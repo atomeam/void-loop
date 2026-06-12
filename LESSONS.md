@@ -100,3 +100,10 @@
 **ROOT CAUSE:** Third universal-negative from incomplete evidence. Did not verify retrieval completeness with sentinel string known to exist.
 **RULE:** Before concluding data absence, verify retrieval completeness with a sentinel string you KNOW exists (e.g., page title). "Not found in my fetch" ≠ "not in the source."
 **PERMANENT:** ✓ (New rule - verify retrieval completeness before concluding absence)
+
+## LESSON 11: Flag Conflicts, Never Silent Substitutes
+
+**SURPRISE:** Implemented route $11 → $01 → $04 which was graph-invalid ($04 not adjacent to $01). Silent reroute indistinguishable from wrong turn.
+**ROOT CAUSE:** Instruction conflicted with verified data, but conflict was not flagged. Substituted route without proposing fix.
+**RULE:** When an instruction conflicts with verified data, FLAG the conflict and propose the fix — never silently substitute. A silent reroute is indistinguishable from a wrong turn.
+**PERMANENT:** ✓ (New rule - conflict flagging before substitution)

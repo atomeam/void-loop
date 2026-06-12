@@ -52,6 +52,37 @@ function resolveRoomGraph(currentLevel) {
     return graph;
 }
 
+// Spawn player near a position, scanning outward for wall-free position
+function spawnNear(roomId, targetX, targetY) {
+    const { checkCollision } = require('./collision');
+    const hitboxSize = 8;
+    const maxSearchRadius = 32;
+    
+    for (let radius = 0; radius <= maxSearchRadius; radius += 4) {
+        // Search in spiral pattern
+        for (let dx = -radius; dx <= radius; dx += 4) {
+            for (let dy = -radius; dy <= radius; dy += 4) {
+                const testX = targetX + dx;
+                const testY = targetY + dy;
+                
+                // Check bounds
+                if (testX < 0 || testX > 159 - hitboxSize || testY < 0 || testY > 111 - hitboxSize) {
+                    continue;
+                }
+                
+                // Test if position is wall-free
+                const testPlayer = { x: testX, y: testY };
+                if (!checkCollision(testPlayer, roomId)) {
+                    return { x: testX, y: testY };
+                }
+            }
+        }
+    }
+    
+    // Fallback to center if no wall-free position found
+    return { x: 80, y: 56 };
+}
+
 // Initialize game state
 function createInitialState() {
     return {
@@ -60,15 +91,15 @@ function createInitialState() {
             {
                 id: 0,
                 roomId: 17, // Yellow Castle exterior ($11 = 17 decimal)
-                x: 160, // Center of room (320px width)
-                y: 16, // Upper area (112px height) - row 1
+                x: 80, // Center of room (open courtyard)
+                y: 56, // Center of room
                 color: 0xFF0000 // Red for player 0
             },
             {
                 id: 1,
                 roomId: 17, // Yellow Castle exterior
-                x: 160, // Center of room
-                y: 48, // Lower area - row 3
+                x: 72, // Slightly offset
+                y: 56,
                 color: 0x00FF00 // Green for player 1
             }
         ]

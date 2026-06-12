@@ -33,7 +33,7 @@ function applyInput(state, playerId, action) {
     const player = state.players.find(p => p.id === playerId);
     if (!player) return;
     
-    const moveSpeed = 2; // Pixels per tick
+    const moveSpeed = 1; // 1px per tick per axis
     let newX = player.x;
     let newY = player.y;
     
@@ -48,7 +48,7 @@ function applyInput(state, playerId, action) {
             newX = Math.max(0, player.x - moveSpeed);
             break;
         case 'right':
-            newX = Math.min(319, player.x + moveSpeed);
+            newX = Math.min(159, player.x + moveSpeed);
             break;
     }
     

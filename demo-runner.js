@@ -16,6 +16,22 @@ if (!romPath) {
 }
 
 const romBuffer = fs.readFileSync(romPath);
+
+// Verify ROM SHA-1
+const crypto = require('crypto');
+const sha1 = crypto.createHash('sha1');
+sha1.update(romBuffer);
+const romSha1 = sha1.digest('hex');
+const expectedSha1 = 'ec23bbea83cf47277482e775ad58ac8e6d1483fe';
+
+if (romSha1 !== expectedSha1) {
+    console.error(`✗ ROM SHA-1 mismatch: ${romSha1} (expected: ${expectedSha1})`);
+    console.error('Demo will only run against the verified PAL dump.');
+    process.exit(1);
+}
+
+console.log(`✓ ROM SHA-1 verified: ${romSha1}`);
+
 setCollisionRom(romBuffer);
 setRenderRom(romBuffer);
 

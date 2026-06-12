@@ -12,8 +12,8 @@ function setRomBuffer(buffer) {
 
 // Render a single frame to PNG
 function renderFrame(state, outputPath) {
-    const roomWidth = 320; // 40 columns × 8 pixels
-    const roomHeight = 112; // 7 rows × 16 pixels
+    const roomWidth = 160; // World space: 160 wide
+    const roomHeight = 112; // World space: 112 tall
     
     const png = new PNG({ width: roomWidth, height: roomHeight });
     const pngData = new Uint8Array(roomWidth * roomHeight * 4);
@@ -57,7 +57,7 @@ function renderFrame(state, outputPath) {
             const pf1 = gfxData[rowIdx * 3 + 1];
             const pf2 = gfxData[rowIdx * 3 + 2];
             
-            // Left half = 20px
+            // Left half = 20px (20 cells × 1px, but each cell is 4px wide in world space)
             for (let pixel = 0; pixel < 20; pixel++) {
                 let bit = 0;
                 if (pixel < 4) {
@@ -69,9 +69,10 @@ function renderFrame(state, outputPath) {
                 }
                 
                 if (bit) {
-                    for (let dx = 0; dx < 8; dx++) {
+                    // Draw 4px wide × 16px tall block for each playfield cell
+                    for (let dx = 0; dx < 4; dx++) {
                         for (let dy = 0; dy < 16; dy++) {
-                            const px = (pixel * 8) + dx;
+                            const px = (pixel * 4) + dx;
                             const py = rowY + dy;
                             const idx = (roomWidth * py + px) * 4;
                             pngData[idx] = r;
@@ -98,9 +99,9 @@ function renderFrame(state, outputPath) {
                 }
                 
                 if (bit) {
-                    for (let dx = 0; dx < 8; dx++) {
+                    for (let dx = 0; dx < 4; dx++) {
                         for (let dy = 0; dy < 16; dy++) {
-                            const px = 160 + (pixel * 8) + dx;
+                            const px = 80 + (pixel * 4) + dx;
                             const py = rowY + dy;
                             const idx = (roomWidth * py + px) * 4;
                             pngData[idx] = r;
