@@ -181,9 +181,40 @@
         .fullscreen-container {
             position: relative;
         }
+
+        .agent-badge {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #ff6b6b;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            z-index: 1001;
+            display: none;
+        }
+
+        .operator-badge {
+            position: fixed;
+            top: 10px;
+            right: 140px;
+            background: #ffd700;
+            color: #1a1a2e;
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8em;
+            z-index: 1001;
+            display: none;
+        }
     </style>
 </head>
 <body>
+    <div id="agentBadge" class="agent-badge">AGENT MODE</div>
+    <div id="operatorBadge" class="operator-badge">OPERATOR MODE</div>
+    
     <h1>Adventure (1980)</h1>
     <p class="subtitle">Atari 2600 VCS - PAL Edition</p>
 
@@ -230,6 +261,11 @@
         const EXPECTED_SHA1 = 'ec23bbea83cf47277482e775ad58ac8e6d1483fe';
         let crtEnabled = false;
         let javatariReady = false;
+        let agentMode = false;
+        let operatorMode = false;
+        let inputQueue = [];
+        let currentFrame = 0;
+        let auditLog = [];
 
         // Configure Javatari for PAL mode
         window.Javatari = {
@@ -239,6 +275,242 @@
             SHOW_CONSOLE_PANEL: false,
             AUTO_POWER_ON: true
         };
+
+        // Check for agent mode via URL parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('agent') === '1') {
+            agentMode = true;
+            document.getElementById('agentBadge').style.display = 'block';
+        }
+
+        if (urlParams.get('operator') === '1') {
+            operatorMode = true;
+            document.getElementById('operatorBadge').style.display = 'block';
+        }
+
+        // AgentBridge API for programmatic control
+        window.AgentBridge = {
+            // Load ROM from ArrayBuffer (bypasses file picker)
+            loadRom: async function(arrayBuffer) {
+                const hashBuffer = await crypto.subtle.digest('SHA-1', arrayBuffer);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+                if (hashHex.toLowerCase() !== EXPECTED_SHA1.toLowerCase()) {
+                    throw new Error(`ROM SHA-1 mismatch: ${hashHex} (expected: ${EXPECTED_SHA1})`);
+                }
+
+                const romData = new Uint8Array(arrayBuffer);
+                
+                return new Promise((resolve, reject) => {
+                    if (window.Javatari && window.Javatari.loadROM) {
+                        window.Javatari.loadROM(romData);
+                        javatariReady = true;
+                        resolve();
+                    } else {
+                        setTimeout(() => {
+                            if (window.Javatari && window.Javatari.loadROM) {
+                                window.Javatari.loadROM(romData);
+                                javatariReady = true;
+                                resolve();
+                            } else {
+                                reject(new Error('Javatari not available'));
+                            }
+                        }, 1000);
+                    }
+                });
+            },
+
+            // Queue input action with duration
+            input: function(action, durationMs) {
+                if (!agentMode) {
+                    throw new Error('AgentBridge.input() only available in agent mode (?agent=1)');
+                }
+
+                const validActions = ['up', 'down', 'left', 'right', 'fire', 'reset', 'select'];
+                if (!validActions.includes(action.toLowerCase())) {
+                    throw new Error(`Invalid action: ${action}. Valid: ${validActions.join(', ')}`);
+                }
+
+                inputQueue.push({
+                    action: action.toLowerCase(),
+                    duration: durationMs,
+                    startTime: Date.now(),
+                    startFrame: currentFrame
+                });
+            },
+
+            // Get current frame as base64 PNG
+            getFrame: function() {
+                if (!javatariReady) {
+                    throw new Error('ROM not loaded');
+                }
+
+                const canvas = document.querySelector('#javatari-container canvas');
+                if (!canvas) {
+                    throw new Error('Emulator canvas not found');
+                }
+
+                return canvas.toDataURL('image/png');
+            },
+
+            // Get current state as JSON-serializable object
+            getState: function() {
+                if (!javatariReady) {
+                    throw new Error('ROM not loaded');
+                }
+
+                try {
+                    if (window.Javatari && window.Javatari.saveState) {
+                        return JSON.stringify(window.Javatari.saveState());
+                    } else {
+                        throw new Error('Save state not available');
+                    }
+                } catch (error) {
+                    throw new Error('Error getting state: ' + error.message);
+                }
+            },
+
+            // Set state from JSON string
+            setState: function(stateJson) {
+                if (!javatariReady) {
+                    throw new Error('ROM not loaded');
+                }
+
+                try {
+                    const state = JSON.parse(stateJson);
+                    if (window.Javatari && window.Javatari.loadState) {
+                        window.Javatari.loadState(state);
+                    } else {
+                        throw new Error('Load state not available');
+                    }
+                } catch (error) {
+                    throw new Error('Error setting state: ' + error.message);
+                }
+            },
+
+            // Peek at console RAM address ($80–$FF)
+            peek: function(addr) {
+                if (!agentMode) {
+                    throw new Error('AgentBridge.peek() only available in agent mode (?agent=1)');
+                }
+
+                if (addr < 0x80 || addr > 0xFF) {
+                    throw new Error('Invalid RAM address: ' + addr.toString(16) + ' (must be $80–$FF)');
+                }
+
+                // This is a placeholder - actual implementation depends on Javatari's RAM access API
+                // For now, return a mock value that will be replaced with actual RAM access
+                if (window.Javatari && window.Javatari.readRAM) {
+                    return window.Javatari.readRAM(addr);
+                } else {
+                    // Fallback: try to access RAM through debugger if available
+                    console.warn('Direct RAM access not available, returning 0');
+                    return 0;
+                }
+            },
+
+            // Operator mode: Poke value to RAM address ($80–$FF)
+            poke: function(addr, value, reason) {
+                if (!operatorMode) {
+                    throw new Error('AgentBridge.poke() only available in operator mode (?operator=1)');
+                }
+
+                if (addr < 0x80 || addr > 0xFF) {
+                    throw new Error('Invalid RAM address: ' + addr.toString(16) + ' (must be $80–$FF)');
+                }
+
+                if (value < 0 || value > 255) {
+                    throw new Error('Invalid value: ' + value + ' (must be 0–255)');
+                }
+
+                const before = this.peek(addr);
+                
+                // Log the poke operation
+                auditLog.push({
+                    frame: currentFrame,
+                    addr: addr,
+                    before: before,
+                    after: value,
+                    reason: reason || 'unspecified'
+                });
+
+                // This is a placeholder - actual implementation depends on Javatari's RAM write API
+                if (window.Javatari && window.Javatari.writeRAM) {
+                    window.Javatari.writeRAM(addr, value);
+                } else {
+                    console.warn('Direct RAM write not available');
+                }
+            },
+
+            // Get audit log of all poke operations
+            getAuditLog: function() {
+                if (!operatorMode) {
+                    throw new Error('AgentBridge.getAuditLog() only available in operator mode (?operator=1)');
+                }
+                return JSON.stringify(auditLog);
+            },
+
+            // Get current frame count
+            getFrameCount: function() {
+                return currentFrame;
+            }
+        };
+
+        // Process input queue (frame-accurate input execution)
+        function processInputQueue() {
+            if (inputQueue.length === 0) return;
+
+            const now = Date.now();
+            inputQueue = inputQueue.filter(input => {
+                const elapsed = now - input.startTime;
+                if (elapsed < input.duration) {
+                    // Still executing this input
+                    executeInput(input.action, true);
+                    return true;
+                } else {
+                    // Done with this input
+                    executeInput(input.action, false);
+                    return false;
+                }
+            });
+        }
+
+        function executeInput(action, pressed) {
+            const keyMap = {
+                'up': 'UP',
+                'down': 'DOWN',
+                'left': 'LEFT',
+                'right': 'RIGHT',
+                'fire': 'FIRE',
+                'reset': 'RESET',
+                'select': 'SELECT'
+            };
+
+            const mappedAction = keyMap[action];
+            if (!mappedAction) return;
+
+            if (action === 'reset' && pressed) {
+                if (window.Javatari && window.Javatari.resetConsole) {
+                    window.Javatari.resetConsole();
+                }
+            } else if (action === 'select' && pressed) {
+                if (window.Javatari && window.Javatari.pressButton) {
+                    window.Javatari.pressButton('SELECT', true);
+                    setTimeout(() => window.Javatari.pressButton('SELECT', false), 100);
+                }
+            } else if (window.Javatari && window.Javatari.pressJoystickButton) {
+                window.Javatari.pressJoystickButton(0, mappedAction, pressed);
+            }
+        }
+
+        // Frame counter and input processing loop
+        setInterval(() => {
+            if (javatariReady) {
+                currentFrame++;
+                processInputQueue();
+            }
+        }, 16.67); // ~60 FPS
 
         // ROM file handling
         const romInput = document.getElementById('romInput');

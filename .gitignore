@@ -18,3 +18,13 @@ Thumbs.db
 # Build outputs
 dist/
 build/
+
+# Agent play outputs
+output/
+frames/
+*.png
+
+# Audit logs and manifests (optional - comment out if you want to commit these)
+# manifest.json
+# audit_log.json
+# ram_dump.json
