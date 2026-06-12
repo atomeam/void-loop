@@ -1,0 +1,20 @@
+# ROM files - NEVER commit these
+*.bin
+*.rom
+*.a26
+*.zip
+
+# Node modules (if we add any build tools later)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Build outputs
+dist/
+build/
