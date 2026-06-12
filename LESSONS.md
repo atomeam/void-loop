@@ -65,4 +65,24 @@
 - Kickbacks required: 0
 - Evidence quality: High (screenshots, deployment URLs, git verification)
 
-**Key Insight:** The difference between Phases 1-2 (success) and Phase 4 (failure) was evidence discipline. Phases 1-2 had clear verifiable end-states and artifacts. Phase 4 had assumptions masquerading as knowns.
+**Mission 002 (Evidence Completion):**
+- Slices passed on first attempt: 4/7 (A1 FAIL, A2 FAIL, A3 PASS, B1 DESCOPED, B2 PASS, C1 DESCOPED, D1 PASS)
+- Kickbacks required: 0 (evidence-first approach prevented kickbacks)
+- Descopes: 3 (honest, documented)
+- Evidence quality: High (spike outputs, git status, README updates)
+
+**Key Insight:** The difference between Phase 4 (failure) and Mission 002 (controlled descopes) was evidence discipline. Mission 002 tested risky assumptions first with minimal spikes, leading to quick FAIL verdicts and honest descopes rather than placeholder implementations.
+
+## LESSON 7: Risk-Ordered Slicing Works
+
+**SURPRISE:** Testing 6502.ts with a 10-line spike immediately revealed the dependency injection complexity.
+**ROOT CAUSE:** In Phase 4, built full CLI scaffolding before testing the core. In Mission 002, tested core capability first.
+**RULE:** Order subtasks so the riskiest assumption is tested FIRST in the smallest possible experiment.
+**PERMANENT:** ✓ (Already established)
+
+## LESSON 8: Honest Descope > Placeholder
+
+**SURPRISE:** Removing non-functional code and documenting limitations is better than leaving placeholders.
+**ROOT CAUSE:** Fear of "failure" led to placeholder implementations in Phase 4. Mission 002 embraced descopes.
+**RULE:** When a slice FAILS, either (a) split smaller, (b) swap approach, or (c) descope honestly with documentation. Never leave placeholders.
+**PERMANENT:** ✓ (New rule - descoping is valid outcome)
