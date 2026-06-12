@@ -1,0 +1,687 @@
+{
+  "rooms": [
+    {
+      "id": 0,
+      "gfxPtr": 64220,
+      "color": 134,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 0,
+      "roomLeft": 0,
+      "roomDown": 0,
+      "roomRight": 0,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 1,
+      "gfxPtr": 64178,
+      "color": 56,
+      "bwColor": 10,
+      "pfControl": 161,
+      "roomAbove": 8,
+      "roomLeft": 2,
+      "roomDown": 128,
+      "roomRight": 3,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": true,
+        "mirror": true
+      }
+    },
+    {
+      "id": 2,
+      "gfxPtr": 64178,
+      "color": 88,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 17,
+      "roomLeft": 3,
+      "roomDown": 131,
+      "roomRight": 1,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 3,
+      "gfxPtr": 64160,
+      "color": 200,
+      "bwColor": 10,
+      "pfControl": 97,
+      "roomAbove": 6,
+      "roomLeft": 1,
+      "roomDown": 134,
+      "roomRight": 2,
+      "flags": {
+        "rightThinWall": true,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 4,
+      "gfxPtr": 64318,
+      "color": 214,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 16,
+      "roomLeft": 5,
+      "roomDown": 7,
+      "roomRight": 6,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 5,
+      "gfxPtr": 64339,
+      "color": 214,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 29,
+      "roomLeft": 6,
+      "roomDown": 8,
+      "roomRight": 4,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 6,
+      "gfxPtr": 64360,
+      "color": 214,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 7,
+      "roomLeft": 4,
+      "roomDown": 3,
+      "roomRight": 5,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 7,
+      "gfxPtr": 64381,
+      "color": 214,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 4,
+      "roomLeft": 8,
+      "roomDown": 6,
+      "roomRight": 8,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 8,
+      "gfxPtr": 64402,
+      "color": 214,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 5,
+      "roomLeft": 7,
+      "roomDown": 1,
+      "roomRight": 7,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 9,
+      "gfxPtr": 64423,
+      "color": 8,
+      "bwColor": 8,
+      "pfControl": 37,
+      "roomAbove": 10,
+      "roomLeft": 10,
+      "roomDown": 11,
+      "roomRight": 10,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 10,
+      "gfxPtr": 64462,
+      "color": 8,
+      "bwColor": 8,
+      "pfControl": 37,
+      "roomAbove": 3,
+      "roomLeft": 9,
+      "roomDown": 9,
+      "roomRight": 9,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 11,
+      "gfxPtr": 64441,
+      "color": 8,
+      "bwColor": 8,
+      "pfControl": 37,
+      "roomAbove": 9,
+      "roomLeft": 12,
+      "roomDown": 28,
+      "roomRight": 13,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 12,
+      "gfxPtr": 64199,
+      "color": 184,
+      "bwColor": 10,
+      "pfControl": 97,
+      "roomAbove": 28,
+      "roomLeft": 13,
+      "roomDown": 29,
+      "roomRight": 11,
+      "flags": {
+        "rightThinWall": true,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 13,
+      "gfxPtr": 64199,
+      "color": 120,
+      "bwColor": 10,
+      "pfControl": 161,
+      "roomAbove": 15,
+      "roomLeft": 11,
+      "roomDown": 14,
+      "roomRight": 12,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": true,
+        "mirror": true
+      }
+    },
+    {
+      "id": 14,
+      "gfxPtr": 64628,
+      "color": 152,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 13,
+      "roomLeft": 16,
+      "roomDown": 15,
+      "roomRight": 16,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 15,
+      "gfxPtr": 64483,
+      "color": 12,
+      "bwColor": 12,
+      "pfControl": 33,
+      "roomAbove": 14,
+      "roomLeft": 15,
+      "roomDown": 13,
+      "roomRight": 15,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 16,
+      "gfxPtr": 64483,
+      "color": 0,
+      "bwColor": 2,
+      "pfControl": 33,
+      "roomAbove": 1,
+      "roomLeft": 28,
+      "roomDown": 4,
+      "roomRight": 28,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 17,
+      "gfxPtr": 64483,
+      "color": 42,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 6,
+      "roomLeft": 3,
+      "roomDown": 2,
+      "roomRight": 1,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 18,
+      "gfxPtr": 64220,
+      "color": 42,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 18,
+      "roomLeft": 18,
+      "roomDown": 18,
+      "roomRight": 18,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 19,
+      "gfxPtr": 64649,
+      "color": 8,
+      "bwColor": 8,
+      "pfControl": 37,
+      "roomAbove": 21,
+      "roomLeft": 20,
+      "roomDown": 21,
+      "roomRight": 22,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 20,
+      "gfxPtr": 64688,
+      "color": 8,
+      "bwColor": 8,
+      "pfControl": 36,
+      "roomAbove": 22,
+      "roomLeft": 21,
+      "roomDown": 22,
+      "roomRight": 19,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": false
+      }
+    },
+    {
+      "id": 21,
+      "gfxPtr": 64667,
+      "color": 8,
+      "bwColor": 8,
+      "pfControl": 36,
+      "roomAbove": 19,
+      "roomLeft": 22,
+      "roomDown": 19,
+      "roomRight": 20,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": false
+      }
+    },
+    {
+      "id": 22,
+      "gfxPtr": 64706,
+      "color": 8,
+      "bwColor": 8,
+      "pfControl": 37,
+      "roomAbove": 20,
+      "roomLeft": 19,
+      "roomDown": 27,
+      "roomRight": 21,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 23,
+      "gfxPtr": 64550,
+      "color": 102,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 25,
+      "roomLeft": 24,
+      "roomDown": 25,
+      "roomRight": 24,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 24,
+      "gfxPtr": 64589,
+      "color": 102,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 26,
+      "roomLeft": 23,
+      "roomDown": 26,
+      "roomRight": 23,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 25,
+      "gfxPtr": 64568,
+      "color": 102,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 23,
+      "roomLeft": 26,
+      "roomDown": 23,
+      "roomRight": 26,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 26,
+      "gfxPtr": 64607,
+      "color": 102,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 24,
+      "roomLeft": 25,
+      "roomDown": 24,
+      "roomRight": 25,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 27,
+      "gfxPtr": 64297,
+      "color": 102,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 137,
+      "roomLeft": 137,
+      "roomDown": 137,
+      "roomRight": 137,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 28,
+      "gfxPtr": 64220,
+      "color": 134,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 29,
+      "roomLeft": 7,
+      "roomDown": 140,
+      "roomRight": 8,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    },
+    {
+      "id": 29,
+      "gfxPtr": 64628,
+      "color": 102,
+      "bwColor": 10,
+      "pfControl": 33,
+      "roomAbove": 143,
+      "roomLeft": 1,
+      "roomDown": 16,
+      "roomRight": 3,
+      "flags": {
+        "rightThinWall": false,
+        "leftThinWall": false,
+        "mirror": true
+      }
+    }
+  ],
+  "total": 30,
+  "gfxMap": [
+    {
+      "hex": "f0ffff300000300000300000300000300000f0ff0f",
+      "offset": 64220,
+      "rooms": [
+        0,
+        18,
+        28
+      ]
+    },
+    {
+      "hex": "f0ff0f000000000000000000000000000000f0ffff",
+      "offset": 64178,
+      "rooms": [
+        1,
+        2
+      ]
+    },
+    {
+      "hex": "f0ffff000000000000000000000000000000f0ff0f",
+      "offset": 64160,
+      "rooms": [
+        3
+      ]
+    },
+    {
+      "hex": "f0ff0f000c0cf00c3cf00c00f0ff3f003030f0333f",
+      "offset": 64318,
+      "rooms": [
+        4
+      ]
+    },
+    {
+      "hex": "f0ffff000000f0fcfff000c0f03fcf0030ccf0f3cc",
+      "offset": 64339,
+      "rooms": [
+        5
+      ]
+    },
+    {
+      "hex": "f0f30c00300cf03f0ff00000f0f000003000f0ffff",
+      "offset": 64360,
+      "rooms": [
+        6
+      ]
+    },
+    {
+      "hex": "f0333f00303cf0ff3c00033cf0333c00330cf0f30c",
+      "offset": 64381,
+      "rooms": [
+        7
+      ]
+    },
+    {
+      "hex": "f0f3cc00330cf033fc003300f0f3ff000000f0ff0f",
+      "offset": 64402,
+      "rooms": [
+        8
+      ]
+    },
+    {
+      "hex": "f0ffcc0000ccf003cf000300f0f3fc00330cf033cc",
+      "offset": 64423,
+      "rooms": [
+        9
+      ]
+    },
+    {
+      "hex": "f0ff0f003000f030ff0030c0f0f3c00003c0f0ffcc",
+      "offset": 64462,
+      "rooms": [
+        10
+      ]
+    },
+    {
+      "hex": "f033cc0030cc003fcf0000c0003fc30030c0f0ffff",
+      "offset": 64441,
+      "rooms": [
+        11
+      ]
+    },
+    {
+      "hex": "f0ff0f000000000000000000000000000000f0ff0f",
+      "offset": 64199,
+      "rooms": [
+        12,
+        13
+      ]
+    },
+    {
+      "hex": "f0ff0f300000300000300000300000300000f0ffff",
+      "offset": 64628,
+      "rooms": [
+        14,
+        29
+      ]
+    },
+    {
+      "hex": "f0fe1530031f3003ff3000ff30003f300000f0ff0f",
+      "offset": 64483,
+      "rooms": [
+        15,
+        16,
+        17
+      ]
+    },
+    {
+      "hex": "f0f0ff000003f0ff03000000303fff003000f0f0ff",
+      "offset": 64649,
+      "rooms": [
+        19
+      ]
+    },
+    {
+      "hex": "f0ffff0000c0f0ffcf00000cf00fff000fc030cfcc",
+      "offset": 64688,
+      "rooms": [
+        20
+      ]
+    },
+    {
+      "hex": "f0f0ff300000303fff003000f0f0ff300003f0f0ff",
+      "offset": 64667,
+      "rooms": [
+        21
+      ]
+    },
+    {
+      "hex": "30cfcc00c0ccf0ff0f000000f0ff0f000000f0ff0f",
+      "offset": 64706,
+      "rooms": [
+        22
+      ]
+    },
+    {
+      "hex": "f0ffff000000f0ff0f00000cf0ff0cf003ccf033cf",
+      "offset": 64550,
+      "rooms": [
+        23
+      ]
+    },
+    {
+      "hex": "f0ffff0000c0f0ffcf0000ccf033fff03300f03f0c",
+      "offset": 64589,
+      "rooms": [
+        24
+      ]
+    },
+    {
+      "hex": "f033cff03000f033ff003300f0ff00000000f0ff0f",
+      "offset": 64568,
+      "rooms": [
+        25
+      ]
+    },
+    {
+      "hex": "f03f0cf0000cf0ff0f003000f03000003000f0ff0f",
+      "offset": 64607,
+      "rooms": [
+        26
+      ]
+    },
+    {
+      "hex": "f0ff0f300000300000300000300000300000f0ff0f",
+      "offset": 64297,
+      "rooms": [
+        27
+      ]
+    }
+  ],
+  "roomDiffs": [
+    [
+      16,
+      15,
+      15
+    ],
+    [
+      5,
+      17,
+      17
+    ],
+    [
+      29,
+      10,
+      10
+    ],
+    [
+      28,
+      22,
+      22
+    ],
+    [
+      27,
+      12,
+      12
+    ],
+    [
+      3,
+      12,
+      12
+    ]
+  ]
+}

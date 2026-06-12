@@ -1,22 +1,21 @@
 {
   "name": "adventure-lab",
-  "version": "1.0.0",
-  "description": "Atari 2600 Adventure emulator with agent play capabilities",
-  "main": "agent-play.js",
+  "version": "2.0.0",
+  "description": "Atari 2600 Adventure native reimplementation with agent play capabilities",
+  "main": "extract-assets.js",
   "scripts": {
-    "agent-play": "node agent-play.js"
+    "extract": "node extract-assets.js"
   },
   "keywords": [
     "atari",
     "2600",
-    "emulator",
+    "adventure",
     "agent",
-    "headless"
+    "reimplementation"
   ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "6502.ts": "^1.1.4",
     "pngjs": "^7.0.0"
   }
 }

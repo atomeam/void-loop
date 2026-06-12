@@ -1,0 +1,207 @@
+{
+  "palSha1": "ec23bbea83cf47277482e775ad58ac8e6d1483fe",
+  "offsetDelta": 0,
+  "palOffsets": {
+    "easterEgg": 3459,
+    "bridge": 3284,
+    "castleGate": 3061,
+    "creatureSprites": {
+      "start": 3012,
+      "end": 3375
+    },
+    "roomPlayfield": 3620
+  },
+  "colorTable": {
+    "type": "PAL",
+    "colors": [
+      {
+        "roomId": 0,
+        "color": 134,
+        "bwColor": 10
+      },
+      {
+        "roomId": 1,
+        "color": 56,
+        "bwColor": 10
+      },
+      {
+        "roomId": 2,
+        "color": 88,
+        "bwColor": 10
+      },
+      {
+        "roomId": 3,
+        "color": 200,
+        "bwColor": 10
+      },
+      {
+        "roomId": 4,
+        "color": 214,
+        "bwColor": 10
+      },
+      {
+        "roomId": 5,
+        "color": 214,
+        "bwColor": 10
+      },
+      {
+        "roomId": 6,
+        "color": 214,
+        "bwColor": 10
+      },
+      {
+        "roomId": 7,
+        "color": 214,
+        "bwColor": 10
+      },
+      {
+        "roomId": 8,
+        "color": 214,
+        "bwColor": 10
+      },
+      {
+        "roomId": 9,
+        "color": 8,
+        "bwColor": 8
+      },
+      {
+        "roomId": 10,
+        "color": 8,
+        "bwColor": 8
+      },
+      {
+        "roomId": 11,
+        "color": 8,
+        "bwColor": 8
+      },
+      {
+        "roomId": 12,
+        "color": 184,
+        "bwColor": 10
+      },
+      {
+        "roomId": 13,
+        "color": 120,
+        "bwColor": 10
+      },
+      {
+        "roomId": 14,
+        "color": 152,
+        "bwColor": 10
+      },
+      {
+        "roomId": 15,
+        "color": 12,
+        "bwColor": 12
+      },
+      {
+        "roomId": 16,
+        "color": 0,
+        "bwColor": 2
+      },
+      {
+        "roomId": 17,
+        "color": 42,
+        "bwColor": 10
+      },
+      {
+        "roomId": 18,
+        "color": 42,
+        "bwColor": 10
+      },
+      {
+        "roomId": 19,
+        "color": 8,
+        "bwColor": 8
+      },
+      {
+        "roomId": 20,
+        "color": 8,
+        "bwColor": 8
+      },
+      {
+        "roomId": 21,
+        "color": 8,
+        "bwColor": 8
+      },
+      {
+        "roomId": 22,
+        "color": 8,
+        "bwColor": 8
+      },
+      {
+        "roomId": 23,
+        "color": 102,
+        "bwColor": 10
+      },
+      {
+        "roomId": 24,
+        "color": 102,
+        "bwColor": 10
+      },
+      {
+        "roomId": 25,
+        "color": 102,
+        "bwColor": 10
+      },
+      {
+        "roomId": 26,
+        "color": 102,
+        "bwColor": 10
+      },
+      {
+        "roomId": 27,
+        "color": 102,
+        "bwColor": 10
+      },
+      {
+        "roomId": 28,
+        "color": 134,
+        "bwColor": 10
+      },
+      {
+        "roomId": 29,
+        "color": 102,
+        "bwColor": 10
+      }
+    ]
+  },
+  "sprites": [
+    "048515a5df8519491f851760a5df49038517a9058519a906851560a5df4c90faf0ff",
+    "f0fffff0ff",
+    "f0ff0ff0ffff",
+    "f0ff0f0424fb0822fb0c20fb101efb141cfb181afb1c18fb201afb241cfb281efb2c20fb3022fbff24fbfeaafeaafeaafeaafeaafeaafeaafeaa00f0ff0f",
+    "f0ff0ff0ff0f000c0cf00c3cf00c00f0ff3f003030f0333ff0ff",
+    "f0fcfff000c0f03fcf0030ccf0f3ccf0f30c00300cf03f0f",
+    "3000f0fffff0333f00303cf0ff3c00033cf0333c00330cf0f30cf0f3cc00330cf033fc003300f0f3",
+    "f0ff0ff0ff",
+    "ccf003cf000300f0f3fc00330cf033cc0030cc003f",
+    "c0003fc30030c0f0fffff0ff0f003000f030ff0030c0f0f3c00003c0f0ffccf0fe1530031f3003ff3000ff30003f",
+    "f0ff0f114d310f4d31104d3100ff05fcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00f0ff",
+    "0cf0ff0cf003ccf033cff03000f033ff003300f0",
+    "f0ff0ff0ff",
+    "ccf033fff03300f03f0cf0000cf0ff0f003000f0",
+    "3000f0ff0ff0ff0f",
+    "f0fffff0f0",
+    "303fff003000f0f0ff",
+    "303fff003000f0f0ff300003f0f0fff0ff",
+    "0cf00fff000fc030cfcc00c0ccf0ff",
+    "f0ff0f00ffdbfcc3c3c3c342424242424242424242424242424242c3c3c3c300040c04040404",
+    "ff00fd07fda7000e11010204081f000e11010601110e00031afdff22fd8181c3c3ff5a6600018001803c5a66c38181",
+    "3afd0166fd023afdff4ffd060ff3fe0e04041e3f7fe3c3c3c7ff3c088fe13f008040261f0b0e1e24448e1e3f7f7f7f7f3e1c08f880e0000c0c0c0e1b7fce80fcfefe7e78206e42",
+    "ff7cfd2040ff40",
+    "ff86fd8000f0808080f40487e5878005e5a7e187e001e0a0f00140e040404001e0a0e080e0012020e0a0e001010188a8a8a8f801e0a0f00180e08f890f8ae9808e0aeea0e888ee0a8ee0a4a40480080e0a0a800e0a0e080e80040e04040480040e040404001e506900ff88fd00fff3fd8181c37e7e3c1818",
+    "504001f4fc0304fdff0cfd00ff12fe3c7ee7c3c3c3c3c300dcfa860a",
+    "b2fa380aa108028003b2fa580a2111038301a0fac80a61060186023efbd60a211005070653fbd60a211d06080468fbd60a21070403057dfbd60a210408060892fbd60a2105070107a7fb0808250a0a0b0acefb08082503090909b9fb080825090c1c0dc7fab80a611c0d1d0bc7fa780aa10f0b0e0c74fc980a210d100f10e3fb0c0c210e0f0d0fe3fb000221011c041ce3fb2a0a2106030201dcfa2a0a211212121289fc08082515141516b0fc080824161516139bfc08082413161314c2fc08082514131b1526fc660a21191819184dfc660a211a171a1738fc660a21171a171a5ffc660a211819181929fb660a2189898989dcfa860a211d078c0874fc660a218f011003b2fa860a2106010603100f0f0511111d0a0a1c16161b0c0c030c0cd90001fc02fc480c07f8fbc800f1",
+    "fbfbc900f1",
+    "fefbca00f1",
+    "e8fdebfdecfd",
+    "02fedd0005fe",
+    "a400a8002efd660e00a900ad002efd2a0600ae00b2002efd",
+    "b60078fd79fd2a0600bc00d7fcd8fc860207bf00fcfcfdfc2a0600c200fcfcfdfc0e0e00c500fcfcfd",
+    "cb00cf0014",
+    "a10082fd83fd080800b900effdf0fdcb0600b3000efe0ffe000600bc00fdfdfe",
+    "f000f000f0"
+  ],
+  "spriteCount": 35
+}

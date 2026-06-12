@@ -1,0 +1,180 @@
+{
+  "sprites": [
+    {
+      "id": 0,
+      "data": "048515a5df8519491f851760a5df49038517a9058519a906851560a5df4c90faf0ff",
+      "size": 34
+    },
+    {
+      "id": 1,
+      "data": "f0fffff0ff",
+      "size": 5
+    },
+    {
+      "id": 2,
+      "data": "f0ff0ff0ffff",
+      "size": 6
+    },
+    {
+      "id": 3,
+      "data": "f0ff0f0424fb0822fb0c20fb101efb141cfb181afb1c18fb201afb241cfb281efb2c20fb3022fbff24fbfeaafeaafeaafeaafeaafeaafeaafeaa00f0ff0f",
+      "size": 62
+    },
+    {
+      "id": 4,
+      "data": "f0ff0ff0ff0f000c0cf00c3cf00c00f0ff3f003030f0333ff0ff",
+      "size": 26
+    },
+    {
+      "id": 5,
+      "data": "f0fcfff000c0f03fcf0030ccf0f3ccf0f30c00300cf03f0f",
+      "size": 24
+    },
+    {
+      "id": 6,
+      "data": "3000f0fffff0333f00303cf0ff3c00033cf0333c00330cf0f30cf0f3cc00330cf033fc003300f0f3",
+      "size": 40
+    },
+    {
+      "id": 7,
+      "data": "f0ff0ff0ff",
+      "size": 5
+    },
+    {
+      "id": 8,
+      "data": "ccf003cf000300f0f3fc00330cf033cc0030cc003f",
+      "size": 21
+    },
+    {
+      "id": 9,
+      "data": "c0003fc30030c0f0fffff0ff0f003000f030ff0030c0f0f3c00003c0f0ffccf0fe1530031f3003ff3000ff30003f",
+      "size": 46
+    },
+    {
+      "id": 10,
+      "data": "f0ff0f114d310f4d31104d3100ff05fcffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff00f0ff",
+      "size": 51
+    },
+    {
+      "id": 11,
+      "data": "0cf0ff0cf003ccf033cff03000f033ff003300f0",
+      "size": 20
+    },
+    {
+      "id": 12,
+      "data": "f0ff0ff0ff",
+      "size": 5
+    },
+    {
+      "id": 13,
+      "data": "ccf033fff03300f03f0cf0000cf0ff0f003000f0",
+      "size": 20
+    },
+    {
+      "id": 14,
+      "data": "3000f0ff0ff0ff0f",
+      "size": 8
+    },
+    {
+      "id": 15,
+      "data": "f0fffff0f0",
+      "size": 5
+    },
+    {
+      "id": 16,
+      "data": "303fff003000f0f0ff",
+      "size": 9
+    },
+    {
+      "id": 17,
+      "data": "303fff003000f0f0ff300003f0f0fff0ff",
+      "size": 17
+    },
+    {
+      "id": 18,
+      "data": "0cf00fff000fc030cfcc00c0ccf0ff",
+      "size": 15
+    },
+    {
+      "id": 19,
+      "data": "f0ff0f00ffdbfcc3c3c3c342424242424242424242424242424242c3c3c3c300040c04040404",
+      "size": 38
+    },
+    {
+      "id": 20,
+      "data": "ff00fd07fda7000e11010204081f000e11010601110e00031afdff22fd8181c3c3ff5a6600018001803c5a66c38181",
+      "size": 47
+    },
+    {
+      "id": 21,
+      "data": "3afd0166fd023afdff4ffd060ff3fe0e04041e3f7fe3c3c3c7ff3c088fe13f008040261f0b0e1e24448e1e3f7f7f7f7f3e1c08f880e0000c0c0c0e1b7fce80fcfefe7e78206e42",
+      "size": 71
+    },
+    {
+      "id": 22,
+      "data": "ff7cfd2040ff40",
+      "size": 7
+    },
+    {
+      "id": 23,
+      "data": "ff86fd8000f0808080f40487e5878005e5a7e187e001e0a0f00140e040404001e0a0e080e0012020e0a0e001010188a8a8a8f801e0a0f00180e08f890f8ae9808e0aeea0e888ee0a8ee0a4a40480080e0a0a800e0a0e080e80040e04040480040e040404001e506900ff88fd00fff3fd8181c37e7e3c1818",
+      "size": 120
+    },
+    {
+      "id": 24,
+      "data": "504001f4fc0304fdff0cfd00ff12fe3c7ee7c3c3c3c3c300dcfa860a",
+      "size": 28
+    },
+    {
+      "id": 25,
+      "data": "b2fa380aa108028003b2fa580a2111038301a0fac80a61060186023efbd60a211005070653fbd60a211d06080468fbd60a21070403057dfbd60a210408060892fbd60a2105070107a7fb0808250a0a0b0acefb08082503090909b9fb080825090c1c0dc7fab80a611c0d1d0bc7fa780aa10f0b0e0c74fc980a210d100f10e3fb0c0c210e0f0d0fe3fb000221011c041ce3fb2a0a2106030201dcfa2a0a211212121289fc08082515141516b0fc080824161516139bfc08082413161314c2fc08082514131b1526fc660a21191819184dfc660a211a171a1738fc660a21171a171a5ffc660a211819181929fb660a2189898989dcfa860a211d078c0874fc660a218f011003b2fa860a2106010603100f0f0511111d0a0a1c16161b0c0c030c0cd90001fc02fc480c07f8fbc800f1",
+      "size": 302
+    },
+    {
+      "id": 26,
+      "data": "fbfbc900f1",
+      "size": 5
+    },
+    {
+      "id": 27,
+      "data": "fefbca00f1",
+      "size": 5
+    },
+    {
+      "id": 28,
+      "data": "e8fdebfdecfd",
+      "size": 6
+    },
+    {
+      "id": 29,
+      "data": "02fedd0005fe",
+      "size": 6
+    },
+    {
+      "id": 30,
+      "data": "a400a8002efd660e00a900ad002efd2a0600ae00b2002efd",
+      "size": 24
+    },
+    {
+      "id": 31,
+      "data": "b60078fd79fd2a0600bc00d7fcd8fc860207bf00fcfcfdfc2a0600c200fcfcfdfc0e0e00c500fcfcfd",
+      "size": 41
+    },
+    {
+      "id": 32,
+      "data": "cb00cf0014",
+      "size": 5
+    },
+    {
+      "id": 33,
+      "data": "a10082fd83fd080800b900effdf0fdcb0600b3000efe0ffe000600bc00fdfdfe",
+      "size": 32
+    },
+    {
+      "id": 34,
+      "data": "f000f000f0",
+      "size": 5
+    }
+  ],
+  "total": 35
+}

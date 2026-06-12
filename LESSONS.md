@@ -86,3 +86,17 @@
 **ROOT CAUSE:** Fear of "failure" led to placeholder implementations in Phase 4. Mission 002 embraced descopes.
 **RULE:** When a slice FAILS, either (a) split smaller, (b) swap approach, or (c) descope honestly with documentation. Never leave placeholders.
 **PERMANENT:** ✓ (New rule - descoping is valid outcome)
+
+## LESSON 9: Verify Raw Source Windows, Not Processed Artifacts
+
+**SURPRISE:** Compared extracted runs from sprites.json against operator's raw ROM windows instead of verifying raw ROM bytes first. Processing differences masqueraded as data differences.
+**ROOT CAUSE:** Compared processed artifacts (sprites.json) against raw source data (ROM windows) instead of raw-to-raw verification first.
+**RULE:** Always verify against raw source data with fixed windows before comparing processed artifacts. Raw window verification must pass before any extraction validation.
+**PERMANENT:** ✓ (New rule - raw-first verification protocol)
+
+## LESSON 10: "Data Absent From My Fetch" ≠ "Data Absent From The Source"
+
+**SURPRISE:** Concluded NTSC Easter egg address was absent from disassembly HTML when operator found it present. Fetch was truncated.
+**ROOT CAUSE:** Third universal-negative from incomplete evidence. Did not verify retrieval completeness with sentinel string known to exist.
+**RULE:** Before concluding data absence, verify retrieval completeness with a sentinel string you KNOW exists (e.g., page title). "Not found in my fetch" ≠ "not in the source."
+**PERMANENT:** ✓ (New rule - verify retrieval completeness before concluding absence)
