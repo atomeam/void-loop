@@ -20,10 +20,15 @@ A browser-based implementation of the classic Atari 2600 game "Adventure" (1980)
 
 ### Phase 4 (Agent Play Mode)
 - **Browser AgentBridge**: Programmatic API for AI agents to control the emulator via `?agent=1` flag
-- **Headless CLI**: Node.js command-line interface for running scripts without a browser
-- **Operator Mode**: RAM manipulation (`poke()`) with audit logging for agent intervention studies
-- **Frame Capture**: Deterministic frame output for training data generation
-- **RAM Access**: Peek/poke console RAM ($80–$FF) for agent perception and world manipulation
+- **Headless CLI**: Node.js command-line interface (currently requires build setup - see limitations below)
+- **Operator Mode**: RAM manipulation (`poke()`) with audit logging for agent intervention studies (headless only)
+- **Frame Capture**: Deterministic frame output for training data generation (headless only)
+- **RAM Access**: Peek/poke console RAM ($80–$FF) for agent perception and world manipulation (headless only)
+
+**Current Limitations:**
+- **Browser RAM Access**: Javatari.js does not expose public RAM access APIs. Peek/poke only available in headless mode.
+- **Headless CLI**: Requires building 6502.ts from source for proper Node.js API access. The NPM package provides browser-focused APIs that need complex setup.
+- **Demo Scripts**: Provided as templates but require actual ROM file and working emulator for validation.
 
 ## ROM Information
 
@@ -103,21 +108,33 @@ const playerX = AgentBridge.peek(0x85);  // Example: read player X position
 const frameCount = AgentBridge.getFrameCount();
 ```
 
+**Important RAM Access Limitation**: Javatari.js does not expose public RAM access APIs. The `peek()` and `poke()` methods are **only available in the headless CLI** (which uses the 6502.ts core). In browser mode, these methods will throw an error directing you to use the CLI for RAM operations.
+
 **Operator Mode** (add `?operator=1`):
 
 ```javascript
-// Poke values to RAM (agents only - never available to human UI)
-AgentBridge.poke(0x87, 0x05, 'Summon bridge to current room');
-
-// Get audit log of all poke operations
-const auditLog = AgentBridge.getAuditLog();
+// NOTE: Operator mode RAM operations are only available in headless CLI
+// Browser mode does not support poke() due to Javatari.js limitations
+// Use the Node.js CLI with --operator flag for RAM manipulation
 ```
 
 **Valid Actions**: `up`, `down`, `left`, `right`, `fire`, `reset`, `select`
 
 ### 2. Headless CLI
 
-For environments without a browser, use the Node.js CLI:
+**CURRENT STATUS: NON-FUNCTIONAL - Requires Build Setup**
+
+The headless CLI requires building 6502.ts from source to access the Node.js API. The NPM package provides browser-focused APIs that need complex build setup. 
+
+To enable headless mode, you would need to:
+1. Clone https://github.com/6502ts/6502.ts
+2. Build the project using their build system (Yarn + Webpack)
+3. Extract the Node.js-compatible emulator core
+4. Integrate it into the agent-play.js CLI
+
+This is a significant undertaking that goes beyond the current $0 budget constraint.
+
+**Intended Usage** (when functional):
 
 ```bash
 # Install dependencies

@@ -6,8 +6,18 @@ const crypto = require('crypto');
 const { createCanvas } = require('canvas');
 const { PNG } = require('pngjs');
 
-// Import 6502.ts emulator core
-const { VCS } = require('6502.ts');
+// NOTE: 6502.ts requires complex build setup and is not a simple drop-in Node.js module
+// The headless CLI is currently non-functional due to API complexity
+// This is a known limitation that requires either:
+// 1. Building 6502.ts from source with proper Node.js bindings
+// 2. Using a different headless emulator core
+// 3. Accepting that headless mode is not currently feasible
+
+// For now, we'll document this limitation
+console.error('ERROR: Headless CLI requires 6502.ts build setup.');
+console.error('The 6502.ts NPM package does not provide simple Node.js API access.');
+console.error('This requires building from source: https://github.com/6502ts/6502.ts');
+process.exit(1);
 
 const EXPECTED_SHA1 = 'ec23bbea83cf47277482e775ad58ac8e6d1483fe';
 

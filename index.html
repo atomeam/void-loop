@@ -399,15 +399,10 @@
                     throw new Error('Invalid RAM address: ' + addr.toString(16) + ' (must be $80–$FF)');
                 }
 
-                // This is a placeholder - actual implementation depends on Javatari's RAM access API
-                // For now, return a mock value that will be replaced with actual RAM access
-                if (window.Javatari && window.Javatari.readRAM) {
-                    return window.Javatari.readRAM(addr);
-                } else {
-                    // Fallback: try to access RAM through debugger if available
-                    console.warn('Direct RAM access not available, returning 0');
-                    return 0;
-                }
+                // NOTE: Javatari.js does not expose a public RAM access API
+                // RAM peek/poke is only available in the headless CLI (6502.ts core)
+                // This is a known limitation of the Javatari.js browser integration
+                throw new Error('RAM access (peek/poke) is only available in headless CLI mode. Javatari.js browser integration does not expose RAM access APIs. Use the Node.js CLI for RAM operations.');
             },
 
             // Operator mode: Poke value to RAM address ($80–$FF)
@@ -424,23 +419,10 @@
                     throw new Error('Invalid value: ' + value + ' (must be 0–255)');
                 }
 
-                const before = this.peek(addr);
-                
-                // Log the poke operation
-                auditLog.push({
-                    frame: currentFrame,
-                    addr: addr,
-                    before: before,
-                    after: value,
-                    reason: reason || 'unspecified'
-                });
-
-                // This is a placeholder - actual implementation depends on Javatari's RAM write API
-                if (window.Javatari && window.Javatari.writeRAM) {
-                    window.Javatari.writeRAM(addr, value);
-                } else {
-                    console.warn('Direct RAM write not available');
-                }
+                // NOTE: Javatari.js does not expose a public RAM access API
+                // RAM peek/poke is only available in the headless CLI (6502.ts core)
+                // This is a known limitation of the Javatari.js browser integration
+                throw new Error('RAM access (peek/poke) is only available in headless CLI mode. Javatari.js browser integration does not expose RAM access APIs. Use the Node.js CLI for RAM operations.');
             },
 
             // Get audit log of all poke operations

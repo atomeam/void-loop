@@ -28,3 +28,6 @@ frames/
 # manifest.json
 # audit_log.json
 # ram_dump.json
+
+# Vercel deployment config
+.vercel/
