@@ -89,7 +89,8 @@ async function testAgentBridge() {
         console.log('✓ Frame counting works');
         console.log('✓ RAM access correctly blocked (Javatari limitation)');
         console.log('✗ ROM-dependent tests require actual ROM file');
-        console.log('✗ Headless CLI requires 6502.ts build setup');
+        console.log('✗ Headless CLI non-functional (6502.ts requires complex build, alternatives not suitable)');
+        console.log('✗ Agent capability: VISION-ONLY (frames + controls, no RAM access)');
         
     } catch (error) {
         console.error('✗ Test failed:', error);

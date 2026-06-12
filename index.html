@@ -196,24 +196,10 @@
             display: none;
         }
 
-        .operator-badge {
-            position: fixed;
-            top: 10px;
-            right: 140px;
-            background: #ffd700;
-            color: #1a1a2e;
-            padding: 8px 16px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.8em;
-            z-index: 1001;
-            display: none;
-        }
     </style>
 </head>
 <body>
-    <div id="agentBadge" class="agent-badge">AGENT MODE</div>
-    <div id="operatorBadge" class="operator-badge">OPERATOR MODE</div>
+    <div id="agentBadge" class="agent-badge">AGENT MODE (VISION-ONLY)</div>
     
     <h1>Adventure (1980)</h1>
     <p class="subtitle">Atari 2600 VCS - PAL Edition</p>
@@ -262,10 +248,8 @@
         let crtEnabled = false;
         let javatariReady = false;
         let agentMode = false;
-        let operatorMode = false;
         let inputQueue = [];
         let currentFrame = 0;
-        let auditLog = [];
 
         // Configure Javatari for PAL mode
         window.Javatari = {
@@ -281,11 +265,6 @@
         if (urlParams.get('agent') === '1') {
             agentMode = true;
             document.getElementById('agentBadge').style.display = 'block';
-        }
-
-        if (urlParams.get('operator') === '1') {
-            operatorMode = true;
-            document.getElementById('operatorBadge').style.display = 'block';
         }
 
         // AgentBridge API for programmatic control
@@ -389,48 +368,20 @@
                 }
             },
 
-            // Peek at console RAM address ($80–$FF)
+            // NOTE: RAM access (peek/poke) is not available
+            // Javatari.js does not expose public RAM access APIs
+            // Headless CLI is also non-functional within $0 budget constraints
+            // Agents play vision-only via input/output (frames + controls)
             peek: function(addr) {
-                if (!agentMode) {
-                    throw new Error('AgentBridge.peek() only available in agent mode (?agent=1)');
-                }
-
-                if (addr < 0x80 || addr > 0xFF) {
-                    throw new Error('Invalid RAM address: ' + addr.toString(16) + ' (must be $80–$FF)');
-                }
-
-                // NOTE: Javatari.js does not expose a public RAM access API
-                // RAM peek/poke is only available in the headless CLI (6502.ts core)
-                // This is a known limitation of the Javatari.js browser integration
-                throw new Error('RAM access (peek/poke) is only available in headless CLI mode. Javatari.js browser integration does not expose RAM access APIs. Use the Node.js CLI for RAM operations.');
+                throw new Error('RAM access (peek) is not available. Javatari.js does not expose public RAM access APIs, and headless CLI is non-functional within $0 budget. Agents play vision-only via frames + controls.');
             },
 
-            // Operator mode: Poke value to RAM address ($80–$FF)
             poke: function(addr, value, reason) {
-                if (!operatorMode) {
-                    throw new Error('AgentBridge.poke() only available in operator mode (?operator=1)');
-                }
-
-                if (addr < 0x80 || addr > 0xFF) {
-                    throw new Error('Invalid RAM address: ' + addr.toString(16) + ' (must be $80–$FF)');
-                }
-
-                if (value < 0 || value > 255) {
-                    throw new Error('Invalid value: ' + value + ' (must be 0–255)');
-                }
-
-                // NOTE: Javatari.js does not expose a public RAM access API
-                // RAM peek/poke is only available in the headless CLI (6502.ts core)
-                // This is a known limitation of the Javatari.js browser integration
-                throw new Error('RAM access (peek/poke) is only available in headless CLI mode. Javatari.js browser integration does not expose RAM access APIs. Use the Node.js CLI for RAM operations.');
+                throw new Error('RAM access (poke) is not available. Javatari.js does not expose public RAM access APIs, and headless CLI is non-functional within $0 budget. Agents play vision-only via frames + controls.');
             },
 
-            // Get audit log of all poke operations
             getAuditLog: function() {
-                if (!operatorMode) {
-                    throw new Error('AgentBridge.getAuditLog() only available in operator mode (?operator=1)');
-                }
-                return JSON.stringify(auditLog);
+                throw new Error('Audit logging is not available. Requires working headless CLI with RAM access, which is non-functional within $0 budget.');
             },
 
             // Get current frame count

@@ -18,17 +18,25 @@ A browser-based implementation of the classic Atari 2600 game "Adventure" (1980)
 - **Difficulty Controls**: Quick-switch buttons for left/right difficulty switches
 - **Game Selection**: UI buttons for game variations (1/2/3)
 
-### Phase 4 (Agent Play Mode)
-- **Browser AgentBridge**: Programmatic API for AI agents to control the emulator via `?agent=1` flag
-- **Headless CLI**: Node.js command-line interface (currently requires build setup - see limitations below)
-- **Operator Mode**: RAM manipulation (`poke()`) with audit logging for agent intervention studies (headless only)
-- **Frame Capture**: Deterministic frame output for training data generation (headless only)
-- **RAM Access**: Peek/poke console RAM ($80–$FF) for agent perception and world manipulation (headless only)
+### Phase 4 (Agent Play Mode) - DESCOPE NOTICE
 
-**Current Limitations:**
-- **Browser RAM Access**: Javatari.js does not expose public RAM access APIs. Peek/poke only available in headless mode.
-- **Headless CLI**: Requires building 6502.ts from source for proper Node.js API access. The NPM package provides browser-focused APIs that need complex setup.
-- **Demo Scripts**: Provided as templates but require actual ROM file and working emulator for validation.
+**HEADLESS CLI: NON-FUNCTIONAL**
+- **Browser AgentBridge**: Programmatic API for AI agents to control the emulator via `?agent=1` flag (PARTIALLY FUNCTIONAL)
+- **Headless CLI**: NOT AVAILABLE - Requires complex build setup beyond $0 budget constraints
+- **Operator Mode**: NOT AVAILABLE - RAM manipulation requires working headless emulator
+- **Frame Capture**: NOT AVAILABLE - Requires working headless emulator
+- **RAM Access**: NOT AVAILABLE - Neither browser (Javatari.js) nor headless (build complexity) expose RAM access APIs
+
+**Current Status:**
+- **Browser AgentBridge**: PARTIALLY FUNCTIONAL - Input queueing, frame counting, state management work. RAM access blocked by Javatari.js architecture.
+- **Headless CLI**: NON-FUNCTIONAL - 6502.ts requires complex build setup (Yarn + Webpack) for Node.js API access. Alternative emulators (retroemu) are designed for interactive terminal play, not programmatic agent integration.
+- **RAM Access**: UNAVAILABLE EVERYWHERE - Javatari.js does not expose public RAM access APIs. No drop-in headless emulator provides programmatic RAM access within $0 budget.
+- **Agent Capability**: VISION-ONLY - Agents can play via input/output (frames + controls) but cannot access RAM for state inspection or manipulation.
+
+**Evidence:**
+- 6502.ts Board class requires complex dependency injection (test-6502-spike.js output)
+- retroemu designed for interactive terminal play, not programmatic API (test-retroemu-spike.js output)
+- Javatari.js confirmed to not expose RAM access APIs (GitHub research: sehugg/javatari.js commits show read/writeAddress added but not public; pitfall-agent-javatari fork shows RAM access requires modifying Javatari internals)
 
 ## ROM Information
 
@@ -80,9 +88,9 @@ If implemented, BPS/IPS patches will be provided for minor enhancements. Origina
 
 ## How an AI Agent Plays
 
-This emulator supports two environments for AI agent play:
+This emulator supports browser-based agent play with vision-only capabilities.
 
-### 1. Browser AgentBridge API
+### Browser AgentBridge API
 
 Enable agent mode by adding `?agent=1` to the URL. This exposes `window.AgentBridge` with the following methods:
 
@@ -101,114 +109,33 @@ const frameData = AgentBridge.getFrame();
 const state = AgentBridge.getState();
 AgentBridge.setState(state);
 
-// Peek at console RAM ($80–$FF)
-const playerX = AgentBridge.peek(0x85);  // Example: read player X position
-
 // Get current frame count
 const frameCount = AgentBridge.getFrameCount();
 ```
 
-**Important RAM Access Limitation**: Javatari.js does not expose public RAM access APIs. The `peek()` and `poke()` methods are **only available in the headless CLI** (which uses the 6502.ts core). In browser mode, these methods will throw an error directing you to use the CLI for RAM operations.
-
-**Operator Mode** (add `?operator=1`):
-
-```javascript
-// NOTE: Operator mode RAM operations are only available in headless CLI
-// Browser mode does not support poke() due to Javatari.js limitations
-// Use the Node.js CLI with --operator flag for RAM manipulation
-```
+**IMPORTANT LIMITATIONS:**
+- **RAM Access NOT Available**: Javatari.js does not expose public RAM access APIs. Agents cannot peek/poke memory.
+- **Vision-Only Agents**: Agents play via input/output (frames + controls) but cannot access internal game state.
+- **No Operator Mode**: RAM manipulation requires working headless emulator which is not available within $0 budget.
 
 **Valid Actions**: `up`, `down`, `left`, `right`, `fire`, `reset`, `select`
 
-### 2. Headless CLI
+### Agent Capability Summary
 
-**CURRENT STATUS: NON-FUNCTIONAL - Requires Build Setup**
+**Available:**
+- Input queueing (frame-accurate)
+- Frame capture (base64 PNG)
+- State management (save/load)
+- Frame counting
 
-The headless CLI requires building 6502.ts from source to access the Node.js API. The NPM package provides browser-focused APIs that need complex build setup. 
+**NOT Available:**
+- RAM peek/poke (memory access)
+- Operator mode (world manipulation)
+- Headless execution (CLI)
+- Deterministic frame capture to disk
+- Audit logging
 
-To enable headless mode, you would need to:
-1. Clone https://github.com/6502ts/6502.ts
-2. Build the project using their build system (Yarn + Webpack)
-3. Extract the Node.js-compatible emulator core
-4. Integrate it into the agent-play.js CLI
-
-This is a significant undertaking that goes beyond the current $0 budget constraint.
-
-**Intended Usage** (when functional):
-
-```bash
-# Install dependencies
-npm install
-
-# Run a script
-node agent-play.js --rom path/to/adventure.bin --script demo-key-castle.json --out output/
-
-# Run with operator mode (allows poke actions)
-node agent-play.js --rom path/to/adventure.bin --script demo-operator-summon.json --out output/ --operator
-
-# Capture every 30th frame (default: 60)
-node agent-play.js --rom path/to/adventure.bin --script demo-key-castle.json --out output/ --frame-interval 30
-```
-
-**Input Script Format** (JSON):
-
-```json
-[
-  {
-    "frame": 0,
-    "action": "reset",
-    "frames": 1
-  },
-  {
-    "frame": 60,
-    "action": "right",
-    "frames": 30
-  },
-  {
-    "frame": 120,
-    "action": "fire",
-    "frames": 5
-  },
-  {
-    "frame": 180,
-    "action": "poke",
-    "addr": 135,
-    "value": 5,
-    "reason": "Summon bridge"
-  }
-]
-```
-
-**Outputs**:
-- `frame_XXXXXX.png` - Captured frames at specified intervals
-- `manifest.json` - Run metadata (ROM SHA-1, total frames, script hash)
-- `ram_dump.json` - Final RAM state ($80–$FF)
-- `audit_log.json` - Operator mode poke log (if `--operator` enabled)
-
-### Adventure RAM Map
-
-The Atari 2600 has 128 bytes of RAM at addresses $80–$FF. While the exact Adventure memory map requires reverse-engineering, known patterns include:
-
-**Player/Object State** (approximate, requires verification):
-- `$80-$8F`: Player state (position, room, carrying item)
-- `$90-$9F`: Object states (sword, keys, bridge, etc.)
-- `$A0-$AF`: Dragon states (Yorgle, Grundle, Rhindle)
-- `$B0-$BF`: Room/object relationships
-- `$C0-$CF`: Game flags and state
-- `$D0-$FF`: Stack and temporary variables
-
-**Common Patterns**:
-- Object positions typically stored as X/Y coordinates
-- Room numbers often use single bytes
-- Item carried flags usually bit-masks
-- Dragon AI state machines use sequential bytes
-
-**Note**: The exact Adventure RAM map is an active research area. Agents should use `peek()` to discover patterns and `poke()` to test hypotheses about memory layout.
-
-### Agent Hierarchy
-
-1. **Players** (human or agent) - Inputs only. Live inside the rules: walk, carry, run from dragons.
-2. **Operators** (agents only) - Can `poke()` RAM to summon items, teleport, modify world state. Every poke is logged.
-3. **Architect** (human) - Decides which agents get operator access and reviews audit logs.
-
-The audit log turns "summons" into labeled training data: *world state → intervention → outcome*. This enables training models that learn when operators should reach into the system and change it.
+**Evidence:**
+- 6502.ts Board class requires complex dependency injection (test-6502-spike.js)
+- retroemu designed for interactive terminal play, not programmatic API (test-retroemu-spike.js)
+- Javatari.js confirmed to not expose RAM access APIs (research + browser testing)
