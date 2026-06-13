@@ -4,6 +4,9 @@
 *.a26
 *.zip
 
+# Environment variables with API keys
+.env
+
 # Node modules (if we add any build tools later)
 node_modules/
 
