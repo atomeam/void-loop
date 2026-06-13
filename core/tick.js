@@ -1,6 +1,6 @@
 // Tick module - fixed-timestep tick loop with async input queue
-const { resolveRoomGraph } = require('./world');
-const { updatePosition } = require('./collision');
+import { resolveRoomGraph } from './world.js';
+import { updatePosition } from './collision.js';
 
 // Input queue for async action collection
 let inputQueue = [];
@@ -85,7 +85,7 @@ function getCurrentTick() {
     return currentTick;
 }
 
-module.exports = {
+export {
     queueInput,
     tick,
     resetTick,

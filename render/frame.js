@@ -1,7 +1,7 @@
 // Frame renderer - thin renderer with headless PNG output
-const fs = require('fs');
-const { PNG } = require('pngjs');
-const { getRoom } = require('../core/world');
+import fs from 'fs';
+import { PNG } from 'pngjs';
+import { getRoom } from '../core/world.js';
 
 // Load ROM for room graphics data
 let romBuffer = null;
@@ -144,7 +144,7 @@ function renderFrame(state, outputPath) {
     fs.writeFileSync(outputPath, buffer);
 }
 
-module.exports = {
+export {
     setRomBuffer,
     renderFrame
 };

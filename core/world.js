@@ -1,5 +1,6 @@
 // World module - room graph and game state management
-const fs = require('fs');
+import fs from 'fs';
+import { checkCollision } from './collision.js';
 
 // Load rooms.json v2
 const roomsData = JSON.parse(fs.readFileSync('rooms.json', 'utf8'));
@@ -54,14 +55,16 @@ function resolveRoomGraph(currentLevel) {
 
 // Spawn player near a position, scanning outward for wall-free position
 function spawnNear(roomId, targetX, targetY) {
-    const { checkCollision } = require('./collision');
     const hitboxSize = 8;
-    const maxSearchRadius = 32;
+    const maxSearchRadius = 40;
     
-    for (let radius = 0; radius <= maxSearchRadius; radius += 4) {
+    for (let radius = 0; radius <= maxSearchRadius; radius++) {
         // Search in spiral pattern
-        for (let dx = -radius; dx <= radius; dx += 4) {
-            for (let dy = -radius; dy <= radius; dy += 4) {
+        for (let dx = -radius; dx <= radius; dx++) {
+            for (let dy = -radius; dy <= radius; dy++) {
+                // Only check perimeter of current radius
+                if (Math.abs(dx) !== radius && Math.abs(dy) !== radius) continue;
+                
                 const testX = targetX + dx;
                 const testY = targetY + dy;
                 
@@ -91,22 +94,20 @@ function createInitialState() {
             {
                 id: 0,
                 roomId: 17, // Yellow Castle exterior ($11 = 17 decimal)
-                x: 80, // Center of room (open courtyard)
-                y: 56, // Center of room
+                ...spawnNear(17, 80, 72), // Spawn near courtyard center
                 color: 0xFF0000 // Red for player 0
             },
             {
                 id: 1,
                 roomId: 17, // Yellow Castle exterior
-                x: 72, // Slightly offset
-                y: 56,
+                ...spawnNear(17, 40, 72), // Spawn near left side
                 color: 0x00FF00 // Green for player 1
             }
         ]
     };
 }
 
-module.exports = {
+export {
     resolveNeighbor,
     getRoom,
     resolveRoomGraph,

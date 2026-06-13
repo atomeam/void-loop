@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const { createInitialState } = require('./core/world');
-const { queueInput, tick, resetTick, getCurrentTick } = require('./core/tick');
-const { setRomBuffer: setCollisionRom } = require('./core/collision');
-const { setRomBuffer: setRenderRom, renderFrame } = require('./render/frame');
+import fs from 'fs';
+import crypto from 'crypto';
+import { createInitialState } from './core/world.js';
+import { queueInput, tick, resetTick, getCurrentTick } from './core/tick.js';
+import { setRomBuffer as setCollisionRom } from './core/collision.js';
+import { setRomBuffer as setRenderRom, renderFrame } from './render/frame.js';
 
 console.log('=== Demo Runner: 3-Room Walk ===');
 
@@ -18,7 +19,6 @@ if (!romPath) {
 const romBuffer = fs.readFileSync(romPath);
 
 // Verify ROM SHA-1
-const crypto = require('crypto');
 const sha1 = crypto.createHash('sha1');
 sha1.update(romBuffer);
 const romSha1 = sha1.digest('hex');
@@ -61,7 +61,7 @@ for (const step of demoScript) {
     state = tick(state);
     
     // Render frame
-    const framePath = `${outputDir}/frame_${String(getCurrentTick()).padStart(3, '0')}.png`;
+    const framePath = `${outputDir}/${getCurrentTick()}.png`;
     renderFrame(state, framePath);
     
     console.log(`Tick ${getCurrentTick()}: Player 0 at (${state.players[0].roomId}, ${state.players[0].x}, ${state.players[0].y}), Player 1 at (${state.players[1].roomId}, ${state.players[1].x}, ${state.players[1].y})`);

@@ -1,6 +1,6 @@
 // Collision module - per-player wall collision against playfield bitmaps
-const fs = require('fs');
-const { getRoom, resolveNeighbor } = require('./world');
+import fs from 'fs';
+import { getRoom, resolveNeighbor } from './world.js';
 
 // Load ROM for room graphics data
 let romBuffer = null;
@@ -61,9 +61,6 @@ function decodeRoomPlayfield(roomId) {
 
 // Check if position collides with wall (hitbox-based)
 function checkCollision(player, roomId) {
-    // Temporarily disable collision to test movement and transitions
-    return false;
-    
     const collisionMap = decodeRoomPlayfield(roomId);
     if (!collisionMap) return false;
     
@@ -188,7 +185,7 @@ function updatePosition(state, playerId, newX, newY) {
     return true; // No collision
 }
 
-module.exports = {
+export {
     setRomBuffer,
     updatePosition,
     checkCollision
