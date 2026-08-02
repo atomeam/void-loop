@@ -52,7 +52,7 @@ class HeuristicClassifier:
         stem = file.path.stem.lower()
         ext = file.path.suffix.lower()
 
-        if stem in _LICENSE_NAMES and ext in _LICENSE_EXTS:
+        if stem in _LICENSE_NAMES and ext.lstrip(".") in _LICENSE_EXTS:
             return Evaluation(file, CATEGORY_LICENSE, 0.98, ("license-named file",), "heuristic")
         if ext in _SOURCE_EXTS:
             return Evaluation(file, CATEGORY_SOURCE, 0.9, (f"source extension {ext or '(none)'}",), "heuristic")

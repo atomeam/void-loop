@@ -4,14 +4,14 @@ from scanner import ScanOptions, scan
 
 
 def test_scan_finds_files(tmp_path: Path) -> None:
-    (tmp_path / "a.py").write_text("print('hi')\n", encoding="utf-8")
+    (tmp_path / "a.py").write_bytes(b"print('hi')\n")
     (tmp_path / "sub").mkdir()
     (tmp_path / "sub" / "b.txt").write_text("hello\n", encoding="utf-8")
 
     found = scan(tmp_path)
 
     assert [f.rel_path for f in found] == ["a.py", "sub/b.txt"]
-    assert found[0].size == len("print('hi')\n")
+    assert found[0].size == 12
     assert found[0].checksum is not None
 
 
