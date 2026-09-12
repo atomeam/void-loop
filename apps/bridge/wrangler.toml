@@ -1,0 +1,21 @@
+name = "aether-bridge"
+main = "src/worker.ts"
+compatibility_date = "2026-03-01"
+
+[[d1_databases]]
+binding = "BRIDGE_DB"
+database_name = "aether-bridge-db"
+database_id = "f29243db-5b7a-407b-aa38-64091c1e0676"
+
+[[r2_buckets]]
+binding = "EVIDENCE"
+bucket_name = "aether-logs"
+
+[vars]
+WORKER_ROLE = "executor"
+AG_TOS_OK = "0"
+CRA_SRP_LIVE = "0"
+AG_API_BASE = "https://api.alphagenomedocs.com"
+ENABLE_CRA_COMPLIANCE = "true"
+ENABLE_HOLD_GATE = "true"
+ENABLE_AG_SCORING = "true"
