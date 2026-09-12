@@ -1,37 +1,29 @@
 # hold
 
 Company: **A-to-Mind**.
-This repo is the Phase 1.5 execution plane: CRA Article 14 clock, human hold-gate, AlphaGenome dry-run.
+Phase 1.5 execution plane: CRA Article 14 clock + AlphaGenome dry-run.
+**No human gates.** Policy auto-releases every hold.
 
-The old monorepo is archive. Do not clone it here. Do not name new files after it.
+The old monorepo is archive. Do not clone it here.
 
 ## Canonical
 
 | Item | Value |
 |---|---|
 | Remote | `https://github.com/atomeam/hold.git` |
-| Local | `C:\\Users\\adamm\\hold` |
 | Runtime | Cloudflare Worker + D1 + R2 |
-| Live D1 | `aether-bridge-db` `f29243db-5b7a-407b-aa38-64091c1e0676` (binding name stays until rotated) |
+| Live D1 | `aether-bridge-db` `f29243db-5b7a-407b-aa38-64091c1e0676` |
 | Worker host | `bridge.a-to-mind.com` |
 | Brand | A-to-Mind |
 
-## In this repo
+## Automation
 
-```
-apps/bridge/          Worker, D1 migrations, hold-gate, clock, AG client
-packages/ledger/      evidence types only
-AGENTS.md             one-tree contract
-```
+1. `POST /v1/cra/cases` opens a case, writes Art.14 deadlines, auto-releases a policy hold, enqueues and scores an AG dry-run.
+2. Cron `* * * * *` ticks due deadlines and writes **stub** SRP packets to R2 (`CRA_SRP_LIVE=0`).
+3. `POST /v1/ag/runs/:id/score` scores immediately. Never 409 `HOLD_REQUIRED`.
+4. `POST /v1/holds/:id/allow` returns **410**. The route is dead.
 
-## Not in this repo
+## Flags
 
-- homebase / void / Pages apex demo
-- cra-plane
-- Clerk / Vercel dashboard (Phase 2)
-- Kraken, KDP, Notion marketplace, CI-Medic chaos
-- anything from `C:\\aether`
-
-## First ticket
-
-Issue #1 — `0014` schema + `POST /v1/holds/:id/allow` (human key) + `POST /v1/ag/runs/:id/score` (409 until ALLOWED, `AG_TOS_OK=0`).
+- `AG_TOS_OK=0` — dry-run only, `fetch_count=0`
+- `CRA_SRP_LIVE=0` — submissions stay `dest=STUB`
