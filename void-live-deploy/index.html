@@ -2516,6 +2516,24 @@ return { ok: true, detail: 'timer-reset' };
            .replace(/^(please\s+)?(tell\s+me\s+about|explain|define|describe|show\s+me|look\s+up)\s+(a|an|the)?\s*/i, '');
       return t.trim() || text.trim();
     }
+    // Answer engine (plan item 2): asks no skill covers get a short sourced answer; excerpt if the model is busy.
+    async function showAnswer(text) {
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><div class="sub">thinking…</div>'; });
+      say('looking up');
+      let j = null;
+      try {
+        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: text }) });
+        if (r.ok || r.status === 429) j = await r.json();
+      } catch (_) {}
+      if (vpageEl !== el) return 'answer';
+      if (!j || !j.answer) { say(''); return showArticle(text); }
+      const srcs = (j.sources || []).map((s, i) => '<a href="' + esc(s.url) + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.title) + '</a>').join(' · ');
+      const body = esc(j.answer).replace(/\n+/g, '</p><p>');
+      el.innerHTML = '<h2>' + esc(text) + '</h2><p>' + body + '</p>'
+        + '<div class="src">Source: ' + (srcs || 'no source found') + ' · written by Void from these sources</div>';
+      say('done');
+      return 'answer';
+    }
     function wantsArticle(lower) {
       return /^(please\s+)?((what|who|where|when)\s+(is|are|was|were)\b|tell\s+me\s+about\b|explain\b|define\b|describe\b|look\s+up\b)/.test(lower);
     }
@@ -2987,10 +3005,14 @@ return { ok: true, detail: 'timer-reset' };
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
       if (wantsSelfPage(lower0)) { showSelfPage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
+      if (/^(why|how|when|where|which|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
+          && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {
+        showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'answer' }); return;
+      }
       if (wantsArticle(lower0)) { showArticle(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'article' }); return; }
       const result = freerEnglishParse(text);
       if (!result.ok) {
-        showArticle(text).then((src) => reportMiss(text, src || 'none'));
+        showAnswer(text).then((src) => reportMiss(text, src || 'none'));
         loopLog({ domain: 'void.page', ask: text, score: 'fallback', note: 'article fallback' });
         return;
       }

@@ -16,3 +16,8 @@ binding = "DB"
 database_name = "a-to-mind-board"
 database_id = "3f92c99d-b78a-4394-8bb5-d9945ded44cf"
 
+
+# Answer engine (plan item 2): Workers AI, free Gemma 4 26B
+[ai]
+binding = "AI"
+

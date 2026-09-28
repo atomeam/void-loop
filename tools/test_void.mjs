@@ -36,7 +36,15 @@ async function fresh() {
     if (u.includes('frankfurter')) return r.fulfill(json({ amount: 100, base: 'USD', date: '2026-09-26', rates: { EUR: 92 } }));
     return r.fulfill({ status: 204, body: '' });
   });
-  await ctx.route(/127\.0\.0\.1.*\/api\//, (r) => r.fulfill({ status: 204, body: '' }));
+  await ctx.route(/127\.0\.0\.1.*\/api\//, (r) => {
+    const u = r.request().url();
+    if (u.includes('/api/answer')) {
+      const ask = JSON.parse(r.request().postData() || '{}').ask || '';
+      if (/busy/.test(ask)) return r.fulfill(json({ answer: null, sources: [], note: 'model busy' }));
+      return r.fulfill(json({ answer: 'Sunlight scatters off air molecules, and blue light scatters most [1].', sources: [{ title: 'Rayleigh scattering', url: 'https://en.wikipedia.org/wiki/Rayleigh_scattering' }] }));
+    }
+    return r.fulfill({ status: 204, body: '' });
+  });
   const p = await ctx.newPage();
   const errors = [];
   p.on('pageerror', (e) => errors.push(e.message));
@@ -72,6 +80,8 @@ try {
   await t.ask('weather in Lisbon', 1200); check('weather', /20°|68°/.test(await t.page()));
   await t.ask('5 miles in km', 700); check('calculation', /8\.05/.test(await t.page()));
   await t.ask('make my void deep blue'); check('your look', /01040f/.test(await t.p.evaluate(() => localStorage.getItem('a2m.void.look.v1') || '')));
+  await t.ask('why is the sky blue', 900); const an = await t.page(); check('answer engine answers with sources', /blue light scatters/.test(an) && /Rayleigh scattering/.test(an) && /as of/.test(an), an.slice(0, 120));
+  await t.ask('why is the model busy', 1200); check('answer engine busy -> article excerpt', /Black hole/.test(await t.page()));
   await t.ask('update yourself'); check('build asks are owner-only', /owner/.test(await t.whisper()));
   await t.p.fill('#input', 'tim'); await t.p.waitForTimeout(150); check('hints while typing', (await t.p.$$eval('#hints div', (d) => d.map((x) => x.textContent))).some((h) => /timer/.test(h)));
   check('no script errors', t.errors.length === 0, t.errors.join(' | '));
