@@ -7,6 +7,7 @@ function placeOf(text) {
   const m = t.match(/^(?:show\s+(?:me\s+)?)?(?:a\s+|the\s+)?(?:street\s+)?map\s+(?:of|for)\s+(.+)$/i)
     || t.match(/^where\s+(?:is|are|'s)\s+(.+)$/i)
     || t.match(/^(?:streets|neighbou?rhood|area)\s+(?:around|near|of)\s+(.+)$/i)
+    || t.match(/^show\s+(?:me\s+)?(.+?)\s+on\s+(?:a\s+|the\s+)?map$/i)
     || t.match(/^(.+?)\s+(?:street\s+)?map$/i);
   if (!m) return null;
   const p = m[1].replace(/^(the\s+)/i, '').trim();
@@ -51,7 +52,7 @@ async function run(text, api) {
 
 export default {
   name: 'place',
-  examples: ['map of Lisbon', 'where is Kyoto', 'streets around Penn Station', 'Paris map'],
+  examples: ['map of Lisbon', 'where is Kyoto', 'streets around Penn Station', 'Paris map', 'show Tokyo on a map'],
   match(lower, text) { return !!placeOf(text); },
   run
 };
