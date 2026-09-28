@@ -8,6 +8,7 @@
 - Floating pages: the weather ("weather in Tokyo"), a street map ("map of Lisbon", "where is Kyoto"), a translation ("translate hello to Spanish"), a calculation or conversion ("5 miles in km", "100 usd in eur"), or a page about almost anything ("what is a black hole"), with its source linked.
 - Keep a page as a card with "keep this"; "call this ...", "take this off" and "same again" work on it.
 - Your own look: "make my void deep blue", "add stars", "quieter font", "reset my void".
+- Optional, never required: "remember me" keeps your stage, look and kept cards on every device with a passkey (no password, no email). Then "sign in" on another device, "am I signed in", "sign out", "forget me". Agents can't ask these for someone.
 - "menu" or "what can I do" lists every skill, clickable.
 
 ## Linking to an answer

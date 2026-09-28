@@ -4,7 +4,7 @@ const CORE = [
   { name: 'stage', description: 'Put a thing on the stage: clock, timer, counter, sticky note, notepad, list, calculator, shape, image or link card.', examples: ['make a clock', 'make a 5 minute timer', 'add a sticky that says hi', 'make a list', 'draw a circle'] },
   { name: 'page', description: 'A short sourced page about almost any topic (Wikipedia, Wiktionary).', examples: ['what is a black hole', 'who was Ada Lovelace', 'define serendipity'] },
   { name: 'calculate', description: 'Arithmetic, percentages, unit and currency conversion.', examples: ['15% of 80', '5 miles in km', '100 usd in eur'] },
-  { name: 'look', description: "Change the person's own Void (kept in their browser).", examples: ['make my void deep blue', 'add stars', 'quieter font', 'reset my void'] },
+  { name: 'look', description: "Change the person's own Void (kept in their browser, and on every device once they say \"remember me\" and make a passkey).", examples: ['make my void deep blue', 'add stars', 'quieter font', 'reset my void'] },
   { name: 'keep', description: 'Keep, name, remove or re-run what is on screen.', examples: ['keep this', 'call this trip', 'take this off', 'same again', 'undo'] },
 ];
 const HIDDEN = new Set(['rebuild-map']);

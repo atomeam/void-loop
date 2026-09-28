@@ -444,6 +444,10 @@
     // freerEnglishParse — natural-language intent for clock (+ sticky)
     const LOOP_KEY = 'a2m.void.loop.v1';
     const STATE_KEY = 'a2m.void.state.v1';
+    // plan item 6: the passkey session on this device ({ token, userId, rev, sig, synced }); see "Your Void follows you" below
+    const ME_KEY = 'a2m.void.me.v1';
+    let me = null; try { me = JSON.parse(localStorage.getItem(ME_KEY) || 'null'); } catch (_) {}
+    let minePushT = 0, minePulled = 0, mineQuiet = false, pendingForget = null, pkRetryFn = null;
 
     const stage = document.getElementById('stage');
     const input = document.getElementById('input');
@@ -463,6 +467,7 @@
     function save() {
       localStorage.setItem(STATE_KEY, JSON.stringify(things));
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
+      mineChanged();
     }
     function loopLog(attempt) {
       let log = [];
@@ -2541,6 +2546,7 @@ return { ok: true, detail: 'timer-reset' };
           ['reset', 'reset my void', ''],
           ['undo', 'undo', 'oops · Esc Esc'],
           ['keep this', '', 'on a map, weather or any page · call this … · take this off · same again'],
+          ['on every device', 'remember me', 'a passkey, no password or email · sign in · am I signed in · sign out · forget me'],
         ]],
       ];
       const seen = new Set(['rebuild-map']);
@@ -2866,7 +2872,7 @@ return { ok: true, detail: 'timer-reset' };
       cancelAnimationFrame(starRAF); starRAF = 0;
       if (voidLook.stars !== 'off') { if (!stars.length) seedStars(); starCv.classList.add('on'); drawStars(); }
       else starCv.classList.remove('on');
-      if (persist) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} }
+      if (persist) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} mineChanged(); }
     }
     document.addEventListener('visibilitychange', () => { if (!document.hidden && voidLook.stars !== 'off' && !starRAF) drawStars(); });
     window.addEventListener('resize', () => { if (voidLook.stars !== 'off') seedStars(); });
@@ -2947,7 +2953,7 @@ return { ok: true, detail: 'timer-reset' };
       } catch (_) {}
       things = {}; load(); render();
       voidLook = { ...LOOK_DEFAULT }; try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}
-      applyLook(false);
+      applyLook(false); mineChanged();
       say('undone');
       loopLog({ domain: 'void.surface', ask: 'undo', score: 'pass', note: 'undo' });
     }
@@ -3111,10 +3117,259 @@ return { ok: true, detail: 'timer-reset' };
     whisper.addEventListener('click', (e) => { const v = e.target.closest && e.target.closest('[data-vc]'); if (v && pendingConfirm) { decideConfirm(v.dataset.vc === 'yes' ? 'approve' : 'reject', 'said no'); input.focus(); } });
     whisper.addEventListener('keydown', (e) => { const v = e.target.closest && e.target.closest('[data-vc]'); if (v && pendingConfirm && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); v.click(); } });
 
+    // --- Your Void follows you (plan item 6): passkeys (WebAuthn Level 3), no passwords, no email, nothing on the surface. ---
+    // Ask: "remember me" (makes a passkey; on Chrome 149+ signs in instead if this device already has one), "sign in"
+    // (another device: a synced passkey or your phone), "add a passkey", "am I signed in", "sign out" (your Void leaves
+    // this device with you), "forget me" (asks first, then deletes every passkey and synced byte on the server).
+    // Signed in, the stage, look and kept cards go to /api/mine (debounced, only when changed) and come back on every device.
+    // Anything that comes back from the server is cleaned before it's shown (kept-card HTML, links, colors, look values).
+    const pkOK = () => !!(window.PublicKeyCredential && navigator.credentials && window.isSecureContext);
+    const b2u = (buf) => { const b = new Uint8Array(buf); let s = ''; for (const x of b) s += String.fromCharCode(x); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+    const u2b = (s) => { const t = String(s).replace(/-/g, '+').replace(/_/g, '/'); const bin = atob(t + '==='.slice((t.length + 3) % 4)); const o = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) o[i] = bin.charCodeAt(i); return o.buffer; };
+    function pkCreationOptions(j) {
+      if (PublicKeyCredential.parseCreationOptionsFromJSON) return PublicKeyCredential.parseCreationOptionsFromJSON(j);
+      return { ...j, challenge: u2b(j.challenge), user: { ...j.user, id: u2b(j.user.id) }, excludeCredentials: (j.excludeCredentials || []).map((c) => ({ ...c, id: u2b(c.id) })) };
+    }
+    function pkRequestOptions(j) {
+      if (PublicKeyCredential.parseRequestOptionsFromJSON) return PublicKeyCredential.parseRequestOptionsFromJSON(j);
+      return { ...j, challenge: u2b(j.challenge), allowCredentials: (j.allowCredentials || []).map((c) => ({ ...c, id: u2b(c.id) })) };
+    }
+    function pkJSON(c) {
+      try { if (c.toJSON) return c.toJSON(); } catch (_) {}
+      const r = c.response, out = { id: c.id, rawId: b2u(c.rawId), type: c.type, authenticatorAttachment: c.authenticatorAttachment || null, clientExtensionResults: c.getClientExtensionResults ? c.getClientExtensionResults() : {}, response: { clientDataJSON: b2u(r.clientDataJSON) } };
+      if (r.attestationObject) { out.response.attestationObject = b2u(r.attestationObject); out.response.transports = r.getTransports ? r.getTransports() : []; }
+      else { out.response.authenticatorData = b2u(r.authenticatorData); out.response.signature = b2u(r.signature); out.response.userHandle = r.userHandle ? b2u(r.userHandle) : null; }
+      return out;
+    }
+    async function meFetch(url, method, body) {
+      const h = { 'content-type': 'application/json' }; if (me && me.token) h.authorization = 'Bearer ' + me.token;
+      const r = await fetch(url, { method, headers: h, body: body ? JSON.stringify(body) : undefined, cache: 'no-store' });
+      let j = null; try { j = await r.json(); } catch (_) {}
+      return { status: r.status, body: j || {} };
+    }
+    const pkCall = (step, extra) => meFetch('/api/passkey', 'POST', { step, ...(extra || {}) });
+    const mineCall = (method, body) => meFetch('/api/mine', method, body);
+    function meSet(v) { me = v; try { if (v) localStorage.setItem(ME_KEY, JSON.stringify(v)); else localStorage.removeItem(ME_KEY); } catch (_) {} }
+    const sig = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return s.length + ':' + (h >>> 0).toString(36); };
+    function mineSnapshot() { let entered = null; try { entered = localStorage.getItem(ENTRY_KEY); } catch (_) {} return { v: 1, state: things, look: voidLook, entered }; }
+    const mineSig = () => sig(JSON.stringify(mineSnapshot()));
+
+    const THING_KINDS = new Set(['clock', 'sticky', 'notepad', 'timer', 'counter', 'image', 'link', 'list', 'calc', 'shape', 'kept']);
+    function cleanHTML(html) {
+      const doc = new DOMParser().parseFromString('<!doctype html><body>' + String(html || '').slice(0, 300000), 'text/html');
+      doc.body.querySelectorAll('script,style,link,meta,base,object,embed,frame,frameset,form,input,textarea,select,button,template,noscript,svg,math,portal').forEach((n) => n.remove());
+      for (const el of Array.from(doc.body.querySelectorAll('*'))) {
+        for (const a of Array.from(el.attributes)) {
+          const n = a.name.toLowerCase(), v = a.value.trim();
+          if (n.startsWith('on') || n.includes(':') || /^(srcdoc|formaction|action|srcset|is|popovertarget)$/.test(n)) { el.removeAttribute(a.name); continue; }
+          if (/^(href|src|poster|data|background|cite|ping)$/.test(n) && !/^(https?:|mailto:|#|\/(?!\/)|\?)/i.test(v)) el.removeAttribute(a.name);
+        }
+        if (el.tagName === 'IFRAME') {
+          if (!/^https:\/\//i.test(el.getAttribute('src') || '')) { el.remove(); continue; }
+          el.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups'); el.setAttribute('referrerpolicy', 'no-referrer');
+        }
+      }
+      return doc.body.innerHTML;
+    }
+    function cleanThings(st) {
+      const out = {};
+      if (!st || typeof st !== 'object' || Array.isArray(st)) return out;
+      for (const [k, t0] of Object.entries(st).slice(0, 400)) {
+        if (!t0 || typeof t0 !== 'object' || !THING_KINDS.has(t0.kind) || !/^[\w-]{1,48}$/.test(k)) continue;
+        const t = JSON.parse(JSON.stringify(t0)); t.id = k;
+        for (const n of ['x', 'y', 'w', 'h', 'size']) if (n in t) { t[n] = Number(t[n]); if (!isFinite(t[n])) t[n] = n === 'size' ? 48 : 40; }
+        if (t.kind === 'kept') t.html = cleanHTML(t.html);
+        if (t.kind === 'link' && !/^https?:\/\//i.test(String(t.url || ''))) continue;
+        if (t.kind === 'image' && !/^(https?:\/\/|data:image\/(png|jpeg|gif|webp);)/i.test(String(t.src || ''))) continue;
+        for (const n of ['color', 'font', 'bg', 'fill', 'stroke']) if (n in t && (typeof t[n] !== 'string' || /[;{}<>\\]|url\s*\(|expression|@import/i.test(t[n]))) delete t[n];
+        out[k] = t;
+      }
+      return out;
+    }
+    function cleanLook(l) {
+      const o = { ...LOOK_DEFAULT };
+      if (!l || typeof l !== 'object') return o;
+      if (/^#[0-9a-f]{6}$/i.test(l.bg)) o.bg = l.bg;
+      if (/^#[0-9a-f]{6}$/i.test(l.glow)) o.glow = l.glow;
+      if (['off', 'on', 'slow'].includes(l.stars)) o.stars = l.stars;
+      o.quiet = !!l.quiet;
+      const s = Number(l.scale); if (isFinite(s) && s) o.scale = Math.min(1.4, Math.max(0.85, s));
+      return o;
+    }
+    // mode: 'replace' (a newer copy from another device), 'signin' (their look + union of stages), 'conflict' (this device's look + union)
+    function mineApply(data, mode) {
+      const remote = cleanThings(data && data.state);
+      things = mode === 'replace' ? remote : { ...remote, ...things };
+      if (selectedId && !things[selectedId]) selectedId = null;
+      if (lastKeptId && !things[lastKeptId]) lastKeptId = null;
+      if (mode !== 'conflict' && data && data.look) voidLook = cleanLook(data.look);
+      if (data && typeof data.entered === 'string') { try { if (!localStorage.getItem(ENTRY_KEY)) localStorage.setItem(ENTRY_KEY, data.entered.slice(0, 40)); } catch (_) {} document.body.classList.add('void-entered'); }
+      mineQuiet = true;
+      try { save(); applyLook(true); } finally { mineQuiet = false; }
+      render();
+    }
+    function mineChanged() { if (!me || !me.token || mineQuiet) return; clearTimeout(minePushT); minePushT = setTimeout(() => { minePush().catch(() => {}); }, 1200); }
+    async function minePush(retried) {
+      if (!me || !me.token) return true;
+      const data = mineSnapshot(), s = sig(JSON.stringify(data));
+      if (s === me.sig) return true;
+      let r; try { r = await mineCall('PUT', { data, baseRev: me.rev || 0 }); } catch (_) { return false; }
+      if (!me) return false;
+      if (r.status === 200) { meSet({ ...me, rev: r.body.rev, synced: r.body.updated, sig: s }); return true; }
+      if (r.status === 409 && !retried && r.body.data) { mineApply(r.body.data, 'conflict'); meSet({ ...me, rev: r.body.rev }); return minePush(true); }
+      if (r.status === 401) { meSet(null); say('signed out on this device'); return false; }
+      if (r.status === 413) say('too big to sync, kept on this device');
+      return false;
+    }
+    async function minePull() {
+      if (!me || !me.token) return;
+      minePulled = Date.now();
+      let r; try { r = await mineCall('GET'); } catch (_) { return; }
+      if (!me) return;
+      if (r.status === 401) { meSet(null); return; }
+      if (r.status !== 200) return;
+      const dirty = mineSig() !== me.sig; // edits here that haven't reached the server yet
+      if (r.body.data && r.body.rev > (me.rev || 0)) {
+        mineApply(r.body.data, dirty ? 'conflict' : 'replace');
+        meSet({ ...me, rev: r.body.rev, synced: r.body.updated, sig: dirty ? '' : mineSig() });
+        if (dirty) mineChanged();
+      } else if (dirty) mineChanged();
+    }
+    async function meSignedIn(body) {
+      meSet({ token: body.token, userId: body.userId, rpId: body.rpId, rev: 0, sig: '', since: new Date().toISOString() });
+      let r = null; try { r = await mineCall('GET'); } catch (_) {}
+      if (r && r.status === 200 && r.body.data) { mineApply(r.body.data, 'signin'); meSet({ ...me, rev: r.body.rev, synced: r.body.updated }); }
+      await minePush().catch(() => {});
+    }
+    // Safari (and slow networks) can refuse a passkey prompt that isn't close enough to a tap: offer one tap to retry.
+    function pkRetry(msg, fn) {
+      whisper.innerHTML = esc(msg) + ' · <span class="vc" data-vp="1" role="button" tabindex="0">try again</span>';
+      pkRetryFn = fn; setTimeout(() => { if (pkRetryFn === fn) { pkRetryFn = null; if (whisper.querySelector('[data-vp]')) whisper.textContent = ''; } }, 60000);
+    }
+    async function pkMake(opts, add) {
+      let cred;
+      try { cred = await navigator.credentials.create({ publicKey: pkCreationOptions(opts) }); }
+      catch (e) {
+        if (e && e.name === 'InvalidStateError') { say('this device already has your passkey · say “sign in”'); return; }
+        pkRetry(e && e.name === 'NotAllowedError' ? 'no passkey made' : "couldn't make a passkey", () => pkMake(opts, add)); return;
+      }
+      const r = await pkCall('create', { credential: pkJSON(cred) }).catch(() => null);
+      if (!r || r.status !== 200) { say(r && r.status === 503 ? "passkeys aren't available right now, nothing saved" : "that passkey didn't check out, nothing saved"); return; }
+      if (r.body.added) { say('passkey added'); loopLog({ domain: 'void.me', ask: 'add a passkey', score: 'pass', note: 'passkey added' }); return; }
+      await meSignedIn(r.body);
+      say('remembered · say “sign in” on your other devices');
+      loopLog({ domain: 'void.me', ask: 'remember me', score: 'pass', note: 'passkey made' });
+    }
+    async function rememberMe(add) {
+      if (!pkOK()) { say("this browser can't make passkeys"); return; }
+      if (me && me.token && !add) { say('already remembered · say “sign in” on your other devices'); minePull(); return; }
+      if (add && !(me && me.token)) add = false;
+      if (!add) { // Chrome 149+ immediate UI: if this device already has your passkey, sign in instead of making a second Void
+        const caps = PublicKeyCredential.getClientCapabilities ? await PublicKeyCredential.getClientCapabilities().catch(() => ({})) : {};
+        // only 'none' (no passkey here, or one the server has forgotten) goes on to make a new one
+        if (caps && caps.immediateGet && (await signIn({ immediate: true })) !== 'none') return;
+      }
+      whisper.textContent = 'making a passkey';
+      const o = await pkCall('create-options').catch(() => null);
+      if (!o || o.status !== 200) { say(o && o.status === 503 ? "passkeys aren't available right now, nothing saved" : o && o.status === 429 ? 'slow down a moment' : "couldn't start a passkey"); return; }
+      await pkMake(o.body.publicKey, add);
+    }
+    async function pkUse(opts, immediate) {
+      let cred;
+      try { cred = await navigator.credentials.get({ publicKey: pkRequestOptions(opts), ...(immediate ? { uiMode: 'immediate' } : {}) }); }
+      catch (e) { if (!immediate) pkRetry(e && e.name === 'NotAllowedError' ? 'no passkey used' : "couldn't sign in", () => pkUse(opts, false)); return 'none'; }
+      if (!cred) return 'none';
+      const r = await pkCall('get', { credential: pkJSON(cred) }).catch(() => null);
+      if (!r || r.status !== 200) {
+        if (r && r.status === 404) {
+          try { if (PublicKeyCredential.signalUnknownCredential) await PublicKeyCredential.signalUnknownCredential({ rpId: opts.rpId, credentialId: cred.id }); } catch (_) {}
+          if (!immediate) say('that passkey was forgotten · say “remember me” to make a new one');
+          return 'none';
+        }
+        say(r && r.status === 503 ? "passkeys aren't available right now" : "that passkey didn't check out"); return 'failed';
+      }
+      await meSignedIn(r.body);
+      say('welcome back');
+      loopLog({ domain: 'void.me', ask: 'sign in', score: 'pass', note: immediate ? 'signed in (immediate)' : 'signed in' });
+      return 'ok';
+    }
+    // -> 'ok' signed in | 'none' no usable passkey here | 'failed' something went wrong (already said)
+    async function signIn(opt = {}) {
+      if (!pkOK()) { if (!opt.immediate) say("this browser can't use passkeys"); return 'none'; }
+      if (me && me.token && !opt.immediate) { say('already signed in'); minePull(); return 'ok'; }
+      if (!opt.immediate) whisper.textContent = 'signing in';
+      const o = await pkCall('get-options').catch(() => null);
+      if (!o || o.status !== 200) { if (!opt.immediate) say(o && o.status === 503 ? "passkeys aren't available right now" : "couldn't start signing in"); return 'none'; }
+      return pkUse(o.body.publicKey, !!opt.immediate);
+    }
+    async function signOut() {
+      if (!me || !me.token) { say('not signed in'); return; }
+      clearTimeout(minePushT);
+      if (!(await minePush().catch(() => false)) && mineSig() !== (me && me.sig)) { say("couldn't save the latest to your Void, still signed in"); return; }
+      await pkCall('sign-out').catch(() => null);
+      meSet(null);
+      things = {}; selectedId = null; lastKeptId = null; voidLook = { ...LOOK_DEFAULT };
+      try { [STATE_KEY, LOOK_KEY, UNDO_KEY, ENTRY_KEY].forEach((k) => localStorage.removeItem(k)); } catch (_) {}
+      document.body.classList.remove('void-entered');
+      if (vpageEl) closePage();
+      applyLook(false); render();
+      say('signed out · your Void left with you');
+    }
+    async function forgetMe() {
+      const r = await pkCall('forget').catch(() => null);
+      if (!r || r.status !== 200) { if (r && r.status === 401) { meSet(null); say('already forgotten'); } else say("couldn't reach the server, nothing forgotten yet"); return; }
+      // Level 3 signal API: tell the passkey provider none of this Void's passkeys are valid any more, so it can drop them
+      try { if (PublicKeyCredential.signalAllAcceptedCredentials) await PublicKeyCredential.signalAllAcceptedCredentials({ rpId: r.body.rpId, userId: r.body.userId, allAcceptedCredentialIds: [] }); } catch (_) {}
+      clearTimeout(minePushT); meSet(null);
+      say('forgotten everywhere · this device keeps its stage');
+      loopLog({ domain: 'void.me', ask: 'forget me', score: 'pass', note: 'forgotten' });
+    }
+    const REMEMBER_RE = /^(remember me|remember my void|save my void|sync my void|keep my void( everywhere)?|follow me|my void everywhere|make (me )?a passkey|create a passkey|set up a passkey|sign me up|sign up)\s*[.!]?$/;
+    const ADD_PK_RE = /^(add (a |another )?passkey|add this device|remember this device)\s*[.!]?$/;
+    const SIGNIN_RE = /^(sign in|sign me in|signin|log in|log me in|login|it'?s me|i'?m back|sign in with (a |my )?passkey|use my passkey|bring (back )?my void)\s*[.!]?$/;
+    const SIGNOUT_RE = /^(sign out|sign me out|signout|log out|log me out|logout|forget this device)\s*[.!]?$/;
+    const FORGET_RE = /^(forget me|forget me everywhere|forget my void|delete my void|delete my account|erase me|erase my void)\s*[.!]?$/;
+    const WHO_RE = /^(am i signed in|am i remembered|do you remember me|who am i|sync status|is my void (synced|saved))\s*[?.!]?$/;
+    function isMeAsk(lower) { return [REMEMBER_RE, ADD_PK_RE, SIGNIN_RE, SIGNOUT_RE, FORGET_RE, WHO_RE].some((re) => re.test(lower)); }
+    function forgetAnswer(lower) { // true = the answer was for "forget me"
+      const pf = pendingForget; if (!pf) return false;
+      pendingForget = null; clearTimeout(pf.timer); whisper.textContent = '';
+      if (YES_RE.test(lower)) { forgetMe(); return true; }
+      if (NO_RE.test(lower)) { say('ok, kept'); return true; }
+      return false;
+    }
+    async function handleMeAsk(lower) {
+      if (!isMeAsk(lower)) return false;
+      if (WHO_RE.test(lower)) {
+        if (!me || !me.token) say('not signed in' + (pkOK() ? ' · say “remember me” to keep your Void on every device' : ''));
+        else { await minePull(); say(me ? 'signed in · ' + (me.synced ? 'synced ' + new Date(me.synced).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : 'syncing') : 'signed out on this device'); }
+        return true;
+      }
+      if (REMEMBER_RE.test(lower)) { await rememberMe(false); return true; }
+      if (ADD_PK_RE.test(lower)) { await rememberMe(true); return true; }
+      if (SIGNIN_RE.test(lower)) { await signIn(); return true; }
+      if (SIGNOUT_RE.test(lower)) { await signOut(); return true; }
+      if (!me || !me.token) { say('nothing of yours is kept on the server'); return true; }
+      const pf = { timer: setTimeout(() => { if (pendingForget === pf) { pendingForget = null; whisper.textContent = ''; say('ok, kept'); } }, 60000) };
+      pendingForget = pf;
+      whisper.innerHTML = 'Forget your Void on every device? <span class="vc" data-vf="yes" role="button" tabindex="0">Yes</span> / <span class="vc" data-vf="no" role="button" tabindex="0">No</span>';
+      return true;
+    }
+    whisper.addEventListener('click', (e) => {
+      const f = e.target.closest && e.target.closest('[data-vf]');
+      if (f && pendingForget) { forgetAnswer(f.dataset.vf === 'yes' ? 'yes' : 'no'); input.focus(); return; }
+      const p = e.target.closest && e.target.closest('[data-vp]');
+      if (p && pkRetryFn) { const fn = pkRetryFn; pkRetryFn = null; whisper.textContent = ''; fn(); }
+    });
+    whisper.addEventListener('keydown', (e) => { const v = e.target.closest && e.target.closest('[data-vf], [data-vp]'); if (v && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); v.click(); } });
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && me && me.token && Date.now() - minePulled > 15000) minePull(); });
+    if (me && me.token) minePull();
+
     async function handle(raw) {
       const text = (raw || '').trim();
       if (!text) return;
       const lower0 = text.toLowerCase();
+      if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingConfirm && YES_RE.test(lower0)) { await decideConfirm('approve'); return; }
       if (pendingConfirm && NO_RE.test(lower0)) { await decideConfirm('reject', 'said no'); return; }
       if (pendingConfirm) await decideConfirm('reject', 'asked something else');
@@ -3122,6 +3377,7 @@ return { ok: true, detail: 'timer-reset' };
       if (vpageEl && /^(close|close it|close this|go away|dismiss|hide it|done|ok)\s*[.!]?$/.test(lower0)) { closePage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'closed' }); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
       if (await handleBuildAsk(text, lower0)) return;
+      if (await handleMeAsk(lower0)) return;
       if (handleVoiceAsk(lower0)) return;
       if (await handleGatedAsk(text)) return;
       takeUndoSnapshot();
@@ -3162,7 +3418,7 @@ return { ok: true, detail: 'timer-reset' };
     const hintsEl = document.getElementById('hints');
     const CORE_HINTS = ['what can you do', 'make a clock', 'make a 5 minute timer', 'add a sticky that says ', 'make a list', 'open a notepad',
       'make a calculator', 'make a counter', 'draw a circle', 'what is a black hole', 'define ', '15% of 80', '5 miles in km', '100 usd in eur',
-      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'show the board', 'menu', 'undo', 'what do you want to be', 'keep this', 'call this ', 'take this off', 'same again', 'close', 'read it aloud'];
+      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'show the board', 'menu', 'undo', 'what do you want to be', 'remember me', 'sign in', 'am i signed in', 'sign out', 'forget me', 'keep this', 'call this ', 'take this off', 'same again', 'close', 'read it aloud'];
     let hintList = [], hintSel = -1;
     function allHints() {
       const out = CORE_HINTS.slice();
@@ -3233,8 +3489,8 @@ return { ok: true, detail: 'timer-reset' };
       addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });
     }
 
-    // Voice: tap and talk. Chrome 153+ draws a <microphone> element (browser-owned permission + stream);
-    // everywhere else with speech recognition, the plain mic button is the fallback. No recognition -> no mic at all.
+    // Voice: tap and talk. A plain mic button on arrival; on Chrome 153+ the <microphone> element (browser-owned permission
+    // + stream) replaces it after the first tap. No recognition -> no mic at all.
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     let voiceRec = null, voiceStream = null;
     function voiceEnd() {
@@ -3271,24 +3527,27 @@ return { ok: true, detail: 'timer-reset' };
       try { if (SpeechRec.available) SpeechRec.available({ langs: [navigator.language || 'en-US'], processLocally: true }).then((st) => { voiceLocal = st === 'available'; }).catch(() => {}); } catch (_) {}
       const MIC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
       const go0 = document.getElementById('go');
-      const fallback = document.createElement('button');
-      fallback.type = 'button'; fallback.setAttribute('aria-label', 'Talk'); fallback.innerHTML = MIC_SVG;
-      if ('HTMLMicrophoneElement' in window) {
-        const mic = document.createElement('microphone');
-        mic.id = 'mic'; mic.appendChild(fallback);
-        try { mic.setConstraints({ audio: { echoCancellation: true, noiseSuppression: true } }); } catch (_) {}
-        mic.addEventListener('stream', () => {
-          voiceStream = mic.stream || null;
-          const track = voiceStream && voiceStream.getAudioTracks ? voiceStream.getAudioTracks()[0] : null;
-          voiceListen(track && track.readyState === 'live' ? track : null);
-        });
-        mic.addEventListener('error', () => say('microphone is off'));
-        go0.before(mic);
-      } else {
-        fallback.id = 'mic';
-        fallback.addEventListener('click', () => voiceListen(null));
-        go0.before(fallback);
-      }
+      const micButton = () => { const b = document.createElement('button'); b.type = 'button'; b.setAttribute('aria-label', 'Talk'); b.innerHTML = MIC_SVG; return b; };
+      // The plain mic icon on arrival. Chrome 153's <microphone> element (browser-owned permission + stream) only takes over
+      // after the first tap, so its "Use microphone" label never sits on the empty surface. The first tap already listens.
+      const plain = micButton();
+      plain.id = 'mic';
+      plain.addEventListener('click', () => {
+        if ('HTMLMicrophoneElement' in window && plain.isConnected) {
+          const mic = document.createElement('microphone');
+          mic.appendChild(micButton()); // fallback content, never shown where the element works
+          try { mic.setConstraints({ audio: { echoCancellation: true, noiseSuppression: true } }); } catch (_) {}
+          mic.addEventListener('stream', () => {
+            voiceStream = mic.stream || null;
+            const track = voiceStream && voiceStream.getAudioTracks ? voiceStream.getAudioTracks()[0] : null;
+            voiceListen(track && track.readyState === 'live' ? track : null);
+          });
+          mic.addEventListener('error', () => say('microphone is off'));
+          plain.removeAttribute('id'); plain.replaceWith(mic); mic.id = 'mic';
+        }
+        voiceListen(null);
+      });
+      go0.before(plain);
     }
 
     // Read aloud: "read it aloud" reads the open page; "stop" while reading stops it.
@@ -3320,6 +3579,7 @@ return { ok: true, detail: 'timer-reset' };
       ask = String(ask || '').trim().slice(0, 500);
       if (!ask) return 'Say what you want in plain words, e.g. "weather in Tokyo".';
       if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the owner, typed by hand.';
+      if (isMeAsk(ask.toLowerCase())) return 'Passkeys and sign-in are for the person at the screen, asked by hand.';
       await skillsReady;
       const before = JSON.stringify(things), pageBefore = vpageEl;
       await handle(ask);
