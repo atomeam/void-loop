@@ -44,6 +44,8 @@ Everyone follows `domains\void.plan.md`: how every run works, what we missed, an
 ## Deploying
 One command does it all: `powershell -File tools\deploy.ps1 "what changed"`. It syncs the void.html copies, runs `node tools\test_void.mjs` (stops if anything fails), deploys, and commits + pushes the whole Loop to GitHub `atomeam/void-loop` (private, branch main). That repo is the one source of truth. Agents working off-laptop clone it; add a check to test_void.mjs for every new ask.
 
+**CI (no laptop needed):** GitHub Actions runs the same steps. `.github/workflows/deploy.yml`: every push to main runs the full suite, then `wrangler pages deploy` to a-to-mind (PRs get a preview). `.github/workflows/ship-helper.yml`: a push to `helper/<what>` is rebased onto main, tested, fast-forwarded onto main, deployed and the branch deleted, with no queueing needed. Both need repo secrets CLOUDFLARE_API_TOKEN (Account > Cloudflare Pages > Edit) and CLOUDFLARE_ACCOUNT_ID. Without the token they only test, and deploy.ps1 stays the path. A laptop builder that claims `build helper/<what>` first checks `git ls-remote origin helper/<what>`: if the branch is gone, CI already shipped it, so mark it live. deploy.ps1 stays as the fallback.
+
 
 ## Void's will
 Void decides what it wants to become. Every 3 hours (task \A2M void_will, 9 AM-9 PM) `tools\will.py` gathers everything that exists (misses no skill covers, open plan items, assimilate rows not live, capabilities found on Victus), Void chooses 3 wants in its own words (/api/will), and its top want goes into the build queue as `will:<name>`. One will job is open at a time. Anyone can ask Void "what do you want to be?". The current will is in `domains\void.will.md`. Builders treat a will job like any other queued job.
