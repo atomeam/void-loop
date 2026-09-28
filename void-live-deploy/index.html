@@ -2595,7 +2595,7 @@ return { ok: true, detail: 'timer-reset' };
       } catch (_) {}
       if (vpageEl !== el) return 'answer';
       if (!j || !j.answer) { say(''); return showArticle(text); }
-      const srcs = (j.sources || []).map((s, i) => '<a href="' + esc(s.url) + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.title) + '</a>').join(' · ');
+      const srcs = (j.sources || []).map((s, i) => '<a href="' + esc(/^https:\/\//i.test(String(s.url || '')) ? s.url : '#') + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.title) + '</a>').join(' · '); // https links only
       const body = esc(j.answer).replace(/\n+/g, '</p><p>');
       el.innerHTML = '<h2>' + esc(text) + '</h2><p>' + body + '</p>'
         + '<div class="src">Source: ' + (srcs || 'no source found') + ' · written by Void from these sources</div>';
@@ -2842,7 +2842,7 @@ return { ok: true, detail: 'timer-reset' };
         const rows = await r.json();
         if (vpageEl !== el) return;
         el.innerHTML = '<h2>The board</h2><div class="sub">What people asked that Void can\'t answer yet · most asked first</div>'
-          + (rows.length ? '<ul>' + rows.slice(0, 40).map((x) => '<li><b>' + x.count + '×</b> ' + esc(x.ask) + ' <span style="color:#6a6a6a">· ' + esc((x.last || '').slice(0, 10)) + (x.fallback ? ' · ' + esc(x.fallback) : '') + '</span></li>').join('') + '</ul>' : '<p>Nothing missed yet.</p>');
+          + (rows.length ? '<ul>' + rows.slice(0, 40).map((x) => '<li><b>' + esc(x.count) + '×</b> ' + esc(x.ask) + ' <span style="color:#6a6a6a">· ' + esc((x.last || '').slice(0, 10)) + (x.fallback ? ' · ' + esc(x.fallback) : '') + '</span></li>').join('') + '</ul>' : '<p>Nothing missed yet.</p>');
       } catch (_) { if (vpageEl === el) el.innerHTML = '<h2>The board</h2><p>The board didn\'t answer just now.</p>'; }
     }
 
@@ -3125,8 +3125,10 @@ return { ok: true, detail: 'timer-reset' };
       lastConfirm = { until: Date.now() + 60000, expired: decision === 'timeout' || (d && d.decision === 'timeout'), nothing };
       whisper.textContent = ''; say(msg);
     }
-    whisper.addEventListener('click', (e) => { const v = e.target.closest && e.target.closest('[data-vc]'); if (v && pendingConfirm) { decideConfirm(v.dataset.vc === 'yes' ? 'approve' : 'reject', 'said no'); input.focus(); } });
-    whisper.addEventListener('keydown', (e) => { const v = e.target.closest && e.target.closest('[data-vc]'); if (v && pendingConfirm && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); v.click(); } });
+    // Only a real person's click or key answers the line (e.isTrusted): a script's synthetic click never says yes.
+    const confirmBy = (e, v) => { if (v && pendingConfirm && e.isTrusted) { decideConfirm(v.dataset.vc === 'yes' ? 'approve' : 'reject', 'said no'); input.focus(); } };
+    whisper.addEventListener('click', (e) => confirmBy(e, e.target.closest && e.target.closest('[data-vc]')));
+    whisper.addEventListener('keydown', (e) => { const v = e.target.closest && e.target.closest('[data-vc]'); if (v && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); confirmBy(e, v); } });
 
     // --- Your Void follows you (plan item 6): passkeys (WebAuthn Level 3), no passwords, no email, nothing on the surface. ---
     // Ask: "remember me" (makes a passkey; on Chrome 149+ signs in instead if this device already has one), "sign in"
@@ -3366,13 +3368,15 @@ return { ok: true, detail: 'timer-reset' };
       whisper.innerHTML = 'Forget your Void on every device? <span class="vc" data-vf="yes" role="button" tabindex="0">Yes</span> / <span class="vc" data-vf="no" role="button" tabindex="0">No</span>';
       return true;
     }
-    whisper.addEventListener('click', (e) => {
-      const f = e.target.closest && e.target.closest('[data-vf]');
+    const whisperBy = (e, el) => {
+      if (!el || !e.isTrusted) return; // a person's click or key only
+      const f = el.closest('[data-vf]');
       if (f && pendingForget) { forgetAnswer(f.dataset.vf === 'yes' ? 'yes' : 'no'); input.focus(); return; }
-      const p = e.target.closest && e.target.closest('[data-vp]');
+      const p = el.closest('[data-vp]');
       if (p && pkRetryFn) { const fn = pkRetryFn; pkRetryFn = null; whisper.textContent = ''; fn(); }
-    });
-    whisper.addEventListener('keydown', (e) => { const v = e.target.closest && e.target.closest('[data-vf], [data-vp]'); if (v && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); v.click(); } });
+    };
+    whisper.addEventListener('click', (e) => whisperBy(e, e.target.closest && e.target.closest('[data-vf], [data-vp]')));
+    whisper.addEventListener('keydown', (e) => { const v = e.target.closest && e.target.closest('[data-vf], [data-vp]'); if (v && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); whisperBy(e, v); } });
     document.addEventListener('visibilitychange', () => { if (!document.hidden && me && me.token && Date.now() - minePulled > 15000) minePull(); });
     if (me && me.token) minePull();
 
@@ -3618,7 +3622,8 @@ return { ok: true, detail: 'timer-reset' };
         handle(input.value); input.value = ''; drawHints();
       }
     });
-    { const q0 = new URLSearchParams(location.search).get('q'); if (q0) { skillsReady.then(() => handle(q0)); history.replaceState(null, '', location.pathname); } }
+    // A link (?q=) runs its ask, except a send, booking or spend: that one is only typed into the box for the person to ask.
+    { const q0 = new URLSearchParams(location.search).get('q'); if (q0) { history.replaceState(null, '', location.pathname); skillsReady.then(async () => { const core = await approvalReady; if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; } handle(q0); }); } }
 
     // --- Void everywhere (plan item 4): share to Void, installable app, address bar (opensearch.xml), voice ---
     // Share target (manifest share_target -> /?share_title=&share_text=&share_url=): a link becomes a link card, words become an ask.
@@ -3728,6 +3733,13 @@ return { ok: true, detail: 'timer-reset' };
       if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the owner, typed by hand.';
       if (isMeAsk(ask.toLowerCase())) return 'Passkeys and sign-in are for the person at the screen, asked by hand.';
       if (isPaidAsk(ask)) return 'Paid Void is for the person at the screen, asked by hand.';
+      // Defences (runaway agents): an agent can never answer the confirm line or "forget me" for the person, never start a
+      // send, booking or spend, and never read the owner's board. Those are for the person at the screen, by hand.
+      if (pendingConfirm || pendingForget) return 'Void is waiting for the person at the screen to answer. Agents can\'t answer for them.';
+      const coreA = await Promise.race([approvalReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      if (!coreA) return 'Try again in a moment.';
+      if (coreA.parseGatedAsk(ask)) return 'Sends, bookings and spends are for the person at the screen, asked by hand.';
+      if (wantsBoard(ask.toLowerCase())) return 'That one is for the owner, typed by hand.';
       await skillsReady;
       const before = JSON.stringify(things), pageBefore = vpageEl;
       await handle(ask);

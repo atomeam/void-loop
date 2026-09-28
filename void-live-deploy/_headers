@@ -1,6 +1,9 @@
 /*
-  Content-Security-Policy: frame-ancestors 'self' chrome-extension: moz-extension:
   Referrer-Policy: no-referrer
+  X-Content-Type-Options: nosniff
+  Content-Security-Policy: object-src 'none'; base-uri 'self'; frame-ancestors 'self' chrome-extension: moz-extension:; form-action 'self'
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: camera=(), usb=(), serial=(), hid=(), bluetooth=(), midi=(), payment=()
 
 /sw.js
   Cache-Control: no-cache

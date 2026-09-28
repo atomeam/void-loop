@@ -24,7 +24,7 @@ def call(path, body=None):
     req = urllib.request.Request("https://a-to-mind.com" + path, data=json.dumps(body).encode() if body is not None else None, headers=H, method="POST" if body is not None else "GET")
     return json.load(urllib.request.urlopen(req, timeout=90))
 
-def gather(cap=60):
+def gather(cap=60, with_done=False):
     cands = []
     # 1. what people asked for and Void couldn't do
     try:
@@ -95,7 +95,16 @@ def gather(cap=60):
         root = w["joins"] if w.get("joins") in by_id else r.get("id") or id(r)
         groups.setdefault(root, []).append(r)
     today = __import__("datetime").date.today().isoformat()
+    # built: a record with `done: <record id>` (domains/inputs/builds/) says that want was built and shipped. It leaves the
+    # candidates until fresh evidence arrives after it (a later record joining the same want reopens it).
+    done = {}
+    for r in recs:
+        if r.get("done"):
+            done[r["done"]] = max(done.get(r["done"], ""), str(r.get("at") or ""))
     for root, rs in groups.items():
+        built = done.get(root)
+        if built and all(str(x.get("at") or "") <= built for x in rs) and not with_done:
+            continue
         base = by_id.get(root, rs[0])
         def wt(x):
             v = int(x["want"].get("weight", 8))
@@ -117,7 +126,7 @@ def gather(cap=60):
         else:
             kind = "idea from stale input"
             why = f"stale input from {lead.get('brief_date') or lead.get('hour') or 'an old run'}, unverified: " + why
-        cands.append({"kind": kind, "title": title[:160], "why": why[:240], "weight": max(wt(x) for x in rs), "source": str(lead.get("source") or base.get("source"))[:60]})
+        cands.append({"kind": kind, "title": title[:160], "why": why[:240], "weight": max(wt(x) for x in rs), "source": str(lead.get("source") or base.get("source"))[:60], **({"done": built} if built else {})})
     # budget inputs (e.g. reported model price drops) go on the budget-related upgrades: a better model for the same money
     for note in [str(r["budget_input"]) for r in recs if r.get("budget_input") and not r.get("stale")][-1:]:
         for c in cands:
@@ -135,7 +144,7 @@ def gather(cap=60):
 
 if __name__ == "__main__":
     if "--candidates" in sys.argv:
-        print(json.dumps(gather(None if "--all" in sys.argv else 60)))  # ASCII-escaped: safe through a Windows (cp1252) pipe
+        print(json.dumps(gather(None if "--all" in sys.argv else 60, with_done="--with-done" in sys.argv)))  # ASCII-escaped: safe through a Windows (cp1252) pipe
         sys.exit(0)
     out = gather()
     res = call("/api/will", {"candidates": out})
