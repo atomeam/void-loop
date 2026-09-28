@@ -14,6 +14,12 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"A-to-Mind","url":"https://a-to-mind.com/","email":"atom@a-to-mind.com"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"A-to-Mind","url":"https://a-to-mind.com/","description":"Void by A-to-Mind: one quiet input. Ask for anything and it appears: a clock, notes, a street map, the weather, a translation, a calculation, or a page about any topic. No account.","potentialAction":{"@type":"SearchAction","target":"https://a-to-mind.com/?q={query}","query-input":"required name=query"}}</script>
   <script>
+    // WebMCP origin trial (plan item 5): paste the token for a-to-mind.com here (developer.chrome.com/origintrials -> WebMCP).
+    // Empty = off; browsers with WebMCP turned on (flag or trial) still get Void's tools, everyone else uses /tools.json.
+    var WEBMCP_TRIAL_TOKEN = '';
+    if (WEBMCP_TRIAL_TOKEN) { var ot = document.createElement('meta'); ot.httpEquiv = 'origin-trial'; ot.content = WEBMCP_TRIAL_TOKEN; document.head.appendChild(ot); }
+  </script>
+  <script>
     // First frame: your saved look is painted before anything draws.
     try {
       var L = JSON.parse(localStorage.getItem('a2m.void.look.v1') || 'null'), d = document.documentElement;
@@ -3241,6 +3247,52 @@ return { ok: true, detail: 'timer-reset' };
       }
       return false;
     }
+
+    // --- WebMCP (plan item 5): browser agents call Void's tools directly, from the same list as /tools.json. ---
+    // Each tool takes one plain-words ask, runs it like a typed ask, and returns what appeared. Owner-only asks never run from an agent.
+    async function agentAsk(ask) {
+      ask = String(ask || '').trim().slice(0, 500);
+      if (!ask) return 'Say what you want in plain words, e.g. "weather in Tokyo".';
+      if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the owner, typed by hand.';
+      await skillsReady;
+      const before = JSON.stringify(things), pageBefore = vpageEl;
+      await handle(ask);
+      let text = '';
+      for (let i = 0; i < 40; i++) {
+        const pg = document.querySelector('.vpage.on');
+        if (pg && pg !== pageBefore) {
+          text = (pg.innerText || '').replace(/\s+\n/g, '\n').trim();
+          if (text && !/…\s*$/.test(text.split('\n')[1] || '') && !/…$/.test(text)) break;
+        }
+        if (!pg && JSON.stringify(things) !== before) break;
+        await new Promise((r) => setTimeout(r, 150));
+      }
+      if (text) return text.slice(0, 4000);
+      const now = Object.values(things).map((t) => t.kind);
+      return JSON.stringify(things) !== before ? 'Done. On the stage now: ' + (now.join(', ') || 'nothing') + '.' : (whisper.textContent || 'Done.');
+    }
+    (async () => {
+      const mc = document.modelContext || navigator.modelContext;
+      if (!mc || typeof mc.registerTool !== 'function') return;
+      let list = null;
+      try { const r = await fetch('/tools.json'); if (r.ok) list = await r.json(); } catch (_) {}
+      let tools = list && Array.isArray(list.tools) ? list.tools : null;
+      if (!tools) { await skillsReady; tools = learnedSkills.filter((k) => k.name !== 'rebuild-map' && k.examples && k.examples.length).map((k) => ({ name: k.name === 'place' ? 'map' : k.name, description: k.name, examples: k.examples })); }
+      const READ_ONLY = /^(page|calculate|weather|map|translate|place)$/;
+      const all = [{ name: 'ask', description: 'Ask Void anything in plain words; it answers or puts it on the stage.', examples: ['what is a black hole', 'make a 5 minute timer', 'map of Lisbon'] }].concat(tools);
+      for (const t of all) {
+        const ex = (t.examples || []).slice(0, 3);
+        try {
+          await mc.registerTool({
+            name: 'void_' + String(t.name).toLowerCase().replace(/[^a-z0-9_]/g, '_'),
+            description: t.description + (ex.length ? ' Examples: ' + ex.map((e) => '"' + e + '"').join(', ') + '.' : ''),
+            inputSchema: { type: 'object', properties: { ask: { type: 'string', description: 'The ask in plain words' + (ex[0] ? ', e.g. "' + ex[0] + '"' : '') } }, required: ['ask'] },
+            annotations: { readOnlyHint: READ_ONLY.test(t.name), untrustedContentHint: /^(page|ask|translate)$/.test(t.name) },
+            execute: async (input) => agentAsk(input && input.ask),
+          });
+        } catch (_) {}
+      }
+    })();
 
     load();
     render();

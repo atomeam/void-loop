@@ -34,7 +34,7 @@ Stage things, pages about anything, weather, street maps, translation, calculati
    - Browser address bar: an OpenSearch description, so people can make Void their search engine. Every search becomes a Void ask.
    - Voice: tap and talk; Void can read answers aloud.
    - Share to Void from any phone app (share target).
-5. **WebMCP.** Chrome now lets pages declare tools that browser agents call directly. Declare Void's tools on the page itself, generated from the same list as `/tools.json`. Agents in Chrome, Gemini, Atlas, Comet and Claude for Chrome can then use Void without scraping.
+5. **WebMCP.** Built 2026-09-27 by the Linux helper on branch `helper/webmcp` (stacked on `helper/everywhere`; waiting for the builder): `document.modelContext.registerTool` (falls back to `navigator.modelContext`), one `void_*` tool per `/tools.json` entry plus `void_ask`, owner-only asks refused. Needs Atom: register a-to-mind.com for the WebMCP origin trial and paste the token into `WEBMCP_TRIAL_TOKEN` at the top of void.html; until then only browsers with WebMCP switched on see the tools. Chrome now lets pages declare tools that browser agents call directly. Declare Void's tools on the page itself, generated from the same list as `/tools.json`. Agents in Chrome, Gemini, Atlas, Comet and Claude for Chrome can then use Void without scraping.
 6. **Your Void on every device.** Sign in with a passkey (no passwords). Your stage, look and kept cards sync. Stays optional: Void works fully without it.
 
 ## Next

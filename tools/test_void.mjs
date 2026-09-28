@@ -151,6 +151,23 @@ try {
   check('voice fallback: plain mic button still works', fb === 'BUTTON' && await until(async () => (await t.state()).some((x) => x.kind === 'counter'), 5000), fb);
   check('no script errors (everywhere)', !errs1.length && !t.errors.length, errs1.concat(t.errors).join(' | '));
   await t.ctx.close();
+
+  // Plan item 5: WebMCP. A stub document.modelContext records registrations; /tools.json is served like production.
+  t = await fresh(() => { window.__tools = {}; document.modelContext = { registerTool: async (d) => { window.__tools[d.name] = d; } }; });
+  await t.ctx.route(/\/tools\.json$/, (r) => r.fulfill(json({ tools: [
+    { name: 'stage', description: 'Put a thing on the stage.', examples: ['make a clock'] },
+    { name: 'calculate', description: 'Arithmetic and conversion.', examples: ['5 miles in km'] },
+    { name: 'weather', description: 'Weather.', examples: ['weather in Tokyo'] }] })));
+  await t.p.reload(); await t.p.waitForTimeout(300);
+  const names = await until(async () => { const n = await t.p.evaluate(() => Object.keys(window.__tools).sort()); return n.length >= 4 && n; }, 6000);
+  const schemaOk = await t.p.evaluate(() => { const d = window.__tools.void_calculate; return !!d && d.inputSchema.required[0] === 'ask' && d.annotations.readOnlyHint === true && /5 miles in km/.test(d.description); }).catch(() => false);
+  check('WebMCP: tools declared from /tools.json', names && ['void_ask', 'void_calculate', 'void_stage', 'void_weather'].every((n) => names.includes(n)) && schemaOk, String(names));
+  const calc = await t.p.evaluate(() => window.__tools.void_calculate.execute({ ask: '5 miles in km' })).catch((e) => 'ERR ' + e);
+  const made = await t.p.evaluate(() => window.__tools.void_stage.execute({ ask: 'make a clock' })).catch((e) => 'ERR ' + e);
+  check('WebMCP: an agent call runs the ask and returns the result', /8\.05/.test(calc) && /clock/.test(made) && (await t.state()).some((x) => x.kind === 'clock'), calc.slice(0, 80) + ' | ' + made);
+  const owner = await t.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'update yourself' }));
+  check('WebMCP: owner-only asks never run from an agent', /owner/.test(owner) && t.errors.length === 0, owner + ' ' + t.errors.join(' | '));
+  await t.ctx.close();
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));
 }
