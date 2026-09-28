@@ -404,14 +404,14 @@ try {
   // start only when someone asks in their own Void, and "calm my void" stops them. Card physics: a grabbed card comes to the front.
   { const V = await fresh();
     const pub = await V.p.evaluate(() => { const d = document.getElementById('void-depth'), cs = d && getComputedStyle(d); return { aura: !!document.getElementById('void-aura'), swarm: !!document.getElementById('void-swarm'), fx: document.documentElement.dataset.fx, depth: !!cs && /radial-gradient/.test(cs.backgroundImage) && cs.animationName === 'depthBreath', pill: getComputedStyle(document.getElementById('row')).backdropFilter }; });
-    await V.p.mouse.move(40, 40); await V.p.mouse.move(900, 500, { steps: 6 }); await V.p.waitForTimeout(400);
-    const tracked = await V.p.evaluate(() => document.getElementById('void-depth').style.getPropertyValue('--dx'));
+    await V.p.mouse.move(640, 380); await V.p.mouse.move(1100, 500, { steps: 6 });
+    const tracked = await until(async () => { const v = await V.p.evaluate(() => document.getElementById('void-depth').style.getPropertyValue('--dx')); return parseFloat(v) > 55 ? v : false; }, 3000) || '';
     const fx = async () => V.p.evaluate(() => ({ look: (JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}')).fx, aura: !!document.querySelector('#void-aura.on'), swarm: !!document.querySelector('#void-swarm.on'), gl: !document.documentElement.classList.contains('no-gl') && !!document.createElement('canvas').getContext('webgl') }));
     await V.ask('make my void swirl', 800); const sw = await fx();
     await V.ask('add a nebula', 800); const nb = await fx();
     await V.ask('calm my void', 800); const calm = await fx();
     check('effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: "make my void swirl" starts the particle swarm, "add a nebula" swaps to the nebula, "calm my void" stops both; saved in your look',
-      !pub.aura && !pub.swarm && pub.fx === 'off' && pub.depth && /blur/.test(pub.pill) && parseFloat(tracked) > 50 && sw.look === 'swarm' && nb.look === 'nebula' && calm.look === 'off'
+      !pub.aura && !pub.swarm && pub.fx === 'off' && pub.depth && /blur/.test(pub.pill) && parseFloat(tracked) > 55 && sw.look === 'swarm' && nb.look === 'nebula' && calm.look === 'off'
       && (!sw.gl || (sw.swarm && !sw.aura)) && (!nb.gl || (nb.aura && !nb.swarm)) && !calm.aura && !calm.swarm && !V.errors.length,
       JSON.stringify({ pub, tracked, sw, nb, calm, e: V.errors }));
     await V.ask('add a sticky that says first', 400); await V.ask('another note that says second', 400);
