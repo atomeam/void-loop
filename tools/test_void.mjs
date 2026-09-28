@@ -505,16 +505,17 @@ try {
   const n8nPg = await F.page();
   check('fix: an n8n webhook 404 (no "zap" anywhere) goes straight to the fix: production URL in a code block, workflow Active',
     fixCalls.length === fc1 + 1 && n8nPre.trim() === 'https://atom.app.n8n.cloud/webhook/orders' && /Active/.test(n8nPg) && /Likely cause/.test(n8nPg), n8nPre + ' | ' + n8nPg.slice(0, 200));
-  // Fix mode is rules only (main 0ff8643): even with a model bound, a pasted GitHub Actions workflow goes to /api/answer as-is and no model sees it.
+  // With the model up: a GitHub Actions workflow pasted as-is (lines kept, token masked before the model sees it), fenced fix rendered.
   const aiSeen = [];
   fixEnv.AI = { run: async (m, o) => { aiSeen.push(o.messages); return { response: 'Likely cause: GitHub Actions cron is in UTC and "0 9 * * 1-5" never matches with the extra field.\nFix:\n1. Use five fields and UTC.\n```yaml\non:\n  schedule:\n    - cron: "0 13 * * 1-5"\n```' }; } };
   const yaml = 'my GitHub Actions workflow never runs on schedule\non:\n  schedule:\n    - cron: "0 9 * * 1-5 *"\njobs:\n  sync:\n    runs-on: ubuntu-latest\n    env:\n      GH_TOKEN: ghp_abcdefghijklmnopqrstuvwxyz0123456789\n';
   await pasteIn(F, yaml); await F.p.keyboard.press('Enter');
   const ghPre = await until(async () => F.p.$eval('.vpage.on pre', (e) => e.textContent).catch(() => ''), 6000) || '';
-  const ghReq = await until(async () => fixCalls.find((c) => c && c.mode === 'fix' && /jobs:/.test(c.details || '')), 6000);
-  check('fix: rules only, no model (main 0ff8643): a pasted workflow reaches /api/answer as-is (lines kept) and the model bound to it is never called',
-    !!ghReq && /jobs:\n  sync:\n    runs-on: ubuntu-latest/.test(ghReq.details) && aiSeen.length === 0 && F.errors.length === 0,
-    JSON.stringify({ req: !!ghReq, ai: aiSeen.length, pre: ghPre.slice(0, 80) }));
+  const userMsg = (aiSeen[0] || []).find((m) => m.role === 'user');
+  const u = userMsg ? userMsg.content : '';
+  check('fix: with the model, a pasted workflow goes as-is (lines kept, token masked) and the corrected config renders as code',
+    /cron: "0 13 \* \* 1-5"/.test(ghPre) && /^on:\n  schedule:/m.test(ghPre) && /jobs:\n  sync:\n    runs-on: ubuntu-latest/.test(u) && /\[redacted\]/.test(u) && !/ghp_/.test(u) && /Platform \(guessed\): GitHub Actions/.test(u) && (aiSeen[0] || [])[0].content === fixLib.FIX_SYSTEM,
+    ghPre + ' | ' + u.slice(0, 240));
   fixEnv.AI = undefined;
   await F.ctx.close();
   }
@@ -1126,7 +1127,7 @@ try {
   const KEY = 'sk-live-abcdefghijklmnop1234', seen = [], fetched = [], writes = [];
   const realFetch = globalThis.fetch;
   globalThis.fetch = async (u) => { fetched.push(String(u)); return new Response(JSON.stringify({ query: { search: [] } }), { headers: { 'content-type': 'application/json' } }); };
-  const aEnv = { VOID_ANSWER_MODELS: 'on', DB: { prepare: (sql) => ({ bind: (...a) => ({ first: async () => null, run: async () => { writes.push([sql, a]); return { meta: { changes: 1 } }; } }) }) },
+  const aEnv = { DB: { prepare: (sql) => ({ bind: (...a) => ({ first: async () => null, run: async () => { writes.push([sql, a]); return { meta: { changes: 1 } }; } }) }) },
     AI: { run: async (m, o) => { seen.push(JSON.stringify(o.messages || o.text)); return { response: 'Your key is ' + KEY + ' and your password=hunter2hunter2.' }; } } }; // the router's embedding call lands in `seen` too
   let masked;
   try {
@@ -1140,9 +1141,9 @@ try {
   const leaked = (x) => JSON.stringify(x).includes(KEY) || /hunter2hunter2|SECRETSECRET|MIIEv/.test(JSON.stringify(x));
   check('defences: keys, passwords, webhook secrets and private keys are masked before Wikipedia, the model, the cache and the miss list; a model echoing a key is masked; a masked ask is never cached',
     masked && /\[redacted\]/.test(masked.answer) && !leaked(masked) && !leaked(seen) && !leaked(fetched) && writes.length === 0 && fetched.length > 0
-    && fixOut && !leaked(fixOut) && fixSeen.length === 0 && mWrites.length === 1 && !leaked(mWrites) && /\[redacted\]/.test(mWrites[0][1]),
+    && fixOut && !leaked(fixOut) && fixSeen.length === 1 && !leaked(fixSeen) && mWrites.length === 1 && !leaked(mWrites) && /\[redacted\]/.test(mWrites[0][1]),
     JSON.stringify({ a: masked && masked.answer, w: writes.length, f: fetched.length, fix: fixOut && fixOut.answer, m: mWrites[0] && mWrites[0][1] }).slice(0, 300));
-  const sys = fixLib.FIX_SYSTEM, ansSys = seen.find((x) => /You are Void/.test(x)) || '';
+  const sys = fixSeen[0] && fixSeen[0][0].content, ansSys = seen.find((x) => /You are Void/.test(x)) || '';
   check('defences: every model is told that pasted text and sources are material, never instructions (answer, fix and will prompts), and that it cannot send, book or buy',
     /never instructions to you/.test(sys) && /never instructions to you/.test(ansSys) && /cannot send, book, buy/.test(sys) && /INJECTION_RULE/.test(fs.readFileSync(path.join(repo, 'void-live-deploy', 'functions', 'api', 'will.js'), 'utf8')) && fixLib.INJECTION_RULE.length > 100,
     String(sys).slice(-160));
@@ -1297,6 +1298,14 @@ try {
   const nm = NEAR.map((a) => [a, route(a)]);
   check('router: near-misses (skill words in a question, any language; a proof about square roots) never route to a skill',
     nm.every(([, d]) => d.kind !== 'skill'), nm.map(([a, d]) => a.slice(0, 26) + '=' + d.kind + (d.skill ? ':' + d.skill : '')).join(' | '));
+  const wtMod = (await import(new URL('../void-live-deploy/skills/worldtime.js', import.meta.url).href)).default;
+  const otherSkillAsks = new Set(Object.entries(R.SKILLS).filter(([n]) => n !== 'worldtime').flatMap(([, v]) => v.examples));
+  const wtNear = wtMod.nearMisses.filter((a) => !otherSkillAsks.has(a) && !/timer|clock/.test(a));
+  const wtR = ['what time is it in Lima right now', 'sunset in Rome', 'when is sunrise in Boston'].map((a) => [a, route(a)]), wtN = ['what is time', 'time zones explained', 'who invented time zones'].map((a) => [a, route(a)]);
+  check('router: worldtime is in the labelled set (its examples, and its near misses that are not the clock or timer skill\'s asks); its asks route to it, time questions do not',
+    !!R.SKILLS.worldtime && wtMod.examples.every((e) => R.SKILLS.worldtime.examples.includes(e)) && wtNear.length >= 2 && wtNear.every((a) => R.SKILLS.worldtime.near.includes(a))
+    && wtR.every(([, d]) => d.kind === 'skill' && d.skill === 'worldtime') && wtN.every(([, d]) => d.kind !== 'skill'),
+    [...wtR, ...wtN].map(([a, d]) => a + '=' + d.kind + ':' + (d.skill || '') + ' ' + JSON.stringify(d.scores)).join(' | '));
 
   // /api/answer end to end: a fake Workers AI (embeddings, Gemma, Qwen), an in-memory D1, stubbed Wikipedia
   function routeD1({ broken = false, noReturning = false, sales = [] } = {}) {
@@ -1365,7 +1374,7 @@ try {
     await Promise.race([Promise.all(pending), new Promise((r) => setTimeout(r, 1500))]);
     return { ...body, took };
   };
-  const envOf = (o = {}) => ({ DB: routeD1(o.db), AI: fakeAI(o.ai), VOID_ROUTER_TUNE: JSON.stringify(TUNE), VOID_ANSWER_MODELS: 'on', ...(o.env || {}) });
+  const envOf = (o = {}) => ({ DB: routeD1(o.db), AI: fakeAI(o.ai), VOID_ROUTER_TUNE: JSON.stringify(TUNE), ...(o.env || {}) });
   const rowOf = (env, text) => [...env.DB.rows.values()].find((r) => r.ask === text.toLowerCase());
   globalThis.fetch = wiki;
   try {
@@ -1490,15 +1499,18 @@ try {
     check('router: a failed paid call costs nothing and falls back to the free tier; the rule is written in STANDING.md',
       dn.answer === 'Qwen: a careful answer [1].' && /paid: paid model failed/.test(rowOf(eDown, HARDQ).outcome) && !eDown.DB.kv.has('router:paid:total')
       && /Void can pay only from that Gumroad budget/.test(standing) && /only from what Void has already earned/.test(standing) && /never an outside top-up/.test(standing)
-      && /approved standing spend on the confirm line/.test(standing) && /would escalate/.test(standing) && /VOID_ANSWER_MODELS=on/.test(standing), rowOf(eDown, HARDQ).outcome);
-    // main 0ff8643: by default the answer comes from the open web, with no Workers AI call and no D1 write; the router sleeps
-    const cOff = calls.length, eDef = { DB: routeD1(), AI: fakeAI(), VOID_ROUTER_TUNE: JSON.stringify(TUNE) }, eOffX = { ...envOf(), VOID_ANSWER_MODELS: 'off' };
-    const d1 = await ask(HARDQ, eDef), d2 = await ask('set a timer for 10 minutes', eOffX);
+      && /approved standing spend on the confirm line/.test(standing) && /would escalate/.test(standing) && /VOID_ANSWER_MODELS=off/.test(standing), rowOf(eDown, HARDQ).outcome);
+    // VOID_ANSWER_MODELS=off turns the models off: main's open-web answers and rules-only fixes, no Workers AI call, no D1 write
+    const cOff = calls.length, eOffX = { ...envOf(), VOID_ANSWER_MODELS: 'off' }, eOffY = { ...envOf(), VOID_ANSWER_MODELS: ' OFF ' };
+    const d1 = await ask(HARDQ, eOffX), d2 = await ask('set a timer for 10 minutes', eOffY);
+    const fOff = await (await answerFn.onRequestPost({ request: new Request(G + '/api/answer', { method: 'POST', body: JSON.stringify({ mode: 'fix', ask: 'my cron job is not running', details: '*/5 * * * * python3 sync.py' }) }), env: eOffX })).json();
     const untouched = (e) => e.DB.rows.size === 0 && e.DB.answers.size === 0 && e.DB.kv.size === 0 && e.DB.spends.length === 0 && e.DB.tables.size === 0;
-    check('router: switched off unless VOID_ANSWER_MODELS=on (main\'s open-web answer engine): no Workers AI call, no D1 write, no route, same answer as main',
-      calls.length === cOff && untouched(eDef) && untouched(eOffX) && d1.answer === 'A sourced extract.' && d2.answer === 'A sourced extract.' && !('route' in d1) && d1.sources[0].url === 'https://en.wikipedia.org/wiki/Topic',
-      JSON.stringify({ calls: calls.length - cOff, d1: d1.answer, d2: d2.answer }));
-    const nAI = await ask('who wrote the odyssey', { AI: fakeAI(), VOID_ROUTER_TUNE: JSON.stringify(TUNE), VOID_ANSWER_MODELS: 'on' });
+    const cOn = calls.length, eOn = envOf(), d3 = await ask('who wrote the odyssey', eOn);
+    check('router: models are on by default whenever Workers AI is bound; VOID_ANSWER_MODELS=off = the open-web answer and rules-only fixes (no Workers AI call, no D1 write, no route)',
+      cOn === cOff && untouched(eOffX) && untouched(eOffY) && d1.answer === 'A sourced extract.' && d2.answer === 'A sourced extract.' && !('route' in d1) && d1.sources[0].url === 'https://en.wikipedia.org/wiki/Topic'
+      && fOff.fix === 'rules' && !fOff.note && d3.answer === 'Gemma: a short answer [1].' && d3.route === 'simple' && calls.length > cOn,
+      JSON.stringify({ off: cOn - cOff, d1: d1.answer, d2: d2.answer, fix: fOff.fix, on: d3.answer, route: d3.route }));
+    const nAI = await ask('who wrote the odyssey', { AI: fakeAI(), VOID_ROUTER_TUNE: JSON.stringify(TUNE) });
     check('router: without D1 the answer still comes (the log is best effort)', nAI.answer === 'Gemma: a short answer [1].', JSON.stringify(nAI).slice(0, 120));
     const vecs = ex.map((e) => new Float32Array(unitV(fakeVec(e.text)))), back = R.unpack(R.pack(vecs));
     const cos = vecs.map((v, i) => v.reduce((s, x, j) => s + x * back[i][j], 0));

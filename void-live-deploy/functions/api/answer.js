@@ -1,13 +1,17 @@
 // Void's answer engine: any ask no skill covers is answered from the open web.
-// Wikipedia search + summaries. By default: no Workers AI, no D1 writes (Cloudflare's free quota is not required for an answer).
-// VOID_ANSWER_MODELS=on (Pages env var, off unless set) turns on the model path with a tiny router in front (lib/router.js):
-// skill / simple / hard while the sources are fetched. Gemma 4 26B answers by default; a hard ask may pay for a stronger model
+// Wikipedia search + summaries; Cloudflare's free quota is not required for an answer: the open-web answer is the floor.
+// On top of it (whenever Workers AI is bound; the Pages env var VOID_ANSWER_MODELS=off turns it off) a model writes the answer
+// from those sources, with a tiny router in front (lib/router.js): skill / simple / hard while the sources are fetched. Gemma 4 26B answers by default; a hard ask may pay for a stronger model
 // only from what Void earned under a standing spend said yes to on the confirm line, else a stronger free model, else it logs
-// 'would escalate'. A slow or failed router = the plain Gemma answer; no model at all = the open-web answer below.
-// With the switch on, D1 is written: the answer cache, the route log (void_routes) and the escalation counters.
-import { INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
+// 'would escalate'. A slow or failed router = the plain Gemma answer; no model (allowance out, paying not allowed, or
+// switched off) = the open-web answer. With models on, D1 is written: the answer cache, the route log (void_routes) and the
+// escalation counters. Fix mode: the model works on the pasted automation; the rules (ruleFix) are its fallback.
+import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
 import { DEFAULT_MODEL, PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, escalation, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
 const MODEL = DEFAULT_MODEL;
+// models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
+const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
+const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const TTL_DAYS = 7, RL_MAX = 12;
 const norm = (t) => String(t || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
 async function sha(s) {
@@ -49,11 +53,26 @@ async function fixAnswer(request, env, body) {
   if (await rateLimited(request, env)) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
   const all = ask + (details ? '\n\n' + details : '');
   const platform = platformOf(all);
+  const on = modelsOn(env);
+  if (on) {
+    try {
+      const r = await env.AI.run(MODEL, {
+        messages: [
+          { role: 'system', content: FIX_SYSTEM },
+          { role: 'user', content: 'What they said: ' + ask + (platform ? '\nPlatform (guessed): ' + platform : '') + (details ? '\n\nWhat they pasted (as is):\n' + details : '\n\n(nothing pasted yet)') },
+        ],
+        max_tokens: 1600, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
+      });
+      const answer = redact(String(pick(r)).trim()); // never echo a secret, even one the model made up
+      if (answer) return Response.json({ answer, sources: [], fix: 'model', platform });
+    } catch (_) {}
+  }
+  // the fallback: fixed from the error itself (rules only)
   const rules = ruleFix(all);
-  return Response.json({ answer: rules, sources: [], fix: rules ? 'rules' : null, platform, note: rules ? null : 'no rule for that' });
+  const note = on ? (rules ? 'model busy, fixed from the error' : 'model busy') : (rules ? null : 'no rule for that');
+  return Response.json({ answer: rules, sources: [], fix: rules ? 'rules' : null, platform, note });
 }
 
-const modelsOn = (env) => String(env.VOID_ANSWER_MODELS || '').toLowerCase() === 'on' && !!env.AI;
 
 export async function onRequestPost({ request, env, waitUntil }) {
   const t0 = Date.now();
@@ -77,11 +96,10 @@ export async function onRequestPost({ request, env, waitUntil }) {
 }
 
 const ANSWER_SYSTEM = 'You are Void. Answer the question in 2 to 6 plain sentences, using only the numbered sources. Cite sources inline like [1]. If the sources do not answer it, say briefly what you could not find. No preamble, no markdown headings. ' + INJECTION_RULE;
-const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const noThink = (t) => String(t || '').replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/^[\s\S]*<\/think>/i, '').trim();
 function within(p, ms) { let t; return Promise.race([p, new Promise((_, rej) => { t = setTimeout(() => rej(new Error('timeout')), ms); })]).finally(() => clearTimeout(t)); }
 
-// The model path (VOID_ANSWER_MODELS=on only).
+// The model path (on unless VOID_ANSWER_MODELS=off).
 async function modelAnswer(request, env, waitUntil, t0, ask, masked, key) {
   const later = (p) => { try { if (waitUntil) waitUntil(p); } catch (_) {} return p; };
   // the router runs alongside the source fetch; the answer waits for it until BUDGET_MS from the start, then moves on without it
