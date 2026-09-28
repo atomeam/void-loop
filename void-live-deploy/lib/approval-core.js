@@ -24,6 +24,8 @@ export const GATED = {
   'booking.make': { rule: 'book.booking', kind: 'book', service: 'booking', board: 'make a booking' },
   'order.place': { rule: 'spend.order', kind: 'spend', service: 'shopping', board: 'buy something' },
   'payment.send': { rule: 'spend.payment', kind: 'spend', service: 'payments', board: 'pay someone' },
+  // A standing spend on a stronger model, paid only from what Void earned (STANDING.md; lib/router.js). The newest one wins; $0 stops it.
+  'models.spend': { rule: 'spend.models', kind: 'spend', service: 'model spending', board: 'let Void pay for a stronger model' },
 };
 export const isGated = (toolName) => Object.prototype.hasOwnProperty.call(GATED, toolName);
 export const NOTHING = { send: 'nothing sent', book: 'nothing booked', spend: 'nothing spent' };
@@ -66,6 +68,7 @@ export function confirmLine(toolName, args) {
     case 'booking.make': return `Book ${a.what}${cost ? ' for ' + cost : ''}?`;
     case 'order.place': return cost ? `Buy ${a.item} for ${cost}?` : `Buy ${a.item}? The price isn't known yet.`;
     case 'payment.send': return `Pay ${a.to} ${cost}?`;
+    case 'models.spend': return a.cost && a.cost.amount > 0 ? `Let Void spend up to ${cost} a ${a.per || 'month'} of what it earned on a stronger model?` : 'Stop Void paying for a stronger model?';
     default: return '';
   }
 }
@@ -89,6 +92,17 @@ export function parseGatedAsk(text) {
   if ((m = s.match(/^(?:send|write and send)\s+(?:an?\s+)?(?:e-?mail|mail)\s+to\s+(.+?)(?:\s+(?:saying|that says|to say|about|with)\s+(.+))?$/i))
       || (m = s.match(/^e-?mail\s+(.+?)(?:\s+(?:saying|that says|to say|about|with)\s+(.+))?$/i))) {
     return { toolName: 'email.send', args: { to: clip(m[1], 120), body: clip(m[2], 2000) } };
+  }
+  // "let Void spend up to $5 a month on a stronger model" / "let Void pay for a stronger model up to $5 a month" / "stop paying for stronger models"
+  const MODELS = '(?:a\\s+)?(?:stronger|better|smarter|paid)\\s+(?:ai\\s+)?models?';
+  const EARNED = '(?:\\s+(?:from|out of)\\s+(?:what\\s+(?:it|you)(?:\\s+ha(?:s|ve))?\\s+earned|(?:its|your)\\s+earnings))?';
+  if ((m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|yourself|you)\\s+(?:to\\s+)?(?:pay|spend)\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)\\s+(?:on|for)\\s+' + MODELS + EARNED + '$', 'i')))
+      || (m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|yourself|you)\\s+(?:to\\s+)?pay\\s+for\\s+' + MODELS + '\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)' + EARNED + '$', 'i')))) {
+    const cost = parseCost(m[1]);
+    if (cost && cost.currency === 'USD') return { toolName: 'models.spend', args: { model: '@cf/deepseek-ai/deepseek-v4-flash-0731', cost, per: m[2].toLowerCase() } };
+  }
+  if (new RegExp('^(?:stop|don\'?t)\\s+(?:void\\s+)?(?:paying|pay|spending)\\s+(?:for|on)\\s+' + MODELS + '$', 'i').test(s)) {
+    return { toolName: 'models.spend', args: { model: '@cf/deepseek-ai/deepseek-v4-flash-0731', cost: { amount: 0, currency: 'USD' }, per: 'month' } };
   }
   if ((m = s.match(new RegExp('^(?:pay|send)\\s+' + COST + '\\s+to\\s+(.+)$', 'i'))) || (m = s.match(new RegExp('^pay\\s+(.+?)\\s+' + COST + '$', 'i')))) {
     const costFirst = /^\s*[$€£\d]/.test(m[1]);

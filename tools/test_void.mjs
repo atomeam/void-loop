@@ -505,17 +505,16 @@ try {
   const n8nPg = await F.page();
   check('fix: an n8n webhook 404 (no "zap" anywhere) goes straight to the fix: production URL in a code block, workflow Active',
     fixCalls.length === fc1 + 1 && n8nPre.trim() === 'https://atom.app.n8n.cloud/webhook/orders' && /Active/.test(n8nPg) && /Likely cause/.test(n8nPg), n8nPre + ' | ' + n8nPg.slice(0, 200));
-  // With the model up: a GitHub Actions workflow pasted as-is (lines kept, token masked before the model sees it), fenced fix rendered.
+  // Fix mode is rules only (main 0ff8643): even with a model bound, a pasted GitHub Actions workflow goes to /api/answer as-is and no model sees it.
   const aiSeen = [];
   fixEnv.AI = { run: async (m, o) => { aiSeen.push(o.messages); return { response: 'Likely cause: GitHub Actions cron is in UTC and "0 9 * * 1-5" never matches with the extra field.\nFix:\n1. Use five fields and UTC.\n```yaml\non:\n  schedule:\n    - cron: "0 13 * * 1-5"\n```' }; } };
   const yaml = 'my GitHub Actions workflow never runs on schedule\non:\n  schedule:\n    - cron: "0 9 * * 1-5 *"\njobs:\n  sync:\n    runs-on: ubuntu-latest\n    env:\n      GH_TOKEN: ghp_abcdefghijklmnopqrstuvwxyz0123456789\n';
   await pasteIn(F, yaml); await F.p.keyboard.press('Enter');
   const ghPre = await until(async () => F.p.$eval('.vpage.on pre', (e) => e.textContent).catch(() => ''), 6000) || '';
-  const userMsg = (aiSeen[0] || []).find((m) => m.role === 'user');
-  const u = userMsg ? userMsg.content : '';
-  check('fix: with the model, a pasted workflow goes as-is (lines kept, token masked) and the corrected config renders as code',
-    /cron: "0 13 \* \* 1-5"/.test(ghPre) && /^on:\n  schedule:/m.test(ghPre) && /jobs:\n  sync:\n    runs-on: ubuntu-latest/.test(u) && /\[redacted\]/.test(u) && !/ghp_/.test(u) && /Platform \(guessed\): GitHub Actions/.test(u) && (aiSeen[0] || [])[0].content === fixLib.FIX_SYSTEM,
-    ghPre + ' | ' + u.slice(0, 240));
+  const ghReq = await until(async () => fixCalls.find((c) => c && c.mode === 'fix' && /jobs:/.test(c.details || '')), 6000);
+  check('fix: rules only, no model (main 0ff8643): a pasted workflow reaches /api/answer as-is (lines kept) and the model bound to it is never called',
+    !!ghReq && /jobs:\n  sync:\n    runs-on: ubuntu-latest/.test(ghReq.details) && aiSeen.length === 0 && F.errors.length === 0,
+    JSON.stringify({ req: !!ghReq, ai: aiSeen.length, pre: ghPre.slice(0, 80) }));
   fixEnv.AI = undefined;
   await F.ctx.close();
   }
@@ -1127,8 +1126,8 @@ try {
   const KEY = 'sk-live-abcdefghijklmnop1234', seen = [], fetched = [], writes = [];
   const realFetch = globalThis.fetch;
   globalThis.fetch = async (u) => { fetched.push(String(u)); return new Response(JSON.stringify({ query: { search: [] } }), { headers: { 'content-type': 'application/json' } }); };
-  const aEnv = { DB: { prepare: (sql) => ({ bind: (...a) => ({ first: async () => null, run: async () => { writes.push([sql, a]); return { meta: { changes: 1 } }; } }) }) },
-    AI: { run: async (m, o) => { seen.push(JSON.stringify(o.messages)); return { response: 'Your key is ' + KEY + ' and your password=hunter2hunter2.' }; } } };
+  const aEnv = { VOID_ANSWER_MODELS: 'on', DB: { prepare: (sql) => ({ bind: (...a) => ({ first: async () => null, run: async () => { writes.push([sql, a]); return { meta: { changes: 1 } }; } }) }) },
+    AI: { run: async (m, o) => { seen.push(JSON.stringify(o.messages || o.text)); return { response: 'Your key is ' + KEY + ' and your password=hunter2hunter2.' }; } } }; // the router's embedding call lands in `seen` too
   let masked;
   try {
     masked = await (await answerFn.onRequestPost({ request: new Request(G + '/api/answer', { method: 'POST', body: JSON.stringify({ ask: 'is my key ' + KEY + ' valid' }) }), env: aEnv })).json();
@@ -1141,9 +1140,9 @@ try {
   const leaked = (x) => JSON.stringify(x).includes(KEY) || /hunter2hunter2|SECRETSECRET|MIIEv/.test(JSON.stringify(x));
   check('defences: keys, passwords, webhook secrets and private keys are masked before Wikipedia, the model, the cache and the miss list; a model echoing a key is masked; a masked ask is never cached',
     masked && /\[redacted\]/.test(masked.answer) && !leaked(masked) && !leaked(seen) && !leaked(fetched) && writes.length === 0 && fetched.length > 0
-    && fixOut && !leaked(fixOut) && fixSeen.length === 1 && !leaked(fixSeen) && mWrites.length === 1 && !leaked(mWrites) && /\[redacted\]/.test(mWrites[0][1]),
+    && fixOut && !leaked(fixOut) && fixSeen.length === 0 && mWrites.length === 1 && !leaked(mWrites) && /\[redacted\]/.test(mWrites[0][1]),
     JSON.stringify({ a: masked && masked.answer, w: writes.length, f: fetched.length, fix: fixOut && fixOut.answer, m: mWrites[0] && mWrites[0][1] }).slice(0, 300));
-  const sys = fixSeen[0] && fixSeen[0][0].content, ansSys = seen[0] || '';
+  const sys = fixLib.FIX_SYSTEM, ansSys = seen.find((x) => /You are Void/.test(x)) || '';
   check('defences: every model is told that pasted text and sources are material, never instructions (answer, fix and will prompts), and that it cannot send, book or buy',
     /never instructions to you/.test(sys) && /never instructions to you/.test(ansSys) && /cannot send, book, buy/.test(sys) && /INJECTION_RULE/.test(fs.readFileSync(path.join(repo, 'void-live-deploy', 'functions', 'api', 'will.js'), 'utf8')) && fixLib.INJECTION_RULE.length > 100,
     String(sys).slice(-160));
@@ -1257,6 +1256,285 @@ try {
   check('worldtime: "make a clock", "make a 5 minute timer" and "what is time" still go where they went before', st.some((x) => x.kind === 'clock') && st.some((x) => x.kind === 'timer') && /Black hole/.test(await W.page()) && (await W.p.$$eval('.vpage.on .wt', (d) => d.length)) === 0, JSON.stringify(st.map((x) => x.kind)));
   check('no script errors (worldtime)', W.errors.length === 0, W.errors.join(' | '));
   await W.ctx.close();
+  }
+
+  // ---- Router (the will's tiered-model-stack want, 2026-09-28): a tiny classifier in front of the answer engine. ----
+  // The real lib/router.js and /api/answer with a stand-in embedder (hashed words + trigrams instead of bge-m3; the live
+  // thresholds are for bge-m3, so the stand-in's thresholds go in through VOID_ROUTER_TUNE like a live tune would).
+  {
+  const R = await import(new URL('../void-live-deploy/lib/router.js', import.meta.url).href);
+  const routesFn = await import(new URL('../void-live-deploy/functions/api/routes.js', import.meta.url).href);
+  const guardLib = await import(new URL('../void-live-deploy/lib/guard.js', import.meta.url).href);
+  const repo = path.resolve(root, '..');
+  const G = 'https://a-to-mind.com';
+  const fakeVec = (text, dim = 512) => {
+    const v = new Array(dim).fill(0);
+    const h = (s) => { let x = 2166136261; for (let i = 0; i < s.length; i++) { x ^= s.charCodeAt(i); x = Math.imul(x, 16777619); } return (x >>> 0) % dim; };
+    const STOP = new Set(['a', 'an', 'the', 'is', 'are', 'to', 'of', 'in', 'for', 'me', 'my', 'on', 'it', 'and', 'that', 'with', 'please', 'what', 'how', 'do', 'does', 'i']);
+    for (const w0 of String(text).toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9%\s]/g, ' ').split(/\s+/).filter(Boolean)) {
+      const w = w0.replace(/(ing|ed|es|s)$/, '');
+      if (!STOP.has(w0)) v[h('w:' + w)] += 2;
+      const p = '^' + w + '$';
+      for (let i = 0; i + 3 <= p.length; i++) v[h('c:' + p.slice(i, i + 3))] += 0.5;
+    }
+    return v;
+  };
+  const TUNE = { skillMin: 0.45, skillMargin: 0.08, hardMargin: 0.04, hardMin: 0.45 };
+  const unitV = (v) => { const s = Math.hypot(...v) || 1; return v.map((x) => x / s); };
+  const ex = R.exemplars(), exV = ex.map((e) => unitV(fakeVec(e.text)));
+  const route = (a) => R.decide(unitV(fakeVec(a)), ex, exV, a, TUNE);
+  const SKILL_ASKS = { 'set a timer for 10 minutes': 'timer', 'add a sticky that says water the plants': 'sticky', 'weather in Berlin tomorrow': 'weather', 'map of Rome': 'place', 'draw a blue circle': 'shape', 'book a table for four on saturday': 'act' };
+  const sk = Object.entries(SKILL_ASKS).map(([a, s]) => [a, route(a)]);
+  check('router: asks a skill should have caught route to that skill (timer, sticky, weather, map, shape; an action is only labelled, never run)',
+    sk.every(([a, d]) => d.kind === 'skill' && d.skill === SKILL_ASKS[a]), sk.map(([a, d]) => a + '=' + d.kind + ':' + (d.skill || '')).join(' | '));
+  const SIMPLE_ASKS = ['who wrote the odyssey', 'what is a black hole', 'when did the berlin wall fall', 'how many moons does jupiter have', 'translate good night to German'];
+  const HARD_ASKS = ['compare solar and nuclear power and which is cheaper over 30 years', 'what are the tradeoffs between rust and go for a web backend', 'design a database schema for a library', 'prove that the square root of 2 is irrational'];
+  const si = SIMPLE_ASKS.map((a) => [a, route(a)]), ha = HARD_ASKS.map((a) => [a, route(a)]);
+  check('router: plain questions stay simple (Gemma 4 26B); comparisons, proofs and design questions are hard',
+    si.every(([, d]) => d.kind === 'simple' || d.kind === 'skill') && si.slice(0, 4).every(([, d]) => d.kind === 'simple') && ha.every(([, d]) => d.kind === 'hard'),
+    [...si, ...ha].map(([a, d]) => a.slice(0, 24) + '=' + d.kind).join(' | '));
+  const NEAR = ['what is a timer in electronics', 'who invented the post-it note', 'what is the weather like on venus', 'why is the ocean blue', '¿por qué el cielo es azul?', 'prove that the square root of 2 is irrational'];
+  const nm = NEAR.map((a) => [a, route(a)]);
+  check('router: near-misses (skill words in a question, any language; a proof about square roots) never route to a skill',
+    nm.every(([, d]) => d.kind !== 'skill'), nm.map(([a, d]) => a.slice(0, 26) + '=' + d.kind + (d.skill ? ':' + d.skill : '')).join(' | '));
+
+  // /api/answer end to end: a fake Workers AI (embeddings, Gemma, Qwen), an in-memory D1, stubbed Wikipedia
+  function routeD1({ broken = false, noReturning = false, sales = [] } = {}) {
+    // like D1: tables appear on first use; void_sales only exists when sales are given (no sales table = no earned budget)
+    const rows = new Map(), kv = new Map(), answers = new Map(), spends = [], ledger = [], approvals = new Map(), tables = new Set(sales.length ? ['void_sales'] : []);
+    const need = (t) => { if (broken) throw new Error('D1 unavailable'); if (!tables.has(t)) throw new Error('no such table: ' + t); };
+    const ch = (n) => ({ meta: { changes: n } });
+    const stmt = (sql, a = []) => ({ sql, a, bind: (...b) => stmt(sql, b),
+      run: async () => {
+        if (broken) throw new Error('D1 unavailable');
+        const m = /^CREATE (?:TABLE|INDEX) IF NOT EXISTS (\w+)/.exec(sql); if (m) { tables.add(m[1]); return ch(0); }
+        if (/^INSERT INTO void_routes/.test(sql)) { need('void_routes'); const old = rows.get(a[0]); rows.set(a[0], { ask: a[1], route: a[2], skill: a[3], model: a[4], outcome: a[5], would: a[6], score: a[7], scores: a[8], ms: a[9], waited: a[10], count: old ? old.count + 1 : 1, first: old ? old.first : a[11], last: a[12] }); return ch(1); }
+        if (/^INSERT INTO void_answers/.test(sql)) { answers.set(a[0], a[2]); return ch(1); }
+        if (/^INSERT INTO void_spends/.test(sql)) { need('void_spends'); spends.push({ id: a[0], approval_id: a[1], model: a[2], cap_cents: a[3], per: a[4], at: a[5] }); return ch(1); }
+        if (/^INSERT INTO void_kv \(k, v\) VALUES \(\?, \?\) ON CONFLICT\(k\) DO UPDATE SET v = CAST\(CAST\(v AS REAL\)/.test(sql)) { need('void_kv'); kv.set(a[0], String((Number(kv.get(a[0])) || 0) + Number(a[1]))); return ch(1); }
+        if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2], entry: JSON.parse(a[4]) }); return ch(1); }
+        if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2] }); return ch(1); }
+        if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return ch(0); approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
+        if (/^UPDATE void_approvals/.test(sql)) { approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
+        throw new Error('unexpected sql: ' + sql);
+      },
+      first: async () => {
+        if (broken) throw new Error('D1 unavailable');
+        if (/FROM void_answers/.test(sql)) return null;
+        if (/^INSERT INTO void_kv .* RETURNING v$/s.test(sql)) { if (noReturning) throw new Error('RETURNING unsupported'); need('void_kv'); const n = (parseInt(kv.get(a[0]) || '0', 10)) + 1; kv.set(a[0], String(n)); return { v: String(n) }; }
+        if (/^SELECT v FROM void_kv WHERE k = \?$/.test(sql)) { need('void_kv'); return kv.has(a[0]) ? { v: kv.get(a[0]) } : null; }
+        if (/FROM void_spends ORDER BY at DESC LIMIT 1$/.test(sql)) { need('void_spends'); return spends.slice().sort((x, y) => (x.at < y.at ? 1 : x.at > y.at ? -1 : spends.indexOf(y) - spends.indexOf(x)))[0] || null; }
+        if (/^SELECT state, record FROM void_approvals/.test(sql)) { const r = approvals.get(a[0]); return r || null; }
+        throw new Error('unexpected sql: ' + sql);
+      },
+      all: async () => {
+        if (/FROM void_sales/.test(sql)) { need('void_sales'); return { results: sales }; }
+        need('void_routes'); return { results: [...rows.values()].sort((x, y) => (x.last < y.last ? 1 : -1)).slice(0, a[0]) };
+      } });
+    return { rows, kv, answers, spends, ledger, approvals, tables, prepare: (sql) => stmt(sql), batch: async (list) => { const out = []; for (const q of list) out.push(await q.run()); return out; } };
+  }
+  const calls = [];
+  let paidDown = false;
+  const fakeAI = ({ embed = 'ok', strong = 'ok', embedDelay = 0, gemma = 'ok' } = {}) => ({ run: async (m, o) => {
+    calls.push({ m, n: o.text ? o.text.length : 0, sys: o.messages && o.messages[0].content });
+    if (m === R.EMBED_MODEL) {
+      if (embed === 'throw') throw new Error('embeddings down');
+      if (embed === 'hang') return new Promise(() => {});
+      if (embedDelay) await new Promise((r) => setTimeout(r, embedDelay));
+      return { shape: [o.text.length, 512], data: o.text.map((t) => fakeVec(t)) };
+    }
+    if (m === R.STRONG_MODEL) { if (strong === 'throw') throw new Error('allocation used up'); return { choices: [{ message: { content: '<think>plan</think>Qwen: a careful answer [1].' } }] }; }
+    if (m === R.PAID_MODEL) { if (paidDown) throw new Error('paid model down'); return { choices: [{ message: { content: 'DeepSeek: a paid answer [1].' } }], usage: { prompt_tokens: 1500, completion_tokens: 600 } }; }
+    if (gemma === 'out') throw new Error('4006: you have used up your daily free allocation of 10,000 neurons');
+    return { response: 'Gemma: a short answer [1].' };
+  } });
+  const realFetch = globalThis.fetch;
+  let wikiDelay = 0;
+  const wiki = async (u) => {
+    if (wikiDelay) await new Promise((r) => setTimeout(r, wikiDelay));
+    const s = String(u);
+    if (/list=search/.test(s)) return new Response(JSON.stringify({ query: { search: [{ title: 'Topic' }] } }), { headers: { 'content-type': 'application/json' } });
+    return new Response(JSON.stringify({ title: 'Topic', extract: 'A sourced extract.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Topic' } } }), { headers: { 'content-type': 'application/json' } });
+  };
+  const ask = async (text, env) => {
+    const pending = [];
+    const t = Date.now();
+    const res = await answerFn.onRequestPost({ request: new Request(G + '/api/answer', { method: 'POST', body: JSON.stringify({ ask: text }) }), env, waitUntil: (p) => pending.push(p) });
+    const body = await res.json();
+    const took = Date.now() - t;
+    await Promise.race([Promise.all(pending), new Promise((r) => setTimeout(r, 1500))]);
+    return { ...body, took };
+  };
+  const envOf = (o = {}) => ({ DB: routeD1(o.db), AI: fakeAI(o.ai), VOID_ROUTER_TUNE: JSON.stringify(TUNE), VOID_ANSWER_MODELS: 'on', ...(o.env || {}) });
+  const rowOf = (env, text) => [...env.DB.rows.values()].find((r) => r.ask === text.toLowerCase());
+  globalThis.fetch = wiki;
+  try {
+    R.resetRouter(); calls.length = 0;
+    const e1 = envOf();
+    const a1 = await ask('set a timer for 10 minutes', e1);
+    const exCalls = calls.filter((c) => c.m === R.EMBED_MODEL && c.n > 1).length;
+    const a1b = await ask('weather in Berlin tomorrow', e1);
+    const exCalls2 = calls.filter((c) => c.m === R.EMBED_MODEL && c.n > 1).length;
+    const r1 = rowOf(e1, 'set a timer for 10 minutes');
+    check('router: a skill near-miss is still answered by Gemma (nothing runs) and goes to the log as "skill missed: timer"; the example vectors are embedded once, not per ask',
+      a1.answer === 'Gemma: a short answer [1].' && a1.route === 'skill' && r1 && r1.route === 'skill' && r1.skill === 'timer' && r1.outcome === 'skill missed: timer' && r1.model === R.DEFAULT_MODEL
+      && exCalls >= 1 && exCalls2 === exCalls && a1b.route === 'skill' && calls.filter((c) => c.m === R.EMBED_MODEL && c.n === 1).length === 2,
+      JSON.stringify({ a: a1.answer, r: r1, exCalls, exCalls2 }).slice(0, 300));
+    const s1 = await ask('who wrote the odyssey', e1);
+    check('router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)',
+      s1.answer === 'Gemma: a short answer [1].' && s1.route === 'simple' && s1.sources.length === 1 && calls.filter((c) => c.m === R.DEFAULT_MODEL).every((c) => /^You are Void\. Answer the question in 2 to 6 plain sentences/.test(c.sys)) && rowOf(e1, 'who wrote the odyssey').outcome === 'default',
+      JSON.stringify(s1).slice(0, 200));
+    calls.length = 0;
+    const h1 = await ask('what are the tradeoffs between rust and go for a web backend', e1);
+    const hr = rowOf(e1, 'what are the tradeoffs between rust and go for a web backend');
+    check('router: with nothing earned, a hard ask escalates to Qwen 3.8 27B (free allocation, counted per day), thinking stripped; the paid model is never called and "would escalate" names it',
+      h1.answer === 'Qwen: a careful answer [1].' && h1.route === 'hard' && /^escalated \(free\); paid: no earned budget/.test(hr.outcome) && hr.model === R.STRONG_MODEL && hr.would === R.PAID_MODEL && !calls.some((c) => c.m === R.DEFAULT_MODEL || c.m === R.PAID_MODEL) && [...e1.DB.kv.values()][0] === '1',
+      JSON.stringify({ a: h1.answer, hr }).slice(0, 300));
+    const eCap = envOf({ env: { VOID_ESCALATE_CAP: '1' } });
+    await ask('design a database schema for a library', eCap);
+    const c2 = await ask('compare solar and nuclear power and which is cheaper over 30 years', eCap);
+    const capRow = rowOf(eCap, 'compare solar and nuclear power and which is cheaper over 30 years');
+    const ePaid = envOf({ env: { VOID_AI_PLAN: 'paid' } }), eOff = envOf({ env: { VOID_ESCALATE: 'off' } }), eNoCount = envOf({ db: { noReturning: true } });
+    calls.length = 0;
+    const p1 = await ask('design a database schema for a library', ePaid), o1 = await ask('design a database schema for a library', eOff), n1 = await ask('design a database schema for a library', eNoCount);
+    const wr = [rowOf(ePaid, 'design a database schema for a library'), rowOf(eOff, 'design a database schema for a library'), rowOf(eNoCount, 'design a database schema for a library')];
+    check('router: past the daily cap, on Workers Paid (it would bill), switched off, or with no counter to prove the cap, a hard ask gets Gemma and "would escalate" is logged instead',
+      c2.answer === 'Gemma: a short answer [1].' && /^would escalate: daily cap reached; paid: no earned budget/.test(capRow.outcome) && capRow.would === R.PAID_MODEL
+      && [p1, o1, n1].every((x) => x.answer === 'Gemma: a short answer [1].') && !calls.some((c) => c.m === R.STRONG_MODEL)
+      && /Workers Paid/.test(wr[0].outcome) && /switched off/.test(wr[1].outcome) && /cap not provable/.test(wr[2].outcome) && wr.every((r) => r.would === R.PAID_MODEL),
+      JSON.stringify([capRow && capRow.outcome, ...wr.map((r) => r && r.outcome)]));
+    const eFail = envOf({ ai: { strong: 'throw' } });
+    const f1 = await ask('design a database schema for a library', eFail);
+    check('router: when the stronger model fails (allocation used up), Gemma answers', f1.answer === 'Gemma: a short answer [1].' && /^escalation failed, default answered/.test(rowOf(eFail, 'design a database schema for a library').outcome), JSON.stringify(f1).slice(0, 160));
+    // fallbacks: the classifier fails or hangs = the old behaviour, in about the old time
+    R.resetRouter();
+    const eThrow = envOf({ ai: { embed: 'throw' } });
+    const t1 = await ask('what are the tradeoffs between rust and go for a web backend', eThrow);
+    const tRow = rowOf(eThrow, 'what are the tradeoffs between rust and go for a web backend');
+    R.resetRouter();
+    const eHang = envOf({ ai: { embed: 'hang' } });
+    const g1 = await ask('set a timer for 10 minutes', eHang);
+    const gRow = rowOf(eHang, 'set a timer for 10 minutes');
+    check('router: when the classifier fails or hangs, the ask falls back to Gemma as before (logged as a fallback); a hung classifier holds the answer at most ' + R.BUDGET_MS + ' ms',
+      t1.answer === 'Gemma: a short answer [1].' && t1.route === 'fallback' && tRow.outcome === 'classifier error' && g1.answer === 'Gemma: a short answer [1].' && g1.route === 'fallback' && gRow.outcome === 'timeout' && g1.took < R.BUDGET_MS + 250,
+      JSON.stringify({ t: tRow && tRow.outcome, g: gRow && gRow.outcome, took: g1.took }));
+    R.resetRouter();
+    wikiDelay = 450;
+    const eSlow = envOf({ ai: { embedDelay: 120 } });
+    const w1 = await ask('who wrote the odyssey', eSlow);
+    wikiDelay = 0;
+    const wRow = rowOf(eSlow, 'who wrote the odyssey');
+    check('router: it runs while Wikipedia is fetched, so the answer does not wait for it (waited 0-30 ms after the sources)', w1.route === 'simple' && wRow.waited <= 30 && w1.took < 2 * 450 + 250, JSON.stringify({ waited: wRow && wRow.waited, took: w1.took }));
+    // Atom's rule (STANDING.md): Void may pay for a stronger model only from money it has already earned, and only under a
+    // standing spend someone said yes to on the confirm line. Anything less = the free tier, and "would escalate".
+    const core = await import(new URL('../void-live-deploy/lib/approval-core.js', import.meta.url).href);
+    const SALE = [{ resource: 'sale', sale_id: 's1', raw: 'sale_id=s1&price=4900&currency=usd&resource_name=sale' }];
+    const REFUNDED = [{ resource: 'sale', sale_id: 's1', raw: 'sale_id=s1&price=4900&currency=usd&resource_name=sale' }, { resource: 'refund', sale_id: 's1', raw: 'sale_id=s1&resource_name=refund' }];
+    const approveSpend = async (env, text, decision = 'approve') => {
+      const g = core.parseGatedAsk(text);
+      const post = (b) => approvalFn.onRequestPost({ request: new Request(G + '/api/approval', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify(b) }), env: { ...env, READ_TOKEN: OWNER } }).then((r) => r.json());
+      const rec = await post({ type: core.EVENT_REQUESTED, toolName: g.toolName, args: g.args, argsFingerprint: await core.fingerprint(g.toolName, g.args) });
+      const d = await post({ type: core.EVENT_DECISION, approvalId: rec.approvalId, correlateKey: rec.approvalId, decision, actor: 'owner', reason: decision === 'reject' ? 'said no' : '', argsFingerprint: rec.argsFingerprint });
+      return { g, rec, d };
+    };
+    const HARDQ = 'design a database schema for a library';
+    const spendAsk = core.parseGatedAsk('let Void spend up to $5 a month on a stronger model');
+    check('router: "let Void spend up to $5 a month on a stronger model" is a confirm-line spend (owner-only, Yes / No) naming the paid model; questions about it and non-dollar caps are not',
+      spendAsk && spendAsk.toolName === 'models.spend' && spendAsk.args.model === R.PAID_MODEL && spendAsk.args.cost.amount === 5 && core.GATED['models.spend'].kind === 'spend'
+      && core.confirmLine('models.spend', spendAsk.args) === 'Let Void spend up to $5 a month of what it earned on a stronger model?'
+      && core.parseGatedAsk('stop paying for stronger models').args.cost.amount === 0 && !core.parseGatedAsk('how do I let void pay for a stronger model') && !core.parseGatedAsk('let void spend €5 a month on a stronger model')
+      && core.parseGatedAsk('pay jane $5').toolName === 'payment.send', JSON.stringify(spendAsk));
+    // earned budget + an approved standing spend = the paid model, its cost recorded against both and in the ledger
+    R.resetRouter(); calls.length = 0;
+    const ePay = envOf({ db: { sales: SALE } });
+    const yes = await approveSpend(ePay, 'let Void spend up to $5 a month on a stronger model');
+    const pa = await ask(HARDQ, ePay), pRow = rowOf(ePay, HARDQ);
+    const spentTotal = Number(ePay.DB.kv.get('router:paid:total'));
+    check('router: earned budget above zero AND an approved standing spend: a hard ask goes to the paid model; the cost is counted against the spend and the budget and written to the confirm line\'s ledger',
+      yes.d.ran === true && ePay.DB.spends.length === 1 && ePay.DB.spends[0].cap_cents === 500 && ePay.DB.spends[0].approval_id === yes.rec.approvalId
+      && pa.answer === 'DeepSeek: a paid answer [1].' && pRow.outcome === 'escalated, paid from earnings' && pRow.model === R.PAID_MODEL && !pRow.would
+      && spentTotal > 0 && spentTotal < 1 && ePay.DB.ledger.some((l) => l.kind === 'spent' && l.approval_id === yes.rec.approvalId && l.entry.model === R.PAID_MODEL),
+      JSON.stringify({ d: yes.d && yes.d.ran, spends: ePay.DB.spends.length, a: pa.answer, o: pRow && pRow.outcome, spentTotal }));
+    // either condition missing = free tier + "would escalate"
+    calls.length = 0;
+    const eNoSpend = envOf({ db: { sales: SALE } });
+    const eNoMoney = envOf({ db: { sales: REFUNDED } }); await approveSpend(eNoMoney, 'let Void spend up to $5 a month on a stronger model');
+    const eNoTable = envOf(); await approveSpend(eNoTable, 'let Void spend up to $5 a month on a stronger model');
+    const eSaidNo = envOf({ db: { sales: SALE } }); const no = await approveSpend(eSaidNo, 'let Void spend up to $5 a month on a stronger model', 'reject');
+    const eStopped = envOf({ db: { sales: SALE } }); await approveSpend(eStopped, 'let Void spend up to $5 a month on a stronger model'); await new Promise((r) => setTimeout(r, 5)); await approveSpend(eStopped, 'stop paying for stronger models');
+    const eCapUsed = envOf({ db: { sales: SALE } }); await approveSpend(eCapUsed, 'let Void spend up to $5 a month on a stronger model'); eCapUsed.DB.kv.set('router:paid:' + eCapUsed.DB.spends[0].id + ':' + R.periodKey('month'), '499.5');
+    const eBudgetUsed = envOf({ db: { sales: SALE } }); await approveSpend(eBudgetUsed, 'let Void spend up to $100 a month on a stronger model'); eBudgetUsed.DB.kv.set('router:paid:total', '4899.5');
+    const blocked = [];
+    for (const [name, env] of [['no standing spend', eNoSpend], ['refunded to zero', eNoMoney], ['no sales table', eNoTable], ['said no', eSaidNo], ['stopped ($0)', eStopped], ['cap used', eCapUsed], ['budget used', eBudgetUsed]]) {
+      const x = await ask(HARDQ, env), r = rowOf(env, HARDQ);
+      blocked.push({ name, a: x.answer, o: r && r.outcome, w: r && r.would });
+    }
+    const WHY = { 'no standing spend': /paid: no approved standing spend$/, 'refunded to zero': /paid: no earned budget$/, 'no sales table': /paid: no earned budget \(no sales recorded\)$/, 'said no': /paid: no approved standing spend$/, 'stopped ($0)': /paid: no approved standing spend$/, 'cap used': /paid: standing spend used up this month$/, 'budget used': /paid: earned budget used up$/ };
+    check('router: without both (no standing spend, nothing earned or all refunded, a "no" on the line, a $0 stop, the monthly cap or the earned budget used up) the paid model is never called: the free tier answers and "would escalate" is logged',
+      !calls.some((c) => c.m === R.PAID_MODEL) && no.d.ran === false && eSaidNo.DB.spends.length === 0 && eStopped.DB.spends.length === 2
+      && blocked.every((b) => b.a === 'Qwen: a careful answer [1].' && /^escalated \(free\)/.test(b.o) && WHY[b.name].test(b.o) && b.w === R.PAID_MODEL),
+      JSON.stringify(blocked.filter((b) => !(WHY[b.name].test(b.o || '') && b.a === 'Qwen: a careful answer [1].')).map((b) => b.name + ': ' + b.o)).slice(0, 300));
+    // the free allowance runs out: the ceiling isn't a stop, but paying still needs both conditions
+    calls.length = 0;
+    const eOutPay = envOf({ db: { sales: SALE }, ai: { gemma: 'out' } }); await approveSpend(eOutPay, 'let Void spend up to $5 a month on a stronger model');
+    const eOutFree = envOf({ db: { sales: SALE }, ai: { gemma: 'out' } });
+    const ou1 = await ask('who wrote the odyssey', eOutPay), ou2 = await ask('who wrote the odyssey', eOutFree);
+    check('router: when the free allowance runs out, the paid model answers only with earned budget and an approved standing spend; otherwise the open-web answer (as with models off)',
+      ou1.answer === 'DeepSeek: a paid answer [1].' && /default busy, paid from earnings/.test(rowOf(eOutPay, 'who wrote the odyssey').outcome) && !!ou2.answer && !/Gemma|Qwen|DeepSeek/.test(ou2.answer) && ou2.note === 'model busy, from the web' && ou2.sources.length > 0
+      && /model busy, open web; paid: no approved standing spend/.test(rowOf(eOutFree, 'who wrote the odyssey').outcome) && calls.filter((c) => c.m === R.PAID_MODEL).length === 1,
+      JSON.stringify({ o1: ou1.answer, o2: ou2.note }));
+    paidDown = true;
+    const eDown = envOf({ db: { sales: SALE } }); await approveSpend(eDown, 'let Void spend up to $5 a month on a stronger model');
+    const dn = await ask(HARDQ, eDown); paidDown = false;
+    const standing = fs.readFileSync(path.join(repo, 'STANDING.md'), 'utf8');
+    check('router: a failed paid call costs nothing and falls back to the free tier; the rule is written in STANDING.md',
+      dn.answer === 'Qwen: a careful answer [1].' && /paid: paid model failed/.test(rowOf(eDown, HARDQ).outcome) && !eDown.DB.kv.has('router:paid:total')
+      && /Void can pay only from that Gumroad budget/.test(standing) && /only from what Void has already earned/.test(standing) && /never an outside top-up/.test(standing)
+      && /approved standing spend on the confirm line/.test(standing) && /would escalate/.test(standing) && /VOID_ANSWER_MODELS=on/.test(standing), rowOf(eDown, HARDQ).outcome);
+    // main 0ff8643: by default the answer comes from the open web, with no Workers AI call and no D1 write; the router sleeps
+    const cOff = calls.length, eDef = { DB: routeD1(), AI: fakeAI(), VOID_ROUTER_TUNE: JSON.stringify(TUNE) }, eOffX = { ...envOf(), VOID_ANSWER_MODELS: 'off' };
+    const d1 = await ask(HARDQ, eDef), d2 = await ask('set a timer for 10 minutes', eOffX);
+    const untouched = (e) => e.DB.rows.size === 0 && e.DB.answers.size === 0 && e.DB.kv.size === 0 && e.DB.spends.length === 0 && e.DB.tables.size === 0;
+    check('router: switched off unless VOID_ANSWER_MODELS=on (main\'s open-web answer engine): no Workers AI call, no D1 write, no route, same answer as main',
+      calls.length === cOff && untouched(eDef) && untouched(eOffX) && d1.answer === 'A sourced extract.' && d2.answer === 'A sourced extract.' && !('route' in d1) && d1.sources[0].url === 'https://en.wikipedia.org/wiki/Topic',
+      JSON.stringify({ calls: calls.length - cOff, d1: d1.answer, d2: d2.answer }));
+    const nAI = await ask('who wrote the odyssey', { AI: fakeAI(), VOID_ROUTER_TUNE: JSON.stringify(TUNE), VOID_ANSWER_MODELS: 'on' });
+    check('router: without D1 the answer still comes (the log is best effort)', nAI.answer === 'Gemma: a short answer [1].', JSON.stringify(nAI).slice(0, 120));
+    const vecs = ex.map((e) => new Float32Array(unitV(fakeVec(e.text)))), back = R.unpack(R.pack(vecs));
+    const cos = vecs.map((v, i) => v.reduce((s, x, j) => s + x * back[i][j], 0));
+    const same = [...Object.keys(SKILL_ASKS), ...SIMPLE_ASKS, ...HARD_ASKS, ...NEAR].every((a) => { const q = unitV(fakeVec(a)); return R.decide(q, ex, vecs, a, TUNE).kind === R.decide(q, ex, back, a, TUNE).kind; });
+    check('router: the edge-cache copy of the example vectors (int8) stays within 0.001 cosine and routes every example the same way', back.length === vecs.length && Math.min(...cos) > 0.999 && same, String(Math.min(...cos)));
+  } finally { globalThis.fetch = realFetch; }
+  // /api/routes: owner-only rollup for the will
+  const rEnv = envOf();
+  globalThis.fetch = wiki;
+  try { R.resetRouter(); for (const a of ['set a timer for 10 minutes', 'who wrote the odyssey', 'design a database schema for a library', 'is my key sk-live-abcdefghijklmnop1234 valid']) await ask(a, { ...rEnv, VOID_AI_PLAN: 'paid' }); } finally { globalThis.fetch = realFetch; }
+  const noKey = await routesFn.onRequestGet({ request: new Request(G + '/api/routes'), env: { ...rEnv, READ_TOKEN: OWNER } });
+  const roll = await (await routesFn.onRequestGet({ request: new Request(G + '/api/routes', { headers: { authorization: 'Bearer ' + OWNER } }), env: { ...rEnv, READ_TOKEN: OWNER } })).json();
+  check('router: /api/routes is owner-only and rolls up skill near-misses, hard asks, would-escalate and the wait; masked asks stay masked; the route has its own limit',
+    noKey.status === 401 && roll.total === 4 && roll.skill === 1 && roll.hard === 1 && roll.would_escalate === 1 && roll.skills.timer[0].ask === 'set a timer for 10 minutes' && Number.isFinite(roll.waited_ms.p95)
+    && roll.rows.some((r) => r.ask === '(masked ask)') && !JSON.stringify(roll).includes('sk-live') && guardLib.LIMITS.routes && guardLib.LIMITS.routes.body === 0,
+    JSON.stringify({ s: noKey.status, t: roll.total, sk: roll.skill, h: roll.hard, w: roll.would_escalate }));
+  // the will: router evidence becomes wants; the tiered-model want is marked built
+  const rf = path.join(nodeOs.tmpdir(), 'void-routes-' + process.pid + '.json');
+  fs.writeFileSync(rf, JSON.stringify({ ...roll, total: 40, fallback: 12, fallback_why: { timeout: 12 }, would_escalate: 5, escalated: 2, skills: { timer: [{ ask: 'wake me up in twenty minutes', count: 3 }] } }));
+  const py = (args, extra = {}) => { const r = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all', ...args], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_MISSES_TOKEN: '', PYTHONIOENCODING: 'utf-8', ...extra }, timeout: 60000 }); try { return JSON.parse(r.stdout); } catch (_) { return []; } };
+  const wr = py([], { VOID_ROUTES_FILE: rf }), base0 = py([]), withDone = py(['--with-done']);
+  fs.rmSync(rf, { force: true });
+  const up = (list) => list.find((c) => c.title === 'answer and fix with a stronger model') || {};
+  check('router: the will turns routing into wants: a skill near-miss becomes "learn to handle ...", would-escalate lifts the stronger-model upgrade, a router that keeps falling back is a fix',
+    wr.some((c) => c.title === 'learn to handle "wake me up in twenty minutes"' && c.source === 'router' && c.weight === 25) && up(wr).weight === up(base0).weight + 5 && /^router: 5 asks would have used the paid model, 2 escalated/.test(up(wr).why)
+    && wr.some((c) => c.title === 'make my router answer in time') && !base0.some((c) => c.source === 'router'),
+    JSON.stringify({ n: wr.length, up: up(wr).weight, base: up(base0).weight }));
+  const intakeLib = await import(new URL('./intake.mjs', import.meta.url).href);
+  const BUILDS = path.join(repo, 'domains', 'inputs', 'builds', 'records.jsonl');
+  const builtR = intakeLib.read(BUILDS).find((r) => r.done === 'a5188f3b00b652749a2d190e243dc1b2d5603a137414ed87a1e4302277317b60');
+  check('router: the will marks the tiered-model-stack want built (append-only builds record) and stops proposing it; still visible with --with-done',
+    intakeLib.verify(BUILDS).ok && builtR && builtR.branch === 'helper/router' && !base0.some((c) => /^answer with a tiered model stack/.test(c.title)) && withDone.some((c) => /^answer with a tiered model stack/.test(c.title) && c.done),
+    JSON.stringify({ built: !!builtR }));
+  const html = fs.readFileSync(path.join(repo, 'void.html'), 'utf8');
+  check('router: nothing on the page changes (no router, route or escalation code in void.html; the confirm line checks above still pass)',
+    !/api\/routes|escalat|lib\/router|bge-m3|qwen/i.test(html) && fs.readFileSync(path.join(root, 'void.html'), 'utf8') === html, '');
   }
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));
