@@ -26,7 +26,7 @@ Stage things, pages about anything, weather, street maps, translation, calculati
 - **Free-tier watch:** D1 now enforces daily limits (since 2026-09-01). Keep writes lean; move to paid the day we hit them.
 
 ## Now (build in this order)
-1. **Test suite + GitHub sync.** `tools\test_void.py` covers every ask in the menu; deploys commit to GitHub. (Claude)
+1. **Test suite + GitHub sync: DONE 2026-09-27.** `tools\test_void.mjs` (23 checks, add one per new ask); `powershell -File tools\deploy.ps1 "what changed"` tests, deploys and pushes to private GitHub `atomeam/void-loop` (the one source of truth).
 2. **The answer engine.** Any ask no skill handles gets a short, sourced answer written by a model (Cloudflare Workers AI first; free, at the edge), grounded in Wikipedia/Wiktionary/Open-Meteo results it fetched. It says what it's unsure of. The miss still goes on the board so a real skill replaces it.
 3. **Void learns skills by itself (edit engine step 3).** The daily miss list turns into queued jobs automatically: the top unanswered asks become "build a skill for X" in the queue. Builders pick them up like any other job.
 4. **Void everywhere you already are.**
@@ -57,4 +57,5 @@ Stage things, pages about anything, weather, street maps, translation, calculati
 - **Grok idea generator (hourly):** one new idea per run, checked against the spent list, aimed at the Now/Next gaps above.
 - **OpenCode agents (happy-moon, muse-spark, witty-rocket, neon-sailor, lucky-river, Nemotron, Big Pickle, Space Bunny):** claim Next items 7â€“11 and skills from the assimilate list, one at a time, through the lock.
 - **Adam:** the pilot. Sends features, does the dashboard tasks, tries every new ask on his phone.
+
 

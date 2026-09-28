@@ -1,7 +1,7 @@
-# One deploy for everyone: sync void.html copies, test, deploy, commit + push to GitHub (branch "void" of atomeam/a-to-mind.com).
+﻿# One deploy for everyone: sync void.html copies, test, deploy, commit + push to GitHub (branch "void" of atomeam/a-to-mind.com).
 # Usage: powershell -File tools\deploy.ps1 "what changed"
 param([string]$msg = "deploy")
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "Continue"
 $loop = Split-Path $PSScriptRoot -Parent
 $site = Join-Path $loop "void-live-deploy"
 Copy-Item "$loop\void.html" "$site\index.html" -Force
@@ -21,3 +21,4 @@ Push-Location $site
 git add -A; git commit -q -m $msg; git push -q origin void 2>&1 | Out-Null
 git log -1 --format="pushed %h %s"
 Pop-Location
+
