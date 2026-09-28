@@ -12,6 +12,10 @@ Needs env VOID_MISSES_TOKEN.  `python tools/will.py --candidates [--all]` prints
 import json, os, re, sys, urllib.request, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 TOK = os.environ.get("VOID_MISSES_TOKEN", "")
+try:
+    sys.stdout.reconfigure(errors="replace")  # a Windows console/pipe (cp1252) must never crash the will on a character
+except Exception:
+    pass
 H = {"authorization": "Bearer " + TOK, "content-type": "application/json", "user-agent": "a2m-void-will/1.0"}
 
 def call(path, body=None):
@@ -121,7 +125,7 @@ def gather(cap=60):
 
 if __name__ == "__main__":
     if "--candidates" in sys.argv:
-        print(json.dumps(gather(None if "--all" in sys.argv else 60), ensure_ascii=False))
+        print(json.dumps(gather(None if "--all" in sys.argv else 60)))  # ASCII-escaped: safe through a Windows (cp1252) pipe
         sys.exit(0)
     out = gather()
     res = call("/api/will", {"candidates": out})

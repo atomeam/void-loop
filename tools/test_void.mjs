@@ -940,7 +940,7 @@ try {
   fs.rmSync(tmp, { recursive: true, force: true });
 
   // tools/will.py picks up the intake as a candidate source, tagged; /api/will keeps the tag on the want it chooses
-  const py = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_MISSES_TOKEN: '' }, timeout: 60000 });
+  const py = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_MISSES_TOKEN: '', PYTHONIOENCODING: 'utf-8' }, timeout: 60000 });
   let wc = []; try { wc = JSON.parse(py.stdout); } catch (_) {}
   const gl2 = wc.filter((c) => c.source === 'growth-ledger-backlog');
   const useFirst = gl2.filter((c) => /^use (Paperclip|Hermes Agent|Hindsight) /.test(c.title));
