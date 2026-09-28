@@ -6,6 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
 import nodeOs from 'node:os';
+import { pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
@@ -294,7 +295,9 @@ async function fresh(...inits) {
     if (u.includes('translate.googleapis.com')) return r.fulfill(json([[['hola', 'hello']]]));
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Black hole' }] } }));
     if (u.includes('/page/summary/')) return r.fulfill(json({ title: 'Black hole', extract: 'A region of spacetime.', timestamp: '2026-09-20T10:00:00Z' }));
-    if (u.includes('geocoding-api.open-meteo.com')) return r.fulfill(json({ results: [{ name: 'Lisbon', country: 'Portugal', latitude: 38.7, longitude: -9.1, population: 500000 }, { name: 'Lisbon', admin1: 'Ohio', country: 'United States', latitude: 40.7, longitude: -80.7, population: 2800 }] }));
+    if (u.includes('geocoding-api.open-meteo.com') && /name=Tokyo/i.test(u)) return r.fulfill(json({ results: [{ name: 'Tokyo', country: 'Japan', latitude: 35.7, longitude: 139.7, timezone: 'Asia/Tokyo' }] }));
+    if (u.includes('geocoding-api.open-meteo.com') && /name=Nowhereville/i.test(u)) return r.fulfill(json({}));
+    if (u.includes('geocoding-api.open-meteo.com')) return r.fulfill(json({ results: [{ name: 'Lisbon', country: 'Portugal', latitude: 38.7, longitude: -9.1, population: 500000, timezone: 'Europe/Lisbon' }, { name: 'Lisbon', admin1: 'Ohio', country: 'United States', latitude: 40.7, longitude: -80.7, population: 2800 }] }));
     if (u.includes('api.open-meteo.com')) return r.fulfill(json({ current: { temperature_2m: 20, apparent_temperature: 19, weather_code: 1, wind_speed_10m: 5 }, daily: { temperature_2m_max: [24], temperature_2m_min: [15], precipitation_probability_max: [10] }, hourly: { time: Array.from({ length: 8 }, (_, i) => '2026-09-27T1' + i + ':00'), temperature_2m: Array(8).fill(20), precipitation_probability: Array(8).fill(5), weather_code: Array(8).fill(1) } }));
     if (u.includes('frankfurter')) return r.fulfill(json({ amount: 100, base: 'USD', date: '2026-09-26', rates: { EUR: 92 } }));
     return r.fulfill({ status: 204, body: '' });
@@ -355,6 +358,18 @@ try {
   await t.p.reload(); await t.p.waitForTimeout(700); check('kept card survives reload', (await t.p.$$eval('.kept-card', (d) => d.length)) === 1);
   await t.ask('map of Lisbon', 1200); const mp = await t.page(); check('map of Lisbon picks Portugal', /Lisbon/.test(mp) && /Portugal/.test(mp) && (await t.p.$$eval('.vpage iframe', (d) => d.length)) === 1, mp.slice(0, 80));
   await t.ask('weather in Lisbon', 1200); check('weather', /20°|68°/.test(await t.page()));
+  // worldtime skill: place time zone from Open-Meteo geocoding, clock from the device; near-misses stay with clock/timer/answers.
+  await t.ask('time in Tokyo', 1200); const wt = await t.page(); check('world time: time in Tokyo', /Tokyo/.test(wt) && /Asia\/Tokyo/.test(wt) && /UTC\+9/.test(wt) && /\d:\d\d/.test(wt) && /Open-Meteo/.test(wt), wt.slice(0, 120));
+  await t.ask('what time is it in Lisbon?', 1200); const wl = await t.page(); check('world time: what time is it in Lisbon', /Lisbon/.test(wl) && /Europe\/Lisbon/.test(wl), wl.slice(0, 120));
+  await t.ask('time difference between Tokyo and Lisbon', 1200); const wd = await t.page(); check('world time: difference', /Time difference/.test(wd) && /Tokyo is (8|9) hours ahead of Lisbon/.test(wd), wd.slice(0, 160));
+  await t.ask('time in Nowhereville', 1200); check('world time: unknown place says so', /couldn.t find/.test(await t.page()));
+  { const wtSkill = (await import(pathToFileURL(path.join(root, 'skills', 'worldtime.js')).href)).default;
+    const yes = ['time in tokyo', 'what time is it in london?', 'current time in new york', 'tokyo time now', 'time zone in lisbon', 'time difference between paris and tokyo', "what's the time in sydney", 'local time in cape town'];
+    const no = ['make a clock', 'what time is it', 'set a timer for 5 minutes', 'time in a bottle', 'once upon a time in hollywood', 'screen time', 'how much time is left', 'weather in tokyo', 'spend time in nature', 'time for bed', 'time in 2 hours', 'time in history', 'what is time'];
+    const wrong = yes.filter((q) => !wtSkill.match(q)).concat(no.filter((q) => wtSkill.match(q)));
+    check('world time: examples match, near-misses do not', !wrong.length, wrong.join(' | ')); }
+  { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
+    check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
   await t.ask('5 miles in km', 700); check('calculation', /8\.05/.test(await t.page()));
   await t.ask('make my void deep blue'); check('your look', /01040f/.test(await t.p.evaluate(() => localStorage.getItem('a2m.void.look.v1') || '')));
   await t.ask('why is the sky blue', 900); const an = await t.page(); check('answer engine answers with sources', /blue light scatters/.test(an) && /Rayleigh scattering/.test(an) && /as of/.test(an), an.slice(0, 120));

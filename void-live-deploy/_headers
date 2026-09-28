@@ -1,5 +1,5 @@
 /*
-  X-Frame-Options: DENY
+  Content-Security-Policy: frame-ancestors 'self' chrome-extension: moz-extension:
   Referrer-Policy: no-referrer
 
 /sw.js
