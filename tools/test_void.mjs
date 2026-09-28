@@ -38,8 +38,10 @@ async function fresh() {
   });
   await ctx.route(/127\.0\.0\.1.*\/api\//, (r) => {
     const u = r.request().url();
+    if (u.includes('/api/will')) return r.fulfill(json({ at: '2026-09-27T23:00:00Z', wants: [{ kind: 'people asked', title: 'learn x', i_want: 'I want to answer every question about tides.', because: 'asked 9 times' }] }));
     if (u.includes('/api/answer')) {
       const ask = JSON.parse(r.request().postData() || '{}').ask || '';
+      if (false) {}
       if (/busy/.test(ask)) return r.fulfill(json({ answer: null, sources: [], note: 'model busy' }));
       return r.fulfill(json({ answer: 'Sunlight scatters off air molecules, and blue light scatters most [1].', sources: [{ title: 'Rayleigh scattering', url: 'https://en.wikipedia.org/wiki/Rayleigh_scattering' }] }));
     }
@@ -82,6 +84,7 @@ try {
   await t.ask('make my void deep blue'); check('your look', /01040f/.test(await t.p.evaluate(() => localStorage.getItem('a2m.void.look.v1') || '')));
   await t.ask('why is the sky blue', 900); const an = await t.page(); check('answer engine answers with sources', /blue light scatters/.test(an) && /Rayleigh scattering/.test(an) && /as of/.test(an), an.slice(0, 120));
   await t.ask('why is the model busy', 1200); check('answer engine busy -> article excerpt', /Black hole/.test(await t.page()));
+  await t.ask('what do you want to be?', 700); check('will: Void says what it wants', /I want to answer every question about tides/.test(await t.page()));
   await t.ask('update yourself'); check('build asks are owner-only', /owner/.test(await t.whisper()));
   await t.p.fill('#input', 'tim'); await t.p.waitForTimeout(150); check('hints while typing', (await t.p.$$eval('#hints div', (d) => d.map((x) => x.textContent))).some((h) => /timer/.test(h)));
   check('no script errors', t.errors.length === 0, t.errors.join(' | '));

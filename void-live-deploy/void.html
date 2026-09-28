@@ -2567,6 +2567,20 @@ return { ok: true, detail: 'timer-reset' };
       say('done');
       return 'answer';
     }
+    // Will engine: Void says what it wants to become next (chosen by Void from everything that exists).
+    function wantsWill(lower) {
+      return /^(what\s+do\s+you\s+want(\s+to\s+(be|become|do))?|what\s+(is|'s)\s+your\s+will|what\s+are\s+you\s+becoming|what\s+do\s+you\s+wish\s+for|your\s+will)\s*[?.!]?$/.test(lower);
+    }
+    async function showWill() {
+      const el = showPage((p) => { p.innerHTML = '<h2>What I want to become</h2><div class="sub">…</div>'; });
+      let w = null;
+      try { w = await fetch('/api/will').then((r) => r.json()); } catch (_) {}
+      if (vpageEl !== el) return;
+      if (!w || !w.wants || !w.wants.length) { el.innerHTML = '<h2>What I want to become</h2><p>I haven\'t decided yet. I look at everything that exists every few hours and choose.</p>'; return; }
+      el.innerHTML = '<h2>What I want to become</h2><div class="sub">I choose this myself, from what people ask me and everything I\'m made of.</div>'
+        + '<ul>' + w.wants.map((x) => '<li><b>' + esc(x.i_want) + '</b> <span style="color:#8a8a8a">— ' + esc(x.because) + '</span></li>').join('') + '</ul>'
+        + '<div class="src">Source: my will · chosen ' + esc(new Date(w.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '</div>';
+    }
     function wantsArticle(lower) {
       return /^(please\s+)?((what|who|where|when)\s+(is|are|was|were)\b|tell\s+me\s+about\b|explain\b|define\b|describe\b|look\s+up\b)/.test(lower);
     }
@@ -3035,6 +3049,7 @@ return { ok: true, detail: 'timer-reset' };
       { const u = text.match(/^unlock\s+(\S{16,})$/i); if (u) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } }
       if (wantsBoard(lower0)) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
+      if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
       if (wantsSelfPage(lower0)) { showSelfPage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
@@ -3063,7 +3078,7 @@ return { ok: true, detail: 'timer-reset' };
     const hintsEl = document.getElementById('hints');
     const CORE_HINTS = ['what can you do', 'make a clock', 'make a 5 minute timer', 'add a sticky that says ', 'make a list', 'open a notepad',
       'make a calculator', 'make a counter', 'draw a circle', 'what is a black hole', 'define ', '15% of 80', '5 miles in km', '100 usd in eur',
-      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'show the board', 'menu', 'undo', 'keep this', 'call this ', 'take this off', 'same again', 'close'];
+      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'show the board', 'menu', 'undo', 'what do you want to be', 'keep this', 'call this ', 'take this off', 'same again', 'close'];
     let hintList = [], hintSel = -1;
     function allHints() {
       const out = CORE_HINTS.slice();

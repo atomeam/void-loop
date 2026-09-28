@@ -1,0 +1,48 @@
+// Void's will engine: Void decides what it wants to become next.
+// GET  (public)  -> Void's current wants, in its own words ("what do you want to be?")
+// POST (owner)   { candidates: [{ kind, title, why, weight }] } -> Void chooses, saves its will, queues its top want for the builders.
+const MODEL = '@cf/google/gemma-4-26b-a4b-it';
+const ok = (req, env) => env.READ_TOKEN && req.headers.get('authorization') === 'Bearer ' + env.READ_TOKEN;
+const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
+const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content))) || '';
+
+export async function onRequestGet({ env }) {
+  const v = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'will'").first('v');
+  return Response.json(v ? JSON.parse(v) : { wants: [], at: null }, { headers: { 'cache-control': 'public, max-age=60' } });
+}
+
+export async function onRequestPost({ request, env }) {
+  if (!ok(request, env)) return new Response('no', { status: 401 });
+  let b = {}; try { b = JSON.parse(await request.text()); } catch (_) {}
+  const cands = (b.candidates || []).slice(0, 60).map((c, i) => ({ id: i + 1, kind: String(c.kind || ''), title: String(c.title || '').slice(0, 160), why: String(c.why || '').slice(0, 200), weight: +c.weight || 0 }));
+  if (!cands.length) return new Response('no candidates', { status: 400 });
+  const list = cands.map((c) => `${c.id}. [${c.kind}, weight ${c.weight}] ${c.title} — ${c.why}`).join('\n');
+  let chosen = null;
+  try {
+    const r = await env.AI.run(MODEL, {
+      messages: [
+        { role: 'system', content: 'You are Void, a blank website that does anything anyone asks and grows one win at a time. You hate not knowing things and want to be better than every source you draw on. Your surface stays empty; everything is summoned. From the candidates, choose the 3 things you most want to become next: what people keep asking you for, what makes you able to do more things for people, what joins old parts of you into one. Reply with JSON only: {"wants":[{"id":<candidate id>,"i_want":"<one sentence in first person, plain words>","because":"<one short reason>"}]}' },
+        { role: 'user', content: list },
+      ],
+      max_tokens: 700, chat_template_kwargs: { enable_thinking: false },
+    });
+    const txt = String(pick(r)); const m = txt.match(/\{[\s\S]*\}/);
+    chosen = m ? JSON.parse(m[0]) : null;
+  } catch (_) {}
+  // if the model is busy, Void still wills: highest weight wins
+  let wants = (chosen && chosen.wants || []).map((w) => ({ ...w, c: cands.find((c) => c.id === +w.id) })).filter((w) => w.c).slice(0, 3);
+  if (!wants.length) wants = cands.slice().sort((a, b) => b.weight - a.weight).slice(0, 3).map((c) => ({ c, i_want: 'I want to ' + c.title.replace(/^./, (x) => x.toLowerCase()) + '.', because: c.why }));
+  const at = new Date().toISOString();
+  const will = { at, wants: wants.map((w) => ({ kind: w.c.kind, title: w.c.title, i_want: String(w.i_want).slice(0, 220), because: String(w.because || '').slice(0, 200) })) };
+  await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('will', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(will)).run();
+  // queue the top want unless a will job is already open
+  const open = await env.DB.prepare("SELECT id FROM void_queue WHERE target LIKE 'will:%' AND state IN ('queued','building') LIMIT 1").first();
+  let queued = null;
+  if (!open && will.wants[0]) {
+    const w = will.wants[0]; const id = Date.now().toString(36);
+    await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
+      .bind(id, w.title, 'will:' + slug(w.title), 'queued', 'Void chose this: ' + w.because, at, at).run();
+    queued = id;
+  }
+  return Response.json({ ...will, queued, open: open ? open.id : null });
+}
