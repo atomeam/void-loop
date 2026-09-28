@@ -1048,6 +1048,62 @@ try {
     JSON.stringify({ n: fu.length, d: defence[0] && [defence[0].weight, defence[0].source, defence[0].why.slice(-40)] }));
   await IV.ctx.close();
   }
+  {
+  // World time (worldtime skill): the time anywhere, "3pm London to Tokyo", sunrise and sunset, from Open-Meteo (stubbed here).
+  // Routing is checked against the real skill modules in index.json order (first match wins, as on the page), then in a browser.
+  const wtIndex = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
+  const mods = [];
+  for (const n of wtIndex) mods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
+  const firstSkill = (a) => { const k = mods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
+  const wt = mods.find((s) => s.name === 'worldtime');
+  const wtHits = (a) => !!wt && wt.match(a.toLowerCase(), a);
+  // The item 3 multilingual collision set (domains/void.item3-harness.md): none of it is a world-time ask.
+  const HARNESS = ['¿por qué el cielo es azul?', 'pourquoi le ciel est-il bleu?', 'Warum ist der Himmel blau?', 'bakit asul ang langit?', 'haz el reloj azul', "rends l'horloge bleue", '为什么天是蓝的'];
+  const NEAR = ['make a clock', 'make a 5 minute timer', 'what is time'];
+  check('worldtime: listed in skills/index.json with examples and near misses; every example routes to worldtime and no other skill claims one',
+    !!wt && wt.examples.length >= 4 && (wt.nearMisses || []).length >= 3 && wt.examples.every((e) => firstSkill(e) === 'worldtime' && mods.every((s) => s === wt || !s.match(e.toLowerCase(), e))),
+    wt ? wt.examples.map((e) => e + ' -> ' + firstSkill(e)).join(' | ') : 'no worldtime in index.json');
+  const nearHits = NEAR.concat((wt && wt.nearMisses) || [], HARNESS).filter(wtHits);
+  check('worldtime: "make a clock", "make a 5 minute timer", "what is time", its own near misses and the multilingual collision set never reach it', !!wt && !nearHits.length, nearHits.join(' | '));
+  const others = mods.filter((s) => s !== wt).flatMap((s) => (s.examples || []).map((e) => [s.name, e]));
+  const stolen = others.filter(([n, e]) => wtHits(e) || firstSkill(e) === 'worldtime');
+  check('worldtime: takes no other skill\'s examples (collision)', !!wt && others.length > 10 && !stolen.length, stolen.map((x) => x.join(': ')).join(' | '));
+
+  const W = await fresh();
+  const PLACES = { tokyo: ['Tokyo', 'Tokyo', 'Japan', 'Asia/Tokyo', 35.69, 139.69], london: ['London', 'England', 'United Kingdom', 'Europe/London', 51.51, -0.13],
+    paris: ['Paris', 'Île-de-France', 'France', 'Europe/Paris', 48.85, 2.35], 'new york': ['New York', 'New York', 'United States', 'America/New_York', 40.71, -74.01],
+    sydney: ['Sydney', 'New South Wales', 'Australia', 'Australia/Sydney', -33.87, 151.21] };
+  const sunCalls = [];
+  await W.ctx.route(/geocoding-api\.open-meteo\.com/, (r) => {
+    const v = PLACES[(new URL(r.request().url()).searchParams.get('name') || '').toLowerCase()];
+    return r.fulfill(json({ results: v ? [{ name: v[0], admin1: v[1], country: v[2], timezone: v[3], latitude: v[4], longitude: v[5], population: 5000000 }] : [] }));
+  });
+  await W.ctx.route(/api\.open-meteo\.com\/v1\/forecast/, (r) => {
+    const u = new URL(r.request().url()); sunCalls.push(u.searchParams.get('daily'));
+    const tz = u.searchParams.get('timezone'), day = (n) => new Intl.DateTimeFormat('en-CA', { timeZone: tz }).format(new Date(Date.now() + n * 864e5));
+    const ny = /New_York/.test(tz);
+    return r.fulfill(json({ timezone: tz, daily: { time: [day(0), day(1)], sunrise: [day(0) + (ny ? 'T07:01' : 'T07:45'), day(1) + (ny ? 'T07:02' : 'T07:47')], sunset: [day(0) + 'T19:35', day(1) + 'T19:33'] } }));
+  });
+  const wtPage = async (a, re) => { await W.ask(a, 0); return until(async () => { const pg = await W.page(); return re.test(pg) && (await W.p.$$eval('.vpage.on .wt', (d) => d.length)) === 1 && pg; }, 6000); };
+  const tokyoNow = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', hour: 'numeric' }).format(new Date()).replace(/\s*[AP]M/, '');
+  const pTokyo = await wtPage('time in Tokyo', /Tokyo, Japan[\s\S]*Asia\/Tokyo · UTC\+9/);
+  check('worldtime: "time in Tokyo" shows Tokyo\'s clock, zone and offset', pTokyo && new RegExp('(^|\\n)' + tokyoNow + ':\\d\\d\\s?[AP]M').test(pTokyo), String(pTokyo).slice(0, 140));
+  const pConv = await wtPage('3pm London to Tokyo', /3:00\s?PM in London[\s\S]*(11:00\s?PM|12:00\s?AM)[\s\S]*in Tokyo, Japan/);
+  check('worldtime: "3pm London to Tokyo" converts the time between the two places', !!pConv, String(pConv).slice(0, 140));
+  const pSet = await wtPage('sunset in Paris', /Sunset · Paris[\s\S]*7:3[35]\s?PM/);
+  check('worldtime: "sunset in Paris" gives the sunset from Open-Meteo', !!pSet && sunCalls.includes('sunrise,sunset'), String(pSet).slice(0, 140));
+  const pRise = await wtPage('when is sunrise in New York', /Sunrise · New York[\s\S]*7:0[12]\s?AM/);
+  check('worldtime: "when is sunrise in New York" gives the sunrise', !!pRise, String(pRise).slice(0, 140));
+  const pSyd = await wtPage('what time is it in Sydney', /Sydney[\s\S]*Australia\/Sydney · UTC\+1[01]/);
+  check('worldtime: "what time is it in Sydney" answers too', !!pSyd, String(pSyd).slice(0, 140));
+  await W.ask('close');
+  await W.ask('make a clock'); await W.ask('make a 5 minute timer');
+  const st = await W.state();
+  await W.ask('what is time', 300); await until(async () => /Black hole/.test(await W.page()), 5000);
+  check('worldtime: "make a clock", "make a 5 minute timer" and "what is time" still go where they went before', st.some((x) => x.kind === 'clock') && st.some((x) => x.kind === 'timer') && /Black hole/.test(await W.page()) && (await W.p.$$eval('.vpage.on .wt', (d) => d.length)) === 0, JSON.stringify(st.map((x) => x.kind)));
+  check('no script errors (worldtime)', W.errors.length === 0, W.errors.join(' | '));
+  await W.ctx.close();
+  }
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));
 }
