@@ -479,9 +479,11 @@
       if (log.length > 200) log = log.slice(-200);
       localStorage.setItem(LOOP_KEY, JSON.stringify(log));
     }
+    let sayCount = 0;
     function say(msg) {
       whisper.textContent = msg || '';
-      if (msg) setTimeout(() => { if (whisper.textContent === msg) whisper.textContent = ''; }, 3500);
+      const said = ++sayCount; // a repeated line gets its own 3.5 s; an older timer never clears a newer say
+      if (msg) setTimeout(() => { if (said === sayCount && whisper.textContent === msg) whisper.textContent = ''; }, 3500);
     }
     function uid(prefix) {
       return prefix + '_' + Math.random().toString(36).slice(2, 9);
@@ -1131,6 +1133,8 @@ function wantsClearStage(lower) {
       if (/^(another|one\s+more|a\s+new|new|a\s+second)\s+(sticky(\s+note)?|note)\b/.test(lower)) return true;
       if (/^note\s*:\s*/i.test(raw)) return true;
       if (/^sticky\s*:\s*/i.test(raw)) return true;
+      if (/^(a\s+)?sticky(\s+note)?\s+(that\s+says?|saying)\s+\S/.test(lower)) return true;
+      if (/^(a\s+)?sticky\s+note\s+\S/.test(lower)) return true;
       return false;
     }
 
@@ -1140,6 +1144,8 @@ function wantsClearStage(lower) {
       m = raw.match(/\b(?:that\s+says?|saying|with\s+text|reading)\s+["']?([\s\S]+?)["']?\s*$/i);
       if (m) return m[1].trim();
       m = raw.match(/\b(?:sticky(?:\s+note)?|note)\s+(?:that\s+says?\s+)?["']([^"']+)["']/i);
+      if (m) return m[1].trim();
+      m = raw.match(/^\s*(?:a\s+)?sticky\s+note\s+([\s\S]+?)\s*[.!]?\s*$/i);
       if (m) return m[1].trim();
       return '';
     }
@@ -1651,6 +1657,7 @@ function wantsCreateImage(lower, raw) {
       if (/\b(add\s+item|list\s+add|check|done|complete|remove|delete|clear|empty)\b/.test(lower)) return false;
       if (/^list\s*:/i.test(raw)) return true;
       if (/^(todo\s+list|list)(\s+please)?\s*[.!]?$/i.test(raw.trim())) return true;
+      if (/^(?:a\s+)?(?:grocery|groceries|shopping|packing|todo|to-do|chores?)\s+list\s*[.!]?$/i.test(raw.trim()) || /^list\s+(?:groceries|shopping|chores|todos?)\s*[.!]?$/i.test(raw.trim())) return true;
       return /\b(make|add|create|show|spawn|put|place|drop)\s+(a\s+)?(todo\s+)?list\b/.test(lower);
     }
 
@@ -1660,7 +1667,13 @@ function wantsCreateImage(lower, raw) {
       match = raw.match(/^\s*list\s+add\s+([\s\S]+?)\s*[.!]?\s*$/i);
       if (match) return cleanListText(match[1]);
       match = raw.match(/^\s*add\s+([\s\S]+?)\s+to\s+(?:the\s+)?list\s*[.!]?\s*$/i);
-      return match ? cleanListText(match[1]) : '';
+      if (match) return cleanListText(match[1]);
+      match = raw.match(/^\s*(?:make|create|start)\s+(?:a\s+)?(?:new\s+)?list\s*(?:,|and)?\s+add\s+([\s\S]+?)\s*[.!]?\s*$/i);
+      if (match) return cleanListText(match[1]);
+      // bare "add milk": onto the open list (or a new one), unless it names a stage thing, a look, a number or a link
+      match = raw.match(/^\s*add\s+([a-z][a-z' -]{0,40}?)\s*[.!]?\s*$/i);
+      if (match && !resolveTargetKind(match[1].toLowerCase()) && !/\b(a|an|another|some|more|the|my|stars?|glow|sparkles?|clock|timer|sticky|note|notepad|list|counter|calc(ulator)?|shape|circle|square|line|image|picture|photo|link|card|item)\b/i.test(match[1])) return cleanListText(match[1]);
+      return '';
     }
 
     function wantsListAdd(raw) { return !!extractListAdd(raw); }
@@ -2181,7 +2194,8 @@ say('nothing selected to remove');
           save(); render();
           return { ok: true, detail: 'list-item-added' };
         }
-        return { ok: false, detail: 'list-item-already-exists' };
+        selectedId = list.id; say('already on the list'); save(); render();
+        return { ok: true, detail: 'list-item-already-exists' };
       }
       if (wantsCreateList(lower, text)) {
         ensureList(extractListSeeds(text));
@@ -2730,7 +2744,12 @@ return { ok: true, detail: 'timer-reset' };
     const CALC_MONTHS = { january: 0, february: 1, march: 2, april: 3, may: 4, june: 5, july: 6, august: 7, september: 8, october: 9, november: 10, december: 11, jan: 0, feb: 1, mar: 2, apr: 3, jun: 5, jul: 6, aug: 7, sep: 8, sept: 8, oct: 9, nov: 10, dec: 11 };
     const CALC_HOLIDAYS = { christmas: { m: 11, d: 25 }, xmas: { m: 11, d: 25 }, 'new year': { m: 0, d: 1 }, "new year's day": { m: 0, d: 1 }, halloween: { m: 9, d: 31 }, thanksgiving: { m: 10, d: 26 }, easter: null, birthday: null };
     function fmtNum(n) { return (Math.round(n * 100) / 100).toString(); }
+    // "how many cups in a liter" -> "1 liter in cups"
+    function calcNormalize(lower) {
+      return lower.replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?(?:in|per)\s+(?:a|an|one|1)\s+([a-z]+)\s*\??$/, '1 $2 in $1');
+    }
     function wantsCalc(lower) {
+      lower = calcNormalize(lower);
       if (/\d\s*%/.test(lower) && /(%\s*(of|off)\b|%\s*tip\s+(on|for)\b)/.test(lower)) return true;
       if (CALC_UNIT_RE.test(lower)) return true;
       if (/\b(\d+(?:\.\d+)?)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\s+(?:in|to)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\b/i.test(lower)) return true;
@@ -2739,7 +2758,7 @@ return { ok: true, detail: 'timer-reset' };
       return false;
     }
     async function showCalc(query) {
-      const lower = query.toLowerCase();
+      const lower = calcNormalize(query.toLowerCase());
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; });
 
       let hit = false;
@@ -3524,6 +3543,10 @@ return { ok: true, detail: 'timer-reset' };
       if (pendingConfirm) await decideConfirm('reject', 'asked something else');
       else if (lastConfirm && lastConfirm.until > Date.now() && (YES_RE.test(lower0) || NO_RE.test(lower0))) { say(lastConfirm.expired && YES_RE.test(lower0) ? 'that one expired, ' + lastConfirm.nothing : 'nothing is waiting for a yes'); return; }
       if (vpageEl && /^(close|close it|close this|go away|dismiss|hide it|done|ok)\s*[.!]?$/.test(lower0)) { closePage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'closed' }); return; }
+      // quiet one-liners: nothing to close, a greeting, a probe. No page, no Wikipedia, nothing on the miss board.
+      if (!vpageEl && /^(close|close it|close this|go away|dismiss|hide it)\s*[.!]?$/.test(lower0)) { say('nothing open'); return; }
+      if (/^(hi|hello|hey|hiya|yo|ola|olá|hola|good\s+(morning|afternoon|evening))(\s+(there|void))?\s*[.!]*$/.test(lower0)) { say('hi. ask for anything'); return; }
+      if (/^(test|testing|probe|ping|ping-test|research probe|test miss from research|asdf+|qwerty|zz+q*x*)\s*[.!?]*$/.test(lower0) || /^[bcdfghjklmnpqrstvwxz]{4,8}$/.test(lower0)) { say(''); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
