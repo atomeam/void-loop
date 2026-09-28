@@ -22,7 +22,16 @@ const TABLES = [
   'CREATE TABLE IF NOT EXISTS void_sessions (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, at TEXT NOT NULL, expires INTEGER NOT NULL)',
   'CREATE INDEX IF NOT EXISTS void_sessions_user ON void_sessions (user_id)',
   'CREATE TABLE IF NOT EXISTS void_mine (user_id TEXT PRIMARY KEY, data TEXT NOT NULL, rev INTEGER NOT NULL, updated TEXT NOT NULL)',
+  // Plan item 12 (paid Void): a passkey account's tier. No row = 'free'. Only /api/gumroad writes it, after Gumroad's API confirms the sale.
+  "CREATE TABLE IF NOT EXISTS void_accounts (user_id TEXT PRIMARY KEY, tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'paid')), sale_id TEXT UNIQUE, subscription_id TEXT, updated TEXT NOT NULL)",
 ];
+// The account's tier. Fails closed: a missing row, an unknown value or any read error is 'free' (never paid by accident).
+export async function tierOf(env, userId) {
+  try {
+    const row = await env.DB.prepare('SELECT tier FROM void_accounts WHERE user_id = ?').bind(userId).first();
+    return row && row.tier === 'paid' ? 'paid' : 'free';
+  } catch (_) { return 'free'; }
+}
 const made = new WeakMap();
 export function ensureTables(env) {
   if (!env.DB) return Promise.reject(new Error('no DB binding'));

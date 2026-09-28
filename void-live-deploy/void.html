@@ -18,6 +18,9 @@
     // Empty = off; browsers with WebMCP turned on (flag or trial) still get Void's tools, everyone else uses /tools.json.
     var WEBMCP_TRIAL_TOKEN = '';
     if (WEBMCP_TRIAL_TOKEN) { var ot = document.createElement('meta'); ot.httpEquiv = 'origin-trial'; ot.content = WEBMCP_TRIAL_TOKEN; document.head.appendChild(ot); }
+    // Paid Void (plan item 12): Void Monthly on Atom's Gumroad store (https only). Empty = payments aren't open: nothing links out,
+    // and a signed-in ask to pay just says so. Only ever shown when someone asks, signed in; never on the surface.
+    var GUMROAD_URL = 'https://moonbeam846.gumroad.com/l/yinmj';
   </script>
   <script>
     // First frame: your saved look is painted before anything draws.
@@ -2500,6 +2503,13 @@ return { ok: true, detail: 'timer-reset' };
         d.appendChild(s);
       });
     }
+    // A product line (plan item 12) stays at the bottom of the page for the ask it belongs to, however the page fills in.
+    let pageTail = null;
+    function keepTail(el) {
+      if (!el._tail || el.lastElementChild && el.lastElementChild.classList.contains('vtail')) return;
+      const old = el.querySelector('.vtail'); if (old) old.remove();
+      const d = document.createElement('div'); d.className = 'src vtail'; d.innerHTML = el._tail; el.appendChild(d);
+    }
     function showPage(build) {
       closePage();
       const el = document.createElement('div');
@@ -2508,8 +2518,9 @@ return { ok: true, detail: 'timer-reset' };
       document.body.appendChild(el);
       vpageEl = el;
       el._ask = currentAsk;
-      stampSources(el);
-      new MutationObserver(() => stampSources(el)).observe(el, { childList: true, subtree: true });
+      if (pageTail && pageTail.ask === currentAsk) el._tail = pageTail.html;
+      stampSources(el); keepTail(el);
+      new MutationObserver(() => { stampSources(el); keepTail(el); }).observe(el, { childList: true, subtree: true });
       requestAnimationFrame(() => el.classList.add('on'));
       return el;
     }
@@ -3365,6 +3376,77 @@ return { ok: true, detail: 'timer-reset' };
     document.addEventListener('visibilitychange', () => { if (!document.hidden && me && me.token && Date.now() - minePulled > 15000) minePull(); });
     if (me && me.token) minePull();
 
+    // --- Paid Void and Atom's store, asked for, not advertised (plan item 12). No pricing page, no upsell, nothing on the surface. ---
+    // Free Void stays whole, and sync on every device stays free with a passkey. After a passkey, paid Void (Void Monthly on
+    // Gumroad) adds only more model answers, private skills and a higher cap on actions that pass the confirm line (the confirm
+    // itself never goes away). Asks for something one of Atom's products covers get a plain answer plus one line: the product,
+    // its live price (/api/catalog, merged from the store) and its link. None of it is in the menu, hints, /tools.json or WebMCP.
+    const storeReady = import('/lib/gumroad.js').catch(() => null);
+    let catalogAt = 0, catalogP = null;
+    async function storeCatalog(load) { // -> { g, products } ; products from /api/catalog once asked, the built-in seed until then
+      const g = await Promise.race([storeReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      if (!g) return { g: null, products: [] };
+      const seed = () => g.CATALOG_SEED.map(g.publicProduct);
+      if (load && (!catalogP || Date.now() - catalogAt > 600000)) {
+        catalogAt = Date.now();
+        catalogP = fetch('/api/catalog').then((r) => (r.ok ? r.json() : null)).then((j) => (j && Array.isArray(j.products) && j.products.length ? j.products : seed())).catch(() => seed());
+      }
+      return { g, products: catalogP ? await catalogP : seed() };
+    }
+    const PAID_ADDS = 'more model answers, private skills and a higher cap on actions you confirm';
+    const PAID_LEAD = "(?:please\\s+)?(?:(?:i\\s+(?:want|need|would\\s+like)|i'?d\\s+like|can\\s+i|could\\s+i|how\\s+(?:do|can)\\s+i|let\\s+me|give\\s+me|get\\s+me)(?:\\s+to)?(?:\\s+(?:have|get))?\\s+)?";
+    const PAID_CORE = [
+      "upgrade(?: me| my void| void| my account| my plan)?(?: to (?:paid|pro|premium)(?: void)?)?",
+      "(?:the |your )?(?:pricing|prices?|plans?|price list)",
+      "what (?:does|do) (?:void|it|paid void|a-to-mind) cost|how much (?:does|is|do) (?:void|it|paid void|a-to-mind|the paid (?:version|tier|plan))(?: cost)?|how much for (?:void|paid void|more)",
+      "pay(?: for (?:void|paid void|more|it|the paid (?:version|tier|plan)))?(?: you)?",
+      "(?:buy|get|try) (?:void )?(?:pro|premium|paid(?: void)?|monthly|the paid (?:version|tier|plan))",
+      "subscribe|(?:a |my )?subscription|go pro|void pro|void monthly|paid void|premium|(?:a |the )?paid (?:tier|plan|version)",
+      "(?:more|extra|unlimited) (?:model )?answers|(?:a )?higher answer (?:limit|cap)|raise (?:my|the) answer (?:limit|cap)",
+      "(?:a |my )?private skills?|(?:make|keep) (?:a |my )?skills? private|(?:make|build|add|create) (?:me )?(?:a )?private skill",
+      "(?:a )?higher (?:confirm(?:ation)?|action) (?:cap|limit)|raise (?:my|the) (?:confirm(?:ation)?|action) (?:cap|limit)|more (?:confirmed )?actions(?: per day)?",
+    ];
+    const PAID_RE = new RegExp('^' + PAID_LEAD + '(?:' + PAID_CORE.join('|') + ')$');
+    function isPaidAsk(lower) { return PAID_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
+    function paidUrl() { // Void Monthly's checkout, carrying this Void's account id (Gumroad hands url_params to the Ping); '' = not open
+      const g = typeof GUMROAD_URL === 'string' ? GUMROAD_URL.trim() : '';
+      if (!/^https:\/\//i.test(g) || !me || !me.userId) return '';
+      try { const u = new URL(g); u.searchParams.set('void', me.userId); return u.href; } catch (_) { return ''; }
+    }
+    async function meTier() { // 'paid' only when the server says so; anything else (offline, 503, no table) is free
+      if (!me || !me.token) return 'free';
+      try { const r = await pkCall('tier'); return r.status === 200 && r.body && r.body.tier === 'paid' ? 'paid' : 'free'; } catch (_) { return 'free'; }
+    }
+    async function handlePaidAsk(lower) {
+      if (!isPaidAsk(lower)) return false;
+      if (!me || !me.token) { say('paid Void starts with a passkey · say “remember me” first'); loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
+      if ((await meTier()) === 'paid') { say('your Void is paid: ' + PAID_ADDS); return true; }
+      const { g, products } = await storeCatalog(true);
+      const vm = products.find((p) => p.slug === 'yinmj');
+      const price = g && vm ? g.priceText(vm) : '$49 a month';
+      const url = vm && vm.available !== false ? paidUrl() : '', line = 'Paid Void is ' + price + ': ' + PAID_ADDS;
+      if (!url) say(line + " · payments aren't open yet");
+      else {
+        whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
+        const shown = whisper.innerHTML; setTimeout(() => { if (whisper.innerHTML === shown) whisper.textContent = ''; }, 30000);
+      }
+      loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: url ? 'gumroad link' : 'not open' });
+      return true;
+    }
+    async function handleProductAsk(text, lower) {
+      let { g, products } = await storeCatalog(false);
+      if (!g || !g.productFor(lower, products)) return false;
+      ({ products } = await storeCatalog(true)); // live prices
+      const p = g.productFor(lower, products);
+      if (!p) return false;
+      const link = String(p.url || '').replace(/^https:\/\//, '');
+      currentAsk = text; lastAsk = text;
+      pageTail = { ask: text, html: 'From A-to-Mind: <b>' + esc(p.name) + '</b> · ' + esc(g.priceText(p)) + ' · <a href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(link) + '</a>' };
+      showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); });
+      loopLog({ domain: 'void.store', ask: text, score: 'pass', note: 'product ' + p.slug });
+      return true;
+    }
+
     async function handle(raw) {
       const text = (raw || '').trim();
       if (!text) return;
@@ -3378,6 +3460,8 @@ return { ok: true, detail: 'timer-reset' };
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
+      if (await handlePaidAsk(lower0)) return;
+      if (await handleProductAsk(text, lower0)) return;
       if (handleVoiceAsk(lower0)) return;
       if (await handleGatedAsk(text)) return;
       takeUndoSnapshot();
@@ -3580,6 +3664,7 @@ return { ok: true, detail: 'timer-reset' };
       if (!ask) return 'Say what you want in plain words, e.g. "weather in Tokyo".';
       if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the owner, typed by hand.';
       if (isMeAsk(ask.toLowerCase())) return 'Passkeys and sign-in are for the person at the screen, asked by hand.';
+      if (isPaidAsk(ask)) return 'Paid Void is for the person at the screen, asked by hand.';
       await skillsReady;
       const before = JSON.stringify(things), pageBefore = vpageEl;
       await handle(ask);

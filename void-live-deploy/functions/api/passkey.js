@@ -6,11 +6,12 @@
 // POST { step: 'get-options' }               -> { publicKey }  request options (discoverable: no allowCredentials)
 // POST { step: 'get', credential }           -> { token, userId }  | 404 { error: 'unknown passkey', credentialId }
 // POST { step: 'sign-out' }  (Bearer)        -> ends that session
-// POST { step: 'forget' }    (Bearer)        -> deletes every passkey, session and synced byte of that Void -> { userId, credentialIds }
+// POST { step: 'forget' }    (Bearer)        -> deletes every passkey, session, synced byte and tier row of that Void -> { userId, credentialIds }
+// POST { step: 'tier' }      (Bearer)        -> { tier: 'free' | 'paid' }  (plan item 12; no row or a read error = free)
 // Every challenge is stored in D1, good for 5 minutes, and deleted before it's checked, so it can only be used once.
 // Origin and rpId are a-to-mind.com; signatures are verified with WebCrypto (lib/webauthn.js).
 import { verifyRegistration, verifyAuthentication, randomB64u, unb64u, ALGS } from '../../lib/webauthn.js';
-import { RP_NAME, CHALLENGE_TTL_MS, rp, ensureTables, bad, good, session, newSession, newUserId, brake } from '../../lib/void-me.js';
+import { RP_NAME, CHALLENGE_TTL_MS, rp, ensureTables, bad, good, session, newSession, newUserId, brake, tierOf } from '../../lib/void-me.js';
 
 async function mintChallenge(env, kind, userId) {
   const id = randomB64u(32), now = Date.now();
@@ -102,6 +103,12 @@ async function signOut(request, env) {
   return good({ ok: true });
 }
 
+async function tier(request, env) {
+  const me = await session(request, env);
+  if (!me) return bad(401, 'not signed in');
+  return good({ tier: await tierOf(env, me.userId) });
+}
+
 async function forget(request, env) {
   const me = await session(request, env);
   if (!me) return bad(401, 'not signed in');
@@ -111,6 +118,7 @@ async function forget(request, env) {
     env.DB.prepare('DELETE FROM void_passkeys WHERE user_id = ?').bind(me.userId),
     env.DB.prepare('DELETE FROM void_passkey_challenges WHERE user_id = ?').bind(me.userId),
     env.DB.prepare('DELETE FROM void_sessions WHERE user_id = ?').bind(me.userId),
+    env.DB.prepare('DELETE FROM void_accounts WHERE user_id = ?').bind(me.userId),
   ]);
   return good({ ok: true, userId: me.userId, credentialIds: ids, rpId: rp(env).id });
 }
@@ -127,6 +135,7 @@ export async function onRequestPost({ request, env }) {
     if (b.step === 'get') return await get(request, env, b);
     if (b.step === 'sign-out') return await signOut(request, env);
     if (b.step === 'forget') return await forget(request, env);
+    if (b.step === 'tier') return await tier(request, env);
     return bad(400, 'unknown step');
   } catch (_) { return bad(503, 'passkeys unavailable'); } // fails closed: nobody is signed in, nothing is saved
 }

@@ -80,7 +80,7 @@ const wa = await import(new URL('../void-live-deploy/lib/webauthn.js', import.me
 const localBase = base.replace('127.0.0.1', 'localhost'), localOrigin = localBase.replace(/\/$/, '');
 function memoryMeD1({ broken = false } = {}) {
   // Like D1: no tables until the functions make them; broken = the database can't be reached. batch() is all-or-nothing.
-  const T = { passkeys: new Map(), challenges: new Map(), sessions: new Map(), mine: new Map() }, tables = new Set();
+  const T = { passkeys: new Map(), challenges: new Map(), sessions: new Map(), mine: new Map(), accounts: new Map() }, tables = new Set();
   const need = (t) => { if (broken) throw new Error('D1 unavailable'); if (!tables.has(t)) throw new Error('no such table: ' + t); };
   const ch = (n) => ({ meta: { changes: n } });
   const delWhere = (map, f) => { let n = 0; for (const [k, v] of map) if (f(v)) { map.delete(k); n += 1; } return ch(n); };
@@ -101,6 +101,7 @@ function memoryMeD1({ broken = false } = {}) {
     if (/^INSERT INTO void_mine \(user_id, data, rev, updated\) VALUES \(\?, \?, 1, \?\) ON CONFLICT\(user_id\) DO NOTHING$/.test(sql)) { need('void_mine'); if (T.mine.has(a[0])) return ch(0); T.mine.set(a[0], { data: a[1], rev: 1, updated: a[2] }); return ch(1); }
     if (/^UPDATE void_mine SET data = \?, rev = rev \+ 1, updated = \? WHERE user_id = \? AND rev = \?$/.test(sql)) { need('void_mine'); const r = T.mine.get(a[2]); if (!r || r.rev !== a[3]) return ch(0); Object.assign(r, { data: a[0], rev: r.rev + 1, updated: a[1] }); return ch(1); }
     if (/^DELETE FROM void_mine WHERE user_id = \?$/.test(sql)) { need('void_mine'); return ch(T.mine.delete(a[0]) ? 1 : 0); }
+    if (/^DELETE FROM void_accounts WHERE user_id = \?$/.test(sql)) { need('void_accounts'); return ch(T.accounts.delete(a[0]) ? 1 : 0); }
     throw new Error('unexpected sql: ' + sql);
   };
   const first = (sql, a) => {
@@ -109,6 +110,7 @@ function memoryMeD1({ broken = false } = {}) {
     if (/^SELECT user_id, public_key, alg, sign_count FROM void_passkeys WHERE id = \?$/.test(sql)) { need('void_passkeys'); return T.passkeys.get(a[0]) || null; }
     if (/^SELECT user_id, expires FROM void_sessions WHERE id = \?$/.test(sql)) { need('void_sessions'); return T.sessions.get(a[0]) || null; }
     if (/^SELECT data, rev, updated FROM void_mine WHERE user_id = \?$/.test(sql)) { need('void_mine'); return T.mine.get(a[0]) || null; }
+    if (/^SELECT tier FROM void_accounts WHERE user_id = \?$/.test(sql)) { need('void_accounts'); return T.accounts.get(a[0]) || null; }
     throw new Error('unexpected sql: ' + sql);
   };
   const all = (sql, a) => {
@@ -196,6 +198,77 @@ const SIGNAL_SPY = () => {
   for (const n of ['signalUnknownCredential', 'signalAllAcceptedCredentials']) { const f = P[n]; P[n] = async (o) => { window.__signals.push({ n, o }); try { return f ? await f.call(P, o) : undefined; } catch (_) {} }; }
 };
 
+// Plan item 12: Atom's Gumroad store. /api/catalog and /api/gumroad are the real Pages Functions, run against an in-memory D1,
+// with a stand-in store (storefront + product pages carry an HTML-escaped data-page JSON, like moonbeam846.gumroad.com).
+const catalogFn = await import(new URL('../void-live-deploy/functions/api/catalog.js', import.meta.url).href);
+const pingFn = await import(new URL('../void-live-deploy/functions/api/gumroad.js', import.meta.url).href);
+const gum = await import(new URL('../void-live-deploy/lib/gumroad.js', import.meta.url).href);
+const storeDb = await import(new URL('../void-live-deploy/lib/store-db.js', import.meta.url).href);
+function memoryStoreD1({ broken = false } = {}) {
+  const T = { catalog: new Map(), meta: new Map(), sales: new Map(), accounts: new Map() }, tables = new Set();
+  const need = (t) => { if (broken) throw new Error('D1 unavailable'); if (!tables.has(t)) throw new Error('no such table: ' + t); };
+  const ch = (n) => ({ meta: { changes: n } });
+  const run = (sql, a) => {
+    if (broken) throw new Error('D1 unavailable');
+    const made = /^CREATE (?:TABLE|INDEX) IF NOT EXISTS (\w+)/.exec(sql);
+    if (made) { tables.add(made[1]); return ch(0); }
+    if (/^INSERT INTO void_catalog \(slug, data, available, updated\) VALUES \(\?, \?, \?, \?\) ON CONFLICT\(slug\) DO UPDATE/.test(sql)) { need('void_catalog'); T.catalog.set(a[0], { data: a[1], available: a[2], updated: a[3] }); return ch(1); }
+    if (/^INSERT INTO void_catalog_meta \(k, v\) VALUES \(\?, \?\) ON CONFLICT\(k\) DO UPDATE/.test(sql)) { need('void_catalog_meta'); T.meta.set(a[0], a[1]); return ch(1); }
+    if (/^INSERT OR IGNORE INTO void_sales \(id, resource, sale_id, subscription_id, product, void_id, verified, effect, raw, at\) VALUES \(\?, \?, \?, \?, \?, \?, 0, \?, \?, \?\)$/.test(sql)) { need('void_sales'); if (T.sales.has(a[0])) return ch(0); T.sales.set(a[0], { resource: a[1], sale_id: a[2], subscription_id: a[3], product: a[4], void_id: a[5], verified: 0, effect: a[6], raw: a[7], at: a[8] }); return ch(1); }
+    if (/^UPDATE void_sales SET verified = \?, effect = \?, void_id = \? WHERE id = \?$/.test(sql)) { need('void_sales'); const r = T.sales.get(a[3]); if (!r) return ch(0); Object.assign(r, { verified: a[0], effect: a[1], void_id: a[2] }); return ch(1); }
+    if (/^INSERT INTO void_accounts \(user_id, tier, sale_id, subscription_id, updated\) VALUES \(\?, \?, \?, \?, \?\) ON CONFLICT\(user_id\) DO UPDATE/.test(sql)) { need('void_accounts'); for (const [u, r] of T.accounts) if (u !== a[0] && r.sale_id && r.sale_id === a[2]) throw new Error('UNIQUE constraint failed: void_accounts.sale_id'); T.accounts.set(a[0], { tier: a[1], sale_id: a[2], subscription_id: a[3], updated: a[4] }); return ch(1); }
+    if (/^UPDATE void_accounts SET tier = \?, updated = \? WHERE subscription_id = \? OR sale_id = \?$/.test(sql)) { need('void_accounts'); let n = 0; for (const r of T.accounts.values()) if ((r.subscription_id && r.subscription_id === a[2]) || (r.sale_id && r.sale_id === a[3])) { r.tier = a[0]; r.updated = a[1]; n += 1; } return ch(n); }
+    throw new Error('unexpected sql: ' + sql);
+  };
+  const first = (sql, a) => {
+    if (broken) throw new Error('D1 unavailable');
+    if (/^SELECT v FROM void_catalog_meta WHERE k = \?$/.test(sql)) { need('void_catalog_meta'); return T.meta.has(a[0]) ? { v: T.meta.get(a[0]) } : null; }
+    if (/^SELECT tier FROM void_accounts WHERE user_id = \?$/.test(sql)) { need('void_accounts'); return T.accounts.get(a[0]) || null; }
+    throw new Error('unexpected sql: ' + sql);
+  };
+  const all = (sql) => {
+    if (broken) throw new Error('D1 unavailable');
+    if (/^SELECT slug, data, available FROM void_catalog$/.test(sql)) { need('void_catalog'); return { results: [...T.catalog].map(([slug, r]) => ({ slug, data: r.data, available: r.available })) }; }
+    throw new Error('unexpected sql: ' + sql);
+  };
+  const stmt = (sql, a = []) => ({ sql, a, bind: (...b) => stmt(sql, b), run: async () => run(sql, a), first: async () => first(sql, a), all: async () => all(sql, a) });
+  return { ...T, T, tables, prepare: (sql) => stmt(sql), batch: async (list) => list.map((q) => run(q.sql, q.a)) };
+}
+const escAttr = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const STORE_PRODUCTS = () => [
+  { slug: 'yinmj', name: 'Void Monthly', price_cents: 4900, recurrence: 'monthly', native_type: 'membership', tiered: true },
+  { slug: 'join-the-team', short: 'klwlxn', name: 'Join the Team', price_cents: 100 },
+  { slug: 'gqsgib', name: 'The Big Board', price_cents: 2500, recurrence: 'monthly', native_type: 'membership' },
+  { slug: 'first-automation-setup', short: 'rpmuz', name: 'First Automation Setup — Your First Automation, Built For You, $100', price_cents: 10000 },
+  { slug: 'full-stack-audit', short: 'chafpm', name: 'Full Stack Audit — Every Automation You Run, Reviewed, $300', price_cents: 30000 },
+  { slug: 'keep-it-running-membership', short: 'agstkz', name: 'Keep-It-Running Plan — Automation Monitoring & Repair, $49/month', price_cents: 4900 },
+  { slug: 'eozcma', name: 'Automation Cleanup — One Broken Zap, Fixed Fast', price_cents: 2500 },
+];
+const storeHtml = (list) => '<!doctype html><html><head><meta property="og:title" content="Subscribe to Atom Bomb on Gumroad"></head><body><div id="app" data-page="' + escAttr(JSON.stringify({ component: 'Users/Show', props: { sections: [{ id: 'default-products', type: 'SellerProfileProductsSection', search_results: { total: list.length, products: list.map((p) => ({ id: p.slug + '==', permalink: p.short || p.slug, name: p.name, native_type: p.native_type || 'digital', price_cents: p.tiered ? 0 : p.price_cents, currency_code: 'usd', url: 'https://moonbeam846.gumroad.com/l/' + p.slug + '?layout=profile', recurrence: p.recurrence || null })) } }] } })) + '"></div></body></html>';
+const productHtml = (p) => '<!doctype html><html><head><meta property="og:title" content="' + escAttr(p.name) + '" inertia="meta-property-og-title"></head><body><div id="app" data-page="' + escAttr(JSON.stringify({ component: 'Products/Show', props: { product: { permalink: p.short || p.slug, name: p.name, is_published: p.is_published !== false, price_cents: p.tiered ? 0 : p.price_cents, currency_code: 'usd', is_tiered_membership: !!p.tiered, recurrences: p.recurrence ? { default: p.recurrence, enabled: [{ recurrence: p.recurrence, price_cents: 0 }] } : null, options: p.tiered ? [{ name: p.name, recurrence_price_values: { [p.recurrence]: { price_cents: p.price_cents } } }] : [] } } })) + '"></div></body></html>';
+function storeFetch(state) {
+  const f = async (u) => {
+    f.calls.push(String(u));
+    if (state.down) throw new Error('store offline');
+    const url = new URL(u);
+    if (url.hostname !== 'moonbeam846.gumroad.com') return new Response('', { status: 404 });
+    if (url.pathname === '/') return new Response(state.empty ? '<!doctype html><html><body>maintenance</body></html>' : storeHtml(state.list.filter((p) => !p.hidden)));
+    const p = state.list.find((x) => '/l/' + x.slug === url.pathname);
+    return p ? new Response(productHtml(p)) : new Response('', { status: 404 });
+  };
+  f.calls = [];
+  return f;
+}
+// What the page sees: the live store has a new price for the audit and one product Void didn't know about yet.
+const uiStore = { list: STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 32500 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check — A Quick Look At One Workflow', price_cents: 1500 }]) };
+const storeEnv = { DB: memoryStoreD1(), GUMROAD_FETCH: storeFetch(uiStore) };
+const catalogHits = [];
+async function catalogRoute(r) {
+  catalogHits.push(r.request().url());
+  const res = await catalogFn.onRequestGet({ request: new Request(r.request().url()), env: storeEnv });
+  return r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() });
+}
+
 async function fresh(...inits) {
   const at = inits[0] && typeof inits[0] === 'object' && inits[0].base ? inits.shift().base : base;
   const ctx = await browser.newContext();
@@ -226,6 +299,7 @@ async function fresh(...inits) {
     }
     if (u.includes('/api/approval')) return approvalRoute(r);
     if (/\/api\/(passkey|mine)$/.test(new URL(u).pathname)) return meRoute(r);
+    if (/\/api\/catalog$/.test(new URL(u).pathname)) return catalogRoute(r);
     return r.fulfill({ status: 204, body: '' });
   });
   const p = await ctx.newPage();
@@ -332,7 +406,51 @@ try {
   check('WebMCP: owner-only asks never run from an agent', /owner/.test(owner) && t.errors.length === 0, owner + ' ' + t.errors.join(' | '));
   const idAsks = await t.p.evaluate(async () => [await window.__tools.void_ask.execute({ ask: 'forget me' }), await window.__tools.void_ask.execute({ ask: 'sign in' })]);
   check('WebMCP: agents cannot sign in or forget anyone (item 6)', idAsks.every((x) => /person at the screen/.test(x)), idAsks.join(' | '));
+  const paidAgent = await t.p.evaluate(async () => { const out = []; for (const a of ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'raise my confirm cap', 'buy paid void']) out.push(await window.__tools.void_ask.execute({ ask: a })); return out; });
+  const toolText = await t.p.evaluate(() => JSON.stringify(Object.values(window.__tools).map((d) => [d.name, d.description])));
+  check('WebMCP: paid Void asks are refused to agents and never listed (item 12)', paidAgent.every((x) => x === 'Paid Void is for the person at the screen, asked by hand.') && !/\$\d|price|pricing|upgrade|premium|paid|subscri|gumroad|checkout/i.test(toolText) && t.errors.length === 0, paidAgent.join(' | ') + ' ' + toolText.slice(0, 120));
   await t.ctx.close();
+
+  // Plan item 12: paid Void and Atom's store, asked for, not advertised. Nothing on the surface; asked, one plain line.
+  {
+  const P = await fresh();
+  const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
+  check('paid: a fresh visit is an empty screen (no price, product, account chrome or upgrade prompt; the store is not even fetched)', bare.stage === 0 && !(await P.page()) && !/\$\s?\d|price|pricing|upgrade|premium|paid|subscri|gumroad|checkout|sign in|account|log in|audit|big board/i.test(bare.text) && bare.links === 0 && bare.gum === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic') && catalogHits.length === 0, JSON.stringify(bare).slice(0, 200) + ' hits=' + catalogHits.length);
+  const PITCH = /\$\s?\d|price|pricing|upgrade|premium|paid|subscri|gumroad|checkout|\bpro\b|\btier\b|audit|big board|join the team|automation setup/i;
+  await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
+  await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
+  const hintsFor = async (q) => { await P.p.fill('#input', q); await P.p.waitForTimeout(150); const h = await P.p.$$eval('#hints div', (d) => d.map((x) => x.textContent)); await P.p.fill('#input', ''); return h; };
+  const payHints = [...(await hintsFor('upg')), ...(await hintsFor('pay')), ...(await hintsFor('pric')), ...(await hintsFor('private')), ...(await hintsFor('audit')), ...(await hintsFor('join'))];
+  check('paid: "what can you do", the menu and hints never pitch a tier or a product', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg) && !PITCH.test(selfPg) && !PITCH.test(menuPg) && !payHints.some((h) => PITCH.test(h) || /private skill/.test(h)) && catalogHits.length === 0, [selfPg.slice(0, 60), payHints.join(',')].join(' | '));
+  const OUT_LINE = 'paid Void starts with a passkey · say “remember me” first';
+  const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pricing', 'pay', 'how much does Void cost?', 'go pro', 'buy paid void', 'void monthly'];
+  const outGot = [], callsBefore = gate.calls.length;
+  for (const a of outAsks) { await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 3000) || await P.whisper()); }
+  check('paid: signed out, every paid ask gets one plain line + "remember me" (no page, no link, no price)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
+    outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
+  // Asks a product covers: a plain answer, plus one line with the product, its live price and its link. Nothing opens by itself.
+  const productAsks = [
+    ['can you audit my automations?', 'Full Stack Audit', '$325', 'full-stack-audit'], // live price (the store moved it from $300)
+    ['my zap is broken', 'Automation Cleanup', '$25', 'eozcma'],
+    ['help me set up my first automation', 'First Automation Setup', '$100', 'first-automation-setup'],
+    ['monitor my automations', 'Keep-It-Running Plan', '$49', 'keep-it-running-membership'],
+    ['tell me about the big board', 'The Big Board', '$25 a month', 'gqsgib'],
+    ['how do I join the team', 'Join the Team', '$1', 'join-the-team'],
+    ['zap health check', 'Zap Health Check', '$15', 'zap-health-check'], // new in the store: Void learned it from the live catalog
+  ];
+  const prodGot = [];
+  for (const [a, name, price, slug] of productAsks) {
+    await P.ask(a, 0);
+    const line = await until(async () => { const pg = await P.page(); return /blue light scatters/.test(pg) && (await P.p.$eval('.vpage.on .vtail', (e) => e.textContent).catch(() => '')); }, 6000) || '';
+    const link = await P.p.$eval('.vpage.on .vtail a', (e) => ({ href: e.href, target: e.target, rel: e.rel })).catch(() => null);
+    const want = 'From A-to-Mind: ' + name + ' · ' + price + ' · moonbeam846.gumroad.com/l/' + slug;
+    prodGot.push({ a, ok: line === want && link && link.href === 'https://moonbeam846.gumroad.com/l/' + slug && link.target === '_blank' && /noopener/.test(link.rel), line });
+  }
+  check('store: an ask a product covers gets a plain answer + one line (product, live price, link); new store products are found', prodGot.every((x) => x.ok) && P.ctx.pages().length === 1 && catalogHits.length >= 1, prodGot.filter((x) => !x.ok).map((x) => x.a + '=' + x.line).join(' | '));
+  await P.ask('make a clock'); await P.ask('what is a black hole', 300); await until(async () => /region of spacetime/.test(await P.page()), 5000);
+  check('store: other asks carry no product line', !(await P.p.$('.vpage.on .vtail')) && (await P.state()).some((x) => x.kind === 'clock') && P.errors.length === 0, P.errors.join(' | '));
+  await P.ctx.close();
+  }
 
   // Plan item 7: the confirm line. One plain line before a send/book/spend; No, no answer or a changed request = it doesn't run.
   t = await fresh();
@@ -411,6 +529,29 @@ try {
   const bBg = await B.p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--void-bg').trim());
   check('sign in on another device brings your stage, look and kept cards', inB && bState.some((x) => x.kind === 'clock') && bState.some((x) => x.kind === 'kept') && (await B.p.$$eval('.kept-card', (d) => d.length)) === 1 && (await lookOf(B)).bg === '#07020f' && bBg === '#07020f' && db().passkeys.size === 1,
     [inB, bState.map((x) => x.kind).join(','), bBg, await B.whisper()].join(' | '));
+  const tierB = await pk(meEnv, { step: 'tier' }, (await meOf(B)).token);
+  check('cross-device look works from the passkey alone, on the free tier (no payment)', inB && bBg === '#07020f' && (await lookOf(B)).bg === '#07020f' && tierB.status === 200 && tierB.body.tier === 'free' && db().accounts.size === 0, [inB, bBg, tierB.status, JSON.stringify(tierB.body), db().accounts.size].join(' | '));
+  // Plan item 12, signed in with a passkey: $49 a month (live from the store), what it adds, and Void Monthly's link carrying the account id.
+  const GUM = 'https://moonbeam846.gumroad.com/l/yinmj';
+  const IN_LINK = 'Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm · buy it on Gumroad';
+  const inAsks = ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
+  const inGot = [];
+  for (const a of inAsks) { await A.ask(a, 0); inGot.push(await until(async () => { const w = await A.whisper(); return /Paid Void|paid Void|your Void is paid/.test(w) ? w : ''; }, 5000) || await A.whisper()); }
+  const aLink = await A.p.$eval('#whisper a', (a) => ({ href: a.href, target: a.target, rel: a.rel })).catch(() => null);
+  check('paid: signed in, paid asks give $49 a month, what it adds and the Void Monthly link with the account id (never opened by itself)', inGot.every((w) => w === IN_LINK) && aLink && aLink.href === GUM + '?void=' + encodeURIComponent(meA.userId) && aLink.target === '_blank' && /noopener/.test(aLink.rel) && !(await A.page()) && A.ctx.pages().length === 1 && db().accounts.size === 0,
+    inGot.map((w, i) => inAsks[i] + '=' + w).join(' | ') + ' ' + JSON.stringify(aLink));
+  // With a passkey, an outbound action still stops on the confirm line (a passkey never skips it; visitors still can't send).
+  const ranBeforePk = gate.ran.length, askedBeforePk = gate.calls.filter((c) => c.type === 'a2m.approval.requested').length;
+  await B.ask('send an email to jane@x.com saying hi', 0);
+  const bNoOwner = await until(async () => /owner/.test(await B.whisper()) && (await B.whisper()), 4000);
+  await A.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
+  await A.ask('send an email to jane@x.com saying hi', 0);
+  const pkLine = await until(async () => /Yes \/ No/.test(await A.whisper()) && (await A.whisper()), 6000);
+  const ranWhileAsked = gate.ran.length;
+  await A.ask('no', 0); const pkNo = await until(async () => /nothing sent/.test(await A.whisper()) && (await A.whisper()), 4000);
+  await A.p.evaluate(() => localStorage.removeItem('a2m.void.owner.v1'));
+  check('paid: with a passkey, an outbound action still stops on the confirm line', !!(await meOf(A)) && !!(await meOf(B)) && /only the owner/.test(bNoOwner) && pkLine === 'Send this email to jane@x.com? Yes / No' && ranWhileAsked === ranBeforePk && /^ok, nothing sent$/.test(pkNo) && gate.ran.length === ranBeforePk && gate.calls.filter((c) => c.type === 'a2m.approval.requested').length === askedBeforePk + 1,
+    [bNoOwner, pkLine, pkNo, gate.ran.length - ranBeforePk].join(' | '));
   await B.ask('add a sticky that says from the other device');
   const upB = await until(() => { const d = serverData(); return d && Object.values(d.state).some((x) => x.kind === 'sticky' && /from the other device/.test(x.text)); }, 6000);
   await A.p.reload();
@@ -423,6 +564,26 @@ try {
   const cDone = await until(async () => /welcome back|remembered/.test(await C.whisper()) && (await C.whisper()), 10000);
   check('remember me on a device that already has your passkey signs in (no second Void)', !immediate || (/welcome back/.test(cDone) && db().passkeys.size === 1 && (await C.state()).some((x) => x.kind === 'clock')), [immediate, cDone, db().passkeys.size].join(' | '));
   await C.ctx.close();
+  // GUMROAD_URL empty (test override): payments aren't open, so no link at all. Then the tier the server reports.
+  const D = await fresh({ base: localBase });
+  await D.ctx.route(/^http:\/\/localhost:\d+\/(index\.html)?(\?.*)?$/, (r) => r.fulfill({ status: 200, contentType: 'text/html', body: fs.readFileSync(path.join(root, 'index.html'), 'utf8').replace("var GUMROAD_URL = 'https://moonbeam846.gumroad.com/l/yinmj';", "var GUMROAD_URL = '';") }));
+  await D.p.reload(); await D.p.waitForTimeout(700);
+  const dUrl = await D.p.evaluate(() => (typeof GUMROAD_URL === 'string' ? GUMROAD_URL : 'missing'));
+  await authenticator(D, credsA.map((c) => ({ ...c, signCount: 300 })));
+  await D.ask('sign in', 0); await until(async () => /welcome back/.test(await D.whisper()), 10000);
+  const meD = await meOf(D);
+  await D.ask('upgrade', 0);
+  const dIn = await until(async () => /Paid Void/.test(await D.whisper()) && (await D.whisper()), 5000);
+  check('paid: with GUMROAD_URL empty, signed-in asks say payments aren\'t open yet (no link, no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm · payments aren't open yet" && (await D.p.$$eval('#whisper a', (d) => d.length)) === 0 && !(await D.page()) && D.ctx.pages().length === 1,
+    [dUrl, dIn].join(' | '));
+  db().accounts.set(meD.userId, { tier: 'paid' });
+  await D.ask('pay', 0); const dPaid = await until(async () => /your Void is paid/.test(await D.whisper()) && (await D.whisper()), 4000);
+  db().accounts.set(meD.userId, { tier: 'gold' });
+  await D.ask('pay', 0); const dOdd = await until(async () => /Paid Void is/.test(await D.whisper()) && (await D.whisper()), 4000);
+  db().accounts.set(meD.userId, { tier: 'paid' });
+  check('paid: the tier comes from the server; only "paid" counts (anything else reads as free)', dPaid === 'your Void is paid: more model answers, private skills and a higher cap on actions you confirm' && /^Paid Void is \$49 a month/.test(dOdd), [dPaid, dOdd].join(' | '));
+  const meErrsD = D.errors.slice();
+  await D.ctx.close();
   const sessionsBefore = db().sessions.size;
   await B.ask('sign out', 0);
   const outB = await until(async () => /signed out/.test(await B.whisper()), 6000);
@@ -436,11 +597,12 @@ try {
   const sigA = await A.p.evaluate(() => window.__signals.filter((x) => x.n === 'signalAllAcceptedCredentials'));
   check('forget me asks first, then deletes every passkey, session and synced byte', forgetLine === 'Forget your Void on every device? Yes / No' && keptAfterNo && forgot && db().passkeys.size === 0 && db().mine.size === 0 && db().sessions.size === 0 && !(await meOf(A)) && (await A.state()).some((x) => x.kind === 'clock') && sigA.length === 1 && sigA[0].o.userId === meA.userId && sigA[0].o.allAcceptedCredentialIds.length === 0,
     [forgetLine, keptAfterNo, forgot, db().passkeys.size, db().mine.size, db().sessions.size, JSON.stringify(sigA)].join(' | '));
+  check('forget me also deletes the tier row (item 12)', forgot && db().accounts.size === 0, db().accounts.size);
   await B.ask('sign in', 0);
   const refused = await until(async () => /forgotten/.test(await B.whisper()), 8000);
   const sigB = await B.p.evaluate(() => window.__signals.filter((x) => x.n === 'signalUnknownCredential'));
   check('a forgotten passkey is refused, and the browser is told (signalUnknownCredential)', refused && !(await meOf(B)) && sigB.length === 1 && sigB[0].o.credentialId === credsA[0].credentialId.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '') && sigB[0].o.rpId === 'localhost', [refused, JSON.stringify(sigB)].join(' | '));
-  const meErrs = A.errors.concat(B.errors);
+  const meErrs = A.errors.concat(B.errors, meErrsD);
   await A.ctx.close(); await B.ctx.close();
 
   // Server rules, with a software authenticator (things a real browser won't do on purpose).
@@ -492,11 +654,21 @@ try {
   const afterOut = await mine('GET', null, tok);
   check('passkeys: sync needs a live session; a stale write gets 409 with the newer copy', m0.status === 401 && m1.status === 200 && m1.body.data === null && w1.status === 200 && w1.body.rev === 1 && w1again.status === 409 && w1again.body.rev === 1 && w1again.body.data.state.a.kind === 'clock' && w2.status === 200 && w2.body.rev === 2 && big.status === 413 && junk.status === 400 && afterOut.status === 401,
     [m0.status, m1.status, w1.status, w1again.status, w2.status, big.status, junk.status, afterOut.status].join(','));
+  const tierEnv = { DB: memoryMeD1(), PASSKEY_RP_ID: 'localhost', PASSKEY_ORIGINS: localOrigin, PASSKEY_BRAKE: 100000 };
+  const tr1 = await softRegister(tierEnv), trTok = tr1.res.body.token;
+  const tNone = await pk(tierEnv, { step: 'tier' }), tFree = await pk(tierEnv, { step: 'tier' }, trTok);
+  tierEnv.DB.accounts.set(tr1.userId, { tier: 'paid' }); const tPaid = await pk(tierEnv, { step: 'tier' }, trTok);
+  tierEnv.DB.accounts.set(tr1.userId, { tier: 'PAID' }); const tOdd = await pk(tierEnv, { step: 'tier' }, trTok);
+  const me12 = await import(new URL('../void-live-deploy/lib/void-me.js', import.meta.url).href);
+  const tBrokenRead = await me12.tierOf({ DB: memoryMeD1({ broken: true }) }, tr1.userId);
+  const tBrokenApi = await pk({ DB: memoryMeD1({ broken: true }) }, { step: 'tier' }, trTok);
+  check('paid: tier needs a session, defaults to free, and fails closed (no row, odd value or no D1 = not paid)', tNone.status === 401 && tFree.status === 200 && tFree.body.tier === 'free' && tPaid.body.tier === 'paid' && tOdd.body.tier === 'free' && tBrokenRead === 'free' && tBrokenApi.status === 503 && tierEnv.DB.tables.has('void_accounts'),
+    [tNone.status, JSON.stringify(tFree.body), JSON.stringify(tPaid.body), JSON.stringify(tOdd.body), tBrokenRead, tBrokenApi.status].join(' | '));
   const brakeEnv = { DB: memoryMeD1(), PASSKEY_BRAKE: 3 };
   const braked = []; for (let i = 0; i < 4; i++) braked.push((await pk(brakeEnv, { step: 'get-options' }, null, { 'cf-connecting-ip': '203.0.113.9' })).status);
   check('passkeys: anonymous challenge minting is braked per connection', braked.join(',') === '200,200,200,429', braked.join(','));
   // The deploy doesn't run tools/d1/void_passkeys.sql: tables appear on first use; a database that can't make them fails closed.
-  const madeMe = ['void_passkeys', 'void_passkeys_user', 'void_passkey_challenges', 'void_sessions', 'void_sessions_user', 'void_mine'].every((x) => meEnv.DB.tables.has(x));
+  const madeMe = ['void_passkeys', 'void_passkeys_user', 'void_passkey_challenges', 'void_sessions', 'void_sessions_user', 'void_mine', 'void_accounts'].every((x) => meEnv.DB.tables.has(x));
   const goodMe = meEnv.DB; meEnv.DB = memoryMeD1({ broken: true });
   const E = await fresh({ base: localBase });
   const authE = await authenticator(E);
@@ -508,6 +680,85 @@ try {
   meEnv.DB = goodMe;
   check('no script errors (passkeys)', !meErrs.length && !E.errors.length, meErrs.concat(E.errors).join(' | '));
   await E.ctx.close();
+  }
+
+  {
+  // Plan item 12, server side: the catalog (merged from the live store, never shrinks) and the Gumroad Ping (every sale kept).
+  const st = { list: STORE_PRODUCTS() }, sf = storeFetch(st);
+  const cEnv = { DB: memoryStoreD1(), GUMROAD_FETCH: sf };
+  const rowsOf = () => [...cEnv.DB.catalog].map(([slug, r]) => ({ slug, available: !!r.available, ...JSON.parse(r.data) }));
+  const bySlug = (slug) => rowsOf().find((x) => x.slug === slug);
+  const g1 = await catalogFn.onRequestGet({ request: new Request('http://x/api/catalog'), env: cEnv });
+  const j1 = await g1.json();
+  const vm = j1.products.find((p) => p.slug === 'yinmj');
+  check('catalog: first read pulls the live store (all 7 products, tiered Void Monthly = $49 a month) and saves it', g1.status === 200 && j1.source === 'store' && j1.products.length === 7 && vm && vm.price_cents === 4900 && gum.priceText(vm) === '$49 a month' && j1.products.every((p) => p.available && /^https:\/\/moonbeam846\.gumroad\.com\/l\//.test(p.url)) && cEnv.DB.catalog.size === 7 && !!cEnv.DB.meta.get('refreshed') && j1.products.find((p) => p.slug === 'full-stack-audit').name === 'Full Stack Audit',
+    JSON.stringify(j1).slice(0, 200));
+  const callsAfter1 = sf.calls.length;
+  await catalogFn.onRequestGet({ request: new Request('http://x/api/catalog'), env: cEnv });
+  const noRefetch = sf.calls.length === callsAfter1;
+  st.list = st.list.filter((p) => p.slug !== 'eozcma').map((p) => (p.slug === 'gqsgib' ? { ...p, is_published: false } : p));
+  const r2 = await storeDb.refreshCatalog(cEnv, { now: '2026-09-28T08:00:00.000Z' });
+  const gone = bySlug('eozcma'), unpub = bySlug('gqsgib');
+  const j2 = await (await catalogFn.onRequestGet({ request: new Request('http://x/api/catalog'), env: cEnv })).json();
+  check('catalog merge: a product gone from the store or unpublished stays, marked unavailable, with its history (never deleted, never offered)', noRefetch && r2 && cEnv.DB.catalog.size === 7 && gone && gone.available === false && gone.unavailable_since === '2026-09-28T08:00:00.000Z' && gone.history.some((h) => h.event === 'gone from the store') && gone.price_cents === 2500
+    && unpub && unpub.available === false && unpub.history.some((h) => h.event === 'unpublished') && j2.products.length === 7 && j2.products.find((p) => p.slug === 'eozcma').available === false && gum.productFor('my zap is broken', j2.products) === null && gum.productFor('tell me about the big board', j2.products) === null,
+    JSON.stringify([gone, unpub]).slice(0, 240));
+  st.list = STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 35000 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check', price_cents: 1500 }]);
+  await storeDb.refreshCatalog(cEnv, { now: '2026-09-28T14:30:00.000Z' });
+  const fsa = bySlug('full-stack-audit'), added = bySlug('zap-health-check'), back = bySlug('eozcma');
+  check('catalog merge: a new store product appears, a price change comes from the live store (old price kept in history), a returning product comes back', cEnv.DB.catalog.size === 8 && added && added.available && added.first_seen === '2026-09-28T14:30:00.000Z' && added.history[0].event === 'added'
+    && fsa.price_cents === 35000 && fsa.history.some((h) => h.event === 'changed' && h.price_cents === 35000 && h.was.price_cents === 30000) && back.available === true && back.history.some((h) => h.event === 'back') && bySlug('gqsgib').available === true
+    && gum.productFor('can you audit my automations', rowsOf().map(gum.publicProduct)).price_cents === 35000,
+    JSON.stringify([fsa && fsa.history, added]).slice(0, 240));
+  const before = JSON.stringify([...cEnv.DB.catalog]);
+  st.down = true; const rDown = await storeDb.refreshCatalog(cEnv); st.down = false;
+  st.empty = true; const rEmpty = await storeDb.refreshCatalog(cEnv); st.empty = false;
+  const afterFail = JSON.stringify([...cEnv.DB.catalog]);
+  cEnv.DB.meta.set('refreshed', new Date(Date.now() - 7 * 3600e3).toISOString());
+  const callsBeforeStale = sf.calls.length;
+  await catalogFn.onRequestGet({ request: new Request('http://x/api/catalog'), env: cEnv });
+  const staleRefetched = sf.calls.length > callsBeforeStale && Date.now() - Date.parse(cEnv.DB.meta.get('refreshed')) < 60000;
+  const seedRes = await (await catalogFn.onRequestGet({ request: new Request('http://x/api/catalog'), env: { DB: memoryStoreD1({ broken: true }), GUMROAD_FETCH: sf } })).json();
+  const forced = [await catalogFn.onRequestPost({ request: new Request('http://x/api/catalog', { method: 'POST' }), env: { ...cEnv, READ_TOKEN: OWNER } }), await catalogFn.onRequestPost({ request: new Request('http://x/api/catalog', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER } }), env: { ...cEnv, READ_TOKEN: OWNER } })].map((r) => r.status);
+  check('catalog: an unreachable or empty store changes nothing; older than 6 hours refreshes on read; no D1 serves the seed; owner can force a refresh', rDown === null && rEmpty === null && afterFail === before && cEnv.DB.catalog.size === 8 && staleRefetched && seedRes.source === 'seed' && seedRes.products.length === 7 && forced.join(',') === '401,200',
+    [rDown, rEmpty, staleRefetched, seedRes.source, forced.join(',')].join(' | '));
+
+  // Gumroad Ping: key required; every ping recorded once; Void Monthly -> paid only after Gumroad's API confirms the sale.
+  const saleApi = new Map();
+  const apiFetch = async (u, o) => { const m = /\/v2\/sales\/([^/?]+)$/.exec(String(u)); if (!m || !/^Bearer tok$/.test((o && o.headers && o.headers.authorization) || '')) return new Response(JSON.stringify({ success: false }), { status: 401 }); const s = saleApi.get(decodeURIComponent(m[1])); return new Response(JSON.stringify(s ? { success: true, sale: s } : { success: false, message: 'not found' }), { status: s ? 200 : 404 }); };
+  const pEnv = { DB: memoryStoreD1(), GUMROAD_PING_KEY: 'ping-key-123', GUMROAD_FETCH: apiFetch };
+  const ping = async (fields, { key = 'ping-key-123', env = pEnv } = {}) => { const res = await pingFn.onRequestPost({ request: new Request('https://a-to-mind.com/api/gumroad?k=' + key, { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(fields).toString() }), env }); return { status: res.status, body: await res.json().catch(() => null) }; };
+  const VID = 'AAAAAAAAAAAAAAAAAAAAAA', VID2 = 'BBBBBBBBBBBBBBBBBBBBBB';
+  const vmSale = (id, extra = {}) => ({ sale_id: id, sale_timestamp: '2026-09-28T01:00:00Z', product_id: 'ITp6', product_permalink: 'yinmj', product_name: 'Void Monthly', price: '4900', email: 'buyer@example.com', subscription_id: 'sub-1', 'url_params[void]': VID, resource_name: 'sale', ...extra });
+  const noKeyCfg = await ping(vmSale('s0'), { env: { DB: memoryStoreD1() } });
+  const wrongKey = await ping(vmSale('s0'), { key: 'nope' });
+  const audit = await ping({ sale_id: 'a1', sale_timestamp: '2026-09-28T01:00:00Z', product_permalink: 'full-stack-audit', product_name: 'Full Stack Audit', price: '30000', email: 'x@example.com', resource_name: 'sale' });
+  const auditAgain = await ping({ sale_id: 'a1', sale_timestamp: '2026-09-28T01:00:00Z', product_permalink: 'full-stack-audit', product_name: 'Full Stack Audit', price: '30000', email: 'x@example.com', resource_name: 'sale' });
+  const unverified = await ping(vmSale('s1'));
+  const tierAfterUnverified = pEnv.DB.accounts.get(VID);
+  pEnv.GUMROAD_ACCESS_TOKEN = 'tok';
+  saleApi.set('s2', { id: 's2', product_permalink: 'yinmj', product_name: 'Void Monthly', refunded: false, chargedback: false, subscription_id: 'sub-1' });
+  saleApi.set('s3', { id: 's3', product_permalink: 'gqsgib', product_name: 'The Big Board', refunded: false, subscription_id: 'sub-9' });
+  const wrongProduct = await ping(vmSale('s3', { 'url_params[void]': VID2, subscription_id: 'sub-9' }));
+  const notFound = await ping(vmSale('s404', { 'url_params[void]': VID2 }));
+  const good = await ping(vmSale('s2'));
+  const reuse = await ping(vmSale('s2', { 'url_params[void]': VID2, sale_timestamp: '2026-09-28T02:00:00Z' }));
+  const salesRow = pEnv.DB.sales.get('sale:a1:2026-09-28T01:00:00Z');
+  check('gumroad ping: key required; every sale of any product recorded once; Void Monthly -> paid only when Gumroad\'s API confirms the sale', noKeyCfg.status === 503 && wrongKey.status === 403 && audit.status === 200 && salesRow && salesRow.product === 'full-stack-audit' && /buyer|x%40example/.test(salesRow.raw) && auditAgain.body.note === 'already recorded'
+    && /no GUMROAD_ACCESS_TOKEN/.test(unverified.body.effect) && !tierAfterUnverified && /different product/.test(wrongProduct.body.effect) && /not found/.test(notFound.body.effect) && !pEnv.DB.accounts.has(VID2)
+    && good.body.effect === 'tier paid' && pEnv.DB.accounts.get(VID).tier === 'paid' && pEnv.DB.accounts.get(VID).subscription_id === 'sub-1' && /already linked/.test(reuse.body.effect) && !pEnv.DB.accounts.has(VID2) && pEnv.DB.sales.size === 6,
+    [noKeyCfg.status, wrongKey.status, audit.status, auditAgain.body && auditAgain.body.note, unverified.body.effect, wrongProduct.body.effect, notFound.body.effect, good.body.effect, reuse.body.effect, pEnv.DB.sales.size].join(' | '));
+  const sub = (resource, at) => ({ subscription_id: 'sub-1', product_id: 'ITp6', product_name: 'Void Monthly', resource_name: resource, [resource === 'cancellation' ? 'cancelled_at' : resource === 'subscription_ended' ? 'ended_at' : 'restarted_at']: at, user_email: 'buyer@example.com' });
+  const cancel = await ping(sub('cancellation', '2026-10-01T00:00:00Z')); const afterCancel = pEnv.DB.accounts.get(VID).tier;
+  const restart = await ping(sub('subscription_restarted', '2026-10-02T00:00:00Z')); const afterRestart = pEnv.DB.accounts.get(VID).tier;
+  const ended = await ping(sub('subscription_ended', '2026-11-01T00:00:00Z')); const afterEnded = pEnv.DB.accounts.get(VID).tier;
+  await ping(sub('subscription_restarted', '2026-11-02T00:00:00Z'));
+  const refund = await ping({ sale_id: 's2', product_permalink: 'yinmj', product_name: 'Void Monthly', resource_name: 'refund', sale_timestamp: '2026-09-28T01:00:00Z', refunded: 'true' }); const afterRefund = pEnv.DB.accounts.get(VID).tier;
+  const otherCancel = await ping({ subscription_id: 'sub-9', product_name: 'The Big Board', resource_name: 'cancellation', cancelled_at: '2026-10-03T00:00:00Z' });
+  check('gumroad ping: a cancellation, ended membership or refund drops the Void back to free (restarted = paid again); every ping stays on record', cancel.body.effect === 'tier free (cancellation)' && afterCancel === 'free' && afterRestart === 'paid' && ended.body.effect === 'tier free (subscription_ended)' && afterEnded === 'free' && refund.body.effect === 'tier free (refund)' && afterRefund === 'free' && otherCancel.status === 200 && pEnv.DB.sales.size === 12 && [...pEnv.DB.sales.values()].filter((r) => r.resource === 'cancellation').length === 2,
+    [cancel.body.effect, afterCancel, afterRestart, ended.body.effect, afterEnded, refund.body.effect, afterRefund, pEnv.DB.sales.size].join(' | '));
+  const brokenPing = await ping(vmSale('s9'), { env: { ...pEnv, DB: memoryStoreD1({ broken: true }) } });
+  check('gumroad ping: no D1 = 503 so Gumroad retries (nothing half-written); nothing ever deletes a sale or a catalog row', brokenPing.status === 503 && !/DELETE FROM void_(sales|catalog)/.test(fs.readFileSync(new URL('../void-live-deploy/functions/api/gumroad.js', import.meta.url), 'utf8') + fs.readFileSync(new URL('../void-live-deploy/lib/store-db.js', import.meta.url), 'utf8') + fs.readFileSync(new URL('../void-live-deploy/functions/api/catalog.js', import.meta.url), 'utf8')), brokenPing.status);
   }
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));

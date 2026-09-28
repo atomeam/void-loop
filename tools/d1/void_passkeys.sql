@@ -33,3 +33,12 @@ CREATE TABLE IF NOT EXISTS void_mine (
   rev INTEGER NOT NULL,         -- bumps on every write; a stale write gets 409
   updated TEXT NOT NULL
 );
+-- Plan item 12 (paid Void, asked for, not advertised): a passkey account's tier. No row = 'free'.
+-- Written only by /api/gumroad after Gumroad's API confirms a Void Monthly sale; forget me deletes it.
+CREATE TABLE IF NOT EXISTS void_accounts (
+  user_id TEXT PRIMARY KEY,
+  tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'paid')),
+  sale_id TEXT UNIQUE,          -- the Gumroad sale that linked it (one sale, one Void)
+  subscription_id TEXT,         -- the Void Monthly membership (cancellation / ended / restarted pings find the Void by this)
+  updated TEXT NOT NULL
+);

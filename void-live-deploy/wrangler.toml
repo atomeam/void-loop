@@ -6,6 +6,8 @@ pages_build_output_dir = "."
 #   npx wrangler kv namespace create MISSES   -> paste the id below
 # Secrets once: npx wrangler pages secret put READ_TOKEN --project-name=a-to-mind
 #               npx wrangler pages secret put SALT --project-name=a-to-mind
+# Paid Void + the store (plan item 12): npx wrangler pages secret put GUMROAD_PING_KEY --project-name=a-to-mind      (any long random string; also in the Ping URL)
+#                                       npx wrangler pages secret put GUMROAD_ACCESS_TOKEN --project-name=a-to-mind  (Gumroad app token, view_sales scope)
 [[kv_namespaces]]
 binding = "MISSES"
 id = "95b089f5717a4793b2b52a852f2a8443"
