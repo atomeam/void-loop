@@ -390,11 +390,14 @@
       opacity: 0; transition: opacity 1.5s ease; }
     #void-stars.on { opacity: 1; }
     #stage, #dock { z-index: 1; }
+    html.dragging, html.dragging * { user-select: none !important; -webkit-user-select: none !important; cursor: grabbing !important; }
+    #void-swarm { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; }
+    #void-swarm.on { opacity: 1; }
     body.void-quiet { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; font-weight: 300; }
     /* ---- Atmosphere + depth (the void stays empty; it just breathes) ---- */
     #void-aura { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 2.4s ease; }
     #void-aura.on { opacity: 1; }
-    html.no-gl body::before { content: ''; position: fixed; inset: -20%; z-index: 0; pointer-events: none;
+    html.no-gl[data-fx="nebula"] body::before { content: ''; position: fixed; inset: -20%; z-index: 0; pointer-events: none;
       background: radial-gradient(40% 35% at 30% 40%, color-mix(in srgb, var(--void-glow, #0b0b10) 70%, #1a1030), transparent 70%),
                   radial-gradient(35% 30% at 70% 60%, color-mix(in srgb, var(--void-glow, #0b0b10) 60%, #06202a), transparent 70%);
       filter: blur(40px); opacity: .7; animation: auraDrift 60s ease-in-out infinite alternate; }
@@ -422,7 +425,8 @@
     @media (prefers-reduced-motion: reduce) {
       .thing, .vpage, .thing.arrive { animation: none !important; transition: opacity .2s ease !important; }
       .vpage, .vpage.on { transform: translate(-50%, -46%); filter: none; }
-      html.no-gl body::before { animation: none; }
+      html.no-gl[data-fx="nebula"] body::before { animation: none; }
+      html, #void-glow, #void-stars, #void-aura, #void-swarm, #row { transition: none !important; }
     }
   </style>
 </head>
@@ -580,21 +584,32 @@ Object.values(things).forEach((th) => {
 
     function bindDrag(el, th) {
       el.addEventListener('pointerdown', (e) => {
-        if (e.target && e.target.isContentEditable) return;
-        selectedId = th.id;
-        render();
+        if (e.button > 0) return;
+        const editable = !!(e.target && e.target.isContentEditable); // text you can edit: a click edits, a real move drags
         const startX = e.clientX, startY = e.clientY;
         const origX = th.x, origY = th.y;
+        let cur = null;
+        const begin = () => {
+          selectedId = th.id;
+          if (Object.keys(things).pop() !== th.id) { delete things[th.id]; things[th.id] = th; } // to the front (render order = z-order)
+          document.documentElement.classList.add('dragging');
+          if (editable) { try { getSelection().removeAllRanges(); if (document.activeElement) document.activeElement.blur(); } catch (_) {} }
+          render();
+          cur = stage.querySelector('[data-id="' + th.id + '"]') || el; // render() replaced the element; move the live one
+        };
+        if (!editable) begin();
         const move = (ev) => {
+          if (!cur) { if (Math.hypot(ev.clientX - startX, ev.clientY - startY) < 5) return; begin(); }
           th.x = Math.max(0, origX + (ev.clientX - startX));
           th.y = Math.max(0, origY + (ev.clientY - startY));
-          el.style.left = th.x + 'px';
-          el.style.top = th.y + 'px';
+          cur.style.left = th.x + 'px';
+          cur.style.top = th.y + 'px';
         };
         const up = () => {
           window.removeEventListener('pointermove', move);
           window.removeEventListener('pointerup', up);
-          save();
+          document.documentElement.classList.remove('dragging');
+          if (cur) save();
         };
         window.addEventListener('pointermove', move);
         window.addEventListener('pointerup', up);
@@ -2914,7 +2929,7 @@ return { ok: true, detail: 'timer-reset' };
 
     // row 13: entering your own Void (silent, first time something is kept) + personal look
     const ENTRY_KEY = 'a2m.void.entered.v1', LOOK_KEY = 'a2m.void.look.v1';
-    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'off', quiet: false, scale: 1 };
+    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'off', quiet: false, scale: 1, fx: 'off' };
     const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };
     let voidLook = { ...LOOK_DEFAULT };
     try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}
@@ -2949,13 +2964,16 @@ return { ok: true, detail: 'timer-reset' };
       cancelAnimationFrame(starRAF); starRAF = 0;
       if (voidLook.stars !== 'off') { if (!stars.length) seedStars(); starCv.classList.add('on'); drawStars(); }
       else starCv.classList.remove('on');
+      document.documentElement.dataset.fx = voidLook.fx || 'off'; // the atmosphere script below reads this; the public stage is plain
+      window.dispatchEvent(new Event('void-fx'));
       if (persist) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} mineChanged(); }
     }
     document.addEventListener('visibilitychange', () => { if (!document.hidden && voidLook.stars !== 'off' && !starRAF) drawStars(); });
     window.addEventListener('resize', () => { if (voidLook.stars !== 'off') seedStars(); });
     function handleLookAsk(lower) {
       if (/^(this is mine|open my void|my void)\s*[.!]?$/.test(lower)) { enterVoid(); say('yours'); return true; }
-      if (!/\b(my void|the void|void)\b.*\b(deep blue|blue|purple|warmer|warm|darker|dark)\b|\b(add|slow|no|remove|hide)\s+(the\s+)?stars\b|\bquieter\s+(font|text)\b|\b(bigger|larger|smaller)\s+text\b|^reset\s+my\s+void$/.test(lower)) return false;
+      const FX = /\b(add|no|remove|hide|stop)\s+(a\s+|the\s+)?(nebula|particles?|swarm)\b|\bmake\s+my\s+void\s+(swirl|swirly|alive|move)\b|^(calm\s+my\s+void|no\s+effects)\s*[.!]?$/;
+      if (!FX.test(lower) && !/\b(my void|the void|void)\b.*\b(deep blue|blue|purple|warmer|warm|darker|dark)\b|\b(add|slow|no|remove|hide)\s+(the\s+)?stars\b|\bquieter\s+(font|text)\b|\b(bigger|larger|smaller)\s+text\b|^reset\s+my\s+void$/.test(lower)) return false;
       enterVoid();
       if (/^reset\s+my\s+void$/.test(lower)) voidLook = { ...LOOK_DEFAULT };
       const c = (lower.match(/\b(deep blue|purple|warmer|darker|blue)\b/) || [])[1] || (/\bwarm\b/.test(lower) ? 'warmer' : /\bdark\b/.test(lower) ? 'darker' : '');
@@ -2963,6 +2981,9 @@ return { ok: true, detail: 'timer-reset' };
       if (/\badd\s+(the\s+)?stars\b/.test(lower)) voidLook.stars = 'on';
       if (/\bslow\s+(the\s+)?stars\b/.test(lower)) voidLook.stars = 'slow';
       if (/\b(no|remove|hide)\s+(the\s+)?stars\b/.test(lower)) voidLook.stars = 'off';
+      if (/\badd\s+(a\s+|the\s+)?nebula\b/.test(lower)) voidLook.fx = 'nebula';
+      if (/\badd\s+(the\s+)?(particles?|swarm)\b|\bmake\s+my\s+void\s+(swirl|swirly|alive|move)\b/.test(lower)) voidLook.fx = 'swarm';
+      if (/\b(no|remove|hide|stop)\s+(a\s+|the\s+)?(nebula|particles?|swarm)\b|^(calm\s+my\s+void|no\s+effects)\s*[.!]?$/.test(lower)) voidLook.fx = 'off';
       if (/\bquieter\s+(font|text)\b/.test(lower)) voidLook.quiet = true;
       if (/\b(bigger|larger)\s+text\b/.test(lower)) voidLook.scale = Math.min(1.4, (voidLook.scale || 1) + 0.15);
       if (/\bsmaller\s+text\b/.test(lower)) voidLook.scale = Math.max(0.85, (voidLook.scale || 1) - 0.15);
@@ -3274,6 +3295,7 @@ return { ok: true, detail: 'timer-reset' };
       if (/^#[0-9a-f]{6}$/i.test(l.bg)) o.bg = l.bg;
       if (/^#[0-9a-f]{6}$/i.test(l.glow)) o.glow = l.glow;
       if (['off', 'on', 'slow'].includes(l.stars)) o.stars = l.stars;
+      if (['off', 'nebula', 'swarm'].includes(l.fx)) o.fx = l.fx;
       o.quiet = !!l.quiet;
       const s = Number(l.scale); if (isFinite(s) && s) o.scale = Math.min(1.4, Math.max(0.85, s));
       return o;
@@ -3861,6 +3883,10 @@ return { ok: true, detail: 'timer-reset' };
   // ---- Atmosphere: a slow nebula behind the void (WebGL, tinted by your look), plus depth on everything summoned ----
   (function () {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fxNow = () => document.documentElement.dataset.fx || 'off';
+    let nebulaStarted = false;
+    const startNebula = () => {
+    if (nebulaStarted) return; nebulaStarted = true;
     const cv = document.createElement('canvas'); cv.id = 'void-aura'; document.body.prepend(cv);
     const gl = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false, powerPreference: 'low-power' });
     if (!gl) { document.documentElement.classList.add('no-gl'); cv.remove(); }
@@ -3902,13 +3928,63 @@ return { ok: true, detail: 'timer-reset' };
             gl.uniform3fv(uG, hex(cs.getPropertyValue('--void-glow'), '0b0b10')); gl.uniform3fv(uB, hex(cs.getPropertyValue('--void-bg'), '050505'));
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
           }
-          if (!reduce && !document.hidden) raf = requestAnimationFrame(draw);
+          if (!reduce && !document.hidden && fxNow() === 'nebula') raf = requestAnimationFrame(draw);
         };
-        document.addEventListener('visibilitychange', () => { if (!document.hidden && !raf) raf = requestAnimationFrame(draw); });
-        requestAnimationFrame((t) => { draw(t); cv.classList.add('on'); });
+        const sync = () => { const on = fxNow() === 'nebula'; cv.classList.toggle('on', on); if (on && !raf) raf = requestAnimationFrame(draw); };
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); });
+        addEventListener('void-fx', sync);
+        requestAnimationFrame((t) => { draw(t); sync(); });
         if (reduce) addEventListener('storage', () => requestAnimationFrame(draw));
       }
     }
+    };
+    // particle swarm: thousands of points on the GPU, drifting in a slow orbit, parting around the cursor (your Void only)
+    let swarmStarted = false;
+    const startSwarm = () => {
+      if (swarmStarted) return; swarmStarted = true;
+      const cv = document.createElement('canvas'); cv.id = 'void-swarm'; document.body.prepend(cv);
+      const gl = cv.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: false, powerPreference: 'low-power' });
+      if (!gl) { cv.remove(); return; }
+      const vs = `attribute vec3 a;uniform float t;uniform vec2 m;uniform vec2 r;uniform float dpr;varying float v;
+        void main(){float s=a.z;float ang=t*(.015+.03*s);mat2 R=mat2(cos(ang),-sin(ang),sin(ang),cos(ang));
+          vec2 p=R*a.xy+.035*vec2(sin(t*.31+s*40.+a.y*3.),cos(t*.27+s*55.+a.x*3.));
+          vec2 asp=vec2(r.y/r.x,1.);vec2 d=(p-m)/asp;float k=exp(-dot(d,d)*14.)*.16;p+=normalize(d+1e-4)*k*asp;
+          p.x*=asp.x*1.25;gl_Position=vec4(p,0.,1.);gl_PointSize=(1.+s*2.2)*dpr;v=(.18+.62*s)*(1.-smoothstep(.9,1.6,length(a.xy)));}`;
+      const fs = `precision mediump float;uniform vec3 g;varying float v;void main(){vec2 c=gl_PointCoord-.5;float d=dot(c,c);
+        gl_FragColor=vec4(mix(vec3(.75,.82,1.),g*3.+vec3(.25,.3,.5),.45),v*smoothstep(.25,.0,d));}`;
+      const sh = (tp, src) => { const o = gl.createShader(tp); gl.shaderSource(o, src); gl.compileShader(o); return o; };
+      const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr);
+      if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { cv.remove(); return; }
+      gl.useProgram(pr);
+      const N = Math.round(Math.min(9000, Math.max(2500, innerWidth * innerHeight / 180)));
+      const data = new Float32Array(N * 3);
+      for (let i = 0; i < N; i++) { const rr = Math.sqrt(Math.random()) * 1.45, th = Math.random() * 6.2832; data[i * 3] = Math.cos(th) * rr; data[i * 3 + 1] = Math.sin(th) * rr * .8; data[i * 3 + 2] = Math.pow(Math.random(), 2.2); }
+      const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
+      const U = (k) => gl.getUniformLocation(pr, k); const uT = U('t'), uM = U('m'), uR = U('r'), uD = U('dpr'), uG = U('g');
+      gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+      const dpr = Math.min(2, devicePixelRatio || 1);
+      const size = () => { cv.width = Math.round(innerWidth * dpr); cv.height = Math.round(innerHeight * dpr); gl.viewport(0, 0, cv.width, cv.height); };
+      size(); addEventListener('resize', size);
+      let mx = 9, my = 9, tx = 9, ty = 9, raf = 0;
+      addEventListener('pointermove', (e) => { tx = e.clientX / innerWidth * 2 - 1; ty = 1 - e.clientY / innerHeight * 2; }, { passive: true });
+      addEventListener('pointerleave', () => { tx = 9; ty = 9; });
+      const hex = (v) => { const m = /#?([0-9a-f]{6})/i.exec(v || '') || [0, '0b0b10']; const x = parseInt(m[1], 16); return [(x >> 16 & 255) / 255, (x >> 8 & 255) / 255, (x & 255) / 255]; };
+      const draw = (now) => {
+        raf = 0; mx += (tx - mx) * .08; my += (ty - my) * .08;
+        gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.uniform1f(uT, reduce ? 30 : now / 1000); gl.uniform2f(uM, mx, my); gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uD, dpr);
+        gl.uniform3fv(uG, hex(getComputedStyle(document.documentElement).getPropertyValue('--void-glow')));
+        gl.drawArrays(gl.POINTS, 0, N);
+        if (!reduce && !document.hidden && fxNow() === 'swarm') raf = requestAnimationFrame(draw);
+      };
+      const sync = () => { const on = fxNow() === 'swarm'; cv.classList.toggle('on', on); if (on && !raf) raf = requestAnimationFrame(draw); };
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); });
+      addEventListener('void-fx', sync);
+      requestAnimationFrame(sync);
+    };
+    const fxGo = () => { const f = fxNow(); if (f === 'nebula') startNebula(); if (f === 'swarm') startSwarm(); };
+    addEventListener('void-fx', fxGo); fxGo();
     // depth: summoned things arrive from the dark and tilt toward you
     if (!reduce) {
       new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.classList && n.classList.contains('thing') && !n.dataset.seen) { n.dataset.seen = '1'; if (performance.now() > 1500) { n.classList.add('arrive'); setTimeout(() => n.classList.remove('arrive'), 800); } } })

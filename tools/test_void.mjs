@@ -400,6 +400,28 @@ try {
       /only the owner/.test(gated) && shown === 1 && /Call Sam/.test(afterReload) && gone === 0 && kept === 3 && afterX === 2 && afterUndo === 3 && !net.some((u) => /wikipedia|miss|answer/.test(u)),
       [gated, shown, afterReload.slice(0, 40), gone, kept, afterX, afterUndo, net.join(',')].join(' | '));
     await C.ctx.close(); }
+  // Earned effects (Atom 2026-09-28: personal layer first): the public stage runs no WebGL; the nebula and the particle swarm
+  // start only when someone asks in their own Void, and "calm my void" stops them. Card physics: a grabbed card comes to the front.
+  { const V = await fresh();
+    const pub = await V.p.evaluate(() => ({ aura: !!document.getElementById('void-aura'), swarm: !!document.getElementById('void-swarm'), fx: document.documentElement.dataset.fx }));
+    const fx = async () => V.p.evaluate(() => ({ look: (JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}')).fx, aura: !!document.querySelector('#void-aura.on'), swarm: !!document.querySelector('#void-swarm.on'), gl: !document.documentElement.classList.contains('no-gl') && !!document.createElement('canvas').getContext('webgl') }));
+    await V.ask('make my void swirl', 800); const sw = await fx();
+    await V.ask('add a nebula', 800); const nb = await fx();
+    await V.ask('calm my void', 800); const calm = await fx();
+    check('effects: a fresh public visit starts no WebGL (no nebula, no swarm); "make my void swirl" starts the particle swarm, "add a nebula" swaps to the nebula, "calm my void" stops both; saved in your look',
+      !pub.aura && !pub.swarm && pub.fx === 'off' && sw.look === 'swarm' && nb.look === 'nebula' && calm.look === 'off'
+      && (!sw.gl || (sw.swarm && !sw.aura)) && (!nb.gl || (nb.aura && !nb.swarm)) && !calm.aura && !calm.swarm && !V.errors.length,
+      JSON.stringify({ pub, sw, nb, calm, e: V.errors }));
+    await V.ask('add a sticky that says first', 400); await V.ask('another note that says second', 400);
+    const firstBox = await V.p.$$eval('.sticky', (d) => { const e = d.find((x) => x.textContent === 'first'); const b = e.getBoundingClientRect(); return { x: b.left + 20, y: b.top + 20 }; });
+    await V.p.mouse.move(firstBox.x, firstBox.y); await V.p.mouse.down(); await V.p.mouse.move(firstBox.x + 40, firstBox.y + 30, { steps: 4 });
+    const dragging = await V.p.evaluate(() => document.documentElement.classList.contains('dragging'));
+    await V.p.mouse.up(); await V.p.waitForTimeout(150);
+    const order = (await V.state()).filter((x) => x.kind === 'sticky').map((x) => x.text);
+    check('card physics: the grabbed card comes to the front and stays there after the drop; nothing selects while dragging',
+      dragging && order[order.length - 1] === 'first' && !(await V.p.evaluate(() => document.documentElement.classList.contains('dragging'))) && !(await V.p.evaluate(() => String(getSelection()))),
+      JSON.stringify({ dragging, order }));
+    await V.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
