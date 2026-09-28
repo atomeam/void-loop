@@ -21,3 +21,18 @@ How to use this: pick the top row whose Void form isn't live yet, read the old c
 | 13 | (new) entering your own Void | the step from the shared empty surface into your own Void | silent entry the first time you keep something (the void deepens once, flag a2m.void.entered.v1), then "make my void deep blue / add stars / reset my void" saved per browser (a2m.void.look.v1); public surface stays plain; skills and learning stay universal | live (entry + look, deploy verified 2026-09-25) |
 
 Rows get added whenever AutoSalvage or an agent finds another old project. Nothing is thrown out.
+
+## From the September spec pack (Site Operator, 2026-09-27)
+| ask | becomes | notes |
+| --- | --- | --- |
+| write release notes for my repo | skill | drafts notes; posting anywhere waits for the confirm line |
+| audit my GitHub Actions | skill | read-only; findings by file and line |
+| write an incident brief | skill | timeline, impact, cause if known, next steps |
+| plan <objective> | skill | steps, spend cap, which steps need a confirm, before anything runs |
+| show the board | live | empty board: one plain line + a few example asks; samples never count |
+| what did you do today? | skill (row 4) | today's runs, spend, confirms, declines, budget left |
+| confirm line (plan item 7) | core | from ApprovalEvent v0: one line before any send/book/spend; changed request or no answer = doesn't run |
+| status | skill | each component; Momentum = workflow execution and event delivery |
+| uptime page | page off the front | history, incidents, subscribe |
+| show me a sample run | optional skill | read-only FrostShare run; never touches the board |
+Dropped: front-page headline, subheading, buttons, sample board panel, pricing, demo embed, portal card.
