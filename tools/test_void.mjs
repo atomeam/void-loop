@@ -104,6 +104,7 @@ function memoryMeD1({ broken = false } = {}) {
     if (/^UPDATE void_mine SET data = \?, rev = rev \+ 1, updated = \? WHERE user_id = \? AND rev = \?$/.test(sql)) { need('void_mine'); const r = T.mine.get(a[2]); if (!r || r.rev !== a[3]) return ch(0); Object.assign(r, { data: a[0], rev: r.rev + 1, updated: a[1] }); return ch(1); }
     if (/^DELETE FROM void_mine WHERE user_id = \?$/.test(sql)) { need('void_mine'); return ch(T.mine.delete(a[0]) ? 1 : 0); }
     if (/^DELETE FROM void_accounts WHERE user_id = \?$/.test(sql)) { need('void_accounts'); return ch(T.accounts.delete(a[0]) ? 1 : 0); }
+    if (/^DELETE FROM void_pages WHERE user_id = \?$/.test(sql)) { need('void_pages'); return ch(0); }
     throw new Error('unexpected sql: ' + sql);
   };
   const first = (sql, a) => {
@@ -466,16 +467,24 @@ try {
       /Lisbon, Portugal/.test(seen.card) && !seen.img && seen.bg === '#01040f' && seen.fx === 'swarm' && /"mine"/.test(seen.mine || '') && /@sam/.test(hello) && /no one here yet/.test(nobody),
       JSON.stringify({ seen, hello, nobody }));
     await P.ctx.close();
-    const O = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", ' + JSON.stringify(JSON.stringify({ token: A })) + ');' });
+    const O = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", ' + JSON.stringify(JSON.stringify({ token: A })) + ');' }, () => { window.__tools = {}; document.modelContext = { registerTool: async (d) => { window.__tools[d.name] = d; } }; });
     await O.ctx.route(/\/api\/mine$/, (rt) => rt.fulfill(json({ data: null, rev: 0, updated: null })));
     await O.ctx.route(/\/api\/publish$/, async (rt) => { const q = rt.request(); const res = await publishFn['onRequest' + q.method()[0] + q.method().slice(1).toLowerCase()]({ request: new Request('https://a-to-mind.com/api/publish', { method: q.method(), headers: { 'content-type': 'application/json', authorization: (await q.allHeaders()).authorization || '' }, body: q.method() === 'GET' || q.method() === 'DELETE' ? undefined : q.postData() }), env }); return rt.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }); });
     await O.p.reload(); await O.p.waitForTimeout(600);
     await O.ask('publish my void as @neo', 500); const asked = await O.whisper(); const before = await DB.prepare("SELECT handle FROM void_pages WHERE handle = 'neo'").first();
     await O.ask('yes', 900); const done = await O.page(); const after = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
     await O.ask('unpublish', 700); const gone = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
+    const C = await mk('userC', 'paid'); await pub(C, 'POST', { handle: 'cee', look, cards });
+    const up = (await render('@cee')).status;
+    const fg = await passkeyFn.onRequestPost({ request: new Request('https://a-to-mind.com/api/passkey', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + C }, body: JSON.stringify({ step: 'forget' }) }), env });
+    const afterForget = (await render('@cee')).status, rowC = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userC'").first();
+    const agentTry = await O.p.evaluate(async () => { const t = window.__tools && window.__tools.void_ask; return t ? [await t.execute({ ask: 'publish my void as @agentx' }), await t.execute({ ask: 'unpublish' })] : null; }).catch((e) => 'ERR ' + e);
     check('publish: "publish my void as @neo" asks the person first (nothing written); "yes" publishes and shows the link (the old @sam is freed); "unpublish" takes it down',
       /Put your Void at a-to-mind\.com\/@neo/.test(asked) && !before && /Your Void is public/.test(done) && /@neo/.test(done) && after && after.handle === 'neo' && !gone,
       JSON.stringify({ asked, before, done: done.slice(0, 80), after, gone }));
+    check('publish: "forget me" also takes the public page down (it was live, then 404, row gone); a browser agent cannot publish or unpublish',
+      up === 200 && fg.status === 200 && afterForget === 404 && !rowC && Array.isArray(agentTry) && agentTry.every((x) => /person at the screen/.test(String(x))),
+      JSON.stringify({ up, forget: fg.status, afterForget, rowC, agentTry }));
     await O.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');

@@ -3900,7 +3900,8 @@ return { ok: true, detail: 'timer-reset' };
       if (isPaidAsk(ask)) return 'Paid Void is for the person at the screen, asked by hand.';
       // Defences (runaway agents): an agent can never answer the confirm line or "forget me" for the person, never start a
       // send, booking or spend, and never read the owner's board. Those are for the person at the screen, by hand.
-      if (pendingConfirm || pendingForget) return 'Void is waiting for the person at the screen to answer. Agents can\'t answer for them.';
+      if (pendingConfirm || pendingForget || pendingPublish) return 'Void is waiting for the person at the screen to answer. Agents can\'t answer for them.';
+      if (PUBLISH_RE.test(ask.toLowerCase()) || UNPUBLISH_RE.test(ask.toLowerCase())) return 'Publishing your Void is for the person at the screen, asked by hand.';
       const coreA = await Promise.race([approvalReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
       if (!coreA) return 'Try again in a moment.';
       if (coreA.parseGatedAsk(ask)) return 'Sends, bookings and spends are for the person at the screen, asked by hand.';
