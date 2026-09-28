@@ -14,10 +14,10 @@
 //   hard   - Atom's rule (STANDING.md): Void may pay for a stronger model, but only from money it has already earned (the
 //            Gumroad earnings, lib/earnings.js) and only under a standing spend someone said yes to on the confirm line
 //            (/api/approval, tool models.spend). So: earned budget > 0 AND an approved standing spend with room left = the paid
-//            model (DeepSeek V4 Flash), each call's cost recorded against both. Otherwise the free tier: Qwen 3.8 27B on the
-//            Workers AI free allocation (no billing method, no new cost), within a daily cap so it can't eat Gemma's allowance.
-//            Otherwise Gemma. Whenever the paid model wasn't used, "would escalate" goes to the log as evidence for the will.
-//            The same paid path (same two conditions) answers when the free allowance runs out and Gemma can't.
+//            model (DeepSeek V4 Flash), each call's cost recorded against both. Otherwise Gemma answers (the one free model;
+//            Atom: no second fallback stack) and the stronger model is recorded, not called: a 'would escalate' in
+//            void_shortfalls (lib/shortfall.js, the same evidence ledger the will and /api/earnings read).
+//            The same paid path (same two conditions) answers when Gemma itself fails; otherwise the open-web answer.
 //   fallback - the classifier failed or ran out of time: exactly the old behaviour (Gemma), logged.
 // The router runs while Wikipedia sources are fetched, and the answer waits for it at most BUDGET_MS from the start.
 // Nothing here touches the page, the confirm line or any action: the router only picks a model and writes a log line.
@@ -26,12 +26,10 @@ import { readEarnings } from './earnings.js';
 
 export const EMBED_MODEL = '@cf/baai/bge-m3';
 export const DEFAULT_MODEL = '@cf/google/gemma-4-26b-a4b-it';
-export const STRONG_MODEL = '@cf/qwen/qwen3.8-27b'; // free allocation, no paid billing method needed (developers.cloudflare.com/workers-ai/platform/pricing)
 export const PAID_MODEL = '@cf/deepseek-ai/deepseek-v4-flash-0731'; // needs a paid billing method: only from earnings, under an approved standing spend
 export const BUDGET_MS = 300; // the longest the router may hold an answer, counted from the start of the request
-export const STRONG_TIMEOUT_MS = 20000; // then Gemma answers instead
-export const ESCALATE_DAILY_CAP = 10;
-export const EXAMPLES_TIMEOUT_MS = 10000; // a stuck embedding call is dropped, so the next ask tries again // ~400 neurons each (Qwen 3.8 27B) = at most ~40% of the 10,000 free neurons a day
+export const STRONG_TIMEOUT_MS = 20000; // a paid call that takes longer is dropped (and costs nothing); then Gemma answers
+export const EXAMPLES_TIMEOUT_MS = 10000; // a stuck embedding call is dropped, so the next ask tries again
 // Initial thresholds for bge-m3 cosine similarity; every routed ask logs its scores so these can be tuned from real traffic
 // (Pages env VOID_ROUTER_TUNE = JSON, e.g. {"skillMin":0.72}) without a code change.
 export const TUNING = { skillMin: 0.7, skillMargin: 0.04, hardMargin: 0.03, hardMin: 0.62, cue: 0.05, cueMax: 0.1 };
@@ -197,24 +195,6 @@ export function ensureRouteTables(env) {
   return p;
 }
 
-// The free tier for a hard ask. { model } = yes; { would, why } = no. Never adds a cost:
-// Qwen 3.8 27B runs on the Workers AI free allocation (Workers Free can't be billed; past the allowance it just refuses).
-export async function escalation(env, day = new Date().toISOString().slice(0, 10)) {
-  const cap = Number.isFinite(+(env && env.VOID_ESCALATE_CAP)) && env.VOID_ESCALATE_CAP !== undefined && env.VOID_ESCALATE_CAP !== '' ? +env.VOID_ESCALATE_CAP : ESCALATE_DAILY_CAP;
-  if (env && env.VOID_ESCALATE === 'off') return { would: STRONG_MODEL, why: 'switched off' };
-  if (String((env && env.VOID_AI_PLAN) || 'free').toLowerCase() !== 'free') return { would: STRONG_MODEL, why: 'Workers Paid: past the free allowance it would bill, so only the paid path may' };
-  if (!(cap > 0)) return { would: STRONG_MODEL, why: 'daily cap is 0' };
-  try {
-    await ensureRouteTables(env);
-    const row = await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES (?, '1') ON CONFLICT(k) DO UPDATE SET v = CAST(v AS INTEGER) + 1 RETURNING v").bind('router:escalated:' + day).first();
-    const n = parseInt(row && row.v, 10);
-    if (!(n <= cap)) return { would: STRONG_MODEL, why: 'daily cap reached' };
-    return { model: STRONG_MODEL, n };
-  } catch (_) {
-    return { would: STRONG_MODEL, why: 'no counter, cap not provable' }; // can't prove the cap = don't spend the allowance
-  }
-}
-
 // --- paying for a stronger model: only from what Void earned, only under a standing spend said yes to on the confirm line ---
 export const PAID_MODELS = [PAID_MODEL]; // a standing spend can only name these
 export const PAID_PRICE = { [PAID_MODEL]: { in: 0.44, out: 1.32 } }; // $ per M tokens (developers.cloudflare.com/workers-ai/platform/pricing)
@@ -236,7 +216,7 @@ export async function grantStandingSpend(args, env, rec) {
   return { standing: id, model, cap_cents: cap, per };
 }
 
-// { model, spend, left } = Void may pay for this call; { why } = it may not (then the free tier, and "would escalate").
+// { model, spend, left } = Void may pay for this call; { why } = it may not (then Gemma, and a 'would escalate' shortfall).
 export async function paidAccess(env, now = new Date()) {
   let budget = 0;
   try { budget = (await readEarnings(env)).budget_cents; } catch (_) { return { why: 'no earned budget (no sales recorded)' }; }
@@ -292,7 +272,6 @@ export async function readRoutes(env, limit = 500) {
   return {
     total: sum(() => true),
     skill: sum((r) => r.route === 'skill'), simple: sum((r) => r.route === 'simple'), hard: sum((r) => r.route === 'hard'), fallback: sum((r) => r.route === 'fallback'),
-    escalated: sum((r) => r.route === 'hard' && /^escalated/.test(r.outcome || '')),
     paid: sum((r) => /paid from earnings/.test(r.outcome || '')),
     would_escalate: sum((r) => r.route === 'hard' && !!r.would),
     would_models: [...new Set(rows.filter((r) => r.would).map((r) => r.would))],

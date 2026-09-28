@@ -1,13 +1,14 @@
-// Void's answer engine: any ask no skill covers is answered from the open web.
-// Wikipedia search + summaries; Cloudflare's free quota is not required for an answer: the open-web answer is the floor.
-// On top of it (whenever Workers AI is bound; the Pages env var VOID_ANSWER_MODELS=off turns it off) a model writes the answer
-// from those sources, with a tiny router in front (lib/router.js): skill / simple / hard while the sources are fetched. Gemma 4 26B answers by default; a hard ask may pay for a stronger model
-// only from what Void earned under a standing spend said yes to on the confirm line, else a stronger free model, else it logs
-// 'would escalate'. A slow or failed router = the plain Gemma answer; no model (allowance out, paying not allowed, or
-// switched off) = the open-web answer. With models on, D1 is written: the answer cache, the route log (void_routes) and the
-// escalation counters. Fix mode: the model works on the pasted automation; the rules (ruleFix) are its fallback.
+// Void's answer engine: any ask no skill covers gets a short sourced answer. Sources: Wikipedia search + summaries.
+// Gemma 4 26B on Workers AI is the one free model (answers and fixes). A tiny router (lib/router.js) runs while the sources
+// load: skill / simple / hard. A hard ask may pay for a stronger model only from what Void earned, under a standing spend said
+// yes to on the confirm line; otherwise Gemma answers and the stronger model is recorded, not called ('would escalate' in
+// void_shortfalls, lib/shortfall.js: the one evidence ledger). A slow or failed router = the plain Gemma answer. When Gemma
+// itself fails (allowance out, busy, empty) the same paid rule applies, and without it the answer is the open web (the
+// Wikipedia extracts, no model, no D1 write) and a fix is the rules (ruleFix). VOID_ANSWER_MODELS=off (Pages env var) turns
+// the models off. With models on, D1 is written: the answer cache, the route log (void_routes), the shortfall counts.
 import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
-import { DEFAULT_MODEL, PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, escalation, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
+import { DEFAULT_MODEL, PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
+import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 const MODEL = DEFAULT_MODEL;
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -65,7 +66,8 @@ async function fixAnswer(request, env, body) {
       });
       const answer = redact(String(pick(r)).trim()); // never echo a secret, even one the model made up
       if (answer) return Response.json({ answer, sources: [], fix: 'model', platform });
-    } catch (_) {}
+      await recordShortfall(env, 'fix', 'empty');
+    } catch (e) { await recordShortfall(env, 'fix', reasonOf(e)); }
   }
   // the fallback: fixed from the error itself (rules only)
   const rules = ruleFix(all);
@@ -132,16 +134,10 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key) {
       if (answer) { model = access.model; outcome = 'escalated, paid from earnings'; }
     }
     if (!answer) {
-      const esc = await escalation(env);
-      const paidWhy = access.model ? 'paid model failed' : access.why;
-      would = PAID_MODEL; // the paid model wasn't used: recorded, not spent (evidence for the will)
-      if (esc.model) {
-        try {
-          const r = await within(env.AI.run(esc.model, { messages, max_tokens: 2000, reasoning_effort: 'low' }), STRONG_TIMEOUT_MS);
-          answer = redact(noThink(pick(r)));
-          if (answer) { model = esc.model; outcome = 'escalated (free); paid: ' + paidWhy; } else outcome = 'escalation empty, default answered; paid: ' + paidWhy;
-        } catch (_) { outcome = 'escalation failed, default answered; paid: ' + paidWhy; }
-      } else outcome = 'would escalate: ' + esc.why + '; paid: ' + paidWhy;
+      // no second free model (Atom): Gemma answers, and the stronger model is recorded, not called
+      would = PAID_MODEL;
+      outcome = 'would escalate; paid: ' + (access.model ? 'paid model failed' : access.why);
+      later(recordShortfall(env, 'answer', 'would escalate'));
     }
   }
   const log = (extra) => later(logRoute(env, { ask, masked, route: route.kind, skill: route.skill, score: route.score, scores: route.scores, ms: route.ms, waited, model, outcome, would, ...extra }));
@@ -150,8 +146,10 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key) {
       const r = await env.AI.run(MODEL, { messages, max_tokens: 1200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
       answer = redact(String(pick(r)).trim());
       model = MODEL;
+      if (!answer) throw new Error('empty');
     } catch (e) {
       // the free allowance ran out (or Gemma is down): the free ceiling isn't a stop, but paying still needs both conditions
+      later(recordShortfall(env, 'answer', String(e && e.message) === 'empty' ? 'empty' : reasonOf(e)));
       const access = await paidAccess(env);
       const paid = access.model ? await tryPaid(access, 'free allowance out') : '';
       if (!paid) {
@@ -165,7 +163,6 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key) {
     }
   }
   log({ model });
-  if (!answer) return Response.json({ answer: null, sources: src, note: 'no answer' });
   const at = new Date().toISOString();
   if (!masked) try {
     await env.DB.prepare('INSERT INTO void_answers (id, ask, answer, sources, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET answer = excluded.answer, sources = excluded.sources, at = excluded.at')

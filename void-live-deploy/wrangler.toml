@@ -23,10 +23,6 @@ database_id = "3f92c99d-b78a-4394-8bb5-d9945ded44cf"
 # Answer engine (plan item 2): Workers AI, free Gemma 4 26B
 [ai]
 binding = "AI"
-# VOID_ANSWER_MODELS  on = /api/answer uses Workers AI (Gemma default + the router below) and writes D1 (answer cache,
-#   route log, counters). Unset/off = main's open-web answers: no Workers AI, no D1 writes (0ff8643).
-# Router (lib/router.js), optional Pages env vars, read only when VOID_ANSWER_MODELS=on:
+# VOID_ANSWER_MODELS  off = /api/answer answers from the open web and fixes from rules (no Workers AI, no D1 writes).
+#   Unset = models on: Gemma 4 26B (the one free model) with the router (lib/router.js) in front.
 #   VOID_ROUTER_TUNE   JSON thresholds, e.g. {"skillMin":0.72,"hardMin":0.6}  (tune from GET /api/routes scores)
-#   VOID_ESCALATE      off = hard asks never escalate (logged as "would escalate")
-#   VOID_ESCALATE_CAP  escalations to Qwen 3.8 27B per day (default 10)
-#   VOID_AI_PLAN       set to paid after moving to Workers Paid: escalation stops (it would bill) until someone says yes

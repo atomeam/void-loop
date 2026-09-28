@@ -135,8 +135,9 @@ def gather(cap=60, with_done=False):
 
     # 7. the router's decisions (owner-only GET /api/routes, lib/router.js; VOID_ROUTES_FILE = a saved copy, for tests).
     #    An ask the router heard as a skill the page's parsers didn't catch is a "learn to handle ..." want, like a miss.
-    #    Hard asks that only "would escalate" (cap reached, switched off, or it would bill) are evidence for the stronger-model
-    #    upgrade; they never spend anything themselves. A router that keeps falling back is something to fix.
+    #    Hard asks that "would escalate" are counted in the one evidence ledger, void_shortfalls (lib/shortfall.js), which
+    #    /api/will itself adds to the stronger-model upgrade, so they are not counted again here. A router that keeps falling
+    #    back is something to fix.
     try:
         rf = os.environ.get("VOID_ROUTES_FILE", "")
         rt = json.loads(pathlib.Path(rf).read_text(encoding="utf-8")) if rf else call("/api/routes")
@@ -155,12 +156,6 @@ def gather(cap=60, with_done=False):
                 continue
             what = "an action my confirm line should have recognised" if skill == "act" else f"my {skill} skill didn't catch this wording"
             cands.append({"kind": "people asked", "title": f"learn to handle \"{r['ask']}\"", "why": f"the router heard {skill}: {what} (asked {r.get('count', 1)} times)", "weight": 10 + 5 * int(r.get("count") or 1), "source": "router"})
-        would, esc, paid = int(rt.get("would_escalate") or 0), int(rt.get("escalated") or 0), int(rt.get("paid") or 0)
-        if would or esc:
-            for c in cands:
-                if c["kind"] == "upgrade myself" and "stronger model" in c["title"]:
-                    c["weight"] += min(10, would)
-                    c["why"] = (f"router: {would} asks would have used the paid model, {esc} escalated ({paid} paid from earnings); " + c["why"])[:240]  # first: /api/will keeps 200 characters
         total, fb = int(rt.get("total") or 0), int(rt.get("fallback") or 0)
         if total >= 20 and fb * 4 > total:
             cands.append({"kind": "fix myself", "title": "make my router answer in time", "why": f"the classifier fell back {fb} of {total} times ({', '.join(f'{k} {v}' for k, v in (rt.get('fallback_why') or {}).items())})"[:240], "weight": 9, "source": "router"})
