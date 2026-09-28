@@ -374,6 +374,32 @@ try {
       st2.some((x) => x.kind === 'clock') && !st2.filter((x) => x.kind === 'list').some((l) => l.items.some((i) => /clock|stars/.test(i.text))) && /4\.23 cups/.test(cups),
       JSON.stringify(st2.map((x) => x.kind)) + ' | ' + cups.slice(0, 60));
     await M.ctx.close(); }
+  // Calendar (per-person spaces): a visitor's own adds save in this browser and show on a draggable stage card; no yes, no server, no Wikipedia.
+  // Only an ask that reaches another person ("schedule a meeting with Sam") goes to the confirm line, which is the owner's.
+  { const C = await fresh(); const net = [];
+    C.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer|approval)$/.test(u)) net.push(u.replace(/^.*\/\/[^/]+/, '')); });
+    await C.ask('call Sam next Tuesday at 4', 900); const said = await C.whisper();
+    await C.ask('add dentist to my calendar Oct 12 at 3pm', 900);
+    await C.ask('put lunch with Ana on my calendar tomorrow at noon', 900);
+    const agenda = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]'));
+    const card = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
+    const netAdds = net.slice();
+    await C.ask('schedule a meeting with Sam on Friday at 3', 700); const gated = await C.whisper();
+    await C.ask('calender', 700); const shown = await C.p.$$eval('.calendar-card', (d) => d.length);
+    await C.p.reload(); await C.p.waitForTimeout(700); const afterReload = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
+    await C.ask('remove my calendar', 700); const gone = await C.p.$$eval('.calendar-card', (d) => d.length);
+    const kept = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    await C.ask('agenda', 700);
+    await C.p.click('.calendar-card .cal-event button'); await C.p.waitForTimeout(200);
+    const afterX = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    await C.ask('undo', 400); const afterUndo = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    check('calendar: a visitor adds "call Sam next Tuesday at 4", "add dentist to my calendar Oct 12 at 3pm", "put lunch with Ana on my calendar tomorrow at noon"; all saved here and on the stage card; no yes, no server, no Wikipedia',
+      agenda.length === 3 && /Call Sam/.test(card) && /dentist/i.test(card) && /Lunch with Ana/i.test(card) && /on your calendar: Call Sam/.test(said) && !netAdds.length && !(await C.page()),
+      JSON.stringify(agenda.map((e) => e.title)) + ' | ' + said + ' | ' + netAdds.join(',') + ' | ' + card.slice(0, 120));
+    check('calendar: "schedule a meeting with Sam" is the owner\'s confirm line (a visitor is told so, nothing saved); "calender" shows one card; the card survives a reload; "remove my calendar" hides it and keeps the events; × removes one and undo brings it back',
+      /only the owner/.test(gated) && shown === 1 && /Call Sam/.test(afterReload) && gone === 0 && kept === 3 && afterX === 2 && afterUndo === 3 && !net.some((u) => /wikipedia|miss|answer/.test(u)),
+      [gated, shown, afterReload.slice(0, 40), gone, kept, afterX, afterUndo, net.join(',')].join(' | '));
+    await C.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));

@@ -23,7 +23,13 @@ check('add: call Sam next Tuesday at 4', add && add.kind === 'add' && /sam/i.tes
 const oct = parseCalendar('dentist October 12 at 3pm');
 check('add: dentist October 12 at 3pm', oct && oct.kind === 'add' && /dentist/i.test(oct.title) && oct.at.getHours() === 15, JSON.stringify(oct && { title: oct.title, hours: oct.at && oct.at.getHours() }));
 
-const gated = ['add this to my calendar', 'add the flight to my calendar', 'schedule a meeting with Sam', 'book a call with Sam'];
+const own = parseCalendar('add dentist to my calendar Oct 12 at 3pm');
+check('own calendar: add X to my calendar <when> is a local add', own && own.kind === 'add' && /dentist/i.test(own.title) && own.at.getHours() === 15 && own.at.getMonth() === 9, JSON.stringify(own && { title: own.title, at: own.at }));
+const own2 = parseCalendar('put lunch with Ana on my calendar tomorrow at noon');
+check('own calendar: put X on my calendar tomorrow at noon', own2 && own2.kind === 'add' && /lunch with ana/i.test(own2.title), JSON.stringify(own2));
+const noWhen = parseCalendar('add this to my calendar');
+check('own calendar without a when asks when (no confirm line, no Wikipedia)', noWhen && noWhen.kind === 'when', JSON.stringify(noWhen));
+const gated = ['schedule a meeting with Sam', 'book a call with Sam'];
 for (const a of gated) {
   check('gated stays off the skill: ' + a, parseCalendar(a) === null, JSON.stringify(parseCalendar(a)));
 }
