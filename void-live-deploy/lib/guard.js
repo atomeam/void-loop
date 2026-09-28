@@ -21,6 +21,7 @@ export const LIMITS = {
   catalog: { rpm: 60, body: 1000 },
   passkey: { rpm: 60, body: 20000 },
   mine: { rpm: 120, body: 900200 },
+  publish: { rpm: 20, body: 40000 }, // a paid Void's public page (/@name)
   gumroad: { rpm: 120, body: 50000 },
 };
 export const DEFAULT_LIMIT = { rpm: 60, body: 16000 };
