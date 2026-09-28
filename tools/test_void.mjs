@@ -35,6 +35,7 @@ const VOICE_STUB = () => {
   window.__spoken = [];
   if (window.speechSynthesis) { speechSynthesis.speak = (u) => window.__spoken.push(u.text); speechSynthesis.cancel = () => {}; }
 };
+const queued = []; // build targets the page POSTed to /api/queue (stubbed)
 const NO_MIC_ELEMENT = () => { delete window.HTMLMicrophoneElement; };
 const json = (body) => ({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(body) });
 
@@ -59,6 +60,11 @@ async function fresh(...inits) {
       if (false) {}
       if (/busy/.test(ask)) return r.fulfill(json({ answer: null, sources: [], note: 'model busy' }));
       return r.fulfill(json({ answer: 'Sunlight scatters off air molecules, and blue light scatters most [1].', sources: [{ title: 'Rayleigh scattering', url: 'https://en.wikipedia.org/wiki/Rayleigh_scattering' }] }));
+    }
+    if (u.includes('/api/queue')) {
+      const b = JSON.parse(r.request().postData() || '{}'); if (b.target) queued.push(b.target);
+      const it = { id: 'q1', target: b.target || 'next', state: 'queued', note: '' };
+      return r.fulfill(json({ item: it, items: [it], heartbeat: new Date().toISOString() }));
     }
     return r.fulfill({ status: 204, body: '' });
   });
@@ -88,7 +94,7 @@ try {
   await t.ask('make everything blue'); check('make everything blue', (await t.state()).every((x) => !x.color || /6aa8ff|9ec8ff/.test(x.color)));
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
-  await t.ask('what is a black hole', 900); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
+  await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
   await t.ask('translate hello to Spanish', 1200); const tr = await t.page(); check('translate', /hola/.test(tr) && /Google Translate/.test(tr), tr.slice(0, 80));
   await t.ask('keep this'); check('keep this', (await t.state()).some((x) => x.kind === 'kept'));
   await t.ask('call this spanish hello'); check('call this', (await t.state()).some((x) => x.kind === 'kept' && x.name === 'spanish hello'));
@@ -133,6 +139,9 @@ try {
   await t.p.goto(base + '?share_title=Example&share_url=' + encodeURIComponent('https://example.com/a'));
   const sharedLink = await until(async () => (await t.state()).some((x) => x.kind === 'link' && /example\.com/.test(x.url)), 6000);
   check('share to Void: words run, a link becomes a card', sharedAsk && sharedLink && !/share_/.test(t.p.url()), t.p.url());
+  await t.p.evaluate(() => localStorage.setItem('a2m.void.owner.v1', 'test-owner-key-0123456789'));
+  await t.ask('build helper/everywhere', 0);
+  check('owner can queue a helper branch build', await until(() => queued.includes('helper/everywhere'), 4000), queued.join(','));
   const errs1 = t.errors.slice();
   await t.ctx.close();
 

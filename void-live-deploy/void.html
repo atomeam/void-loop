@@ -3026,7 +3026,7 @@ return { ok: true, detail: 'timer-reset' };
       tick(); buildPoll = setInterval(tick, 30000);
     }
     async function handleBuildAsk(text, lower) {
-      const m = lower.match(/^(?:update yourself|ship the next (?:item|thing)|build the next (?:item|thing)|build (\d{3}|#?\d{1,2}))\s*[.!]?$/);
+      const m = lower.match(/^(?:update yourself|ship the next (?:item|thing)|build the next (?:item|thing)|build (\d{3}|#?\d{1,2}|helper\/[a-z0-9][a-z0-9-]{0,31}))\s*[.!]?$/);
       const st = /^(build status|update status|how'?s the (?:update|build))\s*[?.!]?$/.test(lower);
       if (!m && !st) return false;
       if (!ownerToken()) { say('only the owner can ask that'); return true; }

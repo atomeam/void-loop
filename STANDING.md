@@ -34,6 +34,9 @@ The owner can type "update yourself", "ship the next item" or "build 007" in Voi
 Every builder run starts with `python tools\void_queue.py claim`. If it prints an item, build that one (target "next" = the first open item on the board). Test, deploy, mark the board, then `python tools\void_queue.py done <id> live` (or `needs-you "why"`). `domains\void.queue.md` mirrors the queue; the task \A2M void_queue syncs it and sends the laptop heartbeat every 10 minutes.
 
 
+Linux helpers never deploy: they push finished work to a branch `helper/<what>` and queue `build helper/<what>` (the owner can type that in Void after unlock). A builder that claims target `helper/<what>`: `git fetch origin`, rebase `origin/helper/<what>` onto main, run `node tools\test_void.mjs`, deploy with `tools\deploy.ps1`, then `git push origin --delete helper/<what>`.
+
+
 ## The plan
 Everyone follows `domains\void.plan.md`: how every run works, what we missed, and the Now / Next order. Check the latest news for your area before building.
 
