@@ -43,16 +43,16 @@ export async function onRequestPost({ request, env }) {
   const src = await sources(ask);
   if (!env.AI) return Response.json({ answer: null, sources: src, note: 'no model' });
   const ctx = src.map((s, i) => `[${i + 1}] ${s.title}: ${s.text}`).join('\n\n') || '(no sources found)';
-  let answer = '';
+  let answer = '', raw = null;
   try {
     const r = await env.AI.run(MODEL, {
       messages: [
         { role: 'system', content: 'You are Void. Answer the question in 2 to 6 plain sentences, using only the numbered sources. Cite sources inline like [1]. If the sources do not answer it, say briefly what you could not find. No preamble, no markdown headings.' },
         { role: 'user', content: `Question: ${ask}\n\nSources:\n${ctx}` },
       ],
-      max_tokens: 320,
+      max_tokens: 1200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
     });
-    answer = String(pick(r)).trim();
+    raw = r; answer = String(pick(r)).trim();
   } catch (e) {
     return Response.json({ answer: null, sources: src, note: 'model busy' });
   }
