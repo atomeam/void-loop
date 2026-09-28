@@ -53,6 +53,16 @@ try:
 except Exception as e:
     print("ingest:", e)
 
+# 5. upgrades to Void itself and the systems it runs on, paid from what it earned (the will reads the budget from /api/earnings
+#    via /api/will and weighs a candidate up when the budget covers its monthly cost). Real spend still needs the confirm line.
+#    Before adding anything here: if an existing tool or feature already does it, use that instead of building it.
+UPGRADES = [
+    {"title": "move to Cloudflare Workers Paid for higher D1, KV and Workers AI limits", "why": "the free daily limits are the first wall I'll hit", "cost_cents": 500},
+    {"title": "answer and fix with a stronger model", "why": "better fixes and answers for everyone (usage estimate)", "cost_cents": 1000},
+]
+for u in UPGRADES:
+    cands.append({"kind": "upgrade myself", "weight": 12, **u})
+
 # keep it to the strongest 60, unique titles
 seen, out = set(), []
 for c in sorted(cands, key=lambda c: -c["weight"]):
@@ -63,5 +73,13 @@ res = call("/api/will", {"candidates": out})
 lines = ["# void.will: what Void wants to become next (chosen by Void)", "", f"Chosen {res['at'][:16]} from {len(out)} candidates. Top want queued: {res.get('queued') or ('already building ' + str(res.get('open')))}.", ""]
 for i, w in enumerate(res["wants"], 1):
     lines.append(f"{i}. **{w['i_want']}**  \n   because {w['because']} ({w['kind']}: {w['title']})")
+# notes for Atom only (never on the page): what Void has earned and any milestone reached
+try:
+    e = call("/api/earnings")
+    lines += ["", f"Owner only: earned ${e['earned_cents'] / 100:.2f} from {e['sales']} sales (gross ${e['gross_cents'] / 100:.2f}, refunded ${e['refunded_cents'] / 100:.2f}); budget ${e['budget_cents'] / 100:.2f}."]
+    for m in e.get("milestones", []):
+        lines.append(f"Milestone {m['id']} ({m['at'][:10]}): {m['note']}")
+except Exception as ex:
+    print("earnings:", ex)
 (ROOT / "domains" / "void.will.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
 print("\n".join(lines))

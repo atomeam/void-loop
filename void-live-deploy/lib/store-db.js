@@ -1,11 +1,12 @@
 // The store in D1 (plan item 12): the Gumroad catalog (merged, never shrinks) and every sale ping (append-only).
 // Tables are made on first use (same SQL as tools/d1/void_store.sql) because the deploy doesn't run D1 SQL.
-import { CATALOG_SEED, STALE_MS, fetchStore, mergeCatalog } from './gumroad.js';
+import { STALE_MS, fetchStore, mergeCatalog } from './gumroad.js';
 
 const TABLES = [
   'CREATE TABLE IF NOT EXISTS void_catalog (slug TEXT PRIMARY KEY, data TEXT NOT NULL, available INTEGER NOT NULL, updated TEXT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS void_catalog_meta (k TEXT PRIMARY KEY, v TEXT)',
   'CREATE TABLE IF NOT EXISTS void_sales (id TEXT PRIMARY KEY, resource TEXT NOT NULL, sale_id TEXT, subscription_id TEXT, product TEXT, void_id TEXT, verified INTEGER NOT NULL, effect TEXT, raw TEXT NOT NULL, at TEXT NOT NULL)',
+  'CREATE TABLE IF NOT EXISTS void_milestones (id TEXT PRIMARY KEY, at TEXT NOT NULL, earned_cents INTEGER NOT NULL, note TEXT)',
 ];
 const made = new WeakMap();
 export function ensureStoreTables(env) {
@@ -32,9 +33,8 @@ export function refreshCatalog(env, { fetchImpl, now } = {}) {
     if (!fresh) return null;
     const at = now || new Date().toISOString();
     const { products: old } = await loadCatalog(env);
-    // first run: start from the seed so the history begins with what Void already knew
-    const { products, changed } = mergeCatalog(old.length ? old : CATALOG_SEED.map((p) => ({ ...p, first_seen: at, last_seen: at, history: [{ at, event: 'added', price_cents: p.price_cents, recurrence: p.recurrence, name: p.name, available: true }] })), fresh, at);
-    const touched = old.length ? changed : products.map((p) => p.slug);
+    const { products, changed } = mergeCatalog(old, fresh, at);
+    const touched = changed;
     const stmts = products.filter((p) => touched.includes(p.slug)).map((p) => {
       const { slug, available, ...data } = p;
       return env.DB.prepare('INSERT INTO void_catalog (slug, data, available, updated) VALUES (?, ?, ?, ?) ON CONFLICT(slug) DO UPDATE SET data = excluded.data, available = excluded.available, updated = excluded.updated').bind(slug, JSON.stringify(data), available ? 1 : 0, at);

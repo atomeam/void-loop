@@ -1,53 +1,81 @@
 // Atom's Gumroad store, as Void knows it (plan item 12). Shared by the page, /api/catalog and /api/gumroad.
 // Void uses every product in the store, keeps them current and never drops one: the catalog is merged from the live
 // storefront, a product that disappears or is unpublished stays (marked unavailable, with its history), new ones join.
-// Products surface only when someone asks for what they cover: one plain line with the live price and the link.
+// Products surface only when someone asks for what they cover: one plain line with the live price and the link, after the answer.
 // Nothing here is ever shown on the empty surface, in the menu, the hints, /tools.json or WebMCP tool lists.
 
 export const STORE = 'https://moonbeam846.gumroad.com';
 export const STALE_MS = 6 * 3600e3; // refresh the catalog from the store when it's older than this
 
-// The store as of 2026-09-27 (used until the first live refresh, and whenever the store can't be reached and nothing is saved).
-// slug = the /l/<slug> path; short = Gumroad's own permalink (Pings may carry either).
-export const CATALOG_SEED = [
-  { slug: 'yinmj', short: 'yinmj', name: 'Void Monthly', price_cents: 4900, currency: 'usd', recurrence: 'monthly', native_type: 'membership' },
-  { slug: 'gqsgib', short: 'gqsgib', name: 'The Big Board', price_cents: 2500, currency: 'usd', recurrence: 'monthly', native_type: 'membership' },
-  { slug: 'join-the-team', short: 'klwlxn', name: 'Join the Team', price_cents: 100, currency: 'usd', recurrence: null, native_type: 'digital' },
-  { slug: 'first-automation-setup', short: 'rpmuz', name: 'First Automation Setup', price_cents: 10000, currency: 'usd', recurrence: null, native_type: 'digital' },
-  { slug: 'full-stack-audit', short: 'chafpm', name: 'Full Stack Audit', price_cents: 30000, currency: 'usd', recurrence: null, native_type: 'digital' },
-  { slug: 'keep-it-running-membership', short: 'agstkz', name: 'Keep-It-Running Plan', price_cents: 4900, currency: 'usd', recurrence: null, native_type: 'digital' },
-  { slug: 'eozcma', short: 'eozcma', name: 'Automation Cleanup', price_cents: 2500, currency: 'usd', recurrence: null, native_type: 'digital' },
-].map((p) => ({ ...p, url: STORE + '/l/' + p.slug, available: true }));
+// Nothing about products is hard-coded here: names, prices, descriptions and what each covers all come from the live store
+// (/api/catalog). When Atom renames, reprices or rewrites a product, Void follows on the next refresh.
 
-// What a purchase unlocks in Void. Void Monthly = paid Void. Add a row here when another membership should unlock something.
-export const UNLOCKS = [{ slugs: ['yinmj'], names: ['void monthly'], tier: 'paid' }];
+// What a purchase unlocks in Void, by Gumroad's product id and permalink (both survive a rename). The first row is the paid Void membership.
+// Add a row here when another membership should unlock something.
+export const UNLOCKS = [{ ids: ['ITp6zMMOC7A2h-bsSejYSA=='], slugs: ['yinmj'], tier: 'paid' }];
+// A Ping's product_permalink is the product's long URL (https://moonbeam846.gumroad.com/l/yinmj); permalink and short_product_id are bare.
+const permalinkOf = (x) => { const s = String(x || '').trim().toLowerCase(); const m = /\/l\/([^/?#]+)/.exec(s); return m ? m[1] : s; };
 export function unlockFor(p) {
-  const slug = String((p && (p.slug || p.product_permalink || p.permalink)) || '').toLowerCase();
-  const name = String((p && (p.name || p.product_name)) || '').toLowerCase().trim();
-  return UNLOCKS.find((u) => (slug && u.slugs.includes(slug)) || (name && u.names.includes(name))) || null;
+  if (!p) return null;
+  const ids = [p.product_id, p.id].filter(Boolean).map(String);
+  const slugs = [p.slug, p.product_permalink, p.permalink, p.short, p.short_product_id].filter(Boolean).map(permalinkOf);
+  return UNLOCKS.find((u) => ids.some((x) => u.ids.includes(x)) || slugs.some((x) => u.slugs.includes(x))) || null;
 }
-export const isUnlockSlug = (slug) => UNLOCKS.some((u) => u.slugs.includes(slug));
+export const isUnlock = (p) => !!unlockFor(p);
 
-// Which asks each product covers (checked in this order). A product the store adds later still matches by its name.
-export const TOPICS = [
-  ['full-stack-audit', /\baudits?\b/],
-  ['eozcma', /\b(broken|broke|fix|fixing|fixed|repair|debug|failing|fails|stopped working|not working|clean ?up)\b.*\b(zaps?|zapier|automations?|workflows?|make\.com|n8n|scenarios?)\b|\b(zaps?|zapier|automations?|workflows?)\b.*\b(broken|broke|failing|fails|stopped working|not working|keeps? failing)\b/],
-  ['keep-it-running-membership', /\b(monitor(ing)?|keep (it|them|my \w+|things|everything) running|uptime|watch (over )?my (automations?|zaps?|workflows?|site|stack))\b/],
-  ['first-automation-setup', /\b(set ?up|build|make|create|start|need|want|get)\b.*\b(automations?|zaps?|zapier)\b|\bautomate (my|our|this|a|an|the)\b|\bfirst automation\b/],
-  ['gqsgib', /\bbig board\b/],
-  ['join-the-team', /\bjoin (the |your )?team\b|\bwork (with|for) (you|a-to-mind|void|atom)\b|\bjoin a-to-mind\b/],
-];
-export function shortName(n) { return String(n || '').split(/\s+[—–-]\s+/)[0].trim().slice(0, 80); }
-export function productFor(ask, products) {
-  const s = String(ask || '').toLowerCase().replace(/\s+/g, ' ').trim();
-  if (!s) return null;
-  const live = (products || []).filter((p) => p && p.available !== false && !isUnlockSlug(p.slug));
-  for (const [slug, re] of TOPICS) if (re.test(s)) { const p = live.find((x) => x.slug === slug); if (p) return p; }
-  // any product (including ones added later) by its own name, e.g. "the big board", "keep-it-running plan"
-  const words = (x) => x.toLowerCase().replace(/^the\s+/, '').replace(/[^a-z0-9]+/g, ' ').trim();
-  const flat = ' ' + words(s) + ' ';
-  return live.find((p) => { const n = words(shortName(p.name)); return n.length >= 6 && flat.includes(' ' + n + ' '); }) || null;
+// Atom's seller account, as Gumroad's Ping names it: seller_id is Gumroad's obfuscated id (ObfuscateIds.encrypt(seller.id), the
+// same style as product_id), read from Atom's Gumroad settings. It is not the storefront's numeric external id. GUMROAD_SELLER_ID,
+// if set, replaces it (comma-separated for more than one).
+export const SELLER_IDS = ['I1O8RSqkcoRWcew39cQx7A=='];
+export function sellerMatches(p, pinned) {
+  const sid = String((p && p.seller_id) || '').trim();
+  const ids = pinned ? String(pinned).split(',').map((x) => x.trim()).filter(Boolean) : SELLER_IDS;
+  return !!sid && ids.includes(sid);
 }
+
+// Which product an ask is about, scored from each product's own name and description (as the store has them today).
+const STOP = new Set(('the a an and or but if then than so to of in on at by for with from into onto about as is are was were be been being am do does did done have has had having ' +
+  'i me my mine we us our you your yours he she it its they them their this that these those there here what which who whom whose when where why how can could should would will shall may might must ' +
+  'not no yes just only also very really more most much many some any all every each both few other such own same too again once ever still even like get got gets getting make makes made making ' +
+  'add show open set put clear draw create give tell take want need please help thing things something anything everything one two way new now day days time week weekly month monthly year yearly ' +
+  'back out up down off over under per via available gumroad void a-to-mind atom know say says said see look use used using work works working run runs running go going come let lets well good ' +
+  'right sure okay hey hi hello thank thanks without within while because after before until since don doesn didn isn aren won wasn weren www http https com').split(/\s+/));
+const IRR = { break: 'brok', brok: 'brok' };
+function stem(w) {
+  let x = w;
+  if (x.length > 4) x = x.replace(/(ations|ation|ating|ated|ates|ings|ing|ure|ies|ied|ed|es|en|s)$/, '');
+  if (x.length > 3) x = x.replace(/e$/, '');
+  return IRR[x] || x;
+}
+export function terms(text) {
+  const out = new Set();
+  for (const w of String(text || '').toLowerCase().replace(/[’']/g, '').split(/[^a-z0-9]+/)) {
+    if (w.length < 3 || STOP.has(w)) continue;
+    const t = stem(w);
+    if (t.length >= 3 && !STOP.has(t)) out.add(t);
+  }
+  return out;
+}
+const FIX_HINT = ['fix', 'brok', 'fail', 'diagnos', 'repair'];
+// -> the best product, or null. fix = the ask was a broken automation (Void already answered with the fix; this line is optional).
+export function productFor(ask, products, { fix = false } = {}) {
+  const live = (products || []).filter((p) => p && p.available !== false && !isUnlock(p) && p.name);
+  if (!live.length) return null;
+  const docs = live.map((p) => ({ p, n: terms(shortName(p.name)), d: terms(p.description) }));
+  const df = (t) => docs.filter((x) => x.n.has(t) || x.d.has(t)).length || 1;
+  const A = terms(ask);
+  if (fix) for (const t of FIX_HINT) A.add(t);
+  if (!A.size) return null;
+  const scored = docs.map(({ p, n, d }) => {
+    let s = 0;
+    for (const t of A) { const k = n.has(t) ? 3 : d.has(t) ? 1 : 0; if (k) s += k * Math.log(1 + docs.length / df(t)); }
+    return { p, s };
+  }).sort((x, y) => y.s - x.s);
+  const [best, next] = scored;
+  if (best.s < 2.5 || (next && best.s - next.s < 0.1)) return null;
+  return best.p;
+}
+export function shortName(n) { return String(n || '').split(/\s+[—–]\s+|\s+-\s+/)[0].trim().slice(0, 80); }
 export function money(cents, currency = 'usd') {
   const n = Number(cents) / 100;
   const sym = { usd: '$', eur: '€', gbp: '£' }[String(currency).toLowerCase()];
@@ -74,13 +102,14 @@ export function parseStorefront(html) {
   for (const sec of sections) for (const p of (sec && sec.search_results && sec.search_results.products) || []) {
     const slug = slugOf(p.url, p.permalink);
     if (!slug || out.some((x) => x.slug === slug)) continue;
-    out.push({ slug, short: p.permalink || slug, name: String(p.name || slug), price_cents: Number(p.price_cents) || 0, currency: p.currency_code || 'usd', recurrence: p.recurrence || null, native_type: p.native_type || null, url: STORE + '/l/' + slug });
+    out.push({ slug, id: p.id || null, short: p.permalink || slug, name: String(p.name || slug), price_cents: Number(p.price_cents) || 0, currency: p.currency_code || 'usd', recurrence: p.recurrence || null, native_type: p.native_type || null, url: STORE + '/l/' + slug });
   }
   return out;
 }
 // product page HTML -> { name (og:title), price_cents, is_published, recurrence } or null
 export function parseProductPage(html) {
   const og = /<meta[^>]+property="og:title"[^>]+content="([^"]*)"/.exec(String(html || ''));
+  const ogd = /<meta[^>]+property="og:description"[^>]+content="([^"]*)"/.exec(String(html || ''));
   const j = dataPage(html), pr = j && j.props && j.props.product;
   if (!pr && !og) return null;
   let cents = pr ? Number(pr.price_cents) || 0 : null;
@@ -89,7 +118,8 @@ export function parseProductPage(html) {
     const vals = pr.options.map((o) => o && o.recurrence_price_values && o.recurrence_price_values[rec || 'monthly'] && Number(o.recurrence_price_values[rec || 'monthly'].price_cents)).filter((x) => x > 0);
     if (vals.length) cents = Math.min(...vals);
   }
-  return { name: og ? unesc(og[1]) : pr && pr.name, price_cents: cents, is_published: pr ? pr.is_published !== false : true, recurrence: rec, currency: pr && pr.currency_code };
+  const desc = ogd ? unesc(ogd[1]) : pr && pr.summary ? String(pr.summary) : '';
+  return { name: og ? unesc(og[1]) : pr && pr.name, price_cents: cents, is_published: pr ? pr.is_published !== false : true, recurrence: rec, currency: pr && pr.currency_code, description: /^available on gumroad$/i.test(desc.trim()) ? '' : desc.slice(0, 1500) };
 }
 // Storefront + each product page. Returns the store's current products, or null if the store couldn't be read.
 export async function fetchStore(fetchImpl = fetch) {
@@ -103,6 +133,8 @@ export async function fetchStore(fetchImpl = fetch) {
     if (d.price_cents) p.price_cents = d.price_cents;
     if (d.recurrence) p.recurrence = d.recurrence;
     if (d.currency) p.currency = d.currency;
+    if (d.description) p.description = d.description;
+    if (d.name && !p.name) p.name = d.name;
     if (d.is_published === false) p.unpublished = true;
   }));
   return list;
@@ -118,7 +150,7 @@ export function mergeCatalog(old, fresh, now = new Date().toISOString()) {
     const live = !f.unpublished;
     seen.add(f.slug);
     const cur = bySlug.get(f.slug);
-    const fields = { short: f.short, name: f.name, price_cents: f.price_cents, currency: f.currency || 'usd', recurrence: f.recurrence || null, native_type: f.native_type || null, url: f.url || STORE + '/l/' + f.slug };
+    const fields = { id: f.id || (cur && cur.id) || null, description: f.description || (cur && cur.description) || '', short: f.short, name: f.name, price_cents: f.price_cents, currency: f.currency || 'usd', recurrence: f.recurrence || null, native_type: f.native_type || null, url: f.url || STORE + '/l/' + f.slug };
     if (!cur) {
       bySlug.set(f.slug, { slug: f.slug, ...fields, available: live, first_seen: now, last_seen: live ? now : null, ...(live ? {} : { unavailable_since: now }), history: [{ at: now, event: 'added', price_cents: fields.price_cents, recurrence: fields.recurrence, name: fields.name, available: live }] });
       changed.add(f.slug); continue;
@@ -138,4 +170,4 @@ export function mergeCatalog(old, fresh, now = new Date().toISOString()) {
   return { products: [...bySlug.values()], changed: [...changed] };
 }
 // What the page gets: live fields only (no history).
-export const publicProduct = (p) => ({ slug: p.slug, name: shortName(p.name), price_cents: p.price_cents, currency: p.currency || 'usd', recurrence: p.recurrence || null, url: p.url || STORE + '/l/' + p.slug, available: p.available !== false });
+export const publicProduct = (p) => ({ slug: p.slug, id: p.id || null, name: shortName(p.name), description: String(p.description || '').slice(0, 800), price_cents: p.price_cents, currency: p.currency || 'usd', recurrence: p.recurrence || null, url: p.url || STORE + '/l/' + p.slug, available: p.available !== false });

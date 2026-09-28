@@ -2,32 +2,34 @@
 //   https://a-to-mind.com/api/gumroad?k=<GUMROAD_PING_KEY>
 // and subscribe the same URL to sale, refund, dispute, dispute_won, cancellation, subscription_ended, subscription_restarted.
 // Every ping is recorded in D1 void_sales (append-only: nothing is ever deleted; duplicates are recognised by resource + id).
-// Unlocks (lib/gumroad.js UNLOCKS; Void Monthly -> the paid tier):
-//   sale                        -> read the sale back from Gumroad's API (GUMROAD_ACCESS_TOKEN, view_sales) and only then set
-//                                  void_accounts.tier = 'paid' for the passkey account in url_params[void] (the page adds ?void=<id>)
+// Unlocks (lib/gumroad.js UNLOCKS, by Gumroad product id / permalink so a rename changes nothing; the paid membership -> the paid tier):
+//   sale                        -> set void_accounts.tier = 'paid' for the passkey account in url_params[void] (the page adds ?void=<id>)
+//                                  once the sale is trusted: with GUMROAD_ACCESS_TOKEN set, it's read back from Gumroad's API
+//                                  (view_sales); without a token, the ping itself is trusted only when it came with the right ?k=,
+//                                  carries Atom's seller_id (lib/gumroad.js SELLER_IDS), is for
+//                                  the membership that unlocks paid Void, and isn't a test ping
 //   refund, dispute, cancellation, subscription_ended          -> back to 'free' (found by subscription_id or sale_id)
 //   subscription_restarted, dispute_won                        -> 'paid' again, only for an account a verified sale already linked
-// Pings are unsigned, so the key in the URL is required and an upgrade is never taken on the ping's word alone.
-import { unlockFor } from '../../lib/gumroad.js';
+// Pings are unsigned, so the key in the URL is always required; one sale links to one Void only (void_accounts.sale_id is unique).
+// After each ping the running total is recomputed (lib/earnings.js) and any milestone crossed is recorded once (void_milestones).
+import { unlockFor, sellerMatches } from '../../lib/gumroad.js';
 import { ensureStoreTables } from '../../lib/store-db.js';
 import { ensureTables } from '../../lib/void-me.js';
+import { parsePing, readEarnings, recordMilestones } from '../../lib/earnings.js';
 
 const DOWN = ['refund', 'dispute', 'cancellation', 'subscription_ended'];
 const UP_AGAIN = ['subscription_restarted', 'dispute_won'];
 const reply = (status, body) => Response.json(body, { status, headers: { 'cache-control': 'no-store' } });
 
-// x-www-form-urlencoded with bracketed keys (url_params[void], custom_fields[Name]) -> nested object
-export function parsePing(text) {
-  const o = {};
-  for (const [k, v] of new URLSearchParams(String(text || ''))) {
-    const m = /^([a-z_]+)\[([^\]]*)\]$/i.exec(k);
-    if (m) { o[m[1]] = o[m[1]] && typeof o[m[1]] === 'object' ? o[m[1]] : {}; o[m[1]][m[2]] = v; } else o[k] = v;
-  }
-  return o;
-}
+export { parsePing };
 
 async function verifySale(env, p, unlock) {
-  if (!env.GUMROAD_ACCESS_TOKEN) return { ok: false, why: 'not verified: no GUMROAD_ACCESS_TOKEN' };
+  if (!env.GUMROAD_ACCESS_TOKEN) { // no API token: the keyed ping is trusted on its own, but only from Atom's seller account
+    if (String(p.test) === 'true') return { ok: false, why: 'not trusted: test ping' };
+    if (!sellerMatches(p, env.GUMROAD_SELLER_ID)) return { ok: false, why: 'not trusted: different seller' };
+    if (String(p.disputed) === 'true' || String(p.chargebacked) === 'true') return { ok: false, why: 'not trusted: disputed' };
+    return { ok: true, subscription_id: p.subscription_id || null, how: 'keyed ping' };
+  }
   let j = null;
   try {
     const r = await (env.GUMROAD_FETCH || fetch)('https://api.gumroad.com/v2/sales/' + encodeURIComponent(p.sale_id), { headers: { authorization: 'Bearer ' + env.GUMROAD_ACCESS_TOKEN } });
@@ -35,7 +37,7 @@ async function verifySale(env, p, unlock) {
   } catch (_) { return { ok: false, why: 'not verified: Gumroad API unreachable' }; }
   const s = j && j.success && j.sale;
   if (!s || s.id !== p.sale_id) return { ok: false, why: 'not verified: sale not found' };
-  if (!unlockFor({ product_permalink: s.product_permalink, product_name: s.product_name }) || unlockFor({ product_permalink: s.product_permalink, product_name: s.product_name }) !== unlock) return { ok: false, why: 'not verified: different product' };
+  if (unlockFor({ product_permalink: s.product_permalink, product_id: s.product_id }) !== unlock) return { ok: false, why: 'not verified: different product' };
   if (s.refunded || s.chargedback || s.disputed) return { ok: false, why: 'not verified: refunded or disputed' };
   return { ok: true, subscription_id: s.subscription_id || p.subscription_id || null };
 }
@@ -83,6 +85,9 @@ export async function onRequestPost({ request, env }) {
       effect = u.meta && u.meta.changes ? 'tier ' + unlock.tier + ' (' + resource + ')' : resource + ': no linked Void';
     }
     await env.DB.prepare('UPDATE void_sales SET verified = ?, effect = ?, void_id = ? WHERE id = ?').bind(verified, effect, voidId, id).run();
-    return reply(200, { ok: true, effect });
+    // the running total (all products, net of refunds); a milestone is recorded the first time it's crossed, never again
+    let crossed = [];
+    try { crossed = await recordMilestones(env, await readEarnings(env)); } catch (_) {}
+    return reply(200, { ok: true, effect, ...(crossed.length ? { milestones: crossed } : {}) });
   } catch (_) { return reply(503, { ok: false, error: 'not recorded, Gumroad will retry' }); }
 }

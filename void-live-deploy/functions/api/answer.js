@@ -1,6 +1,7 @@
 // Void's answer engine: any ask no skill covers gets a short sourced answer.
 // Sources are fetched here (Wikipedia search + summaries); the model only writes from them.
 // Cached in D1 (void_answers) so each new question is written once; per-connection rate limit in the edge cache.
+import { FIX_SYSTEM, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
 const MODEL = '@cf/google/gemma-4-26b-a4b-it';
 const TTL_DAYS = 7, RL_MAX = 12;
 const norm = (t) => String(t || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
@@ -22,9 +23,46 @@ async function sources(ask) {
 }
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 
+// Fix mode: { mode: 'fix', ask, details } -> { answer, sources: [], fix: 'model' | 'rules' | null }.
+// Works on the broken automation as it is. Secrets are masked first; nothing is cached or stored (pasted configs stay private).
+async function rateLimited(request, env) {
+  try {
+    const conn = await sha((request.headers.get('cf-connecting-ip') || '') + (env.SALT || ''));
+    const cache = caches.default, rlReq = new Request(new URL(request.url).origin + '/__void-answer/rl/' + conn);
+    const n = parseInt((await (await cache.match(rlReq))?.text()) || '0', 10);
+    if (n >= RL_MAX) return true;
+    await cache.put(rlReq, new Response(String(n + 1), { headers: { 'cache-control': 'max-age=60' } }));
+  } catch (_) {}
+  return false;
+}
+async function fixAnswer(request, env, body) {
+  const ask = redact(String(body.ask || '').replace(/[\u0000-\u0008\u000b-\u001f]/g, ' ').trim().slice(0, 600));
+  const details = redact(String(body.details || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').slice(0, 8000));
+  if (ask.length < 3) return new Response('empty', { status: 400 });
+  if (await rateLimited(request, env)) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
+  const all = ask + (details ? '\n\n' + details : '');
+  const platform = platformOf(all);
+  if (env.AI) {
+    try {
+      const r = await env.AI.run(MODEL, {
+        messages: [
+          { role: 'system', content: FIX_SYSTEM },
+          { role: 'user', content: 'What they said: ' + ask + (platform ? '\nPlatform (guessed): ' + platform : '') + (details ? '\n\nWhat they pasted (as is):\n' + details : '\n\n(nothing pasted yet)') },
+        ],
+        max_tokens: 1600, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
+      });
+      const answer = String(pick(r)).trim();
+      if (answer) return Response.json({ answer, sources: [], fix: 'model', platform });
+    } catch (_) {}
+  }
+  const rules = ruleFix(all);
+  return Response.json({ answer: rules, sources: [], fix: rules ? 'rules' : null, platform, note: rules ? 'model busy, fixed from the error' : 'model busy' });
+}
+
 export async function onRequestPost({ request, env }) {
   let body = {};
-  try { body = JSON.parse((await request.text()).slice(0, 2000)); } catch (_) { return new Response('bad', { status: 400 }); }
+  try { body = JSON.parse((await request.text()).slice(0, 20000)); } catch (_) { return new Response('bad', { status: 400 }); }
+  if (body && body.mode === 'fix') return fixAnswer(request, env, body);
   const ask = norm(body.ask);
   if (ask.length < 3) return new Response('empty', { status: 400 });
   const key = await sha(ask.toLowerCase());

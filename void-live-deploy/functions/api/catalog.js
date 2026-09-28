@@ -3,8 +3,9 @@
 // GET                              -> { products: [{ slug, name, price_cents, currency, recurrence, url, available }], refreshed, source }
 //                                     refreshed from moonbeam846.gumroad.com when older than 6 hours (merged: nothing is ever dropped)
 // POST (Bearer READ_TOKEN)         -> refresh now (for a scheduled task; Pages Functions have no cron trigger) -> { refreshed, changed }
-// If D1 or the store can't be reached, the saved catalog (or the built-in seed) is served: asks still get an answer.
-import { CATALOG_SEED, publicProduct } from '../../lib/gumroad.js';
+// Nothing about the products is built in: without D1 the live store is read directly (not saved); with neither, the list is empty
+// and asks simply get their answer without a product line.
+import { publicProduct, fetchStore } from '../../lib/gumroad.js';
 import { ensureStoreTables, loadCatalog, refreshCatalog, isStale } from '../../lib/store-db.js';
 
 const out = (body, status = 200) => Response.json(body, { status, headers: { 'cache-control': 'public, max-age=300' } });
@@ -17,8 +18,9 @@ export async function onRequestGet({ env, waitUntil }) {
     if (products.length && typeof waitUntil === 'function') waitUntil(job); // serve what's saved, refresh behind it
     else { const r = await job; if (r) ({ products, refreshed } = r); }
   }
-  const source = products.length ? 'store' : 'seed';
-  return out({ products: (products.length ? products : CATALOG_SEED).map(publicProduct), refreshed, source });
+  let source = products.length ? 'store' : 'none';
+  if (!db && !products.length) { const live = await fetchStore(env.GUMROAD_FETCH || fetch).catch(() => null); if (live) { products = live.map((p) => ({ ...p, available: !p.unpublished })); source = 'live'; } }
+  return out({ products: products.map(publicProduct), refreshed, source });
 }
 
 export async function onRequestPost({ request, env }) {

@@ -24,3 +24,11 @@ CREATE TABLE IF NOT EXISTS void_sales (
   raw TEXT NOT NULL,            -- the ping exactly as received
   at TEXT NOT NULL
 );
+
+-- Earnings milestones (lib/earnings.js): each recorded once, the first time Void's net sales cross it; a note for Atom, never shown on the page.
+CREATE TABLE IF NOT EXISTS void_milestones (
+  id TEXT PRIMARY KEY,
+  at TEXT NOT NULL,
+  earned_cents INTEGER NOT NULL,
+  note TEXT
+);

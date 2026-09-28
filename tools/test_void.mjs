@@ -204,8 +204,14 @@ const catalogFn = await import(new URL('../void-live-deploy/functions/api/catalo
 const pingFn = await import(new URL('../void-live-deploy/functions/api/gumroad.js', import.meta.url).href);
 const gum = await import(new URL('../void-live-deploy/lib/gumroad.js', import.meta.url).href);
 const storeDb = await import(new URL('../void-live-deploy/lib/store-db.js', import.meta.url).href);
+const answerFn = await import(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url).href);
+const willFn = await import(new URL('../void-live-deploy/functions/api/will.js', import.meta.url).href);
+const earnFn = await import(new URL('../void-live-deploy/functions/api/earnings.js', import.meta.url).href);
+const fixLib = await import(new URL('../void-live-deploy/lib/automation-fix.js', import.meta.url).href);
+// Fix mode (plan item 13) runs the real /api/answer handler; fixEnv.AI is swapped per check (undefined = the model is busy).
+const fixEnv = { AI: undefined }, fixCalls = [];
 function memoryStoreD1({ broken = false } = {}) {
-  const T = { catalog: new Map(), meta: new Map(), sales: new Map(), accounts: new Map() }, tables = new Set();
+  const T = { catalog: new Map(), meta: new Map(), sales: new Map(), accounts: new Map(), milestones: new Map(), kv: new Map(), queue: new Map() }, tables = new Set();
   const need = (t) => { if (broken) throw new Error('D1 unavailable'); if (!tables.has(t)) throw new Error('no such table: ' + t); };
   const ch = (n) => ({ meta: { changes: n } });
   const run = (sql, a) => {
@@ -217,6 +223,9 @@ function memoryStoreD1({ broken = false } = {}) {
     if (/^INSERT OR IGNORE INTO void_sales \(id, resource, sale_id, subscription_id, product, void_id, verified, effect, raw, at\) VALUES \(\?, \?, \?, \?, \?, \?, 0, \?, \?, \?\)$/.test(sql)) { need('void_sales'); if (T.sales.has(a[0])) return ch(0); T.sales.set(a[0], { resource: a[1], sale_id: a[2], subscription_id: a[3], product: a[4], void_id: a[5], verified: 0, effect: a[6], raw: a[7], at: a[8] }); return ch(1); }
     if (/^UPDATE void_sales SET verified = \?, effect = \?, void_id = \? WHERE id = \?$/.test(sql)) { need('void_sales'); const r = T.sales.get(a[3]); if (!r) return ch(0); Object.assign(r, { verified: a[0], effect: a[1], void_id: a[2] }); return ch(1); }
     if (/^INSERT INTO void_accounts \(user_id, tier, sale_id, subscription_id, updated\) VALUES \(\?, \?, \?, \?, \?\) ON CONFLICT\(user_id\) DO UPDATE/.test(sql)) { need('void_accounts'); for (const [u, r] of T.accounts) if (u !== a[0] && r.sale_id && r.sale_id === a[2]) throw new Error('UNIQUE constraint failed: void_accounts.sale_id'); T.accounts.set(a[0], { tier: a[1], sale_id: a[2], subscription_id: a[3], updated: a[4] }); return ch(1); }
+    if (/^INSERT OR IGNORE INTO void_milestones \(id, at, earned_cents, note\) VALUES \(\?, \?, \?, \?\)$/.test(sql)) { need('void_milestones'); if (T.milestones.has(a[0])) return ch(0); T.milestones.set(a[0], { id: a[0], at: a[1], earned_cents: a[2], note: a[3] }); return ch(1); }
+    if (/^INSERT INTO void_kv \(k, v\) VALUES \('will', \?\) ON CONFLICT/.test(sql)) { T.kv.set('will', a[0]); return ch(1); }
+    if (/^INSERT INTO void_queue \(id, ask, target, state, note, at, updated\) VALUES/.test(sql)) { T.queue.set(a[0], { id: a[0], ask: a[1], target: a[2], state: a[3], note: a[4] }); return ch(1); }
     if (/^UPDATE void_accounts SET tier = \?, updated = \? WHERE subscription_id = \? OR sale_id = \?$/.test(sql)) { need('void_accounts'); let n = 0; for (const r of T.accounts.values()) if ((r.subscription_id && r.subscription_id === a[2]) || (r.sale_id && r.sale_id === a[3])) { r.tier = a[0]; r.updated = a[1]; n += 1; } return ch(n); }
     throw new Error('unexpected sql: ' + sql);
   };
@@ -224,28 +233,33 @@ function memoryStoreD1({ broken = false } = {}) {
     if (broken) throw new Error('D1 unavailable');
     if (/^SELECT v FROM void_catalog_meta WHERE k = \?$/.test(sql)) { need('void_catalog_meta'); return T.meta.has(a[0]) ? { v: T.meta.get(a[0]) } : null; }
     if (/^SELECT tier FROM void_accounts WHERE user_id = \?$/.test(sql)) { need('void_accounts'); return T.accounts.get(a[0]) || null; }
+    if (/^SELECT v FROM void_kv WHERE k = 'will'$/.test(sql)) return T.kv.has('will') ? { v: T.kv.get('will') } : null;
+    if (/^SELECT id FROM void_queue WHERE target LIKE 'will:%' AND state IN \('queued','building'\) LIMIT 1$/.test(sql)) return [...T.queue.values()].find((q) => /^will:/.test(q.target) && /queued|building/.test(q.state)) || null;
     throw new Error('unexpected sql: ' + sql);
   };
   const all = (sql) => {
     if (broken) throw new Error('D1 unavailable');
+    if (/^SELECT resource, sale_id, raw FROM void_sales$/.test(sql)) { need('void_sales'); return { results: [...T.sales.values()].map((r) => ({ resource: r.resource, sale_id: r.sale_id, raw: r.raw })) }; }
+    if (/^SELECT id, at, earned_cents, note FROM void_milestones$/.test(sql)) { need('void_milestones'); return { results: [...T.milestones.values()] }; }
     if (/^SELECT slug, data, available FROM void_catalog$/.test(sql)) { need('void_catalog'); return { results: [...T.catalog].map(([slug, r]) => ({ slug, data: r.data, available: r.available })) }; }
     throw new Error('unexpected sql: ' + sql);
   };
-  const stmt = (sql, a = []) => ({ sql, a, bind: (...b) => stmt(sql, b), run: async () => run(sql, a), first: async () => first(sql, a), all: async () => all(sql, a) });
+  const stmt = (sql, a = []) => ({ sql, a, bind: (...b) => stmt(sql, b), run: async () => run(sql, a), first: async (col) => { const r = first(sql, a); return col ? (r ? r[col] : null) : r; }, all: async () => all(sql, a) });
   return { ...T, T, tables, prepare: (sql) => stmt(sql), batch: async (list) => list.map((q) => run(q.sql, q.a)) };
 }
 const escAttr = (s) => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+// The store as the live pages describe it (names and descriptions are the only thing product matching reads).
 const STORE_PRODUCTS = () => [
-  { slug: 'yinmj', name: 'Void Monthly', price_cents: 4900, recurrence: 'monthly', native_type: 'membership', tiered: true },
-  { slug: 'join-the-team', short: 'klwlxn', name: 'Join the Team', price_cents: 100 },
-  { slug: 'gqsgib', name: 'The Big Board', price_cents: 2500, recurrence: 'monthly', native_type: 'membership' },
-  { slug: 'first-automation-setup', short: 'rpmuz', name: 'First Automation Setup — Your First Automation, Built For You, $100', price_cents: 10000 },
-  { slug: 'full-stack-audit', short: 'chafpm', name: 'Full Stack Audit — Every Automation You Run, Reviewed, $300', price_cents: 30000 },
-  { slug: 'keep-it-running-membership', short: 'agstkz', name: 'Keep-It-Running Plan — Automation Monitoring & Repair, $49/month', price_cents: 4900 },
-  { slug: 'eozcma', name: 'Automation Cleanup — One Broken Zap, Fixed Fast', price_cents: 2500 },
+  { slug: 'yinmj', id: 'ITp6zMMOC7A2h-bsSejYSA==', name: 'Void Monthly', price_cents: 4900, recurrence: 'monthly', native_type: 'membership', tiered: true, description: 'The Void is not a tool. It is a living, active environment. A persistent canvas where your commands initiate autonomous execution.' },
+  { slug: 'join-the-team', short: 'klwlxn', name: 'Join the Team', price_cents: 100, description: 'Available on Gumroad' },
+  { slug: 'gqsgib', name: 'The Big Board', price_cents: 2500, recurrence: 'monthly', native_type: 'membership', description: 'Real Jobs that pay real money.' },
+  { slug: 'first-automation-setup', short: 'rpmuz', name: 'First Automation Setup — Your First Automation, Built For You, $100', price_cents: 10000, description: "If you do anything twice a week by hand, it can probably run itself. You don't need to know what any of this is called — describe your day; we'll find the robot in it. One repetitive task, automated end to end — from trigger to done, tested and running. Built with the tools you already use. New orders copied into a spreadsheet automatically, form submissions." },
+  { slug: 'full-stack-audit', short: 'chafpm', name: 'Full Stack Audit — Every Automation You Run, Reviewed, $300', price_cents: 30000, description: 'Most businesses are running automations nobody fully remembers building. Some are broken. Some are fragile. Some are quietly wasting money on every run. The Full Stack Audit finds all of it. An inventory of every workflow you run — zaps, scenarios, webhooks, syncs, form flows, notifications. A verdict on each: working, broken, fragile, or wasteful. A written repair plan, ranked by priority.' },
+  { slug: 'keep-it-running-membership', short: 'agstkz', name: 'Keep-It-Running Plan — Automation Monitoring & Repair, $49/month', price_cents: 4900, description: 'Your automations run your day — until one quietly stops. Orders stop syncing. Emails stop sending. Forms go nowhere. Round-the-clock watch on your workflows — live monitoring with alerts, so a silent failure never runs for days. Repairs included when something breaks — we diagnose and fix it, and show you proof it runs again.' },
+  { slug: 'eozcma', name: 'Automation Cleanup — One Broken Zap, Fixed Fast', price_cents: 2500, description: "Got a Zap that broke and you don't have time to figure out why? Send it to me and I'll fix it — fast. It used to work, now it's silently failing, double-sending, or just sitting there dead. I diagnose one broken Zap (or automation) and tell you exactly what went wrong. I fix it so it actually runs." },
 ];
-const storeHtml = (list) => '<!doctype html><html><head><meta property="og:title" content="Subscribe to Atom Bomb on Gumroad"></head><body><div id="app" data-page="' + escAttr(JSON.stringify({ component: 'Users/Show', props: { sections: [{ id: 'default-products', type: 'SellerProfileProductsSection', search_results: { total: list.length, products: list.map((p) => ({ id: p.slug + '==', permalink: p.short || p.slug, name: p.name, native_type: p.native_type || 'digital', price_cents: p.tiered ? 0 : p.price_cents, currency_code: 'usd', url: 'https://moonbeam846.gumroad.com/l/' + p.slug + '?layout=profile', recurrence: p.recurrence || null })) } }] } })) + '"></div></body></html>';
-const productHtml = (p) => '<!doctype html><html><head><meta property="og:title" content="' + escAttr(p.name) + '" inertia="meta-property-og-title"></head><body><div id="app" data-page="' + escAttr(JSON.stringify({ component: 'Products/Show', props: { product: { permalink: p.short || p.slug, name: p.name, is_published: p.is_published !== false, price_cents: p.tiered ? 0 : p.price_cents, currency_code: 'usd', is_tiered_membership: !!p.tiered, recurrences: p.recurrence ? { default: p.recurrence, enabled: [{ recurrence: p.recurrence, price_cents: 0 }] } : null, options: p.tiered ? [{ name: p.name, recurrence_price_values: { [p.recurrence]: { price_cents: p.price_cents } } }] : [] } } })) + '"></div></body></html>';
+const storeHtml = (list) => '<!doctype html><html><head><meta property="og:title" content="Subscribe to Atom Bomb on Gumroad"></head><body><div id="app" data-page="' + escAttr(JSON.stringify({ component: 'Users/Show', props: { sections: [{ id: 'default-products', type: 'SellerProfileProductsSection', search_results: { total: list.length, products: list.map((p) => ({ id: p.id || p.slug + '==', permalink: p.short || p.slug, name: p.name, native_type: p.native_type || 'digital', price_cents: p.tiered ? 0 : p.price_cents, currency_code: 'usd', url: 'https://moonbeam846.gumroad.com/l/' + p.slug + '?layout=profile', recurrence: p.recurrence || null })) } }] } })) + '"></div></body></html>';
+const productHtml = (p) => '<!doctype html><html><head><meta property="og:title" content="' + escAttr(p.name) + '" inertia="meta-property-og-title"><meta property="og:description" content="' + escAttr(p.description || '') + '" inertia="meta-property-og-description"></head><body><div id="app" data-page="' + escAttr(JSON.stringify({ component: 'Products/Show', props: { product: { permalink: p.short || p.slug, name: p.name, is_published: p.is_published !== false, price_cents: p.tiered ? 0 : p.price_cents, currency_code: 'usd', is_tiered_membership: !!p.tiered, recurrences: p.recurrence ? { default: p.recurrence, enabled: [{ recurrence: p.recurrence, price_cents: 0 }] } : null, options: p.tiered ? [{ name: p.name, recurrence_price_values: { [p.recurrence]: { price_cents: p.price_cents } } }] : [] } } })) + '"></div></body></html>';
 function storeFetch(state) {
   const f = async (u) => {
     f.calls.push(String(u));
@@ -260,7 +274,7 @@ function storeFetch(state) {
   return f;
 }
 // What the page sees: the live store has a new price for the audit and one product Void didn't know about yet.
-const uiStore = { list: STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 32500 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check — A Quick Look At One Workflow', price_cents: 1500 }]) };
+const uiStore = { list: STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 32500 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check — A Quick Look At One Workflow', price_cents: 1500, description: 'A quick health check of one workflow.' }]) };
 const storeEnv = { DB: memoryStoreD1(), GUMROAD_FETCH: storeFetch(uiStore) };
 const catalogHits = [];
 async function catalogRoute(r) {
@@ -287,8 +301,12 @@ async function fresh(...inits) {
     const u = r.request().url();
     if (u.includes('/api/will')) return r.fulfill(json({ at: '2026-09-27T23:00:00Z', wants: [{ kind: 'people asked', title: 'learn x', i_want: 'I want to answer every question about tides.', because: 'asked 9 times' }] }));
     if (u.includes('/api/answer')) {
-      const ask = JSON.parse(r.request().postData() || '{}').ask || '';
-      if (false) {}
+      const body = JSON.parse(r.request().postData() || '{}'), ask = body.ask || '';
+      if (body.mode === 'fix') {
+        fixCalls.push(body);
+        return answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env: fixEnv })
+          .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
+      }
       if (/busy/.test(ask)) return r.fulfill(json({ answer: null, sources: [], note: 'model busy' }));
       return r.fulfill(json({ answer: 'Sunlight scatters off air molecules, and blue light scatters most [1].', sources: [{ title: 'Rayleigh scattering', url: 'https://en.wikipedia.org/wiki/Rayleigh_scattering' }] }));
     }
@@ -413,27 +431,27 @@ try {
 
   // Plan item 12: paid Void and Atom's store, asked for, not advertised. Nothing on the surface; asked, one plain line.
   {
+  const hits0 = catalogHits.length; // earlier contexts asked questions (an answer may carry a product line, so they read the catalog)
   const P = await fresh();
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
-  check('paid: a fresh visit is an empty screen (no price, product, account chrome or upgrade prompt; the store is not even fetched)', bare.stage === 0 && !(await P.page()) && !/\$\s?\d|price|pricing|upgrade|premium|paid|subscri|gumroad|checkout|sign in|account|log in|audit|big board/i.test(bare.text) && bare.links === 0 && bare.gum === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic') && catalogHits.length === 0, JSON.stringify(bare).slice(0, 200) + ' hits=' + catalogHits.length);
+  check('paid: a fresh visit is an empty screen (no price, product, account chrome or upgrade prompt; the store is not even fetched)', bare.stage === 0 && !(await P.page()) && !/\$\s?\d|price|pricing|upgrade|premium|paid|subscri|gumroad|checkout|sign in|account|log in|audit|big board/i.test(bare.text) && bare.links === 0 && bare.gum === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic') && catalogHits.length === hits0, JSON.stringify(bare).slice(0, 200) + ' hits=' + (catalogHits.length - hits0));
   const PITCH = /\$\s?\d|price|pricing|upgrade|premium|paid|subscri|gumroad|checkout|\bpro\b|\btier\b|audit|big board|join the team|automation setup/i;
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
   const hintsFor = async (q) => { await P.p.fill('#input', q); await P.p.waitForTimeout(150); const h = await P.p.$$eval('#hints div', (d) => d.map((x) => x.textContent)); await P.p.fill('#input', ''); return h; };
   const payHints = [...(await hintsFor('upg')), ...(await hintsFor('pay')), ...(await hintsFor('pric')), ...(await hintsFor('private')), ...(await hintsFor('audit')), ...(await hintsFor('join'))];
-  check('paid: "what can you do", the menu and hints never pitch a tier or a product', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg) && !PITCH.test(selfPg) && !PITCH.test(menuPg) && !payHints.some((h) => PITCH.test(h) || /private skill/.test(h)) && catalogHits.length === 0, [selfPg.slice(0, 60), payHints.join(',')].join(' | '));
+  check('paid: "what can you do", the menu and hints never pitch a tier or a product', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg) && !PITCH.test(selfPg) && !PITCH.test(menuPg) && !payHints.some((h) => PITCH.test(h) || /private skill/.test(h)) && catalogHits.length === hits0, [selfPg.slice(0, 60), payHints.join(',')].join(' | '));
   const OUT_LINE = 'paid Void starts with a passkey · say “remember me” first';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pricing', 'pay', 'how much does Void cost?', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
   for (const a of outAsks) { await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 3000) || await P.whisper()); }
   check('paid: signed out, every paid ask gets one plain line + "remember me" (no page, no link, no price)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
     outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
-  // Asks a product covers: a plain answer, plus one line with the product, its live price and its link. Nothing opens by itself.
+  // Asks a product covers: Void's own answer, then one line with the product, its live price and its link (matched from the live
+  // catalog's names and descriptions; nothing about products is hard-coded in the page). Nothing opens by itself.
   const productAsks = [
     ['can you audit my automations?', 'Full Stack Audit', '$325', 'full-stack-audit'], // live price (the store moved it from $300)
-    ['my zap is broken', 'Automation Cleanup', '$25', 'eozcma'],
     ['help me set up my first automation', 'First Automation Setup', '$100', 'first-automation-setup'],
-    ['monitor my automations', 'Keep-It-Running Plan', '$49', 'keep-it-running-membership'],
     ['tell me about the big board', 'The Big Board', '$25 a month', 'gqsgib'],
     ['how do I join the team', 'Join the Team', '$1', 'join-the-team'],
     ['zap health check', 'Zap Health Check', '$15', 'zap-health-check'], // new in the store: Void learned it from the live catalog
@@ -441,15 +459,88 @@ try {
   const prodGot = [];
   for (const [a, name, price, slug] of productAsks) {
     await P.ask(a, 0);
-    const line = await until(async () => { const pg = await P.page(); return /blue light scatters/.test(pg) && (await P.p.$eval('.vpage.on .vtail', (e) => e.textContent).catch(() => '')); }, 6000) || '';
+    const line = await until(async () => { const pg = await P.page(); return /blue light scatters|region of spacetime/.test(pg) && (await P.p.$eval('.vpage.on .vtail', (e) => e.textContent).catch(() => '')); }, 6000) || '';
     const link = await P.p.$eval('.vpage.on .vtail a', (e) => ({ href: e.href, target: e.target, rel: e.rel })).catch(() => null);
+    const after = await P.p.$eval('.vpage.on', (e) => e.lastElementChild && e.lastElementChild.classList.contains('vtail') && e.children.length > 1).catch(() => false);
     const want = 'From A-to-Mind: ' + name + ' · ' + price + ' · moonbeam846.gumroad.com/l/' + slug;
-    prodGot.push({ a, ok: line === want && link && link.href === 'https://moonbeam846.gumroad.com/l/' + slug && link.target === '_blank' && /noopener/.test(link.rel), line });
+    prodGot.push({ a, ok: line === want && after && link && link.href === 'https://moonbeam846.gumroad.com/l/' + slug && link.target === '_blank' && /noopener/.test(link.rel), line });
   }
-  check('store: an ask a product covers gets a plain answer + one line (product, live price, link); new store products are found', prodGot.every((x) => x.ok) && P.ctx.pages().length === 1 && catalogHits.length >= 1, prodGot.filter((x) => !x.ok).map((x) => x.a + '=' + x.line).join(' | '));
+  check('store: an ask a product covers gets Void\'s answer first, then one line (product, live price, link) from the live catalog; new store products are found', prodGot.every((x) => x.ok) && P.ctx.pages().length === 1 && catalogHits.length > hits0, prodGot.filter((x) => !x.ok).map((x) => x.a + '=' + x.line).join(' | '));
   await P.ask('make a clock'); await P.ask('what is a black hole', 300); await until(async () => /region of spacetime/.test(await P.page()), 5000);
   check('store: other asks carry no product line', !(await P.p.$('.vpage.on .vtail')) && (await P.state()).some((x) => x.kind === 'clock') && P.errors.length === 0, P.errors.join(' | '));
   await P.ctx.close();
+  }
+
+  // Plan item 13: any broken automation, fixed as it is. The fix is the answer; a product line may follow it, never lead.
+  {
+  const F = await fresh();
+  fixEnv.AI = undefined; const fc0 = fixCalls.length;
+  await F.ask('my Make scenario is broken', 0);
+  const askPg = await until(async () => { const pg = await F.page(); return /fix it as it is/.test(pg) && pg; }, 5000) || await F.page();
+  await F.p.waitForTimeout(700);
+  const askTail = await F.p.$('.vpage.on .vtail');
+  const pasted = 'HTTP module: [401] Unauthorized\n{"error":"invalid_token","message":"token has expired"}\nsteps: Watch orders -> HTTP make a request';
+  const pasteIn = async (P0, t) => { await P0.p.focus('#input'); await P0.p.evaluate((x) => { const dt = new DataTransfer(); dt.setData('text/plain', x); document.querySelector('#input').dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true })); }, t); };
+  await pasteIn(F, pasted);
+  const flatVal = await F.p.inputValue('#input');
+  await F.p.keyboard.press('Enter');
+  const fixPg = await until(async () => { const pg = await F.page(); return /Likely cause/.test(pg) && pg; }, 6000) || await F.page();
+  await F.p.waitForTimeout(600);
+  const fixAll = await F.page();
+  const tailOk = await F.p.$eval('.vpage.on', (e) => { const t = e.querySelector('.vtail'); return !t || (e.lastElementChild === t && e.innerText.indexOf('Likely cause') < e.innerText.indexOf('From A-to-Mind')); }).catch(() => false);
+  const req = fixCalls[fc0];
+  check('fix: "my Make scenario is broken" asks for what it shows (no product line); the pasted error keeps its lines and gets the concrete fix; any product line comes after it',
+    /fix it as it is/.test(askPg) && !askTail && /⏎/.test(flatVal) && req && req.mode === 'fix' && req.ask === 'my Make scenario is broken' && req.details === pasted && /Likely cause/.test(fixPg) && /Connections/.test(fixPg) && /Reauthorize/.test(fixPg) && tailOk && F.errors.length === 0,
+    [askPg.slice(0, 80), flatVal.slice(0, 60), JSON.stringify(req || {}).slice(0, 160), fixAll.slice(0, 200), F.errors.join(' | ')].join(' || '));
+  const fc1 = fixCalls.length;
+  await F.ask('my n8n webhook returns 404 when Stripe calls https://atom.app.n8n.cloud/webhook-test/orders', 0);
+  const n8nPre = await until(async () => F.p.$eval('.vpage.on pre', (e) => e.textContent).catch(() => ''), 6000) || '';
+  const n8nPg = await F.page();
+  check('fix: an n8n webhook 404 (no "zap" anywhere) goes straight to the fix: production URL in a code block, workflow Active',
+    fixCalls.length === fc1 + 1 && n8nPre.trim() === 'https://atom.app.n8n.cloud/webhook/orders' && /Active/.test(n8nPg) && /Likely cause/.test(n8nPg), n8nPre + ' | ' + n8nPg.slice(0, 200));
+  // With the model up: a GitHub Actions workflow pasted as-is (lines kept, token masked before the model sees it), fenced fix rendered.
+  const aiSeen = [];
+  fixEnv.AI = { run: async (m, o) => { aiSeen.push(o.messages); return { response: 'Likely cause: GitHub Actions cron is in UTC and "0 9 * * 1-5" never matches with the extra field.\nFix:\n1. Use five fields and UTC.\n```yaml\non:\n  schedule:\n    - cron: "0 13 * * 1-5"\n```' }; } };
+  const yaml = 'my GitHub Actions workflow never runs on schedule\non:\n  schedule:\n    - cron: "0 9 * * 1-5 *"\njobs:\n  sync:\n    runs-on: ubuntu-latest\n    env:\n      GH_TOKEN: ghp_abcdefghijklmnopqrstuvwxyz0123456789\n';
+  await pasteIn(F, yaml); await F.p.keyboard.press('Enter');
+  const ghPre = await until(async () => F.p.$eval('.vpage.on pre', (e) => e.textContent).catch(() => ''), 6000) || '';
+  const userMsg = (aiSeen[0] || []).find((m) => m.role === 'user');
+  const u = userMsg ? userMsg.content : '';
+  check('fix: with the model, a pasted workflow goes as-is (lines kept, token masked) and the corrected config renders as code',
+    /cron: "0 13 \* \* 1-5"/.test(ghPre) && /^on:\n  schedule:/m.test(ghPre) && /jobs:\n  sync:\n    runs-on: ubuntu-latest/.test(u) && /\[redacted\]/.test(u) && !/ghp_/.test(u) && /Platform \(guessed\): GitHub Actions/.test(u) && (aiSeen[0] || [])[0].content === fixLib.FIX_SYSTEM,
+    ghPre + ' | ' + u.slice(0, 240));
+  fixEnv.AI = undefined;
+  await F.ctx.close();
+  }
+  {
+  const pos = ['my Make scenario is broken', 'my n8n webhook returns 404', 'IFTTT applet stopped working', 'power automate flow fails with 401', 'my cron job is not running', 'the github action keeps failing', 'my python script keeps timing out', 'the webhook times out', 'our hubspot integration errors out', 'my automation double sends emails', 'my zap is broken'];
+  const neg = ['make a clock', 'make all the timers red', 'clear all the notes', 'what is a black hole', 'why is the sky blue', 'make a 5 minute timer', 'send an email to jane@x.com saying hi', 'what do you want to be?', 'weather in Lisbon', 'remember me', 'can you audit my automations?', 'help me set up my first automation'];
+  const plat = fixLib.platformOf('my n8n webhook returns 404') === 'n8n' && fixLib.platformOf('my Make scenario is broken') === 'Make' && fixLib.platformOf('IFTTT applet') === 'IFTTT' && fixLib.platformOf('Power Automate flow') === 'Power Automate';
+  check('fix: broken-automation asks are recognised on any platform (no "zap" needed) and ordinary asks are not', pos.every(fixLib.isFixAsk) && !neg.some(fixLib.isFixAsk) && plat && fixLib.redact('api_key="sk_live_12345678" password: hunter22 Bearer abcdefghijklmnop1234').indexOf('sk_live') < 0,
+    pos.filter((x) => !fixLib.isFixAsk(x)).concat(neg.filter(fixLib.isFixAsk).map((x) => 'FALSE ' + x)).join(' | '));
+  const busy = await (await answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', body: JSON.stringify({ mode: 'fix', ask: 'my cron job is not running', details: '*/5 * * * * python3 sync.py' }) }), env: { AI: { run: async () => { throw new Error('busy'); } } } })).json();
+  check('fix: model busy = fixed from the error itself (corrected cron line); nothing cached', busy.fix === 'rules' && /\*\/5 \* \* \* \* cd "\$HOME" && \/usr\/bin\/env python3 sync\.py >> \/tmp\/job\.log 2>&1/.test(busy.answer) && busy.platform === 'cron', JSON.stringify(busy).slice(0, 240));
+  }
+  {
+  // Rename a product in the store: the line follows on the next catalog read, with no change to Void's code.
+  const R1 = await fresh();
+  const RASK = 'my zapier zap double sends, every order shows up twice with a duplicate row error';
+  await R1.ask(RASK, 0);
+  const l1 = await until(async () => /Likely cause/.test(await R1.page()) && R1.p.$eval('.vpage.on .vtail', (e) => e.textContent).catch(() => ''), 7000) || '';
+  await R1.ctx.close();
+  const was = uiStore.list;
+  uiStore.list = was.map((p) => (p.slug === 'eozcma' ? { ...p, name: 'Zap Rescue — One Broken Zap, Fixed Fast' } : p));
+  storeEnv.DB.meta.set('refreshed', new Date(Date.now() - 7 * 3600e3).toISOString());
+  const R2 = await fresh();
+  await R2.ask(RASK, 0);
+  const l2 = await until(async () => /Likely cause/.test(await R2.page()) && R2.p.$eval('.vpage.on .vtail', (e) => e.textContent).catch(() => ''), 7000) || '';
+  await R2.ctx.close();
+  uiStore.list = was; storeEnv.DB.meta.set('refreshed', new Date(Date.now() - 7 * 3600e3).toISOString());
+  check('store: renaming a product in the store changes the line after the fix, with no code change', l1 === 'From A-to-Mind: Automation Cleanup · $25 · moonbeam846.gumroad.com/l/eozcma' && l2 === 'From A-to-Mind: Zap Rescue · $25 · moonbeam846.gumroad.com/l/eozcma', l1 + ' | ' + l2);
+  const NAMES = /Void Monthly|Full Stack Audit|Big Board|Join the Team|First Automation Setup|Keep-It-Running|Automation Cleanup|Zap Health Check|\$49\b|\b4900\b|\$25\b|\$300\b/;
+  const files = ['../void.html', '../void-live-deploy/lib/gumroad.js', '../void-live-deploy/lib/automation-fix.js', '../void-live-deploy/lib/earnings.js', '../void-live-deploy/lib/store-db.js', '../void-live-deploy/functions/api/answer.js', '../void-live-deploy/functions/api/catalog.js', '../void-live-deploy/functions/api/gumroad.js', '../void-live-deploy/functions/api/will.js'];
+  const named = files.filter((f) => NAMES.test(fs.readFileSync(new URL(f, import.meta.url), 'utf8')));
+  check('store: no product names or prices are hard-coded in the page or the libraries (all from the live catalog)', named.length === 0, named.join(', '));
   }
 
   // Plan item 7: the confirm line. One plain line before a send/book/spend; No, no answer or a changed request = it doesn't run.
@@ -701,7 +792,7 @@ try {
   const gone = bySlug('eozcma'), unpub = bySlug('gqsgib');
   const j2 = await (await catalogFn.onRequestGet({ request: new Request('http://x/api/catalog'), env: cEnv })).json();
   check('catalog merge: a product gone from the store or unpublished stays, marked unavailable, with its history (never deleted, never offered)', noRefetch && r2 && cEnv.DB.catalog.size === 7 && gone && gone.available === false && gone.unavailable_since === '2026-09-28T08:00:00.000Z' && gone.history.some((h) => h.event === 'gone from the store') && gone.price_cents === 2500
-    && unpub && unpub.available === false && unpub.history.some((h) => h.event === 'unpublished') && j2.products.length === 7 && j2.products.find((p) => p.slug === 'eozcma').available === false && gum.productFor('my zap is broken', j2.products) === null && gum.productFor('tell me about the big board', j2.products) === null,
+    && unpub && unpub.available === false && unpub.history.some((h) => h.event === 'unpublished') && j2.products.length === 7 && j2.products.find((p) => p.slug === 'eozcma').available === false && (gum.productFor('can you fix my zapier zap, it double sends', j2.products, { fix: true }) || {}).slug !== 'eozcma' && gum.productFor('tell me about the big board', j2.products) === null,
     JSON.stringify([gone, unpub]).slice(0, 240));
   st.list = STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 35000 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check', price_cents: 1500 }]);
   await storeDb.refreshCatalog(cEnv, { now: '2026-09-28T14:30:00.000Z' });
@@ -720,7 +811,7 @@ try {
   const staleRefetched = sf.calls.length > callsBeforeStale && Date.now() - Date.parse(cEnv.DB.meta.get('refreshed')) < 60000;
   const seedRes = await (await catalogFn.onRequestGet({ request: new Request('http://x/api/catalog'), env: { DB: memoryStoreD1({ broken: true }), GUMROAD_FETCH: sf } })).json();
   const forced = [await catalogFn.onRequestPost({ request: new Request('http://x/api/catalog', { method: 'POST' }), env: { ...cEnv, READ_TOKEN: OWNER } }), await catalogFn.onRequestPost({ request: new Request('http://x/api/catalog', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER } }), env: { ...cEnv, READ_TOKEN: OWNER } })].map((r) => r.status);
-  check('catalog: an unreachable or empty store changes nothing; older than 6 hours refreshes on read; no D1 serves the seed; owner can force a refresh', rDown === null && rEmpty === null && afterFail === before && cEnv.DB.catalog.size === 8 && staleRefetched && seedRes.source === 'seed' && seedRes.products.length === 7 && forced.join(',') === '401,200',
+  check('catalog: an unreachable or empty store changes nothing; older than 6 hours refreshes on read; no D1 reads the live store (no seed); owner can force a refresh', rDown === null && rEmpty === null && afterFail === before && cEnv.DB.catalog.size === 8 && staleRefetched && seedRes.source === 'live' && seedRes.products.length === st.list.length && forced.join(',') === '401,200',
     [rDown, rEmpty, staleRefetched, seedRes.source, forced.join(',')].join(' | '));
 
   // Gumroad Ping: key required; every ping recorded once; Void Monthly -> paid only after Gumroad's API confirms the sale.
@@ -729,7 +820,7 @@ try {
   const pEnv = { DB: memoryStoreD1(), GUMROAD_PING_KEY: 'ping-key-123', GUMROAD_FETCH: apiFetch };
   const ping = async (fields, { key = 'ping-key-123', env = pEnv } = {}) => { const res = await pingFn.onRequestPost({ request: new Request('https://a-to-mind.com/api/gumroad?k=' + key, { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(fields).toString() }), env }); return { status: res.status, body: await res.json().catch(() => null) }; };
   const VID = 'AAAAAAAAAAAAAAAAAAAAAA', VID2 = 'BBBBBBBBBBBBBBBBBBBBBB';
-  const vmSale = (id, extra = {}) => ({ sale_id: id, sale_timestamp: '2026-09-28T01:00:00Z', product_id: 'ITp6', product_permalink: 'yinmj', product_name: 'Void Monthly', price: '4900', email: 'buyer@example.com', subscription_id: 'sub-1', 'url_params[void]': VID, resource_name: 'sale', ...extra });
+  const vmSale = (id, extra = {}) => ({ sale_id: id, sale_timestamp: '2026-09-28T01:00:00Z', product_id: 'ITp6zMMOC7A2h-bsSejYSA==', product_permalink: 'https://moonbeam846.gumroad.com/l/yinmj', permalink: 'yinmj', short_product_id: 'yinmj', product_name: 'Void Monthly', price: '4900', email: 'buyer@example.com', subscription_id: 'sub-1', 'url_params[void]': VID, resource_name: 'sale', ...extra });
   const noKeyCfg = await ping(vmSale('s0'), { env: { DB: memoryStoreD1() } });
   const wrongKey = await ping(vmSale('s0'), { key: 'nope' });
   const audit = await ping({ sale_id: 'a1', sale_timestamp: '2026-09-28T01:00:00Z', product_permalink: 'full-stack-audit', product_name: 'Full Stack Audit', price: '30000', email: 'x@example.com', resource_name: 'sale' });
@@ -745,10 +836,10 @@ try {
   const reuse = await ping(vmSale('s2', { 'url_params[void]': VID2, sale_timestamp: '2026-09-28T02:00:00Z' }));
   const salesRow = pEnv.DB.sales.get('sale:a1:2026-09-28T01:00:00Z');
   check('gumroad ping: key required; every sale of any product recorded once; Void Monthly -> paid only when Gumroad\'s API confirms the sale', noKeyCfg.status === 503 && wrongKey.status === 403 && audit.status === 200 && salesRow && salesRow.product === 'full-stack-audit' && /buyer|x%40example/.test(salesRow.raw) && auditAgain.body.note === 'already recorded'
-    && /no GUMROAD_ACCESS_TOKEN/.test(unverified.body.effect) && !tierAfterUnverified && /different product/.test(wrongProduct.body.effect) && /not found/.test(notFound.body.effect) && !pEnv.DB.accounts.has(VID2)
+    && /different seller/.test(unverified.body.effect) && !tierAfterUnverified && /different product/.test(wrongProduct.body.effect) && /not found/.test(notFound.body.effect) && !pEnv.DB.accounts.has(VID2)
     && good.body.effect === 'tier paid' && pEnv.DB.accounts.get(VID).tier === 'paid' && pEnv.DB.accounts.get(VID).subscription_id === 'sub-1' && /already linked/.test(reuse.body.effect) && !pEnv.DB.accounts.has(VID2) && pEnv.DB.sales.size === 6,
     [noKeyCfg.status, wrongKey.status, audit.status, auditAgain.body && auditAgain.body.note, unverified.body.effect, wrongProduct.body.effect, notFound.body.effect, good.body.effect, reuse.body.effect, pEnv.DB.sales.size].join(' | '));
-  const sub = (resource, at) => ({ subscription_id: 'sub-1', product_id: 'ITp6', product_name: 'Void Monthly', resource_name: resource, [resource === 'cancellation' ? 'cancelled_at' : resource === 'subscription_ended' ? 'ended_at' : 'restarted_at']: at, user_email: 'buyer@example.com' });
+  const sub = (resource, at) => ({ subscription_id: 'sub-1', product_id: 'ITp6zMMOC7A2h-bsSejYSA==', product_name: 'Void Monthly', resource_name: resource, [resource === 'cancellation' ? 'cancelled_at' : resource === 'subscription_ended' ? 'ended_at' : 'restarted_at']: at, user_email: 'buyer@example.com' });
   const cancel = await ping(sub('cancellation', '2026-10-01T00:00:00Z')); const afterCancel = pEnv.DB.accounts.get(VID).tier;
   const restart = await ping(sub('subscription_restarted', '2026-10-02T00:00:00Z')); const afterRestart = pEnv.DB.accounts.get(VID).tier;
   const ended = await ping(sub('subscription_ended', '2026-11-01T00:00:00Z')); const afterEnded = pEnv.DB.accounts.get(VID).tier;
@@ -757,6 +848,61 @@ try {
   const otherCancel = await ping({ subscription_id: 'sub-9', product_name: 'The Big Board', resource_name: 'cancellation', cancelled_at: '2026-10-03T00:00:00Z' });
   check('gumroad ping: a cancellation, ended membership or refund drops the Void back to free (restarted = paid again); every ping stays on record', cancel.body.effect === 'tier free (cancellation)' && afterCancel === 'free' && afterRestart === 'paid' && ended.body.effect === 'tier free (subscription_ended)' && afterEnded === 'free' && refund.body.effect === 'tier free (refund)' && afterRefund === 'free' && otherCancel.status === 200 && pEnv.DB.sales.size === 12 && [...pEnv.DB.sales.values()].filter((r) => r.resource === 'cancellation').length === 2,
     [cancel.body.effect, afterCancel, afterRestart, ended.body.effect, afterEnded, refund.body.effect, afterRefund, pEnv.DB.sales.size].join(' | '));
+  // No GUMROAD_ACCESS_TOKEN (Atom doesn't pass one): a keyed ping from Atom's seller account for the paid membership is trusted.
+  const kEnv = { DB: memoryStoreD1(), GUMROAD_PING_KEY: 'ping-key-123' };
+  const SELLER = 'I1O8RSqkcoRWcew39cQx7A==', VK1 = 'CCCCCCCCCCCCCCCCCCCCCC', VK2 = 'DDDDDDDDDDDDDDDDDDDDDD', VK3 = 'EEEEEEEEEEEEEEEEEEEEEE';
+  const kSale = (id, extra = {}) => vmSale(id, { seller_id: SELLER, subscription_id: 'sub-k' + id, 'url_params[void]': VK1, ...extra });
+  const kGood = await ping(kSale('k1'), { env: kEnv });
+  const kWrongSeller = await ping(kSale('k2', { seller_id: 'zzOtherSellerZZzzzzzzz==', 'url_params[void]': VK2 }), { env: kEnv });
+  const kNoSeller = await ping(kSale('k3', { seller_id: '', 'url_params[void]': VK2 }), { env: kEnv });
+  const kTest = await ping(kSale('k4', { test: 'true', 'url_params[void]': VK2 }), { env: kEnv });
+  const kNoKey = await ping(kSale('k5', { 'url_params[void]': VK2 }), { env: kEnv, key: '' });
+  const kReuse = await ping(kSale('k1', { 'url_params[void]': VK3, sale_timestamp: '2026-09-28T03:00:00Z' }), { env: kEnv });
+  const kOther = await ping({ sale_id: 'k6', seller_id: SELLER, sale_timestamp: '2026-09-28T01:00:00Z', product_id: 'GTQsNJR9Nsd66O5QVhI4MA==', product_permalink: 'https://moonbeam846.gumroad.com/l/gqsgib', price: '2500', 'url_params[void]': VK2, resource_name: 'sale' }, { env: kEnv });
+  const kPinned = await ping(kSale('k7', { 'url_params[void]': VK2 }), { env: { ...kEnv, GUMROAD_SELLER_ID: 'someone-else==' } });
+  const kCancel = await ping({ subscription_id: 'sub-kk1', seller_id: SELLER, product_id: 'ITp6zMMOC7A2h-bsSejYSA==', resource_name: 'cancellation', cancelled_at: '2026-10-01T00:00:00Z' }, { env: kEnv });
+  check('gumroad ping, no API token: keyed ping + Atom\'s seller_id = paid; wrong or missing seller, test ping or another product = recorded, no unlock; no key = refused; one sale, one Void; cancel = free',
+    kGood.body.effect === 'tier paid' && /different seller/.test(kWrongSeller.body.effect) && /different seller/.test(kNoSeller.body.effect) && /test ping/.test(kTest.body.effect) && kNoKey.status === 403 && /already linked/.test(kReuse.body.effect) && kOther.body.effect === 'recorded' && /different seller/.test(kPinned.body.effect)
+    && !kEnv.DB.accounts.has(VK2) && !kEnv.DB.accounts.has(VK3) && kEnv.DB.sales.has('sale:k2:2026-09-28T01:00:00Z') && !kEnv.DB.sales.has('sale:k5:2026-09-28T01:00:00Z') && kCancel.body.effect === 'tier free (cancellation)' && kEnv.DB.accounts.get(VK1).tier === 'free',
+    [kGood.body.effect, kWrongSeller.body.effect, kNoSeller.body.effect, kTest.body.effect, kNoKey.status, kReuse.body.effect, kOther.body.effect, kPinned.body.effect, kCancel.body.effect].join(' | '));
+
+  // Earnings: the running total of every sale (all products, net of refunds). Crossing $100 is recorded once, for Atom only.
+  const eEnv = { DB: memoryStoreD1(), GUMROAD_PING_KEY: 'ping-key-123', READ_TOKEN: OWNER };
+  const eSale = (id, cents, extra = {}) => ping({ sale_id: id, seller_id: SELLER, sale_timestamp: '2026-09-28T0' + id.slice(-1) + ':00:00Z', product_id: 'x' + id, product_permalink: 'https://moonbeam846.gumroad.com/l/p' + id, price: String(cents), resource_name: 'sale', ...extra }, { env: eEnv });
+  const e1 = await eSale('e1', 4900), e2 = await eSale('e2', 2500);
+  const e2r = await ping({ sale_id: 'e2', resource_name: 'refund', sale_timestamp: '2026-09-28T02:00:00Z', refunded: 'true', price: '2500' }, { env: eEnv });
+  const e3 = await eSale('e3', 3000), e4 = await eSale('e4', 50000, { test: 'true' });
+  const below = eEnv.DB.milestones.size;
+  const e5 = await eSale('e5', 3000);
+  const e6 = await eSale('e6', 9900);
+  await ping({ sale_id: 'e1', resource_name: 'refund', sale_timestamp: '2026-09-28T01:00:00Z', refunded: 'true', price: '4900' }, { env: eEnv });
+  const e7 = await eSale('e7', 9900);
+  const ms = [...eEnv.DB.milestones.values()];
+  const earnNo = await earnFn.onRequestGet({ request: new Request('http://x/api/earnings'), env: eEnv });
+  const earnYes = await (await earnFn.onRequestGet({ request: new Request('http://x/api/earnings', { headers: { authorization: 'Bearer ' + OWNER } }), env: eEnv })).json();
+  check('earnings: net of refunds (test pings ignored); crossing $100 is recorded once with the Gumroad Agent / first payout note; nothing is queued or built',
+    [e1, e2, e2r, e3, e4].every((x) => x.status === 200 && !x.body.milestones) && below === 0 && JSON.stringify(e5.body.milestones) === '["sales-100"]' && !e6.body.milestones && !e7.body.milestones && ms.length === 1 && ms[0].id === 'sales-100' && ms[0].earned_cents === 10900
+    && /\$100/.test(ms[0].note) && /first payout completes/.test(ms[0].note) && /Agent/.test(ms[0].note) && !/\bunlocked\b|is open now|now open/i.test(ms[0].note) && eEnv.DB.queue.size === 0,
+    JSON.stringify([e5.body, ms]).slice(0, 300));
+  check('earnings: /api/earnings is owner-only and returns the totals and milestones', earnNo.status === 401 && earnYes.earned_cents === 4900 + 2500 + 3000 + 3000 + 9900 + 9900 - 2500 - 4900 && earnYes.sales === 6 && earnYes.gross_cents === 4900 + 2500 + 3000 + 3000 + 9900 + 9900 && earnYes.milestones.length === 1,
+    earnNo.status + ' ' + JSON.stringify(earnYes).slice(0, 200));
+
+  // The will engine reads the budget when it ranks: an upgrade the budget covers weighs more; money never shows in the will.
+  const wSeen = [];
+  const wEnv = { ...eEnv, AI: { run: async (m, o) => { wSeen.push(o.messages); return { response: JSON.stringify({ wants: [{ id: 2, i_want: 'I want a stronger model, worth every $10/month of my budget.', because: 'my earnings cover it' }] }) }; } } };
+  const cands = { candidates: [{ kind: 'people asked', title: 'Answer tide questions', why: 'asked 9 times', weight: 20 }, { kind: 'upgrade myself', title: 'Answer and fix with a stronger model', why: 'better fixes', weight: 12, cost_cents: 1000 }, { kind: 'upgrade myself', title: 'Move to a dedicated GPU', why: 'speed', weight: 12, cost_cents: 500000 }] };
+  const wPost = (env) => willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify(cands) }), env });
+  const w1 = await (await wPost(wEnv)).json();
+  const prompt = ((wSeen[0] || []).find((m) => m.role === 'user') || {}).content || '';
+  const sys = ((wSeen[0] || [])[0] || {}).content || '';
+  const saved = eEnv.DB.kv.get('will') || '';
+  eEnv.DB.queue.clear();
+  const w2 = await (await wPost({ ...eEnv, AI: { run: async () => { throw new Error('busy'); } } })).json();
+  check('will: the budget line leads the candidates; an affordable upgrade gets +15, one over budget doesn\'t; the saved will never mentions money; model busy = the boosted upgrade wins',
+    /^Budget: \$258 earned from 6 sales \(net of refunds\)/.test(prompt) && /2\. \[upgrade myself, weight 27, costs \$10\/month, affordable\]/.test(prompt) && /3\. \[upgrade myself, weight 12, costs \$5000\/month, over budget\]/.test(prompt) && /prefer using it over building it/.test(sys)
+    && w1.wants[0].title === 'Answer and fix with a stronger model' && !/\$|budget|earning/i.test(saved) && w2.wants[0].title === 'Answer and fix with a stronger model',
+    prompt.slice(0, 260) + ' | ' + saved.slice(0, 200) + ' | ' + JSON.stringify(w2.wants.map((w) => w.title)));
+
   const brokenPing = await ping(vmSale('s9'), { env: { ...pEnv, DB: memoryStoreD1({ broken: true }) } });
   check('gumroad ping: no D1 = 503 so Gumroad retries (nothing half-written); nothing ever deletes a sale or a catalog row', brokenPing.status === 503 && !/DELETE FROM void_(sales|catalog)/.test(fs.readFileSync(new URL('../void-live-deploy/functions/api/gumroad.js', import.meta.url), 'utf8') + fs.readFileSync(new URL('../void-live-deploy/lib/store-db.js', import.meta.url), 'utf8') + fs.readFileSync(new URL('../void-live-deploy/functions/api/catalog.js', import.meta.url), 'utf8')), brokenPing.status);
   }

@@ -18,7 +18,7 @@
     // Empty = off; browsers with WebMCP turned on (flag or trial) still get Void's tools, everyone else uses /tools.json.
     var WEBMCP_TRIAL_TOKEN = '';
     if (WEBMCP_TRIAL_TOKEN) { var ot = document.createElement('meta'); ot.httpEquiv = 'origin-trial'; ot.content = WEBMCP_TRIAL_TOKEN; document.head.appendChild(ot); }
-    // Paid Void (plan item 12): Void Monthly on Atom's Gumroad store (https only). Empty = payments aren't open: nothing links out,
+    // Paid Void (plan item 12): the paid membership's checkout on Atom's Gumroad store (https only). Empty = payments aren't open: nothing links out,
     // and a signed-in ask to pay just says so. Only ever shown when someone asks, signed in; never on the surface.
     var GUMROAD_URL = 'https://moonbeam846.gumroad.com/l/yinmj';
   </script>
@@ -3377,21 +3377,21 @@ return { ok: true, detail: 'timer-reset' };
     if (me && me.token) minePull();
 
     // --- Paid Void and Atom's store, asked for, not advertised (plan item 12). No pricing page, no upsell, nothing on the surface. ---
-    // Free Void stays whole, and sync on every device stays free with a passkey. After a passkey, paid Void (Void Monthly on
-    // Gumroad) adds only more model answers, private skills and a higher cap on actions that pass the confirm line (the confirm
-    // itself never goes away). Asks for something one of Atom's products covers get a plain answer plus one line: the product,
-    // its live price (/api/catalog, merged from the store) and its link. None of it is in the menu, hints, /tools.json or WebMCP.
+    // Free Void stays whole, and sync on every device stays free with a passkey. After a passkey, paid Void (the membership
+    // lib/gumroad.js UNLOCKS names by id) adds only more model answers, private skills and a higher cap on actions that pass the
+    // confirm line (the confirm itself never goes away). Products are never named or priced in this file: names, prices and what
+    // each covers come from the live store (/api/catalog), so Void follows when Atom renames or reprices. A product line comes
+    // only after Void's own answer or fix. None of it is in the menu, hints, /tools.json or WebMCP.
     const storeReady = import('/lib/gumroad.js').catch(() => null);
     let catalogAt = 0, catalogP = null;
-    async function storeCatalog(load) { // -> { g, products } ; products from /api/catalog once asked, the built-in seed until then
+    async function storeCatalog() { // -> { g, products }; products from /api/catalog (fetched on the first ask that needs it, never on arrival)
       const g = await Promise.race([storeReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
       if (!g) return { g: null, products: [] };
-      const seed = () => g.CATALOG_SEED.map(g.publicProduct);
-      if (load && (!catalogP || Date.now() - catalogAt > 600000)) {
+      if (!catalogP || Date.now() - catalogAt > 600000) {
         catalogAt = Date.now();
-        catalogP = fetch('/api/catalog').then((r) => (r.ok ? r.json() : null)).then((j) => (j && Array.isArray(j.products) && j.products.length ? j.products : seed())).catch(() => seed());
+        catalogP = fetch('/api/catalog').then((r) => (r.ok ? r.json() : null)).then((j) => (j && Array.isArray(j.products) ? j.products : [])).catch(() => []);
       }
-      return { g, products: catalogP ? await catalogP : seed() };
+      return { g, products: await catalogP };
     }
     const PAID_ADDS = 'more model answers, private skills and a higher cap on actions you confirm';
     const PAID_LEAD = "(?:please\\s+)?(?:(?:i\\s+(?:want|need|would\\s+like)|i'?d\\s+like|can\\s+i|could\\s+i|how\\s+(?:do|can)\\s+i|let\\s+me|give\\s+me|get\\s+me)(?:\\s+to)?(?:\\s+(?:have|get))?\\s+)?";
@@ -3401,14 +3401,14 @@ return { ok: true, detail: 'timer-reset' };
       "what (?:does|do) (?:void|it|paid void|a-to-mind) cost|how much (?:does|is|do) (?:void|it|paid void|a-to-mind|the paid (?:version|tier|plan))(?: cost)?|how much for (?:void|paid void|more)",
       "pay(?: for (?:void|paid void|more|it|the paid (?:version|tier|plan)))?(?: you)?",
       "(?:buy|get|try) (?:void )?(?:pro|premium|paid(?: void)?|monthly|the paid (?:version|tier|plan))",
-      "subscribe|(?:a |my )?subscription|go pro|void pro|void monthly|paid void|premium|(?:a |the )?paid (?:tier|plan|version)",
+      "subscribe|(?:a |my )?subscription|go pro|void (?:pro|plus|premium|monthly|yearly|annual)|paid void|premium|(?:a |the )?paid (?:tier|plan|version)",
       "(?:more|extra|unlimited) (?:model )?answers|(?:a )?higher answer (?:limit|cap)|raise (?:my|the) answer (?:limit|cap)",
       "(?:a |my )?private skills?|(?:make|keep) (?:a |my )?skills? private|(?:make|build|add|create) (?:me )?(?:a )?private skill",
       "(?:a )?higher (?:confirm(?:ation)?|action) (?:cap|limit)|raise (?:my|the) (?:confirm(?:ation)?|action) (?:cap|limit)|more (?:confirmed )?actions(?: per day)?",
     ];
     const PAID_RE = new RegExp('^' + PAID_LEAD + '(?:' + PAID_CORE.join('|') + ')$');
     function isPaidAsk(lower) { return PAID_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
-    function paidUrl() { // Void Monthly's checkout, carrying this Void's account id (Gumroad hands url_params to the Ping); '' = not open
+    function paidUrl() { // the paid membership's checkout, carrying this Void's account id (Gumroad hands url_params to the Ping); '' = not open
       const g = typeof GUMROAD_URL === 'string' ? GUMROAD_URL.trim() : '';
       if (!/^https:\/\//i.test(g) || !me || !me.userId) return '';
       try { const u = new URL(g); u.searchParams.set('void', me.userId); return u.href; } catch (_) { return ''; }
@@ -3421,10 +3421,10 @@ return { ok: true, detail: 'timer-reset' };
       if (!isPaidAsk(lower)) return false;
       if (!me || !me.token) { say('paid Void starts with a passkey · say “remember me” first'); loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
       if ((await meTier()) === 'paid') { say('your Void is paid: ' + PAID_ADDS); return true; }
-      const { g, products } = await storeCatalog(true);
-      const vm = products.find((p) => p.slug === 'yinmj');
-      const price = g && vm ? g.priceText(vm) : '$49 a month';
-      const url = vm && vm.available !== false ? paidUrl() : '', line = 'Paid Void is ' + price + ': ' + PAID_ADDS;
+      const { g, products } = await storeCatalog();
+      const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Void, as the store has it now
+      const url = !vm || vm.available !== false ? paidUrl() : '';
+      const line = vm && vm.available !== false ? 'Paid Void is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Void adds ' + PAID_ADDS;
       if (!url) say(line + " · payments aren't open yet");
       else {
         whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
@@ -3433,17 +3433,80 @@ return { ok: true, detail: 'timer-reset' };
       loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: url ? 'gumroad link' : 'not open' });
       return true;
     }
-    async function handleProductAsk(text, lower) {
-      let { g, products } = await storeCatalog(false);
-      if (!g || !g.productFor(lower, products)) return false;
-      ({ products } = await storeCatalog(true)); // live prices
-      const p = g.productFor(lower, products);
-      if (!p) return false;
+    // The optional product line: only when the live catalog has something for this ask, after Void's own answer (or fix).
+    function productLine(g, p) {
       const link = String(p.url || '').replace(/^https:\/\//, '');
+      return 'From A-to-Mind: <b>' + esc(p.name) + '</b> · ' + esc(g.priceText(p)) + ' · <a href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(link) + '</a>';
+    }
+    async function attachProductTail(text, opt = {}) {
+      const { g, products } = await storeCatalog();
+      const p = g && g.productFor(text, products, { fix: !!opt.fix });
+      if (!p) return;
+      const html = productLine(g, p);
+      if (opt.el) { if (opt.el === vpageEl) { opt.el._tail = html; keepTail(opt.el); } }
+      else { pageTail = { ask: text, html }; if (vpageEl && vpageEl._ask === text) { vpageEl._tail = html; keepTail(vpageEl); } }
+      loopLog({ domain: 'void.store', ask: text, score: 'pass', note: 'product line ' + p.slug });
+    }
+
+    // --- Any broken automation, fixed as it is (Atom: "fix as is, the void is constantly evolving"). ---
+    // Zapier, Make, n8n, IFTTT, Power Automate, cron, GitHub Actions, a script, a webhook, anything: Void reads what was pasted
+    // (error, config, steps), names the likely cause and gives the concrete fix or corrected config (/api/answer mode 'fix',
+    // lib/automation-fix.js). If nothing was pasted yet, Void asks for it. The fix is the answer; a product line may follow it.
+    const fixReady = import('/lib/automation-fix.js').catch(() => null);
+    let pendingFix = null, pasteRaw = null, pasteFlat = null;
+    input.addEventListener('paste', (e) => { // keep a pasted config/log with its line breaks (a one-line input would flatten it)
+      const t = e.clipboardData && e.clipboardData.getData('text');
+      if (!t || !/\n/.test(t)) return;
+      e.preventDefault();
+      const flat = t.replace(/\s*\r?\n\s*/g, ' ⏎ ').trim();
+      const st = input.selectionStart ?? input.value.length, en = input.selectionEnd ?? input.value.length;
+      input.setRangeText(flat, st, en, 'end');
+      pasteRaw = t; pasteFlat = flat; drawHints();
+    });
+    function restorePaste(text) {
+      const raw = pasteRaw, flat = pasteFlat; pasteRaw = pasteFlat = null;
+      return raw && flat && text.includes(flat) ? text.replace(flat, raw) : text;
+    }
+    function fixHtml(t) {
+      return String(t).split(/```[\w.+-]*[ \t]*\n?/).map((part, i) => (i % 2
+        ? '<pre style="white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.06);padding:10px 12px;border-radius:8px;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto"><code>' + esc(part.replace(/\n$/, '')) + '</code></pre>'
+        : part.trim() ? '<p>' + esc(part.trim()).replace(/\n+/g, '<br>') + '</p>' : '')).join('');
+    }
+    async function showFix(ask, details) {
+      const title = ask.split('\n')[0].slice(0, 140);
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">working on it…</div>'; });
+      say('working on it');
+      let j = null;
+      try {
+        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'fix', ask: title, details }) });
+        if (r.ok || r.status === 429) j = await r.json();
+      } catch (_) {}
+      if (vpageEl !== el) return 'fix';
+      say('');
+      if (!j || !j.answer) {
+        el.innerHTML = '<h2>' + esc(title) + '</h2><p>' + (j && j.note === 'slow down' ? 'Too many at once. Ask again in a minute.' : "I can't tell what broke from that yet. Paste the exact error and the step, config or code it fails on, as it is.") + '</p>';
+        pendingFix = { ask: title, until: Date.now() + 600000 };
+        return 'none';
+      }
+      el.innerHTML = '<h2>' + esc(title) + '</h2>' + fixHtml(j.answer) + '<div class="src">Worked out by Void from what you gave it' + (j.fix === 'rules' ? ' (from the error itself)' : '') + ' · run it once to confirm</div>';
+      loopLog({ domain: 'void.fix', ask: title, score: 'pass', note: (j.fix || '') + ' ' + (j.platform || '') });
+      attachProductTail(title + '\n' + details, { fix: true, el });
+      return 'fix';
+    }
+    async function handleFixAsk(text, full) {
+      const fx = await Promise.race([fixReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      if (!fx) return false;
+      if (pendingFix) {
+        const pf = pendingFix; pendingFix = null;
+        if (Date.now() < pf.until && (fx.hasDetails(full) || fx.isFixAsk(full))) { currentAsk = text; lastAsk = text; showFix(pf.ask, full); return true; }
+      }
+      if (!fx.isFixAsk(full)) return false;
       currentAsk = text; lastAsk = text;
-      pageTail = { ask: text, html: 'From A-to-Mind: <b>' + esc(p.name) + '</b> · ' + esc(g.priceText(p)) + ' · <a href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(link) + '</a>' };
-      showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); });
-      loopLog({ domain: 'void.store', ask: text, score: 'pass', note: 'product ' + p.slug });
+      if (fx.hasDetails(full)) { showFix(full.split('\n')[0], full); return true; }
+      const title = text.slice(0, 140);
+      showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><p>I\'ll fix it as it is. Paste what it shows: the error message, and the step, config or code it fails on (any tool: Make, n8n, Zapier, IFTTT, Power Automate, cron, GitHub Actions, a script, a webhook…). Keys and passwords are masked before it\'s read.</p>'; });
+      pendingFix = { ask: title, until: Date.now() + 600000 };
+      loopLog({ domain: 'void.fix', ask: title, score: 'pass', note: 'asked for details' });
       return true;
     }
 
@@ -3461,7 +3524,7 @@ return { ok: true, detail: 'timer-reset' };
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
       if (await handlePaidAsk(lower0)) return;
-      if (await handleProductAsk(text, lower0)) return;
+      if (await handleFixAsk(text, restorePaste(text))) return;
       if (handleVoiceAsk(lower0)) return;
       if (await handleGatedAsk(text)) return;
       takeUndoSnapshot();
@@ -3479,12 +3542,12 @@ return { ok: true, detail: 'timer-reset' };
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
       if (/^(why|how|when|where|which|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
           && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {
-        showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'answer' }); return;
+        showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'answer' }); return;
       }
-      if (wantsArticle(lower0)) { showArticle(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'article' }); return; }
+      if (wantsArticle(lower0)) { showArticle(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'article' }); return; }
       const result = freerEnglishParse(text);
       if (!result.ok) {
-        showAnswer(text).then((src) => reportMiss(text, src || 'none'));
+        showAnswer(text).then((src) => reportMiss(text, src || 'none')); attachProductTail(text);
         loopLog({ domain: 'void.page', ask: text, score: 'fallback', note: 'article fallback' });
         return;
       }

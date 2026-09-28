@@ -7,7 +7,8 @@ pages_build_output_dir = "."
 # Secrets once: npx wrangler pages secret put READ_TOKEN --project-name=a-to-mind
 #               npx wrangler pages secret put SALT --project-name=a-to-mind
 # Paid Void + the store (plan item 12): npx wrangler pages secret put GUMROAD_PING_KEY --project-name=a-to-mind      (any long random string; also in the Ping URL)
-#                                       npx wrangler pages secret put GUMROAD_ACCESS_TOKEN --project-name=a-to-mind  (Gumroad app token, view_sales scope)
+#                                       optional: GUMROAD_ACCESS_TOKEN (Gumroad app token, view_sales) = read each sale back from the API;
+#                                       without it a keyed ping with Atom's seller_id (lib/gumroad.js SELLER_IDS) is trusted. Optional GUMROAD_SELLER_ID overrides it.
 [[kv_namespaces]]
 binding = "MISSES"
 id = "95b089f5717a4793b2b52a852f2a8443"
