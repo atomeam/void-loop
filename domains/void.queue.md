@@ -1,6 +1,6 @@
 # void.queue: builds the owner asked Void for
 
-Synced 2026-09-27T23:52-04:00. Builders: run `python tools/void_queue.py claim` first; when done, `python tools/void_queue.py done <id> live` (or `needs-you "why"`).
+Synced 2026-09-28T00:02-04:00. Builders: run `python tools/void_queue.py claim` first; when done, `python tools/void_queue.py done <id> live` (or `needs-you "why"`).
 
 | id | target | state | asked | note |
 | --- | --- | --- | --- | --- |
