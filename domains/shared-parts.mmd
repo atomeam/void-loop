@@ -1,0 +1,116 @@
+flowchart TB
+  %% A-to-Mind shared parts map, redrawn 2026-09-25 (source: A2M.ops.md Shared parts)
+
+  FACE["Face: a-to-mind.com<br/>blank Void, capabilities only<br/>no venture names, no shared parts"]
+
+  NET[["<b>LOCAL REFERRAL NETWORK · Central FL</b><br/>CPAs · TPAs · ERISA counsel · benefits brokers<br/>estate and divorce attorneys"]]
+
+  subgraph PRI["PRIMARY"]
+    HS["Handoff Studio / AfterOwner"]
+  end
+
+  subgraph PIPE["PIPELINE"]
+    direction TB
+    GLP["Group-Letter Proof Pack"]
+    CAS["Conforming Amendment Sprint"]
+    RR["Renewal Rescue"]
+    SD["Street Days"]
+    CAP["Capacity + AfterBell"]
+    GS["Grid Salvage"]
+    AQ["Aquifer Yield"]
+    GLP ~~~ CAP
+    CAS ~~~ GS
+    RR ~~~ AQ
+  end
+
+  subgraph RESF["RESEARCH · rules/filings"]
+    direction TB
+    CL["Control Ledger (E&W)"]
+    TP["Taxpoint File (UK)"]
+    CO["Cutover File (UK)"]
+    WS["Worksite Split (UK + EU)"]
+    CL ~~~ CO
+    TP ~~~ WS
+  end
+
+  subgraph RESR["RESEARCH · residue and data"]
+    direction TB
+    EM["Embodied error"]
+    GH["Ghost Finishing"]
+    CR["Context Residue"]
+    RW["RelicWeaver + LKL"]
+    EM ~~~ CR
+    GH ~~~ RW
+  end
+
+  subgraph ENGINE["SHARED PARTS"]
+    direction TB
+    INTAKE[["One intake<br/>meta: venture · content_class · consent_scope · jurisdiction<br/>party-of-record timeline · parent/child roster"]]
+    CONSENT["Consent and data-rights record"]
+    SPRINT["Readiness sprint (paid prep)"]
+    RULES[["Jurisdiction rule sets<br/>incl. carbon-pricing group"]]
+    XWALK["Cross-jurisdiction crosswalk"]
+    SCOPE["Scope / exemption worksheet<br/>+ exemption-proof exhibit"]
+    CAL["Deadline calendar<br/>due dates + cutover dates"]
+    DRIFT["Drift check = prevention mode<br/>first form: ops-to-doc matrix"]
+    MEMO["Underwriting memo<br/>facts · reason · fixed · remains · attachments"]
+    PACKET[["Packet engine<br/>template · ready / hold / do-not-file<br/>submission-window check"]]
+    BACK["Back office"]
+  end
+
+  BOUND{{"BOUNDARY<br/>evidence = ours · instrument = partner's"}}
+  BENCH[["Licensed-partner bench<br/>accredited opinions · licence-supply risk"]]
+  GATE(["Gatekeepers<br/>regulators · registries · lenders · underwriters"])
+
+  %% referral network feeds three packets
+  NET ==> HS
+  NET ==> GLP
+  NET ==> CAS
+
+  %% venture groups to the engine
+  PRI --> INTAKE
+  PIPE --> INTAKE
+  RESF --> RULES
+  RESR -. "story content never enters packets" .-> INTAKE
+  RESF --> XWALK
+
+  %% key ventures to the parts they lean on
+  GLP -- "exemption-proof exhibit" --> SCOPE
+  CAS -- "ops-to-doc matrix" --> DRIFT
+  HS -- "paid prep" --> SPRINT
+  CO -- "cutover dates" --> CAL
+  PIPE --> BACK
+
+  %% inside the engine
+  CONSENT --> INTAKE
+  INTAKE --> PACKET
+  SPRINT --> PACKET
+  RULES --> XWALK
+  RULES --> SCOPE
+  XWALK --> PACKET
+  SCOPE --> PACKET
+  CAL --> PACKET
+  CAL --> DRIFT
+  INTAKE -. "re-pulls" .-> DRIFT
+  DRIFT --> PACKET
+  MEMO --> PACKET
+
+  %% out to the partner and gatekeeper
+  PACKET --> BOUND
+  BOUND --> BENCH
+  BENCH --> GATE
+
+  classDef primary fill:#fff3b0,stroke:#b8860b,stroke-width:3px,font-weight:bold;
+  classDef venture fill:#ffffff,stroke:#555555;
+  classDef part fill:#e8f0fe,stroke:#3367d6;
+  classDef net fill:#ffe0b2,stroke:#e65100,stroke-width:4px,font-weight:bold,font-size:18px;
+  classDef bound fill:#fff8e1,stroke:#8d6e63,stroke-width:2px;
+  classDef gate fill:#fde8e8,stroke:#c0392b;
+  classDef face fill:#111111,stroke:#111111,color:#ffffff;
+  class HS primary;
+  class GLP,CAS,RR,SD,CAP,GS,AQ,CL,TP,CO,WS,EM,GH,CR,RW venture;
+  class INTAKE,CONSENT,SPRINT,RULES,XWALK,SCOPE,CAL,DRIFT,MEMO,PACKET,BACK,BENCH part;
+  class NET net;
+  class BOUND bound;
+  class GATE gate;
+  class FACE face;

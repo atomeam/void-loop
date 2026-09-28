@@ -1,0 +1,18 @@
+# A-to-Mind
+
+> Void by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.
+
+## What you can ask for today
+- Things on the stage: a clock, timer, counter, sticky note, notepad, list, calculator, shape, image or link card ("make a 5 minute timer", "draw a circle", "add a sticky that says hi"). They stay in your browser across visits.
+- Changes to the stage: "make it blue", "make everything bigger", "clear", "undo".
+- Floating pages: the weather ("weather in Tokyo"), a street map ("map of Lisbon", "where is Kyoto"), a translation ("translate hello to Spanish"), a calculation or conversion ("5 miles in km", "100 usd in eur"), or a page about almost anything ("what is a black hole"), with its source linked.
+- Keep a page as a card with "keep this"; "call this ...", "take this off" and "same again" work on it.
+- Your own look: "make my void deep blue", "add stars", "quieter font", "reset my void".
+- "menu" or "what can I do" lists every skill, clickable.
+
+## Linking to an answer
+- https://a-to-mind.com/?q=<ask> opens Void and runs the ask, for example https://a-to-mind.com/?q=weather%20in%20Tokyo
+
+## Notes for crawlers and agents
+- Everything runs in the browser at https://a-to-mind.com. There is no public API, CLI or SDK.
+- Earlier pages on this domain described a different product (workflow execution, treaties, ledgers). They are retired.

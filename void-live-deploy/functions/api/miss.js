@@ -1,0 +1,40 @@
+// void-misses: collects asks Void could not answer, so agents know what to build next.
+// Stores only the words typed (normalized, max 200 chars), counts, first/last time, and which fallback ran.
+// No IPs, cookies or user agents are stored. The connection is hashed only for a 60s rate-limit window.
+// Storage: D1 (void_misses). Older rows still in KV are merged in by /api/misses until they expire.
+const MAX_LEN = 200;
+const RL_MAX = 20; // writes per connection per minute
+
+async function sha(s) {
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('').slice(0, 24);
+}
+function norm(t) {
+  return String(t || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase().slice(0, MAX_LEN);
+}
+
+export async function onRequestPost({ request: req, env }) {
+  let body = {};
+  try { body = JSON.parse((await req.text()).slice(0, 1000)); } catch (_) { return new Response('bad', { status: 400 }); }
+  const ask = norm(body.ask);
+  const fallback = String(body.fallback || '').slice(0, 40);
+  if (!ask || ask.length < 2) return new Response('empty', { status: 400 });
+  const conn = await sha((req.headers.get('cf-connecting-ip') || '') + (env.SALT || ''));
+  const cache = caches.default, base = new URL(req.url).origin + '/__void-miss/';
+  const short = (v) => new Response(v, { headers: { 'cache-control': 'max-age=60' } });
+  const rlReq = new Request(base + 'rl/' + conn);
+  const n = parseInt((await (await cache.match(rlReq))?.text()) || '0', 10);
+  if (n >= RL_MAX) return new Response('slow down', { status: 429 });
+  await cache.put(rlReq, short(String(n + 1)));
+  const id = await sha(ask);
+  const dupReq = new Request(base + 'd/' + conn + '/' + id);
+  if (await cache.match(dupReq)) return new Response(null, { status: 204 });
+  await cache.put(dupReq, short('1'));
+  const now = new Date().toISOString();
+  try {
+    await env.DB.prepare(`INSERT INTO void_misses (id, ask, count, first, last, fallback) VALUES (?, ?, 1, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET count = count + 1, last = excluded.last, fallback = COALESCE(NULLIF(excluded.fallback, ''), fallback)`)
+      .bind(id, ask, now, now, fallback).run();
+  } catch (_) { return new Response('miss list unavailable', { status: 503 }); }
+  return new Response(null, { status: 204 });
+}

@@ -1,0 +1,18 @@
+name = "a-to-mind"
+compatibility_date = "2025-01-01"
+pages_build_output_dir = "."
+
+# Shared miss list (asks Void couldn't answer yet). Create once:
+#   npx wrangler kv namespace create MISSES   -> paste the id below
+# Secrets once: npx wrangler pages secret put READ_TOKEN --project-name=a-to-mind
+#               npx wrangler pages secret put SALT --project-name=a-to-mind
+[[kv_namespaces]]
+binding = "MISSES"
+id = "95b089f5717a4793b2b52a852f2a8443"
+
+# Void's queue + miss list (D1, 100k writes/day free). Reuses the old a-to-mind-board database.
+[[d1_databases]]
+binding = "DB"
+database_name = "a-to-mind-board"
+database_id = "3f92c99d-b78a-4394-8bb5-d9945ded44cf"
+

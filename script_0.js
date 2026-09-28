@@ -1,0 +1,2418 @@
+
+    // Private learning log — never shown as product claims.
+    // freerEnglishParse — natural-language intent for clock (+ sticky)
+    const LOOP_KEY = 'a2m.void.loop.v1';
+    const STATE_KEY = 'a2m.void.state.v1';
+
+    const stage = document.getElementById('stage');
+    const input = document.getElementById('input');
+    const go = document.getElementById('go');
+    const whisper = document.getElementById('whisper');
+
+    /** @type {Record<string, any>} */
+    let things = {};
+    let selectedId = null;
+
+    function load() {
+      try {
+        const raw = localStorage.getItem(STATE_KEY);
+        if (raw) things = JSON.parse(raw) || {};
+      } catch (_) { things = {}; }
+    }
+    function save() {
+      localStorage.setItem(STATE_KEY, JSON.stringify(things));
+      if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
+    }
+    function loopLog(attempt) {
+      let log = [];
+      try { log = JSON.parse(localStorage.getItem(LOOP_KEY) || '[]'); } catch (_) {}
+      log.push({ t: new Date().toISOString(), ...attempt });
+      if (log.length > 200) log = log.slice(-200);
+      localStorage.setItem(LOOP_KEY, JSON.stringify(log));
+    }
+    function say(msg) {
+      whisper.textContent = msg || '';
+      if (msg) setTimeout(() => { if (whisper.textContent === msg) whisper.textContent = ''; }, 3500);
+    }
+    function uid(prefix) {
+      return prefix + '_' + Math.random().toString(36).slice(2, 9);
+    }
+
+    function render() {
+      stage.querySelectorAll('.clock').forEach((el) => clearInterval(el._timer));
+      stage.querySelectorAll('.timer').forEach((el) => clearInterval(el._tickInterval));
+      stage.innerHTML = '';
+Object.values(things).forEach((th) => {
+        if (th.kind === 'clock') mountClock(th);
+        else if (th.kind === 'sticky') mountSticky(th);
+        else if (th.kind === 'notepad') mountNotepad(th);
+        else if (th.kind === 'timer') mountTimer(th);
+        else if (th.kind === 'counter') mountCounter(th);
+        else if (th.kind === 'image') mountImage(th);
+        else if (th.kind === 'link') mountLink(th);
+        else if (th.kind === 'list') mountList(th);
+        else if (th.kind === 'calc') mountCalc(th);
+        else if (th.kind === 'shape') mountShape(th);
+      });
+    }
+
+    function bindDrag(el, th) {
+      el.addEventListener('pointerdown', (e) => {
+        if (e.target && e.target.isContentEditable) return;
+        selectedId = th.id;
+        render();
+        const startX = e.clientX, startY = e.clientY;
+        const origX = th.x, origY = th.y;
+        const move = (ev) => {
+          th.x = Math.max(0, origX + (ev.clientX - startX));
+          th.y = Math.max(0, origY + (ev.clientY - startY));
+          el.style.left = th.x + 'px';
+          el.style.top = th.y + 'px';
+        };
+        const up = () => {
+          window.removeEventListener('pointermove', move);
+          window.removeEventListener('pointerup', up);
+          save();
+        };
+        window.addEventListener('pointermove', move);
+        window.addEventListener('pointerup', up);
+      });
+    }
+
+    function mountClock(th) {
+      const el = document.createElement('div');
+      el.className = 'thing clock';
+      el.dataset.id = th.id;
+      el.style.left = th.x + 'px';
+      el.style.top = th.y + 'px';
+      el.style.fontSize = (th.size || 48) + 'px';
+      el.style.color = th.color || '#e8e8e8';
+      el.style.fontFamily = th.font || 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+      if (th.bold) el.style.fontWeight = '600';
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+
+      const tick = () => {
+        const now = new Date();
+        let text;
+        if (th.format === '24h') {
+          text = now.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: th.seconds ? '2-digit' : undefined });
+        } else if (th.format === 'date') {
+          text = now.toLocaleString();
+        } else {
+          text = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: th.seconds ? '2-digit' : undefined });
+        }
+        el.textContent = text;
+      };
+      tick();
+      el._timer = setInterval(tick, 250);
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
+
+    function mountSticky(th) {
+      const el = document.createElement('div');
+      el.className = 'thing sticky';
+      el.dataset.id = th.id;
+      el.style.left = th.x + 'px';
+      el.style.top = th.y + 'px';
+      if (th.color) el.style.background = th.color;
+      el.textContent = th.text || '';
+      el.contentEditable = 'true';
+      el.spellcheck = false;
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(0,0,0,0.25)';
+      el.addEventListener('input', () => {
+        th.text = el.textContent || '';
+        save();
+      });
+      el.addEventListener('pointerdown', () => { selectedId = th.id; });
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
+
+function mountNotepad(th) {
+      const el = document.createElement('div');
+      el.className = 'thing notepad';
+      el.dataset.id = th.id;
+      el.style.left = th.x + 'px';
+      el.style.top = th.y + 'px';
+      if (th.color) el.style.borderColor = th.color;
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+
+      const title = document.createElement('div');
+      title.className = 'notepad-title';
+      title.contentEditable = 'true';
+      title.spellcheck = false;
+      title.dataset.placeholder = 'Notepad';
+      title.textContent = th.title || '';
+      title.addEventListener('pointerdown', (e) => e.stopPropagation());
+      title.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); title.blur(); }
+      });
+      title.addEventListener('input', () => { th.title = title.textContent || ''; save(); });
+
+      const area = document.createElement('textarea');
+      area.className = 'notepad-textarea';
+      area.placeholder = 'Write in your notepad';
+      area.value = th.text || '';
+      area.spellcheck = false;
+      area.addEventListener('pointerdown', (e) => e.stopPropagation());
+      area.addEventListener('input', () => { th.text = area.value || ''; save(); });
+
+      el.appendChild(title);
+      el.appendChild(area);
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
+function mountLink(th) {
+      const el = document.createElement('div');
+      el.className = 'thing link-card';
+      el.dataset.id = th.id;
+      el.style.left = th.x + 'px';
+      el.style.top = th.y + 'px';
+      if (th.color) el.style.borderColor = th.color;
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+      const a = document.createElement('a');
+      a.href = th.url;
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+      a.textContent = th.title || th.host || th.url;
+      a.addEventListener('pointerdown', (e) => e.stopPropagation());
+      const host = document.createElement('div');
+      host.className = 'host';
+      host.textContent = th.host || '';
+      el.appendChild(a);
+      if (th.host && th.title !== th.host) el.appendChild(host);
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
+
+function mountImage(th) {
+      const el = document.createElement('div');
+      el.className = 'thing image';
+      el.dataset.id = th.id;
+      el.style.left = th.x + 'px';
+      el.style.top = th.y + 'px';
+      if (th.color) el.style.borderColor = th.color;
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+
+      const title = document.createElement('div');
+      title.className = 'image-title';
+      title.style.cssText = 'min-height:22px;margin-bottom:6px;color:var(--fg);font-size:12px;font-weight:500;outline:0;text-align:center;opacity:0.6;';
+      title.dataset.placeholder = 'Image';
+      title.contentEditable = 'true';
+      title.spellcheck = false;
+      title.textContent = th.title || '';
+      title.addEventListener('pointerdown', (e) => e.stopPropagation());
+      title.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); title.blur(); } });
+      title.addEventListener('input', () => { th.title = title.textContent || ''; save(); });
+
+      const img = document.createElement('img');
+      img.src = th.src;
+      img.alt = '';
+      img.draggable = false;
+      img.onerror = () => { img.style.display = 'none'; title.textContent = th.title || 'Image (failed)'; say('image failed to load'); };
+      img.onload = () => { if (!th.title) title.textContent = ''; };
+
+      el.appendChild(title);
+      el.appendChild(img);
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
+
+function mountList(th) {
+      const el = document.createElement('div');
+      el.className = 'thing list-card';
+      el.dataset.id = th.id;
+      el.style.left = th.x + 'px';
+      el.style.top = th.y + 'px';
+      if (th.color) el.style.borderColor = th.color;
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+
+      const title = document.createElement('div');
+      title.className = 'list-title';
+      title.contentEditable = 'true';
+      title.spellcheck = false;
+      title.dataset.placeholder = 'List';
+      title.textContent = th.title || '';
+      title.addEventListener('pointerdown', (e) => e.stopPropagation());
+      title.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); title.blur(); }
+      });
+      title.addEventListener('input', () => { th.title = title.textContent || ''; save(); });
+      el.appendChild(title);
+
+      const items = Array.isArray(th.items) ? th.items : (th.items = []);
+      items.forEach((item) => {
+        if (!item || !item.id) return;
+        const row = document.createElement('div');
+        row.className = 'list-entry' + (item.done ? ' done' : '');
+        const check = document.createElement('input');
+        check.type = 'checkbox';
+        check.checked = !!item.done;
+        check.setAttribute('aria-label', 'complete ' + (item.text || 'item'));
+        check.addEventListener('pointerdown', (e) => e.stopPropagation());
+        check.addEventListener('change', () => {
+          item.done = check.checked;
+          save();
+          render();
+        });
+        const label = document.createElement('span');
+        label.className = 'list-item-text';
+        label.textContent = item.text || '';
+        const remove = document.createElement('button');
+        remove.className = 'list-remove';
+        remove.type = 'button';
+        remove.textContent = '×';
+        remove.setAttribute('aria-label', 'remove ' + (item.text || 'item'));
+        remove.addEventListener('pointerdown', (e) => e.stopPropagation());
+        remove.addEventListener('click', () => {
+          th.items = th.items.filter((candidate) => candidate.id !== item.id);
+          save();
+          render();
+        });
+        row.appendChild(check);
+        row.appendChild(label);
+        row.appendChild(remove);
+        el.appendChild(row);
+      });
+
+      if (!items.length) {
+        const empty = document.createElement('div');
+        empty.className = 'list-empty';
+        empty.textContent = 'No items yet';
+        el.appendChild(empty);
+      }
+
+      const addRow = document.createElement('div');
+      addRow.className = 'list-add-row';
+      const addInput = document.createElement('input');
+      addInput.className = 'list-add-input';
+      addInput.type = 'text';
+      addInput.placeholder = 'Add item';
+      const addButton = document.createElement('button');
+      addButton.className = 'list-add-button';
+      addButton.type = 'button';
+      addButton.textContent = '+';
+      const addItem = () => {
+        const value = addInput.value.trim();
+        if (!value) return;
+        th.items.push({ id: uid('item'), text: value, done: false });
+        save();
+        render();
+      };
+      addInput.addEventListener('pointerdown', (e) => e.stopPropagation());
+      addInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') addItem(); });
+      addButton.addEventListener('pointerdown', (e) => e.stopPropagation());
+      addButton.addEventListener('click', addItem);
+      addRow.appendChild(addInput);
+      addRow.appendChild(addButton);
+      el.appendChild(addRow);
+
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
+
+function mountCalc(th) {
+      const el = document.createElement('div');
+      el.className = 'thing calc-card';
+      el.dataset.id = th.id;
+      el.style.left = th.x + 'px';
+      el.style.top = th.y + 'px';
+      if (th.color) el.style.borderColor = th.color;
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+
+      const title = document.createElement('div');
+      title.className = 'calc-title';
+      title.contentEditable = 'true';
+      title.spellcheck = false;
+      title.dataset.placeholder = 'Calculator';
+      title.textContent = th.title || '';
+      title.addEventListener('pointerdown', (e) => e.stopPropagation());
+      title.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); title.blur(); }
+      });
+      title.addEventListener('input', () => { th.title = title.textContent || ''; save(); });
+
+      const expression = document.createElement('div');
+      expression.className = 'calc-expression';
+      expression.dataset.placeholder = 'Expression';
+      expression.textContent = th.expression || '';
+
+      const result = document.createElement('div');
+      result.className = 'calc-result';
+      result.dataset.placeholder = 'Result';
+      result.textContent = th.result || '';
+
+      el.appendChild(title);
+      el.appendChild(expression);
+      el.appendChild(result);
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
+
+    function mountTimer(th) {
+      const el = document.createElement('div');
+      el.className = 'thing timer';
+      el.dataset.id = th.id;
+      el.style.left = th.x + 'px';
+      el.style.top = th.y + 'px';
+      el.style.fontSize = (th.size || 40) + 'px';
+      el.style.color = th.color || '#e8e8e8';
+      el.style.fontFamily = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+
+      const remaining = th.running ? Math.max(0, th.remaining - (Date.now() - th.startedAt)) : th.remaining;
+      const total = th.duration;
+      const pct = total > 0 ? remaining / total : 0;
+      const mins = Math.floor(remaining / 60000);
+      const secs = Math.floor((remaining % 60000) / 1000);
+      const display = mins + ':' + String(secs).padStart(2, '0');
+
+      const timeSpan = document.createElement('span');
+      timeSpan.textContent = display;
+
+      const label = document.createElement('span');
+      label.className = 'timer-label';
+      label.textContent = th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused');
+
+      // progress ring
+      const ring = document.createElement('svg');
+      ring.setAttribute('width', '32');
+      ring.setAttribute('height', '32');
+      ring.setAttribute('viewBox', '0 0 32 32');
+      const bg = document.createElement('circle');
+      bg.setAttribute('cx', '16'); bg.setAttribute('cy', '16'); bg.setAttribute('r', '14');
+      bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', 'rgba(255,255,255,0.08)'); bg.setAttribute('stroke-width', '2');
+      const fg = document.createElement('circle');
+      fg.setAttribute('cx', '16'); fg.setAttribute('cy', '16'); fg.setAttribute('r', '14');
+      fg.setAttribute('fill', 'none'); fg.setAttribute('stroke', pct > 0.15 ? '#5dffa5' : '#ff5c5c');
+      fg.setAttribute('stroke-width', '2');
+      fg.setAttribute('stroke-linecap', 'round');
+      fg.setAttribute('stroke-dasharray', String(2 * Math.PI * 14));
+      fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - pct)));
+      fg.setAttribute('transform', 'rotate(-90 16 16)');
+      ring.appendChild(bg); ring.appendChild(fg);
+
+      el.appendChild(ring);
+      el.appendChild(timeSpan);
+      el.appendChild(label);
+
+      // tick while running
+      if (th.running) {
+        el._tickInterval = setInterval(() => {
+          const rem = Math.max(0, th.remaining - (Date.now() - th.startedAt));
+          const m = Math.floor(rem / 60000);
+          const s = Math.floor((rem % 60000) / 1000);
+          timeSpan.textContent = m + ':' + String(s).padStart(2, '0');
+          label.textContent = rem > 0 ? 'running' : 'done';
+          const p = total > 0 ? rem / total : 0;
+          fg.setAttribute('stroke', p > 0.15 ? '#5dffa5' : '#ff5c5c');
+          fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - p)));
+          if (rem <= 0) {
+            clearInterval(el._tickInterval);
+            th.running = false;
+            th.remaining = 0;
+            th.startedAt = 0;
+            save();
+            say('timer done');
+          }
+        }, 250);
+      }
+
+bindDrag(el, th);
+      stage.appendChild(el);
+    }
+
+    function mountCounter(th) {
+      const el = document.createElement('div');
+      el.className = 'thing counter';
+      el.dataset.id = th.id;
+      el.style.left = th.x + 'px';
+      el.style.top = th.y + 'px';
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+
+      const dec = document.createElement('button');
+      dec.type = 'button';
+      dec.className = 'counter-chip';
+      dec.textContent = '−';
+      dec.setAttribute('aria-label', 'decrement counter');
+      dec.addEventListener('pointerdown', (e) => e.stopPropagation());
+      dec.addEventListener('click', () => {
+        th.value = (th.value || 0) - 1;
+        save(); render();
+      });
+
+      const value = document.createElement('span');
+      value.className = 'counter-value';
+      value.textContent = String(th.value || 0);
+      if (th.color) value.style.color = th.color;
+      if (th.size) value.style.fontSize = th.size + 'px';
+
+      const inc = document.createElement('button');
+      inc.type = 'button';
+      inc.className = 'counter-chip';
+      inc.textContent = '+';
+      inc.setAttribute('aria-label', 'increment counter');
+      inc.addEventListener('pointerdown', (e) => e.stopPropagation());
+      inc.addEventListener('click', () => {
+        th.value = (th.value || 0) + 1;
+        save(); render();
+      });
+
+      const label = document.createElement('span');
+      label.className = 'counter-label';
+      label.textContent = 'counter';
+
+      el.appendChild(dec);
+      el.appendChild(value);
+      el.appendChild(inc);
+      el.appendChild(label);
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
+
+    function mountShape(th) {
+      const el = document.createElement('div');
+      el.className = 'thing shape';
+      el.dataset.id = th.id;
+      el.style.left = th.x + 'px';
+      el.style.top = th.y + 'px';
+      if (th.width) el.style.width = th.width + 'px';
+      if (th.height) el.style.height = th.height + 'px';
+      if (th.color) {
+        el.style.setProperty('--shape-color', th.color);
+        const inner = el.querySelector('.shape-rect, .shape-circle, .shape-line');
+        if (inner) inner.style.borderColor = th.color;
+      }
+      if (th.filled) el.classList.add('filled');
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+
+      const shapeType = th.shapeType || 'rect';
+      let inner;
+      if (shapeType === 'circle') {
+        inner = document.createElement('div');
+        inner.className = 'shape-circle';
+        inner.style.width = '100%';
+        inner.style.height = '100%';
+      } else if (shapeType === 'line') {
+        inner = document.createElement('div');
+        inner.className = 'shape-line';
+        inner.style.width = '100%';
+        if (th.rotation) inner.style.transform = 'rotate(' + th.rotation + 'deg)';
+      } else {
+        inner = document.createElement('div');
+        inner.className = 'shape-rect';
+        inner.style.width = '100%';
+        inner.style.height = '100%';
+      }
+      inner.style.borderWidth = (th.strokeWidth || 2) + 'px';
+      if (th.color) inner.style.borderColor = th.color;
+      el.appendChild(inner);
+
+      const label = document.createElement('div');
+      label.className = 'shape-label';
+      label.textContent = shapeType;
+      el.appendChild(label);
+
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
+
+    function ensureClock() {
+      let clock = Object.values(things).find((t) => t.kind === 'clock');
+      if (!clock) {
+        clock = {
+          id: uid('clock'),
+          kind: 'clock',
+          x: Math.max(40, stage.clientWidth / 2 - 80),
+          y: Math.max(40, stage.clientHeight / 2 - 40),
+          size: 56,
+          color: '#e8e8e8',
+          format: '12h',
+          seconds: true,
+          bold: false,
+        };
+        things[clock.id] = clock;
+        selectedId = clock.id;
+      }
+      return clock;
+    }
+
+    function ensureSticky(seedText) {
+      let note = Object.values(things).find((t) => t.kind === 'sticky' && t.id === selectedId)
+        || Object.values(things).find((t) => t.kind === 'sticky');
+      if (!note) {
+        note = {
+          id: uid('sticky'),
+          kind: 'sticky',
+          x: Math.max(40, stage.clientWidth / 2 - 90),
+          y: Math.max(40, stage.clientHeight / 2 + 40),
+          text: seedText || '',
+          color: '#f4e27a',
+        };
+        things[note.id] = note;
+        selectedId = note.id;
+      } else if (seedText != null && seedText !== '') {
+        note.text = seedText;
+      }
+      return note;
+    }
+
+    function wantsCreateNotepad(lower, raw) {
+      if (/\b(remove|delete|get rid|hide|clear)\b/.test(lower) && /\bnotepad\b/.test(lower)) return false;
+      if (/^notepad\s*:/i.test(raw)) return true;
+      if (/^\s*write\s+(?:in|on)\s+(?:the\s+)?notepad\b/i.test(raw)) return true;
+      if (/^(a\s+)?notepad(\s+please)?\s*[.!]?\s*$/i.test(raw.trim())) return true;
+      return /\b(make|add|create|open|new|show|spawn|put|place|drop)\b.*\bnotepad\b/.test(lower);
+    }
+
+    function extractNotepadText(raw) {
+      let match = raw.match(/^\s*notepad\s*:\s*([\s\S]*)$/i);
+      if (match) return match[1].trim();
+      match = raw.match(/^\s*write\s+(?:in|on)\s+(?:the\s+)?notepad\s+([\s\S]+?)\s*[.!]?\s*$/i);
+      return match ? match[1].trim() : '';
+    }
+
+    function wantsClearNotepad(lower) {
+      return /^(clear|empty)\s+(the\s+)?notepad\s*[.!]?\s*$/.test(lower);
+    }
+
+    function wantsRemoveNotepad(lower) {
+      return /^(remove|delete|get\s+rid\s+of|hide)\s+(the\s+)?notepad\s*[.!]?\s*$/.test(lower)
+        || /\b(remove|delete|get\s+rid\s+of|hide)\b.*\bnotepad\b/.test(lower);
+    }
+
+    function ensureNotepad(seedText) {
+      let note = (selectedId && things[selectedId] && things[selectedId].kind === 'notepad' && things[selectedId])
+        || Object.values(things).find((thing) => thing.kind === 'notepad');
+      if (!note) {
+        note = {
+          id: uid('notepad'),
+          kind: 'notepad',
+          x: Math.max(40, stage.clientWidth / 2 - 160),
+          y: Math.max(40, stage.clientHeight / 2 - 120),
+          title: '',
+          text: seedText || '',
+        };
+        things[note.id] = note;
+      } else if (seedText != null && seedText !== '') {
+        note.text = seedText;
+      }
+      selectedId = note.id;
+      return note;
+    }
+    function colorFrom(text) {
+      const map = {
+        red: '#ff5c5c', blue: '#6aa8ff', green: '#5dffa5', yellow: '#ffe66a',
+        white: '#f5f5f5', black: '#111111', purple: '#c79bff', orange: '#ffb060',
+        pink: '#ff8ec8', gray: '#9a9a9a', grey: '#9a9a9a', gold: '#e6c35c',
+        cyan: '#5eefff', teal: '#3dcfb6',
+      };
+      const t = text.toLowerCase();
+      for (const [k, v] of Object.entries(map)) if (new RegExp('\\b' + k + '\\b').test(t)) return v;
+      const hex = t.match(/#([0-9a-f]{3}|[0-9a-f]{6})\b/i);
+      return hex ? hex[0] : null;
+    }
+
+    function stickyColorFrom(text) {
+      const map = {
+        yellow: '#f4e27a', pink: '#ff9ec8', blue: '#9ec8ff', green: '#b6f5a8',
+        orange: '#ffc080', white: '#f5f5f5', purple: '#d4b0ff',
+      };
+      const t = text.toLowerCase();
+      for (const [k, v] of Object.entries(map)) if (new RegExp('\\b' + k + '\\b').test(t)) return v;
+      return null;
+    }
+
+function wantsClearStage(lower) {
+      return /^(clear|clear\s+(everything|all|stage|the\s+stage)|reset\s+(everything|all|stage)|wipe|start\s+over)\s*[.!]?\s*$/.test(lower)
+        || /\b(clear|reset)\s+(everything|all|the\s+stage|stage)\b/.test(lower)
+        || /\bwipe\s+(everything|all|the\s+stage)\b/.test(lower);
+    }
+
+    function wantsCreateClock(lower) {
+      if (/\b(remove|delete|get rid|hide|clear the clock)\b/.test(lower)) return false;
+      // bare / polite create
+      if (/^(a\s+)?clock(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
+      if (/\b(i\s+want|i'd\s+like|i\s+need|give\s+me|can\s+i\s+have|could\s+i\s+have)\b.*\bclock\b/.test(lower)) return true;
+      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\bclock\b/.test(lower)) return true;
+      if (/\bclock\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
+      // "blue clock" / "big clock" as create-or-alter (ensureClock handles)
+      if (/\b(blue|red|green|yellow|white|black|purple|orange|pink|gray|grey|gold|cyan|teal|#(?:[0-9a-f]{3}|[0-9a-f]{6}))\s+clock\b/.test(lower)) return true;
+      if (/\b(big|large|huge|giant|small|tiny|little)\s+clock\b/.test(lower)) return true;
+      return false;
+    }
+
+    function wantsCreateSticky(lower, raw) {
+      if (/\b(remove|delete|get rid|hide)\b/.test(lower) && /\b(note|sticky)\b/.test(lower)) return false;
+      if (/^(a\s+)?(sticky(\s+note)?|note)(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
+      if (/\b(make|add|create|show|spawn|put|place|drop|i\s+want|give\s+me)\b.*\b(sticky(\s+note)?|note)\b/.test(lower)) return true;
+      if (/^note\s*:\s*/i.test(raw)) return true;
+      if (/^sticky\s*:\s*/i.test(raw)) return true;
+      return false;
+    }
+
+    function extractStickyText(raw, lower) {
+      let m = raw.match(/^note\s*:\s*([\s\S]+)/i) || raw.match(/^sticky\s*:\s*([\s\S]+)/i);
+      if (m) return m[1].trim();
+      m = raw.match(/\b(?:that\s+says?|saying|with\s+text|reading)\s+["']?([\s\S]+?)["']?\s*$/i);
+      if (m) return m[1].trim();
+      m = raw.match(/\b(?:sticky(?:\s+note)?|note)\s+(?:that\s+says?\s+)?["']([^"']+)["']/i);
+      if (m) return m[1].trim();
+      return '';
+    }
+
+function applyClockAlters(c, lower) {
+      let ok = false;
+      const col = colorFrom(lower);
+      if (col) { c.color = col; ok = true; }
+
+      if (/\b(bigger|larger|increase|grow|enlarge)\b/.test(lower)) {
+        c.size = Math.min(200, (c.size || 56) + 16); ok = true;
+      }
+      if (/\b(smaller|tinier|decrease|shrink)\b/.test(lower)) {
+        c.size = Math.max(16, (c.size || 56) - 16); ok = true;
+      }
+      if (/\b(huge|giant|enormous|massive)\b/.test(lower)) { c.size = 120; ok = true; }
+      if (/\b(tiny|mini|petite)\b/.test(lower)) { c.size = 22; ok = true; }
+      if (/\b(big|large)\b/.test(lower) && !/\bbigger\b|\blarger\b/.test(lower)) {
+        c.size = Math.max(c.size || 56, 96); ok = true;
+      }
+      if (/\b(small|little)\b/.test(lower) && !/\bsmaller\b/.test(lower)) {
+        c.size = Math.min(c.size || 56, 28); ok = true;
+      }
+
+      if (/\b(24\s*-?\s*h(our)?s?|24h|military(\s+time)?)\b/.test(lower)) { c.format = '24h'; ok = true; }
+      if (/\b(12\s*-?\s*h(our)?s?|12h|am\s*\/?\s*pm)\b/.test(lower)) { c.format = '12h'; ok = true; }
+      if (/\b(show\s+date|with\s+date|date\s*time|datetime|full\s+date)\b/.test(lower)) { c.format = 'date'; ok = true; }
+      if (/\b(hide\s+seconds|no\s+seconds|without\s+seconds)\b/.test(lower)) { c.seconds = false; ok = true; }
+      if (/\b(show\s+seconds|with\s+seconds)\b/.test(lower)) { c.seconds = true; ok = true; }
+      if (/\bbold\b/.test(lower)) { c.bold = true; ok = true; }
+      if (/\b(unbold|not\s+bold|normal\s+weight)\b/.test(lower)) { c.bold = false; ok = true; }
+
+      ok = applyPositionTarget(c, lower) || ok;
+      return ok;
+    }
+
+    // Multi-object targeting: apply color/size/position alters to whichever
+    // surface the ask names ("make the timer blue", "make the counter big",
+    // "move the calc to the top right") instead of always the clock.
+    function resolveTargetKind(lower) {
+      if (/\bnotepad\b/.test(lower)) return 'notepad';
+      if (/\b(image|picture|photo)\b/.test(lower)) return 'image';
+      if (/\b(link|card)\b/.test(lower)) return 'link';
+      if (/\b(sticky|note)\b/.test(lower)) return 'sticky';
+      if (/\b(list|checklist)\b/.test(lower)) return 'list';
+      if (/\b(calculator|calc)\b/.test(lower)) return 'calc';
+      if (/\b(timer|countdown)\b/.test(lower)) return 'timer';
+      if (/\bcounter\b/.test(lower)) return 'counter';
+      if (/\b(shape|rect|rectangle|square|circle|line)\b/.test(lower)) return 'shape';
+      if (/\bclock\b/.test(lower)) return 'clock';
+      return null;
+    }
+
+    function hasAlterProperty(lower) {
+      return colorFrom(lower) !== null
+        || /\b(bigger|larger|increase|grow|enlarge|smaller|tinier|decrease|shrink|huge|giant|enormous|massive|tiny|mini|petite|big|large|small|little)\b/.test(lower)
+        || /\b(cent(?:er|re)|middle|top|bottom|left|right|upper|lower)\b/.test(lower)
+        || /\b(24\s*-?\s*h(our)?s?|24h|military|12\s*-?\s*h(our)?s?|12h|am\s*\/?\s*pm|bold|seconds|date)\b/.test(lower);
+    }
+
+    function findTargetThing(kind) {
+      let th = (selectedId && things[selectedId] && things[selectedId].kind === kind && things[selectedId])
+        || Object.values(things).find((t) => t.kind === kind);
+      if (th) return th;
+      if (kind === 'clock') return ensureClock();
+      if (kind === 'timer') return ensureTimer(60000);
+      if (kind === 'counter') return ensureCounter();
+      if (kind === 'sticky') return ensureSticky('');
+      if (kind === 'notepad') return ensureNotepad('');
+      if (kind === 'list') return ensureList([]);
+      if (kind === 'calc') return ensureCalc();
+      if (kind === 'shape') return ensureShape('rect');
+      return null;
+    }
+
+    function applyTargetAlters(th, kind, lower) {
+      let ok = false;
+      if (kind === 'clock') {
+        ok = applyClockAlters(th, lower) || ok;
+        return ok;
+      }
+      if (kind === 'timer') {
+        if (/\b(bigger|larger|increase|grow|enlarge)\b/.test(lower)) { th.size = Math.min(200, (th.size || 40) + 16); ok = true; }
+        if (/\b(smaller|tinier|decrease|shrink)\b/.test(lower)) { th.size = Math.max(16, (th.size || 40) - 16); ok = true; }
+        if (/\b(huge|giant|enormous|massive)\b/.test(lower)) { th.size = 80; ok = true; }
+        if (/\b(tiny|mini|petite)\b/.test(lower)) { th.size = 20; ok = true; }
+        if (/\b(big|large)\b/.test(lower) && !/\bbigger\b|\blarger\b/.test(lower)) { th.size = Math.max(th.size || 40, 64); ok = true; }
+        if (/\b(small|little)\b/.test(lower) && !/\bsmaller\b/.test(lower)) { th.size = Math.min(th.size || 40, 24); ok = true; }
+      }
+      if (kind === 'counter') {
+        if (/\b(bigger|larger|increase|grow|enlarge)\b/.test(lower)) { th.size = Math.min(200, (th.size || 26) + 16); ok = true; }
+        if (/\b(smaller|tinier|decrease|shrink)\b/.test(lower)) { th.size = Math.max(10, (th.size || 26) - 16); ok = true; }
+        if (/\b(huge|giant|enormous|massive)\b/.test(lower)) { th.size = 56; ok = true; }
+        if (/\b(tiny|mini|petite)\b/.test(lower)) { th.size = 14; ok = true; }
+        if (/\b(big|large)\b/.test(lower) && !/\bbigger\b|\blarger\b/.test(lower)) { th.size = Math.max(th.size || 26, 40); ok = true; }
+        if (/\b(small|little)\b/.test(lower) && !/\bsmaller\b/.test(lower)) { th.size = Math.min(th.size || 26, 18); ok = true; }
+      }
+      if (kind === 'shape') {
+        if (/\b(bigger|larger|increase|grow|enlarge)\b/.test(lower)) { th.width = Math.min(400, (th.width || 80) + 40); th.height = Math.min(400, (th.height || 80) + 40); ok = true; }
+        if (/\b(smaller|tinier|decrease|shrink)\b/.test(lower)) { th.width = Math.max(20, (th.width || 80) - 40); th.height = Math.max(20, (th.height || 80) - 40); ok = true; }
+        if (/\b(huge|giant|enormous|massive)\b/.test(lower)) { th.width = 200; th.height = 200; ok = true; }
+        if (/\b(tiny|mini|petite)\b/.test(lower)) { th.width = 40; th.height = 40; ok = true; }
+        if (/\b(big|large)\b/.test(lower) && !/\bbigger\b|\blarger\b/.test(lower)) { th.width = Math.max(th.width || 80, 160); th.height = Math.max(th.height || 80, 160); ok = true; }
+        if (/\b(small|little)\b/.test(lower) && !/\bsmaller\b/.test(lower)) { th.width = Math.min(th.width || 80, 50); th.height = Math.min(th.height || 80, 50); ok = true; }
+        if (/\b(make\s+(?:it\s+)?a?\s*(?:rect|rectangle|square))\b/.test(lower) && th.shapeType !== 'rect') { th.shapeType = 'rect'; ok = true; }
+        if (/\b(make\s+(?:it\s+)?a?\s*circle)\b/.test(lower) && th.shapeType !== 'circle') { th.shapeType = 'circle'; ok = true; }
+        if (/\b(make\s+(?:it\s+)?a?\s*line)\b/.test(lower) && th.shapeType !== 'line') { th.shapeType = 'line'; ok = true; }
+        if (/\bfill(?:ed)?\b/.test(lower)) { th.filled = true; ok = true; }
+        if (/\b(unfill|outline|stroke)\b/.test(lower)) { th.filled = false; ok = true; }
+        if (/\b(thick|thicker)\b/.test(lower)) { th.strokeWidth = Math.min(8, (th.strokeWidth || 2) + 2); ok = true; }
+        if (/\b(thin|thinner)\b/.test(lower)) { th.strokeWidth = Math.max(1, (th.strokeWidth || 2) - 1); ok = true; }
+      }
+      if (kind === 'sticky') {
+        const col = stickyColorFrom(lower);
+        if (col) { th.color = col; ok = true; }
+      } else {
+        const col = colorFrom(lower);
+        if (col) { th.color = col; ok = true; }
+      }
+      ok = applyPositionTarget(th, lower) || ok;
+      return ok;
+    }
+
+    // Batch targeting: "resize all timers", "make every clock blue",
+    // "move all shapes to the top left", "make everything blue" — the same
+    // alters applied to every match of the named kind(s).
+    function batchKinds(lower) {
+      if (/\beverything\b|\ball\s+(?:the\s+)?(?:things|objects|items|surfaces|cards)\b/.test(lower)) {
+        const present = Object.values(things).map((t) => t.kind);
+        return present.length ? Array.from(new Set(present)) : [];
+      }
+      const defs = [
+        ['notepad', /\bnotepads?\b/],
+        ['image', /\b(?:images?|pictures?|photos?)\b/],
+        ['link', /\b(?:links?|cards?)\b/],
+        ['sticky', /\b(?:stick(?:y|ies)|notes?)\b/],
+        ['list', /\b(?:lists?|checklists?)\b/],
+        ['calc', /\b(?:calcs?|calculators?)\b/],
+        ['timer', /\b(?:timers?|countdowns?)\b/],
+        ['counter', /\bcounters?\b/],
+        ['shape', /\b(?:shapes?|rect(?:angles?)?|squares?|circles?|lines?)\b/],
+        ['clock', /\bclocks?\b/],
+      ];
+      return defs.filter(([, re]) => re.test(lower)).map(([kind]) => kind);
+    }
+
+    function wantsBatchAlter(lower, kinds) {
+      if (!kinds.length || !hasAlterProperty(lower)) return false;
+      if (/\b(remove|delete|get\s+rid\s+of|hide|clear|cancel|dismiss)\b/.test(lower)) return false;
+      if (/\b(all|every|each|both|everything)\b/.test(lower)) return true;
+      // plural noun alone is enough: "the timers are blue", "clocks bigger"
+      return /\b(timers|countdowns|clocks|shapes|rectangles|squares|circles|lines|counters|lists|checklists|images|pictures|photos|cards|links|notepads|calculators|calcs|stickies|notes)\b/.test(lower);
+    }
+
+    function applyPositionTarget(th, lower) {
+      let ok = false;
+      if (/\b(cent(?:er|re)|middle)\b/.test(lower)) {
+        th.x = Math.max(20, stage.clientWidth / 2 - 90);
+        th.y = Math.max(20, stage.clientHeight / 2 - 40);
+        ok = true;
+      }
+      if (/\b(top\s*left|upper\s*left|left\s*top)\b/.test(lower)) { th.x = 24; th.y = 24; ok = true; }
+      if (/\b(top\s*right|upper\s*right|right\s*top)\b/.test(lower)) { th.x = Math.max(24, stage.clientWidth - 220); th.y = 24; ok = true; }
+      if (/\b(bottom\s*left|lower\s*left|left\s*bottom)\b/.test(lower)) { th.x = 24; th.y = Math.max(24, stage.clientHeight - 100); ok = true; }
+      if (/\b(bottom\s*right|lower\s*right|right\s*bottom)\b/.test(lower)) {
+        th.x = Math.max(24, stage.clientWidth - 220);
+        th.y = Math.max(24, stage.clientHeight - 100);
+        ok = true;
+      }
+      if (/\b(top|upper)\b/.test(lower) && !/\bleft\b|\bright\b/.test(lower) && !/\btop\s*left\b|\btop\s*right\b/.test(lower)) {
+        th.y = 24;
+        th.x = Math.max(20, stage.clientWidth / 2 - 90);
+        ok = true;
+      }
+      if (/\b(bottom|lower)\b/.test(lower) && !/\bleft\b|\bright\b/.test(lower) && !/\bbottom\s*left\b|\bbottom\s*right\b/.test(lower)) {
+        th.y = Math.max(24, stage.clientHeight - 100);
+        th.x = Math.max(20, stage.clientWidth / 2 - 90);
+        ok = true;
+      }
+      return ok;
+    }
+
+    function wantsRemoveClock(lower) {
+      return /\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(clock|it|this)\b/.test(lower)
+        || /\b(clock)\b.*\b(away|gone)\b/.test(lower)
+        || /^(remove|delete|get\s+rid\s+of|hide)\s+(it|this)\s*[.!]?\s*$/.test(lower);
+    }
+
+    function wantsRemoveSticky(lower) {
+      return /\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(sticky|note|it|this)\b/.test(lower)
+        && /\b(sticky|note)\b/.test(lower);
+    }
+
+    function wantsAlter(lower) {
+      return /\b(make\s+it|turn\s+it|set\s+it|change|paint|color|colour|move|put\s+it|place\s+it)\b/.test(lower)
+        || /\b(bigger|smaller|larger|huge|tiny|big|small)\b/.test(lower)
+        || /\b(24\s*-?\s*h|24h|military|12\s*-?\s*h|12h|am\s*\/?\s*pm)\b/.test(lower)
+        || /\b(cent(?:er|re)|middle|top|bottom|left|right)\b/.test(lower)
+        || /\b(blue|red|green|yellow|white|black|purple|orange|pink|gray|grey|gold|cyan|teal)\b/.test(lower)
+        || /#([0-9a-f]{3}|[0-9a-f]{6})\b/i.test(lower)
+        || /\b(bold|seconds|date)\b/.test(lower);
+    }
+
+    function durationNumber(value) {
+      const token = value.toLowerCase();
+      if (/^\d+(?:\.\d+)?$/.test(token)) return Number(token);
+      const words = {
+        a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5,
+        six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
+        eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15,
+        sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20,
+        thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70,
+        eighty: 80, ninety: 90, hundred: 100,
+        half: 0.5,
+      };
+      return Object.prototype.hasOwnProperty.call(words, token) ? words[token] : 0;
+    }
+
+    function parseDuration(text) {
+      const lower = (text || '').toLowerCase()
+        .replace(/[-‐‑‒–—]/g, ' ')
+        .replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
+      // "days until christmas", "days until december 25", "how many days until christmas"
+      const daysUntil = lower.match(/(?:how\s+many\s+)?days?\s+until\s+(.+)$/i);
+      if (daysUntil) {
+        const target = parseTargetDate(daysUntil[1].trim());
+        if (target) {
+          const diff = target - Date.now();
+          if (diff > 0) return diff;
+        }
+      }
+      const pattern = /(\d+(?:\.\d+)?|a|an|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|half)\s*(hours?|hrs?|h|minutes?|mins?|m|seconds?|secs?|s)(?=\b|\d)/g;
+      let ms = 0;
+      let match;
+      while ((match = pattern.exec(lower)) !== null) {
+        const amount = durationNumber(match[1]);
+        const unit = match[2].charAt(0);
+        if (unit === 'h') ms += amount * 3600000;
+        else if (unit === 'm') ms += amount * 60000;
+        else if (unit === 's') ms += amount * 1000;
+      }
+      if (ms === 0) {
+        const bare = lower.match(/(\d+(?:\.\d+)?)\s*$/);
+        if (bare) ms = Number(bare[1]) * 60000;
+      }
+      return ms;
+    }
+
+    function parseTargetDate(text) {
+      const lower = text.toLowerCase().trim();
+      const now = new Date();
+      const year = now.getFullYear();
+      const monthMap = {
+        january: 0, jan: 0, february: 1, feb: 1, march: 2, mar: 2, april: 3, apr: 3,
+        may: 4, june: 5, jun: 5, july: 6, jul: 6, august: 7, aug: 7, september: 8, sep: 8, sept: 8,
+        october: 9, oct: 9, november: 10, nov: 10, december: 11, dec: 11,
+      };
+      // "christmas", "xmas", "new year", "new years", "halloween", "thanksgiving"
+      const fixedDates = {
+        christmas: new Date(year, 11, 25),
+        xmas: new Date(year, 11, 25),
+        'new year': new Date(year + 1, 0, 1),
+        'new years': new Date(year + 1, 0, 1),
+        halloween: new Date(year, 9, 31),
+        thanksgiving: (() => { const d = new Date(year, 10, 1); while (d.getDay() !== 4) d.setDate(d.getDate() + 1); d.setDate(d.getDate() + 21); return d; })(),
+      };
+      if (fixedDates[lower]) return fixedDates[lower].getTime();
+      // "december 25", "dec 25", "25 december", "25 dec"
+      const m = lower.match(/^(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*$/i)
+        || lower.match(/^(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\s+(\d{1,2})$/i);
+      if (m) {
+        const day = parseInt(m[1].match(/\d+/) ? m[1] : m[2], 10);
+        const month = monthMap[m[1].match(/\d+/) ? m[2].toLowerCase() : m[1].toLowerCase()];
+        if (month !== undefined) {
+          const target = new Date(year, month, day);
+          if (target < now) target.setFullYear(year + 1);
+          return target.getTime();
+        }
+      }
+      return null;
+    }
+
+    function isDurationRequest(lower) {
+      const normalized = lower
+        .replace(/[-‐‑‒–—]/g, ' ')
+        .replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
+      if (/(?:how\s+many\s+)?days?\s+until\s+.+/i.test(normalized)) return true;
+      const number = '(?:\\d+(?:\\.\\d+)?|a|an|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)';
+      const unit = '(?:hours?|hrs?|h|minutes?|mins?|m|seconds?|secs?|s)';
+      const duration = number + '\\s*' + unit + '(?:\\s*' + number + '\\s*' + unit + ')*';
+      return new RegExp('^(?:please\\s+)?(?:(?:start|begin|go|run|set)\\s+)?(?:(?:a|an|the)\\s+)?(?:for\\s+)?' + duration + '(?:\\s+please)?[.!]?$').test(normalized);
+    }
+
+    function wantsCreateTimer(lower) {
+      const mentionsTimer = /\b(timers?|countdowns?)\b/.test(lower);
+      const duration = parseDuration(lower);
+      if (mentionsTimer && /\b(remove|delete|get\s+rid\s+of|hide|clear|cancel|dismiss)\b/.test(lower)) return false;
+      if (mentionsTimer && /\b(pause|stop|hold|wait|freeze|suspend)\b/.test(lower)) return false;
+      if (mentionsTimer && duration === 0 && (/\b(start|begin|go|resume|continue|run|launch|activate|reset|restart|redo)\b/.test(lower) || /\bstart\s+over\b/.test(lower))) return false;
+      if (duration > 0 && (mentionsTimer || isDurationRequest(lower))) return true;
+      if (/^(?:an?\s+)?(?:timer|countdown)(?:\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
+      if (/\b(make|add|create|set|start|spawn|put|place|drop|show|open|give\s+me|i\s+need|i'?d\s+like)\b.*\b(timer|countdown)\b/.test(lower)) return true;
+      if (/\b(timer|countdown)\b.*\b(please|for|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
+      if (/(?:how\s+many\s+)?days?\s+until\s+/.test(lower)) return true;
+      return false;
+    }
+
+
+    function wantsTimerAction(lower) {
+      const selected = selectedId && things[selectedId];
+      const timerSelected = selected && selected.kind === 'timer';
+      const hasTimer = Object.values(things).some((thing) => thing.kind === 'timer');
+      const mentionsTimer = /\b(timers?|countdowns?)\b/.test(lower);
+      let action = null;
+      if (/\b(reset|restart|redo)\b/.test(lower) || /\bstart\s+over\b/.test(lower)) action = 'reset';
+      else if (/\b(pause|stop|hold|wait|freeze|suspend)\b/.test(lower)) action = 'pause';
+      else if (/\b(start|go|resume|continue|run|launch|activate)\b/.test(lower)) action = 'start';
+      if (mentionsTimer && action) return action;
+      if (!timerSelected && (selected || !hasTimer)) return null;
+      const command = lower
+        .replace(/^\s*(?:please\s+)?(?:can\s+you|could\s+you|would\s+you)\s+/, '')
+        .replace(/\s+please\s*$/, '')
+        .trim();
+      const verbs = action === 'start'
+        ? 'start|go|resume|continue|run|launch|activate'
+        : action === 'pause'
+          ? 'pause|stop|hold|wait|freeze|suspend'
+          : 'reset|restart|redo|start\\s+over';
+      if (action && new RegExp('^(?:' + verbs + ')(?:\\s+(?:it|this))?[.!]?$').test(command)) return action;
+      return null;
+    }
+
+    function wantsRemoveTimer(lower) {
+      const selected = selectedId && things[selectedId];
+      const timerSelected = selected && selected.kind === 'timer';
+      const hasTimer = Object.values(things).some((thing) => thing.kind === 'timer');
+      const removeWord = /\b(remove|delete|get\s+rid\s+of|hide|clear|cancel|dismiss)\b/;
+      if (removeWord.test(lower) && /\b(timers?|countdowns?)\b/.test(lower)) return true;
+      if (/\b(timers?|countdowns?)\b.*\b(away|gone)\b/.test(lower)) return true;
+      if ((timerSelected || (!selected && hasTimer)) && /^(remove|delete|get\s+rid\s+of|hide|clear|cancel|dismiss)(\s+(it|this))?\s*[.!]?\s*$/.test(lower)) return true;
+      return false;
+    }
+
+    function parseImageUrl(text) {
+      const m = text.match(/https?:\/\/[^\s]+/i);
+      if (!m) return null;
+      const url = m[0].replace(/[),.!]+$/, '');
+      if (/\.(png|jpe?g|gif|webp|avif|svg)(\?.*)?$/i.test(url) || /https?:\/\//i.test(url)) return url;
+      return url;
+    }
+function wantsCreateImage(lower, raw) {
+      if (/\b(remove|delete|get rid|hide)\b/.test(lower) && /\b(image|picture|photo|img)\b/.test(lower)) return false;
+      const url = parseImageUrl(raw);
+      // "show this image https://..." / "show image https://..."
+      if (url && /\b(show|display)\b.*\b(this\s+)?(image|picture|photo|img)\b/.test(lower)) return true;
+      // "put an image here <url>" / "put image here <url>" / "place image here <url>"
+      if (url && /\b(put|place|drop)\b.*\b(image|picture|photo|img)\b.*\bhere\b/.test(lower)) return true;
+      // "put an image here <url>" without "image" keyword if URL is clearly an image
+      if (url && /\b(put|place|drop)\b.*\bhere\b/.test(lower) && /\.(png|jpe?g|gif|webp|avif|svg)\b/i.test(url)) return true;
+      // "add image <url>" / "create image <url>"
+      if (url && /\b(add|create|make|new)\b.*\b(image|picture|photo|img)\b/.test(lower)) return true;
+      // existing patterns
+      if (url && /\b(image|picture|photo|img)\b/.test(lower)) return true;
+      if (url && /https?:\/\//i.test(raw) && /\.(png|jpe?g|gif|webp|avif|svg)\b/i.test(raw)) return true;
+      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\b(image|picture|photo|img)\b/.test(lower) && url) return true;
+      if (/^image\s*:\s*https?:\/\//i.test(raw)) return true;
+      return false;
+    }
+    function wantsRemoveImage(lower) {
+      // "remove the image" / "remove image" / "delete the image" / "get rid of the image" / "clear the image"
+      if (/^(remove|delete|get\s+rid\s+of|hide|clear)\s+(the\s+)?(image|picture|photo|img)\s*[.!]?\s*$/.test(lower)) return true;
+      if (/\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(image|picture|photo|img)\b/.test(lower)) return true;
+      if (/\b(image|picture|photo)\b.*\b(away|gone)\b/.test(lower)) return true;
+      // "remove it" when image is selected
+      if (/^(remove|delete|get\s+rid\s+of|hide)\s+(it|this)\s*[.!]?\s*$/.test(lower)) return true;
+      return false;
+    }
+    function ensureImage(src) {
+      let img = Object.values(things).find((th) => th.kind === 'image');
+      if (!img) {
+        img = {
+          id: uid('image'),
+          kind: 'image',
+          x: Math.max(40, stage.clientWidth / 2 - 160),
+          y: Math.max(40, stage.clientHeight / 2 - 160),
+          src: src,
+        };
+        things[img.id] = img;
+        selectedId = img.id;
+      } else {
+        img.src = src;
+        selectedId = img.id;
+      }
+      return img;
+    }
+
+    function hostFromUrl(url) {
+      try { return new URL(url).hostname.replace(/^www\./, ''); } catch (_) { return url; }
+    }
+    function titleFromUrl(url) {
+      try {
+        const u = new URL(url);
+        const host = u.hostname.replace(/^www\./, '');
+        const path = (u.pathname || '/').replace(/\/$/, '');
+        if (path && path !== '/') {
+          const parts = path.split('/').filter(Boolean);
+          const snip = parts[parts.length - 1] || path;
+          return host + '/' + decodeURIComponent(snip).slice(0, 48);
+        }
+        return host;
+      } catch (_) { return url; }
+    }
+    function isImageUrl(url) {
+      return /\.(png|jpe?g|gif|webp|avif|svg)(\?.*)?$/i.test(url);
+    }
+    function parseUrl(text) {
+      const m = text.match(/https?:\/\/[^\s]+/i);
+      return m ? m[0].replace(/[),.!]+$/, '') : null;
+    }
+    function wantsCreateLink(lower, raw) {
+      if (/\b(remove|delete|get rid|hide|clear)\b/.test(lower) && /\b(link|card|url)\b/.test(lower)) return false;
+      const url = parseUrl(raw);
+      if (!url || isImageUrl(url)) return false;
+      if (/\blink\s*card\b/.test(lower) && url) return true;
+      if (/\b(show\s+this\s+link|put\s+a\s+link|show\s+link|add\s+a\s+link|drop\s+a\s+link)\b/.test(lower) && url) return true;
+      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\blink\b/.test(lower) && url) return true;
+      if (/^https?:\/\/[^\s]+$/i.test(raw.trim()) && !isImageUrl(raw.trim())) return true;
+      return false;
+    }
+    function wantsRemoveLink(lower) {
+      if (/\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(link|card)\b/.test(lower)) return true;
+      if (/\b(link|card)\b.*\b(away|gone)\b/.test(lower)) return true;
+      // allow bare "remove the link" / "remove the card"
+      if (/^(remove|delete|hide|clear)\s+(the\s+)?(link|card)(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
+      return false;
+    }
+    function ensureLink(url) {
+      const host = hostFromUrl(url);
+      let card = Object.values(things).find((th) => th.kind === 'link');
+      if (!card) {
+        card = {
+          id: uid('link'),
+          kind: 'link',
+          x: Math.max(40, stage.clientWidth / 2 - 140),
+          y: Math.max(40, stage.clientHeight / 2 - 20),
+          url: url,
+          host: host,
+          title: titleFromUrl(url),
+        };
+        things[card.id] = card;
+        selectedId = card.id;
+      } else {
+        card.url = url;
+        card.host = host;
+        card.title = titleFromUrl(url);
+        selectedId = card.id;
+      }
+      return card;
+    }
+
+    function cleanListText(value) {
+      return (value || '').replace(/^[\s,;:]+|[\s,;.!?]+$/g, '').trim();
+    }
+
+    function normalizeListItems(items) {
+      return (Array.isArray(items) ? items : []).map((item) => {
+        if (typeof item === 'string') return { id: uid('item'), text: cleanListText(item), done: false };
+        return { id: item && item.id || uid('item'), text: cleanListText(item && item.text), done: !!(item && item.done) };
+      }).filter((item) => item.text);
+    }
+
+    function ensureList(seedItems) {
+      let list = (selectedId && things[selectedId] && things[selectedId].kind === 'list' && things[selectedId])
+        || Object.values(things).find((thing) => thing.kind === 'list');
+      const seeds = normalizeListItems(seedItems);
+      if (!list) {
+        list = {
+          id: uid('list'),
+          kind: 'list',
+          x: Math.max(40, stage.clientWidth / 2 - 140),
+          y: Math.max(40, stage.clientHeight / 2 - 120),
+          title: '',
+          items: seeds,
+        };
+        things[list.id] = list;
+      } else {
+        list.items = normalizeListItems(list.items);
+        seeds.forEach((seed) => {
+          if (!list.items.some((item) => item.text.toLowerCase() === seed.text.toLowerCase())) list.items.push(seed);
+        });
+      }
+      selectedId = list.id;
+      return list;
+    }
+
+    function findList() {
+      return (selectedId && things[selectedId] && things[selectedId].kind === 'list' && things[selectedId])
+        || Object.values(things).find((thing) => thing.kind === 'list') || null;
+    }
+
+    function extractListSeeds(raw) {
+      const match = raw.match(/\blist\s*:\s*([\s\S]+)/i);
+      if (!match) return [];
+      return match[1].split(/[,\n]/).map(cleanListText).filter(Boolean).map((text) => ({ id: uid('item'), text, done: false }));
+    }
+
+    function wantsCreateList(lower, raw) {
+      if (/\b(add\s+item|list\s+add|check|done|complete|remove|delete|clear|empty)\b/.test(lower)) return false;
+      if (/^list\s*:/i.test(raw)) return true;
+      if (/^(todo\s+list|list)(\s+please)?\s*[.!]?$/i.test(raw.trim())) return true;
+      return /\b(make|add|create|show|spawn|put|place|drop)\s+(a\s+)?(todo\s+)?list\b/.test(lower);
+    }
+
+    function extractListAdd(raw) {
+      let match = raw.match(/^\s*add\s+item\s+([\s\S]+?)\s*[.!]?\s*$/i);
+      if (match) return cleanListText(match[1]);
+      match = raw.match(/^\s*list\s+add\s+([\s\S]+?)\s*[.!]?\s*$/i);
+      if (match) return cleanListText(match[1]);
+      match = raw.match(/^\s*add\s+([\s\S]+?)\s+to\s+(?:the\s+)?list\s*[.!]?\s*$/i);
+      return match ? cleanListText(match[1]) : '';
+    }
+
+    function wantsListAdd(raw) { return !!extractListAdd(raw); }
+    function extractListActionItem(raw) {
+      const match = raw.match(/^\s*(?:check|done|complete)\s+([\s\S]+?)\s*[.!]?\s*$/i);
+      return match ? cleanListText(match[1]) : '';
+    }
+    function wantsListCheck(raw) { return !!extractListActionItem(raw); }
+    function extractListRemove(raw) {
+      const match = raw.match(/^\s*remove\s+([\s\S]+?)\s+from\s+(?:the\s+)?list\s*[.!]?\s*$/i);
+      return match ? cleanListText(match[1]) : '';
+    }
+    function wantsListItemRemove(raw) { return !!extractListRemove(raw); }
+    function wantsRemoveList(lower) {
+      return /^(remove|delete|get\s+rid\s+of|hide)\s+(the\s+)?list\s*[.!]?$/i.test(lower);
+    }
+    function wantsClearList(lower) {
+      return /^(clear|empty)\s+(the\s+)?list\s*[.!]?$/i.test(lower);
+    }
+
+    function wantsCreateCalc(lower) {
+      if (/\b(remove|delete|get\s+rid|hide|clear)\b/.test(lower) && /\b(calculator|calc)\b/.test(lower)) return false;
+      if (/^(a\s+)?calculator(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
+      if (/^calc(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
+      return /\b(make|add|create|show|spawn|put|place|drop)\b.*\b(calculator|calc)\b/.test(lower)
+        || /\b(calculator|calc)\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower);
+    }
+
+    function wantsRemoveCalc(lower) {
+      return /\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(calculator|calc)\b/.test(lower)
+        || /\b(calculator|calc)\b.*\b(away|gone)\b/.test(lower)
+        || /^(remove|delete|hide|clear)\s+(the\s+)?(calculator|calc)(\s+please)?\s*[.!]?\s*$/.test(lower);
+    }
+
+    function extractCalcExpression(raw) {
+      const text = (raw || '').trim();
+      let match = text.match(/^calculate\s+([\s\S]+)$/i)
+        || text.match(/^what\s+is\s+([\s\S]+)$/i)
+        || text.match(/^calc(?:ulator)?\s+([\s\S]+)$/i);
+      if (match) return match[1].replace(/[?!]\s*$/, '').trim();
+      if (/^[\d\s()+\-*/.%]+$/.test(text)
+        || /^[\d\s()+\-*/.]+%\s*of\s*[\d\s()+\-*/.]+$/i.test(text)) return text;
+      // "15 percent of 240", "what is 15 percent of 240"
+      if (/(?:what\s+is\s+)?\d+(?:\.\d+)?\s*percent\s+of\s+\d+(?:\.\d+)?/i.test(text)) {
+        return text.replace(/^what\s+is\s+/i, '').replace(/percent/gi, '%');
+      }
+      // "5 miles in km", "5 miles to km", "convert 5 miles to km"
+      const conv = text.match(/^(?:convert\s+)?([\d.]+)\s+(\w+)\s+(?:in|to|as)\s+(\w+)$/i);
+      if (conv) return `convert(${conv[1]}, "${conv[2]}", "${conv[3]}")`;
+      return null;
+    }
+
+    function wantsCalcCompute(raw) {
+      return extractCalcExpression(raw) !== null;
+    }
+
+    function evaluateMath(source) {
+      const text = (source || '').trim();
+      let index = 0;
+      const skip = () => { while (/\s/.test(text[index] || '')) index += 1; };
+      const parseNumber = () => {
+        skip();
+        const start = index;
+        let dots = 0;
+        let digits = 0;
+        while (index < text.length) {
+          const ch = text[index];
+          if (/\d/.test(ch)) { digits += 1; index += 1; continue; }
+          if (ch === '.' && dots === 0) { dots += 1; index += 1; continue; }
+          break;
+        }
+        if (!digits) throw new Error('number expected');
+        const value = Number(text.slice(start, index));
+        if (!Number.isFinite(value)) throw new Error('invalid number');
+        return value;
+      };
+      let parseExpression;
+      const parsePrimary = () => {
+        skip();
+        if (text[index] === '(') {
+          index += 1;
+          const value = parseExpression();
+          skip();
+          if (text[index] !== ')') throw new Error('missing )');
+          index += 1;
+          return value;
+        }
+        if (text[index] === '+' || text[index] === '-') {
+          const sign = text[index++] === '-' ? -1 : 1;
+          return sign * parsePrimary();
+        }
+        return parseNumber();
+      };
+      const parseTerm = () => {
+        let value = parsePrimary();
+        while (true) {
+          skip();
+          const op = text[index];
+          if (op !== '*' && op !== '/') break;
+          index += 1;
+          const rhs = parsePrimary();
+          if (op === '/' && rhs === 0) throw new Error('division by zero');
+          value = op === '*' ? value * rhs : value / rhs;
+        }
+        return value;
+      };
+      parseExpression = () => {
+        let value = parseTerm();
+        while (true) {
+          skip();
+          const op = text[index];
+          if (op !== '+' && op !== '-') break;
+          index += 1;
+          const rhs = parseTerm();
+          value = op === '+' ? value + rhs : value - rhs;
+        }
+        return value;
+      };
+      try {
+        if (!text) throw new Error('empty expression');
+        const value = parseExpression();
+        skip();
+        if (index !== text.length) throw new Error('unexpected character');
+        if (!Number.isFinite(value)) throw new Error('non-finite result');
+        return { ok: true, value };
+      } catch (error) {
+        return { ok: false, error: error.message || 'invalid expression' };
+      }
+    }
+
+    function evaluateCalcExpression(raw) {
+      const text = (raw || '').trim();
+      const percent = text.match(/^([\s\S]+?)\s*%\s*of\s*([\s\S]+)$/i);
+      if (percent) {
+        const left = evaluateMath(percent[1]);
+        const right = evaluateMath(percent[2]);
+        if (!left.ok || !right.ok) return { ok: false, error: 'invalid percent expression' };
+        const value = (left.value / 100) * right.value;
+        return Number.isFinite(value) ? { ok: true, value } : { ok: false, error: 'non-finite result' };
+      }
+      const conv = text.match(/^convert\(([\d.]+),\s*"([^"]+)",\s*"([^"]+)"\)$/);
+      if (conv) {
+        const value = parseFloat(conv[1]);
+        const from = conv[2].toLowerCase();
+        const to = conv[3].toLowerCase();
+        const converted = convertUnits(value, from, to);
+        if (converted === null) return { ok: false, error: `unknown units: ${from} to ${to}` };
+        return { ok: true, value: converted };
+      }
+      return evaluateMath(text);
+    }
+
+    const UNIT_CONVERSIONS = {
+      length: {
+        m: 1, meter: 1, meters: 1, metre: 1, metres: 1,
+        km: 1000, kilometer: 1000, kilometers: 1000,
+        cm: 0.01, centimeter: 0.01, centimeters: 0.01,
+        mm: 0.001, millimeter: 0.001, millimeters: 0.001,
+        mi: 1609.344, mile: 1609.344, miles: 1609.344,
+        yd: 0.9144, yard: 0.9144, yards: 0.9144,
+        ft: 0.3048, foot: 0.3048, feet: 0.3048,
+        in: 0.0254, inch: 0.0254, inches: 0.0254,
+      },
+      mass: {
+        kg: 1, kilogram: 1, kilograms: 1,
+        g: 0.001, gram: 0.001, grams: 0.001,
+        lb: 0.453592, lbs: 0.453592, pound: 0.453592, pounds: 0.453592,
+        oz: 0.0283495, ounce: 0.0283495, ounces: 0.0283495,
+      },
+      temp: { c: 'C', celsius: 'C', f: 'F', fahrenheit: 'F', k: 'K', kelvin: 'K' },
+    };
+
+    function convertUnits(value, from, to) {
+      const length = UNIT_CONVERSIONS.length;
+      if (length[from] !== undefined && length[to] !== undefined) {
+        return (value * length[from]) / length[to];
+      }
+      const mass = UNIT_CONVERSIONS.mass;
+      if (mass[from] !== undefined && mass[to] !== undefined) {
+        return (value * mass[from]) / mass[to];
+      }
+      const temp = UNIT_CONVERSIONS.temp;
+      if (temp[from] !== undefined && temp[to] !== undefined) {
+        let celsius;
+        if (temp[from] === 'C') celsius = value;
+        else if (temp[from] === 'F') celsius = (value - 32) * 5 / 9;
+        else if (temp[from] === 'K') celsius = value - 273.15;
+        else return null;
+        if (temp[to] === 'C') return celsius;
+        if (temp[to] === 'F') return celsius * 9 / 5 + 32;
+        if (temp[to] === 'K') return celsius + 273.15;
+        return null;
+      }
+      return null;
+    }
+
+    function formatCalcResult(value) {
+      if (Object.is(value, -0)) return '0';
+      return String(Number(value.toPrecision(12)));
+    }
+
+    function ensureCalc() {
+      let calc = (selectedId && things[selectedId] && things[selectedId].kind === 'calc' && things[selectedId])
+        || Object.values(things).find((thing) => thing.kind === 'calc');
+      if (!calc) {
+        calc = {
+          id: uid('calc'),
+          kind: 'calc',
+          x: Math.max(40, stage.clientWidth / 2 - 130),
+          y: Math.max(40, stage.clientHeight / 2 - 90),
+          title: '',
+          expression: '',
+          result: '',
+        };
+        things[calc.id] = calc;
+      }
+      selectedId = calc.id;
+      return calc;
+    }
+
+    function ensureTimer(durationMs) {
+      let t = Object.values(things).find((th) => th.kind === 'timer');
+      if (!t) {
+        t = {
+          id: uid('timer'),
+          kind: 'timer',
+          x: Math.max(40, stage.clientWidth / 2 - 60),
+          y: Math.max(40, stage.clientHeight / 2 - 40),
+          size: 40,
+          color: '#e8e8e8',
+          duration: durationMs,
+          remaining: durationMs,
+          running: false,
+          startedAt: 0,
+        };
+        things[t.id] = t;
+        selectedId = t.id;
+      } else {
+        // reset with new duration if creating fresh
+        t.duration = durationMs;
+t.remaining = durationMs;
+        t.running = false;
+        t.startedAt = 0;
+        selectedId = t.id;
+      }
+      return t;
+    }
+
+    function ensureCounter() {
+      let counter = Object.values(things).find((th) => th.kind === 'counter');
+      if (!counter) {
+        counter = {
+          id: uid('counter'),
+          kind: 'counter',
+          x: Math.max(40, stage.clientWidth / 2 - 60),
+          y: Math.max(40, stage.clientHeight / 2 - 40),
+          value: 0,
+        };
+        things[counter.id] = counter;
+        selectedId = counter.id;
+      }
+      return counter;
+    }
+
+    function ensureShape(shapeType) {
+      let shape = Object.values(things).find((th) => th.kind === 'shape');
+      if (!shape) {
+        const size = 80;
+        shape = {
+          id: uid('shape'),
+          kind: 'shape',
+          x: Math.max(40, stage.clientWidth / 2 - size / 2),
+          y: Math.max(40, stage.clientHeight / 2 - size / 2),
+          width: size,
+          height: size,
+          shapeType: shapeType || 'rect',
+          strokeWidth: 2,
+          filled: false,
+        };
+        things[shape.id] = shape;
+        selectedId = shape.id;
+      }
+      return shape;
+    }
+
+    function parseCounterDelta(text) {
+      const m = /(?:by|plus|minus)\s+(-?\d+)/i.exec(text || '');
+      if (m) return parseInt(m[1], 10);
+      return 1;
+    }
+
+    function parseCounterSetNumber(text) {
+      const m = /(?:to|at|equals?|is)\s+(-?\d+)/i.exec(text || '');
+      if (m) return parseInt(m[1], 10);
+      return null;
+    }
+
+    function wantsCreateCounter(lower) {
+      if (/\b(remove|delete|get\s+rid\s+of|hide|clear|reset|set|increment|decrement|count)\b/.test(lower) && /\bcounter\b/.test(lower)) return false;
+      if (/^(a\s+)?counter(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
+      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\bcounter\b/.test(lower)) return true;
+      if (/\bcounter\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
+      return false;
+    }
+
+    function wantsCounterAction(lower, text) {
+      const counterWord = /\bcounter\b/.test(lower);
+      const selected = selectedId && things[selectedId];
+      const counterSel = selected && selected.kind === 'counter';
+      const hasCounter = Object.values(things).some((th) => th.kind === 'counter');
+      const hasTimer = Object.values(things).some((th) => th.kind === 'timer');
+      if (counterWord) {
+        if (/\b(count\s+up|increment|increase|go\s+up|plus\s+one|add\s+one)\b/.test(lower)) return 'up';
+        if (/\b(count\s+down|decrement|decrease|go\s+down|minus\s+one)\b/.test(lower)) return 'down';
+        if (/\b(set|put|change)\b.*\bcounter\b.*\bto\s+(-?\d+)\b/.test(lower)) return 'set';
+        if (/\b(reset|zero|back\s+to\s+zero)\b/.test(lower)) return 'reset';
+      }
+      if (/^count\s+up(\s+by\s+(-?\d+))?\s*[.!]?\s*$/.test(lower)) return 'up';
+      if (/^count\s+down(\s+by\s+(-?\d+))?\s*[.!]?\s*$/.test(lower)) return 'down';
+      if (counterSel && /^(up|plus)\s*[.!]?\s*$/.test(lower)) return 'up';
+      if (counterSel && /^(down|minus)\s*[.!]?\s*$/.test(lower)) return 'down';
+      if (counterSel && /^(reset|zero|clear\s+it)\s*[.!]?\s*$/.test(lower)) return 'reset';
+      if (!hasTimer && hasCounter && /^(reset|zero|clear\s+it)\s*[.!]?\s*$/.test(lower)) return 'reset';
+      return null;
+    }
+
+    function wantsRemoveCounter(lower) {
+      if (/\b(remove|delete|get\s+rid\s+of|hide|clear|cancel)\b.*\bcounter\b/.test(lower)) return true;
+      if (/\bcounter\b.*\b(away|gone)\b/.test(lower)) return true;
+      const selected = selectedId && things[selectedId];
+      if (selected && selected.kind === 'counter' && /^(remove|delete|get\s+rid\s+of|hide|clear|cancel)\s+(it|this)\s*[.!]?\s*$/.test(lower)) return true;
+      return false;
+    }
+
+    function wantsCreateShape(lower, raw) {
+      if (/\b(remove|delete|get\s+rid\s+of|hide|clear)\b/.test(lower) && /\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return false;
+      if (/^(a\s+)?(shape|rect|rectangle|circle|line|square)(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
+      if (/\b(draw|sketch)\b.*\b(circle|rect|rectangle|line|square|shape)\b/.test(lower)) return true;
+      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
+      if (/\b(shape|rect|rectangle|circle|line|square)\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
+      if (/^shape\s*:\s*(rect|rectangle|circle|line|square)\b/i.test(raw)) return true;
+      return false;
+    }
+
+    function extractShapeType(lower, raw) {
+      if (/\bcircle\b/.test(lower)) return 'circle';
+      if (/\bline\b/.test(lower)) return 'line';
+      if (/\b(rect|rectangle)\b/.test(lower)) return 'rect';
+      if (/\bsquare\b/.test(lower)) return 'rect';
+      let match = raw.match(/^shape\s*:\s*(rect|rectangle|circle|line|square)\b/i);
+      if (match) return match[1] === 'square' ? 'rect' : match[1];
+      return 'rect';
+    }
+
+    function wantsRemoveShape(lower) {
+      if (/\b(remove|delete|get\s+rid\s+of|hide|clear|cancel|erase)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
+      if (/\b(shape|rect|rectangle|circle|line|square)\b.*\b(away|gone)\b/.test(lower)) return true;
+      const selected = selectedId && things[selectedId];
+      if (selected && selected.kind === 'shape' && /^(remove|delete|get\s+rid\s+of|hide|clear|cancel|erase)\s+(it|this)\s*[.!]?\s*$/.test(lower)) return true;
+      return false;
+    }
+
+    /** freerEnglishParse — broaden natural asks for clock (+ sticky) without rigid phrases */
+    function freerEnglishParse(raw) {
+      const text = (raw || '').trim();
+      if (!text) return { ok: false, detail: '' };
+      let lower = text.toLowerCase().replace(/['']/g, "'");
+      // "resize X" with no direction reads as grow (single + batch alters)
+      if (/\bresize\b/.test(lower) && !/\b(bigger|larger|smaller|huge|tiny|big|large|small|little|enlarge|shrink|grow|increase|decrease)\b/.test(lower)) {
+        lower += ' bigger';
+      }
+      let ok = false;
+      let detail = '';
+
+// clear entire stage
+      if (wantsClearStage(lower)) {
+        things = {};
+        selectedId = null;
+        save(); render();
+        return { ok: true, detail: 'cleared' };
+      }
+
+      // remove the selected thing — "remove it", "remove this", bare "remove"/"delete"
+      const bareRemove = /^(remove|delete|get\s+rid\s+of|hide|clear)\s+(it|this)(\s+please)?\s*[.!]?\s*$/.test(lower)
+        || /^(remove|delete|get\s+rid\s+of|hide)\s*[.!]?\s*$/.test(lower);
+      if (bareRemove) {
+        let sel = selectedId && things[selectedId];
+        if (!sel) {
+          const timers = Object.values(things).filter((thing) => thing.kind === 'timer');
+          if (timers.length === 1) sel = timers[0];
+        }
+        if (sel) {
+          const id = sel.id;
+          const kind = sel.kind;
+          delete things[id];
+          if (selectedId === id) selectedId = null;
+          save(); render();
+          return { ok: true, detail: kind + '-removed' };
+        }
+say('nothing selected to remove');
+        return { ok: false, detail: 'nothing selected' };
+      }
+
+      // batch targeting: "make all timers blue", "resize every clock",
+      // "move all shapes to the top left", "make everything blue"
+      const batchKindList = batchKinds(lower);
+      if (wantsBatchAlter(lower, batchKindList)) {
+        let batchChanged = 0;
+        let batchFirstId = null;
+        for (const batchKind of batchKindList) {
+          for (const member of Object.values(things)) {
+            if (member.kind !== batchKind) continue;
+            if (applyTargetAlters(member, batchKind, lower)) {
+              batchChanged += 1;
+              if (!batchFirstId) batchFirstId = member.id;
+            }
+          }
+        }
+        if (batchChanged) {
+          selectedId = batchFirstId;
+          save(); render();
+          return { ok: true, detail: 'batch-' + batchKindList.join('+') + '-altered' };
+        }
+      }
+
+      // multi-object targeting: "make the timer blue", "make the counter big",
+      // "make the calc green", "move the notepad to the top right"
+      const targetKindName = resolveTargetKind(lower)
+        || (selectedId && things[selectedId] && hasAlterProperty(lower) && /\b(it|this)\b/.test(lower)
+          ? things[selectedId].kind
+          : null);
+      if (targetKindName && hasAlterProperty(lower) && !/\b(remove|delete|get\s+rid\s+of|hide|clear|cancel)\b/.test(lower)) {
+        const tThing = findTargetThing(targetKindName);
+        if (tThing && applyTargetAlters(tThing, targetKindName, lower)) {
+          selectedId = tThing.id;
+          save(); render();
+          return { ok: true, detail: targetKindName + '-altered' };
+        }
+      }
+
+      // simple calculator surface
+      if (wantsRemoveCalc(lower)) {
+        const calc = Object.values(things).find((thing) => thing.kind === 'calc' && thing.id === selectedId)
+          || Object.values(things).find((thing) => thing.kind === 'calc');
+        if (calc) {
+          delete things[calc.id];
+          if (selectedId === calc.id) selectedId = null;
+          save(); render();
+          return { ok: true, detail: 'calc-removed' };
+        }
+        return { ok: false, detail: 'no calculator' };
+      }
+      const calcExpression = extractCalcExpression(text);
+      if (calcExpression !== null) {
+        const computed = evaluateCalcExpression(calcExpression);
+        if (!computed.ok) return { ok: false, detail: 'calc-invalid' };
+        const calc = ensureCalc();
+        calc.expression = calcExpression;
+        calc.result = formatCalcResult(computed.value);
+        save(); render();
+        return { ok: true, detail: 'calc-computed' };
+      }
+      if (wantsCreateCalc(lower)) {
+        ensureCalc();
+        save(); render();
+        return { ok: true, detail: 'calc' };
+      }
+
+      // simple list surface
+      if (wantsRemoveList(lower)) {
+        const list = findList();
+        if (list) {
+          delete things[list.id];
+          if (selectedId === list.id) selectedId = null;
+          save(); render();
+          return { ok: true, detail: 'list-removed' };
+        }
+        return { ok: false, detail: 'no list' };
+      }
+      if (wantsClearList(lower)) {
+        const list = findList();
+        if (list) {
+          list.items = [];
+          selectedId = list.id;
+          save(); render();
+          return { ok: true, detail: 'list-cleared' };
+        }
+        return { ok: false, detail: 'no list' };
+      }
+      if (wantsListItemRemove(text)) {
+        const list = findList();
+        const itemText = extractListRemove(text);
+        const item = list && list.items.find((candidate) => candidate.text.toLowerCase() === itemText.toLowerCase());
+        if (item) {
+          list.items = list.items.filter((candidate) => candidate.id !== item.id);
+          selectedId = list.id;
+          save(); render();
+          return { ok: true, detail: 'list-item-removed' };
+        }
+        return { ok: false, detail: 'list-item-not-found' };
+      }
+      if (wantsListCheck(text)) {
+        const list = findList();
+        const itemText = extractListActionItem(text);
+        const item = list && list.items.find((candidate) => candidate.text.toLowerCase() === itemText.toLowerCase());
+        if (item) {
+          item.done = !item.done;
+          selectedId = list.id;
+          save(); render();
+          return { ok: true, detail: item.done ? 'list-item-complete' : 'list-item-uncomplete' };
+        }
+        return { ok: false, detail: 'list-item-not-found' };
+      }
+      if (wantsListAdd(text)) {
+        const list = ensureList([]);
+        const itemText = extractListAdd(text);
+        if (itemText && !list.items.some((item) => item.text.toLowerCase() === itemText.toLowerCase())) {
+          list.items.push({ id: uid('item'), text: itemText, done: false });
+          save(); render();
+          return { ok: true, detail: 'list-item-added' };
+        }
+        return { ok: false, detail: 'list-item-already-exists' };
+      }
+      if (wantsCreateList(lower, text)) {
+        ensureList(extractListSeeds(text));
+        save(); render();
+        return { ok: true, detail: 'list' };
+      }
+
+      // notepad surface
+      if (wantsRemoveNotepad(lower)) {
+        const note = Object.values(things).find((thing) => thing.kind === 'notepad' && thing.id === selectedId)
+          || Object.values(things).find((thing) => thing.kind === 'notepad');
+        if (note) {
+          delete things[note.id];
+          if (selectedId === note.id) selectedId = null;
+          save(); render();
+          return { ok: true, detail: 'notepad-removed' };
+        }
+        return { ok: false, detail: 'no notepad' };
+      }
+      if (wantsClearNotepad(lower)) {
+        const note = Object.values(things).find((thing) => thing.kind === 'notepad' && thing.id === selectedId)
+          || Object.values(things).find((thing) => thing.kind === 'notepad');
+        if (note) {
+          note.text = '';
+          selectedId = note.id;
+          save(); render();
+          return { ok: true, detail: 'notepad-cleared' };
+        }
+        return { ok: false, detail: 'no notepad' };
+      }
+      if (wantsCreateNotepad(lower, text)) {
+        const note = ensureNotepad(extractNotepadText(text));
+        save(); render();
+        return { ok: true, detail: 'notepad' };
+      }
+      // sticky create / text
+      if (wantsCreateSticky(lower, text)) {
+        const seed = extractStickyText(text, lower);
+        const n = ensureSticky(seed);
+        const scol = stickyColorFrom(lower);
+        if (scol) n.color = scol;
+        selectedId = n.id;
+        save(); render();
+        return { ok: true, detail: 'sticky' };
+      }
+
+      // sticky remove
+      if (wantsRemoveSticky(lower)) {
+        const n = Object.values(things).find((t) => t.kind === 'sticky' && t.id === selectedId)
+          || Object.values(things).find((t) => t.kind === 'sticky');
+        if (n) {
+          delete things[n.id];
+          if (selectedId === n.id) selectedId = null;
+          save(); render();
+          return { ok: true, detail: 'sticky-removed' };
+        }
+        say('');
+        return { ok: false, detail: 'no sticky' };
+      }
+
+      // image create (url)
+      if (wantsCreateImage(lower, text)) {
+        const url = parseImageUrl(text);
+        if (url) {
+          ensureImage(url);
+          save(); render();
+          return { ok: true, detail: 'image' };
+        }
+      }
+      // image remove
+      if (wantsRemoveImage(lower)) {
+        const im = Object.values(things).find((th) => th.kind === 'image');
+        if (im) {
+          delete things[im.id];
+          if (selectedId === im.id) selectedId = null;
+          save(); render();
+          return { ok: true, detail: 'image-removed' };
+        }
+        return { ok: false, detail: 'no image' };
+      }
+      // link card create
+      if (wantsCreateLink(lower, text)) {
+        const url = parseUrl(text);
+        if (url && !isImageUrl(url)) {
+          ensureLink(url);
+          save(); render();
+          return { ok: true, detail: 'link' };
+        }
+      }
+      // link card remove
+      if (wantsRemoveLink(lower)) {
+        const card = Object.values(things).find((th) => th.kind === 'link');
+        if (card) {
+          delete things[card.id];
+          if (selectedId === card.id) selectedId = null;
+          save(); render();
+          return { ok: true, detail: 'link-removed' };
+        }
+        return { ok: false, detail: 'no link' };
+      }
+      // bare URL (non-image) → link card
+      if (/^https?:\/\/[^\s]+$/i.test(text.trim()) && !isImageUrl(text.trim())) {
+        ensureLink(text.trim());
+        save(); render();
+        return { ok: true, detail: 'link' };
+      }
+      // bare image url paste (freer)
+      if (/^https?:\/\/[^\s]+\.(png|jpe?g|gif|webp|avif|svg)(\?.*)?$/i.test(text.trim())) {
+        ensureImage(text.trim());
+        save(); render();
+        return { ok: true, detail: 'image' };
+      }
+
+      // sticky text edit when selected / referenced
+      if (/\b(sticky|note)\b/.test(lower) && /:/.test(text)) {
+        const seed = extractStickyText(text, lower);
+        if (seed) {
+          const n = ensureSticky(seed);
+          selectedId = n.id;
+          save(); render();
+          return { ok: true, detail: 'sticky-text' };
+        }
+      }
+
+// sticker alter branch (below) catches "make it blue" for a selected sticky.
+      // timer create
+      if (wantsCreateTimer(lower)) {
+        const dur = parseDuration(lower) || 60000; // default 1 min
+        const t = ensureTimer(dur);
+        if (/\b(start|begin|go)\b/.test(lower) && !t.running) {
+          t.running = true;
+          t.startedAt = Date.now();
+        }
+        save(); render();
+        return { ok: true, detail: t.running ? 'timer-start' : 'timer' };
+      }
+
+// timer action (start/pause/reset)
+      const timerAction = wantsTimerAction(lower);
+      if (timerAction) {
+        const timerMentioned = /\b(timer|countdown)\b/.test(lower)
+          || !!(selectedId && things[selectedId] && things[selectedId].kind === 'timer');
+        const t = Object.values(things).find((th) => th.kind === 'timer');
+        if (t) {
+          if (timerAction === 'start') {
+            if (!t.running) {
+              if (t.remaining <= 0) t.remaining = t.duration;
+              t.running = true;
+              t.startedAt = Date.now();
+            }
+            save(); render();
+            return { ok: true, detail: 'timer-start' };
+          }
+          if (timerAction === 'pause') {
+            if (t.running) {
+              t.remaining = Math.max(0, t.remaining - (Date.now() - t.startedAt));
+              t.running = false;
+              t.startedAt = 0;
+            }
+            save(); render();
+            return { ok: true, detail: 'timer-pause' };
+          }
+          if (timerAction === 'reset') {
+            t.remaining = t.duration;
+            t.running = false;
+            t.startedAt = 0;
+            save(); render();
+return { ok: true, detail: 'timer-reset' };
+          }
+        }
+        if (timerMentioned) {
+          say('no timer to ' + timerAction);
+          return { ok: false, detail: 'no timer' };
+        }
+      }
+
+      // counter create
+      if (wantsCreateCounter(lower)) {
+        ensureCounter();
+        save(); render();
+        return { ok: true, detail: 'counter' };
+      }
+
+      // shape create
+      if (wantsCreateShape(lower, text)) {
+        const st = extractShapeType(lower, text);
+        ensureShape(st);
+        const col = colorFrom(lower);
+        const s = Object.values(things).find((th) => th.kind === 'shape');
+        if (s && col) s.color = col;
+        save(); render();
+        return { ok: true, detail: 'shape-' + st };
+      }
+
+      // counter actions (count up/down, set, reset)
+      const counterAction = wantsCounterAction(lower, text);
+      if (counterAction) {
+        let counter = Object.values(things).find((th) => th.kind === 'counter');
+        if (!counter) counter = ensureCounter();
+        if (counterAction === 'up') counter.value = (counter.value || 0) + parseCounterDelta(text);
+        else if (counterAction === 'down') counter.value = (counter.value || 0) - parseCounterDelta(text);
+        else if (counterAction === 'set') {
+          const n = parseCounterSetNumber(text);
+          counter.value = n === null ? 0 : n;
+        }
+        else if (counterAction === 'reset') counter.value = 0;
+        selectedId = counter.id;
+        save(); render();
+        return { ok: true, detail: 'counter-' + counterAction };
+      }
+
+      // counter remove
+      if (wantsRemoveCounter(lower)) {
+        const counter = Object.values(things).find((th) => th.kind === 'counter' && th.id === selectedId)
+          || Object.values(things).find((th) => th.kind === 'counter');
+        if (counter) {
+          delete things[counter.id];
+          if (selectedId === counter.id) selectedId = null;
+          save(); render();
+          return { ok: true, detail: 'counter-removed' };
+        }
+        say('');
+        return { ok: false, detail: 'no counter' };
+      }
+
+      // shape remove
+      if (wantsRemoveShape(lower)) {
+        const shape = Object.values(things).find((th) => th.kind === 'shape' && th.id === selectedId)
+          || Object.values(things).find((th) => th.kind === 'shape');
+        if (shape) {
+          delete things[shape.id];
+          if (selectedId === shape.id) selectedId = null;
+          save(); render();
+          return { ok: true, detail: 'shape-removed' };
+        }
+        say('');
+        return { ok: false, detail: 'no shape' };
+      }
+
+      // timer remove
+      if (wantsRemoveTimer(lower)) {
+        const t = Object.values(things).find((th) => th.kind === 'timer');
+        if (t) {
+          delete things[t.id];
+          if (selectedId === t.id) selectedId = null;
+          save(); render();
+          return { ok: true, detail: 'timer-removed' };
+        }
+        say('');
+        return { ok: false, detail: 'no timer' };
+      }
+
+      // remove clock
+      if (wantsRemoveClock(lower) && !/\b(sticky|note)\b/.test(lower)) {
+        const c = Object.values(things).find((t) => t.kind === 'clock' && t.id === selectedId)
+          || Object.values(things).find((t) => t.kind === 'clock');
+        if (c) {
+          delete things[c.id];
+          if (selectedId === c.id) selectedId = null;
+          save(); render();
+          return { ok: true, detail: 'removed' };
+        }
+        say('');
+        return { ok: false, detail: 'no clock' };
+      }
+
+      // create clock (also applies color/size/format from same phrase)
+      if (wantsCreateClock(lower)) {
+        const c = ensureClock();
+        selectedId = c.id;
+        applyClockAlters(c, lower);
+        save(); render();
+        return { ok: true, detail: 'clock' };
+      }
+
+      // alter clock — create-then-apply when none exists yet
+      if (wantsAlter(lower) || /\bclock\b/.test(lower) || (selectedId && things[selectedId] && things[selectedId].kind === 'clock')) {
+        // if sticky is selected and alter has no clock word, skip unless color/size typical of clock
+        const sel = selectedId && things[selectedId];
+        if (sel && sel.kind === 'sticky' && !/\bclock\b/.test(lower) && !/\b(24|12|military|am\s*\/?\s*pm|seconds)\b/.test(lower)) {
+          const scol = stickyColorFrom(lower);
+          if (scol) {
+            sel.color = scol;
+            save(); render();
+            return { ok: true, detail: 'sticky-altered' };
+          }
+        }
+        const c = ensureClock(); // prefer create-then-apply
+        selectedId = c.id;
+        ok = applyClockAlters(c, lower);
+        if (ok) {
+          save(); render();
+          return { ok: true, detail: 'altered' };
+        }
+      }
+
+      return { ok: false, detail: 'no handler yet' };
+    }
+
+    // summoned page: a calm floating page; ephemeral, not saved
+    let vpageEl = null;
+    function closePage() {
+      if (!vpageEl) return false;
+      const el = vpageEl; vpageEl = null;
+      el.classList.remove('on');
+      setTimeout(() => el.remove(), 350);
+      return true;
+    }
+    function showPage(build) {
+      closePage();
+      const el = document.createElement('div');
+      el.className = 'vpage';
+      build(el);
+      document.body.appendChild(el);
+      vpageEl = el;
+      requestAnimationFrame(() => el.classList.add('on'));
+      return el;
+    }
+    function esc(t) { const d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
+    function wantsSelfPage(lower) {
+      return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|a-to-mind)\b|^what\s+can\s+(you|i|void)\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|void)\b/.test(lower);
+    }
+    function showSelfPage() {
+      const skills = [
+        ['clock', 'make a clock · make it blue · 24 hour'],
+        ['timer', 'make a 5 minute timer · start · pause'],
+        ['sticky note', 'add a sticky that says hi'],
+        ['notepad', 'open a notepad'],
+        ['list', 'make a list · add milk'],
+        ['calculator', 'calculator · 12*7'],
+        ['counter', 'make a counter · plus one'],
+        ['shape', 'draw a circle · make it bigger'],
+        ['image / link', 'paste an image or link'],
+        ['everything at once', 'make everything blue · clear'],
+        ['weather', 'weather in Tokyo · will it rain · weather here'],
+        ['a page about anything', 'what is a black hole · who was Ada Lovelace'],
+      ];
+      showPage((el) => {
+        el.innerHTML = '<h2>Void</h2><div class="sub">Ask, and it appears.</div>'
+          + '<p>Type what you want. Things arrive on the stage; drag them, change them, or clear them away.</p>'
+          + '<ul>' + skills.map(([k, v]) => '<li><b>' + esc(k) + '</b> — <span style="color:#9a9a9a">' + esc(v) + '</span></li>').join('') + '</ul>'
+          + '<div class="src">Esc or click the void to close.</div>';
+      });
+    }
+    function topicFrom(text) {
+      let t = text.trim().replace(/[?.!]+$/, '');
+      t = t.replace(/^(please\s+)?(what|who|where|when)\s+(is|are|was|were)\s+(a|an|the)?\s*/i, '')
+           .replace(/^(please\s+)?(tell\s+me\s+about|explain|define|describe|show\s+me|look\s+up)\s+(a|an|the)?\s*/i, '');
+      return t.trim() || text.trim();
+    }
+    function wantsArticle(lower) {
+      return /^(please\s+)?((what|who|where|when)\s+(is|are|was|were)\b|tell\s+me\s+about\b|explain\b|define\b|describe\b|look\s+up\b)/.test(lower);
+    }
+    async function showArticle(query) {
+      const topic = topicFrom(query);
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(topic) + '</h2><div class="sub">…</div>'; });
+      try {
+        const sr = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=1&format=json&origin=*&srsearch=' + encodeURIComponent(topic));
+        const sj = await sr.json();
+        const hit = sj && sj.query && sj.query.search && sj.query.search[0];
+        if (!hit) throw new Error('none');
+        const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(hit.title.replace(/ /g, '_')));
+        const j = await r.json();
+        if (vpageEl !== el) return;
+        const url = (j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page) || ('https://en.wikipedia.org/wiki/' + encodeURIComponent(hit.title));
+        el.innerHTML = '<h2>' + esc(j.title || hit.title) + '</h2>'
+          + (j.description ? '<div class="sub">' + esc(j.description) + '</div>' : '')
+          + (j.thumbnail && j.thumbnail.source ? '<img alt="" src="' + esc(j.thumbnail.source) + '">' : '')
+          + '<p>' + esc(j.extract || '') + '</p>'
+          + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a></div>';
+        return 'wikipedia';
+      } catch (_) {
+        try {
+          const w = topic.toLowerCase().replace(/\s+/g, '_');
+          const d = await fetch('https://en.wiktionary.org/api/rest_v1/page/definition/' + encodeURIComponent(w)).then((r) => { if (!r.ok) throw 0; return r.json(); });
+          const en = (d.en || [])[0];
+          const def = en && en.definitions && en.definitions[0] && en.definitions[0].definition;
+          if (!def) throw 0;
+          if (vpageEl !== el) return 'wiktionary';
+          const tmp = document.createElement('div'); tmp.innerHTML = def;
+          el.innerHTML = '<h2>' + esc(topic) + '</h2><div class="sub">' + esc(en.partOfSpeech || '') + '</div><p>' + esc(tmp.textContent) + '</p>'
+            + '<div class="src">Source: <a href="https://en.wiktionary.org/wiki/' + encodeURIComponent(w) + '" target="_blank" rel="noopener">Wiktionary</a></div>';
+          return 'wiktionary';
+        } catch (__) {
+          if (vpageEl !== el) return 'none';
+          el.innerHTML = '<h2>' + esc(topic) + '</h2><p>I don\'t know this yet. I\'ve noted it, so I can learn it.</p>';
+          return 'none';
+        }
+      }
+    }
+    function reportMiss(ask, fallback) {
+      try {
+        fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback }), keepalive: true }).catch(() => {});
+      } catch (_) {}
+    }
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePage(); });
+    stage.addEventListener('pointerdown', (e) => { if (e.target === stage) closePage(); });
+
+    // weather page (Open-Meteo, no key)
+    const WX = {0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',56:'Freezing drizzle',57:'Freezing drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Showers',81:'Showers',82:'Heavy showers',85:'Snow showers',86:'Snow showers',95:'Thunderstorm',96:'Thunderstorm, hail',99:'Thunderstorm, hail'};
+    function wantsWeather(lower) {
+      return /\b(weather|forecast|temperature)\b/.test(lower) || /\b(is it|will it|going to)\s+(rain|snow)\b/.test(lower) || /\bhow\s+(cold|hot|warm)\s+is\s+it\b/.test(lower);
+    }
+    function weatherPlace(text) {
+      const m = text.match(/\b(?:in|at|for|near)\s+([^?.!]+)$/i);
+      if (m) return m[1].replace(/\b(today|tomorrow|now|right now|this week)\b/ig, '').trim();
+      const t = text.replace(/[?.!]/g, '').replace(/\b(what'?s|what is|the|weather|forecast|temperature|like|today|now|is it|will it|going to|rain|snow|how|cold|hot|warm|here|outside)\b/ig, ' ').trim();
+      return t;
+    }
+    function hereCoords() {
+      return new Promise((res) => {
+        if (!navigator.geolocation) return res(null);
+        navigator.geolocation.getCurrentPosition((p) => res({ latitude: p.coords.latitude, longitude: p.coords.longitude, name: 'Here' }), () => res(null), { timeout: 8000, maximumAge: 600000 });
+      });
+    }
+    async function showWeather(text) {
+      const place = weatherPlace(text);
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(place || 'Weather') + '</h2><div class="sub">…</div>'; });
+      try {
+        let loc = null;
+        if (place) {
+          const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(place)).then((r) => r.json());
+          const r0 = g.results && g.results[0];
+          if (r0) loc = { latitude: r0.latitude, longitude: r0.longitude, name: r0.name + (r0.admin1 && r0.admin1 !== r0.name ? ', ' + r0.admin1 : '') + (r0.country ? ', ' + r0.country : '') };
+        } else {
+          loc = await hereCoords();
+        }
+        if (vpageEl !== el) return 'weather';
+        if (!loc) {
+          el.innerHTML = '<h2>Weather</h2><p>' + (place ? 'I couldn\'t find “' + esc(place) + '”. Try a city name, like “weather in Tokyo”.' : 'Where? Try “weather in Tokyo”, or allow location for “weather here”.') + '</p>';
+          return place ? 'none' : 'weather';
+        }
+        const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.latitude + '&longitude=' + loc.longitude
+          + '&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_hours=8&forecast_days=1&timezone=auto';
+        const w = await fetch(u).then((r) => r.json());
+        if (vpageEl !== el) return 'weather';
+        const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
+        const T = (c) => Math.round(f ? c * 9 / 5 + 32 : c) + '°';
+        const c = w.current, d = w.daily, h = w.hourly;
+        const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center;min-width:44px"><div style="color:#8a8a8a;font-size:12px">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div>' + T(h.temperature_2m[i]) + '</div><div style="color:#8a8a8a;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
+        el.innerHTML = '<h2>' + esc(loc.name) + '</h2>'
+          + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + '</div>'
+          + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
+          + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
+          + '<div style="display:flex;gap:6px;overflow-x:auto;padding:6px 0 2px">' + hours + '</div>'
+          + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></div>';
+        return 'weather';
+      } catch (_) {
+        if (vpageEl !== el) return 'none';
+        el.innerHTML = '<h2>Weather</h2><p>The weather service didn\'t answer just now. Ask again in a moment.</p>';
+        return 'none';
+      }
+    }
+
+    // calculation page: percentages, unit conversion, date math, currency
+    const CALC_UNITS = {
+      length: { mile: 1609.344, miles: 1609.344, mi: 1609.344, kilometer: 1000, kilometers: 1000, kilometre: 1000, km: 1000, foot: 0.3048, feet: 0.3048, ft: 0.3048, meter: 1, meters: 1, metre: 1, m: 1, inch: 0.0254, inches: 0.0254, centimeter: 0.01, centimeters: 0.01, centimetre: 0.01, cm: 0.01 },
+      mass: { pound: 0.45359237, pounds: 0.45359237, lb: 0.45359237, lbs: 0.45359237, kilogram: 1, kilograms: 1, kg: 1, gram: 0.001, grams: 0.001, g: 0.001, ounce: 0.0283495, ounces: 0.0283495, oz: 0.0283495 },
+      volume: { cup: 236.588, cups: 236.588, milliliter: 1, milliliters: 1, ml: 1, liter: 1000, liters: 1000, litre: 1000, l: 1000, gallon: 3785.41178, gallons: 3785.41178, gal: 3785.41178, quart: 946.353, quarts: 946.353 },
+    };
+    const CALC_UNIT_RE = /\b(\d+(?:\.\d+)?)\s*(miles?|mi|km|kilomet(?:er|re)s?|feet|ft|foot|meters?|metres?|m|inches?|cm|pounds?|lb|lbs|kg|kilograms?|grams?|g|ounces?|oz|cups?|ml|milliliters?|liters?|litres?|l|gallons?|gal|quarts?|f|fah(?:renheit)?|c|celsius|centigrade)\s+(?:in|to)\s+(miles?|mi|km|kilomet(?:er|re)s?|feet|ft|foot|meters?|metres?|m|inches?|cm|pounds?|lb|lbs|kg|kilograms?|grams?|g|ounces?|oz|cups?|ml|milliliters?|liters?|litres?|l|gallons?|gal|quarts?|f|fah(?:renheit)?|c|celsius|centigrade)\b/i;
+    const CALC_MONTHS = { january: 0, february: 1, march: 2, april: 3, may: 4, june: 5, july: 6, august: 7, september: 8, october: 9, november: 10, december: 11, jan: 0, feb: 1, mar: 2, apr: 3, jun: 5, jul: 6, aug: 7, sep: 8, sept: 8, oct: 9, nov: 10, dec: 11 };
+    const CALC_HOLIDAYS = { christmas: { m: 11, d: 25 }, xmas: { m: 11, d: 25 }, 'new year': { m: 0, d: 1 }, "new year's day": { m: 0, d: 1 }, halloween: { m: 9, d: 31 }, thanksgiving: { m: 10, d: 26 }, easter: null, birthday: null };
+    function fmtNum(n) { return (Math.round(n * 100) / 100).toString(); }
+    function wantsCalc(lower) {
+      if (/\d\s*%/.test(lower) && /(%\s*(of|off)\b|%\s*tip\s+(on|for)\b)/.test(lower)) return true;
+      if (CALC_UNIT_RE.test(lower)) return true;
+      if (/\b(\d+(?:\.\d+)?)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\s+(?:in|to)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\b/i.test(lower)) return true;
+      if (/^(how\s+many\s+days\s+(until|before|till)|days\s+until|until\s+)/i.test(lower) && /(christmas|xmas|new\s*year|halloween|thanksgiving|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(lower)) return true;
+      if (/^what\s+day\s+(is|will)\s+(?:be\s+)?(?:the\s+)?(\d{1,2}|\b(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b)/i.test(lower)) return true;
+      return false;
+    }
+    async function showCalc(query) {
+      const lower = query.toLowerCase();
+      const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; });
+
+      let hit = false;
+      const setV = (big, note, src) => { if (vpageEl === el) el.innerHTML = '<h2>Calculated</h2><div style="font-size:56px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); };
+
+      // percent: "15% of 240", "what's a 20% tip on 80"
+      const pm = lower.match(/\b(\d+(?:\.\d+)?)\s*%\s*(?:of|off)\s+(?:a|an|the)?\s*\$?(\d+(?:\.\d+)?)/);
+      if (pm) {
+        const v = parseFloat(pm[1]) / 100 * parseFloat(pm[2]);
+        setV(fmtNum(v), pm[1] + '% of ' + pm[2] + ' = ' + fmtNum(v));
+        hit = true;
+      }
+      const tm = lower.match(/\b(\d+(?:\.\d+)?)\s*%\s*tip\s+(?:on|for)\s+(?:a|an|the)?\s*\$?(\d+(?:\.\d+)?)/);
+      if (tm) {
+        const tip = parseFloat(tm[1]) / 100 * parseFloat(tm[2]);
+        const total = parseFloat(tm[2]) + tip;
+        setV(fmtNum(tip) + ' (total ' + fmtNum(total) + ')', 'a ' + tm[1] + '% tip on ' + tm[2] + ' = ' + fmtNum(tip));
+        hit = true;
+      }
+
+      // unit conversion: "5 miles in km", "70 f in c", "10 lb in kg", "3 cups in ml"
+      const um = lower.match(CALC_UNIT_RE);
+      if (um && !hit) {
+        const val = parseFloat(um[1]);
+        const fromU = um[2], toU = um[3];
+        if (/^(f|fah(?:renheit)?)$/i.test(fromU) && /^(c|celsius|centigrade)$/i.test(toU)) {
+          setV(fmtNum((val - 32) * 5 / 9) + ' °C', val + ' °F = ' + fmtNum((val - 32) * 5 / 9) + ' °C');
+          hit = true;
+        } else if (/^(c|celsius|centigrade)$/i.test(fromU) && /^(f|fah(?:renheit)?)$/i.test(toU)) {
+          setV(fmtNum(val * 9 / 5 + 32) + ' °F', val + ' °C = ' + fmtNum(val * 9 / 5 + 32) + ' °F');
+          hit = true;
+        } else {
+          for (const cat in CALC_UNITS) {
+            const f = CALC_UNITS[cat][fromU.toLowerCase()], t = CALC_UNITS[cat][toU.toLowerCase()];
+            if (f != null && t != null) {
+              setV(fmtNum(val * f / t) + ' ' + toU, val + ' ' + fromU + ' = ' + fmtNum(val * f / t) + ' ' + toU);
+              hit = true;
+              break;
+            }
+          }
+          if (!hit) { setV('?', 'I don\'t convert ' + fromU + ' to ' + toU + ' yet.'); }
+        }
+      }
+
+      // currency: "100 dollars in euros" (Frankfurter, no key)
+      const cm = lower.match(/\b(\d+(?:\.\d+)?)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\s+(?:in|to)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\b/i);
+      if (cm && !hit) {
+        const CUR = { dollar: 'USD', dollars: 'USD', usd: 'USD', euro: 'EUR', euros: 'EUR', eur: 'EUR', gbp: 'GBP', pound: 'GBP', pounds: 'GBP', sterling: 'GBP', yen: 'JPY', jpy: 'JPY' };
+        const from = CUR[cm[2].toLowerCase()], to = CUR[cm[3].toLowerCase()];
+        setV('…', 'checking rates');
+        try {
+          const r = await fetch('https://api.frankfurter.dev/v1/latest?base=' + from + '&symbols=' + to + '&amount=' + cm[1]);
+          const j = await r.json();
+          if (vpageEl === el && j && j.rates && j.rates[to] != null) setV(fmtNum(j.rates[to]) + ' ' + cm[3], cm[1] + ' ' + cm[2] + ' = ' + fmtNum(j.rates[to]) + ' ' + cm[3], 'Source: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter (ECB)</a>');
+          else if (vpageEl === el) { setV('?', 'The currency service didn\'t answer just now.'); hit = true; }
+        } catch (_) { if (vpageEl === el) { setV('?', 'The currency service didn\'t answer just now.'); } }
+        hit = true;
+        return 'currency';
+      }
+
+      // date math: "days until christmas", "what day is march 3"
+      if (!hit) {
+        let target = null;
+        const hol = lower.match(/\b(christmas|xmas|new\s*year|halloween|thanksgiving)\b/);
+        if (hol) target = CALC_HOLIDAYS[hol[1].toLowerCase()];
+        const dm = lower.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2})\b/i);
+        if (dm) target = { m: CALC_MONTHS[dm[1].toLowerCase()], d: parseInt(dm[2], 10) };
+        if (target) {
+          const now = new Date();
+          let d = new Date(now.getFullYear(), target.m, target.d);
+          if (d < new Date(now.getFullYear(), now.getMonth(), now.getDate())) d = new Date(now.getFullYear() + 1, target.m, target.d);
+          if (/^what\s+day\s+/.test(lower)) {
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            setV(days[d.getDay()], dm ? dm[1][0].toUpperCase() + dm[1].slice(1) + ' ' + dm[2] + ' ' + d.getFullYear() : '');
+          } else {
+            const diff = Math.round((d - now) / 86400000);
+            setV(diff + (diff === 1 ? ' day' : ' days'), d.toDateString() + ' · in ' + diff + (diff === 1 ? ' day' : ' days'));
+          }
+          hit = true;
+        }
+      }
+
+      if (!hit) return 'none';
+      return 'calc';
+    }
+
+    // owner board: what visitors asked that Void couldn't answer yet (reads /api/misses)
+    const OWNER_KEY = 'a2m.void.owner.v1';
+    function wantsBoard(lower) {
+      return /^(show\s+(me\s+)?)?(the\s+)?(big\s+)?board$|^what\s+(are|were)\s+people\s+asking|^(show\s+(me\s+)?)?(the\s+)?misses$/.test(lower);
+    }
+    async function showBoard() {
+      let tok = '';
+      try { tok = localStorage.getItem(OWNER_KEY) || ''; } catch (_) {}
+      const el = showPage((p) => { p.innerHTML = '<h2>The board</h2><div class="sub">…</div>'; });
+      if (!tok) { el.innerHTML = '<h2>The board</h2><p>This one is for the owner. Type “unlock” followed by your key.</p>'; return; }
+      try {
+        const r = await fetch('/api/misses', { headers: { authorization: 'Bearer ' + tok } });
+        if (r.status === 401) { el.innerHTML = '<h2>The board</h2><p>That key didn\'t open it.</p>'; return; }
+        const rows = await r.json();
+        if (vpageEl !== el) return;
+        el.innerHTML = '<h2>The board</h2><div class="sub">What people asked that Void can\'t answer yet · most asked first</div>'
+          + (rows.length ? '<ul>' + rows.slice(0, 40).map((x) => '<li><b>' + x.count + '×</b> ' + esc(x.ask) + ' <span style="color:#6a6a6a">· ' + esc((x.last || '').slice(0, 10)) + (x.fallback ? ' · ' + esc(x.fallback) : '') + '</span></li>').join('') + '</ul>' : '<p>Nothing missed yet.</p>');
+      } catch (_) { if (vpageEl === el) el.innerHTML = '<h2>The board</h2><p>The board didn\'t answer just now.</p>'; }
+    }
+
+    // row 13: entering your own Void (silent, first time something is kept) + personal look
+    const ENTRY_KEY = 'a2m.void.entered.v1', LOOK_KEY = 'a2m.void.look.v1';
+    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'off', quiet: false, scale: 1 };
+    const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };
+    let voidLook = { ...LOOK_DEFAULT };
+    try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}
+    const starCv = document.getElementById('void-stars');
+    const starCtx = starCv.getContext('2d');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let stars = [], starRAF = 0;
+    function isEntered() { try { return !!localStorage.getItem(ENTRY_KEY); } catch (_) { return false; } }
+    function enterVoid() {
+      if (!isEntered()) { try { localStorage.setItem(ENTRY_KEY, new Date().toISOString()); } catch (_) {} }
+      document.body.classList.add('void-entered');
+    }
+    function seedStars() {
+      starCv.width = innerWidth; starCv.height = innerHeight;
+      stars = Array.from({ length: 120 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.3 + 0.2, vx: (Math.random() - 0.5) * 0.15, vy: (Math.random() - 0.5) * 0.15 }));
+    }
+    function drawStars() {
+      starCtx.clearRect(0, 0, starCv.width, starCv.height);
+      starCtx.fillStyle = 'rgba(255,255,255,0.65)';
+      const k = voidLook.stars === 'slow' ? 0.3 : 1, move = !reduceMotion.matches;
+      for (const st of stars) {
+        if (move) { st.x = (st.x + st.vx * k + starCv.width) % starCv.width; st.y = (st.y + st.vy * k + starCv.height) % starCv.height; }
+        starCtx.beginPath(); starCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starCtx.fill();
+      }
+      if (move && !document.hidden) starRAF = requestAnimationFrame(drawStars); else starRAF = 0;
+    }
+    function applyLook(persist) {
+      const r = document.documentElement.style;
+      r.setProperty('--void-bg', voidLook.bg); r.setProperty('--void-glow', voidLook.glow);
+      document.body.classList.toggle('void-quiet', !!voidLook.quiet);
+      document.body.style.fontSize = (15 * (voidLook.scale || 1)) + 'px';
+      cancelAnimationFrame(starRAF); starRAF = 0;
+      if (voidLook.stars !== 'off') { if (!stars.length) seedStars(); starCv.classList.add('on'); drawStars(); }
+      else starCv.classList.remove('on');
+      if (persist) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} }
+    }
+    document.addEventListener('visibilitychange', () => { if (!document.hidden && voidLook.stars !== 'off' && !starRAF) drawStars(); });
+    window.addEventListener('resize', () => { if (voidLook.stars !== 'off') seedStars(); });
+    function handleLookAsk(lower) {
+      if (/^(this is mine|open my void|my void)\s*[.!]?$/.test(lower)) { enterVoid(); say('yours'); return true; }
+      if (!/\b(my void|the void|void)\b.*\b(deep blue|blue|purple|warmer|warm|darker|dark)\b|\b(add|slow|no|remove|hide)\s+(the\s+)?stars\b|\bquieter\s+(font|text)\b|\b(bigger|larger|smaller)\s+text\b|^reset\s+my\s+void$/.test(lower)) return false;
+      enterVoid();
+      if (/^reset\s+my\s+void$/.test(lower)) voidLook = { ...LOOK_DEFAULT };
+      const c = (lower.match(/\b(deep blue|purple|warmer|darker|blue)\b/) || [])[1] || (/\bwarm\b/.test(lower) ? 'warmer' : /\bdark\b/.test(lower) ? 'darker' : '');
+      if (c && /void/.test(lower)) { voidLook.bg = BGS[c][0]; voidLook.glow = BGS[c][1]; }
+      if (/\badd\s+(the\s+)?stars\b/.test(lower)) voidLook.stars = 'on';
+      if (/\bslow\s+(the\s+)?stars\b/.test(lower)) voidLook.stars = 'slow';
+      if (/\b(no|remove|hide)\s+(the\s+)?stars\b/.test(lower)) voidLook.stars = 'off';
+      if (/\bquieter\s+(font|text)\b/.test(lower)) voidLook.quiet = true;
+      if (/\b(bigger|larger)\s+text\b/.test(lower)) voidLook.scale = Math.min(1.4, (voidLook.scale || 1) + 0.15);
+      if (/\bsmaller\s+text\b/.test(lower)) voidLook.scale = Math.max(0.85, (voidLook.scale || 1) - 0.15);
+      applyLook(true);
+      return true;
+    }
+    if (isEntered()) document.body.classList.add('void-entered');
+    applyLook(false);
+
+    // --- Skill loader (edit engine step 1) ---
+    const SKILLS_INDEX_URL = '/skills/index.json';
+    let learnedSkills = [];
+    async function loadLearnedSkills() {
+      try {
+        const res = await fetch(SKILLS_INDEX_URL);
+        if (!res.ok) return;
+        const index = await res.json();
+        for (const name of index) {
+          try {
+            const mod = await import('/skills/' + name + '.js');
+            const skill = mod.default;
+            if (skill && skill.name && skill.match && skill.run) learnedSkills.push(skill);
+          } catch (_) {}
+        }
+      } catch (_) {}
+    }
+    loadLearnedSkills();
+
+    async function runLearnedSkills(text, lower0) {
+      for (const skill of learnedSkills) {
+        if (skill.match(lower0, text)) {
+          const api = {
+            showPage,
+            esc,
+            say,
+            reportMiss,
+            loopLog,
+            _pageStill: (el) => vpageEl === el,
+          };
+          const src = await skill.run(text, api);
+          if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + skill.name });
+          if (src === 'none') reportMiss(text, 'skill:' + skill.name);
+          return true;
+        }
+      }
+      return false;
+    }
+
+    async function handle(raw) {
+      const text = (raw || '').trim();
+      if (!text) return;
+      const lower0 = text.toLowerCase();
+      if (vpageEl && /^(close|close it|close this|go away|dismiss|hide it|done|ok)\s*[.!]?$/.test(lower0)) { closePage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'closed' }); return; }
+      if (await runLearnedSkills(text, lower0)) return;
+      { const u = text.match(/^unlock\s+(\S{16,})$/i); if (u) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } }
+      if (wantsBoard(lower0)) { showBoard(); return; }
+      if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
+      if (wantsSelfPage(lower0)) { showSelfPage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
+      if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
+      if (wantsArticle(lower0)) { showArticle(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'article' }); return; }
+      const result = freerEnglishParse(text);
+      if (!result.ok) {
+        showArticle(text).then((src) => reportMiss(text, src || 'none'));
+        loopLog({ domain: 'void.page', ask: text, score: 'fallback', note: 'article fallback' });
+        return;
+      }
+      if (false) {
+        say('');
+        loopLog({ domain: 'void.surface', ask: text, score: 'fail', note: result.detail || 'no handler yet' });
+        whisper.textContent = '';
+        return;
+      }
+      loopLog({ domain: 'void.surface', ask: text, score: 'pass', note: result.detail });
+      say('');
+    }
+
+    go.addEventListener('click', () => { handle(input.value); input.value = ''; input.focus(); });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') { handle(input.value); input.value = ''; }
+    });
+
+    load();
+    render();
+    window.addEventListener('resize', () => render());
+  

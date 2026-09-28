@@ -1,0 +1,1309 @@
+{
+  "generated_at": "2026-09-23T16:43:34.144743+00:00",
+  "home": "C:\\Users\\adamm",
+  "machine": "Victus",
+  "counts": {
+    "total": 64,
+    "by_loop_object": {
+      "Absorb": 4,
+      "Capability": 25,
+      "Domain": 12,
+      "Review": 14,
+      "Waste": 5,
+      "Waste_or_Capability": 4
+    },
+    "by_cluster": {
+      "aether": 4,
+      "docs_thesis": 9,
+      "domain_work": 10,
+      "execution": 8,
+      "infra": 2,
+      "misc": 14,
+      "ops_companion": 7,
+      "victus_nest": 2,
+      "void_face": 8
+    }
+  },
+  "items": [
+    {
+      "path": "C:\\Users\\adamm\\aether-bridge",
+      "rel": "aether-bridge",
+      "name": "aether-bridge",
+      "kind": "dir",
+      "cluster": "aether",
+      "loop_object": "Waste_or_Capability",
+      "rationale": "Earlier control-plane brand \u2014 absorb modules, kill parallel brand",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "aether-bridge",
+        "package_desc": "",
+        "mtime": "2026-06-18T23:26:32.803290+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\aether-clean",
+      "rel": "aether-clean",
+      "name": "aether-clean",
+      "kind": "dir",
+      "cluster": "aether",
+      "loop_object": "Waste_or_Capability",
+      "rationale": "Earlier control-plane brand \u2014 absorb modules, kill parallel brand",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-06-17T21:21:56.503386+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\aether-clone",
+      "rel": "aether-clone",
+      "name": "aether-clone",
+      "kind": "dir",
+      "cluster": "aether",
+      "loop_object": "Waste_or_Capability",
+      "rationale": "Earlier control-plane brand \u2014 absorb modules, kill parallel brand",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "# Aether - Autonomous Agent Teams\n\n## \ud83d\ude80 Get Pro Access - $49\n\n**Payment Link**: https://aether-pay.pages.dev\n\nAutonomous agent teams. Measurable output. No babysitting.\n\n### What You Get\n- API key with priority rate limits\n- Council session logs & replay\n- Email support\n- Multi-chain crypto payments (Base USDC, Ethereum ETH, Polygon USDC)\n\n### Payment Flow\n1. Go to https://aether-pay.pages.dev\n2. Enter your email\n3. Pay with crypto\n4. Receive API key automatically\n\n### Technical Details\n- **Fee*",
+        "package_name": "aether",
+        "package_desc": "",
+        "mtime": "2026-08-07T03:36:14.991991+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\projects\\aether",
+      "rel": "projects\\aether",
+      "name": "aether",
+      "kind": "dir",
+      "cluster": "aether",
+      "loop_object": "Waste_or_Capability",
+      "rationale": "Earlier control-plane brand \u2014 absorb modules, kill parallel brand",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "# A2m - Autonomous Agent Teams\n\n## \ud83d\ude80 Get Pro Access - $49\n\n**Payment Link**: https://a2m-pay.pages.dev\n\nAutonomous agent teams. Measurable output. No babysitting.\n\n### What You Get\n- API key with priority rate limits\n- Council session logs & replay\n- Email support\n- Multi-chain crypto payments (Base USDC, Ethereum ETH, Polygon USDC)\n\n### Payment Flow\n1. Go to https://a2m-pay.pages.dev\n2. Enter your email\n3. Pay with crypto\n4. Receive API key automatically\n\n### Technical Details\n- **Fee**: 0.5% (",
+        "package_name": "a2m",
+        "package_desc": "",
+        "mtime": "2026-09-19T17:47:19.778264+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\a-to-mind-docs-architecture.md",
+      "rel": "a-to-mind-docs-architecture.md",
+      "name": "a-to-mind-docs-architecture.md",
+      "kind": "file",
+      "cluster": "docs_thesis",
+      "loop_object": "Absorb",
+      "rationale": "Sources for Absorb; marketing thesis mostly Waste under Void",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "## Docs Restructuring \u2014 Around Jobs-to-be-Done\n\n### Get started\n\n**Build your first durable agent in 10 minutes.**\n\n### Core concepts\n\n- **Runs** \u2014 The primary object: objective \u2192 plan \u2192 policy \u2192 execution \u2192 approvals \u2192 artifacts \u2192 cost \u2192 timeline \u2192 ledger\n- **Policies** \u2014 Budget caps, tool allowlists, approval gates versioned per run\n- **Approvals** \u2014 Human-in-the-loop at external-write boundaries\n- **Checkpoints** \u2014 Durable state persistence across restarts and crashe",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-11T19:09:43.155347+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\a-to-mind-roadmap.md",
+      "rel": "a-to-mind-roadmap.md",
+      "name": "a-to-mind-roadmap.md",
+      "kind": "file",
+      "cluster": "docs_thesis",
+      "loop_object": "Absorb",
+      "rationale": "Sources for Absorb; marketing thesis mostly Waste under Void",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "## Launch Templates \u2014 Read-only Engineering Specs\n\nAll templates are read-only engineering specs. Business packages (Glass-Box, Surface Ledger, Promise Ledger, Adversarial Twin, Hostile Mirror) stay on their playbook URLs until an approved first-party run exists.\n\n| Template | Output | Authority |\n|---|---|---|\n| Release-note generator | Markdown notes from a tag range | Read-only |\n| GitHub Actions security audit | Findings plus suggested patch | Read-only |\n| Cloudflare deployment review | D",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-11T19:10:22.710604+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\docs",
+      "rel": "docs",
+      "name": "docs",
+      "kind": "dir",
+      "cluster": "docs_thesis",
+      "loop_object": "Absorb",
+      "rationale": "Sources for Absorb; marketing thesis mostly Waste under Void",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-03T15:22:18.529371+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\substrate-docs",
+      "rel": "substrate-docs",
+      "name": "substrate-docs",
+      "kind": "dir",
+      "cluster": "docs_thesis",
+      "loop_object": "Absorb",
+      "rationale": "Sources for Absorb; marketing thesis mostly Waste under Void",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# Game Matrix Substrate\n\nA universal substrate for grid-based games with 4-power API and multi-agent council coordination.\n\n## Overview\n\nThe Game Matrix Substrate provides a uniform interface for implementing grid-based games with:\n- **Uniform GameState**: JSON-serializable state with gameId, timestamp, tick, status\n- **Declared Ruleset**: Versioned rules with enable/disable/modification\n- **4-Power API**: get_state, mutate (NLI), rewrite_rules, submit_move\n- **Agent Council**: Multi-agent coord",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-06-14T03:22:18.812486+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono",
+      "rel": "_archive_old_mono",
+      "name": "_archive_old_mono",
+      "kind": "dir",
+      "cluster": "docs_thesis",
+      "loop_object": "Waste",
+      "rationale": "Archived mono / dead path \u2014 keep as Waste history, don't revive",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "# Aether - Autonomous Agent Teams\n\n## \ud83d\ude80 Get Pro Access - $49\n\n**Payment Link**: https://aether-pay.pages.dev\n\nAutonomous agent teams. Measurable output. No babysitting.\n\n### What You Get\n- API key with priority rate limits\n- Council session logs & replay\n- Email support\n- Multi-chain crypto payments (Base USDC, Ethereum ETH, Polygon USDC)\n\n### Payment Flow\n1. Go to https://aether-pay.pages.dev\n2. Enter your email\n3. Pay with crypto\n4. Receive API key automatically\n\n### Technical Details\n- **Fee*",
+        "package_name": "aether",
+        "package_desc": "",
+        "mtime": "2026-09-12T08:02:00.346720+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\a-to-mind-brand-branding.md",
+      "rel": "a-to-mind-brand-branding.md",
+      "name": "a-to-mind-brand-branding.md",
+      "kind": "file",
+      "cluster": "docs_thesis",
+      "loop_object": "Waste",
+      "rationale": "Public-claims docs \u2014 Void does not tell; Absorb only if useful for scoring",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "## Brand Direction\n\n### Away from generic \"AI developer infrastructure\" visual language\n\n### Core concept: **A \u2192 Mind** = Translating intention into action\n\n### Visual language: **Intent \u2192 Execution**\n\n```text\nINTENT\n   \u2193\nPLAN\n   \u2193\nPOLICY\n   \u2193\nEXECUTE\n   \u2193\nVERIFY\n   \u2193\nPROVE\n```\n\n### Brand personality:\n\n- **Serious** \u2014 This is mission-critical infrastructure, not experimental\n- **Technical** \u2014 Precise, engineered, not \"magic\"\n- **Calm** \u2014 Controlled, not chaotic or hyped\n- **P",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-11T19:09:04.269769+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\a-to-mind-homepage-redesign.md",
+      "rel": "a-to-mind-homepage-redesign.md",
+      "name": "a-to-mind-homepage-redesign.md",
+      "kind": "file",
+      "cluster": "docs_thesis",
+      "loop_object": "Waste",
+      "rationale": "Public-claims docs \u2014 Void does not tell; Absorb only if useful for scoring",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# A-to-Mind \u2014 The execution layer for production AI agents\n\n## Navigation\n\n**A-to-Mind**\n\nProduct | Solutions | Developers | Security | Pricing\n\n**View demo** | **Start building**\n\n---\n\n## Hero\n\n# **AI agents that finish the job.**\n\nRun AI workflows for minutes, hours, or days\u2014with durable state, hard limits, and human approval when it matters.\n\n**A-to-Mind is the execution layer for production AI agents.**\n\n[Start building] [Watch a run]\n\n---\n\n## Problem\n\n### AI agents don't fail only becau",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-11T19:06:11.461963+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\a-to-mind-positioning.md",
+      "rel": "a-to-mind-positioning.md",
+      "name": "a-to-mind-positioning.md",
+      "kind": "file",
+      "cluster": "docs_thesis",
+      "loop_object": "Waste",
+      "rationale": "Public-claims docs \u2014 Void does not tell; Absorb only if useful for scoring",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "## Competitive Positioning\n\n### The wedge: **Governed execution**\n\nThe combination of:\n- **Durability** + **Permissions** + **Budgets** + **Approvals** + **Evidence**\n\nThis is a much more interesting territory than generic \"durable execution,\" especially for:\n- Engineering teams\n- Operations teams\n- Security teams\n- Compliance teams\n- Enterprise workflows\n\n### Why this wedge works\n\nThe market is converging around durable agent execution:\n- **LangGraph** describes human-in-the-loop, persistence, ",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-11T19:08:14.226988+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\a-to-mind-pricing-redesign.md",
+      "rel": "a-to-mind-pricing-redesign.md",
+      "name": "a-to-mind-pricing-redesign.md",
+      "kind": "file",
+      "cluster": "docs_thesis",
+      "loop_object": "Waste",
+      "rationale": "Public-claims docs \u2014 Void does not tell; Absorb only if useful for scoring",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "## Pricing \u2014 Brutally Simple\n\n### The core differentiator: **No token markup.**\n\nYou pay your model provider directly at provider cost. We charge only for orchestration, governance, and retention.\n\n---\n\n### Free\n\n**Explore A-to-Mind.**\n\n- Sandbox runs with mocked tools, full trace\n- Execution limits: 1 concurrent run, $2.00 max spend per run\n- 3 run reports kept 7 days, then deleted\n- Community support\n- [Try the sandbox]\n\n---\n\n### Builder\n\n**For individual developers running real agents.**\n\n-",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-11T19:08:45.789027+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\ALPHA",
+      "rel": "ALPHA",
+      "name": "ALPHA",
+      "kind": "dir",
+      "cluster": "domain_work",
+      "loop_object": "Domain",
+      "rationale": "Concrete work domains \u2014 candidate first Domains for The Loop",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "<div align=\"center\">\n<img width=\"1200\" height=\"475\" alt=\"GHBanner\" src=\"https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6\" />\n</div>\n\n# Run and deploy your AI Studio app\n\nThis contains everything you need to run your app locally.\n\nView your app in AI Studio: https://ai.studio/apps/2f08be05-c588-41ac-9ca8-1b42aded3c26\n\n## Run Locally\n\n**Prerequisites:**  Node.js\n\n\n1. Install dependencies:\n   `npm install`\n2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to you",
+        "package_name": "react-example",
+        "package_desc": "",
+        "mtime": "2026-06-17T18:56:26.559141+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\ALPHA-1",
+      "rel": "ALPHA-1",
+      "name": "ALPHA-1",
+      "kind": "dir",
+      "cluster": "domain_work",
+      "loop_object": "Domain",
+      "rationale": "Concrete work domains \u2014 candidate first Domains for The Loop",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# Alpha\n\nConsolidated AtoMind ecosystem. Backend on `:8080`, frontend on `:5173`, trust-first integration routing.\n\n## Status\n\n**Phase 1 \u2014 Connected cockpit.** The monorepo now contains a backend, frontend dashboard, trust kernel, Alpha core, MCP envelope, provider registry, and isolated source mirrors. See [docs/MIGRATION.md](docs/MIGRATION.md) for the remaining phase roadmap.\n\n## Stack\n\n- Node 22+ (see `.nvmrc`)\n- pnpm 9 workspaces + Turborepo for task orchestration\n- TypeScript 5.8\n- ESLint 9",
+        "package_name": "alpha",
+        "package_desc": "Alpha \u2014 consolidated AtoMind ecosystem (backend :8080, frontend :5173, trust-first integration routing).",
+        "mtime": "2026-05-29T11:42:14.647927+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\borrowed-momentum",
+      "rel": "borrowed-momentum",
+      "name": "borrowed-momentum",
+      "kind": "dir",
+      "cluster": "domain_work",
+      "loop_object": "Domain",
+      "rationale": "Concrete work domains \u2014 candidate first Domains for The Loop",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# Borrowed Momentum \u2014 Landing Page\n\nSingle-page idea validation site for the Borrowed Momentum concept.\n\n## What's here\n\n- `index.html` \u2014 Self-contained landing page (HTML + CSS + JS, zero dependencies)\n- Dual CTAs: \"I'm stuck\" (client) and \"I have momentum\" (source)\n- Email capture with localStorage persistence (wire up a real backend before launch)\n- Fully responsive, dark theme, no framework\n\n## Deploy anywhere\n\nDrop `index.html` on any static host:\n\n- **Cloudflare Pages**: Drag and drop the ",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-18T05:12:44.273196+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\forevor",
+      "rel": "forevor",
+      "name": "forevor",
+      "kind": "dir",
+      "cluster": "domain_work",
+      "loop_object": "Domain",
+      "rationale": "Concrete work domains \u2014 candidate first Domains for The Loop",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "forevor",
+        "package_desc": "Local-first fallback orchestrator for coding agents (Windows-first CLI).",
+        "mtime": "2026-08-18T07:54:56.747854+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\forevor-coder",
+      "rel": "forevor-coder",
+      "name": "forevor-coder",
+      "kind": "dir",
+      "cluster": "domain_work",
+      "loop_object": "Domain",
+      "rationale": "Concrete work domains \u2014 candidate first Domains for The Loop",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# forevor-coder\n\nA resilient, local-first fallback stack for coding agents.\n\n## What it does\n\nForevor Coder discovers installed coding tools on your machine, checks whether they are available, and maintains a ranked fallback chain. If one agent fails or is unavailable, the next usable option is tried automatically.\n\n## Privacy\n\n- All probes are local-only. No data leaves your machine.\n- No automatic installation of tools.\n- No remote discovery or telemetry.\n- No file editing or modification.\n- N",
+        "package_name": "forevor-coder",
+        "package_desc": "A resilient, local-first fallback stack for coding agents",
+        "mtime": "2026-08-18T07:45:04.246217+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\microclimate-farms",
+      "rel": "microclimate-farms",
+      "name": "microclimate-farms",
+      "kind": "dir",
+      "cluster": "domain_work",
+      "loop_object": "Domain",
+      "rationale": "Concrete work domains \u2014 candidate first Domains for The Loop",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# Micro-Climate Farms\n\nA residential micro-climate data mesh. This repo is a **thin vertical slice**:\nsimulated home sensor hosts \u2192 privacy-respecting ingestion \u2192 aggregation \u2192 a\npublic sample neighborhood dashboard. It is infrastructure-light on purpose so\nwe can deepen any layer later (real firmware, paid API tiers, city/insurer\nreports) without re-architecting.\n\n## Why\n\nOfficial weather/climate networks deliberately undersample dense, street-level,\nindoor/outdoor micro-climate texture. That m",
+        "package_name": "microclimate-farms",
+        "package_desc": "Residential micro-climate data mesh: simulate hosts, ingest with privacy, aggregate, and publish sample neighborhood dashboards.",
+        "mtime": "2026-08-18T05:42:18.328587+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\P2",
+      "rel": "P2",
+      "name": "P2",
+      "kind": "dir",
+      "cluster": "domain_work",
+      "loop_object": "Domain",
+      "rationale": "Concrete work domains \u2014 candidate first Domains for The Loop",
+      "signals": {
+        "has_git": true,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# P2 \u2014 Player Two: Intergame Agent & Inventory\n\n## Vision\n\n**P2 is an intergame agent.** One persistent player who lives across every game in this stack \u2014\nmoving between titles with a single identity, a single inventory (the **Satchel**), and a growing\nset of **live in-game AI agent abilities**: controlling characters, executing in-game actions,\nreading game state, and reporting back \u2014 not just scripting bots, but operating as an agent\ninside the games themselves.\n\nP2 unifies the gaming companio",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-19T05:21:35.081500+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\p2-gbc",
+      "rel": "p2-gbc",
+      "name": "p2-gbc",
+      "kind": "dir",
+      "cluster": "domain_work",
+      "loop_object": "Domain",
+      "rationale": "Concrete work domains \u2014 candidate first Domains for The Loop",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": true,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-14T19:26:58.782338+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\surplus",
+      "rel": "surplus",
+      "name": "surplus",
+      "kind": "dir",
+      "cluster": "domain_work",
+      "loop_object": "Domain",
+      "rationale": "Concrete work domains \u2014 candidate first Domains for The Loop",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "surplus",
+        "package_desc": "",
+        "mtime": "2026-08-18T05:41:52.186774+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\wix",
+      "rel": "wix",
+      "name": "wix",
+      "kind": "dir",
+      "cluster": "domain_work",
+      "loop_object": "Domain",
+      "rationale": "Concrete work domains \u2014 candidate first Domains for The Loop",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# Git Integration & Wix CLI <img align=\"left\" src=\"https://user-images.githubusercontent.com/89579857/185785022-cab37bf5-26be-4f11-85f0-1fac63c07d3b.png\">\n\nThis repo is part of Git Integration & Wix CLI, a set of tools that allows you to write, test, and publish code for your Wix site locally on your computer. \n\nConnect your site to GitHub, develop in your favorite IDE, test your code in real time, and publish your site from the command line.\n\n## Set up this repository in your IDE\nThis repo is c",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-06-05T05:20:53.236269+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\.victus\\subagent-orchestrator",
+      "rel": ".victus\\subagent-orchestrator",
+      "name": "subagent-orchestrator",
+      "kind": "dir",
+      "cluster": "execution",
+      "loop_object": "Capability",
+      "rationale": "Loop runner ancestors \u2014 fold into one runner",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-06-06T22:04:35.997139+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\agent-hub",
+      "rel": "agent-hub",
+      "name": "agent-hub",
+      "kind": "dir",
+      "cluster": "execution",
+      "loop_object": "Capability",
+      "rationale": "Loop runner ancestors \u2014 fold into one runner",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# \ud83e\udd16 Agent Hub\n\n**Unified control center for all your AI agent services.**\n\n## Quick Start\n\n```powershell\n# Check status of all agents\n.\\start-all.ps1 -Status\n\n# Start all enabled agents (Aether, HomeBase, Orchestrator)\n.\\start-all.ps1\n\n# Start everything including disabled agents\n.\\start-all.ps1 -All\n\n# Start specific agents only\n.\\start-all.ps1 -Agents aether,homebase\n\n# Stop all agents\n.\\start-all.ps1 -Stop\n```\n\n## Architecture\n\n```\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502    ",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-06-10T23:11:36.642860+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\alpha-hub-worker",
+      "rel": "alpha-hub-worker",
+      "name": "alpha-hub-worker",
+      "kind": "dir",
+      "cluster": "execution",
+      "loop_object": "Capability",
+      "rationale": "Loop runner ancestors \u2014 fold into one runner",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "alpha-hub",
+        "package_desc": "Unified AI API backend for Alpha app",
+        "mtime": "2026-05-22T09:45:47.527945+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\cli-agent",
+      "rel": "cli-agent",
+      "name": "cli-agent",
+      "kind": "dir",
+      "cluster": "execution",
+      "loop_object": "Capability",
+      "rationale": "Loop runner ancestors \u2014 fold into one runner",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "cli-agent",
+        "package_desc": "",
+        "mtime": "2026-08-01T22:37:09.230824+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\cli-evolution-agent",
+      "rel": "cli-evolution-agent",
+      "name": "cli-evolution-agent",
+      "kind": "dir",
+      "cluster": "execution",
+      "loop_object": "Capability",
+      "rationale": "Loop runner ancestors \u2014 fold into one runner",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": true,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# CLI Evolution Agent\n\nA self-evolving CLI agent with safe self-updating capabilities, local tool registry, and vector memory.\n\n## Project Structure\n\n```\ncli-evolution-agent/\n\u251c\u2500\u2500 config/                 # Configuration files and API keys\n\u251c\u2500\u2500 data/                   # Local storage for state and vector memory\n\u2502   \u251c\u2500\u2500 memory/             # Vector memory entries (JSONL)\n\u2502   \u2514\u2500\u2500 tools/              # Downloaded tool registry\n\u251c\u2500\u2500 src/                    # Core application source code\n\u2502   \u251c\u2500\u2500 agent.py",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-19T07:26:32.762020+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\GitHub\\inventory-orchestrator",
+      "rel": "GitHub\\inventory-orchestrator",
+      "name": "inventory-orchestrator",
+      "kind": "dir",
+      "cluster": "execution",
+      "loop_object": "Capability",
+      "rationale": "Loop runner ancestors \u2014 fold into one runner",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "inventory-orchestrator",
+        "package_desc": "",
+        "mtime": "2026-08-19T06:57:07.937895+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\projects\\research-agent",
+      "rel": "projects\\research-agent",
+      "name": "research-agent",
+      "kind": "dir",
+      "cluster": "execution",
+      "loop_object": "Capability",
+      "rationale": "Loop runner ancestors \u2014 fold into one runner",
+      "signals": {
+        "has_git": true,
+        "has_package_json": false,
+        "has_python": true,
+        "has_wrangler": false,
+        "has_docker": true,
+        "readme_head": "# research-agent\n\nSimple ReAct agent\nAgent generated with `agents-cli` version `1.4.0`\n\n## Project Structure\n\n```\nresearch-agent/\n\u251c\u2500\u2500 app/         # Core agent code\n\u2502   \u251c\u2500\u2500 agent.py               # Main agent logic\n\u2502   \u251c\u2500\u2500 fast_api_app.py        # FastAPI Backend server\n\u2502   \u2514\u2500\u2500 app_utils/             # App utilities and helpers\n\u251c\u2500\u2500 tests/                     # Unit, integration, and load tests\n\u251c\u2500\u2500 GEMINI.md                  # AI-assisted development guide\n\u2514\u2500\u2500 pyproject.toml             # Project",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-22T03:27:34.593672+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\self-extending-agent",
+      "rel": "self-extending-agent",
+      "name": "self-extending-agent",
+      "kind": "dir",
+      "cluster": "execution",
+      "loop_object": "Capability",
+      "rationale": "Loop runner ancestors \u2014 fold into one runner",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": true,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# Self-Extending CLI Agent\n\nA minimal-but-complete starter for a CLI coding agent that can detect\ncapability gaps and build reusable **skills** for itself.\n\n## Layout\n\n```\nself-extending-agent/\n\u251c\u2500\u2500 agent.py            # Main entry + ReAct loop\n\u251c\u2500\u2500 tools/              # read/write/edit, shell, create_skill, evaluate, web\n\u2502   \u251c\u2500\u2500 llm.py          # LLM provider abstraction (OpenAI-compatible)\n\u2502   \u2514\u2500\u2500 ...\n\u251c\u2500\u2500 skills/             # auto-discovered skills live here\n\u251c\u2500\u2500 memory/             # episodes, ",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-19T05:37:47.829618+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\cloudflare-workers",
+      "rel": "cloudflare-workers",
+      "name": "cloudflare-workers",
+      "kind": "dir",
+      "cluster": "infra",
+      "loop_object": "Capability",
+      "rationale": "Deploy and edge infra \u2014 keep what still runs",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "# Cloudflare Workers Configuration\n\nThis directory contains Cloudflare Workers for the A-to-Mind automation platform.\n\n## Workers\n\n### 1. Slack Completion Detector\n- **Config**: `wrangler.toml`\n- **Main file**: `slack_completion_detector_no_export.js` (located in `../slack-ops/`)\n- **Purpose**: Detects Slack message completions and logs them to D1 database\n- **Deploy**: `wrangler deploy`\n\n### 2. Control Worker\n- **Config**: `wrangler-control.toml`\n- **Main file**: `control_worker.js`\n- **Purpose",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-07-15T15:11:59.578362+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\Desktop\\atom-deploy",
+      "rel": "Desktop\\atom-deploy",
+      "name": "atom-deploy",
+      "kind": "dir",
+      "cluster": "infra",
+      "loop_object": "Capability",
+      "rationale": "Deploy and edge infra \u2014 keep what still runs",
+      "signals": {
+        "has_git": true,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-07-27T19:40:05.425426+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\.darwin",
+      "rel": ".darwin",
+      "name": ".darwin",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": true,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-19T04:31:24.494036+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\.grok",
+      "rel": ".grok",
+      "name": ".grok",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# Grok\n\nA terminal-based AI coding assistant and agentic harness.\n\nUse it interactively as a TUI, or integrate it into your own apps via headless mode and the Agent Client Protocol (ACP).\n\n## Quick Start\n\n```bash\n# Install\ncurl -fsSL https://x.ai/cli/install.sh | bash\n\n# Interactive TUI\ngrok\n\n# Headless (for scripts/automation)\ngrok -p \"Explain this codebase\"\n\n# Agent mode (for IDE/app integration)\ngrok agent stdio\n```\n\n## Contents\n\n- [Installation](#installation)\n- [Authentication](#authenticat",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-11T01:38:57.664876+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\apps",
+      "rel": "apps",
+      "name": "apps",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-06-17T18:48:39.280680+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\automation_consolidation_v2",
+      "rel": "automation_consolidation_v2",
+      "name": "automation_consolidation_v2",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "# Automation Consolidation v2\n\n**Consolidated automation backbone for managing workflows across multiple projects.**\n\n## \ud83d\ude80 Quick Start (One-Command Run)\n\n### Start Orchestrator with Integrated Web UI\n```bash\ncd C:\\Users\\adamm\\automation_consolidation_v2\nnpm run dev\n```\n\nThe orchestrator will start on port 3333 with integrated web UI.\n\n**Access Points**:\n- Main Dashboard: http://localhost:3333/\n- Workflows: http://localhost:3333/workflows\n- Run History: http://localhost:3333/runs-page\n\n## \ud83d\ude80 Deplo",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-06-17T21:21:39.801243+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\bottleneck",
+      "rel": "bottleneck",
+      "name": "bottleneck",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "bottleneck",
+        "package_desc": "AI traffic backpressure gateway: edge rate limiting, 429-fallback routing, adaptive provider cooldowns.",
+        "mtime": "2026-08-18T08:15:37.541828+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\commons-engine",
+      "rel": "commons-engine",
+      "name": "commons-engine",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# commons-engine \u2014 tooling-intel\n\nEvidence-collection CLI for tooling intelligence. The GitHub adapter is a\n**pure evidence collector, not a trust engine**: it catalogs what was asserted,\nby whom, against which exact artifact \u2014 and nothing more.\n\n## Boundary\n\nThe collector emits only:\n\n1. A canonical source-located resource identity (`github|owner/name`).\n2. Immutable artifact snapshots \u2014 raw bytes persisted verbatim, content-addressed by SHA-256.\n3. Narrow attributed claims tied to those exact ",
+        "package_name": "tooling-intel",
+        "package_desc": "Evidence-collector CLI for tooling intelligence: immutable artifact snapshots, attributed claims, failed-ingestion records. No assessments.",
+        "mtime": "2026-08-21T04:19:50.544100+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\dev",
+      "rel": "dev",
+      "name": "dev",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-07-10T10:41:59.664583+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\hold",
+      "rel": "hold",
+      "name": "hold",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": true,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# hold\n\nCompany: **A-to-Mind**.\nThis repo is the Phase 1.5 execution plane: CRA Article 14 clock, human hold-gate, AlphaGenome dry-run.\n\nThe old monorepo is archive. Do not clone it here. Do not name new files after it.\n\n## Canonical\n\n| Item | Value |\n|---|---|\n| Remote | `https://github.com/atomeam/hold.git` |\n| Local | `C:\\\\Users\\\\adamm\\\\hold` |\n| Runtime | Cloudflare Worker + D1 + R2 |\n| Live D1 | `aether-bridge-db` `f29243db-5b7a-407b-aa38-64091c1e0676` (binding name stays until rotated) |\n|",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-20T08:41:35.957183+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\projects",
+      "rel": "projects",
+      "name": "projects",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-13T22:06:29.506977+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\projects\\commons-engine",
+      "rel": "projects\\commons-engine",
+      "name": "commons-engine",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "commons-engine",
+        "package_desc": "",
+        "mtime": "2026-08-21T04:02:08.407048+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\projects\\content-research-engine",
+      "rel": "projects\\content-research-engine",
+      "name": "content-research-engine",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": true,
+        "has_package_json": false,
+        "has_python": true,
+        "has_wrangler": false,
+        "has_docker": true,
+        "readme_head": "# content-research-engine\n\nSimple ReAct agent\nAgent generated with `agents-cli` version `1.4.0`\n\n## Project Structure\n\n```\ncontent-research-engine/\n\u251c\u2500\u2500 app/         # Core agent code\n\u2502   \u251c\u2500\u2500 agent.py               # Main agent logic\n\u2502   \u251c\u2500\u2500 fast_api_app.py        # FastAPI Backend server\n\u2502   \u2514\u2500\u2500 app_utils/             # App utilities and helpers\n\u251c\u2500\u2500 .github/                   # CI/CD pipeline configurations for GitHub Actions\n\u251c\u2500\u2500 deployment/                # Infrastructure and deployment scripts",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-22T03:34:34.617738+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\projects\\forgotten-tabs",
+      "rel": "projects\\forgotten-tabs",
+      "name": "forgotten-tabs",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "forgotten-tabs",
+        "package_desc": "Curated digital time capsules from your forgotten browsing - paid, consent-driven, privacy-first.",
+        "mtime": "2026-08-19T04:02:45.881373+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\projects\\research-engine",
+      "rel": "projects\\research-engine",
+      "name": "research-engine",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": true,
+        "has_wrangler": false,
+        "has_docker": true,
+        "readme_head": "# research-engine\n\nSimple ReAct agent\nAgent generated with `agents-cli` version `1.4.0`\n\n## Project Structure\n\n```\nresearch-engine/\n\u251c\u2500\u2500 app/         # Core agent code\n\u2502   \u251c\u2500\u2500 agent.py               # Main agent logic\n\u2502   \u251c\u2500\u2500 fast_api_app.py        # FastAPI Backend server\n\u2502   \u2514\u2500\u2500 app_utils/             # App utilities and helpers\n\u251c\u2500\u2500 tests/                     # Unit, integration, and load tests\n\u251c\u2500\u2500 GEMINI.md                  # AI-assisted development guide\n\u2514\u2500\u2500 pyproject.toml             # Proje",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-22T02:58:20.803327+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\test-scripts",
+      "rel": "test-scripts",
+      "name": "test-scripts",
+      "kind": "dir",
+      "cluster": "misc",
+      "loop_object": "Review",
+      "rationale": "Needs human glance",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": true,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-07-15T15:12:07.324536+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\deployment-love-monitor",
+      "rel": "deployment-love-monitor",
+      "name": "deployment-love-monitor",
+      "kind": "dir",
+      "cluster": "ops_companion",
+      "loop_object": "Capability",
+      "rationale": "Private operator UX \u2014 fold into Scoreboard / Attempt surfaces",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# \ud83d\udc9a Deployment Love Monitor\n\n**Spreading love through reliable deployments and helpful automation for everyone! \ud83c\udf1f**\n\n## \ud83c\udf1f Mission\n\nThis project exists to make deployment monitoring a positive, encouraging experience for everyone involved. We believe that:\n\n- **Every deployment is an opportunity to make someone's day better**\n- **Helpful automation should spread positivity, not just efficiency**\n- **Documentation should be kind and encouraging**\n- **Everyone deserves to feel appreciated for their",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-06-06T07:29:54.227562+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\emotional-weather",
+      "rel": "emotional-weather",
+      "name": "emotional-weather",
+      "kind": "dir",
+      "cluster": "ops_companion",
+      "loop_object": "Capability",
+      "rationale": "Private operator UX \u2014 fold into Scoreboard / Attempt surfaces",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# Barometric \u2014 pilot stack\n\nPrivacy-first \"daily internal weather\" concierge test. Self-contained: one static\nlanding page + one zero-dependency Node server.\n\n## Run it\n\n```\nnode server.js\n# http://localhost:8787\n```\n\nEnv vars (optional):\n\n| Var | Purpose |\n|---|---|\n| `PORT` | Port (default `8787`) |\n| `RESEND_API_KEY` | Enables real email via Resend. Without it, messages drop to `data/outbox.jsonl` as `pending`. |\n| `MAIL_FROM` | Sender for welcome email (default `Barometric <pilot@barometric.",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-19T04:18:38.463078+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\focus-companion-pilot",
+      "rel": "focus-companion-pilot",
+      "name": "focus-companion-pilot",
+      "kind": "dir",
+      "cluster": "ops_companion",
+      "loop_object": "Capability",
+      "rationale": "Private operator UX \u2014 fold into Scoreboard / Attempt surfaces",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# Focus Companion Pilot \u2014 Kill/Scale Test\n\n## Hypothesis\n\nPeople who churned off Focusmate/Flow Club (social load) or got burned by ghost rooms\n(empty drop-ins) will pay $10\u201315 per session for a **booked, verified human who shows up\non time, silently, every session** \u2014 reliability as the product, not matching or rooms.\n\n## The only three numbers\n\n| Metric | Definition | Target |\n|---|---|---|\n| Booking conversion | replies \u2192 booked sessions from outreach | track, no gate |\n| Show-up rate | compa",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-24T01:59:50.765472+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\HomeBase",
+      "rel": "HomeBase",
+      "name": "HomeBase",
+      "kind": "dir",
+      "cluster": "ops_companion",
+      "loop_object": "Capability",
+      "rationale": "Private operator UX \u2014 fold into Scoreboard / Attempt surfaces",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000",
+        "package_name": "homebase",
+        "package_desc": "Homebase v1: primary cockpit for docs, status, tasks, and ops links.",
+        "mtime": "2026-06-17T21:07:25.146439+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\intent-canvas",
+      "rel": "intent-canvas",
+      "name": "intent-canvas",
+      "kind": "dir",
+      "cluster": "ops_companion",
+      "loop_object": "Capability",
+      "rationale": "Private operator UX \u2014 fold into Scoreboard / Attempt surfaces",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "# The Void\n\nA read\u2013generate\u2013run\u2013evaporate surface on Cloudflare Workers. One permanent input at the bottom of the screen. Type a command, press enter, and the input dissolves as a WebSocket opens. The server streams back a transient instrument \u2014 a raw WebGL surface, a live canvas, or a high-fps terminal. When the run resolves, the instrument cuts to black, a receipt line drops, and the input returns. Nothing persists on screen; the ledger keeps the receipt.\n\n## The Loop\n\n1. **Ignition** \u2014 the on",
+        "package_name": "intent-canvas",
+        "package_desc": "",
+        "mtime": "2026-09-18T03:42:46.136429+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\project-ops-companion",
+      "rel": "project-ops-companion",
+      "name": "project-ops-companion",
+      "kind": "dir",
+      "cluster": "ops_companion",
+      "loop_object": "Capability",
+      "rationale": "Private operator UX \u2014 fold into Scoreboard / Attempt surfaces",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# Project Ops Companion\n\nA free, browser-based operations dashboard for the Aether monorepo and AI Crew operations, optimized for Meta Quest 3S spatial workspaces.\n\n## Features\n\n\u2705 **Live Project Status Dashboard** - Real-time health endpoint monitoring with auto-refresh\n\ud83d\udd17 **Quick Links Hub** - One-click access to all key project dashboards\n\ud83d\udcdd **Activity & Evidence Log** - Session logging with export to text/JSON\n\u26a1 **Workflow Shortcuts** - Copy helpers and quick actions\n\ud83c\udfae **PCVR Status Helper** - ",
+        "package_name": "project-ops-companion",
+        "package_desc": "",
+        "mtime": "2026-06-18T01:33:44.856363+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\slack-ops",
+      "rel": "slack-ops",
+      "name": "slack-ops",
+      "kind": "dir",
+      "cluster": "ops_companion",
+      "loop_object": "Capability",
+      "rationale": "Private operator UX \u2014 fold into Scoreboard / Attempt surfaces",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": true,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-07-15T15:12:05.307977+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\.victus\\ai-code-review-agency",
+      "rel": ".victus\\ai-code-review-agency",
+      "name": "ai-code-review-agency",
+      "kind": "dir",
+      "cluster": "victus_nest",
+      "loop_object": "Domain",
+      "rationale": "Agency / earn experiments \u2014 strong Cycle 0 candidates",
+      "signals": {
+        "has_git": true,
+        "has_package_json": false,
+        "has_python": true,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# AI Code Review & Bug Fix Agency - Productized Service\n\n## The Offer\n\n**AI-Powered Code Review & Bug Fix Service**\n\n### What We Do\nWe review every pull request, identify bugs before they hit production, and fix critical issues automatically. Your team ships faster with fewer bugs.\n\n### Pricing\n- **Code Review Only**: $3,000/month\n- **Code Review + Bug Fix**: $5,000/month\n- **Enterprise (24/7 monitoring)**: $8,000/month\n\n### What's Included\n- Automated review of every PR within 30 minutes\n- AI-p",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-06-06T22:54:00.345300+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\.victus\\self-funding",
+      "rel": ".victus\\self-funding",
+      "name": "self-funding",
+      "kind": "dir",
+      "cluster": "victus_nest",
+      "loop_object": "Domain",
+      "rationale": "Agency / earn experiments \u2014 strong Cycle 0 candidates",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "# AI Self-Funding System - Production Infrastructure\n\nComplete production-ready infrastructure for the AI self-funding system with Stripe integration, webhooks, service API, client portal, and auto-upgrade.\n\n## Architecture\n\n```\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502  Client Portal  \u2502 (http://localhost:3000)\n\u2502  (Frontend)     \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n         \u2502\n         \u2193\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502  Service API    \u2502 (http://localhost:3002)\n\u2502  (Backend)      \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n         \u2502\n         \u2193\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510",
+        "package_name": "ai-self-funding-server",
+        "package_desc": "AI Self-Funding System - Payment and Service Delivery",
+        "mtime": "2026-06-06T22:49:30.262643+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\a-to-mind-deploy",
+      "rel": "a-to-mind-deploy",
+      "name": "a-to-mind-deploy",
+      "kind": "dir",
+      "cluster": "void_face",
+      "loop_object": "Capability",
+      "rationale": "Void / public and gateway surfaces \u2014 rebuild native, strip slop",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-06-30T15:29:43.942893+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\a-to-mind-loop",
+      "rel": "a-to-mind-loop",
+      "name": "a-to-mind-loop",
+      "kind": "dir",
+      "cluster": "void_face",
+      "loop_object": "Capability",
+      "rationale": "Void / public and gateway surfaces \u2014 rebuild native, strip slop",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-23T16:43:29.557278+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\a-to-mind-void-gateway",
+      "rel": "a-to-mind-void-gateway",
+      "name": "a-to-mind-void-gateway",
+      "kind": "dir",
+      "cluster": "void_face",
+      "loop_object": "Capability",
+      "rationale": "Void / public and gateway surfaces \u2014 rebuild native, strip slop",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-16T04:24:50.215826+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\a-to-mind.com",
+      "rel": "a-to-mind.com",
+      "name": "a-to-mind.com",
+      "kind": "dir",
+      "cluster": "void_face",
+      "loop_object": "Capability",
+      "rationale": "Void / public and gateway surfaces \u2014 rebuild native, strip slop",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": true,
+        "readme_head": "",
+        "package_name": "a-to-mind",
+        "package_desc": "A-to-Mind - AI Operations with Receipts",
+        "mtime": "2026-09-22T02:19:05.806956+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\a2m-console",
+      "rel": "a2m-console",
+      "name": "a2m-console",
+      "kind": "dir",
+      "cluster": "void_face",
+      "loop_object": "Capability",
+      "rationale": "Void / public and gateway surfaces \u2014 rebuild native, strip slop",
+      "signals": {
+        "has_git": false,
+        "has_package_json": false,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-09-16T19:42:11.298997+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\atomind-web",
+      "rel": "atomind-web",
+      "name": "atomind-web",
+      "kind": "dir",
+      "cluster": "void_face",
+      "loop_object": "Capability",
+      "rationale": "Void / public and gateway surfaces \u2014 rebuild native, strip slop",
+      "signals": {
+        "has_git": false,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": false,
+        "has_docker": false,
+        "readme_head": "",
+        "package_name": "atomind-web",
+        "package_desc": "",
+        "mtime": "2026-09-12T03:47:06.273538+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\Desktop\\a-to-mind-board",
+      "rel": "Desktop\\a-to-mind-board",
+      "name": "a-to-mind-board",
+      "kind": "dir",
+      "cluster": "void_face",
+      "loop_object": "Capability",
+      "rationale": "Void / public and gateway surfaces \u2014 rebuild native, strip slop",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "# Welcome to React Router on Cloudflare Workers with D1!\n\nA modern, production-ready template for building full-stack React applications using React Router, hosted on Cloudflare Workers with D1 as the database.\n\nYou can quickly create a new React Router application from this template by running:\n\n```\nnpx create-react-router@latest --template matthewlynch/react-router-cloudflare-d1\n```\n\nSome of the code in this repo was adapted from the [React Router Cloudflare D1 template](https://github.com/rem",
+        "package_name": "a-to-mind-board",
+        "package_desc": "React Router Cloudflare D1 template",
+        "mtime": "2026-07-13T22:54:21.919850+00:00"
+      }
+    },
+    {
+      "path": "C:\\Users\\adamm\\dev\\a-to-mind-homepage",
+      "rel": "dev\\a-to-mind-homepage",
+      "name": "a-to-mind-homepage",
+      "kind": "dir",
+      "cluster": "void_face",
+      "loop_object": "Capability",
+      "rationale": "Void / public and gateway surfaces \u2014 rebuild native, strip slop",
+      "signals": {
+        "has_git": true,
+        "has_package_json": true,
+        "has_python": false,
+        "has_wrangler": true,
+        "has_docker": false,
+        "readme_head": "# A-to-Mind Homepage with Mission Board\n\nA Cloudflare Worker project serving the A-to-Mind homepage (static landing page with live\nsystem-status checks) plus a D1-powered mission board for grants, jobs, contracts, and\nbounties pulled from the Blackglass ecosystem.\n\n## Features\n\n- **Static Homepage** \u2014 Full A-to-Mind landing page with in-browser live status checks.\n- **Mission Board API** \u2014 D1-backed API for verified opportunities.\n- **Graceful Fallback** \u2014 Inline sample data served when D1 is un",
+        "package_name": "",
+        "package_desc": "",
+        "mtime": "2026-08-29T19:18:30.326301+00:00"
+      }
+    }
+  ]
+}

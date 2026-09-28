@@ -1,0 +1,77 @@
+graph LR
+  subgraph TR["transition/residue"]
+    HS["<b>Handoff (PRIMARY)</b>"]
+    CR["Context Residue"]
+    GH["Ghost Finishing"]
+    RW["RelicWeaver + LKL"]
+  end
+  subgraph PO["place/ops"]
+    SD["Street Days"]
+    RR["Renewal Rescue"]
+  end
+  subgraph RC["resource/commons"]
+    CAP["Capacity + AfterBell"]
+    GS["Grid Salvage"]
+    AQ["Aquifer Yield"]
+  end
+  subgraph DT["data/traces"]
+    EM["Embodied error"]
+  end
+  subgraph SP["Shared parts"]
+    INGEST[["Shared intake<br/>CF Worker + R2"]]
+    PACKET[["Gatekeeper packet<br/>template"]]
+    BENCH[["Partner bench"]]
+    BACK[["Back office"]]
+    LAK[["Lakeland / Polk"]]
+    DC[["Data-center demand"]]
+  end
+  REG{{"Regulated packets<br/>SBA / underwriting / EQIP"}}
+
+  HS --> INGEST
+  HS --> PACKET
+  HS --> BENCH
+  HS --> BACK
+  HS --> LAK
+  HS --> DC
+  SD --> INGEST
+  SD --> BENCH
+  SD --> BACK
+  SD --> LAK
+  RR --> INGEST
+  RR --> PACKET
+  RR --> BENCH
+  RR --> BACK
+  RR --> LAK
+  CAP --> INGEST
+  CAP --> PACKET
+  CAP --> BENCH
+  CAP --> BACK
+  CAP --> DC
+  GS --> PACKET
+  GS --> BENCH
+  GS --> BACK
+  GS --> DC
+  AQ --> INGEST
+  AQ --> PACKET
+  AQ --> BENCH
+  AQ --> BACK
+  AQ --> DC
+  EM -.->|schema only| INGEST
+  EM --> PACKET
+  EM --> BACK
+  CR --> INGEST
+  CR --> BACK
+  GH --> INGEST
+  GH --> BACK
+  RW --> INGEST
+  RW --> BACK
+  PACKET --> REG
+  RW -.->|never| REG
+  GH -.->|never| REG
+
+  classDef primary fill:#fff3b0,stroke:#b8860b,stroke-width:3px,font-weight:bold;
+  classDef part fill:#e8f0fe,stroke:#3367d6;
+  classDef reg fill:#fde8e8,stroke:#c0392b;
+  class HS primary;
+  class INGEST,PACKET,BENCH,BACK,LAK,DC part;
+  class REG reg;

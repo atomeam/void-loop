@@ -1,0 +1,6 @@
+_archive*/
+node_modules/
+.wrangler/
+*.log
+.void-lock
+__pycache__/

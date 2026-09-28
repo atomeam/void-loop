@@ -1,0 +1,1693 @@
+{
+  "generated_at": "2026-09-23T16:49:40.684464+00:00",
+  "total": 94,
+  "counts_by_layer": {
+    "Capability": 35,
+    "Bridge": 16,
+    "Runner": 18,
+    "Loop": 15,
+    "Void": 8,
+    "Review": 2
+  },
+  "counts_by_action": {
+    "fold": 26,
+    "retain": 66,
+    "defer": 2
+  },
+  "items": [
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\adversarial",
+      "rel": "_archive_old_mono\\packages\\adversarial",
+      "name": "adversarial",
+      "package_name": "@aether/adversarial",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\alerts",
+      "rel": "_archive_old_mono\\packages\\alerts",
+      "name": "alerts",
+      "package_name": "@aether/alerts",
+      "description": "",
+      "readme_head": "@aether/alerts",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\ambient-core",
+      "rel": "_archive_old_mono\\packages\\ambient-core",
+      "name": "ambient-core",
+      "package_name": "@aether/ambient-core",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 4,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\api-gateway",
+      "rel": "_archive_old_mono\\packages\\api-gateway",
+      "name": "api-gateway",
+      "package_name": "@aether/api-gateway",
+      "description": "",
+      "readme_head": "@aether/api-gateway",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched hold|gate|allow|deny|permission|policy",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\auth",
+      "rel": "_archive_old_mono\\packages\\auth",
+      "name": "auth",
+      "package_name": "@aether/auth",
+      "description": "",
+      "readme_head": "@aether/auth",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 4,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\automation",
+      "rel": "_archive_old_mono\\packages\\automation",
+      "name": "automation",
+      "package_name": "@aether/automation",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\browser-automation",
+      "rel": "_archive_old_mono\\packages\\browser-automation",
+      "name": "browser-automation",
+      "package_name": "",
+      "description": "",
+      "readme_head": "",
+      "scripts": [],
+      "dep_count": 0,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\chaos",
+      "rel": "_archive_old_mono\\packages\\chaos",
+      "name": "chaos",
+      "package_name": "@aether/chaos",
+      "description": "",
+      "readme_head": "@aether/chaos",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\ci-cd",
+      "rel": "_archive_old_mono\\packages\\ci-cd",
+      "name": "ci-cd",
+      "package_name": "@aether/ci-cd",
+      "description": "",
+      "readme_head": "@aether/ci-cd",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\circuit-breaker",
+      "rel": "_archive_old_mono\\packages\\circuit-breaker",
+      "name": "circuit-breaker",
+      "package_name": "",
+      "description": "",
+      "readme_head": "",
+      "scripts": [],
+      "dep_count": 0,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\cli",
+      "rel": "_archive_old_mono\\packages\\cli",
+      "name": "cli",
+      "package_name": "@aether/cli",
+      "description": "Aether CLI - Command-line interface for project scaffolding, package management, deployment, and development",
+      "readme_head": "@aether/cli",
+      "scripts": [
+        "build",
+        "clean",
+        "format",
+        "format:check",
+        "lint",
+        "test",
+        "test:coverage",
+        "typecheck"
+      ],
+      "dep_count": 17,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\cloud-providers",
+      "rel": "_archive_old_mono\\packages\\cloud-providers",
+      "name": "cloud-providers",
+      "package_name": "@aether/cloud-providers",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\cms",
+      "rel": "_archive_old_mono\\packages\\cms",
+      "name": "cms",
+      "package_name": "@aether/cms",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "test:coverage",
+        "typecheck"
+      ],
+      "dep_count": 4,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\codegen",
+      "rel": "_archive_old_mono\\packages\\codegen",
+      "name": "codegen",
+      "package_name": "@aether/codegen",
+      "description": "Aether Code Generation - Generate components, API clients, schemas, types, and boilerplate",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "clean",
+        "format",
+        "format:check",
+        "lint",
+        "test",
+        "test:coverage",
+        "typecheck"
+      ],
+      "dep_count": 8,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\compactor",
+      "rel": "_archive_old_mono\\packages\\compactor",
+      "name": "compactor",
+      "package_name": "@aether/compactor",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\components",
+      "rel": "_archive_old_mono\\packages\\components",
+      "name": "components",
+      "package_name": "@aether/components",
+      "description": "",
+      "readme_head": "@aether/components",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Void",
+      "action": "fold",
+      "why": "matched \\bui-core\\b|\\bpwa\\b|\\bcomponents\\b|\\bresponsive\\b|\\bdashboar",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\config",
+      "rel": "_archive_old_mono\\packages\\config",
+      "name": "config",
+      "package_name": "",
+      "description": "",
+      "readme_head": "",
+      "scripts": [],
+      "dep_count": 0,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\context-truncate",
+      "rel": "_archive_old_mono\\packages\\context-truncate",
+      "name": "context-truncate",
+      "package_name": "@aether/context-truncate",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\contracts",
+      "rel": "_archive_old_mono\\packages\\contracts",
+      "name": "contracts",
+      "package_name": "@aether/contracts",
+      "description": "",
+      "readme_head": "@aether/logger",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\convene",
+      "rel": "_archive_old_mono\\packages\\convene",
+      "name": "convene",
+      "package_name": "@aether/convene",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\council",
+      "rel": "_archive_old_mono\\packages\\council",
+      "name": "council",
+      "package_name": "@aether/council",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\credential-injector",
+      "rel": "_archive_old_mono\\packages\\credential-injector",
+      "name": "credential-injector",
+      "package_name": "@aether/credential-injector",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "dev",
+        "start"
+      ],
+      "dep_count": 0,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\credential-recovery",
+      "rel": "_archive_old_mono\\packages\\credential-recovery",
+      "name": "credential-recovery",
+      "package_name": "@aether/credential-recovery",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "deploy",
+        "dev",
+        "scan"
+      ],
+      "dep_count": 0,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\curator",
+      "rel": "_archive_old_mono\\packages\\curator",
+      "name": "curator",
+      "package_name": "@aether/curator",
+      "description": "",
+      "readme_head": "@aether/curator",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 5,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\curator-audit",
+      "rel": "_archive_old_mono\\packages\\curator-audit",
+      "name": "curator-audit",
+      "package_name": "@aether/curator-audit",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\daemon",
+      "rel": "_archive_old_mono\\packages\\daemon",
+      "name": "daemon",
+      "package_name": "@loxa/daemon",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "dev",
+        "start",
+        "typecheck"
+      ],
+      "dep_count": 7,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\dashboards",
+      "rel": "_archive_old_mono\\packages\\dashboards",
+      "name": "dashboards",
+      "package_name": "@aether/dashboards",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Void",
+      "action": "fold",
+      "why": "matched \\bui-core\\b|\\bpwa\\b|\\bcomponents\\b|\\bresponsive\\b|\\bdashboar",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\database",
+      "rel": "_archive_old_mono\\packages\\database",
+      "name": "database",
+      "package_name": "@aether/database",
+      "description": "Database abstraction layer with support for PostgreSQL, MySQL, SQLite, and MongoDB",
+      "readme_head": "@aether/database",
+      "scripts": [
+        "build",
+        "dev",
+        "lint",
+        "lint:fix",
+        "test",
+        "test:coverage",
+        "typecheck"
+      ],
+      "dep_count": 11,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\deploy-automation",
+      "rel": "_archive_old_mono\\packages\\deploy-automation",
+      "name": "deploy-automation",
+      "package_name": "@aether/deploy-automation",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "clean",
+        "dev",
+        "lint",
+        "test",
+        "test:coverage",
+        "test:watch",
+        "typecheck"
+      ],
+      "dep_count": 8,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\docs",
+      "rel": "_archive_old_mono\\packages\\docs",
+      "name": "docs",
+      "package_name": "@aether/docs",
+      "description": "Documentation generation and management tools for the Aether monorepo",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "clean",
+        "dev",
+        "generate:all",
+        "generate:api",
+        "generate:architecture",
+        "generate:components",
+        "generate:examples",
+        "generate:package-readmes",
+        "generate:types",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 13,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\dream",
+      "rel": "_archive_old_mono\\packages\\dream",
+      "name": "dream",
+      "package_name": "@aether/dream",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\env",
+      "rel": "_archive_old_mono\\packages\\env",
+      "name": "env",
+      "package_name": "@aether/env",
+      "description": "",
+      "readme_head": "@aether/env",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\errors",
+      "rel": "_archive_old_mono\\packages\\errors",
+      "name": "errors",
+      "package_name": "@aether/errors",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "typecheck"
+      ],
+      "dep_count": 0,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\etl",
+      "rel": "_archive_old_mono\\packages\\etl",
+      "name": "etl",
+      "package_name": "@aether/etl",
+      "description": "",
+      "readme_head": "@aether/etl",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\file-system",
+      "rel": "_archive_old_mono\\packages\\file-system",
+      "name": "file-system",
+      "package_name": "",
+      "description": "",
+      "readme_head": "",
+      "scripts": [],
+      "dep_count": 0,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\foresight",
+      "rel": "_archive_old_mono\\packages\\foresight",
+      "name": "foresight",
+      "package_name": "@aether/foresight",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\gemini-browser",
+      "rel": "_archive_old_mono\\packages\\gemini-browser",
+      "name": "gemini-browser",
+      "package_name": "@aether/gemini-browser",
+      "description": "",
+      "readme_head": "@aether/gemini-browser - Smart Gemini Browser Control",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 4,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\github-automation",
+      "rel": "_archive_old_mono\\packages\\github-automation",
+      "name": "github-automation",
+      "package_name": "@aether/github-automation",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\goals",
+      "rel": "_archive_old_mono\\packages\\goals",
+      "name": "goals",
+      "package_name": "@aether/goals",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\governance",
+      "rel": "_archive_old_mono\\packages\\governance",
+      "name": "governance",
+      "package_name": "@aether/governance",
+      "description": "",
+      "readme_head": "@aether/governance",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\graphify",
+      "rel": "_archive_old_mono\\packages\\graphify",
+      "name": "graphify",
+      "package_name": "@aether/graphify",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Review",
+      "action": "defer",
+      "why": "no strong signal \u2014 needs human glance",
+      "loop_object": "Review"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\http-client",
+      "rel": "_archive_old_mono\\packages\\http-client",
+      "name": "http-client",
+      "package_name": "@aether/http-client",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\human-queue",
+      "rel": "_archive_old_mono\\packages\\human-queue",
+      "name": "human-queue",
+      "package_name": "@aether/human-queue",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\idempotency",
+      "rel": "_archive_old_mono\\packages\\idempotency",
+      "name": "idempotency",
+      "package_name": "",
+      "description": "",
+      "readme_head": "",
+      "scripts": [],
+      "dep_count": 0,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\infrastructure",
+      "rel": "_archive_old_mono\\packages\\infrastructure",
+      "name": "infrastructure",
+      "package_name": "@aether/infrastructure",
+      "description": "",
+      "readme_head": "@aether/infrastructure",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\kv-writers",
+      "rel": "_archive_old_mono\\packages\\kv-writers",
+      "name": "kv-writers",
+      "package_name": "@aether/kv-writers",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\ledger",
+      "rel": "_archive_old_mono\\packages\\ledger",
+      "name": "ledger",
+      "package_name": "@aether/ledger",
+      "description": "",
+      "readme_head": "@aether/ledger",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\lessons",
+      "rel": "_archive_old_mono\\packages\\lessons",
+      "name": "lessons",
+      "package_name": "@aether/lessons",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\llm-router",
+      "rel": "_archive_old_mono\\packages\\llm-router",
+      "name": "llm-router",
+      "package_name": "@aether/llm-router",
+      "description": "LLM routing and load balancing for multiple AI providers (OpenAI, Anthropic, Google)",
+      "readme_head": "@aether/llm-router",
+      "scripts": [
+        "build",
+        "dev",
+        "test",
+        "test:coverage",
+        "test:ui"
+      ],
+      "dep_count": 5,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\logger",
+      "rel": "_archive_old_mono\\packages\\logger",
+      "name": "logger",
+      "package_name": "@aether/logger",
+      "description": "",
+      "readme_head": "@aether/logger",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\mcp-tools",
+      "rel": "_archive_old_mono\\packages\\mcp-tools",
+      "name": "mcp-tools",
+      "package_name": "@aether/mcp-tools",
+      "description": "",
+      "readme_head": "@aether/mcp-tools",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\media",
+      "rel": "_archive_old_mono\\packages\\media",
+      "name": "media",
+      "package_name": "@aether/media",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 4,
+      "layer": "Void",
+      "action": "fold",
+      "why": "matched \\bui-core\\b|\\bpwa\\b|\\bcomponents\\b|\\bresponsive\\b|\\bdashboar",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\metrics",
+      "rel": "_archive_old_mono\\packages\\metrics",
+      "name": "metrics",
+      "package_name": "@aether/metrics",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\ml-core",
+      "rel": "_archive_old_mono\\packages\\ml-core",
+      "name": "ml-core",
+      "package_name": "@aether/ml-core",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\mobile-core",
+      "rel": "_archive_old_mono\\packages\\mobile-core",
+      "name": "mobile-core",
+      "package_name": "@aether/mobile-core",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "test:coverage",
+        "typecheck"
+      ],
+      "dep_count": 27,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\monitoring",
+      "rel": "_archive_old_mono\\packages\\monitoring",
+      "name": "monitoring",
+      "package_name": "@aether/monitoring",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\network-health",
+      "rel": "_archive_old_mono\\packages\\network-health",
+      "name": "network-health",
+      "package_name": "@aether/network-health",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\notifier",
+      "rel": "_archive_old_mono\\packages\\notifier",
+      "name": "notifier",
+      "package_name": "@aether/notifier",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\notion-connector",
+      "rel": "_archive_old_mono\\packages\\notion-connector",
+      "name": "notion-connector",
+      "package_name": "@aether/notion-connector",
+      "description": "",
+      "readme_head": "@aether/notion-connector",
+      "scripts": [
+        "build",
+        "test",
+        "test:manual",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\observability",
+      "rel": "_archive_old_mono\\packages\\observability",
+      "name": "observability",
+      "package_name": "@aether/observability",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 4,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\panic",
+      "rel": "_archive_old_mono\\packages\\panic",
+      "name": "panic",
+      "package_name": "@aether/panic",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\payments",
+      "rel": "_archive_old_mono\\packages\\payments",
+      "name": "payments",
+      "package_name": "@aether/payments",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "test:coverage",
+        "typecheck"
+      ],
+      "dep_count": 4,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\profile",
+      "rel": "_archive_old_mono\\packages\\profile",
+      "name": "profile",
+      "package_name": "@aether/profile",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\prompt-optimizer",
+      "rel": "_archive_old_mono\\packages\\prompt-optimizer",
+      "name": "prompt-optimizer",
+      "package_name": "@aether/prompt-optimizer",
+      "description": "Prompt engineering optimization library with A/B testing, metrics tracking, and template system",
+      "readme_head": "@aether/prompt-optimizer",
+      "scripts": [
+        "build",
+        "dev",
+        "test",
+        "test:coverage",
+        "test:ui"
+      ],
+      "dep_count": 5,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\pwa",
+      "rel": "_archive_old_mono\\packages\\pwa",
+      "name": "pwa",
+      "package_name": "@aether/pwa",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "test:coverage",
+        "typecheck"
+      ],
+      "dep_count": 6,
+      "layer": "Void",
+      "action": "fold",
+      "why": "matched \\bui-core\\b|\\bpwa\\b|\\bcomponents\\b|\\bresponsive\\b|\\bdashboar",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\rag-engine",
+      "rel": "_archive_old_mono\\packages\\rag-engine",
+      "name": "rag-engine",
+      "package_name": "@aether/rag-engine",
+      "description": "Retrieval Augmented Generation engine with vector database abstraction, document chunking, and citation tracking",
+      "readme_head": "@aether/rag-engine",
+      "scripts": [
+        "build",
+        "dev",
+        "test",
+        "test:coverage",
+        "test:ui"
+      ],
+      "dep_count": 5,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\rate-limiter",
+      "rel": "_archive_old_mono\\packages\\rate-limiter",
+      "name": "rate-limiter",
+      "package_name": "@aether/rate-limiter",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\replay",
+      "rel": "_archive_old_mono\\packages\\replay",
+      "name": "replay",
+      "package_name": "@aether/replay",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\reports",
+      "rel": "_archive_old_mono\\packages\\reports",
+      "name": "reports",
+      "package_name": "@aether/reports",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 5,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\responsive",
+      "rel": "_archive_old_mono\\packages\\responsive",
+      "name": "responsive",
+      "package_name": "@aether/responsive",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "test:coverage",
+        "typecheck"
+      ],
+      "dep_count": 4,
+      "layer": "Void",
+      "action": "fold",
+      "why": "matched \\bui-core\\b|\\bpwa\\b|\\bcomponents\\b|\\bresponsive\\b|\\bdashboar",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\retry",
+      "rel": "_archive_old_mono\\packages\\retry",
+      "name": "retry",
+      "package_name": "",
+      "description": "",
+      "readme_head": "",
+      "scripts": [],
+      "dep_count": 0,
+      "layer": "Review",
+      "action": "defer",
+      "why": "no strong signal \u2014 needs human glance",
+      "loop_object": "Review"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\sandbox",
+      "rel": "_archive_old_mono\\packages\\sandbox",
+      "name": "sandbox",
+      "package_name": "@aether/sandbox",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\sanitization",
+      "rel": "_archive_old_mono\\packages\\sanitization",
+      "name": "sanitization",
+      "package_name": "@aether/sanitization",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\scheduler",
+      "rel": "_archive_old_mono\\packages\\scheduler",
+      "name": "scheduler",
+      "package_name": "@aether/scheduler",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\scheduling",
+      "rel": "_archive_old_mono\\packages\\scheduling",
+      "name": "scheduling",
+      "package_name": "@aether/scheduling",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\secrets",
+      "rel": "_archive_old_mono\\packages\\secrets",
+      "name": "secrets",
+      "package_name": "@aether/secrets",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\signed-provenance",
+      "rel": "_archive_old_mono\\packages\\signed-provenance",
+      "name": "signed-provenance",
+      "package_name": "@aether/signed-provenance",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\storage",
+      "rel": "_archive_old_mono\\packages\\storage",
+      "name": "storage",
+      "package_name": "@aether/storage",
+      "description": "File storage abstraction with support for S3, local filesystem, and Cloudflare R2",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "dev",
+        "lint",
+        "lint:fix",
+        "test",
+        "test:coverage",
+        "typecheck"
+      ],
+      "dep_count": 9,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\storyteller",
+      "rel": "_archive_old_mono\\packages\\storyteller",
+      "name": "storyteller",
+      "package_name": "@aether/storyteller",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Void",
+      "action": "fold",
+      "why": "matched \\bui-core\\b|\\bpwa\\b|\\bcomponents\\b|\\bresponsive\\b|\\bdashboar",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\streaming",
+      "rel": "_archive_old_mono\\packages\\streaming",
+      "name": "streaming",
+      "package_name": "@aether/streaming",
+      "description": "",
+      "readme_head": "@aether/streaming",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\substrates",
+      "rel": "_archive_old_mono\\packages\\substrates",
+      "name": "substrates",
+      "package_name": "@aether/substrates",
+      "description": "Game substrate patterns for Aether",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test"
+      ],
+      "dep_count": 0,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\telemetry",
+      "rel": "_archive_old_mono\\packages\\telemetry",
+      "name": "telemetry",
+      "package_name": "@aether/telemetry",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\test-runner",
+      "rel": "_archive_old_mono\\packages\\test-runner",
+      "name": "test-runner",
+      "package_name": "@aether/test-runner",
+      "description": "",
+      "readme_head": "@aether/test-runner",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 4,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\throttle",
+      "rel": "_archive_old_mono\\packages\\throttle",
+      "name": "throttle",
+      "package_name": "@aether/throttle",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\timecapsule",
+      "rel": "_archive_old_mono\\packages\\timecapsule",
+      "name": "timecapsule",
+      "package_name": "@aether/timecapsule",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\tombstone",
+      "rel": "_archive_old_mono\\packages\\tombstone",
+      "name": "tombstone",
+      "package_name": "@aether/tombstone",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\triage",
+      "rel": "_archive_old_mono\\packages\\triage",
+      "name": "triage",
+      "package_name": "@aether/triage",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\ui-core",
+      "rel": "_archive_old_mono\\packages\\ui-core",
+      "name": "ui-core",
+      "package_name": "@aether/ui-core",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Void",
+      "action": "fold",
+      "why": "matched \\bui-core\\b|\\bpwa\\b|\\bcomponents\\b|\\bresponsive\\b|\\bdashboar",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\unbought",
+      "rel": "_archive_old_mono\\packages\\unbought",
+      "name": "unbought",
+      "package_name": "@aether/unbought",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 4,
+      "layer": "Void",
+      "action": "fold",
+      "why": "matched \\bui-core\\b|\\bpwa\\b|\\bcomponents\\b|\\bresponsive\\b|\\bdashboar",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\validation",
+      "rel": "_archive_old_mono\\packages\\validation",
+      "name": "validation",
+      "package_name": "@aether/validation",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Bridge",
+      "action": "retain",
+      "why": "matched auth|governance|sandbox|sanitiz|validation|circuit-breaker|r",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\vitalsigns",
+      "rel": "_archive_old_mono\\packages\\vitalsigns",
+      "name": "vitalsigns",
+      "package_name": "@aether/vitalsigns",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 2,
+      "layer": "Loop",
+      "action": "retain",
+      "why": "matched ledger|lessons|goals|dream|foresight|timecapsule|signed-prov",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\web3-core",
+      "rel": "_archive_old_mono\\packages\\web3-core",
+      "name": "web3-core",
+      "package_name": "@aether/web3-core",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "test:coverage",
+        "typecheck"
+      ],
+      "dep_count": 6,
+      "layer": "Capability",
+      "action": "fold",
+      "why": "matched profile|reports|docs|logger|errors|config|env|contracts|infr",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\websocket-server",
+      "rel": "_archive_old_mono\\packages\\websocket-server",
+      "name": "websocket-server",
+      "package_name": "@aether/websocket-server",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "test",
+        "typecheck"
+      ],
+      "dep_count": 5,
+      "layer": "Capability",
+      "action": "retain",
+      "why": "matched notion-connector|payments|github-automation|deploy-automatio",
+      "loop_object": "Capability"
+    },
+    {
+      "path": "C:\\Users\\adamm\\_archive_old_mono\\packages\\workflow",
+      "rel": "_archive_old_mono\\packages\\workflow",
+      "name": "workflow",
+      "package_name": "@aether/workflow",
+      "description": "",
+      "readme_head": "",
+      "scripts": [
+        "build",
+        "typecheck"
+      ],
+      "dep_count": 3,
+      "layer": "Runner",
+      "action": "retain",
+      "why": "matched \\bcli\\b|daemon|workflow|scheduler|scheduling|automation|brow",
+      "loop_object": "Capability"
+    }
+  ]
+}
