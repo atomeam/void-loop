@@ -403,15 +403,17 @@ try {
   // Earned effects (Atom 2026-09-28: personal layer first): the public stage runs no WebGL; the nebula and the particle swarm
   // start only when someone asks in their own Void, and "calm my void" stops them. Card physics: a grabbed card comes to the front.
   { const V = await fresh();
-    const pub = await V.p.evaluate(() => ({ aura: !!document.getElementById('void-aura'), swarm: !!document.getElementById('void-swarm'), fx: document.documentElement.dataset.fx }));
+    const pub = await V.p.evaluate(() => { const d = document.getElementById('void-depth'), cs = d && getComputedStyle(d); return { aura: !!document.getElementById('void-aura'), swarm: !!document.getElementById('void-swarm'), fx: document.documentElement.dataset.fx, depth: !!cs && /radial-gradient/.test(cs.backgroundImage) && cs.animationName === 'depthBreath', pill: getComputedStyle(document.getElementById('row')).backdropFilter }; });
+    await V.p.mouse.move(40, 40); await V.p.mouse.move(900, 500, { steps: 6 }); await V.p.waitForTimeout(400);
+    const tracked = await V.p.evaluate(() => document.getElementById('void-depth').style.getPropertyValue('--dx'));
     const fx = async () => V.p.evaluate(() => ({ look: (JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}')).fx, aura: !!document.querySelector('#void-aura.on'), swarm: !!document.querySelector('#void-swarm.on'), gl: !document.documentElement.classList.contains('no-gl') && !!document.createElement('canvas').getContext('webgl') }));
     await V.ask('make my void swirl', 800); const sw = await fx();
     await V.ask('add a nebula', 800); const nb = await fx();
     await V.ask('calm my void', 800); const calm = await fx();
-    check('effects: a fresh public visit starts no WebGL (no nebula, no swarm); "make my void swirl" starts the particle swarm, "add a nebula" swaps to the nebula, "calm my void" stops both; saved in your look',
-      !pub.aura && !pub.swarm && pub.fx === 'off' && sw.look === 'swarm' && nb.look === 'nebula' && calm.look === 'off'
+    check('effects: the public homepage is a volumetric depth (CSS layers that ease after the cursor, frosted pill) with no WebGL; the heavy effects are earned: "make my void swirl" starts the particle swarm, "add a nebula" swaps to the nebula, "calm my void" stops both; saved in your look',
+      !pub.aura && !pub.swarm && pub.fx === 'off' && pub.depth && /blur/.test(pub.pill) && parseFloat(tracked) > 50 && sw.look === 'swarm' && nb.look === 'nebula' && calm.look === 'off'
       && (!sw.gl || (sw.swarm && !sw.aura)) && (!nb.gl || (nb.aura && !nb.swarm)) && !calm.aura && !calm.swarm && !V.errors.length,
-      JSON.stringify({ pub, sw, nb, calm, e: V.errors }));
+      JSON.stringify({ pub, tracked, sw, nb, calm, e: V.errors }));
     await V.ask('add a sticky that says first', 400); await V.ask('another note that says second', 400);
     const firstBox = await V.p.$$eval('.sticky', (d) => { const e = d.find((x) => x.textContent === 'first'); const b = e.getBoundingClientRect(); return { x: b.left + 20, y: b.top + 20 }; });
     await V.p.mouse.move(firstBox.x, firstBox.y); await V.p.mouse.down(); await V.p.mouse.move(firstBox.x + 40, firstBox.y + 30, { steps: 4 });
@@ -1586,8 +1588,8 @@ try {
     const standing = fs.readFileSync(path.join(repo, 'STANDING.md'), 'utf8');
     check('router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md',
       dn.answer === 'Gemma: a short answer [1].' && /paid: paid model failed/.test(rowOf(eDown, HARDQ).outcome) && !eDown.DB.kv.has('router:paid:total')
-      && /Void can pay only from that Gumroad budget/.test(standing) && /never an outside top-up/.test(standing) && /approved standing spend on the confirm line/.test(standing)
-      && /recorded, not called: one `would escalate` in `void_shortfalls`/.test(standing) && /no other free model/.test(standing) && /VOID_ANSWER_MODELS=off/.test(standing), rowOf(eDown, HARDQ).outcome);
+      // the rule as Atom rewrote it (86bb31e): Gumroad earnings are the budget, a spend waits for a yes, free models until the first sale
+      && /Earnings[^.]*are Void's budget/.test(standing) && /A spend still waits for a yes on the confirm line/.test(standing) && /Until the first sale, Void stays on free models and records when a stronger model would have been used/.test(standing), rowOf(eDown, HARDQ).outcome);
     // VOID_ANSWER_MODELS=off turns the models off: main's open-web answers and rules-only fixes, no Workers AI call, no D1 write
     const cOff = calls.length, eOffX = { ...envOf(), VOID_ANSWER_MODELS: 'off' }, eOffY = { ...envOf(), VOID_ANSWER_MODELS: ' OFF ' };
     const d1 = await ask(HARDQ, eOffX), d2 = await ask('set a timer for 10 minutes', eOffY);

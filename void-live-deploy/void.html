@@ -406,8 +406,27 @@
     .thing { transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
       transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .35s ease; filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); }
     .thing.lift { --tz: 18px; filter: drop-shadow(0 26px 40px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(140,170,255,.18)); }
-    .thing.arrive { animation: summon .7s cubic-bezier(.2,.8,.2,1) both; }
-    @keyframes summon { from { opacity: 0; transform: perspective(900px) translateZ(-260px) rotateX(18deg); filter: blur(6px); } }
+    .thing.arrive { animation: summon .75s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes summon { from { opacity: 0; transform: perspective(900px) translateZ(-320px) rotateX(14deg) scale(.92); filter: blur(12px); }
+      55% { opacity: 1; filter: blur(1.5px); } to { filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); } }
+    /* volumetric darkness: the homepage is a deep space, not a flat colour. Two slow layers; one eases after the cursor. CSS only. */
+    #void-depth { position: fixed; inset: -10%; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(38vmax 30vmax at var(--dx, 50%) var(--dy, 42%), color-mix(in srgb, var(--void-glow, #0b0b10) 55%, #1a2350 45%) 0%, transparent 70%),
+        radial-gradient(60vmax 45vmax at 50% 118%, rgba(40,52,110,.16), transparent 70%),
+        radial-gradient(50vmax 40vmax at 12% -10%, rgba(70,40,120,.10), transparent 70%);
+      opacity: .55; animation: depthBreath 14s ease-in-out infinite alternate; }
+    @keyframes depthBreath { to { opacity: .8; transform: scale(1.04); } }
+    /* film grain dithers the dark gradient so it never bands into rings */
+    #void-depth::after { content: ''; position: absolute; inset: 0; opacity: .07; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    /* the anchor: a frosted edge, a caret that breathes instead of blinking, a focus ring that snaps in */
+    #row { background: linear-gradient(180deg, rgba(22,24,32,.78), rgba(10,11,16,.86)); backdrop-filter: blur(18px) saturate(1.3); -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.07), inset 0 -1px 0 rgba(0,0,0,.4), 0 18px 50px rgba(0,0,0,.45);
+      transition: box-shadow .42s cubic-bezier(.34,1.56,.64,1), border-color .3s ease, transform .42s cubic-bezier(.34,1.56,.64,1); }
+    #row:focus-within { transform: translateY(-1px) scale(1.006); }
+    #input { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; caret-color: #cfd8ff; caret-animation: manual; animation: caretBreath 1.6s ease-in-out infinite; }
+    @keyframes caretBreath { 0%, 100% { caret-color: rgba(207,216,255,1); } 50% { caret-color: rgba(207,216,255,.18); } }
     .vpage { transform: translate(-50%, -46%) perspective(1200px) rotateX(calc(var(--rx, 0deg) + 10deg)) rotateY(var(--ry, 0deg)) translateZ(-140px);
       transition: opacity .5s ease, transform .6s cubic-bezier(.2,.8,.2,1), filter .6s ease; filter: blur(4px);
       background: linear-gradient(160deg, rgba(34,38,56,0.82), rgba(12,13,20,0.86) 45%, rgba(20,24,44,0.84)); backdrop-filter: blur(22px) saturate(1.2);
@@ -418,7 +437,6 @@
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: .8; }
     .vpage::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
       background: radial-gradient(600px 200px at var(--gx, 30%) -10%, rgba(255,255,255,.07), transparent 60%); }
-    #row { transition: box-shadow .5s ease, border-color .5s ease; backdrop-filter: blur(14px); }
     #row:focus-within { border-color: rgba(150,175,255,.28); box-shadow: 0 0 0 1px rgba(150,175,255,.10), 0 0 40px rgba(110,140,255,.12), 0 20px 60px rgba(0,0,0,.5); }
     #dock { background: linear-gradient(to top, color-mix(in srgb, var(--void-bg, #050505) 92%, transparent) 55%, transparent); z-index: 5; }
     #hints { backdrop-filter: blur(10px); }
@@ -427,6 +445,7 @@
       .vpage, .vpage.on { transform: translate(-50%, -46%); filter: none; }
       html.no-gl[data-fx="nebula"] body::before { animation: none; }
       html, #void-glow, #void-stars, #void-aura, #void-swarm, #row { transition: none !important; }
+      #void-depth, #input { animation: none !important; }
     }
   </style>
 </head>
@@ -436,7 +455,7 @@
     <p>Void by A-to-Mind is one quiet input. Ask for anything and it appears: a clock, a timer, notes, a list, a street map, the weather, a translation, a calculation, or a page about any topic. Nothing to sign up for. It needs JavaScript to run.</p>
     <p>Link straight to an answer: <a style="color:#fff" href="/?q=weather%20in%20Tokyo">a-to-mind.com/?q=weather in Tokyo</a>. More in <a style="color:#fff" href="/llms.txt">llms.txt</a>.</p>
   </main></noscript>
-  <div id="void-glow"></div><canvas id="void-stars"></canvas>
+  <div id="void-depth" aria-hidden="true"></div><div id="void-glow"></div><canvas id="void-stars"></canvas>
   <div id="stage" aria-label="void"></div>
   <div id="dock">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
@@ -3983,6 +4002,11 @@ return { ok: true, detail: 'timer-reset' };
       addEventListener('void-fx', sync);
       requestAnimationFrame(sync);
     };
+    // the depth layer eases after the cursor; it settles and stops drawing when the pointer rests
+    { const dep = document.getElementById('void-depth'); let cx = 50, cy = 42, gx = 50, gy = 42, dr = 0;
+      const step = () => { cx += (gx - cx) * .06; cy += (gy - cy) * .06; dep.style.setProperty('--dx', cx.toFixed(2) + '%'); dep.style.setProperty('--dy', cy.toFixed(2) + '%');
+        dr = Math.abs(gx - cx) + Math.abs(gy - cy) > .05 ? requestAnimationFrame(step) : 0; };
+      if (dep && !reduce) addEventListener('pointermove', (e) => { gx = 30 + 40 * e.clientX / innerWidth; gy = 25 + 35 * e.clientY / innerHeight; if (!dr) dr = requestAnimationFrame(step); }, { passive: true }); }
     const fxGo = () => { const f = fxNow(); if (f === 'nebula') startNebula(); if (f === 'swarm') startSwarm(); };
     addEventListener('void-fx', fxGo); fxGo();
     // depth: summoned things arrive from the dark and tilt toward you
