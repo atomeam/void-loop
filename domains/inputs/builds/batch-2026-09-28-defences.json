@@ -1,0 +1,13 @@
+[
+ {
+  "source": "void-builds",
+  "type": "built",
+  "done": "ceead49efc45c8363263a1ac423843fd8e427f17cdee394de1c9f1a2a44f8208",
+  "title": "check my defences against AI-driven attacks using what I already have",
+  "built": "2026-09-28",
+  "by": "linux-helper",
+  "branch": "helper/defences",
+  "what": "Audit + fixes: /api middleware (per-connection limits, size caps, wrong-key brake, no cross-site writes, no CORS, nosniff/no-store), constant-time owner and ping keys, wider secret masking (asks, miss list, model output), injection rule for every model, agents can't start or answer a send/spend/forget or read the board, a script's click never approves, ?q= links can't start an action, https-only source links, CSP/HSTS/permissions headers; permanent adversarial tests in tools/test_void.mjs; audit in domains/void.defences.md.",
+  "note": "Records are data. Fresh evidence joining the defences want after this record reopens it."
+ }
+]

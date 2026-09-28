@@ -5,6 +5,7 @@
 // POST (Bearer READ_TOKEN)         -> refresh now (for a scheduled task; Pages Functions have no cron trigger) -> { refreshed, changed }
 // Nothing about the products is built in: without D1 the live store is read directly (not saved); with neither, the list is empty
 // and asks simply get their answer without a product line.
+import { ownerOk } from '../../lib/guard.js';
 import { publicProduct, fetchStore } from '../../lib/gumroad.js';
 import { ensureStoreTables, loadCatalog, refreshCatalog, isStale } from '../../lib/store-db.js';
 
@@ -24,8 +25,7 @@ export async function onRequestGet({ env, waitUntil }) {
 }
 
 export async function onRequestPost({ request, env }) {
-  const tok = (request.headers.get('authorization') || '').replace(/^Bearer\s+/, '');
-  if (!env.READ_TOKEN || tok !== env.READ_TOKEN) return out({ ok: false, error: 'owner only' }, 401);
+  if (!(await ownerOk(request, env))) return out({ ok: false, error: 'owner only' }, 401);
   try {
     await ensureStoreTables(env);
     const r = await refreshCatalog(env);
