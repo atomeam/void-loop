@@ -1,5 +1,6 @@
+import { ownerOk } from '../../lib/guard.js';
 export async function onRequestGet({ request: req, env }) {
-  if (!env.READ_TOKEN || req.headers.get('authorization') !== 'Bearer ' + env.READ_TOKEN) return new Response('no', { status: 401 });
+  if (!(await ownerOk(req, env))) return new Response('no', { status: 401 });
   const byAsk = new Map();
   const { results } = await env.DB.prepare('SELECT ask, count, first, last, fallback FROM void_misses').all();
   for (const r of results) byAsk.set(r.ask, r);

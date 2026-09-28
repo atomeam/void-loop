@@ -1,7 +1,7 @@
 // Void's answer engine: any ask no skill covers gets a short sourced answer.
 // Sources are fetched here (Wikipedia search + summaries); the model only writes from them.
 // Cached in D1 (void_answers) so each new question is written once; per-connection rate limit in the edge cache.
-import { FIX_SYSTEM, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
+import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
 const MODEL = '@cf/google/gemma-4-26b-a4b-it';
 const TTL_DAYS = 7, RL_MAX = 12;
 const norm = (t) => String(t || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
@@ -17,7 +17,9 @@ async function sources(ask) {
   const out = [];
   for (const h of hits.slice(0, 3)) {
     const j = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(h.title.replace(/ /g, '_')), { headers: UA }).then((r) => r.json()).catch(() => null);
-    if (j && j.extract) out.push({ title: j.title, url: (j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page) || 'https://en.wikipedia.org/wiki/' + encodeURIComponent(h.title), text: j.extract.slice(0, 1200), edited: j.timestamp || null });
+    const page = j && j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page;
+    // only Wikipedia links ever go back to the page
+    if (j && j.extract) out.push({ title: String(j.title || h.title).slice(0, 200), url: /^https:\/\/en\.wikipedia\.org\//.test(page || '') ? page : 'https://en.wikipedia.org/wiki/' + encodeURIComponent(h.title), text: j.extract.slice(0, 1200), edited: j.timestamp || null });
   }
   return out;
 }
@@ -51,7 +53,7 @@ async function fixAnswer(request, env, body) {
         ],
         max_tokens: 1600, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
-      const answer = String(pick(r)).trim();
+      const answer = redact(String(pick(r)).trim()); // never echo a secret, even one the model made up
       if (answer) return Response.json({ answer, sources: [], fix: 'model', platform });
     } catch (_) {}
   }
@@ -63,20 +65,17 @@ export async function onRequestPost({ request, env }) {
   let body = {};
   try { body = JSON.parse((await request.text()).slice(0, 20000)); } catch (_) { return new Response('bad', { status: 400 }); }
   if (body && body.mode === 'fix') return fixAnswer(request, env, body);
-  const ask = norm(body.ask);
+  // a key or password typed into Void is masked before it goes anywhere (Wikipedia, the model, the cache); a masked ask is never cached
+  const typed = norm(body.ask), ask = redact(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
   const key = await sha(ask.toLowerCase());
   // cached answer?
   try {
-    const hit = await env.DB.prepare('SELECT answer, sources, at FROM void_answers WHERE id = ? AND at > ?').bind(key, new Date(Date.now() - TTL_DAYS * 864e5).toISOString()).first();
+    const hit = masked ? null : await env.DB.prepare('SELECT answer, sources, at FROM void_answers WHERE id = ? AND at > ?').bind(key, new Date(Date.now() - TTL_DAYS * 864e5).toISOString()).first();
     if (hit) return Response.json({ answer: hit.answer, sources: JSON.parse(hit.sources), at: hit.at, cached: true });
   } catch (_) {}
   // rate limit per connection (edge cache, no writes)
-  const conn = await sha((request.headers.get('cf-connecting-ip') || '') + (env.SALT || ''));
-  const cache = caches.default, rlReq = new Request(new URL(request.url).origin + '/__void-answer/rl/' + conn);
-  const n = parseInt((await (await cache.match(rlReq))?.text()) || '0', 10);
-  if (n >= RL_MAX) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
-  await cache.put(rlReq, new Response(String(n + 1), { headers: { 'cache-control': 'max-age=60' } }));
+  if (await rateLimited(request, env)) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
 
   const src = await sources(ask);
   if (!env.AI) return Response.json({ answer: null, sources: src, note: 'no model' });
@@ -85,18 +84,18 @@ export async function onRequestPost({ request, env }) {
   try {
     const r = await env.AI.run(MODEL, {
       messages: [
-        { role: 'system', content: 'You are Void. Answer the question in 2 to 6 plain sentences, using only the numbered sources. Cite sources inline like [1]. If the sources do not answer it, say briefly what you could not find. No preamble, no markdown headings.' },
+        { role: 'system', content: 'You are Void. Answer the question in 2 to 6 plain sentences, using only the numbered sources. Cite sources inline like [1]. If the sources do not answer it, say briefly what you could not find. No preamble, no markdown headings. ' + INJECTION_RULE },
         { role: 'user', content: `Question: ${ask}\n\nSources:\n${ctx}` },
       ],
       max_tokens: 1200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
     });
-    raw = r; answer = String(pick(r)).trim();
+    raw = r; answer = redact(String(pick(r)).trim());
   } catch (e) {
     return Response.json({ answer: null, sources: src, note: 'model busy' });
   }
   if (!answer) return Response.json({ answer: null, sources: src, note: 'no answer' });
   const at = new Date().toISOString();
-  try {
+  if (!masked) try {
     await env.DB.prepare('INSERT INTO void_answers (id, ask, answer, sources, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET answer = excluded.answer, sources = excluded.sources, at = excluded.at')
       .bind(key, ask, answer, JSON.stringify(src.map(({ title, url, edited }) => ({ title, url, edited }))), at).run();
   } catch (_) {}

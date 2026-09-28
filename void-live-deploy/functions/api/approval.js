@@ -12,6 +12,7 @@
 // Tables are created on first use (ensureTables; same SQL as tools/d1/void_approvals.sql), because the deploy
 // (tools/deploy.ps1) doesn't run D1 SQL. If they can't be made, every call answers 503 and nothing runs.
 // Moving to Workflows later: domains/void.confirm-line.md.
+import { ownerOk } from '../../lib/guard.js';
 import {
   EVENT_REQUESTED, EVENT_DECISION, POLICY_VERSION, GATED, ORG_ID, WORKFLOW_ID, CONFIRM_TTL_MS,
   isGated, fingerprint, confirmLine, budgetImpact, checkDecision,
@@ -21,7 +22,7 @@ import {
 // executor is recorded as approved-but-not-run and Void says the service isn't connected yet.
 export const executors = {};
 
-const ok = (req, env) => env.READ_TOKEN && req.headers.get('authorization') === 'Bearer ' + env.READ_TOKEN;
+const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 const bad = (status, error, extra) => Response.json({ ok: false, error, ...(extra || {}) }, { status });
 const uuid = () => crypto.randomUUID();
 
@@ -116,7 +117,7 @@ async function decided(env, b) {
 }
 
 export async function onRequestPost({ request, env }) {
-  if (!ok(request, env)) return new Response('no', { status: 401 });
+  if (!(await ok(request, env))) return new Response('no', { status: 401 });
   let b = {};
   try { b = JSON.parse((await request.text()).slice(0, 8000)); } catch (_) { return bad(400, 'bad json'); }
   try {
@@ -128,7 +129,7 @@ export async function onRequestPost({ request, env }) {
 }
 
 export async function onRequestGet({ request, env }) {
-  if (!ok(request, env)) return new Response('no', { status: 401 });
+  if (!(await ok(request, env))) return new Response('no', { status: 401 });
   const id = new URL(request.url).searchParams.get('id');
   if (!id) return bad(400, 'id missing');
   try { await ensureTables(env); const f = await load(env, id); return f ? Response.json({ state: f.state, ...f.rec }) : bad(404, 'no such approval'); } catch (_) { return bad(503, 'approvals unavailable'); }

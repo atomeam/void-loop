@@ -1,6 +1,10 @@
 /*
   X-Frame-Options: DENY
   Referrer-Policy: no-referrer
+  X-Content-Type-Options: nosniff
+  Content-Security-Policy: object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'
+  Strict-Transport-Security: max-age=31536000
+  Permissions-Policy: camera=(), usb=(), serial=(), hid=(), bluetooth=(), midi=(), payment=()
 
 /sw.js
   Cache-Control: no-cache

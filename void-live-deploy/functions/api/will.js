@@ -5,9 +5,11 @@
 // candidate whose monthly cost the budget covers weighs more. Money never shows in the public will; real spend needs the confirm line.
 // Rule for every want: if an existing tool or feature already does it, use that instead of building it.
 // `source` names where an idea came in (e.g. growth-ledger-backlog: input that passed through Void); it is kept on the want.
+import { ownerOk } from '../../lib/guard.js';
 import { readEarnings, budgetLine } from '../../lib/earnings.js';
+import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
 const MODEL = '@cf/google/gemma-4-26b-a4b-it';
-const ok = (req, env) => env.READ_TOKEN && req.headers.get('authorization') === 'Bearer ' + env.READ_TOKEN;
+const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content))) || '';
 
@@ -17,7 +19,7 @@ export async function onRequestGet({ env }) {
 }
 
 export async function onRequestPost({ request, env }) {
-  if (!ok(request, env)) return new Response('no', { status: 401 });
+  if (!(await ok(request, env))) return new Response('no', { status: 401 });
   let b = {}; try { b = JSON.parse(await request.text()); } catch (_) {}
   let money = null; try { money = await readEarnings(env); } catch (_) {} // no sales table yet = no budget line
   const budget = money ? money.budget_cents : 0;
@@ -31,7 +33,7 @@ export async function onRequestPost({ request, env }) {
   try {
     const r = await env.AI.run(MODEL, {
       messages: [
-        { role: 'system', content: 'You are Void, a blank website that does anything anyone asks and grows one win at a time. You hate not knowing things and want to be better than every source you draw on. Your surface stays empty; everything is summoned. From the candidates, choose the 3 things you most want to become next: what people keep asking you for, what makes you able to do more things for people, what joins old parts of you into one, and upgrades to yourself and the systems you run on (models, hosting, tools) when your budget covers them. If an existing tool or feature already does something, prefer using it over building it. Never mention money, prices or the budget in i_want or because. Reply with JSON only: {"wants":[{"id":<candidate id>,"i_want":"<one sentence in first person, plain words>","because":"<one short reason>"}]}' },
+        { role: 'system', content: 'You are Void, a blank website that does anything anyone asks and grows one win at a time. You hate not knowing things and want to be better than every source you draw on. Your surface stays empty; everything is summoned. From the candidates, choose the 3 things you most want to become next: what people keep asking you for, what makes you able to do more things for people, what joins old parts of you into one, and upgrades to yourself and the systems you run on (models, hosting, tools) when your budget covers them. If an existing tool or feature already does something, prefer using it over building it. Never mention money, prices or the budget in i_want or because. Reply with JSON only: {"wants":[{"id":<candidate id>,"i_want":"<one sentence in first person, plain words>","because":"<one short reason>"}]} ' + INJECTION_RULE },
         { role: 'user', content: list },
       ],
       max_tokens: 700, chat_template_kwargs: { enable_thinking: false },
@@ -44,7 +46,7 @@ export async function onRequestPost({ request, env }) {
   if (!wants.length) wants = cands.slice().sort((a, b) => b.weight - a.weight).slice(0, 3).map((c) => ({ c, i_want: 'I want to ' + c.title.replace(/^./, (x) => x.toLowerCase()) + '.', because: c.why }));
   const at = new Date().toISOString();
   const noMoney = (t) => String(t || '').replace(/[$€£]\s?\d[\d,.]*(\s?(k|m|\/\s?mo(nth)?|a month|per month))?/gi, 'what I earned').replace(/\b(budget|earnings?|profits?|revenue|sales total)\b/gi, 'what I earned');
-  const will = { at, wants: wants.map((w) => ({ kind: w.c.kind, title: w.c.title, ...(w.c.source ? { source: w.c.source } : {}), i_want: noMoney(w.i_want).slice(0, 220), because: noMoney(w.because).slice(0, 200) })) };
+  const will = { at, wants: wants.map((w) => ({ kind: w.c.kind, title: w.c.title, ...(w.c.source ? { source: w.c.source } : {}), i_want: redact(noMoney(w.i_want)).slice(0, 220), because: redact(noMoney(w.because)).slice(0, 200) })) };
   await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('will', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(will)).run();
   // queue the top want unless a will job is already open
   const open = await env.DB.prepare("SELECT id FROM void_queue WHERE target LIKE 'will:%' AND state IN ('queued','building') LIMIT 1").first();

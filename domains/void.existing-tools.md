@@ -16,3 +16,8 @@ Add a row whenever an input or a run finds a tool worth reaching for. Rows are n
 | WinUI (open source) | native Windows UI | a native Windows shell | morning-brief 2026-08-29 (stale, unverified) |
 | Codex (repo agent) | an agent that works inside a code repository | a repo or coding agent | ai-landscape-2026-09-late-followup (2026-09-27 23:57, unverified) |
 | ChatGPT Work scheduled tasks | recurring tasks run on a schedule | a scheduler for recurring jobs | ai-landscape-2026-09-late-followup (2026-09-27 23:57, unverified) |
+| Snyk connector (code, open-source deps, secrets) | security scans | any security audit | defences check 2026-09-28 (needs Atom's Snyk sign-in) |
+| Semgrep + gitleaks (open source) | code scan, secrets in git history | any security audit | defences check 2026-09-28 (0 findings; gitleaks false positives only) |
+| npm audit | dependency vulnerabilities | adding a dependency | defences check 2026-09-28 (0) |
+| Cloudflare edge cache + Pages middleware (lib/guard.js) | per-connection limits, size caps, wrong-key brake | any new /api route | defences check 2026-09-28 |
+| Cloudflare WAF rate-limiting rule (dashboard) | a global outer limit | stronger rate limits | defences check 2026-09-28 (left for Atom) |

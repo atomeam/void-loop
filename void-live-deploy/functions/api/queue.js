@@ -1,6 +1,7 @@
 // Void's build queue (D1): the owner asks Void to update itself; the laptop builder picks it up.
 // GET -> { items, heartbeat } · POST { ask, target } · PATCH { id?, state?, note?, heartbeat? } — all owner token.
-const ok = (req, env) => env.READ_TOKEN && req.headers.get('authorization') === 'Bearer ' + env.READ_TOKEN;
+import { ownerOk } from '../../lib/guard.js';
+const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 const view = async (env) => {
   const { results } = await env.DB.prepare('SELECT * FROM void_queue ORDER BY at DESC LIMIT 20').all();
   const hb = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'heartbeat'").first('v');
@@ -8,8 +9,8 @@ const view = async (env) => {
 };
 const body = async (req) => { try { return JSON.parse(await req.text()); } catch (_) { return {}; } };
 const guard = (fn) => async (ctx) => {
-  if (!ok(ctx.request, ctx.env)) return new Response('no', { status: 401 });
-  try { return await fn(ctx); } catch (e) { return new Response('queue error: ' + (e && e.message), { status: 500 }); }
+  if (!(await ok(ctx.request, ctx.env))) return new Response('no', { status: 401 });
+  try { return await fn(ctx); } catch (e) { return new Response('queue error', { status: 500 }); }
 };
 
 export const onRequestGet = guard(async ({ env }) => Response.json(await view(env)));

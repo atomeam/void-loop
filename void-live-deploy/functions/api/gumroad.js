@@ -12,6 +12,7 @@
 //   subscription_restarted, dispute_won                        -> 'paid' again, only for an account a verified sale already linked
 // Pings are unsigned, so the key in the URL is always required; one sale links to one Void only (void_accounts.sale_id is unique).
 // After each ping the running total is recomputed (lib/earnings.js) and any milestone crossed is recorded once (void_milestones).
+import { sameSecret } from '../../lib/guard.js';
 import { unlockFor, sellerMatches } from '../../lib/gumroad.js';
 import { ensureStoreTables } from '../../lib/store-db.js';
 import { ensureTables } from '../../lib/void-me.js';
@@ -45,7 +46,7 @@ async function verifySale(env, p, unlock) {
 export async function onRequestPost({ request, env }) {
   const key = new URL(request.url).searchParams.get('k') || '';
   if (!env.GUMROAD_PING_KEY) return reply(503, { ok: false, error: 'ping not configured' });
-  if (key !== env.GUMROAD_PING_KEY) return reply(403, { ok: false, error: 'wrong key' });
+  if (!(await sameSecret(key, env.GUMROAD_PING_KEY))) return reply(403, { ok: false, error: 'wrong key' });
   const raw = (await request.text()).slice(0, 50000);
   const p = parsePing(raw);
   const resource = String(p.resource_name || 'sale');
