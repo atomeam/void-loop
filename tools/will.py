@@ -19,8 +19,11 @@ def call(path, body=None):
 cands = []
 # 1. what people asked for and Void couldn't do
 try:
-    for m in call("/api/misses")[:25]:
-        if m["count"] >= 1 and not str(m.get("fallback", "")).startswith("skill:"):
+    import subprocess
+    misses = [m for m in call("/api/misses")[:40] if not str(m.get("fallback", "")).startswith("skill:")]
+    covered = json.loads(subprocess.run(["node", str(ROOT / "tools" / "covered.mjs")], input=json.dumps([m["ask"] for m in misses]), capture_output=True, text=True, timeout=60).stdout or "[]")
+    for m, done in zip(misses, covered + [False] * len(misses)):
+        if not done and len(m["ask"]) > 4 and not re.match(r"^(test|zz|asdf)", m["ask"]):
             cands.append({"kind": "people asked", "title": f"learn to handle \"{m['ask']}\"", "why": f"asked {m['count']} times, last {m['last'][:10]}", "weight": 10 + 5 * m["count"]})
 except Exception as e:
     print("misses:", e)

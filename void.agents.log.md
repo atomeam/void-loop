@@ -34,3 +34,5 @@
 - 2026-09-27 claude: plan item 2 DONE. /api/answer live (Gemma 4 26B, enable_thinking false, D1 cache, rate limit, excerpt fallback); void.html routes questions + uncovered asks to it; 2 new tests (25 total). Lock released.
 
 - 2026-09-27 claude: shipped atmosphere + depth: WebGL nebula behind the void (tinted by your look, 30fps, pauses when hidden, static for reduced motion, CSS fallback), faint breathing event-horizon ring, glass panels with rim light, summons arrive from depth and tilt toward the pointer, glowing input on focus.
+
+- 2026-09-27 claude: will engine live. /api/will (Gemma chooses from candidates, weight fallback), tools/will.py + covered.mjs, task \A2M void_will every 3h 9-9. First choice queued: 'Void learns skills by itself' (plan item 3).
