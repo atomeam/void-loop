@@ -479,9 +479,11 @@
       if (log.length > 200) log = log.slice(-200);
       localStorage.setItem(LOOP_KEY, JSON.stringify(log));
     }
+    let sayCount = 0;
     function say(msg) {
       whisper.textContent = msg || '';
-      if (msg) setTimeout(() => { if (whisper.textContent === msg) whisper.textContent = ''; }, 3500);
+      const said = ++sayCount; // a repeated line gets its own 3.5 s; an older timer never clears a newer say
+      if (msg) setTimeout(() => { if (said === sayCount && whisper.textContent === msg) whisper.textContent = ''; }, 3500);
     }
     function uid(prefix) {
       return prefix + '_' + Math.random().toString(36).slice(2, 9);
