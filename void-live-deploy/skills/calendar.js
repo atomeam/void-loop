@@ -21,7 +21,7 @@ const CLEAN = (s) => String(s || '').replace(/[?!.]+$/, '').replace(/\s+/g, ' ')
 
 function gated(text) {
   const s = CLEAN(text).replace(/^(?:please\s+)/i, '');
-  if (/^(?:add|put)\s+.++\s+(?:to|on|in)\s+my calendar\b/i.test(s)) return true;
+  if (/^(?:add|put)\s+.+\s+(?:to|on|in)\s+my calendar\b/i.test(s)) return true;
   if (/^schedule\s+(?:a\s+|an\s+)?(?:meeting|call)\s+with\b/i.test(s)) return true;
   if (/^book\s+(?:a\s+|an\s+)?(?:meeting|call)\s+with\b/i.test(s)) return true;
   return false;
