@@ -32,3 +32,5 @@
 - 2026-09-27 claude: plan item 1 DONE. tools\test_void.mjs (23 checks, Edge on Victus via playwright-core), tools\deploy.ps1 (test -> deploy -> push), Loop is now git repo atomeam/void-loop (private).
 
 - 2026-09-27 claude: plan item 2 DONE. /api/answer live (Gemma 4 26B, enable_thinking false, D1 cache, rate limit, excerpt fallback); void.html routes questions + uncovered asks to it; 2 new tests (25 total). Lock released.
+
+- 2026-09-27 claude: shipped atmosphere + depth: WebGL nebula behind the void (tinted by your look, 30fps, pauses when hidden, static for reduced motion, CSS fallback), faint breathing event-horizon ring, glass panels with rim light, summons arrive from depth and tilt toward the pointer, glowing input on focus.

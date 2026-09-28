@@ -371,6 +371,39 @@
     #void-stars.on { opacity: 1; }
     #stage, #dock { z-index: 1; }
     body.void-quiet { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; font-weight: 300; }
+    /* ---- Atmosphere + depth (the void stays empty; it just breathes) ---- */
+    #void-aura { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 2.4s ease; }
+    #void-aura.on { opacity: 1; }
+    html.no-gl body::before { content: ''; position: fixed; inset: -20%; z-index: 0; pointer-events: none;
+      background: radial-gradient(40% 35% at 30% 40%, color-mix(in srgb, var(--void-glow, #0b0b10) 70%, #1a1030), transparent 70%),
+                  radial-gradient(35% 30% at 70% 60%, color-mix(in srgb, var(--void-glow, #0b0b10) 60%, #06202a), transparent 70%);
+      filter: blur(40px); opacity: .7; animation: auraDrift 60s ease-in-out infinite alternate; }
+    @keyframes auraDrift { to { transform: translate(3%, -2%) scale(1.08); } }
+    #stage { perspective: 1400px; }
+    .thing { transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
+      transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .35s ease; filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); }
+    .thing.lift { --tz: 18px; filter: drop-shadow(0 26px 40px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(140,170,255,.18)); }
+    .thing.arrive { animation: summon .7s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes summon { from { opacity: 0; transform: perspective(900px) translateZ(-260px) rotateX(18deg); filter: blur(6px); } }
+    .vpage { transform: translate(-50%, -46%) perspective(1200px) rotateX(calc(var(--rx, 0deg) + 10deg)) rotateY(var(--ry, 0deg)) translateZ(-140px);
+      transition: opacity .5s ease, transform .6s cubic-bezier(.2,.8,.2,1), filter .6s ease; filter: blur(4px);
+      background: linear-gradient(160deg, rgba(34,38,56,0.82), rgba(12,13,20,0.86) 45%, rgba(20,24,44,0.84)); backdrop-filter: blur(22px) saturate(1.2);
+      box-shadow: 0 40px 120px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,.06), inset 0 1px 0 rgba(255,255,255,.10), 0 0 60px rgba(110,140,255,.06); }
+    .vpage.on { transform: translate(-50%, -46%) perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0); filter: none; }
+    .vpage::before { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+      background: conic-gradient(from var(--rim, 210deg), rgba(140,170,255,.45), rgba(255,255,255,.04) 25%, rgba(200,140,255,.30) 55%, rgba(255,255,255,.04) 80%, rgba(140,170,255,.45));
+      -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: .8; }
+    .vpage::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+      background: radial-gradient(600px 200px at var(--gx, 30%) -10%, rgba(255,255,255,.07), transparent 60%); }
+    #row { transition: box-shadow .5s ease, border-color .5s ease; backdrop-filter: blur(14px); }
+    #row:focus-within { border-color: rgba(150,175,255,.28); box-shadow: 0 0 0 1px rgba(150,175,255,.10), 0 0 40px rgba(110,140,255,.12), 0 20px 60px rgba(0,0,0,.5); }
+    #dock { background: linear-gradient(to top, color-mix(in srgb, var(--void-bg, #050505) 92%, transparent) 55%, transparent); z-index: 5; }
+    #hints { backdrop-filter: blur(10px); }
+    @media (prefers-reduced-motion: reduce) {
+      .thing, .vpage, .thing.arrive { animation: none !important; transition: opacity .2s ease !important; }
+      .vpage, .vpage.on { transform: translate(-50%, -46%); filter: none; }
+      html.no-gl body::before { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -3088,6 +3121,76 @@ return { ok: true, detail: 'timer-reset' };
     load();
     render();
     window.addEventListener('resize', () => render());
+  </script>
+  <script>
+  // ---- Atmosphere: a slow nebula behind the void (WebGL, tinted by your look), plus depth on everything summoned ----
+  (function () {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const cv = document.createElement('canvas'); cv.id = 'void-aura'; document.body.prepend(cv);
+    const gl = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false, powerPreference: 'low-power' });
+    if (!gl) { document.documentElement.classList.add('no-gl'); cv.remove(); }
+    else {
+      const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+      const fs = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform vec3 g;uniform vec3 b;
+        float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+        float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+        float fb(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
+        void main(){vec2 uv=(gl_FragCoord.xy-.5*r)/r.y;vec2 q=uv+m*.035;
+          float T=t*.018;float f1=fb(q*1.6+vec2(T,-T*.6));float f2=fb(q*2.4+f1*1.3-vec2(T*.7,T));
+          float neb=smoothstep(.3,.95,f2)*.85;
+          vec3 tint=mix(g*2.2+vec3(.035,.02,.07),vec3(.05,.07,.16),.35);vec3 tint2=mix(g*1.6+vec3(.07,.02,.05),vec3(.12,.04,.14),.5);
+          vec3 c=b+tint*neb+tint2*pow(f1,3.)*.35;
+          float d=length(uv);float ring=exp(-pow((d-.34-sin(t*.21)*.006)*38.,2.))*.035;c+=vec3(.55,.65,1.)*ring*(.6+.4*sin(t*.3));
+          c*=1.-smoothstep(.25,1.15,d)*.55;
+          float s=step(.9985,h(floor(gl_FragCoord.xy*.5)))*(.35+.65*n(gl_FragCoord.xy*.02+t*.1));c+=s*.35;
+          gl_FragColor=vec4(c,1.);}`;
+      const sh = (tp, src) => { const s = gl.createShader(tp); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+      const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr);
+      if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { document.documentElement.classList.add('no-gl'); cv.remove(); }
+      else {
+        gl.useProgram(pr);
+        const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+        const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+        const U = (k) => gl.getUniformLocation(pr, k); const uR = U('r'), uT = U('t'), uM = U('m'), uG = U('g'), uB = U('b');
+        const hex = (v, d) => { const m = /#?([0-9a-f]{6})/i.exec(v || '') || [0, d]; const x = parseInt(m[1], 16); return [(x >> 16 & 255) / 255, (x >> 8 & 255) / 255, (x & 255) / 255]; };
+        let mx = 0, my = 0, tx = 0, ty = 0, last = 0, raf = 0;
+        const scale = Math.min(1, 0.6 / Math.max(1, devicePixelRatio / 1.5));
+        const size = () => { cv.width = Math.round(innerWidth * scale); cv.height = Math.round(innerHeight * scale); gl.viewport(0, 0, cv.width, cv.height); };
+        size(); addEventListener('resize', size);
+        addEventListener('pointermove', (e) => { tx = e.clientX / innerWidth - .5; ty = .5 - e.clientY / innerHeight; }, { passive: true });
+        const draw = (now) => {
+          raf = 0;
+          if (now - last > 33 || reduce) {
+            last = now; mx += (tx - mx) * .04; my += (ty - my) * .04;
+            const cs = getComputedStyle(document.documentElement);
+            gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, reduce ? 40 : now / 1000); gl.uniform2f(uM, mx, my);
+            gl.uniform3fv(uG, hex(cs.getPropertyValue('--void-glow'), '0b0b10')); gl.uniform3fv(uB, hex(cs.getPropertyValue('--void-bg'), '050505'));
+            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+          }
+          if (!reduce && !document.hidden) raf = requestAnimationFrame(draw);
+        };
+        document.addEventListener('visibilitychange', () => { if (!document.hidden && !raf) raf = requestAnimationFrame(draw); });
+        requestAnimationFrame((t) => { draw(t); cv.classList.add('on'); });
+        if (reduce) addEventListener('storage', () => requestAnimationFrame(draw));
+      }
+    }
+    // depth: summoned things arrive from the dark and tilt toward you
+    if (!reduce) {
+      new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.classList && n.classList.contains('thing') && !n.dataset.seen) { n.dataset.seen = '1'; if (performance.now() > 1500) { n.classList.add('arrive'); setTimeout(() => n.classList.remove('arrive'), 800); } } })
+        .observe(document.getElementById('stage'), { childList: true });
+      let hot = null;
+      addEventListener('pointermove', (e) => {
+        const el = e.target.closest && e.target.closest('.vpage, .thing');
+        if (hot && hot !== el) { hot.style.removeProperty('--rx'); hot.style.removeProperty('--ry'); hot.classList.remove('lift'); }
+        hot = el; if (!el) return;
+        const b = el.getBoundingClientRect(); const x = (e.clientX - b.left) / b.width - .5, y = (e.clientY - b.top) / b.height - .5;
+        const k = el.classList.contains('vpage') ? 3 : 7;
+        el.style.setProperty('--rx', (-y * k).toFixed(2) + 'deg'); el.style.setProperty('--ry', (x * k).toFixed(2) + 'deg');
+        if (el.classList.contains('vpage')) { el.style.setProperty('--gx', ((x + .5) * 100).toFixed(0) + '%'); el.style.setProperty('--rim', (210 + x * 90).toFixed(0) + 'deg'); }
+        else if (!e.buttons) el.classList.add('lift');
+      }, { passive: true });
+    }
+  })();
   </script>
 </body>
 </html>
