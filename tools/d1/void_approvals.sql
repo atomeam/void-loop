@@ -1,5 +1,6 @@
 -- The confirm line (plan item 7): paused actions and their decisions, plus the ledger they write.
--- Run once:  npx wrangler d1 execute a-to-mind-board --remote --file tools/d1/void_approvals.sql
+-- /api/approval creates these itself on first use (the deploy doesn't run SQL). To make them ahead of time:
+--   npx wrangler d1 execute a-to-mind-board --remote --file tools/d1/void_approvals.sql
 CREATE TABLE IF NOT EXISTS void_approvals (
   id TEXT PRIMARY KEY,          -- approvalId (= correlateKey)
   state TEXT NOT NULL,          -- pending | deciding | done | approved-not-run | failed | reject | timeout | escalate

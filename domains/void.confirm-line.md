@@ -55,9 +55,10 @@ None are connected yet, so an approved action is recorded as `approved-not-run` 
 To connect one: add `executors['email.send'] = async (args, env) => { ... }` in `functions/api/approval.js` (or import it there).
 It is only ever called from `resumeOnDecision`, after an in-time approve with a matching fingerprint.
 
-## Setup before deploying
-`npx wrangler d1 execute a-to-mind-board --remote --file tools/d1/void_approvals.sql` (two tables, one index).
-Until the tables exist `/api/approval` answers 503 and the page says "couldn't ask for a yes, nothing sent" (fails closed).
+## Setup
+None needed: `/api/approval` creates its two tables and one index on first use (`CREATE ... IF NOT EXISTS`, once per isolate),
+because `tools\deploy.ps1` doesn't run D1 SQL. `tools/d1/void_approvals.sql` is the same SQL if you'd rather make them ahead of time.
+If the tables can't be made or reached, `/api/approval` answers 503 and the page says "couldn't ask for a yes, nothing sent" (fails closed).
 Writes per gated action: 1 (request) + 3 (claim, ledger, final record). Watch the D1 free-tier daily limit.
 
 ## The Workflows gap

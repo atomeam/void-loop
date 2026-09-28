@@ -28,17 +28,23 @@ const json = (body) => ({ status: 200, contentType: 'application/json', headers:
 // with a stand-in email executor so we can see exactly when an action runs.
 const approvalFn = await import(new URL('../void-live-deploy/functions/api/approval.js', import.meta.url).href);
 const OWNER = 'test-owner-key-0123456789';
-function memoryD1() {
-  const approvals = new Map(), ledger = [];
+function memoryD1({ broken = false } = {}) {
+  // Like D1: the tables don't exist until /api/approval makes them; broken = the database can't be reached.
+  const approvals = new Map(), ledger = [], tables = new Set();
+  const need = (t) => { if (broken) throw new Error('D1 unavailable'); if (!tables.has(t)) throw new Error('no such table: ' + t); };
   const exec = (sql, a) => {
-    if (/^INSERT INTO void_approvals/.test(sql)) { approvals.set(a[0], { state: a[1], record: a[2] }); return { meta: { changes: 1 } }; }
-    if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return { meta: { changes: 0 } }; approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
-    if (/^UPDATE void_approvals/.test(sql)) { approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
-    if (/^INSERT INTO void_ledger/.test(sql)) { ledger.push({ id: a[0], approval_id: a[1], kind: a[2] }); return { meta: { changes: 1 } }; }
+    if (broken) throw new Error('D1 unavailable');
+    const made = /^CREATE (?:TABLE|INDEX) IF NOT EXISTS (\w+)/.exec(sql);
+    if (made) { tables.add(made[1]); return { meta: { changes: 0 } }; }
+    if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2] }); return { meta: { changes: 1 } }; }
+    if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { need('void_approvals'); const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return { meta: { changes: 0 } }; approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
+    if (/^UPDATE void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
+    if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2] }); return { meta: { changes: 1 } }; }
     throw new Error('unexpected sql: ' + sql);
   };
-  const first = (sql, a) => { if (/^SELECT state, record FROM void_approvals/.test(sql)) return approvals.get(a[0]) || null; throw new Error('unexpected sql: ' + sql); };
-  return { approvals, ledger, prepare: (sql) => ({ bind: (...a) => ({ run: async () => exec(sql, a), first: async () => first(sql, a) }) }) };
+  const first = (sql, a) => { if (/^SELECT state, record FROM void_approvals/.test(sql)) { need('void_approvals'); return approvals.get(a[0]) || null; } throw new Error('unexpected sql: ' + sql); };
+  const stmt = (sql, a = []) => ({ sql, a, bind: (...b) => stmt(sql, b), run: async () => exec(sql, a), first: async () => first(sql, a) });
+  return { approvals, ledger, tables, prepare: (sql) => stmt(sql), batch: async (list) => list.map((q) => exec(q.sql, q.a)) };
 }
 const gate = { env: { READ_TOKEN: OWNER, DB: memoryD1() }, calls: [], ran: [] };
 approvalFn.executors['email.send'] = async (args) => { gate.ran.push(args); return { id: 'sent-' + gate.ran.length }; };
@@ -159,6 +165,15 @@ try {
     && ['decision', 'actor', 'reason', 'decidedAt', 'ledgerEntryId'].every((k) => k in wrongFp.body);
   check('confirm line: server rules (reason, fingerprint, once, read-only, v0 fields)', noReason.status === 400 && escNoReason.status === 400 && wrongFp.status === 409 && wrongFp.body.ran === false && replay.status === 409 && readOnly.status === 400 && gate.ran.length === 1 && v0,
     [noReason.status, escNoReason.status, wrongFp.status, replay.status, readOnly.status, gate.ran.length, v0].join(','));
+  // The deploy doesn't run tools/d1/void_approvals.sql: the tables appear on first use; a database that can't make them fails closed.
+  const madeAll = ['void_approvals', 'void_ledger', 'void_ledger_at'].every((x) => gate.env.DB.tables.has(x));
+  const good = gate.env.DB, ranBefore = gate.ran.length, askedBefore = sent('a2m.approval.requested').length;
+  gate.env.DB = memoryD1({ broken: true });
+  await t.ask('send an email to jane@x.com saying hi', 900); const brokenLine = await t.whisper();
+  const brokenApi = await call({ type: 'a2m.approval.requested', toolName: 'email.send', args: { to: 'a@b.c', body: 'x' } });
+  gate.env.DB = good;
+  check('confirm line: tables made on first use; missing table fails closed', madeAll && /couldn't ask for a yes, nothing sent/.test(brokenLine) && !/Yes \/ No/.test(brokenLine) && brokenApi.status === 503 && gate.ran.length === ranBefore && sent('a2m.approval.requested').length === askedBefore + 1,
+    [madeAll, brokenLine, brokenApi.status, gate.ran.length].join(' | '));
   await t.ctx.close();
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));
