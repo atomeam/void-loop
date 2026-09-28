@@ -28,3 +28,5 @@
 - 2026-09-27 claude: /api/queue POST wakes the on-request builder when Pages secrets BUILDER_WEBHOOK_URL (+ BUILDER_WEBHOOK_KEY) exist; queue note shows 'builder woken' or 'builder wake failed <code>'. Deployed f03aee1f.
 
 - 2026-09-27 claude: wrote domains\void.plan.md (the plan everyone follows) and pointed STANDING.md at it.
+
+- 2026-09-27 claude: plan item 1 DONE. tools\test_void.mjs (23 checks, Edge on Victus via playwright-core), tools\deploy.ps1 (test -> deploy -> push), Loop is now git repo atomeam/void-loop (private).
