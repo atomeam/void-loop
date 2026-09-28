@@ -94,25 +94,35 @@ def gather(cap=60):
             continue
         root = w["joins"] if w.get("joins") in by_id else r.get("id") or id(r)
         groups.setdefault(root, []).append(r)
+    today = __import__("datetime").date.today().isoformat()
     for root, rs in groups.items():
         base = by_id.get(root, rs[0])
-        title = str((base.get("want") or {}).get("title") or next((x["want"].get("title") for x in rs if x["want"].get("title")), ""))
-        if not title:
-            continue
         def wt(x):
             v = int(x["want"].get("weight", 8))
             return min(v, 4) if x.get("stale") else v
         fresh = [x for x in rs if not x.get("stale")]
-        lead = max(fresh or rs, key=lambda x: (wt(x), str(x.get("brief_date") or x.get("hour") or "")))
+        lead = max(fresh or rs, key=lambda x: (wt(x), str(x.get("brief_date") or x.get("hour") or x.get("received") or "")))
+        if str(lead["want"].get("until") or "9999") < today:  # a dated watch that has passed
+            continue
+        # fresh evidence may restate the want (e.g. a tiered model stack instead of a one-off evaluation); stale never does
+        title = str((lead["want"].get("title") if lead in fresh else "") or (base.get("want") or {}).get("title") or next((x["want"].get("title") for x in rs if x["want"].get("title")), ""))
+        if not title:
+            continue
         why = str(lead["want"].get("why", ""))
         if fresh:
             kind = "idea from input"
-            if len(rs) > 1:
-                why += f" (joins {len(rs) - 1} earlier record{'s' if len(rs) > 2 else ''})"
+            if len(rs) > 1:  # the join count always survives the 240-character cut
+                tail = f" (joins {len(rs) - 1} earlier record{'s' if len(rs) > 2 else ''})"
+                why = why[:240 - len(tail)] + tail
         else:
             kind = "idea from stale input"
             why = f"stale input from {lead.get('brief_date') or lead.get('hour') or 'an old run'}, unverified: " + why
-        cands.append({"kind": kind, "title": title[:160], "why": why[:240], "weight": max(wt(x) for x in rs), "source": str(base.get("source"))[:60]})
+        cands.append({"kind": kind, "title": title[:160], "why": why[:240], "weight": max(wt(x) for x in rs), "source": str(lead.get("source") or base.get("source"))[:60]})
+    # budget inputs (e.g. reported model price drops) go on the budget-related upgrades: a better model for the same money
+    for note in [str(r["budget_input"]) for r in recs if r.get("budget_input") and not r.get("stale")][-1:]:
+        for c in cands:
+            if c["kind"] == "upgrade myself" and "model" in c["title"]:
+                c["why"] = (c["why"] + " (" + note + ")")[:240]
 
     # keep it to the strongest 60, unique titles
     seen, out = set(), []

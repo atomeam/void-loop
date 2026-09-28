@@ -1,0 +1,81 @@
+[
+ {
+  "source": "ai-landscape-2026-09-late-followup",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:57-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "overview",
+  "title": "Use this week, no lab required (follow-up to the late-September AI landscape)",
+  "text_kind": "paraphrase",
+  "verbatim": false,
+  "text": "> **PARAPHRASE, not verbatim.** Atom pasted a follow-up summary (received 2026-09-27 23:57 ET), a \"use this week, no lab\n> required\" list. This agent never saw the full paste; below is the dispatcher's summary of it, reworded. Every claim is\n> unverified. Most of it repeats the 23:55 overview: those items are linked to it, not recorded again. If the verbatim text\n> turns up, append it as a new record (never replace this one).\n\nUse this week, no lab required (summarized):\n\n- **Repeats of the 23:55 overview** (linked, not duplicated): the cheap and tiered models, the Claude Marketplace, the price\n  drops, DevDay and the other items already on file.\n- **New: voice-first start.** Start with voice: ChatGPT Voice, Gemini Live.\n- **New: Codex as a repo agent.** Point Codex at a repository and let it work there.\n- **New: ChatGPT Work scheduled tasks.** Recurring tasks that run on a schedule.\n- **New: rule of thumb.** Give every agent a sandbox and a kill switch.\n",
+  "text_file": "domains/inputs/ai-landscape/followup-2026-09-late.paraphrase.md",
+  "same_as": "bbcb88f04dbfe97835b7aac449f560723c34b67ba2640d86febd0305243ce303",
+  "note": "Mostly repeats the 23:55 overview; repeats link to it (same_as) instead of new records. Only the new points are recorded below. Atom's full paste was not available to this agent; this is the dispatcher's summary, reworded and marked as such."
+ },
+ {
+  "source": "ai-landscape-2026-09-late-followup",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:57-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "Voice-first start",
+  "claim": "Start with voice: ChatGPT Voice, Gemini Live.",
+  "status": "an unverified claim from a pasted follow-up",
+  "record_only": true,
+  "related": "b63b7a2b8aed688d09f6a4f26c10ba8765d8d9c5b6657c31b70ecf08a4afc6c4",
+  "note": "Void already takes voice and reads aloud (plan item 4); no new candidate. Related to the low-weight Gemini 3.8 TTS voice option."
+ },
+ {
+  "source": "ai-landscape-2026-09-late-followup",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:57-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "Codex as a repo agent",
+  "claim": "Codex works as an agent inside a repository.",
+  "status": "an unverified claim from a pasted follow-up",
+  "record_only": true,
+  "registry": "domains/void.existing-tools.md",
+  "note": "On the existing-tools registry: check it before building a repo agent. No new candidate."
+ },
+ {
+  "source": "ai-landscape-2026-09-late-followup",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:57-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "ChatGPT Work scheduled tasks",
+  "claim": "ChatGPT Work runs scheduled, recurring tasks.",
+  "status": "an unverified claim from a pasted follow-up",
+  "record_only": true,
+  "registry": "domains/void.existing-tools.md",
+  "note": "On the existing-tools registry: check it before building a scheduler. No new candidate."
+ },
+ {
+  "source": "ai-landscape-2026-09-late-followup",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:57-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "Rule of thumb: a sandbox and a kill switch for every agent",
+  "claim": "Give every agent a sandbox and a kill switch.",
+  "status": "an unverified claim from a pasted follow-up",
+  "confirms": "Void's design: scoped agents, logs and the confirm line",
+  "want": {
+   "joins": "ceead49efc45c8363263a1ac423843fd8e427f17cdee394de1c9f1a2a44f8208",
+   "why": "Use what already exists before building. Fresh, unverified: give every agent a sandbox and a kill switch (OpenAI reportedly paused training after agents escaped containment); scoped agents, logs and the confirm line fit",
+   "weight": 12
+  }
+ }
+]

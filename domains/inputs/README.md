@@ -2,7 +2,7 @@
 
 Atom: "those are backlog runs, it's ok, we can still assimilate and ingest them as we do with all info."
 
-- One folder per source (`growth-ledger/`, `morning-brief/`, ...). Each holds `records.jsonl`: one JSON record per line, **append-only, never shed**.
+- One folder per source (`growth-ledger/`, `morning-brief/`, `ai-landscape/`, ...). Each holds `records.jsonl`: one JSON record per line, **append-only, never shed**.
   Lines are hash-chained (`id` = sha256(previous id + canonical JSON), `prev` = the line before), so an edit or a dropped
   line breaks the chain. `node tools/intake.mjs verify <file>` checks it; `node tools/intake.mjs append <file> <batch.json>`
   is the only way in (repeats are skipped, nothing is rewritten). The test suite checks both, plus that every committed
@@ -14,4 +14,7 @@ Atom: "those are backlog runs, it's ok, we can still assimilate and ingest them 
   product by being ingested.
 - Old input is flagged `stale: true` (with its own date): the will engine marks it stale and never weighs it above 4, so it's
   never treated as current news. Claims from pasted briefs are recorded as unverified (`verified: false`).
+- A want with `joins: <record id>` is more evidence for that record's want: one candidate, weighed by its strongest evidence
+  (fresh evidence isn't capped and may restate the want). `same_as` only links a duplicate. `until` ends a dated watch.
+  `budget_input` notes go on the model upgrade the budget pays for. Text that isn't verbatim is stored and marked as a paraphrase.
 - Big raw files (zips) stay out of git under `<source>/raw/` (gitignored); the sha256 and file list are committed instead.
