@@ -17,6 +17,9 @@ $out
 Pop-Location
 if ("$out" -notmatch 'Deployment complete') { Write-Host 'deploy failed'; exit 1 }
 Push-Location $loop
-git add -A; git commit -q -m $msg; git push -q origin main 2>&1 | Out-Null
+git add -A; git commit -q -m $msg
+# CI (.github/workflows/ship-helper.yml) can move main too: replay this commit on top before pushing.
+git pull -q --rebase origin main 2>&1 | Out-Null; if ($LASTEXITCODE -ne 0) { git rebase --abort 2>&1 | Out-Null }
+git push -q origin main 2>&1 | Out-Null; if ($LASTEXITCODE -ne 0) { Write-Host 'push to GitHub failed: git pull --rebase origin main, then git push origin main' }
 git log -1 --format="pushed %h %s"
 Pop-Location
