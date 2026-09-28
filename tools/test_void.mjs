@@ -994,9 +994,8 @@ try {
   const joiner = fresh2.find((r) => r.want && r.want.joins);
   const sameAs = dig2.filter((r) => r.same_as);
   const mbc = wc.filter((c) => c.source === 'morning-brief');
-  const defence = mbc.filter((c) => /^check my defences against AI-driven attacks/.test(c.title));
+  const defence = wc.filter((c) => /^check my defences against AI-driven attacks/.test(c.title)); // later input (ai-landscape) joins it too
   const usChina = mbc.find((c) => /US–China AI dialogue/.test(c.title));
-  const evalM = mbc.find((c) => /^evaluate Qwen3\.8-Flash-Next/.test(c.title));
   const aar = mbc.find((c) => /Automated Alignment Researcher/.test(c.title));
   const NEW2 = /Hormuz|Fairford|Brnabi|Kyivstar|Qwen|Muse Glimmer|GLM-5|Hy4|LAION|Alignment Researcher/i;
   check('intake: the fresh 2026-09-28 brief (current, unverified) and the stale Aug 28-29 AI digest are on file; fresh evidence lifts the one defences want, duplicates link instead of adding candidates, nothing reaches the screen',
@@ -1006,12 +1005,47 @@ try {
     && sameAs.length === 2 && sameAs.every((r) => byId.get(r.same_as) && byId.get(r.same_as).brief_date === '2026-08-29' && !r.want)
     && fresh2.concat(dig2).filter((r) => r.want).length === 4 && !fresh2.some((r) => r.want && /world|business|markets|weather/.test(r.section))
     && dig2.filter((r) => /LAION|Lambda|Cursor/.test(r.topic)).every((r) => !r.want) && dig2.find((r) => /Cursor/.test(r.topic)).signal_kind === 'tooling-dependency'
-    && defence.length === 1 && defence[0].weight === 10 && defence[0].kind === 'idea from input' && /Use what already exists/.test(defence[0].why) && /joins 1 earlier record/.test(defence[0].why)
+    && defence.length === 1 && defence[0].weight >= 10 && defence[0].kind === 'idea from input' && /Use what already exists/.test(defence[0].why) && /joins \d earlier record/.test(defence[0].why)
     && usChina && usChina.weight === 6 && usChina.kind === 'idea from input' && /Use what already exists/.test(usChina.why)
-    && evalM && evalM.weight <= 4 && evalM.kind === 'idea from stale input' && /Workers AI already offers/.test(evalM.title) && aar && aar.weight <= 4 && aar.kind === 'idea from stale input'
-    && mbc.filter((c) => /Machine Age/.test(c.title)).length === 1 && mbc.filter((c) => /blacklisting of Anthropic/.test(c.title)).length === 1 && mbc.length === 7
+    && aar && aar.weight <= 4 && aar.kind === 'idea from stale input'
+    && mbc.filter((c) => /Machine Age/.test(c.title)).length === 1 && mbc.filter((c) => /blacklisting of Anthropic/.test(c.title)).length === 1 && mbc.length === 5
     && !NEW2.test(ivText) && !NEW2.test(pageSrc),
     JSON.stringify({ fresh: fresh2.length, dig: dig2.length, cands: mbc.map((c) => c.weight + ' ' + c.kind.slice(-11) + ' ' + c.title.slice(0, 28)) }));
+  // Third input (2026-09-27 23:55 ET): the late-September AI landscape, CURRENT and unverified, stored as a marked paraphrase.
+  // Only Void-relevant items become candidates, each with "use what exists"; it restates and lifts the stale model evaluation,
+  // lifts the defences want again, puts the Claude Marketplace on the existing-tools registry and feeds the budget line.
+  const AL = path.join(repo, 'domains', 'inputs', 'ai-landscape', 'records.jsonl');
+  const alV = intake.verify(AL), al = intake.read(AL);
+  const alText = fs.readFileSync(path.join(repo, 'domains', 'inputs', 'ai-landscape', 'overview-2026-09-late.paraphrase.md'), 'utf8');
+  const al0 = al.filter((r) => r.source === 'ai-landscape-2026-09-late'), ov = al0.find((r) => r.type === 'overview');
+  const alc = wc.filter((c) => /^ai-landscape-2026-09-late/.test(c.source || ''));
+  const tier = wc.filter((c) => /tiered model stack/.test(c.title)), mkt = alc.find((c) => /Claude Marketplace/.test(c.title)), dev = alc.find((c) => /DevDay/.test(c.title)), tts = alc.find((c) => /Gemini 3\.8 TTS/.test(c.title));
+  const up = wc.find((c) => c.kind === 'upgrade myself' && /stronger model/.test(c.title));
+  const registry = fs.readFileSync(path.join(repo, 'domains', 'void.existing-tools.md'), 'utf8');
+  const NEW3 = /MiMo|DeepSeek V4|Claude Marketplace|DevDay|World Labs|Open-RAIL|Gemini 3\.8|GLiNER/i;
+  check('intake: the late-September AI landscape (current, unverified, marked paraphrase) feeds the will: tiered model stack lifts the stale evaluation, defences lifted again, Claude Marketplace on the tools registry, DevDay watch, price drops on the budget line; nothing on screen',
+    alV.ok && al0.length === 11 && al0.every((r) => r.source === 'ai-landscape-2026-09-late' && r.stale === false && r.verified === false && /^2026-09-27T23:55/.test(r.received))
+    && ov && ov.text_kind === 'paraphrase' && ov.verbatim === false && lf(ov.text) === lf(alText) && /^> \*\*PARAPHRASE, not verbatim\.\*\*/.test(alText) && /The last two weeks of September 2026 have been unusually dense/.test(alText)
+    && al0.filter((r) => r.want).length === 5 && al0.filter((r) => r.record_only).length === 4 && al0.filter((r) => r.record_only).every((r) => !r.want) && al0.some((r) => r.budget_input && !r.want)
+    && tier.length === 1 && tier[0].weight === 11 && tier[0].kind === 'idea from input' && tier[0].source === 'ai-landscape-2026-09-late' && /Workers AI already hosts/.test(tier[0].why) && /joins 1 earlier record/.test(tier[0].why) && !wc.some((c) => /^evaluate Qwen/.test(c.title))
+    && defence[0].weight === 12 && /joins \d earlier records\)$/.test(defence[0].why) && /^ai-landscape-2026-09-late/.test(defence[0].source)
+    && mkt && mkt.weight === 9 && /\| Claude Marketplace \(2,000\+ connectors\) \|/.test(registry) && dev && dev.weight === 8 && tts && tts.weight === 2
+    && alc.length === 5 && alc.every((c) => /Use what already exists before building/.test(c.why)) && up && /40-50% price drops/.test(up.why)
+    && !NEW3.test(ivText) && !NEW3.test(pageSrc),
+    JSON.stringify({ alV, n: al.length, cands: alc.map((c) => c.weight + ' ' + c.title.slice(0, 30)), up: up && up.why.slice(-60) }));
+  // Follow-up (23:57 ET), "use this week, no lab required": mostly repeats, so it links to the 23:55 overview; the new points are
+  // recorded (voice-first, Codex, ChatGPT Work scheduled tasks on the registry) and the kill-switch rule backs the defences want.
+  const fu = al.filter((r) => r.source === 'ai-landscape-2026-09-late-followup'), fov = fu.find((r) => r.type === 'overview');
+  const fuText = fs.readFileSync(path.join(repo, 'domains', 'inputs', 'ai-landscape', 'followup-2026-09-late.paraphrase.md'), 'utf8');
+  const kill = fu.find((r) => r.want);
+  check('intake: the 23:57 follow-up links its repeats to the overview, records voice-first, Codex and scheduled tasks without new candidates, and the kill-switch rule backs the defences want',
+    al.length === 16 && fu.length === 5 && fu.every((r) => r.stale === false && r.verified === false && /^2026-09-27T23:57/.test(r.received))
+    && fov && fov.same_as === ov.id && fov.text_kind === 'paraphrase' && lf(fov.text) === lf(fuText) && /^> \*\*PARAPHRASE, not verbatim\.\*\*/.test(fuText)
+    && fu.filter((r) => r.record_only).length === 3 && fu.filter((r) => r.want).length === 1 && kill.want.joins === 'ceead49efc45c8363263a1ac423843fd8e427f17cdee394de1c9f1a2a44f8208' && /sandbox and a kill switch/.test(kill.claim)
+    && /\| Codex \(repo agent\) \|/.test(registry) && /\| ChatGPT Work scheduled tasks \|/.test(registry)
+    && defence.length === 1 && defence[0].weight === 12 && defence[0].source === 'ai-landscape-2026-09-late-followup' && /kill switch/.test(defence[0].why) && /joins 3 earlier records\)$/.test(defence[0].why)
+    && !wc.some((c) => /Codex|ChatGPT Work|ChatGPT Voice|Gemini Live/.test(c.title)) && !/Codex|ChatGPT Work|Gemini Live|kill switch/i.test(ivText + pageSrc),
+    JSON.stringify({ n: fu.length, d: defence[0] && [defence[0].weight, defence[0].source, defence[0].why.slice(-40)] }));
   await IV.ctx.close();
   }
 } catch (e) {

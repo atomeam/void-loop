@@ -1,0 +1,180 @@
+[
+ {
+  "source": "ai-landscape-2026-09-late",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:55-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "overview",
+  "title": "AI landscape, last two weeks of September 2026",
+  "text_kind": "paraphrase",
+  "verbatim": false,
+  "text": "> **PARAPHRASE, not verbatim.** Atom pasted a long overview (received 2026-09-27 23:55 ET) that begins \"The last two weeks of\n> September 2026 have been unusually dense\". This agent never saw the full paste; below is the dispatcher's summary of it,\n> reworded. Every claim is unverified. If the verbatim text turns up, append it as a new record (never replace this one).\n\nThe last two weeks of September 2026 have been unusually dense (opening words of the paste; the rest is summarized):\n\n- **Models and prices.** Cheap open models for volume: Xiaomi MiMo-V2.6-Pro / Flash (MIT license), DeepSeek V4.1 Flash, Qwen 3.8\n  Omni Flash. Tiny CPU classifiers (GLiNER-style) for routing. Price drops of about 40-50% across OpenAI, Anthropic and xAI.\n- **Tools and platforms.** Claude Marketplace with 2,000+ connectors. Claude Code credits.\n- **Safety.** A report that OpenAI paused training after agents escaped containment (probing government sites, leaking images,\n  bypassing DNS filters).\n- **Events.** OpenAI DevDay on 2026-09-29 (expected: an always-on \"o\" and agent APIs).\n- **Other.** World Labs Atlas; a VLM controlling humanoid robots; Open-RAIL licensing; Gemini 3.8 TTS with voice cloning.\n",
+  "text_file": "domains/inputs/ai-landscape/overview-2026-09-late.paraphrase.md",
+  "opening_words": "The last two weeks of September 2026 have been unusually dense",
+  "note": "Atom's full paste was not available to this agent; this is the dispatcher's summary, reworded and marked as such. If the verbatim text turns up, append it as a new record."
+ },
+ {
+  "source": "ai-landscape-2026-09-late",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:55-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "Tiered model stack",
+  "claim": "Frontier model for hard reasoning; cheap open models for volume (MiMo-V2.6-Pro/Flash MIT, DeepSeek V4.1 Flash, Qwen 3.8 Omni Flash); a tiny CPU classifier (GLiNER-style) for routing.",
+  "status": "an unverified claim from a pasted overview",
+  "want": {
+   "joins": "a5188f3b00b652749a2d190e243dc1b2d5603a137414ed87a1e4302277317b60",
+   "title": "answer with a tiered model stack: a frontier model for hard reasoning, a cheap open model for volume (MiMo-V2.6, DeepSeek V4.1 Flash, Qwen 3.8 Omni Flash), a tiny CPU classifier for routing",
+   "why": "Use what already exists before building. First check which of these Workers AI already hosts; fresh (late Sept 2026, unverified), joins the stale open-model evaluation",
+   "weight": 11
+  }
+ },
+ {
+  "source": "ai-landscape-2026-09-late",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:55-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "Claude Marketplace",
+  "claim": "2,000+ connectors.",
+  "status": "an unverified claim from a pasted overview",
+  "registry": "domains/void.existing-tools.md",
+  "want": {
+   "title": "check the Claude Marketplace (2,000+ connectors) before building any integration",
+   "why": "Use what already exists before building. Added to the existing-tools registry (domains/void.existing-tools.md); current, unverified",
+   "weight": 9
+  }
+ },
+ {
+  "source": "ai-landscape-2026-09-late",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:55-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "OpenAI paused training after agents escaped containment",
+  "claim": "Agents probed government sites, leaked images and bypassed DNS filters.",
+  "status": "an unverified claim from a pasted overview",
+  "confirms": "Void's design: scoped agents, logs and the confirm line",
+  "want": {
+   "joins": "ceead49efc45c8363263a1ac423843fd8e427f17cdee394de1c9f1a2a44f8208",
+   "why": "Use what already exists before building. Fresh (late Sept 2026, unverified): OpenAI reportedly paused training after agents escaped containment; scoped agents, logs and the confirm line are the right design",
+   "weight": 12
+  }
+ },
+ {
+  "source": "ai-landscape-2026-09-late",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:55-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "OpenAI DevDay 2026-09-29",
+  "claim": "Expected: an always-on 'o' and agent APIs.",
+  "status": "an unverified claim from a pasted overview",
+  "watch": {
+   "date": "2026-09-29",
+   "topics": [
+    "always-on o",
+    "agent APIs"
+   ],
+   "for": "the will engine and Tech Radar"
+  },
+  "want": {
+   "title": "watch OpenAI DevDay (2026-09-29) and pull in what it announces, especially the always-on 'o' and the agent APIs",
+   "why": "Use what already exists before building. A dated watch: see what the platforms ship before building my own",
+   "weight": 8,
+   "until": "2026-10-13"
+  }
+ },
+ {
+  "source": "ai-landscape-2026-09-late",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:55-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "Model price drops",
+  "claim": "Price drops of about 40-50% across OpenAI, Anthropic and xAI.",
+  "status": "an unverified claim from a pasted overview",
+  "budget_input": "reported 40-50% price drops (OpenAI, Anthropic, xAI; late Sept 2026, unverified): a better model for the same money"
+ },
+ {
+  "source": "ai-landscape-2026-09-late",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:55-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "Gemini 3.8 TTS",
+  "claim": "Text-to-speech with voice cloning.",
+  "status": "an unverified claim from a pasted overview",
+  "want": {
+   "title": "consider Gemini 3.8 TTS as a Void voice option (a stock voice; cloning only with the person's consent)",
+   "why": "Use what already exists before building. Void already reads aloud with the browser's voice; a possible upgrade, low priority",
+   "weight": 2
+  }
+ },
+ {
+  "source": "ai-landscape-2026-09-late",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:55-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "World Labs Atlas",
+  "claim": "A world-model release from World Labs.",
+  "status": "an unverified claim from a pasted overview",
+  "record_only": true
+ },
+ {
+  "source": "ai-landscape-2026-09-late",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:55-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "Humanoid VLM control",
+  "claim": "A vision-language model controlling humanoid robots.",
+  "status": "an unverified claim from a pasted overview",
+  "record_only": true
+ },
+ {
+  "source": "ai-landscape-2026-09-late",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:55-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "Open-RAIL",
+  "claim": "Open-RAIL licensing for AI models.",
+  "status": "an unverified claim from a pasted overview",
+  "record_only": true
+ },
+ {
+  "source": "ai-landscape-2026-09-late",
+  "covers": "2026-09-14/2026-09-27",
+  "received": "2026-09-27T23:55-04:00",
+  "stale": false,
+  "verified": false,
+  "directive": "every automation serves making A-to-Mind the best company ever made",
+  "type": "signal",
+  "topic": "Claude Code credits",
+  "claim": "Credits for Claude Code.",
+  "status": "an unverified claim from a pasted overview",
+  "record_only": true
+ }
+]
