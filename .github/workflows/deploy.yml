@@ -1,0 +1,87 @@
+# PC-free deploy: every push to main is tested with the full suite, then deployed to the
+# Cloudflare Pages project "a-to-mind" (a-to-mind.com). Same steps as tools/deploy.ps1,
+# which stays as the laptop fallback. PRs into main get a preview deployment.
+name: Void deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      ref:
+        description: Commit to test and deploy (the ship workflow passes the merged main commit)
+        type: string
+        required: true
+    secrets:
+      CLOUDFLARE_API_TOKEN:
+        required: false
+      CLOUDFLARE_ACCOUNT_ID:
+        required: false
+
+concurrency:
+  group: void-deploy-${{ github.event_name == 'pull_request' && github.head_ref || 'production' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0 # the suite reads git history of the append-only records
+
+      - name: Test (full suite)
+        uses: ./.github/actions/void-test
+
+      - name: Deploy target
+        id: target
+        env:
+          HEAD_REF: ${{ github.head_ref }}
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            echo "branch=$(printf '%s' "$HEAD_REF" | tr -c 'A-Za-z0-9-' '-' | cut -c1-28)" >> "$GITHUB_OUTPUT"
+          else
+            echo "branch=main" >> "$GITHUB_OUTPUT"
+          fi
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Cloudflare credentials missing
+        if: env.CF_READY != 'true'
+        run: |
+          echo "::warning title=Not deployed::Tests passed, but repo secret CLOUDFLARE_API_TOKEN is not set, so nothing was deployed. Add a token with Account > Cloudflare Pages > Edit (gh secret set CLOUDFLARE_API_TOKEN -R atomeam/void-loop), then re-run this workflow."
+          echo "### Not deployed: CLOUDFLARE_API_TOKEN secret missing" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Deploy to Cloudflare Pages (a-to-mind)
+        id: deploy
+        if: env.CF_READY == 'true'
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '3.114.17' # same as the laptop (C:\Users\adamm\a-to-mind.com)
+          workingDirectory: void-live-deploy
+          command: pages deploy . --project-name=a-to-mind --branch=${{ steps.target.outputs.branch }} --commit-hash=${{ steps.target.outputs.sha }} --commit-dirty=true
+
+      - name: Smoke check the deployment
+        if: steps.deploy.outcome == 'success'
+        env:
+          URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          echo "Deployment: $URL"
+          for i in 1 2 3 4 5 6; do
+            code=$(curl -s -o page.html -w '%{http_code}' "$URL/") || code=000
+            if [ "$code" = "200" ] && cmp -s page.html void.html; then echo "served index.html matches void.html"; break; fi
+            echo "attempt $i: HTTP $code"; sleep 10
+            [ "$i" = 6 ] && { echo "::error::deployment did not serve the tested void.html"; exit 1; }
+          done
+          echo "### Deployed ${{ steps.target.outputs.sha }} to ${{ steps.target.outputs.branch }}: $URL" >> "$GITHUB_STEP_SUMMARY"
