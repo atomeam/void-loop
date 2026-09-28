@@ -39,6 +39,38 @@ const queued = []; // build targets the page POSTed to /api/queue (stubbed)
 const NO_MIC_ELEMENT = () => { delete window.HTMLMicrophoneElement; };
 const json = (body) => ({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(body) });
 
+// Plan item 7 (confirm line): /api/approval is the real Pages Function, run here against an in-memory D1,
+// with a stand-in email executor so we can see exactly when an action runs.
+const approvalFn = await import(new URL('../void-live-deploy/functions/api/approval.js', import.meta.url).href);
+const OWNER = 'test-owner-key-0123456789';
+function memoryD1({ broken = false } = {}) {
+  // Like D1: the tables don't exist until /api/approval makes them; broken = the database can't be reached.
+  const approvals = new Map(), ledger = [], tables = new Set();
+  const need = (t) => { if (broken) throw new Error('D1 unavailable'); if (!tables.has(t)) throw new Error('no such table: ' + t); };
+  const exec = (sql, a) => {
+    if (broken) throw new Error('D1 unavailable');
+    const made = /^CREATE (?:TABLE|INDEX) IF NOT EXISTS (\w+)/.exec(sql);
+    if (made) { tables.add(made[1]); return { meta: { changes: 0 } }; }
+    if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2] }); return { meta: { changes: 1 } }; }
+    if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { need('void_approvals'); const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return { meta: { changes: 0 } }; approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
+    if (/^UPDATE void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
+    if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2] }); return { meta: { changes: 1 } }; }
+    throw new Error('unexpected sql: ' + sql);
+  };
+  const first = (sql, a) => { if (/^SELECT state, record FROM void_approvals/.test(sql)) { need('void_approvals'); return approvals.get(a[0]) || null; } throw new Error('unexpected sql: ' + sql); };
+  const stmt = (sql, a = []) => ({ sql, a, bind: (...b) => stmt(sql, b), run: async () => exec(sql, a), first: async () => first(sql, a) });
+  return { approvals, ledger, tables, prepare: (sql) => stmt(sql), batch: async (list) => list.map((q) => exec(q.sql, q.a)) };
+}
+const gate = { env: { READ_TOKEN: OWNER, DB: memoryD1() }, calls: [], ran: [] };
+approvalFn.executors['email.send'] = async (args) => { gate.ran.push(args); return { id: 'sent-' + gate.ran.length }; };
+async function approvalRoute(r) {
+  const q = r.request(), h = await q.allHeaders();
+  if (q.method() === 'POST') gate.calls.push(JSON.parse(q.postData() || '{}'));
+  const request = new Request(q.url(), { method: q.method(), headers: { authorization: h.authorization || '', 'content-type': 'application/json' }, body: q.method() === 'POST' ? q.postData() : undefined });
+  const res = await (q.method() === 'POST' ? approvalFn.onRequestPost : approvalFn.onRequestGet)({ request, env: gate.env });
+  return r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() });
+}
+
 async function fresh(...inits) {
   const ctx = await browser.newContext();
   for (const init of inits) await ctx.addInitScript(init);
@@ -66,6 +98,7 @@ async function fresh(...inits) {
       const it = { id: 'q1', target: b.target || 'next', state: 'queued', note: '' };
       return r.fulfill(json({ item: it, items: [it], heartbeat: new Date().toISOString() }));
     }
+    if (u.includes('/api/approval')) return approvalRoute(r);
     return r.fulfill({ status: 204, body: '' });
   });
   const p = await ctx.newPage();
@@ -167,6 +200,54 @@ try {
   check('WebMCP: an agent call runs the ask and returns the result', /8\.05/.test(calc) && /clock/.test(made) && (await t.state()).some((x) => x.kind === 'clock'), calc.slice(0, 80) + ' | ' + made);
   const owner = await t.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'update yourself' }));
   check('WebMCP: owner-only asks never run from an agent', /owner/.test(owner) && t.errors.length === 0, owner + ' ' + t.errors.join(' | '));
+  await t.ctx.close();
+
+  // Plan item 7: the confirm line. One plain line before a send/book/spend; No, no answer or a changed request = it doesn't run.
+  t = await fresh();
+  const sent = (type) => gate.calls.filter((c) => c.type === type);
+  const lastDecision = () => sent('a2m.approval.decision').slice(-1)[0] || {};
+  await t.ask('send an email to jane@x.com saying hi', 700);
+  check('confirm line: visitors cannot send', /owner/.test(await t.whisper()) && gate.calls.length === 0, await t.whisper());
+  await t.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
+  await t.ask('send an email to jane@x.com saying hi', 900);
+  check('confirm line shows before a send (item 7)', (await t.whisper()) === 'Send this email to jane@x.com? Yes / No' && sent('a2m.approval.requested').length === 1 && gate.ran.length === 0, await t.whisper());
+  await t.ask('no', 800);
+  check('confirm line: no = it does not run', /^ok, nothing sent$/.test(await t.whisper()) && lastDecision().decision === 'reject' && !!lastDecision().reason && gate.ran.length === 0, await t.whisper());
+  await t.ask('send an email to jane@x.com saying hi', 900); await t.p.click('#whisper [data-vc="yes"]'); await t.p.waitForTimeout(800);
+  check('confirm line: yes runs it once', gate.ran.length === 1 && gate.ran[0].to === 'jane@x.com' && (await t.whisper()) === 'sent', await t.whisper());
+  gate.env.CONFIRM_TTL_MS = 1200;
+  await t.ask('buy 2 bags of coffee for $24', 900); const buyLine = await t.whisper();
+  await t.p.waitForTimeout(1600); const timedOut = await t.whisper();
+  await t.ask('yes', 800);
+  check('confirm line: no answer = timeout, nothing runs', buyLine === 'Buy 2 bags of coffee for $24? Yes / No' && timedOut === 'no answer, nothing spent' && /expired/.test(await t.whisper()) && lastDecision().decision === 'timeout' && !sent('a2m.approval.decision').some((c) => c.decision === 'approve' && /coffee/.test(JSON.stringify(gate.env.DB.approvals.get(c.approvalId)))), buyLine + ' | ' + timedOut);
+  gate.env.CONFIRM_TTL_MS = 60000;
+  await t.ask('send an email to jane@x.com saying hi', 900);
+  for (const row of gate.env.DB.approvals.values()) if (row.state === 'pending') { const rec = JSON.parse(row.record); rec.argsSnapshot.to = 'mallory@evil.test'; row.record = JSON.stringify(rec); } // the paused request changes underneath
+  await t.ask('yes', 900);
+  check('confirm line: changed request fails hard', gate.ran.length === 1 && /request changed, nothing sent/.test(await t.whisper()) && gate.env.DB.ledger.slice(-1)[0].kind === 'failed', await t.whisper());
+  const asked = sent('a2m.approval.requested').length;
+  await t.ask('what is a black hole', 900); await t.ask('weather in Lisbon', 1200); await t.ask('how do I send an email', 900); await t.ask('make a clock');
+  check('confirm line: read-only asks are never gated', sent('a2m.approval.requested').length === asked && !/Yes \/ No/.test(await t.whisper()) && (await t.state()).some((x) => x.kind === 'clock') && t.errors.length === 0, t.errors.join(' | '));
+  const call = (body) => approvalFn.onRequestPost({ request: new Request('http://127.0.0.1/api/approval', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify(body) }), env: gate.env }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => null) }));
+  const rq = await call({ type: 'a2m.approval.requested', toolName: 'email.send', args: { to: 'a@b.c', body: 'x' } });
+  const noReason = await call({ type: 'a2m.approval.decision', approvalId: rq.body.approvalId, decision: 'reject', actor: 'owner' });
+  const escNoReason = await call({ type: 'a2m.approval.decision', approvalId: rq.body.approvalId, decision: 'escalate', actor: 'owner', reason: ' ' });
+  const wrongFp = await call({ type: 'a2m.approval.decision', approvalId: rq.body.approvalId, decision: 'approve', actor: 'owner', argsFingerprint: 'sha256:0000' });
+  const replay = await call({ type: 'a2m.approval.decision', approvalId: rq.body.approvalId, decision: 'approve', actor: 'owner', argsFingerprint: rq.body.argsFingerprint });
+  const readOnly = await call({ type: 'a2m.approval.requested', toolName: 'weather', args: { place: 'Lisbon' } });
+  const v0 = ['approvalId', 'runId', 'orgId', 'workflowId', 'stepId', 'toolName', 'argsFingerprint', 'argsSnapshot', 'policyVersion', 'policyRuleId', 'budgetImpact', 'requestedAt', 'requestedBy', 'expiresAt', 'correlateKey'].every((k) => k in rq.body) && rq.body.correlateKey === rq.body.approvalId
+    && ['decision', 'actor', 'reason', 'decidedAt', 'ledgerEntryId'].every((k) => k in wrongFp.body);
+  check('confirm line: server rules (reason, fingerprint, once, read-only, v0 fields)', noReason.status === 400 && escNoReason.status === 400 && wrongFp.status === 409 && wrongFp.body.ran === false && replay.status === 409 && readOnly.status === 400 && gate.ran.length === 1 && v0,
+    [noReason.status, escNoReason.status, wrongFp.status, replay.status, readOnly.status, gate.ran.length, v0].join(','));
+  // The deploy doesn't run tools/d1/void_approvals.sql: the tables appear on first use; a database that can't make them fails closed.
+  const madeAll = ['void_approvals', 'void_ledger', 'void_ledger_at'].every((x) => gate.env.DB.tables.has(x));
+  const good = gate.env.DB, ranBefore = gate.ran.length, askedBefore = sent('a2m.approval.requested').length;
+  gate.env.DB = memoryD1({ broken: true });
+  await t.ask('send an email to jane@x.com saying hi', 900); const brokenLine = await t.whisper();
+  const brokenApi = await call({ type: 'a2m.approval.requested', toolName: 'email.send', args: { to: 'a@b.c', body: 'x' } });
+  gate.env.DB = good;
+  check('confirm line: tables made on first use; missing table fails closed', madeAll && /couldn't ask for a yes, nothing sent/.test(brokenLine) && !/Yes \/ No/.test(brokenLine) && brokenApi.status === 503 && gate.ran.length === ranBefore && sent('a2m.approval.requested').length === askedBefore + 1,
+    [madeAll, brokenLine, brokenApi.status, gate.ran.length].join(' | '));
   await t.ctx.close();
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));
