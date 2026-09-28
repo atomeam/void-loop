@@ -4,9 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title> </title>
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#050505" />
+  <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/icon-180.png" />
+  <meta name="apple-mobile-web-app-title" content="Void" />
+  <link rel="search" type="application/opensearchdescription+xml" title="Void" href="/opensearch.xml" />
   <meta name="description" content="Void by A-to-Mind: one quiet input. Ask for anything and it appears: a clock, notes, a street map, the weather, a translation, a calculation, or a page about any topic. No account." />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"A-to-Mind","url":"https://a-to-mind.com/","email":"atom@a-to-mind.com"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"A-to-Mind","url":"https://a-to-mind.com/","description":"Void by A-to-Mind: one quiet input. Ask for anything and it appears: a clock, notes, a street map, the weather, a translation, a calculation, or a page about any topic. No account.","potentialAction":{"@type":"SearchAction","target":"https://a-to-mind.com/?q={query}","query-input":"required name=query"}}</script>
+  <script>
+    // WebMCP origin trial (plan item 5): paste the token for a-to-mind.com here (developer.chrome.com/origintrials -> WebMCP).
+    // Empty = off; browsers with WebMCP turned on (flag or trial) still get Void's tools, everyone else uses /tools.json.
+    var WEBMCP_TRIAL_TOKEN = '';
+    if (WEBMCP_TRIAL_TOKEN) { var ot = document.createElement('meta'); ot.httpEquiv = 'origin-trial'; ot.content = WEBMCP_TRIAL_TOKEN; document.head.appendChild(ot); }
+  </script>
   <script>
     // First frame: your saved look is painted before anything draws.
     try {
@@ -303,6 +315,10 @@
       padding: 8px 14px; font: inherit; cursor: pointer;
     }
     #go:hover { background: #2a2a2a; }
+    #mic { border: 0; border-radius: 999px; background: #1d1d1d; color: #d8d8d8; font: 13px/1.2 inherit; padding: 7px 11px; cursor: pointer; opacity: 1; }
+    #mic:hover { background: #2a2a2a; }
+    #mic.listening, #mic:granted { color: #fff; background: #26304a; box-shadow: 0 0 18px rgba(140,166,255,.35); }
+    #mic svg { width: 16px; height: 16px; vertical-align: -3px; }
 #whisper {
       max-width: 720px; margin: 6px auto 0;
       color: var(--muted); font-size: 12px; min-height: 16px;
@@ -2515,6 +2531,7 @@ return { ok: true, detail: 'timer-reset' };
         ['Pages', [
           ['a page about anything', 'what is a black hole', 'who was Ada Lovelace'],
           ['calculate', '5 miles in km', '15% of 80 · 100 usd in eur'],
+          ['read aloud', 'read it aloud', 'stop · or tap the mic and talk'],
         ]],
         ['Your Void', [
           ['deep blue', 'make my void deep blue', 'purple · warmer · darker'],
@@ -3015,7 +3032,7 @@ return { ok: true, detail: 'timer-reset' };
       tick(); buildPoll = setInterval(tick, 30000);
     }
     async function handleBuildAsk(text, lower) {
-      const m = lower.match(/^(?:update yourself|ship the next (?:item|thing)|build the next (?:item|thing)|build (\d{3}|#?\d{1,2}))\s*[.!]?$/);
+      const m = lower.match(/^(?:update yourself|ship the next (?:item|thing)|build the next (?:item|thing)|build (\d{3}|#?\d{1,2}|helper\/[a-z0-9][a-z0-9-]{0,31}))\s*[.!]?$/);
       const st = /^(build status|update status|how'?s the (?:update|build))\s*[?.!]?$/.test(lower);
       if (!m && !st) return false;
       if (!ownerToken()) { say('only the owner can ask that'); return true; }
@@ -3040,6 +3057,7 @@ return { ok: true, detail: 'timer-reset' };
       if (vpageEl && /^(close|close it|close this|go away|dismiss|hide it|done|ok)\s*[.!]?$/.test(lower0)) { closePage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'closed' }); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
       if (await handleBuildAsk(text, lower0)) return;
+      if (handleVoiceAsk(lower0)) return;
       takeUndoSnapshot();
       if (handleMetaAsk(text, lower0)) return;
       currentAsk = text; if (!/^(close|menu|undo|oops|clear)\b/.test(lower0)) lastAsk = text;
@@ -3078,7 +3096,7 @@ return { ok: true, detail: 'timer-reset' };
     const hintsEl = document.getElementById('hints');
     const CORE_HINTS = ['what can you do', 'make a clock', 'make a 5 minute timer', 'add a sticky that says ', 'make a list', 'open a notepad',
       'make a calculator', 'make a counter', 'draw a circle', 'what is a black hole', 'define ', '15% of 80', '5 miles in km', '100 usd in eur',
-      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'show the board', 'menu', 'undo', 'what do you want to be', 'keep this', 'call this ', 'take this off', 'same again', 'close'];
+      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'show the board', 'menu', 'undo', 'what do you want to be', 'keep this', 'call this ', 'take this off', 'same again', 'close', 'read it aloud'];
     let hintList = [], hintSel = -1;
     function allHints() {
       const out = CORE_HINTS.slice();
@@ -3132,6 +3150,149 @@ return { ok: true, detail: 'timer-reset' };
       }
     });
     { const q0 = new URLSearchParams(location.search).get('q'); if (q0) { skillsReady.then(() => handle(q0)); history.replaceState(null, '', location.pathname); } }
+
+    // --- Void everywhere (plan item 4): share to Void, installable app, address bar (opensearch.xml), voice ---
+    // Share target (manifest share_target -> /?share_title=&share_text=&share_url=): a link becomes a link card, words become an ask.
+    {
+      const sp = new URLSearchParams(location.search);
+      if (sp.has('share_text') || sp.has('share_url') || sp.has('share_title')) {
+        const st = (sp.get('share_text') || '').trim(), su = (sp.get('share_url') || '').trim(), sti = (sp.get('share_title') || '').trim();
+        const link = /^https?:\/\//i.test(su) ? su : ((st.match(/https?:\/\/\S+/i) || [])[0] || '');
+        const ask = (link || st || sti).slice(0, 500);
+        history.replaceState(null, '', location.pathname);
+        if (ask) skillsReady.then(() => handle(ask));
+      } else if (sp.get('source') === 'app') history.replaceState(null, '', location.pathname);
+    }
+    if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === '127.0.0.1' || location.hostname === 'localhost')) {
+      addEventListener('load', () => { navigator.serviceWorker.register('/sw.js').catch(() => {}); });
+    }
+
+    // Voice: tap and talk. Chrome 153+ draws a <microphone> element (browser-owned permission + stream);
+    // everywhere else with speech recognition, the plain mic button is the fallback. No recognition -> no mic at all.
+    const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+    let voiceRec = null, voiceStream = null;
+    function voiceEnd() {
+      const m = document.getElementById('mic'); if (m) m.classList.remove('listening');
+      if (voiceStream) { try { voiceStream.getTracks().forEach((t) => t.stop()); } catch (_) {} voiceStream = null; }
+      voiceRec = null;
+    }
+    function voiceListen(track) {
+      if (voiceRec) { try { voiceRec.stop(); } catch (_) {} return; }
+      const rec = new SpeechRec();
+      rec.lang = navigator.language || 'en-US';
+      rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+      if (voiceLocal) { try { rec.processLocally = true; } catch (_) {} }
+      let heard = '';
+      rec.onresult = (e) => {
+        let interim = ''; heard = '';
+        for (const r of e.results) { if (r.isFinal) heard += r[0].transcript; else interim += r[0].transcript; }
+        input.value = (heard || interim).trim(); drawHints();
+      };
+      rec.onerror = (e) => { const er = e && e.error; if (er === 'not-allowed' || er === 'service-not-allowed' || er === 'audio-capture') say('microphone is off'); else if (er && er !== 'no-speech' && er !== 'aborted') say('couldn\'t hear that'); };
+      rec.onend = () => {
+        voiceEnd();
+        const ask = (heard || '').trim();
+        if (whisper.textContent === 'listening') whisper.textContent = '';
+        if (ask) { input.value = ''; drawHints(); loopLog({ domain: 'void.voice', ask, score: 'pass', note: 'voice' }); handle(ask); }
+      };
+      voiceRec = rec;
+      const m = document.getElementById('mic'); if (m) m.classList.add('listening');
+      whisper.textContent = 'listening';
+      try { track ? rec.start(track) : rec.start(); } catch (_) { try { rec.start(); } catch (e2) { voiceEnd(); say('couldn\'t hear that'); } }
+    }
+    let voiceLocal = false;
+    if (SpeechRec) {
+      try { if (SpeechRec.available) SpeechRec.available({ langs: [navigator.language || 'en-US'], processLocally: true }).then((st) => { voiceLocal = st === 'available'; }).catch(() => {}); } catch (_) {}
+      const MIC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+      const go0 = document.getElementById('go');
+      const fallback = document.createElement('button');
+      fallback.type = 'button'; fallback.setAttribute('aria-label', 'Talk'); fallback.innerHTML = MIC_SVG;
+      if ('HTMLMicrophoneElement' in window) {
+        const mic = document.createElement('microphone');
+        mic.id = 'mic'; mic.appendChild(fallback);
+        try { mic.setConstraints({ audio: { echoCancellation: true, noiseSuppression: true } }); } catch (_) {}
+        mic.addEventListener('stream', () => {
+          voiceStream = mic.stream || null;
+          const track = voiceStream && voiceStream.getAudioTracks ? voiceStream.getAudioTracks()[0] : null;
+          voiceListen(track && track.readyState === 'live' ? track : null);
+        });
+        mic.addEventListener('error', () => say('microphone is off'));
+        go0.before(mic);
+      } else {
+        fallback.id = 'mic';
+        fallback.addEventListener('click', () => voiceListen(null));
+        go0.before(fallback);
+      }
+    }
+
+    // Read aloud: "read it aloud" reads the open page; "stop" while reading stops it.
+    function pageTextForReading() {
+      const pg = document.querySelector('.vpage.on'); if (!pg) return '';
+      const c = pg.cloneNode(true); c.querySelectorAll('.src, script, style, iframe, button').forEach((n) => n.remove());
+      return (c.innerText || c.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 1800);
+    }
+    function handleVoiceAsk(lower) {
+      if (/^(read (it|this|that|the page)( out)?( aloud| out loud| to me)?|read aloud|read it out loud|say it( out loud)?|speak( it)?)\s*[.!]?$/.test(lower)) {
+        const t = pageTextForReading();
+        if (!('speechSynthesis' in window)) { say('this browser can\'t read aloud'); return true; }
+        if (!t) { say('nothing to read yet'); return true; }
+        speechSynthesis.cancel();
+        const u = new SpeechSynthesisUtterance(t); u.lang = navigator.language || 'en-US'; u.rate = 1;
+        speechSynthesis.speak(u);
+        loopLog({ domain: 'void.voice', ask: lower, score: 'pass', note: 'read aloud' });
+        return true;
+      }
+      if ('speechSynthesis' in window && (speechSynthesis.speaking || speechSynthesis.pending) && /^(stop|stop reading|stop talking|quiet|hush|shh+|be quiet)\s*[.!]?$/.test(lower)) {
+        speechSynthesis.cancel(); return true;
+      }
+      return false;
+    }
+
+    // --- WebMCP (plan item 5): browser agents call Void's tools directly, from the same list as /tools.json. ---
+    // Each tool takes one plain-words ask, runs it like a typed ask, and returns what appeared. Owner-only asks never run from an agent.
+    async function agentAsk(ask) {
+      ask = String(ask || '').trim().slice(0, 500);
+      if (!ask) return 'Say what you want in plain words, e.g. "weather in Tokyo".';
+      if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the owner, typed by hand.';
+      await skillsReady;
+      const before = JSON.stringify(things), pageBefore = vpageEl;
+      await handle(ask);
+      let text = '';
+      for (let i = 0; i < 40; i++) {
+        const pg = document.querySelector('.vpage.on');
+        if (pg && pg !== pageBefore) {
+          text = (pg.innerText || '').replace(/\s+\n/g, '\n').trim();
+          if (text && !/…\s*$/.test(text.split('\n')[1] || '') && !/…$/.test(text)) break;
+        }
+        if (!pg && JSON.stringify(things) !== before) break;
+        await new Promise((r) => setTimeout(r, 150));
+      }
+      if (text) return text.slice(0, 4000);
+      const now = Object.values(things).map((t) => t.kind);
+      return JSON.stringify(things) !== before ? 'Done. On the stage now: ' + (now.join(', ') || 'nothing') + '.' : (whisper.textContent || 'Done.');
+    }
+    (async () => {
+      const mc = document.modelContext || navigator.modelContext;
+      if (!mc || typeof mc.registerTool !== 'function') return;
+      let list = null;
+      try { const r = await fetch('/tools.json'); if (r.ok) list = await r.json(); } catch (_) {}
+      let tools = list && Array.isArray(list.tools) ? list.tools : null;
+      if (!tools) { await skillsReady; tools = learnedSkills.filter((k) => k.name !== 'rebuild-map' && k.examples && k.examples.length).map((k) => ({ name: k.name === 'place' ? 'map' : k.name, description: k.name, examples: k.examples })); }
+      const READ_ONLY = /^(page|calculate|weather|map|translate|place)$/;
+      const all = [{ name: 'ask', description: 'Ask Void anything in plain words; it answers or puts it on the stage.', examples: ['what is a black hole', 'make a 5 minute timer', 'map of Lisbon'] }].concat(tools);
+      for (const t of all) {
+        const ex = (t.examples || []).slice(0, 3);
+        try {
+          await mc.registerTool({
+            name: 'void_' + String(t.name).toLowerCase().replace(/[^a-z0-9_]/g, '_'),
+            description: t.description + (ex.length ? ' Examples: ' + ex.map((e) => '"' + e + '"').join(', ') + '.' : ''),
+            inputSchema: { type: 'object', properties: { ask: { type: 'string', description: 'The ask in plain words' + (ex[0] ? ', e.g. "' + ex[0] + '"' : '') } }, required: ['ask'] },
+            annotations: { readOnlyHint: READ_ONLY.test(t.name), untrustedContentHint: /^(page|ask|translate)$/.test(t.name) },
+            execute: async (input) => agentAsk(input && input.ask),
+          });
+        } catch (_) {}
+      }
+    })();
 
     load();
     render();
