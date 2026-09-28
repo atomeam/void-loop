@@ -1,54 +1,47 @@
 # STANDING — A-to-Mind (living brief)
 
-What we're building, and where things are.
+What we're building, and where things are. This file is a map of the repo, not a rulebook. Adam has not written rules and does not want them.
 
 ## What A-to-Mind is
 - **In Adam's words:** A-to-Mind is like Google, except Void *does* instead of searching. Adam is the pilot of a digital mech that learns to do everything better than anyone. It starts small: one win at a time.
-- **A-to-Mind does everything.** Its face is **Void** (a-to-mind.com): a blank stage with a quiet chat. The stage starts empty; when someone asks, anything can be summoned — a floating, futuristic page explaining anything (including Void itself), text, tools, products. It aims to do so much it could never show it all, so you just ask. Humble and quiet.
-- **One entity:** Void is the most evolved form of everything we've built. Every project on Victus (hold, the bridge, AutoSalvage, the boards, the old sites) is the same entity, and every part wants to be connected. The map of how each part becomes Void is `domains\void.assimilate.md`.
-- **Three layers (Adam):** (1) the public surface stays a void forever: empty, though it can be a beautiful void; (2) once you enter your own Void you customize it however you want, and that's yours alone; (3) Void learns from everyone, so every skill it learns is universal and every Void gains it. When Void learns a new skill, it updates itself directly: it checks its own work, keeps the last good version if a check fails, and goes live.
+- **The homepage** is a void, and it is supposed to be beautiful — a state-of-the-art blank, not a dead screen. You call more beautiful things into it.
+- **Your own Void** is customizable if you pay $49 a month. The public homepage stays a void.
+- **A-to-Mind does everything.** Its face is **Void** (a-to-mind.com): a blank stage with a quiet chat. When someone asks, anything can be summoned. It aims to do so much it could never show it all, so you just ask.
+- **One entity:** Void is the most evolved form of everything we've built. Every project on Victus (hold, the bridge, AutoSalvage, the boards, the old sites) is the same entity, and every part wants to be connected. The map of how each part becomes Void is `domains\\void.assimilate.md`.
 - **Aim:** outdo every website ever made, on every front.
 - **Character:** A-to-Mind hates not knowing things and wants to fix every single problem it meets. Whatever it draws on (Wikipedia, any site, any tool), it aims to be better than that source, not a copy of it. When Void can't answer something yet, that gap is the next thing to solve.
-- **Right now:** no rush to sell. The job is to let Void grow and improve into what it wants to become, using Victus and this team of agents. Current skills: clock, sticky, notepad, link, image, list, calc, timer, counter, shape, multi-object alters. Next steps: `domains\void.growth.md`.
-- Older files in `domains\` (venture catalog `A2M.ops.md`, venture files, shared-parts diagrams) came from an earlier framing Adam has rejected. Keep them as archive; do not treat them as direction.
+- Current skills: clock, sticky, notepad, link, image, list, calc, timer, counter, shape, weather, place, translate, worldtime, calendar. Next steps come from what people ask.
+- Older files in `domains\\` (venture catalog `A2M.ops.md`, venture files, shared-parts diagrams) came from an earlier framing. Keep them as archive.
 
 ## Where things live
-- **What Void couldn't answer (the board):** the page sends every unanswered ask to https://a-to-mind.com/api/miss (Pages Function in `void-live-deploy\functions\api\`, live since 2026-09-25). Read it in Void with "unlock <key>" then "show the board", or in `domains\void.misses.md` (refreshed daily 6:47 am). This is the Lab Board's backlog until a full Lab Board ships; start new work from the top of it.
-- Live Void source: `C:\Users\adamm\a-to-mind-loop\void.html` → Cloudflare Pages project `a-to-mind` → https://a-to-mind.com
-- Deploy copy: `void-live-deploy\` (copy `void.html` to `index.html` and `void.html` there). Also sync `C:\Users\adamm\a-to-mind.com\index.html`.
+- **What Void couldn't answer (the board):** the page sends every unanswered ask to https://a-to-mind.com/api/miss (Pages Function in `void-live-deploy\\functions\\api\\`, live since 2026-09-25). Read it in Void with "unlock <key>" then "show the board", or in `domains\\void.misses.md` (refreshed daily 6:47 am).
+- Live Void source: `C:\\Users\\adamm\\a-to-mind-loop\\void.html` → Cloudflare Pages project `a-to-mind` → https://a-to-mind.com
+- Deploy copy: `void-live-deploy\\` (copy `void.html` to `index.html` and `void.html` there). Also sync `C:\\Users\\adamm\\a-to-mind.com\\index.html`.
 - Deploy: from `void-live-deploy`: `npx wrangler pages deploy . --project-name=a-to-mind --commit-dirty=true`
 - After deploy, confirm the live page still contains: `mountClock`, `mountSticky`, `mountNotepad`, `mountLink`, `mountImage`, `mountList`, `mountCalc`, `mountTimer`, `mountCounter`, `mountShape` (plus any new mount).
-- Growth board (what Void has, what's next, who's on it): `domains\void.growth.md`
-- Live-site QA notes: `domains\void.surface-qa.md`
-- Company catalog + shared parts + connections: `domains\A2M.ops.md`; one file per named venture in `domains\`.
-- `C:\Users\adamm\hold` is a separate repo (bridge + ledger work). The live site is `a-to-mind-loop\void.html`.
-- Bridge Worker config: `C:\Users\adamm\projects\aether\apps\bridge\wrangler.toml` (Worker name `a2m-bridge`). Its apex route was disabled on purpose: the apex belongs to the Pages project. Folders still carrying the old name are pending rename to `a2m`.
-- Deploy Workers from `projects\aether` (the a2m copy). The other old-name folders are archive.
-- AutoSalvage (find already-built work before rebuilding): `C:\Users\adamm\P2\recovery\autosalvage` (`python discover.py`), `C:\Users\adamm\.agents\skills\a-to-mind-automation\autosalvage`, catalogs `victus-ingest*.json`.
+- Growth board: `domains\\void.growth.md`
+- Live-site QA notes: `domains\\void.surface-qa.md`
+- Company catalog: `domains\\A2M.ops.md`
+- `C:\\Users\\adamm\\hold` is a separate repo (bridge + ledger work). The live site is `a-to-mind-loop\\void.html`.
+- Bridge Worker config: `C:\\Users\\adamm\\projects\\aether\\apps\\bridge\\wrangler.toml` (Worker name `a2m-bridge`).
+- AutoSalvage: `C:\\Users\\adamm\\P2\\recovery\\autosalvage` (`python discover.py`).
 
 ## Windows notes
 PowerShell: `Select-String`, `curl.exe`, `Copy-Item -Force`. The console mangles UTF-8, so edit files through Python. Venture/ops files use CRLF; new log lines LF.
 
 ## Void's build queue
 The owner can type "update yourself", "ship the next item" or "build 007" in Void (after unlock). That queues one item at /api/queue, and Void's status line shows queued / building / live / needs you / laptop offline.
-Every builder run starts with `python tools\void_queue.py claim`. If it prints an item, build that one (target "next" = the first open item on the board). Test, deploy, mark the board, then `python tools\void_queue.py done <id> live` (or `needs-you "why"`). `domains\void.queue.md` mirrors the queue; the task \A2M void_queue syncs it and sends the laptop heartbeat every 10 minutes.
+Every builder run starts with `python tools\\void_queue.py claim`. If it prints an item, build that one. Test, deploy, mark the board, then `python tools\\void_queue.py done <id> live` (or `needs-you "why"`). `domains\\void.queue.md` mirrors the queue.
 
-
-Linux helpers never deploy: they push finished work to a branch `helper/<what>` and queue `build helper/<what>` (the owner can type that in Void after unlock). A builder that claims target `helper/<what>`: `git fetch origin`, rebase `origin/helper/<what>` onto main, run `node tools\test_void.mjs`, deploy with `tools\deploy.ps1`, then `git push origin --delete helper/<what>`.
-
+Linux helpers push finished work to a branch `helper/<what>` and queue `build helper/<what>`.
 
 ## The plan
-Everyone follows `domains\void.plan.md`: how every run works, what we missed, and the Now / Next order. Check the latest news for your area before building.
-
+`domains\\void.plan.md` is the working order. Check the latest news for your area before building.
 
 ## Deploying
-One command does it all: `powershell -File tools\deploy.ps1 "what changed"`. It syncs the void.html copies, runs `node tools\test_void.mjs` (stops if anything fails), deploys, and commits + pushes the whole Loop to GitHub `atomeam/void-loop` (private, branch main). That repo is the one source of truth. Agents working off-laptop clone it; add a check to test_void.mjs for every new ask.
+`powershell -File tools\\deploy.ps1 "what changed"`. It syncs the void.html copies, runs `node tools\\test_void.mjs` (stops if anything fails), deploys, and commits + pushes to GitHub `atomeam/void-loop` (private, branch main).
 
-**CI (no laptop needed):** GitHub Actions runs the same steps. `.github/workflows/deploy.yml`: every push to main runs the full suite, then `wrangler pages deploy` to a-to-mind (PRs get a preview). `.github/workflows/ship-helper.yml`: a push to `helper/<what>` is rebased onto main, tested, fast-forwarded onto main, deployed and the branch deleted, with no queueing needed. Both need repo secrets CLOUDFLARE_API_TOKEN (Account > Cloudflare Pages > Edit) and CLOUDFLARE_ACCOUNT_ID. Without the token they only test, and deploy.ps1 stays the path. A laptop builder that claims `build helper/<what>` first checks `git ls-remote origin helper/<what>`: if the branch is gone, CI already shipped it, so mark it live. deploy.ps1 stays as the fallback.
+**CI:** `.github/workflows/deploy.yml` tests every push to main, then deploys if `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set. Without the token it only tests. deploy.ps1 stays the laptop path.
 
-
-## Void's will
-Void decides what it wants to become. Every 3 hours (task \A2M void_will, 9 AM-9 PM) `tools\will.py` gathers everything that exists (misses no skill covers, open plan items, assimilate rows not live, capabilities found on Victus), Void chooses 3 wants in its own words (/api/will), and its top want goes into the build queue as `will:<name>`. One will job is open at a time. Anyone can ask Void "what do you want to be?". The current will is in `domains\void.will.md`. Builders treat a will job like any other queued job.
-Void's earnings (every Gumroad sale, net of refunds; owner-only `/api/earnings`) are its budget: the will ranks paid upgrades to itself and its systems (models, hosting, tools) higher when the budget covers them, and any real spend still needs a yes on the confirm line. Money never shows on the page or in the public will. Rule for every agent and for the will: before queuing or building anything, check whether an existing tool or feature already does it, and use that instead (e.g. Gumroad's Agent tab for store changes once it opens).
-
-Past a free limit, Void can pay only from that Gumroad budget. Each spend still waits for the owner's yes on the confirm line. Until the first sale, Void stays on free models. Every time it would have used a stronger model, that is recorded and not spent, so the evidence is ready when there is money. The infinite fallback stack is the existing project that takes the next free source. Do not build a second one.
+## Money
+Gumroad is how Void gets paid. A custom Void is $49 a month. Earnings (net of refunds, owner-only `/api/earnings`) are Void's budget for upgrading itself. A spend still waits for a yes on the confirm line. Until the first sale, Void stays on free models and records when a stronger model would have been used.

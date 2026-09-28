@@ -13,6 +13,7 @@
 // (tools/deploy.ps1) doesn't run D1 SQL. If they can't be made, every call answers 503 and nothing runs.
 // Moving to Workflows later: domains/void.confirm-line.md.
 import { ownerOk } from '../../lib/guard.js';
+import { grantStandingSpend } from '../../lib/router.js';
 import {
   EVENT_REQUESTED, EVENT_DECISION, POLICY_VERSION, GATED, ORG_ID, WORKFLOW_ID, CONFIRM_TTL_MS,
   isGated, fingerprint, confirmLine, budgetImpact, checkDecision,
@@ -20,7 +21,10 @@ import {
 
 // toolName -> async (args, env) => result. Empty until a connector ships: an approved action with no
 // executor is recorded as approved-but-not-run and Void says the service isn't connected yet.
-export const executors = {};
+export const executors = {
+  // a standing spend on a stronger model (STANDING.md): recorded only here, after the yes; the router pays only from earnings
+  'models.spend': (args, env, rec) => grantStandingSpend(args, env, rec),
+};
 
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 const bad = (status, error, extra) => Response.json({ ok: false, error, ...(extra || {}) }, { status });
@@ -89,7 +93,7 @@ async function resumeOnDecision(env, rec, event) {
   if (event.argsFingerprint !== rec.argsFingerprint || now !== rec.argsFingerprint) return { ran: false, error: 'fingerprint mismatch' };
   const run = executors[rec.toolName];
   if (!run) return { ran: false, note: 'not connected' };
-  try { return { ran: true, result: await run(rec.argsSnapshot, env) }; } catch (e) { return { ran: false, error: 'action failed: ' + String(e && e.message).slice(0, 120) }; }
+  try { return { ran: true, result: await run(rec.argsSnapshot, env, rec) }; } catch (e) { return { ran: false, error: 'action failed: ' + String(e && e.message).slice(0, 120) }; }
 }
 
 async function decided(env, b) {

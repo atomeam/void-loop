@@ -8,6 +8,7 @@
 import { ownerOk } from '../../lib/guard.js';
 import { readEarnings, budgetLine } from '../../lib/earnings.js';
 import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
+import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../lib/shortfall.js';
 const MODEL = '@cf/google/gemma-4-26b-a4b-it';
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
@@ -28,6 +29,9 @@ export async function onRequestPost({ request, env }) {
     return { id: i + 1, kind: String(c.kind || ''), title: String(c.title || '').slice(0, 160), why: String(c.why || '').slice(0, 200), weight: (+c.weight || 0) + (cost && budget >= cost ? 15 : 0), cost, source: String(c.source || '').replace(/[^\w .:-]/g, '').slice(0, 60) };
   });
   if (!cands.length) return new Response('no candidates', { status: 400 });
+  // Evidence for a stronger model: each time the free one fell short this week (+1 per 5, at most +10). Stays free until the budget covers it.
+  const short = await readShortfalls(env, 7);
+  if (short.total) for (const c of cands) if (/stronger model/i.test(c.title)) { c.why = (c.why + '; ' + shortfallLine(short)).slice(0, 300); c.weight += Math.min(10, Math.ceil(short.total / 5)); }
   const list = (money ? budgetLine(money) + '\n\n' : '') + cands.map((c) => `${c.id}. [${c.kind}, weight ${c.weight}${c.cost ? ', costs $' + (c.cost / 100).toFixed(2).replace(/\.00$/, '') + '/month' + (budget >= c.cost ? ', affordable' : ', over budget') : ''}${c.source ? ', from ' + c.source : ''}] ${c.title} — ${c.why}`).join('\n');
   let chosen = null;
   try {
@@ -40,7 +44,7 @@ export async function onRequestPost({ request, env }) {
     });
     const txt = String(pick(r)); const m = txt.match(/\{[\s\S]*\}/);
     chosen = m ? JSON.parse(m[0]) : null;
-  } catch (_) {}
+  } catch (e) { await recordShortfall(env, 'will', reasonOf(e)); }
   // if the model is busy, Void still wills: highest weight wins
   let wants = (chosen && chosen.wants || []).map((w) => ({ ...w, c: cands.find((c) => c.id === +w.id) })).filter((w) => w.c).slice(0, 3);
   if (!wants.length) wants = cands.slice().sort((a, b) => b.weight - a.weight).slice(0, 3).map((c) => ({ c, i_want: 'I want to ' + c.title.replace(/^./, (x) => x.toLowerCase()) + '.', because: c.why }));

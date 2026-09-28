@@ -21,3 +21,4 @@ Add a row whenever an input or a run finds a tool worth reaching for. Rows are n
 | npm audit | dependency vulnerabilities | adding a dependency | defences check 2026-09-28 (0) |
 | Cloudflare edge cache + Pages middleware (lib/guard.js) | per-connection limits, size caps, wrong-key brake | any new /api route | defences check 2026-09-28 |
 | Cloudflare WAF rate-limiting rule (dashboard) | a global outer limit | stronger rate limits | defences check 2026-09-28 (left for Atom) |
+| Workers AI bge-m3 embeddings (multilingual) | a cheap nearest-neighbour classifier (Workers AI has no intent classifier) | any routing or "which skill is this" question | router 2026-09-28 (lib/router.js) |

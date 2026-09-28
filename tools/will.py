@@ -133,6 +133,35 @@ def gather(cap=60, with_done=False):
             if c["kind"] == "upgrade myself" and "model" in c["title"]:
                 c["why"] = (c["why"] + " (" + note + ")")[:240]
 
+    # 7. the router's decisions (owner-only GET /api/routes, lib/router.js; VOID_ROUTES_FILE = a saved copy, for tests).
+    #    An ask the router heard as a skill the page's parsers didn't catch is a "learn to handle ..." want, like a miss.
+    #    Hard asks that "would escalate" are counted in the one evidence ledger, void_shortfalls (lib/shortfall.js), which
+    #    /api/will itself adds to the stronger-model upgrade, so they are not counted again here. A router that keeps falling
+    #    back is something to fix.
+    try:
+        rf = os.environ.get("VOID_ROUTES_FILE", "")
+        rt = json.loads(pathlib.Path(rf).read_text(encoding="utf-8")) if rf else call("/api/routes")
+        near = []
+        for skill, rows in (rt.get("skills") or {}).items():
+            for r in rows:
+                if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not re.match(r"^(test|zz|asdf)", str(r["ask"])):
+                    near.append((skill, r))
+        try:
+            import subprocess
+            done = json.loads(subprocess.run(["node", str(ROOT / "tools" / "covered.mjs")], input=json.dumps([r["ask"] for _, r in near]), capture_output=True, text=True, timeout=60).stdout or "[]")
+        except Exception:
+            done = []
+        for (skill, r), covered in zip(near, done + [False] * len(near)):
+            if covered:
+                continue
+            what = "an action my confirm line should have recognised" if skill == "act" else f"my {skill} skill didn't catch this wording"
+            cands.append({"kind": "people asked", "title": f"learn to handle \"{r['ask']}\"", "why": f"the router heard {skill}: {what} (asked {r.get('count', 1)} times)", "weight": 10 + 5 * int(r.get("count") or 1), "source": "router"})
+        total, fb = int(rt.get("total") or 0), int(rt.get("fallback") or 0)
+        if total >= 20 and fb * 4 > total:
+            cands.append({"kind": "fix myself", "title": "make my router answer in time", "why": f"the classifier fell back {fb} of {total} times ({', '.join(f'{k} {v}' for k, v in (rt.get('fallback_why') or {}).items())})"[:240], "weight": 9, "source": "router"})
+    except Exception as e:
+        print("routes:", e, file=sys.stderr)
+
     # keep it to the strongest 60, unique titles
     seen, out = set(), []
     for c in sorted(cands, key=lambda c: -c["weight"]):

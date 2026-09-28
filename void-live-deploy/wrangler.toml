@@ -23,4 +23,6 @@ database_id = "3f92c99d-b78a-4394-8bb5-d9945ded44cf"
 # Answer engine (plan item 2): Workers AI, free Gemma 4 26B
 [ai]
 binding = "AI"
-
+# VOID_ANSWER_MODELS  off = /api/answer answers from the open web and fixes from rules (no Workers AI, no D1 writes).
+#   Unset = models on: Gemma 4 26B (the one free model) with the router (lib/router.js) in front.
+#   VOID_ROUTER_TUNE   JSON thresholds, e.g. {"skillMin":0.72,"hardMin":0.6}  (tune from GET /api/routes scores)

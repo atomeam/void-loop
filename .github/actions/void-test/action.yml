@@ -32,6 +32,9 @@ runs:
       run: |
         cp void.html void-live-deploy/index.html
         cp void.html void-live-deploy/void.html
+    - name: node tools/test_calendar.mjs
+      shell: bash
+      run: node tools/test_calendar.mjs
     - name: node tools/test_void.mjs
       shell: bash
       env:

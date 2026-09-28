@@ -390,11 +390,14 @@
       opacity: 0; transition: opacity 1.5s ease; }
     #void-stars.on { opacity: 1; }
     #stage, #dock { z-index: 1; }
+    html.dragging, html.dragging * { user-select: none !important; -webkit-user-select: none !important; cursor: grabbing !important; }
+    #void-swarm { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; }
+    #void-swarm.on { opacity: 1; }
     body.void-quiet { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; font-weight: 300; }
     /* ---- Atmosphere + depth (the void stays empty; it just breathes) ---- */
     #void-aura { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 2.4s ease; }
     #void-aura.on { opacity: 1; }
-    html.no-gl body::before { content: ''; position: fixed; inset: -20%; z-index: 0; pointer-events: none;
+    html.no-gl[data-fx="nebula"] body::before { content: ''; position: fixed; inset: -20%; z-index: 0; pointer-events: none;
       background: radial-gradient(40% 35% at 30% 40%, color-mix(in srgb, var(--void-glow, #0b0b10) 70%, #1a1030), transparent 70%),
                   radial-gradient(35% 30% at 70% 60%, color-mix(in srgb, var(--void-glow, #0b0b10) 60%, #06202a), transparent 70%);
       filter: blur(40px); opacity: .7; animation: auraDrift 60s ease-in-out infinite alternate; }
@@ -403,8 +406,27 @@
     .thing { transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
       transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .35s ease; filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); }
     .thing.lift { --tz: 18px; filter: drop-shadow(0 26px 40px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(140,170,255,.18)); }
-    .thing.arrive { animation: summon .7s cubic-bezier(.2,.8,.2,1) both; }
-    @keyframes summon { from { opacity: 0; transform: perspective(900px) translateZ(-260px) rotateX(18deg); filter: blur(6px); } }
+    .thing.arrive { animation: summon .75s cubic-bezier(.16,1,.3,1) both; }
+    @keyframes summon { from { opacity: 0; transform: perspective(900px) translateZ(-320px) rotateX(14deg) scale(.92); filter: blur(12px); }
+      55% { opacity: 1; filter: blur(1.5px); } to { filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); } }
+    /* volumetric darkness: the homepage is a deep space, not a flat colour. Two slow layers; one eases after the cursor. CSS only. */
+    #void-depth { position: fixed; inset: -10%; z-index: 0; pointer-events: none;
+      background:
+        radial-gradient(38vmax 30vmax at var(--dx, 50%) var(--dy, 42%), color-mix(in srgb, var(--void-glow, #0b0b10) 55%, #1a2350 45%) 0%, transparent 70%),
+        radial-gradient(60vmax 45vmax at 50% 118%, rgba(40,52,110,.16), transparent 70%),
+        radial-gradient(50vmax 40vmax at 12% -10%, rgba(70,40,120,.10), transparent 70%);
+      opacity: .55; animation: depthBreath 14s ease-in-out infinite alternate; }
+    @keyframes depthBreath { to { opacity: .8; transform: scale(1.04); } }
+    /* film grain dithers the dark gradient so it never bands into rings */
+    #void-depth::after { content: ''; position: absolute; inset: 0; opacity: .07; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+    /* the anchor: a frosted edge, a caret that breathes instead of blinking, a focus ring that snaps in */
+    #row { background: linear-gradient(180deg, rgba(22,24,32,.78), rgba(10,11,16,.86)); backdrop-filter: blur(18px) saturate(1.3); -webkit-backdrop-filter: blur(18px) saturate(1.3);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.07), inset 0 -1px 0 rgba(0,0,0,.4), 0 18px 50px rgba(0,0,0,.45);
+      transition: box-shadow .42s cubic-bezier(.34,1.56,.64,1), border-color .3s ease, transform .42s cubic-bezier(.34,1.56,.64,1); }
+    #row:focus-within { transform: translateY(-1px) scale(1.006); }
+    #input { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; caret-color: #cfd8ff; caret-animation: manual; animation: caretBreath 1.6s ease-in-out infinite; }
+    @keyframes caretBreath { 0%, 100% { caret-color: rgba(207,216,255,1); } 50% { caret-color: rgba(207,216,255,.18); } }
     .vpage { transform: translate(-50%, -46%) perspective(1200px) rotateX(calc(var(--rx, 0deg) + 10deg)) rotateY(var(--ry, 0deg)) translateZ(-140px);
       transition: opacity .5s ease, transform .6s cubic-bezier(.2,.8,.2,1), filter .6s ease; filter: blur(4px);
       background: linear-gradient(160deg, rgba(34,38,56,0.82), rgba(12,13,20,0.86) 45%, rgba(20,24,44,0.84)); backdrop-filter: blur(22px) saturate(1.2);
@@ -415,14 +437,15 @@
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: .8; }
     .vpage::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
       background: radial-gradient(600px 200px at var(--gx, 30%) -10%, rgba(255,255,255,.07), transparent 60%); }
-    #row { transition: box-shadow .5s ease, border-color .5s ease; backdrop-filter: blur(14px); }
     #row:focus-within { border-color: rgba(150,175,255,.28); box-shadow: 0 0 0 1px rgba(150,175,255,.10), 0 0 40px rgba(110,140,255,.12), 0 20px 60px rgba(0,0,0,.5); }
     #dock { background: linear-gradient(to top, color-mix(in srgb, var(--void-bg, #050505) 92%, transparent) 55%, transparent); z-index: 5; }
     #hints { backdrop-filter: blur(10px); }
     @media (prefers-reduced-motion: reduce) {
       .thing, .vpage, .thing.arrive { animation: none !important; transition: opacity .2s ease !important; }
       .vpage, .vpage.on { transform: translate(-50%, -46%); filter: none; }
-      html.no-gl body::before { animation: none; }
+      html.no-gl[data-fx="nebula"] body::before { animation: none; }
+      html, #void-glow, #void-stars, #void-aura, #void-swarm, #row { transition: none !important; }
+      #void-depth, #input { animation: none !important; }
     }
   </style>
 </head>
@@ -432,7 +455,7 @@
     <p>Void by A-to-Mind is one quiet input. Ask for anything and it appears: a clock, a timer, notes, a list, a street map, the weather, a translation, a calculation, or a page about any topic. Nothing to sign up for. It needs JavaScript to run.</p>
     <p>Link straight to an answer: <a style="color:#fff" href="/?q=weather%20in%20Tokyo">a-to-mind.com/?q=weather in Tokyo</a>. More in <a style="color:#fff" href="/llms.txt">llms.txt</a>.</p>
   </main></noscript>
-  <div id="void-glow"></div><canvas id="void-stars"></canvas>
+  <div id="void-depth" aria-hidden="true"></div><div id="void-glow"></div><canvas id="void-stars"></canvas>
   <div id="stage" aria-label="void"></div>
   <div id="dock">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
@@ -479,9 +502,11 @@
       if (log.length > 200) log = log.slice(-200);
       localStorage.setItem(LOOP_KEY, JSON.stringify(log));
     }
+    let sayCount = 0;
     function say(msg) {
       whisper.textContent = msg || '';
-      if (msg) setTimeout(() => { if (whisper.textContent === msg) whisper.textContent = ''; }, 3500);
+      const said = ++sayCount; // a repeated line gets its own 3.5 s; an older timer never clears a newer say
+      if (msg) setTimeout(() => { if (said === sayCount && whisper.textContent === msg) whisper.textContent = ''; }, 3500);
     }
     function uid(prefix) {
       return prefix + '_' + Math.random().toString(36).slice(2, 9);
@@ -503,6 +528,7 @@ Object.values(things).forEach((th) => {
         else if (th.kind === 'calc') mountCalc(th);
         else if (th.kind === 'shape') mountShape(th);
         else if (th.kind === 'kept') mountKept(th);
+        else if (th.kind === 'calendar') mountCalendar(th);
       });
     }
 
@@ -529,23 +555,80 @@ Object.values(things).forEach((th) => {
       stage.appendChild(el);
     }
 
+    // calendar card: upcoming events from a2m.void.agenda.v1 (skills/calendar.js writes them), this browser only
+    const AGENDA_KEY = 'a2m.void.agenda.v1';
+    function mountCalendar(th) {
+      let list = []; try { list = JSON.parse(localStorage.getItem(AGENDA_KEY) || '[]'); } catch (_) {}
+      if (!Array.isArray(list)) list = [];
+      const now = Date.now();
+      const up = list.filter((e) => e && e.at && new Date(e.at).getTime() + (e.allDay ? 864e5 : 36e5) >= now).sort((a, b) => a.at.localeCompare(b.at));
+      const el = document.createElement('div');
+      el.className = 'thing calendar-card';
+      el.dataset.id = th.id;
+      el.style.cssText += ';left:' + th.x + 'px;top:' + th.y + 'px;width:280px;max-width:calc(100vw - 32px);max-height:360px;overflow:auto;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(12,12,12,0.92);font-size:13px;cursor:grab;user-select:none';
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+      const head = document.createElement('div');
+      head.style.cssText = 'color:var(--muted);font-size:12px;margin-bottom:6px';
+      head.textContent = 'Calendar';
+      el.appendChild(head);
+      if (!up.length) {
+        const none = document.createElement('div'); none.style.color = 'var(--muted)';
+        none.textContent = 'Nothing coming up. Try “call Sam next Tuesday at 4”.'; el.appendChild(none);
+      }
+      let lastDay = '';
+      up.slice(0, 30).forEach((ev) => {
+        const t = new Date(ev.at), day = t.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+        if (day !== lastDay) { const d = document.createElement('div'); d.style.cssText = 'color:var(--muted);font-size:11px;margin:8px 0 2px;text-transform:uppercase;letter-spacing:.04em'; d.textContent = t.toDateString() === new Date().toDateString() ? 'Today' : day; el.appendChild(d); lastDay = day; }
+        const row = document.createElement('div'); row.className = 'cal-event'; row.style.cssText = 'display:flex;gap:8px;align-items:baseline;padding:2px 0';
+        const when = document.createElement('span'); when.style.cssText = 'color:var(--muted);min-width:62px;font-variant-numeric:tabular-nums';
+        when.textContent = ev.allDay ? 'all day' : t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        const what = document.createElement('span'); what.style.flex = '1'; what.textContent = ev.title || 'Event';
+        const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'remove ' + (ev.title || 'event'));
+        x.style.cssText = 'background:none;border:0;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px';
+        x.addEventListener('pointerdown', (e) => e.stopPropagation());
+        x.addEventListener('click', () => { takeUndoSnapshot(); try { localStorage.setItem(AGENDA_KEY, JSON.stringify(list.filter((e) => e.id !== ev.id))); } catch (_) {} render(); });
+        row.appendChild(when); row.appendChild(what); row.appendChild(x); el.appendChild(row);
+      });
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
+    // skills put things on the stage through this: summon('calendar') shows the card, { hide: true } takes it off (events stay)
+    function summonThing(kind, opts = {}) {
+      if (kind !== 'calendar') return null;
+      let th = Object.values(things).find((t) => t.kind === kind);
+      if (opts.hide) { if (th) { delete things[th.id]; if (selectedId === th.id) selectedId = null; } save(); render(); return null; }
+      if (!th) { th = { id: uid(kind), kind, x: Math.max(16, Math.min(stage.clientWidth - 300, stage.clientWidth - 340)), y: 60 }; things[th.id] = th; }
+      selectedId = th.id; save(); render(); return th;
+    }
+
     function bindDrag(el, th) {
       el.addEventListener('pointerdown', (e) => {
-        if (e.target && e.target.isContentEditable) return;
-        selectedId = th.id;
-        render();
+        if (e.button > 0) return;
+        const editable = !!(e.target && e.target.isContentEditable); // text you can edit: a click edits, a real move drags
         const startX = e.clientX, startY = e.clientY;
         const origX = th.x, origY = th.y;
+        let cur = null;
+        const begin = () => {
+          selectedId = th.id;
+          if (Object.keys(things).pop() !== th.id) { delete things[th.id]; things[th.id] = th; } // to the front (render order = z-order)
+          document.documentElement.classList.add('dragging');
+          if (editable) { try { getSelection().removeAllRanges(); if (document.activeElement) document.activeElement.blur(); } catch (_) {} }
+          render();
+          cur = stage.querySelector('[data-id="' + th.id + '"]') || el; // render() replaced the element; move the live one
+        };
+        if (!editable) begin();
         const move = (ev) => {
+          if (!cur) { if (Math.hypot(ev.clientX - startX, ev.clientY - startY) < 5) return; begin(); }
           th.x = Math.max(0, origX + (ev.clientX - startX));
           th.y = Math.max(0, origY + (ev.clientY - startY));
-          el.style.left = th.x + 'px';
-          el.style.top = th.y + 'px';
+          cur.style.left = th.x + 'px';
+          cur.style.top = th.y + 'px';
         };
         const up = () => {
           window.removeEventListener('pointermove', move);
           window.removeEventListener('pointerup', up);
-          save();
+          document.documentElement.classList.remove('dragging');
+          if (cur) save();
         };
         window.addEventListener('pointermove', move);
         window.addEventListener('pointerup', up);
@@ -1131,6 +1214,8 @@ function wantsClearStage(lower) {
       if (/^(another|one\s+more|a\s+new|new|a\s+second)\s+(sticky(\s+note)?|note)\b/.test(lower)) return true;
       if (/^note\s*:\s*/i.test(raw)) return true;
       if (/^sticky\s*:\s*/i.test(raw)) return true;
+      if (/^(a\s+)?sticky(\s+note)?\s+(that\s+says?|saying)\s+\S/.test(lower)) return true;
+      if (/^(a\s+)?sticky\s+note\s+\S/.test(lower)) return true;
       return false;
     }
 
@@ -1140,6 +1225,8 @@ function wantsClearStage(lower) {
       m = raw.match(/\b(?:that\s+says?|saying|with\s+text|reading)\s+["']?([\s\S]+?)["']?\s*$/i);
       if (m) return m[1].trim();
       m = raw.match(/\b(?:sticky(?:\s+note)?|note)\s+(?:that\s+says?\s+)?["']([^"']+)["']/i);
+      if (m) return m[1].trim();
+      m = raw.match(/^\s*(?:a\s+)?sticky\s+note\s+([\s\S]+?)\s*[.!]?\s*$/i);
       if (m) return m[1].trim();
       return '';
     }
@@ -1651,6 +1738,7 @@ function wantsCreateImage(lower, raw) {
       if (/\b(add\s+item|list\s+add|check|done|complete|remove|delete|clear|empty)\b/.test(lower)) return false;
       if (/^list\s*:/i.test(raw)) return true;
       if (/^(todo\s+list|list)(\s+please)?\s*[.!]?$/i.test(raw.trim())) return true;
+      if (/^(?:a\s+)?(?:grocery|groceries|shopping|packing|todo|to-do|chores?)\s+list\s*[.!]?$/i.test(raw.trim()) || /^list\s+(?:groceries|shopping|chores|todos?)\s*[.!]?$/i.test(raw.trim())) return true;
       return /\b(make|add|create|show|spawn|put|place|drop)\s+(a\s+)?(todo\s+)?list\b/.test(lower);
     }
 
@@ -1660,7 +1748,13 @@ function wantsCreateImage(lower, raw) {
       match = raw.match(/^\s*list\s+add\s+([\s\S]+?)\s*[.!]?\s*$/i);
       if (match) return cleanListText(match[1]);
       match = raw.match(/^\s*add\s+([\s\S]+?)\s+to\s+(?:the\s+)?list\s*[.!]?\s*$/i);
-      return match ? cleanListText(match[1]) : '';
+      if (match) return cleanListText(match[1]);
+      match = raw.match(/^\s*(?:make|create|start)\s+(?:a\s+)?(?:new\s+)?list\s*(?:,|and)?\s+add\s+([\s\S]+?)\s*[.!]?\s*$/i);
+      if (match) return cleanListText(match[1]);
+      // bare "add milk": onto the open list (or a new one), unless it names a stage thing, a look, a number or a link
+      match = raw.match(/^\s*add\s+([a-z][a-z' -]{0,40}?)\s*[.!]?\s*$/i);
+      if (match && !resolveTargetKind(match[1].toLowerCase()) && !/\b(a|an|another|some|more|the|my|stars?|glow|sparkles?|clock|timer|sticky|note|notepad|list|counter|calc(ulator)?|shape|circle|square|line|image|picture|photo|link|card|item)\b/i.test(match[1])) return cleanListText(match[1]);
+      return '';
     }
 
     function wantsListAdd(raw) { return !!extractListAdd(raw); }
@@ -2181,7 +2275,8 @@ say('nothing selected to remove');
           save(); render();
           return { ok: true, detail: 'list-item-added' };
         }
-        return { ok: false, detail: 'list-item-already-exists' };
+        selectedId = list.id; say('already on the list'); save(); render();
+        return { ok: true, detail: 'list-item-already-exists' };
       }
       if (wantsCreateList(lower, text)) {
         ensureList(extractListSeeds(text));
@@ -2730,7 +2825,12 @@ return { ok: true, detail: 'timer-reset' };
     const CALC_MONTHS = { january: 0, february: 1, march: 2, april: 3, may: 4, june: 5, july: 6, august: 7, september: 8, october: 9, november: 10, december: 11, jan: 0, feb: 1, mar: 2, apr: 3, jun: 5, jul: 6, aug: 7, sep: 8, sept: 8, oct: 9, nov: 10, dec: 11 };
     const CALC_HOLIDAYS = { christmas: { m: 11, d: 25 }, xmas: { m: 11, d: 25 }, 'new year': { m: 0, d: 1 }, "new year's day": { m: 0, d: 1 }, halloween: { m: 9, d: 31 }, thanksgiving: { m: 10, d: 26 }, easter: null, birthday: null };
     function fmtNum(n) { return (Math.round(n * 100) / 100).toString(); }
+    // "how many cups in a liter" -> "1 liter in cups"
+    function calcNormalize(lower) {
+      return lower.replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?(?:in|per)\s+(?:a|an|one|1)\s+([a-z]+)\s*\??$/, '1 $2 in $1');
+    }
     function wantsCalc(lower) {
+      lower = calcNormalize(lower);
       if (/\d\s*%/.test(lower) && /(%\s*(of|off)\b|%\s*tip\s+(on|for)\b)/.test(lower)) return true;
       if (CALC_UNIT_RE.test(lower)) return true;
       if (/\b(\d+(?:\.\d+)?)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\s+(?:in|to)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\b/i.test(lower)) return true;
@@ -2739,7 +2839,7 @@ return { ok: true, detail: 'timer-reset' };
       return false;
     }
     async function showCalc(query) {
-      const lower = query.toLowerCase();
+      const lower = calcNormalize(query.toLowerCase());
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; });
 
       let hit = false;
@@ -2848,7 +2948,7 @@ return { ok: true, detail: 'timer-reset' };
 
     // row 13: entering your own Void (silent, first time something is kept) + personal look
     const ENTRY_KEY = 'a2m.void.entered.v1', LOOK_KEY = 'a2m.void.look.v1';
-    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'off', quiet: false, scale: 1 };
+    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'off', quiet: false, scale: 1, fx: 'off' };
     const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };
     let voidLook = { ...LOOK_DEFAULT };
     try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}
@@ -2883,13 +2983,16 @@ return { ok: true, detail: 'timer-reset' };
       cancelAnimationFrame(starRAF); starRAF = 0;
       if (voidLook.stars !== 'off') { if (!stars.length) seedStars(); starCv.classList.add('on'); drawStars(); }
       else starCv.classList.remove('on');
+      document.documentElement.dataset.fx = voidLook.fx || 'off'; // the atmosphere script below reads this; the public stage is plain
+      window.dispatchEvent(new Event('void-fx'));
       if (persist) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} mineChanged(); }
     }
     document.addEventListener('visibilitychange', () => { if (!document.hidden && voidLook.stars !== 'off' && !starRAF) drawStars(); });
     window.addEventListener('resize', () => { if (voidLook.stars !== 'off') seedStars(); });
     function handleLookAsk(lower) {
       if (/^(this is mine|open my void|my void)\s*[.!]?$/.test(lower)) { enterVoid(); say('yours'); return true; }
-      if (!/\b(my void|the void|void)\b.*\b(deep blue|blue|purple|warmer|warm|darker|dark)\b|\b(add|slow|no|remove|hide)\s+(the\s+)?stars\b|\bquieter\s+(font|text)\b|\b(bigger|larger|smaller)\s+text\b|^reset\s+my\s+void$/.test(lower)) return false;
+      const FX = /\b(add|no|remove|hide|stop)\s+(a\s+|the\s+)?(nebula|particles?|swarm)\b|\bmake\s+my\s+void\s+(swirl|swirly|alive|move)\b|^(calm\s+my\s+void|no\s+effects)\s*[.!]?$/;
+      if (!FX.test(lower) && !/\b(my void|the void|void)\b.*\b(deep blue|blue|purple|warmer|warm|darker|dark)\b|\b(add|slow|no|remove|hide)\s+(the\s+)?stars\b|\bquieter\s+(font|text)\b|\b(bigger|larger|smaller)\s+text\b|^reset\s+my\s+void$/.test(lower)) return false;
       enterVoid();
       if (/^reset\s+my\s+void$/.test(lower)) voidLook = { ...LOOK_DEFAULT };
       const c = (lower.match(/\b(deep blue|purple|warmer|darker|blue)\b/) || [])[1] || (/\bwarm\b/.test(lower) ? 'warmer' : /\bdark\b/.test(lower) ? 'darker' : '');
@@ -2897,6 +3000,9 @@ return { ok: true, detail: 'timer-reset' };
       if (/\badd\s+(the\s+)?stars\b/.test(lower)) voidLook.stars = 'on';
       if (/\bslow\s+(the\s+)?stars\b/.test(lower)) voidLook.stars = 'slow';
       if (/\b(no|remove|hide)\s+(the\s+)?stars\b/.test(lower)) voidLook.stars = 'off';
+      if (/\badd\s+(a\s+|the\s+)?nebula\b/.test(lower)) voidLook.fx = 'nebula';
+      if (/\badd\s+(the\s+)?(particles?|swarm)\b|\bmake\s+my\s+void\s+(swirl|swirly|alive|move)\b/.test(lower)) voidLook.fx = 'swarm';
+      if (/\b(no|remove|hide|stop)\s+(a\s+|the\s+)?(nebula|particles?|swarm)\b|^(calm\s+my\s+void|no\s+effects)\s*[.!]?$/.test(lower)) voidLook.fx = 'off';
       if (/\bquieter\s+(font|text)\b/.test(lower)) voidLook.quiet = true;
       if (/\b(bigger|larger)\s+text\b/.test(lower)) voidLook.scale = Math.min(1.4, (voidLook.scale || 1) + 0.15);
       if (/\bsmaller\s+text\b/.test(lower)) voidLook.scale = Math.max(0.85, (voidLook.scale || 1) - 0.15);
@@ -2935,10 +3041,12 @@ return { ok: true, detail: 'timer-reset' };
             reportMiss,
             loopLog,
             _pageStill: (el) => vpageEl === el,
+            summon: summonThing,
           };
           say(/weather|place|map/.test(skill.name) ? 'looking up' : skill.name === 'translate' ? 'translating' : 'working');
+          const before = whisper.textContent;
           const src = await skill.run(text, api);
-          say(src === 'none' ? "couldn't" : 'done');
+          if (whisper.textContent === before) say(src === 'none' ? "couldn't" : 'done'); // a skill that said something keeps its line
           if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + skill.name });
           if (src === 'none') reportMiss(text, 'skill:' + skill.name);
           return true;
@@ -2950,17 +3058,18 @@ return { ok: true, detail: 'timer-reset' };
     // --- Undo the last thing: one step, this device ---
     const UNDO_KEY = 'a2m.void.undo.v1';
     function takeUndoSnapshot() {
-      try { localStorage.setItem(UNDO_KEY, JSON.stringify({ state: localStorage.getItem(STATE_KEY), look: localStorage.getItem(LOOK_KEY) })); } catch (_) {}
+      try { localStorage.setItem(UNDO_KEY, JSON.stringify({ state: localStorage.getItem(STATE_KEY), look: localStorage.getItem(LOOK_KEY), agenda: localStorage.getItem(AGENDA_KEY) })); } catch (_) {}
     }
     function undoLast() {
       let snap = null;
       try { snap = JSON.parse(localStorage.getItem(UNDO_KEY) || 'null'); } catch (_) {}
-      const nowState = localStorage.getItem(STATE_KEY), nowLook = localStorage.getItem(LOOK_KEY);
-      if (!snap || (snap.state === nowState && snap.look === nowLook)) { say('nothing to undo'); return; }
+      const nowState = localStorage.getItem(STATE_KEY), nowLook = localStorage.getItem(LOOK_KEY), nowAgenda = localStorage.getItem(AGENDA_KEY);
+      if (!snap || (snap.state === nowState && snap.look === nowLook && (snap.agenda === undefined || snap.agenda === nowAgenda))) { say('nothing to undo'); return; }
       try {
         if (snap.state == null) localStorage.removeItem(STATE_KEY); else localStorage.setItem(STATE_KEY, snap.state);
         if (snap.look == null) localStorage.removeItem(LOOK_KEY); else localStorage.setItem(LOOK_KEY, snap.look);
-        localStorage.setItem(UNDO_KEY, JSON.stringify({ state: nowState, look: nowLook }));
+        if (snap.agenda !== undefined) { if (snap.agenda == null) localStorage.removeItem(AGENDA_KEY); else localStorage.setItem(AGENDA_KEY, snap.agenda); }
+        localStorage.setItem(UNDO_KEY, JSON.stringify({ state: nowState, look: nowLook, agenda: nowAgenda }));
       } catch (_) {}
       things = {}; load(); render();
       voidLook = { ...LOOK_DEFAULT }; try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}
@@ -3205,6 +3314,7 @@ return { ok: true, detail: 'timer-reset' };
       if (/^#[0-9a-f]{6}$/i.test(l.bg)) o.bg = l.bg;
       if (/^#[0-9a-f]{6}$/i.test(l.glow)) o.glow = l.glow;
       if (['off', 'on', 'slow'].includes(l.stars)) o.stars = l.stars;
+      if (['off', 'nebula', 'swarm'].includes(l.fx)) o.fx = l.fx;
       o.quiet = !!l.quiet;
       const s = Number(l.scale); if (isFinite(s) && s) o.scale = Math.min(1.4, Math.max(0.85, s));
       return o;
@@ -3524,6 +3634,10 @@ return { ok: true, detail: 'timer-reset' };
       if (pendingConfirm) await decideConfirm('reject', 'asked something else');
       else if (lastConfirm && lastConfirm.until > Date.now() && (YES_RE.test(lower0) || NO_RE.test(lower0))) { say(lastConfirm.expired && YES_RE.test(lower0) ? 'that one expired, ' + lastConfirm.nothing : 'nothing is waiting for a yes'); return; }
       if (vpageEl && /^(close|close it|close this|go away|dismiss|hide it|done|ok)\s*[.!]?$/.test(lower0)) { closePage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'closed' }); return; }
+      // quiet one-liners: nothing to close, a greeting, a probe. No page, no Wikipedia, nothing on the miss board.
+      if (!vpageEl && /^(close|close it|close this|go away|dismiss|hide it)\s*[.!]?$/.test(lower0)) { say('nothing open'); return; }
+      if (/^(hi|hello|hey|hiya|yo|ola|olá|hola|good\s+(morning|afternoon|evening))(\s+(there|void))?\s*[.!]*$/.test(lower0)) { say('hi. ask for anything'); return; }
+      if (/^(test|testing|probe|ping|ping-test|research probe|test miss from research|asdf+|qwerty|zz+q*x*)\s*[.!?]*$/.test(lower0) || /^[bcdfghjklmnpqrstvwxz]{4,8}$/.test(lower0)) { say(''); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
@@ -3764,7 +3878,7 @@ return { ok: true, detail: 'timer-reset' };
       try { const r = await fetch('/tools.json'); if (r.ok) list = await r.json(); } catch (_) {}
       let tools = list && Array.isArray(list.tools) ? list.tools : null;
       if (!tools) { await skillsReady; tools = learnedSkills.filter((k) => k.name !== 'rebuild-map' && k.examples && k.examples.length).map((k) => ({ name: k.name === 'place' ? 'map' : k.name, description: k.name, examples: k.examples })); }
-      const READ_ONLY = /^(page|calculate|weather|map|translate|place)$/;
+      const READ_ONLY = /^(page|calculate|weather|worldtime|map|translate|place)$/;
       const all = [{ name: 'ask', description: 'Ask Void anything in plain words; it answers or puts it on the stage.', examples: ['what is a black hole', 'make a 5 minute timer', 'map of Lisbon'] }].concat(tools);
       for (const t of all) {
         const ex = (t.examples || []).slice(0, 3);
@@ -3788,6 +3902,10 @@ return { ok: true, detail: 'timer-reset' };
   // ---- Atmosphere: a slow nebula behind the void (WebGL, tinted by your look), plus depth on everything summoned ----
   (function () {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const fxNow = () => document.documentElement.dataset.fx || 'off';
+    let nebulaStarted = false;
+    const startNebula = () => {
+    if (nebulaStarted) return; nebulaStarted = true;
     const cv = document.createElement('canvas'); cv.id = 'void-aura'; document.body.prepend(cv);
     const gl = cv.getContext('webgl', { antialias: false, premultipliedAlpha: false, powerPreference: 'low-power' });
     if (!gl) { document.documentElement.classList.add('no-gl'); cv.remove(); }
@@ -3829,13 +3947,68 @@ return { ok: true, detail: 'timer-reset' };
             gl.uniform3fv(uG, hex(cs.getPropertyValue('--void-glow'), '0b0b10')); gl.uniform3fv(uB, hex(cs.getPropertyValue('--void-bg'), '050505'));
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
           }
-          if (!reduce && !document.hidden) raf = requestAnimationFrame(draw);
+          if (!reduce && !document.hidden && fxNow() === 'nebula') raf = requestAnimationFrame(draw);
         };
-        document.addEventListener('visibilitychange', () => { if (!document.hidden && !raf) raf = requestAnimationFrame(draw); });
-        requestAnimationFrame((t) => { draw(t); cv.classList.add('on'); });
+        const sync = () => { const on = fxNow() === 'nebula'; cv.classList.toggle('on', on); if (on && !raf) raf = requestAnimationFrame(draw); };
+        document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); });
+        addEventListener('void-fx', sync);
+        requestAnimationFrame((t) => { draw(t); sync(); });
         if (reduce) addEventListener('storage', () => requestAnimationFrame(draw));
       }
     }
+    };
+    // particle swarm: thousands of points on the GPU, drifting in a slow orbit, parting around the cursor (your Void only)
+    let swarmStarted = false;
+    const startSwarm = () => {
+      if (swarmStarted) return; swarmStarted = true;
+      const cv = document.createElement('canvas'); cv.id = 'void-swarm'; document.body.prepend(cv);
+      const gl = cv.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: false, powerPreference: 'low-power' });
+      if (!gl) { cv.remove(); return; }
+      const vs = `attribute vec3 a;uniform float t;uniform vec2 m;uniform vec2 r;uniform float dpr;varying float v;
+        void main(){float s=a.z;float ang=t*(.015+.03*s);mat2 R=mat2(cos(ang),-sin(ang),sin(ang),cos(ang));
+          vec2 p=R*a.xy+.035*vec2(sin(t*.31+s*40.+a.y*3.),cos(t*.27+s*55.+a.x*3.));
+          vec2 asp=vec2(r.y/r.x,1.);vec2 d=(p-m)/asp;float k=exp(-dot(d,d)*14.)*.16;p+=normalize(d+1e-4)*k*asp;
+          p.x*=asp.x*1.25;gl_Position=vec4(p,0.,1.);gl_PointSize=(1.+s*2.2)*dpr;v=(.18+.62*s)*(1.-smoothstep(.9,1.6,length(a.xy)));}`;
+      const fs = `precision mediump float;uniform vec3 g;varying float v;void main(){vec2 c=gl_PointCoord-.5;float d=dot(c,c);
+        gl_FragColor=vec4(mix(vec3(.75,.82,1.),g*3.+vec3(.25,.3,.5),.45),v*smoothstep(.25,.0,d));}`;
+      const sh = (tp, src) => { const o = gl.createShader(tp); gl.shaderSource(o, src); gl.compileShader(o); return o; };
+      const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr);
+      if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) { cv.remove(); return; }
+      gl.useProgram(pr);
+      const N = Math.round(Math.min(9000, Math.max(2500, innerWidth * innerHeight / 180)));
+      const data = new Float32Array(N * 3);
+      for (let i = 0; i < N; i++) { const rr = Math.sqrt(Math.random()) * 1.45, th = Math.random() * 6.2832; data[i * 3] = Math.cos(th) * rr; data[i * 3 + 1] = Math.sin(th) * rr * .8; data[i * 3 + 2] = Math.pow(Math.random(), 2.2); }
+      const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, data, gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(pr, 'a'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 3, gl.FLOAT, false, 0, 0);
+      const U = (k) => gl.getUniformLocation(pr, k); const uT = U('t'), uM = U('m'), uR = U('r'), uD = U('dpr'), uG = U('g');
+      gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+      const dpr = Math.min(2, devicePixelRatio || 1);
+      const size = () => { cv.width = Math.round(innerWidth * dpr); cv.height = Math.round(innerHeight * dpr); gl.viewport(0, 0, cv.width, cv.height); };
+      size(); addEventListener('resize', size);
+      let mx = 9, my = 9, tx = 9, ty = 9, raf = 0;
+      addEventListener('pointermove', (e) => { tx = e.clientX / innerWidth * 2 - 1; ty = 1 - e.clientY / innerHeight * 2; }, { passive: true });
+      addEventListener('pointerleave', () => { tx = 9; ty = 9; });
+      const hex = (v) => { const m = /#?([0-9a-f]{6})/i.exec(v || '') || [0, '0b0b10']; const x = parseInt(m[1], 16); return [(x >> 16 & 255) / 255, (x >> 8 & 255) / 255, (x & 255) / 255]; };
+      const draw = (now) => {
+        raf = 0; mx += (tx - mx) * .08; my += (ty - my) * .08;
+        gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.uniform1f(uT, reduce ? 30 : now / 1000); gl.uniform2f(uM, mx, my); gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uD, dpr);
+        gl.uniform3fv(uG, hex(getComputedStyle(document.documentElement).getPropertyValue('--void-glow')));
+        gl.drawArrays(gl.POINTS, 0, N);
+        if (!reduce && !document.hidden && fxNow() === 'swarm') raf = requestAnimationFrame(draw);
+      };
+      const sync = () => { const on = fxNow() === 'swarm'; cv.classList.toggle('on', on); if (on && !raf) raf = requestAnimationFrame(draw); };
+      document.addEventListener('visibilitychange', () => { if (!document.hidden) sync(); });
+      addEventListener('void-fx', sync);
+      requestAnimationFrame(sync);
+    };
+    // the depth layer eases after the cursor; it settles and stops drawing when the pointer rests
+    { const dep = document.getElementById('void-depth'); let cx = 50, cy = 42, gx = 50, gy = 42, dr = 0;
+      const step = () => { cx += (gx - cx) * .06; cy += (gy - cy) * .06; dep.style.setProperty('--dx', cx.toFixed(2) + '%'); dep.style.setProperty('--dy', cy.toFixed(2) + '%');
+        dr = Math.abs(gx - cx) + Math.abs(gy - cy) > .05 ? requestAnimationFrame(step) : 0; };
+      if (dep && !reduce) addEventListener('pointermove', (e) => { gx = 30 + 40 * e.clientX / innerWidth; gy = 25 + 35 * e.clientY / innerHeight; if (!dr) dr = requestAnimationFrame(step); }, { passive: true }); }
+    const fxGo = () => { const f = fxNow(); if (f === 'nebula') startNebula(); if (f === 'swarm') startSwarm(); };
+    addEventListener('void-fx', fxGo); fxGo();
     // depth: summoned things arrive from the dark and tilt toward you
     if (!reduce) {
       new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.classList && n.classList.contains('thing') && !n.dataset.seen) { n.dataset.seen = '1'; if (performance.now() > 1500) { n.classList.add('arrive'); setTimeout(() => n.classList.remove('arrive'), 800); } } })

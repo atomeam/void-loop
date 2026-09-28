@@ -1,0 +1,13 @@
+[
+ {
+  "source": "void-builds",
+  "type": "built",
+  "done": "a5188f3b00b652749a2d190e243dc1b2d5603a137414ed87a1e4302277317b60",
+  "title": "answer with a tiered model stack: a frontier model for hard reasoning, a cheap open model for volume, a tiny classifier for routing",
+  "built": "2026-09-28",
+  "by": "linux-helper",
+  "branch": "helper/router",
+  "what": "lib/router.js in front of /api/answer: @cf/baai/bge-m3 embeddings as a nearest-neighbour classifier over labelled asks (each skill's asks and near-misses, simple and hard questions; example vectors embedded once, kept in memory and the edge cache). Sorts each ask into skill (logged as a skill near-miss for the will), simple (Gemma 4 26B, the default) or hard (Qwen 3.8 27B on the Workers AI free allocation, at most 10 a day; otherwise 'would escalate' is logged as evidence for the stronger-model upgrade; DeepSeek V4 Flash needs paid billing and is never called). Runs alongside the Wikipedia fetch; the answer waits for it at most 300 ms from the start, then falls back to the old behaviour. Decisions in D1 void_routes, owner-only GET /api/routes, read by tools/will.py (source 7). The page and the confirm line are untouched.",
+  "note": "Records are data. Built on a branch; ships when a builder merges and deploys it. Fresh evidence joining the tiered-model want after this record reopens it; the stronger-model upgrade stays a candidate and gets the router's would-escalate counts."
+ }
+]
