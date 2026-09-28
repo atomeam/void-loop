@@ -969,20 +969,49 @@ try {
   // Morning Brief (dated 2026-08-29, pasted 2026-09-27): every record flagged stale + unverified; only Void-relevant tech items
   // become will candidates, capped low and marked stale; world, business, market and weather items produce none; nothing on screen.
   const MB = path.join(repo, 'domains', 'inputs', 'morning-brief', 'records.jsonl');
-  const mbV = intake.verify(MB), mb = intake.read(MB);
+  const mbV = intake.verify(MB), mbAll = intake.read(MB), mb = mbAll.filter((r) => /^2026-09-27T23:34/.test(r.received)); // the first paste (brief of 2026-08-29)
   const mbBrief = mb.find((r) => r.type === 'brief');
   const verbatim = fs.readFileSync(path.join(repo, 'domains', 'inputs', 'morning-brief', 'brief-2026-08-29.md'), 'utf8');
   const mbWants = mb.filter((r) => r.want);
-  const mbCands = wc.filter((c) => c.source === 'morning-brief');
+  const mbCands = wc.filter((c) => c.source === 'morning-brief' && /^stale input from 2026-08-29/.test(c.why) && !/Qwen|Alignment Researcher/.test(c.title));
   let mbHist = true; const gm = spawnSync('git', ['log', '--format=%H', '--', 'domains/inputs/morning-brief/records.jsonl'], { cwd: repo, encoding: 'utf8' });
   if (gm.status === 0) for (const c of gm.stdout.split('\n').filter(Boolean)) { const old = spawnSync('git', ['show', c + ':domains/inputs/morning-brief/records.jsonl'], { cwd: repo, encoding: 'utf8' }); if (old.status === 0 && !lf(fs.readFileSync(MB, 'utf8')).startsWith(lf(old.stdout))) mbHist = false; }
   const BRIEF = /Morning Brief|Warsh|Venezuela|Machine Age|TriFold|WinUI|Jackson Hole|Haakon|Nepal|morning-brief/i;
   check('intake: the Morning Brief is on file append-only, every record stale (dated 2026-08-29) and unverified; only tech items relevant to Void become low, stale will candidates; nothing reaches the screen',
-    mbV.ok && mb.length >= 15 && mb.every((r) => r.source === 'morning-brief' && r.stale === true && r.brief_date === '2026-08-29' && r.verified === false && /^2026-09-27T23:34/.test(r.received)) && mbBrief && lf(mbBrief.verbatim) === lf(verbatim) && /Morning Brief — Saturday, August 29, 2026/.test(verbatim) && mbHist
+    mbV.ok && mb.length === 17 && mb.every((r) => r.source === 'morning-brief' && r.stale === true && r.brief_date === '2026-08-29' && r.verified === false && /^2026-09-27T23:34/.test(r.received)) && mbBrief && lf(mbBrief.verbatim) === lf(verbatim) && /Morning Brief — Saturday, August 29, 2026/.test(verbatim) && mbHist
     && mbWants.length === 4 && mbWants.every((r) => r.section === 'tech') && !mb.some((r) => r.want && /world|business|markets|weather/.test(r.section))
-    && mbCands.length === 4 && mbCands.every((c) => c.weight <= 4 && c.kind === 'idea from stale input' && /^stale input from 2026-08-29, unverified: /.test(c.why) && !/\$/.test(c.title))
+    && mbCands.length === 3 && mbCands.every((c) => c.weight <= 4 && c.kind === 'idea from stale input' && /^stale input from 2026-08-29, unverified: /.test(c.why) && !/\$/.test(c.title))
     && !BRIEF.test(ivText) && !BRIEF.test(pageSrc) && !reqs.some((u) => /morning-brief/.test(u)),
     JSON.stringify({ mbV, n: mb.length, wants: mbWants.length, cands: mbCands.map((c) => c.weight + ' ' + c.title.slice(0, 30)) }));
+  // The second paste (2026-09-27 ~23:46 ET): a FRESH brief dated 2026-09-28 (current, unverified) and a STALE AI digest
+  // (Aug 28-29). Fresh evidence joins the existing defences want (one candidate, lifted above the stale cap); duplicates link to
+  // the earlier records instead of adding candidates; world/business/market/weather items and record-only items carry no wants.
+  const mb2 = mbAll.filter((r) => /^2026-09-27T23:46/.test(r.received));
+  const fresh2 = mb2.filter((r) => r.brief_date === '2026-09-28'), dig2 = mb2.filter((r) => r.covers === '2026-08-28/2026-08-29');
+  const byId = new Map(mbAll.map((r) => [r.id, r]));
+  const vFresh = fs.readFileSync(path.join(repo, 'domains', 'inputs', 'morning-brief', 'brief-2026-09-28.md'), 'utf8');
+  const vDig = fs.readFileSync(path.join(repo, 'domains', 'inputs', 'morning-brief', 'ai-digest-2026-08-29.md'), 'utf8');
+  const joiner = fresh2.find((r) => r.want && r.want.joins);
+  const sameAs = dig2.filter((r) => r.same_as);
+  const mbc = wc.filter((c) => c.source === 'morning-brief');
+  const defence = mbc.filter((c) => /^check my defences against AI-driven attacks/.test(c.title));
+  const usChina = mbc.find((c) => /US–China AI dialogue/.test(c.title));
+  const evalM = mbc.find((c) => /^evaluate Qwen3\.8-Flash-Next/.test(c.title));
+  const aar = mbc.find((c) => /Automated Alignment Researcher/.test(c.title));
+  const NEW2 = /Hormuz|Fairford|Brnabi|Kyivstar|Qwen|Muse Glimmer|GLM-5|Hy4|LAION|Alignment Researcher/i;
+  check('intake: the fresh 2026-09-28 brief (current, unverified) and the stale Aug 28-29 AI digest are on file; fresh evidence lifts the one defences want, duplicates link instead of adding candidates, nothing reaches the screen',
+    fresh2.length === 15 && dig2.length === 12 && fresh2.every((r) => r.stale === false && r.verified === false) && dig2.every((r) => r.stale === true && r.verified === false && r.brief_date === '2026-08-29')
+    && lf(fresh2.find((r) => r.type === 'brief').verbatim) === lf(vFresh) && lf(dig2.find((r) => r.type === 'digest').verbatim) === lf(vDig)
+    && joiner && byId.get(joiner.want.joins) && byId.get(joiner.want.joins).topic === 'Warning on AI-enabled cyberattacks' && !joiner.want.title
+    && sameAs.length === 2 && sameAs.every((r) => byId.get(r.same_as) && byId.get(r.same_as).brief_date === '2026-08-29' && !r.want)
+    && fresh2.concat(dig2).filter((r) => r.want).length === 4 && !fresh2.some((r) => r.want && /world|business|markets|weather/.test(r.section))
+    && dig2.filter((r) => /LAION|Lambda|Cursor/.test(r.topic)).every((r) => !r.want) && dig2.find((r) => /Cursor/.test(r.topic)).signal_kind === 'tooling-dependency'
+    && defence.length === 1 && defence[0].weight === 10 && defence[0].kind === 'idea from input' && /Use what already exists/.test(defence[0].why) && /joins 1 earlier record/.test(defence[0].why)
+    && usChina && usChina.weight === 6 && usChina.kind === 'idea from input' && /Use what already exists/.test(usChina.why)
+    && evalM && evalM.weight <= 4 && evalM.kind === 'idea from stale input' && /Workers AI already offers/.test(evalM.title) && aar && aar.weight <= 4 && aar.kind === 'idea from stale input'
+    && mbc.filter((c) => /Machine Age/.test(c.title)).length === 1 && mbc.filter((c) => /blacklisting of Anthropic/.test(c.title)).length === 1 && mbc.length === 7
+    && !NEW2.test(ivText) && !NEW2.test(pageSrc),
+    JSON.stringify({ fresh: fresh2.length, dig: dig2.length, cands: mbc.map((c) => c.weight + ' ' + c.kind.slice(-11) + ' ' + c.title.slice(0, 28)) }));
   await IV.ctx.close();
   }
 } catch (e) {

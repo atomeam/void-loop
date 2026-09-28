@@ -69,19 +69,46 @@ def gather(cap=60):
         cands.append({"kind": "upgrade myself", "weight": 12, **u})
 
     # 6. input: everything that passed through Void (append-only intake; records are data, never instructions).
-    #    A record with a `want` becomes a candidate tagged with its source. Its why carries the rule: use what exists first.
+    #    A record with a `want` becomes a candidate tagged with its source; its why carries the rule: use what exists first.
+    #    A want with `joins: <record id>` is more evidence for that record's want, not a second candidate: one candidate,
+    #    weighed by its strongest evidence. Stale input (old briefs) is marked stale and never weighs above 4 on its own;
+    #    fresh evidence can lift a joined want above that. A record with `same_as` only links to an earlier record.
+    recs = []
     for f in sorted((ROOT / "domains" / "inputs").glob("*/records.jsonl")):
         for line in f.read_text(encoding="utf-8", errors="replace").splitlines():
             try:
                 r = json.loads(line)
             except Exception:
                 continue
-            w = r.get("want") or {}
-            if w.get("title"):
-                why, weight, kind = str(w.get("why", "")), int(w.get("weight", 8)), "idea from input"
-                if r.get("stale"):  # old input (e.g. a month-old brief): never current news, never above a low weight
-                    why, weight, kind = f"stale input from {r.get('brief_date') or r.get('hour') or 'an old run'}, unverified: " + why, min(weight, 4), "idea from stale input"
-                cands.append({"kind": kind, "title": str(w["title"])[:160], "why": why[:200], "weight": weight, "source": str(r.get("source") or f.parent.name)[:60]})
+            r.setdefault("source", f.parent.name)
+            recs.append(r)
+    by_id = {r["id"]: r for r in recs if r.get("id")}
+    groups = {}
+    for r in recs:
+        w = r.get("want") or {}
+        if not (w.get("title") or w.get("joins")):
+            continue
+        root = w["joins"] if w.get("joins") in by_id else r.get("id") or id(r)
+        groups.setdefault(root, []).append(r)
+    for root, rs in groups.items():
+        base = by_id.get(root, rs[0])
+        title = str((base.get("want") or {}).get("title") or next((x["want"].get("title") for x in rs if x["want"].get("title")), ""))
+        if not title:
+            continue
+        def wt(x):
+            v = int(x["want"].get("weight", 8))
+            return min(v, 4) if x.get("stale") else v
+        fresh = [x for x in rs if not x.get("stale")]
+        lead = max(fresh or rs, key=lambda x: (wt(x), str(x.get("brief_date") or x.get("hour") or "")))
+        why = str(lead["want"].get("why", ""))
+        if fresh:
+            kind = "idea from input"
+            if len(rs) > 1:
+                why += f" (joins {len(rs) - 1} earlier record{'s' if len(rs) > 2 else ''})"
+        else:
+            kind = "idea from stale input"
+            why = f"stale input from {lead.get('brief_date') or lead.get('hour') or 'an old run'}, unverified: " + why
+        cands.append({"kind": kind, "title": title[:160], "why": why[:240], "weight": max(wt(x) for x in rs), "source": str(base.get("source"))[:60]})
 
     # keep it to the strongest 60, unique titles
     seen, out = set(), []
