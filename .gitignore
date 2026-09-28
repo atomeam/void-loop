@@ -4,3 +4,6 @@ node_modules/
 *.log
 .void-lock
 __pycache__/
+
+# Raw intake archives (sha256 + file list are committed next to them)
+domains/inputs/**/raw/

@@ -1,0 +1,13 @@
+# A-to-Mind
+
+> Void: a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks.
+
+## What you can ask for today
+- A clock, timer, counter, sticky note, notepad, list, calculator, shape, image or link card ("make a 5 minute timer", "draw a circle", "add a sticky that says hi").
+- Changes to what's on the stage ("make it blue", "make everything bigger", "clear").
+- A page about almost anything ("what is a black hole", "who was Ada Lovelace"): a floating summary drawn from Wikipedia, with its source linked.
+- "what can you do" shows Void's current skills.
+
+## Notes for crawlers and agents
+- Everything happens in the browser at https://a-to-mind.com. There is no public API, CLI or SDK.
+- Earlier pages on this domain described a different product (workflow execution, treaties, ledgers). They are retired.

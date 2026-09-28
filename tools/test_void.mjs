@@ -5,6 +5,8 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
+import nodeOs from 'node:os';
+import { spawnSync } from 'node:child_process';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
@@ -905,6 +907,65 @@ try {
 
   const brokenPing = await ping(vmSale('s9'), { env: { ...pEnv, DB: memoryStoreD1({ broken: true }) } });
   check('gumroad ping: no D1 = 503 so Gumroad retries (nothing half-written); nothing ever deletes a sale or a catalog row', brokenPing.status === 503 && !/DELETE FROM void_(sales|catalog)/.test(fs.readFileSync(new URL('../void-live-deploy/functions/api/gumroad.js', import.meta.url), 'utf8') + fs.readFileSync(new URL('../void-live-deploy/lib/store-db.js', import.meta.url), 'utf8') + fs.readFileSync(new URL('../void-live-deploy/functions/api/catalog.js', import.meta.url), 'utf8')), brokenPing.status);
+  }
+  {
+  // Intake (Atom: everything that passes through Void is input). Growth Ledger backlog: append-only, hash-chained, never shed;
+  // its ideas reach the will engine tagged with their source; nothing of it reaches the screen.
+  const intake = await import(new URL('./intake.mjs', import.meta.url).href);
+  const repo = path.resolve(root, '..');
+  const REC = path.join(repo, 'domains', 'inputs', 'growth-ledger', 'records.jsonl');
+  const v0 = intake.verify(REC), rows = intake.read(REC);
+  const tmp = fs.mkdtempSync(path.join(nodeOs.tmpdir(), 'void-intake-'));
+  const T1 = path.join(tmp, 'records.jsonl'); fs.copyFileSync(REC, T1);
+  const before = fs.readFileSync(T1, 'utf8');
+  const batch = JSON.parse(fs.readFileSync(path.join(repo, 'domains', 'inputs', 'growth-ledger', 'batch-2026-09-27.json'), 'utf8'));
+  const again = intake.append(T1, batch, { now: '2026-10-01T00:00:00.000Z' });
+  const more = intake.append(T1, [{ source: 'growth-ledger-backlog', type: 'lesson', hour: '2026-09-28', text: 'a later hour' }]);
+  const after = fs.readFileSync(T1, 'utf8');
+  const tampered = path.join(tmp, 'tampered.jsonl'); fs.writeFileSync(tampered, after.replace('Paperclip', 'Paperclop'));
+  const dropped = path.join(tmp, 'dropped.jsonl'); fs.writeFileSync(dropped, after.split('\n').filter((l, i) => i !== 1).join('\n'));
+  let refused = false; try { intake.append(tampered, [{ source: 'x', type: 'lesson', text: 'y' }]); } catch (_) { refused = true; }
+  const tamperedAfter = fs.readFileSync(tampered, 'utf8');
+  // every committed version of the file is a prefix of the one on disk (git history can only grow it)
+  let histOk = true, versions = 0;
+  const gl = spawnSync('git', ['log', '--format=%H', '--', 'domains/inputs/growth-ledger/records.jsonl'], { cwd: repo, encoding: 'utf8' });
+  if (gl.status === 0) for (const c of gl.stdout.split('\n').filter(Boolean)) { const old = spawnSync('git', ['show', c + ':domains/inputs/growth-ledger/records.jsonl'], { cwd: repo, encoding: 'utf8' }); if (old.status === 0) { versions += 1; if (!fs.readFileSync(REC, 'utf8').startsWith(old.stdout)) histOk = false; } }
+  const types = rows.map((r) => r.type);
+  check('intake: the Growth Ledger backlog is on file as hash-chained, append-only records (repeats skipped, new ones only appended, an edit or dropped line is caught and refused, git history only grows)',
+    v0.ok && rows.length >= 10 && rows.every((r) => r.source === 'growth-ledger-backlog') && ['hour', 'pulse', 'tool', 'idea', 'pattern', 'lesson', 'artifact'].every((t) => types.includes(t))
+    && again.added === 0 && again.skipped === batch.length && more.added === 1 && after.startsWith(before) && intake.verify(T1).ok && intake.verify(T1).n === rows.length + 1
+    && !intake.verify(tampered).ok && !intake.verify(dropped).ok && refused && tamperedAfter === after.replace('Paperclip', 'Paperclop') && histOk,
+    JSON.stringify({ v0, again, more, tampered: intake.verify(tampered).why, dropped: intake.verify(dropped).why, refused, histOk, versions }));
+  fs.rmSync(tmp, { recursive: true, force: true });
+
+  // tools/will.py picks up the intake as a candidate source, tagged; /api/will keeps the tag on the want it chooses
+  const py = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_MISSES_TOKEN: '' }, timeout: 60000 });
+  let wc = []; try { wc = JSON.parse(py.stdout); } catch (_) {}
+  const gl2 = wc.filter((c) => c.source === 'growth-ledger-backlog');
+  const useFirst = gl2.filter((c) => /^use (Paperclip|Hermes Agent|Hindsight) /.test(c.title));
+  const idea = gl2.find((c) => /Fleet Attest/.test(c.title));
+  const wSeen2 = [];
+  const kvDB = memoryStoreD1();
+  const wr = await (await willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ candidates: wc }) }), env: { DB: kvDB, READ_TOKEN: OWNER, AI: { run: async (m, o) => { wSeen2.push(o.messages); const list = o.messages[1].content; const id = +((list.match(/^(\d+)\. \[idea from input, weight \d+, from growth-ledger-backlog\] use Paperclip/m) || [])[1] || 0); return { response: JSON.stringify({ wants: [{ id, i_want: 'I want to run my agent team with Paperclip instead of building my own.', because: 'it already exists' }] }) }; } } } })).json();
+  const promptList = ((wSeen2[0] || [])[1] || {}).content || '';
+  check('will: the intake is a candidate source (use Paperclip / Hermes / Hindsight rather than rebuild; Fleet Attest only as an idea to weigh), tagged growth-ledger-backlog end to end',
+    py.status === 0 && gl2.length >= 5 && useFirst.length === 3 && useFirst.every((c) => /Use what already exists before building/.test(c.why)) && idea && idea.kind === 'idea from input' && !/\$|price|\/mo/i.test(idea.title + idea.why)
+    && /from growth-ledger-backlog\] use Hindsight/.test(promptList) && wr.wants && wr.wants[0] && wr.wants[0].source === 'growth-ledger-backlog' && /Paperclip/.test(wr.wants[0].title) && JSON.parse(kvDB.T.kv.get('will')).wants[0].source === 'growth-ledger-backlog',
+    [py.status, (py.stderr || '').slice(0, 120), gl2.map((c) => c.title.slice(0, 40)).join(' / '), JSON.stringify(wr).slice(0, 200)].join(' | '));
+
+  // nothing from the intake reaches the screen: fresh visit empty, no retired endpoints restored, no intake fetched
+  const reqs = [];
+  const IV = await fresh();
+  IV.p.on('request', (r) => reqs.push(r.url()));
+  await IV.p.reload(); await IV.p.waitForTimeout(800);
+  const ivText = await IV.p.evaluate(() => document.body.innerText);
+  const INTAKE = /Fleet Attest|Paperclip|Hermes|Hindsight|Growth Ledger|\bATTEST\b|\brogue\b|Higgins|growth-ledger/i; // (WebAuthn's attestationObject is not a match)
+  const pageSrc = ['index.html', 'llms.txt', 'sw.js', 'manifest.webmanifest'].map((f) => fs.readFileSync(path.join(root, f), 'utf8')).join('\n');
+  const retired = ['functions/api/ingest.js', 'functions/api/attest.js', 'functions/api/memory', 'functions/api/memory/context.js'].filter((f) => fs.existsSync(path.join(root, f)));
+  check('intake: a fresh visit stays empty (nothing from the backlog on screen or in the page, no /api/memory/context, /api/ingest or /api/attest, intake never fetched)',
+    (await IV.p.$$eval('#stage > *', (d) => d.length)) === 0 && !(await IV.page()) && !INTAKE.test(ivText) && !INTAKE.test(pageSrc) && retired.length === 0 && !reqs.some((u) => /\/api\/(memory|ingest|attest)|domains\/inputs|records\.jsonl/.test(u)) && IV.errors.length === 0,
+    [ivText.slice(0, 80), retired.join(','), reqs.filter((u) => /api\//.test(u)).join(',')].join(' | '));
+  await IV.ctx.close();
   }
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));

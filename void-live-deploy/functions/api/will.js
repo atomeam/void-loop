@@ -1,9 +1,10 @@
 // Void's will engine: Void decides what it wants to become next.
 // GET  (public)  -> Void's current wants, in its own words ("what do you want to be?")
-// POST (owner)   { candidates: [{ kind, title, why, weight, cost_cents? }] } -> Void chooses, saves its will, queues its top want for the builders.
+// POST (owner)   { candidates: [{ kind, title, why, weight, cost_cents?, source? }] } -> Void chooses, saves its will, queues its top want for the builders.
 // Void's earnings (plan item 12: every Gumroad sale, net of refunds) are its budget: the will reads them when it ranks, and a
 // candidate whose monthly cost the budget covers weighs more. Money never shows in the public will; real spend needs the confirm line.
 // Rule for every want: if an existing tool or feature already does it, use that instead of building it.
+// `source` names where an idea came in (e.g. growth-ledger-backlog: input that passed through Void); it is kept on the want.
 import { readEarnings, budgetLine } from '../../lib/earnings.js';
 const MODEL = '@cf/google/gemma-4-26b-a4b-it';
 const ok = (req, env) => env.READ_TOKEN && req.headers.get('authorization') === 'Bearer ' + env.READ_TOKEN;
@@ -22,10 +23,10 @@ export async function onRequestPost({ request, env }) {
   const budget = money ? money.budget_cents : 0;
   const cands = (b.candidates || []).slice(0, 60).map((c, i) => {
     const cost = Math.max(0, Math.round(+c.cost_cents || 0));
-    return { id: i + 1, kind: String(c.kind || ''), title: String(c.title || '').slice(0, 160), why: String(c.why || '').slice(0, 200), weight: (+c.weight || 0) + (cost && budget >= cost ? 15 : 0), cost };
+    return { id: i + 1, kind: String(c.kind || ''), title: String(c.title || '').slice(0, 160), why: String(c.why || '').slice(0, 200), weight: (+c.weight || 0) + (cost && budget >= cost ? 15 : 0), cost, source: String(c.source || '').replace(/[^\w .:-]/g, '').slice(0, 60) };
   });
   if (!cands.length) return new Response('no candidates', { status: 400 });
-  const list = (money ? budgetLine(money) + '\n\n' : '') + cands.map((c) => `${c.id}. [${c.kind}, weight ${c.weight}${c.cost ? ', costs $' + (c.cost / 100).toFixed(2).replace(/\.00$/, '') + '/month' + (budget >= c.cost ? ', affordable' : ', over budget') : ''}] ${c.title} — ${c.why}`).join('\n');
+  const list = (money ? budgetLine(money) + '\n\n' : '') + cands.map((c) => `${c.id}. [${c.kind}, weight ${c.weight}${c.cost ? ', costs $' + (c.cost / 100).toFixed(2).replace(/\.00$/, '') + '/month' + (budget >= c.cost ? ', affordable' : ', over budget') : ''}${c.source ? ', from ' + c.source : ''}] ${c.title} — ${c.why}`).join('\n');
   let chosen = null;
   try {
     const r = await env.AI.run(MODEL, {
@@ -43,7 +44,7 @@ export async function onRequestPost({ request, env }) {
   if (!wants.length) wants = cands.slice().sort((a, b) => b.weight - a.weight).slice(0, 3).map((c) => ({ c, i_want: 'I want to ' + c.title.replace(/^./, (x) => x.toLowerCase()) + '.', because: c.why }));
   const at = new Date().toISOString();
   const noMoney = (t) => String(t || '').replace(/[$€£]\s?\d[\d,.]*(\s?(k|m|\/\s?mo(nth)?|a month|per month))?/gi, 'what I earned').replace(/\b(budget|earnings?|profits?|revenue|sales total)\b/gi, 'what I earned');
-  const will = { at, wants: wants.map((w) => ({ kind: w.c.kind, title: w.c.title, i_want: noMoney(w.i_want).slice(0, 220), because: noMoney(w.because).slice(0, 200) })) };
+  const will = { at, wants: wants.map((w) => ({ kind: w.c.kind, title: w.c.title, ...(w.c.source ? { source: w.c.source } : {}), i_want: noMoney(w.i_want).slice(0, 220), because: noMoney(w.because).slice(0, 200) })) };
   await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('will', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(will)).run();
   // queue the top want unless a will job is already open
   const open = await env.DB.prepare("SELECT id FROM void_queue WHERE target LIKE 'will:%' AND state IN ('queued','building') LIMIT 1").first();
