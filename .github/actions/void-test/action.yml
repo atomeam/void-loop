@@ -1,0 +1,42 @@
+name: Void test suite
+description: Mirror tools/deploy.ps1 before it deploys. Sync the void.html copies, then run node tools/test_void.mjs (Chromium via Playwright, Python for will.py).
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: npm
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: npm ci
+      shell: bash
+      run: npm ci --no-audit --no-fund
+    - name: Playwright version
+      id: pw
+      shell: bash
+      run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+    - name: Cache Chromium
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/ms-playwright
+        key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+    - name: Install Chromium (+ system deps)
+      shell: bash
+      run: |
+        npx playwright-core install --with-deps chromium
+        echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+    - name: Sync void.html copies (same as deploy.ps1)
+      shell: bash
+      run: |
+        cp void.html void-live-deploy/index.html
+        cp void.html void-live-deploy/void.html
+    - name: node tools/test_void.mjs
+      shell: bash
+      env:
+        PYTHONIOENCODING: utf-8
+      run: |
+        set -o pipefail
+        node tools/test_void.mjs 2>&1 | tee test-output.txt
+        echo "### Void tests: $(tail -n 1 test-output.txt)" >> "$GITHUB_STEP_SUMMARY"
