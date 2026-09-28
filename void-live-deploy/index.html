@@ -505,6 +505,7 @@ Object.values(things).forEach((th) => {
         else if (th.kind === 'calc') mountCalc(th);
         else if (th.kind === 'shape') mountShape(th);
         else if (th.kind === 'kept') mountKept(th);
+        else if (th.kind === 'calendar') mountCalendar(th);
       });
     }
 
@@ -529,6 +530,52 @@ Object.values(things).forEach((th) => {
       bindDrag(el, th);
       body.addEventListener('pointerdown', (e) => { if (e.target.closest('a, iframe')) e.stopPropagation(); });
       stage.appendChild(el);
+    }
+
+    // calendar card: upcoming events from a2m.void.agenda.v1 (skills/calendar.js writes them), this browser only
+    const AGENDA_KEY = 'a2m.void.agenda.v1';
+    function mountCalendar(th) {
+      let list = []; try { list = JSON.parse(localStorage.getItem(AGENDA_KEY) || '[]'); } catch (_) {}
+      if (!Array.isArray(list)) list = [];
+      const now = Date.now();
+      const up = list.filter((e) => e && e.at && new Date(e.at).getTime() + (e.allDay ? 864e5 : 36e5) >= now).sort((a, b) => a.at.localeCompare(b.at));
+      const el = document.createElement('div');
+      el.className = 'thing calendar-card';
+      el.dataset.id = th.id;
+      el.style.cssText += ';left:' + th.x + 'px;top:' + th.y + 'px;width:280px;max-width:calc(100vw - 32px);max-height:360px;overflow:auto;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(12,12,12,0.92);font-size:13px;cursor:grab;user-select:none';
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+      const head = document.createElement('div');
+      head.style.cssText = 'color:var(--muted);font-size:12px;margin-bottom:6px';
+      head.textContent = 'Calendar';
+      el.appendChild(head);
+      if (!up.length) {
+        const none = document.createElement('div'); none.style.color = 'var(--muted)';
+        none.textContent = 'Nothing coming up. Try “call Sam next Tuesday at 4”.'; el.appendChild(none);
+      }
+      let lastDay = '';
+      up.slice(0, 30).forEach((ev) => {
+        const t = new Date(ev.at), day = t.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+        if (day !== lastDay) { const d = document.createElement('div'); d.style.cssText = 'color:var(--muted);font-size:11px;margin:8px 0 2px;text-transform:uppercase;letter-spacing:.04em'; d.textContent = t.toDateString() === new Date().toDateString() ? 'Today' : day; el.appendChild(d); lastDay = day; }
+        const row = document.createElement('div'); row.className = 'cal-event'; row.style.cssText = 'display:flex;gap:8px;align-items:baseline;padding:2px 0';
+        const when = document.createElement('span'); when.style.cssText = 'color:var(--muted);min-width:62px;font-variant-numeric:tabular-nums';
+        when.textContent = ev.allDay ? 'all day' : t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+        const what = document.createElement('span'); what.style.flex = '1'; what.textContent = ev.title || 'Event';
+        const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'remove ' + (ev.title || 'event'));
+        x.style.cssText = 'background:none;border:0;color:var(--muted);cursor:pointer;font-size:14px;padding:0 2px';
+        x.addEventListener('pointerdown', (e) => e.stopPropagation());
+        x.addEventListener('click', () => { takeUndoSnapshot(); try { localStorage.setItem(AGENDA_KEY, JSON.stringify(list.filter((e) => e.id !== ev.id))); } catch (_) {} render(); });
+        row.appendChild(when); row.appendChild(what); row.appendChild(x); el.appendChild(row);
+      });
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
+    // skills put things on the stage through this: summon('calendar') shows the card, { hide: true } takes it off (events stay)
+    function summonThing(kind, opts = {}) {
+      if (kind !== 'calendar') return null;
+      let th = Object.values(things).find((t) => t.kind === kind);
+      if (opts.hide) { if (th) { delete things[th.id]; if (selectedId === th.id) selectedId = null; } save(); render(); return null; }
+      if (!th) { th = { id: uid(kind), kind, x: Math.max(16, Math.min(stage.clientWidth - 300, stage.clientWidth - 340)), y: 60 }; things[th.id] = th; }
+      selectedId = th.id; save(); render(); return th;
     }
 
     function bindDrag(el, th) {
@@ -2954,10 +3001,12 @@ return { ok: true, detail: 'timer-reset' };
             reportMiss,
             loopLog,
             _pageStill: (el) => vpageEl === el,
+            summon: summonThing,
           };
           say(/weather|place|map/.test(skill.name) ? 'looking up' : skill.name === 'translate' ? 'translating' : 'working');
+          const before = whisper.textContent;
           const src = await skill.run(text, api);
-          say(src === 'none' ? "couldn't" : 'done');
+          if (whisper.textContent === before) say(src === 'none' ? "couldn't" : 'done'); // a skill that said something keeps its line
           if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + skill.name });
           if (src === 'none') reportMiss(text, 'skill:' + skill.name);
           return true;
@@ -2969,17 +3018,18 @@ return { ok: true, detail: 'timer-reset' };
     // --- Undo the last thing: one step, this device ---
     const UNDO_KEY = 'a2m.void.undo.v1';
     function takeUndoSnapshot() {
-      try { localStorage.setItem(UNDO_KEY, JSON.stringify({ state: localStorage.getItem(STATE_KEY), look: localStorage.getItem(LOOK_KEY) })); } catch (_) {}
+      try { localStorage.setItem(UNDO_KEY, JSON.stringify({ state: localStorage.getItem(STATE_KEY), look: localStorage.getItem(LOOK_KEY), agenda: localStorage.getItem(AGENDA_KEY) })); } catch (_) {}
     }
     function undoLast() {
       let snap = null;
       try { snap = JSON.parse(localStorage.getItem(UNDO_KEY) || 'null'); } catch (_) {}
-      const nowState = localStorage.getItem(STATE_KEY), nowLook = localStorage.getItem(LOOK_KEY);
-      if (!snap || (snap.state === nowState && snap.look === nowLook)) { say('nothing to undo'); return; }
+      const nowState = localStorage.getItem(STATE_KEY), nowLook = localStorage.getItem(LOOK_KEY), nowAgenda = localStorage.getItem(AGENDA_KEY);
+      if (!snap || (snap.state === nowState && snap.look === nowLook && (snap.agenda === undefined || snap.agenda === nowAgenda))) { say('nothing to undo'); return; }
       try {
         if (snap.state == null) localStorage.removeItem(STATE_KEY); else localStorage.setItem(STATE_KEY, snap.state);
         if (snap.look == null) localStorage.removeItem(LOOK_KEY); else localStorage.setItem(LOOK_KEY, snap.look);
-        localStorage.setItem(UNDO_KEY, JSON.stringify({ state: nowState, look: nowLook }));
+        if (snap.agenda !== undefined) { if (snap.agenda == null) localStorage.removeItem(AGENDA_KEY); else localStorage.setItem(AGENDA_KEY, snap.agenda); }
+        localStorage.setItem(UNDO_KEY, JSON.stringify({ state: nowState, look: nowLook, agenda: nowAgenda }));
       } catch (_) {}
       things = {}; load(); render();
       voidLook = { ...LOOK_DEFAULT }; try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}

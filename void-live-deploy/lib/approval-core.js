@@ -116,8 +116,8 @@ export function parseGatedAsk(text) {
   if ((m = s.match(/^(?:post|publish)\s+(?:the\s+|my\s+|these\s+)?release notes\s+(?:to|on|for)\s+(.+)$/i))) {
     return { toolName: 'release.publish', args: { where: clip(m[1], 120) } };
   }
-  if ((m = s.match(/^(?:add|put)\s+(.+?)\s+(?:to|on|in)\s+my calendar(?:\s+((?:for|on|at)\s+.+))?$/i))
-      || (m = s.match(/^schedule\s+(?:a\s+|an\s+)?(.+?)(?:\s+((?:for|on|at)\s+.+))?$/i))
+  // Your own calendar is yours (skills/calendar.js saves it in this browser, no yes needed). Only asks that reach another person are gated.
+  if ((m = s.match(/^schedule\s+(?:a\s+|an\s+)?((?:meeting|call)\s+with\s+.+?)(?:\s+((?:for|on|at)\s+.+))?$/i))
       || (m = s.match(/^book\s+(?:a\s+|an\s+)?((?:meeting|call)\s+with\s+.+?)(?:\s+((?:for|on|at)\s+.+))?$/i))) {
     return { toolName: 'calendar.book', args: { what: clip(m[1], 160), when: clip(m[2], 80) } };
   }
