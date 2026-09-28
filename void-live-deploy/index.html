@@ -308,6 +308,7 @@
       color: var(--muted); font-size: 12px; min-height: 16px;
       padding: 0 18px;
     }
+    #whisper .vc { color: var(--fg); cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
     .shape {
       position: absolute;
       user-select: none;
@@ -3007,7 +3008,7 @@ return { ok: true, detail: 'timer-reset' };
       const tick = async () => {
         try {
           const v = await queueCall('GET');
-          const it = v.items.find((i) => i.id === id); if (!it) return;
+          const it = v.items.find((i) => i.id === id); if (!it || pendingConfirm) return;
           whisper.textContent = buildStatusLine(v, it);
           if (it.state === 'live' || it.state === 'needs-you') { clearInterval(buildPoll); setTimeout(() => { if (whisper.textContent.startsWith(BUILD_STATES[it.state])) whisper.textContent = ''; }, 15000); }
         } catch (_) {}
@@ -3033,13 +3034,78 @@ return { ok: true, detail: 'timer-reset' };
       return true;
     }
 
+    // --- The confirm line (plan item 7, ApprovalEvent v0): one plain line before anything that sends, books or spends. ---
+    // The action waits server-side (/api/approval) until the decision arrives. No, no answer, or a changed request = it doesn't run.
+    // Which asks count, the wording and the fingerprint live in /lib/approval-core.js, shared with the server. Read-only asks never get here.
+    const approvalReady = import('/lib/approval-core.js').catch(() => null);
+    const YES_RE = /^(yes|y|yeah|yep|yup|sure|do it|send it|book it|buy it|pay it|go ahead|confirm)\s*[.!]?$/;
+    const NO_RE = /^(no|n|nope|cancel|stop|don'?t|no thanks|never ?mind)\s*[.!]?$/;
+    let pendingConfirm = null, lastConfirm = null;
+    async function approvalCall(body) {
+      const r = await fetch('/api/approval', { method: 'POST', headers: { authorization: 'Bearer ' + ownerToken(), 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      let j = null; try { j = await r.json(); } catch (_) {}
+      return { status: r.status, body: j };
+    }
+    async function handleGatedAsk(text) {
+      const core = await Promise.race([approvalReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      const ask = core && core.parseGatedAsk(text);
+      if (!ask) return false;
+      const nothing = core.NOTHING[core.GATED[ask.toolName].kind];
+      if (!ownerToken()) { say('only the owner can ask that'); return true; }
+      const fp = await core.fingerprint(ask.toolName, ask.args);
+      let res = null;
+      try { res = await approvalCall({ type: core.EVENT_REQUESTED, runId: crypto.randomUUID ? crypto.randomUUID() : uid('run'), workflowId: core.WORKFLOW_ID, stepId: ask.toolName, toolName: ask.toolName, args: ask.args, argsFingerprint: fp }); } catch (_) {}
+      const rec = res && res.status === 200 ? res.body : null;
+      if (!rec || rec.argsFingerprint !== fp || rec.toolName !== ask.toolName || rec.correlateKey !== rec.approvalId) {
+        say(res && res.status === 401 ? 'key not accepted, ' + nothing : (res && res.status === 409) || rec ? 'that request changed on the way, ' + nothing : "couldn't ask for a yes, " + nothing);
+        loopLog({ domain: 'void.confirm', ask: text, score: 'fail', note: 'not asked ' + ask.toolName });
+        return true;
+      }
+      const pc = { core, rec, fp, text, toolName: ask.toolName, args: ask.args, kind: core.GATED[ask.toolName].kind, line: core.confirmLine(ask.toolName, ask.args) };
+      const wait = Math.max(0, Date.parse(rec.expiresAt) - Date.parse(rec.requestedAt));
+      pc.expiresAt = Date.now() + wait;
+      pc.timer = setTimeout(() => { if (pendingConfirm === pc) decideConfirm('timeout', 'no answer in time'); }, wait);
+      pendingConfirm = pc;
+      whisper.innerHTML = esc(pc.line) + ' <span class="vc" data-vc="yes" role="button" tabindex="0">Yes</span> / <span class="vc" data-vc="no" role="button" tabindex="0">No</span>';
+      loopLog({ domain: 'void.confirm', ask: text, score: 'pass', note: 'asked ' + ask.toolName });
+      return true;
+    }
+    async function decideConfirm(decision, reason) {
+      const pc = pendingConfirm; if (!pc) return;
+      const { core, rec } = pc, nothing = core.NOTHING[pc.kind];
+      clearTimeout(pc.timer); pendingConfirm = null;
+      if (decision === 'approve' && Date.now() >= pc.expiresAt) { decision = 'timeout'; reason = 'no answer in time'; }
+      let mismatch = false;
+      if (decision === 'approve' && (await core.fingerprint(pc.toolName, pc.args)) !== rec.argsFingerprint) { mismatch = true; decision = 'reject'; reason = 'request changed before yes'; }
+      let d = null;
+      try { d = (await approvalCall({ type: core.EVENT_DECISION, approvalId: rec.approvalId, correlateKey: rec.approvalId, decision, actor: 'owner', reason: reason || '', argsFingerprint: pc.fp, decidedAt: new Date().toISOString() })).body; } catch (_) {}
+      let msg;
+      if (mismatch || (d && d.error === 'fingerprint mismatch')) msg = 'that request changed, ' + nothing;
+      else if (decision === 'timeout' || (d && d.decision === 'timeout')) msg = 'no answer, ' + nothing;
+      else if (decision !== 'approve') msg = reason === 'asked something else' ? '' : 'ok, ' + nothing;
+      else if (!d) msg = 'no reply, check before asking again';
+      else if (d.ran) msg = core.DONE[pc.kind];
+      else if (d.note === 'not connected') { msg = core.GATED[pc.toolName].service + " isn't connected yet, " + nothing; reportMiss(core.GATED[pc.toolName].board, 'not-connected'); }
+      else msg = "couldn't, " + nothing;
+      loopLog({ domain: 'void.confirm', ask: pc.text, score: d && d.ran ? 'pass' : 'fail', note: (d && d.decision || decision) + (d && d.ran ? ' ran' : ' not run') });
+      lastConfirm = { until: Date.now() + 60000, expired: decision === 'timeout' || (d && d.decision === 'timeout'), nothing };
+      whisper.textContent = ''; say(msg);
+    }
+    whisper.addEventListener('click', (e) => { const v = e.target.closest && e.target.closest('[data-vc]'); if (v && pendingConfirm) { decideConfirm(v.dataset.vc === 'yes' ? 'approve' : 'reject', 'said no'); input.focus(); } });
+    whisper.addEventListener('keydown', (e) => { const v = e.target.closest && e.target.closest('[data-vc]'); if (v && pendingConfirm && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); v.click(); } });
+
     async function handle(raw) {
       const text = (raw || '').trim();
       if (!text) return;
       const lower0 = text.toLowerCase();
+      if (pendingConfirm && YES_RE.test(lower0)) { await decideConfirm('approve'); return; }
+      if (pendingConfirm && NO_RE.test(lower0)) { await decideConfirm('reject', 'said no'); return; }
+      if (pendingConfirm) await decideConfirm('reject', 'asked something else');
+      else if (lastConfirm && lastConfirm.until > Date.now() && (YES_RE.test(lower0) || NO_RE.test(lower0))) { say(lastConfirm.expired && YES_RE.test(lower0) ? 'that one expired, ' + lastConfirm.nothing : 'nothing is waiting for a yes'); return; }
       if (vpageEl && /^(close|close it|close this|go away|dismiss|hide it|done|ok)\s*[.!]?$/.test(lower0)) { closePage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'closed' }); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
       if (await handleBuildAsk(text, lower0)) return;
+      if (await handleGatedAsk(text)) return;
       takeUndoSnapshot();
       if (handleMetaAsk(text, lower0)) return;
       currentAsk = text; if (!/^(close|menu|undo|oops|clear)\b/.test(lower0)) lastAsk = text;
