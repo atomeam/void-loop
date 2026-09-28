@@ -1,0 +1,2 @@
+# Intake records are hash-chained and verbatim: keep their bytes exactly (no CRLF conversion on Windows checkouts).
+domains/inputs/** -text

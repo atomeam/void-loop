@@ -7,7 +7,7 @@ every assimilate row not live yet, every project on Victus the ingest classified
 to Void itself, and ideas from everything that passed through Void as input (domains/inputs/*/records.jsonl,
 tagged with their source, e.g. growth-ledger-backlog). Rule for all of them: use what already exists before building.
 Void picks 3 wants in its own words (/api/will), saves them, and queues the top one for the builders.
-Needs env VOID_MISSES_TOKEN.  `python tools/will.py --candidates` prints the candidate list only (no network without the token).
+Needs env VOID_MISSES_TOKEN.  `python tools/will.py --candidates [--all]` prints the candidate list only (--all = before the top-60 cut; no network without the token).
 """
 import json, os, re, sys, urllib.request, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -20,7 +20,7 @@ def call(path, body=None):
     req = urllib.request.Request("https://a-to-mind.com" + path, data=json.dumps(body).encode() if body is not None else None, headers=H, method="POST" if body is not None else "GET")
     return json.load(urllib.request.urlopen(req, timeout=90))
 
-def gather():
+def gather(cap=60):
     cands = []
     # 1. what people asked for and Void couldn't do
     try:
@@ -78,20 +78,23 @@ def gather():
                 continue
             w = r.get("want") or {}
             if w.get("title"):
-                cands.append({"kind": "idea from input", "title": str(w["title"])[:160], "why": str(w.get("why", ""))[:200], "weight": int(w.get("weight", 8)), "source": str(r.get("source") or f.parent.name)[:60]})
+                why, weight, kind = str(w.get("why", "")), int(w.get("weight", 8)), "idea from input"
+                if r.get("stale"):  # old input (e.g. a month-old brief): never current news, never above a low weight
+                    why, weight, kind = f"stale input from {r.get('brief_date') or r.get('hour') or 'an old run'}, unverified: " + why, min(weight, 4), "idea from stale input"
+                cands.append({"kind": kind, "title": str(w["title"])[:160], "why": why[:200], "weight": weight, "source": str(r.get("source") or f.parent.name)[:60]})
 
     # keep it to the strongest 60, unique titles
     seen, out = set(), []
     for c in sorted(cands, key=lambda c: -c["weight"]):
         if c["title"] not in seen:
             seen.add(c["title"]); out.append(c)
-    out = out[:60]
+    out = out[:cap] if cap else out
     return out
 
 
 if __name__ == "__main__":
     if "--candidates" in sys.argv:
-        print(json.dumps(gather(), ensure_ascii=False))
+        print(json.dumps(gather(None if "--all" in sys.argv else 60), ensure_ascii=False))
         sys.exit(0)
     out = gather()
     res = call("/api/will", {"candidates": out})

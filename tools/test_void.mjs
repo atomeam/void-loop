@@ -912,6 +912,7 @@ try {
   // Intake (Atom: everything that passes through Void is input). Growth Ledger backlog: append-only, hash-chained, never shed;
   // its ideas reach the will engine tagged with their source; nothing of it reaches the screen.
   const intake = await import(new URL('./intake.mjs', import.meta.url).href);
+  const lf = (t) => String(t).replace(/\r\n/g, '\n'); // Windows checkouts may carry CRLF
   const repo = path.resolve(root, '..');
   const REC = path.join(repo, 'domains', 'inputs', 'growth-ledger', 'records.jsonl');
   const v0 = intake.verify(REC), rows = intake.read(REC);
@@ -929,7 +930,7 @@ try {
   // every committed version of the file is a prefix of the one on disk (git history can only grow it)
   let histOk = true, versions = 0;
   const gl = spawnSync('git', ['log', '--format=%H', '--', 'domains/inputs/growth-ledger/records.jsonl'], { cwd: repo, encoding: 'utf8' });
-  if (gl.status === 0) for (const c of gl.stdout.split('\n').filter(Boolean)) { const old = spawnSync('git', ['show', c + ':domains/inputs/growth-ledger/records.jsonl'], { cwd: repo, encoding: 'utf8' }); if (old.status === 0) { versions += 1; if (!fs.readFileSync(REC, 'utf8').startsWith(old.stdout)) histOk = false; } }
+  if (gl.status === 0) for (const c of gl.stdout.split('\n').filter(Boolean)) { const old = spawnSync('git', ['show', c + ':domains/inputs/growth-ledger/records.jsonl'], { cwd: repo, encoding: 'utf8' }); if (old.status === 0) { versions += 1; if (!lf(fs.readFileSync(REC, 'utf8')).startsWith(lf(old.stdout))) histOk = false; } }
   const types = rows.map((r) => r.type);
   check('intake: the Growth Ledger backlog is on file as hash-chained, append-only records (repeats skipped, new ones only appended, an edit or dropped line is caught and refused, git history only grows)',
     v0.ok && rows.length >= 10 && rows.every((r) => r.source === 'growth-ledger-backlog') && ['hour', 'pulse', 'tool', 'idea', 'pattern', 'lesson', 'artifact'].every((t) => types.includes(t))
@@ -939,7 +940,7 @@ try {
   fs.rmSync(tmp, { recursive: true, force: true });
 
   // tools/will.py picks up the intake as a candidate source, tagged; /api/will keeps the tag on the want it chooses
-  const py = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_MISSES_TOKEN: '' }, timeout: 60000 });
+  const py = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_MISSES_TOKEN: '' }, timeout: 60000 });
   let wc = []; try { wc = JSON.parse(py.stdout); } catch (_) {}
   const gl2 = wc.filter((c) => c.source === 'growth-ledger-backlog');
   const useFirst = gl2.filter((c) => /^use (Paperclip|Hermes Agent|Hindsight) /.test(c.title));
@@ -965,6 +966,23 @@ try {
   check('intake: a fresh visit stays empty (nothing from the backlog on screen or in the page, no /api/memory/context, /api/ingest or /api/attest, intake never fetched)',
     (await IV.p.$$eval('#stage > *', (d) => d.length)) === 0 && !(await IV.page()) && !INTAKE.test(ivText) && !INTAKE.test(pageSrc) && retired.length === 0 && !reqs.some((u) => /\/api\/(memory|ingest|attest)|domains\/inputs|records\.jsonl/.test(u)) && IV.errors.length === 0,
     [ivText.slice(0, 80), retired.join(','), reqs.filter((u) => /api\//.test(u)).join(',')].join(' | '));
+  // Morning Brief (dated 2026-08-29, pasted 2026-09-27): every record flagged stale + unverified; only Void-relevant tech items
+  // become will candidates, capped low and marked stale; world, business, market and weather items produce none; nothing on screen.
+  const MB = path.join(repo, 'domains', 'inputs', 'morning-brief', 'records.jsonl');
+  const mbV = intake.verify(MB), mb = intake.read(MB);
+  const mbBrief = mb.find((r) => r.type === 'brief');
+  const verbatim = fs.readFileSync(path.join(repo, 'domains', 'inputs', 'morning-brief', 'brief-2026-08-29.md'), 'utf8');
+  const mbWants = mb.filter((r) => r.want);
+  const mbCands = wc.filter((c) => c.source === 'morning-brief');
+  let mbHist = true; const gm = spawnSync('git', ['log', '--format=%H', '--', 'domains/inputs/morning-brief/records.jsonl'], { cwd: repo, encoding: 'utf8' });
+  if (gm.status === 0) for (const c of gm.stdout.split('\n').filter(Boolean)) { const old = spawnSync('git', ['show', c + ':domains/inputs/morning-brief/records.jsonl'], { cwd: repo, encoding: 'utf8' }); if (old.status === 0 && !lf(fs.readFileSync(MB, 'utf8')).startsWith(lf(old.stdout))) mbHist = false; }
+  const BRIEF = /Morning Brief|Warsh|Venezuela|Machine Age|TriFold|WinUI|Jackson Hole|Haakon|Nepal|morning-brief/i;
+  check('intake: the Morning Brief is on file append-only, every record stale (dated 2026-08-29) and unverified; only tech items relevant to Void become low, stale will candidates; nothing reaches the screen',
+    mbV.ok && mb.length >= 15 && mb.every((r) => r.source === 'morning-brief' && r.stale === true && r.brief_date === '2026-08-29' && r.verified === false && /^2026-09-27T23:34/.test(r.received)) && mbBrief && lf(mbBrief.verbatim) === lf(verbatim) && /Morning Brief — Saturday, August 29, 2026/.test(verbatim) && mbHist
+    && mbWants.length === 4 && mbWants.every((r) => r.section === 'tech') && !mb.some((r) => r.want && /world|business|markets|weather/.test(r.section))
+    && mbCands.length === 4 && mbCands.every((c) => c.weight <= 4 && c.kind === 'idea from stale input' && /^stale input from 2026-08-29, unverified: /.test(c.why) && !/\$/.test(c.title))
+    && !BRIEF.test(ivText) && !BRIEF.test(pageSrc) && !reqs.some((u) => /morning-brief/.test(u)),
+    JSON.stringify({ mbV, n: mb.length, wants: mbWants.length, cands: mbCands.map((c) => c.weight + ' ' + c.title.slice(0, 30)) }));
   await IV.ctx.close();
   }
 } catch (e) {
