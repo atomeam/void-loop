@@ -3752,7 +3752,7 @@ return { ok: true, detail: 'timer-reset' };
       try { const r = await fetch('/tools.json'); if (r.ok) list = await r.json(); } catch (_) {}
       let tools = list && Array.isArray(list.tools) ? list.tools : null;
       if (!tools) { await skillsReady; tools = learnedSkills.filter((k) => k.name !== 'rebuild-map' && k.examples && k.examples.length).map((k) => ({ name: k.name === 'place' ? 'map' : k.name, description: k.name, examples: k.examples })); }
-      const READ_ONLY = /^(page|calculate|weather|map|translate|place)$/;
+      const READ_ONLY = /^(page|calculate|weather|worldtime|map|translate|place)$/;
       const all = [{ name: 'ask', description: 'Ask Void anything in plain words; it answers or puts it on the stage.', examples: ['what is a black hole', 'make a 5 minute timer', 'map of Lisbon'] }].concat(tools);
       for (const t of all) {
         const ex = (t.examples || []).slice(0, 3);

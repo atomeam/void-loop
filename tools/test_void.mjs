@@ -429,7 +429,8 @@ try {
   await t.ctx.route(/\/tools\.json$/, (r) => r.fulfill(json({ tools: [
     { name: 'stage', description: 'Put a thing on the stage.', examples: ['make a clock'] },
     { name: 'calculate', description: 'Arithmetic and conversion.', examples: ['5 miles in km'] },
-    { name: 'weather', description: 'Weather.', examples: ['weather in Tokyo'] }] })));
+    { name: 'weather', description: 'Weather.', examples: ['weather in Tokyo'] },
+    { name: 'worldtime', description: 'The time anywhere.', examples: ['time in Tokyo'] }] })));
   await t.p.reload(); await t.p.waitForTimeout(300);
   const names = await until(async () => { const n = await t.p.evaluate(() => Object.keys(window.__tools).sort()); return n.length >= 4 && n; }, 6000);
   const schemaOk = await t.p.evaluate(() => { const d = window.__tools.void_calculate; return !!d && d.inputSchema.required[0] === 'ask' && d.annotations.readOnlyHint === true && /5 miles in km/.test(d.description); }).catch(() => false);
@@ -437,6 +438,8 @@ try {
   const calc = await t.p.evaluate(() => window.__tools.void_calculate.execute({ ask: '5 miles in km' })).catch((e) => 'ERR ' + e);
   const made = await t.p.evaluate(() => window.__tools.void_stage.execute({ ask: 'make a clock' })).catch((e) => 'ERR ' + e);
   check('WebMCP: an agent call runs the ask and returns the result', /8\.05/.test(calc) && /clock/.test(made) && (await t.state()).some((x) => x.kind === 'clock'), calc.slice(0, 80) + ' | ' + made);
+  const wtTool = await t.p.evaluate(async () => { const d = window.__tools.void_worldtime; return d ? { ro: d.annotations.readOnlyHint, out: String(await d.execute({ ask: 'time in Tokyo' })) } : null; }).catch((e) => ({ out: 'ERR ' + e }));
+  check('WebMCP: world time is a read-only tool and answers', wtTool && wtTool.ro === true && /Tokyo/.test(wtTool.out), JSON.stringify(wtTool).slice(0, 120));
   const owner = await t.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'update yourself' }));
   check('WebMCP: owner-only asks never run from an agent', /owner/.test(owner) && t.errors.length === 0, owner + ' ' + t.errors.join(' | '));
   const idAsks = await t.p.evaluate(async () => [await window.__tools.void_ask.execute({ ask: 'forget me' }), await window.__tools.void_ask.execute({ ask: 'sign in' })]);
