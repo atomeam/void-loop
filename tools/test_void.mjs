@@ -214,7 +214,7 @@ const fixLib = await import(new URL('../void-live-deploy/lib/automation-fix.js',
 // Fix mode (plan item 13) runs the real /api/answer handler; fixEnv.AI is swapped per check (undefined = the model is busy).
 const fixEnv = { AI: undefined }, fixCalls = [];
 function memoryStoreD1({ broken = false } = {}) {
-  const T = { catalog: new Map(), meta: new Map(), sales: new Map(), accounts: new Map(), milestones: new Map(), kv: new Map(), queue: new Map() }, tables = new Set();
+  const T = { catalog: new Map(), meta: new Map(), sales: new Map(), accounts: new Map(), milestones: new Map(), kv: new Map(), queue: new Map(), shortfalls: new Map() }, tables = new Set();
   const need = (t) => { if (broken) throw new Error('D1 unavailable'); if (!tables.has(t)) throw new Error('no such table: ' + t); };
   const ch = (n) => ({ meta: { changes: n } });
   const run = (sql, a) => {
@@ -227,6 +227,7 @@ function memoryStoreD1({ broken = false } = {}) {
     if (/^UPDATE void_sales SET verified = \?, effect = \?, void_id = \? WHERE id = \?$/.test(sql)) { need('void_sales'); const r = T.sales.get(a[3]); if (!r) return ch(0); Object.assign(r, { verified: a[0], effect: a[1], void_id: a[2] }); return ch(1); }
     if (/^INSERT INTO void_accounts \(user_id, tier, sale_id, subscription_id, updated\) VALUES \(\?, \?, \?, \?, \?\) ON CONFLICT\(user_id\) DO UPDATE/.test(sql)) { need('void_accounts'); for (const [u, r] of T.accounts) if (u !== a[0] && r.sale_id && r.sale_id === a[2]) throw new Error('UNIQUE constraint failed: void_accounts.sale_id'); T.accounts.set(a[0], { tier: a[1], sale_id: a[2], subscription_id: a[3], updated: a[4] }); return ch(1); }
     if (/^INSERT OR IGNORE INTO void_milestones \(id, at, earned_cents, note\) VALUES \(\?, \?, \?, \?\)$/.test(sql)) { need('void_milestones'); if (T.milestones.has(a[0])) return ch(0); T.milestones.set(a[0], { id: a[0], at: a[1], earned_cents: a[2], note: a[3] }); return ch(1); }
+    if (/^INSERT INTO void_shortfalls \(day, place, reason, n, last\) VALUES \(\?, \?, \?, 1, \?\) ON CONFLICT\(day, place, reason\) DO UPDATE SET n = n \+ 1, last = excluded\.last$/.test(sql)) { need('void_shortfalls'); const k = a.slice(0, 3).join('|'), r = T.shortfalls.get(k); T.shortfalls.set(k, { day: a[0], place: a[1], reason: a[2], n: r ? r.n + 1 : 1, last: a[3] }); return ch(1); }
     if (/^INSERT INTO void_kv \(k, v\) VALUES \('will', \?\) ON CONFLICT/.test(sql)) { T.kv.set('will', a[0]); return ch(1); }
     if (/^INSERT INTO void_queue \(id, ask, target, state, note, at, updated\) VALUES/.test(sql)) { T.queue.set(a[0], { id: a[0], ask: a[1], target: a[2], state: a[3], note: a[4] }); return ch(1); }
     if (/^UPDATE void_accounts SET tier = \?, updated = \? WHERE subscription_id = \? OR sale_id = \?$/.test(sql)) { need('void_accounts'); let n = 0; for (const r of T.accounts.values()) if ((r.subscription_id && r.subscription_id === a[2]) || (r.sale_id && r.sale_id === a[3])) { r.tier = a[0]; r.updated = a[1]; n += 1; } return ch(n); }
@@ -240,9 +241,10 @@ function memoryStoreD1({ broken = false } = {}) {
     if (/^SELECT id FROM void_queue WHERE target LIKE 'will:%' AND state IN \('queued','building'\) LIMIT 1$/.test(sql)) return [...T.queue.values()].find((q) => /^will:/.test(q.target) && /queued|building/.test(q.state)) || null;
     throw new Error('unexpected sql: ' + sql);
   };
-  const all = (sql) => {
+  const all = (sql, a) => {
     if (broken) throw new Error('D1 unavailable');
     if (/^SELECT resource, sale_id, raw FROM void_sales$/.test(sql)) { need('void_sales'); return { results: [...T.sales.values()].map((r) => ({ resource: r.resource, sale_id: r.sale_id, raw: r.raw })) }; }
+    if (/^SELECT place, reason, SUM\(n\) AS n FROM void_shortfalls WHERE day >= \? GROUP BY place, reason$/.test(sql)) { need('void_shortfalls'); const g = new Map(); for (const r of T.shortfalls.values()) if (r.day >= a[0]) { const k = r.place + '|' + r.reason; g.set(k, { place: r.place, reason: r.reason, n: (g.get(k) ? g.get(k).n : 0) + r.n }); } return { results: [...g.values()] }; }
     if (/^SELECT id, at, earned_cents, note FROM void_milestones$/.test(sql)) { need('void_milestones'); return { results: [...T.milestones.values()] }; }
     if (/^SELECT slug, data, available FROM void_catalog$/.test(sql)) { need('void_catalog'); return { results: [...T.catalog].map(([slug, r]) => ({ slug, data: r.data, available: r.available })) }; }
     throw new Error('unexpected sql: ' + sql);
@@ -922,6 +924,32 @@ try {
     /^Budget: \$258 earned from 6 sales \(net of refunds\)/.test(prompt) && /2\. \[upgrade myself, weight 27, costs \$10\/month, affordable\]/.test(prompt) && /3\. \[upgrade myself, weight 12, costs \$5000\/month, over budget\]/.test(prompt) && /prefer using it over building it/.test(sys)
     && w1.wants[0].title === 'Answer and fix with a stronger model' && !/\$|budget|earning/i.test(saved) && w2.wants[0].title === 'Answer and fix with a stronger model',
     prompt.slice(0, 260) + ' | ' + saved.slice(0, 200) + ' | ' + JSON.stringify(w2.wants.map((w) => w.title)));
+
+  // Free models until Void has earned: each time the free model falls short it is counted (place + reason, never the ask),
+  // and the count becomes the will's evidence for a stronger model; the owner sees it next to the earnings.
+  { const realFetch = globalThis.fetch, realCaches = globalThis.caches, rl = new Map();
+    globalThis.fetch = async () => new Response(JSON.stringify({ query: { search: [] } }), { headers: { 'content-type': 'application/json' } });
+    globalThis.caches = { default: { match: async (r) => (rl.has(r.url) ? new Response(rl.get(r.url)) : undefined), put: async (r, v) => { rl.set(r.url, await v.text()); } } };
+    try {
+      const limitEnv = { DB: eEnv.DB, SALT: 's', AI: { run: async () => { throw new Error('AiError: 4006: you have used up your daily free allocation of 10,000 neurons'); } } };
+      const post = (b, env) => answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', body: JSON.stringify(b) }), env });
+      const a1 = await (await post({ ask: 'secret plan for tuesday' }, limitEnv)).json();
+      await post({ ask: 'another private question' }, limitEnv);
+      const f1 = await (await post({ mode: 'fix', ask: 'my zap is broken' }, { ...limitEnv, AI: { run: async () => ({ response: '' }) } })).json();
+      const rows = [...eEnv.DB.shortfalls.values()];
+      const get = (pl, re) => (rows.find((r) => r.place === pl && r.reason === re) || {}).n || 0;
+      check('shortfalls: free limit, empty answer and a busy will are each counted by place and reason; no ask text is kept; the page still gets its fallback',
+        a1.note === 'model busy' && f1.note === 'model busy' && get('answer', 'free limit') === 2 && get('fix', 'empty') === 1 && get('will', 'busy') === 1 && !/secret|private|zap/.test(JSON.stringify(rows)),
+        JSON.stringify(rows).slice(0, 240));
+      wSeen.length = 0;
+      await wPost(wEnv);
+      const p2 = ((wSeen[0] || []).find((m) => m.role === 'user') || {}).content || '';
+      const e2 = await (await earnFn.onRequestGet({ request: new Request('http://x/api/earnings', { headers: { authorization: 'Bearer ' + OWNER } }), env: eEnv })).json();
+      check('shortfalls: the will sees them as evidence for a stronger model (+1 per 5, capped) and only there; the owner sees them with the earnings',
+        /2\. \[upgrade myself, weight 28, costs \$10\/month, affordable\] Answer and fix with a stronger model — better fixes; the free model fell short 4 times in 7 days \(2 answer free limit/.test(p2)
+        && /3\. \[upgrade myself, weight 12,[^\n]*\] Move to a dedicated GPU — speed$/m.test(p2) && e2.shortfalls_7d && e2.shortfalls_7d.total === 4,
+        p2.split('\n').slice(2, 5).join(' / ').slice(0, 300) + ' | ' + JSON.stringify(e2.shortfalls_7d));
+    } finally { globalThis.fetch = realFetch; globalThis.caches = realCaches; } }
 
   const brokenPing = await ping(vmSale('s9'), { env: { ...pEnv, DB: memoryStoreD1({ broken: true }) } });
   check('gumroad ping: no D1 = 503 so Gumroad retries (nothing half-written); nothing ever deletes a sale or a catalog row', brokenPing.status === 503 && !/DELETE FROM void_(sales|catalog)/.test(fs.readFileSync(new URL('../void-live-deploy/functions/api/gumroad.js', import.meta.url), 'utf8') + fs.readFileSync(new URL('../void-live-deploy/lib/store-db.js', import.meta.url), 'utf8') + fs.readFileSync(new URL('../void-live-deploy/functions/api/catalog.js', import.meta.url), 'utf8')), brokenPing.status);

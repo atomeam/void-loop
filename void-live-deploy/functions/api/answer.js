@@ -2,6 +2,7 @@
 // Sources are fetched here (Wikipedia search + summaries); the model only writes from them.
 // Cached in D1 (void_answers) so each new question is written once; per-connection rate limit in the edge cache.
 import { FIX_SYSTEM, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
+import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 const MODEL = '@cf/google/gemma-4-26b-a4b-it';
 const TTL_DAYS = 7, RL_MAX = 12;
 const norm = (t) => String(t || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 300);
@@ -53,7 +54,8 @@ async function fixAnswer(request, env, body) {
       });
       const answer = String(pick(r)).trim();
       if (answer) return Response.json({ answer, sources: [], fix: 'model', platform });
-    } catch (_) {}
+      await recordShortfall(env, 'fix', 'empty');
+    } catch (e) { await recordShortfall(env, 'fix', reasonOf(e)); }
   }
   const rules = ruleFix(all);
   return Response.json({ answer: rules, sources: [], fix: rules ? 'rules' : null, platform, note: rules ? 'model busy, fixed from the error' : 'model busy' });
@@ -92,9 +94,10 @@ export async function onRequestPost({ request, env }) {
     });
     raw = r; answer = String(pick(r)).trim();
   } catch (e) {
+    await recordShortfall(env, 'answer', reasonOf(e));
     return Response.json({ answer: null, sources: src, note: 'model busy' });
   }
-  if (!answer) return Response.json({ answer: null, sources: src, note: 'no answer' });
+  if (!answer) { await recordShortfall(env, 'answer', 'empty'); return Response.json({ answer: null, sources: src, note: 'no answer' }); }
   const at = new Date().toISOString();
   try {
     await env.DB.prepare('INSERT INTO void_answers (id, ask, answer, sources, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET answer = excluded.answer, sources = excluded.sources, at = excluded.at')
