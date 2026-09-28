@@ -353,6 +353,27 @@ try {
   await t.ask('clear all the notes'); check('clear all the notes', !(await t.state()).some((x) => x.kind === 'sticky') && (await t.state()).some((x) => x.kind === 'timer'));
   await t.ask('undo'); check('undo brings the group back', (await t.state()).filter((x) => x.kind === 'sticky').length === 2);
   await t.ask('make everything blue'); check('make everything blue', (await t.state()).every((x) => !x.color || /6aa8ff|9ec8ff/.test(x.color)));
+  // Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss board (items 3-8 of the 2026-09-28 list).
+  { const M = await fresh(); const out = [];
+    const net = []; M.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer)$/.test(u)) net.push(u); });
+    const quiet = async (a) => { const n0 = net.length; await M.ask(a, 500); return net.length === n0 && !(await M.page()); };
+    for (const a of ['close', 'dismiss', 'go away', 'hello', 'ola', 'test', 'probe', 'zzqx']) if (!(await quiet(a))) out.push(a);
+    const w = await (async () => { await M.ask('hello', 200); return M.whisper(); })();
+    for (const a of ['add milk', 'make a list add milk', 'list groceries', 'sticky note buy milk']) if (!(await quiet(a))) out.push(a);
+    const stickies = (await M.state()).filter((x) => x.kind === 'sticky').map((x) => x.text);
+    if (!(await quiet('sticky that says buy bread'))) out.push('sticky that says');
+    const st = await M.state(), lists = st.filter((x) => x.kind === 'list'), items = lists.flatMap((l) => l.items.map((i) => i.text));
+    stickies.push(...st.filter((x) => x.kind === 'sticky').map((x) => x.text));
+    await M.ask('add a clock'); await M.ask('add stars');
+    const st2 = await M.state();
+    await M.ask('how many cups in a liter', 600); const cups = await M.page();
+    check('top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss',
+      !out.length && /hi/.test(w) && lists.length === 1 && items.filter((x) => x === 'milk').length === 1 && JSON.stringify(stickies) === '["buy milk","buy bread"]',
+      out.join(',') + ' | ' + w + ' | ' + JSON.stringify(items) + ' | ' + JSON.stringify(stickies));
+    check('top misses: "add a clock" still makes a clock (not a list item), "add stars" is still a look; "how many cups in a liter" converts',
+      st2.some((x) => x.kind === 'clock') && !st2.filter((x) => x.kind === 'list').some((l) => l.items.some((i) => /clock|stars/.test(i.text))) && /4\.23 cups/.test(cups),
+      JSON.stringify(st2.map((x) => x.kind)) + ' | ' + cups.slice(0, 60));
+    await M.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
