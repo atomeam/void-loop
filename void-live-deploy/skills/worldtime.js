@@ -1,5 +1,5 @@
 /**
- * worldtime skill — Open-Meteo geocoding (gives each place's time zone), no key
+ * worldtime skill — the current time anywhere, and the gap between two places (Open-Meteo time zones, no key)
  * Contract: { name, examples, match(lower, text), run(text, api) }
  * api: { showPage, esc, say, reportMiss, loopLog }
  * Asks: "time in Tokyo", "what time is it in London", "current time in New York", "Tokyo time now",
