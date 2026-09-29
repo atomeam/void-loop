@@ -86,6 +86,7 @@ export function parseCalendar(text) {
   // an add needs a when in it: "call Sam next Tuesday at 4", "dentist Oct 12 at 3pm", "gym at 7pm", "pay rent in 3 days"
   if (/^(?:what|who|why|how|when|where|is|are|does|do|can|define|translate|weather|time|map|make|set|start)\b/i.test(t)) return null;
   if (/\b(timer|clock|sticky|notepad|counter|countdown|shape|calculator)\b/i.test(t)) return null;
+  if (/\b(hours?\s+between|time\s+difference|how\s+many\s+(hours|days))\b/i.test(t)) return null; // world time and the calculator answer these
   if (/^\d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/i.test(t) || /\b(sunrise|sunset|time zone|timezone)\b/i.test(t)) return null; // "3pm London to Tokyo" is world time; an event starts with what it is
   const w = parseWhenText(t);
   if (!w || !w.title || w.title === 'Event' || w.title.length < 2) return null;

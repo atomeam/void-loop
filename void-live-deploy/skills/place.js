@@ -15,9 +15,17 @@ function placeOf(text) {
   return p;
 }
 
+// "how do I get to Kyoto", "directions to Kyoto": the map plus a route link (OpenStreetMap, or Google Maps), from wherever you are
+function directionsTo(text) {
+  const m = text.trim().replace(/[?!.]+$/, '').match(/^(?:(?:how\s+(?:do\s+i|can\s+i|to)\s+get\s+to)|directions\s+to|route\s+to|take\s+me\s+to|navigate\s+to|get\s+me\s+to)\s+(.+)$/i);
+  if (!m) return null;
+  const p = m[1].replace(/^(the\s+)/i, '').trim();
+  return p && !/^(work|home|school|bed|sleep|the point|it|there|here)$/i.test(p) ? p : null;
+}
+
 const label = (r) => r.name + (r.admin1 && r.admin1 !== r.name ? ', ' + r.admin1 : '') + (r.country ? ', ' + r.country : '');
 
-function draw(el, r, others, api) {
+function draw(el, r, others, api, dir) {
   const { esc } = api;
   const zoomSpan = r.population > 1000000 ? 0.18 : r.population > 100000 ? 0.08 : 0.03;
   const bbox = [r.longitude - zoomSpan, r.latitude - zoomSpan * 0.6, r.longitude + zoomSpan, r.latitude + zoomSpan * 0.6].join(',');
@@ -27,13 +35,15 @@ function draw(el, r, others, api) {
   el.innerHTML = '<h2>' + esc(r.name) + '</h2><div class="sub">' + esc(label(r).split(', ').slice(1).join(', ')) + '</div>'
     + '<iframe title="map" src="' + src + '" style="width:100%;height:340px;border:0;border-radius:10px;margin:8px 0;filter:saturate(.85)" loading="lazy"></iframe>'
     + (alt.length ? '<div class="sub">Other places with this name: ' + alt.map((o, i) => '<a href="#" data-alt="' + i + '">' + esc(label(o)) + '</a>').join(' · ') + '</div>' : '')
+    + (dir ? '<p class="dir-links">Directions: <a href="https://www.openstreetmap.org/directions?to=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">OpenStreetMap</a> · <a href="https://www.google.com/maps/dir/?api=1&destination=' + r.latitude + '%2C' + r.longitude + '" target="_blank" rel="noopener">Google Maps</a> <span class="sub">(starts from where you are)</span></p>' : '')
     + '<div class="src">Source: <a href="' + big + '" target="_blank" rel="noopener">OpenStreetMap</a></div>';
-  el.querySelectorAll('[data-alt]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); draw(el, alt[+a.dataset.alt], others, api); }));
+  el.querySelectorAll('[data-alt]').forEach((a) => a.addEventListener('click', (e) => { e.preventDefault(); draw(el, alt[+a.dataset.alt], others, api, dir); }));
 }
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  const place = placeOf(text);
+  const dir = directionsTo(text);
+  const place = dir || placeOf(text);
   if (!place) return 'none';
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(place) + '</h2><div class="sub">…</div>'; });
   try {
@@ -41,7 +51,7 @@ async function run(text, api) {
     if (!api._pageStill(el)) return 'place';
     const rs = (g.results || []).sort((a, b) => (b.population || 0) - (a.population || 0));
     if (!rs.length) { el.innerHTML = '<h2>' + esc(place) + '</h2><p>I couldn\'t find that place yet. Try a city or town name, like "map of Lisbon".</p>'; if (api.reportMiss) api.reportMiss(text); return 'none'; }
-    draw(el, rs[0], rs, api);
+    draw(el, rs[0], rs, api, !!dir);
     return 'place';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
@@ -52,7 +62,7 @@ async function run(text, api) {
 
 export default {
   name: 'place',
-  examples: ['map of Lisbon', 'where is Kyoto', 'streets around Penn Station', 'Paris map', 'show Tokyo on a map'],
-  match(lower, text) { return !!placeOf(text); },
+  examples: ['map of Lisbon', 'where is Kyoto', 'streets around Penn Station', 'Paris map', 'show Tokyo on a map', 'how do I get to Kyoto', 'directions to the Louvre'],
+  match(lower, text) { return !!(directionsTo(text) || placeOf(text)); },
   run
 };

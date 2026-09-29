@@ -2840,7 +2840,7 @@ return { ok: true, detail: 'timer-reset' };
       if (/\d\s*%/.test(lower) && /(%\s*(of|off)\b|%\s*tip\s+(on|for)\b)/.test(lower)) return true;
       if (CALC_UNIT_RE.test(lower)) return true;
       if (/\b(\d+(?:\.\d+)?)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\s+(?:in|to)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\b/i.test(lower)) return true;
-      if (/^(how\s+many\s+days\s+(until|before|till)|days\s+until|until\s+)/i.test(lower) && /(christmas|xmas|new\s*year|halloween|thanksgiving|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(lower)) return true;
+      if (/^(how\s+many\s+days\s+(until|before|till)|days\s+until|until\s+)/i.test(lower) && /(christmas|xmas|new\s*year|halloween|thanksgiving|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|sunday|monday|tuesday|wednesday|thursday|friday|saturday|weekend)/i.test(lower)) return true;
       if (/^what\s+day\s+(is|will)\s+(?:be\s+)?(?:the\s+)?(\d{1,2}|\b(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b)/i.test(lower)) return true;
       return false;
     }
@@ -2913,6 +2913,16 @@ return { ok: true, detail: 'timer-reset' };
         if (hol) target = CALC_HOLIDAYS[hol[1].toLowerCase()];
         const dm = lower.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2})\b/i);
         if (dm) target = { m: CALC_MONTHS[dm[1].toLowerCase()], d: parseInt(dm[2], 10) };
+        // "how many days until friday", "days until the weekend": the next one, never today
+        const wd = !target && /\b(until|till|before)\b/.test(lower) && lower.match(/\b(sunday|monday|tuesday|wednesday|thursday|friday|saturday|weekend)\b/);
+        if (wd) {
+          const names = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'], today = new Date();
+          const want = wd[1] === 'weekend' ? 6 : names.indexOf(wd[1]);
+          const ahead = (want - today.getDay() + 7) % 7 || 7;
+          const d = new Date(today.getFullYear(), today.getMonth(), today.getDate() + ahead);
+          setV(ahead + (ahead === 1 ? ' day' : ' days'), 'until ' + d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }));
+          hit = true;
+        }
         if (target) {
           const now = new Date();
           let d = new Date(now.getFullYear(), target.m, target.d);
