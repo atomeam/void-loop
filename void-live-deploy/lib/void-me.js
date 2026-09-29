@@ -2,6 +2,7 @@
 // Tables are made on first use (same SQL as tools/d1/void_passkeys.sql) because the deploy doesn't run D1 SQL.
 // If they can't be made, every call answers 503: no sign-in, no sync, nothing half-written.
 import { randomB64u, sha256, b64u } from './webauthn.js';
+import { PAGE_TABLE } from './pages.js';
 
 export const RP_NAME = 'Void';
 export const CHALLENGE_TTL_MS = 5 * 60e3;
@@ -23,6 +24,7 @@ const TABLES = [
   'CREATE INDEX IF NOT EXISTS void_sessions_user ON void_sessions (user_id)',
   'CREATE TABLE IF NOT EXISTS void_mine (user_id TEXT PRIMARY KEY, data TEXT NOT NULL, rev INTEGER NOT NULL, updated TEXT NOT NULL)',
   // Plan item 12 (paid Void): a passkey account's tier. No row = 'free'. Only /api/gumroad writes it, after Gumroad's API confirms the sale.
+  PAGE_TABLE, // a published Void (/@name): made here too so 'forget me' can always remove it
   "CREATE TABLE IF NOT EXISTS void_accounts (user_id TEXT PRIMARY KEY, tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'paid')), sale_id TEXT UNIQUE, subscription_id TEXT, updated TEXT NOT NULL)",
 ];
 // The account's tier. Fails closed: a missing row, an unknown value or any read error is 'free' (never paid by accident).

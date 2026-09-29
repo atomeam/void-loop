@@ -6,7 +6,7 @@
 // POST { step: 'get-options' }               -> { publicKey }  request options (discoverable: no allowCredentials)
 // POST { step: 'get', credential }           -> { token, userId }  | 404 { error: 'unknown passkey', credentialId }
 // POST { step: 'sign-out' }  (Bearer)        -> ends that session
-// POST { step: 'forget' }    (Bearer)        -> deletes every passkey, session, synced byte and tier row of that Void -> { userId, credentialIds }
+// POST { step: 'forget' }    (Bearer)        -> deletes every passkey, session, synced byte, tier row and public /@name page of that Void -> { userId, credentialIds }
 // POST { step: 'tier' }      (Bearer)        -> { tier: 'free' | 'paid' }  (plan item 12; no row or a read error = free)
 // Every challenge is stored in D1, good for 5 minutes, and deleted before it's checked, so it can only be used once.
 // Origin and rpId are a-to-mind.com; signatures are verified with WebCrypto (lib/webauthn.js).
@@ -119,6 +119,7 @@ async function forget(request, env) {
     env.DB.prepare('DELETE FROM void_passkey_challenges WHERE user_id = ?').bind(me.userId),
     env.DB.prepare('DELETE FROM void_sessions WHERE user_id = ?').bind(me.userId),
     env.DB.prepare('DELETE FROM void_accounts WHERE user_id = ?').bind(me.userId),
+    env.DB.prepare('DELETE FROM void_pages WHERE user_id = ?').bind(me.userId), // a public /@name page goes too: nothing of a forgotten Void stays up
   ]);
   return good({ ok: true, userId: me.userId, credentialIds: ids, rpId: rp(env).id });
 }

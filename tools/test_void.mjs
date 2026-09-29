@@ -104,6 +104,7 @@ function memoryMeD1({ broken = false } = {}) {
     if (/^UPDATE void_mine SET data = \?, rev = rev \+ 1, updated = \? WHERE user_id = \? AND rev = \?$/.test(sql)) { need('void_mine'); const r = T.mine.get(a[2]); if (!r || r.rev !== a[3]) return ch(0); Object.assign(r, { data: a[0], rev: r.rev + 1, updated: a[1] }); return ch(1); }
     if (/^DELETE FROM void_mine WHERE user_id = \?$/.test(sql)) { need('void_mine'); return ch(T.mine.delete(a[0]) ? 1 : 0); }
     if (/^DELETE FROM void_accounts WHERE user_id = \?$/.test(sql)) { need('void_accounts'); return ch(T.accounts.delete(a[0]) ? 1 : 0); }
+    if (/^DELETE FROM void_pages WHERE user_id = \?$/.test(sql)) { need('void_pages'); return ch(0); }
     throw new Error('unexpected sql: ' + sql);
   };
   const first = (sql, a) => {
@@ -209,6 +210,16 @@ const storeDb = await import(new URL('../void-live-deploy/lib/store-db.js', impo
 const answerFn = await import(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url).href);
 const willFn = await import(new URL('../void-live-deploy/functions/api/will.js', import.meta.url).href);
 const earnFn = await import(new URL('../void-live-deploy/functions/api/earnings.js', import.meta.url).href);
+const publishFn = await import(new URL('../void-live-deploy/functions/api/publish.js', import.meta.url).href);
+const pageFn = await import(new URL('../void-live-deploy/functions/[handle].js', import.meta.url).href);
+const voidMe = await import(new URL('../void-live-deploy/lib/void-me.js', import.meta.url).href);
+const { DatabaseSync } = await import('node:sqlite');
+// A D1 stand-in on real SQLite (the SQL runs for real): prepare/bind/first/all/run and batch in one transaction.
+function sqliteD1() {
+  const db = new DatabaseSync(':memory:');
+  const st = (sql, a = []) => ({ sql, a, bind: (...b) => st(sql, b), first: async () => db.prepare(sql).get(...a) ?? null, all: async () => ({ results: db.prepare(sql).all(...a) }), run: async () => { const r = db.prepare(sql).run(...a); return { meta: { changes: Number(r.changes) } }; } });
+  return { db, prepare: (sql) => st(sql), batch: async (list) => { db.exec('BEGIN'); try { const out = []; for (const q of list) out.push(await q.run()); db.exec('COMMIT'); return out; } catch (e) { db.exec('ROLLBACK'); throw e; } } };
+}
 const fixLib = await import(new URL('../void-live-deploy/lib/automation-fix.js', import.meta.url).href);
 // Fix mode (plan item 13) runs the real /api/answer handler; fixEnv.AI is swapped per check (undefined = the model is busy).
 const fixEnv = { AI: undefined }, fixCalls = [];
@@ -424,6 +435,57 @@ try {
       dragging && order[order.length - 1] === 'first' && !(await V.p.evaluate(() => document.documentElement.classList.contains('dragging'))) && !(await V.p.evaluate(() => String(getSelection()))),
       JSON.stringify({ dragging, order }));
     await V.ctx.close(); }
+  // Public Voids: "publish my void as @name" puts a paid Void's look and kept cards (as text) at /@name, after the person's own yes.
+  { const DB = sqliteD1(), env = { DB, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'index.html'), 'utf8')) } };
+    await voidMe.ensureTables(env);
+    const mk = async (uid, tier) => { const tok = 'tok_' + uid + '_' + 'x'.repeat(40); await DB.prepare('INSERT INTO void_sessions (id, user_id, at, expires) VALUES (?, ?, ?, ?)').bind(await voidMe.sessionId(tok), uid, 'now', Date.now() + 1e9).run(); if (tier) await DB.prepare("INSERT INTO void_accounts (user_id, tier, updated) VALUES (?, ?, 'now')").bind(uid, tier).run(); return tok; };
+    const A = await mk('userA', 'paid'), B = await mk('userB', 'paid'), F = await mk('userF', null);
+    const pub = async (tok, method, body) => { const res = await publishFn['onRequest' + method[0] + method.slice(1).toLowerCase()]({ request: new Request('https://a-to-mind.com/api/publish', { method, headers: { 'content-type': 'application/json', ...(tok ? { authorization: 'Bearer ' + tok } : {}) }, body: body ? JSON.stringify(body) : undefined }), env }); return { status: res.status, body: await res.json() }; };
+    const look = { bg: '#01040f', glow: '#0a1a3a', fx: 'swarm', stars: 'on', bogus: 'x' };
+    const cards = [{ name: 'Trip', ask: 'map of Lisbon', text: '<img src=x onerror=alert(1)>Lisbon, Portugal' }];
+    const r = { none: await pub(null, 'POST', { handle: 'sam', look, cards }), free: await pub(F, 'POST', { handle: 'freeone', look, cards }), badName: await pub(A, 'POST', { handle: 'S!', look }), reserved: await pub(A, 'POST', { handle: 'admin', look }),
+      ok: await pub(A, 'POST', { handle: '@Sam', look, cards }), taken: await pub(B, 'POST', { handle: 'sam', look }), bOk: await pub(B, 'POST', { handle: 'bea', look: {} }) };
+    const row = await DB.prepare('SELECT data FROM void_pages WHERE handle = ?').bind('sam').first();
+    check('publish: needs a signed-in, paid Void (401 / 402); names are 3-24 of a-z 0-9 _ (400), reserved or taken names are refused (409); the page keeps only a clean look and cards as text (no markup)',
+      r.none.status === 401 && r.free.status === 402 && r.badName.status === 400 && r.reserved.status === 409 && r.ok.status === 200 && r.ok.body.url === 'https://a-to-mind.com/@sam' && r.taken.status === 409 && r.bOk.status === 200
+      && row && !/<|onerror|bogus/.test(row.data) && /Lisbon, Portugal/.test(row.data) && /"fx":"swarm"/.test(row.data),
+      JSON.stringify(Object.fromEntries(Object.entries(r).map(([k, v]) => [k, v.status]))) + ' | ' + (row && row.data));
+    const render = async (h) => { let nexted = false; const res = await pageFn.onRequestGet({ request: new Request('https://a-to-mind.com/' + h), env, params: { handle: h }, next: async () => { nexted = true; return new Response('asset'); } }); return { status: res.status, html: await res.text(), nexted }; };
+    const pg = await render('@sam'), none = await render('@nobody'), asset = await render('sw.js');
+    check('publish: /@sam is the homepage with that look set in the HTML (before first paint) and its cards as data; an unclaimed name is a 404 "no one here"; any other path is the site as usual',
+      pg.status === 200 && /--void-bg:#01040f/.test(pg.html) && /data-fx="swarm"/.test(pg.html) && /window\.__VOID_PAGE__=\{"handle":"sam"/.test(pg.html) && !/<img src=x/.test(pg.html) && /mountCalendar/.test(pg.html)
+      && none.status === 404 && /"none":true/.test(none.html) && asset.nexted,
+      [pg.status, none.status, asset.nexted].join(' | '));
+    // in the browser: a visitor sees @sam's look and cards, and their own stage is untouched; the owner publishes with a yes
+    const P = await fresh(() => { localStorage.setItem('a2m.void.state.v1', JSON.stringify({ s1: { id: 's1', kind: 'sticky', x: 10, y: 10, text: 'mine' } })); });
+    await P.ctx.route(/\/@[a-z0-9_]+$/, async (rt) => { const h = new URL(rt.request().url()).pathname.slice(1); const out = await render(h); return rt.fulfill({ status: out.status, contentType: 'text/html', body: out.html }); });
+    await P.p.goto(base + '@sam'); await P.p.waitForTimeout(900);
+    const seen = await P.p.evaluate(() => ({ card: (document.querySelector('.kept-card') || {}).innerText || '', img: !!document.querySelector('#stage img'), bg: getComputedStyle(document.documentElement).getPropertyValue('--void-bg').trim(), fx: document.documentElement.dataset.fx, mine: localStorage.getItem('a2m.void.state.v1') }));
+    const hello = await P.whisper();
+    await P.p.goto(base + '@nobody'); await P.p.waitForTimeout(700); const nobody = await P.whisper();
+    check('publish: a visitor at /@sam sees its look (deep blue, swarm) and its cards as text (no markup runs); their own stage in this browser is untouched; an unclaimed name says so',
+      /Lisbon, Portugal/.test(seen.card) && !seen.img && seen.bg === '#01040f' && seen.fx === 'swarm' && /"mine"/.test(seen.mine || '') && /@sam/.test(hello) && /no one here yet/.test(nobody),
+      JSON.stringify({ seen, hello, nobody }));
+    await P.ctx.close();
+    const O = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", ' + JSON.stringify(JSON.stringify({ token: A })) + ');' }, () => { window.__tools = {}; document.modelContext = { registerTool: async (d) => { window.__tools[d.name] = d; } }; });
+    await O.ctx.route(/\/api\/mine$/, (rt) => rt.fulfill(json({ data: null, rev: 0, updated: null })));
+    await O.ctx.route(/\/api\/publish$/, async (rt) => { const q = rt.request(); const res = await publishFn['onRequest' + q.method()[0] + q.method().slice(1).toLowerCase()]({ request: new Request('https://a-to-mind.com/api/publish', { method: q.method(), headers: { 'content-type': 'application/json', authorization: (await q.allHeaders()).authorization || '' }, body: q.method() === 'GET' || q.method() === 'DELETE' ? undefined : q.postData() }), env }); return rt.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }); });
+    await O.p.reload(); await O.p.waitForTimeout(600);
+    await O.ask('publish my void as @neo', 500); const asked = await O.whisper(); const before = await DB.prepare("SELECT handle FROM void_pages WHERE handle = 'neo'").first();
+    await O.ask('yes', 900); const done = await O.page(); const after = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
+    await O.ask('unpublish', 700); const gone = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
+    const C = await mk('userC', 'paid'); await pub(C, 'POST', { handle: 'cee', look, cards });
+    const up = (await render('@cee')).status;
+    const fg = await passkeyFn.onRequestPost({ request: new Request('https://a-to-mind.com/api/passkey', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + C }, body: JSON.stringify({ step: 'forget' }) }), env });
+    const afterForget = (await render('@cee')).status, rowC = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userC'").first();
+    const agentTry = await O.p.evaluate(async () => { const t = window.__tools && window.__tools.void_ask; return t ? [await t.execute({ ask: 'publish my void as @agentx' }), await t.execute({ ask: 'unpublish' })] : null; }).catch((e) => 'ERR ' + e);
+    check('publish: "publish my void as @neo" asks the person first (nothing written); "yes" publishes and shows the link (the old @sam is freed); "unpublish" takes it down',
+      /Put your Void at a-to-mind\.com\/@neo/.test(asked) && !before && /Your Void is public/.test(done) && /@neo/.test(done) && after && after.handle === 'neo' && !gone,
+      JSON.stringify({ asked, before, done: done.slice(0, 80), after, gone }));
+    check('publish: "forget me" also takes the public page down (it was live, then 404, row gone); a browser agent cannot publish or unpublish',
+      up === 200 && fg.status === 200 && afterForget === 404 && !rowC && Array.isArray(agentTry) && agentTry.every((x) => /person at the screen/.test(String(x))),
+      JSON.stringify({ up, forget: fg.status, afterForget, rowC, agentTry }));
+    await O.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));

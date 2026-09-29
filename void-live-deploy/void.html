@@ -472,6 +472,7 @@
     const STATE_KEY = 'a2m.void.state.v1';
     // plan item 6: the passkey session on this device ({ token, userId, rev, sig, synced }); see "Your Void follows you" below
     const ME_KEY = 'a2m.void.me.v1';
+    const PAGE = window.__VOID_PAGE__ || null; // a-to-mind.com/@name: someone's published Void (functions/[handle].js), shown, never saved over yours
     let me = null; try { me = JSON.parse(localStorage.getItem(ME_KEY) || 'null'); } catch (_) {}
     let minePushT = 0, minePulled = 0, mineQuiet = false, pendingForget = null, pkRetryFn = null;
 
@@ -485,12 +486,17 @@
     let selectedId = null;
 
     function load() {
+      if (PAGE) { // the page's cards, as text only; your own stage stays untouched in this browser
+        things = {}; (PAGE.cards || []).forEach((c, i) => { const id = 'page' + i; things[id] = { id, kind: 'kept', x: 40 + (i % 3) * 340, y: 40 + Math.floor(i / 3) * 260, name: c.name, ask: c.ask, html: '<h2>' + esc(c.name || '') + '</h2><p>' + esc(c.text || '') + '</p>' }; });
+        return;
+      }
       try {
         const raw = localStorage.getItem(STATE_KEY);
         if (raw) things = JSON.parse(raw) || {};
       } catch (_) { things = {}; }
     }
     function save() {
+      if (PAGE) return;
       localStorage.setItem(STATE_KEY, JSON.stringify(things));
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
       mineChanged();
@@ -2952,6 +2958,7 @@ return { ok: true, detail: 'timer-reset' };
     const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };
     let voidLook = { ...LOOK_DEFAULT };
     try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}
+    if (PAGE && PAGE.look) voidLook = { ...LOOK_DEFAULT, ...PAGE.look };
     const starCv = document.getElementById('void-stars');
     const starCtx = starCv.getContext('2d');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -2985,7 +2992,7 @@ return { ok: true, detail: 'timer-reset' };
       else starCv.classList.remove('on');
       document.documentElement.dataset.fx = voidLook.fx || 'off'; // the atmosphere script below reads this; the public stage is plain
       window.dispatchEvent(new Event('void-fx'));
-      if (persist) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} mineChanged(); }
+      if (persist && !PAGE) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} mineChanged(); }
     }
     document.addEventListener('visibilitychange', () => { if (!document.hidden && voidLook.stars !== 'off' && !starRAF) drawStars(); });
     window.addEventListener('resize', () => { if (voidLook.stars !== 'off') seedStars(); });
@@ -3333,6 +3340,7 @@ return { ok: true, detail: 'timer-reset' };
     }
     function mineChanged() { if (!me || !me.token || mineQuiet) return; clearTimeout(minePushT); minePushT = setTimeout(() => { minePush().catch(() => {}); }, 1200); }
     async function minePush(retried) {
+      if (PAGE) return; // someone's public page: never pulled over, never pushed from
       if (!me || !me.token) return true;
       const data = mineSnapshot(), s = sig(JSON.stringify(data));
       if (s === me.sig) return true;
@@ -3346,6 +3354,7 @@ return { ok: true, detail: 'timer-reset' };
     }
     async function minePull() {
       if (!me || !me.token) return;
+      if (PAGE) return; // someone's public page: never pulled over, never pushed from
       minePulled = Date.now();
       let r; try { r = await mineCall('GET'); } catch (_) { return; }
       if (!me) return;
@@ -3461,6 +3470,44 @@ return { ok: true, detail: 'timer-reset' };
       if (NO_RE.test(lower)) { say('ok, kept'); return true; }
       return false;
     }
+    // "publish my void as @sam": your look and kept cards (as text) at a-to-mind.com/@sam, after your own yes. Paid Voids; the server checks.
+    const PUBLISH_RE = /^publish\s+my\s+void(?:\s+(?:as|at))?\s+@?([a-z0-9_]{3,24})\s*[.!]?$/;
+    const UNPUBLISH_RE = /^(unpublish(\s+my\s+void)?|take\s+(down\s+my\s+(void|page)|my\s+(void|page)\s+down))\s*[.!]?$/;
+    let pendingPublish = null;
+    function publishAnswer(lower) {
+      const pp = pendingPublish; if (!pp) return false;
+      pendingPublish = null; clearTimeout(pp.timer); whisper.textContent = '';
+      if (YES_RE.test(lower)) { doPublish(pp.handle); return true; }
+      if (NO_RE.test(lower)) { say('ok, not published'); return true; }
+      return false;
+    }
+    const plainText = (html) => { try { return new DOMParser().parseFromString(String(html || ''), 'text/html').body.textContent.replace(/\s+/g, ' ').trim(); } catch (_) { return ''; } };
+    async function doPublish(handle) {
+      const cards = Object.values(things).filter((t) => t.kind === 'kept').map((t) => ({ name: t.name || t.ask || '', ask: t.ask || '', text: plainText(t.html).slice(0, 1200) }));
+      say('publishing');
+      let r = null; try { r = await meFetch('/api/publish', 'POST', { handle, look: voidLook, cards }); } catch (_) {}
+      if (!r) { say("couldn't reach the server, nothing published"); return; }
+      if (r.status === 402) { say('publishing is part of a paid Void'); return; }
+      if (r.status === 401) { say('say “sign in” first, then publish'); return; }
+      if (r.status === 409) { say('@' + handle + ' is taken, try another name'); return; }
+      if (r.status !== 200) { say(r.body && r.body.error ? r.body.error : "couldn't publish"); return; }
+      const url = r.body.url;
+      showPage((p) => { p.innerHTML = '<h2>Your Void is public</h2><p><a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(url.replace(/^https?:\/\//, '')) + '</a></p><p class="sub">Your look and ' + cards.length + ' kept card' + (cards.length === 1 ? '' : 's') + ', as text. Your stage, calendar and notes stay private. Say “unpublish” to take it down.</p><button type="button" class="pub-copy">Copy link</button>'; const b = p.querySelector('.pub-copy'); if (b) b.addEventListener('click', () => { try { navigator.clipboard.writeText(url); b.textContent = 'Copied'; } catch (_) {} }); });
+      say('published');
+      loopLog({ domain: 'void.page', ask: 'publish', score: 'pass', note: '@' + handle });
+    }
+    async function handlePublishAsk(lower) {
+      const m = lower.match(PUBLISH_RE), un = UNPUBLISH_RE.test(lower);
+      if (!m && !un) return false;
+      if (PAGE) { say('this is @' + PAGE.handle + '’s Void · go to a-to-mind.com to publish yours'); return true; }
+      if (!me || !me.token) { say('say “remember me” first, then publish'); return true; }
+      if (un) { let r = null; try { r = await meFetch('/api/publish', 'DELETE'); } catch (_) {} say(r && r.status === 200 ? 'your page is down' : "couldn't take it down"); return true; }
+      const handle = m[1];
+      const pp = { handle, timer: setTimeout(() => { if (pendingPublish === pp) { pendingPublish = null; whisper.textContent = ''; say('ok, not published'); } }, 60000) };
+      pendingPublish = pp;
+      whisper.innerHTML = 'Put your Void at a-to-mind.com/@' + esc(handle) + ' where anyone can see it? <span class="vc" data-vpub="yes" role="button" tabindex="0">Yes</span> / <span class="vc" data-vpub="no" role="button" tabindex="0">No</span>';
+      return true;
+    }
     async function handleMeAsk(lower) {
       if (!isMeAsk(lower)) return false;
       if (WHO_RE.test(lower)) {
@@ -3482,11 +3529,13 @@ return { ok: true, detail: 'timer-reset' };
       if (!el || !e.isTrusted) return; // a person's click or key only
       const f = el.closest('[data-vf]');
       if (f && pendingForget) { forgetAnswer(f.dataset.vf === 'yes' ? 'yes' : 'no'); input.focus(); return; }
+      const pb = el.closest('[data-vpub]');
+      if (pb && pendingPublish) { publishAnswer(pb.dataset.vpub === 'yes' ? 'yes' : 'no'); input.focus(); return; }
       const p = el.closest('[data-vp]');
       if (p && pkRetryFn) { const fn = pkRetryFn; pkRetryFn = null; whisper.textContent = ''; fn(); }
     };
-    whisper.addEventListener('click', (e) => whisperBy(e, e.target.closest && e.target.closest('[data-vf], [data-vp]')));
-    whisper.addEventListener('keydown', (e) => { const v = e.target.closest && e.target.closest('[data-vf], [data-vp]'); if (v && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); whisperBy(e, v); } });
+    whisper.addEventListener('click', (e) => whisperBy(e, e.target.closest && e.target.closest('[data-vf], [data-vp], [data-vpub]')));
+    whisper.addEventListener('keydown', (e) => { const v = e.target.closest && e.target.closest('[data-vf], [data-vp], [data-vpub]'); if (v && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); whisperBy(e, v); } });
     document.addEventListener('visibilitychange', () => { if (!document.hidden && me && me.token && Date.now() - minePulled > 15000) minePull(); });
     if (me && me.token) minePull();
 
@@ -3629,6 +3678,8 @@ return { ok: true, detail: 'timer-reset' };
       if (!text) return;
       const lower0 = text.toLowerCase();
       if (pendingForget && forgetAnswer(lower0)) return;
+      if (pendingPublish && publishAnswer(lower0)) return;
+      if (await handlePublishAsk(lower0)) return;
       if (pendingConfirm && YES_RE.test(lower0)) { await decideConfirm('approve'); return; }
       if (pendingConfirm && NO_RE.test(lower0)) { await decideConfirm('reject', 'said no'); return; }
       if (pendingConfirm) await decideConfirm('reject', 'asked something else');
@@ -3849,7 +3900,8 @@ return { ok: true, detail: 'timer-reset' };
       if (isPaidAsk(ask)) return 'Paid Void is for the person at the screen, asked by hand.';
       // Defences (runaway agents): an agent can never answer the confirm line or "forget me" for the person, never start a
       // send, booking or spend, and never read the owner's board. Those are for the person at the screen, by hand.
-      if (pendingConfirm || pendingForget) return 'Void is waiting for the person at the screen to answer. Agents can\'t answer for them.';
+      if (pendingConfirm || pendingForget || pendingPublish) return 'Void is waiting for the person at the screen to answer. Agents can\'t answer for them.';
+      if (PUBLISH_RE.test(ask.toLowerCase()) || UNPUBLISH_RE.test(ask.toLowerCase())) return 'Publishing your Void is for the person at the screen, asked by hand.';
       const coreA = await Promise.race([approvalReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
       if (!coreA) return 'Try again in a moment.';
       if (coreA.parseGatedAsk(ask)) return 'Sends, bookings and spends are for the person at the screen, asked by hand.';
@@ -3896,6 +3948,7 @@ return { ok: true, detail: 'timer-reset' };
 
     load();
     render();
+    if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s Void'), 400);
     window.addEventListener('resize', () => render());
   </script>
   <script>
