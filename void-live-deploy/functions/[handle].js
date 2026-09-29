@@ -16,5 +16,6 @@ export async function onRequestGet(ctx) {
   const vars = page ? `<style>:root{--void-bg:${page.look.bg};--void-glow:${page.look.glow}}</style>` : '';
   html = html.replace('<html', `<html data-fx="${page ? page.look.fx : 'off'}" data-page="@${handle.replace(/[^a-z0-9_]/g, '')}"`)
     .replace('</head>', `${vars}<script>window.__VOID_PAGE__=${inline(pub)}</script></head>`);
-  return new Response(html, { status: page ? 200 : 404, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'public, max-age=60' } });
+  // no-store: unpublish and forget take a page down at once, and a handle's next owner never gets the old page from a cache
+  return new Response(html, { status: page ? 200 : 404, headers: { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' } });
 }
