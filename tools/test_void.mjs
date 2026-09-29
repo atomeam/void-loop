@@ -633,6 +633,37 @@ try {
     check('"reset my void" brings the plain stage back after "make my void deep blue"', blue && blue !== '#050505' && after === '#050505', JSON.stringify({ blue, after }));
     check('the how-to batch threw no page errors', !H.errors.length, H.errors.join(' | '));
     await H.ctx.close(); }
+  // Handoff: writes need HANDOFF_TOKEN (the owner's READ_TOKEN never writes); the /handoff page drops and opens a file; /surface is a preview.
+  { const hf = await import(new URL('../void-live-deploy/functions/api/handoff.js', import.meta.url).href);
+    const DB = sqliteD1();
+    const post = (env, tok, body) => hf.onRequest({ request: new Request('https://a-to-mind.com/api/handoff', { method: 'POST', headers: { 'content-type': 'application/json', ...(tok ? { authorization: 'Bearer ' + tok } : {}) }, body: JSON.stringify(body || { name: 'x.sh', body: 'echo hi' }) }), env: { DB, ...env } });
+    const none = (await post({ READ_TOKEN: 'owner-read' }, 'owner-read')).status, wrong = (await post({ HANDOFF_TOKEN: 'hand' }, 'nope')).status;
+    const readNotEnough = (await post({ HANDOFF_TOKEN: 'hand', READ_TOKEN: 'owner-read' }, 'owner-read')).status;
+    const viaHand = await post({ HANDOFF_TOKEN: 'hand' }, 'hand', { name: 'void_publish_check.sh', author: 'test', body: '#!/bin/sh\necho ok\n' }); const vr = await viaHand.json();
+    const got = await hf.onRequest({ request: new Request('https://a-to-mind.com/api/handoff?id=' + vr.id + '&raw=1'), env: { DB } }); const raw = await got.text();
+    const bad = (await hf.onRequest({ request: new Request('https://a-to-mind.com/api/handoff'), env: { DB } })).status;
+    check('handoff: writes need HANDOFF_TOKEN (503 without it even when READ_TOKEN is set, 401 wrong, READ_TOKEN never writes); the link reads back raw; no id is a 400',
+      none === 503 && wrong === 401 && readNotEnough === 401 && viaHand.status === 201 && /^[a-f0-9]{32}$/.test(vr.id) && /\/api\/handoff\?id=[a-f0-9]{32}&raw=1$/.test(vr.url)
+      && raw === '#!/bin/sh\necho ok\n' && bad === 400,
+      JSON.stringify({ none, wrong, readNotEnough, via: viaHand.status, raw, bad }));
+    const P = await fresh();
+    await P.ctx.route(/\/api\/handoff/, async (rt) => { const q = rt.request(); const res = await hf.onRequest({ request: new Request('https://a-to-mind.com' + new URL(q.url()).pathname + new URL(q.url()).search, { method: q.method(), headers: await q.allHeaders(), body: q.method() === 'POST' ? q.postData() : undefined }), env: { DB, HANDOFF_TOKEN: 'hand' } });
+      return rt.fulfill({ status: res.status, contentType: res.headers.get('content-type') || 'application/json', body: await res.text() }); });
+    await P.p.goto(base + 'handoff.html'); await P.p.waitForTimeout(200);
+    await P.p.fill('#q', 'drop'); await P.p.keyboard.press('Enter');
+    await P.p.fill('#dn', 'notes.txt'); await P.p.fill('#db', 'hello from the test'); await P.p.fill('#dt', 'hand'); await P.p.click('#send');
+    await until(async () => /hello from the test/.test(await P.p.$eval('#body', (e) => e.textContent).catch(() => '')), 4000);
+    const shown = await P.p.$eval('#body', (e) => e.textContent).catch(() => ''), meta = await P.p.$eval('#meta', (e) => e.textContent).catch(() => ''), idInUrl = /\?id=[a-f0-9]{32}$/.test(P.p.url());
+    await P.p.goto(base + 'handoff.html?id=' + '0'.repeat(32)); await P.p.waitForTimeout(400); const nf = await P.p.$eval('#msg', (e) => e.textContent);
+    await P.p.goto(base + 'surface.html'); await P.p.waitForTimeout(300); await P.p.fill('#i', 'a sky of cards'); await P.p.keyboard.press('Enter'); await P.p.waitForTimeout(200);
+    const card = await P.p.$eval('#cards .vc', (e) => e.textContent).catch(() => '');
+    const heads = ['handoff.html', 'surface.html'].map((f) => fs.readFileSync(path.join(root, f), 'utf8')).every((h) => /<meta name="robots" content="noindex, nofollow">/.test(h));
+    const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
+    check('/handoff drops a file with the write token and opens it (name, body, id in the URL); an unknown id says so; /surface is a noindex preview that shows what you type; neither page becomes the offline front page',
+      shown === 'hello from the test' && /notes\.txt/.test(meta) && idInUrl && /not found/.test(nf) && /a sky of cards/.test(card) && /preview/.test(card) && heads
+      && /url\.pathname === '\/'/.test(sw) && !P.errors.length,
+      JSON.stringify({ shown, meta, idInUrl, nf, card, heads, errors: P.errors }));
+    await P.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
