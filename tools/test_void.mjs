@@ -615,6 +615,24 @@ try {
       && merged.find((x) => /paris/i.test(x.ask)).count === 2 && missKey('class') === 'class' && missKey('Whats a black hole') === 'black hole',
       JSON.stringify(merged));
   }
+  // How-to asks, "what are you", "remove every clock", "reset my void" (list items 48, 88, 89, 96).
+  { const H = await fresh(); const net = []; H.p.on('request', (r) => { if (/wikipedia\.org|\/api\/(answer|miss)$/.test(r.url())) net.push(r.url()); });
+    await H.ask('how do I make a timer', 700); const how = await H.page(); const lit = await H.p.$eval('.vpage.on li.focus', (e) => e.textContent).catch(() => '');
+    await H.ask('how can I add a sticky note?', 700); const lit2 = await H.p.$eval('.vpage.on li.focus', (e) => e.textContent).catch(() => '');
+    const built = (await H.state()).length;
+    check('"how do I make a timer" opens the Void page at the timer line (lit), builds nothing, and reaches neither Wikipedia nor the answer engine',
+      /Ask, and it appears/.test(how) && /timer/.test(lit) && /sticky/.test(lit2) && built === 0 && !net.length, JSON.stringify({ lit, lit2, built, net }));
+    await H.ask('close', 300); await H.ask('what are you', 600); const self = await H.page();
+    check('"what are you" is the self page', /Ask, and it appears/.test(self) && !net.length, self.slice(0, 80));
+    await H.ask('close', 300);
+    await H.ask('make a clock', 300); await H.ask('make a clock', 300); await H.ask('make a 5 minute timer', 300);
+    await H.ask('remove every clock', 400); const left = (await H.state()).map((x) => x.kind);
+    check('"remove every clock" removes both clocks and keeps the timer', !left.includes('clock') && left.includes('timer'), left.join(','));
+    await H.ask('make my void deep blue', 500); const blue = await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}').bg || '');
+    await H.ask('reset my void', 500); const after = await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}').bg || '#050505');
+    check('"reset my void" brings the plain stage back after "make my void deep blue"', blue && blue !== '#050505' && after === '#050505', JSON.stringify({ blue, after }));
+    check('the how-to batch threw no page errors', !H.errors.length, H.errors.join(' | '));
+    await H.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
