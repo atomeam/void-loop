@@ -15,7 +15,8 @@ self.addEventListener('fetch', (e) => {
   const nav = req.mode === 'navigate';
   if (!nav && !url.pathname.startsWith('/skills/') && !SHELL.includes(url.pathname)) return;
   e.respondWith(fetch(req).then((res) => {
-    if (res.ok && (!nav || /text\/html/.test(res.headers.get('content-type') || ''))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(nav ? '/' : req, copy)); }
+    // only the front page is the offline fallback for a navigation; /handoff or /surface never replaces it
+    if (res.ok && (!nav || (url.pathname === '/' && /text\/html/.test(res.headers.get('content-type') || '')))) { const copy = res.clone(); caches.open(CACHE).then((c) => c.put(nav ? '/' : req, copy)); }
     return res;
   }).catch(() => caches.match(nav ? '/' : req).then((r) => r || Response.error())));
 });

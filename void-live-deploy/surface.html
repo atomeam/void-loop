@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#050505">
+<title>Void · surface preview</title>
+<style>
+html,body{margin:0;height:100%;background:#050505;overflow:hidden;color-scheme:dark;font:15px/1.5 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+#v{position:relative;height:100%}
+canvas{position:absolute;inset:0;width:100%;height:100%}
+#cards{position:absolute;inset:0;pointer-events:none}
+#i{position:absolute;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(420px,80%);text-align:center;font:inherit;padding:12px 16px;border-radius:24px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.22);color:#d8d8dc}
+#i:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+#i::placeholder{color:#666}
+.vc{position:absolute;padding:12px 16px;max-width:240px;border-radius:12px;background:rgba(18,18,24,.78);border:1px solid rgba(160,190,255,.35);color:#e6e6ea;font-size:14px;opacity:0;animation:vin 9s ease-out forwards}
+.vc small{display:block;margin-top:6px;color:#8a8a98;font-size:11px}
+@keyframes vin{0%{opacity:0;transform:translateY(24px) scale(.86)}12%{opacity:1}80%{opacity:1}100%{opacity:0;transform:translateY(-70px) scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.vc{animation:none;opacity:1}}
+</style>
+</head>
+<body>
+<div id="v">
+<canvas id="c" aria-hidden="true"></canvas>
+<div id="cards" aria-live="polite"></div>
+<input id="i" type="text" placeholder="ask for anything" autocomplete="off" aria-label="Ask Void for anything" autofocus>
+</div>
+<script>
+(function(){
+var cv=document.getElementById('c'),ctx=cv.getContext('2d'),box=document.getElementById('v');
+var W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,2),mx=0,my=0,tx=0,ty=0;
+var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+var layers=[{n:90,s:.5,r:.7,a:.45},{n:60,s:1.1,r:1.1,a:.7},{n:34,s:2.2,r:1.7,a:.95}];
+var stars=[];layers.forEach(function(L,li){for(var k=0;k<L.n;k++)stars.push({x:Math.random(),y:Math.random(),l:li,p:Math.random()*6.28,tw:.6+Math.random()*1.4})});
+function size(){W=box.clientWidth;H=box.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+size();window.addEventListener('resize',size);
+box.addEventListener('pointermove',function(e){var r=box.getBoundingClientRect();tx=(e.clientX-r.left)/r.width-.5;ty=(e.clientY-r.top)/r.height-.5});
+function glow(x,y,r,c,a){var g=ctx.createRadialGradient(x,y,0,x,y,r);g.addColorStop(0,'rgba('+c+','+a+')');g.addColorStop(1,'rgba('+c+',0)');ctx.fillStyle=g;ctx.fillRect(x-r,y-r,r*2,r*2)}
+function frame(t){
+  t=t/1000;mx+=(tx-mx)*.04;my+=(ty-my)*.04;
+  ctx.fillStyle='#050505';ctx.fillRect(0,0,W,H);
+  glow(W*(.3+.04*Math.sin(t*.11)),H*(.35+.03*Math.cos(t*.09)),W*.5,'70,90,200',.10);
+  glow(W*(.72+.04*Math.cos(t*.08)),H*(.62+.03*Math.sin(t*.1)),W*.42,'120,60,170',.09);
+  glow(W*.5,H*.5,W*.22,'150,60,50',.05+.02*Math.sin(t*.5));
+  var b=1+.03*Math.sin(t*.6),rr=Math.min(W,H)*.26*b;
+  ctx.lineWidth=.6;ctx.strokeStyle='rgba(170,190,255,'+(.10+.04*Math.sin(t*.6))+')';
+  ctx.beginPath();ctx.arc(W/2-mx*18,H/2-my*18,rr,0,6.283);ctx.stroke();
+  ctx.strokeStyle='rgba(170,190,255,.05)';ctx.beginPath();ctx.arc(W/2-mx*30,H/2-my*30,rr*1.5,0,6.283);ctx.stroke();
+  for(var i=0;i<stars.length;i++){var s=stars[i],L=layers[s.l];
+    var x=((s.x*W-mx*W*.06*L.s+t*2*L.s*(reduce?0:1))%W+W)%W,y=s.y*H-my*H*.06*L.s;
+    var a=L.a*(.65+.35*Math.sin(t*s.tw+s.p));ctx.fillStyle='rgba(220,228,255,'+(reduce?L.a:a)+')';
+    ctx.beginPath();ctx.arc(x,y,L.r,0,6.283);ctx.fill()}
+  if(!reduce)requestAnimationFrame(frame)
+}
+requestAnimationFrame(frame);
+var cards=document.getElementById('cards'),inp=document.getElementById('i');
+inp.addEventListener('keydown',function(e){
+  if(e.key!=='Enter')return;var v=inp.value.trim();if(!v)return;inp.value='';
+  var d=document.createElement('div');d.className='vc';
+  d.style.left=(8+Math.random()*(W-260)/W*80)+'%';d.style.top=(10+Math.random()*40)+'%';
+  d.appendChild(document.createTextNode(v));var sm=document.createElement('small');sm.textContent='preview: nothing real behind this yet';d.appendChild(sm);
+  cards.appendChild(d);while(cards.children.length>4)cards.removeChild(cards.firstChild);
+  setTimeout(function(){if(d.parentNode)d.parentNode.removeChild(d)},9200)
+});
+})();
+</script>
+</body>
+</html>
