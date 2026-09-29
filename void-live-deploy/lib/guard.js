@@ -23,6 +23,7 @@ export const LIMITS = {
   mine: { rpm: 120, body: 900200 },
   publish: { rpm: 20, body: 40000 }, // a paid Void's public page (/@name)
   gumroad: { rpm: 120, body: 50000 },
+  handoff: { rpm: 30, body: 262144 }, // agent drop-links; 256 KB matches functions/api/handoff.js
 };
 export const DEFAULT_LIMIT = { rpm: 60, body: 16000 };
 export const FAIL_MAX = 10; // wrong keys (401/403) per connection per minute before every /api call from it is refused
