@@ -440,6 +440,14 @@
     #row:focus-within { border-color: rgba(150,175,255,.28); box-shadow: 0 0 0 1px rgba(150,175,255,.10), 0 0 40px rgba(110,140,255,.12), 0 20px 60px rgba(0,0,0,.5); }
     #dock { background: linear-gradient(to top, color-mix(in srgb, var(--void-bg, #050505) 92%, transparent) 55%, transparent); z-index: 5; }
     #hints { backdrop-filter: blur(10px); }
+    /* the same ask again: the page that is already open answers with a brief glow instead of a second fetch */
+    @keyframes vpage-again { 0% { box-shadow: 0 0 0 1px rgba(150,175,255,.45), 0 0 60px rgba(110,140,255,.30); } 100% { box-shadow: none; } }
+    .vpage.again { animation: vpage-again .9s ease-out; }
+    .vpage .choices { list-style: none; padding: 0; margin: 8px 0 0; }
+    .vpage .choices li { margin: 2px 0; }
+    .vpage .choices a { display: block; padding: 7px 10px; border-radius: 8px; color: var(--fg); text-decoration: none; }
+    .vpage .choices a:hover, .vpage .choices a:focus-visible { background: rgba(255,255,255,.06); }
+    .vpage .choices small { color: #8a8a8a; }
     @media (prefers-reduced-motion: reduce) {
       .thing, .vpage, .thing.arrive { animation: none !important; transition: opacity .2s ease !important; }
       .vpage, .vpage.on { transform: translate(-50%, -46%); filter: none; }
@@ -2618,7 +2626,12 @@ return { ok: true, detail: 'timer-reset' };
       build(el);
       document.body.appendChild(el);
       vpageEl = el;
-      el._ask = currentAsk;
+      el._ask = currentAsk; el._at = Date.now();
+      // a line with data-ask on any page (a menu row, a choice between two Springfields) runs that ask
+      el.addEventListener('click', (e) => {
+        const a = e.target.closest && e.target.closest('a[data-ask]'); if (!a) return;
+        e.preventDefault(); const ask = a.getAttribute('data-ask'); closePage(); handle(ask);
+      });
       if (pageTail && pageTail.ask === currentAsk) el._tail = pageTail.html;
       stampSources(el); keepTail(el);
       new MutationObserver(() => { stampSources(el); keepTail(el); }).observe(el, { childList: true, subtree: true });
@@ -2674,10 +2687,6 @@ return { ok: true, detail: 'timer-reset' };
           + groups.map(([g, items]) => '<div class="sub" style="margin-top:12px">' + esc(g) + '</div><ul>' + items.map(row).join('') + '</ul>').join('')
           + '<div class="src">Esc or click the void to close.</div>';
       });
-      if (el && el.addEventListener) el.addEventListener('click', (e) => {
-        const a = e.target.closest('[data-ask]'); if (!a) return;
-        e.preventDefault(); const ask = a.getAttribute('data-ask'); closePage(); handle(ask);
-      });
     }
     function topicFrom(text) {
       let t = text.trim().replace(/[?.!]+$/, '');
@@ -2731,6 +2740,23 @@ return { ok: true, detail: 'timer-reset' };
         const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(hit.title.replace(/ /g, '_')));
         const j = await r.json();
         if (vpageEl !== el) return;
+        // a name with several meanings (Mercury, Springfield): list them and let the person pick, never guess one
+        if (j.type === 'disambiguation') {
+          let opts = [];
+          try {
+            const lr = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=10&format=json&origin=*&srsearch=' + encodeURIComponent(topic)).then((x) => x.json());
+            const strip = (h) => { const d = document.createElement('div'); d.innerHTML = h || ''; return d.textContent.replace(/\s+/g, ' ').trim(); };
+            opts = ((lr.query && lr.query.search) || []).filter((x) => x.title !== hit.title && !/disambiguation/i.test(x.title)).slice(0, 8)
+              .map((x) => ({ title: x.title, note: strip(x.snippet).slice(0, 90) }));
+          } catch (_) {}
+          if (vpageEl !== el) return;
+          const page = (j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page) || ('https://en.wikipedia.org/wiki/' + encodeURIComponent(hit.title));
+          el.innerHTML = '<h2>Which ' + esc(topic) + '?</h2><div class="sub">' + esc(j.title || hit.title) + ' can mean several things. Pick one.</div>'
+            + (opts.length ? '<ul class="choices">' + opts.map((o) => '<li><a href="#" data-ask="' + esc('tell me about ' + o.title) + '">' + esc(o.title) + (o.note ? ' <small>· ' + esc(o.note) + '…</small>' : '') + '</a></li>').join('') + '</ul>' : '<p>' + esc(j.extract || '') + '</p>')
+            + '<div class="src">Source: <a href="' + esc(page) + '" target="_blank" rel="noopener">Wikipedia</a> (all the meanings)</div>';
+          say('which one?');
+          return 'wikipedia';
+        }
         const url = (j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page) || ('https://en.wikipedia.org/wiki/' + encodeURIComponent(hit.title));
         el.innerHTML = '<h2>' + esc(j.title || hit.title) + '</h2>'
           + (j.description ? '<div class="sub">' + esc(j.description) + '</div>' : '')
@@ -2762,7 +2788,6 @@ return { ok: true, detail: 'timer-reset' };
         fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback }), keepalive: true }).catch(() => {});
       } catch (_) {}
     }
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePage(); });
     stage.addEventListener('pointerdown', (e) => { if (e.target === stage) closePage(); });
 
     // weather page (Open-Meteo, no key)
@@ -2835,11 +2860,43 @@ return { ok: true, detail: 'timer-reset' };
     function calcNormalize(lower) {
       return lower.replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?(?:in|per)\s+(?:a|an|one|1)\s+([a-z]+)\s*\??$/, '1 $2 in $1');
     }
+    // Currency asks: every currency the ECB publishes a reference rate for (Frankfurter serves them, no key).
+    // "100 usd in eur", "$50 to euros", "£20 in yen", "250 canadian dollars to pounds", "1000 rupees in dollars", "how much is 20 euros in dollars".
+    const FX_CODES = 'AUD BGN BRL CAD CHF CNY CZK DKK EUR GBP HKD HUF IDR ILS INR ISK JPY KRW MXN MYR NOK NZD PHP PLN RON SEK SGD THB TRY USD ZAR'.split(' ');
+    const FX_NAMES = [
+      ['(?:us |american )?dollars?|bucks?', 'USD'], ['canadian dollars?', 'CAD'], ['(?:australian|aussie) dollars?', 'AUD'],
+      ['(?:new zealand|nz) dollars?', 'NZD'], ['(?:hong kong|hk) dollars?', 'HKD'], ['singapore dollars?', 'SGD'],
+      ['euros?', 'EUR'], ['(?:british )?pounds?(?: sterling)?|sterling|quid', 'GBP'], ['(?:japanese )?yen', 'JPY'],
+      ['(?:indian )?rupees?', 'INR'], ['(?:chinese )?(?:yuan|renminbi|rmb)', 'CNY'], ['(?:south )?(?:korean )?won', 'KRW'],
+      ['(?:swiss )?francs?', 'CHF'], ['(?:mexican )?pesos?', 'MXN'], ['(?:brazilian )?(?:real|reais)', 'BRL'],
+      ['(?:south african )?rand', 'ZAR'], ['(?:polish )?(?:zloty|złoty)s?', 'PLN'], ['(?:turkish )?lira', 'TRY'],
+      ['(?:thai )?baht', 'THB'], ['(?:swedish )?(?:krona|kronor)', 'SEK'], ['(?:norwegian )?(?:krone|kroner)', 'NOK'],
+      ['danish (?:krone|kroner)', 'DKK'], ['(?:israeli )?shekels?', 'ILS'], ['(?:hungarian )?forints?', 'HUF'],
+      ['(?:czech )?(?:koruna|korunas|koruny)', 'CZK'], ['(?:indonesian )?rupiah', 'IDR'], ['(?:malaysian )?ringgit', 'MYR'], ['philippine pesos?', 'PHP'],
+    ].map(([re, code]) => [new RegExp('^(?:' + re + ')$'), code]);
+    const FX_SYMBOL = { '$': 'USD', '€': 'EUR', '£': 'GBP', '¥': 'JPY', '₹': 'INR', '₩': 'KRW', '₺': 'TRY', '₪': 'ILS', '฿': 'THB' };
+    function fxCode(w) {
+      w = String(w || '').trim().toLowerCase().replace(/\s+/g, ' ');
+      if (!w) return null;
+      if (/^[a-z]{3}$/.test(w) && FX_CODES.includes(w.toUpperCase())) return w.toUpperCase();
+      for (const [re, code] of FX_NAMES) if (re.test(w)) return code;
+      return null;
+    }
+    function parseCurrency(lower) {
+      const t = String(lower || '').toLowerCase().replace(/^(?:how\s+much\s+is|what(?:'s|\s+is)|convert)\s+/, '').replace(/[?.!]+$/, '').replace(/(\d),(\d{3})/g, '$1$2').trim();
+      const m = t.match(/^([$€£¥₹₩₺₪฿])?\s*(\d+(?:\.\d+)?)\s*(k\b)?\s*([a-z][a-z .()]{0,28}?)?\s+(?:in|to|into)\s+([a-z][a-z .()]{1,28}?)$/i);
+      if (!m) return null;
+      const from = m[1] ? (m[4] ? fxCode(m[4]) || FX_SYMBOL[m[1]] : FX_SYMBOL[m[1]]) : fxCode(m[4]);
+      const to = fxCode(m[5]);
+      if (!from || !to) return null;
+      const amount = parseFloat(m[2]) * (m[3] ? 1000 : 1);
+      return { amount, from, to };
+    }
     function wantsCalc(lower) {
       lower = calcNormalize(lower);
       if (/\d\s*%/.test(lower) && /(%\s*(of|off)\b|%\s*tip\s+(on|for)\b)/.test(lower)) return true;
       if (CALC_UNIT_RE.test(lower)) return true;
-      if (/\b(\d+(?:\.\d+)?)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\s+(?:in|to)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\b/i.test(lower)) return true;
+      if (parseCurrency(lower)) return true;
       if (/^(how\s+many\s+days\s+(until|before|till)|days\s+until|until\s+)/i.test(lower) && /(christmas|xmas|new\s*year|halloween|thanksgiving|jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec|sunday|monday|tuesday|wednesday|thursday|friday|saturday|weekend)/i.test(lower)) return true;
       if (/^what\s+day\s+(is|will)\s+(?:be\s+)?(?:the\s+)?(\d{1,2}|\b(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b)/i.test(lower)) return true;
       return false;
@@ -2890,18 +2947,25 @@ return { ok: true, detail: 'timer-reset' };
         }
       }
 
-      // currency: "100 dollars in euros" (Frankfurter, no key)
-      const cm = lower.match(/\b(\d+(?:\.\d+)?)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\s+(?:in|to)\s+(dollars?|usd|euros?|eur|gbp|pounds?|sterling|yen|jpy)\b/i);
+      // currency: "100 dollars in euros", "$50 to yen", "250 canadian dollars in pounds" (Frankfurter, ECB reference rates, no key).
+      // The rate is the ECB's for its date (working days, around 16:00 CET), and the page says which date that is.
+      const cm = parseCurrency(lower);
       if (cm && !hit) {
-        const CUR = { dollar: 'USD', dollars: 'USD', usd: 'USD', euro: 'EUR', euros: 'EUR', eur: 'EUR', gbp: 'GBP', pound: 'GBP', pounds: 'GBP', sterling: 'GBP', yen: 'JPY', jpy: 'JPY' };
-        const from = CUR[cm[2].toLowerCase()], to = CUR[cm[3].toLowerCase()];
+        const { amount, from, to } = cm;
         setV('…', 'checking rates');
+        const src = 'Source: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter</a> · European Central Bank reference rates';
+        if (from === to) { setV(fmtNum(amount) + ' ' + to, 'Same currency.', ''); return 'currency'; }
         try {
-          const r = await fetch('https://api.frankfurter.dev/v1/latest?base=' + from + '&symbols=' + to + '&amount=' + cm[1]);
+          const r = await fetch('https://api.frankfurter.dev/v1/latest?base=' + from + '&symbols=' + to + '&amount=' + amount);
           const j = await r.json();
-          if (vpageEl === el && j && j.rates && j.rates[to] != null) setV(fmtNum(j.rates[to]) + ' ' + cm[3], cm[1] + ' ' + cm[2] + ' = ' + fmtNum(j.rates[to]) + ' ' + cm[3], 'Source: <a href="https://www.frankfurter.app/" target="_blank" rel="noopener">Frankfurter (ECB)</a>');
-          else if (vpageEl === el) { setV('?', 'The currency service didn\'t answer just now.'); hit = true; }
-        } catch (_) { if (vpageEl === el) { setV('?', 'The currency service didn\'t answer just now.'); } }
+          if (vpageEl === el && j && j.rates && j.rates[to] != null) {
+            const day = j.date ? new Date(j.date + 'T12:00:00Z') : null;
+            const dayWords = day ? day.toLocaleDateString([], { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }) : '';
+            const unit = j.rates[to] / amount;
+            setV(fmtNum(j.rates[to]) + ' ' + to, fmtNum(amount) + ' ' + from + ' = ' + fmtNum(j.rates[to]) + ' ' + to + ' · 1 ' + from + ' = ' + String(+unit.toPrecision(4)) + ' ' + to
+              + (dayWords ? ' · ECB rate of ' + dayWords : ''), src);
+          } else if (vpageEl === el) setV('?', 'The currency service didn\'t answer just now.');
+        } catch (_) { if (vpageEl === el) setV('?', 'The currency service didn\'t answer just now.'); }
         hit = true;
         return 'currency';
       }
@@ -3095,8 +3159,11 @@ return { ok: true, detail: 'timer-reset' };
       loopLog({ domain: 'void.surface', ask: 'undo', score: 'pass', note: 'undo' });
     }
     let lastEsc = 0;
+    // Esc does one thing at a time: the hints (input handler, stops here), then the open page, then a double Esc undoes.
+    // Closing a page never counts toward the double Esc, so Esc, Esc closes a page and nothing is undone.
     document.addEventListener('keydown', (e) => {
-      if (e.key !== 'Escape' || vpageEl) return;
+      if (e.key !== 'Escape') return;
+      if (vpageEl) { closePage(); lastEsc = 0; return; }
       const t = Date.now(); if (t - lastEsc < 450) { lastEsc = 0; undoLast(); } else lastEsc = t;
     });
 
@@ -3700,6 +3767,10 @@ return { ok: true, detail: 'timer-reset' };
       if (/^(hi|hello|hey|hiya|yo|ola|olá|hola|good\s+(morning|afternoon|evening))(\s+(there|void))?\s*[.!]*$/.test(lower0)) { say('hi. ask for anything'); return; }
       if (/^(test|testing|probe|ping|ping-test|research probe|test miss from research|asdf+|qwerty|zz+q*x*)\s*[.!?]*$/.test(lower0) || /^[bcdfghjklmnpqrstvwxz]{4,8}$/.test(lower0)) { say(''); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
+      if (vpageEl && vpageEl._ask && vpageEl._ask.toLowerCase().replace(/[?.!\s]+$/, '') === lower0.replace(/[?.!\s]+$/, '') && Date.now() - (vpageEl._at || 0) < 120000) {
+        const el = vpageEl; el.classList.remove('again'); void el.offsetWidth; el.classList.add('again');
+        say('same page'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'same page' }); return;
+      }
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
       if (await handlePaidAsk(lower0)) return;
@@ -3791,7 +3862,7 @@ return { ok: true, detail: 'timer-reset' };
       if (e.key === 'ArrowDown' && hintList.length) { e.preventDefault(); hintSel = (hintSel + 1) % hintList.length; markHint(); return; }
       if (e.key === 'ArrowUp' && hintList.length) { e.preventDefault(); hintSel = hintSel <= 0 ? hintList.length - 1 : hintSel - 1; markHint(); return; }
       if (e.key === 'Tab' && hintList.length) { e.preventDefault(); input.value = hintList[Math.max(0, hintSel)]; drawHints(); return; }
-      if (e.key === 'Escape' && hintList.length) { hintList = []; hintsEl.classList.remove('on'); return; }
+      if (e.key === 'Escape' && hintList.length) { e.stopPropagation(); hintList = []; hintsEl.classList.remove('on'); return; }
       if (e.key === 'Enter') {
         if (hintSel >= 0 && hintList[hintSel]) { e.preventDefault(); takeHint(hintList[hintSel]); return; }
         handle(input.value); input.value = ''; drawHints();

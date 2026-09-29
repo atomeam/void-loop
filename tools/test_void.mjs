@@ -515,6 +515,54 @@ try {
       && /Tokyo is \d+ hours ahead of London/.test(gap) && !net.length && cal === 0,
       [fri.slice(0, 60), day.slice(0, 60), gap.slice(0, 160), net.join(','), cal].join(' | '));
     await D.ctx.close(); }
+  // The next batch: every ECB currency with the rate's date, a choice between Springfields, a choice between meanings,
+  // the same ask again keeps its page, and Esc does one thing at a time.
+  { const B = await fresh(); const fx = [], summaries = [];
+    await B.ctx.route(/frankfurter/, (r) => { const u = new URL(r.request().url()); fx.push(u.search); const to = u.searchParams.get('symbols'), amt = +u.searchParams.get('amount');
+      return r.fulfill(json({ amount: amt, base: u.searchParams.get('base'), date: '2026-09-25', rates: { [to]: amt * 0.5 } })); });
+    const SPR = [['Missouri', 169176, 'America/Chicago'], ['Massachusetts', 155929, 'America/New_York'], ['Illinois', 114230, 'America/Chicago'], ['Oregon', 62000, 'America/Los_Angeles']]
+      .map(([a, n, tz]) => ({ name: 'Springfield', admin1: a, country: 'United States', country_code: 'US', population: n, timezone: tz, latitude: 39, longitude: -90 }));
+    await B.ctx.route(/geocoding-api\.open-meteo\.com/, (r) => r.fulfill(json({ results: /name=springfield/i.test(r.request().url()) ? SPR : [] })));
+    await B.ctx.route(/en\.wikipedia\.org\/w\/api\.php/, (r) => /srsearch=mercury/i.test(r.request().url())
+      ? r.fulfill(json({ query: { search: [{ title: 'Mercury', snippet: '' }, { title: 'Mercury (planet)', snippet: 'the smallest <span class="searchmatch">planet</span>' }, { title: 'Mercury (element)', snippet: 'a chemical element' }, { title: 'Mercury (disambiguation)', snippet: '' }] } }))
+      : r.fulfill(json({ query: { search: [{ title: 'Black hole' }] } })));
+    await B.ctx.route(/\/page\/summary\//, (r) => { const u = r.request().url(); summaries.push(u);
+      return r.fulfill(json(/summary\/Mercury$/.test(u) ? { type: 'disambiguation', title: 'Mercury', extract: 'Mercury may refer to:' } : { type: 'standard', title: 'Black hole', extract: 'A region of spacetime.' })); });
+    await B.ask('$50 to euros', 900); const c1 = await B.page();
+    await B.ask('250 canadian dollars to pounds', 900); const c2 = await B.page();
+    await B.ask('how much is 10k yen in usd?', 900); const c3 = await B.page();
+    check('currency: symbols, names and codes for every ECB currency ("$50 to euros", "250 canadian dollars to pounds", "10k yen in usd"), with the ECB date and the unit rate',
+      /25 EUR/.test(c1) && /ECB rate of/.test(c1) && /25 Sep 2026|Sep 25, 2026/.test(c1) && /1 USD = 0\.5 EUR/.test(c1) && /European Central Bank/.test(c1)
+      && /125 GBP/.test(c2) && fx.some((q) => /base=CAD/.test(q) && /symbols=GBP/.test(q) && /amount=250\b/.test(q)) && /5000 USD/.test(c3),
+      [c1.slice(0, 160), c2.slice(0, 60), c3.slice(0, 60), fx.join(' ')].join(' | '));
+    await B.ask('time in Springfield', 1200); const which = await B.page();
+    const links = await B.p.$$eval('.vpage.on .choices a[data-ask]', (as) => as.map((a) => a.getAttribute('data-ask')));
+    await B.p.click('.vpage.on .choices a[data-ask="time in Springfield, Illinois"]'); await B.p.waitForTimeout(1200); const ill = await B.page();
+    await B.ask('sunset in Springfield, MA', 300); await B.p.waitForTimeout(300);
+    check('worldtime: "time in Springfield" asks which one (towns in different zones), each choice runs the ask for that town; "Springfield, MA" picks by state',
+      /Which Springfield\?/.test(which) && links.length === 4 && links.includes('time in Springfield, Missouri') && /Springfield, Illinois/.test(ill) && /America\/Chicago/.test(ill) && !/Which/.test(ill),
+      [which.slice(0, 120), links.join(','), ill.slice(0, 80)].join(' | '));
+    await B.ask('what is mercury', 1500); const merc = await B.page();
+    const mlinks = await B.p.$$eval('.vpage.on .choices a[data-ask]', (as) => as.map((a) => a.getAttribute('data-ask')));
+    check('article: a name with several meanings lists them to pick from, never guesses one',
+      /Which mercury\?/i.test(merc) && mlinks.includes('tell me about Mercury (planet)') && mlinks.includes('tell me about Mercury (element)') && !mlinks.some((x) => /disambiguation|about Mercury$/.test(x)),
+      merc.slice(0, 140) + ' | ' + mlinks.join(','));
+    await B.ask('close', 400);
+    await B.ask('what is a black hole', 900); const n1 = summaries.length;
+    await B.ask('what is a black hole', 500); const again = await B.whisper(); const n2 = summaries.length; const glow = await B.p.$eval('.vpage.on', (e) => e.classList.contains('again')).catch(() => false);
+    check('the same ask again with its page open keeps that page (no second fetch, a brief glow)', n1 >= 1 && n2 === n1 && /same page/.test(again) && glow, JSON.stringify({ n1, n2, again, glow }));
+    await B.ask('close', 400);
+    await B.ask('make a clock', 400); await B.ask('menu', 500);
+    await B.p.fill('#input', 'ma'); await B.p.waitForTimeout(150);
+    const hintsOn = await B.p.$eval('#hints', (e) => e.classList.contains('on'));
+    await B.p.keyboard.press('Escape'); await B.p.waitForTimeout(100);
+    const afterHints = { hints: await B.p.$eval('#hints', (e) => e.classList.contains('on')), page: !!(await B.page()) };
+    await B.p.keyboard.press('Escape'); await B.p.keyboard.press('Escape'); await B.p.waitForTimeout(500);
+    const clocks = (await B.state()).filter((x) => x.kind === 'clock').length;
+    check('Esc does one thing at a time: the hints first (the page stays), then the page; Esc, Esc to close a page undoes nothing',
+      hintsOn && !afterHints.hints && afterHints.page && !(await B.page()) && clocks === 1, JSON.stringify({ hintsOn, afterHints, clocks }));
+    check('the batch threw no page errors', !B.errors.length, B.errors.join(' | '));
+    await B.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
