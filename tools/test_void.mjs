@@ -492,6 +492,29 @@ try {
       up === 200 && fg.status === 200 && afterForget === 404 && !rowC && Array.isArray(agentTry) && agentTry.every((x) => /person at the screen/.test(String(x))),
       JSON.stringify({ up, forget: fg.status, afterForget, rowC, agentTry }));
     await O.ctx.close(); }
+  // More of the list: directions, definitions (Wiktionary), weekday countdowns, "what day is it in", the time gap between two places.
+  { const D = await fresh(); const net = [];
+    await D.ctx.route(/geocoding-api\.open-meteo\.com/, (r) => { const u = r.request().url(); const tok = /name=tokyo/i.test(u), lon = /name=london/i.test(u);
+      return r.fulfill(json({ results: [tok ? { name: 'Tokyo', country: 'Japan', latitude: 35.68, longitude: 139.69, timezone: 'Asia/Tokyo', population: 9e6 } : lon ? { name: 'London', country: 'United Kingdom', latitude: 51.5, longitude: -0.12, timezone: 'Europe/London', population: 8e6 } : { name: 'Kyoto', country: 'Japan', latitude: 35.01, longitude: 135.77, timezone: 'Asia/Tokyo', population: 1.4e6 }] })); });
+    await D.ctx.route(/en\.wiktionary\.org\/api\/rest_v1\/page\/definition\//, (r) => r.fulfill(json({ en: [{ partOfSpeech: 'Noun', definitions: [{ definition: 'The <b>faculty</b> of making happy discoveries by accident.' }] }] })));
+    D.p.on('request', (r) => { if (/wikipedia\.org|\/api\/miss$/.test(r.url())) net.push(r.url()); });
+    await D.ask('how do I get to Kyoto', 1200); const dir = await D.p.$eval('.vpage.on', (e) => e.innerHTML).catch(() => '');
+    await D.ask('define serendipity', 1200); const def = await D.page();
+    await D.ask('what does ephemeral mean', 1200); const def2 = await D.page();
+    await D.ask('how many days until friday', 700); const fri = await D.page();
+    await D.ask('what day is it in Tokyo', 1200); const day = await D.page();
+    await D.ask('time difference between London and Tokyo', 1500); const gap = await D.page();
+    const cal = await D.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    const want = ['friday'].map(() => { const t = new Date(); const a = (5 - t.getDay() + 7) % 7 || 7; return a; })[0];
+    check('list: "how do I get to Kyoto" is the map with OpenStreetMap and Google directions; "define serendipity" and "what does X mean" read Wiktionary (text, no markup)',
+      /openstreetmap\.org\/directions\?to=35\.01/.test(dir) && /google\.com\/maps\/dir/.test(dir) && /Kyoto/.test(dir)
+      && /serendipity/.test(def) && /faculty of making happy discoveries/.test(def) && /Wiktionary/.test(def) && /ephemeral/.test(def2),
+      [dir.slice(0, 80), def.slice(0, 80), def2.slice(0, 40)].join(' | '));
+    check('list: "how many days until friday" counts to the next Friday; "what day is it in Tokyo" shows the day there; "time difference between London and Tokyo" says the gap in words; none reach Wikipedia, the miss board or the calendar',
+      new RegExp('^Calculated\\s+' + want + ' days?').test(fri) && /Friday/.test(fri) && /Tokyo/.test(day) && /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/.test(day)
+      && /Tokyo is \d+ hours ahead of London/.test(gap) && !net.length && cal === 0,
+      [fri.slice(0, 60), day.slice(0, 60), gap.slice(0, 160), net.join(','), cal].join(' | '));
+    await D.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));

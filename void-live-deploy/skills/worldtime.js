@@ -14,8 +14,18 @@ export function parseWorldTime(text) {
   const t = CLEAN(text || '');
   let m = t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?(?:current\s+|local\s+)?time\s+(?:is\s+it\s+)?(?:right\s+now\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^what\s+time\s+is\s+it\s+(?:right\s+now\s+)?(?:in|at)\s+(.+)$/i)
-    || t.match(/^(?:current|local)\s+time\s+(?:in|at|for)\s+(.+)$/i);
+    || t.match(/^(?:current|local)\s+time\s+(?:in|at|for)\s+(.+)$/i)
+    || t.match(/^what\s+(?:day|date)\s+is\s+it\s+(?:today\s+)?(?:in|at)\s+(.+)$/i)
+    || t.match(/^(?:what'?s|whats|what\s+is)\s+(?:the\s+)?(?:date|day)\s+(?:today\s+)?(?:in|at)\s+(.+)$/i);
   if (m) { const place = PLACE(m[1]); return place && !NOT_PLACE.test(place) ? { kind: 'now', place } : null; }
+  // "hours between 3pm London and Tokyo", "time difference between London and Tokyo" (no time = now)
+  m = t.match(new RegExp('^(?:how\\s+many\\s+)?hours?\\s+(?:difference\\s+)?between\\s+(?:' + TIME + '\\s+(?:in\\s+)?)?(.+?)\\s+and\\s+(.+?)(?:\\s+time)?$', 'i'))
+    || t.match(/^(?:what(?:'s|s|\s+is)\s+)?(?:the\s+)?time\s+difference\s+(?:between\s+)?()(.+?)\s+(?:and|to|vs\.?)\s+(.+)$/i);
+  if (m) {
+    const from = PLACE(m[2]), to = PLACE(m[3]);
+    if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: m[1] ? m[1].toLowerCase().replace(/\./g, '').replace(/\s+/g, '') : 'now', from, to };
+    return null;
+  }
   m = t.match(new RegExp('^(?:convert\\s+|what\\s+is\\s+|what\'s\\s+)?' + TIME + '\\s+(?:in\\s+)?(.+?)\\s+(?:to|in)\\s+(.+?)(?:\\s+time)?$', 'i'));
   if (m) {
     const from = PLACE(m[2]), to = PLACE(m[3]);
@@ -97,19 +107,23 @@ async function run(text, api) {
       return 'worldtime';
     }
     if (q.kind === 'convert') {
-      const hm = parseClock(q.time);
+      const nowMode = q.time === 'now';
+      const hm = nowMode ? [0, 0] : parseClock(q.time);
       const [a, b] = await Promise.all([geo(q.from), geo(q.to)]);
       if (!api._pageStill(el)) return 'worldtime';
       if (!hm) { el.innerHTML = '<h2>' + esc(title) + '</h2><p>"' + esc(q.time) + '" isn\'t a time I can read. Try "3pm London to Tokyo".</p>'; return 'none'; }
       if (!a) return missing(q.from);
       if (!b) return missing(q.to);
       const [y, mo, d] = ymdIn(a.timezone, now);
-      const at = instantIn(a.timezone, y, mo, d, hm[0], hm[1]);
+      const at = nowMode ? now : instantIn(a.timezone, y, mo, d, hm[0], hm[1]);
+      const gapMin = offsetMin(b.timezone, at) - offsetMin(a.timezone, at), gh = Math.floor(Math.abs(gapMin) / 60), gm = Math.abs(gapMin) % 60;
+      const gapLine = gapMin === 0 ? b.name + ' and ' + a.name + ' are on the same time' : b.name + ' is ' + (gh ? gh + (gh === 1 ? ' hour' : ' hours') : '') + (gh && gm ? ' ' : '') + (gm ? gm + ' minutes' : '') + (gapMin > 0 ? ' ahead of ' : ' behind ') + a.name;
       const dayA = ymdIn(a.timezone, at).join('-'), dayB = ymdIn(b.timezone, at).join('-');
       const shift = dayA === dayB ? '' : (dayB > dayA ? ' (next day)' : ' (day before)');
       el.innerHTML = '<div class="sub wt">' + esc(fmtTime(a.timezone, at)) + ' in ' + esc(label(a)) + ' is</div>'
         + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + esc(fmtTime(b.timezone, at)) + '</div>'
         + '<div class="sub">in ' + esc(label(b)) + ' · ' + esc(fmtDay(b.timezone, at)) + esc(shift) + ' · ' + gmt(offsetMin(a.timezone, at)) + ' → ' + gmt(offsetMin(b.timezone, at)) + '</div>'
+        + '<p class="wt-gap">' + esc(gapLine) + '.</p>'
         + SRC;
       return 'worldtime';
     }
@@ -141,7 +155,7 @@ async function run(text, api) {
 
 export default {
   name: 'worldtime',
-  examples: ['time in Tokyo', '3pm London to Tokyo', 'sunset in Paris', 'when is sunrise in New York', 'what time is it in Sydney'],
+  examples: ['time in Tokyo', '3pm London to Tokyo', 'sunset in Paris', 'when is sunrise in New York', 'what time is it in Sydney', 'what day is it in Auckland', 'time difference between London and Tokyo'],
   nearMisses: ['make a clock', 'make a 5 minute timer', 'what is time', 'set a timer for 3pm', 'time zones explained'],
   match(lower, text) { return !!parseWorldTime(text); },
   run
