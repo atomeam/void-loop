@@ -1,0 +1,119 @@
+--- a/void.html
++++ b/void.html
+@@ -2,8 +2,8 @@
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8" />
+-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+-  <title> </title>
++  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
++  <title>Void · A-to-Mind</title>
+   <link rel="manifest" href="/manifest.webmanifest" />
+   <meta name="theme-color" content="#050505" />
+   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+@@ -461,6 +461,36 @@
+       html, #void-glow, #void-stars, #void-aura, #void-swarm, #row { transition: none !important; }
+       #void-depth, #input { animation: none !important; }
+     }
++    #input:focus-visible,
++    #mic:focus-visible,
++    #go:focus-visible {
++      outline: 2px solid rgba(170,190,255,.85);
++      outline-offset: 2px;
++    }
++    #mic, #go {
++      min-width: 44px;
++      min-height: 44px;
++      display: inline-flex;
++      align-items: center;
++      justify-content: center;
++    }
++    #dock {
++      padding: 12px 16px calc(18px + env(safe-area-inset-bottom, 0px));
++    }
++    #stage {
++      inset: 0 0 calc(72px + env(safe-area-inset-bottom, 0px)) 0;
++    }
++    @media (max-width: 480px) {
++      #dock { padding: 10px 10px calc(14px + env(safe-area-inset-bottom, 0px)); }
++      #row { padding: 6px 8px 6px 14px; max-width: none; }
++      .vpage {
++        width: calc(100vw - 20px);
++        max-height: calc(100vh - 120px - env(safe-area-inset-bottom, 0px));
++        top: 44%;
++      }
++    }
++    #void-stars-far { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0; }
++    #void-stars-far.on { opacity: .55; }
+   </style>
+ </head>
+ <body>
+@@ -469,15 +499,16 @@
+     <p>Void by A-to-Mind is one quiet input. Ask for anything and it appears: a clock, a timer, notes, a list, a street map, the weather, a translation, a calculation, or a page about any topic. Nothing to sign up for. It needs JavaScript to run.</p>
+     <p>Link straight to an answer: <a style="color:#fff" href="/?q=weather%20in%20Tokyo">a-to-mind.com/?q=weather in Tokyo</a>. More in <a style="color:#fff" href="/llms.txt">llms.txt</a>.</p>
+   </main></noscript>
+-  <div id="void-depth" aria-hidden="true"></div><div id="void-glow"></div><canvas id="void-stars"></canvas>
++  <div id="void-depth" aria-hidden="true"></div><div id="void-glow"></div><canvas id="void-stars-far" aria-hidden="true"></canvas><canvas id="void-stars"></canvas>
+   <div id="stage" aria-label="void"></div>
+   <div id="dock">
+     <div id="hints" role="listbox" aria-label="suggestions"></div>
+     <div id="row">
+-      <input id="input" aria-label="Ask Void" autocomplete="off" spellcheck="false" placeholder="" autofocus />
++      <input id="input" aria-label="Ask Void" autocomplete="off" spellcheck="false" placeholder="Ask the Void" autofocus />
++      <button type="button" aria-label="Talk" id="mic" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0M12 18v3"></path></svg></button>
+       <button id="go" type="button" aria-label="Ask">↵</button>
+     </div>
+-    <div id="whisper"></div>
++    <div id="whisper" aria-live="polite"></div>
+   </div>
+   <script>
+     // Private learning log — never shown as product claims.
+@@ -3040,9 +3071,11 @@
+     try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}
+     if (PAGE && PAGE.look) voidLook = { ...LOOK_DEFAULT, ...PAGE.look };
+     const starCv = document.getElementById('void-stars');
++    const starFar = document.getElementById('void-stars-far');
+     const starCtx = starCv.getContext('2d');
++    const starFarCtx = starFar ? starFar.getContext('2d') : null;
+     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+-    let stars = [], starRAF = 0;
++    let stars = [], farStars = [], starRAF = 0;
+     function isEntered() { try { return !!localStorage.getItem(ENTRY_KEY); } catch (_) { return false; } }
+     function enterVoid() {
+       if (!isEntered()) { try { localStorage.setItem(ENTRY_KEY, new Date().toISOString()); } catch (_) {} }
+@@ -3050,12 +3083,22 @@
+     }
+     function seedStars() {
+       starCv.width = innerWidth; starCv.height = innerHeight;
+-      stars = Array.from({ length: 120 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.3 + 0.2, vx: (Math.random() - 0.5) * 0.15, vy: (Math.random() - 0.5) * 0.15 }));
++      if (starFar) { starFar.width = innerWidth; starFar.height = innerHeight; }
++      stars = Array.from({ length: 90 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.4 + 0.35, vx: (Math.random() - 0.5) * 0.18, vy: (Math.random() - 0.5) * 0.18 }));
++      farStars = Array.from({ length: 160 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 0.8 + 0.12, vx: (Math.random() - 0.5) * 0.05, vy: (Math.random() - 0.5) * 0.05 }));
+     }
+     function drawStars() {
+       starCtx.clearRect(0, 0, starCv.width, starCv.height);
+-      starCtx.fillStyle = 'rgba(255,255,255,0.65)';
++      if (starFarCtx) starFarCtx.clearRect(0, 0, starFar.width, starFar.height);
+       const k = voidLook.stars === 'slow' ? 0.3 : 1, move = !reduceMotion.matches;
++      if (starFarCtx) {
++        starFarCtx.fillStyle = 'rgba(210,220,255,0.35)';
++        for (const st of farStars) {
++          if (move) { st.x = (st.x + st.vx * k + starFar.width) % starFar.width; st.y = (st.y + st.vy * k + starFar.height) % starFar.height; }
++          starFarCtx.beginPath(); starFarCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starFarCtx.fill();
++        }
++      }
++      starCtx.fillStyle = 'rgba(255,255,255,0.7)';
+       for (const st of stars) {
+         if (move) { st.x = (st.x + st.vx * k + starCv.width) % starCv.width; st.y = (st.y + st.vy * k + starCv.height) % starCv.height; }
+         starCtx.beginPath(); starCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starCtx.fill();
+@@ -3068,8 +3111,8 @@
+       document.body.classList.toggle('void-quiet', !!voidLook.quiet);
+       document.body.style.fontSize = (15 * (voidLook.scale || 1)) + 'px';
+       cancelAnimationFrame(starRAF); starRAF = 0;
+-      if (voidLook.stars !== 'off') { if (!stars.length) seedStars(); starCv.classList.add('on'); drawStars(); }
+-      else starCv.classList.remove('on');
++      if (voidLook.stars !== 'off') { if (!stars.length) seedStars(); starCv.classList.add('on'); if (starFar) starFar.classList.add('on'); drawStars(); }
++      else { starCv.classList.remove('on'); if (starFar) starFar.classList.remove('on'); }
+       document.documentElement.dataset.fx = voidLook.fx || 'off'; // the atmosphere script below reads this; the public stage is plain
+       window.dispatchEvent(new Event('void-fx'));
+       if (persist && !PAGE) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} mineChanged(); }
