@@ -448,6 +448,12 @@
     .vpage .choices a { display: block; padding: 7px 10px; border-radius: 8px; color: var(--fg); text-decoration: none; }
     .vpage .choices a:hover, .vpage .choices a:focus-visible { background: rgba(255,255,255,.06); }
     .vpage .choices small { color: #8a8a8a; }
+    .vpage .wclock { display: grid; gap: 2px; margin-top: 8px; }
+    .vpage .wrow { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 2px; border-top: 1px solid rgba(255,255,255,.06); }
+    .vpage .wrow.you { color: var(--muted); }
+    .vpage .wtime { font-size: 30px; font-weight: 300; font-variant-numeric: tabular-nums; white-space: nowrap; }
+    .vpage .tr-copy { font: inherit; font-size: 13px; color: var(--fg); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: 5px 14px; cursor: pointer; }
+    .vpage .tr-copy:hover, .vpage .tr-copy:focus-visible { background: rgba(255,255,255,.12); }
     @media (prefers-reduced-motion: reduce) {
       .thing, .vpage, .thing.arrive { animation: none !important; transition: opacity .2s ease !important; }
       .vpage, .vpage.on { transform: translate(-50%, -46%); filter: none; }

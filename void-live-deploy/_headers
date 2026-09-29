@@ -9,6 +9,9 @@
   Cache-Control: no-cache
   Service-Worker-Allowed: /
 
+/skills/*
+  Cache-Control: public, max-age=60, must-revalidate
+
 /manifest.webmanifest
   Content-Type: application/manifest+json
 

@@ -563,6 +563,36 @@ try {
       hintsOn && !afterHints.hints && afterHints.page && !(await B.page()) && clocks === 1, JSON.stringify({ hintsOn, afterHints, clocks }));
     check('the batch threw no page errors', !B.errors.length, B.errors.join(' | '));
     await B.ctx.close(); }
+  // World clock, translation copy and MyMemory's matches, skill files cached for a minute, and a 390px phone.
+  { const C = await fresh(); await C.ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: new URL(base).origin });
+    await C.ctx.route(/geocoding-api\.open-meteo\.com/, (r) => { const u = r.request().url();
+      const v = /name=paris/i.test(u) ? { name: 'Paris', country: 'France', country_code: 'FR', timezone: 'Europe/Paris', population: 2.1e6 } : /name=sydney/i.test(u) ? { name: 'Sydney', country: 'Australia', country_code: 'AU', timezone: 'Australia/Sydney', population: 5e6 } : null;
+      return r.fulfill(json({ results: v ? [v] : [] })); });
+    await C.ctx.route(/translate\.googleapis\.com/, (r) => r.fulfill({ status: 500, body: '' }));
+    await C.ctx.route(/api\.mymemory\.translated\.net/, (r) => r.fulfill(json({ responseStatus: 200, responseData: { translatedText: '' }, matches: [{ translation: 'salut', match: 0.7 }, { translation: 'bonjour', match: 0.99 }] })));
+    await C.ask('world clock', 800); const wc = await C.page(); const rows = await C.p.$$eval('.vpage.on .wrow', (d) => d.length);
+    await C.ask('world clock for Paris and Sydney', 1000); const wc2 = await C.page();
+    check('worldtime: "world clock" shows Tokyo, London, New York and you, each with its offset; "world clock for Paris and Sydney" shows those',
+      rows === 4 && /Tokyo/.test(wc) && /London/.test(wc) && /New York/.test(wc) && /You/.test(wc) && /UTC[+−]\d/.test(wc) && /Paris/.test(wc2) && /Sydney/.test(wc2) && !/Tokyo/.test(wc2),
+      [rows, wc.slice(0, 120), wc2.slice(0, 80)].join(' | '));
+    await C.ask('good morning in French', 1000); const tr = await C.page();
+    await C.p.click('.vpage.on .tr-copy'); await C.p.waitForTimeout(250);
+    const copied = await C.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
+    check('translate: when MyMemory leaves translatedText empty its best match is used, the page names MyMemory, and "copy" puts the translation on the clipboard',
+      /bonjour/.test(tr) && !/salut/.test(tr) && /MyMemory/.test(tr) && copied === 'bonjour', tr.slice(0, 100) + ' | ' + copied);
+    const hdr = fs.readFileSync(path.join(root, '_headers'), 'utf8');
+    check('skill files are cached for a minute at most, so a shipped skill shows up without a hard refresh', /\/skills\/\*\s*\n\s*Cache-Control: public, max-age=60, must-revalidate/.test(hdr), hdr.slice(0, 80));
+    await C.ask('close', 300);
+    await C.p.setViewportSize({ width: 390, height: 844 }); await C.p.waitForTimeout(200);
+    await C.ask('what is a black hole', 900);
+    const phone = await C.p.evaluate(() => { const i = document.getElementById('input'), b = i.getBoundingClientRect(), pg = document.querySelector('.vpage.on');
+      const top = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
+      return { sideways: document.documentElement.scrollWidth > window.innerWidth, inView: b.top >= 0 && b.bottom <= window.innerHeight && b.left >= 0 && b.right <= window.innerWidth, reachable: top === i || i.contains(top), page: !!pg, pageFits: pg ? pg.getBoundingClientRect().right <= window.innerWidth && pg.getBoundingClientRect().left >= 0 : false }; });
+    await C.p.keyboard.press('Escape'); await C.p.waitForTimeout(450); const gone = !(await C.page());
+    check('a 390px phone: with a page open the input is in view and on top, the page fits, nothing scrolls sideways, and Esc dismisses the page',
+      !phone.sideways && phone.inView && phone.reachable && phone.page && phone.pageFits && gone, JSON.stringify({ ...phone, gone }));
+    check('the world clock / translate / phone batch threw no page errors', !C.errors.length, C.errors.join(' | '));
+    await C.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));

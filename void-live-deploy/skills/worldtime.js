@@ -12,7 +12,13 @@ const TIME = '(\\d{1,2}(?::\\d{2})?\\s*(?:am|pm|a\\.m\\.|p\\.m\\.)|\\d{1,2}:\\d{
 // One ask -> { kind: 'now' | 'convert' | 'sun', ... } or null. Only asks that name a place (or two) are ours.
 export function parseWorldTime(text) {
   const t = CLEAN(text || '');
-  let m = t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?(?:current\s+|local\s+)?time\s+(?:is\s+it\s+)?(?:right\s+now\s+)?(?:in|at)\s+(.+)$/i)
+  // "world clock", "show the world clock", "world clock for Paris, Sydney and Lagos" (Tokyo, London and New York by default)
+  let m = t.match(/^(?:show\s+(?:me\s+)?|open\s+)?(?:the\s+|a\s+)?world\s*clocks?(?:\s+(?:for|with)\s+(.+))?$/i);
+  if (m) {
+    const places = m[1] ? m[1].split(/\s*(?:,|\band\b|&)\s*/i).map(PLACE).filter((x) => x && !NOT_PLACE.test(x)).slice(0, 8) : [];
+    return { kind: 'clock', places };
+  }
+  m = t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?(?:current\s+|local\s+)?time\s+(?:is\s+it\s+)?(?:right\s+now\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^what\s+time\s+is\s+it\s+(?:right\s+now\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^(?:current|local)\s+time\s+(?:in|at|for)\s+(.+)$/i)
     || t.match(/^what\s+(?:day|date)\s+is\s+it\s+(?:today\s+)?(?:in|at)\s+(.+)$/i)
@@ -125,7 +131,7 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const q = parseWorldTime(text);
   if (!q) return 'none';
-  const title = q.kind === 'convert' ? q.time + ' ' + q.from + ' → ' + q.to : q.kind === 'sun' ? q.which[0].toUpperCase() + q.which.slice(1) + ' in ' + q.place : 'Time in ' + q.place;
+  const title = q.kind === 'clock' ? 'World clock' : q.kind === 'convert' ? q.time + ' ' + q.from + ' → ' + q.to : q.kind === 'sun' ? q.which[0].toUpperCase() + q.which.slice(1) + ' in ' + q.place : 'Time in ' + q.place;
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">…</div>'; });
   const choose = (n, pool) => {
     const re = new RegExp(n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
@@ -138,6 +144,34 @@ async function run(text, api) {
   const missing = (n) => { el.innerHTML = '<h2>' + esc(title) + '</h2><p>I couldn\'t find "' + esc(n) + '". Try a city name, like "time in Tokyo".</p>'; return 'none'; };
   try {
     const now = new Date(), youTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (q.kind === 'clock') {
+      // no lookup for the default three; named places go through the same geocoder as everything else
+      let rows = [{ name: 'Tokyo', tz: 'Asia/Tokyo' }, { name: 'London', tz: 'Europe/London' }, { name: 'New York', tz: 'America/New_York' }];
+      if (q.places.length) {
+        const found = await Promise.all(q.places.map((n) => geo(n, true).then((g) => ({ n, g })).catch(() => ({ n, g: { r: null } }))));
+        if (!api._pageStill(el)) return 'worldtime';
+        const miss = found.filter((x) => !x.g.r && !x.g.choices).map((x) => x.n);
+        rows = found.filter((x) => x.g.r || x.g.choices).map((x) => { const r = x.g.r || x.g.choices[0]; return { name: r.name, tz: r.timezone }; });
+        if (!rows.length) return missing(miss[0] || q.places[0]);
+        el._missing = miss;
+      }
+      rows.push({ name: 'You', tz: youTz, you: true });
+      const draw = () => {
+        const at = new Date(), yo = offsetMin(youTz, at);
+        el.innerHTML = '<h2 class="wt">World clock</h2>'
+          + '<div class="wclock">' + rows.map((r) => {
+            const off = offsetMin(r.tz, at), day = ymdIn(r.tz, at).join('-'), yday = ymdIn(youTz, at).join('-');
+            return '<div class="wrow' + (r.you ? ' you' : '') + '"><div><b>' + esc(r.name) + '</b><div class="sub" style="margin:0">' + esc(r.tz.replace(/_/g, ' ')) + ' · ' + gmt(off) + (r.you ? '' : ' · ' + esc(diffWords(off - yo))) + (day === yday ? '' : day > yday ? ' · tomorrow' : ' · yesterday') + '</div></div>'
+              + '<div class="wtime">' + esc(fmtTime(r.tz, at)) + '</div></div>';
+          }).join('') + '</div>'
+          + (el._missing && el._missing.length ? '<p class="sub">I couldn\'t find ' + esc(el._missing.join(', ')) + '.</p>' : '')
+          + SRC;
+      };
+      draw();
+      // it keeps time while it is open, then stops
+      const tick = setInterval(() => { if (!api._pageStill(el)) return clearInterval(tick); draw(); }, 15000);
+      return 'worldtime';
+    }
     if (q.kind === 'now') {
       const { r, choices } = await geo(q.place, true);
       if (!api._pageStill(el)) return 'worldtime';
@@ -203,7 +237,7 @@ async function run(text, api) {
 
 export default {
   name: 'worldtime',
-  examples: ['time in Tokyo', '3pm London to Tokyo', 'sunset in Paris', 'when is sunrise in New York', 'what time is it in Sydney', 'what day is it in Auckland', 'time difference between London and Tokyo'],
+  examples: ['world clock', 'time in Tokyo', '3pm London to Tokyo', 'sunset in Paris', 'when is sunrise in New York', 'what time is it in Sydney', 'what day is it in Auckland', 'time difference between London and Tokyo'],
   nearMisses: ['make a clock', 'make a 5 minute timer', 'what is time', 'set a timer for 3pm', 'time zones explained'],
   match(lower, text) { return !!parseWorldTime(text); },
   run
