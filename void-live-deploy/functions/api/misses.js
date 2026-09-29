@@ -1,4 +1,5 @@
 import { ownerOk } from '../../lib/guard.js';
+import { mergeMisses } from '../../lib/misskey.js';
 export async function onRequestGet({ request: req, env }) {
   if (!(await ownerOk(req, env))) return new Response('no', { status: 401 });
   const byAsk = new Map();
@@ -18,6 +19,6 @@ export async function onRequestGet({ request: req, env }) {
       cursor = page.list_complete ? undefined : page.cursor;
     } while (cursor);
   } catch (_) {}
-  const out = [...byAsk.values()].sort((a, b) => b.count - a.count || (b.last > a.last ? 1 : -1));
+  const out = mergeMisses([...byAsk.values()]).sort((a, b) => b.count - a.count || (b.last > a.last ? 1 : -1));
   return Response.json(out);
 }

@@ -593,6 +593,28 @@ try {
       !phone.sideways && phone.inView && phone.reachable && phone.page && phone.pageFits && gone, JSON.stringify({ ...phone, gone }));
     check('the world clock / translate / phone batch threw no page errors', !C.errors.length, C.errors.join(' | '));
     await C.ctx.close(); }
+  // "who is X" prefers the person; a loose match says so in one line; the board counts one ask in different words once.
+  { const E = await fresh(); const sums = [];
+    await E.ctx.route(/en\.wikipedia\.org\/w\/api\.php/, (r) => { const u = decodeURIComponent(r.request().url());
+      if (/generator=search/.test(u)) return r.fulfill(json({ query: { pages: { 11: { index: 1, title: 'Air Jordan', description: 'Brand of basketball shoes' }, 12: { index: 2, title: 'Michael Jordan', description: 'American basketball player (born 1963)' } } } }));
+      return r.fulfill(json({ query: { search: [{ title: /snorgleblat/.test(u) ? 'Blat' : 'Air Jordan' }] } })); });
+    await E.ctx.route(/\/page\/summary\//, (r) => { const t = decodeURIComponent(r.request().url().split('/summary/')[1]).replace(/_/g, ' '); sums.push(t);
+      return r.fulfill(json({ type: 'standard', title: t, description: t === 'Michael Jordan' ? 'American basketball player (born 1963)' : t === 'Blat' ? 'Russian slang' : 'Brand of basketball shoes', extract: t + ' extract.' })); });
+    await E.ask('who is michael jordan', 1200); const mj = await E.page();
+    await E.ask('what is a snorgleblat', 1200); const thin = await E.page();
+    check('article: "who is X" opens the person, not the brand that ranks first; a loose match says "Closest match I found" in one line, a close one does not',
+      /^Michael Jordan/.test(mj) && /basketball player/.test(mj) && !/Closest match/.test(mj) && sums[0] === 'Michael Jordan' && /Blat/.test(thin) && /Closest match I found for “snorgleblat”/.test(thin),
+      [mj.slice(0, 80), thin.slice(0, 120), sums.join(',')].join(' | '));
+    await E.ctx.close();
+    const { missKey, mergeMisses } = await import(new URL('../void-live-deploy/lib/misskey.js', import.meta.url).href);
+    const merged = mergeMisses([{ ask: 'what is a black hole?', count: 2, first: '2026-09-01', last: '2026-09-02', fallback: 'none' }, { ask: 'tell me about black holes', count: 1, first: '2026-09-04', last: '2026-09-06', fallback: 'answer' },
+      { ask: 'black hole', count: 5, first: '2026-09-03', last: '2026-09-05', fallback: 'none' }, { ask: 'map of paris', count: 1, first: '2026-09-01', last: '2026-09-01' }, { ask: 'please show me a map of Paris', count: 1, first: '2026-09-02', last: '2026-09-02' }, { ask: 'class', count: 1 }]);
+    const bh = merged.find((x) => x.ask === 'black hole');
+    check('board: one ask in different words is one row (counts summed, first/last kept, the most-asked wording names it, the others listed); "class" stays "class"',
+      merged.length === 3 && bh && bh.count === 8 && bh.first === '2026-09-01' && bh.last === '2026-09-06' && bh.fallback === 'answer' && bh.variants.length === 2
+      && merged.find((x) => /paris/i.test(x.ask)).count === 2 && missKey('class') === 'class' && missKey('Whats a black hole') === 'black hole',
+      JSON.stringify(merged));
+  }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
