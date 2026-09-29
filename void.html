@@ -2651,7 +2651,7 @@ return { ok: true, detail: 'timer-reset' };
     function wantsSelfPage(lower) {
       return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|a-to-mind)\b|^what\s+can\s+(you|i|void)\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|void)\b/.test(lower);
     }
-    function showSelfPage(asMenu) {
+    function showSelfPage(asMenu, focus) {
       const groups = [
         ['On the stage', [
           ['clock', 'make a clock', 'make it blue · 24 hour'],
@@ -2686,13 +2686,23 @@ return { ok: true, detail: 'timer-reset' };
         seen.add(sk.name);
         groups[1][1].unshift([sk.name === 'place' ? 'map' : sk.name, sk.examples[0], sk.examples.slice(1, 3).join(' · ')]);
       }
-      const row = ([k, ask, more]) => '<li>' + (ask ? '<a href="#" data-ask="' + esc(ask) + '" style="color:var(--fg);text-decoration:none"><b>' + esc(k) + '</b> <span style="color:#9a9a9a">— ' + esc(ask) + '</span></a>' : '<b>' + esc(k) + '</b>') + (more ? ' <span style="color:#6a6a6a">· ' + esc(more) + '</span>' : '') + '</li>';
+      const row = ([k, ask, more]) => '<li' + (focus && k === focus ? ' class="focus" style="background:rgba(150,175,255,.10);border-radius:8px;padding:4px 6px;margin:0 -6px"' : '') + '>' + (ask ? '<a href="#" data-ask="' + esc(ask) + '" style="color:var(--fg);text-decoration:none"><b>' + esc(k) + '</b> <span style="color:#9a9a9a">— ' + esc(ask) + '</span></a>' : '<b>' + esc(k) + '</b>') + (more ? ' <span style="color:#6a6a6a">· ' + esc(more) + '</span>' : '') + '</li>';
       const el = showPage((p) => {
         p.innerHTML = '<h2>' + (asMenu ? 'Menu' : 'Void') + '</h2><div class="sub">' + (asMenu ? 'Pick one, or just type.' : 'Ask, and it appears.') + '</div>'
           + (asMenu ? '' : '<p>Type what you want. Things arrive on the stage; drag them, change them, or clear them away. Tap any line to try it.</p>')
           + groups.map(([g, items]) => '<div class="sub" style="margin-top:12px">' + esc(g) + '</div><ul>' + items.map(row).join('') + '</ul>').join('')
           + '<div class="src">Esc or click the void to close.</div>';
       });
+      // "how do I make a timer": the same page, with the timer's line lit and in view
+      if (focus && el && el.querySelector) { const f = el.querySelector('li.focus'); if (f && f.scrollIntoView) f.scrollIntoView({ block: 'center' }); }
+      return el;
+    }
+    // "how do I make a timer", "how can I add a sticky note", "how to draw a circle" -> the self page at that line, not Wikipedia
+    const HOWTO_KINDS = { clock: 'clock', clocks: 'clock', timer: 'timer', timers: 'timer', countdown: 'timer', sticky: 'sticky note', stickies: 'sticky note', note: 'sticky note', notes: 'sticky note', 'sticky note': 'sticky note',
+      notepad: 'notepad', list: 'list', checklist: 'list', 'to-do list': 'list', 'todo list': 'list', calculator: 'calculator', counter: 'counter', shape: 'shape', circle: 'shape', square: 'shape', line: 'shape' };
+    function howToThing(lower) {
+      const m = lower.replace(/[?.!]+$/, '').match(/^(?:how\s+(?:do|can|would|should)\s+i|how\s+to|how\s+do\s+you)\s+(?:make|add|create|draw|open|start|set\s+up|set|get|put|use)\s+(?:a|an|the|my|some)?\s*(.+?)(?:\s+(?:here|on\s+(?:the\s+)?(?:stage|screen|void|page)|in\s+void))?$/);
+      return m ? HOWTO_KINDS[m[1].trim()] || null : null;
     }
     function topicFrom(text) {
       let t = text.trim().replace(/[?.!]+$/, '');
@@ -3801,6 +3811,8 @@ return { ok: true, detail: 'timer-reset' };
         const el = vpageEl; el.classList.remove('again'); void el.offsetWidth; el.classList.add('again');
         say('same page'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'same page' }); return;
       }
+      // a question about how to make a thing is answered with the line that makes it, before any build runs
+      { const k = howToThing(lower0); if (k) { currentAsk = text; showSelfPage(false, k); say('here'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'how-to ' + k }); return; } }
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
       if (await handlePaidAsk(lower0)) return;
