@@ -80,10 +80,45 @@ function diffWords(min) {
 const label = (r) => r.name + (r.admin1 && r.admin1 !== r.name ? ', ' + r.admin1 : '') + (r.country ? ', ' + r.country : '');
 const SRC = '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> (place and time zone) · clock from your browser</div>';
 
-async function geo(name) {
-  const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&language=en&name=' + encodeURIComponent(name)).then((r) => r.json());
-  const rs = (g.results || []).filter((r) => r.timezone).sort((a, b) => (b.population || 0) - (a.population || 0));
-  return rs[0] || null;
+// Which of the places with this name was meant. "Springfield, Illinois" (or ", IL", ", US") narrows by state or country.
+// Several towns of the same name, none far bigger than the next, are a real question: { choices } lists them, and the page
+// asks. For the time itself, towns in one time zone are the same answer, so only a difference in zone makes it a question.
+const US_STATES = { al: 'alabama', ak: 'alaska', az: 'arizona', ar: 'arkansas', ca: 'california', co: 'colorado', ct: 'connecticut', de: 'delaware', fl: 'florida', ga: 'georgia', hi: 'hawaii', id: 'idaho', il: 'illinois', in: 'indiana', ia: 'iowa', ks: 'kansas', ky: 'kentucky', la: 'louisiana', me: 'maine', md: 'maryland', ma: 'massachusetts', mi: 'michigan', mn: 'minnesota', ms: 'mississippi', mo: 'missouri', mt: 'montana', ne: 'nebraska', nv: 'nevada', nh: 'new hampshire', nj: 'new jersey', nm: 'new mexico', ny: 'new york', nc: 'north carolina', nd: 'north dakota', oh: 'ohio', ok: 'oklahoma', or: 'oregon', pa: 'pennsylvania', ri: 'rhode island', sc: 'south carolina', sd: 'south dakota', tn: 'tennessee', tx: 'texas', ut: 'utah', vt: 'vermont', va: 'virginia', wa: 'washington', wv: 'west virginia', wi: 'wisconsin', wy: 'wyoming' };
+export function pickPlace(results, name, zoneOnly) {
+  const [base, ...rest] = String(name || '').split(',');
+  const qual = rest.join(',').trim().toLowerCase().replace(/\./g, '');
+  let rs = (results || []).filter((r) => r && r.timezone).sort((a, b) => (b.population || 0) - (a.population || 0));
+  if (qual) {
+    const want = US_STATES[qual] || qual;
+    const fits = (r) => [r.admin1, r.admin2, r.country].some((x) => x && x.toLowerCase() === want) || (r.country_code && r.country_code.toLowerCase() === (qual === 'uk' ? 'gb' : qual === 'usa' ? 'us' : qual))
+      || [r.admin1, r.country].some((x) => x && want.length > 3 && x.toLowerCase().startsWith(want));
+    const narrowed = rs.filter(fits);
+    return { r: narrowed[0] || null, choices: null };
+  }
+  if (!rs.length) return { r: null, choices: null };
+  const b = base.trim().toLowerCase();
+  const same = rs.filter((r) => r.name && r.name.toLowerCase() === b);
+  const seen = new Set(), distinct = [];
+  for (const r of same) { const k = (r.admin1 || '') + '|' + r.country_code; if (!seen.has(k)) { seen.add(k); distinct.push(r); } }
+  const top = distinct[0], next = distinct[1];
+  // a city of a million or more is what people mean (Dublin, Birmingham); otherwise within 20x of the next is a real question
+  const close = top && next && !(top.population >= 1e6) && (!(top.population > 0) || (top.population || 0) < 20 * (next.population || 0));
+  if (close) {
+    const pool = distinct.filter((r) => !top.population || (r.population || 0) * 20 > top.population).slice(0, 6);
+    const zones = new Set(pool.map((r) => r.timezone));
+    if (pool.length > 1 && (!zoneOnly || zones.size > 1)) return { r: null, choices: pool };
+  }
+  return { r: rs[0], choices: null };
+}
+// "Springfield, Illinois": the state when it tells two apart, else the country
+export function choiceLabel(r, all) {
+  const twin = (all || []).some((o) => o !== r && o.admin1 === r.admin1 && o.country_code === r.country_code);
+  return r.name + ', ' + (r.admin1 && !twin ? r.admin1 : r.country || r.admin1 || '');
+}
+async function geo(name, zoneOnly) {
+  const base = String(name).split(',')[0].trim();
+  const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&name=' + encodeURIComponent(base)).then((r) => r.json());
+  return pickPlace(g.results, name, zoneOnly);
 }
 
 async function run(text, api) {
@@ -92,12 +127,21 @@ async function run(text, api) {
   if (!q) return 'none';
   const title = q.kind === 'convert' ? q.time + ' ' + q.from + ' → ' + q.to : q.kind === 'sun' ? q.which[0].toUpperCase() + q.which.slice(1) + ' in ' + q.place : 'Time in ' + q.place;
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">…</div>'; });
+  const choose = (n, pool) => {
+    const re = new RegExp(n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+    el.innerHTML = '<h2>Which ' + esc(n) + '?</h2><div class="sub">There\'s more than one. Pick one, or ask again with the state or country.</div>'
+      + '<ul class="choices">' + pool.map((r) => { const l = choiceLabel(r, pool); return '<li><a href="#" data-ask="' + esc(text.replace(re, l)) + '">' + esc(l) + (r.population ? ' <small>· ' + esc(r.population.toLocaleString()) + ' people</small>' : '') + ' <small>· ' + esc(r.timezone.replace(/_/g, ' ')) + '</small></a></li>'; }).join('') + '</ul>'
+      + SRC;
+    api.say && api.say('which one?');
+    return 'worldtime';
+  };
   const missing = (n) => { el.innerHTML = '<h2>' + esc(title) + '</h2><p>I couldn\'t find "' + esc(n) + '". Try a city name, like "time in Tokyo".</p>'; return 'none'; };
   try {
     const now = new Date(), youTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
     if (q.kind === 'now') {
-      const r = await geo(q.place);
+      const { r, choices } = await geo(q.place, true);
       if (!api._pageStill(el)) return 'worldtime';
+      if (choices) return choose(q.place, choices);
       if (!r) return missing(q.place);
       const off = offsetMin(r.timezone, now), youOff = offsetMin(youTz, now);
       el.innerHTML = '<h2 class="wt">' + esc(label(r)) + '</h2>'
@@ -109,9 +153,12 @@ async function run(text, api) {
     if (q.kind === 'convert') {
       const nowMode = q.time === 'now';
       const hm = nowMode ? [0, 0] : parseClock(q.time);
-      const [a, b] = await Promise.all([geo(q.from), geo(q.to)]);
+      const [ga, gb] = await Promise.all([geo(q.from, true), geo(q.to, true)]);
       if (!api._pageStill(el)) return 'worldtime';
       if (!hm) { el.innerHTML = '<h2>' + esc(title) + '</h2><p>"' + esc(q.time) + '" isn\'t a time I can read. Try "3pm London to Tokyo".</p>'; return 'none'; }
+      if (ga.choices) return choose(q.from, ga.choices);
+      if (gb.choices) return choose(q.to, gb.choices);
+      const a = ga.r, b = gb.r;
       if (!a) return missing(q.from);
       if (!b) return missing(q.to);
       const [y, mo, d] = ymdIn(a.timezone, now);
@@ -128,8 +175,9 @@ async function run(text, api) {
       return 'worldtime';
     }
     // sunrise / sunset
-    const r = await geo(q.place);
+    const { r, choices } = await geo(q.place, false);
     if (!api._pageStill(el)) return 'worldtime';
+    if (choices) return choose(q.place, choices);
     if (!r) return missing(q.place);
     const w = await fetch('https://api.open-meteo.com/v1/forecast?latitude=' + r.latitude + '&longitude=' + r.longitude + '&daily=sunrise,sunset&timezone=' + encodeURIComponent(r.timezone) + '&forecast_days=2').then((x) => x.json());
     if (!api._pageStill(el)) return 'worldtime';
