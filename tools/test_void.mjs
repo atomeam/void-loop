@@ -446,15 +446,21 @@ try {
     const r = { none: await pub(null, 'POST', { handle: 'sam', look, cards }), free: await pub(F, 'POST', { handle: 'freeone', look, cards }), badName: await pub(A, 'POST', { handle: 'S!', look }), reserved: await pub(A, 'POST', { handle: 'admin', look }),
       ok: await pub(A, 'POST', { handle: '@Sam', look, cards }), taken: await pub(B, 'POST', { handle: 'sam', look }), bOk: await pub(B, 'POST', { handle: 'bea', look: {} }) };
     const row = await DB.prepare('SELECT data FROM void_pages WHERE handle = ?').bind('sam').first();
+    // a rename is atomic: A (at @sam) moving onto a name B holds - via the API and straight at the database - is refused and A keeps @sam
+    const race = await pub(A, 'POST', { handle: 'bea', look });
+    let raw = 'ok'; try { await DB.prepare('UPDATE void_pages SET handle = ?, data = ?, updated = ? WHERE user_id = ?').bind('bea', '{}', 'now', 'userA').run(); } catch (e) { raw = /unique|constraint/i.test(String(e.message)) ? 'refused' : String(e.message); }
+    const stillSam = await DB.prepare('SELECT handle FROM void_pages WHERE user_id = ?').bind('userA').first(), stillBea = await DB.prepare('SELECT user_id FROM void_pages WHERE handle = ?').bind('bea').first();
     check('publish: needs a signed-in, paid Void (401 / 402); names are 3-24 of a-z 0-9 _ (400), reserved or taken names are refused (409); the page keeps only a clean look and cards as text (no markup)',
       r.none.status === 401 && r.free.status === 402 && r.badName.status === 400 && r.reserved.status === 409 && r.ok.status === 200 && r.ok.body.url === 'https://a-to-mind.com/@sam' && r.taken.status === 409 && r.bOk.status === 200
       && row && !/<|onerror|bogus/.test(row.data) && /Lisbon, Portugal/.test(row.data) && /"fx":"swarm"/.test(row.data),
       JSON.stringify(Object.fromEntries(Object.entries(r).map(([k, v]) => [k, v.status]))) + ' | ' + (row && row.data));
-    const render = async (h) => { let nexted = false; const res = await pageFn.onRequestGet({ request: new Request('https://a-to-mind.com/' + h), env, params: { handle: h }, next: async () => { nexted = true; return new Response('asset'); } }); return { status: res.status, html: await res.text(), nexted }; };
+    check('publish: moving onto a name someone else holds is refused whole (409; the database itself refuses the one-statement rename), and the mover keeps their page',
+      race.status === 409 && raw === 'refused' && stillSam && stillSam.handle === 'sam' && stillBea && stillBea.user_id === 'userB', JSON.stringify({ race: race.status, raw, stillSam, stillBea }));
+    const render = async (h) => { let nexted = false; const res = await pageFn.onRequestGet({ request: new Request('https://a-to-mind.com/' + h), env, params: { handle: h }, next: async () => { nexted = true; return new Response('asset'); } }); return { status: res.status, html: await res.text(), nexted, cache: res.headers.get('cache-control') }; };
     const pg = await render('@sam'), none = await render('@nobody'), asset = await render('sw.js');
     check('publish: /@sam is the homepage with that look set in the HTML (before first paint) and its cards as data; an unclaimed name is a 404 "no one here"; any other path is the site as usual',
       pg.status === 200 && /--void-bg:#01040f/.test(pg.html) && /data-fx="swarm"/.test(pg.html) && /window\.__VOID_PAGE__=\{"handle":"sam"/.test(pg.html) && !/<img src=x/.test(pg.html) && /mountCalendar/.test(pg.html)
-      && none.status === 404 && /"none":true/.test(none.html) && asset.nexted,
+      && none.status === 404 && /"none":true/.test(none.html) && asset.nexted && pg.cache === 'no-store' && none.cache === 'no-store',
       [pg.status, none.status, asset.nexted].join(' | '));
     // in the browser: a visitor sees @sam's look and cards, and their own stage is untouched; the owner publishes with a yes
     const P = await fresh(() => { localStorage.setItem('a2m.void.state.v1', JSON.stringify({ s1: { id: 's1', kind: 'sticky', x: 10, y: 10, text: 'mine' } })); });

@@ -30,11 +30,16 @@ export async function onRequestPost({ request, env }) {
     const owner = await env.DB.prepare('SELECT user_id FROM void_pages WHERE handle = ?').bind(handle).first();
     if (owner && owner.user_id !== me.userId) return bad(409, 'that name is taken');
     const now = new Date().toISOString();
-    // one page per Void: moving to a new name frees the old one
-    await env.DB.batch([
-      env.DB.prepare('DELETE FROM void_pages WHERE user_id = ? AND handle <> ?').bind(me.userId, handle),
-      env.DB.prepare('INSERT INTO void_pages (handle, user_id, data, updated) VALUES (?, ?, ?, ?) ON CONFLICT(handle) DO UPDATE SET data = excluded.data, updated = excluded.updated WHERE void_pages.user_id = excluded.user_id').bind(handle, me.userId, data, now),
-    ]);
+    // one page per Void. A move to a new name is ONE statement (UPDATE ... SET handle): if someone claimed that name in the
+    // meantime, the unique handle refuses it and nothing changes, so the old page is never lost to a failed rename.
+    const had = await env.DB.prepare('SELECT handle FROM void_pages WHERE user_id = ?').bind(me.userId).first();
+    try {
+      if (had) await env.DB.prepare('UPDATE void_pages SET handle = ?, data = ?, updated = ? WHERE user_id = ?').bind(handle, data, now, me.userId).run();
+      else await env.DB.prepare('INSERT INTO void_pages (handle, user_id, data, updated) VALUES (?, ?, ?, ?)').bind(handle, me.userId, data, now).run();
+    } catch (e) {
+      if (/unique|constraint/i.test(String(e && e.message))) return bad(409, 'that name is taken');
+      throw e;
+    }
     const mine = await env.DB.prepare('SELECT user_id FROM void_pages WHERE handle = ?').bind(handle).first();
     if (!mine || mine.user_id !== me.userId) return bad(409, 'that name is taken');
     return good({ ok: true, handle, url: new URL(request.url).origin + '/@' + handle, updated: now });
