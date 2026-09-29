@@ -42,12 +42,27 @@ async function run(text, api) {
     if (!out) {
       const r = await fetch('https://api.mymemory.translated.net/get?mt=1&q=' + encodeURIComponent(p.q) + '&langpair=' + from + '|' + to).then((x) => x.json());
       out = r && r.responseStatus === 200 && r.responseData && r.responseData.translatedText; via = 'mymemory';
+      // MyMemory sometimes leaves translatedText empty and puts the answer in matches: take the best-rated one
+      if (!out && r && Array.isArray(r.matches)) {
+        const best = r.matches.filter((x) => x && x.translation && String(x.translation).trim()).sort((a, b) => (+b.match || 0) - (+a.match || 0) || (+b.quality || 0) - (+a.quality || 0))[0];
+        out = best ? String(best.translation).trim() : '';
+      }
     }
     if (!api._pageStill(el)) return 'translate';
     if (!out) throw 0;
     el.innerHTML = '<div class="sub">' + esc(p.q) + ' · ' + esc(p.to.charAt(0).toUpperCase() + p.to.slice(1).toLowerCase()) + '</div>'
-      + '<div style="font-size:40px;font-weight:300;line-height:1.2;margin:8px 0">' + esc(out) + '</div>'
+      + '<div class="tr-out" style="font-size:40px;font-weight:300;line-height:1.2;margin:8px 0">' + esc(out) + '</div>'
+      + '<button type="button" class="tr-copy" aria-label="copy the translation">copy</button>'
       + '<div class="src">Source: ' + (via === 'google' ? '<a href="https://translate.google.com/" target="_blank" rel="noopener">Google Translate</a>' : '<a href="https://mymemory.translated.net/" target="_blank" rel="noopener">MyMemory</a>') + '</div>';
+    const btn = el.querySelector('.tr-copy');
+    if (btn) btn.addEventListener('click', async () => {
+      let ok = false;
+      try { await navigator.clipboard.writeText(out); ok = true; } catch (_) {
+        try { const ta = document.createElement('textarea'); ta.value = out; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); ta.remove(); } catch (__) {}
+      }
+      btn.textContent = ok ? 'copied' : 'select it to copy'; if (api.say) api.say(ok ? 'copied' : '');
+      setTimeout(() => { btn.textContent = 'copy'; }, 1600);
+    });
     return 'translate';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
