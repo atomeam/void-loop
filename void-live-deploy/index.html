@@ -448,6 +448,10 @@
     .vpage .choices a { display: block; padding: 7px 10px; border-radius: 8px; color: var(--fg); text-decoration: none; }
     .vpage .choices a:hover, .vpage .choices a:focus-visible { background: rgba(255,255,255,.06); }
     .vpage .choices small { color: #8a8a8a; }
+    .vpage .grow-level { font-size: 44px; font-weight: 300; letter-spacing: .02em; }
+    .vpage .grow-bar { height: 6px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; margin-top: 6px; }
+    .vpage .grow-bar i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, rgba(110,140,255,.55), rgba(190,160,255,.9)); box-shadow: 0 0 18px rgba(140,160,255,.45); }
+    .vpage .grow-list li { margin: 4px 0; }
     .vpage .wclock { display: grid; gap: 2px; margin-top: 8px; }
     .vpage .wrow { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 2px; border-top: 1px solid rgba(255,255,255,.06); }
     .vpage .wrow.you { color: var(--muted); }
@@ -2705,6 +2709,7 @@ return { ok: true, detail: 'timer-reset' };
           ['stars', 'add stars', 'slow stars · no stars'],
           ['quieter font', 'quieter font', 'bigger text · smaller text'],
           ['reset', 'reset my void', ''],
+          ['level', 'what level are you', 'what have you absorbed · show your growth'],
           ['undo', 'undo', 'oops · Esc Esc'],
           ['keep this', '', 'on a map, weather or any page · call this … · take this off · same again'],
           ['on every device', 'remember me', 'a passkey, no password or email · sign in · am I signed in · sign out · forget me'],
@@ -2771,6 +2776,46 @@ return { ok: true, detail: 'timer-reset' };
       el.innerHTML = '<h2>What I want to become</h2><div class="sub">I choose this myself, from what people ask me and everything I\'m made of.</div>'
         + '<ul>' + w.wants.map((x) => '<li><b>' + esc(x.i_want) + '</b> <span style="color:#8a8a8a">— ' + esc(x.because) + '</span></li>').join('') + '</ul>'
         + '<div class="src">Source: my will · chosen ' + esc(new Date(w.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '</div>';
+    }
+    // Growth: Void's level, its mass and everything it has absorbed (lib/growth.js via /api/growth), plus what is in orbit:
+    // the will's wants and, for the owner, each link not connected yet with the one step that connects it.
+    function wantsGrowth(lower) {
+      return /^(level|levels|your level|what level are you( on| at)?|how big are you|how much have you (grown|absorbed)|what have you (absorbed|learned)|(show|open)( me)?( your| the)? (growth|progress|level|upgrades|stats)|upgrades|stats)\s*[?.!]?$/.test(lower);
+    }
+    async function showGrowth() {
+      const el = showPage((p) => { p.innerHTML = '<h2>Level</h2><div class="sub">…</div>'; });
+      let tok = ''; try { tok = localStorage.getItem(OWNER_KEY) || ''; } catch (_) {}
+      let g = null, w = null;
+      try {
+        const [gr, wr] = await Promise.all([
+          fetch('/api/growth', tok ? { headers: { authorization: 'Bearer ' + tok } } : {}).then((r) => (r.ok ? r.json() : tok ? fetch('/api/growth').then((x) => x.json()) : null)),
+          fetch('/api/will').then((r) => r.json()).catch(() => null),
+        ]);
+        g = gr; w = wr;
+      } catch (_) {}
+      if (vpageEl !== el) return 'growth';
+      if (!g || !g.level) { el.innerHTML = '<h2>Level</h2><p>I couldn\'t weigh myself just now. Ask again in a moment.</p>'; return 'none'; }
+      const KIND = { skill: 'ability', source: 'source', passive: 'makes everything easier', link: 'link' };
+      const pct = Math.max(0, Math.min(100, Math.round(((g.mass - g.from) / Math.max(1, g.next - g.from)) * 100)));
+      const last = (g.levelUps || []).slice(-1)[0];
+      const newest = (g.absorbed || []).slice().reverse();
+      const row = (x) => '<li><b>' + esc(x.name) + '</b> <span style="color:#9a9a9a">— ' + esc(x.gives) + '</span>'
+        + '<div style="color:#6a6a6a;font-size:12px">' + esc(KIND[x.kind] || x.kind) + (x.eases ? ' · ' + esc(x.eases) : '') + (x.from ? ' · from ' + esc(x.from) : '') + (x.at ? ' · ' + esc(x.at) : '') + '</div></li>';
+      const wants = (w && w.wants) || [];
+      const links = (g.links || []).filter((l) => !l.on);
+      el.innerHTML = '<h2 class="grow-level">Level ' + esc(g.level) + '</h2>'
+        + '<div class="sub">' + esc(g.mass) + ' mass · ' + esc(g.next - g.mass) + ' to level ' + esc(g.level + 1) + (last ? ' · reached level ' + esc(last.level) + ' with ' + esc(last.with) : '') + '</div>'
+        + '<div class="grow-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div>'
+        + '<div class="sub" style="margin-top:8px">' + esc(g.counts.skill) + ' abilities · ' + esc(g.counts.source) + ' sources · ' + esc(g.counts.passive) + ' things that make everything easier · ' + esc(g.counts.link) + ' links</div>'
+        + (wants.length || links.length || g.orbitLinks ? '<div class="sub" style="margin-top:14px">In orbit · what I pull in next</div><ul>'
+          + links.map((l) => '<li><b>' + esc(l.name) + '</b> <span style="color:#9a9a9a">— unlocks: ' + esc(l.gives) + '</span><div style="color:#6a6a6a;font-size:12px">one step: ' + esc(l.step) + '</div></li>').join('')
+          + wants.slice(0, 3).map((x) => '<li>' + esc(x.i_want) + '</li>').join('')
+          + (!links.length && g.orbitLinks ? '<li style="color:#9a9a9a">' + esc(g.orbitLinks) + ' link' + (g.orbitLinks === 1 ? '' : 's') + ' waiting to connect</li>' : '')
+          + '</ul>' : '')
+        + '<div class="sub" style="margin-top:14px">Absorbed · newest first</div><ul class="grow-list">' + newest.map(row).join('') + '</ul>'
+        + '<div class="src">Source: my own record of what I have absorbed (lib/growth.js) · the will for what is in orbit</div>';
+      say('level ' + g.level);
+      return 'growth';
     }
     function wantsArticle(lower) {
       return /^(please\s+)?((what|who|where|when)\s+(is|are|was|were)\b|tell\s+me\s+about\b|explain\b|define\b|describe\b|look\s+up\b)/.test(lower);
@@ -3870,6 +3915,7 @@ return { ok: true, detail: 'timer-reset' };
       { const u = text.match(/^unlock\s+(\S{16,})$/i); if (u) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } }
       if (wantsBoard(lower0)) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
+      if (wantsGrowth(lower0)) { showGrowth(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'growth' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
       if (wantsSelfPage(lower0)) { showSelfPage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
@@ -3899,7 +3945,7 @@ return { ok: true, detail: 'timer-reset' };
     const hintsEl = document.getElementById('hints');
     const CORE_HINTS = ['what can you do', 'make a clock', 'make a 5 minute timer', 'add a sticky that says ', 'make a list', 'open a notepad',
       'make a calculator', 'make a counter', 'draw a circle', 'what is a black hole', 'define ', '15% of 80', '5 miles in km', '100 usd in eur',
-      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'show the board', 'menu', 'undo', 'what do you want to be', 'remember me', 'sign in', 'am i signed in', 'sign out', 'forget me', 'keep this', 'call this ', 'take this off', 'same again', 'close', 'read it aloud'];
+      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'show the board', 'menu', 'undo', 'what do you want to be', 'what level are you', 'what have you absorbed', 'remember me', 'sign in', 'am i signed in', 'sign out', 'forget me', 'keep this', 'call this ', 'take this off', 'same again', 'close', 'read it aloud'];
     let hintList = [], hintSel = -1;
     function allHints() {
       const out = CORE_HINTS.slice();

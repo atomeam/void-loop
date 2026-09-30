@@ -664,6 +664,36 @@ try {
       && /url\.pathname === '\/'/.test(sw) && !P.errors.length,
       JSON.stringify({ shown, meta, idInUrl, nf, card, heads, errors: P.errors }));
     await P.ctx.close(); }
+  // Growth: everything absorbed, the level, and what is in orbit (lib/growth.js, /api/growth, "what level are you").
+  { const gv = await import(new URL('../void-live-deploy/lib/growth.js', import.meta.url).href);
+    const gf = await import(new URL('../void-live-deploy/functions/api/growth.js', import.meta.url).href);
+    const skills = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
+    const unrecorded = skills.filter((n) => !gv.ABSORBED.some((x) => x.id === n && x.kind === 'skill'));
+    const ids = gv.ABSORBED.map((x) => x.id), dupes = ids.filter((x, i) => ids.indexOf(x) !== i);
+    const dated = gv.ABSORBED.every((x) => /^2026-\d\d-\d\d$/.test(x.at) && x.name && x.gives && gv.WEIGHT[x.kind]);
+    const curve = [0, 4, 5, 14, 15, 104, 105, 139, 140].map((m) => gv.levelOf(m).level).join(',');
+    const env = { DB: {}, AI: {}, READ_TOKEN: 'owner-k' };
+    const pub = await (await gf.onRequestGet({ request: new Request('https://a-to-mind.com/api/growth'), env })).json();
+    const own = await (await gf.onRequestGet({ request: new Request('https://a-to-mind.com/api/growth', { headers: { authorization: 'Bearer owner-k' } }), env })).json();
+    const wrong = (await gf.onRequestGet({ request: new Request('https://a-to-mind.com/api/growth', { headers: { authorization: 'Bearer guess' } }), env })).status;
+    const handoffLink = (own.links || []).find((l) => l.id === 'handoff-key');
+    check('growth: every live skill is recorded as absorbed (a skill shipped without an entry fails here); entries are dated, weighed and unique; levels follow 0,5,15,…,105,140',
+      !unrecorded.length && !dupes.length && dated && curve === '1,1,2,2,3,6,7,7,8', JSON.stringify({ unrecorded, dupes, dated, curve }));
+    check('growth: public view has the level, mass and absorbed list but never which keys exist; the owner sees each link, on or off, with the one step for a missing one; a wrong key is a 401',
+      pub.level >= 1 && pub.mass === own.mass && Array.isArray(pub.absorbed) && !('links' in pub) && pub.orbitLinks === 3 && !JSON.stringify(pub).includes('HANDOFF_TOKEN')
+      && handoffLink && !handoffLink.on && /HANDOFF_TOKEN/.test(handoffLink.step) && own.links.find((l) => l.id === 'memory').on && wrong === 401,
+      JSON.stringify({ level: pub.level, mass: pub.mass, orbit: pub.orbitLinks, handoffLink, wrong }));
+    const G = await fresh();
+    await G.ctx.route(/\/api\/growth$/, async (rt) => { const res = await gf.onRequestGet({ request: new Request('https://a-to-mind.com/api/growth', { headers: await rt.request().allHeaders() }), env }); return rt.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }); });
+    await G.ask('what level are you', 900); const gp = await G.page(); const bar = await G.p.$eval('.vpage.on .grow-bar', (e) => e.getAttribute('aria-valuenow')).catch(() => null);
+    await G.ask('close', 300);
+    await G.p.evaluate(() => localStorage.setItem('a2m.void.owner.v1', 'owner-k'));
+    await G.ask('what have you absorbed', 900); const go = await G.page();
+    check('"what level are you" opens the level page: the level, mass to the next level, a progress bar, the will\'s wants in orbit, everything absorbed newest first; the owner also sees each missing link with its one step',
+      new RegExp('^Level ' + pub.level).test(gp) && /mass · \d+ to level/.test(gp) && bar !== null && /Absorbed/.test(gp) && /Level and orbit/.test(gp) && /Handoff/.test(gp) && /tides/.test(gp) && !/one step/.test(gp)
+      && /Handoff key/.test(go) && /one step: add HANDOFF_TOKEN/.test(go) && gp.indexOf('Level and orbit') < gp.indexOf('The stage') && !G.errors.length,
+      [gp.slice(0, 160), go.slice(0, 60), bar, G.errors.join('|')].join(' | '));
+    await G.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
