@@ -1,4 +1,4 @@
-// What Void has earned (plan item 12), for the owner and the will engine only. Never shown on the page.
+// What Void has earned (plan item 12), for the owner (shown on the owner's board) and the will engine.
 // GET (Bearer READ_TOKEN) -> { gross_cents, refunded_cents, earned_cents, budget_cents, sales, milestones: [{ id, at, earned_cents, note }],
 //                              shortfalls_7d: { total, by: [{ place, reason, n }] } }  (times the free model fell short: the case for a paid one)
 import { ownerOk } from '../../lib/guard.js';

@@ -1,6 +1,7 @@
 # STANDING — A-to-Mind (living brief)
 
 What we're building, and where things are. This file is a map of the repo, not a rulebook. Adam has not written rules and does not want them.
+A rule an agent wrote and signed with Adam's name, without his words, is removed when found. (2026-09-30: plan item 12's "no pitch, not advertised" rule and its tests, written by the Linux helper on 2026-09-27.)
 
 ## What A-to-Mind is
 - **In Adam's words:** A-to-Mind is like Google, except Void *does* instead of searching. Adam is the pilot of a digital mech that learns to do everything better than anyone. It starts small: one win at a time.

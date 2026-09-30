@@ -60,7 +60,7 @@ function parseWhenText(text, now = new Date()) {
 }
 function tidy(s) {
   return s.replace(/\b(Add|Put|Schedule|Book|Remind)\b/g, (w) => w.toLowerCase()).replace(/\b(add|put|schedule|book|set up|remind me to|remind me|to my (calendar|calender|agenda)|on my (calendar|calender|agenda)|in my (calendar|calender|agenda)|my (calendar|calender|agenda)|calendar|calender|agenda|please)\b/g, ' ')
-    .replace(/^\s*(a|an|the|this)\s+/, ' ').replace(/\s+(on|at|for|by)\s*$/, ' ').replace(/\s+/g, ' ').trim().replace(/^./, (c) => c.toUpperCase()) || 'Event';
+    .replace(/^\s*(a|an|the|this|to)\s+/, ' ').replace(/\s+(on|at|for|by)\s*$/, ' ').replace(/\s+/g, ' ').trim().replace(/^./, (c) => c.toUpperCase()) || 'Event';
 }
 
 
@@ -86,9 +86,12 @@ export function parseCalendar(text) {
   // an add needs a when in it: "call Sam next Tuesday at 4", "dentist Oct 12 at 3pm", "gym at 7pm", "pay rent in 3 days"
   if (/^(?:what|who|why|how|when|where|is|are|does|do|can|define|translate|weather|time|map|make|set|start)\b/i.test(t)) return null;
   if (/\b(timer|clock|sticky|notepad|counter|countdown|shape|calculator)\b/i.test(t)) return null;
+  if (/^(?:the\s+|today'?s\s+)?(?:news|headlines|top\s+stories)\b/i.test(t)) return null; // the news skill
   if (/\b(hours?\s+between|time\s+difference|how\s+many\s+(hours|days))\b/i.test(t)) return null; // world time and the calculator answer these
   if (/^\d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/i.test(t) || /\b(sunrise|sunset|time zone|timezone)\b/i.test(t)) return null; // "3pm London to Tokyo" is world time; an event starts with what it is
   const w = parseWhenText(t);
+  // "remind me to call mom" with no when: it goes on today, so it is kept rather than lost
+  if (!w) { const r = t.match(/^(?:please\s+)?remind\s+me\s+(?:to|about)\s+(.{2,80})$/i); if (r) { const d = new Date(); d.setHours(0, 0, 0, 0); return { kind: 'add', title: tidy(r[1]), at: d, allDay: true, raw: t }; } }
   if (!w || !w.title || w.title === 'Event' || w.title.length < 2) return null;
   return { kind: 'add', title: w.title, at: w.at, allDay: w.allDay, raw: t };
 }

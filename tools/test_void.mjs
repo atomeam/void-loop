@@ -615,6 +615,14 @@ try {
       && merged.find((x) => /paris/i.test(x.ask)).count === 2 && missKey('class') === 'class' && missKey('Whats a black hole') === 'black hole',
       JSON.stringify(merged));
   }
+  // The owner's board shows what Void has earned and its milestones (they used to be "never on screen", even to the owner).
+  { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    await O.ctx.route(/\/api\/misses$/, (r) => r.fulfill(json([{ ask: 'make me an app', count: 2, last: '2026-09-30', fallback: 'answer' }])));
+    await O.ctx.route(/\/api\/earnings$/, (r) => r.fulfill(json(/owner-k/.test(r.request().headers().authorization || '') ? { earned_cents: 9800, refunded_cents: 0, sales: 2, milestones: [{ id: 'sales-1', at: '2026-10-02T10:00:00Z' }], shortfalls_7d: { total: 3, by: [] } } : {})));
+    await O.ask('show the board', 900); const bp = await O.page();
+    check('owner board: what Void earned (net, sales), its milestones and the free-model shortfalls sit on top of the board',
+      /Earned \$98\.00/.test(bp) && /2 sales/.test(bp) && /sales-1/.test(bp) && /fell short 3 times/.test(bp) && /make me an app/.test(bp) && !O.errors.length, bp.slice(0, 200));
+    await O.ctx.close(); }
   // How-to asks, "what are you", "remove every clock", "reset my void" (list items 48, 88, 89, 96).
   { const H = await fresh(); const net = []; H.p.on('request', (r) => { if (/wikipedia\.org|\/api\/(answer|miss)$/.test(r.url())) net.push(r.url()); });
     await H.ask('how do I make a timer', 700); const how = await H.page(); const lit = await H.p.$eval('.vpage.on li.focus', (e) => e.textContent).catch(() => '');
@@ -683,6 +691,12 @@ try {
     await R.ask('build me a pomodoro app with notes', 900); const one = (await R.state()).map((x) => x.kind).sort().join(',');
     if (two !== 'list,timer' || !/built: a list \+ a timer/.test(twoSay) || one !== 'list,notepad,timer,timer') bad.push('app -> ' + JSON.stringify({ two, twoSay, one }));
     const shape = grown.every((g) => g.ask && /^2026-\d\d-\d\d$/.test(g.missed) && g.now && ['page', 'say', 'stage', 'quiet'].includes(g.expect) && (g.expect === 'quiet' || g.text));
+    // the everyday benchmark (tools/bench.json): the score may rise, never fall below tools/bench.best.json
+    { const run = spawnSync(process.execPath, [path.join(root, '..', 'tools', 'bench.mjs'), '--score'], { encoding: 'utf8', timeout: 600000 });
+      let b = null; try { b = JSON.parse(String(run.stdout).trim().split('\n').pop()); } catch (_) {}
+      const best = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'bench.best.json'), 'utf8'));
+      check('bench: the everyday benchmark scores at least its best (' + best.score + ' of ' + best.total + '); each ask answered by what should answer it',
+        !!b && b.score >= best.score && b.total >= best.total, b ? b.score + '/' + b.total + ' wrong: ' + b.wrong.join(' | ') : String(run.stderr).slice(0, 300)); }
     check('grown: ' + grown.length + ' real asks Void once missed now answer on the real page (no miss posted, the right answer); the list only grows',
       shape && !bad.length && grown.length >= 15 && !R.errors.length, bad.join(' | ') + ' ' + R.errors.join('|'));
     await R.ctx.close(); }
@@ -772,26 +786,23 @@ try {
   check('WebMCP: agents cannot sign in or forget anyone (item 6)', idAsks.every((x) => /person at the screen/.test(x)), idAsks.join(' | '));
   const paidAgent = await t.p.evaluate(async () => { const out = []; for (const a of ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'raise my confirm cap', 'buy paid void']) out.push(await window.__tools.void_ask.execute({ ask: a })); return out; });
   const toolText = await t.p.evaluate(() => JSON.stringify(Object.values(window.__tools).map((d) => [d.name, d.description])));
-  check('WebMCP: paid Void asks are refused to agents and never listed (item 12)', paidAgent.every((x) => x === 'Paid Void is for the person at the screen, asked by hand.') && !/\$\d|price|pricing|upgrade|premium|paid|subscri|gumroad|checkout/i.test(toolText) && t.errors.length === 0, paidAgent.join(' | ') + ' ' + toolText.slice(0, 120));
+  check('WebMCP: a paid Void ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout', paidAgent.every((x) => /^Paid Void (is \$49 a month|adds)/.test(x) && /remember me/.test(x)) && t.ctx.pages().length === 1 && t.errors.length === 0, paidAgent.join(' | ').slice(0, 300));
   await t.ctx.close();
 
-  // Plan item 12: paid Void and Atom's store, asked for, not advertised. Nothing on the surface; asked, one plain line.
+  // Plan item 12: paid Void and Atom's store. A fresh visit is the void; a paid ask gets the price and how to buy.
   {
   const hits0 = catalogHits.length; // earlier contexts asked questions (an answer may carry a product line, so they read the catalog)
   const P = await fresh();
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
-  check('paid: a fresh visit is an empty screen (no price, product, account chrome or upgrade prompt; the store is not even fetched)', bare.stage === 0 && !(await P.page()) && !/\$\s?\d|price|pricing|upgrade|premium|paid|subscri|gumroad|checkout|sign in|account|log in|audit|big board/i.test(bare.text) && bare.links === 0 && bare.gum === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic') && catalogHits.length === hits0, JSON.stringify(bare).slice(0, 200) + ' hits=' + (catalogHits.length - hits0));
-  const PITCH = /\$\s?\d|price|pricing|upgrade|premium|paid|subscri|gumroad|checkout|\bpro\b|\btier\b|audit|big board|join the team|automation setup/i;
+  check('a fresh visit is the void: an empty stage and the input, nothing else to click', bare.stage === 0 && !(await P.page()) && bare.links === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic'), JSON.stringify(bare).slice(0, 200));
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
-  const hintsFor = async (q) => { await P.p.fill('#input', q); await P.p.waitForTimeout(150); const h = await P.p.$$eval('#hints div', (d) => d.map((x) => x.textContent)); await P.p.fill('#input', ''); return h; };
-  const payHints = [...(await hintsFor('upg')), ...(await hintsFor('pay')), ...(await hintsFor('pric')), ...(await hintsFor('private')), ...(await hintsFor('audit')), ...(await hintsFor('join'))];
-  check('paid: "what can you do", the menu and hints never pitch a tier or a product', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg) && !PITCH.test(selfPg) && !PITCH.test(menuPg) && !payHints.some((h) => PITCH.test(h) || /private skill/.test(h)) && catalogHits.length === hits0, [selfPg.slice(0, 60), payHints.join(',')].join(' | '));
-  const OUT_LINE = 'paid Void starts with a passkey · say “remember me” first';
+  check('"what can you do" and the menu open', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg), selfPg.slice(0, 60));
+  const OUT_LINE = 'Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pricing', 'pay', 'how much does Void cost?', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
   for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
-  check('paid: signed out, every paid ask gets one plain line + "remember me" (no page, no link, no price)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
+  check('paid: signed out, every paid ask gets the price, what it adds and "remember me" first (no page, no checkout opened)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
     outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
   // Asks a product covers: Void's own answer, then one line with the product, its live price and its link (matched from the live
   // catalog's names and descriptions; nothing about products is hard-coded in the page). Nothing opens by itself.
