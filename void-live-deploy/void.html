@@ -2962,7 +2962,30 @@ return { ok: true, detail: 'timer-reset' };
       const amount = parseFloat(m[2]) * (m[3] ? 1000 : 1);
       return { amount, from, to };
     }
+    // Arithmetic in words: "what is 12 times 7", "sqrt of 144", "2 to the power of 10", "is 97 a prime number",
+    // "how many seconds in a day". A small parser of its own (+ - * / ^, brackets, square roots); nothing is ever eval'd.
+    const TIME_S = { second: 1, minute: 60, hour: 3600, day: 86400, week: 604800, year: 31557600 };
+    function wordMath(lower) {
+      let t = String(lower || '').toLowerCase().replace(/[?!]+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').trim();
+      let m = t.match(/^is\s+(\d{1,15})\s+(?:a\s+)?prime(?:\s+number)?$/);
+      if (m) { const n = +m[1]; let p = n > 1; for (let i = 2; p && i * i <= n; i++) if (n % i === 0) p = i; return { value: p === true ? 'Yes' : 'No', note: p === true ? n + ' is prime.' : n + ' is not prime' + (typeof p === 'number' ? ' (' + p + ' × ' + n / p + ')' : '') + '.' }; }
+      m = t.match(/^how\s+many\s+(second|minute|hour|day|week)s?\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+(minute|hour|day|week|year)$/);
+      if (m && TIME_S[m[2]] > TIME_S[m[1]]) { const v = TIME_S[m[2]] / TIME_S[m[1]]; return { value: v.toLocaleString(), note: 'one ' + m[2] + ' = ' + v.toLocaleString() + ' ' + m[1] + 's' + (m[2] === 'year' ? ' (365.25 days)' : '') + '.' }; }
+      const e = t.replace(/\bsquare\s+root\s+of\b|\bsqrt\s+of\b|\bsqrt\b/g, ' r ').replace(/\bto\s+the\s+power\s+of\b|\braised\s+to\b|\*\*/g, ' ^ ')
+        .replace(/\bsquared\b/g, ' ^ 2 ').replace(/\bcubed\b/g, ' ^ 3 ').replace(/\btimes\b|\bmultiplied\s+by\b|×|\bx\b/g, ' * ').replace(/\bdivided\s+by\b|\bover\b|÷/g, ' / ')
+        .replace(/\bplus\b|\badded\s+to\b/g, ' + ').replace(/\bminus\b|\bless\b/g, ' - ').replace(/(\d),(\d{3})/g, '$1$2').trim();
+      if (!/^[\d\s.+\-*/^()r]+$/.test(e) || !/\d/.test(e) || !/[+\-*/^r]/.test(e.replace(/^-/, ''))) return null;
+      const tk = e.match(/\d+(?:\.\d+)?|[+\-*/^()r]/g); let i = 0;
+      const peek = () => tk[i], take = () => tk[i++];
+      const prim = () => { const x = take(); if (x === '(') { const v = add(); if (take() !== ')') throw 0; return v; } if (x === '-') return -pow(); if (x === 'r') return Math.sqrt(pow()); if (x == null || isNaN(+x)) throw 0; return +x; };
+      const pow = () => { const b = prim(); if (peek() === '^') { take(); return Math.pow(b, pow()); } return b; };
+      const mul = () => { let v = pow(); while (peek() === '*' || peek() === '/') { const o = take(), r = pow(); v = o === '*' ? v * r : v / r; } return v; };
+      const add = () => { let v = mul(); while (peek() === '+' || peek() === '-') { const o = take(), r = mul(); v = o === '+' ? v + r : v - r; } return v; };
+      try { const v = add(); if (i !== tk.length || !isFinite(v)) return null; const shown = Math.abs(v) >= 1e15 ? v.toExponential(6) : String(+v.toPrecision(12));
+        return { value: shown, note: e.replace(/\s*r\s*/g, ' √').replace(/\s+/g, ' ').trim() + ' = ' + shown }; } catch (_) { return null; }
+    }
     function wantsCalc(lower) {
+      if (wordMath(lower)) return true;
       lower = calcNormalize(lower);
       if (/\d\s*%/.test(lower) && /(%\s*(of|off)\b|%\s*tip\s+(on|for)\b)/.test(lower)) return true;
       if (CALC_UNIT_RE.test(lower)) return true;
@@ -2977,6 +3000,8 @@ return { ok: true, detail: 'timer-reset' };
 
       let hit = false;
       const setV = (big, note, src) => { if (vpageEl === el) el.innerHTML = '<h2>Calculated</h2><div style="font-size:56px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); };
+      const wm = wordMath(query.toLowerCase());
+      if (wm) { setV(wm.value, wm.note); return 'calc'; }
 
       // percent: "15% of 240", "what's a 20% tip on 80"
       const pm = lower.match(/\b(\d+(?:\.\d+)?)\s*%\s*(?:of|off)\s+(?:a|an|the)?\s*\$?(\d+(?:\.\d+)?)/);
@@ -3698,12 +3723,11 @@ return { ok: true, detail: 'timer-reset' };
     document.addEventListener('visibilitychange', () => { if (!document.hidden && me && me.token && Date.now() - minePulled > 15000) minePull(); });
     if (me && me.token) minePull();
 
-    // --- Paid Void and Atom's store, asked for, not advertised (plan item 12). No pricing page, no upsell, nothing on the surface. ---
+    // --- Paid Void and Atom's store (plan item 12). ---
     // Free Void stays whole, and sync on every device stays free with a passkey. After a passkey, paid Void (the membership
     // lib/gumroad.js UNLOCKS names by id) adds only more model answers, private skills and a higher cap on actions that pass the
     // confirm line (the confirm itself never goes away). Products are never named or priced in this file: names, prices and what
-    // each covers come from the live store (/api/catalog), so Void follows when Atom renames or reprices. A product line comes
-    // only after Void's own answer or fix. None of it is in the menu, hints, /tools.json or WebMCP.
+    // each covers come from the live store (/api/catalog), so Void follows when Atom renames or reprices.
     const storeReady = import('/lib/gumroad.js').catch(() => null);
     let catalogAt = 0, catalogP = null;
     async function storeCatalog() { // -> { g, products }; products from /api/catalog (fetched on the first ask that needs it, never on arrival)
@@ -3741,7 +3765,10 @@ return { ok: true, detail: 'timer-reset' };
     }
     async function handlePaidAsk(lower) {
       if (!isPaidAsk(lower)) return false;
-      if (!me || !me.token) { say('paid Void starts with a passkey · say “remember me” first'); loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
+      if (!me || !me.token) { // signed out: the price and what it adds, then how to buy (the purchase attaches to your Void's passkey)
+        const { g: g0, products: p0 } = await storeCatalog(); const vm0 = g0 ? p0.find((p) => g0.isUnlock(p)) : null;
+        say((vm0 && vm0.available !== false ? 'Paid Void is ' + g0.priceText(vm0) + ': ' + PAID_ADDS : 'Paid Void adds ' + PAID_ADDS) + ' · say “remember me” first, then ask again to buy');
+        loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
       if ((await meTier()) === 'paid') { say('your Void is paid: ' + PAID_ADDS); return true; }
       const { g, products } = await storeCatalog();
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Void, as the store has it now
@@ -3925,8 +3952,33 @@ return { ok: true, detail: 'timer-reset' };
       loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'app: asked what it should do' });
       return true;
     }
+    // Today: "what day is it", "what's the date today", "what year is it" -> the date here, with the week and day of the year.
+    function wantsToday(l) {
+      return /^(what(?:'s|\s+is)?|whats)\s+(?:the\s+)?(?:day|date|today'?s?\s+date)(?:\s+(?:is\s+it|today|is\s+it\s+today|is\s+today))?$|^what\s+day\s+is\s+(?:it|today)(\s+today)?$|^what(?:'s|\s+is)?\s+the\s+date(\s+today)?$|^(?:what|which)\s+year\s+is\s+(?:it|this)$|^today'?s\s+date$|^date\s+today$/.test(l.replace(/[?.!]+$/, ''));
+    }
+    function showToday() {
+      const d = new Date(), y0 = new Date(d.getFullYear(), 0, 1), doy = Math.floor((d - y0) / 864e5) + 1, days = ((d.getFullYear() % 4 === 0 && d.getFullYear() % 100 !== 0) || d.getFullYear() % 400 === 0) ? 366 : 365;
+      const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const dn = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - dn);
+      const week = Math.ceil(((t - Date.UTC(t.getUTCFullYear(), 0, 1)) / 864e5 + 1) / 7);
+      showPage((p) => { p.innerHTML = '<h2>Today</h2><div style="font-size:44px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })) + '</div>'
+        + '<p style="color:#8a8a8a">Week ' + week + ' · day ' + doy + ' of ' + days + ' · ' + esc(Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/_/g, ' ')) + '</p>'; });
+    }
+    // Chance: "flip a coin", "roll a dice" / "roll 2 dice" / "roll a d20", "pick a random number between 1 and 100". crypto.getRandomValues.
+    function rnd(n) { const a = new Uint32Array(1); const lim = Math.floor(4294967296 / n) * n; let x; do { crypto.getRandomValues(a); x = a[0]; } while (x >= lim); return x % n; }
+    function chanceOf(l) {
+      l = l.replace(/[?.!]+$/, '');
+      if (/^(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin$|^heads\s+or\s+tails$/.test(l)) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip' };
+      let m = l.match(/^(?:please\s+)?roll\s+(?:(a|an|one|two|three|four|five|six|\d{1,2})\s+)?(?:dice|die|d(\d{1,3})s?|(\d{1,3})[- ]sided\s+di(?:c)?e)$/);
+      if (m) { const W = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }; const n = Math.min(10, W[m[1]] || +m[1] || 1), s = Math.min(1000, +(m[2] || m[3]) || 6);
+        const r = Array.from({ length: n }, () => rnd(s) + 1); return { title: n > 1 ? n + ' dice' : 'Die', big: r.join('  '), note: (n > 1 ? 'total ' + r.reduce((a, b) => a + b, 0) + ' · ' : '') + 'd' + s }; }
+      m = l.match(/^(?:pick|give\s+me|choose|generate)\s+(?:me\s+)?a\s+random\s+number(?:\s+(?:between|from)\s+(-?\d{1,9})\s+(?:and|to)\s+(-?\d{1,9}))?$|^random\s+number(?:\s+(?:between|from)\s+(-?\d{1,9})\s+(?:and|to)\s+(-?\d{1,9}))?$/);
+      if (m) { let a = +(m[1] || m[3] || 1), b = +(m[2] || m[4] || 100); if (a > b) [a, b] = [b, a]; return { title: 'Random number', big: String(a + rnd(b - a + 1)), note: 'from ' + a + ' to ' + b + ', each equally likely' }; }
+      return null;
+    }
     async function handleGrownAsk(text, lower0) {
       const l = lower0.replace(/\s+/g, ' ').trim();
+      if (wantsToday(l)) { showToday(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'today' }); return true; }
+      { const c = chanceOf(l); if (c) { showPage((p) => { p.innerHTML = '<h2>' + esc(c.title) + '</h2><div style="font-size:56px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
       if (await handleAppAsk(text, l)) return true;
       for (const [lang, re, line] of SPEAKS) if (re.test(l)) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'speaks ' + lang }); return true; }
       for (const [re, line] of WHAT_ARE_YOU) if (re.test(l.replace(/[?.!]+$/, ''))) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self (other language)' }); return true; }
@@ -3980,7 +4032,7 @@ return { ok: true, detail: 'timer-reset' };
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
       if (wantsSelfPage(lower0)) { showSelfPage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
-      if (/^(why|how|when|where|which|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
+      if (/^(why|how|when|where|which|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
           && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {
         showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'answer' }); return;
       }

@@ -37,7 +37,19 @@ async function run(text, api) {
       const r0 = g.results && g.results[0];
       if (r0) loc = { latitude: r0.latitude, longitude: r0.longitude, name: r0.name + (r0.admin1 && r0.admin1 !== r0.name ? ', ' + r0.admin1 : '') + (r0.country ? ', ' + r0.country : '') };
     } else {
-      loc = await hereCoords();
+      // where you are: the device's location if already allowed (no prompt), else the city your time zone names
+      let granted = false;
+      try { granted = navigator.permissions && (await navigator.permissions.query({ name: 'geolocation' })).state === 'granted'; } catch (_) {}
+      if (granted) loc = await hereCoords();
+      if (!loc) {
+        const tz = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+        const city = tz.includes('/') ? tz.split('/').pop().replace(/_/g, ' ') : '';
+        if (city) {
+          const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(city)).then((r) => r.json()).catch(() => null);
+          const r0 = g && g.results && g.results[0];
+          if (r0) loc = { latitude: r0.latitude, longitude: r0.longitude, name: r0.name + (r0.country ? ', ' + r0.country : ''), guessed: true };
+        }
+      }
     }
     if (!api._pageStill(el)) return 'weather';
     if (!loc) {
@@ -57,7 +69,7 @@ async function run(text, api) {
       + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
       + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
       + '<div style="display:flex;gap:6px;overflow-x:auto;padding:6px 0 2px">' + hours + '</div>'
-      + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></div>';
+      + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>' + (loc.guessed ? ' · place from your time zone; ask "weather in …" for another' : '') + '</div>';
     return 'weather';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
