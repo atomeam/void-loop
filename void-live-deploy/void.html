@@ -2681,7 +2681,7 @@ return { ok: true, detail: 'timer-reset' };
     function wantsSelfPage(lower) {
       return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|a-to-mind)\b|^what\s+can\s+(you|i|void)\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|void)\b/.test(lower);
     }
-    function showSelfPage(asMenu, focus) {
+    function showSelfPage(asMenu, focus, lead) {
       const groups = [
         ['On the stage', [
           ['clock', 'make a clock', 'make it blue · 24 hour'],
@@ -2718,7 +2718,7 @@ return { ok: true, detail: 'timer-reset' };
       }
       const row = ([k, ask, more]) => '<li' + (focus && k === focus ? ' class="focus" style="background:rgba(150,175,255,.10);border-radius:8px;padding:4px 6px;margin:0 -6px"' : '') + '>' + (ask ? '<a href="#" data-ask="' + esc(ask) + '" style="color:var(--fg);text-decoration:none"><b>' + esc(k) + '</b> <span style="color:#9a9a9a">— ' + esc(ask) + '</span></a>' : '<b>' + esc(k) + '</b>') + (more ? ' <span style="color:#6a6a6a">· ' + esc(more) + '</span>' : '') + '</li>';
       const el = showPage((p) => {
-        p.innerHTML = '<h2>' + (asMenu ? 'Menu' : 'Void') + '</h2><div class="sub">' + (asMenu ? 'Pick one, or just type.' : 'Ask, and it appears.') + '</div>'
+        p.innerHTML = '<h2>' + (asMenu ? 'Menu' : 'Void') + '</h2>' + (lead ? '<p class="lead" style="font-size:17px;margin:4px 0 10px">' + esc(lead) + '</p>' : '') + '<div class="sub">' + (asMenu ? 'Pick one, or just type.' : 'Ask, and it appears.') + '</div>'
           + (asMenu ? '' : '<p>Type what you want. Things arrive on the stage; drag them, change them, or clear them away. Tap any line to try it.</p>')
           + groups.map(([g, items]) => '<div class="sub" style="margin-top:12px">' + esc(g) + '</div><ul>' + items.map(row).join('') + '</ul>').join('')
           + '<div class="src">Esc or click the void to close.</div>';
@@ -3832,6 +3832,65 @@ return { ok: true, detail: 'timer-reset' };
       return true;
     }
 
+    // Asks real visitors made that Void couldn't answer, now answered (tools/grown.json lists each one; the tests replay them all).
+    // Other languages: "do you speak …" and "what are you" in Portuguese, Hungarian, Spanish, French, German, Italian get a
+    // reply in that language, honestly (the answer engine replies in the asker's language; some pages are still English).
+    const SPEAKS = [
+      ['pt', /^(voc[eê]\s+)?(fala|falas)\s+portugu[eê]s|^portugu[eê]s\s*\?$/, 'Sim! Escreva em português: eu respondo o melhor que posso. Algumas páginas ainda saem em inglês.'],
+      ['hu', /(tudsz|beszélsz|beszelsz)\s+magyarul|^magyarul\s*\?$/, 'Igen! Írj magyarul: válaszolok, ahogy tudok. Néhány oldal még angolul jelenik meg.'],
+      ['es', /(hablas|habla|hablan)\s+(español|espanol)|^(español|espanol)\s*\?$/, '¡Sí! Escribe en español: respondo lo mejor que puedo. Algunas páginas todavía salen en inglés.'],
+      ['fr', /(tu\s+parles|parlez[- ]vous|parles[- ]tu)\s+(français|francais)/, 'Oui ! Écris en français : je réponds du mieux que je peux. Certaines pages sont encore en anglais.'],
+      ['de', /(sprichst\s+du|sprechen\s+sie)\s+deutsch/, 'Ja! Schreib auf Deutsch: ich antworte, so gut ich kann. Manche Seiten sind noch auf Englisch.'],
+      ['it', /(parli|parla)\s+italiano/, 'Sì! Scrivi in italiano: rispondo come posso. Alcune pagine sono ancora in inglese.'],
+    ];
+    const WHAT_ARE_YOU = [
+      [/^(o\s*q(ue)?|oq)\s+([eé]|es)\s+voc[eê]|^quem\s+([eé]|es)\s+voc[eê]/, 'Eu sou o Void: peça qualquer coisa e ela aparece aqui.'],
+      [/^(mi|ki)\s+vagy(\s+te)?$/, 'Én vagyok a Void: kérj bármit, és itt megjelenik.'],
+      [/^(qu[eé]|qui[eé]n)\s+eres(\s+t[uú])?$/, 'Soy Void: pide cualquier cosa y aparece aquí.'],
+      [/^(qu'?est[- ]ce\s+que\s+tu\s+es|qui\s+es[- ]tu|tu\s+es\s+qui)$/, 'Je suis Void : demande n’importe quoi et ça apparaît ici.'],
+      [/^(was|wer)\s+bist\s+du$/, 'Ich bin Void: frag nach irgendwas, und es erscheint hier.'],
+      [/^(chi|cosa)\s+sei(\s+tu)?$/, 'Sono Void: chiedi qualsiasi cosa e appare qui.'],
+    ];
+    async function showApiPage(lead) {
+      const el = showPage((p) => { p.innerHTML = '<h2>Void\'s API</h2><div class="sub">…</div>'; });
+      let t = null; try { t = await fetch('/tools.json').then((r) => r.json()); } catch (_) {}
+      if (vpageEl !== el) return;
+      const tools = (t && t.tools) || [];
+      el.innerHTML = '<h2>Void\'s API</h2>' + (lead ? '<p style="font-size:17px;margin:4px 0 10px">' + esc(lead) + '</p>' : '')
+        + '<div class="sub">Anything you can type here, a program can ask too.</div>'
+        + '<ul><li><b>Ask in plain words</b> <span style="color:#9a9a9a">— open ' + esc(location.origin) + '/?q=your ask</span></li>'
+        + '<li><b>The tool list</b> <span style="color:#9a9a9a">— <a href="/tools.json" target="_blank" rel="noopener">/tools.json</a>' + (tools.length ? ' · ' + esc(tools.length) + ' tools: ' + tools.map((x) => esc(x.name)).join(', ') : '') + '</span></li>'
+        + '<li><b>Browser agents</b> <span style="color:#9a9a9a">— the same tools over WebMCP, where the browser supports it</span></li>'
+        + '<li><b>Files by link</b> <span style="color:#9a9a9a">— <a href="/handoff" target="_blank" rel="noopener">/handoff</a></span></li></ul>'
+        + '<div class="src">Source: <a href="/tools.json" target="_blank" rel="noopener">/tools.json</a>, built live from Void\'s skills</div>';
+    }
+    // one or two typed words that mean a known ask, typos included (edit distance ≤ 2 for longer words)
+    const SHORT_ASKS = { notes: 'open a notepad', note: 'open a notepad', notepad: 'open a notepad', 'world map': 'map of the world', worldmap: 'map of the world', 'world clock': 'world clock', worldclock: 'world clock' };
+    function editDistance(a, b) {
+      const d = Array.from({ length: a.length + 1 }, (_, i) => [i]);
+      for (let j = 1; j <= b.length; j++) d[0][j] = j;
+      for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
+      return d[a.length][b.length];
+    }
+    function shortAsk(lower) {
+      const w = lower.replace(/[?.!]+$/, '').trim();
+      if (!w || w.split(/\s+/).length > 2) return null;
+      if (SHORT_ASKS[w]) return SHORT_ASKS[w];
+      if (w.length < 6) return null;
+      let best = null, bd = 3;
+      for (const k of Object.keys(SHORT_ASKS)) { const dd = editDistance(w, k); if (dd < bd && dd <= 2) { bd = dd; best = SHORT_ASKS[k]; } }
+      return best;
+    }
+    async function handleGrownAsk(text, lower0) {
+      const l = lower0.replace(/\s+/g, ' ').trim();
+      for (const [lang, re, line] of SPEAKS) if (re.test(l)) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'speaks ' + lang }); return true; }
+      for (const [re, line] of WHAT_ARE_YOU) if (re.test(l.replace(/[?.!]+$/, ''))) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self (other language)' }); return true; }
+      if (/\bpulcs/.test(l)) { showApiPage('Pulcsim még nincs, de API-m van:'); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'api (hu)' }); return true; }
+      if (/^(the\s+|your\s+|void'?s?\s+|an?\s+)?api(\s+docs?)?\s*[?.!]?$|^(do|does)\s+(you|void)\s+have\s+an?\s+api\b|^is\s+there\s+an\s+api\b/.test(l)) { showApiPage(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'api' }); return true; }
+      if (/^(the\s+)?void\s*[?.!]?$/.test(l)) { showSelfPage(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return true; }
+      const sa = shortAsk(l); if (sa && sa !== l.replace(/[?.!]+$/, '').trim()) { await handle(sa); return true; } // an ask that maps to itself goes on normally
+      return false;
+    }
     async function handle(raw) {
       const text = (raw || '').trim();
       if (!text) return;
@@ -3846,9 +3905,11 @@ return { ok: true, detail: 'timer-reset' };
       if (vpageEl && /^(close|close it|close this|go away|dismiss|hide it|done|ok)\s*[.!]?$/.test(lower0)) { closePage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'closed' }); return; }
       // quiet one-liners: nothing to close, a greeting, a probe. No page, no Wikipedia, nothing on the miss board.
       if (!vpageEl && /^(close|close it|close this|go away|dismiss|hide it)\s*[.!]?$/.test(lower0)) { say('nothing open'); return; }
-      if (/^(hi|hello|hey|hiya|yo|ola|olá|hola|good\s+(morning|afternoon|evening))(\s+(there|void))?\s*[.!]*$/.test(lower0)) { say('hi. ask for anything'); return; }
-      if (/^(test|testing|probe|ping|ping-test|research probe|test miss from research|asdf+|qwerty|zz+q*x*)\s*[.!?]*$/.test(lower0) || /^[bcdfghjklmnpqrstvwxz]{4,8}$/.test(lower0)) { say(''); return; }
+      if (/^(hi|hello|hey|hiya|yo|sup|wassup|wazzup|what'?s\s+up|whats\s+up|ola|olá|oi|hola|szia|hallo|bonjour|salut|ciao|hej|good\s+(morning|afternoon|evening))(\s+(there|void))?\s*[.!?]*$/.test(lower0)) { say('hi. ask for anything'); return; }
+      if (/^(test|testing|probe|ping|ping-test|research probe|test miss from research|asdf+|qwerty|zz+q*x*)\s*[.!?]*$/.test(lower0) || /^[bcdfghjklmnpqrstvwxz]{4,8}$/.test(lower0)
+          || /^\/[\w-]+$/.test(lower0) || /^zz+\b.*\bprobe\b/.test(lower0)) { say(''); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
+      if (await handleGrownAsk(text, lower0)) return;
       if (vpageEl && vpageEl._ask && vpageEl._ask.toLowerCase().replace(/[?.!\s]+$/, '') === lower0.replace(/[?.!\s]+$/, '') && Date.now() - (vpageEl._at || 0) < 120000) {
         const el = vpageEl; el.classList.remove('again'); void el.offsetWidth; el.classList.add('again');
         say('same page'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'same page' }); return;
@@ -3880,6 +3941,10 @@ return { ok: true, detail: 'timer-reset' };
       }
       if (wantsArticle(lower0)) { showArticle(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'article' }); return; }
       const result = freerEnglishParse(text);
+      // one or two plain words the stage doesn't take ("brazil", "saturn"): a sourced page, and a miss only if there is none
+      if (!result.ok && /^[\p{L}][\p{L}'’ -]{1,40}$/u.test(text.trim()) && text.trim().split(/\s+/).length <= 2 && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|show|give|me|my|you|your|i)\b/.test(lower0)) {
+        showArticle('tell me about ' + text.trim()).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'short topic' }); return;
+      }
       if (!result.ok) {
         showAnswer(text).then((src) => reportMiss(text, src || 'none')); attachProductTail(text);
         loopLog({ domain: 'void.page', ask: text, score: 'fallback', note: 'article fallback' });

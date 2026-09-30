@@ -46,6 +46,13 @@ async function run(text, api) {
   const place = dir || placeOf(text);
   if (!place) return 'none';
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(place) + '</h2><div class="sub">…</div>'; });
+  // the whole world: no lookup, the full map
+  if (/^(the\s+)?(world|earth|globe|planet)$/i.test(place.trim())) {
+    el.innerHTML = '<h2>The world</h2>'
+      + '<iframe title="map" src="https://www.openstreetmap.org/export/embed.html?bbox=-170,-58,170,75&amp;layer=mapnik" style="width:100%;height:340px;border:0;border-radius:10px;margin:8px 0;filter:saturate(.85)" loading="lazy"></iframe>'
+      + '<div class="src">Source: <a href="https://www.openstreetmap.org/#map=2/20/0" target="_blank" rel="noopener">OpenStreetMap</a></div>';
+    return 'place';
+  }
   try {
     const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&name=' + encodeURIComponent(place)).then((r) => r.json());
     if (!api._pageStill(el)) return 'place';

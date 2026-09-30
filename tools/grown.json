@@ -1,0 +1,16 @@
+[
+  { "ask": "fala portugues", "missed": "2026-09-30", "now": "answers in Portuguese that it understands Portuguese", "expect": "page", "text": "Escreva em português" },
+  { "ask": "oq e voce", "missed": "2026-09-30", "now": "says what Void is, in Portuguese", "expect": "page", "text": "Eu sou o Void" },
+  { "ask": "tudsz magyarul?", "missed": "2026-09-28", "now": "answers in Hungarian that it understands Hungarian", "expect": "page", "text": "Írj magyarul" },
+  { "ask": "api pulcsod van ?", "missed": "2026-09-28", "now": "no hoodie yet, but here is the API (in Hungarian)", "expect": "page", "text": "API-m van" },
+  { "ask": "api", "missed": "2026-09-30", "now": "Void's API page: plain-words asks, /tools.json, WebMCP, /handoff", "expect": "page", "text": "Void's API" },
+  { "ask": "your api", "missed": "2026-09-30", "now": "Void's API page", "expect": "page", "text": "Void's API" },
+  { "ask": "brazil", "missed": "2026-09-30", "now": "a sourced page about it (one or two plain words is a topic)", "expect": "page", "text": "Source" },
+  { "ask": "sup", "missed": "2026-09-30", "now": "a quiet hello", "expect": "say", "text": "hi" },
+  { "ask": "worldma", "missed": "2026-09-29", "now": "the world map (typo understood)", "expect": "page", "text": "The world" },
+  { "ask": "calender", "missed": "2026-09-28", "now": "your calendar (typo understood)", "expect": "stage", "text": "calendar" },
+  { "ask": "void", "missed": "2026-09-28", "now": "what Void is", "expect": "page", "text": "Ask, and it appears" },
+  { "ask": "notes", "missed": "2026-09-28", "now": "opens a notepad", "expect": "stage", "text": "notepad" },
+  { "ask": "/force-tick", "missed": "2026-09-28", "now": "a probe, dropped quietly", "expect": "quiet" },
+  { "ask": "zz kv write probe 7", "missed": "2026-09-27", "now": "a probe, dropped quietly", "expect": "quiet" }
+]
