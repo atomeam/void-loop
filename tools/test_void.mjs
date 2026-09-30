@@ -664,6 +664,22 @@ try {
       && /url\.pathname === '\/'/.test(sw) && !P.errors.length,
       JSON.stringify({ shown, meta, idInUrl, nf, card, heads, errors: P.errors }));
     await P.ctx.close(); }
+  // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
+  // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
+  { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
+    const R = await fresh(); const miss = [];
+    R.p.on('request', (r) => { if (/\/api\/miss$/.test(r.url())) miss.push(r.url()); });
+    for (const g of grown) {
+      await R.p.goto(base); await R.p.waitForTimeout(500); await R.p.evaluate(() => localStorage.clear());
+      const n0 = miss.length; await R.ask(g.ask, 1300);
+      const pg = await R.page(), w = await R.whisper(), st = (await R.state()).map((x) => x.kind).join(',');
+      const hit = g.expect === 'page' ? pg.includes(g.text) : g.expect === 'say' ? w.includes(g.text) : g.expect === 'stage' ? st.includes(g.text) : !pg && !st;
+      if (miss.length !== n0 || !hit) bad.push(g.ask + ' -> ' + (miss.length !== n0 ? 'MISS ' : '') + JSON.stringify({ pg: pg.slice(0, 60), w, st }));
+    }
+    const shape = grown.every((g) => g.ask && /^2026-\d\d-\d\d$/.test(g.missed) && g.now && ['page', 'say', 'stage', 'quiet'].includes(g.expect) && (g.expect === 'quiet' || g.text));
+    check('grown: ' + grown.length + ' real asks Void once missed now answer on the real page (no miss posted, the right answer); the list only grows',
+      shape && !bad.length && grown.length >= 14 && !R.errors.length, bad.join(' | ') + ' ' + R.errors.join('|'));
+    await R.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
