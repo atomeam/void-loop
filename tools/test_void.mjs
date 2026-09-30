@@ -615,6 +615,14 @@ try {
       && merged.find((x) => /paris/i.test(x.ask)).count === 2 && missKey('class') === 'class' && missKey('Whats a black hole') === 'black hole',
       JSON.stringify(merged));
   }
+  // The owner's board shows what Void has earned and its milestones (they used to be "never on screen", even to the owner).
+  { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    await O.ctx.route(/\/api\/misses$/, (r) => r.fulfill(json([{ ask: 'make me an app', count: 2, last: '2026-09-30', fallback: 'answer' }])));
+    await O.ctx.route(/\/api\/earnings$/, (r) => r.fulfill(json(/owner-k/.test(r.request().headers().authorization || '') ? { earned_cents: 9800, refunded_cents: 0, sales: 2, milestones: [{ id: 'sales-1', at: '2026-10-02T10:00:00Z' }], shortfalls_7d: { total: 3, by: [] } } : {})));
+    await O.ask('show the board', 900); const bp = await O.page();
+    check('owner board: what Void earned (net, sales), its milestones and the free-model shortfalls sit on top of the board',
+      /Earned \$98\.00/.test(bp) && /2 sales/.test(bp) && /sales-1/.test(bp) && /fell short 3 times/.test(bp) && /make me an app/.test(bp) && !O.errors.length, bp.slice(0, 200));
+    await O.ctx.close(); }
   // How-to asks, "what are you", "remove every clock", "reset my void" (list items 48, 88, 89, 96).
   { const H = await fresh(); const net = []; H.p.on('request', (r) => { if (/wikipedia\.org|\/api\/(answer|miss)$/.test(r.url())) net.push(r.url()); });
     await H.ask('how do I make a timer', 700); const how = await H.page(); const lit = await H.p.$eval('.vpage.on li.focus', (e) => e.textContent).catch(() => '');
@@ -778,7 +786,7 @@ try {
   check('WebMCP: agents cannot sign in or forget anyone (item 6)', idAsks.every((x) => /person at the screen/.test(x)), idAsks.join(' | '));
   const paidAgent = await t.p.evaluate(async () => { const out = []; for (const a of ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'raise my confirm cap', 'buy paid void']) out.push(await window.__tools.void_ask.execute({ ask: a })); return out; });
   const toolText = await t.p.evaluate(() => JSON.stringify(Object.values(window.__tools).map((d) => [d.name, d.description])));
-  check('WebMCP: paid Void asks are refused to agents and never listed (item 12)', paidAgent.every((x) => x === 'Paid Void is for the person at the screen, asked by hand.') && !/\$\d|price|pricing|upgrade|premium|paid|subscri|gumroad|checkout/i.test(toolText) && t.errors.length === 0, paidAgent.join(' | ') + ' ' + toolText.slice(0, 120));
+  check('WebMCP: a paid Void ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout', paidAgent.every((x) => /^Paid Void (is \$49 a month|adds)/.test(x) && /remember me/.test(x)) && t.ctx.pages().length === 1 && t.errors.length === 0, paidAgent.join(' | ').slice(0, 300));
   await t.ctx.close();
 
   // Plan item 12: paid Void and Atom's store. A fresh visit is the void; a paid ask gets the price and how to buy.

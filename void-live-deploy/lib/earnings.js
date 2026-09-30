@@ -15,7 +15,7 @@ export function parsePing(text) {
   return o;
 }
 
-// Milestones: each one is recorded once, the first time earned crosses it, with a note for Atom (never on screen).
+// Milestones: each one is recorded once, the first time earned crosses it, with a note for Atom (on the owner's board).
 // Before anything new gets built for a milestone, check whether an existing tool already does it; here Gumroad does.
 export const MILESTONES = [
   // Gumroad's own store assistant (the 'Agent' tab, antiwork/gumroad app/models/user.rb eligible_for_store_agent?) opens when the

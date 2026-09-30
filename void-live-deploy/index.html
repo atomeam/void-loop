@@ -3115,8 +3115,13 @@ return { ok: true, detail: 'timer-reset' };
         const r = await fetch('/api/misses', { headers: { authorization: 'Bearer ' + tok } });
         if (r.status === 401) { el.innerHTML = '<h2>The board</h2><p>That key didn\'t open it.</p>'; return; }
         const rows = await r.json();
+        let earn = null; try { const er = await fetch('/api/earnings', { headers: { authorization: 'Bearer ' + tok } }); if (er.ok) earn = await er.json(); } catch (_) {}
         if (vpageEl !== el) return;
-        el.innerHTML = '<h2>The board</h2><div class="sub">What people asked that Void can\'t answer yet · most asked first</div>'
+        const $ = (c) => '$' + ((+c || 0) / 100).toFixed(2);
+        const earnLine = earn && earn.earned_cents != null ? '<p class="earn" style="margin:4px 0 10px"><b>Earned ' + esc($(earn.earned_cents)) + '</b> <span style="color:#9a9a9a">net from ' + esc(earn.sales || 0) + ' sale' + (earn.sales === 1 ? '' : 's') + (earn.refunded_cents ? ' · ' + esc($(earn.refunded_cents)) + ' refunded' : '') + '</span>'
+          + ((earn.milestones || []).length ? '<br><span style="color:#9a9a9a">milestones: ' + earn.milestones.map((m) => esc(m.id) + ' (' + esc(String(m.at || '').slice(0, 10)) + ')').join(' · ') + '</span>' : '')
+          + (earn.shortfalls_7d && earn.shortfalls_7d.total ? '<br><span style="color:#9a9a9a">the free model fell short ' + esc(earn.shortfalls_7d.total) + ' times this week</span>' : '') + '</p>' : '';
+        el.innerHTML = '<h2>The board</h2>' + earnLine + '<div class="sub">What people asked that Void can\'t answer yet · most asked first</div>'
           + (rows.length ? '<ul>' + rows.slice(0, 40).map((x) => '<li><b>' + esc(x.count) + '×</b> ' + esc(x.ask) + ' <span style="color:#6a6a6a">· ' + esc((x.last || '').slice(0, 10)) + (x.fallback ? ' · ' + esc(x.fallback) : '') + '</span>' + (x.variants && x.variants.length ? '<div style="color:#6a6a6a;font-size:12px">also asked as: ' + x.variants.map(esc).join(' · ') + '</div>' : '') + '</li>').join('') + '</ul>' : '<p>Nothing missed yet.</p>');
       } catch (_) { if (vpageEl === el) el.innerHTML = '<h2>The board</h2><p>The board didn\'t answer just now.</p>'; }
     }
@@ -3763,11 +3768,14 @@ return { ok: true, detail: 'timer-reset' };
       if (!me || !me.token) return 'free';
       try { const r = await pkCall('tier'); return r.status === 200 && r.body && r.body.tier === 'paid' ? 'paid' : 'free'; } catch (_) { return 'free'; }
     }
+    async function paidLine() { // what paid Void costs and adds, from the live store
+      const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
+      return vm && vm.available !== false ? 'Paid Void is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Void adds ' + PAID_ADDS;
+    }
     async function handlePaidAsk(lower) {
       if (!isPaidAsk(lower)) return false;
       if (!me || !me.token) { // signed out: the price and what it adds, then how to buy (the purchase attaches to your Void's passkey)
-        const { g: g0, products: p0 } = await storeCatalog(); const vm0 = g0 ? p0.find((p) => g0.isUnlock(p)) : null;
-        say((vm0 && vm0.available !== false ? 'Paid Void is ' + g0.priceText(vm0) + ': ' + PAID_ADDS : 'Paid Void adds ' + PAID_ADDS) + ' · say “remember me” first, then ask again to buy');
+        say((await paidLine()) + ' · say “remember me” first, then ask again to buy');
         loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
       if ((await meTier()) === 'paid') { say('your Void is paid: ' + PAID_ADDS); return true; }
       const { g, products } = await storeCatalog();
@@ -4224,7 +4232,7 @@ return { ok: true, detail: 'timer-reset' };
       if (!ask) return 'Say what you want in plain words, e.g. "weather in Tokyo".';
       if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the owner, typed by hand.';
       if (isMeAsk(ask.toLowerCase())) return 'Passkeys and sign-in are for the person at the screen, asked by hand.';
-      if (isPaidAsk(ask)) return 'Paid Void is for the person at the screen, asked by hand.';
+      if (isPaidAsk(ask)) return (await paidLine()) + '. The person buys it in their own browser: say "remember me", then "buy paid void".'; // the answer, never a checkout
       // Defences (runaway agents): an agent can never answer the confirm line or "forget me" for the person, never start a
       // send, booking or spend, and never read the owner's board. Those are for the person at the screen, by hand.
       if (pendingConfirm || pendingForget || pendingPublish) return 'Void is waiting for the person at the screen to answer. Agents can\'t answer for them.';
