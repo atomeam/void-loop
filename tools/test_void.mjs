@@ -676,9 +676,15 @@ try {
       const hit = g.expect === 'page' ? pg.includes(g.text) : g.expect === 'say' ? w.includes(g.text) : g.expect === 'stage' ? st.includes(g.text) : !pg && !st;
       if (miss.length !== n0 || !hit) bad.push(g.ask + ' -> ' + (miss.length !== n0 ? 'MISS ' : '') + JSON.stringify({ pg: pg.slice(0, 60), w, st }));
     }
+    // the two-step app: "make me an app", then what it should do; and one line that says it all at once
+    await R.p.goto(base); await R.p.waitForTimeout(500); await R.p.evaluate(() => localStorage.clear());
+    await R.ask('make me an app', 600); await R.ask('something for my groceries and a timer', 900);
+    const two = (await R.state()).map((x) => x.kind).sort().join(','), twoSay = await R.whisper();
+    await R.ask('build me a pomodoro app with notes', 900); const one = (await R.state()).map((x) => x.kind).sort().join(',');
+    if (two !== 'list,timer' || !/built: a list \+ a timer/.test(twoSay) || one !== 'list,notepad,timer,timer') bad.push('app -> ' + JSON.stringify({ two, twoSay, one }));
     const shape = grown.every((g) => g.ask && /^2026-\d\d-\d\d$/.test(g.missed) && g.now && ['page', 'say', 'stage', 'quiet'].includes(g.expect) && (g.expect === 'quiet' || g.text));
     check('grown: ' + grown.length + ' real asks Void once missed now answer on the real page (no miss posted, the right answer); the list only grows',
-      shape && !bad.length && grown.length >= 14 && !R.errors.length, bad.join(' | ') + ' ' + R.errors.join('|'));
+      shape && !bad.length && grown.length >= 15 && !R.errors.length, bad.join(' | ') + ' ' + R.errors.join('|'));
     await R.ctx.close(); }
   await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');

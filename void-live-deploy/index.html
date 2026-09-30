@@ -3881,8 +3881,53 @@ return { ok: true, detail: 'timer-reset' };
       for (const k of Object.keys(SHORT_ASKS)) { const dd = editDistance(w, k); if (dd < bd && dd <= 2) { bd = dd; best = SHORT_ASKS[k]; } }
       return best;
     }
+    // "make me an app": Void builds small apps from its stage parts. It asks what the app should do (or reads it from the ask),
+    // then builds it. What it can't build yet goes on the board as that real want, not as "make me an app".
+    const APP_PARTS = [
+      [/\b(to-?do|todo|tasks?|checklist|list|groceries|grocery|shopping|packing|habits?)\b/, 'make a list', 'a list'],
+      [/\b(timer|pomodoro|countdown|focus|workout|interval|stopwatch|cooking)\b/, 'make a 25 minute timer', 'a timer'],
+      [/\b(notes?|journal|diary|notepad|writing|ideas?)\b/, 'open a notepad', 'a notepad'],
+      [/\b(counter|count|tally|score(board)?|clicker|habit count)\b/, 'make a counter', 'a counter'],
+      [/\b(calculator|calc|math|budget|sums?|tip)\b/, 'make a calculator', 'a calculator'],
+      [/\b(clock|time)\b/, 'make a clock', 'a clock'],
+    ];
+    let pendingApp = false;
+    const APP_ASK = /^(?:please\s+)?(?:can\s+you\s+|could\s+you\s+)?(?:make|build|create|code|write)\s+(?:me\s+)?(?:an?\s+)?(?:simple\s+|little\s+|small\s+)?(.{0,40}?)\s*(?:web\s*)?app\b(.*)$/;
+    async function buildApp(desc, text) {
+      const parts = APP_PARTS.filter(([re]) => re.test(desc));
+      if (!parts.length) return false;
+      for (const [, ask] of parts) await handle(ask);
+      say('built: ' + parts.map((x) => x[2]).join(' + ') + '. keep adding to it');
+      loopLog({ domain: 'void.surface', ask: text, score: 'pass', note: 'app: ' + parts.map((x) => x[2]).join('+') });
+      return true;
+    }
+    async function handleAppAsk(text, l) {
+      if (pendingApp) {
+        pendingApp = false;
+        if (await buildApp(l, text)) { closePage(); return true; }
+        if (/^(an?\s+|one\s+that|it\s+(should|would|does|can)|something\s+(that|to|for)|for\s+|to\s+)/.test(l)) {
+          const el = showPage((p) => { p.innerHTML = '<h2>Not yet</h2><p>I can\'t build that app yet. I\'ve noted it, so I can learn it. Right now I can make a to-do list, a timer, a notepad, a counter, a calculator or a clock, and you can put several together.</p>'; });
+          reportMiss('app: ' + text, 'app'); return !!el;
+        }
+        return false; // they asked something else: carry on normally
+      }
+      const m = l.replace(/[?.!]+$/, '').match(APP_ASK);
+      if (!m) return false;
+      const desc = ((m[1] || '') + ' ' + (m[2] || '')).trim();
+      if (desc) return buildApp(desc, text); // "a weather app" that isn't built from stage parts carries on to the skill that does it
+      pendingApp = true;
+      showPage((p) => {
+        p.innerHTML = '<h2>What should it do?</h2><div class="sub">Tell me in a few words, or pick one. I build it from parts on the stage, and you can keep adding.</div>'
+          + '<ul class="choices">' + [['a to-do list', 'a to-do app'], ['a focus timer', 'a pomodoro app'], ['notes', 'a notes app'], ['a tally counter', 'a counter app'], ['a budget calculator', 'a budget app']]
+            .map(([label, ask]) => '<li><a href="#" data-ask="' + esc('make me ' + ask) + '">' + esc(label) + '</a></li>').join('') + '</ul>';
+      });
+      say('what should it do?');
+      loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'app: asked what it should do' });
+      return true;
+    }
     async function handleGrownAsk(text, lower0) {
       const l = lower0.replace(/\s+/g, ' ').trim();
+      if (await handleAppAsk(text, l)) return true;
       for (const [lang, re, line] of SPEAKS) if (re.test(l)) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'speaks ' + lang }); return true; }
       for (const [re, line] of WHAT_ARE_YOU) if (re.test(l.replace(/[?.!]+$/, ''))) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self (other language)' }); return true; }
       if (/\bpulcs/.test(l)) { showApiPage('Pulcsim még nincs, de API-m van:'); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'api (hu)' }); return true; }
