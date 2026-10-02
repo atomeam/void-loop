@@ -127,5 +127,9 @@
   {"ask": "define ephemeral", "want": "skill:define"},
   {"ask": "translate good morning to french", "want": "skill:translate"},
   {"ask": "chicken recipes", "want": "skill:recipe"},
-  {"ask": "how far is new york from boston", "want": "skill:distance"}
+  {"ask": "how far is new york from boston", "want": "skill:distance"},
+  {"ask": "books by octavia butler", "want": "skill:book"},
+  {"ask": "tv show severance", "want": "skill:show"},
+  {"ask": "nba team celtics", "want": "skill:sport"},
+  {"ask": "public holidays in japan", "want": "skill:holidays"}
 ]

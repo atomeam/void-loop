@@ -1736,6 +1736,15 @@ try {
   const nm = NEAR.map((a) => [a, route(a)]);
   check('router: near-misses (skill words in a question, any language; a proof about square roots) never route to a skill',
     nm.every(([, d]) => d.kind !== 'skill'), nm.map(([a, d]) => a.slice(0, 26) + '=' + d.kind + (d.skill ? ':' + d.skill : '')).join(' | '));
+  
+  const newSkills = ['book', 'show', 'sport', 'holidays'];
+  for (const name of newSkills) {
+    const mod = tdMods.find((s) => s.name === name);
+    check(name + ': listed with examples and near misses; examples route only to it',
+      !!mod && mod.examples.length >= 4 && (mod.nearMisses || []).length >= 3 && mod.examples.every((e) => firstTd(e) === name) && mod.nearMisses.every((e) => firstTd(e) !== name),
+      mod ? mod.examples.map((e) => e + ' -> ' + firstTd(e)).join(' | ') : 'missing ' + name);
+  }
+
   const wtMod = (await import(new URL('../void-live-deploy/skills/worldtime.js', import.meta.url).href)).default;
   const otherSkillAsks = new Set(Object.entries(R.SKILLS).filter(([n]) => n !== 'worldtime').flatMap(([, v]) => v.examples));
   const wtNear = wtMod.nearMisses.filter((a) => !otherSkillAsks.has(a) && !/timer|clock/.test(a));
