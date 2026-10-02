@@ -131,5 +131,6 @@
   {"ask": "books by octavia butler", "want": "skill:book"},
   {"ask": "tv show severance", "want": "skill:show"},
   {"ask": "nba team celtics", "want": "skill:sport"},
-  {"ask": "public holidays in japan", "want": "skill:holidays"}
+  {"ask": "public holidays in japan", "want": "skill:holidays"},
+  {"ask": "find me work as a designer", "want": "skill:work"}
 ]
