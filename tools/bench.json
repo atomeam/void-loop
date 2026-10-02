@@ -80,5 +80,20 @@
   {"ask": "round 3.14159 to 2 decimals", "want": "calc"},
   {"ask": "what is 3/4 as a percent", "want": "calc"},
   {"ask": "days between march 1 and april 15", "want": "calc"},
-  {"ask": "lorem ipsum", "want": "skill:util"}
+  {"ask": "lorem ipsum", "want": "skill:util"},
+  {"ask": "what is a 20% tip on 45", "want": "calc"},
+  {"ask": "split 120 between 4 people", "want": "calc"},
+  {"ask": "convert 30 celsius to fahrenheit", "want": "calc"},
+  {"ask": "what day of the week is july 4 2027", "want": "calc|today"},
+  {"ask": "synonym for happy", "want": "skill:words"},
+  {"ask": "capital of canada", "want": "skill:country"},
+  {"ask": "how far is paris from berlin", "want": "skill:distance"},
+  {"ask": "set a timer for 10 minutes", "want": "timer"},
+  {"ask": "square root of 144", "want": "calc"},
+  {"ask": "convert 5 km to miles", "want": "calc"},
+  {"ask": "roll a die", "want": "chance"},
+  {"ask": "random number between 1 and 100", "want": "chance"},
+  {"ask": "2 to the power of 10", "want": "calc"},
+  {"ask": "how many weeks in a year", "want": "calc"},
+  {"ask": "what is the date today", "want": "today"}
 ]
