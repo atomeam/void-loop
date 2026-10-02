@@ -2976,6 +2976,12 @@ return { ok: true, detail: 'timer-reset' };
       if (m) { const n = +(m[1] || m[2]); if (n > 170) return null; let v = 1; for (let i = 2; i <= n; i++) v *= i; const shown = v >= 1e15 ? v.toExponential(6) : v.toLocaleString(); return { value: shown, note: n + '! = ' + shown }; }
       m = t.match(/^(-?\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+of\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = +(+m[1] / 100 * +m[2]).toPrecision(12); return { value: v.toLocaleString(), note: m[1] + '% of ' + m[2] }; }
+      m = t.match(/^is\s+(\d{4})\s+a\s+leap\s+year$/);
+      if (m) { const y = +m[1], leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; return { value: leap ? 'Yes' : 'No', note: y + (leap ? ' is a leap year (366 days).' : ' is not a leap year (365 days).') }; }
+      m = t.match(/^how\s+many\s+days\s+(?:are\s+)?(?:there\s+)?in\s+([a-z]+)(?:\s+(\d{4}))?$/);
+      if (m && CALC_MONTHS[m[1]] != null) { const y = m[2] ? +m[2] : new Date().getFullYear(), n = new Date(y, CALC_MONTHS[m[1]] + 1, 0).getDate(); return { value: String(n), note: n + ' days in ' + new Date(y, CALC_MONTHS[m[1]], 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) }; }
+      m = t.match(/^what\s+time\s+(?:will\s+it\s+be|is\s+it)\s+in\s+(\d{1,4})\s+(hours?|hrs?|minutes?|mins?)$/);
+      if (m) { const d = new Date(Date.now() + +m[1] * (/^h/.test(m[2]) ? 36e5 : 6e4)); return { value: d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), note: 'in ' + m[1] + ' ' + m[2] + ', ' + d.toLocaleDateString([], { weekday: 'long' }) }; }
       m = t.match(/^(?:split|divide)\s+[$€£]?(\d+(?:\.\d+)?)\s+(?:between|among|amongst|by|into|for)\s+(\d{1,4})(?:\s+(?:people|persons|ways|friends|of\s+us))?$/);
       if (m && +m[2] > 0) { const v = +m[1] / +m[2]; return { value: v.toFixed(2).replace(/\.00$/, ''), note: m[1] + ' split ' + m[2] + ' ways' + (Math.round(v * 100) / 100 * +m[2] !== +m[1] ? ' (rounded to the cent)' : '') }; }
       m = t.match(/^(?:what\s+)?day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?([a-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s*(\d{4}))?$/);
@@ -4073,6 +4079,9 @@ return { ok: true, detail: 'timer-reset' };
     const bigPage = (title, big, note) => showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : ''); });
     async function handleGrownAsk(text, lower0) {
       const l = lower0.replace(/\s+/g, ' ').trim();
+      { const w = l.replace(/[?.!]+$/, '').match(/^how\s+many\s+(days|weeks|months)\s+(?:until|till|til|to|before)\s+(.+)$/), h = w && holidayOf('when is ' + w[2]);
+        if (h) { const n = w[1] === 'days' ? h.days : w[1] === 'weeks' ? Math.round(h.days / 7 * 10) / 10 : Math.round(h.days / 30.44 * 10) / 10;
+          bigPage(h.name, n + ' ' + w[1], h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + ' · ' + h.days + ' day' + (h.days === 1 ? '' : 's')); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
       { const h = holidayOf(l); if (h) { bigPage(h.name, h.d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }), h.days === 0 ? 'today' : 'in ' + h.days + ' day' + (h.days === 1 ? '' : 's')); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'holiday' }); return true; } }
       { const a = ageOf(l); if (a) { bigPage('Age', a.big, a.note); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'age' }); return true; } }
       { const u = untilOf(l); if (u) { bigPage('Time until', u.big, u.note); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'timeuntil' }); return true; } }
