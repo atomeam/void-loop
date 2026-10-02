@@ -3,10 +3,35 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "news today", "what's in the news", "headlines".
  */
+// "tech news", "technology news today", "hacker news": the Hacker News front page (Algolia API, no key). Other topics
+// (sports, business…) have no keyless source yet, so they are not claimed.
+export function isTechNews(text) {
+  return /^(?:(?:show\s+me\s+|give\s+me\s+)?(?:the\s+|today'?s\s+|latest\s+)?(?:tech|technology|hacker|startup|programming)\s+(?:news|headlines)(?:\s+today|\s+now|\s+please)?|what'?s\s+new\s+in\s+tech(?:nology)?)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+}
+async function runTech(api) {
+  const { showPage, esc } = api;
+  const el = showPage((p) => { p.innerHTML = '<h2>Tech news</h2><div class="sub">…</div>'; });
+  try {
+    const j = await fetch('https://hn.algolia.com/api/v1/search?tags=front_page&hitsPerPage=10').then((r) => r.json());
+    if (!api._pageStill(el)) return 'news';
+    const items = ((j && j.hits) || []).filter((h) => h.title).slice(0, 10);
+    if (!items.length) throw 0;
+    el.innerHTML = '<h2>Tech news</h2><div class="sub">Hacker News front page, now</div><ul>'
+      + items.map((h) => { const u = /^https:\/\//.test(h.url || '') ? h.url : 'https://news.ycombinator.com/item?id=' + encodeURIComponent(h.objectID || '');
+        return '<li style="margin:6px 0"><a href="' + esc(u) + '" target="_blank" rel="noopener">' + esc(h.title) + '</a> <span style="color:#8a8a8a">· ' + esc(String(h.points || 0)) + ' points</span></li>'; }).join('') + '</ul>'
+      + '<div class="src">Source: <a href="https://news.ycombinator.com/" target="_blank" rel="noopener">Hacker News</a></div>';
+    return 'news';
+  } catch (_) {
+    if (!api._pageStill(el)) return 'none';
+    el.innerHTML = '<h2>Tech news</h2><p>The tech news feed didn\'t answer just now. Ask again in a moment.</p>';
+    return 'none';
+  }
+}
 export function isNews(text) {
   return /^(?:(?:show\s+me\s+|give\s+me\s+)?(?:the\s+|today'?s\s+)?(?:(?:latest|breaking|world|top|recent)\s+)?(?:news|headlines|top\s+stories)(?:\s+today|\s+now|\s+please)?|what'?s\s+(?:in\s+the\s+news|happening(?:\s+in\s+the\s+world)?(?:\s+today)?)|what\s+is\s+in\s+the\s+news(?:\s+today)?|any\s+news)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 async function run(text, api) {
+  if (isTechNews(text)) return runTech(api);
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>In the news</h2><div class="sub">…</div>'; });
   const strip = (h) => { const d = document.createElement('div'); d.innerHTML = h || ''; return d.textContent.replace(/\s+/g, ' ').trim(); };
@@ -28,8 +53,8 @@ async function run(text, api) {
 }
 export default {
   name: 'news',
-  examples: ['news today', 'what\'s in the news', 'headlines', 'latest news'],
+  examples: ['news today', 'what\'s in the news', 'headlines', 'latest news', 'tech news'],
   nearMisses: ['what is fake news', 'news anchor jobs', 'history of newspapers'],
-  match(lower, text) { return isNews(text); },
+  match(lower, text) { return isNews(text) || isTechNews(text); },
   run
 };

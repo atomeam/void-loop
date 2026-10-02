@@ -108,5 +108,25 @@
     ],
     "sha256": "8e66092c9d7eb6703027072eb4b88b5db02c7ed57c70b2fc8b42f8f8084bdf25",
     "emit": false
+  },
+  {
+    "run": 5,
+    "at": "2026-10-02T19:41:55Z",
+    "family": "quiet-signal-filter",
+    "draft": "drafts/fringe/quiet-signal-filter.html",
+    "sources": [
+      {
+        "claim": "Clickbait headlines share measurable surface features (forward-reference phrases, hyperbole, punctuation)",
+        "source": "https://doi.org/10.1109/ASONAM.2016.7752207",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Ranking by tone alone surfaces more useful items for a reader",
+        "source": "https://doi.org/10.1109/ASONAM.2016.7752207",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "cb64d55a4802a0732d783511d930bbe969ca8d6a0f6e923db1460f98f1c8e60b",
+    "emit": false
   }
 ]
