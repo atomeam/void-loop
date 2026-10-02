@@ -1261,6 +1261,7 @@ function wantsClearStage(lower) {
       if (/\b(remove|delete|get rid|hide)\b/.test(lower) && /\b(note|sticky)\b/.test(lower)) return false;
       if (/^(a\s+)?(sticky(\s+note)?|note)(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
       if (/\b(make|add|create|show|spawn|put|place|drop|i\s+want|give\s+me)\b.*\b(sticky(\s+note)?|note)\b/.test(lower)) return true;
+      if (/^(take|jot(\s+down)?|write)\s+(a\s+|some\s+)?notes?(\s+down)?\s*[.!]?$/.test(lower.trim())) return true;
       if (/^(another|one\s+more|a\s+new|new|a\s+second)\s+(sticky(\s+note)?|note)\b/.test(lower)) return true;
       if (/^note\s*:\s*/i.test(raw)) return true;
       if (/^sticky\s*:\s*/i.test(raw)) return true;

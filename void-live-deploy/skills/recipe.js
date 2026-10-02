@@ -7,6 +7,9 @@ export function dishOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   let m = t.match(/^(?:(?:give|show|find)\s+me\s+)?(?:a\s+)?recipes?\s+(?:for|of)\s+(.{2,40})$/i) || t.match(/^(?:a\s+)?(.{2,40}?)\s+recipes?$/i);
   if (m) return { dish: m[1].replace(/^(?:a|an|some|the)\s+/i, '').trim(), by: 'name' };
+  // "how do i make guacamole", "how to cook rice", "how to bake banana bread"; not money, friends, a website…
+  m = t.match(/^how\s+(?:do\s+(?:i|you)|to|can\s+i|should\s+i)\s+(?:make|cook|bake|prepare)\s+(?:a\s+|an\s+|some\s+|the\s+)?([a-z][a-z' -]{1,30})$/i);
+  if (m && !/\b(money|friends?|website|site|app|apps|game|games|video|account|living|difference|decisions?|choices?|sense|it|this|that|me|you|him|her|them|music|songs?|beats?|bots?|server|robot|mods?|slime|portal|potions?|paper|origami|time|love|plans?|lists?|calls?|payments?|changes?|progress|mistakes?|noise|space|room|tea\s+party|fire|soap|candles?)\b/i.test(m[1])) return { dish: m[1].trim(), by: 'name' };
   m = t.match(/^(?:recipes?|what\s+can\s+i\s+(?:make|cook))\s+with\s+(.{2,30})$/i);
   if (m) return { dish: m[1].trim(), by: 'ingredient' };
   return null;
@@ -45,8 +48,8 @@ async function run(text, api) {
 }
 export default {
   name: 'recipe',
-  examples: ['recipe for pancakes', 'lasagna recipe', 'recipes with chicken'],
-  nearMisses: ['recipe for disaster meaning', 'what is a recipe', 'who invented pizza'],
+  examples: ['recipe for pancakes', 'lasagna recipe', 'recipes with chicken', 'how do i make guacamole'],
+  nearMisses: ['recipe for disaster meaning', 'what is a recipe', 'who invented pizza', 'how do i make money', 'how to make friends'],
   match(lower, text) { return !!dishOf(text) && !/\bdisaster\b|\bsuccess\b/i.test(text); },
   run
 };

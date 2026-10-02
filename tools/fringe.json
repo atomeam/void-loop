@@ -88,5 +88,25 @@
     ],
     "sha256": "80f7880be296e2deb5581ab2ab5cf657725911c8d71d004691ca2e6f6e2f900b",
     "emit": false
+  },
+  {
+    "run": 4,
+    "at": "2026-10-02T18:41:27Z",
+    "family": "miss-board",
+    "draft": "drafts/fringe/miss-board.html",
+    "sources": [
+      {
+        "claim": "17 real board misses, each now answered and replayed in tests",
+        "source": "tools/grown.json",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Showing people what Void got wrong, and what it does now, builds more trust than hiding misses",
+        "source": "tools/grown.json",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "8e66092c9d7eb6703027072eb4b88b5db02c7ed57c70b2fc8b42f8f8084bdf25",
+    "emit": false
   }
 ]

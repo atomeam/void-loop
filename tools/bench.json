@@ -102,5 +102,17 @@
   {"ask": "make a shopping list", "want": "list"},
   {"ask": "generate a strong password", "want": "skill:util"},
   {"ask": "what is 8 ounces in grams", "want": "calc"},
-  {"ask": "what is 1 mile in feet", "want": "calc"}
+  {"ask": "what is 1 mile in feet", "want": "calc"},
+  {"ask": "how do i make guacamole", "want": "skill:recipe"},
+  {"ask": "latest news", "want": "skill:news"},
+  {"ask": "breaking news", "want": "skill:news"},
+  {"ask": "map of tokyo", "want": "skill:place"},
+  {"ask": "where is madagascar", "want": "skill:place|skill:country"},
+  {"ask": "take a note", "want": "sticky|notepad"},
+  {"ask": "add dentist appointment tomorrow at 3pm", "want": "skill:calendar"},
+  {"ask": "what time is it in sydney", "want": "skill:worldtime"},
+  {"ask": "50 euros to pounds", "want": "calc"},
+  {"ask": "what is the opposite of brave", "want": "skill:words"},
+  {"ask": "what is the currency of japan", "want": "skill:country"},
+  {"ask": "how long is a marathon in miles", "want": "answer|article|calc"}
 ]
