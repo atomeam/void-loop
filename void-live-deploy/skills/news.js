@@ -4,7 +4,7 @@
  * "news today", "what's in the news", "headlines".
  */
 export function isNews(text) {
-  return /^(?:(?:show\s+me\s+|give\s+me\s+)?(?:the\s+|today'?s\s+)?(?:news|headlines|top\s+stories)(?:\s+today|\s+now|\s+please)?|what'?s\s+(?:in\s+the\s+news|happening(?:\s+in\s+the\s+world)?(?:\s+today)?)|what\s+is\s+in\s+the\s+news(?:\s+today)?|any\s+news)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:(?:show\s+me\s+|give\s+me\s+)?(?:the\s+|today'?s\s+)?(?:(?:latest|breaking|world|top|recent)\s+)?(?:news|headlines|top\s+stories)(?:\s+today|\s+now|\s+please)?|what'?s\s+(?:in\s+the\s+news|happening(?:\s+in\s+the\s+world)?(?:\s+today)?)|what\s+is\s+in\s+the\s+news(?:\s+today)?|any\s+news)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 async function run(text, api) {
   const { showPage, esc } = api;
@@ -28,7 +28,7 @@ async function run(text, api) {
 }
 export default {
   name: 'news',
-  examples: ['news today', 'what\'s in the news', 'headlines'],
+  examples: ['news today', 'what\'s in the news', 'headlines', 'latest news'],
   nearMisses: ['what is fake news', 'news anchor jobs', 'history of newspapers'],
   match(lower, text) { return isNews(text); },
   run
