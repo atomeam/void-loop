@@ -1,0 +1,19 @@
+[
+  {
+    "run": 1,
+    "at": "2026-10-02T16:10:00Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger.html",
+    "sources": [
+      {"claim": "PURSUE UAP file releases, all unresolved cases", "source": "https://earthsky.org/human-world/6th-batch-of-pentagon-uap-files-ufos-pursue/", "confidence": "confirmed"},
+      {"claim": "ODNI NDA-waiver guidance for UAP reporting", "source": "https://douglasmmessier.substack.com/p/guidance-published-for-uap-disclosure", "confidence": "confirmed"},
+      {"claim": "Whistleblower crash-retrieval testimony", "source": "https://defensescoop.com/2025/09/09/military-whistleblowers-share-new-evidence-alleged-uap-ufo-hearing/", "confidence": "claim"},
+      {"claim": "Executive order renaming AI to Super Intelligence", "source": "https://www.freshfields.com/en/our-thinking/blogs/a-fresh-take/trump-executive-order-mandates-shift-to-super-intelligence-102o403", "confidence": "confirmed"},
+      {"claim": "SI as a capability has arrived", "source": "https://iapp.org/news/a/ai-by-any-other-name-white-house-directs-federal-agencies-to-enter-the-era-of-super-intelligence", "confidence": "open"},
+      {"claim": "Remote viewing effects beyond chance", "source": "https://en.wikipedia.org/wiki/Remote_viewing", "confidence": "open"},
+      {"claim": "First human partial-reprogramming trial dosed", "source": "https://www.technologyreview.com/2026/01/27/1131796/the-first-human-test-of-a-rejuvenation-method-will-begin-shortly/", "confidence": "confirmed"}
+    ],
+    "sha256": "548f97fee6662c3046e6752a6d99c8a3522614953dcd1a992e748079be0b6ce5",
+    "emit": false
+  }
+]
