@@ -1737,12 +1737,16 @@ try {
   check('router: near-misses (skill words in a question, any language; a proof about square roots) never route to a skill',
     nm.every(([, d]) => d.kind !== 'skill'), nm.map(([a, d]) => a.slice(0, 26) + '=' + d.kind + (d.skill ? ':' + d.skill : '')).join(' | '));
   
+  // the skills are loaded here in order (index.json): tdMods/firstTd belong to the "today" block above and are not in scope
+  const nsMods = [];
+  for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
+  const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
   const newSkills = ['book', 'show', 'sport', 'holidays'];
   for (const name of newSkills) {
-    const mod = tdMods.find((s) => s.name === name);
+    const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
-      !!mod && mod.examples.length >= 4 && (mod.nearMisses || []).length >= 3 && mod.examples.every((e) => firstTd(e) === name) && mod.nearMisses.every((e) => firstTd(e) !== name),
-      mod ? mod.examples.map((e) => e + ' -> ' + firstTd(e)).join(' | ') : 'missing ' + name);
+      !!mod && mod.examples.length >= 4 && (mod.nearMisses || []).length >= 3 && mod.examples.every((e) => firstNs(e) === name) && mod.nearMisses.every((e) => firstNs(e) !== name),
+      mod ? mod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing ' + name);
   }
 
   const wtMod = (await import(new URL('../void-live-deploy/skills/worldtime.js', import.meta.url).href)).default;
