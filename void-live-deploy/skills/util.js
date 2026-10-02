@@ -1,0 +1,77 @@
+/**
+ * util skill — small tools: passwords, QR codes, colours, word counts, text case, moon phase, placeholder text
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * Everything runs in the browser (crypto for passwords, maths for the moon); only the QR image comes from goqr.me (no key).
+ */
+const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
+  'title case': (s) => s.toLowerCase().replace(/\b\p{L}/gu, (c) => c.toUpperCase()), reverse: (s) => Array.from(s).reverse().join('') };
+const NAMED = { red: '#ff0000', green: '#008000', blue: '#0000ff', teal: '#008080', navy: '#000080', orange: '#ffa500', purple: '#800080', pink: '#ffc0cb', gold: '#ffd700', coral: '#ff7f50', salmon: '#fa8072', turquoise: '#40e0d0', indigo: '#4b0082', violet: '#ee82ee', maroon: '#800000', olive: '#808000', lime: '#00ff00', cyan: '#00ffff', magenta: '#ff00ff', black: '#000000', white: '#ffffff', gray: '#808080', grey: '#808080', brown: '#a52a2a', beige: '#f5f5dc', lavender: '#e6e6fa' };
+export function utilOf(text) {
+  const raw = String(text || '').trim(), t = raw.replace(/[?!.]+$/, '').replace(/\s+/g, ' '), l = t.toLowerCase();
+  let m = l.match(/^(?:generate|make|create|give me|new)\s+(?:me\s+)?(?:a\s+)?(?:strong\s+|secure\s+|random\s+)*password(?:\s+(?:with|of)\s+(\d{1,3})\s+(?:characters|chars|letters))?$|^password\s+generator$/);
+  if (m) return { kind: 'password', n: Math.min(128, Math.max(8, +m[1] || 20)) };
+  m = t.match(/^(?:make\s+(?:me\s+)?|create\s+|generate\s+)?(?:a\s+)?qr(?:\s+code)?\s+(?:for|of|with)\s+(.{1,300})$/i);
+  if (m) return { kind: 'qr', data: m[1].trim() };
+  m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?(?:the\s+colou?r\s+)?|colou?r\s+)(#?[0-9a-f]{6}|#?[0-9a-f]{3}|[a-z]{3,12})$/);
+  if (m && (/^#?[0-9a-f]{3}([0-9a-f]{3})?$/.test(m[1]) || NAMED[m[1]])) return { kind: 'color', c: m[1] };
+  m = t.match(/^(?:word\s+count|count\s+(?:the\s+)?words)\s+(?:of|in|for)\s+(.+)$/i) || t.match(/^how\s+many\s+words\s+(?:are\s+)?in\s+(.+)$/i);
+  if (m) return { kind: 'count', s: m[1].replace(/^["“]|["”]$/g, '') };
+  m = t.match(/^(uppercase|upper case|lowercase|lower case|title case|reverse)\s+(?:this:?\s+)?(.+)$/i);
+  if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] };
+  if (/^(?:what(?:'s| is)\s+)?(?:the\s+)?moon\s+phase(?:\s+(?:tonight|today|now))?$|^(?:what\s+)?phase\s+(?:is\s+)?(?:of\s+)?the\s+moon(?:\s+in)?(?:\s+(?:tonight|today|now))?$|^is\s+it\s+a\s+full\s+moon(?:\s+tonight)?$/.test(l)) return { kind: 'moon' };
+  if (/^(?:give\s+me\s+)?(?:some\s+)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)$/.test(l)) return { kind: 'lorem' };
+  return null;
+}
+function hex(c) { c = NAMED[c] || c; c = c.replace('#', ''); if (c.length === 3) c = c.split('').map((x) => x + x).join(''); return '#' + c.toLowerCase(); }
+function hsl(h) { const r = parseInt(h.slice(1, 3), 16) / 255, g = parseInt(h.slice(3, 5), 16) / 255, b = parseInt(h.slice(5, 7), 16) / 255; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn; let H = 0;
+  if (d) H = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; H = Math.round(H * 60 + 360) % 360; const L = (mx + mn) / 2, S = d ? d / (1 - Math.abs(2 * L - 1)) : 0;
+  return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255), h: H, s: Math.round(S * 100), l: Math.round(L * 100) }; }
+export function moonPhase(d = new Date()) { // days since a known new moon (2000-01-06 18:14 UTC), mean synodic month
+  const syn = 29.530588853, age = ((d.getTime() - Date.UTC(2000, 0, 6, 18, 14)) / 864e5 % syn + syn) % syn, f = age / syn;
+  const names = ['New moon', 'Waxing crescent', 'First quarter', 'Waxing gibbous', 'Full moon', 'Waning gibbous', 'Last quarter', 'Waning crescent'];
+  return { age, name: names[Math.floor(f * 8 + 0.5) % 8], lit: Math.round((1 - Math.cos(2 * Math.PI * f)) / 2 * 100), nextFull: new Date(d.getTime() + ((syn / 2 - age + syn) % syn) * 864e5) };
+}
+const LOREM = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+async function run(text, api) {
+  const { showPage, esc } = api;
+  const q = utilOf(text);
+  if (!q) return 'none';
+  const big = (s, size) => '<div class="util-out" style="font-size:' + (size || 30) + 'px;font-weight:300;line-height:1.3;margin:8px 0;word-break:break-all">' + esc(s) + '</div>';
+  const copyBtn = '<button type="button" class="tr-copy util-copy">copy</button>';
+  let el;
+  if (q.kind === 'password') {
+    const set = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%^&*-_=+?';
+    const a = new Uint32Array(q.n); crypto.getRandomValues(a);
+    const pw = Array.from(a, (x) => set[x % set.length]).join('');
+    el = showPage((p) => { p.innerHTML = '<h2>Password</h2>' + big(pw, 26) + copyBtn + '<p style="color:#8a8a8a">' + q.n + ' characters, made in your browser and never sent anywhere · ask again for another</p>'; });
+  } else if (q.kind === 'qr') {
+    const src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=8&data=' + encodeURIComponent(q.data);
+    el = showPage((p) => { p.innerHTML = '<h2>QR code</h2><div class="sub">' + esc(q.data) + '</div><img alt="QR code for ' + esc(q.data) + '" src="' + esc(src) + '" style="float:none;max-width:240px;max-height:240px;background:#fff;border-radius:8px;margin:8px 0">'
+      + '<div class="src">Source: <a href="https://goqr.me/api/" target="_blank" rel="noopener">goqr.me</a></div>'; });
+  } else if (q.kind === 'color') {
+    const h = hex(q.c), v = hsl(h);
+    el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'
+      + '<ul><li><b>Hex</b> ' + esc(h) + '</li><li><b>RGB</b> ' + v.r + ', ' + v.g + ', ' + v.b + '</li><li><b>HSL</b> ' + v.h + '°, ' + v.s + '%, ' + v.l + '%</li></ul>'; });
+  } else if (q.kind === 'count') {
+    const words = (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length, chars = Array.from(q.s).length, noSp = Array.from(q.s.replace(/\s/g, '')).length;
+    el = showPage((p) => { p.innerHTML = '<h2>Word count</h2>' + big(words + (words === 1 ? ' word' : ' words'), 44) + '<p style="color:#8a8a8a">' + chars + ' characters (' + noSp + ' without spaces)</p>'; });
+  } else if (q.kind === 'case') {
+    const out = CASES[q.how](q.s);
+    el = showPage((p) => { p.innerHTML = '<h2>' + esc(q.how.charAt(0).toUpperCase() + q.how.slice(1)) + '</h2>' + big(out, 28) + copyBtn; });
+  } else if (q.kind === 'moon') {
+    const m = moonPhase();
+    el = showPage((p) => { p.innerHTML = '<h2>The moon</h2>' + big(m.name, 44) + '<p style="color:#8a8a8a">' + m.lit + '% lit · ' + m.age.toFixed(1) + ' days into its cycle · next full moon ' + esc(m.nextFull.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })) + '</p><div class="sub">worked out from the mean lunar cycle; within about a day</div>'; });
+  } else if (q.kind === 'lorem') {
+    el = showPage((p) => { p.innerHTML = '<h2>Lorem ipsum</h2><p>' + esc(LOREM) + '</p>' + copyBtn; });
+  }
+  const b = el && el.querySelector && el.querySelector('.util-copy');
+  if (b) b.addEventListener('click', async () => { const s = (el.querySelector('.util-out') || el.querySelector('p')).textContent; let ok = false; try { await navigator.clipboard.writeText(s); ok = true; } catch (_) {} b.textContent = ok ? 'copied' : 'select it to copy'; setTimeout(() => { b.textContent = 'copy'; }, 1600); });
+  return 'util';
+}
+export default {
+  name: 'util',
+  examples: ['generate a password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'moon phase tonight'],
+  nearMisses: ['reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of'],
+  match(lower, text) { return !!utilOf(text); },
+  run
+};

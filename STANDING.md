@@ -1,6 +1,7 @@
 # STANDING — A-to-Mind (living brief)
 
 What we're building, and where things are. This file is a map of the repo, not a rulebook. Adam has not written rules and does not want them.
+**No hold-gates (Adam, 2026-10-02, to the whole Blackglass Syndicate):** agents apply their updates and improve the site on their own; nobody pauses for Adam's permission or a form. Tests passing is the gate. (Money and other people's data stay behind the owner key and the confirm line.)
 A rule an agent wrote and signed with Adam's name, without his words, is removed when found. (2026-09-30: plan item 12's "no pitch, not advertised" rule and its tests, written by the Linux helper on 2026-09-27.)
 
 ## What A-to-Mind is
