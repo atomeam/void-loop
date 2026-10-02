@@ -1789,7 +1789,7 @@ function wantsCreateImage(lower, raw) {
       if (/^list\s*:/i.test(raw)) return true;
       if (/^(todo\s+list|list)(\s+please)?\s*[.!]?$/i.test(raw.trim())) return true;
       if (/^(?:a\s+)?(?:grocery|groceries|shopping|packing|todo|to-do|chores?)\s+list\s*[.!]?$/i.test(raw.trim()) || /^list\s+(?:groceries|shopping|chores|todos?)\s*[.!]?$/i.test(raw.trim())) return true;
-      return /\b(make|add|create|show|spawn|put|place|drop)\s+(a\s+)?(todo\s+)?list\b/.test(lower);
+      return /\b(make|add|create|show|spawn|put|place|drop|start|open)\s+(a\s+|my\s+|new\s+|a\s+new\s+)?(todo|to-do|grocery|groceries|shopping|packing|chores?)?\s*list\b/.test(lower);
     }
 
     function extractListAdd(raw) {

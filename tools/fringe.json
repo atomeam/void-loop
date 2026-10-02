@@ -63,5 +63,30 @@
     ],
     "sha256": "4203bc0da9605b0effcc324ac849357c9571c795e0609e3d9c2d19426330fa51",
     "emit": false
+  },
+  {
+    "run": 3,
+    "at": "2026-10-02T17:41:07Z",
+    "family": "opt-in-gesture",
+    "draft": "drafts/fringe/opt-in-gesture.html",
+    "sources": [
+      {
+        "claim": "Pointer Events give one input model for touch, pen and mouse swipes and long-press",
+        "source": "https://www.w3.org/TR/pointerevents3/",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Gestures need an equivalent single-pointer or keyboard path (WCAG 2.5.1 Pointer Gestures)",
+        "source": "https://www.w3.org/WAI/WCAG22/Understanding/pointer-gestures",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Off-by-default, opt-in gesture input raises trust without lowering use",
+        "source": "https://www.w3.org/WAI/WCAG22/Understanding/pointer-gestures",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "80f7880be296e2deb5581ab2ab5cf657725911c8d71d004691ca2e6f6e2f900b",
+    "emit": false
   }
 ]

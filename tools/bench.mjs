@@ -7,6 +7,9 @@ import http from 'node:http'; import fs from 'node:fs'; import path from 'node:p
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
 const asks = JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'));
+// A repeated ask would count twice and inflate the score: refuse it.
+{ const seen = new Set(), dup = asks.map((a) => a.ask.toLowerCase()).filter((k) => seen.has(k) || !seen.add(k));
+  if (dup.length) { console.error('bench.json repeats: ' + dup.join(' | ')); process.exit(1); } }
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json' };
 const server = http.createServer((req, res) => { let p = decodeURIComponent(new URL(req.url, 'http://x').pathname); if (p === '/') p = '/index.html'; const f = path.join(root, p);
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': types[path.extname(f)] || 'text/plain' }); fs.createReadStream(f).pipe(res); }).listen(0);
