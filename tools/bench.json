@@ -151,5 +151,6 @@
   {"ask": "18% tip on 64 dollars", "want": "calc"},
   {"ask": "what is 12 squared", "want": "calc"},
   {"ask": "10 kg in pounds", "want": "calc"},
-  {"ask": "how many weeks until christmas", "want": "holiday|calc"}
+  {"ask": "how many weeks until christmas", "want": "holiday|calc"},
+  {"ask": "find me work as a designer", "want": "skill:work"}
 ]
