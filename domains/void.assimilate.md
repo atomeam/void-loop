@@ -9,7 +9,7 @@ How to use this: pick the top row whose Void form isn't live yet, read the old c
 | 1 | AutoSalvage + Lab Board (.agents\skills\a-to-mind-automation\autosalvage, _archive_old_mono\apps\bridge\src\autosalvage.ts) | found unfinished work, backlog, approve/reject | "show the board": misses now; next add approve / reject / "build this" per row, then AutoSalvage finds as rows | v1 live (misses) |
 | 2 | AI edit engine (a-to-mind.com self-editing Worker + Claude + GitHub) | the site changed itself on request | someone asks Void for a new skill in plain words ("learn to convert currencies"); Void builds it, checks every existing skill still works, and goes live on its own (keeps the last good version if a check fails). Learned skills are universal; personal looks and layouts live in each person's own Void | step 1 live (skill files: weather.js, map.js; edit-engine.md plan), biggest win |
 | 3 | Aether / a2m dispatcher + bridge (projects\aether: apps\backend, apps\bridge; D1 council-routing-db, curator-jobs queue, /v1/void/writes allow/deny) | ran multi-step jobs, human approve/deny on writes | "do this for me" tasks that keep running after you leave, with an approve card on the stage when a step needs you | not started |
-| 4 | Treaty / ledger / glassbox / surfaceledger / drift (a-to-mind.com folder) | public proof of what ran, claims vs proofs | "what did you do today": a page of Void's own recent actions with sources; replaces the old bragging files | not started |
+| 4 | Treaty / ledger / glassbox / surfaceledger / drift (a-to-mind.com folder) | public proof of what ran, claims vs proofs | "what did you do today": a page of Void's own recent actions with sources; replaces the old bragging files | live (today skill, helper/what-did-you-do) |
 | 5 | Real Work Board / Job Finder (Desktop\a-to-mind-board: work_listings, rejections, scam_risk) | real paid work, scams screened out | "find me work as a …": a calm page of real listings with a scam-risk line | not started |
 | 6 | Inventory orchestrator (GitHub\inventory-orchestrator) | found duplicate work across repos | feeds the board with "already built" rows so agents reuse before rebuilding | not started |
 | 7 | intent-canvas (C:\Users\adamm\intent-canvas) | nodes with position/size/z-order | grouping + layers on the stage | queued on growth board |
@@ -30,7 +30,7 @@ Rows get added whenever AutoSalvage or an agent finds another old project. Nothi
 | write an incident brief | skill | timeline, impact, cause if known, next steps |
 | plan <objective> | skill | steps, spend cap, which steps need a confirm, before anything runs |
 | show the board | live | empty board: one plain line + a few example asks; samples never count |
-| what did you do today? | skill (row 4) | today's runs, spend, confirms, declines, budget left |
+| what did you do today? | live (row 4) | today skill: local loop log on this device (ask + note); spend/budget later |
 | confirm line (plan item 7) | core | from ApprovalEvent v0: one line before any send/book/spend; changed request or no answer = doesn't run |
 | status | skill | each component; Momentum = workflow execution and event delivery |
 | uptime page | page off the front | history, incidents, subscribe |

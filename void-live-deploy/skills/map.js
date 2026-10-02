@@ -9,7 +9,7 @@ const MAP = [
   { n: 1, p: 'AutoSalvage + Lab Board', f: '"show the board" — misses now; next: approve / reject / build this per row', s: 'v1 live (misses)' },
   { n: 2, p: 'AI edit engine', f: 'someone asks Void for a new skill in plain words; it builds, checks every existing skill still works, and goes live on its own', s: 'step 1 live (skill files), biggest win' },
   { n: 3, p: 'Aether dispatcher + bridge', f: '"do this for me" tasks that keep running, with an approve card when a step needs you', s: 'not started' },
-  { n: 4, p: 'Treaty / ledger / glassbox', f: '"what did you do today" — a page of Void\'s own recent actions with sources', s: 'not started' },
+  { n: 4, p: 'Treaty / ledger / glassbox', f: '"what did you do today" — a page of Void\'s own recent actions with sources', s: 'live (today skill)' },
   { n: 5, p: 'Real Work Board / Job Finder', f: '"find me work as a …" — real listings with a scam-risk line', s: 'not started' },
   { n: 6, p: 'Inventory orchestrator', f: 'feeds the board "already built" rows so agents reuse before rebuilding', s: 'not started' },
   { n: 7, p: 'intent-canvas', f: 'grouping + layers on the stage', s: 'queued' },

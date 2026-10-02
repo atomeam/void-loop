@@ -1628,6 +1628,75 @@ try {
   await W.ctx.close();
   }
 
+  {
+  // "what did you do today" (assimilate row 4 / plan item 8): Void's own recent actions from a2m.void.loop.v1 on this device.
+  const tdIndex = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
+  const tdMods = [];
+  for (const n of tdIndex) tdMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
+  const firstTd = (a) => { const k = tdMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
+  const td = tdMods.find((s) => s.name === 'today');
+  const tdHits = (a) => !!td && td.match(a.toLowerCase(), a);
+  check('today: listed in skills/index.json with examples and near misses; every example routes to today and no other skill claims one',
+    !!td && td.examples.length >= 4 && (td.nearMisses || []).length >= 3 && td.examples.every((e) => firstTd(e) === 'today' && tdMods.every((s) => s === td || !s.match(e.toLowerCase(), e))),
+    td ? td.examples.map((e) => e + ' -> ' + firstTd(e)).join(' | ') : 'no today in index.json');
+  const tdNearHits = (td && td.nearMisses || []).filter(tdHits);
+  check('today: its own near misses never reach it', !!td && !tdNearHits.length, tdNearHits.join(' | '));
+  const tdOthers = tdMods.filter((s) => s !== td).flatMap((s) => (s.examples || []).map((e) => [s.name, e]));
+  const tdStolen = tdOthers.filter(([, e]) => tdHits(e) || firstTd(e) === 'today');
+  check('today: takes no other skill\'s examples (collision)', !!td && tdOthers.length > 10 && !tdStolen.length, tdStolen.map((x) => x.join(': ')).join(' | '));
+
+  const T0 = await fresh();
+  const net0 = [];
+  T0.p.on('request', (r) => { if (/wikipedia\.org|\/api\/miss$/.test(r.url())) net0.push(r.url()); });
+  await T0.ask('what did you do today', 700);
+  const emptyPg = await until(async () => { const pg = await T0.page(); return /Nothing is logged on this device yet/.test(pg) && pg; }, 5000);
+  check('today: empty loop log shows one plain empty line (no Wikipedia, no miss)',
+    !!emptyPg && /Nothing is logged on this device yet/.test(emptyPg) && !net0.length && T0.errors.length === 0,
+    String(emptyPg).slice(0, 140) + ' | net=' + net0.length);
+  await T0.ctx.close();
+
+  const T1 = await fresh();
+  const net1 = [];
+  T1.p.on('request', (r) => { if (/wikipedia\.org|\/api\/miss$/.test(r.url())) net1.push(r.url()); });
+  await T1.ask('make a clock', 500);
+  await T1.ask('make a 5 minute timer', 500);
+  await T1.ask('what have you done today', 800);
+  const filled = await until(async () => { const pg = await T1.page(); return /make a clock/i.test(pg) && /make a 5 minute timer/i.test(pg) && pg; }, 6000);
+  const logN = await T1.p.evaluate(() => {
+    try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').length; } catch (_) { return 0; }
+  });
+  check('today: after a few asks the page lists them from the local loop log',
+    !!filled && /Today/.test(filled) && /make a clock/i.test(filled) && /make a 5 minute timer/i.test(filled) && logN >= 2 && !net1.length,
+    String(filled).slice(0, 180) + ' | log=' + logN + ' | net=' + net1.length);
+  for (const a of ['what did you do today', 'what did void do today', 'show your log', 'your recent actions', 'what have you been doing']) {
+    await T1.ask('close', 200);
+    const nBefore = net1.length;
+    await T1.ask(a, 700);
+    const pg = await until(async () => { const p = await T1.page(); return /Today/.test(p) && p; }, 5000);
+    check('today: "' + a + '" opens the Today page with no Wikipedia or miss',
+      !!pg && /Today/.test(pg) && net1.length === nBefore, String(pg).slice(0, 100) + ' | net+' + (net1.length - nBefore));
+  }
+  await T1.ask('close', 200);
+  await T1.ask('what day is it today', 600);
+  const datePg = await until(async () => { const pg = await T1.page(); return /Week \d+/.test(pg) && pg; }, 4000);
+  check('today: "what day is it today" stays with the date page (wantsToday), not the loop log',
+    !!datePg && /Week \d+/.test(datePg) && !/Nothing is logged|a2m\.void\.loop/.test(datePg), String(datePg).slice(0, 140));
+  await T1.ask('close', 200);
+  await T1.ask("what's the date today", 600);
+  const datePg2 = await until(async () => { const pg = await T1.page(); return /Week \d+/.test(pg) && pg; }, 4000);
+  check('today: "what\'s the date today" stays with the date page',
+    !!datePg2 && /Week \d+/.test(datePg2) && !/Nothing is logged|loop log/.test(datePg2), String(datePg2).slice(0, 140));
+  await T1.ask('close', 200);
+  const netI = [];
+  T1.p.on('request', (r) => { if (/wikipedia\.org|\/api\/miss$/.test(r.url())) netI.push(r.url()); });
+  await T1.ask('what did I do today', 800);
+  const iPg = await T1.page();
+  check('today: "what did I do today" is a near miss (does not open the loop-log page)',
+    !/Nothing is logged on this device yet|a2m\.void\.loop\.v1|from the local loop log/.test(iPg || ''), String(iPg).slice(0, 140));
+  check('no script errors (today)', T1.errors.length === 0, T1.errors.join(' | '));
+  await T1.ctx.close();
+  }
+
   // ---- Router (the will's tiered-model-stack want, 2026-09-28): a tiny classifier in front of the answer engine. ----
   // The real lib/router.js and /api/answer with a stand-in embedder (hashed words + trigrams instead of bge-m3; the live
   // thresholds are for bge-m3, so the stand-in's thresholds go in through VOID_ROUTER_TUNE like a live tune would).
