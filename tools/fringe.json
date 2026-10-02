@@ -128,5 +128,30 @@
     ],
     "sha256": "cb64d55a4802a0732d783511d930bbe969ca8d6a0f6e923db1460f98f1c8e60b",
     "emit": false
+  },
+  {
+    "run": 6,
+    "at": "2026-10-02T22:41:45Z",
+    "family": "anomalous-event-timeline",
+    "draft": "drafts/fringe/anomalous-event-timeline.html",
+    "sources": [
+      {
+        "claim": "PURSUE UAP file releases since 2026-05-08, all labelled unresolved",
+        "source": "https://earthsky.org/human-world/6th-batch-of-pentagon-uap-files-ufos-pursue/",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "ODNI NDA-waiver guidance for UAP reporting (2026-07-31)",
+        "source": "https://douglasmmessier.substack.com/p/guidance-published-for-uap-disclosure",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Whistleblower crash-retrieval testimony",
+        "source": "https://defensescoop.com/2025/09/09/military-whistleblowers-share-new-evidence-alleged-uap-ufo-hearing/",
+        "confidence": "claim"
+      }
+    ],
+    "sha256": "276081d7a7d8e9ac09ddc88656736b49cd1d2793b2d6026382cd364487587a3b",
+    "emit": false
   }
 ]
