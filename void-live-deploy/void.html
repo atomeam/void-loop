@@ -2973,6 +2973,13 @@ return { ok: true, detail: 'timer-reset' };
       if (m && TIME_S[m[2]] > TIME_S[m[1]]) { const v = TIME_S[m[2]] / TIME_S[m[1]]; return { value: v.toLocaleString(), note: 'one ' + m[2] + ' = ' + v.toLocaleString() + ' ' + m[1] + 's' + (m[2] === 'year' ? ' (365.25 days)' : '') + '.' }; }
       m = t.match(/^(\d{1,3})\s*(?:!|factorial)$|^(?:the\s+)?factorial\s+of\s+(\d{1,3})$/);
       if (m) { const n = +(m[1] || m[2]); if (n > 170) return null; let v = 1; for (let i = 2; i <= n; i++) v *= i; const shown = v >= 1e15 ? v.toExponential(6) : v.toLocaleString(); return { value: shown, note: n + '! = ' + shown }; }
+      m = t.match(/^(?:split|divide)\s+[$€£]?(\d+(?:\.\d+)?)\s+(?:between|among|amongst|by|into|for)\s+(\d{1,4})(?:\s+(?:people|persons|ways|friends|of\s+us))?$/);
+      if (m && +m[2] > 0) { const v = +m[1] / +m[2]; return { value: v.toFixed(2).replace(/\.00$/, ''), note: m[1] + ' split ' + m[2] + ' ways' + (Math.round(v * 100) / 100 * +m[2] !== +m[1] ? ' (rounded to the cent)' : '') }; }
+      m = t.match(/^(?:what\s+)?day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?([a-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s*(\d{4}))?$/);
+      if (m && CALC_MONTHS[m[1]] != null) {
+        const y = m[3] ? +m[3] : new Date().getFullYear(), d = new Date(y, CALC_MONTHS[m[1]], +m[2]);
+        if (d.getMonth() === CALC_MONTHS[m[1]]) return { value: d.toLocaleDateString('en-US', { weekday: 'long' }), note: d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) };
+      }
       m = t.match(/^round\s+(-?\d+(?:\.\d+)?)\s+to\s+(\d{1,2})\s+(?:decimal(?:\s+places?)?|decimals|places|dp)$|^round\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const x = +(m[1] || m[3]), d = m[1] ? +m[2] : 0; const v = (Math.round(x * 10 ** d) / 10 ** d).toFixed(d); return { value: v, note: (m[1] || m[3]) + ' rounded to ' + d + ' decimal' + (d === 1 ? '' : 's') }; }
       m = t.match(/^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s+(?:as\s+a\s+|in\s+)?(?:percent(?:age)?|%)$/);
@@ -3904,6 +3911,13 @@ return { ok: true, detail: 'timer-reset' };
       [/^(qu'?est[- ]ce\s+que\s+tu\s+es|qui\s+es[- ]tu|tu\s+es\s+qui)$/, 'Je suis Void : demande n’importe quoi et ça apparaît ici.'],
       [/^(was|wer)\s+bist\s+du$/, 'Ich bin Void: frag nach irgendwas, und es erscheint hier.'],
       [/^(chi|cosa)\s+sei(\s+tu)?$/, 'Sono Void: chiedi qualsiasi cosa e appare qui.'],
+      // "what is this" / "how does it work" (board: "que coño es esto?", "ça marche comment ?")
+      [/^(o\s*q(ue)?|oq)\s+[eé]\s+(isso|isto|aqui)$|^como\s+(isso\s+)?funciona(\s+isso)?$/, 'Isto é o Void: escreva o que precisa (o tempo, uma conta, uma tradução, um mapa) e aparece aqui.'],
+      [/^mi\s+ez(\s+az?)?$|^(hogy(an)?|hogy\s+kell)\s+m[űu]k[öo]dik$/, 'Ez a Void: írd be, amire szükséged van (időjárás, számolás, fordítás, térkép), és itt megjelenik.'],
+      [/^(qu[eé]|qu[eé]\s+(coño|carajo|diablos|demonios|mierda))\s+es\s+esto$|^c[oó]mo\s+funciona(s|\s+esto)?$/, 'Esto es Void: escribe lo que necesites (el tiempo, una cuenta, una traducción, un mapa) y aparece aquí.'],
+      [/^(c'?est\s+quoi(\s+(ça|ca|ce\s+truc|ce\s+site))?|qu'?est[- ]ce\s+que\s+c'?est(\s+que\s+(ça|ca))?)$|^((ça|ca)\s+marche\s+comment|comment\s+(ça|ca)\s+marche|comment\s+(ça|ca)\s+fonctionne)$/, 'C’est Void : écris ce dont tu as besoin (la météo, un calcul, une traduction, une carte) et ça apparaît ici.'],
+      [/^was\s+ist\s+(das|dies)(\s+hier)?$|^wie\s+funktioniert\s+(das|es)$/, 'Das ist Void: schreib, was du brauchst (Wetter, eine Rechnung, eine Übersetzung, eine Karte), und es erscheint hier.'],
+      [/^(cos'?[eè]|che\s+cos'?[eè])\s+(questo|questa\s+cosa)$|^come\s+funziona$/, 'Questo è Void: scrivi ciò che ti serve (il meteo, un calcolo, una traduzione, una mappa) e appare qui.'],
     ];
     async function showApiPage(lead) {
       const el = showPage((p) => { p.innerHTML = '<h2>Void\'s API</h2><div class="sub">…</div>'; });
@@ -4066,7 +4080,7 @@ return { ok: true, detail: 'timer-reset' };
       { const c = chanceOf(l); if (c) { showPage((p) => { p.innerHTML = '<h2>' + esc(c.title) + '</h2><div style="font-size:56px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
       if (await handleAppAsk(text, l)) return true;
       for (const [lang, re, line] of SPEAKS) if (re.test(l)) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'speaks ' + lang }); return true; }
-      for (const [re, line] of WHAT_ARE_YOU) if (re.test(l.replace(/[?.!]+$/, ''))) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self (other language)' }); return true; }
+      for (const [re, line] of WHAT_ARE_YOU) if (re.test(l.replace(/[\s?¿.!¡]+$/, '').replace(/^[¿¡\s]+/, ''))) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self (other language)' }); return true; }
       if (/\bpulcs/.test(l)) { showApiPage('Pulcsim még nincs, de API-m van:'); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'api (hu)' }); return true; }
       if (/^(the\s+|your\s+|void'?s?\s+|an?\s+)?api(\s+docs?)?\s*[?.!]?$|^(do|does)\s+(you|void)\s+have\s+an?\s+api\b|^is\s+there\s+an\s+api\b/.test(l)) { showApiPage(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'api' }); return true; }
       if (/^(the\s+)?void\s*[?.!]?$/.test(l)) { showSelfPage(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return true; }
