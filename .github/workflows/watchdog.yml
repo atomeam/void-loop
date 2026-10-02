@@ -1,0 +1,46 @@
+# Void watchdog: the loop checks itself. Every six hours (and on demand) it runs the full suite, the grown replay and the
+# everyday benchmark on main. If anything fails it opens one issue (or comments on the open one) with the failing
+# lines, so the next agent fixes it first; when main is green again it closes that issue. No secrets needed.
+name: Void watchdog
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Test (full suite, grown replay, benchmark)
+        id: test
+        continue-on-error: true
+        uses: ./.github/actions/void-test
+      - name: Open, update or close the watchdog issue
+        uses: actions/github-script@v7
+        env:
+          OUTCOME: ${{ steps.test.outcome }}
+        with:
+          script: |
+            const title = 'Void watchdog: main is failing';
+            const { data: open } = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'watchdog' });
+            const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            if (process.env.OUTCOME === 'success') {
+              for (const i of open) {
+                await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: i.number, body: 'Green again on ' + context.sha.slice(0, 7) + ' (' + run + '). Closing.' });
+                await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: i.number, state: 'closed', state_reason: 'completed' });
+              }
+              return;
+            }
+            const body = 'The check failed on main ' + context.sha.slice(0, 7) + ': ' + run + '\n\nFix this before new work: read the run log, find the failing check, fix it, merge on green. This issue closes itself when main is green.';
+            if (open.length) await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: open[0].number, body });
+            else await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['watchdog'] });
+            core.setFailed('main failed the check');
