@@ -87,7 +87,7 @@ export function parseCalendar(text) {
   if (/^(?:what|who|why|how|when|where|is|are|does|do|can|define|translate|weather|time|map|make|set|start)\b/i.test(t)) return null;
   if (/\b(timer|clock|sticky|notepad|counter|countdown|shape|calculator)\b/i.test(t)) return null;
   if (/^(?:the\s+|today'?s\s+)?(?:news|headlines|top\s+stories)\b/i.test(t)) return null; // the news skill
-  if (/\b(hours?\s+between|time\s+difference|how\s+many\s+(hours|days))\b/i.test(t)) return null; // world time and the calculator answer these
+  if (/\b(hours?\s+between|days?\s+between|time\s+difference|how\s+many\s+(hours|days)|how\s+long\s+until)\b/i.test(t)) return null; // world time and the calculator answer these
   if (/^\d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/i.test(t) || /\b(sunrise|sunset|time zone|timezone)\b/i.test(t)) return null; // "3pm London to Tokyo" is world time; an event starts with what it is
   const w = parseWhenText(t);
   // "remind me to call mom" with no when: it goes on today, so it is kept rather than lost
