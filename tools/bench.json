@@ -114,5 +114,18 @@
   {"ask": "50 euros to pounds", "want": "calc"},
   {"ask": "what is the opposite of brave", "want": "skill:words"},
   {"ask": "what is the currency of japan", "want": "skill:country"},
-  {"ask": "how long is a marathon in miles", "want": "answer|article|calc"}
+  {"ask": "how long is a marathon in miles", "want": "answer|article|calc"},
+  {"ask": "tech news today", "want": "skill:news"},
+  {"ask": "technology news", "want": "skill:news"},
+  {"ask": "whats new in tech", "want": "skill:news"},
+  {"ask": "what is 25 percent of 360", "want": "calc"},
+  {"ask": "how many liters in a gallon", "want": "calc"},
+  {"ask": "weather tomorrow in berlin", "want": "skill:weather"},
+  {"ask": "what time is it in dubai", "want": "skill:worldtime"},
+  {"ask": "pick a number from 1 to 10", "want": "chance"},
+  {"ask": "capital of brazil", "want": "skill:country"},
+  {"ask": "define ephemeral", "want": "skill:define"},
+  {"ask": "translate good morning to french", "want": "skill:translate"},
+  {"ask": "chicken recipes", "want": "skill:recipe"},
+  {"ask": "how far is new york from boston", "want": "skill:distance"}
 ]
