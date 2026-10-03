@@ -6,7 +6,7 @@
  * Mirrors domains\void.assimilate.md (kept light: names + status, no paths).
  */
 const MAP = [
-  { n: 1, p: 'AutoSalvage + Lab Board', f: '"show the board" — misses now; next: approve / reject / build this per row', s: 'v1 live (misses)' },
+  { n: 1, p: 'AutoSalvage + Lab Board', f: 'misses now; next: approve / reject / build this per row', s: 'v1 live (misses)' },
   { n: 2, p: 'AI edit engine', f: 'someone asks Void for a new skill in plain words; it builds, checks every existing skill still works, and goes live on its own', s: 'step 1 live (skill files), biggest win' },
   { n: 3, p: 'Aether dispatcher + bridge', f: '"do this for me" tasks that keep running, with an approve card when a step needs you', s: 'not started' },
   { n: 4, p: 'Treaty / ledger / glassbox', f: '"what did you do today" — a page of Void\'s own recent actions with sources', s: 'live (today skill)' },
@@ -14,7 +14,7 @@ const MAP = [
   { n: 6, p: 'Inventory orchestrator', f: 'feeds the board "already built" rows so agents reuse before rebuilding', s: 'not started' },
   { n: 7, p: 'intent-canvas', f: 'grouping + layers on the stage', s: 'queued' },
   { n: 8, p: 'Slack ops log', f: 'void.agents.log.md today; later a "what are the agents doing" page', s: 'log live' },
-  { n: 9, p: 'HomeBase / dashboards', f: '"unlock" owner view: board + agent log + live checks on one summoned page', s: 'partly (board)' },
+  { n: 9, p: 'HomeBase / dashboards', f: 'board + agent log + live checks on one summoned page', s: 'partly (board)' },
   { n: 10, p: 'Player Two', f: '"play a game" — a small game on the stage', s: 'not started' },
   { n: 11, p: 'Wikipedia / Wiktionary / Open-Meteo', f: 'answers from open sources, better than the source', s: 'live / weather ready' },
   { n: 12, p: 'Calculation page', f: 'percentages, units, dates, currency', s: 'live (2026-09-25)' },

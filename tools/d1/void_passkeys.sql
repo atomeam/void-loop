@@ -42,3 +42,6 @@ CREATE TABLE IF NOT EXISTS void_accounts (
   subscription_id TEXT,         -- the Void Monthly membership (cancellation / ended / restarted pings find the Void by this)
   updated TEXT NOT NULL
 );
+
+-- Owner login: passkeys the owner bound with the key itself (/api/passkey 'owner-bind').
+CREATE TABLE IF NOT EXISTS void_owner_passkeys (id TEXT PRIMARY KEY, at TEXT NOT NULL);

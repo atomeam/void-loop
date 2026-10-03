@@ -82,7 +82,7 @@ const wa = await import(new URL('../void-live-deploy/lib/webauthn.js', import.me
 const localBase = base.replace('127.0.0.1', 'localhost'), localOrigin = localBase.replace(/\/$/, '');
 function memoryMeD1({ broken = false } = {}) {
   // Like D1: no tables until the functions make them; broken = the database can't be reached. batch() is all-or-nothing.
-  const T = { passkeys: new Map(), challenges: new Map(), sessions: new Map(), mine: new Map(), accounts: new Map() }, tables = new Set();
+  const T = { passkeys: new Map(), challenges: new Map(), sessions: new Map(), mine: new Map(), accounts: new Map(), owners: new Map() }, tables = new Set();
   const need = (t) => { if (broken) throw new Error('D1 unavailable'); if (!tables.has(t)) throw new Error('no such table: ' + t); };
   const ch = (n) => ({ meta: { changes: n } });
   const delWhere = (map, f) => { let n = 0; for (const [k, v] of map) if (f(v)) { map.delete(k); n += 1; } return ch(n); };
@@ -105,6 +105,8 @@ function memoryMeD1({ broken = false } = {}) {
     if (/^DELETE FROM void_mine WHERE user_id = \?$/.test(sql)) { need('void_mine'); return ch(T.mine.delete(a[0]) ? 1 : 0); }
     if (/^DELETE FROM void_accounts WHERE user_id = \?$/.test(sql)) { need('void_accounts'); return ch(T.accounts.delete(a[0]) ? 1 : 0); }
     if (/^DELETE FROM void_pages WHERE user_id = \?$/.test(sql)) { need('void_pages'); return ch(0); }
+    if (/^INSERT INTO void_owner_passkeys \(id, at\) VALUES \(\?, \?\) ON CONFLICT\(id\) DO NOTHING$/.test(sql)) { need('void_owner_passkeys'); if (T.owners.has(a[0])) return ch(0); T.owners.set(a[0], { id: a[0], at: a[1] }); return ch(1); }
+    if (/^DELETE FROM void_owner_passkeys WHERE id IN \(SELECT id FROM void_passkeys WHERE user_id = \?\)$/.test(sql)) { if (!tables.has('void_owner_passkeys')) tables.add('void_owner_passkeys'); return delWhere(T.owners, (v) => { const p = T.passkeys.get(v.id); return !!p && p.user_id === a[0]; }); }
     throw new Error('unexpected sql: ' + sql);
   };
   const first = (sql, a) => {
@@ -114,6 +116,7 @@ function memoryMeD1({ broken = false } = {}) {
     if (/^SELECT user_id, expires FROM void_sessions WHERE id = \?$/.test(sql)) { need('void_sessions'); return T.sessions.get(a[0]) || null; }
     if (/^SELECT data, rev, updated FROM void_mine WHERE user_id = \?$/.test(sql)) { need('void_mine'); return T.mine.get(a[0]) || null; }
     if (/^SELECT tier FROM void_accounts WHERE user_id = \?$/.test(sql)) { need('void_accounts'); return T.accounts.get(a[0]) || null; }
+    if (/^SELECT id FROM void_owner_passkeys WHERE id = \?$/.test(sql)) { need('void_owner_passkeys'); return T.owners.get(a[0]) || null; }
     throw new Error('unexpected sql: ' + sql);
   };
   const all = (sql, a) => {
@@ -408,7 +411,7 @@ try {
       agenda.length === 3 && /Call Sam/.test(card) && /dentist/i.test(card) && /Lunch with Ana/i.test(card) && /on your calendar: Call Sam/.test(said) && !netAdds.length && !pageAfterAdds,
       JSON.stringify(agenda.map((e) => e.title)) + ' | ' + said + ' | ' + netAdds.join(',') + ' | page: ' + pageAfterAdds.slice(0, 60) + ' | ' + card.slice(0, 120));
     check('calendar: "schedule a meeting with Sam" is the owner\'s confirm line (a visitor is told so, nothing saved); "calender" shows one card; the card survives a reload; "remove my calendar" hides it and keeps the events; × removes one and undo brings it back',
-      /only the owner/.test(gated) && shown === 1 && /Call Sam/.test(afterReload) && gone === 0 && kept === 3 && afterX === 2 && afterUndo === 3 && !net.some((u) => /wikipedia|miss|answer/.test(u)),
+      /person at the screen/.test(gated) && shown === 1 && /Call Sam/.test(afterReload) && gone === 0 && kept === 3 && afterX === 2 && afterUndo === 3 && !net.some((u) => /wikipedia|miss|answer/.test(u)),
       [gated, shown, afterReload.slice(0, 40), gone, kept, afterX, afterUndo, net.join(',')].join(' | '));
     // the 3D wall calendar: "my calendar" opens it; tap a day, add an event in the editor, rename it; it is saved and on the card
     await C.ask('my calendar', 900);
@@ -640,7 +643,7 @@ try {
     await O.ctx.close(); }
   // "unlock <key>" is the first thing handled: pasted with or without the space (or "unlock" twice) it is saved on this
   // device and nothing carrying the key leaves the page (it once went to the answer model and the miss board).
-  { const U = await fresh(); const leaked = []; U.p.on('request', (r) => { if (/0123456789abcdef0123/.test(r.url() + (r.postData() || ''))) leaked.push(r.url()); });
+  { meEnv.READ_TOKEN = '0123456789abcdef0123456789abcdef'; const U = await fresh(); const leaked = []; // the server checks the key first (owner login) U.p.on('request', (r) => { if (/0123456789abcdef0123/.test(r.url() + (r.postData() || ''))) leaked.push(r.url()); });
     const keys = [];
     for (const a of ['unlock 0123456789abcdef0123456789abcdef', 'unlock0123456789abcdef0123456789abcdef', 'unlockunlock 0123456789abcdef0123456789abcdef']) {
       await U.p.evaluate(() => localStorage.removeItem('a2m.void.owner.v1'));
@@ -648,7 +651,7 @@ try {
     }
     check('unlock: with or without the space (or doubled) the key is saved on this device, and no request carries it',
       keys.every((k) => k === '0123456789abcdef0123456789abcdef') && !leaked.length && !U.errors.length, JSON.stringify(keys) + ' ' + leaked.join(','));
-    await U.ctx.close(); }
+    await U.ctx.close(); delete meEnv.READ_TOKEN; }
   // How-to asks, "what are you", "remove every clock", "reset my void" (list items 48, 88, 89, 96).
   { const H = await fresh(); const net = []; H.p.on('request', (r) => { if (/wikipedia\.org|\/api\/(answer|miss)$/.test(r.url())) net.push(r.url()); });
     await H.ask('how do I make a timer', 700); const how = await H.page(); const lit = await H.p.$eval('.vpage.on li.focus', (e) => e.textContent).catch(() => '');
@@ -742,7 +745,8 @@ try {
   await t.ask('why is the sky blue', 900); const an = await t.page(); check('answer engine answers with sources', /blue light scatters/.test(an) && /Rayleigh scattering/.test(an) && /as of/.test(an), an.slice(0, 120));
   await t.ask('why is the model busy', 600); check('answer engine busy -> article excerpt', await until(async () => /Black hole/.test(await t.page()), 5000));
   await t.ask('what do you want to be?', 300); check('will: Void says what it wants', await until(async () => /I want to answer every question about tides/.test(await t.page()), 4000));
-  await t.ask('update yourself', 0); check('build asks are owner-only', await until(async () => /owner/.test(await t.whisper()), 3000));
+  { const q0 = queued.length; await t.ask('update yourself', 700); const w = await t.whisper();
+    check('build asks are owner-only (a stranger\'s goes the ordinary way: nothing queued, no word of an owner)', queued.length === q0 && !/owner/i.test(w), w); }
   await t.p.fill('#input', 'tim'); await t.p.waitForTimeout(150); check('hints while typing', (await t.p.$$eval('#hints div', (d) => d.map((x) => x.textContent))).some((h) => /timer/.test(h)));
   check('no script errors', t.errors.length === 0, t.errors.join(' | '));
   await t.ctx.close();
@@ -807,7 +811,7 @@ try {
   check('WebMCP: an agent call runs the ask and returns the result', /8\.05/.test(calc) && /clock/.test(made) && (await t.state()).some((x) => x.kind === 'clock'), calc.slice(0, 80) + ' | ' + made);
   check('WebMCP: world time is declared read-only, like weather and map', await t.p.evaluate(() => !!window.__tools.void_worldtime && window.__tools.void_worldtime.annotations.readOnlyHint === true));
   const owner = await t.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'update yourself' }));
-  check('WebMCP: owner-only asks never run from an agent', /owner/.test(owner) && t.errors.length === 0, owner + ' ' + t.errors.join(' | '));
+  check('WebMCP: owner-only asks never run from an agent (and the answer names no owner)', /person at the screen/.test(String(owner || '')) && !/\bowner\b/i.test(String(owner || '')) && t.errors.length === 0, JSON.stringify({ owner, errors: t.errors }));
   const idAsks = await t.p.evaluate(async () => [await window.__tools.void_ask.execute({ ask: 'forget me' }), await window.__tools.void_ask.execute({ ask: 'sign in' })]);
   check('WebMCP: agents cannot sign in or forget anyone (item 6)', idAsks.every((x) => /person at the screen/.test(x)), idAsks.join(' | '));
   const paidAgent = await t.p.evaluate(async () => { const out = []; for (const a of ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'raise my confirm cap', 'buy paid void']) out.push(await window.__tools.void_ask.execute({ ask: a })); return out; });
@@ -931,7 +935,7 @@ try {
   const sent = (type) => gate.calls.filter((c) => c.type === type);
   const lastDecision = () => sent('a2m.approval.decision').slice(-1)[0] || {};
   await t.ask('send an email to jane@x.com saying hi', 700);
-  check('confirm line: visitors cannot send', /owner/.test(await t.whisper()) && gate.calls.length === 0, await t.whisper());
+  check('confirm line: visitors cannot send', /person at the screen/.test(await t.whisper()) && gate.calls.length === 0, await t.whisper());
   await t.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
   await t.ask('send an email to jane@x.com saying hi', 900);
   check('confirm line shows before a send (item 7)', (await t.whisper()) === 'Send this email to jane@x.com? Yes / No' && sent('a2m.approval.requested').length === 1 && gate.ran.length === 0, await t.whisper());
@@ -1017,14 +1021,14 @@ try {
   // With a passkey, an outbound action still stops on the confirm line (a passkey never skips it; visitors still can't send).
   const ranBeforePk = gate.ran.length, askedBeforePk = gate.calls.filter((c) => c.type === 'a2m.approval.requested').length;
   await B.ask('send an email to jane@x.com saying hi', 0);
-  const bNoOwner = await until(async () => /owner/.test(await B.whisper()) && (await B.whisper()), 4000);
+  const bNoOwner = await until(async () => /person at the screen/.test(await B.whisper()) && (await B.whisper()), 4000);
   await A.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
   await A.ask('send an email to jane@x.com saying hi', 0);
   const pkLine = await until(async () => /Yes \/ No/.test(await A.whisper()) && (await A.whisper()), 6000);
   const ranWhileAsked = gate.ran.length;
   await A.ask('no', 0); const pkNo = await until(async () => /nothing sent/.test(await A.whisper()) && (await A.whisper()), 4000);
   await A.p.evaluate(() => localStorage.removeItem('a2m.void.owner.v1'));
-  check('paid: with a passkey, an outbound action still stops on the confirm line', !!(await meOf(A)) && !!(await meOf(B)) && /only the owner/.test(bNoOwner) && pkLine === 'Send this email to jane@x.com? Yes / No' && ranWhileAsked === ranBeforePk && /^ok, nothing sent$/.test(pkNo) && gate.ran.length === ranBeforePk && gate.calls.filter((c) => c.type === 'a2m.approval.requested').length === askedBeforePk + 1,
+  check('paid: with a passkey, an outbound action still stops on the confirm line', !!(await meOf(A)) && !!(await meOf(B)) && /person at the screen/.test(bNoOwner) && pkLine === 'Send this email to jane@x.com? Yes / No' && ranWhileAsked === ranBeforePk && /^ok, nothing sent$/.test(pkNo) && gate.ran.length === ranBeforePk && gate.calls.filter((c) => c.type === 'a2m.approval.requested').length === askedBeforePk + 1,
     [bNoOwner, pkLine, pkNo, gate.ran.length - ranBeforePk].join(' | '));
   await B.ask('add a sticky that says from the other device');
   const upB = await until(() => { const d = serverData(); return d && Object.values(d.state).some((x) => x.kind === 'sticky' && /from the other device/.test(x.text)); }, 6000);
@@ -1061,7 +1065,7 @@ try {
   const sessionsBefore = db().sessions.size;
   await B.ask('sign out', 0);
   const outB = await until(async () => /signed out/.test(await B.whisper()), 6000);
-  check('sign out: your Void leaves this device and stays on the server', outB && !(await meOf(B)) && (await B.state()).length === 0 && !(await B.p.evaluate(() => localStorage.getItem('a2m.void.look.v1'))) && db().sessions.size === sessionsBefore - 1 && !!serverData(), [outB, (await B.state()).length, db().sessions.size, sessionsBefore].join(' | '));
+  check('sign out: your Void leaves this device and stays on the server', outB && !(await meOf(B)) && (await B.state()).length === 0 && !(await B.p.evaluate(() => localStorage.getItem('a2m.void.look.v1'))) && db().sessions.size === sessionsBefore - 1 && !!serverData(), JSON.stringify({ outB, me: await meOf(B), stage: (await B.state()).length, look: await B.p.evaluate(() => localStorage.getItem('a2m.void.look.v1')), sessions: db().sessions.size, sessionsBefore, mine: db().mine.size }));
   await A.ask('forget me', 300);
   const forgetLine = await A.whisper();
   await A.ask('no', 300);
@@ -1141,8 +1145,103 @@ try {
   const brakeEnv = { DB: memoryMeD1(), PASSKEY_BRAKE: 3 };
   const braked = []; for (let i = 0; i < 4; i++) braked.push((await pk(brakeEnv, { step: 'get-options' }, null, { 'cf-connecting-ip': '203.0.113.9' })).status);
   check('passkeys: anonymous challenge minting is braked per connection', braked.join(',') === '200,200,200,429', braked.join(','));
+  // (after the brake checks: these ceremonies share the per-isolate challenge brake with them)
+  // Owner login with a passkey (Adam, 2026-10-03): the owner key binds a passkey once; after that "sign in" + the device PIN makes
+  // the owner. Strangers can't bind, can't tell an owner mode exists, and nothing public lists it.
+  { const G1 = await import(new URL('../void-live-deploy/lib/guard.js', import.meta.url).href);
+    const oEnv = { DB: memoryMeD1(), PASSKEY_RP_ID: 'localhost', PASSKEY_ORIGINS: localOrigin, PASSKEY_BRAKE: 100000, READ_TOKEN: OWNER, SALT: 'test-salt' };
+    const bearer = (t) => new Request('http://localhost/api/misses', { headers: { authorization: 'Bearer ' + t } });
+    const opts = await pk(oEnv, { step: 'create-options' }), pkO = opts.body.publicKey, sel = pkO.authenticatorSelection || {};
+    check('owner login: passkey options keep Windows Hello available (no cross-platform attachment, this device first, PIN required, RS256 offered)',
+      !('authenticatorAttachment' in sel) && pkO.hints[0] === 'client-device' && sel.residentKey === 'required' && sel.userVerification === 'required' && pkO.pubKeyCredParams.some((p) => p.alg === -257), JSON.stringify({ hints: pkO.hints, sel }));
+    const mine = await softRegister(oEnv), stranger = await softRegister(oEnv);
+    const mId = mine.res.body.credentialId, sId = stranger.res.body.credentialId;
+    const forged = await G1.mintOwnerSession({ READ_TOKEN: 'some-other-key-0123456789', SALT: 'test-salt' }, sId);
+    const tries = [await pk(oEnv, { step: 'owner-bind', credentialId: sId }), await pk(oEnv, { step: 'owner-bind', credentialId: sId }, 'not-the-owner-key-0000000'),
+      await pk(oEnv, { step: 'owner-bind', credentialId: sId }, stranger.res.body.token), await pk(oEnv, { step: 'owner-bind', credentialId: sId }, forged.token)];
+    check('owner login: binding a passkey is refused without the owner key (no key, a wrong key, a passkey session, a forged owner session)',
+      tries.every((x) => x.status === 401) && oEnv.DB.owners.size === 0, tries.map((x) => x.status).join(','));
+    const bound = await pk(oEnv, { step: 'owner-bind', credentialId: mId }, OWNER);
+    const unknown = await pk(oEnv, { step: 'owner-bind', credentialId: 'AAAAAAAAAAAAAAAAAAAAAA' }, OWNER);
+    const inMine = await softLogin(oEnv, mine), inStranger = await softLogin(oEnv, stranger);
+    const ot = (inMine.res.body.owner || {}).token || '';
+    const viaSession = await pk(oEnv, { step: 'owner-bind', credentialId: sId }, ot); // an owner session can't bind either: only the key itself
+    check('owner login: the key binds its passkey; signing in with it brings an owner session (never READ_TOKEN); a stranger\'s passkey signs in as a plain visitor',
+      bound.status === 200 && unknown.status === 404 && inMine.res.status === 200 && /^vo1\./.test(ot) && !JSON.stringify(inMine.res.body).includes(OWNER)
+      && inStranger.res.status === 200 && !inStranger.res.body.owner && viaSession.status === 401 && oEnv.DB.owners.size === 1,
+      [bound.status, unknown.status, inMine.res.status, ot.slice(0, 4), inStranger.res.status, JSON.stringify(inStranger.res.body.owner || null), viaSession.status].join(' | '));
+    const p3 = (ot || 'a.b.c.d').split('.'); const tampered = [p3[0], p3[1], p3[2], (p3[3][0] === 'A' ? 'B' : 'A') + p3[3].slice(1)].join('.');
+    const late = await G1.mintOwnerSession(oEnv, mId, Date.now() - 31 * 864e5);
+    const g = (t, env = oEnv) => G1.ownerOk(bearer(t), env);
+    check('owner login: lib/guard.js takes the owner session and READ_TOKEN; refuses an expired, tampered or other-key session and a passkey session; rotating READ_TOKEN ends every session',
+      (await g(ot)) && (await g(OWNER)) && !(await g(late.token)) && !(await g(tampered)) && !(await g(forged.token)) && !(await g(inStranger.res.body.token)) && !(await g(ot, { ...oEnv, READ_TOKEN: 'rotated-owner-key-0123456789' })) && !(await g(ot, { ...oEnv, READ_TOKEN: '' })), '');
+    const older = await G1.mintOwnerSession(oEnv, mId, Date.now() - 5 * 864e5);
+    const ren = await pk(oEnv, { step: 'owner' }, older.token), renKey = await pk(oEnv, { step: 'owner' }, OWNER), renNo = await pk(oEnv, { step: 'owner' }, 'not-the-owner-key-0000000');
+    const rt = (ren.body.renewed || {}).token || '';
+    check('owner login: an owner session renews itself while used (30 more days, same passkey); the key checks out with nothing to renew; a wrong key is a plain 401',
+      ren.status === 200 && /^vo1\./.test(rt) && parseInt(rt.split('.')[1], 36) > parseInt(older.token.split('.')[1], 36) && rt.split('.')[2] === older.token.split('.')[2] && (await g(rt))
+      && renKey.status === 200 && !renKey.body.renewed && renNo.status === 401 && parseInt(ot.split('.')[1], 36) > Date.now() + 29 * 864e5, [ren.status, renKey.status, renNo.status].join(' | '));
+    // In the page: unlock once, "remember me" binds this device's passkey (the key stays, so nothing logs the owner out); the key
+    // survives a reload, "clear" and "reset my void"; only "sign out" ends it; "sign in" + the PIN brings back an owner session.
+    const dbShared = meEnv.DB; meEnv.DB = memoryMeD1(); // its own database, so the passkey checks after this still count only theirs
+    meEnv.READ_TOKEN = OWNER; meEnv.SALT = 'test-salt';
+    const Z = await fresh({ base: localBase }); await authenticator(Z);
+    const okey = () => Z.p.evaluate(() => localStorage.getItem('a2m.void.owner.v1'));
+    await Z.ask('unlock ' + OWNER, 700);
+    const unlocked = (await okey()) === OWNER && /unlocked/.test(await Z.whisper());
+    await Z.p.keyboard.press('Escape');
+    const owners0 = meEnv.DB.owners.size;
+    await Z.ask('remember me', 0);
+    const zRem = await until(async () => /remembered/.test(await Z.whisper()) && (await Z.whisper()), 10000);
+    const keptKey = (await okey()) === OWNER;
+    await Z.p.reload(); await Z.p.waitForTimeout(800);
+    await Z.ask('clear', 300); await Z.ask('reset my void', 300);
+    const afterReload = (await okey()) === OWNER;
+    await Z.ask('show the board', 800); const zBoard = await Z.page();
+    check('owner login in the page: unlock once and "remember me" makes this passkey the owner login; the key stays through a reload, "clear" and "reset my void"; the board opens',
+      unlocked && /owner login set/.test(zRem || '') && meEnv.DB.owners.size === owners0 + 1 && keptKey && afterReload && /board/i.test(zBoard) && Z.errors.length === 0,
+      [unlocked, zRem, keptKey, afterReload, zBoard.slice(0, 60), Z.errors.join(';')].join(' | '));
+    await Z.p.keyboard.press('Escape');
+    await Z.ask('sign out', 0); await until(async () => /signed out/.test(await Z.whisper()), 6000);
+    const afterOut = await okey();
+    await Z.ask('sign in', 0);
+    const zIn = await until(async () => /welcome back/.test(await Z.whisper()) && (await Z.whisper()), 10000);
+    const afterIn = await okey();
+    check('owner login in the page: only "sign out" ends owner mode; then "sign in" + the device PIN makes the owner again (an owner session, not the key)',
+      afterOut === null && /owner/.test(zIn || '') && /^vo1\./.test(afterIn || '') && (await G1.ownerOk(bearer(afterIn || ''), meEnv)) && Z.errors.length === 0,
+      [afterOut, zIn, (afterIn || '').slice(0, 4), Z.errors.join(';')].join(' | '));
+    await Z.ctx.close(); delete meEnv.READ_TOKEN; delete meEnv.SALT; meEnv.DB = dbShared;
+    // Strangers: nothing public names owner mode, and "unlock ..." from a stranger reads as an ordinary ask.
+    const S = await fresh(() => { window.__tools = {}; document.modelContext = { registerTool: async (x) => { window.__tools[x.name] = x; } }; });
+    const sent = []; S.p.on('request', (r) => sent.push(r.url() + ' ' + (r.postData() || '')));
+    const hintsFor = async (q) => { await S.p.fill('#input', q); await S.p.waitForTimeout(150); return S.p.$$eval('#hints [role="option"]', (d) => d.map((x) => x.textContent)); };
+    const hinted = [...(await hintsFor('un')), ...(await hintsFor('owner')), ...(await hintsFor('show the')), ...(await hintsFor('update'))];
+    await S.p.fill('#input', '');
+    const OWNERISH = /\bunlock\b|owner login|owner mode|show the board|for the owner|update yourself/i;
+    await S.ask('what can you do', 700); const menuText = await S.page(); await S.p.keyboard.press('Escape');
+    await S.ask('show the map', 700); const mapText = await S.page(); await S.p.keyboard.press('Escape');
+    await until(async () => S.p.evaluate(() => !!(window.__tools && window.__tools.void_ask)), 6000);
+    const toolText = await S.p.evaluate(() => JSON.stringify(Object.values(window.__tools).map((t) => [t.name, t.description, t.inputSchema])));
+    const toolsSrc = fs.readFileSync(path.join(root, 'functions', 'tools.json.js'), 'utf8'), llms = fs.readFileSync(path.join(root, 'llms.txt'), 'utf8');
+    const skillEx = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8')).map((n) => { const src = fs.readFileSync(path.join(root, 'skills', n + '.js'), 'utf8'); const m = src.match(/examples\s*:\s*\[([^\]]*)\]/); return m ? m[1] : ''; }).join(' ');
+    check('owner login: unlock and owner sign-in are listed nowhere public (hints, what can you do, the map, WebMCP tools, /tools.json, llms.txt, skill examples)',
+      !hinted.some((h) => OWNERISH.test(h)) && !OWNERISH.test(menuText) && !OWNERISH.test(mapText) && !OWNERISH.test(toolText) && !OWNERISH.test(toolsSrc) && !OWNERISH.test(llms) && !OWNERISH.test(skillEx),
+      JSON.stringify({ hinted, menu: OWNERISH.exec(menuText), map: OWNERISH.exec(mapText), tools: OWNERISH.exec(toolText), src: OWNERISH.exec(toolsSrc), llms: OWNERISH.exec(llms), skills: OWNERISH.exec(skillEx) }));
+    const said = [];
+    for (const a of ['unlock x', 'unlock 0123456789abcdefWRONGWRONGWRONG', 'show the board', 'make this my owner login', 'update yourself']) {
+      await S.ask(a, 800);
+      said.push(a + ' => ' + ((await S.whisper()) + ' / ' + (await S.page()).slice(0, 120)).toLowerCase().split(a.toLowerCase()).join('~'));
+      await S.p.keyboard.press('Escape');
+    }
+    const agentUnlock = await S.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'unlock 0123456789abcdefWRONGWRONGWRONG' }));
+    check('owner login: a stranger\'s "unlock x", a wrong key, "show the board", the bind ask and "update yourself" read as ordinary asks: no owner hint, nothing saved, the key never leaves in a URL or body',
+      said.every((x) => !/owner|unlocked|wrong key|your key|only the|typed by hand/i.test(x.split(' => ')[1])) && !(await S.p.evaluate(() => localStorage.getItem('a2m.void.owner.v1')))
+      && !sent.some((x) => /WRONGWRONG/.test(x)) && !/owner|unlock/i.test(agentUnlock) && S.errors.length === 0,
+      said.join(' || ') + ' | agent: ' + agentUnlock + ' | ' + S.errors.join(';'));
+    await S.ctx.close();
+  }
   // The deploy doesn't run tools/d1/void_passkeys.sql: tables appear on first use; a database that can't make them fails closed.
-  const madeMe = ['void_passkeys', 'void_passkeys_user', 'void_passkey_challenges', 'void_sessions', 'void_sessions_user', 'void_mine', 'void_accounts'].every((x) => meEnv.DB.tables.has(x));
+  const madeMe = ['void_passkeys', 'void_passkeys_user', 'void_passkey_challenges', 'void_sessions', 'void_sessions_user', 'void_owner_passkeys', 'void_mine', 'void_accounts'].every((x) => meEnv.DB.tables.has(x));
   const goodMe = meEnv.DB; meEnv.DB = memoryMeD1({ broken: true });
   const E = await fresh({ base: localBase });
   const authE = await authenticator(E);
@@ -1560,7 +1659,7 @@ try {
   const agentBuy = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'buy 2 bags of coffee for $24' }));
   const agentBoard = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'show the board' }));
   check('defences: an agent (WebMCP) can\'t start a send or a spend, or read the owner\'s board, even in the owner\'s browser',
-    /person at the screen/.test(agentSend) && /person at the screen/.test(agentBuy) && /owner/.test(agentBoard) && gate.calls.length === callsBefore && missesCalls.length === missesBefore, [agentSend, agentBuy, agentBoard, missesCalls.length - missesBefore].join(' | '));
+    /person at the screen/.test(agentSend) && /person at the screen/.test(agentBuy) && /person at the screen/.test(agentBoard) && !/owner|unlock/i.test(agentBoard) && gate.calls.length === callsBefore && missesCalls.length === missesBefore, [agentSend, agentBuy, agentBoard, missesCalls.length - missesBefore].join(' | '));
   await d.ask('send an email to jane@x.com saying hi', 900);
   const line = await d.whisper();
   const agentYes = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'yes' }));
