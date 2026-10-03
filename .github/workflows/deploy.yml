@@ -1,6 +1,7 @@
 # PC-free deploy: every push to main is tested with the full suite, then deployed to the
 # Cloudflare Pages project "a-to-mind" (a-to-mind.com). Same steps as tools/deploy.ps1,
 # which stays as the laptop fallback. PRs into main get a preview deployment.
+# workflow_call is only Void ship helper, which already ran the suite on this commit.
 name: Void deploy
 
 on:
@@ -41,6 +42,7 @@ jobs:
           fetch-depth: 0 # the suite reads git history of the append-only records
 
       - name: Test (full suite)
+        if: github.event_name != 'workflow_call'
         uses: ./.github/actions/void-test
 
       - name: Deploy target

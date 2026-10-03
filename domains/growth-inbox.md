@@ -1,8 +1,8 @@
 # Growth inbox
 
-Open rows are features not yet on main. A run appends a row before it builds. It never deletes an open row. Shipped rows stay, with the main SHA.
+Open rows are features not yet on main. A run claims the oldest open row (node tools/next-growth.mjs) and marks it building in the same commit as the skill. It never deletes an open or building row. Shipped rows stay, with the main SHA.
 
-Push the build to `helper/<slug>`. Void ship helper tests, fast-forwards main, and deploys. Do not open a pull request.
+Push the build to `helper/<slug>`. Void ship helper tests once, fast-forwards main, and deploys. Do not open a pull request.
 
 | status | date | ask | source |
 | --- | --- | --- | --- |
