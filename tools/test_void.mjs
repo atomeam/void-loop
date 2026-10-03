@@ -1940,6 +1940,16 @@ try {
       && !/\/api\/publish/.test(JSON.stringify(magCard)),
     magMod ? magMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing magnetize');
 
+  const expMod = nsMods.find((s) => s.name === 'exportprint');
+  const expFile = expMod && expMod.exportFile();
+  check('exportprint: listed with examples and near misses; examples route only to it; the handoff is 3MF, names the magnetize step for hard magnets, and does not publish',
+    !!expMod && expMod.examples.length >= 4 && (expMod.nearMisses || []).length >= 3
+      && expMod.examples.every((e) => firstNs(e) === 'exportprint') && expMod.nearMisses.every((e) => firstNs(e) !== 'exportprint')
+      && expFile && expFile.format === '3MF' && /one mesh per material/.test(expFile.why)
+      && /1\.5 T/.test(expFile.magnetize) && /no magnetize step/.test(expFile.soft)
+      && !/\/api\/publish/.test(JSON.stringify(expFile)),
+    expMod ? expMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing exportprint');
+
   const esMod = nsMods.find((s) => s.name === 'spanish');
   const esReady = esMod && esMod.spanishReady();
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
