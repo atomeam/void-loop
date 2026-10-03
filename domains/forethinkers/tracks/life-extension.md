@@ -2,6 +2,7 @@
 
 ## Progress ledger
 
+- 2026-10-03 12:11 ET - Held. Planet-restoration advanced this cycle; life-extension next open question (AI-readable registries / methylome watchlist) waits for a later run.
 - 2026-10-03 10:08 ET - Answered the first contribution-map question with three dated human RCTs: senolytic D+Q improves fibrotic MASH histology (Nature Metabolism, 1 Oct 2026); intermittent low-dose rapamycin is safe over 48 weeks with sex-specific lean-mass signal (PEARL, Aging, 4 Apr 2025); semaglutide slows epigenetic aging clocks in a post-hoc RCT analysis (Nature Communications, 19 May 2026). Next: which open AI-readable trial registries and methylome datasets let a small team track replication without claiming a cure.
 - 2026-10-03 04:04 ET - Track created. First research cycle still open.
 
