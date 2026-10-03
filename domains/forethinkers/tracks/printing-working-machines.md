@@ -2,6 +2,7 @@
 
 ## Progress ledger
 
+- 2026-10-03 12:11 ET - Held. Planet-restoration advanced; browser multi-object 3MF emitter question stays open on printing/void-stage.
 - 2026-10-03 08:07 ET - Answered: multi-material export format is 3MF (ISO/IEC 25422:2025) with Core basematerials naming the five MIT regions; slicer extruder mapping stays vendor metadata. STL alone cannot carry multi-material. Next: browser path that emits a valid multi-object 3MF a consumer slicer opens with five material slots.
 - 2026-10-03 06:12 ET - Answered: MIT hard-magnet pellet is nylon-12 / strontium ferrite (69 vol%), magnetized post-print at 1.5 T; bonded Neo needs 3-4 T throughout. Benchtop Mag-Instruments Pulse Magnetizer reaches 4 T at dia 1.25 cm sample OD (figure scale), so yes for MIT feedstock with margin and yes for bonded Neo at ~1 cm OD. Next: multi-material print file format for slicer export.
 - 2026-10-03 04:04 ET - Answered: the magnetize post-step is independent of the MIT printer. Bonded NdFeB prints are saturated on a separate impulse magnetizer (about 3-7 T). Soft-magnetic cores need no magnetize step. Next: name the peak field and fixture size for a figure-scale hard-magnet volume.
