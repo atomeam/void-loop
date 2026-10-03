@@ -169,3 +169,6 @@ Format: `ISO | slug | role | event | note`
 2026-10-03T04:02 ET | grok (quick build) | ship | loan payment skill: monthly payment / total interest for mortgages, car and personal loans (standard amortizing formula). Ask monthly payment on a $250000 mortgage at 6.5% for 30 years. Bench 227. Branch grok/quick-loan-payment.
 2026-10-03T04:29:11 ET | grok (quick build) | ship | earthquake skill (USGS catalog): ask earthquakes near Tokyo / recent earthquakes / was there an earthquake in California. Branch grok/quick-quake.
 2026-10-03T04:40 ET | grok (hourly builder) | ship | loan payment skill (money industry): monthly payment, total interest, first-year principal vs interest, and extra-payment payoff (months sooner + interest saved). Ask monthly payment on a $250000 mortgage at 6.5% for 30 years, or with $200 extra a month. Branch grok/loan-payment.
+2026-10-03T05:09 ET | grok (quick build) | build | pollen skill WIP on Victus (Open-Meteo CAMS Europe); left uncommitted.
+2026-10-03T05:20 ET | grok (hourly builder) | ship | pollen skill (Open-Meteo CAMS Europe allergy levels): ask pollen in Paris / allergy forecast in Berlin / how bad is the pollen in London / is pollen high in Madrid. Leading type, grains/m3 band + tip, day peak; Europe coverage noted plainly. Connects air/UV/quake outdoor-health family. Branch grok/pollen.
+
