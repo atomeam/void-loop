@@ -4159,6 +4159,7 @@ return { ok: true, detail: 'timer-reset' };
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
       { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } }
+      rememberAsk(text);
       if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingPublish && publishAnswer(lower0)) return;
       if (await handlePublishAsk(lower0)) return;
@@ -4242,10 +4243,32 @@ return { ok: true, detail: 'timer-reset' };
       const words = q.split(/\s+/).filter(Boolean);
       return words.length && words.every((w) => hl.includes(w)) ? 1 : 0;
     }
+    const ASKS_KEY = 'a2m.void.asks.v1';
+    function recentAsks() {
+      try {
+        const raw = JSON.parse(localStorage.getItem(ASKS_KEY) || '[]');
+        return Array.isArray(raw) ? raw.filter((s) => typeof s === 'string' && s.trim()).slice(0, 5) : [];
+      } catch (_) { return []; }
+    }
+    function rememberAsk(text) {
+      const t = String(text || '').trim().slice(0, 240);
+      if (!t || /^(?:unlock\s*)+\S{16,}\s*$/i.test(t)) return;
+      try {
+        const prev = recentAsks().filter((s) => s.toLowerCase() !== t.toLowerCase());
+        localStorage.setItem(ASKS_KEY, JSON.stringify([t].concat(prev).slice(0, 5)));
+      } catch (_) {}
+    }
+    let askBoxTouched = false;
     function drawHints() {
       const q = input.value.trim().toLowerCase();
       hintSel = -1;
-      if (!q) { hintList = []; hintsEl.classList.remove('on'); hintsEl.innerHTML = ''; return; }
+      if (!q) {
+        if (!askBoxTouched || document.activeElement !== input) { hintList = []; hintsEl.classList.remove('on'); hintsEl.innerHTML = ''; return; }
+        hintList = recentAsks();
+        hintsEl.innerHTML = hintList.map((h, i) => '<div role="option" data-i="' + i + '">' + esc(h) + '</div>').join('');
+        hintsEl.classList.toggle('on', hintList.length > 0);
+        return;
+      }
       hintList = allHints().map((h) => [h, scoreHint(h, q)]).filter((x) => x[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 5).map((x) => x[0]);
       hintsEl.innerHTML = hintList.map((h, i) => {
         const at = h.toLowerCase().indexOf(q);
@@ -4261,8 +4284,9 @@ return { ok: true, detail: 'timer-reset' };
     }
     hintsEl.addEventListener('mousedown', (e) => { const d = e.target.closest('[data-i]'); if (d) { e.preventDefault(); takeHint(hintList[+d.dataset.i]); } });
     input.addEventListener('input', drawHints);
-    input.addEventListener('blur', () => setTimeout(() => { hintsEl.classList.remove('on'); }, 120));
-    input.addEventListener('focus', drawHints);
+    input.addEventListener('blur', () => setTimeout(() => { hintsEl.classList.remove('on'); hintsEl.innerHTML = ''; }, 120));
+    input.addEventListener('pointerdown', () => { askBoxTouched = true; drawHints(); });
+    input.addEventListener('focus', () => { if (askBoxTouched) drawHints(); });
     document.addEventListener('keydown', (e) => {
       const typing = /^(INPUT|TEXTAREA)$/.test((e.target && e.target.tagName) || '') || (e.target && e.target.isContentEditable);
       if ((e.key === 'k' || e.key === 'K') && (e.metaKey || e.ctrlKey)) { e.preventDefault(); input.focus(); input.select(); return; }

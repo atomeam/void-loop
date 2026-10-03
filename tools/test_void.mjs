@@ -1775,6 +1775,18 @@ try {
       mod ? mod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing ' + name);
   }
   const shareMod = nsMods.find((s) => s.name === 'share');
+  const recentMod = nsMods.find((s) => s.name === 'recent');
+  const mem = { bag: {} };
+  const store = { getItem: (k) => (k in mem.bag ? mem.bag[k] : null), setItem: (k, v) => { mem.bag[k] = String(v); } };
+  if (recentMod) { recentMod.rememberAsk('map of Lisbon', store); recentMod.rememberAsk('weather in Kyoto', store); }
+  const again = recentMod && recentMod.recentAsks(store);
+  check('recent: listed with examples and near misses; examples route only to it; an empty box stays empty until focus and recent asks stay in this browser',
+    !!recentMod && recentMod.examples.length >= 4 && (recentMod.nearMisses || []).length >= 3
+      && recentMod.examples.every((e) => firstNs(e) === 'recent') && recentMod.nearMisses.every((e) => firstNs(e) !== 'recent')
+      && Array.isArray(again) && again[0] === 'weather in Kyoto' && again[1] === 'map of Lisbon'
+      && /a2m\.void\.asks\.v1/.test(fs.readFileSync(path.join(root, 'index.html'), 'utf8'))
+      && !/<div id="hints"[^>]*class="on"/.test(fs.readFileSync(path.join(root, 'index.html'), 'utf8')),
+    recentMod ? recentMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing recent');
   const shareHref = shareMod && shareMod.shareLink('share this card: rain in Lisbon');
   check('share: listed with examples and near misses; examples route only to it; a card link uses the existing share target and does not publish',
     !!shareMod && shareMod.examples.length >= 4 && (shareMod.nearMisses || []).length >= 3
