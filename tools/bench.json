@@ -153,7 +153,7 @@
   },
   {
     "ask": "calculate a 20% tip on 45",
-    "want": "calc"
+    "want": "skill:tip"
   },
   {
     "ask": "what is 2 to the power of 10",
@@ -329,11 +329,11 @@
   },
   {
     "ask": "what is a 20% tip on 45",
-    "want": "calc"
+    "want": "skill:tip"
   },
   {
     "ask": "split 120 between 4 people",
-    "want": "calc"
+    "want": "skill:tip"
   },
   {
     "ask": "convert 30 celsius to fahrenheit",
@@ -597,7 +597,7 @@
   },
   {
     "ask": "18% tip on 64 dollars",
-    "want": "calc"
+    "want": "skill:tip"
   },
   {
     "ask": "what is 12 squared",
@@ -681,7 +681,7 @@
   },
   {
     "ask": "how much is a 15% tip on 82.50",
-    "want": "calc"
+    "want": "skill:tip"
   },
   {
     "ask": "is 91 prime",
@@ -994,5 +994,17 @@
   {
     "ask": "summon motelet",
     "want": "skill:figure"
+  },
+  {
+    "ask": "split $85 three ways with 20% tip",
+    "want": "skill:tip"
+  },
+  {
+    "ask": "tip on $67.50 at 18%",
+    "want": "skill:tip"
+  },
+  {
+    "ask": "how much tip for a $52 bill at 15%",
+    "want": "skill:tip"
   }
 ]
