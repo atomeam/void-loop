@@ -1,1 +1,1 @@
-PLACEHOLDER_LOAD_FROM_FILE
+@/workspace/forethinkers-out/FINAL_GROWTH.md
