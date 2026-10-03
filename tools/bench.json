@@ -202,5 +202,7 @@
   {"ask": "idea vault", "want": "skill:make"},
   {"ask": "show void progress", "want": "skill:make"},
   {"ask": "hypothesis ledger", "want": "skill:make"},
-  {"ask": "uap timeline", "want": "skill:make"}
+  {"ask": "uap timeline", "want": "skill:make"},
+  {"ask": "clear calender", "want": "skill:calendar"},
+  {"ask": "delete all my events", "want": "skill:calendar"}
 ]

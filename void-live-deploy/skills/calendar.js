@@ -80,6 +80,11 @@ export function parseCalendar(text) {
     || /^(?:upcoming|my agenda)\b/i.test(t)) {
     return { kind: 'show' };
   }
+  // "clear calendar" / "delete all my events": empties it, after one tap (it can't be undone)
+  if (/^(?:clear|empty|wipe|erase|reset|delete\s+all(?:\s+of)?)\s+(?:out\s+)?(?:my\s+|the\s+)?(?:calender|calendar|agenda)(?:\s+events)?$/i.test(t)
+    || /^(?:clear|delete|remove|erase)\s+(?:all\s+)?(?:of\s+)?(?:my\s+)?(?:calendar\s+|calender\s+)?events$/i.test(t)) {
+    return { kind: 'clear' };
+  }
   if (/^(?:remove|close|hide|dismiss)\s+(?:my\s+)?(?:the\s+)?(?:calender|calendar|agenda)\b/i.test(t)) {
     return { kind: 'hide' };
   }
@@ -135,6 +140,15 @@ async function run(text, api) {
     else if (api.closePage) api.closePage();
     return 'calendar';
   }
+  if (q.kind === 'clear') {
+    const n = load().length;
+    if (!n) { if (api.say) api.say('your calendar is already empty'); return 'calendar'; }
+    const el = showPage((p) => { p.innerHTML = '<h2>Clear your calendar?</h2><div class="sub">' + n + ' event' + (n === 1 ? '' : 's')
+      + ' saved in this browser. This can\'t be undone.</div><button type="button" class="tr-copy cal-clear" style="margin-top:12px">clear all ' + n + '</button>'; });
+    const b = el.querySelector('.cal-clear');
+    if (b) b.addEventListener('click', () => { save([]); draw(el, api); if (api.say) api.say('calendar cleared'); if (api.summon) api.summon('calendar', { hide: true }); });
+    return 'calendar';
+  }
   if (q.kind === 'when') {
     if (api.say) api.say('when? e.g. "add ' + (q.title || 'dentist') + ' to my calendar Oct 12 at 3"');
     return 'calendar';
@@ -153,8 +167,8 @@ async function run(text, api) {
 
 export default {
   name: 'calendar',
-  examples: ['my calendar', 'agenda', "what's next", 'call Sam next Tuesday at 4', 'dentist October 12 at 3pm'],
-  nearMisses: ['make a 5 minute timer', 'what is a calendar', 'schedule a meeting with Sam', 'book a call with Sam', 'time in Tokyo'],
+  examples: ['my calendar', 'agenda', "what's next", 'call Sam next Tuesday at 4', 'dentist October 12 at 3pm', 'clear calender'],
+  nearMisses: ['make a 5 minute timer', 'what is a calendar', 'schedule a meeting with Sam', 'book a call with Sam', 'time in Tokyo', 'clear the stage'],
   match(lower, text) { return !!parseCalendar(text); },
   run
 };

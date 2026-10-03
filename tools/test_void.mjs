@@ -623,6 +623,17 @@ try {
     check('owner board: what Void earned (net, sales), its milestones and the free-model shortfalls sit on top of the board',
       /Earned \$98\.00/.test(bp) && /2 sales/.test(bp) && /sales-1/.test(bp) && /fell short 3 times/.test(bp) && /make me an app/.test(bp) && !O.errors.length, bp.slice(0, 200));
     await O.ctx.close(); }
+  // "unlock <key>" is the first thing handled: pasted with or without the space (or "unlock" twice) it is saved on this
+  // device and nothing carrying the key leaves the page (it once went to the answer model and the miss board).
+  { const U = await fresh(); const leaked = []; U.p.on('request', (r) => { if (/0123456789abcdef0123/.test(r.url() + (r.postData() || ''))) leaked.push(r.url()); });
+    const keys = [];
+    for (const a of ['unlock 0123456789abcdef0123456789abcdef', 'unlock0123456789abcdef0123456789abcdef', 'unlockunlock 0123456789abcdef0123456789abcdef']) {
+      await U.p.evaluate(() => localStorage.removeItem('a2m.void.owner.v1'));
+      await U.ask(a, 700); keys.push(await U.p.evaluate(() => localStorage.getItem('a2m.void.owner.v1')));
+    }
+    check('unlock: with or without the space (or doubled) the key is saved on this device, and no request carries it',
+      keys.every((k) => k === '0123456789abcdef0123456789abcdef') && !leaked.length && !U.errors.length, JSON.stringify(keys) + ' ' + leaked.join(','));
+    await U.ctx.close(); }
   // How-to asks, "what are you", "remove every clock", "reset my void" (list items 48, 88, 89, 96).
   { const H = await fresh(); const net = []; H.p.on('request', (r) => { if (/wikipedia\.org|\/api\/(answer|miss)$/.test(r.url())) net.push(r.url()); });
     await H.ask('how do I make a timer', 700); const how = await H.page(); const lit = await H.p.$eval('.vpage.on li.focus', (e) => e.textContent).catch(() => '');

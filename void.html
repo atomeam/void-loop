@@ -2675,6 +2675,17 @@ return { ok: true, detail: 'timer-reset' };
       requestAnimationFrame(() => el.classList.add('on'));
       return el;
     }
+    // a "copy" button under an answer: copies the heading and the text (not the buttons), says "copied"
+    function addCopy(el) {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'tr-copy vcopy'; b.textContent = 'copy'; b.style.marginTop = '10px';
+      b.addEventListener('click', async () => {
+        const c = el.cloneNode(true); c.querySelectorAll('button, .src').forEach((x) => x.remove());
+        const txt = Array.from(c.children).map((x) => x.innerText || x.textContent).map((x) => x.trim()).filter(Boolean).join('\n\n');
+        let ok = false; try { await navigator.clipboard.writeText(txt); ok = true; } catch (_) {}
+        b.textContent = ok ? 'copied' : 'select and copy'; setTimeout(() => { b.textContent = 'copy'; }, 1600);
+      });
+      el.appendChild(b);
+    }
     function esc(t) { const d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
     function wantsMenu(lower) {
       return /^(menu|the menu|show (me )?(the )?menu|open (the )?menu|options|commands|what can i do( here)?|what can i ask|list (the )?skills|skills)\s*[?.!]?$/.test(lower);
@@ -2756,6 +2767,7 @@ return { ok: true, detail: 'timer-reset' };
       const body = esc(j.answer).replace(/\n+/g, '</p><p>');
       el.innerHTML = '<h2>' + esc(text) + '</h2><p>' + body + '</p>'
         + '<div class="src">Source: ' + (srcs || 'no source found') + ' · written by Void from these sources</div>';
+      addCopy(el);
       say('done');
       return 'answer';
     }
@@ -2834,6 +2846,7 @@ return { ok: true, detail: 'timer-reset' };
           + (j.thumbnail && j.thumbnail.source ? '<img alt="" src="' + esc(j.thumbnail.source) + '">' : '')
           + '<p>' + esc(j.extract || '') + '</p>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
+        addCopy(el);
         return 'wikipedia';
       } catch (_) {
         try {
@@ -4143,6 +4156,8 @@ return { ok: true, detail: 'timer-reset' };
       const text = (raw || '').trim();
       if (!text) return;
       const lower0 = text.toLowerCase();
+      // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
+      { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } }
       if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingPublish && publishAnswer(lower0)) return;
       if (await handlePublishAsk(lower0)) return;
@@ -4176,7 +4191,6 @@ return { ok: true, detail: 'timer-reset' };
       if (!skillsLoaded) say('waking up');
       if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);
       if (await runLearnedSkills(text, lower0)) return;
-      { const u = text.match(/^unlock\s+(\S{16,})$/i); if (u) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } }
       if (wantsBoard(lower0)) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
