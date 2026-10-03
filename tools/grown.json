@@ -15,5 +15,6 @@
   {"ask": "zz kv write probe 7", "missed": "2026-09-27", "now": "a probe, dropped quietly", "expect": "quiet"},
   {"ask": "make me an app", "missed": "2026-09-29", "now": "asks what the app should do, then builds it from stage parts (to-do, timer, notes, counter, calculator, clock); what it can't build yet goes on the board as that real want", "expect": "page", "text": "What should it do?"},
   {"ask": "que coño es esto?", "missed": "2026-10-01", "now": "says what Void is and how to use it, in Spanish", "expect": "page", "text": "Esto es Void"},
-  {"ask": "ça marche comment ?", "missed": "2026-10-01", "now": "says how Void works, in French", "expect": "page", "text": "C’est Void"}
+  {"ask": "ça marche comment ?", "missed": "2026-10-01", "now": "says how Void works, in French", "expect": "page", "text": "C’est Void"},
+  {"ask": "capital of australia", "missed": "2026-10-03", "now": "answers Canberra even when the live country service (REST Countries) fails or is slow, from a built-in list of capitals", "expect": "page", "text": "Canberra"}
 ]

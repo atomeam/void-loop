@@ -181,5 +181,13 @@
   {"ask": "convert 1 mile to feet", "want": "calc"},
   {"ask": "what is 3 dozen", "want": "calc"},
   {"ask": "how many teaspoons in a tablespoon", "want": "calc"},
-  {"ask": "what is 1 million divided by 12", "want": "calc"}
+  {"ask": "what is 1 million divided by 12", "want": "calc"},
+  {"ask": "capital of japan", "want": "skill:country"},
+  {"ask": "what is the capital of kenya", "want": "skill:country"},
+  {"ask": "capital city of peru", "want": "skill:country"},
+  {"ask": "what is 40 percent of 90", "want": "calc"},
+  {"ask": "triple 25", "want": "calc"},
+  {"ask": "quarter of 200", "want": "calc"},
+  {"ask": "how many hours in 2 days", "want": "calc"},
+  {"ask": "what is 6 dozen", "want": "calc"}
 ]
