@@ -40,6 +40,15 @@ nodes:
     date: 2025-06-06
     tracks: [printing-working-machines, void-stage]
     claim: "Export-to-print emits 3MF (ISO/IEC 25422:2025) with Core basematerials naming the five MIT material classes plus display colors. Extruder mapping is slicer-vendor metadata, not Core. STL cannot carry multi-material in one file. Prusa prefers 3MF over AMF (KB accessed 2026-10-03)."
+  - id: senolytics-mash-dq
+    kind: shared-part
+    status: established
+    part: intermittent senolytic D+Q fibrosis improvement in fibrotic MASH
+    title: "Senolytics dasatinib and quercetin in metabolic dysfunction-associated steatohepatitis: a proof-of-principle randomized, controlled trial"
+    url: https://www.nature.com/articles/s42255-026-01643-4
+    date: 2026-10-01
+    tracks: [life-extension]
+    claim: "Phase-2 RCT (n=31): intermittent dasatinib+quercetin achieved ≥1-stage fibrosis improvement without MASH worsening in 47% vs 7% placebo (P=0.02); MASH resolution 53% vs 7%. snRNA-seq showed lower senescence and fibrosis signatures. Hypothesis-generating (small n). Nature Metabolism 1 Oct 2026; NCT05506488."
   - id: printed-actuator-moves-figure-joint
     kind: shared-part
     status: hypothesis
@@ -62,6 +71,7 @@ nodes:
 
 ## Cycle log
 
+- 2026-10-03 10:08 ET. Senolytics-mash-dq established (Nature Metabolism 1 Oct 2026; D+Q 47% vs 7% fibrosis improvement). PEARL rapamycin safety (Aging 4 Apr 2025) and semaglutide epigenetic slowing (Nat Commun 19 May 2026) logged on life-extension track. Printing/void-stage 3MF work from 08:07 stays folded on this branch.
 - 2026-10-03 08:07 ET. Multimaterial-export-3mf established (ISO/IEC 25422:2025; Core basematerials; Prusa prefers 3MF). Export-to-print stays blocked on browser emitter + slicer test. Figure-joint link stays hypothesis.
 - 2026-10-03 06:12 ET. Figure-scale-benchtop-magnetize established. MIT hard magnet is Sr-ferrite at 1.5 T (Canada et al. VPP 2026); bonded Neo needs 3-4 T (Magnequench); Mag-Instruments PM reaches 4 T at dia 1.25 cm sample OD. Export-to-print stays blocked on format. Figure-joint link stays hypothesis.
 - 2026-10-03 04:04 ET. Magnetize-outside-printer established from Sloma et al. 2025 (7 T impulse on FDM NdFeB) plus MIT News 2026-02-18 (magnetize is post-print; in-print is next). Figure-joint link stays hypothesis. Export-to-print stays blocked on main.
