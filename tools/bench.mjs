@@ -4,6 +4,8 @@
 //   node tools/bench.mjs            prints each ask and what answered it, then the totals
 //   node tools/bench.mjs --score    prints only {"score","total","wrong":[...]} (the tests read this; tools/bench.best.json is the floor)
 //   node tools/bench.mjs --last 10  replays only the last 10 asks (fast while growing a new round; the score and floor use all)
+// Asks run BENCH_PAR at a time (default 6), each in its own browser context, so the order and the result don't change;
+// each waits until the page has logged its answer (at least 1.6 s, at most 4 s), so a busy machine doesn't miss one.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { chromium } from 'playwright-core';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
@@ -18,9 +20,9 @@ const base = 'http://127.0.0.1:' + server.address().port + '/';
 const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe'].find((p) => p && fs.existsSync(p));
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
-const out = [];
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
-for (const { ask: a, want } of (lastN ? asks.slice(-lastN) : asks)) {
+const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
+async function one({ ask: a, want }) {
   const ctx = await browser.newContext(); const miss = [];
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => { const u = r.request().url();
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Topic' }] } }));
@@ -46,14 +48,18 @@ for (const { ask: a, want } of (lastN ? asks.slice(-lastN) : asks)) {
     return r.fulfill({ status: 204, body: '' }); });
   const p = await ctx.newPage(); await p.goto(base); await p.waitForTimeout(600);
   await p.fill('#input', a); await p.keyboard.press('Enter'); await p.waitForTimeout(1600);
+  const said = await p.$eval('#whisper', (e) => e.textContent).catch(() => ''); // read before it fades
+  await p.waitForFunction((q) => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => x.ask === q), a, { timeout: 2400 }).catch(() => {});
   const log = await p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'));
   const last = log.filter((x) => x.ask === a).pop();
-  const said = await p.$eval('#whisper', (e) => e.textContent).catch(() => '');
   const note = last ? String(last.note || '') : (said && !miss.length ? 'said' : '');
   const right = !miss.length && new RegExp('^(' + want + ')').test(note);
-  out.push({ ask: a, want, by: note || '(none)', right });
   await ctx.close();
+  return { ask: a, want, by: note || '(none)', right };
 }
+const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || 6);
+let next = 0;
+await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]); } }));
 await browser.close(); server.close();
 if (process.argv.includes('--score')) { console.log(JSON.stringify({ score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by) })); process.exit(0); }
 for (const x of out) console.log((x.right ? '  ok  ' : ' ---- ') + x.ask.padEnd(42) + (x.by + (x.right ? '' : '   (wants ' + x.want + ')')));
