@@ -2816,9 +2816,10 @@ return { ok: true, detail: 'timer-reset' };
       if (vpageEl !== el) return 'answer';
       if (!j || !j.answer) { say(''); return showArticle(text); }
       const srcs = (j.sources || []).map((s, i) => '<a href="' + esc(/^https:\/\//i.test(String(s.url || '')) ? s.url : '#') + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.title) + '</a>').join(' · '); // https links only
-      const body = esc(j.answer).replace(/\n+/g, '</p><p>');
-      el.innerHTML = '<h2>' + esc(text) + '</h2><p>' + body + '</p>'
-        + '<div class="src">Source: ' + (srcs || 'no source found') + ' · written by Void from these sources</div>';
+      // fenced code keeps its whitespace and gets a monospace block (fixHtml); sources are a citation when one
+      // genuinely matched, not a claim that nothing else went into the answer
+      el.innerHTML = '<h2>' + esc(text) + '</h2>' + fixHtml(j.answer)
+        + '<div class="src">' + (srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
       addCopy(el);
       say('done');
       return 'answer';

@@ -1,4 +1,7 @@
-// Void's answer engine: any ask no skill covers gets a short sourced answer. Sources: Wikipedia search + summaries.
+// Void's answer engine: any ask no skill covers gets answered directly, from the model's own knowledge, citing a
+// Wikipedia source when one genuinely matches; it never refuses just because nothing matched (there's no Wikipedia
+// page for "write me a script"). Without a model (VOID_ANSWER_MODELS=off or Workers AI unbound) it falls back to
+// the plain Wikipedia extract, since there's no model left to generate anything beyond that.
 // Gemma 4 26B on Workers AI is the one free model (answers and fixes). A tiny router (lib/router.js) runs while the sources
 // load: skill / simple / hard. A hard ask may pay for a stronger model only from what Void earned, under a standing spend said
 // yes to on the confirm line; otherwise Gemma answers and the stronger model is recorded, not called ('would escalate' in
@@ -97,7 +100,9 @@ export async function onRequestPost({ request, env, waitUntil }) {
   return Response.json({ answer, sources: src.map(({ title, url, edited }) => ({ title, url, edited })), at: new Date().toISOString() });
 }
 
-const ANSWER_SYSTEM = 'You are Void. Answer the question in 2 to 6 plain sentences, using only the numbered sources. Cite sources inline like [1]. If the sources do not answer it, say briefly what you could not find. No preamble, no markdown headings. ' + INJECTION_RULE;
+// Sources are help, not a cage: cite one when it actually answers the question, but never refuse just because
+// none matched (they're only Wikipedia searches; a script, a plan, a proof, a poem has no Wikipedia page at all).
+const ANSWER_SYSTEM = 'You are Void. Answer the question directly and completely, from what you know. Use a numbered source only when it genuinely answers part of the question, citing it inline like [1]; when the sources do not cover it, answer anyway from your own knowledge and reasoning. Never refuse or say you lack sources: that is only true if you genuinely cannot help at all. For code, write the whole thing in a fenced code block with the language named, then a short explanation after. Keep plain answers to 2 to 6 sentences unless the question needs more (a full script, a step-by-step, a worked example). No preamble, no markdown headings. ' + INJECTION_RULE;
 const noThink = (t) => String(t || '').replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/^[\s\S]*<\/think>/i, '').trim();
 function within(p, ms) { let t; return Promise.race([p, new Promise((_, rej) => { t = setTimeout(() => rej(new Error('timeout')), ms); })]).finally(() => clearTimeout(t)); }
 
@@ -121,7 +126,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key) {
   // one paid call: only with earned budget > 0 AND an approved standing spend with room left (lib/router.js paidAccess)
   const tryPaid = async (access, why) => {
     try {
-      const r = await within(env.AI.run(access.model, { messages, max_tokens: 2000 }), STRONG_TIMEOUT_MS);
+      const r = await within(env.AI.run(access.model, { messages, max_tokens: 3000 }), STRONG_TIMEOUT_MS);
       const out = redact(noThink(pick(r)));
       await recordSpend(env, access, costCents(access.model, r, JSON.stringify(messages).length, String(pick(r)).length), { why });
       return out;
@@ -143,7 +148,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key) {
   const log = (extra) => later(logRoute(env, { ask, masked, route: route.kind, skill: route.skill, score: route.score, scores: route.scores, ms: route.ms, waited, model, outcome, would, ...extra }));
   if (!answer) {
     try {
-      const r = await env.AI.run(MODEL, { messages, max_tokens: 1200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+      const r = await env.AI.run(MODEL, { messages, max_tokens: 2200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
       answer = redact(String(pick(r)).trim());
       model = MODEL;
       if (!answer) throw new Error('empty');
