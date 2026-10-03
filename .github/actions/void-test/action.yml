@@ -35,6 +35,11 @@ runs:
     - name: node tools/fringe.mjs (fringe ledger rules)
       shell: bash
       run: node tools/fringe.mjs
+    - name: python tools/forethinkers.py (map labels, findings, gate, convergence filter)
+      shell: bash
+      run: |
+        python tools/forethinkers.py check
+        python tools/forethinkers.py selftest
     - name: node tools/test_glyphs.mjs (cross-sense board draft)
       shell: bash
       run: node tools/test_glyphs.mjs

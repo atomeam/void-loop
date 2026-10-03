@@ -22,6 +22,7 @@ A rule an agent wrote and signed with Adam's name, without his words, is removed
 - Deploy: from `void-live-deploy`: `npx wrangler pages deploy . --project-name=a-to-mind --commit-dirty=true`
 - After deploy, confirm the live page still contains: `mountClock`, `mountSticky`, `mountNotepad`, `mountLink`, `mountImage`, `mountList`, `mountCalc`, `mountTimer`, `mountCounter`, `mountShape` (plus any new mount).
 - Growth board: `domains\\void.growth.md`
+- The Forethinkers (research pathway for printed machines, living figures, life extension, planet restoration): `domains\\forethinkers\\brief.md`. One shared part or blocked Void stage per cycle; map in `convergence.md`; `.github/workflows/forethinkers.yml` (manual first, schedule off until `FORETHINKERS_SCHEDULE` is on).
 - Live-site QA notes: `domains\\void.surface-qa.md`
 - Company catalog: `domains\\A2M.ops.md`
 - `C:\\Users\\adamm\\hold` is a separate repo (bridge + ledger work). The live site is `a-to-mind-loop\\void.html`.
