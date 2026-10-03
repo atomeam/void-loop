@@ -1990,6 +1990,15 @@ try {
       && !/\/api\/publish/.test(JSON.stringify(magCard)),
     magMod ? magMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing magnetize');
 
+  const tossMod = nsMods.find((s) => s.name === 'throw-off');
+  const toss = tossMod && tossMod.throwOff({ open: true, figure: true });
+  check('throw-off: listed with examples and near misses; examples route only to it; the toss clears the stage and does not publish',
+    !!tossMod && tossMod.examples.length >= 4 && (tossMod.nearMisses || []).length >= 3
+      && tossMod.examples.every((e) => firstNs(e) === 'throw-off') && tossMod.nearMisses.every((e) => firstNs(e) !== 'throw-off')
+      && toss && toss.html === '' && toss.published === false && toss.had === true,
+    tossMod ? tossMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing throw-off');
+
+
   const esMod = nsMods.find((s) => s.name === 'spanish');
   const esReady = esMod && esMod.spanishReady();
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
