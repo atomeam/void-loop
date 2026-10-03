@@ -222,4 +222,9 @@
   {"ask": "how strong is the sun in LA", "want": "skill:uv"},
   {"ask": "should I wear sunscreen in Phoenix", "want": "skill:uv"},
   {"ask": "what's the UV in Tokyo", "want": "skill:uv"}
+,
+{"ask": "monthly payment on a $250000 mortgage at 6.5% for 30 years", "want": "skill:loan"},
+{"ask": "car loan $20000 at 7% for 5 years", "want": "skill:loan"},
+{"ask": "loan payment $15000 at 5.9% over 36 months", "want": "skill:loan"},
+{"ask": "what's the payment on a $300k mortgage 6% 30 year", "want": "skill:loan"}
 ]
