@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · co-agency ledger (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:760px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:16px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+h2{font-size:14px;font-weight:normal;color:#fff;margin:8px 0 0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+li small{color:#77777f}
+.who{display:inline-block;min-width:9em;color:#8ab4ff}
+.flag{color:#f0a07a}
+</style>
+</head>
+<body>
+<main>
+  <h1>co-agency ledger · draft · not published</h1>
+  <p class="note">Who decided and who built, 2026-10-02 to 03, from domains/void.agents.log.md and the git history. People set direction and keep the keys; agents build, test and merge on green. Nothing here scores anyone.</p>
+
+  <h2>Decided by Adam (the owner)</h2>
+  <ul>
+    <li>Void grows every hour, no hold-gates; many small improvements that never hurt the site.</li>
+    <li>The fringe step runs on top of growth, one family per run, no repeat within six; sources stay hypotheses; emit stays false.</li>
+    <li>Correction: the AI → SI story is the 2026-09-29 executive order, not self-improvement.</li>
+    <li>"Make sure all this is really working and not just in chat."</li>
+    <li>Kept with Adam: spend, secrets, the owner key and the confirm line.</li>
+  </ul>
+
+  <h2>Built by agents</h2>
+  <ul>
+    <li><span class="who">claude</span>hourly rounds: benchmark 82 → 183, fringe runs 1–8, watchdog, fringe ledger checker, tools/append.mjs, bench --last <small>(through PRs, merged on green)</small></li>
+    <li><span class="who">Chief of Staff</span>"what did you do today" skill <small>(pushed straight to main)</small></li>
+    <li><span class="who">grok</span>books, TV, teams, public holidays; remote jobs <small>(pushed straight to main)</small></li>
+  </ul>
+
+  <h2>Where the hand-off broke</h2>
+  <ul>
+    <li class="flag">17:23 ET (21:23 UTC): a direct push to main failed its own deploy (a test used a name out of scope). claude fixed it through a PR; main was red for about 50 minutes.</li>
+    <li class="flag">Three times, direct pushes collided with an open PR (agents log, benchmark files). Each was merged by hand keeping both sides.</li>
+  </ul>
+  <p class="note">Open question (hypothesis): if every agent went through a PR, CI would catch these before main, at the cost of a few minutes per change.</p>
+</main>
+</body>
+</html>

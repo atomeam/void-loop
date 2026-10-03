@@ -173,5 +173,25 @@
     ],
     "sha256": "2a24abee75edf1fff9c8140ded62182d9e4101cc40ef694acf9cf3e8c7b06b0b",
     "emit": false
+  },
+  {
+    "run": 8,
+    "at": "2026-10-03T00:41:27Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency.html",
+    "sources": [
+      {
+        "claim": "Who built what on 2026-10-02/03 (claude via PRs; Chief of Staff and grok pushed to main)",
+        "source": "domains/void.agents.log.md; git log",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Routing every agent through PRs would catch breakages before main",
+        "source": "git log (31a5af6 red deploy, three merge collisions)",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "cb3f2c6af762cd5c303c005469330765f5c2a7f0017250ff1cfa1b763eb1efe4",
+    "emit": false
   }
 ]

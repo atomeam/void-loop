@@ -2968,6 +2968,8 @@ return { ok: true, detail: 'timer-reset' };
     const TIME_S = { second: 1, minute: 60, hour: 3600, day: 86400, week: 604800, year: 31557600 };
     function wordMath(lower) {
       let t = String(lower || '').toLowerCase().replace(/[?!]+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').trim();
+      // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
+      t = t.replace(/(\d+(?:\.\d+)?)\s+(thousand|million|billion|trillion)\b/g, (_, n, u) => String(+n * { thousand: 1e3, million: 1e6, billion: 1e9, trillion: 1e12 }[u]));
       let m = t.match(/^is\s+(\d{1,15})\s+(?:a\s+)?prime(?:\s+number)?$/);
       if (m) { const n = +m[1]; let p = n > 1; for (let i = 2; p && i * i <= n; i++) if (n % i === 0) p = i; return { value: p === true ? 'Yes' : 'No', note: p === true ? n + ' is prime.' : n + ' is not prime' + (typeof p === 'number' ? ' (' + p + ' × ' + n / p + ')' : '') + '.' }; }
       m = t.match(/^how\s+many\s+(second|minute|hour|day|week)s?\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+(minute|hour|day|week|year)$/);
@@ -3000,6 +3002,20 @@ return { ok: true, detail: 'timer-reset' };
           if (ua && ub && ua !== ub && (/ounce|oz/.test(ua + ub) ? !/^(?:ounce|oz|fluid ounce|fl oz)$/.test(ua) || !/^(?:ounce|oz|fluid ounce|fl oz)$/.test(ub) : true) && !(/^(?:ml|milliliter|liter|litre)$/.test(ua) && /^(?:ml|milliliter|liter|litre)$/.test(ub))) {
             const v = Math.round(q * VOL[ua] / VOL[ub] * 100) / 100; const nm = (u) => /ounce|oz/.test(u) ? 'fl oz' : u + 's';
             return { value: v.toLocaleString() + ' ' + nm(ub), note: q + ' ' + (q === 1 ? ua.replace('fluid ounce', 'fl oz') : nm(ua)) + ' = ' + v.toLocaleString() + ' ' + nm(ub) + ' (US)' }; } } }
+      m = t.match(/^(half|a\s+half|one\s+half|a\s+third|one\s+third|a\s+quarter|one\s+quarter|quarter|third)\s+of\s+(-?\d+(?:\.\d+)?)$|^(double|twice|triple|thrice|quadruple|halve)\s+(-?\d+(?:\.\d+)?)$/);
+      if (m) { const k = (m[1] || m[3]).replace(/^(?:a|one)\s+/, ''), x = +(m[2] || m[4]);
+        const f = { half: 0.5, halve: 0.5, third: 1 / 3, quarter: 0.25, double: 2, twice: 2, triple: 3, thrice: 3, quadruple: 4 }[k];
+        const v = Math.round(x * f * 1e6) / 1e6; return { value: v.toLocaleString(), note: f > 1 ? x + ' × ' + f : k + ' of ' + x }; }
+      m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+off\s+(?:of\s+)?[$€£]?(\d+(?:\.\d+)?)$/);
+      if (m) { const save = +m[2] * +m[1] / 100, v = Math.round((+m[2] - save) * 100) / 100; return { value: v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: m[1] + '% off ' + m[2] + ' (you save ' + (Math.round(save * 100) / 100) + ')' }; }
+      m = t.match(/^how\s+many\s+(hours|minutes)\s+(?:are\s+(?:there\s+)?)?(?:between|from)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s+(?:and|to|till|until)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/);
+      if (m) { const mins = (h, mm, ap) => { h = +h % 12 + (ap === 'pm' ? 12 : ap === 'am' ? 0 : (+h < 12 && +h >= 1 && +h <= 6 ? 12 : 0)); return h * 60 + (+mm || 0); };
+        let d = mins(m[5], m[6], m[7] || m[4]) - mins(m[2], m[3], m[4] || (m[7] === 'pm' && +m[2] > +m[5] ? 'am' : m[7])); if (d <= 0) d += 1440;
+        const v = m[1] === 'hours' ? +(d / 60).toFixed(2) : d; return { value: String(v), note: v + ' ' + m[1] + ' from ' + m[2] + (m[3] ? ':' + m[3] : '') + (m[4] || '') + ' to ' + m[5] + (m[6] ? ':' + m[6] : '') + (m[7] || '') }; }
+      m = t.match(/^(?:the\s+)?(?:remainder|modulo|mod)\s+(?:of\s+|when\s+)?(-?\d+)\s+(?:is\s+)?(?:divided\s+by|by|mod|\/)\s+(-?\d+)$|^(-?\d+)\s+(?:mod|modulo|%)\s+(-?\d+)$/);
+      if (m) { const a = +(m[1] || m[3]), b = +(m[2] || m[4]); if (b) return { value: String(a % b), note: a + ' ÷ ' + b + ' = ' + Math.trunc(a / b) + ' remainder ' + (a % b) }; }
+      m = t.match(/^(\d+(?:\.\d+)?|a|one|half\s+a)\s+dozen$/);
+      if (m) { const n = /^(?:a|one)$/.test(m[1]) ? 1 : /half/.test(m[1]) ? 0.5 : +m[1]; return { value: String(n * 12), note: m[1] + ' dozen = ' + (n * 12) }; }
       m = t.match(/^is\s+(\d{4})\s+a\s+leap\s+year$/);
       if (m) { const y = +m[1], leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; return { value: leap ? 'Yes' : 'No', note: y + (leap ? ' is a leap year (366 days).' : ' is not a leap year (365 days).') }; }
       m = t.match(/^how\s+many\s+days\s+(?:are\s+)?(?:there\s+)?in\s+([a-z]+)(?:\s+(\d{4}))?$/);
