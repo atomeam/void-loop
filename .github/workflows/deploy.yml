@@ -24,10 +24,12 @@ on:
 
 concurrency:
   group: void-deploy-${{ github.event_name == 'pull_request' && github.head_ref || 'production' }}
-  cancel-in-progress: false
+  # a newer push to the same PR stops the older run; main (production) always runs to the end
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
+  checks: read # to see that a PR head with the same code already passed (see "Already tested?")
 
 jobs:
   test-and-deploy:
@@ -41,9 +43,31 @@ jobs:
           ref: ${{ inputs.ref || github.event.pull_request.head.sha || github.sha }}
           fetch-depth: 0 # the suite reads git history of the append-only records
 
+      # A merge to main whose code (git tree) is exactly the PR head that already passed the full suite is not
+      # tested twice: same tree, same files, same result. Anything else (main moved, a direct push) runs the suite.
+      - name: Already tested?
+        id: tested
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          head=$(git rev-parse HEAD); second=$(git rev-parse -q --verify HEAD^2 || true)
+          if [ -n "$second" ] && [ "$(git rev-parse HEAD^{tree})" = "$(git rev-parse "$second^{tree}")" ]; then
+            ok=$(gh api "repos/${{ github.repository }}/commits/$second/check-runs?check_name=test-and-deploy" --jq '[.check_runs[] | select(.conclusion == "success")] | length')
+            if [ "${ok:-0}" -gt 0 ]; then
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "### Not re-tested: tree of $head is identical to PR head $second, which passed the full suite" >> "$GITHUB_STEP_SUMMARY"
+            fi
+          fi
+
       - name: Test (full suite)
-        if: github.event_name != 'workflow_call'
+        if: github.event_name != 'workflow_call' && steps.tested.outputs.skip != 'true'
         uses: ./.github/actions/void-test
+
+      - name: Sync void.html copies (also when the suite was skipped)
+        run: |
+          cp void.html void-live-deploy/index.html
+          cp void.html void-live-deploy/void.html
 
       - name: Deploy target
         id: target

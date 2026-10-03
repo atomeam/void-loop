@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · cross-sense board (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+.board{display:flex;gap:14px;justify-content:center;align-items:flex-end;min-height:110px;padding:18px;border:1px solid rgba(255,255,255,.12);border-radius:14px}
+.g{width:34px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}
+.g i{display:block;width:34px;height:12px;border-radius:3px;background:#7cf}
+.g.gap i{background:transparent;border:1px dashed rgba(255,255,255,.35)}
+.g.stack i{background:#f0a07a}
+.g small{color:#77777f;font-size:11px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input,button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+input[type=checkbox]{width:auto;padding:0}
+input:focus-visible,button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button{cursor:pointer}
+#out{min-height:1.5em}
+.key{font-size:12px;color:#8a8a92}
+</style>
+</head>
+<body>
+<main>
+  <h1>cross-sense board · draft · not published</h1>
+  <p class="note">Three glyphs: bar is 1, gap is 0, stack is 10. Read the row, type its sum. The answer is right or wrong, nothing in between: this is arithmetic agreement, not a measure of how well you see or hear. If you turn the tone on, the same row also plays as sound on this device (bar a 440 Hz sine, gap silence, stack a 220 Hz square, 200 ms each). No camera, no microphone, nothing sent anywhere. It does not restore or replace a sense.</p>
+  <div class="board" id="board" role="img" aria-label="glyph row"></div>
+  <div class="row">
+    <label for="sum">sum</label><input id="sum" inputmode="numeric" autocomplete="off" size="6" aria-label="the sum of the row">
+    <button id="check" type="button">check</button>
+    <button id="next" type="button">new row</button>
+  </div>
+  <div class="row">
+    <label><input id="tone" type="checkbox"> tone (off until you turn it on)</label>
+    <button id="play" type="button" disabled>play the row</button>
+  </div>
+  <div id="out" aria-live="polite"></div>
+  <p class="key">bar = 1 · gap = 0 · stack = 10 · 3 to 5 glyphs a row</p>
+</main>
+<script>
+(function(){
+  var VALUE={bar:1,gap:0,stack:10}, TONE={bar:{type:'sine',hz:440},gap:null,stack:{type:'square',hz:220}}, STEP=0.2;
+  function sum(seq){return seq.reduce(function(a,g){if(!(g in VALUE))throw new Error('unknown glyph '+g);return a+VALUE[g]},0)}
+  // strict: digits only (no sign, decimals, words or leading zeros), surrounding spaces ignored, then exact equality
+  function agree(seq,input){var t=String(input==null?'':input).trim();if(!/^(0|[1-9][0-9]*)$/.test(t))return false;return Number(t)===sum(seq)}
+  function toneSteps(seq){return seq.map(function(g,i){var t=TONE[g];return {at:+(i*STEP).toFixed(3),dur:STEP,type:t?t.type:'silence',hz:t?t.hz:0}})}
+  function row(rand){rand=rand||Math.random;var n=3+Math.floor(rand()*3),k=Object.keys(VALUE),s=[];for(var i=0;i<n;i++)s.push(k[Math.floor(rand()*k.length)]);return s}
+  var seq=row(), ctx=null, board=document.getElementById('board'), out=document.getElementById('out'), tone=document.getElementById('tone'), play=document.getElementById('play');
+  function draw(){board.innerHTML='';seq.forEach(function(g){var d=document.createElement('div');d.className='g '+g;var h=g==='stack'?3:1;for(var i=0;i<h;i++)d.appendChild(document.createElement('i'));var s=document.createElement('small');s.textContent=g;d.appendChild(s);board.appendChild(d)});board.setAttribute('aria-label','glyph row: '+seq.join(', '))}
+  function sound(){
+    if(!tone.checked)return 0; // opt-in only: no audio context exists until the tone is turned on
+    var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return 0;ctx=ctx||new AC();var t0=ctx.currentTime+0.05,n=0;
+    toneSteps(seq).forEach(function(s){if(s.type==='silence')return;var o=ctx.createOscillator(),g=ctx.createGain();o.type=s.type;o.frequency.value=s.hz;g.gain.value=0.08;o.connect(g);g.connect(ctx.destination);o.start(t0+s.at);o.stop(t0+s.at+s.dur);n++});
+    return n;
+  }
+  document.getElementById('check').addEventListener('click',function(){var ok=agree(seq,document.getElementById('sum').value);out.textContent=ok?'agrees: '+sum(seq):'does not agree';});
+  document.getElementById('next').addEventListener('click',function(){seq=row();draw();out.textContent='';document.getElementById('sum').value=''});
+  tone.addEventListener('change',function(){play.disabled=!tone.checked});
+  play.addEventListener('click',sound);
+  draw();
+  window.__glyphs={sum:sum,agree:agree,toneSteps:toneSteps,row:row,sound:sound,set:function(s){seq=s;draw()}}; // for tools/test_glyphs.mjs
+})();
+</script>
+</body>
+</html>

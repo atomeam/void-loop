@@ -213,5 +213,35 @@
     ],
     "sha256": "67422f1c4155296e27cc5c92bdb0f5bf02d5ef867af7ead63c5f73203c7b99ba",
     "emit": true
+  },
+  {
+    "run": 10,
+    "at": "2026-10-03T03:55:00Z",
+    "family": "sensory-substitution",
+    "draft": "drafts/fringe/sensory-substitution.html",
+    "sources": [
+      {
+        "claim": "Bach-y-Rita 1969: camera image projected onto the skin of the back (tactile vision substitution)",
+        "source": "https://www.nature.com/articles/221963a0",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Meijer 1992: image-to-sound encoding (The vOICe)",
+        "source": "https://doi.org/10.1109/10.121642",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Substitution used to anticipate a lead vehicle (preprint pointed to by @seeingwithsound, 2026-09-30)",
+        "source": "https://www.seeingwithsound.com/",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A closed glyph code (bar, gap, stack) read by sight or tone gives the same sum: agreement, not acuity",
+        "source": "drafts/fringe/sensory-substitution.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "626d7cee09fb9b2b4d0b96e8963a07a279350dfc8a178547923d6cf45df3e31e",
+    "emit": false
   }
 ]

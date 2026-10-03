@@ -146,8 +146,9 @@ export function parseGatedAsk(text) {
     return { toolName: 'order.place', args: cost ? { item: clip(m[1], 160), cost } : { item: clip(m[1], 160) } };
   }
   // "remind me at 5" — behind the confirm line. No executor, so a yes does not push.
-  if ((m = s.match(/^remind me(?:\s+to\s+(.{1,80}))?\s+at\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.|p\.m\.)?|noon|midnight)(?:\s+to\s+(.{1,80}))?$/i))) {
-    return { toolName: 'reminder.ping', args: { when: reminderWhen(m[2]), what: clip(m[1] || m[3] || '', 80) } };
+  // "remind me to call mom at 6pm" (the task first) is the calendar's: it saves on this device (skills/remind.js).
+  if ((m = s.match(/^remind me\s+at\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.|p\.m\.)?|noon|midnight)(?:\s+to\s+(.{1,80}))?$/i))) {
+    return { toolName: 'reminder.ping', args: { when: reminderWhen(m[1]), what: clip(m[2] || '', 80) } };
   }
   return null;
 }

@@ -2,15 +2,16 @@
  * remind skill — "remind me at 5" (plan item 7)
  * Uses the confirm line already in lib/approval-core.js (void_approvals / void_ledger).
  * No phone push, no VAPID key, no new connector. An approved reminder is not run until one exists.
- * "remind me at 5", "remind me at 5 to call home".
+ * "remind me at 5", "remind me at 5 to call home". "remind me to call home at 5" (the task first) is the calendar's:
+ * it saves the reminder on this device, which works today (tools/bench.json has asked it of the calendar since 2026-10-02).
  */
 export function remindOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   const s = t.replace(/^(?:please\s+|(?:can|could|would|will)\s+you\s+(?:please\s+)?)/i, '');
-  const m = s.match(/^remind me(?:\s+to\s+(.{1,80}))?\s+at\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.|p\.m\.)?|noon|midnight)(?:\s+to\s+(.{1,80}))?$/i);
+  const m = s.match(/^remind me\s+at\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.|p\.m\.)?|noon|midnight)(?:\s+to\s+(.{1,80}))?$/i);
   if (!m) return null;
-  const what = String(m[1] || m[3] || '').trim();
-  return { when: clock(m[2]), what };
+  const what = String(m[2] || '').trim();
+  return { when: clock(m[1]), what };
 }
 function clock(raw) {
   const s = String(raw || '').toLowerCase().replace(/\s+/g, '').replace(/\./g, '');
@@ -47,8 +48,8 @@ async function run(text, api) {
 }
 export default {
   name: 'remind',
-  examples: ['remind me at 5', 'remind me at 5pm', 'remind me at 5 to call home', 'remind me to call home at 5', 'please remind me at noon'],
-  nearMisses: ['what is a reminder', 'set a timer for 5 minutes', 'remind me to call mom'],
+  examples: ['remind me at 5', 'remind me at 5pm', 'remind me at 5 to call home', 'please remind me at noon'],
+  nearMisses: ['what is a reminder', 'set a timer for 5 minutes', 'remind me to call mom', 'remind me to call mom at 6pm'],
   remindOf,
   confirmHold,
   match(lower, text) { return !!remindOf(text); },
