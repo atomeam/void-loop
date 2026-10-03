@@ -10,7 +10,7 @@
 const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
 
 const OBJECT_RE = /^(?:please\s+)?(?:(?:summon|add|put|place|make|give|show|get|bring)(?:\s+me)?\s+)?(?:a|an|one|the)?\s*(?:(?:little|tiny|small|3d|wooden)\s+)*(chair|cup|mug)(?:\s+(?:on|to)\s+the\s+stage)?$/;
-const FIGURE_RE = /^(?:please\s+)?(?:(?:summon|add|bring|show(?:\s+me)?|make|put|get|call|where\s+is)\s+)?motelet(?:\s+(?:on|to)\s+the\s+stage)?$/;
+const FIGURE_RE = /^(?:please\s+)?(?:(?:summon|add|bring|show(?:\s+me)?|make|put|get|call|where\s+is)\s+)?(?:motelet|(?:a|the|one)\s+figure)(?:\s+(?:on|to)\s+the\s+stage)?$/;
 const SPIN_RE = /^(?:spin|turn|rotate)\s+(?:motelet|it|the\s+(?:chair|cup|mug|figure))(?:\s+(?:around|round))?$/;
 const EXPORT_RE = /^(?:download|export|print|save)\s+(?:the\s+)?motelet(?:'s)?(?:\s+(?:stl|file|print\s+file|body))?$|^motelet\s+(?:stl|print\s+file)$/;
 
@@ -342,7 +342,10 @@ export default {
     'summon a cup',
     'put a little chair on the stage',
     'spin motelet',
+    'spin the figure',
     'download motelet',
+    'summon a figure',
+    'a figure',
   ],
   nearMisses: [
     'world cup',
@@ -350,6 +353,7 @@ export default {
     'how many cups in a liter',
     'chair yoga',
     'summon linemote-1',
+    'what is a figure of speech',
   ],
   match(lower, text) { return !!parseAsk(text); },
   run,

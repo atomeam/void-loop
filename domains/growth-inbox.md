@@ -10,8 +10,8 @@ New ideas land here in batches. A run may build any open row. Shipped rows stay,
 | shipped 2e67f4b | 2026-10-03 | recent asks on an empty box | board Next #15 (Grok idea F001) |
 | shipped c5d99e8 | 2026-10-03 | show the magnetize step | board Next, magnetize-step card |
 | building | 2026-10-02 | what's already built | assimilate row 6, plan item 8 |
-| shipped helper/throw-off | 2026-10-03 | throw it off the screen | figures-first dismiss (skill + stageKinds flick; main already throwable) |
+| shipped e8661b4 | 2026-10-03 | throw it off the screen | figures-first dismiss (universal: any stage object or person, not just the figure; fixed a velocity-floor bug that misread slow drags as throws) |
 | open | 2026-10-03 | export a print file | void-stage, slicer 3MF |
 | open | 2026-10-03 | summon a figure | figures-first, living 3D |
-| open | 2026-10-03 | spin the figure | figures-first, see the back |
+| shipped e8661b4 | 2026-10-03 | spin the figure | figures-first, see the back (already true: SPIN_RE's "spin the figure" falls back to the active Motelet) |
 | open | 2026-10-03 | days until new year | board later, date countdown |
