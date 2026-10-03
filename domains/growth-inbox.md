@@ -11,3 +11,4 @@ Push the build to `helper/<slug>`. Void ship helper tests once, fast-forwards ma
 | shipped d972baf | 2026-10-02 | remind me at 5 | plan item 7, connector behind the confirm line |
 | shipped 2e67f4b | 2026-10-03 | recent asks on an empty box | board Next #15 (Grok idea F001) |
 | shipped c5d99e8 | 2026-10-03 | show the magnetize step | board Next, magnetize-step card |
+| open | 2026-10-02 | what's already built | assimilate row 6, plan item 8 |

@@ -11,7 +11,7 @@ const MAP = [
   { n: 3, p: 'Aether dispatcher + bridge', f: '"do this for me" tasks that keep running, with an approve card when a step needs you', s: 'not started' },
   { n: 4, p: 'Treaty / ledger / glassbox', f: '"what did you do today" — a page of Void\'s own recent actions with sources', s: 'live (today skill)' },
   { n: 5, p: 'Real Work Board / Job Finder', f: '"find me work as a …" — real listings with a check-yourself line', s: 'live (work / Remotive)' },
-  { n: 6, p: 'Inventory orchestrator', f: 'feeds the board "already built" rows so agents reuse before rebuilding', s: 'not started' },
+  { n: 6, p: 'Inventory orchestrator', f: 'feeds the board "already built" rows so agents reuse before rebuilding', s: 'live (inventory skill + board section)' },
   { n: 7, p: 'intent-canvas', f: 'grouping + layers on the stage', s: 'queued' },
   { n: 8, p: 'Slack ops log', f: 'void.agents.log.md today; later a "what are the agents doing" page', s: 'log live' },
   { n: 9, p: 'HomeBase / dashboards', f: 'board + agent log + live checks on one summoned page', s: 'partly (board)' },
