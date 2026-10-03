@@ -1026,5 +1026,9 @@
   {"ask": "mortgage on 350k at 6.25% for 30 years", "want": "skill:loan"},
   {"ask": "fuel cost 120 miles at 30 mpg $3.80 a gallon", "want": "skill:fuel"},
   {"ask": "public holidays in germany", "want": "skill:holidays"},
-  {"ask": "what time is it in berlin", "want": "skill:worldtime"}
+  {"ask": "what time is it in berlin", "want": "skill:worldtime"},
+  {"ask": "what are you", "want": "self|speaks|what"},
+  {"ask": "weather in seattle", "want": "skill:weather"},
+  {"ask": "tip 20% on $45", "want": "skill:tip"},
+  {"ask": "pollen in paris tomorrow", "want": "skill:pollen"}
 ]
