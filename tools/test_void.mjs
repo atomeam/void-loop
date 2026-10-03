@@ -1748,6 +1748,13 @@ try {
       !!mod && mod.examples.length >= 4 && (mod.nearMisses || []).length >= 3 && mod.examples.every((e) => firstNs(e) === name) && mod.nearMisses.every((e) => firstNs(e) !== name),
       mod ? mod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing ' + name);
   }
+  const shareMod = nsMods.find((s) => s.name === 'share');
+  const shareHref = shareMod && shareMod.shareLink('share this card: rain in Lisbon');
+  check('share: listed with examples and near misses; examples route only to it; a card link uses the existing share target and does not publish',
+    !!shareMod && shareMod.examples.length >= 4 && (shareMod.nearMisses || []).length >= 3
+      && shareMod.examples.every((e) => firstNs(e) === 'share') && shareMod.nearMisses.every((e) => firstNs(e) !== 'share')
+      && typeof shareHref === 'string' && shareHref.includes('share_text=') && !/\/api\/publish|\/@/.test(shareHref),
+    shareMod ? shareMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') + ' | ' + shareHref : 'missing share');
 
   const wtMod = (await import(new URL('../void-live-deploy/skills/worldtime.js', import.meta.url).href)).default;
   const otherSkillAsks = new Set(Object.entries(R.SKILLS).filter(([n]) => n !== 'worldtime').flatMap(([, v]) => v.examples));
