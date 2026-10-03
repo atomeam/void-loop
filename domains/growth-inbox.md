@@ -1,8 +1,6 @@
 # Growth inbox
 
-Open rows are features not yet on main. A run claims the oldest open row (node tools/next-growth.mjs) and marks it building in the same commit as the skill. It never deletes an open or building row. Shipped rows stay, with the main SHA.
-
-Push the build to `helper/<slug>`. Void ship helper tests once, fast-forwards main, and deploys. Do not open a pull request.
+New ideas land here in batches. A run may build any open row. Shipped rows stay, with the main SHA. Rows are not deleted.
 
 | status | date | ask | source |
 | --- | --- | --- | --- |
@@ -12,3 +10,8 @@ Push the build to `helper/<slug>`. Void ship helper tests once, fast-forwards ma
 | shipped 2e67f4b | 2026-10-03 | recent asks on an empty box | board Next #15 (Grok idea F001) |
 | shipped c5d99e8 | 2026-10-03 | show the magnetize step | board Next, magnetize-step card |
 | open | 2026-10-02 | what's already built | assimilate row 6, plan item 8 |
+| open | 2026-10-03 | throw it off the screen | figures-first dismiss |
+| open | 2026-10-03 | export a print file | void-stage, slicer 3MF |
+| open | 2026-10-03 | summon a figure | figures-first, living 3D |
+| open | 2026-10-03 | spin the figure | figures-first, see the back |
+| open | 2026-10-03 | days until new year | board later, date countdown |
