@@ -189,5 +189,11 @@
   {"ask": "triple 25", "want": "calc"},
   {"ask": "quarter of 200", "want": "calc"},
   {"ask": "how many hours in 2 days", "want": "calc"},
-  {"ask": "what is 6 dozen", "want": "calc"}
+  {"ask": "what is 6 dozen", "want": "calc"},
+  {"ask": "play connect 4", "want": "skill:make"},
+  {"ask": "lets play tic tac toe", "want": "skill:make"},
+  {"ask": "make a 3d cube", "want": "skill:make"},
+  {"ask": "show me a gold 3d diamond", "want": "skill:make"},
+  {"ask": "a red 3d planet", "want": "skill:make"},
+  {"ask": "make me a connect four game", "want": "skill:make"}
 ]
