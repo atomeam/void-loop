@@ -2976,6 +2976,30 @@ return { ok: true, detail: 'timer-reset' };
       if (m) { const n = +(m[1] || m[2]); if (n > 170) return null; let v = 1; for (let i = 2; i <= n; i++) v *= i; const shown = v >= 1e15 ? v.toExponential(6) : v.toLocaleString(); return { value: shown, note: n + '! = ' + shown }; }
       m = t.match(/^(-?\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+of\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = +(+m[1] / 100 * +m[2]).toPrecision(12); return { value: v.toLocaleString(), note: m[1] + '% of ' + m[2] }; }
+      m = t.match(/^(?:the\s+)?(?:average|mean)\s+of\s+(-?\d+(?:\.\d+)?(?:\s*(?:,|and|,\s*and)\s*-?\d+(?:\.\d+)?)+)$/);
+      if (m) { const xs = m[1].split(/\s*(?:,\s*and|,|and)\s*/).map(Number); const v = +(xs.reduce((a, b) => a + b, 0) / xs.length).toPrecision(12); return { value: v.toLocaleString(), note: 'average of ' + xs.join(', ') }; }
+      m = t.match(/^how\s+many\s+(second|minute|hour|day|week)s?\s+(?:are\s+)?(?:there\s+)?in\s+(\d+(?:\.\d+)?)\s+(minute|hour|day|week|year)s?$/);
+      if (m && TIME_S[m[3]] > TIME_S[m[1]]) { const v = +(+m[2] * TIME_S[m[3]] / TIME_S[m[1]]).toPrecision(12); return { value: v.toLocaleString(), note: m[2] + ' ' + m[3] + (m[2] === '1' ? '' : 's') + ' = ' + v.toLocaleString() + ' ' + m[1] + 's' }; }
+      m = t.match(/^(\d{1,4})\s+(minutes?|mins?|hours?|hrs?)\s+from\s+now$/);
+      if (m) { const d = new Date(Date.now() + +m[1] * (/^h/.test(m[2]) ? 36e5 : 6e4)); return { value: d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), note: m[1] + ' ' + m[2] + ' from now, ' + d.toLocaleDateString([], { weekday: 'long' }) }; }
+      m = t.match(/^(?:what\s+(?:was|is|will\s+be)\s+the\s+date|(?:which|what)\s+day\s+(?:was|is|will)\s+it(?:\s+be)?|the\s+date)\s+(\d{1,5})\s+(days?|weeks?)\s+(ago|from\s+now|from\s+today)$/);
+      if (m) { const n = +m[1] * (/^w/.test(m[2]) ? 7 : 1), d = new Date(); d.setDate(d.getDate() + (m[3] === 'ago' ? -n : n)); return { value: d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }), note: m[1] + ' ' + m[2] + ' ' + m[3] }; }
+      m = t.match(/^what\s+year\s+(?:will\s+it\s+be|is\s+it)\s+in\s+(\d{1,4})\s+years?$|^what\s+year\s+was\s+it\s+(\d{1,4})\s+years?\s+ago$/);
+      if (m) { const y = new Date().getFullYear() + (m[1] ? +m[1] : -m[2]); return { value: String(y), note: m[1] ? 'in ' + m[1] + ' years' : m[2] + ' years ago' }; }
+      // speed: "100 mph to kph", "30 knots in km/h"
+      { const SPD = { mph: 1.609344, kph: 1, 'km/h': 1, kmh: 1, 'm/s': 3.6, mps: 3.6, knots: 1.852, knot: 1.852, kn: 1.852 };
+        const sm = t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*(mph|kph|km\/h|kmh|m\/s|mps|knots?|kn)\s+(?:to|in|into)\s+(mph|kph|km\/h|kmh|m\/s|mps|knots?|kn)$/);
+        if (sm) { const v = +(+sm[1] * SPD[sm[2]] / SPD[sm[3]]).toPrecision(6); return { value: v.toLocaleString() + ' ' + sm[3], note: sm[1] + ' ' + sm[2] + ' = ' + v.toLocaleString() + ' ' + sm[3] }; } }
+      // kitchen volume, US: fluid ounces, cups, pints, quarts, gallons, tablespoons, teaspoons, ml, liters
+      { const VOL = { 'fluid ounce': 29.5735, 'fl oz': 29.5735, ounce: 29.5735, oz: 29.5735, cup: 236.588, pint: 473.176, pt: 473.176, quart: 946.353, qt: 946.353, gallon: 3785.41, gal: 3785.41, tablespoon: 14.7868, tbsp: 14.7868, teaspoon: 4.92892, tsp: 4.92892, ml: 1, milliliter: 1, liter: 1000, litre: 1000 };
+        const unit = (w) => { w = w.replace(/^fluid\s+ounces?$/, 'fluid ounce').replace(/s$/, ''); return VOL[w] ? w : null; };
+        const vm = t.match(/^how\s+many\s+([a-z]+(?:\s+ounces?)?)\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+([a-z]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s+([a-z]+(?:\s+ounces?)?)\s+(?:to|in|into)\s+([a-z]+(?:\s+ounces?)?)$/);
+        if (vm) { const [q, a, b] = vm.length === 3 ? [1, vm[2], vm[1]] : [+vm[1], vm[2], vm[3]];
+          const ua = unit(a), ub = unit(b);
+          // only when an ounce meets a volume (cups, pints…): ounces with grams/pounds stay weight for the calculator
+          if (ua && ub && ua !== ub && (/ounce|oz/.test(ua + ub) ? !/^(?:ounce|oz|fluid ounce|fl oz)$/.test(ua) || !/^(?:ounce|oz|fluid ounce|fl oz)$/.test(ub) : true) && !(/^(?:ml|milliliter|liter|litre)$/.test(ua) && /^(?:ml|milliliter|liter|litre)$/.test(ub))) {
+            const v = Math.round(q * VOL[ua] / VOL[ub] * 100) / 100; const nm = (u) => /ounce|oz/.test(u) ? 'fl oz' : u + 's';
+            return { value: v.toLocaleString() + ' ' + nm(ub), note: q + ' ' + (q === 1 ? ua.replace('fluid ounce', 'fl oz') : nm(ua)) + ' = ' + v.toLocaleString() + ' ' + nm(ub) + ' (US)' }; } } }
       m = t.match(/^is\s+(\d{4})\s+a\s+leap\s+year$/);
       if (m) { const y = +m[1], leap = (y % 4 === 0 && y % 100 !== 0) || y % 400 === 0; return { value: leap ? 'Yes' : 'No', note: y + (leap ? ' is a leap year (366 days).' : ' is not a leap year (365 days).') }; }
       m = t.match(/^how\s+many\s+days\s+(?:are\s+)?(?:there\s+)?in\s+([a-z]+)(?:\s+(\d{4}))?$/);

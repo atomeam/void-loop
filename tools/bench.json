@@ -152,5 +152,15 @@
   {"ask": "what is 12 squared", "want": "calc"},
   {"ask": "10 kg in pounds", "want": "calc"},
   {"ask": "how many weeks until christmas", "want": "holiday|calc"},
-  {"ask": "find me work as a designer", "want": "skill:work"}
+  {"ask": "find me work as a designer", "want": "skill:work"},
+  {"ask": "what is the average of 4, 8 and 15", "want": "calc"},
+  {"ask": "how many seconds in 3 hours", "want": "calc"},
+  {"ask": "what is 15 minutes from now", "want": "calc|today"},
+  {"ask": "convert 100 mph to kph", "want": "calc"},
+  {"ask": "what is 2 plus 2 times 3", "want": "calc"},
+  {"ask": "what was the date 30 days ago", "want": "calc|today"},
+  {"ask": "which day was it 100 days ago", "want": "calc|today"},
+  {"ask": "what is 1000 divided by 7", "want": "calc"},
+  {"ask": "how many ounces in a cup", "want": "calc"},
+  {"ask": "what year will it be in 25 years", "want": "calc"}
 ]

@@ -153,5 +153,25 @@
     ],
     "sha256": "276081d7a7d8e9ac09ddc88656736b49cd1d2793b2d6026382cd364487587a3b",
     "emit": false
+  },
+  {
+    "run": 7,
+    "at": "2026-10-02T23:41:45Z",
+    "family": "correlation-view",
+    "draft": "drafts/fringe/correlation-view.html",
+    "sources": [
+      {
+        "claim": "Benchmark floor history 57 -> 164 across the hourly rounds",
+        "source": "git log -- tools/bench.best.json",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Score and asks-added move together by construction, not by discovery",
+        "source": "tools/bench.mjs",
+        "confidence": "confirmed"
+      }
+    ],
+    "sha256": "2a24abee75edf1fff9c8140ded62182d9e4101cc40ef694acf9cf3e8c7b06b0b",
+    "emit": false
   }
 ]
