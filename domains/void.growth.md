@@ -71,8 +71,8 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Why:** this is the shared engine every two-part summon rides on. Lazy loading keeps the empty page fast, and reduced motion plus send-away keep each visitor in charge of their own Void.
 - **Reuse:** stage layering, undo stack, personal layer in localStorage, the media-query pattern from Next #7 applied to `prefers-reduced-motion`.
 - **Done when:** the empty page loads zero 3D code (network log); summoning a test figure loads the layer, and the figure wanders and follows the cursor; reduced motion holds it still; "send them away" clears it and undo brings it back; tests gain a lazy-load check and stay green.
-- **claim:** free
-- **claim_until:**
+- **claim:** grok (branch grok/stage3d-roam)
+- **claim_until:** 2026-10-03 08:00 ET
 
 ### Next #18 — base bodies dressed from the card
 - **What:** a set of base bodies (person, animal, object, place, idea) plus a styling step that dresses one from the card data: the subject's colors, a prop or two and a few of its own words in a speech bubble. The card's kind and facts pick the body (a person article gets a person, a city gets a place, a concept gets an idea).
