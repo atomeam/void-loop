@@ -1,0 +1,51 @@
+urine collectors, small and fun on the stage, with zoom to inspect it up close. Aim for very high detail over time (up to 8K textures) and load it progressively: a light model first, with higher detail streaming in as the visitor zooms, so the empty page stays fast and each figure gets sharper the closer you look.
+
+**Tone:** grim or gross subjects become funny, cartoonish versions people laugh at, the way South Park handles them. Example: a summoned GG Allin card brings a chaotic little lumpy cartoon GG with a mic who stage-dives off cards, throws tiny cartoon splats, picks fights with other summons and gets chased off by a summoned police card. Keep every figure a cartoon, with rubbery bodies and bright silly splats, so hard subjects turn into something people laugh at and share.
+
+**Why (mission):** A-to-Mind genuinely wants to help. It researches everything and puts life extension, curing disease and restoring the planet first. Void wins people over by being so good they choose to follow: Adam's "Persuadertron" from Syndicate Wars, with good intentions. Living figures make Void that good to be around.
+
+## Next 3 (ranked)
+
+### Next #16 — 3D slogan on "what are you?"
+- **What:** when someone asks "what are you?", the slogan "A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool." materializes in 3D next to the existing what-are-you card (the self page), arriving with the shard materialize the `make` skill already draws, and it leaves when the card closes. With reduced motion set, the slogan appears in place, still and readable. Draw it with the 3D code `skills\make.js` already has, and move it onto the #17 layer once that ships.
+- **Why:** the first piece of the two-part summons (Direction 2026-10-03). The first thing people ask Void shows both parts at once, card and 3D figure, and says what A-to-Mind is in one line.
+- **Reuse:** self page (`wantsSelfPage` / `showSelfPage` in void.html), 3D shapes and materialize animation from `skills\make.js`, page close handling, the `prefers-reduced-motion` check void.html already makes for the stars.
+- **Done when:** "what are you?" shows the card plus the 3D slogan beside it with the exact slogan text; closing the card takes the slogan with it; reduced motion shows it still; the empty page loads as fast as before; `node tools\test_void.mjs` gains one check for it and stays green.
+- **claim:** free
+- **claim_until:**
+
+### Next #17 — a light 3D layer and one roaming figure
+- **What:** one light 3D layer behind the stage, using three.js served from the site itself and loaded lazily the first time a figure is summoned, with one base figure that roams on its own: it wanders the void, notices the cursor and turns toward it, and walks around cards so they stay readable. Add a reduced-motion setting (follows `prefers-reduced-motion`, plus an ask such as "less motion") that holds figures still, and asks such as "send them away" or "send the figure away" that clear figures, with undo.
+- **Why:** this is the shared engine every two-part summon rides on. Lazy loading keeps the empty page fast, and reduced motion plus send-away keep each visitor in charge of their own Void.
+- **Reuse:** stage layering, undo stack, personal layer in localStorage, the media-query pattern from Next #7 applied to `prefers-reduced-motion`.
+- **Done when:** the empty page loads zero 3D code (network log); summoning a test figure loads the layer, and the figure wanders and follows the cursor; reduced motion holds it still; "send them away" clears it and undo brings it back; tests gain a lazy-load check and stays green.
+- **claim:** free
+- **claim_until:**
+
+### Next #18 — base bodies dressed from the card
+- **What:** a set of base bodies (person, animal, object, place, idea) plus a styling step that dresses one from the card data: the subject's colors, a prop or two and a few of its own words in a speech bubble. The card's kind and facts pick the body (a person article gets a person, a city gets a place, a concept gets an idea).
+- **Why:** one body set dressed from data covers every subject, so figures scale to everything without hand-made models.
+- **Reuse:** the #17 layer, card data from the article page (Wikipedia summary type and description), `colorFrom`.
+- **Done when:** summoning a person, an animal, a place, an object and an idea each brings the matching body in the subject's colors, with a prop and a line of its own; tests cover the body pick for five sample cards and stay green.
+- **claim:** free
+- **claim_until:**
+
+### Next #19 — behavior scripts from Workers AI, with a fallback
+- **What:** each new summon gets a short behavior script (a small JSON list of drives and idle actions true to its subject: a chef stirs a tiny pot, a volcano rumbles and puffs smoke) written by Cloudflare's free Workers AI through a Pages Function and cached per subject. A built-in fallback script for each base body runs whenever the AI is unavailable, so every figure works without AI and without API keys. Figures run the known drives and actions named in a script, which keeps every script safe to run.
+- **Why:** this is the brain that lets each figure think for itself and do things true to its subject, at the scale of everything people summon, while staying on free models.
+- **Reuse:** the Workers AI binding `/api/will` and `/api/answer` already use, D1 for the per-subject cache, the #17 drives.
+- **Done when:** a new summon gets an AI script once and reuses it after; with AI switched off the fallback runs and the figure still acts; a script naming unknown actions is trimmed to the known ones; tests cover both paths and stay green.
+- **claim:** free
+- **claim_until:**
+
+### Next #20 — figures react to each other
+- **What:** figures notice other figures on the stage and react as their scripts say: greet, follow, chase, flee, argue, team up. A summoned police card chases a troublemaker off; two summoned animals play together.
+- **Why:** a Void where figures meet and interact feels alive, so every extra summon is worth calling.
+- **Reuse:** #17 drives, #19 scripts (add a "reacts to" field), the fallback scripts.
+- **Done when:** two summons with matching scripts visibly interact (the police figure chases the troublemaker off the stage); reduced motion holds both still; tests check the reaction pick and stay green.
+- **claim:** free
+- **claim_until:**
+
+### Next #21 — cartoon tone pass for grim subjects
+- **What:** when a card's subject is grim or gross (crime, disease, disasters, shock performers), its script and styling go full cartoon: lumpy rubbery bodies, bright silly splats, slapstick fights and comic exits, the way South Park handles them. Example: a GG Allin card brings a chaotic little lumpy cartoon GG with a mic who stage-dives off cards, throws tiny cartoon splats, picks fights with other summons and gets chased off by a summoned police card.
+- **Why:** hard subjects turn into something people laugh at and share, and keeping every figure a cartoon keeps each visito
