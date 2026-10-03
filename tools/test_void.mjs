@@ -1960,6 +1960,15 @@ try {
       for (const e of mod.nearMisses || []) if (firstNs(e) === mod.name) bad.push(mod.name + ': near miss "' + e + '" taken');
     }
     check('skills: every skill in index.json gets its own examples and none of its near misses (' + nsMods.length + ' skills)', !bad.length, bad.join(' | ')); }
+  const diceMod = nsMods.find((s) => s.name === 'dice');
+  const coin = diceMod && diceMod.rollDice(diceMod.diceOf('flip a coin'), () => 0);
+  const two = diceMod && diceMod.rollDice(diceMod.diceOf('roll 2d6'), () => 0);
+  check('dice: listed with examples and near misses; examples route only to it; a coin flip and a dice roll stay in the page and the empty surface stays empty',
+    !!diceMod && diceMod.examples.length >= 4 && (diceMod.nearMisses || []).length >= 3
+      && diceMod.examples.every((e) => firstNs(e) === 'dice') && diceMod.nearMisses.every((e) => firstNs(e) !== 'dice')
+      && coin && coin.value === 'heads' && two && two.total === 2
+      && !/<div id="hints"[^>]*class="on"/.test(fs.readFileSync(path.join(root, 'index.html'), 'utf8')),
+    diceMod ? diceMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing dice');
   const shareMod = nsMods.find((s) => s.name === 'share');
   const recentMod = nsMods.find((s) => s.name === 'recent');
   const mem = { bag: {} };
