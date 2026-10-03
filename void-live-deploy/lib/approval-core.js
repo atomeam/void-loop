@@ -26,6 +26,8 @@ export const GATED = {
   'payment.send': { rule: 'spend.payment', kind: 'spend', service: 'payments', board: 'pay someone' },
   // A standing spend on a stronger model, paid only from what Void earned (STANDING.md; lib/router.js). The newest one wins; $0 stops it.
   'models.spend': { rule: 'spend.models', kind: 'spend', service: 'model spending', board: 'let Void pay for a stronger model' },
+  // Phone push is not connected. The ask still stops on the confirm line; no executor, so a yes does not send.
+  'reminder.ping': { rule: 'send.reminder', kind: 'send', service: 'reminders', board: 'remind me' },
 };
 export const isGated = (toolName) => Object.prototype.hasOwnProperty.call(GATED, toolName);
 export const NOTHING = { send: 'nothing sent', book: 'nothing booked', spend: 'nothing spent' };
@@ -69,19 +71,33 @@ export function confirmLine(toolName, args) {
     case 'order.place': return cost ? `Buy ${a.item} for ${cost}?` : `Buy ${a.item}? The price isn't known yet.`;
     case 'payment.send': return `Pay ${a.to} ${cost}?`;
     case 'models.spend': return a.cost && a.cost.amount > 0 ? `Let Void spend up to ${cost} a ${a.per || 'month'} of what it earned on a stronger model?` : 'Stop Void paying for a stronger model?';
+    case 'reminder.ping': return `Remind you at ${a.when}${a.what ? ' to ' + a.what : ''}?`;
     default: return '';
   }
 }
 
 function parseCost(s) {
-  const m = String(s || '').trim().match(/^(?:([$€£])\s*(\d+(?:\.\d{1,2})?)|(\d+(?:\.\d{1,2})?)\s*(usd|dollars?|eur|euros?|gbp|pounds?))$/i);
+  const m = String(s || '').trim().match(/^(?:([$\u20ac\u00a3])\s*(\d+(?:\.\d{1,2})?)|(\d+(?:\.\d{1,2})?)\s*(usd|dollars?|eur|euros?|gbp|pounds?))$/i);
   if (!m) return null;
   const amount = parseFloat(m[2] || m[3]);
   const cur = m[1] ? { $: 'USD', '€': 'EUR', '£': 'GBP' }[m[1]] : /^(usd|dollar)/i.test(m[4]) ? 'USD' : /^eur/i.test(m[4]) ? 'EUR' : 'GBP';
   return { amount, currency: cur };
 }
 const clip = (s, n) => String(s || '').trim().replace(/[.!?]+$/, '').slice(0, n);
-const COST = '([$€£]\\s*\\d+(?:\\.\\d{1,2})?|\\d+(?:\\.\\d{1,2})?\\s*(?:usd|dollars?|eur|euros?|gbp|pounds?))';
+const COST = '([$\u20ac\u00a3]\\s*\\d+(?:\\.\\d{1,2})?|\\d+(?:\\.\\d{1,2})?\\s*(?:usd|dollars?|eur|euros?|gbp|pounds?))';
+
+function reminderWhen(raw) {
+  const s = String(raw || '').toLowerCase().replace(/\s+/g, '').replace(/\./g, '');
+  if (s === 'noon') return 'noon';
+  if (s === 'midnight') return 'midnight';
+  const m = s.match(/^(\d{1,2})(?::(\d{2}))?(am|pm)?$/);
+  if (!m) return clip(raw, 40);
+  let h = +m[1];
+  const mi = m[2] || '';
+  let ap = m[3] || '';
+  if (!ap && !mi && h >= 1 && h <= 7) ap = 'pm';
+  return String(h) + (mi ? ':' + mi : '') + ap;
+}
 
 // Which asks send, book or spend. Returns { toolName, args } or null (null = read-only, never gated).
 // Only imperative asks match; questions like "how do I send an email" stay with the answer engine.
@@ -105,7 +121,7 @@ export function parseGatedAsk(text) {
     return { toolName: 'models.spend', args: { model: '@cf/deepseek-ai/deepseek-v4-flash-0731', cost: { amount: 0, currency: 'USD' }, per: 'month' } };
   }
   if ((m = s.match(new RegExp('^(?:pay|send)\\s+' + COST + '\\s+to\\s+(.+)$', 'i'))) || (m = s.match(new RegExp('^pay\\s+(.+?)\\s+' + COST + '$', 'i')))) {
-    const costFirst = /^\s*[$€£\d]/.test(m[1]);
+    const costFirst = /^\s*[$\u20ac\u00a3\d]/.test(m[1]);
     const cost = parseCost(costFirst ? m[1] : m[2]);
     if (cost) return { toolName: 'payment.send', args: { to: clip(costFirst ? m[2] : m[1], 120), cost } };
   }
@@ -121,13 +137,17 @@ export function parseGatedAsk(text) {
       || (m = s.match(/^book\s+(?:a\s+|an\s+)?((?:meeting|call)\s+with\s+.+?)(?:\s+((?:for|on|at)\s+.+))?$/i))) {
     return { toolName: 'calendar.book', args: { what: clip(m[1], 160), when: clip(m[2], 80) } };
   }
-  if ((m = s.match(/^(?:book|reserve)\s+((?:a|an|the|me a|us a|\d+)\s+.+?|(?:tickets?|flights?|rooms?|tables?|hotels?|seats?)\b.*?)(?:\s+for\s+([$€£]\s*\d+(?:\.\d{1,2})?))?$/i))) {
+  if ((m = s.match(/^(?:book|reserve)\s+((?:a|an|the|me a|us a|\d+)\s+.+?|(?:tickets?|flights?|rooms?|tables?|hotels?|seats?)\b.*?)(?:\s+for\s+([$\u20ac\u00a3]\s*\d+(?:\.\d{1,2})?))?$/i))) {
     const cost = m[2] ? parseCost(m[2]) : null;
     return { toolName: 'booking.make', args: cost ? { what: clip(m[1], 160), cost } : { what: clip(m[1], 160) } };
   }
   if ((m = s.match(new RegExp('^(?:buy|order|purchase)\\s+(?!of\\b|by\\b|in\\b)(?:me\\s+|us\\s+)?(.+?)(?:\\s+for\\s+' + COST + ')?$', 'i')))) {
     const cost = m[2] ? parseCost(m[2]) : null;
     return { toolName: 'order.place', args: cost ? { item: clip(m[1], 160), cost } : { item: clip(m[1], 160) } };
+  }
+  // "remind me at 5" — behind the confirm line. No executor, so a yes does not push.
+  if ((m = s.match(/^remind me(?:\s+to\s+(.{1,80}))?\s+at\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.|p\.m\.)?|noon|midnight)(?:\s+to\s+(.{1,80}))?$/i))) {
+    return { toolName: 'reminder.ping', args: { when: reminderWhen(m[2]), what: clip(m[1] || m[3] || '', 80) } };
   }
   return null;
 }

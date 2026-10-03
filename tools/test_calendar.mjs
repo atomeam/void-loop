@@ -1,6 +1,9 @@
 // Calendar skill parser. Run: node tools/test_calendar.mjs
 // No browser. Confirms local match, gated asks stay off the skill, and Wikipedia is never the path.
 import { parseCalendar } from '../void-live-deploy/skills/calendar.js';
+import { confirmHold } from '../void-live-deploy/skills/remind.js';
+import { parseGatedAsk, confirmLine, GATED } from '../void-live-deploy/lib/approval-core.js';
+import { executors } from '../void-live-deploy/functions/api/approval.js';
 
 const results = [];
 const check = (name, ok, got) => { results.push({ name, ok: !!ok, got }); };
@@ -38,6 +41,15 @@ const near = ['make a 5 minute timer', 'what is a calendar', 'time in Tokyo', 'm
 for (const a of near) {
   check('near-miss stays off the skill: ' + a, parseCalendar(a) === null, JSON.stringify(parseCalendar(a)));
 }
+
+const hold = confirmHold('remind me at 5');
+const gatedRemind = parseGatedAsk('remind me at 5');
+check('remind me at 5 stays behind the confirm line and does not push',
+  hold && hold.toolName === 'reminder.ping' && hold.line === 'Remind you at 5pm?'
+    && gatedRemind && gatedRemind.toolName === 'reminder.ping' && confirmLine(gatedRemind.toolName, gatedRemind.args) === 'Remind you at 5pm?'
+    && GATED['reminder.ping'].service === 'reminders' && !executors['reminder.ping']
+    && parseCalendar('remind me at 5') === null,
+  JSON.stringify({ hold, gatedRemind }));
 
 const bad = results.filter((r) => !r.ok);
 for (const r of results) console.log((r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
