@@ -2,6 +2,14 @@
 
 **Note (2026-10-03):** full board is being reassembled from `domains/forethinkers/_growth_parts/*.part` (assemble workflow). Think-tank claims below stay claimable while the board remounts.
 
+### Next [think-tank] — senolytic MASH trial card
+- **What:** a summonable explainer card for the phase-2 intermittent dasatinib + quercetin trial in fibrotic MASH: primary fibrosis endpoint 47% vs 7% placebo, MASH resolution 53% vs 7%, Nature Metabolism 1 Oct 2026 and NCT05506488 dated, authors' hypothesis-generating caveat shown. Neighbouring context links to PEARL rapamycin safety (Aging 4 Apr 2025) and semaglutide epigenetic aging (Nature Communications 19 May 2026). No cure claim; original wording only.
+- **Why:** Forethinkers established (2026-10-03 10:08 ET) the first human RCT histology signal for senolytics in MASH, so Void can hand a visitor a truthful disease-cure research card that separates proven endpoints from longevity marketing.
+- **Reuse:** article/page summon pattern, dated-source layout from Next #13 / magnetize-step card.
+- **Done when:** an ask such as "senolytics for fatty liver" or "dasatinib quercetin MASH trial" opens the card with the three sources dated and the caveat visible; tests stay green.
+- **claim:** free
+- **claim_until:**
+
 ### Next [think-tank] — multi-material 3MF download for a printed motor body
 - **What:** a summonable original-named printed motor part page whose download emits a multi-object **3MF** with five Core basematerials named dielectric, conductive, soft-magnetic, hard-magnetic, and flexible (display colors included). Companion magnetize-step card keeps the 1.5 T Sr-ferrite and 3-4 T bonded Neo numbers. Original part name and original shape only.
 - **Why:** Forethinkers established (2026-10-03 08:07 ET) that the slicer export format is 3MF under ISO/IEC 25422:2025, not STL or AMF-as-primary. Complements the magnetize-step card and the printable-actuator-spec ask.
