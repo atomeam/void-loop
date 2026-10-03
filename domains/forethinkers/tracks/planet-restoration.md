@@ -2,6 +2,7 @@
 
 ## Progress ledger
 
+- 2026-10-03 10:08 ET - Held. Life-extension advanced this cycle; planet-restoration remains the next least-advanced track for a later run.
 - 2026-10-03 04:04 ET — Track created. First research cycle still open.
 
 ## Open questions, ranked
