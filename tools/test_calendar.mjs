@@ -4,6 +4,7 @@ import { parseCalendar } from '../void-live-deploy/skills/calendar.js';
 import { confirmHold } from '../void-live-deploy/skills/remind.js';
 import { parseGatedAsk, confirmLine, GATED } from '../void-live-deploy/lib/approval-core.js';
 import { executors } from '../void-live-deploy/functions/api/approval.js';
+import countdown from '../void-live-deploy/skills/countdown.js';
 
 const results = [];
 const check = (name, ok, got) => { results.push({ name, ok: !!ok, got }); };
@@ -50,6 +51,16 @@ check('remind me at 5 stays behind the confirm line and does not push',
     && GATED['reminder.ping'].service === 'reminders' && !executors['reminder.ping']
     && parseCalendar('remind me at 5') === null,
   JSON.stringify({ hold, gatedRemind }));
+
+const countSpec = countdown.countdownOf('days until new year');
+const countDays = countSpec && countdown.daysUntil(countSpec, new Date(2026, 9, 3));
+check('countdown: days until new year from 3 Oct 2026 is 90; a weekday count stays with the list; nothing mounts until asked',
+  countdown.examples.length >= 4 && countdown.nearMisses.length >= 3
+    && countdown.examples.every((e) => countdown.match(e.toLowerCase(), e))
+    && countdown.nearMisses.every((e) => !countdown.match(e.toLowerCase(), e))
+    && countDays && countDays.days === 90 && countDays.target.getMonth() === 0
+    && !countdown.countdownOf('how many days until friday'),
+  JSON.stringify(countDays && { days: countDays.days, target: countDays.target }));
 
 const bad = results.filter((r) => !r.ok);
 for (const r of results) console.log((r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
