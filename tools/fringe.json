@@ -348,5 +348,30 @@
     ],
     "sha256": "430ce3b9abc94a6ea7a1909cdb6df5b8e2f60f963e28785c25d835fb7d7d4e7d",
     "emit": false
+  },
+  {
+    "run": 15,
+    "at": "2026-10-03T21:43:02Z",
+    "family": "correlation-view",
+    "draft": "drafts/fringe/correlation-view-2.html",
+    "sources": [
+      {
+        "claim": "Benchmark floor and skill count over 22 hours, read from this repo's git history (tools/bench.best.json, void-live-deploy/skills/index.json)",
+        "source": "tools/bench.best.json",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Pearson correlation measures linear co-movement, not cause",
+        "source": "https://en.wikipedia.org/wiki/Correlation_does_not_imply_causation",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "More skills cause a higher benchmark (rather than both following the same agents' rounds)",
+        "source": "drafts/fringe/correlation-view-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "e9cc47f19494eb31ac86be5567298e70db50a27ffadb4b1ac0d081040f03669c",
+    "emit": false
   }
 ]

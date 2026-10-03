@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · skills and the benchmark (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:760px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+svg{width:100%;height:auto}
+.legend{display:flex;gap:18px;font-size:12px;color:#8a8a92}
+.legend i{display:inline-block;width:12px;height:3px;margin-right:6px;vertical-align:middle}
+#r{font-size:13px}
+</style>
+</head>
+<body>
+<main>
+  <h1>skills and the benchmark · draft · not published</h1>
+  <p class="note">Two series from git history, 2026-10-02 21:00 to 2026-10-03 19:00 UTC: the benchmark floor (asks Void must answer right, highest so far) and how many skills Void had at that moment. Several agents raised them in parallel branches, so the floor is shown as its running maximum. They rise together, partly because new skills bring new asks with them. Correlation shows what moves together; on its own it never says why.</p>
+  <div class="legend"><span><i style="background:#7cf"></i>benchmark floor</span><span><i style="background:#f0a07a"></i>skills</span></div>
+  <svg id="c" viewBox="0 0 700 300" role="img" aria-label="Benchmark floor and number of skills over time"></svg>
+  <div id="r" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var D=[
+    ['10-02 21:04',129,16],
+    ['10-02 21:23',133,20],
+    ['10-02 22:42',134,21],
+    ['10-02 23:46',154,21],
+    ['10-03 00:33',164,21],
+    ['10-03 01:15',183,21],
+    ['10-03 01:57',191,22],
+    ['10-03 02:26',197,23],
+    ['10-03 04:25',207,25],
+    ['10-03 06:48',219,27],
+    ['10-03 07:04',221,28],
+    ['10-03 07:18',223,29],
+    ['10-03 08:22',227,29],
+    ['10-03 09:47',235,32],
+    ['10-03 12:51',239,34],
+    ['10-03 16:41',245,34],
+    ['10-03 17:10',249,36],
+    ['10-03 17:45',256,36],
+    ['10-03 17:55',259,37],
+    ['10-03 18:45',266,37]
+  ];
+  // Pearson correlation of the two series
+  function pearson(a,b){var n=a.length,ma=a.reduce(function(s,x){return s+x},0)/n,mb=b.reduce(function(s,x){return s+x},0)/n,sab=0,sa=0,sb=0;for(var i=0;i<n;i++){sab+=(a[i]-ma)*(b[i]-mb);sa+=(a[i]-ma)*(a[i]-ma);sb+=(b[i]-mb)*(b[i]-mb)}return sab/Math.sqrt(sa*sb)}
+  var svg=document.getElementById('c'),NS='http://www.w3.org/2000/svg',W=700,H=300,L=40,R=40,T=10,B=30;
+  function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e}
+  var x=function(i){return L+i*(W-L-R)/(D.length-1)},y1=function(v){return T+(H-T-B)*(1-(v-100)/200)},y2=function(v){return T+(H-T-B)*(1-v/40)};
+  [100,200,300].forEach(function(v){el('line',{x1:L,x2:W-R,y1:y1(v),y2:y1(v),stroke:'rgba(255,255,255,.08)'});var t=el('text',{x:L-6,y:y1(v)+4,'text-anchor':'end',fill:'#7cf','font-size':11});t.textContent=v});
+  [0,20,40].forEach(function(v){var t=el('text',{x:W-R+6,y:y2(v)+4,fill:'#f0a07a','font-size':11});t.textContent=v});
+  function line(k,y,c){el('polyline',{points:D.map(function(d,i){return x(i)+','+y(d[k])}).join(' '),fill:'none',stroke:c,'stroke-width':2})}
+  line(1,y1,'#7cf');line(2,y2,'#f0a07a');
+  [0,D.length-1].forEach(function(i){var t=el('text',{x:x(i),y:H-8,'text-anchor':i?'end':'start',fill:'#77777f','font-size':11});t.textContent=D[i][0]+' UTC'});
+  var r=pearson(D.map(function(d){return d[1]}),D.map(function(d){return d[2]}));
+  document.getElementById('r').textContent='Pearson r = '+r.toFixed(2)+' across '+D.length+' points. Floor '+D[0][1]+' to '+D[D.length-1][1]+'; skills '+D[0][2]+' to '+D[D.length-1][2]+'.';
+  window.__corr={pearson:pearson,data:D}; // for checks
+})();
+</script>
+</body>
+</html>

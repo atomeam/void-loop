@@ -65,7 +65,7 @@ let next = 0;
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]); } }));
 await browser.close(); server.close();
 if (process.argv.includes('--score')) { console.log(JSON.stringify({ score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by) })); process.exit(0); }
-for (const x of out) console.log((x.right ? '  ok  ' : ' ---- ') + x.ask.padEnd(42) + (x.by + (x.right ? '' : '   (wants ' + x.want + ')')));
+for (const x of out) console.log((x.right ? '  ok  ' : ' ---- ') + x.ask.padEnd(42) + ' ' + (x.by + (x.right ? '' : '   (wants ' + x.want + ')')));
 const n = out.filter((x) => x.right).length;
 console.log('\n' + n + ' of ' + out.length + ' answered by what should answer them.');
 if (process.argv.includes('--json')) fs.writeFileSync(path.join(here, 'bench.last.json'), JSON.stringify(out, null, 1));

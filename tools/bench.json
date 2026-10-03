@@ -1020,5 +1020,11 @@
   {"ask": "recent earthquakes near los angeles", "want": "skill:quake"},
   {"ask": "car loan $25000 at 6% for 60 months", "want": "skill:loan"},
   {"ask": "what day is christmas this year", "want": "holiday"},
-  {"ask": "convert 5 miles to km", "want": "calc"}
+  {"ask": "convert 5 miles to km", "want": "calc"},
+  {"ask": "pollen forecast for london", "want": "skill:pollen"},
+  {"ask": "uv index today in sydney", "want": "skill:uv"},
+  {"ask": "mortgage on 350k at 6.25% for 30 years", "want": "skill:loan"},
+  {"ask": "fuel cost 120 miles at 30 mpg $3.80 a gallon", "want": "skill:fuel"},
+  {"ask": "public holidays in germany", "want": "skill:holidays"},
+  {"ask": "what time is it in berlin", "want": "skill:worldtime"}
 ]
