@@ -9,9 +9,9 @@ New ideas land here in batches. A run may build any open row. Shipped rows stay,
 | shipped d972baf | 2026-10-02 | remind me at 5 | plan item 7, connector behind the confirm line |
 | shipped 2e67f4b | 2026-10-03 | recent asks on an empty box | board Next #15 (Grok idea F001) |
 | shipped c5d99e8 | 2026-10-03 | show the magnetize step | board Next, magnetize-step card |
-| building | 2026-10-02 | what's already built | assimilate row 6, plan item 8 |
+| shipped 323077d | 2026-10-02 | what's already built | assimilate row 6, plan item 8 |
 | shipped e8661b4 | 2026-10-03 | throw it off the screen | figures-first dismiss (skill + stageKinds flick; main already throwable) |
 | open | 2026-10-03 | export a print file | void-stage, slicer 3MF |
-| shipped e8661b4 | 2026-10-03 | summon a figure | figures-first, living 3D |
-| shipped e8661b4 | 2026-10-03 | spin the figure | figures-first, see the back |
-| open | 2026-10-03 | days until new year | board later, date countdown |
+| building | 2026-10-03 | summon a figure | figures-first, living 3D |
+| open | 2026-10-03 | spin the figure | figures-first, see the back |
+| building | 2026-10-03 | days until new year | board later, date countdown |
