@@ -243,5 +243,35 @@
     ],
     "sha256": "626d7cee09fb9b2b4d0b96e8963a07a279350dfc8a178547923d6cf45df3e31e",
     "emit": false
+  },
+  {
+    "run": 11,
+    "at": "2026-10-03T06:45:42Z",
+    "family": "non-lexical-intent",
+    "draft": "drafts/fringe/non-lexical-intent.html",
+    "sources": [
+      {
+        "claim": "Augmentative and alternative communication (AAC): people communicate intent without speech, using gestures, symbols and switch patterns",
+        "source": "https://www.asha.org/public/speech/disorders/aac/",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Morse code: a two-element timing code (short / long) carries meaning by pattern alone",
+        "source": "https://www.itu.int/rec/R-REC-M.1677",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Non-lexical sounds (uh-huh, mm) carry conversational intent without words",
+        "source": "https://doi.org/10.1075/pc.14.1.08war",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A small personal tap vocabulary is faster than typing for a few frequent intents",
+        "source": "drafts/fringe/non-lexical-intent.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "636a69a9b9bbeb2d92bb8910126ad2648c6bf8ae836fece57448526cffbcbd4c",
+    "emit": false
   }
 ]

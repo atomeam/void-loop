@@ -22,6 +22,8 @@ const TABLES = [
   'CREATE TABLE IF NOT EXISTS void_passkey_challenges (id TEXT PRIMARY KEY, kind TEXT NOT NULL, user_id TEXT, expires INTEGER NOT NULL)',
   'CREATE TABLE IF NOT EXISTS void_sessions (id TEXT PRIMARY KEY, user_id TEXT NOT NULL, at TEXT NOT NULL, expires INTEGER NOT NULL)',
   'CREATE INDEX IF NOT EXISTS void_sessions_user ON void_sessions (user_id)',
+  // Owner login: passkeys the owner bound with the key itself (/api/passkey 'owner-bind'). Signing in with one brings an owner session.
+  'CREATE TABLE IF NOT EXISTS void_owner_passkeys (id TEXT PRIMARY KEY, at TEXT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS void_mine (user_id TEXT PRIMARY KEY, data TEXT NOT NULL, rev INTEGER NOT NULL, updated TEXT NOT NULL)',
   // Plan item 12 (paid Void): a passkey account's tier. No row = 'free'. Only /api/gumroad writes it, after Gumroad's API confirms the sale.
   PAGE_TABLE, // a published Void (/@name): made here too so 'forget me' can always remove it

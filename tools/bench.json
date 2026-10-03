@@ -205,5 +205,17 @@
   {"ask": "uap timeline", "want": "skill:make"},
   {"ask": "clear calender", "want": "skill:calendar"},
   {"ask": "delete all my events", "want": "skill:calendar"},
-  {"ask": "show my calendar", "want": "skill:calendar"}
+  {"ask": "show my calendar", "want": "skill:calendar"},
+  {"ask": "air quality in Tokyo", "want": "skill:air"},
+  {"ask": "AQI in London", "want": "skill:air"},
+  {"ask": "is the air good in Paris", "want": "skill:air"},
+  {"ask": "what's the air quality in New York", "want": "skill:air"},
+  {"ask": "what time is it", "want": "timenow"},
+  {"ask": "what's the time", "want": "timenow"},
+  {"ask": "current time", "want": "timenow"},
+  {"ask": "what time is it right now", "want": "timenow"},
+  {"ask": "connect 4", "want": "skill:make"},
+  {"ask": "make a blue 3d sphere", "want": "skill:make"},
+  {"ask": "clear my calendar", "want": "skill:calendar"},
+  {"ask": "what time is it in paris", "want": "skill:worldtime"}
 ]

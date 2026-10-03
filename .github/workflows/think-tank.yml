@@ -1,0 +1,52 @@
+name: Forethinkers
+
+on:
+  schedule:
+    - cron: "3 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Print writes and write nothing
+        type: boolean
+        default: true
+
+jobs:
+  cycle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Even New York hour, or a manual run
+        id: gate
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          hour=$(TZ=America/New_York date +%H)
+          hour=$((10#$hour))
+          if [ $((hour % 2)) -eq 0 ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "skip odd America/New_York hour $hour"
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.run == 'true'
+        with:
+          node-version: "20"
+
+      - name: One node, touched tracks only
+        if: steps.gate.outputs.run == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MODEL: ${{ vars.MODEL }}
+          NOTIFY_WEBHOOK: ${{ secrets.NOTIFY_WEBHOOK }}
+          ACTIVE_TRACKS: ${{ vars.ACTIVE_TRACKS }}
+          MAX_SEARCHES: ${{ vars.MAX_SEARCHES }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == false && 'false' || 'true' }}
+        run: |
+          node --test domains/forethinkers/think-tank.test.mjs
+          node domains/forethinkers/think-tank.mjs
