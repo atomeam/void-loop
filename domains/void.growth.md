@@ -166,8 +166,8 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **What:** when a visitor clicks into or focuses the empty input, show their last few asks as quiet clickable suggestions, saved only in their own browser (localStorage, personal layer); Enter or a click re-runs one. The suggestions appear only once the box has focus, so the surface stays blank until then.
 - **Why:** returning visitors get back to what they asked before in one step. Source: Grok idea F001 (intent command palette); the rest of F001 is already live (menu, Cmd/Ctrl+K and /, miss fallback, /tools.json).
 - **Reuse:** existing #hints suggestion list under the input, find-or-ask focus handling, localStorage personal layer.
-- **claim:**
-- **claim_until:**
+- **claim:** grok 2026-10-03 00:19 ET (Adam asked for work now)
+- **claim_until:** 2026-10-03 02:30 ET
 
 ### Later (queued, not ranked)
 - **Text annotation / labels:** free-floating labels, arrows, connectors between objects (~35% reuse).
