@@ -50,6 +50,7 @@ export default {
   name: 'recipe',
   examples: ['recipe for pancakes', 'lasagna recipe', 'recipes with chicken', 'how do i make guacamole'],
   nearMisses: ['recipe for disaster meaning', 'what is a recipe', 'who invented pizza', 'how do i make money', 'how to make friends'],
-  match(lower, text) { return !!dishOf(text) && !/\bdisaster\b|\bsuccess\b/i.test(text); },
+  // a question about recipes ("what is a recipe") is not a request for one
+  match(lower, text) { return !!dishOf(text) && !/\bdisaster\b|\bsuccess\b/i.test(text) && !/^(?:what|who|why|when|where|is|are|define|meaning)\b/i.test(String(text).trim()); },
   run
 };

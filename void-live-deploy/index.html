@@ -4122,6 +4122,17 @@ return { ok: true, detail: 'timer-reset' };
     function wantsToday(l) {
       return /^(what(?:'s|\s+is)?|whats)\s+(?:the\s+)?(?:day|date|today'?s?\s+date)(?:\s+(?:is\s+it|today|is\s+it\s+today|is\s+today))?$|^what\s+day\s+is\s+(?:it|today)(\s+today)?$|^what(?:'s|\s+is)?\s+the\s+date(\s+today)?$|^(?:what|which)\s+year\s+is\s+(?:it|this)$|^today'?s\s+date$|^date\s+today$/.test(l.replace(/[?.!]+$/, ''));
     }
+    // "what time is it" with no place: the time here, ticking, with the zone and the date ("time in Tokyo" is worldtime's)
+    function wantsTimeNow(l) {
+      return /^(?:what(?:'s|\s+is)?|whats)\s+the\s+time(?:\s+(?:now|right\s+now|here))?$|^what\s+time\s+is\s+it(?:\s+(?:now|right\s+now|here))?$|^(?:current|local)\s+time$|^(?:the\s+)?time\s+(?:now|right\s+now|please)$/.test(l.replace(/[?.!]+$/, '').trim());
+    }
+    function showTimeNow() {
+      const zone = (Intl.DateTimeFormat().resolvedOptions().timeZone || '').replace(/_/g, ' ');
+      const el = bigPage('Time', new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' }),
+        new Date().toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) + (zone ? ' · ' + zone : ''));
+      const big = el && el.querySelector('div'); if (!big) return;
+      const tick = setInterval(() => { if (vpageEl !== el) { clearInterval(tick); return; } big.textContent = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' }); }, 1000);
+    }
     function showToday() {
       const d = new Date(), y0 = new Date(d.getFullYear(), 0, 1), doy = Math.floor((d - y0) / 864e5) + 1, days = ((d.getFullYear() % 4 === 0 && d.getFullYear() % 100 !== 0) || d.getFullYear() % 400 === 0) ? 366 : 365;
       const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const dn = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - dn);
@@ -4205,6 +4216,7 @@ return { ok: true, detail: 'timer-reset' };
       // small tools win over the stage's own words ("what color is #ff8800" is a colour, not a recolour)
       if (skillsLoaded) for (const sk of learnedSkills) if (sk.name === 'util' && sk.match(l, text)) return runLearnedSkills(text, l);
       if (wantsToday(l)) { showToday(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'today' }); return true; }
+      if (wantsTimeNow(l)) { showTimeNow(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'timenow' }); return true; }
       { const c = chanceOf(l); if (c) { showPage((p) => { p.innerHTML = '<h2>' + esc(c.title) + '</h2><div style="font-size:56px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
       if (await handleAppAsk(text, l)) return true;
       for (const [lang, re, line] of SPEAKS) if (re.test(l)) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'speaks ' + lang }); return true; }
