@@ -219,5 +219,7 @@
   {"ask": "connect 4", "want": "skill:make"},
   {"ask": "make a blue 3d sphere", "want": "skill:make"},
   {"ask": "clear my calendar", "want": "skill:calendar"},
-  {"ask": "what time is it in paris", "want": "skill:worldtime"}
+  {"ask": "what time is it in paris", "want": "skill:worldtime"},
+  {"ask": "a chair", "want": "skill:figure"},
+  {"ask": "summon motelet", "want": "skill:figure"}
 ]

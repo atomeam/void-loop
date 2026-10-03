@@ -2,6 +2,13 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-03 talking cycle: one figure uses one object
+
+Motelet, the first original character, lives on the stage (void-live-deploy/skills/figure.js, plus a small stage hook in
+void.html: skill stage kinds, and things that leave when thrown off the screen). "a chair" then "summon motelet": it
+sits. "a cup" then "summon motelet": it holds the cup. "download motelet" saves the body in its stage pose (38 mm, 21
+closed shells). Browser test covers sit, hold, stand, spin, the file, the throw and a reload. Not printed yet.
+
 ## 2026-10-03 talking cycle: one part, end to end
 
 Linemote-1 is live in Void as a skill (void-live-deploy/skills/part.js): "summon linemote-1" shows the page (what it is,

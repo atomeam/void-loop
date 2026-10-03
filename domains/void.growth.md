@@ -228,3 +228,5 @@ Score: _(human)_
 - 2026-09-27 claude: 007 DONE and live (deploy 4a60c211): 'add a sticky', 'another note', 'make a 2 minute timer' add a new one; 'set the timer to…' still edits. Built through the queue (item mukgwcjf, queued -> building -> live). 008 self-update handoff is LIVE: queue and miss list moved from KV to D1 (a-to-mind-board DB, 100k writes/day).
 
 [think-tank] 2026-10-03 summon / export: Linemote-1, the first printable part. "summon linemote-1" shows its page and Download STL saves linemote-1.stl (built on the printed linear motor, https://news.mit.edu/2026/3d-printing-platform-rapidly-produces-complex-electric-machines-0218, 2026-02-18). Next: one test print.
+
+[think-tank] 2026-10-03 summon / spin / export: Motelet, the first figure that uses the stage. "a chair" then "summon motelet" and it sits; "a cup" and it holds it; "download motelet" saves its body as a print file. Next: a second ask that changes size, pose or a part, and one test print.

@@ -528,6 +528,8 @@
     /** @type {Record<string, any>} */
     let things = {};
     let selectedId = null;
+    // stage kinds a skill file brings (3D figures and objects): { kind: { mount(th, S), dropped?(th, S), thrown?(th, S), throwable } }
+    const stageKinds = {};
 
     function load() {
       if (PAGE) { // the page's cards, as text only; your own stage stays untouched in this browser
@@ -579,6 +581,7 @@ Object.values(things).forEach((th) => {
         else if (th.kind === 'shape') mountShape(th);
         else if (th.kind === 'kept') mountKept(th);
         else if (th.kind === 'calendar') mountCalendar(th);
+        else if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
     }
 
@@ -644,12 +647,18 @@ Object.values(things).forEach((th) => {
     }
     // skills put things on the stage through this: summon('calendar') shows the card, { hide: true } takes it off (events stay)
     function summonThing(kind, opts = {}) {
+      if (stageKinds[kind]) { // skill kinds: each ask adds one more; it stays until thrown off the screen
+        const th = Object.assign({ id: uid(kind), kind, x: 40, y: 60 }, opts);
+        things[th.id] = th; selectedId = th.id; save(); render(); return th;
+      }
       if (kind !== 'calendar') return null;
       let th = Object.values(things).find((t) => t.kind === kind);
       if (opts.hide) { if (th) { delete things[th.id]; if (selectedId === th.id) selectedId = null; } save(); render(); return null; }
       if (!th) { th = { id: uid(kind), kind, x: Math.max(16, Math.min(stage.clientWidth - 300, stage.clientWidth - 340)), y: 60 }; things[th.id] = th; }
       selectedId = th.id; save(); render(); return th;
     }
+    // what a skill's stage kind gets: the live things, and the stage's own drag, save and render
+    const stageApi = { stage, things: () => things, bindDrag, save, render, say, select: (id) => { selectedId = id; }, selected: () => selectedId };
 
     function bindDrag(el, th) {
       el.addEventListener('pointerdown', (e) => {
@@ -657,7 +666,8 @@ Object.values(things).forEach((th) => {
         const editable = !!(e.target && e.target.isContentEditable); // text you can edit: a click edits, a real move drags
         const startX = e.clientX, startY = e.clientY;
         const origX = th.x, origY = th.y;
-        let cur = null;
+        const sk = stageKinds[th.kind], free = !!(sk && sk.throwable); // a figure can leave the screen: thrown off, it is gone
+        let cur = null, vx = 0, vy = 0, lastX = e.clientX, lastY = e.clientY, lastT = performance.now();
         const begin = () => {
           selectedId = th.id;
           if (Object.keys(things).pop() !== th.id) { delete things[th.id]; things[th.id] = th; } // to the front (render order = z-order)
@@ -669,8 +679,10 @@ Object.values(things).forEach((th) => {
         if (!editable) begin();
         const move = (ev) => {
           if (!cur) { if (Math.hypot(ev.clientX - startX, ev.clientY - startY) < 5) return; begin(); }
-          th.x = Math.max(0, origX + (ev.clientX - startX));
-          th.y = Math.max(0, origY + (ev.clientY - startY));
+          th.x = free ? origX + (ev.clientX - startX) : Math.max(0, origX + (ev.clientX - startX));
+          th.y = free ? origY + (ev.clientY - startY) : Math.max(0, origY + (ev.clientY - startY));
+          const now = performance.now(), dt = Math.max(1, now - lastT);
+          vx = (ev.clientX - lastX) / dt; vy = (ev.clientY - lastY) / dt; lastX = ev.clientX; lastY = ev.clientY; lastT = now;
           cur.style.left = th.x + 'px';
           cur.style.top = th.y + 'px';
         };
@@ -678,6 +690,18 @@ Object.values(things).forEach((th) => {
           window.removeEventListener('pointermove', move);
           window.removeEventListener('pointerup', up);
           document.documentElement.classList.remove('dragging');
+          if (cur && free) {
+            const r = cur.getBoundingClientRect(), fling = Math.hypot(vx, vy) > 2 && performance.now() - lastT < 120;
+            const out = r.right < 30 || r.left > innerWidth - 30 || r.bottom < 30 || r.top > innerHeight - 30;
+            if (fling || out) { // thrown off the screen: it flies on and is gone
+              takeUndoSnapshot(); delete things[th.id]; if (selectedId === th.id) selectedId = null;
+              try { if (sk.thrown) sk.thrown(th, stageApi); } catch (_) {}
+              save(); cur.style.transition = 'left .3s ease-in, top .3s ease-in, opacity .3s'; cur.style.left = (th.x + vx * 400) + 'px'; cur.style.top = (th.y + vy * 400) + 'px'; cur.style.opacity = '0';
+              setTimeout(render, 320); say('gone'); return;
+            }
+            try { if (sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
+            save(); render(); return;
+          }
           if (cur) save();
         };
         window.addEventListener('pointermove', move);
@@ -3330,9 +3354,11 @@ return { ok: true, detail: 'timer-reset' };
             const mod = await import('/skills/' + name + '.js');
             const skill = mod.default;
             if (skill && skill.name && skill.match && skill.run) learnedSkills.push(skill);
+            if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
           } catch (_) {}
         }
       } catch (_) {}
+      if (Object.values(things).some((t) => stageKinds[t.kind])) render(); // figures kept from last time come back
     }
     const skillsReady = loadLearnedSkills().finally(() => { skillsLoaded = true; });
 
@@ -3347,6 +3373,7 @@ return { ok: true, detail: 'timer-reset' };
             loopLog,
             _pageStill: (el) => vpageEl === el,
             summon: summonThing,
+            stage: stageApi,
             refreshThings: () => render(), // the 3D calendar redraws the stage card after an edit
           };
           say(/weather|place|map/.test(skill.name) ? 'looking up' : skill.name === 'translate' ? 'translating' : 'working');
