@@ -273,5 +273,30 @@
     ],
     "sha256": "636a69a9b9bbeb2d92bb8910126ad2648c6bf8ae836fece57448526cffbcbd4c",
     "emit": false
+  },
+  {
+    "run": 12,
+    "at": "2026-10-03T15:42:59Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention.html",
+    "sources": [
+      {
+        "claim": "The Page Visibility API reports when a page is hidden (another tab or app) and visible again",
+        "source": "https://www.w3.org/TR/page-visibility-2/",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Gloria Mark's studies: average attention on one screen before switching fell to about 47 seconds",
+        "source": "https://gloriamark.com/attention-span/",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Seeing your own unbroken stretches helps you hold longer ones",
+        "source": "drafts/fringe/attention.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "0c71faf8e5085faa0c9efeb8b36034ed60b45365c19005a205e291aed34ef94f",
+    "emit": false
   }
 ]

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · attention (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+input,button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+input:focus-visible,button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#one{font-size:22px;color:#fff;min-height:1.4em}
+#bar{height:6px;border-radius:3px;background:#1a1a20;overflow:hidden}
+#bar i{display:block;height:100%;width:0;background:#7cf;transition:width .5s}
+ol{margin:0;padding-left:20px;font-size:13px;color:#a8a8b0}
+</style>
+</head>
+<body>
+<main>
+  <h1>attention · draft · not published</h1>
+  <p class="note">Name one thing and start. While it runs, this page notes each time you leave it (another tab or app) and for how long, using only the browser's own visibility signal. Nothing is sent; nothing is scored against anyone. At the end you see the stretches you held and where they broke.</p>
+  <div class="row"><input id="what" placeholder="the one thing" aria-label="the one thing you are doing" size="28"><input id="mins" type="number" min="1" max="120" value="25" aria-label="minutes" style="width:5em"> min <button id="go" type="button">start</button></div>
+  <div id="one" aria-live="polite"></div>
+  <div id="bar" aria-hidden="true"><i></i></div>
+  <div id="sum" aria-live="polite"></div>
+  <ol id="log" aria-label="when you left and came back"></ol>
+</main>
+<script>
+(function(){
+  var run=null, timer=0;
+  // stretches = time on the page between leaves; leaves = [{at, away}]
+  function summary(r,now){var held=[],last=r.start,away=0;r.leaves.forEach(function(l){held.push(l.at-last);last=l.at+l.away;away+=l.away});held.push(now-last);return {held:held,away:away,longest:Math.max.apply(null,held),leaves:r.leaves.length}}
+  function mmss(ms){var s=Math.round(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
+  function tick(){if(!run)return;var now=Date.now(),f=Math.min(1,(now-run.start)/run.len);document.querySelector('#bar i').style.width=(f*100)+'%';if(f>=1)stop()}
+  function stop(){if(!run)return;clearInterval(timer);var s=summary(run,Date.now());document.getElementById('sum').textContent='done. you left '+s.leaves+' time'+(s.leaves===1?'':'s')+', away '+mmss(s.away)+' in all; your longest unbroken stretch was '+mmss(s.longest)+'.';run=null;document.getElementById('go').textContent='start'}
+  document.getElementById('go').addEventListener('click',function(){
+    if(run){stop();return}
+    var w=document.getElementById('what').value.trim()||'one thing',m=Math.max(1,Math.min(120,+document.getElementById('mins').value||25));
+    run={what:w,start:Date.now(),len:m*6e4,leaves:[],hiddenAt:0};document.getElementById('one').textContent=w;document.getElementById('sum').textContent='';document.getElementById('log').innerHTML='';this.textContent='stop';timer=setInterval(tick,500)});
+  document.addEventListener('visibilitychange',function(){
+    if(!run)return;
+    if(document.hidden){run.hiddenAt=Date.now()}
+    else if(run.hiddenAt){var l={at:run.hiddenAt,away:Date.now()-run.hiddenAt};run.leaves.push(l);run.hiddenAt=0;var li=document.createElement('li');li.textContent='left at '+mmss(l.at-run.start)+' for '+mmss(l.away);document.getElementById('log').appendChild(li)}
+  });
+  window.__attention={summary:summary}; // for checks
+})();
+</script>
+</body>
+</html>
