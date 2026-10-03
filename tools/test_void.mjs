@@ -2004,6 +2004,15 @@ try {
       && held && held.held === true && held.kind === 'person' && held.html === '',
     tossMod ? tossMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing throw-off');
 
+  const yearMod = nsMods.find((s) => s.name === 'new-year');
+  const yearApi = yearMod && await import(new URL('../void-live-deploy/skills/new-year.js', import.meta.url).href);
+  const daysLeft = yearApi && yearApi.daysUntilNewYear(new Date(2026, 9, 3));
+  const onDay = yearApi && yearApi.daysUntilNewYear(new Date(2027, 0, 1));
+  check('new-year: listed with examples and near misses; examples route only to it; 3 Oct 2026 is 90 days out and New Year day itself is 0',
+    !!yearMod && yearMod.examples.length >= 4 && (yearMod.nearMisses || []).length >= 3
+      && yearMod.examples.every((e) => firstNs(e) === 'new-year') && yearMod.nearMisses.every((e) => firstNs(e) !== 'new-year')
+      && daysLeft === 90 && onDay === 0 && /90 days/.test(yearApi.newYearLine(new Date(2026, 9, 3))),
+    yearMod ? yearMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing new-year');
 
   const esMod = nsMods.find((s) => s.name === 'spanish');
   const esReady = esMod && esMod.spanishReady();
