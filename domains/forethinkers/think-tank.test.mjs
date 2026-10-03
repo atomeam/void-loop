@@ -30,6 +30,11 @@ test("map seed: motor is established and joint stays hypothesis", () => {
     assert.equal(fmt.status, "established");
     assert.equal(establishedOk(fmt), true);
   }
+  const seno = map.find((n) => n.id === "senolytics-mash-dq");
+  if (seno) {
+    assert.equal(seno.status, "established");
+    assert.equal(establishedOk(seno), true);
+  }
   const joint = map.find((n) => n.id === "printed-actuator-moves-figure-joint");
   assert.equal(joint.status, "hypothesis");
   assert.deepEqual(joint.tracks, ["printing-working-machines", "living-figures"]);
