@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · tap with the beat (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,select{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible,select:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+#pad{height:140px;border:1px solid rgba(255,255,255,.18);border-radius:16px;display:flex;align-items:center;justify-content:center;color:#8a8a92;user-select:none;touch-action:manipulation}
+#pad.beat{border-color:#7cf}
+#out{min-height:3em;white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>tap with the beat · draft · not published</h1>
+  <p class="note">A flash (and, if you turn it on, a click) beats at a steady tempo. Tap the pad, or the space bar, on each beat. People tend to tap a little before the beat; this shows your own average lead or lag and how steady you were, after 16 taps. It is a number about this round, not a judgement. Nothing leaves the device.</p>
+  <div class="row"><select id="bpm" aria-label="tempo"><option>60</option><option selected>90</option><option>120</option></select> bpm <label><input id="snd" type="checkbox"> click</label> <button id="go" type="button">start</button></div>
+  <div id="pad" tabindex="0" role="button" aria-label="tap pad">tap on the beat</div>
+  <div id="out" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var pad=document.getElementById('pad'),out=document.getElementById('out'),run=null,ac=null;
+  // each tap is matched to its nearest beat; offset < 0 means early (anticipation)
+  function score(beats,taps){var off=taps.map(function(t){var n=beats.reduce(function(a,b){return Math.abs(b-t)<Math.abs(a-t)?b:a});return t-n});var m=off.reduce(function(a,b){return a+b},0)/off.length;var sd=Math.sqrt(off.reduce(function(a,b){return a+(b-m)*(b-m)},0)/off.length);return {mean:m,sd:sd,n:off.length}}
+  function stop(){if(!run)return;clearInterval(run.t);var s=run.taps.length?score(run.beats,run.taps):null;out.textContent=s?('taps: '+s.n+'\naverage: '+(s.mean<0?Math.round(-s.mean)+' ms before the beat':Math.round(s.mean)+' ms after the beat')+'\nsteadiness (spread): ± '+Math.round(s.sd)+' ms'):'no taps';run=null;document.getElementById('go').textContent='start'}
+  function tap(){if(!run)return;run.taps.push(performance.now());if(run.taps.length>=16)stop()}
+  document.getElementById('go').addEventListener('click',function(){
+    if(run){stop();return}
+    var ms=60000/+document.getElementById('bpm').value,snd=document.getElementById('snd').checked;
+    if(snd&&!ac){var A=window.AudioContext||window.webkitAudioContext;if(A)ac=new A()}
+    run={beats:[],taps:[],t:0};out.textContent='';this.textContent='stop';
+    var beat=function(){run.beats.push(performance.now());pad.classList.add('beat');setTimeout(function(){pad.classList.remove('beat')},90);
+      if(snd&&ac){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=1000;g.gain.value=0.05;o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+0.03)}};
+    beat();run.t=setInterval(beat,ms);
+  });
+  pad.addEventListener('pointerdown',function(e){e.preventDefault();tap()});
+  pad.addEventListener('keydown',function(e){if(e.code==='Space'&&!e.repeat){e.preventDefault();tap()}});
+  window.__beat={score:score}; // for checks
+})();
+</script>
+</body>
+</html>

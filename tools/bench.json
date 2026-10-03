@@ -1013,5 +1013,12 @@
   {"ask": "upcoming holidays", "want": "skill:holidays"},
   {"ask": "recommend books like the hobbit", "want": "skill:book"},
   {"ask": "ethereum price", "want": "skill:crypto"},
-  {"ask": "what is 15% of 80", "want": "calc"}
+  {"ask": "what is 15% of 80", "want": "calc"},
+  {"ask": "18% tip on $92", "want": "skill:tip"},
+  {"ask": "air quality in denver", "want": "skill:air"},
+  {"ask": "sunscreen needed in miami today", "want": "skill:uv"},
+  {"ask": "recent earthquakes near los angeles", "want": "skill:quake"},
+  {"ask": "car loan $25000 at 6% for 60 months", "want": "skill:loan"},
+  {"ask": "what day is christmas this year", "want": "holiday"},
+  {"ask": "convert 5 miles to km", "want": "calc"}
 ]
