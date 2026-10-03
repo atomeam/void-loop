@@ -13,6 +13,15 @@ nodes:
     date: 2026-02-18
     tracks: [printing-working-machines]
     claim: Five materials, about three hours, one post-step to magnetize, 318 um at 41.6 Hz. A printed motor exists. It does not show a figure joint moving.
+  - id: magnetize-outside-printer
+    kind: shared-part
+    status: established
+    part: post-print impulse magnetization of bonded hard magnets
+    title: "3D printed bonded magnets from rare-earth micropowder alloys"
+    url: https://doi.org/10.1088/2058-8585/aded1f
+    date: 2025-07-18
+    tracks: [printing-working-machines]
+    claim: Hard-magnetic polymer prints are saturated on a separate impulse magnetizer (about 3 to 7 T), not inside the MIT extrusion platform. Soft-magnetic cores need no magnetize step. MIT News 2026-02-18 states magnetization is the post-print step and in-print magnetization is the next research goal.
   - id: printed-actuator-moves-figure-joint
     kind: shared-part
     status: hypothesis
@@ -24,7 +33,7 @@ nodes:
     status: blocked
     part: export a print file from a summoned figure
     tracks: [void-stage]
-    claim: Ask, spin, download STL or 3MF. Not browser-tested. Not slicer-tested.
+    claim: Ask, spin, download STL or 3MF. Not browser-tested on main. Not slicer-tested. Magnetize handoff text can now cite dated impulse practice.
   - id: stage-figure
     kind: void-stage
     status: hypothesis
@@ -35,4 +44,5 @@ nodes:
 
 ## Cycle log
 
+- 2026-10-03 04:04 ET. Magnetize-outside-printer established from Słoma et al. 2025 (7 T impulse on FDM NdFeB) plus MIT News 2026-02-18 (magnetize is post-print; in-print is next). Figure-joint link stays hypothesis. Export-to-print stays blocked on main.
 - 2026-10-03 seed. Only the MIT linear motor is established. Figure-joint link is a hypothesis. Export-to-print is blocked.
