@@ -7,15 +7,16 @@
  */
 export const MOTION_KEY = 'a2m.void.motion.v1';
 
-const NOUN = '(?:sprites?|buddy|buddies|friends?|figurines?|critters?|creatures?|companions?|pals?)'; // not bare "figure(s)" — that is Motelet's figure skill
+const NOUN = '(?:sprites?|buddy|buddies|friends?|figurines?|critters?|creatures?|companions?|pals?)'; // not bare figure(s): Motelet
+const FIG = '(?:sprites?|buddy|buddies|friends?|figures?|figurines?|critters?|creatures?|companions?|pals?)';
 const ADJ = '(?:(?:little|tiny|small|cute|new|roaming|void|3d|3-d|three[\\s-]?d)\\s+)*';
 const SUMMON = new RegExp('^(?:please\\s+)?(?:summon|bring(?:\\s+(?:out|in))?|show\\s+me|give\\s+me|call(?:\\s+up)?|spawn|add|make\\s+me)\\s+'
   + '(?:me\\s+)?(?:a|an|another|one\\s+more|my|some)?\\s*' + ADJ + NOUN + '(?:\\s+(?:friend|buddy))?(?:\\s+please)?$');
-const WHO = '(?:them|the\\s+' + ADJ + NOUN + '|my\\s+' + ADJ + NOUN + '|all\\s+(?:the\\s+)?' + ADJ + NOUN + '|everyone|everybody)';
+const WHO = '(?:them|the\\s+' + ADJ + FIG + '|my\\s+' + ADJ + FIG + '|all\\s+(?:the\\s+)?' + ADJ + FIG + '|everyone|everybody)';
 const DISMISS = [
   new RegExp('^(?:please\\s+)?(?:send|wave)\\s+' + WHO + '\\s+(?:away|off|home)(?:\\s+please)?$'),
-  new RegExp('^(?:please\\s+)?(?:dismiss|remove|clear|hide)\\s+(?:the\\s+|all\\s+(?:the\\s+)?|my\\s+)?' + ADJ + NOUN + '$'),
-  new RegExp('^(?:bye|goodbye|bye\\s+bye|see\\s+you),?\\s+(?:little\\s+)?' + NOUN + '$'),
+  new RegExp('^(?:please\\s+)?(?:dismiss|remove|clear|hide)\\s+(?:the\\s+|all\\s+(?:the\\s+)?|my\\s+)?' + ADJ + FIG + '$'),
+  new RegExp('^(?:bye|goodbye|bye\\s+bye|see\\s+you),?\\s+(?:little\\s+)?' + FIG + '$'),
 ];
 const STILL = /^(?:please\s+)?(?:less\s+motion|reduce(?:d)?\s+motion|hold\s+still|stay\s+still|stop\s+moving|keep\s+(?:them|the\s+(?:figures?|sprites?))\s+still|(?:figures?|sprites?)\s+hold\s+still)$/;
 const ROAM = /^(?:please\s+)?(?:more\s+motion|let\s+(?:them|the\s+(?:figures?|sprites?))\s+(?:roam|move|wander)(?:\s+again)?|roam\s+free|you\s+can\s+move(?:\s+again)?)$/;
