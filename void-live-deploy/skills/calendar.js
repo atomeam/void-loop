@@ -78,7 +78,7 @@ export function parseCalendar(text) {
   }
   if (/^(?:show\s+(?:me\s+)?)?(?:my\s+)?(?:the\s+)?(?:calender|calendar|agenda)\b/i.test(t)
     || /^(?:what'?s|whats)\s+(?:next|on(?:\s+today)?|coming\s+up)\b/i.test(t)
-    || /^(?:upcoming|my agenda)\b/i.test(t)) {
+    || /^(?:upcoming|my agenda)\b(?!\s+(?:public\s+|bank\s+)?holidays?\b)/i.test(t)) { // "upcoming holidays" is the holiday list
     return { kind: 'show' };
   }
   // "clear calendar" / "delete all my events": empties it, after one tap (it can't be undone)

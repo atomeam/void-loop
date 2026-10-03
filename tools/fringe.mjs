@@ -35,7 +35,8 @@ const ATTESTED = [
 ];
 
 const hash = (p) => createHash('sha256').update(readFileSync(resolve(root, p))).digest('hex');
-export const live = (r) => `void-live-deploy/fringe/${r.family}.html`;
+// the live copy is named after the draft file, so a family's second draft (drafts/fringe/<family>-2.html) gets its own page
+export const live = (r) => `void-live-deploy/fringe/${String(r.draft || '').split('/').pop() || r.family + '.html'}`;
 export const published = (html) => html.replace(/ · draft · not published/g, '').replace(/ \(draft\)<\/title>/g, '</title>')
   .replace('<meta charset="utf-8">', '<meta charset="utf-8">\n<base target="_blank">'); // shown in a frame: source links open a tab
 const load = () => JSON.parse(readFileSync(resolve(root, 'tools/fringe.json'), 'utf8'));

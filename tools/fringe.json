@@ -298,5 +298,30 @@
     ],
     "sha256": "0c71faf8e5085faa0c9efeb8b36034ed60b45365c19005a205e291aed34ef94f",
     "emit": false
+  },
+  {
+    "run": 13,
+    "at": "2026-10-03T17:42:46Z",
+    "family": "opt-in-gesture",
+    "draft": "drafts/fringe/opt-in-gesture-2.html",
+    "sources": [
+      {
+        "claim": "DeviceOrientation events report device tilt (beta = front-to-back) and iOS requires an explicit permission request",
+        "source": "https://www.w3.org/TR/orientation-event/",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Tilt-to-scroll was studied as a one-handed reading technique on handhelds (Rekimoto 1996, Tilting operations for small screen interfaces)",
+        "source": "https://doi.org/10.1145/237091.237115",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A gesture that is off by default and shows its own reading is trusted more than an always-on one",
+        "source": "drafts/fringe/opt-in-gesture-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "ce0524e217a6bc5dbb5f2547b961f6b7d15c6761aafc5a4f4eac4764324ee2b1",
+    "emit": false
   }
 ]
