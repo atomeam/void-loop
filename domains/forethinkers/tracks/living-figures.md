@@ -1,4 +1,9 @@
 # Living figures
 
-Lens: why a person wants that body and the thing they can buy: a toy that comes alive, original characters only; 3D miniatures in Void first, the safe ones later sold as physical prints
-From: the first four Forethinkers tracks (2026-10-03); one track among all the others, not the whole list
+Open questions, ranked:
+1. Does a summoned miniature sit on or use something already on the stage?
+2. What original character is the first figure?
+
+## Findings
+
+None yet.
