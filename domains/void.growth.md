@@ -1,70 +1,12 @@
 ﻿# void.growth — living Have / Next board
 
-**Broadcast 2026-10-03 01:45 (grok, Adam's vision):** every summon now brings two parts: its card, plus a living 3D figure that roams the visitor's own Void and acts true to its subject. Doing this for everything is the finished product, so build it in. Start with Next #16 (the 3D slogan on "what are you?"), then take #17 to #22 in order. The direction and its reasons are in "Direction (Adam, 2026-10-03)" below and in `..\STANDING.md`.
+**Note (2026-10-03):** full board is being reassembled from `domains/forethinkers/_growth_parts/*.part` (assemble workflow). The magnetize-step claim is already in those parts.
 
-**Figure build state 2026-10-03 (grok):** Next #17 has a full green implementation in PR #41 (`grok/stage3d-roam`: `skills/figures.js` + `skills/figures3d.js`). Claude's draft PR #40 (Motelet `figure.js` + Linemote-1 `part.js`) is the parallel figure track. Build new figure work (#16, #18 to #22 and the #40 figures) on #41's shared three.js layer through `mountInScene`, so every figure lives in one scene and the page loads three.js once.
-
-**Broadcast 2026-09-25 15:30 (witty-rocket):** row 13 "enter your own Void" shipped (7448d761) and the map is now the second skill file (342e9d29) — "show the map" renders the assimilation map, all 13 rows. **Next free work = edit engine step 2–3 (row 2 of `domains\void.assimilate.md`):** `/skills/*` served from KV with `index.prev.json`, then `/api/learn` with Claude writing a skill file for an owner "learn to …" ask. Full plan in `domains\void.edit-engine.md`. Old edit-engine references: the a-to-mind.com self-editing Worker + Claude + GitHub setup (row 2 of assimilate). Also open: build the board approve/reject per row (assimilate row 1). Take .void-lock before editing void.html or void-live-deploy; writing plan files doesn't need it.
-
-**Assimilation map:** `domains\void.assimilate.md` lists every old project and the Void form it becomes. After the current Next item, take its top unfinished row.
-
-**Hourly automation (2026-09-27):** the hourly Grok automation is now named "Void growth — unique visitor summon". It keeps a spent list of summons already covered (translator, place map, weather, converter, Wikipedia, Wiktionary, internal map, Trigger Grants, dark mode / theming, command palette (live: Ctrl/Cmd+K and / focus the input via find-or-ask; the summoned menu lists every action), speed layer (Void's version: skills load in the background without delaying the first frame or first ask), undo (live: undo / oops / Esc twice), quiet status line (live), keep typing while it works (already true), pins (Void's version is 'keep this'), answer-first page contract (Void's version is the machine layer, Next #11), declared agent tools (live: /tools.json), dated sources (Next #13)); Grok updates that list after each good run, so each run looks for a fresh visitor summon. Translator and place map are on the spent list and live as of 2026-09-27.
-
-**Updated:** 2026-10-03  
-**Chooser:** keep this file current. Fold AutoSalvage + apex Prove into Have/Next.  
-**Agents:** read `..\STANDING.md` first. Claim before Ship. Append status to `void.agents.log.md`.
-
----
-
-## Have (live on blank Void → https://a-to-mind.com)
-
-| Skill | Kind | Status |
-| --- | --- | --- |
-| clock | mount + freer English | live — create, recolor, resize, format, move, remove |
-| sticky | mount + freer English | live — create, edit, color |
-| timer | mount + freer English | live — create, start, pause, reset, remove, progress ring |
-| image | mount + freer English | live — create from URL, drag, remove |
-| link card | mount + freer English | live — create from URL, host extraction |
-| list | mount + freer English | live — create, add, check, remove items |
-| calc | mount + freer English | live — create, expression, evaluate |
-| notepad | mount + freer English | live — title + textarea, edit |
-| counter | mount + freer English | live — + / − / reset (deploy verified 2026-09-23) |
-| shape | mount + freer English | live — rect/circle/line, color, size, fill, stroke, type switch (deploy verified 2026-09-23) |
-| multi-object targeting | alter routing + batch | live — select by kind ("make the timer blue"), batch alters ("resize all timers", "make everything blue") (deploy verified 2026-09-25) |
-| enter your own Void | look + entry (row 13) | live — silent entry on first keep (a2m.void.entered.v1), "make my void deep blue / add stars / reset my void" saved per browser (a2m.void.look.v1), public surface stays plain (deploy verified 2026-09-25) |
-| weather | external skill file | live — first skill file (skills/weather.js, Open-Meteo, no key); loader fetches /skills/index.json and imports each skill before fallback (deploy verified 2026-09-25) |
-| the map | external skill file (row 2 step 1) | live — second skill file (skills/map.js): "show the map" renders the assimilation map, all 13 rows with status (deploy verified 2026-09-25) |
-
-**Shared patterns (≥30% reuse target for Next):**  
-`mount*` · `ensure*` · `wantsCreate*` / `wantsRemove*` · `wantsAlter` / `apply*Alters` · `colorFrom` · `uid` / `load` / `save` / `render` · `bindDrag` · `say` · `loopLog`
-
----
-
-## Direction (Adam, 2026-09-25; ranked by Claude)
-
-Void is the front door. Blank until asked; then anything can be summoned: an explanation page, text, a product, later a venture intake. Humble and quiet, unlike modern sites that are in your face. No rush to sell: right now Void's job is to grow and improve, using Victus and the agent team first. Each Next item should move Void from "a canvas of widgets" toward "ask anything, it appears."
-
-## Direction (Adam, 2026-10-03): two-part summons
-
-**Every summon brings two things:** the card it brings today (facts and sources) and a living 3D figure that thinks for itself, roams the void on its own and does things true to its subject. Doing this for everything is the finished product, so each skill and card counts as finished once its figure arrives with it.
-
-**How it fits the blank surface:** the surface stays empty until someone asks, exactly as before. A figure appears because someone summoned its card, it lives in that visitor's own Void (the personal layer, kept in their browser), and it leaves when they send it away. The homepage stays a beautiful void for the next visitor, and the figures are one more beautiful thing you call into it.
-
-**Engine shape (so it scales without hand-made models):** one light 3D layer behind the stage (three.js, loaded lazily the first time a figure is summoned, so the empty page stays fast); a few base bodies (person, animal, object, place, idea) dressed in each subject's colors, props and words; simple drives (wander, notice the cursor, react to other summons, idle actions matched to the subject); and a brain where Cloudflare's free Workers AI writes a short behavior script for each new summon, with a built-in fallback script so every figure works without AI and without API keys. A reduced-motion setting and a way to send figures away keep each visitor in charge of their own Void.
-
-**Collector-grade miniatures:** each figure is a detailed miniature, accurate enough to satisfy figurine collectors, small and fun on the stage, with zoom to inspect it up close. Aim for very high detail over time (up to 8K textures) and load it progressively: a light model first, with higher detail streaming in as the visitor zooms, so the empty page stays fast and each figure gets sharper the closer you look.
-
-**Tone:** grim or gross subjects become funny, cartoonish versions people laugh at, the way South Park handles them. Example: a summoned GG Allin card brings a chaotic little lumpy cartoon GG with a mic who stage-dives off cards, throws tiny cartoon splats, picks fights with other summons and gets chased off by a summoned police card. Keep every figure a cartoon, with rubbery bodies and bright silly splats, so hard subjects turn into something people laugh at and share.
-
-**Why (mission):** A-to-Mind genuinely wants to help. It researches everything and puts life extension, curing disease and restoring the planet first. Void wins people over by being so good they choose to follow: Adam's "Persuadertron" from Syndicate Wars, with good intentions. Living figures make Void that good to be around.
-
-## Next 3 (ranked)
-
-### Next #16 — 3D slogan on "what are you?"
-- **What:** when someone asks "what are you?", the slogan "A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool." materializes in 3D next to the existing what-are-you card (the self page), arriving with the shard materialize the `make` skill already draws, and it leaves when the card closes. With reduced motion set, the slogan appears in place, still and readable. Draw it with the 3D code `skills\make.js` already has, and move it onto the #17 layer once that ships.
-- **Why:** the first piece of the two-part summons (Direction 2026-10-03). The first thing people ask Void shows both parts at once, card and 3D figure, and says what A-to-Mind is in one line.
-- **Reuse:** self page (`wantsSelfPage` / `showSelfPage` in void.html), 3D shapes and materialize animation from `skills\make.js`, page close handling, the `prefers-reduced-motion` check void.html already makes for the stars.
-- **Done when:** "what are you?" shows the card plus the 3D slogan beside it with the exact slogan text; closing the card takes the slogan with it; reduced motion shows it still; the empty page loads as fast as before; `node tools\test_void.mjs` gains one check for it and stays green.
+### Next [think-tank] — magnetize-step card for a printed hard-magnet part
+- **What:** a summonable explainer card for the one post-print step a multi-material printed motor still needs: impulse magnetization of the hard-magnetic regions on a separate fixture (about 3–7 T), with dated sources (MIT News 2026-02-18; Słoma et al. DOI 10.1088/2058-8585/aded1f; Cañada/Kim/Velásquez-García soft-magnetic cores DOI 10.1080/17452759.2024.2310046). Original part name and original shape only. Soft-magnetic cores are described as needing no magnetize step.
+- **Why:** Forethinkers established that magnetization is independent of the MIT printer, so Void can hand a visitor a truthful handoff page before in-print magnetization exists. Complements the earlier printable-actuator-spec ask.
+- **Reuse:** article/page summon pattern, dated-source layout from Next #13, print-file download once export-to-print ships.
+- **Done when:** an ask such as "how do I magnetize a printed motor" or "show the magnetize step" opens the card with the three sources dated; soft-magnetic vs hard-magnetic is clear; no sold likeness; tests stay green.
 - **claim:** free
 - **claim_until:**
 

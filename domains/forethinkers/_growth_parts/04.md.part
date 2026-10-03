@@ -1,0 +1,59 @@
+, so returning visitors never see the default flash first. When nobody has picked a look, follow the device's light/dark setting (`prefers-color-scheme`) live, and set `color-scheme` to match so native inputs agree.
+- **Why:** the personal layer should feel like it was always yours. Source: hourly automation run 001 (zero-flash theming), translated for Void.
+- **Finding 2026-09-27 18:35 ET (grok):** flashes today on slow connections: the look is applied at void.html line 2712 (`applyLook(false)`, end of the body script), so throttled first paint showed the default #050505 at 168 ms and the saved look arrived at DOMContentLoaded (~1.26 s), then faded in over the 1.5 s `html` background transition (line 347); fast connections show the look at first paint. The page sets `color-scheme: dark` (line 10) and has no `prefers-color-scheme` rule yet.
+- **Reuse:** ~60% (LOOK_KEY / LOOK_DEFAULT / BGS values and applyLook from row 13; the head script sets `--void-bg` / `--void-glow` and body classes, applyLook keeps the rest)
+- **Status 2026-09-27 (claude): done, live** (deploy 8f45d40a).
+- **claim:**
+- **claim_until:**
+
+### Next #8 — summon a menu
+- **What:** when someone asks for a menu ("menu", "show me the menu", "what can I do here"), float in a clickable menu built from Void's live skill list and pages (same source as the self/capability page), grouped sensibly; clicking an item runs it as if typed, and the menu dismisses like any stage item.
+- **Why:** Void shows nothing until asked, and a menu is one more thing it can summon on request; this is the Void form of a command palette. Source: Adam, 2026-09-27.
+- **Today (checked 2026-09-27 18:35 ET, grok):** "menu" and "show me the menu" open Wikipedia's restaurant-menu article (and post a miss); "what can I do here" already opens the self/capability page via `wantsSelfPage` (void.html line 2394), so the menu can build on that page's list.
+- **Reuse:** ~60% (showSelfPage list, skills index, showPage, handle() to run a clicked item as typed)
+- **Status 2026-09-27 (claude): done, live** (deploy 8f45d40a).
+- **claim:**
+- **claim_until:**
+
+### Next #9 — first ask waits for skills
+- **What:** an ask typed in the first ~5 s after load currently skips the newer skills (place map, translator, weather) and falls to Wikipedia because /skills/ files haven't loaded yet. Make handle() await the skill loader (with a short timeout) before falling back, without delaying first paint.
+- **Why:** this is the one place speed shows in Void (automation F003, narrowed). Evidence 2026-09-27 (grok, headless on Victus): quick asks "translate hello to Japanese" opened Hello Kitty and "where is Kyoto" opened the Kyoto article; with a 5 s wait both opened their skills.
+- **Reuse:** ~80% (existing skill loader and handle() routing; add one awaited loader promise with a timeout)
+- **Status 2026-09-27 (claude): done, live** (deploy de53a462).
+- **claim:**
+- **claim_until:**
+
+### Next #10 — keep this
+- **What:** any floating page (place map, weather, translation, article, calculation) gets a quiet 'keep this' control, and the ask 'keep this' does the same for the page on screen; it becomes a card on the stage saved in your own Void (localStorage) that survives reloads, reopens the full page on click, and can be undone.
+- **Why:** stage items already persist; floating pages are what disappear, and this is Void's version of pins (automation F017, translated).
+- **Reuse:** stage card persistence, link/image card, undo stack.
+- **Status 2026-09-27 (claude): done, live** (also 'call this', 'take this off', 'same again').
+- **claim:**
+- **claim_until:**
+
+### Next #11 — Void explains itself to machines
+- **What:** keep the surface blank and give crawlers and agents a clean machine layer: (1) a real /robots.txt (plain text, allow search and live-fetch bots, point to the sitemap) and /sitemap.xml — today both paths return the Void HTML page; (2) a one-sentence `<meta name="description">` (today there is none and the title is blank); (3) /llms.txt generated from the same live skill list the summoned menu and self page use, so it updates whenever Void learns a skill — today it lists only the stage objects and Wikipedia and misses place map, translator, weather, calculations, menu, undo and your own look; (4) the self page ("what are you?") opens with a plain two-sentence answer naming A-to-Mind and Void before the skill list. Keep the JSON-LD matched to what the page actually does.
+- **Why:** AI search and agents now answer for visitors; Void stays empty on screen while its facts are easy to read and cite. Source: hourly automation run F-2026-09-27-001 (answer-first dual contract), translated: the visible hero block is left out because Void shows nothing until asked.
+- **Reuse:** existing llms.txt, JSON-LD in `<head>`, skills index, self page list.
+- **Status 2026-09-27 (claude): live** — robots.txt text/plain, sitemap.xml application/xml, meta description, noscript stub, labeled input (verified by grok 19:20 ET). llms.txt is hand-written, so update it when a skill is added; /tools.json is the self-updating list. The self page ('what are you?') opens the full clickable skill list by design.
+- **claim:**
+- **claim_until:**
+
+### Next #12 — tools agents can call
+- **What:** /tools.json built fresh from the skills on every request (name, description, examples, ?q= links); agents call a tool by opening /?q=<ask>.
+- **Source:** automation 003.
+- **Status 2026-09-27 (claude): done, live**, 8 tools (verified by grok 19:22 ET).
+- **claim:**
+- **claim_until:**
+
+### Next #13 — dated sources on pages
+- **What:** every floating page that shows outside facts (article, weather, currency/calculation, translation, place map) shows its source and the date/time the fact was fetched in a quiet footer line, and tools.json / ?q= results carry the same source and date. Stale facts (e.g. currency older than a day) are marked as such.
+- **Why:** Void's answers stay trustworthy for people and agents quoting them; source: automation 005 (dated sources), translated.
+- **Reuse:** page footers already credit Wikipedia/Open-Meteo/Frankfurter/translator; the translator currently always credits Google even when MyMemory answered — fix that as part of this.
+- **Translator credit 2026-09-27 (claude):** fixed, live — credits whichever service answered (Google or MyMemory).
+- **claim:**
+- **claim_until:**
+
+### Next #14 — a second ask adds a second item (fix)
+- **What:** 'add a sticky that says b' when a sticky already exists puts a NEW sticky on the stage; the same for timers, clocks, notes, lists, counters and cards. Edits aimed at the existing item ('make it say b', 'change the note to b', 'set the timer to 10 minutes') keep changing the one already there (most recent, or the one named). New items place themselves so they don't cover existing ones. Undo removes just the new item.
+- **Why:** today a second sticky or timer ask overwrites the first, so the stage can hold only one of each and kind-scoped batc

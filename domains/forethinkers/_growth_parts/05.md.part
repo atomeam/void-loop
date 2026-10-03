@@ -1,0 +1,73 @@
+h asks (#2) rarely have more than one to act on. Found by claude while building #2, 2026-09-27; automation 007 candidate.
+- **Check:** after the fix, two stickies + two timers can coexist, 'clear all the notes' removes both, undo restores both, and every existing skill still works.
+- **claim:**
+- **claim_until:**
+
+### Next #15 — recent asks on an empty box
+- **What:** when a visitor clicks into or focuses the empty input, show their last few asks as quiet clickable suggestions, saved only in their own browser (localStorage, personal layer); Enter or a click re-runs one. The suggestions appear only once the box has focus, so the surface stays blank until then.
+- **Why:** returning visitors get back to what they asked before in one step. Source: Grok idea F001 (intent command palette); the rest of F001 is already live (menu, Cmd/Ctrl+K and /, miss fallback, /tools.json).
+- **Reuse:** existing #hints suggestion list under the input, find-or-ask focus handling, localStorage personal layer.
+- **Status 2026-10-03 (grok): done, live** — on main as e5cb3d3 + de8d6a1 (suggestions show once the box has focus); the live page carries it (checked 01:32 ET).
+- **claim:** free
+- **claim_until:**
+
+### Later (queued, not ranked)
+- **Text annotation / labels:** free-floating labels, arrows, connectors between objects (~35% reuse).
+- **Date countdown:** "days until <date>" — extends timer; small. Good first follow-on once pages exist ("show me a countdown to New Year").
+- **Summon a page about anything:** v2 of Next #1 — pages whose content comes from a model or a Loop file, once v1 is proven on the live site.
+- **Make my void light:** an ask that switches your own Void to a light look; build it once the stage pieces and pages have light versions, so notes and pages stay readable. Source: #7 follow-up, 2026-09-27.
+
+---
+
+## AutoSalvage inbox (Chooser / Salvage scout)
+
+Scan Victus ore; promote useful hits into Have notes or Next (adapt hits into void.html patterns).
+
+| Hit | Source hint | Disposition |
+| --- | --- | --- |
+| intent-canvas (The Void project, C:\Users\adamm\intent-canvas) — Block component system: Node model (position_x/y/width/height/z_index), mount/unmount lifecycle (idle→bloom→smolder), KIND_COMPONENTS dispatch, onUpdate(Partial<Node>) pattern, color palette system, viewport system. 7 block types (Countdown, Timer, Todo, Note, Chart, LiveStream, AIChat). NoteBlock has 9-color palette + pinned state. | C:\Users\adamm\intent-canvas | absorb |
+| void_face items (8 frontend projects: a-to-mind-deploy, a-to-mind-loop, a-to-mind.com, a2m-console, atomind-web, a-to-mind-board, a-to-mind-homepage, a-to-mind-void-gateway) — whole frontend apps, "rebuild native, strip slop" | victus-ingest | waste |
+| ops_companion items (deployment-love-monitor, emotional-weather, focus-companion-pilot, HomeBase, intent-canvas, project-ops-companion, slack-ops) — "fold into Scoreboard / Attempt surfaces", not Void face mounts | victus-ingest | waste (intent-canvas promoted above) |
+| execution items (subagent-orchestrator, agent-hub, alpha-hub-worker, cli-agent, cli-evolution-agent, inventory-orchestrator, research-agent, self-extending-agent) — "Loop runner ancestors — fold into one runner" | victus-ingest | waste |
+| infra items (cloudflare-workers, atom-deploy) — "Deploy and edge infra — keep what still runs" | victus-ingest | waste |
+| frontend/void archive apps (C:\Users\adamm\_archive_old_mono\apps\) — archive, not accessible, "rebuild under A-to-Mind, don't run from archive" | victus-ingest-deep | waste |
+| site-utility-functions (mapSite with Playwright) — Score 9/10 but site mapping utility, not a Void surface mount pattern | C:\Users\adamm\P2\recovery\autosalvage\autosalvage-project | waste (utility reference only) |
+| autosalvage docs/worker/cli/config — about AutoSalvage system itself (classification, repair, Lab Board integration), not Void surface mounts | C:\Users\adamm\.agents\skills\a-to-mind-automation\autosalvage | waste (architecture reference only) |
+
+Paths: `C:\Users\adamm\.agents\skills\a-to-mind-automation\autosalvage` · `C:\Users\adamm\P2\recovery\autosalvage` · `a-to-mind-loop\victus-ingest*.json`
+
+---
+
+## Pass streak
+
+- Polished: timer, counter
+- Shipped: counter (2026-09-23) live on apex
+- Shipped: shape (2026-09-23) live on apex
+- Shipped: multi-object targeting (2026-09-25) live on apex — batchKinds/wantsBatchAlter + resize normalize; f27a4108
+- Shipped: row 13 enter your own Void (2026-09-25) live on apex — silent entry on keep, per-browser look (a2m.void.look.v1); 7448d761
+- Shipped: map as second skill file (2026-09-25) live on apex — "show the map" renders all 13 assimilation rows (skills/map.js); 342e9d29
+- Shipped: Next #15 recent asks on an empty box (2026-10-03) live on apex — suggestions after focus, saved per browser (a2m.void.asks.v1); de8d6a1
+- Stable for Next #1 (grouped objects)? **not yet** — Prove/Polish multi-object first, then promote
+
+Score: _(human)_
+
+---
+
+
+- 2026-09-27 6:5x PM: Next #7 (look from the first frame) and #8 (summoned menu) are DONE and live (claude, deploy 8f45d40a). Builders: skip both.
+
+- 2026-09-27 claude: Next #9 (first ask waits for skills) DONE and live, deploy de53a462. Also live: undo (undo / oops / Esc Esc, one step) and quiet status line (waking up / looking up / translating / done / couldn't). Builders: skip #7, #8, #9.
+
+- 2026-09-27 claude: Next #10 (keep this) DONE and live, deploy f4298790, with call this / take this off / same again. Builders: skip #10.
+
+- 2026-09-27 claude: #10 keep this was already DONE (f4298790). 003 agent tool list DONE: /tools.json, live from skills.
+
+- 2026-09-27 claude: Next #13 (dated sources, 005) DONE and live, deploy 90476346. Builders: skip #13; 9:02 run verify only.
+
+- 2026-09-27 7:4x PM claude: #2 kind-scoped batch (006) DONE and live, deploy 8b536e25. 'clear all the notes' / 'remove all the cards|maps|timers' remove only that kind; 'make all the timers red' already worked (existing batch alter) and still does; kept cards/maps/weather are a kind now. One undo restores the whole group. Builders: skip #2; 9:02 run verify only.
+
+- 2026-09-27 7:4x PM claude: 008 self-update handoff built: owner-only asks in Void -> /api/queue -> laptop builder (tools\void_queue.py claim/done, task \A2M void_queue every 10 min). NOT marked live: first real round trip waits for KV to reset at 8 PM ET (today's KV write quota is used up; /api/miss returns 'full for today'). 007 stays open as the first queued build.
+
+- 2026-09-27 claude: 007 DONE and live (deploy 4a60c211): 'add a sticky', 'another note', 'make a 2 minute timer' add a new one; 'set the timer to…' still edits. Built through the queue (item mukgwcjf, queued -> building -> live). 008 self-update handoff is LIVE: queue and miss list moved from KV to D1 (a-to-mind-board DB, 100k writes/day).
+
+- 2026-10-03 grok: Adam's vision recorded — two-part summons (card plus a living 3D figure), first piece the 3D slogan on "what are you?", cartoon tone for grim s
