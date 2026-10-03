@@ -1,4 +1,4 @@
-﻿# void.growth — living Have / Next board
+# void.growth — living Have / Next board
 
 **Note (2026-10-03):** full board is being reassembled from `domains/forethinkers/_growth_parts/*.part` (assemble workflow). The magnetize-step claim is already in those parts.
 
@@ -7,8 +7,8 @@
 - **Why:** Forethinkers established that magnetization is independent of the MIT printer, so Void can hand a visitor a truthful handoff page before in-print magnetization exists. Complements the earlier printable-actuator-spec ask.
 - **Reuse:** article/page summon pattern, dated-source layout from Next #13, print-file download once export-to-print ships.
 - **Done when:** an ask such as "how do I magnetize a printed motor" or "show the magnetize step" opens the card with the three sources dated; soft-magnetic vs hard-magnetic is clear; no sold likeness; tests stay green.
-- **claim:** free
-- **claim_until:**
+- **claim:** building helper/magnetize-step
+- **claim_until:** 2026-10-03
 
 ### Next #17 — a light 3D layer and one roaming figure
 - **What:** one light 3D layer behind the stage, using three.js served from the site itself and loaded lazily the first time a figure is summoned, with one base figure that roams on its own: it wanders the void, notices the cursor and turns toward it, and walks around cards so they stay readable. Add a reduced-motion setting (follows `prefers-reduced-motion`, plus an ask such as "less motion") that holds figures still, and asks such as "send them away" or "send the figure away" that clear figures, with undo.

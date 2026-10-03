@@ -24,8 +24,9 @@ on:
 
 concurrency:
   group: void-deploy-${{ github.event_name == 'pull_request' && github.head_ref || 'production' }}
-  # a newer push to the same PR stops the older run; main (production) always runs to the end
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  # Literal false: expression form broke Void ship helper workflow_call (startup_failure since 8676bd2).
+  # PR superseding still works via distinct group keys per head_ref; production never cancels.
+  cancel-in-progress: false
 
 permissions:
   contents: read

@@ -1978,6 +1978,16 @@ try {
       && typeof shareHref === 'string' && shareHref.includes('share_text=') && !/\/api\/publish|\/@/.test(shareHref),
     shareMod ? shareMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') + ' | ' + shareHref : 'missing share');
 
+  const magMod = nsMods.find((s) => s.name === 'magnetize');
+  const magCard = magMod && magMod.magnetizeCard();
+  check('magnetize: listed with examples and near misses; examples route only to it; the card dates the three sources, separates soft from hard, and does not publish',
+    !!magMod && magMod.examples.length >= 4 && (magMod.nearMisses || []).length >= 3
+      && magMod.examples.every((e) => firstNs(e) === 'magnetize') && magMod.nearMisses.every((e) => firstNs(e) !== 'magnetize')
+      && magCard && /strontium ferrite/.test(magCard.hard) && /1\.5 T/.test(magCard.hard) && /no magnetize step/.test(magCard.soft)
+      && magCard.sources.some((s) => s.date === '2026-02-18') && magCard.sources.some((s) => /10\.1088\/2058-8585\/aded1f/.test(s.href)) && magCard.sources.some((s) => /10\.1080\/17452759\.2024\.2310046/.test(s.href))
+      && !/\/api\/publish/.test(JSON.stringify(magCard)),
+    magMod ? magMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing magnetize');
+
   const esMod = nsMods.find((s) => s.name === 'spanish');
   const esReady = esMod && esMod.spanishReady();
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
