@@ -35,6 +35,9 @@ runs:
     - name: node tools/fringe.mjs (fringe ledger rules)
       shell: bash
       run: node tools/fringe.mjs
+    - name: node --test domains/forethinkers/think-tank.test.mjs (node cycle, labels, dead runs, dry run)
+      shell: bash
+      run: node --test domains/forethinkers/think-tank.test.mjs
     - name: node tools/test_glyphs.mjs (cross-sense board draft)
       shell: bash
       run: node tools/test_glyphs.mjs

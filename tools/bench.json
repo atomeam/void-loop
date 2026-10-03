@@ -939,14 +939,60 @@
     "ask": "fuel for 400 km at 7 L/100km 1.85 per liter",
     "want": "skill:fuel"
   },
-  {"ask": "uv index in denver", "want": "skill:uv"},
-  {"ask": "pollen count in rome", "want": "skill:pollen"},
-  {"ask": "any earthquakes in japan", "want": "skill:quake"},
-  {"ask": "mortgage payment on 400k at 7% for 30 years", "want": "skill:loan"},
-  {"ask": "make me laugh", "want": "skill:joke"},
-  {"ask": "bitcoin price today", "want": "skill:crypto"},
-  {"ask": "when is the next holiday", "want": "skill:holidays"},
-  {"ask": "remote jobs for designers", "want": "skill:work"},
-  {"ask": "books like dune", "want": "skill:book"},
-  {"ask": "gas for 250 miles at 25 mpg $3.50 a gallon", "want": "skill:fuel"}
+  {
+    "ask": "uv index in denver",
+    "want": "skill:uv"
+  },
+  {
+    "ask": "pollen count in rome",
+    "want": "skill:pollen"
+  },
+  {
+    "ask": "any earthquakes in japan",
+    "want": "skill:quake"
+  },
+  {
+    "ask": "mortgage payment on 400k at 7% for 30 years",
+    "want": "skill:loan"
+  },
+  {
+    "ask": "make me laugh",
+    "want": "skill:joke"
+  },
+  {
+    "ask": "bitcoin price today",
+    "want": "skill:crypto"
+  },
+  {
+    "ask": "when is the next holiday",
+    "want": "skill:holidays"
+  },
+  {
+    "ask": "remote jobs for designers",
+    "want": "skill:work"
+  },
+  {
+    "ask": "books like dune",
+    "want": "skill:book"
+  },
+  {
+    "ask": "gas for 250 miles at 25 mpg $3.50 a gallon",
+    "want": "skill:fuel"
+  },
+  {
+    "ask": "summon linemote-1",
+    "want": "skill:part"
+  },
+  {
+    "ask": "summon a printable actuator spec",
+    "want": "skill:part"
+  },
+  {
+    "ask": "a chair",
+    "want": "skill:figure"
+  },
+  {
+    "ask": "summon motelet",
+    "want": "skill:figure"
+  }
 ]

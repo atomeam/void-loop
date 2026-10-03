@@ -23,6 +23,7 @@ A rule an agent wrote and signed with Adam's name, without his words, is removed
 - Deploy: from `void-live-deploy`: `npx wrangler pages deploy . --project-name=a-to-mind --commit-dirty=true`
 - After deploy, confirm the live page still contains: `mountClock`, `mountSticky`, `mountNotepad`, `mountLink`, `mountImage`, `mountList`, `mountCalc`, `mountTimer`, `mountCounter`, `mountShape` (plus any new mount).
 - Growth board: `domains\\void.growth.md`
+- The Forethinkers (A-to-Mind's research): `domains\\forethinkers\\THINK-TANK-BRIEF.md`; node map `convergence.md`; runner `domains\\forethinkers\\think-tank.mjs` (tests: `node --test domains/forethinkers/think-tank.test.mjs`). A cycle picks one node and fans only into the tracks it names; `.github/workflows/think-tank.yml` runs on even New York hours, dry-run by default. The build path starts at `domains\\forethinkers\\figures-first.md`.
 - Live-site QA notes: `domains\\void.surface-qa.md`
 - Company catalog: `domains\\A2M.ops.md`
 - `C:\\Users\\adamm\\hold` is a separate repo (bridge + ledger work). The live site is `a-to-mind-loop\\void.html`.

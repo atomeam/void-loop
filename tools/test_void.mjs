@@ -633,6 +633,54 @@ try {
       !phone.sideways && phone.inView && phone.reachable && phone.page && phone.pageFits && gone, JSON.stringify({ ...phone, gone }));
     check('the world clock / translate / phone batch threw no page errors', !C.errors.length, C.errors.join(' | '));
     await C.ctx.close(); }
+  // Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail + slider, closed shells, mm)
+  { const P = await fresh();
+    await P.ask('summon linemote-1', 900); const lm = await P.page();
+    const dl = P.p.waitForEvent('download', { timeout: 5000 }).catch(() => null);
+    await P.p.click('.vpage.on [data-linemote-stl]').catch(() => {}); const d = await dl;
+    const stl = d ? fs.readFileSync(await d.path(), 'utf8') : '';
+    const facets = (stl.match(/^ facet normal /gm) || []).length;
+    const vs = [...stl.matchAll(/^ {3}vertex (\S+) (\S+) (\S+)$/gm)].map((m) => [+m[1], +m[2], +m[3]]);
+    let vol = 0; for (let k = 0; k + 2 < vs.length; k += 3) { const [a, b, c] = [vs[k], vs[k + 1], vs[k + 2]]; vol += (a[0] * (b[1] * c[2] - b[2] * c[1]) - a[1] * (b[0] * c[2] - b[2] * c[0]) + a[2] * (b[0] * c[1] - b[1] * c[0])) / 6; }
+    const span = [0, 1, 2].map((i) => Math.max(...vs.map((v) => v[i])) - Math.min(...vs.map((v) => v[i])));
+    check('part: "summon linemote-1" shows the Linemote-1 page (dimensions, materials, magnetize post-step, three dated sources, safety) and Download STL saves linemote-1.stl: closed outward shells, 22 x 13 x 5 mm plate, 372 mm3',
+      /Linemote-1/.test(lm) && /22 × 6 × 5 mm/.test(lm) && /magnetize/i.test(lm) && /2026-02-18/.test(lm) && /2025-03-17/.test(lm) && /2025-12-11/.test(lm) && /swallowed/.test(lm)
+        && !!d && d.suggestedFilename() === 'linemote-1.stl' && /^solid linemote_1/.test(stl) && facets === vs.length / 3 && facets > 500
+        && Math.abs(vol - 372.25) < 0.5 && span.join() === '22,13,5' && !P.errors.length,
+      [lm.slice(0, 80), d ? d.suggestedFilename() : 'no download', facets, vol.toFixed(2), span.join('x'), P.errors.join(';')].join(' | '));
+    await P.ctx.close(); }
+  // figures first: a chair, then Motelet sits on it; a cup, then the next Motelet picks it up; a third stands; spin;
+  // the print file is the body as it is on the stage; flung off the screen a figure is gone; the rest come back after a reload
+  { const G = await fresh();
+    const figs = () => G.p.$$eval('.fig3d', (els) => els.map((e) => ({ m: e.dataset.model, pose: e.dataset.pose, x: parseFloat(e.style.left), y: parseFloat(e.style.top) })));
+    const st3d = async () => (await G.state()).filter((t) => t.kind === 'fig3d');
+    await G.ask('a chair', 700); await G.ask('summon motelet', 700); const w1 = await G.whisper();
+    await G.ask('a cup', 700); await G.ask('summon motelet', 700); const w2 = await G.whisper();
+    await G.ask('summon motelet', 700); const w3 = await G.whisper();
+    const f1 = await figs(), s1 = await st3d();
+    const chair = s1.find((t) => t.model === 'chair'), sitter = s1.find((t) => t.model === 'motelet' && t.on === chair.id), holder = s1.find((t) => t.model === 'motelet' && t.holds);
+    const cup = s1.find((t) => t.model === 'cup');
+    await G.ask('spin motelet', 500); const spun = (await st3d()).find((t) => t.model === 'motelet' && !t.on && !t.holds);
+    const dl = G.p.waitForEvent('download', { timeout: 5000 }).catch(() => null);
+    await G.ask('download motelet', 400); const d = await dl; const stl = d ? fs.readFileSync(await d.path(), 'utf8') : '';
+    const vs = [...stl.matchAll(/^ {3}vertex (\S+) (\S+) (\S+)$/gm)].map((m) => [+m[1], +m[2], +m[3]]);
+    let vol = 0; for (let k = 0; k + 2 < vs.length; k += 3) { const [a, b, c] = [vs[k], vs[k + 1], vs[k + 2]]; vol += (a[0] * (b[1] * c[2] - b[2] * c[1]) - a[1] * (b[0] * c[2] - b[2] * c[0]) + a[2] * (b[0] * c[1] - b[1] * c[0])) / 6; }
+    const zs = vs.map((v) => v[2]), tall = vs.length ? Math.max(...zs) - Math.min(...zs) : 0;
+    // fling the seated Motelet off the screen: a quick drag to the right
+    const box = await G.p.$eval('.fig3d[data-pose="sit"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 3 }; }).catch(() => null);
+    if (box) { await G.p.mouse.move(box.x, box.y); await G.p.mouse.down(); await G.p.mouse.move(box.x + 30, box.y, { steps: 2 }); await G.p.mouse.move(box.x + 700, box.y, { steps: 2 }); await G.p.mouse.up(); await G.p.waitForTimeout(500); }
+    const s2 = await st3d();
+    await G.p.reload(); await G.p.waitForTimeout(1200); const f3 = await figs();
+    check('figure: "a chair" then "summon motelet" sits Motelet on it; a cup is picked up by the next; a third stands; "spin motelet" turns it; "download motelet" saves the body as on the stage (38 mm, closed); flung off the screen it is gone; the rest come back after a reload',
+      /sits on the chair/.test(w1) && /picks up the cup/.test(w2) && /looks around/.test(w3)
+        && !!chair && !!sitter && !!holder && !!cup && cup.heldBy === holder.id && f1.filter((f) => f.m === 'cup').length === 0
+        && f1.some((f) => f.m === 'motelet' && f.pose === 'sit') && f1.some((f) => f.m === 'motelet' && f.pose === 'hold') && f1.some((f) => f.m === 'motelet' && f.pose === 'stand')
+        && !!spun && Math.abs(spun.yaw - Math.PI) < 0.01
+        && !!d && d.suggestedFilename() === 'motelet.stl' && vol > 2000 && Math.abs(tall - 38) < 0.01
+        && s2.length === s1.length - 1 && !s2.some((t) => t.id === sitter.id) && s2.some((t) => t.id === chair.id)
+        && f3.length === 3 && f3.some((f) => f.m === 'chair') && f3.some((f) => f.pose === 'hold') && !G.errors.length,
+      [w1, w2, w3, JSON.stringify(f1.map((f) => f.m + ':' + f.pose)), spun && spun.yaw, d ? d.suggestedFilename() : 'no download', vol.toFixed(0), tall.toFixed(2), s2.length + '/' + s1.length, JSON.stringify(f3.map((f) => f.m + ':' + f.pose)), G.errors.join(';')].join(' | '));
+    await G.ctx.close(); }
   // "who is X" prefers the person; a loose match says so in one line; the board counts one ask in different words once.
   { const E = await fresh(); const sums = [];
     await E.ctx.route(/en\.wikipedia\.org\/w\/api\.php/, (r) => { const u = decodeURIComponent(r.request().url());
@@ -1895,7 +1943,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'inventory'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',

@@ -32,3 +32,12 @@ Until 1 through 5 are true, do not open a new product track. 6 and 7 are the han
 ## This cycle
 
 2026-10-03. Stage rule locked: pop up, inhabit the existing Void, stay on brand, leave when thrown off. Next work is one ask that produces a figure which sits on or uses something already summoned.
+
+2026-10-03, later. Motelet is the first original character (void-live-deploy/skills/figure.js): 38 mm, mint, round head,
+antenna; curious and polite, it sits whenever it finds a chair. "a chair" / "a cup" put little 3D ones on the stage;
+"summon motelet" brings one that sits on a free chair, else picks up a free cup, else stands and looks around. Checks 1-7
+hold on that ask: it appears on the stage (not a page); the mouse wheel or "spin motelet" turns it (front and back); it
+uses a chair or a cup already there; it keeps existing while others arrive; flung off the screen it is gone; "download
+motelet" or its STL button saves the same body in its stage pose (seated, on a print stool); the file is made in the
+browser. Not yet: walking, a second ask that changes size or a part, celeb behaviour, finer detail.
+
