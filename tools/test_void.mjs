@@ -315,7 +315,7 @@ async function fresh(...inits) {
     if (u.includes('/page/summary/')) return r.fulfill(json({ title: 'Black hole', extract: 'A region of spacetime.', timestamp: '2026-09-20T10:00:00Z' }));
     if (u.includes('geocoding-api.open-meteo.com')) return r.fulfill(json({ results: [{ name: 'Lisbon', country: 'Portugal', latitude: 38.7, longitude: -9.1, population: 500000 }, { name: 'Lisbon', admin1: 'Ohio', country: 'United States', latitude: 40.7, longitude: -80.7, population: 2800 }] }));
     if (u.includes('air-quality-api.open-meteo.com')) return r.fulfill(json({ current: { time: '2026-10-03T12:00', us_aqi: 42, european_aqi: 25, pm2_5: 10.2, pm10: 18.0, ozone: 55, nitrogen_dioxide: 12, sulphur_dioxide: 3, carbon_monoxide: 140, us_aqi_pm2_5: 42, us_aqi_pm10: 16, us_aqi_ozone: 18, us_aqi_nitrogen_dioxide: 11, us_aqi_sulphur_dioxide: 2, us_aqi_carbon_monoxide: 2 } }));
-    if (u.includes('api.open-meteo.com')) return r.fulfill(json({ current: { temperature_2m: 20, apparent_temperature: 19, weather_code: 1, wind_speed_10m: 5 }, daily: { temperature_2m_max: [24], temperature_2m_min: [15], precipitation_probability_max: [10] }, hourly: { time: Array.from({ length: 8 }, (_, i) => '2026-09-27T1' + i + ':00'), temperature_2m: Array(8).fill(20), precipitation_probability: Array(8).fill(5), weather_code: Array(8).fill(1) } }));
+    if (u.includes('api.open-meteo.com')) { const d = new Date().toISOString().slice(0, 10); return r.fulfill(json({ current: { temperature_2m: 20, apparent_temperature: 19, weather_code: 1, wind_speed_10m: 5 }, daily: { temperature_2m_max: [24], temperature_2m_min: [15], precipitation_probability_max: [10], uv_index_max: [7.2] }, hourly: { time: Array.from({ length: 24 }, (_, i) => d + 'T' + String(i).padStart(2, '0') + ':00'), temperature_2m: Array(24).fill(20), precipitation_probability: Array(24).fill(5), weather_code: Array(24).fill(1), uv_index: Array(24).fill(6.5) } })); }
     if (u.includes('frankfurter')) return r.fulfill(json({ amount: 100, base: 'USD', date: '2026-09-26', rates: { EUR: 92 } }));
     return r.fulfill({ status: 204, body: '' });
   });
@@ -788,6 +788,7 @@ try {
   await t.ask('map of Lisbon', 1200); const mp = await t.page(); check('map of Lisbon picks Portugal', /Lisbon/.test(mp) && /Portugal/.test(mp) && (await t.p.$$eval('.vpage iframe', (d) => d.length)) === 1, mp.slice(0, 80));
   await t.ask('weather in Lisbon', 1200); check('weather', /20°|68°/.test(await t.page()));
   await t.ask('air quality in Lisbon', 1200); const airPg = await t.page(); check('air quality', /US AQI/.test(airPg) && /Good|Moderate|Unhealthy|Hazardous/.test(airPg) && /Open-Meteo/.test(airPg), airPg.slice(0, 120));
+  await t.ask('UV index in Lisbon', 1200); const uvPg = await t.page(); check('uv index', /UV index/.test(uvPg) && /Low|Moderate|High|Very High|Extreme/.test(uvPg) && /Open-Meteo/.test(uvPg) && /WHO/.test(uvPg), uvPg.slice(0, 120));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
   await t.ask('5 miles in km', 700); check('calculation', /8\.05/.test(await t.page()));
@@ -1916,7 +1917,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
