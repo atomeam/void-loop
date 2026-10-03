@@ -2,6 +2,20 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-03 12:11 ET even-hour cycle
+
+Victus offline this run; worked on the box + GitHub MCP. Folded waiting branch `forethinkers/cycle-2026-10-03-1008` (life-extension senolytic MASH + prior 3MF/magnetize stack) into `forethinkers/cycle-2026-10-03-1211`. Orphan branches `0400`, `0612`, and `0807` remain earlier merged or already folded content. Left draft PR #40 and Next #17 PR #44 untouched.
+
+Read `convergence.md`, every track, and the 10:08 stack. Picked **planet-restoration** (least recently advanced stub) over continuing the browser-3MF implementation question or the life-extension registry watchlist.
+
+- Established: offshore *Acropora cervicornis* outplanting in the Lower Florida Keys flipped reef-accretion potential from **−0.84 mm y⁻¹** (non-restored) to **+2.80 mm y⁻¹** (restored) within 2–6 years; gross carbonate production >16-fold (≈3.62 vs 0.22 kg CaCO₃ m⁻² y⁻¹); ≈5% cover gain. Inshore massive restoration: no measurable accretion effect. 2023 bleach: near-complete *A. cervicornis* loss vs 59% massive survival. [Toth et al., Scientific Reports, DOI 10.1038/s41598-025-04818-3](https://doi.org/10.1038/s41598-025-04818-3); USGS pubs [70270065](https://pubs.usgs.gov/publication/70270065).
+- Established (open data): USGS carbonate-budget / SfM release DOI [10.5066/P13HMEON](https://www.usgs.gov/data/carbonate-budgets-structure-motion-products-and-topographic-complexity-measurements-restored) (2025-06-24, CC0); imagery [10.5066/P1WHKTRD](https://doi.org/10.5066/P1WHKTRD).
+- Established (soil companion ledgers): GSOCS-LULCC 8,748 SOC records ([Scientific Data](https://www.nature.com/articles/s41597-026-07749-4); Zenodo [10.5281/zenodo.20774640](https://doi.org/10.5281/zenodo.20774640)); Australia SOC-M 308-site resample ([Scientific Data](https://www.nature.com/articles/s41597-026-07850-8)).
+- Neighbour context: Wales ERW reforestation +27% broadleaf aboveground C by 2024 ([Communications Sustainability](https://www.nature.com/articles/s44458-026-00103-0)).
+- Next open question: Void summonable reef-accretion card (dated sources + local action framing) ranked first among restoration explainers.
+
+[think-tank] Summon a Florida Keys reef-accretion card: cite Toth et al. Scientific Reports DOI 10.1038/s41598-025-04818-3 and USGS 10.5066/P13HMEON, show −0.84 → +2.80 mm y⁻¹ offshore flip and >16× carbonate production, state inshore null and 2023 bleach survival caveat; link GSOCS-LULCC as soil companion; no unverified planet-save claim.
+
 ## 2026-10-03 10:08 ET even-hour cycle
 
 Victus offline this run; worked on the box + GitHub MCP. Folded waiting branch `forethinkers/cycle-2026-10-03-0807` (3MF export answer + board claims) into `forethinkers/cycle-2026-10-03-1008`. Orphan branches `forethinkers/cycle-2026-10-03-0400` and `0612` remain merged content. Left draft PR #40 and Next #17 PR #44 untouched.
