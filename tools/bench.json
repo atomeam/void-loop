@@ -217,5 +217,9 @@
   {"ask": "connect 4", "want": "skill:make"},
   {"ask": "make a blue 3d sphere", "want": "skill:make"},
   {"ask": "clear my calendar", "want": "skill:calendar"},
-  {"ask": "what time is it in paris", "want": "skill:worldtime"}
+  {"ask": "what time is it in paris", "want": "skill:worldtime"},
+  {"ask": "UV index in Miami", "want": "skill:uv"},
+  {"ask": "how strong is the sun in LA", "want": "skill:uv"},
+  {"ask": "should I wear sunscreen in Phoenix", "want": "skill:uv"},
+  {"ask": "what's the UV in Tokyo", "want": "skill:uv"}
 ]

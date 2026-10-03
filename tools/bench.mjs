@@ -31,8 +31,8 @@ async function one({ ask: a, want }) {
     if (u.includes('air-quality-api.open-meteo.com')) return r.fulfill(json({ current: { time: '2026-10-03T12:00', us_aqi: 42, european_aqi: 25, pm2_5: 10.2, pm10: 18.0, ozone: 55, nitrogen_dioxide: 12, sulphur_dioxide: 3, carbon_monoxide: 140, us_aqi_pm2_5: 42, us_aqi_pm10: 16, us_aqi_ozone: 18, us_aqi_nitrogen_dioxide: 11, us_aqi_sulphur_dioxide: 2, us_aqi_carbon_monoxide: 2 } }));
     if (u.includes('api.open-meteo.com')) { const d = new Date().toISOString().slice(0, 10);
       return r.fulfill(json({ timezone: 'Europe/Paris', current: { temperature_2m: 20, apparent_temperature: 19, weather_code: 1, wind_speed_10m: 5, relative_humidity_2m: 50 },
-        daily: { time: [d, d], temperature_2m_max: [24, 23], temperature_2m_min: [15, 14], precipitation_probability_max: [10, 20], weather_code: [1, 2], sunrise: [d + 'T07:00', d + 'T07:01'], sunset: [d + 'T19:30', d + 'T19:29'] },
-        hourly: { time: Array.from({ length: 24 }, (_, i) => d + 'T' + String(i).padStart(2, '0') + ':00'), temperature_2m: Array(24).fill(20), precipitation_probability: Array(24).fill(5), weather_code: Array(24).fill(1) } })); }
+        daily: { time: [d, d], temperature_2m_max: [24, 23], temperature_2m_min: [15, 14], precipitation_probability_max: [10, 20], weather_code: [1, 2], sunrise: [d + 'T07:00', d + 'T07:01'], sunset: [d + 'T19:30', d + 'T19:29'], uv_index_max: [7.2, 7.0] },
+        hourly: { time: Array.from({ length: 24 }, (_, i) => d + 'T' + String(i).padStart(2, '0') + ':00'), temperature_2m: Array(24).fill(20), precipitation_probability: Array(24).fill(5), weather_code: Array(24).fill(1), uv_index: Array(24).fill(6.5) } })); }
     if (u.includes('wiktionary.org')) return r.fulfill(json({ en: [{ partOfSpeech: 'Noun', definitions: [{ definition: 'A happy accident.' }] }] }));
     if (u.includes('translate.googleapis.com')) return r.fulfill(json([[['hola', 'hello']]]));
     if (u.includes('api.datamuse.com/sug')) return r.fulfill(json([{ word: 'necessary', score: 1 }]));
