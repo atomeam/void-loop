@@ -660,13 +660,25 @@ Object.values(things).forEach((th) => {
     // what a skill's stage kind gets: the live things, and the stage's own drag, save and render
     const stageApi = { stage, things: () => things, bindDrag, save, render, say, select: (id) => { selectedId = id; }, selected: () => selectedId };
 
+    // Click any stage object or person and it lifts in the hand. A flick throws it off the
+    // screen and it's gone (a real toss: gravity, spin, carried off); a slow drop sets it back down.
+    const TOSS_SPEED = 0.9; // px/ms: a flick, not a place-down
+    function releaseToss(s) {
+      const x = Number(s.x) || 0, y = Number(s.y) || 0, w = Number(s.w) || 0, h = Number(s.h) || 0;
+      const stageW = Number(s.stageW) || 0, stageH = Number(s.stageH) || 0;
+      const vx = Number(s.vx) || 0, vy = Number(s.vy) || 0;
+      const off = x + w < 0 || y + h < 0 || (stageW && x > stageW) || (stageH && y > stageH);
+      const thrown = Math.hypot(vx, vy) >= TOSS_SPEED || !!off;
+      return { thrown, gone: thrown };
+    }
+
     function bindDrag(el, th) {
       el.addEventListener('pointerdown', (e) => {
         if (e.button > 0) return;
         const editable = !!(e.target && e.target.isContentEditable); // text you can edit: a click edits, a real move drags
         const startX = e.clientX, startY = e.clientY;
         const origX = th.x, origY = th.y;
-        const sk = stageKinds[th.kind], free = !!(sk && sk.throwable); // a figure can leave the screen: thrown off, it is gone
+        const sk = stageKinds[th.kind]; // optional hooks a skill can react with; anything can still be thrown
         let cur = null, vx = 0, vy = 0, lastX = e.clientX, lastY = e.clientY, lastT = performance.now();
         const begin = () => {
           selectedId = th.id;
@@ -675,13 +687,14 @@ Object.values(things).forEach((th) => {
           if (editable) { try { getSelection().removeAllRanges(); if (document.activeElement) document.activeElement.blur(); } catch (_) {} }
           render();
           cur = stage.querySelector('[data-id="' + th.id + '"]') || el; // render() replaced the element; move the live one
+          cur.style.transform = 'translateY(-18px) rotate(-6deg)'; // lifted in the hand
         };
         if (!editable) begin();
         const move = (ev) => {
           if (!cur) { if (Math.hypot(ev.clientX - startX, ev.clientY - startY) < 5) return; begin(); }
-          th.x = free ? origX + (ev.clientX - startX) : Math.max(0, origX + (ev.clientX - startX));
-          th.y = free ? origY + (ev.clientY - startY) : Math.max(0, origY + (ev.clientY - startY));
-          const now = performance.now(), dt = Math.max(1, now - lastT);
+          th.x = origX + (ev.clientX - startX); // anything can be lifted off-stage while held
+          th.y = origY + (ev.clientY - startY);
+          const now = performance.now(), dt = Math.max(16, now - lastT); // a real frame's worth: synthetic near-zero gaps shouldn't read as a flick
           vx = (ev.clientX - lastX) / dt; vy = (ev.clientY - lastY) / dt; lastX = ev.clientX; lastY = ev.clientY; lastT = now;
           cur.style.left = th.x + 'px';
           cur.style.top = th.y + 'px';
@@ -690,19 +703,34 @@ Object.values(things).forEach((th) => {
           window.removeEventListener('pointermove', move);
           window.removeEventListener('pointerup', up);
           document.documentElement.classList.remove('dragging');
-          if (cur && free) {
-            const r = cur.getBoundingClientRect(), fling = Math.hypot(vx, vy) > 2 && performance.now() - lastT < 120;
-            const out = r.right < 30 || r.left > innerWidth - 30 || r.bottom < 30 || r.top > innerHeight - 30;
-            if (fling || out) { // thrown off the screen: it flies on and is gone
-              takeUndoSnapshot(); delete things[th.id]; if (selectedId === th.id) selectedId = null;
-              try { if (sk.thrown) sk.thrown(th, stageApi); } catch (_) {}
-              save(); cur.style.transition = 'left .3s ease-in, top .3s ease-in, opacity .3s'; cur.style.left = (th.x + vx * 400) + 'px'; cur.style.top = (th.y + vy * 400) + 'px'; cur.style.opacity = '0';
-              setTimeout(render, 320); say('gone'); return;
-            }
-            try { if (sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
-            save(); render(); return;
+          if (!cur) return;
+          const w = cur.offsetWidth || 40, h = cur.offsetHeight || 40;
+          const verdict = releaseToss({ x: th.x, y: th.y, vx, vy, w, h, stageW: stage.clientWidth, stageH: stage.clientHeight });
+          if (!verdict.gone) { // a slow drop sets it back down
+            th.x = Math.max(0, th.x); th.y = Math.max(0, th.y);
+            cur.style.transform = '';
+            cur.style.left = th.x + 'px'; cur.style.top = th.y + 'px';
+            try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
+            save();
+            return;
           }
-          if (cur) save();
+          takeUndoSnapshot();
+          let px = th.x, py = th.y, tvx = vx || (th.x < 0 ? -1.2 : 1.2), tvy = vy || -0.4, spin = tvx * 40;
+          let prev = performance.now();
+          const step = (t) => {
+            const dt = Math.min(32, t - prev); prev = t;
+            tvx *= 0.995; tvy += 0.0016 * dt; spin += tvx * dt * 0.4; // a real toss: carried by its own speed, gravity pulls it down
+            px += tvx * dt; py += tvy * dt;
+            cur.style.left = px + 'px'; cur.style.top = py + 'px';
+            cur.style.transform = 'rotate(' + spin + 'deg)';
+            const gone = px + w < 0 || py + h < 0 || px > stage.clientWidth || py > stage.clientHeight;
+            if (!gone) { requestAnimationFrame(step); return; }
+            try { if (sk && sk.thrown) sk.thrown(th, stageApi); } catch (_) {}
+            delete things[th.id];
+            if (selectedId === th.id) selectedId = null;
+            save(); render();
+          };
+          requestAnimationFrame(step);
         };
         window.addEventListener('pointermove', move);
         window.addEventListener('pointerup', up);
