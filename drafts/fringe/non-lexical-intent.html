@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · tap intent (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+#pad{height:150px;border:1px solid rgba(255,255,255,.18);border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:13px;color:#8a8a92;cursor:pointer;user-select:none;touch-action:manipulation;transition:background .08s}
+#pad.down{background:rgba(124,204,255,.18);color:#fff}
+#pad:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+#seen{font-size:28px;letter-spacing:.3em;min-height:1.4em;text-align:center}
+#out{min-height:1.5em;text-align:center}
+table{border-collapse:collapse;font-size:13px;width:100%}
+td{padding:4px 8px 4px 0}
+td.p{letter-spacing:.25em;width:7em}
+input,button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:6px 10px}
+button{cursor:pointer}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+</style>
+</head>
+<body>
+<main>
+  <h1>tap intent · draft · not published</h1>
+  <p class="note">Say what you mean without words: tap the pad (or hold the space bar). A short tap is · and a long press is —; stop for a moment and the pattern is read. Each pattern means exactly what you set below, nothing is guessed and there is no score. No microphone, no camera; the list stays on this device.</p>
+  <div id="pad" tabindex="0" role="button" aria-label="tap pad: short tap or long press">tap · or hold —</div>
+  <div id="seen" aria-hidden="true"></div>
+  <div id="out" aria-live="polite"></div>
+  <table id="vocab" aria-label="your patterns"></table>
+  <div class="row"><input id="np" size="6" placeholder="·—" aria-label="new pattern (· and —)"><input id="nm" placeholder="what it means" aria-label="what it means"><button id="add" type="button">add</button></div>
+</main>
+<script>
+(function(){
+  var LONG=250, END=700, KEY='void.tapintent.v1';
+  var vocab={'·':'yes','··':'no','—':'wait','·—':'help','——':'done'};
+  try{var saved=JSON.parse(localStorage.getItem(KEY)||'null');if(saved&&typeof saved==='object')vocab=saved}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(vocab))}catch(_){}}
+  // durations of presses (ms) -> pattern; exact lookup, unknown stays unknown
+  function pattern(presses){return presses.map(function(d){return d>=LONG?'—':'·'}).join('')}
+  function read(p){return Object.prototype.hasOwnProperty.call(vocab,p)?vocab[p]:null}
+  var pad=document.getElementById('pad'),seen=document.getElementById('seen'),out=document.getElementById('out'),tb=document.getElementById('vocab');
+  var presses=[],t0=0,timer=0,down=false;
+  function start(){if(down)return;down=true;t0=performance.now();pad.classList.add('down');clearTimeout(timer)}
+  function stop(){if(!down)return;down=false;pad.classList.remove('down');presses.push(performance.now()-t0);seen.textContent=pattern(presses);timer=setTimeout(finish,END)}
+  function finish(){var p=pattern(presses),m=read(p);out.textContent=m?p+'  →  '+m:p+'  →  (not one of yours yet)';presses=[]}
+  pad.addEventListener('pointerdown',function(e){e.preventDefault();start()});
+  pad.addEventListener('pointerup',stop);pad.addEventListener('pointerleave',stop);
+  pad.addEventListener('keydown',function(e){if(e.code==='Space'){e.preventDefault();if(!e.repeat)start()}});
+  pad.addEventListener('keyup',function(e){if(e.code==='Space'){e.preventDefault();stop()}});
+  function draw(){tb.innerHTML='';Object.keys(vocab).forEach(function(p){var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td'),c=document.createElement('td'),x=document.createElement('button');a.className='p';a.textContent=p;b.textContent=vocab[p];x.type='button';x.textContent='×';x.setAttribute('aria-label','remove '+vocab[p]);x.onclick=function(){delete vocab[p];save();draw()};c.appendChild(x);tr.appendChild(a);tr.appendChild(b);tr.appendChild(c);tb.appendChild(tr)})}
+  document.getElementById('add').addEventListener('click',function(){var p=document.getElementById('np').value.replace(/\./g,'·').replace(/-/g,'—').replace(/[^·—]/g,''),m=document.getElementById('nm').value.trim();if(!p||!m)return;vocab[p]=m.slice(0,40);save();draw();document.getElementById('np').value='';document.getElementById('nm').value=''});
+  draw();
+  window.__tap={pattern:pattern,read:read}; // for checks
+})();
+</script>
+</body>
+</html>
