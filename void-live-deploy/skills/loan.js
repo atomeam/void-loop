@@ -4,8 +4,11 @@
  * "monthly payment on a $250000 mortgage at 6.5% for 30 years",
  * "car loan $20000 at 7% for 5 years",
  * "loan payment $15000 at 5.9% over 36 months",
- * "what's the payment on a $300k mortgage 6% 30 year".
- * Shows monthly payment, total paid, and total interest. Not advice; standard amortizing formula.
+ * "what's the payment on a $300k mortgage 6% 30 year",
+ * "$300k mortgage 6.5% 30 years with $200 extra a month".
+ * Shows monthly payment, total paid, total interest, first-year principal vs interest,
+ * and (when asked) how much earlier + how much interest an extra monthly payment saves.
+ * Not advice; standard amortizing formula. Better than a bare payment number: visitors see the payoff path.
  */
 function money(s) {
   if (!s) return NaN;
@@ -52,7 +55,15 @@ function loanOf(text) {
   else if (/\b(car|auto)\s+loan\b/.test(l)) kind = 'car loan';
   else if (/\bpersonal\s+loan\b/.test(l)) kind = 'personal loan';
 
-  return { principal: amt, apr, months, kind };
+  let extra = 0;
+  m = t.match(/(?:with|plus|\+)\s+\$?\s*([\d,]+(?:\.\d+)?)\s*(?:extra|more|additional)?\s*(?:a\s+|per\s+)?(?:month|mo)\b/i)
+    || t.match(/\$?\s*([\d,]+(?:\.\d+)?)\s*(?:extra|more|additional)\s*(?:a\s+|per\s+)?(?:month|mo)\b/i);
+  if (m) {
+    extra = +String(m[1]).replace(/,/g, '');
+    if (!Number.isFinite(extra) || extra < 0) extra = 0;
+  }
+
+  return { principal: amt, apr, months, kind, extra };
 }
 
 function payment(p, apr, n) {
@@ -62,30 +73,74 @@ function payment(p, apr, n) {
   return p * r * f / (f - 1);
 }
 
+function schedule(p, apr, n, extra) {
+  const r = apr / 100 / 12;
+  const base = payment(p, apr, n);
+  const pay = base + (extra || 0);
+  let bal = p, interest = 0, months = 0, y1P = 0, y1I = 0;
+  const max = n + 1200;
+  while (bal > 0.005 && months < max) {
+    const i = r === 0 ? 0 : bal * r;
+    let prin = pay - i;
+    if (prin > bal) prin = bal;
+    if (prin <= 0 && r > 0) break;
+    bal -= prin;
+    interest += i;
+    months += 1;
+    if (months <= 12) { y1P += prin; y1I += i; }
+  }
+  return { base, pay, months, interest, total: p + interest, y1P, y1I, paidOff: bal <= 0.005 };
+}
+
 function moneyFmt(n) {
   return n.toLocaleString(undefined, { style: 'currency', currency: 'USD', maximumFractionDigits: 2 });
+}
+
+function termLabel(months) {
+  if (months % 12 === 0) {
+    const y = months / 12;
+    return y + (y === 1 ? ' year' : ' years');
+  }
+  return months + ' months';
 }
 
 async function run(text, api) {
   const { showPage, esc } = api;
   const q = loanOf(text);
   if (!q) return 'none';
-  const pay = payment(q.principal, q.apr, q.months);
-  const total = pay * q.months;
-  const interest = total - q.principal;
-  const years = q.months % 12 === 0 ? (q.months / 12) + (q.months / 12 === 1 ? ' year' : ' years') : q.months + ' months';
+  const base = schedule(q.principal, q.apr, q.months, 0);
+  const withX = q.extra > 0 ? schedule(q.principal, q.apr, q.months, q.extra) : null;
+  // When no extra is asked, still show a $100/mo illustration so visitors see the lever (2026 calculators lead with this).
+  const demoExtra = q.extra > 0 ? q.extra : 100;
+  const demo = q.extra > 0 ? withX : schedule(q.principal, q.apr, q.months, demoExtra);
+  const savedInterest = Math.max(0, base.interest - demo.interest);
+  const monthsSooner = Math.max(0, base.months - demo.months);
+  const years = termLabel(q.months);
   const title = q.kind.charAt(0).toUpperCase() + q.kind.slice(1);
+  const payShown = withX ? withX.pay : base.base;
   showPage((el) => {
-    el.innerHTML = '<h2>' + esc(title) + ' payment</h2>'
-      + '<div class="sub">' + esc(moneyFmt(q.principal)) + ' at ' + esc(String(q.apr)) + '% for ' + esc(years) + '</div>'
-      + '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(moneyFmt(pay)) + '<span style="font-size:18px;color:#8a8a8a"> / month</span></div>'
+    let html = '<h2>' + esc(title) + ' payment</h2>'
+      + '<div class="sub">' + esc(moneyFmt(q.principal)) + ' at ' + esc(String(q.apr)) + '% for ' + esc(years)
+      + (q.extra > 0 ? ' · ' + esc(moneyFmt(q.extra)) + ' extra / month' : '')
+      + '</div>'
+      + '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(moneyFmt(payShown))
+      + '<span style="font-size:18px;color:#8a8a8a"> / month</span></div>'
       + '<ul>'
-      + '<li><b>Total paid</b> ' + esc(moneyFmt(total)) + '</li>'
-      + '<li><b>Total interest</b> ' + esc(moneyFmt(interest)) + '</li>'
-      + '<li><b>Payments</b> ' + esc(String(q.months)) + '</li>'
-      + '</ul>'
-      + '<p style="color:#8a8a8a">Standard amortizing loan (fixed rate, monthly). Not a quote or advice — lenders add fees and insurance.</p>'
-      + '<div class="src">Formula: M = P · r(1+r)^n / ((1+r)^n − 1)</div>';
+      + '<li><b>Total paid</b> ' + esc(moneyFmt(withX ? withX.total : base.total)) + '</li>'
+      + '<li><b>Total interest</b> ' + esc(moneyFmt(withX ? withX.interest : base.interest)) + '</li>'
+      + '<li><b>Payments</b> ' + esc(String(withX ? withX.months : base.months)) + '</li>'
+      + '<li><b>First year</b> ' + esc(moneyFmt(base.y1I)) + ' interest · ' + esc(moneyFmt(base.y1P)) + ' principal</li>'
+      + '</ul>';
+    if (demo.paidOff && savedInterest > 0) {
+      const label = q.extra > 0
+        ? ('With ' + moneyFmt(q.extra) + ' extra each month')
+        : ('If you added ' + moneyFmt(demoExtra) + ' extra each month');
+      html += '<p><b>' + esc(label) + '</b>: pay off ' + esc(String(monthsSooner)) + ' months sooner and save '
+        + esc(moneyFmt(savedInterest)) + ' in interest.</p>';
+    }
+    html += '<p style="color:#8a8a8a">Standard amortizing loan (fixed rate, monthly). Not a quote or advice — lenders add fees and insurance.</p>'
+      + '<div class="src">Formula: M = P · r(1+r)^n / ((1+r)^n − 1) · Sources: standard amortization; extra-payment payoff modeled month by month (as of Oct 2026)</div>';
+    el.innerHTML = html;
   });
   return 'loan';
 }
@@ -97,7 +152,8 @@ export default {
     'car loan $20000 at 7% for 5 years',
     'loan payment $15000 at 5.9% over 36 months',
     'what\'s the payment on a $300k mortgage 6% 30 year',
-    'personal loan $8000 at 9.5% for 4 years'
+    'personal loan $8000 at 9.5% for 4 years',
+    '$300k mortgage at 6.5% for 30 years with $200 extra a month'
   ],
   nearMisses: [
     'what is a mortgage',
