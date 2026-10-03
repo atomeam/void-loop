@@ -3323,6 +3323,7 @@ return { ok: true, detail: 'timer-reset' };
             loopLog,
             _pageStill: (el) => vpageEl === el,
             summon: summonThing,
+            refreshThings: () => render(), // the 3D calendar redraws the stage card after an edit
           };
           say(/weather|place|map/.test(skill.name) ? 'looking up' : skill.name === 'translate' ? 'translating' : 'working');
           const before = whisper.textContent;

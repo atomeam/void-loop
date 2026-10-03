@@ -6,6 +6,7 @@
  * Gated asks ("add X to my calendar", "schedule a meeting with …") stay on the confirm line.
  * This file only shows the local agenda and adds events that are not those gated sentences.
  */
+import { show3d } from './calendar3d.js';
 const KEY = 'a2m.void.agenda.v1';
 const CLEAN = (s) => String(s || '').replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
 
@@ -159,9 +160,8 @@ async function run(text, api) {
     save(rows);
     if (api.say) api.say('on your calendar: ' + q.title + ', ' + fmtWhen(q.at.toISOString()));
   }
-  if (api.summon) { api.summon('calendar'); return 'calendar'; } // the card on the stage (void.html mountCalendar)
-  const el = showPage((p) => { p.innerHTML = '<h2>Coming up</h2><div class="sub">…</div>'; });
-  draw(el, api);
+  if (api.summon) api.summon('calendar'); // the card on the stage (void.html mountCalendar)
+  if (q.kind === 'show') show3d(api); // and the 3D wall calendar; an add only says so (the card shows it)
   return 'calendar';
 }
 

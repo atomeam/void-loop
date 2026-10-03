@@ -410,6 +410,21 @@ try {
     check('calendar: "schedule a meeting with Sam" is the owner\'s confirm line (a visitor is told so, nothing saved); "calender" shows one card; the card survives a reload; "remove my calendar" hides it and keeps the events; × removes one and undo brings it back',
       /only the owner/.test(gated) && shown === 1 && /Call Sam/.test(afterReload) && gone === 0 && kept === 3 && afterX === 2 && afterUndo === 3 && !net.some((u) => /wikipedia|miss|answer/.test(u)),
       [gated, shown, afterReload.slice(0, 40), gone, kept, afterX, afterUndo, net.join(',')].join(' | '));
+    // the 3D wall calendar: "my calendar" opens it; tap a day, add an event in the editor, rename it; it is saved and on the card
+    await C.ask('my calendar', 900);
+    const c3 = await C.p.evaluate(async () => {
+      const pg = document.querySelector('.vpage.on'); if (!pg || !pg.querySelector('.c3d-page')) return 'no 3d page';
+      const day = [...pg.querySelectorAll('.c3d-day:not(.out)')][14]; day.click(); await new Promise((r) => setTimeout(r, 50));
+      const row = pg.querySelector('.c3d-edit .row.add'); row.querySelector('.w').value = 'Launch party'; row.querySelector('.t').value = '19:30'; row.querySelector('.ok').click();
+      await new Promise((r) => setTimeout(r, 50));
+      const w = pg.querySelector('.c3d-edit .row:not(.add) .w'); w.value = 'Launch party at the lab'; w.dispatchEvent(new Event('change', { bubbles: true }));
+      await new Promise((r) => setTimeout(r, 50));
+      const ev = JSON.parse(localStorage.getItem('a2m.void.agenda.v1')).find((e) => /Launch/.test(e.title));
+      return [ev && ev.title, ev && new Date(ev.at).getDate() === 15 && new Date(ev.at).getHours() === 19, [...pg.querySelectorAll('.c3d-ev')].some((e) => /Launch party at the lab/.test(e.textContent))].join(' ');
+    });
+    const card3 = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
+    check('calendar: "my calendar" opens the 3D wall calendar; tap a day, add an event and rename it in place; saved here, written on the day, on the stage card',
+      c3 === 'Launch party at the lab true true' && /Launch party at the lab/.test(card3) && !C.errors.length, c3 + ' | ' + card3.slice(0, 80));
     await C.ctx.close(); }
   // Earned effects (Atom 2026-09-28: personal layer first): the public stage runs no WebGL; the nebula and the particle swarm
   // start only when someone asks in their own Void, and "calm my void" stops them. Card physics: a grabbed card comes to the front.
@@ -1533,7 +1548,7 @@ try {
   // the page: an injected answer is only text; agents can't start or answer a send, spend or forget; a script's click never says yes
   let d = await fresh(() => { window.__tools = {}; document.modelContext = { registerTool: async (x) => { window.__tools[x.name] = x; } }; });
   await d.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
-  const callsBefore = gate.calls.length, ranBefore = gate.ran.length;
+  const callsBefore = gate.calls.length, ranBefore = gate.ran.length, missesBefore = missesCalls.length; // the owner's own unlock earlier opens the board
   await d.ask('inject: what is the capital of France', 900);
   await until(async () => /gift cards/.test(await d.page()), 4000);
   const inj = await d.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return { imgs: pg ? pg.querySelectorAll('p img, p script').length : -1, js: [...document.querySelectorAll('.vpage.on a')].some((a) => /^javascript:/i.test(a.getAttribute('href') || '')), pwned: !!window.__pwned }; });
@@ -1545,7 +1560,7 @@ try {
   const agentBuy = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'buy 2 bags of coffee for $24' }));
   const agentBoard = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'show the board' }));
   check('defences: an agent (WebMCP) can\'t start a send or a spend, or read the owner\'s board, even in the owner\'s browser',
-    /person at the screen/.test(agentSend) && /person at the screen/.test(agentBuy) && /owner/.test(agentBoard) && gate.calls.length === callsBefore && missesCalls.length === 0, [agentSend, agentBuy, agentBoard, missesCalls.length].join(' | '));
+    /person at the screen/.test(agentSend) && /person at the screen/.test(agentBuy) && /owner/.test(agentBoard) && gate.calls.length === callsBefore && missesCalls.length === missesBefore, [agentSend, agentBuy, agentBoard, missesCalls.length - missesBefore].join(' | '));
   await d.ask('send an email to jane@x.com saying hi', 900);
   const line = await d.whisper();
   const agentYes = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'yes' }));
