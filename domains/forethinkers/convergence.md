@@ -31,6 +31,15 @@ nodes:
     date: 2026-10-03
     tracks: [printing-working-machines]
     claim: "MIT Sr-ferrite hard magnets need 1.5 T (paper DOI 10.1080/17452759.2026.2613185). Bonded Neo needs 3-4 T throughout (Magnequench guide). Mag-Instruments benchtop PM reaches 4 T at dia 1.25 cm sample OD and 2.9 T at dia 2.5 cm, so figure-scale (~1 cm) magnetize is a benchtop job for MIT feedstock and for Neo at tight coil OD."
+  - id: multimaterial-export-3mf
+    kind: shared-part
+    status: established
+    part: multi-material slicer export format
+    title: "ISO/IEC 25422:2025 — 3D Manufacturing Format (3MF) specification suite"
+    url: https://www.iso.org/standard/90283.html
+    date: 2025-06-06
+    tracks: [printing-working-machines, void-stage]
+    claim: "Export-to-print emits 3MF (ISO/IEC 25422:2025) with Core basematerials naming the five MIT material classes plus display colors. Extruder mapping is slicer-vendor metadata, not Core. STL cannot carry multi-material in one file. Prusa prefers 3MF over AMF (KB accessed 2026-10-03)."
   - id: printed-actuator-moves-figure-joint
     kind: shared-part
     status: hypothesis
@@ -42,7 +51,7 @@ nodes:
     status: blocked
     part: export a print file from a summoned figure
     tracks: [void-stage]
-    claim: Ask, spin, download STL or 3MF. Not browser-tested on main. Not slicer-tested. Magnetize handoff can cite 1.5 T (MIT Sr-ferrite) or 3-4 T (bonded Neo) and a dia 1.25 cm benchtop coil path.
+    claim: Format is 3MF with five Core basematerials (see multimaterial-export-3mf). Still blocked on a browser emitter and a slicer open test. Magnetize handoff cites 1.5 T (MIT Sr-ferrite) or 3-4 T (bonded Neo) and a dia 1.25 cm benchtop coil path.
   - id: stage-figure
     kind: void-stage
     status: hypothesis
@@ -53,6 +62,7 @@ nodes:
 
 ## Cycle log
 
+- 2026-10-03 08:07 ET. Multimaterial-export-3mf established (ISO/IEC 25422:2025; Core basematerials; Prusa prefers 3MF). Export-to-print stays blocked on browser emitter + slicer test. Figure-joint link stays hypothesis.
 - 2026-10-03 06:12 ET. Figure-scale-benchtop-magnetize established. MIT hard magnet is Sr-ferrite at 1.5 T (Canada et al. VPP 2026); bonded Neo needs 3-4 T (Magnequench); Mag-Instruments PM reaches 4 T at dia 1.25 cm sample OD. Export-to-print stays blocked on format. Figure-joint link stays hypothesis.
 - 2026-10-03 04:04 ET. Magnetize-outside-printer established from Sloma et al. 2025 (7 T impulse on FDM NdFeB) plus MIT News 2026-02-18 (magnetize is post-print; in-print is next). Figure-joint link stays hypothesis. Export-to-print stays blocked on main.
 - 2026-10-03 seed. Only the MIT linear motor is established. Figure-joint link is a hypothesis. Export-to-print is blocked.
