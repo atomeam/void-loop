@@ -40,7 +40,7 @@ export default {
   examples: ['show the map', 'what is the map', 'the map', "what's being built"],
   match(lower, text) {
     if (/\bmap\s+of\s+(?!everything)/.test(lower)) return false;
-    return /\b(show\s+(me\s+)?(the\s+)?map|the\s+map|what\s+is\s+the\s+map|what'?s\s+(on\s+)?the\s+map|what\s+are\s+you\s+building|map\s+of\s+everything)\b/.test(lower);
+    return /\b(show\s+(me\s+)?(the\s+)?map|the\s+map|what\s+is\s+the\s+map|what'?s\s+(on\s+)?the\s+map|what\s+are\s+you\s+building|what'?s\s+being\s+built|map\s+of\s+everything)\b/.test(lower);
   },
   run
 };
