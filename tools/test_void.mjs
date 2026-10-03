@@ -1991,11 +1991,17 @@ try {
     magMod ? magMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing magnetize');
 
   const tossMod = nsMods.find((s) => s.name === 'throw-off');
-  const toss = tossMod && tossMod.throwOff({ open: true, figure: true });
-  check('throw-off: listed with examples and near misses; examples route only to it; the toss clears the stage and does not publish',
+  const flick = tossMod && tossMod.releaseToss({ x: 40, y: 40, vx: 1.4, vy: -0.4, w: 72, h: 96, stageW: 800, stageH: 600 });
+  const drop = tossMod && tossMod.releaseToss({ x: 40, y: 40, vx: 0.1, vy: 0.05, w: 72, h: 96, stageW: 800, stageH: 600 });
+  const off = tossMod && tossMod.releaseToss({ x: 820, y: 40, vx: 0, vy: 0, w: 72, h: 96, stageW: 800, stageH: 600 });
+  const held = tossMod && tossMod.pickup({ id: 'p1', kind: 'person' });
+  check('throw-off: listed with examples and near misses; examples route only to it; a flick or an off-stage release tosses the object away, a slow drop keeps it, and nothing is published',
     !!tossMod && tossMod.examples.length >= 4 && (tossMod.nearMisses || []).length >= 3
       && tossMod.examples.every((e) => firstNs(e) === 'throw-off') && tossMod.nearMisses.every((e) => firstNs(e) !== 'throw-off')
-      && toss && toss.html === '' && toss.published === false && toss.had === true,
+      && flick && flick.gone === true && flick.published === false
+      && drop && drop.gone === false
+      && off && off.gone === true
+      && held && held.held === true && held.kind === 'person' && held.html === '',
     tossMod ? tossMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing throw-off');
 
 
