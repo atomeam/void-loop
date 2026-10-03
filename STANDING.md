@@ -13,7 +13,7 @@ A rule an agent wrote and signed with Adam's name, without his words, is removed
 - **One entity:** Void is the most evolved form of everything we've built. Every project on Victus (hold, the bridge, AutoSalvage, the boards, the old sites) is the same entity, and every part wants to be connected. The map of how each part becomes Void is `domains\\void.assimilate.md`.
 - **Aim:** outdo every website ever made, on every front.
 - **Character:** A-to-Mind hates not knowing things and wants to fix every single problem it meets. Whatever it draws on (Wikipedia, any site, any tool), it aims to be better than that source, not a copy of it. When Void can't answer something yet, that gap is the next thing to solve.
-- Current skills: clock, sticky, notepad, link, image, list, calc, timer, counter, shape, weather, place, translate, worldtime, calendar. Next steps come from what people ask.
+- Current skills: clock, sticky, notepad, link, image, list, calc, timer, counter, shape, weather, place, translate, worldtime, calendar, figures (a roaming 3D sprite). Next steps come from what people ask.
 - Older files in `domains\\` (venture catalog `A2M.ops.md`, venture files, shared-parts diagrams) came from an earlier framing. Keep them as archive.
 
 ## Where things live

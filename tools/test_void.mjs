@@ -2156,6 +2156,114 @@ try {
   check('router: nothing on the page changes (no router, route or escalation code in void.html; the confirm line checks above still pass)',
     !/api\/routes|escalat|lib\/router|bge-m3|qwen/i.test(html) && fs.readFileSync(path.join(root, 'void.html'), 'utf8') === html, '');
   }
+  // Board Next #17: one light 3D layer and a roaming figure. The empty page loads no 3D code; "summon a sprite" loads
+  // skills/figures3d.js and three.js (pinned CDN build, stubbed here so the suite stays offline); "send them away" clears the
+  // figures and undo brings them back; reduced motion holds them still; a wheel over a figure zooms toward it.
+  {
+    const figSrc = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const figIndex = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
+    const figMods = [];
+    for (const n of figIndex) figMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
+    const firstFig = (a) => { const k = figMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
+    const figMod = figMods.find((s) => s.name === 'figures');
+    const SUMMONS = ['summon a sprite', 'bring a friend', 'show me a 3D buddy', 'summon a void sprite', 'bring out a little friend'];
+    const AWAY = ['send them away', 'dismiss figures', 'send the sprite away', 'send the figures away'];
+    check('figures (#17): listed in skills/index.json with examples and near misses; summon and send-away phrases route only to it; the 3D engine (figures3d.js) is not in the index, so the empty page never imports it',
+      !!figMod && figMod.examples.length >= 4 && (figMod.nearMisses || []).length >= 3 && [...figMod.examples, ...SUMMONS, ...AWAY].every((e) => firstFig(e) === 'figures')
+      && figMod.nearMisses.every((e) => firstFig(e) !== 'figures') && !figIndex.includes('figures3d') && !figIndex.includes('stage3d'),
+      figMod ? [...figMod.examples, ...SUMMONS, ...AWAY].map((e) => e + ' -> ' + firstFig(e)).join(' | ') : 'missing figures');
+    // the brain is plain JS: walk around a card, notice the cursor, hold still with reduced motion
+    const B3 = await import(new URL('../void-live-deploy/skills/figures3d.js', import.meta.url).href);
+    let seed = 7; const rng = () => ((seed = (seed * 16807) % 2147483647) / 2147483647);
+    const card = { l: 300, t: 200, r: 500, b: 400 }, world = { bounds: { l: 40, t: 40, r: 900, b: 600 }, rects: [card], cursor: null, others: [] };
+    const fb = B3.makeBrain({ x: 200, y: 300 }, rng); fb.mode = 'wander'; fb.tx = 620; fb.ty = 300;
+    let inside = 0, reached = false;
+    for (let i = 0; i < 900 && !reached; i++) { B3.stepFigure(fb, 1 / 30, world, rng); if (B3.insideAny(fb.x, fb.y, [card], 0)) inside += 1; if (fb.mode === 'idle' && Math.hypot(fb.x - 620, fb.y - 300) < 14) reached = true; }
+    const nb = B3.makeBrain({ x: 600, y: 500 }, rng); for (let i = 0; i < 20; i++) B3.stepFigure(nb, 1 / 30, { ...world, cursor: { x: 700, y: 480 } }, rng);
+    const sb = B3.makeBrain({ x: 600, y: 500 }, rng); sb.mode = 'wander'; sb.tx = 100; sb.ty = 100;
+    for (let i = 0; i < 60; i++) B3.stepFigure(sb, 1 / 30, { ...world, still: true }, rng);
+    const freeSpot = B3.pickTarget(world, rng);
+    check('figures (#17): the brain walks around a card to reach the far side without entering it, turns to look at a nearby cursor, and holds a still pose with reduced motion; a new figure lands on a free spot',
+      reached && inside === 0 && nb.mode === 'notice' && nb.yaw > 0.1 && nb.lookX > 0.3 && sb.x === 600 && sb.y === 500 && sb.mode === 'still' && !B3.insideAny(freeSpot.x, freeSpot.y, [card], 20)
+      && /^https:\/\/cdn\.jsdelivr\.net\/npm\/three@\d+\.\d+\.\d+\/build\/three\.module\.min\.js$/.test(B3.THREE_URL),
+      JSON.stringify({ reached, inside, at: [Math.round(fb.x), Math.round(fb.y)], notice: nb.mode, yaw: nb.yaw, still: [sb.x, sb.y, sb.mode], url: B3.THREE_URL }));
+    // In the browser three.js is a stand-in module (every class a harmless stub) built from the names figures3d.js uses.
+    const names = Array.from(new Set(Array.from(figSrc.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUB = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + names.map((n) => n + '=U').join(',') + ';';
+    const withThree = async (T) => {
+      const hits = [];
+      T.p.on('request', (r) => { const u = r.url(); if (/three@|three\.module|figures3d|stage3d/.test(u)) hits.push(u.replace(/^.*\/\/[^/]+/, '')); });
+      await T.ctx.route(/cdn\.jsdelivr\.net\/npm\/three@/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB }));
+      return hits;
+    };
+    const F = await fresh(); const hits = await withThree(F);
+    await F.p.waitForTimeout(500);
+    const emptyHtml = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
+    const empty = { hits: hits.length, canvas: await F.p.$$eval('#void-3d', (d) => d.length), api: await F.p.evaluate(() => typeof window.__void3d) };
+    check('figures (#17): the empty page loads zero 3D code (no figures3d.js, no three.js request, no WebGL canvas) and the page itself names no three.js URL',
+      empty.hits === 0 && empty.canvas === 0 && empty.api === 'undefined' && !/three@|three\.module/.test(emptyHtml), JSON.stringify(empty));
+    await F.ask('add a sticky that says hello', 300);
+    await F.ask('summon a sprite', 600);
+    const s3 = () => F.p.evaluate(() => (window.__void3d ? window.__void3d.state() : null));
+    const up = await until(async () => { const v = await s3(); return v && v.figures.length === 1 ? v : false; }, 6000);
+    const figsIn = async () => (await F.state()).filter((x) => x.kind === 'figure').length;
+    const said = await F.whisper();
+    const p0 = up && up.figures[0];
+    const moved = await until(async () => { const v = await s3(); const q = v && v.figures[0]; return q && p0 && Math.hypot(q.x - p0.x, q.y - p0.y) > 3 ? q : false; }, 6000);
+    const canvas = await F.p.evaluate(() => { const c = document.getElementById('void-3d'), s = c && getComputedStyle(c); return c ? { pe: s.pointerEvents, z: s.zIndex, before: c.nextElementSibling && c.nextElementSibling.id } : null; });
+    check('figures (#17): "summon a sprite" puts one figure on the stage (a stage item in this browser), loads figures3d.js and the pinned three.js only now, adds a click-through canvas behind the cards, and the figure roams',
+      !!up && (await figsIn()) === 1 && hits.some((u) => /\/skills\/figures3d\.js$/.test(u)) && hits.some((u) => /three@[\d.]+\/build\/three\.module\.min\.js$/.test(u))
+      && canvas && canvas.pe === 'none' && canvas.z === '0' && canvas.before === 'stage' && !!moved && /sprite/.test(said) && !F.errors.length,
+      JSON.stringify({ up, hits, canvas, moved, said, e: F.errors }));
+    await F.ask('bring a friend', 600);
+    const two = await until(async () => { const v = await s3(); return v && v.figures.length === 2 ? v : false; }, 4000);
+    await F.ask('send them away', 700);
+    const gone = await until(async () => { const v = await s3(); return v && v.figures.length === 0 ? v : false; }, 4000);
+    const goneState = await figsIn(), goneSaid = await F.whisper();
+    await F.ask('undo', 700);
+    const back = await until(async () => { const v = await s3(); return v && v.figures.length === 2 ? v : false; }, 4000);
+    const backState = await figsIn();
+    await F.ask('dismiss figures', 600); const dis = await figsIn();
+    check('figures (#17): "bring a friend" adds a second figure; "send them away" clears both (stage and scene) and undo brings both back; "dismiss figures" clears them too; the sticky stays',
+      !!two && !!gone && goneState === 0 && /sent away/.test(goneSaid) && !!back && backState === 2 && dis === 0 && (await F.state()).some((x) => x.kind === 'sticky') && !F.errors.length,
+      JSON.stringify({ two: !!two, gone: !!gone, goneState, goneSaid, back: !!back, backState, dis, e: F.errors }));
+    // wheel over a figure zooms the camera toward it; a tap on the bare void steps back out
+    await F.ask('summon a sprite', 600);
+    const zf = await until(async () => { const v = await s3(); return v && v.figures.length === 1 ? v.figures[0] : false; }, 4000);
+    await F.p.evaluate(() => { localStorage.setItem('a2m.void.motion.v1', 'still'); window.dispatchEvent(new Event('void-motion')); }); // hold it still so the pointer stays on it
+    await F.p.waitForTimeout(200);
+    const zs = await s3(), zf2 = zs && zs.figures[0];
+    if (zf2) { await F.p.mouse.move(zf2.x, zf2.y); await F.p.mouse.wheel(0, -400); }
+    const zin = await until(async () => { const v = await s3(); return v && v.zoomTo > 1.3 ? v : false; }, 3000);
+    await F.p.mouse.click(Math.round(zf2 ? (zf2.x > 640 ? 120 : 1100) : 120), 90);
+    const zout = await until(async () => { const v = await s3(); return v && v.zoomTo === 1 ? v : false; }, 3000);
+    check('figures (#17): a wheel over a figure zooms the camera toward it (first step toward collector zoom); a tap on the bare void zooms back out',
+      !!zf && !!zin && !!zout, JSON.stringify({ zf2, zin: zin && zin.zoomTo, zout: zout && zout.zoomTo }));
+    await F.ctx.close();
+    // reduced motion: the device setting holds figures in a still pose and the loop sleeps; "less motion" does the same by ask
+    const M3 = await fresh(); await withThree(M3); await M3.p.emulateMedia({ reducedMotion: 'reduce' });
+    await M3.ask('show me a 3D buddy', 600);
+    const r0 = await until(async () => { const v = await M3.p.evaluate(() => (window.__void3d ? window.__void3d.state() : null)); return v && v.figures.length === 1 ? v : false; }, 6000);
+    await M3.p.waitForTimeout(1200);
+    const r1 = await M3.p.evaluate(() => window.__void3d && window.__void3d.state());
+    await M3.p.emulateMedia({ reducedMotion: 'no-preference' });
+    await M3.ask('less motion', 400); const lm = await M3.p.evaluate(() => ({ key: localStorage.getItem('a2m.void.motion.v1'), still: window.__void3d.state().still }));
+    await M3.ask('let them roam', 400); const lr = await M3.p.evaluate(() => ({ key: localStorage.getItem('a2m.void.motion.v1'), still: window.__void3d.state().still }));
+    check('figures (#17): with prefers-reduced-motion the figure holds a still pose (no wandering, no loop running); "less motion" holds figures still by ask and "let them roam" frees them',
+      !!r0 && r1 && r1.still && r1.figures[0].mode === 'still' && r1.figures[0].x === r0.figures[0].x && r1.figures[0].y === r0.figures[0].y && !r1.animating
+      && lm.key === 'still' && lm.still && lr.key === null && !lr.still && !M3.errors.length,
+      JSON.stringify({ r0: r0 && r0.figures[0], r1, lm, lr, e: M3.errors }));
+    await M3.ctx.close();
+    // "what can you do" and /tools.json pick the skill up from the skill list on their own
+    const toolsFn = await import(new URL('../void-live-deploy/functions/tools.json.js', import.meta.url).href);
+    const tres = await toolsFn.onRequestGet({ request: new Request('https://a-to-mind.com/tools.json'), env: { ASSETS: { fetch: async (rq) => { const f = path.join(root, new URL(rq.url).pathname); return fs.existsSync(f) ? new Response(fs.readFileSync(f, 'utf8')) : new Response('', { status: 404 }); } } } });
+    const tj = await tres.json(), ft = tj.tools.find((x) => x.name === 'figures');
+    const W3 = await fresh(); await W3.ask('what can you do', 700); const menu = await W3.page(); await W3.ctx.close();
+    check('figures (#17): /tools.json and the "what can you do" page list the figures skill from the live skill list (examples included)',
+      !!ft && ft.examples.includes('summon a sprite') && /3D friend/.test(ft.description) && /figures/.test(menu) && /summon a sprite/.test(menu),
+      JSON.stringify({ ft, menu: menu.slice(0, 80) }));
+  }
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));
 }

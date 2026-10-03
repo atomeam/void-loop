@@ -1,0 +1,456 @@
+/**
+ * figures3d — Void's light 3D layer and its roaming figures (board Next #17). Not a skill: nothing imports this file until a figure is on the stage,
+ * so the empty page loads no 3D code at all. On first use it loads three.js from a pinned CDN build and puts one transparent
+ * WebGL canvas behind the cards, over the black stage. Pointer events pass through to the cards; the page asks this layer
+ * whether a figure is under the pointer, and only then does a click, wheel or pinch go to the figure.
+ *
+ * API for later items (#16 slogan, #18 bodies, #19 scripts, #22 zoom):
+ *   mountStage3D()            -> Promise<stage>   load three.js once, add the canvas, start the loop
+ *   addFigure(spec)           -> Promise<figure>  spec: { id?, body: 'sprite', color?, x?, y? } (x, y in CSS px)
+ *   removeFigures(ids?)       -> number           all figures, or the ids given
+ *   syncFigures(list)         -> Promise          make the scene match the stage items of kind 'figure' (void.html calls this)
+ *   mountInScene(mounter)     -> Promise<unmount> share the scene: mounter({ THREE, scene, camera, renderer, toWorld, still, requestRender })
+ *                                                 may return { update(dt, t), dispose() }. Any module (the #16 slogan, Claude's
+ *                                                 stage3d.js with its GLB/STL export) mounts here, so the page keeps one three.js
+ *                                                 copy and one WebGL scene. loadThree() hands out the same three.js module.
+ * The brain (stepFigure, pickTarget) is plain JS with no three.js, so it runs and is tested without WebGL.
+ */
+export const THREE_VERSION = '0.180.0';
+export const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@' + THREE_VERSION + '/build/three.module.min.js';
+export const MOTION_KEY = 'a2m.void.motion.v1';
+const PALETTE = [0x9d8cff, 0x6ee7c8, 0xffa98a, 0x7cc4ff, 0xff8fc7, 0xc6f27a];
+const R = 28;            // body radius in CSS px: a figure is about 80 px tall on the stage
+const SPEED = 42;        // px per second while wandering
+const NOTICE = 190;      // the cursor is "near" inside this many px
+const MAX_ZOOM = 6;
+const PAD = R * 1.3 + 42; // how far a goal sits from any card, just outside where cards start to push
+
+// ---------- the brain: plain numbers in screen px (y grows downward) ----------
+export function makeBrain(spec = {}, rng = Math.random) {
+  return { id: spec.id || 'fig_' + Math.random().toString(36).slice(2, 8), x: spec.x ?? 200, y: spec.y ?? 200, vx: 0, vy: 0,
+    tx: spec.x ?? 200, ty: spec.y ?? 200, mode: 'idle', modeT: 0.6 + rng() * 1.2, act: 'look', yaw: 0, lookX: 0, lookY: 0,
+    blinkT: 0, nextBlink: 1.5 + rng() * 3, bob: rng() * 6.28, hop: 0, spin: 0, noticed: false, wave: 0, slide: 0, t: 0 };
+}
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+export function insideAny(x, y, rects, pad = 0) {
+  return rects.some((r) => x > r.l - pad && x < r.r + pad && y > r.t - pad && y < r.b + pad);
+}
+/** A free spot on the stage: inside the bounds, away from every card (falls back to the least-bad spot). */
+export function pickTarget(world, rng = Math.random, pad = PAD) {
+  const b = world.bounds; let best = null, bestD = -1;
+  for (let i = 0; i < 24; i++) {
+    const x = b.l + rng() * Math.max(1, b.r - b.l), y = b.t + rng() * Math.max(1, b.b - b.t);
+    if (!insideAny(x, y, world.rects || [], pad)) return { x, y };
+    const d = Math.min(...(world.rects || []).map((r) => Math.hypot(x - clamp(x, r.l, r.r), y - clamp(y, r.t, r.b))));
+    if (d > bestD) { bestD = d; best = { x, y }; }
+  }
+  return best || { x: (b.l + b.r) / 2, y: (b.t + b.b) / 2 };
+}
+/**
+ * One step of a figure's life. world = { bounds:{l,t,r,b}, rects:[{l,t,r,b}], cursor:{x,y}|null, still, posing, others:[brain] }.
+ * Drives: wander to a free spot, walk around cards, notice the cursor and turn to look at it, idle (look around, twirl, wave), blink, bob.
+ */
+export function stepFigure(f, dt, world, rng = Math.random) {
+  dt = Math.min(dt, 0.1); f.t += dt;
+  const rects = world.rects || [], b = world.bounds;
+  if (world.still) { // reduced motion: a still pose, facing you, eyes open; no wandering, no bob
+    f.vx = 0; f.vy = 0; f.mode = 'still'; f.yaw = 0; f.lookX = 0; f.lookY = 0; f.blinkT = 0; f.hop = 0; f.spin = 0; f.wave = 0;
+    return f;
+  }
+  f.bob += dt * 2.3;
+  // blink: every 1.5-5.5 s, now and then a double blink
+  if (f.blinkT > 0) f.blinkT = Math.max(0, f.blinkT - dt);
+  f.nextBlink -= dt;
+  if (f.nextBlink <= 0) { f.blinkT = 0.14; f.nextBlink = rng() < 0.22 ? 0.22 : 1.5 + rng() * 4; }
+  f.hop = Math.max(0, f.hop - dt * 2.2); f.wave = Math.max(0, f.wave - dt * 0.8);
+  if (f.spin > 0) f.spin = Math.max(0, f.spin - dt * 5.5);
+  const c = world.cursor, dc = c ? Math.hypot(c.x - f.x, c.y - f.y) : Infinity;
+  let wantYaw = 0;
+  if (world.posing) { // zoomed in on: hold the pose and look at the viewer
+    f.mode = 'pose'; f.vx *= 0.8; f.vy *= 0.8; f.lookX *= 0.85; f.lookY *= 0.85;
+  } else if (dc < NOTICE) {
+    if (!f.noticed) { f.hop = 1; f.noticed = true; }
+    f.mode = 'notice';
+    const lx = clamp((c.x - f.x) / 160, -1, 1), ly = clamp((f.y - c.y) / 160, -1, 1);
+    f.lookX += (lx - f.lookX) * Math.min(1, dt * 8); f.lookY += (ly - f.lookY) * Math.min(1, dt * 8);
+    wantYaw = clamp((c.x - f.x) / 220, -0.7, 0.7);
+    f.vx *= Math.pow(0.02, dt); f.vy *= Math.pow(0.02, dt);
+  } else {
+    if (f.mode === 'notice' || f.mode === 'pose' || f.mode === 'still') { f.mode = 'idle'; f.modeT = 0.8 + rng() * 1.2; f.act = 'look'; }
+    if (dc > NOTICE * 1.4) f.noticed = false;
+    f.lookX *= Math.pow(0.1, dt); f.lookY *= Math.pow(0.1, dt);
+    if (insideAny(f.tx, f.ty, rects, PAD - 12)) { const p = pickTarget(world, rng); f.tx = p.x; f.ty = p.y; } // a card landed on the goal
+    if (f.mode === 'idle') {
+      f.modeT -= dt; f.vx *= Math.pow(0.05, dt); f.vy *= Math.pow(0.05, dt);
+      if (f.act === 'look') { f.lookX = Math.sin(f.t * 1.3) * 0.6; wantYaw = Math.sin(f.t * 0.9) * 0.35; }
+      if (f.modeT <= 0) { const p = pickTarget(world, rng); f.tx = p.x; f.ty = p.y; f.mode = 'wander'; }
+    } else { // wander toward the goal, sliding around cards
+      const gx = f.tx - f.x, gy = f.ty - f.y, gd = Math.hypot(gx, gy) || 1;
+      if (gd < 10) {
+        f.mode = 'idle'; f.modeT = 1.5 + rng() * 3;
+        const r = rng(); f.act = r < 0.5 ? 'look' : r < 0.75 ? 'twirl' : 'wave';
+        if (f.act === 'twirl') f.spin = 1; if (f.act === 'wave') f.wave = 1;
+      } else {
+        let dx = gx / gd * SPEED, dy = gy / gd * SPEED;
+        const clear = R * 1.3, infl = clear + 40; let near = false; // keep the arms and the glow off the card
+        for (const r of rects) {
+          const nx = clamp(f.x, r.l, r.r), ny = clamp(f.y, r.t, r.b);
+          let ax = f.x - nx, ay = f.y - ny, d = Math.hypot(ax, ay);
+          if (d === 0) { // inside a card: step out by the shortest side
+            const out = [[f.x - r.l, -1, 0], [r.r - f.x, 1, 0], [f.y - r.t, 0, -1], [r.b - f.y, 0, 1]].sort((p, q) => p[0] - q[0])[0];
+            ax = out[1]; ay = out[2]; d = 0.001;
+            dx += ax * SPEED * 3; dy += ay * SPEED * 3; continue;
+          }
+          if (d < infl) {
+            ax /= d; ay /= d; const k = clamp(1 - (d - clear) / 40, 0, 2);
+            // slide along the edge toward the goal; keep the chosen side until clear of the card, so it never dithers head-on
+            let tx = -ay, ty = ax;
+            if (!f.slide) {
+              const dot = (tx * gx + ty * gy) / gd;
+              f.slide = Math.abs(dot) > 0.2 ? Math.sign(dot) : Math.sign(tx * (f.x - (r.l + r.r) / 2) + ty * (f.y - (r.t + r.b) / 2)) || 1;
+            }
+            tx *= f.slide; ty *= f.slide; near = true;
+            dx += (ax * 1.6 * k + tx * Math.min(1, k)) * SPEED; dy += (ay * 1.6 * k + ty * Math.min(1, k)) * SPEED;
+          }
+        }
+        if (!near) f.slide = 0;
+        for (const o of world.others || []) { // keep a little room between friends
+          if (o === f) continue; const ox = f.x - o.x, oy = f.y - o.y, od = Math.hypot(ox, oy);
+          if (od > 0 && od < R * 3) { dx += ox / od * SPEED * (1 - od / (R * 3)); dy += oy / od * SPEED * (1 - od / (R * 3)); }
+        }
+        const sp = Math.hypot(dx, dy), cap = SPEED * 1.6; if (sp > cap) { dx = dx / sp * cap; dy = dy / sp * cap; }
+        const a = Math.min(1, dt * 3); f.vx += (dx - f.vx) * a; f.vy += (dy - f.vy) * a;
+        wantYaw = clamp(f.vx / SPEED, -1, 1) * 0.85;
+      }
+    }
+  }
+  f.x += f.vx * dt; f.y += f.vy * dt;
+  if (b) { f.x = clamp(f.x, b.l, b.r); f.y = clamp(f.y, b.t, b.b); }
+  f.yaw += (wantYaw - f.yaw) * Math.min(1, dt * 5);
+  return f;
+}
+
+// ---------- the layer ----------
+let THREE = null, threeP = null, stage = null, mountP = null, desired = null;
+const figures = new Map(); // id -> { brain, spec, obj, parts, born, leaving }
+const extras = new Set();  // things other modules mounted into the scene (#16 slogan)
+const ui = { cursor: null, zoom: 1, zoomTo: 1, zoomId: null, pinch: null, rects: [], rectsAt: 0, cam: { x: 0, y: 0 } };
+
+export function loadThree() {
+  if (!threeP) threeP = import(/* @vite-ignore */ THREE_URL).then((m) => (THREE = m)).catch((e) => { threeP = null; throw e; });
+  return threeP;
+}
+function osStill() { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (_) { return false; } }
+export function motionStill() { let mine = false; try { mine = localStorage.getItem(MOTION_KEY) === 'still'; } catch (_) {} return osStill() || mine; }
+
+function worldNow() {
+  const now = performance.now();
+  if (now - ui.rectsAt > 350) { // cards, the open page and the ask box are obstacles
+    ui.rectsAt = now;
+    const els = [...document.querySelectorAll('#stage > *, .vpage.on, #row, #hints.on')];
+    ui.rects = els.map((e) => e.getBoundingClientRect()).filter((r) => r.width > 0 && r.height > 0).map((r) => ({ l: r.left, t: r.top, r: r.right, b: r.bottom }));
+  }
+  const st = document.getElementById('stage'), sr = st ? st.getBoundingClientRect() : { bottom: innerHeight - 72 };
+  const m = R + 16;
+  return { bounds: { l: m, t: R * 2.2, r: Math.max(m + 1, innerWidth - m), b: Math.max(R * 2.2 + 1, sr.bottom - m - 10) }, rects: ui.rects };
+}
+// screen px -> world units (world z = 0 plane maps 1:1 to CSS px at zoom 1; y up)
+const toWorld = (x, y) => ({ x: x - innerWidth / 2, y: innerHeight / 2 - y });
+
+function softTexture(inner, outer) {
+  const c = document.createElement('canvas'); c.width = c.height = 128;
+  const g = c.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  gr.addColorStop(0, inner); gr.addColorStop(1, outer); g.fillStyle = gr; g.fillRect(0, 0, 128, 128);
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; return t;
+}
+
+export function mountStage3D() {
+  if (mountP) return mountP;
+  mountP = (async () => {
+    await loadThree();
+    const canvas = document.createElement('canvas');
+    canvas.id = 'void-3d'; canvas.setAttribute('aria-hidden', 'true');
+    canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0;transition:opacity .6s ease';
+    const anchor = document.getElementById('stage');
+    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(canvas, anchor); else document.body.appendChild(canvas);
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power', premultipliedAlpha: true });
+    } catch (e) { canvas.remove(); mountP = null; throw e; }
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setClearColor(0x000000, 0);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(30, 1, 10, 20000);
+    // soft studio light: cool sky over a warm floor, a warm key from the upper left, a cool rim from behind
+    scene.add(new THREE.HemisphereLight(0xcfdcff, 0x3a2340, 1.1));
+    const key = new THREE.DirectionalLight(0xfff0dc, 2.4); key.position.set(-300, 420, 600); scene.add(key);
+    const rim = new THREE.DirectionalLight(0x9fbcff, 2.2); rim.position.set(260, 180, -500); scene.add(rim);
+    const fill = new THREE.DirectionalLight(0xffd6f0, 0.5); fill.position.set(400, -200, 300); scene.add(fill);
+    stage = { THREE, scene, camera, renderer, canvas, raf: 0, last: 0, dirty: true, home: 1000, onResize: null };
+    const resize = () => {
+      const w = innerWidth, h = innerHeight;
+      renderer.setSize(w, h, false); camera.aspect = w / h;
+      stage.home = (h / 2) / Math.tan((camera.fov * Math.PI / 180) / 2);
+      camera.near = stage.home / 50; camera.far = stage.home * 4; camera.updateProjectionMatrix();
+      ui.rectsAt = 0; requestRender();
+    };
+    stage.onResize = resize; resize();
+    camera.position.set(0, 0, stage.home);
+    bindPointer();
+    addEventListener('resize', resize);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) requestRender(); });
+    addEventListener('void-motion', requestRender);
+    try { matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', requestRender); } catch (_) {}
+    window.__void3d = { state: debugState, version: THREE_VERSION };
+    requestAnimationFrame(() => { canvas.style.opacity = '1'; });
+    return stage;
+  })();
+  return mountP;
+}
+
+function debugState() {
+  return { mounted: !!stage, canvas: !!document.getElementById('void-3d'), animating: !!(stage && stage.raf), still: motionStill(), zoom: ui.zoom, zoomTo: ui.zoomTo,
+    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, blink: f.brain.blinkT > 0, color: f.spec.color || null })) };
+}
+
+// --- the void sprite: a soft, glossy little blob with big shiny eyes, rosy cheeks, a glowing antenna bulb and a wispy tail ---
+function buildSprite(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const base = new T.Color(spec.color || PALETTE[0]);
+  const light = base.clone().lerp(new T.Color(0xffffff), 0.45), deep = base.clone().multiplyScalar(0.55);
+  const skin = new T.MeshPhysicalMaterial({ color: base, roughness: 0.42, metalness: 0, clearcoat: 0.7, clearcoatRoughness: 0.28,
+    sheen: 0.8, sheenColor: light, sheenRoughness: 0.45, emissive: deep, emissiveIntensity: 0.18 });
+  const ink = new T.MeshPhysicalMaterial({ color: 0x0c0b16, roughness: 0.12, clearcoat: 1, clearcoatRoughness: 0.05 });
+  const shine = new T.MeshBasicMaterial({ color: 0xffffff });
+  const blush = new T.MeshStandardMaterial({ color: 0xff8fb1, roughness: 0.8, transparent: true, opacity: 0.75, emissive: 0xff5c8a, emissiveIntensity: 0.15 });
+  const glow = new T.MeshStandardMaterial({ color: 0xfff1b8, emissive: 0xffd36b, emissiveIntensity: 2.2, roughness: 0.3 });
+  const parts = { mats: [skin, ink, shine, blush, glow], geos: [] };
+  const geo = (x) => { parts.geos.push(x); return x; };
+  const blob = new T.Mesh(geo(new T.SphereGeometry(R, 48, 32)), skin); blob.scale.set(1, 1.04, 0.94); body.add(blob);
+  const eyes = new T.Group(); eyes.position.set(0, R * 0.16, R * 0.8); body.add(eyes);
+  const eyeGeo = geo(new T.SphereGeometry(R * 0.19, 24, 16)), dotGeo = geo(new T.SphereGeometry(R * 0.055, 10, 8)), dot2 = geo(new T.SphereGeometry(R * 0.028, 8, 6));
+  for (const s of [-1, 1]) {
+    const e = new T.Group(); e.position.set(s * R * 0.36, 0, 0);
+    const ball = new T.Mesh(eyeGeo, ink); ball.scale.set(0.82, 1.12, 0.55); e.add(ball);
+    const hi = new T.Mesh(dotGeo, shine); hi.position.set(-R * 0.05, R * 0.08, R * 0.09); e.add(hi);
+    const lo = new T.Mesh(dot2, shine); lo.position.set(R * 0.05, -R * 0.06, R * 0.09); e.add(lo);
+    eyes.add(e);
+  }
+  const cheekGeo = geo(new T.SphereGeometry(R * 0.12, 16, 10));
+  for (const s of [-1, 1]) { const ch = new T.Mesh(cheekGeo, blush); ch.position.set(s * R * 0.6, -R * 0.08, R * 0.74); ch.scale.set(1, 0.6, 0.3); body.add(ch); }
+  const smile = new T.Mesh(geo(new T.TorusGeometry(R * 0.11, R * 0.026, 8, 20, Math.PI)), ink); smile.position.set(0, -R * 0.1, R * 0.93); smile.rotation.z = Math.PI; body.add(smile);
+  const antenna = new T.Group(); antenna.position.set(0, R * 0.98, 0); body.add(antenna);
+  const stalk = new T.Mesh(geo(new T.CylinderGeometry(R * 0.035, R * 0.055, R * 0.55, 10)), skin); stalk.position.y = R * 0.27; antenna.add(stalk);
+  const bulb = new T.Mesh(geo(new T.SphereGeometry(R * 0.15, 20, 14)), glow); bulb.position.y = R * 0.6; antenna.add(bulb);
+  const lamp = new T.PointLight(0xffd36b, 1.2, R * 6, 1.6); lamp.position.y = R * 0.6; antenna.add(lamp);
+  const arms = [];
+  const armGeo = geo(new T.CapsuleGeometry(R * 0.12, R * 0.24, 6, 12));
+  for (const s of [-1, 1]) {
+    const pivot = new T.Group(); pivot.position.set(s * R * 0.86, -R * 0.12, R * 0.05);
+    const arm = new T.Mesh(armGeo, skin); arm.position.set(s * R * 0.12, -R * 0.14, 0); arm.rotation.z = s * 0.55; pivot.add(arm);
+    body.add(pivot); arms.push(pivot);
+  }
+  // a soft teardrop wisp under the body: the sprite floats instead of walking
+  const tail = new T.Group(); tail.position.set(0, -R * 0.78, -R * 0.05); body.add(tail);
+  const drip = new T.Mesh(geo(new T.SphereGeometry(R * 0.36, 24, 16)), skin); drip.position.y = -R * 0.22; drip.scale.set(0.8, 1.15, 0.8); tail.add(drip);
+  const tip = new T.Mesh(geo(new T.SphereGeometry(R * 0.16, 16, 12)), skin); tip.position.set(R * 0.06, -R * 0.62, 0); tail.add(tip);
+  const halo = new T.Sprite(new T.SpriteMaterial({ map: softTexture('rgba(255,225,150,0.9)', 'rgba(255,200,90,0)'), transparent: true, depthWrite: false, blending: T.AdditiveBlending }));
+  halo.scale.set(R * 0.9, R * 0.9, 1); halo.position.y = R * 0.6; antenna.add(halo); parts.mats.push(halo.material);
+  // a soft aura behind the body and a soft pool of light below it: the sprite floats in the void
+  const auraMat = new T.SpriteMaterial({ map: softTexture('rgba(255,255,255,0.55)', 'rgba(255,255,255,0)'), color: base, transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: 0.35 });
+  const aura = new T.Sprite(auraMat); aura.scale.set(R * 5, R * 5, 1); aura.position.z = -R * 1.5; g.add(aura);
+  const poolMat = new T.MeshBasicMaterial({ map: softTexture('rgba(150,170,255,0.32)', 'rgba(150,170,255,0)'), transparent: true, depthWrite: false });
+  const pool = new T.Mesh(geo(new T.PlaneGeometry(R * 3.2, R * 0.9)), poolMat); pool.position.set(0, -R * 2.1, -R * 0.5); g.add(pool);
+  parts.mats.push(auraMat, poolMat);
+  Object.assign(parts, { body, eyes, antenna, arms, tail, aura, pool, lamp, glow });
+  return { obj: g, parts };
+}
+
+function poseSprite(f, now) {
+  const b = f.brain, p = f.parts, still = b.mode === 'still';
+  const w = toWorld(b.x, b.y);
+  const bob = still ? 0 : Math.sin(b.bob) * 5;
+  const hop = still ? 0 : Math.sin(Math.min(1, 1 - b.hop) * Math.PI) * (b.hop > 0 ? 16 : 0);
+  // arrival pop and leaving shrink (skipped with less motion)
+  let s = 1;
+  if (f.leaving) s = Math.max(0, 1 - (now - f.leaving) / 280);
+  else if (!still) { const a = Math.min(1, (now - f.born) / 650); s = a >= 1 ? 1 : 1 + Math.sin(a * Math.PI * 1.25) * 0.18 * (1 - a) - (1 - a) * (1 - a) * 0.9; s = Math.max(0.01, s); }
+  f.obj.position.set(w.x, w.y + bob + hop, 0);
+  f.obj.scale.setScalar(s);
+  p.body.rotation.y = b.yaw + (b.spin > 0 ? (1 - b.spin) * Math.PI * 2 : 0) + b.lookX * 0.25;
+  p.body.rotation.x = -b.lookY * 0.18 + (still ? 0 : Math.sin(b.bob * 0.5) * 0.03);
+  p.body.rotation.z = still ? 0 : -b.vx / SPEED * 0.12;
+  p.body.scale.set(1 + (still ? 0 : Math.sin(b.bob * 2) * 0.015), 1 - (still ? 0 : Math.sin(b.bob * 2) * 0.02), 1);
+  p.eyes.scale.y = b.blinkT > 0 ? 0.12 : 1;
+  p.eyes.position.x = b.lookX * R * 0.12; p.eyes.position.y = R * 0.16 + b.lookY * R * 0.08;
+  p.antenna.rotation.z = still ? 0 : -b.vx / SPEED * 0.35 + Math.sin(b.t * 3.1) * 0.06;
+  p.antenna.rotation.x = still ? 0 : Math.sin(b.t * 2.3) * 0.05;
+  p.glow.emissiveIntensity = (b.mode === 'notice' || b.mode === 'pose') ? 3.2 : 2.2 + (still ? 0 : Math.sin(b.t * 2) * 0.3);
+  p.lamp.intensity = p.glow.emissiveIntensity * 0.5;
+  const wave = b.wave > 0 ? Math.sin(b.t * 14) * 0.5 + 1.2 : 0;
+  p.arms[0].rotation.z = still ? 0 : -Math.sin(b.bob) * 0.18 - (b.mode === 'notice' ? 0.3 : 0);
+  p.arms[1].rotation.z = still ? 0 : Math.sin(b.bob) * 0.18 + (b.mode === 'notice' ? 0.3 : 0) + wave;
+  p.tail.rotation.z = still ? 0 : Math.sin(b.t * 2.6) * 0.18 - b.vx / SPEED * 0.25;
+  p.pool.position.y = -R * 2.1 - bob - hop; p.pool.scale.setScalar(1 - (bob + hop) / 60);
+}
+
+export async function addFigure(spec = {}) {
+  await mountStage3D();
+  const id = spec.id || 'fig_' + Math.random().toString(36).slice(2, 8);
+  if (figures.has(id)) return figures.get(id);
+  const n = figures.size, color = spec.color || PALETTE[n % PALETTE.length];
+  const brain = makeBrain({ id, x: spec.x, y: spec.y });
+  if (spec.x == null || spec.y == null) { // a free spot away from cards and from the friends already here
+    const w = worldNow(), near = [...figures.values()].map((o) => ({ l: o.brain.x - R * 2, r: o.brain.x + R * 2, t: o.brain.y - R * 2, b: o.brain.y + R * 2 }));
+    const p = pickTarget({ ...w, rects: w.rects.concat(near) }); brain.x = brain.tx = p.x; brain.y = brain.ty = p.y;
+  }
+  const { obj, parts } = buildSprite({ ...spec, color });
+  const f = { brain, spec: { ...spec, id, color: spec.color || null }, obj, parts, born: performance.now(), leaving: 0 };
+  stage.scene.add(obj); figures.set(id, f); poseSprite(f, f.born); requestRender();
+  return f;
+}
+function disposeFigure(f) {
+  stage.scene.remove(f.obj);
+  for (const g of f.parts.geos) g.dispose && g.dispose();
+  for (const m of f.parts.mats) { if (m.map && m.map.dispose) m.map.dispose(); m.dispose && m.dispose(); }
+}
+export function removeFigures(ids) {
+  if (!stage) return 0;
+  let n = 0; const now = performance.now(), still = motionStill();
+  for (const [id, f] of figures) {
+    if (ids && !ids.includes(id)) continue;
+    if (f.leaving) continue; n += 1;
+    if (ui.zoomId === id) { ui.zoomId = null; ui.zoomTo = 1; }
+    if (still) { disposeFigure(f); figures.delete(id); } else f.leaving = now;
+  }
+  requestRender();
+  return n;
+}
+export async function syncFigures(list) {
+  desired = (list || []).map((t) => ({ id: t.id, body: t.body || 'sprite', color: t.color || null, x: t.sx, y: t.sy }));
+  if (!desired.length && !stage) return;
+  await mountStage3D();
+  const want = desired, ids = want.map((d) => d.id);
+  removeFigures([...figures.keys()].filter((id) => !ids.includes(id)));
+  for (const d of want) {
+    const f = figures.get(d.id);
+    if (f && f.leaving) { disposeFigure(f); figures.delete(d.id); }
+    if (!figures.has(d.id)) await addFigure({ id: d.id, body: d.body, color: d.color || undefined });
+    else if ((f.spec.color || null) !== (d.color || null)) { // "make everything blue" reaches figures too
+      f.spec.color = d.color; const c = new THREE.Color(d.color || PALETTE[0]); f.parts.mats[0].color.copy(c); f.parts.mats[0].sheenColor.copy(c.clone().lerp(new THREE.Color(0xffffff), 0.45)); requestRender();
+    }
+  }
+}
+export async function mountInScene(mounter) {
+  const s = await mountStage3D();
+  const api = { THREE, scene: s.scene, camera: s.camera, renderer: s.renderer, toWorld, still: motionStill, requestRender };
+  const handle = (mounter && mounter(api)) || {};
+  extras.add(handle); requestRender();
+  return () => { extras.delete(handle); try { handle.dispose && handle.dispose(); } catch (_) {} requestRender(); };
+}
+
+// --- pointer: cards keep every event; only a pointer over a figure (on the bare stage) reaches it ---
+function onBareStage(e) {
+  const t = e.target; if (!t || !t.closest) return true;
+  return t.id === 'stage' || t === document.body || t === document.documentElement || t.id === 'void-3d';
+}
+function figureAt(x, y) {
+  const k = ui.zoom, cam = camFor(k); let hit = null, best = Infinity;
+  for (const f of figures.values()) {
+    if (f.leaving) continue;
+    // while zoomed the camera dollies in (k times bigger) and glides over the focused figure (ui.cam, in world units)
+    const w = toWorld(f.brain.x, f.brain.y), sx = innerWidth / 2 + (w.x - cam.x) * k, sy = innerHeight / 2 - (w.y - cam.y) * k, d = Math.hypot(x - sx, y - sy);
+    if (d < R * 1.5 * k && d < best) { best = d; hit = f; }
+  }
+  return hit;
+}
+// where the camera looks at a given zoom: over the focused figure, reached by zoom 2 (world units)
+function camFor(k) {
+  const z = ui.zoomId && figures.get(ui.zoomId); if (!z || k <= 1) return { x: 0, y: 0 };
+  const fw = toWorld(z.brain.x, z.brain.y), m = Math.min(1, k - 1);
+  return { x: fw.x * m, y: (fw.y + R * 0.3) * m };
+}
+let pointerBound = false;
+function bindPointer() {
+  if (pointerBound) return; pointerBound = true;
+  const st = document.getElementById('stage');
+  addEventListener('pointermove', (e) => {
+    ui.cursor = { x: e.clientX, y: e.clientY };
+    const over = onBareStage(e) && figureAt(e.clientX, e.clientY);
+    if (st) st.style.cursor = over ? 'pointer' : '';
+  }, { passive: true });
+  document.addEventListener('pointerleave', () => { ui.cursor = null; });
+  addEventListener('blur', () => { ui.cursor = null; });
+  addEventListener('pointerdown', (e) => {
+    if (!onBareStage(e)) return;
+    const f = figureAt(e.clientX, e.clientY);
+    if (f) { f.brain.hop = 1; f.brain.wave = 1; requestRender(); } // a tap says hello back
+    else if (ui.zoomTo > 1) { ui.zoomTo = 1; requestRender(); }   // a tap on the bare void steps back out
+  }, true);
+  const zoomBy = (f, factor) => {
+    if (f && ui.zoomId !== f.brain.id) { if (ui.zoom > 1.02) return; ui.zoomId = f.brain.id; }
+    ui.zoomTo = clamp(ui.zoomTo * factor, 1, MAX_ZOOM);
+    if (ui.zoomTo <= 1.001) ui.zoomTo = 1;
+    if (motionStill()) ui.zoom = ui.zoomTo;
+    requestRender();
+  };
+  addEventListener('wheel', (e) => { // wheel, or a trackpad pinch (ctrl+wheel), over a figure zooms toward it
+    const zoomed = ui.zoomTo > 1;
+    if (!onBareStage(e) && !(zoomed && !e.target.closest('.vpage, #dock'))) return;
+    const f = (zoomed && figures.get(ui.zoomId)) || figureAt(e.clientX, e.clientY); // once zoomed, the wheel keeps steering that figure
+    if (!f) return;
+    e.preventDefault();
+    zoomBy(f, Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0018)));
+  }, { passive: false });
+  addEventListener('touchstart', (e) => {
+    if (e.touches.length !== 2 || !onBareStage(e)) return;
+    const [a, b] = e.touches, mx = (a.clientX + b.clientX) / 2, my = (a.clientY + b.clientY) / 2;
+    const f = figureAt(mx, my) || figureAt(a.clientX, a.clientY) || figureAt(b.clientX, b.clientY);
+    if (f) { ui.pinch = { f, d: Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY) || 1, z: ui.zoomTo }; e.preventDefault(); }
+  }, { passive: false });
+  addEventListener('touchmove', (e) => {
+    if (!ui.pinch || e.touches.length !== 2) return;
+    e.preventDefault();
+    const [a, b] = e.touches, d = Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY) || 1;
+    ui.zoomTo = ui.pinch.z; zoomBy(ui.pinch.f, d / ui.pinch.d);
+  }, { passive: false });
+  addEventListener('touchend', () => { if (ui.pinch) ui.pinch = null; });
+}
+
+// --- the loop: runs only while something moves; with less motion the scene draws once per change ---
+export function requestRender() {
+  if (!stage) return;
+  stage.dirty = true;
+  if (!stage.raf) stage.raf = requestAnimationFrame(frame);
+}
+function frame(ts) {
+  stage.raf = 0;
+  if (document.hidden) return;
+  const now = performance.now(), dt = stage.last ? Math.min(0.1, (now - stage.last) / 1000) : 1 / 60; stage.last = now;
+  const still = motionStill(), world = worldNow();
+  world.still = still; world.cursor = ui.cursor; world.others = [...figures.values()].map((f) => f.brain);
+  let moving = false;
+  for (const [id, f] of figures) {
+    if (f.leaving && now - f.leaving > 300) { disposeFigure(f); figures.delete(id); continue; }
+    stepFigure(f.brain, dt, { ...world, posing: ui.zoomId === id && ui.zoomTo > 1 });
+    poseSprite(f, now);
+    if (!still || f.leaving) moving = true;
+  }
+  // zoom: dolly the camera in and glide over the focused figure, so it grows and comes to the middle of the screen
+  if (!figures.has(ui.zoomId)) { ui.zoomId = null; ui.zoomTo = 1; }
+  ui.zoom = still ? ui.zoomTo : ui.zoom + (ui.zoomTo - ui.zoom) * Math.min(1, dt * 7);
+  if (Math.abs(ui.zoom - ui.zoomTo) < 0.002) ui.zoom = ui.zoomTo; else moving = true;
+  ui.cam = camFor(ui.zoom);
+  stage.camera.position.set(ui.cam.x, ui.cam.y, stage.home / ui.zoom);
+  for (const x of extras) { try { if (x.update) { x.update(dt, now / 1000); if (!still) moving = true; } } catch (_) {} }
+  stage.renderer.render(stage.scene, stage.camera);
+  stage.dirty = false;
+  const empty = !figures.size && !extras.size;
+  if (!figures.size) { ui.zoom = ui.zoomTo = 1; ui.zoomId = null; }
+  stage.canvas.style.opacity = empty ? '0' : '1';
+  stage.canvas.style.zIndex = ui.zoom > 1.05 ? '2' : '0'; // zoomed in, the figure comes in front of the cards; the ask box stays on top
+  if (moving && !empty) stage.raf = requestAnimationFrame(frame);
+  else stage.last = 0;
+}
