@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · miss board</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:760px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:16px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+.score{display:flex;gap:24px;font-size:28px;color:#fff}
+.score span{display:block;font-size:12px;color:#8a8a92}
+.bar{font-size:12px;color:#8a8a92;display:flex;gap:8px;align-items:center}
+.bar i{display:inline-block;height:8px;border-radius:4px;background:#7cf}
+ol{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+li{display:grid;grid-template-columns:1fr auto;gap:2px 12px;padding:10px 12px;border:1px solid rgba(255,255,255,.1);border-radius:10px}
+li b{font-weight:normal;color:#fff;overflow-wrap:anywhere}
+li span{color:#8a8a92;font-size:12px}
+li small{grid-column:1/-1;color:#8fe0a8;font-size:12px}
+</style>
+</head>
+<body>
+<main>
+  <h1>miss board</h1>
+  <p class="note">Every line is a real ask Void once missed, the day it was missed, and what Void does with it now. Snapshot of tools/grown.json at build time; nothing here is live or sent anywhere.</p>
+  <div class="score"><div>17<span>beaten</span></div><div>0<span>open</span></div></div>
+  <div aria-label="Misses by day">
+    <div class="bar"><i style="width:24px"></i>2026-09-27 · 1</div>
+    <div class="bar"><i style="width:144px"></i>2026-09-28 · 6</div>
+    <div class="bar"><i style="width:48px"></i>2026-09-29 · 2</div>
+    <div class="bar"><i style="width:144px"></i>2026-09-30 · 6</div>
+    <div class="bar"><i style="width:48px"></i>2026-10-01 · 2</div>
+  </div>
+  <ol>
+    <li><b>fala portugues</b><span>2026-09-30</span><small>answers in Portuguese that it understands Portuguese</small></li>
+    <li><b>oq e voce</b><span>2026-09-30</span><small>says what Void is, in Portuguese</small></li>
+    <li><b>tudsz magyarul?</b><span>2026-09-28</span><small>answers in Hungarian that it understands Hungarian</small></li>
+    <li><b>api pulcsod van ?</b><span>2026-09-28</span><small>no hoodie yet, but here is the API (in Hungarian)</small></li>
+    <li><b>api</b><span>2026-09-30</span><small>Void's API page: plain-words asks, /tools.json, WebMCP, /handoff</small></li>
+    <li><b>your api</b><span>2026-09-30</span><small>Void's API page</small></li>
+    <li><b>brazil</b><span>2026-09-30</span><small>a sourced page about it (one or two plain words is a topic)</small></li>
+    <li><b>sup</b><span>2026-09-30</span><small>a quiet hello</small></li>
+    <li><b>worldma</b><span>2026-09-29</span><small>the world map (typo understood)</small></li>
+    <li><b>calender</b><span>2026-09-28</span><small>your calendar (typo understood)</small></li>
+    <li><b>void</b><span>2026-09-28</span><small>what Void is</small></li>
+    <li><b>notes</b><span>2026-09-28</span><small>opens a notepad</small></li>
+    <li><b>/force-tick</b><span>2026-09-28</span><small>a probe, dropped quietly</small></li>
+    <li><b>zz kv write probe 7</b><span>2026-09-27</span><small>a probe, dropped quietly</small></li>
+    <li><b>make me an app</b><span>2026-09-29</span><small>asks what the app should do, then builds it from stage parts (to-do, timer, notes, counter, calculator, clock); what it can't build yet goes on the board as that real want</small></li>
+    <li><b>que coño es esto?</b><span>2026-10-01</span><small>says what Void is and how to use it, in Spanish</small></li>
+    <li><b>ça marche comment ?</b><span>2026-10-01</span><small>says how Void works, in French</small></li>
+  </ol>
+</main>
+</body>
+</html>

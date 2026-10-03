@@ -4,6 +4,8 @@
  * "play connect 4", "make me a tic tac toe game", "make a 3d torus", "a gold 3d diamond".
  * Each runs in a sandboxed frame (scripts only: no network, no cookies, no access to the page or to Void's data)
  * and arrives with a materialize animation. Everything is drawn here: no libraries, no downloads.
+ * Tools: the fringe drafts wired live (tools/fringe.mjs --publish writes void-live-deploy/fringe/<family>.html);
+ * "timing game", "what did void get wrong", "idea vault", "uap timeline"… open the page in a frame.
  */
 const GAMES = [
   [/^(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)$/, 'connect4', 'Connect 4'],
@@ -16,8 +18,20 @@ const COLORS = { red: [235, 70, 70], orange: [245, 150, 60], gold: [235, 190, 80
   blue: [80, 150, 245], cyan: [80, 210, 230], purple: [160, 110, 240], violet: [160, 110, 240], pink: [240, 120, 190], white: [225, 228, 235],
   silver: [190, 196, 210], black: [70, 72, 80], glass: [150, 210, 255], chrome: [200, 205, 215] };
 
+const OPEN = '(?:(?:show|open|play|start|launch|give)\\s+(?:me\\s+)?)?(?:the\\s+|my\\s+|a\\s+)?';
+const TOOLS = [
+  ['(?:timing game|interval timing|time sense game|test my (?:sense of time|timing))', 'interval-timing', 'Timing game', 'How well do you feel time pass? Stop the clock by feel.'],
+  ['(?:miss board|what did void get wrong|what has void (?:missed|got wrong))', 'miss-board', 'Miss board', 'Asks Void could not answer yet, and what it learned from them.'],
+  ['(?:quiet(?:[\\s-]signal)? filter|headline filter|news without the noise)', 'quiet-signal-filter', 'Quiet filter', 'Paste headlines; the loud ones fade, the quiet signal stays.'],
+  ['(?:idea vault|incubation log|incubate an idea|seal an idea)', 'private-incubation-log', 'Idea vault', 'Seal a half-formed idea; it comes back to you later. Kept on this device only.'],
+  ['(?:void(?:\'s)? (?:growth chart|progress|growth)|void progress|how is void growing)', 'correlation-view', 'Void growth', 'The benchmark score round by round, and what moved it.'],
+  ['(?:hypothesis ledger|weak signal ledger|weak signals)', 'weak-signal-hypothesis-ledger', 'Hypothesis ledger', 'Weak signals held as hypotheses, each with its confidence and source.'],
+  ['(?:(?:uap|ufo) (?:disclosure )?timeline|uap disclosure)', 'anomalous-event-timeline', 'UAP timeline', 'Public steps in US UAP disclosure, each with its confidence. Releases are events; the cases stay unresolved.'],
+].map(([re, id, label, sub]) => [new RegExp('^' + OPEN + re + '$'), id, label, sub]);
+
 export function makeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  for (const [re, id, label, sub] of TOOLS) if (re.test(t)) return { kind: 'tool', id, label, sub };
   let m = t.match(/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|build|create|start|open|give\s+me|code)\s+(?:me\s+)?(?:a\s+|an\s+)?(?:game\s+of\s+|round\s+of\s+)?(.+?)(?:\s+game|\s+app)?$/);
   if (m) for (const [re, id, label] of GAMES) if (re.test(m[1])) return { kind: 'game', id, label };
   for (const [re, id, label] of GAMES) if (re.test(t)) return { kind: 'game', id, label }; // just "connect 4"
@@ -146,6 +160,18 @@ async function run(text, api) {
   if (!q) return 'none';
   ensureStyle();
   let title, doc, h, sub;
+  if (q.kind === 'tool') {
+    const el = showPage((p) => { p.innerHTML = '<h2>' + esc(q.label) + '</h2><div class="sub">' + esc(q.sub) + '</div><div class="vmake"></div>'; });
+    const f = document.createElement('iframe');
+    // our own pages (same origin): the incubation log keeps its ideas in this browser's storage; links open in a new tab
+    f.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox');
+    f.setAttribute('title', q.label);
+    f.style.height = '560px';
+    f.src = '/fringe/' + q.id + '.html';
+    const box = el.querySelector('.vmake');
+    if (box) box.appendChild(f);
+    return 'make';
+  }
   if (q.kind === 'game') {
     title = q.label; h = q.id === 'connect4' ? 520 : 380;
     doc = q.id === 'connect4' ? connect4Doc() : tictactoeDoc();
@@ -168,8 +194,8 @@ async function run(text, api) {
 
 export default {
   name: 'make',
-  examples: ['play connect 4', 'make me a tic tac toe game', 'make a 3d torus', 'show me a gold 3d diamond', 'connect four'],
-  nearMisses: ['what is connect 4', 'who invented tic tac toe', 'how to make a 3d model', 'make a list'],
+  examples: ['play connect 4', 'make me a tic tac toe game', 'make a 3d torus', 'show me a gold 3d diamond', 'connect four', 'timing game', 'uap timeline'],
+  nearMisses: ['what is connect 4', 'who invented tic tac toe', 'how to make a 3d model', 'make a list', 'what is a uap', 'news filter settings'],
   match(lower, text) { return !!makeOf(text); },
   run,
 };

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · interval timing</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;min-height:100%;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:560px;margin:0 auto;padding:40px 16px;display:flex;flex-direction:column;gap:18px;align-items:center;text-align:center}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+.targets{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:8px 16px;cursor:pointer}
+button[aria-pressed="true"]{border-color:#7cf;color:#fff}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+#pad{width:min(320px,90vw);height:180px;border-radius:20px;font-size:18px}
+#pad.on{border-color:#7cf;background:rgba(120,200,255,.08)}
+#out{min-height:3em;font-size:22px;color:#fff}
+#hist{width:100%;font-size:13px;color:#8a8a92}
+#hist div{display:flex;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,.06);padding:4px 0}
+</style>
+</head>
+<body>
+<main>
+  <h1>interval timing</h1>
+  <p class="note">Pick a target, press the pad to start, press again when you think the time is up. No clock is shown. Your error is the score; the pattern of errors is the signal.</p>
+  <div class="targets" role="group" aria-label="Target interval">
+    <button type="button" data-s="3" aria-pressed="false">3 s</button>
+    <button type="button" data-s="10" aria-pressed="true">10 s</button>
+    <button type="button" data-s="30" aria-pressed="false">30 s</button>
+  </div>
+  <button id="pad" type="button">start</button>
+  <div id="out" role="status" aria-live="polite"></div>
+  <div id="hist" aria-label="Your tries"></div>
+  <p class="note">Background (confirmed): people's timing error grows in proportion to the interval, about the same percentage at 3 s as at 30 s (scalar timing, Gibbon 1977). This page measures your own ratio; it claims nothing beyond that.</p>
+</main>
+<script>
+(function(){
+  var target=10,t0=null,tries=[];
+  var pad=document.getElementById('pad'),out=document.getElementById('out'),hist=document.getElementById('hist');
+  document.querySelectorAll('.targets button').forEach(function(b){
+    b.addEventListener('click',function(){
+      if(t0!==null)return;
+      target=+b.dataset.s;
+      document.querySelectorAll('.targets button').forEach(function(o){o.setAttribute('aria-pressed',o===b?'true':'false')});
+    });
+  });
+  function render(){
+    hist.innerHTML='';
+    tries.slice(-8).reverse().forEach(function(x){
+      var d=document.createElement('div');
+      var a=document.createElement('span');a.textContent=x.target+' s target';
+      var b=document.createElement('span');b.textContent=x.got.toFixed(2)+' s ('+(x.err>=0?'+':'')+(x.err*100).toFixed(0)+'%)';
+      d.appendChild(a);d.appendChild(b);hist.appendChild(d);
+    });
+    if(tries.length>=3){
+      var m=tries.reduce(function(s,x){return s+Math.abs(x.err)},0)/tries.length;
+      var p=document.createElement('div');
+      var a=document.createElement('span');a.textContent='average error';
+      var b=document.createElement('span');b.textContent=(m*100).toFixed(0)+'%';
+      p.appendChild(a);p.appendChild(b);hist.appendChild(p);
+    }
+  }
+  pad.addEventListener('click',function(){
+    if(t0===null){t0=performance.now();pad.classList.add('on');pad.textContent='stop';out.textContent='';return}
+    var got=(performance.now()-t0)/1000,err=(got-target)/target;
+    t0=null;pad.classList.remove('on');pad.textContent='start';
+    out.textContent=got.toFixed(2)+' s · '+(err>=0?'+':'')+(err*100).toFixed(0)+'%';
+    tries.push({target:target,got:got,err:err});render();
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · hypothesis ledger</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:760px;margin:0 auto;padding:32px 16px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0 0 6px}
+p.note{color:#8a8a92;font-size:13px;margin:0 0 20px}
+.f{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.f button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:16px;padding:6px 14px;cursor:pointer}
+.f button[aria-pressed="true"]{border-color:#7cf;color:#fff}
+ol{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px}
+li{padding:12px 14px;border:1px solid rgba(255,255,255,.1);border-radius:10px;background:rgba(255,255,255,.02)}
+li b{display:inline-block;font-weight:normal;font-size:11px;padding:1px 8px;border-radius:8px;margin-right:8px;letter-spacing:.04em}
+li[data-c="confirmed"] b{background:#14321f;color:#8fe0a8}
+li[data-c="claim"] b{background:#3a2e10;color:#f0cf7a}
+li[data-c="open"] b{background:#2a2440;color:#b9a8ff}
+li small{display:block;color:#77777f;margin-top:4px;font-size:12px}
+li a{color:#8ab4ff}
+</style>
+</head>
+<body>
+<main>
+  <h1>hypothesis ledger</h1>
+  <p class="note">Each line is a signal with how much it is backed. confirmed = primary or official sources show it happened. claim = asserted by credible people, not independently verified. open = evidence mixed or disputed. Nothing here is stated as fact beyond its label.</p>
+  <div class="f" role="group" aria-label="Filter by confidence">
+    <button type="button" data-k="all" aria-pressed="true">all</button>
+    <button type="button" data-k="confirmed" aria-pressed="false">confirmed</button>
+    <button type="button" data-k="claim" aria-pressed="false">claim</button>
+    <button type="button" data-k="open" aria-pressed="false">open</button>
+  </div>
+  <ol id="l"></ol>
+</main>
+<script>
+(function(){
+  var L=[
+    ['confirmed','UAP','Pentagon PURSUE releases: six batches since 2026-05-08, all described as unresolved cases.','2026-09-18','https://earthsky.org/human-world/6th-batch-of-pentagon-uap-files-ufos-pursue/'],
+    ['confirmed','UAP','ODNI preliminary guidance waives NDAs so officials and contractors can report UAP information to the PURSUE task force.','2026-07-31','https://douglasmmessier.substack.com/p/guidance-published-for-uap-disclosure'],
+    ['confirmed','UAP','AARO historical report vol. 1 found no empirical evidence of off-world technology or reverse-engineering programs.','2024-03-08','https://media.defense.gov/2024/Mar/08/2003409233/-1/-1/0/DOPSR-2024-0263-AARO-HISTORICAL-RECORD-REPORT-VOLUME-1-2024.PDF'],
+    ['claim','UAP','Whistleblower testimony of crash-retrieval programs and non-human craft; no public physical evidence.','2025-09-09','https://defensescoop.com/2025/09/09/military-whistleblowers-share-new-evidence-alleged-uap-ufo-hearing/'],
+    ['confirmed','SI','Executive order "Inaugurating The Era of Super Intelligence": federal agencies use Super Intelligence / SI in place of AI.','2026-09-29','https://www.freshfields.com/en/our-thinking/blogs/a-fresh-take/trump-executive-order-mandates-shift-to-super-intelligence-102o403'],
+    ['confirmed','SI','White House Accord on Super Intelligence signed by six frontier companies; voluntary, no penalties.','2026-09-29','https://siliconangle.com/2026/09/30/prominent-tech-ceos-sign-voluntary-white-house-ai-safety-accord/'],
+    ['confirmed','SI','METR: agent task horizon doubling about every 4 months; Claude Mythos Preview at 16+ hours.','2026-05-08','https://metr.org/time-horizons/'],
+    ['open','SI','Whether SI as a capability (beyond human level across fields) has arrived. Federal definition due about 2026-11-28.','2026-11-28','https://iapp.org/news/a/ai-by-any-other-name-white-house-directs-federal-agencies-to-enter-the-era-of-super-intelligence'],
+    ['open','remote viewing','1995 AIR evaluation split: Utts saw effects beyond chance, Hyman saw no replication. Program ended.','1995-09-29','https://en.wikipedia.org/wiki/Remote_viewing'],
+    ['open','remote viewing','2026 papers (expert guidelines, Project Firefly, a source-receiver model) without independent preregistered replication.','2026','https://journalofscientificexploration.org/index.php/jse/article/view/3687'],
+    ['confirmed','longevity','First human partial-reprogramming trial (Life Biosciences ER-100, eye, ~18 people) dosed; safety trial only.','2026-06','https://www.technologyreview.com/2026/01/27/1131796/the-first-human-test-of-a-rejuvenation-method-will-begin-shortly/'],
+    ['confirmed','medicine','Personalized mRNA melanoma vaccine (intismeran + Keytruda) met its Phase 3 primary endpoint.','2026-08','https://cen.acs.org/pharmaceuticals/vaccines/mrna-cancer-vaccine-succeeds-clinical-trial/104/web/2026/08'],
+    ['confirmed','medicine','FDA draft "plausible mechanism" pathway for bespoke gene-editing platforms.','2026-02','https://crisprmedicinenews.com/news/fda-pathway-could-make-bespoke-crispr-therapies-viable/'],
+    ['claim','medicine','Isomorphic Labs says its first AI-designed drug trials start by end of 2026.','2026-01','https://www.investing.com/news/stock-market-news/googlebacked-ai-drug-discovery-startup-isomorphic-labs-delays-clinical-trial-timeline-4456134']
+  ];
+  var ol=document.getElementById('l');
+  L.forEach(function(x){
+    var li=document.createElement('li');li.dataset.c=x[0];
+    var b=document.createElement('b');b.textContent=x[0];li.appendChild(b);
+    li.appendChild(document.createTextNode(x[2]));
+    var sm=document.createElement('small');sm.textContent=x[1]+' · '+x[3]+' · ';
+    var a=document.createElement('a');a.href=x[4];a.rel='noopener';a.textContent='source';sm.appendChild(a);
+    li.appendChild(sm);ol.appendChild(li);
+  });
+  document.querySelectorAll('.f button').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var k=btn.dataset.k;
+      document.querySelectorAll('.f button').forEach(function(o){o.setAttribute('aria-pressed',o===btn?'true':'false')});
+      ol.querySelectorAll('li').forEach(function(li){li.hidden=!(k==='all'||li.dataset.c===k)});
+    });
+  });
+})();
+</script>
+</body>
+</html>

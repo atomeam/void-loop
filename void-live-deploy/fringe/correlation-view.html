@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · correlation view</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:760px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+svg{width:100%;height:auto}
+.legend{display:flex;gap:18px;font-size:12px;color:#8a8a92}
+.legend i{display:inline-block;width:12px;height:3px;margin-right:6px;vertical-align:middle}
+table{border-collapse:collapse;font-size:13px}
+td,th{padding:3px 12px 3px 0;text-align:left;font-weight:normal}
+th{color:#8a8a92}
+</style>
+</head>
+<body>
+<main>
+  <h1>correlation view</h1>
+  <p class="note">Two series from the same runs: the everyday benchmark score, and how many new asks each round added. They move together because the score can only rise by asks being added and answered; that is the mechanism, not a discovery. A correlation view shows what moves with what. It never says why on its own.</p>
+  <div class="legend"><span><i style="background:#7cf"></i>benchmark score</span><span><i style="background:#f0a07a"></i>asks added that round</span></div>
+  <svg id="c" viewBox="0 0 700 300" role="img" aria-label="Benchmark score and asks added per round"></svg>
+  <table id="t"><tr><th>when (ET)</th><th>score</th><th>added</th><th>note</th></tr></table>
+</main>
+<script>
+(function(){
+  // from git history of tools/bench.best.json; 97 was a counting error (3 repeated asks) corrected to 94 the next hour
+  var D=[['09-30 12:21',57,57,'first floor'],['10-02 11:41',82,25,''],['10-02 13:15',94,12,'published as 97, 3 repeats; corrected'],
+         ['10-02 14:13',104,10,''],['10-02 15:15',116,12,''],['10-02 17:04',129,13,'tech news added'],
+         ['10-02 18:42',134,5,'another agent: books, TV, teams, holidays (+4), jobs (+1)'],['10-02 19:46',154,20,'merged with the other agent’s +1'],
+         ['10-02 20:47',164,10,'averages, speed, kitchen volume, dates ago']];
+  var svg=document.getElementById('c'),NS='http://www.w3.org/2000/svg',W=700,H=300,L=40,R=10,T=10,B=30;
+  function el(n,a){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e}
+  var max=180,x=function(i){return L+i*(W-L-R)/(D.length-1)},y=function(v){return T+(H-T-B)*(1-v/max)};
+  [0,60,120,180].forEach(function(v){el('line',{x1:L,x2:W-R,y1:y(v),y2:y(v),stroke:'rgba(255,255,255,.08)'});var t=el('text',{x:L-6,y:y(v)+4,'text-anchor':'end',fill:'#77777f','font-size':11});t.textContent=v});
+  function line(k,c){el('polyline',{points:D.map(function(d,i){return x(i)+','+y(d[k])}).join(' '),fill:'none',stroke:c,'stroke-width':2});
+    D.forEach(function(d,i){el('circle',{cx:x(i),cy:y(d[k]),r:3,fill:c})})}
+  line(1,'#7cf');line(2,'#f0a07a');
+  var tb=document.getElementById('t');
+  D.forEach(function(d){var tr=document.createElement('tr');[d[0],d[1],'+'+d[2],d[3]].forEach(function(v){var td=document.createElement('td');td.textContent=v;tr.appendChild(td)});tb.appendChild(tr)});
+})();
+</script>
+</body>
+</html>
