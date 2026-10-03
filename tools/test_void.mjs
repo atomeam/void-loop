@@ -2165,3 +2165,4 @@ const bad = results.filter((r) => !r.ok);
 for (const r of results) console.log((r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
 console.log(`${results.length - bad.length}/${results.length} passed`);
 process.exit(bad.length ? 1 : 0);
+

@@ -20,3 +20,4 @@
 - Browser agents with WebMCP (Chrome) find Void's tools declared on the page itself (void_ask, void_stage, void_calculate, ...): each takes one plain-words ask and returns what appeared. The same list is at https://a-to-mind.com/tools.json.
 - Earlier pages on this domain described a different product (workflow execution, treaties, ledgers). They are retired.
 
+
