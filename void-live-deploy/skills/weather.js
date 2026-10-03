@@ -82,6 +82,7 @@ export default {
   name: 'weather',
   examples: ['weather in Tokyo', 'weather here', 'will it rain tomorrow', 'temperature in London', 'forecast for New York'],
   match(lower, text) {
+    if (/\b(pollen|allerg)/.test(lower)) return false;
     return /\b(weather|forecast|temperature)\b/.test(lower)
       || /\b(is it|will it|going to)\s+(rain|snow)\b/.test(lower)
       || /\bhow\s+(cold|hot|warm)\s+is\s+it\b/.test(lower);
