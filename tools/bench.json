@@ -205,5 +205,9 @@
   {"ask": "uap timeline", "want": "skill:make"},
   {"ask": "clear calender", "want": "skill:calendar"},
   {"ask": "delete all my events", "want": "skill:calendar"},
-  {"ask": "show my calendar", "want": "skill:calendar"}
+  {"ask": "show my calendar", "want": "skill:calendar"},
+  {"ask": "air quality in Tokyo", "want": "skill:air"},
+  {"ask": "AQI in London", "want": "skill:air"},
+  {"ask": "is the air good in Paris", "want": "skill:air"},
+  {"ask": "what's the air quality in New York", "want": "skill:air"}
 ]

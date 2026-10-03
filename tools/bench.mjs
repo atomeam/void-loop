@@ -28,6 +28,7 @@ async function one({ ask: a, want }) {
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Topic' }] } }));
     if (u.includes('/page/summary/')) return r.fulfill(json({ title: 'Topic', extract: 'An extract.' }));
     if (u.includes('geocoding-api.open-meteo.com')) return r.fulfill(json({ results: [{ name: 'Paris', country: 'France', country_code: 'FR', latitude: 48.85, longitude: 2.35, timezone: 'Europe/Paris', population: 2100000 }] }));
+    if (u.includes('air-quality-api.open-meteo.com')) return r.fulfill(json({ current: { time: '2026-10-03T12:00', us_aqi: 42, european_aqi: 25, pm2_5: 10.2, pm10: 18.0, ozone: 55, nitrogen_dioxide: 12, sulphur_dioxide: 3, carbon_monoxide: 140, us_aqi_pm2_5: 42, us_aqi_pm10: 16, us_aqi_ozone: 18, us_aqi_nitrogen_dioxide: 11, us_aqi_sulphur_dioxide: 2, us_aqi_carbon_monoxide: 2 } }));
     if (u.includes('api.open-meteo.com')) { const d = new Date().toISOString().slice(0, 10);
       return r.fulfill(json({ timezone: 'Europe/Paris', current: { temperature_2m: 20, apparent_temperature: 19, weather_code: 1, wind_speed_10m: 5, relative_humidity_2m: 50 },
         daily: { time: [d, d], temperature_2m_max: [24, 23], temperature_2m_min: [15, 14], precipitation_probability_max: [10, 20], weather_code: [1, 2], sunrise: [d + 'T07:00', d + 'T07:01'], sunset: [d + 'T19:30', d + 'T19:29'] },
