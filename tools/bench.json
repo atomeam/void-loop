@@ -209,5 +209,7 @@
   {"ask": "air quality in Tokyo", "want": "skill:air"},
   {"ask": "AQI in London", "want": "skill:air"},
   {"ask": "is the air good in Paris", "want": "skill:air"},
-  {"ask": "what's the air quality in New York", "want": "skill:air"}
+  {"ask": "what's the air quality in New York", "want": "skill:air"},
+  {"ask": "summon linemote-1", "want": "skill:part"},
+  {"ask": "summon a printable actuator spec", "want": "skill:part"}
 ]

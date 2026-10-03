@@ -612,6 +612,22 @@ try {
       !phone.sideways && phone.inView && phone.reachable && phone.page && phone.pageFits && gone, JSON.stringify({ ...phone, gone }));
     check('the world clock / translate / phone batch threw no page errors', !C.errors.length, C.errors.join(' | '));
     await C.ctx.close(); }
+  // Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail + slider, closed shells, mm)
+  { const P = await fresh();
+    await P.ask('summon linemote-1', 900); const lm = await P.page();
+    const dl = P.p.waitForEvent('download', { timeout: 5000 }).catch(() => null);
+    await P.p.click('.vpage.on [data-linemote-stl]').catch(() => {}); const d = await dl;
+    const stl = d ? fs.readFileSync(await d.path(), 'utf8') : '';
+    const facets = (stl.match(/^ facet normal /gm) || []).length;
+    const vs = [...stl.matchAll(/^ {3}vertex (\S+) (\S+) (\S+)$/gm)].map((m) => [+m[1], +m[2], +m[3]]);
+    let vol = 0; for (let k = 0; k + 2 < vs.length; k += 3) { const [a, b, c] = [vs[k], vs[k + 1], vs[k + 2]]; vol += (a[0] * (b[1] * c[2] - b[2] * c[1]) - a[1] * (b[0] * c[2] - b[2] * c[0]) + a[2] * (b[0] * c[1] - b[1] * c[0])) / 6; }
+    const span = [0, 1, 2].map((i) => Math.max(...vs.map((v) => v[i])) - Math.min(...vs.map((v) => v[i])));
+    check('part: "summon linemote-1" shows the Linemote-1 page (dimensions, materials, magnetize post-step, three dated sources, safety) and Download STL saves linemote-1.stl: closed outward shells, 22 x 13 x 5 mm plate, 372 mm3',
+      /Linemote-1/.test(lm) && /22 × 6 × 5 mm/.test(lm) && /magnetize/i.test(lm) && /2026-02-18/.test(lm) && /2025-03-17/.test(lm) && /2025-12-11/.test(lm) && /swallowed/.test(lm)
+        && !!d && d.suggestedFilename() === 'linemote-1.stl' && /^solid linemote_1/.test(stl) && facets === vs.length / 3 && facets > 500
+        && Math.abs(vol - 372.25) < 0.5 && span.join() === '22,13,5' && !P.errors.length,
+      [lm.slice(0, 80), d ? d.suggestedFilename() : 'no download', facets, vol.toFixed(2), span.join('x'), P.errors.join(';')].join(' | '));
+    await P.ctx.close(); }
   // "who is X" prefers the person; a loose match says so in one line; the board counts one ask in different words once.
   { const E = await fresh(); const sums = [];
     await E.ctx.route(/en\.wikipedia\.org\/w\/api\.php/, (r) => { const u = decodeURIComponent(r.request().url());
@@ -1868,7 +1884,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'part'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
