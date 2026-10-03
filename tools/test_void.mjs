@@ -1943,7 +1943,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
@@ -1978,6 +1978,16 @@ try {
       && typeof shareHref === 'string' && shareHref.includes('share_text=') && !/\/api\/publish|\/@/.test(shareHref),
     shareMod ? shareMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') + ' | ' + shareHref : 'missing share');
 
+  const magMod = nsMods.find((s) => s.name === 'magnetize');
+  const magCard = magMod && magMod.magnetizeCard();
+  check('magnetize: listed with examples and near misses; examples route only to it; the card dates the three sources, separates soft from hard, and does not publish',
+    !!magMod && magMod.examples.length >= 4 && (magMod.nearMisses || []).length >= 3
+      && magMod.examples.every((e) => firstNs(e) === 'magnetize') && magMod.nearMisses.every((e) => firstNs(e) !== 'magnetize')
+      && magCard && /strontium ferrite/.test(magCard.hard) && /1\.5 T/.test(magCard.hard) && /no magnetize step/.test(magCard.soft)
+      && magCard.sources.some((s) => s.date === '2026-02-18') && magCard.sources.some((s) => /10\.1088\/2058-8585\/aded1f/.test(s.href)) && magCard.sources.some((s) => /10\.1080\/17452759\.2024\.2310046/.test(s.href))
+      && !/\/api\/publish/.test(JSON.stringify(magCard)),
+    magMod ? magMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing magnetize');
+
   const esMod = nsMods.find((s) => s.name === 'spanish');
   const esReady = esMod && esMod.spanishReady();
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
@@ -1985,6 +1995,22 @@ try {
       && esMod.examples.every((e) => firstNs(e) === 'spanish') && esMod.nearMisses.every((e) => firstNs(e) !== 'spanish')
       && typeof esReady === 'string' && /Puedo responder en español/.test(esReady) && !/\/api\/publish/.test(esReady),
     esMod ? esMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') + ' | ' + esReady : 'missing spanish');
+
+  {
+    const invMod = nsMods.find((s) => s.name === 'inventory');
+    const invApi = await import(new URL('../void-live-deploy/skills/inventory.js', import.meta.url).href);
+    check('inventory: near misses leave the board, the map, fridge stock and "build inventory" alone',
+      !!invMod && ['show the board', 'show the map', 'inventory of my fridge', 'build inventory', 'what are you building'].every((a) => !invMod.match(a.toLowerCase(), a)),
+      'near');
+    check('inventory: boardSectionHtml feeds the owner board with already-built skill and tool rows',
+      typeof invApi.boardSectionHtml === 'function' && /Already built/.test(invApi.boardSectionHtml((s) => s)) && /weather/.test(invApi.boardSectionHtml((s) => s)) && /confirm line/.test(invApi.boardSectionHtml((s) => s)),
+      'boardSectionHtml');
+    check('inventory: have-we-built query finds weather and misses nonsense',
+      invApi.inventoryOf('have we built weather')?.kind === 'query' && invApi.inventoryOf('have we built weather')?.q === 'weather'
+      && invApi.inventoryOf("what's already built")?.kind === 'all'
+      && !invApi.inventoryOf('weather in Tokyo'),
+      JSON.stringify(invApi.inventoryOf('have we built weather')));
+  }
 
   const wtMod = (await import(new URL('../void-live-deploy/skills/worldtime.js', import.meta.url).href)).default;
   const otherSkillAsks = new Set(Object.entries(R.SKILLS).filter(([n]) => n !== 'worldtime').flatMap(([, v]) => v.examples));

@@ -3257,8 +3257,11 @@ return { ok: true, detail: 'timer-reset' };
         const earnLine = earn && earn.earned_cents != null ? '<p class="earn" style="margin:4px 0 10px"><b>Earned ' + esc($(earn.earned_cents)) + '</b> <span style="color:#9a9a9a">net from ' + esc(earn.sales || 0) + ' sale' + (earn.sales === 1 ? '' : 's') + (earn.refunded_cents ? ' · ' + esc($(earn.refunded_cents)) + ' refunded' : '') + '</span>'
           + ((earn.milestones || []).length ? '<br><span style="color:#9a9a9a">milestones: ' + earn.milestones.map((m) => esc(m.id) + ' (' + esc(String(m.at || '').slice(0, 10)) + ')').join(' · ') + '</span>' : '')
           + (earn.shortfalls_7d && earn.shortfalls_7d.total ? '<br><span style="color:#9a9a9a">the free model fell short ' + esc(earn.shortfalls_7d.total) + ' times this week</span>' : '') + '</p>' : '';
+        let already = '';
+        try { const inv = await import('/skills/inventory.js'); if (inv.boardSectionHtml) already = inv.boardSectionHtml(esc); } catch (_) {}
         el.innerHTML = '<h2>The board</h2>' + earnLine + '<div class="sub">What people asked that Void can\'t answer yet · most asked first</div>'
-          + (rows.length ? '<ul>' + rows.slice(0, 40).map((x) => '<li><b>' + esc(x.count) + '×</b> ' + esc(x.ask) + ' <span style="color:#6a6a6a">· ' + esc((x.last || '').slice(0, 10)) + (x.fallback ? ' · ' + esc(x.fallback) : '') + '</span>' + (x.variants && x.variants.length ? '<div style="color:#6a6a6a;font-size:12px">also asked as: ' + x.variants.map(esc).join(' · ') + '</div>' : '') + '</li>').join('') + '</ul>' : '<p>Nothing missed yet.</p>');
+          + (rows.length ? '<ul>' + rows.slice(0, 40).map((x) => '<li><b>' + esc(x.count) + '×</b> ' + esc(x.ask) + ' <span style="color:#6a6a6a">· ' + esc((x.last || '').slice(0, 10)) + (x.fallback ? ' · ' + esc(x.fallback) : '') + '</span>' + (x.variants && x.variants.length ? '<div style="color:#6a6a6a;font-size:12px">also asked as: ' + x.variants.map(esc).join(' · ') + '</div>' : '') + '</li>').join('') + '</ul>' : '<p>Nothing missed yet.</p>')
+          + already;
       } catch (_) { if (vpageEl === el) el.innerHTML = '<h2>The board</h2><p>The board didn\'t answer just now.</p>'; }
     }
 

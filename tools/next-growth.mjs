@@ -1,10 +1,11 @@
-// Oldest open growth-inbox row. Building rows are already claimed.
+// Open growth ideas. Prints every open row. Building rows are in progress, not a lock.
 import { readFileSync } from 'node:fs';
 const text = readFileSync(new URL('../domains/growth-inbox.md', import.meta.url), 'utf8');
-const rows = text.split('\n').filter((line) => line.startsWith('| open |') || line.startsWith('| building |'));
-const open = rows.find((line) => line.startsWith('| open |'));
-if (!open) {
-  console.log(rows[0] || 'none');
-  process.exit(rows.length ? 0 : 1);
+const open = text.split('\n').filter((line) => line.startsWith('| open |'));
+const building = text.split('\n').filter((line) => line.startsWith('| building |'));
+if (!open.length && !building.length) {
+  console.log('none');
+  process.exit(1);
 }
-console.log(open);
+for (const line of open) console.log(line);
+for (const line of building) console.log(line);
