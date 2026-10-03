@@ -1,39 +1,58 @@
 /**
  * inventory skill — assimilate row 6 (Inventory orchestrator → Void)
  * Feeds agents and anyone who asks with "already built" rows so they reuse before rebuilding.
- * Sources: live skills, existing-tools registry, assimilate rows that are live.
- * No network. Tessl Skill Inventory / BoardKit Orchestrator / factory-codebase-inventory exist
- * outside Void; this is Void's own form on the stage and on the owner board.
+ * Skill ids come from skills/index.json so the list cannot drift from the registry.
+ * No network. Tessl / BoardKit exist outside Void; this is Void's own form.
  */
+import skillNames from './index.json' with { type: 'json' };
+
 const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 
-/** Live skills Void already answers (keep in sync with skills/index.json). */
-export const SKILLS_BUILT = [
-  { id: 'weather', what: 'weather and forecasts' },
-  { id: 'translate', what: 'translation' },
-  { id: 'rebuild-map', what: 'assimilation map (what is being rebuilt as Void)' },
-  { id: 'place', what: 'street maps and places' },
-  { id: 'worldtime', what: 'world clock, time zones, sunrise/sunset' },
-  { id: 'define', what: 'definitions' },
-  { id: 'news', what: 'headlines (incl. tech via Hacker News)' },
-  { id: 'words', what: 'word maths and word play' },
-  { id: 'country', what: 'countries' },
-  { id: 'distance', what: 'distances' },
-  { id: 'joke', what: 'jokes' },
-  { id: 'recipe', what: 'recipes' },
-  { id: 'crypto', what: 'crypto prices' },
-  { id: 'util', what: 'passwords, QR, colours, moon, lorem' },
-  { id: 'calendar', what: 'calendar / agenda on this device' },
-  { id: 'today', what: "what Void did today (this device's loop log)" },
-  { id: 'book', what: 'books (Open Library)' },
-  { id: 'show', what: 'TV shows (TVMaze)' },
-  { id: 'sport', what: 'teams (TheSportsDB)' },
-  { id: 'holidays', what: 'public holidays' },
-  { id: 'work', what: 'remote jobs (Remotive)' },
-  { id: 'inventory', what: 'this list — already built rows' },
-];
+export const SKILL_NAMES = skillNames;
 
-/** Tools/features already in the repo that agents should reach for first. */
+/** Words for a skill id. Unknown ids still show, under their registry name. */
+const WHAT = {
+  part: 'named printable parts (Linemote-1 and the like)',
+  figure: 'summoned figures on the stage',
+  make: 'make an app from stage parts',
+  weather: 'weather and forecasts',
+  air: 'air quality',
+  uv: 'UV index',
+  quake: 'recent earthquakes',
+  pollen: 'pollen',
+  spanish: 'answers in Spanish',
+  translate: 'translation',
+  'rebuild-map': 'assimilation map (what is being rebuilt as Void)',
+  place: 'street maps and places',
+  worldtime: 'world clock, time zones, sunrise/sunset',
+  define: 'definitions',
+  news: 'headlines (incl. tech via Hacker News)',
+  words: 'word maths and word play',
+  country: 'countries',
+  distance: 'distances',
+  joke: 'jokes',
+  recipe: 'recipes',
+  crypto: 'crypto prices',
+  loan: 'loan payments',
+  fuel: 'fuel cost',
+  tip: 'tips and splits',
+  util: 'passwords, QR, colours, moon, lorem',
+  remind: 'a reminder held on the confirm line',
+  calendar: 'calendar / agenda on this device',
+  today: "what Void did today (this device's loop log)",
+  book: 'books (Open Library)',
+  show: 'TV shows (TVMaze)',
+  sport: 'teams (TheSportsDB)',
+  holidays: 'public holidays',
+  work: 'remote jobs (Remotive)',
+  share: 'share this card',
+  recent: 'recent asks on an empty box',
+  magnetize: 'the post-print magnetize step',
+  inventory: 'this list — already built rows',
+};
+
+export const SKILLS_BUILT = SKILL_NAMES.map((id) => ({ id, what: WHAT[id] || id }));
+
 export const TOOLS_BUILT = [
   { id: 'existing-tools.md', what: 'registry of tools to check before building anything' },
   { id: 'confirm line', what: 'yes before any send, book or spend' },
@@ -45,7 +64,6 @@ export const TOOLS_BUILT = [
   { id: 'growth inbox', what: 'unfinished features written down before they are built' },
 ];
 
-/** Assimilate rows that are already live (mirrors domains/void.assimilate.md). */
 export const ASSIMILATE_LIVE = [
   { id: 'board (misses)', what: 'show the board — what people asked that Void cannot answer yet' },
   { id: 'skill files', what: 'edit engine step 1 — skills as files Void loads' },
@@ -61,13 +79,12 @@ export const ASSIMILATE_LIVE = [
 export function inventoryOf(text) {
   const t = CLEAN(text);
   if (!t) return null;
-  // have we built X / did we build X / is X already built
   let m = t.match(/^(?:have\s+we\s+built|did\s+we\s+build|is\s+there\s+already|do\s+we\s+already\s+have|already\s+built)\s+(.+)$/i);
   if (m) {
     const q = m[1].replace(/^(?:a|an|the)\s+/i, '').trim();
     if (q && q.length >= 2 && !/^(?:it|that|this|me|you)$/i.test(q)) return { kind: 'query', q };
   }
-  if (/^(?:what(?:'?s|\s+is|\s+are)\s+(?:already\s+)?(?:built|here)|what(?:'?s|\s+is)\s+(?:in\s+)?(?:the\s+)?inventory|show\s+(?:me\s+)?(?:the\s+)?inventory|already\s+built|show\s+(?:me\s+)?what(?:'?s|\s+is)\s+already\s+built|list\s+(?:what(?:'?s|\s+is)\s+)?already\s+built|what\s+can\s+i\s+reuse)$/i.test(t)) {
+  if (/^(?:what(?:'s|\s+is|\s+are)\s+(?:already\s+)?(?:built|here)|what(?:'s|\s+is)\s+(?:in\s+)?(?:the\s+)?inventory|show\s+(?:me\s+)?(?:the\s+)?inventory|already\s+built|show\s+(?:me\s+)?what(?:'s|\s+is)\s+already\s+built|list\s+(?:what(?:'s|\s+is)\s+)?already\s+built|what\s+can\s+i\s+reuse)$/i.test(t)) {
     return { kind: 'all' };
   }
   return null;
@@ -106,7 +123,7 @@ function pageHtml(esc, hit) {
     }
     const rows = found.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
     return '<h2>Already built · ' + esc(hit.q) + '</h2><div class="sub">Matches in skills, tools and live assimilate rows · reuse before rebuilding</div><ul>' + rows + '</ul>'
-      + '<div class="src">Source: Void inventory · skills, existing-tools, assimilate</div>';
+      + '<div class="src">Source: Void inventory · skills/index.json</div>';
   }
   const skills = SKILLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
   const tools = TOOLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
