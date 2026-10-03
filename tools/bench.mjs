@@ -41,6 +41,7 @@ async function one({ ask: a, want }) {
     if (u.includes('icanhazdadjoke.com')) return r.fulfill(json({ id: 'x1', joke: 'I only know 25 letters of the alphabet. I don\'t know y.' }));
     if (u.includes('themealdb.com')) return r.fulfill(json({ meals: [{ idMeal: '1', strMeal: 'Pancakes', strArea: 'American', strCategory: 'Dessert', strInstructions: 'Mix.\nCook.', strIngredient1: 'Flour', strMeasure1: '100g' }] }));
     if (u.includes('api.coingecko.com')) return r.fulfill(json({ bitcoin: { usd: 65000, usd_24h_change: 1.2, last_updated_at: 1700000000 } }));
+    if (u.includes('earthquake.usgs.gov')) return r.fulfill(json({ features: [{ id: 'q1', properties: { mag: 4.6, place: '20 km E of Somewhere', time: Date.now() - 3600e3, url: 'https://earthquake.usgs.gov/earthquakes/eventpage/q1' }, geometry: { coordinates: [139.7, 35.7, 10] } }] }));
     if (u.includes('hn.algolia.com')) return r.fulfill(json({ hits: [{ objectID: '1', title: 'A thing shipped', url: 'https://example.com/a', points: 120 }] }));
     if (u.includes('/feed/featured/')) return r.fulfill(json({ news: [{ story: '<b>Something</b> happened today.', links: [] }] }));
     return r.fulfill({ status: 204, body: '' }); });
