@@ -1960,6 +1960,10 @@ try {
       for (const e of mod.nearMisses || []) if (firstNs(e) === mod.name) bad.push(mod.name + ': near miss "' + e + '" taken');
     }
     check('skills: every skill in index.json gets its own examples and none of its near misses (' + nsMods.length + ' skills)', !bad.length, bad.join(' | ')); }
+  const cdMod = nsMods.find((s) => s.name === 'countdown');
+  check('countdown: days until new year routes only to it and counts forward',
+    !!cdMod && cdMod.examples.every((e) => firstNs(e) === 'countdown') && cdMod.nearMisses.every((e) => firstNs(e) !== 'countdown')
+      && cdMod.daysUntil(new Date(2027, 0, 1), new Date(2026, 9, 3)) === 90, 'countdown');
   const shareMod = nsMods.find((s) => s.name === 'share');
   const recentMod = nsMods.find((s) => s.name === 'recent');
   const mem = { bag: {} };
