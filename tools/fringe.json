@@ -42,7 +42,7 @@
       }
     ],
     "sha256": "548f97fee6662c3046e6752a6d99c8a3522614953dcd1a992e748079be0b6ce5",
-    "emit": false
+    "emit": true
   },
   {
     "run": 2,
@@ -62,7 +62,7 @@
       }
     ],
     "sha256": "4203bc0da9605b0effcc324ac849357c9571c795e0609e3d9c2d19426330fa51",
-    "emit": false
+    "emit": true
   },
   {
     "run": 3,
@@ -107,7 +107,7 @@
       }
     ],
     "sha256": "8e66092c9d7eb6703027072eb4b88b5db02c7ed57c70b2fc8b42f8f8084bdf25",
-    "emit": false
+    "emit": true
   },
   {
     "run": 5,
@@ -127,7 +127,7 @@
       }
     ],
     "sha256": "cb64d55a4802a0732d783511d930bbe969ca8d6a0f6e923db1460f98f1c8e60b",
-    "emit": false
+    "emit": true
   },
   {
     "run": 6,
@@ -152,7 +152,7 @@
       }
     ],
     "sha256": "276081d7a7d8e9ac09ddc88656736b49cd1d2793b2d6026382cd364487587a3b",
-    "emit": false
+    "emit": true
   },
   {
     "run": 7,
@@ -172,7 +172,7 @@
       }
     ],
     "sha256": "2a24abee75edf1fff9c8140ded62182d9e4101cc40ef694acf9cf3e8c7b06b0b",
-    "emit": false
+    "emit": true
   },
   {
     "run": 8,
@@ -212,6 +212,6 @@
       }
     ],
     "sha256": "67422f1c4155296e27cc5c92bdb0f5bf02d5ef867af7ead63c5f73203c7b99ba",
-    "emit": false
+    "emit": true
   }
 ]

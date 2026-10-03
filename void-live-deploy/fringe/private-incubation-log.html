@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · incubation log</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+textarea,select,button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:10px 12px}
+textarea{min-height:90px;resize:vertical}
+textarea:focus-visible,select:focus-visible,button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+button{cursor:pointer}
+ol{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:8px}
+li{padding:10px 12px;border:1px solid rgba(255,255,255,.1);border-radius:10px}
+li.sealed{color:#666}
+li small{display:block;color:#77777f;font-size:12px;margin-top:2px}
+</style>
+</head>
+<body>
+<main>
+  <h1>incubation log</h1>
+  <p class="note">Write a half-formed idea and let it sit. It stays sealed until the time you choose, then comes back to you to look at fresh. It is kept on this device only (local storage); nothing is sent anywhere, and clearing the browser clears it.</p>
+  <textarea id="idea" aria-label="An idea to incubate" placeholder="a half-formed idea…"></textarea>
+  <div class="row">
+    <label for="wait">let it sit for</label>
+    <select id="wait"><option value="0.0007">1 minute (try it)</option><option value="1">1 day</option><option value="3" selected>3 days</option><option value="7">a week</option></select>
+    <button id="add" type="button">seal it</button>
+  </div>
+  <ol id="list" aria-label="Your ideas"></ol>
+</main>
+<script>
+(function(){
+  var KEY='void.incubation.v1',items=[];
+  try{items=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(_){items=[]}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(_){}}
+  var list=document.getElementById('list');
+  function render(){
+    list.innerHTML='';var now=Date.now();
+    items.slice().reverse().forEach(function(it){
+      var li=document.createElement('li'),open=now>=it.until;
+      li.className=open?'':'sealed';
+      li.textContent=open?it.text:'sealed · '+Math.ceil((it.until-now)/36e5)+' h to go';
+      var sm=document.createElement('small');sm.textContent='written '+new Date(it.at).toLocaleString();li.appendChild(sm);
+      list.appendChild(li);
+    });
+  }
+  document.getElementById('add').addEventListener('click',function(){
+    var t=document.getElementById('idea').value.trim();if(!t)return;
+    var d=+document.getElementById('wait').value;
+    items.push({text:t,at:Date.now(),until:Date.now()+d*864e5});save();
+    document.getElementById('idea').value='';render();
+  });
+  render();setInterval(render,30000);
+})();
+</script>
+</body>
+</html>

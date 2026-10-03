@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<base target="_blank">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · anomalous-event timeline</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:760px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+ol{list-style:none;padding:0 0 0 18px;margin:0;border-left:1px solid rgba(255,255,255,.15);display:flex;flex-direction:column;gap:14px}
+li{position:relative}
+li::before{content:'';position:absolute;left:-23px;top:7px;width:9px;height:9px;border-radius:50%;background:#555}
+li[data-c="confirmed"]::before{background:#8fe0a8}
+li[data-c="claim"]::before{background:#f0cf7a}
+li[data-c="open"]::before{background:#b9a8ff}
+li time{display:block;color:#8a8a92;font-size:12px}
+li b{font-weight:normal;font-size:11px;padding:1px 7px;border-radius:7px;margin-right:6px;background:#1c1c22;color:#aaa}
+li a{color:#8ab4ff;font-size:12px}
+</style>
+</head>
+<body>
+<main>
+  <h1>anomalous-event timeline</h1>
+  <p class="note">Public steps in US UAP disclosure, in date order, each with its confidence. A release is an event; what it shows stays as the government labels it: unresolved. Nothing here says what any object was.</p>
+  <ol id="t"></ol>
+</main>
+<script>
+(function(){
+  var E=[
+    ['2024-03-08','confirmed','AARO historical report vol. 1: no empirical evidence of off-world technology or reverse-engineering programs.','https://media.defense.gov/2024/Mar/08/2003409233/-1/-1/0/DOPSR-2024-0263-AARO-HISTORICAL-RECORD-REPORT-VOLUME-1-2024.PDF'],
+    ['2025-09-09','claim','House Oversight whistleblower hearing: sworn testimony of crash retrievals; no public physical evidence.','https://defensescoop.com/2025/09/09/military-whistleblowers-share-new-evidence-alleged-uap-ufo-hearing/'],
+    ['2026-02-19','confirmed','President directs the Secretary of Defense to identify and release UAP files.','https://defensescoop.com/2026/02/20/trump-ufo-uap-government-files-disclosure/'],
+    ['2026-05-08','confirmed','PURSUE release 1: 162 records (Apollo-era material, infrared footage, FBI interviews). Unresolved cases.','https://abcnews.com/Politics/pentagon-begins-release-decades-unresolved-ufo-files/story?id=132780534'],
+    ['2026-05-22','confirmed','PURSUE release 2: 64 files, 51 of them sensor videos. Unresolved cases.','https://jasperbernaers.com/pentagon-uap-ufo-files-released-2026-pursue-declassified/'],
+    ['2026-07-31','confirmed','ODNI preliminary guidance: NDAs waived for reporting UAP information to the PURSUE task force.','https://douglasmmessier.substack.com/p/guidance-published-for-uap-disclosure'],
+    ['2026-08-07','confirmed','PURSUE release 5: 41 files, reports of orbs and triangles. Unresolved cases.','https://earthsky.org/human-world/pentagon-uap-files-batch-5-ufos-orbs-triangles/'],
+    ['2026-09-18','confirmed','PURSUE release 6: 72 files. Unresolved cases.','https://earthsky.org/human-world/6th-batch-of-pentagon-uap-files-ufos-pursue/'],
+    ['next','open','More PURSUE releases expected; AARO historical report vol. 2 still unreleased.','https://defensescoop.com/2026/02/25/hegseth-ufo-disclosure-trump-aaro-uap-caseload/']
+  ];
+  var ol=document.getElementById('t');
+  E.forEach(function(e){
+    var li=document.createElement('li');li.dataset.c=e[1];
+    var t=document.createElement('time');t.textContent=e[0];li.appendChild(t);
+    var b=document.createElement('b');b.textContent=e[1];li.appendChild(b);
+    li.appendChild(document.createTextNode(e[2]+' '));
+    var a=document.createElement('a');a.href=e[3];a.rel='noopener';a.textContent='source';li.appendChild(a);
+    ol.appendChild(li);
+  });
+})();
+</script>
+</body>
+</html>
