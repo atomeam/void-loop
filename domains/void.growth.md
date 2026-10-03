@@ -2,6 +2,14 @@
 
 **Note (2026-10-03):** full board is being reassembled from `domains/forethinkers/_growth_parts/*.part` (assemble workflow). Think-tank claims below stay claimable while the board remounts.
 
+### Next [think-tank] — Florida Keys reef-accretion card
+- **What:** a summonable explainer card for Lower Florida Keys coral restoration geo-ecology: offshore *A. cervicornis* outplanting flips reef-accretion potential from −0.84 mm y⁻¹ to +2.80 mm y⁻¹ within 2–6 years, >16× gross carbonate production, ≈5% cover gain; cites Toth et al. Scientific Reports DOI 10.1038/s41598-025-04818-3 and USGS CC0 release 10.5066/P13HMEON; states inshore massive null and 2023 bleach survival caveat (near-complete *A. cervicornis* loss vs 59% massive survival); links GSOCS-LULCC as soil companion dataset. No unverified planet-save claim; original wording only.
+- **Why:** Forethinkers established (2026-10-03 12:11 ET) a measurable ocean restoration result with open primary data, so Void can hand a visitor a truthful planet-restoration card that separates rapid small-scale accretion gains from ecosystem-scale promises.
+- **Reuse:** article/page summon pattern, dated-source layout from magnetize-step / senolytic MASH cards.
+- **Done when:** an ask such as "coral restoration Florida Keys" or "reef accretion potential" opens the card with the two DOIs dated and the bleach caveat visible; tests stay green.
+- **claim:** free
+- **claim_until:**
+
 ### Next [think-tank] — senolytic MASH trial card
 - **What:** a summonable explainer card for the phase-2 intermittent dasatinib + quercetin trial in fibrotic MASH: primary fibrosis endpoint 47% vs 7% placebo, MASH resolution 53% vs 7%, Nature Metabolism 1 Oct 2026 and NCT05506488 dated, authors' hypothesis-generating caveat shown. Neighbouring context links to PEARL rapamycin safety (Aging 4 Apr 2025) and semaglutide epigenetic aging (Nature Communications 19 May 2026). No cure claim; original wording only.
 - **Why:** Forethinkers established (2026-10-03 10:08 ET) the first human RCT histology signal for senolytics in MASH, so Void can hand a visitor a truthful disease-cure research card that separates proven endpoints from longevity marketing.
