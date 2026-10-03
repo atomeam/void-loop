@@ -373,5 +373,30 @@
     ],
     "sha256": "e9cc47f19494eb31ac86be5567298e70db50a27ffadb4b1ac0d081040f03669c",
     "emit": false
+  },
+  {
+    "run": 16,
+    "at": "2026-10-03T22:42:30Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-2.html",
+    "sources": [
+      {
+        "claim": "35 pull requests merged into atomeam/void-loop on 2026-10-03, by branch lane (claude 12, helper 12, grok 10, forethinkers 1)",
+        "source": "https://github.com/atomeam/void-loop/pulls?q=is%3Apr+is%3Amerged+merged%3A2026-10-03",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The breaks listed (key reaching the answer model, a skill collision, append conflicts, stalled runs) and their fixes",
+        "source": "domains/void.agents.log.md",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "More parallel lanes raised output, and checks can absorb the conflict cost",
+        "source": "drafts/fringe/human-machine-co-agency-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "1eaeeb2d56031820fd35a2cf9123ec7a1d7d15cc132ab2d03b9c9af3bb04530f",
+    "emit": false
   }
 ]
