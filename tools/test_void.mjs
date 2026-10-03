@@ -2012,6 +2012,12 @@ try {
       && invApi.inventoryOf("what's already built")?.kind === 'all'
       && !invApi.inventoryOf('weather in Tokyo'),
       JSON.stringify(invApi.inventoryOf('have we built weather')));
+    const idx = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
+    const builtIds = new Set(invApi.SKILLS_BUILT.map((r) => r.id));
+    check('inventory: already-built list matches skills/index.json (derive, never hand-edit)',
+      idx.length === invApi.SKILLS_BUILT.length && idx.every((id) => builtIds.has(id))
+      && ['magnetize', 'share', 'recent', 'inventory', 'part', 'figure'].every((id) => builtIds.has(id)),
+      (invApi.SKILLS_BUILT || []).length + ' built vs ' + idx.length + ' in index.json');
   }
 
   const wtMod = (await import(new URL('../void-live-deploy/skills/worldtime.js', import.meta.url).href)).default;

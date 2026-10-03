@@ -7,31 +7,50 @@
  */
 const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 
-/** Live skills Void already answers (keep in sync with skills/index.json). */
-export const SKILLS_BUILT = [
-  { id: 'weather', what: 'weather and forecasts' },
-  { id: 'translate', what: 'translation' },
-  { id: 'rebuild-map', what: 'assimilation map (what is being rebuilt as Void)' },
-  { id: 'place', what: 'street maps and places' },
-  { id: 'worldtime', what: 'world clock, time zones, sunrise/sunset' },
-  { id: 'define', what: 'definitions' },
-  { id: 'news', what: 'headlines (incl. tech via Hacker News)' },
-  { id: 'words', what: 'word maths and word play' },
-  { id: 'country', what: 'countries' },
-  { id: 'distance', what: 'distances' },
-  { id: 'joke', what: 'jokes' },
-  { id: 'recipe', what: 'recipes' },
-  { id: 'crypto', what: 'crypto prices' },
-  { id: 'util', what: 'passwords, QR, colours, moon, lorem' },
-  { id: 'calendar', what: 'calendar / agenda on this device' },
-  { id: 'today', what: "what Void did today (this device's loop log)" },
-  { id: 'book', what: 'books (Open Library)' },
-  { id: 'show', what: 'TV shows (TVMaze)' },
-  { id: 'sport', what: 'teams (TheSportsDB)' },
-  { id: 'holidays', what: 'public holidays' },
-  { id: 'work', what: 'remote jobs (Remotive)' },
-  { id: 'inventory', what: 'this list — already built rows' },
-];
+import index from './index.json' with { type: 'json' };
+
+const WHAT = {
+  part: 'named printable parts (Linemote-1 and the like)',
+  figure: 'summoned figures on the stage',
+  make: 'make an app from stage parts',
+  weather: 'weather and forecasts',
+  air: 'air quality',
+  uv: 'UV index',
+  quake: 'recent earthquakes',
+  pollen: 'pollen',
+  spanish: 'answers in Spanish',
+  translate: 'translation',
+  'rebuild-map': 'assimilation map (what is being rebuilt as Void)',
+  place: 'street maps and places',
+  worldtime: 'world clock, time zones, sunrise/sunset',
+  define: 'definitions',
+  news: 'headlines (incl. tech via Hacker News)',
+  words: 'word maths and word play',
+  country: 'countries',
+  distance: 'distances',
+  joke: 'jokes',
+  recipe: 'recipes',
+  crypto: 'crypto prices',
+  loan: 'loan payments',
+  fuel: 'fuel cost',
+  tip: 'tips and splits',
+  util: 'passwords, QR, colours, moon, lorem',
+  remind: 'a reminder held on the confirm line',
+  calendar: 'calendar / agenda on this device',
+  today: "what Void did today (this device's loop log)",
+  book: 'books (Open Library)',
+  show: 'TV shows (TVMaze)',
+  sport: 'teams (TheSportsDB)',
+  holidays: 'public holidays',
+  work: 'remote jobs (Remotive)',
+  share: 'share this card',
+  recent: 'recent asks on an empty box',
+  magnetize: 'the post-print magnetize step',
+  inventory: 'this list — already built rows',
+};
+
+/** Live skills Void already answers; derived from skills/index.json so the list cannot drift. */
+export const SKILLS_BUILT = index.map((id) => ({ id, what: WHAT[id] || 'a Void skill' }));
 
 /** Tools/features already in the repo that agents should reach for first. */
 export const TOOLS_BUILT = [
