@@ -1,38 +1,23 @@
 # Forethinkers brief
 
-Read this, then the files it names. Do the work. Do not invent findings.
+A cycle works one node, not one topic and not every track.
 
-## One system
+Read `convergence.md`. Each row is one claim: a shared part or a Void stage. Pick the node that most changes the map or unblocks a stage. Fan it only into the tracks that node names. A track the node does not touch stays unread.
 
-A-to-Mind does everything. Void is the form each part becomes: summon, spin, export, print, own it. The tracks are not four topics. A cycle that picks living figures, printed machines, cures, and the planet, then stitches them, is still a silo.
+The product start is a 3D Void figure: ask, a little 3D version appears, it inhabits the Void already on stage, it stays until thrown off with the mouse. Print export is a later handoff of that same body. Do not treat "printed actuator moves a figure joint" as established. The linear motor does not show that.
 
-Every cycle covers everything:
+## Writes
 
-- every file in `domains/` that is a track (venture files and assimilate rows; skip only logs, queues, and this folder's runner notes)
-- `domains/void.assimilate.md`
-- `domains/void.growth.md`
-- `domains/void.misses.md`
-- `domains/forethinkers/convergence.md`
+Change the node, or unblock a stage, or write nothing. A dead run adds one cycle line and does not touch a track file, the board, or the map. Code enforces this.
 
-A new file under `domains/` is a track on the next cycle. There is no allowlist and no `ACTIVE_TRACKS` cut. If a miss or an old project fits no file, add a track file and a map row in the same cycle.
+`established` requires a title, a URL, a publication date, and a named part. Anything else stays `hypothesis`.
 
-## What a cycle does
+Date every source. A Void feature becomes a `[think-tank]` board line. A breakthrough note goes out only when a webhook is configured and the finding has a source. Other runs stay silent.
 
-1. Read the whole set. Note which tracks a shared part or a blocked Void stage touches.
-2. Advance the most promising open question that changes the shared map or unblocks a stage. One question can land in several track files. A finding that helps no other track and no product stage is a dead run: record that and stop.
-3. Date every source. `established` means a dated source and a named part. `hypothesis` means the map says so and nobody has checked. Do not promote a hypothesis.
-4. Edit only the track files you actually advanced, plus `convergence.md`. Append a `[think-tank]` line on `domains/void.growth.md` when a result can become a Void feature.
-5. Stay silent. Post the webhook only for a real breakthrough, and include the source link.
+## Names
 
-## Names you do not sell
-
-Inside Void, a reference is fine. A physical print that is sold needs an original name and an original design.
-
-- The Indian in the Cupboard: title and characters are Lynne Reid Banks. The book is widely criticized for how it portrays Native people. A toy that comes alive is the idea. The character is not yours.
-- Persuadatron: name and design come from Syndicate Wars (Bullfrog). Same rule. Do not print or sell that name or that design.
-
-Toys R Us, or any brand acquisition, is a research line on the growth board, not a plan.
+Inside Void, a reference is fine. A sold print needs an original name and design. Persuadatron is Syndicate / Syndicate Wars. The Indian in the Cupboard is Lynne Reid Banks. A recognizable celeb on stage is a behavior reference. A sold likeness needs the right to that likeness.
 
 ## Cost
 
-One cycle sees every track. It does not spawn one model call per track. Cap web searches. Watch the first day before leaving it unattended.
+One cheap pick call, then one search worker per touched track. `ACTIVE_TRACKS` limits the fan-out. `MAX_SEARCHES` caps searches per worker. First live cycle is dry-run, printing track only, webhook off.

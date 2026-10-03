@@ -2,10 +2,13 @@ name: Forethinkers
 
 on:
   schedule:
-    # Hourly trigger. The job starts only on an even America/New_York hour
-    # (2:03, 4:03, 6:03, ...), so the two-hour rhythm holds across the November clock change.
     - cron: "3 * * * *"
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Print writes and write nothing
+        type: boolean
+        default: true
 
 jobs:
   cycle:
@@ -23,6 +26,7 @@ jobs:
           fi
           hour=$(TZ=America/New_York date +%H)
           hour=$((10#$hour))
+          hour=$((10#$hour))
           if [ $((hour % 2)) -eq 0 ]; then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
@@ -30,19 +34,20 @@ jobs:
             echo "skip odd America/New_York hour $hour"
           fi
 
-      - name: Every track, one cycle
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.run == 'true'
+        with:
+          node-version: "20"
+
+      - name: One node, touched tracks only
         if: steps.gate.outputs.run == 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           MODEL: ${{ vars.MODEL }}
           NOTIFY_WEBHOOK: ${{ secrets.NOTIFY_WEBHOOK }}
+          ACTIVE_TRACKS: ${{ vars.ACTIVE_TRACKS }}
+          MAX_SEARCHES: ${{ vars.MAX_SEARCHES }}
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == false && 'false' || 'true' }}
         run: |
-          set -euo pipefail
-          echo "tracks:"
-          find domains -maxdepth 1 -name '*.md' -printf '%f\n' | sort
-          echo "assimilate rows and growth board are in that set"
-          if [ ! -f domains/forethinkers/think-tank.mjs ]; then
-            echo "no runner yet; schedule is live, model call is not"
-            exit 0
-          fi
+          node --test domains/forethinkers/think-tank.test.mjs
           node domains/forethinkers/think-tank.mjs
