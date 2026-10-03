@@ -1,4 +1,4 @@
-﻿# void.growth — living Have / Next board
+# void.growth — living Have / Next board
 
 **Note (2026-10-03):** full board is being reassembled from `domains/forethinkers/_growth_parts/*.part` (assemble workflow). The magnetize-step claim is already in those parts.
 
@@ -7,5 +7,5 @@
 - **Why:** Forethinkers established that magnetization is independent of the MIT printer, so Void can hand a visitor a truthful handoff page before in-print magnetization exists. Complements the earlier printable-actuator-spec ask.
 - **Reuse:** article/page summon pattern, dated-source layout from Next #13, print-file download once export-to-print ships.
 - **Done when:** an ask such as "how do I magnetize a printed motor" or "show the magnetize step" opens the card with the three sources dated; soft-magnetic vs hard-magnetic is clear; no sold likeness; tests stay green.
-- **claim:** free
-- **claim_until:**
+- **claim:** building helper/magnetize-step
+- **claim_until:** 2026-10-03
