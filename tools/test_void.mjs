@@ -2027,6 +2027,10 @@ try {
       && invApi.inventoryOf("what's already built")?.kind === 'all'
       && !invApi.inventoryOf('weather in Tokyo'),
       JSON.stringify(invApi.inventoryOf('have we built weather')));
+    check('inventory: skill ids come from skills/index.json, including magnetize, share, and recent',
+      Array.isArray(invApi.SKILL_NAMES) && invApi.SKILL_NAMES.includes('magnetize') && invApi.SKILL_NAMES.includes('share') && invApi.SKILL_NAMES.includes('recent')
+      && invApi.SKILLS_BUILT.map((r) => r.id).join(',') === invApi.SKILL_NAMES.join(','),
+      (invApi.SKILL_NAMES || []).join(','));
   }
 
   const wtMod = (await import(new URL('../void-live-deploy/skills/worldtime.js', import.meta.url).href)).default;
