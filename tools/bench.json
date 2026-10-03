@@ -1006,5 +1006,12 @@
   {
     "ask": "how much tip for a $52 bill at 15%",
     "want": "skill:tip"
-  }
+  },
+  {"ask": "what time is it in tokyo right now", "want": "skill:worldtime"},
+  {"ask": "weather tomorrow in chicago", "want": "skill:weather"},
+  {"ask": "how far is boston from new york", "want": "skill:distance"},
+  {"ask": "upcoming holidays", "want": "skill:holidays"},
+  {"ask": "recommend books like the hobbit", "want": "skill:book"},
+  {"ask": "ethereum price", "want": "skill:crypto"},
+  {"ask": "what is 15% of 80", "want": "calc"}
 ]

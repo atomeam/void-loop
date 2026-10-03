@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · tilt to read (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 14px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+#reading{font-size:13px;color:#7cf;min-height:1.4em}
+#text{height:220px;overflow:auto;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:12px 14px;line-height:1.8}
+</style>
+</head>
+<body>
+<main>
+  <h1>tilt to read · draft · not published</h1>
+  <p class="note">A gesture you turn on, see, and turn off. Off by default. When you tap "turn on", the page asks the browser for motion access (your phone asks you too) and then reads only the forward/back tilt, shown below as a number. Tilt away to scroll down, toward you to scroll up; level stops it. Nothing is stored or sent; "turn off" stops the reading at once. Arrow keys do the same without any sensor.</p>
+  <div><button id="on" type="button" aria-pressed="false">turn on</button></div>
+  <div id="reading" aria-live="polite">off · no sensor is being read</div>
+  <div id="text" tabindex="0" aria-label="text to read"></div>
+</main>
+<script>
+(function(){
+  var text=document.getElementById('text'),reading=document.getElementById('reading'),btn=document.getElementById('on'),on=false,speed=0,raf=0;
+  for(var i=1;i<=40;i++){var p=document.createElement('p');p.textContent=i+'. A line to read while the page scrolls by tilt. Level the phone and it stops.';p.style.margin='0';text.appendChild(p)}
+  // tilt (degrees forward/back, beta) -> pixels per frame; a dead zone around the resting angle so a steady hand doesn't drift
+  function speedOf(beta,rest){var d=beta-rest;if(Math.abs(d)<6)return 0;return Math.max(-12,Math.min(12,(d-Math.sign(d)*6)*0.4))}
+  var rest=null;
+  function onTilt(e){if(!on||e.beta==null)return;if(rest===null)rest=e.beta;speed=speedOf(e.beta,rest);reading.textContent='on · tilt '+Math.round(e.beta-rest)+'° · '+(speed?((speed>0?'down ':'up ')+Math.abs(speed).toFixed(1)+' px/frame'):'still')}
+  function loop(){if(!on)return;if(speed)text.scrollTop+=speed;raf=requestAnimationFrame(loop)}
+  function stop(){on=false;speed=0;rest=null;cancelAnimationFrame(raf);window.removeEventListener('deviceorientation',onTilt);btn.textContent='turn on';btn.setAttribute('aria-pressed','false');reading.textContent='off · no sensor is being read'}
+  btn.addEventListener('click',function(){
+    if(on){stop();return}
+    var go=function(){on=true;window.addEventListener('deviceorientation',onTilt);btn.textContent='turn off';btn.setAttribute('aria-pressed','true');reading.textContent='on · hold the phone as you like to read; that angle is level';loop()};
+    var DOE=window.DeviceOrientationEvent;
+    if(DOE&&typeof DOE.requestPermission==='function'){DOE.requestPermission().then(function(r){if(r==='granted')go();else reading.textContent='motion access was not given · nothing is read'}).catch(function(){reading.textContent='motion access was not given · nothing is read'})}
+    else if(DOE)go();else reading.textContent='this browser has no motion sensor · arrow keys still scroll';
+  });
+  text.addEventListener('keydown',function(e){if(e.key==='ArrowDown'){text.scrollTop+=30;e.preventDefault()}if(e.key==='ArrowUp'){text.scrollTop-=30;e.preventDefault()}});
+  window.__tilt={speedOf:speedOf,isOn:function(){return on}}; // for checks
+})();
+</script>
+</body>
+</html>
