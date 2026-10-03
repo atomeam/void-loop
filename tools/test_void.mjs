@@ -394,7 +394,7 @@ try {
     await C.ask('put lunch with Ana on my calendar tomorrow at noon', 900);
     const agenda = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]'));
     const card = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
-    const netAdds = net.slice();
+    const netAdds = net.slice(), pageAfterAdds = await C.page(); // read now: "calender" and "agenda" below open the 3D calendar
     await C.ask('schedule a meeting with Sam on Friday at 3', 700); const gated = await C.whisper();
     await C.ask('calender', 700); const shown = await C.p.$$eval('.calendar-card', (d) => d.length);
     await C.p.reload(); await C.p.waitForTimeout(700); const afterReload = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
@@ -405,11 +405,26 @@ try {
     const afterX = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
     await C.ask('undo', 400); const afterUndo = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
     check('calendar: a visitor adds "call Sam next Tuesday at 4", "add dentist to my calendar Oct 12 at 3pm", "put lunch with Ana on my calendar tomorrow at noon"; all saved here and on the stage card; no yes, no server, no Wikipedia',
-      agenda.length === 3 && /Call Sam/.test(card) && /dentist/i.test(card) && /Lunch with Ana/i.test(card) && /on your calendar: Call Sam/.test(said) && !netAdds.length && !(await C.page()),
-      JSON.stringify(agenda.map((e) => e.title)) + ' | ' + said + ' | ' + netAdds.join(',') + ' | ' + card.slice(0, 120));
+      agenda.length === 3 && /Call Sam/.test(card) && /dentist/i.test(card) && /Lunch with Ana/i.test(card) && /on your calendar: Call Sam/.test(said) && !netAdds.length && !pageAfterAdds,
+      JSON.stringify(agenda.map((e) => e.title)) + ' | ' + said + ' | ' + netAdds.join(',') + ' | page: ' + pageAfterAdds.slice(0, 60) + ' | ' + card.slice(0, 120));
     check('calendar: "schedule a meeting with Sam" is the owner\'s confirm line (a visitor is told so, nothing saved); "calender" shows one card; the card survives a reload; "remove my calendar" hides it and keeps the events; × removes one and undo brings it back',
       /only the owner/.test(gated) && shown === 1 && /Call Sam/.test(afterReload) && gone === 0 && kept === 3 && afterX === 2 && afterUndo === 3 && !net.some((u) => /wikipedia|miss|answer/.test(u)),
       [gated, shown, afterReload.slice(0, 40), gone, kept, afterX, afterUndo, net.join(',')].join(' | '));
+    // the 3D wall calendar: "my calendar" opens it; tap a day, add an event in the editor, rename it; it is saved and on the card
+    await C.ask('my calendar', 900);
+    const c3 = await C.p.evaluate(async () => {
+      const pg = document.querySelector('.vpage.on'); if (!pg || !pg.querySelector('.c3d-page')) return 'no 3d page';
+      const day = [...pg.querySelectorAll('.c3d-day:not(.out)')][14]; day.click(); await new Promise((r) => setTimeout(r, 50));
+      const row = pg.querySelector('.c3d-edit .row.add'); row.querySelector('.w').value = 'Launch party'; row.querySelector('.t').value = '19:30'; row.querySelector('.ok').click();
+      await new Promise((r) => setTimeout(r, 50));
+      const w = pg.querySelector('.c3d-edit .row:not(.add) .w'); w.value = 'Launch party at the lab'; w.dispatchEvent(new Event('change', { bubbles: true }));
+      await new Promise((r) => setTimeout(r, 50));
+      const ev = JSON.parse(localStorage.getItem('a2m.void.agenda.v1')).find((e) => /Launch/.test(e.title));
+      return [ev && ev.title, ev && new Date(ev.at).getDate() === 15 && new Date(ev.at).getHours() === 19, [...pg.querySelectorAll('.c3d-ev')].some((e) => /Launch party at the lab/.test(e.textContent))].join(' ');
+    });
+    const card3 = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
+    check('calendar: "my calendar" opens the 3D wall calendar; tap a day, add an event and rename it in place; saved here, written on the day, on the stage card',
+      c3 === 'Launch party at the lab true true' && /Launch party at the lab/.test(card3) && !C.errors.length, c3 + ' | ' + card3.slice(0, 80));
     await C.ctx.close(); }
   // Earned effects (Atom 2026-09-28: personal layer first): the public stage runs no WebGL; the nebula and the particle swarm
   // start only when someone asks in their own Void, and "calm my void" stops them. Card physics: a grabbed card comes to the front.
@@ -623,6 +638,17 @@ try {
     check('owner board: what Void earned (net, sales), its milestones and the free-model shortfalls sit on top of the board',
       /Earned \$98\.00/.test(bp) && /2 sales/.test(bp) && /sales-1/.test(bp) && /fell short 3 times/.test(bp) && /make me an app/.test(bp) && !O.errors.length, bp.slice(0, 200));
     await O.ctx.close(); }
+  // "unlock <key>" is the first thing handled: pasted with or without the space (or "unlock" twice) it is saved on this
+  // device and nothing carrying the key leaves the page (it once went to the answer model and the miss board).
+  { const U = await fresh(); const leaked = []; U.p.on('request', (r) => { if (/0123456789abcdef0123/.test(r.url() + (r.postData() || ''))) leaked.push(r.url()); });
+    const keys = [];
+    for (const a of ['unlock 0123456789abcdef0123456789abcdef', 'unlock0123456789abcdef0123456789abcdef', 'unlockunlock 0123456789abcdef0123456789abcdef']) {
+      await U.p.evaluate(() => localStorage.removeItem('a2m.void.owner.v1'));
+      await U.ask(a, 700); keys.push(await U.p.evaluate(() => localStorage.getItem('a2m.void.owner.v1')));
+    }
+    check('unlock: with or without the space (or doubled) the key is saved on this device, and no request carries it',
+      keys.every((k) => k === '0123456789abcdef0123456789abcdef') && !leaked.length && !U.errors.length, JSON.stringify(keys) + ' ' + leaked.join(','));
+    await U.ctx.close(); }
   // How-to asks, "what are you", "remove every clock", "reset my void" (list items 48, 88, 89, 96).
   { const H = await fresh(); const net = []; H.p.on('request', (r) => { if (/wikipedia\.org|\/api\/(answer|miss)$/.test(r.url())) net.push(r.url()); });
     await H.ask('how do I make a timer', 700); const how = await H.page(); const lit = await H.p.$eval('.vpage.on li.focus', (e) => e.textContent).catch(() => '');
@@ -1522,7 +1548,7 @@ try {
   // the page: an injected answer is only text; agents can't start or answer a send, spend or forget; a script's click never says yes
   let d = await fresh(() => { window.__tools = {}; document.modelContext = { registerTool: async (x) => { window.__tools[x.name] = x; } }; });
   await d.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
-  const callsBefore = gate.calls.length, ranBefore = gate.ran.length;
+  const callsBefore = gate.calls.length, ranBefore = gate.ran.length, missesBefore = missesCalls.length; // the owner's own unlock earlier opens the board
   await d.ask('inject: what is the capital of France', 900);
   await until(async () => /gift cards/.test(await d.page()), 4000);
   const inj = await d.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return { imgs: pg ? pg.querySelectorAll('p img, p script').length : -1, js: [...document.querySelectorAll('.vpage.on a')].some((a) => /^javascript:/i.test(a.getAttribute('href') || '')), pwned: !!window.__pwned }; });
@@ -1534,7 +1560,7 @@ try {
   const agentBuy = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'buy 2 bags of coffee for $24' }));
   const agentBoard = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'show the board' }));
   check('defences: an agent (WebMCP) can\'t start a send or a spend, or read the owner\'s board, even in the owner\'s browser',
-    /person at the screen/.test(agentSend) && /person at the screen/.test(agentBuy) && /owner/.test(agentBoard) && gate.calls.length === callsBefore && missesCalls.length === 0, [agentSend, agentBuy, agentBoard, missesCalls.length].join(' | '));
+    /person at the screen/.test(agentSend) && /person at the screen/.test(agentBuy) && /owner/.test(agentBoard) && gate.calls.length === callsBefore && missesCalls.length === missesBefore, [agentSend, agentBuy, agentBoard, missesCalls.length - missesBefore].join(' | '));
   await d.ask('send an email to jane@x.com saying hi', 900);
   const line = await d.whisper();
   const agentYes = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'yes' }));
