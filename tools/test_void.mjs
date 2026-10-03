@@ -314,7 +314,21 @@ async function fresh(...inits) {
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Black hole' }] } }));
     if (u.includes('/page/summary/')) return r.fulfill(json({ title: 'Black hole', extract: 'A region of spacetime.', timestamp: '2026-09-20T10:00:00Z' }));
     if (u.includes('geocoding-api.open-meteo.com')) return r.fulfill(json({ results: [{ name: 'Lisbon', country: 'Portugal', latitude: 38.7, longitude: -9.1, population: 500000 }, { name: 'Lisbon', admin1: 'Ohio', country: 'United States', latitude: 40.7, longitude: -80.7, population: 2800 }] }));
-    if (u.includes('air-quality-api.open-meteo.com')) return r.fulfill(json({ current: { time: '2026-10-03T12:00', us_aqi: 42, european_aqi: 25, pm2_5: 10.2, pm10: 18.0, ozone: 55, nitrogen_dioxide: 12, sulphur_dioxide: 3, carbon_monoxide: 140, us_aqi_pm2_5: 42, us_aqi_pm10: 16, us_aqi_ozone: 18, us_aqi_nitrogen_dioxide: 11, us_aqi_sulphur_dioxide: 2, us_aqi_carbon_monoxide: 2 } }));
+    if (u.includes('air-quality-api.open-meteo.com')) {
+      if (/grass_pollen|birch_pollen|alder_pollen/.test(u)) {
+        const d0 = new Date(); d0.setHours(0,0,0,0);
+        const d1 = new Date(d0); d1.setDate(d1.getDate()+1);
+        const fmt = (d) => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+        const day0 = fmt(d0), day1 = fmt(d1);
+        const times = [];
+        for (let i=0;i<24;i++) times.push(day0+'T'+String(i).padStart(2,'0')+':00');
+        for (let i=0;i<24;i++) times.push(day1+'T'+String(i).padStart(2,'0')+':00');
+        const grass = Array(24).fill(45).concat(Array(24).fill(70));
+        const birch = Array(24).fill(12).concat(Array(24).fill(18));
+        return r.fulfill(json({ hourly: { time: times, grass_pollen: grass, birch_pollen: birch, alder_pollen: Array(48).fill(3), olive_pollen: Array(48).fill(0), mugwort_pollen: Array(48).fill(8), ragweed_pollen: Array(48).fill(22) } }));
+      }
+      return r.fulfill(json({ current: { time: '2026-10-03T12:00', us_aqi: 42, european_aqi: 25, pm2_5: 10.2, pm10: 18.0, ozone: 55, nitrogen_dioxide: 12, sulphur_dioxide: 3, carbon_monoxide: 140, us_aqi_pm2_5: 42, us_aqi_pm10: 16, us_aqi_ozone: 18, us_aqi_nitrogen_dioxide: 11, us_aqi_sulphur_dioxide: 2, us_aqi_carbon_monoxide: 2 } }));
+    }
     if (u.includes('earthquake.usgs.gov')) {
       const now = Date.now();
       return r.fulfill(json({ type: 'FeatureCollection', features: [
@@ -749,6 +763,10 @@ try {
   await t.ask('air quality in Lisbon', 1200); const airPg = await t.page(); check('air quality', /US AQI/.test(airPg) && /Good|Moderate|Unhealthy|Hazardous/.test(airPg) && /Open-Meteo/.test(airPg), airPg.slice(0, 120));
   await t.ask('UV index in Lisbon', 1200); const uvPg = await t.page(); check('uv index', /UV index/.test(uvPg) && /Low|Moderate|High|Very High|Extreme/.test(uvPg) && /Open-Meteo/.test(uvPg) && /WHO/.test(uvPg), uvPg.slice(0, 120));
   await t.ask('earthquakes near Lisbon', 1200); const quakePg = await t.page(); check('earthquakes', /Near Lisbon|Earthquakes|USGS/.test(quakePg) && /M5\.2|M3\.1|magnitude|Major|Strong|Moderate|Light|Minor/.test(quakePg), quakePg.slice(0, 160));
+  await t.ask('monthly payment on a $250000 mortgage at 6.5% for 30 years', 700); const loanPg = await t.page(); check('loan payment', /\/ month/.test(loanPg) && /Total interest/.test(loanPg) && /mortgage/i.test(loanPg) && /First year/.test(loanPg) && /extra each month/.test(loanPg), loanPg.slice(0, 180));
+  await t.ask('$300k mortgage at 6.5% for 30 years with $200 extra a month', 700); const loanX = await t.page(); check('loan extra payment', /extra \/ month/.test(loanX) && /months sooner/.test(loanX) && /save/.test(loanX) && /interest/.test(loanX), loanX.slice(0, 180));
+  await t.ask('gas cost for 320 miles at 28 mpg $3.59 a gallon', 700); const fuelPg = await t.page(); check('trip fuel', /Trip fuel/.test(fuelPg) && /Fuel needed/.test(fuelPg) && /Per mile/.test(fuelPg) && /gal/.test(fuelPg), fuelPg.slice(0, 180));
+  await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
   await t.ask('5 miles in km', 700); check('calculation', /8\.05/.test(await t.page()));
@@ -1877,7 +1895,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
@@ -2172,3 +2190,4 @@ const bad = results.filter((r) => !r.ok);
 for (const r of results) console.log((r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
 console.log(`${results.length - bad.length}/${results.length} passed`);
 process.exit(bad.length ? 1 : 0);
+
