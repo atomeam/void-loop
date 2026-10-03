@@ -10,3 +10,4 @@ Push the build to `helper/<slug>`. Void ship helper tests once, fast-forwards ma
 | shipped 8642810 | 2026-10-02 | answer me in Spanish | plan item 9, Void in other languages |
 | shipped d972baf | 2026-10-02 | remind me at 5 | plan item 7, connector behind the confirm line |
 | shipped 2e67f4b | 2026-10-03 | recent asks on an empty box | board Next #15 (Grok idea F001) |
+| building | 2026-10-03 | recent earthquakes | visitor summon, USGS feed (no key) |
