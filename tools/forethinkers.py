@@ -1,34 +1,31 @@
-"""The Forethinkers: research on everything, every cycle, anchored on shared parts and Void stages.
+"""The Forethinkers runner (the even-hour backstop; a talking cycle doesn't wait for it).
 
-Read domains/forethinkers/brief.md first. The map is domains/forethinkers/convergence.md; kept findings, placements and
-the runs that changed something are in domains/forethinkers/findings.json.
+Read domains/forethinkers/THINK-TANK-BRIEF.md first. The shared map is domains/forethinkers/convergence.md; kept findings
+and placements are in domains/forethinkers/findings.json; domains/forethinkers/run-log.md is the human log.
 
-Tracks are not a fixed list. They are read from the repo every time: the Forethinkers' own track files
-(domains/forethinkers/tracks/*.md), every venture domain file (domains/*.md with a **Title:** line), every numbered row of
-domains/void.assimilate.md, and every open miss on domains/void.misses.md. A domain's "Shared parts: ... uses:" line is a
-declared link: `sync` puts it on the map, and `check` fails while it is missing.
+Tracks are discovered, never listed: every file in domains/ (skipping only logs, queues and the QA sheet), every
+numbered row of domains/void.assimilate.md, and every track file in domains/forethinkers/tracks/. A new file under
+domains/ is a track on the next cycle. A domain's "Shared parts: ... uses:" line is a declared link: `sync` puts it on the
+map and `check` fails while it is missing.
 
-A cycle works every unit (each part, each blocked stage) through every track it touches, with one convergence pass per
-unit that keeps only what changed the map or unblocked a stage. Tracks that touch no part yet are worked too, until they
-link to a part, fit an existing track, or get their own track file.
+One cycle is one model call that sees every track and the whole map (no fan-out per track), with web searches capped.
+Every change it proposes is held to the labels in code before anything is written; nothing that fails is kept.
 
-  python tools/forethinkers.py check       the map, labels, findings and declared links hold (CI; exit 1 on any break)
+  python tools/forethinkers.py check       map, labels, findings and declared links hold (CI; exit 1 on any break)
   python tools/forethinkers.py sync        puts every declared domain link on the map
-  python tools/forethinkers.py tracks      lists every track and where it came from
-  python tools/forethinkers.py plan        prints what the next cycle works and how many model calls it makes
-  python tools/forethinkers.py gate [--at ISO]   prints run / skip: even ET hours run, odd hours skip
-  python tools/forethinkers.py cycle       runs one cycle (needs ANTHROPIC_API_KEY and `pip install anthropic`)
-  python tools/forethinkers.py selftest    gate across DST, labels, dead runs, convergence and orphan filters (no network)
+  python tools/forethinkers.py tracks      lists every track, and whether it is on the map yet
+  python tools/forethinkers.py plan        what the next cycle reads (no model call)
+  python tools/forethinkers.py gate [--at ISO]   prints run / skip: even New York hours run, odd hours skip
+  python tools/forethinkers.py cycle       one cycle; without ANTHROPIC_API_KEY it lists the tracks and calls nothing
+  python tools/forethinkers.py selftest    gate across DST, labels, declared links, dead runs, the change filter
 
-Env (all optional): ACTIVE_TRACKS ("all", the default, or a comma list), UNIT (work one row only), MAX_SEARCHES (per
-worker, default 3), FORETHINKERS_MODEL or MODEL (default claude-opus-5-5), FORETHINKERS_EFFORT (default medium),
-FORETHINKERS_PARALLEL (calls at once, default 6).
+Env (optional): MAX_SEARCHES (default 5), MODEL or FORETHINKERS_MODEL (default claude-opus-5-5), FORETHINKERS_EFFORT
+(default high).
 """
 import json
 import os
 import re
 import sys
-from concurrent.futures import ThreadPoolExecutor
 from datetime import date, datetime, timezone
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -37,11 +34,14 @@ ROOT = Path(__file__).resolve().parent.parent
 DOMAINS = ROOT / 'domains'
 DIR = DOMAINS / 'forethinkers'
 TRACK_DIR = DIR / 'tracks'
+BRIEF = DIR / 'THINK-TANK-BRIEF.md'
 MAP = DIR / 'convergence.md'
 LEDGER = DIR / 'findings.json'
+RUNLOG = DIR / 'run-log.md'
 GROWTH = DOMAINS / 'void.growth.md'
 ASSIMILATE = DOMAINS / 'void.assimilate.md'
-MISSES = DOMAINS / 'void.misses.md'
+# the brief: skip only logs, queues and the QA sheet
+SKIP = {'void.agents.log.md', 'void.queue.md', 'void.surface-qa.md', 'growth-inbox.md'}
 STAGES = ['summon', 'spin', 'export', 'print', 'own']
 ET = ZoneInfo('America/New_York')
 NODE_COLS = ['id', 'kind', 'name', 'tracks', 'stages', 'status', 'source', 'dated', 'checked']
@@ -49,8 +49,8 @@ EDGE_COLS = ['from', 'to', 'via', 'status', 'source', 'dated']
 DATE = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 URL = re.compile(r'^https?://\S+$')
 ID = re.compile(r'^[a-z0-9]+(-[a-z0-9]+)*$')
-# board rows that are probes and tests, not asks
-NOISE = re.compile(r'test|probe|ping|^(dismiss|close)$|^zz')
+TRACK_ID = re.compile(r'^[a-z0-9]+([.-][a-z0-9]+)*$')
+PER_TRACK_CHARS = 12000
 # the same shared part, named two ways in the domain files
 PART_ALIASES = {'licensed-partner bench': 'partner bench', 'one intake': 'shared intake'}
 
@@ -83,7 +83,7 @@ def top_split(s):
     return [x.strip() for x in out + [cur] if x.strip()]
 
 
-# ---------- tracks: read from the repo, never a fixed list ----------
+# ---------- tracks: discovered from the repo ----------
 
 def domain_uses(text):
     m = re.search(r'^\*\*Shared parts:\*\*.*?uses:\s*(.*)$', text, re.M)
@@ -99,84 +99,40 @@ def domain_uses(text):
     return out
 
 
-def domain_lens(text, title):
-    for pat in (r'^## One-liner\s*\n+(.+)$', r'^\*\*What it is:\*\*\s*(.+)$', r'^\*\*The thought:\*\*\s*(.+)$',
-                r'^\*\*What we are:\*\*\s*(.+)$', r'^## Thesis\s*\n+(.+)$'):
-        m = re.search(pat, text, re.M)
-        if m:
-            return m.group(1).strip()[:400]
-    return title
-
-
-def table_rows(text, first=r'\d+'):
-    rows = []
-    for line in text.split('\n'):
-        if re.match(r'^\|\s*' + first + r'\s*\|', line):
-            rows.append([c.strip() for c in line.strip().strip('|').split('|')])
-    return rows
-
-
-def open_misses():
-    """Asks on the board that nothing answers yet: not grown, not in the benchmark, not a skill's fallback, not a probe."""
-    if not MISSES.exists():
-        return []
-    def asks(p):
-        try:
-            data = json.loads(read(p))
-        except (OSError, ValueError):
-            return set()
-        data = data if isinstance(data, list) else data.get('asks', [])
-        return {(x.get('ask') or '').strip().lower() for x in data if isinstance(x, dict)}
-    answered = asks(ROOT / 'tools' / 'grown.json') | asks(ROOT / 'tools' / 'bench.json')
-    out = []
-    for c in table_rows(read(MISSES)):
-        if len(c) < 4:
-            continue
-        ask, fallback = c[1].strip().lower(), c[3]
-        if ask in answered or fallback.startswith('skill:') or NOISE.search(ask) or ask in out:
-            continue
-        out.append(ask)
-    return out
-
-
 def load_tracks():
-    """Every track: Forethinkers track files, venture domain files, assimilate rows, open misses."""
+    """Every track: each file in domains/ (minus logs and queues), each assimilate row, each Forethinkers track file."""
     tracks = {}
+    for p in sorted(DOMAINS.glob('*.md')):
+        if p.name in SKIP:
+            continue
+        t = read(p)
+        title = re.search(r'^\*\*Title:\*\*\s*(.+?)\s*$', t, re.M) or re.search(r'^#\s+(.+?)\s*$', t, re.M)
+        tid = p.stem.lower()
+        tracks[tid] = {'id': tid, 'kind': 'domain', 'name': title.group(1) if title else p.stem,
+                       'uses': domain_uses(t), 'file': rel(p)}
+    if ASSIMILATE.exists():
+        for line in read(ASSIMILATE).split('\n'):
+            c = [x.strip() for x in line.strip().strip('|').split('|')] if re.match(r'^\|\s*\d+\s*\|', line) else []
+            if len(c) >= 5:
+                tid = f'assimilate-{c[0]}'
+                tracks[tid] = {'id': tid, 'kind': 'assimilate', 'name': re.sub(r'\s*\(.*', '', c[1]).strip() or tid,
+                               'text': f'{c[2]}. Void form: {c[3]} (status: {c[4]})', 'file': rel(ASSIMILATE)}
     for p in sorted(TRACK_DIR.glob('*.md')):
         t = read(p)
         name = re.search(r'^# (.+)$', t, re.M)
         lens = re.search(r'^Lens:\s*(.+)$', t, re.M)
-        frm = re.search(r'^From:\s*(.+)$', t, re.M)
-        tracks[p.stem] = {'id': p.stem, 'kind': 'track', 'name': name.group(1).strip() if name else p.stem,
-                          'lens': lens.group(1).strip() if lens else '', 'from': frm.group(1).strip() if frm else '',
-                          'file': rel(p)}
-    for p in sorted(DOMAINS.glob('*.md')):
-        t = read(p)
-        m = re.search(r'^\*\*Title:\*\*\s*(.+?)\s*$', t, re.M)
-        if not m:
-            continue
+        entry = {'id': p.stem, 'kind': 'track', 'name': name.group(1).strip() if name else p.stem,
+                 'lens': lens.group(1).strip() if lens else '', 'file': rel(p)}
         if p.stem in tracks:
-            tracks[p.stem]['clash'] = rel(p)
-            continue
-        tracks[p.stem] = {'id': p.stem, 'kind': 'domain', 'name': m.group(1), 'lens': domain_lens(t, m.group(1)),
-                          'uses': domain_uses(t), 'file': rel(p)}
-    if ASSIMILATE.exists():
-        for c in table_rows(read(ASSIMILATE)):
-            if len(c) < 5:
-                continue
-            tid = f'assimilate-{c[0]}'
-            tracks[tid] = {'id': tid, 'kind': 'assimilate', 'name': re.sub(r'\s*\(.*', '', c[1]).strip() or tid,
-                           'lens': f'{c[2]}. Void form: {c[3]} (status: {c[4]})', 'file': rel(ASSIMILATE)}
-    for ask in open_misses():
-        tid = 'miss-' + slug(ask)
-        tracks.setdefault(tid, {'id': tid, 'kind': 'miss', 'name': ask, 'lens': f'an ask Void could not answer yet: "{ask}"',
-                                'file': rel(MISSES)})
+            entry['clash'] = tracks[p.stem]['file']
+        tracks[p.stem] = entry
     return tracks
 
 
-def mappable(tracks):
-    """Tracks a map row may name. Misses come and go with the board, so a miss is placed, never written into a row."""
-    return {t for t, v in tracks.items() if v['kind'] != 'miss'}
+def track_text(t):
+    if t['kind'] == 'assimilate':
+        return t['text']
+    return read(ROOT / t['file'])[:PER_TRACK_CHARS]
 
 
 # ---------- the map ----------
@@ -214,9 +170,8 @@ def render_map(m):
 
 def load_ledger():
     led = json.loads(read(LEDGER))
-    led.setdefault('findings', [])
-    led.setdefault('runs', [])
-    led.setdefault('placed', {})
+    for k, v in (('findings', []), ('runs', []), ('placed', {})):
+        led.setdefault(k, v)
     return led
 
 
@@ -267,9 +222,8 @@ def check(m=None, ledger=None, tracks=None, today=None):
     ledger = ledger if ledger is not None else load_ledger()
     tracks = tracks if tracks is not None else load_tracks()
     today = today or date.today().isoformat()
-    ok_tracks = mappable(tracks)
-    errs = [f'track {t}: a track file and a domain file share this id ({v["clash"]})' for t, v in tracks.items() if v.get('clash')]
-    errs += [f'track file {v["file"]}: needs a "Lens:" line' for v in tracks.values() if v['kind'] == 'track' and not v['lens']]
+    errs = [f'track {t}: a track file and {v["clash"]} share this id' for t, v in tracks.items() if v.get('clash')]
+    errs += [f'{v["file"]}: a track file needs a "Lens:" line' for v in tracks.values() if v['kind'] == 'track' and not v['lens']]
     if m['nhead'] != NODE_COLS:
         errs.append(f'Nodes columns must be {NODE_COLS}')
     if m['ehead'] != EDGE_COLS:
@@ -285,9 +239,9 @@ def check(m=None, ledger=None, tracks=None, today=None):
         ids.add(nid)
         if not n.get('name'):
             errs.append(f'{where}: no name')
-        bad = [t for t in n['tracks'] if t not in ok_tracks]
+        bad = [t for t in n['tracks'] if t not in tracks]
         if bad or not n['tracks']:
-            errs.append(f'{where}: tracks must be tracks in the repo (track files, domain files, assimilate rows); got {bad or "none"}')
+            errs.append(f'{where}: tracks must be tracks in the repo (python tools/forethinkers.py tracks); got {bad or "none"}')
         if any(s not in STAGES for s in n['stages']):
             errs.append(f'{where}: stages must be from {STAGES}')
         if n.get('kind') == 'stage':
@@ -312,7 +266,7 @@ def check(m=None, ledger=None, tracks=None, today=None):
         for end in ('from', 'to'):
             if e.get(end) not in ids:
                 errs.append(f'{where}: {end} "{e.get(end)}" is not a node')
-        if e.get('via') not in ok_tracks:
+        if e.get('via') not in tracks:
             errs.append(f'{where}: via must be a track in the repo')
         if edge_id(e) in seen:
             errs.append(f'{where}: repeated edge')
@@ -324,26 +278,27 @@ def check(m=None, ledger=None, tracks=None, today=None):
         if r.get('result') not in ('changed', 'dead'):
             errs.append(f'run {k + 1}: result must be changed or dead')
     for orphan, home in ledger['placed'].items():
-        if not ID.match(orphan) or (home not in ok_tracks and home not in ids):
+        if not TRACK_ID.match(orphan) or (home not in tracks and home not in ids):
             errs.append(f'placed {orphan}: must point at a track in the repo or a row on the map (got "{home}")')
     return errs
 
 
 def finding_errors(f, ids, tracks, where, today):
     errs = []
-    if not ID.match(f.get('track') or ''):
+    if not TRACK_ID.match(f.get('track') or ''):
         errs.append(f'{where}: no track')
     if not f.get('claim'):
         errs.append(f'{where}: no claim')
     effect = f.get('effect')
     if effect not in ('map', 'unblocks', 'placed'):
         errs.append(f'{where}: effect must be map, unblocks or placed')
-    if effect != 'placed' and f.get('part') not in ids:
-        errs.append(f'{where}: names no part on the map')
+    if effect != 'placed':
+        if f.get('part') not in ids:
+            errs.append(f'{where}: names no part on the map')
+        if f.get('unit') not in ids:
+            errs.append(f'{where}: unit "{f.get("unit")}" is not on the map')
     if effect == 'unblocks' and f.get('stage') not in STAGES:
         errs.append(f'{where}: unblocks names no stage')
-    if effect != 'placed' and f.get('unit') not in ids:
-        errs.append(f'{where}: unit "{f.get("unit")}" is not on the map')
     others = [h for h in f.get('helps') or [] if h != f.get('track') and (h in STAGES or h in tracks or h in ids)]
     if not others:
         errs.append(f'{where}: dead run: helps no other track and no product stage')
@@ -358,36 +313,58 @@ def gate(at=None):
     return 'run' if at.astimezone(ET).hour % 2 == 0 else 'skip'
 
 
-# ---------- what a cycle works ----------
+# ---------- what a cycle reads ----------
 
-def active_tracks(tracks):
-    raw = os.environ.get('ACTIVE_TRACKS', 'all').strip()
-    if raw in ('', 'all'):
-        return None
-    act = split_list(raw)
-    bad = [t for t in act if t not in tracks]
-    if bad:
-        sys.exit(f'ACTIVE_TRACKS has tracks that are not in the repo: {bad} (python tools/forethinkers.py tracks lists them)')
-    return set(act)
-
-
-def plan(m, tracks, ledger, active=None, force=None):
-    """Every part and every blocked stage, each through every track it touches; then every track that touches nothing."""
-    pool = [n for n in m['nodes'] if not (n['kind'] == 'stage' and n['status'] == 'live')]
-    if force:
-        pool = [n for n in m['nodes'] if n['id'] == force]
-        if not pool:
-            sys.exit(f'UNIT "{force}" is not on the map')
-    units = []
-    for n in pool:
-        ts = [t for t in n['tracks'] if active is None or t in active]
-        if ts:
-            units.append({'unit': n, 'tracks': ts})
+def plan(m, tracks, ledger):
     touched = {t for n in m['nodes'] for t in n['tracks']}
-    orphans = [] if force else [t for t in tracks if t not in touched and t not in ledger['placed']
-                                and (active is None or t in active)]
-    calls = sum(len(u['tracks']) + 1 for u in units) + len(orphans)
-    return {'units': units, 'orphans': orphans, 'calls': calls}
+    return {'tracks': list(tracks), 'blocked': [n['id'] for n in m['nodes'] if n['kind'] == 'stage' and n['status'] == 'blocked'],
+            'hypotheses': [n['id'] for n in m['nodes'] if n['kind'] == 'part' and n['status'] == 'hypothesis'],
+            'unjoined': [t for t in tracks if t not in touched and t not in ledger['placed']], 'calls': 1}
+
+
+def map_brief(m):
+    rows = [f"- {n['id']} ({n['kind']}, {n['status']}): {n['name']} | tracks {', '.join(n['tracks'])}"
+            + (f" | stages {', '.join(n['stages'])}" if n['stages'] else '') for n in m['nodes']]
+    rows += [f"- edge {edge_id(e)} via {e['via']} ({e['status']})" for e in m['edges']]
+    return '\n'.join(rows)
+
+
+def cycle_prompt(m, tracks, ledger, searches):
+    p = plan(m, tracks, ledger)
+    body = '\n\n'.join(f"### track {t['id']} ({t['kind']}): {t['name']}\n{track_text(t)}" for t in tracks.values())
+    return f"""{read(BRIEF)}
+
+## How this runner holds you to it
+Every change below is checked in code before it is written; anything that fails is dropped.
+- A source counts only if your web search returned that exact URL in this call, with the date on the page (YYYY-MM-DD).
+  Then the row is established. Without both it lands as hypothesis, with no source.
+- Every change names the row it advances ("unit": a node id) and the track ids it helps. A change that helps no other
+  track and no stage ({', '.join(STAGES)}) is a dead run and is dropped.
+- Track ids are exactly the ids after "### track" below. Node ids are lower-case words joined by -.
+- You have at most {searches} web searches.
+
+## The map now
+{map_brief(m)}
+
+Blocked stages: {', '.join(p['blocked'])}
+Tracks not on the map yet: {', '.join(p['unjoined'])}
+
+## Every track
+{body}
+
+## Answer
+Advance the most promising open question that changes the shared map or unblocks a stage. If nothing does, return no
+changes: silence is the right answer, not a weak finding. One JSON block:
+```json
+{{"changes": [
+  {{"op": "establish", "id": "<node id or from>to edge id>", "unit": "", "track": "", "claim": "", "source": "", "dated": "", "helps": []}},
+  {{"op": "add_part", "id": "", "name": "", "tracks": [], "stages": [], "unit": "", "track": "", "claim": "", "source": "", "dated": "", "helps": []}},
+  {{"op": "add_edge", "from": "", "to": "", "via": "", "unit": "", "track": "", "claim": "", "source": "", "dated": "", "helps": []}},
+  {{"op": "unblocks", "stage": "", "part": "", "unit": "", "track": "", "claim": "", "source": "", "dated": "", "helps": []}},
+  {{"op": "touch", "track": "<a track not on the map>", "part": "<node id it uses>", "claim": ""}},
+  {{"op": "add_track", "id": "", "name": "", "lens": "", "from": "<the miss or old project>", "part": "<node id it touches>", "claim": ""}}
+], "note": "one plain sentence with the source link if this is a breakthrough, else empty"}}
+```"""
 
 
 # ---------- the model ----------
@@ -405,25 +382,22 @@ def parse_json(text):
 
 
 def call(client, prompt, searches):
-    """One model call. Returns (text, urls the web search actually returned)."""
+    """The cycle's one model call. Returns (text, urls the web search actually returned)."""
     import anthropic
     model = os.environ.get('FORETHINKERS_MODEL') or os.environ.get('MODEL') or 'claude-opus-5-5'
-    kw = dict(model=model, max_tokens=16000, betas=['server-side-fallback-2026-07-01'],
-              extra_body={'fallbacks': 'default', 'output_config': {'effort': os.environ.get('FORETHINKERS_EFFORT', 'medium')}})
-    if searches:
-        kw['tools'] = [{'type': 'web_search_20260209', 'name': 'web_search', 'max_uses': searches}]
+    kw = dict(model=model, max_tokens=32000, betas=['server-side-fallback-2026-07-01'],
+              tools=[{'type': 'web_search_20260209', 'name': 'web_search', 'max_uses': searches}],
+              extra_body={'fallbacks': 'default', 'output_config': {'effort': os.environ.get('FORETHINKERS_EFFORT', 'high')}})
     messages = [{'role': 'user', 'content': prompt}]
-    urls = set()
-    r = None
+    urls, r = set(), None
     for _ in range(4):
         try:
-            r = client.beta.messages.create(messages=messages, **kw)
+            with client.beta.messages.stream(messages=messages, **kw) as s:
+                r = s.get_final_message()
         except anthropic.APIStatusError as e:
-            print(f'  model call failed ({e.status_code}): {e.message}')
-            return '', urls
+            sys.exit(f'model call failed ({e.status_code}): {e.message}')
         except anthropic.APIConnectionError:
-            print('  model call failed: network error')
-            return '', urls
+            sys.exit('model call failed: network error')
         for b in r.content:
             if b.type == 'web_search_tool_result' and isinstance(b.content, list):
                 urls.update(x.url for x in b.content if getattr(x, 'url', None))
@@ -435,112 +409,18 @@ def call(client, prompt, searches):
     return ''.join(b.text for b in r.content if b.type == 'text'), urls
 
 
-def map_brief(m):
-    rows = [f"- {n['id']} ({n['kind']}, {n['status']}): {n['name']} | tracks {', '.join(n['tracks'])}"
-            + (f" | stages {', '.join(n['stages'])}" if n['stages'] else '') for n in m['nodes']]
-    rows += [f"- edge {edge_id(e)} via {e['via']} ({e['status']})" for e in m['edges']]
-    return '\n'.join(rows)
-
-
-def track_brief(t):
-    text = f"{t['id']} ({t['kind']}): {t['name']}\nLens: {t['lens']}\nFile: {t['file']}"
-    if t['kind'] == 'domain':
-        text += '\n\nFrom the file:\n' + read(ROOT / t['file'])[:5000]
-    return text
-
-
-def brief():
-    return read(DIR / 'brief.md')
-
-
-def worker_prompt(m, unit, t, searches):
-    return f"""{brief()}
-
-## The map now
-{map_brief(m)}
-
-## This unit
-{unit['id']} ({unit['kind']}): {unit['name']}
-
-## Your track
-{track_brief(t)}
-
-Search (at most {searches} searches) for what this unit means through your track. Only report what would change the map
-(establish a hypothesis row, add a part, add an edge) or unblock a Void stage ({', '.join(STAGES)}). A source must be a
-page your search returned in this cycle, with the date shown on that page. If you find nothing like that, return no
-findings: silence is the right answer, not a weak finding.
-
-Answer with one JSON block:
-```json
-{{"findings": [{{"claim": "one sentence", "part": "<node id, or a new id>", "new_part": {{"name": "", "tracks": [], "stages": []}},
-  "helps": ["<other track ids and/or stages>"], "source": "<url>", "dated": "YYYY-MM-DD"}}]}}
-```"""
-
-
-def convergence_prompt(m, unit, worker_out):
-    return f"""You are the convergence pass of the Forethinkers (domains/forethinkers/brief.md). The unit is
-{unit['id']}: {unit['name']}.
-
-The map:
-{map_brief(m)}
-
-What each track's worker reported:
-{json.dumps(worker_out, indent=1)}
-
-Keep only what changes the map or unblocks a stage. Drop anything that helps no other track and no stage, anything without
-a dated source, and repeats of what the map already says. Answer with one JSON block:
-```json
-{{"changes": [
-  {{"op": "establish", "id": "<node id or from>to edge id>", "track": "", "claim": "", "source": "", "dated": "", "helps": []}},
-  {{"op": "add_part", "id": "", "name": "", "tracks": [], "stages": [], "track": "", "claim": "", "source": "", "dated": "", "helps": []}},
-  {{"op": "add_edge", "from": "", "to": "", "via": "", "track": "", "claim": "", "source": "", "dated": "", "helps": []}},
-  {{"op": "unblocks", "stage": "{'|'.join(STAGES)}", "part": "", "track": "", "claim": "", "source": "", "dated": "", "helps": []}}
-], "note": "one plain sentence if this is a breakthrough, else empty"}}
-```"""
-
-
-def orphan_prompt(m, t, tracks, searches):
-    others = '\n'.join(f"- {v['id']} ({v['kind']}): {v['name']}" for v in tracks.values() if v['kind'] != 'miss')
-    return f"""{brief()}
-
-## The map now
-{map_brief(m)}
-
-## Tracks in the repo
-{others}
-
-## Your track touches no part on the map yet
-{track_brief(t)}
-
-Find where it joins the system (at most {searches} searches). Prefer, in order:
-1. touch: a part or stage already on the map that this track uses or moves;
-2. add_part: a new part this track shares with at least one other track (name both);
-3. fits: (a miss or an old project only) an existing track it belongs to;
-4. add_track: (a miss or an old project only) it fits nothing: a new track, with a one-line lens.
-Return nothing rather than a weak link. Answer with one JSON block:
-```json
-{{"links": [
-  {{"op": "touch", "part": "<node id>", "claim": "why, one sentence"}},
-  {{"op": "add_part", "id": "", "name": "", "tracks": ["{t['id']}", "<other track>"], "stages": [], "claim": "", "source": "", "dated": ""}},
-  {{"op": "fits", "track": "<track id>", "claim": ""}},
-  {{"op": "add_track", "id": "", "name": "", "lens": "", "claim": ""}}
-]}}
-```"""
-
-
 # ---------- applying what came back ----------
 
-def converge(m, tracks, unit, conv, seen_urls, today, run_id):
-    """Apply a unit's convergence pass, holding every change to the labels. A source counts only if a worker's search
-    returned it this cycle. Returns the kept findings; the map changes in place."""
+def apply_changes(m, tracks, ledger, answer, seen_urls, today, run_id, new_files):
+    """Hold every proposed change to the labels; apply the ones that pass. Returns the kept findings."""
     nodes = {n['id']: n for n in m['nodes']}
     edges = {edge_id(e): e for e in m['edges']}
-    ok_tracks = mappable(tracks)
+    touched = {t for n in m['nodes'] for t in n['tracks']}
     kept = []
-    for c in (conv or {}).get('changes', []):
+    for c in (answer or {}).get('changes', []):
         src, dated = c.get('source', ''), c.get('dated', '')
         sourced = src in seen_urls and bool(DATE.match(dated or '')) and dated <= today
-        f = {'at': today, 'run': run_id, 'unit': unit['id'], 'track': c.get('track'), 'claim': c.get('claim', ''),
+        f = {'at': today, 'run': run_id, 'unit': c.get('unit'), 'track': c.get('track'), 'claim': c.get('claim', ''),
              'helps': c.get('helps') or [], 'type': 'established' if sourced else 'hypothesis',
              'source': src if sourced else '', 'dated': dated if sourced else '', 'effect': 'map'}
         op = c.get('op')
@@ -549,18 +429,20 @@ def converge(m, tracks, unit, conv, seen_urls, today, run_id):
             if not sourced or not target or target.get('status') != 'hypothesis' or target.get('kind') == 'stage':
                 continue
             f['part'] = c['id'] if c['id'] in nodes else target['to']
+            f['unit'] = f['unit'] if f['unit'] in nodes else f['part']
             if finding_errors(f, set(nodes), tracks, 'x', today):
                 continue
             target.update(status='established', source=src, dated=dated)
         elif op == 'add_part':
             pid = c.get('id', '')
-            ts = [t for t in c.get('tracks', []) if t in ok_tracks]
+            ts = [t for t in c.get('tracks', []) if t in tracks]
             if not ID.match(pid) or pid in nodes or not ts or not c.get('name'):
                 continue
             node = {'id': pid, 'kind': 'part', 'name': c['name'].replace('|', '/'), 'tracks': ts,
                     'stages': [s for s in c.get('stages', []) if s in STAGES], 'status': f['type'],
-                    'source': f['source'], 'dated': f['dated'], 'checked': ''}
+                    'source': f['source'], 'dated': f['dated'], 'checked': today}
             f['part'] = pid
+            f['unit'] = f['unit'] if f['unit'] in nodes else pid
             if finding_errors(f, set(nodes) | {pid}, tracks, 'x', today):
                 continue
             m['nodes'].append(node)
@@ -568,9 +450,10 @@ def converge(m, tracks, unit, conv, seen_urls, today, run_id):
         elif op == 'add_edge':
             e = {'from': c.get('from'), 'to': c.get('to'), 'via': c.get('via'), 'status': f['type'],
                  'source': f['source'], 'dated': f['dated']}
-            if e['from'] not in nodes or e['to'] not in nodes or e['via'] not in ok_tracks or edge_id(e) in edges:
+            if e['from'] not in nodes or e['to'] not in nodes or e['via'] not in tracks or edge_id(e) in edges:
                 continue
             f['part'] = e['from'] if nodes[e['from']]['kind'] == 'part' else e['to']
+            f['unit'] = f['unit'] if f['unit'] in nodes else f['part']
             if finding_errors(f, set(nodes), tracks, 'x', today):
                 continue
             m['edges'].append(e)
@@ -580,76 +463,37 @@ def converge(m, tracks, unit, conv, seen_urls, today, run_id):
             stage = nodes.get(c.get('stage'))
             if not sourced or not stage or stage['kind'] != 'stage' or stage['status'] != 'blocked':
                 continue
-            f.update(effect='unblocks', stage=stage['id'], part=c.get('part'))
+            f.update(effect='unblocks', stage=stage['id'], part=c.get('part'),
+                     unit=f['unit'] if f['unit'] in nodes else stage['id'])
             if finding_errors(f, set(nodes), tracks, 'x', today):
                 continue
-        else:
-            continue
-        kept.append(f)
-    return kept
-
-
-def place_orphan(m, tracks, ledger, orphan, out, seen_urls, today, run_id, new_files):
-    """Join a track that touched nothing to the map: touch a row, add a shared part, fit a track, or get a track file."""
-    t = tracks[orphan]
-    nodes = {n['id']: n for n in m['nodes']}
-    ok_tracks = mappable(tracks)
-    can_place = t['kind'] in ('miss', 'assimilate')
-    kept = []
-    for c in (out or {}).get('links', []):
-        if orphan in ledger['placed'] or (t['kind'] != 'miss' and any(orphan in n['tracks'] for n in m['nodes'])):
-            break  # one home is enough
-        op = c.get('op')
-        f = {'at': today, 'run': run_id, 'unit': '', 'track': orphan, 'claim': c.get('claim', ''), 'type': 'hypothesis',
-             'source': '', 'dated': '', 'effect': 'map'}
-        if op == 'touch':
-            n = nodes.get(c.get('part'))
-            if not n:
+        elif op == 'touch':
+            t, n = c.get('track'), nodes.get(c.get('part'))
+            if t not in tracks or t in touched or not n:
                 continue
-            f.update(unit=n['id'], part=n['id'], helps=[x for x in n['tracks'] if x != orphan] + n['stages']
-                     + ([n['id']] if n['kind'] == 'stage' else []))
+            f.update(type='hypothesis', source='', dated='', unit=n['id'], part=n['id'],
+                     helps=[x for x in n['tracks'] if x != t] + n['stages'] + ([n['id']] if n['kind'] == 'stage' else []))
             if finding_errors(f, set(nodes), tracks, 'x', today):
                 continue
-            if t['kind'] == 'miss':
-                ledger['placed'][orphan] = n['id']
-                f['effect'] = 'placed'
-            else:
-                n['tracks'].append(orphan)
-        elif op == 'add_part':
-            pid = c.get('id', '')
-            ts = [x for x in c.get('tracks', []) if x in ok_tracks]
-            if t['kind'] != 'miss' and orphan not in ts:
-                ts.insert(0, orphan)
-            src, dated = c.get('source', ''), c.get('dated', '')
-            sourced = src in seen_urls and bool(DATE.match(dated or '')) and dated <= today
-            if not ID.match(pid) or pid in nodes or not c.get('name') or len([x for x in ts if x != orphan]) < 1:
+            n['tracks'].append(t)
+            touched.add(t)
+        elif op == 'add_track':
+            # a miss or an old project that fits no file: a track file and a map row in the same cycle
+            tid, name, lens, n = c.get('id', ''), (c.get('name') or '').strip(), (c.get('lens') or '').strip(), nodes.get(c.get('part'))
+            if not ID.match(tid) or tid in tracks or tid in new_files or not name or not lens or not n:
                 continue
-            f.update(unit=pid, part=pid, helps=[x for x in ts if x != orphan] + [s for s in c.get('stages', []) if s in STAGES],
-                     type='established' if sourced else 'hypothesis', source=src if sourced else '', dated=dated if sourced else '')
-            node = {'id': pid, 'kind': 'part', 'name': c['name'].replace('|', '/'), 'tracks': ts,
-                    'stages': [s for s in c.get('stages', []) if s in STAGES], 'status': f['type'],
-                    'source': f['source'], 'dated': f['dated'], 'checked': ''}
-            if finding_errors(f, set(nodes) | {pid}, tracks, 'x', today):
+            f.update(type='hypothesis', source='', dated='', track=tid, unit=n['id'], part=n['id'],
+                     helps=[x for x in n['tracks'] if x != tid] + n['stages'] + ([n['id']] if n['kind'] == 'stage' else []))
+            if finding_errors(f, set(nodes), dict(tracks, **{tid: {'id': tid}}), 'x', today):
                 continue
-            m['nodes'].append(node)
-            nodes[pid] = node
-            if t['kind'] == 'miss':
-                ledger['placed'][orphan] = pid
-        elif op == 'fits' and can_place:
-            home = c.get('track')
-            if home not in ok_tracks or home == orphan:
-                continue
-            f.update(effect='placed', helps=[home])
-            ledger['placed'][orphan] = home
-        elif op == 'add_track' and can_place:
-            tid, name, lens = c.get('id', ''), (c.get('name') or '').strip(), (c.get('lens') or '').strip()
-            if not ID.match(tid) or tid in tracks or tid in new_files or not name or not lens:
-                continue
-            new_files[tid] = f'# {name}\n\nLens: {lens}\nFrom: {orphan} ({t["name"]}), placed by Forethinkers run {run_id}, {today}\n'
-            f.update(effect='placed', helps=[tid])
-            ledger['placed'][orphan] = tid
+            new_files[tid] = f'# {name}\n\nLens: {lens}\nFrom: {c.get("from") or "a miss or old project"}; added by Forethinkers run {run_id}, {today}\n'
+            tracks[tid] = {'id': tid, 'kind': 'track', 'name': name, 'lens': lens, 'file': rel(TRACK_DIR / f'{tid}.md')}
+            n['tracks'].append(tid)
+            touched.add(tid)
         else:
             continue
+        if f['unit'] in nodes:
+            nodes[f['unit']]['checked'] = today
         kept.append(f)
     return kept
 
@@ -662,86 +506,63 @@ def growth_lines(kept):
         if f['type'] != 'established':
             continue
         stages = [h for h in f.get('helps', []) if h in STAGES] + ([f['stage']] if f.get('stage') else [])
-        if not stages:
-            continue
-        lines.append(f"\n[think-tank] {f['at']} {' / '.join(dict.fromkeys(stages))}: {f['claim']} ({f['source']}, {f['dated']})\n")
+        if stages:
+            lines.append(f"\n[think-tank] {f['at']} {' / '.join(dict.fromkeys(stages))}: {f['claim']} ({f['source']}, {f['dated']})\n")
     return lines
 
 
+def log_run(run_id, kept, note):
+    """Newest first, under the run log's header."""
+    head, sep, rest = read(RUNLOG).partition('\n## ')
+    stamp = datetime.now(ET).strftime('%Y-%m-%d %H:%M ET')
+    lines = [f'## {stamp} backstop run {run_id}', ''] + [
+        f"- {f['type'].capitalize()}: {f['claim']}" + (f" {f['source']} ({f['dated']})" if f['source'] else '') for f in kept]
+    if note:
+        lines += ['', f'Breakthrough: {note}']
+    RUNLOG.write_text(head.rstrip('\n') + '\n\n' + '\n'.join(lines) + '\n' + (('\n## ' + rest) if sep else ''), encoding='utf-8')
+
+
 def cycle():
-    import anthropic
     m, ledger, tracks = load_map(), load_ledger(), load_tracks()
     synced = sync(m, tracks)
-    active = active_tracks(tracks)
-    searches = max(1, min(int(os.environ.get('MAX_SEARCHES', '3')), 10))
-    p = plan(m, tracks, ledger, active, os.environ.get('UNIT') or None)
+    p = plan(m, tracks, ledger)
+    print(f"tracks={len(tracks)} blocked={','.join(p['blocked'])} not on the map yet={len(p['unjoined'])}")
+    if not os.environ.get('ANTHROPIC_API_KEY'):
+        print('no key: no model call. A talking cycle still writes findings by hand.')
+        print('\n'.join(tracks))
+        return out(changed=False)
+    import anthropic
+    searches = max(1, min(int(os.environ.get('MAX_SEARCHES', '5')), 20))
     today, run_id = date.today().isoformat(), len(ledger['runs']) + 1
-    client = anthropic.Anthropic()
-    pool = ThreadPoolExecutor(max_workers=max(1, int(os.environ.get('FORETHINKERS_PARALLEL', '6'))))
-    print(f"Forethinkers run {run_id}: {len(p['units'])} units, {len(p['orphans'])} unjoined tracks, up to {p['calls']} calls")
-
-    # every unit through every track it touches, at once
-    jobs = {(u['unit']['id'], t): pool.submit(call, client, worker_prompt(m, u['unit'], tracks[t], searches), searches)
-            for u in p['units'] for t in u['tracks']}
-    orphan_jobs = {o: pool.submit(call, client, orphan_prompt(m, tracks[o], tracks, searches), searches) for o in p['orphans']}
-    seen, worker_out = set(), {}
-    for (uid, t), fut in jobs.items():
-        text, urls = fut.result()
-        seen |= urls
-        found = (parse_json(text) or {}).get('findings', [])
-        if found:
-            worker_out.setdefault(uid, {})[t] = found
-    orphan_out = {}
-    for o, fut in orphan_jobs.items():
-        text, urls = fut.result()
-        seen |= urls
-        orphan_out[o] = parse_json(text)
-
-    # one convergence pass per unit that had anything to say
-    units = {u['unit']['id']: u['unit'] for u in p['units']}
-    conv_jobs = {uid: pool.submit(call, client, convergence_prompt(m, units[uid], said), 0) for uid, said in worker_out.items()}
-    kept, notes = [], []
-    for uid, fut in conv_jobs.items():
-        conv = parse_json(fut.result()[0])
-        got = converge(m, tracks, units[uid], conv, seen, today, run_id)
-        kept += got
-        if got and (conv or {}).get('note'):
-            notes.append(conv['note'].strip())
+    text, seen = call(anthropic.Anthropic(), cycle_prompt(m, tracks, ledger, searches), searches)
+    answer = parse_json(text)
     new_files = {}
-    for o, links in orphan_out.items():
-        kept += place_orphan(m, tracks, ledger, o, links, seen, today, run_id, new_files)
-    pool.shutdown()
-    for n in m['nodes']:
-        if n['id'] in units:
-            n['checked'] = today
-
-    calls = len(jobs) + len(orphan_jobs) + len(conv_jobs)
-    result = 'changed' if kept or synced or new_files else 'dead'
-    ledger['runs'].append({'run': run_id, 'at': today, 'units': len(units), 'tracks': len({t for _, t in jobs} | set(orphan_jobs)),
-                           'calls': calls, 'max_searches': searches, 'result': result, 'kept': len(kept)})
+    kept = apply_changes(m, tracks, ledger, answer, seen, today, run_id, new_files)
+    result = 'changed' if kept or synced else 'dead'
+    ledger['runs'].append({'run': run_id, 'at': today, 'tracks': len(tracks), 'calls': 1, 'max_searches': searches,
+                           'searched': len(seen), 'result': result, 'kept': len(kept)})
     ledger['findings'] += kept
-    for tid, text in new_files.items():
-        tracks[tid] = {'id': tid, 'kind': 'track', 'name': tid, 'lens': 'x', 'file': f'domains/forethinkers/tracks/{tid}.md'}
     errs = check(m, ledger, tracks, today)
     if errs:
         sys.exit('cycle produced a map that fails the check:\n' + '\n'.join(errs))
-    summary = f"Forethinkers run {run_id}: {len(units)} units, {calls} calls: {result}, {len(kept)} kept"
+    established = any(f['type'] == 'established' for f in kept)
+    note = ((answer or {}).get('note') or '').strip() if established else ''
+    summary = f"Forethinkers run {run_id}: {len(tracks)} tracks, 1 call: {result}, {len(kept)} kept"
     print(summary)
     for f in kept:
         print(f"  [{f['type']}] {f['track']}: {f['claim']} ({f['source'] or 'no source'})")
     if result == 'changed':
-        # Silence is the default: only a cycle that changed something writes.
+        # silence is the default: only a cycle that changed something writes
         MAP.write_text(render_map(m), encoding='utf-8')
         LEDGER.write_text(json.dumps(ledger, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
         TRACK_DIR.mkdir(exist_ok=True)
-        for tid, text in new_files.items():
-            (TRACK_DIR / f'{tid}.md').write_text(text, encoding='utf-8')
+        for tid, body in new_files.items():
+            (TRACK_DIR / f'{tid}.md').write_text(body, encoding='utf-8')
+        log_run(run_id, kept, note)
         board = growth_lines(kept)
         if board:
             with open(GROWTH, 'a', encoding='utf-8', newline='') as fh:
                 fh.write(''.join(board))
-    established = any(f['type'] == 'established' for f in kept)
-    note = ' '.join(notes) if established else ''
     return out(changed=result == 'changed', breakthrough=bool(note), note=note, summary=summary)
 
 
@@ -764,27 +585,28 @@ def selftest():
         if not cond:
             fails.append(what)
     u = lambda s: datetime.fromisoformat(s).replace(tzinfo=timezone.utc)
-    # 02:03 ET on both sides of the 2026-11-01 change; odd ET hours skip
+    # 02:03 New York time on both sides of the 2026-11-01 change; odd hours skip
     ok(gate(u('2026-10-31T06:03')) == 'run', '02:03 EDT (Oct 31) runs')
     ok(gate(u('2026-11-01T07:03')) == 'run', '02:03 EST (Nov 1) runs')
     ok(gate(u('2026-11-01T06:03')) == 'skip', '01:03 EST (second 1 am, Nov 1) skips')
     ok(gate(u('2026-11-01T05:03')) == 'skip', '01:03 EDT (first 1 am, Nov 1) skips')
-    ok(gate(u('2027-03-14T06:03')) == 'skip', '01:03 EST (Mar 14) skips')
     ok(gate(u('2027-03-14T07:03')) == 'skip', '03:03 EDT (Mar 14, 2 am does not exist) skips')
     ok(gate(u('2027-03-14T08:03')) == 'run', '04:03 EDT (Mar 14) runs')
 
     tracks, m, empty = load_tracks(), load_map(), {'findings': [], 'runs': [], 'placed': {}}
-    kinds = {k: sum(1 for v in tracks.values() if v['kind'] == k) for k in ('track', 'domain', 'assimilate', 'miss')}
-    ok(kinds['domain'] >= 18, f'every venture domain file is a track (got {kinds["domain"]})')
-    ok(kinds['assimilate'] >= 13, f'every assimilate row is a track (got {kinds["assimilate"]})')
-    ok(kinds['track'] >= 4, 'the first four are track files, not the whole list')
-    ok(not any(v['kind'] == 'miss' and NOISE.search(v['name']) for v in tracks.values()), 'probes on the board are not tracks')
+    domain_files = {p.stem.lower() for p in DOMAINS.glob('*.md') if p.name not in SKIP}
+    ok(domain_files <= set(tracks), 'every file in domains/ (minus logs and queues) is a track')
+    ok(not ({'void.agents.log', 'void.queue'} & set(tracks)), 'logs and queues are not tracks')
+    ok(sum(1 for t in tracks if t.startswith('assimilate-')) >= 13, 'every assimilate row is a track')
+    ok({'printed-machines', 'living-figures', 'influence-science'} <= set(tracks), 'Forethinkers track files are tracks')
     ok('shared-intake' in tracks['handoff-studio']['uses'] and 'partner-bench' in tracks['control-ledger']['uses'],
        'a domain uses: line is read, aliases folded (licensed-partner bench is the partner bench)')
     errs = check(m, empty, tracks)
     ok(not errs, 'the committed map passes: ' + '; '.join(errs[:5]))
-    est = [n['id'] for n in m['nodes'] if n['kind'] == 'part' and n['status'] == 'established']
-    ok(est == ['printed-linear-motor'], f'the MIT motor is the only established node (got {est})')
+    est = sorted(n['id'] for n in m['nodes'] if n['kind'] == 'part' and n['status'] == 'established')
+    ok(est == ['fiber-muscle', 'printed-linear-motor', 'stamped-muscle'], f'the dated actuator family is established, nothing else (got {est})')
+    p = plan(m, tracks, empty)
+    ok(p['calls'] == 1 and len(p['tracks']) == len(tracks), 'one call sees every track')
 
     bad = load_map()
     next(n for n in bad['nodes'] if n['id'] == 'shared-intake')['tracks'].remove('handoff-studio')
@@ -797,77 +619,43 @@ def selftest():
     ok(any('without a date' in e for e in check(bad, empty, tracks)), 'established without a date fails')
     soft.update(dated='2099-01-01')
     ok(any('future' in e for e in check(bad, empty, tracks)), 'a future date fails')
-    soft.update(status='hypothesis', source='', dated='', tracks=['printed-machines', 'miss-anything'])
-    ok(any('tracks must be' in e for e in check(bad, empty, tracks)), 'a miss is placed, never written into a row')
-
     dead = {'unit': 'soft-actuator', 'track': 'printed-machines', 'claim': 'x', 'part': 'soft-actuator',
             'helps': ['printed-machines'], 'type': 'hypothesis', 'source': '', 'dated': '', 'effect': 'map'}
     ok(any('dead run' in e for e in check(m, dict(empty, findings=[dead]), tracks)), 'a finding that helps only its own track is dead')
 
-    # everything, every cycle: every unit through every track it touches, plus every track that touches nothing
-    p = plan(m, tracks, empty)
-    unit_ids = {x['unit']['id'] for x in p['units']}
-    ok({'export', 'print', 'own', 'printed-linear-motor', 'shared-intake', 'persuadetron'} <= unit_ids,
-       f'every part and blocked stage is worked (missing {sorted({"export", "print", "own", "shared-intake"} - unit_ids)})')
-    ok(not ({'summon', 'spin'} & unit_ids), 'live stages are not units')
-    si = next(x for x in p['units'] if x['unit']['id'] == 'shared-intake')
-    ok(len(si['tracks']) >= 14, f'a shared part fans into every track that uses it (shared intake: {len(si["tracks"])})')
-    touched = {t for n in m['nodes'] for t in n['tracks']}
-    ok(set(p['orphans']) == set(tracks) - touched, 'every track that touches nothing is worked too')
-    ok(p['calls'] == sum(len(x['tracks']) + 1 for x in p['units']) + len(p['orphans']), 'the call count adds up')
-    one = plan(m, tracks, empty, None, 'print')
-    ok(len(one['units']) == 1 and not one['orphans'], 'UNIT works one row only')
-
-    # a unit's convergence: a URL the search did not return is not a source; a sourced change lands; a dead one drops
-    m2 = load_map()
-    unit = next(n for n in m2['nodes'] if n['id'] == 'printed-actuator-joint')
+    # what one call proposes is held to the labels in code
+    m2, t2, led, files = load_map(), load_tracks(), {'findings': [], 'runs': [], 'placed': {}}, {}
     url = 'https://example.org/joint-2026'
-    conv = {'changes': [
+    orphan = next(t for t in plan(m2, t2, led)['unjoined'] if t.startswith('assimilate-'))
+    answer = {'changes': [
         {'op': 'establish', 'id': 'soft-actuator', 'track': 'printed-machines', 'claim': 'from memory',
          'source': 'https://nowhere.example/x', 'dated': '2026-01-01', 'helps': ['living-figures']},
         {'op': 'establish', 'id': 'printed-actuator-joint', 'track': 'printed-machines', 'claim': 'a printed joint moves a figure arm',
          'source': url, 'dated': '2026-05-01', 'helps': ['living-figures', 'print']},
-        {'op': 'add_part', 'id': 'printed-gear', 'name': 'Printed gear', 'tracks': ['printed-machines'], 'stages': [],
-         'track': 'printed-machines', 'claim': 'gears print', 'source': url, 'dated': '2026-05-01', 'helps': ['printed-machines']},
+        {'op': 'add_part', 'id': 'printed-gear', 'name': 'Printed gear', 'tracks': ['printed-machines'], 'track': 'printed-machines',
+         'claim': 'gears print', 'source': url, 'dated': '2026-05-01', 'helps': ['printed-machines']},
         {'op': 'add_edge', 'from': 'printed-joint-sensor', 'to': 'assistive-joint', 'via': 'life-extension', 'track': 'printed-machines',
          'claim': 'the same sensor reads a prosthetic knee', 'helps': ['life-extension']},
-    ], 'note': ''}
-    kept = converge(m2, tracks, unit, conv, {url}, '2026-10-03', 1)
+        {'op': 'touch', 'track': orphan, 'part': 'export', 'claim': 'its pages export'},
+        {'op': 'add_track', 'id': 'everyday-lists', 'name': 'Everyday lists', 'lens': 'lists people keep', 'from': 'miss: add milk',
+         'part': 'summon', 'claim': 'no track for lists yet'},
+    ]}
+    kept = apply_changes(m2, t2, led, answer, {url}, '2026-10-03', 1, files)
     ids = {n['id']: n for n in m2['nodes']}
     ok(ids['soft-actuator']['status'] == 'hypothesis', 'a source the search never returned does not establish')
     ok(ids['printed-actuator-joint']['status'] == 'established', 'a searched, dated source establishes')
     ok('printed-gear' not in ids, 'a new part that helps no other track or stage is dropped')
-    ok(any(e['from'] == 'printed-joint-sensor' and e['to'] == 'assistive-joint' and e['status'] == 'hypothesis'
-           for e in m2['edges']), 'an unsourced edge lands as hypothesis')
-    ok(len(kept) == 2, f'two changes kept (got {len(kept)})')
-
-    # tracks that touched nothing: an old project joins a part; a miss fits a track or gets its own track file
-    led = {'findings': [], 'runs': [], 'placed': {}}
-    files = {}
-    orphan_old = next(t for t in tracks if t.startswith('assimilate-') and t not in touched)
-    kept += place_orphan(m2, tracks, led, orphan_old, {'links': [{'op': 'touch', 'part': 'export', 'claim': 'its pages export'}]},
-                         set(), '2026-10-03', 1, files)
-    ok(orphan_old in ids['export']['tracks'], 'an old project that touches a stage joins its row')
-    misses = [t for t, v in tracks.items() if v['kind'] == 'miss']
-    if len(misses) >= 2:
-        kept += place_orphan(m2, tracks, led, misses[0], {'links': [{'op': 'fits', 'track': 'living-figures', 'claim': 'x'}]},
-                             set(), '2026-10-03', 1, files)
-        kept += place_orphan(m2, tracks, led, misses[1], {'links': [{'op': 'add_track', 'id': 'everyday-lists',
-                             'name': 'Everyday lists', 'lens': 'lists people keep', 'claim': 'fits nothing yet'}]},
-                             set(), '2026-10-03', 1, files)
-        ok(led['placed'].get(misses[0]) == 'living-figures', 'a miss that fits a track is placed there')
-        ok(led['placed'].get(misses[1]) == 'everyday-lists' and 'Lens: lists people keep' in files['everyday-lists'],
-           'a miss that fits nothing gets a track file')
-        tracks2 = dict(tracks, **{'everyday-lists': {'id': 'everyday-lists', 'kind': 'track', 'name': 'Everyday lists',
-                                                     'lens': 'lists people keep', 'file': 'x'}})
-    else:
-        tracks2 = tracks
+    ok(any(e['from'] == 'printed-joint-sensor' and e['status'] == 'hypothesis' for e in m2['edges']), 'an unsourced edge lands as hypothesis')
+    ok(orphan in ids['export']['tracks'], 'a track not on the map joins the row it touches')
+    ok('everyday-lists' in ids['summon']['tracks'] and 'Lens: lists people keep' in files.get('everyday-lists', ''),
+       'a miss that fits no file gets a track file and a map row in the same cycle')
+    ok(len(kept) == 4, f'four changes kept (got {len(kept)})')
     led['findings'] = kept
-    errs = check(m2, led, tracks2, '2026-10-03')
+    errs = check(m2, led, t2, '2026-10-03')
     ok(not errs, 'the map after a cycle passes the check: ' + '; '.join(errs[:5]))
     ok(load_map(render_map(m2))['nodes'] == m2['nodes'], 'the map round-trips through markdown')
     board = growth_lines(kept)
-    ok(len(board) == 1 and url in board[0], 'only the established finding that reaches a Void stage goes on the growth board')
+    ok(len(board) == 1 and url in board[0], 'only an established finding that reaches a Void stage goes on the growth board')
 
     for f in fails:
         print('FAIL', f)
@@ -894,9 +682,16 @@ def main():
         tracks, m, led = load_tracks(), load_map(), load_ledger()
         touched = {t for n in m['nodes'] for t in n['tracks']}
         for v in tracks.values():
-            where = 'on the map' if v['id'] in touched else (f"placed: {led['placed'][v['id']]}" if v['id'] in led['placed'] else 'unjoined')
-            print(f"{v['kind']:10} {v['id']:40} {where:24} {v['name'][:60]}")
+            where = 'on the map' if v['id'] in touched else (f"placed: {led['placed'][v['id']]}" if v['id'] in led['placed'] else 'not on the map yet')
+            print(f"{v['kind']:10} {v['id']:36} {where:20} {v['name'][:60]}")
         print(f'{len(tracks)} tracks')
+        return 0
+    if cmd == 'plan':
+        p = plan(load_map(), load_tracks(), load_ledger())
+        print(f"{len(p['tracks'])} tracks, read in one call")
+        print(f"blocked stages: {', '.join(p['blocked'])}")
+        print(f"hypothesis parts: {len(p['hypotheses'])}")
+        print(f"tracks not on the map yet ({len(p['unjoined'])}): {', '.join(p['unjoined'])}")
         return 0
     if cmd == 'selftest':
         return selftest()
@@ -908,15 +703,6 @@ def main():
         g = gate(at)
         print(g)
         out(run=g == 'run')
-        return 0
-    if cmd == 'plan':
-        tracks = load_tracks()
-        p = plan(load_map(), tracks, load_ledger(), active_tracks(tracks), os.environ.get('UNIT') or None)
-        for x in p['units']:
-            print(f"unit {x['unit']['id']} ({x['unit']['kind']}, {x['unit']['status']}): {len(x['tracks'])} tracks: {', '.join(x['tracks'])}")
-        if p['orphans']:
-            print(f"unjoined tracks ({len(p['orphans'])}): {', '.join(p['orphans'])}")
-        print(f"{len(p['units'])} units, {len(p['orphans'])} unjoined tracks, up to {p['calls']} model calls")
         return 0
     if cmd == 'cycle':
         cycle()

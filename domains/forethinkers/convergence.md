@@ -1,14 +1,14 @@
 # convergence — the shared-parts map
 
-Every cycle works every row here: each part, and each Void stage that is blocked, through every track it touches. `tools/forethinkers.py`
-reads and rewrites the two tables below; keep their columns as they are.
+Shared parts and blocked stages. A cycle starts here, reads every track, and writes back only what changed this map or
+unblocked a stage. Tracks are discovered from `domains/`, not from this table: this table is the shared map, not the track
+list (`python tools/forethinkers.py tracks`). The even-hour workflow is the backstop; a talking cycle runs whenever someone
+is here and writes here too. `tools/forethinkers.py` reads and rewrites the two tables below; keep their columns.
 
-- tracks: every track in the repo (`python tools/forethinkers.py tracks`): the Forethinkers track files, every venture
-  domain file, every assimilate row. Open misses are tracks too; they are placed, not written into rows.
 - a domain's "Shared parts: ... uses:" line is a declared link; `python tools/forethinkers.py sync` puts it here
 - part status: established (dated source + named part) | hypothesis (the map says so, nobody has checked; no source)
 - stage status: live | blocked
-- `checked` is the last day a cycle took this row as its unit
+- `checked` is the last day a cycle advanced this row
 
 ## Nodes
 
@@ -19,7 +19,10 @@ reads and rewrites the two tables below; keep their columns as they are.
 | export | stage | Export: a summoned thing leaves Void as a mesh file (STL / 3MF / glTF) | printed-machines, living-figures |  | blocked |  |  |  |
 | print | stage | Print: the exported file prints, and a body with parts moves | printed-machines, living-figures, life-extension, restoring-planet |  | blocked |  |  |  |
 | own | stage | Own: what was printed is bound to the person, with rights and safe-use limits | living-figures, life-extension, restoring-planet |  | blocked |  |  |  |
-| printed-linear-motor | part | Printed electric linear motor (MIT multi-material platform, about 3 hours, about $0.50 of material) | printed-machines | print | established | https://news.mit.edu/2026/3d-printing-platform-rapidly-produces-complex-electric-machines-0218 | 2026-02-18 |  |
+| printed-linear-motor | part | Fully 3D-printed electric linear motor (Cañada, Bigelow, Velásquez-García, DOI 10.1080/17452759.2026.2613185: five materials, about 3 hours, magnetize after the print, about $0.50 of material, 318 μm at 41.6 Hz) | printed-machines, living-figures, life-extension, restoring-planet | export, print | established | https://news.mit.edu/2026/3d-printing-platform-rapidly-produces-complex-electric-machines-0218 | 2026-02-18 |  |
+| stamped-muscle | part | Stamped skeletal-muscle actuator: a 3D-printed stamp grows real muscle that pulls in more than one direction (iris-like; Raman group, Biomaterials Science) | living-figures, life-extension, restoring-planet | print | established | https://news.mit.edu/2025/artificial-muscle-flexes-multiple-directions-offering-path-soft-wiggly-robots-0317 | 2025-03-17 |  |
+| fiber-muscle | part | Electrofluidic fiber muscle: under 2 mm, about 50 W/kg, 20% contraction in 0.3 s, silent EHD pump with no moving parts (Afsar, Cacucciolo) | living-figures, life-extension, restoring-planet | print | established | https://zenodo.org/records/17902764 | 2025-12-11 |  |
+| printed-actuator-spec | part | Printable actuator spec Void can summon from the dated actuator family (motor, stamped muscle, fiber muscle); original name and shape only | printed-machines, living-figures | summon, export, print | hypothesis |  |  |  |
 | printed-actuator-joint | part | Printed actuator used as a figure joint | printed-machines, living-figures | export, print | hypothesis |  |  |  |
 | soft-actuator | part | Soft actuator (motion that is safe next to people) | printed-machines, living-figures, life-extension, restoring-planet | print | hypothesis |  |  |  |
 | printed-joint-sensor | part | Printed joint sensor (position, speed, direction) | printed-machines, living-figures, life-extension | print | hypothesis |  |  |  |
@@ -62,6 +65,10 @@ reads and rewrites the two tables below; keep their columns as they are.
 | printed-joint-sensor | printed-actuator-joint | living-figures | hypothesis |  |  |
 | original-figure | export | living-figures | hypothesis |  |  |
 | export | print | printed-machines | hypothesis |  |  |
+| printed-linear-motor | printed-actuator-spec | printed-machines | hypothesis |  |  |
+| stamped-muscle | printed-actuator-spec | living-figures | hypothesis |  |  |
+| fiber-muscle | printed-actuator-spec | life-extension | hypothesis |  |  |
+| printed-actuator-spec | export | living-figures | hypothesis |  |  |
 | print | own | living-figures | hypothesis |  |  |
 | replicator | print | living-figures | hypothesis |  |  |
 | holodeck | original-figure | living-figures | hypothesis |  |  |

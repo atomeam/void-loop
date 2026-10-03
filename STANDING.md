@@ -22,7 +22,7 @@ A rule an agent wrote and signed with Adam's name, without his words, is removed
 - Deploy: from `void-live-deploy`: `npx wrangler pages deploy . --project-name=a-to-mind --commit-dirty=true`
 - After deploy, confirm the live page still contains: `mountClock`, `mountSticky`, `mountNotepad`, `mountLink`, `mountImage`, `mountList`, `mountCalc`, `mountTimer`, `mountCounter`, `mountShape` (plus any new mount).
 - Growth board: `domains\\void.growth.md`
-- The Forethinkers (A-to-Mind's research on everything that comes through): `domains\\forethinkers\\brief.md`. Tracks are every domain file, every assimilate row, every open miss and the Forethinkers track files; every cycle works every part and blocked Void stage on `convergence.md` through each track it touches. `.github/workflows/forethinkers.yml` runs on even ET hours once `ANTHROPIC_API_KEY` is set (off switch: `FORETHINKERS_SCHEDULE=off`).
+- The Forethinkers (A-to-Mind's research): `domains\\forethinkers\\THINK-TANK-BRIEF.md`; shared map `convergence.md`, run log `run-log.md`. Tracks are discovered from `domains\\` (every file but logs and queues), the assimilate rows and `domains\\forethinkers\\tracks\\`. Backstop: `.github/workflows/think-tank.yml` on even New York hours, one model call per cycle once `ANTHROPIC_API_KEY` is set (off switch: `FORETHINKERS_SCHEDULE=off`). Runner: `python tools/forethinkers.py`.
 - Live-site QA notes: `domains\\void.surface-qa.md`
 - Company catalog: `domains\\A2M.ops.md`
 - `C:\\Users\\adamm\\hold` is a separate repo (bridge + ledger work). The live site is `a-to-mind-loop\\void.html`.
