@@ -10,7 +10,7 @@ Read domains/forethinkers/brief.md first. The map is domains/forethinkers/conver
   python tools/forethinkers.py cycle       runs one cycle (needs ANTHROPIC_API_KEY and `pip install anthropic`)
 
 Env: ACTIVE_TRACKS (comma list, default "printing"), MAX_SEARCHES (per worker, default 3), UNIT (force a row id),
-FORETHINKERS_MODEL (default claude-opus-5-5), FORETHINKERS_EFFORT (default medium).
+FORETHINKERS_MODEL or MODEL (default claude-opus-5-5), FORETHINKERS_EFFORT (default medium).
 """
 import json
 import os
@@ -24,8 +24,9 @@ ROOT = Path(__file__).resolve().parent.parent
 DIR = ROOT / 'domains' / 'forethinkers'
 MAP = DIR / 'convergence.md'
 LEDGER = DIR / 'findings.json'
+GROWTH = ROOT / 'domains' / 'void.growth.md'
 TRACKS = ['printing', 'figures', 'longevity', 'restoration']
-STAGES = ['summon', 'spin', 'export', 'print']
+STAGES = ['summon', 'spin', 'export', 'print', 'own']
 ET = ZoneInfo('America/New_York')
 NODE_COLS = ['id', 'kind', 'name', 'tracks', 'stages', 'status', 'source', 'dated', 'checked']
 EDGE_COLS = ['from', 'to', 'via', 'status', 'source', 'dated']
@@ -246,7 +247,7 @@ def parse_json(text):
 def call(client, prompt, searches):
     """One model call. Returns (text, urls the web search actually returned)."""
     import anthropic
-    model = os.environ.get('FORETHINKERS_MODEL', 'claude-opus-5-5')
+    model = os.environ.get('FORETHINKERS_MODEL') or os.environ.get('MODEL') or 'claude-opus-5-5'
     kw = dict(model=model, max_tokens=16000, betas=['server-side-fallback-2026-07-01'],
               extra_body={'fallbacks': 'default', 'output_config': {'effort': os.environ.get('FORETHINKERS_EFFORT', 'medium')}})
     if searches:
@@ -290,7 +291,7 @@ Unit: {unit['id']} ({unit['kind']}): {unit['name']}
 Your track: {track} ({TRACK_LENS[track]})
 
 Search (at most {searches} searches) for what this unit means through your track. Only report what would change the map
-(establish a hypothesis row, add a part, add an edge) or unblock a Void stage (export, print). A source must be a page
+(establish a hypothesis row, add a part, add an edge) or unblock a Void stage (export, print, own). A source must be a page
 your search returned in this cycle, with the date shown on that page. If you find nothing like that, return no findings:
 silence is the right answer, not a weak finding.
 
@@ -319,7 +320,7 @@ a dated source, and repeats of what the map already says. Answer with one JSON b
   {{"op": "establish", "id": "<node id or from>to edge id>", "track": "", "claim": "", "source": "", "dated": "", "helps": []}},
   {{"op": "add_part", "id": "", "name": "", "tracks": [], "stages": [], "track": "", "claim": "", "source": "", "dated": "", "helps": []}},
   {{"op": "add_edge", "from": "", "to": "", "via": "", "track": "", "claim": "", "source": "", "dated": "", "helps": []}},
-  {{"op": "unblocks", "stage": "export|print", "part": "", "track": "", "claim": "", "source": "", "dated": "", "helps": []}}
+  {{"op": "unblocks", "stage": "export|print|own", "part": "", "track": "", "claim": "", "source": "", "dated": "", "helps": []}}
 ], "note": "one plain sentence if this is a breakthrough, else empty"}}
 ```"""
 
@@ -382,6 +383,18 @@ def converge(m, unit, conv, seen_urls, today, run_id):
     return kept
 
 
+def growth_lines(kept):
+    """A [think-tank] line on the growth board for each kept finding that reaches a Void stage, with its source."""
+    lines = []
+    for f in kept:
+        stages = [h for h in f['helps'] if h in STAGES] + ([f['stage']] if f.get('stage') else [])
+        if not stages:
+            continue
+        src = f" ({f['source']}, {f['dated']})" if f['source'] else ' (hypothesis, unsourced)'
+        lines.append(f"\n[think-tank] {f['at']} {' / '.join(dict.fromkeys(stages))}: {f['claim']}{src}\n")
+    return lines
+
+
 def cycle():
     import anthropic
     m, ledger = load_map(), load_ledger()
@@ -425,6 +438,10 @@ def cycle():
         # summary, and in the ledger only when something else is written.
         MAP.write_text(render_map(m), encoding='utf-8')
         LEDGER.write_text(json.dumps(ledger, indent=2, ensure_ascii=False) + '\n', encoding='utf-8')
+        board = growth_lines(kept)
+        if board:
+            with open(GROWTH, 'a', encoding='utf-8', newline='') as fh:
+                fh.write(''.join(board))
     established = any(f['type'] == 'established' for f in kept)
     return out(changed=bool(kept), breakthrough=bool(note and established), note=note, summary=summary)
 
@@ -506,6 +523,10 @@ def selftest():
     ok(not check(m2, {'findings': kept, 'runs': [{'unit': 'printed-actuator-joint', 'result': 'changed'}]}, '2026-10-03'),
        'the map after convergence passes the check')
     ok(load_map(render_map(m2))['nodes'] == m2['nodes'], 'the map round-trips through markdown')
+    board = growth_lines(kept)
+    ok(len(board) == 1 and '[think-tank]' in board[0] and url in board[0],
+       'only the finding that reaches a Void stage goes on the growth board, with its source')
+    ok(any(n['id'] == 'own' and n['status'] == 'blocked' for n in m['nodes']), 'own is a blocked stage on the map')
 
     for f in fails:
         print('FAIL', f)

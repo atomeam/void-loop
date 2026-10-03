@@ -7,7 +7,7 @@
 # gate keeps even ET hours only. Full fan-out is 5 calls a cycle, about 60 a day: watched, not left on.
 # Silence is the default: a cycle that changed nothing writes nothing. A cycle that changed the map opens a PR.
 # The webhook stays off until FORETHINKERS_WEBHOOK_ON is "on" (after a run has written a real finding with a source),
-# and then carries breakthrough notes only.
+# and then carries breakthrough notes only (secret NOTIFY_WEBHOOK). Model: repo variable MODEL (default claude-opus-5-5).
 name: Forethinkers cycle
 
 on:
@@ -66,6 +66,7 @@ jobs:
         if: steps.gate.outputs.run == 'true' && !inputs.dry_run
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MODEL: ${{ vars.MODEL }}
         run: |
           if [ -z "$ANTHROPIC_API_KEY" ]; then echo "ANTHROPIC_API_KEY is not set; nothing ran" | tee -a "$GITHUB_STEP_SUMMARY"; exit 1; fi
           pip install --quiet anthropic
@@ -80,7 +81,7 @@ jobs:
           git config user.name "forethinkers[bot]"
           git config user.email "forethinkers@users.noreply.github.com"
           git checkout -b "$branch"
-          git add domains/forethinkers/convergence.md domains/forethinkers/findings.json
+          git add domains/forethinkers/convergence.md domains/forethinkers/findings.json domains/void.growth.md
           git commit -m "$SUMMARY"
           git push -u origin "$branch"
           gh pr create --base main --head "$branch" --title "$SUMMARY" \
@@ -88,7 +89,7 @@ jobs:
       - name: Breakthrough note
         if: steps.cycle.outputs.breakthrough == 'true' && vars.FORETHINKERS_WEBHOOK_ON == 'on'
         env:
-          WEBHOOK: ${{ secrets.FORETHINKERS_WEBHOOK }}
+          WEBHOOK: ${{ secrets.NOTIFY_WEBHOOK }}
           NOTE: ${{ steps.cycle.outputs.note }}
         run: |
           [ -n "$WEBHOOK" ] || exit 0
