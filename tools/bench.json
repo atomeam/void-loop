@@ -209,7 +209,7 @@
   },
   {
     "ask": "what can you do",
-    "want": "self"
+    "want": "quiet list"
   },
   {
     "ask": "make a 5 minute timer",

@@ -904,9 +904,12 @@ try {
   const P = await fresh();
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
   check('a fresh visit is the void: an empty stage and the input, nothing else to click', bare.stage === 0 && !(await P.page()) && bare.links === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic'), JSON.stringify(bare).slice(0, 200));
-  await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
+  await P.ask('what can you do', 600); const selfPg = await P.page();
+  const quietCls = await P.p.$eval('.vpage.on', (e) => e.className).catch(() => '');
+  await P.ask('close');
   await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
-  check('"what can you do" and the menu open', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg), selfPg.slice(0, 60));
+  check('"what can you do" is a quiet list (small, muted — not the full page) and the menu still opens',
+    /What Void can do/.test(selfPg) && /quiet list/.test(selfPg) && /"menu" for that/.test(selfPg) && quietCls.includes('quiet-page') && /Menu/.test(menuPg), selfPg.slice(0, 60));
   const OUT_LINE = 'Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pricing', 'pay', 'how much does Void cost?', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;

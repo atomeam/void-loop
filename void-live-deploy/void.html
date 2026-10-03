@@ -377,6 +377,11 @@
     .vpage ul { margin: 0 0 10px; padding-left: 18px; color: #d6d6d6; }
     .vpage .src { clear: both; margin-top: 12px; font-size: 12px; color: var(--muted); }
     .vpage .src a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.15); }
+    .vpage.quiet-page { width: min(400px, calc(100vw - 48px)); max-height: 44vh; padding: 14px 18px 12px; }
+    .vpage .quiet { margin: 0; padding: 0; list-style: none; font-size: 12.5px; line-height: 1.55; }
+    .vpage .quiet a { color: inherit; text-decoration: none; }
+    .vpage .quiet b { color: #cfcfcf; font-weight: 500; }
+    .vpage .quiet span { color: #7a7a7a; }
     html { background: var(--void-bg, #050505); transition: background-color 1.5s ease; }
     html, body { background-color: transparent; }
     html { background-color: var(--void-bg, #050505); }
@@ -2791,6 +2796,46 @@ return { ok: true, detail: 'timer-reset' };
       if (focus && el && el.querySelector) { const f = el.querySelector('li.focus'); if (f && f.scrollIntoView) f.scrollIntoView({ block: 'center' }); }
       return el;
     }
+    // "what can you do": a quiet list — everything Void can do, one muted line each, in a small
+    // panel that does not fill the empty surface. "menu" still gives the full page.
+    function wantsQuietList(lower) {
+      return /^what\s+can\s+(you|void)\s+do( here)?\s*[?.!]?$/.test(lower);
+    }
+    function showQuietList() {
+      const things = [
+        ['a clock', 'make a clock'],
+        ['a timer', 'make a 5 minute timer'],
+        ['a sticky note', 'add a sticky that says hi'],
+        ['a notepad', 'open a notepad'],
+        ['a list', 'make a list'],
+        ['a calculator', 'make a calculator'],
+        ['a counter', 'make a counter'],
+        ['a shape', 'draw a circle'],
+        ['an image or a link', 'paste an image or link'],
+        ['everything at once', 'make everything bigger'],
+        ['a page about anything', 'what is a black hole'],
+        ['a calculation', '15% of 80'],
+        ['read aloud', 'read it aloud'],
+        ['my void', 'make my void deep blue'],
+        ['stars', 'add stars'],
+        ['undo', 'undo'],
+        ['keep this', 'keep this'],
+        ['on every device', 'remember me'],
+      ];
+      const seen = new Set(['rebuild-map']);
+      for (const sk of learnedSkills) {
+        if (seen.has(sk.name) || !(sk.examples && sk.examples.length)) continue;
+        seen.add(sk.name);
+        things.push([sk.name === 'place' ? 'a map' : sk.name, sk.examples[0]]);
+      }
+      const row = ([k, ask]) => '<li><a href="#" data-ask="' + esc(ask) + '"><b>' + esc(k) + '</b> <span>— ' + esc(ask) + '</span></a></li>';
+      return showPage((p) => {
+        p.className = 'vpage quiet-page';
+        p.innerHTML = '<div class="sub">What Void can do — ask, and it appears.</div>'
+          + '<ul class="quiet">' + things.map(row).join('') + '</ul>'
+          + '<div class="src">A quiet list, not the whole menu. Say "menu" for that. Esc or click the void to close.</div>';
+      });
+    }
     // "how do I make a timer", "how can I add a sticky note", "how to draw a circle" -> the self page at that line, not Wikipedia
     const HOWTO_KINDS = { clock: 'clock', clocks: 'clock', timer: 'timer', timers: 'timer', countdown: 'timer', sticky: 'sticky note', stickies: 'sticky note', note: 'sticky note', notes: 'sticky note', 'sticky note': 'sticky note',
       notepad: 'notepad', list: 'list', checklist: 'list', 'to-do list': 'list', 'todo list': 'list', calculator: 'calculator', counter: 'counter', shape: 'shape', circle: 'shape', square: 'shape', line: 'shape' };
@@ -4312,6 +4357,7 @@ return { ok: true, detail: 'timer-reset' };
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
+      if (wantsQuietList(lower0)) { showQuietList(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'quiet list' }); return; }
       if (wantsSelfPage(lower0)) { showSelfPage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
       if (/^(why|how|when|where|which|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
