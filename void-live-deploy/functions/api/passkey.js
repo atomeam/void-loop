@@ -8,9 +8,13 @@
 // POST { step: 'sign-out' }  (Bearer)        -> ends that session
 // POST { step: 'forget' }    (Bearer)        -> deletes every passkey, session, synced byte, tier row and public /@name page of that Void -> { userId, credentialIds }
 // POST { step: 'tier' }      (Bearer)        -> { tier: 'free' | 'paid' }  (plan item 12; no row or a read error = free)
+// POST { step: 'owner' }   (Bearer key or owner session) -> 200 { owner: true, renewed? } | 401. No D1 needed.
+// POST { step: 'owner-bind', credentialId } (Bearer READ_TOKEN only) -> that passkey becomes the owner's login.
+//   'get' with an owner passkey also returns { owner: { token, expires } }, an owner session (never READ_TOKEN).
 // Every challenge is stored in D1, good for 5 minutes, and deleted before it's checked, so it can only be used once.
 // Origin and rpId are a-to-mind.com; signatures are verified with WebCrypto (lib/webauthn.js).
 import { verifyRegistration, verifyAuthentication, randomB64u, unb64u, ALGS } from '../../lib/webauthn.js';
+import { ownerOk, ownerKeyOk, mintOwnerSession, OWNER_SESSION_PREFIX } from '../../lib/guard.js';
 import { RP_NAME, CHALLENGE_TTL_MS, rp, ensureTables, bad, good, session, newSession, newUserId, brake, tierOf } from '../../lib/void-me.js';
 
 async function mintChallenge(env, kind, userId) {
@@ -93,7 +97,33 @@ async function get(request, env, b) {
   if (!upd.meta || upd.meta.changes !== 1) return bad(409, 'passkey used twice at once');
   const s = await newSession(env, row.user_id);
   await s.stmt.run();
-  return good({ ok: true, userId: row.user_id, token: s.token, expires: s.expires, rpId: r.id });
+  const owner = await ownerFor(env, cred.id); // a passkey the owner bound also brings an owner session
+  return good({ ok: true, userId: row.user_id, credentialId: cred.id, token: s.token, expires: s.expires, rpId: r.id, ...(owner ? { owner } : {}) });
+}
+
+// Owner login (2026-10-03). Only the owner key itself (READ_TOKEN, constant-time) can bind a passkey as the owner's login: a stranger
+// can never promote their own passkey, and a copied owner session can't make itself permanent.
+async function ownerFor(env, credentialId) {
+  try {
+    const row = await env.DB.prepare('SELECT id FROM void_owner_passkeys WHERE id = ?').bind(credentialId).first();
+    return row ? await mintOwnerSession(env, credentialId) : null;
+  } catch (_) { return null; } // fails closed: not the owner
+}
+async function ownerBind(request, env, b) {
+  if (!(await ownerKeyOk(request, env))) return bad(401, 'no');
+  const id = typeof b.credentialId === 'string' && /^[A-Za-z0-9_-]{16,1400}$/.test(b.credentialId) ? b.credentialId : '';
+  if (!id) return bad(400, 'which passkey?');
+  const row = await env.DB.prepare('SELECT user_id, public_key, alg, sign_count FROM void_passkeys WHERE id = ?').bind(id).first();
+  if (!row) return bad(404, 'unknown passkey');
+  await env.DB.prepare('INSERT INTO void_owner_passkeys (id, at) VALUES (?, ?) ON CONFLICT(id) DO NOTHING').bind(id, new Date().toISOString()).run();
+  return good({ ok: true, owner: true });
+}
+// The key or an owner session -> 200, and a session comes back renewed (30 more days). Anything else is a 401, which lib/guard.js
+// counts per connection (10 wrong keys a minute and every /api call from it waits).
+async function ownerStep(request, env) {
+  if (!(await ownerOk(request, env))) return bad(401, 'no');
+  const t = (request.headers.get('authorization') || '').slice(7);
+  return good({ ok: true, owner: true, ...(t.startsWith(OWNER_SESSION_PREFIX) ? { renewed: await mintOwnerSession(env, null, Date.now(), t.split('.')[2]) } : {}) });
 }
 
 async function signOut(request, env) {
@@ -114,6 +144,7 @@ async function forget(request, env) {
   if (!me) return bad(401, 'not signed in');
   const ids = ((await env.DB.prepare('SELECT id FROM void_passkeys WHERE user_id = ?').bind(me.userId).all()).results || []).map((x) => x.id);
   await env.DB.batch([ // one transaction: all of it goes, or none of it
+    env.DB.prepare('DELETE FROM void_owner_passkeys WHERE id IN (SELECT id FROM void_passkeys WHERE user_id = ?)').bind(me.userId),
     env.DB.prepare('DELETE FROM void_mine WHERE user_id = ?').bind(me.userId),
     env.DB.prepare('DELETE FROM void_passkeys WHERE user_id = ?').bind(me.userId),
     env.DB.prepare('DELETE FROM void_passkey_challenges WHERE user_id = ?').bind(me.userId),
@@ -129,6 +160,7 @@ export async function onRequestPost({ request, env }) {
   try { b = JSON.parse((await request.text()).slice(0, 20000)); } catch (_) { return bad(400, 'bad json'); }
   if (!b || typeof b !== 'object') return bad(400, 'bad json');
   try {
+    if (b.step === 'owner') return await ownerStep(request, env); // works even when D1 doesn't
     await ensureTables(env);
     if (b.step === 'create-options') return await createOptions(request, env);
     if (b.step === 'create') return await create(request, env, b);
@@ -137,6 +169,7 @@ export async function onRequestPost({ request, env }) {
     if (b.step === 'sign-out') return await signOut(request, env);
     if (b.step === 'forget') return await forget(request, env);
     if (b.step === 'tier') return await tier(request, env);
+    if (b.step === 'owner-bind') return await ownerBind(request, env, b);
     return bad(400, 'unknown step');
   } catch (_) { return bad(503, 'passkeys unavailable'); } // fails closed: nobody is signed in, nothing is saved
 }

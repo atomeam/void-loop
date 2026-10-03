@@ -42,10 +42,47 @@ export async function sameSecret(given, secret) {
   for (let i = 0; i < x.length; i++) d |= x[i] ^ y[i];
   return d === 0;
 }
-// Bearer READ_TOKEN (the owner). Fails closed when READ_TOKEN isn't set.
-export function ownerOk(request, env) {
+// Bearer READ_TOKEN (the owner) or an owner session (below). Fails closed when READ_TOKEN isn't set.
+export async function ownerOk(request, env) {
   const h = request.headers.get('authorization') || '';
-  return h.startsWith('Bearer ') ? sameSecret(h.slice(7), env && env.READ_TOKEN) : Promise.resolve(false);
+  if (!h.startsWith('Bearer ')) return false;
+  const t = h.slice(7);
+  return t.startsWith(OWNER_SESSION_PREFIX) ? ownerSessionOk(t, env) : sameSecret(t, env && env.READ_TOKEN);
+}
+// The key itself, never a session. Binding a passkey as the owner's login needs this, so a copied session can't make itself permanent.
+export function ownerKeyOk(request, env) {
+  const h = request.headers.get('authorization') || '';
+  return h.startsWith('Bearer ') && !h.startsWith('Bearer ' + OWNER_SESSION_PREFIX) ? sameSecret(h.slice(7), env && env.READ_TOKEN) : Promise.resolve(false);
+}
+
+// Owner sessions (owner login, 2026-10-03): signing in with a passkey the owner bound (/api/passkey 'owner-bind') returns one, so a
+// browser never needs READ_TOKEN to be the owner. Form: vo1.<expiry ms, base36>.<credential tag>.<HMAC-SHA256>, keyed from
+// READ_TOKEN + SALT, so rotating either one ends every owner session at once. 30 days, renewed while used (/api/passkey 'owner').
+export const OWNER_SESSION_PREFIX = 'vo1.';
+export const OWNER_SESSION_TTL_MS = 30 * 864e5;
+const b64u = (buf) => btoa(String.fromCharCode(...new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const unb64u = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((s.length + 3) % 4)), (c) => c.charCodeAt(0));
+async function ownerSessionKey(env) {
+  if (!env || !env.READ_TOKEN) return null;
+  return crypto.subtle.importKey('raw', await digest('void-owner-session:' + env.READ_TOKEN + '|' + (env.SALT || '')), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify']);
+}
+// tag: keep the same credential tag when renewing a session
+export async function mintOwnerSession(env, credentialId, now = Date.now(), tag = null) {
+  const key = await ownerSessionKey(env);
+  if (!key) return null;
+  const exp = now + OWNER_SESSION_TTL_MS;
+  const t = tag && /^[A-Za-z0-9_-]{16}$/.test(tag) ? tag : b64u(await digest('owner-cred:' + credentialId)).slice(0, 16);
+  const body = OWNER_SESSION_PREFIX + exp.toString(36) + '.' + t;
+  return { token: body + '.' + b64u(await crypto.subtle.sign('HMAC', key, enc.encode(body))), expires: new Date(exp).toISOString() };
+}
+export async function ownerSessionOk(token, env, now = Date.now()) {
+  const m = typeof token === 'string' && token.length < 120 ? /^vo1\.([0-9a-z]{1,12})\.([A-Za-z0-9_-]{16})\.([A-Za-z0-9_-]{43})$/.exec(token) : null;
+  if (!m) return false;
+  const exp = parseInt(m[1], 36);
+  if (!(exp > now) || exp > now + OWNER_SESSION_TTL_MS + 60e3) return false;
+  const key = await ownerSessionKey(env);
+  if (!key) return false;
+  try { return await crypto.subtle.verify('HMAC', key, unb64u(m[3]), enc.encode('vo1.' + m[1] + '.' + m[2])); } catch (_) { return false; }
 }
 
 export async function connId(request, env) {

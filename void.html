@@ -3191,6 +3191,30 @@ return { ok: true, detail: 'timer-reset' };
 
     // owner board: what visitors asked that Void couldn't answer yet (reads /api/misses)
     const OWNER_KEY = 'a2m.void.owner.v1';
+    // Owner sign-in (2026-10-03). The server is the lock: /api/passkey 'owner' checks the key or an owner session in constant time and
+    // lib/guard.js stops a connection after 10 wrong keys a minute. Nothing public names it: no hint, menu line, tool or message.
+    // The key never expires here; an owner session (from "sign in" with the owner's passkey) renews itself. Only "sign out" ends either.
+    const OWNER_RENEW_MS = 29 * 864e5;
+    function rawOwnerKey() { const t = ownerToken(); return t && !t.startsWith('vo1.') ? t : ''; }
+    async function ownerCheck(tok) {
+      try {
+        const r = await fetch('/api/passkey', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + tok }, body: JSON.stringify({ step: 'owner' }), cache: 'no-store' });
+        return r.status === 200 ? await r.json().catch(() => null) : null;
+      } catch (_) { return null; }
+    }
+    async function ownerRenew() {
+      const t = ownerToken(); if (!t.startsWith('vo1.')) return;
+      if (!(parseInt(t.split('.')[1], 36) - Date.now() < OWNER_RENEW_MS)) return;
+      const b = await ownerCheck(t);
+      if (b && b.renewed && typeof b.renewed.token === 'string' && ownerToken() === t) { try { localStorage.setItem(OWNER_KEY, b.renewed.token); } catch (_) {} }
+    }
+    setTimeout(() => { ownerRenew(); setInterval(ownerRenew, 6 * 3600e3); }, 2000);
+    async function bindOwner(credentialId, key) {
+      let ok = false;
+      try { const r = await fetch('/api/passkey', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + key }, body: JSON.stringify({ step: 'owner-bind', credentialId }), cache: 'no-store' }); ok = r.status === 200; } catch (_) {}
+      if (ok) loopLog({ domain: 'void.me', ask: 'owner login', score: 'pass', note: 'owner passkey bound' });
+      return ok;
+    }
     function wantsBoard(lower) {
       return /^(show\s+(me\s+)?)?(the\s+)?(big\s+)?board$|^what\s+(are|were)\s+people\s+asking|^(show\s+(me\s+)?)?(the\s+)?misses$/.test(lower);
     }
@@ -3198,7 +3222,7 @@ return { ok: true, detail: 'timer-reset' };
       let tok = '';
       try { tok = localStorage.getItem(OWNER_KEY) || ''; } catch (_) {}
       const el = showPage((p) => { p.innerHTML = '<h2>The board</h2><div class="sub">…</div>'; });
-      if (!tok) { el.innerHTML = '<h2>The board</h2><p>This one is for the owner. Type “unlock” followed by your key.</p>'; return; }
+      if (!tok) { closePage(); return; }
       try {
         const r = await fetch('/api/misses', { headers: { authorization: 'Bearer ' + tok } });
         if (r.status === 401) { el.innerHTML = '<h2>The board</h2><p>That key didn\'t open it.</p>'; return; }
@@ -3447,7 +3471,7 @@ return { ok: true, detail: 'timer-reset' };
       const m = lower.match(/^(?:update yourself|ship the next (?:item|thing)|build the next (?:item|thing)|build (\d{3}|#?\d{1,2}|helper\/[a-z0-9][a-z0-9-]{0,31}))\s*[.!]?$/);
       const st = /^(build status|update status|how'?s the (?:update|build))\s*[?.!]?$/.test(lower);
       if (!m && !st) return false;
-      if (!ownerToken()) { say('only the owner can ask that'); return true; }
+      if (!ownerToken()) { whisper.textContent = ''; return true; } // absorb: nothing queued, nothing that names an owner
       try {
         if (st) {
           const v = await queueCall('GET'); const it = v.items[v.items.length - 1];
@@ -3479,7 +3503,7 @@ return { ok: true, detail: 'timer-reset' };
       const ask = core && core.parseGatedAsk(text);
       if (!ask) return false;
       const nothing = core.NOTHING[core.GATED[ask.toolName].kind];
-      if (!ownerToken()) { say('only the owner can ask that'); return true; }
+      if (!ownerToken()) { say('That one is for the person at the screen, asked by hand.'); return true; }
       const fp = await core.fingerprint(ask.toolName, ask.args);
       let res = null;
       try { res = await approvalCall({ type: core.EVENT_REQUESTED, runId: crypto.randomUUID ? crypto.randomUUID() : uid('run'), workflowId: core.WORKFLOW_ID, stepId: ask.toolName, toolName: ask.toolName, args: ask.args, argsFingerprint: fp }); } catch (_) {}
@@ -3652,6 +3676,7 @@ return { ok: true, detail: 'timer-reset' };
       await minePush().catch(() => {});
     }
     // Safari (and slow networks) can refuse a passkey prompt that isn't close enough to a tap: offer one tap to retry.
+    let pkLastId = null; // the passkey this page last made or used (owner login binds it)
     function pkRetry(msg, fn) {
       whisper.innerHTML = esc(msg) + ' · <span class="vc" data-vp="1" role="button" tabindex="0">try again</span>';
       pkRetryFn = fn; setTimeout(() => { if (pkRetryFn === fn) { pkRetryFn = null; if (whisper.querySelector('[data-vp]')) whisper.textContent = ''; } }, 60000);
@@ -3665,9 +3690,11 @@ return { ok: true, detail: 'timer-reset' };
       }
       const r = await pkCall('create', { credential: pkJSON(cred) }).catch(() => null);
       if (!r || r.status !== 200) { say(r && r.status === 503 ? "passkeys aren't available right now, nothing saved" : "that passkey didn't check out, nothing saved"); return; }
-      if (r.body.added) { say('passkey added'); loopLog({ domain: 'void.me', ask: 'add a passkey', score: 'pass', note: 'passkey added' }); return; }
+      pkLastId = r.body.credentialId || null;
+      const oKey = rawOwnerKey(), bound = oKey && pkLastId ? await bindOwner(pkLastId, oKey) : false; // the owner's own passkey becomes the owner login
+      if (r.body.added) { say('passkey added' + (bound ? ' · owner login set' : '')); loopLog({ domain: 'void.me', ask: 'add a passkey', score: 'pass', note: 'passkey added' }); return; }
       await meSignedIn(r.body);
-      say('remembered · say “sign in” on your other devices');
+      say(bound ? 'remembered · owner login set · next time just say “sign in”' : 'remembered · say “sign in” on your other devices');
       loopLog({ domain: 'void.me', ask: 'remember me', score: 'pass', note: 'passkey made' });
     }
     async function rememberMe(add) {
@@ -3679,7 +3706,7 @@ return { ok: true, detail: 'timer-reset' };
         // only 'none' (no passkey here, or one the server has forgotten) goes on to make a new one
         if (caps && caps.immediateGet && (await signIn({ immediate: true })) !== 'none') return;
       }
-      whisper.textContent = 'making a passkey';
+      whisper.textContent = 'making a passkey · use this device’s PIN';
       const o = await pkCall('create-options').catch(() => null);
       if (!o || o.status !== 200) { say(o && o.status === 503 ? "passkeys aren't available right now, nothing saved" : o && o.status === 429 ? 'slow down a moment' : "couldn't start a passkey"); return; }
       await pkMake(o.body.publicKey, add);
@@ -3699,31 +3726,43 @@ return { ok: true, detail: 'timer-reset' };
         say(r && r.status === 503 ? "passkeys aren't available right now" : "that passkey didn't check out"); return 'failed';
       }
       await meSignedIn(r.body);
-      say('welcome back');
+      pkLastId = r.body.credentialId || cred.id;
+      const oSession = r.body.owner && typeof r.body.owner.token === 'string' ? r.body.owner.token : '';
+      if (oSession && !rawOwnerKey()) { try { localStorage.setItem(OWNER_KEY, oSession); } catch (_) {} } // the key itself, if this browser has it, stays
+      say(oSession ? 'welcome back · owner' : 'welcome back');
       loopLog({ domain: 'void.me', ask: 'sign in', score: 'pass', note: immediate ? 'signed in (immediate)' : 'signed in' });
       return 'ok';
     }
     // -> 'ok' signed in | 'none' no usable passkey here | 'failed' something went wrong (already said)
     async function signIn(opt = {}) {
       if (!pkOK()) { if (!opt.immediate) say("this browser can't use passkeys"); return 'none'; }
-      if (me && me.token && !opt.immediate) { say('already signed in'); minePull(); return 'ok'; }
-      if (!opt.immediate) whisper.textContent = 'signing in';
+      if (me && me.token && !opt.immediate && !opt.force) { say('already signed in'); minePull(); return 'ok'; }
+      if (!opt.immediate) whisper.textContent = 'signing in · use this device’s PIN';
       const o = await pkCall('get-options').catch(() => null);
       if (!o || o.status !== 200) { if (!opt.immediate) say(o && o.status === 503 ? "passkeys aren't available right now" : "couldn't start signing in"); return 'none'; }
       return pkUse(o.body.publicKey, !!opt.immediate);
     }
     async function signOut() {
-      if (!me || !me.token) { say('not signed in'); return; }
+      // "sign out" is the one ask that ends owner mode on this device (the key or an owner session); nothing else clears it
+      const wasOwner = !!ownerToken();
+      try { localStorage.removeItem(OWNER_KEY); } catch (_) {}
+      if (!me || !me.token) { say(wasOwner ? 'signed out' : 'not signed in'); return; }
       clearTimeout(minePushT);
       if (!(await minePush().catch(() => false)) && mineSig() !== (me && me.sig)) { say("couldn't save the latest to your Void, still signed in"); return; }
       await pkCall('sign-out').catch(() => null);
       meSet(null);
       things = {}; selectedId = null; lastKeptId = null; voidLook = { ...LOOK_DEFAULT };
-      try { [STATE_KEY, LOOK_KEY, UNDO_KEY, ENTRY_KEY].forEach((k) => localStorage.removeItem(k)); } catch (_) {}
       document.body.classList.remove('void-entered');
       if (vpageEl) closePage();
       applyLook(false); render();
+      try { [STATE_KEY, LOOK_KEY, UNDO_KEY, ENTRY_KEY].forEach((k) => localStorage.removeItem(k)); } catch (_) {}
       say('signed out · your Void left with you');
+    }
+    async function ownerBindAsk() {
+      const key = rawOwnerKey();
+      if (!pkOK()) { say("this browser can't use passkeys"); return; }
+      if (!pkLastId) { const got = await signIn({ force: true }); if (got !== 'ok') { if (got === 'none') say('no passkey here yet · say “remember me” and it becomes your owner login'); return; } }
+      say((await bindOwner(pkLastId, key)) ? 'owner login set · next time just say “sign in” and use this device’s PIN' : "couldn't set the owner login, nothing changed");
     }
     async function forgetMe() {
       const r = await pkCall('forget').catch(() => null);
@@ -3740,7 +3779,10 @@ return { ok: true, detail: 'timer-reset' };
     const SIGNOUT_RE = /^(sign out|sign me out|signout|log out|log me out|logout|forget this device)\s*[.!]?$/;
     const FORGET_RE = /^(forget me|forget me everywhere|forget my void|delete my void|delete my account|erase me|erase my void)\s*[.!]?$/;
     const WHO_RE = /^(am i signed in|am i remembered|do you remember me|who am i|sync status|is my void (synced|saved))\s*[?.!]?$/;
-    function isMeAsk(lower) { return [REMEMBER_RE, ADD_PK_RE, SIGNIN_RE, SIGNOUT_RE, FORGET_RE, WHO_RE].some((re) => re.test(lower)); }
+    // Unlisted on purpose: the same passkey sign-in, run even when already signed in; and binding (only acts for the key holder).
+    const OWNER_SIGNIN_RE = /^(owner (log ?in|sign ?in)|(sign|log) (me )?in as (the )?owner)\s*[.!]?$/;
+    const OWNER_BIND_RE = /^(make (this|my passkey) (my |the )?owner (login|sign ?in|passkey)|use (this|my) passkey (as|for) (the |my )?owner( login)?|bind (my |this )?(passkey|owner login))\s*[.!]?$/;
+    function isMeAsk(lower) { return [REMEMBER_RE, ADD_PK_RE, SIGNIN_RE, SIGNOUT_RE, FORGET_RE, WHO_RE, OWNER_SIGNIN_RE].some((re) => re.test(lower)); }
     function forgetAnswer(lower) { // true = the answer was for "forget me"
       const pf = pendingForget; if (!pf) return false;
       pendingForget = null; clearTimeout(pf.timer); whisper.textContent = '';
@@ -3793,6 +3835,7 @@ return { ok: true, detail: 'timer-reset' };
         else { await minePull(); say(me ? 'signed in · ' + (me.synced ? 'synced ' + new Date(me.synced).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : 'syncing') : 'signed out on this device'); }
         return true;
       }
+      if (OWNER_SIGNIN_RE.test(lower)) { await signIn({ force: true }); return true; }
       if (REMEMBER_RE.test(lower)) { await rememberMe(false); return true; }
       if (ADD_PK_RE.test(lower)) { await rememberMe(true); return true; }
       if (SIGNIN_RE.test(lower)) { await signIn(); return true; }
@@ -4158,7 +4201,9 @@ return { ok: true, detail: 'timer-reset' };
       if (!text) return;
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
-      { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } }
+      { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } return handle('unlock'); } }
+      // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
+      if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
       rememberAsk(text);
       if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingPublish && publishAnswer(lower0)) return;
@@ -4193,7 +4238,7 @@ return { ok: true, detail: 'timer-reset' };
       if (!skillsLoaded) say('waking up');
       if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);
       if (await runLearnedSkills(text, lower0)) return;
-      if (wantsBoard(lower0)) { showBoard(); return; }
+      if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
@@ -4228,10 +4273,11 @@ return { ok: true, detail: 'timer-reset' };
     const hintsEl = document.getElementById('hints');
     const CORE_HINTS = ['what can you do', 'make a clock', 'make a 5 minute timer', 'add a sticky that says ', 'make a list', 'open a notepad',
       'make a calculator', 'make a counter', 'draw a circle', 'what is a black hole', 'define ', '15% of 80', '5 miles in km', '100 usd in eur',
-      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'show the board', 'menu', 'undo', 'what do you want to be', 'remember me', 'sign in', 'am i signed in', 'sign out', 'forget me', 'keep this', 'call this ', 'take this off', 'same again', 'close', 'read it aloud'];
+      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'menu', 'undo', 'what do you want to be', 'remember me', 'sign in', 'am i signed in', 'sign out', 'forget me', 'keep this', 'call this ', 'take this off', 'same again', 'close', 'read it aloud'];
     let hintList = [], hintSel = -1;
     function allHints() {
       const out = CORE_HINTS.slice();
+      if (ownerToken()) out.push('show the board', 'update yourself'); // owner-only lines show only to the owner
       for (const sk of learnedSkills) for (const ex of (sk.examples || [])) out.push(ex);
       return Array.from(new Set(out));
     }
@@ -4412,7 +4458,7 @@ return { ok: true, detail: 'timer-reset' };
     async function agentAsk(ask) {
       ask = String(ask || '').trim().slice(0, 500);
       if (!ask) return 'Say what you want in plain words, e.g. "weather in Tokyo".';
-      if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the owner, typed by hand.';
+      if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the person at the screen, asked by hand.';
       if (isMeAsk(ask.toLowerCase())) return 'Passkeys and sign-in are for the person at the screen, asked by hand.';
       if (isPaidAsk(ask)) return (await paidLine()) + '. The person buys it in their own browser: say "remember me", then "buy paid void".'; // the answer, never a checkout
       // Defences (runaway agents): an agent can never answer the confirm line or "forget me" for the person, never start a
@@ -4422,7 +4468,7 @@ return { ok: true, detail: 'timer-reset' };
       const coreA = await Promise.race([approvalReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
       if (!coreA) return 'Try again in a moment.';
       if (coreA.parseGatedAsk(ask)) return 'Sends, bookings and spends are for the person at the screen, asked by hand.';
-      if (wantsBoard(ask.toLowerCase())) return 'That one is for the owner, typed by hand.';
+      if (wantsBoard(ask.toLowerCase())) return 'That one is for the person at the screen, asked by hand.';
       await skillsReady;
       const before = JSON.stringify(things), pageBefore = vpageEl;
       await handle(ask);
