@@ -1891,6 +1891,14 @@ try {
       !!mod && mod.examples.length >= 4 && (mod.nearMisses || []).length >= 3 && mod.examples.every((e) => firstNs(e) === name) && mod.nearMisses.every((e) => firstNs(e) !== name),
       mod ? mod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing ' + name);
   }
+  // every skill in skills/index.json, old and new: its own examples reach it first and its near misses never do
+  // (a new skill that takes another's asks, or a dead example, fails here instead of on the benchmark)
+  { const bad = [];
+    for (const mod of nsMods) {
+      for (const e of mod.examples || []) if (firstNs(e) !== mod.name) bad.push(mod.name + ': "' + e + '" -> ' + firstNs(e));
+      for (const e of mod.nearMisses || []) if (firstNs(e) === mod.name) bad.push(mod.name + ': near miss "' + e + '" taken');
+    }
+    check('skills: every skill in index.json gets its own examples and none of its near misses (' + nsMods.length + ' skills)', !bad.length, bad.join(' | ')); }
   const shareMod = nsMods.find((s) => s.name === 'share');
   const recentMod = nsMods.find((s) => s.name === 'recent');
   const mem = { bag: {} };
