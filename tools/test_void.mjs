@@ -2004,6 +2004,15 @@ try {
       && held && held.held === true && held.kind === 'person' && held.html === '',
     tossMod ? tossMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing throw-off');
 
+  const diceMod = nsMods.find((s) => s.name === 'dice');
+  const coin = diceMod && diceMod.rollDice(diceMod.diceOf('flip a coin'), () => 0);
+  const two = diceMod && diceMod.rollDice(diceMod.diceOf('roll 2d6'), () => 0);
+  check('dice: listed with examples and near misses; examples route only to it; a coin flip and a dice roll stay in the page and the empty surface stays empty',
+    !!diceMod && diceMod.examples.length >= 4 && (diceMod.nearMisses || []).length >= 3
+      && diceMod.examples.every((e) => firstNs(e) === 'dice') && diceMod.nearMisses.every((e) => firstNs(e) !== 'dice')
+      && coin && coin.value === 'heads' && two && two.total === 2
+      && !/<div id="hints"[^>]*class="on"/.test(fs.readFileSync(path.join(root, 'index.html'), 'utf8')),
+    diceMod ? diceMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing dice');
 
   const esMod = nsMods.find((s) => s.name === 'spanish');
   const esReady = esMod && esMod.spanishReady();

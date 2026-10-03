@@ -15,3 +15,4 @@ New ideas land here in batches. A run may build any open row. Shipped rows stay,
 | shipped 3b6bbea | 2026-10-03 | summon a figure | figures-first, living 3D |
 | shipped 3b6bbea | 2026-10-03 | spin the figure | figures-first, see the back |
 | open | 2026-10-03 | days until new year | board later, date countdown |
+| building | 2026-10-03 | flip a coin | no open row; coin and dice not covered by util |
