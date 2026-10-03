@@ -583,6 +583,7 @@ Object.values(things).forEach((th) => {
         else if (th.kind === 'calendar') mountCalendar(th);
         else if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
+      syncFigures();
     }
 
     function mountKept(th) {
@@ -646,7 +647,26 @@ Object.values(things).forEach((th) => {
       stage.appendChild(el);
     }
     // skills put things on the stage through this: summon('calendar') shows the card, { hide: true } takes it off (events stay)
+    
+    // 3D figures (board Next #17): stage items of kind 'figure' live in skills/figures3d.js's WebGL layer, not in #stage.
+    // That module and three.js load only once a figure is on the stage, so the empty page loads no 3D code at all.
+    let figures3d = null, figures3dP = null;
+    function syncFigures() {
+      const figs = Object.values(things).filter((t) => t.kind === 'figure');
+      if (!figs.length && !figures3d) return;
+      if (!figures3dP) figures3dP = import('/skills/figures3d.js').then((m) => (figures3d = m));
+      figures3dP.then((m) => m.syncFigures(figs)).catch(() => { figures3dP = null; if (figs.length) say("3D can't show in this browser"); });
+    }
+
     function summonThing(kind, opts = {}) {
+      
+      if (kind === 'figure') {
+        const figs = Object.values(things).filter((t) => t.kind === 'figure');
+        if (opts.hide) { for (const f of figs) delete things[f.id]; if (figs.length) { save(); render(); } return figs.length; }
+        if (figs.length >= 6) return null;
+        const th = { id: uid('figure'), kind: 'figure', body: opts.body || 'sprite', x: 0, y: 0 };
+        things[th.id] = th; save(); render(); return th;
+      }
       if (stageKinds[kind]) { // skill kinds: each ask adds one more; it stays until thrown off the screen
         const th = Object.assign({ id: uid(kind), kind, x: 40, y: 60 }, opts);
         things[th.id] = th; selectedId = th.id; save(); render(); return th;

@@ -15,3 +15,8 @@ New ideas land here in batches. A run may build any open row. Shipped rows stay,
 | shipped 952cb99 | 2026-10-03 | summon a figure | figures-first, living 3D |
 | shipped 3b6bbea | 2026-10-03 | spin the figure | figures-first, see the back |
 | shipped dbd08d3 | 2026-10-03 | days until new year | board later, date countdown (correction: row stayed "building" after this landed; outcome-card follow-up on helper/outcome-card-countdown) |
+| open | 2026-10-03 | read it aloud | plan item 4, voice |
+| open | 2026-10-03 | make my void light | board later, light look |
+| open | 2026-10-03 | what did you do today | plan item 8, ledger as a skill |
+| open | 2026-10-03 | dismiss this | figures-first, send it away |
+| open | 2026-10-03 | a figure that sits on the chair | figures-first, use what is already there |
