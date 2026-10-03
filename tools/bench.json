@@ -922,5 +922,21 @@
   {
     "ask": "is pollen high in Madrid",
     "want": "skill:pollen"
+  },
+  {
+    "ask": "gas cost for 320 miles at 28 mpg $3.59 a gallon",
+    "want": "skill:fuel"
+  },
+  {
+    "ask": "how much fuel for a 500 mile trip at 30 mpg gas is $3.40",
+    "want": "skill:fuel"
+  },
+  {
+    "ask": "trip fuel 280 miles 32 mpg $3.25/gal",
+    "want": "skill:fuel"
+  },
+  {
+    "ask": "fuel for 400 km at 7 L/100km 1.85 per liter",
+    "want": "skill:fuel"
   }
 ]

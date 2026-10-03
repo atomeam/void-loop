@@ -172,3 +172,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-03T05:09 ET | grok (quick build) | build | pollen skill WIP on Victus (Open-Meteo CAMS Europe); left uncommitted.
 2026-10-03T05:20 ET | grok (hourly builder) | ship | pollen skill (Open-Meteo CAMS Europe allergy levels): ask pollen in Paris / allergy forecast in Berlin / how bad is the pollen in London / is pollen high in Madrid. Leading type, grains/m3 band + tip, day peak; Europe coverage noted plainly. Connects air/UV/quake outdoor-health family. Branch grok/pollen.
 
+2026-10-03T05:35 ET | grok (quick build) | ship | fuel skill: trip gas/petrol cost from distance, mpg or L/100km, and pump price. Ask gas cost for 320 miles at 28 mpg $3.59 a gallon. Bench 235. Branch grok/quick-fuel.
