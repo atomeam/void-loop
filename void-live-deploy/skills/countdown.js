@@ -1,6 +1,7 @@
 /**
  * countdown skill — days until a date. "days until new year" needs no network.
- * Empty surface stays empty; the count is a page.
+ * Empty surface stays empty; the count is an outcome card that stays on the stage (stageKinds), copyable as
+ * plain text, until it's thrown off. A second named countdown (new year plus a birthday) gets its own card.
  */
 export function countdownOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -29,10 +30,33 @@ function namedDate(label, now) {
   if (daysUntil(d, now) < 0) d = new Date(now.getFullYear() + 1, month, day);
   return d;
 }
-function page(esc, label, n) {
-  const word = n === 1 ? 'day' : 'days';
-  const line = n === 0 ? 'That is today.' : n < 0 ? 'That date has passed.' : n + ' ' + word + ' until ' + label + '.';
-  return '<h2>' + esc(label) + '</h2><p>' + esc(line) + '</p><div class="src">Counted on this device. Nothing is published.</div>';
+function titleOf(label) { return String(label).replace(/\b\w/g, (c) => c.toUpperCase()); }
+export function dateText(d) { return d.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); }
+export function daysLine(n) {
+  if (n === 0) return 'Today';
+  if (n < 0) return Math.abs(n) + (Math.abs(n) === 1 ? ' day ago' : ' days ago');
+  return n + (n === 1 ? ' day' : ' days');
+}
+// the outcome card: title, the count, the date — one child per line, so "copy" (stageApi.addCopy) reads naturally
+function mount(th, stageApi) {
+  const el = document.createElement('div');
+  el.className = 'thing kept-card countdown-card';
+  el.dataset.id = th.id;
+  el.style.cssText = 'position:absolute;left:' + th.x + 'px;top:' + th.y + 'px;width:200px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:rgba(12,12,12,0.92);font-size:13px;cursor:grab;user-select:none;text-align:center';
+  if (stageApi.selected() === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+  const head = document.createElement('div');
+  head.style.cssText = 'color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px';
+  head.textContent = 'Days until ' + th.label;
+  const big = document.createElement('div');
+  big.style.cssText = 'font-size:28px;font-weight:600;line-height:1.1;margin-bottom:8px';
+  big.textContent = daysLine(th.days);
+  const date = document.createElement('div');
+  date.style.cssText = 'color:var(--muted);font-size:11px';
+  date.textContent = th.dateText;
+  el.appendChild(head); el.appendChild(big); el.appendChild(date);
+  stageApi.bindDrag(el, th);
+  stageApi.addCopy(el);
+  stageApi.stage.appendChild(el);
 }
 async function run(text, api) {
   const hit = countdownOf(text);
@@ -40,9 +64,16 @@ async function run(text, api) {
   const now = new Date();
   const target = hit.kind === 'newyear' ? newYearDate(now) : namedDate(hit.label, now);
   if (!target) return 'none';
-  const label = hit.kind === 'newyear' ? 'New Year' : hit.label;
-  const el = api.showPage((p) => { p.innerHTML = page(api.esc, label, daysUntil(target, now)); });
-  return el ? 'countdown' : 'countdown';
+  const label = hit.kind === 'newyear' ? 'New Year' : titleOf(hit.label);
+  const days = daysUntil(target, now), dText = dateText(target);
+  const things = api.stage.things();
+  const existing = Object.values(things).find((t) => t.kind === 'countdown' && t.label === label);
+  if (existing) { existing.days = days; existing.dateText = dText; api.stage.save(); api.stage.render(); }
+  else { // a second distinct countdown (new year, then a birthday) gets its own spot, not stacked on the first
+    const n = Object.values(things).filter((t) => t.kind === 'countdown').length;
+    api.summon('countdown', { label, days, dateText: dText, x: 40 + n * 24, y: 60 + n * 24 });
+  }
+  return 'countdown';
 }
 export default {
   name: 'countdown',
@@ -52,4 +83,5 @@ export default {
   nearMisses: ['what is the new year', 'make a clock', 'when is the next holiday', 'remind me at 5'],
   match(lower, text) { return !!countdownOf(text); },
   run,
+  stageKinds: { countdown: { mount } },
 };

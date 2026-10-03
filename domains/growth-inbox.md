@@ -11,7 +11,7 @@ New ideas land here in batches. A run may build any open row. Shipped rows stay,
 | shipped c5d99e8 | 2026-10-03 | show the magnetize step | board Next, magnetize-step card |
 | shipped ee370b3 | 2026-10-02 | what's already built | assimilate row 6, plan item 8 |
 | shipped d421518 | 2026-10-03 | throw it off the screen | figures-first dismiss (skill + stageKinds flick; main already throwable) |
-| building | 2026-10-03 | export a print file | void-stage, slicer 3MF |
+| shipped 1633dbd | 2026-10-03 | export a print file | void-stage, slicer 3MF (correction: row stayed "building" after this landed) |
 | shipped 952cb99 | 2026-10-03 | summon a figure | figures-first, living 3D |
 | shipped 3b6bbea | 2026-10-03 | spin the figure | figures-first, see the back |
-| building | 2026-10-03 | days until new year | board later, date countdown |
+| shipped dbd08d3 | 2026-10-03 | days until new year | board later, date countdown (correction: row stayed "building" after this landed; outcome-card follow-up on helper/outcome-card-countdown) |

@@ -2043,6 +2043,24 @@ try {
       && cdMod.countdownOf('what is the new year') === null,
     cdMod ? cdMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing countdown');
 
+  // outcome card: the count is a stage thing now (not a popup page) — it keeps the right day count, copies as
+  // plain text (stageApi.addCopy, reused rather than a one-off button), and survives a reload like any other thing
+  { const Q = await fresh();
+    const cdFull = await import(new URL('../void-live-deploy/skills/countdown.js', import.meta.url).href);
+    const wantDays = cdFull.daysUntil(cdFull.newYearDate());
+    await Q.ask('days until new year', 500);
+    const card = await Q.p.$eval('.countdown-card', (e) => ({ text: e.innerText, hasCopy: !!e.querySelector('.vcopy') })).catch(() => null);
+    const st = (await Q.state()).find((t) => t.kind === 'countdown');
+    await Q.p.$eval('.countdown-card .vcopy', (b) => b.click()).catch(() => {});
+    await Q.p.waitForTimeout(80);
+    const copied = await Q.p.$eval('.countdown-card .vcopy', (b) => b.textContent).catch(() => '');
+    await Q.p.reload(); await Q.p.waitForTimeout(900);
+    const survived = await Q.p.$('.countdown-card');
+    check('countdown: "days until new year" lands as an outcome card on the stage (not a popup page) with the right day count, a working copy button, and it survives a reload',
+      !!card && card.hasCopy && /^(copied|select and copy)$/.test(copied) && st && st.days === wantDays && card.text.includes(cdFull.daysLine(wantDays)) && !!survived && Q.errors.length === 0,
+      JSON.stringify({ card, st, wantDays, copied, errs: Q.errors }));
+    await Q.ctx.close(); }
+
   { const slog = await import(new URL('../void-live-deploy/skills/slogan3d.js', import.meta.url).href);
     const doc = slog.sloganDoc({ reduce: true });
     check('slogan3d: exact slogan text; reduced-motion doc stays still (REDUCE true); no network libs',

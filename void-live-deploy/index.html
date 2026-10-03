@@ -657,8 +657,8 @@ Object.values(things).forEach((th) => {
       if (!th) { th = { id: uid(kind), kind, x: Math.max(16, Math.min(stage.clientWidth - 300, stage.clientWidth - 340)), y: 60 }; things[th.id] = th; }
       selectedId = th.id; save(); render(); return th;
     }
-    // what a skill's stage kind gets: the live things, and the stage's own drag, save and render
-    const stageApi = { stage, things: () => things, bindDrag, save, render, say, select: (id) => { selectedId = id; }, selected: () => selectedId };
+    // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
+    const stageApi = { stage, things: () => things, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId };
 
     // Click any stage object or person and it lifts in the hand. A flick throws it off the
     // screen and it's gone (a real toss: gravity, spin, carried off); a slow drop sets it back down.
