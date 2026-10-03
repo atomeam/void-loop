@@ -7,6 +7,7 @@
  * This file only shows the local agenda and adds events that are not those gated sentences.
  */
 import { show3d } from './calendar3d.js';
+import { countdownOf } from './countdown.js';
 const KEY = 'a2m.void.agenda.v1';
 const CLEAN = (s) => String(s || '').replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
 
@@ -66,8 +67,11 @@ function tidy(s) {
 
 
 export function parseCalendar(text) {
-  if (gated(text)) return null;
-  const t = CLEAN(text);
+     if (gated(text)) return null;
+     const t = CLEAN(text);
+     // "days until new year", "days until december 25": that is a countdown, not an agenda.
+     // The ask carries a date, so parseWhenText would claim it - hand it to the countdown skill.
+     if (countdownOf(t)) return null;
   // "add dentist to my calendar Oct 12 at 3" / "put lunch with Ana on my calendar tomorrow at noon": your own calendar, saved here
   const own = t.match(/^(?:please\s+)?(?:add|put)\s+(.+?)\s+(?:to|on|in)\s+my\s+(?:calendar|calender|agenda)(?:\s+(.+))?$/i);
   if (own) {

@@ -2016,6 +2016,15 @@ try {
       && chairPrint && chairPrint[0] === 80 && chairPrint[1] === 75 && /3dmodel\.model/.test(chairXml) && /<vertex /.test(chairXml),
     printMod ? printMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing print-file');
 
+  const cdMod = nsMods.find((s) => s.name === 'countdown');
+  check('countdown: listed with examples and near misses; examples route only to it (the calendar does not take a dated countdown); counts forward to a named date and to new year',
+    !!cdMod && cdMod.examples.length >= 4 && (cdMod.nearMisses || []).length >= 3
+      && cdMod.examples.every((e) => firstNs(e) === 'countdown') && cdMod.nearMisses.every((e) => firstNs(e) !== 'countdown')
+      && cdMod.daysUntil(new Date(2027, 0, 1), new Date(2026, 9, 3)) === 90
+      && cdMod.countdownOf('days until december 25').kind === 'named'
+      && cdMod.countdownOf('what is the new year') === null,
+    cdMod ? cdMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing countdown');
+
   const esMod = nsMods.find((s) => s.name === 'spanish');
   const esReady = esMod && esMod.spanishReady();
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
