@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · co-agency, 2026-10-03 (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:820px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:16px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+h2{font-size:14px;font-weight:normal;color:#fff;margin:6px 0 0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+ul{margin:0;padding-left:18px}
+.bar{display:flex;gap:6px;align-items:center;font-size:13px}
+.bar i{display:inline-block;height:10px;border-radius:3px;background:#7cf}
+table{border-collapse:collapse;font-size:12.5px;width:100%}
+td{padding:3px 10px 3px 0;vertical-align:top}
+td.t{color:#77777f;white-space:nowrap}
+td.w{color:#8ab4ff;white-space:nowrap}
+.flag{color:#f0a07a}
+</style>
+</head>
+<body>
+<main>
+  <h1>co-agency, 2026-10-03 · draft · not published</h1>
+  <p class="note">Who decided and who built on one day, from the pull requests merged into atomeam/void-loop (times UTC) and this session's record. Lanes are read from each branch's prefix (claude/, grok/, helper/, forethinkers/), so they say which agent opened the work, not how good it was. Nothing here scores anyone.</p>
+  <h2>Decided by Adam</h2>
+  <ul>
+    <li>Make the site worth showing: games, 3D objects that build themselves, a 3D calendar that looks real and is easy to edit.</li>
+    <li>The drafts were built to be used: seven fringe tools went live.</li>
+    <li>Go faster: the pipeline went from about 25 minutes push-to-live to under 10.</li>
+    <li>A copy button on answers; "clear calendar"; owner unlock without a passkey.</li>
+    <li>Noted for later: robots driven by different models fight differently (model fight league).</li>
+    <li>Kept with Adam: spend, secrets, the owner key and the confirm line.</li>
+  </ul>
+  <h2>Built by agents (merged pull requests)</h2>
+  <div id="lanes"></div>
+  <table id="t" aria-label="merged pull requests"></table>
+  <h2>Where the hand-off broke</h2>
+  <ul>
+    <li class="flag">A pasted owner key reached the answer model and the miss board, because "unlock" was read after the skills. Fixed (unlock first), the copies deleted, the key rotated by Adam.</li>
+    <li class="flag">A new skill (remind me at 5) took an ask the calendar already answered; the benchmark caught it, and the suite now checks every skill's examples against every other.</li>
+    <li class="flag">Agents appending to the same records (benchmark, agents log) conflicted on most merges; tools/merge-main.mjs now keeps both sides.</li>
+    <li class="flag">Hourly runs stalled for hours when the session's tools reconnected; runs now go through git and the GitHub API directly.</li>
+  </ul>
+  <p class="note">Open question (hypothesis): more lanes shipping in parallel raised the day's output; the cost shows up as conflicts and collisions, which checks can absorb.</p>
+</main>
+<script>
+(function(){
+  var P=[["00:33", "claude", 31, "Hourly run: benchmark 154 → 164, fringe run 7 (correlation view)"], ["01:15", "claude", 32, "Hourly run: benchmark 164 → 183, bench --last, fringe run 8 (co-agency ledger)"], ["01:57", "claude", 33, "Capital answers survive a country-service outage (board 18/18), benchmark 183 → 191, fringe "], ["03:30", "claude", 34, "make: Connect 4, tic-tac-toe, 3D objects, and seven fringe tools wired live"], ["04:20", "claude", 35, "Owner unlock first; clear calendar; copy button; 3D wall calendar"], ["04:45", "claude", 36, "Faster CI; fringe run 10 (cross-sense board); floor 207; model fight league noted"], ["05:47", "grok", 37, "Owner login: Windows Hello / device PIN after unlock once"], ["06:10", "grok", 39, "Add air quality skill (Open-Meteo US AQI)"], ["06:56", "claude", 42, "Hourly run: local time page; bench 219; fringe 11 (tap intent); every skill collision-checked"], ["07:48", "grok", 38, "Vision: two-part summons (card + living 3D figure); board Next #16-#22"], ["07:59", "grok", 43, "UV index skill (Open-Meteo WHO scale + peak + guidance)"], ["09:03", "grok", 46, "Earthquake skill: recent quakes from USGS"], ["09:26", "grok", 47, "Loan payment skill: monthly payment, first-year split, extra-payment payoff"], ["09:39", "grok", 48, "Pollen skill: CAMS Europe allergy levels (4-day peaks)"], ["09:56", "grok", 49, "Fuel skill: trip gas cost (mpg or L/100km)"], ["10:29", "forethinkers", 45, "Forethinkers think tank: first research cycle (2026-10-03 04:00)"], ["13:17", "helper", 50, "Magnetize-step card skill"], ["16:18", "helper", 51, "Fix Void ship helper startup_failure (deploy concurrency)"], ["16:33", "helper", 52, "Mark magnetize-step shipped"], ["16:50", "helper", 53, "Assimilate row 6: already-built inventory skill"], ["16:59", "claude", 54, "Hourly run: next holiday, books like X, quake measured; bench 245; fringe 12 (attention)"], ["17:33", "claude", 40, "Motelet sits on what you summoned; Linemote-1 exports a print file"], ["17:46", "grok", 55, "Tip skill: tip amount + bill split"], ["18:04", "claude", 57, "Hourly run: upcoming holidays, any-coin bench stub; bench 256; fringe 13 (tilt to read)"], ["18:07", "grok", 58, "Ship helper: grant checks: read so calling deploy.yml starts"], ["18:53", "claude", 59, "Hourly run: bench 266; fringe 14 (tap with the beat); merge-main for the append-only records"], ["19:16", "helper", 56, "Throw it off the screen (click to lift, flick to toss)"], ["19:32", "helper", 60, "what's already built: skill ids read from skills/index.json"], ["19:37", "helper", 61, "Throw-to-dismiss, universal (not just figures)"], ["20:02", "helper", 63, "Inbox: close shipped rows to real main SHAs"], ["20:33", "helper", 65, "summon a figure: generic alias for Motelet; close spin/throw-off inbox rows"], ["20:50", "helper", 70, "Fix summon figure SHA: 952cb99 (not 3b6bbea)"], ["21:53", "claude", 72, "Hourly run: bench 272; fringe 15 (skills vs benchmark, from git history)"], ["22:10", "helper", 62, "Next #16: 3D slogan on \"what are you?\""], ["22:33", "helper", 73, "answer engine: never refuse for lack of a source — write scripts, reason, create"]];
+  var lanes={};P.forEach(function(p){lanes[p[1]]=(lanes[p[1]]||0)+1});
+  var box=document.getElementById('lanes');Object.keys(lanes).sort(function(a,b){return lanes[b]-lanes[a]}).forEach(function(k){var d=document.createElement('div');d.className='bar';var i=document.createElement('i');i.style.width=(lanes[k]*14)+'px';d.appendChild(i);d.appendChild(document.createTextNode(k+' · '+lanes[k]));box.appendChild(d)});
+  var t=document.getElementById('t');P.forEach(function(p){var tr=document.createElement('tr');[[p[0],'t'],[p[1],'w'],['#'+p[2]+' '+p[3],'']].forEach(function(c){var td=document.createElement('td');td.textContent=c[0];if(c[1])td.className=c[1];tr.appendChild(td)});t.appendChild(tr)});
+  window.__coagency={lanes:lanes,count:P.length}; // for checks
+})();
+</script>
+</body>
+</html>
