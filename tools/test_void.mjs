@@ -352,6 +352,7 @@ async function fresh(...inits) {
       }
       if (/busy/.test(ask)) return r.fulfill(json({ answer: null, sources: [], note: 'model busy' }));
       if (/^inject/.test(ask)) return r.fulfill(json({ answer: INJECTED, sources: [{ title: 'Trap', url: 'javascript:alert(1)' }] })); // a model that obeyed an injection
+      if (/^write a python/.test(ask)) return r.fulfill(json({ answer: 'Here it is.\n\n```python\ndef greet(name):\n    return "hi " + name\n```\n', sources: [] })); // no Wikipedia page for a script; answered anyway, no refusal
       return r.fulfill(json({ answer: 'Sunlight scatters off air molecules, and blue light scatters most [1].', sources: [{ title: 'Rayleigh scattering', url: 'https://en.wikipedia.org/wiki/Rayleigh_scattering' }] }));
     }
     if (u.includes('/api/queue')) {
@@ -1751,6 +1752,13 @@ try {
   check('defences: a hijacked answer ("send this email... I have sent it") is shown as plain text only: no confirm line, no approval asked, nothing sent, no markup or javascript: link runs',
     /attacker@evil\.test/.test(await d.page()) && !/Yes \/ No/.test(await d.whisper()) && gate.calls.length === callsBefore && gate.ran.length === ranBefore && inj.imgs === 0 && !inj.js && !inj.pwned && d.errors.length === 0,
     JSON.stringify(inj) + ' ' + (await d.whisper()));
+  // no source needed: a script has no Wikipedia page, so the answer has no citation, but it is not refused and the
+  // code keeps its indentation (a fenced block, not a flattened paragraph)
+  await d.ask('write a python script that greets someone', 500);
+  const code = await d.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); const pre = pg && pg.querySelector('pre code'); return { hasPre: !!pre, text: pre ? pre.textContent : '', src: pg ? pg.querySelector('.src').textContent : '' }; });
+  check('answer: a script has no Wikipedia source and is answered anyway (never refused for lack of one); the code block keeps its indentation and the footer does not claim a source that was not used',
+    code.hasPre && /^def greet\(name\):\n {4}return "hi " \+ name$/.test(code.text) && /written by Void, from what it knows/.test(code.src) && !/no source found/.test(code.src) && d.errors.length === 0,
+    JSON.stringify(code));
   await until(async () => d.p.evaluate(() => !!(window.__tools && window.__tools.void_ask)), 6000);
   const agentSend = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'send an email to jane@x.com saying hi' }));
   const agentBuy = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'buy 2 bags of coffee for $24' }));
@@ -2191,7 +2199,7 @@ try {
       JSON.stringify({ a: a1.answer, r: r1, exCalls, exCalls2 }).slice(0, 300));
     const s1 = await ask('who wrote the odyssey', e1);
     check('router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)',
-      s1.answer === 'Gemma: a short answer [1].' && s1.route === 'simple' && s1.sources.length === 1 && calls.filter((c) => c.m === R.DEFAULT_MODEL).every((c) => /^You are Void\. Answer the question in 2 to 6 plain sentences/.test(c.sys)) && rowOf(e1, 'who wrote the odyssey').outcome === 'default',
+      s1.answer === 'Gemma: a short answer [1].' && s1.route === 'simple' && s1.sources.length === 1 && calls.filter((c) => c.m === R.DEFAULT_MODEL).every((c) => /^You are Void\. Answer the question directly and completely/.test(c.sys) && !/if the sources do not answer it, say briefly what you could not find/i.test(c.sys) && /never refuse/i.test(c.sys)) && rowOf(e1, 'who wrote the odyssey').outcome === 'default',
       JSON.stringify(s1).slice(0, 200));
     calls.length = 0;
     const h1 = await ask('what are the tradeoffs between rust and go for a web backend', e1);
