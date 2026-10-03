@@ -2684,6 +2684,9 @@ return { ok: true, detail: 'timer-reset' };
     function closePage() {
       if (!vpageEl) return false;
       const el = vpageEl; vpageEl = null;
+      if (el._slogan && el._slogan.parentNode) el._slogan.parentNode.removeChild(el._slogan);
+      el._slogan = null;
+      document.querySelectorAll('.vslogan').forEach((n) => n.remove());
       el.classList.remove('on');
       setTimeout(() => el.remove(), 350);
       return true;
@@ -2789,6 +2792,14 @@ return { ok: true, detail: 'timer-reset' };
       });
       // "how do I make a timer": the same page, with the timer's line lit and in view
       if (focus && el && el.querySelector) { const f = el.querySelector('li.focus'); if (f && f.scrollIntoView) f.scrollIntoView({ block: 'center' }); }
+      // Next #16: 3D slogan beside the self card (not the menu, not a how-to focus). Closes with the card.
+      if (!asMenu && !focus && el) {
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        import('/skills/slogan3d.js').then((m) => {
+          if (vpageEl !== el) return;
+          m.mountSlogan(el, { reduce });
+        }).catch(() => {});
+      }
       return el;
     }
     // "how do I make a timer", "how can I add a sticky note", "how to draw a circle" -> the self page at that line, not Wikipedia

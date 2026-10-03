@@ -729,9 +729,27 @@ try {
     const built = (await H.state()).length;
     check('"how do I make a timer" opens the Void page at the timer line (lit), builds nothing, and reaches neither Wikipedia nor the answer engine',
       /Ask, and it appears/.test(how) && /timer/.test(lit) && /sticky/.test(lit2) && built === 0 && !net.length, JSON.stringify({ lit, lit2, built, net }));
-    await H.ask('close', 300); await H.ask('what are you', 600); const self = await H.page();
+    await H.ask('close', 300); await H.ask('what are you', 900); const self = await H.page();
+    const slogan = await H.p.evaluate(async () => {
+      const want = 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.';
+      let wrap = null, f = null, iframeText = '', srcHas = false;
+      for (let i = 0; i < 20; i++) {
+        wrap = document.querySelector('.vslogan');
+        f = wrap && wrap.querySelector('iframe');
+        srcHas = !!(f && (f.srcdoc || '').includes(want));
+        try { iframeText = f && f.contentWindow && f.contentWindow.__slogan ? f.contentWindow.__slogan.text : ''; } catch (_) { iframeText = ''; }
+        if (wrap && srcHas) break;
+        await new Promise((r) => setTimeout(r, 100));
+      }
+      return { has: !!wrap, srcHas, iframeText, count: document.querySelectorAll('.vslogan').length };
+    });
     check('"what are you" is the self page', /Ask, and it appears/.test(self) && !net.length, self.slice(0, 80));
+    check('"what are you" mounts the 3D slogan beside the card with the exact A-to-Mind line',
+      slogan.has && slogan.count === 1 && (slogan.srcHas || slogan.iframeText === 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.'),
+      JSON.stringify(slogan).slice(0, 220));
     await H.ask('close', 300);
+    const gone = await H.p.evaluate(() => document.querySelectorAll('.vslogan').length);
+    check('closing the self page takes the 3D slogan with it', gone === 0, 'left=' + gone);
     await H.ask('make a clock', 300); await H.ask('make a clock', 300); await H.ask('make a 5 minute timer', 300);
     await H.ask('remove every clock', 400); const left = (await H.state()).map((x) => x.kind);
     check('"remove every clock" removes both clocks and keeps the timer', !left.includes('clock') && left.includes('timer'), left.join(','));
@@ -2024,6 +2042,14 @@ try {
       && cdMod.countdownOf('days until december 25').kind === 'named'
       && cdMod.countdownOf('what is the new year') === null,
     cdMod ? cdMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing countdown');
+
+  { const slog = await import(new URL('../void-live-deploy/skills/slogan3d.js', import.meta.url).href);
+    const doc = slog.sloganDoc({ reduce: true });
+    check('slogan3d: exact slogan text; reduced-motion doc stays still (REDUCE true); no network libs',
+      slog.SLOGAN === 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.'
+      && doc.includes(slog.SLOGAN) && /REDUCE=true/.test(doc) && !/three\.js|cdn\./i.test(doc),
+      slog.SLOGAN.slice(0, 40) + ' reduce=' + /REDUCE=true/.test(doc));
+  }
 
   const esMod = nsMods.find((s) => s.name === 'spanish');
   const esReady = esMod && esMod.spanishReady();
