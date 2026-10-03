@@ -49,6 +49,15 @@ nodes:
     date: 2026-10-01
     tracks: [life-extension]
     claim: "Phase-2 RCT (n=31): intermittent dasatinib+quercetin achieved ≥1-stage fibrosis improvement without MASH worsening in 47% vs 7% placebo (P=0.02); MASH resolution 53% vs 7%. snRNA-seq showed lower senescence and fibrosis signatures. Hypothesis-generating (small n). Nature Metabolism 1 Oct 2026; NCT05506488."
+  - id: florida-keys-reef-accretion
+    kind: shared-part
+    status: established
+    part: A. cervicornis outplanting raises offshore reef-accretion potential
+    title: "Coral restoration can drive rapid increases in reef-accretion potential"
+    url: https://doi.org/10.1038/s41598-025-04818-3
+    date: 2025-08-04
+    tracks: [planet-restoration]
+    claim: "Lower Florida Keys paired surveys: restored offshore A. cervicornis areas reach +2.80 mm y⁻¹ reef-accretion potential vs −0.84 mm y⁻¹ non-restored within 2–6 years; >16× gross carbonate production; ≈5% cover gain. Inshore massive restoration: no measurable accretion effect. 2023 bleach near-complete A. cervicornis mortality vs 59% massive survival. Open USGS CC0 data DOI 10.5066/P13HMEON."
   - id: printed-actuator-moves-figure-joint
     kind: shared-part
     status: hypothesis
@@ -71,6 +80,7 @@ nodes:
 
 ## Cycle log
 
+- 2026-10-03 12:11 ET. Florida-keys-reef-accretion established (Toth et al. Sci Rep DOI 10.1038/s41598-025-04818-3; −0.84 → +2.80 mm y⁻¹; USGS 10.5066/P13HMEON). GSOCS-LULCC and Australia SOC-M logged on planet-restoration track. Life-extension and 3MF work from prior cycles stay folded on this branch.
 - 2026-10-03 10:08 ET. Senolytics-mash-dq established (Nature Metabolism 1 Oct 2026; D+Q 47% vs 7% fibrosis improvement). PEARL rapamycin safety (Aging 4 Apr 2025) and semaglutide epigenetic slowing (Nat Commun 19 May 2026) logged on life-extension track. Printing/void-stage 3MF work from 08:07 stays folded on this branch.
 - 2026-10-03 08:07 ET. Multimaterial-export-3mf established (ISO/IEC 25422:2025; Core basematerials; Prusa prefers 3MF). Export-to-print stays blocked on browser emitter + slicer test. Figure-joint link stays hypothesis.
 - 2026-10-03 06:12 ET. Figure-scale-benchtop-magnetize established. MIT hard magnet is Sr-ferrite at 1.5 T (Canada et al. VPP 2026); bonded Neo needs 3-4 T (Magnequench); Mag-Instruments PM reaches 4 T at dia 1.25 cm sample OD. Export-to-print stays blocked on format. Figure-joint link stays hypothesis.
