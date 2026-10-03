@@ -323,5 +323,30 @@
     ],
     "sha256": "ce0524e217a6bc5dbb5f2547b961f6b7d15c6761aafc5a4f4eac4764324ee2b1",
     "emit": false
+  },
+  {
+    "run": 14,
+    "at": "2026-10-03T18:42:16Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-2.html",
+    "sources": [
+      {
+        "claim": "Negative mean asynchrony: people tapping along to a metronome tend to tap tens of milliseconds before the beat",
+        "source": "https://doi.org/10.3758/BF03206433",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Sensorimotor synchronization research reviews (Repp 2005; Repp & Su 2013)",
+        "source": "https://doi.org/10.3758/s13423-012-0371-2",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing your own lead/lag after a round makes the next round steadier",
+        "source": "drafts/fringe/interval-timing-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "430ce3b9abc94a6ea7a1909cdb6df5b8e2f60f963e28785c25d835fb7d7d4e7d",
+    "emit": false
   }
 ]
