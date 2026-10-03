@@ -31,6 +31,7 @@
 | multi-object targeting | alter routing + batch | live — select by kind ("make the timer blue"), batch alters ("resize all timers", "make everything blue") (deploy verified 2026-09-25) |
 | enter your own Void | look + entry (row 13) | live — silent entry on first keep (a2m.void.entered.v1), "make my void deep blue / add stars / reset my void" saved per browser (a2m.void.look.v1), public surface stays plain (deploy verified 2026-09-25) |
 | weather | external skill file | live — first skill file (skills/weather.js, Open-Meteo, no key); loader fetches /skills/index.json and imports each skill before fallback (deploy verified 2026-09-25) |
+| figures | skill file + lazy 3D layer (Next #17) | in PR — "summon a sprite" brings a roaming 3D void sprite into your own Void; "send them away" with undo; reduced motion holds it still; skills/figures.js + skills/figures3d.js (three.js loads on first summon) |
 | the map | external skill file (row 2 step 1) | live — second skill file (skills/map.js): "show the map" renders the assimilation map, all 13 rows with status (deploy verified 2026-09-25) |
 
 **Shared patterns (≥30% reuse target for Next):**  
@@ -65,14 +66,17 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Done when:** "what are you?" shows the card plus the 3D slogan beside it with the exact slogan text; closing the card takes the slogan with it; reduced motion shows it still; the empty page loads as fast as before; `node tools\test_void.mjs` gains one check for it and stays green.
 - **claim:** free
 - **claim_until:**
+- **Layer note 2026-10-03 (grok):** the #17 layer is live in the PR as `skills\figures3d.js`. Mount the slogan with `mountInScene((ctx) => ({ update, dispose }))` so it shares the figures' three.js copy, canvas and camera, and the page keeps one WebGL scene.
 
 ### Next #17 — a light 3D layer and one roaming figure
 - **What:** one light 3D layer behind the stage, using three.js served from the site itself and loaded lazily the first time a figure is summoned, with one base figure that roams on its own: it wanders the void, notices the cursor and turns toward it, and walks around cards so they stay readable. Add a reduced-motion setting (follows `prefers-reduced-motion`, plus an ask such as "less motion") that holds figures still, and asks such as "send them away" or "send the figure away" that clear figures, with undo.
 - **Why:** this is the shared engine every two-part summon rides on. Lazy loading keeps the empty page fast, and reduced motion plus send-away keep each visitor in charge of their own Void.
 - **Reuse:** stage layering, undo stack, personal layer in localStorage, the media-query pattern from Next #7 applied to `prefers-reduced-motion`.
 - **Done when:** the empty page loads zero 3D code (network log); summoning a test figure loads the layer, and the figure wanders and follows the cursor; reduced motion holds it still; "send them away" clears it and undo brings it back; tests gain a lazy-load check and stay green.
-- **claim:** grok (branch grok/stage3d-roam)
-- **claim_until:** 2026-10-03 08:00 ET
+- **Status 2026-10-03 (grok): done, in PR from branch grok/stage3d-roam.** `skills/figures.js` (in the skill list, so /tools.json and "what can you do" show it) routes "summon a sprite", "bring a friend", "show me a 3D buddy" to a new stage item of kind `figure`; "send them away" or "dismiss figures" clears them and undo brings them back (the existing undo snapshot); "less motion" holds them still and "let them roam" frees them, and `prefers-reduced-motion` always holds a still pose. `skills/figures3d.js` (not in the skill list) loads three.js 0.180.0 from a pinned jsDelivr URL only once a figure is on the stage, so the empty page loads no 3D code; one click-through WebGL canvas sits behind the cards. The figure is a void sprite: a glossy pastel blob with big shiny eyes that blink, rosy cheeks, a glowing antenna bulb and a teardrop wisp; it bobs, wanders to free spots and slides around cards, turns to look at a nearby cursor, idles (looks around, twirls, waves), and hops when tapped. Wheel, trackpad pinch or touch pinch over a figure zooms the camera in on it (it comes to the middle, in front of the cards); a tap on the bare void steps back out. API for #16, #18 to #22 and Claude's `stage3d.js`: `mountStage3D()`, `addFigure(spec)`, `removeFigures(ids?)`, `syncFigures(list)`, `mountInScene(mounter)` and `loadThree()`, so every 3D module shares one three.js copy and one scene. Tests: 8 new checks in `tools/test_void.mjs`.
+- **Next steps:** serve three.js from the site itself once a module vendors it (the board asked for that; the pinned CDN build keeps the repo small until then), and save each figure's last spot so a reload puts it back where it was.
+- **claim:** free
+- **claim_until:**
 
 ### Next #18 — base bodies dressed from the card
 - **What:** a set of base bodies (person, animal, object, place, idea) plus a styling step that dresses one from the card data: the subject's colors, a prop or two and a few of its own words in a speech bubble. The card's kind and facts pick the body (a person article gets a person, a city gets a place, a concept gets an idea).
@@ -302,3 +306,5 @@ Score: _(human)_
 - 2026-09-27 claude: 007 DONE and live (deploy 4a60c211): 'add a sticky', 'another note', 'make a 2 minute timer' add a new one; 'set the timer to…' still edits. Built through the queue (item mukgwcjf, queued -> building -> live). 008 self-update handoff is LIVE: queue and miss list moved from KV to D1 (a-to-mind-board DB, 100k writes/day).
 
 - 2026-10-03 grok: Adam's vision recorded — two-part summons (card plus a living 3D figure), first piece the 3D slogan on "what are you?", cartoon tone for grim subjects, collector-grade detail with zoom. New Next #16 to #22; #16 is the top open item. Next #15 (recent asks) is DONE and live (de8d6a1); Grok's claim cleared.
+
+- 2026-10-03 grok: Next #17 (light 3D layer + one roaming figure) DONE in PR from grok/stage3d-roam: skills/figures.js + skills/figures3d.js, three.js 0.180.0 loads on first summon only. Builders: take #16 next and mount the slogan with mountInScene from figures3d.js.
