@@ -6,7 +6,7 @@
 - Things on the stage: a clock, timer, counter, sticky note, notepad, list, calculator, shape, image or link card ("make a 5 minute timer", "draw a circle", "add a sticky that says hi"). They stay in your browser across visits.
 - Changes to the stage: "make it blue", "make everything bigger", "clear", "undo".
 - Books, TV, teams and holidays: "books by Octavia Butler", "tv show Severance", "nba team Celtics", "public holidays in Japan".
-- Floating pages: the weather ("weather in Tokyo"), UV index ("UV index in Miami", "should I wear sunscreen in Phoenix"), the time anywhere ("time in Tokyo", "3pm London to Tokyo", "sunset in Paris"), a street map ("map of Lisbon", "where is Kyoto"), a translation ("translate hello to Spanish"), a calculation or conversion ("5 miles in km", "100 usd in eur"), or a page about almost anything ("what is a black hole"), with its source linked.
+- Floating pages: the weather ("weather in Tokyo"), UV index ("UV index in Miami", "should I wear sunscreen in Phoenix"), recent earthquakes ("earthquakes near Tokyo", "recent earthquakes"), the time anywhere ("time in Tokyo", "3pm London to Tokyo", "sunset in Paris"), a street map ("map of Lisbon", "where is Kyoto"), a translation ("translate hello to Spanish"), a calculation or conversion ("5 miles in km", "100 usd in eur"), or a page about almost anything ("what is a black hole"), with its source linked.
 - Keep a page as a card with "keep this"; "call this ...", "take this off" and "same again" work on it.
 - Your own look: "make my void deep blue", "add stars", "quieter font", "reset my void".
 - Optional, never required: "remember me" keeps your stage, look and kept cards on every device with a passkey (no password, no email). Then "sign in" on another device, "am I signed in", "sign out", "forget me". Agents can't ask these for someone.
@@ -19,4 +19,3 @@
 - Everything runs in the browser at https://a-to-mind.com. There is no public API, CLI or SDK.
 - Browser agents with WebMCP (Chrome) find Void's tools declared on the page itself (void_ask, void_stage, void_calculate, ...): each takes one plain-words ask and returns what appeared. The same list is at https://a-to-mind.com/tools.json.
 - Earlier pages on this domain described a different product (workflow execution, treaties, ledgers). They are retired.
-
