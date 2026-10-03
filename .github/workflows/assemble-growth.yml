@@ -1,0 +1,32 @@
+name: assemble-growth
+on:
+  workflow_dispatch:
+  push:
+    branches: [forethinkers/cycle-2026-10-03-0400]
+    paths: [domains/forethinkers/_growth_parts/**]
+permissions:
+  contents: write
+jobs:
+  assemble:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Assemble void.growth.md
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          parts = sorted(Path("domains/forethinkers/_growth_parts").glob("*.part"))
+          text = "".join(p.read_text(encoding="utf-8") for p in parts)
+          out = Path("domains/void.growth.md")
+          out.write_text(text, encoding="utf-8")
+          print("wrote", out, "bytes", out.stat().st_size, "from", len(parts), "parts")
+          assert "magnetize-step card" in text
+          PY
+      - name: Commit assembled board
+        run: |
+          git config user.name "atomeam"
+          git config user.email "atomicmoonbeam88@gmail.com"
+          git add domains/void.growth.md
+          git diff --cached --quiet && echo "no change" && exit 0
+          git commit -m "Forethinkers: assemble magnetize-step growth board"
+          git push

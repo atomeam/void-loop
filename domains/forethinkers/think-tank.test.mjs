@@ -11,10 +11,20 @@ import { readFile } from "node:fs/promises";
 
 const map = parseMap(await readFile(new URL("./convergence.md", import.meta.url), "utf8"));
 
-test("map seed: only the motor is established", () => {
+test("map seed: motor is established and joint stays hypothesis", () => {
   const motor = map.find((n) => n.id === "mit-printed-linear-motor");
   assert.equal(motor.status, "established");
   assert.equal(establishedOk(motor), true);
+  const magnetize = map.find((n) => n.id === "magnetize-outside-printer");
+  if (magnetize) {
+    assert.equal(magnetize.status, "established");
+    assert.equal(establishedOk(magnetize), true);
+  }
+  const bench = map.find((n) => n.id === "figure-scale-benchtop-magnetize");
+  if (bench) {
+    assert.equal(bench.status, "established");
+    assert.equal(establishedOk(bench), true);
+  }
   const joint = map.find((n) => n.id === "printed-actuator-moves-figure-joint");
   assert.equal(joint.status, "hypothesis");
   assert.deepEqual(joint.tracks, ["printing-working-machines", "living-figures"]);

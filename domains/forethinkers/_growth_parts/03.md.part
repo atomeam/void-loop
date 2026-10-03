@@ -1,0 +1,48 @@
+6. To act now: purge those two URLs in the Cloudflare dashboard (the Cloudflare MCP cannot purge cache; salvage item 12). Sources in the old site folder: `C:\Users\adamm\a-to-mind.com\surfaceledger\surface-ledger.md`, `surfaceledger\public-summary.md`, `glassbox\public-summary.md`, `inflightledger\public-summary.md`, `inflightledger\runs\seed-notion\public-summary.md`, plus that folder's own copies of `llms.txt`, `.well-known\`, `discover\`, `drift\`, `templates\`. Move those into `C:\Users\adamm\a-to-mind.com\_archive-2026-09-25\site\` too, so a deploy from that folder (it has its own `wrangler.jsonc` for Pages project `a-to-mind`) cannot republish them; keep `C:\Users\adamm\a-to-mind.com\index.html` in place (sync target).
+- **Status 2026-09-25 13:20 ET (grok, ship; Adam approved): partly done.** Done: article page, self page and no-match fallback are live (deployment b8f6df44; headless check OK); the new `llms.txt` is in the Pages deploy and served at `/llms.txt?cb=...` (the plain URL still shows an old edge-cache copy); `treaty-worker\public\*` archived to `C:\Users\adamm\a-to-mind.com\_archive-2026-09-25\treaty-worker-public\`; its 8 routes commented out and the worker redeployed. Still open for Adam: `/.well-known/*`, `/discover*` and `/drift*` on the apex still answer from outside Pages (probe paths return an empty 404), so remove any remaining `a-to-mind-treaty` routes in the Cloudflare dashboard (Workers Routes); then press Purge for `/llms.txt`, `/.well-known/treaty.json`, `/.well-known/agent-card.md`, `/discover/`, `/drift/`, `/drift/drift.md`, `/surfaceledger/surface-ledger.md`, `/glassbox/public-summary.md`. After that, curl each and confirm the blank Void.
+- **claim:** free
+- **claim_until:**
+
+### Next #2 — batch actions
+- **What:** "remove all timers", "start all timers", "clear the counters" — remove/start/pause/reset across every match of a kind
+- **Why:** direct gap found while shipping multi-object: batchKinds/wantsBatchAlter route these today but remove/start still hit only the first match
+- **Reuse:** ~60% (batchKinds, wantsBatchAlter, wantsRemove*/wantsTimerAction)
+- **Scope 2026-09-27 (Adam via claude):** 'make everything blue' and 'make everything bigger' already work; keep them working. Build the missing part: asks aimed at one kind of stage item — 'clear all the notes', 'make all the timers red', 'make the stickies bigger', 'remove every clock' — matching item kinds by their everyday names and plurals, with undo covering the whole batch.
+- **Status 2026-09-27 (claude): done, live** — remove by kind, kept cards as a kind, one undo restores the group.
+- **claim:** free
+- **claim_until:**
+
+### Next #3 — grouped objects / layers
+- **What:** group + move/resize as unit; z-order
+- **Why:** composes targeting + drag; follows shipped multi-object
+- **Reuse:** ~40%
+- **claim:** free
+- **claim_until:**
+- **AutoSalvage note:** intent-canvas Node model (position_x/y/width/height/z_index) + KIND_COMPONENTS dispatch + onUpdate(Partial<Node>) is effectively the grouping/z-order infrastructure — absorb patterns when this ships
+
+### Next #4 — translator page
+- **What:** a translator skill file on the `/skills` match+run contract that uses the existing floating page. Summoned by plain words ("translate X to Y", "what does X mean", "say this in French: ..."). The page shows the source text, both languages, the translation and a copy control, and names its public translation source on the page.
+- **Why:** live visitor tests 2026-09-27: "translate hello to Spanish" opened Wikipedia's HelloTalk and "translate hello to Japanese" opened Hello Kitty. A translator page gives these visitors the answer they asked for.
+- **Reuse:** ~50% (floating page object, skill loader, source-link pattern from the article page)
+- **Status 2026-09-27 17:52 ET (grok, ship): done, live.** skills/translate.js shipped in deployment https://0c0b3b68.a-to-mind.pages.dev; a later deploy the same evening updated translate.js to Google Translate first with MyMemory as fallback. Verified in headless Chrome on Victus: "translate hello to Japanese" shows こんにちは, "translate hello to Spanish" shows Hola, "good morning in French" shows bonjour, each with "Source: Google Translate". Follow-ups for the next pass: (a) have the loader finish importing skill files before answering, or re-run skills once they load; an ask typed in the first seconds after page load currently falls to the article fallback (hello→Japanese opened Hello Kitty in two quick runs); (b) name the source that actually answered (MyMemory when the fallback is used); (c) add the copy control; (d) read MyMemory `matches` when `translatedText` comes back empty (hello→Japanese does).
+- **claim:**
+- **claim_until:**
+
+### Next #5 — place map page
+- **What:** a place map skill file on the same `/skills` contract. Summoned by "map of X" and "where is X": a quiet map on a floating page using OpenStreetMap tiles and Nominatim, with attribution shown. When a place name is ambiguous, show a short choice list on the same page first, then the chosen map. Keep the existing "show the map" (internal rebuild map) working alongside it.
+- **Why:** live visitor test 2026-09-27: "map of Lisbon" opened Wikipedia's Lisbon, Ohio. A map page shows the place the visitor meant.
+- **Reuse:** ~40% (floating page object, skill loader, choice list shared with Next #6)
+- **Status 2026-09-27 17:52 ET (grok, ship): done, live.** skills/place.js shipped in deployment https://0c0b3b68.a-to-mind.pages.dev (Open-Meteo geocoding + OpenStreetMap embed with OSM attribution). Verified live: "map of Lisbon" shows Lisbon, Portugal with Lisbon Maine/Ohio/Iowa/North Dakota as links (clicking Lisbon, Maine switches the map); "where is Kyoto" shows Kyoto, Japan; "show the map" still renders the internal rebuild map (skills/rebuild-map.js). Follow-up: the same load-timing fix as Next #4 (an early "where is Kyoto" opened the Wikipedia article); the alternates list mixes in landmarks (Kyoto Heliport), so filter it to towns and cities.
+- **claim:**
+- **claim_until:**
+
+### Next #6 — article page picks the right meaning
+- **What:** when Wikipedia's match is ambiguous or a small stub (Lisbon, Ohio for "Lisbon"), prefer the main topic or show a short choice list on the page. Route "translate" and "map" asks to their skills (Next #4, #5) before the article fallback.
+- **Why:** the same 2026-09-27 tests: the article fallback answered translate and map asks with the wrong page. Picking the main meaning makes every fallback answer feel right.
+- **Reuse:** ~70% (existing article page, opensearch/REST summary fetch, skill routing)
+- **Note 2026-09-27 17:52 ET (grok):** Claude is building this in void.html now; claim it with Claude before starting.
+- **claim:**
+- **claim_until:**
+
+### Next #7 — your look shows from the first frame
+- **What:** apply the saved personal look (`a2m.void.look.v1`: background, glow, stars, quiet font, text size) in a tiny blocking script in `<head>` before the page draws
