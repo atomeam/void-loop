@@ -765,6 +765,7 @@ try {
   await t.ask('earthquakes near Lisbon', 1200); const quakePg = await t.page(); check('earthquakes', /Near Lisbon|Earthquakes|USGS/.test(quakePg) && /M5\.2|M3\.1|magnitude|Major|Strong|Moderate|Light|Minor/.test(quakePg), quakePg.slice(0, 160));
   await t.ask('monthly payment on a $250000 mortgage at 6.5% for 30 years', 700); const loanPg = await t.page(); check('loan payment', /\/ month/.test(loanPg) && /Total interest/.test(loanPg) && /mortgage/i.test(loanPg) && /First year/.test(loanPg) && /extra each month/.test(loanPg), loanPg.slice(0, 180));
   await t.ask('$300k mortgage at 6.5% for 30 years with $200 extra a month', 700); const loanX = await t.page(); check('loan extra payment', /extra \/ month/.test(loanX) && /months sooner/.test(loanX) && /save/.test(loanX) && /interest/.test(loanX), loanX.slice(0, 180));
+  await t.ask('gas cost for 320 miles at 28 mpg $3.59 a gallon', 700); const fuelPg = await t.page(); check('trip fuel', /Trip fuel/.test(fuelPg) && /Fuel needed/.test(fuelPg) && /Per mile/.test(fuelPg) && /gal/.test(fuelPg), fuelPg.slice(0, 180));
   await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
@@ -1894,7 +1895,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
