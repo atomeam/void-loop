@@ -1756,6 +1756,14 @@ try {
       && typeof shareHref === 'string' && shareHref.includes('share_text=') && !/\/api\/publish|\/@/.test(shareHref),
     shareMod ? shareMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') + ' | ' + shareHref : 'missing share');
 
+  const esMod = nsMods.find((s) => s.name === 'spanish');
+  const esReady = esMod && esMod.spanishReady();
+  check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
+    !!esMod && esMod.examples.length >= 4 && (esMod.nearMisses || []).length >= 3
+      && esMod.examples.every((e) => firstNs(e) === 'spanish') && esMod.nearMisses.every((e) => firstNs(e) !== 'spanish')
+      && typeof esReady === 'string' && /Puedo responder en español/.test(esReady) && !/\/api\/publish/.test(esReady),
+    esMod ? esMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') + ' | ' + esReady : 'missing spanish');
+
   const wtMod = (await import(new URL('../void-live-deploy/skills/worldtime.js', import.meta.url).href)).default;
   const otherSkillAsks = new Set(Object.entries(R.SKILLS).filter(([n]) => n !== 'worldtime').flatMap(([, v]) => v.examples));
   const wtNear = wtMod.nearMisses.filter((a) => !otherSkillAsks.has(a) && !/timer|clock/.test(a));
