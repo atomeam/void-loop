@@ -193,5 +193,25 @@
     ],
     "sha256": "cb3f2c6af762cd5c303c005469330765f5c2a7f0017250ff1cfa1b763eb1efe4",
     "emit": false
+  },
+  {
+    "run": 9,
+    "at": "2026-10-03T01:41:40Z",
+    "family": "private-incubation-log",
+    "draft": "drafts/fringe/private-incubation-log.html",
+    "sources": [
+      {
+        "claim": "Incubation (setting a problem aside) improves later insight in lab studies",
+        "source": "https://doi.org/10.1037/a0015329",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A sealed, device-only idea log helps people return to ideas fresh",
+        "source": "https://doi.org/10.1037/a0015329",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "67422f1c4155296e27cc5c92bdb0f5bf02d5ef867af7ead63c5f73203c7b99ba",
+    "emit": false
   }
 ]
