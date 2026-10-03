@@ -2004,6 +2004,17 @@ try {
       && held && held.held === true && held.kind === 'person' && held.html === '',
     tossMod ? tossMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing throw-off');
 
+  const printMod = nsMods.find((s) => s.name === 'print-file');
+  const printApi = printMod && await import(new URL('../void-live-deploy/skills/print-file.js', import.meta.url).href);
+  const emptyPrint = printApi && printApi.stage3mf({});
+  const chairPrint = printApi && printApi.stage3mf({ c: { id: 'c', kind: 'fig3d', model: 'chair' } });
+  const chairXml = chairPrint ? new TextDecoder().decode(chairPrint) : '';
+  check('print-file: listed with examples and near misses; examples route only to it; an empty stage stays empty and a chair on the stage is a 3MF package',
+    !!printMod && printMod.examples.length >= 4 && (printMod.nearMisses || []).length >= 3
+      && printMod.examples.every((e) => firstNs(e) === 'print-file') && printMod.nearMisses.every((e) => firstNs(e) !== 'print-file')
+      && emptyPrint === null
+      && chairPrint && chairPrint[0] === 80 && chairPrint[1] === 75 && /3dmodel\.model/.test(chairXml) && /<vertex /.test(chairXml),
+    printMod ? printMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing print-file');
 
   const esMod = nsMods.find((s) => s.name === 'spanish');
   const esReady = esMod && esMod.spanishReady();
