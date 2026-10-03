@@ -1,0 +1,48 @@
+name: Forethinkers
+
+on:
+  schedule:
+    # Hourly trigger. The job starts only on an even America/New_York hour
+    # (2:03, 4:03, 6:03, ...), so the two-hour rhythm holds across the November clock change.
+    - cron: "3 * * * *"
+  workflow_dispatch:
+
+jobs:
+  cycle:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Even New York hour, or a manual run
+        id: gate
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          hour=$(TZ=America/New_York date +%H)
+          hour=$((10#$hour))
+          if [ $((hour % 2)) -eq 0 ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "skip odd America/New_York hour $hour"
+          fi
+
+      - name: Every track, one cycle
+        if: steps.gate.outputs.run == 'true'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MODEL: ${{ vars.MODEL }}
+          NOTIFY_WEBHOOK: ${{ secrets.NOTIFY_WEBHOOK }}
+        run: |
+          set -euo pipefail
+          echo "tracks:"
+          find domains -maxdepth 1 -name '*.md' -printf '%f\n' | sort
+          echo "assimilate rows and growth board are in that set"
+          if [ ! -f domains/forethinkers/think-tank.mjs ]; then
+            echo "no runner yet; schedule is live, model call is not"
+            exit 0
+          fi
+          node domains/forethinkers/think-tank.mjs
