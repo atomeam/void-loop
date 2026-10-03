@@ -2,6 +2,19 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-03 10:08 ET even-hour cycle
+
+Victus offline this run; worked on the box + GitHub MCP. Folded waiting branch `forethinkers/cycle-2026-10-03-0807` (3MF export answer + board claims) into `forethinkers/cycle-2026-10-03-1008`. Orphan branches `forethinkers/cycle-2026-10-03-0400` and `0612` remain merged content. Left draft PR #40 and Next #17 PR #44 untouched.
+
+Read `convergence.md`, every track, and the 08:07 stack. Picked **life-extension** (least recently advanced stub) over continuing the browser-3MF implementation question.
+
+- Established: intermittent senolytic dasatinib + quercetin improves fibrotic MASH histology in a phase-2 RCT — 47% vs 7% fibrosis improvement without MASH worsening (P = 0.02); MASH resolution 53% vs 7%. [Nature Metabolism, 1 Oct 2026](https://www.nature.com/articles/s42255-026-01643-4); [NCT05506488](https://clinicaltrials.gov/study/NCT05506488). Authors mark it hypothesis-generating (small n).
+- Established (safety context): PEARL — intermittent low-dose rapamycin safe over 48 weeks; visceral fat unchanged; women on 10 mg gained lean mass / less pain. [Aging, 4 Apr 2025, DOI 10.18632/aging.206235](https://doi.org/10.18632/aging.206235).
+- Established (exploratory gerotherapeutic signal): semaglutide slowed multiple epigenetic clocks vs placebo in a post-hoc analysis of an HIV-lipohypertrophy RCT. [Nature Communications, 19 May 2026](https://www.nature.com/articles/s41467-026-72861-3).
+- Next open question: open registries / methylome datasets / endpoints a small team can watch for replication without claiming a cure.
+
+[think-tank] Summon a senolytic MASH trial card: cite Nature Metabolism 1 Oct 2026 and NCT05506488, show 47% vs 7% fibrosis endpoint with the hypothesis-generating caveat, link PEARL and semaglutide epigenetic papers as neighbouring context; no cure claim.
+
 ## 2026-10-03 08:07 ET even-hour cycle
 
 Victus offline this run; worked on the box + GitHub MCP. No open forethinkers PR; leftover branches `forethinkers/cycle-2026-10-03-0400` and `forethinkers/cycle-2026-10-03-0612` are already merged content (orphans left alone). Left draft PR #40 and Next #17 PR #44 untouched.
