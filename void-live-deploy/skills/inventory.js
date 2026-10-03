@@ -4,12 +4,21 @@
  * Sources: live skills, existing-tools registry, assimilate rows that are live.
  * No network. Tessl Skill Inventory / BoardKit Orchestrator / factory-codebase-inventory exist
  * outside Void; this is Void's own form on the stage and on the owner board.
+ * A blank ask matches nothing, so the empty surface stays empty.
  */
 const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 
 /** Live skills Void already answers (keep in sync with skills/index.json). */
 export const SKILLS_BUILT = [
+  { id: 'part', what: 'parts a figure is built from' },
+  { id: 'figure', what: 'a figure on the stage' },
+  { id: 'make', what: 'builds a small app on the stage from parts Void already has' },
   { id: 'weather', what: 'weather and forecasts' },
+  { id: 'air', what: 'air quality' },
+  { id: 'uv', what: 'UV index' },
+  { id: 'quake', what: 'recent earthquakes' },
+  { id: 'pollen', what: 'pollen' },
+  { id: 'spanish', what: 'answers in Spanish' },
   { id: 'translate', what: 'translation' },
   { id: 'rebuild-map', what: 'assimilation map (what is being rebuilt as Void)' },
   { id: 'place', what: 'street maps and places' },
@@ -22,7 +31,11 @@ export const SKILLS_BUILT = [
   { id: 'joke', what: 'jokes' },
   { id: 'recipe', what: 'recipes' },
   { id: 'crypto', what: 'crypto prices' },
+  { id: 'loan', what: 'loan payments' },
+  { id: 'fuel', what: 'fuel prices' },
+  { id: 'tip', what: 'tip amount and bill split from the numbers in the ask' },
   { id: 'util', what: 'passwords, QR, colours, moon, lorem' },
+  { id: 'remind', what: 'a reminder, only after the confirm line' },
   { id: 'calendar', what: 'calendar / agenda on this device' },
   { id: 'today', what: "what Void did today (this device's loop log)" },
   { id: 'book', what: 'books (Open Library)' },
@@ -30,6 +43,9 @@ export const SKILLS_BUILT = [
   { id: 'sport', what: 'teams (TheSportsDB)' },
   { id: 'holidays', what: 'public holidays' },
   { id: 'work', what: 'remote jobs (Remotive)' },
+  { id: 'share', what: 'share this card' },
+  { id: 'recent', what: 'recent asks, saved only in this browser; the empty box stays empty until focus' },
+  { id: 'magnetize', what: 'the post-print magnetize step' },
   { id: 'inventory', what: 'this list — already built rows' },
 ];
 
@@ -136,6 +152,7 @@ export default {
     'show inventory',
     'already built',
     'have we built passkeys',
+    'have we built tip',
     'did we build the confirm line',
     'what can i reuse',
   ],

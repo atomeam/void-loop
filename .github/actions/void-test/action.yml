@@ -44,6 +44,9 @@ runs:
     - name: node tools/test_calendar.mjs
       shell: bash
       run: node tools/test_calendar.mjs
+    - name: node tools/test_inventory.mjs
+      shell: bash
+      run: node tools/test_inventory.mjs
     - name: node tools/test_void.mjs
       shell: bash
       env:
