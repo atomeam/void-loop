@@ -1,13 +1,13 @@
-# The Forethinkers cycle (domains/forethinkers/brief.md). One shared part or blocked Void stage per cycle, fanned into
-# the active tracks it touches, then one convergence pass that keeps only what changed the map or unblocked a stage.
+# The Forethinkers cycle (domains/forethinkers/brief.md). Everything, every cycle: every part and blocked Void stage on
+# domains/forethinkers/convergence.md through every track it touches (tracks are every domain file, assimilate row, open
+# miss and Forethinkers track file), one convergence pass per row, and every track not on the map yet until it joins.
 #
-# First live cycle: run it by hand (Actions > Forethinkers cycle > Run workflow) with active_tracks = printing:
-# one worker + the convergence pass, 2 model calls. Needs the ANTHROPIC_API_KEY secret.
-# The schedule fires at :03 every hour; it does nothing unless the repo variable FORETHINKERS_SCHEDULE is "on", and the
-# gate keeps even ET hours only. Full fan-out is 5 calls a cycle, about 60 a day: watched, not left on.
+# Runs once the ANTHROPIC_API_KEY secret is set (adding it is the yes on the spend). `python tools/forethinkers.py plan`
+# prints the exact model calls per cycle; the gate keeps even ET hours (12 cycles a day). Off switch: repo variable
+# FORETHINKERS_SCHEDULE = off. Model: repo variable MODEL (default claude-opus-5-5).
 # Silence is the default: a cycle that changed nothing writes nothing. A cycle that changed the map opens a PR.
 # The webhook stays off until FORETHINKERS_WEBHOOK_ON is "on" (after a run has written a real finding with a source),
-# and then carries breakthrough notes only (secret NOTIFY_WEBHOOK). Model: repo variable MODEL (default claude-opus-5-5).
+# and then carries breakthrough notes only (secret NOTIFY_WEBHOOK).
 name: Forethinkers cycle
 
 on:
@@ -16,13 +16,13 @@ on:
   workflow_dispatch:
     inputs:
       active_tracks:
-        description: 'Tracks to fan into (comma list of printing, figures, longevity, restoration)'
-        default: printing
+        description: 'Tracks to work ("all", or a comma list from `python tools/forethinkers.py tracks`)'
+        default: all
       max_searches:
         description: 'Web searches per worker (1-10)'
         default: '3'
       unit:
-        description: 'Force one map row id (blank = next in rotation)'
+        description: 'Work one map row only (blank = every row)'
         default: ''
       dry_run:
         description: 'Only print the plan (no model calls)'
@@ -39,22 +39,28 @@ permissions:
 
 jobs:
   cycle:
-    if: github.event_name == 'workflow_dispatch' || vars.FORETHINKERS_SCHEDULE == 'on'
+    if: github.event_name == 'workflow_dispatch' || vars.FORETHINKERS_SCHEDULE != 'off'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 110
     env:
-      ACTIVE_TRACKS: ${{ inputs.active_tracks || vars.FORETHINKERS_ACTIVE_TRACKS || 'printing' }}
+      ACTIVE_TRACKS: ${{ inputs.active_tracks || vars.FORETHINKERS_ACTIVE_TRACKS || 'all' }}
       MAX_SEARCHES: ${{ inputs.max_searches || vars.FORETHINKERS_MAX_SEARCHES || '3' }}
       UNIT: ${{ inputs.unit }}
+      HAS_KEY: ${{ secrets.ANTHROPIC_API_KEY != '' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Gate (schedule only; even ET hours run)
+      - name: Gate (schedule only; even ET hours run, and only with a key)
         id: gate
         run: |
-          if [ "${{ github.event_name }}" = "schedule" ]; then python tools/forethinkers.py gate; else echo "run=true" >> "$GITHUB_OUTPUT"; fi
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            if [ "$HAS_KEY" != "true" ]; then echo "run=false" >> "$GITHUB_OUTPUT"; echo "No ANTHROPIC_API_KEY yet; nothing ran." >> "$GITHUB_STEP_SUMMARY"; exit 0; fi
+            python tools/forethinkers.py gate
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
       - name: Check the map
         if: steps.gate.outputs.run == 'true'
         run: python tools/forethinkers.py check
@@ -81,11 +87,11 @@ jobs:
           git config user.name "forethinkers[bot]"
           git config user.email "forethinkers@users.noreply.github.com"
           git checkout -b "$branch"
-          git add domains/forethinkers/convergence.md domains/forethinkers/findings.json domains/void.growth.md
+          git add domains/forethinkers domains/void.growth.md
           git commit -m "$SUMMARY"
           git push -u origin "$branch"
           gh pr create --base main --head "$branch" --title "$SUMMARY" \
-            --body "Forethinkers cycle ${{ github.run_id }}. Rows and findings changed by this cycle; \`python tools/forethinkers.py check\` passed before the push."
+            --body "Forethinkers cycle ${{ github.run_id }}. Rows, findings, placements and track files changed by this cycle; \`python tools/forethinkers.py check\` passed before the push."
       - name: Breakthrough note
         if: steps.cycle.outputs.breakthrough == 'true' && vars.FORETHINKERS_WEBHOOK_ON == 'on'
         env:
