@@ -26,7 +26,6 @@ jobs:
           fi
           hour=$(TZ=America/New_York date +%H)
           hour=$((10#$hour))
-          hour=$((10#$hour))
           if [ $((hour % 2)) -eq 0 ]; then
             echo "run=true" >> "$GITHUB_OUTPUT"
           else
