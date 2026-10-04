@@ -1,6 +1,6 @@
 // The everyday benchmark: common asks replayed on the real page. tools/bench.json says what should answer each one (`want`, a
 // note from the page's own log a2m.void.loop.v1, alternatives with |). The score is how many are answered by what should answer
-// them (and, when an ask has "says", whose visible answer matches that pattern); growth is that score going up. External services are stubbed with plausible data: this measures Void, not their uptime.
+// them (when an ask has "before", those setup asks run first on the same page; and, when an ask has "says", whose visible answer matches that pattern); growth is that score going up. External services are stubbed with plausible data: this measures Void, not their uptime.
 //   node tools/bench.mjs            prints each ask and what answered it, then the totals
 //   node tools/bench.mjs --score    prints only {"score","total","wrong":[...]} (the tests read this; tools/bench.best.json is the floor)
 //   node tools/bench.mjs --last 10  replays only the last 10 asks (fast while growing a new round; the score and floor use all)
@@ -26,7 +26,7 @@ const browser = await chromium.launch({ executablePath: exe, headless: true });
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
-async function one({ ask: a, want, says }) {
+async function one({ ask: a, want, says, before }) {
   const ctx = await browser.newContext(); const miss = [];
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => { const u = r.request().url();
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Topic' }] } }));
@@ -55,6 +55,8 @@ async function one({ ask: a, want, says }) {
     if (/\/api\/answer$/.test(u)) return r.fulfill(json({ answer: 'A generic answer.', sources: [] }));
     return r.fulfill({ status: 204, body: '' }); });
   const p = await ctx.newPage(); await p.goto(base); await p.waitForTimeout(600);
+  // "before": setup asks run first (a list to check off, a timer to pause), so asks that act on earlier ones are tested too
+  for (const b0 of before || []) { await p.fill('#input', b0); await p.keyboard.press('Enter'); await p.waitForTimeout(900); await p.keyboard.press('Escape').catch(() => {}); }
   await p.fill('#input', a); await p.keyboard.press('Enter'); await p.waitForTimeout(1600);
   const said = await p.$eval('#whisper', (e) => e.textContent).catch(() => ''); // read before it fades
   await p.waitForFunction((q) => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => x.ask === q), a, { timeout: 2400 }).catch(() => {});

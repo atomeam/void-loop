@@ -1377,6 +1377,7 @@ function wantsClearStage(lower) {
       if (/\b(make|add|create|show|spawn|put|place|drop|i\s+want|give\s+me)\b.*\b(sticky(\s+note)?|note)\b/.test(lower)) return true;
       if (/^(take|jot(\s+down)?|write)\s+(a\s+|some\s+)?notes?(\s+down)?\s*[.!]?$/.test(lower.trim())) return true;
       if (/^(another|one\s+more|a\s+new|new|a\s+second)\s+(sticky(\s+note)?|note)\b/.test(lower)) return true;
+      if (/^(?:take|make|jot(?:\s+down)?|write(?:\s+down)?|add)\s+(?:a\s+)?note\s*:\s*\S/i.test(raw)) return true;
       if (/^note\s*:\s*/i.test(raw)) return true;
       if (/^sticky\s*:\s*/i.test(raw)) return true;
       if (/^(a\s+)?sticky(\s+note)?\s+(that\s+says?|saying)\s+\S/.test(lower)) return true;
@@ -1385,7 +1386,7 @@ function wantsClearStage(lower) {
     }
 
     function extractStickyText(raw, lower) {
-      let m = raw.match(/^note\s*:\s*([\s\S]+)/i) || raw.match(/^sticky\s*:\s*([\s\S]+)/i);
+      let m = raw.match(/^(?:(?:take|make|jot(?:\s+down)?|write(?:\s+down)?|add)\s+(?:a\s+)?)?note\s*:\s*([\s\S]+)/i) || raw.match(/^sticky\s*:\s*([\s\S]+)/i);
       if (m) return m[1].trim();
       m = raw.match(/\b(?:that\s+says?|saying|with\s+text|reading)\s+["']?([\s\S]+?)["']?\s*$/i);
       if (m) return m[1].trim();
@@ -1928,7 +1929,8 @@ function wantsCreateImage(lower, raw) {
 
     function wantsListAdd(raw) { return !!extractListAdd(raw); }
     function extractListActionItem(raw) {
-      const match = raw.match(/^\s*(?:check|done|complete)\s+([\s\S]+?)\s*[.!]?\s*$/i);
+      const match = raw.match(/^\s*(?:check(?:\s+off)?|cross\s+off|tick(?:\s+off)?|done|complete)\s+([\s\S]+?)(?:\s+(?:on|from)\s+(?:the\s+|my\s+)?(?:\w+\s+)?list)?\s*[.!]?\s*$/i)
+        || raw.match(/^\s*mark\s+([\s\S]+?)\s+(?:as\s+)?(?:done|complete|completed|bought|checked)\s*[.!]?\s*$/i);
       return match ? cleanListText(match[1]) : '';
     }
     function wantsListCheck(raw) { return !!extractListActionItem(raw); }
@@ -3134,6 +3136,9 @@ return { ok: true, detail: 'timer-reset' };
     function wordMath(lower) {
       let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
       // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
+      // "a quarter cup", "half a cup", "a third of a cup" -> numbers the converters can read
+      t = t.replace(/\b(?:a\s+|one\s+)?quarter\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.25 $1').replace(/\b(?:a\s+|one\s+)?half\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.5 $1')
+        .replace(/\b(?:a\s+|one\s+)?third\s+(?:of\s+)?(?:a\s+)?(cup)/g, '0.3333 $1');
       t = t.replace(/(\d+(?:\.\d+)?)\s+(thousand|million|billion|trillion)\b/g, (_, n, u) => String(+n * { thousand: 1e3, million: 1e6, billion: 1e9, trillion: 1e12 }[u]));
       let m = t.match(/^is\s+(\d{1,15})\s+(?:a\s+)?prime(?:\s+number)?$/);
       if (m) { const n = +m[1]; let p = n > 1; for (let i = 2; p && i * i <= n; i++) if (n % i === 0) p = i; return { value: p === true ? 'Yes' : 'No', note: p === true ? n + ' is prime.' : n + ' is not prime' + (typeof p === 'number' ? ' (' + p + ' × ' + n / p + ')' : '') + '.' }; }
@@ -3209,6 +3214,81 @@ return { ok: true, detail: 'timer-reset' };
       if (m) { const w = m[1].replace(/'/g, ''), D = /eve$/.test(w) ? (/christmas/.test(w) ? [11, 24] : [11, 31]) : /christmas|xmas/.test(w) ? [11, 25] : /halloween/.test(w) ? [9, 31] : /new\s+years?/.test(w) ? [0, 1] : /valentine/.test(w) ? [1, 14] : [6, 4];
         const now = new Date(), y = m[3] ? +m[3] : m[2] === 'next' ? now.getFullYear() + 1 : now.getFullYear(), d = new Date(y, D[0], D[1]);
         return { value: d.toLocaleDateString('en-US', { weekday: 'long' }), note: d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }; }
+      // scale a recipe line: "double this recipe 2 cups flour", "halve 3 eggs and 1.5 cups sugar", "triple: 2 tbsp oil"
+      m = t.match(/^(double|triple|halve|half|quadruple)\s+(?:this\s+|the\s+|my\s+)?(?:recipe\s*:?\s*)?:?\s*(.*\d.*)$/);
+      if (m) { const k = { double: 2, triple: 3, quadruple: 4, halve: 0.5, half: 0.5 }[m[1]];
+        const out = m[2].replace(/(\d+(?:\.\d+)?)(?:\s*\/\s*(\d+))?/g, (_, a, b) => { const v = (b ? +a / +b : +a) * k; return String(Math.round(v * 100) / 100); });
+        return { value: out, note: m[1] + 'd: every amount × ' + k }; }
+      // butter: "2 sticks of butter in grams" (US stick = 113 g = 8 tbsp = ½ cup)
+      m = t.match(/^(?:convert\s+|how\s+many\s+(grams|tablespoons|tbsp|cups|ounces|oz)\s+(?:is|are|in)\s+)?(\d+(?:\.\d+)?)\s+sticks?\s+(?:of\s+)?butter(?:\s+(?:in|to|into)\s+(grams|tablespoons|tbsp|cups|ounces|oz))?$/);
+      if (m && (m[1] || m[3])) { const n = +m[2], u = (m[1] || m[3]).replace(/^tbsp$/, 'tablespoons').replace(/^oz$/, 'ounces'), per = { grams: 113.4, tablespoons: 8, cups: 0.5, ounces: 4 }[u];
+        const v = Math.round(n * per * 10) / 10; return { value: v + ' ' + u, note: n + ' stick' + (n === 1 ? '' : 's') + ' of butter (a US stick is 113 g, 8 tbsp, ½ cup)' }; }
+      // BMI in feet/inches and pounds: "bmi for 5 feet 10 inches 170 pounds", "bmi 5'10 170 lbs"
+      m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?bmi\s+(?:for|at|if\s+i'?m)?\s*(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?\s*(?:and\s+|,\s*)?(\d{2,3}(?:\.\d+)?)\s*(?:pounds|lbs?)$/);
+      if (m) { const inches = +m[1] * 12 + +(m[2] || 0), lb = +m[3], v = 703 * lb / (inches * inches), r = Math.round(v * 10) / 10, band = v < 18.5 ? 'underweight' : v < 25 ? 'healthy range' : v < 30 ? 'overweight' : 'obese range';
+        return { value: String(r), note: 'BMI for ' + m[1] + ' ft ' + (m[2] || 0) + ' in and ' + lb + ' lb: ' + r + ' (' + band + ', by the standard adult bands; BMI ignores build and age)' }; }
+      // steps to distance (an average stride of 2.5 ft: about 2,100 steps a mile)
+      m = t.match(/^(?:convert\s+|how\s+(?:many\s+miles|far)\s+(?:is|are)\s+)?(\d[\d,]*)\s+steps(?:\s+(?:in|to|into)\s+(miles|km|kilometers))?$/);
+      if (m && (m[2] || /how/.test(t))) { const st = +m[1].replace(/,/g, ''), mi = st * 2.5 / 5280, km = mi * 1.609344, u = m[2] && /k/.test(m[2]) ? 'km' : 'miles';
+        return { value: (u === 'km' ? km : mi).toFixed(1) + ' ' + u, note: st.toLocaleString() + ' steps at an average 2.5 ft stride (yours may differ)' }; }
+      // heart-rate zones by age (the 220 − age estimate)
+      m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?(?:target\s+|max(?:imum)?\s+)?heart\s+rate(?:\s+zones?)?\s+(?:at|for|if\s+i'?m)\s+(?:age\s+)?(\d{1,3})(?:\s+years?\s+old)?$/);
+      if (m) { const mx = 220 - +m[1], z = (a, b) => Math.round(mx * a) + '–' + Math.round(mx * b);
+        return { value: 'max ' + mx + ' bpm', note: 'moderate ' + z(0.5, 0.7) + ' · vigorous ' + z(0.7, 0.85) + ' bpm (the 220 − age estimate; a doctor can give yours)' }; }
+      // race distances: "how many miles is a 5k", "a marathon in km"
+      m = t.match(/^(?:how\s+(?:many|far|long)\s+(miles|km|kilometers|kilometres)?\s*(?:is|are)\s+(?:a|an|the)\s+|(?:a|an|the)\s+)?(5k|10k|half\s+marathon|marathon|ultra(?:marathon)?|mile)(?:\s+(?:in|to)\s+(miles|km|kilometers|kilometres))?$/);
+      if (m && /how|in|to/.test(t)) { const KM = { '5k': 5, '10k': 10, 'half marathon': 21.0975, marathon: 42.195, ultramarathon: 50, ultra: 50, mile: 1.609344 }[m[2].replace(/\s+/g, ' ')], u = (m[1] || m[3] || 'miles');
+        const v = /k/.test(u) ? KM : KM / 1.609344; return { value: (Math.round(v * 100) / 100) + (/k/.test(u) ? ' km' : ' miles'), note: 'a ' + m[2] + ' is ' + KM + ' km' }; }
+      // ---- homework maths ----
+      // linear equations: "solve 2x + 3 = 11", "solve for x: 5x - 10 = 0", "3(x - 2) = x + 4" (a small parser; nothing is eval'd)
+      m = t.match(/^(?:solve\s*:?\s*)?(?:for\s+[a-z]\s*:?\s*)?([0-9a-z+\-*/^().\s]*[a-z][0-9a-z+\-*/^().\s]*=[0-9a-z+\-*/^().\s]+)$/);
+      if (m && (m[1].match(/[a-z]/g) || []).every((c) => c === (m[1].match(/[a-z]/) || [''])[0])) {
+        const v = m[1].match(/[a-z]/)[0], [L, Rt] = m[1].split('='), ev = (src, x) => { let i = 0; const s2 = src.replace(/\s+/g, '').replace(new RegExp('(\\d|\\))(?=[' + v + '(])', 'g'), '$1*').replace(new RegExp(v + '(?=[\\d(])', 'g'), v + '*');
+          const num = () => { if (s2[i] === '(') { i++; const r = add(); i++; return r; } if (s2[i] === '-') { i++; return -num(); } if (s2[i] === v) { i++; return x; } const mm = s2.slice(i).match(/^\d+(?:\.\d+)?/); if (!mm) throw 0; i += mm[0].length; return +mm[0]; };
+          const pow = () => { let a = num(); while (s2[i] === '^') { i++; a = Math.pow(a, num()); } return a; };
+          const mul = () => { let a = pow(); while (s2[i] === '*' || s2[i] === '/') { const o = s2[i++]; const b = pow(); a = o === '*' ? a * b : a / b; } return a; };
+          const add = () => { let a = mul(); while (s2[i] === '+' || s2[i] === '-') { const o = s2[i++]; const b = mul(); a = o === '+' ? a + b : a - b; } return a; };
+          const r = add(); if (i !== s2.length) throw 0; return r; };
+        try { const f = (x) => ev(L, x) - ev(Rt, x), f0 = f(0), f1 = f(1), f2 = f(2);
+          if (Math.abs((f2 - f1) - (f1 - f0)) < 1e-9 && Math.abs(f1 - f0) > 1e-12) { const x = -f0 / (f1 - f0), r = Math.round(x * 1e9) / 1e9; return { value: v + ' = ' + r, note: 'solving ' + m[1].trim() + ' (check: both sides ' + (Math.round(ev(L, x) * 1e6) / 1e6) + ')' }; } } catch (_) {} }
+      // geometry
+      const PI = Math.PI, r2 = (x) => Math.round(x * 100) / 100;
+      m = t.match(/^(?:the\s+)?(area|circumference|perimeter)\s+of\s+a\s+circle\s+(?:with\s+(?:a\s+)?)?(radius|diameter|r|d)\s*(?:of\s+|=\s*|is\s+)?(\d+(?:\.\d+)?)$/);
+      if (m) { const rad = /^d/.test(m[2]) ? +m[3] / 2 : +m[3], v = m[1] === 'area' ? PI * rad * rad : 2 * PI * rad; return { value: String(r2(v)), note: (m[1] === 'area' ? 'πr²' : '2πr') + ' with r = ' + rad }; }
+      m = t.match(/^(?:the\s+)?(volume|surface\s+area)\s+of\s+a\s+sphere\s+(?:with\s+(?:a\s+)?)?(radius|diameter)\s*(?:of\s+|=\s*)?(\d+(?:\.\d+)?)$/);
+      if (m) { const rad = m[2] === 'diameter' ? +m[3] / 2 : +m[3], v = m[1] === 'volume' ? 4 / 3 * PI * rad ** 3 : 4 * PI * rad * rad; return { value: String(r2(v)), note: (m[1] === 'volume' ? '⁴⁄₃πr³' : '4πr²') + ' with r = ' + rad }; }
+      m = t.match(/^(?:the\s+)?volume\s+of\s+a\s+(cylinder|cone)\s+(?:with\s+)?(?:radius|r)\s*(\d+(?:\.\d+)?)\s*(?:and\s+|,\s*)?(?:height|h)\s*(\d+(?:\.\d+)?)$/);
+      if (m) { const v = PI * (+m[2]) ** 2 * +m[3] / (m[1] === 'cone' ? 3 : 1); return { value: String(r2(v)), note: (m[1] === 'cone' ? '⅓' : '') + 'πr²h' }; }
+      m = t.match(/^(?:the\s+)?area\s+of\s+a\s+triangle\s+(?:with\s+)?base\s+(\d+(?:\.\d+)?)\s+(?:and\s+)?height\s+(\d+(?:\.\d+)?)$/);
+      if (m) return { value: String(r2(+m[1] * +m[2] / 2)), note: '½ × base × height' };
+      m = t.match(/^(?:the\s+)?(area|perimeter)\s+of\s+a\s+(rectangle|square)\s+(?:with\s+sides?\s+|of\s+)?(\d+(?:\.\d+)?)(?:\s*(?:by|x|×|and)\s*(\d+(?:\.\d+)?))?$/);
+      if (m) { const a = +m[3], b = m[4] ? +m[4] : a, v = m[1] === 'area' ? a * b : 2 * (a + b); return { value: String(r2(v)), note: m[1] + ' of a ' + a + ' × ' + b + ' ' + m[2] }; }
+      m = t.match(/^(?:the\s+)?hypotenuse\s+(?:of\s+|for\s+|with\s+(?:sides|legs)\s+)?(\d+(?:\.\d+)?)\s*(?:and|,|by)\s*(\d+(?:\.\d+)?)$/);
+      if (m) return { value: String(r2(Math.hypot(+m[1], +m[2]))), note: '√(' + m[1] + '² + ' + m[2] + '²)' };
+      // number theory
+      const gcd = (a, b) => { while (b) [a, b] = [b, a % b]; return Math.abs(a); };
+      m = t.match(/^(?:the\s+)?(lcm|least\s+common\s+multiple|gcd|gcf|hcf|greatest\s+common\s+(?:divisor|factor)|highest\s+common\s+factor)\s+(?:of\s+)?(\d+(?:\s*(?:,|and)\s*\d+)+)$/);
+      if (m) { const xs = m[2].split(/\s*(?:,|and)\s*/).map(Number), isL = /^l/.test(m[1]); const v = xs.reduce((a, b) => isL ? a / gcd(a, b) * b : gcd(a, b)); return { value: String(v), note: (isL ? 'least common multiple' : 'greatest common divisor') + ' of ' + xs.join(', ') }; }
+      m = t.match(/^(?:the\s+)?prime\s+factori[sz]ation\s+of\s+(\d{1,12})$|^(?:the\s+)?prime\s+factors\s+of\s+(\d{1,12})$/);
+      if (m) { let n = +(m[1] || m[2]), f = []; for (let d = 2; d * d <= n; d++) while (n % d === 0) { f.push(d); n /= d; } if (n > 1) f.push(n); return { value: f.join(' × '), note: (m[1] || m[2]) + (f.length === 1 ? ' is prime' : '') }; }
+      m = t.match(/^is\s+(-?\d{1,15})\s+(?:an?\s+)?(even|odd)(?:\s+number)?$/);
+      if (m) { const ev2 = +m[1] % 2 === 0, yes = m[2] === 'even' ? ev2 : !ev2; return { value: yes ? 'Yes' : 'No', note: m[1] + ' is ' + (ev2 ? 'even' : 'odd') }; }
+      m = t.match(/^(?:simplify|reduce)\s+(\d+)\s*\/\s*(\d+)$/);
+      if (m && +m[2]) { const g = gcd(+m[1], +m[2]); return { value: (+m[1] / g) + '/' + (+m[2] / g), note: m[1] + '/' + m[2] + ' divided top and bottom by ' + g }; }
+      m = t.match(/^(\d+)\s*\/\s*(\d+)\s+(?:as|in|to)\s+(?:a\s+)?(?:percent|percentage|%)$/);
+      if (m && +m[2]) { const v = Math.round(+m[1] / +m[2] * 1e6) / 1e4; return { value: v + '%', note: m[1] + '/' + m[2] }; }
+      // statistics and counting
+      m = t.match(/^(?:the\s+)?(?:population\s+|sample\s+)?(?:standard\s+deviation|std\s*dev|stdev)\s+(?:of\s+)?(-?\d+(?:\.\d+)?(?:(?:\s*,\s*|\s+)-?\d+(?:\.\d+)?)+)$/);
+      if (m) { const xs = m[1].split(/\s*,\s*|\s+/).map(Number), mu = xs.reduce((a, b) => a + b, 0) / xs.length, sq = xs.reduce((a, b) => a + (b - mu) ** 2, 0); const pop = Math.sqrt(sq / xs.length), smp = Math.sqrt(sq / (xs.length - 1));
+        const sample = /sample/.test(t); return { value: String(r2(sample ? smp : pop)), note: (sample ? 'sample' : 'population') + ' standard deviation of ' + xs.length + ' numbers (mean ' + r2(mu) + '; ' + (sample ? 'population ' + r2(pop) : 'sample ' + r2(smp)) + ')' }; }
+      m = t.match(/^(\d{1,3})\s+(choose|c|permute|p)\s+(\d{1,3})$|^(?:combinations|permutations)\s+of\s+(\d{1,3})\s+(?:taken\s+)?(\d{1,3})(?:\s+at\s+a\s+time)?$/);
+      if (m) { const n = +(m[1] || m[4]), k = +(m[3] || m[5]), perm = /^p/.test(m[2] || '') || /^permutations/.test(t); if (k <= n) { let v = 1; for (let j = 0; j < k; j++) v = perm ? v * (n - j) : v * (n - j) / (j + 1); v = Math.round(v); return { value: v.toLocaleString(), note: perm ? n + 'P' + k + ': ordered' : n + 'C' + k + ': ways to choose ' + k + ' of ' + n }; } }
+      // "how long ago was 1999", "how many years ago was 2010"
+      m = t.match(/^how\s+(?:long|many\s+years)\s+ago\s+(?:was|is)\s+(\d{4})$/);
+      if (m) { const n = new Date().getFullYear() - +m[1]; return { value: n + (n === 1 ? ' year' : ' years'), note: m[1] + ' was ' + n + ' years ago' }; }
+      // "what year was 10 years ago", "what year will it be in 5 years"
+      m = t.match(/^what\s+year\s+was\s+(\d{1,4})\s+years?\s+ago$/);
+      if (m) return { value: String(new Date().getFullYear() - +m[1]), note: m[1] + ' years before ' + new Date().getFullYear() };
       // "subtract 45 from 100", "take 7 away from 20"
       m = t.match(/^(?:subtract|take(?:\s+away)?|minus)\s+(-?\d+(?:\.\d+)?)\s+(?:away\s+)?from\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = +m[2] - +m[1]; return { value: String(Math.round(v * 1e9) / 1e9), note: m[2] + ' − ' + m[1] }; }
@@ -3255,12 +3335,14 @@ return { ok: true, detail: 'timer-reset' };
       // kitchen volume, US: fluid ounces, cups, pints, quarts, gallons, tablespoons, teaspoons, ml, liters
       { const VOL = { 'fluid ounce': 29.5735, 'fl oz': 29.5735, ounce: 29.5735, oz: 29.5735, cup: 236.588, pint: 473.176, pt: 473.176, quart: 946.353, qt: 946.353, gallon: 3785.41, gal: 3785.41, tablespoon: 14.7868, tbsp: 14.7868, teaspoon: 4.92892, tsp: 4.92892, ml: 1, milliliter: 1, liter: 1000, litre: 1000 };
         const unit = (w) => { w = w.replace(/^fluid\s+ounces?$/, 'fluid ounce').replace(/s$/, ''); return VOL[w] ? w : null; };
-        const vm = t.match(/^how\s+many\s+([a-z]+(?:\s+ounces?)?)\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+([a-z]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s+([a-z]+(?:\s+ounces?)?)\s+(?:to|in|into)\s+([a-z]+(?:\s+ounces?)?)$/);
+        // "how many tablespoons in 0.25 cup" (a quarter cup) counts too: the amount, not just one
+        const vq = t.match(/^how\s+many\s+([a-z]+(?:\s+ounces?)?)\s+(?:are\s+)?(?:there\s+)?in\s+(\d*\.\d+|\d+)\s+([a-z]+)$/);
+        const vm = (vq && [vq[0], String(vq[2]), vq[3], vq[1]]) || t.match(/^how\s+many\s+([a-z]+(?:\s+ounces?)?)\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+([a-z]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s+([a-z]+(?:\s+ounces?)?)\s+(?:to|in|into)\s+([a-z]+(?:\s+ounces?)?)$/);
         if (vm) { const [q, a, b] = vm.length === 3 ? [1, vm[2], vm[1]] : [+vm[1], vm[2], vm[3]];
           const ua = unit(a), ub = unit(b);
           // only when an ounce meets a volume (cups, pints…): ounces with grams/pounds stay weight for the calculator
           if (ua && ub && ua !== ub && (/ounce|oz/.test(ua + ub) ? !/^(?:ounce|oz|fluid ounce|fl oz)$/.test(ua) || !/^(?:ounce|oz|fluid ounce|fl oz)$/.test(ub) : true) && !(/^(?:ml|milliliter|liter|litre)$/.test(ua) && /^(?:ml|milliliter|liter|litre)$/.test(ub))) {
-            const v = Math.round(q * VOL[ua] / VOL[ub] * 100) / 100; const nm = (u) => /ounce|oz/.test(u) ? 'fl oz' : u + 's';
+            const v = Math.round(q * VOL[ua] / VOL[ub] * 100) / 100; const nm = (u) => /ounce|oz/.test(u) ? 'fl oz' : /^(?:ml|l|tbsp|tsp|qt|pt|gal)$/.test(u) ? u : u + 's';
             return { value: v.toLocaleString() + ' ' + nm(ub), note: q + ' ' + (q === 1 ? ua.replace('fluid ounce', 'fl oz') : nm(ua)) + ' = ' + v.toLocaleString() + ' ' + nm(ub) + ' (US)' }; } } }
       m = t.match(/^(half|a\s+half|one\s+half|a\s+third|one\s+third|a\s+quarter|one\s+quarter|quarter|third)\s+of\s+(-?\d+(?:\.\d+)?)$|^(double|twice|triple|thrice|quadruple|halve)\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const k = (m[1] || m[3]).replace(/^(?:a|one)\s+/, ''), x = +(m[2] || m[4]);
