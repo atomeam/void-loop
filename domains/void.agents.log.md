@@ -227,3 +227,4 @@ Format: `ISO | slug | role | event | note`
 - 2026-10-04 15:10 ET grok: Next #20 started on helper/figures-react (stacked on #19 v2): scripts.reactsTo/tags, pickReaction, chase-off, reduced-motion still; tests pending push until #19 ships.
 
 - 2026-10-04 15:42 ET grok: Next #19 live (main b67d2a8c; 279/279 + bench 1006/1006). Pushing helper/figures-react for Next #20.
+- 2026-10-04 18:45 ET grok: watchdog #110 (bench 1002/1006, four money/GPA asks 'said'): no skill stole them; the skill loader imported 55 modules one after another, so asks that wait for skills ('waking up': calc, loan) logged after the bench window on a slow runner. Loader now imports all skills at once (index order kept) and clears a stale 'waking up'; two #110 near-miss checks in test_void (285/285, bench 1007/1007). Branch helper/fix-bench-money.
