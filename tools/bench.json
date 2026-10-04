@@ -477,5 +477,8 @@
   {"ask": "word count of hello there friend", "want": "skill:util", "says": "\\b3 words"},
   {"ask": "start a 25 minute pomodoro", "want": "timer"},
   {"ask": "play some tic tac toe", "want": "skill:tictactoe"},
-  {"ask": "tell me something funny", "want": "skill:joke|answer"}
+  {"ask": "tell me something funny", "want": "skill:joke|answer"},
+  {"ask": "make a shopping list with eggs and milk", "want": "list", "says": "eggs[\\s\\S]*milk"},
+  {"ask": "to-do list with laundry, dishes and taxes", "want": "list", "says": "laundry[\\s\\S]*dishes[\\s\\S]*taxes"},
+  {"ask": "make a list for the trip", "want": "list"}
 ]

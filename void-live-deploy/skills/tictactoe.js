@@ -86,7 +86,8 @@ function mount(th, stageApi) {
     grid.appendChild(b);
   }
   function paint() {
-    for (let i = 0; i < 9; i++) { cells[i].textContent = th.state.board[i] || ''; cells[i].disabled = th.state.board[i] !== null || th.state.status !== 'playing'; }
+    for (let i = 0; i < 9; i++) { cells[i].textContent = th.state.board[i] || ''; cells[i].disabled = th.state.board[i] !== null || th.state.status !== 'playing';
+      cells[i].setAttribute('aria-label', 'row ' + (Math.floor(i / 3) + 1) + ', column ' + (i % 3 + 1) + ': ' + (th.state.board[i] || 'empty')); }
     status.textContent = th.state.status === 'playing' ? th.state.currentPlayer + "'s move" : th.state.status === 'draw' ? 'draw' : th.state.status.replace('_', ' ');
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());

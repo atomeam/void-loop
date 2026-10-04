@@ -47,6 +47,7 @@ async function one({ ask: a, want, says }) {
     if (u.includes('api.coingecko.com')) { const ids = (new URL(u).searchParams.get('ids') || 'bitcoin').split(','); // whichever coin was asked
       return r.fulfill(json(Object.fromEntries(ids.map((id) => [id, { usd: 65000, usd_24h_change: 1.2, last_updated_at: 1700000000 }])))); }
     if (u.includes('earthquake.usgs.gov')) return r.fulfill(json({ features: [{ id: 'q1', properties: { mag: 4.6, place: '20 km E of Somewhere', time: Date.now() - 3600e3, url: 'https://earthquake.usgs.gov/earthquakes/eventpage/q1' }, geometry: { coordinates: [139.7, 35.7, 10] } }] }));
+    if (u.includes('openlibrary.org/search.json')) return r.fulfill(json({ docs: [{ key: '/works/OL1W', title: 'Kindred', author_name: ['Octavia E. Butler'], first_publish_year: 1979, subject: ['Science fiction', 'Time travel'] }, { key: '/works/OL2W', title: 'Hyperion', author_name: ['Dan Simmons'], first_publish_year: 1989, subject: ['Science fiction'] }] }));
     if (u.includes('hn.algolia.com')) return r.fulfill(json({ hits: [{ objectID: '1', title: 'A thing shipped', url: 'https://example.com/a', points: 120 }] }));
     if (u.includes('/feed/featured/')) return r.fulfill(json({ news: [{ story: '<b>Something</b> happened today.', links: [] }] }));
     return r.fulfill({ status: 204, body: '' }); });
