@@ -9,6 +9,9 @@ export function countdownOf(text) {
   if (/^days until (?:jan(?:uary)?\.?\s+1|january 1)$/i.test(t)) return { kind: 'newyear' };
   const m = t.match(/^(?:how many )?days until ([a-z]+\s+\d{1,2})$/i);
   if (m && realDay(m[1])) return { kind: 'named', label: m[1] };
+  // "days until valentines day": named days the holiday list doesn't answer (christmas and halloween stay with it)
+  const v = t.match(/^(?:how many )?days (?:until|till|to) (.+)$/i);
+  if (v) { const w = v[1].toLowerCase().replace(/^the /, '').replace(/['’]/g, ''); if (OWN.has(w) && NAMED[w]) return { kind: 'named', label: NAMED[w][0], date: NAMED[w][1] }; }
   // "days until my birthday on march 3": a named day with its date
   const b = t.match(/^(?:how many )?days (?:until|till|to) (?:my |our |the )?([a-z' ]{2,40}?) (?:on|is on|is) ([a-z]+ \d{1,2})$/i);
   if (b && realDay(b[2])) return { kind: 'named', label: b[1], date: b[2].toLowerCase() };
@@ -39,6 +42,7 @@ function realDay(md) {
   if (!m || MONTHS[m[1]] == null) return false;
   return +m[2] >= 1 && +m[2] <= [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][MONTHS[m[1]]];
 }
+const OWN = new Set(['valentines day', 'new years eve', 'christmas eve', 'july 4th', '4th of july']);
 const MONTHS = { january: 0, february: 1, march: 2, april: 3, may: 4, june: 5, july: 6, august: 7, september: 8, october: 9, november: 10, december: 11 };
 function namedDate(label, now) {
   const m = String(label).toLowerCase().match(/^([a-z]+)\s+(\d{1,2})$/);

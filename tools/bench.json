@@ -1099,5 +1099,13 @@
   {"ask": "translate goodbye to french", "want": "skill:translate"},
   {"ask": "how far is la from sf", "want": "skill:distance"},
   {"ask": "what is the population of japan", "want": "skill:country|answer"},
-  {"ask": "mortgage payment on 300000 at 6.5% for 30 years", "want": "skill:loan"}
+  {"ask": "mortgage payment on 300000 at 6.5% for 30 years", "want": "skill:loan"},
+  {"ask": "what is 3 plus 4 times 2", "want": "calc"},
+  {"ask": "how many feet in a mile", "want": "calc|answer"},
+  {"ask": "convert 1 gallon to liters", "want": "calc"},
+  {"ask": "what is 2 to the power of 16", "want": "calc"},
+  {"ask": "mean of 10, 20, 30", "want": "calc"},
+  {"ask": "days until valentines day", "want": "calc|holiday|skill:holidays|skill:countdown"},
+  {"ask": "countdown to july 4th", "want": "skill:countdown"},
+  {"ask": "play reversi", "want": "skill:othello"}
 ]
