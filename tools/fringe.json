@@ -498,5 +498,30 @@
     ],
     "sha256": "42c59305e335d09e0c8a520092839f42f9d241557d826b042ed941ca9713211c",
     "emit": false
+  },
+  {
+    "run": 21,
+    "at": "2026-10-04T10:44:26Z",
+    "family": "private-incubation-log",
+    "draft": "drafts/fringe/private-incubation-log-2.html",
+    "sources": [
+      {
+        "claim": "Incubation (setting an unsolved problem aside) improves problem solving on average; a meta-analysis of 117 studies found a reliable but modest effect",
+        "source": "https://doi.org/10.1037/a0014212",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Sleep between attempts more than doubled the rate of discovering a hidden shortcut in a number task",
+        "source": "https://doi.org/10.1038/nature02223",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Writing a stuck problem down at night and revisiting it the next day helps this person, measured by their own hit rate",
+        "source": "drafts/fringe/private-incubation-log-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "a9dc2296dbc6dc0492ea2caf842830093900526ebb83bf09218f8015f4cd61ca",
+    "emit": false
   }
 ]
