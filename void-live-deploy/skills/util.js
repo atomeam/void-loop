@@ -34,10 +34,18 @@ export function utilOf(text) {
   if (m) return { kind: 'case', how: /caps/i.test(m[1]) ? 'uppercase' : m[1].toLowerCase(), s: m[2] };
   // "how many characters in supercalifragilistic", "character count of ..."
   m = t.match(/^(?:how\s+many\s+(?:characters|letters|chars)\s+(?:are\s+)?in|(?:character|letter|char)\s+count\s+(?:of|in|for))\s+(.+)$/i);
+  if (m && /^(?:the\s+)?(?:english\s+)?alphabet$/i.test(m[1])) m = null; // a fact, not a count of the word "alphabet"
   if (m) return { kind: 'count', s: m[1].replace(/^["“]|["”]$/g, ''), chars: true };
   if (/^(?:generate|make|give\s+me|create|new)\s+(?:a\s+|an\s+)?(?:uuid|guid|unique\s+id)$|^(?:uuid|guid)$/i.test(t)) return { kind: 'uuid' };
   m = t.match(/^(?:an?\s+)?emojis?\s+(?:for|of|that\s+means)\s+([a-z ]{2,20})$/i);
   if (m && EMOJI[m[1].trim().toLowerCase()]) return { kind: 'emoji', w: m[1].trim().toLowerCase() };
+  // "nato alphabet for hello", "spell hello in nato", "morse code for sos", "hello in binary"
+  m = t.match(/^(?:(?:the\s+)?(?:nato|phonetic)\s+(?:alphabet|spelling)\s+(?:for|of)\s+(.{1,40})|spell\s+(.{1,40}?)\s+(?:in|with\s+the)\s+(?:nato|phonetic)(?:\s+alphabet)?)$/i);
+  if (m) return { kind: 'nato', s: (m[1] || m[2]).trim() };
+  m = t.match(/^(?:(?:the\s+)?morse(?:\s+code)?\s+(?:for|of)\s+(.{1,60})|(.{1,60}?)\s+in\s+morse(?:\s+code)?)$/i);
+  if (m) return { kind: 'morse', s: (m[1] || m[2]).trim() };
+  m = t.match(/^(?:(?:the\s+)?(?:word|text)\s+)?["“']?([a-z ]{1,24}?)["”']?\s+in\s+binary$/i);
+  if (m && /[a-z]/i.test(m[1]) && !/^\d/.test(m[1])) return { kind: 'textbin', s: m[1] };
   m = t.match(/^spell\s+(.+?)\s+backwards?$/i);
   if (m) return { kind: 'case', how: 'reverse', s: m[1] };
   // "reverse the words in hello big world"
@@ -51,11 +59,13 @@ export function utilOf(text) {
   if (m) return { kind: 'syllables', w: m[1] || m[2] };
   m = t.match(/^(uppercase|upper case|lowercase|lower case|title case|reverse)\s*:?\s+(?:this:?\s+)?(.+)$/i);
   if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] };
-  if (/^(?:what(?:'s| is)\s+)?(?:the\s+)?moon\s+phase(?:\s+(?:tonight|today|now))?$|^(?:what\s+)?phase\s+(?:is\s+)?(?:of\s+)?the\s+moon(?:\s+in)?(?:\s+(?:tonight|today|now))?$|^is\s+it\s+a\s+full\s+moon(?:\s+tonight)?$/.test(l)) return { kind: 'moon' };
+  if (/^(?:what(?:'s| is)\s+)?(?:the\s+)?moon\s+phase(?:\s+(?:tonight|today|now))?$|^(?:what\s+)?phase\s+(?:is\s+)?(?:of\s+)?the\s+moon(?:\s+in)?(?:\s+(?:tonight|today|now))?$|^is\s+it\s+a\s+full\s+moon(?:\s+tonight)?$|^when\s+is\s+the\s+next\s+(?:full|new)\s+moon$|^next\s+full\s+moon$/.test(l)) return { kind: 'moon' };
   m = l.match(/^(?:give\s+me\s+)?(?:some\s+|(\d{1,2})\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+(\d{1,2})\s+paragraphs?)?$/);
   if (m) return { kind: 'lorem', n: Math.max(1, Math.min(10, +(m[1] || m[2]) || 1)) };
   return null;
 }
+const NATO = { A: 'Alfa', B: 'Bravo', C: 'Charlie', D: 'Delta', E: 'Echo', F: 'Foxtrot', G: 'Golf', H: 'Hotel', I: 'India', J: 'Juliett', K: 'Kilo', L: 'Lima', M: 'Mike', N: 'November', O: 'Oscar', P: 'Papa', Q: 'Quebec', R: 'Romeo', S: 'Sierra', T: 'Tango', U: 'Uniform', V: 'Victor', W: 'Whiskey', X: 'X-ray', Y: 'Yankee', Z: 'Zulu', 0: 'Zero', 1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine' };
+const MORSE = { A: '·−', B: '−···', C: '−·−·', D: '−··', E: '·', F: '··−·', G: '−−·', H: '····', I: '··', J: '·−−−', K: '−·−', L: '·−··', M: '−−', N: '−·', O: '−−−', P: '·−−·', Q: '−−·−', R: '·−·', S: '···', T: '−', U: '··−', V: '···−', W: '·−−', X: '−··−', Y: '−·−−', Z: '−−··', 0: '−−−−−', 1: '·−−−−', 2: '··−−−', 3: '···−−', 4: '····−', 5: '·····', 6: '−····', 7: '−−···', 8: '−−−··', 9: '−−−−·', '.': '·−·−·−', ',': '−−··−−', '?': '··−−··', '!': '−·−·−−', '/': '−··−·', '@': '·−−·−·' };
 const EMOJI = { happy: '😀 😊 😄', sad: '😢 😞 ☹️', love: '❤️ 😍 🥰', laugh: '😂 🤣', angry: '😠 😡', tired: '😴 🥱', cool: '😎', thinking: '🤔', party: '🎉 🥳', fire: '🔥', ok: '👌 👍', yes: '✅ 👍', no: '❌ 👎', thanks: '🙏', heart: '❤️', star: '⭐ 🌟', sun: '☀️', moon: '🌙', rain: '🌧️', snow: '❄️', coffee: '☕', pizza: '🍕', cake: '🎂', dog: '🐶', cat: '🐱', money: '💰 💵', idea: '💡', rocket: '🚀', music: '🎵 🎶', birthday: '🎂 🎉', surprised: '😮 😲', scared: '😱', sick: '🤒', cry: '😭', wink: '😉', kiss: '😘', clap: '👏', strong: '💪', eyes: '👀', skull: '💀', ghost: '👻', robot: '🤖', alien: '👽', earth: '🌍', flower: '🌸', tree: '🌳', car: '🚗', home: '🏠', book: '📚', phone: '📱', time: '⏰', warning: '⚠️', check: '✔️' };
 function hex(c) { c = NAMED[c] || c; c = c.replace('#', ''); if (c.length === 3) c = c.split('').map((x) => x + x).join(''); return '#' + c.toLowerCase(); }
 function hsl(h) { const r = parseInt(h.slice(1, 3), 16) / 255, g = parseInt(h.slice(3, 5), 16) / 255, b = parseInt(h.slice(5, 7), 16) / 255; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn; let H = 0;
@@ -106,6 +116,15 @@ async function run(text, api) {
   } else if (q.kind === 'syllables') {
     const n = syllables(q.w);
     el = showPage((p) => { p.innerHTML = '<h2>Syllables</h2>' + big(n + (n === 1 ? ' syllable' : ' syllables'), 44) + '<p style="color:#8a8a8a">“' + esc(q.w) + '”, counted by its vowel sounds; a few words break the rules</p>'; });
+  } else if (q.kind === 'nato') {
+    const words = Array.from(q.s.toUpperCase()).map((c) => NATO[c] || (c === ' ' ? '·' : c)).join(' ');
+    el = showPage((p) => { p.innerHTML = '<h2>NATO alphabet</h2>' + big(words, 24) + copyBtn + '<p style="color:#8a8a8a">“' + esc(q.s) + '” letter by letter</p>'; });
+  } else if (q.kind === 'morse') {
+    const code = Array.from(q.s.toUpperCase()).map((c) => (c === ' ' ? '/' : MORSE[c] || '')).filter(Boolean).join(' ');
+    el = showPage((p) => { p.innerHTML = '<h2>Morse code</h2>' + big(code, 28) + copyBtn + '<p style="color:#8a8a8a">“' + esc(q.s) + '” · letters split by spaces, words by /</p>'; });
+  } else if (q.kind === 'textbin') {
+    const bin = Array.from(new TextEncoder().encode(q.s)).map((b) => b.toString(2).padStart(8, '0')).join(' ');
+    el = showPage((p) => { p.innerHTML = '<h2>In binary</h2>' + big(bin, 20) + copyBtn + '<p style="color:#8a8a8a">“' + esc(q.s) + '” as 8-bit UTF-8 bytes</p>'; });
   } else if (q.kind === 'moon') {
     const m = moonPhase();
     el = showPage((p) => { p.innerHTML = '<h2>The moon</h2>' + big(m.name, 44) + '<p style="color:#8a8a8a">' + m.lit + '% lit · ' + m.age.toFixed(1) + ' days into its cycle · next full moon ' + esc(m.nextFull.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })) + '</p><div class="sub">worked out from the mean lunar cycle; within about a day</div>'; });

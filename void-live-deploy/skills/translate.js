@@ -19,6 +19,8 @@ function parse(text) {
   if (m) return { q: m[1], from: m[2], to: m[3] };
   m = t.match(new RegExp('^how\\s+(?:do|would)\\s+(?:you|i|we)\\s+say\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'));
   if (m) return { q: m[1], to: m[2] };
+  // "the longest word in english", "most common letter in english": a question about the language, not a translation
+  if (/^(?:what\s+is\s+)?(?:the\s+)?(?:longest|shortest|most\s+common|hardest|oldest|newest|first|last)\s+\w+(?:\s+\w+)?\s+in\s+/i.test(t)) return null;
   m = t.match(new RegExp('^what\\s+is\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'))
    || t.match(new RegExp('^["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'));
   if (m) return { q: m[1], to: m[2] };
