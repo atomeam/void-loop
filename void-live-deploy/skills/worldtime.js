@@ -18,6 +18,12 @@ export function parseWorldTime(text) {
     const places = m[1] ? m[1].split(/\s*(?:,|\band\b|&)\s*/i).map(PLACE).filter((x) => x && !NOT_PLACE.test(x)).slice(0, 8) : [];
     return { kind: 'clock', places };
   }
+  // "time in Tokyo when it's 9am in New York", "what time is it in London when it's 3pm in LA"
+  m = t.match(new RegExp('^(?:what\\s+)?(?:time\\s+is\\s+it|time)\\s+in\\s+(.+?)\\s+(?:when|if)\\s+it(?:\\s+is|\'?s)\\s+' + TIME + '\\s+in\\s+(.+?)$', 'i'));
+  if (m) { const to = PLACE(m[1]), from = PLACE(m[3]); if (to && from && !NOT_PLACE.test(to) && !NOT_PLACE.test(from)) return { kind: 'convert', time: m[2].toLowerCase().replace(/\./g, '').replace(/\s+/g, ''), from, to }; }
+  // "jet lag from LA to London": the clock difference, now
+  m = t.match(/^(?:how\s+(?:bad|much)\s+is\s+(?:the\s+)?)?jet\s*lag\s+(?:from|between)\s+(.+?)\s+(?:to|and)\s+(.+)$/i);
+  if (m) { const from = PLACE(m[1]), to = PLACE(m[2]); if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: 'now', from, to }; }
   m = t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?(?:current\s+|local\s+)?time\s+(?:is\s+it\s+)?(?:right\s+now\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^what\s+time\s+is\s+it\s+(?:right\s+now\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^(?:current|local)\s+time\s+(?:in|at|for)\s+(.+)$/i)
