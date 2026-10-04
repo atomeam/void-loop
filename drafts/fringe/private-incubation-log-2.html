@@ -36,7 +36,7 @@ li .came{color:#7cf;white-space:pre-line}
 <script>
 (function(){
   var KEY='a2m.fringe.incubate.v1',items=[];
-  try{items=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(_){}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(j))items=j}catch(_){}
   function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(_){}}
   function day(t){var d=new Date(t);return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()}
   // ripe once a calendar day has turned since it was put away (a night in between)

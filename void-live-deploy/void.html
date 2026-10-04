@@ -2801,6 +2801,11 @@ return { ok: true, detail: 'timer-reset' };
       if (/^(?:i'?m|i\s+am)\s+bored$|^(?:entertain\s+me|i'?m\s+so\s+bored)$/.test(l)) return 'try: play othello · magic 8 ball · knock knock · tell me a fun fact';
       if (/^(?:tell\s+me\s+)?(?:a\s+)?(?:fun|random|cool|interesting)\s+fact$|^tell\s+me\s+something\s+(?:interesting|i\s+don'?t\s+know)$/.test(l)) return pick(FUN_FACTS);
       if (/^(?:motivate\s+me|inspire\s+me|i\s+need\s+motivation|give\s+me\s+(?:some\s+)?motivation|encourage\s+me)$/.test(l)) return pick(CHEERS);
+      if (/^(?:let'?s\s+)?play\s+(?:a\s+)?game$|^what\s+games?\s+(?:can\s+i\s+play|do\s+you\s+have)$|^(?:any\s+)?games\??$/.test(l)) return 'try: play othello · tic tac toe · connect 4 · rock paper scissors · magic 8 ball';
+      { const AS = { cow: 'moo', dog: 'woof', cat: 'meow', pig: 'oink', sheep: 'baa', duck: 'quack', horse: 'neigh', chicken: 'cluck', rooster: 'cock-a-doodle-doo', owl: 'hoot', lion: 'roar', frog: 'ribbit', goat: 'maa', bee: 'buzz', snake: 'hiss', mouse: 'squeak', donkey: 'hee-haw', wolf: 'howl', bird: 'tweet', turkey: 'gobble' };
+        const a = l.match(/^what\s+(?:sound|noise)\s+does\s+an?\s+([a-z]+)\s+make$|^what\s+does\s+an?\s+([a-z]+)\s+say$/); if (a && AS[a[1] || a[2]]) return 'a ' + (a[1] || a[2]) + ' says ' + AS[a[1] || a[2]];
+        const LG = { spider: '8 legs', ant: '6 legs', bee: '6 legs', insect: '6 legs', fly: '6 legs', butterfly: '6 legs', dog: '4 legs', cat: '4 legs', horse: '4 legs', cow: '4 legs', bird: '2 legs', chicken: '2 legs', duck: '2 legs', human: '2 legs', person: '2 legs', octopus: '8 arms', crab: '10 legs (8 walking legs and 2 claws)', lobster: '10 legs', starfish: '5 arms, usually', snake: 'none', fish: 'none', kangaroo: '2 legs (plus a strong tail)' };
+        const g = l.match(/^how\s+many\s+(?:legs|arms)\s+does\s+an?\s+([a-z]+)\s+have$/); if (g && LG[g[1]]) return 'a ' + g[1] + ' has ' + LG[g[1]]; }
       if (/^what\s+should\s+i\s+(?:eat|have|make|cook)(?:\s+for)?(?:\s+(?:dinner|lunch|tonight|today))?$/.test(l)) { const d = pick(DINNERS); return 'how about ' + d + '? say “recipe for ' + d.replace(/^(?:a|an)\s+/, '') + '” for one'; }
       return null;
     }
@@ -3156,6 +3161,12 @@ return { ok: true, detail: 'timer-reset' };
     // Arithmetic in words: "what is 12 times 7", "sqrt of 144", "2 to the power of 10", "is 97 a prime number",
     // "how many seconds in a day". A small parser of its own (+ - * / ^, brackets, square roots); nothing is ever eval'd.
     const TIME_S = { second: 1, minute: 60, hour: 3600, day: 86400, week: 604800, year: 31557600 };
+    // the big answer line: giant for one short value, smaller and line-broken for a list or a long one
+    function bigStyle(v) {
+      const t = String(v), lines = t.split('\n'), long = Math.max(...lines.map((x) => x.length));
+      const size = lines.length > 1 ? (lines.length > 6 ? 18 : 24) : long > 28 ? 24 : long > 14 ? 36 : 56;
+      return 'font-size:' + size + 'px;font-weight:300;line-height:' + (size > 30 ? 1.15 : 1.45) + ';margin:6px 0 4px;white-space:pre-line;overflow-wrap:anywhere';
+    }
     function wordMath(lower) {
       let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
       // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
@@ -3171,7 +3182,7 @@ return { ok: true, detail: 'timer-reset' };
       if (m) { const n = +(m[1] || m[2]); if (n > 170) return null; let v = 1; for (let i = 2; i <= n; i++) v *= i; const shown = v >= 1e15 ? v.toExponential(6) : v.toLocaleString(); return { value: shown, note: n + '! = ' + shown }; }
       // "the square of 13"
       m = t.match(/^(?:the\s+)?square\s+of\s+(-?\d+(?:\.\d+)?)$/);
-      if (m) { const v = +m[1] * +m[1]; return { value: String(Math.round(v * 1e9) / 1e9), note: m[1] + '² = ' + v }; }
+      if (m) { const v = String(Math.round(+m[1] * +m[1] * 1e9) / 1e9); return { value: v, note: m[1] + '² = ' + v }; }
       // roman numerals both ways: "2024 in roman numerals", "what is XLII in numbers"
       m = t.match(/^(?:convert\s+)?(\d{1,4})\s+(?:in|to|into|as)\s+roman(?:\s+numerals?)?$/);
       if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
@@ -3211,6 +3222,11 @@ return { ok: true, detail: 'timer-reset' };
       // time units: "how long is 90 minutes in hours", "2.5 hours in minutes"
       m = t.match(/^(?:how\s+long\s+is\s+|convert\s+)?(\d+(?:\.\d+)?)\s+(seconds?|minutes?|hours?|days?|weeks?)\s+(?:in|to|into)\s+(seconds|minutes|hours|days|weeks)$/);
       if (m) { const U = { second: 1, minute: 60, hour: 3600, day: 86400, week: 604800 }, a = U[m[2].replace(/s$/, '')], b = U[m[3].replace(/s$/, '')]; const v = Math.round(+m[1] * a / b * 1e4) / 1e4; return { value: v.toLocaleString() + ' ' + m[3], note: m[1] + ' ' + m[2] }; }
+      // "how many days in a leap year", "how many hours in a week", "how many weeks in a year"
+      m = t.match(/^how\s+many\s+(seconds|minutes|hours|days|weeks|months)\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one)\s+(minute|hour|day|week|month|year|leap\s+year|decade|century)$/);
+      if (m) { const D = { second: 1 / 86400, minute: 1 / 1440, hour: 1 / 24, day: 1, week: 7, month: 30.436875, year: 365, 'leap year': 366, decade: 3652.5, century: 36524.25 }, from = m[2].replace(/\s+/g, ' '), to = m[1].replace(/s$/, '');
+        if (D[from] > D[to]) { const exact = { 'month:year': 12, 'month:leap year': 12, 'month:decade': 120, 'month:century': 1200 }[to + ':' + from], v = exact || Math.round(D[from] / D[to] * 100) / 100;
+          return { value: v.toLocaleString(), note: m[1] + ' in a ' + from + (from === 'month' ? ' (on average)' : from === 'year' ? ' (366 in a leap year)' : '') }; } }
       // "5 dollars a day for a year", "$12 a week for 2 years"
       m = t.match(/^(?:how\s+much\s+is\s+)?\$?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|usd)?\s+(?:a|per|each|every)\s+(day|week|month)\s+for\s+(a|one|\d+(?:\.\d+)?)\s+(years?|months?|weeks?)$/);
       if (m) { const per = { day: 1, week: 7, month: 30.4375 }[m[2]], span = (m[3] === 'a' || m[3] === 'one' ? 1 : +m[3]) * { year: 365, years: 365, month: 30.4375, months: 30.4375, week: 7, weeks: 7 }[m[4]];
@@ -3345,6 +3361,18 @@ return { ok: true, detail: 'timer-reset' };
       // "how long to save 10000 at 500 a month"
       m = t.match(/^how\s+long\s+(?:will\s+it\s+take\s+)?to\s+save\s+\$?([\d,.]+k?)\s+(?:at|with|saving)\s+\$?([\d,.]+)\s*(?:a|per|every|each)\s+(month|week|day|year)$/);
       if (m && N(m[2])) { const n = Math.ceil(N(m[1]) / N(m[2])); return { value: n + ' ' + m[3] + (n === 1 ? '' : 's'), note: $f(N(m[1])) + ' at ' + $f(N(m[2])) + ' a ' + m[3] + ' (no interest)' }; }
+      // ---- for kids ----
+      m = t.match(/^(?:the\s+)?(?:multiplication|times)\s+tables?\s+(?:of|for)\s+(\d{1,3})$|^(?:the\s+)?(\d{1,3})\s+times\s+tables?$/);
+      if (m) { const n = +(m[1] || m[2]); return { value: Array.from({ length: 12 }, (_, i) => n + ' × ' + (i + 1) + ' = ' + n * (i + 1)).join('\n'), note: n + ' times table, 1 to 12' }; }
+      m = t.match(/^count\s+(?:to|up\s+to)\s+(\d{1,3})$|^count\s+(?:down\s+)?from\s+(\d{1,3})(?:\s+to\s+(?:0|1|zero|one))?$/);
+      if (m) { const up = !!m[1], n = Math.min(100, +(m[1] || m[2])); const xs = up ? Array.from({ length: n }, (_, i) => i + 1) : Array.from({ length: n + 1 }, (_, i) => n - i); return { value: xs.join(', '), note: up ? 'counting to ' + n : 'counting down from ' + n }; }
+      m = t.match(/^what\s+(?:day|month|letter|number)?\s*comes\s+(after|before)\s+(.+)$/);
+      if (m) { const w = m[2].trim(), dir = m[1] === 'after' ? 1 : -1, D = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'], MO = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
+        const cap = (x) => x[0].toUpperCase() + x.slice(1); let v = null;
+        if (D.includes(w)) v = cap(D[(D.indexOf(w) + dir + 7) % 7]); else if (MO.includes(w)) v = cap(MO[(MO.indexOf(w) + dir + 12) % 12]);
+        else if (/^(?:the\s+letter\s+)?[a-z]$/.test(w)) { const c = w.slice(-1).charCodeAt(0) + dir; if (c >= 97 && c <= 122) v = String.fromCharCode(c).toUpperCase(); }
+        else if (/^-?\d+$/.test(w)) v = String(+w + dir);
+        if (v) return { value: v, note: 'what comes ' + m[1] + ' ' + w }; }
       // "subtract 45 from 100", "take 7 away from 20"
       m = t.match(/^(?:subtract|take(?:\s+away)?|minus)\s+(-?\d+(?:\.\d+)?)\s+(?:away\s+)?from\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = +m[2] - +m[1]; return { value: String(Math.round(v * 1e9) / 1e9), note: m[2] + ' − ' + m[1] }; }
@@ -3472,7 +3500,7 @@ return { ok: true, detail: 'timer-reset' };
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; });
 
       let hit = false;
-      const setV = (big, note, src) => { if (vpageEl === el) el.innerHTML = '<h2>Calculated</h2><div style="font-size:56px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); };
+      const setV = (big, note, src) => { if (vpageEl === el) el.innerHTML = '<h2>Calculated</h2><div style="' + bigStyle(big) + '">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); };
       const wm = wordMath(query.toLowerCase());
       if (wm) { setV(wm.value, wm.note); return 'calc'; }
 
@@ -4597,7 +4625,7 @@ return { ok: true, detail: 'timer-reset' };
       if (skillsLoaded) for (const sk of learnedSkills) if (sk.name === 'util' && sk.match(l, text)) return runLearnedSkills(text, l);
       if (wantsToday(l)) { showToday(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'today' }); return true; }
       if (wantsTimeNow(l)) { showTimeNow(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'timenow' }); return true; }
-      { const c = chanceOf(l); if (c) { showPage((p) => { p.innerHTML = '<h2>' + esc(c.title) + '</h2><div style="font-size:56px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
+      { const c = chanceOf(l); if (c) { showPage((p) => { p.innerHTML = '<h2>' + esc(c.title) + '</h2><div style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
       if (await handleAppAsk(text, l)) return true;
       for (const [lang, re, line] of SPEAKS) if (re.test(l)) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'speaks ' + lang }); return true; }
       for (const [re, line] of WHAT_ARE_YOU) if (re.test(l.replace(/[\s?¿.!¡]+$/, '').replace(/^[¿¡\s]+/, ''))) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self (other language)' }); return true; }
