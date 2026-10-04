@@ -212,6 +212,7 @@ const gum = await import(new URL('../void-live-deploy/lib/gumroad.js', import.me
 const storeDb = await import(new URL('../void-live-deploy/lib/store-db.js', import.meta.url).href);
 const answerFn = await import(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url).href);
 const willFn = await import(new URL('../void-live-deploy/functions/api/will.js', import.meta.url).href);
+const figurescriptFn = await import(new URL('../void-live-deploy/functions/api/figurescript.js', import.meta.url).href);
 const earnFn = await import(new URL('../void-live-deploy/functions/api/earnings.js', import.meta.url).href);
 const publishFn = await import(new URL('../void-live-deploy/functions/api/publish.js', import.meta.url).href);
 const pageFn = await import(new URL('../void-live-deploy/functions/[handle].js', import.meta.url).href);
@@ -364,6 +365,11 @@ async function fresh(...inits) {
     if (u.includes('/api/misses')) { missesCalls.push(u); return r.fulfill(json([])); }
     if (/\/api\/(passkey|mine)$/.test(new URL(u).pathname)) return meRoute(r);
     if (/\/api\/catalog$/.test(new URL(u).pathname)) return catalogRoute(r);
+    if (u.includes('/api/figurescript')) {
+      const body = r.request().method() === 'POST' ? JSON.parse(r.request().postData() || '{}') : Object.fromEntries(new URL(u).searchParams);
+      return figurescriptFn.onRequestPost({ request: new Request('http://x/api/figurescript', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env: {} })
+        .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
+    }
     return r.fulfill({ status: 204, body: '' });
   });
   const p = await ctx.newPage();
@@ -2273,6 +2279,127 @@ try {
       still18 && still18.still && !!gone18 && (await A18.state()).every((x) => x.kind !== 'figure') && !A18.errors.length,
       JSON.stringify({ still: still18 && still18.still, gone: !!gone18, e: A18.errors }));
     await A18.ctx.close();
+  }
+
+  // Board Next #19: behavior scripts from Workers AI, with a fallback. Pure trim/fallback offline; API paths for AI / cache / off.
+  {
+    const Scr = await import(new URL('../void-live-deploy/skills/scripts.js', import.meta.url).href);
+    const F3 = await import(new URL('../void-live-deploy/skills/figures3d.js', import.meta.url).href);
+    const fbPerson = Scr.fallbackScript('person', 'Marie Curie');
+    const fbVolcano = Scr.fallbackScript('place', 'Volcano');
+    const trimmed = Scr.trimScript({ drives: ['wander', 'fly', 'notice'], actions: ['stir', 'explode', 'wave', 'look'] }, 'person', 'Chef');
+    const empty = Scr.trimScript({ drives: [], actions: [] }, 'animal', 'Fox');
+    const junk = Scr.trimScript('not-json', 'idea');
+    check('scripts (#19): fallbackScript gives each base body known drives and actions; every figure works without AI',
+      Scr.KNOWN_DRIVES.length === 3 && Scr.KNOWN_ACTIONS.length >= 10 && !!Scr.FALLBACKS.person
+      && fbPerson.source === 'fallback' && fbPerson.actions.includes('wave') && fbPerson.drives.includes('wander')
+      && fbVolcano.body === 'place' && fbVolcano.actions.every((a) => Scr.KNOWN_ACTIONS.includes(a))
+      && typeof F3.fallbackScript === 'function' && F3.fallbackScript('sprite').actions.includes('look'),
+      JSON.stringify({ fbPerson, fbVolcano }));
+    check('scripts (#19): trimScript drops unknown drives/actions and collapses junk to the body fallback',
+      trimmed.drives.includes('wander') && trimmed.drives.includes('notice') && !trimmed.drives.includes('fly')
+      && trimmed.actions.includes('stir') && trimmed.actions.includes('wave') && !trimmed.actions.includes('explode')
+      && empty.actions.length >= 1 && empty.drives.length >= 1 && junk.source === 'fallback' && junk.body === 'idea',
+      JSON.stringify({ trimmed, empty, junk }));
+    // Brain picks idle acts from the script (stir -> wave visual).
+    const brain = F3.makeBrain({ body: 'person', script: trimmed, x: 100, y: 100 }, () => 0);
+    check('scripts (#19): makeBrain keeps a trimmed script; pickIdleAction + visualAct map stir to wave',
+      !!brain.script && brain.script.actions.includes('stir') && Scr.visualAct('stir') === 'wave' && Scr.pickIdleAction(trimmed, () => 0) === 'stir',
+      JSON.stringify(brain.script));
+    // API: AI off -> fallback; AI on -> script once then cache reuse; unknown actions trimmed.
+    const mem = new Map();
+    const fakeDB = {
+      prepare(sql) {
+        const self = {
+          _b: [],
+          bind(...a) { self._b = a; return self; },
+          async first(col) {
+            if (/CREATE/i.test(sql)) return null;
+            if (/SELECT script/i.test(sql)) {
+              const row = mem.get(self._b[0]);
+              if (!row) return null;
+              return col ? row[col] : row;
+            }
+            return null;
+          },
+          async run() {
+            if (/CREATE/i.test(sql)) return { success: true };
+            if (/INSERT INTO void_figure_scripts/i.test(sql)) {
+              mem.set(self._b[0], { id: self._b[0], body: self._b[1], script: self._b[2], at: self._b[3] });
+              return { success: true };
+            }
+            return { success: true };
+          },
+        };
+        return self;
+      },
+    };
+    const off = await (await figurescriptFn.onRequestPost({
+      request: new Request('http://x/api/figurescript', { method: 'POST', body: JSON.stringify({ title: 'Marie Curie', body: 'person', description: 'physicist (1867–1934)', extract: 'Nobel Prize' }) }),
+      env: {},
+    })).json();
+    const aiCalls = [];
+    const aiEnv = {
+      DB: fakeDB,
+      AI: {
+        run: async (model, opts) => {
+          aiCalls.push(opts);
+          return { response: JSON.stringify({ drives: ['wander', 'idle', 'teleport'], actions: ['stir', 'read', 'look', 'fly'] }) };
+        },
+      },
+    };
+    const ai1 = await (await figurescriptFn.onRequestPost({
+      request: new Request('http://x/api/figurescript', { method: 'POST', body: JSON.stringify({ title: 'Marie Curie', body: 'person', description: 'physicist (1867–1934)' }) }),
+      env: aiEnv,
+    })).json();
+    const ai2 = await (await figurescriptFn.onRequestPost({
+      request: new Request('http://x/api/figurescript', { method: 'POST', body: JSON.stringify({ title: 'Marie Curie', body: 'person', description: 'physicist (1867–1934)' }) }),
+      env: aiEnv,
+    })).json();
+    check('scripts (#19): /api/figurescript returns fallback with AI off; with AI writes once, trims unknowns, and reuses the D1 cache',
+      off.source === 'fallback' && off.script && off.script.actions.length >= 1
+      && ai1.source === 'ai' && ai1.script.actions.includes('stir') && ai1.script.actions.includes('read') && !ai1.script.actions.includes('fly')
+      && !ai1.script.drives.includes('teleport') && ai2.source === 'cache' && aiCalls.length === 1,
+      JSON.stringify({ off, ai1, ai2, aiCalls: aiCalls.length }));
+    // Browser: article summon carries a fallback script on the figure; three.js stays lazy until then.
+    const wikiPerson = {
+      type: 'standard', title: 'Marie Curie', description: 'Polish-French physicist and chemist (1867–1934)',
+      extract: 'Marie Skłodowska Curie was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.',
+      content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Marie_Curie' } },
+      timestamp: '2026-01-01T00:00:00Z',
+    };
+    const A19 = await fresh();
+    const hits19 = [];
+    A19.p.on('request', (r) => { const u = r.url(); if (/three@|figures3d|bodies\.js|scripts\.js|figurescript/.test(u)) hits19.push(u.replace(/^.*\/\/[^/]+/, '')); });
+    const figSrc19 = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const names19 = Array.from(new Set(Array.from(figSrc19.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUB19 = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + names19.map((n) => n + '=U').join(',') + ';';
+    await A19.ctx.route(/cdn\.jsdelivr\.net\/npm\/three@/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB19 }));
+    await A19.ctx.route(/en\.wikipedia\.org/, async (rt) => {
+      const u = rt.request().url();
+      if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(json({ query: { search: [{ title: 'Marie Curie' }] } }));
+      if (/api\.php/.test(u) && /generator=search/.test(u)) return rt.fulfill(json({ query: { pages: { 1: { title: 'Marie Curie', description: wikiPerson.description, index: 1 } } } }));
+      if (/page\/summary/.test(u)) return rt.fulfill(json(wikiPerson));
+      return rt.fulfill(json({}));
+    });
+    await A19.ask('who is Marie Curie', 900);
+    const fig19 = await until(async () => {
+      const v = await A19.p.evaluate(() => (window.__void3d ? window.__void3d.state() : null));
+      return v && v.figures && v.figures.some((f) => f.body === 'person' && f.script && f.script.actions && f.script.actions.length) ? v : false;
+    }, 8000);
+    const person19 = fig19 && fig19.figures.find((f) => f.body === 'person');
+    const state19 = await A19.state();
+    const staged = state19.find((x) => x.kind === 'figure' && x.body === 'person');
+    check('scripts (#19): "who is Marie Curie" brings a dressed person figure that already carries a fallback behavior script; /api/figurescript is called; figures3d imports scripts.js',
+      !!fig19 && !!person19 && !!person19.script && person19.script.actions.every((a) => Scr.KNOWN_ACTIONS.includes(a))
+      && person19.script.drives.every((d) => Scr.KNOWN_DRIVES.includes(d))
+      && staged && staged.script && staged.script.actions && staged.script.actions.length
+      && hits19.some((u) => /\/api\/figurescript/.test(u))
+      && /from '\.\/scripts\.js'/.test(figSrc19) && !A19.errors.length,
+      JSON.stringify({ person19, stagedScript: staged && staged.script, hits: hits19, e: A19.errors }));
+    await A19.ask('send them away', 700);
+    await A19.ctx.close();
   }
 
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
