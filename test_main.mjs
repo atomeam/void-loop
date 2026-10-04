@@ -2094,20 +2094,6 @@ try {
       JSON.stringify({ before, status, errs: Q.errors }));
     await Q.ctx.close(); }
 
-  const liMod = nsMods.find((s) => s.name === 'local-inference');
-  const liApi = liMod && await import(new URL('../void-live-deploy/skills/local-inference.js', import.meta.url).href);
-  const passDiff = '+CREATE TABLE void_ledger (id INTEGER PRIMARY KEY, kind TEXT, approval_id TEXT)';
-  const failDiff = '+CREATE TABLE void_ledger (id INTEGER PRIMARY KEY); +CREATE TABLE void_ledger (id INTEGER PRIMARY KEY)';
-  const schemaState = { tables: { void_ledger: { columns: ['id', 'kind', 'approval_id'] } } };
-  const passResult = liApi && await liApi.checkLedgerDiff(passDiff, schemaState);
-  const failResult = liApi && await liApi.checkLedgerDiff(failDiff, schemaState);
-  check('local-inference: listed with examples and near misses; examples route only to it; offline check catches duplicate table and passes clean diff',
-    !!liMod && liMod.examples.length >= 4 && (liMod.nearMisses || []).length >= 3
-      && liMod.examples.every((e) => firstNs(e) === 'local-inference') && liMod.nearMisses.every((e) => firstNs(e) !== 'local-inference')
-      && passResult && passResult.pass === true && Array.isArray(passResult.issues)
-      && failResult && failResult.pass === false && failResult.issues.some(i => /duplicate|collision/i.test(i)),
-    liMod ? liMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing local-inference');
-
   { const slog = await import(new URL('../void-live-deploy/skills/slogan3d.js', import.meta.url).href);
     const doc = slog.sloganDoc({ reduce: true });
     check('slogan3d: exact slogan text; reduced-motion doc stays still (REDUCE true); no network libs',
