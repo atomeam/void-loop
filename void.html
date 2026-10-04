@@ -3169,6 +3169,46 @@ return { ok: true, detail: 'timer-reset' };
       if (m) { const now = new Date(), y = now.getFullYear(), w = m[2];
         const at = /^new/.test(w) ? new Date(y + 1, 0, 1) : /christmas|xmas/.test(w) ? new Date(now > new Date(y, 11, 25) ? y + 1 : y, 11, 25) : w === 'halloween' ? new Date(now > new Date(y, 9, 31) ? y + 1 : y, 9, 31) : new Date(y, now.getMonth(), now.getDate() + 1);
         const v = Math.floor((at - now) / { seconds: 1e3, minutes: 6e4, hours: 36e5 }[m[1]]); return { value: v.toLocaleString() + ' ' + m[1], note: 'until ' + at.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) }; }
+      // clock arithmetic: "add 2 hours to 3:30 pm", "3:30 pm plus 45 minutes", "subtract 90 minutes from 2pm"
+      const clockOf = (x) => { const c = String(x).trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?$/); if (!c) return null; let h = +c[1], mi = +(c[2] || 0); const ap = (c[3] || '').replace(/\./g, ''); if (ap === 'pm' && h < 12) h += 12; if (ap === 'am' && h === 12) h = 0; return h < 24 && mi < 60 && (ap || c[2]) ? h * 60 + mi : null; };
+      const fmt12 = (mins) => { mins = ((mins % 1440) + 1440) % 1440; const h = Math.floor(mins / 60), mi = mins % 60; return ((h % 12) || 12) + ':' + String(mi).padStart(2, '0') + ' ' + (h < 12 ? 'AM' : 'PM'); };
+      m = t.match(/^(add|subtract)\s+(\d{1,4})\s+(hours?|hrs?|minutes?|mins?)\s+(?:to|from)\s+(.+)$/) || t.match(/^(.+?)\s+(plus|minus)\s+(\d{1,4})\s+(hours?|hrs?|minutes?|mins?)$/);
+      if (m) { const add = m[1] === 'add' || m[2] === 'plus', base = clockOf(m[1] === 'add' || m[1] === 'subtract' ? m[4] : m[1]), n = +(m[1] === 'add' || m[1] === 'subtract' ? m[2] : m[3]), unit = m[1] === 'add' || m[1] === 'subtract' ? m[3] : m[4];
+        if (base != null) { const d = n * (/^h/.test(unit) ? 60 : 1) * (add ? 1 : -1); return { value: fmt12(base + d), note: fmt12(base) + (add ? ' + ' : ' − ') + n + ' ' + unit }; } }
+      // "3pm in 24 hour time" -> 15:00; "1500 military time" / "convert 1500 to 12 hour time" -> 3:00 PM
+      m = t.match(/^(?:convert\s+)?(\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.|p\.m\.))\s+(?:in|to|as)\s+(?:24[\s-]*hours?|military)(?:\s+time)?$/);
+      if (m) { const c = clockOf(m[1]); if (c != null) return { value: String(Math.floor(c / 60)).padStart(2, '0') + ':' + String(c % 60).padStart(2, '0'), note: m[1] + ' on a 24-hour clock' }; }
+      m = t.match(/^(?:convert\s+|what\s+is\s+)?([01]\d|2[0-3])([0-5]\d)(?:\s+hours)?\s+(?:(?:in|to|as)\s+)?(?:military\s+time|(?:12[\s-]*hours?|regular|standard|normal)\s+time)(?:\s+(?:in|to)\s+(?:12[\s-]*hours?|regular|standard|normal)(?:\s+time)?)?$/);
+      if (m) { const c = +m[1] * 60 + +m[2]; return { value: fmt12(c), note: m[1] + m[2] + ' on a 12-hour clock' }; }
+      // time units: "how long is 90 minutes in hours", "2.5 hours in minutes"
+      m = t.match(/^(?:how\s+long\s+is\s+|convert\s+)?(\d+(?:\.\d+)?)\s+(seconds?|minutes?|hours?|days?|weeks?)\s+(?:in|to|into)\s+(seconds|minutes|hours|days|weeks)$/);
+      if (m) { const U = { second: 1, minute: 60, hour: 3600, day: 86400, week: 604800 }, a = U[m[2].replace(/s$/, '')], b = U[m[3].replace(/s$/, '')]; const v = Math.round(+m[1] * a / b * 1e4) / 1e4; return { value: v.toLocaleString() + ' ' + m[3], note: m[1] + ' ' + m[2] }; }
+      // "5 dollars a day for a year", "$12 a week for 2 years"
+      m = t.match(/^(?:how\s+much\s+is\s+)?\$?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|usd)?\s+(?:a|per|each|every)\s+(day|week|month)\s+for\s+(a|one|\d+(?:\.\d+)?)\s+(years?|months?|weeks?)$/);
+      if (m) { const per = { day: 1, week: 7, month: 30.4375 }[m[2]], span = (m[3] === 'a' || m[3] === 'one' ? 1 : +m[3]) * { year: 365, years: 365, month: 30.4375, months: 30.4375, week: 7, weeks: 7 }[m[4]];
+        const v = Math.round(+m[1] * span / per * 100) / 100; return { value: '$' + v.toLocaleString(undefined, { maximumFractionDigits: 2 }), note: '$' + m[1] + ' a ' + m[2] + ' for ' + (m[3] === 'a' ? 'a' : m[3]) + ' ' + m[4] }; }
+      // "compound interest on 1000 at 5% for 10 years" (yearly; "monthly" compounds monthly)
+      m = t.match(/^(?:compound\s+interest\s+on|what\s+will\s+\$?\d+.*grow\s+to.*|\$?)\s*\$?(\d+(?:\.\d+)?)\s+(?:dollars\s+)?at\s+(\d+(?:\.\d+)?)\s*%\s+(?:interest\s+)?(?:for|over)\s+(\d{1,3})\s+years?(?:\s+(monthly|yearly|annually|compounded\s+monthly))?$/);
+      if (m && /interest|compound/.test(t)) { const P = +m[1], r = +m[2] / 100, n = +m[3], k = /monthly/.test(m[4] || '') ? 12 : 1, A = P * Math.pow(1 + r / k, k * n);
+        return { value: '$' + A.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }), note: '$' + P + ' at ' + m[2] + '% ' + (k === 12 ? 'compounded monthly' : 'compounded yearly') + ' for ' + n + ' years · interest $' + (A - P).toLocaleString(undefined, { maximumFractionDigits: 2 }) }; }
+      // "gpa of 3.5 and 4.0" / "average gpa 3.2, 3.8, 4.0": the plain average (equal credits)
+      m = t.match(/^(?:what\s+is\s+)?(?:the\s+)?(?:average\s+)?gpa\s+(?:of\s+)?(\d(?:\.\d+)?(?:(?:\s*,\s*|\s+and\s+|\s+)\d(?:\.\d+)?)+)$/);
+      if (m) { const xs = m[1].split(/\s*,\s*|\s+and\s+|\s+/).map(Number), v = xs.reduce((a, b) => a + b, 0) / xs.length; return { value: v.toFixed(2), note: 'average of ' + xs.length + ' grades, equal credits' }; }
+      // "how many business days until christmas" (Monday to Friday, holidays not removed)
+      m = t.match(/^how\s+many\s+(?:business|work(?:ing)?|week)\s*days\s+(?:are\s+)?(?:left\s+)?(?:until|till|to|before)\s+(.+)$/);
+      if (m) { const key = m[1].replace(/^the\s+/, '').trim(); const hol = CALC_HOLIDAYS[key]; const now = new Date(); let end = null;
+        if (hol) { end = new Date(now.getFullYear(), hol.m, hol.d); if (end < now) end = new Date(now.getFullYear() + 1, hol.m, hol.d); } else { const p = Date.parse(key + (/\d{4}/.test(key) ? '' : ' ' + now.getFullYear())); if (!isNaN(p)) end = new Date(p); }
+        if (end) { let n = 0; const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1); while (d < end) { const w = d.getDay(); if (w && w < 6) n++; d.setDate(d.getDate() + 1); } return { value: n + ' business days', note: 'Monday to Friday until ' + end.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }) + ' (public holidays not taken off)' }; } }
+      // "what season is it" (northern hemisphere unless your time zone is clearly southern)
+      if (/^(?:what|which)\s+season\s+is\s+it(?:\s+(?:now|today))?$/.test(t)) { let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch (_) {}
+        const south = /^(Australia|Antarctica)\/|America\/(Argentina|Santiago|Sao_Paulo|Montevideo|Asuncion|La_Paz|Lima)|Africa\/(Johannesburg|Maputo|Harare|Windhoek|Gaborone)|Pacific\/Auckland/.test(tz), mo = new Date().getMonth();
+        const N = ['Winter', 'Winter', 'Spring', 'Spring', 'Spring', 'Summer', 'Summer', 'Summer', 'Autumn', 'Autumn', 'Autumn', 'Winter'], S = ['Summer', 'Summer', 'Autumn', 'Autumn', 'Autumn', 'Winter', 'Winter', 'Winter', 'Spring', 'Spring', 'Spring', 'Summer'];
+        return { value: (south ? S : N)[mo], note: (south ? 'southern' : 'northern') + ' hemisphere, by month' }; }
+      // "what day of the week is christmas this year", "what day does halloween fall on in 2027"
+      m = t.match(/^(?:what|which)\s+day(?:\s+of\s+the\s+week)?\s+(?:is|does|will)\s+(christmas(?:\s+day|\s+eve)?|xmas|halloween|new\s+year'?s?(?:\s+day|\s+eve)?|valentine'?s?(?:\s+day)?|(?:the\s+)?(?:4th\s+of\s+july|july\s+4(?:th)?|fourth\s+of\s+july))(?:\s+(?:fall|land|be))?(?:\s+on)?(?:\s+(?:in\s+)?(this|next)\s+year|\s+(?:in\s+)?(\d{4}))?$/);
+      if (m) { const w = m[1].replace(/'/g, ''), D = /eve$/.test(w) ? (/christmas/.test(w) ? [11, 24] : [11, 31]) : /christmas|xmas/.test(w) ? [11, 25] : /halloween/.test(w) ? [9, 31] : /new\s+years?/.test(w) ? [0, 1] : /valentine/.test(w) ? [1, 14] : [6, 4];
+        const now = new Date(), y = m[3] ? +m[3] : m[2] === 'next' ? now.getFullYear() + 1 : now.getFullYear(), d = new Date(y, D[0], D[1]);
+        return { value: d.toLocaleDateString('en-US', { weekday: 'long' }), note: d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) }; }
       // "subtract 45 from 100", "take 7 away from 20"
       m = t.match(/^(?:subtract|take(?:\s+away)?|minus)\s+(-?\d+(?:\.\d+)?)\s+(?:away\s+)?from\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = +m[2] - +m[1]; return { value: String(Math.round(v * 1e9) / 1e9), note: m[2] + ' − ' + m[1] }; }
@@ -4342,6 +4382,14 @@ return { ok: true, detail: 'timer-reset' };
       let m = l.match(/^(?:please\s+)?roll\s+(?:(a|an|one|two|three|four|five|six|\d{1,2})\s+)?(?:dice|die|d(\d{1,3})s?|(\d{1,3})[- ]sided\s+di(?:c)?e)$/);
       if (m) { const W = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }; const n = Math.min(10, W[m[1]] || +m[1] || 1), s = Math.min(1000, +(m[2] || m[3]) || 6);
         const r = Array.from({ length: n }, () => rnd(s) + 1); return { title: n > 1 ? n + ' dice' : 'Die', big: r.join('  '), note: (n > 1 ? 'total ' + r.reduce((a, b) => a + b, 0) + ' · ' : '') + 'd' + s }; }
+      // "flip 3 coins"
+      m = l.match(/^(?:flip|toss)\s+(two|three|four|five|\d{1,2})\s+coins$/);
+      if (m) { const n = Math.min(20, { two: 2, three: 3, four: 4, five: 5 }[m[1]] || +m[1]); const r = Array.from({ length: n }, () => rnd(2) ? 'H' : 'T'); const h = r.filter((x) => x === 'H').length; return { title: n + ' coins', big: r.join(' '), note: h + ' heads · ' + (n - h) + ' tails' }; }
+      if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+letter$/.test(l)) { const c = String.fromCharCode(65 + rnd(26)); return { title: 'Random letter', big: c, note: 'A to Z, each equally likely' }; }
+      if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+colou?r$/.test(l)) { const hex = '#' + [0, 0, 0].map(() => rnd(256).toString(16).padStart(2, '0')).join(''); return { title: 'Random colour', big: hex, note: 'ask “what color is ' + hex + '” to see it' }; }
+      if (/^(?:yes\s+or\s+no|should\s+i\s+do\s+it|decide\s+for\s+me)$/.test(l)) return { title: 'Yes or no', big: rnd(2) ? 'Yes' : 'No', note: 'a fair coin decided' };
+      if (/^(?:(?:ask\s+the\s+|shake\s+the\s+)?magic\s+8[\s-]?ball)(?:\s.*)?$/.test(l)) { const A = ['It is certain', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful', 'No']; return { title: 'Magic 8 ball', big: A[rnd(A.length)], note: 'for fun: it is a random pick of the classic 20 answers' }; }
+      if (/^(?:play\s+)?rock[\s,]+paper[\s,]+(?:and\s+)?scissors$/.test(l)) { const R = ['Rock', 'Paper', 'Scissors']; return { title: 'Rock, paper, scissors', big: R[rnd(3)], note: 'Void’s throw: what was yours?' }; }
       m = l.match(/^(?:pick|give\s+me|choose|generate|think\s+of)\s+(?:me\s+)?a\s+(?:random\s+)?number(?:\s+(?:between|from)\s+(-?\d{1,9})\s+(?:and|to)\s+(-?\d{1,9}))?$|^random\s+number(?:\s+(?:between|from)?\s*(-?\d{1,9})\s+(?:and|to|-)\s+(-?\d{1,9}))?$/);
       if (m) { let a = +(m[1] || m[3] || 1), b = +(m[2] || m[4] || 100); if (a > b) [a, b] = [b, a]; return { title: 'Random number', big: String(a + rnd(b - a + 1)), note: 'from ' + a + ' to ' + b + ', each equally likely' }; }
       return null;
