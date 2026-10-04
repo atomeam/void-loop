@@ -2075,6 +2075,24 @@ try {
       JSON.stringify({ card, st, wantDays, copied, errs: Q.errors }));
     await Q.ctx.close(); }
 
+  // othello: real rules (4 starting discs, a move must flip, 8 directions), and Void answers your move on the card
+  { const oth = await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
+    const s0 = oth.createOthelloState();
+    const after = oth.resolveMove(s0, 19).nextState; // d3: flips d4
+    let illegal = false; try { oth.resolveMove(s0, 0); } catch (_) { illegal = true; }
+    const Q = await fresh();
+    await Q.ask('play othello', 500);
+    const before = await Q.p.$$eval('.othello-card button[data-i] span', (d) => d.length).catch(() => 0);
+    await Q.p.$eval('.othello-card button[data-i="19"]', (b) => b.click()).catch(() => {});
+    await Q.p.waitForTimeout(900);
+    const st = (await Q.state()).find((t) => t.kind === 'othello');
+    const status = await Q.p.$eval('.othello-card', (e) => e.innerText).catch(() => '');
+    check('othello: opening has 4 legal moves for black, a move flips, an illegal square is refused; "play othello" summons a board, your move lands and Void replies',
+      oth.legalMoves(s0.board, 1).join() === '19,26,37,44' && after.board[27] === 1 && after.turn === 2 && illegal
+        && before === 8 && !!st && /your move/.test(status) && Q.errors.length === 0,
+      JSON.stringify({ before, status, errs: Q.errors }));
+    await Q.ctx.close(); }
+
   { const slog = await import(new URL('../void-live-deploy/skills/slogan3d.js', import.meta.url).href);
     const doc = slog.sloganDoc({ reduce: true });
     check('slogan3d: exact slogan text; reduced-motion doc stays still (REDUCE true); no network libs',

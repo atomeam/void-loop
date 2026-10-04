@@ -1077,5 +1077,7 @@
   {"ask": "tip on $64 at 20%", "want": "skill:tip"},
   {"ask": "remind me to stretch in 20 minutes", "want": "timer|skill:remind"},
   {"ask": "what is 1/3 as a decimal", "want": "calc"},
-  {"ask": "convert 30 cm to inches", "want": "calc"}
+  {"ask": "convert 30 cm to inches", "want": "calc"},
+  {"ask": "play othello", "want": "skill:othello"},
+  {"ask": "lets play reversi", "want": "skill:othello"}
 ]

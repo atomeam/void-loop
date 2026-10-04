@@ -17,7 +17,7 @@ A rule an agent wrote and signed with Adam's name, without his words, is removed
 - Older files in `domains\\` (venture catalog `A2M.ops.md`, venture files, shared-parts diagrams) came from an earlier framing. Keep them as archive.
 
 ## Where things live
-- **What Void couldn't answer (the board):** the page sends every unanswered ask to https://a-to-mind.com/api/miss (Pages Function in `void-live-deploy\\functions\\api\\`, live since 2026-09-25). Read it in Void with "unlock <key>" then "show the board", or in `domains\\void.misses.md` (refreshed daily 6:47 am).
+- **What Void couldn't answer (the board):** the page sends every unanswered ask to https://a-to-mind.com/api/miss (Pages Function in `void-live-deploy\\functions\\api\\`, live since 2026-09-25). Read it in Void with "unlock <key>" then "show the board", or on the Victus in `domains\\void.misses.md` (refreshed daily 6:47 am; git-ignored, since the repo is public), or with `node tools/misses.mjs` (prints the new ones, needs VOID_MISSES_TOKEN).
 - Live Void source: `C:\\Users\\adamm\\a-to-mind-loop\\void.html` → Cloudflare Pages project `a-to-mind` → https://a-to-mind.com
 - Deploy copy: `void-live-deploy\\` (copy `void.html` to `index.html` and `void.html` there). Also sync `C:\\Users\\adamm\\a-to-mind.com\\index.html`.
 - Deploy: from `void-live-deploy`: `npx wrangler pages deploy . --project-name=a-to-mind --commit-dirty=true`
