@@ -1035,5 +1035,16 @@
   {"ask": "earthquakes today", "want": "skill:quake"},
   {"ask": "split $120 four ways with 18% tip", "want": "skill:tip"},
   {"ask": "how much gas for 300 miles at 25 mpg $3.20 a gallon", "want": "skill:fuel"},
-  {"ask": "air quality in los angeles", "want": "skill:air"}
+  {"ask": "air quality in los angeles", "want": "skill:air"},
+  {"ask": "days until july 4", "want": "skill:countdown"},
+  {"ask": "nba team lakers", "want": "skill:sport"},
+  {"ask": "what stadium do the packers play in", "want": "skill:sport"},
+  {"ask": "reply in spanish: what time is it in madrid", "want": "skill:spanish"},
+  {"ask": "what is 15% of 240", "want": "calc"},
+  {"ask": "how far is chicago from denver", "want": "skill:distance"},
+  {"ask": "price of ethereum", "want": "skill:crypto"},
+  {"ask": "countdown to christmas", "want": "skill:countdown"},
+  {"ask": "how many sleeps until christmas", "want": "skill:countdown"},
+  {"ask": "what is 2 to the 10th power", "want": "calc"},
+  {"ask": "pollen count in atlanta", "want": "skill:pollen"}
 ]

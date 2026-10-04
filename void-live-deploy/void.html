@@ -3151,7 +3151,7 @@ return { ok: true, detail: 'timer-reset' };
       m = t.match(/^(?:how\s+many\s+)?days\s+(?:are\s+there\s+)?between\s+(.+?)\s+and\s+(.+)$/);
       if (m) { const yr = new Date().getFullYear(), d = (x) => { let v = Date.parse(x + (/\d{4}/.test(x) ? '' : ' ' + yr)); return isNaN(v) ? null : v; }; const a = d(m[1]), b = d(m[2]);
         if (a != null && b != null) { const n = Math.round(Math.abs(b - a) / 864e5); return { value: n + (n === 1 ? ' day' : ' days'), note: 'between ' + m[1] + ' and ' + m[2] + (/\d{4}/.test(m[1] + m[2]) ? '' : ' ' + yr) }; } }
-      const e = t.replace(/\bsquare\s+root\s+of\b|\bsqrt\s+of\b|\bsqrt\b/g, ' r ').replace(/\bto\s+the\s+power\s+of\b|\braised\s+to\b|\*\*/g, ' ^ ')
+      const e = t.replace(/\bsquare\s+root\s+of\b|\bsqrt\s+of\b|\bsqrt\b/g, ' r ').replace(/\bto\s+the\s+(\d+)(?:st|nd|rd|th)?\s+power\b/g, ' ^ $1 ').replace(/\bto\s+the\s+power\s+of\b|\braised\s+to\b|\*\*/g, ' ^ ')
         .replace(/\bsquared\b/g, ' ^ 2 ').replace(/\bcubed\b/g, ' ^ 3 ').replace(/\btimes\b|\bmultiplied\s+by\b|×|\bx\b/g, ' * ').replace(/\bdivided\s+by\b|\bover\b|÷/g, ' / ')
         .replace(/\bplus\b|\badded\s+to\b/g, ' + ').replace(/\bminus\b|\bless\b/g, ' - ').replace(/(\d),(\d{3})/g, '$1$2').trim();
       if (!/^[\d\s.+\-*/^()r]+$/.test(e) || !/\d/.test(e) || !/[+\-*/^r]/.test(e.replace(/^-/, ''))) return null;

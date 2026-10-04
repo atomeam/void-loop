@@ -9,6 +9,14 @@ export function countdownOf(text) {
   if (/^days until (?:jan(?:uary)?\.?\s+1|january 1)$/i.test(t)) return { kind: 'newyear' };
   const m = t.match(/^(?:how many )?days until ([a-z]+\s+\d{1,2})$/i);
   if (m) return { kind: 'named', label: m[1] };
+  // "countdown to christmas", "how many sleeps until christmas" (plain "days until christmas" stays with holidays/calc)
+  const c = t.match(/^(?:(?:a |start a )?countdown (?:to|until|till)|(?:how many )?sleeps (?:until|till|to)) (.+)$/i);
+  if (c) {
+    const w = c[1].toLowerCase().replace(/^the /, '').replace(/['’]/g, '');
+    if (/^new years?(?: day)?$|^jan(?:uary)? 1$/.test(w)) return { kind: 'newyear' };
+    if (NAMED[w]) return { kind: 'named', label: NAMED[w][0], date: NAMED[w][1] };
+    if (/^[a-z]+\s+\d{1,2}$/.test(w) && MONTHS[w.split(' ')[0]] != null) return { kind: 'named', label: c[1] };
+  }
   return null;
 }
 export function daysUntil(target, now = new Date()) {
@@ -21,6 +29,7 @@ export function newYearDate(now = new Date()) {
   const year = now.getMonth() === 0 && now.getDate() === 1 ? now.getFullYear() : now.getFullYear() + 1;
   return new Date(year, 0, 1);
 }
+const NAMED = { christmas: ['Christmas', 'december 25'], 'christmas day': ['Christmas', 'december 25'], 'christmas eve': ['Christmas Eve', 'december 24'], halloween: ['Halloween', 'october 31'], 'valentines day': ['Valentine’s Day', 'february 14'], 'new years eve': ['New Year’s Eve', 'december 31'], 'july 4th': ['July 4', 'july 4'], 'the 4th of july': ['July 4', 'july 4'], '4th of july': ['July 4', 'july 4'] };
 const MONTHS = { january: 0, february: 1, march: 2, april: 3, may: 4, june: 5, july: 6, august: 7, september: 8, october: 9, november: 10, december: 11 };
 function namedDate(label, now) {
   const m = String(label).toLowerCase().match(/^([a-z]+)\s+(\d{1,2})$/);
@@ -62,7 +71,7 @@ async function run(text, api) {
   const hit = countdownOf(text);
   if (!hit) return 'none';
   const now = new Date();
-  const target = hit.kind === 'newyear' ? newYearDate(now) : namedDate(hit.label, now);
+  const target = hit.kind === 'newyear' ? newYearDate(now) : namedDate(hit.date || hit.label, now);
   if (!target) return 'none';
   const label = hit.kind === 'newyear' ? 'New Year' : titleOf(hit.label);
   const days = daysUntil(target, now), dText = dateText(target);
@@ -79,8 +88,8 @@ export default {
   name: 'countdown',
   countdownOf,
   daysUntil,
-  examples: ['days until new year', 'how many days until new year', 'days until january 1', 'days until december 25'],
-  nearMisses: ['what is the new year', 'make a clock', 'when is the next holiday', 'remind me at 5'],
+  examples: ['days until new year', 'how many days until new year', 'days until january 1', 'days until december 25', 'countdown to christmas', 'how many sleeps until christmas'],
+  nearMisses: ['what is the new year', 'make a clock', 'when is the next holiday', 'remind me at 5', 'how many days until christmas'],
   match(lower, text) { return !!countdownOf(text); },
   run,
   stageKinds: { countdown: { mount } },
