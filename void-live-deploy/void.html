@@ -3312,6 +3312,39 @@ return { ok: true, detail: 'timer-reset' };
       // "what year was 10 years ago", "what year will it be in 5 years"
       m = t.match(/^what\s+year\s+was\s+(\d{1,4})\s+years?\s+ago$/);
       if (m) return { value: String(new Date().getFullYear() - +m[1]), note: m[1] + ' years before ' + new Date().getFullYear() };
+      // ---- money ----
+      const N = (x) => +String(x).replace(/[$,]/g, '').replace(/k$/i, '000'), $f = (v) => '$' + v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 });
+      // pay: "15 an hour per year", "60000 a year is how much an hour", "salary of 75000 per month" (40 h weeks, 52 weeks: 2,080 h a year)
+      m = t.match(/^(?:how\s+much\s+is\s+)?\$?([\d,.]+k?)\s*(?:dollars?\s+)?(?:an|a|per|\/)\s*(hour|hr|year|yr|month|week)\s+(?:is\s+(?:how\s+much\s+)?|in\s+|per\s+|a\s+|an\s+|to\s+)?(?:an?\s+)?(hour|hourly|year|yearly|annually|month|monthly|week|weekly)$/)
+        || t.match(/^(?:a\s+)?salary\s+of\s+\$?([\d,.]+k?)\s+(?:a\s+year\s+)?()(?:per|a|in\s+a|an?)\s+(hour|month|week)$/);
+      if (m) { const H = { hour: 1, hr: 1, hourly: 1, week: 40, weekly: 40, month: 2080 / 12, monthly: 2080 / 12, year: 2080, yr: 2080, yearly: 2080, annually: 2080, '': 2080 };
+        const from = H[m[2]], to = H[m[3]]; if (from && to && from !== to) { const v = Math.round(N(m[1]) * to / from * 100) / 100, per = (m[2] || 'year').replace('hr', 'hour').replace('yr', 'year'); return { value: $f(v), note: $f(N(m[1])) + (per === 'hour' ? ' an ' : ' a ') + (m[2] || 'year').replace('hr', 'hour').replace('yr', 'year') + ' → per ' + m[3].replace(/ly$/, '').replace('annual', 'year') + ' (40-hour weeks, 52 weeks a year)' }; } }
+      // unit price: "price per ounce 4.99 for 16 oz", "unit price of $3.50 for 12"
+      m = t.match(/^(?:the\s+)?(?:price\s+per\s+([a-z]+)|unit\s+price)\s+(?:of\s+)?\$?([\d.]+)\s+for\s+([\d.]+)\s*([a-z]+)?$/);
+      if (m) { const v = N(m[2]) / N(m[3]), u = m[1] || m[4] || 'unit'; return { value: '$' + (Math.round(v * 1000) / 1000) + ' per ' + u.replace(/s$/, ''), note: '$' + m[2] + ' ÷ ' + m[3] }; }
+      // "which is cheaper 3 for 5 or 2 for 3.50"
+      m = t.match(/^which\s+is\s+(?:cheaper|a\s+better\s+deal|better)\s*:?\s*(\d+)\s+for\s+\$?([\d.]+)\s+or\s+(\d+)\s+for\s+\$?([\d.]+)$/);
+      if (m) { const a = N(m[2]) / N(m[1]), b = N(m[4]) / N(m[3]); const best = a < b ? m[1] + ' for $' + m[2] : b < a ? m[3] + ' for $' + m[4] : 'same price'; return { value: best, note: '$' + a.toFixed(3) + ' vs $' + b.toFixed(3) + ' each' }; }
+      // "25% more than 80", "10% less than 50"
+      m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(more|less|higher|lower|bigger|smaller)\s+than\s+\$?([\d,.]+)$/);
+      if (m) { const up = /more|higher|bigger/.test(m[2]), v = N(m[3]) * (1 + (up ? 1 : -1) * +m[1] / 100); return { value: String(Math.round(v * 100) / 100), note: m[3] + (up ? ' + ' : ' − ') + m[1] + '%' }; }
+      // "percent change from 50 to 65", "% increase from 40 to 50"
+      m = t.match(/^(?:the\s+)?(?:percent(?:age)?|%)\s+(?:change|increase|decrease|difference)\s+(?:from|between)\s+\$?([\d,.]+)\s+(?:to|and)\s+\$?([\d,.]+)$/);
+      if (m && N(m[1])) { const v = (N(m[2]) - N(m[1])) / N(m[1]) * 100; return { value: (v > 0 ? '+' : '') + (Math.round(v * 100) / 100) + '%', note: m[1] + ' → ' + m[2] }; }
+      // "what percent of 80 is 20"
+      m = t.match(/^what\s+(?:percent|percentage|%)\s+of\s+\$?([\d,.]+)\s+is\s+\$?([\d,.]+)$/);
+      if (m && N(m[1])) { const v = N(m[2]) / N(m[1]) * 100; return { value: (Math.round(v * 100) / 100) + '%', note: m[2] + ' of ' + m[1] }; }
+      // "markup 40% on 25"
+      m = t.match(/^(?:a\s+)?mark\s*up\s+(?:of\s+)?(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:on|to)\s+\$?([\d,.]+)$/);
+      if (m) { const v = N(m[2]) * (1 + +m[1] / 100); return { value: $f(Math.round(v * 100) / 100), note: '$' + m[2] + ' + ' + m[1] + '% markup' }; }
+      // "1000 dollars after 20% tax" (taken off: income); "60 plus 8% tax" (added: sales tax)
+      m = t.match(/^(?:how\s+much\s+is\s+)?\$?([\d,.]+)\s*(?:dollars?)?\s+after\s+(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:tax|taxes|deductions?)$/);
+      if (m) { const v = N(m[1]) * (1 - +m[2] / 100); return { value: $f(Math.round(v * 100) / 100), note: m[2] + '% taken off $' + m[1] + ' (if it is sales tax added on top, ask “' + m[1] + ' plus ' + m[2] + '% tax”)' }; }
+      m = t.match(/^\$?([\d,.]+)\s*(?:dollars?)?\s+plus\s+(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:sales\s+)?tax$/);
+      if (m) { const v = N(m[1]) * (1 + +m[2] / 100); return { value: $f(Math.round(v * 100) / 100), note: '$' + m[1] + ' + ' + m[2] + '% tax' }; }
+      // "how long to save 10000 at 500 a month"
+      m = t.match(/^how\s+long\s+(?:will\s+it\s+take\s+)?to\s+save\s+\$?([\d,.]+k?)\s+(?:at|with|saving)\s+\$?([\d,.]+)\s*(?:a|per|every|each)\s+(month|week|day|year)$/);
+      if (m && N(m[2])) { const n = Math.ceil(N(m[1]) / N(m[2])); return { value: n + ' ' + m[3] + (n === 1 ? '' : 's'), note: $f(N(m[1])) + ' at ' + $f(N(m[2])) + ' a ' + m[3] + ' (no interest)' }; }
       // "subtract 45 from 100", "take 7 away from 20"
       m = t.match(/^(?:subtract|take(?:\s+away)?|minus)\s+(-?\d+(?:\.\d+)?)\s+(?:away\s+)?from\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = +m[2] - +m[1]; return { value: String(Math.round(v * 1e9) / 1e9), note: m[2] + ' − ' + m[1] }; }

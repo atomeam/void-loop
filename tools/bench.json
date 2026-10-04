@@ -607,5 +607,20 @@
   {"ask": "motivate me", "want": "said|answer"},
   {"ask": "what should i eat for dinner", "want": "chance|said|answer|skill:recipe"},
   {"ask": "good night", "want": "said|self|hello"},
-  {"ask": "you're awesome", "want": "said|self|hello|thanks"}
+  {"ask": "you're awesome", "want": "said|self|hello|thanks"},
+  {"ask": "30% off 120", "want": "calc", "says": "\\b84\\b"},
+  {"ask": "how much is 15 an hour per year", "want": "calc", "says": "31,?200"},
+  {"ask": "60000 a year is how much an hour", "want": "calc", "says": "28\\.8"},
+  {"ask": "salary of 75000 per month", "want": "calc", "says": "6,?250"},
+  {"ask": "price per ounce 4.99 for 16 oz", "want": "calc", "says": "0\\.31"},
+  {"ask": "which is cheaper 3 for 5 or 2 for 3.50", "want": "calc", "says": "3 for"},
+  {"ask": "how much should i tip on 50", "want": "skill:tip|calc", "says": "\\b10\\b"},
+  {"ask": "split 85 between 3 with 18% tip", "want": "skill:tip", "says": "33\\.4"},
+  {"ask": "what is 25% more than 80", "want": "calc", "says": "\\b100\\b"},
+  {"ask": "percent change from 50 to 65", "want": "calc", "says": "30\\s*%"},
+  {"ask": "what percent of 80 is 20", "want": "calc", "says": "25\\s*%"},
+  {"ask": "markup 40% on 25", "want": "calc", "says": "\\b35\\b"},
+  {"ask": "how much is 1000 dollars after 20% tax", "want": "calc", "says": "\\b800\\b"},
+  {"ask": "monthly payment on a 25000 car at 7% for 60 months", "want": "skill:loan", "says": "49[05]"},
+  {"ask": "how long to save 10000 at 500 a month", "want": "calc", "says": "\\b20 months"}
 ]
