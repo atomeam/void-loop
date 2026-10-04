@@ -3,13 +3,17 @@
 //   node tools/append.mjs bench '{"ask":"split 120 between 4","want":"calc"}' ...
 //   node tools/append.mjs grown '{"ask":"…","missed":"2026-10-01","now":"…","expect":"page","text":"…"}'
 //   --skip   drop repeats (named on stderr) and add the rest, instead of refusing the whole batch
+//   --file c.json   add every entry of a JSON array (e.g. a probe batch for bench.mjs --probe that now passes)
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2), skip = args.includes('--skip');
-const [which, ...raw] = args.filter((a) => a !== '--skip');
+// --file c.json: take the entries from a JSON array (a probe batch that now passes) instead of the command line
+const fileAt = args.indexOf('--file'), fromFile = fileAt >= 0 ? JSON.parse(readFileSync(resolve(args[fileAt + 1]), 'utf8')).map((o) => JSON.stringify(o)) : [];
+const [which, ...raw0] = args.filter((a, i) => a !== '--skip' && !(fileAt >= 0 && (i === fileAt || i === fileAt + 1)));
+const raw = raw0.concat(fromFile);
 if (!['bench', 'grown'].includes(which) || !raw.length) {
   console.error('usage: node tools/append.mjs bench|grown \'{"ask":…}\' …');
   process.exit(2);

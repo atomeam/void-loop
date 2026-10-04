@@ -145,6 +145,7 @@ function mount(th, stageApi) {
         c.appendChild(d);
       }
       c.style.cursor = legal.has(i) ? 'pointer' : 'default';
+      c.setAttribute('aria-label', 'square ' + 'abcdefgh'[i % N] + (Math.floor(i / N) + 1) + ': ' + (v === 1 ? 'black' : v === 2 ? 'white' : legal.has(i) ? 'empty, you can play here' : 'empty'));
     }
     const { black, white } = countDiscs(th.state.board), s = th.state.status;
     status.textContent = (s === 'playing'

@@ -26,10 +26,15 @@ async function run(text, api) {
   const url = 'https://en.wiktionary.org/api/rest_v1/page/definition/' + encodeURIComponent(word.replace(/ /g, '_')) + '?redirect=true';
   const page = 'https://en.wiktionary.org/wiki/' + encodeURIComponent(word.replace(/ /g, '_'));
   let j = null;
-  try { const r = await fetch(url); if (r.ok) j = await r.json(); } catch (_) {}
+  let reached = false; // the dictionary answered at all (a 404 is an answer: no such word); a network failure is not
+  try { const r = await fetch(url); reached = r.ok || r.status === 404; if (r.ok) j = await r.json(); } catch (_) {}
   if (!api._pageStill(el)) return 'define';
   let senses = (j && (j.en || j[Object.keys(j)[0]])) || [];
   senses = senses.map((s) => ({ pos: s.partOfSpeech, defs: (s.definitions || []).map((d) => strip(d.definition)).filter(Boolean).slice(0, 3) })).filter((s) => s.defs.length).slice(0, 3);
+  if (!senses.length && !reached) {
+    el.innerHTML = '<h2>' + esc(word) + '</h2><p>The dictionary didn\'t answer just now. Ask again in a moment.</p>';
+    return 'none';
+  }
   if (!senses.length) {
     el.innerHTML = '<h2>' + esc(word) + '</h2><p>I couldn\'t find “' + esc(word) + '” in the dictionary. Check the spelling, or ask “what is ' + esc(word) + '” for a page about it.</p>';
     return 'none';

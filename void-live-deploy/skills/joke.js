@@ -4,7 +4,7 @@
  * "tell me a joke", "make me laugh", "dad joke".
  */
 export function isJoke(text) {
-  return /^(?:please\s+)?(?:tell\s+(?:me\s+)?(?:a|another|one\s+more|a\s+funny)\s+joke|(?:another|a)\s+joke|joke(?:\s+please)?|make\s+me\s+laugh|(?:tell\s+me\s+a\s+)?dad\s+joke|say\s+something\s+funny|got\s+any\s+jokes)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:tell\s+(?:me\s+)?(?:a|another|one\s+more|a\s+funny)\s+joke|(?:another|a)\s+joke|joke(?:\s+please)?|make\s+me\s+laugh|(?:tell\s+me\s+a\s+)?dad\s+joke|(?:say|tell\s+me)\s+something\s+funny|got\s+any\s+jokes|make\s+me\s+smile)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
 // knock-knock jokes are their own shape (the dad-joke service doesn't do them), so a few classics live here
 const KNOCK = [['Lettuce', 'Lettuce in, it\'s cold out here!'], ['Boo', 'Don\'t cry, it\'s only a joke.'], ['Interrupting cow', 'Mo— (moo!)'],

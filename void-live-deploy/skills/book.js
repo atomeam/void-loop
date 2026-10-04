@@ -51,7 +51,7 @@ async function run(text, api) {
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
     el.innerHTML = '<h2>Books</h2><p>Open Library didn\'t answer. Try the title again in a moment.</p>';
-    return 'book';
+    return 'none';
   }
 }
 export default {

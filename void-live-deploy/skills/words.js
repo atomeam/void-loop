@@ -20,7 +20,7 @@ export function pluralOf(word) {
 }
 export function wordsOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/["“”]/g, '');
-  let m = t.match(/^(?:what(?:'s| is| are)\s+)?(?:a\s+|the\s+)?(?:synonyms?|another\s+word|other\s+words?|a\s+word|words?)\s+(?:for|that\s+means?|meaning|like)\s+([a-z' -]{2,30})$/);
+  let m = t.match(/^(?:what(?:'s| is| are)\s+)?(?:a\s+|the\s+)?(?:synonyms?|another\s+word|other\s+words?|a\s+word|words?)\s+(?:for|of|that\s+means?|meaning|like)\s+([a-z' -]{2,30})$/);
   if (m) return { kind: 'syn', word: m[1].trim() };
   m = t.match(/^(?:what(?:'s| is)\s+)?(?:the\s+)?(?:opposite|antonyms?)\s+(?:of|for)\s+([a-z' -]{2,30})$/);
   if (m) return { kind: 'ant', word: m[1].trim() };

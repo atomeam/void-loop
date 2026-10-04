@@ -46,7 +46,7 @@ export function resolveMove(state, index) {
 
 export function tictactoeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open|summon)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:tic[\s-]*tac[\s-]*toe|noughts\s+and\s+crosses|x'?s?\s+and\s+o'?s?)(?:\s+game)?$/i.test(t)) return { kind: 'game' };
+  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open|summon)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+|some\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:tic[\s-]*tac[\s-]*toe|noughts\s+and\s+crosses|x'?s?\s+and\s+o'?s?)(?:\s+game)?$/i.test(t)) return { kind: 'game' };
   return null;
 }
 
@@ -86,7 +86,8 @@ function mount(th, stageApi) {
     grid.appendChild(b);
   }
   function paint() {
-    for (let i = 0; i < 9; i++) { cells[i].textContent = th.state.board[i] || ''; cells[i].disabled = th.state.board[i] !== null || th.state.status !== 'playing'; }
+    for (let i = 0; i < 9; i++) { cells[i].textContent = th.state.board[i] || ''; cells[i].disabled = th.state.board[i] !== null || th.state.status !== 'playing';
+      cells[i].setAttribute('aria-label', 'row ' + (Math.floor(i / 3) + 1) + ', column ' + (i % 3 + 1) + ': ' + (th.state.board[i] || 'empty')); }
     status.textContent = th.state.status === 'playing' ? th.state.currentPlayer + "'s move" : th.state.status === 'draw' ? 'draw' : th.state.status.replace('_', ' ');
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
