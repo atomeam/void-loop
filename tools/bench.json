@@ -1004,5 +1004,6 @@
   {"ask": "how many days in 3 years", "want": "calc", "says": "1,?095"},
   {"ask": "surface area of a cube with side 2", "want": "calc", "says": "24"},
   {"ask": "hypotenuse with legs 5 and 12", "want": "calc", "says": "13"},
-  {"ask": "raise 1200 by 3 percent", "want": "calc", "says": "1,?236"}
+  {"ask": "raise 1200 by 3 percent", "want": "calc", "says": "1,?236"},
+  {"ask": "play aggravation", "want": "skill:aggravation"}
 ]
