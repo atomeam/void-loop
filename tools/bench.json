@@ -1079,5 +1079,18 @@
   {"ask": "what is 1/3 as a decimal", "want": "calc"},
   {"ask": "convert 30 cm to inches", "want": "calc"},
   {"ask": "play othello", "want": "skill:othello"},
-  {"ask": "lets play reversi", "want": "skill:othello"}
+  {"ask": "lets play reversi", "want": "skill:othello"},
+  {"ask": "how many tablespoons in a cup", "want": "calc|answer"},
+  {"ask": "convert 100 usd to euros", "want": "calc|answer|skill:crypto"},
+  {"ask": "days until halloween", "want": "calc|holiday|skill:holidays|skill:countdown"},
+  {"ask": "set a timer for 90 seconds", "want": "timer"},
+  {"ask": "what is 5 factorial", "want": "calc"},
+  {"ask": "what is 40 percent of 250", "want": "calc"},
+  {"ask": "how many minutes in a week", "want": "calc"},
+  {"ask": "what is 6!", "want": "calc"},
+  {"ask": "average of 4 8 15 16 23 42", "want": "calc"},
+  {"ask": "what is the median of 3 9 4 7", "want": "calc"},
+  {"ask": "what is 15% tip on $82", "want": "skill:tip|calc"},
+  {"ask": "what is 9 mod 4", "want": "calc"},
+  {"ask": "what is the cube root of 27", "want": "calc"}
 ]
