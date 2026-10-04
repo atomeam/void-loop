@@ -3202,6 +3202,10 @@ return { ok: true, detail: 'timer-reset' };
       [/^how\s+many\s+slices\s+(?:are\s+)?in\s+a\s+large\s+pizza$/, 'usually 8', 'a 14-inch large; some shops cut 10 or 12'],
       [/^how\s+many\s+grams\s+of\s+sugar\s+(?:are\s+)?in\s+a\s+teaspoon$/, 'about 4 g', 'granulated sugar, level; a tablespoon is about 12.5 g'],
       [/^how\s+many\s+tablespoons\s+(?:of\s+butter\s+)?(?:are\s+)?in\s+a\s+stick(?:\s+of\s+butter)?$/, '8 tablespoons', 'a US stick: ½ cup, 113 g'],
+      [/^how\s+many\s+watts\s+does\s+a\s+(?:fridge|refrigerator)\s+use$/, 'about 100–250 W running', 'a modern fridge, while the compressor runs; it cycles, so about 1–2 kWh a day in all'],
+      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+60\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '800 lumens', 'the brightness of an old 60 W bulb; LED equivalents use about 8–10 W (40 W ≈ 450, 75 W ≈ 1,100, 100 W ≈ 1,600 lumens)'],
+      [/^how\s+many\s+lumens\s+(?:is|in|equals?)\s+a\s+100\s*(?:watt|w)(?:\s+(?:bulb|light\s*bulb|incandescent))?$/, '1,600 lumens', 'the brightness of an old 100 W bulb; an LED equivalent uses about 14–16 W'],
+      [/^how\s+many\s+(?:people|adults)\s+(?:per|does\s+a)\s+(?:large\s+)?pizza(?:\s+feed)?$/, '2–3 adults', 'a 14-inch large has 8 slices: about 3 slices each for adults, 2 for kids (so 4 kids)'],
       [/^how\s+much\s+(?:uncooked\s+|dry\s+)?rice\s+(?:per|for\s+(?:each|one|a))\s+person$/, '¼–½ cup uncooked', 'about 45–90 g dry, which cooks to ¾–1½ cups; use the smaller amount for a side'],
       [/^(?:what\s+is\s+the\s+)?(?:rice\s+to\s+water|water\s+to\s+rice)\s+ratio(?:\s+for\s+(?:white\s+)?rice)?$|^how\s+much\s+water\s+(?:for|per)\s+(?:a\s+|1\s+|one\s+)?cup\s+of\s+rice$/, '1 : 2', '1 cup white rice to 2 cups water on the stove; jasmine and basmati about 1 : 1½, brown rice 1 : 2½'],
       [/^how\s+(?:much|many\s+pounds\s+of)\s+meat\s+(?:per|for\s+(?:each|one|a))\s+person$/, '½ lb boneless', 'about 225 g boneless per adult; ¾–1 lb bone-in (ribs, whole chicken)'],
@@ -3531,6 +3535,68 @@ return { ok: true, detail: 'timer-reset' };
       // a string of 0s and 1s "in decimal" is binary: "what is 101010 in decimal"
       m = String(lower || '').trim().toLowerCase().replace(/\?+$/, '').replace(/^(?:what(?:'s|\s+is)\s+|convert\s+)/, '').match(/^([01]{4,32})(?:\s+(?:binary|in\s+binary|base\s*2))?\s+(?:in|to|as)\s+(?:decimal|base\s*10|a\s+number)$|^(?:binary\s+)([01]{2,32})\s+(?:in|to|as)\s+(?:decimal|base\s*10)$/); // read before "in decimal" is stripped above
       if (m) { const b = m[1] || m[2], v = parseInt(b, 2); return { value: v.toLocaleString(), note: 'binary ' + b + ' = ' + v + ' in decimal' }; }
+      // generic "how many <unit> in a <unit>" for the extra units ("how many square feet in an acre", "how many kpa in a bar")
+      m = t.match(/^how\s+many\s+([a-z][a-z /²]*?)\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+([a-z][a-z /²]*?)$/);
+      const everyday = m && Object.values(CALC_UNITS).some((u) => u[m[1].trim()] != null && u[m[2].trim()] != null); // cups in a liter, feet in a mile: the everyday converter's own answer
+      if (m && !everyday) { const a = unitOf(m[2]), b = unitOf(m[1]); if (a && b && a.cat === b.cat && a !== b && a.cat !== 'fuel') { const v = a.f / b.f, shown = v >= 1 ? Math.round(v * 100) / 100 : +v.toPrecision(4); return { value: shown.toLocaleString() + ' ' + b.name, note: '1 ' + a.name + ' = ' + shown.toLocaleString() + ' ' + b.name }; } }
+      // saving and paying off: "if i save 200 a month how much in 5 years", "how long to pay off 5000 at 200 a month"
+      m = t.match(/^(?:if\s+i\s+)?(?:save|put\s+away|set\s+aside)\s+\$?(\d+(?:\.\d+)?)\s*(?:dollars?)?\s+(?:a|per|each|every)\s+(week|month|year)\s*,?\s*(?:how\s+much\s+(?:will\s+i\s+have\s+)?)?(?:in|after|for)\s+(\d+(?:\.\d+)?)\s+(years?|months?)$/);
+      if (m) { const per = { week: 52, month: 12, year: 1 }[m[2]], yrs = +m[3] / (/^m/.test(m[4]) ? 12 : 1), v = +m[1] * per * yrs; return { value: '$' + v.toLocaleString(undefined, { maximumFractionDigits: 2 }), note: '$' + m[1] + ' a ' + m[2] + ' for ' + m[3] + ' ' + m[4] + ', before any interest; at 4% a year it would be about $' + Math.round(+m[1] * per / 12 * ((Math.pow(1 + 0.04 / 12, yrs * 12) - 1) / (0.04 / 12))).toLocaleString() }; }
+      m = t.match(/^how\s+long\s+(?:to|will\s+it\s+take\s+to)\s+pay\s+off\s+\$?(\d+(?:\.\d+)?)\s*(?:dollars?)?\s+(?:at|paying|with)\s+\$?(\d+(?:\.\d+)?)\s*(?:dollars?)?\s+(?:a|per|each)\s+month(?:\s+at\s+(\d+(?:\.\d+)?)\s*%(?:\s+(?:interest|apr))?)?$/);
+      if (m) { const P = +m[1], M = +m[2], r = m[3] ? +m[3] / 1200 : 0; if (!(M > 0)) return { value: 'never', note: 'with no monthly payment the balance is never paid off' };
+        if (r && M <= P * r) return { value: 'never', note: 'at ' + m[3] + '% the interest ($' + (P * r).toFixed(2) + ' a month) is more than the payment' };
+        // month by month, so the last (smaller) payment is counted as what it really is
+        let bal = P, n = 0, paid = 0; while (bal > 0.005 && n < 1200) { bal *= 1 + r; const pay = Math.min(M, bal); bal -= pay; paid += pay; n++; }
+        return { value: n + ' months', note: (n >= 12 ? Math.floor(n / 12) + ' years ' + (n % 12) + ' months · ' : '') + 'total paid $' + paid.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + (r ? ' with ' + m[3] + '% interest' : ' (no interest; add the rate, "at 20%", to include it)') }; }
+      // doubling: "rule of 72 at 8 percent", "how long to double money at 6% interest"
+      m = t.match(/^(?:(?:the\s+)?rule\s+of\s+72\s+(?:at|for)|how\s+long\s+(?:does\s+it\s+take\s+)?to\s+double\s+(?:my\s+|your\s+)?(?:money|an\s+investment|savings)\s+at)\s+(\d+(?:\.\d+)?)\s*(?:%|percent)(?:\s+(?:interest|return|a\s+year))?$/);
+      if (m && !(+m[1] > 0)) return { value: 'never', note: 'at 0% money does not grow, so it never doubles' };
+      if (m) { const r = +m[1], exact = Math.log(2) / Math.log(1 + r / 100); return { value: 'about ' + (Math.round(72 / r * 10) / 10) + ' years', note: 'rule of 72: 72 ÷ ' + r + ' · exactly ' + (Math.round(exact * 10) / 10) + ' years with yearly compounding' }; }
+      m = t.match(/^(?:the\s+)?simple\s+interest\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)\s+at\s+(\d+(?:\.\d+)?)\s*%\s+(?:for|over)\s+(\d+(?:\.\d+)?)\s+(years?|months?)$/);
+      if (m) { const yrs = +m[3] / (/^m/.test(m[4]) ? 12 : 1), i = +m[1] * +m[2] / 100 * yrs; return { value: '$' + (Math.round(i * 100) / 100).toLocaleString(), note: 'simple interest; total $' + (Math.round((+m[1] + i) * 100) / 100).toLocaleString() }; }
+      // pay: "what is 30 hours at 18.50", "overtime pay for 10 hours at 20 an hour"
+      m = t.match(/^(overtime(?:\s+pay)?\s+(?:for\s+)?)?(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)\s+(?:of\s+overtime\s+)?(?:at|@)\s+\$?(\d+(?:\.\d+)?)(?:\s*(?:an?|per|\/)\s*(?:hour|hr))?$/);
+      if (m) { const ot = !!m[1] || /overtime/.test(t), v = +m[2] * +m[3] * (ot ? 1.5 : 1); return { value: '$' + v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: m[2] + ' hours × $' + m[3] + (ot ? ' × 1.5 (time and a half)' : '') + ', before tax' }; }
+      // "how many hours is 9 to 5 with an hour lunch", "40 hours a week is how many hours a year"
+      m = t.match(/^how\s+many\s+hours\s+(?:is|are)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s+(?:to|-|until)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?(?:\s+with\s+(?:an?\s+)?(half\s+hour|\d+\s*(?:min(?:ute)?s?|hours?)|hour)\s+(?:lunch|break))?$/);
+      if (m) { const toMin = (h, mi, ap) => ((+h % 12) + (ap === 'pm' ? 12 : 0)) * 60 + +(mi || 0); let a = toMin(m[1], m[2], m[3]), b = toMin(m[4], m[5], m[6]); if (b <= a) b += 720; if (b <= a) b += 720; const brk = !m[7] ? 0 : /half/.test(m[7]) ? 30 : /min/.test(m[7]) ? parseInt(m[7]) : /^\d/.test(m[7]) ? parseInt(m[7]) * 60 : 60, d = b - a - brk;
+        return { value: (Math.round(d / 60 * 100) / 100) + ' hours', note: (b - a) / 60 + ' hours' + (brk ? ' minus a ' + brk + '-minute break' : '') + ' · ' + Math.round(d / 60 * 5 * 100) / 100 + ' a week over 5 days' }; }
+      m = t.match(/^(\d+(?:\.\d+)?)\s*hours?\s+(?:a|per)\s+week\s+(?:is\s+)?(?:how\s+many|in)\s+hours?\s+(?:a|per)\s+(year|month)$/);
+      if (m) { const v = +m[1] * (m[2] === 'year' ? 52 : 52 / 12); return { value: (Math.round(v * 10) / 10).toLocaleString() + ' hours', note: m[1] + ' × ' + (m[2] === 'year' ? '52 weeks' : '4.33 weeks') + ', before time off' }; }
+      if (/^how\s+many\s+(?:work(?:ing)?|business)\s+days\s+(?:are\s+)?(?:there\s+)?in\s+a\s+year$/.test(t)) { const y = new Date().getFullYear(); let n = 0; for (let d = new Date(y, 0, 1); d.getFullYear() === y; d.setDate(d.getDate() + 1)) if (d.getDay() % 6) n++; return { value: n + ' weekdays in ' + y, note: 'Monday to Friday; about ' + (n - 11) + ' after the 11 US federal holidays, fewer after vacation' }; }
+      // "how many hours is a flight from 2pm to 9pm"
+      m = t.match(/^how\s+(?:many\s+hours|long)\s+is\s+(?:a|the|my)\s+(?:flight|drive|trip|shift|class|movie)\s+from\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)\s+(?:to|until)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/);
+      if (m) { const toMin = (h, mi, ap) => ((+h % 12) + (ap === 'pm' ? 12 : 0)) * 60 + +(mi || 0); let a = toMin(m[1], m[2], m[3]), b = toMin(m[4], m[5], m[6]); if (b <= a) b += 1440; const d = b - a; return { value: Math.floor(d / 60) + ' h' + (d % 60 ? ' ' + d % 60 + ' min' : ''), note: 'by the clock times given; a flight across time zones takes more or less than this' }; }
+      // range on fuel: "how many miles can i drive on 12 gallons at 30 mpg"
+      m = t.match(/^how\s+(?:many\s+miles|far)\s+can\s+(?:i|you)\s+(?:drive|go)\s+on\s+(\d+(?:\.\d+)?)\s*(?:gallons?|gal)\s+(?:at|with|getting)\s+(\d+(?:\.\d+)?)\s*mpg$/);
+      if (m) { const v = +m[1] * +m[2]; return { value: v.toLocaleString() + ' miles', note: m[1] + ' gal × ' + m[2] + ' mpg' }; }
+      // home projects: paint, mulch, concrete, heating and cooling
+      m = t.match(/^how\s+(?:many\s+gallons\s+of|much)\s+paint\s+(?:do\s+i\s+need\s+)?(?:for|to\s+cover)\s+(\d+(?:\.\d+)?)\s*(?:square\s+feet|sq\s*ft|sqft)(?:\s+(?:with\s+)?(one|two|1|2|three|3)\s+coats?)?$/);
+      if (m) { const coats = { one: 1, '1': 1, two: 2, '2': 2, three: 3, '3': 3 }[m[2] || 'two'], g = +m[1] * coats / 350; return { value: 'about ' + (Math.round(g * 10) / 10) + ' gallons', note: coats + (coats === 1 ? ' coat' : ' coats') + ' at about 350 sq ft per gallon; buy ' + Math.ceil(g) + '; rough or porous walls take more' }; }
+      m = t.match(/^how\s+much\s+(mulch|soil|topsoil|gravel|sand|compost|stone)\s+(?:do\s+i\s+need\s+)?(?:for|to\s+cover)\s+(\d+(?:\.\d+)?)\s*(?:square\s+feet|sq\s*ft|sqft)\s+(?:at\s+)?(\d+(?:\.\d+)?)\s*(?:inches?|in|")\s*(?:deep|thick)?$/);
+      if (m) { const cf = +m[2] * +m[3] / 12, yd = cf / 27; return { value: (Math.round(yd * 100) / 100) + ' cubic yards', note: (Math.round(cf * 10) / 10) + ' cubic feet of ' + m[1] + ' · about ' + Math.ceil(cf / 2) + ' bags of 2 cu ft' }; }
+      m = t.match(/^how\s+much\s+concrete\s+(?:do\s+i\s+need\s+)?(?:for|to\s+pour)\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(?:x|by|×)\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|foot|')?\s*(?:slab|patio|pad|floor)?\s*,?\s*(\d+(?:\.\d+)?)\s*(?:inches?|in|")\s*(?:thick|deep)?$/);
+      if (m) { const cf = +m[1] * +m[2] * +m[3] / 12, yd = cf / 27; return { value: (Math.round(yd * 100) / 100) + ' cubic yards', note: (Math.round(cf * 10) / 10) + ' cubic feet · about ' + Math.ceil(cf / 0.6) + ' bags of 80 lb (0.6 cu ft each); order 10% extra' }; }
+      m = t.match(/^how\s+many\s+(?:bags\s+of\s+)?(\d{2})\s*(?:-?\s*lbs?|\s*pounds?)\s+(?:bags\s+of\s+)?concrete(?:\s+bags)?\s+(?:for|in|make)\s+(?:a|one|1|(\d+(?:\.\d+)?))\s+cubic\s+yards?$/);
+      if (m) { const y = { 40: 0.3, 50: 0.375, 60: 0.45, 80: 0.6 }[m[1]]; if (y) { const n = Math.ceil(27 * +(m[2] || 1) / y); return { value: n + ' bags', note: m[1] + '-lb bags yield about ' + y + ' cu ft each; a cubic yard is 27 cu ft' }; } }
+      m = t.match(/^(?:how\s+many\s+)?btus?\s+(?:do\s+i\s+need\s+|needed\s+)?(?:for|to\s+(?:cool|heat))\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(?:square\s+(?:foot|feet)|sq\s*ft|sqft)(?:\s+(?:room|space|area|house|home))?$|^what\s+size\s+(?:ac|air\s+conditioner|a\/c)(?:\s+unit)?\s+(?:do\s+i\s+need\s+)?for\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(?:square\s+(?:foot|feet)|sq\s*ft|sqft)(?:\s+(?:room|space|house|home))?$/);
+      if (m) { const a = +(m[1] || m[2]), btu = Math.round(a * 20 / 500) * 500, tons = btu / 12000; return { value: btu.toLocaleString() + ' BTU' + (tons >= 1 ? ' (' + (Math.round(tons * 2) / 2) + ' tons)' : ''), note: 'about 20 BTU per square foot (ENERGY STAR); add 10% for a sunny room, 600 BTU per person over two, 4,000 for a kitchen' }; }
+      // gatherings: pizzas, drinks, seating
+      m = t.match(/^how\s+many\s+(?:large\s+)?pizzas?\s+(?:do\s+i\s+need\s+)?(?:for|to\s+feed)\s+(\d+)\s+(?:people|guests|adults|kids|children)$/);
+      if (m) { const n = +m[1], kids = /kids|children/.test(t); return { value: Math.ceil(n * (kids ? 2 : 3) / 8) + ' large pizzas', note: (kids ? 2 : 3) + ' slices each, 8 slices per 14-inch large' }; }
+      m = t.match(/^how\s+many\s+drinks\s+(?:do\s+i\s+need\s+)?for\s+(\d+)\s+(?:people|guests)(?:\s+(?:for|over)\s+(\d+)\s+hours?)?$/);
+      if (m) { const n = +m[1], h = +(m[2] || 3), d = n * (2 + Math.max(0, h - 1)); return { value: 'about ' + d + ' drinks', note: '2 per guest in the first hour, 1 an hour after, over ' + h + ' hours; plus water for everyone' }; }
+      m = t.match(/^how\s+many\s+(?:chairs|people|guests|seats)\s+(?:can\s+)?(?:fit|seat|sit)\s+(?:in\s+)?(?:a\s+)?(\d+)\s*(?:x|by|×)\s*(\d+)(?:\s*(?:ft|feet|foot))?\s*(?:room|space|hall)?$/);
+      if (m) { const a = +m[1] * +m[2]; return { value: 'about ' + Math.floor(a / 8) + ' in rows, ' + Math.floor(a / 12) + ' at tables', note: a + ' sq ft at 8 sq ft a person in rows, 12 at round tables; aisles and exits come first' }; }
+      // reverse percentages: "original price if 75 after 25% off", "reverse percentage 120 after 20% increase"
+      m = t.match(/^(?:what\s+(?:was|is)\s+the\s+)?(?:original|starting|full|old|pre[\s-]?discount)\s+price\s+(?:if|when|of)\s+(?:it(?:'s|\s+is)\s+)?\$?(\d+(?:\.\d+)?)\s+(?:after|with)\s+(\d+(?:\.\d+)?)\s*%\s+off$|^(?:reverse\s+percentage\s+(?:of\s+)?)\$?(\d+(?:\.\d+)?)\s+after\s+(?:an?\s+)?(\d+(?:\.\d+)?)\s*%\s+(increase|decrease|discount|off|rise|drop)$/);
+      if (m && !/increase|rise/.test(m[5] || '') && +(m[2] || m[4]) >= 100) return { value: 'no original price', note: 'after ' + (m[2] || m[4]) + '% off nothing is left to pay, so the price before cannot be worked back' };
+      if (m) { const now = +(m[1] || m[3]), pct = +(m[2] || m[4]), up = /increase|rise/.test(m[5] || ''), v = now / (1 + (up ? 1 : -1) * pct / 100); return { value: (Math.round(v * 100) / 100).toLocaleString(), note: now + ' ÷ ' + (up ? '1.' : '(1 − 0.') + String(pct).padStart(2, '0') + (up ? '' : ')') + ' = the amount before the ' + pct + '% ' + (up ? 'increase' : 'cut') }; }
+      // "15% of 80 plus 80", "80 plus 15%"
+      m = t.match(/^(\d+(?:\.\d+)?)\s*%\s+of\s+(\d+(?:\.\d+)?)\s+(plus|minus)\s+(\d+(?:\.\d+)?)$/);
+      if (m) { const v = +m[1] / 100 * +m[2] + (m[3] === 'plus' ? 1 : -1) * +m[4]; return { value: (Math.round(v * 100) / 100).toLocaleString(), note: m[1] + '% of ' + m[2] + ' = ' + (+m[1] / 100 * +m[2]) + ', ' + m[3] + ' ' + m[4] }; }
+      m = t.match(/^(\d+(?:\.\d+)?)\s+(plus|minus|\+|-)\s+(\d+(?:\.\d+)?)\s*%$/);
+      if (m) { const up = m[2] === 'plus' || m[2] === '+', v = +m[1] * (1 + (up ? 1 : -1) * +m[3] / 100); return { value: (Math.round(v * 100) / 100).toLocaleString(), note: m[1] + (up ? ' + ' : ' − ') + m[3] + '% of it' }; }
       // "the square of 13"
       m = t.match(/^(?:the\s+)?square\s+of\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = String(Math.round(+m[1] * +m[1] * 1e9) / 1e9); return { value: v, note: m[1] + '² = ' + v }; }

@@ -648,5 +648,30 @@
     ],
     "sha256": "26b8564ded28e9f4c83733d572e3b83d3ae197d17b326d30d1bf9edd7e0a4b83",
     "emit": false
+  },
+  {
+    "run": 27,
+    "at": "2026-10-04T17:56:30Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger-3.html",
+    "sources": [
+      {
+        "claim": "People neglect base rates when judging how likely something is from a specific description (representativeness)",
+        "source": "https://doi.org/10.1037/h0034747",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "In a large geopolitical forecasting tournament, brief training in probabilistic reasoning (including starting from base rates) made forecasts more accurate",
+        "source": "https://doi.org/10.1177/0956797614524255",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "For this person, starting from a base rate and weighing each signal explicitly gives better-scored chances than their gut, over 15 or more resolved hunches",
+        "source": "drafts/fringe/weak-signal-hypothesis-ledger-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "56263fa7473090937e54048f22db513db9c052ad504e14b8de3b3da5fc5dc242",
+    "emit": false
   }
 ]
