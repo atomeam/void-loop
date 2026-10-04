@@ -2439,6 +2439,39 @@ try {
       String(typeof F3.pickReaction));
   }
 
+  // Watchdog #110: four money/GPA asks came back "said" (no log entry) because they wait for the skills ("waking up") and the
+  // skill loader imported 55 modules one after another. Near misses: no learned skill (figures, aggravation, ...) may claim them,
+  // and with a slow link to /skills/ they still reach the math/finance answer inside the benchmark's window.
+  {
+    const MONEY = [['loan payment on 20000 at 6% for 5 years', /^skill:loan$/, /386/, 'loan'], ['how much is 5 dollars a day for a year', /^calc$/, /1,?825/, null],
+      ['compound interest on 1000 at 5% for 10 years', /^(calc|skill:loan)$/, /1,?628/, null], ['what is the gpa of 3.5 and 4.0', /^calc$/, /3\.75/, null]];
+    const claimed = MONEY.map(([a, , , want]) => ({ a, by: nsMods.filter((s) => s.match(a.toLowerCase(), a)).map((s) => s.name), want }));
+    check('money/GPA near misses (#110): no figures, behavior or aggravation skill claims loan payment, $5 a day for a year, compound interest or a GPA; only loan takes the loan ask',
+      claimed.every((c) => c.want ? c.by.length >= 1 && c.by[0] === c.want : c.by.length === 0)
+      && claimed.every((c) => !c.by.some((n) => /figure|cartoon|aggravation|zoom|dismiss|throw/.test(n))),
+      JSON.stringify(claimed));
+    const loaderSrc = fs.readFileSync(path.join(root, '..', 'void.html'), 'utf8');
+    const slow = await Promise.all(MONEY.map(async ([a, note, value]) => {
+      const ctx = await browser.newContext();
+      await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
+      await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => r.fulfill({ status: 204, body: '' }));
+      await ctx.route(/127\.0\.0\.1:\d+\/skills\/.*\.js$/, (r) => setTimeout(() => r.continue().catch(() => {}), 80)); // a slow link: 80 ms per skill file
+      const p = await ctx.newPage(); await p.goto(base); await p.waitForTimeout(600);
+      await p.fill('#input', a); await p.keyboard.press('Enter'); const t0 = Date.now();
+      const ok = await until(() => p.evaluate((q) => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => x.ask === q), a), 4000);
+      const last = (await p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'))).filter((x) => x.ask === a).pop();
+      const shown = await until(async () => { const txt = await p.evaluate(() => document.body.innerText); return value.test(txt) ? txt : false; }, 3000);
+      const w = await p.$eval('#whisper', (e) => e.textContent).catch(() => '');
+      await ctx.close();
+      return { a, ms: ok ? Date.now() - t0 : null, note: last ? last.note : null, right: !!last && note.test(String(last.note)) && !!shown, w };
+    }));
+    check('money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load at once (Promise.all), and no "waking up" is left behind',
+      slow.every((x) => x.right && x.ms != null && x.ms < 4000 && x.w !== 'waking up')
+      && /const mods = await Promise\.all\(index\.map\(\(name\) => import\('\/skills\/' \+ name \+ '\.js'\)/.test(loaderSrc)
+      && !/for \(const name of index\) \{\s*try \{\s*const mod = await import/.test(loaderSrc),
+      JSON.stringify(slow));
+  }
+
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
     !!esMod && esMod.examples.length >= 4 && (esMod.nearMisses || []).length >= 3
       && esMod.examples.every((e) => firstNs(e) === 'spanish') && esMod.nearMisses.every((e) => firstNs(e) !== 'spanish')
