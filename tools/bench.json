@@ -1006,5 +1006,6 @@
   {"ask": "hypotenuse with legs 5 and 12", "want": "calc", "says": "13"},
   {"ask": "raise 1200 by 3 percent", "want": "calc", "says": "1,?236"},
   {"ask": "dark", "want": "skill:dark-look"},
-  {"ask": "light", "want": "skill:light-look"}
+  {"ask": "light", "want": "skill:light-look"},
+  {"ask": "play aggravation", "want": "skill:aggravation"}
 ]
