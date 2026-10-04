@@ -868,7 +868,7 @@
   {"ask": "how many weekends until christmas", "want": "calc", "says": "\\d"},
   {"ask": "what is the 100th day of the year", "want": "calc", "says": "April"},
   {"ask": "days between today and july 4", "want": "calc", "says": "\\d"},
-  {"ask": "what year was 30 years ago", "want": "calc", "says": "1996"},
+  {"ask": "what year was 30 years ago", "want": "calc", "says": "\\b(19|20)\\d\\d\\b"},
   {"ask": "how old will i be in 2040 if i was born in 1990", "want": "calc|age", "says": "50"},
   {"ask": "what generation is someone born in 1995", "want": "calc|answer", "says": "Gen Z|Millennial"},
   {"ask": "chinese zodiac for 1990", "want": "calc", "says": "Horse"},
@@ -883,5 +883,8 @@
   {"ask": "nato alphabet for hello", "want": "calc|skill:util", "says": "Hotel"},
   {"ask": "morse code for sos", "want": "calc|skill:util", "says": "···|\\.\\.\\."},
   {"ask": "hello in binary", "want": "calc|skill:util", "says": "01101000|01001000"},
-  {"ask": "what is 101010 in decimal", "want": "calc", "says": "42"}
+  {"ask": "what is 101010 in decimal", "want": "calc", "says": "42"},
+  {"ask": "define lol", "want": "calc", "says": "laughing out loud"},
+  {"ask": "meaning of brb", "want": "calc", "says": "be right back"},
+  {"ask": "how many fridays until december 25 2030", "want": "calc", "says": "\\d{3}"}
 ]

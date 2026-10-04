@@ -58,7 +58,7 @@ canvas.off{opacity:.35}
   // returns the best template and a 0..1 score; under 0.75 counts as "not sure"
   function recognize(pts){if(pts.length<8||pathLen(pts)<40)return {name:null,score:0};var p=norm(pts),bd=Infinity,bn=null;T.forEach(function(t){var d=best(p,t.pts);if(d<bd){bd=d;bn=t.name}});var sc=1-bd/(.5*Math.sqrt(2*SIZE*SIZE));return {name:sc>=.75?bn:null,guess:bn,score:Math.round(sc*100)/100}}
 
-  var KEY='a2m.fringe.drawact.v1',st={tries:[]},on=false,stroke=null,target=null;
+  var KEY='a2m.fringe.drawact.v1',st={tries:[]},on=false,stroke=null,strokeId=null,target=null;
   try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.tries))st=j}catch(_){}
   function save(){try{localStorage.setItem(KEY,JSON.stringify({tries:st.tries.slice(-500)}))}catch(_){}}
   var ACT={circle:'refresh',check:'done',cross:'undo',line:'clear'},el=function(id){return document.getElementById(id)};
@@ -67,11 +67,13 @@ canvas.off{opacity:.35}
   function clear(){ctx.clearRect(0,0,pad.width,pad.height)}
   function pickTarget(){target=['circle','check','cross','line'][Math.floor(Math.random()*4)];el('ask').textContent='try: draw a '+target}
   function act(name,how){el('state').textContent=ACT[name]+(how?' ('+how+')':' (button)')}
-  el('on').addEventListener('click',function(){on=!on;this.setAttribute('aria-pressed',String(on));this.textContent=on?'turn drawing off':'turn drawing on';pad.classList.toggle('off',!on);pad.setAttribute('aria-label',on?'drawing area':'drawing area, off until turned on');if(on){fit();pickTarget()}else{el('ask').textContent='';clear()}});
+  el('on').addEventListener('click',function(){on=!on;this.setAttribute('aria-pressed',String(on));this.textContent=on?'turn drawing off':'turn drawing on';pad.classList.toggle('off',!on);pad.setAttribute('aria-label',on?'drawing area':'drawing area, off until turned on');if(on){fit();pickTarget()}else{stroke=null;strokeId=null;el('ask').textContent='';clear()}});
   document.querySelectorAll('[data-act]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.act)})});
-  pad.addEventListener('pointerdown',function(e){if(!on)return;pad.setPointerCapture(e.pointerId);clear();var r=pad.getBoundingClientRect();stroke=[{x:e.clientX-r.left,y:e.clientY-r.top}];ctx.beginPath();ctx.moveTo(stroke[0].x,stroke[0].y)});
-  pad.addEventListener('pointermove',function(e){if(!stroke)return;var r=pad.getBoundingClientRect(),q={x:e.clientX-r.left,y:e.clientY-r.top};stroke.push(q);ctx.lineTo(q.x,q.y);ctx.stroke()});
-  pad.addEventListener('pointerup',function(){if(!stroke)return;var res=recognize(stroke);stroke=null;
+  pad.addEventListener('pointerdown',function(e){if(!on||stroke)return;strokeId=e.pointerId;pad.setPointerCapture(e.pointerId);clear();var r=pad.getBoundingClientRect();stroke=[{x:e.clientX-r.left,y:e.clientY-r.top}];ctx.beginPath();ctx.moveTo(stroke[0].x,stroke[0].y)});
+  pad.addEventListener('pointermove',function(e){if(!stroke||e.pointerId!==strokeId)return;var r=pad.getBoundingClientRect(),q={x:e.clientX-r.left,y:e.clientY-r.top};stroke.push(q);ctx.lineTo(q.x,q.y);ctx.stroke()});
+  // a cancelled stroke (palm, scroll, an alert) is dropped, never read as a gesture
+  pad.addEventListener('pointercancel',function(e){if(e.pointerId===strokeId){stroke=null;strokeId=null;clear()}});
+  pad.addEventListener('pointerup',function(e){if(!stroke||!on||e.pointerId!==strokeId)return;var res=recognize(stroke);stroke=null;strokeId=null;
     if(!res.name){el('state').textContent='not sure what that was'+(res.guess?' (closest: '+res.guess+', '+res.score+')':'')+' · the buttons below always work'}
     else{act(res.name,'drew a '+res.name+', '+res.score)}
     if(target){st.tries.push({at:Date.now(),want:target,got:res.name});save();draw();pickTarget()}});

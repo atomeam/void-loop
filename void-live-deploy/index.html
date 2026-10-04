@@ -3501,7 +3501,7 @@ return { ok: true, detail: 'timer-reset' };
       // "how many weekends until christmas", "how many fridays until june 1"
       m = t.match(/^how\s+many\s+(weekends|saturdays|sundays|mondays|tuesdays|wednesdays|thursdays|fridays)\s+(?:are\s+)?(?:left\s+)?(?:until|till|to|before)\s+(.+)$/);
       if (m) { const key = m[2].replace(/^the\s+/, '').trim(), hol = CALC_HOLIDAYS[key], now = new Date(); let end = null;
-        if (hol) { end = new Date(now.getFullYear(), hol.m, hol.d); if (end < now) end = new Date(now.getFullYear() + 1, hol.m, hol.d); } else { const p = Date.parse(key + (/\d{4}/.test(key) ? '' : ' ' + now.getFullYear())); if (!isNaN(p)) { end = new Date(p); if (end < now) end.setFullYear(end.getFullYear() + 1); } }
+        if (hol) { end = new Date(now.getFullYear(), hol.m, hol.d); if (end < now) end = new Date(now.getFullYear() + 1, hol.m, hol.d); } else { const p = Date.parse(key + (/\d{4}/.test(key) ? '' : ' ' + now.getFullYear())); if (!isNaN(p)) { end = new Date(p); if (end < now && !/\d{4}/.test(key)) end.setFullYear(end.getFullYear() + 1); } } // an explicit year is kept, even if past
         if (end) { const want = m[1] === 'weekends' ? 6 : ['sundays', 'mondays', 'tuesdays', 'wednesdays', 'thursdays', 'fridays', 'saturdays'].indexOf(m[1]); let n = 0; const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1); while (d < end) { if (d.getDay() === want) n++; d.setDate(d.getDate() + 1); }
           return { value: n + ' ' + m[1], note: 'after today, before ' + end.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }) + (m[1] === 'weekends' ? ' (counted by Saturdays)' : '') }; } }
       // "what is the 100th day of the year"
@@ -3524,8 +3524,8 @@ return { ok: true, detail: 'timer-reset' };
       if (m) { const n = +(m[1] || m[2]), A = { 1: 'Paper', 2: 'Cotton', 3: 'Leather', 4: 'Fruit and flowers (UK: linen)', 5: 'Wood', 6: 'Iron (UK: sugar)', 7: 'Wool or copper', 8: 'Bronze', 9: 'Pottery', 10: 'Tin or aluminium', 11: 'Steel', 12: 'Silk or linen', 13: 'Lace', 14: 'Ivory (often swapped for gold jewelry)', 15: 'Crystal', 20: 'China', 25: 'Silver', 30: 'Pearl', 35: 'Coral', 40: 'Ruby', 45: 'Sapphire', 50: 'Gold', 55: 'Emerald', 60: 'Diamond', 65: 'Blue sapphire', 70: 'Platinum' };
         if (A[n]) return { value: A[n], note: 'the traditional gift for a ' + n + (n % 10 === 1 && n !== 11 ? 'st' : n % 10 === 2 && n !== 12 ? 'nd' : n % 10 === 3 && n !== 13 ? 'rd' : 'th') + ' anniversary; modern lists differ' }; }
       // abbreviations: "what does lol mean", "what does asap stand for"
-      m = t.match(/^what\s+(?:does|do)\s+["“']?([a-z.]{2,8})["”']?\s+(?:mean|stand\s+for)(?:\s+in\s+(?:texting|text|chat|slang|email))?$|^(?:what\s+is\s+)?(?:the\s+)?(?:meaning|full\s+form)\s+of\s+["“']?([a-z.]{2,8})["”']?$/);
-      if (m) { const k = (m[1] || m[2]).replace(/\./g, ''), v = ABBR[k]; if (v) return { value: v[0], note: k.toUpperCase() + ' · ' + v[1] }; }
+      m = t.match(/^what\s+(?:does|do)\s+["“']?([a-z.]{2,8})["”']?\s+(?:mean|stand\s+for)(?:\s+in\s+(?:texting|text|chat|slang|email))?$|^(?:what\s+is\s+)?(?:the\s+)?(?:meaning|full\s+form|definition)\s+of\s+["“']?([a-z.]{2,8})["”']?$|^(?:please\s+)?define\s+["“']?([a-z.]{2,8})["”']?$/);
+      if (m) { const k = (m[1] || m[2] || m[3]).replace(/\./g, ''), v = ABBR[k]; if (v) return { value: v[0], note: k.toUpperCase() + ' · ' + v[1] }; }
       // facts about the alphabet
       if (/^how\s+many\s+(?:letters|characters)\s+(?:are\s+)?(?:there\s+)?in\s+the\s+(?:english\s+)?alphabet$/.test(t)) return { value: '26', note: '5 vowels (A E I O U, sometimes Y) and 21 consonants' };
       // a string of 0s and 1s "in decimal" is binary: "what is 101010 in decimal"
