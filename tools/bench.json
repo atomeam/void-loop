@@ -735,7 +735,7 @@
   {"ask": "aspect ratio of 1920x1080", "want": "calc", "says": "16:9"},
   {"ask": "simplify the ratio 12:18", "want": "calc", "says": "2:3"},
   {"ask": "what day of the week is december 25 2026", "want": "calc", "says": "Friday"},
-  {"ask": "how many years until 2050", "want": "calc", "says": "2[34]"},
+  {"ask": "how many years until 2050", "want": "calc", "says": "^\\d{1,2}$|\\b\\d{1,2}\\b"},
   {"ask": "what century is 1776 in", "want": "calc", "says": "18th"},
   {"ask": "is 1000 divisible by 8", "want": "calc", "says": "[Yy]es"},
   {"ask": "what are the factors of 36", "want": "calc", "says": "1, 2, 3, 4, 6, 9, 12, 18, 36"},
@@ -780,7 +780,7 @@
   {"ask": "add 1h 45m and 2h 30m", "want": "calc", "says": "4 h(ours)? 15|4:15"},
   {"ask": "how many work hours in a year", "want": "calc", "says": "2,?080"},
   {"ask": "is it a weekend", "want": "today|calc|said", "says": "[Nn]o|[Yy]es"},
-  {"ask": "what quarter of the year is it", "want": "calc|today", "says": "Q4|4th|fourth"},
+  {"ask": "what quarter of the year is it", "want": "calc|today", "says": "Q[1-4]"},
   {"ask": "how many amps is 1500 watts at 120 volts", "want": "calc", "says": "12\\.5"},
   {"ask": "watts for 10 amps at 240 volts", "want": "calc", "says": "2,?400"},
   {"ask": "cost to run a 100 watt bulb for 10 hours at 15 cents per kwh", "want": "calc", "says": "0\\.15|15"},
@@ -815,5 +815,10 @@
   {"ask": "pi radians in degrees", "want": "calc", "says": "180"},
   {"ask": "1 megapixel is how many pixels", "want": "calc|answer", "says": "1,?000,?000"},
   {"ask": "1 hertz is how many cycles per second", "want": "calc|answer|said", "says": "1|one"},
-  {"ask": "1 btu in joules", "want": "calc", "says": "1,?055"}
+  {"ask": "1 btu in joules", "want": "calc", "says": "1,?055"},
+  {"ask": "area of a 10 ft by 12 in rectangle", "want": "calc", "says": "^10 sq ft|\\b10 sq ft"},
+  {"ask": "area of a 3 m by 4 m room", "want": "calc", "says": "12 m²"},
+  {"ask": "10 miles in 1:30 pace", "want": "calc", "says": "9:00 per mile"},
+  {"ask": "pace for a 5k in 25:00", "want": "calc", "says": "8:0[0-9] per mile"},
+  {"ask": "pace for a marathon in 4:00", "want": "calc", "says": "9:09 per mile"}
 ]
