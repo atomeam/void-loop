@@ -62,6 +62,7 @@ export function localInferenceOf(text) {
   if (/^(?:validate|check)\s+(?:this\s+)?(?:diff|ledger|draft)\b/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
   if (/^(?:run\s+)?local\s+inference\s+(?:on|for)\s+(?:this\s+)?(?:diff|draft)\b/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
   if (/^check\s+ledger\s+drift\b/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
+  if (/^check\s+this\s+commit\s+against\s+d1\s+schema\b/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
   return null;
 }
 
