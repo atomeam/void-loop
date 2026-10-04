@@ -3098,6 +3098,11 @@ return { ok: true, detail: 'timer-reset' };
       if (m && TIME_S[m[3]] > TIME_S[m[1]]) { const v = +(+m[2] * TIME_S[m[3]] / TIME_S[m[1]]).toPrecision(12); return { value: v.toLocaleString(), note: m[2] + ' ' + m[3] + (m[2] === '1' ? '' : 's') + ' = ' + v.toLocaleString() + ' ' + m[1] + 's' }; }
       m = t.match(/^(\d{1,4})\s+(minutes?|mins?|hours?|hrs?)\s+from\s+now$/);
       if (m) { const d = new Date(Date.now() + +m[1] * (/^h/.test(m[2]) ? 36e5 : 6e4)); return { value: d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), note: m[1] + ' ' + m[2] + ' from now, ' + d.toLocaleDateString([], { weekday: 'long' }) }; }
+      m = t.match(/^(?:(?:what(?:'s|\s+is|\s+will\s+be)\s+)?the\s+date|(?:what|which)\s+day\s+(?:is|will)\s+it(?:\s+be)?)\s+in\s+(\d{1,5})\s+(days?|weeks?)$/);
+      if (m) { const n = +m[1] * (/^w/.test(m[2]) ? 7 : 1), d = new Date(); d.setDate(d.getDate() + n); return { value: d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }), note: 'in ' + m[1] + ' ' + m[2] }; }
+      // "what day is it tomorrow", "what day was yesterday", "what's the date tomorrow"
+      m = t.match(/^(?:what|which)\s+(?:day|date)\s+(?:is\s+(?:it\s+)?|was\s+(?:it\s+)?|will\s+it\s+be\s+)?(tomorrow|yesterday)$|^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?date\s+(tomorrow|yesterday)$|^(?:what(?:'s|\s+is)|what\s+was)\s+(tomorrow|yesterday)$/);
+      if (m) { const w = m[1] || m[2] || m[3], d = new Date(); d.setDate(d.getDate() + (w === 'tomorrow' ? 1 : -1)); return { value: d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }), note: w }; }
       m = t.match(/^(?:what\s+(?:was|is|will\s+be)\s+the\s+date|(?:which|what)\s+day\s+(?:was|is|will)\s+it(?:\s+be)?|the\s+date)\s+(\d{1,5})\s+(days?|weeks?)\s+(ago|from\s+now|from\s+today)$/);
       if (m) { const n = +m[1] * (/^w/.test(m[2]) ? 7 : 1), d = new Date(); d.setDate(d.getDate() + (m[3] === 'ago' ? -n : n)); return { value: d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }), note: m[1] + ' ' + m[2] + ' ' + m[3] }; }
       m = t.match(/^what\s+year\s+(?:will\s+it\s+be|is\s+it)\s+in\s+(\d{1,4})\s+years?$|^what\s+year\s+was\s+it\s+(\d{1,4})\s+years?\s+ago$/);
@@ -4208,7 +4213,7 @@ return { ok: true, detail: 'timer-reset' };
     }
     // Today: "what day is it", "what's the date today", "what year is it" -> the date here, with the week and day of the year.
     function wantsToday(l) {
-      return /^(what(?:'s|\s+is)?|whats)\s+(?:the\s+)?(?:day|date|today'?s?\s+date)(?:\s+(?:is\s+it|today|is\s+it\s+today|is\s+today))?$|^what\s+day\s+is\s+(?:it|today)(\s+today)?$|^what(?:'s|\s+is)?\s+the\s+date(\s+today)?$|^(?:what|which)\s+year\s+is\s+(?:it|this)$|^today'?s\s+date$|^date\s+today$|^(?:how\s+many\s+)?days\s+(?:are\s+)?(?:left|remaining)\s+in\s+(?:the|this)\s+year$/.test(l.replace(/[?.!]+$/, ''));
+      return /^(what(?:'s|\s+is)?|whats)\s+(?:the\s+)?(?:day|date|today'?s?\s+date)(?:\s+(?:is\s+it|today|is\s+it\s+today|is\s+today))?$|^what\s+day\s+is\s+(?:it|today)(\s+today)?$|^what(?:'s|\s+is)?\s+the\s+date(\s+today)?$|^(?:what|which)\s+year\s+is\s+(?:it|this)$|^today'?s\s+date$|^date\s+today$|^(?:what|which)\s+week(?:\s+(?:number|of\s+the\s+year))?\s+is\s+(?:it|this)(?:\s+(?:now|today))?$|^(?:how\s+many\s+)?days\s+(?:are\s+)?(?:left|remaining)\s+in\s+(?:the|this)\s+year$/.test(l.replace(/[?.!]+$/, ''));
     }
     // "what time is it" with no place: the time here, ticking, with the zone and the date ("time in Tokyo" is worldtime's)
     function wantsTimeNow(l) {
@@ -4271,7 +4276,7 @@ return { ok: true, detail: 'timer-reset' };
     }
     // "how long until 5pm", "time until 17:30": from now, here
     function untilOf(l) {
-      const m = l.replace(/[?.!]+$/, '').match(/^(?:how\s+long\s+(?:is\s+it\s+)?(?:until|till|til)|time\s+(?:until|till|left\s+until))\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?$|^(?:how\s+long\s+(?:until|till)|time\s+until)\s+(noon|midnight)$/);
+      const m = l.replace(/[?.!]+$/, '').match(/^(?:how\s+long\s+(?:is\s+it\s+)?(?:until|till|til)|time\s+(?:until|till|left\s+until))\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?$|^(?:how\s+long\s+(?:until|till)|time\s+until|how\s+many\s+(?:hours|minutes)\s+(?:until|till|left\s+until))\s+(noon|midnight)$/);
       if (!m) return null;
       let h, mi = 0; if (m[4]) h = m[4] === 'noon' ? 12 : 0; else { h = +m[1]; mi = +(m[2] || 0); const ap = (m[3] || '').replace(/\./g, ''); if (ap === 'pm' && h < 12) h += 12; if (ap === 'am' && h === 12) h = 0; if (h > 23 || mi > 59) return null; }
       const now = new Date(), t = new Date(now); t.setHours(h, mi, 0, 0); if (t <= now) t.setDate(t.getDate() + 1);

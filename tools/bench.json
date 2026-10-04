@@ -1115,5 +1115,10 @@
   {"ask": "what color is #00ff00", "want": "skill:util"},
   {"ask": "qr code for example.com", "want": "skill:util"},
   {"ask": "reverse the word hello", "want": "skill:util|calc|answer"},
-  {"ask": "roll a d20", "want": "chance"}
+  {"ask": "roll a d20", "want": "chance"},
+  {"ask": "what is 30 minutes from now", "want": "calc|timenow|today|answer"},
+  {"ask": "what day is it tomorrow", "want": "today|calc"},
+  {"ask": "what is the date in 10 days", "want": "calc|today"},
+  {"ask": "how many hours until midnight", "want": "calc|timeuntil"},
+  {"ask": "what week of the year is it", "want": "today|calc"}
 ]
