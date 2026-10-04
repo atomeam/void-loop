@@ -20,7 +20,7 @@ New ideas land here in batches. A run may build any open row. Shipped rows stay,
 | shipped d40bd25 | 2026-10-03 | what did you do today | plan item 8, ledger as a skill (correction: row was stuck "open"; wantsToday/showToday already shipped) |
 | open | 2026-10-03 | dismiss this | figures-first, send it away (checked: throw-off.js only matches specific phrasings like "throw it off the screen"; "dismiss this" for a generic selected stage thing is a real gap, not yet covered. genuinely open, not stale) |
 | shipped 3b6bbea | 2026-10-03 | a figure that sits on the chair | figures-first, use what is already there (correction: row was stuck "open"; Motelet's whole personality is "it sits whenever it finds a chair", same commit as "spin the figure") |
-| open | 2026-10-04 | download the print file | export-to-print, file stays valid offline |
+| building | 2026-10-04 | download the print file | export-to-print, file stays valid offline |
 | open | 2026-10-04 | cartoon version of a hard subject | two-part summons, funny not grim |
 | open | 2026-10-04 | zoom in on the figure | collector detail, progressive |
 | open | 2026-10-04 | what can this figure do | figure stays on brand |
