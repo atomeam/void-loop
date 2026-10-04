@@ -1137,5 +1137,10 @@
   {"ask": "what is the time zone of denver", "want": "skill:worldtime|answer"},
   {"ask": "weather in london this weekend", "want": "skill:weather"},
   {"ask": "will it snow in denver", "want": "skill:weather"},
-  {"ask": "how hot is it in phoenix", "want": "skill:weather"}
+  {"ask": "how hot is it in phoenix", "want": "skill:weather"},
+  {"ask": "how do i make pancakes", "want": "skill:recipe"},
+  {"ask": "chicken curry recipe", "want": "skill:recipe"},
+  {"ask": "a book by stephen king", "want": "skill:book"},
+  {"ask": "tell me a dad joke", "want": "skill:joke"},
+  {"ask": "knock knock joke", "want": "skill:joke"}
 ]
