@@ -816,7 +816,8 @@ try {
     if (two !== 'list,timer' || !/built: a list \+ a timer/.test(twoSay) || one !== 'list,notepad,timer,timer') bad.push('app -> ' + JSON.stringify({ two, twoSay, one }));
     const shape = grown.every((g) => g.ask && /^2026-\d\d-\d\d$/.test(g.missed) && g.now && ['page', 'say', 'stage', 'quiet'].includes(g.expect) && (g.expect === 'quiet' || g.text));
     // the everyday benchmark (tools/bench.json): the score may rise, never fall below tools/bench.best.json
-    { const run = spawnSync(process.execPath, [path.join(root, '..', 'tools', 'bench.mjs'), '--score'], { encoding: 'utf8', timeout: 600000 });
+    // (VOID_SKIP_BENCH: CI runs it as its own job, on its own machine, alongside this suite)
+    if (!process.env.VOID_SKIP_BENCH) { const run = spawnSync(process.execPath, [path.join(root, '..', 'tools', 'bench.mjs'), '--score'], { encoding: 'utf8', timeout: 600000 });
       let b = null; try { b = JSON.parse(String(run.stdout).trim().split('\n').pop()); } catch (_) {}
       const best = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'bench.best.json'), 'utf8'));
       check('bench: the everyday benchmark scores at least its best (' + best.score + ' of ' + best.total + '); each ask answered by what should answer it',

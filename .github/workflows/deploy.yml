@@ -69,6 +69,9 @@ jobs:
           head=$(git rev-parse HEAD); second=$(git rev-parse -q --verify HEAD^2 || true)
           if [ -n "$second" ] && [ "$(git rev-parse HEAD^{tree})" = "$(git rev-parse "$second^{tree}")" ]; then
             ok=$(gh api "repos/${{ github.repository }}/commits/$second/check-runs?check_name=test-and-deploy" --jq '[.check_runs[] | select(.conclusion == "success")] | length')
+            # a PR head's benchmark runs as its own "bench" job: when there is one, it has to have passed as well
+            benchbad=$(gh api "repos/${{ github.repository }}/commits/$second/check-runs?check_name=bench" --jq '[.check_runs[]] | if length == 0 then 0 else ([.[] | select(.conclusion == "success")] | if length > 0 then 0 else 1 end) end')
+            [ "${benchbad:-1}" = "0" ] || ok=0
             if [ "${ok:-0}" -gt 0 ]; then
               echo "skip=true" >> "$GITHUB_OUTPUT"
               echo "### Not re-tested: tree of $head is identical to PR head $second, which passed the full suite" >> "$GITHUB_STEP_SUMMARY"
@@ -78,6 +81,9 @@ jobs:
       - name: Test (full suite)
         if: github.event_name != 'workflow_call' && steps.tested.outputs.skip != 'true'
         uses: ./.github/actions/void-test
+        with:
+          # on a PR the everyday benchmark runs as its own job (below), at the same time, on another machine
+          bench: ${{ github.event_name == 'pull_request' && 'skip' || 'with' }}
 
       - name: Sync void.html copies (also when the suite was skipped)
         run: |
@@ -126,3 +132,17 @@ jobs:
             [ "$i" = 6 ] && { echo "::error::deployment did not serve the tested void.html"; exit 1; }
           done
           echo "### Deployed ${{ steps.target.outputs.sha }} to ${{ steps.target.outputs.branch }}: $URL" >> "$GITHUB_STEP_SUMMARY"
+
+  # The everyday benchmark (tools/bench.json, ~3 min) for a PR, in parallel with test-and-deploy instead of inside it.
+  bench:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Everyday benchmark
+        uses: ./.github/actions/void-test
+        with:
+          bench: only
