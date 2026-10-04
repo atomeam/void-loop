@@ -773,11 +773,11 @@
   },
   {
     "ask": "lets play othello",
-    "want": "skill:make"
+    "want": "skill:othello"
   },
   {
     "ask": "play reversi",
-    "want": "skill:make"
+    "want": "skill:othello"
   },
   {
     "ask": "make a 3d cube",

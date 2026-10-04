@@ -10,7 +10,6 @@
 const GAMES = [
   [/^(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)$/, 'connect4', 'Connect 4'],
   [/^(?:tic[\s-]*tac[\s-]*toe|noughts\s+and\s+crosses|x(?:'s)?\s+and\s+o(?:'s)?)$/, 'tictactoe', 'Tic-tac-toe'],
-  [/^(?:othello|reversi)$/, 'othello', 'Othello'],
 ];
 const SHAPES = { cube: 'cube', box: 'cube', sphere: 'sphere', ball: 'sphere', orb: 'sphere', torus: 'torus', donut: 'torus', doughnut: 'torus', ring: 'torus',
   pyramid: 'pyramid', cone: 'cone', cylinder: 'cylinder', diamond: 'diamond', gem: 'diamond', crystal: 'diamond', octahedron: 'diamond',
@@ -100,26 +99,6 @@ document.getElementById('r').onclick=reset;reset();})();`
     + '</script></body></html>';
 }
 
-function othelloDoc() {
-  return '<!doctype html><html><head><meta charset="utf-8"><style>' + FRAME_CSS
-    + '.g{display:grid;grid-template-columns:repeat(8,56px);gap:4px;justify-content:center;margin-top:10px}'
-    + '.g button{height:56px;width:56px;border-radius:50%;font-size:28px;padding:0;transition:transform .1s}.g button:hover{transform:scale(1.05)}'
-    + '.b{background:#1a1a2e;border:2px solid #ffd700}.w{background:#f0f0f0;border:2px solid #444}.empty{background:#0f3460;border:2px solid #1a1a2e}</style></head><body>'
-    + '<div class="bar"><span id="s">your move · you are black</span><button id="r">new game</button><span id="score">● 2 ○ 2</span></div><div class="g" id="g"></div><script>'
-    + `(function(){var b,over,g=document.getElementById('g'),st=document.getElementById('s'),sc=document.getElementById('score'),D=[-9,-8,-7,-1,1,7,8,9];
-function ix(r,c){return r*8+c}function rc(i){return [Math.floor(i/8),i%8]}
-function inside(r,c){return r>=0&&r<8&&c>=0&&c<8}
-function flips(bb,pos,player){var opp=player===1?2:1,out=[];for(var d of D){var r=Math.floor(pos/8)+Math.floor(d/8),c=pos%8+d%8,path=[];while(inside(r,c)){var idx=ix(r,c);if(bb[idx]===opp)path.push(idx);else if(bb[idx]===player&&path.length){out.push(...path);break}else break;r+=Math.floor(d/8);c+=d%8}}return out}
-function valid(bb,player){var v=[];for(var i=0;i<64;i++)if(!bb[i]&&flips(bb,i,player).length)v.push(i);return v}
-function count(bb){var bl=0,wh=0;for(var v of bb){if(v===1)bl++;else if(v===2)wh++}return [bl,wh]}
-function render(){g.innerHTML='';b.forEach(function(v,i){var e=document.createElement('button');if(v===1)e.className='b',e.textContent='●';else if(v===2)e.className='w',e.textContent='○';else e.className='empty';e.setAttribute('aria-label','square '+(i+1));e.onclick=function(){if(over||!valid(b,1).includes(i))return;var f=flips(b,i,1);b[i]=1;f.forEach(function(j){b[j]=1});render();if(!valid(b,2).length){if(!valid(b,1).length)end();return}st.textContent='Void is thinking…';setTimeout(function(){var vm=valid(b,2);var best=-1,bestScore=-1e9;for(var m of vm){var bb=b.slice();bb[m]=2;flips(bb,m,2).forEach(function(j){bb[j]=2});var sc=count(bb)[1];if(sc>bestScore){bestScore=sc;best=m}}if(best>=0){b[best]=2;flips(b,best,2).forEach(function(j){b[j]=2})}render();if(!valid(b,1).length){if(!valid(b,2).length)end();else st.textContent='no moves for you'}else st.textContent='your move · you are black'},400)};g.appendChild(e)})}
-function end(){var [bl,wh]=count(b);over=true;st.textContent=bl>wh?'you win! '+bl+'-'+wh:wh>bl?'Void wins '+wh+'-'+bl:'draw '+bl+'-'+wh}
-function reset(){b=new Array(64).fill(0);b[27]=b[36]=2;b[28]=b[35]=1;over=false;st.textContent='your move · you are black';sc.textContent='● 2 ○ 2';render()}
-function updScore(){var [bl,wh]=count(b);sc.textContent='● '+bl+' ○ '+wh}
-document.getElementById('r').onclick=reset;reset();})();`
-    + '</script></body></html>';
-}
-
 function shapeDoc(shape, rgb) {
   return '<!doctype html><html><head><meta charset="utf-8"><style>' + FRAME_CSS + 'canvas{display:block;width:100%;height:100%;cursor:grab;touch-action:none}</style></head><body>'
     + '<canvas id="c"></canvas><script>'
@@ -196,8 +175,7 @@ async function run(text, api) {
   if (q.kind === 'game') {
     title = q.label;
     if (q.id === 'connect4') { h = 520; doc = connect4Doc(); sub = 'You are red. Void looks five moves ahead.'; }
-    else if (q.id === 'tictactoe') { h = 380; doc = tictactoeDoc(); sub = 'You are X. Void plays perfectly: a draw is a good result.'; }
-    else { h = 480; doc = othelloDoc(); sub = 'You are black. Void flips your discs.'; }
+    else { h = 380; doc = tictactoeDoc(); sub = 'You are X. Void plays perfectly: a draw is a good result.'; }
   } else {
     const rgb = COLORS[q.color] || [124, 180, 255];
     const cap = (w) => w[0].toUpperCase() + w.slice(1); title = q.color ? cap(q.color) + ' ' + q.word : cap(q.word); h = 360;
