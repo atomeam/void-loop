@@ -1,0 +1,103 @@
+{
+ "about": "Void by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
+ "shipped": [
+  {
+   "state": "shipped",
+   "date": "2026-10-02",
+   "ask": "share this card",
+   "from": "plan item 10, shared Voids"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-02",
+   "ask": "answer me in Spanish",
+   "from": "plan item 9, Void in other languages"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-02",
+   "ask": "remind me at 5",
+   "from": "plan item 7, connector behind the confirm line"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "recent asks on an empty box",
+   "from": "board Next #15"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "show the magnetize step",
+   "from": "board Next, magnetize-step card"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-02",
+   "ask": "what's already built",
+   "from": "assimilate row 6, plan item 8"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "throw it off the screen",
+   "from": "figures-first dismiss"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "export a print file",
+   "from": "void-stage, slicer 3MF"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "summon a figure",
+   "from": "figures-first, living 3D"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "spin the figure",
+   "from": "figures-first, see the back"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "days until new year",
+   "from": "board later, date countdown"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "read it aloud",
+   "from": "plan item 4, voice"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "what did you do today",
+   "from": "plan item 8, ledger as a skill"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "a figure that sits on the chair",
+   "from": "figures-first, use what is already there"
+  }
+ ],
+ "open": [
+  {
+   "state": "open",
+   "date": "2026-10-03",
+   "ask": "make my void light",
+   "from": "board later, light look"
+  },
+  {
+   "state": "open",
+   "date": "2026-10-03",
+   "ask": "dismiss this",
+   "from": "figures-first, send it away"
+  }
+ ]
+}
