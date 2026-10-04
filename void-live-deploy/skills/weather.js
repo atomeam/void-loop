@@ -83,6 +83,7 @@ export default {
   examples: ['weather in Tokyo', 'weather here', 'will it rain tomorrow', 'temperature in London', 'forecast for New York'],
   match(lower, text) {
     if (/\b(pollen|allerg)/.test(lower)) return false;
+    if (/\b(cook|bake|roast|oven|internal|chicken|pork|beef|steak|turkey|fish|salmon|burgers?|eggs?|leftovers|body|fever)\b/.test(lower) && /\btemp(?:erature)?\b/.test(lower)) return false; // food and body temperatures are not the weather
     return /\b(weather|forecast|temperature)\b/.test(lower)
       || /\b(is it|will it|going to)\s+(rain|snow)\b/.test(lower)
       || /^is\s+it\s+(raining|snowing|sunny|windy|cloudy|hot|cold)\b/.test(lower)

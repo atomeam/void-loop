@@ -548,5 +548,30 @@
     ],
     "sha256": "a5a1aacd94f5d40bad916b32c3a188f316bb54cdaef730282d9fdd252a19e5dc",
     "emit": false
+  },
+  {
+    "run": 23,
+    "at": "2026-10-04T13:42:03Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-3.html",
+    "sources": [
+      {
+        "claim": "Duration judgments differ by paradigm: when people know in advance they will judge time (prospective) their estimates behave differently from when they are asked only afterwards (retrospective), and mental load shifts the two in opposite directions (meta-analysis)",
+        "source": "https://doi.org/10.3758/BF03209393",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Time that was full of events tends to be remembered as longer, while it often feels shorter while it is happening (the holiday paradox)",
+        "source": "https://doi.org/10.1016/j.tics.2013.09.003",
+        "confidence": "claim"
+      },
+      {
+        "claim": "This person's after-the-fact guesses are biased in a steady direction that depends on whether they were busy or idle",
+        "source": "drafts/fringe/interval-timing-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "2242298b2c482b9fadda6db17672b5809166ff766e8e6f38fb0d91ffb6b3771e",
+    "emit": false
   }
 ]
