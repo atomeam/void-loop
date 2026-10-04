@@ -449,7 +449,9 @@
       -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: .8; }
     .vpage::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
       background: radial-gradient(600px 200px at var(--gx, 30%) -10%, rgba(255,255,255,.07), transparent 60%); }
-    #row:focus-within { border-color: rgba(150,175,255,.28); box-shadow: 0 0 0 1px rgba(150,175,255,.10), 0 0 40px rgba(110,140,255,.12), 0 20px 60px rgba(0,0,0,.5); }
+    /* the ask bar itself is the focus ring: no square outline inside the rounded bar, and a border bright enough to see (>= 3:1) */
+    #input:focus, #input:focus-visible { outline: none; }
+    #row:focus-within { border-color: rgba(150,175,255,.6); box-shadow: 0 0 0 1px rgba(150,175,255,.10), 0 0 40px rgba(110,140,255,.12), 0 20px 60px rgba(0,0,0,.5); }
     #dock { background: linear-gradient(to top, color-mix(in srgb, var(--void-bg, #050505) 92%, transparent) 55%, transparent); z-index: 5; }
     #hints { backdrop-filter: blur(10px); }
     /* the same ask again: the page that is already open answers with a brief glow instead of a second fetch */
@@ -473,7 +475,7 @@
       html, #void-glow, #void-stars, #void-aura, #void-swarm, #row { transition: none !important; }
       #void-depth, #input { animation: none !important; }
     }
-    #input:focus-visible,
+    /* the text box shows focus through the ask bar's own glow (#row:focus-within); the round buttons keep a ring */
     #mic:focus-visible,
     #go:focus-visible {
       outline: 2px solid rgba(170,190,255,.85);
@@ -2558,7 +2560,9 @@ say('nothing selected to remove');
       if (wantsCreateTimer(lower)) {
         const dur = parseDuration(lower) || 60000; // default 1 min
         const t = ensureTimer(dur, wantsFresh(lower) && Object.values(things).some((th) => th.kind === 'timer'));
-        if (/\b(start|begin|go)\b|^(?:please\s+)?(?:remind|wake|ping|alert|buzz)\s+me\b/.test(lower) && !t.running) {
+        // a timer asked for with a length ("set a timer for 5 minutes") starts at once, like every phone's; "make a timer" or "…paused" waits
+        const startNow = /\b(start|begin|go)\b|^(?:please\s+)?(?:remind|wake|ping|alert|buzz)\s+me\b/.test(lower) || (parseDuration(lower) > 0 && !/\b(paused?|don'?t\s+start|not\s+yet|later)\b/.test(lower));
+        if (startNow && !t.running) {
           t.running = true;
           t.startedAt = Date.now();
         }
