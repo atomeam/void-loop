@@ -423,5 +423,30 @@
     ],
     "sha256": "3f10683c1596465760ea3f9a5210501c75ed3a1154fb83a9d9041b170618e47f",
     "emit": false
+  },
+  {
+    "run": 18,
+    "at": "2026-10-04T04:46:25Z",
+    "family": "non-lexical-intent",
+    "draft": "drafts/fringe/non-lexical-intent-2.html",
+    "sources": [
+      {
+        "claim": "Rising final pitch commonly marks questions and continuation; falling pitch marks statements and finality (intonation in English)",
+        "source": "https://doi.org/10.1017/CBO9780511620935",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Autocorrelation estimates the fundamental frequency of a voiced sound (de Cheveigné & Kawahara, YIN)",
+        "source": "https://doi.org/10.1121/1.1458024",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A one-second hum contour (rising / falling / level) is a usable yes / no / wait signal for a person who would rather not speak or type",
+        "source": "drafts/fringe/non-lexical-intent-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "67be0c97da2bbdb44390bc2dedcece902eb2f54804f674d81b46cccacae1eea1",
+    "emit": false
   }
 ]

@@ -13,6 +13,8 @@
 //   node tools/fringe.mjs --next   prints the families the next run may pick
 //   node tools/fringe.mjs --hash drafts/fringe/x.html   prints the sha256 to record
 //   node tools/fringe.mjs --publish  writes the live copy of every emit:true draft
+//   node tools/fringe.mjs --record drafts/fringe/x.html sources.json   appends the next run (family from the file name,
+//     run number, time, sha256, emit:false) in the ledger's own 2-space style, then checks the ledger
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { resolve, dirname } from 'node:path';
@@ -82,6 +84,16 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const arg = process.argv[2];
   if (arg === '--next') console.log(next().join('\n'));
   else if (arg === '--hash') console.log(hash(process.argv[3]));
+  else if (arg === '--record') {
+    const draft = process.argv[3], runs = load();
+    const family = draft.split('/').pop().replace(/\.html$/, '').replace(/-\d+$/, '');
+    runs.push({ run: runs.length + 1, at: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), family, draft,
+      sources: JSON.parse(readFileSync(resolve(root, process.argv[4]), 'utf8')), sha256: hash(draft), emit: false });
+    const bad = check(runs);
+    if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
+    writeFileSync(resolve(root, 'tools/fringe.json'), JSON.stringify(runs, null, 2) + '\n');
+    console.log(`recorded run ${runs.length}: ${family}`);
+  }
   else if (arg === '--publish') {
     mkdirSync(resolve(root, 'void-live-deploy/fringe'), { recursive: true });
     for (const r of load()) if (r.emit === true) { writeFileSync(resolve(root, live(r)), published(readFileSync(resolve(root, r.draft), 'utf8'))); console.log('published ' + live(r)); }

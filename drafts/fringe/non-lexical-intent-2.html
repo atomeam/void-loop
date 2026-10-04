@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · hum the answer (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 14px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+canvas{width:100%;height:120px;border:1px solid rgba(255,255,255,.12);border-radius:12px;display:block}
+#out{min-height:3em;white-space:pre-line}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<main>
+  <h1>hum the answer · draft · not published</h1>
+  <p class="note">No words: hum for about a second. A hum that rises reads as "yes / go on", one that falls reads as "no / done", a level one as "wait". Rising pitch for a question and falling pitch for a statement are common in speech, but people differ, so this shows the pitch line it heard and the slope it measured, not just the verdict. The microphone is used only while you hold the button, only on this device, and nothing is stored or sent. The three buttons below try it without a microphone.</p>
+  <div class="row"><button id="hold" type="button">hold to hum</button> <button data-demo="up" type="button">try rising</button> <button data-demo="down" type="button">try falling</button> <button data-demo="flat" type="button">try level</button></div>
+  <canvas id="line" width="600" height="120" aria-label="pitch line"></canvas>
+  <div id="out" aria-live="polite">mic off</div>
+</main>
+<script>
+(function(){
+  var out=document.getElementById('out'),cv=document.getElementById('line'),cx=cv.getContext('2d');
+  // pitch of one frame by autocorrelation, 80-500 Hz (a hum); null when the frame is too quiet
+  function pitch(buf,rate){var n=buf.length,rms=0;for(var i=0;i<n;i++)rms+=buf[i]*buf[i];if(Math.sqrt(rms/n)<0.01)return null;
+    var best=0,lag=0;for(var l=Math.floor(rate/500);l<=Math.floor(rate/80);l++){var s=0;for(var j=0;j<n-l;j++)s+=buf[j]*buf[j+l];if(s>best){best=s;lag=l}}return lag?rate/lag:null}
+  // slope of the contour in semitones per second (least squares); +/-3 st/s is the line between level and moving
+  function classify(c){var p=c.filter(function(x){return x.hz});if(p.length<5)return {intent:'unclear',slope:0,n:p.length};
+    var xs=p.map(function(x){return x.t}),ys=p.map(function(x){return 12*Math.log2(x.hz/p[0].hz)});
+    var mx=xs.reduce(function(a,b){return a+b},0)/xs.length,my=ys.reduce(function(a,b){return a+b},0)/ys.length,num=0,den=0;
+    for(var i=0;i<xs.length;i++){num+=(xs[i]-mx)*(ys[i]-my);den+=(xs[i]-mx)*(xs[i]-mx)}var s=den?num/den:0;
+    return {intent:s>3?'yes / go on':s<-3?'no / done':'wait',slope:s,n:p.length}}
+  function draw(c){cx.clearRect(0,0,cv.width,cv.height);var p=c.filter(function(x){return x.hz});if(!p.length)return;var t1=c[c.length-1].t||1;
+    cx.strokeStyle='#7cf';cx.lineWidth=2;cx.beginPath();p.forEach(function(x,i){var X=x.t/t1*(cv.width-20)+10,Y=cv.height-10-(Math.log2(x.hz/80)/Math.log2(500/80))*(cv.height-20);i?cx.lineTo(X,Y):cx.moveTo(X,Y)});cx.stroke()}
+  function show(c){draw(c);var r=classify(c);out.textContent=r.intent==='unclear'?'heard too little hum ('+r.n+' frames) · try a longer, louder hum':'heard: '+r.intent+'\nslope: '+(r.slope>=0.05?'+':'')+(Math.abs(r.slope)<0.05?0:r.slope).toFixed(1)+' semitones a second over '+r.n+' frames'}
+  function demo(kind){var c=[];for(var i=0;i<=30;i++){var t=i/30;c.push({t:t,hz:kind==='up'?180*Math.pow(2,t*6/12):kind==='down'?240*Math.pow(2,-t*6/12):200*(1+0.005*Math.sin(i))})}show(c)}
+  document.querySelectorAll('[data-demo]').forEach(function(b){b.addEventListener('click',function(){demo(b.dataset.demo)})});
+  var rec=null,hold=document.getElementById('hold');
+  function start(){if(rec||!navigator.mediaDevices)return;navigator.mediaDevices.getUserMedia({audio:true}).then(function(st){
+      var ac=new (window.AudioContext||window.webkitAudioContext)(),an=ac.createAnalyser();an.fftSize=2048;ac.createMediaStreamSource(st).connect(an);
+      var buf=new Float32Array(an.fftSize),t0=performance.now(),c=[];rec={st:st,ac:ac,c:c,id:0};out.textContent='mic on · listening';
+      (function tick(){if(!rec)return;an.getFloatTimeDomainData(buf);c.push({t:(performance.now()-t0)/1000,hz:pitch(buf,ac.sampleRate)});draw(c);rec.id=requestAnimationFrame(tick)})();
+    }).catch(function(){out.textContent='microphone not allowed · the try buttons still work'})}
+  function stop(){if(!rec)return;cancelAnimationFrame(rec.id);rec.st.getTracks().forEach(function(t){t.stop()});rec.ac.close();var c=rec.c;rec=null;show(c)}
+  hold.addEventListener('pointerdown',function(e){e.preventDefault();start()});
+  ['pointerup','pointerleave','pointercancel'].forEach(function(ev){hold.addEventListener(ev,stop)});
+  hold.addEventListener('keydown',function(e){if((e.code==='Space'||e.code==='Enter')&&!e.repeat){e.preventDefault();start()}});
+  hold.addEventListener('keyup',function(e){if(e.code==='Space'||e.code==='Enter')stop()});
+  window.__hum={pitch:pitch,classify:classify}; // for checks
+})();
+</script>
+</body>
+</html>
