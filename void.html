@@ -1651,6 +1651,7 @@ function applyClockAlters(c, lower) {
       if (mentionsTimer && /\b(pause|stop|hold|wait|freeze|suspend)\b/.test(lower)) return false;
       if (mentionsTimer && duration === 0 && (/\b(start|begin|go|resume|continue|run|launch|activate|reset|restart|redo)\b/.test(lower) || /\bstart\s+over\b/.test(lower))) return false;
       if (duration > 0 && (mentionsTimer || isDurationRequest(lower))) return true;
+      if (duration > 0 && /^(?:please\s+)?remind\s+me\b.*\bin\s+\S+\s*(?:minutes?|mins?|hours?|hrs?|seconds?|secs?)\b/.test(lower)) return true; // "remind me to stretch in 20 minutes"
       if (/^(?:an?\s+)?(?:timer|countdown)(?:\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
       if (/\b(make|add|create|set|start|spawn|put|place|drop|show|open|give\s+me|i\s+need|i'?d\s+like)\b.*\b(timer|countdown)\b/.test(lower)) return true;
       if (/\b(timer|countdown)\b.*\b(please|for|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
@@ -2529,7 +2530,7 @@ say('nothing selected to remove');
       if (wantsCreateTimer(lower)) {
         const dur = parseDuration(lower) || 60000; // default 1 min
         const t = ensureTimer(dur, wantsFresh(lower) && Object.values(things).some((th) => th.kind === 'timer'));
-        if (/\b(start|begin|go)\b/.test(lower) && !t.running) {
+        if (/\b(start|begin|go)\b|^(?:please\s+)?remind\s+me\b/.test(lower) && !t.running) {
           t.running = true;
           t.startedAt = Date.now();
         }
@@ -3072,7 +3073,7 @@ return { ok: true, detail: 'timer-reset' };
     // "how many seconds in a day". A small parser of its own (+ - * / ^, brackets, square roots); nothing is ever eval'd.
     const TIME_S = { second: 1, minute: 60, hour: 3600, day: 86400, week: 604800, year: 31557600 };
     function wordMath(lower) {
-      let t = String(lower || '').toLowerCase().replace(/[?!]+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').trim();
+      let t = String(lower || '').toLowerCase().replace(/[?!]+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
       // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
       t = t.replace(/(\d+(?:\.\d+)?)\s+(thousand|million|billion|trillion)\b/g, (_, n, u) => String(+n * { thousand: 1e3, million: 1e6, billion: 1e9, trillion: 1e12 }[u]));
       let m = t.match(/^is\s+(\d{1,15})\s+(?:a\s+)?prime(?:\s+number)?$/);

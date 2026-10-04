@@ -9,6 +9,9 @@ export function countdownOf(text) {
   if (/^days until (?:jan(?:uary)?\.?\s+1|january 1)$/i.test(t)) return { kind: 'newyear' };
   const m = t.match(/^(?:how many )?days until ([a-z]+\s+\d{1,2})$/i);
   if (m) return { kind: 'named', label: m[1] };
+  // "days until my birthday on march 3": a named day with its date
+  const b = t.match(/^(?:how many )?days (?:until|till|to) (?:my |our |the )?([a-z' ]{2,40}?) (?:on|is on|is) ([a-z]+ \d{1,2})$/i);
+  if (b && MONTHS[b[2].split(' ')[0].toLowerCase()] != null) return { kind: 'named', label: b[1], date: b[2].toLowerCase() };
   // "countdown to christmas", "how many sleeps until christmas" (plain "days until christmas" stays with holidays/calc)
   const c = t.match(/^(?:(?:a |start a )?countdown (?:to|until|till)|(?:how many )?sleeps (?:until|till|to)) (.+)$/i);
   if (c) {
@@ -88,7 +91,7 @@ export default {
   name: 'countdown',
   countdownOf,
   daysUntil,
-  examples: ['days until new year', 'how many days until new year', 'days until january 1', 'days until december 25', 'countdown to christmas', 'how many sleeps until christmas'],
+  examples: ['days until new year', 'how many days until new year', 'days until january 1', 'days until december 25', 'countdown to christmas', 'how many sleeps until christmas', 'days until my birthday on march 3'],
   nearMisses: ['what is the new year', 'make a clock', 'when is the next holiday', 'remind me at 5', 'how many days until christmas'],
   match(lower, text) { return !!countdownOf(text); },
   run,

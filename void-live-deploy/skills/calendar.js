@@ -15,6 +15,8 @@ function gated(text) {
   const s = CLEAN(text).replace(/^(?:please\s+)/i, '');
   if (/^schedule\s+(?:a\s+|an\s+)?(?:meeting|call)\s+with\b/i.test(s)) return true;
   if (/^book\s+(?:a\s+|an\s+)?(?:meeting|call)\s+with\b/i.test(s)) return true;
+  // "remind me to stretch in 20 minutes": a timer from now, not a calendar entry
+  if (/^remind\s+me\b.*\bin\s+(?:\d+(?:\.\d+)?|a|an|one|two|three|five|ten|fifteen|twenty|thirty)\s*(?:minutes?|mins?|hours?|hrs?|seconds?|secs?)\b/i.test(s)) return true;
   return false;
 }
 
