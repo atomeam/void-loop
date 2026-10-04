@@ -1,7 +1,8 @@
-# Persistent tasks: Void's build queue inspected on a schedule and turned into a2m-bridge task
-# envelopes. Dry-run by default, like think-tank.yml: a scheduled run prints the envelopes it would
-# send and writes nothing live. Only a manual run with dry_run explicitly false attempts a live call,
-# and even then it refuses unless BRIDGE_URL and BRIDGE_TOKEN are both present as secrets.
+# Persistent tasks: Void's build queue inspected on a schedule and gated on the owner's yes.
+#
+# A scheduled run is always a dry run: it builds and prints the envelopes and stops. Reaching the
+# bridge needs an owner decision, and only a person can start that, so approval mode is manual only.
+# There is no setting that makes an unattended run deliver anything.
 name: Void dispatcher
 
 on:
@@ -9,10 +10,11 @@ on:
     - cron: "23 * * * *"
   workflow_dispatch:
     inputs:
-      dry_run:
-        description: Print the envelopes and send nothing
-        type: boolean
-        default: true
+      mode:
+        description: dry-run builds the envelopes; approval puts them on the owner's confirm line
+        type: choice
+        options: [dry-run, approval]
+        default: dry-run
 
 permissions:
   contents: read
@@ -32,31 +34,34 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Dry run unless a manual run says otherwise
+      - name: Scheduled runs are dry runs, always
         id: mode
         env:
-          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == false && 'false' || 'true' }}
+          REQUESTED: ${{ inputs.mode }}
         run: |
           set -euo pipefail
-          echo "dry_run=$DRY_RUN" >> "$GITHUB_OUTPUT"
-          if [ "$DRY_RUN" = "true" ]; then
-            echo "dry run: envelopes are printed and audited, nothing is sent to the bridge"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "mode=$REQUESTED" >> "$GITHUB_OUTPUT"
+            if [ "$REQUESTED" = "approval" ]; then
+              echo "approval requested: the owner gets the confirm line. Nothing reaches the bridge without that yes."
+            fi
           else
-            echo "::warning title=Live dispatch::This run may POST to the bridge."
+            echo "mode=dry-run" >> "$GITHUB_OUTPUT"
+            echo "scheduled run: dry-run only, by design"
           fi
 
       - name: Dispatcher checks
-        if: steps.mode.outputs.dry_run == 'true'
         run: node --test tools/dispatcher.test.mjs
 
-      - name: Inspect the queue and build envelopes
+      - name: Inspect the queue and stop at the gate
         env:
-          DRY_RUN: ${{ steps.mode.outputs.dry_run }}
+          DISPATCH: ${{ steps.mode.outputs.mode }}
+          APPROVAL_URL: ${{ vars.APPROVAL_URL || '' }}
+          READ_TOKEN: ${{ secrets.READ_TOKEN }}
           BRIDGE_URL: ${{ secrets.BRIDGE_URL }}
-          BRIDGE_TOKEN: ${{ secrets.BRIDGE_TOKEN }}
         run: node tools/dispatcher.mjs
 
-      - name: Where each row would land
+      - name: Where each row stopped
         if: always()
         run: |
           set -euo pipefail
