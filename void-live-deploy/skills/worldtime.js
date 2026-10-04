@@ -140,7 +140,17 @@ export function choiceLabel(r, all) {
   const twin = (all || []).some((o) => o !== r && o.admin1 === r.admin1 && o.country_code === r.country_code);
   return r.name + ', ' + (r.admin1 && !twin ? r.admin1 : r.country || r.admin1 || '');
 }
+// zone abbreviations need no lookup; each maps to its region's IANA zone, so "EST" in July follows New York's daylight time as people mean it
+const ZONES = { est: ['Eastern Time', 'America/New_York'], edt: ['Eastern Time', 'America/New_York'], et: ['Eastern Time', 'America/New_York'], eastern: ['Eastern Time', 'America/New_York'],
+  cst: ['Central Time', 'America/Chicago'], cdt: ['Central Time', 'America/Chicago'], ct: ['Central Time', 'America/Chicago'], central: ['Central Time', 'America/Chicago'],
+  mst: ['Mountain Time', 'America/Denver'], mdt: ['Mountain Time', 'America/Denver'], mt: ['Mountain Time', 'America/Denver'], mountain: ['Mountain Time', 'America/Denver'],
+  pst: ['Pacific Time', 'America/Los_Angeles'], pdt: ['Pacific Time', 'America/Los_Angeles'], pt: ['Pacific Time', 'America/Los_Angeles'], pacific: ['Pacific Time', 'America/Los_Angeles'],
+  akst: ['Alaska Time', 'America/Anchorage'], hst: ['Hawaii Time', 'Pacific/Honolulu'], utc: ['UTC', 'UTC'], gmt: ['GMT (London)', 'Europe/London'], bst: ['UK time', 'Europe/London'],
+  cet: ['Central European Time', 'Europe/Paris'], cest: ['Central European Time', 'Europe/Paris'], eet: ['Eastern European Time', 'Europe/Athens'], ist: ['India Time', 'Asia/Kolkata'],
+  jst: ['Japan Time', 'Asia/Tokyo'], aest: ['Sydney Time', 'Australia/Sydney'], aedt: ['Sydney Time', 'Australia/Sydney'], sgt: ['Singapore Time', 'Asia/Singapore'], hkt: ['Hong Kong Time', 'Asia/Hong_Kong'] };
+export function zoneOf(name) { const z = ZONES[String(name || '').trim().toLowerCase().replace(/\s+time$/, '').replace(/\./g, '')]; return z ? { name: z[0], timezone: z[1], country: '', admin1: '' } : null; }
 async function geo(name, zoneOnly) {
+  const z = zoneOf(name); if (z) return { r: z, choices: null };
   const base = String(name).split(',')[0].trim();
   const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&name=' + encodeURIComponent(base)).then((r) => r.json());
   return pickPlace(g.results, name, zoneOnly);

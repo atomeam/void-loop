@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · hear the shape (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+.pick svg{display:block;width:72px;height:48px}
+.pick.right{border-color:#7c7}
+.pick.wrong{border-color:#c66}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>hear the shape · draft · not published</h1>
+  <p class="note">A hidden line is played as sound from left to right: higher on the screen is a higher note. Listen, then pick which of the four shapes it was. Devices like this let some blind people "see" with sound or touch after practice. This page only counts whether you get better than chance (1 in 4) over many tries. It does not restore or replace a sense. Sound only, nothing is sent anywhere.</p>
+  <div class="row"><button id="play" type="button">play a shape</button><button id="again" type="button" disabled>hear it again</button></div>
+  <div class="row" id="picks" role="group" aria-label="which shape was it"></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var COLS=16,KEY='a2m.fringe.hearshape.v1';
+  // each shape: height 0..1 at each of 16 columns
+  var SHAPES={
+    rising:function(x){return x},
+    falling:function(x){return 1-x},
+    valley:function(x){return Math.abs(2*x-1)},
+    hill:function(x){return 1-Math.abs(2*x-1)},
+    wave:function(x){return .5+.45*Math.sin(x*Math.PI*2)},
+    step:function(x){return x<.5?.2:.8}
+  };
+  var NAMES=Object.keys(SHAPES),st={tries:[]};
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.tries))st=j}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({tries:st.tries.slice(-500)}))}catch(_){}}
+  function heights(name){var f=SHAPES[name],out=[];for(var i=0;i<COLS;i++)out.push(f(i/(COLS-1)));return out}
+  function freq(h){return 220*Math.pow(2,h*2)} // two octaves, 220 to 880 Hz
+  // binomial tail: chance of at least k right out of n at p = 1/4, to say whether a run is above chance
+  function tail(k,n,p){p=p||.25;var s=0;for(var i=k;i<=n;i++){var c=1;for(var j=0;j<i;j++)c=c*(n-j)/(j+1);s+=c*Math.pow(p,i)*Math.pow(1-p,n-i)}return s}
+  var ctx=null,cur=null,choices=[];
+  function play(name){
+    try{ctx=ctx||new (window.AudioContext||window.webkitAudioContext)()}catch(_){document.getElementById('state').textContent='this browser cannot play sound';return}
+    var t=ctx.currentTime+.05,o=ctx.createOscillator(),g=ctx.createGain();o.type='sine';o.connect(g);g.connect(ctx.destination);
+    g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.18,t+.03);
+    heights(name).forEach(function(h,i){o.frequency.setValueAtTime(freq(h),t+i*.09)});
+    g.gain.setValueAtTime(.18,t+COLS*.09-.03);g.gain.linearRampToValueAtTime(0,t+COLS*.09);o.start(t);o.stop(t+COLS*.09+.05);
+  }
+  function icon(name){var h=heights(name),pts=h.map(function(v,i){return (4+i*64/(COLS-1)).toFixed(1)+','+(44-v*40).toFixed(1)}).join(' ');
+    return '<svg viewBox="0 0 72 48" aria-hidden="true"><polyline points="'+pts+'" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/></svg>'}
+  function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+  function round(){
+    choices=shuffle(NAMES.slice()).slice(0,4);cur=choices[Math.floor(Math.random()*4)];
+    var P=document.getElementById('picks');P.textContent='';
+    choices.forEach(function(n){var b=document.createElement('button');b.type='button';b.className='pick';b.innerHTML=icon(n);b.setAttribute('aria-label',n);b.addEventListener('click',function(){answer(n,b)});P.appendChild(b)});
+    document.getElementById('again').disabled=false;document.getElementById('state').textContent='which shape was it?';play(cur);
+  }
+  function answer(n,b){
+    if(!cur)return;var ok=n===cur;st.tries.push({at:Date.now(),ok:ok});save();
+    b.classList.add(ok?'right':'wrong');if(!ok){var r=[].find.call(document.querySelectorAll('.pick'),function(x){return x.getAttribute('aria-label')===cur});r&&r.classList.add('right')}
+    document.getElementById('state').textContent=(ok?'right':'it was '+cur)+' · play another when ready';cur=null;document.getElementById('again').disabled=true;draw();
+  }
+  function draw(){
+    var n=st.tries.length,k=st.tries.filter(function(x){return x.ok}).length,last=st.tries.slice(-20),lk=last.filter(function(x){return x.ok}).length;
+    if(!n){document.getElementById('score').textContent='';return}
+    var p=tail(k,n);
+    document.getElementById('score').textContent=k+' of '+n+' right ('+Math.round(100*k/n)+'%; chance is 25%)'+(n>=20?'\nlast 20: '+lk+' right':'')+(n>=20?'\n'+(p<.01?'well above chance (a run this good by luck: '+(p<.001?'under 1 in 1000':'about 1 in '+Math.round(1/p))+')':'not yet clearly above chance'):'\nafter 20 tries the page says whether this beats guessing');
+  }
+  document.getElementById('play').addEventListener('click',round);
+  document.getElementById('again').addEventListener('click',function(){cur&&play(cur)});
+  draw();
+  window.__hear={heights:heights,freq:freq,tail:tail}; // for checks
+})();
+</script>
+</body>
+</html>

@@ -573,5 +573,30 @@
     ],
     "sha256": "0102e65261c240793e1f8c65c40f962621fc363453e4700829e954377d2a8200",
     "emit": false
+  },
+  {
+    "run": 24,
+    "at": "2026-10-04T14:48:43Z",
+    "family": "sensory-substitution",
+    "draft": "drafts/fringe/sensory-substitution-2.html",
+    "sources": [
+      {
+        "claim": "A camera image turned into sound (left to right in time, height as pitch, brightness as loudness) can convey pictures to the ear; this is the design of The vOICe",
+        "source": "https://doi.org/10.1109/10.121642",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Blind people trained with a tactile vision-substitution system learned to recognise objects and their layout through touch on the skin",
+        "source": "https://doi.org/10.1038/221963a0",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "With practice, this person can tell simple shapes apart by sound alone, measured as a hit rate above the 1-in-4 chance level",
+        "source": "drafts/fringe/sensory-substitution-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "de68d56cd95c576a58eb1f0601279418707a44e85c76a6d87e16e3052fe2862a",
+    "emit": false
   }
 ]
