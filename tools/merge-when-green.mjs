@@ -36,6 +36,10 @@ while (Date.now() < end) {
     // a push may not have reached the PR yet: if the head moved since this loop read it, look again instead of stopping on the old head
     if (found && gh(`repos/${repo}/pulls/${pr}`).head.sha !== sha) { await wait(10e3); continue; }
     if (found) { console.log(`#${pr} CI green, but CodeRabbit left ${found} finding(s) on ${sha.slice(0, 7)}: fix them, push, and run this again`); process.exit(3); }
+    // a CodeRabbit thread nobody has answered blocks the merge, whichever commit it was left on (a later push does not answer it)
+    const rc = gh(`repos/${repo}/pulls/${pr}/comments?per_page=100`), replied = new Set(rc.filter((c) => c.in_reply_to_id && c.user && c.user.login !== 'coderabbitai[bot]').map((c) => c.in_reply_to_id));
+    const open = rc.filter((c) => !c.in_reply_to_id && c.user && c.user.login === 'coderabbitai[bot]' && !replied.has(c.id));
+    if (open.length) { console.log(`#${pr} CI green, but ${open.length} CodeRabbit thread(s) have no answer yet: fix or reply on each, push, and run this again`); process.exit(3); }
     if (p.draft) execFileSync('gh', ['api', '-X', 'POST', `repos/${repo}/pulls/${pr}/ccr/ready_for_review`], { encoding: 'utf8' });
     const m = gh('-X', 'PUT', `repos/${repo}/pulls/${pr}/merge`, '-f', 'merge_method=merge', '-f', `sha=${sha}`);
     console.log(m.merged ? `merged #${pr} at ${sha.slice(0, 7)} (CI green)` : `merge refused: ${m.message}`);

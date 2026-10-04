@@ -28,18 +28,23 @@ li .sig{color:#8a8a92;font-size:13px}
   <p class="note">A hunch ledger that does the arithmetic. Start from how often things like this happen at all (the base rate), and write down your gut chance too. Then add each weak signal as it comes, saying how much more likely you would see it if the hunch were true than if it were false. The page updates the chance by Bayes' rule. When the hunch resolves, it scores both the worked chance and your gut, so you can see which serves you better. This is arithmetic on your own guesses, not a prediction service. Everything stays in this browser.</p>
   <form id="f" class="row">
     <input id="h" required maxlength="140" placeholder="the hunch" aria-label="the hunch" style="flex:1 1 220px">
-    <label>base rate <input id="base" type="number" min="1" max="99" value="20" style="width:4.5em" aria-label="base rate percent">%</label>
-    <label>gut <input id="gut" type="number" min="1" max="99" value="50" style="width:4.5em" aria-label="gut chance percent">%</label>
+    <label>base rate <input id="base" type="number" min="1" max="99" value="20" required style="width:4.5em" aria-label="base rate percent">%</label>
+    <label>gut <input id="gut" type="number" min="1" max="99" value="50" required style="width:4.5em" aria-label="gut chance percent">%</label>
     <button type="submit">add</button>
   </form>
   <ul id="list" aria-label="hunches"></ul>
+  <div id="warn" role="alert" hidden style="color:#f9a">this browser is not saving the ledger (storage is full or blocked): the hunches on screen will be gone after a reload</div>
   <div id="score" class="note" aria-live="polite"></div>
 </main>
 <script>
 (function(){
   var KEY='a2m.fringe.bayes.v1',items=[];
-  try{var j=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(j))items=j}catch(_){}
-  function save(){try{localStorage.setItem(KEY,JSON.stringify(items.slice(0,200)))}catch(_){}}
+  // only well-formed records load; a damaged one is skipped instead of stopping the page
+  function okItem(x){return x&&typeof x.h==='string'&&x.base>0&&x.base<1&&x.gut>0&&x.gut<1&&Array.isArray(x.signals)&&x.signals.every(function(s){return s&&s.lr>0})&&(x.outcome==null||x.outcome===0||x.outcome===1)}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(j))items=j.filter(okItem)}catch(_){}
+  var unsaved=false;
+  // the whole ledger is kept (a few hundred hunches are a few dozen KB); if the browser refuses, the page says so and keeps the entries on screen
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(items));unsaved=false}catch(_){unsaved=true}var w=document.getElementById('warn');if(w)w.hidden=!unsaved}
   // posterior from a prior and likelihood ratios: odds multiply
   function posterior(prior,lrs){var o=prior/(1-prior);(lrs||[]).forEach(function(r){o*=r});return o/(1+o)}
   function brier(p,y){return (p-(y?1:0))*(p-(y?1:0))}
@@ -65,9 +70,9 @@ li .sig{color:#8a8a92;font-size:13px}
       }
       L.appendChild(li);
     });
-    var s=scores(items);document.getElementById('score').textContent=s?'resolved '+s.n+' · average Brier score (0 is perfect, 0.25 is always saying 50%): worked '+s.worked.toFixed(3)+' · gut '+s.gut.toFixed(3)+(s.n<15?'\nunder 15 resolved: too few to say which serves you better':'\n'+(s.worked<s.gut?'the worked chance has been closer':'your gut has been closer')):'';
+    var s=scores(items);document.getElementById('score').textContent=s?'resolved '+s.n+' · average Brier score (0 is perfect, 0.25 is always saying 50%): worked '+s.worked.toFixed(3)+' · gut '+s.gut.toFixed(3)+(s.n<15?'\nunder 15 resolved: too few to say which serves you better':'\n'+(Math.abs(s.worked-s.gut)<0.0005?'a tie so far: neither has been closer':s.worked<s.gut?'the worked chance has been closer':'your gut has been closer')):'';
   }
-  document.getElementById('f').addEventListener('submit',function(e){e.preventDefault();var b=Math.min(99,Math.max(1,+document.getElementById('base').value))/100,g=Math.min(99,Math.max(1,+document.getElementById('gut').value))/100,h=document.getElementById('h');
+  document.getElementById('f').addEventListener('submit',function(e){e.preventDefault();var bv=document.getElementById('base').value.trim(),gv=document.getElementById('gut').value.trim();if(bv===''||gv===''||isNaN(+bv)||isNaN(+gv)){document.getElementById('score').textContent='fill in both the base rate and your gut chance (1 to 99%)';return}var b=Math.min(99,Math.max(1,+bv))/100,g=Math.min(99,Math.max(1,+gv))/100,h=document.getElementById('h');
     items.unshift({h:h.value.trim(),base:b,gut:g,signals:[],outcome:null,at:Date.now()});h.value='';save();draw()});
   draw();
   window.__bayes={posterior:posterior,brier:brier,scores:scores}; // for checks

@@ -58,7 +58,7 @@ export function utilOf(text) {
   m = l.match(/^(?:how\s+many\s+)?syllables?\s+(?:are\s+)?(?:in|does)\s+(?:the\s+word\s+)?["“']?([a-z'-]{1,30})["”']?(?:\s+have)?$|^how\s+many\s+syllables\s+does\s+["“']?([a-z'-]{1,30})["”']?\s+have$/);
   if (m) return { kind: 'syllables', w: m[1] || m[2] };
   m = t.match(/^(uppercase|upper case|lowercase|lower case|title case|reverse)\s*:?\s+(?:this:?\s+)?(.+)$/i);
-  if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2]) && !/^(?:percentage|percent)\b/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] }; // "reverse percentage ..." is maths
+  if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2]) && !/^(?:\d+(?:\.\d+)?\s*)?(?:percentage|percent|%)/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] }; // "reverse percentage ..." is maths
   if (/^(?:what(?:'s| is)\s+)?(?:the\s+)?moon\s+phase(?:\s+(?:tonight|today|now))?$|^(?:what\s+)?phase\s+(?:is\s+)?(?:of\s+)?the\s+moon(?:\s+in)?(?:\s+(?:tonight|today|now))?$|^is\s+it\s+a\s+full\s+moon(?:\s+tonight)?$|^when\s+is\s+the\s+next\s+(?:full|new)\s+moon$|^next\s+full\s+moon$/.test(l)) return { kind: 'moon' };
   m = l.match(/^(?:give\s+me\s+)?(?:some\s+|(\d{1,2})\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+(\d{1,2})\s+paragraphs?)?$/);
   if (m) return { kind: 'lorem', n: Math.max(1, Math.min(10, +(m[1] || m[2]) || 1)) };

@@ -915,12 +915,17 @@
   {"ask": "how many watts does a fridge use", "want": "calc|answer", "says": "\\d"},
   {"ask": "how many outlets on a 15 amp circuit", "want": "calc|answer", "says": "\\d"},
   {"ask": "how many lumens is a 60 watt bulb", "want": "calc|answer", "says": "800"},
-  {"ask": "how many people per pizza", "want": "calc|answer", "says": "\\d"},
+  {"ask": "how many people per pizza", "want": "calc|answer", "says": "2–3"},
   {"ask": "how many drinks for 50 guests", "want": "calc", "says": "\\d"},
   {"ask": "how many chairs fit in a 20x30 room", "want": "calc", "says": "\\d"},
   {"ask": "split 240 among 3 people", "want": "calc|skill:tip", "says": "80"},
   {"ask": "what is 15% of 80 plus 80", "want": "calc", "says": "92"},
   {"ask": "reverse percentage 120 after 20% increase", "want": "calc", "says": "100"},
   {"ask": "original price if 75 after 25% off", "want": "calc", "says": "100"},
-  {"ask": "how many kpa in a bar", "want": "calc", "says": "100"}
+  {"ask": "how many kpa in a bar", "want": "calc", "says": "100"},
+  {"ask": "how long to pay off 5000 at 0 a month", "want": "calc", "says": "never"},
+  {"ask": "how long to pay off 100 at 200 a month at 20%", "want": "calc", "says": "101\\.67"},
+  {"ask": "rule of 72 at 0 percent", "want": "calc", "says": "never"},
+  {"ask": "original price if 50 after 100% off", "want": "calc", "says": "no original price"},
+  {"ask": "reverse 20% of 80", "want": "calc|answer|article|said"}
 ]
