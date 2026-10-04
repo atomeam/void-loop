@@ -3,6 +3,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "define serendipity", "what does ephemeral mean", "meaning of saudade", "definition of hubris".
  */
+const ABBR_HELD = new Set(['lol', 'asap', 'brb', 'btw', 'fyi', 'imo', 'imho', 'tbh', 'idk', 'omg', 'rsvp', 'eta', 'faq', 'diy', 'aka', 'tba', 'tbd', 'fomo', 'smh', 'irl', 'dm', 'afaik', 'tldr', 'ootd', 'nvm', 'ttyl', 'rofl', 'jk', 'ikr', 'ftw', 'goat', 'ama', 'eod', 'ooo', 'wfh', 'pto', 'roi', 'kpi', 'cc', 'bcc', 'ps', 'nb', 'ie', 'eg', 'etc']);
 export function wordOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   const m = t.match(/^(?:please\s+)?define\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
@@ -11,6 +12,7 @@ export function wordOf(text) {
     || t.match(/^what\s+is\s+the\s+meaning\s+of\s+["“]?(.+?)["”]?$/i);
   if (!m) return null;
   const w = m[1].trim();
+  if (/^(?:[a-z]{2,6})$/i.test(w) && ABBR_HELD.has(w.toLowerCase())) return null; // texting and office abbreviations are answered by the calculator's table
   // a word or a short phrase, not a sentence or a number ("what does it mean", "define 42" stay elsewhere)
   if (!w || w.split(' ').length > 3 || /\d/.test(w) || /^(it|this|that|life|love|you|me|my\s+\w+)$/i.test(w)) return null;
   return w;

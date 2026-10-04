@@ -623,5 +623,30 @@
     ],
     "sha256": "b33a4627b30727026960c7beb903cbf0f2694437f480221a07014a54c319d15d",
     "emit": false
+  },
+  {
+    "run": 26,
+    "at": "2026-10-04T16:43:05Z",
+    "family": "opt-in-gesture",
+    "draft": "drafts/fringe/opt-in-gesture-3.html",
+    "sources": [
+      {
+        "claim": "A simple template matcher (resample, rotate, scale, compare) recognizes single-stroke gestures with about 97% accuracy from one example per shape, and 99% with three or more",
+        "source": "https://doi.org/10.1145/1294211.1294238",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Gesture-only interfaces hurt usability when gestures are invisible and undiscoverable and give no feedback; an equivalent visible control and clear feedback are recommended",
+        "source": "https://doi.org/10.1145/1836216.1836228",
+        "confidence": "claim"
+      },
+      {
+        "claim": "This person's own strokes are read right at least 90% of the time after 20 tries, so drawing could stand in for these four buttons for them",
+        "source": "drafts/fringe/opt-in-gesture-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "faa4f3596272d521b386577367c62234306f8dea99d7fcd3996c102e68f05d8a",
+    "emit": false
   }
 ]

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · draw to act (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button[aria-pressed=true]{border-color:#7cf;color:#7cf}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+canvas{width:100%;height:240px;border:1px solid rgba(255,255,255,.12);border-radius:14px;touch-action:none;display:block}
+canvas.off{opacity:.35}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>draw to act · draft · not published</h1>
+  <p class="note">Drawing gestures, off until you turn them on. Draw one of four shapes in the box: a circle, a check mark, a cross, or a straight line. Each shape does the same thing as one of the buttons below, and the buttons always work. Gestures are hard to discover and easy to misread, so the page says which shape it saw and keeps your own hit rate. Strokes are read in this browser and never sent or stored; only the counts are kept.</p>
+  <div class="row"><button id="on" type="button" aria-pressed="false">turn drawing on</button><span id="ask" class="note"></span></div>
+  <canvas id="pad" class="off" aria-label="drawing area, off until turned on"></canvas>
+  <div class="row" aria-label="the same actions as buttons">
+    <button type="button" data-act="circle">○ refresh</button><button type="button" data-act="check">✓ done</button><button type="button" data-act="cross">✕ undo</button><button type="button" data-act="line">— clear</button>
+  </div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  // the $1 unistroke recognizer (Wobbrock, Wilson and Li 2007): resample, rotate to the indicative angle, scale, translate, then golden-section search over rotation
+  var N=64,SIZE=250,PHI=.5*(-1+Math.sqrt(5)),RANGE=Math.PI/4,PREC=Math.PI/90;
+  function pathLen(p){var d=0;for(var i=1;i<p.length;i++)d+=Math.hypot(p[i].x-p[i-1].x,p[i].y-p[i-1].y);return d}
+  function resample(pts){var I=pathLen(pts)/(N-1),D=0,p=pts.slice(),out=[p[0]];for(var i=1;i<p.length;i++){var d=Math.hypot(p[i].x-p[i-1].x,p[i].y-p[i-1].y);if(D+d>=I&&d>0){var q={x:p[i-1].x+((I-D)/d)*(p[i].x-p[i-1].x),y:p[i-1].y+((I-D)/d)*(p[i].y-p[i-1].y)};out.push(q);p.splice(i,0,q);D=0}else D+=d}while(out.length<N)out.push(p[p.length-1]);return out.slice(0,N)}
+  function centroid(p){var x=0,y=0;p.forEach(function(q){x+=q.x;y+=q.y});return {x:x/p.length,y:y/p.length}}
+  function rotate(p,a){var c=centroid(p),cs=Math.cos(a),sn=Math.sin(a);return p.map(function(q){return {x:(q.x-c.x)*cs-(q.y-c.y)*sn+c.x,y:(q.x-c.x)*sn+(q.y-c.y)*cs+c.y}})}
+  function scale(p){var xs=p.map(function(q){return q.x}),ys=p.map(function(q){return q.y}),w=Math.max.apply(null,xs)-Math.min.apply(null,xs),h=Math.max.apply(null,ys)-Math.min.apply(null,ys),mx=Math.min.apply(null,xs),my=Math.min.apply(null,ys);
+    // a line is one-dimensional: scale it uniformly so it keeps its shape (the 1D variant of $1)
+    var oneD=Math.min(w,h)/Math.max(w,h,1e-9)<.3,k=oneD?SIZE/Math.max(w,h,1e-9):0;return p.map(function(q){return oneD?{x:(q.x-mx)*k,y:(q.y-my)*k}:{x:(q.x-mx)*SIZE/w,y:(q.y-my)*SIZE/h}})}
+  function toOrigin(p){var c=centroid(p);return p.map(function(q){return {x:q.x-c.x,y:q.y-c.y}})}
+  function norm(pts){var p=resample(pts),c=centroid(p),a=Math.atan2(c.y-p[0].y,c.x-p[0].x);return toOrigin(scale(rotate(p,-a)))}
+  function pathDist(a,b){var d=0;for(var i=0;i<a.length;i++)d+=Math.hypot(a[i].x-b[i].x,a[i].y-b[i].y);return d/a.length}
+  function distAt(p,t,a){return pathDist(rotate(p,a),t)}
+  function best(p,t){var a=-RANGE,b=RANGE,x1=PHI*a+(1-PHI)*b,f1=distAt(p,t,x1),x2=(1-PHI)*a+PHI*b,f2=distAt(p,t,x2);while(Math.abs(b-a)>PREC){if(f1<f2){b=x2;x2=x1;f2=f1;x1=PHI*a+(1-PHI)*b;f1=distAt(p,t,x1)}else{a=x1;x1=x2;f1=f2;x2=(1-PHI)*a+PHI*b;f2=distAt(p,t,x2)}}return Math.min(f1,f2)}
+  function shape(name){var p=[],i;
+    if(name==='circle')for(i=0;i<=48;i++)p.push({x:100+80*Math.cos(-Math.PI/2+i*2*Math.PI/48),y:100+80*Math.sin(-Math.PI/2+i*2*Math.PI/48)});
+    else if(name==='check'){for(i=0;i<=10;i++)p.push({x:20+i*4,y:100+i*5});for(i=1;i<=20;i++)p.push({x:60+i*7,y:150-i*8})}
+    else if(name==='cross'){for(i=0;i<=20;i++)p.push({x:20+i*8,y:20+i*8});for(i=1;i<=10;i++)p.push({x:180,y:180-i*16});for(i=1;i<=20;i++)p.push({x:180-i*8,y:20+i*8})}
+    else for(i=0;i<=30;i++)p.push({x:20+i*6,y:100});
+    return p}
+  var T=['circle','check','cross','line'].map(function(n){return {name:n,pts:norm(shape(n))}});
+  // returns the best template and a 0..1 score; under 0.75 counts as "not sure"
+  function recognize(pts){if(pts.length<8||pathLen(pts)<40)return {name:null,score:0};var p=norm(pts),bd=Infinity,bn=null;T.forEach(function(t){var d=best(p,t.pts);if(d<bd){bd=d;bn=t.name}});var sc=1-bd/(.5*Math.sqrt(2*SIZE*SIZE));return {name:sc>=.75?bn:null,guess:bn,score:Math.round(sc*100)/100}}
+
+  var KEY='a2m.fringe.drawact.v1',st={tries:[]},on=false,stroke=null,target=null;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.tries))st=j}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({tries:st.tries.slice(-500)}))}catch(_){}}
+  var ACT={circle:'refresh',check:'done',cross:'undo',line:'clear'},el=function(id){return document.getElementById(id)};
+  var pad=el('pad'),ctx=pad.getContext('2d');
+  function fit(){var r=pad.getBoundingClientRect(),d=window.devicePixelRatio||1;pad.width=r.width*d;pad.height=r.height*d;ctx.setTransform(d,0,0,d,0,0);ctx.lineWidth=4;ctx.lineCap=ctx.lineJoin='round';ctx.strokeStyle='#7cf'}
+  function clear(){ctx.clearRect(0,0,pad.width,pad.height)}
+  function pickTarget(){target=['circle','check','cross','line'][Math.floor(Math.random()*4)];el('ask').textContent='try: draw a '+target}
+  function act(name,how){el('state').textContent=ACT[name]+(how?' ('+how+')':' (button)')}
+  el('on').addEventListener('click',function(){on=!on;this.setAttribute('aria-pressed',String(on));this.textContent=on?'turn drawing off':'turn drawing on';pad.classList.toggle('off',!on);pad.setAttribute('aria-label',on?'drawing area':'drawing area, off until turned on');if(on){fit();pickTarget()}else{el('ask').textContent='';clear()}});
+  document.querySelectorAll('[data-act]').forEach(function(b){b.addEventListener('click',function(){act(b.dataset.act)})});
+  pad.addEventListener('pointerdown',function(e){if(!on)return;pad.setPointerCapture(e.pointerId);clear();var r=pad.getBoundingClientRect();stroke=[{x:e.clientX-r.left,y:e.clientY-r.top}];ctx.beginPath();ctx.moveTo(stroke[0].x,stroke[0].y)});
+  pad.addEventListener('pointermove',function(e){if(!stroke)return;var r=pad.getBoundingClientRect(),q={x:e.clientX-r.left,y:e.clientY-r.top};stroke.push(q);ctx.lineTo(q.x,q.y);ctx.stroke()});
+  pad.addEventListener('pointerup',function(){if(!stroke)return;var res=recognize(stroke);stroke=null;
+    if(!res.name){el('state').textContent='not sure what that was'+(res.guess?' (closest: '+res.guess+', '+res.score+')':'')+' · the buttons below always work'}
+    else{act(res.name,'drew a '+res.name+', '+res.score)}
+    if(target){st.tries.push({at:Date.now(),want:target,got:res.name});save();draw();pickTarget()}});
+  function draw(){var n=st.tries.length,k=st.tries.filter(function(x){return x.want===x.got}).length,u=st.tries.filter(function(x){return !x.got}).length;
+    el('score').textContent=n?'read right '+k+' of '+n+' ('+Math.round(100*k/n)+'%) · not sure '+u+(n<20?'\n20 tries before the rate means much':''):''}
+  window.addEventListener('resize',function(){if(on)fit()});draw();
+  window.__drawact={recognize:recognize,shape:shape,norm:norm}; // for checks
+})();
+</script>
+</body>
+</html>
