@@ -2546,7 +2546,7 @@ try {
   const calls = [];
   let paidDown = false;
   const fakeAI = ({ embed = 'ok', strong = 'ok', embedDelay = 0, gemma = 'ok' } = {}) => ({ run: async (m, o) => {
-    calls.push({ m, n: o.text ? o.text.length : 0, sys: o.messages && o.messages[0].content });
+    calls.push({ m, n: o.text ? o.text.length : 0, sys: o.messages && o.messages[0].content, user: o.messages && o.messages[1] && o.messages[1].content });
     if (m === R.EMBED_MODEL) {
       if (embed === 'throw') throw new Error('embeddings down');
       if (embed === 'hang') return new Promise(() => {});
@@ -2594,6 +2594,37 @@ try {
     check('router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)',
       s1.answer === 'Gemma: a short answer [1].' && s1.route === 'simple' && s1.sources.length === 1 && calls.filter((c) => c.m === R.DEFAULT_MODEL).every((c) => /^You are Void\. Answer the question directly and completely/.test(c.sys) && !/if the sources do not answer it, say briefly what you could not find/i.test(c.sys) && /never refuse/i.test(c.sys)) && rowOf(e1, 'who wrote the odyssey').outcome === 'default',
       JSON.stringify(s1).slice(0, 200));
+    // Self-grounding: an ask about Void itself is answered from its own facts (self.json, skills/index.json, the will), not Wikipedia
+    {
+      const SC = await import(new URL('../void-live-deploy/lib/self-context.js', import.meta.url).href);
+      const yes = ["what's next — more scouting-report features, or something else?", 'what are you building', "what's in your growth inbox", 'what does Void want to learn next', 'what can you do'];
+      const no = ['who wrote the odyssey', 'how do I clear the inbox in gmail', 'what is a void pointer in c and what features does it have', 'what should I build next in my garden', 'what is the will of the people'];
+      const misY = yes.filter((a) => !SC.isSelfAsk(a)), misN = no.filter((a) => SC.isSelfAsk(a));
+      check('self-grounding: asks about Void itself are recognised; generic asks that only share a word (inbox, void pointer, next, will) are not', !misY.length && !misN.length, JSON.stringify({ misY, misN }));
+      const dep = new URL('../void-live-deploy', import.meta.url).pathname;
+      const ASSETS = { fetch: async (rq) => { const f = path.join(dep, new URL(rq.url).pathname); return fs.existsSync(f) ? new Response(fs.readFileSync(f, 'utf8')) : new Response('', { status: 404 }); } };
+      const eS = envOf({ env: { ASSETS } });
+      eS.DB.tables.add('void_kv'); eS.DB.kv.set('will', JSON.stringify({ at: '2026-10-03T00:00:00Z', wants: [{ title: 'Learn the light look', i_want: 'I want a light look for my void.', because: 'people keep asking' }] }));
+      let wikiHits = 0; globalThis.fetch = async (u) => { wikiHits++; return wiki(u); };
+      calls.length = 0;
+      const SQ = "what's next — more scouting-report features, or something else?";
+      const sa = await ask(SQ, eS);
+      globalThis.fetch = wiki;
+      const g = calls.filter((c) => c.m === R.DEFAULT_MODEL).slice(-1)[0] || {};
+      const selfJson = JSON.parse(fs.readFileSync(path.join(dep, 'self.json'), 'utf8'));
+      const openAsk = (selfJson.open[0] || {}).ask || '(none open)';
+      check('self-grounding: "what\'s next" is answered from Void\'s own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache',
+        sa.self === true && sa.sources.length === 0 && wikiHits === 0 && g.sys && g.sys.includes(SC.SELF_RULE) && /^You are Void\. Answer the question directly/.test(g.sys)
+        && /Facts about Void:/.test(g.user) && g.user.includes(openAsk) && /My skills \(\d+\): .*\btip\b/.test(g.user) && g.user.includes('I want a light look for my void.') && !/Sources:/.test(g.user)
+        && eS.DB.answers.size === 0 && /self-grounded/.test(rowOf(eS, SQ).outcome),
+        JSON.stringify({ self: sa.self, wikiHits, user: String(g.user).slice(0, 200), cached: eS.DB.answers.size }));
+      const eSo = envOf({ ai: { gemma: 'out' }, env: { ASSETS } });
+      const so = await ask('what are you building', eSo);
+      const off = await (await answerFn.onRequestPost({ request: new Request(G + '/api/answer', { method: 'POST', body: JSON.stringify({ ask: 'what are you building' }) }), env: { DB: routeD1(), ASSETS, VOID_ANSWER_MODELS: 'off' } })).json();
+      check('self-grounding: with the model busy or switched off, a self ask gets Void\'s own facts, never a Wikipedia extract',
+        so.self === true && so.note === 'model busy, my own facts' && /My skills/.test(so.answer) && off.self === true && /Growth inbox, still open/.test(off.answer) && !/sourced extract/.test(off.answer + so.answer),
+        JSON.stringify({ so: so.note, off: String(off.answer).slice(0, 120) }));
+    }
     calls.length = 0;
     const h1 = await ask('what are the tradeoffs between rust and go for a web backend', e1);
     const hr = rowOf(e1, 'what are the tradeoffs between rust and go for a web backend');
