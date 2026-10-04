@@ -3124,7 +3124,7 @@ return { ok: true, detail: 'timer-reset' };
     function fmtNum(n) { return (Math.round(n * 100) / 100).toString(); }
     // "how many cups in a liter" -> "1 liter in cups"
     function calcNormalize(lower) {
-      return lower.replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?(?:in|per)\s+(?:a|an|one|1)\s+([a-z]+)\s*\??$/, '1 $2 in $1');
+      return lower.replace(/^(how\s+many\s+[a-z]+)\s+of\s+(?:water|milk|liquid)\s+/, '$1 ').replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?(?:in|per)\s+(?:a|an|one|1)\s+([a-z]+)\s*\??$/, '1 $2 in $1');
     }
     // Currency asks: every currency the ECB publishes a reference rate for (Frankfurter serves them, no key).
     // "100 usd in eur", "$50 to euros", "£20 in yen", "250 canadian dollars to pounds", "1000 rupees in dollars", "how much is 20 euros in dollars".
@@ -3320,6 +3320,57 @@ return { ok: true, detail: 'timer-reset' };
       if (m) { const v = +(m[1] + 'e' + m[2]); if (isFinite(v)) return { value: Math.abs(v) >= 1e21 || (v !== 0 && Math.abs(v) < 1e-6) ? String(v) : v.toLocaleString(undefined, { maximumFractionDigits: 12 }), note: m[1] + ' × 10^' + m[2] }; }
       m = t.match(/^(?:(?:write|put|convert)\s+)?(-?\d[\d,]*(?:\.\d+)?)\s+(?:in|to|into|as)\s+scientific\s+notation$|^scientific\s+notation\s+(?:of|for)\s+(-?\d[\d,]*(?:\.\d+)?)$/);
       if (m) { const v = +(m[1] || m[2]).replace(/,/g, ''); if (v) { const e = Math.floor(Math.log10(Math.abs(v))), c = +(v / Math.pow(10, e)).toPrecision(10); return { value: c + ' × 10^' + e, note: (m[1] || m[2]) + ' = ' + c + 'e' + e }; } }
+      // stacked discounts: "20% off 60 then another 10% off", "30% off 80 and an extra 15% off"
+      m = t.match(/^(\d+(?:\.\d+)?)\s*%\s+off\s+\$?(\d+(?:\.\d+)?)\s*,?\s+(?:then|and|plus)\s+(?:an?\s+)?(?:another|extra|additional|further)?\s*(\d+(?:\.\d+)?)\s*%\s+off$/);
+      if (m) { const v = +m[2] * (1 - m[1] / 100) * (1 - m[3] / 100), eff = Math.round((1 - v / +m[2]) * 1000) / 10; return { value: '$' + v.toFixed(2), note: m[1] + '% then ' + m[3] + '% off $' + m[2] + ' = ' + eff + '% off in all (not ' + (+m[1] + +m[3]) + '%)' }; }
+      // "buy one get one half off at 30 each", "bogo 50% off on 24"
+      m = t.match(/^(?:buy\s+one\s+get\s+one|bogo)\s+(half|free|\d+\s*%)\s*(?:off)?\s+(?:at|on|for)\s+\$?(\d+(?:\.\d+)?)(?:\s+each)?$/);
+      if (m) { const p = +m[2], off = m[1] === 'free' ? 1 : m[1] === 'half' ? 0.5 : parseFloat(m[1]) / 100, tot = p * (2 - off); return { value: '$' + tot.toFixed(2) + ' for two', note: '$' + (tot / 2).toFixed(2) + ' each on average · ' + Math.round(off / 2 * 100) + '% off the pair' }; }
+      // pay for hours: "40 dollars an hour for 37.5 hours", "$22/hr for 40 hours"
+      m = t.match(/^\$?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks)?\s*(?:an?|per|\/)\s*(?:hour|hr)\s+(?:for|times|x)\s+(\d+(?:\.\d+)?)\s*(?:hours?|hrs?)(?:\s+a\s+week)?$/);
+      if (m) { const v = +m[1] * +m[2]; return { value: '$' + v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: '$' + m[1] + ' an hour × ' + m[2] + ' hours, before tax' }; }
+      // rooms and boxes: "how many square feet is a 12 by 15 room", "area of a 10 by 12 rectangle", "perimeter of ...", "volume of a box 2 by 3 by 4"
+      m = t.match(/^(?:how\s+many\s+(?:square\s+feet|sq\s*ft|square\s+met(?:er|re)s|square\s+units)\s+(?:is|in)\s+|(?:the\s+)?(area|perimeter)\s+of\s+)(?:a|an|the)?\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|foot|m|in|cm|')?\s*(?:by|x|×)\s*(\d+(?:\.\d+)?)\s*(?:ft|feet|foot|m|in|cm|')?\s*(room|rectangle|floor|yard|garden|wall|square|kitchen|bedroom|space|patio|deck)?$/);
+      if (m && (m[1] || m[4])) { const a = +m[2], b = +m[3], per = m[1] === 'perimeter'; const v = per ? 2 * (a + b) : a * b; const u = /met(?:er|re)/.test(t) ? ' m' : /square\s+feet|sq\s*ft|feet|ft|room|floor|yard|kitchen|bedroom|deck|patio/.test(t) ? ' ft' : '';
+        return { value: v.toLocaleString() + (per ? u : u ? (u === ' ft' ? ' sq ft' : ' m²') : ''), note: (per ? 'perimeter 2 × (' + a + ' + ' + b + ')' : 'area ' + a + ' × ' + b) }; }
+      m = t.match(/^(?:the\s+)?volume\s+of\s+(?:a|an|the)?\s*(?:box|cuboid|room|tank|container|rectangular\s+prism)?\s*(\d+(?:\.\d+)?)\s*(?:by|x|×)\s*(\d+(?:\.\d+)?)\s*(?:by|x|×)\s*(\d+(?:\.\d+)?)(?:\s*(?:box|cuboid|room|tank))?$/);
+      if (m) { const v = +m[1] * +m[2] * +m[3]; return { value: v.toLocaleString(), note: m[1] + ' × ' + m[2] + ' × ' + m[3] + ' (cubic units)' }; }
+      // tiles: "how many tiles 12 inch for 180 square feet", "how many 6 inch tiles for 50 sq ft"
+      m = t.match(/^how\s+many\s+(?:(\d+(?:\.\d+)?)\s*(?:inch|in|")\s+)?tiles?\s+(?:(\d+(?:\.\d+)?)\s*(?:inch|in|")\s+)?(?:do\s+i\s+need\s+)?(?:for|to\s+cover)\s+(\d+(?:\.\d+)?)\s*(?:square\s+feet|sq\s*ft|sqft)$/);
+      if (m && (m[1] || m[2])) { const side = +(m[1] || m[2]), each = (side / 12) ** 2, n = Math.ceil(+m[3] / each); return { value: n.toLocaleString() + ' tiles', note: side + '-inch tiles cover ' + (Math.round(each * 100) / 100) + ' sq ft each · buy about ' + Math.ceil(n * 1.1).toLocaleString() + ' with 10% for cuts and breakage' }; }
+      // coins: "how many quarters in 5 dollars", "how many nickels in a dollar"
+      m = t.match(/^how\s+many\s+(pennies|nickels|dimes|quarters|half\s+dollars)\s+(?:are\s+)?(?:in|make)\s+(?:a|one|\$?(\d+(?:\.\d+)?))\s*(?:dollars?|bucks)?$/);
+      if (m) { const c = { pennies: 1, nickels: 5, dimes: 10, quarters: 25, 'half dollars': 50 }[m[1].replace(/\s+/g, ' ')], d = +(m[2] || 1), v = Math.round(d * 100 / c); return { value: v.toLocaleString(), note: m[1] + ' in $' + d + ' (' + c + '¢ each)' }; }
+      // counting words: "how many is a baker's dozen", "how many in a gross", "what is a score"
+      m = t.match(/^(?:how\s+many\s+(?:is|are|in)\s+(?:a|one)\s+|(?:what(?:'s|\s+is)\s+)?(?:a|one)\s+)(baker'?s\s+dozen|dozen|gross|score|great\s+gross|pair|brace|myriad|ream)(?:\s+in\s+numbers)?$/);
+      if (m) { const k = m[1].replace(/\s+/g, ' ').replace(/'/g, ''), N = { 'bakers dozen': 13, dozen: 12, gross: 144, score: 20, 'great gross': 1728, pair: 2, brace: 2, myriad: 10000, ream: 500 }[k]; return { value: String(N), note: 'a ' + m[1] + (k === 'gross' ? ' (12 dozen)' : k === 'ream' ? ' (sheets of paper)' : k === 'bakers dozen' ? ' (12 plus one)' : '') }; }
+      // little body and health facts with their usual ranges
+      if (/^(?:what(?:'s|\s+is)\s+(?:a\s+)?)?(?:the\s+)?normal\s+(?:human\s+)?body\s+temp(?:erature)?$/.test(t)) return { value: '98.6 °F (37 °C)', note: 'the classic average; healthy adults range about 97–99 °F (36.1–37.2 °C), lower in the morning; 100.4 °F (38 °C) or more counts as a fever' };
+      if (/^how\s+many\s+calories\s+(?:to\s+lose|in|are\s+in)\s+(?:a|one)\s+pound(?:\s+of\s+(?:fat|weight))?$/.test(t)) return { value: 'about 3,500', note: 'the old rule of thumb for a pound of body fat; real weight loss slows as the body adapts, so it is a rough guide' };
+      if (/^how\s+many\s+steps\s+(?:are\s+)?(?:in|per)\s+(?:a|one)\s+mile$/.test(t)) return { value: 'about 2,000–2,500', note: 'walking; it depends on stride length (taller people take fewer); running is about 1,400–1,700' };
+      if (/^how\s+many\s+(?:work(?:ing)?\s+hours|hours\s+of\s+work)\s+(?:are\s+)?in\s+a\s+year$/.test(t)) return { value: '2,080', note: '40 hours a week × 52 weeks, before holidays and time off' };
+      // fever and other temperatures: "102 f fever in celsius"
+      m = t.match(/^(-?\d+(?:\.\d+)?)\s*°?\s*(f|c|fahrenheit|celsius)\s+(?:fever|temperature|temp|body\s+temp(?:erature)?)\s+(?:in|to)\s+(celsius|c|fahrenheit|f)$/);
+      if (m) { const x = +m[1], toC = /^f/.test(m[2]), v = Math.round((toC ? (x - 32) * 5 / 9 : x * 9 / 5 + 32) * 10) / 10, c = toC ? v : x; return { value: v + (toC ? ' °C' : ' °F'), note: m[1] + (toC ? ' °F' : ' °C') + (c >= 38 ? ' · a fever (38 °C / 100.4 °F or more)' : '') }; }
+      // running pace: "pace for a 5k in 25 minutes", "marathon in 4 hours pace", "10 miles in 1:30 pace"
+      m = t.match(/^(?:what(?:'s|\s+is)\s+(?:the\s+|my\s+)?)?pace\s+(?:for\s+|to\s+run\s+)?(?:a\s+)?(5k|10k|half\s+marathon|marathon|\d+(?:\.\d+)?\s*(?:k|km|miles?|mi))\s+in\s+(\d{1,2}:\d{2}(?::\d{2})?|\d+(?:\.\d+)?\s*(?:minutes?|mins?|hours?|hrs?))$|^(5k|10k|half\s+marathon|marathon|\d+(?:\.\d+)?\s*(?:k|km|miles?|mi))\s+in\s+(\d{1,2}:\d{2}(?::\d{2})?|\d+(?:\.\d+)?\s*(?:minutes?|mins?|hours?|hrs?))\s+pace$/);
+      if (m) { const d = (m[1] || m[3]).replace(/\s+/g, ' '), tm = m[2] || m[4]; const km = d === '5k' ? 5 : d === '10k' ? 10 : d === 'half marathon' ? 21.0975 : d === 'marathon' ? 42.195 : /mi/.test(d) ? parseFloat(d) * 1.609344 : parseFloat(d);
+        let sec; if (/:/.test(tm)) { const p = tm.split(':').map(Number); sec = p.length === 3 ? p[0] * 3600 + p[1] * 60 + p[2] : (p[0] >= 3 && /half|marathon|mi/.test(d) && p[0] < 10 ? p[0] * 3600 + p[1] * 60 : p[0] * 60 + p[1]); } else sec = parseFloat(tm) * (/^h/.test(tm.replace(/[\d.\s]/g, '')) ? 3600 : 60);
+        const mmss = (s) => Math.floor(s / 60) + ':' + String(Math.round(s % 60)).padStart(2, '0'); if (km > 0 && sec > 0) return { value: mmss(sec / (km / 1.609344)) + ' per mile', note: mmss(sec / km) + ' per km · ' + d + ' (' + (Math.round(km * 100) / 100) + ' km) in ' + tm }; }
+      // clock maths: "what time is 3 hours after 10pm", "what was the time 90 minutes ago", "how long from 9:15 to 5:45", "add 1h 45m and 2h 30m"
+      m = t.match(/^(?:what\s+time\s+(?:is|will\s+it\s+be)\s+)?(\d+(?:\.\d+)?)\s*(hours?|hrs?|minutes?|mins?)\s+(after|before|from)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/);
+      if (m) { let h = +m[4] % 12 + (m[6] === 'pm' ? 12 : 0); if (!m[6] && +m[4] === 12) h = 12; if (!m[6] && +m[4] > 12) h = +m[4]; const base = h * 60 + +(m[5] || 0), dmin = parseFloat(m[1]) * (/^h/.test(m[2]) ? 60 : 1) * (m[3] === 'before' ? -1 : 1), tot = ((base + dmin) % 1440 + 1440) % 1440;
+        const H = Math.floor(tot / 60), M = Math.round(tot % 60), ap = H >= 12 ? 'pm' : 'am', h12 = H % 12 || 12; return { value: h12 + ':' + String(M).padStart(2, '0') + ' ' + ap, note: m[1] + ' ' + m[2] + ' ' + m[3] + ' ' + m[4] + (m[5] ? ':' + m[5] : '') + (m[6] || '') + (base + dmin >= 1440 ? ' (the next day)' : base + dmin < 0 ? ' (the day before)' : '') }; }
+      m = t.match(/^what\s+(?:was\s+the\s+time|time\s+was\s+it)\s+(\d+)\s*(hours?|hrs?|minutes?|mins?)\s+ago$/);
+      if (m) { const d = new Date(Date.now() - +m[1] * (/^h/.test(m[2]) ? 36e5 : 6e4)); return { value: d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), note: m[1] + ' ' + m[2] + ' ago' + (d.getDate() !== new Date().getDate() ? ', ' + d.toLocaleDateString([], { weekday: 'long' }) : '') }; }
+      m = t.match(/^(?:how\s+long\s+(?:is\s+it\s+)?|how\s+many\s+hours\s+(?:is\s+it\s+)?|time\s+)?(?:from|between)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?\s+(?:to|and|until|till)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)?$/);
+      if (m) { const toMin = (h, mi, ap) => ((+h % 12) + (ap === 'pm' ? 12 : 0) + (!ap && +h === 12 ? 12 : 0)) * 60 + +(mi || 0); let a = toMin(m[1], m[2], m[3]), b = toMin(m[4], m[5], m[6]); if (!m[3] && !m[6]) { while (b <= a) b += 720; } else if (b <= a) b += 1440;
+        const d = b - a, H = Math.floor(d / 60), M = d % 60; return { value: H + ' h' + (M ? ' ' + M + ' min' : ''), note: (Math.round(d / 60 * 100) / 100) + ' hours' + (!m[3] && !m[6] ? ' (no am/pm given: the next time the clock reaches it)' : '') }; }
+      m = t.match(/^(?:add\s+)?((?:\d+\s*h(?:ours?|rs?)?\s*)?(?:\d+\s*m(?:in(?:ute)?s?)?)?)\s+(?:and|plus|\+)\s+((?:\d+\s*h(?:ours?|rs?)?\s*)?(?:\d+\s*m(?:in(?:ute)?s?)?)?)$/);
+      if (m && m[1].trim() && m[2].trim() && /h|m/.test(m[1]) && /h|m/.test(m[2])) { const mins = (x) => { const h = x.match(/(\d+)\s*h/), mi = x.match(/(\d+)\s*m/); return (h ? +h[1] * 60 : 0) + (mi ? +mi[1] : 0); }, d = mins(m[1]) + mins(m[2]); return { value: Math.floor(d / 60) + ' h ' + (d % 60) + ' min', note: m[1].trim() + ' + ' + m[2].trim() + ' = ' + d + ' minutes' }; }
+      // "is it a weekend", "is today a weekday", "what quarter of the year is it"
+      if (/^is\s+(?:it|today)\s+(?:a\s+|the\s+)?(?:weekend|weekday|work\s*day|business\s+day)(?:\s+today)?$/.test(t)) { const d = new Date().getDay(), we = d === 0 || d === 6; return { value: /weekend/.test(t) ? (we ? 'Yes' : 'No') : (we ? 'No' : 'Yes'), note: 'today is ' + new Date().toLocaleDateString([], { weekday: 'long' }) }; }
+      if (/^(?:what|which)\s+(?:fiscal\s+)?quarter\s+(?:of\s+the\s+year\s+)?(?:is\s+it|are\s+we\s+in|is\s+this)(?:\s+(?:now|today))?$/.test(t)) { const d = new Date(), q = Math.floor(d.getMonth() / 3) + 1; return { value: 'Q' + q, note: ['January–March', 'April–June', 'July–September', 'October–December'][q - 1] + ' ' + d.getFullYear() + ' (calendar quarters; fiscal years can differ)' }; }
       // "the square of 13"
       m = t.match(/^(?:the\s+)?square\s+of\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = String(Math.round(+m[1] * +m[1] * 1e9) / 1e9); return { value: v, note: m[1] + '² = ' + v }; }
