@@ -592,5 +592,20 @@
   {"ask": "make the timer bigger", "want": "timer|alter", "before": ["set a timer for 10 minutes"]},
   {"ask": "make the list blue", "want": "list|alter", "before": ["make a shopping list with milk and eggs"]},
   {"ask": "cross off eggs", "want": "list", "before": ["make a shopping list with milk and eggs"]},
-  {"ask": "mark milk as done", "want": "list", "before": ["make a shopping list with milk and eggs"]}
+  {"ask": "mark milk as done", "want": "list", "before": ["make a shopping list with milk and eggs"]},
+  {"ask": "hi", "want": "said|self|hello"},
+  {"ask": "thanks", "want": "said|self|hello|thanks"},
+  {"ask": "thank you", "want": "said|self|hello|thanks"},
+  {"ask": "good morning", "want": "said|self|hello|today"},
+  {"ask": "how are you", "want": "said|self|hello"},
+  {"ask": "what's your name", "want": "self|said"},
+  {"ask": "who made you", "want": "self|said"},
+  {"ask": "are you an ai", "want": "self|said"},
+  {"ask": "help", "want": "self"},
+  {"ask": "i'm bored", "want": "said|self|chance|skill:joke|answer"},
+  {"ask": "tell me a fun fact", "want": "said|answer|skill:joke"},
+  {"ask": "motivate me", "want": "said|answer"},
+  {"ask": "what should i eat for dinner", "want": "chance|said|answer|skill:recipe"},
+  {"ask": "good night", "want": "said|self|hello"},
+  {"ask": "you're awesome", "want": "said|self|hello|thanks"}
 ]

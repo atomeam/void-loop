@@ -2781,6 +2781,29 @@ return { ok: true, detail: 'timer-reset' };
       const old = el.querySelector('.vtail'); if (old) old.remove();
       const d = document.createElement('div'); d.className = 'src vtail'; d.innerHTML = el._tail; el.appendChild(d);
     }
+    // Small talk lines (no network, nothing on the miss board). Facts are well-established ones; the encouragements are Void's own.
+    const FUN_FACTS = ['Octopuses have three hearts and blue blood.', 'Honey found in ancient Egyptian tombs was still edible.', 'A day on Venus is longer than its year.',
+      'Bananas are berries; strawberries are not.', 'Wombat droppings are cube-shaped.', 'There are more trees on Earth than stars in the Milky Way, by most estimates.',
+      'The Eiffel Tower grows about 15 cm taller in summer heat.', 'Sharks existed before trees did.', 'A group of flamingos is called a flamboyance.',
+      'Your stomach gets a new lining every few days.', 'Hot water can freeze faster than cold under some conditions (the Mpemba effect).', 'Sea otters hold hands while they sleep so they don’t drift apart.'];
+    const CHEERS = ['Start small: one thing, the next ten minutes.', 'You’ve done hard things before. This is one more.', 'Progress counts even when it’s quiet.',
+      'Done beats perfect. Ship the first version.', 'Rest is part of the work.', 'The best time was earlier. The second best is now.'];
+    const DINNERS = ['tacos', 'a stir-fry', 'pasta with garlic and olive oil', 'a big salad', 'curry', 'homemade pizza', 'soup and bread', 'fried rice', 'burrito bowls', 'grilled cheese and tomato soup'];
+    const pick = (a) => a[Math.floor(Math.random() * a.length)];
+    function smallTalk(l) {
+      if (/^(?:thanks|thank\s+you|thx|ty|cheers|thanks\s+(?:void|a\s+lot|so\s+much)|thank\s+you\s+(?:void|so\s+much))$/.test(l)) return 'anytime';
+      if (/^(?:how\s+are\s+you|how'?s\s+it\s+going|how\s+are\s+you\s+doing|how\s+do\s+you\s+do|you\s+ok)(?:\s+(?:today|void))?$/.test(l)) return 'quiet and ready. what do you need?';
+      if (/^(?:what'?s|what\s+is)\s+your\s+name$|^who\s+are\s+you$/.test(l)) return 'Void, by A-to-Mind. ask for anything';
+      if (/^(?:who\s+(?:made|built|created|designed)\s+you|who'?s\s+your\s+(?:maker|creator))$/.test(l)) return 'A-to-Mind made me: Adam, building with a crew of AI agents';
+      if (/^(?:are\s+you\s+(?:an?\s+)?(?:ai|bot|robot|human|real|a\s+person|alive|chatgpt|sentient))$/.test(l)) return 'software, not a person: I make things appear when you ask';
+      if (/^(?:good\s*night|night\s+night|nighty\s+night|sleep\s+well|bye|goodbye|see\s+you|see\s+ya|later)(?:\s+void)?$/.test(l)) return /night/.test(l) ? 'good night' : 'see you';
+      if (/^(?:you'?re|you\s+are)\s+(?:awesome|great|amazing|cool|the\s+best|smart|helpful)$|^(?:i\s+love\s+you|love\s+you|nice|cool|awesome|great\s+job|good\s+job|well\s+done)(?:\s+void)?$/.test(l)) return 'thank you';
+      if (/^(?:i'?m|i\s+am)\s+bored$|^(?:entertain\s+me|i'?m\s+so\s+bored)$/.test(l)) return 'try: play othello · magic 8 ball · knock knock · tell me a fun fact';
+      if (/^(?:tell\s+me\s+)?(?:a\s+)?(?:fun|random|cool|interesting)\s+fact$|^tell\s+me\s+something\s+(?:interesting|i\s+don'?t\s+know)$/.test(l)) return pick(FUN_FACTS);
+      if (/^(?:motivate\s+me|inspire\s+me|i\s+need\s+motivation|give\s+me\s+(?:some\s+)?motivation|encourage\s+me)$/.test(l)) return pick(CHEERS);
+      if (/^what\s+should\s+i\s+(?:eat|have|make|cook)(?:\s+for)?(?:\s+(?:dinner|lunch|tonight|today))?$/.test(l)) { const d = pick(DINNERS); return 'how about ' + d + '? say “recipe for ' + d.replace(/^(?:a|an)\s+/, '') + '” for one'; }
+      return null;
+    }
     // Read an answer page out: its title becomes the region's name, and its title and first lines go to the polite live
     // region. Pages that fill in later (weather, news) are read again once they settle.
     function srAnnounce(el) {
@@ -4571,6 +4594,8 @@ return { ok: true, detail: 'timer-reset' };
       // quiet one-liners: nothing to close, a greeting, a probe. No page, no Wikipedia, nothing on the miss board.
       if (!vpageEl && /^(close|close it|close this|go away|dismiss|hide it)\s*[.!]?$/.test(lower0)) { say('nothing open'); return; }
       if (/^(hi|hello|hey|hiya|yo|sup|wassup|wazzup|what'?s\s+up|whats\s+up|ola|olá|oi|hola|szia|hallo|bonjour|salut|ciao|hej|good\s+(morning|afternoon|evening))(\s+(there|void))?\s*[.!?]*$/.test(lower0)) { say('hi. ask for anything'); return; }
+      // small talk: short, warm, and no encyclopedia page about the word "thanks"
+      { const st = smallTalk(lower0.replace(/[.!?]+$/, '').replace(/\s+/g, ' ').trim()); if (st) { say(st); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'said' }); return; } }
       if (/^(test|testing|probe|ping|ping-test|research probe|test miss from research|asdf+|qwerty|zz+q*x*)\s*[.!?]*$/.test(lower0) || /^[bcdfghjklmnpqrstvwxz]{4,8}$/.test(lower0)
           || /^\/[\w-]+$/.test(lower0) || /^zz+\b.*\bprobe\b/.test(lower0)) { say(''); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
