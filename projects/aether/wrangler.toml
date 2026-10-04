@@ -1,0 +1,20 @@
+name = "aether-dispatcher"
+main = "src/dispatcher.ts"
+compatibility_date = "2025-01-01"
+
+# Void API access for fetching miss board
+[env.production]
+vars = { VOID_API_URL = "https://a-to-mind.com" }
+# VOID_API_TOKEN must be set via: wrangler secret put VOID_API_TOKEN --env production
+
+# Scheduled trigger: every hour
+[[triggers.crons]]
+cron = "0 * * * *"
+
+[build]
+command = "npm install && npm run build"
+cwd = "."
+watch_paths = ["src/**/*.ts"]
+
+[build.upload]
+format = "service-worker"

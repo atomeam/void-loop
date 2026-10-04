@@ -1,0 +1,69 @@
+# Persistent tasks: Void's build queue inspected on a schedule and turned into a2m-bridge task
+# envelopes. Dry-run by default, like think-tank.yml: a scheduled run prints the envelopes it would
+# send and writes nothing live. Only a manual run with dry_run explicitly false attempts a live call,
+# and even then it refuses unless BRIDGE_URL and BRIDGE_TOKEN are both present as secrets.
+name: Void dispatcher
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: Print the envelopes and send nothing
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: void-dispatcher
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Dry run unless a manual run says otherwise
+        id: mode
+        env:
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run == false && 'false' || 'true' }}
+        run: |
+          set -euo pipefail
+          echo "dry_run=$DRY_RUN" >> "$GITHUB_OUTPUT"
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "dry run: envelopes are printed and audited, nothing is sent to the bridge"
+          else
+            echo "::warning title=Live dispatch::This run may POST to the bridge."
+          fi
+
+      - name: Dispatcher checks
+        if: steps.mode.outputs.dry_run == 'true'
+        run: node --test tools/dispatcher.test.mjs
+
+      - name: Inspect the queue and build envelopes
+        env:
+          DRY_RUN: ${{ steps.mode.outputs.dry_run }}
+          BRIDGE_URL: ${{ secrets.BRIDGE_URL }}
+          BRIDGE_TOKEN: ${{ secrets.BRIDGE_TOKEN }}
+        run: node tools/dispatcher.mjs
+
+      - name: Where each row would land
+        if: always()
+        run: |
+          set -euo pipefail
+          {
+            echo "### Dispatcher"
+            echo
+            echo '```json'
+            tail -n 40 domains/void.dispatch-log.jsonl || echo "(no audit rows)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
