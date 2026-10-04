@@ -772,6 +772,14 @@
     "want": "skill:make"
   },
   {
+    "ask": "lets play othello",
+    "want": "skill:make"
+  },
+  {
+    "ask": "play reversi",
+    "want": "skill:make"
+  },
+  {
     "ask": "make a 3d cube",
     "want": "skill:make"
   },
