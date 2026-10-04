@@ -921,5 +921,6 @@
   {"ask": "split 240 among 3 people", "want": "calc|skill:tip", "says": "80"},
   {"ask": "what is 15% of 80 plus 80", "want": "calc", "says": "92"},
   {"ask": "reverse percentage 120 after 20% increase", "want": "calc", "says": "100"},
-  {"ask": "original price if 75 after 25% off", "want": "calc", "says": "100"}
+  {"ask": "original price if 75 after 25% off", "want": "calc", "says": "100"},
+  {"ask": "how many kpa in a bar", "want": "calc", "says": "100"}
 ]
