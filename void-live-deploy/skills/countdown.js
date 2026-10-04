@@ -13,7 +13,7 @@ export function countdownOf(text) {
   const v = t.match(/^(?:how many )?days (?:until|till|to) (.+)$/i);
   if (v) { const w = v[1].toLowerCase().replace(/^the /, '').replace(/['’]/g, ''); if (OWN.has(w) && NAMED[w]) return { kind: 'named', label: NAMED[w][0], date: NAMED[w][1] }; }
   // "days until my birthday on march 3": a named day with its date
-  const b = t.match(/^(?:how many )?days (?:until|till|to) (?:my |our |the )?([a-z' ]{2,40}?) (?:on|is on|is) ([a-z]+ \d{1,2})$/i);
+  const b = t.match(/^(?:(?:how many )?days (?:until|till|to)|(?:a |start a )?countdown (?:to|until|till)) (?:my |our |the )?([a-z' ]{2,40}?) (?:on|is on|is) ([a-z]+ \d{1,2})$/i);
   if (b && realDay(b[2])) return { kind: 'named', label: b[1], date: b[2].toLowerCase() };
   // "countdown to christmas", "how many sleeps until christmas" (plain "days until christmas" stays with holidays/calc)
   const c = t.match(/^(?:(?:a |start a )?countdown (?:to|until|till)|(?:how many )?sleeps (?:until|till|to)) (.+)$/i);
