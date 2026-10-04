@@ -816,7 +816,8 @@ try {
     if (two !== 'list,timer' || !/built: a list \+ a timer/.test(twoSay) || one !== 'list,notepad,timer,timer') bad.push('app -> ' + JSON.stringify({ two, twoSay, one }));
     const shape = grown.every((g) => g.ask && /^2026-\d\d-\d\d$/.test(g.missed) && g.now && ['page', 'say', 'stage', 'quiet'].includes(g.expect) && (g.expect === 'quiet' || g.text));
     // the everyday benchmark (tools/bench.json): the score may rise, never fall below tools/bench.best.json
-    { const run = spawnSync(process.execPath, [path.join(root, '..', 'tools', 'bench.mjs'), '--score'], { encoding: 'utf8', timeout: 600000 });
+    // (VOID_SKIP_BENCH: CI runs it as its own job, on its own machine, alongside this suite)
+    if (!process.env.VOID_SKIP_BENCH) { const run = spawnSync(process.execPath, [path.join(root, '..', 'tools', 'bench.mjs'), '--score'], { encoding: 'utf8', timeout: 600000 });
       let b = null; try { b = JSON.parse(String(run.stdout).trim().split('\n').pop()); } catch (_) {}
       const best = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'bench.best.json'), 'utf8'));
       check('bench: the everyday benchmark scores at least its best (' + best.score + ' of ' + best.total + '); each ask answered by what should answer it',
@@ -2073,6 +2074,24 @@ try {
     check('countdown: "days until new year" lands as an outcome card on the stage (not a popup page) with the right day count, a working copy button, and it survives a reload',
       !!card && card.hasCopy && /^(copied|select and copy)$/.test(copied) && st && st.days === wantDays && card.text.includes(cdFull.daysLine(wantDays)) && !!survived && Q.errors.length === 0,
       JSON.stringify({ card, st, wantDays, copied, errs: Q.errors }));
+    await Q.ctx.close(); }
+
+  // othello: real rules (4 starting discs, a move must flip, 8 directions), and Void answers your move on the card
+  { const oth = await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
+    const s0 = oth.createOthelloState();
+    const after = oth.resolveMove(s0, 19).nextState; // d3: flips d4
+    let illegal = false; try { oth.resolveMove(s0, 0); } catch (_) { illegal = true; }
+    const Q = await fresh();
+    await Q.ask('play othello', 500);
+    const before = await Q.p.$$eval('.othello-card button[data-i] span', (d) => d.length).catch(() => 0);
+    await Q.p.$eval('.othello-card button[data-i="19"]', (b) => b.click()).catch(() => {});
+    await Q.p.waitForTimeout(900);
+    const st = (await Q.state()).find((t) => t.kind === 'othello');
+    const status = await Q.p.$eval('.othello-card', (e) => e.innerText).catch(() => '');
+    check('othello: opening has 4 legal moves for black, a move flips, an illegal square is refused; "play othello" summons a board, your move lands and Void replies',
+      oth.legalMoves(s0.board, 1).join() === '19,26,37,44' && after.board[27] === 1 && after.turn === 2 && illegal
+        && before === 8 && !!st && /your move/.test(status) && Q.errors.length === 0,
+      JSON.stringify({ before, status, errs: Q.errors }));
     await Q.ctx.close(); }
 
   { const slog = await import(new URL('../void-live-deploy/skills/slogan3d.js', import.meta.url).href);

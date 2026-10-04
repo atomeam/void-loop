@@ -473,5 +473,30 @@
     ],
     "sha256": "c15781b36afd82c659ff1957475b653b3310d9591286f246b1611c1e007b253b",
     "emit": false
+  },
+  {
+    "run": 20,
+    "at": "2026-10-04T09:46:30Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger-2.html",
+    "sources": [
+      {
+        "claim": "The Brier score, the mean squared gap between a stated probability and what happened, measures forecast quality; always saying 50% scores 0.25",
+        "source": "https://doi.org/10.1175/1520-0493(1950)078%3C0001:VOFEIT%3E2.0.CO;2",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "People who keep score of their probabilistic forecasts become better calibrated over time (Good Judgment Project)",
+        "source": "https://doi.org/10.1177/0956797614524255",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Scoring your own hunches tells you which of your weak signals are worth acting on",
+        "source": "drafts/fringe/weak-signal-hypothesis-ledger-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "42c59305e335d09e0c8a520092839f42f9d241557d826b042ed941ca9713211c",
+    "emit": false
   }
 ]

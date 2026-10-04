@@ -1,0 +1,7 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# The hourly runs open their PRs as drafts and merge them on green CI, so CodeRabbit has to review drafts too,
+# or every PR here goes unreviewed ("Draft PR not reviewed").
+reviews:
+  auto_review:
+    enabled: true
+    drafts: true

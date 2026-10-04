@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · how sure were you (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+input,button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 10px}
+button{cursor:pointer}
+input:focus-visible,button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+form{display:flex;gap:8px;flex-wrap:wrap}
+#claim{flex:1 1 260px}
+#p{width:5.5em}
+ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+li{display:flex;gap:8px;align-items:center;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.08);padding-bottom:6px}
+li .t{flex:1 1 200px}
+li.true .t{color:#7cf}
+li.false .t{color:#6a6a72;text-decoration:line-through}
+#score{white-space:pre-line;min-height:3em}
+svg{width:100%;max-width:320px;height:auto;display:block}
+</style>
+</head>
+<body>
+<main>
+  <h1>how sure were you · draft · not published</h1>
+  <p class="note">A hunch ledger that scores you. Write a hunch and how sure you are (0–100%). Later, mark whether it happened. The page shows your Brier score (0 is perfect; always saying 50% scores 0.25) and whether your "70%" hunches come true about 70% of the time. A strong feeling is not evidence; this only measures how well your confidence tracks what happens. Everything stays in this browser.</p>
+  <form id="f"><input id="claim" required maxlength="200" placeholder="it rains here on saturday" aria-label="hunch"><input id="p" type="number" min="0" max="100" step="5" value="70" aria-label="how sure, percent"> <button type="submit">add</button></form>
+  <ul id="list" aria-label="hunches"></ul>
+  <div id="score" aria-live="polite"></div>
+  <svg id="cal" viewBox="0 0 220 220" role="img" aria-label="calibration: said vs happened"></svg>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.hunches.v1',items=[];
+  try{items=JSON.parse(localStorage.getItem(KEY)||'[]')}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(_){}}
+  // Brier (1950): mean of (p - outcome)^2 over resolved hunches
+  function brier(xs){var r=xs.filter(function(x){return x.outcome!=null});if(!r.length)return null;return r.reduce(function(a,x){var d=x.p-(x.outcome?1:0);return a+d*d},0)/r.length}
+  // calibration: resolved hunches in 10-point bins -> [{said, happened, n}]
+  function bins(xs){var b={};xs.forEach(function(x){if(x.outcome==null)return;var k=Math.min(9,Math.floor(x.p*10));(b[k]=b[k]||{said:0,hit:0,n:0});b[k].said+=x.p;b[k].hit+=x.outcome?1:0;b[k].n++});return Object.keys(b).map(function(k){var v=b[k];return {said:v.said/v.n,happened:v.hit/v.n,n:v.n}})}
+  function draw(){
+    var list=document.getElementById('list');list.textContent='';
+    items.forEach(function(x,i){var li=document.createElement('li');li.className=x.outcome==null?'':x.outcome?'true':'false';
+      var t=document.createElement('span');t.className='t';t.textContent=Math.round(x.p*100)+'% · '+x.claim;li.appendChild(t);
+      [['happened',true],['didn’t',false],['remove',null]].forEach(function(o){var b=document.createElement('button');b.type='button';b.textContent=o[0];
+        b.addEventListener('click',function(){if(o[1]===null)items.splice(i,1);else items[i].outcome=o[1];save();draw()});li.appendChild(b)});
+      list.appendChild(li)});
+    var s=brier(items),n=items.filter(function(x){return x.outcome!=null}).length;
+    document.getElementById('score').textContent=s==null?'mark a hunch to see a score':('Brier score: '+s.toFixed(3)+' over '+n+' resolved'+(n<10?' (under 10: too few to read much into)':'')+'\n'+(s<0.2?'better than always saying 50%':s>0.25?'worse than always saying 50%':'about as good as always saying 50%'));
+    var svg=document.getElementById('cal'),ns='http://www.w3.org/2000/svg';svg.textContent='';
+    function el(n,a){var e=document.createElementNS(ns,n);for(var k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e}
+    el('rect',{x:10,y:10,width:200,height:200,fill:'none',stroke:'rgba(255,255,255,.18)'});
+    el('line',{x1:10,y1:210,x2:210,y2:10,stroke:'rgba(255,255,255,.25)','stroke-dasharray':'4 4'});
+    bins(items).forEach(function(b){el('circle',{cx:10+b.said*200,cy:210-b.happened*200,r:3+Math.min(9,b.n),fill:'#7cf','fill-opacity':.7})});
+  }
+  document.getElementById('f').addEventListener('submit',function(e){e.preventDefault();var c=document.getElementById('claim'),p=Math.max(0,Math.min(100,+document.getElementById('p').value||0))/100;
+    items.push({claim:c.value.trim(),p:p,outcome:null,at:new Date().toISOString().slice(0,10)});c.value='';save();draw()});
+  draw();
+  window.__hunch={brier:brier,bins:bins}; // for checks
+})();
+</script>
+</body>
+</html>

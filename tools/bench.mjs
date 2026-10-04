@@ -4,12 +4,16 @@
 //   node tools/bench.mjs            prints each ask and what answered it, then the totals
 //   node tools/bench.mjs --score    prints only {"score","total","wrong":[...]} (the tests read this; tools/bench.best.json is the floor)
 //   node tools/bench.mjs --last 10  replays only the last 10 asks (fast while growing a new round; the score and floor use all)
+//   node tools/bench.mjs --probe c.json  tries candidate asks from a file, prints only the misses (bench.json untouched)
 // Asks run BENCH_PAR at a time (default 6), each in its own browser context, so the order and the result don't change;
 // each waits until the page has logged its answer (at least 1.6 s, at most 4 s), so a busy machine doesn't miss one.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { chromium } from 'playwright-core';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
-const asks = JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'));
+// --probe file.json: try candidate asks (same shape) without touching bench.json; prints only the misses, so a big batch
+// finds the gaps fast. Add the ones worth keeping with tools/append.mjs once Void answers them.
+const probeFile = process.argv.includes('--probe') ? process.argv[process.argv.indexOf('--probe') + 1] : null;
+const asks = JSON.parse(fs.readFileSync(probeFile ? path.resolve(probeFile) : path.join(here, 'bench.json'), 'utf8'));
 // A repeated ask would count twice and inflate the score: refuse it.
 { const seen = new Set(), dup = asks.map((a) => a.ask.toLowerCase()).filter((k) => seen.has(k) || !seen.add(k));
   if (dup.length) { console.error('bench.json repeats: ' + dup.join(' | ')); process.exit(1); } }
@@ -65,7 +69,7 @@ let next = 0;
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]); } }));
 await browser.close(); server.close();
 if (process.argv.includes('--score')) { console.log(JSON.stringify({ score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by) })); process.exit(0); }
-for (const x of out) console.log((x.right ? '  ok  ' : ' ---- ') + x.ask.padEnd(42) + ' ' + (x.by + (x.right ? '' : '   (wants ' + x.want + ')')));
+for (const x of out) if (!probeFile || !x.right) console.log((x.right ? '  ok  ' : ' ---- ') + x.ask.padEnd(42) + ' ' + (x.by + (x.right ? '' : '   (wants ' + x.want + ')')));
 const n = out.filter((x) => x.right).length;
 console.log('\n' + n + ' of ' + out.length + ' answered by what should answer them.');
 if (process.argv.includes('--json')) fs.writeFileSync(path.join(here, 'bench.last.json'), JSON.stringify(out, null, 1));

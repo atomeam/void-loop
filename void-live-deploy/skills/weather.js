@@ -15,7 +15,7 @@ const WX = {
 function weatherPlace(text) {
   const m = text.match(/\b(?:in|at|for|near)\s+([^?.!]+)$/i);
   if (m) return m[1].replace(/\b(today|tomorrow|now|right now|this week)\b/ig, '').trim();
-  const t = text.replace(/[?.!]/g, '').replace(/\b(what'?s|what is|the|weather|forecast|temperature|like|today|now|is it|will it|going to|rain|snow|how|cold|hot|warm|here|outside)\b/ig, ' ').trim();
+  const t = text.replace(/[?.!]/g, '').replace(/\b(what'?s|what is|the|weather|forecast|temperature|like|today|now|is it|will it|going to|rain|snow|raining|snowing|sunny|windy|cloudy|how|cold|hot|warm|here|outside)\b/ig, ' ').trim();
   return t;
 }
 
@@ -85,6 +85,7 @@ export default {
     if (/\b(pollen|allerg)/.test(lower)) return false;
     return /\b(weather|forecast|temperature)\b/.test(lower)
       || /\b(is it|will it|going to)\s+(rain|snow)\b/.test(lower)
+      || /^is\s+it\s+(raining|snowing|sunny|windy|cloudy|hot|cold)\b/.test(lower)
       || /\bhow\s+(cold|hot|warm)\s+is\s+it\b/.test(lower);
   },
   run
