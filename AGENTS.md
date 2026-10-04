@@ -10,7 +10,7 @@ Then read `domains\void.growth.md` (what's next) and the last lines of `domains\
 
 - `node tools/checks.mjs` runs every fast check in one go (fringe ledger, skill collisions, calendar, glyphs, the full benchmark against its floor, the miss reader's redaction). Run it before every push; CI runs the full browser suite.
 - `node tools/bench.mjs --probe candidates.json` tries a batch of new asks (same shape as tools/bench.json) and prints only the misses. Probe 30–40 at once, fix the misses, then add the batch with `tools/append.mjs bench --skip`.
-- Never wait on CI. Push, then run `node tools/merge-when-green.mjs <pr>` in the background; it merges when test-and-deploy (and the parallel bench job) pass on the PR's current head, and stops with the failing run's link otherwise.
+- Never wait on CI. Push, then run `node tools/merge-when-green.mjs <pr>` in the background; it merges when test-and-deploy (and the parallel bench job) pass on the PR's current head, and stops with the failing run's link otherwise. A CodeRabbit review still running gets up to 10 min after green, and actionable CodeRabbit findings on the head stop it (exit 3) so they get fixed before merging.
 - A new push to a PR cancels the older run of that PR (deploy.yml "Supersede older runs"); on a PR the benchmark runs as its own job, in parallel with the suite.
 - `node tools/merge-main.mjs` merges origin/main and settles the append-only files (bench.json, grown.json, the agent log) by keeping both sides.
 - `node tools/misses.mjs` reads the real miss board (owner-only /api/misses, needs VOID_MISSES_TOKEN). It only prints: this repo is public, so raw asks never get committed.

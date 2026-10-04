@@ -598,5 +598,30 @@
     ],
     "sha256": "de68d56cd95c576a58eb1f0601279418707a44e85c76a6d87e16e3052fe2862a",
     "emit": false
+  },
+  {
+    "run": 25,
+    "at": "2026-10-04T16:00:16Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-3.html",
+    "sources": [
+      {
+        "claim": "People using decision aids tend to accept automated suggestions without enough checking (automation bias), including wrong ones, across fields such as aviation and medicine",
+        "source": "https://doi.org/10.1177/0018720810376055",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "In clinical decision support, automation bias raised errors when advice was wrong; committing to one's own judgment before seeing the advice is among the suggested mitigations",
+        "source": "https://doi.org/10.1136/amiajnl-2011-000089",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This person catches more wrong suggestions when they answer before seeing the suggestion than when they see it first",
+        "source": "drafts/fringe/human-machine-co-agency-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "b33a4627b30727026960c7beb903cbf0f2694437f480221a07014a54c319d15d",
+    "emit": false
   }
 ]
