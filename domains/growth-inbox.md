@@ -21,7 +21,7 @@ New ideas land here in batches. A run may build any open row. Shipped rows stay,
 | shipped 4ee2383 | 2026-10-03 | dismiss this | figures-first, send it away (skill on main at 4ee2383) |
 | shipped 3b6bbea | 2026-10-03 | a figure that sits on the chair | figures-first, use what is already there (correction: row was stuck "open"; Motelet's whole personality is "it sits whenever it finds a chair", same commit as "spin the figure") |
 | building | 2026-10-04 | download the print file | export-to-print, file stays valid offline |
-| open | 2026-10-04 | cartoon version of a hard subject | two-part summons, funny not grim |
+| building | 2026-10-04 | cartoon version of a hard subject | two-part summons, funny not grim |
 | open | 2026-10-04 | zoom in on the figure | collector detail, progressive |
 | open | 2026-10-04 | what can this figure do | figure stays on brand |
 | open | 2026-10-04 | show the countdown | days until a date |
