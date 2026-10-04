@@ -12,6 +12,7 @@ Then read `domains\void.growth.md` (what's next) and the last lines of `domains\
 - `node tools/bench.mjs --probe candidates.json` tries a batch of new asks (same shape as tools/bench.json) and prints only the misses. Probe 30–40 at once, fix the misses, then add the batch with `tools/append.mjs bench --skip`.
 - Never wait on CI. Push, then run `node tools/merge-when-green.mjs <pr>` in the background; it merges when test-and-deploy (and the parallel bench job) pass on the PR's current head, and stops with the failing run's link otherwise. A CodeRabbit review still running gets up to 10 min after green, and actionable CodeRabbit findings on the head, or any CodeRabbit thread nobody has answered, stop it (exit 3) so they get fixed or answered before merging.
 - A new push to a PR cancels the older run of that PR (deploy.yml "Supersede older runs"); on a PR the benchmark runs as its own job, in parallel with the suite.
+- `node tools/ask.mjs "ask" …` shows what Void answers for each ask (who answered, the card text, any page error such as a TDZ crash) with outside services blocked. Use it when a probe misses for no clear reason.
 - `node tools/merge-main.mjs` merges origin/main and settles the append-only files (bench.json, grown.json, the agent log) by keeping both sides.
 - `node tools/misses.mjs` reads the real miss board (owner-only /api/misses, needs VOID_MISSES_TOKEN). It only prints: this repo is public, so raw asks never get committed.
 - `node tools/fringe.mjs --record <draft> <sources.json>` adds a fringe run in the ledger's own style.

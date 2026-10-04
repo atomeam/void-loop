@@ -673,5 +673,30 @@
     ],
     "sha256": "56263fa7473090937e54048f22db513db9c052ad504e14b8de3b3da5fc5dc242",
     "emit": false
+  },
+  {
+    "run": 28,
+    "at": "2026-10-04T18:39:04Z",
+    "family": "private-incubation-log",
+    "draft": "drafts/fringe/private-incubation-log-3.html",
+    "sources": [
+      {
+        "claim": "An undemanding task during an incubation break led to more new ideas on a repeated unusual-uses problem than a demanding task, rest, or no break",
+        "source": "https://doi.org/10.1177/0956797612446024",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Incubation effects vary with the kind of problem and what fills the break; a meta-analysis of 117 studies found the effect is larger for divergent (many-answer) problems",
+        "source": "https://doi.org/10.1037/a0014212",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "For this person, an easy task in the break gives more new ideas than a hard task or rest, measured by their own rounds",
+        "source": "drafts/fringe/private-incubation-log-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "b0a73addf58945877a4c0324366d7f7dbf2366b3e4f73d25a01f3c96b141186b",
+    "emit": false
   }
 ]
