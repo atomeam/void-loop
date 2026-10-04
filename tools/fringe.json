@@ -521,7 +521,32 @@
         "confidence": "open"
       }
     ],
-    "sha256": "a9dc2296dbc6dc0492ea2caf842830093900526ebb83bf09218f8015f4cd61ca",
+    "sha256": "dd17337969521c63c8077c6b720f994c0724bc316e32bc7ca121228a64228f9c",
+    "emit": false
+  },
+  {
+    "run": 22,
+    "at": "2026-10-04T12:44:41Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention-2.html",
+    "sources": [
+      {
+        "claim": "The psychomotor vigilance task (reacting to a counter shown at random 2-10 s intervals) is a standard, practice-resistant measure of sustained attention",
+        "source": "https://doi.org/10.3758/BF03200977",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Lapses (reactions of 500 ms or more) on the vigilance task rise steadily with chronic sleep restriction, even when people rate themselves as only slightly sleepy",
+        "source": "https://doi.org/10.1093/sleep/26.2.117",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A short 2-minute home version, logged by time of day, shows when this person is sharpest",
+        "source": "drafts/fringe/attention-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "a5a1aacd94f5d40bad916b32c3a188f316bb54cdaef730282d9fdd252a19e5dc",
     "emit": false
   }
 ]
