@@ -48,6 +48,16 @@ export function parseWorldTime(text) {
     const tomorrow = /tomorrow/i.test(t);
     return place && !NOT_PLACE.test(place) ? { kind: 'sun', which, place, tomorrow } : null;
   }
+  // "what time is sunset", "when is sunrise tomorrow": no place named, so the city your device's time zone names
+  // (the page title says which city, so it is never a hidden guess)
+  m = t.match(/^(?:(?:when|what\s+time)\s+is\s+|what'?s\s+)?(?:the\s+)?(?:(today'?s|tomorrow'?s)\s+)?(sunrise|sunset|dawn|dusk)(?:\s+(today|tonight|tomorrow))?$/i)
+    || t.match(/^(?:(?:when|what\s+time)\s+)?does\s+the\s+sun\s+(rise|set)(?:\s+(today|tonight|tomorrow))?$/i);
+  if (m) {
+    let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {}
+    const place = tz.includes('/') ? tz.split('/').pop().replace(/_/g, ' ') : '';
+    if (!place) return null;
+    return { kind: 'sun', which: /rise|dawn/i.test(m[2] || m[1]) ? 'sunrise' : 'sunset', place, tomorrow: /tomorrow/i.test(t) };
+  }
   return null;
 }
 
