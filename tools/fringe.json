@@ -566,12 +566,12 @@
         "confidence": "claim"
       },
       {
-        "claim": "This person's after-the-fact guesses are biased in a steady direction that depends on whether they were busy or idle",
+        "claim": "When this person knows in advance they will be asked (they mark the start), their duration estimates are biased in a steady direction that depends on whether they were busy or idle",
         "source": "drafts/fringe/interval-timing-3.html",
         "confidence": "open"
       }
     ],
-    "sha256": "2242298b2c482b9fadda6db17672b5809166ff766e8e6f38fb0d91ffb6b3771e",
+    "sha256": "0102e65261c240793e1f8c65c40f962621fc363453e4700829e954377d2a8200",
     "emit": false
   }
 ]

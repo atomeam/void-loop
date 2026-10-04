@@ -714,5 +714,11 @@
   {"ask": "pick one: pizza, tacos, sushi", "want": "chance", "says": "pizza|tacos|sushi"},
   {"ask": "draw a card", "want": "chance"},
   {"ask": "random number between 50 and 60", "want": "chance", "says": "5\\d|60"},
-  {"ask": "I love you void", "want": "said|answer"}
+  {"ask": "I love you void", "want": "said|answer"},
+  {"ask": "temperature in turkey", "want": "skill:weather"},
+  {"ask": "safe temperature for ham", "want": "calc", "says": "145[\\s\\S]*165"},
+  {"ask": "2 cups of all-purpose flour in grams", "want": "calc", "says": "240"},
+  {"ask": "what date is 1 month from today", "want": "calc"},
+  {"ask": "what is the date this sunday", "want": "calc", "says": "Sunday"},
+  {"ask": "how many syllables in queue", "want": "skill:util", "says": "1 syllable"}
 ]

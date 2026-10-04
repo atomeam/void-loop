@@ -25,7 +25,7 @@ th{color:#8a8a92}
 <body>
 <main>
   <h1>where did the time go · draft · not published</h1>
-  <p class="note">Press "mark" before you go and do something, without looking at the clock. When you come back, guess how many minutes went by, say whether you were busy or idle, and see the real time. People judge time differently depending on how full it was, and differently when they did not know they would be asked. This page keeps your own pattern. Everything stays in this browser.</p>
+  <p class="note">Press "mark" before you go and do something, without looking at the clock. When you come back, guess how many minutes went by, say whether you were busy or idle, and see the real time. Because you mark it first, you know you will be asked: this measures timing with advance notice, which behaves differently from a surprise question afterwards. People judge time differently depending on how full it was. This page keeps your own pattern. Everything stays in this browser.</p>
   <div class="row"><button id="mark" type="button">mark: I'm going now</button></div>
   <div id="back" hidden>
     <div class="row"><label>how many minutes went by? <input id="guess" type="number" min="0" step="1" style="width:6em"></label>
@@ -50,7 +50,7 @@ th{color:#8a8a92}
   function el(t,txt){var e=document.createElement(t);if(txt!=null)e.textContent=txt;return e}
   function draw(){
     document.getElementById('back').hidden=!st.open;
-    document.getElementById('mark').textContent=st.open?'marked at '+new Date(st.open).toLocaleTimeString([],{hour:'numeric',minute:'2-digit'})+' (no peeking)':"mark: I'm going now";
+    document.getElementById('mark').textContent=st.open?'marked (no peeking at the clock)':"mark: I'm going now";
     document.getElementById('mark').disabled=!!st.open;
     var tb=document.getElementById('log');tb.textContent='';
     st.rows.slice(0,30).forEach(function(r,i){var tr=el('tr');[new Date(r.at).toLocaleString([],{weekday:'short',hour:'numeric',minute:'2-digit'}),r.guess+' min',Math.round(r.real/60000)+' min',r.ratio+'×',r.kind].forEach(function(v){tr.appendChild(el('td',v))});tb.appendChild(tr)});
