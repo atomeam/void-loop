@@ -1132,5 +1132,10 @@
   {"ask": "how many ml in a teaspoon", "want": "calc|answer"},
   {"ask": "what is 0.75 as a fraction", "want": "calc"},
   {"ask": "what is 3/4 plus 1/8", "want": "calc"},
-  {"ask": "what is 15 percent of 80 dollars", "want": "calc"}
+  {"ask": "what is 15 percent of 80 dollars", "want": "calc"},
+  {"ask": "time difference between london and new york", "want": "skill:worldtime|calc|answer"},
+  {"ask": "what is the time zone of denver", "want": "skill:worldtime|answer"},
+  {"ask": "weather in london this weekend", "want": "skill:weather"},
+  {"ask": "will it snow in denver", "want": "skill:weather"},
+  {"ask": "how hot is it in phoenix", "want": "skill:weather"}
 ]
