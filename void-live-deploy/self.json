@@ -98,6 +98,36 @@
    "date": "2026-10-03",
    "ask": "dismiss this",
    "from": "figures-first, send it away"
+  },
+  {
+   "state": "open",
+   "date": "2026-10-04",
+   "ask": "download the print file",
+   "from": "export-to-print, file stays valid offline"
+  },
+  {
+   "state": "open",
+   "date": "2026-10-04",
+   "ask": "cartoon version of a hard subject",
+   "from": "two-part summons, funny not grim"
+  },
+  {
+   "state": "open",
+   "date": "2026-10-04",
+   "ask": "zoom in on the figure",
+   "from": "collector detail, progressive"
+  },
+  {
+   "state": "open",
+   "date": "2026-10-04",
+   "ask": "what can this figure do",
+   "from": "figure stays on brand"
+  },
+  {
+   "state": "open",
+   "date": "2026-10-04",
+   "ask": "show the countdown",
+   "from": "days until a date"
   }
  ]
 }
