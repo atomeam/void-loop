@@ -16,7 +16,7 @@ function gated(text) {
   if (/^schedule\s+(?:a\s+|an\s+)?(?:meeting|call)\s+with\b/i.test(s)) return true;
   if (/^book\s+(?:a\s+|an\s+)?(?:meeting|call)\s+with\b/i.test(s)) return true;
   // "simplify 18/24", "reduce 6/8": a fraction, not a date
-  if (/^(?:simplify|reduce)\s+\d+\s*\/\s*\d+$/i.test(s)) return true;
+  if (/^(?:simplify|reduce)\s+(?:the\s+)?(?:ratio\s+)?\d+\s*[/:]\s*\d+$/i.test(s)) return true;
   // "remind me to stretch in 20 minutes": a timer from now, not a calendar entry
   if (/^(?:remind|wake|ping|alert|buzz)\s+me\b.*\bin\s+(?:\d+(?:\.\d+)?|a|an|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|half\s+an?)\s*(?:minutes?|mins?|hours?|hrs?|seconds?|secs?)\b/i.test(s)) return true;
   return false;
