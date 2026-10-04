@@ -19,6 +19,8 @@ function gated(text) {
   if (/^(?:what(?:'s|\s+is)\s+(?:the\s+|my\s+)?)?pace\s+(?:for|to\s+run)\b|\bin\s+[\d:.]+\s*(?:minutes?|mins?|hours?|hrs?)?\s+pace$/i.test(s)) return true;
   // "double 3/4 cup", "half of 2/3 cup": recipe maths, not a date
   if (/^(?:double|triple|halve|half\s+of|a\s+third\s+of|quarter\s+of)\s+\d+\s*\/\s*\d+(?:\s+(?:cups?|tablespoons?|tbsp|teaspoons?|tsp|pounds?|lbs?|ounces?|oz))?$/i.test(s)) return true;
+  // "hours from 8:30am to 4pm": clock maths, not an event
+  if (/^(?:how\s+(?:many\s+(?:hours|minutes)|long|much\s+time)\s+(?:is\s+(?:it\s+)?)?|(?:the\s+)?(?:hours|time|minutes)\s+)(?:between|from)\s+\d{1,2}(?::\d{2})?\s*(?:am|pm)\s+(?:and|to|until|till)\s+\d{1,2}(?::\d{2})?\s*(?:am|pm)\??$/i.test(s)) return true;
   // "simplify 18/24", "reduce 6/8": a fraction, not a date
   if (/^(?:simplify|reduce)\s+(?:the\s+)?(?:ratio\s+)?\d+\s*[/:]\s*\d+$/i.test(s)) return true;
   // "remind me to stretch in 20 minutes": a timer from now, not a calendar entry

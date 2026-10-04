@@ -3118,7 +3118,7 @@ return { ok: true, detail: 'timer-reset' };
       mass: { pound: 0.45359237, pounds: 0.45359237, lb: 0.45359237, lbs: 0.45359237, kilogram: 1, kilograms: 1, kg: 1, gram: 0.001, grams: 0.001, g: 0.001, ounce: 0.0283495, ounces: 0.0283495, oz: 0.0283495 },
       volume: { cup: 236.588, cups: 236.588, milliliter: 1, milliliters: 1, ml: 1, liter: 1000, liters: 1000, litre: 1000, l: 1000, gallon: 3785.41178, gallons: 3785.41178, gal: 3785.41178, quart: 946.353, quarts: 946.353 },
     };
-    const CALC_UNIT_RE = /\b(\d+(?:\.\d+)?)\s*(miles?|mi|km|kilomet(?:er|re)s?|feet|ft|foot|yards?|yd|meters?|metres?|m|inches?|cm|pounds?|lb|lbs|kg|kilograms?|grams?|g|ounces?|oz|cups?|ml|milliliters?|liters?|litres?|l|gallons?|gal|quarts?|f|fah(?:renheit)?|c|celsius|centigrade)\s+(?:in|to)\s+(miles?|mi|km|kilomet(?:er|re)s?|feet|ft|foot|yards?|yd|meters?|metres?|m|inches?|cm|pounds?|lb|lbs|kg|kilograms?|grams?|g|ounces?|oz|cups?|ml|milliliters?|liters?|litres?|l|gallons?|gal|quarts?|f|fah(?:renheit)?|c|celsius|centigrade)\b/i;
+    const CALC_UNIT_RE = /\b(\d+(?:\.\d+)?)\s*(miles?|mi|km|kilomet(?:er|re)s?|feet|ft|foot|yards?|yd|meters?|metres?|m|inch(?:es)?|cm|pounds?|lb|lbs|kg|kilograms?|grams?|g|ounces?|oz|cups?|ml|milliliters?|liters?|litres?|l|gallons?|gal|quarts?|f|fah(?:renheit)?|c|celsius|centigrade)\s+(?:in|to)\s+(miles?|mi|km|kilomet(?:er|re)s?|feet|ft|foot|yards?|yd|meters?|metres?|m|inch(?:es)?|cm|pounds?|lb|lbs|kg|kilograms?|grams?|g|ounces?|oz|cups?|ml|milliliters?|liters?|litres?|l|gallons?|gal|quarts?|f|fah(?:renheit)?|c|celsius|centigrade)\b/i;
     const CALC_MONTHS = { january: 0, february: 1, march: 2, april: 3, may: 4, june: 5, july: 6, august: 7, september: 8, october: 9, november: 10, december: 11, jan: 0, feb: 1, mar: 2, apr: 3, jun: 5, jul: 6, aug: 7, sep: 8, sept: 8, oct: 9, nov: 10, dec: 11 };
     const CALC_HOLIDAYS = { christmas: { m: 11, d: 25 }, xmas: { m: 11, d: 25 }, 'new year': { m: 0, d: 1 }, "new year's day": { m: 0, d: 1 }, halloween: { m: 9, d: 31 }, thanksgiving: { m: 10, d: 26 }, easter: null, birthday: null };
     function fmtNum(n) { return (Math.round(n * 100) / 100).toString(); }
@@ -3186,6 +3186,7 @@ return { ok: true, detail: 'timer-reset' };
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:an?\s+)?|(?:the\s+)?(?:size|dimensions?)\s+of\s+(?:an?\s+)?)?(?:1080p|full\s+hd)(?:\s+resolution)?$|^what\s+is\s+1080p(?:\s+resolution)?$/, '1920 × 1080', 'Full HD; 2,073,600 pixels'],
       [/^(?:what\s+is\s+)?(?:4k|uhd)\s+(?:resolution(?:\s+in\s+pixels)?|in\s+pixels)$|^what\s+is\s+4k(?:\s+resolution)?$/, '3840 × 2160', '4K UHD for TVs; cinema 4K (DCI) is 4096 × 2160'],
       [/^(?:what\s+is\s+)?720p(?:\s+resolution)?$/, '1280 × 720', 'HD'],
+      [/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?speed\s+of\s+sound(?:\s+in\s+air)?$/, '343 m/s', 'in dry air at 20 °C: about 767 mph or 1,235 km/h; faster in warm air, much faster in water (about 1,480 m/s)'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?queen(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '60 × 80 in', 'a US queen mattress (152 × 203 cm)'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?king(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '76 × 80 in', 'a US king mattress (193 × 203 cm); a California king is 72 × 84 in'],
       [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?(?:full|double)(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '54 × 75 in', 'a US full (double) mattress (137 × 191 cm)'],
@@ -3269,6 +3270,9 @@ return { ok: true, detail: 'timer-reset' };
       if (m) { const h = /^m/.test(m[4]) && !/^mi$/.test(m[4]) ? +m[3] / 60 : +m[3], v = Math.round(+m[1] / h * 10) / 10; return { value: v + (/^k/.test(m[2]) ? ' km/h' : ' mph'), note: m[1] + ' ' + m[2] + ' in ' + m[3] + ' ' + m[4] }; }
       // "20 is what percent of 80"
       m = t.match(/^(-?\d+(?:\.\d+)?)\s+is\s+what\s+(?:percent|percentage|%)\s+of\s+(-?\d+(?:\.\d+)?)$/);
+      if (m && +m[2]) { const v = Math.round(+m[1] / +m[2] * 10000) / 100; return { value: v + '%', note: m[1] + ' is ' + v + '% of ' + m[2] }; }
+      // "what percent is 45 of 60"
+      m = t.match(/^what\s+(?:percent|percentage|%)\s+is\s+(-?\d+(?:\.\d+)?)\s+of\s+(-?\d+(?:\.\d+)?)$/);
       if (m && +m[2]) { const v = Math.round(+m[1] / +m[2] * 10000) / 100; return { value: v + '%', note: m[1] + ' is ' + v + '% of ' + m[2] }; }
       // "2/3 of 90"
       m = t.match(/^(\d+)\s*\/\s*(\d+)\s+of\s+(-?\d+(?:\.\d+)?)$/);
@@ -3552,6 +3556,9 @@ return { ok: true, detail: 'timer-reset' };
       m = t.match(/^(?:(?:the\s+)?rule\s+of\s+72\s+(?:at|for)|how\s+long\s+(?:does\s+it\s+take\s+)?to\s+double\s+(?:my\s+|your\s+)?(?:money|an\s+investment|savings)\s+at)\s+(\d+(?:\.\d+)?)\s*(?:%|percent)(?:\s+(?:interest|return|a\s+year))?$/);
       if (m && !(+m[1] > 0)) return { value: 'never', note: 'at 0% money does not grow, so it never doubles' };
       if (m) { const r = +m[1], exact = Math.log(2) / Math.log(1 + r / 100); return { value: 'about ' + (Math.round(72 / r * 10) / 10) + ' years', note: 'rule of 72: 72 ÷ ' + r + ' · exactly ' + (Math.round(exact * 10) / 10) + ' years with yearly compounding' }; }
+      // "6 percent interest on 5000 for 3 years": simple interest, said the other way round
+      m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:simple\s+)?interest\s+(?:on|for)\s+\$?([\d,]+(?:\.\d+)?)\s+(?:for|over)\s+(\d+(?:\.\d+)?)\s+(years?|months?)$/);
+      if (m && +m[2].replace(/,/g, '')) { const P = +m[2].replace(/,/g, ''), yrs = +m[3] / (/^m/.test(m[4]) ? 12 : 1), i = P * +m[1] / 100 * yrs; return { value: '$' + (Math.round(i * 100) / 100).toLocaleString(), note: 'simple interest; total $' + (Math.round((P + i) * 100) / 100).toLocaleString() + ' · with yearly compounding the total would be $' + (Math.round(P * (1 + +m[1] / 100) ** yrs * 100) / 100).toLocaleString() }; }
       m = t.match(/^(?:the\s+)?simple\s+interest\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)\s+at\s+(\d+(?:\.\d+)?)\s*%\s+(?:for|over)\s+(\d+(?:\.\d+)?)\s+(years?|months?)$/);
       if (m) { const yrs = +m[3] / (/^m/.test(m[4]) ? 12 : 1), i = +m[1] * +m[2] / 100 * yrs; return { value: '$' + (Math.round(i * 100) / 100).toLocaleString(), note: 'simple interest; total $' + (Math.round((+m[1] + i) * 100) / 100).toLocaleString() }; }
       // pay: "what is 30 hours at 18.50", "overtime pay for 10 hours at 20 an hour"
@@ -3567,6 +3574,12 @@ return { ok: true, detail: 'timer-reset' };
       // "how many hours is a flight from 2pm to 9pm"
       m = t.match(/^how\s+(?:many\s+hours|long)\s+is\s+(?:a|the|my)\s+(?:flight|drive|trip|shift|class|movie)\s+from\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)\s+(?:to|until)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/);
       if (m) { const toMin = (h, mi, ap) => ((+h % 12) + (ap === 'pm' ? 12 : 0)) * 60 + +(mi || 0); let a = toMin(m[1], m[2], m[3]), b = toMin(m[4], m[5], m[6]); if (b <= a) b += 1440; const d = b - a; return { value: Math.floor(d / 60) + ' h' + (d % 60 ? ' ' + d % 60 + ' min' : ''), note: 'by the clock times given; a flight across time zones takes more or less than this' }; }
+      // walking time at an everyday pace: "how long to walk 5 km", "how long does it take to walk 3 miles"
+      m = t.match(/^how\s+long\s+(?:does\s+it\s+take\s+|will\s+it\s+take\s+(?:me\s+)?|would\s+it\s+take\s+(?:me\s+)?)?to\s+walk\s+(?:a\s+)?(\d+(?:\.\d+)?)?\s*(miles?|mi|km|kilomet(?:er|re)s?)$/);
+      if (m) { const km = (+(m[1] || 1)) * (/^mi/.test(m[2]) ? 1.609344 : 1), mins = Math.round(km / 5 * 60), h = Math.floor(mins / 60), mi = mins % 60; return { value: (h ? h + ' h' : '') + (mi ? (h ? ' ' : '') + mi + ' min' : h ? '' : '0 min'), note: 'at an everyday walking pace of 5 km/h (3.1 mph), without stops; a brisk walk is closer to 6 km/h' }; }
+      // "hours between 9am and 5:30pm", "how many hours from 9am to 5pm", "time from 10:15am to 2pm"
+      m = t.match(/^(?:how\s+(?:many\s+(?:hours|minutes)|long|much\s+time)\s+(?:is\s+(?:it\s+)?)?|(?:the\s+)?(?:hours|time|minutes)\s+)(?:between|from)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)\s+(?:and|to|until|till)\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)$/);
+      if (m && +m[1] >= 1 && +m[1] <= 12 && +m[4] >= 1 && +m[4] <= 12) { const toMin = (h, mi, ap) => ((+h % 12) + (ap === 'pm' ? 12 : 0)) * 60 + +(mi || 0); let a = toMin(m[1], m[2], m[3]), b = toMin(m[4], m[5], m[6]); if (b <= a) b += 1440; const d = b - a; return { value: Math.floor(d / 60) + ' h' + (d % 60 ? ' ' + d % 60 + ' min' : ''), note: (Math.round(d / 60 * 100) / 100) + ' hours by the clock' + (b > 1440 ? ', past midnight' : '') }; }
       // range on fuel: "how many miles can i drive on 12 gallons at 30 mpg"
       m = t.match(/^how\s+(?:many\s+miles|far)\s+can\s+(?:i|you)\s+(?:drive|go)\s+on\s+(\d+(?:\.\d+)?)\s*(?:gallons?|gal)\s+(?:at|with|getting)\s+(\d+(?:\.\d+)?)\s*mpg$/);
       if (m) { const v = +m[1] * +m[2]; return { value: v.toLocaleString() + ' miles', note: m[1] + ' gal × ' + m[2] + ' mpg' }; }
@@ -3884,6 +3897,9 @@ return { ok: true, detail: 'timer-reset' };
         const T = { second: 1, seconds: 1, sec: 1, secs: 1, minute: 60, minutes: 60, min: 60, mins: 60, hour: 3600, hours: 3600, hr: 3600, hrs: 3600, day: 86400, days: 86400, week: 604800, weeks: 604800 };
         if (T[from] && T[to] && m.length === 4) { const v = +(q * T[from] / T[to]).toPrecision(12); return { value: v.toLocaleString() + ' ' + to, note: q + ' ' + from + ' = ' + v.toLocaleString() + ' ' + to }; }
       }
+      // BMI in kg and metres, either order: "bmi for 70 kg and 1.75 m", "bmi 1.75m 70kg"
+      m = t.match(/^(?:what(?:'s| is)\s+)?(?:my\s+)?bmi\s+(?:for|at|with|of)?\s*(?:(\d{2,3}(?:\.\d+)?)\s*kg\s*(?:and|,|at)?\s*([12](?:\.\d+)?)\s*(?:m|meters?|metres?)(?:\s+tall)?|([12](?:\.\d+)?)\s*(?:m|meters?|metres?)\s*(?:tall)?\s*(?:and|,)?\s*(\d{2,3}(?:\.\d+)?)\s*kg)$/);
+      if (m) { const kg = +(m[1] || m[4]), h = +(m[2] || m[3]); if (h >= 1 && h <= 2.5) { const v = kg / h ** 2, r = Math.round(v * 10) / 10; const band = v < 18.5 ? 'underweight' : v < 25 ? 'healthy range' : v < 30 ? 'overweight' : 'obese range'; return { value: String(r), note: 'BMI for ' + kg + ' kg and ' + h + ' m: ' + r + ' (' + band + ', by the standard adult bands; BMI ignores build and age)' }; } }
       m = t.match(/^(?:what(?:'s| is)\s+)?(?:my\s+)?bmi\s+(?:for|at|with)?\s*(\d{2,3}(?:\.\d+)?)\s*cm\s*(?:and|,|tall)?\s*(\d{2,3}(?:\.\d+)?)\s*kg$/);
       if (m) { const v = +m[2] / (+m[1] / 100) ** 2, r = Math.round(v * 10) / 10; const band = v < 18.5 ? 'underweight' : v < 25 ? 'healthy range' : v < 30 ? 'overweight' : 'obese range'; return { value: String(r), note: 'BMI for ' + m[1] + ' cm and ' + m[2] + ' kg: ' + r + ' (' + band + ', by the standard adult bands; BMI ignores build and age)' }; }
       m = t.match(/^(?:how\s+many\s+)?days\s+(?:are\s+there\s+)?between\s+(.+?)\s+and\s+(.+)$/);
