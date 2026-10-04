@@ -448,5 +448,30 @@
     ],
     "sha256": "67be0c97da2bbdb44390bc2dedcece902eb2f54804f674d81b46cccacae1eea1",
     "emit": false
+  },
+  {
+    "run": 19,
+    "at": "2026-10-04T08:43:14Z",
+    "family": "miss-board",
+    "draft": "drafts/fringe/miss-board-2.html",
+    "sources": [
+      {
+        "claim": "Void routes an ask to the first ability in skills/index.json whose match() takes it; abilities list nearMisses they must refuse (tools/skills-check.mjs)",
+        "source": "void-live-deploy/skills/index.json",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Showing people why a system made a decision (explanation interfaces) helps them predict and correct it",
+        "source": "https://doi.org/10.1145/2678025.2701399",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing who would answer before asking turns would-be misses into asks people rephrase, so fewer reach the miss board",
+        "source": "drafts/fringe/miss-board-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "c15781b36afd82c659ff1957475b653b3310d9591286f246b1611c1e007b253b",
+    "emit": false
   }
 ]
