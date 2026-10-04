@@ -684,6 +684,12 @@ try {
     await G.ctx.close(); }
   // "who is X" prefers the person; a loose match says so in one line; the board counts one ask in different words once.
   { const E = await fresh(); const sums = [];
+    // #18 two-part summon loads figures3d + three.js on an article; keep the suite offline with the same stub #17 uses.
+    const figSrcE = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const namesE = Array.from(new Set(Array.from(figSrcE.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUBE = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + namesE.map((n) => n + '=U').join(',') + ';';
+    await E.ctx.route(/cdn\.jsdelivr\.net\/npm\/three@/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBE }));
     await E.ctx.route(/en\.wikipedia\.org\/w\/api\.php/, (r) => { const u = decodeURIComponent(r.request().url());
       if (/generator=search/.test(u)) return r.fulfill(json({ query: { pages: { 11: { index: 1, title: 'Air Jordan', description: 'Brand of basketball shoes' }, 12: { index: 2, title: 'Michael Jordan', description: 'American basketball player (born 1963)' } } } }));
       return r.fulfill(json({ query: { search: [{ title: /snorgleblat/.test(u) ? 'Blat' : 'Air Jordan' }] } })); });
@@ -2186,6 +2192,68 @@ try {
     check('figures (#17): /tools.json and the "what can you do" page list the figures skill from the live skill list (examples included)',
       !!ft && ft.examples.includes('summon a sprite') && /3D friend/.test(ft.description) && /figures/.test(menu) && /summon a sprite/.test(menu),
       JSON.stringify({ ft, menu: menu.slice(0, 80) }));
+  }
+
+  // Board Next #18: base bodies dressed from the card. Pure pick/dress for five sample cards; an article ask
+  // summons the matching body in the subject's colors with a prop and a line of its own (two-part summon).
+  {
+    const B18 = await import(new URL('../void-live-deploy/skills/bodies.js', import.meta.url).href);
+    const F3 = await import(new URL('../void-live-deploy/skills/figures3d.js', import.meta.url).href);
+    const want = { 'Marie Curie': 'person', 'Red fox': 'animal', 'Paris': 'place', 'Telescope': 'object', 'Democracy': 'idea' };
+    const picks = B18.SAMPLE_CARDS.map((c) => [c.title, B18.pickBody(c)]);
+    const dressed = B18.SAMPLE_CARDS.map((c) => B18.dressFromCard(c));
+    check('bodies (#18): pickBody maps the five sample cards to person, animal, place, object, idea',
+      picks.length === 5 && picks.every(([t, b]) => want[t] === b) && B18.BODIES.length === 5
+      && typeof F3.pickBody === 'function' && F3.SAMPLE_CARDS.length === 5 && F3.pickBody(B18.SAMPLE_CARDS[0]) === 'person',
+      JSON.stringify(picks));
+    check('bodies (#18): dressFromCard gives each sample a color, a prop, and a short line of its own words',
+      dressed.every((d) => B18.BODIES.includes(d.body) && /^#?[0-9a-fA-F]{3,8}$/.test(String(d.color)) && !!d.prop && typeof d.line === 'string' && d.line.length >= 8 && d.line.length <= 80)
+      && /Curie|physicist|radioactivity|Nobel/i.test(dressed[0].line) && dressed[0].body === 'person' && dressed[1].body === 'animal'
+      && dressed[2].body === 'place' && dressed[3].body === 'object' && dressed[4].body === 'idea',
+      JSON.stringify(dressed.map((d) => ({ body: d.body, color: d.color, prop: d.prop, line: d.line.slice(0, 40) }))));
+    // Browser: stub Wikipedia summary for a person, ask, and expect a dressed person figure beside the card.
+    const wikiPerson = {
+      type: 'standard', title: 'Marie Curie', description: 'Polish-French physicist and chemist (1867–1934)',
+      extract: 'Marie Skłodowska Curie was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.',
+      content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Marie_Curie' } },
+      timestamp: '2026-01-01T00:00:00Z',
+    };
+    const A18 = await fresh();
+    const hits18 = [];
+    A18.p.on('request', (r) => { const u = r.url(); if (/three@|three\.module|figures3d|bodies\.js/.test(u)) hits18.push(u.replace(/^.*\/\/[^/]+/, '')); });
+    const figSrc18 = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const names18 = Array.from(new Set(Array.from(figSrc18.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUB18 = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + names18.map((n) => n + '=U').join(',') + ';';
+    await A18.ctx.route(/cdn\.jsdelivr\.net\/npm\/three@/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB18 }));
+    await A18.ctx.route(/en\.wikipedia\.org/, async (rt) => {
+      const u = rt.request().url();
+      if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(json({ query: { search: [{ title: 'Marie Curie' }] } }));
+      if (/api\.php/.test(u) && /generator=search/.test(u)) return rt.fulfill(json({ query: { pages: { 1: { title: 'Marie Curie', description: wikiPerson.description, index: 1 } } } }));
+      if (/page\/summary/.test(u)) return rt.fulfill(json(wikiPerson));
+      return rt.fulfill(json({}));
+    });
+    await A18.ask('who is Marie Curie', 900);
+    const page18 = await until(async () => { const t = await A18.page(); return /Marie Curie/.test(t) && /physicist/.test(t) ? t : false; }, 6000);
+    const fig18 = await until(async () => {
+      const v = await A18.p.evaluate(() => (window.__void3d ? window.__void3d.state() : null));
+      return v && v.figures && v.figures.some((f) => f.body === 'person') ? v : false;
+    }, 8000);
+    const personFig = fig18 && fig18.figures.find((f) => f.body === 'person');
+    const stateFigs = await A18.state();
+    check('bodies (#18): "who is Marie Curie" brings the article card plus a dressed person figure (subject color, prop, line); three.js stays lazy until then',
+      !!page18 && !!fig18 && !!personFig && personFig.body === 'person' && !!personFig.color && !!personFig.prop && !!personFig.line
+      && /Curie|physicist|radioactivity/i.test(personFig.line) && stateFigs.some((x) => x.kind === 'figure' && x.body === 'person')
+      && hits18.some((u) => /\/skills\/bodies\.js$/.test(u)) && hits18.some((u) => /\/skills\/figures3d\.js$/.test(u)) && !A18.errors.length,
+      JSON.stringify({ page: !!(page18 && page18.slice(0, 40)), personFig, hits: hits18, e: A18.errors }));
+    await A18.ask('less motion', 400);
+    const still18 = await A18.p.evaluate(() => window.__void3d && window.__void3d.state());
+    await A18.ask('send them away', 700);
+    const gone18 = await until(async () => { const v = await A18.p.evaluate(() => window.__void3d && window.__void3d.state()); return v && v.figures.length === 0 ? v : false; }, 4000);
+    check('bodies (#18): reduced motion and send-away still work on a dressed body',
+      still18 && still18.still && !!gone18 && (await A18.state()).every((x) => x.kind !== 'figure') && !A18.errors.length,
+      JSON.stringify({ still: still18 && still18.still, gone: !!gone18, e: A18.errors }));
+    await A18.ctx.close();
   }
 
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',

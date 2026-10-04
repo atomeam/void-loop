@@ -6,7 +6,8 @@
  *
  * API for later items (#16 slogan, #18 bodies, #19 scripts, #22 zoom):
  *   mountStage3D()            -> Promise<stage>   load three.js once, add the canvas, start the loop
- *   addFigure(spec)           -> Promise<figure>  spec: { id?, body: 'sprite', color?, x?, y? } (x, y in CSS px)
+ *   addFigure(spec)           -> Promise<figure>  spec: { id?, body: 'sprite'|'person'|'animal'|'object'|'place'|'idea', color?, prop?, line?, x?, y? }
+ *   pickBody / dressFromCard  re-exported from skills/bodies.js (Next #18; pure, no three.js)
  *   removeFigures(ids?)       -> number           all figures, or the ids given
  *   syncFigures(list)         -> Promise          make the scene match the stage items of kind 'figure' (void.html calls this)
  *   mountInScene(mounter)     -> Promise<unmount> share the scene: mounter({ THREE, scene, camera, renderer, toWorld, still, requestRender })
@@ -15,6 +16,8 @@
  *                                                 copy and one WebGL scene. loadThree() hands out the same three.js module.
  * The brain (stepFigure, pickTarget) is plain JS with no three.js, so it runs and is tested without WebGL.
  */
+import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
+export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
 export const THREE_VERSION = '0.180.0';
 export const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@' + THREE_VERSION + '/build/three.module.min.js';
 export const MOTION_KEY = 'a2m.void.motion.v1';
@@ -212,7 +215,7 @@ export function mountStage3D() {
 
 function debugState() {
   return { mounted: !!stage, canvas: !!document.getElementById('void-3d'), animating: !!(stage && stage.raf), still: motionStill(), zoom: ui.zoom, zoomTo: ui.zoomTo,
-    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, blink: f.brain.blinkT > 0, color: f.spec.color || null })) };
+    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, blink: f.brain.blinkT > 0, color: f.spec.color || null })) };
 }
 
 // --- the void sprite: a soft, glossy little blob with big shiny eyes, rosy cheeks, a glowing antenna bulb and a wispy tail ---
@@ -283,17 +286,233 @@ function poseSprite(f, now) {
   p.body.rotation.x = -b.lookY * 0.18 + (still ? 0 : Math.sin(b.bob * 0.5) * 0.03);
   p.body.rotation.z = still ? 0 : -b.vx / SPEED * 0.12;
   p.body.scale.set(1 + (still ? 0 : Math.sin(b.bob * 2) * 0.015), 1 - (still ? 0 : Math.sin(b.bob * 2) * 0.02), 1);
-  p.eyes.scale.y = b.blinkT > 0 ? 0.12 : 1;
-  p.eyes.position.x = b.lookX * R * 0.12; p.eyes.position.y = R * 0.16 + b.lookY * R * 0.08;
-  p.antenna.rotation.z = still ? 0 : -b.vx / SPEED * 0.35 + Math.sin(b.t * 3.1) * 0.06;
-  p.antenna.rotation.x = still ? 0 : Math.sin(b.t * 2.3) * 0.05;
-  p.glow.emissiveIntensity = (b.mode === 'notice' || b.mode === 'pose') ? 3.2 : 2.2 + (still ? 0 : Math.sin(b.t * 2) * 0.3);
-  p.lamp.intensity = p.glow.emissiveIntensity * 0.5;
+  if (p.eyes) {
+    if (p.eyesBase == null) p.eyesBase = { x: p.eyes.position.x, y: p.eyes.position.y, z: p.eyes.position.z };
+    p.eyes.scale.y = b.blinkT > 0 ? 0.12 : 1;
+    p.eyes.position.x = p.eyesBase.x + b.lookX * R * 0.12;
+    p.eyes.position.y = p.eyesBase.y + b.lookY * R * 0.08;
+  }
+  if (p.antenna && p.antenna.rotation) {
+    p.antenna.rotation.z = still ? 0 : -b.vx / SPEED * 0.35 + Math.sin(b.t * 3.1) * 0.06;
+    p.antenna.rotation.x = still ? 0 : Math.sin(b.t * 2.3) * 0.05;
+  }
+  if (p.glow && p.glow.emissiveIntensity != null) p.glow.emissiveIntensity = (b.mode === 'notice' || b.mode === 'pose') ? 3.2 : 2.2 + (still ? 0 : Math.sin(b.t * 2) * 0.3);
+  if (p.lamp && p.glow) p.lamp.intensity = (p.glow.emissiveIntensity || 2) * 0.5;
   const wave = b.wave > 0 ? Math.sin(b.t * 14) * 0.5 + 1.2 : 0;
-  p.arms[0].rotation.z = still ? 0 : -Math.sin(b.bob) * 0.18 - (b.mode === 'notice' ? 0.3 : 0);
-  p.arms[1].rotation.z = still ? 0 : Math.sin(b.bob) * 0.18 + (b.mode === 'notice' ? 0.3 : 0) + wave;
-  p.tail.rotation.z = still ? 0 : Math.sin(b.t * 2.6) * 0.18 - b.vx / SPEED * 0.25;
-  p.pool.position.y = -R * 2.1 - bob - hop; p.pool.scale.setScalar(1 - (bob + hop) / 60);
+  if (p.arms && p.arms[0]) p.arms[0].rotation.z = still ? 0 : -Math.sin(b.bob) * 0.18 - (b.mode === 'notice' ? 0.3 : 0);
+  if (p.arms && p.arms[1]) p.arms[1].rotation.z = still ? 0 : Math.sin(b.bob) * 0.18 + (b.mode === 'notice' ? 0.3 : 0) + wave;
+  if (p.tail && p.tail.rotation) p.tail.rotation.z = still ? 0 : Math.sin(b.t * 2.6) * 0.18 - b.vx / SPEED * 0.25;
+  if (p.pool && p.pool.position) { p.pool.position.y = -R * 2.1 - bob - hop; if (p.pool.scale && p.pool.scale.setScalar) p.pool.scale.setScalar(1 - (bob + hop) / 60); }
+  if (p.bubble) p.bubble.material.opacity = still ? 0.95 : 0.85 + Math.sin(b.t * 2) * 0.08;
+}
+
+
+
+// ---------- Next #18: base bodies dressed from the card (person, animal, object, place, idea) ----------
+function hexColor(c, fallback = PALETTE[0]) {
+  if (c == null || c === '') return fallback;
+  if (typeof c === 'number') return c;
+  const s = String(c).trim();
+  if (s[0] === '#') return parseInt(s.slice(1), 16);
+  const n = Number(s); return Number.isFinite(n) ? n : fallback;
+}
+function softMats(baseHex) {
+  const T = THREE, base = new T.Color(baseHex), light = base.clone().lerp(new T.Color(0xffffff), 0.45), deep = base.clone().multiplyScalar(0.55);
+  const skin = new T.MeshPhysicalMaterial({ color: base, roughness: 0.45, metalness: 0, clearcoat: 0.55, clearcoatRoughness: 0.3,
+    sheen: 0.7, sheenColor: light, sheenRoughness: 0.5, emissive: deep, emissiveIntensity: 0.14 });
+  const ink = new T.MeshPhysicalMaterial({ color: 0x0c0b16, roughness: 0.12, clearcoat: 1, clearcoatRoughness: 0.05 });
+  const shine = new T.MeshBasicMaterial({ color: 0xffffff });
+  const accent = new T.MeshStandardMaterial({ color: light, roughness: 0.5, emissive: base, emissiveIntensity: 0.25 });
+  return { base, light, deep, skin, ink, shine, accent, mats: [skin, ink, shine, accent] };
+}
+function makeEyes(parts, ink, shine, y = R * 0.2, z = R * 0.72) {
+  const T = THREE, eyes = new T.Group(); eyes.position.set(0, y, z);
+  const eyeGeo = (parts.geos.push(new T.SphereGeometry(R * 0.16, 20, 14)), parts.geos[parts.geos.length - 1]);
+  const dotGeo = (parts.geos.push(new T.SphereGeometry(R * 0.045, 10, 8)), parts.geos[parts.geos.length - 1]);
+  for (const s of [-1, 1]) {
+    const e = new T.Group(); e.position.set(s * R * 0.3, 0, 0);
+    const ball = new T.Mesh(eyeGeo, ink); ball.scale.set(0.85, 1.1, 0.55); e.add(ball);
+    const hi = new T.Mesh(dotGeo, shine); hi.position.set(-R * 0.04, R * 0.06, R * 0.08); e.add(hi);
+    eyes.add(e);
+  }
+  return eyes;
+}
+function bubbleTexture(line) {
+  const T = THREE, c = document.createElement('canvas'); c.width = 512; c.height = 160;
+  const g = c.getContext('2d');
+  g.clearRect(0, 0, 512, 160);
+  // soft bubble
+  g.fillStyle = 'rgba(255,255,255,0.92)';
+  g.strokeStyle = 'rgba(20,24,40,0.35)';
+  g.lineWidth = 4;
+  const r = 28; g.beginPath();
+  g.moveTo(r, 12); g.arcTo(500, 12, 500, 120, r); g.arcTo(500, 120, 40, 120, r);
+  g.lineTo(70, 120); g.lineTo(48, 148); g.lineTo(90, 120); g.arcTo(12, 120, 12, 12, r); g.closePath();
+  g.fill(); g.stroke();
+  g.fillStyle = '#1a1c28'; g.font = '600 28px system-ui,Segoe UI,sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  const words = String(line || '…').split(/\s+/), lines = []; let cur = '';
+  for (const w of words) {
+    const t = cur ? cur + ' ' + w : w;
+    if (g.measureText(t).width > 430 && cur) { lines.push(cur); cur = w; } else cur = t;
+  }
+  if (cur) lines.push(cur);
+  const shown = lines.slice(0, 3);
+  const startY = 66 - (shown.length - 1) * 16;
+  shown.forEach((ln, i) => g.fillText(ln, 256, startY + i * 32));
+  const tex = new T.CanvasTexture(c); tex.colorSpace = T.SRGBColorSpace; return tex;
+}
+function addSpeech(g, parts, line) {
+  if (!line) return null;
+  const T = THREE, mat = new T.SpriteMaterial({ map: bubbleTexture(line), transparent: true, depthWrite: false });
+  const sp = new T.Sprite(mat); sp.scale.set(R * 5.2, R * 1.65, 1); sp.position.set(R * 1.6, R * 2.6, R * 0.2);
+  g.add(sp); parts.mats.push(mat); parts.bubble = sp; return sp;
+}
+function buildPropMesh(kind, mats, geos) {
+  const T = THREE, g = new T.Group();
+  const geo = (x) => { geos.push(x); return x; };
+  const accent = mats[3] || mats[0], skin = mats[0], ink = mats[1];
+  if (kind === 'mic') {
+    const stick = new T.Mesh(geo(new T.CylinderGeometry(R * 0.04, R * 0.05, R * 0.7, 8)), ink); stick.position.y = -R * 0.15; g.add(stick);
+    const head = new T.Mesh(geo(new T.SphereGeometry(R * 0.16, 14, 10)), accent); head.position.y = R * 0.28; g.add(head);
+  } else if (kind === 'book' || kind === 'quill') {
+    const book = new T.Mesh(geo(new T.BoxGeometry(R * 0.42, R * 0.08, R * 0.55)), accent); g.add(book);
+    if (kind === 'quill') { const q = new T.Mesh(geo(new T.CylinderGeometry(R * 0.02, R * 0.045, R * 0.7, 6)), skin); q.rotation.z = 0.6; q.position.set(R * 0.2, R * 0.25, 0); g.add(q); }
+  } else if (kind === 'hat' || kind === 'wand') {
+    const brim = new T.Mesh(geo(new T.CylinderGeometry(R * 0.35, R * 0.35, R * 0.05, 16)), accent); g.add(brim);
+    const top = new T.Mesh(geo(new T.CylinderGeometry(R * 0.18, R * 0.22, R * 0.35, 12)), accent); top.position.y = R * 0.2; g.add(top);
+  } else if (kind === 'leaf' || kind === 'flower') {
+    const leaf = new T.Mesh(geo(new T.SphereGeometry(R * 0.22, 12, 8)), accent); leaf.scale.set(1.4, 0.35, 0.8); g.add(leaf);
+  } else if (kind === 'bone' || kind === 'fish') {
+    const bone = new T.Mesh(geo(new T.CapsuleGeometry(R * 0.07, R * 0.4, 4, 8)), skin); bone.rotation.z = Math.PI / 2; g.add(bone);
+  } else if (kind === 'ball') {
+    g.add(new T.Mesh(geo(new T.SphereGeometry(R * 0.2, 14, 10)), accent));
+  } else if (kind === 'pin' || kind === 'key' || kind === 'lantern' || kind === 'map') {
+    const pin = new T.Mesh(geo(new T.SphereGeometry(R * 0.18, 14, 10)), accent); pin.position.y = R * 0.1; g.add(pin);
+    const stem = new T.Mesh(geo(new T.ConeGeometry(R * 0.08, R * 0.35, 8)), ink); stem.position.y = -R * 0.2; g.add(stem);
+  } else if (kind === 'flag') {
+    const pole = new T.Mesh(geo(new T.CylinderGeometry(R * 0.03, R * 0.03, R * 0.8, 6)), ink); g.add(pole);
+    const cloth = new T.Mesh(geo(new T.PlaneGeometry(R * 0.5, R * 0.32)), accent); cloth.position.set(R * 0.28, R * 0.2, 0); g.add(cloth);
+  } else if (kind === 'bulb' || kind === 'orbit' || kind === 'cloud') {
+    const bulb = new T.Mesh(geo(new T.SphereGeometry(R * 0.22, 16, 12)), accent); g.add(bulb);
+    const base = new T.Mesh(geo(new T.CylinderGeometry(R * 0.1, R * 0.12, R * 0.18, 8)), ink); base.position.y = -R * 0.28; g.add(base);
+  } else if (kind === 'gear' || kind === 'tag' || kind === 'ribbon' || kind === 'spark' || kind === 'star') {
+    const star = new T.Mesh(geo(new T.OctahedronGeometry(R * 0.22, 0)), accent); g.add(star);
+  } else {
+    g.add(new T.Mesh(geo(new T.SphereGeometry(R * 0.16, 12, 8)), accent));
+  }
+  return g;
+}
+function attachProp(bodyGroup, parts, prop, hold = { x: R * 0.95, y: -R * 0.05, z: R * 0.2 }) {
+  if (!prop) return null;
+  const mesh = buildPropMesh(prop, parts.mats, parts.geos);
+  mesh.position.set(hold.x, hold.y, hold.z);
+  bodyGroup.add(mesh); parts.prop = mesh; return mesh;
+}
+
+function buildPerson(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const col = hexColor(spec.color); const { skin, ink, shine, mats } = softMats(col);
+  const parts = { mats, geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
+  const torso = new T.Mesh(geo(new T.CapsuleGeometry(R * 0.55, R * 0.7, 8, 16)), skin); torso.position.y = -R * 0.15; body.add(torso);
+  const head = new T.Mesh(geo(new T.SphereGeometry(R * 0.48, 28, 20)), skin); head.position.y = R * 0.95; body.add(head);
+  const eyes = makeEyes(parts, ink, shine, R * 1.0, R * 0.42); body.add(eyes);
+  const arms = [];
+  const armGeo = geo(new T.CapsuleGeometry(R * 0.12, R * 0.35, 6, 10));
+  for (const s of [-1, 1]) {
+    const pivot = new T.Group(); pivot.position.set(s * R * 0.7, R * 0.15, 0);
+    const arm = new T.Mesh(armGeo, skin); arm.position.set(s * R * 0.05, -R * 0.28, 0); arm.rotation.z = s * 0.35; pivot.add(arm);
+    body.add(pivot); arms.push(pivot);
+  }
+  const legGeo = geo(new T.CapsuleGeometry(R * 0.14, R * 0.35, 6, 10));
+  for (const s of [-1, 1]) {
+    const leg = new T.Mesh(legGeo, skin); leg.position.set(s * R * 0.28, -R * 1.15, 0); body.add(leg);
+  }
+  attachProp(body, parts, spec.prop, { x: R * 0.85, y: -R * 0.15, z: R * 0.25 });
+  addSpeech(g, parts, spec.line);
+  const auraMat = new T.SpriteMaterial({ map: softTexture('rgba(255,255,255,0.5)', 'rgba(255,255,255,0)'), color: new T.Color(col), transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: 0.28 });
+  const aura = new T.Sprite(auraMat); aura.scale.set(R * 4.5, R * 4.5, 1); aura.position.z = -R; g.add(aura); parts.mats.push(auraMat);
+  Object.assign(parts, { body, eyes, arms, antenna: body, glow: skin, lamp: { intensity: 0 }, tail: body, pool: { position: { y: 0 }, scale: { setScalar() {} } }, aura });
+  return { obj: g, parts };
+}
+function buildAnimal(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const col = hexColor(spec.color); const { skin, ink, shine, mats } = softMats(col);
+  const parts = { mats, geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
+  const torso = new T.Mesh(geo(new T.SphereGeometry(R * 0.7, 28, 20)), skin); torso.scale.set(1.35, 0.85, 0.95); body.add(torso);
+  const head = new T.Mesh(geo(new T.SphereGeometry(R * 0.42, 24, 16)), skin); head.position.set(R * 0.85, R * 0.25, R * 0.15); body.add(head);
+  const ears = [];
+  for (const s of [-1, 1]) {
+    const ear = new T.Mesh(geo(new T.ConeGeometry(R * 0.14, R * 0.32, 8)), skin); ear.position.set(R * 0.7 + s * R * 0.22, R * 0.55, R * 0.05); ear.rotation.z = s * 0.35; body.add(ear); ears.push(ear);
+  }
+  const eyes = makeEyes(parts, ink, shine, R * 0.32, R * 0.95); eyes.position.x = R * 0.85; body.add(eyes);
+  const tail = new T.Group(); tail.position.set(-R * 0.95, 0, -R * 0.1); body.add(tail);
+  const tip = new T.Mesh(geo(new T.SphereGeometry(R * 0.18, 12, 8)), skin); tip.scale.set(0.7, 0.7, 1.6); tip.position.x = -R * 0.25; tail.add(tip);
+  const arms = [];
+  for (const s of [-1, 1]) {
+    const paw = new T.Group(); paw.position.set(s * R * 0.45, -R * 0.55, R * 0.35);
+    paw.add(new T.Mesh(geo(new T.SphereGeometry(R * 0.16, 12, 8)), skin)); body.add(paw); arms.push(paw);
+  }
+  attachProp(body, parts, spec.prop, { x: R * 0.2, y: -R * 0.7, z: R * 0.55 });
+  addSpeech(g, parts, spec.line);
+  Object.assign(parts, { body, eyes, arms, antenna: head, glow: skin, lamp: { intensity: 0 }, tail, pool: { position: { y: 0 }, scale: { setScalar() {} } }, ears });
+  return { obj: g, parts };
+}
+function buildObject(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const col = hexColor(spec.color); const { skin, ink, shine, accent, mats } = softMats(col);
+  const parts = { mats, geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
+  const core = new T.Mesh(geo(new T.BoxGeometry(R * 1.1, R * 1.1, R * 1.1)), skin); core.rotation.y = 0.4; body.add(core);
+  const lens = new T.Mesh(geo(new T.CylinderGeometry(R * 0.28, R * 0.35, R * 0.55, 16)), accent); lens.rotation.x = Math.PI / 2; lens.position.z = R * 0.7; body.add(lens);
+  const eyes = makeEyes(parts, ink, shine, R * 0.15, R * 0.55); body.add(eyes);
+  const arms = [new T.Group(), new T.Group()]; arms.forEach((a, i) => { a.position.set((i ? 1 : -1) * R * 0.7, 0, 0); body.add(a); });
+  attachProp(body, parts, spec.prop, { x: R * 0.9, y: R * 0.5, z: 0 });
+  addSpeech(g, parts, spec.line);
+  Object.assign(parts, { body, eyes, arms, antenna: lens, glow: accent, lamp: { intensity: 0 }, tail: body, pool: { position: { y: 0 }, scale: { setScalar() {} } } });
+  return { obj: g, parts };
+}
+function buildPlace(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const col = hexColor(spec.color); const { skin, ink, shine, accent, mats } = softMats(col);
+  const parts = { mats, geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
+  const base = new T.Mesh(geo(new T.CylinderGeometry(R * 1.05, R * 1.15, R * 0.22, 24)), skin); base.position.y = -R * 0.7; body.add(base);
+  const tower = new T.Mesh(geo(new T.BoxGeometry(R * 0.7, R * 1.4, R * 0.7)), accent); tower.position.y = R * 0.15; body.add(tower);
+  const roof = new T.Mesh(geo(new T.ConeGeometry(R * 0.55, R * 0.5, 4)), ink); roof.position.y = R * 1.1; roof.rotation.y = Math.PI / 4; body.add(roof);
+  const eyes = makeEyes(parts, ink, shine, R * 0.35, R * 0.4); body.add(eyes);
+  const arms = [new T.Group(), new T.Group()]; arms.forEach((a, i) => { a.position.set((i ? 1 : -1) * R * 0.55, R * 0.1, 0); body.add(a); });
+  attachProp(body, parts, spec.prop, { x: R * 0.85, y: R * 0.9, z: 0 });
+  addSpeech(g, parts, spec.line);
+  Object.assign(parts, { body, eyes, arms, antenna: roof, glow: accent, lamp: { intensity: 0 }, tail: body, pool: { position: { y: 0 }, scale: { setScalar() {} } } });
+  return { obj: g, parts };
+}
+function buildIdea(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const col = hexColor(spec.color); const { skin, ink, shine, accent, mats } = softMats(col);
+  const parts = { mats, geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
+  const orb = new T.Mesh(geo(new T.SphereGeometry(R * 0.75, 32, 24)), skin); body.add(orb);
+  const ring = new T.Mesh(geo(new T.TorusGeometry(R * 1.05, R * 0.05, 8, 32)), accent); ring.rotation.x = Math.PI / 2.6; body.add(ring);
+  const eyes = makeEyes(parts, ink, shine, R * 0.12, R * 0.65); body.add(eyes);
+  const arms = [new T.Group(), new T.Group()]; arms.forEach((a, i) => { a.position.set((i ? 1 : -1) * R * 0.9, 0, 0); body.add(a); });
+  const glow = accent; glow.emissiveIntensity = 1.4;
+  attachProp(body, parts, spec.prop, { x: 0, y: R * 1.15, z: 0 });
+  addSpeech(g, parts, spec.line);
+  const auraMat = new T.SpriteMaterial({ map: softTexture('rgba(255,255,255,0.65)', 'rgba(255,255,255,0)'), color: new T.Color(col), transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: 0.4 });
+  const aura = new T.Sprite(auraMat); aura.scale.set(R * 5.5, R * 5.5, 1); g.add(aura); parts.mats.push(auraMat);
+  Object.assign(parts, { body, eyes, arms, antenna: ring, glow, lamp: { intensity: 0 }, tail: ring, pool: { position: { y: 0 }, scale: { setScalar() {} } }, aura });
+  return { obj: g, parts };
+}
+
+function buildFigure(spec) {
+  const body = String(spec.body || 'sprite').toLowerCase();
+  if (body === 'person') return buildPerson(spec);
+  if (body === 'animal') return buildAnimal(spec);
+  if (body === 'object') return buildObject(spec);
+  if (body === 'place') return buildPlace(spec);
+  if (body === 'idea') return buildIdea(spec);
+  // sprite: keep the void buddy; still dress a speech line / prop when a card brought them
+  const built = buildSprite(spec);
+  if (spec.prop) attachProp(built.parts.body, built.parts, spec.prop);
+  if (spec.line) addSpeech(built.obj, built.parts, spec.line);
+  return built;
 }
 
 export async function addFigure(spec = {}) {
@@ -301,13 +520,14 @@ export async function addFigure(spec = {}) {
   const id = spec.id || 'fig_' + Math.random().toString(36).slice(2, 8);
   if (figures.has(id)) return figures.get(id);
   const n = figures.size, color = spec.color || PALETTE[n % PALETTE.length];
+  const body = spec.body || 'sprite';
   const brain = makeBrain({ id, x: spec.x, y: spec.y });
   if (spec.x == null || spec.y == null) { // a free spot away from cards and from the friends already here
     const w = worldNow(), near = [...figures.values()].map((o) => ({ l: o.brain.x - R * 2, r: o.brain.x + R * 2, t: o.brain.y - R * 2, b: o.brain.y + R * 2 }));
     const p = pickTarget({ ...w, rects: w.rects.concat(near) }); brain.x = brain.tx = p.x; brain.y = brain.ty = p.y;
   }
-  const { obj, parts } = buildSprite({ ...spec, color });
-  const f = { brain, spec: { ...spec, id, color: spec.color || null }, obj, parts, born: performance.now(), leaving: 0 };
+  const { obj, parts } = buildFigure({ ...spec, body, color });
+  const f = { brain, spec: { ...spec, id, body, color: spec.color || null, prop: spec.prop || null, line: spec.line || null }, obj, parts, born: performance.now(), leaving: 0 };
   stage.scene.add(obj); figures.set(id, f); poseSprite(f, f.born); requestRender();
   return f;
 }
@@ -329,7 +549,7 @@ export function removeFigures(ids) {
   return n;
 }
 export async function syncFigures(list) {
-  desired = (list || []).map((t) => ({ id: t.id, body: t.body || 'sprite', color: t.color || null, x: t.sx, y: t.sy }));
+  desired = (list || []).map((t) => ({ id: t.id, body: t.body || 'sprite', color: t.color || null, prop: t.prop || null, line: t.line || null, x: t.sx, y: t.sy }));
   if (!desired.length && !stage) return;
   await mountStage3D();
   const want = desired, ids = want.map((d) => d.id);
@@ -337,9 +557,9 @@ export async function syncFigures(list) {
   for (const d of want) {
     const f = figures.get(d.id);
     if (f && f.leaving) { disposeFigure(f); figures.delete(d.id); }
-    if (!figures.has(d.id)) await addFigure({ id: d.id, body: d.body, color: d.color || undefined });
+    if (!figures.has(d.id)) await addFigure({ id: d.id, body: d.body, color: d.color || undefined, prop: d.prop || undefined, line: d.line || undefined });
     else if ((f.spec.color || null) !== (d.color || null)) { // "make everything blue" reaches figures too
-      f.spec.color = d.color; const c = new THREE.Color(d.color || PALETTE[0]); f.parts.mats[0].color.copy(c); f.parts.mats[0].sheenColor.copy(c.clone().lerp(new THREE.Color(0xffffff), 0.45)); requestRender();
+      f.spec.color = d.color; const c = new THREE.Color(d.color || PALETTE[0]); f.parts.mats[0].color.copy(c); if (f.parts.mats[0].sheenColor) f.parts.mats[0].sheenColor.copy(c.clone().lerp(new THREE.Color(0xffffff), 0.45)); requestRender();
     }
   }
 }

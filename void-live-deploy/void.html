@@ -648,7 +648,7 @@ Object.values(things).forEach((th) => {
     }
     // skills put things on the stage through this: summon('calendar') shows the card, { hide: true } takes it off (events stay)
     
-    // 3D figures (board Next #17): stage items of kind 'figure' live in skills/figures3d.js's WebGL layer, not in #stage.
+    // 3D figures (board Next #17 / #18): stage items of kind 'figure' live in skills/figures3d.js's WebGL layer, not in #stage.
     // That module and three.js load only once a figure is on the stage, so the empty page loads no 3D code at all.
     let figures3d = null, figures3dP = null;
     function syncFigures() {
@@ -664,7 +664,7 @@ Object.values(things).forEach((th) => {
         const figs = Object.values(things).filter((t) => t.kind === 'figure');
         if (opts.hide) { for (const f of figs) delete things[f.id]; if (figs.length) { save(); render(); } return figs.length; }
         if (figs.length >= 6) return null;
-        const th = { id: uid('figure'), kind: 'figure', body: opts.body || 'sprite', x: 0, y: 0 };
+        const th = { id: uid('figure'), kind: 'figure', body: opts.body || 'sprite', color: opts.color || null, prop: opts.prop || null, line: opts.line || null, title: opts.title || null, x: 0, y: 0 };
         things[th.id] = th; save(); render(); return th;
       }
       if (stageKinds[kind]) { // skill kinds: each ask adds one more; it stays until thrown off the screen
@@ -2931,6 +2931,14 @@ return { ok: true, detail: 'timer-reset' };
           + '<p>' + esc(j.extract || '') + '</p>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
         addCopy(el);
+        // Next #18: two-part summon — the card, plus a base body dressed from this summary.
+        try {
+          import('/skills/bodies.js').then((m) => {
+            if (vpageEl !== el) return;
+            const dressed = m.dressFromCard({ title: j.title || hit.title, description: j.description || '', extract: j.extract || '', type: j.type || '' });
+            summonThing('figure', dressed);
+          }).catch(() => {});
+        } catch (_) {}
         return 'wikipedia';
       } catch (_) {
         try {

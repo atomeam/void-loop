@@ -769,7 +769,7 @@
   },
   {
     "ask": "lets play tic tac toe",
-    "want": "skill:make"
+    "want": "skill:tictactoe"
   },
   {
     "ask": "make a 3d cube",

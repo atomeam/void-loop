@@ -9,9 +9,9 @@
  */
 const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
 
-const OBJECT_RE = /^(?:please\s+)?(?:(?:summon|add|put|place|make|give|show|get|bring)(?:\s+me)?\s+)?(?:a|an|one|the)?\s*(?:(?:little|tiny|small|3d|wooden)\s+)*(chair|cup|mug)(?:\s+(?:on|to)\s+the\s+stage)?$/;
+const OBJECT_RE = /^(?:please\s+)?(?:(?:summon|add|put|place|make|give|show|get|bring)(?:\s+me)?\s+)?(?:a|an|one|the)?\s*(?:(?:little|tiny|small|3d|wooden)\s+)*(chair|cup|mug|book|lamp)(?:\s+(?:on|to)\s+the\s+stage)?$/;
 const FIGURE_RE = /^(?:please\s+)?(?:(?:summon|add|bring|show(?:\s+me)?|make|put|get|call|where\s+is)\s+)?(?:motelet|(?:a|the|one)\s+figure)(?:\s+(?:on|to)\s+the\s+stage)?$/;
-const SPIN_RE = /^(?:spin|turn|rotate)\s+(?:motelet|it|the\s+(?:chair|cup|mug|figure))(?:\s+(?:around|round))?$/;
+const SPIN_RE = /^(?:spin|turn|rotate)\s+(?:motelet|it|the\s+(?:chair|cup|mug|figure|book|lamp))(?:\s+(?:around|round))?$/;
 const EXPORT_RE = /^(?:download|export|print|save)\s+(?:the\s+)?motelet(?:'s)?(?:\s+(?:stl|file|print\s+file|body))?$|^motelet\s+(?:stl|print\s+file)$/;
 
 export function parseAsk(text) {
@@ -19,7 +19,7 @@ export function parseAsk(text) {
   let m;
   if ((m = t.match(OBJECT_RE))) return { act: 'object', model: m[1] === 'mug' ? 'cup' : m[1] };
   if (FIGURE_RE.test(t)) return { act: 'figure' };
-  if (SPIN_RE.test(t)) return { act: 'spin', what: (t.match(/chair|cup|mug/) || [''])[0].replace('mug', 'cup') };
+  if (SPIN_RE.test(t)) return { act: 'spin', what: (t.match(/chair|cup|mug|book|lamp/) || [''])[0].replace('mug', 'cup') };
   if (EXPORT_RE.test(t)) return { act: 'export' };
   return null;
 }
@@ -68,6 +68,7 @@ function box(x0, x1, y0, y1, z0, z1, color) {
 }
 
 const WOOD = '#b07a4a', CUP = '#ece6da', CUPBAND = '#ff7a59';
+const BOOK = '#b0483e', PAGES = '#f2ead8', LAMPON = '#f2c14e', POLE = '#4a4a52';
 export const CHAIR = { seat: 12, half: 8 }; // seat top 12 mm, 16 x 16 mm
 
 export function chairParts() {
@@ -80,6 +81,14 @@ export function cupParts(at = [0, 0, 0]) {
   return [cylinder([x, y, z], [x, y, z + 7], 3, CUP), cylinder([x, y, z + 4.6], [x, y, z + 5.8], 3.15, CUPBAND),
     box(x - 4.9, x - 2.6, y - 0.6, y + 0.6, z + 5.2, z + 6.2, CUP), box(x - 4.9, x - 2.6, y - 0.6, y + 0.6, z + 1.4, z + 2.4, CUP),
     box(x - 4.9, x - 3.9, y - 0.6, y + 0.6, z + 2.4, z + 5.2, CUP)];
+}
+
+export function bookParts() { // a closed paperback, 16 x 11 x 4 mm
+  return [box(-8, 8, -5.5, 5.5, 0, 3.2, BOOK), box(-7.4, 7.4, -5, 5, 0.6, 2.8, PAGES), box(-8.4, -7.6, -5.5, 5.5, 0, 3.2, BOOK)];
+}
+
+export function lampParts() { // a small desk lamp: round base, pole, drum shade, 22 mm
+  return [cylinder([0, 0, 0], [0, 0, 1.6], 4.5, POLE), cylinder([0, 0, 1.6], [0, 0, 15], 0.9, POLE), cylinder([0, 0, 13.4], [0, 0, 20.5], 4.8, LAMPON)];
 }
 
 // Motelet: 38 mm tall standing. One personality: curious and polite; it always sits when it finds a chair.
@@ -118,6 +127,8 @@ export const HOLD_CUP_AT = [5.6 + 4.4, -7.2, 11.3 + 6.2 - 3.8]; // the cup's bas
 export function bodyFor(th, things) {
   if (th.model === 'chair') return chairParts();
   if (th.model === 'cup') return cupParts();
+  if (th.model === 'book') return bookParts();
+  if (th.model === 'lamp') return lampParts();
   const pose = th.on && things[th.on] ? 'sit' : th.holds && things[th.holds] ? 'hold' : 'stand';
   const parts = moteletParts(pose);
   return pose === 'hold' ? parts.concat(cupParts(HOLD_CUP_AT)) : parts;
@@ -340,6 +351,8 @@ export default {
     'motelet',
     'a chair',
     'summon a cup',
+    'a book',
+    'summon a lamp',
     'put a little chair on the stage',
     'spin motelet',
     'spin the figure',
