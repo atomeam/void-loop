@@ -1120,5 +1120,11 @@
   {"ask": "what day is it tomorrow", "want": "today|calc"},
   {"ask": "what is the date in 10 days", "want": "calc|today"},
   {"ask": "how many hours until midnight", "want": "calc|timeuntil"},
-  {"ask": "what week of the year is it", "want": "today|calc"}
+  {"ask": "what week of the year is it", "want": "today|calc"},
+  {"ask": "recipe for banana bread", "want": "skill:recipe"},
+  {"ask": "news about spacex", "want": "skill:news"},
+  {"ask": "nfl team packers", "want": "skill:sport"},
+  {"ask": "air quality in delhi", "want": "skill:air"},
+  {"ask": "pollen count in chicago", "want": "skill:pollen"},
+  {"ask": "earthquakes near california", "want": "skill:quake"}
 ]
