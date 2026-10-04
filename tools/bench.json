@@ -1107,5 +1107,13 @@
   {"ask": "mean of 10, 20, 30", "want": "calc"},
   {"ask": "days until valentines day", "want": "calc|holiday|skill:holidays|skill:countdown"},
   {"ask": "countdown to july 4th", "want": "skill:countdown"},
-  {"ask": "play reversi", "want": "skill:othello"}
+  {"ask": "play reversi", "want": "skill:othello"},
+  {"ask": "what is the plural of cactus", "want": "skill:words|skill:define|answer"},
+  {"ask": "how do you spell restaurant", "want": "skill:words"},
+  {"ask": "antonym of generous", "want": "skill:words"},
+  {"ask": "word count of the quick brown fox", "want": "skill:util"},
+  {"ask": "what color is #00ff00", "want": "skill:util"},
+  {"ask": "qr code for example.com", "want": "skill:util"},
+  {"ask": "reverse the word hello", "want": "skill:util|calc|answer"},
+  {"ask": "roll a d20", "want": "chance"}
 ]
