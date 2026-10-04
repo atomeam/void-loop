@@ -14,6 +14,7 @@ export function lightOf(text) {
   if (/^(?:please\s+)?light look$/.test(t)) return { theme: 'light' };
   if (/^(?:please\s+)?switch (?:my void|the void) to light$/.test(t)) return { theme: 'light' };
   if (/^(?:please\s+)?make the void light$/.test(t)) return { theme: 'light' };
+  if (/^(?:please\s+)?light$/.test(t)) return { theme: 'light' };
   return null;
 }
 
