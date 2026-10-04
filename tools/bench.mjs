@@ -1,6 +1,6 @@
 // The everyday benchmark: common asks replayed on the real page. tools/bench.json says what should answer each one (`want`, a
 // note from the page's own log a2m.void.loop.v1, alternatives with |). The score is how many are answered by what should answer
-// them; growth is that score going up. External services are stubbed with plausible data: this measures Void, not their uptime.
+// them (and, when an ask has "says", whose visible answer matches that pattern); growth is that score going up. External services are stubbed with plausible data: this measures Void, not their uptime.
 //   node tools/bench.mjs            prints each ask and what answered it, then the totals
 //   node tools/bench.mjs --score    prints only {"score","total","wrong":[...]} (the tests read this; tools/bench.best.json is the floor)
 //   node tools/bench.mjs --last 10  replays only the last 10 asks (fast while growing a new round; the score and floor use all)
@@ -26,7 +26,7 @@ const browser = await chromium.launch({ executablePath: exe, headless: true });
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
-async function one({ ask: a, want }) {
+async function one({ ask: a, want, says }) {
   const ctx = await browser.newContext(); const miss = [];
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => { const u = r.request().url();
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Topic' }] } }));
@@ -60,9 +60,14 @@ async function one({ ask: a, want }) {
   const log = await p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'));
   const last = log.filter((x) => x.ask === a).pop();
   const note = last ? String(last.note || '') : (said && !miss.length ? 'said' : '');
-  const right = !miss.length && new RegExp('^(' + want + ')').test(note);
+  const routed = !miss.length && new RegExp('^(' + want + ')').test(note);
+  // "says": a pattern the visible answer must contain (the right ability AND the right value: "7 cubed" -> 343)
+  let shown = '';
+  if (routed && says) shown = said + '\n' + await p.evaluate(() => { const i = document.getElementById('input'); return document.body.innerText.replace(i ? i.value : '', ''); }).catch(() => '');
+  const valueOk = !says || new RegExp(says, 'i').test(shown);
+  const right = routed && valueOk;
   await ctx.close();
-  return { ask: a, want, by: note || '(none)', right };
+  return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right };
 }
 const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || 6);
 let next = 0;
