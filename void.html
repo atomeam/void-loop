@@ -3188,6 +3188,17 @@ return { ok: true, detail: 'timer-reset' };
       ['mass', 6.35029318, 'stone', /^(?:stones?|st)$/], ['mass', 0.45359237, 'pounds', /^(?:pounds?|lbs?)$/], ['mass', 1, 'kg', /^(?:kg|kilos?|kilograms?)$/], ['mass', 0.001, 'grams', /^(?:grams?|g)$/], ['mass', 0.028349523, 'ounces', /^(?:ounces?|oz)$/],
       ['speed', 0.44704, 'mph', /^(?:mph|miles?\s+(?:an|per)\s+hour)$/], ['speed', 1 / 3.6, 'km/h', /^(?:km\/?h|kph|kmh|kilomet(?:er|re)s?\s+(?:an|per)\s+hour)$/], ['speed', 1, 'm/s', /^(?:m\/s|meters?\s+per\s+second|metres?\s+per\s+second)$/], ['speed', 0.514444, 'knots', /^(?:knots?|kn|kt)$/],
       ['data', 1024, 'KB', /^(?:kb|kilobytes?)$/], ['data', 1048576, 'MB', /^(?:mb|megabytes?)$/], ['data', 1073741824, 'GB', /^(?:gb|gigabytes?)$/], ['data', 1099511627776, 'TB', /^(?:tb|terabytes?)$/],
+      ['mass', 907.18474, 'short tons (US)', /^(?:tons?|short\s+tons?|us\s+tons?)$/], ['mass', 1000, 'metric tons', /^(?:metric\s+tons?|tonnes?|t)$/], ['mass', 0.0002, 'carats', /^(?:carats?|ct)$/], ['mass', 0.0311034768, 'troy ounces', /^(?:troy\s+ounces?|ozt)$/],
+      ['energy', 1, 'joules', /^(?:joules?|j)$/], ['energy', 1000, 'kJ', /^(?:kj|kilojoules?)$/], ['energy', 3600, 'Wh', /^(?:wh|watt[\s-]hours?)$/], ['energy', 3.6e6, 'kWh', /^(?:kwh|kilowatt[\s-]hours?)$/],
+      ['energy', 4184, 'food calories (kcal)', /^(?:calories|calorie|kcal|cal)$/], ['energy', 1055.06, 'BTU', /^(?:btus?)$/],
+      ['power', 1, 'watts', /^(?:watts?|w)$/], ['power', 1000, 'kW', /^(?:kw|kilowatts?)$/], ['power', 745.7, 'horsepower', /^(?:horsepower|hp)$/],
+      ['pressure', 1000, 'kPa', /^(?:kpa|kilopascals?)$/], ['pressure', 1, 'pascals', /^(?:pa|pascals?)$/], ['pressure', 1e5, 'bar', /^(?:bars?)$/], ['pressure', 6894.757, 'psi', /^(?:psi)$/], ['pressure', 101325, 'atmospheres', /^(?:atm|atmospheres?)$/], ['pressure', 133.322, 'mmHg', /^(?:mmhg|mm\s+hg)$/],
+      ['length', 1, 'meters', /^(?:m|meters?|metres?)$/], ['length', 1000, 'km', /^(?:km|kilomet(?:er|re)s?)$/], ['length', 0.001, 'mm', /^(?:mm|millimet(?:er|re)s?)$/], ['length', 0.01, 'cm', /^(?:cm|centimet(?:er|re)s?)$/], ['length', 0.0254, 'inches', /^(?:in|inch|inches)$/],
+      ['length', 0.3048, 'feet', /^(?:ft|feet|foot)$/], ['length', 0.9144, 'yards', /^(?:yd|yards?)$/], ['length', 1609.344, 'miles', /^(?:mi|miles?)$/], ['length', 1852, 'nautical miles', /^(?:nautical\s+miles?|nmi)$/], ['length', 9.4607e15, 'light years', /^(?:light[\s-]?years?|ly)$/], ['length', 1.495978707e11, 'AU', /^(?:au|astronomical\s+units?)$/],
+      ['volume', 1, 'ml', /^(?:ml|millilit(?:er|re)s?)$/], ['volume', 1000, 'liters', /^(?:l|lit(?:er|re)s?)$/], ['volume', 29.5735, 'fl oz', /^(?:fl\.?\s*oz|fluid\s+ounces?)$/], ['volume', 473.176, 'pints (US)', /^(?:pints?|pt)$/], ['volume', 946.353, 'quarts (US)', /^(?:quarts?|qt)$/],
+      ['volume', 3785.41, 'gallons (US)', /^(?:gallons?|gal)$/], ['volume', 236.588, 'cups (US)', /^(?:cups?)$/], ['volume', 14.7868, 'tablespoons', /^(?:tablespoons?|tbsp|tbs)$/], ['volume', 4.92892, 'teaspoons', /^(?:teaspoons?|tsp)$/], ['volume', 28316.8, 'cubic feet', /^(?:cubic\s+f(?:ee|oo)t|cu\s*ft|ft3|ft³)$/], ['volume', 1e6, 'cubic meters', /^(?:cubic\s+met(?:er|re)s?|m3|m³)$/],
+      ['angle', 1, 'degrees', /^(?:degrees?|deg|°)$/], ['angle', 180 / Math.PI, 'radians', /^(?:radians?|rad)$/],
+      ['rate', 125000, 'Mbps (megabits/s)', /^(?:mbps|mbit\/s|megabits?\s+per\s+second)$/], ['rate', 1.25e8, 'Gbps', /^(?:gbps|gbit\/s)$/], ['rate', 1e6, 'MB/s (megabytes/s)', /^(?:mb\/s|mbytes\/s|megabytes?\s+per\s+second)$/], ['rate', 125, 'kbps', /^(?:kbps)$/],
       ['fuel', 1, 'mpg', /^(?:mpg|miles\s+per\s+gallon)$/, false], ['fuel', 1, 'L/100 km', /^(?:l\/100\s*km|litres?\s+per\s+100\s*km|liters?\s+per\s+100\s*km)$/, true],
     ].map(([cat, f, name, re, inv]) => ({ cat, f, name, re, inv }));
     function unitOf(w) { w = String(w).trim().replace(/\.$/, ''); return MORE_UNITS.find((u) => u.re.test(w)) || null; }
@@ -3210,7 +3221,8 @@ return { ok: true, detail: 'timer-reset' };
         const a = unitOf(m[2]), b = unitOf(m[3]), x = +m[1];
         if (a && b && a.cat === b.cat && a !== b) {
           const v = a.cat === 'fuel' ? (a.inv === b.inv ? x : 235.214583 / x) : x * a.f / b.f, shown = Math.abs(v) >= 100 ? Math.round(v * 100) / 100 : Math.round(v * 10000) / 10000;
-          return { value: shown.toLocaleString(undefined, { maximumFractionDigits: 4 }) + ' ' + b.name, note: m[1] + ' ' + a.name + ' = ' + shown.toLocaleString(undefined, { maximumFractionDigits: 4 }) + ' ' + b.name + (a.cat === 'data' ? ' (1 GB = 1,024 MB, as computers count)' : '') };
+          const sci = Math.abs(v) >= 1e9 || (v !== 0 && Math.abs(v) < 1e-4) ? (+v.toExponential(3).split('e')[0]) + ' × 10^' + +v.toExponential(3).split('e')[1] : null;
+          return { value: (sci || shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name, note: m[1] + ' ' + a.name + ' = ' + (sci ? Math.abs(v) >= 1e9 ? Math.round(v).toLocaleString() : String(v) : shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name + (a.cat === 'data' ? ' (1 GB = 1,024 MB, as computers count)' : '') };
         }
       }
       // "how many weeks is 100 days", "100 days is how many weeks"
@@ -3371,6 +3383,35 @@ return { ok: true, detail: 'timer-reset' };
       // "is it a weekend", "is today a weekday", "what quarter of the year is it"
       if (/^is\s+(?:it|today)\s+(?:a\s+|the\s+)?(?:weekend|weekday|work\s*day|business\s+day)(?:\s+today)?$/.test(t)) { const d = new Date().getDay(), we = d === 0 || d === 6; return { value: /weekend/.test(t) ? (we ? 'Yes' : 'No') : (we ? 'No' : 'Yes'), note: 'today is ' + new Date().toLocaleDateString([], { weekday: 'long' }) }; }
       if (/^(?:what|which)\s+(?:fiscal\s+)?quarter\s+(?:of\s+the\s+year\s+)?(?:is\s+it|are\s+we\s+in|is\s+this)(?:\s+(?:now|today))?$/.test(t)) { const d = new Date(), q = Math.floor(d.getMonth() / 3) + 1; return { value: 'Q' + q, note: ['January–March', 'April–June', 'July–September', 'October–December'][q - 1] + ' ' + d.getFullYear() + ' (calendar quarters; fiscal years can differ)' }; }
+      // electricity: "how many amps is 1500 watts at 120 volts", "watts for 10 amps at 240 volts", "cost to run a 100 watt bulb for 10 hours at 15 cents per kwh"
+      m = t.match(/^(?:how\s+many\s+)?amps?\s+(?:is|for|in|does)\s+(\d+(?:\.\d+)?)\s*(?:watts?|w)\s+(?:at|on)\s+(\d+(?:\.\d+)?)\s*(?:volts?|v)(?:\s+draw)?$/);
+      if (m) { const a = Math.round(+m[1] / +m[2] * 100) / 100; return { value: a + ' A', note: m[1] + ' W ÷ ' + m[2] + ' V (amps = watts ÷ volts)' }; }
+      m = t.match(/^(?:how\s+many\s+)?watts?\s+(?:is|for|in)\s+(\d+(?:\.\d+)?)\s*(?:amps?|a)\s+(?:at|on)\s+(\d+(?:\.\d+)?)\s*(?:volts?|v)$/);
+      if (m) { const w = Math.round(+m[1] * +m[2] * 100) / 100; return { value: w.toLocaleString() + ' W', note: m[1] + ' A × ' + m[2] + ' V (watts = amps × volts)' }; }
+      m = t.match(/^(?:how\s+much\s+(?:does\s+it\s+)?|what\s+(?:does\s+it\s+)?)?(?:cost|costs)\s+(?:to\s+run\s+)?(?:a\s+)?(\d+(?:\.\d+)?)\s*(watts?|w|kw|kilowatts?)\s*(?:[a-z ]{0,20}?)\s+for\s+(\d+(?:\.\d+)?)\s*(hours?|hrs?|days?)\s+at\s+\$?(\d+(?:\.\d+)?)\s*(cents?|¢|dollars?)?\s*(?:per|a|\/)\s*kwh$/);
+      if (m) { const kw = +m[1] / (/^k/.test(m[2]) ? 1 : 1000), hrs = +m[3] * (/^d/.test(m[4]) ? 24 : 1), price = /cent|¢/.test(m[6] || '') || (+m[5] >= 1 && !m[6]) ? +m[5] / 100 : +m[5], kwh = kw * hrs, cost = kwh * price;
+        return { value: '$' + cost.toFixed(2), note: kwh.toLocaleString(undefined, { maximumFractionDigits: 3 }) + ' kWh at $' + price.toFixed(3).replace(/0$/, '') + ' per kWh' }; }
+      // downloads: "how long to download 5 gb at 100 mbps"
+      m = t.match(/^how\s+long\s+(?:to|will\s+it\s+take\s+to|does\s+it\s+take\s+to)\s+(?:download|upload|transfer)\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(kb|mb|gb|tb)\s+(?:file\s+)?(?:at|on|with)\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(kbps|mbps|gbps)(?:\s+(?:connection|internet))?$/);
+      if (m) { const bytes = +m[1] * { kb: 1e3, mb: 1e6, gb: 1e9, tb: 1e12 }[m[2]], bps = +m[3] * { kbps: 1e3, mbps: 1e6, gbps: 1e9 }[m[4]], sec = bytes * 8 / bps, h = Math.floor(sec / 3600), mi = Math.floor(sec % 3600 / 60), se = Math.round(sec % 60);
+        return { value: (h ? h + ' h ' : '') + (h || mi ? mi + ' min ' : '') + (h ? '' : se + ' s'), note: m[1] + ' ' + m[2].toUpperCase() + ' at a full ' + m[3] + ' ' + m[4].replace('bps', 'bps') + ' (bits, not bytes); real downloads are often slower' }; }
+      // screen density: "ppi of a 6.1 inch 2532x1170 screen"
+      m = t.match(/^(?:what(?:'s|\s+is)\s+(?:the\s+)?)?(?:ppi|pixel\s+density|pixels\s+per\s+inch)\s+(?:of|for)\s+(?:a\s+)?(\d+(?:\.\d+)?)\s*(?:inch|in|")\s+(\d{2,5})\s*[x×]\s*(\d{2,5})(?:\s+(?:screen|display|monitor|phone|tv))?$|^(?:ppi|pixel\s+density)\s+(?:of|for)\s+(?:a\s+)?(\d{2,5})\s*[x×]\s*(\d{2,5})\s+(\d+(?:\.\d+)?)\s*(?:inch|in|")(?:\s+(?:screen|display|monitor|phone|tv))?$/);
+      if (m) { const d = +(m[1] || m[6]), w = +(m[2] || m[4]), h = +(m[3] || m[5]), ppi = Math.round(Math.hypot(w, h) / d); return { value: ppi + ' ppi', note: w + '×' + h + ' on a ' + d + '-inch diagonal' }; }
+      // kelvin both ways
+      m = t.match(/^(-?\d+(?:\.\d+)?)\s*(k|kelvin|c|celsius|f|fahrenheit)\s+(?:in|to|into)\s+(k|kelvin|c|celsius|f|fahrenheit)$/);
+      if (m && (/^k/.test(m[2]) || /^k/.test(m[3])) && m[2][0] !== m[3][0]) { const x = +m[1], C = /^k/.test(m[2]) ? x - 273.15 : /^c/.test(m[2]) ? x : (x - 32) * 5 / 9, out = /^k/.test(m[3]) ? C + 273.15 : /^c/.test(m[3]) ? C : C * 9 / 5 + 32, u = /^k/.test(m[3]) ? ' K' : /^c/.test(m[3]) ? ' °C' : ' °F';
+        return { value: (Math.round(out * 100) / 100) + u, note: m[1] + (/^k/.test(m[2]) ? ' K' : /^c/.test(m[2]) ? ' °C' : ' °F') + (C < -273.15 ? ' is below absolute zero, which is impossible' : '') }; }
+      // "pi radians in degrees", "2pi radians"
+      m = t.match(/^(\d*(?:\.\d+)?)\s*(?:\*\s*)?(?:pi|π)(?:\s*\/\s*(\d+))?\s+radians?\s+(?:in|to)\s+degrees$/);
+      if (m) { const v = (+(m[1] || 1)) * 180 / +(m[2] || 1); return { value: (Math.round(v * 1e6) / 1e6) + '°', note: (m[1] || '') + 'π' + (m[2] ? '/' + m[2] : '') + ' radians' }; }
+      // "speed of light in mph"
+      m = t.match(/^(?:the\s+)?speed\s+of\s+(light|sound)\s+in\s+(mph|km\/?h|kph|m\/s|miles?\s+per\s+(?:hour|second)|km\/s)$/);
+      if (m) { const ms = m[1] === 'light' ? 299792458 : 343, u = m[2]; const v = /mph|miles?\s+per\s+hour/.test(u) ? ms / 0.44704 : /miles?\s+per\s+second/.test(u) ? ms / 1609.344 : /km\/?h|kph/.test(u) ? ms * 3.6 : /km\/s/.test(u) ? ms / 1000 : ms;
+        return { value: Math.round(v).toLocaleString() + ' ' + u, note: m[1] === 'light' ? 'exactly 299,792,458 m/s in a vacuum' : 'about 343 m/s in dry air at 20 °C; it changes with temperature' }; }
+      // tiny definitions with numbers
+      if (/^(?:(?:1|one|a)\s+)?megapixels?\s+(?:is|=|equals)\s+how\s+many\s+pixels$|^how\s+many\s+pixels\s+(?:are\s+)?in\s+a\s+megapixel$/.test(t)) return { value: '1,000,000 pixels', note: 'a million pixels, e.g. about 1155 × 866' };
+      if (/^(?:(?:1|one|a)\s+)?hertz\s+(?:is|=|equals)\s+how\s+many\s+cycles\s+per\s+second$|^what\s+is\s+(?:a\s+)?hertz$/.test(t)) return { value: '1 cycle per second', note: '1 Hz = one cycle (or event) each second; 1 kHz = 1,000, 1 MHz = 1,000,000' };
       // "the square of 13"
       m = t.match(/^(?:the\s+)?square\s+of\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = String(Math.round(+m[1] * +m[1] * 1e9) / 1e9); return { value: v, note: m[1] + '² = ' + v }; }
