@@ -538,6 +538,21 @@
 
     const stage = document.getElementById('stage');
     const input = document.getElementById('input');
+    // First visit: until someone has asked anything, the quiet hint text shows what Void can do, one real ask at a time.
+    // It stops for good after the first ask, while typing, and for reduced motion (then it's one static example).
+    (function firstHints() {
+      let asked = false; try { asked = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').length > 0; } catch (_) {}
+      if (asked || /[?&]q=/.test(location.search)) return;
+      const tries = ['weather in Tokyo', 'set a timer for 10 minutes', 'play othello', 'what is 15% of 240', 'translate thank you to Japanese',
+        'countdown to christmas', 'a shopping list with eggs and milk', 'define serendipity', 'news about spacex', 'make a 3d torus'];
+      const base = input.placeholder, still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let i = 0; const show = () => { input.placeholder = 'try: ' + tries[i++ % tries.length]; };
+      setTimeout(show, 1800); if (still) return;
+      const tick = setInterval(() => { if (input.value) return; show(); }, 3200);
+      const stop = () => { clearInterval(tick); input.placeholder = base; };
+      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') stop(); });
+      document.getElementById('go').addEventListener('click', stop);
+    })();
     const go = document.getElementById('go');
     const whisper = document.getElementById('whisper');
 
