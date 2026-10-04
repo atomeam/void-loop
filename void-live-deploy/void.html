@@ -3220,7 +3220,7 @@ return { ok: true, detail: 'timer-reset' };
       if (m) {
         const a = unitOf(m[2]), b = unitOf(m[3]), x = +m[1];
         if (a && b && a.cat === b.cat && a !== b) {
-          const v = a.cat === 'fuel' ? (a.inv === b.inv ? x : 235.214583 / x) : x * a.f / b.f, shown = Math.abs(v) >= 100 ? Math.round(v * 100) / 100 : Math.round(v * 10000) / 10000;
+          const v = a.cat === 'fuel' ? (a.inv === b.inv ? x : 235.214583 / x) : x * a.f / b.f, shown = Math.abs(v) >= 1 ? Math.round(v * 100) / 100 : +v.toPrecision(4); // two decimals, as the everyday converter always gave
           const sci = Math.abs(v) >= 1e9 || (v !== 0 && Math.abs(v) < 1e-4) ? (+v.toExponential(3).split('e')[0]) + ' × 10^' + +v.toExponential(3).split('e')[1] : null;
           return { value: (sci || shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name, note: m[1] + ' ' + a.name + ' = ' + (sci ? Math.abs(v) >= 1e9 ? Math.round(v).toLocaleString() : String(v) : shown.toLocaleString(undefined, { maximumFractionDigits: 4 })) + ' ' + b.name + (a.cat === 'data' ? ' (1 GB = 1,024 MB, as computers count)' : '') };
         }

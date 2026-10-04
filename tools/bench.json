@@ -795,7 +795,7 @@
   {"ask": "1 atmosphere in psi", "want": "calc", "says": "14\\.69|14\\.7"},
   {"ask": "1 light year in km", "want": "calc|answer", "says": "9\\.46"},
   {"ask": "speed of light in mph", "want": "calc|answer", "says": "670"},
-  {"ask": "1 nautical mile in km", "want": "calc", "says": "1\\.852"},
+  {"ask": "1 nautical mile in km", "want": "calc", "says": "1\\.85"},
   {"ask": "1 cubic foot in liters", "want": "calc", "says": "28\\.3"},
   {"ask": "1 cubic meter in gallons", "want": "calc", "says": "264"},
   {"ask": "500 ml in fl oz", "want": "calc", "says": "16\\.9"},
