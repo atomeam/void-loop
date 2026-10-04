@@ -706,7 +706,7 @@ Object.values(things).forEach((th) => {
         const figs = Object.values(things).filter((t) => t.kind === 'figure');
         if (opts.hide) { for (const f of figs) delete things[f.id]; if (figs.length) { save(); render(); } return figs.length; }
         if (figs.length >= 6) return null;
-        const th = { id: uid('figure'), kind: 'figure', body: opts.body || 'sprite', color: opts.color || null, prop: opts.prop || null, line: opts.line || null, title: opts.title || null, x: 0, y: 0 };
+        const th = { id: uid('figure'), kind: 'figure', body: opts.body || 'sprite', color: opts.color || null, prop: opts.prop || null, line: opts.line || null, title: opts.title || null, script: opts.script || null, x: 0, y: 0 };
         things[th.id] = th; save(); render(); return th;
       }
       if (stageKinds[kind]) { // skill kinds: each ask adds one more; it stays until thrown off the screen
@@ -3021,12 +3021,26 @@ return { ok: true, detail: 'timer-reset' };
           + '<p>' + esc(j.extract || '') + '</p>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
         addCopy(el);
-        // Next #18: two-part summon — the card, plus a base body dressed from this summary.
+        // Next #18/#19: two-part summon — the card, plus a base body dressed from this summary, then a behavior script (AI once, cached; fallback without AI).
         try {
-          import('/skills/bodies.js').then((m) => {
+          Promise.all([import('/skills/bodies.js'), import('/skills/scripts.js')]).then(([m, S]) => {
             if (vpageEl !== el) return;
-            const dressed = m.dressFromCard({ title: j.title || hit.title, description: j.description || '', extract: j.extract || '', type: j.type || '' });
-            summonThing('figure', dressed);
+            const card = { title: j.title || hit.title, description: j.description || '', extract: j.extract || '', type: j.type || '' };
+            const dressed = m.dressFromCard(card);
+            dressed.script = S.fallbackScript(dressed.body, card.title); // acts at once; /api/figurescript may upgrade later
+            const fig = summonThing('figure', dressed);
+            if (!fig) return;
+            // Next #19: AI script once per subject (cached in D1); with AI off the fallback already on the figure stays.
+            fetch('/api/figurescript', {
+              method: 'POST',
+              headers: { 'content-type': 'application/json' },
+              body: JSON.stringify({ title: card.title, body: dressed.body, description: card.description, extract: card.extract }),
+              keepalive: true,
+            }).then((r) => r.ok ? r.json() : null).then((out) => {
+              if (!out || !out.script || !things[fig.id]) return;
+              things[fig.id].script = out.script;
+              save(); syncFigures();
+            }).catch(() => {});
           }).catch(() => {});
         } catch (_) {}
         return 'wikipedia';

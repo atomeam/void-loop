@@ -27,16 +27,16 @@ urine collectors, small and fun on the stage, with zoom to inspect it up close. 
 - **Why:** one body set dressed from data covers every subject, so figures scale to everything without hand-made models.
 - **Reuse:** the #17 layer, card data from the article page (Wikipedia summary type and description), `colorFrom`.
 - **Done when:** summoning a person, an animal, a place, an object and an idea each brings the matching body in the subject's colors, with a prop and a line of its own; tests cover the body pick for five sample cards and stay green.
-- **claim:** building helper/base-bodies
-- **claim_until:** 2026-10-04
+- **claim:** DONE (helper/base-bodies)
+- **claim_until:**
 
 ### Next #19 — behavior scripts from Workers AI, with a fallback
 - **What:** each new summon gets a short behavior script (a small JSON list of drives and idle actions true to its subject: a chef stirs a tiny pot, a volcano rumbles and puffs smoke) written by Cloudflare's free Workers AI through a Pages Function and cached per subject. A built-in fallback script for each base body runs whenever the AI is unavailable, so every figure works without AI and without API keys. Figures run the known drives and actions named in a script, which keeps every script safe to run.
 - **Why:** this is the brain that lets each figure think for itself and do things true to its subject, at the scale of everything people summon, while staying on free models.
 - **Reuse:** the Workers AI binding `/api/will` and `/api/answer` already use, D1 for the per-subject cache, the #17 drives.
 - **Done when:** a new summon gets an AI script once and reuses it after; with AI switched off the fallback runs and the figure still acts; a script naming unknown actions is trimmed to the known ones; tests cover both paths and stay green.
-- **claim:** free
-- **claim_until:**
+- **claim:** building helper/behavior-scripts
+- **claim_until:** 2026-10-05
 
 ### Next #20 — figures react to each other
 - **What:** figures notice other figures on the stage and react as their scripts say: greet, follow, chase, flee, argue, team up. A summoned police card chases a troublemaker off; two summoned animals play together.
