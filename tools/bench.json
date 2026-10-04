@@ -1092,5 +1092,12 @@
   {"ask": "what is the median of 3 9 4 7", "want": "calc"},
   {"ask": "what is 15% tip on $82", "want": "skill:tip|calc"},
   {"ask": "what is 9 mod 4", "want": "calc"},
-  {"ask": "what is the cube root of 27", "want": "calc"}
+  {"ask": "what is the cube root of 27", "want": "calc"},
+  {"ask": "what is the weather in paris", "want": "skill:weather"},
+  {"ask": "define gregarious", "want": "skill:define"},
+  {"ask": "what rhymes with cat", "want": "skill:words"},
+  {"ask": "translate goodbye to french", "want": "skill:translate"},
+  {"ask": "how far is la from sf", "want": "skill:distance"},
+  {"ask": "what is the population of japan", "want": "skill:country|answer"},
+  {"ask": "mortgage payment on 300000 at 6.5% for 30 years", "want": "skill:loan"}
 ]
