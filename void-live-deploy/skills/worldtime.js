@@ -240,7 +240,7 @@ async function run(text, api) {
 
 export default {
   name: 'worldtime',
-  examples: ['world clock', 'time in Tokyo', '3pm London to Tokyo', 'sunset in Paris', 'when is sunrise in New York', 'what time is it in Sydney', 'what day is it in Auckland', 'time difference between London and Tokyo', 'time zone of Denver'],
+  examples: ['world clock', 'time in Tokyo', '3pm London to Tokyo', 'sunset in Paris', 'when is sunrise in New York', 'what time is it in Sydney', 'what day is it in Auckland', 'time difference between London and Tokyo'],
   nearMisses: ['make a clock', 'make a 5 minute timer', 'what is time', 'set a timer for 3pm', 'time zones explained'],
   match(lower, text) { return !!parseWorldTime(text); },
   run

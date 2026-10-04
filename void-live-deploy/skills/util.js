@@ -22,7 +22,8 @@ export function utilOf(text) {
   m = t.match(/^(uppercase|upper case|lowercase|lower case|title case|reverse)\s+(?:this:?\s+)?(.+)$/i);
   if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] };
   if (/^(?:what(?:'s| is)\s+)?(?:the\s+)?moon\s+phase(?:\s+(?:tonight|today|now))?$|^(?:what\s+)?phase\s+(?:is\s+)?(?:of\s+)?the\s+moon(?:\s+in)?(?:\s+(?:tonight|today|now))?$|^is\s+it\s+a\s+full\s+moon(?:\s+tonight)?$/.test(l)) return { kind: 'moon' };
-  if (/^(?:give\s+me\s+)?(?:some\s+|\d{1,2}\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+\d{1,2}\s+paragraphs?)?$/.test(l)) return { kind: 'lorem' };
+  m = l.match(/^(?:give\s+me\s+)?(?:some\s+|(\d{1,2})\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+(\d{1,2})\s+paragraphs?)?$/);
+  if (m) return { kind: 'lorem', n: Math.max(1, Math.min(10, +(m[1] || m[2]) || 1)) };
   return null;
 }
 function hex(c) { c = NAMED[c] || c; c = c.replace('#', ''); if (c.length === 3) c = c.split('').map((x) => x + x).join(''); return '#' + c.toLowerCase(); }
@@ -65,7 +66,7 @@ async function run(text, api) {
     const m = moonPhase();
     el = showPage((p) => { p.innerHTML = '<h2>The moon</h2>' + big(m.name, 44) + '<p style="color:#8a8a8a">' + m.lit + '% lit · ' + m.age.toFixed(1) + ' days into its cycle · next full moon ' + esc(m.nextFull.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })) + '</p><div class="sub">worked out from the mean lunar cycle; within about a day</div>'; });
   } else if (q.kind === 'lorem') {
-    el = showPage((p) => { p.innerHTML = '<h2>Lorem ipsum</h2><p>' + esc(LOREM) + '</p>' + copyBtn; });
+    el = showPage((p) => { p.innerHTML = '<h2>Lorem ipsum</h2><div class="util-out">' + Array.from({ length: q.n || 1 }, () => '<p>' + esc(LOREM) + '</p>').join('\n\n') + '</div>' + copyBtn; });
   }
   const b = el && el.querySelector && el.querySelector('.util-copy');
   if (b) b.addEventListener('click', async () => { const s = (el.querySelector('.util-out') || el.querySelector('p')).textContent; let ok = false; try { await navigator.clipboard.writeText(s); ok = true; } catch (_) {} b.textContent = ok ? 'copied' : 'select it to copy'; setTimeout(() => { b.textContent = 'copy'; }, 1600); });
