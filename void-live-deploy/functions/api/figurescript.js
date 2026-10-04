@@ -4,7 +4,7 @@
 // With AI off / unbound / busy, the built-in fallback for the base body runs (every figure still acts).
 import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
 import {
-  KNOWN_DRIVES, KNOWN_ACTIONS, FALLBACKS, subjectKey, fallbackScript, trimScript,
+  KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey, fallbackScript, trimScript,
 } from '../../skills/scripts.js';
 
 const MODEL = '@cf/google/gemma-4-26b-a4b-it';
@@ -60,13 +60,15 @@ async function writeCache(env, id, body, script) {
 async function aiScript(env, card, body) {
   const knownD = KNOWN_DRIVES.join(', ');
   const knownA = KNOWN_ACTIONS.join(', ');
+  const knownR = KNOWN_REACTS.join(', ');
+  const knownT = KNOWN_TAGS.join(', ');
   const subject = card.title || body;
   const about = redact([card.title, card.description, card.extract].filter(Boolean).join(' — ')).slice(0, 500);
   const r = await env.AI.run(MODEL, {
     messages: [
       {
         role: 'system',
-        content: 'You write short behavior scripts for tiny 3D figures on a blank stage. Reply with JSON only: {"drives":["..."],"actions":["..."]}. drives must be a subset of: ' + knownD + '. actions must be a subset of: ' + knownA + '. Pick 2-4 drives and 3-6 actions true to the subject (a chef stirs, a volcano rumbles and puffs). No prose, no markdown. ' + INJECTION_RULE,
+        content: 'You write short behavior scripts for tiny 3D figures on a blank stage. Reply with JSON only: {"drives":["..."],"actions":["..."],"tags":["..."],"reactsTo":{"tag":"react"}}. drives subset of: ' + knownD + '. actions subset of: ' + knownA + '. tags subset of: ' + knownT + '. reactsTo values subset of: ' + knownR + '. Pick 2-4 drives, 3-6 actions, 1-3 tags, and 0-3 reactsTo true to the subject (a chef stirs; a police figure chases a troublemaker; a fox flees a person). No prose, no markdown. ' + INJECTION_RULE,
       },
       { role: 'user', content: 'Subject: ' + subject + (about ? '\nAbout: ' + about : '') + '\nBase body: ' + body },
     ],

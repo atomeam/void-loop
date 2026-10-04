@@ -2404,6 +2404,41 @@ try {
     await A19.ctx.close();
   }
 
+  // Board Next #20: figures react to each other (reactsTo × tags). Pure pickers + brain chase/flee; reduced motion holds still.
+  {
+    const Scr = await import(new URL('../void-live-deploy/skills/scripts.js', import.meta.url).href);
+    const F3 = await import(new URL('../void-live-deploy/skills/figures3d.js', import.meta.url).href);
+    const police = Scr.fallbackScript('person', 'Police officer');
+    const bad = Scr.fallbackScript('person', 'Troublemaker thief');
+    const fox = Scr.fallbackScript('animal', 'Red fox');
+    const junkR = Scr.trimScript({ drives: ['wander'], actions: ['wave'], tags: ['alien', 'police'], reactsTo: { troublemaker: 'chase', ghost: 'haunt', person: 'hug' } }, 'person', 'Police officer');
+    check('react (#20): fallback tags + reactsTo — police chases troublemaker, troublemaker flees police; unknown react names trimmed',
+      police.tags.includes('police') && bad.tags.includes('troublemaker')
+      && Scr.pickReaction(police, bad) === 'chase' && Scr.pickReaction(bad, police) === 'flee'
+      && Scr.pickReaction(fox, fox) === 'team'
+      && junkR.tags.includes('police') && !junkR.tags.includes('alien')
+      && junkR.reactsTo.troublemaker === 'chase' && !junkR.reactsTo.ghost && junkR.reactsTo.person === 'greet',
+      JSON.stringify({ police, bad, junkR }));
+    const rng = () => 0.5;
+    const cop = F3.makeBrain({ id: 'cop', x: 100, y: 100, body: 'person', script: police, title: 'Police officer' }, rng);
+    const crook = F3.makeBrain({ id: 'crook', x: 130, y: 100, body: 'person', script: bad, title: 'Troublemaker thief' }, rng);
+    const world = { bounds: { l: 0, t: 0, r: 800, b: 600 }, rects: [], cursor: null, still: false, posing: false, others: [cop, crook] };
+    for (let i = 0; i < 50; i++) { F3.stepFigure(cop, 0.05, world, rng); F3.stepFigure(crook, 0.05, world, rng); }
+    check('react (#20): nearby police + troublemaker — chase catches and marks chasedOff; flee runs',
+      crook.chasedOff === true,
+      JSON.stringify({ copMode: cop.mode, copReact: cop.react, crookMode: crook.mode, crookReact: crook.react, off: crook.chasedOff, cx: cop.x, bx: crook.x }));
+    const c2 = F3.makeBrain({ id: 'cop2', x: 100, y: 100, body: 'person', script: police }, rng);
+    const k2 = F3.makeBrain({ id: 'crook2', x: 120, y: 100, body: 'person', script: bad }, rng);
+    F3.stepFigure(c2, 0.05, { bounds: world.bounds, rects: [], cursor: null, still: true, posing: false, others: [c2, k2] }, rng);
+    F3.stepFigure(k2, 0.05, { bounds: world.bounds, rects: [], cursor: null, still: true, posing: false, others: [c2, k2] }, rng);
+    check('react (#20): reduced motion holds both still with no reaction',
+      c2.mode === 'still' && k2.mode === 'still' && !c2.react && !k2.react && !k2.chasedOff,
+      JSON.stringify({ c2: c2.mode, k2: k2.mode, r: c2.react }));
+    check('react (#20): figures3d re-exports pickReaction / KNOWN_REACTS',
+      typeof F3.pickReaction === 'function' && Array.isArray(F3.KNOWN_REACTS) && F3.KNOWN_REACTS.includes('chase'),
+      String(typeof F3.pickReaction));
+  }
+
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
     !!esMod && esMod.examples.length >= 4 && (esMod.nearMisses || []).length >= 3
       && esMod.examples.every((e) => firstNs(e) === 'spanish') && esMod.nearMisses.every((e) => firstNs(e) !== 'spanish')

@@ -223,3 +223,7 @@ Format: `ISO | slug | role | event | note`
 - 2026-10-04 09:40 ET grok: Next #19 behavior scripts — skills/scripts.js + /api/figurescript (Workers AI once, D1 cache, body fallbacks); figures3d runs script drives/actions; helper/behavior-scripts.
 
 - 2026-10-04 15:05 ET grok: Next #19 re-ship — helper/behavior-scripts-v2 (rebase onto main after 279/280 empty-got); ship-helper runs bench as its own step; claim v2.
+
+- 2026-10-04 15:10 ET grok: Next #20 started on helper/figures-react (stacked on #19 v2): scripts.reactsTo/tags, pickReaction, chase-off, reduced-motion still; tests pending push until #19 ships.
+
+- 2026-10-04 15:42 ET grok: Next #19 live (main b67d2a8c; 279/279 + bench 1006/1006). Pushing helper/figures-react for Next #20.

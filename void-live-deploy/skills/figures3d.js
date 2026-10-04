@@ -16,14 +16,14 @@
  *                                                 stage3d.js with its GLB/STL export) mounts here, so the page keeps one three.js
  *                                                 copy and one WebGL scene. loadThree() hands out the same three.js module.
  * The brain (stepFigure, pickTarget) is plain JS with no three.js, so it runs and is tested without WebGL.
- * Next #19: each figure may carry a behavior script (drives + idle actions). Unknown action names are trimmed; missing
- * scripts fall back to the base-body defaults so every figure still acts without AI.
+ * Next #19/#20: each figure may carry a behavior script (drives, idle actions, reactsTo/tags). Unknown names are trimmed;
+ * missing scripts fall back to the base-body defaults. Nearby figures trigger greet/follow/chase/flee/argue/team; reduced motion holds all still.
  */
 import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
 import { PERSON, ANIMAL, bodyMesh } from './sdfmesh.js';
-import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, KNOWN_DRIVES, KNOWN_ACTIONS, FALLBACKS, subjectKey } from './scripts.js';
+import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey } from './scripts.js';
 export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
-export { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, KNOWN_DRIVES, KNOWN_ACTIONS, FALLBACKS, subjectKey };
+export { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey };
 export const THREE_VERSION = '0.180.0';
 export const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@' + THREE_VERSION + '/build/three.module.min.js';
 export const MOTION_KEY = 'a2m.void.motion.v1';
@@ -41,7 +41,7 @@ export function makeBrain(spec = {}, rng = Math.random) {
   return { id: spec.id || 'fig_' + Math.random().toString(36).slice(2, 8), x: spec.x ?? 200, y: spec.y ?? 200, vx: 0, vy: 0,
     tx: spec.x ?? 200, ty: spec.y ?? 200, mode: 'idle', modeT: 0.6 + rng() * 1.2, act: 'look', yaw: 0, lookX: 0, lookY: 0,
     blinkT: 0, nextBlink: 1.5 + rng() * 3, bob: rng() * 6.28, hop: 0, spin: 0, noticed: false, wave: 0, slide: 0, t: 0,
-    script, body };
+    script, body, react: null, reactId: null, reactT: 0, chasedOff: false };
 }
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export function insideAny(x, y, rects, pad = 0) {
@@ -65,8 +65,9 @@ export function pickTarget(world, rng = Math.random, pad = PAD) {
 export function stepFigure(f, dt, world, rng = Math.random) {
   dt = Math.min(dt, 0.1); f.t += dt;
   const rects = world.rects || [], b = world.bounds;
-  if (world.still) { // reduced motion: a still pose, facing you, eyes open; no wandering, no bob
+  if (world.still) { // reduced motion: a still pose, facing you, eyes open; no wandering, no bob, no reactions
     f.vx = 0; f.vy = 0; f.mode = 'still'; f.yaw = 0; f.lookX = 0; f.lookY = 0; f.blinkT = 0; f.hop = 0; f.spin = 0; f.wave = 0;
+    f.react = null; f.reactId = null; f.reactT = 0;
     return f;
   }
   f.bob += dt * 2.3;
@@ -93,7 +94,49 @@ export function stepFigure(f, dt, world, rng = Math.random) {
     if (dc > NOTICE * 1.4) f.noticed = false;
     f.lookX *= Math.pow(0.1, dt); f.lookY *= Math.pow(0.1, dt);
     if (insideAny(f.tx, f.ty, rects, PAD - 12)) { const p = pickTarget(world, rng); f.tx = p.x; f.ty = p.y; } // a card landed on the goal
-    if (f.mode === 'idle') {
+    // Next #20: react to a nearby figure when the script says so (cursor notice still wins above).
+    const near = pickNearbyReaction(f, world.others || [], NOTICE * 1.15);
+    if (near && (!f.react || f.reactId !== near.other.id || f.react !== near.react)) {
+      f.react = near.react; f.reactId = near.other.id; f.reactT = 2.4 + rng() * 1.6;
+      if (near.react === 'greet' || near.react === 'argue') { f.mode = near.react; f.hop = 1; f.wave = 1; f.act = 'wave'; }
+      else if (near.react === 'chase' || near.react === 'follow' || near.react === 'flee' || near.react === 'team') {
+        f.mode = near.react; f.modeT = 3;
+      }
+    }
+    if (f.react && f.reactT > 0) f.reactT -= dt;
+    if (f.mode === 'greet' || f.mode === 'argue') {
+      const o = (world.others || []).find((x) => x && x.id === f.reactId);
+      if (!o || f.reactT <= 0) { f.mode = 'idle'; f.modeT = 0.8 + rng() * 1.2; f.react = null; f.reactId = null; }
+      else {
+        wantYaw = clamp((o.x - f.x) / 220, -0.7, 0.7);
+        f.lookX += (clamp((o.x - f.x) / 160, -1, 1) - f.lookX) * Math.min(1, dt * 8);
+        f.vx *= Math.pow(0.05, dt); f.vy *= Math.pow(0.05, dt);
+        if (f.act === 'wave') f.wave = Math.max(f.wave, 0.6);
+      }
+    } else if (f.mode === 'chase' || f.mode === 'follow' || f.mode === 'flee' || f.mode === 'team') {
+      const o = (world.others || []).find((x) => x && x.id === f.reactId && !x.chasedOff);
+      if (!o || f.reactT <= 0) { f.mode = 'idle'; f.modeT = 0.8 + rng() * 1.2; f.react = null; f.reactId = null; }
+      else {
+        const dx0 = o.x - f.x, dy0 = o.y - f.y, dist = Math.hypot(dx0, dy0) || 1;
+        let tx = o.x, ty = o.y, spd = SPEED;
+        if (f.mode === 'flee') { tx = f.x - dx0; ty = f.y - dy0; spd = SPEED * 1.25; }
+        else if (f.mode === 'chase') { spd = SPEED * 1.45; }
+        else if (f.mode === 'team') { // stick near, not on top
+          if (dist < R * 2.2) { tx = f.x; ty = f.y; }
+          else { tx = o.x - (dx0 / dist) * R * 2; ty = o.y - (dy0 / dist) * R * 2; }
+        } else if (f.mode === 'follow') {
+          tx = o.x - (dx0 / dist) * R * 2.4; ty = o.y - (dy0 / dist) * R * 2.4;
+        }
+        if (f.mode === 'chase' && dist < R * 1.6) { // caught: chase the other off the stage
+          o.chasedOff = true; f.mode = 'idle'; f.modeT = 1.2; f.react = null; f.reactId = null; f.hop = 1; f.wave = 1;
+        } else {
+          f.tx = tx; f.ty = ty;
+          const gx = f.tx - f.x, gy = f.ty - f.y, gd = Math.hypot(gx, gy) || 1;
+          f.vx = gx / gd * spd; f.vy = gy / gd * spd;
+          wantYaw = clamp(gx / 180, -0.7, 0.7);
+        }
+      }
+    } else if (f.mode === 'idle') {
       f.modeT -= dt; f.vx *= Math.pow(0.05, dt); f.vy *= Math.pow(0.05, dt);
       if (f.act === 'look') { f.lookX = Math.sin(f.t * 1.3) * 0.6; wantYaw = Math.sin(f.t * 0.9) * 0.35; }
       if (f.modeT <= 0) {
@@ -229,7 +272,7 @@ export function mountStage3D() {
 
 function debugState() {
   return { mounted: !!stage, canvas: !!document.getElementById('void-3d'), animating: !!(stage && stage.raf), still: motionStill(), zoom: ui.zoom, zoomTo: ui.zoomTo,
-    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, blink: f.brain.blinkT > 0, color: f.spec.color || null })) };
+    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null })) };
 }
 
 // --- the void sprite: a soft, glossy little blob with big shiny eyes, rosy cheeks, a glowing antenna bulb and a wispy tail ---
@@ -682,6 +725,10 @@ function frame(ts) {
   let moving = false;
   for (const [id, f] of figures) {
     if (f.leaving && now - f.leaving > 300) { disposeFigure(f); figures.delete(id); continue; }
+    if (f.brain.chasedOff && !f.leaving) { // Next #20: a chase that caught this figure sends them off
+      if (still) { disposeFigure(f); figures.delete(id); continue; }
+      f.leaving = now; f.brain.chasedOff = false;
+    }
     stepFigure(f.brain, dt, { ...world, posing: ui.zoomId === id && ui.zoomTo > 1 });
     poseSprite(f, now);
     if (!still || f.leaving) moving = true;
