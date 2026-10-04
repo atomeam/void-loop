@@ -5143,6 +5143,8 @@ return { ok: true, detail: 'timer-reset' };
       if (/^(hi|hello|hey|hiya|yo|sup|wassup|wazzup|what'?s\s+up|whats\s+up|ola|olá|oi|hola|szia|hallo|bonjour|salut|ciao|hej|good\s+(morning|afternoon|evening))(\s+(there|void))?\s*[.!?]*$/.test(lower0)) { say('hi. ask for anything'); return; }
       // small talk: short, warm, and no encyclopedia page about the word "thanks"
       { const st = smallTalk(lower0.replace(/[.!?]+$/, '').replace(/\s+/g, ' ').trim()); if (st) { say(st); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'said' }); return; } }
+      // a bare probe or ping is someone checking Void is alive: say so (no page, no miss)
+      if (/^(probe|ping)\s*[.!?]*$/.test(lower0)) { say('here. ask for anything'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'said' }); return; }
       if (/^(test|testing|probe|ping|ping-test|research probe|test miss from research|asdf+|qwerty|zz+q*x*)\s*[.!?]*$/.test(lower0) || /^[bcdfghjklmnpqrstvwxz]{4,8}$/.test(lower0)
           || /^\/[\w-]+$/.test(lower0) || /^zz+\b.*\bprobe\b/.test(lower0)) { say(''); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
