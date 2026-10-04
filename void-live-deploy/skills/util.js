@@ -4,7 +4,17 @@
  * Everything runs in the browser (crypto for passwords, maths for the moon); only the QR image comes from goqr.me (no key).
  */
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
-  'title case': (s) => s.toLowerCase().replace(/\b\p{L}/gu, (c) => c.toUpperCase()), reverse: (s) => Array.from(s).reverse().join('') };
+  // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
+  'title case': (s) => { const w = s.toLowerCase().split(/(\s+)/), last = w.length - 1; return w.map((x, i) => (i && i !== last && SMALL.has(x)) ? x : x.replace(/^\p{L}/u, (c) => c.toUpperCase())).join(''); },
+  reverse: (s) => Array.from(s).reverse().join(''), 'reverse words': (s) => s.trim().split(/\s+/).reverse().join(' ') };
+const SMALL = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'so', 'yet', 'at', 'by', 'in', 'of', 'on', 'to', 'up', 'as', 'via', 'vs']);
+// syllables by vowel groups, with the usual English corrections (silent final e, -le, -ed); right for most words, labelled "about"
+export function syllables(w) {
+  w = String(w).toLowerCase().replace(/[^a-z]/g, ''); if (!w) return 0; if (w.length <= 3) return 1;
+  let s = w.replace(/(?:[^laeiouy]es|[^laeiouy]ed|[^laeiouy]e)$/, '').replace(/^y/, '');
+  const n = (s.match(/[aeiouy]+/g) || []).length + (/[^aeiouy]le$/.test(w) ? 1 : 0) - (/[^aeiouy]le$/.test(w) && /e$/.test(s) ? 1 : 0);
+  return Math.max(1, n);
+}
 const NAMED = { red: '#ff0000', green: '#008000', blue: '#0000ff', teal: '#008080', navy: '#000080', orange: '#ffa500', purple: '#800080', pink: '#ffc0cb', gold: '#ffd700', coral: '#ff7f50', salmon: '#fa8072', turquoise: '#40e0d0', indigo: '#4b0082', violet: '#ee82ee', maroon: '#800000', olive: '#808000', lime: '#00ff00', cyan: '#00ffff', magenta: '#ff00ff', black: '#000000', white: '#ffffff', gray: '#808080', grey: '#808080', brown: '#a52a2a', beige: '#f5f5dc', lavender: '#e6e6fa' };
 export function utilOf(text) {
   const raw = String(text || '').trim(), t = raw.replace(/[?!.]+$/, '').replace(/\s+/g, ' '), l = t.toLowerCase();
@@ -17,7 +27,7 @@ export function utilOf(text) {
   // "what color is rgb 255 0 0", "rgb(0, 128, 255)"
   m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?)?rgb\s*\(?\s*(\d{1,3})[\s,]+(\d{1,3})[\s,]+(\d{1,3})\s*\)?$/);
   if (m && [m[1], m[2], m[3]].every((v) => +v <= 255)) return { kind: 'color', c: '#' + [m[1], m[2], m[3]].map((v) => (+v).toString(16).padStart(2, '0')).join('') };
-  m = t.match(/^(?:word\s+count|count\s+(?:the\s+)?words)\s+(?:of|in|for)\s+(.+)$/i) || t.match(/^how\s+many\s+words\s+(?:are\s+)?in\s+(.+)$/i);
+  m = t.match(/^(?:word\s+count|count\s+(?:the\s+)?words)(?:\s+(?:of|in|for)\s+|\s*:\s*)(.+)$/i) || t.match(/^how\s+many\s+words\s+(?:are\s+)?in\s+(.+)$/i);
   if (m) return { kind: 'count', s: m[1].replace(/^["“]|["”]$/g, '') };
   // "make it uppercase: hello world", "turn this into title case: ..."
   m = t.match(/^(?:make|turn|convert|change|put)\s+(?:it|this|that|the\s+text)\s+(?:in(?:to)?\s+|to\s+)?(uppercase|upper case|lowercase|lower case|title case|all caps|caps)\s*:\s*(.+)$/i);
@@ -30,7 +40,16 @@ export function utilOf(text) {
   if (m && EMOJI[m[1].trim().toLowerCase()]) return { kind: 'emoji', w: m[1].trim().toLowerCase() };
   m = t.match(/^spell\s+(.+?)\s+backwards?$/i);
   if (m) return { kind: 'case', how: 'reverse', s: m[1] };
-  m = t.match(/^(uppercase|upper case|lowercase|lower case|title case|reverse)\s+(?:this:?\s+)?(.+)$/i);
+  // "reverse the words in hello big world"
+  m = t.match(/^reverse\s+(?:the\s+)?(?:order\s+of\s+(?:the\s+)?)?words\s+(?:in|of)\s*:?\s+(.+)$/i);
+  if (m) return { kind: 'case', how: 'reverse words', s: m[1] };
+  // "is racecar a palindrome", "is 'never odd or even' a palindrome"
+  m = t.match(/^is\s+["“']?(.+?)["”']?\s+a\s+palindrome$/i);
+  if (m) return { kind: 'palindrome', s: m[1] };
+  // "how many syllables in banana", "syllables in elephant"
+  m = l.match(/^(?:how\s+many\s+)?syllables?\s+(?:are\s+)?(?:in|does)\s+(?:the\s+word\s+)?["“']?([a-z'-]{1,30})["”']?(?:\s+have)?$|^how\s+many\s+syllables\s+does\s+["“']?([a-z'-]{1,30})["”']?\s+have$/);
+  if (m) return { kind: 'syllables', w: m[1] || m[2] };
+  m = t.match(/^(uppercase|upper case|lowercase|lower case|title case|reverse)\s*:?\s+(?:this:?\s+)?(.+)$/i);
   if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] };
   if (/^(?:what(?:'s| is)\s+)?(?:the\s+)?moon\s+phase(?:\s+(?:tonight|today|now))?$|^(?:what\s+)?phase\s+(?:is\s+)?(?:of\s+)?the\s+moon(?:\s+in)?(?:\s+(?:tonight|today|now))?$|^is\s+it\s+a\s+full\s+moon(?:\s+tonight)?$/.test(l)) return { kind: 'moon' };
   m = l.match(/^(?:give\s+me\s+)?(?:some\s+|(\d{1,2})\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+(\d{1,2})\s+paragraphs?)?$/);
@@ -81,6 +100,12 @@ async function run(text, api) {
   } else if (q.kind === 'case') {
     const out = CASES[q.how](q.s);
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(q.how.charAt(0).toUpperCase() + q.how.slice(1)) + '</h2>' + big(out, 28) + copyBtn; });
+  } else if (q.kind === 'palindrome') {
+    const k = Array.from(q.s.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '')), yes = k.length > 1 && k.join('') === k.slice().reverse().join('');
+    el = showPage((p) => { p.innerHTML = '<h2>Palindrome?</h2>' + big(yes ? 'Yes' : 'No', 44) + '<p style="color:#8a8a8a">“' + esc(q.s) + '” ' + (yes ? 'reads the same backwards' : 'backwards is “' + esc(Array.from(q.s).reverse().join('')) + '”') + ' (ignoring spaces, punctuation and case)</p>'; });
+  } else if (q.kind === 'syllables') {
+    const n = syllables(q.w);
+    el = showPage((p) => { p.innerHTML = '<h2>Syllables</h2>' + big(n + (n === 1 ? ' syllable' : ' syllables'), 44) + '<p style="color:#8a8a8a">“' + esc(q.w) + '”, counted by its vowel sounds; a few words break the rules</p>'; });
   } else if (q.kind === 'moon') {
     const m = moonPhase();
     el = showPage((p) => { p.innerHTML = '<h2>The moon</h2>' + big(m.name, 44) + '<p style="color:#8a8a8a">' + m.lit + '% lit · ' + m.age.toFixed(1) + ' days into its cycle · next full moon ' + esc(m.nextFull.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })) + '</p><div class="sub">worked out from the mean lunar cycle; within about a day</div>'; });
@@ -94,7 +119,7 @@ async function run(text, api) {
 export default {
   name: 'util',
   examples: ['generate a password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'moon phase tonight'],
-  nearMisses: ['reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of'],
+  nearMisses: ['what is a palindrome', 'reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of'],
   match(lower, text) { return !!utilOf(text); },
   run
 };

@@ -3167,6 +3167,16 @@ return { ok: true, detail: 'timer-reset' };
       const size = lines.length > 1 ? (lines.length > 6 ? 18 : 24) : long > 28 ? 24 : long > 14 ? 36 : 56;
       return 'font-size:' + size + 'px;font-weight:300;line-height:' + (size > 30 ? 1.15 : 1.45) + ';margin:6px 0 4px;white-space:pre-line;overflow-wrap:anywhere';
     }
+    // cup weights for baking (US cup, spooned and levelled), from the King Arthur ingredient chart
+    const CUP_GRAMS = { flour: 120, 'bread flour': 120, 'whole wheat flour': 113, sugar: 200, 'brown sugar': 213, 'powdered sugar': 113, 'icing sugar': 113, butter: 227, rice: 185, oats: 90, 'rolled oats': 90, honey: 340, milk: 227, water: 236, 'cocoa': 84, 'cocoa powder': 84, 'chocolate chips': 170, 'maple syrup': 312, oil: 198, 'vegetable oil': 198, 'olive oil': 198, cornstarch: 112, 'almond flour': 96, yogurt: 227, 'peanut butter': 270, salt: 288 };
+    function numberWords(n) {
+      if (n < 0) return 'minus ' + numberWords(-n); if (n === 0) return 'zero';
+      const O = ['', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen'], T = ['', '', 'twenty', 'thirty', 'forty', 'fifty', 'sixty', 'seventy', 'eighty', 'ninety'];
+      const small = (x) => { const h = Math.floor(x / 100), r = x % 100, out = []; if (h) out.push(O[h] + ' hundred'); if (r) out.push(r < 20 ? O[r] : T[Math.floor(r / 10)] + (r % 10 ? '-' + O[r % 10] : '')); return out.join(' and '); };
+      const S = ['', ' thousand', ' million', ' billion', ' trillion', ' quadrillion'], parts = []; let i = 0;
+      while (n > 0) { const c = n % 1000; if (c) parts.unshift(small(c) + S[i]); n = Math.floor(n / 1000); i++; }
+      return parts.join(' ');
+    }
     // the extra units wordMath converts; the regex converter further down keeps the everyday ones it always had
     const MORE_UNITS = [
       ['area', 0.09290304, 'square feet', /^(?:sq(?:uare)?\.?\s*(?:feet|foot|ft)|ft2|ft²)$/], ['area', 1, 'square meters', /^(?:sq(?:uare)?\.?\s*(?:meters?|metres?|m)|m2|m²)$/],
@@ -3232,6 +3242,35 @@ return { ok: true, detail: 'timer-reset' };
       // dog years (the simple vets' rule: 15 for year one, 9 for year two, then about 5 a year for a medium dog)
       m = t.match(/(?:how\s+old\s+is\s+)?(?:my\s+|a\s+)?dog(?:'s)?.*?(?:in\s+human\s+years|human\s+age).*?(\d+(?:\.\d+)?)|(\d+(?:\.\d+)?)\s*(?:-|\s)?(?:year|yr)s?(?:\s+|-)old\s+dog\s+in\s+human\s+years|(\d+(?:\.\d+)?)\s+dog\s+years\s+in\s+human\s+years/);
       if (m && /dog/.test(t) && /human/.test(t)) { const a = +(m[1] || m[2] || m[3]); if (a > 0 && a <= 30) { const v = a <= 1 ? Math.round(15 * a) : a <= 2 ? Math.round(15 + 9 * (a - 1)) : Math.round(24 + 5 * (a - 2)); return { value: 'about ' + v, note: 'a ' + a + '-year-old medium dog in human years (15 for the first year, 9 for the second, about 5 a year after; big dogs age faster)' }; } }
+      // dates from today: "what date is 90 days from today", "45 days from now", "the date next friday"
+      m = t.match(/^(?:(?:what(?:'s|\s+is|\s+will\s+be)\s+)?the\s+date\s+|(?:what\s+)?date\s+(?:is|will\s+it\s+be)\s+|what\s+day\s+is\s+)?(\d{1,5})\s+(days?|weeks?|months?)\s+(?:from\s+(?:today|now)|after\s+today)$/);
+      if (m) { const d = new Date(); d.setHours(12, 0, 0, 0); if (/^m/.test(m[2])) { const day = d.getDate(); d.setDate(1); d.setMonth(d.getMonth() + +m[1]); d.setDate(Math.min(day, new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate())); } else d.setDate(d.getDate() + +m[1] * (/^w/.test(m[2]) ? 7 : 1));
+        return { value: d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }), note: m[1] + ' ' + m[2] + ' from today' }; }
+      m = t.match(/^(?:(?:what(?:'s|\s+is)\s+)?the\s+date\s+(?:of\s+|on\s+)?|(?:what\s+)?date\s+is\s+|when\s+is\s+)(this|next|last)\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)$/);
+      if (m) { const W = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'], want = W.indexOf(m[2]), d = new Date(); d.setHours(12, 0, 0, 0); const today = d.getDay();
+        let k = m[1] === 'last' ? -(((today - want + 7) % 7) || 7) : m[1] === 'this' ? (want - today + 7) % 7 : ((want - today + 7) % 7) || 7; d.setDate(d.getDate() + k);
+        return { value: d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' }), note: m[1] + ' ' + m[2] + (m[1] === 'this' && k === 0 ? ' (that is today)' : m[1] === 'next' ? ' (the coming one)' : '') }; }
+      // the alphabet: "what number is the letter m in the alphabet", "what letter is number 13", "13th letter of the alphabet"
+      m = t.match(/^(?:what\s+(?:number|position)\s+is\s+(?:the\s+letter\s+)?|where\s+is\s+(?:the\s+letter\s+)?)([a-z])(?:\s+in\s+the\s+alphabet)?$/);
+      if (m) { const n = m[1].charCodeAt(0) - 96; return { value: String(n), note: m[1].toUpperCase() + ' is letter ' + n + ' of 26' }; }
+      m = t.match(/^(?:what\s+(?:is\s+the\s+)?letter\s+is\s+(?:number\s+)?(\d{1,2})|(?:the\s+)?(\d{1,2})(?:st|nd|rd|th)\s+letter(?:\s+of\s+the\s+alphabet)?)(?:\s+in\s+the\s+alphabet)?$/);
+      if (m) { const n = +(m[1] || m[2]); if (n >= 1 && n <= 26) return { value: String.fromCharCode(64 + n), note: 'letter ' + n + ' of 26' }; }
+      // numbers in words: "spell 42 in words", "write 1250 in words", "1,000,001 in words"
+      m = t.match(/^(?:spell(?:\s+out)?|write(?:\s+out)?|say)?\s*(-?\d[\d,]{0,16})\s+(?:in|as|into)\s+words$|^(?:spell|write)\s+out\s+(-?\d[\d,]{0,16})$/);
+      if (m) { const n = +(m[1] || m[2]).replace(/,/g, ''); if (Number.isSafeInteger(n)) return { value: numberWords(n), note: n.toLocaleString() + ' in words' }; }
+      // baking by weight: "2 cups of flour in grams", "how many grams in a cup of sugar"
+      m = t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s+cups?\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+(grams|g|ounces|oz)$/) || ((mm) => mm && [mm[0], '1', mm[2], mm[1]])(t.match(/^how\s+many\s+(grams|g|ounces|oz)\s+(?:is|are|in)\s+(?:a|one|1)\s+cup\s+of\s+([a-z -]+)$/));
+      if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const v = +m[1] * g, oz = /^o/.test(m[3]);
+        return { value: (oz ? Math.round(v / 28.3495 * 10) / 10 + ' oz' : Math.round(v) + ' g'), note: m[1] + ' US cup' + (m[1] === '1' ? '' : 's') + ' of ' + m[2].trim() + ' (about ' + g + ' g a cup, spooned and levelled; scooping packs more in)' }; } }
+      // food safety: "what temperature to cook chicken", "safe internal temp for pork"
+      m = t.match(/^(?:what(?:'s|\s+is)?\s+)?(?:the\s+)?(?:safe\s+|internal\s+|minimum\s+|cooking\s+)*(?:temperature|temp)\s+(?:to\s+cook|for|of|should)\s+(?:a\s+)?(chicken|turkey|poultry|pork|beef|steak|lamb|ground\s+beef|burgers?|hamburgers?|fish|salmon|ham|eggs?|leftovers)(?:\s+be(?:\s+cooked\s+to)?|\s+cooked\s+to)?$|^(?:what\s+)?temperature\s+(?:is|should)\s+(chicken|pork|beef|steak|fish|salmon|turkey)\s+(?:done|be\s+cooked\s+to|cooked\s+to)$|^(?:how\s+hot|what\s+temp(?:erature)?)\s+(?:to|should\s+i)\s+cook\s+(chicken|pork|beef|steak|fish|salmon|turkey|burgers?)(?:\s+to)?$/);
+      if (m) { const k = (m[1] || m[2] || m[3]).replace(/s$/, '');
+        if (k === 'ham') return { value: 'raw ham 145 °F (63 °C)\nreheating cooked ham 165 °F (74 °C)', note: 'raw or fresh ham: 145 °F, then rest 3 minutes; precooked ham can be reheated to 140 °F (60 °C) only if it was packaged in a USDA-inspected plant, otherwise 165 °F (USDA)' };
+        const T = /chicken|turkey|poultry|leftover/.test(k) ? [165, 74, ''] : /ground|burger/.test(k) ? [160, 71, ''] : /egg/.test(k) ? [160, 71, ' for egg dishes; cook eggs until yolk and white are firm'] : [145, 63, /fish|salmon/.test(k) ? '' : ', then rest 3 minutes'];
+        return { value: T[0] + ' °F (' + T[1] + ' °C)', note: 'safe internal temperature for ' + k + T[2] + ', measured with a thermometer in the thickest part (USDA)' }; }
+      // eggs: "how long to boil an egg", "how long do you boil eggs", "soft boiled egg time"
+      if (/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:hard\s+|soft\s+)?boil\s+(?:an?\s+|the\s+)?eggs?(?:\s+for)?$|^(?:hard|soft|medium)[\s-]boiled\s+eggs?\s+(?:time|how\s+long)$|^how\s+long\s+(?:for|to\s+make)\s+(?:a\s+)?(?:hard|soft)[\s-]boiled\s+eggs?$/.test(t))
+        return { value: 'soft 6 min\nmedium 8 min\nhard 10–12 min', note: 'large eggs lowered into water already boiling, then into cold water; add a minute straight from the fridge' };
       // "the square of 13"
       m = t.match(/^(?:the\s+)?square\s+of\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = String(Math.round(+m[1] * +m[1] * 1e9) / 1e9); return { value: v, note: m[1] + '² = ' + v }; }
@@ -4572,7 +4611,7 @@ return { ok: true, detail: 'timer-reset' };
     }
     // Today: "what day is it", "what's the date today", "what year is it" -> the date here, with the week and day of the year.
     function wantsToday(l) {
-      return /^(what(?:'s|\s+is)?|whats)\s+(?:the\s+)?(?:day|date|today'?s?\s+date)(?:\s+(?:is\s+it|today|is\s+it\s+today|is\s+today))?$|^what\s+day\s+is\s+(?:it|today)(\s+today)?$|^what(?:'s|\s+is)?\s+the\s+date(\s+today)?$|^(?:what|which)\s+year\s+is\s+(?:it|this)$|^today'?s\s+date$|^date\s+today$|^(?:what|which)\s+week(?:\s+(?:number|of\s+the\s+year))?\s+is\s+(?:it|this)(?:\s+(?:now|today))?$|^(?:how\s+many\s+)?days\s+(?:are\s+)?(?:left|remaining)\s+in\s+(?:the|this)\s+year$/.test(l.replace(/[?.!]+$/, ''));
+      return /^(what(?:'s|\s+is)?|whats)\s+(?:the\s+)?(?:day|date|today'?s?\s+date)(?:\s+(?:is\s+it|today|is\s+it\s+today|is\s+today))?$|^what\s+day\s+is\s+(?:it|today)(\s+today)?$|^what(?:'s|\s+is)?\s+the\s+date(\s+today)?$|^(?:what|which)\s+year\s+is\s+(?:it|this)$|^today'?s\s+date$|^date\s+today$|^(?:what|which)\s+week(?:\s+(?:number|of\s+the\s+year))?\s+is\s+(?:it|this)(?:\s+(?:now|today))?$|^(?:how\s+many\s+)?days\s+(?:are\s+)?(?:left|remaining)\s+in\s+(?:the|this)\s+year$|^(?:what|which)\s+day\s+of\s+the\s+year\s+is\s+(?:it|this|today)(?:\s+today)?$/.test(l.replace(/[?.!]+$/, ''));
     }
     // "what time is it" with no place: the time here, ticking, with the zone and the date ("time in Tokyo" is worldtime's)
     function wantsTimeNow(l) {
@@ -4600,6 +4639,17 @@ return { ok: true, detail: 'timer-reset' };
       let m = l.match(/^(?:please\s+)?roll\s+(?:(a|an|one|two|three|four|five|six|\d{1,2})\s+)?(?:dice|die|d(\d{1,3})s?|(\d{1,3})[- ]sided\s+di(?:c)?e)$/);
       if (m) { const W = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }; const n = Math.min(10, W[m[1]] || +m[1] || 1), s = Math.min(1000, +(m[2] || m[3]) || 6);
         const r = Array.from({ length: n }, () => rnd(s) + 1); return { title: n > 1 ? n + ' dice' : 'Die', big: r.join('  '), note: (n > 1 ? 'total ' + r.reduce((a, b) => a + b, 0) + ' · ' : '') + 'd' + s }; }
+      // "roll 3d6", "roll 2d20"
+      m = l.match(/^(?:please\s+)?roll\s+(\d{1,2})\s*d\s*(\d{1,4})$/);
+      if (m) { const n = Math.min(20, Math.max(1, +m[1])), s = Math.min(1000, Math.max(2, +m[2])), r = Array.from({ length: n }, () => rnd(s) + 1); return { title: n + 'd' + s, big: r.join('  '), note: (n > 1 ? 'total ' + r.reduce((a, b) => a + b, 0) + ' · ' : '') + n + ' × d' + s }; }
+      // "pick one: pizza, tacos, sushi", "choose between tea and coffee", "help me pick: a or b"
+      m = l.match(/^(?:pick|choose|decide|help\s+me\s+(?:pick|choose|decide))(?:\s+(?:one|for\s+me))?(?:\s*:\s*|\s+(?:between|from|among)\s+)(.+)$/);
+      if (m) { const xs = m[1].split(/\s*(?:,\s*(?:or|and)\s+|,|\s+or\s+|\s+and\s+)\s*/).map((x) => x.trim()).filter(Boolean); if (xs.length >= 2 && xs.length <= 30) return { title: 'Picked', big: xs[rnd(xs.length)], note: 'one of ' + xs.length + ', each equally likely' }; }
+      // "shuffle red, green, blue"
+      m = l.match(/^(?:shuffle|randomi[sz]e(?:\s+the\s+order\s+of)?)\s*:?\s+(.+(?:,|\s+and\s+).+)$/);
+      if (m) { const xs = m[1].split(/\s*(?:,\s*and\s+|,|\s+and\s+)\s*/).filter(Boolean); if (xs.length >= 2 && xs.length <= 50) { for (let i = xs.length - 1; i > 0; i--) { const j = rnd(i + 1); [xs[i], xs[j]] = [xs[j], xs[i]]; } return { title: 'Shuffled', big: xs.join('\n'), note: xs.length + ' in a random order' }; } }
+      // "draw a card", "pick a card"
+      if (/^(?:draw|pick|deal(?:\s+me)?|give\s+me)\s+a\s+(?:random\s+)?(?:playing\s+)?card$/.test(l)) { const R = ['Ace', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King'], S = [['♠', 'Spades'], ['♥', 'Hearts'], ['♦', 'Diamonds'], ['♣', 'Clubs']], r = R[rnd(13)], su = S[rnd(4)]; return { title: 'Your card', big: r + ' ' + su[0], note: r + ' of ' + su[1] + ' · from a full 52-card deck' }; }
       // "flip 3 coins"
       m = l.match(/^(?:flip|toss)\s+(two|three|four|five|\d{1,2})\s+coins$/);
       if (m) { const n = Math.min(20, { two: 2, three: 3, four: 4, five: 5 }[m[1]] || +m[1]); const r = Array.from({ length: n }, () => rnd(2) ? 'H' : 'T'); const h = r.filter((x) => x === 'H').length; return { title: n + ' coins', big: r.join(' '), note: h + ' heads · ' + (n - h) + ' tails' }; }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · where did the time go (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+h2{font-size:13px;font-weight:normal;color:#8a8a92;margin:8px 0 0;text-transform:uppercase;letter-spacing:.05em}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+input,button,select{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 10px}
+button{cursor:pointer}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#state{white-space:pre-line}
+table{border-collapse:collapse;font-size:13px}
+td,th{padding:3px 10px 3px 0;text-align:left;font-weight:normal}
+th{color:#8a8a92}
+</style>
+</head>
+<body>
+<main>
+  <h1>where did the time go · draft · not published</h1>
+  <p class="note">Press "mark" before you go and do something, without looking at the clock. When you come back, guess how many minutes went by, say whether you were busy or idle, and see the real time. Because you mark it first, you know you will be asked: this measures timing with advance notice, which behaves differently from a surprise question afterwards. People judge time differently depending on how full it was. This page keeps your own pattern. Everything stays in this browser.</p>
+  <div class="row"><button id="mark" type="button">mark: I'm going now</button></div>
+  <div id="back" hidden>
+    <div class="row"><label>how many minutes went by? <input id="guess" type="number" min="0" step="1" style="width:6em"></label>
+    <select id="kind" aria-label="what the time was like"><option value="busy">I was busy</option><option value="idle">I was idle or waiting</option></select>
+    <button id="reveal" type="button">show the real time</button></div>
+  </div>
+  <div id="state" aria-live="polite"></div>
+  <h2>your guesses</h2>
+  <table><thead><tr><th>when</th><th>guess</th><th>real</th><th>ratio</th><th></th></tr></thead><tbody id="log"></tbody></table>
+  <div id="pattern" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.retro.v1',st={open:null,rows:[]};
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.rows))st=j}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(_){}}
+  // ratio > 1: it felt longer than it was
+  function ratio(guessMin,realMs){return realMs>0?Math.round(guessMin/(realMs/60000)*100)/100:null}
+  function geo(xs){return xs.length?Math.round(Math.exp(xs.reduce(function(a,x){return a+Math.log(x)},0)/xs.length)*100)/100:null}
+  // per kind: geometric mean ratio, only once a kind has 3 guesses
+  function pattern(rows){var out={};['busy','idle'].forEach(function(k){var r=rows.filter(function(x){return x.kind===k&&x.ratio>0}).map(function(x){return x.ratio});out[k]=r.length>=3?{mean:geo(r),n:r.length}:null});return out}
+  function el(t,txt){var e=document.createElement(t);if(txt!=null)e.textContent=txt;return e}
+  function draw(){
+    document.getElementById('back').hidden=!st.open;
+    document.getElementById('mark').textContent=st.open?'marked (no peeking at the clock)':"mark: I'm going now";
+    document.getElementById('mark').disabled=!!st.open;
+    var tb=document.getElementById('log');tb.textContent='';
+    st.rows.slice(0,30).forEach(function(r,i){var tr=el('tr');[new Date(r.at).toLocaleString([],{weekday:'short',hour:'numeric',minute:'2-digit'}),r.guess+' min',Math.round(r.real/60000)+' min',r.ratio+'×',r.kind].forEach(function(v){tr.appendChild(el('td',v))});tb.appendChild(tr)});
+    var p=pattern(st.rows),bits=[];
+    ['busy','idle'].forEach(function(k){if(p[k])bits.push(k+': you guess '+p[k].mean+'× the real time ('+(p[k].mean>1?'it feels longer':'it feels shorter')+', '+p[k].n+' guesses)')});
+    document.getElementById('pattern').textContent=bits.length?bits.join('\n'):'three guesses of each kind (busy and idle) show your pattern';
+  }
+  document.getElementById('mark').addEventListener('click',function(){st.open=Date.now();save();document.getElementById('state').textContent='go; come back whenever';draw()});
+  document.getElementById('reveal').addEventListener('click',function(){
+    var g=parseFloat(document.getElementById('guess').value);if(!(g>=0)||!st.open)return;
+    var real=Date.now()-st.open,row={at:st.open,guess:g,real:real,ratio:ratio(g,real),kind:document.getElementById('kind').value};
+    if(real<60000){document.getElementById('state').textContent='under a minute: too short to count, mark again and go a little longer';st.open=null;save();draw();return}
+    st.rows.unshift(row);st.open=null;save();document.getElementById('guess').value='';
+    document.getElementById('state').textContent='it was '+Math.round(real/60000)+' min; you guessed '+g+' ('+row.ratio+'×)';draw();
+  });
+  draw();
+  window.__retro={ratio:ratio,geo:geo,pattern:pattern}; // for checks
+})();
+</script>
+</body>
+</html>
