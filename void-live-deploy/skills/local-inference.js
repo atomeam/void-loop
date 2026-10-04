@@ -78,8 +78,7 @@ export default {
     'how does ollama work',
     'deepseek docs',
     'local model setup',
-    'offline ai validation',
-    'check this commit against d1 schema'
+    'offline ai validation'
   ],
   match(lower, text) { return !!localInferenceOf(text); },
   async run(text, api) {
