@@ -3181,6 +3181,28 @@ return { ok: true, detail: 'timer-reset' };
     // the asked-for character keeps its case ("ascii code for A" is 65, not 97): find it in the original ask
     let lastAskRaw = '';
     function text0Char(lower, c) { const raw = lastAskRaw || ''; const m = raw.match(/(?:for|of)\s+["'“]?(.)["'”]?\s*\??\s*$/i); return m && m[1].toLowerCase() === c.toLowerCase() ? m[1] : c; }
+    // fixed facts for standard sizes and quantities, with the caveat people need
+    const SIZE_FACTS = [
+      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:an?\s+)?|(?:the\s+)?(?:size|dimensions?)\s+of\s+(?:an?\s+)?)?(?:1080p|full\s+hd)(?:\s+resolution)?$|^what\s+is\s+1080p(?:\s+resolution)?$/, '1920 × 1080', 'Full HD; 2,073,600 pixels'],
+      [/^(?:what\s+is\s+)?(?:4k|uhd)\s+(?:resolution(?:\s+in\s+pixels)?|in\s+pixels)$|^what\s+is\s+4k(?:\s+resolution)?$/, '3840 × 2160', '4K UHD for TVs; cinema 4K (DCI) is 4096 × 2160'],
+      [/^(?:what\s+is\s+)?720p(?:\s+resolution)?$/, '1280 × 720', 'HD'],
+      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?queen(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '60 × 80 in', 'a US queen mattress (152 × 203 cm)'],
+      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?king(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '76 × 80 in', 'a US king mattress (193 × 203 cm); a California king is 72 × 84 in'],
+      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?(?:full|double)(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '54 × 75 in', 'a US full (double) mattress (137 × 191 cm)'],
+      [/^(?:what\s+(?:size|dimensions?)\s+is\s+(?:a\s+)?)?twin(?:\s+size)?\s+bed(?:\s+(?:size|dimensions?))?(?:\s+in\s+inches)?$/, '38 × 75 in', 'a US twin mattress (97 × 191 cm); twin XL is 38 × 80 in'],
+      [/^how\s+(?:big|large)\s+is\s+(?:an?\s+)?(?:american\s+)?football\s+field(?:\s+in\s+acres)?$/, 'about 1.32 acres', '360 × 160 ft with the end zones (57,600 sq ft); 1.1 acres without them'],
+      [/^how\s+(?:big|large)\s+is\s+a\s+soccer\s+(?:field|pitch)(?:\s+in\s+acres)?$/, 'about 1.76 acres', 'a typical 105 × 68 m pitch; FIFA allows a range'],
+      [/^how\s+(?:long|big)\s+is\s+an?\s+olympic(?:\s+swimming)?\s+pool$/, '50 m long', '25 m wide, at least 2 m deep; about 2,500,000 liters'],
+      [/^how\s+(?:tall|high)\s+is\s+an?\s+(?:basketball\s+)?(?:hoop|rim|basket)$/, '10 ft (3.05 m)', 'the rim, from the floor, in the NBA and most leagues'],
+      [/^(?:what\s+is\s+(?:the\s+|a\s+)?)?standard\s+(?:interior\s+|front\s+|exterior\s+)?door\s+(?:width|size)$/, '36 in (exterior)', 'US: front doors 36 in wide; interior doors 28–32 in; both usually 80 in tall'],
+      [/^how\s+many\s+(?:fl(?:uid)?\s+)?ounces\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?can\s+of\s+(?:soda|pop|coke|beer)$/, '12 fl oz', '355 ml in the US; 330 ml is common elsewhere'],
+      [/^how\s+many\s+ml\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:wine\s+bottle|bottle\s+of\s+wine)$/, '750 ml', 'about five 5-oz glasses'],
+      [/^how\s+many\s+shots\s+(?:are\s+)?in\s+a\s+(?:standard\s+)?(?:fifth|bottle|750(?:\s*ml)?(?:\s+bottle)?)$/, 'about 17', '1.5-oz shots in a 750 ml bottle; about 39 in a 1.75 l handle'],
+      [/^how\s+many\s+cups\s+of\s+coffee\s+(?:in|from)\s+a\s+pound(?:\s+of\s+coffee)?$/, 'about 48', '6-oz cups at 2 tablespoons of grounds each; stronger brewing gives fewer'],
+      [/^how\s+many\s+slices\s+(?:are\s+)?in\s+a\s+large\s+pizza$/, 'usually 8', 'a 14-inch large; some shops cut 10 or 12'],
+      [/^how\s+many\s+grams\s+of\s+sugar\s+(?:are\s+)?in\s+a\s+teaspoon$/, 'about 4 g', 'granulated sugar, level; a tablespoon is about 12.5 g'],
+      [/^how\s+many\s+tablespoons\s+(?:of\s+butter\s+)?(?:are\s+)?in\s+a\s+stick(?:\s+of\s+butter)?$/, '8 tablespoons', 'a US stick: ½ cup, 113 g'],
+    ];
     // the extra units wordMath converts; the regex converter further down keeps the everyday ones it always had
     const MORE_UNITS = [
       ['area', 0.09290304, 'square feet', /^(?:sq(?:uare)?\.?\s*(?:feet|foot|ft)|ft2|ft²)$/], ['area', 1, 'square meters', /^(?:sq(?:uare)?\.?\s*(?:meters?|metres?|m)|m2|m²)$/],
@@ -3418,6 +3440,39 @@ return { ok: true, detail: 'timer-reset' };
       // tiny definitions with numbers
       if (/^(?:(?:1|one|a)\s+)?megapixels?\s+(?:is|=|equals)\s+how\s+many\s+pixels$|^how\s+many\s+pixels\s+(?:are\s+)?in\s+a\s+megapixel$/.test(t)) return { value: '1,000,000 pixels', note: 'a million pixels, e.g. about 1155 × 866' };
       if (/^(?:(?:1|one|a)\s+)?hertz\s+(?:is|=|equals)\s+how\s+many\s+cycles\s+per\s+second$|^what\s+is\s+(?:a\s+)?hertz$/.test(t)) return { value: '1 cycle per second', note: '1 Hz = one cycle (or event) each second; 1 kHz = 1,000, 1 MHz = 1,000,000' };
+      // standard sizes and everyday quantities: fixed facts answered here, each with its usual caveat
+      for (const [re, value, note] of SIZE_FACTS) if (re.test(t)) return { value, note };
+      // paper in other units: "a4 in inches", "us letter size in mm"
+      m = t.match(/^(?:what\s+(?:size|dimensions?)\s+is\s+)?(a[0-6]|us\s+letter|letter|legal|tabloid)(?:\s+(?:paper|size|sheet))*(?:\s+(?:in|to)\s+(mm|cm|inches|in))?$/);
+      if (m) { const P = { a0: [841, 1189], a1: [594, 841], a2: [420, 594], a3: [297, 420], a4: [210, 297], a5: [148, 210], a6: [105, 148], letter: [215.9, 279.4], 'us letter': [215.9, 279.4], legal: [215.9, 355.6], tabloid: [279.4, 431.8] }[m[1].replace(/\s+/g, ' ')], u = m[2] || (/^a/.test(m[1]) ? 'mm' : 'in');
+        const f = /^in/.test(u) ? 1 / 25.4 : u === 'cm' ? 0.1 : 1, r = (x) => Math.round(x * f * 100) / 100; return { value: r(P[0]) + ' × ' + r(P[1]) + (/^in/.test(u) ? ' in' : ' ' + u), note: m[1].toUpperCase() + ' paper (' + P[0] + ' × ' + P[1] + ' mm)' }; }
+      // tv size: "how big is a 55 inch tv", "width of a 65 inch tv" (16:9)
+      m = t.match(/^(?:how\s+(?:big|wide|tall)\s+is\s+|(?:the\s+)?(?:width|height|dimensions?|size)\s+of\s+)(?:a\s+)?(\d{2,3})(?:\s*(?:inch|in|"))\s*(?:tv|television|monitor|screen)$/);
+      if (m) { const d = +m[1], w = d * 16 / Math.sqrt(337), h = d * 9 / Math.sqrt(337), r = (x) => Math.round(x * 10) / 10; return { value: r(w) + ' × ' + r(h) + ' in', note: 'the screen of a ' + d + '-inch 16:9 TV (' + r(w * 2.54) + ' × ' + r(h * 2.54) + ' cm); the frame adds a little' }; }
+      // "what size tv for 10 feet away"
+      m = t.match(/^(?:what|which)\s+size\s+(?:tv|television)\s+(?:for|at|from)\s+(\d+(?:\.\d+)?)\s*(feet|ft|foot|m|meters?|metres?)(?:\s+away)?$/);
+      if (m) { const inch = +m[1] * (/^m/.test(m[2]) ? 39.37 : 12), lo = Math.round(inch / 1.6 / 5) * 5, hi = Math.round(inch / 1.0 / 5) * 5; return { value: 'about ' + lo + '–' + Math.min(hi, 120) + ' inches', note: 'for 4K at ' + m[1] + ' ' + m[2] + ': the smaller end fills about 30° of your view (SMPTE), the larger about 40° (THX, more cinematic)' }; }
+      // resolutions: "how many pixels in 1080p", "how many megapixels is 4k"
+      m = t.match(/^how\s+many\s+(pixels|megapixels)\s+(?:is|are\s+in|in)\s+(?:a\s+)?(720p|1080p|1440p|2k|4k|8k|full\s+hd|uhd)(?:\s+(?:screen|image|video|resolution))?$/);
+      if (m) { const R = { '720p': [1280, 720], '1080p': [1920, 1080], 'full hd': [1920, 1080], '1440p': [2560, 1440], '2k': [2560, 1440], '4k': [3840, 2160], uhd: [3840, 2160], '8k': [7680, 4320] }[m[2].replace(/\s+/g, ' ')], px = R[0] * R[1];
+        return { value: m[1] === 'pixels' ? px.toLocaleString() : (Math.round(px / 1e5) / 10) + ' MP', note: R[0] + ' × ' + R[1] }; }
+      // print: "print size of 3000x2000 at 300 dpi", "72 dpi in pixels per cm"
+      m = t.match(/^(?:the\s+)?print\s+size\s+(?:of|for)\s+(?:a\s+)?(\d{2,6})\s*[x×]\s*(\d{2,6})(?:\s+(?:image|photo|pixels?))?\s+at\s+(\d{2,4})\s*(?:dpi|ppi)$/);
+      if (m) { const r = (x) => Math.round(x * 100) / 100, w = +m[1] / +m[3], h = +m[2] / +m[3]; return { value: r(w) + ' × ' + r(h) + ' in', note: r(w * 2.54) + ' × ' + r(h * 2.54) + ' cm at ' + m[3] + ' dpi (300 is photo quality)' }; }
+      m = t.match(/^(?:what\s+is\s+)?(\d+(?:\.\d+)?)\s*(dpi|ppi)\s+in\s+(?:pixels|dots)\s+per\s+(?:cm|centimet(?:er|re))$/);
+      if (m) { const v = Math.round(+m[1] / 2.54 * 100) / 100; return { value: v + ' per cm', note: m[1] + ' per inch ÷ 2.54' }; }
+      // shoe sizes (adult, approximate: brands differ): "us shoe size 10 in eu", "eu shoe size 38 in us women's", "uk shoe size 8 in us"
+      m = t.match(/^(?:(us|uk|eu|european)\s+)?(?:(men'?s|women'?s|mens|womens)\s+)?(?:shoe\s+)?size\s+(\d{1,2}(?:\.5)?)\s+(?:(men'?s|women'?s|mens|womens)\s+)?(?:shoes?\s+)?(?:in|to)\s+(us|uk|eu|european)(?:\s+(men'?s|women'?s|mens|womens))?(?:\s+(?:size|sizes|shoes?))?$/);
+      if (m && m[1] && /shoe/.test(t)) { const from = m[1].slice(0, 2), to = m[5].slice(0, 2), x = +m[3], g = (m[2] || m[4] || m[6] || 'men').startsWith('w') ? 'w' : 'm';
+        const uk = from === 'uk' ? x : from === 'eu' ? (x - 31.5) / 1.27 : x - (g === 'w' ? 2.5 : 1), half = (v) => Math.round(v * 2) / 2;
+        const out = to === 'uk' ? half(uk) : to === 'eu' ? Math.round(1.27 * uk + 31.5) : half(uk + (g === 'w' ? 2.5 : 1));
+        if (from !== to) return { value: to.toUpperCase() + ' ' + out + (to === 'us' ? (g === 'w' ? ' women’s' : ' men’s') : ''), note: from.toUpperCase() + ' ' + x + ' · approximate: brands differ, so check the maker’s own chart' }; }
+      // dress sizes (women, approximate): "us dress size 8 in uk"
+      m = t.match(/^(us|uk|eu)\s+(?:dress|clothing|women'?s)\s+size\s+(\d{1,2})\s+(?:in|to)\s+(us|uk|eu)$/);
+      if (m && m[1] !== m[3]) { const us = m[1] === 'us' ? +m[2] : m[1] === 'uk' ? +m[2] - 4 : +m[2] - 30, out = m[3] === 'us' ? us : m[3] === 'uk' ? us + 4 : us + 30; return { value: m[3].toUpperCase() + ' ' + out, note: m[1].toUpperCase() + ' ' + m[2] + ' · approximate; brands differ' }; }
+      // ring sizes: "ring size 7 diameter", "17 mm ring size"
+      m = t.match(/^(?:us\s+)?ring\s+size\s+(\d{1,2}(?:\.\d+)?)\s+(?:diameter|in\s+mm|inside\s+diameter|circumference)$/);
+      if (m) { const dmm = 11.63 + 0.8128 * +m[1], r = (x) => Math.round(x * 100) / 100; return { value: /circum/.test(t) ? r(dmm * Math.PI) + ' mm around' : r(dmm) + ' mm', note: 'US ring size ' + m[1] + ': ' + r(dmm) + ' mm inside diameter, ' + r(dmm * Math.PI) + ' mm around' }; }
       // "the square of 13"
       m = t.match(/^(?:the\s+)?square\s+of\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = String(Math.round(+m[1] * +m[1] * 1e9) / 1e9); return { value: v, note: m[1] + '² = ' + v }; }
