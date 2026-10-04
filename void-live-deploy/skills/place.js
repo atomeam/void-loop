@@ -12,6 +12,8 @@ function placeOf(text) {
   if (!m) return null;
   const p = m[1].replace(/^(the\s+)/i, '').trim();
   if (!p || /^(everything|the map|you|i|my \w+)$/i.test(p)) return null;
+  // "area of a circle with radius 5": geometry, not a neighbourhood
+  if (/^(?:a|an|the)?\s*(?:circle|triangle|rectangle|square|sphere|cylinder|cone|cube|trapezoid|parallelogram|polygon|hexagon|pentagon|ellipse|rhombus)\b/i.test(p)) return null;
   return p;
 }
 

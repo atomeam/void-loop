@@ -3237,6 +3237,50 @@ return { ok: true, detail: 'timer-reset' };
       m = t.match(/^(?:how\s+(?:many|far|long)\s+(miles|km|kilometers|kilometres)?\s*(?:is|are)\s+(?:a|an|the)\s+|(?:a|an|the)\s+)?(5k|10k|half\s+marathon|marathon|ultra(?:marathon)?|mile)(?:\s+(?:in|to)\s+(miles|km|kilometers|kilometres))?$/);
       if (m && /how|in|to/.test(t)) { const KM = { '5k': 5, '10k': 10, 'half marathon': 21.0975, marathon: 42.195, ultramarathon: 50, ultra: 50, mile: 1.609344 }[m[2].replace(/\s+/g, ' ')], u = (m[1] || m[3] || 'miles');
         const v = /k/.test(u) ? KM : KM / 1.609344; return { value: (Math.round(v * 100) / 100) + (/k/.test(u) ? ' km' : ' miles'), note: 'a ' + m[2] + ' is ' + KM + ' km' }; }
+      // ---- homework maths ----
+      // linear equations: "solve 2x + 3 = 11", "solve for x: 5x - 10 = 0", "3(x - 2) = x + 4" (a small parser; nothing is eval'd)
+      m = t.match(/^(?:solve\s*:?\s*)?(?:for\s+[a-z]\s*:?\s*)?([0-9a-z+\-*/^().\s]*[a-z][0-9a-z+\-*/^().\s]*=[0-9a-z+\-*/^().\s]+)$/);
+      if (m && (m[1].match(/[a-z]/g) || []).every((c) => c === (m[1].match(/[a-z]/) || [''])[0])) {
+        const v = m[1].match(/[a-z]/)[0], [L, Rt] = m[1].split('='), ev = (src, x) => { let i = 0; const s2 = src.replace(/\s+/g, '').replace(new RegExp('(\\d|\\))(?=[' + v + '(])', 'g'), '$1*').replace(new RegExp(v + '(?=[\\d(])', 'g'), v + '*');
+          const num = () => { if (s2[i] === '(') { i++; const r = add(); i++; return r; } if (s2[i] === '-') { i++; return -num(); } if (s2[i] === v) { i++; return x; } const mm = s2.slice(i).match(/^\d+(?:\.\d+)?/); if (!mm) throw 0; i += mm[0].length; return +mm[0]; };
+          const pow = () => { let a = num(); while (s2[i] === '^') { i++; a = Math.pow(a, num()); } return a; };
+          const mul = () => { let a = pow(); while (s2[i] === '*' || s2[i] === '/') { const o = s2[i++]; const b = pow(); a = o === '*' ? a * b : a / b; } return a; };
+          const add = () => { let a = mul(); while (s2[i] === '+' || s2[i] === '-') { const o = s2[i++]; const b = mul(); a = o === '+' ? a + b : a - b; } return a; };
+          const r = add(); if (i !== s2.length) throw 0; return r; };
+        try { const f = (x) => ev(L, x) - ev(Rt, x), f0 = f(0), f1 = f(1), f2 = f(2);
+          if (Math.abs((f2 - f1) - (f1 - f0)) < 1e-9 && Math.abs(f1 - f0) > 1e-12) { const x = -f0 / (f1 - f0), r = Math.round(x * 1e9) / 1e9; return { value: v + ' = ' + r, note: 'solving ' + m[1].trim() + ' (check: both sides ' + (Math.round(ev(L, x) * 1e6) / 1e6) + ')' }; } } catch (_) {} }
+      // geometry
+      const PI = Math.PI, r2 = (x) => Math.round(x * 100) / 100;
+      m = t.match(/^(?:the\s+)?(area|circumference|perimeter)\s+of\s+a\s+circle\s+(?:with\s+(?:a\s+)?)?(radius|diameter|r|d)\s*(?:of\s+|=\s*|is\s+)?(\d+(?:\.\d+)?)$/);
+      if (m) { const rad = /^d/.test(m[2]) ? +m[3] / 2 : +m[3], v = m[1] === 'area' ? PI * rad * rad : 2 * PI * rad; return { value: String(r2(v)), note: (m[1] === 'area' ? 'πr²' : '2πr') + ' with r = ' + rad }; }
+      m = t.match(/^(?:the\s+)?(volume|surface\s+area)\s+of\s+a\s+sphere\s+(?:with\s+(?:a\s+)?)?(radius|diameter)\s*(?:of\s+|=\s*)?(\d+(?:\.\d+)?)$/);
+      if (m) { const rad = m[2] === 'diameter' ? +m[3] / 2 : +m[3], v = m[1] === 'volume' ? 4 / 3 * PI * rad ** 3 : 4 * PI * rad * rad; return { value: String(r2(v)), note: (m[1] === 'volume' ? '⁴⁄₃πr³' : '4πr²') + ' with r = ' + rad }; }
+      m = t.match(/^(?:the\s+)?volume\s+of\s+a\s+(cylinder|cone)\s+(?:with\s+)?(?:radius|r)\s*(\d+(?:\.\d+)?)\s*(?:and\s+|,\s*)?(?:height|h)\s*(\d+(?:\.\d+)?)$/);
+      if (m) { const v = PI * (+m[2]) ** 2 * +m[3] / (m[1] === 'cone' ? 3 : 1); return { value: String(r2(v)), note: (m[1] === 'cone' ? '⅓' : '') + 'πr²h' }; }
+      m = t.match(/^(?:the\s+)?area\s+of\s+a\s+triangle\s+(?:with\s+)?base\s+(\d+(?:\.\d+)?)\s+(?:and\s+)?height\s+(\d+(?:\.\d+)?)$/);
+      if (m) return { value: String(r2(+m[1] * +m[2] / 2)), note: '½ × base × height' };
+      m = t.match(/^(?:the\s+)?(area|perimeter)\s+of\s+a\s+(rectangle|square)\s+(?:with\s+sides?\s+|of\s+)?(\d+(?:\.\d+)?)(?:\s*(?:by|x|×|and)\s*(\d+(?:\.\d+)?))?$/);
+      if (m) { const a = +m[3], b = m[4] ? +m[4] : a, v = m[1] === 'area' ? a * b : 2 * (a + b); return { value: String(r2(v)), note: m[1] + ' of a ' + a + ' × ' + b + ' ' + m[2] }; }
+      m = t.match(/^(?:the\s+)?hypotenuse\s+(?:of\s+|for\s+|with\s+(?:sides|legs)\s+)?(\d+(?:\.\d+)?)\s*(?:and|,|by)\s*(\d+(?:\.\d+)?)$/);
+      if (m) return { value: String(r2(Math.hypot(+m[1], +m[2]))), note: '√(' + m[1] + '² + ' + m[2] + '²)' };
+      // number theory
+      const gcd = (a, b) => { while (b) [a, b] = [b, a % b]; return Math.abs(a); };
+      m = t.match(/^(?:the\s+)?(lcm|least\s+common\s+multiple|gcd|gcf|hcf|greatest\s+common\s+(?:divisor|factor)|highest\s+common\s+factor)\s+(?:of\s+)?(\d+(?:\s*(?:,|and)\s*\d+)+)$/);
+      if (m) { const xs = m[2].split(/\s*(?:,|and)\s*/).map(Number), isL = /^l/.test(m[1]); const v = xs.reduce((a, b) => isL ? a / gcd(a, b) * b : gcd(a, b)); return { value: String(v), note: (isL ? 'least common multiple' : 'greatest common divisor') + ' of ' + xs.join(', ') }; }
+      m = t.match(/^(?:the\s+)?prime\s+factori[sz]ation\s+of\s+(\d{1,12})$|^(?:the\s+)?prime\s+factors\s+of\s+(\d{1,12})$/);
+      if (m) { let n = +(m[1] || m[2]), f = []; for (let d = 2; d * d <= n; d++) while (n % d === 0) { f.push(d); n /= d; } if (n > 1) f.push(n); return { value: f.join(' × '), note: (m[1] || m[2]) + (f.length === 1 ? ' is prime' : '') }; }
+      m = t.match(/^is\s+(-?\d{1,15})\s+(?:an?\s+)?(even|odd)(?:\s+number)?$/);
+      if (m) { const ev2 = +m[1] % 2 === 0, yes = m[2] === 'even' ? ev2 : !ev2; return { value: yes ? 'Yes' : 'No', note: m[1] + ' is ' + (ev2 ? 'even' : 'odd') }; }
+      m = t.match(/^(?:simplify|reduce)\s+(\d+)\s*\/\s*(\d+)$/);
+      if (m && +m[2]) { const g = gcd(+m[1], +m[2]); return { value: (+m[1] / g) + '/' + (+m[2] / g), note: m[1] + '/' + m[2] + ' divided top and bottom by ' + g }; }
+      m = t.match(/^(\d+)\s*\/\s*(\d+)\s+(?:as|in|to)\s+(?:a\s+)?(?:percent|percentage|%)$/);
+      if (m && +m[2]) { const v = Math.round(+m[1] / +m[2] * 1e6) / 1e4; return { value: v + '%', note: m[1] + '/' + m[2] }; }
+      // statistics and counting
+      m = t.match(/^(?:the\s+)?(?:population\s+|sample\s+)?(?:standard\s+deviation|std\s*dev|stdev)\s+(?:of\s+)?(-?\d+(?:\.\d+)?(?:(?:\s*,\s*|\s+)-?\d+(?:\.\d+)?)+)$/);
+      if (m) { const xs = m[1].split(/\s*,\s*|\s+/).map(Number), mu = xs.reduce((a, b) => a + b, 0) / xs.length, sq = xs.reduce((a, b) => a + (b - mu) ** 2, 0); const pop = Math.sqrt(sq / xs.length), smp = Math.sqrt(sq / (xs.length - 1));
+        const sample = /sample/.test(t); return { value: String(r2(sample ? smp : pop)), note: (sample ? 'sample' : 'population') + ' standard deviation of ' + xs.length + ' numbers (mean ' + r2(mu) + '; ' + (sample ? 'population ' + r2(pop) : 'sample ' + r2(smp)) + ')' }; }
+      m = t.match(/^(\d{1,3})\s+(choose|c|permute|p)\s+(\d{1,3})$|^(?:combinations|permutations)\s+of\s+(\d{1,3})\s+(?:taken\s+)?(\d{1,3})(?:\s+at\s+a\s+time)?$/);
+      if (m) { const n = +(m[1] || m[4]), k = +(m[3] || m[5]), perm = /^p/.test(m[2] || '') || /^permutations/.test(t); if (k <= n) { let v = 1; for (let j = 0; j < k; j++) v = perm ? v * (n - j) : v * (n - j) / (j + 1); v = Math.round(v); return { value: v.toLocaleString(), note: perm ? n + 'P' + k + ': ordered' : n + 'C' + k + ': ways to choose ' + k + ' of ' + n }; } }
       // "subtract 45 from 100", "take 7 away from 20"
       m = t.match(/^(?:subtract|take(?:\s+away)?|minus)\s+(-?\d+(?:\.\d+)?)\s+(?:away\s+)?from\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = +m[2] - +m[1]; return { value: String(Math.round(v * 1e9) / 1e9), note: m[2] + ' − ' + m[1] }; }
