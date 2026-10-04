@@ -3144,6 +3144,31 @@ return { ok: true, detail: 'timer-reset' };
       // "the square of 13"
       m = t.match(/^(?:the\s+)?square\s+of\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = +m[1] * +m[1]; return { value: String(Math.round(v * 1e9) / 1e9), note: m[1] + '² = ' + v }; }
+      // roman numerals both ways: "2024 in roman numerals", "what is XLII in numbers"
+      m = t.match(/^(?:convert\s+)?(\d{1,4})\s+(?:in|to|into|as)\s+roman(?:\s+numerals?)?$/);
+      if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
+      m = t.match(/^(?:the\s+)?(?:roman\s+numerals?\s+)?([mdclxvi]{1,15})\s+(?:in|to|as)\s+(?:a\s+)?(?:numbers?|arabic|decimal|digits)$/);
+      if (m) { const V = { i: 1, v: 5, x: 10, l: 50, c: 100, d: 500, m: 1000 }; let n = 0; const r = m[1];
+        for (let k = 0; k < r.length; k++) { const a = V[r[k]], b = V[r[k + 1]] || 0; n += a < b ? -a : a; }
+        return { value: String(n), note: m[1].toUpperCase() + ' = ' + n }; }
+      // bases: "42 in binary", "convert 255 to hex", "101010 binary to decimal"
+      m = t.match(/^(?:convert\s+)?(\d{1,15})\s+(?:in|to|into|as)\s+(binary|hex|hexadecimal|octal)$/);
+      if (m) { const b = m[2] === 'binary' ? 2 : m[2] === 'octal' ? 8 : 16, v = Number(m[1]).toString(b); return { value: b === 16 ? v.toUpperCase() : v, note: m[1] + ' in ' + m[2] + ' (' + (b === 2 ? '0b' : b === 8 ? '0o' : '0x') + v + ')' }; }
+      m = t.match(/^(?:binary\s+)?([01]{1,40})\s+(?:binary\s+)?(?:in|to)\s+(?:decimal|a\s+number|base\s+10)$|^(?:hex\s+)?(?:0x)?([0-9a-f]{1,12})\s+(?:hex\s+)?(?:in|to)\s+(?:decimal|base\s+10)$/);
+      if (m) { const v = m[1] ? parseInt(m[1], 2) : parseInt(m[2], 16); return { value: String(v), note: (m[1] ? 'binary ' + m[1] : 'hex ' + m[2]) + ' = ' + v }; }
+      // zodiac: "zodiac sign for march 3", "what is my zodiac sign if i was born march 3"
+      m = t.match(/^(?:what(?:'s| is)\s+)?(?:my\s+|the\s+)?(?:zodiac|star|astrological)\s+sign\s+(?:for\s+|if\s+(?:i\s+was|i'm|you're|you\s+were)\s+born\s+(?:on\s+)?|born\s+(?:on\s+)?)([a-z]+)\s+(\d{1,2})$/);
+      if (m && CALC_MONTHS[m[1]] != null) { const md = (CALC_MONTHS[m[1]] + 1) * 100 + +m[2];
+        const Z = [[120, 'Capricorn'], [219, 'Aquarius'], [320, 'Pisces'], [420, 'Aries'], [521, 'Taurus'], [621, 'Gemini'], [722, 'Cancer'], [823, 'Leo'], [923, 'Virgo'], [1023, 'Libra'], [1122, 'Scorpio'], [1222, 'Sagittarius'], [1231, 'Capricorn']];
+        const sign = Z.find(([end]) => md <= end)[1]; return { value: sign, note: 'Western zodiac for ' + m[1] + ' ' + m[2] + ' (by date range; a tradition, not a measurement)' }; }
+      // "how many days old am i if i was born on june 1 1990"
+      m = t.match(/^how\s+(?:many\s+)?(days|weeks|months)\s+old\s+am\s+i\s+(?:if\s+)?(?:i\s+was\s+)?born\s+(?:on\s+)?(.+)$/);
+      if (m) { const d = Date.parse(m[2]); if (!isNaN(d)) { const days = Math.floor((Date.now() - d) / 864e5), v = m[1] === 'days' ? days : m[1] === 'weeks' ? Math.floor(days / 7) : Math.floor(days / 30.4375); return { value: v.toLocaleString() + ' ' + m[1], note: 'since ' + new Date(d).toLocaleDateString([], { month: 'long', day: 'numeric', year: 'numeric' }) }; } }
+      // "how many seconds until new year" (any unit, to a named day the calculator knows)
+      m = t.match(/^how\s+many\s+(seconds|minutes|hours)\s+(?:are\s+)?(?:left\s+)?(?:until|till|to)\s+(?:the\s+)?(new\s+year'?s?(?:\s+day)?|christmas|xmas|halloween|midnight)$/);
+      if (m) { const now = new Date(), y = now.getFullYear(), w = m[2];
+        const at = /^new/.test(w) ? new Date(y + 1, 0, 1) : /christmas|xmas/.test(w) ? new Date(now > new Date(y, 11, 25) ? y + 1 : y, 11, 25) : w === 'halloween' ? new Date(now > new Date(y, 9, 31) ? y + 1 : y, 9, 31) : new Date(y, now.getMonth(), now.getDate() + 1);
+        const v = Math.floor((at - now) / { seconds: 1e3, minutes: 6e4, hours: 36e5 }[m[1]]); return { value: v.toLocaleString() + ' ' + m[1], note: 'until ' + at.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) }; }
       // "subtract 45 from 100", "take 7 away from 20"
       m = t.match(/^(?:subtract|take(?:\s+away)?|minus)\s+(-?\d+(?:\.\d+)?)\s+(?:away\s+)?from\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = +m[2] - +m[1]; return { value: String(Math.round(v * 1e9) / 1e9), note: m[2] + ' − ' + m[1] }; }

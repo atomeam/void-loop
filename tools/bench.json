@@ -480,5 +480,22 @@
   {"ask": "tell me something funny", "want": "skill:joke|answer"},
   {"ask": "make a shopping list with eggs and milk", "want": "list", "says": "eggs[\\s\\S]*milk"},
   {"ask": "to-do list with laundry, dishes and taxes", "want": "list", "says": "laundry[\\s\\S]*dishes[\\s\\S]*taxes"},
-  {"ask": "make a list for the trip", "want": "list"}
+  {"ask": "make a list for the trip", "want": "list"},
+  {"ask": "2024 in roman numerals", "want": "calc", "says": "MMXXIV"},
+  {"ask": "what is XLII in numbers", "want": "calc", "says": "\\b42\\b"},
+  {"ask": "42 in binary", "want": "calc", "says": "101010"},
+  {"ask": "convert 255 to hex", "want": "calc", "says": "\\bff\\b|0xff"},
+  {"ask": "what is my zodiac sign if i was born march 3", "want": "calc|answer", "says": "pisces"},
+  {"ask": "how many days old am i if born on june 1 1990", "want": "calc|age"},
+  {"ask": "how to tie a tie", "want": "answer|article"},
+  {"ask": "what rhymes with day", "want": "skill:words"},
+  {"ask": "what is 1 bitcoin in dollars", "want": "skill:crypto"},
+  {"ask": "convert 50 usd to yen", "want": "calc"},
+  {"ask": "what's 9/5", "want": "calc", "says": "1\\.8"},
+  {"ask": "what is 5 percent of 1 million", "want": "calc", "says": "50,?000"},
+  {"ask": "how many seconds until new year", "want": "calc|skill:countdown|timeuntil"},
+  {"ask": "make a note that says call the dentist", "want": "sticky|notepad", "says": "call the dentist"},
+  {"ask": "set a timer for 5 minutes", "want": "timer", "says": "4:5\\d|5:00(?![\\s\\S]*PAUSED)"},
+  {"ask": "make a timer", "want": "timer"},
+  {"ask": "10 minute timer", "want": "timer", "says": "9:5\\d|10:00(?![\\s\\S]*PAUSED)"}
 ]
