@@ -780,6 +780,18 @@
     "want": "skill:othello"
   },
   {
+    "ask": "validate this diff",
+    "want": "skill:local-inference"
+  },
+  {
+    "ask": "check ledger drift",
+    "want": "skill:local-inference"
+  },
+  {
+    "ask": "run local inference on draft",
+    "want": "skill:local-inference"
+  },
+  {
     "ask": "make a 3d cube",
     "want": "skill:make"
   },
