@@ -1152,5 +1152,10 @@
   {"ask": "make a todo list", "want": "list"},
   {"ask": "add milk to my shopping list", "want": "list"},
   {"ask": "show me a clock", "want": "clock|timenow"},
-  {"ask": "open the calculator", "want": "calc"}
+  {"ask": "open the calculator", "want": "calc"},
+  {"ask": "what is 18 c in f", "want": "calc"},
+  {"ask": "100 f to c", "want": "calc"},
+  {"ask": "how many seconds in an hour", "want": "calc"},
+  {"ask": "what is 1 billion divided by 365", "want": "calc"},
+  {"ask": "what is 8 percent tax on 49.99", "want": "calc"}
 ]
