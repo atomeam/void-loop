@@ -107,6 +107,7 @@ export function othelloOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^(?:play\s+)?(?:othello|reversi)$/.test(t)) return { kind: 'game', id: 'othello', label: 'Othello' };
   if (/^(?:lets?\s+play\s+|can\s+we\s+play\s+|i\s+want\s+to\s+play\s+)(?:othello|reversi)$/.test(t)) return { kind: 'game', id: 'othello', label: 'Othello' };
+  if (/^start\s+othello\s+game$/.test(t)) return { kind: 'game', id: 'othello', label: 'Othello' };
   return null;
 }
 
