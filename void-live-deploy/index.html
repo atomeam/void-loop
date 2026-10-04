@@ -3540,7 +3540,7 @@ return { ok: true, detail: 'timer-reset' };
           say(/weather|place|map/.test(skill.name) ? 'looking up' : skill.name === 'translate' ? 'translating' : 'working');
           const before = whisper.textContent;
           const src = await skill.run(text, api);
-          if (whisper.textContent === before) say(src === 'none' ? "couldn't" : 'done'); // a skill that said something keeps its line
+          if (whisper.textContent === before) say(src === 'none' ? (navigator.onLine === false ? "you're offline · this one needs the internet" : "couldn't") : 'done'); // a skill that said something keeps its line
           if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + skill.name });
           if (src === 'none') reportMiss(text, 'skill:' + skill.name);
           return true;
