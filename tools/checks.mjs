@@ -1,5 +1,5 @@
 // The fast checks an hourly run makes before it opens a PR, in one go: fringe ledger, every-skill collisions,
-// calendar parser, the cross-sense board draft, and the full everyday benchmark (against tools/bench.best.json).
+// calendar parser, the cross-sense board draft, the board reader's redaction, and the full everyday benchmark (against tools/bench.best.json).
 // The full browser suite (tools/test_void.mjs) still runs in CI.
 //   node tools/checks.mjs      prints one line per check, exit 1 if any fails
 import { spawnSync } from 'node:child_process';
@@ -18,5 +18,11 @@ for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.m
   const best = JSON.parse(readFileSync(resolve(here, 'bench.best.json'), 'utf8'));
   const ok = !!b && b.score >= best.score && b.total >= best.total;
   results.push(['bench', ok, b ? `${b.score}/${b.total} (floor ${best.score})${b.wrong.length ? ' wrong: ' + b.wrong.join(' | ') : ''}` : r.out.slice(-2).join(' ')]); }
+{ // the board reader must drop anything key-like before it prints (tools/misses.mjs)
+  const { redact } = await import('./misses.mjs');
+  const cases = [['unlock abcdEFGH12345678zz', null], ['my key is Zx9kQ2mP7vR4tY8wL3nB', null], ['mail sam@example.com', 'mail [email]'],
+    ['call 555-123-4567', 'call [number]'], ['weather in kyoto', 'weather in kyoto'], ['define antidisestablishmentarianism', 'define antidisestablishmentarianism']];
+  const bad = cases.filter(([a, want]) => redact(a) !== want);
+  results.push(['misses', !bad.length, bad.length ? 'redact wrong for: ' + bad.map((c) => c[0]).join(' | ') : cases.length + ' redaction cases ok']); }
 for (const [n, ok, line] of results) console.log((ok ? 'ok   ' : 'FAIL ') + n.padEnd(9) + line);
 process.exit(results.every((r) => r[1]) ? 0 : 1);
