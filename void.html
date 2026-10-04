@@ -1871,7 +1871,7 @@ function wantsCreateImage(lower, raw) {
       if (match) return cleanListText(match[1]);
       match = raw.match(/^\s*list\s+add\s+([\s\S]+?)\s*[.!]?\s*$/i);
       if (match) return cleanListText(match[1]);
-      match = raw.match(/^\s*add\s+([\s\S]+?)\s+to\s+(?:the\s+)?list\s*[.!]?\s*$/i);
+      match = raw.match(/^\s*(?:please\s+)?(?:add|put)\s+([\s\S]+?)\s+(?:to|on)\s+(?:the\s+|my\s+)?(?:(?:grocery|groceries|shopping|packing|todo|to-do|chores?)\s+)?list\s*[.!]?\s*$/i);
       if (match) return cleanListText(match[1]);
       match = raw.match(/^\s*(?:make|create|start)\s+(?:a\s+)?(?:new\s+)?list\s*(?:,|and)?\s+add\s+([\s\S]+?)\s*[.!]?\s*$/i);
       if (match) return cleanListText(match[1]);
@@ -1903,7 +1903,7 @@ function wantsCreateImage(lower, raw) {
       if (/\b(remove|delete|get\s+rid|hide|clear)\b/.test(lower) && /\b(calculator|calc)\b/.test(lower)) return false;
       if (/^(a\s+)?calculator(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
       if (/^calc(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
-      return /\b(make|add|create|show|spawn|put|place|drop)\b.*\b(calculator|calc)\b/.test(lower)
+      return /\b(make|add|create|show|spawn|put|place|drop|open|start|launch|give\s+me|bring\s+up|pull\s+up)\b.*\b(calculator|calc)\b/.test(lower)
         || /\b(calculator|calc)\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower);
     }
 

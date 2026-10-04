@@ -1142,5 +1142,15 @@
   {"ask": "chicken curry recipe", "want": "skill:recipe"},
   {"ask": "a book by stephen king", "want": "skill:book"},
   {"ask": "tell me a dad joke", "want": "skill:joke"},
-  {"ask": "knock knock joke", "want": "skill:joke"}
+  {"ask": "knock knock joke", "want": "skill:joke"},
+  {"ask": "what is the capital of brazil", "want": "skill:country|answer"},
+  {"ask": "what currency does japan use", "want": "skill:country|answer"},
+  {"ask": "what language do they speak in brazil", "want": "skill:country|answer"},
+  {"ask": "population of germany", "want": "skill:country|answer"},
+  {"ask": "distance from tokyo to osaka", "want": "skill:distance"},
+  {"ask": "how far is the moon", "want": "answer|article|calc"},
+  {"ask": "make a todo list", "want": "list"},
+  {"ask": "add milk to my shopping list", "want": "list"},
+  {"ask": "show me a clock", "want": "clock|timenow"},
+  {"ask": "open the calculator", "want": "calc"}
 ]
