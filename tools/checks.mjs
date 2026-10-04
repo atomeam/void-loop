@@ -24,5 +24,11 @@ for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.m
     ['call 555-123-4567', 'call [number]'], ['weather in kyoto', 'weather in kyoto'], ['define antidisestablishmentarianism', 'define antidisestablishmentarianism']];
   const bad = cases.filter(([a, want]) => redact(a) !== want);
   results.push(['misses', !bad.length, bad.length ? 'redact wrong for: ' + bad.map((c) => c[0]).join(' | ') : cases.length + ' redaction cases ok']); }
+{ // test traffic (probe, ping, test) never becomes a miss or a want, and real questions about probes still do (lib/noise.js, tools/will.py)
+  const { isNoise } = await import('../void-live-deploy/lib/noise.js');
+  const py = (await import('node:fs')).readFileSync(new URL('./will.py', import.meta.url), 'utf8').includes('NOISE.match(');
+  const cases = [['probe', true], ['ping', true], ['research probe', true], ['test', true], ['how do space probes work', false], ['probe the moon', false], ['weather in paris', false]];
+  const bad = cases.filter(([a, want]) => isNoise(a) !== want);
+  results.push(['noise', !bad.length && py, !py ? 'tools/will.py no longer uses the noise list' : bad.length ? 'noise wrong for: ' + bad.map((c) => c[0]).join(' | ') : cases.length + ' noise cases ok (miss board and will)']); }
 for (const [n, ok, line] of results) console.log((ok ? 'ok   ' : 'FAIL ') + n.padEnd(9) + line);
 process.exit(results.every((r) => r[1]) ? 0 : 1);

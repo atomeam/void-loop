@@ -3,6 +3,7 @@
 // No IPs, cookies or user agents are stored. The connection is hashed only for a 60s rate-limit window.
 // Storage: D1 (void_misses). Older rows still in KV are merged in by /api/misses until they expire.
 import { redact } from '../../lib/automation-fix.js';
+import { isNoise } from '../../lib/noise.js';
 const MAX_LEN = 200;
 const RL_MAX = 20; // writes per connection per minute
 
@@ -20,6 +21,7 @@ export async function onRequestPost({ request: req, env }) {
   const ask = redact(norm(body.ask)); // a key typed into Void never lands on the miss list
   const fallback = String(body.fallback || '').slice(0, 40);
   if (!ask || ask.length < 2) return new Response('empty', { status: 400 });
+  if (isNoise(ask)) return new Response(null, { status: 204 }); // test traffic is not a miss (lib/noise.js)
   const id = await sha(ask);
   try { // the edge cache (per colo); the /api middleware also limits every connection
     const conn = await sha((req.headers.get('cf-connecting-ip') || '') + (env.SALT || ''));

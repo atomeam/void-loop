@@ -18,6 +18,9 @@ except Exception:
     pass
 H = {"authorization": "Bearer " + TOK, "content-type": "application/json", "user-agent": "a2m-void-will/1.0"}
 
+# the same test-traffic list as void-live-deploy/lib/noise.js: probes and pings are never wants
+NOISE = re.compile(r"^(?:test|testing|probe|ping|ping-test|pong|hello world test|research probe|test miss(?: from research)?|health ?check|smoke ?test|asdf+|qwerty|zz+q*x*)\s*[.!?]*$|^[bcdfghjklmnpqrstvwxz]{4,8}$|^/[\w-]+$|^zz+\b.*\bprobe\b|^(?:test|probe)[\s:_-]+\S*$", re.I)
+
 def call(path, body=None):
     if not TOK:
         raise RuntimeError("no VOID_MISSES_TOKEN")
@@ -32,7 +35,7 @@ def gather(cap=60, with_done=False):
         misses = [m for m in call("/api/misses")[:40] if not str(m.get("fallback", "")).startswith("skill:")]
         covered = json.loads(subprocess.run(["node", str(ROOT / "tools" / "covered.mjs")], input=json.dumps([m["ask"] for m in misses]), capture_output=True, text=True, timeout=60).stdout or "[]")
         for m, done in zip(misses, covered + [False] * len(misses)):
-            if not done and len(m["ask"]) > 4 and not re.match(r"^(test|zz|asdf)", m["ask"]):
+            if not done and len(m["ask"]) > 4 and not NOISE.match(str(m["ask"]).strip()):
                 cands.append({"kind": "people asked", "title": f"learn to handle \"{m['ask']}\"", "why": f"asked {m['count']} times, last {m['last'][:10]}", "weight": 10 + 5 * m["count"]})
     except Exception as e:
         print("misses:", e, file=sys.stderr)
@@ -144,7 +147,7 @@ def gather(cap=60, with_done=False):
         near = []
         for skill, rows in (rt.get("skills") or {}).items():
             for r in rows:
-                if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not re.match(r"^(test|zz|asdf)", str(r["ask"])):
+                if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not NOISE.match(str(r["ask"]).strip()):
                     near.append((skill, r))
         try:
             import subprocess
