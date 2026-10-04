@@ -17,6 +17,7 @@
  * The brain (stepFigure, pickTarget) is plain JS with no three.js, so it runs and is tested without WebGL.
  */
 import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
+import { PERSON, ANIMAL, bodyMesh } from './sdfmesh.js';
 export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
 export const THREE_VERSION = '0.180.0';
 export const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@' + THREE_VERSION + '/build/three.module.min.js';
@@ -409,23 +410,33 @@ function attachProp(bodyGroup, parts, prop, hold = { x: R * 0.95, y: -R * 0.05, 
   bodyGroup.add(mesh); parts.prop = mesh; return mesh;
 }
 
+// One seamless mesh per living body (skills/sdfmesh.js: blended shapes, surface nets, gradient normals), built once and
+// shared as plain arrays; each figure gets its own BufferGeometry of it, so removing one figure never disposes another's.
+const SMOOTH = {};
+function smoothBody(kind) {
+  const m = SMOOTH[kind] || (SMOOTH[kind] = bodyMesh(kind === 'animal' ? ANIMAL(R) : PERSON(R), R));
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.BufferAttribute(m.positions.slice(), 3));
+  g.setAttribute('normal', new THREE.BufferAttribute(m.normals.slice(), 3));
+  g.setIndex(new THREE.BufferAttribute(m.indices.slice(), 1));
+  g.computeBoundingSphere();
+  return g;
+}
 function buildPerson(spec) {
   const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
   const col = hexColor(spec.color); const { skin, ink, shine, mats } = softMats(col);
   const parts = { mats, geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
-  const torso = new T.Mesh(geo(new T.CapsuleGeometry(R * 0.55, R * 0.7, 8, 16)), skin); torso.position.y = -R * 0.15; body.add(torso);
-  const head = new T.Mesh(geo(new T.SphereGeometry(R * 0.48, 28, 20)), skin); head.position.y = R * 0.95; body.add(head);
-  const eyes = makeEyes(parts, ink, shine, R * 1.0, R * 0.42); body.add(eyes);
+  // head, neck, shoulders, torso, legs and feet are one smooth mesh; the arms swing from the shoulders
+  const fused = new T.Mesh(geo(smoothBody('person')), skin); body.add(fused);
+  const eyes = makeEyes(parts, ink, shine, R * 1.0, R * 0.4); eyes.scale.setScalar(0.9); body.add(eyes);
   const arms = [];
-  const armGeo = geo(new T.CapsuleGeometry(R * 0.12, R * 0.35, 6, 10));
+  const armGeo = geo(new T.CapsuleGeometry(R * 0.11, R * 0.42, 6, 12));
+  const handGeo = geo(new T.SphereGeometry(R * 0.13, 14, 10));
   for (const s of [-1, 1]) {
-    const pivot = new T.Group(); pivot.position.set(s * R * 0.7, R * 0.15, 0);
-    const arm = new T.Mesh(armGeo, skin); arm.position.set(s * R * 0.05, -R * 0.28, 0); arm.rotation.z = s * 0.35; pivot.add(arm);
+    const pivot = new T.Group(); pivot.position.set(s * R * 0.6, R * 0.36, 0);
+    const arm = new T.Mesh(armGeo, skin); arm.position.set(s * R * 0.1, -R * 0.32, 0); arm.rotation.z = s * 0.22; pivot.add(arm);
+    const hand = new T.Mesh(handGeo, skin); hand.position.set(s * R * 0.2, -R * 0.66, R * 0.02); pivot.add(hand);
     body.add(pivot); arms.push(pivot);
-  }
-  const legGeo = geo(new T.CapsuleGeometry(R * 0.14, R * 0.35, 6, 10));
-  for (const s of [-1, 1]) {
-    const leg = new T.Mesh(legGeo, skin); leg.position.set(s * R * 0.28, -R * 1.15, 0); body.add(leg);
   }
   attachProp(body, parts, spec.prop, { x: R * 0.85, y: -R * 0.15, z: R * 0.25 });
   addSpeech(g, parts, spec.line);
@@ -438,19 +449,16 @@ function buildAnimal(spec) {
   const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
   const col = hexColor(spec.color); const { skin, ink, shine, mats } = softMats(col);
   const parts = { mats, geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
-  const torso = new T.Mesh(geo(new T.SphereGeometry(R * 0.7, 28, 20)), skin); torso.scale.set(1.35, 0.85, 0.95); body.add(torso);
-  const head = new T.Mesh(geo(new T.SphereGeometry(R * 0.42, 24, 16)), skin); head.position.set(R * 0.85, R * 0.25, R * 0.15); body.add(head);
-  const ears = [];
-  for (const s of [-1, 1]) {
-    const ear = new T.Mesh(geo(new T.ConeGeometry(R * 0.14, R * 0.32, 8)), skin); ear.position.set(R * 0.7 + s * R * 0.22, R * 0.55, R * 0.05); ear.rotation.z = s * 0.35; body.add(ear); ears.push(ear);
-  }
-  const eyes = makeEyes(parts, ink, shine, R * 0.32, R * 0.95); eyes.position.x = R * 0.85; body.add(eyes);
-  const tail = new T.Group(); tail.position.set(-R * 0.95, 0, -R * 0.1); body.add(tail);
-  const tip = new T.Mesh(geo(new T.SphereGeometry(R * 0.18, 12, 8)), skin); tip.scale.set(0.7, 0.7, 1.6); tip.position.x = -R * 0.25; tail.add(tip);
+  // body, chest, neck, head, snout, ears, four legs and the root of the tail are one smooth mesh, centred under the figure
+  const fused = new T.Mesh(geo(smoothBody('animal')), skin); fused.position.set(-R * 0.15, R * 0.15, 0); body.add(fused);
+  const head = fused, ears = [];
+  const eyes = makeEyes(parts, ink, shine, R * 0.8, R * 0.33); eyes.position.x = R * 0.9; eyes.scale.setScalar(0.75); body.add(eyes);
+  const tail = new T.Group(); tail.position.set(-R * 1.3, R * 0.57, 0); body.add(tail); // the tip wags from the end of the fused root
+  const tip = new T.Mesh(geo(new T.SphereGeometry(R * 0.11, 14, 10)), skin); tip.scale.set(1.6, 0.8, 0.8); tip.position.x = -R * 0.1; tail.add(tip);
   const arms = [];
-  for (const s of [-1, 1]) {
-    const paw = new T.Group(); paw.position.set(s * R * 0.45, -R * 0.55, R * 0.35);
-    paw.add(new T.Mesh(geo(new T.SphereGeometry(R * 0.16, 12, 8)), skin)); body.add(paw); arms.push(paw);
+  for (const z of [R * 0.28, -R * 0.28]) { // the front paws (what "wave" lifts)
+    const paw = new T.Group(); paw.position.set(R * 0.35, -R * 0.82, z);
+    paw.add(new T.Mesh(geo(new T.SphereGeometry(R * 0.13, 14, 10)), skin)); body.add(paw); arms.push(paw);
   }
   attachProp(body, parts, spec.prop, { x: R * 0.2, y: -R * 0.7, z: R * 0.55 });
   addSpeech(g, parts, spec.line);
