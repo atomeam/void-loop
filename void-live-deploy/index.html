@@ -3167,6 +3167,16 @@ return { ok: true, detail: 'timer-reset' };
       const size = lines.length > 1 ? (lines.length > 6 ? 18 : 24) : long > 28 ? 24 : long > 14 ? 36 : 56;
       return 'font-size:' + size + 'px;font-weight:300;line-height:' + (size > 30 ? 1.15 : 1.45) + ';margin:6px 0 4px;white-space:pre-line;overflow-wrap:anywhere';
     }
+    // the extra units wordMath converts; the regex converter further down keeps the everyday ones it always had
+    const MORE_UNITS = [
+      ['area', 0.09290304, 'square feet', /^(?:sq(?:uare)?\.?\s*(?:feet|foot|ft)|ft2|ft²)$/], ['area', 1, 'square meters', /^(?:sq(?:uare)?\.?\s*(?:meters?|metres?|m)|m2|m²)$/],
+      ['area', 4046.8564224, 'acres', /^acres?$/], ['area', 10000, 'hectares', /^(?:hectares?|ha)$/], ['area', 2589988.110336, 'square miles', /^(?:sq(?:uare)?\.?\s*(?:miles?|mi)|mi2)$/], ['area', 1e6, 'square km', /^(?:sq(?:uare)?\.?\s*(?:km|kilomet(?:er|re)s?)|km2|km²)$/],
+      ['mass', 6.35029318, 'stone', /^(?:stones?|st)$/], ['mass', 0.45359237, 'pounds', /^(?:pounds?|lbs?)$/], ['mass', 1, 'kg', /^(?:kg|kilos?|kilograms?)$/], ['mass', 0.001, 'grams', /^(?:grams?|g)$/], ['mass', 0.028349523, 'ounces', /^(?:ounces?|oz)$/],
+      ['speed', 0.44704, 'mph', /^(?:mph|miles?\s+(?:an|per)\s+hour)$/], ['speed', 1 / 3.6, 'km/h', /^(?:km\/?h|kph|kmh|kilomet(?:er|re)s?\s+(?:an|per)\s+hour)$/], ['speed', 1, 'm/s', /^(?:m\/s|meters?\s+per\s+second|metres?\s+per\s+second)$/], ['speed', 0.514444, 'knots', /^(?:knots?|kn|kt)$/],
+      ['data', 1024, 'KB', /^(?:kb|kilobytes?)$/], ['data', 1048576, 'MB', /^(?:mb|megabytes?)$/], ['data', 1073741824, 'GB', /^(?:gb|gigabytes?)$/], ['data', 1099511627776, 'TB', /^(?:tb|terabytes?)$/],
+      ['fuel', 1, 'mpg', /^(?:mpg|miles\s+per\s+gallon)$/, false], ['fuel', 1, 'L/100 km', /^(?:l\/100\s*km|litres?\s+per\s+100\s*km|liters?\s+per\s+100\s*km)$/, true],
+    ].map(([cat, f, name, re, inv]) => ({ cat, f, name, re, inv }));
+    function unitOf(w) { w = String(w).trim().replace(/\.$/, ''); return MORE_UNITS.find((u) => u.re.test(w)) || null; }
     function wordMath(lower) {
       let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
       // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
@@ -3180,6 +3190,48 @@ return { ok: true, detail: 'timer-reset' };
       if (m && TIME_S[m[2]] > TIME_S[m[1]]) { const v = TIME_S[m[2]] / TIME_S[m[1]]; return { value: v.toLocaleString(), note: 'one ' + m[2] + ' = ' + v.toLocaleString() + ' ' + m[1] + 's' + (m[2] === 'year' ? ' (365.25 days)' : '') + '.' }; }
       m = t.match(/^(\d{1,3})\s*(?:!|factorial)$|^(?:the\s+)?factorial\s+of\s+(\d{1,3})$/);
       if (m) { const n = +(m[1] || m[2]); if (n > 170) return null; let v = 1; for (let i = 2; i <= n; i++) v *= i; const shown = v >= 1e15 ? v.toExponential(6) : v.toLocaleString(); return { value: shown, note: n + '! = ' + shown }; }
+      // more units: area, stone, speed, data, mpg <-> L/100 km ("1 acre in square feet", "70 kg in stone", "60 mph in km/h", "half a pound in grams")
+      m = t.match(/^(?:convert\s+)?(-?\d+(?:\.\d+)?)\s*([a-z][a-z0-9/ .²]*?)\s+(?:in|to|into)\s+([a-z][a-z0-9/ .²]*?)$/);
+      if (m) {
+        const a = unitOf(m[2]), b = unitOf(m[3]), x = +m[1];
+        if (a && b && a.cat === b.cat && a !== b) {
+          const v = a.cat === 'fuel' ? (a.inv === b.inv ? x : 235.214583 / x) : x * a.f / b.f, shown = Math.abs(v) >= 100 ? Math.round(v * 100) / 100 : Math.round(v * 10000) / 10000;
+          return { value: shown.toLocaleString(undefined, { maximumFractionDigits: 4 }) + ' ' + b.name, note: m[1] + ' ' + a.name + ' = ' + shown.toLocaleString(undefined, { maximumFractionDigits: 4 }) + ' ' + b.name + (a.cat === 'data' ? ' (1 GB = 1,024 MB, as computers count)' : '') };
+        }
+      }
+      // "how many weeks is 100 days", "100 days is how many weeks"
+      m = t.match(/^how\s+many\s+(seconds|minutes|hours|days|weeks|months|years)\s+(?:is|are)\s+(\d+(?:\.\d+)?)\s+(seconds?|minutes?|hours?|days?|weeks?|months?|years?)$/) || ((mm) => mm && [mm[0], mm[3], mm[1], mm[2]])(t.match(/^(\d+(?:\.\d+)?)\s+(seconds?|minutes?|hours?|days?|weeks?|months?|years?)\s+(?:is|are|in)\s+how\s+many\s+(seconds|minutes|hours|days|weeks|months|years)$/));
+      if (m) { const D = { second: 1 / 86400, minute: 1 / 1440, hour: 1 / 24, day: 1, week: 7, month: 30.436875, year: 365.25 }, v = Math.round(+m[2] * D[m[3].replace(/s$/, '')] / D[m[1].replace(/s$/, '')] * 100) / 100;
+        return { value: v.toLocaleString() + ' ' + m[1], note: m[2] + ' ' + m[3] + ' = ' + v.toLocaleString() + ' ' + m[1] }; }
+      // travel: "how long to drive 300 miles at 60 mph", "how far is 2 hours at 50 mph", "what speed to go 120 miles in 2 hours"
+      m = t.match(/^how\s+long\s+(?:does\s+it\s+take\s+|will\s+it\s+take\s+)?(?:to\s+)?(?:drive|go|travel|walk|run|cycle|bike|fly)?\s*(\d+(?:\.\d+)?)\s*(miles?|mi|km|kilomet(?:er|re)s?)\s+at\s+(\d+(?:\.\d+)?)\s*(mph|km\/?h|kph|miles?\s+(?:an|per)\s+hour|km\s+(?:an|per)\s+hour)$/);
+      if (m) { const h = +m[1] / +m[3], hh = Math.floor(h), mi = Math.round((h - hh) * 60); return { value: (hh ? hh + ' h' : '') + (mi ? (hh ? ' ' : '') + mi + ' min' : hh ? '' : '0 min'), note: m[1] + ' ' + m[2] + ' at ' + m[3] + ' ' + m[4] + ', without stops' }; }
+      m = t.match(/^how\s+far\s+(?:is|do\s+i\s+go\s+in|can\s+i\s+go\s+in)\s+(\d+(?:\.\d+)?)\s*(hours?|hrs?|minutes?|mins?)\s+at\s+(\d+(?:\.\d+)?)\s*(mph|km\/?h|kph)$/);
+      if (m) { const h = /^m/.test(m[2]) ? +m[1] / 60 : +m[1], d = Math.round(h * +m[3] * 100) / 100; return { value: d.toLocaleString() + (m[4] === 'mph' ? ' miles' : ' km'), note: m[1] + ' ' + m[2] + ' at ' + m[3] + ' ' + m[4] }; }
+      m = t.match(/^(?:what|how\s+fast)\s+(?:speed\s+)?(?:do\s+i\s+need\s+)?(?:to\s+)?(?:go|drive|travel|average)\s+(\d+(?:\.\d+)?)\s*(miles?|mi|km)\s+in\s+(\d+(?:\.\d+)?)\s*(hours?|hrs?|minutes?|mins?)$/);
+      if (m) { const h = /^m/.test(m[4]) && !/^mi$/.test(m[4]) ? +m[3] / 60 : +m[3], v = Math.round(+m[1] / h * 10) / 10; return { value: v + (/^k/.test(m[2]) ? ' km/h' : ' mph'), note: m[1] + ' ' + m[2] + ' in ' + m[3] + ' ' + m[4] }; }
+      // "20 is what percent of 80"
+      m = t.match(/^(-?\d+(?:\.\d+)?)\s+is\s+what\s+(?:percent|percentage|%)\s+of\s+(-?\d+(?:\.\d+)?)$/);
+      if (m && +m[2]) { const v = Math.round(+m[1] / +m[2] * 10000) / 100; return { value: v + '%', note: m[1] + ' is ' + v + '% of ' + m[2] }; }
+      // "2/3 of 90"
+      m = t.match(/^(\d+)\s*\/\s*(\d+)\s+of\s+(-?\d+(?:\.\d+)?)$/);
+      if (m && +m[2]) { const v = Math.round(+m[1] / +m[2] * +m[3] * 1e6) / 1e6; return { value: v.toLocaleString(), note: m[1] + '/' + m[2] + ' of ' + m[3] }; }
+      // logs, absolute value, trig in degrees
+      m = t.match(/^(?:the\s+)?log(?:arithm)?\s+(?:base\s+(\d+(?:\.\d+)?)\s+of|of)\s+(\d+(?:\.\d+)?)(?:\s+(?:in\s+)?base\s+(\d+(?:\.\d+)?))?$|^(?:the\s+)?(ln|natural\s+log(?:arithm)?)\s+(?:of\s+)?(\d+(?:\.\d+)?)$|^log(2|10)\s*\(?\s*(\d+(?:\.\d+)?)\s*\)?$/);
+      if (m) { const base = m[4] ? Math.E : +(m[1] || m[3] || m[6] || 10), x = +(m[2] || m[5] || m[7]); if (x > 0 && base > 0 && base !== 1) { const v = Math.round(Math.log(x) / Math.log(base) * 1e9) / 1e9; return { value: String(v), note: (m[4] ? 'ln ' : 'log base ' + base + ' of ') + x + ' = ' + v }; } }
+      m = t.match(/^(?:the\s+)?absolute\s+value\s+of\s+(-?\d+(?:\.\d+)?)$|^abs\s*\(\s*(-?\d+(?:\.\d+)?)\s*\)$/);
+      if (m) { const v = Math.abs(+(m[1] || m[2])); return { value: String(v), note: '|' + (m[1] || m[2]) + '| = ' + v }; }
+      m = t.match(/^(?:the\s+)?(sin|cos|tan|sine|cosine|tangent)\s*(?:of\s+)?\(?\s*(-?\d+(?:\.\d+)?)\s*(?:degrees?|deg|°)?\s*\)?$/);
+      if (m) { const f = m[1].slice(0, 3), r = +m[2] * Math.PI / 180; if (!(f === 'tan' && Math.abs(+m[2] % 180) === 90)) { const v = Math.round(Math[f](r) * 1e10) / 1e10; return { value: String(v), note: f + ' ' + m[2] + '° = ' + v }; } }
+      // "how many zeros in a billion"
+      m = t.match(/^how\s+many\s+zeros?\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|one)\s+(hundred|thousand|million|billion|trillion|quadrillion)$/);
+      if (m) { const z = { hundred: 2, thousand: 3, million: 6, billion: 9, trillion: 12, quadrillion: 15 }[m[1]]; return { value: String(z), note: 'one ' + m[1] + ' = 1' + '0'.repeat(z).replace(/\B(?=(\d{3})+(?!\d))/g, ',') }; }
+      // "0xff in decimal", "0b1010 in decimal"
+      m = t.match(/^(0x[0-9a-f]+|0b[01]+|0o[0-7]+)(?:\s+(?:in|to|as)\s+(?:decimal|base\s*10|a\s+number))?$/);
+      if (m) { const v = Number(m[1]); return { value: v.toLocaleString(), note: m[1] + ' = ' + v + ' in decimal' }; }
+      // dog years (the simple vets' rule: 15 for year one, 9 for year two, then about 5 a year for a medium dog)
+      m = t.match(/(?:how\s+old\s+is\s+)?(?:my\s+|a\s+)?dog(?:'s)?.*?(?:in\s+human\s+years|human\s+age).*?(\d+(?:\.\d+)?)|(\d+(?:\.\d+)?)\s*(?:-|\s)?(?:year|yr)s?(?:\s+|-)old\s+dog\s+in\s+human\s+years|(\d+(?:\.\d+)?)\s+dog\s+years\s+in\s+human\s+years/);
+      if (m && /dog/.test(t) && /human/.test(t)) { const a = +(m[1] || m[2] || m[3]); if (a > 0 && a <= 30) { const v = a <= 1 ? Math.round(15 * a) : a <= 2 ? Math.round(15 + 9 * (a - 1)) : Math.round(24 + 5 * (a - 2)); return { value: 'about ' + v, note: 'a ' + a + '-year-old medium dog in human years (15 for the first year, 9 for the second, about 5 a year after; big dogs age faster)' }; } }
       // "the square of 13"
       m = t.match(/^(?:the\s+)?square\s+of\s+(-?\d+(?:\.\d+)?)$/);
       if (m) { const v = String(Math.round(+m[1] * +m[1] * 1e9) / 1e9); return { value: v, note: m[1] + '² = ' + v }; }
