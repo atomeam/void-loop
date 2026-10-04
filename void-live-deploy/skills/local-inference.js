@@ -59,9 +59,9 @@ export async function checkLedgerDiff(diff, schemaState, model = MODEL) {
 
 export function localInferenceOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:validate|check)\s+(?:this\s+)?(?:diff|ledger|draft)/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
-  if (/^(?:run\s+)?local\s+inference\s+(?:on|for)\s+(?:this\s+)?(?:diff|draft)/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
-  if (/^check\s+ledger\s+drift/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
+  if (/^(?:validate|check)\s+(?:this\s+)?(?:diff|ledger|draft)\b/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
+  if (/^(?:run\s+)?local\s+inference\s+(?:on|for)\s+(?:this\s+)?(?:diff|draft)\b/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
+  if (/^check\s+ledger\s+drift\b/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
   return null;
 }
 
@@ -78,7 +78,8 @@ export default {
     'how does ollama work',
     'deepseek docs',
     'local model setup',
-    'offline ai validation'
+    'offline ai validation',
+    'check this commit against d1 schema'
   ],
   match(lower, text) { return !!localInferenceOf(text); },
   async run(text, api) {
