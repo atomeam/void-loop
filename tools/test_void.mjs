@@ -826,8 +826,10 @@ try {
     if (!process.env.VOID_SKIP_BENCH) { const run = spawnSync(process.execPath, [path.join(root, '..', 'tools', 'bench.mjs'), '--score'], { encoding: 'utf8', timeout: 600000 });
       let b = null; try { b = JSON.parse(String(run.stdout).trim().split('\n').pop()); } catch (_) {}
       const best = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'bench.best.json'), 'utf8'));
+      const detail = b ? (b.score + '/' + b.total + ' wrong: ' + (b.wrong || []).join(' | '))
+        : ('bench --score produced no JSON (status=' + run.status + ' signal=' + run.signal + ' err=' + String(run.stderr || '').slice(0, 200) + ' out=' + String(run.stdout || '').slice(-200) + ')');
       check('bench: the everyday benchmark scores at least its best (' + best.score + ' of ' + best.total + '); each ask answered by what should answer it',
-        !!b && b.score >= best.score && b.total >= best.total, b ? b.score + '/' + b.total + ' wrong: ' + b.wrong.join(' | ') : String(run.stderr).slice(0, 300)); }
+        !!b && b.score >= best.score && b.total >= best.total, detail); }
     check('grown: ' + grown.length + ' real asks Void once missed now answer on the real page (no miss posted, the right answer); the list only grows',
       shape && !bad.length && grown.length >= 15 && !R.errors.length, bad.join(' | ') + ' ' + R.errors.join('|'));
     await R.ctx.close(); }
