@@ -1046,5 +1046,16 @@
   {"ask": "countdown to christmas", "want": "skill:countdown"},
   {"ask": "how many sleeps until christmas", "want": "skill:countdown"},
   {"ask": "what is 2 to the 10th power", "want": "calc"},
-  {"ask": "pollen count in atlanta", "want": "skill:pollen"}
+  {"ask": "pollen count in atlanta", "want": "skill:pollen"},
+  {"ask": "another word for tired", "want": "skill:words"},
+  {"ask": "what rhymes with light", "want": "skill:words"},
+  {"ask": "what does ubiquitous mean", "want": "skill:define"},
+  {"ask": "make me a strong password", "want": "skill:util"},
+  {"ask": "what phase is the moon", "want": "skill:util"},
+  {"ask": "how do you say thank you in japanese", "want": "skill:translate"},
+  {"ask": "countdown to halloween", "want": "skill:countdown"},
+  {"ask": "what is 3 to the 4th power", "want": "calc"},
+  {"ask": "how many days left in the year", "want": "calc|today"},
+  {"ask": "what is 7 cubed", "want": "calc"},
+  {"ask": "countdown to new years eve", "want": "skill:countdown"}
 ]

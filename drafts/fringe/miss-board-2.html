@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · who would answer (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:10px 12px;width:100%;box-sizing:border-box}
+input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+ol{margin:0;padding-left:1.4em}
+li{margin:2px 0}
+li.win{color:#7cf}
+li.miss{color:#6a6a72}
+#status{color:#8a8a92;font-size:13px;min-height:1.4em}
+</style>
+</head>
+<body>
+<main>
+  <h1>who would answer · draft · not published</h1>
+  <p class="note">A miss board before the miss: type an ask and see, in Void's own order, which abilities claim it. The first one that claims it answers; if none do, the ask falls to Void's built-in answers (sums, today, the clock) or to the model, and if those miss too it lands on the board. Each ability also lists asks it must not take; if your ask is one of them, that shows too. Everything runs here, in this page; nothing is sent.</p>
+  <input id="ask" type="text" placeholder="countdown to christmas" aria-label="ask" autocomplete="off">
+  <div id="status" aria-live="polite">loading abilities…</div>
+  <ol id="list" aria-label="abilities in the order Void tries them"></ol>
+</main>
+<script type="module">
+const status = document.getElementById('status'), list = document.getElementById('list'), input = document.getElementById('ask');
+// the skills folder sits next to the live copy (../skills/) or, from the draft, under void-live-deploy/
+const BASES = ['../skills/', '../../void-live-deploy/skills/'];
+let skills = [];
+async function load() {
+  for (const base of BASES) {
+    try {
+      const names = await (await fetch(base + 'index.json')).json();
+      const mods = await Promise.all(names.map((n) => import(base + n + '.js').then((m) => m.default).catch(() => null)));
+      return mods.filter(Boolean);
+    } catch (_) {}
+  }
+  return [];
+}
+// claims(skill, ask): does this ability take the ask? (a throwing matcher counts as no)
+export function claims(s, text) { try { return !!s.match(text.toLowerCase(), text); } catch (_) { return false; } }
+export function route(all, text) {
+  const t = text.trim(), rows = all.map((s) => ({ name: s.name, claims: t ? claims(s, t) : false,
+    refuses: (s.nearMisses || []).some((n) => n.toLowerCase() === t.toLowerCase()) }));
+  return { rows, winner: (rows.find((r) => r.claims) || {}).name || null };
+}
+function show() {
+  const t = input.value, r = route(skills, t);
+  list.textContent = '';
+  for (const row of r.rows) {
+    const li = document.createElement('li');
+    li.className = row.name === r.winner ? 'win' : row.claims ? '' : 'miss';
+    li.textContent = row.name + (row.name === r.winner ? ' ← answers' : row.claims ? ' (also claims it, but comes later)' : '') + (row.refuses ? ' · listed as an ask it must not take' : '');
+    list.appendChild(li);
+  }
+  status.textContent = !t.trim() ? skills.length + ' abilities, in the order Void tries them' : r.winner ? r.winner + ' answers this' : 'no ability claims this · built-ins or the model would try next';
+}
+skills = await load();
+if (!skills.length) status.textContent = 'could not load the abilities (open this page from the site, not as a file)';
+else show();
+input.addEventListener('input', show);
+window.__route = { route: (t) => route(skills, t), count: () => skills.length }; // for checks
+</script>
+</body>
+</html>

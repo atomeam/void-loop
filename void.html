@@ -4199,7 +4199,7 @@ return { ok: true, detail: 'timer-reset' };
     }
     // Today: "what day is it", "what's the date today", "what year is it" -> the date here, with the week and day of the year.
     function wantsToday(l) {
-      return /^(what(?:'s|\s+is)?|whats)\s+(?:the\s+)?(?:day|date|today'?s?\s+date)(?:\s+(?:is\s+it|today|is\s+it\s+today|is\s+today))?$|^what\s+day\s+is\s+(?:it|today)(\s+today)?$|^what(?:'s|\s+is)?\s+the\s+date(\s+today)?$|^(?:what|which)\s+year\s+is\s+(?:it|this)$|^today'?s\s+date$|^date\s+today$/.test(l.replace(/[?.!]+$/, ''));
+      return /^(what(?:'s|\s+is)?|whats)\s+(?:the\s+)?(?:day|date|today'?s?\s+date)(?:\s+(?:is\s+it|today|is\s+it\s+today|is\s+today))?$|^what\s+day\s+is\s+(?:it|today)(\s+today)?$|^what(?:'s|\s+is)?\s+the\s+date(\s+today)?$|^(?:what|which)\s+year\s+is\s+(?:it|this)$|^today'?s\s+date$|^date\s+today$|^(?:how\s+many\s+)?days\s+(?:are\s+)?(?:left|remaining)\s+in\s+(?:the|this)\s+year$/.test(l.replace(/[?.!]+$/, ''));
     }
     // "what time is it" with no place: the time here, ticking, with the zone and the date ("time in Tokyo" is worldtime's)
     function wantsTimeNow(l) {
@@ -4217,7 +4217,7 @@ return { ok: true, detail: 'timer-reset' };
       const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const dn = t.getUTCDay() || 7; t.setUTCDate(t.getUTCDate() + 4 - dn);
       const week = Math.ceil(((t - Date.UTC(t.getUTCFullYear(), 0, 1)) / 864e5 + 1) / 7);
       showPage((p) => { p.innerHTML = '<h2>Today</h2><div style="font-size:44px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })) + '</div>'
-        + '<p style="color:#8a8a8a">Week ' + week + ' · day ' + doy + ' of ' + days + ' · ' + esc(Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/_/g, ' ')) + '</p>'; });
+        + '<p style="color:#8a8a8a">Week ' + week + ' · day ' + doy + ' of ' + days + ' · ' + (days - doy) + (days - doy === 1 ? ' day' : ' days') + ' left this year · ' + esc(Intl.DateTimeFormat().resolvedOptions().timeZone.replace(/_/g, ' ')) + '</p>'; });
     }
     // Chance: "flip a coin", "roll a dice" / "roll 2 dice" / "roll a d20", "pick a random number between 1 and 100". crypto.getRandomValues.
     function rnd(n) { const a = new Uint32Array(1); const lim = Math.floor(4294967296 / n) * n; let x; do { crypto.getRandomValues(a); x = a[0]; } while (x >= lim); return x % n; }
