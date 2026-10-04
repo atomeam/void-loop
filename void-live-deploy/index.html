@@ -3724,6 +3724,33 @@ return { ok: true, detail: 'timer-reset' };
       const PI = Math.PI, r2 = (x) => Math.round(x * 100) / 100;
       m = t.match(/^(?:the\s+)?(area|circumference|perimeter)\s+of\s+a\s+circle\s+(?:with\s+(?:a\s+)?)?(radius|diameter|r|d)\s*(?:of\s+|=\s*|is\s+)?(\d+(?:\.\d+)?)$/);
       if (m) { const rad = /^d/.test(m[2]) ? +m[3] / 2 : +m[3], v = m[1] === 'area' ? PI * rad * rad : 2 * PI * rad; return { value: String(r2(v)), note: (m[1] === 'area' ? 'πr²' : '2πr') + ' with r = ' + rad }; }
+      // cube volume / surface: "volume of a cube with side 3"
+      m = t.match(/^(?:the\s+)?(volume|surface\s+area)\s+of\s+a\s+cube\s+(?:with\s+(?:a\s+)?)?(?:sides?|edges?|side\s+length)\s*(?:of\s+|=\s*|is\s+)?(\d+(?:\.\d+)?)$/);
+      if (m) { const a = +m[2], v = m[1] === 'volume' ? a ** 3 : 6 * a * a; return { value: String(r2(v)), note: (m[1] === 'volume' ? 'side³' : '6 × side²') + ' with side ' + a }; }
+      // "hypotenuse of a 3 4 triangle", "hypotenuse with legs 5 and 12"
+      m = t.match(/^(?:the\s+)?hypotenuse\s+(?:of\s+a\s+|for\s+a\s+)?(?:right\s+)?(?:triangle\s+)?(?:with\s+)?(?:legs|sides)?\s*(\d+(?:\.\d+)?)\s*(?:,|and|by|x|×)?\s*(\d+(?:\.\d+)?)(?:\s+(?:right\s+)?triangle)?$/);
+      if (m) { const v = Math.hypot(+m[1], +m[2]); return { value: String(Math.round(v * 1e4) / 1e4), note: '√(' + m[1] + '² + ' + m[2] + '²), by Pythagoras' }; }
+      // "sum of 1 to 100", "sum of the numbers from 1 to 50"
+      m = t.match(/^(?:the\s+)?sum\s+of\s+(?:all\s+)?(?:the\s+)?(?:(?:whole\s+)?numbers\s+|integers\s+)?(?:from\s+)?(-?\d+)\s+(?:to|through|thru)\s+(-?\d+)$/);
+      if (m && Math.abs(+m[2] - +m[1]) <= 1e9) { const a = Math.min(+m[1], +m[2]), b = Math.max(+m[1], +m[2]), v = (a + b) * (b - a + 1) / 2; return { value: v.toLocaleString(), note: 'every whole number from ' + a + ' to ' + b + ': (first + last) × count ÷ 2' }; }
+      // polygons: "how many sides does a hexagon have", "how many degrees in a triangle"
+      m = t.match(/^how\s+many\s+(sides|corners|vertices|degrees|angles)\s+(?:does|do|are|is)?\s*(?:there\s+)?(?:in\s+|on\s+)?(?:a|an)\s+(triangle|square|rectangle|quadrilateral|pentagon|hexagon|heptagon|octagon|nonagon|decagon|dodecagon|circle)(?:\s+have)?$/);
+      if (m) { const SIDES = { triangle: 3, square: 4, rectangle: 4, quadrilateral: 4, pentagon: 5, hexagon: 6, heptagon: 7, octagon: 8, nonagon: 9, decagon: 10, dodecagon: 12 }, n = SIDES[m[2]];
+        if (m[2] === 'circle') return m[1] === 'degrees' ? { value: '360°', note: 'a full turn' } : null;
+        if (m[1] === 'degrees') return { value: (n - 2) * 180 + '°', note: 'the inside angles of a ' + m[2] + ' add up to (' + n + ' − 2) × 180°' + (/^(?:square|rectangle|triangle)$/.test(m[2]) ? '' : '; each is ' + Math.round((n - 2) * 180 / n * 100) / 100 + '° when it is regular') };
+        return { value: String(n), note: 'a ' + m[2] + ' has ' + n + ' sides, ' + n + ' corners and ' + n + ' angles' }; }
+      // "increase 50 by 20%", "decrease 80 by 25 percent"
+      m = t.match(/^(increase|decrease|raise|reduce|lower)\s+\$?([\d,]+(?:\.\d+)?)\s+by\s+(\d+(?:\.\d+)?)\s*(?:%|percent)$/);
+      if (m) { const x = +m[2].replace(/,/g, ''), up = /^(?:increase|raise)$/.test(m[1]), v = x * (1 + (up ? 1 : -1) * +m[3] / 100); return { value: (Math.round(v * 100) / 100).toLocaleString(), note: m[2] + (up ? ' + ' : ' − ') + m[3] + '% (' + (Math.round(x * +m[3]) / 100).toLocaleString() + ')' }; }
+      // "40 as a percentage of 160"
+      m = t.match(/^(-?\d+(?:\.\d+)?)\s+as\s+a\s+(?:percent(?:age)?|%)\s+of\s+(-?\d+(?:\.\d+)?)$/);
+      if (m && +m[2]) { const v = Math.round(+m[1] / +m[2] * 10000) / 100; return { value: v + '%', note: m[1] + ' is ' + v + '% of ' + m[2] }; }
+      // calendar spans: "how many months in 3 years", "how many weeks in 100 days"
+      m = t.match(/^how\s+many\s+(seconds|minutes|hours|days|weeks|months|years|decades)\s+(?:are\s+)?(?:there\s+)?in\s+(\d+(?:\.\d+)?)\s+(seconds?|minutes?|hours?|days?|weeks?|months?|years?|decades?|centur(?:y|ies))$/);
+      if (m) { const unit = (w) => w.replace(/ies$/, 'y').replace(/s$/, ''), D = { second: 1 / 86400, minute: 1 / 1440, hour: 1 / 24, day: 1, week: 7, month: 365.25 / 12, year: 365.25, decade: 3652.5, century: 36525 }, from = unit(m[3]), to = unit(m[1]), q = +m[2];
+        const long = (u) => /^(?:month|year|decade|century)$/.test(u), exact = long(from) === long(to), v = q * D[from] / D[to], r = Math.round(v * 100) / 100;
+        let extra = ''; if (to === 'week' && from === 'day' && v % 1) extra = ' (' + Math.floor(v) + ' weeks and ' + Math.round(q - Math.floor(v) * 7) + ' days)';
+        return { value: r.toLocaleString() + ' ' + m[1], note: q + ' ' + m[3] + ' = ' + r.toLocaleString() + ' ' + m[1] + extra + (exact ? '' : '; on average, counting a leap year every 4 years') }; }
       m = t.match(/^(?:the\s+)?(volume|surface\s+area)\s+of\s+a\s+sphere\s+(?:with\s+(?:a\s+)?)?(radius|diameter)\s*(?:of\s+|=\s*)?(\d+(?:\.\d+)?)$/);
       if (m) { const rad = m[2] === 'diameter' ? +m[3] / 2 : +m[3], v = m[1] === 'volume' ? 4 / 3 * PI * rad ** 3 : 4 * PI * rad * rad; return { value: String(r2(v)), note: (m[1] === 'volume' ? '⁴⁄₃πr³' : '4πr²') + ' with r = ' + rad }; }
       m = t.match(/^(?:the\s+)?volume\s+of\s+a\s+(cylinder|cone)\s+(?:with\s+)?(?:radius|r)\s*(\d+(?:\.\d+)?)\s*(?:and\s+|,\s*)?(?:height|h)\s*(\d+(?:\.\d+)?)$/);

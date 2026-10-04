@@ -698,5 +698,30 @@
     ],
     "sha256": "b0a73addf58945877a4c0324366d7f7dbf2366b3e4f73d25a01f3c96b141186b",
     "emit": false
+  },
+  {
+    "run": 29,
+    "at": "2026-10-04T18:55:04Z",
+    "family": "anomalous-event-timeline",
+    "draft": "drafts/fringe/anomalous-event-timeline-2.html",
+    "sources": [
+      {
+        "claim": "Of the UAP reports US officials could resolve, most were ordinary objects such as balloons, birds, drones, aircraft and satellites",
+        "source": "https://www.dni.gov/files/ODNI/documents/assessments/FY2023-Consolidated-Annual-Report-on-UAP-Oct2023.pdf",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Low-orbit satellites, including Starlink, are visible when the observer's sky is dark but the satellite is still sunlit, which concentrates sightings in the hours around dusk and dawn",
+        "source": "https://doi.org/10.1051/0004-6361/202037501",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Checking a personal sighting against the sun's position and a short list of common explanations resolves most of what a person logs",
+        "source": "drafts/fringe/anomalous-event-timeline-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "4857dc349d1c46334aad4a5bca74b4b848043bcce09db451d6c1b08263a0646f",
+    "emit": false
   }
 ]
