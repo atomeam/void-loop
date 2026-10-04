@@ -772,14 +772,6 @@
     "want": "skill:tictactoe"
   },
   {
-    "ask": "lets play othello",
-    "want": "skill:othello"
-  },
-  {
-    "ask": "play reversi",
-    "want": "skill:othello"
-  },
-  {
     "ask": "make a 3d cube",
     "want": "skill:make"
   },
