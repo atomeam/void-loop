@@ -1126,5 +1126,11 @@
   {"ask": "nfl team packers", "want": "skill:sport"},
   {"ask": "air quality in delhi", "want": "skill:air"},
   {"ask": "pollen count in chicago", "want": "skill:pollen"},
-  {"ask": "earthquakes near california", "want": "skill:quake"}
+  {"ask": "earthquakes near california", "want": "skill:quake"},
+  {"ask": "what is 72 inches in feet", "want": "calc"},
+  {"ask": "convert 50 mph to kph", "want": "calc"},
+  {"ask": "how many ml in a teaspoon", "want": "calc|answer"},
+  {"ask": "what is 0.75 as a fraction", "want": "calc"},
+  {"ask": "what is 3/4 plus 1/8", "want": "calc"},
+  {"ask": "what is 15 percent of 80 dollars", "want": "calc"}
 ]
