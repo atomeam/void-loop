@@ -16,7 +16,7 @@ New ideas land here in batches. A run may build any open row. Shipped rows stay,
 | shipped 3b6bbea | 2026-10-03 | spin the figure | figures-first, see the back |
 | shipped dbd08d3 | 2026-10-03 | days until new year | board later, date countdown (correction: row stayed "building" after this landed; outcome-card follow-up on helper/outcome-card-countdown) |
 | shipped ce74ceb | 2026-10-03 | read it aloud | plan item 4, voice (correction: row was stuck "open"; speechSynthesis read-aloud already shipped, listed in the self-page menu) |
-| building | 2026-10-03 | make my void light | board later, light look (checked: no light-theme preset exists; LOOK_DEFAULT is dark-only. genuinely open, not stale) |
+| shipped 6a04b90 | 2026-10-03 | make my void light | board later, light look (checked: no light-theme preset exists; LOOK_DEFAULT is dark-only. genuinely open, not stale) |
 | shipped d40bd25 | 2026-10-03 | what did you do today | plan item 8, ledger as a skill (correction: row was stuck "open"; wantsToday/showToday already shipped) |
 | shipped 4ee2383 | 2026-10-03 | dismiss this | figures-first, send it away (skill on main at 4ee2383) |
 | shipped 3b6bbea | 2026-10-03 | a figure that sits on the chair | figures-first, use what is already there (correction: row was stuck "open"; Motelet's whole personality is "it sits whenever it finds a chair", same commit as "spin the figure") |

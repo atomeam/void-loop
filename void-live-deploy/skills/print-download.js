@@ -16,11 +16,12 @@ export function downloadPrintOf(text) {
   return null;
 }
 
-/** Zip magic and no http URL. A slicer can open this without the network. */
+/** Zip magic, local file targets only. Schema ids may be http; mesh targets may not. */
 export function offlinePackage(bytes) {
-  if (!bytes || bytes.length < 4 || bytes[0] !== 0x50 || bytes[1] !== 0x4b) return { ok: false, offline: false, published: false };
+  if (!bytes || bytes.length < 4 || bytes[0] !== 0x50 || bytes[1] !== 0x4b) return { ok: false, offline: false, published: false, html: '' };
   const text = new TextDecoder().decode(bytes);
-  const offline = !/https?:\/\//i.test(text);
+  const targets = [...text.matchAll(/Target="([^"]+)"/g)].map((m) => m[1]);
+  const offline = targets.length > 0 && targets.every((t) => t.startsWith('/')) && text.includes('3D/3dmodel.model') && !/Target="https?:/i.test(text);
   return { ok: offline, offline, published: false, html: '' };
 }
 
@@ -59,7 +60,9 @@ export default {
   run,
   suite() {
     const empty = offlinePackage(stage3mf({}));
-    const ok = !!downloadPrintOf('download the print file') && downloadPrintOf('export a print file') === null && empty.ok === false && empty.published === false;
+    const chair = offlinePackage(stage3mf({ c: { kind: 'fig3d', model: 'chair' } }));
+    const ok = !!downloadPrintOf('download the print file') && downloadPrintOf('export a print file') === null
+      && empty.ok === false && empty.published === false && chair.ok === true && chair.offline === true;
     return { ok, got: ok ? 'offline, empty stays empty' : 'miss' };
   }
 };
