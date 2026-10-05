@@ -4212,20 +4212,39 @@ return { ok: true, detail: 'timer-reset' };
     const SKILLS_INDEX_URL = '/skills/index.json';
     let learnedSkills = [], skillsLoaded = false;
     async function loadLearnedSkills() {
+      let index = null;
       try {
         const res = await fetch(SKILLS_INDEX_URL);
-        if (!res.ok) return;
-        const index = await res.json();
-        // All skill modules load at once, not one after another: one round trip per skill in a row (55 and growing) kept
-        // asks that wait for the skills ("waking up": calc, loan) past 4 s on a slow link or busy machine. Match order stays the index order.
-        const mods = await Promise.all(index.map((name) => import('/skills/' + name + '.js').catch(() => null)));
-        for (const mod of mods) {
-          const skill = mod && mod.default;
-          if (skill && skill.name && skill.match && skill.run) learnedSkills.push(skill);
-          if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
-        }
-      } catch (_) {}
+        if (!res.ok) throw new Error('HTTP ' + res.status + ' fetching skills index');
+        const parsed = JSON.parse(await res.text());
+        if (!Array.isArray(parsed)) throw new Error('skills index root is ' + (parsed === null ? 'null' : typeof parsed) + ', not an Array');
+        const bad = parsed.findIndex((n) => typeof n !== 'string' || !n);
+        if (bad >= 0) throw new Error('skills index entry ' + bad + ' is not a skill name: ' + JSON.stringify(parsed[bad]));
+        index = parsed;
+      } catch (err) {
+        // A corrupt index used to land in the catch below and leave no trace: the loop never ran,
+        // learnedSkills stayed empty, and every ask quietly fell through to the model. Say so.
+        console.error('[Void] skills index unusable, keeping ' + learnedSkills.length + ' already loaded:', err && err.message);
+        if (typeof window !== 'undefined') window.__VOID_SKILLS_LOAD_ERROR__ = String((err && err.message) || err);
+        if (Object.values(things).some((t) => stageKinds[t.kind])) render();
+        return learnedSkills;
+      }
+      delete window.__VOID_SKILLS_LOAD_ERROR__;
+      // All skill modules load at once, not one after another: one round trip per skill in a row (55 and growing) kept
+      // asks that wait for the skills ("waking up": calc, loan) past 4 s on a slow link or busy machine. Match order stays the index order.
+      const mods = await Promise.all(index.map((name) => import('/skills/' + name + '.js').catch(() => null)));
+      const missing = [];
+      for (let i = 0; i < mods.length; i++) {
+        const skill = mods[i] && mods[i].default;
+        if (skill && skill.name && skill.match && skill.run) learnedSkills.push(skill);
+        else missing.push(index[i]);
+        if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
+      }
+      // An index entry with no file behind it, or a file without the {name,match,run} shape, is a
+      // silent hole: that ask just never gets answered by a skill.
+      if (missing.length) console.warn('[Void] ' + missing.length + ' skill(s) in the index did not load:', missing.join(', '));
       if (Object.values(things).some((t) => stageKinds[t.kind])) render(); // figures kept from last time come back
+      return learnedSkills;
     }
     const skillsReady = loadLearnedSkills().finally(() => { skillsLoaded = true; });
 
