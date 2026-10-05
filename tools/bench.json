@@ -1,2044 +1,1662 @@
 [
-  {
+{
     "ask": "weather in paris",
     "want": "skill:weather"
   },
-  {
+{
     "ask": "will it rain tomorrow in london",
     "want": "skill:weather"
   },
-  {
+{
     "ask": "time in tokyo",
     "want": "skill:worldtime"
   },
-  {
+{
     "ask": "what time is it in new york",
     "want": "skill:worldtime"
   },
-  {
+{
     "ask": "sunset in rome",
     "want": "skill:worldtime"
   },
-  {
-    "ask": "15% of 80",
-    "want": "calc"
-  },
-  {
-    "ask": "what is 12 times 7",
-    "want": "calc"
-  },
-  {
-    "ask": "sqrt of 144",
-    "want": "calc"
-  },
-  {
+{"ask": "15% of 80", "want": "calc", "says": "\\b12\\b"},
+{"ask": "what is 12 times 7", "want": "calc", "says": "\\b84\\b"},
+{"ask": "sqrt of 144", "want": "calc", "says": "\\b12\\b"},
+{
     "ask": "5 miles in km",
     "want": "calc"
   },
-  {
+{
     "ask": "100 usd in eur",
     "want": "calc"
   },
-  {
+{
     "ask": "how many cups in a liter",
     "want": "calc"
   },
-  {
+{
     "ask": "70 fahrenheit in celsius",
     "want": "calc"
   },
-  {
+{
     "ask": "how many days until christmas",
     "want": "calc|holiday"
   },
-  {
+{
     "ask": "what day is it today",
     "want": "today"
   },
-  {
+{
     "ask": "define serendipity",
     "want": "skill:define"
   },
-  {
+{
     "ask": "synonym for happy",
     "want": "skill:words"
   },
-  {
+{
     "ask": "how do you spell necessary",
     "want": "skill:words"
   },
-  {
+{
     "ask": "translate hello to spanish",
     "want": "skill:translate"
   },
-  {
+{
     "ask": "what is a black hole",
     "want": "article"
   },
-  {
+{
     "ask": "who is taylor swift",
     "want": "article"
   },
-  {
+{
     "ask": "capital of australia",
     "want": "skill:country"
   },
-  {
+{
     "ask": "population of japan",
     "want": "skill:country"
   },
-  {
+{
     "ask": "how tall is the eiffel tower",
     "want": "answer"
   },
-  {
+{
     "ask": "how old is the universe",
     "want": "answer"
   },
-  {
+{
     "ask": "distance from london to paris",
     "want": "skill:distance"
   },
-  {
+{
     "ask": "map of kyoto",
     "want": "skill:place"
   },
-  {
+{
     "ask": "directions to the louvre",
     "want": "skill:place"
   },
-  {
+{
     "ask": "set a timer for 10 minutes",
     "want": "timer"
   },
-  {
+{
     "ask": "make a list",
     "want": "list"
   },
-  {
+{
     "ask": "remind me to call mom",
     "want": "skill:calendar"
   },
-  {
+{
     "ask": "flip a coin",
     "want": "chance"
   },
-  {
+{
     "ask": "roll a dice",
     "want": "chance"
   },
-  {
+{
     "ask": "pick a random number between 1 and 100",
     "want": "chance"
   },
-  {
+{
     "ask": "tell me a joke",
     "want": "skill:joke"
   },
-  {
+{
     "ask": "what is the date today",
     "want": "today"
   },
-  {
+{
     "ask": "what year is it",
     "want": "today"
   },
-  {
-    "ask": "how many seconds in a day",
-    "want": "calc"
-  },
-  {
+{"ask": "how many seconds in a day", "want": "calc", "says": "86,?400"},
+{
     "ask": "what is pi",
     "want": "article|calc"
   },
-  {
+{
     "ask": "calculate a 20% tip on 45",
     "want": "skill:tip"
   },
-  {
-    "ask": "what is 2 to the power of 10",
-    "want": "calc"
-  },
-  {
-    "ask": "is 97 a prime number",
-    "want": "calc"
-  },
-  {
-    "ask": "convert 5 feet to cm",
-    "want": "calc"
-  },
-  {
+{"ask": "what is 2 to the power of 10", "want": "calc", "says": "1,?024"},
+{"ask": "is 97 a prime number", "want": "calc", "says": "\\byes\\b|97 is prime"},
+{"ask": "convert 5 feet to cm", "want": "calc", "says": "152\\.4"},
+{
     "ask": "what time is sunrise in sydney",
     "want": "skill:worldtime"
   },
-  {
+{
     "ask": "world clock",
     "want": "skill:worldtime"
   },
-  {
+{
     "ask": "what is the speed of light",
     "want": "article|answer"
   },
-  {
+{
     "ask": "who wrote hamlet",
     "want": "answer|article"
   },
-  {
+{
     "ask": "what is photosynthesis",
     "want": "article"
   },
-  {
+{
     "ask": "how to boil an egg",
     "want": "answer"
   },
-  {
+{
     "ask": "recipe for pancakes",
     "want": "skill:recipe"
   },
-  {
+{
     "ask": "bitcoin price",
     "want": "skill:crypto"
   },
-  {
+{
     "ask": "news today",
     "want": "skill:news"
   },
-  {
+{
     "ask": "what is the weather like",
     "want": "skill:weather"
   },
-  {
+{
     "ask": "what can you do",
     "want": "self"
   },
-  {
+{
     "ask": "make a 5 minute timer",
     "want": "timer"
   },
-  {
+{
     "ask": "open a notepad",
     "want": "notepad"
   },
-  {
+{
     "ask": "draw a circle",
     "want": "shape-circle"
   },
-  {
+{
     "ask": "hello",
     "want": "said"
   },
-  {
+{
     "ask": "when is thanksgiving",
     "want": "holiday"
   },
-  {
+{
     "ask": "when is easter this year",
     "want": "holiday"
   },
-  {
+{
     "ask": "how many days until halloween",
     "want": "calc|holiday"
   },
-  {
+{
     "ask": "when is mother's day",
     "want": "holiday"
   },
-  {
+{
     "ask": "how old is someone born in 1990",
     "want": "age"
   },
-  {
+{
     "ask": "how long until 5pm",
     "want": "calc|timeuntil"
   },
-  {
+{
     "ask": "generate a password",
     "want": "skill:util"
   },
-  {
+{
     "ask": "make a strong password with 20 characters",
     "want": "skill:util"
   },
-  {
+{
     "ask": "qr code for a-to-mind.com",
     "want": "skill:util"
   },
-  {
+{
     "ask": "what color is #ff8800",
     "want": "skill:util"
   },
-  {
+{
     "ask": "word count of the quick brown fox jumps",
     "want": "skill:util"
   },
-  {
+{
     "ask": "uppercase hello world",
     "want": "skill:util"
   },
-  {
+{
     "ask": "bmi for 180 cm and 75 kg",
     "want": "calc"
   },
-  {
+{
     "ask": "what is the moon phase tonight",
     "want": "skill:util"
   },
-  {
-    "ask": "how many mb in a gb",
-    "want": "calc"
-  },
-  {
-    "ask": "convert 2 hours to minutes",
-    "want": "calc"
-  },
-  {
-    "ask": "how many ounces in a pound",
-    "want": "calc"
-  },
-  {
+{"ask": "how many mb in a gb", "want": "calc", "says": "1,?0(00|24)"},
+{"ask": "convert 2 hours to minutes", "want": "calc", "says": "\\b120\\b"},
+{"ask": "how many ounces in a pound", "want": "calc", "says": "\\b16\\b"},
+{
     "ask": "temperature in tokyo",
     "want": "skill:weather"
   },
-  {
+{
     "ask": "sunrise tomorrow in london",
     "want": "skill:worldtime"
   },
-  {
+{
     "ask": "start a stopwatch",
     "want": "stopwatch|timer"
   },
-  {
-    "ask": "what's 7 factorial",
-    "want": "calc"
-  },
-  {
-    "ask": "round 3.14159 to 2 decimals",
-    "want": "calc"
-  },
-  {
-    "ask": "what is 3/4 as a percent",
-    "want": "calc"
-  },
-  {
-    "ask": "days between march 1 and april 15",
-    "want": "calc"
-  },
-  {
+{"ask": "what's 7 factorial", "want": "calc", "says": "5,?040"},
+{"ask": "round 3.14159 to 2 decimals", "want": "calc", "says": "3\\.14\\b"},
+{"ask": "what is 3/4 as a percent", "want": "calc", "says": "\\b75\\s*%"},
+{"ask": "days between march 1 and april 15", "want": "calc", "says": "\\b45\\b"},
+{
     "ask": "lorem ipsum",
     "want": "skill:util"
   },
-  {
+{
     "ask": "what is a 20% tip on 45",
     "want": "skill:tip"
   },
-  {
+{
     "ask": "split 120 between 4 people",
     "want": "skill:tip"
   },
-  {
-    "ask": "convert 30 celsius to fahrenheit",
-    "want": "calc"
-  },
-  {
+{"ask": "convert 30 celsius to fahrenheit", "want": "calc", "says": "\\b86\\b"},
+{
     "ask": "what day of the week is july 4 2027",
     "want": "calc|today"
   },
-  {
+{
     "ask": "capital of canada",
     "want": "skill:country"
   },
-  {
+{
     "ask": "how far is paris from berlin",
     "want": "skill:distance"
   },
-  {
-    "ask": "square root of 144",
-    "want": "calc"
-  },
-  {
+{"ask": "square root of 144", "want": "calc", "says": "\\b12\\b"},
+{
     "ask": "convert 5 km to miles",
     "want": "calc"
   },
-  {
+{
     "ask": "roll a die",
     "want": "chance"
   },
-  {
+{
     "ask": "random number between 1 and 100",
     "want": "chance"
   },
-  {
-    "ask": "2 to the power of 10",
-    "want": "calc"
-  },
-  {
+{"ask": "2 to the power of 10", "want": "calc", "says": "1,?024"},
+{
     "ask": "how many weeks in a year",
     "want": "calc"
   },
-  {
-    "ask": "what's 15% off 80",
-    "want": "calc"
-  },
-  {
+{"ask": "what's 15% off 80", "want": "calc", "says": "\\b68\\b"},
+{
     "ask": "how many calories in a banana",
     "want": "answer|article"
   },
-  {
+{
     "ask": "translate thank you to japanese",
     "want": "skill:translate"
   },
-  {
+{
     "ask": "what rhymes with orange",
     "want": "skill:words"
   },
-  {
+{
     "ask": "what is the weather like this weekend in chicago",
     "want": "skill:weather"
   },
-  {
+{
     "ask": "remind me to call mom at 6pm",
     "want": "skill:calendar"
   },
-  {
+{
     "ask": "make a shopping list",
     "want": "list"
   },
-  {
+{
     "ask": "generate a strong password",
     "want": "skill:util"
   },
-  {
+{
     "ask": "what is 8 ounces in grams",
     "want": "calc"
   },
-  {
-    "ask": "what is 1 mile in feet",
-    "want": "calc"
-  },
-  {
+{"ask": "what is 1 mile in feet", "want": "calc", "says": "5,?280"},
+{
     "ask": "how do i make guacamole",
     "want": "skill:recipe"
   },
-  {
+{
     "ask": "latest news",
     "want": "skill:news"
   },
-  {
+{
     "ask": "breaking news",
     "want": "skill:news"
   },
-  {
+{
     "ask": "map of tokyo",
     "want": "skill:place"
   },
-  {
+{
     "ask": "where is madagascar",
     "want": "skill:place|skill:country"
   },
-  {
+{
     "ask": "take a note",
     "want": "sticky|notepad"
   },
-  {
+{
     "ask": "add dentist appointment tomorrow at 3pm",
     "want": "skill:calendar"
   },
-  {
+{
     "ask": "what time is it in sydney",
     "want": "skill:worldtime"
   },
-  {
+{
     "ask": "50 euros to pounds",
     "want": "calc"
   },
-  {
+{
     "ask": "what is the opposite of brave",
     "want": "skill:words"
   },
-  {
+{
     "ask": "what is the currency of japan",
     "want": "skill:country"
   },
-  {
+{
     "ask": "how long is a marathon in miles",
     "want": "answer|article|calc"
   },
-  {
+{
     "ask": "tech news today",
     "want": "skill:news"
   },
-  {
+{
     "ask": "technology news",
     "want": "skill:news"
   },
-  {
+{
     "ask": "whats new in tech",
     "want": "skill:news"
   },
-  {
-    "ask": "what is 25 percent of 360",
-    "want": "calc"
-  },
-  {
+{"ask": "what is 25 percent of 360", "want": "calc", "says": "\\b90\\b"},
+{
     "ask": "how many liters in a gallon",
     "want": "calc"
   },
-  {
+{
     "ask": "weather tomorrow in berlin",
     "want": "skill:weather"
   },
-  {
+{
     "ask": "what time is it in dubai",
     "want": "skill:worldtime"
   },
-  {
+{
     "ask": "pick a number from 1 to 10",
     "want": "chance"
   },
-  {
+{
     "ask": "capital of brazil",
     "want": "skill:country"
   },
-  {
+{
     "ask": "define ephemeral",
     "want": "skill:define"
   },
-  {
+{
     "ask": "translate good morning to french",
     "want": "skill:translate"
   },
-  {
+{
     "ask": "chicken recipes",
     "want": "skill:recipe"
   },
-  {
+{
     "ask": "how far is new york from boston",
     "want": "skill:distance"
   },
-  {
+{
     "ask": "books by octavia butler",
     "want": "skill:book"
   },
-  {
+{
     "ask": "tv show severance",
     "want": "skill:show"
   },
-  {
+{
     "ask": "nba team celtics",
     "want": "skill:sport"
   },
-  {
+{
     "ask": "public holidays in japan",
     "want": "skill:holidays"
   },
-  {
-    "ask": "what is 7 times 8",
-    "want": "calc"
-  },
-  {
+{"ask": "what is 7 times 8", "want": "calc", "says": "\\b56\\b"},
+{
     "ask": "how many cups in a quart",
     "want": "calc"
   },
-  {
+{
     "ask": "convert 72 fahrenheit to celsius",
     "want": "calc"
   },
-  {
+{
     "ask": "who wrote pride and prejudice",
     "want": "skill:book|answer|article"
   },
-  {
+{
     "ask": "weather in tokyo this week",
     "want": "skill:weather"
   },
-  {
+{
     "ask": "what day is it",
     "want": "today"
   },
-  {
+{
     "ask": "roll two dice",
     "want": "chance"
   },
-  {
+{
     "ask": "define ubiquitous",
     "want": "skill:define"
   },
-  {
+{
     "ask": "synonyms for big",
     "want": "skill:words"
   },
-  {
+{
     "ask": "translate cat to spanish",
     "want": "skill:translate"
   },
-  {
+{
     "ask": "what is the population of canada",
     "want": "skill:country"
   },
-  {
+{
     "ask": "set a 5 minute timer",
     "want": "timer"
   },
-  {
+{
     "ask": "is 2028 a leap year",
     "want": "calc"
   },
-  {
+{
     "ask": "how many days in february 2028",
     "want": "calc"
   },
-  {
+{
     "ask": "convert 5 feet 10 inches to cm",
     "want": "calc"
   },
-  {
+{
     "ask": "what time will it be in 3 hours",
     "want": "calc|today|skill:worldtime"
   },
-  {
+{
     "ask": "18% tip on 64 dollars",
     "want": "skill:tip"
   },
-  {
-    "ask": "what is 12 squared",
-    "want": "calc"
-  },
-  {
+{"ask": "what is 12 squared", "want": "calc", "says": "\\b144\\b"},
+{
     "ask": "10 kg in pounds",
     "want": "calc"
   },
-  {
+{
     "ask": "how many weeks until christmas",
     "want": "holiday|calc"
   },
-  {
+{
     "ask": "find me work as a designer",
     "want": "skill:work"
   },
-  {
-    "ask": "what is the average of 4, 8 and 15",
-    "want": "calc"
-  },
-  {
-    "ask": "how many seconds in 3 hours",
-    "want": "calc"
-  },
-  {
+{"ask": "what is the average of 4, 8 and 15", "want": "calc", "says": "\\b9\\b"},
+{"ask": "how many seconds in 3 hours", "want": "calc", "says": "10,?800"},
+{
     "ask": "what is 15 minutes from now",
     "want": "calc|today"
   },
-  {
+{
     "ask": "convert 100 mph to kph",
     "want": "calc"
   },
-  {
-    "ask": "what is 2 plus 2 times 3",
-    "want": "calc"
-  },
-  {
+{"ask": "what is 2 plus 2 times 3", "want": "calc", "says": "\\b8\\b"},
+{
     "ask": "what was the date 30 days ago",
     "want": "calc|today"
   },
-  {
+{
     "ask": "which day was it 100 days ago",
     "want": "calc|today"
   },
-  {
+{
     "ask": "what is 1000 divided by 7",
     "want": "calc"
   },
-  {
+{
     "ask": "how many ounces in a cup",
     "want": "calc"
   },
-  {
+{
     "ask": "what year will it be in 25 years",
     "want": "calc"
   },
-  {
-    "ask": "what is 30% of 250",
-    "want": "calc"
-  },
-  {
-    "ask": "how many minutes in a day",
-    "want": "calc"
-  },
-  {
+{"ask": "what is 30% of 250", "want": "calc", "says": "\\b75\\b"},
+{"ask": "how many minutes in a day", "want": "calc", "says": "1,?440"},
+{
     "ask": "weather tomorrow",
     "want": "skill:weather"
   },
-  {
+{
     "ask": "what is the time in paris",
     "want": "skill:worldtime"
   },
-  {
+{
     "ask": "what is the capital of australia",
     "want": "skill:country"
   },
-  {
-    "ask": "what is 9 to the power of 3",
-    "want": "calc"
-  },
-  {
+{"ask": "what is 9 to the power of 3", "want": "calc", "says": "\\b729\\b"},
+{
     "ask": "how much is a 15% tip on 82.50",
     "want": "skill:tip"
   },
-  {
-    "ask": "is 91 prime",
-    "want": "calc"
-  },
-  {
+{"ask": "is 91 prime", "want": "calc", "says": "\\bno\\b|not prime"},
+{
     "ask": "convert 2 pints to cups",
     "want": "calc"
   },
-  {
-    "ask": "what is half of 365",
-    "want": "calc"
-  },
-  {
-    "ask": "double 48",
-    "want": "calc"
-  },
-  {
-    "ask": "what is 20 percent off 59.99",
-    "want": "calc"
-  },
-  {
+{"ask": "what is half of 365", "want": "calc", "says": "182\\.5"},
+{"ask": "double 48", "want": "calc", "says": "\\b96\\b"},
+{"ask": "what is 20 percent off 59.99", "want": "calc", "says": "47\\.99"},
+{
     "ask": "how many hours between 9am and 5pm",
     "want": "calc|skill:worldtime"
   },
-  {
-    "ask": "what is the remainder of 17 divided by 5",
-    "want": "calc"
-  },
-  {
-    "ask": "round 2.71828 to 3 decimal places",
-    "want": "calc"
-  },
-  {
-    "ask": "convert 1 mile to feet",
-    "want": "calc"
-  },
-  {
-    "ask": "what is 3 dozen",
-    "want": "calc"
-  },
-  {
-    "ask": "how many teaspoons in a tablespoon",
-    "want": "calc"
-  },
-  {
+{"ask": "what is the remainder of 17 divided by 5", "want": "calc", "says": "\\b2\\b"},
+{"ask": "round 2.71828 to 3 decimal places", "want": "calc", "says": "2\\.718\\b"},
+{"ask": "convert 1 mile to feet", "want": "calc", "says": "5,?280"},
+{"ask": "what is 3 dozen", "want": "calc", "says": "\\b36\\b"},
+{"ask": "how many teaspoons in a tablespoon", "want": "calc", "says": "\\b3\\b"},
+{
     "ask": "what is 1 million divided by 12",
     "want": "calc"
   },
-  {
+{
     "ask": "capital of japan",
     "want": "skill:country"
   },
-  {
+{
     "ask": "what is the capital of kenya",
     "want": "skill:country"
   },
-  {
+{
     "ask": "capital city of peru",
     "want": "skill:country"
   },
-  {
-    "ask": "what is 40 percent of 90",
-    "want": "calc"
-  },
-  {
-    "ask": "triple 25",
-    "want": "calc"
-  },
-  {
-    "ask": "quarter of 200",
-    "want": "calc"
-  },
-  {
-    "ask": "how many hours in 2 days",
-    "want": "calc"
-  },
-  {
-    "ask": "what is 6 dozen",
-    "want": "calc"
-  },
-  {
+{"ask": "what is 40 percent of 90", "want": "calc", "says": "\\b36\\b"},
+{"ask": "triple 25", "want": "calc", "says": "\\b75\\b"},
+{"ask": "quarter of 200", "want": "calc", "says": "\\b50\\b"},
+{"ask": "how many hours in 2 days", "want": "calc", "says": "\\b48\\b"},
+{"ask": "what is 6 dozen", "want": "calc", "says": "\\b72\\b"},
+{
     "ask": "play connect 4",
     "want": "skill:make"
   },
-  {
+{
     "ask": "lets play tic tac toe",
     "want": "skill:tictactoe"
   },
-  {
+{
     "ask": "lets play othello",
     "want": "skill:othello"
   },
-  {
+{
     "ask": "play reversi",
     "want": "skill:othello"
   },
-  {
+{
     "ask": "validate this diff",
     "want": "skill:local-inference"
   },
-  {
+{
     "ask": "check ledger drift",
     "want": "skill:local-inference"
   },
-  {
+{
     "ask": "run local inference on draft",
     "want": "skill:local-inference"
   },
-  {
+{
     "ask": "make a 3d cube",
     "want": "skill:make"
   },
-  {
+{
     "ask": "show me a gold 3d diamond",
     "want": "skill:make"
   },
-  {
+{
     "ask": "a red 3d planet",
     "want": "skill:make"
   },
-  {
+{
     "ask": "make me a connect four game",
     "want": "skill:make"
   },
-  {
+{
     "ask": "timing game",
     "want": "skill:make"
   },
-  {
+{
     "ask": "what did void get wrong",
     "want": "skill:make"
   },
-  {
+{
     "ask": "headline filter",
     "want": "skill:make"
   },
-  {
+{
     "ask": "idea vault",
     "want": "skill:make"
   },
-  {
+{
     "ask": "show void progress",
     "want": "skill:make"
   },
-  {
+{
     "ask": "hypothesis ledger",
     "want": "skill:make"
   },
-  {
+{
     "ask": "uap timeline",
     "want": "skill:make"
   },
-  {
+{
     "ask": "clear calender",
     "want": "skill:calendar"
   },
-  {
+{
     "ask": "delete all my events",
     "want": "skill:calendar"
   },
-  {
+{
     "ask": "show my calendar",
     "want": "skill:calendar"
   },
-  {
+{
     "ask": "air quality in Tokyo",
     "want": "skill:air"
   },
-  {
+{
     "ask": "AQI in London",
     "want": "skill:air"
   },
-  {
+{
     "ask": "is the air good in Paris",
     "want": "skill:air"
   },
-  {
+{
     "ask": "what's the air quality in New York",
     "want": "skill:air"
   },
-  {
+{
     "ask": "what time is it",
     "want": "timenow"
   },
-  {
+{
     "ask": "what's the time",
     "want": "timenow"
   },
-  {
+{
     "ask": "current time",
     "want": "timenow"
   },
-  {
+{
     "ask": "what time is it right now",
     "want": "timenow"
   },
-  {
+{
     "ask": "connect 4",
     "want": "skill:make"
   },
-  {
+{
     "ask": "make a blue 3d sphere",
     "want": "skill:make"
   },
-  {
+{
     "ask": "clear my calendar",
     "want": "skill:calendar"
   },
-  {
+{
     "ask": "what time is it in paris",
     "want": "skill:worldtime"
   },
-  {
+{
     "ask": "UV index in Miami",
     "want": "skill:uv"
   },
-  {
+{
     "ask": "how strong is the sun in LA",
     "want": "skill:uv"
   },
-  {
+{
     "ask": "should I wear sunscreen in Phoenix",
     "want": "skill:uv"
   },
-  {
+{
     "ask": "what's the UV in Tokyo",
     "want": "skill:uv"
   },
-  {
+{
     "ask": "monthly payment on a $250000 mortgage at 6.5% for 30 years",
     "want": "skill:loan"
   },
-  {
+{
     "ask": "car loan $20000 at 7% for 5 years",
     "want": "skill:loan"
   },
-  {
+{
     "ask": "loan payment $15000 at 5.9% over 36 months",
     "want": "skill:loan"
   },
-  {
+{
     "ask": "what's the payment on a $300k mortgage 6% 30 year",
     "want": "skill:loan"
   },
-  {
+{
     "ask": "pollen in Paris",
     "want": "skill:pollen"
   },
-  {
+{
     "ask": "allergy forecast in Berlin",
     "want": "skill:pollen"
   },
-  {
+{
     "ask": "how bad is the pollen in London",
     "want": "skill:pollen"
   },
-  {
+{
     "ask": "is pollen high in Madrid",
     "want": "skill:pollen"
   },
-  {
+{
     "ask": "gas cost for 320 miles at 28 mpg $3.59 a gallon",
     "want": "skill:fuel"
   },
-  {
+{
     "ask": "how much fuel for a 500 mile trip at 30 mpg gas is $3.40",
     "want": "skill:fuel"
   },
-  {
+{
     "ask": "trip fuel 280 miles 32 mpg $3.25/gal",
     "want": "skill:fuel"
   },
-  {
+{
     "ask": "fuel for 400 km at 7 L/100km 1.85 per liter",
     "want": "skill:fuel"
   },
-  {
+{
     "ask": "uv index in denver",
     "want": "skill:uv"
   },
-  {
+{
     "ask": "pollen count in rome",
     "want": "skill:pollen"
   },
-  {
+{
     "ask": "any earthquakes in japan",
     "want": "skill:quake"
   },
-  {
+{
     "ask": "mortgage payment on 400k at 7% for 30 years",
     "want": "skill:loan"
   },
-  {
+{
     "ask": "make me laugh",
     "want": "skill:joke"
   },
-  {
+{
     "ask": "bitcoin price today",
     "want": "skill:crypto"
   },
-  {
+{
     "ask": "when is the next holiday",
     "want": "skill:holidays"
   },
-  {
+{
     "ask": "remote jobs for designers",
     "want": "skill:work"
   },
-  {
+{
     "ask": "books like dune",
     "want": "skill:book"
   },
-  {
+{
     "ask": "gas for 250 miles at 25 mpg $3.50 a gallon",
     "want": "skill:fuel"
   },
-  {
+{
     "ask": "summon linemote-1",
     "want": "skill:part"
   },
-  {
+{
     "ask": "summon a printable actuator spec",
     "want": "skill:part"
   },
-  {
+{
     "ask": "a chair",
     "want": "skill:figure"
   },
-  {
+{
     "ask": "summon motelet",
     "want": "skill:figure"
   },
-  {
+{
     "ask": "split $85 three ways with 20% tip",
     "want": "skill:tip"
   },
-  {
+{
     "ask": "tip on $67.50 at 18%",
     "want": "skill:tip"
   },
-  {
+{
     "ask": "how much tip for a $52 bill at 15%",
     "want": "skill:tip"
   },
-  {"ask": "weather in paris", "want": "skill:weather"},
-  {"ask": "will it rain tomorrow in london", "want": "skill:weather"},
-  {"ask": "time in tokyo", "want": "skill:worldtime"},
-  {"ask": "what time is it in new york", "want": "skill:worldtime"},
-  {"ask": "sunset in rome", "want": "skill:worldtime"},
-  {"ask": "15% of 80", "want": "calc", "says": "\\b12\\b"},
-  {"ask": "what is 12 times 7", "want": "calc", "says": "\\b84\\b"},
-  {"ask": "sqrt of 144", "want": "calc", "says": "\\b12\\b"},
-  {"ask": "5 miles in km", "want": "calc"},
-  {"ask": "100 usd in eur", "want": "calc"},
-  {"ask": "how many cups in a liter", "want": "calc"},
-  {"ask": "70 fahrenheit in celsius", "want": "calc"},
-  {"ask": "how many days until christmas", "want": "calc|holiday"},
-  {"ask": "what day is it today", "want": "today"},
-  {"ask": "define serendipity", "want": "skill:define"},
-  {"ask": "synonym for happy", "want": "skill:words"},
-  {"ask": "how do you spell necessary", "want": "skill:words"},
-  {"ask": "translate hello to spanish", "want": "skill:translate"},
-  {"ask": "what is a black hole", "want": "article"},
-  {"ask": "who is taylor swift", "want": "article"},
-  {"ask": "capital of australia", "want": "skill:country"},
-  {"ask": "population of japan", "want": "skill:country"},
-  {"ask": "how tall is the eiffel tower", "want": "answer"},
-  {"ask": "how old is the universe", "want": "answer"},
-  {"ask": "distance from london to paris", "want": "skill:distance"},
-  {"ask": "map of kyoto", "want": "skill:place"},
-  {"ask": "directions to the louvre", "want": "skill:place"},
-  {"ask": "set a timer for 10 minutes", "want": "timer"},
-  {"ask": "make a list", "want": "list"},
-  {"ask": "remind me to call mom", "want": "skill:calendar"},
-  {"ask": "flip a coin", "want": "chance"},
-  {"ask": "roll a dice", "want": "chance"},
-  {"ask": "pick a random number between 1 and 100", "want": "chance"},
-  {"ask": "tell me a joke", "want": "skill:joke"},
-  {"ask": "what is the date today", "want": "today"},
-  {"ask": "what year is it", "want": "today"},
-  {"ask": "how many seconds in a day", "want": "calc", "says": "86,?400"},
-  {"ask": "what is pi", "want": "article|calc"},
-  {"ask": "calculate a 20% tip on 45", "want": "skill:tip"},
-  {"ask": "what is 2 to the power of 10", "want": "calc", "says": "1,?024"},
-  {"ask": "is 97 a prime number", "want": "calc", "says": "\\byes\\b|97 is prime"},
-  {"ask": "convert 5 feet to cm", "want": "calc", "says": "152\\.4"},
-  {"ask": "what time is sunrise in sydney", "want": "skill:worldtime"},
-  {"ask": "world clock", "want": "skill:worldtime"},
-  {"ask": "what is the speed of light", "want": "article|answer"},
-  {"ask": "who wrote hamlet", "want": "answer|article"},
-  {"ask": "what is photosynthesis", "want": "article"},
-  {"ask": "how to boil an egg", "want": "answer"},
-  {"ask": "recipe for pancakes", "want": "skill:recipe"},
-  {"ask": "bitcoin price", "want": "skill:crypto"},
-  {"ask": "news today", "want": "skill:news"},
-  {"ask": "what is the weather like", "want": "skill:weather"},
-  {"ask": "what can you do", "want": "self"},
-  {"ask": "make a 5 minute timer", "want": "timer"},
-  {"ask": "open a notepad", "want": "notepad"},
-  {"ask": "draw a circle", "want": "shape-circle"},
-  {"ask": "hello", "want": "said"},
-  {"ask": "when is thanksgiving", "want": "holiday"},
-  {"ask": "when is easter this year", "want": "holiday"},
-  {"ask": "how many days until halloween", "want": "calc|holiday"},
-  {"ask": "when is mother's day", "want": "holiday"},
-  {"ask": "how old is someone born in 1990", "want": "age"},
-  {"ask": "how long until 5pm", "want": "calc|timeuntil"},
-  {"ask": "generate a password", "want": "skill:util"},
-  {"ask": "make a strong password with 20 characters", "want": "skill:util"},
-  {"ask": "qr code for a-to-mind.com", "want": "skill:util"},
-  {"ask": "what color is #ff8800", "want": "skill:util"},
-  {"ask": "word count of the quick brown fox jumps", "want": "skill:util"},
-  {"ask": "uppercase hello world", "want": "skill:util"},
-  {"ask": "bmi for 180 cm and 75 kg", "want": "calc"},
-  {"ask": "what is the moon phase tonight", "want": "skill:util"},
-  {"ask": "how many mb in a gb", "want": "calc", "says": "1,?0(00|24)"},
-  {"ask": "convert 2 hours to minutes", "want": "calc", "says": "\\b120\\b"},
-  {"ask": "how many ounces in a pound", "want": "calc", "says": "\\b16\\b"},
-  {"ask": "temperature in tokyo", "want": "skill:weather"},
-  {"ask": "sunrise tomorrow in london", "want": "skill:worldtime"},
-  {"ask": "start a stopwatch", "want": "stopwatch|timer"},
-  {"ask": "what's 7 factorial", "want": "calc", "says": "5,?040"},
-  {"ask": "round 3.14159 to 2 decimals", "want": "calc", "says": "3\\.14\\b"},
-  {"ask": "what is 3/4 as a percent", "want": "calc", "says": "\\b75\\s*%"},
-  {"ask": "days between march 1 and april 15", "want": "calc", "says": "\\b45\\b"},
-  {"ask": "lorem ipsum", "want": "skill:util"},
-  {"ask": "what is a 20% tip on 45", "want": "skill:tip"},
-  {"ask": "split 120 between 4 people", "want": "skill:tip"},
-  {"ask": "convert 30 celsius to fahrenheit", "want": "calc", "says": "\\b86\\b"},
-  {"ask": "what day of the week is july 4 2027", "want": "calc|today"},
-  {"ask": "capital of canada", "want": "skill:country"},
-  {"ask": "how far is paris from berlin", "want": "skill:distance"},
-  {"ask": "square root of 144", "want": "calc", "says": "\\b12\\b"},
-  {"ask": "convert 5 km to miles", "want": "calc"},
-  {"ask": "roll a die", "want": "chance"},
-  {"ask": "random number between 1 and 100", "want": "chance"},
-  {"ask": "2 to the power of 10", "want": "calc", "says": "1,?024"},
-  {"ask": "how many weeks in a year", "want": "calc"},
-  {"ask": "what's 15% off 80", "want": "calc", "says": "\\b68\\b"},
-  {"ask": "how many calories in a banana", "want": "answer|article"},
-  {"ask": "translate thank you to japanese", "want": "skill:translate"},
-  {"ask": "what rhymes with orange", "want": "skill:words"},
-  {"ask": "what is the weather like this weekend in chicago", "want": "skill:weather"},
-  {"ask": "remind me to call mom at 6pm", "want": "skill:calendar"},
-  {"ask": "make a shopping list", "want": "list"},
-  {"ask": "generate a strong password", "want": "skill:util"},
-  {"ask": "what is 8 ounces in grams", "want": "calc"},
-  {"ask": "what is 1 mile in feet", "want": "calc", "says": "5,?280"},
-  {"ask": "how do i make guacamole", "want": "skill:recipe"},
-  {"ask": "latest news", "want": "skill:news"},
-  {"ask": "breaking news", "want": "skill:news"},
-  {"ask": "map of tokyo", "want": "skill:place"},
-  {"ask": "where is madagascar", "want": "skill:place|skill:country"},
-  {"ask": "take a note", "want": "sticky|notepad"},
-  {"ask": "add dentist appointment tomorrow at 3pm", "want": "skill:calendar"},
-  {"ask": "what time is it in sydney", "want": "skill:worldtime"},
-  {"ask": "50 euros to pounds", "want": "calc"},
-  {"ask": "what is the opposite of brave", "want": "skill:words"},
-  {"ask": "what is the currency of japan", "want": "skill:country"},
-  {"ask": "how long is a marathon in miles", "want": "answer|article|calc"},
-  {"ask": "tech news today", "want": "skill:news"},
-  {"ask": "technology news", "want": "skill:news"},
-  {"ask": "whats new in tech", "want": "skill:news"},
-  {"ask": "what is 25 percent of 360", "want": "calc", "says": "\\b90\\b"},
-  {"ask": "how many liters in a gallon", "want": "calc"},
-  {"ask": "weather tomorrow in berlin", "want": "skill:weather"},
-  {"ask": "what time is it in dubai", "want": "skill:worldtime"},
-  {"ask": "pick a number from 1 to 10", "want": "chance"},
-  {"ask": "capital of brazil", "want": "skill:country"},
-  {"ask": "define ephemeral", "want": "skill:define"},
-  {"ask": "translate good morning to french", "want": "skill:translate"},
-  {"ask": "chicken recipes", "want": "skill:recipe"},
-  {"ask": "how far is new york from boston", "want": "skill:distance"},
-  {"ask": "books by octavia butler", "want": "skill:book"},
-  {"ask": "tv show severance", "want": "skill:show"},
-  {"ask": "nba team celtics", "want": "skill:sport"},
-  {"ask": "public holidays in japan", "want": "skill:holidays"},
-  {"ask": "what is 7 times 8", "want": "calc", "says": "\\b56\\b"},
-  {"ask": "how many cups in a quart", "want": "calc"},
-  {"ask": "convert 72 fahrenheit to celsius", "want": "calc"},
-  {"ask": "who wrote pride and prejudice", "want": "skill:book|answer|article"},
-  {"ask": "weather in tokyo this week", "want": "skill:weather"},
-  {"ask": "what day is it", "want": "today"},
-  {"ask": "roll two dice", "want": "chance"},
-  {"ask": "define ubiquitous", "want": "skill:define"},
-  {"ask": "synonyms for big", "want": "skill:words"},
-  {"ask": "translate cat to spanish", "want": "skill:translate"},
-  {"ask": "what is the population of canada", "want": "skill:country"},
-  {"ask": "set a 5 minute timer", "want": "timer"},
-  {"ask": "is 2028 a leap year", "want": "calc"},
-  {"ask": "how many days in february 2028", "want": "calc"},
-  {"ask": "convert 5 feet 10 inches to cm", "want": "calc"},
-  {"ask": "what time will it be in 3 hours", "want": "calc|today|skill:worldtime"},
-  {"ask": "18% tip on 64 dollars", "want": "skill:tip"},
-  {"ask": "what is 12 squared", "want": "calc", "says": "\\b144\\b"},
-  {"ask": "10 kg in pounds", "want": "calc"},
-  {"ask": "how many weeks until christmas", "want": "holiday|calc"},
-  {"ask": "find me work as a designer", "want": "skill:work"},
-  {"ask": "what is the average of 4, 8 and 15", "want": "calc", "says": "\\b9\\b"},
-  {"ask": "how many seconds in 3 hours", "want": "calc", "says": "10,?800"},
-  {"ask": "what is 15 minutes from now", "want": "calc|today"},
-  {"ask": "convert 100 mph to kph", "want": "calc"},
-  {"ask": "what is 2 plus 2 times 3", "want": "calc", "says": "\\b8\\b"},
-  {"ask": "what was the date 30 days ago", "want": "calc|today"},
-  {"ask": "which day was it 100 days ago", "want": "calc|today"},
-  {"ask": "what is 1000 divided by 7", "want": "calc"},
-  {"ask": "how many ounces in a cup", "want": "calc"},
-  {"ask": "what year will it be in 25 years", "want": "calc"},
-  {"ask": "what is 30% of 250", "want": "calc", "says": "\\b75\\b"},
-  {"ask": "how many minutes in a day", "want": "calc", "says": "1,?440"},
-  {"ask": "weather tomorrow", "want": "skill:weather"},
-  {"ask": "what is the time in paris", "want": "skill:worldtime"},
-  {"ask": "what is the capital of australia", "want": "skill:country"},
-  {"ask": "what is 9 to the power of 3", "want": "calc", "says": "\\b729\\b"},
-  {"ask": "how much is a 15% tip on 82.50", "want": "skill:tip"},
-  {"ask": "is 91 prime", "want": "calc", "says": "\\bno\\b|not prime"},
-  {"ask": "convert 2 pints to cups", "want": "calc"},
-  {"ask": "what is half of 365", "want": "calc", "says": "182\\.5"},
-  {"ask": "double 48", "want": "calc", "says": "\\b96\\b"},
-  {"ask": "what is 20 percent off 59.99", "want": "calc", "says": "47\\.99"},
-  {"ask": "how many hours between 9am and 5pm", "want": "calc|skill:worldtime"},
-  {"ask": "what is the remainder of 17 divided by 5", "want": "calc", "says": "\\b2\\b"},
-  {"ask": "round 2.71828 to 3 decimal places", "want": "calc", "says": "2\\.718\\b"},
-  {"ask": "convert 1 mile to feet", "want": "calc", "says": "5,?280"},
-  {"ask": "what is 3 dozen", "want": "calc", "says": "\\b36\\b"},
-  {"ask": "how many teaspoons in a tablespoon", "want": "calc", "says": "\\b3\\b"},
-  {"ask": "what is 1 million divided by 12", "want": "calc"},
-  {"ask": "capital of japan", "want": "skill:country"},
-  {"ask": "what is the capital of kenya", "want": "skill:country"},
-  {"ask": "capital city of peru", "want": "skill:country"},
-  {"ask": "what is 40 percent of 90", "want": "calc", "says": "\\b36\\b"},
-  {"ask": "triple 25", "want": "calc", "says": "\\b75\\b"},
-  {"ask": "quarter of 200", "want": "calc", "says": "\\b50\\b"},
-  {"ask": "how many hours in 2 days", "want": "calc", "says": "\\b48\\b"},
-  {"ask": "what is 6 dozen", "want": "calc", "says": "\\b72\\b"},
-  {"ask": "play connect 4", "want": "skill:make"},
-  {"ask": "lets play tic tac toe", "want": "skill:tictactoe"},
-  {"ask": "make a 3d cube", "want": "skill:make"},
-  {"ask": "show me a gold 3d diamond", "want": "skill:make"},
-  {"ask": "a red 3d planet", "want": "skill:make"},
-  {"ask": "make me a connect four game", "want": "skill:make"},
-  {"ask": "timing game", "want": "skill:make"},
-  {"ask": "what did void get wrong", "want": "skill:make"},
-  {"ask": "headline filter", "want": "skill:make"},
-  {"ask": "idea vault", "want": "skill:make"},
-  {"ask": "show void progress", "want": "skill:make"},
-  {"ask": "hypothesis ledger", "want": "skill:make"},
-  {"ask": "uap timeline", "want": "skill:make"},
-  {"ask": "clear calender", "want": "skill:calendar"},
-  {"ask": "delete all my events", "want": "skill:calendar"},
-  {"ask": "show my calendar", "want": "skill:calendar"},
-  {"ask": "air quality in Tokyo", "want": "skill:air"},
-  {"ask": "AQI in London", "want": "skill:air"},
-  {"ask": "is the air good in Paris", "want": "skill:air"},
-  {"ask": "what's the air quality in New York", "want": "skill:air"},
-  {"ask": "what time is it", "want": "timenow"},
-  {"ask": "what's the time", "want": "timenow"},
-  {"ask": "current time", "want": "timenow"},
-  {"ask": "what time is it right now", "want": "timenow"},
-  {"ask": "connect 4", "want": "skill:make"},
-  {"ask": "make a blue 3d sphere", "want": "skill:make"},
-  {"ask": "clear my calendar", "want": "skill:calendar"},
-  {"ask": "what time is it in paris", "want": "skill:worldtime"},
-  {"ask": "UV index in Miami", "want": "skill:uv"},
-  {"ask": "how strong is the sun in LA", "want": "skill:uv"},
-  {"ask": "should I wear sunscreen in Phoenix", "want": "skill:uv"},
-  {"ask": "what's the UV in Tokyo", "want": "skill:uv"},
-  {"ask": "monthly payment on a $250000 mortgage at 6.5% for 30 years", "want": "skill:loan"},
-  {"ask": "car loan $20000 at 7% for 5 years", "want": "skill:loan"},
-  {"ask": "loan payment $15000 at 5.9% over 36 months", "want": "skill:loan"},
-  {"ask": "what's the payment on a $300k mortgage 6% 30 year", "want": "skill:loan"},
-  {"ask": "pollen in Paris", "want": "skill:pollen"},
-  {"ask": "allergy forecast in Berlin", "want": "skill:pollen"},
-  {"ask": "how bad is the pollen in London", "want": "skill:pollen"},
-  {"ask": "is pollen high in Madrid", "want": "skill:pollen"},
-  {"ask": "gas cost for 320 miles at 28 mpg $3.59 a gallon", "want": "skill:fuel"},
-  {"ask": "how much fuel for a 500 mile trip at 30 mpg gas is $3.40", "want": "skill:fuel"},
-  {"ask": "trip fuel 280 miles 32 mpg $3.25/gal", "want": "skill:fuel"},
-  {"ask": "fuel for 400 km at 7 L/100km 1.85 per liter", "want": "skill:fuel"},
-  {"ask": "uv index in denver", "want": "skill:uv"},
-  {"ask": "pollen count in rome", "want": "skill:pollen"},
-  {"ask": "any earthquakes in japan", "want": "skill:quake"},
-  {"ask": "mortgage payment on 400k at 7% for 30 years", "want": "skill:loan"},
-  {"ask": "make me laugh", "want": "skill:joke"},
-  {"ask": "bitcoin price today", "want": "skill:crypto"},
-  {"ask": "when is the next holiday", "want": "skill:holidays"},
-  {"ask": "remote jobs for designers", "want": "skill:work"},
-  {"ask": "books like dune", "want": "skill:book"},
-  {"ask": "gas for 250 miles at 25 mpg $3.50 a gallon", "want": "skill:fuel"},
-  {"ask": "summon linemote-1", "want": "skill:part"},
-  {"ask": "summon a printable actuator spec", "want": "skill:part"},
-  {"ask": "a chair", "want": "skill:figure"},
-  {"ask": "summon motelet", "want": "skill:figure"},
-  {"ask": "split $85 three ways with 20% tip", "want": "skill:tip"},
-  {"ask": "tip on $67.50 at 18%", "want": "skill:tip"},
-  {"ask": "how much tip for a $52 bill at 15%", "want": "skill:tip"},
-  {"ask": "what time is it in tokyo right now", "want": "skill:worldtime"},
-  {"ask": "weather tomorrow in chicago", "want": "skill:weather"},
-  {"ask": "how far is boston from new york", "want": "skill:distance"},
-  {"ask": "upcoming holidays", "want": "skill:holidays"},
-  {"ask": "recommend books like the hobbit", "want": "skill:book"},
-  {"ask": "ethereum price", "want": "skill:crypto"},
-  {"ask": "what is 15% of 80", "want": "calc", "says": "\\b12\\b"},
-  {"ask": "18% tip on $92", "want": "skill:tip"},
-  {"ask": "air quality in denver", "want": "skill:air"},
-  {"ask": "sunscreen needed in miami today", "want": "skill:uv"},
-  {"ask": "recent earthquakes near los angeles", "want": "skill:quake"},
-  {"ask": "car loan $25000 at 6% for 60 months", "want": "skill:loan"},
-  {"ask": "what day is christmas this year", "want": "holiday"},
-  {"ask": "convert 5 miles to km", "want": "calc"},
-  {"ask": "pollen forecast for london", "want": "skill:pollen"},
-  {"ask": "uv index today in sydney", "want": "skill:uv"},
-  {"ask": "mortgage on 350k at 6.25% for 30 years", "want": "skill:loan"},
-  {"ask": "fuel cost 120 miles at 30 mpg $3.80 a gallon", "want": "skill:fuel"},
-  {"ask": "public holidays in germany", "want": "skill:holidays"},
-  {"ask": "what time is it in berlin", "want": "skill:worldtime"},
-  {"ask": "what are you", "want": "self|speaks|what"},
-  {"ask": "weather in seattle", "want": "skill:weather"},
-  {"ask": "tip 20% on $45", "want": "skill:tip"},
-  {"ask": "pollen in paris tomorrow", "want": "skill:pollen"},
-  {"ask": "what is the uv index in austin", "want": "skill:uv"},
-  {"ask": "earthquakes today", "want": "skill:quake"},
-  {"ask": "split $120 four ways with 18% tip", "want": "skill:tip"},
-  {"ask": "how much gas for 300 miles at 25 mpg $3.20 a gallon", "want": "skill:fuel"},
-  {"ask": "air quality in los angeles", "want": "skill:air"},
-  {"ask": "days until july 4", "want": "skill:countdown"},
-  {"ask": "nba team lakers", "want": "skill:sport"},
-  {"ask": "what stadium do the packers play in", "want": "skill:sport"},
-  {"ask": "reply in spanish: what time is it in madrid", "want": "skill:spanish"},
-  {"ask": "what is 15% of 240", "want": "calc", "says": "\\b36\\b"},
-  {"ask": "how far is chicago from denver", "want": "skill:distance"},
-  {"ask": "price of ethereum", "want": "skill:crypto"},
-  {"ask": "countdown to christmas", "want": "skill:countdown"},
-  {"ask": "how many sleeps until christmas", "want": "skill:countdown"},
-  {"ask": "what is 2 to the 10th power", "want": "calc", "says": "1,?024"},
-  {"ask": "pollen count in atlanta", "want": "skill:pollen"},
-  {"ask": "another word for tired", "want": "skill:words"},
-  {"ask": "what rhymes with light", "want": "skill:words"},
-  {"ask": "what does ubiquitous mean", "want": "skill:define"},
-  {"ask": "make me a strong password", "want": "skill:util"},
-  {"ask": "what phase is the moon", "want": "skill:util"},
-  {"ask": "how do you say thank you in japanese", "want": "skill:translate"},
-  {"ask": "countdown to halloween", "want": "skill:countdown"},
-  {"ask": "what is 3 to the 4th power", "want": "calc", "says": "\\b81\\b"},
-  {"ask": "how many days left in the year", "want": "calc|today"},
-  {"ask": "what is 7 cubed", "want": "calc", "says": "\\b343\\b"},
-  {"ask": "countdown to new years eve", "want": "skill:countdown"},
-  {"ask": "what is 20% off $85", "want": "calc", "says": "\\b68\\b"},
-  {"ask": "what day of the week was july 4 1976", "want": "calc|today"},
-  {"ask": "what is the square root of 225", "want": "calc", "says": "\\b15\\b"},
-  {"ask": "72 fahrenheit in celsius", "want": "calc"},
-  {"ask": "how many days until thanksgiving", "want": "calc|holiday|skill:holidays"},
-  {"ask": "weather tomorrow in boston", "want": "skill:weather"},
-  {"ask": "time in london", "want": "skill:worldtime"},
-  {"ask": "pick a number between 1 and 50", "want": "chance"},
-  {"ask": "how do you spell definitely", "want": "skill:words"},
-  {"ask": "what is the sqrt of 81", "want": "calc", "says": "\\b9\\b"},
-  {"ask": "whats 15 percent of 60", "want": "calc", "says": "\\b9\\b"},
-  {"ask": "how many grams in a pound", "want": "calc|answer"},
-  {"ask": "days until my birthday on march 3", "want": "skill:countdown|calc"},
-  {"ask": "whats the weather like", "want": "skill:weather"},
-  {"ask": "is it going to rain today", "want": "skill:weather"},
-  {"ask": "synonym for big", "want": "skill:words"},
-  {"ask": "tip on $64 at 20%", "want": "skill:tip"},
-  {"ask": "remind me to stretch in 20 minutes", "want": "timer|skill:remind"},
-  {"ask": "what is 1/3 as a decimal", "want": "calc", "says": "0\\.333"},
-  {"ask": "convert 30 cm to inches", "want": "calc"},
-  {"ask": "play othello", "want": "skill:othello"},
-  {"ask": "lets play reversi", "want": "skill:othello"},
-  {"ask": "validate this diff", "want": "skill:local-inference"},
-  {"ask": "check ledger drift", "want": "skill:local-inference"},
-  {"ask": "run local inference on draft", "want": "skill:local-inference"},
-  {"ask": "how many tablespoons in a cup", "want": "calc|answer"},
-  {"ask": "convert 100 usd to euros", "want": "calc|answer|skill:crypto"},
-  {"ask": "days until halloween", "want": "calc|holiday|skill:holidays|skill:countdown"},
-  {"ask": "set a timer for 90 seconds", "want": "timer"},
-  {"ask": "what is 5 factorial", "want": "calc", "says": "\\b120\\b"},
-  {"ask": "what is 40 percent of 250", "want": "calc", "says": "\\b100\\b"},
-  {"ask": "how many minutes in a week", "want": "calc", "says": "10,?080"},
-  {"ask": "what is 6!", "want": "calc", "says": "\\b720\\b"},
-  {"ask": "average of 4 8 15 16 23 42", "want": "calc", "says": "\\b18\\b"},
-  {"ask": "what is the median of 3 9 4 7", "want": "calc", "says": "5\\.5"},
-  {"ask": "what is 15% tip on $82", "want": "skill:tip|calc"},
-  {"ask": "what is 9 mod 4", "want": "calc", "says": "\\b1\\b"},
-  {"ask": "what is the cube root of 27", "want": "calc", "says": "\\b3\\b"},
-  {"ask": "what is the weather in paris", "want": "skill:weather"},
-  {"ask": "define gregarious", "want": "skill:define"},
-  {"ask": "what rhymes with cat", "want": "skill:words"},
-  {"ask": "translate goodbye to french", "want": "skill:translate"},
-  {"ask": "how far is la from sf", "want": "skill:distance"},
-  {"ask": "what is the population of japan", "want": "skill:country|answer"},
-  {"ask": "mortgage payment on 300000 at 6.5% for 30 years", "want": "skill:loan"},
-  {"ask": "what is 3 plus 4 times 2", "want": "calc", "says": "\\b11\\b"},
-  {"ask": "how many feet in a mile", "want": "calc|answer"},
-  {"ask": "convert 1 gallon to liters", "want": "calc"},
-  {"ask": "what is 2 to the power of 16", "want": "calc", "says": "65,?536"},
-  {"ask": "mean of 10, 20, 30", "want": "calc", "says": "\\b20\\b"},
-  {"ask": "days until valentines day", "want": "calc|holiday|skill:holidays|skill:countdown"},
-  {"ask": "countdown to july 4th", "want": "skill:countdown"},
-  {"ask": "play reversi", "want": "skill:othello"},
-  {"ask": "what is the plural of cactus", "want": "skill:words|skill:define|answer"},
-  {"ask": "how do you spell restaurant", "want": "skill:words"},
-  {"ask": "antonym of generous", "want": "skill:words"},
-  {"ask": "word count of the quick brown fox", "want": "skill:util"},
-  {"ask": "what color is #00ff00", "want": "skill:util"},
-  {"ask": "qr code for example.com", "want": "skill:util"},
-  {"ask": "reverse the word hello", "want": "skill:util|calc|answer"},
-  {"ask": "roll a d20", "want": "chance"},
-  {"ask": "what is 30 minutes from now", "want": "calc|timenow|today|answer"},
-  {"ask": "what day is it tomorrow", "want": "today|calc"},
-  {"ask": "what is the date in 10 days", "want": "calc|today"},
-  {"ask": "how many hours until midnight", "want": "calc|timeuntil"},
-  {"ask": "what week of the year is it", "want": "today|calc"},
-  {"ask": "recipe for banana bread", "want": "skill:recipe"},
-  {"ask": "news about spacex", "want": "skill:news"},
-  {"ask": "nfl team packers", "want": "skill:sport"},
-  {"ask": "air quality in delhi", "want": "skill:air"},
-  {"ask": "pollen count in chicago", "want": "skill:pollen"},
-  {"ask": "earthquakes near california", "want": "skill:quake"},
-  {"ask": "what is 72 inches in feet", "want": "calc", "says": "\\b6\\b"},
-  {"ask": "convert 50 mph to kph", "want": "calc"},
-  {"ask": "how many ml in a teaspoon", "want": "calc|answer"},
-  {"ask": "what is 0.75 as a fraction", "want": "calc", "says": "3/4"},
-  {"ask": "what is 3/4 plus 1/8", "want": "calc"},
-  {"ask": "what is 15 percent of 80 dollars", "want": "calc", "says": "\\b12\\b"},
-  {"ask": "time difference between london and new york", "want": "skill:worldtime|calc|answer"},
-  {"ask": "what is the time zone of denver", "want": "skill:worldtime|answer"},
-  {"ask": "weather in london this weekend", "want": "skill:weather"},
-  {"ask": "will it snow in denver", "want": "skill:weather"},
-  {"ask": "how hot is it in phoenix", "want": "skill:weather"},
-  {"ask": "how do i make pancakes", "want": "skill:recipe"},
-  {"ask": "chicken curry recipe", "want": "skill:recipe"},
-  {"ask": "a book by stephen king", "want": "skill:book"},
-  {"ask": "tell me a dad joke", "want": "skill:joke"},
-  {"ask": "knock knock joke", "want": "skill:joke"},
-  {"ask": "what is the capital of brazil", "want": "skill:country|answer"},
-  {"ask": "what currency does japan use", "want": "skill:country|answer"},
-  {"ask": "what language do they speak in brazil", "want": "skill:country|answer"},
-  {"ask": "population of germany", "want": "skill:country|answer"},
-  {"ask": "distance from tokyo to osaka", "want": "skill:distance"},
-  {"ask": "how far is the moon", "want": "answer|article|calc"},
-  {"ask": "make a todo list", "want": "list"},
-  {"ask": "add milk to my shopping list", "want": "list"},
-  {"ask": "show me a clock", "want": "clock|timenow"},
-  {"ask": "open the calculator", "want": "calc"},
-  {"ask": "what is 18 c in f", "want": "calc"},
-  {"ask": "100 f to c", "want": "calc"},
-  {"ask": "how many seconds in an hour", "want": "calc"},
-  {"ask": "what is 1 billion divided by 365", "want": "calc"},
-  {"ask": "what is 8 percent tax on 49.99", "want": "calc", "says": "53\\.99"},
-  {"ask": "what's 25 times 4", "want": "calc", "says": "\\b100\\b"},
-  {"ask": "divide 144 by 12", "want": "calc", "says": "\\b12\\b"},
-  {"ask": "subtract 45 from 100", "want": "calc", "says": "\\b55\\b"},
-  {"ask": "what is 20 percent off 60", "want": "calc", "says": "\\b48\\b"},
-  {"ask": "how much is a 15% tip on 60", "want": "skill:tip|calc"},
-  {"ask": "is 2027 a leap year", "want": "calc|answer"},
-  {"ask": "how many days in february", "want": "calc|answer"},
-  {"ask": "how old am i if i was born in 1985", "want": "calc|age"},
-  {"ask": "what is 2 + 2", "want": "calc", "says": "\\b4\\b"},
-  {"ask": "square root of 2", "want": "calc"},
-  {"ask": "what is pi to 5 digits", "want": "calc|answer", "says": "3\\.14159"},
-  {"ask": "convert 10 km to miles", "want": "calc"},
-  {"ask": "convert 5 lbs to kg", "want": "calc"},
-  {"ask": "how many oz in a pound", "want": "calc|answer"},
-  {"ask": "what's 3 hours in seconds", "want": "calc"},
-  {"ask": "timer 25 minutes", "want": "timer"},
-  {"ask": "wake me in 10 minutes", "want": "timer"},
-  {"ask": "remind me in an hour to check the oven", "want": "timer|skill:remind"},
-  {"ask": "countdown to my birthday on june 9", "want": "skill:countdown"},
-  {"ask": "what's the weather", "want": "skill:weather"},
-  {"ask": "forecast for seattle", "want": "skill:weather"},
-  {"ask": "is it raining in london", "want": "skill:weather"},
-  {"ask": "sunrise in tokyo", "want": "skill:worldtime"},
-  {"ask": "what time is it in la", "want": "skill:worldtime"},
-  {"ask": "convert 9am est to pst", "want": "skill:worldtime|calc"},
-  {"ask": "meaning of serendipity", "want": "skill:define"},
-  {"ask": "synonyms for fast", "want": "skill:words"},
-  {"ask": "translate thank you to german", "want": "skill:translate"},
-  {"ask": "how do you say hello in italian", "want": "skill:translate"},
-  {"ask": "flip a coin please", "want": "chance"},
-  {"ask": "random number 1 to 10", "want": "chance"},
-  {"ask": "roll 3 dice", "want": "chance"},
-  {"ask": "lorem ipsum 3 paragraphs", "want": "skill:util|answer"},
-  {"ask": "what color is rgb 255 0 0", "want": "skill:util"},
-  {"ask": "play tic tac toe", "want": "skill:tictactoe"},
-  {"ask": "play connect four", "want": "skill:make"},
-  {"ask": "what's 18% of 250", "want": "calc", "says": "\\b45\\b"},
-  {"ask": "how much is 3 times 17", "want": "calc", "says": "\\b51\\b"},
-  {"ask": "what is 1000 minus 357", "want": "calc", "says": "\\b643\\b"},
-  {"ask": "what is 64 divided by 8", "want": "calc", "says": "\\b8\\b"},
-  {"ask": "what is 5 squared plus 12", "want": "calc", "says": "\\b37\\b"},
-  {"ask": "what is 45 minutes in hours", "want": "calc", "says": "0\\.75"},
-  {"ask": "how many inches in a foot", "want": "calc|answer", "says": "\\b12\\b"},
-  {"ask": "how many feet in a yard", "want": "calc|answer", "says": "\\b3\\b"},
-  {"ask": "convert 3 km to meters", "want": "calc", "says": "3,?000"},
-  {"ask": "how many grams in a kilogram", "want": "calc|answer", "says": "1,?000"},
-  {"ask": "convert 98.6 f to c", "want": "calc", "says": "\\b37\\b"},
-  {"ask": "what is 10% of 1500", "want": "calc", "says": "\\b150\\b"},
-  {"ask": "tip 20% on 85 dollars", "want": "skill:tip|calc", "says": "\\b17\\b"},
-  {"ask": "split 90 dollars 3 ways", "want": "skill:tip|calc", "says": "\\b30\\b"},
-  {"ask": "what is 100 factorial", "want": "calc"},
-  {"ask": "is 101 prime", "want": "calc", "says": "\\byes\\b|is prime"},
-  {"ask": "what's the square of 13", "want": "calc", "says": "\\b169\\b"},
-  {"ask": "0.2 as a fraction", "want": "calc", "says": "1/5"},
-  {"ask": "days until thanksgiving", "want": "calc|holiday|skill:holidays|skill:countdown"},
-  {"ask": "how many days until summer", "want": "calc|holiday|skill:holidays|skill:countdown|answer"},
-  {"ask": "when is easter", "want": "holiday|skill:holidays"},
-  {"ask": "when is mothers day", "want": "holiday|skill:holidays"},
-  {"ask": "set a timer for half an hour", "want": "timer"},
-  {"ask": "remind me in 45 minutes to call back", "want": "timer|skill:remind"},
-  {"ask": "what time is it in paris right now", "want": "skill:worldtime"},
-  {"ask": "what's the weather in miami tomorrow", "want": "skill:weather"},
-  {"ask": "define ubiquity", "want": "skill:define"},
-  {"ask": "what does yeet mean", "want": "skill:define|answer"},
-  {"ask": "synonyms of big", "want": "skill:words"},
-  {"ask": "translate where is the bathroom to spanish", "want": "skill:translate"},
-  {"ask": "how do you say cheers in german", "want": "skill:translate"},
-  {"ask": "roll a d6", "want": "chance"},
-  {"ask": "coin flip", "want": "chance"},
-  {"ask": "pick a number from 1 to 100", "want": "chance"},
-  {"ask": "make a qr code for my wifi", "want": "skill:util|answer"},
-  {"ask": "what color is navy", "want": "skill:util"},
-  {"ask": "word count of hello there friend", "want": "skill:util", "says": "\\b3 words"},
-  {"ask": "start a 25 minute pomodoro", "want": "timer"},
-  {"ask": "play some tic tac toe", "want": "skill:tictactoe"},
-  {"ask": "tell me something funny", "want": "skill:joke|answer"},
-  {"ask": "make a shopping list with eggs and milk", "want": "list", "says": "eggs[\\s\\S]*milk"},
-  {"ask": "to-do list with laundry, dishes and taxes", "want": "list", "says": "laundry[\\s\\S]*dishes[\\s\\S]*taxes"},
-  {"ask": "make a list for the trip", "want": "list"},
-  {"ask": "2024 in roman numerals", "want": "calc", "says": "MMXXIV"},
-  {"ask": "what is XLII in numbers", "want": "calc", "says": "\\b42\\b"},
-  {"ask": "42 in binary", "want": "calc", "says": "101010"},
-  {"ask": "convert 255 to hex", "want": "calc", "says": "\\bff\\b|0xff"},
-  {"ask": "what is my zodiac sign if i was born march 3", "want": "calc|answer", "says": "pisces"},
-  {"ask": "how many days old am i if born on june 1 1990", "want": "calc|age"},
-  {"ask": "how to tie a tie", "want": "answer|article"},
-  {"ask": "what rhymes with day", "want": "skill:words"},
-  {"ask": "what is 1 bitcoin in dollars", "want": "skill:crypto"},
-  {"ask": "convert 50 usd to yen", "want": "calc"},
-  {"ask": "what's 9/5", "want": "calc", "says": "1\\.8"},
-  {"ask": "what is 5 percent of 1 million", "want": "calc", "says": "50,?000"},
-  {"ask": "how many seconds until new year", "want": "calc|skill:countdown|timeuntil"},
-  {"ask": "make a note that says call the dentist", "want": "sticky|notepad", "says": "call the dentist"},
-  {"ask": "set a timer for 5 minutes", "want": "timer", "says": "4:5\\d|5:00(?![\\s\\S]*PAUSED)"},
-  {"ask": "make a timer", "want": "timer"},
-  {"ask": "10 minute timer", "want": "timer", "says": "9:5\\d|10:00(?![\\s\\S]*PAUSED)"},
-  {"ask": "what day of the week is christmas this year", "want": "calc|holiday|skill:holidays|today", "says": "friday"},
-  {"ask": "is today a weekend", "want": "today|calc|answer"},
-  {"ask": "how many business days until christmas", "want": "calc|holiday|skill:holidays"},
-  {"ask": "what's the date 3 weeks from today", "want": "calc|today"},
-  {"ask": "add 2 hours to 3:30 pm", "want": "calc", "says": "5:30"},
-  {"ask": "what is 3pm in 24 hour time", "want": "calc|skill:worldtime", "says": "15:00"},
-  {"ask": "convert 1500 to military time", "want": "calc|skill:worldtime", "says": "3(:00)?\\s*pm"},
-  {"ask": "how long is 90 minutes in hours", "want": "calc", "says": "1\\.5"},
-  {"ask": "tip calculator", "want": "skill:tip|calc"},
-  {"ask": "what is 15 percent tip on 47.50", "want": "skill:tip|calc", "says": "7\\.1[23]"},
-  {"ask": "loan payment on 20000 at 6% for 5 years", "want": "skill:loan", "says": "386"},
-  {"ask": "how much is 5 dollars a day for a year", "want": "calc", "says": "1,?825"},
-  {"ask": "compound interest on 1000 at 5% for 10 years", "want": "calc|skill:loan", "says": "1,?628"},
-  {"ask": "what is the gpa of 3.5 and 4.0", "want": "calc", "says": "3\\.75"},
-  {"ask": "flip 3 coins", "want": "chance"},
-  {"ask": "random letter", "want": "chance|skill:util"},
-  {"ask": "pick a random color", "want": "chance|skill:util"},
-  {"ask": "yes or no", "want": "chance"},
-  {"ask": "magic 8 ball", "want": "chance"},
-  {"ask": "rock paper scissors", "want": "chance|skill:make"},
-  {"ask": "count words in to be or not to be", "want": "skill:util", "says": "6 words"},
-  {"ask": "reverse hello", "want": "skill:util", "says": "olleh"},
-  {"ask": "make it uppercase: hello world", "want": "skill:util", "says": "HELLO WORLD"},
-  {"ask": "how many characters in supercalifragilistic", "want": "skill:util|calc", "says": "\\b20\\b"},
-  {"ask": "generate a uuid", "want": "skill:util"},
-  {"ask": "what is the moon phase", "want": "skill:util"},
-  {"ask": "emoji for happy", "want": "skill:words|answer|skill:util"},
-  {"ask": "how do you pronounce quinoa", "want": "skill:define|answer"},
-  {"ask": "is it a full moon tonight", "want": "skill:util"},
-  {"ask": "what season is it", "want": "today|calc|answer"},
-  {"ask": "how many tablespoons in a quarter cup", "want": "calc|answer", "says": "\\b4\\b"},
-  {"ask": "double this recipe 2 cups flour", "want": "calc", "says": "4 cups"},
-  {"ask": "350 f in c", "want": "calc", "says": "17[67]"},
-  {"ask": "how long to boil an egg", "want": "calc|answer|article", "says": "\\d"},
-  {"ask": "convert 2 sticks of butter to grams", "want": "calc", "says": "22[67]"},
-  {"ask": "how many ounces in a gallon", "want": "calc|answer", "says": "\\b128\\b"},
-  {"ask": "set a timer for pasta", "want": "timer"},
-  {"ask": "bmi for 5 feet 10 inches 170 pounds", "want": "calc", "says": "24\\.[34]"},
-  {"ask": "how many calories to lose a pound", "want": "calc|answer|article", "says": "3,?500"},
-  {"ask": "convert 10000 steps to miles", "want": "calc", "says": "\\b(4\\.\\d|5\\.\\d)\\b"},
-  {"ask": "what is my heart rate zone at 40", "want": "calc|answer", "says": "18[0-9]|1[0-9]{2}"},
-  {"ask": "how much water should i drink a day", "want": "answer|article"},
-  {"ask": "time in tokyo when it's 9am in new york", "want": "skill:worldtime"},
-  {"ask": "how long is a flight from nyc to la", "want": "answer|skill:distance|article"},
-  {"ask": "distance from new york to boston in km", "want": "skill:distance"},
-  {"ask": "convert 100 dollars to pesos", "want": "calc"},
-  {"ask": "what is 20 euros in dollars", "want": "calc"},
-  {"ask": "what timezone is london", "want": "skill:worldtime"},
-  {"ask": "jet lag from la to london", "want": "skill:worldtime|answer"},
-  {"ask": "how many miles is a 5k", "want": "calc|answer", "says": "3\\.1"},
-  {"ask": "solve 2x + 3 = 11", "want": "calc", "says": "x\\s*=\\s*4"},
-  {"ask": "solve for x: 5x - 10 = 0", "want": "calc", "says": "x\\s*=\\s*2"},
-  {"ask": "area of a circle with radius 5", "want": "calc", "says": "78\\.5"},
-  {"ask": "circumference of a circle with diameter 10", "want": "calc", "says": "31\\.4"},
-  {"ask": "volume of a sphere with radius 3", "want": "calc", "says": "113\\.1"},
-  {"ask": "hypotenuse of 3 and 4", "want": "calc", "says": "\\b5\\b"},
-  {"ask": "area of a triangle with base 10 and height 6", "want": "calc", "says": "\\b30\\b"},
-  {"ask": "area of a rectangle 4 by 7", "want": "calc", "says": "\\b28\\b"},
-  {"ask": "lcm of 4 and 6", "want": "calc", "says": "\\b12\\b"},
-  {"ask": "gcd of 48 and 18", "want": "calc", "says": "\\b6\\b"},
-  {"ask": "prime factors of 84", "want": "calc", "says": "2\\s*[×x*·]\\s*2\\s*[×x*·]\\s*3\\s*[×x*·]\\s*7"},
-  {"ask": "is 17 even", "want": "calc", "says": "\\bno\\b|odd"},
-  {"ask": "1/8 as a percent", "want": "calc", "says": "12\\.5"},
-  {"ask": "what is 2/3 plus 1/6", "want": "calc", "says": "5/6|0\\.83"},
-  {"ask": "simplify 18/24", "want": "calc", "says": "3/4"},
-  {"ask": "what is the past tense of run", "want": "skill:words|skill:define|answer", "says": "\\bran\\b"},
-  {"ask": "what is 7 percent of 340", "want": "calc", "says": "23\\.8"},
-  {"ask": "standard deviation of 2 4 4 4 5 5 7 9", "want": "calc", "says": "\\b2\\b"},
-  {"ask": "what is 10 choose 3", "want": "calc", "says": "\\b120\\b"},
-  {"ask": "solve 3(x - 2) = x + 4", "want": "calc", "says": "x\\s*=\\s*5"},
-  {"ask": "2y + 1 = 9", "want": "calc", "says": "y\\s*=\\s*4"},
-  {"ask": "is 1000 even", "want": "calc", "says": "yes"},
-  {"ask": "perimeter of a square with sides 5", "want": "calc", "says": "\\b20\\b"},
-  {"ask": "volume of a cylinder with radius 2 and height 5", "want": "calc", "says": "62\\.83"},
-  {"ask": "add dentist tomorrow at 3pm", "want": "skill:calendar"},
-  {"ask": "what's on my calendar today", "want": "skill:calendar"},
-  {"ask": "lunch with sam on friday at noon", "want": "skill:calendar"},
-  {"ask": "add milk to the list", "want": "list", "before": ["make a shopping list with milk and eggs"]},
-  {"ask": "check off milk", "want": "list", "before": ["make a shopping list with milk and eggs"]},
-  {"ask": "remove milk from the list", "want": "list", "before": ["make a shopping list with milk and eggs"]},
-  {"ask": "clear the list", "want": "list", "before": ["make a shopping list with milk and eggs"]},
-  {"ask": "pause the timer", "want": "timer", "before": ["set a timer for 10 minutes"]},
-  {"ask": "stop the timer", "want": "timer", "before": ["set a timer for 10 minutes"]},
-  {"ask": "reset the timer", "want": "timer", "before": ["set a timer for 10 minutes"]},
-  {"ask": "add 5 minutes to the timer", "want": "timer", "before": ["set a timer for 10 minutes"]},
-  {"ask": "how long ago was 1999", "want": "calc", "says": "\\b27\\b"},
-  {"ask": "what year was 10 years ago", "want": "calc", "says": "2016"},
-  {"ask": "how old is someone born in 2000", "want": "calc|age", "says": "\\b2[56]\\b"},
-  {"ask": "take a note: buy batteries", "want": "sticky|notepad", "says": "buy batteries"},
-  {"ask": "clear everything", "want": "clear|list|timer|said"},
-  {"ask": "undo", "want": "undo|said"},
-  {"ask": "make the timer bigger", "want": "timer|alter", "before": ["set a timer for 10 minutes"]},
-  {"ask": "make the list blue", "want": "list|alter", "before": ["make a shopping list with milk and eggs"]},
-  {"ask": "cross off eggs", "want": "list", "before": ["make a shopping list with milk and eggs"]},
-  {"ask": "mark milk as done", "want": "list", "before": ["make a shopping list with milk and eggs"]},
-  {"ask": "hi", "want": "said|self|hello"},
-  {"ask": "thanks", "want": "said|self|hello|thanks"},
-  {"ask": "thank you", "want": "said|self|hello|thanks"},
-  {"ask": "good morning", "want": "said|self|hello|today"},
-  {"ask": "how are you", "want": "said|self|hello"},
-  {"ask": "what's your name", "want": "self|said"},
-  {"ask": "who made you", "want": "self|said"},
-  {"ask": "are you an ai", "want": "self|said"},
-  {"ask": "help", "want": "self"},
-  {"ask": "i'm bored", "want": "said|self|chance|skill:joke|answer"},
-  {"ask": "tell me a fun fact", "want": "said|answer|skill:joke"},
-  {"ask": "motivate me", "want": "said|answer"},
-  {"ask": "what should i eat for dinner", "want": "chance|said|answer|skill:recipe"},
-  {"ask": "good night", "want": "said|self|hello"},
-  {"ask": "you're awesome", "want": "said|self|hello|thanks"},
-  {"ask": "30% off 120", "want": "calc", "says": "\\b84\\b"},
-  {"ask": "how much is 15 an hour per year", "want": "calc", "says": "31,?200"},
-  {"ask": "60000 a year is how much an hour", "want": "calc", "says": "28\\.8"},
-  {"ask": "salary of 75000 per month", "want": "calc", "says": "6,?250"},
-  {"ask": "price per ounce 4.99 for 16 oz", "want": "calc", "says": "0\\.31"},
-  {"ask": "which is cheaper 3 for 5 or 2 for 3.50", "want": "calc", "says": "3 for"},
-  {"ask": "how much should i tip on 50", "want": "skill:tip|calc", "says": "\\b10\\b"},
-  {"ask": "split 85 between 3 with 18% tip", "want": "skill:tip", "says": "33\\.4"},
-  {"ask": "what is 25% more than 80", "want": "calc", "says": "\\b100\\b"},
-  {"ask": "percent change from 50 to 65", "want": "calc", "says": "30\\s*%"},
-  {"ask": "what percent of 80 is 20", "want": "calc", "says": "25\\s*%"},
-  {"ask": "markup 40% on 25", "want": "calc", "says": "\\b35\\b"},
-  {"ask": "how much is 1000 dollars after 20% tax", "want": "calc", "says": "\\b800\\b"},
-  {"ask": "monthly payment on a 25000 car at 7% for 60 months", "want": "skill:loan", "says": "49[05]"},
-  {"ask": "how long to save 10000 at 500 a month", "want": "calc", "says": "\\b20 months"},
-  {"ask": "multiplication table of 7", "want": "calc|said", "says": "7\\s*[×x]\\s*7\\s*=\\s*49"},
-  {"ask": "times tables for 9", "want": "calc|said", "says": "9\\s*[×x]\\s*9\\s*=\\s*81"},
-  {"ask": "count to 10", "want": "said|calc", "says": "1[\\s,]+2[\\s,]+3"},
-  {"ask": "spell cat backwards", "want": "skill:util|said", "says": "tac"},
-  {"ask": "tell me a riddle", "want": "skill:joke|said"},
-  {"ask": "tongue twister", "want": "skill:joke|said"},
-  {"ask": "what sound does a cow make", "want": "said|answer|article", "says": "moo"},
-  {"ask": "play a game", "want": "said|skill:make|skill:tictactoe|skill:othello|self"},
-  {"ask": "what games can i play", "want": "said|self|skill:make"},
-  {"ask": "how many legs does a spider have", "want": "said|answer|article", "says": "\\b8\\b|eight"},
-  {"ask": "what comes after tuesday", "want": "said|calc|today", "says": "wednesday"},
-  {"ask": "what letter comes after q", "want": "said|calc", "says": "\\br\\b"},
-  {"ask": "9 cubed", "want": "calc", "says": "729"},
-  {"ask": "what's 2 to the power of 10", "want": "calc", "says": "1,?024"},
-  {"ask": "round 3.14159 to 2 decimal places", "want": "calc", "says": "3\\.14"},
-  {"ask": "what is 15 percent off 80", "want": "calc", "says": "68"},
-  {"ask": "how many days in a leap year", "want": "calc", "says": "366"},
-  {"ask": "100 fahrenheit in celsius", "want": "calc", "says": "37\\.7|37\\.8"},
-  {"ask": "2 liters in gallons", "want": "calc", "says": "0\\.5"},
-  {"ask": "is 97 prime", "want": "calc", "says": "prime"},
-  {"ask": "what is the square root of 144", "want": "calc", "says": "12"},
-  {"ask": "average of 4, 8 and 15", "want": "calc", "says": "9"},
-  {"ask": "set a timer for 3 minutes", "want": "timer"},
-  {"ask": "make a grocery list with apples and rice", "want": "list"},
-  {"ask": "new note: call the dentist", "want": "sticky|note"},
-  {"ask": "what time is it in london", "want": "skill:worldtime"},
-  {"ask": "time in sydney", "want": "skill:worldtime"},
-  {"ask": "will it rain tomorrow", "want": "skill:weather"},
-  {"ask": "past tense of swim", "want": "skill:words", "says": "swam"},
-  {"ask": "thank you void", "want": "said|answer", "says": "welcome|pleasure|anytime"},
-  {"ask": "what day of the week was july 4 1776", "want": "calc", "says": "Thursday"},
-  {"ask": "how many hours in a week", "want": "calc", "says": "168"},
-  {"ask": "how many months in a decade", "want": "calc", "says": "120"},
-  {"ask": "how many days are there in a year", "want": "calc", "says": "365"},
-  {"ask": "60 mph in km/h", "want": "calc", "says": "96\\.5|96\\.6"},
-  {"ask": "100 km/h in mph", "want": "calc", "says": "62\\.1"},
-  {"ask": "how many megabytes in a gigabyte", "want": "calc", "says": "1,?024|1,?000"},
-  {"ask": "5 gb in mb", "want": "calc", "says": "5,?120|5,?000"},
-  {"ask": "how old is my dog in human years if he is 5", "want": "calc|said", "says": "\\d"},
-  {"ask": "30 mpg in l/100km", "want": "calc", "says": "7\\.8"},
-  {"ask": "how long to drive 300 miles at 60 mph", "want": "calc", "says": "5 h"},
-  {"ask": "how far is 2 hours at 50 mph", "want": "calc", "says": "100"},
-  {"ask": "what speed to go 120 miles in 2 hours", "want": "calc", "says": "60"},
-  {"ask": "1 acre in square feet", "want": "calc", "says": "43,?560"},
-  {"ask": "1 hectare in acres", "want": "calc", "says": "2\\.47"},
-  {"ask": "200 c in f", "want": "calc", "says": "392"},
-  {"ask": "1 stone in pounds", "want": "calc", "says": "14"},
-  {"ask": "70 kg in stone", "want": "calc", "says": "11"},
-  {"ask": "1 tablespoon in teaspoons", "want": "calc", "says": "3"},
-  {"ask": "half a pound in grams", "want": "calc", "says": "226|227"},
-  {"ask": "what is 40% of 55", "want": "calc", "says": "22"},
-  {"ask": "what is 7.5% of 200", "want": "calc", "says": "15"},
-  {"ask": "20 is what percent of 80", "want": "calc", "says": "25"},
-  {"ask": "what is 1/3 plus 1/4", "want": "calc", "says": "7/12|0\\.58"},
-  {"ask": "what is 2/3 of 90", "want": "calc", "says": "60"},
-  {"ask": "what is 10 factorial", "want": "calc", "says": "3,?628,?800"},
-  {"ask": "log base 2 of 64", "want": "calc", "says": "6"},
-  {"ask": "what is 15 mod 4", "want": "calc", "says": "3"},
-  {"ask": "absolute value of -42", "want": "calc", "says": "42"},
-  {"ask": "what is pi to 5 decimal places", "want": "calc|answer", "says": "3\\.14159"},
-  {"ask": "sin of 30 degrees", "want": "calc", "says": "0\\.5"},
-  {"ask": "what is 1 million divided by 365", "want": "calc", "says": "2,?739"},
-  {"ask": "how many zeros in a billion", "want": "calc|said|answer", "says": "9"},
-  {"ask": "what is 255 in binary", "want": "calc", "says": "11111111"},
-  {"ask": "what is 0xff in decimal", "want": "calc", "says": "255"},
-  {"ask": "what day is christmas on this year", "want": "calc|holiday", "says": "day"},
-  {"ask": "what is the date 30 days from today", "want": "calc|skill:calendar"},
-  {"ask": "how many weeks is 100 days", "want": "calc", "says": "14\\.2|14\\.3"},
-  {"ask": "how many syllables in banana", "want": "skill:words|skill:util", "says": "3|three"},
-  {"ask": "is racecar a palindrome", "want": "skill:util|skill:words|calc", "says": "[Yy]es"},
-  {"ask": "word count: the quick brown fox jumps", "want": "skill:util", "says": "5"},
-  {"ask": "title case: the lord of the rings", "want": "skill:util", "says": "The Lord of the Rings"},
-  {"ask": "lowercase HELLO WORLD", "want": "skill:util", "says": "hello world"},
-  {"ask": "reverse the words in hello big world", "want": "skill:util", "says": "world big hello"},
-  {"ask": "what letter comes after k", "want": "said|calc", "says": "\\bl\\b|\\bL\\b"},
-  {"ask": "what number is the letter m in the alphabet", "want": "said|calc", "says": "13"},
-  {"ask": "spell 42 in words", "want": "calc|skill:util", "says": "forty-two"},
-  {"ask": "write 1250 in words", "want": "calc|skill:util", "says": "one thousand two hundred (and )?fifty"},
-  {"ask": "how many days between march 1 and june 1", "want": "calc", "says": "92"},
-  {"ask": "what date is 90 days from today", "want": "calc|skill:calendar"},
-  {"ask": "is 2100 a leap year", "want": "calc", "says": "[Nn]o"},
-  {"ask": "what day of the year is it", "want": "today|calc", "says": "\\d"},
-  {"ask": "what is the date next friday", "want": "calc|skill:calendar"},
-  {"ask": "convert 2 cups of flour to grams", "want": "calc", "says": "240"},
-  {"ask": "1 cup of sugar in grams", "want": "calc", "says": "200"},
-  {"ask": "what temperature to cook chicken", "want": "calc|answer|said|article", "says": "165|74"},
-  {"ask": "roll 3d6", "want": "chance"},
-  {"ask": "shuffle red, green, blue", "want": "chance|skill:util", "says": "red|green|blue"},
-  {"ask": "pick one: pizza, tacos, sushi", "want": "chance", "says": "pizza|tacos|sushi"},
-  {"ask": "draw a card", "want": "chance"},
-  {"ask": "random number between 50 and 60", "want": "chance", "says": "5\\d|60"},
-  {"ask": "I love you void", "want": "said|answer"},
-  {"ask": "temperature in turkey", "want": "skill:weather"},
-  {"ask": "safe temperature for ham", "want": "calc", "says": "145[\\s\\S]*165"},
-  {"ask": "2 cups of all-purpose flour in grams", "want": "calc", "says": "240"},
-  {"ask": "what date is 1 month from today", "want": "calc"},
-  {"ask": "what is the date this sunday", "want": "calc", "says": "Sunday"},
-  {"ask": "how many syllables in queue", "want": "skill:util", "says": "1 syllable"},
-  {"ask": "how many pints in a gallon", "want": "calc", "says": "\\b8\\b"},
-  {"ask": "5 feet 10 inches in cm", "want": "calc", "says": "177\\.8"},
-  {"ask": "6'2 in cm", "want": "calc", "says": "187\\.9|188"},
-  {"ask": "45 minutes in hours", "want": "calc", "says": "0\\.75"},
-  {"ask": "mortgage payment on 300000 at 6% for 30 years", "want": "skill:loan", "says": "1,?798|1,?799"},
-  {"ask": "loan payment 20000 at 5% for 5 years", "want": "skill:loan", "says": "377\\.4"},
-  {"ask": "how much is 15% off 49.99", "want": "calc", "says": "42\\.49"},
-  {"ask": "split 87.50 three ways", "want": "calc|skill:tip", "says": "29\\.17"},
-  {"ask": "hourly rate for 52000 a year", "want": "calc", "says": "\\b25\\b"},
-  {"ask": "ascii code for A", "want": "calc|skill:util", "says": "65"},
-  {"ask": "how many bits in a byte", "want": "calc|said|answer", "says": "\\b8\\b"},
-  {"ask": "aspect ratio of 1920x1080", "want": "calc", "says": "16:9"},
-  {"ask": "simplify the ratio 12:18", "want": "calc", "says": "2:3"},
-  {"ask": "what day of the week is december 25 2026", "want": "calc", "says": "Friday"},
-  {"ask": "how many years until 2050", "want": "calc", "says": "^\\d{1,2}$|\\b\\d{1,2}\\b"},
-  {"ask": "what century is 1776 in", "want": "calc", "says": "18th"},
-  {"ask": "is 1000 divisible by 8", "want": "calc", "says": "[Yy]es"},
-  {"ask": "what are the factors of 36", "want": "calc", "says": "1, 2, 3, 4, 6, 9, 12, 18, 36"},
-  {"ask": "next prime after 100", "want": "calc", "says": "101"},
-  {"ask": "10th fibonacci number", "want": "calc", "says": "55"},
-  {"ask": "17 out of 20 as a percentage", "want": "calc", "says": "85"},
-  {"ask": "what grade is 42 out of 50", "want": "calc", "says": "84"},
-  {"ask": "percentage of 45 out of 60", "want": "calc", "says": "75"},
-  {"ask": "round 1234.5678 to the nearest hundred", "want": "calc", "says": "1,?200"},
-  {"ask": "what is 1e6", "want": "calc", "says": "1,?000,?000"},
-  {"ask": "scientific notation of 45000", "want": "calc", "says": "4\\.5\\s*[×x]\\s*10"},
-  {"ask": "what is 30% of 1 million", "want": "calc", "says": "300,?000"},
-  {"ask": "how many hours is 3 days", "want": "calc", "says": "72"},
-  {"ask": "what is 9am est in pst", "want": "skill:worldtime", "says": "6"},
-  {"ask": "what time is it in tokyo when it's noon in london", "want": "skill:worldtime"},
-  {"ask": "how much sleep do i need", "want": "answer|said|article"},
-  {"ask": "normal body temperature", "want": "calc|answer|said|article", "says": "98\\.6|37"},
-  {"ask": "102 f fever in celsius", "want": "calc", "says": "38\\.8|38\\.9"},
-  {"ask": "how many steps in a mile", "want": "calc|answer|said", "says": "2,?000|2,?[0-9]00"},
-  {"ask": "10000 steps in miles", "want": "calc", "says": "\\b5\\b|4\\.[0-9]"},
-  {"ask": "pace for a 5k in 25 minutes", "want": "calc", "says": "8:0[0-9]|5:00"},
-  {"ask": "how many liters of water in a gallon", "want": "calc", "says": "3\\.78|3\\.79"},
-  {"ask": "cost of gas for 300 miles at 25 mpg and 3.50 a gallon", "want": "skill:fuel", "says": "42"},
-  {"ask": "how much is 40 dollars an hour for 37.5 hours", "want": "calc", "says": "1,?500"},
-  {"ask": "what is 20% off 60 then another 10% off", "want": "calc", "says": "43\\.2"},
-  {"ask": "bogo half off at 30 each", "want": "calc", "says": "45"},
-  {"ask": "how many square feet is a 12 by 15 room", "want": "calc", "says": "180"},
-  {"ask": "how much paint for a 12 by 15 room", "want": "calc|answer|said", "says": "\\d"},
-  {"ask": "how many tiles 12 inch for 180 square feet", "want": "calc", "says": "180"},
-  {"ask": "area of a 10 by 12 rectangle", "want": "calc", "says": "120"},
-  {"ask": "perimeter of a 10 by 12 rectangle", "want": "calc", "says": "44"},
-  {"ask": "volume of a box 2 by 3 by 4", "want": "calc", "says": "24"},
-  {"ask": "convert 3.5 feet to inches", "want": "calc", "says": "42"},
-  {"ask": "how many quarters in 5 dollars", "want": "calc", "says": "20"},
-  {"ask": "how many nickels in a dollar", "want": "calc", "says": "20"},
-  {"ask": "how many is a baker's dozen", "want": "calc|said|answer", "says": "13"},
-  {"ask": "how many in a gross", "want": "calc|said|answer", "says": "144"},
-  {"ask": "what is a score in numbers", "want": "calc|said|answer", "says": "20"},
-  {"ask": "what time is 3 hours after 10pm", "want": "calc", "says": "1:00"},
-  {"ask": "what was the time 90 minutes ago", "want": "calc", "says": "\\d"},
-  {"ask": "how long from 9:15 to 5:45", "want": "calc", "says": "8 h(ours)? 30|8:30|8\\.5"},
-  {"ask": "add 1h 45m and 2h 30m", "want": "calc", "says": "4 h(ours)? 15|4:15"},
-  {"ask": "how many work hours in a year", "want": "calc", "says": "2,?080"},
-  {"ask": "is it a weekend", "want": "today|calc|said", "says": "[Nn]o|[Yy]es"},
-  {"ask": "what quarter of the year is it", "want": "calc|today", "says": "Q[1-4]"},
-  {"ask": "how many amps is 1500 watts at 120 volts", "want": "calc", "says": "12\\.5"},
-  {"ask": "watts for 10 amps at 240 volts", "want": "calc", "says": "2,?400"},
-  {"ask": "cost to run a 100 watt bulb for 10 hours at 15 cents per kwh", "want": "calc", "says": "0\\.15|15"},
-  {"ask": "1 kwh in joules", "want": "calc", "says": "3,?600,?000|3\\.6"},
-  {"ask": "100 calories in kj", "want": "calc", "says": "418|419"},
-  {"ask": "1 horsepower in watts", "want": "calc", "says": "745|746"},
-  {"ask": "how long to download 5 gb at 100 mbps", "want": "calc", "says": "6 min|7 min|6\\.[0-9]|7\\.[0-9]"},
-  {"ask": "100 mbps in mb/s", "want": "calc", "says": "12\\.5"},
-  {"ask": "ppi of a 6.1 inch 2532x1170 screen", "want": "calc", "says": "45[0-9]|460"},
-  {"ask": "1 psi in kpa", "want": "calc", "says": "6\\.89"},
-  {"ask": "30 psi in bar", "want": "calc", "says": "2\\.0[67]"},
-  {"ask": "1 atmosphere in psi", "want": "calc", "says": "14\\.69|14\\.7"},
-  {"ask": "1 light year in km", "want": "calc|answer", "says": "9\\.46"},
-  {"ask": "speed of light in mph", "want": "calc|answer", "says": "670"},
-  {"ask": "1 nautical mile in km", "want": "calc", "says": "1\\.85"},
-  {"ask": "1 cubic foot in liters", "want": "calc", "says": "28\\.3"},
-  {"ask": "1 cubic meter in gallons", "want": "calc", "says": "264"},
-  {"ask": "500 ml in fl oz", "want": "calc", "says": "16\\.9"},
-  {"ask": "12 fl oz in ml", "want": "calc", "says": "354|355"},
-  {"ask": "1 pint in ml", "want": "calc", "says": "473"},
-  {"ask": "2 tablespoons in ml", "want": "calc", "says": "29\\.5|30"},
-  {"ask": "0 kelvin in celsius", "want": "calc", "says": "-273\\.15"},
-  {"ask": "300 kelvin in fahrenheit", "want": "calc", "says": "80\\.3"},
-  {"ask": "1 mile in feet", "want": "calc", "says": "5,?280"},
-  {"ask": "1 inch in mm", "want": "calc", "says": "25\\.4"},
-  {"ask": "100 yards in meters", "want": "calc", "says": "91\\.4"},
-  {"ask": "1 ton in pounds", "want": "calc", "says": "2,?000"},
-  {"ask": "1 metric ton in pounds", "want": "calc", "says": "2,?204"},
-  {"ask": "1 carat in grams", "want": "calc", "says": "0\\.2"},
-  {"ask": "1 troy ounce in grams", "want": "calc", "says": "31\\.1"},
-  {"ask": "90 degrees in radians", "want": "calc", "says": "1\\.57"},
-  {"ask": "pi radians in degrees", "want": "calc", "says": "180"},
-  {"ask": "1 megapixel is how many pixels", "want": "calc|answer", "says": "1,?000,?000"},
-  {"ask": "1 hertz is how many cycles per second", "want": "calc|answer|said", "says": "1|one"},
-  {"ask": "1 btu in joules", "want": "calc", "says": "1,?055"},
-  {"ask": "area of a 10 ft by 12 in rectangle", "want": "calc", "says": "^10 sq ft|\\b10 sq ft"},
-  {"ask": "area of a 3 m by 4 m room", "want": "calc", "says": "12 m²"},
-  {"ask": "10 miles in 1:30 pace", "want": "calc", "says": "9:00 per mile"},
-  {"ask": "pace for a 5k in 25:00", "want": "calc", "says": "8:0[0-9] per mile"},
-  {"ask": "pace for a marathon in 4:00", "want": "calc", "says": "9:09 per mile"},
-  {"ask": "us shoe size 10 in eu", "want": "calc", "says": "43|44"},
-  {"ask": "eu shoe size 38 in us women's", "want": "calc", "says": "7\\.5|7|8"},
-  {"ask": "uk shoe size 8 in us", "want": "calc", "says": "9"},
-  {"ask": "what size is a4 paper", "want": "calc|answer", "says": "210\\s*[×x]\\s*297"},
-  {"ask": "a4 in inches", "want": "calc", "says": "8\\.27\\s*[×x]\\s*11\\.69|8\\.3"},
-  {"ask": "us letter size in mm", "want": "calc", "says": "215\\.9|216"},
-  {"ask": "how big is a 55 inch tv", "want": "calc", "says": "47\\.9|48"},
-  {"ask": "width of a 65 inch tv", "want": "calc", "says": "56\\.6|56\\.7"},
-  {"ask": "what size tv for 10 feet away", "want": "calc|answer", "says": "\\d"},
-  {"ask": "us dress size 8 in uk", "want": "calc", "says": "12"},
-  {"ask": "ring size 7 diameter", "want": "calc", "says": "17\\.3"},
-  {"ask": "what is 1080p resolution", "want": "calc|answer", "says": "1920\\s*[×x]\\s*1080"},
-  {"ask": "4k resolution in pixels", "want": "calc|answer", "says": "3840\\s*[×x]\\s*2160"},
-  {"ask": "how many pixels in 1080p", "want": "calc", "says": "2,?073,?600"},
-  {"ask": "how many megapixels is 4k", "want": "calc", "says": "8\\.3"},
-  {"ask": "what is 72 dpi in pixels per cm", "want": "calc", "says": "28\\.3"},
-  {"ask": "print size of 3000x2000 at 300 dpi", "want": "calc", "says": "10\\s*[×x]\\s*6\\.67|10 × 6\\.7"},
-  {"ask": "queen bed size in inches", "want": "calc|answer", "says": "60\\s*[×x]\\s*80"},
-  {"ask": "king bed dimensions", "want": "calc|answer", "says": "76\\s*[×x]\\s*80"},
-  {"ask": "how big is a football field in acres", "want": "calc|answer", "says": "1\\.3"},
-  {"ask": "how long is an olympic pool", "want": "calc|answer", "says": "50"},
-  {"ask": "how tall is a basketball hoop", "want": "calc|answer", "says": "10 f|3\\.05"},
-  {"ask": "standard door width", "want": "calc|answer", "says": "\\d"},
-  {"ask": "how many ounces in a standard can of soda", "want": "calc|answer", "says": "12"},
-  {"ask": "how many ml in a wine bottle", "want": "calc|answer", "says": "750"},
-  {"ask": "how many shots in a bottle", "want": "calc|answer", "says": "1[67]"},
-  {"ask": "how many cups of coffee in a pound", "want": "calc|answer", "says": "\\d"},
-  {"ask": "how many slices in a large pizza", "want": "calc|answer", "says": "8"},
-  {"ask": "how many grams of sugar in a teaspoon", "want": "calc|answer", "says": "4"},
-  {"ask": "how many tablespoons of butter in a stick", "want": "calc|answer", "says": "8"},
-  {"ask": "how long to cook a 12 pound turkey", "want": "calc|answer", "says": "[\\d¼½¾]+\\s*(–|-|to)\\s*[\\d¼½¾]+\\s*h"},
-  {"ask": "how long does it take to thaw a 15 lb turkey in the fridge", "want": "calc|answer", "says": "\\b[34]\\b|days"},
-  {"ask": "how long to bake chicken breast at 400", "want": "calc|answer", "says": "\\d"},
-  {"ask": "how much rice per person", "want": "calc", "says": "\\d"},
-  {"ask": "rice to water ratio", "want": "calc", "says": "1\\s*:\\s*2|2 cups"},
-  {"ask": "how many people does a 9 inch cake serve", "want": "calc|answer", "says": "\\d"},
-  {"ask": "how many pounds of meat per person", "want": "calc", "says": "\\d"},
-  {"ask": "double 3/4 cup", "want": "calc", "says": "1\\s*1\\/2|1\\.5"},
-  {"ask": "half of 2/3 cup", "want": "calc", "says": "1\\/3|0\\.33"},
-  {"ask": "how many days until spring", "want": "calc|holiday|skill:countdown", "says": "\\d"},
-  {"ask": "when is the next full moon", "want": "skill:util|calc", "says": "\\d"},
-  {"ask": "how many days in this month", "want": "calc", "says": "3[01]|2[89]"},
-  {"ask": "what is today's date in roman numerals", "want": "calc", "says": "[IVXLCDM]"},
-  {"ask": "how many weekdays until christmas", "want": "calc", "says": "\\d"},
-  {"ask": "how many weekends until christmas", "want": "calc", "says": "\\d"},
-  {"ask": "what is the 100th day of the year", "want": "calc", "says": "April"},
-  {"ask": "days between today and july 4", "want": "calc", "says": "\\d"},
-  {"ask": "what year was 30 years ago", "want": "calc", "says": "\\b(19|20)\\d\\d\\b"},
-  {"ask": "how old will i be in 2040 if i was born in 1990", "want": "calc|age", "says": "50"},
-  {"ask": "what generation is someone born in 1995", "want": "calc|answer", "says": "Gen Z|Millennial"},
-  {"ask": "chinese zodiac for 1990", "want": "calc", "says": "Horse"},
-  {"ask": "what is my birthstone for may", "want": "calc|answer", "says": "[Ee]merald"},
-  {"ask": "birth flower for june", "want": "calc|answer", "says": "[Rr]ose"},
-  {"ask": "what is the 25th anniversary gift", "want": "calc|answer", "says": "[Ss]ilver"},
-  {"ask": "how do you say hello in 5 languages", "want": "skill:translate|calc|answer|said"},
-  {"ask": "what does lol mean", "want": "calc", "says": "laugh"},
-  {"ask": "what does asap stand for", "want": "calc", "says": "[Ss]oon"},
-  {"ask": "how many letters in the alphabet", "want": "calc", "says": "26"},
-  {"ask": "what is the longest word in english", "want": "answer|article|said"},
-  {"ask": "nato alphabet for hello", "want": "calc|skill:util", "says": "Hotel"},
-  {"ask": "morse code for sos", "want": "calc|skill:util", "says": "···|\\.\\.\\."},
-  {"ask": "hello in binary", "want": "calc|skill:util", "says": "01101000|01001000"},
-  {"ask": "what is 101010 in decimal", "want": "calc", "says": "42"},
-  {"ask": "define lol", "want": "calc", "says": "laughing out loud"},
-  {"ask": "meaning of brb", "want": "calc", "says": "be right back"},
-  {"ask": "how many fridays until december 25 2030", "want": "calc", "says": "\\d{3}"},
-  {"ask": "how much should i tip on 85", "want": "calc|skill:tip", "says": "\\d"},
-  {"ask": "tip 18% on 64.50", "want": "calc|skill:tip", "says": "11\\.61"},
-  {"ask": "what is 20% of 1500 a month", "want": "calc", "says": "300"},
-  {"ask": "if i save 200 a month how much in 5 years", "want": "calc", "says": "12,?000"},
-  {"ask": "how long to pay off 5000 at 200 a month", "want": "calc|skill:loan", "says": "\\d"},
-  {"ask": "rule of 72 at 8 percent", "want": "calc", "says": "9"},
-  {"ask": "how long to double money at 6% interest", "want": "calc", "says": "1[12]"},
-  {"ask": "simple interest on 1000 at 5% for 3 years", "want": "calc", "says": "150"},
-  {"ask": "how much is 50000 after 20% tax", "want": "calc", "says": "40,?000"},
-  {"ask": "what is 30 hours at 18.50", "want": "calc", "says": "555"},
-  {"ask": "overtime pay for 10 hours at 20 an hour", "want": "calc", "says": "300"},
-  {"ask": "how many hours is 9 to 5 with an hour lunch", "want": "calc", "says": "\\b7\\b"},
-  {"ask": "how many work days in a year", "want": "calc|answer", "says": "26[0-9]|25\\d"},
-  {"ask": "40 hours a week is how many hours a year", "want": "calc", "says": "2,?080"},
-  {"ask": "how many miles can i drive on 12 gallons at 30 mpg", "want": "calc|skill:fuel", "says": "360"},
-  {"ask": "how much luggage weight allowed", "want": "answer|article|said|calc"},
-  {"ask": "what is 23 kg in pounds", "want": "calc", "says": "50\\.7"},
-  {"ask": "how many hours is a flight from 2pm to 9pm", "want": "calc", "says": "\\b7\\b"},
-  {"ask": "how many square feet in an acre", "want": "calc", "says": "43,?560"},
-  {"ask": "how many gallons of paint for 400 square feet", "want": "calc", "says": "\\d"},
-  {"ask": "how much mulch for 100 square feet 3 inches deep", "want": "calc", "says": "\\d"},
-  {"ask": "how much concrete for a 10x10 slab 4 inches thick", "want": "calc", "says": "1\\.2|33"},
-  {"ask": "how many bags of 80lb concrete for 1 cubic yard", "want": "calc", "says": "4[0-5]"},
-  {"ask": "btu needed for a 400 square foot room", "want": "calc", "says": "\\d"},
-  {"ask": "what size ac unit for 1500 sq ft", "want": "calc", "says": "\\d"},
-  {"ask": "how many watts does a fridge use", "want": "calc|answer", "says": "\\d"},
-  {"ask": "how many outlets on a 15 amp circuit", "want": "calc|answer", "says": "\\d"},
-  {"ask": "how many lumens is a 60 watt bulb", "want": "calc|answer", "says": "800"},
-  {"ask": "how many people per pizza", "want": "calc|answer", "says": "2–3"},
-  {"ask": "how many drinks for 50 guests", "want": "calc", "says": "\\d"},
-  {"ask": "how many chairs fit in a 20x30 room", "want": "calc", "says": "\\d"},
-  {"ask": "split 240 among 3 people", "want": "calc|skill:tip", "says": "80"},
-  {"ask": "what is 15% of 80 plus 80", "want": "calc", "says": "92"},
-  {"ask": "reverse percentage 120 after 20% increase", "want": "calc", "says": "100"},
-  {"ask": "original price if 75 after 25% off", "want": "calc", "says": "100"},
-  {"ask": "how many kpa in a bar", "want": "calc", "says": "100"},
-  {"ask": "how long to pay off 5000 at 0 a month", "want": "calc", "says": "never"},
-  {"ask": "how long to pay off 100 at 200 a month at 20%", "want": "calc", "says": "101\\.67"},
-  {"ask": "rule of 72 at 0 percent", "want": "calc", "says": "never"},
-  {"ask": "original price if 50 after 100% off", "want": "calc", "says": "no original price"},
-  {"ask": "reverse 20% of 80", "want": "calc|answer|article|said"},
-  {"ask": "how many seconds in a week", "want": "calc", "says": "604,?800"},
-  {"ask": "what is 15% tip on 64", "want": "skill:tip|calc", "says": "9\\.6"},
-  {"ask": "what is 3 squared plus 4 squared", "want": "calc", "says": "25"},
-  {"ask": "cube root of 27", "want": "calc", "says": "\\b3\\b"},
-  {"ask": "what is 7 factorial", "want": "calc", "says": "5,?040"},
-  {"ask": "median of 3 1 4 1 5", "want": "calc", "says": "\\b3\\b"},
-  {"ask": "convert 100 fahrenheit to celsius", "want": "calc", "says": "37\\.7?8"},
-  {"ask": "20 celsius in fahrenheit", "want": "calc", "says": "68"},
-  {"ask": "6 feet in meters", "want": "calc", "says": "1\\.83"},
-  {"ask": "70 kg in pounds", "want": "calc", "says": "154"},
-  {"ask": "what is 1/3 as a percent", "want": "calc", "says": "33\\.3"},
-  {"ask": "0.375 as a fraction", "want": "calc", "says": "3/8"},
-  {"ask": "what percent is 45 of 60", "want": "calc", "says": "75"},
-  {"ask": "bmi for 70 kg and 1.75 m", "want": "calc", "says": "22\\.9"},
-  {"ask": "hours between 9am and 5:30pm", "want": "calc", "says": "8\\.5|8 h(ou)?rs? 30"},
-  {"ask": "what is 12 times 13", "want": "calc", "says": "156"},
-  {"ask": "what is 17 mod 5", "want": "calc", "says": "\\b2\\b"},
-  {"ask": "what percentage is 18 of 24", "want": "calc", "says": "75"},
-  {"ask": "hours from 8:30am to 4pm", "want": "calc", "says": "7 h 30"},
-  {"ask": "how many hours between 10pm and 6am", "want": "calc", "says": "8 h"},
-  {"ask": "bmi 1.8m 80kg", "want": "calc", "says": "24\\.7"},
-  {"ask": "how many grams in an ounce", "want": "calc", "says": "28\\.3"},
-  {"ask": "how many cm in an inch", "want": "calc", "says": "2\\.54"},
-  {"ask": "how many yards in a mile", "want": "calc", "says": "1,?760"},
-  {"ask": "how many hours in a year", "want": "calc", "says": "8,?76[06]"},
-  {"ask": "what is 25% of 360", "want": "calc", "says": "90"},
-  {"ask": "what is 2/3 times 3/5", "want": "calc", "says": "2/5|0\\.4"},
-  {"ask": "what is 9 cubed", "want": "calc", "says": "729"},
-  {"ask": "90 minutes in hours", "want": "calc", "says": "1\\.5"},
-  {"ask": "what is 5 percent of 2000", "want": "calc", "says": "100"},
-  {"ask": "8% sales tax on 45", "want": "calc|skill:tip", "says": "3\\.6|48\\.6"},
-  {"ask": "double 2.5 cups", "want": "calc", "says": "\\b5\\b"},
-  {"ask": "half of 3/4 cup", "want": "calc", "says": "3/8"},
-  {"ask": "how long to walk 5 km", "want": "calc", "says": "h|min"},
-  {"ask": "what is 100 km in miles", "want": "calc", "says": "62\\.1"},
-  {"ask": "how many calories in a pound of fat", "want": "calc|answer|said", "says": "3,?500"},
-  {"ask": "what is the speed of sound", "want": "calc|answer|said", "says": "343|767"},
-  {"ask": "how far is a marathon", "want": "calc|answer|said", "says": "26\\.2|42\\.195?"},
-  {"ask": "is 1001 divisible by 7", "want": "calc", "says": "yes|143"},
-  {"ask": "what is 6 percent interest on 5000 for 3 years", "want": "calc", "says": "900|5,?955|5,?900"},
-  {"ask": "5 inch in cm", "want": "calc", "says": "12\\.7"},
-  {"ask": "how long does it take to walk 3 miles", "want": "calc", "says": "58 min"},
-  {"ask": "speed of sound", "want": "calc|answer|said", "says": "343"},
-  {"ask": "how many quarts in a gallon", "want": "calc", "says": "\\b4\\b"},
-  {"ask": "how many ml in a cup", "want": "calc", "says": "236|237|240"},
-  {"ask": "how many meters in a kilometer", "want": "calc", "says": "1,?000"},
-  {"ask": "how many mm in an inch", "want": "calc", "says": "25\\.4"},
-  {"ask": "how many acres in a square mile", "want": "calc", "says": "640"},
-  {"ask": "how many bytes in a kilobyte", "want": "calc", "says": "1,?0(00|24)"},
-  {"ask": "how many days in 6 weeks", "want": "calc", "says": "42"},
-  {"ask": "how many weeks in 100 days", "want": "calc", "says": "14\\.2|14 weeks"},
-  {"ask": "how many months in 3 years", "want": "calc", "says": "36"},
-  {"ask": "how many minutes in 2.5 hours", "want": "calc", "says": "150"},
-  {"ask": "5 foot 4 in cm", "want": "calc", "says": "162\\.6"},
-  {"ask": "what is 180 cm in feet", "want": "calc", "says": "5\\.9|5 ?ft|5'"},
-  {"ask": "what is 1 stone in pounds", "want": "calc", "says": "14"},
-  {"ask": "what is 350 f in c", "want": "calc", "says": "176|177"},
-  {"ask": "what is 0 kelvin in celsius", "want": "calc", "says": "-273"},
-  {"ask": "what is 12.5% of 640", "want": "calc", "says": "80"},
-  {"ask": "increase 50 by 20%", "want": "calc", "says": "60"},
-  {"ask": "decrease 80 by 25%", "want": "calc", "says": "60"},
-  {"ask": "what is 40 as a percentage of 160", "want": "calc", "says": "25"},
-  {"ask": "what is 15 out of 20 as a percent", "want": "calc", "says": "75"},
-  {"ask": "what is 10 to the power of 6", "want": "calc", "says": "1,?000,?000"},
-  {"ask": "what is the square root of 0.25", "want": "calc", "says": "0\\.5"},
-  {"ask": "sum of 1 to 100", "want": "calc", "says": "5,?050"},
-  {"ask": "what is the hypotenuse of a 3 4 triangle", "want": "calc", "says": "\\b5\\b"},
-  {"ask": "area of a triangle with base 6 and height 4", "want": "calc", "says": "12"},
-  {"ask": "volume of a cube with side 3", "want": "calc", "says": "27"},
-  {"ask": "perimeter of a rectangle 5 by 8", "want": "calc", "says": "26"},
-  {"ask": "how many degrees in a triangle", "want": "calc|answer|said", "says": "180"},
-  {"ask": "how many sides does a hexagon have", "want": "calc|answer|said", "says": "\\b6\\b|six"},
-  {"ask": "how many degrees in a hexagon", "want": "calc", "says": "720"},
-  {"ask": "how many days in 3 years", "want": "calc", "says": "1,?095"},
-  {"ask": "surface area of a cube with side 2", "want": "calc", "says": "24"},
-  {"ask": "hypotenuse with legs 5 and 12", "want": "calc", "says": "13"},
-  {"ask": "raise 1200 by 3 percent", "want": "calc", "says": "1,?236"},
-  {"ask": "dark", "want": "skill:dark-look"},
-  {"ask": "light", "want": "skill:light-look"},
-  {"ask": "play aggravation", "want": "skill:aggravation"},
-  {"ask": "probe", "want": "said", "says": "here"},
-  {"ask": "ping", "want": "said", "says": "here"}
+{"ask": "what time is it in tokyo right now", "want": "skill:worldtime"},
+{"ask": "weather tomorrow in chicago", "want": "skill:weather"},
+{"ask": "how far is boston from new york", "want": "skill:distance"},
+{"ask": "upcoming holidays", "want": "skill:holidays"},
+{"ask": "recommend books like the hobbit", "want": "skill:book"},
+{"ask": "ethereum price", "want": "skill:crypto"},
+{"ask": "what is 15% of 80", "want": "calc", "says": "\\b12\\b"},
+{"ask": "18% tip on $92", "want": "skill:tip"},
+{"ask": "air quality in denver", "want": "skill:air"},
+{"ask": "sunscreen needed in miami today", "want": "skill:uv"},
+{"ask": "recent earthquakes near los angeles", "want": "skill:quake"},
+{"ask": "car loan $25000 at 6% for 60 months", "want": "skill:loan"},
+{"ask": "what day is christmas this year", "want": "holiday"},
+{"ask": "convert 5 miles to km", "want": "calc"},
+{"ask": "pollen forecast for london", "want": "skill:pollen"},
+{"ask": "uv index today in sydney", "want": "skill:uv"},
+{"ask": "mortgage on 350k at 6.25% for 30 years", "want": "skill:loan"},
+{"ask": "fuel cost 120 miles at 30 mpg $3.80 a gallon", "want": "skill:fuel"},
+{"ask": "public holidays in germany", "want": "skill:holidays"},
+{"ask": "what time is it in berlin", "want": "skill:worldtime"},
+{"ask": "what are you", "want": "self|speaks|what"},
+{"ask": "weather in seattle", "want": "skill:weather"},
+{"ask": "tip 20% on $45", "want": "skill:tip"},
+{"ask": "pollen in paris tomorrow", "want": "skill:pollen"},
+{"ask": "what is the uv index in austin", "want": "skill:uv"},
+{"ask": "earthquakes today", "want": "skill:quake"},
+{"ask": "split $120 four ways with 18% tip", "want": "skill:tip"},
+{"ask": "how much gas for 300 miles at 25 mpg $3.20 a gallon", "want": "skill:fuel"},
+{"ask": "air quality in los angeles", "want": "skill:air"},
+{"ask": "days until july 4", "want": "skill:countdown"},
+{"ask": "nba team lakers", "want": "skill:sport"},
+{"ask": "what stadium do the packers play in", "want": "skill:sport"},
+{"ask": "reply in spanish: what time is it in madrid", "want": "skill:spanish"},
+{"ask": "what is 15% of 240", "want": "calc", "says": "\\b36\\b"},
+{"ask": "how far is chicago from denver", "want": "skill:distance"},
+{"ask": "price of ethereum", "want": "skill:crypto"},
+{"ask": "countdown to christmas", "want": "skill:countdown"},
+{"ask": "how many sleeps until christmas", "want": "skill:countdown"},
+{"ask": "what is 2 to the 10th power", "want": "calc", "says": "1,?024"},
+{"ask": "pollen count in atlanta", "want": "skill:pollen"},
+{"ask": "another word for tired", "want": "skill:words"},
+{"ask": "what rhymes with light", "want": "skill:words"},
+{"ask": "what does ubiquitous mean", "want": "skill:define"},
+{"ask": "make me a strong password", "want": "skill:util"},
+{"ask": "what phase is the moon", "want": "skill:util"},
+{"ask": "how do you say thank you in japanese", "want": "skill:translate"},
+{"ask": "countdown to halloween", "want": "skill:countdown"},
+{"ask": "what is 3 to the 4th power", "want": "calc", "says": "\\b81\\b"},
+{"ask": "how many days left in the year", "want": "calc|today"},
+{"ask": "what is 7 cubed", "want": "calc", "says": "\\b343\\b"},
+{"ask": "countdown to new years eve", "want": "skill:countdown"},
+{"ask": "what is 20% off $85", "want": "calc", "says": "\\b68\\b"},
+{"ask": "what day of the week was july 4 1976", "want": "calc|today"},
+{"ask": "what is the square root of 225", "want": "calc", "says": "\\b15\\b"},
+{"ask": "72 fahrenheit in celsius", "want": "calc"},
+{"ask": "how many days until thanksgiving", "want": "calc|holiday|skill:holidays"},
+{"ask": "weather tomorrow in boston", "want": "skill:weather"},
+{"ask": "time in london", "want": "skill:worldtime"},
+{"ask": "pick a number between 1 and 50", "want": "chance"},
+{"ask": "how do you spell definitely", "want": "skill:words"},
+{"ask": "what is the sqrt of 81", "want": "calc", "says": "\\b9\\b"},
+{"ask": "whats 15 percent of 60", "want": "calc", "says": "\\b9\\b"},
+{"ask": "how many grams in a pound", "want": "calc|answer"},
+{"ask": "days until my birthday on march 3", "want": "skill:countdown|calc"},
+{"ask": "whats the weather like", "want": "skill:weather"},
+{"ask": "is it going to rain today", "want": "skill:weather"},
+{"ask": "synonym for big", "want": "skill:words"},
+{"ask": "tip on $64 at 20%", "want": "skill:tip"},
+{"ask": "remind me to stretch in 20 minutes", "want": "timer|skill:remind"},
+{"ask": "what is 1/3 as a decimal", "want": "calc", "says": "0\\.333"},
+{"ask": "convert 30 cm to inches", "want": "calc"},
+{"ask": "play othello", "want": "skill:othello"},
+{"ask": "lets play reversi", "want": "skill:othello"},
+{"ask": "how many tablespoons in a cup", "want": "calc|answer"},
+{"ask": "convert 100 usd to euros", "want": "calc|answer|skill:crypto"},
+{"ask": "days until halloween", "want": "calc|holiday|skill:holidays|skill:countdown"},
+{"ask": "set a timer for 90 seconds", "want": "timer"},
+{"ask": "what is 5 factorial", "want": "calc", "says": "\\b120\\b"},
+{"ask": "what is 40 percent of 250", "want": "calc", "says": "\\b100\\b"},
+{"ask": "how many minutes in a week", "want": "calc", "says": "10,?080"},
+{"ask": "what is 6!", "want": "calc", "says": "\\b720\\b"},
+{"ask": "average of 4 8 15 16 23 42", "want": "calc", "says": "\\b18\\b"},
+{"ask": "what is the median of 3 9 4 7", "want": "calc", "says": "5\\.5"},
+{"ask": "what is 15% tip on $82", "want": "skill:tip|calc"},
+{"ask": "what is 9 mod 4", "want": "calc", "says": "\\b1\\b"},
+{"ask": "what is the cube root of 27", "want": "calc", "says": "\\b3\\b"},
+{"ask": "what is the weather in paris", "want": "skill:weather"},
+{"ask": "define gregarious", "want": "skill:define"},
+{"ask": "what rhymes with cat", "want": "skill:words"},
+{"ask": "translate goodbye to french", "want": "skill:translate"},
+{"ask": "how far is la from sf", "want": "skill:distance"},
+{"ask": "what is the population of japan", "want": "skill:country|answer"},
+{"ask": "mortgage payment on 300000 at 6.5% for 30 years", "want": "skill:loan"},
+{"ask": "what is 3 plus 4 times 2", "want": "calc", "says": "\\b11\\b"},
+{"ask": "how many feet in a mile", "want": "calc|answer"},
+{"ask": "convert 1 gallon to liters", "want": "calc"},
+{"ask": "what is 2 to the power of 16", "want": "calc", "says": "65,?536"},
+{"ask": "mean of 10, 20, 30", "want": "calc", "says": "\\b20\\b"},
+{"ask": "days until valentines day", "want": "calc|holiday|skill:holidays|skill:countdown"},
+{"ask": "countdown to july 4th", "want": "skill:countdown"},
+{"ask": "what is the plural of cactus", "want": "skill:words|skill:define|answer"},
+{"ask": "how do you spell restaurant", "want": "skill:words"},
+{"ask": "antonym of generous", "want": "skill:words"},
+{"ask": "word count of the quick brown fox", "want": "skill:util"},
+{"ask": "what color is #00ff00", "want": "skill:util"},
+{"ask": "qr code for example.com", "want": "skill:util"},
+{"ask": "reverse the word hello", "want": "skill:util|calc|answer"},
+{"ask": "roll a d20", "want": "chance"},
+{"ask": "what is 30 minutes from now", "want": "calc|timenow|today|answer"},
+{"ask": "what day is it tomorrow", "want": "today|calc"},
+{"ask": "what is the date in 10 days", "want": "calc|today"},
+{"ask": "how many hours until midnight", "want": "calc|timeuntil"},
+{"ask": "what week of the year is it", "want": "today|calc"},
+{"ask": "recipe for banana bread", "want": "skill:recipe"},
+{"ask": "news about spacex", "want": "skill:news"},
+{"ask": "nfl team packers", "want": "skill:sport"},
+{"ask": "air quality in delhi", "want": "skill:air"},
+{"ask": "pollen count in chicago", "want": "skill:pollen"},
+{"ask": "earthquakes near california", "want": "skill:quake"},
+{"ask": "what is 72 inches in feet", "want": "calc", "says": "\\b6\\b"},
+{"ask": "convert 50 mph to kph", "want": "calc"},
+{"ask": "how many ml in a teaspoon", "want": "calc|answer"},
+{"ask": "what is 0.75 as a fraction", "want": "calc", "says": "3/4"},
+{"ask": "what is 3/4 plus 1/8", "want": "calc"},
+{"ask": "what is 15 percent of 80 dollars", "want": "calc", "says": "\\b12\\b"},
+{"ask": "time difference between london and new york", "want": "skill:worldtime|calc|answer"},
+{"ask": "what is the time zone of denver", "want": "skill:worldtime|answer"},
+{"ask": "weather in london this weekend", "want": "skill:weather"},
+{"ask": "will it snow in denver", "want": "skill:weather"},
+{"ask": "how hot is it in phoenix", "want": "skill:weather"},
+{"ask": "how do i make pancakes", "want": "skill:recipe"},
+{"ask": "chicken curry recipe", "want": "skill:recipe"},
+{"ask": "a book by stephen king", "want": "skill:book"},
+{"ask": "tell me a dad joke", "want": "skill:joke"},
+{"ask": "knock knock joke", "want": "skill:joke"},
+{"ask": "what is the capital of brazil", "want": "skill:country|answer"},
+{"ask": "what currency does japan use", "want": "skill:country|answer"},
+{"ask": "what language do they speak in brazil", "want": "skill:country|answer"},
+{"ask": "population of germany", "want": "skill:country|answer"},
+{"ask": "distance from tokyo to osaka", "want": "skill:distance"},
+{"ask": "how far is the moon", "want": "answer|article|calc"},
+{"ask": "make a todo list", "want": "list"},
+{"ask": "add milk to my shopping list", "want": "list"},
+{"ask": "show me a clock", "want": "clock|timenow"},
+{"ask": "open the calculator", "want": "calc"},
+{"ask": "what is 18 c in f", "want": "calc"},
+{"ask": "100 f to c", "want": "calc"},
+{"ask": "how many seconds in an hour", "want": "calc"},
+{"ask": "what is 1 billion divided by 365", "want": "calc"},
+{"ask": "what is 8 percent tax on 49.99", "want": "calc", "says": "53\\.99"},
+{"ask": "what's 25 times 4", "want": "calc", "says": "\\b100\\b"},
+{"ask": "divide 144 by 12", "want": "calc", "says": "\\b12\\b"},
+{"ask": "subtract 45 from 100", "want": "calc", "says": "\\b55\\b"},
+{"ask": "what is 20 percent off 60", "want": "calc", "says": "\\b48\\b"},
+{"ask": "how much is a 15% tip on 60", "want": "skill:tip|calc"},
+{"ask": "is 2027 a leap year", "want": "calc|answer"},
+{"ask": "how many days in february", "want": "calc|answer"},
+{"ask": "how old am i if i was born in 1985", "want": "calc|age"},
+{"ask": "what is 2 + 2", "want": "calc", "says": "\\b4\\b"},
+{"ask": "square root of 2", "want": "calc"},
+{"ask": "what is pi to 5 digits", "want": "calc|answer", "says": "3\\.14159"},
+{"ask": "convert 10 km to miles", "want": "calc"},
+{"ask": "convert 5 lbs to kg", "want": "calc"},
+{"ask": "how many oz in a pound", "want": "calc|answer"},
+{"ask": "what's 3 hours in seconds", "want": "calc"},
+{"ask": "timer 25 minutes", "want": "timer"},
+{"ask": "wake me in 10 minutes", "want": "timer"},
+{"ask": "remind me in an hour to check the oven", "want": "timer|skill:remind"},
+{"ask": "countdown to my birthday on june 9", "want": "skill:countdown"},
+{"ask": "what's the weather", "want": "skill:weather"},
+{"ask": "forecast for seattle", "want": "skill:weather"},
+{"ask": "is it raining in london", "want": "skill:weather"},
+{"ask": "sunrise in tokyo", "want": "skill:worldtime"},
+{"ask": "what time is it in la", "want": "skill:worldtime"},
+{"ask": "convert 9am est to pst", "want": "skill:worldtime|calc"},
+{"ask": "meaning of serendipity", "want": "skill:define"},
+{"ask": "synonyms for fast", "want": "skill:words"},
+{"ask": "translate thank you to german", "want": "skill:translate"},
+{"ask": "how do you say hello in italian", "want": "skill:translate"},
+{"ask": "flip a coin please", "want": "chance"},
+{"ask": "random number 1 to 10", "want": "chance"},
+{"ask": "roll 3 dice", "want": "chance"},
+{"ask": "lorem ipsum 3 paragraphs", "want": "skill:util|answer"},
+{"ask": "what color is rgb 255 0 0", "want": "skill:util"},
+{"ask": "play tic tac toe", "want": "skill:tictactoe"},
+{"ask": "play connect four", "want": "skill:make"},
+{"ask": "what's 18% of 250", "want": "calc", "says": "\\b45\\b"},
+{"ask": "how much is 3 times 17", "want": "calc", "says": "\\b51\\b"},
+{"ask": "what is 1000 minus 357", "want": "calc", "says": "\\b643\\b"},
+{"ask": "what is 64 divided by 8", "want": "calc", "says": "\\b8\\b"},
+{"ask": "what is 5 squared plus 12", "want": "calc", "says": "\\b37\\b"},
+{"ask": "what is 45 minutes in hours", "want": "calc", "says": "0\\.75"},
+{"ask": "how many inches in a foot", "want": "calc|answer", "says": "\\b12\\b"},
+{"ask": "how many feet in a yard", "want": "calc|answer", "says": "\\b3\\b"},
+{"ask": "convert 3 km to meters", "want": "calc", "says": "3,?000"},
+{"ask": "how many grams in a kilogram", "want": "calc|answer", "says": "1,?000"},
+{"ask": "convert 98.6 f to c", "want": "calc", "says": "\\b37\\b"},
+{"ask": "what is 10% of 1500", "want": "calc", "says": "\\b150\\b"},
+{"ask": "tip 20% on 85 dollars", "want": "skill:tip|calc", "says": "\\b17\\b"},
+{"ask": "split 90 dollars 3 ways", "want": "skill:tip|calc", "says": "\\b30\\b"},
+{"ask": "what is 100 factorial", "want": "calc"},
+{"ask": "is 101 prime", "want": "calc", "says": "\\byes\\b|is prime"},
+{"ask": "what's the square of 13", "want": "calc", "says": "\\b169\\b"},
+{"ask": "0.2 as a fraction", "want": "calc", "says": "1/5"},
+{"ask": "days until thanksgiving", "want": "calc|holiday|skill:holidays|skill:countdown"},
+{"ask": "how many days until summer", "want": "calc|holiday|skill:holidays|skill:countdown|answer"},
+{"ask": "when is easter", "want": "holiday|skill:holidays"},
+{"ask": "when is mothers day", "want": "holiday|skill:holidays"},
+{"ask": "set a timer for half an hour", "want": "timer"},
+{"ask": "remind me in 45 minutes to call back", "want": "timer|skill:remind"},
+{"ask": "what time is it in paris right now", "want": "skill:worldtime"},
+{"ask": "what's the weather in miami tomorrow", "want": "skill:weather"},
+{"ask": "define ubiquity", "want": "skill:define"},
+{"ask": "what does yeet mean", "want": "skill:define|answer"},
+{"ask": "synonyms of big", "want": "skill:words"},
+{"ask": "translate where is the bathroom to spanish", "want": "skill:translate"},
+{"ask": "how do you say cheers in german", "want": "skill:translate"},
+{"ask": "roll a d6", "want": "chance"},
+{"ask": "coin flip", "want": "chance"},
+{"ask": "pick a number from 1 to 100", "want": "chance"},
+{"ask": "make a qr code for my wifi", "want": "skill:util|answer"},
+{"ask": "what color is navy", "want": "skill:util"},
+{"ask": "word count of hello there friend", "want": "skill:util", "says": "\\b3 words"},
+{"ask": "start a 25 minute pomodoro", "want": "timer"},
+{"ask": "play some tic tac toe", "want": "skill:tictactoe"},
+{"ask": "tell me something funny", "want": "skill:joke|answer"},
+{"ask": "make a shopping list with eggs and milk", "want": "list", "says": "eggs[\\s\\S]*milk"},
+{"ask": "to-do list with laundry, dishes and taxes", "want": "list", "says": "laundry[\\s\\S]*dishes[\\s\\S]*taxes"},
+{"ask": "make a list for the trip", "want": "list"},
+{"ask": "2024 in roman numerals", "want": "calc", "says": "MMXXIV"},
+{"ask": "what is XLII in numbers", "want": "calc", "says": "\\b42\\b"},
+{"ask": "42 in binary", "want": "calc", "says": "101010"},
+{"ask": "convert 255 to hex", "want": "calc", "says": "\\bff\\b|0xff"},
+{"ask": "what is my zodiac sign if i was born march 3", "want": "calc|answer", "says": "pisces"},
+{"ask": "how many days old am i if born on june 1 1990", "want": "calc|age"},
+{"ask": "how to tie a tie", "want": "answer|article"},
+{"ask": "what rhymes with day", "want": "skill:words"},
+{"ask": "what is 1 bitcoin in dollars", "want": "skill:crypto"},
+{"ask": "convert 50 usd to yen", "want": "calc"},
+{"ask": "what's 9/5", "want": "calc", "says": "1\\.8"},
+{"ask": "what is 5 percent of 1 million", "want": "calc", "says": "50,?000"},
+{"ask": "how many seconds until new year", "want": "calc|skill:countdown|timeuntil"},
+{"ask": "make a note that says call the dentist", "want": "sticky|notepad", "says": "call the dentist"},
+{"ask": "set a timer for 5 minutes", "want": "timer", "says": "4:5\\d|5:00(?![\\s\\S]*PAUSED)"},
+{"ask": "make a timer", "want": "timer"},
+{"ask": "10 minute timer", "want": "timer", "says": "9:5\\d|10:00(?![\\s\\S]*PAUSED)"},
+{"ask": "what day of the week is christmas this year", "want": "calc|holiday|skill:holidays|today", "says": "friday"},
+{"ask": "is today a weekend", "want": "today|calc|answer"},
+{"ask": "how many business days until christmas", "want": "calc|holiday|skill:holidays"},
+{"ask": "what's the date 3 weeks from today", "want": "calc|today"},
+{"ask": "add 2 hours to 3:30 pm", "want": "calc", "says": "5:30"},
+{"ask": "what is 3pm in 24 hour time", "want": "calc|skill:worldtime", "says": "15:00"},
+{"ask": "convert 1500 to military time", "want": "calc|skill:worldtime", "says": "3(:00)?\\s*pm"},
+{"ask": "how long is 90 minutes in hours", "want": "calc", "says": "1\\.5"},
+{"ask": "tip calculator", "want": "skill:tip|calc"},
+{"ask": "what is 15 percent tip on 47.50", "want": "skill:tip|calc", "says": "7\\.1[23]"},
+{"ask": "loan payment on 20000 at 6% for 5 years", "want": "skill:loan", "says": "386"},
+{"ask": "how much is 5 dollars a day for a year", "want": "calc", "says": "1,?825"},
+{"ask": "compound interest on 1000 at 5% for 10 years", "want": "calc|skill:loan", "says": "1,?628"},
+{"ask": "what is the gpa of 3.5 and 4.0", "want": "calc", "says": "3\\.75"},
+{"ask": "flip 3 coins", "want": "chance"},
+{"ask": "random letter", "want": "chance|skill:util"},
+{"ask": "pick a random color", "want": "chance|skill:util"},
+{"ask": "yes or no", "want": "chance"},
+{"ask": "magic 8 ball", "want": "chance"},
+{"ask": "rock paper scissors", "want": "chance|skill:make"},
+{"ask": "count words in to be or not to be", "want": "skill:util", "says": "6 words"},
+{"ask": "reverse hello", "want": "skill:util", "says": "olleh"},
+{"ask": "make it uppercase: hello world", "want": "skill:util", "says": "HELLO WORLD"},
+{"ask": "how many characters in supercalifragilistic", "want": "skill:util|calc", "says": "\\b20\\b"},
+{"ask": "generate a uuid", "want": "skill:util"},
+{"ask": "what is the moon phase", "want": "skill:util"},
+{"ask": "emoji for happy", "want": "skill:words|answer|skill:util"},
+{"ask": "how do you pronounce quinoa", "want": "skill:define|answer"},
+{"ask": "is it a full moon tonight", "want": "skill:util"},
+{"ask": "what season is it", "want": "today|calc|answer"},
+{"ask": "how many tablespoons in a quarter cup", "want": "calc|answer", "says": "\\b4\\b"},
+{"ask": "double this recipe 2 cups flour", "want": "calc", "says": "4 cups"},
+{"ask": "350 f in c", "want": "calc", "says": "17[67]"},
+{"ask": "how long to boil an egg", "want": "calc|answer|article", "says": "\\d"},
+{"ask": "convert 2 sticks of butter to grams", "want": "calc", "says": "22[67]"},
+{"ask": "how many ounces in a gallon", "want": "calc|answer", "says": "\\b128\\b"},
+{"ask": "set a timer for pasta", "want": "timer"},
+{"ask": "bmi for 5 feet 10 inches 170 pounds", "want": "calc", "says": "24\\.[34]"},
+{"ask": "how many calories to lose a pound", "want": "calc|answer|article", "says": "3,?500"},
+{"ask": "convert 10000 steps to miles", "want": "calc", "says": "\\b(4\\.\\d|5\\.\\d)\\b"},
+{"ask": "what is my heart rate zone at 40", "want": "calc|answer", "says": "18[0-9]|1[0-9]{2}"},
+{"ask": "how much water should i drink a day", "want": "answer|article"},
+{"ask": "time in tokyo when it's 9am in new york", "want": "skill:worldtime"},
+{"ask": "how long is a flight from nyc to la", "want": "answer|skill:distance|article"},
+{"ask": "distance from new york to boston in km", "want": "skill:distance"},
+{"ask": "convert 100 dollars to pesos", "want": "calc"},
+{"ask": "what is 20 euros in dollars", "want": "calc"},
+{"ask": "what timezone is london", "want": "skill:worldtime"},
+{"ask": "jet lag from la to london", "want": "skill:worldtime|answer"},
+{"ask": "how many miles is a 5k", "want": "calc|answer", "says": "3\\.1"},
+{"ask": "solve 2x + 3 = 11", "want": "calc", "says": "x\\s*=\\s*4"},
+{"ask": "solve for x: 5x - 10 = 0", "want": "calc", "says": "x\\s*=\\s*2"},
+{"ask": "area of a circle with radius 5", "want": "calc", "says": "78\\.5"},
+{"ask": "circumference of a circle with diameter 10", "want": "calc", "says": "31\\.4"},
+{"ask": "volume of a sphere with radius 3", "want": "calc", "says": "113\\.1"},
+{"ask": "hypotenuse of 3 and 4", "want": "calc", "says": "\\b5\\b"},
+{"ask": "area of a triangle with base 10 and height 6", "want": "calc", "says": "\\b30\\b"},
+{"ask": "area of a rectangle 4 by 7", "want": "calc", "says": "\\b28\\b"},
+{"ask": "lcm of 4 and 6", "want": "calc", "says": "\\b12\\b"},
+{"ask": "gcd of 48 and 18", "want": "calc", "says": "\\b6\\b"},
+{"ask": "prime factors of 84", "want": "calc", "says": "2\\s*[×x*·]\\s*2\\s*[×x*·]\\s*3\\s*[×x*·]\\s*7"},
+{"ask": "is 17 even", "want": "calc", "says": "\\bno\\b|odd"},
+{"ask": "1/8 as a percent", "want": "calc", "says": "12\\.5"},
+{"ask": "what is 2/3 plus 1/6", "want": "calc", "says": "5/6|0\\.83"},
+{"ask": "simplify 18/24", "want": "calc", "says": "3/4"},
+{"ask": "what is the past tense of run", "want": "skill:words|skill:define|answer", "says": "\\bran\\b"},
+{"ask": "what is 7 percent of 340", "want": "calc", "says": "23\\.8"},
+{"ask": "standard deviation of 2 4 4 4 5 5 7 9", "want": "calc", "says": "\\b2\\b"},
+{"ask": "what is 10 choose 3", "want": "calc", "says": "\\b120\\b"},
+{"ask": "solve 3(x - 2) = x + 4", "want": "calc", "says": "x\\s*=\\s*5"},
+{"ask": "2y + 1 = 9", "want": "calc", "says": "y\\s*=\\s*4"},
+{"ask": "is 1000 even", "want": "calc", "says": "yes"},
+{"ask": "perimeter of a square with sides 5", "want": "calc", "says": "\\b20\\b"},
+{"ask": "volume of a cylinder with radius 2 and height 5", "want": "calc", "says": "62\\.83"},
+{"ask": "add dentist tomorrow at 3pm", "want": "skill:calendar"},
+{"ask": "what's on my calendar today", "want": "skill:calendar"},
+{"ask": "lunch with sam on friday at noon", "want": "skill:calendar"},
+{"ask": "add milk to the list", "want": "list", "before": ["make a shopping list with milk and eggs"]},
+{"ask": "check off milk", "want": "list", "before": ["make a shopping list with milk and eggs"]},
+{"ask": "remove milk from the list", "want": "list", "before": ["make a shopping list with milk and eggs"]},
+{"ask": "clear the list", "want": "list", "before": ["make a shopping list with milk and eggs"]},
+{"ask": "pause the timer", "want": "timer", "before": ["set a timer for 10 minutes"]},
+{"ask": "stop the timer", "want": "timer", "before": ["set a timer for 10 minutes"]},
+{"ask": "reset the timer", "want": "timer", "before": ["set a timer for 10 minutes"]},
+{"ask": "add 5 minutes to the timer", "want": "timer", "before": ["set a timer for 10 minutes"]},
+{"ask": "how long ago was 1999", "want": "calc", "says": "\\b27\\b"},
+{"ask": "what year was 10 years ago", "want": "calc", "says": "2016"},
+{"ask": "how old is someone born in 2000", "want": "calc|age", "says": "\\b2[56]\\b"},
+{"ask": "take a note: buy batteries", "want": "sticky|notepad", "says": "buy batteries"},
+{"ask": "clear everything", "want": "clear|list|timer|said"},
+{"ask": "undo", "want": "undo|said"},
+{"ask": "make the timer bigger", "want": "timer|alter", "before": ["set a timer for 10 minutes"]},
+{"ask": "make the list blue", "want": "list|alter", "before": ["make a shopping list with milk and eggs"]},
+{"ask": "cross off eggs", "want": "list", "before": ["make a shopping list with milk and eggs"]},
+{"ask": "mark milk as done", "want": "list", "before": ["make a shopping list with milk and eggs"]},
+{"ask": "hi", "want": "said|self|hello"},
+{"ask": "thanks", "want": "said|self|hello|thanks"},
+{"ask": "thank you", "want": "said|self|hello|thanks"},
+{"ask": "good morning", "want": "said|self|hello|today"},
+{"ask": "how are you", "want": "said|self|hello"},
+{"ask": "what's your name", "want": "self|said"},
+{"ask": "who made you", "want": "self|said"},
+{"ask": "are you an ai", "want": "self|said"},
+{"ask": "help", "want": "self"},
+{"ask": "i'm bored", "want": "said|self|chance|skill:joke|answer"},
+{"ask": "tell me a fun fact", "want": "said|answer|skill:joke"},
+{"ask": "motivate me", "want": "said|answer"},
+{"ask": "what should i eat for dinner", "want": "chance|said|answer|skill:recipe"},
+{"ask": "good night", "want": "said|self|hello"},
+{"ask": "you're awesome", "want": "said|self|hello|thanks"},
+{"ask": "30% off 120", "want": "calc", "says": "\\b84\\b"},
+{"ask": "how much is 15 an hour per year", "want": "calc", "says": "31,?200"},
+{"ask": "60000 a year is how much an hour", "want": "calc", "says": "28\\.8"},
+{"ask": "salary of 75000 per month", "want": "calc", "says": "6,?250"},
+{"ask": "price per ounce 4.99 for 16 oz", "want": "calc", "says": "0\\.31"},
+{"ask": "which is cheaper 3 for 5 or 2 for 3.50", "want": "calc", "says": "3 for"},
+{"ask": "how much should i tip on 50", "want": "skill:tip|calc", "says": "\\b10\\b"},
+{"ask": "split 85 between 3 with 18% tip", "want": "skill:tip", "says": "33\\.4"},
+{"ask": "what is 25% more than 80", "want": "calc", "says": "\\b100\\b"},
+{"ask": "percent change from 50 to 65", "want": "calc", "says": "30\\s*%"},
+{"ask": "what percent of 80 is 20", "want": "calc", "says": "25\\s*%"},
+{"ask": "markup 40% on 25", "want": "calc", "says": "\\b35\\b"},
+{"ask": "how much is 1000 dollars after 20% tax", "want": "calc", "says": "\\b800\\b"},
+{"ask": "monthly payment on a 25000 car at 7% for 60 months", "want": "skill:loan", "says": "49[05]"},
+{"ask": "how long to save 10000 at 500 a month", "want": "calc", "says": "\\b20 months"},
+{"ask": "multiplication table of 7", "want": "calc|said", "says": "7\\s*[×x]\\s*7\\s*=\\s*49"},
+{"ask": "times tables for 9", "want": "calc|said", "says": "9\\s*[×x]\\s*9\\s*=\\s*81"},
+{"ask": "count to 10", "want": "said|calc", "says": "1[\\s,]+2[\\s,]+3"},
+{"ask": "spell cat backwards", "want": "skill:util|said", "says": "tac"},
+{"ask": "tell me a riddle", "want": "skill:joke|said"},
+{"ask": "tongue twister", "want": "skill:joke|said"},
+{"ask": "what sound does a cow make", "want": "said|answer|article", "says": "moo"},
+{"ask": "play a game", "want": "said|skill:make|skill:tictactoe|skill:othello|self"},
+{"ask": "what games can i play", "want": "said|self|skill:make"},
+{"ask": "how many legs does a spider have", "want": "said|answer|article", "says": "\\b8\\b|eight"},
+{"ask": "what comes after tuesday", "want": "said|calc|today", "says": "wednesday"},
+{"ask": "what letter comes after q", "want": "said|calc", "says": "\\br\\b"},
+{"ask": "9 cubed", "want": "calc", "says": "729"},
+{"ask": "what's 2 to the power of 10", "want": "calc", "says": "1,?024"},
+{"ask": "round 3.14159 to 2 decimal places", "want": "calc", "says": "3\\.14"},
+{"ask": "what is 15 percent off 80", "want": "calc", "says": "68"},
+{"ask": "how many days in a leap year", "want": "calc", "says": "366"},
+{"ask": "100 fahrenheit in celsius", "want": "calc", "says": "37\\.7|37\\.8"},
+{"ask": "2 liters in gallons", "want": "calc", "says": "0\\.5"},
+{"ask": "is 97 prime", "want": "calc", "says": "prime"},
+{"ask": "what is the square root of 144", "want": "calc", "says": "12"},
+{"ask": "average of 4, 8 and 15", "want": "calc", "says": "9"},
+{"ask": "set a timer for 3 minutes", "want": "timer"},
+{"ask": "make a grocery list with apples and rice", "want": "list"},
+{"ask": "new note: call the dentist", "want": "sticky|note"},
+{"ask": "what time is it in london", "want": "skill:worldtime"},
+{"ask": "time in sydney", "want": "skill:worldtime"},
+{"ask": "will it rain tomorrow", "want": "skill:weather"},
+{"ask": "past tense of swim", "want": "skill:words", "says": "swam"},
+{"ask": "thank you void", "want": "said|answer", "says": "welcome|pleasure|anytime"},
+{"ask": "what day of the week was july 4 1776", "want": "calc", "says": "Thursday"},
+{"ask": "how many hours in a week", "want": "calc", "says": "168"},
+{"ask": "how many months in a decade", "want": "calc", "says": "120"},
+{"ask": "how many days are there in a year", "want": "calc", "says": "365"},
+{"ask": "60 mph in km/h", "want": "calc", "says": "96\\.5|96\\.6"},
+{"ask": "100 km/h in mph", "want": "calc", "says": "62\\.1"},
+{"ask": "how many megabytes in a gigabyte", "want": "calc", "says": "1,?024|1,?000"},
+{"ask": "5 gb in mb", "want": "calc", "says": "5,?120|5,?000"},
+{"ask": "how old is my dog in human years if he is 5", "want": "calc|said", "says": "\\d"},
+{"ask": "30 mpg in l/100km", "want": "calc", "says": "7\\.8"},
+{"ask": "how long to drive 300 miles at 60 mph", "want": "calc", "says": "5 h"},
+{"ask": "how far is 2 hours at 50 mph", "want": "calc", "says": "100"},
+{"ask": "what speed to go 120 miles in 2 hours", "want": "calc", "says": "60"},
+{"ask": "1 acre in square feet", "want": "calc", "says": "43,?560"},
+{"ask": "1 hectare in acres", "want": "calc", "says": "2\\.47"},
+{"ask": "200 c in f", "want": "calc", "says": "392"},
+{"ask": "1 stone in pounds", "want": "calc", "says": "14"},
+{"ask": "70 kg in stone", "want": "calc", "says": "11"},
+{"ask": "1 tablespoon in teaspoons", "want": "calc", "says": "3"},
+{"ask": "half a pound in grams", "want": "calc", "says": "226|227"},
+{"ask": "what is 40% of 55", "want": "calc", "says": "22"},
+{"ask": "what is 7.5% of 200", "want": "calc", "says": "15"},
+{"ask": "20 is what percent of 80", "want": "calc", "says": "25"},
+{"ask": "what is 1/3 plus 1/4", "want": "calc", "says": "7/12|0\\.58"},
+{"ask": "what is 2/3 of 90", "want": "calc", "says": "60"},
+{"ask": "what is 10 factorial", "want": "calc", "says": "3,?628,?800"},
+{"ask": "log base 2 of 64", "want": "calc", "says": "6"},
+{"ask": "what is 15 mod 4", "want": "calc", "says": "3"},
+{"ask": "absolute value of -42", "want": "calc", "says": "42"},
+{"ask": "what is pi to 5 decimal places", "want": "calc|answer", "says": "3\\.14159"},
+{"ask": "sin of 30 degrees", "want": "calc", "says": "0\\.5"},
+{"ask": "what is 1 million divided by 365", "want": "calc", "says": "2,?739"},
+{"ask": "how many zeros in a billion", "want": "calc|said|answer", "says": "9"},
+{"ask": "what is 255 in binary", "want": "calc", "says": "11111111"},
+{"ask": "what is 0xff in decimal", "want": "calc", "says": "255"},
+{"ask": "what day is christmas on this year", "want": "calc|holiday", "says": "day"},
+{"ask": "what is the date 30 days from today", "want": "calc|skill:calendar"},
+{"ask": "how many weeks is 100 days", "want": "calc", "says": "14\\.2|14\\.3"},
+{"ask": "how many syllables in banana", "want": "skill:words|skill:util", "says": "3|three"},
+{"ask": "is racecar a palindrome", "want": "skill:util|skill:words|calc", "says": "[Yy]es"},
+{"ask": "word count: the quick brown fox jumps", "want": "skill:util", "says": "5"},
+{"ask": "title case: the lord of the rings", "want": "skill:util", "says": "The Lord of the Rings"},
+{"ask": "lowercase HELLO WORLD", "want": "skill:util", "says": "hello world"},
+{"ask": "reverse the words in hello big world", "want": "skill:util", "says": "world big hello"},
+{"ask": "what letter comes after k", "want": "said|calc", "says": "\\bl\\b|\\bL\\b"},
+{"ask": "what number is the letter m in the alphabet", "want": "said|calc", "says": "13"},
+{"ask": "spell 42 in words", "want": "calc|skill:util", "says": "forty-two"},
+{"ask": "write 1250 in words", "want": "calc|skill:util", "says": "one thousand two hundred (and )?fifty"},
+{"ask": "how many days between march 1 and june 1", "want": "calc", "says": "92"},
+{"ask": "what date is 90 days from today", "want": "calc|skill:calendar"},
+{"ask": "is 2100 a leap year", "want": "calc", "says": "[Nn]o"},
+{"ask": "what day of the year is it", "want": "today|calc", "says": "\\d"},
+{"ask": "what is the date next friday", "want": "calc|skill:calendar"},
+{"ask": "convert 2 cups of flour to grams", "want": "calc", "says": "240"},
+{"ask": "1 cup of sugar in grams", "want": "calc", "says": "200"},
+{"ask": "what temperature to cook chicken", "want": "calc|answer|said|article", "says": "165|74"},
+{"ask": "roll 3d6", "want": "chance"},
+{"ask": "shuffle red, green, blue", "want": "chance|skill:util", "says": "red|green|blue"},
+{"ask": "pick one: pizza, tacos, sushi", "want": "chance", "says": "pizza|tacos|sushi"},
+{"ask": "draw a card", "want": "chance"},
+{"ask": "random number between 50 and 60", "want": "chance", "says": "5\\d|60"},
+{"ask": "I love you void", "want": "said|answer"},
+{"ask": "temperature in turkey", "want": "skill:weather"},
+{"ask": "safe temperature for ham", "want": "calc", "says": "145[\\s\\S]*165"},
+{"ask": "2 cups of all-purpose flour in grams", "want": "calc", "says": "240"},
+{"ask": "what date is 1 month from today", "want": "calc"},
+{"ask": "what is the date this sunday", "want": "calc", "says": "Sunday"},
+{"ask": "how many syllables in queue", "want": "skill:util", "says": "1 syllable"},
+{"ask": "how many pints in a gallon", "want": "calc", "says": "\\b8\\b"},
+{"ask": "5 feet 10 inches in cm", "want": "calc", "says": "177\\.8"},
+{"ask": "6'2 in cm", "want": "calc", "says": "187\\.9|188"},
+{"ask": "45 minutes in hours", "want": "calc", "says": "0\\.75"},
+{"ask": "mortgage payment on 300000 at 6% for 30 years", "want": "skill:loan", "says": "1,?798|1,?799"},
+{"ask": "loan payment 20000 at 5% for 5 years", "want": "skill:loan", "says": "377\\.4"},
+{"ask": "how much is 15% off 49.99", "want": "calc", "says": "42\\.49"},
+{"ask": "split 87.50 three ways", "want": "calc|skill:tip", "says": "29\\.17"},
+{"ask": "hourly rate for 52000 a year", "want": "calc", "says": "\\b25\\b"},
+{"ask": "ascii code for A", "want": "calc|skill:util", "says": "65"},
+{"ask": "how many bits in a byte", "want": "calc|said|answer", "says": "\\b8\\b"},
+{"ask": "aspect ratio of 1920x1080", "want": "calc", "says": "16:9"},
+{"ask": "simplify the ratio 12:18", "want": "calc", "says": "2:3"},
+{"ask": "what day of the week is december 25 2026", "want": "calc", "says": "Friday"},
+{"ask": "how many years until 2050", "want": "calc", "says": "^\\d{1,2}$|\\b\\d{1,2}\\b"},
+{"ask": "what century is 1776 in", "want": "calc", "says": "18th"},
+{"ask": "is 1000 divisible by 8", "want": "calc", "says": "[Yy]es"},
+{"ask": "what are the factors of 36", "want": "calc", "says": "1, 2, 3, 4, 6, 9, 12, 18, 36"},
+{"ask": "next prime after 100", "want": "calc", "says": "101"},
+{"ask": "10th fibonacci number", "want": "calc", "says": "55"},
+{"ask": "17 out of 20 as a percentage", "want": "calc", "says": "85"},
+{"ask": "what grade is 42 out of 50", "want": "calc", "says": "84"},
+{"ask": "percentage of 45 out of 60", "want": "calc", "says": "75"},
+{"ask": "round 1234.5678 to the nearest hundred", "want": "calc", "says": "1,?200"},
+{"ask": "what is 1e6", "want": "calc", "says": "1,?000,?000"},
+{"ask": "scientific notation of 45000", "want": "calc", "says": "4\\.5\\s*[×x]\\s*10"},
+{"ask": "what is 30% of 1 million", "want": "calc", "says": "300,?000"},
+{"ask": "how many hours is 3 days", "want": "calc", "says": "72"},
+{"ask": "what is 9am est in pst", "want": "skill:worldtime", "says": "6"},
+{"ask": "what time is it in tokyo when it's noon in london", "want": "skill:worldtime"},
+{"ask": "how much sleep do i need", "want": "answer|said|article"},
+{"ask": "normal body temperature", "want": "calc|answer|said|article", "says": "98\\.6|37"},
+{"ask": "102 f fever in celsius", "want": "calc", "says": "38\\.8|38\\.9"},
+{"ask": "how many steps in a mile", "want": "calc|answer|said", "says": "2,?000|2,?[0-9]00"},
+{"ask": "10000 steps in miles", "want": "calc", "says": "\\b5\\b|4\\.[0-9]"},
+{"ask": "pace for a 5k in 25 minutes", "want": "calc", "says": "8:0[0-9]|5:00"},
+{"ask": "how many liters of water in a gallon", "want": "calc", "says": "3\\.78|3\\.79"},
+{"ask": "cost of gas for 300 miles at 25 mpg and 3.50 a gallon", "want": "skill:fuel", "says": "42"},
+{"ask": "how much is 40 dollars an hour for 37.5 hours", "want": "calc", "says": "1,?500"},
+{"ask": "what is 20% off 60 then another 10% off", "want": "calc", "says": "43\\.2"},
+{"ask": "bogo half off at 30 each", "want": "calc", "says": "45"},
+{"ask": "how many square feet is a 12 by 15 room", "want": "calc", "says": "180"},
+{"ask": "how much paint for a 12 by 15 room", "want": "calc|answer|said", "says": "\\d"},
+{"ask": "how many tiles 12 inch for 180 square feet", "want": "calc", "says": "180"},
+{"ask": "area of a 10 by 12 rectangle", "want": "calc", "says": "120"},
+{"ask": "perimeter of a 10 by 12 rectangle", "want": "calc", "says": "44"},
+{"ask": "volume of a box 2 by 3 by 4", "want": "calc", "says": "24"},
+{"ask": "convert 3.5 feet to inches", "want": "calc", "says": "42"},
+{"ask": "how many quarters in 5 dollars", "want": "calc", "says": "20"},
+{"ask": "how many nickels in a dollar", "want": "calc", "says": "20"},
+{"ask": "how many is a baker's dozen", "want": "calc|said|answer", "says": "13"},
+{"ask": "how many in a gross", "want": "calc|said|answer", "says": "144"},
+{"ask": "what is a score in numbers", "want": "calc|said|answer", "says": "20"},
+{"ask": "what time is 3 hours after 10pm", "want": "calc", "says": "1:00"},
+{"ask": "what was the time 90 minutes ago", "want": "calc", "says": "\\d"},
+{"ask": "how long from 9:15 to 5:45", "want": "calc", "says": "8 h(ours)? 30|8:30|8\\.5"},
+{"ask": "add 1h 45m and 2h 30m", "want": "calc", "says": "4 h(ours)? 15|4:15"},
+{"ask": "how many work hours in a year", "want": "calc", "says": "2,?080"},
+{"ask": "is it a weekend", "want": "today|calc|said", "says": "[Nn]o|[Yy]es"},
+{"ask": "what quarter of the year is it", "want": "calc|today", "says": "Q[1-4]"},
+{"ask": "how many amps is 1500 watts at 120 volts", "want": "calc", "says": "12\\.5"},
+{"ask": "watts for 10 amps at 240 volts", "want": "calc", "says": "2,?400"},
+{"ask": "cost to run a 100 watt bulb for 10 hours at 15 cents per kwh", "want": "calc", "says": "0\\.15|15"},
+{"ask": "1 kwh in joules", "want": "calc", "says": "3,?600,?000|3\\.6"},
+{"ask": "100 calories in kj", "want": "calc", "says": "418|419"},
+{"ask": "1 horsepower in watts", "want": "calc", "says": "745|746"},
+{"ask": "how long to download 5 gb at 100 mbps", "want": "calc", "says": "6 min|7 min|6\\.[0-9]|7\\.[0-9]"},
+{"ask": "100 mbps in mb/s", "want": "calc", "says": "12\\.5"},
+{"ask": "ppi of a 6.1 inch 2532x1170 screen", "want": "calc", "says": "45[0-9]|460"},
+{"ask": "1 psi in kpa", "want": "calc", "says": "6\\.89"},
+{"ask": "30 psi in bar", "want": "calc", "says": "2\\.0[67]"},
+{"ask": "1 atmosphere in psi", "want": "calc", "says": "14\\.69|14\\.7"},
+{"ask": "1 light year in km", "want": "calc|answer", "says": "9\\.46"},
+{"ask": "speed of light in mph", "want": "calc|answer", "says": "670"},
+{"ask": "1 nautical mile in km", "want": "calc", "says": "1\\.85"},
+{"ask": "1 cubic foot in liters", "want": "calc", "says": "28\\.3"},
+{"ask": "1 cubic meter in gallons", "want": "calc", "says": "264"},
+{"ask": "500 ml in fl oz", "want": "calc", "says": "16\\.9"},
+{"ask": "12 fl oz in ml", "want": "calc", "says": "354|355"},
+{"ask": "1 pint in ml", "want": "calc", "says": "473"},
+{"ask": "2 tablespoons in ml", "want": "calc", "says": "29\\.5|30"},
+{"ask": "0 kelvin in celsius", "want": "calc", "says": "-273\\.15"},
+{"ask": "300 kelvin in fahrenheit", "want": "calc", "says": "80\\.3"},
+{"ask": "1 mile in feet", "want": "calc", "says": "5,?280"},
+{"ask": "1 inch in mm", "want": "calc", "says": "25\\.4"},
+{"ask": "100 yards in meters", "want": "calc", "says": "91\\.4"},
+{"ask": "1 ton in pounds", "want": "calc", "says": "2,?000"},
+{"ask": "1 metric ton in pounds", "want": "calc", "says": "2,?204"},
+{"ask": "1 carat in grams", "want": "calc", "says": "0\\.2"},
+{"ask": "1 troy ounce in grams", "want": "calc", "says": "31\\.1"},
+{"ask": "90 degrees in radians", "want": "calc", "says": "1\\.57"},
+{"ask": "pi radians in degrees", "want": "calc", "says": "180"},
+{"ask": "1 megapixel is how many pixels", "want": "calc|answer", "says": "1,?000,?000"},
+{"ask": "1 hertz is how many cycles per second", "want": "calc|answer|said", "says": "1|one"},
+{"ask": "1 btu in joules", "want": "calc", "says": "1,?055"},
+{"ask": "area of a 10 ft by 12 in rectangle", "want": "calc", "says": "^10 sq ft|\\b10 sq ft"},
+{"ask": "area of a 3 m by 4 m room", "want": "calc", "says": "12 m²"},
+{"ask": "10 miles in 1:30 pace", "want": "calc", "says": "9:00 per mile"},
+{"ask": "pace for a 5k in 25:00", "want": "calc", "says": "8:0[0-9] per mile"},
+{"ask": "pace for a marathon in 4:00", "want": "calc", "says": "9:09 per mile"},
+{"ask": "us shoe size 10 in eu", "want": "calc", "says": "43|44"},
+{"ask": "eu shoe size 38 in us women's", "want": "calc", "says": "7\\.5|7|8"},
+{"ask": "uk shoe size 8 in us", "want": "calc", "says": "9"},
+{"ask": "what size is a4 paper", "want": "calc|answer", "says": "210\\s*[×x]\\s*297"},
+{"ask": "a4 in inches", "want": "calc", "says": "8\\.27\\s*[×x]\\s*11\\.69|8\\.3"},
+{"ask": "us letter size in mm", "want": "calc", "says": "215\\.9|216"},
+{"ask": "how big is a 55 inch tv", "want": "calc", "says": "47\\.9|48"},
+{"ask": "width of a 65 inch tv", "want": "calc", "says": "56\\.6|56\\.7"},
+{"ask": "what size tv for 10 feet away", "want": "calc|answer", "says": "\\d"},
+{"ask": "us dress size 8 in uk", "want": "calc", "says": "12"},
+{"ask": "ring size 7 diameter", "want": "calc", "says": "17\\.3"},
+{"ask": "what is 1080p resolution", "want": "calc|answer", "says": "1920\\s*[×x]\\s*1080"},
+{"ask": "4k resolution in pixels", "want": "calc|answer", "says": "3840\\s*[×x]\\s*2160"},
+{"ask": "how many pixels in 1080p", "want": "calc", "says": "2,?073,?600"},
+{"ask": "how many megapixels is 4k", "want": "calc", "says": "8\\.3"},
+{"ask": "what is 72 dpi in pixels per cm", "want": "calc", "says": "28\\.3"},
+{"ask": "print size of 3000x2000 at 300 dpi", "want": "calc", "says": "10\\s*[×x]\\s*6\\.67|10 × 6\\.7"},
+{"ask": "queen bed size in inches", "want": "calc|answer", "says": "60\\s*[×x]\\s*80"},
+{"ask": "king bed dimensions", "want": "calc|answer", "says": "76\\s*[×x]\\s*80"},
+{"ask": "how big is a football field in acres", "want": "calc|answer", "says": "1\\.3"},
+{"ask": "how long is an olympic pool", "want": "calc|answer", "says": "50"},
+{"ask": "how tall is a basketball hoop", "want": "calc|answer", "says": "10 f|3\\.05"},
+{"ask": "standard door width", "want": "calc|answer", "says": "\\d"},
+{"ask": "how many ounces in a standard can of soda", "want": "calc|answer", "says": "12"},
+{"ask": "how many ml in a wine bottle", "want": "calc|answer", "says": "750"},
+{"ask": "how many shots in a bottle", "want": "calc|answer", "says": "1[67]"},
+{"ask": "how many cups of coffee in a pound", "want": "calc|answer", "says": "\\d"},
+{"ask": "how many slices in a large pizza", "want": "calc|answer", "says": "8"},
+{"ask": "how many grams of sugar in a teaspoon", "want": "calc|answer", "says": "4"},
+{"ask": "how many tablespoons of butter in a stick", "want": "calc|answer", "says": "8"},
+{"ask": "how long to cook a 12 pound turkey", "want": "calc|answer", "says": "[\\d¼½¾]+\\s*(–|-|to)\\s*[\\d¼½¾]+\\s*h"},
+{"ask": "how long does it take to thaw a 15 lb turkey in the fridge", "want": "calc|answer", "says": "\\b[34]\\b|days"},
+{"ask": "how long to bake chicken breast at 400", "want": "calc|answer", "says": "\\d"},
+{"ask": "how much rice per person", "want": "calc", "says": "\\d"},
+{"ask": "rice to water ratio", "want": "calc", "says": "1\\s*:\\s*2|2 cups"},
+{"ask": "how many people does a 9 inch cake serve", "want": "calc|answer", "says": "\\d"},
+{"ask": "how many pounds of meat per person", "want": "calc", "says": "\\d"},
+{"ask": "double 3/4 cup", "want": "calc", "says": "1\\s*1\\/2|1\\.5"},
+{"ask": "half of 2/3 cup", "want": "calc", "says": "1\\/3|0\\.33"},
+{"ask": "how many days until spring", "want": "calc|holiday|skill:countdown", "says": "\\d"},
+{"ask": "when is the next full moon", "want": "skill:util|calc", "says": "\\d"},
+{"ask": "how many days in this month", "want": "calc", "says": "3[01]|2[89]"},
+{"ask": "what is today's date in roman numerals", "want": "calc", "says": "[IVXLCDM]"},
+{"ask": "how many weekdays until christmas", "want": "calc", "says": "\\d"},
+{"ask": "how many weekends until christmas", "want": "calc", "says": "\\d"},
+{"ask": "what is the 100th day of the year", "want": "calc", "says": "April"},
+{"ask": "days between today and july 4", "want": "calc", "says": "\\d"},
+{"ask": "what year was 30 years ago", "want": "calc", "says": "\\b(19|20)\\d\\d\\b"},
+{"ask": "how old will i be in 2040 if i was born in 1990", "want": "calc|age", "says": "50"},
+{"ask": "what generation is someone born in 1995", "want": "calc|answer", "says": "Gen Z|Millennial"},
+{"ask": "chinese zodiac for 1990", "want": "calc", "says": "Horse"},
+{"ask": "what is my birthstone for may", "want": "calc|answer", "says": "[Ee]merald"},
+{"ask": "birth flower for june", "want": "calc|answer", "says": "[Rr]ose"},
+{"ask": "what is the 25th anniversary gift", "want": "calc|answer", "says": "[Ss]ilver"},
+{"ask": "how do you say hello in 5 languages", "want": "skill:translate|calc|answer|said"},
+{"ask": "what does lol mean", "want": "calc", "says": "laugh"},
+{"ask": "what does asap stand for", "want": "calc", "says": "[Ss]oon"},
+{"ask": "how many letters in the alphabet", "want": "calc", "says": "26"},
+{"ask": "what is the longest word in english", "want": "answer|article|said"},
+{"ask": "nato alphabet for hello", "want": "calc|skill:util", "says": "Hotel"},
+{"ask": "morse code for sos", "want": "calc|skill:util", "says": "···|\\.\\.\\."},
+{"ask": "hello in binary", "want": "calc|skill:util", "says": "01101000|01001000"},
+{"ask": "what is 101010 in decimal", "want": "calc", "says": "42"},
+{"ask": "define lol", "want": "calc", "says": "laughing out loud"},
+{"ask": "meaning of brb", "want": "calc", "says": "be right back"},
+{"ask": "how many fridays until december 25 2030", "want": "calc", "says": "\\d{3}"},
+{"ask": "how much should i tip on 85", "want": "calc|skill:tip", "says": "\\d"},
+{"ask": "tip 18% on 64.50", "want": "calc|skill:tip", "says": "11\\.61"},
+{"ask": "what is 20% of 1500 a month", "want": "calc", "says": "300"},
+{"ask": "if i save 200 a month how much in 5 years", "want": "calc", "says": "12,?000"},
+{"ask": "how long to pay off 5000 at 200 a month", "want": "calc|skill:loan", "says": "\\d"},
+{"ask": "rule of 72 at 8 percent", "want": "calc", "says": "9"},
+{"ask": "how long to double money at 6% interest", "want": "calc", "says": "1[12]"},
+{"ask": "simple interest on 1000 at 5% for 3 years", "want": "calc", "says": "150"},
+{"ask": "how much is 50000 after 20% tax", "want": "calc", "says": "40,?000"},
+{"ask": "what is 30 hours at 18.50", "want": "calc", "says": "555"},
+{"ask": "overtime pay for 10 hours at 20 an hour", "want": "calc", "says": "300"},
+{"ask": "how many hours is 9 to 5 with an hour lunch", "want": "calc", "says": "\\b7\\b"},
+{"ask": "how many work days in a year", "want": "calc|answer", "says": "26[0-9]|25\\d"},
+{"ask": "40 hours a week is how many hours a year", "want": "calc", "says": "2,?080"},
+{"ask": "how many miles can i drive on 12 gallons at 30 mpg", "want": "calc|skill:fuel", "says": "360"},
+{"ask": "how much luggage weight allowed", "want": "answer|article|said|calc"},
+{"ask": "what is 23 kg in pounds", "want": "calc", "says": "50\\.7"},
+{"ask": "how many hours is a flight from 2pm to 9pm", "want": "calc", "says": "\\b7\\b"},
+{"ask": "how many square feet in an acre", "want": "calc", "says": "43,?560"},
+{"ask": "how many gallons of paint for 400 square feet", "want": "calc", "says": "\\d"},
+{"ask": "how much mulch for 100 square feet 3 inches deep", "want": "calc", "says": "\\d"},
+{"ask": "how much concrete for a 10x10 slab 4 inches thick", "want": "calc", "says": "1\\.2|33"},
+{"ask": "how many bags of 80lb concrete for 1 cubic yard", "want": "calc", "says": "4[0-5]"},
+{"ask": "btu needed for a 400 square foot room", "want": "calc", "says": "\\d"},
+{"ask": "what size ac unit for 1500 sq ft", "want": "calc", "says": "\\d"},
+{"ask": "how many watts does a fridge use", "want": "calc|answer", "says": "\\d"},
+{"ask": "how many outlets on a 15 amp circuit", "want": "calc|answer", "says": "\\d"},
+{"ask": "how many lumens is a 60 watt bulb", "want": "calc|answer", "says": "800"},
+{"ask": "how many people per pizza", "want": "calc|answer", "says": "2–3"},
+{"ask": "how many drinks for 50 guests", "want": "calc", "says": "\\d"},
+{"ask": "how many chairs fit in a 20x30 room", "want": "calc", "says": "\\d"},
+{"ask": "split 240 among 3 people", "want": "calc|skill:tip", "says": "80"},
+{"ask": "what is 15% of 80 plus 80", "want": "calc", "says": "92"},
+{"ask": "reverse percentage 120 after 20% increase", "want": "calc", "says": "100"},
+{"ask": "original price if 75 after 25% off", "want": "calc", "says": "100"},
+{"ask": "how many kpa in a bar", "want": "calc", "says": "100"},
+{"ask": "how long to pay off 5000 at 0 a month", "want": "calc", "says": "never"},
+{"ask": "how long to pay off 100 at 200 a month at 20%", "want": "calc", "says": "101\\.67"},
+{"ask": "rule of 72 at 0 percent", "want": "calc", "says": "never"},
+{"ask": "original price if 50 after 100% off", "want": "calc", "says": "no original price"},
+{"ask": "reverse 20% of 80", "want": "calc|answer|article|said"},
+{"ask": "how many seconds in a week", "want": "calc", "says": "604,?800"},
+{"ask": "what is 15% tip on 64", "want": "skill:tip|calc", "says": "9\\.6"},
+{"ask": "what is 3 squared plus 4 squared", "want": "calc", "says": "25"},
+{"ask": "cube root of 27", "want": "calc", "says": "\\b3\\b"},
+{"ask": "what is 7 factorial", "want": "calc", "says": "5,?040"},
+{"ask": "median of 3 1 4 1 5", "want": "calc", "says": "\\b3\\b"},
+{"ask": "convert 100 fahrenheit to celsius", "want": "calc", "says": "37\\.7?8"},
+{"ask": "20 celsius in fahrenheit", "want": "calc", "says": "68"},
+{"ask": "6 feet in meters", "want": "calc", "says": "1\\.83"},
+{"ask": "70 kg in pounds", "want": "calc", "says": "154"},
+{"ask": "what is 1/3 as a percent", "want": "calc", "says": "33\\.3"},
+{"ask": "0.375 as a fraction", "want": "calc", "says": "3/8"},
+{"ask": "what percent is 45 of 60", "want": "calc", "says": "75"},
+{"ask": "bmi for 70 kg and 1.75 m", "want": "calc", "says": "22\\.9"},
+{"ask": "hours between 9am and 5:30pm", "want": "calc", "says": "8\\.5|8 h(ou)?rs? 30"},
+{"ask": "what is 12 times 13", "want": "calc", "says": "156"},
+{"ask": "what is 17 mod 5", "want": "calc", "says": "\\b2\\b"},
+{"ask": "what percentage is 18 of 24", "want": "calc", "says": "75"},
+{"ask": "hours from 8:30am to 4pm", "want": "calc", "says": "7 h 30"},
+{"ask": "how many hours between 10pm and 6am", "want": "calc", "says": "8 h"},
+{"ask": "bmi 1.8m 80kg", "want": "calc", "says": "24\\.7"},
+{"ask": "how many grams in an ounce", "want": "calc", "says": "28\\.3"},
+{"ask": "how many cm in an inch", "want": "calc", "says": "2\\.54"},
+{"ask": "how many yards in a mile", "want": "calc", "says": "1,?760"},
+{"ask": "how many hours in a year", "want": "calc", "says": "8,?76[06]"},
+{"ask": "what is 25% of 360", "want": "calc", "says": "90"},
+{"ask": "what is 2/3 times 3/5", "want": "calc", "says": "2/5|0\\.4"},
+{"ask": "what is 9 cubed", "want": "calc", "says": "729"},
+{"ask": "90 minutes in hours", "want": "calc", "says": "1\\.5"},
+{"ask": "what is 5 percent of 2000", "want": "calc", "says": "100"},
+{"ask": "8% sales tax on 45", "want": "calc|skill:tip", "says": "3\\.6|48\\.6"},
+{"ask": "double 2.5 cups", "want": "calc", "says": "\\b5\\b"},
+{"ask": "half of 3/4 cup", "want": "calc", "says": "3/8"},
+{"ask": "how long to walk 5 km", "want": "calc", "says": "h|min"},
+{"ask": "what is 100 km in miles", "want": "calc", "says": "62\\.1"},
+{"ask": "how many calories in a pound of fat", "want": "calc|answer|said", "says": "3,?500"},
+{"ask": "what is the speed of sound", "want": "calc|answer|said", "says": "343|767"},
+{"ask": "how far is a marathon", "want": "calc|answer|said", "says": "26\\.2|42\\.195?"},
+{"ask": "is 1001 divisible by 7", "want": "calc", "says": "yes|143"},
+{"ask": "what is 6 percent interest on 5000 for 3 years", "want": "calc", "says": "900|5,?955|5,?900"},
+{"ask": "5 inch in cm", "want": "calc", "says": "12\\.7"},
+{"ask": "how long does it take to walk 3 miles", "want": "calc", "says": "58 min"},
+{"ask": "speed of sound", "want": "calc|answer|said", "says": "343"},
+{"ask": "how many quarts in a gallon", "want": "calc", "says": "\\b4\\b"},
+{"ask": "how many ml in a cup", "want": "calc", "says": "236|237|240"},
+{"ask": "how many meters in a kilometer", "want": "calc", "says": "1,?000"},
+{"ask": "how many mm in an inch", "want": "calc", "says": "25\\.4"},
+{"ask": "how many acres in a square mile", "want": "calc", "says": "640"},
+{"ask": "how many bytes in a kilobyte", "want": "calc", "says": "1,?0(00|24)"},
+{"ask": "how many days in 6 weeks", "want": "calc", "says": "42"},
+{"ask": "how many weeks in 100 days", "want": "calc", "says": "14\\.2|14 weeks"},
+{"ask": "how many months in 3 years", "want": "calc", "says": "36"},
+{"ask": "how many minutes in 2.5 hours", "want": "calc", "says": "150"},
+{"ask": "5 foot 4 in cm", "want": "calc", "says": "162\\.6"},
+{"ask": "what is 180 cm in feet", "want": "calc", "says": "5\\.9|5 ?ft|5'"},
+{"ask": "what is 1 stone in pounds", "want": "calc", "says": "14"},
+{"ask": "what is 350 f in c", "want": "calc", "says": "176|177"},
+{"ask": "what is 0 kelvin in celsius", "want": "calc", "says": "-273"},
+{"ask": "what is 12.5% of 640", "want": "calc", "says": "80"},
+{"ask": "increase 50 by 20%", "want": "calc", "says": "60"},
+{"ask": "decrease 80 by 25%", "want": "calc", "says": "60"},
+{"ask": "what is 40 as a percentage of 160", "want": "calc", "says": "25"},
+{"ask": "what is 15 out of 20 as a percent", "want": "calc", "says": "75"},
+{"ask": "what is 10 to the power of 6", "want": "calc", "says": "1,?000,?000"},
+{"ask": "what is the square root of 0.25", "want": "calc", "says": "0\\.5"},
+{"ask": "sum of 1 to 100", "want": "calc", "says": "5,?050"},
+{"ask": "what is the hypotenuse of a 3 4 triangle", "want": "calc", "says": "\\b5\\b"},
+{"ask": "area of a triangle with base 6 and height 4", "want": "calc", "says": "12"},
+{"ask": "volume of a cube with side 3", "want": "calc", "says": "27"},
+{"ask": "perimeter of a rectangle 5 by 8", "want": "calc", "says": "26"},
+{"ask": "how many degrees in a triangle", "want": "calc|answer|said", "says": "180"},
+{"ask": "how many sides does a hexagon have", "want": "calc|answer|said", "says": "\\b6\\b|six"},
+{"ask": "how many degrees in a hexagon", "want": "calc", "says": "720"},
+{"ask": "how many days in 3 years", "want": "calc", "says": "1,?095"},
+{"ask": "surface area of a cube with side 2", "want": "calc", "says": "24"},
+{"ask": "hypotenuse with legs 5 and 12", "want": "calc", "says": "13"},
+{"ask": "raise 1200 by 3 percent", "want": "calc", "says": "1,?236"},
+{"ask": "dark", "want": "skill:dark-look"},
+{"ask": "light", "want": "skill:light-look"},
+{"ask": "play aggravation", "want": "skill:aggravation"},
+{"ask": "probe", "want": "said", "says": "here"},
+{"ask": "ping", "want": "said", "says": "here"}
 ]
