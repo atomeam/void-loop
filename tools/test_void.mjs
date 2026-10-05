@@ -340,6 +340,7 @@ async function fresh(...inits) {
     return r.fulfill({ status: 204, body: '' });
   });
   await ctx.route(/^http:\/\/(?:127\.0\.0\.1|localhost):\d+\/api\//, (r) => {
+    const u = r.request().url();
     if (u.includes('/api/will')) return r.fulfill(json({ at: '2026-09-27T23:00:00Z', wants: [{ kind: 'people asked', title: 'learn x', i_want: 'I want to answer every question about tides.', because: 'asked 9 times' }] }));
     if (u.includes('/api/answer')) {
       const body = JSON.parse(r.request().postData() || '{}'), ask = body.ask || '';
