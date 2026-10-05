@@ -1007,5 +1007,7 @@
   {"ask": "raise 1200 by 3 percent", "want": "calc", "says": "1,?236"},
   {"ask": "dark", "want": "skill:dark-look"},
   {"ask": "light", "want": "skill:light-look"},
-  {"ask": "play aggravation", "want": "skill:aggravation"}
+  {"ask": "play aggravation", "want": "skill:aggravation"},
+  {"ask": "probe", "want": "said", "says": "here"},
+  {"ask": "ping", "want": "said", "says": "here"}
 ]
