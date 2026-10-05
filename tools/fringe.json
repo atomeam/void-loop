@@ -498,5 +498,230 @@
     ],
     "sha256": "42c59305e335d09e0c8a520092839f42f9d241557d826b042ed941ca9713211c",
     "emit": false
+  },
+  {
+    "run": 21,
+    "at": "2026-10-04T10:44:26Z",
+    "family": "private-incubation-log",
+    "draft": "drafts/fringe/private-incubation-log-2.html",
+    "sources": [
+      {
+        "claim": "Incubation (setting an unsolved problem aside) improves problem solving on average; a meta-analysis of 117 studies found a reliable but modest effect",
+        "source": "https://doi.org/10.1037/a0014212",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Sleep between attempts more than doubled the rate of discovering a hidden shortcut in a number task",
+        "source": "https://doi.org/10.1038/nature02223",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Writing a stuck problem down at night and revisiting it the next day helps this person, measured by their own hit rate",
+        "source": "drafts/fringe/private-incubation-log-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "dd17337969521c63c8077c6b720f994c0724bc316e32bc7ca121228a64228f9c",
+    "emit": false
+  },
+  {
+    "run": 22,
+    "at": "2026-10-04T12:44:41Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention-2.html",
+    "sources": [
+      {
+        "claim": "The psychomotor vigilance task (reacting to a counter shown at random 2-10 s intervals) is a standard, practice-resistant measure of sustained attention",
+        "source": "https://doi.org/10.3758/BF03200977",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Lapses (reactions of 500 ms or more) on the vigilance task rise steadily with chronic sleep restriction, even when people rate themselves as only slightly sleepy",
+        "source": "https://doi.org/10.1093/sleep/26.2.117",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A short 2-minute home version, logged by time of day, shows when this person is sharpest",
+        "source": "drafts/fringe/attention-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "a5a1aacd94f5d40bad916b32c3a188f316bb54cdaef730282d9fdd252a19e5dc",
+    "emit": false
+  },
+  {
+    "run": 23,
+    "at": "2026-10-04T13:42:03Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-3.html",
+    "sources": [
+      {
+        "claim": "Duration judgments differ by paradigm: when people know in advance they will judge time (prospective) their estimates behave differently from when they are asked only afterwards (retrospective), and mental load shifts the two in opposite directions (meta-analysis)",
+        "source": "https://doi.org/10.3758/BF03209393",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Time that was full of events tends to be remembered as longer, while it often feels shorter while it is happening (the holiday paradox)",
+        "source": "https://doi.org/10.1016/j.tics.2013.09.003",
+        "confidence": "claim"
+      },
+      {
+        "claim": "When this person knows in advance they will be asked (they mark the start), their duration estimates are biased in a steady direction that depends on whether they were busy or idle",
+        "source": "drafts/fringe/interval-timing-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "0102e65261c240793e1f8c65c40f962621fc363453e4700829e954377d2a8200",
+    "emit": false
+  },
+  {
+    "run": 24,
+    "at": "2026-10-04T14:48:43Z",
+    "family": "sensory-substitution",
+    "draft": "drafts/fringe/sensory-substitution-2.html",
+    "sources": [
+      {
+        "claim": "A camera image turned into sound (left to right in time, height as pitch, brightness as loudness) can convey pictures to the ear; this is the design of The vOICe",
+        "source": "https://doi.org/10.1109/10.121642",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Blind people trained with a tactile vision-substitution system learned to recognise objects and their layout through touch on the skin",
+        "source": "https://doi.org/10.1038/221963a0",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "With practice, this person can tell simple shapes apart by sound alone, measured as a hit rate above the 1-in-4 chance level",
+        "source": "drafts/fringe/sensory-substitution-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "de68d56cd95c576a58eb1f0601279418707a44e85c76a6d87e16e3052fe2862a",
+    "emit": false
+  },
+  {
+    "run": 25,
+    "at": "2026-10-04T16:00:16Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-3.html",
+    "sources": [
+      {
+        "claim": "People using decision aids tend to accept automated suggestions without enough checking (automation bias), including wrong ones, across fields such as aviation and medicine",
+        "source": "https://doi.org/10.1177/0018720810376055",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "In clinical decision support, automation bias raised errors when advice was wrong; committing to one's own judgment before seeing the advice is among the suggested mitigations",
+        "source": "https://doi.org/10.1136/amiajnl-2011-000089",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This person catches more wrong suggestions when they answer before seeing the suggestion than when they see it first",
+        "source": "drafts/fringe/human-machine-co-agency-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "b33a4627b30727026960c7beb903cbf0f2694437f480221a07014a54c319d15d",
+    "emit": false
+  },
+  {
+    "run": 26,
+    "at": "2026-10-04T16:43:05Z",
+    "family": "opt-in-gesture",
+    "draft": "drafts/fringe/opt-in-gesture-3.html",
+    "sources": [
+      {
+        "claim": "A simple template matcher (resample, rotate, scale, compare) recognizes single-stroke gestures with about 97% accuracy from one example per shape, and 99% with three or more",
+        "source": "https://doi.org/10.1145/1294211.1294238",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Gesture-only interfaces hurt usability when gestures are invisible and undiscoverable and give no feedback; an equivalent visible control and clear feedback are recommended",
+        "source": "https://doi.org/10.1145/1836216.1836228",
+        "confidence": "claim"
+      },
+      {
+        "claim": "This person's own strokes are read right at least 90% of the time after 20 tries, so drawing could stand in for these four buttons for them",
+        "source": "drafts/fringe/opt-in-gesture-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "26b8564ded28e9f4c83733d572e3b83d3ae197d17b326d30d1bf9edd7e0a4b83",
+    "emit": false
+  },
+  {
+    "run": 27,
+    "at": "2026-10-04T17:56:30Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger-3.html",
+    "sources": [
+      {
+        "claim": "People neglect base rates when judging how likely something is from a specific description (representativeness)",
+        "source": "https://doi.org/10.1037/h0034747",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "In a large geopolitical forecasting tournament, brief training in probabilistic reasoning (including starting from base rates) made forecasts more accurate",
+        "source": "https://doi.org/10.1177/0956797614524255",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "For this person, starting from a base rate and weighing each signal explicitly gives better-scored chances than their gut, over 15 or more resolved hunches",
+        "source": "drafts/fringe/weak-signal-hypothesis-ledger-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "56263fa7473090937e54048f22db513db9c052ad504e14b8de3b3da5fc5dc242",
+    "emit": false
+  },
+  {
+    "run": 28,
+    "at": "2026-10-04T18:39:04Z",
+    "family": "private-incubation-log",
+    "draft": "drafts/fringe/private-incubation-log-3.html",
+    "sources": [
+      {
+        "claim": "An undemanding task during an incubation break led to more new ideas on a repeated unusual-uses problem than a demanding task, rest, or no break",
+        "source": "https://doi.org/10.1177/0956797612446024",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Incubation effects vary with the kind of problem and what fills the break; a meta-analysis of 117 studies found the effect is larger for divergent (many-answer) problems",
+        "source": "https://doi.org/10.1037/a0014212",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "For this person, an easy task in the break gives more new ideas than a hard task or rest, measured by their own rounds",
+        "source": "drafts/fringe/private-incubation-log-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "b0a73addf58945877a4c0324366d7f7dbf2366b3e4f73d25a01f3c96b141186b",
+    "emit": false
+  },
+  {
+    "run": 29,
+    "at": "2026-10-04T18:55:04Z",
+    "family": "anomalous-event-timeline",
+    "draft": "drafts/fringe/anomalous-event-timeline-2.html",
+    "sources": [
+      {
+        "claim": "Of the UAP reports US officials could resolve, most were ordinary objects such as balloons, birds, drones, aircraft and satellites",
+        "source": "https://www.dni.gov/files/ODNI/documents/assessments/FY2023-Consolidated-Annual-Report-on-UAP-Oct2023.pdf",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Low-orbit satellites, including Starlink, are visible when the observer's sky is dark but the satellite is still sunlit, which concentrates sightings in the hours around dusk and dawn",
+        "source": "https://doi.org/10.1051/0004-6361/202037501",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Checking a personal sighting against the sun's position and a short list of common explanations resolves most of what a person logs",
+        "source": "drafts/fringe/anomalous-event-timeline-2.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "4857dc349d1c46334aad4a5bca74b4b848043bcce09db451d6c1b08263a0646f",
+    "emit": false
   }
 ]

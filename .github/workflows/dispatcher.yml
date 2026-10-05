@@ -1,0 +1,74 @@
+# Persistent tasks: Void's build queue inspected on a schedule and gated on the owner's yes.
+#
+# A scheduled run is always a dry run: it builds and prints the envelopes and stops. Reaching the
+# bridge needs an owner decision, and only a person can start that, so approval mode is manual only.
+# There is no setting that makes an unattended run deliver anything.
+name: Void dispatcher
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: dry-run builds the envelopes; approval puts them on the owner's confirm line
+        type: choice
+        options: [dry-run, approval]
+        default: dry-run
+
+permissions:
+  contents: read
+
+concurrency:
+  group: void-dispatcher
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Scheduled runs are dry runs, always
+        id: mode
+        env:
+          REQUESTED: ${{ inputs.mode }}
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "mode=$REQUESTED" >> "$GITHUB_OUTPUT"
+            if [ "$REQUESTED" = "approval" ]; then
+              echo "approval requested: the owner gets the confirm line. Nothing reaches the bridge without that yes."
+            fi
+          else
+            echo "mode=dry-run" >> "$GITHUB_OUTPUT"
+            echo "scheduled run: dry-run only, by design"
+          fi
+
+      - name: Dispatcher checks
+        run: node --test tools/dispatcher.test.mjs
+
+      - name: Inspect the queue and stop at the gate
+        env:
+          DISPATCH: ${{ steps.mode.outputs.mode }}
+          APPROVAL_URL: ${{ vars.APPROVAL_URL || '' }}
+          READ_TOKEN: ${{ secrets.READ_TOKEN }}
+          BRIDGE_URL: ${{ secrets.BRIDGE_URL }}
+        run: node tools/dispatcher.mjs
+
+      - name: Where each row stopped
+        if: always()
+        run: |
+          set -euo pipefail
+          {
+            echo "### Dispatcher"
+            echo
+            echo '```json'
+            tail -n 40 domains/void.dispatch-log.jsonl || echo "(no audit rows)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

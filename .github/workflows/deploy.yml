@@ -89,6 +89,7 @@ jobs:
         run: |
           cp void.html void-live-deploy/index.html
           cp void.html void-live-deploy/void.html
+          node tools/self-context.mjs # Void's facts about itself for /api/answer (growth inbox, llms.txt)
 
       - name: Deploy target
         id: target

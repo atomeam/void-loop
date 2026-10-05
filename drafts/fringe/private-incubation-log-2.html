@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · sleep on it (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+h2{font-size:13px;font-weight:normal;color:#8a8a92;margin:8px 0 0;text-transform:uppercase;letter-spacing:.05em}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+textarea,input,button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 10px}
+textarea{width:100%;box-sizing:border-box;min-height:4.5em;resize:vertical}
+button{cursor:pointer}
+textarea:focus-visible,input:focus-visible,button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+li{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 12px}
+li .when{color:#8a8a92;font-size:12px}
+li.ripe{border-color:#7cf}
+li .came{color:#7cf;white-space:pre-line}
+#stats{color:#8a8a92;font-size:13px;white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>sleep on it · draft · not published</h1>
+  <p class="note">Write down a problem you're stuck on, then leave it. After you've slept (the next calendar day), it comes back and asks what came to you. Stepping away from a problem often helps solve it, though nobody knows why for sure. This page keeps your own count of how often it worked. Everything stays in this browser.</p>
+  <form id="f"><textarea id="q" required maxlength="500" placeholder="what am I stuck on?" aria-label="the problem"></textarea><div style="margin-top:8px"><button type="submit">put it away until tomorrow</button></div></form>
+  <h2>ready to look at again</h2><ul id="ripe" aria-label="ready"></ul>
+  <h2>still resting</h2><ul id="resting" aria-label="resting"></ul>
+  <div id="stats" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.incubate.v1',items=[];
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(j))items=j}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(items))}catch(_){}}
+  function day(t){var d=new Date(t);return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate()}
+  // ripe once a calendar day has turned since it was put away (a night in between)
+  function ripe(x,now){return day(now)>day(x.at)}
+  function nights(x,now){return Math.max(0,Math.round((new Date(new Date(now).toDateString())-new Date(new Date(x.at).toDateString()))/864e5))}
+  function stats(xs){var done=xs.filter(function(x){return x.came!=null}),hit=done.filter(function(x){return x.came!==''});return {done:done.length,hit:hit.length}}
+  function el(tag,cls,text){var e=document.createElement(tag);if(cls)e.className=cls;if(text!=null)e.textContent=text;return e}
+  function draw(){
+    var now=Date.now(),R=document.getElementById('ripe'),S=document.getElementById('resting');R.textContent='';S.textContent='';
+    items.forEach(function(x,i){
+      var li=el('li',ripe(x,now)?'ripe':''),n=nights(x,now);
+      li.appendChild(el('div','',x.q));
+      li.appendChild(el('div','when','put away '+new Date(x.at).toLocaleDateString([],{weekday:'short',month:'short',day:'numeric'})+(n?' · '+n+(n===1?' night':' nights'):' · tonight')));
+      if(x.came!=null){li.appendChild(el('div','came',x.came?'came to you: '+x.came:'nothing came yet'));}
+      else if(ripe(x,now)){
+        var a=el('input');a.placeholder='what came to you? (leave empty if nothing)';a.style.width='100%';a.style.boxSizing='border-box';a.style.marginTop='8px';a.setAttribute('aria-label','what came to you');
+        var b=el('button','', 'save');b.type='button';b.style.marginTop='6px';
+        b.addEventListener('click',function(){items[i].came=a.value.trim();items[i].doneAt=Date.now();save();draw()});
+        li.appendChild(a);li.appendChild(b);
+      }
+      var rm=el('button','','remove');rm.type='button';rm.style.marginTop='6px';rm.style.marginLeft='6px';
+      rm.addEventListener('click',function(){items.splice(i,1);save();draw()});li.appendChild(rm);
+      ((x.came==null&&!ripe(x,now))?S:R).appendChild(li);
+    });
+    if(!R.children.length)R.appendChild(el('li','when','nothing yet; things come back the day after you put them away'));
+    var s=stats(items);document.getElementById('stats').textContent=s.done?('looked at again: '+s.done+' · something came: '+s.hit+' ('+Math.round(100*s.hit/s.done)+'%)'+(s.done<10?'\nunder 10 so far: too few to tell whether sleeping on it works for you':'')):'';
+  }
+  document.getElementById('f').addEventListener('submit',function(e){e.preventDefault();var q=document.getElementById('q');items.unshift({q:q.value.trim(),at:Date.now(),came:null});q.value='';save();draw()});
+  draw();
+  window.__incubate={ripe:ripe,nights:nights,stats:stats}; // for checks
+})();
+</script>
+</body>
+</html>

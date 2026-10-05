@@ -4,7 +4,17 @@
  * Everything runs in the browser (crypto for passwords, maths for the moon); only the QR image comes from goqr.me (no key).
  */
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
-  'title case': (s) => s.toLowerCase().replace(/\b\p{L}/gu, (c) => c.toUpperCase()), reverse: (s) => Array.from(s).reverse().join('') };
+  // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
+  'title case': (s) => { const w = s.toLowerCase().split(/(\s+)/), last = w.length - 1; return w.map((x, i) => (i && i !== last && SMALL.has(x)) ? x : x.replace(/^\p{L}/u, (c) => c.toUpperCase())).join(''); },
+  reverse: (s) => Array.from(s).reverse().join(''), 'reverse words': (s) => s.trim().split(/\s+/).reverse().join(' ') };
+const SMALL = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'so', 'yet', 'at', 'by', 'in', 'of', 'on', 'to', 'up', 'as', 'via', 'vs']);
+// syllables by vowel groups, with the usual English corrections (silent final e, -le, -ed); right for most words, labelled "about"
+export function syllables(w) {
+  w = String(w).toLowerCase().replace(/[^a-z]/g, ''); if (!w) return 0; if (w.length <= 3) return 1;
+  let s = w.replace(/(?:[^laeiouy]es|[^laeiouy]ed|[^laeiouy]e)$/, '').replace(/^y/, '');
+  const n = (s.match(/[aeiouy]+/g) || []).length + (/[^aeiouy]le$/.test(w) ? 1 : 0) - (/[^aeiouy]le$/.test(w) && /e$/.test(s) ? 1 : 0);
+  return Math.max(1, n);
+}
 const NAMED = { red: '#ff0000', green: '#008000', blue: '#0000ff', teal: '#008080', navy: '#000080', orange: '#ffa500', purple: '#800080', pink: '#ffc0cb', gold: '#ffd700', coral: '#ff7f50', salmon: '#fa8072', turquoise: '#40e0d0', indigo: '#4b0082', violet: '#ee82ee', maroon: '#800000', olive: '#808000', lime: '#00ff00', cyan: '#00ffff', magenta: '#ff00ff', black: '#000000', white: '#ffffff', gray: '#808080', grey: '#808080', brown: '#a52a2a', beige: '#f5f5dc', lavender: '#e6e6fa' };
 export function utilOf(text) {
   const raw = String(text || '').trim(), t = raw.replace(/[?!.]+$/, '').replace(/\s+/g, ' '), l = t.toLowerCase();
@@ -17,15 +27,46 @@ export function utilOf(text) {
   // "what color is rgb 255 0 0", "rgb(0, 128, 255)"
   m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?)?rgb\s*\(?\s*(\d{1,3})[\s,]+(\d{1,3})[\s,]+(\d{1,3})\s*\)?$/);
   if (m && [m[1], m[2], m[3]].every((v) => +v <= 255)) return { kind: 'color', c: '#' + [m[1], m[2], m[3]].map((v) => (+v).toString(16).padStart(2, '0')).join('') };
-  m = t.match(/^(?:word\s+count|count\s+(?:the\s+)?words)\s+(?:of|in|for)\s+(.+)$/i) || t.match(/^how\s+many\s+words\s+(?:are\s+)?in\s+(.+)$/i);
+  m = t.match(/^(?:word\s+count|count\s+(?:the\s+)?words)(?:\s+(?:of|in|for)\s+|\s*:\s*)(.+)$/i) || t.match(/^how\s+many\s+words\s+(?:are\s+)?in\s+(.+)$/i);
   if (m) return { kind: 'count', s: m[1].replace(/^["“]|["”]$/g, '') };
-  m = t.match(/^(uppercase|upper case|lowercase|lower case|title case|reverse)\s+(?:this:?\s+)?(.+)$/i);
-  if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] };
-  if (/^(?:what(?:'s| is)\s+)?(?:the\s+)?moon\s+phase(?:\s+(?:tonight|today|now))?$|^(?:what\s+)?phase\s+(?:is\s+)?(?:of\s+)?the\s+moon(?:\s+in)?(?:\s+(?:tonight|today|now))?$|^is\s+it\s+a\s+full\s+moon(?:\s+tonight)?$/.test(l)) return { kind: 'moon' };
+  // "make it uppercase: hello world", "turn this into title case: ..."
+  m = t.match(/^(?:make|turn|convert|change|put)\s+(?:it|this|that|the\s+text)\s+(?:in(?:to)?\s+|to\s+)?(uppercase|upper case|lowercase|lower case|title case|all caps|caps)\s*:\s*(.+)$/i);
+  if (m) return { kind: 'case', how: /caps/i.test(m[1]) ? 'uppercase' : m[1].toLowerCase(), s: m[2] };
+  // "how many characters in supercalifragilistic", "character count of ..."
+  m = t.match(/^(?:how\s+many\s+(?:characters|letters|chars)\s+(?:are\s+)?in|(?:character|letter|char)\s+count\s+(?:of|in|for))\s+(.+)$/i);
+  if (m && /^(?:the\s+)?(?:english\s+)?alphabet$/i.test(m[1])) m = null; // a fact, not a count of the word "alphabet"
+  if (m) return { kind: 'count', s: m[1].replace(/^["“]|["”]$/g, ''), chars: true };
+  if (/^(?:generate|make|give\s+me|create|new)\s+(?:a\s+|an\s+)?(?:uuid|guid|unique\s+id)$|^(?:uuid|guid)$/i.test(t)) return { kind: 'uuid' };
+  m = t.match(/^(?:an?\s+)?emojis?\s+(?:for|of|that\s+means)\s+([a-z ]{2,20})$/i);
+  if (m && EMOJI[m[1].trim().toLowerCase()]) return { kind: 'emoji', w: m[1].trim().toLowerCase() };
+  // "nato alphabet for hello", "spell hello in nato", "morse code for sos", "hello in binary"
+  m = t.match(/^(?:(?:the\s+)?(?:nato|phonetic)\s+(?:alphabet|spelling)\s+(?:for|of)\s+(.{1,40})|spell\s+(.{1,40}?)\s+(?:in|with\s+the)\s+(?:nato|phonetic)(?:\s+alphabet)?)$/i);
+  if (m) return { kind: 'nato', s: (m[1] || m[2]).trim() };
+  m = t.match(/^(?:(?:the\s+)?morse(?:\s+code)?\s+(?:for|of)\s+(.{1,60})|(.{1,60}?)\s+in\s+morse(?:\s+code)?)$/i);
+  if (m) return { kind: 'morse', s: (m[1] || m[2]).trim() };
+  m = t.match(/^(?:(?:the\s+)?(?:word|text)\s+)?["“']?([a-z ]{1,24}?)["”']?\s+in\s+binary$/i);
+  if (m && /[a-z]/i.test(m[1]) && !/^\d/.test(m[1])) return { kind: 'textbin', s: m[1] };
+  m = t.match(/^spell\s+(.+?)\s+backwards?$/i);
+  if (m) return { kind: 'case', how: 'reverse', s: m[1] };
+  // "reverse the words in hello big world"
+  m = t.match(/^reverse\s+(?:the\s+)?(?:order\s+of\s+(?:the\s+)?)?words\s+(?:in|of)\s*:?\s+(.+)$/i);
+  if (m) return { kind: 'case', how: 'reverse words', s: m[1] };
+  // "is racecar a palindrome", "is 'never odd or even' a palindrome"
+  m = t.match(/^is\s+["“']?(.+?)["”']?\s+a\s+palindrome$/i);
+  if (m) return { kind: 'palindrome', s: m[1] };
+  // "how many syllables in banana", "syllables in elephant"
+  m = l.match(/^(?:how\s+many\s+)?syllables?\s+(?:are\s+)?(?:in|does)\s+(?:the\s+word\s+)?["“']?([a-z'-]{1,30})["”']?(?:\s+have)?$|^how\s+many\s+syllables\s+does\s+["“']?([a-z'-]{1,30})["”']?\s+have$/);
+  if (m) return { kind: 'syllables', w: m[1] || m[2] };
+  m = t.match(/^(uppercase|upper case|lowercase|lower case|title case|reverse)\s*:?\s+(?:this:?\s+)?(.+)$/i);
+  if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2]) && !/^(?:\d+(?:\.\d+)?\s*)?(?:percentage|percent|%)/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] }; // "reverse percentage ..." is maths
+  if (/^(?:what(?:'s| is)\s+)?(?:the\s+)?moon\s+phase(?:\s+(?:tonight|today|now))?$|^(?:what\s+)?phase\s+(?:is\s+)?(?:of\s+)?the\s+moon(?:\s+in)?(?:\s+(?:tonight|today|now))?$|^is\s+it\s+a\s+full\s+moon(?:\s+tonight)?$|^when\s+is\s+the\s+next\s+(?:full|new)\s+moon$|^next\s+full\s+moon$/.test(l)) return { kind: 'moon' };
   m = l.match(/^(?:give\s+me\s+)?(?:some\s+|(\d{1,2})\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+(\d{1,2})\s+paragraphs?)?$/);
   if (m) return { kind: 'lorem', n: Math.max(1, Math.min(10, +(m[1] || m[2]) || 1)) };
   return null;
 }
+const NATO = { A: 'Alfa', B: 'Bravo', C: 'Charlie', D: 'Delta', E: 'Echo', F: 'Foxtrot', G: 'Golf', H: 'Hotel', I: 'India', J: 'Juliett', K: 'Kilo', L: 'Lima', M: 'Mike', N: 'November', O: 'Oscar', P: 'Papa', Q: 'Quebec', R: 'Romeo', S: 'Sierra', T: 'Tango', U: 'Uniform', V: 'Victor', W: 'Whiskey', X: 'X-ray', Y: 'Yankee', Z: 'Zulu', 0: 'Zero', 1: 'One', 2: 'Two', 3: 'Three', 4: 'Four', 5: 'Five', 6: 'Six', 7: 'Seven', 8: 'Eight', 9: 'Nine' };
+const MORSE = { A: '·−', B: '−···', C: '−·−·', D: '−··', E: '·', F: '··−·', G: '−−·', H: '····', I: '··', J: '·−−−', K: '−·−', L: '·−··', M: '−−', N: '−·', O: '−−−', P: '·−−·', Q: '−−·−', R: '·−·', S: '···', T: '−', U: '··−', V: '···−', W: '·−−', X: '−··−', Y: '−·−−', Z: '−−··', 0: '−−−−−', 1: '·−−−−', 2: '··−−−', 3: '···−−', 4: '····−', 5: '·····', 6: '−····', 7: '−−···', 8: '−−−··', 9: '−−−−·', '.': '·−·−·−', ',': '−−··−−', '?': '··−−··', '!': '−·−·−−', '/': '−··−·', '@': '·−−·−·' };
+const EMOJI = { happy: '😀 😊 😄', sad: '😢 😞 ☹️', love: '❤️ 😍 🥰', laugh: '😂 🤣', angry: '😠 😡', tired: '😴 🥱', cool: '😎', thinking: '🤔', party: '🎉 🥳', fire: '🔥', ok: '👌 👍', yes: '✅ 👍', no: '❌ 👎', thanks: '🙏', heart: '❤️', star: '⭐ 🌟', sun: '☀️', moon: '🌙', rain: '🌧️', snow: '❄️', coffee: '☕', pizza: '🍕', cake: '🎂', dog: '🐶', cat: '🐱', money: '💰 💵', idea: '💡', rocket: '🚀', music: '🎵 🎶', birthday: '🎂 🎉', surprised: '😮 😲', scared: '😱', sick: '🤒', cry: '😭', wink: '😉', kiss: '😘', clap: '👏', strong: '💪', eyes: '👀', skull: '💀', ghost: '👻', robot: '🤖', alien: '👽', earth: '🌍', flower: '🌸', tree: '🌳', car: '🚗', home: '🏠', book: '📚', phone: '📱', time: '⏰', warning: '⚠️', check: '✔️' };
 function hex(c) { c = NAMED[c] || c; c = c.replace('#', ''); if (c.length === 3) c = c.split('').map((x) => x + x).join(''); return '#' + c.toLowerCase(); }
 function hsl(h) { const r = parseInt(h.slice(1, 3), 16) / 255, g = parseInt(h.slice(3, 5), 16) / 255, b = parseInt(h.slice(5, 7), 16) / 255; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn; let H = 0;
   if (d) H = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; H = Math.round(H * 60 + 360) % 360; const L = (mx + mn) / 2, S = d ? d / (1 - Math.abs(2 * L - 1)) : 0;
@@ -58,10 +99,32 @@ async function run(text, api) {
       + '<ul><li><b>Hex</b> ' + esc(h) + '</li><li><b>RGB</b> ' + v.r + ', ' + v.g + ', ' + v.b + '</li><li><b>HSL</b> ' + v.h + '°, ' + v.s + '%, ' + v.l + '%</li></ul>'; });
   } else if (q.kind === 'count') {
     const words = (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length, chars = Array.from(q.s).length, noSp = Array.from(q.s.replace(/\s/g, '')).length;
-    el = showPage((p) => { p.innerHTML = '<h2>Word count</h2>' + big(words + (words === 1 ? ' word' : ' words'), 44) + '<p style="color:#8a8a8a">' + chars + ' characters (' + noSp + ' without spaces)</p>'; });
+    el = q.chars
+      ? showPage((p) => { p.innerHTML = '<h2>Characters</h2>' + big(chars + (chars === 1 ? ' character' : ' characters'), 44) + '<p style="color:#8a8a8a">' + noSp + ' without spaces · ' + words + (words === 1 ? ' word' : ' words') + '</p>'; })
+      : showPage((p) => { p.innerHTML = '<h2>Word count</h2>' + big(words + (words === 1 ? ' word' : ' words'), 44) + '<p style="color:#8a8a8a">' + chars + ' characters (' + noSp + ' without spaces)</p>'; });
+  } else if (q.kind === 'uuid') {
+    const id = (crypto.randomUUID && crypto.randomUUID()) || 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => { const r = crypto.getRandomValues(new Uint8Array(1))[0] % 16; return (c === 'x' ? r : (r & 3) | 8).toString(16); });
+    el = showPage((p) => { p.innerHTML = '<h2>UUID</h2>' + big(id, 22) + copyBtn + '<p style="color:#8a8a8a">version 4, random, made in your browser · ask again for another</p>'; });
+  } else if (q.kind === 'emoji') {
+    el = showPage((p) => { p.innerHTML = '<h2>Emoji for “' + esc(q.w) + '”</h2>' + big(EMOJI[q.w], 44) + copyBtn; });
   } else if (q.kind === 'case') {
     const out = CASES[q.how](q.s);
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(q.how.charAt(0).toUpperCase() + q.how.slice(1)) + '</h2>' + big(out, 28) + copyBtn; });
+  } else if (q.kind === 'palindrome') {
+    const k = Array.from(q.s.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '')), yes = k.length > 1 && k.join('') === k.slice().reverse().join('');
+    el = showPage((p) => { p.innerHTML = '<h2>Palindrome?</h2>' + big(yes ? 'Yes' : 'No', 44) + '<p style="color:#8a8a8a">“' + esc(q.s) + '” ' + (yes ? 'reads the same backwards' : 'backwards is “' + esc(Array.from(q.s).reverse().join('')) + '”') + ' (ignoring spaces, punctuation and case)</p>'; });
+  } else if (q.kind === 'syllables') {
+    const n = syllables(q.w);
+    el = showPage((p) => { p.innerHTML = '<h2>Syllables</h2>' + big(n + (n === 1 ? ' syllable' : ' syllables'), 44) + '<p style="color:#8a8a8a">“' + esc(q.w) + '”, counted by its vowel sounds; a few words break the rules</p>'; });
+  } else if (q.kind === 'nato') {
+    const words = Array.from(q.s.toUpperCase()).map((c) => NATO[c] || (c === ' ' ? '·' : c)).join(' ');
+    el = showPage((p) => { p.innerHTML = '<h2>NATO alphabet</h2>' + big(words, 24) + copyBtn + '<p style="color:#8a8a8a">“' + esc(q.s) + '” letter by letter</p>'; });
+  } else if (q.kind === 'morse') {
+    const code = Array.from(q.s.toUpperCase()).map((c) => (c === ' ' ? '/' : MORSE[c] || '')).filter(Boolean).join(' ');
+    el = showPage((p) => { p.innerHTML = '<h2>Morse code</h2>' + big(code, 28) + copyBtn + '<p style="color:#8a8a8a">“' + esc(q.s) + '” · letters split by spaces, words by /</p>'; });
+  } else if (q.kind === 'textbin') {
+    const bin = Array.from(new TextEncoder().encode(q.s)).map((b) => b.toString(2).padStart(8, '0')).join(' ');
+    el = showPage((p) => { p.innerHTML = '<h2>In binary</h2>' + big(bin, 20) + copyBtn + '<p style="color:#8a8a8a">“' + esc(q.s) + '” as 8-bit UTF-8 bytes</p>'; });
   } else if (q.kind === 'moon') {
     const m = moonPhase();
     el = showPage((p) => { p.innerHTML = '<h2>The moon</h2>' + big(m.name, 44) + '<p style="color:#8a8a8a">' + m.lit + '% lit · ' + m.age.toFixed(1) + ' days into its cycle · next full moon ' + esc(m.nextFull.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })) + '</p><div class="sub">worked out from the mean lunar cycle; within about a day</div>'; });
@@ -75,7 +138,7 @@ async function run(text, api) {
 export default {
   name: 'util',
   examples: ['generate a password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'moon phase tonight'],
-  nearMisses: ['reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of'],
+  nearMisses: ['what is a palindrome', 'reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of'],
   match(lower, text) { return !!utilOf(text); },
   run
 };

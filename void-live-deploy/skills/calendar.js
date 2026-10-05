@@ -15,6 +15,14 @@ function gated(text) {
   const s = CLEAN(text).replace(/^(?:please\s+)/i, '');
   if (/^schedule\s+(?:a\s+|an\s+)?(?:meeting|call)\s+with\b/i.test(s)) return true;
   if (/^book\s+(?:a\s+|an\s+)?(?:meeting|call)\s+with\b/i.test(s)) return true;
+  // "pace for a 5k in 25 minutes": running maths, not a date
+  if (/^(?:what(?:'s|\s+is)\s+(?:the\s+|my\s+)?)?pace\s+(?:for|to\s+run)\b|\bin\s+[\d:.]+\s*(?:minutes?|mins?|hours?|hrs?)?\s+pace$/i.test(s)) return true;
+  // "double 3/4 cup", "half of 2/3 cup": recipe maths, not a date
+  if (/^(?:double|triple|halve|half\s+of|a\s+third\s+of|quarter\s+of)\s+\d+\s*\/\s*\d+(?:\s+(?:cups?|tablespoons?|tbsp|teaspoons?|tsp|pounds?|lbs?|ounces?|oz))?$/i.test(s)) return true;
+  // "hours from 8:30am to 4pm": clock maths, not an event
+  if (/^(?:how\s+(?:many\s+(?:hours|minutes)|long|much\s+time)\s+(?:is\s+(?:it\s+)?)?|(?:the\s+)?(?:hours|time|minutes)\s+)(?:between|from)\s+\d{1,2}(?::\d{2})?\s*(?:am|pm)\s+(?:and|to|until|till)\s+\d{1,2}(?::\d{2})?\s*(?:am|pm)\??$/i.test(s)) return true;
+  // "simplify 18/24", "reduce 6/8": a fraction, not a date
+  if (/^(?:simplify|reduce)\s+(?:the\s+)?(?:ratio\s+)?\d+\s*[/:]\s*\d+$/i.test(s)) return true;
   // "remind me to stretch in 20 minutes": a timer from now, not a calendar entry
   if (/^(?:remind|wake|ping|alert|buzz)\s+me\b.*\bin\s+(?:\d+(?:\.\d+)?|a|an|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|half\s+an?)\s*(?:minutes?|mins?|hours?|hrs?|seconds?|secs?)\b/i.test(s)) return true;
   return false;

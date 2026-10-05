@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · how awake am I (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+h2{font-size:13px;font-weight:normal;color:#8a8a92;margin:8px 0 0;text-transform:uppercase;letter-spacing:.05em}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 14px;cursor:pointer}
+button:focus-visible,#pad:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+#pad{height:220px;border:1px solid rgba(255,255,255,.12);border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:42px;font-variant-numeric:tabular-nums;user-select:none;touch-action:manipulation;cursor:pointer}
+#pad.on{border-color:#7cf;color:#7cf}
+#pad.early{border-color:#c66}
+#result{white-space:pre-line}
+table{border-collapse:collapse;font-size:13px}
+td,th{padding:3px 10px 3px 0;text-align:left;font-weight:normal}
+th{color:#8a8a92}
+</style>
+</head>
+<body>
+<main>
+  <h1>how awake am I · draft · not published</h1>
+  <p class="note">A two-minute reaction test. A counter starts at random moments; tap the box (or press space) as soon as you see it. Sleep labs use a longer version of this to measure tiredness: the slow taps ("lapses", over half a second) go up when you are short on sleep. This page keeps your own results by time of day, so you can see when you are sharpest. It is a rough home version, not a medical test. Everything stays in this browser.</p>
+  <div><button id="go" type="button">start a 2-minute check</button></div>
+  <div id="pad" tabindex="0" role="button" aria-label="tap when the counter appears">·</div>
+  <div id="result" aria-live="polite"></div>
+  <h2>your checks</h2>
+  <table><thead><tr><th>when</th><th>median</th><th>lapses</th><th>early taps</th></tr></thead><tbody id="log"></tbody></table>
+  <div id="bytime" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.pvt.v1',LEN=120000,LAPSE=500,runs=[];
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(j))runs=j}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(runs.slice(0,200)))}catch(_){}}
+  function median(xs){if(!xs.length)return null;var s=xs.slice().sort(function(a,b){return a-b}),m=s.length>>1;return s.length%2?s[m]:Math.round((s[m-1]+s[m])/2)}
+  // one run's score: median reaction, lapses (>=500 ms), early taps (before the counter showed)
+  function score(rts,early){return {median:median(rts),lapses:rts.filter(function(r){return r>=LAPSE}).length,taps:rts.length,early:early}}
+  function part(h){return h<6?'night':h<12?'morning':h<18?'afternoon':'evening'}
+  // medians grouped by part of day, only parts with at least 3 checks count
+  function byPart(rs){var g={};rs.forEach(function(r){if(r.median==null)return;var p=part(new Date(r.at).getHours());(g[p]=g[p]||[]).push(r.median)});var out=[];Object.keys(g).forEach(function(p){if(g[p].length>=3)out.push({part:p,median:median(g[p]),n:g[p].length})});return out.sort(function(a,b){return a.median-b.median})}
+  var pad=document.getElementById('pad'),go=document.getElementById('go'),res=document.getElementById('result');
+  var live=null;
+  function wait(){return 2000+Math.random()*8000} // 2 to 10 s between counters, as in the lab version
+  function arm(){if(!live)return;live.shownAt=0;pad.className='';pad.textContent='·';live.t=setTimeout(show,wait())}
+  function show(){if(!live)return;if(Date.now()-live.start>=LEN)return finish();live.shownAt=performance.now();pad.className='on';(function tick(){if(!live||!live.shownAt)return;var t=performance.now()-live.shownAt;if(t>=10000)return tap();pad.textContent=Math.round(t);live.raf=requestAnimationFrame(tick)})()} // a missed counter ends at 10 s and counts as a lapse
+  function tap(){
+    if(!live)return;
+    if(!live.shownAt){live.early++;pad.className='early';pad.textContent='too soon';clearTimeout(live.t);setTimeout(arm,600);return}
+    var rt=Math.round(performance.now()-live.shownAt);cancelAnimationFrame(live.raf);live.rts.push(rt);live.shownAt=0;pad.textContent=rt+' ms';
+    if(Date.now()-live.start>=LEN)return finish();
+    live.t=setTimeout(function(){pad.textContent='·';pad.className='';live&&(live.t=setTimeout(show,wait()))},500);
+  }
+  function finish(){if(!live)return;clearTimeout(live.t);cancelAnimationFrame(live.raf);var s=score(live.rts,live.early);s.at=live.start;live=null;go.disabled=false;pad.className='';pad.textContent='done';
+    if(s.taps<5){res.textContent='too few taps to score; try again somewhere quiet';draw();return}
+    runs.unshift(s);save();res.textContent='median '+s.median+' ms · '+s.lapses+' slow '+(s.lapses===1?'tap':'taps')+' (over half a second) · '+s.early+' early';draw()}
+  go.addEventListener('click',function(){if(live)return;live={start:Date.now(),rts:[],early:0,shownAt:0};go.disabled=true;res.textContent='watch the box';pad.focus();arm()});
+  pad.addEventListener('pointerdown',function(e){e.preventDefault();tap()});
+  document.addEventListener('keydown',function(e){if(live&&(e.code==='Space'||e.key===' ')){e.preventDefault();tap()}});
+  function draw(){
+    var tb=document.getElementById('log');tb.textContent='';
+    runs.slice(0,20).forEach(function(r){var tr=document.createElement('tr');[new Date(r.at).toLocaleString([],{weekday:'short',hour:'numeric',minute:'2-digit'}),r.median+' ms',r.lapses,r.early].forEach(function(v){var td=document.createElement('td');td.textContent=v;tr.appendChild(td)});tb.appendChild(tr)});
+    var bp=byPart(runs);document.getElementById('bytime').textContent=bp.length>1?'fastest in the '+bp[0].part+' ('+bp[0].median+' ms over '+bp[0].n+' checks), slowest in the '+bp[bp.length-1].part+' ('+bp[bp.length-1].median+' ms)':'do at least 3 checks at two different times of day to compare them';
+  }
+  draw();
+  window.__pvt={median:median,score:score,byPart:byPart,part:part}; // for checks
+})();
+</script>
+</body>
+</html>

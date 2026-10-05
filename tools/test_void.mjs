@@ -212,6 +212,7 @@ const gum = await import(new URL('../void-live-deploy/lib/gumroad.js', import.me
 const storeDb = await import(new URL('../void-live-deploy/lib/store-db.js', import.meta.url).href);
 const answerFn = await import(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url).href);
 const willFn = await import(new URL('../void-live-deploy/functions/api/will.js', import.meta.url).href);
+const figurescriptFn = await import(new URL('../void-live-deploy/functions/api/figurescript.js', import.meta.url).href);
 const earnFn = await import(new URL('../void-live-deploy/functions/api/earnings.js', import.meta.url).href);
 const publishFn = await import(new URL('../void-live-deploy/functions/api/publish.js', import.meta.url).href);
 const pageFn = await import(new URL('../void-live-deploy/functions/[handle].js', import.meta.url).href);
@@ -364,6 +365,11 @@ async function fresh(...inits) {
     if (u.includes('/api/misses')) { missesCalls.push(u); return r.fulfill(json([])); }
     if (/\/api\/(passkey|mine)$/.test(new URL(u).pathname)) return meRoute(r);
     if (/\/api\/catalog$/.test(new URL(u).pathname)) return catalogRoute(r);
+    if (u.includes('/api/figurescript')) {
+      const body = r.request().method() === 'POST' ? JSON.parse(r.request().postData() || '{}') : Object.fromEntries(new URL(u).searchParams);
+      return figurescriptFn.onRequestPost({ request: new Request('http://x/api/figurescript', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env: {} })
+        .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
+    }
     return r.fulfill({ status: 204, body: '' });
   });
   const p = await ctx.newPage();
@@ -820,8 +826,10 @@ try {
     if (!process.env.VOID_SKIP_BENCH) { const run = spawnSync(process.execPath, [path.join(root, '..', 'tools', 'bench.mjs'), '--score'], { encoding: 'utf8', timeout: 600000 });
       let b = null; try { b = JSON.parse(String(run.stdout).trim().split('\n').pop()); } catch (_) {}
       const best = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'bench.best.json'), 'utf8'));
+      const detail = b ? (b.score + '/' + b.total + ' wrong: ' + (b.wrong || []).join(' | '))
+        : ('bench --score produced no JSON (status=' + run.status + ' signal=' + run.signal + ' err=' + String(run.stderr || '').slice(0, 200) + ' out=' + String(run.stdout || '').slice(-200) + ')');
       check('bench: the everyday benchmark scores at least its best (' + best.score + ' of ' + best.total + '); each ask answered by what should answer it',
-        !!b && b.score >= best.score && b.total >= best.total, b ? b.score + '/' + b.total + ' wrong: ' + b.wrong.join(' | ') : String(run.stderr).slice(0, 300)); }
+        !!b && b.score >= best.score && b.total >= best.total, detail); }
     check('grown: ' + grown.length + ' real asks Void once missed now answer on the real page (no miss posted, the right answer); the list only grows',
       shape && !bad.length && grown.length >= 15 && !R.errors.length, bad.join(' | ') + ' ' + R.errors.join('|'));
     await R.ctx.close(); }
@@ -2292,6 +2300,195 @@ try {
     await A18.ctx.close();
   }
 
+  // Board Next #19: behavior scripts from Workers AI, with a fallback. Pure trim/fallback offline; API paths for AI / cache / off.
+  {
+    const Scr = await import(new URL('../void-live-deploy/skills/scripts.js', import.meta.url).href);
+    const F3 = await import(new URL('../void-live-deploy/skills/figures3d.js', import.meta.url).href);
+    const fbPerson = Scr.fallbackScript('person', 'Marie Curie');
+    const fbVolcano = Scr.fallbackScript('place', 'Volcano');
+    const trimmed = Scr.trimScript({ drives: ['wander', 'fly', 'notice'], actions: ['stir', 'explode', 'wave', 'look'] }, 'person', 'Chef');
+    const empty = Scr.trimScript({ drives: [], actions: [] }, 'animal', 'Fox');
+    const junk = Scr.trimScript('not-json', 'idea');
+    check('scripts (#19): fallbackScript gives each base body known drives and actions; every figure works without AI',
+      Scr.KNOWN_DRIVES.length === 3 && Scr.KNOWN_ACTIONS.length >= 10 && !!Scr.FALLBACKS.person
+      && fbPerson.source === 'fallback' && fbPerson.actions.includes('wave') && fbPerson.drives.includes('wander')
+      && fbVolcano.body === 'place' && fbVolcano.actions.every((a) => Scr.KNOWN_ACTIONS.includes(a))
+      && typeof F3.fallbackScript === 'function' && F3.fallbackScript('sprite').actions.includes('look'),
+      JSON.stringify({ fbPerson, fbVolcano }));
+    check('scripts (#19): trimScript drops unknown drives/actions and collapses junk to the body fallback',
+      trimmed.drives.includes('wander') && trimmed.drives.includes('notice') && !trimmed.drives.includes('fly')
+      && trimmed.actions.includes('stir') && trimmed.actions.includes('wave') && !trimmed.actions.includes('explode')
+      && empty.actions.length >= 1 && empty.drives.length >= 1 && junk.source === 'fallback' && junk.body === 'idea',
+      JSON.stringify({ trimmed, empty, junk }));
+    // Brain picks idle acts from the script (stir -> wave visual).
+    const brain = F3.makeBrain({ body: 'person', script: trimmed, x: 100, y: 100 }, () => 0);
+    check('scripts (#19): makeBrain keeps a trimmed script; pickIdleAction + visualAct map stir to wave',
+      !!brain.script && brain.script.actions.includes('stir') && Scr.visualAct('stir') === 'wave' && Scr.pickIdleAction(trimmed, () => 0) === 'stir',
+      JSON.stringify(brain.script));
+    // API: AI off -> fallback; AI on -> script once then cache reuse; unknown actions trimmed.
+    const mem = new Map();
+    const fakeDB = {
+      prepare(sql) {
+        const self = {
+          _b: [],
+          bind(...a) { self._b = a; return self; },
+          async first(col) {
+            if (/CREATE/i.test(sql)) return null;
+            if (/SELECT script/i.test(sql)) {
+              const row = mem.get(self._b[0]);
+              if (!row) return null;
+              return col ? row[col] : row;
+            }
+            return null;
+          },
+          async run() {
+            if (/CREATE/i.test(sql)) return { success: true };
+            if (/INSERT INTO void_figure_scripts/i.test(sql)) {
+              mem.set(self._b[0], { id: self._b[0], body: self._b[1], script: self._b[2], at: self._b[3] });
+              return { success: true };
+            }
+            return { success: true };
+          },
+        };
+        return self;
+      },
+    };
+    const off = await (await figurescriptFn.onRequestPost({
+      request: new Request('http://x/api/figurescript', { method: 'POST', body: JSON.stringify({ title: 'Marie Curie', body: 'person', description: 'physicist (1867–1934)', extract: 'Nobel Prize' }) }),
+      env: {},
+    })).json();
+    const aiCalls = [];
+    const aiEnv = {
+      DB: fakeDB,
+      AI: {
+        run: async (model, opts) => {
+          aiCalls.push(opts);
+          return { response: JSON.stringify({ drives: ['wander', 'idle', 'teleport'], actions: ['stir', 'read', 'look', 'fly'] }) };
+        },
+      },
+    };
+    const ai1 = await (await figurescriptFn.onRequestPost({
+      request: new Request('http://x/api/figurescript', { method: 'POST', body: JSON.stringify({ title: 'Marie Curie', body: 'person', description: 'physicist (1867–1934)' }) }),
+      env: aiEnv,
+    })).json();
+    const ai2 = await (await figurescriptFn.onRequestPost({
+      request: new Request('http://x/api/figurescript', { method: 'POST', body: JSON.stringify({ title: 'Marie Curie', body: 'person', description: 'physicist (1867–1934)' }) }),
+      env: aiEnv,
+    })).json();
+    check('scripts (#19): /api/figurescript returns fallback with AI off; with AI writes once, trims unknowns, and reuses the D1 cache',
+      off.source === 'fallback' && off.script && off.script.actions.length >= 1
+      && ai1.source === 'ai' && ai1.script.actions.includes('stir') && ai1.script.actions.includes('read') && !ai1.script.actions.includes('fly')
+      && !ai1.script.drives.includes('teleport') && ai2.source === 'cache' && aiCalls.length === 1,
+      JSON.stringify({ off, ai1, ai2, aiCalls: aiCalls.length }));
+    // Browser: article summon carries a fallback script on the figure; three.js stays lazy until then.
+    const wikiPerson = {
+      type: 'standard', title: 'Marie Curie', description: 'Polish-French physicist and chemist (1867–1934)',
+      extract: 'Marie Skłodowska Curie was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.',
+      content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Marie_Curie' } },
+      timestamp: '2026-01-01T00:00:00Z',
+    };
+    const A19 = await fresh();
+    const hits19 = [];
+    A19.p.on('request', (r) => { const u = r.url(); if (/three@|figures3d|bodies\.js|scripts\.js|figurescript/.test(u)) hits19.push(u.replace(/^.*\/\/[^/]+/, '')); });
+    const figSrc19 = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const names19 = Array.from(new Set(Array.from(figSrc19.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUB19 = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + names19.map((n) => n + '=U').join(',') + ';';
+    await A19.ctx.route(/cdn\.jsdelivr\.net\/npm\/three@/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB19 }));
+    await A19.ctx.route(/en\.wikipedia\.org/, async (rt) => {
+      const u = rt.request().url();
+      if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(json({ query: { search: [{ title: 'Marie Curie' }] } }));
+      if (/api\.php/.test(u) && /generator=search/.test(u)) return rt.fulfill(json({ query: { pages: { 1: { title: 'Marie Curie', description: wikiPerson.description, index: 1 } } } }));
+      if (/page\/summary/.test(u)) return rt.fulfill(json(wikiPerson));
+      return rt.fulfill(json({}));
+    });
+    await A19.ask('who is Marie Curie', 900);
+    const fig19 = await until(async () => {
+      const v = await A19.p.evaluate(() => (window.__void3d ? window.__void3d.state() : null));
+      return v && v.figures && v.figures.some((f) => f.body === 'person' && f.script && f.script.actions && f.script.actions.length) ? v : false;
+    }, 8000);
+    const person19 = fig19 && fig19.figures.find((f) => f.body === 'person');
+    const state19 = await A19.state();
+    const staged = state19.find((x) => x.kind === 'figure' && x.body === 'person');
+    check('scripts (#19): "who is Marie Curie" brings a dressed person figure that already carries a fallback behavior script; /api/figurescript is called; figures3d imports scripts.js',
+      !!fig19 && !!person19 && !!person19.script && person19.script.actions.every((a) => Scr.KNOWN_ACTIONS.includes(a))
+      && person19.script.drives.every((d) => Scr.KNOWN_DRIVES.includes(d))
+      && staged && staged.script && staged.script.actions && staged.script.actions.length
+      && hits19.some((u) => /\/api\/figurescript/.test(u))
+      && /from '\.\/scripts\.js'/.test(figSrc19) && !A19.errors.length,
+      JSON.stringify({ person19, stagedScript: staged && staged.script, hits: hits19, e: A19.errors }));
+    await A19.ask('send them away', 700);
+    await A19.ctx.close();
+  }
+
+  // Board Next #20: figures react to each other (reactsTo × tags). Pure pickers + brain chase/flee; reduced motion holds still.
+  {
+    const Scr = await import(new URL('../void-live-deploy/skills/scripts.js', import.meta.url).href);
+    const F3 = await import(new URL('../void-live-deploy/skills/figures3d.js', import.meta.url).href);
+    const police = Scr.fallbackScript('person', 'Police officer');
+    const bad = Scr.fallbackScript('person', 'Troublemaker thief');
+    const fox = Scr.fallbackScript('animal', 'Red fox');
+    const junkR = Scr.trimScript({ drives: ['wander'], actions: ['wave'], tags: ['alien', 'police'], reactsTo: { troublemaker: 'chase', ghost: 'haunt', person: 'hug' } }, 'person', 'Police officer');
+    check('react (#20): fallback tags + reactsTo — police chases troublemaker, troublemaker flees police; unknown react names trimmed',
+      police.tags.includes('police') && bad.tags.includes('troublemaker')
+      && Scr.pickReaction(police, bad) === 'chase' && Scr.pickReaction(bad, police) === 'flee'
+      && Scr.pickReaction(fox, fox) === 'team'
+      && junkR.tags.includes('police') && !junkR.tags.includes('alien')
+      && junkR.reactsTo.troublemaker === 'chase' && !junkR.reactsTo.ghost && junkR.reactsTo.person === 'greet',
+      JSON.stringify({ police, bad, junkR }));
+    const rng = () => 0.5;
+    const cop = F3.makeBrain({ id: 'cop', x: 100, y: 100, body: 'person', script: police, title: 'Police officer' }, rng);
+    const crook = F3.makeBrain({ id: 'crook', x: 130, y: 100, body: 'person', script: bad, title: 'Troublemaker thief' }, rng);
+    const world = { bounds: { l: 0, t: 0, r: 800, b: 600 }, rects: [], cursor: null, still: false, posing: false, others: [cop, crook] };
+    for (let i = 0; i < 50; i++) { F3.stepFigure(cop, 0.05, world, rng); F3.stepFigure(crook, 0.05, world, rng); }
+    check('react (#20): nearby police + troublemaker — chase catches and marks chasedOff; flee runs',
+      crook.chasedOff === true,
+      JSON.stringify({ copMode: cop.mode, copReact: cop.react, crookMode: crook.mode, crookReact: crook.react, off: crook.chasedOff, cx: cop.x, bx: crook.x }));
+    const c2 = F3.makeBrain({ id: 'cop2', x: 100, y: 100, body: 'person', script: police }, rng);
+    const k2 = F3.makeBrain({ id: 'crook2', x: 120, y: 100, body: 'person', script: bad }, rng);
+    F3.stepFigure(c2, 0.05, { bounds: world.bounds, rects: [], cursor: null, still: true, posing: false, others: [c2, k2] }, rng);
+    F3.stepFigure(k2, 0.05, { bounds: world.bounds, rects: [], cursor: null, still: true, posing: false, others: [c2, k2] }, rng);
+    check('react (#20): reduced motion holds both still with no reaction',
+      c2.mode === 'still' && k2.mode === 'still' && !c2.react && !k2.react && !k2.chasedOff,
+      JSON.stringify({ c2: c2.mode, k2: k2.mode, r: c2.react }));
+    check('react (#20): figures3d re-exports pickReaction / KNOWN_REACTS',
+      typeof F3.pickReaction === 'function' && Array.isArray(F3.KNOWN_REACTS) && F3.KNOWN_REACTS.includes('chase'),
+      String(typeof F3.pickReaction));
+  }
+
+  // Watchdog #110: four money/GPA asks came back "said" (no log entry) because they wait for the skills ("waking up") and the
+  // skill loader imported 55 modules one after another. Near misses: no learned skill (figures, aggravation, ...) may claim them,
+  // and with a slow link to /skills/ they still reach the math/finance answer inside the benchmark's window.
+  {
+    const MONEY = [['loan payment on 20000 at 6% for 5 years', /^skill:loan$/, /386/, 'loan'], ['how much is 5 dollars a day for a year', /^calc$/, /1,?825/, null],
+      ['compound interest on 1000 at 5% for 10 years', /^(calc|skill:loan)$/, /1,?628/, null], ['what is the gpa of 3.5 and 4.0', /^calc$/, /3\.75/, null]];
+    const claimed = MONEY.map(([a, , , want]) => ({ a, by: nsMods.filter((s) => s.match(a.toLowerCase(), a)).map((s) => s.name), want }));
+    check('money/GPA near misses (#110): no figures, behavior or aggravation skill claims loan payment, $5 a day for a year, compound interest or a GPA; only loan takes the loan ask',
+      claimed.every((c) => c.want ? c.by.length >= 1 && c.by[0] === c.want : c.by.length === 0)
+      && claimed.every((c) => !c.by.some((n) => /figure|cartoon|aggravation|zoom|dismiss|throw/.test(n))),
+      JSON.stringify(claimed));
+    const loaderSrc = fs.readFileSync(path.join(root, '..', 'void.html'), 'utf8');
+    const slow = await Promise.all(MONEY.map(async ([a, note, value]) => {
+      const ctx = await browser.newContext();
+      await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
+      await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => r.fulfill({ status: 204, body: '' }));
+      await ctx.route(/127\.0\.0\.1:\d+\/skills\/.*\.js$/, (r) => setTimeout(() => r.continue().catch(() => {}), 80)); // a slow link: 80 ms per skill file
+      const p = await ctx.newPage(); await p.goto(base); await p.waitForTimeout(600);
+      await p.fill('#input', a); await p.keyboard.press('Enter'); const t0 = Date.now();
+      const ok = await until(() => p.evaluate((q) => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => x.ask === q), a), 4000);
+      const last = (await p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'))).filter((x) => x.ask === a).pop();
+      const shown = await until(async () => { const txt = await p.evaluate(() => document.body.innerText); return value.test(txt) ? txt : false; }, 3000);
+      const w = await p.$eval('#whisper', (e) => e.textContent).catch(() => '');
+      await ctx.close();
+      return { a, ms: ok ? Date.now() - t0 : null, note: last ? last.note : null, right: !!last && note.test(String(last.note)) && !!shown, w };
+    }));
+    check('money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load at once (Promise.all), and no "waking up" is left behind',
+      slow.every((x) => x.right && x.ms != null && x.ms < 4000 && x.w !== 'waking up')
+      && /const mods = await Promise\.all\(index\.map\(\(name\) => import\('\/skills\/' \+ name \+ '\.js'\)/.test(loaderSrc)
+      && !/for \(const name of index\) \{\s*try \{\s*const mod = await import/.test(loaderSrc),
+      JSON.stringify(slow));
+  }
+
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
     !!esMod && esMod.examples.length >= 4 && (esMod.nearMisses || []).length >= 3
       && esMod.examples.every((e) => firstNs(e) === 'spanish') && esMod.nearMisses.every((e) => firstNs(e) !== 'spanish')
@@ -2366,7 +2563,7 @@ try {
   const calls = [];
   let paidDown = false;
   const fakeAI = ({ embed = 'ok', strong = 'ok', embedDelay = 0, gemma = 'ok' } = {}) => ({ run: async (m, o) => {
-    calls.push({ m, n: o.text ? o.text.length : 0, sys: o.messages && o.messages[0].content });
+    calls.push({ m, n: o.text ? o.text.length : 0, sys: o.messages && o.messages[0].content, user: o.messages && o.messages[1] && o.messages[1].content });
     if (m === R.EMBED_MODEL) {
       if (embed === 'throw') throw new Error('embeddings down');
       if (embed === 'hang') return new Promise(() => {});
@@ -2414,6 +2611,37 @@ try {
     check('router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)',
       s1.answer === 'Gemma: a short answer [1].' && s1.route === 'simple' && s1.sources.length === 1 && calls.filter((c) => c.m === R.DEFAULT_MODEL).every((c) => /^You are Void\. Answer the question directly and completely/.test(c.sys) && !/if the sources do not answer it, say briefly what you could not find/i.test(c.sys) && /never refuse/i.test(c.sys)) && rowOf(e1, 'who wrote the odyssey').outcome === 'default',
       JSON.stringify(s1).slice(0, 200));
+    // Self-grounding: an ask about Void itself is answered from its own facts (self.json, skills/index.json, the will), not Wikipedia
+    {
+      const SC = await import(new URL('../void-live-deploy/lib/self-context.js', import.meta.url).href);
+      const yes = ["what's next — more scouting-report features, or something else?", 'what are you building', "what's in your growth inbox", 'what does Void want to learn next', 'what can you do'];
+      const no = ['who wrote the odyssey', 'how do I clear the inbox in gmail', 'what is a void pointer in c and what features does it have', 'what should I build next in my garden', 'what is the will of the people'];
+      const misY = yes.filter((a) => !SC.isSelfAsk(a)), misN = no.filter((a) => SC.isSelfAsk(a));
+      check('self-grounding: asks about Void itself are recognised; generic asks that only share a word (inbox, void pointer, next, will) are not', !misY.length && !misN.length, JSON.stringify({ misY, misN }));
+      const dep = new URL('../void-live-deploy', import.meta.url).pathname;
+      const ASSETS = { fetch: async (rq) => { const f = path.join(dep, new URL(rq.url).pathname); return fs.existsSync(f) ? new Response(fs.readFileSync(f, 'utf8')) : new Response('', { status: 404 }); } };
+      const eS = envOf({ env: { ASSETS } });
+      eS.DB.tables.add('void_kv'); eS.DB.kv.set('will', JSON.stringify({ at: '2026-10-03T00:00:00Z', wants: [{ title: 'Learn the light look', i_want: 'I want a light look for my void.', because: 'people keep asking' }] }));
+      let wikiHits = 0; globalThis.fetch = async (u) => { wikiHits++; return wiki(u); };
+      calls.length = 0;
+      const SQ = "what's next — more scouting-report features, or something else?";
+      const sa = await ask(SQ, eS);
+      globalThis.fetch = wiki;
+      const g = calls.filter((c) => c.m === R.DEFAULT_MODEL).slice(-1)[0] || {};
+      const selfJson = JSON.parse(fs.readFileSync(path.join(dep, 'self.json'), 'utf8'));
+      const openAsk = (selfJson.open[0] || {}).ask || '(none open)';
+      check('self-grounding: "what\'s next" is answered from Void\'s own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache',
+        sa.self === true && sa.sources.length === 0 && wikiHits === 0 && g.sys && g.sys.includes(SC.SELF_RULE) && /^You are Void\. Answer the question directly/.test(g.sys)
+        && /Facts about Void:/.test(g.user) && g.user.includes(openAsk) && /My skills \(\d+\): .*\btip\b/.test(g.user) && g.user.includes('I want a light look for my void.') && !/Sources:/.test(g.user)
+        && eS.DB.answers.size === 0 && /self-grounded/.test(rowOf(eS, SQ).outcome),
+        JSON.stringify({ self: sa.self, wikiHits, user: String(g.user).slice(0, 200), cached: eS.DB.answers.size }));
+      const eSo = envOf({ ai: { gemma: 'out' }, env: { ASSETS } });
+      const so = await ask('what are you building', eSo);
+      const off = await (await answerFn.onRequestPost({ request: new Request(G + '/api/answer', { method: 'POST', body: JSON.stringify({ ask: 'what are you building' }) }), env: { DB: routeD1(), ASSETS, VOID_ANSWER_MODELS: 'off' } })).json();
+      check('self-grounding: with the model busy or switched off, a self ask gets Void\'s own facts, never a Wikipedia extract',
+        so.self === true && so.note === 'model busy, my own facts' && /My skills/.test(so.answer) && off.self === true && /Growth inbox, still open/.test(off.answer) && !/sourced extract/.test(off.answer + so.answer),
+        JSON.stringify({ so: so.note, off: String(off.answer).slice(0, 120) }));
+    }
     calls.length = 0;
     const h1 = await ask('what are the tradeoffs between rust and go for a web backend', e1);
     const hr = rowOf(e1, 'what are the tradeoffs between rust and go for a web backend');

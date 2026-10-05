@@ -9,9 +9,12 @@
 // itself fails (allowance out, busy, empty) the same paid rule applies, and without it the answer is the open web (the
 // Wikipedia extracts, no model, no D1 write) and a fix is the rules (ruleFix). VOID_ANSWER_MODELS=off (Pages env var) turns
 // the models off. With models on, D1 is written: the answer cache, the route log (void_routes), the shortfall counts.
+// An ask about Void itself ("what's next?", "what are you building?") skips Wikipedia and the cache: it is answered from
+// Void's own facts, its skills, growth inbox and will (lib/self-context.js), so the answer is about this project, not generic.
 import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
 import { DEFAULT_MODEL, PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
+import { isSelfAsk, readSelf, selfFacts, SELF_RULE } from '../../lib/self-context.js';
 const MODEL = DEFAULT_MODEL;
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -87,13 +90,20 @@ export async function onRequestPost({ request, env, waitUntil }) {
   const typed = norm(body.ask), ask = redact(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
   const key = await sha(ask.toLowerCase());
+  // an ask about Void itself is answered from its own facts, which change with every ship: never from the 7-day cache
+  const self = isSelfAsk(ask);
   try {
-    const hit = masked ? null : await env.DB.prepare('SELECT answer, sources, at FROM void_answers WHERE id = ? AND at > ?').bind(key, new Date(Date.now() - TTL_DAYS * 864e5).toISOString()).first();
+    const hit = masked || self ? null : await env.DB.prepare('SELECT answer, sources, at FROM void_answers WHERE id = ? AND at > ?').bind(key, new Date(Date.now() - TTL_DAYS * 864e5).toISOString()).first();
     if (hit) return Response.json({ answer: hit.answer, sources: JSON.parse(hit.sources), at: hit.at, cached: true });
   } catch (_) {}
   if (await rateLimited(request, env)) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
 
-  if (modelsOn(env)) return modelAnswer(request, env, waitUntil, t0, ask, masked, key);
+  if (modelsOn(env)) return modelAnswer(request, env, waitUntil, t0, ask, masked, key, self);
+  if (self) {
+    // no model: the facts themselves are the answer (Wikipedia knows nothing about Void)
+    const facts = selfFacts(await readSelf(env, new URL(request.url).origin));
+    if (facts) return Response.json({ answer: facts, sources: [], at: new Date().toISOString(), self: true });
+  }
   const src = await sources(ask);
   const answer = fromWeb(src);
   if (!answer) return Response.json({ answer: null, sources: [], note: 'nothing on the web' });
@@ -107,22 +117,32 @@ const noThink = (t) => String(t || '').replace(/<think>[\s\S]*?<\/think>/gi, '')
 function within(p, ms) { let t; return Promise.race([p, new Promise((_, rej) => { t = setTimeout(() => rej(new Error('timeout')), ms); })]).finally(() => clearTimeout(t)); }
 
 // The model path (on unless VOID_ANSWER_MODELS=off).
-async function modelAnswer(request, env, waitUntil, t0, ask, masked, key) {
+async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self) {
   const later = (p) => { try { if (waitUntil) waitUntil(p); } catch (_) {} return p; };
+  const origin = new URL(request.url).origin;
   // the router runs alongside the source fetch; the answer waits for it until BUDGET_MS from the start, then moves on without it
-  const routeP = classify(env, ask, { origin: new URL(request.url).origin, waitUntil });
-  const src = await sources(ask);
+  const routeP = classify(env, ask, { origin, waitUntil });
+  // an ask about Void itself reads Void's own facts instead of Wikipedia (lib/self-context.js)
+  let selfP = self ? readSelf(env, origin) : null;
+  let src = self ? [] : await sources(ask);
   const srcAt = Date.now();
   const route = await settle(routeP, t0 + BUDGET_MS);
   const waited = Date.now() - srcAt;
+  // the router's 'self' examples catch self asks the regex missed
+  if (!self && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
+  const facts = self ? selfFacts(await selfP) : '';
   const pub = src.map(({ title, url, edited }) => ({ title, url, edited }));
   const ctx = src.map((s, i) => `[${i + 1}] ${s.title}: ${s.text}`).join('\n\n') || '(no sources found)';
-  const messages = [
+  const messages = self ? [
+    { role: 'system', content: ANSWER_SYSTEM + ' ' + SELF_RULE },
+    { role: 'user', content: `Question: ${ask}\n\nFacts about Void:\n${facts || '(my facts could not be read just now)'}` },
+  ] : [
     { role: 'system', content: ANSWER_SYSTEM },
     { role: 'user', content: `Question: ${ask}\n\nSources:\n${ctx}` },
   ];
   let answer = '', model = MODEL, outcome = route.kind === 'fallback' ? route.why : 'default', would = null;
   if (route.kind === 'skill') outcome = 'skill missed: ' + route.skill;
+  if (self) outcome += '; self-grounded';
   // one paid call: only with earned budget > 0 AND an approved standing spend with room left (lib/router.js paidAccess)
   const tryPaid = async (access, why) => {
     try {
@@ -158,20 +178,20 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key) {
       const access = await paidAccess(env);
       const paid = access.model ? await tryPaid(access, 'free allowance out') : '';
       if (!paid) {
-        // no paid path: the open-web answer, as with the switch off
-        const web = fromWeb(src);
+        // no paid path: the open-web answer, as with the switch off (for an ask about Void: its facts)
+        const web = self ? facts : fromWeb(src);
         log({ model: null, outcome: outcome + '; model busy, open web' + (access.model ? '' : '; paid: ' + access.why), would: PAID_MODEL });
         if (!web) return Response.json({ answer: null, sources: [], note: 'nothing on the web', route: route.kind });
-        return Response.json({ answer: web, sources: pub, at: new Date().toISOString(), route: route.kind, note: 'model busy, from the web' });
+        return Response.json({ answer: web, sources: pub, at: new Date().toISOString(), route: route.kind, note: self ? 'model busy, my own facts' : 'model busy, from the web', ...(self ? { self: true } : {}) });
       }
       answer = paid; model = access.model; outcome += '; default busy, paid from earnings';
     }
   }
   log({ model });
   const at = new Date().toISOString();
-  if (!masked) try {
+  if (!masked && !self) try {
     await env.DB.prepare('INSERT INTO void_answers (id, ask, answer, sources, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET answer = excluded.answer, sources = excluded.sources, at = excluded.at')
       .bind(key, ask, answer, JSON.stringify(pub), at).run();
   } catch (_) {}
-  return Response.json({ answer, sources: pub, at, route: route.kind });
+  return Response.json({ answer, sources: pub, at, route: route.kind, ...(self ? { self: true } : {}) });
 }

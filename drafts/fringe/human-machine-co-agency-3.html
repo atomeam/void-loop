@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · trust the suggestion? (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#q{font-size:28px;font-variant-numeric:tabular-nums}
+#sugg{color:#7cf}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>trust the suggestion? · draft · not published</h1>
+  <p class="note">Quick sums with a machine's suggested answer. About 3 in 10 suggestions are wrong on purpose. Accept a suggestion or type your own answer. People tend to accept automated suggestions even when they are wrong ("automation bias"). This page counts how often you catch the wrong ones, and compares two orders: seeing the suggestion first, or answering yourself first. Everything stays in this browser.</p>
+  <div class="row" role="radiogroup" aria-label="order">
+    <label><input type="radio" name="mode" value="first" checked> suggestion first</label>
+    <label><input type="radio" name="mode" value="me"> I answer first</label>
+  </div>
+  <div id="q" aria-live="polite">press start</div>
+  <div id="sugg" aria-live="polite"></div>
+  <div class="row" id="act"><button id="start" type="button">start</button></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.autobias.v1',st={rows:[]};
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.rows))st=j}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({rows:st.rows.slice(-1000)}))}catch(_){}}
+  function rnd(n){return Math.floor(Math.random()*n)}
+  // a two-digit by one- or two-digit product; a wrong suggestion is off by a believable amount (a slip of 10, or a digit)
+  function item(){var a=12+rnd(78),b=3+rnd(27),right=a*b,wrong=Math.random()<.3,s=right;
+    if(wrong){var slips=[10,-10,b,-b,100,-100,9,-9];s=right+slips[rnd(slips.length)];if(s<=0)s=right+10}
+    return {a:a,b:b,right:right,sugg:s,wrong:s!==right}}
+  // per mode: of the wrong suggestions, how many were caught; of the right ones, how many were kept
+  function tally(rows,mode){var r=rows.filter(function(x){return x.mode===mode}),w=r.filter(function(x){return x.wrong}),k=r.filter(function(x){return !x.wrong});
+    return {n:r.length,wrong:w.length,caught:w.filter(function(x){return x.final===x.right}).length,kept:k.filter(function(x){return x.final===x.right}).length,right:k.length}}
+  var cur=null,mode='first';
+  function el(id){return document.getElementById(id)}
+  function ask(){
+    cur=item();cur.shown=Date.now();mode=document.querySelector('input[name=mode]:checked').value;cur.mode=mode;
+    el('q').textContent=cur.a+' × '+cur.b+' = ?';el('state').textContent='';
+    var A=el('act');A.textContent='';
+    var inp=document.createElement('input');inp.type='number';inp.inputMode='numeric';inp.style.width='8em';inp.setAttribute('aria-label','your answer');
+    if(mode==='first'){
+      el('sugg').textContent='suggested: '+cur.sugg;
+      var acc=document.createElement('button');acc.type='button';acc.textContent='accept '+cur.sugg;acc.addEventListener('click',function(){done(cur.sugg)});
+      var own=document.createElement('button');own.type='button';own.textContent='use mine';own.addEventListener('click',function(){var v=parseInt(inp.value,10);if(!isNaN(v))done(v)});
+      A.appendChild(acc);A.appendChild(inp);A.appendChild(own);acc.focus();
+    }else{
+      el('sugg').textContent='';
+      var go=document.createElement('button');go.type='button';go.textContent='lock in, then show the suggestion';
+      go.addEventListener('click',function(){var v=parseInt(inp.value,10);if(isNaN(v))return;cur.mine=v;el('sugg').textContent='you said '+v+' · suggested: '+cur.sugg;A.textContent='';
+        var k=document.createElement('button');k.type='button';k.textContent='keep '+v;k.addEventListener('click',function(){done(v)});
+        var sw=document.createElement('button');sw.type='button';sw.textContent='switch to '+cur.sugg;sw.addEventListener('click',function(){done(cur.sugg)});
+        if(v===cur.sugg){done(v);return}A.appendChild(k);A.appendChild(sw);k.focus()});
+      inp.addEventListener('keydown',function(e){if(e.key==='Enter')go.click()});
+      A.appendChild(inp);A.appendChild(go);inp.focus();
+    }
+  }
+  function done(v){
+    st.rows.push({at:Date.now(),mode:cur.mode,wrong:cur.wrong,right:cur.right,final:v,ms:Date.now()-cur.shown});save();
+    el('state').textContent=(v===cur.right?'right':'it was '+cur.right)+(cur.wrong?' · that suggestion was wrong'+(v===cur.right?', and you caught it':''):'');
+    var A=el('act');A.textContent='';var nx=document.createElement('button');nx.type='button';nx.textContent='next';nx.addEventListener('click',ask);A.appendChild(nx);nx.focus();draw();
+  }
+  function line(name,t){return name+': '+(t.wrong?'caught '+t.caught+' of '+t.wrong+' wrong suggestions ('+Math.round(100*t.caught/t.wrong)+'%)':'no wrong suggestions yet')+(t.right?' · kept '+t.kept+' of '+t.right+' right ones':'')}
+  function draw(){var a=tally(st.rows,'first'),b=tally(st.rows,'me');if(!a.n&&!b.n){el('score').textContent='';return}
+    el('score').textContent=line('suggestion first',a)+'\n'+line('I answer first',b)+(a.wrong<10||b.wrong<10?'\n10 wrong suggestions in each order before the two can be compared':'');}
+  el('start').addEventListener('click',ask);draw();
+  window.__autobias={item:item,tally:tally}; // for checks
+})();
+</script>
+</body>
+</html>

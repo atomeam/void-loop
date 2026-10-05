@@ -5,6 +5,7 @@
  * them back); "less motion" holds them still. Figures are stage items in this browser (the personal layer), so the next
  * visitor still arrives at a blank Void. The 3D layer (skills/figures3d.js + three.js) loads only once a figure is on the stage.
  */
+import { fallbackScript } from './scripts.js';
 export const MOTION_KEY = 'a2m.void.motion.v1';
 
 const NOUN = '(?:sprites?|buddy|buddies|friends?|figurines?|critters?|creatures?|companions?|pals?)'; // not bare figure(s): Motelet
@@ -40,7 +41,7 @@ async function run(text, api) {
   if (!q) return 'none';
   const { say } = api;
   if (q.act === 'summon') {
-    const th = api.summon && api.summon('figure', { body: 'sprite' });
+    const th = api.summon && api.summon('figure', { body: 'sprite', script: fallbackScript('sprite', 'sprite') });
     if (!th) { say('the stage is full of friends'); return 'figures'; }
     say(osWantsStill() ? 'a sprite is here, holding still' : 'a sprite is here');
     return 'figures';

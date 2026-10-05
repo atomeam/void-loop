@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · odd light log (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:640px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+input,button,select{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:7px 10px}
+button{cursor:pointer}
+input:focus-visible,button:focus-visible,select:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+form{display:flex;flex-direction:column;gap:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+li{border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:10px 12px}
+li .sun{color:#8a8a92;font-size:13px}
+li .hint{color:#7cf}
+li .left{color:#fc9}
+#warn,#tally{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>odd light log · draft · not published</h1>
+  <p class="note">Write down something odd you saw in the sky: when, roughly where you were, and how it looked and moved. The page works out where the sun was at that moment, then checks the usual explanations first: satellites and Starlink "trains" (lit by the sun while your sky is dark, so they show up in the hours around dusk and dawn), bright planets, aircraft, and balloons or lanterns. Official reviews have found most sightings that could be resolved were things like these. What is left is marked "unexplained after these checks", which means only that: it does not say what it was. Everything stays in this browser.</p>
+  <form id="f">
+    <div class="row">
+      <label>when <input id="when" type="datetime-local" required></label>
+      <label>lat <input id="lat" type="number" step="any" min="-90" max="90" required style="width:7em" placeholder="51.5"></label>
+      <label>lon <input id="lon" type="number" step="any" min="-180" max="180" required style="width:7em" placeholder="-0.1"></label>
+    </div>
+    <div class="row">
+      <select id="look" aria-label="how it looked">
+        <option value="steady">one steady light</option>
+        <option value="blink">blinking or coloured lights</option>
+        <option value="train">a line of lights following each other</option>
+        <option value="flare">brightened, then faded out</option>
+        <option value="shape">a shape or glow, not a point</option>
+      </select>
+      <select id="move" aria-label="how it moved">
+        <option value="smooth">moved smoothly across the sky</option>
+        <option value="still">stayed in one place</option>
+        <option value="drift">drifted slowly, maybe with the wind</option>
+        <option value="erratic">changed direction or speed</option>
+      </select>
+      <label>for <input id="dur" type="number" min="0" step="any" required style="width:5em" placeholder="3"> min</label>
+    </div>
+    <div class="row">
+      <select id="where" aria-label="where in the sky">
+        <option value="">where in the sky (optional)</option>
+        <option value="w">low in the west</option><option value="e">low in the east</option><option value="high">high up</option><option value="other">somewhere else</option>
+      </select>
+      <input id="what" maxlength="140" placeholder="anything else (optional)" aria-label="notes" style="flex:1 1 200px">
+      <button type="submit">add</button>
+    </div>
+  </form>
+  <div id="warn" role="alert" hidden></div>
+  <ul id="list" aria-label="sightings"></ul>
+  <div id="tally" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.oddlight.v1',items=[];
+  function ok(x){return x&&typeof x.t==='number'&&isFinite(x.lat)&&isFinite(x.lon)&&typeof x.look==='string'&&typeof x.move==='string'&&x.dur>=0}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'[]');if(Array.isArray(j))items=j.filter(ok)}catch(_){}
+  function save(){var w=document.getElementById('warn');try{localStorage.setItem(KEY,JSON.stringify(items));w.hidden=true}catch(_){w.textContent='this browser is not saving the log (storage is full or blocked): entries on screen will be gone after a reload';w.hidden=false}}
+  var R=Math.PI/180;
+  // the sun's height above the horizon in degrees (low-precision formula, good to about 1°)
+  function sunAlt(ms,lat,lon){var d=ms/864e5+2440587.5-2451545,g=(357.529+.98560028*d)*R,q=280.459+.98564736*d,L=(q+1.915*Math.sin(g)+.02*Math.sin(2*g))*R,e=(23.439-3.6e-7*d)*R,
+    ra=Math.atan2(Math.cos(e)*Math.sin(L),Math.cos(L)),dec=Math.asin(Math.sin(e)*Math.sin(L)),gmst=((18.697374558+24.06570982441908*d)%24+24)%24,ha=(gmst*15+lon)*R-ra;
+    return Math.asin(Math.sin(lat*R)*Math.sin(dec)+Math.cos(lat*R)*Math.cos(dec)*Math.cos(ha))/R}
+  function sky(alt){return alt>0?'daylight':alt>-6?'civil twilight':alt>-12?'nautical twilight':alt>-18?'astronomical twilight':'full night'}
+  // the usual explanations that fit what was written down, most likely first; an empty list means none of these fit
+  function hints(x,alt){var h=[],dark=alt<-6,satWin=alt<-6&&alt>-30;
+    if(x.look==='train'&&x.move==='smooth'&&satWin)h.push('a Starlink train: a line of satellites soon after launch, seen in the hours around dusk or dawn');
+    if(x.look==='steady'&&x.move==='smooth'&&x.dur<=8&&satWin)h.push('a satellite or the space station: a steady point crossing in a few minutes, lit by the sun while your sky is dark');
+    if(x.look==='flare'&&x.move==='smooth'&&satWin)h.push('a satellite catching the sun on a panel (a "flare"), or one moving into Earth\'s shadow');
+    if(x.look==='blink'&&x.move!=='still')h.push('an aircraft: navigation lights blink and are red, green and white');
+    if(x.look==='steady'&&x.move==='still'&&(x.where==='w'||x.where==='e')&&alt<0)h.push('a bright planet: Venus and Jupiter stay low in the west after sunset or the east before dawn, and can look still for an hour or more');
+    if(x.look==='steady'&&x.move==='still'&&dark&&x.dur>=10&&!h.length)h.push('a bright star or planet: they move only slowly with the sky, and twinkle low down');
+    if(x.move==='drift')h.push('a balloon or a sky lantern: they drift with the wind and can glow or reflect light');
+    if(x.look==='shape'&&alt>-18&&alt<0)h.push('a rocket launch or fuel dump plume lit by the sun high above you, which looks like a glowing cloud or spiral in twilight');
+    if(x.move==='erratic'&&!h.length)h.push('a drone, or a reflection on a window or glasses: worth ruling out before anything else');
+    return h}
+  function el(t,txt,cls){var e=document.createElement(t);if(txt!=null)e.textContent=txt;if(cls)e.className=cls;return e}
+  function draw(){var L=document.getElementById('list');L.textContent='';var left=0;
+    items.forEach(function(x,i){var alt=sunAlt(x.t,x.lat,x.lon),h=hints(x,alt),li=el('li');if(!h.length)left++;
+      li.appendChild(el('div',new Date(x.t).toLocaleString([],{dateStyle:'medium',timeStyle:'short'})+' · '+x.dur+' min'+(x.what?' · '+x.what:'')));
+      li.appendChild(el('div','sun '+Math.round(alt)+'° · '+sky(alt),'sun'));
+      if(h.length)h.forEach(function(s){li.appendChild(el('div','could be '+s,'hint'))});else li.appendChild(el('div','unexplained after these checks: none of the usual explanations fit what you wrote. That is not a finding of anything unusual; the details may just be too few.','left'));
+      var del=el('button','remove');del.type='button';del.addEventListener('click',function(){items.splice(i,1);save();draw()});li.appendChild(del);L.appendChild(li)});
+    document.getElementById('tally').textContent=items.length?items.length+' logged · '+(items.length-left)+' fit a usual explanation · '+left+' left unexplained after these checks':''}
+  document.getElementById('f').addEventListener('submit',function(e){e.preventDefault();var v=function(id){return document.getElementById(id).value},t=new Date(v('when')).getTime(),lat=parseFloat(v('lat')),lon=parseFloat(v('lon')),dur=parseFloat(v('dur'));
+    if(!isFinite(t)||!(lat>=-90&&lat<=90)||!(lon>=-180&&lon<=180)||!(dur>=0)){var w=document.getElementById('warn');w.textContent='fill in when, latitude (-90 to 90), longitude (-180 to 180) and how many minutes';w.hidden=false;return}
+    items.unshift({t:t,lat:lat,lon:lon,look:v('look'),move:v('move'),dur:dur,where:v('where'),what:v('what').trim(),at:Date.now()});save();draw();document.getElementById('what').value=''});
+  draw();
+  window.__oddlight={sunAlt:sunAlt,hints:hints,sky:sky}; // for checks
+})();
+</script>
+</body>
+</html>

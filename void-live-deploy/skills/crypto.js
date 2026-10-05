@@ -9,6 +9,9 @@ const VS = { usd: 'usd', dollars: 'usd', dollar: 'usd', eur: 'eur', euros: 'eur'
 export function coinOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   const m = t.match(/^(?:what(?:'s| is)\s+)?(?:the\s+)?(?:(?:current\s+)?price\s+of\s+|how\s+much\s+is\s+(?:one\s+|a\s+|1\s+)?)?([a-z]{2,10})(?:\s+(?:price|worth|value|now|today))*(?:\s+in\s+([a-z]{3,7}))?$/);
+  // "what is 1 bitcoin in dollars", "2 eth in euros"
+  const n = !m && t.match(/^(?:what(?:'s| is)\s+|how\s+much\s+is\s+)?(?:one|a|\d+(?:\.\d+)?)\s+([a-z]{2,10})\s+in\s+([a-z]{3,8})$/);
+  if (n && COINS[n[1]]) return { id: COINS[n[1]], name: n[1], vs: VS[n[2]] || VS[n[2].replace(/s$/, '')] || 'usd' };
   if (!m || !COINS[m[1]]) return null;
   if (!/price|how much|worth|value/.test(t)) return null;
   return { id: COINS[m[1]], name: m[1], vs: VS[m[2]] || 'usd' };

@@ -18,6 +18,12 @@ export function parseWorldTime(text) {
     const places = m[1] ? m[1].split(/\s*(?:,|\band\b|&)\s*/i).map(PLACE).filter((x) => x && !NOT_PLACE.test(x)).slice(0, 8) : [];
     return { kind: 'clock', places };
   }
+  // "time in Tokyo when it's 9am in New York", "what time is it in London when it's 3pm in LA"
+  m = t.match(new RegExp('^(?:what\\s+)?(?:time\\s+is\\s+it|time)\\s+in\\s+(.+?)\\s+(?:when|if)\\s+it(?:\\s+is|\'?s)\\s+' + TIME + '\\s+in\\s+(.+?)$', 'i'));
+  if (m) { const to = PLACE(m[1]), from = PLACE(m[3]); if (to && from && !NOT_PLACE.test(to) && !NOT_PLACE.test(from)) return { kind: 'convert', time: m[2].toLowerCase().replace(/\./g, '').replace(/\s+/g, ''), from, to }; }
+  // "jet lag from LA to London": the clock difference, now
+  m = t.match(/^(?:how\s+(?:bad|much)\s+is\s+(?:the\s+)?)?jet\s*lag\s+(?:from|between)\s+(.+?)\s+(?:to|and)\s+(.+)$/i);
+  if (m) { const from = PLACE(m[1]), to = PLACE(m[2]); if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: 'now', from, to }; }
   m = t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?(?:current\s+|local\s+)?time\s+(?:is\s+it\s+)?(?:right\s+now\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^what\s+time\s+is\s+it\s+(?:right\s+now\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^(?:current|local)\s+time\s+(?:in|at|for)\s+(.+)$/i)
@@ -47,6 +53,16 @@ export function parseWorldTime(text) {
     const which = /rise|dawn/i.test(m[2]) ? 'sunrise' : 'sunset', place = PLACE(m[3]);
     const tomorrow = /tomorrow/i.test(t);
     return place && !NOT_PLACE.test(place) ? { kind: 'sun', which, place, tomorrow } : null;
+  }
+  // "what time is sunset", "when is sunrise tomorrow": no place named, so the city your device's time zone names
+  // (the page title says which city, so it is never a hidden guess)
+  m = t.match(/^(?:(?:when|what\s+time)\s+is\s+|what'?s\s+)?(?:the\s+)?(?:(today'?s|tomorrow'?s)\s+)?(sunrise|sunset|dawn|dusk)(?:\s+(today|tonight|tomorrow))?$/i)
+    || t.match(/^(?:(?:when|what\s+time)\s+)?does\s+the\s+sun\s+(rise|set)(?:\s+(today|tonight|tomorrow))?$/i);
+  if (m) {
+    let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {}
+    const place = tz.includes('/') ? tz.split('/').pop().replace(/_/g, ' ') : '';
+    if (!place) return null;
+    return { kind: 'sun', which: /rise|dawn/i.test(m[2] || m[1]) ? 'sunrise' : 'sunset', place, tomorrow: /tomorrow/i.test(t) };
   }
   return null;
 }
@@ -124,7 +140,17 @@ export function choiceLabel(r, all) {
   const twin = (all || []).some((o) => o !== r && o.admin1 === r.admin1 && o.country_code === r.country_code);
   return r.name + ', ' + (r.admin1 && !twin ? r.admin1 : r.country || r.admin1 || '');
 }
+// zone abbreviations need no lookup; each maps to its region's IANA zone, so "EST" in July follows New York's daylight time as people mean it
+const ZONES = { est: ['Eastern Time', 'America/New_York'], edt: ['Eastern Time', 'America/New_York'], et: ['Eastern Time', 'America/New_York'], eastern: ['Eastern Time', 'America/New_York'],
+  cst: ['Central Time', 'America/Chicago'], cdt: ['Central Time', 'America/Chicago'], ct: ['Central Time', 'America/Chicago'], central: ['Central Time', 'America/Chicago'],
+  mst: ['Mountain Time', 'America/Denver'], mdt: ['Mountain Time', 'America/Denver'], mt: ['Mountain Time', 'America/Denver'], mountain: ['Mountain Time', 'America/Denver'],
+  pst: ['Pacific Time', 'America/Los_Angeles'], pdt: ['Pacific Time', 'America/Los_Angeles'], pt: ['Pacific Time', 'America/Los_Angeles'], pacific: ['Pacific Time', 'America/Los_Angeles'],
+  akst: ['Alaska Time', 'America/Anchorage'], hst: ['Hawaii Time', 'Pacific/Honolulu'], utc: ['UTC', 'UTC'], gmt: ['GMT (London)', 'Europe/London'], bst: ['UK time', 'Europe/London'],
+  cet: ['Central European Time', 'Europe/Paris'], cest: ['Central European Time', 'Europe/Paris'], eet: ['Eastern European Time', 'Europe/Athens'], ist: ['India Time', 'Asia/Kolkata'],
+  jst: ['Japan Time', 'Asia/Tokyo'], aest: ['Sydney Time', 'Australia/Sydney'], aedt: ['Sydney Time', 'Australia/Sydney'], sgt: ['Singapore Time', 'Asia/Singapore'], hkt: ['Hong Kong Time', 'Asia/Hong_Kong'] };
+export function zoneOf(name) { const z = ZONES[String(name || '').trim().toLowerCase().replace(/\s+time$/, '').replace(/\./g, '')]; return z ? { name: z[0], timezone: z[1], country: '', admin1: '' } : null; }
 async function geo(name, zoneOnly) {
+  const z = zoneOf(name); if (z) return { r: z, choices: null };
   const base = String(name).split(',')[0].trim();
   const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=10&language=en&name=' + encodeURIComponent(base)).then((r) => r.json());
   return pickPlace(g.results, name, zoneOnly);

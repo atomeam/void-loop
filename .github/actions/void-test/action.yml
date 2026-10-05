@@ -2,7 +2,7 @@ name: Void test suite
 description: Mirror tools/deploy.ps1 before it deploys. Sync the void.html copies, then run node tools/test_void.mjs (Chromium via Playwright, Python for will.py).
 inputs:
   bench:
-    description: "with = the full suite including the everyday benchmark; skip = the suite without it (a parallel job runs it); only = just the benchmark against tools/bench.best.json"
+    description: "with = suite then dedicated everyday benchmark; skip = suite only (a parallel job runs the bench); only = just the benchmark against tools/bench.best.json"
     default: with
 runs:
   using: composite
@@ -36,6 +36,7 @@ runs:
       run: |
         cp void.html void-live-deploy/index.html
         cp void.html void-live-deploy/void.html
+        node tools/self-context.mjs
     - name: node tools/fringe.mjs (fringe ledger rules)
       if: inputs.bench != 'only'
       shell: bash
@@ -44,6 +45,10 @@ runs:
       if: inputs.bench != 'only'
       shell: bash
       run: node --test domains/forethinkers/think-tank.test.mjs
+    - name: node --test tools/dispatcher.test.mjs (queue envelopes, a2m-bridge contract, dry run sends nothing)
+      if: inputs.bench != 'only'
+      shell: bash
+      run: node --test tools/dispatcher.test.mjs
     - name: node tools/test_glyphs.mjs (cross-sense board draft)
       if: inputs.bench != 'only'
       shell: bash
@@ -61,13 +66,17 @@ runs:
       shell: bash
       env:
         PYTHONIOENCODING: utf-8
-        VOID_SKIP_BENCH: ${{ inputs.bench == 'skip' && '1' || '' }}
+        # Never nest bench.mjs inside the suite (spawnSync after a long Chromium run
+        # was exiting 1 with empty stdout — 279/280 on helper/behavior-scripts). The
+        # dedicated step below covers bench:with; deploy.yml PRs use bench:skip + a
+        # parallel bench:only job.
+        VOID_SKIP_BENCH: '1'
       run: |
         set -o pipefail
         node tools/test_void.mjs 2>&1 | tee test-output.txt
         echo "### Void tests: $(tail -n 1 test-output.txt)" >> "$GITHUB_STEP_SUMMARY"
     - name: node tools/bench.mjs --score (everyday benchmark, not below tools/bench.best.json)
-      if: inputs.bench == 'only'
+      if: inputs.bench == 'only' || inputs.bench == 'with'
       shell: bash
       run: |
         node tools/bench.mjs --score | tail -n 1 > bench-score.json
