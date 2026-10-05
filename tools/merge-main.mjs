@@ -21,8 +21,13 @@ const side = (n, f) => { try { return execSync(`git show :${n}:${f}`, { encoding
 for (const f of conflicted) {
   if (APPEND_JSON.includes(f)) {
     const ours = JSON.parse(side(2, f) || '[]'), theirs = JSON.parse(side(3, f) || '[]');
-    const seen = new Set(ours.map((x) => String(x.ask).toLowerCase()));
-    const all = ours.concat(theirs.filter((x) => !seen.has(String(x.ask).toLowerCase()) && seen.add(String(x.ask).toLowerCase())));
+    const seen = new Set();
+    const all = [...ours, ...theirs].filter((x) => {
+      const k = String(x.ask).toLowerCase();
+      if (seen.has(k)) return false;
+      seen.add(k);
+      return true;
+    });
     // one object per line, the files' own style (tools/append.mjs)
     const line = (o) => '  {' + Object.entries(o).map(([k, v]) => JSON.stringify(k) + ': ' + JSON.stringify(v)).join(', ') + '}';
     writeFileSync(f, '[\n' + all.map(line).join(',\n') + '\n]\n');
