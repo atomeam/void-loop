@@ -1307,7 +1307,6 @@
   {"ask": "earthquakes today", "want": "skill:quake"},
   {"ask": "split $120 four ways with 18% tip", "want": "skill:tip"},
   {"ask": "how much gas for 300 miles at 25 mpg $3.20 a gallon", "want": "skill:fuel"},
-  {"ask": "air quality in los angeles", "want": "skill:air"}
   {"ask": "air quality in los angeles", "want": "skill:air"},
   {"ask": "days until july 4", "want": "skill:countdown"},
   {"ask": "nba team lakers", "want": "skill:sport"},
