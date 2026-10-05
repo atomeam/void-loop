@@ -300,8 +300,7 @@ function storeFetch(state) {
   return f;
 }
 // What the page sees: the live store has a new price for the audit and one product Void didn't know about yet.
-const uiStore = { list: STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 32500 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check ╬ô├ç├╢ A Quick Look At One Workflow', price_cents: 1500, description: 'A quick health check of one workflow.' }]) };
-const uiStore = { list: STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 32500 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check ΓÇö A Quick Look At One Workflow', price_cents: 1500, description: 'A quick health check of one workflow.' }]) };
+const uiStore = { list: STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 32500 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check — A Quick Look At One Workflow', price_cents: 1500, description: 'A quick health check of one workflow.' }]) };
 const storeEnv = { DB: memoryStoreD1(), GUMROAD_FETCH: storeFetch(uiStore) };
 const catalogHits = [];
 async function catalogRoute(r) {
