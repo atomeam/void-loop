@@ -300,7 +300,6 @@ function storeFetch(state) {
   return f;
 }
 // What the page sees: the live store has a new price for the audit and one product Void didn't know about yet.
-const uiStore = { list: STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 32500 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check ╬ô├ç├╢ A Quick Look At One Workflow', price_cents: 1500, description: 'A quick health check of one workflow.' }]) };
 const uiStore = { list: STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 32500 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check ΓÇö A Quick Look At One Workflow', price_cents: 1500, description: 'A quick health check of one workflow.' }]) };
 const storeEnv = { DB: memoryStoreD1(), GUMROAD_FETCH: storeFetch(uiStore) };
 const catalogHits = [];
@@ -444,7 +443,6 @@ try {
     check('calendar: a visitor adds "call Sam next Tuesday at 4", "add dentist to my calendar Oct 12 at 3pm", "put lunch with Ana on my calendar tomorrow at noon"; all saved here and on the stage card; no yes, no server, no Wikipedia',
       agenda.length === 3 && /Call Sam/.test(card) && /dentist/i.test(card) && /Lunch with Ana/i.test(card) && /on your calendar: Call Sam/.test(said) && !netAdds.length && !pageAfterAdds,
       JSON.stringify(agenda.map((e) => e.title)) + ' | ' + said + ' | ' + netAdds.join(',') + ' | page: ' + pageAfterAdds.slice(0, 60) + ' | ' + card.slice(0, 120));
-    check('calendar: "schedule a meeting with Sam" is the owner\'s confirm line (a visitor is told so, nothing saved); "calender" shows one card; the card survives a reload; "remove my calendar" hides it and keeps the events; Γö£├╣ removes one and undo brings it back',
     check('calendar: "schedule a meeting with Sam" is the owner\'s confirm line (a visitor is told so, nothing saved); "calender" shows one card; the card survives a reload; "remove my calendar" hides it and keeps the events; ├ù removes one and undo brings it back',
       /person at the screen/.test(gated) && shown === 1 && /Call Sam/.test(afterReload) && gone === 0 && kept === 3 && afterX === 2 && afterUndo === 3 && !net.some((u) => /wikipedia|miss|answer/.test(u)),
       [gated, shown, afterReload.slice(0, 40), gone, kept, afterX, afterUndo, net.join(',')].join(' | '));
@@ -626,7 +624,6 @@ try {
     await C.ask('world clock', 800); const wc = await C.page(); const rows = await C.p.$$eval('.vpage.on .wrow', (d) => d.length);
     await C.ask('world clock for Paris and Sydney', 1000); const wc2 = await C.page();
     check('worldtime: "world clock" shows Tokyo, London, New York and you, each with its offset; "world clock for Paris and Sydney" shows those',
-      rows === 4 && /Tokyo/.test(wc) && /London/.test(wc) && /New York/.test(wc) && /You/.test(wc) && /UTC[+╬ô├¬├å]\d/.test(wc) && /Paris/.test(wc2) && /Sydney/.test(wc2) && !/Tokyo/.test(wc2),
       rows === 4 && /Tokyo/.test(wc) && /London/.test(wc) && /New York/.test(wc) && /You/.test(wc) && /UTC[+ΓêÆ]\d/.test(wc) && /Paris/.test(wc2) && /Sydney/.test(wc2) && !/Tokyo/.test(wc2),
       [rows, wc.slice(0, 120), wc2.slice(0, 80)].join(' | '));
     await C.ask('good morning in French', 1000); const tr = await C.page();
@@ -658,7 +655,6 @@ try {
     let vol = 0; for (let k = 0; k + 2 < vs.length; k += 3) { const [a, b, c] = [vs[k], vs[k + 1], vs[k + 2]]; vol += (a[0] * (b[1] * c[2] - b[2] * c[1]) - a[1] * (b[0] * c[2] - b[2] * c[0]) + a[2] * (b[0] * c[1] - b[1] * c[0])) / 6; }
     const span = [0, 1, 2].map((i) => Math.max(...vs.map((v) => v[i])) - Math.min(...vs.map((v) => v[i])));
     check('part: "summon linemote-1" shows the Linemote-1 page (dimensions, materials, magnetize post-step, three dated sources, safety) and Download STL saves linemote-1.stl: closed outward shells, 22 x 13 x 5 mm plate, 372 mm3',
-      /Linemote-1/.test(lm) && /22 Γö£├╣ 6 Γö£├╣ 5 mm/.test(lm) && /magnetize/i.test(lm) && /2026-02-18/.test(lm) && /2025-03-17/.test(lm) && /2025-12-11/.test(lm) && /swallowed/.test(lm)
       /Linemote-1/.test(lm) && /22 ├ù 6 ├ù 5 mm/.test(lm) && /magnetize/i.test(lm) && /2026-02-18/.test(lm) && /2025-03-17/.test(lm) && /2025-12-11/.test(lm) && /swallowed/.test(lm)
         && !!d && d.suggestedFilename() === 'linemote-1.stl' && /^solid linemote_1/.test(stl) && facets === vs.length / 3 && facets > 500
         && Math.abs(vol - 372.25) < 0.5 && span.join() === '22,13,5' && !P.errors.length,
@@ -712,7 +708,6 @@ try {
     await E.ask('who is michael jordan', 1200); const mj = await E.page();
     await E.ask('what is a snorgleblat', 1200); const thin = await E.page();
     check('article: "who is X" opens the person, not the brand that ranks first; a loose match says "Closest match I found" in one line, a close one does not',
-      /^Michael Jordan/.test(mj) && /basketball player/.test(mj) && !/Closest match/.test(mj) && sums[0] === 'Michael Jordan' && /Blat/.test(thin) && /Closest match I found for ╬ô├ç┬úsnorgleblat╬ô├ç┬Ñ/.test(thin),
       /^Michael Jordan/.test(mj) && /basketball player/.test(mj) && !/Closest match/.test(mj) && sums[0] === 'Michael Jordan' && /Blat/.test(thin) && /Closest match I found for ΓÇ£snorgleblatΓÇ¥/.test(thin),
       [mj.slice(0, 80), thin.slice(0, 120), sums.join(',')].join(' | '));
     await E.ctx.close();
@@ -850,7 +845,6 @@ try {
   await t.ask('call this spanish hello'); check('call this', (await t.state()).some((x) => x.kind === 'kept' && x.name === 'spanish hello'));
   await t.p.reload(); await t.p.waitForTimeout(700); check('kept card survives reload', (await t.p.$$eval('.kept-card', (d) => d.length)) === 1);
   await t.ask('map of Lisbon', 1200); const mp = await t.page(); check('map of Lisbon picks Portugal', /Lisbon/.test(mp) && /Portugal/.test(mp) && (await t.p.$$eval('.vpage iframe', (d) => d.length)) === 1, mp.slice(0, 80));
-  await t.ask('weather in Lisbon', 1200); check('weather', /20Γö¼Γûæ|68Γö¼Γûæ/.test(await t.page()));
   await t.ask('weather in Lisbon', 1200); check('weather', /20┬░|68┬░/.test(await t.page()));
   await t.ask('air quality in Lisbon', 1200); const airPg = await t.page(); check('air quality', /US AQI/.test(airPg) && /Good|Moderate|Unhealthy|Hazardous/.test(airPg) && /Open-Meteo/.test(airPg), airPg.slice(0, 120));
   await t.ask('UV index in Lisbon', 1200); const uvPg = await t.page(); check('uv index', /UV index/.test(uvPg) && /Low|Moderate|High|Very High|Extreme/.test(uvPg) && /Open-Meteo/.test(uvPg) && /WHO/.test(uvPg), uvPg.slice(0, 120));
@@ -951,7 +945,6 @@ try {
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
   check('"what can you do" and the menu open', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg), selfPg.slice(0, 60));
-  const OUT_LINE = 'Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm Γö¼Γòû say ╬ô├ç┬úremember me╬ô├ç┬Ñ first, then ask again to buy';
   const OUT_LINE = 'Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm ┬╖ say ΓÇ£remember meΓÇ¥ first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pricing', 'pay', 'how much does Void cost?', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
@@ -973,7 +966,6 @@ try {
     const line = await until(async () => { const pg = await P.page(); return /blue light scatters|region of spacetime/.test(pg) && (await P.p.$eval('.vpage.on .vtail', (e) => e.textContent).catch(() => '')); }, 6000) || '';
     const link = await P.p.$eval('.vpage.on .vtail a', (e) => ({ href: e.href, target: e.target, rel: e.rel })).catch(() => null);
     const after = await P.p.$eval('.vpage.on', (e) => e.lastElementChild && e.lastElementChild.classList.contains('vtail') && e.children.length > 1).catch(() => false);
-    const want = 'From A-to-Mind: ' + name + ' Γö¼Γòû ' + price + ' Γö¼Γòû moonbeam846.gumroad.com/l/' + slug;
     const want = 'From A-to-Mind: ' + name + ' ┬╖ ' + price + ' ┬╖ moonbeam846.gumroad.com/l/' + slug;
     prodGot.push({ a, ok: line === want && after && link && link.href === 'https://moonbeam846.gumroad.com/l/' + slug && link.target === '_blank' && /noopener/.test(link.rel), line });
   }
@@ -1002,7 +994,6 @@ try {
   const tailOk = await F.p.$eval('.vpage.on', (e) => { const t = e.querySelector('.vtail'); return !t || (e.lastElementChild === t && e.innerText.indexOf('Likely cause') < e.innerText.indexOf('From A-to-Mind')); }).catch(() => false);
   const req = fixCalls[fc0];
   check('fix: "my Make scenario is broken" asks for what it shows (no product line); the pasted error keeps its lines and gets the concrete fix; any product line comes after it',
-    /fix it as it is/.test(askPg) && !askTail && /╬ô├à├ä/.test(flatVal) && req && req.mode === 'fix' && req.ask === 'my Make scenario is broken' && req.details === pasted && /Likely cause/.test(fixPg) && /Connections/.test(fixPg) && /Reauthorize/.test(fixPg) && tailOk && F.errors.length === 0,
     /fix it as it is/.test(askPg) && !askTail && /ΓÅÄ/.test(flatVal) && req && req.mode === 'fix' && req.ask === 'my Make scenario is broken' && req.details === pasted && /Likely cause/.test(fixPg) && /Connections/.test(fixPg) && /Reauthorize/.test(fixPg) && tailOk && F.errors.length === 0,
     [askPg.slice(0, 80), flatVal.slice(0, 60), JSON.stringify(req || {}).slice(0, 160), fixAll.slice(0, 200), F.errors.join(' | ')].join(' || '));
   const fc1 = fixCalls.length;
@@ -1042,7 +1033,6 @@ try {
   const l1 = await until(async () => /Likely cause/.test(await R1.page()) && R1.p.$eval('.vpage.on .vtail', (e) => e.textContent).catch(() => ''), 7000) || '';
   await R1.ctx.close();
   const was = uiStore.list;
-  uiStore.list = was.map((p) => (p.slug === 'eozcma' ? { ...p, name: 'Zap Rescue ╬ô├ç├╢ One Broken Zap, Fixed Fast' } : p));
   uiStore.list = was.map((p) => (p.slug === 'eozcma' ? { ...p, name: 'Zap Rescue ΓÇö One Broken Zap, Fixed Fast' } : p));
   storeEnv.DB.meta.set('refreshed', new Date(Date.now() - 7 * 3600e3).toISOString());
   const R2 = await fresh();
@@ -1050,7 +1040,6 @@ try {
   const l2 = await until(async () => /Likely cause/.test(await R2.page()) && R2.p.$eval('.vpage.on .vtail', (e) => e.textContent).catch(() => ''), 7000) || '';
   await R2.ctx.close();
   uiStore.list = was; storeEnv.DB.meta.set('refreshed', new Date(Date.now() - 7 * 3600e3).toISOString());
-  check('store: renaming a product in the store changes the line after the fix, with no code change', l1 === 'From A-to-Mind: Automation Cleanup Γö¼Γòû $25 Γö¼Γòû moonbeam846.gumroad.com/l/eozcma' && l2 === 'From A-to-Mind: Zap Rescue Γö¼Γòû $25 Γö¼Γòû moonbeam846.gumroad.com/l/eozcma', l1 + ' | ' + l2);
   check('store: renaming a product in the store changes the line after the fix, with no code change', l1 === 'From A-to-Mind: Automation Cleanup ┬╖ $25 ┬╖ moonbeam846.gumroad.com/l/eozcma' && l2 === 'From A-to-Mind: Zap Rescue ┬╖ $25 ┬╖ moonbeam846.gumroad.com/l/eozcma', l1 + ' | ' + l2);
   const NAMES = /Void Monthly|Full Stack Audit|Big Board|Join the Team|First Automation Setup|Keep-It-Running|Automation Cleanup|Zap Health Check|\$49\b|\b4900\b|\$25\b|\$300\b/;
   const files = ['../void.html', '../void-live-deploy/lib/gumroad.js', '../void-live-deploy/lib/automation-fix.js', '../void-live-deploy/lib/earnings.js', '../void-live-deploy/lib/store-db.js', '../void-live-deploy/functions/api/answer.js', '../void-live-deploy/functions/api/catalog.js', '../void-live-deploy/functions/api/gumroad.js', '../void-live-deploy/functions/api/will.js'];
@@ -1139,7 +1128,6 @@ try {
   check('cross-device look works from the passkey alone, on the free tier (no payment)', inB && bBg === '#07020f' && (await lookOf(B)).bg === '#07020f' && tierB.status === 200 && tierB.body.tier === 'free' && db().accounts.size === 0, [inB, bBg, tierB.status, JSON.stringify(tierB.body), db().accounts.size].join(' | '));
   // Plan item 12, signed in with a passkey: $49 a month (live from the store), what it adds, and Void Monthly's link carrying the account id.
   const GUM = 'https://moonbeam846.gumroad.com/l/yinmj';
-  const IN_LINK = 'Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm Γö¼Γòû buy it on Gumroad';
   const IN_LINK = 'Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm ┬╖ buy it on Gumroad';
   const inAsks = ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
   const inGot = [];
@@ -1181,7 +1169,6 @@ try {
   const meD = await meOf(D);
   await D.ask('upgrade', 0);
   const dIn = await until(async () => /Paid Void/.test(await D.whisper()) && (await D.whisper()), 5000);
-  check('paid: with GUMROAD_URL empty, signed-in asks say payments aren\'t open yet (no link, no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm Γö¼Γòû payments aren't open yet" && (await D.p.$$eval('#whisper a', (d) => d.length)) === 0 && !(await D.page()) && D.ctx.pages().length === 1,
   check('paid: with GUMROAD_URL empty, signed-in asks say payments aren\'t open yet (no link, no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm ┬╖ payments aren't open yet" && (await D.p.$$eval('#whisper a', (d) => d.length)) === 0 && !(await D.page()) && D.ctx.pages().length === 1,
     [dUrl, dIn].join(' | '));
   db().accounts.set(meD.userId, { tier: 'paid' });
@@ -1609,7 +1596,6 @@ try {
   if (gm.status === 0) for (const c of gm.stdout.split('\n').filter(Boolean)) { const old = spawnSync('git', ['show', c + ':domains/inputs/morning-brief/records.jsonl'], { cwd: repo, encoding: 'utf8' }); if (old.status === 0 && !lf(fs.readFileSync(MB, 'utf8')).startsWith(lf(old.stdout))) mbHist = false; }
   const BRIEF = /Morning Brief|Warsh|Venezuela|Machine Age|TriFold|WinUI|Jackson Hole|Haakon|Nepal|morning-brief/i;
   check('intake: the Morning Brief is on file append-only, every record stale (dated 2026-08-29) and unverified; only tech items relevant to Void become low, stale will candidates; nothing reaches the screen',
-    mbV.ok && mb.length === 17 && mb.every((r) => r.source === 'morning-brief' && r.stale === true && r.brief_date === '2026-08-29' && r.verified === false && /^2026-09-27T23:34/.test(r.received)) && mbBrief && lf(mbBrief.verbatim) === lf(verbatim) && /Morning Brief ╬ô├ç├╢ Saturday, August 29, 2026/.test(verbatim) && mbHist
     mbV.ok && mb.length === 17 && mb.every((r) => r.source === 'morning-brief' && r.stale === true && r.brief_date === '2026-08-29' && r.verified === false && /^2026-09-27T23:34/.test(r.received)) && mbBrief && lf(mbBrief.verbatim) === lf(verbatim) && /Morning Brief ΓÇö Saturday, August 29, 2026/.test(verbatim) && mbHist
     && mbWants.length === 4 && mbWants.every((r) => r.section === 'tech') && !mb.some((r) => r.want && /world|business|markets|weather/.test(r.section))
     && mbCands.length === 3 && mbCands.every((c) => c.weight <= 4 && c.kind === 'idea from stale input' && /^stale input from 2026-08-29, unverified: /.test(c.why) && !/\$/.test(c.title))
@@ -1627,7 +1613,6 @@ try {
   const sameAs = dig2.filter((r) => r.same_as);
   const mbc = wc.filter((c) => c.source === 'morning-brief');
   const defence = wc.filter((c) => /^check my defences against AI-driven attacks/.test(c.title)); // later input (ai-landscape) joins it too
-  const usChina = mbc.find((c) => /US╬ô├ç├┤China AI dialogue/.test(c.title));
   const usChina = mbc.find((c) => /USΓÇôChina AI dialogue/.test(c.title));
   const aar = mbc.find((c) => /Automated Alignment Researcher/.test(c.title));
   const NEW2 = /Hormuz|Fairford|Brnabi|Kyivstar|Qwen|Muse Glimmer|GLM-5|Hy4|LAION|Alignment Researcher/i;
@@ -1847,8 +1832,7 @@ try {
   const wt = mods.find((s) => s.name === 'worldtime');
   const wtHits = (a) => !!wt && wt.match(a.toLowerCase(), a);
   // The item 3 multilingual collision set (domains/void.item3-harness.md): none of it is a world-time ask.
-  const HARNESS = ['Γö¼ΓöÉpor quΓö£ΓîÉ el cielo es azul?', 'pourquoi le ciel est-il bleu?', 'Warum ist der Himmel blau?', 'bakit asul ang langit?', 'haz el reloj azul', "rends l'horloge bleue", '╬úΓòòΓòæ╬úΓòù├ç╬úΓòú├¬╧â├▒ΓîÉ┬╡├┐┬╗╬ª├┤┬Ñ╧ä├£├ñ'];
-  const HARNESS = ['┬┐por qu├⌐ el cielo es azul?', 'pourquoi le ciel est-il bleu?', 'Warum ist der Himmel blau?', 'bakit asul ang langit?', 'haz el reloj azul', "rends l'horloge bleue", 'Σ╕║Σ╗ÇΣ╣êσñ⌐µÿ»Φô¥τÜä'];
+  const HARNESS = ['¿por qué el cielo es azul?', 'pourquoi le ciel est-il bleu?', 'Warum ist der Himmel blau?', 'bakit asul ang langit?', 'haz el reloj azul', "rends l'horloge bleue", '为什么天是蓝的'];
   const NEAR = ['make a clock', 'make a 5 minute timer', 'what is time'];
   check('worldtime: listed in skills/index.json with examples and near misses; every example routes to worldtime and no other skill claims one',
     !!wt && wt.examples.length >= 4 && (wt.nearMisses || []).length >= 3 && wt.examples.every((e) => firstSkill(e) === 'worldtime' && mods.every((s) => s === wt || !s.match(e.toLowerCase(), e))),
@@ -1877,15 +1861,6 @@ try {
   });
   const wtPage = async (a, re) => { await W.ask(a, 0); return until(async () => { const pg = await W.page(); return re.test(pg) && (await W.p.$$eval('.vpage.on .wt', (d) => d.length)) === 1 && pg; }, 6000); };
   const tokyoNow = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', hour: 'numeric' }).format(new Date()).replace(/\s*[AP]M/, '');
-  const pTokyo = await wtPage('time in Tokyo', /Tokyo, Japan[\s\S]*Asia\/Tokyo Γö¼Γòû UTC\+9/);
-  check('worldtime: "time in Tokyo" shows Tokyo\'s clock, zone and offset', pTokyo && new RegExp('(^|\\n)' + tokyoNow + ':\\d\\d\\s?[AP]M').test(pTokyo), String(pTokyo).slice(0, 140));
-  const pConv = await wtPage('3pm London to Tokyo', /3:00\s?PM in London[\s\S]*(11:00\s?PM|12:00\s?AM)[\s\S]*in Tokyo, Japan/);
-  check('worldtime: "3pm London to Tokyo" converts the time between the two places', !!pConv, String(pConv).slice(0, 140));
-  const pSet = await wtPage('sunset in Paris', /Sunset Γö¼Γòû Paris[\s\S]*7:3[35]\s?PM/);
-  check('worldtime: "sunset in Paris" gives the sunset from Open-Meteo', !!pSet && sunCalls.includes('sunrise,sunset'), String(pSet).slice(0, 140));
-  const pRise = await wtPage('when is sunrise in New York', /Sunrise Γö¼Γòû New York[\s\S]*7:0[12]\s?AM/);
-  check('worldtime: "when is sunrise in New York" gives the sunrise', !!pRise, String(pRise).slice(0, 140));
-  const pSyd = await wtPage('what time is it in Sydney', /Sydney[\s\S]*Australia\/Sydney Γö¼Γòû UTC\+1[01]/);
   const pTokyo = await wtPage('time in Tokyo', /Tokyo, Japan[\s\S]*Asia\/Tokyo ┬╖ UTC\+9/);
   check('worldtime: "time in Tokyo" shows Tokyo\'s clock, zone and offset', pTokyo && new RegExp('(^|\\n)' + tokyoNow + ':\\d\\d\\s?[AP]M').test(pTokyo), String(pTokyo).slice(0, 140));
   const pConv = await wtPage('3pm London to Tokyo', /3:00\s?PM in London[\s\S]*(11:00\s?PM|12:00\s?AM)[\s\S]*in Tokyo, Japan/);
@@ -2009,7 +1984,6 @@ try {
   check('router: plain questions stay simple (Gemma 4 26B); comparisons, proofs and design questions are hard',
     si.every(([, d]) => d.kind === 'simple' || d.kind === 'skill') && si.slice(0, 4).every(([, d]) => d.kind === 'simple') && ha.every(([, d]) => d.kind === 'hard'),
     [...si, ...ha].map(([a, d]) => a.slice(0, 24) + '=' + d.kind).join(' | '));
-  const NEAR = ['what is a timer in electronics', 'who invented the post-it note', 'what is the weather like on venus', 'why is the ocean blue', 'Γö¼ΓöÉpor quΓö£ΓîÉ el cielo es azul?', 'prove that the square root of 2 is irrational'];
   const NEAR = ['what is a timer in electronics', 'who invented the post-it note', 'what is the weather like on venus', 'why is the ocean blue', '┬┐por qu├⌐ el cielo es azul?', 'prove that the square root of 2 is irrational'];
   const nm = NEAR.map((a) => [a, route(a)]);
   check('router: near-misses (skill words in a question, any language; a proof about square roots) never route to a skill',
@@ -2116,7 +2090,7 @@ try {
       && Array.isArray(v2) && v2.length === 4 && v2.sort((a,b)=>a-b).join(',') === '20,29,34,43'
       && Array.isArray(cnt) && cnt[0] === 2 && cnt[1] === 2
       && typeof ai === 'number' && ai >= 0 && ai < 64 && v2.includes(ai),
-    othMod ? othMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing othello';
+    othMod ? othMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing othello');
 
   const liMod = nsMods.find((s) => s.name === 'local-inference');
   const liApi = liMod && await import(new URL('../void-live-deploy/skills/local-inference.js', import.meta.url).href);
@@ -2132,7 +2106,6 @@ try {
       && failResult && failResult.pass === false && failResult.issues.some(i => /duplicate|collision/i.test(i)),
     liMod ? liMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing local-inference');
 
-  // outcome card: the count is a stage thing now (not a popup page) ╬ô├ç├╢ it keeps the right day count, copies as
   // outcome card: the count is a stage thing now (not a popup page) ΓÇö it keeps the right day count, copies as
   // plain text (stageApi.addCopy, reused rather than a one-off button), and survives a reload like any other thing
   { const Q = await fresh();
@@ -2168,23 +2141,6 @@ try {
         && before === 8 && !!st && /your move/.test(status) && Q.errors.length === 0,
       JSON.stringify({ before, status, errs: Q.errors }));
     await Q.ctx.close(); }
-
-  const liMod = nsMods.find((s) => s.name === 'local-inference');
-  const liApi = liMod && await import(new URL('../void-live-deploy/skills/local-inference.js', import.meta.url).href);
-  let passResult, failResult;
-  try {
-    const passDiff = '+CREATE TABLE void_ledger (id INTEGER PRIMARY KEY, kind TEXT, approval_id TEXT)';
-    const failDiff = '+CREATE TABLE void_ledger (id INTEGER PRIMARY KEY); +CREATE TABLE void_ledger (id INTEGER PRIMARY KEY)';
-    const schemaState = { tables: { void_ledger: { columns: ['id', 'kind', 'approval_id'] } } };
-    passResult = liApi && await liApi.checkLedgerDiff(passDiff, { tables: { void_ledger: { columns: ['id', 'kind', 'approval_id'] } } });
-    failResult = liApi && await liApi.checkLedgerDiff(failDiff, { tables: { void_ledger: { columns: ['id', 'kind', 'approval_id'] } } });
-  } catch (_) { passResult = { pass: true, issues: ['skipped: no ollama'] }; failResult = { pass: false, issues: ['skipped: no ollama'] }; }
-  check('local-inference: listed with examples and near misses; examples route only to it; offline check catches duplicate table and passes clean diff',
-    !!liMod && liMod.examples.length >= 4 && (liMod.nearMisses || []).length >= 3
-      && liMod.examples.every((e) => firstNs(e) === 'local-inference') && liMod.nearMisses.every((e) => firstNs(e) !== 'local-inference')
-      && passResult && (passResult.pass === true || passResult.issues?.includes?.('skipped')) && Array.isArray(passResult.issues)
-      && failResult && (failResult.pass === false || failResult.issues?.includes?.('skipped')) && Array.isArray(failResult.issues),
-    liMod ? liMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing local-inference');
 
   { const slog = await import(new URL('../void-live-deploy/skills/slogan3d.js', import.meta.url).href);
     const doc = slog.sloganDoc({ reduce: true });
@@ -2561,7 +2517,6 @@ try {
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
     !!esMod && esMod.examples.length >= 4 && (esMod.nearMisses || []).length >= 3
       && esMod.examples.every((e) => firstNs(e) === 'spanish') && esMod.nearMisses.every((e) => firstNs(e) !== 'spanish')
-      && typeof esReady === 'string' && /Puedo responder en espaΓö£ΓûÆol/.test(esReady) && !/\/api\/publish/.test(esReady),
       && typeof esReady === 'string' && /Puedo responder en espa├▒ol/.test(esReady) && !/\/api\/publish/.test(esReady),
     esMod ? esMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') + ' | ' + esReady : 'missing spanish');
 
@@ -2763,7 +2718,6 @@ try {
     check('router: "let Void spend up to $5 a month on a stronger model" is a confirm-line spend (owner-only, Yes / No) naming the paid model; questions about it and non-dollar caps are not',
       spendAsk && spendAsk.toolName === 'models.spend' && spendAsk.args.model === R.PAID_MODEL && spendAsk.args.cost.amount === 5 && core.GATED['models.spend'].kind === 'spend'
       && core.confirmLine('models.spend', spendAsk.args) === 'Let Void spend up to $5 a month of what it earned on a stronger model?'
-      && core.parseGatedAsk('stop paying for stronger models').args.cost.amount === 0 && !core.parseGatedAsk('how do I let void pay for a stronger model') && !core.parseGatedAsk('let void spend ╬ô├⌐┬╝5 a month on a stronger model')
       && core.parseGatedAsk('stop paying for stronger models').args.cost.amount === 0 && !core.parseGatedAsk('how do I let void pay for a stronger model') && !core.parseGatedAsk('let void spend Γé¼5 a month on a stronger model')
       && core.parseGatedAsk('pay jane $5').toolName === 'payment.send', JSON.stringify(spendAsk));
     // earned budget + an approved standing spend = the paid model, its cost recorded against both and in the ledger
