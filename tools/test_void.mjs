@@ -1867,15 +1867,15 @@ try {
   });
   const wtPage = async (a, re) => { await W.ask(a, 0); return until(async () => { const pg = await W.page(); return re.test(pg) && (await W.p.$$eval('.vpage.on .wt', (d) => d.length)) === 1 && pg; }, 6000); };
   const tokyoNow = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', hour: 'numeric' }).format(new Date()).replace(/\s*[AP]M/, '');
-  const pTokyo = await wtPage('time in Tokyo', /Tokyo, Japan[\s\S]*Asia\/Tokyo Γö¼Γòû UTC\+9/);
+  const pTokyo = await wtPage('time in Tokyo', /Tokyo, Japan[\s\S]*Asia\/Tokyo · UTC\+9/);
   check('worldtime: "time in Tokyo" shows Tokyo\'s clock, zone and offset', pTokyo && new RegExp('(^|\\n)' + tokyoNow + ':\\d\\d\\s?[AP]M').test(pTokyo), String(pTokyo).slice(0, 140));
   const pConv = await wtPage('3pm London to Tokyo', /3:00\s?PM in London[\s\S]*(11:00\s?PM|12:00\s?AM)[\s\S]*in Tokyo, Japan/);
   check('worldtime: "3pm London to Tokyo" converts the time between the two places', !!pConv, String(pConv).slice(0, 140));
-  const pSet = await wtPage('sunset in Paris', /Sunset Γö¼Γòû Paris[\s\S]*7:3[35]\s?PM/);
+  const pSet = await wtPage('sunset in Paris', /Sunset · Paris[\s\S]*7:3[35]\s?PM/);
   check('worldtime: "sunset in Paris" gives the sunset from Open-Meteo', !!pSet && sunCalls.includes('sunrise,sunset'), String(pSet).slice(0, 140));
-  const pRise = await wtPage('when is sunrise in New York', /Sunrise Γö¼Γòû New York[\s\S]*7:0[12]\s?AM/);
+  const pRise = await wtPage('when is sunrise in New York', /Sunrise · New York[\s\S]*7:0[12]\s?AM/);
   check('worldtime: "when is sunrise in New York" gives the sunrise', !!pRise, String(pRise).slice(0, 140));
-  const pSyd = await wtPage('what time is it in Sydney', /Sydney[\s\S]*Australia\/Sydney Γö¼Γòû UTC\+1[01]/);
+  const pSyd = await wtPage('what time is it in Sydney', /Sydney[\s\S]*Australia\/Sydney · UTC\+1[01]/);
   check('worldtime: "time in Tokyo" shows Tokyo\'s clock, zone and offset', pTokyo && new RegExp('(^|\\n)' + tokyoNow + ':\\d\\d\\s?[AP]M').test(pTokyo), String(pTokyo).slice(0, 140));
   check('worldtime: "3pm London to Tokyo" converts the time between the two places', !!pConv, String(pConv).slice(0, 140));
   check('worldtime: "sunset in Paris" gives the sunset from Open-Meteo', !!pSet && sunCalls.includes('sunrise,sunset'), String(pSet).slice(0, 140));
@@ -2085,12 +2085,13 @@ try {
 
   const othMod = nsMods.find((s) => s.name === 'othello');
   const othApi = othMod && await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
-  const init = othApi && othApi.initialBoard();
-  const midFlips = othApi && othApi.flips(init, 19, 1); // (2,3) flips (3,3)=white
-  const v1 = othApi && othApi.validMoves(init, 1);
-  const v2 = othApi && othApi.validMoves(init, 2);
-  const cnt = othApi && othApi.count(init);
-  const ai = othApi && othApi.aiMove(init);
+  const initState = othApi && othApi.createOthelloState();
+  const init = initState && initState.board;
+  const midFlips = othApi && init && othApi.flipsFor(init, 19, 1); // (2,3) flips (3,3)=white
+  const v1 = othApi && init && othApi.legalMoves(init, 1);
+  const v2 = othApi && init && othApi.legalMoves(init, 2);
+  const cnt = othApi && init && othApi.countDiscs(init);
+  const ai = othApi && init && othApi.voidMove(init);
   check('othello: listed with examples and near misses; examples route only to it; engine flips, valid moves, counts, and AI work',
     !!othMod && othMod.examples.length >= 4 && (othMod.nearMisses || []).length >= 3
       && othMod.examples.every((e) => firstNs(e) === 'othello') && othMod.nearMisses.every((e) => firstNs(e) !== 'othello')
@@ -2098,7 +2099,7 @@ try {
       && midFlips && midFlips.length === 1 && midFlips[0] === 27
       && Array.isArray(v1) && v1.length === 4 && v1.sort((a,b)=>a-b).join(',') === '19,26,37,44'
       && Array.isArray(v2) && v2.length === 4 && v2.sort((a,b)=>a-b).join(',') === '20,29,34,43'
-      && Array.isArray(cnt) && cnt[0] === 2 && cnt[1] === 2
+      && cnt && cnt.black === 2 && cnt.white === 2
       && typeof ai === 'number' && ai >= 0 && ai < 64 && v2.includes(ai),
     othMod ? othMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing othello');
 

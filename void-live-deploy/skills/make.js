@@ -9,7 +9,6 @@
  */
 const GAMES = [
   [/^(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)$/, 'connect4', 'Connect 4'],
-  [/^(?:tic[\s-]*tac[\s-]*toe|noughts\s+and\s+crosses|x(?:'s)?\s+and\s+o(?:'s)?)$/, 'tictactoe', 'Tic-tac-toe'],
 ];
 const SHAPES = { cube: 'cube', box: 'cube', sphere: 'sphere', ball: 'sphere', orb: 'sphere', torus: 'torus', donut: 'torus', doughnut: 'torus', ring: 'torus',
   pyramid: 'pyramid', cone: 'cone', cylinder: 'cylinder', diamond: 'diamond', gem: 'diamond', crystal: 'diamond', octahedron: 'diamond',
@@ -202,7 +201,7 @@ async function run(text, api) {
 
 export default {
   name: 'make',
-  examples: ['play connect 4', 'make me a tic tac toe game', 'make a 3d torus', 'show me a gold 3d diamond', 'connect four', 'timing game', 'uap timeline'],
+  examples: ['play connect 4', 'make a 3d torus', 'show me a gold 3d diamond', 'connect four', 'timing game', 'uap timeline'],
   nearMisses: ['what is connect 4', 'who invented tic tac toe', 'how to make a 3d model', 'make a list', 'what is a uap', 'news filter settings'],
   match(lower, text) { return !!makeOf(text); },
   run,
