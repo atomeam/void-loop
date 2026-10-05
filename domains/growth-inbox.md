@@ -23,5 +23,5 @@ New ideas land here in batches. A run may build any open row. Shipped rows stay,
 | building | 2026-10-04 | download the print file | export-to-print, file stays valid offline |
 | building | 2026-10-04 | cartoon version of a hard subject | two-part summons, funny not grim |
 | building | 2026-10-04 | zoom in on the figure | collector detail, progressive |
-| building | 2026-10-04 | what can this figure do | figure stays on brand |
+| shipped 231840b | 2026-10-04 | what can this figure do | figure stays on brand (skill on main at 231840b; Motelet line, no new summon) |
 | building | 2026-10-04 | show the countdown | days until a date |
