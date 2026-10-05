@@ -4216,13 +4216,13 @@ return { ok: true, detail: 'timer-reset' };
         const res = await fetch(SKILLS_INDEX_URL);
         if (!res.ok) return;
         const index = await res.json();
-        for (const name of index) {
-          try {
-            const mod = await import('/skills/' + name + '.js');
-            const skill = mod.default;
-            if (skill && skill.name && skill.match && skill.run) learnedSkills.push(skill);
-            if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
-          } catch (_) {}
+        // All skill modules load at once, not one after another: one round trip per skill in a row (55 and growing) kept
+        // asks that wait for the skills ("waking up": calc, loan) past 4 s on a slow link or busy machine. Match order stays the index order.
+        const mods = await Promise.all(index.map((name) => import('/skills/' + name + '.js').catch(() => null)));
+        for (const mod of mods) {
+          const skill = mod && mod.default;
+          if (skill && skill.name && skill.match && skill.run) learnedSkills.push(skill);
+          if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
         }
       } catch (_) {}
       if (Object.values(things).some((t) => stageKinds[t.kind])) render(); // figures kept from last time come back
@@ -5143,6 +5143,8 @@ return { ok: true, detail: 'timer-reset' };
       if (/^(hi|hello|hey|hiya|yo|sup|wassup|wazzup|what'?s\s+up|whats\s+up|ola|olá|oi|hola|szia|hallo|bonjour|salut|ciao|hej|good\s+(morning|afternoon|evening))(\s+(there|void))?\s*[.!?]*$/.test(lower0)) { say('hi. ask for anything'); return; }
       // small talk: short, warm, and no encyclopedia page about the word "thanks"
       { const st = smallTalk(lower0.replace(/[.!?]+$/, '').replace(/\s+/g, ' ').trim()); if (st) { say(st); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'said' }); return; } }
+      // a bare probe or ping is someone checking Void is alive: say so (no page, no miss)
+      if (/^(probe|ping)\s*[.!?]*$/.test(lower0)) { say('here. ask for anything'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'said' }); return; }
       if (/^(test|testing|probe|ping|ping-test|research probe|test miss from research|asdf+|qwerty|zz+q*x*)\s*[.!?]*$/.test(lower0) || /^[bcdfghjklmnpqrstvwxz]{4,8}$/.test(lower0)
           || /^\/[\w-]+$/.test(lower0) || /^zz+\b.*\bprobe\b/.test(lower0)) { say(''); return; }
       if (/^(undo|oops|undo that|take that back)\s*[.!]?$/.test(lower0)) { undoLast(); return; }
@@ -5163,7 +5165,7 @@ return { ok: true, detail: 'timer-reset' };
       if (handleMetaAsk(text, lower0)) return;
       currentAsk = text; if (!/^(close|menu|undo|oops|clear)\b/.test(lower0)) lastAsk = text;
       if (!skillsLoaded) say('waking up');
-      if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);
+      if (!skillsLoaded) { await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]); if (whisper.textContent === 'waking up') say(''); }
       if (await runLearnedSkills(text, lower0)) return;
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
