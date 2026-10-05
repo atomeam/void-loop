@@ -2,7 +2,8 @@
  * tictactoe skill — the first board game as a real skill (countdown's shape, not make's iframe).
  * "lets play tic tac toe" summons an interactive board on the stage; it stays until thrown off.
  * The engine is a flat 9-element board; the canvas maps it to a 3x3 grid of cells.
- * Hot seat: X and O alternate by tap; the status line calls the result. New game resets.
+ * You are X and Void is O: after each tap Void answers with its best move (full minimax, so it never loses).
+ * The status line calls the result. New game resets.
  */
 export function createTicTacToeState() {
   return {
@@ -44,9 +45,37 @@ export function resolveMove(state, index) {
   };
 }
 
+// Void's move: full minimax over the flat board (9 squares, so it is instant). Wins fast, loses slow; ties go to the lowest index.
+export function bestMove(state) {
+  const me = state.currentPlayer, other = me === 'X' ? 'O' : 'X';
+  const score = (board, player, depth) => {
+    for (const [a, b, c] of WINNING_COMBOS) if (board[a] && board[a] === board[b] && board[a] === board[c]) return board[a] === me ? 10 - depth : depth - 10;
+    if (!board.includes(null)) return 0;
+    let best = player === me ? -Infinity : Infinity;
+    for (let i = 0; i < 9; i++) {
+      if (board[i] !== null) continue;
+      board[i] = player;
+      const v = score(board, player === me ? other : me, depth + 1);
+      board[i] = null;
+      best = player === me ? Math.max(best, v) : Math.min(best, v);
+    }
+    return best;
+  };
+  const board = [...state.board];
+  let pick = null, top = -Infinity;
+  for (let i = 0; i < 9; i++) {
+    if (board[i] !== null) continue;
+    board[i] = me;
+    const v = score(board, other, 1);
+    board[i] = null;
+    if (v > top) { top = v; pick = i; }
+  }
+  return pick;
+}
+
 export function tictactoeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open|summon)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:tic[\s-]*tac[\s-]*toe|noughts\s+and\s+crosses|x'?s?\s+and\s+o'?s?)(?:\s+game)?$/i.test(t)) return { kind: 'game' };
+  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open|summon)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+|some\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:tic[\s-]*tac[\s-]*toe|noughts\s+and\s+crosses|x'?s?\s+and\s+o'?s?)(?:\s+game)?$/i.test(t)) return { kind: 'game' };
   return null;
 }
 
@@ -77,17 +106,25 @@ function mount(th, stageApi) {
     b.addEventListener('pointerdown', (e) => e.stopPropagation());
     b.addEventListener('click', (e) => {
       e.stopPropagation();
+      if (th.state.currentPlayer !== 'X') return; // Void is answering
       try {
         th.state = resolveMove(th.state, i).nextState;
         paint();
-      } catch (_) { /* occupied cell or finished game: no-op */ }
+      } catch (_) { return; /* occupied cell or finished game: no-op */ }
+      const was = th.state;
+      if (was.status === 'playing') setTimeout(() => {
+        if (th.state !== was) return; // new game or board gone in the meantime
+        const m = bestMove(was);
+        if (m !== null) { th.state = resolveMove(was, m).nextState; paint(); }
+      }, 350);
     });
     cells.push(b);
     grid.appendChild(b);
   }
   function paint() {
-    for (let i = 0; i < 9; i++) { cells[i].textContent = th.state.board[i] || ''; cells[i].disabled = th.state.board[i] !== null || th.state.status !== 'playing'; }
-    status.textContent = th.state.status === 'playing' ? th.state.currentPlayer + "'s move" : th.state.status === 'draw' ? 'draw' : th.state.status.replace('_', ' ');
+    for (let i = 0; i < 9; i++) { cells[i].textContent = th.state.board[i] || ''; cells[i].disabled = th.state.board[i] !== null || th.state.status !== 'playing' || th.state.currentPlayer !== 'X';
+      cells[i].setAttribute('aria-label', 'row ' + (Math.floor(i / 3) + 1) + ', column ' + (i % 3 + 1) + ': ' + (th.state.board[i] || 'empty')); }
+    status.textContent = th.state.status === 'playing' ? (th.state.currentPlayer === 'X' ? 'your move' : 'Void is thinking') : th.state.status === 'draw' ? 'draw' : th.state.status.replace('_', ' ');
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
   again.addEventListener('click', (e) => { e.stopPropagation(); th.state = createTicTacToeState(); paint(); });
@@ -102,7 +139,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'tictactoe');
   if (existing) { api.stage.render(); return 'tictactoe'; } // one board at a time
   api.summon('tictactoe', { state: createTicTacToeState(), x: 60, y: 70 });
-  api.say('tic-tac-toe · X starts · tap a square');
+  api.say('tic-tac-toe · you are X · tap a square');
   return 'tictactoe';
 }
 
@@ -111,6 +148,7 @@ export default {
   tictactoeOf,
   createTicTacToeState,
   resolveMove,
+  bestMove,
   examples: ['lets play tic tac toe', 'tic tac toe', 'play tic tac toe', 'a game of tic tac toe', 'noughts and crosses'],
   nearMisses: ['who invented tic tac toe', 'tic tac toe rules', 'connect 4', 'what is connect 4'],
   match(lower, text) { return !!tictactoeOf(text); },

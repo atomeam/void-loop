@@ -86,7 +86,25 @@ function compute(q) {
   return { tip, total, per, billEach, tipEach };
 }
 
+// "tip calculator": a small live calculator (bill, tip %, people) when no bill was given
+const isCalcAsk = (text) => /^(?:a\s+|open\s+(?:a\s+|the\s+)?|show\s+(?:me\s+)?(?:a\s+|the\s+)?)?(?:tip|bill\s+split(?:ting)?|split\s+the\s+bill)\s+calculator$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+function runCalc(api) {
+  const { showPage } = api, f = (n) => '$' + n.toFixed(2);
+  const el = showPage((p) => { p.innerHTML = '<h2>Tip calculator</h2>'
+    + '<div style="display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:center;max-width:320px;margin:10px 0">'
+    + '<label for="tc-bill">Bill</label><input id="tc-bill" type="number" inputmode="decimal" min="0" step="0.01" placeholder="64.50">'
+    + '<label for="tc-pct">Tip %</label><input id="tc-pct" type="number" inputmode="decimal" min="0" max="100" value="20">'
+    + '<label for="tc-n">People</label><input id="tc-n" type="number" inputmode="numeric" min="1" max="99" value="1"></div>'
+    + '<div id="tc-out" aria-live="polite" style="font-size:22px;line-height:1.5"></div>'; });
+  const q = (id) => el.querySelector('#' + id), out = q('tc-out');
+  const upd = () => { const b = +q('tc-bill').value, pc = +q('tc-pct').value, n = Math.max(1, Math.round(+q('tc-n').value || 1));
+    if (!(b > 0)) { out.textContent = 'type the bill'; return; }
+    const tip = b * pc / 100, tot = b + tip; out.innerHTML = 'Tip ' + f(tip) + '<br>Total ' + f(tot) + (n > 1 ? '<br>Each ' + f(tot / n) : ''); };
+  ['tc-bill', 'tc-pct', 'tc-n'].forEach((id) => q(id).addEventListener('input', upd)); upd(); setTimeout(() => q('tc-bill').focus(), 50);
+  return 'tip';
+}
 async function run(text, api) {
+  if (isCalcAsk(text)) return runCalc(api);
   const { showPage, esc } = api;
   const q = tipOf(text);
   if (!q) return 'none';
@@ -145,6 +163,6 @@ export default {
     'gas cost for 320 miles at 28 mpg $3.59 a gallon',
     '100 usd in eur'
   ],
-  match(lower, text) { return !!tipOf(text); },
+  match(lower, text) { return !!tipOf(text) || isCalcAsk(text); },
   run
 };

@@ -1,5 +1,6 @@
 /**
  * local-inference skill — offline Ollama/DeepSeek gate for D1 ledger commits
+ * local-inference skill ΓÇö offline Ollama/DeepSeek gate for D1 ledger commits
  * Runs a local heuristic check on candidate draft commits before they hit CI.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Examples: "validate this diff", "check ledger drift", "run local inference on draft"
@@ -62,6 +63,10 @@ export function localInferenceOf(text) {
   if (/^(?:validate|check)\s+(?:this\s+)?(?:diff|ledger|draft)/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
   if (/^(?:run\s+)?local\s+inference\s+(?:on|for)\s+(?:this\s+)?(?:diff|draft)/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
   if (/^check\s+ledger\s+drift/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
+  if (/^(?:validate|check)\s+(?:this\s+)?(?:diff|ledger|draft)\b/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
+  if (/^(?:run\s+)?local\s+inference\s+(?:on|for)\s+(?:this\s+)?(?:diff|draft)\b/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
+  if (/^check\s+ledger\s+drift\b/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
+  if (/^check\s+this\s+commit\s+against\s+d1\s+schema\b/.test(t)) return { kind: 'local-inference', label: 'Local Inference' };
   return null;
 }
 
@@ -120,6 +125,7 @@ export default {
       runBtn.disabled = true;
       runBtn.classList.add('loading');
       runBtn.textContent = 'Validating…';
+      runBtn.textContent = 'ValidatingΓÇª';
       outEl.textContent = '';
       outEl.className = 'result';
 
@@ -144,4 +150,5 @@ export default {
 
     return 'local-inference';
   }
+};
 };

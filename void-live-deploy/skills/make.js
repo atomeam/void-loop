@@ -125,7 +125,15 @@ c.addEventListener('pointerdown',function(e){drag=[e.clientX,e.clientY,rx,ry];c.
 c.addEventListener('pointermove',function(e){if(!drag)return;ry=drag[3]+(e.clientX-drag[0])*.01;rx=drag[2]+(e.clientY-drag[1])*.01});
 c.addEventListener('pointerup',function(){drag=null;c.style.cursor='grab'});
 var L=[-.4,.7,.6],ll=Math.hypot(L[0],L[1],L[2]);L=L.map(function(z){return z/ll});
-function frame(now){if(c.clientWidth!==W||c.clientHeight!==H)size();if(!W||!H){requestAnimationFrame(frame);return}var T=(now-t0)/1000;if(!drag)ry+=.006;x.clearRect(0,0,W,H);var sc=Math.min(W,H)*.26,ox=W/2,oy=H/2;
+// the loop only runs while the shape is on screen; once built it idles at 30 fps, and with reduced motion it stops and redraws only while dragged
+var running=false,onScreen=true,last=0,MQ=null;try{MQ=matchMedia('(prefers-reduced-motion: reduce)');MQ.addEventListener('change',function(){if(!MQ.matches)kick()})}catch(_){}
+// read live: in a sandboxed frame the setting can arrive a moment after the script starts
+function RMnow(){return !!(MQ&&MQ.matches)}
+function kick(){if(!running){running=true;requestAnimationFrame(frame)}}
+try{new IntersectionObserver(function(es){onScreen=es[es.length-1].isIntersecting;if(onScreen)kick()}).observe(c)}catch(_){}
+c.addEventListener('pointerdown',kick);c.addEventListener('pointermove',function(){if(drag)kick()});
+function frame(now){if(!onScreen){running=false;return}var built=(now-t0)/1000>2.2;if(built&&!drag&&now-last<33){requestAnimationFrame(frame);return}var dt=last?Math.min(100,now-last):16.7;last=now;
+if(c.clientWidth!==W||c.clientHeight!==H)size();if(!W||!H){requestAnimationFrame(frame);return}var T=(now-t0)/1000;if(!drag&&!RMnow())ry+=.006*dt/16.7;x.clearRect(0,0,W,H);var sc=Math.min(W,H)*.26,ox=W/2,oy=H/2;
 var g=x.createRadialGradient(ox,oy,0,ox,oy,sc*2.4);g.addColorStop(0,'rgba('+COL.join(',')+',.18)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
 var cxr=Math.cos(rx),sxr=Math.sin(rx),cyr=Math.cos(ry),syr=Math.sin(ry);
 var P=V.map(function(p){var X=p[0]*cyr+p[2]*syr,Z=-p[0]*syr+p[2]*cyr,Y=p[1]*cxr-Z*sxr;Z=p[1]*sxr+Z*cxr;return [X,Y,Z]});
@@ -138,6 +146,8 @@ var lam=Math.max(0,nx*L[0]+ny*L[1]-nz*L[2]),hz=L[2]+1,hl=Math.hypot(L[0],L[1],hz
 var col=fa.col.map(function(z){return Math.min(255,Math.round(z*(.42+.7*lam)+spec*200+rim*70+glow*160))});list.push({p:pts,z:(pts[0][2]+pts[1][2]+pts[2][2])/3,col:col,a:Math.min(1,.15+e)})}
 list.sort(function(p,q){return q.z-p.z});list.forEach(function(o){x.globalAlpha=o.a;x.fillStyle='rgb('+o.col.join(',')+')';x.strokeStyle=x.fillStyle;x.lineWidth=.6;x.beginPath();x.moveTo(o.p[0][0],o.p[1][1]);x.lineTo(o.p[1][0],o.p[1][1]);x.lineTo(o.p[2][0],o.p[2][1]);x.closePath();x.fill();x.stroke()});x.globalAlpha=1;
 requestAnimationFrame(frame)}requestAnimationFrame(frame);window.__shape={faces:F.length};})();`
+list.sort(function(p,q){return q.z-p.z});list.forEach(function(o){x.globalAlpha=o.a;x.fillStyle='rgb('+o.col.join(',')+')';x.strokeStyle=x.fillStyle;x.lineWidth=.6;x.beginPath();x.moveTo(o.p[0][0],o.p[0][1]);x.lineTo(o.p[1][0],o.p[1][1]);x.lineTo(o.p[2][0],o.p[2][1]);x.closePath();x.fill();x.stroke()});x.globalAlpha=1;
+if(RMnow()&&built&&!drag){running=false;return}requestAnimationFrame(frame)}kick();window.__shape={faces:F.length,get running(){return running}};})();`
     + '</script></body></html>';
 }
 

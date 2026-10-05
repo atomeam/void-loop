@@ -22,6 +22,7 @@ concurrency:
 permissions:
   contents: write
   checks: read # deploy.yml (called below) asks for checks: read; a called workflow gets only what the caller grants, so this keeps startup clean
+  actions: write # deploy.yml requests actions: write; without it the called workflow fails at startup
 
 jobs:
   test-merged:

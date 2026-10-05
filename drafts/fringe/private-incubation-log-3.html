@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · what fills the break (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input,textarea{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+textarea{width:100%;box-sizing:border-box;min-height:9em;resize:vertical}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#prompt{font-size:20px;color:#7cf}
+#clock{font-variant-numeric:tabular-nums;color:#8a8a92}
+#dot{width:64px;height:64px;border-radius:50%;background:#444;border:0;padding:0}
+#dot.go{background:#5c5}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>what fills the break · draft · not published</h1>
+  <p class="note">An idea test in three parts. First, list unusual uses for an everyday object for 2 minutes. Then take a 4-minute break, and the page picks what fills it: an easy task (tap a dot when it turns green), a hard task (subtract 7s in your head), or just resting. Last, the same object comes back for 2 more minutes. In one study (Baird and others, 2012) people who did an easy task in the break came up with more new ideas afterwards than people who did a hard task or rested. This page counts your own new ideas after each kind of break, so you can see whether that holds for you. Everything stays in this browser.</p>
+  <div class="row"><button id="start" type="button">start a round</button><span id="clock" aria-live="off"></span></div>
+  <div id="prompt" aria-live="polite"></div>
+  <div id="stage"></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.breakfill.v1',st={rounds:[]};
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.rounds))st={rounds:j.rounds.filter(function(r){return r&&typeof r.kind==='string'&&r.added>=0})}}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({rounds:st.rounds.slice(-300)}))}catch(_){}}
+  var OBJ=['a brick','a paperclip','a newspaper','a shoe','a tire','a spoon','a bucket','a belt','an umbrella','a cup','a towel','a cardboard box'];
+  var KINDS=['easy','hard','rest'],T={ideas:120,brk:240};
+  // the two lists are compared loosely: case, spacing and leading "a/an/the" are ignored
+  function norm(s){return s.toLowerCase().replace(/[^a-z0-9 ]+/g,' ').replace(/\b(?:a|an|the|to|for|as)\b/g,' ').replace(/\s+/g,' ').trim()}
+  function lines(s){var seen={},out=[];String(s||'').split(/\n|;/).forEach(function(l){var n=norm(l);if(n&&!seen[n]){seen[n]=1;out.push(n)}});return out}
+  function newIdeas(before,after){var b={};lines(before).forEach(function(n){b[n]=1});return lines(after).filter(function(n){return !b[n]}).length}
+  // the break kind is picked by the page, least-used first, so you do not choose the break you expect to work
+  function assign(rounds){var c={easy:0,hard:0,rest:0};rounds.forEach(function(r){if(c[r.kind]!=null)c[r.kind]++});var lo=Math.min(c.easy,c.hard,c.rest),opts=KINDS.filter(function(k){return c[k]===lo});return opts[Math.floor(Math.random()*opts.length)]}
+  function el(id){return document.getElementById(id)}
+  var timer=null,cur=null;
+  function countdown(sec,done){clearInterval(timer);var end=Date.now()+sec*1000;function tick(){var left=Math.max(0,Math.ceil((end-Date.now())/1000));el('clock').textContent=Math.floor(left/60)+':'+String(left%60).padStart(2,'0');if(!left){clearInterval(timer);done()}}tick();timer=setInterval(tick,250)}
+  function area(label){var S=el('stage');S.textContent='';var a=document.createElement('textarea');a.setAttribute('aria-label',label);a.placeholder='one use per line';S.appendChild(a);a.focus();return a}
+  function phase1(){cur={obj:OBJ[Math.floor(Math.random()*OBJ.length)],kind:assign(st.rounds),at:Date.now()};el('start').disabled=true;el('state').textContent='';
+    el('prompt').textContent='unusual uses for '+cur.obj;var a=area('uses, first list');countdown(T.ideas,function(){cur.before=a.value;phase2()})}
+  function phase2(){var S=el('stage');S.textContent='';el('prompt').textContent='break: '+(cur.kind==='easy'?'tap the dot when it turns green':cur.kind==='hard'?'start at 1000 and keep subtracting 7':'rest; look away from the screen');
+    var stop=[];
+    if(cur.kind==='easy'){var d=document.createElement('button');d.id='dot';d.type='button';d.setAttribute('aria-label','dot, press when green');S.appendChild(d);var hits=0,miss=0,t0=null;
+      (function arm(){var w=1500+Math.random()*3000,h=setTimeout(function(){d.classList.add('go');t0=Date.now()},w);stop.push(function(){clearTimeout(h)});d.onclick=function(){if(t0){hits++;d.classList.remove('go');t0=null;arm()}else miss++}})();
+      stop.push(function(){cur.task=hits+' taps, '+miss+' early'})}
+    else if(cur.kind==='hard'){var n=1000,ok=0,bad=0,row=document.createElement('div');row.className='row';var lab=document.createElement('span');lab.textContent=n+' − 7 =';var inp=document.createElement('input');inp.type='number';inp.inputMode='numeric';inp.style.width='7em';inp.setAttribute('aria-label','answer');
+      inp.addEventListener('keydown',function(e){if(e.key!=='Enter')return;var v=parseInt(inp.value,10);if(v===n-7){ok++;n=v}else bad++;inp.value='';lab.textContent=n+' − 7 ='});row.appendChild(lab);row.appendChild(inp);S.appendChild(row);inp.focus();
+      stop.push(function(){cur.task=ok+' right, '+bad+' wrong'})}
+    countdown(T.brk,function(){stop.forEach(function(f){f()});phase3()})}
+  function phase3(){el('prompt').textContent='back to '+cur.obj+': new uses only';var a=area('uses, second list');countdown(T.ideas,function(){
+    var added=newIdeas(cur.before,a.value),first=lines(cur.before).length;st.rounds.push({at:cur.at,kind:cur.kind,first:first,added:added,task:cur.task||''});save();
+    el('stage').textContent='';el('prompt').textContent='';el('clock').textContent='';el('start').disabled=false;
+    el('state').textContent=first+' uses before the break, '+added+' new after a'+(cur.kind==='easy'?'n easy':cur.kind==='hard'?' hard':' resting')+' break';cur=null;draw()})}
+  function mean(xs){return xs.length?xs.reduce(function(a,b){return a+b},0)/xs.length:null}
+  function summary(rounds){var o={};KINDS.forEach(function(k){var r=rounds.filter(function(x){return x.kind===k}).map(function(x){return x.added});o[k]={n:r.length,mean:mean(r)}});return o}
+  function draw(){if(!st.rounds.length){el('score').textContent='';return}var s=summary(st.rounds),bits=KINDS.map(function(k){return (k==='rest'?'rest':k+' task')+': '+(s[k].n?(Math.round(s[k].mean*10)/10)+' new ideas on average ('+s[k].n+' round'+(s[k].n===1?'':'s')+')':'no rounds yet')}),few=KINDS.some(function(k){return s[k].n<5});
+    el('score').textContent=bits.join('\n')+(few?'\n5 rounds of each kind before comparing; the object changes each round, so single rounds vary a lot':'')}
+  el('start').addEventListener('click',phase1);draw();
+  window.__breakfill={norm:norm,lines:lines,newIdeas:newIdeas,assign:assign,summary:summary,T:T}; // for checks
+})();
+</script>
+</body>
+</html>

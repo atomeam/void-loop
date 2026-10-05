@@ -7,3 +7,7 @@ __pycache__/
 
 # Raw intake archives (sha256 + file list are committed next to them)
 domains/inputs/**/raw/
+
+# real asks people typed: kept on the machine that pulls them, never in this public repo (tools/pull_misses.py, tools/misses.mjs)
+domains/void.misses.md
+domains/void.jobs.json

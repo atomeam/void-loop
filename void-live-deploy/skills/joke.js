@@ -4,10 +4,35 @@
  * "tell me a joke", "make me laugh", "dad joke".
  */
 export function isJoke(text) {
-  return /^(?:please\s+)?(?:tell\s+(?:me\s+)?(?:a|another|one\s+more|a\s+funny)\s+joke|(?:another|a)\s+joke|joke(?:\s+please)?|make\s+me\s+laugh|(?:tell\s+me\s+a\s+)?dad\s+joke|say\s+something\s+funny|got\s+any\s+jokes)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  return /^(?:please\s+)?(?:tell\s+(?:me\s+)?(?:a|another|one\s+more|a\s+funny)\s+joke|(?:another|a)\s+joke|joke(?:\s+please)?|make\s+me\s+laugh|(?:tell\s+me\s+a\s+)?dad\s+joke|(?:say|tell\s+me)\s+something\s+funny|got\s+any\s+jokes|make\s+me\s+smile)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
 }
+// knock-knock jokes are their own shape (the dad-joke service doesn't do them), so a few classics live here
+const KNOCK = [['Lettuce', 'Lettuce in, it\'s cold out here!'], ['Boo', 'Don\'t cry, it\'s only a joke.'], ['Interrupting cow', 'Mo— (moo!)'],
+  ['Atch', 'Bless you!'], ['Olive', 'Olive you too.'], ['Cow says', 'No, a cow says moo!'], ['Tank', 'You\'re welcome.'], ['Nobel', 'No bell, that\'s why I knocked.']];
+const RIDDLES = [['What has keys but can’t open locks?', 'A piano.'], ['What gets wetter the more it dries?', 'A towel.'], ['What has hands but can’t clap?', 'A clock.'],
+  ['What can you catch but not throw?', 'A cold.'], ['What has a neck but no head?', 'A bottle.'], ['What goes up but never comes down?', 'Your age.'], ['What has many teeth but can’t bite?', 'A comb.'],
+  ['I’m tall when I’m young and short when I’m old. What am I?', 'A candle.'], ['What runs but never walks?', 'Water (or your nose).'], ['What has one eye but can’t see?', 'A needle.']];
+const TWISTERS = ['She sells seashells by the seashore.', 'Peter Piper picked a peck of pickled peppers.', 'How much wood would a woodchuck chuck if a woodchuck could chuck wood?',
+  'Red lorry, yellow lorry.', 'Unique New York.', 'Fuzzy Wuzzy was a bear. Fuzzy Wuzzy had no hair.', 'Six slippery snails slid slowly seaward.', 'Toy boat, toy boat, toy boat.'];
+export function isRiddle(text) { return /^(?:tell\s+me\s+|give\s+me\s+)?(?:a\s+|another\s+)?riddle$/i.test(String(text || '').trim().replace(/[?!.]+$/, '')); }
+export function isTwister(text) { return /^(?:tell\s+me\s+|give\s+me\s+|say\s+)?(?:a\s+|another\s+)?tongue[\s-]*twisters?$/i.test(String(text || '').trim().replace(/[?!.]+$/, '')); }
+export function isKnock(text) { return /^(?:(?:tell\s+me\s+)?(?:a\s+|another\s+)?knock[\s-]+knock(?:\s+jokes?)?|knock[\s-]+knock)$/i.test(String(text || '').trim().replace(/[?!.]+$/, '')); }
 async function run(text, api) {
   const { showPage, esc } = api;
+  if (isRiddle(text)) {
+    const [q, a] = RIDDLES[Math.floor(Math.random() * RIDDLES.length)];
+    const el = showPage((p) => { p.innerHTML = '<h2>A riddle</h2><p style="font-size:22px;line-height:1.45;font-weight:300">' + esc(q) + '</p><details><summary style="cursor:pointer;color:#8a8a8a">show the answer</summary><p style="font-size:20px">' + esc(a) + '</p></details>'; });
+    return 'joke';
+  }
+  if (isTwister(text)) {
+    showPage((p) => { p.innerHTML = '<h2>Tongue twister</h2><p style="font-size:24px;line-height:1.45;font-weight:300">' + esc(TWISTERS[Math.floor(Math.random() * TWISTERS.length)]) + '</p><div class="sub">say it three times fast</div>'; });
+    return 'joke';
+  }
+  if (isKnock(text)) {
+    const [who, line] = KNOCK[Math.floor(Math.random() * KNOCK.length)];
+    showPage((p) => { p.innerHTML = '<h2>Knock knock</h2><p style="font-size:20px;line-height:1.7;font-weight:300">Knock knock.<br>Who\'s there?<br>' + esc(who) + '.<br>' + esc(who) + ' who?<br>' + esc(line) + '</p><div class="sub">say “knock knock” for another</div>'; });
+    return 'joke';
+  }
   const el = showPage((p) => { p.innerHTML = '<h2>A joke</h2><div class="sub">…</div>'; });
   try {
     const j = await fetch('https://icanhazdadjoke.com/', { headers: { accept: 'application/json' } }).then((r) => r.json());
@@ -24,8 +49,8 @@ async function run(text, api) {
 }
 export default {
   name: 'joke',
-  examples: ['tell me a joke', 'make me laugh', 'dad joke'],
+  examples: ['tell me a joke', 'make me laugh', 'dad joke', 'knock knock joke'],
   nearMisses: ['what is a joke', 'who is the joker', 'history of comedy'],
-  match(lower, text) { return isJoke(text); },
+  match(lower, text) { return isJoke(text) || isKnock(text) || isRiddle(text) || isTwister(text); },
   run
 };

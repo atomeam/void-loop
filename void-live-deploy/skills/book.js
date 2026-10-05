@@ -10,7 +10,7 @@ export function bookOf(text) {
   // "books like dune", "books similar to the hobbit": the book's own subject, other books on it
   m = t.match(/^(?:(?:recommend|suggest|give\s+me)\s+)?(?:some\s+)?(?:books?|novels?|reads?)\s+(?:like|similar\s+to)\s+(.{2,80})$/i);
   if (m) return { q: m[1].replace(/^the\s+/i, ''), isbn: false, like: true };
-  m = t.match(/^(?:books?\s+by|find\s+(?:the\s+)?book|book\s+called)\s+(.{2,80})$/i);
+  m = t.match(/^(?:(?:a|some|any)\s+)?(?:books?\s+by|novels?\s+by|find\s+(?:the\s+)?book|book\s+called)\s+(.{2,80})$/i);
   if (m && !/^(?:a|the)\s+book$/.test(m[1])) return { q: m[1].replace(/^the\s+/i, ''), isbn: false };
   return null;
 }
@@ -51,7 +51,7 @@ async function run(text, api) {
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
     el.innerHTML = '<h2>Books</h2><p>Open Library didn\'t answer. Try the title again in a moment.</p>';
-    return 'book';
+    return 'none';
   }
 }
 export default {

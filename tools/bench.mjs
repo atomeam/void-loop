@@ -1,15 +1,19 @@
 // The everyday benchmark: common asks replayed on the real page. tools/bench.json says what should answer each one (`want`, a
 // note from the page's own log a2m.void.loop.v1, alternatives with |). The score is how many are answered by what should answer
-// them; growth is that score going up. External services are stubbed with plausible data: this measures Void, not their uptime.
+// them (when an ask has "before", those setup asks run first on the same page; and, when an ask has "says", whose visible answer matches that pattern); growth is that score going up. External services are stubbed with plausible data: this measures Void, not their uptime.
 //   node tools/bench.mjs            prints each ask and what answered it, then the totals
 //   node tools/bench.mjs --score    prints only {"score","total","wrong":[...]} (the tests read this; tools/bench.best.json is the floor)
 //   node tools/bench.mjs --last 10  replays only the last 10 asks (fast while growing a new round; the score and floor use all)
+//   node tools/bench.mjs --probe c.json  tries candidate asks from a file, prints only the misses (bench.json untouched)
 // Asks run BENCH_PAR at a time (default 6), each in its own browser context, so the order and the result don't change;
 // each waits until the page has logged its answer (at least 1.6 s, at most 4 s), so a busy machine doesn't miss one.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { chromium } from 'playwright-core';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
-const asks = JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'));
+// --probe file.json: try candidate asks (same shape) without touching bench.json; prints only the misses, so a big batch
+// finds the gaps fast. Add the ones worth keeping with tools/append.mjs once Void answers them.
+const probeFile = process.argv.includes('--probe') ? process.argv[process.argv.indexOf('--probe') + 1] : null;
+const asks = JSON.parse(fs.readFileSync(probeFile ? path.resolve(probeFile) : path.join(here, 'bench.json'), 'utf8'));
 // A repeated ask would count twice and inflate the score: refuse it.
 { const seen = new Set(), dup = asks.map((a) => a.ask.toLowerCase()).filter((k) => seen.has(k) || !seen.add(k));
   if (dup.length) { console.error('bench.json repeats: ' + dup.join(' | ')); process.exit(1); } }
@@ -22,7 +26,7 @@ const browser = await chromium.launch({ executablePath: exe, headless: true });
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
-async function one({ ask: a, want }) {
+async function one({ ask: a, want, says, before }) {
   const ctx = await browser.newContext(); const miss = [];
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => { const u = r.request().url();
     if (u.includes('/w/api.php')) return r.fulfill(json({ query: { search: [{ title: 'Topic' }] } }));
@@ -43,6 +47,7 @@ async function one({ ask: a, want }) {
     if (u.includes('api.coingecko.com')) { const ids = (new URL(u).searchParams.get('ids') || 'bitcoin').split(','); // whichever coin was asked
       return r.fulfill(json(Object.fromEntries(ids.map((id) => [id, { usd: 65000, usd_24h_change: 1.2, last_updated_at: 1700000000 }])))); }
     if (u.includes('earthquake.usgs.gov')) return r.fulfill(json({ features: [{ id: 'q1', properties: { mag: 4.6, place: '20 km E of Somewhere', time: Date.now() - 3600e3, url: 'https://earthquake.usgs.gov/earthquakes/eventpage/q1' }, geometry: { coordinates: [139.7, 35.7, 10] } }] }));
+    if (u.includes('openlibrary.org/search.json')) return r.fulfill(json({ docs: [{ key: '/works/OL1W', title: 'Kindred', author_name: ['Octavia E. Butler'], first_publish_year: 1979, subject: ['Science fiction', 'Time travel'] }, { key: '/works/OL2W', title: 'Hyperion', author_name: ['Dan Simmons'], first_publish_year: 1989, subject: ['Science fiction'] }] }));
     if (u.includes('hn.algolia.com')) return r.fulfill(json({ hits: [{ objectID: '1', title: 'A thing shipped', url: 'https://example.com/a', points: 120 }] }));
     if (u.includes('/feed/featured/')) return r.fulfill(json({ news: [{ story: '<b>Something</b> happened today.', links: [] }] }));
     return r.fulfill({ status: 204, body: '' }); });
@@ -50,22 +55,29 @@ async function one({ ask: a, want }) {
     if (/\/api\/answer$/.test(u)) return r.fulfill(json({ answer: 'A generic answer.', sources: [] }));
     return r.fulfill({ status: 204, body: '' }); });
   const p = await ctx.newPage(); await p.goto(base); await p.waitForTimeout(600);
+  // "before": setup asks run first (a list to check off, a timer to pause), so asks that act on earlier ones are tested too
+  for (const b0 of before || []) { await p.fill('#input', b0); await p.keyboard.press('Enter'); await p.waitForTimeout(900); await p.keyboard.press('Escape').catch(() => {}); }
   await p.fill('#input', a); await p.keyboard.press('Enter'); await p.waitForTimeout(1600);
   const said = await p.$eval('#whisper', (e) => e.textContent).catch(() => ''); // read before it fades
   await p.waitForFunction((q) => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => x.ask === q), a, { timeout: 2400 }).catch(() => {});
   const log = await p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'));
   const last = log.filter((x) => x.ask === a).pop();
   const note = last ? String(last.note || '') : (said && !miss.length ? 'said' : '');
-  const right = !miss.length && new RegExp('^(' + want + ')').test(note);
+  const routed = !miss.length && new RegExp('^(' + want + ')').test(note);
+  // "says": a pattern the visible answer must contain (the right ability AND the right value: "7 cubed" -> 343)
+  let shown = '';
+  if (routed && says) shown = said + '\n' + await p.evaluate(() => { const i = document.getElementById('input'); return document.body.innerText.replace(i ? i.value : '', ''); }).catch(() => '');
+  const valueOk = !says || new RegExp(says, 'i').test(shown);
+  const right = routed && valueOk;
   await ctx.close();
-  return { ask: a, want, by: note || '(none)', right };
+  return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right };
 }
 const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || 6);
 let next = 0;
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]); } }));
 await browser.close(); server.close();
 if (process.argv.includes('--score')) { console.log(JSON.stringify({ score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by) })); process.exit(0); }
-for (const x of out) console.log((x.right ? '  ok  ' : ' ---- ') + x.ask.padEnd(42) + ' ' + (x.by + (x.right ? '' : '   (wants ' + x.want + ')')));
+for (const x of out) if (!probeFile || !x.right) console.log((x.right ? '  ok  ' : ' ---- ') + x.ask.padEnd(42) + ' ' + (x.by + (x.right ? '' : '   (wants ' + x.want + ')')));
 const n = out.filter((x) => x.right).length;
 console.log('\n' + n + ' of ' + out.length + ' answered by what should answer them.');
 if (process.argv.includes('--json')) fs.writeFileSync(path.join(here, 'bench.last.json'), JSON.stringify(out, null, 1));

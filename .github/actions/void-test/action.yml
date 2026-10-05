@@ -1,5 +1,9 @@
 name: Void test suite
 description: Mirror tools/deploy.ps1 before it deploys. Sync the void.html copies, then run node tools/test_void.mjs (Chromium via Playwright, Python for will.py).
+inputs:
+  bench:
+    description: "with = suite then dedicated everyday benchmark; skip = suite only (a parallel job runs the bench); only = just the benchmark against tools/bench.best.json"
+    default: with
 runs:
   using: composite
   steps:
@@ -32,26 +36,48 @@ runs:
       run: |
         cp void.html void-live-deploy/index.html
         cp void.html void-live-deploy/void.html
+        node tools/self-context.mjs
     - name: node tools/fringe.mjs (fringe ledger rules)
+      if: inputs.bench != 'only'
       shell: bash
       run: node tools/fringe.mjs
     - name: node --test domains/forethinkers/think-tank.test.mjs (node cycle, labels, dead runs, dry run)
+      if: inputs.bench != 'only'
       shell: bash
       run: node --test domains/forethinkers/think-tank.test.mjs
+    - name: node --test tools/dispatcher.test.mjs (queue envelopes, a2m-bridge contract, dry run sends nothing)
+      if: inputs.bench != 'only'
+      shell: bash
+      run: node --test tools/dispatcher.test.mjs
     - name: node tools/test_glyphs.mjs (cross-sense board draft)
+      if: inputs.bench != 'only'
       shell: bash
       run: node tools/test_glyphs.mjs
     - name: node tools/test_calendar.mjs
+      if: inputs.bench != 'only'
       shell: bash
       run: node tools/test_calendar.mjs
     - name: growth skill suites
+      if: inputs.bench != 'only'
       shell: bash
       run: node tools/growth-suites.mjs
     - name: node tools/test_void.mjs
+      if: inputs.bench != 'only'
       shell: bash
       env:
         PYTHONIOENCODING: utf-8
+        # Never nest bench.mjs inside the suite (spawnSync after a long Chromium run
+        # was exiting 1 with empty stdout — 279/280 on helper/behavior-scripts). The
+        # dedicated step below covers bench:with; deploy.yml PRs use bench:skip + a
+        # parallel bench:only job.
+        VOID_SKIP_BENCH: '1'
       run: |
         set -o pipefail
         node tools/test_void.mjs 2>&1 | tee test-output.txt
         echo "### Void tests: $(tail -n 1 test-output.txt)" >> "$GITHUB_STEP_SUMMARY"
+    - name: node tools/bench.mjs --score (everyday benchmark, not below tools/bench.best.json)
+      if: inputs.bench == 'only' || inputs.bench == 'with'
+      shell: bash
+      run: |
+        node tools/bench.mjs --score | tail -n 1 > bench-score.json
+        node -e "const b=require('./bench-score.json'),f=require('./tools/bench.best.json');console.log(b.score+'/'+b.total+' (floor '+f.score+')');if(b.wrong.length)console.log('wrong: '+b.wrong.join(' | '));process.exit(b.score>=f.score&&b.total>=f.total?0:1)" | tee -a "$GITHUB_STEP_SUMMARY"
