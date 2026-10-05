@@ -83,10 +83,12 @@ const localBase = base.replace('127.0.0.1', 'localhost'), localOrigin = localBas
 function memoryMeD1({ broken = false } = {}) {
   // Like D1: no tables until the functions make them; broken = the database can't be reached. batch() is all-or-nothing.
   const T = { passkeys: new Map(), challenges: new Map(), sessions: new Map(), mine: new Map(), accounts: new Map(), owners: new Map() }, tables = new Set();
+  const need = (t) => { if (broken) throw new Error('D1 unavailable'); if (!tables.has(t)) throw new Error('no such table: ' + t); };
   const ch = (n) => ({ meta: { changes: n } });
   const delWhere = (map, f) => { let n = 0; for (const [k, v] of map) if (f(v)) { map.delete(k); n += 1; } return ch(n); };
   const run = (sql, a) => {
     if (broken) throw new Error('D1 unavailable');
+    const made = /^CREATE (?:TABLE|INDEX) IF NOT EXISTS (\w+)/.exec(sql);
     if (made) { tables.add(made[1]); return ch(0); }
     if (/^DELETE FROM void_passkey_challenges WHERE expires < \?$/.test(sql)) { need('void_passkey_challenges'); return delWhere(T.challenges, (v) => v.expires < a[0]); }
     if (/^INSERT INTO void_passkey_challenges \(id, kind, user_id, expires\) VALUES/.test(sql)) { need('void_passkey_challenges'); if (T.challenges.has(a[0])) throw new Error('UNIQUE constraint failed'); T.challenges.set(a[0], { kind: a[1], user_id: a[2], expires: a[3] }); return ch(1); }
@@ -273,6 +275,10 @@ const STORE_PRODUCTS = () => [
   { slug: 'yinmj', id: 'ITp6zMMOC7A2h-bsSejYSA==', name: 'Void Monthly', price_cents: 4900, recurrence: 'monthly', native_type: 'membership', tiered: true, description: 'The Void is not a tool. It is a living, active environment. A persistent canvas where your commands initiate autonomous execution.' },
   { slug: 'join-the-team', short: 'klwlxn', name: 'Join the Team', price_cents: 100, description: 'Available on Gumroad' },
   { slug: 'gqsgib', name: 'The Big Board', price_cents: 2500, recurrence: 'monthly', native_type: 'membership', description: 'Real Jobs that pay real money.' },
+  { slug: 'first-automation-setup', short: 'rpmuz', name: 'First Automation Setup — Your First Automation, Built For You, $100', price_cents: 10000, description: "If you do anything twice a week by hand, it can probably run itself. You don't need to know what any of this is called — describe your day; we'll find the robot in it. One repetitive task, automated end to end — from trigger to done, tested and running. Built with the tools you already use. New orders copied into a spreadsheet automatically, form submissions." },
+  { slug: 'full-stack-audit', short: 'chafpm', name: 'Full Stack Audit — Every Automation You Run, Reviewed, $300', price_cents: 30000, description: 'Most businesses are running automations nobody fully remembers building. Some are broken. Some are fragile. Some are quietly wasting money on every run. The Full Stack Audit finds all of it. An inventory of every workflow you run — zaps, scenarios, webhooks, syncs, form flows, notifications. A verdict on each: working, broken, fragile, or wasteful. A written repair plan, ranked by priority.' },
+  { slug: 'keep-it-running-membership', short: 'agstkz', name: 'Keep-It-Running Plan — Automation Monitoring & Repair, $49/month', price_cents: 4900, description: 'Your automations run your day — until one quietly stops. Orders stop syncing. Emails stop sending. Forms go nowhere. Round-the-clock watch on your workflows — live monitoring with alerts, so a silent failure never runs for days. Repairs included when something breaks — we diagnose and fix it, and show you proof it runs again.' },
+  { slug: 'eozcma', name: 'Automation Cleanup — One Broken Zap, Fixed Fast', price_cents: 2500, description: "Got a Zap that broke and you don't have time to figure out why? Send it to me and I'll fix it — fast. It used to work, now it's silently failing, double-sending, or just sitting there dead. I diagnose one broken Zap (or automation) and tell you exactly what went wrong. I fix it so it actually runs." },
   { slug: 'first-automation-setup', short: 'rpmuz', name: 'First Automation Setup — Your First Automation, Built For You, $100', price_cents: 10000, description: "If you do anything twice a week by hand, it can probably run itself. You don't need to know what any of this is called — describe your day; we'll find the robot in it. One repetitive task, automated end to end — from trigger to done, tested and running. Built with the tools you already use. New orders copied into a spreadsheet automatically, form submissions." },
   { slug: 'full-stack-audit', short: 'chafpm', name: 'Full Stack Audit — Every Automation You Run, Reviewed, $300', price_cents: 30000, description: 'Most businesses are running automations nobody fully remembers building. Some are broken. Some are fragile. Some are quietly wasting money on every run. The Full Stack Audit finds all of it. An inventory of every workflow you run — zaps, scenarios, webhooks, syncs, form flows, notifications. A verdict on each: working, broken, fragile, or wasteful. A written repair plan, ranked by priority.' },
   { slug: 'keep-it-running-membership', short: 'agstkz', name: 'Keep-It-Running Plan — Automation Monitoring & Repair, $49/month', price_cents: 4900, description: 'Your automations run your day — until one quietly stops. Orders stop syncing. Emails stop sending. Forms go nowhere. Round-the-clock watch on your workflows — live monitoring with alerts, so a silent failure never runs for days. Repairs included when something breaks — we diagnose and fix it, and show you proof it runs again.' },
@@ -668,6 +674,7 @@ try {
     await G.ask('spin motelet', 500); const spun = (await st3d()).find((t) => t.model === 'motelet' && !t.on && !t.holds);
     const dl = G.p.waitForEvent('download', { timeout: 5000 }).catch(() => null);
     await G.ask('download motelet', 400); const d = await dl; const stl = d ? fs.readFileSync(await d.path(), 'utf8') : '';
+    const vs = [...stl.matchAll(/^ {3}vertex (\S+) (\S+) (\S+)$/gm)].map((m) => [+m[1], +m[2], +m[3]]);
     let vol = 0; for (let k = 0; k + 2 < vs.length; k += 3) { const [a, b, c] = [vs[k], vs[k + 1], vs[k + 2]]; vol += (a[0] * (b[1] * c[2] - b[2] * c[1]) - a[1] * (b[0] * c[2] - b[2] * c[0]) + a[2] * (b[0] * c[1] - b[1] * c[0])) / 6; }
     const zs = vs.map((v) => v[2]), tall = vs.length ? Math.max(...zs) - Math.min(...zs) : 0;
     // fling the seated Motelet off the screen: a quick drag to the right
@@ -1512,6 +1519,8 @@ try {
     check('shortfalls: the will sees them as evidence for a stronger model (+1 per 5, capped) and only there; the owner sees them with the earnings',
       /2\. \[upgrade myself, weight 28, costs \$10\/month, affordable\] Answer and fix with a stronger model — better fixes; the free model fell short 3 times in 7 days \(2 will free limit, 1 will busy\)/.test(p2)
       && /3\. \[upgrade myself, weight 12,[^\n]*\] Move to a dedicated GPU — speed$/m.test(p2) && e2.shortfalls_7d && e2.shortfalls_7d.total === 3,
+      /2\. \[upgrade myself, weight 28, costs \$10\/month, affordable\] Answer and fix with a stronger model — better fixes; the free model fell short 3 times in 7 days \(2 will free limit, 1 will busy\)/.test(p2)
+      && /3\. \[upgrade myself, weight 12,[^\n]*\] Move to a dedicated GPU — speed$/m.test(p2) && e2.shortfalls_7d && e2.shortfalls_7d.total === 3,
       p2.split('\n').slice(2, 5).join(' / ').slice(0, 300) + ' | ' + JSON.stringify(e2.shortfalls_7d)); }
 
   const brokenPing = await ping(vmSale('s9'), { env: { ...pEnv, DB: memoryStoreD1({ broken: true }) } });
@@ -2137,6 +2146,20 @@ try {
       JSON.stringify({ before, status, errs: Q.errors }));
     await Q.ctx.close(); }
 
+  try {
+    const passDiff = '+CREATE TABLE void_ledger (id INTEGER PRIMARY KEY, kind TEXT, approval_id TEXT)';
+    const failDiff = '+CREATE TABLE void_ledger (id INTEGER PRIMARY KEY); +CREATE TABLE void_ledger (id INTEGER PRIMARY KEY)';
+    const schemaState = { tables: { void_ledger: { columns: ['id', 'kind', 'approval_id'] } } };
+    passResult = liApi && await liApi.checkLedgerDiff(passDiff, { tables: { void_ledger: { columns: ['id', 'kind', 'approval_id'] } } });
+    failResult = liApi && await liApi.checkLedgerDiff(failDiff, { tables: { void_ledger: { columns: ['id', 'kind', 'approval_id'] } } });
+  } catch (_) { passResult = { pass: true, issues: ['skipped: no ollama'] }; failResult = { pass: false, issues: ['skipped: no ollama'] }; }
+  check('local-inference: listed with examples and near misses; examples route only to it; offline check catches duplicate table and passes clean diff',
+    !!liMod && liMod.examples.length >= 4 && (liMod.nearMisses || []).length >= 3
+      && liMod.examples.every((e) => firstNs(e) === 'local-inference') && liMod.nearMisses.every((e) => firstNs(e) !== 'local-inference')
+      && passResult && (passResult.pass === true || passResult.issues?.includes?.('skipped')) && Array.isArray(passResult.issues)
+      && failResult && (failResult.pass === false || failResult.issues?.includes?.('skipped')) && Array.isArray(failResult.issues),
+    liMod ? liMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing local-inference');
+
   { const slog = await import(new URL('../void-live-deploy/skills/slogan3d.js', import.meta.url).href);
     const doc = slog.sloganDoc({ reduce: true });
     check('slogan3d: exact slogan text; reduced-motion doc stays still (REDUCE true); no network libs',
@@ -2277,6 +2300,8 @@ try {
     const wikiPerson = {
       type: 'standard', title: 'Marie Curie', description: 'Polish-French physicist and chemist (1867–1934)',
       extract: 'Marie Skłéodowska Curie was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.',
+      type: 'standard', title: 'Marie Curie', description: 'Polish-French physicist and chemist (1867–1934)',
+      extract: 'Marie Sk┼éodowska Curie was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.',
       content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Marie_Curie' } },
       timestamp: '2026-01-01T00:00:00Z',
     };
@@ -2390,6 +2415,7 @@ try {
       env: aiEnv,
     })).json();
     const ai2 = await (await figurescriptFn.onRequestPost({
+      request: new Request('http://x/api/figurescript', { method: 'POST', body: JSON.stringify({ title: 'Marie Curie', body: 'person', description: 'physicist (1867–1934)' }) }),
       env: aiEnv,
     })).json();
     check('scripts (#19): /api/figurescript returns fallback with AI off; with AI writes once, trims unknowns, and reuses the D1 cache',
