@@ -2040,5 +2040,9 @@
   {"ask": "light", "want": "skill:light-look"},
   {"ask": "play aggravation", "want": "skill:aggravation"},
   {"ask": "probe", "want": "said", "says": "here"},
-  {"ask": "ping", "want": "said", "says": "here"}
+  {"ask": "ping", "want": "said", "says": "here"},
+  {"ask": "play mancala", "want": "skill:mancala"},
+  {"ask": "mancala", "want": "skill:mancala"},
+  {"ask": "start a game of mancala", "want": "skill:mancala"},
+  {"ask": "play mancala with void", "want": "skill:mancala"}
 ]
