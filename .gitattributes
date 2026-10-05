@@ -1,3 +1,5 @@
 # Intake records are hash-chained and verbatim: keep their bytes exactly (no CRLF conversion on Windows checkouts).
 domains/inputs/** -text
 domains/void.agents.log.md merge=union
+drafts/fringe/** -text
+void-live-deploy/fringe/** -text

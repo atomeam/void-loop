@@ -123,7 +123,7 @@ export function voidMove(state, depth = 3) {
 
 export function mancalaOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+)?(?:game\s+of\s+)?(?:mancala|kalah)(?:\s+game)?$/.test(t)) return { kind: 'game', label: 'Mancala' };
+  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+)?(?:game\s+of\s+)?(?:mancala|kalah)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game', label: 'Mancala' };
   return null;
 }
 
