@@ -34,7 +34,7 @@ a{color:var(--acc)}small{color:var(--mut)}
 <div class="box"><b>4. Free space.</b> Removes only stale <code>node_modules</code> folders and Python virtual environments whose project still has the file that rebuilds them. Dry run first; you type <code>DELETE</code> to confirm.</div>
 
 <h2>What it will never do</h2>
-<p>It never deletes a project. If a project holds the only copy of your work, the report says so in red, and removing it stays your decision. It never uploads, phones home, or needs an account.</p>
+<p>It deletes a project folder only if you ask it to (<code>--drop</code>), and only after Void has stored its digest and handed it back with a matching hash, the project is safely on a remote repository, and you type <code>DROP</code>. A project that holds the only copy of your work is refused unless you override it by typing its name. Void keeps a digest of what the project was, not your code. It never uploads, phones home, or needs an account.</p>
 
 <h2>Try it</h2>
 <pre>python ouroboros.pyz run --root C:\Users\you --out D:\ouroboros-report</pre>

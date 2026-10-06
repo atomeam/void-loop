@@ -389,6 +389,124 @@ class Ouroboros(unittest.TestCase):
         self.assertEqual(got, [])
         self.assertIn("nothing was sent", txt)
 
+    # ---------------- --drop: delete a project folder only after Void has verifiably absorbed it ----------------
+    def _backed_up(self, name="omega"):
+        """a project that is pushed, clean, and has only rebuildable ignored folders: the one kind --drop may remove without an override"""
+        p = self.root / "dev" / name
+        write(p / "main.py", "print('omega')\n"); write(p / ".gitignore", "node_modules\n"); write(p / "node_modules" / "m" / "i.js", "m" * 500)
+        run_git(p, "init", "-q"); commit_all(p)
+        run_git(p, "remote", "add", "origin", str(self.remote)); run_git(p, "push", "-q", "origin", "HEAD:refs/heads/omega")
+        subprocess.run(["git", "-C", str(p), "fetch", "-q", "origin"], capture_output=True)
+        subprocess.run(["git", "-C", str(p), "branch", "-u", "origin/omega"], capture_output=True)
+        return p
+
+    def _drop(self, *extra, answers=None, **server):
+        srv, got = self._server(**server)
+        url = f"http://127.0.0.1:{srv.server_address[1]}"
+        ask = (lambda prompt="": (answers or (lambda q: "DROP"))(prompt))
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "t"}), mock.patch("builtins.input", side_effect=ask):
+            rc, txt = call("push", ["--out", str(self.out), "--url", url, "--drop", *extra])
+        return rc, txt, srv
+
+    def test_drop_removes_an_absorbed_backed_up_project_and_leaves_a_tombstone(self):
+        omega = self._backed_up(); self.harvest()
+        before = snapshot(self.root, skip=("omega",))
+        rc, txt, srv = self._drop("--yes")
+        self.assertFalse(omega.exists(), txt)
+        tomb = json.loads((omega.parent / "omega.void-tombstone.json").read_text())
+        self.assertEqual((tomb["status"], tomb["project"]), ("absorbed", "omega"))
+        for k in ("timestamp", "record_id", "digest_sha256", "memory_endpoint", "head"):
+            self.assertTrue(tomb[k], k)
+        self.assertEqual(tomb["digest_sha256"], hashlib.sha256(srv.store[tomb["record_id"]]["body"].encode()).hexdigest(), "the tombstone points at what Void actually holds")
+        self.assertIn("Dropped omega", txt); self.assertIn("reclaimed", txt)
+        after = snapshot(self.root)
+        self.assertEqual(before, {k: v for k, v in after.items() if "omega" not in k and "void-tombstone" not in k}, "nothing but omega may change")
+        self.assertEqual(rc, 1, "other projects were kept, so the run is not a clean 'all dropped'")
+
+    def test_drop_refuses_projects_that_would_lose_work(self):
+        self._backed_up(); self.harvest()
+        before = snapshot(self.root, skip=("omega",))
+        rc, txt, _ = self._drop("--yes")
+        for who, reason in (("beta", "no remote repository"), ("gamma", "uncommitted-work"), ("eta", "unpushed-commits"), ("alpha", ".env")):
+            self.assertRegex(txt, rf"KEPT {who}: .*{reason}")
+        after = {k: v for k, v in snapshot(self.root).items() if "omega" not in k}
+        self.assertEqual(before, after, "a refused project must be untouched")
+
+    def test_drop_needs_the_typed_confirmation(self):
+        omega = self._backed_up(); self.harvest()
+        rc, txt, _ = self._drop(answers=lambda q: "no")
+        self.assertTrue(omega.exists()); self.assertIn("Not confirmed", txt)
+        self.assertFalse(list(omega.parent.glob("*.void-tombstone.json")))
+
+    def test_drop_halts_when_void_does_not_answer_exactly_200(self):
+        omega = self._backed_up(); self.harvest()
+        rc, txt, _ = self._drop("--yes", status=202)
+        self.assertTrue(omega.exists(), "a 202 is not a 200: nothing may be deleted")
+        self.assertIn("DROP ABORTED", txt); self.assertIn("exactly 200", txt)
+
+    def test_drop_halts_when_voids_stored_copy_differs(self):
+        omega = self._backed_up(); self.harvest()
+        rc, txt, _ = self._drop("--yes", tamper=True)
+        self.assertTrue(omega.exists()); self.assertIn("KEPT omega", txt); self.assertIn("unverified", txt)
+
+    def test_drop_halts_when_void_cannot_be_read_back(self):
+        omega = self._backed_up(); self.harvest()
+        rc, txt, _ = self._drop("--yes", no_get=True)
+        self.assertTrue(omega.exists())
+
+    def test_drop_halts_on_a_failed_request(self):
+        omega = self._backed_up(); self.harvest()
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "t"}):
+            rc, txt = call("push", ["--out", str(self.out), "--url", "http://127.0.0.1:9", "--drop", "--yes"])
+        self.assertEqual(rc, 1); self.assertTrue(omega.exists()); self.assertIn("could not reach Void", txt)
+
+    def test_drop_refuses_without_a_receipt_or_with_a_stale_one(self):
+        omega = self._backed_up(); self.harvest()
+        e = next(p for p in json.loads((self.out / "manifest.json").read_text())["projects"] if p["path"].endswith("omega"))
+        root = self.root.resolve()
+        self.assertIn("no verified receipt", " ".join(ouroboros.drop_blockers(e, None, root, self.out, False)))
+        self.assertIn("new commits", " ".join(ouroboros.drop_blockers(e, {"head": "0" * 40}, root, self.out, False)))
+        self.assertEqual(ouroboros.drop_blockers(e, {"head": e["head"]}, root, self.out, False), [])
+
+    def test_drop_refuses_a_project_changed_after_it_was_absorbed(self):
+        omega = self._backed_up(); self.harvest()
+        self._drop(answers=lambda q: "no")  # absorbs everything, deletes nothing
+        write(omega / "later.py", "new work"); commit_all(omega)
+        e = next(p for p in json.loads((self.out / "manifest.json").read_text())["projects"] if p["path"].endswith("omega"))
+        rec = ouroboros.load_absorbed(self.out)[str(omega.resolve())]
+        self.assertIn("new commits", " ".join(ouroboros.drop_blockers(e, rec, self.root.resolve(), self.out, False)))
+
+    def test_drop_never_follows_links_or_leaves_the_harvested_folder(self):
+        e = {"path": str(self.root / "dev" / "linked" / "node_modules"), "head": "x"}
+        self.assertTrue(ouroboros.drop_blockers(e, {"head": "x"}, self.root.resolve(), self.out, True))
+        e2 = {"path": str(self.outside), "head": "x"}
+        self.assertIn("not inside", " ".join(ouroboros.drop_blockers(e2, {"head": "x"}, self.root.resolve(), self.out, True)))
+
+    def test_force_drop_unbacked_still_needs_each_name_typed(self):
+        self._backed_up(); self.harvest()
+        beta = self.root / "dev" / "beta"
+        def answers(q):
+            if "Type DROP" in q: return "DROP"
+            return "beta" if "'beta'" in q else "nope"
+        rc, txt, _ = self._drop("--force-drop-unbacked", answers=answers)
+        self.assertFalse(beta.exists(), txt)
+        self.assertTrue((beta.parent / "beta.void-tombstone.json").exists())
+        for kept in ("alpha", "gamma", "eta"):
+            self.assertTrue((self.root / "dev" / kept).exists(), kept + " was not confirmed by name")
+
+    def test_force_flag_alone_is_refused(self):
+        self.harvest()
+        rc, _ = call("push", ["--out", str(self.out), "--url", "https://example.com", "--force-drop-unbacked"])
+        self.assertEqual(rc, 2)
+
+    def test_drop_dry_run_shows_the_plan_and_deletes_nothing(self):
+        omega = self._backed_up(); self.harvest()
+        before = snapshot(self.root)
+        rc, txt = call("push", ["--out", str(self.out), "--url", "https://example.com", "--drop", "--dry-run"])
+        self.assertEqual(rc, 0, txt)
+        self.assertIn("would drop", txt); self.assertIn("would KEEP beta", txt)
+        self.assertEqual(before, snapshot(self.root))
+
 
 if __name__ == "__main__":
     unittest.main()

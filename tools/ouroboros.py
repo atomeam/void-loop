@@ -13,8 +13,10 @@
 The rules the whole tool is built around:
   * harvest and verify never change a source file. They never read .env, keys or certificates, and every digest is redacted.
   * reclaim deletes ONLY regenerable folders (node_modules, a virtualenv) whose project still has the manifest that rebuilds them.
-  * it never deletes a repository. `plan` says which repos already have a remote copy (pushed, clean) and which do not;
-    removing a repo is your decision, made after you have checked the remote copy yourself.
+  * it deletes a project folder only with `push --drop`, which you must ask for. Void must first have stored the project's digest and handed
+    it back with a matching hash (receipt: absorbed.json), the project must have a remote repository with everything pushed and no files git
+    leaves out, and you must type DROP. `--force-drop-unbacked` overrides the remote check, and then you type each project's name.
+    Without --drop nothing but rebuildable folders is ever deleted, and only for projects Void has absorbed. Void stores a digest, not your code.
 Put --out outside --root (another drive is best).
 """
 from __future__ import annotations
@@ -28,6 +30,7 @@ import json
 import os
 import re
 import shutil
+import stat
 import subprocess
 import sys
 import time
@@ -415,6 +418,135 @@ def cmd_run(a) -> int:
     return 0
 
 
+REGENERABLE = {"node_modules", ".venv", "venv", "__pycache__", ".pytest_cache", ".mypy_cache", ".next", ".nuxt", "dist", "build", "target", ".cache", ".turbo", "coverage", ".gradle", ".DS_Store", "Thumbs.db"}
+
+
+def ignored_not_in_git(repo: Path) -> list[str]:
+    """Files git ignores (so no remote copy holds them) that are not obviously rebuildable: .env files, local databases, notes."""
+    extras = []
+    for line in (git(repo, "status", "--porcelain", "--ignored") or "").splitlines():
+        if not line.startswith("!! "):
+            continue
+        path = line[3:].strip().strip('"').rstrip("/")
+        if not any(part in REGENERABLE for part in path.split("/")) and not path.endswith(".pyc"):
+            extras.append(path)
+    return extras
+
+
+def drop_blockers(entry: dict, receipt: dict | None, root: Path, out: Path, force_unbacked: bool) -> list[str]:
+    """Why this project must NOT be deleted right now. An empty list means every check passed."""
+    src = Path(entry["path"])
+    if not receipt:
+        return ["Void has no verified receipt for it (absorbed.json)"]
+    if not src.is_dir() or src.is_symlink():
+        return ["the folder is gone or is a link"]
+    r = src.resolve()
+    if root not in r.parents:
+        return ["it is not inside the folder that was harvested"]
+    if r == out or out in r.parents or r in out.parents or r == Path.home().resolve():
+        return ["it contains (or is) the harvest folder or your home folder"]
+    if not (src / ".git").exists():
+        return ["it is not a git project"]
+    why = []
+    head = (git(src, "rev-parse", "HEAD") or "").strip()
+    if head != receipt.get("head") or head != entry["head"]:
+        why.append("it has new commits since Void absorbed it (run harvest and push again)")
+    st = backup_state(src)
+    unbacked = st["state"] != "remote-current"
+    extra = ignored_not_in_git(src)
+    if (unbacked or extra) and not force_unbacked:
+        if not st["remote"]:
+            why.append("it has no remote repository: deleting it would lose the only copy of its code")
+        elif unbacked:
+            why.append(f"its backup state is {st['state']}: some of its work exists only here")
+        if extra:
+            why.append("it holds files git does not keep (" + ", ".join(extra[:4]) + (", ..." if len(extra) > 4 else "") + ")")
+    return why
+
+
+def _rmtree(p: Path) -> list[str]:
+    """Delete a folder, including read-only files (git objects are read-only on Windows). Returns what could not be removed."""
+    left: list[str] = []
+
+    def fix(func, path, _exc):
+        try:
+            os.chmod(path, stat.S_IWRITE | stat.S_IREAD)
+            func(path)
+        except OSError:
+            left.append(str(path))
+
+    if sys.version_info >= (3, 12):
+        shutil.rmtree(p, onexc=fix)
+    else:
+        shutil.rmtree(p, onerror=fix)
+    return left
+
+
+def drop_phase(a, out: Path, root: Path, base: str, records: list[dict], verified_ids: set[str]) -> int:
+    """--drop: delete the folder of each project that Void has verifiably absorbed. Every check in drop_blockers must pass; the tombstone
+    is written before anything is removed; each deletion is confirmed by typing (DROP once, and each project's name for an unbacked one)."""
+    manifest = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
+    entries = {e["slug"]: e for e in manifest["projects"]}
+    absorbed = load_absorbed(out)
+    plan, kept = [], 0
+    for r in records:
+        e = entries.get(r["id"])
+        if r["id"] not in verified_ids:
+            why = ["Void did not verify its copy on this push (drop aborted for this project: unverified, local files preserved)"]
+        elif not e:
+            why = ["not in the manifest"]
+        else:
+            why = drop_blockers(e, absorbed.get(str(Path(e["path"]).resolve())), root, out, a.force_drop_unbacked)
+        if why:
+            kept += 1
+            print(f"KEPT {r['name']}: " + "; ".join(why))
+        else:
+            plan.append((e, r))
+    if not plan:
+        print("Nothing was dropped.")
+        return 1 if kept else 0
+    sizes = {e["slug"]: void_lens.dir_size(Path(e["path"]), void_lens.Budget(120)) for e, _ in plan}
+    unbacked = [(e, r) for e, r in plan if backup_state(Path(e["path"]))["state"] != "remote-current" or ignored_not_in_git(Path(e["path"]))]
+    print(f"\n{len(plan)} project folder(s) can be dropped ({void_lens.human(sum(sizes.values()))}); Void holds each digest, and a tombstone is left beside each folder:")
+    for e, _ in plan:
+        print(f"  {void_lens.human(sizes[e['slug']]):>9}  {e['path']}" + ("   [UNBACKED: --force-drop-unbacked]" if (e, _) in unbacked else ""))
+    if not (a.yes and not unbacked):
+        if input("\nType DROP to permanently delete the folders above: ").strip() != "DROP":
+            print("Not confirmed. Nothing was deleted.")
+            return 1
+    skip = set()
+    for e, r in unbacked:
+        if input(f"'{r['name']}' may hold the ONLY copy of its code or data. Type its name to delete it anyway: ").strip() != r["name"]:
+            print(f"Not confirmed for {r['name']}: kept.")
+            skip.add(e["slug"])
+    freed = failed = 0
+    for e, r in plan:
+        if e["slug"] in skip:
+            continue
+        src = Path(e["path"])
+        tomb = src.parent / f"{r['name']}.void-tombstone.json"
+        if tomb.exists():
+            tomb = src.parent / f"{r['name']}.{int(time.time())}.void-tombstone.json"
+        body = {"status": "absorbed", "project": r["name"], "timestamp": time.strftime("%Y-%m-%dT%H:%M:%S%z"), "memory_endpoint": base + "/api/memory", "record_id": r["id"],
+                "digest_sha256": absorbed[str(src.resolve())]["body_sha256"], "backup_state": backup_state(src)["state"], "remote": r.get("remote", ""), "head": e["head"]}
+        try:
+            tomb.write_text(json.dumps(body, indent=2), encoding="utf-8")
+        except OSError as err:
+            print(f"KEPT {r['name']}: could not write the tombstone ({err}); nothing was deleted.")
+            failed += 1
+            continue
+        left = _rmtree(src)
+        if src.exists():
+            tomb.write_text(json.dumps({**body, "status": "partial", "left": left[:20]}, indent=2), encoding="utf-8")
+            print(f"PARTLY removed {r['name']}: {len(left)} item(s) could not be deleted (locked?). The folder is still there; the tombstone says 'partial'.")
+            failed += 1
+        else:
+            freed += sizes[e["slug"]]
+            print(f"Dropped {r['name']}: absorbed into Void ({base}/api/memory, record {r['id']}); local disk space reclaimed. Tombstone: {tomb}")
+    print(f"\nVictus storage reclaimed: about {void_lens.human(freed)}.")
+    return 1 if (failed or kept) else 0
+
+
 MAX_REQUEST_BYTES = 200_000  # the server refuses bigger requests (262144); keep clear of it
 
 
@@ -465,6 +597,9 @@ def cmd_push(a) -> int:
     if u.scheme != "https" and not (u.scheme == "http" and local):
         print("--url must be https (http is allowed only for localhost): the token must not travel in the clear", file=sys.stderr)
         return 2
+    if a.force_drop_unbacked and not a.drop:
+        print("--force-drop-unbacked only makes sense together with --drop", file=sys.stderr)
+        return 2
     try:
         records = [json.loads(l) for l in (out / "memory.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
         root = json.loads((out / "manifest.json").read_text(encoding="utf-8")).get("root", "")
@@ -505,8 +640,17 @@ def cmd_push(a) -> int:
         batches.append(cur)
     if a.dry_run:
         print(f"dry run: would send {len(records)} record(s), each with its full digest ({sum(len(b) for b in bodies.values())} characters in all), in {len(batches)} request(s) to {base}/api/memory. Fields sent: " + ", ".join(sorted({k for r in payload for k in r})))
+        if a.drop:
+            entries = {e["slug"]: e for e in json.loads((out / "manifest.json").read_text(encoding="utf-8"))["projects"]}
+            for r in records:
+                e = entries.get(r["id"])
+                fake = {"head": e["head"]} if e else None
+                why = drop_blockers(e, fake, Path(root).resolve(), out, a.force_drop_unbacked) if e else ["not in the manifest"]
+                print(f"  would drop {e['path']} (after Void verifies its copy)" if not why else f"  would KEEP {r['name']}: " + "; ".join(why))
+            print("dry run: nothing was sent or deleted.")
         return 0
     saved = rejected = 0
+    sure: set[str] = set()  # ids Void answered exactly 200 for, with nothing rejected: the only ones --drop may ever act on
     for b in batches:
         try:
             status, res = _http(base + "/api/memory", token, {"source": "ouroboros", "records": b})
@@ -518,6 +662,8 @@ def cmd_push(a) -> int:
             return 1
         saved += res.get("saved", 0)
         rejected += res.get("rejected", 0)
+        if status == 200 and res.get("rejected", 0) == 0 and res.get("saved", 0) == len(b):
+            sure.update(r["id"] for r in b)
     print(f"sent {len(records)} record(s): {saved} saved, {rejected} rejected")
     held, lost, verified_ids = 0, [], set()
     for r in records:
@@ -538,6 +684,12 @@ def cmd_push(a) -> int:
             e = entries[r["id"]]
             prior[str(Path(e["path"]).resolve())] = {"slug": r["id"], "path": e["path"], "head": e["head"], "body_sha256": sha256_text(bodies[r["id"]]), "at": now, "void": base}
     (out / "absorbed.json").write_text(json.dumps({"absorbed": sorted(prior.values(), key=lambda x: x["slug"])}, indent=2), encoding="utf-8")
+    if a.drop:
+        for r in records:
+            if r["id"] in verified_ids and r["id"] not in sure:
+                verified_ids.discard(r["id"])
+                print(f"DROP ABORTED for {r['name']}: Void did not answer exactly 200 with the record saved. Local files preserved.")
+        return drop_phase(a, out, Path(root).resolve(), base, records, verified_ids) or (0 if held == len(records) and not rejected else 1)
     return 0 if held == len(records) and not rejected else 1
 
 
@@ -592,6 +744,9 @@ def main(argv=None) -> int:
         if name == "push":
             s.add_argument("--batch", type=int, default=100)
             s.add_argument("--dry-run", action="store_true")
+            s.add_argument("--drop", action="store_true", help="after Void verifies a project, delete that project folder (needs the absorbed receipt and a remote repository; leaves a tombstone beside it)")
+            s.add_argument("--force-drop-unbacked", action="store_true", help="with --drop: also allow projects with no remote copy or with uncommitted/unpushed work (you type each name to confirm)")
+            s.add_argument("--yes", action="store_true", help="with --drop: skip the DROP prompt when every project is pushed and clean")
         if name == "recall":
             s.add_argument("--q", default="", help="words to look for")
             s.add_argument("--id", default="", help="print the stored digest of this record")

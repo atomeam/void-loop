@@ -48,7 +48,11 @@ This sends each project's full digest to your Void, then reads every one back an
 Only after that is it reasonable to think about removing a project, and that is always your decision.
 
 WHAT IT WILL NEVER DO
-It never deletes a project. The report shows which projects hold the only copy of your work. Back those
+It deletes a project folder only if you pass --drop to push, and only when all of these hold: Void has stored the project's
+digest and returned it with a matching hash, the project has a remote repository with everything pushed and no files git
+leaves out (.env, local data), and you type DROP. Void keeps a DIGEST (what the project was), not your code, so a project
+with no remote copy is refused unless you also pass --force-drop-unbacked and type its name. A tombstone file is left
+beside every deleted folder. The report shows which projects hold the only copy of your work. Back those
 up yourself before you remove anything. It never reads .env files, keys or certificates.
 
 COMMANDS: run, harvest, verify, report, plan, reclaim.   ouroboros.pyz <command> --help for options.
