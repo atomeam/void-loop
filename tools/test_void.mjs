@@ -279,10 +279,10 @@ const STORE_PRODUCTS = () => [
   { slug: 'full-stack-audit', short: 'chafpm', name: 'Full Stack Audit ╬ô├ç├╢ Every Automation You Run, Reviewed, $300', price_cents: 30000, description: 'Most businesses are running automations nobody fully remembers building. Some are broken. Some are fragile. Some are quietly wasting money on every run. The Full Stack Audit finds all of it. An inventory of every workflow you run ╬ô├ç├╢ zaps, scenarios, webhooks, syncs, form flows, notifications. A verdict on each: working, broken, fragile, or wasteful. A written repair plan, ranked by priority.' },
   { slug: 'keep-it-running-membership', short: 'agstkz', name: 'Keep-It-Running Plan ╬ô├ç├╢ Automation Monitoring & Repair, $49/month', price_cents: 4900, description: 'Your automations run your day ╬ô├ç├╢ until one quietly stops. Orders stop syncing. Emails stop sending. Forms go nowhere. Round-the-clock watch on your workflows ╬ô├ç├╢ live monitoring with alerts, so a silent failure never runs for days. Repairs included when something breaks ╬ô├ç├╢ we diagnose and fix it, and show you proof it runs again.' },
   { slug: 'eozcma', name: 'Automation Cleanup ╬ô├ç├╢ One Broken Zap, Fixed Fast', price_cents: 2500, description: "Got a Zap that broke and you don't have time to figure out why? Send it to me and I'll fix it ╬ô├ç├╢ fast. It used to work, now it's silently failing, double-sending, or just sitting there dead. I diagnose one broken Zap (or automation) and tell you exactly what went wrong. I fix it so it actually runs." },
-  { slug: 'first-automation-setup', short: 'rpmuz', name: 'First Automation Setup ΓÇö Your First Automation, Built For You, $100', price_cents: 10000, description: "If you do anything twice a week by hand, it can probably run itself. You don't need to know what any of this is called ΓÇö describe your day; we'll find the robot in it. One repetitive task, automated end to end ΓÇö from trigger to done, tested and running. Built with the tools you already use. New orders copied into a spreadsheet automatically, form submissions." },
-  { slug: 'full-stack-audit', short: 'chafpm', name: 'Full Stack Audit ΓÇö Every Automation You Run, Reviewed, $300', price_cents: 30000, description: 'Most businesses are running automations nobody fully remembers building. Some are broken. Some are fragile. Some are quietly wasting money on every run. The Full Stack Audit finds all of it. An inventory of every workflow you run ΓÇö zaps, scenarios, webhooks, syncs, form flows, notifications. A verdict on each: working, broken, fragile, or wasteful. A written repair plan, ranked by priority.' },
-  { slug: 'keep-it-running-membership', short: 'agstkz', name: 'Keep-It-Running Plan ΓÇö Automation Monitoring & Repair, $49/month', price_cents: 4900, description: 'Your automations run your day ΓÇö until one quietly stops. Orders stop syncing. Emails stop sending. Forms go nowhere. Round-the-clock watch on your workflows ΓÇö live monitoring with alerts, so a silent failure never runs for days. Repairs included when something breaks ΓÇö we diagnose and fix it, and show you proof it runs again.' },
-  { slug: 'eozcma', name: 'Automation Cleanup ΓÇö One Broken Zap, Fixed Fast', price_cents: 2500, description: "Got a Zap that broke and you don't have time to figure out why? Send it to me and I'll fix it ΓÇö fast. It used to work, now it's silently failing, double-sending, or just sitting there dead. I diagnose one broken Zap (or automation) and tell you exactly what went wrong. I fix it so it actually runs." },
+  { slug: 'first-automation-setup', short: 'rpmuz', name: 'First Automation Setup — Your First Automation, Built For You, $100', price_cents: 10000, description: "If you do anything twice a week by hand, it can probably run itself. You don't need to know what any of this is called — describe your day; we'll find the robot in it. One repetitive task, automated end to end — from trigger to done, tested and running. Built with the tools you already use. New orders copied into a spreadsheet automatically, form submissions." },
+  { slug: 'full-stack-audit', short: 'chafpm', name: 'Full Stack Audit — Every Automation You Run, Reviewed, $300', price_cents: 30000, description: 'Most businesses are running automations nobody fully remembers building. Some are broken. Some are fragile. Some are quietly wasting money on every run. The Full Stack Audit finds all of it. An inventory of every workflow you run — zaps, scenarios, webhooks, syncs, form flows, notifications. A verdict on each: working, broken, fragile, or wasteful. A written repair plan, ranked by priority.' },
+  { slug: 'keep-it-running-membership', short: 'agstkz', name: 'Keep-It-Running Plan — Automation Monitoring & Repair, $49/month', price_cents: 4900, description: 'Your automations run your day — until one quietly stops. Orders stop syncing. Emails stop sending. Forms go nowhere. Round-the-clock watch on your workflows — live monitoring with alerts, so a silent failure never runs for days. Repairs included when something breaks — we diagnose and fix it, and show you proof it runs again.' },
+  { slug: 'eozcma', name: 'Automation Cleanup — One Broken Zap, Fixed Fast', price_cents: 2500, description: "Got a Zap that broke and you don't have time to figure out why? Send it to me and I'll fix it — fast. It used to work, now it's silently failing, double-sending, or just sitting there dead. I diagnose one broken Zap (or automation) and tell you exactly what went wrong. I fix it so it actually runs." },
 ];
 const storeHtml = (list) => '<!doctype html><html><head><meta property="og:title" content="Subscribe to Atom Bomb on Gumroad"></head><body><div id="app" data-page="' + escAttr(JSON.stringify({ component: 'Users/Show', props: { sections: [{ id: 'default-products', type: 'SellerProfileProductsSection', search_results: { total: list.length, products: list.map((p) => ({ id: p.id || p.slug + '==', permalink: p.short || p.slug, name: p.name, native_type: p.native_type || 'digital', price_cents: p.tiered ? 0 : p.price_cents, currency_code: 'usd', url: 'https://moonbeam846.gumroad.com/l/' + p.slug + '?layout=profile', recurrence: p.recurrence || null })) } }] } })) + '"></div></body></html>';
 const productHtml = (p) => '<!doctype html><html><head><meta property="og:title" content="' + escAttr(p.name) + '" inertia="meta-property-og-title"><meta property="og:description" content="' + escAttr(p.description || '') + '" inertia="meta-property-og-description"></head><body><div id="app" data-page="' + escAttr(JSON.stringify({ component: 'Products/Show', props: { product: { permalink: p.short || p.slug, name: p.name, is_published: p.is_published !== false, price_cents: p.tiered ? 0 : p.price_cents, currency_code: 'usd', is_tiered_membership: !!p.tiered, recurrences: p.recurrence ? { default: p.recurrence, enabled: [{ recurrence: p.recurrence, price_cents: 0 }] } : null, options: p.tiered ? [{ name: p.name, recurrence_price_values: { [p.recurrence]: { price_cents: p.price_cents } } }] : [] } } })) + '"></div></body></html>';
@@ -443,7 +443,7 @@ try {
     check('calendar: a visitor adds "call Sam next Tuesday at 4", "add dentist to my calendar Oct 12 at 3pm", "put lunch with Ana on my calendar tomorrow at noon"; all saved here and on the stage card; no yes, no server, no Wikipedia',
       agenda.length === 3 && /Call Sam/.test(card) && /dentist/i.test(card) && /Lunch with Ana/i.test(card) && /on your calendar: Call Sam/.test(said) && !netAdds.length && !pageAfterAdds,
       JSON.stringify(agenda.map((e) => e.title)) + ' | ' + said + ' | ' + netAdds.join(',') + ' | page: ' + pageAfterAdds.slice(0, 60) + ' | ' + card.slice(0, 120));
-    check('calendar: "schedule a meeting with Sam" is the owner\'s confirm line (a visitor is told so, nothing saved); "calender" shows one card; the card survives a reload; "remove my calendar" hides it and keeps the events; ├ù removes one and undo brings it back',
+    check('calendar: "schedule a meeting with Sam" is the owner\'s confirm line (a visitor is told so, nothing saved); "calender" shows one card; the card survives a reload; "remove my calendar" hides it and keeps the events; × removes one and undo brings it back',
       /person at the screen/.test(gated) && shown === 1 && /Call Sam/.test(afterReload) && gone === 0 && kept === 3 && afterX === 2 && afterUndo === 3 && !net.some((u) => /wikipedia|miss|answer/.test(u)),
       [gated, shown, afterReload.slice(0, 40), gone, kept, afterX, afterUndo, net.join(',')].join(' | '));
     // the 3D wall calendar: "my calendar" opens it; tap a day, add an event in the editor, rename it; it is saved and on the card
@@ -656,7 +656,7 @@ try {
     let vol = 0; for (let k = 0; k + 2 < vs.length; k += 3) { const [a, b, c] = [vs[k], vs[k + 1], vs[k + 2]]; vol += (a[0] * (b[1] * c[2] - b[2] * c[1]) - a[1] * (b[0] * c[2] - b[2] * c[0]) + a[2] * (b[0] * c[1] - b[1] * c[0])) / 6; }
     const span = [0, 1, 2].map((i) => Math.max(...vs.map((v) => v[i])) - Math.min(...vs.map((v) => v[i])));
     check('part: "summon linemote-1" shows the Linemote-1 page (dimensions, materials, magnetize post-step, three dated sources, safety) and Download STL saves linemote-1.stl: closed outward shells, 22 x 13 x 5 mm plate, 372 mm3',
-      /Linemote-1/.test(lm) && /22 Γö£├╣ 6 Γö£├╣ 5 mm/.test(lm) && /magnetize/i.test(lm) && /2026-02-18/.test(lm) && /2025-03-17/.test(lm) && /2025-12-11/.test(lm) && /swallowed/.test(lm)
+      /Linemote-1/.test(lm) && /22 × 6 × 5 mm/.test(lm) && /magnetize/i.test(lm) && /2026-02-18/.test(lm) && /2025-03-17/.test(lm) && /2025-12-11/.test(lm) && /swallowed/.test(lm)
         && !!d && d.suggestedFilename() === 'linemote-1.stl' && /^solid linemote_1/.test(stl) && facets === vs.length / 3 && facets > 500
         && Math.abs(vol - 372.25) < 0.5 && span.join() === '22,13,5' && !P.errors.length,
       [lm.slice(0, 80), d ? d.suggestedFilename() : 'no download', facets, vol.toFixed(2), span.join('x'), P.errors.join(';')].join(' | '));
@@ -709,7 +709,7 @@ try {
     await E.ask('who is michael jordan', 1200); const mj = await E.page();
     await E.ask('what is a snorgleblat', 1200); const thin = await E.page();
     check('article: "who is X" opens the person, not the brand that ranks first; a loose match says "Closest match I found" in one line, a close one does not',
-      /^Michael Jordan/.test(mj) && /basketball player/.test(mj) && !/Closest match/.test(mj) && sums[0] === 'Michael Jordan' && /Blat/.test(thin) && /Closest match I found for ╬ô├ç┬úsnorgleblat╬ô├ç┬Ñ/.test(thin),
+      /^Michael Jordan/.test(mj) && /basketball player/.test(mj) && !/Closest match/.test(mj) && sums[0] === 'Michael Jordan' && /Blat/.test(thin) && /Closest match I found for “snorgleblat”/.test(thin),
       /^Michael Jordan/.test(mj) && /basketball player/.test(mj) && !/Closest match/.test(mj) && sums[0] === 'Michael Jordan' && /Blat/.test(thin) && /Closest match I found for ΓÇ£snorgleblatΓÇ¥/.test(thin),
       [mj.slice(0, 80), thin.slice(0, 120), sums.join(',')].join(' | '));
     await E.ctx.close();
@@ -848,7 +848,7 @@ try {
   await t.p.reload(); await t.p.waitForTimeout(700); check('kept card survives reload', (await t.p.$$eval('.kept-card', (d) => d.length)) === 1);
   await t.ask('map of Lisbon', 1200); const mp = await t.page(); check('map of Lisbon picks Portugal', /Lisbon/.test(mp) && /Portugal/.test(mp) && (await t.p.$$eval('.vpage iframe', (d) => d.length)) === 1, mp.slice(0, 80));
   await t.ask('weather in Lisbon', 1200); check('weather', /20Γö¼Γûæ|68Γö¼Γûæ/.test(await t.page()));
-  await t.ask('weather in Lisbon', 1200); check('weather', /20┬░|68┬░/.test(await t.page()));
+  await t.ask('weather in Lisbon', 1200); check('weather', /20°|68°/.test(await t.page()));
   await t.ask('air quality in Lisbon', 1200); const airPg = await t.page(); check('air quality', /US AQI/.test(airPg) && /Good|Moderate|Unhealthy|Hazardous/.test(airPg) && /Open-Meteo/.test(airPg), airPg.slice(0, 120));
   await t.ask('UV index in Lisbon', 1200); const uvPg = await t.page(); check('uv index', /UV index/.test(uvPg) && /Low|Moderate|High|Very High|Extreme/.test(uvPg) && /Open-Meteo/.test(uvPg) && /WHO/.test(uvPg), uvPg.slice(0, 120));
   await t.ask('earthquakes near Lisbon', 1200); const quakePg = await t.page(); check('earthquakes', /Near Lisbon|Earthquakes|USGS/.test(quakePg) && /M5\.2|M3\.1|magnitude|Major|Strong|Moderate|Light|Minor/.test(quakePg), quakePg.slice(0, 160));
@@ -948,7 +948,7 @@ try {
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
   check('"what can you do" and the menu open', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg), selfPg.slice(0, 60));
-  const OUT_LINE = 'Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm Γö¼Γòû say ╬ô├ç┬úremember me╬ô├ç┬Ñ first, then ask again to buy';
+  const OUT_LINE = 'Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pricing', 'pay', 'how much does Void cost?', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
   for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
@@ -969,7 +969,7 @@ try {
     const line = await until(async () => { const pg = await P.page(); return /blue light scatters|region of spacetime/.test(pg) && (await P.p.$eval('.vpage.on .vtail', (e) => e.textContent).catch(() => '')); }, 6000) || '';
     const link = await P.p.$eval('.vpage.on .vtail a', (e) => ({ href: e.href, target: e.target, rel: e.rel })).catch(() => null);
     const after = await P.p.$eval('.vpage.on', (e) => e.lastElementChild && e.lastElementChild.classList.contains('vtail') && e.children.length > 1).catch(() => false);
-    const want = 'From A-to-Mind: ' + name + ' Γö¼Γòû ' + price + ' Γö¼Γòû moonbeam846.gumroad.com/l/' + slug;
+    const want = 'From A-to-Mind: ' + name + ' · ' + price + ' · moonbeam846.gumroad.com/l/' + slug;
     prodGot.push({ a, ok: line === want && after && link && link.href === 'https://moonbeam846.gumroad.com/l/' + slug && link.target === '_blank' && /noopener/.test(link.rel), line });
   }
   check('store: an ask a product covers gets Void\'s answer first, then one line (product, live price, link) from the live catalog; new store products are found', prodGot.every((x) => x.ok) && P.ctx.pages().length === 1 && catalogHits.length > hits0, prodGot.filter((x) => !x.ok).map((x) => x.a + '=' + x.line).join(' | '));
@@ -1037,14 +1037,14 @@ try {
   await R1.ctx.close();
   const was = uiStore.list;
   uiStore.list = was.map((p) => (p.slug === 'eozcma' ? { ...p, name: 'Zap Rescue ╬ô├ç├╢ One Broken Zap, Fixed Fast' } : p));
-  uiStore.list = was.map((p) => (p.slug === 'eozcma' ? { ...p, name: 'Zap Rescue ΓÇö One Broken Zap, Fixed Fast' } : p));
+  uiStore.list = was.map((p) => (p.slug === 'eozcma' ? { ...p, name: 'Zap Rescue — One Broken Zap, Fixed Fast' } : p));
   storeEnv.DB.meta.set('refreshed', new Date(Date.now() - 7 * 3600e3).toISOString());
   const R2 = await fresh();
   await R2.ask(RASK, 0);
   const l2 = await until(async () => /Likely cause/.test(await R2.page()) && R2.p.$eval('.vpage.on .vtail', (e) => e.textContent).catch(() => ''), 7000) || '';
   await R2.ctx.close();
   uiStore.list = was; storeEnv.DB.meta.set('refreshed', new Date(Date.now() - 7 * 3600e3).toISOString());
-  check('store: renaming a product in the store changes the line after the fix, with no code change', l1 === 'From A-to-Mind: Automation Cleanup Γö¼Γòû $25 Γö¼Γòû moonbeam846.gumroad.com/l/eozcma' && l2 === 'From A-to-Mind: Zap Rescue Γö¼Γòû $25 Γö¼Γòû moonbeam846.gumroad.com/l/eozcma', l1 + ' | ' + l2);
+  check('store: renaming a product in the store changes the line after the fix, with no code change', l1 === 'From A-to-Mind: Automation Cleanup · $25 · moonbeam846.gumroad.com/l/eozcma' && l2 === 'From A-to-Mind: Zap Rescue · $25 · moonbeam846.gumroad.com/l/eozcma', l1 + ' | ' + l2);
   const NAMES = /Void Monthly|Full Stack Audit|Big Board|Join the Team|First Automation Setup|Keep-It-Running|Automation Cleanup|Zap Health Check|\$49\b|\b4900\b|\$25\b|\$300\b/;
   const files = ['../void.html', '../void-live-deploy/lib/gumroad.js', '../void-live-deploy/lib/automation-fix.js', '../void-live-deploy/lib/earnings.js', '../void-live-deploy/lib/store-db.js', '../void-live-deploy/functions/api/answer.js', '../void-live-deploy/functions/api/catalog.js', '../void-live-deploy/functions/api/gumroad.js', '../void-live-deploy/functions/api/will.js'];
   const named = files.filter((f) => NAMES.test(fs.readFileSync(new URL(f, import.meta.url), 'utf8')));
@@ -1132,7 +1132,7 @@ try {
   check('cross-device look works from the passkey alone, on the free tier (no payment)', inB && bBg === '#07020f' && (await lookOf(B)).bg === '#07020f' && tierB.status === 200 && tierB.body.tier === 'free' && db().accounts.size === 0, [inB, bBg, tierB.status, JSON.stringify(tierB.body), db().accounts.size].join(' | '));
   // Plan item 12, signed in with a passkey: $49 a month (live from the store), what it adds, and Void Monthly's link carrying the account id.
   const GUM = 'https://moonbeam846.gumroad.com/l/yinmj';
-  const IN_LINK = 'Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm Γö¼Γòû buy it on Gumroad';
+  const IN_LINK = 'Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm · buy it on Gumroad';
   const inAsks = ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
   const inGot = [];
   for (const a of inAsks) { await A.ask(a, 0); inGot.push(await until(async () => { const w = await A.whisper(); return /Paid Void|paid Void|your Void is paid/.test(w) ? w : ''; }, 5000) || await A.whisper()); }
@@ -1173,7 +1173,7 @@ try {
   const meD = await meOf(D);
   await D.ask('upgrade', 0);
   const dIn = await until(async () => /Paid Void/.test(await D.whisper()) && (await D.whisper()), 5000);
-  check('paid: with GUMROAD_URL empty, signed-in asks say payments aren\'t open yet (no link, no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm ┬╖ payments aren't open yet" && (await D.p.$$eval('#whisper a', (d) => d.length)) === 0 && !(await D.page()) && D.ctx.pages().length === 1,
+  check('paid: with GUMROAD_URL empty, signed-in asks say payments aren\'t open yet (no link, no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid Void is $49 a month: more model answers, private skills and a higher cap on actions you confirm · payments aren't open yet" && (await D.p.$$eval('#whisper a', (d) => d.length)) === 0 && !(await D.page()) && D.ctx.pages().length === 1,
     [dUrl, dIn].join(' | '));
   db().accounts.set(meD.userId, { tier: 'paid' });
   await D.ask('pay', 0); const dPaid = await until(async () => /your Void is paid/.test(await D.whisper()) && (await D.whisper()), 8000);
@@ -1523,8 +1523,8 @@ try {
     check('shortfalls: the will sees them as evidence for a stronger model (+1 per 5, capped) and only there; the owner sees them with the earnings',
       /2\. \[upgrade myself, weight 28, costs \$10\/month, affordable\] Answer and fix with a stronger model ╬ô├ç├╢ better fixes; the free model fell short 3 times in 7 days \(2 will free limit, 1 will busy\)/.test(p2)
       && /3\. \[upgrade myself, weight 12,[^\n]*\] Move to a dedicated GPU ╬ô├ç├╢ speed$/m.test(p2) && e2.shortfalls_7d && e2.shortfalls_7d.total === 3,
-      /2\. \[upgrade myself, weight 28, costs \$10\/month, affordable\] Answer and fix with a stronger model ΓÇö better fixes; the free model fell short 3 times in 7 days \(2 will free limit, 1 will busy\)/.test(p2)
-      && /3\. \[upgrade myself, weight 12,[^\n]*\] Move to a dedicated GPU ΓÇö speed$/m.test(p2) && e2.shortfalls_7d && e2.shortfalls_7d.total === 3,
+      /2\. \[upgrade myself, weight 28, costs \$10\/month, affordable\] Answer and fix with a stronger model — better fixes; the free model fell short 3 times in 7 days \(2 will free limit, 1 will busy\)/.test(p2)
+      && /3\. \[upgrade myself, weight 12,[^\n]*\] Move to a dedicated GPU — speed$/m.test(p2) && e2.shortfalls_7d && e2.shortfalls_7d.total === 3,
       p2.split('\n').slice(2, 5).join(' / ').slice(0, 300) + ' | ' + JSON.stringify(e2.shortfalls_7d)); }
 
   const brokenPing = await ping(vmSale('s9'), { env: { ...pEnv, DB: memoryStoreD1({ broken: true }) } });
@@ -1836,7 +1836,7 @@ try {
   const wt = mods.find((s) => s.name === 'worldtime');
   const wtHits = (a) => !!wt && wt.match(a.toLowerCase(), a);
   // The item 3 multilingual collision set (domains/void.item3-harness.md): none of it is a world-time ask.
-  const HARNESS = ['Γö¼ΓöÉpor quΓö£ΓîÉ el cielo es azul?', 'pourquoi le ciel est-il bleu?', 'Warum ist der Himmel blau?', 'bakit asul ang langit?', 'haz el reloj azul', "rends l'horloge bleue", '╬úΓòòΓòæ╬úΓòù├ç╬úΓòú├¬╧â├▒ΓîÉ┬╡├┐┬╗╬ª├┤┬Ñ╧ä├£├ñ'];
+  const HARNESS = ['Γö¼ΓöÉpor quΓö£ΓîÉ el cielo es azul?', 'pourquoi le ciel est-il bleu?', 'Warum ist der Himmel blau?', 'bakit asul ang langit?', 'haz el reloj azul', "rends l'horloge bleue", '╬úΓòòΓòæ╬úΓòù├ç╬úΓòú├¬╧âñΓîÉ┬╡├┐┬╗╬ª├┤┬Ñ╧ä├£├ñ'];
   const NEAR = ['make a clock', 'make a 5 minute timer', 'what is time'];
   check('worldtime: listed in skills/index.json with examples and near misses; every example routes to worldtime and no other skill claims one',
     !!wt && wt.examples.length >= 4 && (wt.nearMisses || []).length >= 3 && wt.examples.every((e) => firstSkill(e) === 'worldtime' && mods.every((s) => s === wt || !s.match(e.toLowerCase(), e))),
@@ -1865,15 +1865,15 @@ try {
   });
   const wtPage = async (a, re) => { await W.ask(a, 0); return until(async () => { const pg = await W.page(); return re.test(pg) && (await W.p.$$eval('.vpage.on .wt', (d) => d.length)) === 1 && pg; }, 6000); };
   const tokyoNow = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', hour: 'numeric' }).format(new Date()).replace(/\s*[AP]M/, '');
-  const pTokyo = await wtPage('time in Tokyo', /Tokyo, Japan[\s\S]*Asia\/Tokyo Γö¼Γòû UTC\+9/);
+  const pTokyo = await wtPage('time in Tokyo', /Tokyo, Japan[\s\S]*Asia\/Tokyo · UTC\+9/);
   check('worldtime: "time in Tokyo" shows Tokyo\'s clock, zone and offset', pTokyo && new RegExp('(^|\\n)' + tokyoNow + ':\\d\\d\\s?[AP]M').test(pTokyo), String(pTokyo).slice(0, 140));
   const pConv = await wtPage('3pm London to Tokyo', /3:00\s?PM in London[\s\S]*(11:00\s?PM|12:00\s?AM)[\s\S]*in Tokyo, Japan/);
   check('worldtime: "3pm London to Tokyo" converts the time between the two places', !!pConv, String(pConv).slice(0, 140));
-  const pSet = await wtPage('sunset in Paris', /Sunset Γö¼Γòû Paris[\s\S]*7:3[35]\s?PM/);
+  const pSet = await wtPage('sunset in Paris', /Sunset · Paris[\s\S]*7:3[35]\s?PM/);
   check('worldtime: "sunset in Paris" gives the sunset from Open-Meteo', !!pSet && sunCalls.includes('sunrise,sunset'), String(pSet).slice(0, 140));
-  const pRise = await wtPage('when is sunrise in New York', /Sunrise Γö¼Γòû New York[\s\S]*7:0[12]\s?AM/);
+  const pRise = await wtPage('when is sunrise in New York', /Sunrise · New York[\s\S]*7:0[12]\s?AM/);
   check('worldtime: "when is sunrise in New York" gives the sunrise', !!pRise, String(pRise).slice(0, 140));
-  const pSyd = await wtPage('what time is it in Sydney', /Sydney[\s\S]*Australia\/Sydney Γö¼Γòû UTC\+1[01]/);
+  const pSyd = await wtPage('what time is it in Sydney', /Sydney[\s\S]*Australia\/Sydney · UTC\+1[01]/);
   check('worldtime: "what time is it in Sydney" answers too', !!pSyd, String(pSyd).slice(0, 140));
   await W.ask('close');
   await W.ask('make a clock'); await W.ask('make a 5 minute timer');
@@ -2253,7 +2253,7 @@ try {
     const wikiPerson = {
       type: 'standard', title: 'Marie Curie', description: 'Polish-French physicist and chemist (1867╬ô├ç├┤1934)',
       extract: 'Marie SkΓö╝├⌐odowska Curie was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.',
-      type: 'standard', title: 'Marie Curie', description: 'Polish-French physicist and chemist (1867ΓÇô1934)',
+      type: 'standard', title: 'Marie Curie', description: 'Polish-French physicist and chemist (1867–1934)',
       extract: 'Marie Sk┼éodowska Curie was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.',
       content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Marie_Curie' } },
       timestamp: '2026-01-01T00:00:00Z',
@@ -2488,7 +2488,7 @@ try {
   check('spanish: listed with examples and near misses; examples route only to it; a bare ask answers in Spanish and does not publish',
     !!esMod && esMod.examples.length >= 4 && (esMod.nearMisses || []).length >= 3
       && esMod.examples.every((e) => firstNs(e) === 'spanish') && esMod.nearMisses.every((e) => firstNs(e) !== 'spanish')
-      && typeof esReady === 'string' && /Puedo responder en espaΓö£ΓûÆol/.test(esReady) && !/\/api\/publish/.test(esReady),
+      && typeof esReady === 'string' && /Puedo responder en español/.test(esReady) && !/\/api\/publish/.test(esReady),
     esMod ? esMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') + ' | ' + esReady : 'missing spanish');
 
   {
