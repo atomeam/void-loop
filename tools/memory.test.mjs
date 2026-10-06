@@ -77,3 +77,16 @@ test('forget removes one record', async () => {
   assert.equal((await call(api.onRequestDelete, env, { method: 'DELETE' })).status, 400);
   assert.equal((await (await call(api.onRequestGet, env)).json()).memory.length, 0);
 });
+
+test('exact lookup by id returns the record with its sha256 (what a client checks before it lets go of a source)', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec(), rec({ id: 'beta', name: 'beta' })] } });
+  const one = (await (await call(api.onRequestGet, env, { url: 'https://x/api/memory?id=alpha-1234abcd' })).json()).memory;
+  assert.equal(one.length, 1);
+  assert.equal(one[0].id, 'alpha-1234abcd');
+  assert.equal(one[0].sha256, 'a'.repeat(64));
+  assert.deepEqual((await (await call(api.onRequestGet, env, { url: 'https://x/api/memory?id=nope' })).json()).memory, []);
+  assert.equal((await call(api.onRequestGet, env, { url: 'https://x/api/memory?id=alpha-1234abcd', auth: false })).status, 401);
+  const listed = (await (await call(api.onRequestGet, env)).json()).memory;
+  assert.ok(listed.every((m) => m.sha256 !== undefined), 'search results carry sha256 too');
+});

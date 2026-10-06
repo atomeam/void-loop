@@ -59,7 +59,11 @@ export async function search(env, q, limit = 20) {
   const n = Math.max(1, Math.min(50, parseInt(limit, 10) || 20));
   const where = terms.map(() => "(lower(name) LIKE ? ESCAPE '\\' OR lower(summary) LIKE ? ESCAPE '\\' OR lower(links) LIKE ? ESCAPE '\\')").join(' AND ');
   const args = terms.flatMap((t) => [like(t), like(t), like(t)]);
-  const { results } = await env.DB.prepare(`SELECT id, kind, name, summary, links, state, remote, last_commit, digest, updated FROM void_memory${where ? ' WHERE ' + where : ''} ORDER BY updated DESC LIMIT ${n}`).bind(...args).all();
+  const { results } = await env.DB.prepare(`SELECT id, kind, name, summary, links, state, remote, last_commit, digest, sha256, updated FROM void_memory${where ? ' WHERE ' + where : ''} ORDER BY updated DESC LIMIT ${n}`).bind(...args).all();
   return results.map((r) => ({ ...r, links: JSON.parse(r.links || '[]') }));
+}
+export async function byId(env, id) {
+  const r = await env.DB.prepare('SELECT id, kind, name, summary, links, state, remote, last_commit, digest, sha256, updated FROM void_memory WHERE id = ?').bind(String(id).slice(0, 80)).first();
+  return r ? [{ ...r, links: JSON.parse(r.links || '[]') }] : [];
 }
 export const forget = async (env, id) => (await env.DB.prepare('DELETE FROM void_memory WHERE id = ?').bind(String(id)).run()).meta.changes;
