@@ -9,10 +9,10 @@ canvas{width:100%;background:#15161a;border-radius:8px;display:block}
 .cap{font-weight:600;margin:6px 0 2px}
 </style></head><body>
 <h1>Train-aware driving visualization</h1>
-<p>Concept illustration, not Tesla's renderer. Left: a train drawn as a stream of separate trucks (the behavior observed). Right: the same detections fused into one train, confirmed by crossing context.</p>
+<p>Concept illustration. Left: a train drawn as a stream of separate trucks. Right: the same detections fused into one train, confirmed by crossing context.</p>
 <div class="row">
-<div class="col"><div class="cap">Per-object classes (observed)</div><canvas id="a" width="640" height="320"></canvas></div>
-<div class="col"><div class="cap">Fused + context-confirmed train (proposed)</div><canvas id="b" width="640" height="320"></canvas></div>
+<div class="col"><div class="cap">Per-object classes </div><canvas id="a" width="640" height="320"></canvas></div>
+<div class="col"><div class="cap">Fused + context-confirmed train</div><canvas id="b" width="640" height="320"></canvas></div>
 </div>
 <script>
 const N=12,CAR=46,GAP=6,STEP=CAR+GAP,Y=150;

@@ -1,19 +1,15 @@
-# Train-aware driving visualization: design brief (concept)
+# Train recognition for driving displays
 
-**Observed:** a passing train rendered on a Tesla Model Y display as a stream of separate semi-trucks.
-**Scope:** the on-screen visualization. This brief makes no claim about the driving stack, and nothing here modifies any vehicle.
+A driving display builds its scene from detected objects and gives each one a class. A train has no class of its own, so a passing train can come out as a stream of separate trucks. This is a design for showing it as one train.
 
-## Proposal
-1. **New class, "train".** Chain a run of near-equally spaced, co-moving, collinear boxes into one rigid object (long axis, constant lateral offset, shared velocity).
-2. **Context confirmation.** Raise the train hypothesis when the chain overlaps rails, a mapped level crossing, gates or flashing signals; suppress it for a genuine truck convoy on a road.
-3. **Rendering.** One continuous multi-car model with crossing gates and signals drawn, so the display reads "train, wait" at a glance.
+## Design
+1. **A "train" class.** Chain a run of near-equally spaced, co-moving, collinear boxes into one rigid object (long axis, constant lateral offset, shared velocity).
+2. **Context check.** Raise the train hypothesis when the chain overlaps rails, a mapped level crossing, gates or flashing signals. Keep a truck convoy on a road as trucks.
+3. **Rendering.** Draw one continuous multi-car train, with the crossing gates and signals shown.
 
-## Evidence needed before claiming "better"
-- Labeled clips of crossings (trains vs truck convoys) and the measured confusion rate of the fused vs per-object display.
-- Latency: the fused object should appear within the same frame budget.
-- Failure modes: freight with gaps, light-rail on streets, a convoy stopped at a crossing.
+## What has to be measured
+- Labeled crossing clips (trains and truck convoys) and the confusion rate of per-object vs fused display.
+- Latency: the fused object must appear within the same frame budget.
+- Hard cases: freight with gaps, light rail on streets, a convoy stopped at a crossing.
 
-`demo.html` illustrates the concept only; it is not a measurement.
-
-## Open questions
-Does the occupancy network already expose a fused extent? Is rail geometry in the map layer the display can read?
+`demo.html` illustrates the idea. It is not a measurement.
