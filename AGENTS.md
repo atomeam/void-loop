@@ -17,4 +17,5 @@ Then read `domains\void.growth.md` (what's next) and the last lines of `domains\
 - `node tools/merge-main.mjs` merges origin/main and settles the append-only files (bench.json, grown.json, the agent log) by keeping both sides.
 - `node tools/misses.mjs` reads the real miss board (owner-only /api/misses, needs VOID_MISSES_TOKEN). It only prints: this repo is public, so raw asks never get committed.
 - `node tools/fringe.mjs --record <draft> <sources.json>` adds a fringe run in the ledger's own style.
+- `node tools/draft-check.mjs [draft.html]` opens fringe drafts headless (by default the ones this branch changes) and fails on a missing noindex, a page error on load or first button press, anything fetched from outside, or no `window.__name` hook. checks.mjs runs it, so there is no need to hand-write a test script for a new draft.
 - Don't run the browser suite and the benchmark at the same time on one machine: the benchmark reads answers on a timer and misses them when the CPU is shared.
