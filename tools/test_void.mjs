@@ -2068,12 +2068,12 @@ try {
 
   const othMod = nsMods.find((s) => s.name === 'othello');
   const othApi = othMod && await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
-  const init = othApi && othApi.initialBoard();
-  const midFlips = othApi && othApi.flips(init, 19, 1); // (2,3) flips (3,3)=white
-  const v1 = othApi && othApi.validMoves(init, 1);
-  const v2 = othApi && othApi.validMoves(init, 2);
-  const cnt = othApi && othApi.count(init);
-  const ai = othApi && othApi.aiMove(init);
+  const init = othApi && othApi.createOthelloState().board;
+  const midFlips = othApi && othApi.flipsFor(init, 19, 1); // (2,3) flips (3,3)=white
+  const v1 = othApi && othApi.legalMoves(init, 1);
+  const v2 = othApi && othApi.legalMoves(init, 2);
+  const cnt = othApi && othApi.countDiscs(init);
+  const ai = othApi && othApi.voidMove(init, 2);
   check('othello: listed with examples and near misses; examples route only to it; engine flips, valid moves, counts, and AI work',
     !!othMod && othMod.examples.length >= 4 && (othMod.nearMisses || []).length >= 3
       && othMod.examples.every((e) => firstNs(e) === 'othello') && othMod.nearMisses.every((e) => firstNs(e) !== 'othello')
@@ -2081,7 +2081,7 @@ try {
       && midFlips && midFlips.length === 1 && midFlips[0] === 27
       && Array.isArray(v1) && v1.length === 4 && v1.sort((a,b)=>a-b).join(',') === '19,26,37,44'
       && Array.isArray(v2) && v2.length === 4 && v2.sort((a,b)=>a-b).join(',') === '20,29,34,43'
-      && Array.isArray(cnt) && cnt[0] === 2 && cnt[1] === 2
+      && cnt && cnt.black === 2 && cnt.white === 2
       && typeof ai === 'number' && ai >= 0 && ai < 64 && v2.includes(ai),
     othMod ? othMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing othello');
 

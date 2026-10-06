@@ -33,22 +33,24 @@ export function codeOf(text) {
   let code = '';
   if (lines.length > 1 && isReviewAsk(lines[0])) code = lines.slice(1).join('\n');
   else if (lines.length > 1) code = s;
-  else { const k = s.indexOf(':'); code = k > 0 && k < 120 && isReviewAsk(s.slice(0, k)) ? s.slice(k + 1).trim() : (isReviewAsk(s) ? '' : s); }
+  else { const k = s.search(/[:?]/); code = k > 0 && k < 120 && isReviewAsk(s.slice(0, k) + ': x') ? s.slice(k + 1).trim() : (isReviewAsk(s) ? '' : s); } // "review this: <code>", "is this code safe? <code>"
   code = code.replace(/^\s*```[\w.+#-]*[ \t]*\n?/, '').replace(/\n?```\s*$/, '');
   return code.replace(/^\n+|\s+$/g, '');
 }
 
 // enough code-like text to review (not a sentence)
-export function looksLikeCode(code) {
+// lang: the language the ask names ("review this python: ..."), so one short line in that language is enough
+export function looksLikeCode(code, lang) {
   const s = String(code || '');
   if (s.trim().length < 8) return false;
   let n = 0;
   if (/[{};]\s*$/m.test(s)) n++;
-  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require)\b/.test(s)) n++;
-  if (/[=!<>]=|=>|->|\+\+|&&|\|\||::|:=|\w\(|\)\s*[{:]/.test(s)) n++;
+  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw)\b/.test(s)) n++;
+  if (/[=!<>]=|=>|->|\+\+|&&|\|\||::|:=|\w\(|\)\s*[{:]|\w\.\w+\s*[-+*/]?=[^=]/.test(s)) n++;
   if (/^(?: {2,}|\t)\S/m.test(s)) n++;
   if (/^\s*(?:#!|<\?php|<[a-z]+[\s>]|#include|@\w+)/m.test(s)) n++;
-  return n >= 2 || (n >= 1 && /^(?:shell|sql|python)$/.test(langOf(s))) || /^\s*(?:sudo\s+)?(?:rm|cp|mv|chmod|chown|curl|wget|git|npm|pip|docker|kubectl)\s+-?\S/m.test(s);
+  if (/^\s*[\w$.]+\([^()]*\)\s*;?\s*$/.test(s) && /[.(_$]|[a-z][A-Z]/.test(s.replace(/\(.*/, '(').slice(0, 60))) n++; // the whole paste is one call: eval(userInput)
+  return n >= 2 || (n >= 1 && (!!lang || /^(?:shell|sql|python)$/.test(langOf(s)))) || /^\s*(?:sudo\s+)?(?:rm|cp|mv|chmod|chown|curl|wget|git|npm|pip|docker|kubectl)\s+-?\S/m.test(s);
 }
 
 // the language when the ask names it: "is this python code ok"
