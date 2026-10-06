@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ouroboros: free your disk, keep your work</title>
+<meta name="description" content="Ouroboros finds the old projects eating your disk, keeps a digest of what mattered, shows which ones exist nowhere else, and safely frees the rebuildable space. Runs offline; nothing is uploaded.">
+<link rel="canonical" href="https://a-to-mind.com/ouroboros/">
+<style>
+:root{--bg:#fff;--fg:#1b1b1f;--mut:#5a5a66;--line:#dcdce4;--acc:#2457d6}
+@media(prefers-color-scheme:dark){:root{--bg:#101114;--fg:#ececf1;--mut:#a0a0ad;--line:#2a2c33;--acc:#7aa2ff}}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.6 system-ui,sans-serif}
+main{max-width:760px;margin:0 auto;padding:32px 16px 64px}
+h1{font-size:34px;line-height:1.2;margin:8px 0}h2{margin:36px 0 8px}
+.lead{color:var(--mut);font-size:19px}
+code,pre{font:14px ui-monospace,monospace;background:rgba(127,127,127,.12);border-radius:6px}code{padding:1px 5px}pre{padding:12px;overflow:auto}
+.btn{display:inline-block;background:var(--acc);color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:600}
+.box{border:1px solid var(--line);border-radius:10px;padding:14px 18px;margin:12px 0}
+a{color:var(--acc)}small{color:var(--mut)}
+</style>
+</head>
+<body>
+<main>
+<p><a href="/">&larr; Void · A-to-Mind</a></p>
+<h1>Your disk is full of dead projects. Keep what matters. Free the rest.</h1>
+<p class="lead">Ouroboros finds the old projects eating your disk, writes a short digest of what each one was, tells you which ones exist <em>nowhere else</em>, and safely frees the space that can be rebuilt. It runs on your machine and uploads nothing.</p>
+
+<p><a class="btn" href="BUY_URL_HERE">Get Ouroboros</a> &nbsp; <small>or start with the <a href="https://github.com/atomeam/void-loop/blob/main/tools/void_lens.py">free read-only scanner</a></small></p>
+
+<h2>What it does</h2>
+<div class="box"><b>1. Harvest.</b> For every project with no recent commit: what it was, its tech, recent commits, open TODOs. Secrets are filtered out, and <code>.env</code> files and keys are never read.</div>
+<div class="box"><b>2. Verify.</b> Checksums on every digest, and a check that the project hasn't changed since.</div>
+<div class="box"><b>3. Report.</b> One <code>report.html</code>: every old project, its size, and whether a copy exists elsewhere (pushed and clean, unpushed commits, uncommitted work, or no remote at all).</div>
+<div class="box"><b>4. Free space.</b> Removes only stale <code>node_modules</code> folders and Python virtual environments whose project still has the file that rebuilds them. Dry run first; you type <code>DELETE</code> to confirm.</div>
+
+<h2>What it will never do</h2>
+<p>It never deletes a project. If a project holds the only copy of your work, the report says so in red, and removing it stays your decision. It never uploads, phones home, or needs an account.</p>
+
+<h2>Try it</h2>
+<pre>python ouroboros.pyz run --root C:\Users\you --out D:\ouroboros-report</pre>
+<p>Then open <code>report.html</code>. Needs Python 3.9+ and git. Nothing else.</p>
+
+<h2>Honest limits</h2>
+<ul>
+<li>Git projects only.</li>
+<li>"Pushed and clean" reflects your last <code>git fetch</code>. Check you can clone the remote before removing anything yourself.</li>
+<li>Locked files on Windows can keep a folder from being removed; the tool tells you which.</li>
+</ul>
+</main>
+</body>
+</html>

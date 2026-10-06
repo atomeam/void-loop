@@ -185,6 +185,41 @@ class Ouroboros(unittest.TestCase):
         rc, _ = call("harvest", ["--root", str(self.root), "--out", str(self.root / "dev" / "out")])
         self.assertEqual(rc, 2)
 
+    def test_report_is_self_contained_and_escapes_everything(self):
+        evil = self.root / "dev" / "evil"
+        write(evil / "README.md", "# <script>alert(1)</script>\n\n<img src=x onerror=alert(2)> hostile readme\n")
+        run_git(evil, "init", "-q"); commit_all(evil)
+        self.harvest()
+        rc, txt = call("report", ["--out", str(self.out)])
+        self.assertEqual(rc, 0, txt)
+        page = (self.out / "report.html").read_text()
+        self.assertNotIn("<script", page.lower())
+        self.assertNotIn("onerror=", page.lower().replace("&lt;img src=x onerror=", ""))
+        self.assertNotIn("http://", page); self.assertNotIn("https://", page)
+        for needle in (SECRET_KEY, ENV_SECRET):
+            self.assertNotIn(needle, page)
+        self.assertIn("Pushed and clean", page)
+        self.assertIn("No remote copy", page)
+        self.assertIn("hold work that exists nowhere else", page)
+
+    def test_report_needs_a_harvest(self):
+        rc, _ = call("report", ["--out", str(self.out / "nothing")])
+        self.assertEqual(rc, 2)
+
+    def test_run_does_the_safe_path_and_never_deletes(self):
+        before = snapshot(self.root)
+        rc, txt = call("run", ["--root", str(self.root), "--out", str(self.out)])
+        self.assertEqual(rc, 0, txt)
+        for part in ("1/4 harvest", "2/4 verify", "3/4 report", "4/4 plan", "report.html"):
+            self.assertIn(part, txt)
+        self.assertTrue((self.out / "report.html").is_file())
+        self.assertEqual(before, snapshot(self.root))
+
+    def test_version_flag(self):
+        with self.assertRaises(SystemExit):
+            with contextlib.redirect_stdout(io.StringIO()):
+                ouroboros.main(["--version"])
+
 
 if __name__ == "__main__":
     unittest.main()

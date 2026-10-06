@@ -4,6 +4,8 @@
     python tools/ouroboros.py harvest --root C:\\Users\\you --out D:\\void-harvest      digest inactive projects (read-only)
     python tools/ouroboros.py verify  --out D:\\void-harvest                          re-check every digest and its source
     python tools/ouroboros.py plan    --root C:\\Users\\you --out D:\\void-harvest       what can be freed, and what cannot yet
+    python tools/ouroboros.py report  --out D:\\void-harvest                          one shareable report.html (no network)
+    python tools/ouroboros.py run     --root C:\\Users\\you --out D:\\void-harvest       harvest + verify + report + plan in one go
     python tools/ouroboros.py reclaim --root C:\\Users\\you --out D:\\void-harvest       dry run; add --apply to delete (asks you to type DELETE)
 
 The rules the whole tool is built around:
@@ -17,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import html
 import json
 import os
 import re
@@ -29,6 +32,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import void_lens  # noqa: E402
 
+VERSION = "0.2.0"
 NEVER_READ = re.compile(r"(^|[\\/])(\.env(\..*)?|.*\.(pem|key|p12|pfx|crt|cer|kdbx|keystore|jks)|id_rsa.*|id_ed25519.*|credentials(\..*)?|secrets?(\..*)?|\.npmrc|\.pypirc|\.netrc)$", re.I)
 SECRET_PATTERNS = [
     (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----.*?-----END [A-Z ]*PRIVATE KEY-----", re.S), "[private key]"),
@@ -317,17 +321,80 @@ def cmd_reclaim(a) -> int:
     return 1 if failed else 0
 
 
+STATE_LABEL = {"remote-current": ("Pushed and clean", "ok"), "unpushed-commits": ("Unpushed commits", "bad"), "uncommitted-work": ("Uncommitted work", "bad"), "no-remote": ("No remote copy", "bad")}
+
+
+def build_report(out: Path, root_hint: str = "") -> Path:
+    """One self-contained report.html (no network, no scripts) from a harvest. Every piece of text is HTML-escaped."""
+    m = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
+    e = html.escape
+    rows, total, safe = [], 0, 0
+    for p in sorted(m["projects"], key=lambda x: -x["size_bytes"]):
+        total += p["size_bytes"]
+        label, cls = STATE_LABEL.get(p["state"], (p["state"], "bad"))
+        safe += p["size_bytes"] if p["state"] == "remote-current" else 0
+        try:
+            d = json.loads((out / p["slug"] / "digest.json").read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            d = {}
+        about = next((ln.strip() for ln in (d.get("readme") or "").splitlines() if ln.strip() and not ln.startswith("#")), d.get("description") or "")
+        rows.append(f"<tr><td><a href=\"{e(p['slug'])}/digest.md\">{e(d.get('name') or p['slug'])}</a><div class=sub>{e(about[:140])}</div></td>"
+                    f"<td><span class=\"badge {cls}\">{e(label)}</span></td><td class=n>{e(void_lens.human(p['size_bytes']))}</td>"
+                    f"<td>{e(str(d.get('last_commit') or '')[:10])}</td><td class=path>{e(p['path'])}</td></tr>")
+    need = [p for p in m["projects"] if p["state"] != "remote-current"]
+    page = f"""<!doctype html><html lang=en><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+<title>Ouroboros report</title>
+<style>:root{{--bg:#fff;--fg:#1b1b1f;--mut:#667;--line:#dde;--ok:#0a7d3b;--bad:#b3261e}}@media(prefers-color-scheme:dark){{:root{{--bg:#101114;--fg:#ececf1;--mut:#9aa;--line:#2a2c33;--ok:#4cc38a;--bad:#ff8a80}}}}
+body{{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui,sans-serif}}main{{max-width:1000px;margin:0 auto;padding:24px 16px}}h1{{margin:0 0 4px}}
+.sub{{color:var(--mut);font-size:13px}}.cards{{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}}.card{{border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-width:150px}}
+.card b{{display:block;font-size:22px}}table{{width:100%;border-collapse:collapse}}th,td{{text-align:left;padding:8px;border-bottom:1px solid var(--line);vertical-align:top}}td.n{{white-space:nowrap}}
+.path{{font:12px ui-monospace,monospace;color:var(--mut);word-break:break-all}}.badge{{padding:2px 8px;border-radius:99px;border:1px solid currentColor;font-size:12px;white-space:nowrap}}.ok{{color:var(--ok)}}.bad{{color:var(--bad)}}
+.note{{border-left:3px solid var(--bad);padding:8px 12px;margin:16px 0}}@media(max-width:700px){{td.path{{display:none}}}}</style>
+<main><h1>Ouroboros report</h1><div class=sub>Made {e(m['made'])}{(' from ' + e(root_hint)) if root_hint else ''}. This file never leaves your machine; nothing in it was uploaded.</div>
+<div class=cards><div class=card><b>{len(m['projects'])}</b>old projects digested</div><div class=card><b>{e(void_lens.human(total))}</b>they occupy</div>
+<div class=card><b>{e(void_lens.human(safe))}</b>already safe on a remote</div><div class=card><b>{len(need)}</b>need a backup first</div></div>
+{('<div class=note><b>'+str(len(need))+' project(s) hold work that exists nowhere else.</b> Back them up (push, or copy them) before you remove anything. Ouroboros never deletes a project.</div>') if need else ''}
+<table><thead><tr><th>Project</th><th>Backup</th><th>Size</th><th>Last commit</th><th>Where</th></tr></thead><tbody>{''.join(rows) or '<tr><td colspan=5>No old projects found.</td></tr>'}</tbody></table>
+<p class=sub>Open a project's name for its digest: what it was, its tech, recent commits and open TODOs. Secrets are filtered out of every digest.</p></main></html>"""
+    path = out / "report.html"
+    path.write_text(page, encoding="utf-8")
+    return path
+
+
+def cmd_report(a) -> int:
+    out = Path(a.out).expanduser().resolve()
+    try:
+        path = build_report(out)
+    except (OSError, ValueError):
+        print(f"no readable manifest.json in {out}; run harvest first", file=sys.stderr)
+        return 2
+    print(f"wrote {path}")
+    return 0
+
+
+def cmd_run(a) -> int:
+    """The whole safe path in one command: harvest, verify, report, plan. It never deletes anything."""
+    for name, fn in (("1/4 harvest", cmd_harvest), ("2/4 verify", cmd_verify), ("3/4 report", cmd_report), ("4/4 plan", cmd_plan)):
+        print(f"\n== {name}")
+        rc = fn(a)
+        if rc not in (0,) and name != "2/4 verify":
+            return rc
+    print(f"\nOpen {Path(a.out).expanduser().resolve() / 'report.html'} in your browser.\nTo free the rebuildable space, run: ouroboros reclaim --root {a.root} --out {a.out}   (dry run first)")
+    return 0
+
+
 def main(argv=None) -> int:
-    ap = argparse.ArgumentParser(description="Harvest what is worth keeping from old projects, verify it, then free regenerable space.")
+    ap = argparse.ArgumentParser(prog="ouroboros", description=f"Ouroboros {VERSION}. Harvest what is worth keeping from old projects, verify it, then free regenerable space.")
+    ap.add_argument("--version", action="version", version=f"ouroboros {VERSION}")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name, fn in (("harvest", cmd_harvest), ("verify", cmd_verify), ("plan", cmd_plan), ("reclaim", cmd_reclaim)):
+    for name, fn in (("harvest", cmd_harvest), ("verify", cmd_verify), ("report", cmd_report), ("plan", cmd_plan), ("reclaim", cmd_reclaim), ("run", cmd_run)):
         s = sub.add_parser(name)
         s.add_argument("--root", default=str(Path.home()))
         s.add_argument("--out", required=True)
         s.add_argument("--days", type=int, default=90)
         s.add_argument("--top", type=int, default=15)
         s.add_argument("--max-seconds", type=float, default=300)
-        if name == "harvest":
+        if name in ("harvest", "run"):
             s.add_argument("--include-active", action="store_true", help="also digest projects with recent commits")
         if name == "reclaim":
             s.add_argument("--apply", action="store_true")
