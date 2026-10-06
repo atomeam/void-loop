@@ -271,12 +271,35 @@ def regenerable(root: Path, days: int, budget) -> list[dict]:
     return rows
 
 
+def load_absorbed(out: Path) -> dict[str, dict]:
+    """Projects Void has absorbed: pushed, read back, hash checked. Written only by `push`. {resolved project path: receipt}"""
+    try:
+        return {str(Path(e["path"]).resolve()): e for e in json.loads((out / "absorbed.json").read_text(encoding="utf-8")).get("absorbed", [])}
+    except (OSError, ValueError, KeyError):
+        return {}
+
+
+def is_absorbed(project: Path, absorbed: dict[str, dict]) -> bool:
+    """Absorbed AND unchanged since: a project that has new commits has something Void has not seen."""
+    e = absorbed.get(str(project.resolve()))
+    return bool(e) and (git(project, "rev-parse", "HEAD") or "").strip() == e.get("head")
+
+
+def split_absorbed(rows: list[dict], out: Path) -> tuple[list[dict], list[dict]]:
+    ab = load_absorbed(out)
+    ok = [r for r in rows if is_absorbed(r["path"].parent, ab)]
+    return ok, [r for r in rows if r not in ok]
+
+
 def cmd_plan(a) -> int:
     root, out = Path(a.root).expanduser().resolve(), Path(a.out).expanduser().resolve()
     budget = void_lens.Budget(a.max_seconds)
     rows = regenerable(root, a.days, budget)
-    ok = [r for r in rows if r["stale"] and r["manifest_ok"]]
-    print(f"Can be freed now, and rebuilt on demand: {void_lens.human(sum(r['bytes'] for r in ok))} in {len(ok)} folder(s) (stale node_modules and virtualenvs)")
+    cand = [r for r in rows if r["stale"] and r["manifest_ok"]]
+    ok, waiting = split_absorbed(cand, out)
+    print(f"Can be freed now, and rebuilt on demand: {void_lens.human(sum(r['bytes'] for r in ok))} in {len(ok)} folder(s) (stale node_modules and virtualenvs of projects Void has absorbed)")
+    if waiting:
+        print(f"Waiting: {void_lens.human(sum(r['bytes'] for r in waiting))} in {len(waiting)} folder(s) belong to projects Void has not absorbed yet. Nothing is freed before that: run harvest, then push.")
     for r in sorted(ok, key=lambda r: -r["bytes"])[:a.top]:
         print(f"  {void_lens.human(r['bytes']):>9}  idle {r['idle_days']:>4}d  {r['path']}")
     skipped = [r for r in rows if r["stale"] and not r["manifest_ok"]]
@@ -297,9 +320,11 @@ def cmd_plan(a) -> int:
 def cmd_reclaim(a) -> int:
     root, out = Path(a.root).expanduser().resolve(), Path(a.out).expanduser().resolve()
     budget = void_lens.Budget(a.max_seconds)
-    todo = [r for r in regenerable(root, a.days, budget) if r["stale"] and r["manifest_ok"]]
+    todo, waiting = split_absorbed([r for r in regenerable(root, a.days, budget) if r["stale"] and r["manifest_ok"]], out)
     total = sum(r["bytes"] for r in todo)
-    print(f"{len(todo)} folder(s), {void_lens.human(total)}: stale node_modules/virtualenvs whose projects can rebuild them.")
+    print(f"{len(todo)} folder(s), {void_lens.human(total)}: stale node_modules/virtualenvs of projects Void has absorbed, which can rebuild them.")
+    if waiting:
+        print(f"{len(waiting)} more folder(s) ({void_lens.human(sum(r['bytes'] for r in waiting))}) are NOT touched: Void has not absorbed those projects yet (run harvest, then push).")
     for r in todo[:a.top]:
         print(f"  {void_lens.human(r['bytes']):>9}  {r['path']}")
     if not a.apply:
@@ -494,15 +519,25 @@ def cmd_push(a) -> int:
         saved += res.get("saved", 0)
         rejected += res.get("rejected", 0)
     print(f"sent {len(records)} record(s): {saved} saved, {rejected} rejected")
-    held, lost = 0, []
+    held, lost, verified_ids = 0, [], set()
     for r in records:
         ok, why = void_remembers(base, token, r, bodies[r["id"]])
         held += ok
+        if ok:
+            verified_ids.add(r["id"])
         if not ok:
             lost.append(f"  NOT remembered: {r['name']}: {why}")
     print(f"Void remembers {held} of {len(records)} project(s), each checked by reading the digest back and comparing its hash.")
     for line in lost:
         print(line)
+    entries = {e["slug"]: e for e in json.loads((out / "manifest.json").read_text(encoding="utf-8"))["projects"]}
+    prior = load_absorbed(out)
+    now = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+    for r in records:
+        if r["id"] in verified_ids and r["id"] in entries:
+            e = entries[r["id"]]
+            prior[str(Path(e["path"]).resolve())] = {"slug": r["id"], "path": e["path"], "head": e["head"], "body_sha256": sha256_text(bodies[r["id"]]), "at": now, "void": base}
+    (out / "absorbed.json").write_text(json.dumps({"absorbed": sorted(prior.values(), key=lambda x: x["slug"])}, indent=2), encoding="utf-8")
     return 0 if held == len(records) and not rejected else 1
 
 

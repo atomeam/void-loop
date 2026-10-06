@@ -132,3 +132,23 @@ test('a record sent again with a new digest replaces the old one, and a table ma
   assert.equal(got.body, 'two');
   assert.equal(got.body_sha256, sha('two'));
 });
+
+test('organize: topics group projects by shared tech (file types ignored); related ranks the projects that share the most with one', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const R = (id, links) => rec({ id, name: id, links });
+  await call(api.onRequestPost, env, { method: 'POST', body: { records: [
+    R('shop', ['react', 'stripe', 'node', 'md']), R('blog', ['react', 'node', 'md']), R('game', ['unity', 'cs', 'md']), R('bot', ['node', 'discord', 'json']) ] } });
+  const get = async (q) => (await call(api.onRequestGet, env, { url: 'https://x/api/memory?' + q }));
+  const topics = (await (await get('view=topics')).json()).topics;
+  const by = Object.fromEntries(topics.map((t) => [t.tag, t.count]));
+  assert.equal(by.node, 3);
+  assert.equal(by.react, 2);
+  assert.equal(by.md, undefined, 'file-type tags are not topics');
+  assert.equal(topics[0].tag, 'node', 'biggest group first');
+  const rel = (await (await get('related=shop')).json()).related;
+  assert.deepEqual(rel.map((r) => r.name), ['blog', 'bot'], 'game shares nothing real with shop, so it is left out');
+  assert.deepEqual(rel[0].shared.sort(), ['node', 'react']);
+  assert.ok(rel[0].score > rel[1].score);
+  assert.equal((await get('related=nope')).status, 404);
+  assert.equal((await call(api.onRequestGet, env, { url: 'https://x/api/memory?view=topics', auth: false })).status, 401);
+});

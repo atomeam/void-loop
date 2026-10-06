@@ -167,9 +167,42 @@ class Ouroboros(unittest.TestCase):
         self.assertEqual(rc, 1)
         self.assertEqual(before, snapshot(self.root))
 
-    def test_reclaim_apply_removes_only_regenerable_folders(self):
-        with mock.patch("builtins.input", return_value="DELETE"):
-            rc, txt = call("reclaim", ["--root", str(self.root), "--out", str(self.out), "--apply"])
+    def _absorb(self):
+        """harvest, then push to a stand-in Void that verifies, so projects count as absorbed"""
+        self.harvest()
+        srv, _ = self._server()
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "t"}):
+            rc, txt = call("push", ["--out", str(self.out), "--url", f"http://127.0.0.1:{srv.server_address[1]}"])
+        self.assertEqual(rc, 0, txt)
+        return srv
+
+    def _reclaim(self, answer="DELETE"):
+        with mock.patch("builtins.input", return_value=answer):
+            return call("reclaim", ["--root", str(self.root), "--out", str(self.out), "--apply"])
+
+    def test_nothing_is_deleted_before_void_has_absorbed_it(self):
+        before = snapshot(self.root)
+        rc, txt = self._reclaim()
+        self.assertEqual(before, snapshot(self.root), "reclaim deleted something no one had absorbed")
+        self.assertIn("NOT touched", txt)
+        self.assertIn("0 folder(s)", txt)
+        self.harvest()  # harvested but not yet pushed is still not absorbed
+        rc, txt = self._reclaim()
+        self.assertEqual(before, snapshot(self.root))
+
+    def test_a_push_that_void_cannot_verify_absorbs_nothing(self):
+        self.harvest()
+        srv, _ = self._server(tamper=True)
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "t"}):
+            call("push", ["--out", str(self.out), "--url", f"http://127.0.0.1:{srv.server_address[1]}"])
+        before = snapshot(self.root)
+        self._reclaim()
+        self.assertEqual(before, snapshot(self.root))
+        self.assertFalse(json.loads((self.out / "absorbed.json").read_text())["absorbed"])
+
+    def test_reclaim_after_absorption_removes_only_regenerable_folders_of_absorbed_projects(self):
+        self._absorb()
+        rc, txt = self._reclaim()
         self.assertEqual(rc, 0, txt)
         dev = self.root / "dev"
         self.assertFalse((dev / "alpha" / "node_modules").exists())
@@ -180,6 +213,19 @@ class Ouroboros(unittest.TestCase):
         self.assertTrue((dev / "alpha" / ".git").exists())
         self.assertTrue((dev / "linked" / "node_modules").is_symlink())
         self.assertTrue((self.out / "reclaim-log.jsonl").read_text().strip())
+
+    def test_a_project_with_new_work_since_absorption_is_protected_again(self):
+        self._absorb()
+        a = self.root / "dev" / "alpha"
+        write(a / "later.py", "new work Void has not seen"); commit_all(a)
+        rc, txt = self._reclaim()
+        self.assertTrue((a / "node_modules").exists(), "alpha changed after it was absorbed, so nothing of it may be deleted")
+        self.assertFalse((self.root / "dev" / "beta" / ".venv").exists(), "beta is unchanged and absorbed, so its rebuildable folder goes")
+
+    def test_plan_says_what_is_waiting_for_absorption(self):
+        self.harvest()
+        rc, txt = call("plan", ["--root", str(self.root), "--out", str(self.out)])
+        self.assertIn("Nothing is freed before that", txt)
 
     def test_harvest_refuses_out_inside_root(self):
         rc, _ = call("harvest", ["--root", str(self.root), "--out", str(self.root / "dev" / "out")])

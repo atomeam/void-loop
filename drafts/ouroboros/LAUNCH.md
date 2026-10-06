@@ -14,7 +14,7 @@
 5. **Terms and refunds:** write short terms (what it does and does not guarantee, and that deleting files is the user's decision). Have them reviewed; no legal text is included here.
 
 ## Rule (owner, 2026-10-06): before anything is deleted, Void must remember it
-`push` sends each project's full digest and then reads it back by id, comparing the hash Void computed with the hash of what was sent. It reports "Void remembers N of N" only when every one matches. The tool deletes no project. A delete step, if it is ever added, has to be gated on that read-back, on the project having a pushed remote copy, and on a typed confirmation; a 200 from the server alone is not proof (Void stores a digest, not the code).
+`push` sends each project's full digest and then reads it back by id, comparing the hash Void computed with the hash of what was sent. It reports "Void remembers N of N" only when every one matches. The tool deletes no project, and `reclaim` now touches only the rebuildable folders (`node_modules`, virtualenvs) of projects that `push` has verified into Void (receipt: `absorbed.json`), and only while they are unchanged since. Void organizes what it holds: `GET /api/memory?view=topics` groups projects by shared tech, `?related=<id>` ranks the ones most like a given project. A delete step, if it is ever added, has to be gated on that read-back, on the project having a pushed remote copy, and on a typed confirmation; a 200 from the server alone is not proof (Void stores a digest, not the code).
 
 ## Later (not built)
 - Cloud backup with hash verification, and restore: a subscription tier. Needs R2 and D1 set up and an upload endpoint.

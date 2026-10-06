@@ -81,3 +81,28 @@ export async function byId(env, id) {
   return r ? [{ ...r, links: JSON.parse(r.links || '[]') }] : [];
 }
 export const forget = async (env, id) => (await env.DB.prepare('DELETE FROM void_memory WHERE id = ?').bind(String(id)).run()).meta.changes;
+
+// ---- organize: how the remembered projects relate. Read-only; computed from the tags each record already carries.
+// File-type tags would join every project to every other, so they are left out here (they stay stored).
+const NOISE = new Set(['md', 'txt', 'json', 'yml', 'yaml', 'toml', 'html', 'css', 'svg', 'png', 'jpg', 'xml', 'lock', 'cfg', 'ini', 'gitignore', 'package.json', 'pyproject.toml']);
+const tagsOf = (r) => (JSON.parse(r.links || '[]')).filter((t) => !NOISE.has(t));
+const everything = async (env) => (await env.DB.prepare('SELECT id, name, summary, links, state, updated FROM void_memory ORDER BY updated DESC LIMIT 2000').all()).results;
+
+export async function topics(env) {
+  const by = new Map();
+  for (const r of await everything(env)) for (const t of tagsOf(r)) (by.get(t) || by.set(t, []).get(t)).push({ id: r.id, name: r.name });
+  return [...by].map(([tag, items]) => ({ tag, count: items.length, projects: items.slice(0, 20) })).sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag)).slice(0, 100);
+}
+
+export async function related(env, id, limit = 10) {
+  const all = await everything(env);
+  const me = all.find((r) => r.id === String(id));
+  if (!me) return null;
+  const mine = new Set(tagsOf(me));
+  const n = Math.max(1, Math.min(50, parseInt(limit, 10) || 10));
+  return all.filter((r) => r.id !== me.id).map((r) => {
+    const theirs = new Set(tagsOf(r)), shared = [...mine].filter((t) => theirs.has(t));
+    return { id: r.id, name: r.name, summary: r.summary, state: r.state, shared, score: shared.length / (new Set([...mine, ...theirs]).size || 1) };
+  }).filter((r) => r.shared.length).sort((a, b) => b.score - a.score || b.shared.length - a.shared.length || a.name.localeCompare(b.name)).slice(0, n)
+    .map((r) => ({ ...r, score: Math.round(r.score * 100) / 100 }));
+}

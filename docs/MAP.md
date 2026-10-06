@@ -31,7 +31,7 @@ One product (**Void**, a-to-mind.com) is real and live. Around it are engines th
 | void-lens: free read-only disk scanner | `tools/void_lens.py`, PR #124 | built, 6 tests |
 | Ouroboros: harvest, verify, report, plan, reclaim, run, push | `tools/ouroboros.py`, PR #125 | built, 18 tests; not run on Windows |
 | Download pack + landing draft + launch checklist | `tools/build_ouroboros_pack.py`, `drafts/ouroboros/` | built; not on sale |
-| Void's memory API | `functions/api/memory.js`, `lib/memory-core.js` | built, 12 tests on real SQLite; stores each project's full digest and the hash Void computed from what it stored; lookup by id; table created on first use |
+| Void's memory API | `functions/api/memory.js`, `lib/memory-core.js` | built, 12 tests on real SQLite; stores each project's full digest and the hash Void computed from what it stored; lookup by id; `?view=topics` and `?related=<id>` show how projects connect (shared tech, file types ignored); table created on first use |
 | Train-recognition concept | `drafts/train-visualization/` (PR #123) | concept only, nothing measured |
 
 ## The other repos on the account
@@ -55,5 +55,5 @@ One product (**Void**, a-to-mind.com) is real and live. Around it are engines th
 1. Make `main` green: the three failing checks (a fix attempt is in flight on `helper/mark-inbox-building-shipped`). Nothing ships until this is done.
 2. Merge the small, tested pieces: guard, void-lens, Ouroboros, memory API, SEO page.
 3. Run Ouroboros on the Victus; read the report; push the memory.
-4. Add the Void skill that answers from memory ("what did I build for X?").
+4. Add the Void skill that answers from memory, and a page that shows the topics and related projects ("what did I build for X?").
 5. Only then, the paid pack and cloud backup.
