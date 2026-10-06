@@ -4599,5 +4599,14 @@
   {
     "ask": "play mancala with void",
     "want": "skill:mancala"
-  }
+  },
+  {"ask": "review this code: if (x = 5) { el.innerHTML = name; }", "want": "review", "says": "bug|risk"},
+  {"ask": "review my code", "want": "review|asked for code", "says": "Paste the code"},
+  {"ask": "can you review this function: function add(a, b) { return a + b; }", "want": "review", "says": "nothing wrong|nothing flagged"},
+  {"ask": "what's wrong with my code: const q = \"SELECT * FROM users WHERE id = \" + id;", "want": "review", "says": "SQL injection"},
+  {"ask": "is this python code ok: def f(a, b=[]): return b", "want": "review", "says": "shared by every call"},
+  {"ask": "check this script: rm -rf $DIR/", "want": "review", "says": "empty or unset"},
+  {"ask": "find bugs in this: items.forEach(async (x) => { await save(x); });", "want": "review", "says": "does not wait"},
+  {"ask": "code review: const token = \"ghp_abcdefghijklmnopqrstuvwxyz0123456\";", "want": "review", "says": "key, token or password"},
+  {"ask": "be my code reviewer", "want": "review|asked for code", "says": "Paste the code"}
 ]

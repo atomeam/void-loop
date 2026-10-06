@@ -11,9 +11,18 @@ const here = dirname(fileURLToPath(import.meta.url));
 const run = (args) => { const r = spawnSync(process.execPath, args, { cwd: resolve(here, '..'), encoding: 'utf8', timeout: 900000 });
   return { ok: r.status === 0, out: ((r.stdout || '') + (r.stderr || '')).trim().split('\n').filter((l) => !/ExperimentalWarning|trace-warnings/.test(l)) }; };
 const results = [];
-for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.mjs'], ['calendar', 'test_calendar.mjs'], ['glyphs', 'test_glyphs.mjs']]) {
+for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.mjs'], ['calendar', 'test_calendar.mjs'], ['glyphs', 'test_glyphs.mjs'], ['review', 'review.test.mjs']]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
+// Every script parses, and no text file was re-encoded through a Windows code page (a merge did both to main once:
+// a dash turned into three box-drawing letters, lines doubled, a const declared twice, and CI died before running a single test).
+{ const files = spawnSync('git', ['ls-files', '*.js', '*.mjs', '*.html', '*.md', '*.json', '*.py', '*.yml'], { cwd: resolve(here, '..'), encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
+  const GARBLED = /\u0393[\u00c7\u00c4]|\u252c[\u2556\u2591\u00aa]|\u251c[\u00ba\u00e9]|\u256c\u00f4/; // the cp437 readings of UTF-8 dashes, dots, quotes
+  const garbled = files.filter((f) => GARBLED.test(readFileSync(resolve(here, '..', f), 'utf8')));
+  const broken = files.filter((f) => /\.m?js$/.test(f) && !run(['--check', resolve(here, '..', f)]).ok);
+  results.push(['files', !garbled.length && !broken.length, garbled.length || broken.length
+    ? [garbled.length && 'garbled text in ' + garbled.join(', '), broken.length && 'does not parse: ' + broken.join(', ')].filter(Boolean).join('; ')
+    : files.length + ' files: clean text, every script parses']); }
 { const r = run([resolve(here, 'bench.mjs'), '--score']); let b = null; try { b = JSON.parse(r.out[r.out.length - 1]); } catch (_) {}
   const best = JSON.parse(readFileSync(resolve(here, 'bench.best.json'), 'utf8'));
   const ok = !!b && b.score >= best.score && b.total >= best.total;
