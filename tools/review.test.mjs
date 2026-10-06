@@ -1,5 +1,5 @@
 // node tools/review.test.mjs: the code reviewer (void-live-deploy/lib/code-review.js) finds what it should and stays quiet on clean code.
-import { isReviewAsk, codeOf, langOf, ruleReview, looksLikeCode, autoFix } from '../void-live-deploy/lib/code-review.js';
+import { isReviewAsk, codeOf, langOf, ruleReview, looksLikeCode, autoFix, skippedInReview } from '../void-live-deploy/lib/code-review.js';
 let bad = 0;
 const ok = (c, msg) => { if (!c) { bad++; console.log('FAIL ' + msg); } };
 const rules = (code, lang) => ruleReview(code, lang ? { lang } : {}).findings.map((f) => f.rule + '@' + f.line);
@@ -73,5 +73,10 @@ ok(ruleReview('var a = 1;\nvar b = 2;', { lang: 'javascript' }).findings.filter(
 ok(ruleReview('var a = 1;\nvar b = 2;', { lang: 'javascript', collapse: false }).findings.filter((f) => f.rule === 'var').map((f) => f.line).join() === '1,2', 'collapse: false keeps each line');
 // keys never shown as written
 ok(!JSON.stringify(ruleReview('const token = "ghp_abcdefghijklmnopqrstuvwxyz0123";')).includes('ghp_abcdef'), 'a key in a finding is masked');
+// the pull-request review skips tests in every language the repo writes (their fixtures are bad code on purpose), and nothing else by accident
+for (const f of ['tools/ouroboros_test.py', 'tools/void_lens_test.py', 'tools/memory.test.mjs', 'tools/test_void.mjs', 'tools/skills_test.mjs', 'tools/tictactoe.test.mjs', 'tools/sub/helper_test.js', 'tools/test_glyphs.mjs'])
+  ok(skippedInReview(f), 'a test file is not reviewed: ' + f);
+for (const f of ['tools/ouroboros.py', 'tools/void_lens.py', 'void-live-deploy/lib/memory-core.js', 'tools/latest.py', 'tools/contest.mjs', 'tools/testing_notes.py', 'void-live-deploy/functions/api/memory.js'])
+  ok(!skippedInReview(f), 'real code is still reviewed: ' + f);
 console.log(bad ? bad + ' failed' : 'review: all passed');
 process.exit(bad ? 1 : 0);

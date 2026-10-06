@@ -32,8 +32,11 @@ export function makeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   for (const [re, id, label, sub] of TOOLS) if (re.test(t)) return { kind: 'tool', id, label, sub };
   let m = t.match(/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|build|create|start|open|give\s+me|code)\s+(?:me\s+)?(?:a\s+|an\s+)?(?:game\s+of\s+|round\s+of\s+)?(.+?)(?:\s+game|\s+app)?$/);
-  if (m) for (const [re, id, label] of GAMES) if (re.test(m[1])) return { kind: 'game', id, label };
-  for (const [re, id, label] of GAMES) if (re.test(t)) return { kind: 'game', id, label }; // just "connect 4"
+  if (m) for (const [re, id, label] of GAMES) {
+    if (id === 'tictactoe' && !/^(?:make|build|create|give me|code)\b/.test(t)) continue;
+    if (re.test(m[1])) return { kind: 'game', id, label };
+  }
+  for (const [re, id, label] of GAMES) if (id !== 'tictactoe' && re.test(t)) return { kind: 'game', id, label }; // bare tic-tac-toe is the tictactoe skill
   m = t.match(/^(?:make|build|create|show|render|draw|give|materiali[sz]e|summon|spawn)?\s*(?:me\s+)?(?:a\s+|an\s+)?(?:([a-z]+)\s+)?(?:3d|3-d|three[\s-]?d)\s+(?:([a-z]+)\s+)?([a-z]+)$/);
   if (m && SHAPES[m[3]]) { const c = [m[1], m[2]].find((w) => w && COLORS[w]); return { kind: '3d', shape: SHAPES[m[3]], color: c || null, word: m[3] }; }
   return null;
