@@ -76,8 +76,20 @@
   {
    "state": "shipped",
    "date": "2026-10-03",
+   "ask": "make my void light",
+   "from": "board later, light look"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
    "ask": "what did you do today",
    "from": "plan item 8, ledger as a skill"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "dismiss this",
+   "from": "figures-first, send it away"
   },
   {
    "state": "shipped",
@@ -88,43 +100,31 @@
  ],
  "open": [
   {
-   "state": "open",
-   "date": "2026-10-03",
-   "ask": "make my void light",
-   "from": "board later, light look"
-  },
-  {
-   "state": "open",
-   "date": "2026-10-03",
-   "ask": "dismiss this",
-   "from": "figures-first, send it away"
-  },
-  {
-   "state": "open",
+   "state": "building",
    "date": "2026-10-04",
    "ask": "download the print file",
    "from": "export-to-print, file stays valid offline"
   },
   {
-   "state": "open",
+   "state": "building",
    "date": "2026-10-04",
    "ask": "cartoon version of a hard subject",
    "from": "two-part summons, funny not grim"
   },
   {
-   "state": "open",
+   "state": "building",
    "date": "2026-10-04",
    "ask": "zoom in on the figure",
    "from": "collector detail, progressive"
   },
   {
-   "state": "open",
+   "state": "building",
    "date": "2026-10-04",
    "ask": "what can this figure do",
    "from": "figure stays on brand"
   },
   {
-   "state": "open",
+   "state": "building",
    "date": "2026-10-04",
    "ask": "show the countdown",
    "from": "days until a date"
