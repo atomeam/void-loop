@@ -5546,17 +5546,17 @@ return { ok: true, detail: 'timer-reset' };
     if (!gl) { document.documentElement.classList.add('no-gl'); cv.remove(); }
     else {
       const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-      const fs = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform vec3 g;uniform vec3 b;
+      const fs = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform vec3 g;uniform vec3 b;uniform vec2 pl;uniform float at;
         float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
         float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
         float fb(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
-        void main(){vec2 uv=(gl_FragCoord.xy-.5*r)/r.y;vec2 q=uv+m*.035;
+        void main(){vec2 uv=(gl_FragCoord.xy-.5*r)/r.y;vec2 q=uv+m*.035;vec2 dl=uv-pl;q-=dl*exp(-dot(dl,dl)*3.)*at*.06;
           float T=t*.018;float f1=fb(q*1.6+vec2(T,-T*.6));float f2=fb(q*2.4+f1*1.3-vec2(T*.7,T));
           float neb=smoothstep(.3,.95,f2)*.85;
           vec3 tint=mix(g*2.2+vec3(.035,.02,.07),vec3(.05,.07,.16),.35);vec3 tint2=mix(g*1.6+vec3(.07,.02,.05),vec3(.12,.04,.14),.5);
           vec3 c=b+tint*neb+tint2*pow(f1,3.)*.35;
           float d=length(uv);float ring=exp(-pow((d-.34-sin(t*.21)*.006)*38.,2.))*.035;c+=vec3(.55,.65,1.)*ring*(.6+.4*sin(t*.3));
-          c*=1.-smoothstep(.25,1.15,d)*.55;
+          c*=(1.-smoothstep(.25,1.15,d)*.55)*(1.-at*.25)+vec3(.0,.01,.03)*at*exp(-dot(dl,dl)*6.);
           float s=step(.9985,h(floor(gl_FragCoord.xy*.5)))*(.35+.65*n(gl_FragCoord.xy*.02+t*.1));c+=s*.35;
           gl_FragColor=vec4(c,1.);}`;
       const sh = (tp, src) => { const s = gl.createShader(tp); gl.shaderSource(s, src); gl.compileShader(s); return s; };
@@ -5566,9 +5566,9 @@ return { ok: true, detail: 'timer-reset' };
         gl.useProgram(pr);
         const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
         const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-        const U = (k) => gl.getUniformLocation(pr, k); const uR = U('r'), uT = U('t'), uM = U('m'), uG = U('g'), uB = U('b');
+        const U = (k) => gl.getUniformLocation(pr, k); const uR = U('r'), uT = U('t'), uM = U('m'), uG = U('g'), uB = U('b'), uPl = U('pl'), uAt = U('at');
         const hex = (v, d) => { const m = /#?([0-9a-f]{6})/i.exec(v || '') || [0, d]; const x = parseInt(m[1], 16); return [(x >> 16 & 255) / 255, (x >> 8 & 255) / 255, (x & 255) / 255]; };
-        let mx = 0, my = 0, tx = 0, ty = 0, last = 0, raf = 0;
+        let mx = 0, my = 0, tx = 0, ty = 0, last = 0, raf = 0, att = 0;
         const scale = Math.min(1, 0.6 / Math.max(1, devicePixelRatio / 1.5));
         const size = () => { cv.width = Math.round(innerWidth * scale); cv.height = Math.round(innerHeight * scale); gl.viewport(0, 0, cv.width, cv.height); };
         size(); addEventListener('resize', size);
@@ -5577,6 +5577,9 @@ return { ok: true, detail: 'timer-reset' };
           raf = 0;
           if (now - last > 33 || reduce) {
             last = now; mx += (tx - mx) * .04; my += (ty - my) * .04;
+            const inp = document.getElementById('input'), rw = document.getElementById('row'); att += ((inp && document.activeElement === inp ? 1 : 0) - att) * .05;
+            if (rw) { const bb = rw.getBoundingClientRect(); gl.uniform2f(uPl, ((bb.left + bb.width / 2) - innerWidth / 2) / innerHeight, (innerHeight / 2 - (bb.top + bb.height / 2)) / innerHeight); }
+            gl.uniform1f(uAt, reduce ? 0 : att);
             const cs = getComputedStyle(document.documentElement);
             gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, reduce ? 40 : now / 1000); gl.uniform2f(uM, mx, my);
             gl.uniform3fv(uG, hex(cs.getPropertyValue('--void-glow'), '0b0b10')); gl.uniform3fv(uB, hex(cs.getPropertyValue('--void-bg'), '050505'));
