@@ -20,8 +20,8 @@ New ideas land here in batches. A run may build any open row. Shipped rows stay,
 | shipped d40bd25 | 2026-10-03 | what did you do today | plan item 8, ledger as a skill (correction: row was stuck "open"; wantsToday/showToday already shipped) |
 | shipped 4ee2383 | 2026-10-03 | dismiss this | figures-first, send it away (skill on main at 4ee2383) |
 | shipped 3b6bbea | 2026-10-03 | a figure that sits on the chair | figures-first, use what is already there (correction: row was stuck "open"; Motelet's whole personality is "it sits whenever it finds a chair", same commit as "spin the figure") |
-| building | 2026-10-04 | download the print file | export-to-print, file stays valid offline |
-| building | 2026-10-04 | cartoon version of a hard subject | two-part summons, funny not grim |
-| building | 2026-10-04 | zoom in on the figure | collector detail, progressive |
-| building | 2026-10-04 | what can this figure do | figure stays on brand |
-| building | 2026-10-04 | show the countdown | days until a date |
+| shipped 7293ca7 | 2026-10-04 | download the print file | export-to-print, file stays valid offline (skill on main at 7293ca7) |
+| shipped f249d1a | 2026-10-04 | cartoon version of a hard subject | two-part summons, funny not grim (skill on main at f249d1a) |
+| shipped 6af476e | 2026-10-04 | zoom in on the figure | collector detail, progressive (skill on main at 6af476e) |
+| shipped 231840b | 2026-10-04 | what can this figure do | figure stays on brand (skill on main at 231840b) |
+| shipped 4f5f122 | 2026-10-04 | show the countdown | days until a date (skill on main at 4f5f122) |
