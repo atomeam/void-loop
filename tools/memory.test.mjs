@@ -152,3 +152,15 @@ test('organize: topics group projects by shared tech (file types ignored); relat
   assert.equal((await get('related=nope')).status, 404);
   assert.equal((await call(api.onRequestGet, env, { url: 'https://x/api/memory?view=topics', auth: false })).status, 401);
 });
+
+import { LIMITS, guard } from '../void-live-deploy/lib/guard.js';
+import { MAX_BODY } from '../void-live-deploy/lib/memory-core.js';
+test('the guard lets a full-size push through: /api/memory has its own limit, at least as big as the body the route accepts', async () => {
+  assert.ok(LIMITS.memory, 'without an entry the guard falls back to a 16 KB cap and refuses real pushes with 413');
+  assert.ok(LIMITS.memory.body >= MAX_BODY, `guard body cap ${LIMITS.memory.body} < route cap ${MAX_BODY}`);
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const big = { records: Array.from({ length: 12 }, (_, i) => rec({ id: 'p' + i, body: 'x'.repeat(16000) })) }; // ~190 KB, what ouroboros sends in one request
+  const res = await guard({ env, request: new Request('https://x/api/memory', { method: 'POST', headers: { authorization: 'Bearer ' + TOKEN, 'content-type': 'application/json' }, body: JSON.stringify(big) }), next: (req) => api.onRequestPost({ env, request: req }) });
+  assert.equal(res.status, 200);
+  assert.deepEqual(await res.json(), { saved: 12, rejected: 0 });
+});
