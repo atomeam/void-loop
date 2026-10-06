@@ -84,7 +84,7 @@ def last_commit_age_days(repo: Path) -> float | None:
         if r.returncode == 0 and r.stdout.strip():
             return (time.time() - int(r.stdout.strip())) / 86400
     except (OSError, ValueError, subprocess.SubprocessError):
-        pass
+        return None  # git missing or unreadable: the age is unknown, and the callers treat None as "unknown"
     return None
 
 

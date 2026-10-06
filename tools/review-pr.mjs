@@ -4,7 +4,7 @@
 // --deep URL also asks Void's answer engine (POST URL with mode 'review') for a read of the added code; it is best-effort.
 // Prints markdown (the PR comment) or JSON. Exit code is always 0: the review informs, CI decides.
 import { execFileSync } from 'node:child_process';
-import { ruleReview, langOf } from '../void-live-deploy/lib/code-review.js';
+import { ruleReview, langOf, skippedInReview } from '../void-live-deploy/lib/code-review.js';
 import { redact } from '../void-live-deploy/lib/automation-fix.js';
 
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -14,7 +14,6 @@ const git = (...a) => execFileSync('git', a, { encoding: 'utf8', maxBuffer: 64 <
 const LANG = { js: 'javascript', mjs: 'javascript', cjs: 'javascript', jsx: 'javascript', ts: 'typescript', tsx: 'typescript', py: 'python', sh: 'shell', bash: 'shell', sql: 'sql', go: 'go', rs: 'rust', java: 'java', cs: 'csharp', c: 'c', h: 'c', cpp: 'c', php: 'php', rb: 'ruby', html: 'javascript', htm: 'javascript', yml: 'yaml', yaml: 'yaml' };
 // generated or data files: the same lines in three copies (void.html is copied to the deploy folder) are reviewed once
 // tests are skipped too: their fixtures are bad code on purpose. A file holding "void-review: skip-file" is skipped (the rules themselves).
-const SKIP = /^(?:void-live-deploy\/(?:index|void)\.html|tools\/(?:bench|grown|fringe)(?:\.best)?\.json|.*\.(?:json|md|txt|lock|svg|png|jpg|gif|ico|woff2?)|(?:.*\/)?(?:test_[^/]*|[^/]*\.test\.m?js))$/;
 
 // added line numbers per file, from a zero-context diff
 function added() {
@@ -30,7 +29,7 @@ function added() {
 
 const files = added(), report = [];
 for (const [file, lines] of Object.entries(files)) {
-  if (SKIP.test(file) || !lines.size) continue;
+  if (skippedInReview(file) || !lines.size) continue;
   const ext = (file.match(/\.([\w]+)$/) || [])[1] || '', lang = LANG[ext.toLowerCase()];
   if (!lang || lang === 'yaml') continue;
   let text = ''; try { text = git('show', head + ':' + file); } catch (_) { continue; }

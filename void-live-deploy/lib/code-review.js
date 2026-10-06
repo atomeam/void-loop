@@ -187,6 +187,10 @@ function hasSecret(r, lang) {
   return /\b[a-z][\w+.-]*:\/\/[^\s:@/'"`]+:[^\s@/'"`$]{3,}@/.test(r) && !/:\$\{|:\{\{/.test(r);
 }
 const ORDER = { bug: 0, risk: 1, style: 2, note: 3 };
+// Files a pull-request review does not read: generated or copied files, data, and tests (their fixtures are bad code on purpose:
+// planted fake keys, planted TODOs). Test names in every language this repo writes: test_*, *_test.py|js|mjs, *.test.js|mjs.
+export const REVIEW_SKIP = /^(?:void-live-deploy\/(?:index|void)\.html|tools\/(?:bench|grown|fringe)(?:\.best)?\.json|.*\.(?:json|md|txt|lock|svg|png|jpg|gif|ico|woff2?)|(?:.*\/)?(?:test_[^/]*|[^/]*_test\.(?:py|m?js)|[^/]*\.test\.m?js))$/;
+export const skippedInReview = (path) => REVIEW_SKIP.test(String(path || ''));
 export const KIND_WORD = { bug: 'bug', risk: 'risk', style: 'style', note: 'note' };
 
 // The quick checks: [{ line, kind, rule, message, text }] most serious first, at most `max`. `text` is the line as written, keys masked.
