@@ -990,7 +990,7 @@ try {
   const tailOk = await F.p.$eval('.vpage.on', (e) => { const t = e.querySelector('.vtail'); return !t || (e.lastElementChild === t && e.innerText.indexOf('Likely cause') < e.innerText.indexOf('From A-to-Mind')); }).catch(() => false);
   const req = fixCalls[fc0];
   check('fix: "my Make scenario is broken" asks for what it shows (no product line); the pasted error keeps its lines and gets the concrete fix; any product line comes after it',
-    /fix it as it is/.test(askPg) && !askTail && /↑/.test(flatVal) && req && req.mode === 'fix' && req.ask === 'my Make scenario is broken' && req.details === pasted && /Likely cause/.test(fixPg) && /Connections/.test(fixPg) && /Reauthorize/.test(fixPg) && tailOk && F.errors.length === 0,
+    /fix it as it is/.test(askPg) && !askTail && /⏎/.test(flatVal) && req && req.mode === 'fix' && req.ask === 'my Make scenario is broken' && req.details === pasted && /Likely cause/.test(fixPg) && /Connections/.test(fixPg) && /Reauthorize/.test(fixPg) && tailOk && F.errors.length === 0,
     [askPg.slice(0, 80), flatVal.slice(0, 60), JSON.stringify(req || {}).slice(0, 160), fixAll.slice(0, 200), F.errors.join(' | ')].join(' || '));
   const fc1 = fixCalls.length;
   await F.ask('my n8n webhook returns 404 when Stripe calls https://atom.app.n8n.cloud/webhook-test/orders', 0);
