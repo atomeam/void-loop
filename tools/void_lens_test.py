@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Tests for tools/void_lens.py on a fake home folder. Run: python tools/void_lens_test.py"""
-import hashlib, json, os, subprocess, sys, tempfile, time, unittest
+import hashlib, json, os, subprocess, sys, tempfile, time, unittest, unittest.mock
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
@@ -88,6 +88,21 @@ class Lens(unittest.TestCase):
         time.sleep(0.01)
         d = void_lens.scan(self.home, 90, b, 15)
         self.assertTrue(d["partial"])
+
+    def test_unreadable_folders_are_counted_and_the_report_says_the_sizes_are_a_lower_bound(self):
+        locked = str(self.home / "dev" / "oldproj" / "node_modules")
+        real = os.scandir
+        def flaky(path):
+            if str(path) == locked:
+                raise PermissionError(13, "denied", locked)
+            return real(path)
+        with unittest.mock.patch.object(void_lens.os, "scandir", flaky):
+            d = self.scan()
+        self.assertGreaterEqual(d["unreadable"], 1)
+        self.assertIn("could not be read", void_lens.report_md(d))
+        self.assertIn("lower bound", void_lens.report_md(d))
+        self.assertEqual(self.scan()["unreadable"], 0)
+        self.assertNotIn("could not be read", void_lens.report_md(self.scan()))
 
     def test_bad_root(self):
         self.assertEqual(void_lens.main(["--root", str(self.home / "nope")]), 2)

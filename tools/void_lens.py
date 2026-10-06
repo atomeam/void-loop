@@ -41,6 +41,7 @@ class Budget:
     def __init__(self, seconds: float):
         self.end = time.monotonic() + seconds
         self.hit = False
+        self.skipped = 0  # folders or files that could not be read (permissions, files in use): the numbers are then a lower bound
 
     def spent(self) -> bool:
         if time.monotonic() > self.end:
@@ -66,8 +67,10 @@ def dir_size(path: Path, budget: Budget) -> int:
                         else:
                             total += e.stat(follow_symlinks=False).st_size
                     except OSError:
+                        budget.skipped += 1
                         continue
         except OSError:
+            budget.skipped += 1
             continue
     return total
 
@@ -102,6 +105,7 @@ def walk_projects(root: Path, budget: Budget):
         try:
             entries = list(os.scandir(cur))
         except OSError:
+            budget.skipped += 1
             continue
         names = {e.name for e in entries}
         if ".git" in names:
@@ -163,7 +167,7 @@ def find_vhdx(home: Path, budget: Budget) -> list[tuple[Path, int]]:
                     try:
                         out.append((p, p.stat().st_size))
                     except OSError:
-                        pass
+                        budget.skipped += 1
     return out
 
 
@@ -217,6 +221,7 @@ def scan(root: Path, days: int, budget: Budget, top: int) -> dict:
         "root": str(root),
         "days": days,
         "partial": budget.hit,
+        "unreadable": budget.skipped,
         "caches": caches,
         "node_modules": {"all": len(nm_rows), "total": sum(r["bytes"] for r in nm_rows), "stale": stale(nm_rows)[:top], "stale_total": sum(r["bytes"] for r in stale(nm_rows))},
         "venvs": {"all": len(venv_rows), "total": sum(r["bytes"] for r in venv_rows), "stale": stale(venv_rows)[:top], "stale_total": sum(r["bytes"] for r in stale(venv_rows))},
@@ -230,6 +235,8 @@ def report_md(d: dict) -> str:
     L = ["# void-lens report", "", f"Scanned `{d['root']}`. Read-only: nothing was deleted, moved or uploaded.", ""]
     if d["partial"]:
         L += ["> The scan hit its time limit, so these numbers are a lower bound. Re-run with `--max-seconds` set higher, or scan one folder with `--root`.", ""]
+    if d.get("unreadable"):
+        L += [f"> {d['unreadable']} folder(s) or file(s) could not be read (permissions, or in use), so the sizes below are a lower bound.", ""]
     cache_total = sum(c["bytes"] for c in d["caches"])
     reclaim = cache_total + d["node_modules"]["stale_total"] + d["venvs"]["stale_total"]
     L += [f"**Safe to rebuild: about {human(reclaim)}** (caches, plus dependency folders of projects idle for {d['days']}+ days).", ""]
