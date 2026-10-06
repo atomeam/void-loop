@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · the blink (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#screen{height:140px;display:flex;align-items:center;justify-content:center;font-size:64px;border:1px solid rgba(255,255,255,.1);border-radius:12px}
+#state,#score{white-space:pre-line}
+#bars{display:flex;gap:6px;align-items:flex-end;height:90px}
+#bars div{flex:1;background:#7cf;border-radius:4px 4px 0 0;min-height:2px;position:relative}
+#bars span{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:11px;color:#8a8a92}
+</style>
+</head>
+<body>
+<main>
+  <h1>the blink · draft · not published</h1>
+  <p class="note">Letters flash in one spot, about ten a second. Two of them are digits. Type both digits when the stream ends. Most people miss the second digit when it comes a short moment (roughly 0.2 to 0.5 seconds) after the first, but catch it when it comes right after or later. Psychologists call this the "attentional blink" (Raymond, Shapiro and Arnell, 1992), and it has been repeated in many labs. This page keeps your own results by gap, so you can see your own blink. Everything stays in this browser.</p>
+  <div id="screen" aria-hidden="true"></div>
+  <div class="row"><button id="go" type="button">start a trial</button>
+    <form id="ans" class="row" hidden><input id="d" inputmode="numeric" maxlength="2" style="width:5em" aria-label="the two digits you saw" placeholder="e.g. 37"><button type="submit">answer</button></form></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="bars" aria-hidden="true"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.blink.v1',ITEM=100,LAGS=[1,2,3,5,7],st={trials:[]};
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&LAGS.indexOf(t.lag)>=0&&typeof t.t1==='boolean'&&typeof t.t2==='boolean'})}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-600)}))}catch(_){}}
+  var LET='ABCDEFGHJKLMNPRSTUVWXYZ'; // no I or O, which look like 1 and 0
+  function pick(s){return s[Math.floor(Math.random()*s.length)]}
+  // one stream: 7-11 letters before the first digit, the second digit LAG items later, then letters to the end
+  function stream(lag){var pre=7+Math.floor(Math.random()*5),n=pre+lag+6,a=[],d1=pick('23456789'),d2;do{d2=pick('23456789')}while(d2===d1);
+    for(var i=0;i<n;i++){var c;do{c=pick(LET)}while(i&&c===a[i-1]);a.push(c)}a[pre]=d1;a[pre+lag]=d2;return{items:a,d1:d1,d2:d2,lag:lag}}
+  // the gap used least so far, so each gap fills up evenly
+  function nextLag(trials){var c={};LAGS.forEach(function(l){c[l]=0});trials.forEach(function(t){c[t.lag]++});var lo=Math.min.apply(null,LAGS.map(function(l){return c[l]}));return pick(LAGS.filter(function(l){return c[l]===lo}))}
+  // the second digit counts only on trials where the first was seen, which is how the blink is usually measured
+  function mark(s,typed){var got=String(typed||'').replace(/\D/g,'').split('');return{t1:got.indexOf(s.d1)>=0,t2:got.indexOf(s.d2)>=0}}
+  function byLag(trials){return LAGS.map(function(l){var r=trials.filter(function(t){return t.lag===l&&t.t1});return{lag:l,n:r.length,rate:r.length?r.filter(function(t){return t.t2}).length/r.length:null}})}
+  function el(id){return document.getElementById(id)}
+  var cur=null;
+  function run(){var s=stream(nextLag(st.trials)),i=0,S=el('screen');cur=s;el('go').disabled=true;el('state').textContent='';S.textContent='+';
+    setTimeout(function tick(){if(i<s.items.length){S.textContent=s.items[i++];setTimeout(tick,ITEM)}else{S.textContent='';el('ans').hidden=false;el('d').value='';el('d').focus()}},700)}
+  el('go').addEventListener('click',run);
+  el('ans').addEventListener('submit',function(e){e.preventDefault();if(!cur)return;var m=mark(cur,el('d').value);
+    st.trials.push({lag:cur.lag,t1:m.t1,t2:m.t2,at:Date.now()});save();
+    el('state').textContent='the digits were '+cur.d1+' then '+cur.d2+', '+cur.lag+' item'+(cur.lag>1?'s':'')+' ('+cur.lag*ITEM+' ms) apart · '+(m.t1&&m.t2?'you caught both':m.t1?'you missed the second':m.t2?'you missed the first':'you missed both');
+    cur=null;el('ans').hidden=true;el('go').disabled=false;el('go').focus();draw()});
+  function draw(){var b=byLag(st.trials),B=el('bars');B.textContent='';
+    b.forEach(function(x){var d=document.createElement('div');d.style.height=(x.rate==null?0:Math.round(x.rate*100))+'%';var s=document.createElement('span');s.textContent=x.lag*ITEM+'ms';d.appendChild(s);B.appendChild(d)});
+    var few=b.some(function(x){return x.n<6});
+    el('score').textContent=st.trials.length?b.map(function(x){return x.lag*ITEM+' ms gap: '+(x.n?Math.round(x.rate*100)+'% second digit caught ('+x.n+')':'no trials yet')}).join('\n')+(few?'\nabout 6 trials at each gap before the shape means much':''):''}
+  draw();
+  window.__blink={stream:stream,mark:mark,byLag:byLag,nextLag:nextLag,LAGS:LAGS,ITEM:ITEM}; // for checks
+})();
+</script>
+</body>
+</html>

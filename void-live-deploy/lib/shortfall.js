@@ -1,7 +1,7 @@
 // Where the free model fell short (Atom, 2026-09-28): until Void has earned money, it stays on free models and writes down each
 // time it would have used a stronger one. That is the evidence the will weighs when the budget can pay for an upgrade; any
 // real spend still needs a yes on the confirm line. One row per day, place and reason, counted up. No ask text is kept.
-// place: 'answer' | 'fix' | 'will'.  reason: 'free limit' (daily free allocation used up) | 'busy' | 'empty' | 'error'.
+// place: 'answer' | 'fix' | 'review' | 'will'.  reason: 'free limit' (daily free allocation used up) | 'busy' | 'empty' | 'error'.
 const CREATE = 'CREATE TABLE IF NOT EXISTS void_shortfalls (day TEXT NOT NULL, place TEXT NOT NULL, reason TEXT NOT NULL, n INTEGER NOT NULL, last TEXT NOT NULL, PRIMARY KEY (day, place, reason))';
 const BUMP = 'INSERT INTO void_shortfalls (day, place, reason, n, last) VALUES (?, ?, ?, 1, ?) ON CONFLICT(day, place, reason) DO UPDATE SET n = n + 1, last = excluded.last';
 const READ = 'SELECT place, reason, SUM(n) AS n FROM void_shortfalls WHERE day >= ? GROUP BY place, reason';

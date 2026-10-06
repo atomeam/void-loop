@@ -296,7 +296,7 @@ function storeFetch(state) {
   return f;
 }
 // What the page sees: the live store has a new price for the audit and one product Void didn't know about yet.
-const uiStore = { list: STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 32500 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check - A Quick Look At One Workflow', price_cents: 1500, description: 'A quick health check of one workflow.' }]) };
+const uiStore = { list: STORE_PRODUCTS().map((p) => (p.slug === 'full-stack-audit' ? { ...p, price_cents: 32500 } : p)).concat([{ slug: 'zap-health-check', name: 'Zap Health Check — A Quick Look At One Workflow', price_cents: 1500, description: 'A quick health check of one workflow.' }]) };
 const storeEnv = { DB: memoryStoreD1(), GUMROAD_FETCH: storeFetch(uiStore) };
 const catalogHits = [];
 async function catalogRoute(r) {
@@ -439,7 +439,7 @@ try {
     check('calendar: a visitor adds "call Sam next Tuesday at 4", "add dentist to my calendar Oct 12 at 3pm", "put lunch with Ana on my calendar tomorrow at noon"; all saved here and on the stage card; no yes, no server, no Wikipedia',
       agenda.length === 3 && /Call Sam/.test(card) && /dentist/i.test(card) && /Lunch with Ana/i.test(card) && /on your calendar: Call Sam/.test(said) && !netAdds.length && !pageAfterAdds,
       JSON.stringify(agenda.map((e) => e.title)) + ' | ' + said + ' | ' + netAdds.join(',') + ' | page: ' + pageAfterAdds.slice(0, 60) + ' | ' + card.slice(0, 120));
-    check('calendar: "schedule a meeting with Sam" is the owner\'s confirm line (a visitor is told so, nothing saved); "calender" shows one card; the card survives a reload; "remove my calendar" hides it and keeps the events; x removes one and undo brings it back',
+    check('calendar: "schedule a meeting with Sam" is the owner\'s confirm line (a visitor is told so, nothing saved); "calender" shows one card; the card survives a reload; "remove my calendar" hides it and keeps the events; × removes one and undo brings it back',
       /person at the screen/.test(gated) && shown === 1 && /Call Sam/.test(afterReload) && gone === 0 && kept === 3 && afterX === 2 && afterUndo === 3 && !net.some((u) => /wikipedia|miss|answer/.test(u)),
       [gated, shown, afterReload.slice(0, 40), gone, kept, afterX, afterUndo, net.join(',')].join(' | '));
     // the 3D wall calendar: "my calendar" opens it; tap a day, add an event in the editor, rename it; it is saved and on the card
@@ -620,7 +620,7 @@ try {
     await C.ask('world clock', 800); const wc = await C.page(); const rows = await C.p.$$eval('.vpage.on .wrow', (d) => d.length);
     await C.ask('world clock for Paris and Sydney', 1000); const wc2 = await C.page();
     check('worldtime: "world clock" shows Tokyo, London, New York and you, each with its offset; "world clock for Paris and Sydney" shows those',
-      rows === 4 && /Tokyo/.test(wc) && /London/.test(wc) && /New York/.test(wc) && /You/.test(wc) && /UTC[+-]\d/.test(wc) && /Paris/.test(wc2) && /Sydney/.test(wc2) && !/Tokyo/.test(wc2),
+      rows === 4 && /Tokyo/.test(wc) && /London/.test(wc) && /New York/.test(wc) && /You/.test(wc) && /UTC[+−]\d/.test(wc) && /Paris/.test(wc2) && /Sydney/.test(wc2) && !/Tokyo/.test(wc2),
       [rows, wc.slice(0, 120), wc2.slice(0, 80)].join(' | '));
     await C.ask('good morning in French', 1000); const tr = await C.page();
     await C.p.click('.vpage.on .tr-copy'); await C.p.waitForTimeout(250);
@@ -1515,8 +1515,6 @@ try {
     check('shortfalls: the will sees them as evidence for a stronger model (+1 per 5, capped) and only there; the owner sees them with the earnings',
       /2\. \[upgrade myself, weight 28, costs \$10\/month, affordable\] Answer and fix with a stronger model — better fixes; the free model fell short 3 times in 7 days \(2 will free limit, 1 will busy\)/.test(p2)
       && /3\. \[upgrade myself, weight 12,[^\n]*\] Move to a dedicated GPU — speed$/m.test(p2) && e2.shortfalls_7d && e2.shortfalls_7d.total === 3,
-      /2\. \[upgrade myself, weight 28, costs \$10\/month, affordable\] Answer and fix with a stronger model — better fixes; the free model fell short 3 times in 7 days \(2 will free limit, 1 will busy\)/.test(p2)
-      && /3\. \[upgrade myself, weight 12,[^\n]*\] Move to a dedicated GPU — speed$/m.test(p2) && e2.shortfalls_7d && e2.shortfalls_7d.total === 3,
       p2.split('\n').slice(2, 5).join(' / ').slice(0, 300) + ' | ' + JSON.stringify(e2.shortfalls_7d)); }
 
   const brokenPing = await ping(vmSale('s9'), { env: { ...pEnv, DB: memoryStoreD1({ broken: true }) } });
@@ -1828,7 +1826,7 @@ try {
   const wt = mods.find((s) => s.name === 'worldtime');
   const wtHits = (a) => !!wt && wt.match(a.toLowerCase(), a);
   // The item 3 multilingual collision set (domains/void.item3-harness.md): none of it is a world-time ask.
-  const HARNESS = ['¿por qué el cielo es azul?', 'pourquoi le ciel est-il bleu?', 'Warum ist der Himmel blau?', 'bakit asul ang langit?', 'haz el reloj azul', "rends l'horloge bleue", 'Σ╕║Σ╗ÇΣ╣êσñ⌐µÿ»Φô¥τÜä'];
+  const HARNESS = ['¿por qué el cielo es azul?', 'pourquoi le ciel est-il bleu?', 'Warum ist der Himmel blau?', 'bakit asul ang langit?', 'haz el reloj azul', "rends l'horloge bleue", '为什么天是蓝的'];
   const NEAR = ['make a clock', 'make a 5 minute timer', 'what is time'];
   check('worldtime: listed in skills/index.json with examples and near misses; every example routes to worldtime and no other skill claims one',
     !!wt && wt.examples.length >= 4 && (wt.nearMisses || []).length >= 3 && wt.examples.every((e) => firstSkill(e) === 'worldtime' && mods.every((s) => s === wt || !s.match(e.toLowerCase(), e))),
@@ -2070,13 +2068,12 @@ try {
 
   const othMod = nsMods.find((s) => s.name === 'othello');
   const othApi = othMod && await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
-  const opened = othApi && othApi.createOthelloState();
-  const init = opened && opened.board;
-  const midFlips = init && othApi.flipsFor(init, 19, 1); // (2,3) flips (3,3)=white
-  const v1 = init && othApi.legalMoves(init, 1);
-  const v2 = init && othApi.legalMoves(init, 2);
-  const cnt = init && othApi.countDiscs(init);
-  const ai = init && othApi.voidMove(init);
+  const init = othApi && othApi.createOthelloState().board;
+  const midFlips = othApi && othApi.flipsFor(init, 19, 1); // (2,3) flips (3,3)=white
+  const v1 = othApi && othApi.legalMoves(init, 1);
+  const v2 = othApi && othApi.legalMoves(init, 2);
+  const cnt = othApi && othApi.countDiscs(init);
+  const ai = othApi && othApi.voidMove(init, 2);
   check('othello: listed with examples and near misses; examples route only to it; engine flips, valid moves, counts, and AI work',
     !!othMod && othMod.examples.length >= 4 && (othMod.nearMisses || []).length >= 3
       && othMod.examples.every((e) => firstNs(e) === 'othello') && othMod.nearMisses.every((e) => firstNs(e) !== 'othello')
@@ -2087,7 +2084,6 @@ try {
       && cnt && cnt.black === 2 && cnt.white === 2
       && typeof ai === 'number' && ai >= 0 && ai < 64 && v2.includes(ai),
     othMod ? othMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing othello');
-
 
   // outcome card: the count is a stage thing now (not a popup page) — it keeps the right day count, copies as
   // plain text (stageApi.addCopy, reused rather than a one-off button), and survives a reload like any other thing
@@ -2282,8 +2278,6 @@ try {
     const wikiPerson = {
       type: 'standard', title: 'Marie Curie', description: 'Polish-French physicist and chemist (1867–1934)',
       extract: 'Marie Skłodowska Curie was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.',
-      type: 'standard', title: 'Marie Curie', description: 'Polish-French physicist and chemist (1867–1934)',
-      extract: 'Marie Sk┼éodowska Curie was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.',
       content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Marie_Curie' } },
       timestamp: '2026-01-01T00:00:00Z',
     };
