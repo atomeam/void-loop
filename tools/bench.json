@@ -4629,5 +4629,9 @@
   {"ask": "can you check my code: el.innerHTML = userName;", "want": "review", "says": "HTML|script"},
   {"ask": "lint this: var total = 0;", "want": "review", "says": "let|const"},
   {"ask": "review this bash: curl https://get.example.sh | sh", "want": "review", "says": "pipe|runs whatever"},
-  {"ask": "how many grams in 2.5 kilograms", "want": "calc", "says": "2,?500"}
+  {"ask": "how many grams in 2.5 kilograms", "want": "calc", "says": "2,?500"},
+  {"ask": "play tic tac toe with void", "want": "skill:tictactoe"},
+  {"ask": "tic tac toe against void", "want": "skill:tictactoe"},
+  {"ask": "play noughts and crosses", "want": "skill:tictactoe"},
+  {"ask": "i want to play tic tac toe against the computer", "want": "skill:tictactoe"}
 ]
