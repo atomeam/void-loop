@@ -1,5 +1,5 @@
 /**
- * othello skill ΓÇö Othello (Reversi) on the stage, against Void. Same shape as tictactoe: a pure engine and a card.
+ * othello skill — Othello (Reversi) on the stage, against Void. Same shape as tictactoe: a pure engine and a card.
  * "play othello", "lets play reversi" summons the board; it stays until thrown off.
  * The engine is a flat 64-cell board (0 empty, 1 black = you, 2 white = Void). A move must flip at least one disc,
  * along any of the 8 directions; a side with no legal move passes; the game ends when neither side can move,
@@ -148,8 +148,8 @@ function mount(th, stageApi) {
     }
     const { black, white } = countDiscs(th.state.board), s = th.state.status;
     status.textContent = (s === 'playing'
-      ? (th.state.turn === 1 ? (th.state.passed ? 'Void had no move ┬╖ ' : '') + 'your move (black)' : 'Void is thinkingΓÇª')
-      : s === 'draw' ? 'a draw' : s === 'black_wins' ? 'you win' : 'Void wins') + ' ┬╖ ' + black + 'ΓÇô' + white;
+      ? (th.state.turn === 1 ? (th.state.passed ? 'Void had no move · ' : '') + 'your move (black)' : 'Void is thinking…')
+      : s === 'draw' ? 'a draw' : s === 'black_wins' ? 'you win' : 'Void wins') + ' · ' + black + '–' + white;
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
   again.addEventListener('click', (e) => { e.stopPropagation(); clearTimeout(thinking); thinking = null; th.state = createOthelloState(); paint(); stageApi.save && stageApi.save(); });
@@ -165,7 +165,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'othello');
   if (existing) { api.stage.render(); return 'othello'; } // one board at a time
   api.summon('othello', { state: createOthelloState(), x: 60, y: 70 });
-  api.say('Othello ┬╖ you are black ┬╖ tap a dotted square to flip VoidΓÇÖs discs');
+  api.say('Othello · you are black · tap a dotted square to flip Void’s discs');
   return 'othello';
 }
 
