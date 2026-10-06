@@ -205,8 +205,9 @@ export function ruleReview(code, opts = {}) {
       if (!(langs.includes('*') || langs.includes(as))) continue;
       if (!test(m, r, ctx)) continue;
       const key = id + ':' + i; if (seen.has(key)) continue; seen.add(key);
-      // the same style point on many lines is said once, with the count
-      const same = found.find((f) => f.rule === id && (kind === 'style' || kind === 'note'));
+      // the same style point on many lines is said once, with the count (opts.collapse === false keeps each line: the PR review
+      // filters to added lines afterwards, so a first hit on an old line must not hide the new ones)
+      const same = opts.collapse !== false && found.find((f) => f.rule === id && (kind === 'style' || kind === 'note'));
       if (same) { same.also = (same.also || 0) + 1; continue; }
       found.push({ line: i + 1, kind, rule: id, message, text: redact(r.trim()).slice(0, 160) });
     }
@@ -227,9 +228,8 @@ export function autoFix(code, opts = {}) {
     const note = (rule, what) => changes.push({ line: out.length + 1, rule, what });
     if (JS.includes(lang)) {
       if (/^\s*debugger\s*;?\s*$/.test(m)) { note('debugger', 'removed the debugger line'); continue; }
-      if (/[^=!<>]==[^=]|!=[^=]/.test(m) && !/[=!]=\s*null\b|\bnull\s*[=!]=[^=]/.test(m)) { r = at(r, m, /(?<=[^=!<>])==(?=[^=])|!=(?=[^=])/g, (t) => t + '='); if (r !== before) note('loose-equality', '== → === (exact comparison)'); }
-      if (/^\s*var\s+\w/.test(m)) { const b = r; r = r.replace(/^(\s*)var(\s+)/, '$1let$2'); if (r !== b) note('var', 'var → let'); }
-      if (/\bparseInt\s*\(\s*[^,()]+\)/.test(m)) { const b = r; r = at(r, mask(r, lang), /\bparseInt\s*\(\s*[^,()]+\)/g, (t) => t.replace(/\s*\)$/, ', 10)')); if (r !== b) note('parseint-radix', 'parseInt(s) → parseInt(s, 10)'); }
+      // == → ===, var → let and a parseInt radix stay warnings only: each can change what working code does
+      // ("5" == 5 is true, a var used after its block, parseInt("0x10") is 16), and this version promises it doesn't
     }
     if (lang === 'python') {
       if (/[=!]=\s*None\b/.test(m)) { const b = r; r = at(r, m, /==\s*None\b|!=\s*None\b/g, (t) => t.startsWith('!') ? 'is not None' : 'is None'); if (r !== b) note('eq-none', '== None → is None'); }

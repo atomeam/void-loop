@@ -62,12 +62,15 @@ ok(rules('export STRIPE_SECRET_KEY=abcd1234efgh5678', 'shell').includes('hardcod
 ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').includes('hardcoded-secret@1'), 'a password in a URL');
 // fixes Void makes by itself
 const fx = (c, lang) => autoFix(c, lang ? { lang } : {}).code;
-ok(fx('if (a == b && c != "x == y") { var n = parseInt(s); }', 'javascript') === 'if (a === b && c !== "x == y") { var n = parseInt(s, 10); }', 'js fixes leave strings alone: ' + fx('if (a == b && c != "x == y") { var n = parseInt(s); }', 'javascript'));
-ok(fx('var x = 1;\nif (x == null) go();\ndebugger;', 'javascript') === 'let x = 1;\nif (x == null) go();', 'var, == null kept, debugger removed: ' + JSON.stringify(fx('var x = 1;\nif (x == null) go();\ndebugger;', 'javascript')));
+ok(fx('if (a == b) { var n = parseInt(s); }', 'javascript') === 'if (a == b) { var n = parseInt(s); }', 'js: == / var / parseInt stay warnings, never rewritten ("5" == 5, a var used after its block, parseInt("0x10"))');
+ok(fx('var x = 1;\nif (x == null) go();\ndebugger;', 'javascript') === 'var x = 1;\nif (x == null) go();', 'only the debugger line goes: ' + JSON.stringify(fx('var x = 1;\nif (x == null) go();\ndebugger;', 'javascript')));
 ok(fx('def add(x, items=[], seen={}):\n    items.append(x)\n    return items', 'python') === 'def add(x, items=None, seen=None):\n    items = [] if items is None else items\n    seen = {} if seen is None else seen\n    items.append(x)\n    return items', 'mutable default: ' + JSON.stringify(fx('def add(x, items=[], seen={}):\n    items.append(x)\n    return items', 'python')));
 ok(fx('try:\n    go()\nexcept:\n    log()\nif x == None or y != None:\n    d = yaml.load(f)', 'python') === 'try:\n    go()\nexcept Exception:\n    log()\nif x is None or y is not None:\n    d = yaml.safe_load(f)', 'python fixes');
 ok(fx('rm -rf $DIR/', 'shell') === 'rm -rf "${DIR:?}"/', 'rm guard: ' + fx('rm -rf $DIR/', 'shell'));
 ok(autoFix('const a = 1;', { lang: 'javascript' }).changes.length === 0, 'clean code unchanged');
+// repeats: said once with a count, unless collapse is off (the PR review needs every line)
+ok(ruleReview('var a = 1;\nvar b = 2;', { lang: 'javascript' }).findings.filter((f) => f.rule === 'var').length === 1, 'repeats collapse by default');
+ok(ruleReview('var a = 1;\nvar b = 2;', { lang: 'javascript', collapse: false }).findings.filter((f) => f.rule === 'var').map((f) => f.line).join() === '1,2', 'collapse: false keeps each line');
 // keys never shown as written
 ok(!JSON.stringify(ruleReview('const token = "ghp_abcdefghijklmnopqrstuvwxyz0123";')).includes('ghp_abcdef'), 'a key in a finding is masked');
 console.log(bad ? bad + ' failed' : 'review: all passed');

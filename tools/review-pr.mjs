@@ -35,10 +35,9 @@ for (const [file, lines] of Object.entries(files)) {
   if (!lang || lang === 'yaml') continue;
   let text = ''; try { text = git('show', head + ':' + file); } catch (_) { continue; }
   if (text.length > 2e6 || /void-review: skip-file/.test(text)) continue;
-  const res = ruleReview(text, { lang, max: 400 });
-  // style points are kept only when they're on added lines; the count of "more like it" is recounted for added lines only
-  const mine = res.findings.filter((f) => lines.has(f.line));
-  for (const f of mine) report.push({ file, ...f, also: undefined });
+  // every line's findings (no collapsing of repeats), then only the ones on lines this PR adds
+  const res = ruleReview(text, { lang, max: 5000, collapse: false });
+  for (const f of res.findings.filter((f) => lines.has(f.line))) report.push({ file, ...f });
 }
 const ORDER = { bug: 0, risk: 1, style: 2, note: 3 };
 report.sort((a, b) => ORDER[a.kind] - ORDER[b.kind] || a.file.localeCompare(b.file) || a.line - b.line);
