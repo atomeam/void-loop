@@ -1,0 +1,190 @@
+#!/usr/bin/env python3
+"""Tests for tools/ouroboros.py on a fake machine. Run: python tools/ouroboros_test.py"""
+import contextlib, hashlib, io, json, os, subprocess, sys, tempfile, time, unittest
+from pathlib import Path
+from unittest import mock
+
+HERE = Path(__file__).resolve().parent
+sys.path.insert(0, str(HERE))
+import ouroboros  # noqa: E402
+
+OLD = "2025-01-01T00:00:00"
+SECRET_KEY = "sk-abcdefghijklmnopqrstuvwxyz123456"
+ENV_SECRET = "SECRETVALUE9999"
+
+
+def run_git(repo, *args, date=OLD):
+    env = {**os.environ, "GIT_AUTHOR_DATE": date, "GIT_COMMITTER_DATE": date, "GIT_AUTHOR_NAME": "t", "GIT_AUTHOR_EMAIL": "t@t.io", "GIT_COMMITTER_NAME": "t", "GIT_COMMITTER_EMAIL": "t@t.io"}
+    subprocess.run(["git", "-C", str(repo), *args], check=True, env=env, capture_output=True)
+
+
+def write(p: Path, text="x"):
+    p.parent.mkdir(parents=True, exist_ok=True)
+    p.write_text(text)
+
+
+def commit_all(repo, date=OLD):
+    run_git(repo, "add", "-A", date=date)
+    run_git(repo, "commit", "-q", "-m", "work", "--no-gpg-sign", date=date)
+
+
+def snapshot(root: Path, skip=()):
+    out = {}
+    for p in sorted(root.rglob("*")):
+        if any(s in p.parts for s in skip):
+            continue
+        st = p.lstat()
+        out[str(p)] = (st.st_size, hashlib.sha1(p.read_bytes()).hexdigest() if p.is_file() and not p.is_symlink() else "")
+    return out
+
+
+def call(fn, args):
+    buf = io.StringIO()
+    with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(buf):
+        rc = ouroboros.main([fn, *args])
+    return rc, buf.getvalue()
+
+
+class Ouroboros(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        t = Path(self.tmp.name)
+        self.root, self.out, self.remote, self.outside = t / "home", t / "harvest", t / "remote.git", t / "outside"
+        self.root.mkdir(); self.outside.mkdir()
+        subprocess.run(["git", "init", "-q", "--bare", str(self.remote)], check=True)
+        # A: pushed + clean, secrets everywhere, regenerable node_modules
+        a = self.root / "dev" / "alpha"
+        write(a / "README.md", f"# Alpha\n\nA tiny tool.\napi_key = {SECRET_KEY}\ncontact me@example.com\n")
+        write(a / ".env", f"TOKEN={ENV_SECRET}\n")
+        write(a / "src" / "main.py", "# TODO: handle errors\nprint(1)\n")
+        write(a / "package.json", json.dumps({"name": "alpha", "description": "alpha thing", "dependencies": {"react": "1"}}))
+        write(a / ".gitignore", "node_modules\n.env\n")
+        write(a / "node_modules" / "r" / "i.js", "x" * 4000)
+        run_git(a, "init", "-q"); commit_all(a)
+        run_git(a, "remote", "add", "origin", str(self.remote)); run_git(a, "push", "-q", "origin", "HEAD:refs/heads/main"); run_git(a, "branch", "--set-upstream-to=origin/main") if False else None
+        subprocess.run(["git", "-C", str(a), "branch", "-u", "origin/main"], capture_output=True)
+        # B: no remote, virtualenv + requirements
+        b = self.root / "dev" / "beta"
+        write(b / "requirements.txt", "requests==2\nflask>=1\n"); write(b / ".venv" / "pyvenv.cfg", "home=/x\n"); write(b / ".venv" / "lib" / "a.py", "y" * 3000)
+        write(b / "app.py", "print(2)\n")
+        run_git(b, "init", "-q"); commit_all(b)
+        # C: has remote but uncommitted work
+        c = self.root / "dev" / "gamma"
+        write(c / "g.py", "print(3)\n"); run_git(c, "init", "-q"); commit_all(c)
+        run_git(c, "remote", "add", "origin", str(self.remote)); write(c / "new.py", "unsaved\n")
+        # H: has a remote and is clean, but its commit was never pushed
+        h = self.root / "dev" / "eta"
+        write(h / "h.py", "print(8)\n"); run_git(h, "init", "-q"); commit_all(h); run_git(h, "remote", "add", "origin", str(self.remote))
+        # D: node_modules with no package.json, old mtime, no git
+        d = self.root / "dev" / "delta"
+        write(d / "node_modules" / "z" / "z.js", "z" * 2000); write(d / "notes.txt", "n")
+        old = time.time() - 500 * 86400
+        for p in (d, d / "notes.txt"): os.utime(p, (old, old))
+        # E: fresh project with node_modules
+        e = self.root / "dev" / "fresh"
+        write(e / "package.json", "{}"); write(e / "node_modules" / "q.js", "q" * 1000); write(e / "f.js", "1")
+        run_git(e, "init", "-q"); commit_all(e, date=time.strftime("%Y-%m-%dT%H:%M:%S"))
+        # F: stale project whose node_modules is a symlink to data outside the root
+        f = self.root / "dev" / "linked"
+        write(f / "package.json", "{}"); write(self.outside / "precious.txt", "keep me")
+        (f / "node_modules").symlink_to(self.outside, target_is_directory=True)
+        run_git(f, "init", "-q"); commit_all(f)
+
+    def tearDown(self):
+        self.tmp.cleanup()
+
+    def harvest(self):
+        rc, txt = call("harvest", ["--root", str(self.root), "--out", str(self.out)])
+        self.assertEqual(rc, 0, txt)
+        return json.loads((self.out / "manifest.json").read_text())
+
+    def test_harvest_covers_stale_repos_only_and_classifies_backup(self):
+        m = self.harvest()
+        by = {Path(e["path"]).name: e["state"] for e in m["projects"]}
+        self.assertEqual(by.get("alpha"), "remote-current")
+        self.assertEqual(by.get("beta"), "no-remote")
+        self.assertEqual(by.get("gamma"), "uncommitted-work")
+        self.assertEqual(by.get("eta"), "unpushed-commits")
+        self.assertNotIn("fresh", by)
+
+    def test_no_secret_reaches_any_output(self):
+        self.harvest()
+        blob = "".join(p.read_text() for p in self.out.rglob("*") if p.is_file())
+        for needle in (SECRET_KEY, ENV_SECRET, "me@example.com"):
+            self.assertNotIn(needle, blob)
+        self.assertIn("Alpha", blob)
+        self.assertIn("TODO", blob)
+
+    def test_memory_records_feed_void(self):
+        self.harvest()
+        rows = [json.loads(l) for l in (self.out / "memory.jsonl").read_text().splitlines()]
+        alpha = next(r for r in rows if r["name"] == "alpha")
+        self.assertIn("react", alpha["links"])
+        self.assertEqual(alpha["state"], "remote-current")
+        self.assertTrue(alpha["sha256"])
+
+    def test_sources_never_change_through_harvest_verify_plan_dryrun(self):
+        before = snapshot(self.root)
+        self.harvest()
+        call("verify", ["--out", str(self.out)])
+        call("plan", ["--root", str(self.root), "--out", str(self.out)])
+        call("reclaim", ["--root", str(self.root), "--out", str(self.out)])
+        self.assertEqual(before, snapshot(self.root))
+
+    def test_verify_catches_tampering_and_new_commits(self):
+        self.harvest()
+        rc, txt = call("verify", ["--out", str(self.out)])
+        self.assertEqual(rc, 0, txt)
+        victim = next(self.out.glob("alpha-*/digest.md"))
+        victim.write_text("tampered")
+        rc, txt = call("verify", ["--out", str(self.out)])
+        self.assertEqual(rc, 1)
+        self.assertIn("changed", txt)
+
+    def test_verify_notices_source_moved_on(self):
+        self.harvest()
+        b = self.root / "dev" / "beta"
+        write(b / "more.py", "m"); commit_all(b)
+        rc, txt = call("verify", ["--out", str(self.out)])
+        self.assertEqual(rc, 1)
+        self.assertIn("new commits", txt)
+
+    def test_plan_is_honest_about_whole_projects(self):
+        self.harvest()
+        rc, txt = call("plan", ["--root", str(self.root), "--out", str(self.out)])
+        self.assertEqual(rc, 0)
+        self.assertIn("NOT SAFE: no-remote", txt)
+        self.assertIn("NOT SAFE: uncommitted-work", txt)
+        self.assertIn("a pushed, clean copy exists", txt)
+        self.assertIn("NOT SAFE: unpushed-commits", txt)
+        self.assertIn("NOT auto-freed", txt)
+
+    def test_reclaim_dry_run_deletes_nothing_and_wrong_confirm_deletes_nothing(self):
+        before = snapshot(self.root)
+        call("reclaim", ["--root", str(self.root), "--out", str(self.out)])
+        with mock.patch("builtins.input", return_value="yes"):
+            rc, txt = call("reclaim", ["--root", str(self.root), "--out", str(self.out), "--apply"])
+        self.assertEqual(rc, 1)
+        self.assertEqual(before, snapshot(self.root))
+
+    def test_reclaim_apply_removes_only_regenerable_folders(self):
+        with mock.patch("builtins.input", return_value="DELETE"):
+            rc, txt = call("reclaim", ["--root", str(self.root), "--out", str(self.out), "--apply"])
+        self.assertEqual(rc, 0, txt)
+        dev = self.root / "dev"
+        self.assertFalse((dev / "alpha" / "node_modules").exists())
+        self.assertFalse((dev / "beta" / ".venv").exists())
+        for keep in ((dev / "alpha" / "src" / "main.py"), (dev / "alpha" / ".env"), (dev / "beta" / "app.py"), (dev / "gamma" / "new.py"),
+                     (dev / "delta" / "node_modules" / "z" / "z.js"), (dev / "fresh" / "node_modules" / "q.js"), (self.outside / "precious.txt")):
+            self.assertTrue(keep.exists(), f"{keep} must survive")
+        self.assertTrue((dev / "alpha" / ".git").exists())
+        self.assertTrue((dev / "linked" / "node_modules").is_symlink())
+        self.assertTrue((self.out / "reclaim-log.jsonl").read_text().strip())
+
+    def test_harvest_refuses_out_inside_root(self):
+        rc, _ = call("harvest", ["--root", str(self.root), "--out", str(self.root / "dev" / "out")])
+        self.assertEqual(rc, 2)
+
+
+if __name__ == "__main__":
+    unittest.main()
