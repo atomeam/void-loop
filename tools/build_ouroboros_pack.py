@@ -41,6 +41,12 @@ First run shows what it would remove and deletes nothing. Add --apply and type D
 It removes ONLY stale node_modules folders and Python virtual environments whose project still has the
 file that rebuilds them (package.json, requirements.txt, ...). `npm install` brings them back.
 
+VOID MUST REMEMBER IT FIRST
+  python ouroboros.pyz push --out D:\\ouroboros-report --url https://your-void.example   (token in the VOID_MEMORY_TOKEN variable)
+This sends each project's full digest to your Void, then reads every one back and compares its hash. It only says
+"Void remembers N of N" when each one matches. Ask Void what it holds with:  ouroboros.pyz recall --url ... --q react
+Only after that is it reasonable to think about removing a project, and that is always your decision.
+
 WHAT IT WILL NEVER DO
 It never deletes a project. The report shows which projects hold the only copy of your work. Back those
 up yourself before you remove anything. It never reads .env files, keys or certificates.

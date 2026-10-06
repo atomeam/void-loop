@@ -90,3 +90,45 @@ test('exact lookup by id returns the record with its sha256 (what a client check
   const listed = (await (await call(api.onRequestGet, env)).json()).memory;
   assert.ok(listed.every((m) => m.sha256 !== undefined), 'search results carry sha256 too');
 });
+
+import { createHash } from 'node:crypto';
+const sha = (t) => createHash('sha256').update(t).digest('hex');
+const DIGEST = '# alpha\n\n- Backup state: **remote-current**\n\n## Recent commits\n- first\n- second\n\nunicode: café → ✓\n';
+
+test('Void keeps the whole digest, and reports the hash of what it actually stored', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const r = await (await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec({ body: DIGEST })] } })).json();
+  assert.deepEqual(r, { saved: 1, rejected: 0 });
+  const got = (await (await call(api.onRequestGet, env, { url: 'https://x/api/memory?id=alpha-1234abcd' })).json()).memory[0];
+  assert.equal(got.body, DIGEST);
+  assert.equal(got.body_sha256, sha(DIGEST), "Void's own hash of the stored text matches an independent SHA-256");
+  const listed = (await (await call(api.onRequestGet, env)).json()).memory[0];
+  assert.equal(listed.body, undefined, 'lists stay light: the body comes only from the exact lookup');
+});
+
+test('the stored body is re-redacted by the server, and its hash then differs from the sender\'s (so a sender cannot pass a leaky copy off as verified)', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const leaky = DIGEST + 'api_key = sk-abcdefghijklmnopqrstuvwxyz123456 and me@example.com\n';
+  await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec({ body: leaky })] } });
+  const got = (await (await call(api.onRequestGet, env, { url: 'https://x/api/memory?id=alpha-1234abcd' })).json()).memory[0];
+  assert.ok(!/sk-abc|me@example/.test(got.body), got.body);
+  assert.notEqual(got.body_sha256, sha(leaky));
+  assert.equal(got.body_sha256, sha(got.body));
+});
+
+test('an oversize digest is rejected, never silently cut', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const r = await (await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec({ body: 'x'.repeat(32769) }), rec({ id: 'ok-1', body: 'x'.repeat(32768) })] } })).json();
+  assert.deepEqual(r, { saved: 1, rejected: 1 });
+});
+
+test('a record sent again with a new digest replaces the old one, and a table made before the body column existed gains it', async () => {
+  const db = d1();
+  db.raw.exec('CREATE TABLE void_memory (id TEXT PRIMARY KEY, kind TEXT NOT NULL, name TEXT NOT NULL, summary TEXT NOT NULL, links TEXT NOT NULL, state TEXT NOT NULL, remote TEXT NOT NULL, last_commit TEXT NOT NULL, digest TEXT NOT NULL, sha256 TEXT NOT NULL, source TEXT NOT NULL, at TEXT NOT NULL, updated TEXT NOT NULL)');
+  const env = { READ_TOKEN: TOKEN, DB: db };
+  await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec({ body: 'one' })] } });
+  await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec({ body: 'two' })] } });
+  const got = (await (await call(api.onRequestGet, env, { url: 'https://x/api/memory?id=alpha-1234abcd' })).json()).memory[0];
+  assert.equal(got.body, 'two');
+  assert.equal(got.body_sha256, sha('two'));
+});

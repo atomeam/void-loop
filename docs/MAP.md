@@ -8,7 +8,7 @@ One product (**Void**, a-to-mind.com) is real and live. Around it are engines th
 
 ```
   old projects on disk ──► void_lens (free scan) ──► ouroboros harvest ──► digests + memory.jsonl
-                                                          │ verify (hashes)         │ push (owner token)
+                                                          │ verify (hashes)         │ push: full digest, then read back + hash check
                                                           ▼                         ▼
                                                    report.html            /api/memory (D1)  ──► Void answers
                                                           │                                      "what did I do about X?"
@@ -31,7 +31,7 @@ One product (**Void**, a-to-mind.com) is real and live. Around it are engines th
 | void-lens: free read-only disk scanner | `tools/void_lens.py`, PR #124 | built, 6 tests |
 | Ouroboros: harvest, verify, report, plan, reclaim, run, push | `tools/ouroboros.py`, PR #125 | built, 18 tests; not run on Windows |
 | Download pack + landing draft + launch checklist | `tools/build_ouroboros_pack.py`, `drafts/ouroboros/` | built; not on sale |
-| Void's memory API | `functions/api/memory.js`, `lib/memory-core.js` | built, 7 tests on real SQLite; table created on first use |
+| Void's memory API | `functions/api/memory.js`, `lib/memory-core.js` | built, 12 tests on real SQLite; stores each project's full digest and the hash Void computed from what it stored; lookup by id; table created on first use |
 | Train-recognition concept | `drafts/train-visualization/` (PR #123) | concept only, nothing measured |
 
 ## The other repos on the account

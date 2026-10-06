@@ -220,22 +220,38 @@ class Ouroboros(unittest.TestCase):
             with contextlib.redirect_stdout(io.StringIO()):
                 ouroboros.main(["--version"])
 
-    def _server(self, status=200):
-        got = []
+    def _server(self, status=200, tamper=False, no_get=False):
+        """A stand-in for Void's /api/memory: stores what it is sent and hands it back by id with the hash it computed itself."""
+        got, store = [], {}
         class H(http.server.BaseHTTPRequestHandler):
+            def _send(h, code, obj):
+                h.send_response(code); h.send_header("content-type", "application/json"); h.end_headers(); h.wfile.write(json.dumps(obj).encode())
             def do_POST(h):
                 body = json.loads(h.rfile.read(int(h.headers["content-length"])))
                 got.append({"auth": h.headers.get("authorization"), "path": h.path, "body": body})
-                h.send_response(status); h.send_header("content-type", "application/json"); h.end_headers()
-                h.wfile.write(json.dumps({"saved": len(body["records"]), "rejected": 0}).encode())
+                for r in body["records"]:
+                    b = r.get("body", "") + ("x" if tamper else "")
+                    store[r["id"]] = {**{k: v for k, v in r.items() if k != "body"}, "body": b, "body_sha256": hashlib.sha256(b.encode()).hexdigest()}
+                h._send(status, {"saved": len(body["records"]), "rejected": 0})
+            def do_GET(h):
+                if no_get:
+                    return h._send(404, {})
+                from urllib.parse import urlparse, parse_qs
+                q = parse_qs(urlparse(h.path).query)
+                if "id" in q:
+                    return h._send(200, {"memory": [store[q["id"][0]]] if q["id"][0] in store else []})
+                words = (q.get("q", [""])[0]).lower().split()
+                rows = [{k: v for k, v in r.items() if k not in ("body",)} for r in store.values() if all(w in (r["name"] + r["summary"] + " ".join(r["links"])).lower() for w in words)]
+                h._send(200, {"memory": rows})
             def log_message(h, *a): pass
         srv = http.server.HTTPServer(("127.0.0.1", 0), H)
         threading.Thread(target=srv.serve_forever, daemon=True).start()
         self.addCleanup(srv.server_close)
         self.addCleanup(srv.shutdown)
+        srv.store = store
         return srv, got
 
-    def test_push_sends_chunks_with_the_token_and_no_local_paths(self):
+    def test_push_sends_each_digest_then_reads_it_back_and_checks_the_hash(self):
         self.harvest()
         srv, got = self._server()
         url = f"http://127.0.0.1:{srv.server_address[1]}"
@@ -246,9 +262,57 @@ class Ouroboros(unittest.TestCase):
         self.assertTrue(all(g["auth"] == "Bearer tok-123" and g["path"] == "/api/memory" for g in got))
         sent = json.dumps([g["body"] for g in got])
         self.assertNotIn(str(self.root), sent, "a local path leaked into what was sent")
+        self.assertIn("<root>", sent)
         for needle in (SECRET_KEY, ENV_SECRET):
             self.assertNotIn(needle, sent)
-        self.assertIn("saved", txt)
+        alpha = next(v for v in srv.store.values() if v["name"] == "alpha")
+        self.assertIn("# alpha", alpha["body"])
+        n = len(json.loads((self.out / "manifest.json").read_text())["projects"])
+        self.assertIn(f"Void remembers {n} of {n}", txt)
+
+    def test_push_does_not_claim_memory_when_voids_copy_differs(self):
+        self.harvest()
+        srv, _ = self._server(tamper=True)
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "t"}):
+            rc, txt = call("push", ["--out", str(self.out), "--url", f"http://127.0.0.1:{srv.server_address[1]}"])
+        self.assertEqual(rc, 1)
+        n = len(json.loads((self.out / "manifest.json").read_text())["projects"])
+        self.assertIn(f"Void remembers 0 of {n}", txt)
+        self.assertIn("differs", txt)
+
+    def test_push_does_not_claim_memory_when_the_record_cannot_be_read_back(self):
+        self.harvest()
+        srv, _ = self._server(no_get=True)
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "t"}):
+            rc, txt = call("push", ["--out", str(self.out), "--url", f"http://127.0.0.1:{srv.server_address[1]}"])
+        self.assertEqual(rc, 1)
+        n = len(json.loads((self.out / "manifest.json").read_text())["projects"])
+        self.assertIn(f"Void remembers 0 of {n}", txt)
+
+    def test_push_splits_requests_by_size(self):
+        self.harvest()
+        srv, got = self._server()
+        with mock.patch.object(ouroboros, "MAX_REQUEST_BYTES", 1), mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "t"}):
+            rc, txt = call("push", ["--out", str(self.out), "--url", f"http://127.0.0.1:{srv.server_address[1]}"])
+        self.assertEqual(rc, 0, txt)
+        n = len(json.loads((self.out / "manifest.json").read_text())["projects"])
+        self.assertEqual(len(got), n, "one record per request when every record is over the limit")
+
+    def test_recall_lists_and_prints_a_stored_digest(self):
+        self.harvest()
+        srv, _ = self._server()
+        url = f"http://127.0.0.1:{srv.server_address[1]}"
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "t"}):
+            call("push", ["--out", str(self.out), "--url", url])
+            rc, txt = call("recall", ["--url", url, "--q", "react"])
+            self.assertEqual(rc, 0, txt)
+            self.assertIn("alpha", txt)
+            self.assertNotIn("beta", txt)
+            alpha_id = next(v["id"] for v in srv.store.values() if v["name"] == "alpha")
+            rc, txt = call("recall", ["--url", url, "--id", alpha_id])
+            self.assertIn("# alpha", txt)
+            rc, txt = call("recall", ["--url", url, "--q", "nothing-matches-this"])
+            self.assertIn("remembers nothing", txt)
 
     def test_push_dry_run_sends_nothing_and_needs_no_token(self):
         self.harvest()

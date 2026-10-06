@@ -6,7 +6,8 @@
     python tools/ouroboros.py plan    --root C:\\Users\\you --out D:\\void-harvest       what can be freed, and what cannot yet
     python tools/ouroboros.py report  --out D:\\void-harvest                          one shareable report.html (no network)
     python tools/ouroboros.py run     --root C:\\Users\\you --out D:\\void-harvest       harvest + verify + report + plan in one go
-    python tools/ouroboros.py push    --out D:\\void-harvest --url https://a-to-mind.com   send the memory records to Void (token in VOID_MEMORY_TOKEN)
+    python tools/ouroboros.py push    --out D:\\void-harvest --url https://a-to-mind.com   send every digest to Void, then read each back and check its hash (token in VOID_MEMORY_TOKEN)
+    python tools/ouroboros.py recall  --url https://a-to-mind.com --q react              ask Void what it remembers (add --id <record> to print a stored digest)
     python tools/ouroboros.py reclaim --root C:\\Users\\you --out D:\\void-harvest       dry run; add --apply to delete (asks you to type DELETE)
 
 The rules the whole tool is built around:
@@ -389,19 +390,61 @@ def cmd_run(a) -> int:
     return 0
 
 
+MAX_REQUEST_BYTES = 200_000  # the server refuses bigger requests (262144); keep clear of it
+
+
+def _http(url: str, token: str, body: dict | None = None):
+    req = urllib.request.Request(url, data=None if body is None else json.dumps(body).encode(), method="GET" if body is None else "POST",
+                                 headers={"content-type": "application/json", "authorization": "Bearer " + token})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return r.status, json.loads(r.read().decode())
+
+
+def sha256_text(t: str) -> str:
+    return hashlib.sha256(t.encode("utf-8")).hexdigest()
+
+
+def digest_for_void(out: Path, rec: dict, root: str) -> str:
+    """The digest text that goes to Void: the file on disk, with the scanned folder's path replaced so no username or drive layout leaves the machine."""
+    text = (out / rec["digest"]).read_text(encoding="utf-8")
+    for variant in {root, root.replace("\\", "/"), root.replace("/", "\\")}:
+        if variant:
+            text = text.replace(variant, "<root>")
+    return text
+
+
+def void_remembers(base: str, token: str, rec: dict, sent_body: str) -> tuple[bool, str]:
+    """Ask Void for the record by id and compare the hash it computed from what it stored with the hash of what we sent."""
+    try:
+        status, res = _http(base + "/api/memory?id=" + urllib.parse.quote(rec["id"]), token)
+    except urllib.error.HTTPError as e:
+        return False, f"Void answered {e.code}"
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        return False, f"could not ask Void ({e})"
+    got = next((m for m in (res.get("memory") or []) if m.get("id") == rec["id"]), None)
+    if status != 200 or not got:
+        return False, "Void has no such record"
+    if got.get("body_sha256") != sha256_text(sent_body) or got.get("body") != sent_body:
+        return False, "Void's stored copy differs from what was sent (it may have removed something it took for a secret)"
+    return True, "ok"
+
+
 def cmd_push(a) -> int:
-    """Send memory.jsonl to Void's memory (POST /api/memory). Refuses unless the harvest still verifies. The owner token comes from
-    the VOID_MEMORY_TOKEN environment variable (never from the command line, so it stays out of shell history)."""
+    """Send memory.jsonl AND each project's digest to Void's memory (POST /api/memory), then read every record back and check the hash:
+    only then does it say Void remembers. Refuses unless the harvest still verifies. The owner token comes from the VOID_MEMORY_TOKEN
+    environment variable (never the command line). Nothing is ever deleted by this command."""
     out = Path(a.out).expanduser().resolve()
     u = urllib.parse.urlparse(a.url)
+    base = a.url.rstrip("/")
     local = u.hostname in ("localhost", "127.0.0.1", "::1")
     if u.scheme != "https" and not (u.scheme == "http" and local):
         print("--url must be https (http is allowed only for localhost): the token must not travel in the clear", file=sys.stderr)
         return 2
     try:
         records = [json.loads(l) for l in (out / "memory.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
+        root = json.loads((out / "manifest.json").read_text(encoding="utf-8")).get("root", "")
     except (OSError, ValueError):
-        print(f"no readable memory.jsonl in {out}; run harvest first", file=sys.stderr)
+        print(f"no readable memory.jsonl and manifest.json in {out}; run harvest first", file=sys.stderr)
         return 2
     if not a.dry_run:
         token = os.environ.get("VOID_MEMORY_TOKEN", "")
@@ -414,19 +457,36 @@ def cmd_push(a) -> int:
     if vrc != 0:
         print("verify failed, so nothing was sent:\n" + quiet.getvalue().strip(), file=sys.stderr)
         return 1
-    batches = [records[i:i + a.batch] for i in range(0, len(records), a.batch)]
+    bodies: dict[str, str] = {}
+    for r in records:
+        try:
+            bodies[r["id"]] = digest_for_void(out, r, root)
+        except (OSError, KeyError):
+            print(f"cannot read the digest for {r.get('name')}; run harvest again", file=sys.stderr)
+            return 1
+        if len(bodies[r["id"]]) > 32768:
+            print(f"the digest for {r['name']} is longer than Void keeps (32768 characters); it was not sent", file=sys.stderr)
+            return 1
+    payload = [{**r, "body": bodies[r["id"]]} for r in records]
+    batches, cur, size = [], [], 0
+    for r in payload:
+        n = len(json.dumps(r))
+        if cur and (len(cur) >= a.batch or size + n > MAX_REQUEST_BYTES):
+            batches.append(cur)
+            cur, size = [], 0
+        cur.append(r)
+        size += n
+    if cur:
+        batches.append(cur)
     if a.dry_run:
-        print(f"dry run: would send {len(records)} record(s) in {len(batches)} request(s) to {a.url.rstrip('/')}/api/memory. Fields sent: " + ", ".join(sorted({k for r in records for k in r})))
+        print(f"dry run: would send {len(records)} record(s), each with its full digest ({sum(len(b) for b in bodies.values())} characters in all), in {len(batches)} request(s) to {base}/api/memory. Fields sent: " + ", ".join(sorted({k for r in payload for k in r})))
         return 0
     saved = rejected = 0
     for b in batches:
-        req = urllib.request.Request(a.url.rstrip("/") + "/api/memory", data=json.dumps({"source": "ouroboros", "records": b}).encode(), method="POST",
-                                     headers={"content-type": "application/json", "authorization": "Bearer " + token})
         try:
-            with urllib.request.urlopen(req, timeout=30) as r:
-                res = json.loads(r.read().decode())
+            status, res = _http(base + "/api/memory", token, {"source": "ouroboros", "records": b})
         except urllib.error.HTTPError as e:
-            print(f"Void answered {e.code}: " + {401: "the token was not accepted", 503: "memory needs the database", 413: "batch too large"}.get(e.code, e.reason), file=sys.stderr)
+            print(f"Void answered {e.code}: " + {401: "the token was not accepted", 503: "memory needs the database", 413: "batch too large"}.get(e.code, str(e.reason)), file=sys.stderr)
             return 1
         except (urllib.error.URLError, OSError, ValueError) as e:
             print(f"could not reach Void: {e}", file=sys.stderr)
@@ -434,17 +494,57 @@ def cmd_push(a) -> int:
         saved += res.get("saved", 0)
         rejected += res.get("rejected", 0)
     print(f"sent {len(records)} record(s): {saved} saved, {rejected} rejected")
-    return 0 if not rejected else 1
+    held, lost = 0, []
+    for r in records:
+        ok, why = void_remembers(base, token, r, bodies[r["id"]])
+        held += ok
+        if not ok:
+            lost.append(f"  NOT remembered: {r['name']}: {why}")
+    print(f"Void remembers {held} of {len(records)} project(s), each checked by reading the digest back and comparing its hash.")
+    for line in lost:
+        print(line)
+    return 0 if held == len(records) and not rejected else 1
+
+
+def cmd_recall(a) -> int:
+    """Ask Void what it remembers. With --id, print the stored digest. Read-only."""
+    token = os.environ.get("VOID_MEMORY_TOKEN", "")
+    u = urllib.parse.urlparse(a.url)
+    if u.scheme != "https" and not (u.scheme == "http" and u.hostname in ("localhost", "127.0.0.1", "::1")):
+        print("--url must be https (http is allowed only for localhost)", file=sys.stderr)
+        return 2
+    if not token:
+        print("set VOID_MEMORY_TOKEN to your owner token first", file=sys.stderr)
+        return 2
+    q = "id=" + urllib.parse.quote(a.id) if a.id else "q=" + urllib.parse.quote(a.q or "")
+    try:
+        status, res = _http(a.url.rstrip("/") + "/api/memory?" + q, token)
+    except urllib.error.HTTPError as e:
+        print(f"Void answered {e.code}", file=sys.stderr)
+        return 1
+    except (urllib.error.URLError, OSError, ValueError) as e:
+        print(f"could not reach Void: {e}", file=sys.stderr)
+        return 1
+    rows = res.get("memory") or []
+    if not rows:
+        print("Void remembers nothing matching that.")
+        return 0
+    for m in rows:
+        if a.id:
+            print(m.get("body") or f"(no digest stored for {m['id']})")
+        else:
+            print(f"{m['id']}  {m['name']}  [{m['state']}]  {m['summary'][:100]}")
+    return 0
 
 
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="ouroboros", description=f"Ouroboros {VERSION}. Harvest what is worth keeping from old projects, verify it, then free regenerable space.")
     ap.add_argument("--version", action="version", version=f"ouroboros {VERSION}")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name, fn in (("harvest", cmd_harvest), ("verify", cmd_verify), ("report", cmd_report), ("plan", cmd_plan), ("reclaim", cmd_reclaim), ("run", cmd_run), ("push", cmd_push)):
+    for name, fn in (("harvest", cmd_harvest), ("verify", cmd_verify), ("report", cmd_report), ("plan", cmd_plan), ("reclaim", cmd_reclaim), ("run", cmd_run), ("push", cmd_push), ("recall", cmd_recall)):
         s = sub.add_parser(name)
         s.add_argument("--root", default=str(Path.home()))
-        s.add_argument("--out", required=True)
+        s.add_argument("--out", required=(name != "recall"))
         s.add_argument("--days", type=int, default=90)
         s.add_argument("--top", type=int, default=15)
         s.add_argument("--max-seconds", type=float, default=300)
@@ -452,10 +552,14 @@ def main(argv=None) -> int:
             s.add_argument("--include-active", action="store_true", help="also digest projects with recent commits")
         if name == "reclaim":
             s.add_argument("--apply", action="store_true")
-        if name == "push":
+        if name in ("push", "recall"):
             s.add_argument("--url", required=True, help="your Void, e.g. https://a-to-mind.com")
+        if name == "push":
             s.add_argument("--batch", type=int, default=100)
             s.add_argument("--dry-run", action="store_true")
+        if name == "recall":
+            s.add_argument("--q", default="", help="words to look for")
+            s.add_argument("--id", default="", help="print the stored digest of this record")
         s.set_defaults(fn=fn)
     a = ap.parse_args(argv)
     return a.fn(a)
