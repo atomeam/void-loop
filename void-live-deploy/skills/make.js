@@ -9,7 +9,6 @@
  */
 const GAMES = [
   [/^(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)$/, 'connect4', 'Connect 4'],
-  [/^(?:tic[\s-]*tac[\s-]*toe|noughts\s+and\s+crosses|x(?:'s)?\s+and\s+o(?:'s)?)$/, 'tictactoe', 'Tic-tac-toe'],
 ];
 const SHAPES = { cube: 'cube', box: 'cube', sphere: 'sphere', ball: 'sphere', orb: 'sphere', torus: 'torus', donut: 'torus', doughnut: 'torus', ring: 'torus',
   pyramid: 'pyramid', cone: 'cone', cylinder: 'cylinder', diamond: 'diamond', gem: 'diamond', crystal: 'diamond', octahedron: 'diamond',

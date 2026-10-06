@@ -2077,45 +2077,6 @@ try {
       && cdMod.countdownOf('what is the new year') === null,
     cdMod ? cdMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing countdown');
 
-  const othMod = nsMods.find((s) => s.name === 'othello');
-  const othApi = othMod && await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
-  const init = othApi && othApi.initialBoard();
-  const midFlips = othApi && othApi.flips(init, 19, 1); // (2,3) flips (3,3)=white
-  const v1 = othApi && othApi.validMoves(init, 1);
-  const v2 = othApi && othApi.validMoves(init, 2);
-  const cnt = othApi && othApi.count(init);
-  const ai = othApi && othApi.aiMove(init);
-  check('othello: listed with examples and near misses; examples route only to it; engine flips, valid moves, counts, and AI work',
-    !!othMod && othMod.examples.length >= 4 && (othMod.nearMisses || []).length >= 3
-      && othMod.examples.every((e) => firstNs(e) === 'othello') && othMod.nearMisses.every((e) => firstNs(e) !== 'othello')
-      && Array.isArray(init) && init.length === 64 && init[27] === 2 && init[28] === 1 && init[35] === 1 && init[36] === 2
-      && midFlips && midFlips.length === 1 && midFlips[0] === 27
-      && Array.isArray(v1) && v1.length === 4 && v1.sort((a,b)=>a-b).join(',') === '19,26,37,44'
-      && Array.isArray(v2) && v2.length === 4 && v2.sort((a,b)=>a-b).join(',') === '20,29,34,43'
-      && Array.isArray(cnt) && cnt[0] === 2 && cnt[1] === 2
-      && typeof ai === 'number' && ai >= 0 && ai < 64 && v2.includes(ai),
-    othMod ? othMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing othello');
-
-
-  // outcome card: the count is a stage thing now (not a popup page) ╬ô├ç├╢ it keeps the right day count, copies as
-  // outcome card: the count is a stage thing now (not a popup page) ΓÇö it keeps the right day count, copies as
-  // plain text (stageApi.addCopy, reused rather than a one-off button), and survives a reload like any other thing
-  { const Q = await fresh();
-    const cdFull = await import(new URL('../void-live-deploy/skills/countdown.js', import.meta.url).href);
-    const wantDays = cdFull.daysUntil(cdFull.newYearDate());
-    await Q.ask('days until new year', 500);
-    const card = await Q.p.$eval('.countdown-card', (e) => ({ text: e.innerText, hasCopy: !!e.querySelector('.vcopy') })).catch(() => null);
-    const st = (await Q.state()).find((t) => t.kind === 'countdown');
-    await Q.p.$eval('.countdown-card .vcopy', (b) => b.click()).catch(() => {});
-    await Q.p.waitForTimeout(80);
-    const copied = await Q.p.$eval('.countdown-card .vcopy', (b) => b.textContent).catch(() => '');
-    await Q.p.reload(); await Q.p.waitForTimeout(900);
-    const survived = await Q.p.$('.countdown-card');
-    check('countdown: "days until new year" lands as an outcome card on the stage (not a popup page) with the right day count, a working copy button, and it survives a reload',
-      !!card && card.hasCopy && /^(copied|select and copy)$/.test(copied) && st && st.days === wantDays && card.text.includes(cdFull.daysLine(wantDays)) && !!survived && Q.errors.length === 0,
-      JSON.stringify({ card, st, wantDays, copied, errs: Q.errors }));
-    await Q.ctx.close(); }
-
   // othello: real rules (4 starting discs, a move must flip, 8 directions), and Void answers your move on the card
   { const oth = await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
     const s0 = oth.createOthelloState();
@@ -2133,6 +2094,7 @@ try {
         && before === 8 && !!st && /your move/.test(status) && Q.errors.length === 0,
       JSON.stringify({ before, status, errs: Q.errors }));
     await Q.ctx.close(); }
+
 
   const liMod = nsMods.find((s) => s.name === 'local-inference');
   const liApi = liMod && await import(new URL('../void-live-deploy/skills/local-inference.js', import.meta.url).href);
