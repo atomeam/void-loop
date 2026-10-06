@@ -1,11 +1,11 @@
 /**
- * make skill ΓÇö things that materialize: playable games (Connect 4 against Void, tic-tac-toe) and 3D objects
+ * make skill — things that materialize: playable games (Connect 4 against Void, tic-tac-toe) and 3D objects
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "play connect 4", "make me a tic tac toe game", "make a 3d torus", "a gold 3d diamond".
  * Each runs in a sandboxed frame (scripts only: no network, no cookies, no access to the page or to Void's data)
  * and arrives with a materialize animation. Everything is drawn here: no libraries, no downloads.
  * Tools: the fringe drafts wired live (tools/fringe.mjs --publish writes void-live-deploy/fringe/<family>.html);
- * "timing game", "what did void get wrong", "idea vault", "uap timeline"ΓÇª open the page in a frame.
+ * "timing game", "what did void get wrong", "idea vault", "uap timeline"… open the page in a frame.
  */
 const GAMES = [
   [/^(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)$/, 'connect4', 'Connect 4'],
@@ -47,10 +47,10 @@ const FRAME_CSS = ':root{color-scheme:dark}html,body{margin:0;height:100%;backgr
 function connect4Doc() {
   return '<!doctype html><html><head><meta charset="utf-8"><style>' + FRAME_CSS
     + 'canvas{display:block;margin:0 auto;max-width:100%;height:auto;touch-action:manipulation;cursor:pointer}</style></head><body>'
-    + '<div class="bar"><span id="s">your move ┬╖ you are red</span><button id="r">new game</button></div><canvas id="c" width="490" height="470"></canvas><script>'
+    + '<div class="bar"><span id="s">your move · you are red</span><button id="r">new game</button></div><canvas id="c" width="490" height="470"></canvas><script>'
     + `(function(){var C=7,R=6,S=70,c=document.getElementById('c'),x=c.getContext('2d'),st=document.getElementById('s');
 var b,turn,over,drops,hover=-1;
-function reset(){b=[];for(var i=0;i<R;i++)b.push([0,0,0,0,0,0,0]);turn=1;over=false;drops=[];st.textContent='your move ┬╖ you are red';}
+function reset(){b=[];for(var i=0;i<R;i++)b.push([0,0,0,0,0,0,0]);turn=1;over=false;drops=[];st.textContent='your move · you are red';}
 function row(bb,col){for(var r=R-1;r>=0;r--)if(!bb[r][col])return r;return -1}
 function win(bb,p){var d=[[0,1],[1,0],[1,1],[1,-1]];for(var r=0;r<R;r++)for(var k=0;k<C;k++)if(bb[r][k]===p)for(var j=0;j<4;j++){var ok=1;for(var n=1;n<4;n++){var rr=r+d[j][0]*n,kk=k+d[j][1]*n;if(rr<0||rr>=R||kk<0||kk>=C||bb[rr][kk]!==p){ok=0;break}}if(ok)return [[r,k],[r+d[j][0]*3,k+d[j][1]*3]]}return null}
 function full(bb){for(var k=0;k<C;k++)if(!bb[0][k])return false;return true}
@@ -66,7 +66,7 @@ function play(k,p){var r=row(b,k);if(r<0)return false;b[r][k]=p;drops.push({r:r,
 function after(p){var w=win(b,p);if(w){over=w;st.textContent=p===1?'you win! four in a row':'Void wins this one';return true}if(full(b)){over=true;st.textContent='a draw';return true}return false}
 c.addEventListener('pointermove',function(e){var q=c.getBoundingClientRect();hover=Math.floor((e.clientX-q.left)/q.width*C)});
 c.addEventListener('pointerleave',function(){hover=-1});
-c.addEventListener('click',function(e){if(over||turn!==1)return;var q=c.getBoundingClientRect(),k=Math.floor((e.clientX-q.left)/q.width*C);if(!play(k,1))return;if(after(1))return;turn=2;st.textContent='Void is thinkingΓÇª';
+c.addEventListener('click',function(e){if(over||turn!==1)return;var q=c.getBoundingClientRect(),k=Math.floor((e.clientX-q.left)/q.width*C);if(!play(k,1))return;if(after(1))return;turn=2;st.textContent='Void is thinking…';
 setTimeout(function(){var k2=best();if(k2>=0)play(k2,2);if(!after(2)){turn=1;st.textContent='your move'}},420)});
 document.getElementById('r').onclick=reset;
 function disc(cx,cy,p,a){var g=x.createRadialGradient(cx-10,cy-12,4,cx,cy,30);if(p===1){g.addColorStop(0,'#ff8a8a');g.addColorStop(1,'#c41f2e')}else{g.addColorStop(0,'#fff1a0');g.addColorStop(1,'#d4a017')}x.globalAlpha=a;x.fillStyle=g;x.beginPath();x.arc(cx,cy,28,0,7);x.fill();x.globalAlpha=1}
@@ -87,14 +87,14 @@ function tictactoeDoc() {
     + '.g{display:grid;grid-template-columns:repeat(3,96px);gap:8px;justify-content:center;margin-top:10px}'
     + '.g button{height:96px;font-size:44px;border-radius:14px;padding:0;transition:transform .15s}.g button:hover{transform:scale(1.04)}'
     + '.x{color:#ff7a8a}.o{color:#7cd4ff}</style></head><body>'
-    + '<div class="bar"><span id="s">your move ┬╖ you are X</span><button id="r">new game</button></div><div class="g" id="g"></div><script>'
+    + '<div class="bar"><span id="s">your move · you are X</span><button id="r">new game</button></div><div class="g" id="g"></div><script>'
     + `(function(){var b,over,g=document.getElementById('g'),st=document.getElementById('s'),L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 function w(bb){for(var i=0;i<8;i++){var l=L[i];if(bb[l[0]]&&bb[l[0]]===bb[l[1]]&&bb[l[0]]===bb[l[2]])return bb[l[0]]}return bb.every(Boolean)?'d':null}
 function mm(bb,p){var r=w(bb);if(r==='O')return 1;if(r==='X')return -1;if(r==='d')return 0;var best=p==='O'?-2:2;for(var i=0;i<9;i++)if(!bb[i]){bb[i]=p;var v=mm(bb,p==='O'?'X':'O');bb[i]=null;best=p==='O'?Math.max(best,v):Math.min(best,v)}return best}
 function ai(){var bi=-1,bv=-2;for(var i=0;i<9;i++)if(!b[i]){b[i]='O';var v=mm(b,'X');b[i]=null;if(v>bv){bv=v;bi=i}}return bi}
 function end(){var r=w(b);if(!r)return false;over=true;st.textContent=r==='d'?'a draw (Void never loses)':r==='X'?'you win!':'Void wins';return true}
-function render(){g.innerHTML='';b.forEach(function(v,i){var e=document.createElement('button');e.textContent=v||'';if(v)e.className=v.toLowerCase();e.setAttribute('aria-label','square '+(i+1)+(v?' '+v:''));e.onclick=function(){if(over||b[i])return;b[i]='X';render();if(end())return;st.textContent='Void is thinkingΓÇª';setTimeout(function(){b[ai()]='O';render();if(!end())st.textContent='your move'},300)};g.appendChild(e)})}
-function reset(){b=[null,null,null,null,null,null,null,null,null];over=false;st.textContent='your move ┬╖ you are X';render()}
+function render(){g.innerHTML='';b.forEach(function(v,i){var e=document.createElement('button');e.textContent=v||'';if(v)e.className=v.toLowerCase();e.setAttribute('aria-label','square '+(i+1)+(v?' '+v:''));e.onclick=function(){if(over||b[i])return;b[i]='X';render();if(end())return;st.textContent='Void is thinking…';setTimeout(function(){b[ai()]='O';render();if(!end())st.textContent='your move'},300)};g.appendChild(e)})}
+function reset(){b=[null,null,null,null,null,null,null,null,null];over=false;st.textContent='your move · you are X';render()}
 document.getElementById('r').onclick=reset;reset();})();`
     + '</script></body></html>';
 }
