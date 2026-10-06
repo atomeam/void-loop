@@ -11,6 +11,10 @@ runs:
       with:
         node-version: 22
         cache: npm
+    - name: node tools/guard-source.mjs (every script parses; a broken file fails here in seconds, not after the full suite)
+      if: inputs.bench != 'only'
+      shell: bash
+      run: node tools/guard-source.mjs
     - uses: actions/setup-python@v5
       with:
         python-version: '3.12'
