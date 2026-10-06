@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Tests for tools/ouroboros.py on a fake machine. Run: python tools/ouroboros_test.py"""
-import contextlib, hashlib, io, json, os, subprocess, sys, tempfile, time, unittest
+import contextlib, hashlib, http.server, io, json, os, subprocess, sys, tempfile, threading, time, unittest
 from pathlib import Path
 from unittest import mock
 
@@ -219,6 +219,65 @@ class Ouroboros(unittest.TestCase):
         with self.assertRaises(SystemExit):
             with contextlib.redirect_stdout(io.StringIO()):
                 ouroboros.main(["--version"])
+
+    def _server(self, status=200):
+        got = []
+        class H(http.server.BaseHTTPRequestHandler):
+            def do_POST(h):
+                body = json.loads(h.rfile.read(int(h.headers["content-length"])))
+                got.append({"auth": h.headers.get("authorization"), "path": h.path, "body": body})
+                h.send_response(status); h.send_header("content-type", "application/json"); h.end_headers()
+                h.wfile.write(json.dumps({"saved": len(body["records"]), "rejected": 0}).encode())
+            def log_message(h, *a): pass
+        srv = http.server.HTTPServer(("127.0.0.1", 0), H)
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        self.addCleanup(srv.server_close)
+        self.addCleanup(srv.shutdown)
+        return srv, got
+
+    def test_push_sends_chunks_with_the_token_and_no_local_paths(self):
+        self.harvest()
+        srv, got = self._server()
+        url = f"http://127.0.0.1:{srv.server_address[1]}"
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "tok-123"}):
+            rc, txt = call("push", ["--out", str(self.out), "--url", url, "--batch", "2"])
+        self.assertEqual(rc, 0, txt)
+        self.assertGreaterEqual(len(got), 2)
+        self.assertTrue(all(g["auth"] == "Bearer tok-123" and g["path"] == "/api/memory" for g in got))
+        sent = json.dumps([g["body"] for g in got])
+        self.assertNotIn(str(self.root), sent, "a local path leaked into what was sent")
+        for needle in (SECRET_KEY, ENV_SECRET):
+            self.assertNotIn(needle, sent)
+        self.assertIn("saved", txt)
+
+    def test_push_dry_run_sends_nothing_and_needs_no_token(self):
+        self.harvest()
+        srv, got = self._server()
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("VOID_MEMORY_TOKEN", None)
+            rc, txt = call("push", ["--out", str(self.out), "--url", f"http://127.0.0.1:{srv.server_address[1]}", "--dry-run"])
+        self.assertEqual(rc, 0, txt)
+        self.assertEqual(got, [])
+        self.assertIn("dry run", txt)
+
+    def test_push_refuses_clear_http_to_a_real_host_and_a_missing_token(self):
+        self.harvest()
+        rc, _ = call("push", ["--out", str(self.out), "--url", "http://example.com"])
+        self.assertEqual(rc, 2)
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("VOID_MEMORY_TOKEN", None)
+            rc, _ = call("push", ["--out", str(self.out), "--url", "https://example.com"])
+        self.assertEqual(rc, 2)
+
+    def test_push_refuses_when_the_harvest_no_longer_verifies(self):
+        self.harvest()
+        next(self.out.glob("alpha-*/digest.md")).write_text("tampered")
+        srv, got = self._server()
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "t"}):
+            rc, txt = call("push", ["--out", str(self.out), "--url", f"http://127.0.0.1:{srv.server_address[1]}"])
+        self.assertEqual(rc, 1)
+        self.assertEqual(got, [])
+        self.assertIn("nothing was sent", txt)
 
 
 if __name__ == "__main__":

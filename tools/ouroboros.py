@@ -6,6 +6,7 @@
     python tools/ouroboros.py plan    --root C:\\Users\\you --out D:\\void-harvest       what can be freed, and what cannot yet
     python tools/ouroboros.py report  --out D:\\void-harvest                          one shareable report.html (no network)
     python tools/ouroboros.py run     --root C:\\Users\\you --out D:\\void-harvest       harvest + verify + report + plan in one go
+    python tools/ouroboros.py push    --out D:\\void-harvest --url https://a-to-mind.com   send the memory records to Void (token in VOID_MEMORY_TOKEN)
     python tools/ouroboros.py reclaim --root C:\\Users\\you --out D:\\void-harvest       dry run; add --apply to delete (asks you to type DELETE)
 
 The rules the whole tool is built around:
@@ -18,8 +19,10 @@ Put --out outside --root (another drive is best).
 from __future__ import annotations
 
 import argparse
+import contextlib
 import hashlib
 import html
+import io
 import json
 import os
 import re
@@ -27,6 +30,9 @@ import shutil
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -383,11 +389,59 @@ def cmd_run(a) -> int:
     return 0
 
 
+def cmd_push(a) -> int:
+    """Send memory.jsonl to Void's memory (POST /api/memory). Refuses unless the harvest still verifies. The owner token comes from
+    the VOID_MEMORY_TOKEN environment variable (never from the command line, so it stays out of shell history)."""
+    out = Path(a.out).expanduser().resolve()
+    u = urllib.parse.urlparse(a.url)
+    local = u.hostname in ("localhost", "127.0.0.1", "::1")
+    if u.scheme != "https" and not (u.scheme == "http" and local):
+        print("--url must be https (http is allowed only for localhost): the token must not travel in the clear", file=sys.stderr)
+        return 2
+    try:
+        records = [json.loads(l) for l in (out / "memory.jsonl").read_text(encoding="utf-8").splitlines() if l.strip()]
+    except (OSError, ValueError):
+        print(f"no readable memory.jsonl in {out}; run harvest first", file=sys.stderr)
+        return 2
+    if not a.dry_run:
+        token = os.environ.get("VOID_MEMORY_TOKEN", "")
+        if not token:
+            print("set VOID_MEMORY_TOKEN to your owner token first (it is read from the environment, not the command line)", file=sys.stderr)
+            return 2
+    quiet = io.StringIO()
+    with contextlib.redirect_stdout(quiet):
+        vrc = cmd_verify(a)
+    if vrc != 0:
+        print("verify failed, so nothing was sent:\n" + quiet.getvalue().strip(), file=sys.stderr)
+        return 1
+    batches = [records[i:i + a.batch] for i in range(0, len(records), a.batch)]
+    if a.dry_run:
+        print(f"dry run: would send {len(records)} record(s) in {len(batches)} request(s) to {a.url.rstrip('/')}/api/memory. Fields sent: " + ", ".join(sorted({k for r in records for k in r})))
+        return 0
+    saved = rejected = 0
+    for b in batches:
+        req = urllib.request.Request(a.url.rstrip("/") + "/api/memory", data=json.dumps({"source": "ouroboros", "records": b}).encode(), method="POST",
+                                     headers={"content-type": "application/json", "authorization": "Bearer " + token})
+        try:
+            with urllib.request.urlopen(req, timeout=30) as r:
+                res = json.loads(r.read().decode())
+        except urllib.error.HTTPError as e:
+            print(f"Void answered {e.code}: " + {401: "the token was not accepted", 503: "memory needs the database", 413: "batch too large"}.get(e.code, e.reason), file=sys.stderr)
+            return 1
+        except (urllib.error.URLError, OSError, ValueError) as e:
+            print(f"could not reach Void: {e}", file=sys.stderr)
+            return 1
+        saved += res.get("saved", 0)
+        rejected += res.get("rejected", 0)
+    print(f"sent {len(records)} record(s): {saved} saved, {rejected} rejected")
+    return 0 if not rejected else 1
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(prog="ouroboros", description=f"Ouroboros {VERSION}. Harvest what is worth keeping from old projects, verify it, then free regenerable space.")
     ap.add_argument("--version", action="version", version=f"ouroboros {VERSION}")
     sub = ap.add_subparsers(dest="cmd", required=True)
-    for name, fn in (("harvest", cmd_harvest), ("verify", cmd_verify), ("report", cmd_report), ("plan", cmd_plan), ("reclaim", cmd_reclaim), ("run", cmd_run)):
+    for name, fn in (("harvest", cmd_harvest), ("verify", cmd_verify), ("report", cmd_report), ("plan", cmd_plan), ("reclaim", cmd_reclaim), ("run", cmd_run), ("push", cmd_push)):
         s = sub.add_parser(name)
         s.add_argument("--root", default=str(Path.home()))
         s.add_argument("--out", required=True)
@@ -398,6 +452,10 @@ def main(argv=None) -> int:
             s.add_argument("--include-active", action="store_true", help="also digest projects with recent commits")
         if name == "reclaim":
             s.add_argument("--apply", action="store_true")
+        if name == "push":
+            s.add_argument("--url", required=True, help="your Void, e.g. https://a-to-mind.com")
+            s.add_argument("--batch", type=int, default=100)
+            s.add_argument("--dry-run", action="store_true")
         s.set_defaults(fn=fn)
     a = ap.parse_args(argv)
     return a.fn(a)
