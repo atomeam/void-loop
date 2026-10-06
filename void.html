@@ -2926,21 +2926,24 @@ return { ok: true, detail: 'timer-reset' };
       return t.trim() || text.trim();
     }
     // Answer engine (plan item 2): asks no skill covers get a short sourced answer; excerpt if the model is busy.
-    async function showAnswer(text) {
-      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><div class="sub">thinking…</div>'; });
-      say('looking up');
+    const pageHost = (u) => { try { return /^https?:\/\//i.test(String(u)) ? new URL(u).hostname : ''; } catch (_) { return ''; } };
+    // page: the tab the Void extension read for this ask (title, url, selection, field, text); answered about that page, not the web
+    async function showAnswer(text, page) {
+      const about = page && page.title ? '<div class="sub">about: ' + esc(page.title) + '</div>' : '';
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<div class="sub">thinking…</div>'; });
+      say(page ? 'reading the page' : 'looking up');
       let j = null;
       try {
-        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: text }) });
+        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text }) });
         if (r.ok || r.status === 429) j = await r.json();
       } catch (_) {}
       if (vpageEl !== el) return 'answer';
-      if (!j || !j.answer) { say(''); return showArticle(text); }
+      if (!j || !j.answer) { say(''); if (page) { el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<p>' + esc(j && j.note || 'I couldn’t read that page just now. Try again in a moment.') + '</p>'; return 'answer'; } return showArticle(text); }
       const srcs = (j.sources || []).map((s, i) => '<a href="' + esc(/^https:\/\//i.test(String(s.url || '')) ? s.url : '#') + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.title) + '</a>').join(' · '); // https links only
       // fenced code keeps its whitespace and gets a monospace block (fixHtml); sources are a citation when one
       // genuinely matched, not a claim that nothing else went into the answer
-      el.innerHTML = '<h2>' + esc(text) + '</h2>' + fixHtml(j.answer)
-        + '<div class="src">' + (srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
+      el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + fixHtml(j.answer)
+        + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Void' : srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
       addCopy(el);
       say('done');
       return 'answer';
@@ -5357,7 +5360,22 @@ return { ok: true, detail: 'timer-reset' };
       }
     });
     // A link (?q=) runs its ask, except a send, booking or spend: that one is only typed into the box for the person to ask.
-    { const q0 = new URLSearchParams(location.search).get('q'); if (q0) { history.replaceState(null, '', location.pathname); skillsReady.then(async () => { const core = await approvalReady; if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; } handle(q0); }); } }
+    // From the Void extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
+    // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
+    { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
+      if (q0) { history.replaceState(null, '', location.pathname); skillsReady.then(async () => { const core = await approvalReady; if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; }
+        if (!ctx0) { handle(q0); return; }
+        let done = false;
+        const onCtx = (e) => {
+          if (done || e.source !== window.parent || !/^chrome-extension:\/\//.test(e.origin) || !e.data || e.data.type !== 'void.ctx') return;
+          done = true; removeEventListener('message', onCtx);
+          const pg = e.data.page || {}, cut = (v, n) => String(v || '').slice(0, n);
+          showAnswer(cut(e.data.q || q0, 300), { title: cut(pg.title, 200), url: cut(pg.url, 500), selection: cut(pg.selection, 2000), field: cut(pg.field, 4000), text: cut(pg.text, 8000), unreadable: !!pg.unreadable });
+        };
+        addEventListener('message', onCtx);
+        window.parent.postMessage({ type: 'void.ctx.ready' }, '*'); // carries nothing; the page itself only comes back from an extension
+        setTimeout(() => { if (!done) { done = true; removeEventListener('message', onCtx); handle(q0); } }, 4000);
+      }); } }
 
     // --- Void everywhere (plan item 4): share to Void, installable app, address bar (opensearch.xml), voice ---
     // Share target (manifest share_target -> /?share_title=&share_text=&share_url=): a link becomes a link card, words become an ask.
