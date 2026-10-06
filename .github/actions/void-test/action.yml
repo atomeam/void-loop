@@ -53,6 +53,16 @@ runs:
       if: inputs.bench != 'only'
       shell: bash
       run: node --test tools/dispatcher.test.mjs
+    - name: disk tools and memory API (void_lens, ouroboros, its download pack, /api/memory)
+      if: inputs.bench != 'only'
+      shell: bash
+      run: |
+        git config --global user.email ci@example.invalid
+        git config --global user.name ci
+        python tools/void_lens_test.py
+        python tools/ouroboros_test.py
+        python tools/ouroboros_pack_test.py
+        node --test tools/memory.test.mjs
     - name: node tools/test_glyphs.mjs (cross-sense board draft)
       if: inputs.bench != 'only'
       shell: bash

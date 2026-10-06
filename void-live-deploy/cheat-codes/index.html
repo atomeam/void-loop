@@ -57,7 +57,7 @@
         <p>Reserve paid API tokens for complex reasoning. For basic data extraction and formatting, run small (around 8B-parameter) models locally via <a href="https://ollama.com/">Ollama</a> at $0 API cost.</p>
 
         <h2>7. Purge Local Weight Caches</h2>
-        <p>Local AI dev quickly fills up hard drives. Regularly clear stale Hugging Face downloads with <code>hf cache prune</code> to recover gigabytes of space.</p>
+        <p>Local AI dev quickly fills up hard drives. Regularly clear stale Hugging Face downloads with <code>hf cache prune</code> to recover gigabytes of space. Not sure where the space went? The free, read-only <a href="https://github.com/atomeam/void-loop/blob/main/tools/void_lens.py">void-lens scanner</a> lists your caches, stale <code>node_modules</code>, model weights and virtual disks, and prints the exact command for each. It deletes nothing and uploads nothing.</p>
 
         <h2>8. Prune Docker Wisely</h2>
         <p>When reclaiming disk space from containerized agent runners, use <code>docker system prune -a</code> without the <code>--volumes</code> flag to clear cache while preserving database volumes.</p>

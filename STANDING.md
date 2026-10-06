@@ -22,6 +22,8 @@ A rule an agent wrote and signed with Adam's name, without his words, is removed
 - Deploy copy: `void-live-deploy\\` (copy `void.html` to `index.html` and `void.html` there). Also sync `C:\\Users\\adamm\\a-to-mind.com\\index.html`.
 - Deploy: from `void-live-deploy`: `npx wrangler pages deploy . --project-name=a-to-mind --commit-dirty=true`
 - After deploy, confirm the live page still contains: `mountClock`, `mountSticky`, `mountNotepad`, `mountLink`, `mountImage`, `mountList`, `mountCalc`, `mountTimer`, `mountCounter`, `mountShape` (plus any new mount).
+- **The whole account, mapped (2026-10-06):** `docs/MAP.md`: what is live, what is built but not merged, what is only a plan, and how every repo relates to Void.
+- Disk tools (free scanner `tools/void_lens.py`, the Ouroboros harvest/verify/report/reclaim/push engine `tools/ouroboros.py`, its download pack `tools/build_ouroboros_pack.py`, Void's memory API `void-live-deploy/functions/api/memory.js`). Launch checklist: `drafts/ouroboros/LAUNCH.md`.
 - Growth board: `domains\\void.growth.md`
 - The Forethinkers (A-to-Mind's research): `domains\\forethinkers\\THINK-TANK-BRIEF.md`; node map `convergence.md`; runner `domains\\forethinkers\\think-tank.mjs` (tests: `node --test domains/forethinkers/think-tank.test.mjs`). A cycle picks one node and fans only into the tracks it names; `.github/workflows/think-tank.yml` runs on even New York hours, dry-run by default. The build path starts at `domains\\forethinkers\\figures-first.md`.
 - Live-site QA notes: `domains\\void.surface-qa.md`
