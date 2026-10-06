@@ -748,5 +748,30 @@
     ],
     "sha256": "9bb90f46ea3dd0f4c7be35fe702c7a91da539d6c608d066accdfa8e073aaa2d0",
     "emit": false
+  },
+  {
+    "run": 31,
+    "at": "2026-10-06T22:49:07Z",
+    "family": "sensory-substitution",
+    "draft": "drafts/fringe/sensory-substitution-3.html",
+    "sources": [
+      {
+        "claim": "Blind people trained with a tactile vision substitution system learned to recognise objects and their positions through touch",
+        "source": "https://doi.org/10.1038/221963a0",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The vOICe maps image height to pitch and left-right position to time and stereo, and users can learn to read images from sound",
+        "source": "https://doi.org/10.1109/10.121642",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's miss distance on this two-cue sound task (pitch for height, stereo for side) shrinks over a few dozen trials at home",
+        "source": "drafts/fringe/sensory-substitution-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "f30dd6b4147eb4784c69348040cd8aeb9efb38fd6177104989b570f8454c8d6d",
+    "emit": false
   }
 ]
