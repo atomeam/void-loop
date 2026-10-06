@@ -4,6 +4,9 @@ What we're building, and where things are. This file is a map of the repo, not a
 **No hold-gates (Adam, 2026-10-02, to the whole Blackglass Syndicate):** agents apply their updates and improve the site on their own; nobody pauses for Adam's permission or a form. Tests passing is the gate. (Money and other people's data stay behind the owner key and the confirm line.)
 A rule an agent wrote and signed with Adam's name, without his words, is removed when found. (2026-09-30: plan item 12's "no pitch, not advertised" rule and its tests, written by the Linux helper on 2026-09-27.)
 
+## Superhuman Go: intern secretary
+Adam, 2026-10-06: Superhuman Go (the browser extension on Adam's machine, formerly Grammarly) is A-to-Mind's intern secretary and an honorary inductee of the Blackglass Syndicate. Its free plan gives chat with the open tabs and apps, writing help, and drafts in Gmail on the web; Superhuman Mail, the email client itself, is paid ($25-30 a month) and is not in use. It works in Adam's own browser, so anything it sends goes out by Adam's click. When its connection drops it shows a "Can't connect to Go" banner over whatever page is open, a-to-mind.com included: that banner is Go's, not Void's (Void has no Go backend and opens no WebSocket).
+
 ## What A-to-Mind is
 - **In Adam's words:** A-to-Mind is like Google, except Void *does* instead of searching. Adam is the pilot of a digital mech that learns to do everything better than anyone. It starts small: one win at a time.
 - **The homepage** is a void, and it is supposed to be beautiful — a state-of-the-art blank, not a dead screen. You call more beautiful things into it.
