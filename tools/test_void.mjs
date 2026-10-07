@@ -850,6 +850,9 @@ try {
   await t.ask('gas cost for 320 miles at 28 mpg $3.59 a gallon', 700); const fuelPg = await t.page(); check('trip fuel', /Trip fuel/.test(fuelPg) && /Fuel needed/.test(fuelPg) && /Per mile/.test(fuelPg) && /gal/.test(fuelPg), fuelPg.slice(0, 180));
   await t.ask('20% tip on 45', 700); const tipPg = await t.page(); check('tip amount', /Tip/.test(tipPg) && /\$9/.test(tipPg) && /Total/.test(tipPg) && /\$54/.test(tipPg), tipPg.slice(0, 180));
   await t.ask('split $85 three ways with 20% tip', 700); const tipSplit = await t.page(); check('tip and split', /Tip and split|\/ person/.test(tipSplit) && /Total/.test(tipSplit) && /Tip each|Bill each/.test(tipSplit), tipSplit.slice(0, 180));
+  await t.ask('if i wake up at 7am when should i go to sleep', 700); const sleepPg = await t.page(); check('sleep: bedtimes for a 7 am wake-up (90-min cycles + 15 min to fall asleep, CDC hours)', /Bedtime/.test(sleepPg) && /11:15\s?PM/.test(sleepPg) && /9:45\s?PM/.test(sleepPg) && /12:45\s?AM/.test(sleepPg) && /aim for/.test(sleepPg) && /CDC/.test(sleepPg) && !/on your calendar/i.test(sleepPg), sleepPg.slice(0, 200));
+  await t.ask('if i go to bed at 11pm when should i wake up', 700); const wakePg = await t.page(); check('sleep: wake-up times for an 11 pm bedtime', /Wake-up time/.test(wakePg) && /6:45\s?AM/.test(wakePg) && /8:15\s?AM/.test(wakePg) && /5:15\s?AM/.test(wakePg), wakePg.slice(0, 200));
+  await t.ask('how much sleep does a teenager need', 700); const needPg = await t.page(); check('sleep: hours a teen needs (CDC)', /How much sleep/.test(needPg) && /8\u201310 hours/.test(needPg) && /CDC/.test(needPg), needPg.slice(0, 200));
   await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
@@ -1986,7 +1989,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'inventory', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'sleep', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',

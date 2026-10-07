@@ -34,6 +34,7 @@
 | enter your own Void | look + entry (row 13) | live — silent entry on first keep (a2m.void.entered.v1), "make my void deep blue / add stars / reset my void" saved per browser (a2m.void.look.v1), public surface stays plain (deploy verified 2026-09-25) |
 | weather | external skill file | live — first skill file (skills/weather.js, Open-Meteo, no key); loader fetches /skills/index.json and imports each skill before fallback (deploy verified 2026-09-25) |
 | the map | external skill file (row 2 step 1) | live — second skill file (skills/map.js): "show the map" renders the assimilation map, all 13 rows with status (deploy verified 2026-09-25) |
+| sleep | external skill file (health) | shipped 2026-10-07 by quick build (grok/quick-sleep) — skills/sleep.js: bedtimes from a wake-up time ("if i wake up at 7am when should i go to sleep"), wake-up times from a bedtime or "now", "sleep calculator", and how much sleep each age needs (CDC table); 15 min to fall asleep + 90-min cycles like sleepyti.me; these asks used to be filed as calendar events. Next in health: a pregnancy due-date card ("due date if my last period was march 1" still lands on the calendar) |
 
 **Shared patterns (≥30% reuse target for Next):**  
 `mount*` · `ensure*` · `wantsCreate*` / `wantsRemove*` · `wantsAlter` / `apply*Alters` · `colorFrom` · `uid` / `load` / `save` / `render` · `bindDrag` · `say` · `loopLog`
