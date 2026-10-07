@@ -47,6 +47,7 @@ export function looksLikeCode(code, lang) {
   let n = 0;
   if (/[{};]\s*$/m.test(s)) n++;
   if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert|val|guard|DROP|ALTER|TRUNCATE)\b/.test(s)) n++;
+  if (/^\s*print\s+['"]/m.test(s)) n++; // Python 2's print 'x'
   if (/[=!<>]=|=>|->|\+\+|&&|\|\||::|:=|\w\(|\)\s*[{:]|\w\.\w+\s*[-+*/]?=[^=]/.test(s)) n++;
   if (/^(?: {2,}|\t)\S/m.test(s)) n++;
   if (/^\s*(?:#!|<\?php|<[a-z]+[\s>]|#include|@\w+)/m.test(s)) n++;
@@ -209,6 +210,14 @@ const RULES = [
     'a value is pasted into the SQL text with #{}: a value like \' OR 1=1 -- changes the query (SQL injection). Pass it separately: where("name = ?", params[:name]), or where(name: params[:name]).'],
   ['requests-no-timeout', 'risk', ['python'], (m, r, x) => /\brequests\.(?:get|post|put|patch|delete|head|request)\s*\(/.test(m) && (!/\btimeout\s*=/.test(x.statement()) || /\btimeout\s*=\s*None\b/.test(x.statement())),
     'requests waits forever by default: if the server never answers, this line hangs the program. Give it a timeout in seconds: requests.get(url, timeout=10).'],
+  ['py2-print', 'bug', ['python'], (m, r) => /^\s*print\s+(?:['"]|[A-Za-z_]\w*\s*$)/.test(r),
+    'print without parentheses is Python 2: in Python 3 it is a syntax error. Write print("hello").'],
+  ['wildcard-import', 'style', ['python'], (m) => /^\s*from\s+[\w.]+\s+import\s+\*/.test(m),
+    'import * pulls every name from the module into yours, so it is unclear where a name comes from and one can silently replace another (os.open hides the built-in open). Import the names you use: from os import path, getcwd.'],
+  ['null-deref', 'bug', ['java', 'csharp', ...JS], (m) => /\b(\w+)\s*=\s*null\s*;(?![^;]*\b\1\s*=)[^;]*;?[^;]*?\b\1\s*\.\s*\w+/.test(m),
+    'the variable is set to null and then used with a dot, so this line throws (a NullPointerException in Java, a TypeError in JavaScript). Give it a value first, or check: if (s != null).'],
+  ['php-include-input', 'risk', ['php'], (m, r) => /\b(?:include|require)(?:_once)?\b\s*\(?[^;]*\$_(?:GET|POST|REQUEST|COOKIE)\b/.test(r),
+    'the file to include comes from the request, so a visitor chooses which file runs: ../../etc/passwd to read files, or a URL to run their own code. Map allowed names to files: $pages = ["home" => "home.php"]; include $pages[$_GET["page"]] ?? "home.php";'],
   ['verify-false', 'risk', ['python', ...JS], (m) => /\bverify\s*=\s*False\b|rejectUnauthorized\s*:\s*false\b|NODE_TLS_REJECT_UNAUTHORIZED/.test(m),
     'certificate checks are turned off, so anyone on the network can read or change this traffic. Fix the certificate (or point to the right CA bundle) instead.'],
   ['rm-rf-var', 'risk', ['shell'], (m, r) => /\brm\s+-[a-z]*r[a-z]*f?[a-z]*\s+(?:"?\$\{?\w+\}?"?\/?)(?:\s|$|\/)/i.test(r) && !/\$\{\w+:\?/.test(r),

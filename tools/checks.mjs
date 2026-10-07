@@ -23,6 +23,10 @@ for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.m
   results.push(['files', !garbled.length && !broken.length, garbled.length || broken.length
     ? [garbled.length && 'garbled text in ' + garbled.join(', '), broken.length && 'does not parse: ' + broken.join(', ')].filter(Boolean).join('; ')
     : files.length + ' files: clean text, every script parses']); }
+// the bench and the deploy serve void-live-deploy/index.html: an edit to void.html that was not copied there is tested stale, silently
+{ const read = (f) => readFileSync(resolve(here, '..', f), 'utf8').replace(/\r\n/g, '\n'), src = read('void.html');
+  const stale = ['void-live-deploy/index.html', 'void-live-deploy/void.html'].filter((f) => read(f) !== src);
+  results.push(['copies', !stale.length, stale.length ? stale.join(' and ') + ' differ from void.html: cp void.html void-live-deploy/index.html && cp void.html void-live-deploy/void.html' : 'void.html and both deploy copies match']); }
 { const r = run([resolve(here, 'bench.mjs'), '--score']); let b = null; try { b = JSON.parse(r.out[r.out.length - 1]); } catch (_) {}
   const best = JSON.parse(readFileSync(resolve(here, 'bench.best.json'), 'utf8'));
   const ok = !!b && b.score >= best.score && b.total >= best.total;

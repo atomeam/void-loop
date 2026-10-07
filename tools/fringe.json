@@ -1033,5 +1033,30 @@
     ],
     "sha256": "7d77c79a703e7abd03cffde42ebcbaadb749ffa4765de9d51f46202db77ddd3b",
     "emit": false
+  },
+  {
+    "run": 42,
+    "at": "2026-10-07T10:42:33Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention-4.html",
+    "sources": [
+      {
+        "claim": "Search for a target defined by one feature (colour alone) is about as fast whatever the number of items; search for a conjunction of features slows with each item added",
+        "source": "https://doi.org/10.1016/0010-0285(80)90005-5",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Search slopes form a continuum rather than two clean classes; feature searches cluster near 0 ms per item and conjunction searches higher",
+        "source": "https://doi.org/10.1111/1467-9280.00006",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Measuring their own cost per item changes how people judge cluttered screens and alerts",
+        "source": "drafts/fringe/attention-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "f3a7a20aff93526e35b6ac834bd439690108091d5d15151a96e78430b2854a8d",
+    "emit": false
   }
 ]
