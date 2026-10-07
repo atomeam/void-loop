@@ -892,6 +892,15 @@ try {
   await t.ask('when am i ovulating if my last period was march 1 2026', 700); const ovPg = await t.page(); check('ovulation: fertile window and ovulation day from the last period (next period - 14; six days ending on ovulation, Wilcox NEJM 1995)', /Fertile window/.test(ovPg) && /fertile March 10 \u2013 March 15/.test(ovPg) && /ovulation March 15/.test(ovPg) && /NEJM/.test(ovPg) && /ACOG/.test(ovPg) && !/on your calendar|don't know this yet/i.test(ovPg), ovPg.slice(0, 220));
   await t.ask('my cycle is 26 to 32 days and my last period was october 1 2026 when am i fertile', 700); const ovRg = await t.page(); check('ovulation: irregular cycles as a range (shortest - 18 to longest - 11)', /October 8\u201321, 2026/.test(ovRg) && /shortest cycle minus 18/.test(ovRg), ovRg.slice(0, 220));
   await t.ask('ovulation calculator', 700); const ovCalc = await t.page(); check('ovulation: "ovulation calculator" opens a live form', /Ovulation calculator/.test(ovCalc) && /luteal phase/.test(ovCalc) && /Ovulation:/.test(ovCalc), ovCalc.slice(0, 220));
+  // period log (this browser only): three starts 28 days apart give a 28-day average; "when am i ovulating" with no date then reads the log
+  { const d0 = new Date(); d0.setHours(12, 0, 0, 0); const ago = (n) => { const d = new Date(d0); d.setDate(d.getDate() - n); return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }); };
+    await t.ask('clear my period log', 500);
+    await t.ask('my period started on ' + ago(66), 500); await t.ask('my period started on ' + ago(38), 500); await t.ask('my period started on ' + ago(10), 700);
+    const plog = await t.page(); check('period: "my period started on <date>" logs it; three starts 28 days apart give a 28-day average, today\'s cycle day and the next period', /Period log/.test(plog) && /3 periods logged/.test(plog) && /28-day cycle/.test(plog) && /day 11 of your cycle/.test(plog) && /in 18 days/.test(plog) && !/on your calendar/i.test(plog), plog.slice(0, 260));
+    await t.ask('when am i ovulating', 700); const povl = await t.page(); check('period -> ovulation: "when am i ovulating" with no date uses the logged period and averaged cycle', /Fertile window/.test(povl) && /your period log, 2 cycles averaged/.test(povl) && /28-day cycle/.test(povl), povl.slice(0, 260));
+    await t.ask('is my period late', 600); const plate = await t.page(); check('period: "is my period late" reads the log', /Not late/.test(plate) && /in 18 days/.test(plate), plate.slice(0, 200));
+    await t.ask('remove my last period', 600); const prm = await t.page(); check('period: "remove my last period" takes the newest entry off', /Took off the period/.test(prm) && /2 periods logged/.test(prm), prm.slice(0, 200));
+    await t.ask('clear my period log', 500); const pcl = await t.page(); check('period: "clear my period log" empties it (nothing left in localStorage)', /Cleared your period log/.test(pcl) && (await t.p.evaluate(() => localStorage.getItem('a2m.void.cycle.v1'))) === null, pcl.slice(0, 160)); }
   await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
@@ -2028,7 +2037,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'sleep', 'pregnancy', 'ovulation', 'inventory', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'sleep', 'pregnancy', 'ovulation', 'period', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
