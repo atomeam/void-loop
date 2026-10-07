@@ -54,7 +54,7 @@ export function pickIds(order, target, selected, where) {
   }
   if (/^(?:group|grouped (?:things|ones|stuff|items)|bunch|cluster)$/.test(target.word)) { // "bring the group to the front": every member of the group (skills/group.js)
     const sel = list.find((t) => t.id === selected && t.group);
-    const g = sel ? sel.group : list.filter((t) => t.group).map((t) => t.group).sort().pop();
+    const g = sel ? sel.group : list.filter((t) => t.group).map((t) => t.group).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)).pop(); // newest group (text ids)
     return g ? list.filter((t) => t.group === g).map((t) => t.id) : [];
   }
   const w = target.word.replace(/s$/, '');

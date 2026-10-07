@@ -135,7 +135,7 @@ export function currentGroup(order, selected) {
   const sel = order.find((t) => t && t.id === selected && t.group);
   if (sel) return sel.group;
   const gs = order.filter((t) => t && t.group).map((t) => t.group);
-  return gs.sort().pop() || null;
+  return gs.sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)).pop() || null; // ids are text (time in base 36), newest last
 }
 
 /** Move every member so the group's box lands at `to` (or shifts by dx/dy). boxes: id -> {w,h}. Pure. */
