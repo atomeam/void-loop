@@ -933,5 +933,30 @@
     ],
     "sha256": "841b6cb28423be77d1a8f7a18e84a87e928749404ea07347aed5cf491d0b0acf",
     "emit": false
+  },
+  {
+    "run": 38,
+    "at": "2026-10-07T06:45:23Z",
+    "family": "anomalous-event-timeline",
+    "draft": "drafts/fringe/anomalous-event-timeline-3.html",
+    "sources": [
+      {
+        "claim": "Flying-bomb hits on south London, believed to be aimed at particular districts, fitted a random (Poisson) distribution",
+        "source": "https://doi.org/10.1017/S0020268100035435",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "People see streaks and clusters in random sequences and read them as meaningful (the clustering illusion)",
+        "source": "https://doi.org/10.1016/0010-0285(85)90010-6",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Comparing a personal log of odd events against same-size random timelines changes how much people read into a run of events",
+        "source": "drafts/fringe/anomalous-event-timeline-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "03583674948f13b1cd811b9f0cb5abab87420687ceeb4d093c22fa59d056e45c",
+    "emit": false
   }
 ]
