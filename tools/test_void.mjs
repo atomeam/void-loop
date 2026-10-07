@@ -2073,7 +2073,7 @@ try {
   const v1 = othApi && othApi.legalMoves(init, 1);
   const v2 = othApi && othApi.legalMoves(init, 2);
   const cnt = othApi && othApi.countDiscs(init);
-  const ai = othApi && othApi.voidMove(init);
+  const ai = othApi && othApi.voidMove(init, 2);
   check('othello: listed with examples and near misses; examples route only to it; engine flips, valid moves, counts, and AI work',
     !!othMod && othMod.examples.length >= 4 && (othMod.nearMisses || []).length >= 3
       && othMod.examples.every((e) => firstNs(e) === 'othello') && othMod.nearMisses.every((e) => firstNs(e) !== 'othello')

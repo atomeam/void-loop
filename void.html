@@ -468,6 +468,14 @@
     .vpage .wtime { font-size: 30px; font-weight: 300; font-variant-numeric: tabular-nums; white-space: nowrap; }
     .vpage .tr-copy { font: inherit; font-size: 13px; color: var(--fg); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: 5px 14px; cursor: pointer; }
     .vpage .tr-copy:hover, .vpage .tr-copy:focus-visible { background: rgba(255,255,255,.12); }
+    /* presence: the pill's rim catches light as the pointer nears, and a question sinks into the void (nebula look only) */
+    html[data-fx="nebula"] #row { position: relative; --near: 0; --ang: 0deg; }
+    html[data-fx="nebula"] #row::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1.5px; pointer-events: none;
+      background: conic-gradient(from var(--ang), #3fb4ff, #9a7bff, #ff6fb1, #45e8c8, #3fb4ff);
+      -webkit-mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+      opacity: calc(var(--near) * .6); filter: saturate(1.4); }
+    .void-eaten { position: fixed; z-index: 5; pointer-events: none; white-space: nowrap; color: #cfd8f0; transform-origin: center; }
+    @media (prefers-reduced-motion: reduce) { html[data-fx="nebula"] #row::before { opacity: 0; } }
     @media (prefers-reduced-motion: reduce) {
       .thing, .vpage, .thing.arrive { animation: none !important; transition: opacity .2s ease !important; }
       .vpage, .vpage.on { transform: translate(-50%, -46%); filter: none; }
@@ -3138,7 +3146,9 @@ return { ok: true, detail: 'timer-reset' };
     function fmtNum(n) { return (Math.round(n * 100) / 100).toString(); }
     // "how many cups in a liter" -> "1 liter in cups"
     function calcNormalize(lower) {
-      return lower.replace(/^(how\s+many\s+[a-z]+)\s+of\s+(?:water|milk|liquid)\s+/, '$1 ').replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?(?:in|per)\s+(?:a|an|one|1)\s+([a-z]+)\s*\??$/, '1 $2 in $1');
+      lower = lower.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
+      return lower.replace(/^(how\s+many\s+[a-z]+)\s+of\s+(?:water|milk|liquid)\s+/, '$1 ').replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?(?:in|per)\s+(?:a|an|one|1)\s+([a-z]+)\s*\??$/, '1 $2 in $1')
+        .replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?in\s+(\d+(?:\.\d+)?)\s+([a-z]+)\s*\??$/, '$2 $3 in $1'); // "how many grams in 2.5 kilograms"
     }
     // Currency asks: every currency the ECB publishes a reference rate for (Frankfurter serves them, no key).
     // "100 usd in eur", "$50 to euros", "£20 in yen", "250 canadian dollars to pounds", "1000 rupees in dollars", "how much is 20 euros in dollars".
@@ -3251,11 +3261,21 @@ return { ok: true, detail: 'timer-reset' };
     function wordMath(lower) {
       let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
       // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
+      t = t.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
       // "a quarter cup", "half a cup", "a third of a cup" -> numbers the converters can read
       t = t.replace(/\b(?:a\s+|one\s+)?quarter\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.25 $1').replace(/\b(?:a\s+|one\s+)?half\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.5 $1')
         .replace(/\b(?:a\s+|one\s+)?third\s+(?:of\s+)?(?:a\s+)?(cup)/g, '0.3333 $1');
       t = t.replace(/(\d+(?:\.\d+)?)\s+(thousand|million|billion|trillion)\b/g, (_, n, u) => String(+n * { thousand: 1e3, million: 1e6, billion: 1e9, trillion: 1e12 }[u]));
-      let m = t.match(/^is\s+(\d{1,15})\s+(?:a\s+)?prime(?:\s+number)?$/);
+      // "15% off 80 dollars": the money word after the price (without it the earlier "% of" reading took over)
+      let m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+off\s+(?:of\s+)?[$€£]?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|euros?|pounds?|usd|eur|gbp)$/);
+      if (m) { const save = +m[2] * +m[1] / 100, v = Math.round((+m[2] - save) * 100) / 100; return { value: v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: m[1] + '% off ' + m[2] + ' (you save ' + (Math.round(save * 100) / 100) + ')' }; }
+      // "roman numerals for 2026", "2026 in roman" is handled further down
+      m = t.match(/^(?:the\s+)?roman\s+numerals?\s+(?:for|of)\s+(\d{1,4})$/);
+      if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
+      // "0.2 as a percent", "0.875 to a percentage"
+      m = t.match(/^(\d*\.\d+|\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?(?:percent|percentage|%)$/);
+      if (m) { const v = Math.round(+m[1] * 100 * 1e6) / 1e6; return { value: v + '%', note: m[1] + ' × 100 = ' + v + '%' }; }
+      m = t.match(/^is\s+(\d{1,15})\s+(?:a\s+)?prime(?:\s+number)?$/);
       if (m) { const n = +m[1]; let p = n > 1; for (let i = 2; p && i * i <= n; i++) if (n % i === 0) p = i; return { value: p === true ? 'Yes' : 'No', note: p === true ? n + ' is prime.' : n + ' is not prime' + (typeof p === 'number' ? ' (' + p + ' × ' + n / p + ')' : '') + '.' }; }
       m = t.match(/^how\s+many\s+(second|minute|hour|day|week)s?\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+(minute|hour|day|week|year)$/);
       if (m && TIME_S[m[2]] > TIME_S[m[1]]) { const v = TIME_S[m[2]] / TIME_S[m[1]]; return { value: v.toLocaleString(), note: 'one ' + m[2] + ' = ' + v.toLocaleString() + ' ' + m[1] + 's' + (m[2] === 'year' ? ' (365.25 days)' : '') + '.' }; }
@@ -4912,6 +4932,57 @@ return { ok: true, detail: 'timer-reset' };
       return true;
     }
 
+    // --- Code review (lib/code-review.js, /api/answer mode 'review'). "review my code" + the code: the quick checks show at once
+    // (bugs, security holes, risky habits, with line numbers), then the model's closer read is added under them. Without code yet,
+    // Void asks for it and the next paste is reviewed. Keys and passwords are masked before anything is shown or sent.
+    const reviewReady = import('/lib/code-review.js').catch(() => null);
+    let pendingReview = null;
+    const REVIEW_KIND = { bug: ['bug', '#ff8a8a'], risk: ['risk', '#ffc46b'], style: ['style', '#8ab4ff'], note: ['note', '#9a9a9a'] };
+    async function showReview(ask, code, cr) {
+      const title = (ask || 'Code review').split('\n')[0].slice(0, 140), named = cr.langNamed(title), res = cr.ruleReview(code, named ? { lang: named } : {}), safe = cr.redact ? cr.redact(code) : code;
+      const list = res.findings.length
+        ? '<ol style="padding-left:20px;margin:8px 0">' + res.findings.map((f) => '<li style="margin:0 0 10px"><span style="color:' + REVIEW_KIND[f.kind][1] + ';font-weight:600">' + REVIEW_KIND[f.kind][0] + '</span> · line ' + f.line
+          + (f.also ? ' (and ' + f.also + ' more like it)' : '') + '<br>' + esc(f.message) + '<pre style="white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.06);padding:6px 10px;border-radius:8px;margin:6px 0 0;font:12.5px/1.4 ui-monospace,Menlo,Consolas,monospace"><code>' + esc(f.text) + '</code></pre></li>').join('') + '</ol>'
+        : '<p>The quick checks found nothing wrong.</p>';
+      const head = '<h2>' + esc(title) + '</h2><div class="sub">' + esc(res.lang === 'code' ? 'code' : res.lang) + ' · ' + res.lines + ' line' + (res.lines === 1 ? '' : 's') + ' · ' + (res.findings.length ? res.findings.length + ' thing' + (res.findings.length === 1 ? '' : 's') + ' to look at' : 'nothing flagged') + '</div>';
+      // the fixes that never change what correct code means are made here, in the browser; the rest stay findings
+      const fx = cr.autoFix(code, named ? { lang: named } : {});
+      const fixed = fx.changes.length ? '<h3 style="margin:16px 0 6px;font-weight:500">Fixed version</h3><div class="sub">' + fx.changes.length + ' change' + (fx.changes.length === 1 ? '' : 's') + ' made here: ' + esc(Array.from(new Set(fx.changes.map((c) => c.what))).join('; ')) + '</div>'
+        + '<pre style="white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.06);padding:10px 12px;border-radius:8px;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto"><code data-fixed>' + esc(fx.code) + '</code></pre><button type="button" data-copy style="font:inherit;color:inherit;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 12px;cursor:pointer">copy the fixed code</button>' : '';
+      const el = showPage((p) => { p.innerHTML = head + list + fixed + '<div class="sub" data-deep>reading it more closely…</div>';
+        const b = p.querySelector('[data-copy]'); if (b) b.addEventListener('click', () => { try { navigator.clipboard.writeText(fx.code).then(() => { b.textContent = 'copied'; }, () => { b.textContent = 'select the code above to copy it'; }); } catch (_) { b.textContent = 'select the code above to copy it'; } }); });
+      say(res.findings.length ? res.findings.length + ' to look at' : 'looks clean so far');
+      loopLog({ domain: 'void.review', ask: currentAsk || title, score: 'pass', note: 'review ' + res.lang + ' ' + res.findings.length });
+      let j = null;
+      try {
+        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'review', ask: title, code: safe }) });
+        if (r.ok || r.status === 429) j = await r.json();
+      } catch (_) {}
+      if (vpageEl !== el) return 'review';
+      const deep = el.querySelector('[data-deep]');
+      if (deep) deep.outerHTML = j && j.answer ? '<h3 style="margin:16px 0 6px;font-weight:500">A closer read</h3>' + fixHtml(j.answer) + '<div class="src">Quick checks by Void, closer read by Void\'s model · keys and passwords were masked before it was read</div>'
+        : '<div class="src">Quick checks by Void' + (j && j.note === 'slow down' ? ' · the closer read is busy, ask again in a minute' : ' · the closer read is not available right now') + ' · keys and passwords are masked</div>';
+      return 'review';
+    }
+    async function handleReviewAsk(text, full) {
+      const cr = await Promise.race([reviewReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      if (!cr) return false;
+      if (pendingReview) {
+        const pr = pendingReview; pendingReview = null;
+        const code = cr.isReviewAsk(full) ? cr.codeOf(full) : full.replace(/\s*⏎\s*/g, '\n');
+        if (Date.now() < pr.until && cr.looksLikeCode(code)) { currentAsk = text; lastAsk = text; showReview(pr.ask, code, cr); return true; }
+      }
+      if (!cr.isReviewAsk(full)) return false;
+      currentAsk = text; lastAsk = text;
+      const code = cr.codeOf(full);
+      if (cr.looksLikeCode(code, cr.langNamed(full.split(/\n|\s*⏎/)[0]))) { showReview(full.split(/\n|\s*⏎/)[0].replace(/:\s*$/, '').split(':')[0], code, cr); return true; }
+      const title = text.replace(/\s*⏎[\s\S]*$/, '').slice(0, 140);
+      showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><p>Paste the code and I\'ll review it: bugs first, then security holes, then anything that will be hard to change later, each with the line and a fix. Any language. Keys and passwords are masked before it\'s read.</p>'; });
+      pendingReview = { ask: title, until: Date.now() + 600000 };
+      loopLog({ domain: 'void.review', ask: text, score: 'pass', note: 'asked for code' });
+      return true;
+    }
+
     // Asks real visitors made that Void couldn't answer, now answered (tools/grown.json lists each one; the tests replay them all).
     // Other languages: "do you speak …" and "what are you" in Portuguese, Hungarian, Spanish, French, German, Italian get a
     // reply in that language, honestly (the answer engine replies in the asker's language; some pages are still English).
@@ -5177,7 +5248,7 @@ return { ok: true, detail: 'timer-reset' };
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
       if (await handlePaidAsk(lower0)) return;
-      if (await handleFixAsk(text, restorePaste(text))) return;
+      { const full = restorePaste(text); if (await handleReviewAsk(text, full)) return; if (await handleFixAsk(text, full)) return; }
       if (handleVoiceAsk(lower0)) return;
       if (await handleGatedAsk(text)) return;
       takeUndoSnapshot();
@@ -5475,17 +5546,17 @@ return { ok: true, detail: 'timer-reset' };
     if (!gl) { document.documentElement.classList.add('no-gl'); cv.remove(); }
     else {
       const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
-      const fs = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform vec3 g;uniform vec3 b;
+      const fs = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform vec3 g;uniform vec3 b;uniform vec2 pl;uniform float at;
         float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
         float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
         float fb(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
-        void main(){vec2 uv=(gl_FragCoord.xy-.5*r)/r.y;vec2 q=uv+m*.035;
+        void main(){vec2 uv=(gl_FragCoord.xy-.5*r)/r.y;vec2 q=uv+m*.035;vec2 dl=uv-pl;q-=dl*exp(-dot(dl,dl)*3.)*at*.06;
           float T=t*.018;float f1=fb(q*1.6+vec2(T,-T*.6));float f2=fb(q*2.4+f1*1.3-vec2(T*.7,T));
           float neb=smoothstep(.3,.95,f2)*.85;
           vec3 tint=mix(g*2.2+vec3(.035,.02,.07),vec3(.05,.07,.16),.35);vec3 tint2=mix(g*1.6+vec3(.07,.02,.05),vec3(.12,.04,.14),.5);
           vec3 c=b+tint*neb+tint2*pow(f1,3.)*.35;
           float d=length(uv);float ring=exp(-pow((d-.34-sin(t*.21)*.006)*38.,2.))*.035;c+=vec3(.55,.65,1.)*ring*(.6+.4*sin(t*.3));
-          c*=1.-smoothstep(.25,1.15,d)*.55;
+          c*=(1.-smoothstep(.25,1.15,d)*.55)*(1.-at*.25)+vec3(.0,.01,.03)*at*exp(-dot(dl,dl)*6.);
           float s=step(.9985,h(floor(gl_FragCoord.xy*.5)))*(.35+.65*n(gl_FragCoord.xy*.02+t*.1));c+=s*.35;
           gl_FragColor=vec4(c,1.);}`;
       const sh = (tp, src) => { const s = gl.createShader(tp); gl.shaderSource(s, src); gl.compileShader(s); return s; };
@@ -5495,9 +5566,9 @@ return { ok: true, detail: 'timer-reset' };
         gl.useProgram(pr);
         const buf = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, buf); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
         const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-        const U = (k) => gl.getUniformLocation(pr, k); const uR = U('r'), uT = U('t'), uM = U('m'), uG = U('g'), uB = U('b');
+        const U = (k) => gl.getUniformLocation(pr, k); const uR = U('r'), uT = U('t'), uM = U('m'), uG = U('g'), uB = U('b'), uPl = U('pl'), uAt = U('at');
         const hex = (v, d) => { const m = /#?([0-9a-f]{6})/i.exec(v || '') || [0, d]; const x = parseInt(m[1], 16); return [(x >> 16 & 255) / 255, (x >> 8 & 255) / 255, (x & 255) / 255]; };
-        let mx = 0, my = 0, tx = 0, ty = 0, last = 0, raf = 0;
+        let mx = 0, my = 0, tx = 0, ty = 0, last = 0, raf = 0, att = 0;
         const scale = Math.min(1, 0.6 / Math.max(1, devicePixelRatio / 1.5));
         const size = () => { cv.width = Math.round(innerWidth * scale); cv.height = Math.round(innerHeight * scale); gl.viewport(0, 0, cv.width, cv.height); };
         size(); addEventListener('resize', size);
@@ -5506,6 +5577,9 @@ return { ok: true, detail: 'timer-reset' };
           raf = 0;
           if (now - last > 33 || reduce) {
             last = now; mx += (tx - mx) * .04; my += (ty - my) * .04;
+            const inp = document.getElementById('input'), rw = document.getElementById('row'); att += ((inp && document.activeElement === inp ? 1 : 0) - att) * .05;
+            if (rw) { const bb = rw.getBoundingClientRect(); gl.uniform2f(uPl, ((bb.left + bb.width / 2) - innerWidth / 2) / innerHeight, (innerHeight / 2 - (bb.top + bb.height / 2)) / innerHeight); }
+            gl.uniform1f(uAt, reduce ? 0 : att);
             const cs = getComputedStyle(document.documentElement);
             gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, reduce ? 40 : now / 1000); gl.uniform2f(uM, mx, my);
             gl.uniform3fv(uG, hex(cs.getPropertyValue('--void-glow'), '0b0b10')); gl.uniform3fv(uB, hex(cs.getPropertyValue('--void-bg'), '050505'));
@@ -5589,6 +5663,40 @@ return { ok: true, detail: 'timer-reset' };
         else if (!e.buttons) el.classList.add('lift');
       }, { passive: true });
     }
+  })();
+  </script>
+  <script>
+  // ---- Presence: pointer-near rim light on the pill, and the asked question sinks into the void (only with the nebula look) ----
+  (function () {
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const row = document.getElementById('row'), input = document.getElementById('input'), go = document.getElementById('go');
+    if (!row || !input || reduce) return;
+    const on = () => document.documentElement.dataset.fx === 'nebula';
+    addEventListener('pointermove', (e) => {
+      if (!on()) { row.style.setProperty('--near', '0'); return; }
+      const b = row.getBoundingClientRect(), cx = b.left + b.width / 2, cy = b.top + b.height / 2;
+      const dx = Math.max(Math.abs(e.clientX - cx) - b.width / 2, 0), dy = Math.max(Math.abs(e.clientY - cy) - b.height / 2, 0);
+      const near = Math.pow(Math.max(0, 1 - Math.hypot(dx, dy) / 240), 1.6);
+      row.style.setProperty('--near', (document.activeElement === input ? Math.max(near, .8) : near).toFixed(3));
+      row.style.setProperty('--ang', (Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI + 90).toFixed(1) + 'deg');
+    }, { passive: true });
+    input.addEventListener('focus', () => { if (on()) row.style.setProperty('--near', '.8'); });
+    input.addEventListener('blur', () => row.style.setProperty('--near', '0'));
+    const sink = () => {
+      const text = input.value.trim(); if (!text || !on() || !row.animate) return;
+      const b = input.getBoundingClientRect(), cs = getComputedStyle(input), g = document.createElement('div');
+      g.className = 'void-eaten'; g.setAttribute('aria-hidden', 'true'); g.textContent = text.slice(0, 120);
+      Object.assign(g.style, { left: b.left + 'px', top: b.top + 'px', height: b.height + 'px', lineHeight: b.height + 'px', font: cs.font, maxWidth: b.width + 'px', overflow: 'hidden' });
+      document.body.appendChild(g);
+      const dx = innerWidth / 2 - (b.left + Math.min(b.width, g.scrollWidth) / 2), dy = innerHeight * .42 - (b.top + b.height / 2);
+      const done = () => g.remove();
+      g.animate([{ transform: 'translate3d(0,0,0) scale(1)', filter: 'blur(0px)', opacity: .9 },
+                 { transform: 'translate3d(' + dx * .6 + 'px,' + dy * .6 + 'px,0) scale(.7)', filter: 'blur(2px)', opacity: .5, offset: .6 },
+                 { transform: 'translate3d(' + dx + 'px,' + dy + 'px,0) scale(.15)', filter: 'blur(8px)', opacity: 0 }],
+                { duration: 1100, easing: 'cubic-bezier(.55,0,.85,.45)', fill: 'forwards' }).finished.then(done, done);
+    };
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.isComposing) sink(); }, true);
+    if (go) go.addEventListener('click', sink, true);
   })();
   </script>
 </body>

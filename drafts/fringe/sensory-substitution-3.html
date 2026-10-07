@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · find it by ear (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible,#pad:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#pad{position:relative;width:100%;aspect-ratio:1/1;max-width:420px;border:1px solid rgba(255,255,255,.14);border-radius:12px;touch-action:manipulation;cursor:crosshair;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.05) 1px,transparent 1px);background-size:25% 25%}
+.dot{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%}
+.you{background:#7cf}.was{background:#fc9}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>find it by ear · draft · not published</h1>
+  <p class="note">Wear headphones. A point is hidden in the square. You only hear it: higher in the square is a higher note, and further right is louder in your right ear. Listen, then tap where you think it is. This is the same idea as devices that let blind people "see" through sound (The vOICe, 1992) or touch (Bach-y-Rita, 1969): people get better with practice. This page keeps your miss distance trial by trial, so you can see whether you improve. Everything stays in this browser.</p>
+  <div class="row"><button id="play" type="button">new point</button><button id="again" type="button" disabled>hear it again</button></div>
+  <div id="pad" role="button" tabindex="0" aria-label="the square: tap where you heard the point"></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.byear.v1',st={trials:[]},ac=null,cur=null;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&isFinite(t.err)&&t.err>=0})}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-500)}))}catch(_){}}
+  // the sound for a point (x, y in 0..1, y=0 at the top): pitch 220-1760 Hz on a log scale, pan -1..1
+  function voice(x,y){return{freq:Math.round(220*Math.pow(8,1-y)),pan:Math.round((x*2-1)*100)/100}}
+  function err(a,b){return Math.hypot(a.x-b.x,a.y-b.y)} // in square widths
+  // mean miss of the first and the last block of ten, the plain test of "better with practice"
+  function blocks(trials){var f=trials.slice(0,10),l=trials.slice(-10),m=function(a){return a.length?a.reduce(function(s,t){return s+t.err},0)/a.length:null};return{first:m(f),last:trials.length>=20?m(l):null,n:trials.length}}
+  function sound(p){if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A)return false;ac=new A()}if(ac.state==='suspended')ac.resume();
+    var v=voice(p.x,p.y),o=ac.createOscillator(),g=ac.createGain(),now=ac.currentTime;o.type='sine';o.frequency.value=v.freq;
+    var out=g;if(ac.createStereoPanner){var pn=ac.createStereoPanner();pn.pan.value=v.pan;g.connect(pn);out=pn}out.connect(ac.destination);o.connect(g);
+    g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(.25,now+.05);g.gain.setValueAtTime(.25,now+.75);g.gain.linearRampToValueAtTime(0,now+.85);o.start(now);o.stop(now+.9);return true}
+  function el(id){return document.getElementById(id)}
+  function clearDots(){el('pad').querySelectorAll('.dot').forEach(function(d){d.remove()})}
+  function dot(p,cls){var d=document.createElement('div');d.className='dot '+cls;d.style.left=p.x*100+'%';d.style.top=p.y*100+'%';el('pad').appendChild(d)}
+  el('play').addEventListener('click',function(){clearDots();cur={x:.05+Math.random()*.9,y:.05+Math.random()*.9};
+    if(!sound(cur)){el('state').textContent='this browser cannot play sound, so this page cannot run here';cur=null;return}
+    el('again').disabled=false;el('state').textContent='listen, then tap the square'});
+  el('again').addEventListener('click',function(){if(cur)sound(cur)});
+  function answer(p){if(!cur)return;var e=err(p,cur);dot(p,'you');dot(cur,'was');st.trials.push({err:Math.round(e*1000)/1000,at:Date.now()});save();
+    el('state').textContent='missed by '+Math.round(e*100)+'% of the square\'s width'+(e<.1?' · close':'');cur=null;el('again').disabled=true;draw()}
+  el('pad').addEventListener('click',function(ev){var r=el('pad').getBoundingClientRect();answer({x:Math.min(1,Math.max(0,(ev.clientX-r.left)/r.width)),y:Math.min(1,Math.max(0,(ev.clientY-r.top)/r.height))})});
+  function draw(){var b=blocks(st.trials);if(!b.n){el('score').textContent='';return}
+    el('score').textContent=b.n+' trial'+(b.n>1?'s':'')+' · first ten: '+Math.round(b.first*100)+'% of the width on average'+(b.last!=null?' · last ten: '+Math.round(b.last*100)+'%'+(b.last<b.first?' (closer)':' (no closer yet)'):'\n20 trials before first and last can be compared; guessing at random misses by about 52% on average')}
+  draw();
+  window.__byear={voice:voice,err:err,blocks:blocks}; // for checks
+})();
+</script>
+</body>
+</html>

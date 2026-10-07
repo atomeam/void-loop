@@ -11,6 +11,10 @@ runs:
       with:
         node-version: 22
         cache: npm
+    - name: node tools/guard-source.mjs (every script parses; a broken file fails here in seconds, not after the full suite)
+      if: inputs.bench != 'only'
+      shell: bash
+      run: node tools/guard-source.mjs
     - uses: actions/setup-python@v5
       with:
         python-version: '3.12'
@@ -49,6 +53,16 @@ runs:
       if: inputs.bench != 'only'
       shell: bash
       run: node --test tools/dispatcher.test.mjs
+    - name: disk tools and memory API (void_lens, ouroboros, its download pack, /api/memory)
+      if: inputs.bench != 'only'
+      shell: bash
+      run: |
+        git config --global user.email ci@example.invalid
+        git config --global user.name ci
+        python tools/void_lens_test.py
+        python tools/ouroboros_test.py
+        python tools/ouroboros_pack_test.py
+        node --test tools/memory.test.mjs
     - name: node tools/test_glyphs.mjs (cross-sense board draft)
       if: inputs.bench != 'only'
       shell: bash

@@ -3138,7 +3138,9 @@ return { ok: true, detail: 'timer-reset' };
     function fmtNum(n) { return (Math.round(n * 100) / 100).toString(); }
     // "how many cups in a liter" -> "1 liter in cups"
     function calcNormalize(lower) {
-      return lower.replace(/^(how\s+many\s+[a-z]+)\s+of\s+(?:water|milk|liquid)\s+/, '$1 ').replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?(?:in|per)\s+(?:a|an|one|1)\s+([a-z]+)\s*\??$/, '1 $2 in $1');
+      lower = lower.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
+      return lower.replace(/^(how\s+many\s+[a-z]+)\s+of\s+(?:water|milk|liquid)\s+/, '$1 ').replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?(?:in|per)\s+(?:a|an|one|1)\s+([a-z]+)\s*\??$/, '1 $2 in $1')
+        .replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?in\s+(\d+(?:\.\d+)?)\s+([a-z]+)\s*\??$/, '$2 $3 in $1'); // "how many grams in 2.5 kilograms"
     }
     // Currency asks: every currency the ECB publishes a reference rate for (Frankfurter serves them, no key).
     // "100 usd in eur", "$50 to euros", "£20 in yen", "250 canadian dollars to pounds", "1000 rupees in dollars", "how much is 20 euros in dollars".
@@ -3251,11 +3253,21 @@ return { ok: true, detail: 'timer-reset' };
     function wordMath(lower) {
       let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
       // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
+      t = t.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
       // "a quarter cup", "half a cup", "a third of a cup" -> numbers the converters can read
       t = t.replace(/\b(?:a\s+|one\s+)?quarter\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.25 $1').replace(/\b(?:a\s+|one\s+)?half\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.5 $1')
         .replace(/\b(?:a\s+|one\s+)?third\s+(?:of\s+)?(?:a\s+)?(cup)/g, '0.3333 $1');
       t = t.replace(/(\d+(?:\.\d+)?)\s+(thousand|million|billion|trillion)\b/g, (_, n, u) => String(+n * { thousand: 1e3, million: 1e6, billion: 1e9, trillion: 1e12 }[u]));
-      let m = t.match(/^is\s+(\d{1,15})\s+(?:a\s+)?prime(?:\s+number)?$/);
+      // "15% off 80 dollars": the money word after the price (without it the earlier "% of" reading took over)
+      let m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+off\s+(?:of\s+)?[$€£]?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|euros?|pounds?|usd|eur|gbp)$/);
+      if (m) { const save = +m[2] * +m[1] / 100, v = Math.round((+m[2] - save) * 100) / 100; return { value: v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: m[1] + '% off ' + m[2] + ' (you save ' + (Math.round(save * 100) / 100) + ')' }; }
+      // "roman numerals for 2026", "2026 in roman" is handled further down
+      m = t.match(/^(?:the\s+)?roman\s+numerals?\s+(?:for|of)\s+(\d{1,4})$/);
+      if (m && +m[1] > 0 && +m[1] < 4000) { let n = +m[1], r = ''; for (const [v, sy] of [[1000, 'M'], [900, 'CM'], [500, 'D'], [400, 'CD'], [100, 'C'], [90, 'XC'], [50, 'L'], [40, 'XL'], [10, 'X'], [9, 'IX'], [5, 'V'], [4, 'IV'], [1, 'I']]) while (n >= v) { r += sy; n -= v; } return { value: r, note: m[1] + ' in Roman numerals' }; }
+      // "0.2 as a percent", "0.875 to a percentage"
+      m = t.match(/^(\d*\.\d+|\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?(?:percent|percentage|%)$/);
+      if (m) { const v = Math.round(+m[1] * 100 * 1e6) / 1e6; return { value: v + '%', note: m[1] + ' × 100 = ' + v + '%' }; }
+      m = t.match(/^is\s+(\d{1,15})\s+(?:a\s+)?prime(?:\s+number)?$/);
       if (m) { const n = +m[1]; let p = n > 1; for (let i = 2; p && i * i <= n; i++) if (n % i === 0) p = i; return { value: p === true ? 'Yes' : 'No', note: p === true ? n + ' is prime.' : n + ' is not prime' + (typeof p === 'number' ? ' (' + p + ' × ' + n / p + ')' : '') + '.' }; }
       m = t.match(/^how\s+many\s+(second|minute|hour|day|week)s?\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+(minute|hour|day|week|year)$/);
       if (m && TIME_S[m[2]] > TIME_S[m[1]]) { const v = TIME_S[m[2]] / TIME_S[m[1]]; return { value: v.toLocaleString(), note: 'one ' + m[2] + ' = ' + v.toLocaleString() + ' ' + m[1] + 's' + (m[2] === 'year' ? ' (365.25 days)' : '') + '.' }; }
@@ -4912,6 +4924,57 @@ return { ok: true, detail: 'timer-reset' };
       return true;
     }
 
+    // --- Code review (lib/code-review.js, /api/answer mode 'review'). "review my code" + the code: the quick checks show at once
+    // (bugs, security holes, risky habits, with line numbers), then the model's closer read is added under them. Without code yet,
+    // Void asks for it and the next paste is reviewed. Keys and passwords are masked before anything is shown or sent.
+    const reviewReady = import('/lib/code-review.js').catch(() => null);
+    let pendingReview = null;
+    const REVIEW_KIND = { bug: ['bug', '#ff8a8a'], risk: ['risk', '#ffc46b'], style: ['style', '#8ab4ff'], note: ['note', '#9a9a9a'] };
+    async function showReview(ask, code, cr) {
+      const title = (ask || 'Code review').split('\n')[0].slice(0, 140), named = cr.langNamed(title), res = cr.ruleReview(code, named ? { lang: named } : {}), safe = cr.redact ? cr.redact(code) : code;
+      const list = res.findings.length
+        ? '<ol style="padding-left:20px;margin:8px 0">' + res.findings.map((f) => '<li style="margin:0 0 10px"><span style="color:' + REVIEW_KIND[f.kind][1] + ';font-weight:600">' + REVIEW_KIND[f.kind][0] + '</span> · line ' + f.line
+          + (f.also ? ' (and ' + f.also + ' more like it)' : '') + '<br>' + esc(f.message) + '<pre style="white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.06);padding:6px 10px;border-radius:8px;margin:6px 0 0;font:12.5px/1.4 ui-monospace,Menlo,Consolas,monospace"><code>' + esc(f.text) + '</code></pre></li>').join('') + '</ol>'
+        : '<p>The quick checks found nothing wrong.</p>';
+      const head = '<h2>' + esc(title) + '</h2><div class="sub">' + esc(res.lang === 'code' ? 'code' : res.lang) + ' · ' + res.lines + ' line' + (res.lines === 1 ? '' : 's') + ' · ' + (res.findings.length ? res.findings.length + ' thing' + (res.findings.length === 1 ? '' : 's') + ' to look at' : 'nothing flagged') + '</div>';
+      // the fixes that never change what correct code means are made here, in the browser; the rest stay findings
+      const fx = cr.autoFix(code, named ? { lang: named } : {});
+      const fixed = fx.changes.length ? '<h3 style="margin:16px 0 6px;font-weight:500">Fixed version</h3><div class="sub">' + fx.changes.length + ' change' + (fx.changes.length === 1 ? '' : 's') + ' made here: ' + esc(Array.from(new Set(fx.changes.map((c) => c.what))).join('; ')) + '</div>'
+        + '<pre style="white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.06);padding:10px 12px;border-radius:8px;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto"><code data-fixed>' + esc(fx.code) + '</code></pre><button type="button" data-copy style="font:inherit;color:inherit;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 12px;cursor:pointer">copy the fixed code</button>' : '';
+      const el = showPage((p) => { p.innerHTML = head + list + fixed + '<div class="sub" data-deep>reading it more closely…</div>';
+        const b = p.querySelector('[data-copy]'); if (b) b.addEventListener('click', () => { try { navigator.clipboard.writeText(fx.code).then(() => { b.textContent = 'copied'; }, () => { b.textContent = 'select the code above to copy it'; }); } catch (_) { b.textContent = 'select the code above to copy it'; } }); });
+      say(res.findings.length ? res.findings.length + ' to look at' : 'looks clean so far');
+      loopLog({ domain: 'void.review', ask: currentAsk || title, score: 'pass', note: 'review ' + res.lang + ' ' + res.findings.length });
+      let j = null;
+      try {
+        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'review', ask: title, code: safe }) });
+        if (r.ok || r.status === 429) j = await r.json();
+      } catch (_) {}
+      if (vpageEl !== el) return 'review';
+      const deep = el.querySelector('[data-deep]');
+      if (deep) deep.outerHTML = j && j.answer ? '<h3 style="margin:16px 0 6px;font-weight:500">A closer read</h3>' + fixHtml(j.answer) + '<div class="src">Quick checks by Void, closer read by Void\'s model · keys and passwords were masked before it was read</div>'
+        : '<div class="src">Quick checks by Void' + (j && j.note === 'slow down' ? ' · the closer read is busy, ask again in a minute' : ' · the closer read is not available right now') + ' · keys and passwords are masked</div>';
+      return 'review';
+    }
+    async function handleReviewAsk(text, full) {
+      const cr = await Promise.race([reviewReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      if (!cr) return false;
+      if (pendingReview) {
+        const pr = pendingReview; pendingReview = null;
+        const code = cr.isReviewAsk(full) ? cr.codeOf(full) : full.replace(/\s*⏎\s*/g, '\n');
+        if (Date.now() < pr.until && cr.looksLikeCode(code)) { currentAsk = text; lastAsk = text; showReview(pr.ask, code, cr); return true; }
+      }
+      if (!cr.isReviewAsk(full)) return false;
+      currentAsk = text; lastAsk = text;
+      const code = cr.codeOf(full);
+      if (cr.looksLikeCode(code, cr.langNamed(full.split(/\n|\s*⏎/)[0]))) { showReview(full.split(/\n|\s*⏎/)[0].replace(/:\s*$/, '').split(':')[0], code, cr); return true; }
+      const title = text.replace(/\s*⏎[\s\S]*$/, '').slice(0, 140);
+      showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><p>Paste the code and I\'ll review it: bugs first, then security holes, then anything that will be hard to change later, each with the line and a fix. Any language. Keys and passwords are masked before it\'s read.</p>'; });
+      pendingReview = { ask: title, until: Date.now() + 600000 };
+      loopLog({ domain: 'void.review', ask: text, score: 'pass', note: 'asked for code' });
+      return true;
+    }
+
     // Asks real visitors made that Void couldn't answer, now answered (tools/grown.json lists each one; the tests replay them all).
     // Other languages: "do you speak …" and "what are you" in Portuguese, Hungarian, Spanish, French, German, Italian get a
     // reply in that language, honestly (the answer engine replies in the asker's language; some pages are still English).
@@ -5177,7 +5240,7 @@ return { ok: true, detail: 'timer-reset' };
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
       if (await handlePaidAsk(lower0)) return;
-      if (await handleFixAsk(text, restorePaste(text))) return;
+      { const full = restorePaste(text); if (await handleReviewAsk(text, full)) return; if (await handleFixAsk(text, full)) return; }
       if (handleVoiceAsk(lower0)) return;
       if (await handleGatedAsk(text)) return;
       takeUndoSnapshot();

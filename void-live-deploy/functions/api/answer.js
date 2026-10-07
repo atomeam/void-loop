@@ -12,6 +12,7 @@
 // An ask about Void itself ("what's next?", "what are you building?") skips Wikipedia and the cache: it is answered from
 // Void's own facts, its skills, growth inbox and will (lib/self-context.js), so the answer is about this project, not generic.
 import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
+import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/code-review.js';
 import { DEFAULT_MODEL, PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { isSelfAsk, readSelf, selfFacts, SELF_RULE } from '../../lib/self-context.js';
@@ -81,12 +82,39 @@ async function fixAnswer(request, env, body) {
   return Response.json({ answer: rules, sources: [], fix: rules ? 'rules' : null, platform, note });
 }
 
+// Code review (lib/code-review.js): the quick checks always run and come back as structured findings; the model adds a closer
+// read, told what the checks found so it can confirm, drop or add. Keys are masked before the model or any log sees the code.
+async function reviewAnswer(request, env, body) {
+  const ask = redact(String(body.ask || 'review this code').replace(/[\u0000-\u0008\u000b-\u001f]/g, ' ').trim().slice(0, 300));
+  const code = redact(String(body.code || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').slice(0, 12000));
+  if (code.trim().length < 8) return new Response('empty', { status: 400 });
+  // a PR diff was already checked file by file (tools/review-pr.mjs); its findings come in body.found
+  const named = langNamed(ask), res = body.diff ? { lang: 'diff', findings: [], lines: 0 } : ruleReview(code, named ? { lang: named } : {});
+  const findings = res.findings.map(({ line, kind, rule, message }) => ({ line, kind, rule, message }));
+  if (await rateLimited(request, env)) return Response.json({ answer: null, findings, lang: res.lang, note: 'slow down' }, { status: 429 });
+  if (modelsOn(env)) {
+    try {
+      const r = await env.AI.run(MODEL, {
+        messages: [
+          { role: 'system', content: REVIEW_SYSTEM + ' ' + INJECTION_RULE },
+          { role: 'user', content: 'What they asked: ' + ask + '\nLanguage (guessed): ' + res.lang + (body.diff ? '\nThis is a pull request diff: review the added lines (+), using the rest as context.' : '') + '\n\nQuick checks found:\n' + (body.diff ? String(body.found || 'nothing').slice(0, 3000) : findingsText(res)) + '\n\nThe code (as pasted, keys masked):\n```\n' + code + '\n```' },
+        ],
+        max_tokens: 1400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
+      });
+      const answer = redact(String(pick(r)).trim());
+      if (answer) return Response.json({ answer, findings, lang: res.lang, review: 'model' });
+      await recordShortfall(env, 'review', 'empty');
+    } catch (e) { await recordShortfall(env, 'review', reasonOf(e)); }
+  }
+  return Response.json({ answer: null, findings, lang: res.lang, review: 'rules', note: modelsOn(env) ? 'model busy' : null });
+}
 
 export async function onRequestPost({ request, env, waitUntil }) {
   const t0 = Date.now();
   let body = {};
   try { body = JSON.parse((await request.text()).slice(0, 20000)); } catch (_) { return new Response('bad', { status: 400 }); }
   if (body && body.mode === 'fix') return fixAnswer(request, env, body);
+  if (body && body.mode === 'review') return reviewAnswer(request, env, body);
   const typed = norm(body.ask), ask = redact(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
   const key = await sha(ask.toLowerCase());
