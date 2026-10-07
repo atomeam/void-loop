@@ -67,6 +67,15 @@ nodes:
     date: 2025-08-04
     tracks: [planet-restoration]
     claim: "Lower Florida Keys paired surveys: restored offshore A. cervicornis areas reach +2.80 mm y⁻¹ reef-accretion potential vs −0.84 mm y⁻¹ non-restored within 2–6 years; >16× gross carbonate production; ≈5% cover gain. Inshore massive restoration: no measurable accretion effect. 2023 bleach near-complete A. cervicornis mortality vs 59% massive survival. Open USGS CC0 data DOI 10.5066/P13HMEON."
+  - id: florida-acropora-functional-extinction
+    kind: shared-part
+    status: established
+    part: 2023 heatwave killed nearly all Florida Keys Acropora, so restoration success now hinges on heat tolerance
+    title: "Heat-driven functional extinction of Caribbean Acropora corals from Florida's Coral Reef"
+    url: https://doi.org/10.1126/science.adx7825
+    date: 2025-10-23
+    tracks: [planet-restoration]
+    claim: "Science 390:361 (Manzello et al.): SST at or above 31 C for 40.7 days on average; 97.8-100% of A. palmata and A. cervicornis dead in the Keys and Dry Tortugas by March 2024 (52,356 colonies), 37.9% offshore southeast Florida. Gene banks prevented extirpation (Conserv Biol doi 10.1111/cobi.70168). Durusdinium elkhorn +1.9 C ED50 (Coral Reefs doi 10.1007/s00338-025-02652-7). First permitted cross-border outplant (Florida x Honduras) July 2025; Dry Tortugas side-by-side trial April 2026."
   - id: offline-character-mind-module
     kind: shared-part
     status: established
@@ -107,6 +116,7 @@ nodes:
 
 ## Cycle log
 
+- 2026-10-07 18:07 ET. Florida-acropora-functional-extinction established (Manzello et al. Science 23 Oct 2025): the 2023 heatwave killed 97.8-100% of Keys Acropora, answering planet-restoration question 3. Logged gene banks (Muller et al. Conserv Biol 2025), Durusdinium +1.9 C elkhorn (Coral Reefs 2025), the Baker et al. Science AGF forum, and the Flonduran field trials (Miami July 2025, Dry Tortugas April 2026). No earlier think-tank branches or PRs to fold.
 - 2026-10-07 16:20 ET. Senolytic-burden-selects-responders established (Farr et al. Nat Med 2024; Aging Cell 2025 p16 variant 5). Live ClinicalTrials.gov pass: no senolytic MASH replication registered, NCT05506488 has no posted results, three prospective GLP-1 DNAm-age trials read out Apr-Dec 2027. Registry API is browser-readable, so a live trial-watch card is buildable. Stale 14:16 worktree removed (its PR #158 had merged).
 - 2026-10-07 14:40 ET. Slicer-slot-3mf-layout established by a box slot test (seven variants, lib3mf strict + OrcaSlicer 2.4.2 CLI round-trip): one build item per part with its own one-color colorgroup gives five named parts on extruders 1-5; basematerials alone give one slot. PrusaSlicer 2.9.6 needs Slic3r_PE_model.config. Export-to-print unblocked to hypothesis. Corrected the 08:07 basematerials-only plan.
 - 2026-10-07 12:17 ET. Offline-character-mind-module established (M5Stack Module LLM, AX630C: 54 mm, 17 g, 1.5 W, offline wake word + ASR + 0.5B LLM + TTS at 10.3 tokens/s). Living-figures hold lifted because Motelet is on main. Babaru (16 Apr 2026) and Waylo Offline logged as consumer on-device-mind toys. Folded unmerged 08:07, 10:08 and 12:11 cycles from 2026-10-03.

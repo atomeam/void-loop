@@ -2,6 +2,16 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-07 18:07 ET even-hour cycle
+
+Read `convergence.md`, every track, `index.md`, and the growth board. No earlier `forethinkers/*` branches or open think-tank PRs to fold. Picked planet restoration: least recently advanced (2026-10-03 12:11), and its open question 3 had a published answer to find.
+
+- Answered: the Florida Keys branching-coral accretion gains did not survive. Manzello et al., Science, 23 Oct 2025 (DOI 10.1126/science.adx7825): 97.8-100% of Keys and Dry Tortugas Acropora died in the 2023 heatwave, their functional extinction on Florida's Coral Reef.
+- Established: gene banks and redundant nurseries kept both species from regional extirpation (Muller et al., Conservation Biology 2025, DOI 10.1111/cobi.70168).
+- Logged: Durusdinium-hosting elkhorn 1.9 °C more heat tolerant (Coral Reefs, 22 Apr 2025); Baker et al. Science AGF policy forum (24 Jul 2025); first permitted cross-border coral outplant, Florida x Honduras, July 2025, through summer 2025 per Tela Marine (15 Jan 2026); Dry Tortugas side-by-side trial April 2026 (UM, 19 May 2026).
+- Corrected: the Florida Keys card row now leads with the 2023 die-off so the accretion result is shown with what happened next.
+- Board: new free row, a coral heat-survival card.
+
 ## 2026-10-07 16:20 ET even-hour cycle
 
 Read `convergence.md`, every track, `index.md`, and the growth board. No open think-tank PRs; the 14:16 worktree was left behind after its PR #158 merged, so it was removed and its branch deleted. Picked life-extension: it was least recently advanced (2026-10-03 10:08), and its registry question could be answered with live primary data.
