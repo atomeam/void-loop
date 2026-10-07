@@ -11,6 +11,7 @@
  * three windows, a colored month view, and the day a home pregnancy test is most reliable.
  */
 import { dateOf } from './pregnancy.js';
+import { fromLog } from './period.js';
 
 const add = (d, n) => new Date(d.getFullYear(), d.getMonth(), d.getDate() + n, 12);
 const day0 = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 12);
@@ -125,14 +126,14 @@ const SRC = '<div class="src">Method: next period \u2212 luteal phase = ovulatio
 
 function body(q, p, esc) {
   if (p.range) {
-    return '<h2>Fertile window</h2><div class="sub">' + esc('from your last period ' + short(p.lmp) + ', cycles of ' + q.lo + '\u2013' + q.hi + ' days') + '</div>'
+    return '<h2>Fertile window</h2><div class="sub">' + esc('from your last period ' + short(p.lmp) + ', cycles of ' + q.lo + '\u2013' + q.hi + ' days' + (q.fromLog ? ' (your period log)' : '')) + '</div>'
       + '<div style="font-size:34px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(span(p.fertile[0], p.fertile[1])) + '</div>'
       + '<p>Ovulation likely between <b>' + esc(md(p.ov[0])) + '</b> and <b>' + esc(md(p.ov[1])) + '</b>; next period between <b>' + esc(md(p.next[0])) + '</b> and <b>' + esc(md(p.next[1])) + '</b>.</p>'
       + (p.day >= 1 && p.day <= q.hi + 7 ? '<p style="color:#8a8a8a">Today is day ' + p.day + ' of this cycle' + (inR(p.today, p.fertile[0], p.fertile[1]) ? ', inside the possible fertile days.' : '.') + '</p>' : '')
       + '<p style="color:#8a8a8a">With cycles that vary, the calendar rule counts from your shortest cycle minus 18 days to your longest minus 11, so the window is wider. Ovulation tests narrow it down.</p>'
       + '<p style="color:#8a8a8a">' + esc(NOTE) + '</p>' + SRC;
   }
-  const L = p.lead, from = q.kind === 'next' ? 'next period due ' + short(q.lmp && add(q.lmp, q.cycle)) : 'last period ' + short(q.lmp);
+  const L = p.lead, from = q.kind === 'next' ? 'next period due ' + short(q.lmp && add(q.lmp, q.cycle)) : 'last period ' + short(q.lmp) + (q.fromLog ? ' (your period log' + (q.cycles ? ', ' + q.cycles + (q.cycles === 1 ? ' cycle' : ' cycles') + ' averaged' : '') + ')' : '');
   const rows = (p.rolled || diff(p.given.start, L.start) !== 0 ? [p.given] : []).concat(p.upcoming);
   return '<h2>Fertile window</h2><div class="sub">' + esc('from ' + from + ' \u00b7 ' + q.cycle + '-day cycle' + (q.luteal !== 14 ? ', ' + q.luteal + '-day luteal phase' : '')) + '</div>'
     + '<div class="sub" style="margin-top:8px">' + (diff(p.cur.start, L.start) === 0 ? 'This cycle' : 'Next cycle') + '</div>'
@@ -143,16 +144,18 @@ function body(q, p, esc) {
     + monthView(L, p.today, esc)
     + '<div class="sub" style="margin-top:10px">Next windows</div><ul>' + rows.map((c) => '<li>Period ' + esc(md(c.start)) + ': fertile <b>' + esc(md(c.fertile[0]) + ' \u2013 ' + md(c.fertile[1])) + '</b>, ovulation <b>' + esc(md(c.ov)) + '</b>, next period ' + esc(md(c.next)) + '</li>').join('') + '</ul>'
     + '<p style="color:#8a8a8a">Start daily ovulation (LH) tests around ' + esc(md(L.lh)) + '. If you are trying to get pregnant, a home pregnancy test is most reliable from the day your period is due: ' + esc(md(L.test)) + '.</p>'
+    + (q.fromLog ? '' : '<p style="color:#8a8a8a">Say <a href="#" data-ask="my period started today">my period started today</a> on the first day of each period and I keep a log in this browser, so next time you can just ask \u201cwhen am i ovulating\u201d.</p>')
     + '<p style="color:#8a8a8a">' + esc(NOTE) + '</p>' + SRC;
 }
 
 function runCalc(q0, api) {
   const { showPage, esc } = api;
   const iso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
-  const el = showPage((p) => { p.innerHTML = '<h2>Ovulation calculator</h2>'
+  const logged = fromLog(), start0 = logged ? logged.lmp : add(new Date(), -10), cyc0 = logged && logged.kind === 'cycle' ? logged.cycle : (q0.cycle || 28);
+  const el = showPage((p) => { p.innerHTML = '<h2>Ovulation calculator</h2>' + (logged ? '<div class="sub">filled in from your period log</div>' : '')
     + '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0">'
-    + '<label>first day of last period <input id="ov-date" type="date" value="' + iso(add(new Date(), -10)) + '" aria-label="first day of last period"></label>'
-    + '<label>cycle <input id="ov-cyc" type="number" min="20" max="45" value="' + (q0.cycle || 28) + '" style="width:4em" aria-label="cycle length in days"> days</label>'
+    + '<label>first day of last period <input id="ov-date" type="date" value="' + iso(start0) + '" aria-label="first day of last period"></label>'
+    + '<label>cycle <input id="ov-cyc" type="number" min="20" max="45" value="' + cyc0 + '" style="width:4em" aria-label="cycle length in days"> days</label>'
     + '<label>luteal phase <input id="ov-lut" type="number" min="9" max="17" value="' + (q0.luteal || 14) + '" style="width:4em" aria-label="luteal phase in days"> days</label></div>'
     + '<div id="ov-out" aria-live="polite"></div>'; });
   const g = (id) => el.querySelector('#' + id), out = g('ov-out');
@@ -173,7 +176,13 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const q = ovOf(text);
   if (!q) return 'none';
-  if (q.kind === 'calc') return runCalc(q, api);
+  // no date in the ask: your own period log answers it ("when am i ovulating", "when is my next period"); a calculator ask still gets the form
+  if (q.kind === 'calc') {
+    const logged = /\b(?:calculator|tracker|predictor)\b/.test(String(text).toLowerCase()) ? null : fromLog();
+    if (!logged) return runCalc(q, api);
+    if (q.lo == null && q.cycle === 28 && q.luteal === 14) Object.assign(q, logged);
+    else Object.assign(q, logged, q.lo != null ? { kind: 'range', lo: q.lo, hi: q.hi } : { kind: 'cycle', cycle: q.cycle, luteal: q.luteal });
+  }
   const p = plan(q);
   showPage((el) => { el.innerHTML = body(q, p, esc); });
   return 'ovulation';
