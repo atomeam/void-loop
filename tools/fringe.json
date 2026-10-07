@@ -883,5 +883,30 @@
     ],
     "sha256": "0d4f3c429e374a5fba7e612b76cb10dc97d1a64dea741ac9843a334ea5788410",
     "emit": false
+  },
+  {
+    "run": 36,
+    "at": "2026-10-07T04:42:38Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-4.html",
+    "sources": [
+      {
+        "claim": "When people cause a tone by a voluntary key press, the felt gap between press and tone is shorter than when the same events are not self-caused (intentional binding)",
+        "source": "https://doi.org/10.1038/nn827",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Intentional binding is widely used as an implicit measure of the sense of agency, though what it measures is debated",
+        "source": "https://doi.org/10.1016/j.concog.2012.01.002",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A browser version with a machine-initiated press as the comparison shows the same direction of effect in about 20 trials per condition",
+        "source": "drafts/fringe/human-machine-co-agency-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "173b53d835e6289528ff591383877b7eeb2e49ae37c27d93c963b51d2271b3f0",
+    "emit": false
   }
 ]
