@@ -5131,7 +5131,6 @@
   {"ask": "due date if my last period was march 1 and my cycle is 35 days", "want": "skill:pregnancy"},
   {"ask": "what week of pregnancy am i if my due date is april 20", "want": "skill:pregnancy"},
   {"ask": "due date if conceived jan 10", "want": "skill:pregnancy"},
-<<<<<<< HEAD
   {"ask": "group the clock and the note", "want": "skill:group", "says": "grouped the clock and the note", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer"]},
   {"ask": "group everything", "want": "skill:group", "says": "grouped", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer"]},
   {"ask": "stick the clock and the timer together", "want": "skill:group", "says": "grouped the clock and the timer", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer"]},
@@ -5141,8 +5140,7 @@
   {"ask": "what is in the group", "want": "skill:group", "says": "the clock and the note", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "group the clock and the note"]},
   {"ask": "ungroup", "want": "skill:group", "says": "ungrouped", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "group the clock and the note"]},
   {"ask": "take the clock out of the group", "want": "skill:group", "says": "out of the group", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "group everything"]},
-  {"ask": "bring the group to the front", "want": "skill:layer", "says": "front", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "group the clock and the note"]}
-=======
+  {"ask": "bring the group to the front", "want": "skill:layer", "says": "front", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "group the clock and the note"]},
   {"ask": "when am i ovulating if my last period was march 1", "want": "skill:ovulation"},
   {"ask": "when will i ovulate if my last period was sept 20", "want": "skill:ovulation"},
   {"ask": "fertile window if my last period was sept 20 and my cycle is 30 days", "want": "skill:ovulation"},
@@ -5159,5 +5157,4 @@
   {"ask": "period calculator", "want": "skill:ovulation"},
   {"ask": "luteal phase 12 days last period oct 2 when do i ovulate", "want": "skill:ovulation"},
   {"ask": "am i ovulating today", "want": "skill:ovulation"}
->>>>>>> a15ce46 (Ovulation skill: fertile window, ovulation day and next period from the last period, irregular cycles as a range (ACOG, Wilcox NEJM 1995))
 ]
