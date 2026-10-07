@@ -1058,5 +1058,30 @@
     ],
     "sha256": "843191640e42502e035e8086b5d020563dd66c5266e31299ffb5b2a7583a165d",
     "emit": false
+  },
+  {
+    "run": 43,
+    "at": "2026-10-07T11:42:59Z",
+    "family": "sensory-substitution",
+    "draft": "drafts/fringe/sensory-substitution-4.html",
+    "sources": [
+      {
+        "claim": "Tapping in time with an auditory metronome is more stable than with a visual (flashing) one; asynchrony variability to flashes is roughly two to three times larger",
+        "source": "https://doi.org/10.3758/BF03206433",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "People tend to tap slightly before an auditory beat (negative mean asynchrony)",
+        "source": "https://doi.org/10.3758/BF03206433",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing their own ear-versus-eye timing changes how people judge visual-only cues as stand-ins for sound",
+        "source": "drafts/fringe/sensory-substitution-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "cbfe96717c29b801da084d4cfa27f359bb1487a450aa80399a9df10a14821f6d",
+    "emit": false
   }
 ]

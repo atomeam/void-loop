@@ -220,6 +220,12 @@ const RULES = [
     'the variable is set to null and then used with a dot, so this line throws (a NullPointerException in Java, a TypeError in JavaScript). Give it a value first, or check: if (s != null).'],
   ['php-include-input', 'risk', ['php'], (m, r) => /\b(?:include|require)(?:_once)?\b\s*\(?[^;]*\$_(?:GET|POST|REQUEST|COOKIE)\b/.test(r),
     'the file to include comes from the request, so a visitor chooses which file runs: ../../etc/passwd to read files, or a URL to run their own code. Map allowed names to files: $pages = ["home" => "home.php"]; include $pages[$_GET["page"]] ?? "home.php";'],
+  ['cd-empty-rm', 'risk', ['shell'], (m, r) => { const k = r.match(/\bcd\s+"?\$\{?(\w+)\}?"?\s*(?:&&|;|\n)\s*rm\s+-[a-zA-Z]*r[a-zA-Z]*\s+\*/); return !!k && !new RegExp('\\$\\{' + k[1] + ':\\?').test(r); }, // only a guard on the cd variable itself counts
+    'if the variable is empty, cd $dir goes to your home folder and cd "$dir" stays where you are (and with ; even a failed cd carries on), so rm -rf * then deletes everything in that folder. Stop on an empty value and delete by path: rm -rf -- "${dir:?}"/*'],
+  ['order-by-rand', 'style', ['sql'], (m) => /\bORDER\s+BY\s+(?:RAND|RANDOM|NEWID)\s*\(\s*\)/i.test(m),
+    'ORDER BY RAND() gives every row a random number and sorts the whole table each time, so it gets slow as the table grows. For one random row, pick a random id or offset first (OFFSET floor(random() * count)), or sample with TABLESAMPLE.'],
+  ['rust-unsafe', 'risk', ['rust'], (m, r) => /\bunsafe\s*\{/.test(m) && !/\/\/\s*SAFETY:/.test(r),
+    'an unsafe block turns off Rust\'s checks: a wrong raw pointer here is undefined behaviour (crashes or silent memory corruption). Keep it as small as possible and write a // SAFETY: comment saying why it holds; prefer a safe API (references, Box, slices) if there is one.'],
   ['verify-false', 'risk', ['python', ...JS], (m) => /\bverify\s*=\s*False\b|rejectUnauthorized\s*:\s*false\b|NODE_TLS_REJECT_UNAUTHORIZED/.test(m),
     'certificate checks are turned off, so anyone on the network can read or change this traffic. Fix the certificate (or point to the right CA bundle) instead.'],
   ['rm-rf-var', 'risk', ['shell'], (m, r) => /\brm\s+-[a-z]*r[a-z]*f?[a-z]*\s+(?:"?\$\{?\w+\}?"?\/?)(?:\s|$|\/)/i.test(r) && !/\$\{\w+:\?/.test(r),

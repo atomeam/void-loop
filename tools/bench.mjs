@@ -75,6 +75,10 @@ async function one({ ask: a, want, says, before }) {
   // "says": a pattern the visible answer must contain (the right ability AND the right value: "7 cubed" -> 343)
   let shown = '';
   if (routed && says) shown = said + '\n' + await p.evaluate(() => { const i = document.getElementById('input'); return document.body.innerText.replace(i ? i.value : '', ''); }).catch(() => '');
+  // a review card shows the pasted code back: take that echo out first, so "says" must be in the review itself, not in the code
+  // (other cards may rightly repeat the ask: a note shows its text, a spelling answer shows the word)
+  if (/(^|\|)review(\||$)/.test(want)) { const echoes = [a, a.includes(':') ? a.slice(a.indexOf(':') + 1) : ''].map((x) => x.trim()).filter((x) => x.length >= 4);
+    for (const e of echoes) shown = shown.split(e).join(' '); }
   const valueOk = !says || new RegExp(says, 'i').test(shown);
   const right = routed && valueOk;
   await ctx.close();
