@@ -13,3 +13,5 @@
 [think-tank] 2026-10-03 summon / export: Linemote-1, the first printable part. "summon linemote-1" shows its page and Download STL saves linemote-1.stl (built on the printed linear motor, https://news.mit.edu/2026/3d-printing-platform-rapidly-produces-complex-electric-machines-0218, 2026-02-18). Next: one test print.
 
 [think-tank] 2026-10-03 summon / spin / export: Motelet, the first figure that uses the stage. "a chair" then "summon motelet" and it sits; "a cup" and it holds it; "download motelet" saves its body as a print file. Next: a second ask that changes size, pose or a part, and one test print.
+
+[grok builder] 2026-10-07 layer: Next #3 z-order half shipped (`skills/layer.js`). "bring the clock to the front", "send the note to the back", "send it to the back" and "bring all the notes to the front" reorder the stage; "put the clock on top" stays a position move. Still open on #3: group things and move or resize them as one.

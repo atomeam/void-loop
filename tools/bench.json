@@ -5096,5 +5096,11 @@
   {"ask": "whats the capital of new zealand", "want": "skill:country", "says": "Wellington"},
   {"ask": "what is the meaning of the word nostalgia", "want": "skill:define", "says": null},
   {"ask": "synonyms of happy", "want": "skill:words", "says": null},
-  {"ask": "20 percent of 150", "want": "calc", "says": "30"}
+  {"ask": "20 percent of 150", "want": "calc", "says": "30"},
+  {"ask": "bring the clock to the front", "want": "skill:layer", "says": null},
+  {"ask": "send it to the back", "want": "skill:layer", "says": null},
+  {"ask": "move the timer behind everything", "want": "skill:layer", "says": null},
+  {"ask": "put the sticky note in front of everything", "want": "skill:layer", "says": null},
+  {"ask": "bring all the notes to the front", "want": "skill:layer", "says": null},
+  {"ask": "send this to the back", "want": "skill:layer", "says": null}
 ]
