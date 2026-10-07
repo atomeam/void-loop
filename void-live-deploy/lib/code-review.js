@@ -168,7 +168,7 @@ const RULES = [
     'a pattern built from a variable: if it comes from a user, characters like . * ( are read as regex, and a crafted pattern can hang the page (ReDoS). Escape it first: new RegExp(s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))'],
   ['weak-random', 'risk', ['python', ...JS], (m) => /\b(?:token|password|passwd|secret|nonce|salt|otp|session_?id|api_?key|reset_?code)\w*\s*=.*(?:\brandom\.(?:random|randint|choice|choices|randrange|getrandbits)\s*\(|\bMath\.random\s*\()/i.test(m),
     'random.random and Math.random are predictable, so a token made with them can be guessed. Use secrets.token_urlsafe() in Python, or crypto.randomUUID() / crypto.getRandomValues() in JavaScript.'],
-  ['weak-random-jvm', 'risk', ['java', 'kotlin', 'csharp'], (m, r, x) => /\bnew\s+Random\s*\(/.test(m) && /\b(?:token|password|passwd|secret|nonce|salt|otp|session_?id|api_?key|reset_?code)\w*/i.test(x.statement() + ' ' + x.next(1)),
+  ['weak-random-jvm', 'risk', ['java', 'kotlin', 'csharp'], (m, r, x) => /(?:\bnew\s+(?:java\.util\.|System\.)?Random\s*\(|(?:^|[=(,:]\s*)(?:kotlin\.random\.)?Random\s*\(\s*\))/.test(m) && /\b(?:token|password|passwd|secret|nonce|salt|otp|session_?id|api_?key|reset_?code)\w*/i.test(x.statement() + ' ' + x.next(1)),
     'java.util.Random (and System.Random) is predictable: anyone who sees a few values can work out the next ones, so tokens, passwords and codes made with it can be guessed. Use SecureRandom (RandomNumberGenerator in C#)'],
   ['c-unsafe-string', 'risk', ['c'], (m) => /\b(?:gets|strcpy|strcat|sprintf)\s*\(/.test(m),
     'gets, strcpy, strcat and sprintf write without checking the size of the buffer, so a long input overflows it (a crash, or a way in for an attacker). Use fgets(buf, sizeof buf, stdin), snprintf, or copy with an explicit length.'],
@@ -190,7 +190,9 @@ const RULES = [
     'indexOf returns -1 when the item is missing (which counts as true) and 0 when it is first (which counts as false), so this check is backwards in both cases. Use list.includes(x), or compare: list.indexOf(x) !== -1.'],
   ['listener-called', 'bug', JS, (m, r) => /\.addEventListener\s*\(/.test(m) && /\.addEventListener\s*\(\s*(['"`])[\w:-]+\1\s*,\s*[\w$.]+\s*\(\s*\)\s*[,)]/.test(r), // handler(): a factory with arguments, makeHandler(1), is fine
     'the handler is called right away (handler()) and its result is what gets attached, so nothing happens on the event. Pass the function itself: addEventListener("click", handler), or wrap it: () => handler(arg).'],
-  ['float-equality', 'bug', [...JS, 'python', 'java', 'csharp'], (m) => /\d\.\d*[1-9]\d*\s*(?:[-+*/]\s*[\d.]+[^=!<>]*)?[=!]==?|[=!]==?\s*-?\d*\.\d*[1-9]/.test(m.replace(/['"`][^'"`]*['"`]/g, '""')),
+  ['float-equality', 'bug', [...JS, 'python', 'java', 'csharp'], (m) => { const s = m.replace(/['"`][^'"`]*['"`]/g, '""'), re = /\d\.\d*[1-9]\d*\s*(?:[-+*/]\s*[\d.]+[^=!<>]*)?[=!]==?|[=!]==?\s*-?\d*\.\d*[1-9]\d*/g; let k;
+    // halves, quarters, eighths… (0.5, 2.25) are exact in binary, so == on them is safe; flag only when some decimal in the comparison is not
+    while ((k = re.exec(s))) if ((k[0].match(/\d*\.\d+/g) || []).some((l) => !Number.isInteger(parseFloat(l) * 1024))) return true; return false; },
     'decimal numbers are stored in binary, so sums like 0.1 + 0.2 come out as 0.30000000000000004 and an exact == fails. Compare with a small tolerance: Math.abs(a - b) < 1e-9 (math.isclose in Python), or work in whole cents.'],
   ['drop-table', 'risk', ['sql', 'shell', 'code'], (m) => /^\s*(?:DROP\s+(?:TABLE|DATABASE|SCHEMA)\b|TRUNCATE\s+(?:TABLE\s+)?[\w."`[\]]+)/i.test(m),
     'this deletes the table (or database) and every row in it, and there is no undo. Take a backup first, and in a migration say exactly what you mean: DROP TABLE IF EXISTS old_name.'],

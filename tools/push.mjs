@@ -4,7 +4,8 @@
 // Exits 0 once origin has HEAD, 1 if it never does (the last error is printed).
 import { execFileSync } from 'node:child_process';
 
-const git = (...a) => execFileSync('git', a, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+// each git call gets two minutes, so a stalled push or ls-remote falls through to the next retry instead of hanging
+const git = (...a) => execFileSync('git', a, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 120e3 }).trim();
 const branch = git('rev-parse', '--abbrev-ref', 'HEAD'), head = git('rev-parse', 'HEAD');
 if (branch === 'HEAD') { console.error('push: not on a branch (detached HEAD)'); process.exit(1); }
 const landed = () => { try { return git('ls-remote', 'origin', 'refs/heads/' + branch).startsWith(head); } catch (_) { return false; } };
