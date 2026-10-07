@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · the odd one lasts longer (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 14px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#stage{height:180px;border:1px solid rgba(255,255,255,.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:84px;line-height:1}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>the odd one lasts longer · draft · not published</h1>
+  <p class="note">Each round shows five shapes, one after another. The first four are the same and each stays up for half a second. The fifth is shown for a little less or a little more, and you say whether it seemed shorter or longer than the others: "shorter" (or F) or "longer" (or J). In half the rounds the fifth is a new shape, in the other half the same one again. Studies find that a surprising item seems to last longer than a repeated one of the same length (the "oddball effect"; Tse and others, 2004; Pariyadath and Eagleman, 2007). This page finds, for each kind, the length at which you say "longer" half the time, and shows the difference in milliseconds. Screens show things in whole frames, so lengths are a few milliseconds off; the page records what was really shown. Everything stays in this browser.</p>
+  <div id="stage" aria-hidden="true"></div>
+  <div class="row"><button id="go" type="button">start</button><button id="short" type="button" disabled>shorter (F)</button><button id="long" type="button" disabled>longer (J)</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var LEVELS=[350,425,500,575,650],STD=500,GAP=450,SAME='●',ODD=['▲','■','◆','★'],KEY='a2m.fringe.oddball.v1',st={trials:[]},cur=null,busy=false;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&(t.kind==='odd'||t.kind==='same')&&LEVELS.indexOf(t.level)>=0&&typeof t.longer==='boolean'})}catch(_){}
+  function el(id){return document.getElementById(id)}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-600)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your rounds (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // share of "longer" answers at each length, for one kind of round
+  function curve(trials,kind){return LEVELS.map(function(L){var t=trials.filter(function(x){return x.kind===kind&&x.level===L}),k=t.filter(function(x){return x.longer}).length;return{level:L,n:t.length,p:t.length?k/t.length:null}})}
+  // the length where the curve first reaches one half, read between the two lengths around it (null if it never does)
+  function pse(c){for(var i=0;i<c.length;i++){if(c[i].p==null)return null;if(c[i].p>=.5){if(!i)return c[0].p===.5?c[0].level:null;var a=c[i-1],b=c[i];return a.level+(.5-a.p)/(b.p-a.p)*(b.level-a.level)}}return null}
+  // how much longer the new shape seemed: the "half the time longer" length for repeats minus the one for new shapes
+  function summary(trials){var o=curve(trials,'odd'),s=curve(trials,'same'),po=pse(o),ps=pse(s),min=function(c){return Math.min.apply(null,c.map(function(x){return x.n}))};
+    return{odd:{curve:o,pse:po,least:min(o)},same:{curve:s,pse:ps,least:min(s)},expansion:po!=null&&ps!=null?ps-po:null}}
+  // show a shape for about ms, measured in frames; calls done(real ms shown)
+  function flash(ch,ms,done){var S=el('stage');requestAnimationFrame(function(t0){S.textContent=ch;var on=null;
+    (function tick(t){if(on==null)on=t;if(t-on>=ms-8){S.textContent='';requestAnimationFrame(function(t2){done(t2-on)});return}requestAnimationFrame(tick)})(t0)})}
+  function wait(ms,fn){setTimeout(fn,ms)}
+  function round(){busy=true;var kind=Math.random()<.5?'odd':'same',level=LEVELS[Math.floor(Math.random()*LEVELS.length)],last=kind==='odd'?ODD[Math.floor(Math.random()*ODD.length)]:SAME,i=0;
+    el('state').textContent='watch';
+    (function next(){if(i<4){i++;flash(SAME,STD,function(){wait(GAP,next)});return}
+      flash(last,level,function(real){cur={kind:kind,level:level,real:Math.round(real)};busy=false;el('short').disabled=el('long').disabled=false;el('state').textContent='was the last one shorter or longer?'})})()}
+  function answer(longer){if(!cur)return;st.trials.push({kind:cur.kind,level:cur.level,real:cur.real,longer:longer,at:Date.now()});save();
+    el('state').textContent='the last one was '+(cur.kind==='odd'?'a new shape':'the same shape')+', shown for '+cur.real+' ms (the others '+STD+')';
+    cur=null;el('short').disabled=el('long').disabled=true;draw();wait(900,function(){if(!cur&&!busy)round()})}
+  el('go').addEventListener('click',function(){if(busy||cur)return;el('go').disabled=true;el('go').textContent='running';wait(400,round)});
+  el('short').addEventListener('click',function(){answer(false)});el('long').addEventListener('click',function(){answer(true)});
+  document.addEventListener('keydown',function(ev){if(!cur||ev.repeat)return;var k=ev.key.toLowerCase();if(k==='f'){ev.preventDefault();answer(false)}else if(k==='j'){ev.preventDefault();answer(true)}});
+  function draw(){var n=st.trials.length;if(!n){el('score').textContent='';return}var s=summary(st.trials);
+    function line(name,x){return name+': '+x.curve.map(function(c){return c.level+' ms '+(c.p==null?'–':Math.round(c.p*100)+'%')}).join(' · ')}
+    var enough=s.odd.least>=4&&s.same.least>=4;
+    el('score').textContent=n+' round'+(n>1?'s':'')+' · "longer" answers at each length\n'+line('new shape',s.odd)+'\n'+line('same shape',s.same)
+      +(!enough?'\nabout 4 rounds at every length of each kind before comparing':s.expansion==null?'\nyour answers do not cross one half yet for both kinds; a few more rounds':'\nthe new shape seemed '+(s.expansion>=0?Math.round(s.expansion)+' ms longer':Math.round(-s.expansion)+' ms shorter')+' than the same shape shown for as long')}
+  draw();
+  // made-up answers: new shapes called longer from 500 ms, repeats from 575 ms, so the halfway points are 462.5 and 537.5 and the gap 75
+  function selftest(){var t=[],k;LEVELS.forEach(function(L){for(k=0;k<4;k++){t.push({kind:'odd',level:L,longer:L>=500});t.push({kind:'same',level:L,longer:L>=575})}});
+    var s=summary(t);if(Math.abs(s.odd.pse-462.5)>1e-9||Math.abs(s.same.pse-537.5)>1e-9||Math.abs(s.expansion-75)>1e-9||s.odd.least!==4)return'summary gave '+JSON.stringify({o:s.odd.pse,s:s.same.pse,e:s.expansion});
+    if(pse([{level:350,p:.6},{level:425,p:.8}])!==null||pse([{level:350,p:0},{level:425,p:.2}])!==null)return'pse should be null when the curve never crosses one half from below';return true}
+  window.__oddball={curve:curve,pse:pse,summary:summary,LEVELS:LEVELS,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

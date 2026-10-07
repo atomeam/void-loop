@@ -3,7 +3,7 @@
 //   node tools/append.mjs bench '{"ask":"split 120 between 4","want":"calc"}' ...
 //   node tools/append.mjs grown '{"ask":"…","missed":"2026-10-01","now":"…","expect":"page","text":"…"}'
 //   --skip   drop repeats (named on stderr) and add the rest, instead of refusing the whole batch
-//   --file c.json   add every entry of a JSON array (e.g. a probe batch for bench.mjs --probe that now passes)
+//   --file c.json (or just c.json)   add every entry of a JSON array (e.g. a probe batch for bench.mjs --probe that now passes)
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -15,9 +15,10 @@ const fileAt = args.indexOf('--file');
 if (fileAt >= 0 && (!args[fileAt + 1] || args[fileAt + 1].startsWith('--'))) { console.error('--file needs a path to a JSON array of asks'); process.exit(2); }
 const fromFile = fileAt >= 0 ? JSON.parse(readFileSync(resolve(args[fileAt + 1]), 'utf8')).map((o) => JSON.stringify(o)) : [];
 const [which, ...raw0] = args.filter((a, i) => a !== '--skip' && !(fileAt >= 0 && (i === fileAt || i === fileAt + 1)));
-const raw = raw0.concat(fromFile);
+// a bare path to a .json file (the probe batch itself) works like --file, so the same file goes to --probe and here
+const raw = raw0.flatMap((a) => /^\s*\{/.test(a) || !/\.json$/i.test(a) ? [a] : JSON.parse(readFileSync(resolve(a), 'utf8')).map((o) => JSON.stringify(o))).concat(fromFile);
 if (!['bench', 'grown'].includes(which) || !raw.length) {
-  console.error('usage: node tools/append.mjs bench|grown \'{"ask":…}\' …');
+  console.error('usage: node tools/append.mjs bench|grown [--skip] \'{"ask":…}\' … | batch.json | --file batch.json');
   process.exit(2);
 }
 const file = resolve(root, `tools/${which}.json`);
