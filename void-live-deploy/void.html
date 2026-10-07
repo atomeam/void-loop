@@ -587,6 +587,8 @@
       mineChanged();
     }
     function loopLog(attempt) {
+      // an ask read with its typos fixed is logged as it was typed, so the miss board and the bench see the real ask
+      if (typoFix && attempt && attempt.ask === typoFix.to) attempt = { ...attempt, ask: typoFix.from };
       let log = [];
       try { log = JSON.parse(localStorage.getItem(LOOP_KEY) || '[]'); } catch (_) {}
       log.push({ t: new Date().toISOString(), ...attempt });
@@ -5037,6 +5039,27 @@ return { ok: true, detail: 'timer-reset' };
       for (let i = 1; i <= a.length; i++) for (let j = 1; j <= b.length; j++) d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1));
       return d[a.length][b.length];
     }
+    // Common slips in the words that steer an ask ("waht time is it", "captial of france", "definiton of"). Only short plain asks,
+    // never code or a review paste; real words are fixed only in the phrase that shows the slip ("capitol of", "what dose … mean");
+    // and a few long steering words with no real word one slip away are matched at one slip.
+    let typoFix = null;
+    const TYPO_WORDS = { waht: 'what', whta: 'what', wht: 'what', tiem: 'time', tmie: 'time', captial: 'capital', capitla: 'capital', definiton: 'definition', defintion: 'definition', defenition: 'definition',
+      synonim: 'synonym', synonims: 'synonyms', synomym: 'synonym', traslate: 'translate', tranlate: 'translate', transalte: 'translate', precent: 'percent', percnet: 'percent', pecent: 'percent',
+      tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
+    const TYPO_LONG = ['definition', 'synonym', 'synonyms', 'translate', 'temperature', 'tomorrow', 'population', 'kilometers', 'kilometres', 'antonym', 'pronounce'];
+    function fixTypos(text) {
+      const t = String(text || '');
+      if (t.length > 120 || /[\n⏎:{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix)\b/i.test(t) || t.split(/\s+/).length > 12) return t;
+      let out = t.replace(/[A-Za-z]+/g, (w) => {
+        const lw = w.toLowerCase();
+        if (Object.prototype.hasOwnProperty.call(TYPO_WORDS, lw)) return TYPO_WORDS[lw] || w;
+        if (lw.length >= 7 && !TYPO_LONG.includes(lw)) for (const k of TYPO_LONG) if (Math.abs(k.length - lw.length) <= 1 && editDistance(lw, k) === 1) return k;
+        return w;
+      });
+      out = out.replace(/\bcapitol(\s+(?:city\s+)?of)\b/gi, 'capital$1').replace(/^(what)\s+dose\b(?=.*\bmean\b)/i, '$1 does').replace(/^(how\s+do|can|could)\s+u\b/i, '$1 you')
+        .replace(/\s+(?:pls|plz|plez)\s*([.!?]*)$/i, '$1');
+      return out;
+    }
     function shortAsk(lower) {
       const w = lower.replace(/[?.!]+$/, '').trim();
       if (!w || w.split(/\s+/).length > 2) return null;
@@ -5219,8 +5242,9 @@ return { ok: true, detail: 'timer-reset' };
       return false;
     }
     async function handle(raw) {
-      const text = (raw || '').trim();
-      if (!text) return;
+      const typed = (raw || '').trim();
+      if (!typed) return;
+      const text = fixTypos(typed); typoFix = text !== typed ? { from: typed, to: text } : null;
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
       { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } return handle('unlock'); } }

@@ -1008,5 +1008,30 @@
     ],
     "sha256": "e4c791483b32de1077bde28676a7e3a1d756d1451da49f1d92f301526d9178df",
     "emit": false
+  },
+  {
+    "run": 41,
+    "at": "2026-10-07T09:42:27Z",
+    "family": "miss-board",
+    "draft": "drafts/fringe/miss-board-3.html",
+    "sources": [
+      {
+        "claim": "About 80% of misspellings are a single insertion, deletion, substitution or transposition of adjacent letters",
+        "source": "https://doi.org/10.1145/363958.363994",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Allowing one edit when matching recovers most misspelled queries; the optimal string alignment distance counts an adjacent swap as one edit",
+        "source": "https://doi.org/10.1145/363958.363994",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing which kinds of slips they make under time pressure changes how people judge a tool that misses their typos",
+        "source": "drafts/fringe/miss-board-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "7d77c79a703e7abd03cffde42ebcbaadb749ffa4765de9d51f46202db77ddd3b",
+    "emit": false
   }
 ]
