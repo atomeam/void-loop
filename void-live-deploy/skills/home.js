@@ -386,7 +386,9 @@ async function run(text, api) {
   return 'home';
 }
 
-export { homeOf, followOf, paintMath, floorMath, buyOf };
+export { homeOf, followOf, paintMath, floorMath, buyOf, clean, dimsOf, heightOf, countOf, roomOf };
+// the last room asked about (walls.js reads it so "wallpaper for it" or "drywall for it" follow a paint or floor card)
+export function lastRoomOf() { return lastRoom && Date.now() - lastRoom.at <= FOLLOW_MS ? lastRoom : null; }
 export function _setLastRoom(t, kind) { lastRoom = t ? { t: clean(t), kind, at: Date.now() } : null; }
 export default {
   name: 'home',
