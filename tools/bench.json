@@ -5116,5 +5116,19 @@
   {"ask": "how many hours of sleep should a 5 year old get", "want": "skill:sleep"},
   {"ask": "how much sleep does a newborn need", "want": "skill:sleep"},
   {"ask": "how much sleep does a 70 year old need", "want": "skill:sleep"},
-  {"ask": "remind me to go to bed at 11pm", "want": "skill:calendar|skill:remind|timer"}
+  {"ask": "remind me to go to bed at 11pm", "want": "skill:calendar|skill:remind|timer"},
+  {"ask": "due date if my last period was march 1", "want": "skill:pregnancy"},
+  {"ask": "how many weeks pregnant am i if my last period was august 10", "want": "skill:pregnancy"},
+  {"ask": "i conceived on january 10 when is my baby due", "want": "skill:pregnancy"},
+  {"ask": "my due date is june 1 how far along am i", "want": "skill:pregnancy"},
+  {"ask": "ivf due date 5 day transfer on may 2", "want": "skill:pregnancy"},
+  {"ask": "due date calculator", "want": "skill:pregnancy"},
+  {"ask": "pregnancy calculator", "want": "skill:pregnancy"},
+  {"ask": "how many weeks pregnant am i", "want": "skill:pregnancy"},
+  {"ask": "when is my baby due", "want": "skill:pregnancy"},
+  {"ask": "lmp 3/1", "want": "skill:pregnancy"},
+  {"ask": "im due march 3 what trimester am i in", "want": "skill:pregnancy"},
+  {"ask": "due date if my last period was march 1 and my cycle is 35 days", "want": "skill:pregnancy"},
+  {"ask": "what week of pregnancy am i if my due date is april 20", "want": "skill:pregnancy"},
+  {"ask": "due date if conceived jan 10", "want": "skill:pregnancy"}
 ]
