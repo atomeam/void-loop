@@ -528,7 +528,7 @@ try {
     const box = await L.p.$eval('.clock', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 10, y: b.top + 10 }; });
     await L.p.mouse.move(box.x, box.y); await L.p.mouse.down(); await L.p.mouse.move(box.x - 120, box.y - 60, { steps: 6 }); await L.p.mouse.up(); await L.p.waitForTimeout(250);
     const l2 = await line();
-    const follows = !!(l1 && l2) && l2[2] === l1[2] && l2[3] === l1[3] && Math.abs(l2[0] - l1[0]) + Math.abs(l2[1] - l1[1]) > 40;
+    const follows = !!(l1 && l2) && Math.abs(l2[0] - l1[0]) + Math.abs(l2[1] - l1[1]) > 100 && Math.hypot(l2[2] - l1[2], l2[3] - l1[3]) < 30; // the clock's end moves with it; the timer's end only slides along its edge
     await L.ask('add a label that says to do', 700);
     await L.ask('connect the label to the note', 700);
     const two = await L.p.$$eval('.void-arrows line', (ls) => ls.length);
