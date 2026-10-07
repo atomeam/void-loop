@@ -2,6 +2,9 @@
 
 ## Progress ledger
 
+- 2026-10-03 12:11 ET - Held. Planet-restoration took the first real research step (Florida Keys reef-accretion + open soil SOC ledgers); living-figures still waits on stage inhabit behavior landing on main.
+- 2026-10-03 10:08 ET - Held. Life-extension track took the first real research step (senolytic MASH RCT + PEARL + semaglutide epigenetic RCT); living-figures still waits on stage inhabit behavior landing on main.
+- 2026-10-03 08:07 ET - Held. Printing/void-stage answered the multi-material export format (3MF); living-figures still waits on stage inhabit behavior landing on main.
 - 2026-10-03 06:12 ET - Held. Printing track answered figure-scale peak field / benchtop magnetize; living-figures still waits on stage inhabit behavior landing on main.
 - 2026-10-03 04:04 ET - Held. Printing track answered the magnetize-outside-printer question; living-figures still waits on stage inhabit behavior landing on main.
 - 2026-10-03 seed - Open: does a summoned miniature sit on or use something already on stage; what original character is first.
@@ -14,4 +17,4 @@
 
 ## Findings
 
-None on main yet. Draft PR #40 (Motelet) explores sitting and holding on a branch; this cycle leaves that branch alone and does not treat those claims as established until they land on main with sources and tests. Magnetize numbers for a future printable joint actuator now live in `printing-working-machines.md` (1.5 T Sr-ferrite path; 3-4 T bonded Neo path; dia 1.25 cm benchtop coil).
+None on main yet. Draft PR #40 (Motelet) explores sitting and holding on a branch; this cycle leaves that branch alone and does not treat those claims as established until they land on main with sources and tests. Magnetize numbers and the 3MF export format for a future printable joint actuator now live in `printing-working-machines.md`.

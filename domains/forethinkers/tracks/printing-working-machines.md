@@ -2,15 +2,18 @@
 
 ## Progress ledger
 
+- 2026-10-03 12:11 ET - Held. Planet-restoration advanced; browser multi-object 3MF emitter question stays open on printing/void-stage.
+- 2026-10-03 08:07 ET - Answered: multi-material export format is 3MF (ISO/IEC 25422:2025) with Core basematerials naming the five MIT regions; slicer extruder mapping stays vendor metadata. STL alone cannot carry multi-material. Next: browser path that emits a valid multi-object 3MF a consumer slicer opens with five material slots.
 - 2026-10-03 06:12 ET - Answered: MIT hard-magnet pellet is nylon-12 / strontium ferrite (69 vol%), magnetized post-print at 1.5 T; bonded Neo needs 3-4 T throughout. Benchtop Mag-Instruments Pulse Magnetizer reaches 4 T at dia 1.25 cm sample OD (figure scale), so yes for MIT feedstock with margin and yes for bonded Neo at ~1 cm OD. Next: multi-material print file format for slicer export.
 - 2026-10-03 04:04 ET - Answered: the magnetize post-step is independent of the MIT printer. Bonded NdFeB prints are saturated on a separate impulse magnetizer (about 3-7 T). Soft-magnetic cores need no magnetize step. Next: name the peak field and fixture size for a figure-scale hard-magnet volume.
 - 2026-10-03 seed - Established MIT fully 3D-printed linear motor (five materials, one magnetize post-step).
 
 ## Open questions, ranked
 
-1. What print file format does export-to-print have to emit for a multi-material motor body a slicer can take?
-2. Can a printed motor body and its magnetize step be described so Void hands a visitor an original-named part page with downloadable geometry?
-3. (answered 2026-10-03 06:12 ET) What peak field and fixture geometry saturate the MIT hard-magnetic pellet composite at figure scale, and does a benchtop impulse unit reach it?
+1. (answered 2026-10-03 08:07 ET) What print file format does export-to-print have to emit for a multi-material motor body a slicer can take?
+2. How does a browser emit a valid multi-object 3MF with five named basematerials that PrusaSlicer / Bambu / Cura open with material slots intact?
+3. Can a printed motor body and its magnetize step be described so Void hands a visitor an original-named part page with downloadable geometry?
+4. (answered 2026-10-03 06:12 ET) What peak field and fixture geometry saturate the MIT hard-magnetic pellet composite at figure scale, and does a benchtop impulse unit reach it?
 
 ## What is now known
 
@@ -24,23 +27,29 @@
   - MIT Sr-ferrite path (1.5 T): a benchtop unit reaches it with large margin at 1 cm scale.
   - Bonded Neo upgrade path (3-4 T): a benchtop unit reaches the target at ~1.25 cm OD (4 T); at 2.5 cm OD the listed 2.9 T sits below full Neo saturation, so use a tighter coil or a higher-energy shop unit (Sloma's 7 T / 40 mm path).
 - MAGNET-PHYSIK U-Series (up to 2.8 kJ, currents to 60 kA) is the common lab/production impulse family for ferrite and NdFeB rotors up to about 50-60 mm; peak field depends on the paired fixture rather than a single published Tesla number ([MAGNET-PHYSIK magnetizer page](https://www.magnet-physik.de/en/magnetizing-technology/magnetizer/), U-Series PDF, accessed 2026-10-03).
+- **Multi-material export format (2026-10-03 08:07 ET):** the file Void must emit for a five-material motor body is **3MF**, the 3D Manufacturing Format.
+  - 3MF is an International Standard: [ISO/IEC 25422:2025](https://www.iso.org/standard/90283.html) (published 2025-06-06), Information technology - 3D Manufacturing Format (3MF) specification suite ([3MF Consortium spec page](https://3mf.io/spec/), updated 2026-09-17, accessed 2026-10-03).
+  - Core Specification v1.3.0 defines `basematerials` with portable material `name` and `displaycolor`, assignable per object or triangle ([3MF Core PDF v1.3.0](https://3mf.io/wp-content/uploads/sites/55/2025/02/3MF_Core_Specification_v1.3.0.pdf), accessed 2026-10-03). Materials and Properties Extension v1.2.1 adds composites and multiproperties for layered blends ([Materials Extension v1.2.1](https://3mf.io/spec/materials-v1-2-1/), page dated 2026-01-07).
+  - Consumer slicers treat 3MF as the preferred multi-part / multi-material container. Prusa Knowledge Base lists 3MF first and states AMF is supported but "we suggest using 3MF instead" ([Prusa supported file formats](https://help.prusa3d.com/article/supported-file-formats_1772?product=prusaslicer), accessed 2026-10-03). Prusa's own write-up: 3MF can save multi-part models as one object with several parts, each with its own color and materials; STL requires splitting into separate files with no material metadata ([Prusa blog on 3MF](https://blog.prusa3d.com/3mf-file-format-and-why-its-great_30986/), accessed 2026-10-03).
+  - **STL cannot carry multi-material in one file.** OBJ material/texture data is ignored on Prusa import. AMF can name materials per volume but Prusa steers producers to 3MF.
+  - **Extruder / tool mapping is not Core 3MF.** Standard basematerials carry portable names and display colors; mapping those names onto extruders is slicer-vendor metadata (Prusa `slic3rpe:mmu_segmentation` bitmasks; Bambu/Orca use their own paint/extruder attachments). lib3mf maintainers confirm Bambu "extruder" semantics are outside the standard ([lib3mf issue #460](https://github.com/3MFConsortium/lib3mf/issues/460), accessed 2026-10-03). So Void emits five named basematerials (dielectric, conductive, soft-magnetic, hard-magnetic, flexible) matching the MIT material classes; the visitor maps filaments in their slicer. Magnetize remains a companion handoff page (1.5 T Sr-ferrite or 3-4 T bonded Neo), not a 3MF field.
 
 ## What changed this cycle
 
-Earlier notes treated the MIT hard-magnet pellet as the same class as polymer-bonded NdFeB. Primary sources show MIT used **strontium ferrite** magnetized at **1.5 T**. The figure-scale peak-field question now has named numbers: 1.5 T for the MIT feedstock, 3-4 T for a bonded-Neo upgrade, and a named benchtop unit that delivers 4 T inside a 1.25 cm sample OD. Fixture geometry for figure scale is a custom coil sized to the sample OD (Mag-Instruments ships holders; Magnequench designs keep conductors at the magnet surface).
+The open format question is answered: **emit 3MF with Core basematerials**, not a zip of STLs and not AMF as the primary path. Export-to-print stays blocked only on a browser emitter plus a slicer open test, not on format choice. Magnetize numbers from 06:12 stay as the post-step card beside the download.
 
 ## Next open question
 
-What print file format does export-to-print have to emit so a multi-material motor body (dielectric + conductive + soft magnetic + hard magnetic + flexible) loads in a normal slicer, with a named magnetize post-step citing the peak-field numbers above?
+How does a browser (or a small WASM/lib3mf path) emit a valid multi-object 3MF whose five basematerial names survive a round-trip through PrusaSlicer and Bambu Studio, so a visitor sees five material slots ready to map to filament?
 
 ## Concrete experiment
 
-Print or buy a nylon-12 / Sr-ferrite coupon about 10 mm across and 5 mm tall. Pulse at 1.5 T and at 3 T in a coil with sample OD <= 1.25 cm (Mag-Instruments PM class or equivalent). Measure remanence before and after with a gaussmeter; confirm the 1.5 T step matches MIT's published Br band. Optionally repeat with a bonded-Neo coupon and step 3 T -> 4 T -> 7 T to map the Magnequench saturation curve at figure scale. Record fixture inner diameter and pulse energy for the handoff page.
+Build a five-mesh 3MF (one closed shell per MIT material class) with Core basematerials named `dielectric`, `conductive`, `soft-magnetic`, `hard-magnetic`, and `flexible`, each with a distinct displaycolor. Open it in PrusaSlicer and Bambu Studio; confirm five parts/materials appear. Export a single-mesh STL of the same body as a negative control. Record which slicers preserve names vs only colors. Optionally add a Materials Extension composite for the hard-magnetic shell and re-test.
 
 ## Who is closest
 
-- MIT Microsystems Technology Laboratories (Canada, Bigelow, Velasquez-Garcia) for the multi-material motor body and for integrating magnetization into the print head (in-situ Sr-ferrite work already in the same group).
-- Mag-Instruments (Munich) for a named benchtop impulse unit with published Tesla-at-sample-OD numbers at figure scale.
-- Magnequench for bonded-Neo saturation field (3-4 T) and fixture design practice.
-- Laboratorio Elettrofisico and MAGNET-PHYSIK for higher-energy impulse magnetizers already used on FDM bonded NdFeB (Sloma et al., 2025).
-- Warsaw University of Technology (Sloma et al., 2025) for an end-to-end consumer-FDM plus 7 T magnetize pipeline with measured Br and energy product.
+- 3MF Consortium / ISO/IEC JTC 1 for the standard suite (ISO/IEC 25422:2025) and Core + Materials extensions.
+- lib3mf maintainers for a library path that writes valid Core basematerials without vendor paint tags.
+- Prusa Research for documenting 3MF as the preferred multi-material project format in consumer slicers.
+- MIT Microsystems Technology Laboratories (Canada, Bigelow, Velasquez-Garcia) for the five-material motor body those basematerial names describe.
+- Mag-Instruments, Magnequench, Laboratorio Elettrofisico, MAGNET-PHYSIK, and Warsaw University of Technology (Sloma et al., 2025) remain the magnetize-fixture path from prior cycles.
