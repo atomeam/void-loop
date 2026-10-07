@@ -803,5 +803,30 @@
     ],
     "sha256": "85d16b253449573fb4ee14d692ac67fc17ac13379495b10a4e6a835c8bb1ce30",
     "emit": false
+  },
+  {
+    "run": 33,
+    "at": "2026-10-07T01:42:54Z",
+    "family": "correlation-view",
+    "draft": "drafts/fringe/correlation-view-3.html",
+    "sources": [
+      {
+        "claim": "People judging correlation from scatterplots tend to underestimate moderate correlations, and judgments improve toward r = 1",
+        "source": "https://doi.org/10.1126/science.216.4550.1138",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Perceived correlation in scatterplots follows a consistent law across observers, with the largest underestimation at middle values",
+        "source": "https://doi.org/10.1109/TVCG.2010.152",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's own middle-band underestimate can be seen in about twenty guesses on a phone screen",
+        "source": "drafts/fringe/correlation-view-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "d438ad171f8287ae906d96b372364571a4ba751195bc87fdc0fd3d5d976f6606",
+    "emit": false
   }
 ]
