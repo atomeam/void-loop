@@ -1,8 +1,8 @@
 name: Forethinkers
 
+# Manual runs only. The think tank runs as a routine on Atom's box; a scheduled run here was always a dry run (no
+# ANTHROPIC_API_KEY secret) and billed a minute every hour, so the schedule is off. Start one by hand when wanted.
 on:
-  schedule:
-    - cron: "3 * * * *"
   workflow_dispatch:
     inputs:
       dry_run:

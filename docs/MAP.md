@@ -20,7 +20,7 @@ One product (**Void**, a-to-mind.com) is real and live. Around it are engines th
 ## What is live and real: Void  (`atomeam/void-loop`) [read]
 - A blank stage with one input. About 61 skills (calculators, units, timers, weather, time zones, calendar, games, 3D figures) matched by rules; anything else goes to a free model (Gemma on Workers AI) with a Wikipedia source.
 - A 1,019-ask benchmark with a score floor, and a browser suite. The benchmark checks that asks route to handlers that already exist.
-- Automation: ship helper, hourly grow job, think tank, watchdog, dispatcher (dry-run). The ship helper and deploys have been failing since Oct 5 (a merge broke `tools/test_void.mjs`; three real checks still fail).
+- Automation (CI, Oct 7: trimmed to fit GitHub Free minutes): deploy on PR/main, daily watchdog, daily dispatcher (dry-run); the ship helper and hourly grow job are retired. Earlier: The ship helper and deploys have been failing since Oct 5 (a merge broke `tools/test_void.mjs`; three real checks still fail).
 - NOT built despite the docs: "Void learns skills by itself" (`domains/void.edit-engine.md`: no `/api/learn`, no checker, no KV store).
 
 ## New this session (branches/PRs; none on `main` yet)

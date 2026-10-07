@@ -39,7 +39,7 @@ PowerShell: `Select-String`, `curl.exe`, `Copy-Item -Force`. The console mangles
 The owner can type "update yourself", "ship the next item" or "build 007" in Void (after unlock). That queues one item at /api/queue, and Void's status line shows queued / building / live / needs you / laptop offline.
 Every builder run starts with `python tools\\void_queue.py claim`. If it prints an item, build that one. Test, deploy, mark the board, then `python tools\\void_queue.py done <id> live` (or `needs-you "why"`). `domains\\void.queue.md` mirrors the queue.
 
-Linux helpers push finished work to a branch `helper/<what>` and queue `build helper/<what>`.
+Linux helpers push finished work to a branch `helper/<what>` and open a PR into main; it merges once test-and-deploy passes (CI no longer ships `helper/*` branches by itself).
 
 ## The plan
 `domains\\void.plan.md` is the working order. Check the latest news for your area before building.
@@ -47,7 +47,7 @@ Linux helpers push finished work to a branch `helper/<what>` and queue `build he
 ## Deploying
 `powershell -File tools\\deploy.ps1 "what changed"`. It syncs the void.html copies, runs `node tools\\test_void.mjs` (stops if anything fails), deploys, and commits + pushes to GitHub `atomeam/void-loop` (private, branch main).
 
-**CI:** `.github/workflows/deploy.yml` tests every push to main, then deploys if `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set. Without the token it only tests. deploy.ps1 stays the laptop path.
+**CI:** `.github/workflows/deploy.yml` (check `test-and-deploy`) runs the full suite on every PR that changes code (a docs-only PR gets quick checks), then deploys a preview; a push to main deploys to a-to-mind.com (Cloudflare Pages via wrangler, needs `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID`). The everyday benchmark is not a PR check: run `node tools/checks.mjs` (or the full `node tools/test_void.mjs`) before opening a PR; the watchdog runs it on main on Sundays and the full suite daily. Actions minutes are metered (GitHub Free, private repo: 2,000 a month, about 65 a day, roughly 10 per code PR), so batch small changes into fewer PRs. deploy.ps1 stays the laptop path.
 
 **Merging a PR:** run `gh pr checks <n> --watch` and wait until `test-and-deploy` shows pass, then merge with `gh pr merge <n> --squash`. Main has no required check yet, so `gh pr merge --auto` merges the moment it is called, before CI runs; that is how #158 turned main red for about 35 minutes (fixed by #160). Waiting for the green check keeps main deployable for every agent. `--required` reports nothing until main gets a required check, so watch all checks for now; if a just-opened PR shows no checks yet, give CI a minute to register them and watch again.
 
