@@ -38,8 +38,10 @@ button:disabled{opacity:.4;cursor:default}
   try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.rounds))st.rounds=j.rounds.filter(function(r){return r&&(r.mode==='ear'||r.mode==='eye')&&typeof r.sd==='number'&&isFinite(r.sd)&&typeof r.mean==='number'&&isFinite(r.mean)})}catch(_){}
   function el(id){return document.getElementById(id)}
   function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({rounds:st.rounds.slice(-200)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your rounds (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
-  // each tap is matched to the nearest beat; the first few beats are left out while you find the beat
-  function asynchronies(beats,taps){var out=[];taps.forEach(function(t){var best=null;beats.forEach(function(b,i){if(i<SKIP)return;var d=t-b;if(Math.abs(d)<IOI/2&&(best===null||Math.abs(d)<Math.abs(best)))best=d});if(best!==null)out.push(best)});return out}
+  // each tap is matched to the nearest beat, and each beat takes at most one tap (the closest), so a burst of taps on one beat counts once;
+  // the first few beats are left out while you find the beat
+  function asynchronies(beats,taps){var near={};taps.forEach(function(t){var bi=-1,best=null;beats.forEach(function(b,i){if(i<SKIP)return;var d=t-b;if(Math.abs(d)<IOI/2&&(best===null||Math.abs(d)<Math.abs(best))){best=d;bi=i}});
+      if(bi>=0&&(!(bi in near)||Math.abs(best)<Math.abs(near[bi])))near[bi]=best});return Object.keys(near).map(function(k){return near[k]})}
   function stats(xs){if(xs.length<2)return null;var m=xs.reduce(function(a,x){return a+x},0)/xs.length,v=xs.reduce(function(a,x){return a+(x-m)*(x-m)},0)/(xs.length-1);return{mean:m,sd:Math.sqrt(v),n:xs.length}}
   function summary(rounds){function s(mode){var r=rounds.filter(function(x){return x.mode===mode});return{n:r.length,sd:r.length?r.reduce(function(a,x){return a+x.sd},0)/r.length:null,mean:r.length?r.reduce(function(a,x){return a+x.mean},0)/r.length:null}}
     var ear=s('ear'),eye=s('eye');return{ear:ear,eye:eye,ratio:ear.n&&eye.n&&ear.sd>0?eye.sd/ear.sd:null}}
@@ -69,6 +71,7 @@ button:disabled{opacity:.4;cursor:default}
   // made-up taps 20 ms late with ±10 ms jitter: asynchronies skip the warm-up beats, and the stats come back as made
   function selftest(){var beats=[],taps=[],i;for(i=0;i<BEATS;i++){beats.push(1000+i*IOI);taps.push(1000+i*IOI+20+(i%2?10:-10))}
     var a=asynchronies(beats,taps);if(a.length!==BEATS-SKIP)return'asynchronies kept '+a.length;var s=stats(a);if(Math.abs(s.mean-20)>1e-9||Math.abs(s.sd-Math.sqrt(100*a.length/(a.length-1)))>1e-9)return'stats gave '+JSON.stringify(s);
+    var burst=asynchronies(beats,[beats[6]+5,beats[6]+10,beats[6]+15,beats[6]+20]);if(burst.length!==1||burst[0]!==5)return'a burst on one beat gave '+JSON.stringify(burst);
     var sm=summary([{mode:'ear',sd:30,mean:-20},{mode:'eye',sd:75,mean:10}]);if(Math.abs(sm.ratio-2.5)>1e-12)return'ratio gave '+sm.ratio;return true}
   window.__earoreye={asynchronies:asynchronies,stats:stats,summary:summary,selftest:selftest}; // for checks
 })();
