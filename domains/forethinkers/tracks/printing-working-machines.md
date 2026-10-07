@@ -2,6 +2,7 @@
 
 ## Progress ledger
 
+- 2026-10-07 14:40 ET - Answered on the box with a real slot test: a browser-style STORE-zip 3MF opens in OrcaSlicer 2.4.2 with five named parts on extruders 1-5 only when each part is its own build item whose `pid` points at its own one-color `m:colorgroup`. Core `basematerials` alone, one shared colorgroup, or one assembly object with components all collapse to extruder 1. PrusaSlicer 2.9.6 ignores both basematerials and colorgroup and reads extruders only from `Metadata/Slic3r_PE_model.config`. Corrected the 08:07 note that five basematerials alone give five slots. Next: does the same five-object file slice into one fused body in Bambu Studio and PrusaSlicer, and does Bambu's newer pindex-aware reader keep a single-object, five-volume layout.
 - 2026-10-03 12:11 ET - Held. Planet-restoration advanced; browser multi-object 3MF emitter question stays open on printing/void-stage.
 - 2026-10-03 08:07 ET - Answered: multi-material export format is 3MF (ISO/IEC 25422:2025) with Core basematerials naming the five MIT regions; slicer extruder mapping stays vendor metadata. STL alone cannot carry multi-material. Next: browser path that emits a valid multi-object 3MF a consumer slicer opens with five material slots.
 - 2026-10-03 06:12 ET - Answered: MIT hard-magnet pellet is nylon-12 / strontium ferrite (69 vol%), magnetized post-print at 1.5 T; bonded Neo needs 3-4 T throughout. Benchtop Mag-Instruments Pulse Magnetizer reaches 4 T at dia 1.25 cm sample OD (figure scale), so yes for MIT feedstock with margin and yes for bonded Neo at ~1 cm OD. Next: multi-material print file format for slicer export.
@@ -11,7 +12,8 @@
 ## Open questions, ranked
 
 1. (answered 2026-10-03 08:07 ET) What print file format does export-to-print have to emit for a multi-material motor body a slicer can take?
-2. How does a browser emit a valid multi-object 3MF with five named basematerials that PrusaSlicer / Bambu / Cura open with material slots intact?
+2. (answered 2026-10-07 14:40 ET, OrcaSlicer tested, PrusaSlicer and Bambu Studio from source) How does a browser emit a valid multi-object 3MF with five named basematerials that PrusaSlicer / Bambu / Cura open with material slots intact?
+5. Does the slot-tested five-object file slice as one fused body (parts touching, no gaps) in OrcaSlicer, Bambu Studio and PrusaSlicer, or does a single object with five volumes slice better where the reader supports it?
 3. Can a printed motor body and its magnetize step be described so Void hands a visitor an original-named part page with downloadable geometry?
 4. (answered 2026-10-03 06:12 ET) What peak field and fixture geometry saturate the MIT hard-magnetic pellet composite at figure scale, and does a benchtop impulse unit reach it?
 
@@ -34,22 +36,42 @@
   - **STL cannot carry multi-material in one file.** OBJ material/texture data is ignored on Prusa import. AMF can name materials per volume but Prusa steers producers to 3MF.
   - **Extruder / tool mapping is not Core 3MF.** Standard basematerials carry portable names and display colors; mapping those names onto extruders is slicer-vendor metadata (Prusa `slic3rpe:mmu_segmentation` bitmasks; Bambu/Orca use their own paint/extruder attachments). lib3mf maintainers confirm Bambu "extruder" semantics are outside the standard ([lib3mf issue #460](https://github.com/3MFConsortium/lib3mf/issues/460), accessed 2026-10-03). So Void emits five named basematerials (dielectric, conductive, soft-magnetic, hard-magnetic, flexible) matching the MIT material classes; the visitor maps filaments in their slicer. Magnetize remains a companion handoff page (1.5 T Sr-ferrite or 3-4 T bonded Neo), not a 3MF field.
 
+- **Slot test, 2026-10-07 14:40 ET (run on the box).** Seven variants of a five-part test body (one closed 8 x 8 x 6 mm box per MIT material class) were packed with Void's own `zipStore` from `void-live-deploy/skills/print-file.js`. All seven pass lib3mf 2.5.0 strict read with five names and manifold, oriented meshes ([lib3mf on PyPI](https://pypi.org/project/lib3mf/), 2.5.0 released 2026-02-23). Each was round-tripped through the OrcaSlicer 2.4.2 Linux CLI (`--export-3mf`; [release](https://github.com/OrcaSlicer/OrcaSlicer/releases/tag/v2.4.2), 2026-07-07) and the saved `Metadata/model_settings.config` was read back:
+  - Five objects, each `pid` = Core `basematerials` index: names kept, all five on extruder 1.
+  - Five objects sharing one five-color `m:colorgroup` (different `pindex`): names kept, all on extruder 1.
+  - **Five objects, each `pid` = its own one-color `m:colorgroup`: names kept, extruders 1, 2, 3, 4, 5.** This is the working layout.
+  - One assembly object with five `components` (object pid, or per-triangle pid): parts renamed `motor-body_2` to `motor-body_5`, all on extruder 1.
+  - Loading five filament profiles with `--load-filaments` changes nothing about the mapping; the 3MF layout decides it.
+- **Why, from OrcaSlicer source.** Orca's importer keeps one color per colorgroup id (the last `m:color` wins) and maps each distinct color to the next extruder, keyed by the object's `pid` only ([OrcaSlicer v2.4.2 `bbs_3mf.cpp`](https://github.com/OrcaSlicer/OrcaSlicer/blob/v2.4.2/src/libslic3r/Format/bbs_3mf.cpp), 2026-07-07). It has no `basematerials` handler, and it does not read PrusaSlicer's `Slic3r_PE_model.config` (the constant is commented out).
+- **Bambu Studio master is a step ahead.** Its importer stores every `m:color` in a group and maps (`pid`, `pindex`) pairs to extruders, and also reads per-triangle colorgroup properties on non-Bambu files ([BambuStudio master `bbs_3mf.cpp`](https://github.com/bambulab/BambuStudio/blob/master/src/libslic3r/Format/bbs_3mf.cpp), last change 2026-09-22; latest release v02.08.02.61 on 2026-08-21). So the one-colorgroup-per-part layout works in both the Bambu and Orca readers; the shared-group layout works only in Bambu Studio master (not yet confirmed in a release). Not run on the box yet.
+- **PrusaSlicer reads neither.** In 2.9.6 the 3MF importer applies extruders and per-part settings only from `Metadata/Slic3r_PE_model.config` (`<object id>` matching the 3MF object id, `metadata type="object" key="extruder"`, `<volume firstid lastid>`); a file without it loads as one geometry-only volume per object ([PrusaSlicer 2.9.6 `3mf.cpp`](https://github.com/prusa3d/PrusaSlicer/blob/version_2.9.6/src/libslic3r/Format/3mf.cpp), 2026-06-25). In the 3.0 rewrite the `basematerials` branch is present but commented out ([`Model3mf.cpp` on master](https://github.com/prusa3d/PrusaSlicer/blob/master/src/slic3r-shared/src/Slic3r/Biz/Format/3mf/Model3mf.cpp), last change 2026-08-28; 3.0.0-alpha12 on 2026-09-21). Prusa's own import matrix confirms a 3MF from a modelling tool loads as "shapes only", and that several separate meshes on a multi-material printer trigger a question asking whether they are one object with several parts ([`doc/3mf-import-matrix.md`](https://github.com/prusa3d/PrusaSlicer/blob/master/doc/3mf-import-matrix.md), 2026-09-17). No PrusaSlicer 2.9.6 Linux AppImage is published on GitHub, so this side is source-backed, not run.
+- **Cura** assigns extruders from its own `extruder_nr` setting metadata, not from 3MF material or color resources ([Cura `ThreeMFReader.py`](https://github.com/Ultimaker/Cura/blob/main/plugins/3MFReader/ThreeMFReader.py), last change 2026-07-02; 5.13.0 on 2026-05-28).
+- **Correction (2026-10-07 14:40 ET):** the 08:07 note said Void could emit five named basematerials and let the visitor map filaments. Basematerials keep the names portable but give one material slot in OrcaSlicer and PrusaSlicer. The export needs the colorgroup layout plus the Prusa config file.
+
+### The tested recipe (dual-slicer 3MF)
+
+1. `3D/3dmodel.model` declares the core and materials namespaces (`http://schemas.microsoft.com/3dmanufacturing/material/2015/02`).
+2. Resources: one `basematerials` group with the five names and display colors (portable naming), then five `m:colorgroup` elements, each holding exactly one `m:color` in that part's color.
+3. Five mesh objects, each `name`d after its material class with `pid` = its own colorgroup id and `pindex="0"`, and five `build` items, one per object, so the parts keep their shared coordinates.
+4. `Metadata/Slic3r_PE_model.config` lists each object id with `metadata type="object" key="extruder" value="1..5"` and one `volume` covering its triangles, for PrusaSlicer 2.9.
+5. Check: lib3mf strict read, then `orca-slicer --export-3mf` and read `Metadata/model_settings.config` for extruders 1-5. The seven test variants regenerate with `node domains/forethinkers/experiments/3mf-slot-test.mjs <outdir>` (variant E is the working layout; the Prusa config file in step 4 is not in the test files yet).
+
 ## What changed this cycle
 
-The open format question is answered: **emit 3MF with Core basematerials**, not a zip of STLs and not AMF as the primary path. Export-to-print stays blocked only on a browser emitter plus a slicer open test, not on format choice. Magnetize numbers from 06:12 stay as the post-step card beside the download.
+The browser-emitter question has a tested answer. Void's existing STORE-zip packer already makes valid 3MF; what decides five material slots is the layout: one build item per part, each pointing at its own one-color colorgroup, plus PrusaSlicer's config file. The earlier "five basematerials are enough" plan is overturned. Export-to-print moves from blocked to ready to build.
 
 ## Next open question
 
-How does a browser (or a small WASM/lib3mf path) emit a valid multi-object 3MF whose five basematerial names survive a round-trip through PrusaSlicer and Bambu Studio, so a visitor sees five material slots ready to map to filament?
+Does the slot-tested five-object file slice into one fused, gap-free body in OrcaSlicer, Bambu Studio and PrusaSlicer, and where the reader supports it, does one object with five volumes (Prusa config volumes, Bambu pindex) slice better than five touching objects?
 
 ## Concrete experiment
 
-Build a five-mesh 3MF (one closed shell per MIT material class) with Core basematerials named `dielectric`, `conductive`, `soft-magnetic`, `hard-magnetic`, and `flexible`, each with a distinct displaycolor. Open it in PrusaSlicer and Bambu Studio; confirm five parts/materials appear. Export a single-mesh STL of the same body as a negative control. Record which slicers preserve names vs only colors. Optionally add a Materials Extension composite for the hard-magnetic shell and re-test.
+Take the five-part file from the recipe with the parts touching (a real Linemote-1 rail, slider and coil channel instead of boxes). Run `orca-slicer --slice 0` with five filament profiles and read the G-code for five tool changes and no gap between parts. Repeat with a single-object, five-volume variant carrying the Prusa config. When a desktop slicer is available, open both in PrusaSlicer 2.9.6 and Bambu Studio and record slot count, names and the "one object with several parts" prompt.
 
 ## Who is closest
 
-- 3MF Consortium / ISO/IEC JTC 1 for the standard suite (ISO/IEC 25422:2025) and Core + Materials extensions.
-- lib3mf maintainers for a library path that writes valid Core basematerials without vendor paint tags.
-- Prusa Research for documenting 3MF as the preferred multi-material project format in consumer slicers.
-- MIT Microsystems Technology Laboratories (Canada, Bigelow, Velasquez-Garcia) for the five-material motor body those basematerial names describe.
-- Mag-Instruments, Magnequench, Laboratorio Elettrofisico, MAGNET-PHYSIK, and Warsaw University of Technology (Sloma et al., 2025) remain the magnetize-fixture path from prior cycles.
+- OrcaSlicer and Bambu Lab maintainers own the colorgroup-to-extruder import path; Bambu's master already handles `pindex` and per-triangle colors.
+- Prusa Research owns the `Slic3r_PE_model.config` path and the 3.0 importer rewrite, where `basematerials` is stubbed but not yet read.
+- 3MF Consortium and lib3mf maintainers for the portable naming layer and strict validation ([lib3mf issue #460](https://github.com/3MFConsortium/lib3mf/issues/460) on vendor extruder semantics).
+- MIT Microsystems Technology Laboratories (Canada, Bigelow, Velasquez-Garcia) for the five-material motor body those five parts describe.
+- Mag-Instruments, Magnequench, Laboratorio Elettrofisico, MAGNET-PHYSIK, and Warsaw University of Technology (Sloma et al., 2025) remain the magnetize-fixture path.

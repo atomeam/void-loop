@@ -7,10 +7,10 @@ Forethinkers means building for what is about to be possible, not just for today
 | Track | File | Role |
 | --- | --- | --- |
 | Living action figures | `tracks/living-figures.md` | Tiny actuators, joints, power, on-board mind, sensing, personality, safety. Good-guy target: built to help and play. Last advanced 2026-10-07 (offline mind module). |
-| One-shot printing of working machines | `tracks/printing-working-machines.md` | Multi-material print, embedded electronics, print-in-place mechanisms, printed motors and batteries, design-to-print. |
+| One-shot printing of working machines | `tracks/printing-working-machines.md` | Multi-material print, embedded electronics, print-in-place mechanisms, printed motors and batteries, design-to-print. Last advanced 2026-10-07 (five-slot 3MF layout, slicer-tested). |
 | Life extension and disease cures | `tracks/life-extension.md` | Newest credible results, open problems, where a small team or AI can contribute. |
 | Planet restoration | `tracks/planet-restoration.md` | Air, water, soil, oceans, biodiversity, energy. |
-| Void stage handoff | `tracks/void-stage.md` | What Void shows or exports from a figure once the stage life is real. |
+| Void stage handoff | `tracks/void-stage.md` | What Void shows or exports from a figure once the stage life is real. Export-to-print unblocked 2026-10-07. |
 
 ## How a cycle works
 

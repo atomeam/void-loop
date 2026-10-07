@@ -144,10 +144,10 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **claim_until:**
 
 ### Next [think-tank] — multi-material 3MF download for a printed motor body
-- **What:** a summonable original-named printed motor part page whose download emits a multi-object **3MF** with five Core basematerials named dielectric, conductive, soft-magnetic, hard-magnetic, and flexible (display colors included). Companion magnetize-step card keeps the 1.5 T Sr-ferrite and 3-4 T bonded Neo numbers. Original part name and original shape only.
-- **Why:** Forethinkers established (2026-10-03 08:07 ET) that the slicer export format is 3MF under ISO/IEC 25422:2025, not STL or AMF-as-primary. Complements the magnetize-step card and the printable-actuator-spec ask.
-- **Reuse:** article/page summon pattern, dated-source layout, print-file download once the browser 3MF emitter ships; magnetize-step card for the post-step.
-- **Done when:** an ask such as "download the printed motor as 3MF" or "show the multi-material print file" yields a 3MF that opens in PrusaSlicer or Bambu with five material slots; magnetize companion is linked; no sold likeness; tests stay green.
+- **What:** a summonable original-named printed motor part page whose download emits a five-part **3MF** in the slicer-tested layout: five top-level build items, one mesh object per material class (dielectric, conductive, soft-magnetic, hard-magnetic, flexible), each object carrying that name plus `pid` pointing at its own one-color `m:colorgroup`. Keep a Core `basematerials` group with the same five names for portable tools, and add `Metadata/Slic3r_PE_model.config` with a per-object `extruder` 1-5 for PrusaSlicer 2.9. Companion magnetize-step card keeps the 1.5 T Sr-ferrite and 3-4 T bonded Neo numbers. Original part name and original shape only.
+- **Why:** Forethinkers ran the slot test on 2026-10-07 14:40 ET. OrcaSlicer 2.4.2 keeps all five names and puts them on extruders 1-5 only in this layout; Core basematerials alone, a shared colorgroup, or a single assembly object with components all land every part on extruder 1. PrusaSlicer 2.9.6 reads extruders only from its own config file (source dated 2026-06-25). The layout is the difference between five material slots and one.
+- **Reuse:** `void-live-deploy/skills/print-file.js` (`zipStore`, `modelXml`), the recipe and test results in `domains/forethinkers/tracks/printing-working-machines.md`, the magnetize-step card (live at c5d99e8) for the post-step.
+- **Done when:** an ask such as "download the printed motor as 3MF" or "show the multi-material print file" yields a 3MF that passes lib3mf strict read and that OrcaSlicer CLI round-trips (`--export-3mf`) with five named objects on extruders 1-5; magnetize companion is linked; no sold likeness; tests stay green.
 - **claim:** free
 - **claim_until:**
 
