@@ -50,17 +50,18 @@ export function looksLikeCode(code, lang) {
   if (/^\s*print\s+['"]/m.test(s)) n++; // Python 2's print 'x'
   if (/^\s*(?:FROM|RUN|COPY|ADD|ENV|ARG|EXPOSE|CMD|ENTRYPOINT|WORKDIR|USER|HEALTHCHECK)\s+\S/m.test(s)) n++; // a Dockerfile instruction (upper case, as written)
   if (lang === 'yaml' && /^\s*(?:-\s+)?[\w.-]+:(?:\s|$)/m.test(s)) n++; // key: value
+  if (lang === 'powershell' && /\b[A-Z][a-z]+-[A-Z]\w+\b|\$\w+/.test(s)) n++; // Verb-Noun cmdlets, $variables
   if (lang === 'lua' && /\blocal\s+\w|\bfunction\b|^\s*end\s*$/m.test(s)) n++;
   if (/[=!<>]=|=>|->|\+\+|&&|\|\||::|:=|\w\(|\)\s*[{:]|\w\.\w+\s*[-+*/]?=[^=]/.test(s)) n++;
   if (/^(?: {2,}|\t)\S/m.test(s)) n++;
   if (/^\s*(?:#!|<\?php|<[a-z]+[\s>]|#include|@\w+)/m.test(s)) n++;
   if (/^\s*(?:const\s+|let\s+|var\s+)?[A-Za-z_$][\w$.]*\s*:?=\s*(?:["'`\[{]|-?\d|true\b|false\b|null\b|nil\b|None\b)[^\n]*$/.test(s.trim())) n += 2; // the whole paste is one assignment: password = "…" (or Go's password := "…")
   if (/^\s*[\w$.]+\([^()]*\)\s*;?\s*$/.test(s) && /[.(_$]|[a-z][A-Z]/.test(s.replace(/\(.*/, '(').slice(0, 60))) n++; // the whole paste is one call: eval(userInput)
-  return n >= 2 || (n >= 1 && (!!lang || /^(?:shell|sql|python)$/.test(langOf(s)))) || /^\s*(?:sudo\s+)?(?:rm|cp|mv|chmod|chown|curl|wget|git|npm|pip|docker|kubectl)\s+-?\S/m.test(s);
+  return n >= 2 || (n >= 1 && (!!lang || /^(?:shell|sql|python)$/.test(langOf(s)))) || /^\s*(?:sudo\s+)?(?:rm|cp|mv|chmod|chown|curl|wget|git|npm|pip|docker|kubectl|eval)\s+-?\S/m.test(s);
 }
 
 // the language when the ask names it: "is this python code ok"
-const NAMED = [['dockerfile', /\bdocker\s*file\b|\bcontainerfile\b/], ['yaml', /\bya?ml\b/], ['lua', /\blua\b/], ['perl', /\bperl\b/], ['python', /\bpython\b|\bpy\b/], ['typescript', /\btypescript\b|\bts\b/], ['javascript', /\bjavascript\b|\bjs\b|\bnode(?:\.?js)?\b|\breact\b/], ['sql', /\bsql\b|\bquery\b/], ['shell', /\bbash\b|\bshell\b|\bsh\b|\bzsh\b/], ['go', /\bgolang\b|\bgo\s+code\b|\bgo\s*:|\b(?:this|my|the|some)\s+go\s*$/], ['rust', /\brust\b/], ['java', /\bjava\b/], ['csharp', /\bc#|\bc\s*sharp\b/], ['php', /\bphp\b/], ['ruby', /\bruby\b/], ['kotlin', /\bkotlin\b/], ['swift', /\bswift\b/], ['c', /\bc\+\+|\bcpp\b|\bc\s+code\b|\bc\s*:|\b(?:this|my|the|some)\s+c\s*$/]];
+const NAMED = [['powershell', /\bpowershell\b|\bpwsh\b|\bps1\b/], ['terraform', /\bterraform\b|\bhcl\b|\btf\s*:/], ['dockerfile', /\bdocker\s*file\b|\bcontainerfile\b/], ['yaml', /\bya?ml\b/], ['lua', /\blua\b/], ['perl', /\bperl\b/], ['python', /\bpython\b|\bpy\b/], ['typescript', /\btypescript\b|\bts\b/], ['javascript', /\bjavascript\b|\bjs\b|\bnode(?:\.?js)?\b|\breact\b/], ['sql', /\bsql\b|\bquery\b/], ['shell', /\bbash\b|\bshell\b|\bsh\b|\bzsh\b/], ['go', /\bgolang\b|\bgo\s+code\b|\bgo\s*:|\b(?:this|my|the|some)\s+go\s*$/], ['rust', /\brust\b/], ['java', /\bjava\b/], ['csharp', /\bc#|\bc\s*sharp\b/], ['php', /\bphp\b/], ['ruby', /\bruby\b/], ['kotlin', /\bkotlin\b/], ['swift', /\bswift\b/], ['c', /\bc\+\+|\bcpp\b|\bc\s+code\b|\bc\s*:|\b(?:this|my|the|some)\s+c\s*$/], ['html', /\bhtml\b|\bmarkup\b/], ['css', /\bcss\b|\bstylesheet\b|\bscss\b/]]; // markup last: "js that builds html" is JavaScript
 export function langNamed(ask) { const a = String(ask || '').toLowerCase(); for (const [l, re] of NAMED) if (re.test(a)) return l; return null; }
 
 export function langOf(code) {
@@ -85,7 +86,7 @@ const C_LIKE = new Set(['javascript', 'typescript', 'java', 'csharp', 'c', 'go',
 
 // strings and comments become spaces (quotes kept, line breaks kept), so a rule never fires on text inside a string or a comment
 export function mask(code, lang) {
-  const s = String(code || ''), py = lang === 'python', sh = /^(?:shell|ruby|dockerfile|yaml|perl)$/.test(lang), sql = lang === 'sql' || lang === 'lua';
+  const s = String(code || ''), py = lang === 'python', sh = /^(?:shell|ruby|dockerfile|yaml|perl|powershell|terraform)$/.test(lang), sql = lang === 'sql' || lang === 'lua';
   let out = '', i = 0;
   const blank = (t) => t.replace(/[^\n]/g, ' ');
   while (i < s.length) {
@@ -239,6 +240,18 @@ const RULES = [
     'a variable inside one shell string: a file name such as "x; rm -rf ~" runs as a command. Pass the program and its arguments separately: system("rm", "--", $file)'],
   ['lua-global', 'style', ['lua'], (m, r, x) => { const k = m.match(/^\s*([A-Za-z_]\w*)\s*=[^=]/); return !!k && !/^(?:_G|_ENV)$/.test(k[1]) && !new RegExp('\\blocal\\s+(?:function\\s+|[\\w\\s,]*,\\s*)?' + k[1] + '\\b|\\bfunction\\b[^\\n]*\\([^)]*\\b' + k[1] + '\\b|\\bfor\\s+(?:[\\w\\s,]*,\\s*)?' + k[1] + '\\b').test(x.prev()); },
     'without local this makes a global: any other file that uses the same name changes it too. Write local x = ... the first time'],
+  ['shell-eval', 'risk', ['shell'], (m, r) => /(?:^|[;&|(]\s*|\s)eval\s/.test(m) && /\beval\s+[^#\n]*\$/.test(r),
+    'eval runs its text as a command again, so a value such as "x; rm -rf ~" in that variable runs too. Call the command directly with its arguments, or use an array: "${args[@]}"'],
+  ['ps-invoke-expression', 'risk', ['powershell'], (m, r) => /\b(?:Invoke-Expression|iex)\b[^#\n]*\$/i.test(r),
+    'Invoke-Expression runs a string as code, so whatever that variable holds (text a user typed, a downloaded script) runs with your rights. Call the command directly with & and its arguments, or parse the value first'],
+  ['tf-open-ingress', 'risk', ['terraform'], (m, r) => /\b(?:cidr_blocks|ipv6_cidr_blocks|source_ranges|source_address_prefix(?:es)?)\s*=\s*\[?[^\]\n]*"(?:0\.0\.0\.0\/0|::\/0|\*)"/.test(r),
+    '0.0.0.0/0 opens this to the whole internet. Fine for a public web port (80, 443); for SSH, databases or admin ports, allow only the addresses that need it'],
+  ['grant-all', 'risk', ['sql'], (m) => /\bGRANT\s+ALL\b/i.test(m),
+    'GRANT ALL gives this account every right (dropping tables, changing users), so one leaked password or injection can do anything. Grant only what the app needs, such as SELECT, INSERT, UPDATE on its own tables, and avoid \'%\' (any host) where you can'],
+  ['blank-no-opener', 'style', ['html', ...JS], (m, r) => /\btarget\s*=\s*["']?_blank\b/i.test(r) && !/\brel\s*=\s*["'{][^"'}]*\bno(?:opener|referrer)\b/i.test(r),
+    'target="_blank" without rel="noopener": in older browsers the new tab can reach back through window.opener and send this page somewhere else. Add rel="noopener noreferrer" (new browsers already act this way)'],
+  ['img-no-alt', 'style', ['html', ...JS], (m, r) => /<img\b(?![^>]*\balt\s*=)[^>]*>/i.test(r),
+    'an image with no alt text: screen readers say the file name or nothing at all. Add alt="what it shows", or alt="" if it is only decoration'],
   ['rm-rf-var', 'risk', ['shell'], (m, r) => /\brm\s+-[a-z]*r[a-z]*f?[a-z]*\s+(?:"?\$\{?\w+\}?"?\/?)(?:\s|$|\/)/i.test(r) && !/\$\{\w+:\?/.test(r),
     'rm -rf with a variable: if the variable is empty or unset, this deletes from the current folder or from /. Guard it: rm -rf "${DIR:?}" (stops if DIR is empty).'],
   ['curl-pipe-sh', 'risk', ['shell', 'dockerfile'], (m, r) => /\b(?:curl|wget)\b[^|]*\|\s*(?:sudo\s+)?(?:ba|z)?sh\b/.test(r),
