@@ -157,6 +157,8 @@ const RULES = [
     'rm -rf with a variable: if the variable is empty or unset, this deletes from the current folder or from /. Guard it: rm -rf "${DIR:?}" (stops if DIR is empty).'],
   ['curl-pipe-sh', 'risk', ['shell'], (m, r) => /\b(?:curl|wget)\b[^|]*\|\s*(?:sudo\s+)?(?:ba|z)?sh\b/.test(r),
     'piping a download straight into a shell runs whatever the server sends, unseen. Download it, read it, then run it.'],
+  ['chmod-777', 'risk', ['shell'], (m) => /\bchmod\s+(?:-{1,2}[a-zA-Z][\w-]*(?:=\S+)?\s+)*(?:0?777|a\+rwx|o\+w)\b/.test(m),
+    'this lets every other user on the machine change these files (777 and a+rwx also let them read and run them), so another account or a compromised service can rewrite them. Give only what is needed: chmod 755 for folders and programs, 644 for files.'],
   ['unquoted-var', 'style', ['shell'], (m, r) => /^\s*(?:cd|cp|mv|rm|cat|ls|mkdir|touch|source|\.)\s+[^"'\n]*\$\{?\w+\}?/.test(r) && !/["']\$/.test(r),
     'an unquoted variable is split on spaces, so a path like "My Files" becomes two arguments. Quote it: "$path"'],
   ['update-no-where', 'bug', ['sql', '*'], (m, r, x) => /^\s*UPDATE\s+[\w."`[\]]+\s+SET\b/i.test(r) && !/\bWHERE\b/i.test(x.statement()),

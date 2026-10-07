@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · how surprising is it (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+input,button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:7px 10px}
+button{cursor:pointer}
+input:focus-visible,button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:#8a8a92}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+#big{font-size:28px;color:#7cf}
+#out,#sim{white-space:pre-line}
+#grid{display:grid;grid-template-columns:repeat(50,1fr);gap:2px;max-width:420px}
+#grid i{display:block;aspect-ratio:1/1;background:rgba(255,255,255,.08);border-radius:1px}
+#grid i.hit{background:#fc9}
+</style>
+</head>
+<body>
+<main>
+  <h1>how surprising is it · draft · not published</h1>
+  <p class="note">Something odd happened: a dream that came true, a song on the radio just as you thought of it, a friend calling as you picked up the phone. It feels like one in a million. But how many chances were there for something like it to happen? Rare things on one try become likely when the tries are many (Diaconis and Mosteller, 1989, call this the law of truly large numbers). Put in your own guesses below. This does not say whether anything more was going on; it says how often chance alone would hand you the same story. Nothing leaves the page.</p>
+  <div class="row">
+    <label>chance on one try: 1 in <input id="odds" type="number" min="1" step="any" value="10000" style="width:9em"></label>
+    <label>tries per day (people you think of, songs, calls…) <input id="per" type="number" min="0" step="any" value="20" style="width:7em"></label>
+    <label>over how many days <input id="days" type="number" min="1" step="1" value="365" style="width:6em"></label>
+  </div>
+  <div id="big" aria-live="polite"></div>
+  <div id="out"></div>
+  <div class="row"><button id="run" type="button">simulate 1,000 people</button></div>
+  <div id="grid" aria-hidden="true"></div>
+  <div id="sim" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  // P(at least one hit in n independent tries, each with chance p), computed stably for tiny p and huge n
+  function atLeastOne(p,n){if(!(p>0)||!(n>0))return 0;if(p>=1)return 1;return -Math.expm1(n*Math.log1p(-p))}
+  function fmtP(x){return x>=.995?'almost certain':x<1e-6?'less than 1 in a million':x>=.01?Math.round(x*100)+'%':'1 in '+Math.round(1/x).toLocaleString()}
+  // tries until a 50% chance of at least one hit
+  function halfLife(p){return p>0&&p<1?Math.ceil(Math.log(.5)/Math.log1p(-p)):p>=1?1:Infinity}
+  function el(id){return document.getElementById(id)}
+  function read(){var o=+el('odds').value,per=+el('per').value,d=Math.round(+el('days').value);return{p:o>=1?1/o:NaN,n:per*d,per:per,d:d,o:o}}
+  function draw(){var v=read();if(!isFinite(v.p)||!(v.n>=0)){el('big').textContent='';el('out').textContent='fill in all three numbers (the odds must be at least 1)';return}
+    var q=atLeastOne(v.p,v.n),hl=halfLife(v.p);
+    el('big').textContent='at least once: '+fmtP(q);
+    el('out').textContent=v.n.toLocaleString()+' chances in all · about '+(v.n*v.p).toFixed(v.n*v.p<10?2:0)+' such events expected by chance'
+      +(isFinite(hl)?'\nan even chance of at least one after '+hl.toLocaleString()+' tries'+(v.per>0?' (about '+(hl/v.per<2?(hl/v.per*24).toFixed(1)+' hours':Math.round(hl/v.per).toLocaleString()+' days')+')':''):'')}
+  ['odds','per','days'].forEach(function(id){el(id).addEventListener('input',draw)});
+  // 1,000 simulated people with the same habits: how many of them get at least one such story?
+  // each simulated person has exactly the chance shown above of at least one such event (one draw per person)
+  function simulate(p,n,people){var q=atLeastOne(p,n),hits=[];for(var i=0;i<people;i++)hits.push(Math.random()<q);return hits}
+  el('run').addEventListener('click',function(){var v=read();if(!isFinite(v.p))return;var h=simulate(v.p,v.n,1000),G=el('grid');G.textContent='';
+    h.forEach(function(x){var c=document.createElement('i');if(x)c.className='hit';G.appendChild(c)});
+    var k=h.filter(Boolean).length;el('sim').textContent=k+' of 1,000 simulated people got at least one, by chance alone (each orange square is one of them)'});
+  draw();
+  window.__surprise={atLeastOne:atLeastOne,halfLife:halfLife,simulate:simulate,fmtP:fmtP}; // for checks
+})();
+</script>
+</body>
+</html>

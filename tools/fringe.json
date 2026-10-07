@@ -858,5 +858,30 @@
     ],
     "sha256": "683d0444b873ef9bc4bfd42d6e2618e49749c68b794eaad49e9da9d820414919",
     "emit": false
+  },
+  {
+    "run": 35,
+    "at": "2026-10-07T03:42:55Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger-4.html",
+    "sources": [
+      {
+        "claim": "With a large enough number of chances, any outrageous thing is likely to happen (the law of truly large numbers); many striking coincidences have ordinary explanations",
+        "source": "https://doi.org/10.1080/01621459.1989.10478847",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The chance of at least one event in n independent tries, each with chance p, is 1 - (1 - p)^n",
+        "source": "https://doi.org/10.1080/01621459.1989.10478847",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing their own chance-only count lowers how much weight people give a single striking coincidence",
+        "source": "drafts/fringe/weak-signal-hypothesis-ledger-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "0d4f3c429e374a5fba7e612b76cb10dc97d1a64dea741ac9843a334ea5788410",
+    "emit": false
   }
 ]
