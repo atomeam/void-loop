@@ -50,6 +50,7 @@ export function looksLikeCode(code, lang) {
   if (/[=!<>]=|=>|->|\+\+|&&|\|\||::|:=|\w\(|\)\s*[{:]|\w\.\w+\s*[-+*/]?=[^=]/.test(s)) n++;
   if (/^(?: {2,}|\t)\S/m.test(s)) n++;
   if (/^\s*(?:#!|<\?php|<[a-z]+[\s>]|#include|@\w+)/m.test(s)) n++;
+  if (/^\s*(?:const\s+|let\s+|var\s+)?[A-Za-z_$][\w$.]*\s*=\s*(?:["'`\[{]|-?\d|true\b|false\b|null\b|None\b)[^\n]*$/.test(s.trim())) n += 2; // the whole paste is one assignment: password = "…"
   if (/^\s*[\w$.]+\([^()]*\)\s*;?\s*$/.test(s) && /[.(_$]|[a-z][A-Z]/.test(s.replace(/\(.*/, '(').slice(0, 60))) n++; // the whole paste is one call: eval(userInput)
   return n >= 2 || (n >= 1 && (!!lang || /^(?:shell|sql|python)$/.test(langOf(s)))) || /^\s*(?:sudo\s+)?(?:rm|cp|mv|chmod|chown|curl|wget|git|npm|pip|docker|kubectl)\s+-?\S/m.test(s);
 }
