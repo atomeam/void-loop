@@ -3358,7 +3358,7 @@
   },
   {
     "ask": "how much paint for a 12 by 15 room",
-    "want": "calc|answer|said",
+    "want": "skill:home|calc|answer|said",
     "says": "\\d"
   },
   {
@@ -5156,5 +5156,23 @@
   {"ask": "i started my period on oct 1 when will i ovulate", "want": "skill:ovulation"},
   {"ask": "period calculator", "want": "skill:ovulation"},
   {"ask": "luteal phase 12 days last period oct 2 when do i ovulate", "want": "skill:ovulation"},
-  {"ask": "am i ovulating today", "want": "skill:ovulation"}
+  {"ask": "am i ovulating today", "want": "skill:ovulation"},
+  {"ask": "how much paint do i need for a 12x14 room", "want": "skill:home"},
+  {"ask": "paint for a 10x12 bedroom with 9 foot ceilings", "want": "skill:home"},
+  {"ask": "how many gallons of paint for a 12 by 14 room with 2 doors and 3 windows", "want": "skill:home"},
+  {"ask": "paint a 12x14 room and the ceiling", "want": "skill:home"},
+  {"ask": "how much paint for the ceiling of a 12x14 room", "want": "skill:home"},
+  {"ask": "how much paint for a 4 by 5 metre room", "want": "skill:home"},
+  {"ask": "paint calculator", "want": "skill:home"},
+  {"ask": "how much paint to paint a 12 ft by 14 ft room", "want": "skill:home"},
+  {"ask": "how many gallons to paint a 12x12 bedroom two coats", "want": "skill:home"},
+  {"ask": "how much flooring do i need for a 12x14 room", "want": "skill:home"},
+  {"ask": "how many boxes of laminate for a 15x20 room boxes cover 22 sq ft", "want": "skill:home"},
+  {"ask": "how many 12x24 tiles for a 10x12 floor", "want": "skill:home"},
+  {"ask": "how many tiles do i need for a 10x12 floor", "want": "skill:home"},
+  {"ask": "how much carpet for a 12x14 room", "want": "skill:home"},
+  {"ask": "how much vinyl plank for a 10 x 11 kitchen", "want": "skill:home"},
+  {"ask": "herringbone hardwood for a 12x16 room", "want": "skill:home"},
+  {"ask": "laminate for 250 sq ft", "want": "skill:home"},
+  {"ask": "flooring calculator", "want": "skill:home"}
 ]
