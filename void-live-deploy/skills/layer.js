@@ -24,6 +24,7 @@ export const KIND_WORDS = [
   ['counter', /^counters?$/],
   ['shape', /^(?:shapes?|rect(?:angles?)?|squares?|circles?|lines?)$/],
   ['clock', /^clocks?$/],
+  ['label', /^(?:labels?|captions?)$/], // free-floating labels (skills/label.js)
 ];
 const SELF = /^(?:|it|this|that|this one|that one|the selected one|selected|the selected thing|what i picked)$/;
 
