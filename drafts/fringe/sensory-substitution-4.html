@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · ear or eye (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 14px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#lamp{width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18)}
+#lamp.on{background:#7cf}
+#pad{width:100%;height:120px;border-radius:14px;font-size:16px;touch-action:manipulation}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>ear or eye · draft · not published</h1>
+  <p class="note">Tap along with a steady beat, 16 beats at a time. In some rounds the beat is a beep you hear, in others a light you see. Keeping time is much steadier with sound than with flashes: people tapping to beeps vary by a few tens of milliseconds, to flashes by two or three times as much (Repp, 2005, a review of tapping studies). This is part of why rhythm is hard to pass to the eyes when sound is not there, and why a light needs more than blinking to stand in for a beat. Tap the big pad, or press the space bar. The page compares how steady your own taps are by ear and by eye. Everything stays in this browser.</p>
+  <div class="row"><div id="lamp" aria-hidden="true"></div></div>
+  <button id="pad" type="button" disabled>tap</button>
+  <div class="row"><button id="go" type="button">start a round</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var IOI=600,BEATS=16,SKIP=4,KEY='a2m.fringe.earoreye.v1',st={rounds:[]},ac=null,cur=null,starting=false,timers=[];
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.rounds))st.rounds=j.rounds.filter(function(r){return r&&(r.mode==='ear'||r.mode==='eye')&&typeof r.sd==='number'&&isFinite(r.sd)&&typeof r.mean==='number'&&isFinite(r.mean)})}catch(_){}
+  function el(id){return document.getElementById(id)}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({rounds:st.rounds.slice(-200)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your rounds (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // each tap is matched to the nearest beat; the first few beats are left out while you find the beat
+  function asynchronies(beats,taps){var out=[];taps.forEach(function(t){var best=null;beats.forEach(function(b,i){if(i<SKIP)return;var d=t-b;if(Math.abs(d)<IOI/2&&(best===null||Math.abs(d)<Math.abs(best)))best=d});if(best!==null)out.push(best)});return out}
+  function stats(xs){if(xs.length<2)return null;var m=xs.reduce(function(a,x){return a+x},0)/xs.length,v=xs.reduce(function(a,x){return a+(x-m)*(x-m)},0)/(xs.length-1);return{mean:m,sd:Math.sqrt(v),n:xs.length}}
+  function summary(rounds){function s(mode){var r=rounds.filter(function(x){return x.mode===mode});return{n:r.length,sd:r.length?r.reduce(function(a,x){return a+x.sd},0)/r.length:null,mean:r.length?r.reduce(function(a,x){return a+x.mean},0)/r.length:null}}
+    var ear=s('ear'),eye=s('eye');return{ear:ear,eye:eye,ratio:ear.n&&eye.n&&ear.sd>0?eye.sd/ear.sd:null}}
+  function beep(at){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=880;g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.2,at+.004);g.gain.linearRampToValueAtTime(0,at+.05);o.connect(g);g.connect(ac.destination);o.start(at);o.stop(at+.06)}
+  function begin(mode){var lead=800,t0=performance.now()+lead,beats=[],i;for(i=0;i<BEATS;i++)beats.push(t0+i*IOI);cur={mode:mode,beats:beats,taps:[]};
+    if(mode==='ear'){var a0=ac.currentTime+lead/1000;for(i=0;i<BEATS;i++)beep(a0+i*IOI/1000)}
+    else beats.forEach(function(b){timers.push(setTimeout(function(){el('lamp').classList.add('on');timers.push(setTimeout(function(){el('lamp').classList.remove('on')},80))},b-performance.now()))});
+    el('pad').disabled=false;el('pad').focus();el('state').textContent=(mode==='ear'?'listen and tap with the beeps':'watch the light and tap with it')+' · 16 beats';
+    timers.push(setTimeout(finish,lead+BEATS*IOI+400))}
+  function finish(){if(!cur)return;var a=asynchronies(cur.beats,cur.taps),s=stats(a),mode=cur.mode;cur=null;el('pad').disabled=true;el('go').disabled=false;el('lamp').classList.remove('on');
+    if(!s||s.n<8){el('state').textContent='too few taps landed near a beat; try again and keep tapping to the end';return}
+    st.rounds.push({mode:mode,sd:s.sd,mean:s.mean,n:s.n,at:Date.now()});save();
+    el('state').textContent='by '+mode+': taps varied by ±'+Math.round(s.sd)+' ms and came '+Math.abs(Math.round(s.mean))+' ms '+(s.mean<0?'before':'after')+' the beat on average';draw()}
+  // rounds alternate by ear and by eye, so the two get the same practice
+  el('go').addEventListener('click',function(){if(starting||cur)return;starting=true;el('go').disabled=true;var last=st.rounds.length?st.rounds[st.rounds.length-1].mode:'eye',mode=last==='ear'?'eye':'ear';
+    if(mode==='eye'){starting=false;begin('eye');return}
+    if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A){starting=false;begin('eye');el('state').textContent+=' (this browser has no sound, so only the light runs here)';return}ac=new A()}
+    ac.resume().then(function(){starting=false;if(ac.state!=='running'){el('go').disabled=false;el('state').textContent='the sound did not start; tap start again';return}begin('ear')},function(){starting=false;el('go').disabled=false;el('state').textContent='the sound did not start; tap start again'})});
+  function tap(){if(cur)cur.taps.push(performance.now())}
+  el('pad').addEventListener('pointerdown',function(ev){ev.preventDefault();tap()});
+  el('pad').addEventListener('keydown',function(ev){if((ev.key===' '||ev.key==='Enter')&&!ev.repeat){ev.preventDefault();tap()}});
+  el('pad').addEventListener('click',function(ev){ev.preventDefault()});
+  function draw(){var s=summary(st.rounds);if(!st.rounds.length){el('score').textContent='';return}
+    function line(name,x){return name+': '+(x.n?'±'+Math.round(x.sd)+' ms ('+x.n+' round'+(x.n>1?'s':'')+')':'no rounds yet')}
+    el('score').textContent=line('by ear',s.ear)+'\n'+line('by eye',s.eye)+(s.ratio&&s.ear.n>=3&&s.eye.n>=3?'\nyour taps were '+s.ratio.toFixed(1)+' times as spread by eye as by ear':'\nabout 3 rounds of each before comparing')}
+  draw();
+  // made-up taps 20 ms late with ±10 ms jitter: asynchronies skip the warm-up beats, and the stats come back as made
+  function selftest(){var beats=[],taps=[],i;for(i=0;i<BEATS;i++){beats.push(1000+i*IOI);taps.push(1000+i*IOI+20+(i%2?10:-10))}
+    var a=asynchronies(beats,taps);if(a.length!==BEATS-SKIP)return'asynchronies kept '+a.length;var s=stats(a);if(Math.abs(s.mean-20)>1e-9||Math.abs(s.sd-Math.sqrt(100*a.length/(a.length-1)))>1e-9)return'stats gave '+JSON.stringify(s);
+    var sm=summary([{mode:'ear',sd:30,mean:-20},{mode:'eye',sd:75,mean:10}]);if(Math.abs(sm.ratio-2.5)>1e-12)return'ratio gave '+sm.ratio;return true}
+  window.__earoreye={asynchronies:asynchronies,stats:stats,summary:summary,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>
