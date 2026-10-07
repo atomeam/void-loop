@@ -2,6 +2,16 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-07 14:40 ET even-hour cycle
+
+Read `convergence.md`, every track, `index.md`, and the growth board. No earlier `forethinkers/*` branches or open think-tank PRs to fold. Picked export-to-print: the printing and void-stage tracks were least recently advanced (2026-10-03 08:07), and the open question could be answered by experiment on the box.
+
+- Established: the 3MF layout that gives five named material slots. Seven variants packed with Void's own `zipStore`, all lib3mf 2.5.0 strict-valid, round-tripped through the OrcaSlicer 2.4.2 CLI. Only "one build item per part, each with its own one-color `m:colorgroup`" kept five names on extruders 1-5.
+- From source: OrcaSlicer 2.4.2 has no basematerials handler and keys extruders by object pid; Bambu Studio master (2026-09-22) maps pid/pindex pairs; PrusaSlicer 2.9.6 (2026-06-25) reads extruders only from `Metadata/Slic3r_PE_model.config`, and 3.0's basematerials branch is commented out; Cura uses its own `extruder_nr` metadata.
+- Corrected: five basematerials alone do not give five slots.
+- Board: rewrote the free "multi-material 3MF download" row with the tested layout and an OrcaSlicer CLI done-check.
+- Next open question: does the five-object file slice into one fused body, and does a single-object five-volume layout slice better where supported.
+
 ## 2026-10-07 12:17 ET even-hour cycle
 
 Ran on the Linux box. Folded the unmerged branch `forethinkers/cycle-2026-10-03-1211` (which already carried the 08:07 3MF and 10:08 senolytic MASH cycles) into `forethinkers/cycle-2026-10-07-1217`, so the 2026-10-03 research lands on main with this PR. The 04:00 and 06:12 branches were already squash-merged (PR #45 and commit 62d8a6a), so they are superseded.

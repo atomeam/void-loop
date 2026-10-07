@@ -5155,5 +5155,21 @@
   {"ask": "disconnect the clock from the timer", "want": "skill:label", "says": "took the arrow away", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "connect the timer to the clock"]},
   {"ask": "remove the label from the clock", "want": "skill:label", "says": "took the label off", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "label the clock kitchen"]},
   {"ask": "remove the labels", "want": "skill:label", "says": "took the labels off", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "label the clock kitchen"]},
-  {"ask": "show the labels", "want": "skill:label", "says": "labels:", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "label the clock kitchen"]}
+  {"ask": "show the labels", "want": "skill:label", "says": "labels:", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "label the clock kitchen"]},
+  {"ask": "when am i ovulating if my last period was march 1", "want": "skill:ovulation"},
+  {"ask": "when will i ovulate if my last period was sept 20", "want": "skill:ovulation"},
+  {"ask": "fertile window if my last period was sept 20 and my cycle is 30 days", "want": "skill:ovulation"},
+  {"ask": "when is my next period if my last period was sept 20", "want": "skill:ovulation"},
+  {"ask": "my cycle is 26 to 32 days and my last period was oct 1 when am i fertile", "want": "skill:ovulation"},
+  {"ask": "my next period is due nov 3 when do i ovulate", "want": "skill:ovulation"},
+  {"ask": "ovulation calculator", "want": "skill:ovulation"},
+  {"ask": "fertile window calculator", "want": "skill:ovulation"},
+  {"ask": "when am i most fertile", "want": "skill:ovulation"},
+  {"ask": "when is my fertile window", "want": "skill:ovulation"},
+  {"ask": "best time to get pregnant if my last period was oct 1", "want": "skill:ovulation"},
+  {"ask": "when will i ovulate 32 day cycle lmp 9/28", "want": "skill:ovulation"},
+  {"ask": "i started my period on oct 1 when will i ovulate", "want": "skill:ovulation"},
+  {"ask": "period calculator", "want": "skill:ovulation"},
+  {"ask": "luteal phase 12 days last period oct 2 when do i ovulate", "want": "skill:ovulation"},
+  {"ask": "am i ovulating today", "want": "skill:ovulation"}
 ]
