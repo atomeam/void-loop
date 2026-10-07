@@ -169,8 +169,7 @@ function formHtml(el, q, esc) {
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  let q = askOf(text);
-  if (!q) q = followOf(text);
+  let q = followOf(text) || askOf(text); // after a heart card, "zone 2" keeps the resting rate you gave
   if (!q) return 'none';
   q = Object.assign({}, q);
   const mem = lastStatsOf();
