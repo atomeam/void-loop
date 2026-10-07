@@ -828,5 +828,35 @@
     ],
     "sha256": "d438ad171f8287ae906d96b372364571a4ba751195bc87fdc0fd3d5d976f6606",
     "emit": false
+  },
+  {
+    "run": 34,
+    "at": "2026-10-07T02:42:26Z",
+    "family": "non-lexical-intent",
+    "draft": "drafts/fringe/non-lexical-intent-3.html",
+    "sources": [
+      {
+        "claim": "People match a made-up word like 'maluma' to a rounded shape and 'takete' to a jagged one far more often than chance",
+        "source": "https://archive.org/details/gestaltpsycholog00khle",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The bouba-kiki match holds across speakers of 25 languages and 10 writing systems, though more weakly in some",
+        "source": "https://doi.org/10.1098/rstb.2020.0390",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Voiceless stops and front vowels lean 'sharp', and sonorants with back rounded vowels lean 'round'",
+        "source": "https://doi.org/10.3389/fpsyg.2013.00185",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's own match rate with randomly built words and randomly drawn shapes, over a few dozen rounds, is clearly above 50%",
+        "source": "drafts/fringe/non-lexical-intent-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "e240a576eb6c88ad1a14ebc04ce05e41a224e48b3e91fa92637c2a7d9e2c9d1a",
+    "emit": false
   }
 ]

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · which one is it (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+#word{font-size:30px;color:#7cf;text-align:center;letter-spacing:.04em}
+.pair{display:flex;gap:12px;justify-content:center}
+.pair button{flex:1 1 0;max-width:200px;aspect-ratio:1/1;padding:10px}
+.pair svg{width:100%;height:100%}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>which one is it · draft · not published</h1>
+  <p class="note">Each round shows a made-up word and two shapes, one soft and round, one sharp and spiky. Pick the shape the word belongs to; there is no right answer. Most people across many languages give soft-sounding words (like "maluma") to the round shape and sharp-sounding ones (like "takete") to the spiky shape: the bouba–kiki effect (Köhler, 1929; Ćwiek and others, 2022, in 25 languages). This page counts how often you follow it, against the 50% you would get by chance. Everything stays in this browser.</p>
+  <div id="word" aria-live="polite"></div>
+  <div class="pair"><button id="a" type="button"></button><button id="b" type="button"></button></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.boubakiki.v1',st={trials:[]},cur=null;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&(t.kind==='round'||t.kind==='sharp')&&typeof t.match==='boolean'})}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-500)}))}catch(_){}}
+  function pick(a){return a[Math.floor(Math.random()*a.length)]}
+  // two-syllable nonsense words from sound classes: round = voiced, labial and sonorant consonants with back rounded vowels;
+  // sharp = voiceless stops and fricatives with front vowels (the classes used in the cross-language studies)
+  var C={round:['b','m','l','n','g','w'],sharp:['k','t','p','z','ch','s']},V={round:['o','u','oo','a'],sharp:['i','e','ee','ay']};
+  function word(kind){var w='';for(var i=0;i<2+Math.floor(Math.random()*2);i++)w+=pick(C[kind])+pick(V[kind]);return w}
+  // a blob (smooth closed curve) and a star (sharp points), both with some random wobble so no two rounds look the same
+  function shape(kind){var n=kind==='round'?6+Math.floor(Math.random()*3):9+Math.floor(Math.random()*4),pts=[],i;
+    for(i=0;i<n;i++){var a=i/n*Math.PI*2,r=kind==='round'?36+Math.random()*8:(i%2?16+Math.random()*6:40+Math.random()*6);pts.push([50+r*Math.cos(a),50+r*Math.sin(a)])}
+    var d;if(kind==='sharp')d='M'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1)}).join('L')+'Z';
+    else{d='';for(i=0;i<n;i++){var p0=pts[(i-1+n)%n],p1=pts[i],p2=pts[(i+1)%n],p3=pts[(i+2)%n];if(!i)d+='M'+p1[0].toFixed(1)+','+p1[1].toFixed(1);
+      d+='C'+(p1[0]+(p2[0]-p0[0])/6).toFixed(1)+','+(p1[1]+(p2[1]-p0[1])/6).toFixed(1)+' '+(p2[0]-(p3[0]-p1[0])/6).toFixed(1)+','+(p2[1]-(p3[1]-p1[1])/6).toFixed(1)+' '+p2[0].toFixed(1)+','+p2[1].toFixed(1)}d+='Z'}
+    return '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="'+d+'" fill="#7cf" fill-opacity=".85"/></svg>'}
+  // one-sided binomial p for k or more matches in n trials at chance 0.5
+  function pBinom(k,n){var s=0,c=1,i;for(i=0;i<=n;i++){if(i>=k)s+=c;c=c*(n-i)/(i+1)}return s/Math.pow(2,n)}
+  function el(id){return document.getElementById(id)}
+  function next(){var kind=Math.random()<.5?'round':'sharp',roundLeft=Math.random()<.5;cur={kind:kind,word:word(kind),roundLeft:roundLeft};
+    el('word').textContent=cur.word;el('a').innerHTML=shape(roundLeft?'round':'sharp');el('b').innerHTML=shape(roundLeft?'sharp':'round');
+    el('a').setAttribute('aria-label',roundLeft?'the round shape':'the spiky shape');el('b').setAttribute('aria-label',roundLeft?'the spiky shape':'the round shape')}
+  function answer(left){if(!cur)return;var chose=(left===cur.roundLeft)?'round':'sharp',m=chose===cur.kind;st.trials.push({kind:cur.kind,match:m,at:Date.now()});save();
+    el('state').textContent='"'+cur.word+'" was built from '+(cur.kind==='round'?'soft':'sharp')+' sounds · you chose the '+(chose==='round'?'round':'spiky')+' shape'+(m?', as most people do':'');draw();next()}
+  el('a').addEventListener('click',function(){answer(true)});el('b').addEventListener('click',function(){answer(false)});
+  function draw(){var n=st.trials.length;if(!n){el('score').textContent='';return}var k=st.trials.filter(function(t){return t.match}).length;
+    el('score').textContent=n+' round'+(n>1?'s':'')+' · you followed the sound-shape match '+Math.round(k/n*100)+'% of the time (chance is 50%)'
+      +(n>=10?' · that many by chance alone: p = '+(pBinom(k,n)<.001?'< 0.001':pBinom(k,n).toFixed(3)):'\nabout 10 rounds before comparing with chance')}
+  next();draw();
+  window.__bk={word:word,shape:shape,pBinom:pBinom}; // for checks
+})();
+</script>
+</body>
+</html>
