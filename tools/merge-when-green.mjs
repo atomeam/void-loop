@@ -1,4 +1,4 @@
-// Merge a PR once CI ("test-and-deploy", and "bench" when present) passes on its current head, so a run never sits waiting on CI: start this in
+// Merge a PR once CI ("test-and-deploy", and "bench" when present: bench.yml runs only when the benchmark harness changes) passes on its current head, so a run never sits waiting on CI: start this in
 // the background right after pushing and go do the next thing. If the head moves (a new push), it follows the new
 // head; if CI fails it stops and says so; if the PR closes it stops. A CodeRabbit review still running (or asked for in the last 10 min) gets up to 10 min after
 // green; actionable CodeRabbit findings on the head stop it with exit 3. Uses the gh available in the session.
@@ -32,9 +32,9 @@ while (Date.now() < end) {
   } catch (_) {} }
   const sha = p.head.sha, latest = (name) => gh(`repos/${repo}/commits/${sha}/check-runs?check_name=${name}`).check_runs.sort((a, b) => b.id - a.id)[0];
   const runs = [latest('test-and-deploy'), latest('bench')].filter(Boolean);
-  const failed = runs.find((r) => r.status === 'completed' && r.conclusion !== 'success' && r.conclusion !== 'cancelled');
+  const failed = runs.find((r) => r.status === 'completed' && !['success', 'cancelled', 'skipped', 'neutral'].includes(r.conclusion));
   if (failed) { console.log(`#${pr} ${failed.name} ${failed.conclusion} on ${sha.slice(0, 7)}: ${failed.html_url}`); process.exit(1); }
-  if (runs.length && runs[0].name === 'test-and-deploy' && runs.every((r) => r.status === 'completed' && r.conclusion === 'success')) {
+  if (runs.length && runs[0].name === 'test-and-deploy' && runs.every((r) => r.status === 'completed' && ['success', 'skipped', 'neutral'].includes(r.conclusion)) && runs[0].conclusion === 'success') {
     // CodeRabbit is a bonus, never a gate: but a review already under way gets up to 10 min after green, so its findings land
     // on an open PR; a review of this head with actionable findings stops the merge so they get fixed first
     greenAt = greenAt || Date.now();

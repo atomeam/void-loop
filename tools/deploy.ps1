@@ -31,7 +31,7 @@ Pop-Location
 if (-not $deployed) { Write-Host 'deploy failed'; exit 1 }
 Push-Location $loop
 git add -A; git commit -q -m $msg
-# CI (.github/workflows/ship-helper.yml) can move main too: replay this commit on top before pushing.
+# Merged PRs move main too: replay this commit on top before pushing.
 $pushed = Retry 'git push' {
   git pull -q --rebase origin main 2>&1 | Out-Null; if ($LASTEXITCODE -ne 0) { git rebase --abort 2>&1 | Out-Null }
   git push -q origin main 2>&1 | Out-Null; $LASTEXITCODE -eq 0
