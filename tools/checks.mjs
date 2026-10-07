@@ -23,6 +23,10 @@ for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.m
   results.push(['files', !garbled.length && !broken.length, garbled.length || broken.length
     ? [garbled.length && 'garbled text in ' + garbled.join(', '), broken.length && 'does not parse: ' + broken.join(', ')].filter(Boolean).join('; ')
     : files.length + ' files: clean text, every script parses']); }
+// nothing installed is ever tracked: a node_modules symlink from a worktree once got committed, and copying that commit
+// back replaced the real folder with a link to itself
+{ const bad = spawnSync('git', ['ls-files', '--', 'node_modules', 'node_modules/*'], { cwd: resolve(here, '..'), encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
+  results.push(['tracked', !bad.length, bad.length ? 'git tracks ' + bad.slice(0, 3).join(', ') + ': git rm --cached it (a worktree runs its own npm ci, never a link)' : 'no installed files tracked']); }
 // the bench and the deploy serve void-live-deploy/index.html: an edit to void.html that was not copied there is tested stale, silently
 { const read = (f) => readFileSync(resolve(here, '..', f), 'utf8').replace(/\r\n/g, '\n'), src = read('void.html');
   const stale = ['void-live-deploy/index.html', 'void-live-deploy/void.html'].filter((f) => read(f) !== src);
