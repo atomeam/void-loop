@@ -45,12 +45,14 @@ button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
     var d;if(kind==='sharp')d='M'+pts.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1)}).join('L')+'Z';
     else{d='';for(i=0;i<n;i++){var p0=pts[(i-1+n)%n],p1=pts[i],p2=pts[(i+1)%n],p3=pts[(i+2)%n];if(!i)d+='M'+p1[0].toFixed(1)+','+p1[1].toFixed(1);
       d+='C'+(p1[0]+(p2[0]-p0[0])/6).toFixed(1)+','+(p1[1]+(p2[1]-p0[1])/6).toFixed(1)+' '+(p2[0]-(p3[0]-p1[0])/6).toFixed(1)+','+(p2[1]-(p3[1]-p1[1])/6).toFixed(1)+' '+p2[0].toFixed(1)+','+p2[1].toFixed(1)}d+='Z'}
-    return '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="'+d+'" fill="#7cf" fill-opacity=".85"/></svg>'}
+    // built as elements, not markup, so nothing is ever parsed as HTML
+    var NS='http://www.w3.org/2000/svg',svg=document.createElementNS(NS,'svg'),path=document.createElementNS(NS,'path');svg.setAttribute('viewBox','0 0 100 100');svg.setAttribute('aria-hidden','true');
+    path.setAttribute('d',d);path.setAttribute('fill','#7cf');path.setAttribute('fill-opacity','.85');svg.appendChild(path);return svg}
   // one-sided binomial p for k or more matches in n trials at chance 0.5
   function pBinom(k,n){var s=0,c=1,i;for(i=0;i<=n;i++){if(i>=k)s+=c;c=c*(n-i)/(i+1)}return s/Math.pow(2,n)}
   function el(id){return document.getElementById(id)}
   function next(){var kind=Math.random()<.5?'round':'sharp',roundLeft=Math.random()<.5;cur={kind:kind,word:word(kind),roundLeft:roundLeft};
-    el('word').textContent=cur.word;el('a').innerHTML=shape(roundLeft?'round':'sharp');el('b').innerHTML=shape(roundLeft?'sharp':'round');
+    el('word').textContent=cur.word;el('a').replaceChildren(shape(roundLeft?'round':'sharp'));el('b').replaceChildren(shape(roundLeft?'sharp':'round'));
     el('a').setAttribute('aria-label',roundLeft?'the round shape':'the spiky shape');el('b').setAttribute('aria-label',roundLeft?'the spiky shape':'the round shape')}
   function answer(left){if(!cur)return;var chose=(left===cur.roundLeft)?'round':'sharp',m=chose===cur.kind;st.trials.push({kind:cur.kind,match:m,at:Date.now()});save();
     el('state').textContent='"'+cur.word+'" was built from '+(cur.kind==='round'?'soft':'sharp')+' sounds · you chose the '+(chose==='round'?'round':'spiky')+' shape'+(m?', as most people do':'');draw();next()}
