@@ -26,3 +26,4 @@ New ideas land here in batches. A run may build any open row. Shipped rows stay,
 | shipped 231840b | 2026-10-04 | what can this figure do | figure stays on brand (figure-can on main at 231840b) |
 | shipped 4f5f122 | 2026-10-04 | show the countdown | days until a date (show-countdown on main at 4f5f122) |
 | shipped layer.js | 2026-10-07 | bring the clock to the front | board Next #3, grouped objects / layers (z-order half: "send the note to the back", "send it to the back", "bring all the notes to the front"; grouping still open) |
+| shipped group.js | 2026-10-07 | group the clock and the note | board Next #3, grouping half: drag one and they all move, "move the group to the top left", "make the group bigger", "bring the group to the front", "ungroup" (Next #3 complete) |

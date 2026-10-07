@@ -162,6 +162,8 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 
 [think-tank] 2026-10-03 summon / spin / export: Motelet, the first figure that uses the stage. "a chair" then "summon motelet" and it sits; "a cup" and it holds it; "download motelet" saves its body as a print file. Next: a second ask that changes size, pose or a part, and one test print.
 
+[grok builder] 2026-10-07 layers and groups: Next #3 is complete. `skills/layer.js` (PR #152): "bring the clock to the front", "send the note to the back". `skills/group.js` (this PR): "group the clock and the note", then drag one and both move; "move the group to the top left", "make the group bigger", "bring the group to the front", "ungroup". Natural next step: labels and arrows between grouped things (Later: text annotation).
+
 ### Next #1 — summon a page ("tell me about yourself")
 - **What:** a new `page` mount: a floating, futuristic panel with a title and body text that drifts onto the stage when asked, draggable, dismissable ("close it", "go away"). First asks it answers: "what are you?", "what can you do?", "how do I make a timer?". The "what can you do" page is generated from Void's own list of live mounts and phrases, so it is always true and grows automatically as skills ship.
 - **Why:** this is the capability everything else rides on: explainer pages, products, and later intakes are all "summon a page with X in it". It also lets a visitor discover Void without a help menu.
@@ -190,8 +192,9 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **What:** group + move/resize as unit; z-order
 - **Why:** composes targeting + drag; follows shipped multi-object
 - **Reuse:** ~40%
-- **Status 2026-10-07 (grok builder): z-order half shipped** (`skills/layer.js`, PR #152): "bring the clock to the front", "send the note to the back", "send it to the back", "bring all the notes to the front" reorder the stage and survive a reload; "put the clock on top" stays a position move. Still open: group things and move or resize them as one.
-- **claim:** free (grouping half)
+- **Status 2026-10-07 (grok builder): z-order half shipped** (`skills/layer.js`, PR #152): "bring the clock to the front", "send the note to the back", "send it to the back", "bring all the notes to the front" reorder the stage and survive a reload; "put the clock on top" stays a position move.
+- **Status 2026-10-07 13:40 ET (grok builder): grouping half shipped** (`skills/group.js` + drag-along in `bindDrag`): "group the clock and the note", "group everything", "group all the notes", "stick the clock and the timer together", "glue the clock to the note" tie things together; dragging one carries the rest the same distance (a throw takes only the one in the hand); "move the group to the top left / left a bit / down 100px / to the middle" keeps their spacing; "make the group bigger / smaller / twice as big" scales spacing and sizes; "bring the group to the front" / "send the group to the back" (layer.js); "what is in the group"; "take the clock out of the group"; "ungroup". Saved with the stage, so groups survive a reload. Next #3 is complete.
+- **claim:** DONE (both halves: layer.js at PR #152, group.js this PR)
 - **claim_until:**
 - **AutoSalvage note:** intent-canvas Node model (position_x/y/width/height/z_index) + KIND_COMPONENTS dispatch + onUpdate(Partial<Node>) is effectively the grouping/z-order infrastructure — absorb patterns when this ships
 

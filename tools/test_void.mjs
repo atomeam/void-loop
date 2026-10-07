@@ -482,6 +482,38 @@ try {
       dragging && order[order.length - 1] === 'first' && !(await V.p.evaluate(() => document.documentElement.classList.contains('dragging'))) && !(await V.p.evaluate(() => String(getSelection()))),
       JSON.stringify({ dragging, order }));
     await V.ctx.close(); }
+  // Board Next #3, grouping half (skills/group.js): "group the clock and the note" ties them together, dragging one carries the
+  // other the same distance, the group moves and resizes as one, "bring the group to the front" layers it, "ungroup" lets go.
+  { const G = await fresh();
+    await G.ask('make a clock', 400); await G.ask('add a sticky that says grouped', 400); await G.ask('make a 5 minute timer', 400);
+    await G.ask('group the clock and the note', 900);
+    const said = await G.whisper();
+    let st = await G.state();
+    const ck = st.find((x) => x.kind === 'clock'), nt = st.find((x) => x.kind === 'sticky'), tm = st.find((x) => x.kind === 'timer');
+    const tied = !!ck.group && ck.group === nt.group && !tm.group;
+    const box = await G.p.$eval('.clock', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 10, y: b.top + 10 }; });
+    await G.p.mouse.move(box.x, box.y); await G.p.mouse.down(); await G.p.mouse.move(box.x + 60, box.y + 40, { steps: 6 }); await G.p.mouse.up(); await G.p.waitForTimeout(200);
+    st = await G.state();
+    const ck2 = st.find((x) => x.kind === 'clock'), nt2 = st.find((x) => x.kind === 'sticky'), tm2 = st.find((x) => x.kind === 'timer');
+    const carried = ck2.x - ck.x === 60 && nt2.x - nt.x === 60 && nt2.y - nt.y === 40 && tm2.x === tm.x && tm2.y === tm.y;
+    await G.ask('move the group to the top left', 700);
+    st = await G.state();
+    const ck3 = st.find((x) => x.kind === 'clock'), nt3 = st.find((x) => x.kind === 'sticky');
+    const cornered = Math.min(ck3.x, nt3.x) === 24 && Math.min(ck3.y, nt3.y) === 24 && (nt3.x - ck3.x) === (nt2.x - ck2.x);
+    await G.ask('make the group bigger', 700);
+    const ck4 = (await G.state()).find((x) => x.kind === 'clock');
+    const bigger = ck4.size === Math.round((Number(ck3.size) || 48) * 1.25);
+    await G.ask('bring the group to the front', 700);
+    const order = Object.keys(await G.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
+    const ids = (await G.state()).reduce((m, x) => (m[x.id] = x.kind, m), {});
+    const front = ids[order[0]] === 'timer';
+    await G.ask('ungroup', 700);
+    const loose = (await G.state()).every((x) => !x.group);
+    await G.p.reload(); await G.p.waitForTimeout(700);
+    check('group: "group the clock and the note" ties them (the timer stays loose), dragging the clock carries the note the same distance, "move the group to the top left" keeps their spacing, "make the group bigger" scales them, "bring the group to the front" layers both, "ungroup" lets go, and it all survives a reload',
+      /grouped/.test(said) && tied && carried && cornered && bigger && front && loose && (await G.state()).length === 3 && !G.errors.length,
+      JSON.stringify({ said, tied, carried, cornered, bigger, front, loose, order, ids, e: G.errors }));
+    await G.ctx.close(); }
   // Public Voids: "publish my void as @name" puts a paid Void's look and kept cards (as text) at /@name, after the person's own yes.
   { const DB = sqliteD1(), env = { DB, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'index.html'), 'utf8')) } };
     await voidMe.ensureTables(env);
