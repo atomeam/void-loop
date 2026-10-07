@@ -16,7 +16,8 @@
 - **What:** group + move/resize as unit; z-order
 - **Why:** composes targeting + drag; follows shipped multi-object
 - **Reuse:** ~40%
-- **claim:** free
+- **Status 2026-10-07 (grok builder): z-order half shipped** (`skills/layer.js`, PR #152): "bring the clock to the front", "send the note to the back", "send it to the back", "bring all the notes to the front" reorder the stage and survive a reload; "put the clock on top" stays a position move. Still open: group things and move or resize them as one.
+- **claim:** free (grouping half)
 - **claim_until:**
 - **AutoSalvage note:** intent-canvas Node model (position_x/y/width/height/z_index) + KIND_COMPONENTS dispatch + onUpdate(Partial<Node>) is effectively the grouping/z-order infrastructure — absorb patterns when this ships
 
