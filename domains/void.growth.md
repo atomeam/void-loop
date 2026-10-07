@@ -34,6 +34,7 @@
 | enter your own Void | look + entry (row 13) | live — silent entry on first keep (a2m.void.entered.v1), "make my void deep blue / add stars / reset my void" saved per browser (a2m.void.look.v1), public surface stays plain (deploy verified 2026-09-25) |
 | weather | external skill file | live — first skill file (skills/weather.js, Open-Meteo, no key); loader fetches /skills/index.json and imports each skill before fallback (deploy verified 2026-09-25) |
 | the map | external skill file (row 2 step 1) | live — second skill file (skills/map.js): "show the map" renders the assimilation map, all 13 rows with status (deploy verified 2026-09-25) |
+| sleep | external skill file (health) | shipped 2026-10-07 by quick build (grok/quick-sleep) — skills/sleep.js: bedtimes from a wake-up time ("if i wake up at 7am when should i go to sleep"), wake-up times from a bedtime or "now", "sleep calculator", and how much sleep each age needs (CDC table); 15 min to fall asleep + 90-min cycles like sleepyti.me; these asks used to be filed as calendar events. Next in health: a pregnancy due-date card ("due date if my last period was march 1" still lands on the calendar) |
 
 **Shared patterns (≥30% reuse target for Next):**  
 `mount*` · `ensure*` · `wantsCreate*` / `wantsRemove*` · `wantsAlter` / `apply*Alters` · `colorFrom` · `uid` / `load` / `save` / `render` · `bindDrag` · `say` · `loopLog`
@@ -116,6 +117,38 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **claim:** first pass live at 6af476e (zoom in on the figure, progressive detail); free for the 8K tiers in Done when
 - **claim_until:**
 
+### Next [think-tank] — Motelet remembers you, on this device
+- **What:** Motelet asks the visitor's name the first time it is summoned, keeps the name and the last thing they summoned in this browser only (localStorage, no server call), and on the next visit greets them by name and mentions that last summon ("Hi Sam, did you bring the chair back?"). "forget me" clears it and Motelet says goodbye to the memory. Works with the network off.
+- **Why:** Forethinkers established (2026-10-07 12:17 ET) that a toy-sized offline mind now exists (M5Stack Module LLM, AX630C: 54 mm, 17 g, 1.5 W, wake word + ASR + 0.5B LLM + TTS, https://docs.m5stack.com/en/module/Module-LLM, accessed 2026-10-07), so the physical figure's memory of its kid will live on the toy. Building the same memory on the stage first proves the behaviour (toy problem 4: it stays) and keeps the visitor's data on their own device.
+- **Reuse:** `void-live-deploy/skills/figure.js` (Motelet), the `store()` helper pattern in `skills/figures.js`, existing figure greet behaviour from Next #20.
+- **Done when:** summon Motelet, give a name, reload the page, summon Motelet again and it greets by name with the last summon; "forget me" then reload and it asks again; a browser test covers both paths with the network blocked; tests stay green.
+- **claim:** free
+- **claim_until:**
+
+### Next [think-tank] — Florida Keys reef-accretion card
+- **What:** a summonable explainer card for Lower Florida Keys coral restoration geo-ecology: offshore *A. cervicornis* outplanting flips reef-accretion potential from −0.84 mm y⁻¹ to +2.80 mm y⁻¹ within 2–6 years, >16× gross carbonate production, ≈5% cover gain; cites Toth et al. Scientific Reports DOI 10.1038/s41598-025-04818-3 and USGS CC0 release 10.5066/P13HMEON; states inshore massive null and 2023 bleach survival caveat (near-complete *A. cervicornis* loss vs 59% massive survival); links GSOCS-LULCC as soil companion dataset. No unverified planet-save claim; original wording only.
+- **Why:** Forethinkers established (2026-10-03 12:11 ET) a measurable ocean restoration result with open primary data, so Void can hand a visitor a truthful planet-restoration card that separates rapid small-scale accretion gains from ecosystem-scale promises.
+- **Reuse:** article/page summon pattern, dated-source layout from magnetize-step / senolytic MASH cards.
+- **Done when:** an ask such as "coral restoration Florida Keys" or "reef accretion potential" opens the card with the two DOIs dated and the bleach caveat visible; tests stay green.
+- **claim:** free
+- **claim_until:**
+
+### Next [think-tank] — senolytic MASH trial card
+- **What:** a summonable explainer card for the phase-2 intermittent dasatinib + quercetin trial in fibrotic MASH: primary fibrosis endpoint 47% vs 7% placebo, MASH resolution 53% vs 7%, Nature Metabolism 1 Oct 2026 and NCT05506488 dated, authors' hypothesis-generating caveat shown. Neighbouring context links to PEARL rapamycin safety (Aging 4 Apr 2025) and semaglutide epigenetic aging (Nature Communications 19 May 2026). No cure claim; original wording only.
+- **Why:** Forethinkers established (2026-10-03 10:08 ET) the first human RCT histology signal for senolytics in MASH, so Void can hand a visitor a truthful disease-cure research card that separates proven endpoints from longevity marketing.
+- **Reuse:** article/page summon pattern, dated-source layout from Next #13 / magnetize-step card.
+- **Done when:** an ask such as "senolytics for fatty liver" or "dasatinib quercetin MASH trial" opens the card with the three sources dated and the caveat visible; tests stay green.
+- **claim:** free
+- **claim_until:**
+
+### Next [think-tank] — multi-material 3MF download for a printed motor body
+- **What:** a summonable original-named printed motor part page whose download emits a multi-object **3MF** with five Core basematerials named dielectric, conductive, soft-magnetic, hard-magnetic, and flexible (display colors included). Companion magnetize-step card keeps the 1.5 T Sr-ferrite and 3-4 T bonded Neo numbers. Original part name and original shape only.
+- **Why:** Forethinkers established (2026-10-03 08:07 ET) that the slicer export format is 3MF under ISO/IEC 25422:2025, not STL or AMF-as-primary. Complements the magnetize-step card and the printable-actuator-spec ask.
+- **Reuse:** article/page summon pattern, dated-source layout, print-file download once the browser 3MF emitter ships; magnetize-step card for the post-step.
+- **Done when:** an ask such as "download the printed motor as 3MF" or "show the multi-material print file" yields a 3MF that opens in PrusaSlicer or Bambu with five material slots; magnetize companion is linked; no sold likeness; tests stay green.
+- **claim:** free
+- **claim_until:**
+
 ### Next [think-tank] — magnetize-step card for a printed hard-magnet part
 - **What:** a summonable explainer card for the one post-print step a multi-material printed motor still needs: impulse magnetization of the hard-magnetic regions on a separate fixture (about 3–7 T), with dated sources (MIT News 2026-02-18; Słoma et al. DOI 10.1088/2058-8585/aded1f; Cañada/Kim/Velásquez-García soft-magnetic cores DOI 10.1080/17452759.2024.2310046). Original part name and original shape only. Soft-magnetic cores are described as needing no magnetize step.
 - **Why:** Forethinkers established that magnetization is independent of the MIT printer, so Void can hand a visitor a truthful handoff page before in-print magnetization exists. Complements the earlier printable-actuator-spec ask.
@@ -124,6 +157,10 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **claim:** DONE, live at c5d99e8 (show the magnetize step)
 - **claim_until:**
 
+
+[think-tank] 2026-10-03 summon / export: Linemote-1, the first printable part. "summon linemote-1" shows its page and Download STL saves linemote-1.stl (built on the printed linear motor, https://news.mit.edu/2026/3d-printing-platform-rapidly-produces-complex-electric-machines-0218, 2026-02-18). Next: one test print.
+
+[think-tank] 2026-10-03 summon / spin / export: Motelet, the first figure that uses the stage. "a chair" then "summon motelet" and it sits; "a cup" and it holds it; "download motelet" saves its body as a print file. Next: a second ask that changes size, pose or a part, and one test print.
 
 ### Next #1 — summon a page ("tell me about yourself")
 - **What:** a new `page` mount: a floating, futuristic panel with a title and body text that drifts onto the stage when asked, draggable, dismissable ("close it", "go away"). First asks it answers: "what are you?", "what can you do?", "how do I make a timer?". The "what can you do" page is generated from Void's own list of live mounts and phrases, so it is always true and grows automatically as skills ship.
