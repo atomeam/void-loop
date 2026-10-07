@@ -959,6 +959,14 @@ try {
   await t.ask('wallpaper for it', 700); const wlBack = await t.page(); check('walls follow-up: "wallpaper for it" after a paint card uses that room', /Wallpaper for the room/.test(wlBack) && /11 rolls/.test(wlBack), wlBack.slice(0, 260));
   await t.ask('how many sheets of drywall for a 12x14 room', 700); const wlDw2 = await t.page(); check('walls: drywall sheets, screws, tape and compound from USG\'s figures', /15 sheets/.test(wlDw2) && /416 sq ft/.test(wlDw2) && /154 ft of paper tape/.test(wlDw2) && /USG/.test(wlDw2), wlDw2.slice(0, 260));
   await t.ask('wallpaper calculator', 700); const wlCalc = await t.page(); check('walls: "wallpaper calculator" opens a live form', /Wallpaper calculator/.test(wlCalc) && /rolls/.test(wlCalc) && /half drop/.test(wlCalc), wlCalc.slice(0, 220));
+  // room: everything for one room on one card (paint, floor, wallpaper, drywall, baseboard), priced per line with a live total, built on home + walls
+  await t.ask('paint and carpet a 12x14 room at $40 a gallon', 700); const rmA = await t.page(); check('room: paint and carpet for one room on one card, the paint priced', /Everything for the room/.test(rmA) && /2 gallons \+ 1 quart for the walls/.test(rmA) && /19 sq yd of carpet/.test(rmA) && /54 ft of baseboard/.test(rmA) && /\$120 so far, 1 of 3 lines priced/.test(rmA), rmA.slice(0, 300));
+  await t.ask('add wallpaper', 700); const rmB = await t.page(); check('room follow-up: "add wallpaper" adds a wallpaper line by the drop method', /Everything for the room/.test(rmB) && /12 rolls/.test(rmB) && /4 things to buy/.test(rmB), rmB.slice(0, 300));
+  await t.ask('the ceiling too', 700); const rmC = await t.page(); check('room follow-up: "the ceiling too" with wallpaper puts the paint on the ceiling only (not walls\' drywall)', /paint is just for the ceiling/.test(rmC) && /1 gallon of ceiling white/.test(rmC) && /Everything for the room/.test(rmC), rmC.slice(0, 300));
+  await t.ask('$45 a roll and $4 a sq yd and $1.50 a foot', 700); const rmD = await t.page(); check('room follow-up: prices for every line give the whole room\'s total', /about \$737/.test(rmD) && /4 lines priced/.test(rmD), rmD.slice(0, 300));
+  await t.p.fill('.vpage.on input.rp-price[data-k="paint"]', '50'); await t.p.waitForTimeout(200); const rmE = await t.page(); check('room: typing a price on a line updates the total', /about \$747/.test(rmE), rmE.slice(0, 200));
+  await t.ask('how many sheets of drywall for a 12x14 room', 700); await t.ask('the whole room', 700); const rmF = await t.page(); check('room: "the whole room" after a drywall card puts that room and its drywall on one card', /Everything for the room/.test(rmF) && /15 sheets of 4 \u00d7 8 ft/.test(rmF) && /hang the drywall/.test(rmF) && /Paint/.test(rmF), rmF.slice(0, 300));
+  await t.ask('redo a 4 by 5 metre room', 700); const rmG = await t.page(); check('room: a metric room in litres and square metres', /4 \u00d7 5 m room/.test(rmG) && /7\.7 L/.test(rmG) && /22 m\u00b2 of flooring/.test(rmG), rmG.slice(0, 300));
   await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
@@ -2095,7 +2103,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'home', 'walls', 'sleep', 'pregnancy', 'ovulation', 'period', 'inventory', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'home', 'walls', 'room', 'sleep', 'pregnancy', 'ovulation', 'period', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
