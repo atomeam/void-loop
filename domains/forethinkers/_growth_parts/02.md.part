@@ -1,7 +1,7 @@
 r's Void welcoming.
 - **Reuse:** #18 styling, #19 script prompt and fallback scripts, #20 reactions.
 - **Done when:** sample grim subjects (GG Allin, a plague, a shipwreck) each bring a cartoon figure with comic actions and splats drawn as bright cartoon blobs; the Workers AI prompt asks for cartoon slapstick; tests check the grim samples come out in cartoon style and stay green.
-- **claim:** free
+- **claim:** first pass live at f249d1a (cartoon version of a hard subject); free for the full pass in Done when
 - **claim_until:**
 
 ### Next #22 — collector-grade detail and zoom, with level-of-detail loading
@@ -9,7 +9,7 @@ r's Void welcoming.
 - **Why:** collectors and curious visitors get a miniature worth studying, while everyone else still gets a small, fun figure on the stage that arrives instantly.
 - **Reuse:** the #17 layer (three.js LOD objects and progressive texture loading), #18 base bodies as the light tier, the reduced-motion setting for the zoom move.
 - **Done when:** a summoned figure first loads only its light tier (network log); zooming in streams higher-detail tiers and the figure visibly sharpens; zooming out releases them; the empty page still loads zero 3D code; tests check the tier order and stay green.
-- **claim:** free
+- **claim:** first pass live at 6af476e (zoom in on the figure, progressive detail); free for the 8K tiers in Done when
 - **claim_until:**
 
 ### Next [think-tank] — magnetize-step card for a printed hard-magnet part
@@ -17,7 +17,7 @@ r's Void welcoming.
 - **Why:** Forethinkers established that magnetization is independent of the MIT printer, so Void can hand a visitor a truthful handoff page before in-print magnetization exists. Complements the earlier printable-actuator-spec ask.
 - **Reuse:** article/page summon pattern, dated-source layout from Next #13, print-file download once export-to-print ships.
 - **Done when:** an ask such as "how do I magnetize a printed motor" or "show the magnetize step" opens the card with the three sources dated; soft-magnetic vs hard-magnetic is clear; no sold likeness; tests stay green.
-- **claim:** free
+- **claim:** DONE, live at c5d99e8 (show the magnetize step)
 - **claim_until:**
 
 
