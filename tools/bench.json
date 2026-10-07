@@ -5277,5 +5277,19 @@
   {"ask": "what gpa do i need next semester with 15 credits to raise my 3.2 with 60 credits to 3.4", "want": "skill:grades", "says": "4\\.20"},
   {"ask": "what letter grade is an 87", "want": "skill:grades", "says": "B\\+"},
   {"ask": "87 percent is what grade", "want": "skill:grades"},
-  {"ask": "3.7 gpa in letter grade", "want": "skill:grades", "says": "A-"}
+  {"ask": "3.7 gpa in letter grade", "want": "skill:grades", "says": "A-"},
+  {"ask": "redo a 12x14 room", "want": "skill:room"},
+  {"ask": "what do i need to redo a 12x14 bedroom", "want": "skill:room"},
+  {"ask": "paint and carpet a 12x14 room", "want": "skill:room"},
+  {"ask": "paint and new laminate for a 10x12 bedroom at $40 a gallon and $3 a sq ft", "want": "skill:room"},
+  {"ask": "wallpaper and carpet for a 12x12 room", "want": "skill:room"},
+  {"ask": "drywall paint and flooring for a 12x14 room and the ceiling", "want": "skill:room"},
+  {"ask": "shopping list for a 12x14 bedroom makeover", "want": "skill:room"},
+  {"ask": "wallpaper the walls and paint the ceiling of a 12x12 room", "want": "skill:room"},
+  {"ask": "remodel a 10x12 kitchen with 12x24 tiles", "want": "skill:room"},
+  {"ask": "paint and hardwood for a 4 by 5 metre room", "want": "skill:room"},
+  {"ask": "renovate a 15x20 living room with 9 foot ceilings", "want": "skill:room"},
+  {"ask": "materials for a 11x13 nursery makeover", "want": "skill:room"},
+  {"ask": "paint and flooring for a 12 by 16 office", "want": "skill:room"},
+  {"ask": "spruce up a 10x10 bedroom with paint and new carpet", "want": "skill:room"}
 ]

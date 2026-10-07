@@ -308,6 +308,8 @@ async function run(text, api) {
 
 export { wallsOf, followOf, wpMath, dwMath };
 export function _setLast(q) { last = q ? { q, at: Date.now() } : null; }
+// the last wallpaper or drywall card (room.js reads it so "the whole room" after a walls card keeps that room and that job)
+export function lastWallsOf() { return last && Date.now() - last.at <= FOLLOW_MS ? last : null; }
 export default {
   name: 'walls',
   examples: [
