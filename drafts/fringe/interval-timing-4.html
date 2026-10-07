@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · hold it as long (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 14px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#hold{width:150px;height:150px;border-radius:50%;touch-action:none;user-select:none;-webkit-user-select:none}
+#hold.down{background:rgba(124,204,255,.35);border-color:#7cf}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>hold it as long · draft · not published</h1>
+  <p class="note">Each trial plays a tone of some length between 0.4 and 1.4 seconds. Then hold the big button (or the space bar while it has focus) for as long as the tone lasted. Without a clock, people pull every length toward the middle of what they have been hearing: short ones get held too long, long ones too short (Vierordt's law; Jazayeri and Shadlen, 2010). The spread of errors also grows with the length, roughly in proportion (the "scalar property" of timing; Gibbon, 1977). This page measures both on your own trials. Use headphones or a speaker; everything stays in this browser.</p>
+  <div class="row"><button id="go" type="button">play a tone</button></div>
+  <div class="row"><button id="hold" type="button" disabled aria-describedby="state">hold</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.holdlong.v1',st={trials:[]},ac=null,cur=null,busy=false,downAt=null;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&isFinite(t.dur)&&isFinite(t.held)&&t.dur>0&&t.held>0})}catch(_){}
+  function el(id){return document.getElementById(id)}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-400)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your trials (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // tone lengths: 400 to 1400 ms in 100 ms steps, drawn evenly, so the middle of what you hear is about 900 ms
+  function nextDur(){return 400+100*Math.floor(Math.random()*11)}
+  // least-squares line held = a + b * dur; b below 1 is the pull toward the middle (b = 1 would be perfect, b = 0 always the same hold)
+  function fit(trials){var n=trials.length;if(n<2)return null;var mx=0,my=0,sxy=0,sxx=0;trials.forEach(function(t){mx+=t.dur;my+=t.held});mx/=n;my/=n;
+    trials.forEach(function(t){sxy+=(t.dur-mx)*(t.held-my);sxx+=(t.dur-mx)*(t.dur-mx)});if(!sxx)return null;var b=sxy/sxx;return{a:my-b*mx,b:b,n:n,mid:mx}}
+  // spread (standard deviation of the held time) for short (400-700 ms) and long (1100-1400 ms) tones, and each as a fraction of the mean hold
+  function spread(trials){function s(lo,hi){var t=trials.filter(function(x){return x.dur>=lo&&x.dur<=hi}),n=t.length;if(n<3)return{n:n};var m=t.reduce(function(a,x){return a+x.held},0)/n,
+    v=t.reduce(function(a,x){return a+(x.held-m)*(x.held-m)},0)/(n-1),sd=Math.sqrt(v);return{n:n,mean:m,sd:sd,cv:sd/m}}return{short:s(400,700),long:s(1100,1400)}}
+  function tone(at,ms){var o=ac.createOscillator(),g=ac.createGain(),e=ms/1000;o.frequency.value=660;g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.18,at+.01);
+    g.gain.setValueAtTime(.18,at+e-.01);g.gain.linearRampToValueAtTime(0,at+e);o.connect(g);g.connect(ac.destination);o.start(at);o.stop(at+e+.02)}
+  // one trial at a time: the latch is set before resume() so a second tap while audio wakes up cannot start a second tone
+  el('go').addEventListener('click',function(){if(busy||cur)return;if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A){el('state').textContent='this browser cannot play sound, so this page cannot run here';return}ac=new A()}
+    busy=true;el('go').disabled=true;var fail=function(){busy=false;el('go').disabled=false;el('state').textContent='the sound did not start; tap again, and check the volume'};
+    ac.resume().then(function(){if(ac.state!=='running'){fail();return}var d=nextDur();tone(ac.currentTime+.05,d);el('state').textContent='listen…';
+      // the hold button wakes only after the tone has ended, so it cannot overlap the sound
+      setTimeout(function(){busy=false;cur={dur:d};var H=el('hold');H.disabled=false;H.focus();el('state').textContent='now hold the button as long as the tone lasted'},d+350)},fail)});
+  function press(){if(!cur||downAt!=null)return;downAt=performance.now();el('hold').classList.add('down')}
+  function release(){if(!cur||downAt==null)return;var held=Math.round(performance.now()-downAt);downAt=null;el('hold').classList.remove('down');
+    if(held<60){el('state').textContent='that was a tap, not a hold; hold it down for as long as the tone';return}
+    var t={dur:cur.dur,held:held,at:Date.now()};st.trials.push(t);save();cur=null;el('hold').disabled=true;el('go').disabled=false;el('go').focus();
+    var e=held-t.dur;el('state').textContent='the tone was '+t.dur+' ms · you held '+held+' ms · '+(Math.abs(e)<=50?'close':(e>0?e+' ms too long':(-e)+' ms too short'));draw()}
+  var H=el('hold');
+  H.addEventListener('pointerdown',function(ev){if(ev.button)return;try{H.setPointerCapture(ev.pointerId)}catch(_){}press()});
+  H.addEventListener('pointerup',release);H.addEventListener('pointercancel',function(){downAt=null;H.classList.remove('down')});
+  H.addEventListener('keydown',function(ev){if(ev.key===' '||ev.key==='Enter'){ev.preventDefault();if(!ev.repeat)press()}});
+  H.addEventListener('keyup',function(ev){if(ev.key===' '||ev.key==='Enter'){ev.preventDefault();release()}});
+  H.addEventListener('click',function(ev){ev.preventDefault()});
+  H.addEventListener('contextmenu',function(ev){ev.preventDefault()});
+  function draw(){var n=st.trials.length;if(!n){el('score').textContent='';return}var f=fit(st.trials.slice(-200)),s=spread(st.trials.slice(-200));
+    var out=n+' trial'+(n>1?'s':'');
+    if(f&&n>=12)out+='\nslope '+f.b.toFixed(2)+' (1 would be exact; below 1 means short tones held too long and long ones too short)'
+      // the length you would hold exactly right is where the line crosses held = dur
+      +(f.b<.95?' · lengths pulled toward about '+Math.round(f.a/(1-f.b))+' ms':'');
+    else out+='\nabout 12 trials before the slope means much';
+    if(s.short.sd!=null&&s.long.sd!=null)out+='\nspread: short tones ±'+Math.round(s.short.sd)+' ms ('+Math.round(s.short.cv*100)+'% of the hold) · long tones ±'+Math.round(s.long.sd)+' ms ('+Math.round(s.long.cv*100)+'%)'
+      +' · similar percentages fit the scalar property';
+    el('score').textContent=out}
+  draw();
+  // the maths on made-up trials: holds pulled 40% toward 900 ms must give slope 0.6 and a pull point of 900 ms;
+  // spread grows with length when every hold is off by the same fraction
+  function selftest(){var t=[],d,k;for(d=400;d<=1400;d+=100)for(k=-1;k<=1;k++)t.push({dur:d,held:900+.6*(d-900)+k*.1*d});
+    var f=fit(t),s=spread(t);if(!f||Math.abs(f.b-.6)>1e-9||Math.abs(f.a/(1-f.b)-900)>1e-6)return'fit gave '+JSON.stringify(f);
+    if(!(s.long.sd>s.short.sd))return'spread did not grow with length';
+    for(k=0;k<200;k++){d=nextDur();if(d<400||d>1400||d%100)return'nextDur gave '+d}return true}
+  window.__holdlong={nextDur:nextDur,fit:fit,spread:spread,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

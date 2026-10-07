@@ -38,15 +38,15 @@ export function pluralOf(word) {
 }
 export function wordsOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/["“”]/g, '');
-  let m = t.match(/^(?:what(?:'s| is| are)\s+)?(?:a\s+|the\s+)?(?:synonyms?|another\s+word|other\s+words?|a\s+word|words?)\s+(?:for|of|that\s+means?|meaning|like)\s+([a-z' -]{2,30})$/);
+  let m = t.match(/^(?:what(?:'?s| is| are)\s+)?(?:a\s+|the\s+)?(?:synonyms?|another\s+word|other\s+words?|a\s+word|words?)\s+(?:for|of|that\s+means?|meaning|like)\s+([a-z' -]{2,30})$/);
   if (m) return { kind: 'syn', word: m[1].trim() };
-  m = t.match(/^(?:what(?:'s| is)\s+)?(?:the\s+)?(?:opposite|antonyms?)\s+(?:of|for)\s+([a-z' -]{2,30})$/);
+  m = t.match(/^(?:what(?:'?s| is)\s+)?(?:the\s+)?(?:opposite|antonyms?)\s+(?:of|for)\s+([a-z' -]{2,30})$/);
   if (m) return { kind: 'ant', word: m[1].trim() };
   m = t.match(/^(?:what\s+(?:words?\s+)?rhymes?\s+with|words?\s+that\s+rhymes?\s+with|rhymes?\s+(?:for|with))\s+([a-z']{2,30})$/);
   if (m) return { kind: 'rhy', word: m[1] };
-  m = t.match(/^(?:what(?:'s| is)\s+)?(?:the\s+)?past\s+(?:tense|participle)\s+(?:of|for)\s+(?:to\s+)?([a-z]{2,20})$/);
+  m = t.match(/^(?:what(?:'?s| is)\s+)?(?:the\s+)?past\s+(?:tense|participle)\s+(?:of|for)\s+(?:to\s+)?([a-z]{2,20})$/);
   if (m) return { kind: 'past', word: m[1] };
-  m = t.match(/^(?:what(?:'s| is)\s+)?(?:the\s+)?plural\s+(?:of|for)\s+(?:a\s+|an\s+)?([a-z']{2,30})$/);
+  m = t.match(/^(?:what(?:'?s| is)\s+)?(?:the\s+)?plural\s+(?:of|for)\s+(?:a\s+|an\s+)?([a-z']{2,30})$/);
   if (m) return { kind: 'plural', word: m[1] };
   m = t.match(/^(?:how\s+(?:do\s+(?:you|i)|to)\s+spell|spell|spelling\s+of|is\s+it\s+spelled)\s+([a-z']{2,30})$/);
   if (m) return { kind: 'spell', word: m[1] };
