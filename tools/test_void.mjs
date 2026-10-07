@@ -908,6 +908,10 @@ try {
   await t.ask('monthly payment on a $250000 mortgage at 6.5% for 30 years', 700); const loanPg = await t.page(); check('loan payment', /\/ month/.test(loanPg) && /Total interest/.test(loanPg) && /mortgage/i.test(loanPg) && /First year/.test(loanPg) && /extra each month/.test(loanPg), loanPg.slice(0, 180));
   await t.ask('$300k mortgage at 6.5% for 30 years with $200 extra a month', 700); const loanX = await t.page(); check('loan extra payment', /extra \/ month/.test(loanX) && /months sooner/.test(loanX) && /save/.test(loanX) && /interest/.test(loanX), loanX.slice(0, 180));
   await t.ask('gas cost for 320 miles at 28 mpg $3.59 a gallon', 700); const fuelPg = await t.page(); check('trip fuel', /Trip fuel/.test(fuelPg) && /Fuel needed/.test(fuelPg) && /Per mile/.test(fuelPg) && /gal/.test(fuelPg), fuelPg.slice(0, 180));
+  await t.ask("calories for a 30 year old male 5'10 180 lbs moderately active", 700); const calPg = await t.page(); check('nutrition: daily calories by Mifflin-St Jeor (30, male, 5\'10, 180 lb, moderate = 2,760 to keep, BMR 1,780)', /Daily calories/.test(calPg) && /2,760/.test(calPg) && /1,780/.test(calPg) && /Lose 1 lb a week: 2,260/.test(calPg) && /Mifflin/.test(calPg), calPg.slice(0, 200));
+  await t.ask('how much protein do i need if i weigh 180 pounds', 700); const proPg = await t.page(); check('nutrition: protein for 180 lb (RDA 65 g, 1.6 g/kg 131 g)', /Protein a day/.test(proPg) && /65 g/.test(proPg) && /131 g/.test(proPg) && /ISSN/.test(proPg), proPg.slice(0, 200));
+  await t.ask('how much water should i drink a day', 700); const h2oPg = await t.page(); check('nutrition: water a day (National Academies: 13 cups men, 9 cups women)', /Water a day/.test(h2oPg) && /13 cups/.test(h2oPg) && /9 cups/.test(h2oPg) && /National Academies/.test(h2oPg) && !/noted it/.test(h2oPg), h2oPg.slice(0, 200));
+  await t.ask('calorie calculator', 700); const calForm = await t.page(); check('nutrition: calorie calculator form works (default 30, 5\'9, 170 lb, light = 2,370)', /Calorie calculator/.test(calForm) && /2,370/.test(calForm), calForm.slice(0, 200));
   await t.ask('20% tip on 45', 700); const tipPg = await t.page(); check('tip amount', /Tip/.test(tipPg) && /\$9/.test(tipPg) && /Total/.test(tipPg) && /\$54/.test(tipPg), tipPg.slice(0, 180));
   await t.ask('split $85 three ways with 20% tip', 700); const tipSplit = await t.page(); check('tip and split', /Tip and split|\/ person/.test(tipSplit) && /Total/.test(tipSplit) && /Tip each|Bill each/.test(tipSplit), tipSplit.slice(0, 180));
   await t.ask('how much will i have if i save 200 a month for 20 years at 7%', 700); const svPg = await t.page(); check('savings: 200 a month for 20 years at 7% grows to $104,185 (monthly compounding), put in vs growth and a range', /Savings growth/.test(svPg) && /\$104,185/.test(svPg) && /\$48,000/.test(svPg) && /Investor\.gov/.test(svPg) && !/don't know this yet|on your calendar/i.test(svPg), svPg.slice(0, 220));
@@ -2066,7 +2070,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'home', 'sleep', 'pregnancy', 'ovulation', 'inventory', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'home', 'sleep', 'pregnancy', 'ovulation', 'nutrition', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
