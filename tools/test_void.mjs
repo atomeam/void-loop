@@ -920,6 +920,10 @@ try {
   await t.ask('when am i ovulating if my last period was march 1 2026', 700); const ovPg = await t.page(); check('ovulation: fertile window and ovulation day from the last period (next period - 14; six days ending on ovulation, Wilcox NEJM 1995)', /Fertile window/.test(ovPg) && /fertile March 10 \u2013 March 15/.test(ovPg) && /ovulation March 15/.test(ovPg) && /NEJM/.test(ovPg) && /ACOG/.test(ovPg) && !/on your calendar|don't know this yet/i.test(ovPg), ovPg.slice(0, 220));
   await t.ask('my cycle is 26 to 32 days and my last period was october 1 2026 when am i fertile', 700); const ovRg = await t.page(); check('ovulation: irregular cycles as a range (shortest - 18 to longest - 11)', /October 8\u201321, 2026/.test(ovRg) && /shortest cycle minus 18/.test(ovRg), ovRg.slice(0, 220));
   await t.ask('ovulation calculator', 700); const ovCalc = await t.page(); check('ovulation: "ovulation calculator" opens a live form', /Ovulation calculator/.test(ovCalc) && /luteal phase/.test(ovCalc) && /Ovulation:/.test(ovCalc), ovCalc.slice(0, 220));
+  await t.ask('how much paint do i need for a 12x14 room', 700); const hmPaint = await t.page(); check('home: paint for a room (perimeter x 8 ft, less 1 door and 2 windows, 2 coats at 350 sq ft a gallon)', /Paint for the room/.test(hmPaint) && /366 sq ft/.test(hmPaint) && /2\.09 gallons/.test(hmPaint) && /2 gallons \+ 1 quart/.test(hmPaint) && /Sherwin-Williams/.test(hmPaint), hmPaint.slice(0, 260));
+  await t.ask('how many 12x24 tiles for a 10x12 floor', 700); const hmTile = await t.page(); check('home: tiles for a floor from the tile size, 10% waste', /Tile for the room/.test(hmTile) && /66 tiles/.test(hmTile) && /132 sq ft/.test(hmTile) && /Baseboard/.test(hmTile), hmTile.slice(0, 260));
+  await t.ask('how much carpet for a 12x14 room', 700); const hmCarpet = await t.page(); check('home: carpet in square yards off a 12-ft roll', /Carpet for the room/.test(hmCarpet) && /19 sq yd/.test(hmCarpet) && /12-ft roll/.test(hmCarpet) && /no seams/.test(hmCarpet), hmCarpet.slice(0, 260));
+  await t.ask('paint calculator', 700); const hmCalc = await t.page(); check('home: "paint calculator" opens a live form', /Paint calculator/.test(hmCalc) && /gallons/.test(hmCalc) && /ceiling too/.test(hmCalc), hmCalc.slice(0, 220));
   await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
@@ -2056,7 +2060,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'sleep', 'pregnancy', 'ovulation', 'inventory', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'home', 'sleep', 'pregnancy', 'ovulation', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
