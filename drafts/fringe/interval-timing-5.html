@@ -38,14 +38,16 @@ button:disabled{opacity:.4;cursor:default}
   // share of "longer" answers at each length, for one kind of round
   function curve(trials,kind){return LEVELS.map(function(L){var t=trials.filter(function(x){return x.kind===kind&&x.level===L}),k=t.filter(function(x){return x.longer}).length;return{level:L,n:t.length,p:t.length?k/t.length:null}})}
   // the length where the curve first reaches one half, read between the two lengths around it (null if it never does)
-  function pse(c){for(var i=0;i<c.length;i++){if(c[i].p==null)return null;if(c[i].p>=.5){if(!i)return c[0].p===.5?c[0].level:null;var a=c[i-1],b=c[i];return a.level+(.5-a.p)/(b.p-a.p)*(b.level-a.level)}}return null}
+  function pse(c){for(var i=0;i<c.length;i++){if(c[i].p==null)return null;if(c[i].p>=.5){if(!i)return c[0].p>.5?null:c[0].level;var a=c[i-1],b=c[i];return a.level+(.5-a.p)/(b.p-a.p)*(b.level-a.level)}}return null}
   // how much longer the new shape seemed: the "half the time longer" length for repeats minus the one for new shapes
   function summary(trials){var o=curve(trials,'odd'),s=curve(trials,'same'),po=pse(o),ps=pse(s),min=function(c){return Math.min.apply(null,c.map(function(x){return x.n}))};
     return{odd:{curve:o,pse:po,least:min(o)},same:{curve:s,pse:ps,least:min(s)},expansion:po!=null&&ps!=null?ps-po:null}}
   // show a shape for about ms, measured in frames; calls done(real ms shown)
-  function flash(ch,ms,done){var S=el('stage');requestAnimationFrame(function(t0){S.textContent=ch;var on=null;
-    (function tick(t){if(on==null)on=t;if(t-on>=ms-8){S.textContent='';requestAnimationFrame(function(t2){done(t2-on)});return}requestAnimationFrame(tick)})(t0)})}
-  function wait(ms,fn){setTimeout(fn,ms)}
+  // a round left half-seen (the tab was hidden) is dropped and started again: run counts rounds, so an old one stops itself
+  var run=0,started=false;
+  function flash(ch,ms,done){var S=el('stage'),mine=run;requestAnimationFrame(function(t0){if(mine!==run)return;S.textContent=ch;var on=null;
+    (function tick(t){if(mine!==run)return;if(on==null)on=t;if(t-on>=ms-8){S.textContent='';done(t-on);return}requestAnimationFrame(tick)})(t0)})}
+  function wait(ms,fn){var mine=run;setTimeout(function(){if(mine===run)fn()},ms)}
   function round(){busy=true;var kind=Math.random()<.5?'odd':'same',level=LEVELS[Math.floor(Math.random()*LEVELS.length)],last=kind==='odd'?ODD[Math.floor(Math.random()*ODD.length)]:SAME,i=0;
     el('state').textContent='watch';
     (function next(){if(i<4){i++;flash(SAME,STD,function(){wait(GAP,next)});return}
@@ -53,7 +55,8 @@ button:disabled{opacity:.4;cursor:default}
   function answer(longer){if(!cur)return;st.trials.push({kind:cur.kind,level:cur.level,real:cur.real,longer:longer,at:Date.now()});save();
     el('state').textContent='the last one was '+(cur.kind==='odd'?'a new shape':'the same shape')+', shown for '+cur.real+' ms (the others '+STD+')';
     cur=null;el('short').disabled=el('long').disabled=true;draw();wait(900,function(){if(!cur&&!busy)round()})}
-  el('go').addEventListener('click',function(){if(busy||cur)return;el('go').disabled=true;el('go').textContent='running';wait(400,round)});
+  document.addEventListener('visibilitychange',function(){if(!started||cur)return;if(document.hidden){run++;busy=false;el('stage').textContent='';el('state').textContent='paused: the round starts again when you come back'}else if(!busy){busy=true;setTimeout(function(){busy=false;if(!cur&&!document.hidden)round()},600)}});
+  el('go').addEventListener('click',function(){if(busy||cur)return;started=true;el('go').disabled=true;el('go').textContent='running';wait(400,round)});
   el('short').addEventListener('click',function(){answer(false)});el('long').addEventListener('click',function(){answer(true)});
   document.addEventListener('keydown',function(ev){if(!cur||ev.repeat)return;var k=ev.key.toLowerCase();if(k==='f'){ev.preventDefault();answer(false)}else if(k==='j'){ev.preventDefault();answer(true)}});
   function draw(){var n=st.trials.length;if(!n){el('score').textContent='';return}var s=summary(st.trials);

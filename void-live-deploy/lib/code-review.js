@@ -231,7 +231,7 @@ const RULES = [
     'an unsafe block turns off Rust\'s checks: a wrong raw pointer here is undefined behaviour (crashes or silent memory corruption). Keep it as small as possible and write a // SAFETY: comment saying why it holds; prefer a safe API (references, Box, slices) if there is one.'],
   ['verify-false', 'risk', ['python', ...JS], (m) => /\bverify\s*=\s*False\b|rejectUnauthorized\s*:\s*false\b|NODE_TLS_REJECT_UNAUTHORIZED/.test(m),
     'certificate checks are turned off, so anyone on the network can read or change this traffic. Fix the certificate (or point to the right CA bundle) instead.'],
-  ['curl-insecure', 'risk', ['shell', 'dockerfile'], (m, r) => /\b(?:curl\b[^|;\n]*\s(?:-k|--insecure)\b|wget\b[^|;\n]*\s--no-check-certificate\b)/.test(r),
+  ['curl-insecure', 'risk', ['shell', 'dockerfile'], (m, r) => /\b(?:curl\b[^|;\n]*\s(?:-[a-zA-Z]*k[a-zA-Z]*|--insecure)(?=\s|$)|wget\b[^|;\n]*\s--no-check-certificate\b)/.test(r),
     '-k (--insecure) turns off the certificate check, so anyone between you and the server can read or change what comes back. Fix the certificate instead, or point curl at it with --cacert'],
   ['docker-latest', 'risk', ['dockerfile'], (m, r, x) => { const k = r.match(/^\s*FROM\s+(?:--platform=\S+\s+)?(\S+)/i); return !!k && !/@sha256:/.test(k[1]) && k[1] !== 'scratch' && !/^\$/.test(k[1]) && (/:latest$/i.test(k[1]) || !/:[^/]+$/.test(k[1])) && !new RegExp('\\bAS\\s+' + k[1].replace(/[^\w.-]/g, '') + '\\s*$', 'im').test(x.prev()); }, // FROM build names an earlier stage, not an image
     'no fixed version: :latest (or no tag) means each build can pull a different image, so a build that worked yesterday can break today. Pin a version tag, such as node:20-slim, or a digest'],
