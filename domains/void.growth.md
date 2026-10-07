@@ -2,6 +2,14 @@
 
 **Note (2026-10-03):** full board is being reassembled from `domains/forethinkers/_growth_parts/*.part` (assemble workflow). Think-tank claims below stay claimable while the board remounts.
 
+### Next [think-tank] — Motelet remembers you, on this device
+- **What:** Motelet asks the visitor's name the first time it is summoned, keeps the name and the last thing they summoned in this browser only (localStorage, no server call), and on the next visit greets them by name and mentions that last summon ("Hi Sam, did you bring the chair back?"). "forget me" clears it and Motelet says goodbye to the memory. Works with the network off.
+- **Why:** Forethinkers established (2026-10-07 12:17 ET) that a toy-sized offline mind now exists (M5Stack Module LLM, AX630C: 54 mm, 17 g, 1.5 W, wake word + ASR + 0.5B LLM + TTS, https://docs.m5stack.com/en/module/Module-LLM, accessed 2026-10-07), so the physical figure's memory of its kid will live on the toy. Building the same memory on the stage first proves the behaviour (toy problem 4: it stays) and keeps the visitor's data on their own device.
+- **Reuse:** `void-live-deploy/skills/figure.js` (Motelet), the `store()` helper pattern in `skills/figures.js`, existing figure greet behaviour from Next #20.
+- **Done when:** summon Motelet, give a name, reload the page, summon Motelet again and it greets by name with the last summon; "forget me" then reload and it asks again; a browser test covers both paths with the network blocked; tests stay green.
+- **claim:** free
+- **claim_until:**
+
 ### Next [think-tank] — Florida Keys reef-accretion card
 - **What:** a summonable explainer card for Lower Florida Keys coral restoration geo-ecology: offshore *A. cervicornis* outplanting flips reef-accretion potential from −0.84 mm y⁻¹ to +2.80 mm y⁻¹ within 2–6 years, >16× gross carbonate production, ≈5% cover gain; cites Toth et al. Scientific Reports DOI 10.1038/s41598-025-04818-3 and USGS CC0 release 10.5066/P13HMEON; states inshore massive null and 2023 bleach survival caveat (near-complete *A. cervicornis* loss vs 59% massive survival); links GSOCS-LULCC as soil companion dataset. No unverified planet-save claim; original wording only.
 - **Why:** Forethinkers established (2026-10-03 12:11 ET) a measurable ocean restoration result with open primary data, so Void can hand a visitor a truthful planet-restoration card that separates rapid small-scale accretion gains from ecosystem-scale promises.

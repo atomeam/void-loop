@@ -2,6 +2,19 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-07 12:17 ET even-hour cycle
+
+Ran on the Linux box. Folded the unmerged branch `forethinkers/cycle-2026-10-03-1211` (which already carried the 08:07 3MF and 10:08 senolytic MASH cycles) into `forethinkers/cycle-2026-10-07-1217`, so the 2026-10-03 research lands on main with this PR. The 04:00 and 06:12 branches were already squash-merged (PR #45 and commit 62d8a6a), so they are superseded.
+
+Read `convergence.md`, every track, `figures-first.md` and `toy-problems.md`. Picked **living-figures**: it was the least recently advanced track, and its hold condition (stage inhabit behavior on main) is now met by Motelet in `void-live-deploy/skills/figure.js`.
+
+- Established: a complete offline voice mind (wake word, ASR, Qwen2.5-0.5B, TTS) runs on a 54 x 54 x 13 mm, 17.1 g module at 0.5 W idle and 1.5 W full load ([M5Stack Module LLM docs](https://docs.m5stack.com/en/module/Module-LLM), accessed 2026-10-07), with a 359.8 ms first token and 10.32 tokens/s ([model page](https://docs.m5stack.com/en/stackflow/models/qwen2.5-0.5b-instruct), accessed 2026-10-07).
+- Logged: Babaru offline small-LLM plush, retail Q3 2026 ([Toy World Magazine](https://toyworldmag.co.uk/pms-international-brings-babaru-to-market/), 16 Apr 2026); Waylo Offline plush at €199 pre-order ([waylo.ai](https://waylo.ai/), accessed 2026-10-07); OpenMoxie as the recovery path for a cloud-bound robot ([GitHub](https://github.com/jbeghtol/openmoxie)); CantaStorie at about 27 s to first audio on an Arduino UNO Q ([Hackster.io](https://www.hackster.io/news/an-ai-toy-that-doesn-t-need-the-cloud-4673762c2f8c)).
+- Rules on file for a sellable figure: ASTM F963-23 mandatory since 20 Apr 2024, section 4.25 battery access and chargers ([Federal Register 2024-00741](https://www.federalregister.gov/documents/2024/01/18/2024-00741/safety-standard-mandating-astm-f963-for-toys)); amended COPPA Rule compliance due 22 Apr 2026 ([Federal Register 2025-05904](https://www.federalregister.gov/documents/2025/04/22/2025-05904/childrens-online-privacy-protection-rule)).
+- Next open question: bench the cupboard layout (mind in the base, mic, speaker and two servos in the figure) and measure wake-to-first-word, Wh per 30-minute session, and memory after a power cycle.
+
+[think-tank] Motelet remembers you on this device: it learns the visitor's name once, keeps it in the browser only, and greets them by name with their last summon when they come back; "forget me" clears it. This is the stage version of toy problem 4 and the offline-mind design.
+
 ## 2026-10-03 12:11 ET even-hour cycle
 
 Victus offline this run; worked on the box + GitHub MCP. Folded waiting branch `forethinkers/cycle-2026-10-03-1008` (life-extension senolytic MASH + prior 3MF/magnetize stack) into `forethinkers/cycle-2026-10-03-1211`. Orphan branches `0400`, `0612`, and `0807` remain earlier merged or already folded content. Left draft PR #40 and Next #17 PR #44 untouched.

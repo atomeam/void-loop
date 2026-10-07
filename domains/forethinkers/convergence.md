@@ -58,6 +58,15 @@ nodes:
     date: 2025-08-04
     tracks: [planet-restoration]
     claim: "Lower Florida Keys paired surveys: restored offshore A. cervicornis areas reach +2.80 mm y⁻¹ reef-accretion potential vs −0.84 mm y⁻¹ non-restored within 2–6 years; >16× gross carbonate production; ≈5% cover gain. Inshore massive restoration: no measurable accretion effect. 2023 bleach near-complete A. cervicornis mortality vs 59% massive survival. Open USGS CC0 data DOI 10.5066/P13HMEON."
+  - id: offline-character-mind-module
+    kind: shared-part
+    status: established
+    part: offline voice mind module (wake word, ASR, small LLM, TTS) at toy size and power
+    title: "Module LLM (Axera AX630C)"
+    url: https://docs.m5stack.com/en/module/Module-LLM
+    date: 2026-10-07
+    tracks: [living-figures]
+    claim: "54 x 54 x 13 mm, 17.1 g, 0.5 W idle / 1.5 W full load, wake word + ASR + Qwen2.5-0.5B + TTS with no cloud; 359.8 ms first token and 10.32 tokens/s (M5Stack model page, accessed 2026-10-07). Answers toy problem 1 at the part level. Too large for a 38 mm body, so the mind lives in the figure's home base; that layout is the next bench test."
   - id: printed-actuator-moves-figure-joint
     kind: shared-part
     status: hypothesis
@@ -75,11 +84,12 @@ nodes:
     status: hypothesis
     part: little 3D figure inhabiting the current Void
     tracks: [living-figures, void-stage]
-    claim: Search pops a small 3D version that uses what is already on stage and leaves when thrown off with the mouse.
+    claim: Search pops a small 3D version that uses what is already on stage and leaves when thrown off with the mouse. Motelet does this on main (void-live-deploy/skills/figure.js, 2026-10-07); stays hypothesis here until a dated public page describes it.
 ```
 
 ## Cycle log
 
+- 2026-10-07 12:17 ET. Offline-character-mind-module established (M5Stack Module LLM, AX630C: 54 mm, 17 g, 1.5 W, offline wake word + ASR + 0.5B LLM + TTS at 10.3 tokens/s). Living-figures hold lifted because Motelet is on main. Babaru (16 Apr 2026) and Waylo Offline logged as consumer on-device-mind toys. Folded unmerged 08:07, 10:08 and 12:11 cycles from 2026-10-03.
 - 2026-10-03 12:11 ET. Florida-keys-reef-accretion established (Toth et al. Sci Rep DOI 10.1038/s41598-025-04818-3; −0.84 → +2.80 mm y⁻¹; USGS 10.5066/P13HMEON). GSOCS-LULCC and Australia SOC-M logged on planet-restoration track. Life-extension and 3MF work from prior cycles stay folded on this branch.
 - 2026-10-03 10:08 ET. Senolytics-mash-dq established (Nature Metabolism 1 Oct 2026; D+Q 47% vs 7% fibrosis improvement). PEARL rapamycin safety (Aging 4 Apr 2025) and semaglutide epigenetic slowing (Nat Commun 19 May 2026) logged on life-extension track. Printing/void-stage 3MF work from 08:07 stays folded on this branch.
 - 2026-10-03 08:07 ET. Multimaterial-export-3mf established (ISO/IEC 25422:2025; Core basematerials; Prusa prefers 3MF). Export-to-print stays blocked on browser emitter + slicer test. Figure-joint link stays hypothesis.
