@@ -482,6 +482,66 @@ try {
       dragging && order[order.length - 1] === 'first' && !(await V.p.evaluate(() => document.documentElement.classList.contains('dragging'))) && !(await V.p.evaluate(() => String(getSelection()))),
       JSON.stringify({ dragging, order }));
     await V.ctx.close(); }
+  // Board Next #3, grouping half (skills/group.js): "group the clock and the note" ties them together, dragging one carries the
+  // other the same distance, the group moves and resizes as one, "bring the group to the front" layers it, "ungroup" lets go.
+  { const G = await fresh();
+    await G.ask('make a clock', 400); await G.ask('add a sticky that says grouped', 400); await G.ask('make a 5 minute timer', 400);
+    await G.ask('group the clock and the note', 900);
+    const said = await G.whisper();
+    let st = await G.state();
+    const ck = st.find((x) => x.kind === 'clock'), nt = st.find((x) => x.kind === 'sticky'), tm = st.find((x) => x.kind === 'timer');
+    const tied = !!ck.group && ck.group === nt.group && !tm.group;
+    const box = await G.p.$eval('.clock', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 10, y: b.top + 10 }; });
+    await G.p.mouse.move(box.x, box.y); await G.p.mouse.down(); await G.p.mouse.move(box.x + 60, box.y + 40, { steps: 6 }); await G.p.mouse.up(); await G.p.waitForTimeout(200);
+    st = await G.state();
+    const ck2 = st.find((x) => x.kind === 'clock'), nt2 = st.find((x) => x.kind === 'sticky'), tm2 = st.find((x) => x.kind === 'timer');
+    const carried = ck2.x - ck.x === 60 && nt2.x - nt.x === 60 && nt2.y - nt.y === 40 && tm2.x === tm.x && tm2.y === tm.y;
+    await G.ask('move the group to the top left', 700);
+    st = await G.state();
+    const ck3 = st.find((x) => x.kind === 'clock'), nt3 = st.find((x) => x.kind === 'sticky');
+    const cornered = Math.min(ck3.x, nt3.x) === 24 && Math.min(ck3.y, nt3.y) === 24 && (nt3.x - ck3.x) === (nt2.x - ck2.x);
+    await G.ask('make the group bigger', 700);
+    const ck4 = (await G.state()).find((x) => x.kind === 'clock');
+    const bigger = ck4.size === Math.round((Number(ck3.size) || 48) * 1.25);
+    await G.ask('bring the group to the front', 700);
+    const order = Object.keys(await G.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
+    const ids = (await G.state()).reduce((m, x) => (m[x.id] = x.kind, m), {});
+    const front = ids[order[0]] === 'timer';
+    await G.ask('ungroup', 700);
+    const loose = (await G.state()).every((x) => !x.group);
+    await G.p.reload(); await G.p.waitForTimeout(700);
+    check('group: "group the clock and the note" ties them (the timer stays loose), dragging the clock carries the note the same distance, "move the group to the top left" keeps their spacing, "make the group bigger" scales them, "bring the group to the front" layers both, "ungroup" lets go, and it all survives a reload',
+      /grouped/.test(said) && tied && carried && cornered && bigger && front && loose && (await G.state()).length === 3 && !G.errors.length,
+      JSON.stringify({ said, tied, carried, cornered, bigger, front, loose, order, ids, e: G.errors }));
+    await G.ctx.close(); }
+  // Labels and arrows (skills/label.js, board "Later": text annotation / labels): "label the clock kitchen" tags it, an arrow
+  // drawn by label names joins two things and follows a drag, a free label can be an arrow's end, "undo" and reload behave.
+  { const L = await fresh();
+    await L.ask('make a clock', 400); await L.ask('add a sticky that says milk', 400); await L.ask('make a 5 minute timer', 400);
+    await L.ask('move the timer to the bottom right', 500);
+    await L.ask('label the clock kitchen', 700); await L.ask('label the note groceries', 700);
+    const tags = await L.p.$$eval('.void-tag', (es) => es.map((e) => e.textContent).sort().join(','));
+    await L.ask('draw an arrow from kitchen to the timer', 800);
+    const said = await L.whisper();
+    const line = () => L.p.$eval('.void-arrows line', (l) => [l.getAttribute('x1'), l.getAttribute('y1'), l.getAttribute('x2'), l.getAttribute('y2')].map(Number)).catch(() => null);
+    const l1 = await line();
+    const box = await L.p.$eval('.clock', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 10, y: b.top + 10 }; });
+    await L.p.mouse.move(box.x, box.y); await L.p.mouse.down(); await L.p.mouse.move(box.x - 120, box.y - 60, { steps: 6 }); await L.p.mouse.up(); await L.p.waitForTimeout(250);
+    const l2 = await line();
+    const follows = !!(l1 && l2) && Math.abs(l2[0] - l1[0]) + Math.abs(l2[1] - l1[1]) > 100 && Math.hypot(l2[2] - l1[2], l2[3] - l1[3]) < 30; // the clock's end moves with it; the timer's end only slides along its edge
+    await L.ask('add a label that says to do', 700);
+    await L.ask('connect the label to the note', 700);
+    const two = await L.p.$$eval('.void-arrows line', (ls) => ls.length);
+    await L.ask('undo', 600);
+    const undone = await L.p.$$eval('.void-arrows line', (ls) => ls.length);
+    await L.p.reload(); await L.p.waitForTimeout(900);
+    const kept = (await L.p.$$eval('.void-arrows line', (ls) => ls.length)) === 1 && (await L.p.$$eval('.void-tag', (es) => es.length)) === 2 && (await L.p.$$eval('.void-label', (es) => es.map((e) => e.textContent).join())) === 'to do';
+    await L.ask('remove the arrows', 600); await L.ask('remove the labels', 600);
+    const clean = (await L.p.$$eval('.void-arrows line, .void-tag, .void-label', (es) => es.length)) === 0 && (await L.state()).length === 3;
+    check('label: "label the clock kitchen" and "label the note groceries" tag them, "draw an arrow from kitchen to the timer" joins them and the arrow follows the clock when it is dragged, a free label "to do" takes an arrow, "undo" takes the last arrow back, all of it survives a reload, and "remove the arrows" / "remove the labels" clear them',
+      tags === 'groceries,kitchen' && /drew an arrow/.test(said) && follows && two === 2 && undone === 1 && kept && clean && !L.errors.length,
+      JSON.stringify({ tags, said, l1, l2, two, undone, kept, clean, e: L.errors }));
+    await L.ctx.close(); }
   // Public Voids: "publish my void as @name" puts a paid Void's look and kept cards (as text) at /@name, after the person's own yes.
   { const DB = sqliteD1(), env = { DB, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'index.html'), 'utf8')) } };
     await voidMe.ensureTables(env);
@@ -848,8 +908,69 @@ try {
   await t.ask('monthly payment on a $250000 mortgage at 6.5% for 30 years', 700); const loanPg = await t.page(); check('loan payment', /\/ month/.test(loanPg) && /Total interest/.test(loanPg) && /mortgage/i.test(loanPg) && /First year/.test(loanPg) && /extra each month/.test(loanPg), loanPg.slice(0, 180));
   await t.ask('$300k mortgage at 6.5% for 30 years with $200 extra a month', 700); const loanX = await t.page(); check('loan extra payment', /extra \/ month/.test(loanX) && /months sooner/.test(loanX) && /save/.test(loanX) && /interest/.test(loanX), loanX.slice(0, 180));
   await t.ask('gas cost for 320 miles at 28 mpg $3.59 a gallon', 700); const fuelPg = await t.page(); check('trip fuel', /Trip fuel/.test(fuelPg) && /Fuel needed/.test(fuelPg) && /Per mile/.test(fuelPg) && /gal/.test(fuelPg), fuelPg.slice(0, 180));
+  await t.ask("calories for a 30 year old male 5'10 180 lbs moderately active", 700); const calPg = await t.page(); check('nutrition: daily calories by Mifflin-St Jeor (30, male, 5\'10, 180 lb, moderate = 2,760 to keep, BMR 1,780)', /Daily calories/.test(calPg) && /2,760/.test(calPg) && /1,780/.test(calPg) && /Lose 1 lb a week: 2,260/.test(calPg) && /Mifflin/.test(calPg), calPg.slice(0, 200));
+  await t.ask('how much protein do i need if i weigh 180 pounds', 700); const proPg = await t.page(); check('nutrition: protein for 180 lb (RDA 65 g, 1.6 g/kg 131 g)', /Protein a day/.test(proPg) && /65 g/.test(proPg) && /131 g/.test(proPg) && /ISSN/.test(proPg), proPg.slice(0, 200));
+  await t.ask('how much water should i drink a day', 700); const h2oPg = await t.page(); check('nutrition: water a day (National Academies: 13 cups men, 9 cups women)', /Water a day/.test(h2oPg) && /13 cups/.test(h2oPg) && /9 cups/.test(h2oPg) && /National Academies/.test(h2oPg) && !/noted it/.test(h2oPg), h2oPg.slice(0, 200));
+  await t.ask('calorie calculator', 700); const calForm = await t.page(); check('nutrition: calorie calculator form works (default 30, 5\'9, 170 lb, light = 2,370)', /Calorie calculator/.test(calForm) && /2,370/.test(calForm), calForm.slice(0, 200));
   await t.ask('20% tip on 45', 700); const tipPg = await t.page(); check('tip amount', /Tip/.test(tipPg) && /\$9/.test(tipPg) && /Total/.test(tipPg) && /\$54/.test(tipPg), tipPg.slice(0, 180));
   await t.ask('split $85 three ways with 20% tip', 700); const tipSplit = await t.page(); check('tip and split', /Tip and split|\/ person/.test(tipSplit) && /Total/.test(tipSplit) && /Tip each|Bill each/.test(tipSplit), tipSplit.slice(0, 180));
+  await t.ask('how much will i have if i save 200 a month for 20 years at 7%', 700); const svPg = await t.page(); check('savings: 200 a month for 20 years at 7% grows to $104,185 (monthly compounding), put in vs growth and a range', /Savings growth/.test(svPg) && /\$104,185/.test(svPg) && /\$48,000/.test(svPg) && /Investor\.gov/.test(svPg) && !/don't know this yet|on your calendar/i.test(svPg), svPg.slice(0, 220));
+  await t.ask('how long to save 50000 if i save 500 a month', 700); const svTime = await t.page(); check('savings: time to a goal (no rate: 0% = 8 years 4 months, with 4% and 7% beside it)', /Time to your goal/.test(svTime) && /8 years 4 months/.test(svTime) && /7%/.test(svTime), svTime.slice(0, 220));
+  await t.ask('how much do i need to save a month to have 1 million in 30 years at 7%', 700); const svNeed = await t.page(); check('savings: monthly amount a goal needs ($819.69 a month for $1M in 30 years at 7%)', /Monthly savings needed/.test(svNeed) && /\$819\.69/.test(svNeed) && /Start 5 years later/.test(svNeed), svNeed.slice(0, 220));
+  await t.ask('savings calculator', 700); const svCalc = await t.page(); check('savings: "savings calculator" opens a live form with a goal', /Savings calculator/.test(svCalc) && /Goal/.test(svCalc) && /Balance:/.test(svCalc), svCalc.slice(0, 220));
+  { const { _test: sv } = await import(new URL('../void-live-deploy/skills/savings.js', import.meta.url).href);
+    check('savings: maths (FV of 200/mo at 7% for 20y, months to 50k at 0%, monthly for 1M)', Math.abs(sv.grow(0, 200, 7, 240) - 104185.33) < 0.5 && sv.monthsTo(0, 500, 0, 50000) === 100 && Math.abs(sv.monthlyFor(0, 7, 360, 1e6) - 819.69) < 0.01 && sv.grow(1000, 0, 0, 12) === 1000, ''); }
+  await t.ask('if i wake up at 7am when should i go to sleep', 700); const sleepPg = await t.page(); check('sleep: bedtimes for a 7 am wake-up (90-min cycles + 15 min to fall asleep, CDC hours)', /Bedtime/.test(sleepPg) && /11:15\s?PM/.test(sleepPg) && /9:45\s?PM/.test(sleepPg) && /12:45\s?AM/.test(sleepPg) && /aim for/.test(sleepPg) && /CDC/.test(sleepPg) && !/on your calendar/i.test(sleepPg), sleepPg.slice(0, 200));
+  await t.ask('if i go to bed at 11pm when should i wake up', 700); const wakePg = await t.page(); check('sleep: wake-up times for an 11 pm bedtime', /Wake-up time/.test(wakePg) && /6:45\s?AM/.test(wakePg) && /8:15\s?AM/.test(wakePg) && /5:15\s?AM/.test(wakePg), wakePg.slice(0, 200));
+  await t.ask('how much sleep does a teenager need', 700); const needPg = await t.page(); check('sleep: hours a teen needs (CDC)', /How much sleep/.test(needPg) && /8\u201310 hours/.test(needPg) && /CDC/.test(needPg), needPg.slice(0, 200));
+  await t.ask('due date if my last period was march 1 2026', 700); const duePg = await t.page(); check('pregnancy: due date from the last period (Naegele, last period + 280 days), with the full-term window and ACOG source', /Due date/.test(duePg) && /December 6, 2026/.test(duePg) && /Full term/.test(duePg) && /ACOG/.test(duePg) && !/on your calendar/i.test(duePg), duePg.slice(0, 220));
+  await t.ask('i conceived on january 10 2026 when is my baby due', 700); const conPg = await t.page(); check('pregnancy: due date from conception (+ 266 days)', /Due date/.test(conPg) && /October 3, 2026/.test(conPg) && !/on your calendar/i.test(conPg), conPg.slice(0, 220));
+  await t.ask('ivf due date 5 day transfer on may 2 2026', 700); const ivfPg = await t.page(); check('pregnancy: IVF due date (5-day transfer + 261 days)', /January 18, 2027/.test(ivfPg) && /5-day embryo transfer/.test(ivfPg), ivfPg.slice(0, 220));
+  await t.ask('my due date is june 1 how far along am i', 700); const farPg = await t.page(); check('pregnancy: how far along from a known due date', /How far along/.test(farPg) && /weeks?/.test(farPg) && /June 1/.test(farPg) && !/on your calendar/i.test(farPg), farPg.slice(0, 220));
+  await t.ask('when am i ovulating if my last period was march 1 2026', 700); const ovPg = await t.page(); check('ovulation: fertile window and ovulation day from the last period (next period - 14; six days ending on ovulation, Wilcox NEJM 1995)', /Fertile window/.test(ovPg) && /fertile March 10 \u2013 March 15/.test(ovPg) && /ovulation March 15/.test(ovPg) && /NEJM/.test(ovPg) && /ACOG/.test(ovPg) && !/on your calendar|don't know this yet/i.test(ovPg), ovPg.slice(0, 220));
+  await t.ask('my cycle is 26 to 32 days and my last period was october 1 2026 when am i fertile', 700); const ovRg = await t.page(); check('ovulation: irregular cycles as a range (shortest - 18 to longest - 11)', /October 8\u201321, 2026/.test(ovRg) && /shortest cycle minus 18/.test(ovRg), ovRg.slice(0, 220));
+  await t.ask('ovulation calculator', 700); const ovCalc = await t.page(); check('ovulation: "ovulation calculator" opens a live form', /Ovulation calculator/.test(ovCalc) && /luteal phase/.test(ovCalc) && /Ovulation:/.test(ovCalc), ovCalc.slice(0, 220));
+  // period log (this browser only): three starts 28 days apart give a 28-day average; "when am i ovulating" with no date then reads the log
+  { const d0 = new Date(); d0.setHours(12, 0, 0, 0); const ago = (n) => { const d = new Date(d0); d.setDate(d.getDate() - n); return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }); };
+    await t.ask('clear my period log', 500);
+    await t.ask('my period started on ' + ago(66), 500); await t.ask('my period started on ' + ago(38), 500); await t.ask('my period started on ' + ago(10), 700);
+    const plog = await t.page(); check('period: "my period started on <date>" logs it; three starts 28 days apart give a 28-day average, today\'s cycle day and the next period', /Period log/.test(plog) && /3 periods logged/.test(plog) && /28-day cycle/.test(plog) && /day 11 of your cycle/.test(plog) && /in 18 days/.test(plog) && !/on your calendar/i.test(plog), plog.slice(0, 260));
+    await t.ask('when am i ovulating', 700); const povl = await t.page(); check('period -> ovulation: "when am i ovulating" with no date uses the logged period and averaged cycle', /Fertile window/.test(povl) && /your period log, 2 cycles averaged/.test(povl) && /28-day cycle/.test(povl), povl.slice(0, 260));
+    await t.ask('is my period late', 600); const plate = await t.page(); check('period: "is my period late" reads the log', /Not late/.test(plate) && /in 18 days/.test(plate), plate.slice(0, 200));
+    await t.ask('remove my last period', 600); const prm = await t.page(); check('period: "remove my last period" takes the newest entry off', /Took off the period/.test(prm) && /2 periods logged/.test(prm), prm.slice(0, 200));
+    await t.ask('clear my period log', 500); const pcl = await t.page(); check('period: "clear my period log" empties it (nothing left in localStorage)', /Cleared your period log/.test(pcl) && (await t.p.evaluate(() => localStorage.getItem('a2m.void.cycle.v1'))) === null, pcl.slice(0, 160)); }
+  await t.ask('how much paint do i need for a 12x14 room', 700); const hmPaint = await t.page(); check('home: paint for a room (perimeter x 8 ft, less 1 door and 2 windows, 2 coats at 350 sq ft a gallon)', /Paint for the room/.test(hmPaint) && /366 sq ft/.test(hmPaint) && /2\.09 gallons/.test(hmPaint) && /2 gallons \+ 1 quart/.test(hmPaint) && /Sherwin-Williams/.test(hmPaint), hmPaint.slice(0, 260));
+  await t.ask('how many 12x24 tiles for a 10x12 floor', 700); const hmTile = await t.page(); check('home: tiles for a floor from the tile size, 10% waste', /Tile for the room/.test(hmTile) && /66 tiles/.test(hmTile) && /132 sq ft/.test(hmTile) && /Baseboard/.test(hmTile), hmTile.slice(0, 260));
+  await t.ask('how much carpet for a 12x14 room', 700); const hmCarpet = await t.page(); check('home: carpet in square yards off a 12-ft roll', /Carpet for the room/.test(hmCarpet) && /19 sq yd/.test(hmCarpet) && /12-ft roll/.test(hmCarpet) && /no seams/.test(hmCarpet), hmCarpet.slice(0, 260));
+  // home follow-ups: the card's own suggestions ("with 2 doors and no windows", "9 foot ceilings") and a change of coats, ceiling, price or material redo the last room
+  await t.ask('how much paint do i need for a 12x14 room', 700);
+  await t.ask('what about 3 coats', 700); const hfCoats = await t.page(); check('home follow-up: "what about 3 coats" redoes the last room with 3 coats', /Paint for the room/.test(hfCoats) && /3 coats/.test(hfCoats) && /3\.14 gallons/.test(hfCoats), hfCoats.slice(0, 260));
+  await t.ask('the ceiling too', 700); const hfCeil = await t.page(); check('home follow-up: "the ceiling too" adds the ceiling and keeps the 3 coats', /Ceiling/.test(hfCeil) && /168 sq ft/.test(hfCeil) && /4\.58 gallons/.test(hfCeil), hfCeil.slice(0, 260));
+  await t.ask('at $40 a gallon', 700); const hfCost = await t.page(); check('home follow-up: "at $40 a gallon" prices the same job', /about \$200/.test(hfCost) && /5 \u00d7 \$40 a gallon/.test(hfCost), hfCost.slice(0, 260));
+  await t.ask('with 2 doors and no windows', 700); const hfOpen = await t.page(); check('home follow-up: the card\'s own "with 2 doors and no windows" works on its own', /2 doors, 0 windows/.test(hfOpen) && /376 sq ft/.test(hfOpen) && /about \$200/.test(hfOpen), hfOpen.slice(0, 260));
+  await t.ask('what about carpet', 700); const hfCarpet = await t.page(); check('home follow-up: "what about carpet" switches the same room to carpet', /Carpet for the room/.test(hfCarpet) && /19 sq yd/.test(hfCarpet), hfCarpet.slice(0, 260));
+  await t.ask('how about 12x24 tiles', 700); const hfTile = await t.page(); check('home follow-up: "how about 12x24 tiles" tiles the same floor', /Tile for the room/.test(hfTile) && /93 tiles/.test(hfTile), hfTile.slice(0, 260));
+  await t.ask('paint for it', 700); const hfPaint = await t.page(); check('home follow-up: "paint for it" goes back to paint for the 12x14 room, not the tile size', /Paint for the room/.test(hfPaint) && /366 sq ft/.test(hfPaint), hfPaint.slice(0, 260));
+  await t.ask('paint calculator', 700); const hmCalc = await t.page(); check('home: "paint calculator" opens a live form', /Paint calculator/.test(hmCalc) && /gallons/.test(hmCalc) && /ceiling too/.test(hmCalc), hmCalc.slice(0, 220));
+  // walls: wallpaper rolls by the drop method and drywall sheets, with follow-ups that cross to and from home's paint and floor cards
+  await t.ask('how many rolls of wallpaper for a 12x12 room', 700); const wlWp = await t.page(); check('walls: wallpaper by the drop method (32 drops of 8 ft 4 in, 3 a 33-ft roll = 11 rolls, not the 7 area says)', /Wallpaper for the room/.test(wlWp) && /11 rolls/.test(wlWp) && /32 drops/.test(wlWp) && /Why not 7/.test(wlWp), wlWp.slice(0, 260));
+  await t.ask('with a 21 inch repeat', 700); const wlRep = await t.page(); check('walls follow-up: "with a 21 inch repeat" rounds each drop up to whole repeats', /21 in straight repeat/.test(wlRep) && /drops of 8 ft 9 in/.test(wlRep) && /11 rolls/.test(wlRep), wlRep.slice(0, 260));
+  await t.ask('at $45 a roll', 700); const wlCost = await t.page(); check('walls follow-up: "at $45 a roll" prices the same paper', /about \$495/.test(wlCost) && /11 rolls/.test(wlCost), wlCost.slice(0, 260));
+  await t.ask('drywall for it', 700); const wlDw = await t.page(); check('walls follow-up: "drywall for it" switches the same room to drywall sheets', /Drywall for the room/.test(wlDw) && /14 sheets/.test(wlDw) && /384 sq ft/.test(wlDw), wlDw.slice(0, 260));
+  await t.ask('the ceiling too', 700); const wlCeil = await t.page(); check('walls follow-up: "the ceiling too" adds the ceiling to the drywall (not home\'s paint)', /Drywall for the room/.test(wlCeil) && /19 sheets/.test(wlCeil) && /144 sq ft/.test(wlCeil), wlCeil.slice(0, 260));
+  await t.ask('4x12 sheets', 700); const wlLong = await t.page(); check('walls follow-up: "4x12 sheets" redoes it with longer sheets', /4 \u00d7 12 ft sheets/.test(wlLong) && /13 sheets/.test(wlLong), wlLong.slice(0, 260));
+  await t.ask('paint for it', 700); const wlPaint = await t.page(); check('walls follow-up: "paint for it" hands the same room to home', /Paint for the room/.test(wlPaint) && /12 \u00d7 12 ft room/.test(wlPaint), wlPaint.slice(0, 260));
+  await t.ask('wallpaper for it', 700); const wlBack = await t.page(); check('walls follow-up: "wallpaper for it" after a paint card uses that room', /Wallpaper for the room/.test(wlBack) && /11 rolls/.test(wlBack), wlBack.slice(0, 260));
+  await t.ask('how many sheets of drywall for a 12x14 room', 700); const wlDw2 = await t.page(); check('walls: drywall sheets, screws, tape and compound from USG\'s figures', /15 sheets/.test(wlDw2) && /416 sq ft/.test(wlDw2) && /154 ft of paper tape/.test(wlDw2) && /USG/.test(wlDw2), wlDw2.slice(0, 260));
+  await t.ask('wallpaper calculator', 700); const wlCalc = await t.page(); check('walls: "wallpaper calculator" opens a live form', /Wallpaper calculator/.test(wlCalc) && /rolls/.test(wlCalc) && /half drop/.test(wlCalc), wlCalc.slice(0, 220));
+  // room: everything for one room on one card (paint, floor, wallpaper, drywall, baseboard), priced per line with a live total, built on home + walls
+  await t.ask('paint and carpet a 12x14 room at $40 a gallon', 700); const rmA = await t.page(); check('room: paint and carpet for one room on one card, the paint priced', /Everything for the room/.test(rmA) && /2 gallons \+ 1 quart for the walls/.test(rmA) && /19 sq yd of carpet/.test(rmA) && /54 ft of baseboard/.test(rmA) && /\$120 so far, 1 of 3 lines priced/.test(rmA), rmA.slice(0, 300));
+  await t.ask('add wallpaper', 700); const rmB = await t.page(); check('room follow-up: "add wallpaper" adds a wallpaper line by the drop method', /Everything for the room/.test(rmB) && /12 rolls/.test(rmB) && /4 things to buy/.test(rmB), rmB.slice(0, 300));
+  await t.ask('the ceiling too', 700); const rmC = await t.page(); check('room follow-up: "the ceiling too" with wallpaper puts the paint on the ceiling only (not walls\' drywall)', /paint is just for the ceiling/.test(rmC) && /1 gallon of ceiling white/.test(rmC) && /Everything for the room/.test(rmC), rmC.slice(0, 300));
+  await t.ask('$45 a roll and $4 a sq yd and $1.50 a foot', 700); const rmD = await t.page(); check('room follow-up: prices for every line give the whole room\'s total', /about \$737/.test(rmD) && /4 lines priced/.test(rmD), rmD.slice(0, 300));
+  await t.p.fill('.vpage.on input.rp-price[data-k="paint"]', '50'); await t.p.waitForTimeout(200); const rmE = await t.page(); check('room: typing a price on a line updates the total', /about \$747/.test(rmE), rmE.slice(0, 200));
+  await t.ask('how many sheets of drywall for a 12x14 room', 700); await t.ask('the whole room', 700); const rmF = await t.page(); check('room: "the whole room" after a drywall card puts that room and its drywall on one card', /Everything for the room/.test(rmF) && /15 sheets of 4 \u00d7 8 ft/.test(rmF) && /hang the drywall/.test(rmF) && /Paint/.test(rmF), rmF.slice(0, 300));
+  await t.ask('redo a 4 by 5 metre room', 700); const rmG = await t.page(); check('room: a metric room in litres and square metres', /4 \u00d7 5 m room/.test(rmG) && /7\.7 L/.test(rmG) && /22 m\u00b2 of flooring/.test(rmG), rmG.slice(0, 300));
   await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
@@ -1986,7 +2107,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'inventory', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'home', 'walls', 'room', 'sleep', 'pregnancy', 'ovulation', 'period', 'nutrition', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',

@@ -6,11 +6,11 @@ Forethinkers means building for what is about to be possible, not just for today
 
 | Track | File | Role |
 | --- | --- | --- |
-| Living action figures | `tracks/living-figures.md` | Tiny actuators, joints, power, on-board mind, sensing, personality, safety. Good-guy target: built to help and play. |
-| One-shot printing of working machines | `tracks/printing-working-machines.md` | Multi-material print, embedded electronics, print-in-place mechanisms, printed motors and batteries, design-to-print. |
-| Life extension and disease cures | `tracks/life-extension.md` | Newest credible results, open problems, where a small team or AI can contribute. |
-| Planet restoration | `tracks/planet-restoration.md` | Air, water, soil, oceans, biodiversity, energy. |
-| Void stage handoff | `tracks/void-stage.md` | What Void shows or exports from a figure once the stage life is real. |
+| Living action figures | `tracks/living-figures.md` | Tiny actuators, joints, power, on-board mind, sensing, personality, safety. Good-guy target: built to help and play. Last advanced 2026-10-07 (offline mind module). |
+| One-shot printing of working machines | `tracks/printing-working-machines.md` | Multi-material print, embedded electronics, print-in-place mechanisms, printed motors and batteries, design-to-print. Last advanced 2026-10-07 (five-slot 3MF layout, slicer-tested). |
+| Life extension and disease cures | `tracks/life-extension.md` | Newest credible results, open problems, where a small team or AI can contribute. Last advanced 2026-10-07 (live replication watchlist, burden-selected senolytics). |
+| Planet restoration | `tracks/planet-restoration.md` | Air, water, soil, oceans, biodiversity, energy. Last advanced 2026-10-07 (2023 heatwave answer, heat-tolerant coral trials). |
+| Void stage handoff | `tracks/void-stage.md` | What Void shows or exports from a figure once the stage life is real. Export-to-print unblocked 2026-10-07. |
 
 ## How a cycle works
 
@@ -20,4 +20,4 @@ Supporting briefs already on main: `THINK-TANK-BRIEF.md`, `figures-first.md`, `t
 
 ## This automation
 
-Even-hour Forethinkers job on Victus. Worktree: `C:\Users\adamm\void-wt-forethinkers`. Shared clone stays for other jobs.
+Even-hour Forethinkers job on the Linux box, so it runs whether the laptop is on or off. Worktree: `/workspace/void-wt-forethinkers` on a fresh `forethinkers/cycle-<date>-<time>` branch from `origin/main`; the main clone `/workspace/void-loop` stays on main for other jobs. Setup notes: `/workspace/void-loop-box-setup.md`.

@@ -2,16 +2,49 @@
 
 ## Progress ledger
 
+- 2026-10-07 12:17 ET - Hold lifted: the stage figure is on main (Motelet in `void-live-deploy/skills/figure.js`, figures react in Next #20). Took the first real research step on the physical toy's mind. A complete offline voice mind (wake word, speech recognition, a 0.5B language model, speech out) now runs on a 54 x 54 x 13 mm, 17 g module at 1.5 W, answering at about 10 tokens/s with a 0.36 s first token (M5Stack Module LLM, AX630C). Two consumer plush toys with on-device minds are announced for 2026 (Babaru, Waylo). Next: bench the "cupboard base" layout where the mind lives in the figure's home and the figure carries mic, speaker and servos.
+- 2026-10-03 12:11 ET - Held. Planet-restoration took the first real research step (Florida Keys reef-accretion + open soil SOC ledgers); living-figures still waits on stage inhabit behavior landing on main.
+- 2026-10-03 10:08 ET - Held. Life-extension track took the first real research step (senolytic MASH RCT + PEARL + semaglutide epigenetic RCT); living-figures still waits on stage inhabit behavior landing on main.
+- 2026-10-03 08:07 ET - Held. Printing/void-stage answered the multi-material export format (3MF); living-figures still waits on stage inhabit behavior landing on main.
 - 2026-10-03 06:12 ET - Held. Printing track answered figure-scale peak field / benchtop magnetize; living-figures still waits on stage inhabit behavior landing on main.
 - 2026-10-03 04:04 ET - Held. Printing track answered the magnetize-outside-printer question; living-figures still waits on stage inhabit behavior landing on main.
 - 2026-10-03 seed - Open: does a summoned miniature sit on or use something already on stage; what original character is first.
 
 ## Open questions, ranked
 
-1. Does a summoned miniature sit on or use something already on the stage?
-2. What original character is the first figure?
-3. Once a printed actuator exists, how does it drive a miniature joint without turning the figure into a fighter (help-and-play only)?
+1. Can one offline mind module, living in the figure's home base (the "cupboard"), give a small figure a voice, a memory of its kid, and two moving joints for a 30-minute play session on one replaceable charge, with wake-to-first-word under 2 seconds?
+2. How does the figure's memory of its kid (name, last play, favourite things) fit a 128 to 256 token model context and survive a reboot and the maker going away?
+3. Once a printed actuator exists, how does it drive a miniature joint so the figure helps and plays (the Gorgonite rule: built to help and play, never to fight)?
+4. (answered on the stage 2026-10-03, on main by 2026-10-07) Does a summoned miniature sit on or use something already on the stage? Yes: Motelet sits on a chair or holds a cup.
+5. (answered 2026-10-03) What original character is first? Motelet: 38 mm, mint, round head, antenna, curious and polite.
 
-## Findings
+## What is now known
 
-None on main yet. Draft PR #40 (Motelet) explores sitting and holding on a branch; this cycle leaves that branch alone and does not treat those claims as established until they land on main with sources and tests. Magnetize numbers for a future printable joint actuator now live in `printing-working-machines.md` (1.5 T Sr-ferrite path; 3-4 T bonded Neo path; dia 1.25 cm benchtop coil).
+- **A whole offline voice mind fits a toy-sized board today.** M5Stack Module LLM ([product docs](https://docs.m5stack.com/en/module/Module-LLM), accessed 2026-10-07): Axera AX630C SoC (dual Cortex-A53 1.2 GHz, NPU 3.2 TOPS INT8), 4 GB LPDDR4, 32 GB eMMC, on-board mic and 1 W speaker, built-in wake word, speech recognition, Qwen2.5-0.5B language model and text-to-speech running with no cloud. 54.0 x 54.0 x 13.0 mm, 17.1 g. Power 0.5 W idle, 1.5 W full load at 5 V. Models need Axera's own format, so the model list is set by the vendor's converted builds. The standalone module is marked end-of-life in the [M5Stack shop](https://shop.m5stack.com/products/m5stack-llm-large-laguage-model-module-ax630c) (listed $49.90, accessed 2026-10-07), so a product design names the AX630C chip family and the LLM630 compute kit as the path, not this one SKU.
+- **It answers fast enough for play.** On the same module, Qwen2.5-0.5B (128-token context) gives a 359.8 ms first token and 10.32 tokens/s; the INT4 build gives 442.95 ms and 12.52 tokens/s; the 256-token context build takes 1,126 ms to first token ([M5Stack model page](https://docs.m5stack.com/en/stackflow/models/qwen2.5-0.5b-instruct), accessed 2026-10-07). Derived here: a 30-token reply (about 20 words) is ready in roughly 3.3 s of generation, and streaming speech can start after the first few tokens. Compare the open CantaStorie build on an Arduino UNO Q with Gemma 3 1B through llama.cpp, which took about 27 s before audio started after optimisation ([Hackster.io, Nick Bild](https://www.hackster.io/news/an-ai-toy-that-doesn-t-need-the-cloud-4673762c2f8c), posted about 2026-10-03, accessed 2026-10-07). The NPU path is roughly an order of magnitude quicker, which is the difference between a toy that converses and one that narrates.
+- **Power for a session is a sizing job, not a research gap.** Derived here from the 1.5 W full-load figure: a 2,000 mAh 3.7 V cell holds 7.4 Wh, so at about 85% conversion efficiency it runs the mind at full load for about 4 hours and idle for about 12. Servos and speaker come on top and set the real budget, which is why open question 1 asks for a measured session.
+- **The size points to a "cupboard" layout.** The 54 mm board is larger than Motelet's 38 mm body, so the mind fits the figure's home base, stand or carry case, with mic, speaker and servos in the figure on a thin cable or short radio link. This also matches the book: the cupboard brings the figure to life. Status: design hypothesis, recorded so the bench test in open question 1 checks it.
+- **Consumer toys with on-device minds are arriving in 2026.** Babaru (PMS International): a talking plush described as the first small-LLM offline AI toy, memory stored locally, no data sharing, no subscription, free companion app, ten languages, retail launch Q3 2026, aimed at the kidult market ([Toy World Magazine](https://toyworldmag.co.uk/pms-international-brings-babaru-to-market/), 16 Apr 2026). Waylo: a plush bear for ages 3 to 8 sold in an "Offline" edition at a €199 pre-order price (list €349) with no Wi-Fi or subscription and an online edition at €249 ([waylo.ai](https://waylo.ai/), accessed 2026-10-07). Both are company claims; neither has published hardware specs or independent tests yet.
+- **The Moxie lesson, now with the recovery path on record.** After Embodied's cloud shut down, the engineer behind OpenMoxie shipped a final robot update (24.10.803) that lets Moxie point at a custom server, plus OpenMoxie, a local Docker server that restores scheduling, missions and chat ([jbeghtol/openmoxie on GitHub](https://github.com/jbeghtol/openmoxie), accessed 2026-10-07; [Moxie overview doc](https://github.com/jbeghtol/openmoxie/blob/main/doc/MoxieOverview.md) notes the custom-endpoint setting arrived in release 24.10.801). It still needs the owner's own OpenAI key for speech-to-text and chat, because the robot's mind was built around a cloud. A figure designed mind-on-board from day one never needs that rescue.
+- **An offline mind also simplifies the privacy rule.** The FTC treats internet-connected toys as online services under COPPA, and audio of a child's voice is personal information that needs verifiable parental consent ([FTC COPPA FAQ](https://www.ftc.gov/business-guidance/resources/complying-coppa-frequently-asked-questions), accessed 2026-10-07). The amended COPPA Rule took effect 23 Jun 2025 with compliance due 22 Apr 2026 ([Federal Register 2025-05904](https://www.federalregister.gov/documents/2025/04/22/2025-05904/childrens-online-privacy-protection-rule), 22 Apr 2025). Reading of the FAQ, to confirm with counsel before sale: a figure whose voice never leaves the toy keeps children's audio out of any online service; a companion app or update channel is an online service and gets the full notice-and-consent design.
+- **Toy-safety rules for a powered figure.** ASTM F963-23 is the mandatory US toy standard for toys made after 20 Apr 2024 (16 CFR part 1250; [Federal Register 2024-00741](https://www.federalregister.gov/documents/2024/01/18/2024-00741/safety-standard-mandating-astm-f963-for-toys), 18 Jan 2024; [CPSC toy safety guidance](https://www.cpsc.gov/Business--Manufacturing/Business-Education/Toy-Safety), accessed 2026-10-07). Section 4.25 covers battery-operated toys: batteries reachable only with a common household tool for under-3 toys or small-part batteries, fasteners that stay attached to the cover, no overheating, and supplied chargers; section 8.19 tests toys with rechargeable cells; Annex A8 gives battery design guidelines ([ASTM F963-23 contents](https://store.astm.org/f0963-23.html)). A screw-closed battery door in the base, with a captive screw, meets the access rule by design.
+
+## What changed this cycle
+
+The track left its hold and the toy-problems map moved: problem 1 (the mind dies with the company) and problem 3 (it talks in the room) now have a shipping-class module and two announced products behind them, and problem 6 (power) has a first sizing. The earlier note "living-figures waits on the stage" is closed, because Motelet's sit, hold, spin, throw-off and download are on main.
+
+## Next open question
+
+Open question 1: bench the cupboard layout and measure wake-to-first-word latency, watt-hours per 30-minute session with two micro servos moving, and whether the kid's name and last play survive a power cycle.
+
+## Concrete experiment
+
+Bench rig, about $120 in parts: an AX630C module (Module LLM or LLM630 compute kit) in a printed base box with a 2,000 mAh cell behind a captive-screw door; a scaled-up Motelet (about 120 mm, printed) holding a mic, a small speaker and two SG90-class micro servos (head turn, arm wave) on a ribbon cable. Mind script: on wake it greets the kid by a stored name and recalls last play from a 5-line memory file injected into the prompt; replies stay under 30 tokens. Log three numbers: wake-to-first-audio seconds, Wh used in 30 minutes of mixed talk and motion, and memory intact after unplugging. Pass: under 2 s, under 3 Wh, memory intact.
+
+## Who is closest
+
+- PMS International with Babaru (offline small-LLM plush, retail Q3 2026).
+- Waylo (Bilgen, Marthaler, Bretz) with the offline plush edition.
+- M5Stack and Axera for the module and converted model builds.
+- jbeghtol / OpenMoxie for the only documented rescue of a cloud-bound companion robot.
+- SuperModerno (CantaStorie) for an open, fully offline printed toy build to learn from.

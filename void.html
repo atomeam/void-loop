@@ -569,6 +569,8 @@
     let selectedId = null;
     // stage kinds a skill file brings (3D figures and objects): { kind: { mount(th, S), dropped?(th, S), thrown?(th, S), throwable } }
     const stageKinds = {};
+    const stageDecorators = []; // skills that draw over the stage after each render and drag (labels and arrows: skills/label.js)
+    function decorate() { for (const d of stageDecorators) { try { d(stageApi); } catch (_) {} } }
 
     function load() {
       if (PAGE) { // the page's cards, as text only; your own stage stays untouched in this browser
@@ -624,6 +626,7 @@ Object.values(things).forEach((th) => {
         else if (th.kind === 'calendar') mountCalendar(th);
         else if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
+      decorate();
       syncFigures();
       announceNew();
     }
@@ -730,7 +733,7 @@ Object.values(things).forEach((th) => {
       selectedId = th.id; save(); render(); return th;
     }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
-    const stageApi = { stage, things: () => things, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId };
+    const stageApi = { stage, things: () => things, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot() };
 
     // Click any stage object or person and it lifts in the hand. A flick throws it off the
     // screen and it's gone (a real toss: gravity, spin, carried off); a slow drop sets it back down.
@@ -760,7 +763,12 @@ Object.values(things).forEach((th) => {
           render();
           cur = stage.querySelector('[data-id="' + th.id + '"]') || el; // render() replaced the element; move the live one
           cur.style.transform = 'translateY(-18px) rotate(-6deg)'; // lifted in the hand
+          // grouped things (skills/group.js) ride along with the one in the hand
+          mates = th.group ? Object.values(things).filter((t) => t !== th && t.group === th.group && t.kind !== 'figure')
+            .map((t) => ({ t, ox: t.x, oy: t.y, el: stage.querySelector('[data-id="' + CSS.escape(t.id) + '"]') })) : [];
         };
+        let mates = [];
+        const moveMates = (dx, dy) => { for (const m of mates) { m.t.x = m.ox + dx; m.t.y = m.oy + dy; if (m.el) { m.el.style.left = m.t.x + 'px'; m.el.style.top = m.t.y + 'px'; } } };
         if (!editable) begin();
         const move = (ev) => {
           if (!cur) { if (Math.hypot(ev.clientX - startX, ev.clientY - startY) < 5) return; begin(); }
@@ -770,6 +778,8 @@ Object.values(things).forEach((th) => {
           vx = (ev.clientX - lastX) / dt; vy = (ev.clientY - lastY) / dt; lastX = ev.clientX; lastY = ev.clientY; lastT = now;
           cur.style.left = th.x + 'px';
           cur.style.top = th.y + 'px';
+          moveMates(th.x - origX, th.y - origY);
+          decorate(); // labels and arrows follow the thing in the hand
         };
         const up = () => {
           window.removeEventListener('pointermove', move);
@@ -782,11 +792,15 @@ Object.values(things).forEach((th) => {
             th.x = Math.max(0, th.x); th.y = Math.max(0, th.y);
             cur.style.transform = '';
             cur.style.left = th.x + 'px'; cur.style.top = th.y + 'px';
+            moveMates(th.x - origX, th.y - origY);
+            for (const m of mates) { m.t.x = Math.max(0, m.t.x); m.t.y = Math.max(0, m.t.y); if (m.el) { m.el.style.left = m.t.x + 'px'; m.el.style.top = m.t.y + 'px'; } }
+            decorate();
             try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
             save();
             return;
           }
           takeUndoSnapshot();
+          moveMates(0, 0); // a throw takes only the one in the hand; the rest of its group stays put
           let px = th.x, py = th.y, tvx = vx || (th.x < 0 ? -1.2 : 1.2), tvy = vy || -0.4, spin = tvx * 40;
           let prev = performance.now();
           const step = (t) => {
@@ -4268,6 +4282,7 @@ return { ok: true, detail: 'timer-reset' };
         if (skill && skill.name && skill.match && skill.run) learnedSkills.push(skill);
         else missing.push(index[i]);
         if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
+        if (skill && typeof skill.decorate === 'function') stageDecorators.push(skill.decorate);
       }
       // An index entry with no file behind it, or a file without the {name,match,run} shape, is a
       // silent hole: that ask just never gets answered by a skill.

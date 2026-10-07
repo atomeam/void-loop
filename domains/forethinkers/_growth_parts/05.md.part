@@ -12,7 +12,7 @@ h asks (#2) rarely have more than one to act on. Found by claude while building 
 - **claim_until:**
 
 ### Later (queued, not ranked)
-- **Text annotation / labels:** free-floating labels, arrows, connectors between objects (~35% reuse).
+- **Text annotation / labels:** shipped 2026-10-07 by the grok builder (`skills/label.js` + a `decorate` hook skills can register in void.html): "label the clock kitchen", "put a label on the timer that says pasta", "label it pasta" tag a thing (the tag rides with it); "add a label that says to do" puts a free-floating label on the stage; "draw an arrow from the clock to the note", "connect the timer to the counter", "point the note at the clock" draw an arrow that follows either end when dragged or when its group moves; labelled things answer to their label ("draw an arrow from kitchen to groceries"); "remove the arrows", "disconnect the clock from the note", "remove the label from the clock", "remove the labels", "show the labels"; all saved with the stage, "undo" takes the last change back. Next: arrows with words on them ("connect the clock to the note with 'then'"), and "connect kitchen to groceries" by label name without the word arrow.
 - **Date countdown:** "days until <date>" — extends timer; small. Good first follow-on once pages exist ("show me a countdown to New Year").
 - **Summon a page about anything:** v2 of Next #1 — pages whose content comes from a model or a Loop file, once v1 is proven on the live site.
 - **Make my void light:** an ask that switches your own Void to a light look; build it once the stage pieces and pages have light versions, so notes and pages stay readable. Source: #7 follow-up, 2026-09-27.
