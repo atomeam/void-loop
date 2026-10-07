@@ -153,7 +153,7 @@ const RULES = [
     'yaml.load and pickle can run code hidden in the data. Use yaml.safe_load, and only unpickle data you created yourself.'],
   ['os-system-concat', 'risk', ['python'], (m, r) => /\bos\.(?:system|popen)\s*\(/.test(r) && (/['"]\s*\+|\+\s*['"]|\bf['"][^'"]*\{|['"]\s*%\s*[\w(]|\.format\s*\(/.test(r) || /\bos\.(?:system|popen)\s*\(\s*[A-Za-z_]\w*\s*\)/.test(r)),
     'the shell command is built from text: a name or input containing ; or $( ) runs other commands (shell injection). Use subprocess.run with a list, no shell: subprocess.run(["rm", "-rf", path])'],
-  ['php-echo-input', 'risk', ['php'], (m, r) => /\b(?:echo|print)\b[^;]*\$_(?:GET|POST|REQUEST|COOKIE|SERVER)\b/.test(r) && !/\bhtmlspecialchars\s*\(|\bhtmlentities\s*\(|\besc_html\s*\(/.test(r),
+  ['php-echo-input', 'risk', ['php'], (m, r) => /\b(?:echo|print)\b[^;]*\$_(?:GET|POST|REQUEST|COOKIE|SERVER)\b/.test(r.replace(/\b(?:htmlspecialchars|htmlentities|esc_html|esc_attr|intval|urlencode)\s*\((?:[^()]|\([^()]*\))*\)/g, '')), // each printed value: escaped ones are taken out, any raw one left is flagged
     'request input is printed straight into the page, so a value like <script>…</script> runs in the visitor\'s browser (XSS). Escape it first: echo htmlspecialchars($_GET[\'name\'], ENT_QUOTES, \'UTF-8\');'],
   ['ruby-shell-interp', 'risk', ['ruby'], (m, r) => /(?:\bsystem|\bexec|\bspawn|%x)\s*[(\[{]?\s*"[^"]*#\{|`[^`]*#\{/.test(r),
     'the shell command has a value pasted in with #{}: a value containing ; or $( ) runs other commands (shell injection). Pass the arguments separately: system("ls", dir)'],

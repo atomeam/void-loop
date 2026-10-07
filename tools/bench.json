@@ -4853,5 +4853,8 @@
   {"ask": "review this python: assert user.is_admin", "want": "review", "says": "assert|-O|optimi|removed"},
   {"ask": "review this js: const re = new RegExp(userInput)", "want": "review", "says": "regex|RegExp|escape|ReDoS|slow"},
   {"ask": "review this java: catch (Exception e) {}", "want": "review", "says": "catch|hide|error"},
-  {"ask": "review this python: import random; token = random.random()", "want": "review", "says": "secrets|random|guess|predict"}
+  {"ask": "review this python: import random; token = random.random()", "want": "review", "says": "secrets|random|guess|predict"},
+  {"ask": "what’s the capital of brazil", "want": "skill:country", "says": null},
+  {"ask": "what’s the meaning of nostalgia", "want": "skill:define", "says": null},
+  {"ask": "what’s another word for tired", "want": "skill:words", "says": null}
 ]
