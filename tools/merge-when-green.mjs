@@ -1,6 +1,6 @@
 // Merge a PR once CI ("test-and-deploy", and "bench" when present) passes on its current head, so a run never sits waiting on CI: start this in
 // the background right after pushing and go do the next thing. If the head moves (a new push), it follows the new
-// head; if CI fails it stops and says so; if the PR closes it stops. A CodeRabbit review still running gets up to 10 min after
+// head; if CI fails it stops and says so; if the PR closes it stops. A CodeRabbit review still running (or asked for in the last 10 min) gets up to 10 min after
 // green; actionable CodeRabbit findings on the head stop it with exit 3. Uses the gh available in the session.
 //   node tools/merge-when-green.mjs 85            poll every 30 s, up to 40 min
 import { execFileSync } from 'node:child_process';
@@ -28,10 +28,14 @@ while (Date.now() < end) {
     // CodeRabbit is a bonus, never a gate: but a review already under way gets up to 10 min after green, so its findings land
     // on an open PR; a review of this head with actionable findings stops the merge so they get fixed first
     greenAt = greenAt || Date.now();
-    const cr = gh(`repos/${repo}/issues/${pr}/comments?per_page=100`).filter((c) => c.user && c.user.login === 'coderabbitai[bot]');
-    const busy = cr.some((c) => /review in progress by coderabbit|Currently processing new changes/.test(c.body || ''));
-    if (busy && Date.now() - greenAt < 10 * 60e3) { await wait(30e3); continue; }
+    const all = gh(`repos/${repo}/issues/${pr}/comments?per_page=100`), cr = all.filter((c) => c.user && c.user.login === 'coderabbitai[bot]');
     const reviews = gh(`repos/${repo}/pulls/${pr}/reviews?per_page=100`).filter((r) => r.user && r.user.login === 'coderabbitai[bot]' && r.commit_id === sha);
+    // a review asked for (an "@coderabbitai review" comment) and not yet posted on this head counts as under way too: CodeRabbit
+    // takes a few minutes to say it has started, and in that gap this used to merge before it looked (#141)
+    const asked = all.filter((c) => c.user && c.user.login !== 'coderabbitai[bot]' && /@coderabbitai\s+(?:full\s+)?review\b/i.test(c.body || '')).map((c) => Date.parse(c.created_at));
+    const lastAsk = asked.length ? Math.max(...asked) : 0, answered = reviews.some((r) => Date.parse(r.submitted_at) >= lastAsk);
+    const busy = cr.some((c) => /review in progress by coderabbit|Currently processing new changes/.test(c.body || '')) || (lastAsk && !answered && Date.now() - lastAsk < 10 * 60e3);
+    if (busy && Date.now() - greenAt < 10 * 60e3) { await wait(30e3); continue; }
     const found = reviews.map((r) => +((r.body || '').match(/Actionable comments posted:\s*(\d+)/) || [0, 0])[1]).reduce((a, b) => a + b, 0);
     // a push may not have reached the PR yet: if the head moved since this loop read it, look again instead of stopping on the old head
     if (found && gh(`repos/${repo}/pulls/${pr}`).head.sha !== sha) { await wait(10e3); continue; }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · how big is yes (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 14px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+#field{position:relative;height:320px;border:1px solid rgba(255,255,255,.12);border-radius:12px;touch-action:manipulation;overflow:hidden}
+#home,#target{position:absolute;border-radius:50%;padding:0;transform:translate(-50%,-50%)}
+#home{width:44px;height:44px;border-color:#8a8a92}
+#target{background:rgba(124,204,255,.3);border-color:#7cf}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>how big is yes · draft · not published</h1>
+  <p class="note">Tap the grey circle, then the blue one as fast as you can. The blue target changes size and distance each time. Fitts's law (Fitts, 1954) says the time this takes grows with how hard the jump is: the distance divided by the target's width, on a log scale (the "index of difficulty", in bits). That is why a confirm button for something that matters should be big and close, and a destructive one small or far away. This page fits the line to your own taps and shows how many bits a second you move. Misses are counted too. Everything stays in this browser.</p>
+  <div id="field" aria-label="tapping area"><button id="home" type="button" aria-label="start: tap here first"></button><button id="target" type="button" aria-label="target: tap this" hidden></button></div>
+  <div class="row"><button id="reset" type="button">clear my taps</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.fitts.v1',st={taps:[]},cur=null;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.taps))st.taps=j.taps.filter(function(t){return t&&isFinite(t.d)&&isFinite(t.w)&&isFinite(t.ms)&&typeof t.hit==='boolean'})}catch(_){}
+  function el(id){return document.getElementById(id)}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({taps:st.taps.slice(-400)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your taps (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // index of difficulty in bits, Shannon form (MacKenzie, 1992): log2(distance / width + 1)
+  function id(d,w){return Math.log2(d/w+1)}
+  // least-squares line ms = a + b * ID over hits; throughput (bits a second) = 1000 / b
+  function fit(taps){var h=taps.filter(function(t){return t.hit}),n=h.length;if(n<2)return null;var mx=0,my=0,sxy=0,sxx=0,syy=0;
+    h.forEach(function(t){mx+=id(t.d,t.w);my+=t.ms});mx/=n;my/=n;
+    h.forEach(function(t){var dx=id(t.d,t.w)-mx,dy=t.ms-my;sxy+=dx*dy;sxx+=dx*dx;syy+=dy*dy});if(!sxx)return null;var b=sxy/sxx;
+    return{a:my-b*mx,b:b,n:n,r2:syy?sxy*sxy/(sxx*syy):1,tp:b>0?1000/b:null}}
+  var SIZES=[24,36,56,84],placeHome=function(){var f=el('field').getBoundingClientRect(),H=el('home');H.style.left='36px';H.style.top=(f.height/2)+'px'};
+  // a target of a random size at a random spot, at least a little way from home and fully inside the field
+  function newTarget(){var f=el('field').getBoundingClientRect(),w=SIZES[Math.floor(Math.random()*SIZES.length)],
+    x=Math.max(110,w/2+4)+Math.random()*Math.max(1,f.width-w-4-Math.max(110,w/2+4)),y=w/2+4+Math.random()*Math.max(1,f.height-w-8),T=el('target');
+    T.style.width=T.style.height=w+'px';T.style.left=x+'px';T.style.top=y+'px';return{w:w,x:x,y:y}}
+  el('home').addEventListener('click',function(){if(cur)return;var t=newTarget(),h=el('home').getBoundingClientRect(),f=el('field').getBoundingClientRect();
+    cur={w:t.w,d:Math.hypot(t.x-(h.left+h.width/2-f.left),t.y-(h.top+h.height/2-f.top)),t0:performance.now()};el('target').hidden=false;el('state').textContent='now the blue one'});
+  function done(hit){if(!cur)return;var ms=Math.round(performance.now()-cur.t0);st.taps.push({d:Math.round(cur.d),w:cur.w,ms:ms,hit:hit,at:Date.now()});save();
+    el('state').textContent=(hit?ms+' ms':'missed')+' · '+cur.w+' px wide, '+Math.round(cur.d)+' px away ('+id(cur.d,cur.w).toFixed(1)+' bits) · tap grey again';cur=null;el('target').hidden=true;draw()}
+  el('target').addEventListener('click',function(ev){ev.stopPropagation();done(true)});
+  el('field').addEventListener('click',function(ev){if(cur&&ev.target===el('field'))done(false)});
+  el('reset').addEventListener('click',function(){st.taps=[];save();draw();el('state').textContent=''});
+  function draw(){var n=st.taps.length;if(!n){el('score').textContent='';return}var f=fit(st.taps.slice(-200)),miss=st.taps.filter(function(t){return!t.hit}).length;
+    var small=st.taps.filter(function(t){return t.w===SIZES[0]}),big=st.taps.filter(function(t){return t.w===SIZES[SIZES.length-1]});
+    function rate(a){return a.length?Math.round(a.filter(function(t){return!t.hit}).length/a.length*100)+'% missed ('+a.length+')':'none yet'}
+    el('score').textContent=n+' tap'+(n>1?'s':'')+' · '+miss+' missed'
+      +(f&&f.n>=15?'\ntime = '+Math.round(f.a)+' ms + '+Math.round(f.b)+' ms per bit'+(f.tp?' · about '+f.tp.toFixed(1)+' bits a second':'')+' · the line explains '+Math.round(f.r2*100)+'% of the spread':'\nabout 15 hits before the line means much')
+      +'\nsmallest targets: '+rate(small)+' · biggest: '+rate(big)}
+  placeHome();window.addEventListener('resize',placeHome);draw();
+  // made-up taps that follow time = 200 + 150 * ID exactly must give that line back, 6.7 bits a second, and r2 of 1
+  function selftest(){var t=[],d,w;for(d=100;d<=500;d+=100)SIZES.forEach(function(w){t.push({d:d,w:w,ms:200+150*id(d,w),hit:true})});t.push({d:300,w:24,ms:9999,hit:false});
+    var f=fit(t);if(!f||Math.abs(f.a-200)>1e-6||Math.abs(f.b-150)>1e-6||Math.abs(f.r2-1)>1e-9||Math.abs(f.tp-1000/150)>1e-9)return'fit gave '+JSON.stringify(f);
+    if(Math.abs(id(3,1)-2)>1e-12)return'id(3,1) should be 2 bits';return true}
+  window.__fitts={id:id,fit:fit,SIZES:SIZES,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

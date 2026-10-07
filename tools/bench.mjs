@@ -62,9 +62,10 @@ async function one({ ask: a, want, says, before }) {
   for (const b0 of before || []) { await p.fill('#input', b0); await p.keyboard.press('Enter'); await p.waitForTimeout(900); await p.keyboard.press('Escape').catch(() => {}); }
   await p.fill('#input', a); await p.keyboard.press('Enter'); await p.waitForTimeout(1600);
   const said = await p.$eval('#whisper', (e) => e.textContent).catch(() => ''); // read before it fades
-  await p.waitForFunction((q) => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => x.ask === q), a, { timeout: 2400 }).catch(() => {});
-  const log = await p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'));
-  const last = log.filter((x) => x.ask === a).pop();
+  // the page's own loop log; a log that does not parse reads as empty (a miss), never a crash of the whole run
+  await p.waitForFunction((q) => { try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => String(x.ask).trim() === q.trim()); } catch (_) { return false; } }, a, { timeout: 2400 }).catch(() => {});
+  const log = await p.evaluate(() => { try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); } catch (_) { return []; } });
+  const last = log.filter((x) => String(x.ask).trim() === a.trim()).pop();
   const note = last ? String(last.note || '') : (said && !miss.length ? 'said' : '');
   const routed = !miss.length && new RegExp('^(' + want + ')').test(note);
   // "says": a pattern the visible answer must contain (the right ability AND the right value: "7 cubed" -> 343)

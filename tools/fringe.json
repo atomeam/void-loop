@@ -958,5 +958,30 @@
     ],
     "sha256": "03583674948f13b1cd811b9f0cb5abab87420687ceeb4d093c22fa59d056e45c",
     "emit": false
+  },
+  {
+    "run": 39,
+    "at": "2026-10-07T07:43:27Z",
+    "family": "opt-in-gesture",
+    "draft": "drafts/fringe/opt-in-gesture-4.html",
+    "sources": [
+      {
+        "claim": "The time to move to a target grows linearly with the index of difficulty, log2 of distance over width (Fitts's law)",
+        "source": "https://doi.org/10.1037/h0055392",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The Shannon form log2(D/W + 1) fits pointing data well and gives throughput in bits per second",
+        "source": "https://doi.org/10.1207/s15327051hci0701_3",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing their own time and miss rate by target size changes how people size confirm and destructive buttons",
+        "source": "drafts/fringe/opt-in-gesture-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "89b17a3c712e065ddb405885e03510cf8e0f773600082889d6951ada63500bad",
+    "emit": false
   }
 ]
