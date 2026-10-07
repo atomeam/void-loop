@@ -46,17 +46,17 @@ export function looksLikeCode(code, lang) {
   if (s.trim().length < 8) return false;
   let n = 0;
   if (/[{};]\s*$/m.test(s)) n++;
-  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw)\b/.test(s)) n++;
+  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert)\b/.test(s)) n++;
   if (/[=!<>]=|=>|->|\+\+|&&|\|\||::|:=|\w\(|\)\s*[{:]|\w\.\w+\s*[-+*/]?=[^=]/.test(s)) n++;
   if (/^(?: {2,}|\t)\S/m.test(s)) n++;
   if (/^\s*(?:#!|<\?php|<[a-z]+[\s>]|#include|@\w+)/m.test(s)) n++;
-  if (/^\s*(?:const\s+|let\s+|var\s+)?[A-Za-z_$][\w$.]*\s*=\s*(?:["'`\[{]|-?\d|true\b|false\b|null\b|None\b)[^\n]*$/.test(s.trim())) n += 2; // the whole paste is one assignment: password = "…"
+  if (/^\s*(?:const\s+|let\s+|var\s+)?[A-Za-z_$][\w$.]*\s*:?=\s*(?:["'`\[{]|-?\d|true\b|false\b|null\b|nil\b|None\b)[^\n]*$/.test(s.trim())) n += 2; // the whole paste is one assignment: password = "…" (or Go's password := "…")
   if (/^\s*[\w$.]+\([^()]*\)\s*;?\s*$/.test(s) && /[.(_$]|[a-z][A-Z]/.test(s.replace(/\(.*/, '(').slice(0, 60))) n++; // the whole paste is one call: eval(userInput)
   return n >= 2 || (n >= 1 && (!!lang || /^(?:shell|sql|python)$/.test(langOf(s)))) || /^\s*(?:sudo\s+)?(?:rm|cp|mv|chmod|chown|curl|wget|git|npm|pip|docker|kubectl)\s+-?\S/m.test(s);
 }
 
 // the language when the ask names it: "is this python code ok"
-const NAMED = [['python', /\bpython\b|\bpy\b/], ['typescript', /\btypescript\b|\bts\b/], ['javascript', /\bjavascript\b|\bjs\b|\bnode(?:\.?js)?\b|\breact\b/], ['sql', /\bsql\b|\bquery\b/], ['shell', /\bbash\b|\bshell\b|\bsh\b|\bzsh\b/], ['go', /\bgolang\b|\bgo\s+code\b/], ['rust', /\brust\b/], ['java', /\bjava\b/], ['csharp', /\bc#|\bc\s*sharp\b/], ['php', /\bphp\b/], ['ruby', /\bruby\b/], ['c', /\bc\+\+|\bcpp\b|\bc\s+code\b/]];
+const NAMED = [['python', /\bpython\b|\bpy\b/], ['typescript', /\btypescript\b|\bts\b/], ['javascript', /\bjavascript\b|\bjs\b|\bnode(?:\.?js)?\b|\breact\b/], ['sql', /\bsql\b|\bquery\b/], ['shell', /\bbash\b|\bshell\b|\bsh\b|\bzsh\b/], ['go', /\bgolang\b|\bgo\s+code\b|\bgo\s*:/], ['rust', /\brust\b/], ['java', /\bjava\b/], ['csharp', /\bc#|\bc\s*sharp\b/], ['php', /\bphp\b/], ['ruby', /\bruby\b/], ['c', /\bc\+\+|\bcpp\b|\bc\s+code\b/]];
 export function langNamed(ask) { const a = String(ask || '').toLowerCase(); for (const [l, re] of NAMED) if (re.test(a)) return l; return null; }
 
 export function langOf(code) {
@@ -151,6 +151,18 @@ const RULES = [
     'shell=True runs the command through a shell, so a filename or input with ; or $( ) can run other commands. Pass a list: subprocess.run(["ls", path])'],
   ['unsafe-load', 'risk', ['python'], (m) => /\byaml\.load\s*\((?![^)]*Loader\s*=\s*(?:yaml\.)?SafeLoader)|\bpickle\.loads?\s*\(/.test(m),
     'yaml.load and pickle can run code hidden in the data. Use yaml.safe_load, and only unpickle data you created yourself.'],
+  ['os-system-concat', 'risk', ['python'], (m, r) => /\bos\.(?:system|popen)\s*\(/.test(r) && (/['"]\s*\+|\+\s*['"]|\bf['"][^'"]*\{|['"]\s*%\s*[\w(]|\.format\s*\(/.test(r) || /\bos\.(?:system|popen)\s*\(\s*[A-Za-z_]\w*\s*\)/.test(r)),
+    'the shell command is built from text: a name or input containing ; or $( ) runs other commands (shell injection). Use subprocess.run with a list, no shell: subprocess.run(["rm", "-rf", path])'],
+  ['php-echo-input', 'risk', ['php'], (m, r) => /\b(?:echo|print)\b[^;]*\$_(?:GET|POST|REQUEST|COOKIE|SERVER)\b/.test(r.replace(/\b(?:htmlspecialchars|htmlentities|esc_html|esc_attr|intval|urlencode)\s*\((?:[^()]|\([^()]*\))*\)/g, '')), // each printed value: escaped ones are taken out, any raw one left is flagged
+    'request input is printed straight into the page, so a value like <script>…</script> runs in the visitor\'s browser (XSS). Escape it first: echo htmlspecialchars($_GET[\'name\'], ENT_QUOTES, \'UTF-8\');'],
+  ['ruby-shell-interp', 'risk', ['ruby'], (m, r) => /(?:\bsystem|\bexec|\bspawn|%x)\s*[(\[{]?\s*"[^"]*#\{|`[^`]*#\{/.test(r),
+    'the shell command has a value pasted in with #{}: a value containing ; or $( ) runs other commands (shell injection). Pass the arguments separately: system("ls", dir)'],
+  ['assert-check', 'risk', ['python'], (m) => /^\s*assert\b.*(?:admin|auth|permission|allowed|logged_?in|staff|superuser|\brole|owner|\bcan_)/i.test(m),
+    'assert is removed when Python runs optimised (python -O), so this check silently disappears and everyone gets through. Use a real check: if not user.is_admin: raise PermissionError()'],
+  ['regexp-input', 'risk', JS, (m) => /\bnew\s+RegExp\s*\(\s*(?!['"`/])[A-Za-z_$][\w$.[\]]*\s*[,)]/.test(m),
+    'a pattern built from a variable: if it comes from a user, characters like . * ( are read as regex, and a crafted pattern can hang the page (ReDoS). Escape it first: new RegExp(s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))'],
+  ['weak-random', 'risk', ['python', ...JS], (m) => /\b(?:token|password|passwd|secret|nonce|salt|otp|session_?id|api_?key|reset_?code)\w*\s*=.*(?:\brandom\.(?:random|randint|choice|choices|randrange|getrandbits)\s*\(|\bMath\.random\s*\()/i.test(m),
+    'random.random and Math.random are predictable, so a token made with them can be guessed. Use secrets.token_urlsafe() in Python, or crypto.randomUUID() / crypto.getRandomValues() in JavaScript.'],
   ['verify-false', 'risk', ['python', ...JS], (m) => /\bverify\s*=\s*False\b|rejectUnauthorized\s*:\s*false\b|NODE_TLS_REJECT_UNAUTHORIZED/.test(m),
     'certificate checks are turned off, so anyone on the network can read or change this traffic. Fix the certificate (or point to the right CA bundle) instead.'],
   ['rm-rf-var', 'risk', ['shell'], (m, r) => /\brm\s+-[a-z]*r[a-z]*f?[a-z]*\s+(?:"?\$\{?\w+\}?"?\/?)(?:\s|$|\/)/i.test(r) && !/\$\{\w+:\?/.test(r),
@@ -167,8 +179,8 @@ const RULES = [
     'DELETE without WHERE removes every row in the table. Add a WHERE (or use TRUNCATE if that is really what you want).'],
   ['select-star', 'style', ['sql'], (m) => /\bSELECT\s+\*\s+FROM\b/i.test(m),
     'SELECT * returns every column, so the query breaks or slows down when columns are added. Name the columns you use.'],
-  ['sql-concat', 'risk', ['*'], (m, r) => /(['"`]|\bf['"])\s*(?:SELECT\b[\s\S]*\bFROM|INSERT\s+INTO|UPDATE\s+\w+\s+SET|DELETE\s+FROM)\b/i.test(r)
-      && (/['"]\s*\+\s*[\w$]|[\w$)\]]\s*\+\s*['"]/.test(r) || /`[^`]*\$\{/.test(r) || /\bf['"][^'"]*\{/.test(r) || /['"]\s*%\s*[\w(]/.test(r) || /\.format\s*\(/.test(r)),
+  ['sql-concat', 'risk', ['*'], (m, r, x) => /(['"`]|\bf['"])\s*(?:SELECT\b[\s\S]*\bFROM|INSERT\s+INTO|UPDATE\s+\w+\s+SET|DELETE\s+FROM)\b/i.test(r)
+      && (/['"]\s*\+\s*[\w$]|[\w$)\]]\s*\+\s*['"]/.test(r) || /['"]\s*\.\s*\$|\$[\w\]'"[]+\s*\.\s*['"]/.test(r) || (x.lang === 'php' && /"[^"]*\$[A-Za-z_]/.test(r)) || (x.lang === 'ruby' && /"[^"]*#\{/.test(r)) || /`[^`]*\$\{/.test(r) || /\bf['"][^'"]*\{/.test(r) || /['"]\s*%\s*[\w(]/.test(r) || /\.format\s*\(/.test(r)),
     'the SQL is built by pasting values into the text: a value like \' OR 1=1 -- changes the query (SQL injection). Use placeholders and pass the values separately: query("… WHERE id = ?", [id]).'],
   ['hardcoded-secret', 'risk', ['*'], (m, r, x) => hasSecret(r, x.lang),
     'a key, token or password is written into the code. Anyone who sees the code (or the repo history) has it. Move it to an environment variable or a secret store, and change the key if this code was ever shared.'],
@@ -179,13 +191,15 @@ const RULES = [
 ];
 // a key written into the code: a known key format inside a string, a long string assigned to a key-like name, a password in a URL,
 // or (in shell and .env files, where values aren't quoted) NAME=value. Reading one from the environment or a variable is fine.
-const KEYNAME = /(?:api[_-]?key|apikey|secret|client[_-]?secret|password|passwd|pwd|access[_-]?token|refresh[_-]?token|auth[_-]?token|token|private[_-]?key)\w*["']?\s*[:=]\s*$/i;
+const KEYNAME = /(?:api[_-]?key|apikey|secret|client[_-]?secret|password|passwd|pwd|access[_-]?token|refresh[_-]?token|auth[_-]?token|token|private[_-]?key)\w*["']?\s*:?[:=]\s*$/i;
+const PASSNAME = /(?:password|passwd|pwd)\w*["']?\s*:?[:=]\s*$/i;
 function hasSecret(r, lang) {
   const strs = [...r.matchAll(/(["'`])((?:\\.|(?!\1).)*)\1/g)];
   for (const s of strs) {
     const v = s[2];
     if (redact(v) !== v && !/^\[redacted/.test(v)) return true;
-    if (/^[^\s${}<>]{8,}$/.test(v) && !/^(?:https?:\/\/|\/|\.|[\w-]+\.(?:js|json|html|css|md|txt|py|sh)$)/i.test(v) && !/^(?:x{3,}|\*{3,}|your[_-]|<|changeme|placeholder|example|test|dummy|redacted)/i.test(v) && KEYNAME.test(r.slice(0, s.index))) return true;
+    const before = r.slice(0, s.index), min = PASSNAME.test(before) ? 4 : 8; // people's passwords are often short; random keys are not
+    if (v.length >= min && /^[^\s${}<>]+$/.test(v) && !/^(?:https?:\/\/|\/|\.|[\w-]+\.(?:js|json|html|css|md|txt|py|sh)$)/i.test(v) && !/^(?:x{3,}|\*{3,}|your[_-]|<|changeme|placeholder|example|test|dummy|redacted|password|secret|none|null|true|false)/i.test(v) && KEYNAME.test(before)) return true;
   }
   if ((lang === 'shell' || lang === 'code') && /^\s*(?:export\s+)?[A-Z][A-Z0-9_]*(?:KEY|SECRET|TOKEN|PASSWORD|PASS|PWD)[A-Z0-9_]*=(?!["']?\$)[^\s"'$]{8,}/.test(r)) return true;
   return /\b[a-z][\w+.-]*:\/\/[^\s:@/'"`]+:[^\s@/'"`$]{3,}@/.test(r) && !/:\$\{|:\{\{/.test(r);

@@ -1,5 +1,5 @@
 // node tools/review.test.mjs: the code reviewer (void-live-deploy/lib/code-review.js) finds what it should and stays quiet on clean code.
-import { isReviewAsk, codeOf, langOf, ruleReview, looksLikeCode, autoFix, skippedInReview } from '../void-live-deploy/lib/code-review.js';
+import { isReviewAsk, codeOf, langOf, ruleReview, looksLikeCode, autoFix, skippedInReview, langNamed } from '../void-live-deploy/lib/code-review.js';
 let bad = 0;
 const ok = (c, msg) => { if (!c) { bad++; console.log('FAIL ' + msg); } };
 const rules = (code, lang) => ruleReview(code, lang ? { lang } : {}).findings.map((f) => f.rule + '@' + f.line);
@@ -73,6 +73,16 @@ ok(ruleReview('var a = 1;\nvar b = 2;', { lang: 'javascript' }).findings.filter(
 ok(ruleReview('var a = 1;\nvar b = 2;', { lang: 'javascript', collapse: false }).findings.filter((f) => f.rule === 'var').map((f) => f.line).join() === '1,2', 'collapse: false keeps each line');
 ok(looksLikeCode('password = "hunter2hunter2"') && looksLikeCode('total = 500') && !looksLikeCode('love is = patient and kind'), 'one assignment line is code, a sentence with = is not');
 ok(rules('chmod 777 /var/www', 'shell').includes('chmod-777@1') && rules('chmod -R a+rwx dir', 'shell').includes('chmod-777@1') && rules('chmod --recursive 777 dir', 'shell').includes('chmod-777@1') && rules('chmod o+w f', 'shell').includes('chmod-777@1') && !rules('chmod 755 /var/www', 'shell').includes('chmod-777@1'), 'chmod 777 / a+rwx flagged, 755 not');
+// run 37: Go's := and short passwords, PHP printing request input, Python shell commands built from text
+ok(langNamed('review this go: x := 1') === 'go' && looksLikeCode('password := "hunter2"', 'go') && rules('password := "hunter2"', 'go').includes('hardcoded-secret@1'), 'a short Go password is a hard-coded secret');
+ok(!rules('password = None', 'python').includes('hardcoded-secret@1') && !rules('pwd = ""', 'python').includes('hardcoded-secret@1') && !rules('password = "changeme"', 'python').includes('hardcoded-secret@1') && !rules('if password == "abcd1234":', 'python').includes('hardcoded-secret@1'), 'empty, None, placeholder and compared passwords are not flagged');
+ok(rules("echo $_GET['name'];", 'php').includes('php-echo-input@1') && !rules("echo htmlspecialchars($_GET['name'], ENT_QUOTES, 'UTF-8');", 'php').includes('php-echo-input@1') && rules("echo htmlspecialchars($_GET['safe']) . $_GET['unsafe'];", 'php').includes('php-echo-input@1'), 'PHP echo of request input flagged, escaped echo not');
+ok(rules("os.system('rm -rf ' + path)", 'python').includes('os-system-concat@1') && rules('os.system(f"ls {d}")', 'python').includes('os-system-concat@1') && !rules("os.system('clear')", 'python').includes('os-system-concat@1'), 'os.system with text pasted in flagged, a fixed command not');
+ok(rules('system("ls #{dir}")', 'ruby').includes('ruby-shell-interp@1') && !rules('system("ls", dir)', 'ruby').includes('ruby-shell-interp@1'), 'Ruby shell command with #{} flagged, separate arguments not');
+ok(rules(`$q = "SELECT * FROM t WHERE id=" . $_GET['id'];`, 'php').includes('sql-concat@1') && rules('$q = "SELECT * FROM t WHERE id=$id";', 'php').includes('sql-concat@1') && !rules('const q = "SELECT a FROM t WHERE id = $1";', 'javascript').includes('sql-concat@1'), 'PHP SQL built with . or "$id" flagged, a $1 placeholder not');
+ok(rules('assert user.is_admin', 'python').includes('assert-check@1') && !rules('assert x > 0', 'python').includes('assert-check@1'), 'assert as an access check flagged, a plain assert not');
+ok(rules('const re = new RegExp(userInput)', 'javascript').includes('regexp-input@1') && !rules('const re = new RegExp("^a")', 'javascript').includes('regexp-input@1'), 'RegExp from a variable flagged, from a literal not');
+ok(rules('token = random.random()', 'python').includes('weak-random@1') && rules('const resetCode = Math.random()', 'javascript').includes('weak-random@1') && !rules('const t = Math.random()', 'javascript').includes('weak-random@1'), 'predictable random for a token flagged, for anything else not');
 // keys never shown as written
 ok(!JSON.stringify(ruleReview('const token = "ghp_abcdefghijklmnopqrstuvwxyz0123";')).includes('ghp_abcdef'), 'a key in a finding is masked');
 // the pull-request review skips tests in every language the repo writes (their fixtures are bad code on purpose), and nothing else by accident

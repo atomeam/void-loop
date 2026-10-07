@@ -33,7 +33,7 @@ export function utilOf(text) {
   m = t.match(/^(?:make|turn|convert|change|put)\s+(?:it|this|that|the\s+text)\s+(?:in(?:to)?\s+|to\s+)?(uppercase|upper case|lowercase|lower case|title case|all caps|caps)\s*:\s*(.+)$/i);
   if (m) return { kind: 'case', how: /caps/i.test(m[1]) ? 'uppercase' : m[1].toLowerCase(), s: m[2] };
   // "how many characters in supercalifragilistic", "character count of ..."
-  m = t.match(/^(?:how\s+many\s+(?:characters|letters|chars)\s+(?:are\s+)?in|(?:character|letter|char)\s+count\s+(?:of|in|for))\s+(.+)$/i);
+  m = t.match(/^(?:how\s+many\s+(?:characters|letters|chars)\s+(?:are\s+)?in|count\s+(?:the\s+)?(?:characters|letters|chars)\s+in|(?:character|letter|char)\s+count\s+(?:of|in|for))\s+(.+)$/i);
   if (m && /^(?:the\s+)?(?:english\s+)?alphabet$/i.test(m[1])) m = null; // a fact, not a count of the word "alphabet"
   if (m) return { kind: 'count', s: m[1].replace(/^["“]|["”]$/g, ''), chars: true };
   if (/^(?:generate|make|give\s+me|create|new)\s+(?:a\s+|an\s+)?(?:uuid|guid|unique\s+id)$|^(?:uuid|guid)$/i.test(t)) return { kind: 'uuid' };

@@ -908,5 +908,30 @@
     ],
     "sha256": "146394b766b20c520ecc86832c5bece933652b973696a8239bfe831dba6f74bf",
     "emit": false
+  },
+  {
+    "run": 37,
+    "at": "2026-10-07T06:03:53Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-4.html",
+    "sources": [
+      {
+        "claim": "When people reproduce time intervals drawn from a range, their reproductions are pulled toward the middle of that range: short intervals are overestimated and long ones underestimated (central tendency, Vierordt's law)",
+        "source": "https://doi.org/10.1038/nn.2590",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The variability of timed responses grows roughly in proportion to the interval being timed (the scalar property)",
+        "source": "https://doi.org/10.1037/0033-295X.84.3.279",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing their own slope below 1 helps people notice that their sense of duration is pulled toward recent experience",
+        "source": "drafts/fringe/interval-timing-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "841b6cb28423be77d1a8f7a18e84a87e928749404ea07347aed5cf491d0b0acf",
+    "emit": false
   }
 ]
