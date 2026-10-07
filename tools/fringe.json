@@ -773,5 +773,35 @@
     ],
     "sha256": "f30dd6b4147eb4784c69348040cd8aeb9efb38fd6177104989b570f8454c8d6d",
     "emit": false
+  },
+  {
+    "run": 32,
+    "at": "2026-10-07T00:20:00Z",
+    "family": "quiet-signal-filter",
+    "draft": "drafts/fringe/quiet-signal-filter-3.html",
+    "sources": [
+      {
+        "claim": "Signal detection theory separates sensitivity (d') from response bias (criterion) in yes/no detection, so a listener who says yes more often is not scored as hearing better",
+        "source": "https://archive.org/details/signaldetectiont0000gree",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The log-linear correction (add 0.5 to counts, 1 to totals) keeps hit and false-alarm rates of 0 or 1 usable and biases d' less than other fixes",
+        "source": "https://doi.org/10.3758/BF03203619",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A 2-down 1-up staircase settles near the level where about 71% of signals are detected",
+        "source": "https://doi.org/10.1121/1.1912375",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's own d' for a faint tone in hiss, measured at home with ordinary headphones over about 30 trials, is stable enough to compare day to day",
+        "source": "drafts/fringe/quiet-signal-filter-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "85d16b253449573fb4ee14d692ac67fc17ac13379495b10a4e6a835c8bb1ce30",
+    "emit": false
   }
 ]

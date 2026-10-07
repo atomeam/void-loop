@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · a tone in the hiss (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 14px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>a tone in the hiss · draft · not published</h1>
+  <p class="note">Each trial is one second of hiss. In half of them a faint tone is hidden in it. Say whether you heard a tone. The page then separates two things people usually mix up: how well you can hear the tone (sensitivity, d′) and how ready you are to say "yes" (your bias). Someone who says yes to everything catches every tone but also "hears" tones that are not there; this measure is not fooled by that. It comes from signal detection theory (Green and Swets, 1966), used for radar, medical scans and hearing tests. The tone gets fainter as you do well and louder when you miss. Everything stays in this browser.</p>
+  <div class="row"><button id="play" type="button">play a trial</button><button id="yes" type="button" disabled>tone</button><button id="no" type="button" disabled>no tone</button></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.hiss.v1',st={trials:[],level:-18},ac=null,cur=null;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials)){st.trials=j.trials.filter(function(t){return t&&typeof t.tone==='boolean'&&typeof t.said==='boolean'});if(isFinite(j.level))st.level=j.level}}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-400),level:st.level}))}catch(_){}}
+  // inverse of the standard normal CDF (Acklam's rational approximation, good to about 1e-9)
+  function z(p){var a=[-39.6968302866538,220.946098424521,-275.928510446969,138.357751867269,-30.6647980661472,2.50662827745924],b=[-54.4760987982241,161.585836858041,-155.698979859887,66.8013118877197,-13.2806815528857],
+    c=[-.00778489400243029,-.322396458041136,-2.40075827716184,-2.54973253934373,4.37466414146497,2.93816398269878],d=[.00778469570904146,.32246712907004,2.445134137143,3.75440866190742],q,r;
+    if(p<.02425){q=Math.sqrt(-2*Math.log(p));return(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)}
+    if(p>1-.02425){q=Math.sqrt(-2*Math.log(1-p));return-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)}
+    q=p-.5;r=q*q;return(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1)}
+  // d' and criterion c from yes/no trials; the +0.5 / +1 (log-linear) correction keeps rates of 0 or 1 finite
+  function sdt(trials){var s=trials.filter(function(t){return t.tone}),n=trials.filter(function(t){return!t.tone});if(!s.length||!n.length)return null;
+    var h=(s.filter(function(t){return t.said}).length+.5)/(s.length+1),f=(n.filter(function(t){return t.said}).length+.5)/(n.length+1);
+    return{hit:h,fa:f,d:z(h)-z(f),c:-(z(h)+z(f))/2,n:trials.length}}
+  // 2-down 1-up on tone trials: two hits in a row make it 2 dB fainter, a miss makes it 2 dB louder (tracks about 71% hits)
+  function step(level,trials){var t=trials.filter(function(x){return x.tone});var last=t[t.length-1];if(!last)return level;
+    if(!last.said)return Math.min(-3,level+2);var run=0;for(var i=t.length-1;i>=0&&t[i].said&&t[i].level===level;i--)run++;return run>=2?Math.max(-45,level-2):level}
+  function el(id){return document.getElementById(id)}
+  // plays one trial and calls ended() when the sound has actually finished; false when this browser has no Web Audio
+  function play(tone,levelDb,ended,failed){if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A)return false;ac=new A()}
+    var start=function(){var sr=ac.sampleRate,len=sr,buf=ac.createBuffer(1,len,sr),x=buf.getChannelData(0),amp=Math.pow(10,levelDb/20)*.25,f=1000;
+      for(var i=0;i<len;i++){var env=Math.min(1,i/(sr*.02),(len-i)/(sr*.02));x[i]=env*((Math.random()*2-1)*.18+(tone&&i>sr*.25&&i<sr*.75?amp*Math.sin(2*Math.PI*f*i/sr)*Math.min(1,(i-sr*.25)/(sr*.02),(sr*.75-i)/(sr*.02)):0))}
+      var s=ac.createBufferSource();s.buffer=buf;s.connect(ac.destination);s.onended=ended;s.start()};
+    // a trial only counts once the sound could be heard: wait for the audio to be running, never answer on a timer
+    Promise.resolve(ac.state==='running'?null:ac.resume()).then(function(){if(ac.state!=='running')throw new Error('audio did not start');start()}).catch(failed);return true}
+  el('play').addEventListener('click',function(){var c={tone:Math.random()<.5,level:st.level};el('play').disabled=true;el('state').textContent='listen…';
+    var ok=play(c.tone,c.level,function(){cur=c;el('yes').disabled=el('no').disabled=false;el('state').textContent='was there a tone?'},
+      function(){el('play').disabled=false;el('state').textContent='the sound did not start (tap again, and check the volume)'});
+    if(!ok){el('play').disabled=false;el('state').textContent='this browser cannot play sound, so this page cannot run here'}});
+  function answer(said){if(!cur)return;var t={tone:cur.tone,said:said,level:cur.level,at:Date.now()};st.trials.push(t);
+    st.level=step(st.level,st.trials);save();
+    el('state').textContent=(cur.tone?'there was a tone':'no tone that time')+' · '+(said===cur.tone?'right':'not this one')+' · tone now '+st.level+' dB';
+    cur=null;el('yes').disabled=el('no').disabled=true;el('play').disabled=false;el('play').focus();draw()}
+  el('yes').addEventListener('click',function(){answer(true)});el('no').addEventListener('click',function(){answer(false)});
+  function draw(){var r=sdt(st.trials.slice(-60));if(!r){el('score').textContent=st.trials.length?st.trials.length+' trial(s) so far':'';return}
+    el('score').textContent='last '+Math.min(60,r.n)+' trials · tones caught '+Math.round(r.hit*100)+'% · "heard" when there was none '+Math.round(r.fa*100)+'%\n'
+      +'sensitivity d′ '+r.d.toFixed(2)+' (0 is guessing; 1 to 2 is typical near threshold) · bias '+(r.c>.2?'cautious, you say "tone" only when sure':r.c<-.2?'eager, you say "tone" easily':'about neutral')
+      +(r.n<30?'\nabout 30 trials before these numbers settle':'')}
+  draw();
+  window.__hiss={z:z,sdt:sdt,step:step}; // for checks
+})();
+</script>
+</body>
+</html>

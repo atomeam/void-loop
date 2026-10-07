@@ -11,7 +11,8 @@ const NOUN = '(?:code|script|function|snippet|program|pull\\s+request|pr|diff|cl
 const ASKS = [
   new RegExp('^(?:please\\s+|pls\\s+|hey\\s+void,?\\s+)?(?:(?:can|could|would|will)\\s+you\\s+)?(?:please\\s+)?(?:do\\s+a\\s+)?(?:code[- ]?review|review|critique|audit|lint|look\\s+over|go\\s+over|sanity[- ]check|check|proofread|improve|refactor|clean\\s+up|find\\s+(?:the\\s+)?bugs?\\s+in|spot\\s+(?:the\\s+)?bugs?\\s+in)\\s+(?:of\\s+)?(?:my|this|the|these|that|our|a|some|following)?\\s*(?:[\\w#+.-]+\\s+){0,2}?' + NOUN + 's?\\b', 'i'),
   /^(?:code[- ]?review|review\s+(?:please|pls|this|it))\b/i,
-  /^(?:lint|critique|audit)\s+(?:this|it|that)\s*:\s*\S/i, // "lint this: var x = 1" (a colon and something after it, so "audit this" alone stays a word ask)
+  /^(?:lint|critique|audit)\s+(?:this|it|that)\s*:\s*\S/i,
+  /^(?:check|review|lint|audit)\s+(?:my|this|the)\s+(?:python|py|javascript|js|typescript|ts|sql|bash|shell|go|golang|rust|java|php|ruby|c\+\+|c#|swift|kotlin)\s*:\s*\S/i, // "check my python: <code>" // "lint this: var x = 1" (a colon and something after it, so "audit this" alone stays a word ask)
   new RegExp('\\b(?:what\'?s|what\\s+is|anything|something)\\s+wrong\\s+with\\s+(?:my|this|the)\\s+(?:[\\w#+.-]+\\s+)?' + NOUN + '\\b', 'i'),
   new RegExp('\\b(?:is|does)\\s+(?:my|this|the)\\s+(?:[\\w#+.-]+\\s+)?' + NOUN + '\\s+(?:ok|okay|good|fine|right|correct|safe|secure|look\\s+(?:ok|okay|good|right|fine))\\b', 'i'),
   /\b(?:any|find(?:\s+the)?|spot(?:\s+the)?)\s+bugs?\s+in\s+(?:my|this|the|these)\b/i,
