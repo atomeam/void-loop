@@ -30,7 +30,7 @@ function parse(text) {
   const q = { raw, start: 0, add: NaN, per: 'month', years: NaN, rate: NaN, goal: NaN, want: 'grow' };
 
   let m = t.match(new RegExp('\\b(?:save|saving|put(?:ting)? away|put aside|set aside|invest(?:ing)?|deposit(?:ing)?|contribut(?:e|ing)|add(?:ing)?|put in)\\s+' + MONEY + '\\s+' + PERIOD))
-    || t.match(new RegExp(MONEY + '\\s+' + PERIOD + '\\s+(?:in(?:to)?\\s+)?(?:savings|saved|invested|deposits?|contributions?|into|for)'))
+    || t.match(new RegExp(MONEY + '\\s+' + PERIOD + '\\s+(?:in(?:to)?\\s+)?(?:savings|saved|invested|deposits?|contributions?|into (?:savings|an? (?:account|ira|401k|roth|fund|index fund)))'))
     || t.match(new RegExp('\\b(?:with|and)\\s+' + MONEY + '\\s+' + PERIOD));
   if (m) { q.add = amt(m[1], m[2]); q.per = m[3]; }
 
@@ -167,7 +167,8 @@ export default {
     'monthly payment on a $250000 mortgage at 6.5% for 30 years',
     'remind me to save 50 dollars every week',
     'what is a savings account',
-    'save this note'
+    'save this note',
+    'how much is 5 dollars a day for a year'
   ],
   match(lower, text) { return isCalcAsk(text) || !!parse(text); },
   run
