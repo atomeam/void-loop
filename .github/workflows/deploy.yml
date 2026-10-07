@@ -1,7 +1,11 @@
-# PC-free deploy: every push to main is tested with the full suite, then deployed to the
-# Cloudflare Pages project "a-to-mind" (a-to-mind.com). Same steps as tools/deploy.ps1,
-# which stays as the laptop fallback. PRs into main get a preview deployment.
-# workflow_call is only Void ship helper, which already ran the suite on this commit.
+# Test and deploy Void to the Cloudflare Pages project "a-to-mind" (a-to-mind.com) with wrangler (direct upload, no GitHub
+# Pages). tools/deploy.ps1 stays the laptop fallback. Built to fit GitHub Free's 2,000 Linux minutes a month (~65 a day):
+#   PR, code changed    the full suite (no benchmark: see bench.yml and the weekly watchdog), Void's review comment, a preview deploy
+#   PR, docs only       the quick checks (seconds), Void's review comment; no browser suite, no preview
+#   push to main        deploy. The full suite runs again only when the commit is not a merged PR whose head passed
+#                       test-and-deploy (a direct push, or a PR merged without a green check); the daily watchdog re-tests main
+#   manual run          the full suite (bench optional), then deploy
+# test-and-deploy is the merge gate and always reports, on every PR.
 name: Void deploy
 
 on:
@@ -9,31 +13,23 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
   workflow_dispatch:
-  workflow_call:
     inputs:
-      ref:
-        description: Commit to test and deploy (the ship workflow passes the merged main commit)
-        type: string
-        required: true
-    secrets:
-      CLOUDFLARE_API_TOKEN:
-        required: false
-      CLOUDFLARE_ACCOUNT_ID:
-        required: false
+      bench:
+        description: Also run the everyday benchmark (about 15-25 min more)
+        type: boolean
+        default: false
 
 concurrency:
-  # Each PR commit gets its own group so a new push starts at once instead of queueing behind the previous
-  # commit's full run (a same-group run would sit "pending" for up to ~10 min); the first step below cancels
-  # the older runs of that PR instead. Production keeps one group and never cancels.
-  group: void-deploy-${{ github.event_name == 'pull_request' && format('{0}-{1}', github.head_ref, github.event.pull_request.head.sha) || 'production' }}
-  # Literal false: expression form broke Void ship helper workflow_call (startup_failure since 8676bd2).
-  cancel-in-progress: false
+  # one run per PR: a new push cancels the older run of that PR at once. Production keeps one group and never cancels.
+  group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read
-  checks: read # to see that a PR head with the same code already passed (see "Already tested?")
-  actions: write # a PR run cancels the older runs of the same PR (see "Supersede older runs")
+  checks: read # to see that a merged PR's head already passed (see "What needs testing")
+  pull-requests: write # Void's one review comment on the PR
 
 jobs:
   test-and-deploy:
@@ -42,54 +38,104 @@ jobs:
     env:
       CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
-      - name: Supersede older runs of this PR
-        if: github.event_name == 'pull_request'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BRANCH: ${{ github.head_ref }}
-        run: |
-          for id in $(gh api "repos/${{ github.repository }}/actions/workflows/deploy.yml/runs?event=pull_request&per_page=20" \
-              --jq ".workflow_runs[] | select(.head_branch == env.BRANCH and .id < ${{ github.run_id }} and (.status == \"in_progress\" or .status == \"queued\" or .status == \"pending\" or .status == \"waiting\")) | .id"); do
-            echo "cancelling older run $id"; gh api -X POST "repos/${{ github.repository }}/actions/runs/$id/cancel" || true
-          done
-
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.ref || github.event.pull_request.head.sha || github.sha }}
-          fetch-depth: 0 # the suite reads git history of the append-only records
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0 # the suite reads git history of the append-only records; the PR diff needs the base
 
-      # A merge to main whose code (git tree) is exactly the PR head that already passed the full suite is not
-      # tested twice: same tree, same files, same result. Anything else (main moved, a direct push) runs the suite.
-      - name: Already tested?
-        id: tested
-        if: github.event_name == 'push'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: What needs testing
+        id: plan
         env:
           GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          BASE: ${{ github.event.pull_request.base.ref }}
         run: |
-          head=$(git rev-parse HEAD); second=$(git rev-parse -q --verify HEAD^2 || true)
-          if [ -n "$second" ] && [ "$(git rev-parse HEAD^{tree})" = "$(git rev-parse "$second^{tree}")" ]; then
-            ok=$(gh api "repos/${{ github.repository }}/commits/$second/check-runs?check_name=test-and-deploy" --jq '[.check_runs[] | select(.conclusion == "success")] | length')
-            # a PR head's benchmark runs as its own "bench" job: when there is one, it has to have passed as well
-            benchbad=$(gh api "repos/${{ github.repository }}/commits/$second/check-runs?check_name=bench" --jq '[.check_runs[]] | if length == 0 then 0 else ([.[] | select(.conclusion == "success")] | if length > 0 then 0 else 1 end) end')
-            [ "${benchbad:-1}" = "0" ] || ok=0
-            if [ "${ok:-0}" -gt 0 ]; then
-              echo "skip=true" >> "$GITHUB_OUTPUT"
-              echo "### Not re-tested: tree of $head is identical to PR head $second, which passed the full suite" >> "$GITHUB_STEP_SUMMARY"
+          suite=true
+          if [ "$EVENT" = "pull_request" ]; then
+            # Docs only: every changed file is markdown, and none of the few markdown files the suite reads.
+            files=$(git diff --name-only "$(git merge-base "origin/$BASE" HEAD)" HEAD)
+            light=true
+            [ -n "$files" ] || light=false
+            while IFS= read -r f; do
+              [ -n "$f" ] || continue
+              case "$f" in
+                STANDING.md|domains/void.existing-tools.md|domains/growth-inbox.md|domains/inputs/*) light=false ;;
+                *.md|*.md.part) ;;
+                *) light=false ;;
+              esac
+            done <<< "$files"
+            if [ "$light" = true ]; then
+              suite=false
+              echo "### Docs-only PR: quick checks only, no browser suite" >> "$GITHUB_STEP_SUMMARY"
+            fi
+            echo "light=$light" >> "$GITHUB_OUTPUT"
+          elif [ "$EVENT" = "push" ]; then
+            # A merge commit's second parent, or the PR a squash merge came from: when that head passed test-and-deploy,
+            # main is not tested twice (the quick checks still run, and the daily watchdog runs the full suite on main).
+            head=$(git rev-parse HEAD)
+            pr_head=$(git rev-parse -q --verify HEAD^2 || true)
+            if [ -z "$pr_head" ]; then
+              pr_head=$(gh api "repos/${{ github.repository }}/commits/$head/pulls" --jq '[.[] | select(.merged_at != null and .base.ref == "main")][0].head.sha // empty' || true)
+            fi
+            if [ -n "$pr_head" ]; then
+              ok=$(gh api "repos/${{ github.repository }}/commits/$pr_head/check-runs?check_name=test-and-deploy" \
+                --jq '[.check_runs[] | select(.status == "completed")] | sort_by(.id) | last | .conclusion // ""' || true)
+              if [ "$ok" = "success" ]; then
+                suite=false
+                echo "### Not re-tested: merged PR head $pr_head passed test-and-deploy" >> "$GITHUB_STEP_SUMMARY"
+              fi
             fi
           fi
+          echo "suite=$suite" >> "$GITHUB_OUTPUT"
+          echo "suite=$suite"
+
+      - name: Quick checks (when the browser suite does not run)
+        if: steps.plan.outputs.suite != 'true'
+        run: |
+          node --version
+          node tools/guard-source.mjs
+          node tools/fringe.mjs
+          node --test domains/forethinkers/think-tank.test.mjs
+          node --test tools/dispatcher.test.mjs
 
       - name: Test (full suite)
-        if: github.event_name != 'workflow_call' && steps.tested.outputs.skip != 'true'
+        if: steps.plan.outputs.suite == 'true'
         uses: ./.github/actions/void-test
         with:
-          # on a PR the everyday benchmark runs as its own job (below), at the same time, on another machine
-          bench: ${{ github.event_name == 'pull_request' && 'skip' || 'with' }}
+          bench: ${{ github.event_name == 'workflow_dispatch' && inputs.bench && 'with' || 'skip' }}
 
       - name: Sync void.html copies (also when the suite was skipped)
         run: |
           cp void.html void-live-deploy/index.html
           cp void.html void-live-deploy/void.html
           node tools/self-context.mjs # Void's facts about itself for /api/answer (growth inbox, llms.txt)
+
+      # Void reviews its own pull requests: tools/review-pr.mjs runs the code checks a-to-mind.com runs when a visitor asks
+      # Void to review code (void-live-deploy/lib/code-review.js) on the lines the PR adds, and keeps one PR comment
+      # (marked <!-- void-review -->) up to date. It informs; it never fails the PR.
+      - name: Void's review of the lines this PR adds
+        if: github.event_name == 'pull_request'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+        run: |
+          node tools/review-pr.mjs --base "origin/$BASE" --head HEAD > void-review.md
+          cat void-review.md >> "$GITHUB_STEP_SUMMARY"
+          body=$(jq -Rs '{body: .}' < void-review.md)
+          id=$(gh api "repos/$REPO/issues/$PR/comments?per_page=100" --paginate \
+            --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- void-review -->")))][0].id // empty' | head -n1)
+          if [ -n "$id" ]; then
+            echo "$body" | gh api -X PATCH "repos/$REPO/issues/comments/$id" --input - > /dev/null
+          else
+            echo "$body" | gh api -X POST "repos/$REPO/issues/$PR/comments" --input - > /dev/null
+          fi
 
       - name: Deploy target
         id: target
@@ -111,7 +157,8 @@ jobs:
 
       - name: Deploy to Cloudflare Pages (a-to-mind)
         id: deploy
-        if: env.CF_READY == 'true'
+        # a docs-only PR changes nothing the site serves, so it gets no preview
+        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true'
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
@@ -133,17 +180,3 @@ jobs:
             [ "$i" = 6 ] && { echo "::error::deployment did not serve the tested void.html"; exit 1; }
           done
           echo "### Deployed ${{ steps.target.outputs.sha }} to ${{ steps.target.outputs.branch }}: $URL" >> "$GITHUB_STEP_SUMMARY"
-
-  # The everyday benchmark (tools/bench.json, ~3 min) for a PR, in parallel with test-and-deploy instead of inside it.
-  bench:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.pull_request.head.sha }}
-      - name: Everyday benchmark
-        uses: ./.github/actions/void-test
-        with:
-          bench: only
