@@ -138,6 +138,12 @@
    "date": "2026-10-07",
    "ask": "group the clock and the note",
    "from": "board Next #3, grouped objects / layers"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-07",
+   "ask": "label the clock kitchen",
+   "from": "board Later: text annotation / labels"
   }
  ],
  "open": []
