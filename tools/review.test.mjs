@@ -122,6 +122,11 @@ ok(!rules('etag = md5(body) // skip password check', 'javascript').includes('wea
 { const multi = ruleReview("app.use(cors({\n  origin: '*',\n  credentials: true,\n}))", { lang: 'javascript' }).findings.some((f) => f.rule === 'cors-any');
   const apart = ruleReview("const a = { origin: '*' };\nconst b = { credentials: true };", { lang: 'javascript' }).findings.some((f) => f.rule === 'cors-any');
   ok(multi && !apart, 'CORS * with credentials found across lines of one object, not across two objects'); }
+// run 41: Go empty err handling, a goroutine changing shared state, Rails where("...#{}"), requests with no timeout
+ok(rules('if err != nil { }', 'go').includes('go-empty-err@1') && !rules('if err != nil { return err }', 'go').includes('go-empty-err@1'), 'empty err handling flagged, returning it not');
+ok(rules('go func() { counter++ }()', 'go').includes('go-race@1') && !rules('go func() { mu.Lock(); counter++; mu.Unlock() }()', 'go').includes('go-race@1') && !rules('go func() { atomic.AddInt64(&n, 1) }()', 'go').includes('go-race@1') && !rules('go func() { ch <- 1 }()', 'go').includes('go-race@1'), 'unlocked change in a goroutine flagged; mutex, atomic and channel not');
+ok(rules(`User.where("name = '#{params[:name]}'")`, 'ruby').includes('rails-where-interp@1') && !rules('User.where("name = ?", params[:name])', 'ruby').includes('rails-where-interp@1') && !rules('User.where(name: params[:name])', 'ruby').includes('rails-where-interp@1'), 'Rails where with #{} flagged, ? and hash forms not');
+ok(rules('r = requests.get(url)', 'python').includes('requests-no-timeout@1') && rules('requests.get(url, timeout=None)', 'python').includes('requests-no-timeout@1') && !rules('requests.get(url, timeout=10)', 'python').includes('requests-no-timeout@1') && !rules('r = requests.post(\n    url,\n    json=data,\n    timeout=5,\n)', 'python').includes('requests-no-timeout@1'), 'requests without a timeout flagged; timeout=10, also on a later line, not');
 // keys never shown as written
 ok(!JSON.stringify(ruleReview('const token = "ghp_abcdefghijklmnopqrstuvwxyz0123";')).includes('ghp_abcdef'), 'a key in a finding is masked');
 // the pull-request review skips tests in every language the repo writes (their fixtures are bad code on purpose), and nothing else by accident
