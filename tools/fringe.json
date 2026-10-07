@@ -983,5 +983,30 @@
     ],
     "sha256": "3f8edd881599d5d81f12ae445b2435c15ec00bd58b0d9d8204decccf85b5bc00",
     "emit": false
+  },
+  {
+    "run": 40,
+    "at": "2026-10-07T08:42:48Z",
+    "family": "private-incubation-log",
+    "draft": "drafts/fringe/private-incubation-log-4.html",
+    "sources": [
+      {
+        "claim": "Setting a problem aside for a while (an incubation period) improves later solving on average, with larger effects for creative, divergent problems",
+        "source": "https://doi.org/10.1037/a0014212",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Three-word remote-associate puzzles measure finding a word that links distant ideas",
+        "source": "https://doi.org/10.1037/h0048850",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Comparing their own solve rates after an immediate return and after a break changes when people choose to step away from a hard problem",
+        "source": "drafts/fringe/private-incubation-log-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "c0f20bc0e8660f360cee97de07f195d6093314859e2e6e99a9098366b4e7d041",
+    "emit": false
   }
 ]

@@ -46,7 +46,7 @@ export function looksLikeCode(code, lang) {
   if (s.trim().length < 8) return false;
   let n = 0;
   if (/[{};]\s*$/m.test(s)) n++;
-  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert|val|guard)\b/.test(s)) n++;
+  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert|val|guard|DROP|ALTER|TRUNCATE)\b/.test(s)) n++;
   if (/[=!<>]=|=>|->|\+\+|&&|\|\||::|:=|\w\(|\)\s*[{:]|\w\.\w+\s*[-+*/]?=[^=]/.test(s)) n++;
   if (/^(?: {2,}|\t)\S/m.test(s)) n++;
   if (/^\s*(?:#!|<\?php|<[a-z]+[\s>]|#include|@\w+)/m.test(s)) n++;
@@ -171,7 +171,7 @@ const RULES = [
     'a force unwrap (!! in Kotlin, ! in Swift) crashes the app when the value is null/nil. Handle the missing case: ?. with ?: in Kotlin, if let / guard let or ?? in Swift.'],
   ['string-eq', 'bug', ['java'], (m) => /[=!]=\s*"|"\s*[=!]=/.test(m),
     'in Java, == on strings checks whether they are the same object, not the same text, so equal strings can compare false. Use "yes".equals(s) (safe when s is null).'],
-  ['var-loop-closure', 'bug', JS, (m) => /\bfor\s*\(\s*var\s+\w+[^)]*\)\s*(?:\{[^}]*|[^;{]*)(?:=>|\bfunction\b)/.test(m), // the callback inside the loop body, not later on the same line
+  ['var-loop-closure', 'bug', JS, (m) => /\bfor\s*\(\s*var\s+\w+[^)]*\)\s*(?:\{[^}]*|[^;{]*)(?:\bset(?:Timeout|Interval)\s*\(|\.addEventListener\s*\(|\.on\w+\s*=|\.then\s*\(|\.push\s*\(\s*(?:function\b|\([^)]*\)\s*=>|\w+\s*=>))/.test(m), // a callback that runs later (a timer, a listener, a promise, one stored for later), inside the loop body; .some/.map/.filter run at once and are fine
     'a var in a for loop is shared by every pass, so callbacks created in the loop all see its final value. Declare it with let: for (let i = 0; …).'],
   ['json-parse-storage', 'bug', JS, (m) => /\bJSON\.parse\s*\(\s*(?:window\.)?(?:localStorage|sessionStorage)\.getItem\s*\(/.test(m) && !/\btry\b/.test(m),
     'JSON.parse throws on text that is not valid JSON (an old format, a hand edit, a half-written save), and that stops the page. Wrap it in try/catch and fall back to a default.'],
@@ -185,6 +185,22 @@ const RULES = [
     'the handler is called right away (handler()) and its result is what gets attached, so nothing happens on the event. Pass the function itself: addEventListener("click", handler), or wrap it: () => handler(arg).'],
   ['float-equality', 'bug', [...JS, 'python', 'java', 'csharp'], (m) => /\d\.\d*[1-9]\d*\s*(?:[-+*/]\s*[\d.]+[^=!<>]*)?[=!]==?|[=!]==?\s*-?\d*\.\d*[1-9]/.test(m.replace(/['"`][^'"`]*['"`]/g, '""')),
     'decimal numbers are stored in binary, so sums like 0.1 + 0.2 come out as 0.30000000000000004 and an exact == fails. Compare with a small tolerance: Math.abs(a - b) < 1e-9 (math.isclose in Python), or work in whole cents.'],
+  ['drop-table', 'risk', ['sql', 'shell', 'code'], (m) => /^\s*(?:DROP\s+(?:TABLE|DATABASE|SCHEMA)\b|TRUNCATE\s+(?:TABLE\s+)?[\w."`[\]]+)/i.test(m),
+    'this deletes the table (or database) and every row in it, and there is no undo. Take a backup first, and in a migration say exactly what you mean: DROP TABLE IF EXISTS old_name.'],
+  ['comma-join', 'bug', ['sql'], (m, r, x) => /\bFROM\s+[\w."`[\]]+(?:\s+(?:AS\s+)?\w+)?\s*,\s*[\w."`[\]]+/i.test(m) && !/\bWHERE\b|\bON\b/i.test(x.statement()),
+    'two tables after FROM with no WHERE pairs every row of one with every row of the other (a cross join): 1,000 × 1,000 rows is a million. Use JOIN … ON a.id = b.a_id.'],
+  ['for-ls', 'bug', ['shell'], (m) => /\bfor\s+\w+\s+in\s+(?:\$\(\s*ls\b|`\s*ls\b)/.test(m),
+    'looping over the output of ls splits file names with spaces into pieces (and breaks on other odd names). Let the shell list them: for f in *.txt; do echo "$f"; done'],
+  ['unquoted-test', 'bug', ['shell'], (m) => /(?:^|[;&|\s])\[\s+\$\{?\w+\}?\s+(?:==?|!=|-eq|-ne|-lt|-gt|-le|-ge)\s/.test(m),
+    'an unquoted $variable inside [ ]: if it is empty, the test becomes [ == 1 ] and fails with an error. Quote it: [ "$x" = 1 ] (and use = inside [ ]; == only works in bash).'],
+  ['weak-hash', 'risk', ['*'], (m, r) => /\b(?:md5|sha1)\b|createHash\s*\(\s*['"`](?:md5|sha1)['"`]/i.test(r) && /pass(?:word|wd)?\b|\bpw\b|\bpwd\b/i.test(r),
+    'md5 and sha1 are fast hashes, so a leaked table of password hashes can be cracked in hours. Use a slow password hash: password_hash() in PHP, bcrypt or argon2 in JavaScript, hashlib.scrypt or argon2 in Python.'],
+  ['cors-any', 'risk', JS, (m, r) => /\borigin\s*:\s*(?:(['"`])\*\1|true\b)/.test(r) && /\bcredentials\s*:\s*true\b/.test(r),
+    'CORS that allows any origin together with credentials lets any site make logged-in requests on behalf of your users. List the origins you trust: origin: ["https://app.example.com"].'],
+  ['debug-true', 'risk', ['python'], (m) => /\.run\s*\([^)]*\bdebug\s*=\s*True\b|^\s*DEBUG\s*=\s*True\b/.test(m),
+    'debug mode shows full error pages, and Flask\'s debugger can run code from the browser. Keep it for your own machine; read it from an environment variable so production runs with it off.'],
+  ['jwt-none', 'risk', [...JS, 'python'], (m, r) => /algorithms?\s*[:=]\s*\[?\s*(['"])none\1/i.test(r),
+    'accepting the "none" algorithm means a token with no signature passes, so anyone can forge one. List only the algorithm you sign with: algorithms: ["HS256"].'],
   ['verify-false', 'risk', ['python', ...JS], (m) => /\bverify\s*=\s*False\b|rejectUnauthorized\s*:\s*false\b|NODE_TLS_REJECT_UNAUTHORIZED/.test(m),
     'certificate checks are turned off, so anyone on the network can read or change this traffic. Fix the certificate (or point to the right CA bundle) instead.'],
   ['rm-rf-var', 'risk', ['shell'], (m, r) => /\brm\s+-[a-z]*r[a-z]*f?[a-z]*\s+(?:"?\$\{?\w+\}?"?\/?)(?:\s|$|\/)/i.test(r) && !/\$\{\w+:\?/.test(r),
