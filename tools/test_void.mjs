@@ -514,6 +514,34 @@ try {
       /grouped/.test(said) && tied && carried && cornered && bigger && front && loose && (await G.state()).length === 3 && !G.errors.length,
       JSON.stringify({ said, tied, carried, cornered, bigger, front, loose, order, ids, e: G.errors }));
     await G.ctx.close(); }
+  // Labels and arrows (skills/label.js, board "Later": text annotation / labels): "label the clock kitchen" tags it, an arrow
+  // drawn by label names joins two things and follows a drag, a free label can be an arrow's end, "undo" and reload behave.
+  { const L = await fresh();
+    await L.ask('make a clock', 400); await L.ask('add a sticky that says milk', 400); await L.ask('make a 5 minute timer', 400);
+    await L.ask('move the timer to the bottom right', 500);
+    await L.ask('label the clock kitchen', 700); await L.ask('label the note groceries', 700);
+    const tags = await L.p.$$eval('.void-tag', (es) => es.map((e) => e.textContent).sort().join(','));
+    await L.ask('draw an arrow from kitchen to the timer', 800);
+    const said = await L.whisper();
+    const line = () => L.p.$eval('.void-arrows line', (l) => [l.getAttribute('x1'), l.getAttribute('y1'), l.getAttribute('x2'), l.getAttribute('y2')].map(Number)).catch(() => null);
+    const l1 = await line();
+    const box = await L.p.$eval('.clock', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 10, y: b.top + 10 }; });
+    await L.p.mouse.move(box.x, box.y); await L.p.mouse.down(); await L.p.mouse.move(box.x - 120, box.y - 60, { steps: 6 }); await L.p.mouse.up(); await L.p.waitForTimeout(250);
+    const l2 = await line();
+    const follows = !!(l1 && l2) && l2[2] === l1[2] && l2[3] === l1[3] && Math.abs(l2[0] - l1[0]) + Math.abs(l2[1] - l1[1]) > 40;
+    await L.ask('add a label that says to do', 700);
+    await L.ask('connect the label to the note', 700);
+    const two = await L.p.$$eval('.void-arrows line', (ls) => ls.length);
+    await L.ask('undo', 600);
+    const undone = await L.p.$$eval('.void-arrows line', (ls) => ls.length);
+    await L.p.reload(); await L.p.waitForTimeout(900);
+    const kept = (await L.p.$$eval('.void-arrows line', (ls) => ls.length)) === 1 && (await L.p.$$eval('.void-tag', (es) => es.length)) === 2 && (await L.p.$$eval('.void-label', (es) => es.map((e) => e.textContent).join())) === 'to do';
+    await L.ask('remove the arrows', 600); await L.ask('remove the labels', 600);
+    const clean = (await L.p.$$eval('.void-arrows line, .void-tag, .void-label', (es) => es.length)) === 0 && (await L.state()).length === 3;
+    check('label: "label the clock kitchen" and "label the note groceries" tag them, "draw an arrow from kitchen to the timer" joins them and the arrow follows the clock when it is dragged, a free label "to do" takes an arrow, "undo" takes the last arrow back, all of it survives a reload, and "remove the arrows" / "remove the labels" clear them',
+      tags === 'groceries,kitchen' && /drew an arrow/.test(said) && follows && two === 2 && undone === 1 && kept && clean && !L.errors.length,
+      JSON.stringify({ tags, said, l1, l2, two, undone, kept, clean, e: L.errors }));
+    await L.ctx.close(); }
   // Public Voids: "publish my void as @name" puts a paid Void's look and kept cards (as text) at /@name, after the person's own yes.
   { const DB = sqliteD1(), env = { DB, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'index.html'), 'utf8')) } };
     await voidMe.ensureTables(env);
