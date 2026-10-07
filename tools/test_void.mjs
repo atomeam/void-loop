@@ -885,6 +885,10 @@ try {
   await t.ask('if i wake up at 7am when should i go to sleep', 700); const sleepPg = await t.page(); check('sleep: bedtimes for a 7 am wake-up (90-min cycles + 15 min to fall asleep, CDC hours)', /Bedtime/.test(sleepPg) && /11:15\s?PM/.test(sleepPg) && /9:45\s?PM/.test(sleepPg) && /12:45\s?AM/.test(sleepPg) && /aim for/.test(sleepPg) && /CDC/.test(sleepPg) && !/on your calendar/i.test(sleepPg), sleepPg.slice(0, 200));
   await t.ask('if i go to bed at 11pm when should i wake up', 700); const wakePg = await t.page(); check('sleep: wake-up times for an 11 pm bedtime', /Wake-up time/.test(wakePg) && /6:45\s?AM/.test(wakePg) && /8:15\s?AM/.test(wakePg) && /5:15\s?AM/.test(wakePg), wakePg.slice(0, 200));
   await t.ask('how much sleep does a teenager need', 700); const needPg = await t.page(); check('sleep: hours a teen needs (CDC)', /How much sleep/.test(needPg) && /8\u201310 hours/.test(needPg) && /CDC/.test(needPg), needPg.slice(0, 200));
+  await t.ask('due date if my last period was march 1 2026', 700); const duePg = await t.page(); check('pregnancy: due date from the last period (Naegele, last period + 280 days), with the full-term window and ACOG source', /Due date/.test(duePg) && /December 6, 2026/.test(duePg) && /Full term/.test(duePg) && /ACOG/.test(duePg) && !/on your calendar/i.test(duePg), duePg.slice(0, 220));
+  await t.ask('i conceived on january 10 2026 when is my baby due', 700); const conPg = await t.page(); check('pregnancy: due date from conception (+ 266 days)', /Due date/.test(conPg) && /October 3, 2026/.test(conPg) && !/on your calendar/i.test(conPg), conPg.slice(0, 220));
+  await t.ask('ivf due date 5 day transfer on may 2 2026', 700); const ivfPg = await t.page(); check('pregnancy: IVF due date (5-day transfer + 261 days)', /January 18, 2027/.test(ivfPg) && /5-day embryo transfer/.test(ivfPg), ivfPg.slice(0, 220));
+  await t.ask('my due date is june 1 how far along am i', 700); const farPg = await t.page(); check('pregnancy: how far along from a known due date', /How far along/.test(farPg) && /weeks?/.test(farPg) && /June 1/.test(farPg) && !/on your calendar/i.test(farPg), farPg.slice(0, 220));
   await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
@@ -2021,7 +2025,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'sleep', 'inventory', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'sleep', 'pregnancy', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
