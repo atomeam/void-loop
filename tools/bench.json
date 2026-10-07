@@ -3991,7 +3991,7 @@
   },
   {
     "ask": "if i save 200 a month how much in 5 years",
-    "want": "calc",
+    "want": "skill:savings",
     "says": "12,?000"
   },
   {
