@@ -1,30 +1,56 @@
-# Void watchdog: the loop checks itself. Every six hours (and on demand) it runs the full suite, the grown replay and the
-# everyday benchmark on main. If anything fails it opens one issue (or comments on the open one) with the failing
-# lines, so the next agent fixes it first; when main is green again it closes that issue. No secrets needed.
+# Void watchdog: the loop checks itself. Once a day (and on demand) it runs the full suite on main; on Sundays the everyday
+# benchmark and the grown replay too. A daily run is skipped when main has not moved since the last green watchdog run, so a
+# quiet day costs about a minute. If anything fails it opens one issue (or comments on the open one) with the failing run,
+# so the next agent fixes it first; when main is green again it closes that issue. No secrets needed.
+# (Once a day rather than every six hours: GitHub Free gives a private repo 2,000 Actions minutes a month.)
 name: Void watchdog
 
 on:
   schedule:
-    - cron: '17 */6 * * *'
+    - cron: '17 10 * * 1-6' # 6:17 AM New York (EDT), Monday to Saturday: full suite
+    - cron: '17 10 * * 0'   # Sunday: full suite and the everyday benchmark
   workflow_dispatch:
+    inputs:
+      bench:
+        description: Also run the everyday benchmark
+        type: boolean
+        default: true
 
 permissions:
   contents: read
   issues: write
+  actions: read # to find the last green watchdog run
 
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 50
     steps:
+      - name: Main moved since the last green run?
+        id: moved
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          last=$(gh api "repos/${{ github.repository }}/actions/workflows/watchdog.yml/runs?branch=main&status=success&per_page=1" --jq '.workflow_runs[0].head_sha // ""' || true)
+          if [ "${{ github.event_name }}" = "schedule" ] && [ "${{ github.event.schedule }}" != "17 10 * * 0" ] && [ "$last" = "${{ github.sha }}" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "### main is still ${{ github.sha }}, which the last watchdog run passed: nothing to re-test" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
       - uses: actions/checkout@v4
+        if: steps.moved.outputs.run == 'true'
         with:
           fetch-depth: 0
-      - name: Test (full suite, grown replay, benchmark)
+      - name: Test (full suite; benchmark on Sundays)
         id: test
+        if: steps.moved.outputs.run == 'true'
         continue-on-error: true
         uses: ./.github/actions/void-test
+        with:
+          bench: ${{ (github.event.schedule == '17 10 * * 0' || (github.event_name == 'workflow_dispatch' && inputs.bench)) && 'with' || 'skip' }}
       - name: Open, update or close the watchdog issue
+        if: steps.moved.outputs.run == 'true'
         uses: actions/github-script@v7
         env:
           OUTCOME: ${{ steps.test.outcome }}

@@ -7,7 +7,7 @@ name: Void dispatcher
 
 on:
   schedule:
-    - cron: "23 * * * *"
+    - cron: "23 13 * * *" # once a day, 9:23 AM New York (EDT): a scheduled run is a dry run, and Actions minutes are metered on a private repo
   workflow_dispatch:
     inputs:
       mode:

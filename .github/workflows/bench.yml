@@ -1,0 +1,34 @@
+# The everyday benchmark (tools/bench.json, 1,600+ asks on the real page, about 15-25 min on a hosted runner). It is the
+# biggest CI cost, so it does not run on every PR: the routines run it locally before they open a PR (tools/checks.mjs,
+# tools/test_void.mjs), the watchdog runs it on main every Sunday, and here it runs on a PR only when the benchmark
+# harness itself changes. Run it on any branch by hand: gh workflow run bench.yml --ref <branch>
+name: Void bench
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - tools/bench.mjs
+      - .github/workflows/bench.yml
+      - .github/actions/void-test/**
+  workflow_dispatch:
+
+concurrency:
+  group: void-bench-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Everyday benchmark
+        uses: ./.github/actions/void-test
+        with:
+          bench: only
