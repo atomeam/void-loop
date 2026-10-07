@@ -12,6 +12,9 @@
  *   "how many 12x24 tiles for a 10x12 floor", "how much carpet for a 12x14 room", "herringbone flooring for a 12x16 room",
  *   "flooring calculator". Area x (1 + waste: 10% straight, 15% diagonal, 20% herringbone or chevron), boxes rounded up,
  *   tiles from the tile size, carpet in square yards with the length off a 12-ft roll, and baseboard for the room.
+ * Follow-ups redo the last room (in memory for this page, 30 minutes): "what about 3 coats", "the ceiling too", "at $40 a gallon",
+ *   "with 2 doors and no windows", "9 foot ceilings", "with primer", "just the ceiling", "what about carpet", "how about 12x24 tiles",
+ *   "herringbone", "with 15% waste", "paint for it".
  * Leaves calc's one-liners to calc ("how many gallons of paint for 400 square feet", "how many tiles 12 inch for 180 square feet").
  */
 const WORDN = { no: 0, none: 0, zero: 0, a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8 };
@@ -147,6 +150,89 @@ function homeOf(text) {
   return { kind: 'floor', d, area, metric, mat, pattern, waste, box, tile, price: priceOf(t, 'floor'), raw: text };
 }
 
+// Follow-ups on the last room (kept in memory for this page only, 30 minutes): the card says
+// 'say "with 2 doors and no windows"' or '"9 foot ceilings"', so those, "what about 3 coats", "the ceiling too",
+// "at $40 a gallon", "what about carpet", "what about 12x24 tiles", "herringbone" and "paint for it" redo the last room.
+let lastRoom = null;
+const FOLLOW_MS = 30 * 60 * 1000;
+const LEAD = '(?:(?:and|but|ok|okay|now|so|then)\\s+)?(?:(?:what|how)\\s+about\\s+|what\\s+if\\s+(?:it\\s+(?:has|had|is|was)\\s+|i\\s+(?:do|use|want|go\\s+with)\\s+)?|with\\s+|at\\s+|in\\s+|use\\s+|using\\s+|try\\s+|switch\\s+to\\s+|plus\\s+|include\\s+|including\\s+|add\\s+|same\\s+room\\s+(?:in|with)\\s+)?';
+const TAIL = '(?:\\s+(?:too|instead|as\\s+well|then|for\\s+(?:it|that|this|the\\s+same\\s+room|that\\s+room|the\\s+room)))?$';
+const CNT = '(?:\\d+|no|none|zero|a|an|one|two|three|four|five|six|seven|eight)';
+const OPEN_RE = new RegExp('\\b' + CNT + '\\s+(?:\\w+\\s+)?(?:doors?|windows?)\\b', 'g');
+const HEIGHT_RE = [
+  new RegExp(NUM + "\\s*(?:-\\s*)?(?:'|ft|feet|foot|m|meters?|metres?)?\\s*(?:-\\s*)?(?:high\\s+|tall\\s+)?ceilings?\\b", 'g'),
+  new RegExp("ceilings?\\s+(?:are\\s+|is\\s+|of\\s+|at\\s+)" + NUM + "\\s*(?:'|ft|feet|foot|m|meters?|metres?)?", 'g')
+];
+const PRICE_RE = /(?:at\s+|for\s+)?(?:[$\u00a3\u20ac]\s*\d+(?:\.\d+)?|\d+(?:\.\d+)?\s*(?:dollars|bucks))\s*(?:\/|a|an|per|each)?\s*(?:gal(?:lon)?s?|can|tin|bucket|quart|l|lit(?:er|re)s?|sq(?:uare)?\.?\s*(?:ft|feet|foot|yd|yards?|m|met(?:er|re)s?)|box|carton|tile|yd)?\b/g;
+const tidy = (s) => { // drop the "with" or "and" a removed phrase leaves behind
+  let t = s.replace(/\s*,\s*/g, ' , ').replace(/\s+/g, ' ').trim(), prev;
+  do { prev = t; t = t.replace(/\b(?:with|and|,)\s+(?=(?:with|and|,)\b|$)/g, '').replace(/\s+(?:with|and|,)$/, '').trim(); } while (t !== prev);
+  return t.replace(/\s+,/g, ',');
+};
+const TILE_SIZE_RE = /(\d+(?:\.\d+)?)\s*(?:"|in(?:ch(?:es)?)?|cm|mm)?\s*(?:x|by)\s*(\d+(?:\.\d+)?)\s*("|in(?:ch(?:es)?)?|cm|mm)?\s*(?:(?:porcelain|ceramic|floor|wall|marble|stone|subway)\s+)?tiles?\b|(\d+(?:\.\d+)?)\s*(?:-\s*)?("|in(?:ch(?:es)?)?|cm|mm)\s*(?:square\s+)?(?:(?:porcelain|ceramic|floor|wall|marble|stone|subway)\s+)?tiles?\b/;
+function roomOf(text) { // "12x14 room", "4 by 5 metre room" (a tile size is not the room)
+  const base = text.replace(TILE_SIZE_RE, ' tiles '), d = dimsOf(base);
+  if (!d) return null;
+  return base.substr(d.at, d.len).trim() + (d.metric && !/m|met/.test(base.substr(d.at, d.len)) ? ' metre' : '') + ' room';
+}
+function followOf(text) {
+  if (!lastRoom || Date.now() - lastRoom.at > FOLLOW_MS) return null;
+  const t = clean(text);
+  if (!t || t.length > 90) return null;
+  const base = lastRoom.t, wasPaint = lastRoom.kind === 'paint', room = roomOf(base);
+  let m;
+  // a tile size for the same floor
+  if ((m = t.match(new RegExp('^' + LEAD + '(\\d+(?:\\.\\d+)?\\s*(?:"|in(?:ch(?:es)?)?|cm|mm)?\\s*(?:x|by)\\s*\\d+(?:\\.\\d+)?\\s*(?:"|in(?:ch(?:es)?)?|cm|mm)?|\\d+(?:\\.\\d+)?\\s*(?:-\\s*)?(?:"|in(?:ch(?:es)?)?|cm|mm))\\s*(?:(?:porcelain|ceramic|floor|marble|stone|subway)\\s+)?tiles?' + TAIL))))
+    return room ? 'how many ' + m[1] + ' tiles for a ' + room : null;
+  if (dimsOf(t) || areaOf(t)) return null; // a new room is a fresh ask
+  // another material for the same room
+  if ((m = t.match(new RegExp('^' + LEAD + '(carpet|tiles?|tiling|hardwood|engineered\\s+wood|laminate|vinyl(?:\\s+plank)?|lvp|lvt|flooring|new\\s+floors?)' + TAIL)))
+      && (m[0] !== m[1] || /\s/.test(t))) {
+    const mat = /^til/.test(m[1]) ? 'tile' : /^new/.test(m[1]) ? 'flooring' : m[1];
+    if (room) return 'how much ' + mat + ' for a ' + room;
+    if (!wasPaint) return tidy(base.replace(/\b(?:carpet|tiles?|tiling|hardwood|engineered\s+wood|laminate|vinyl(?:\s+plank)?|lvp|lvt|flooring)\b/, mat)).replace(PRICE_RE, ' ').trim();
+    return null;
+  }
+  if (/^(?:(?:and|now|ok|okay|so)\s+)?(?:(?:what|how)\s+about\s+(?:the\s+)?(?:paint|painting)(?:\s+the\s+walls)?|(?:how\s+much\s+)?paint\s+for\s+(?:it|that|this|the\s+same\s+room|that\s+room|the\s+room)|paint\s+the\s+walls(?:\s+too)?|and\s+paint)$/.test(t))
+    return !wasPaint && room ? 'how much paint for a ' + room : null;
+  // a price
+  if ((m = t.match(/^(?:(?:and|if|what\s+if|but)\s+)?(?:(?:it|paint|the\s+paint|carpet|the\s+carpet|tiles?|the\s+tiles?|flooring|the\s+flooring|laminate|hardwood|vinyl)\s+(?:is|are|costs?|was)\s+|at\s+|for\s+|it'?s\s+)?([$\u00a3\u20ac]\s*\d+(?:\.\d+)?\s*(?:\/|a|an|per|each)\s*(gal(?:lon)?s?|can|tin|bucket|quart|l|lit(?:er|re)s?|sq(?:uare)?\.?\s*(?:ft|feet|foot|yd|yards?|m|met(?:er|re)s?)|box|carton|tile|yd))$/))) {
+    const paintPrice = /^(?:gal|can|tin|bucket|quart|l)/.test(m[2]);
+    if (paintPrice !== wasPaint) return null;
+    return tidy(base.replace(PRICE_RE, ' ')) + ' at ' + m[1];
+  }
+  // paint-only changes; on a floor, they ask for paint in the same room
+  const pbase = wasPaint ? base : room ? 'how much paint for a ' + room : null;
+  if ((m = t.match(new RegExp('^' + LEAD + '(' + CNT + '|a\\s+single)\\s+coats?(?:\\s+of\\s+paint)?' + TAIL))) && pbase)
+    return tidy(pbase.replace(/\b(?:\d|one|two|three|four|a\s+single)\s+coats?\b/g, ' ')) + ' with ' + m[1].replace('a single', 'one') + ' coats';
+  if ((m = t.match(new RegExp('^' + LEAD + '((?:' + CNT + '\\s+(?:\\w+\\s+)?(?:doors?|windows?))(?:\\s*(?:,|and|,\\s*and|&)?\\s*' + CNT + '\\s+(?:\\w+\\s+)?(?:doors?|windows?))?|no\\s+doors?\\s+(?:or|and|nor)\\s+windows?)' + TAIL))) && pbase) {
+    let b = pbase.replace(/\bno\s+doors?\s+(?:or|and|nor)\s+windows?\b/g, ' ');
+    const doorsSaid = /door/.test(m[1]), winSaid = /window/.test(m[1]);
+    b = b.replace(OPEN_RE, (s) => ((/door/.test(s) && doorsSaid) || (/window/.test(s) && winSaid) ? ' ' : s));
+    return tidy(b) + ' with ' + m[1];
+  }
+  if ((m = t.match(new RegExp('^' + LEAD + '(' + NUM + "\\s*(?:-\\s*)?(?:'|ft|feet|foot|m|meters?|metres?)?\\s*(?:-\\s*)?(?:high\\s+|tall\\s+)?ceilings?)" + TAIL))) && pbase) {
+    let b = pbase; for (const re of HEIGHT_RE) b = b.replace(re, ' ');
+    return tidy(b) + ' with ' + m[1];
+  }
+  if (new RegExp('^' + LEAD + '(?:paint\\s+)?(?:the\\s+)?ceilings?' + TAIL).test(t) && /\s/.test(t) && pbase)
+    return /\bceilings?\b/.test(pbase.replace(HEIGHT_RE[0], ' ').replace(HEIGHT_RE[1], ' ')) && !/\b(?:just|only)\s+the\s+ceiling|ceiling\s+of\b/.test(pbase) ? null : tidy(pbase.replace(/\b(?:just|only)\s+the\s+ceiling\s+(?:of|in|for)\b|\bthe\s+ceiling\s+(?:of|in|for)\b/, '')) + ' and the ceiling';
+  if (/^(?:(?:and|now|ok|okay|so)\s+)?(?:just|only)\s+the\s+ceiling$/.test(t) && room) return 'how much paint for the ceiling of a ' + room;
+  if (new RegExp('^' + LEAD + '(?:(?:a\\s+coat\\s+of\\s+)?primer|priming|new\\s+drywall|bare\\s+drywall)' + TAIL).test(t) && /\s/.test(t) && pbase)
+    return /\bprimer|\bprime\b|drywall/.test(pbase) ? null : pbase + ' with primer';
+  if (new RegExp('^' + LEAD + '(?:the\\s+)?(?:trim|baseboards?)' + TAIL).test(t) && /\s/.test(t) && pbase)
+    return /\btrim\b|\bbaseboards?\b/.test(pbase) ? null : pbase + ' and the trim';
+  // floor-only changes
+  if (!wasPaint) {
+    if (/\bcarpet\b/.test(base)) return null; // carpet comes off the roll; a lay pattern does not apply
+    if ((m = t.match(new RegExp('^' + LEAD + '(herringbone|chevron|diagonal|on\\s+the\\s+diagonal|straight)(?:\\s+(?:pattern|lay|layout))?' + TAIL))))
+      return tidy(base.replace(/\b(?:herringbone|chevron|diagonal|straight)\b/g, ' ')) + (m[1] === 'straight' ? '' : ' laid ' + m[1].replace('on the ', ''));
+    if ((m = t.match(new RegExp('^' + LEAD + '(\\d+(?:\\.\\d+)?\\s*%\\s*(?:waste|extra|overage)|no\\s+waste)' + TAIL))))
+      return tidy(base.replace(/\b\d+(?:\.\d+)?\s*%\s*(?:waste|extra|overage)\b|\bno\s+waste\b/g, ' ')) + ' with ' + m[1];
+  }
+  return null;
+}
+
 function paintMath(q) {
   const M = q.metric;
   const cover = M ? 10 : 350, doorA = M ? 1.9 : 20, winA = M ? 1.4 : 15, primerCover = M ? 8 : 300;
@@ -229,7 +315,7 @@ function paintHtml(q, esc) {
     + '<ul>' + li.join('') + '</ul>'
     + (assumed.length ? '<p style="color:#8a8a8a">Counted ' + esc(assumed.join(' and ')) + '. Say "with 2 doors and no windows" to change it' + (q.d ? (M ? ', or "2.7 m ceilings" for taller walls' : ', or "9 foot ceilings" for taller walls') : '') + '.</p>' : '')
     + '<p style="color:#8a8a8a">' + esc(how) + '</p>'
-    + '<div class="src">Method: walls = perimeter \u00d7 height \u2212 openings; paint = area \u00d7 coats \u00f7 coverage (Sherwin-Williams, Benjamin Moore and Behr spread rates) \u00b7 ask "paint calculator" to change any number</div>';
+    + '<div class="src">Method: walls = perimeter \u00d7 height \u2212 openings; paint = area \u00d7 coats \u00f7 coverage (Sherwin-Williams, Benjamin Moore and Behr spread rates) \u00b7 ask "paint calculator" to change any number, or just say "what about 3 coats", "the ceiling too", "at $40 a gallon" or "what about carpet"</div>';
 }
 function floorHtml(q, esc) {
   const r = floorMath(q), M = q.metric, U = M ? 'm\u00b2' : 'sq ft';
@@ -257,7 +343,7 @@ function floorHtml(q, esc) {
   return '<h2>' + esc(name) + ' for the room</h2><div class="sub">' + esc(sub) + '</div>'
     + '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(big) + '</div>'
     + '<ul>' + li.join('') + '</ul><p style="color:#8a8a8a">' + esc(how) + '</p>'
-    + '<div class="src">Method: area \u00d7 (1 + waste), rounded up to whole boxes or tiles (NWFA and TCNA waste ranges, as Home Depot and Lowe\u2019s calculators use) \u00b7 ask "flooring calculator" to change any number</div>';
+    + '<div class="src">Method: area \u00d7 (1 + waste), rounded up to whole boxes or tiles (NWFA and TCNA waste ranges, as Home Depot and Lowe\u2019s calculators use) \u00b7 ask "flooring calculator" to change any number, or just say "what about hardwood", "herringbone", "at $3 a sq ft" or "paint for it"</div>';
 }
 
 function runForm(kind, api) {
@@ -291,14 +377,17 @@ function runForm(kind, api) {
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  const q = homeOf(text);
+  let q = homeOf(text), asked = clean(text);
+  if (!q) { const f = followOf(text); if (f) { q = homeOf(f); asked = f; } }
   if (!q) return 'none';
   if (q.kind === 'paintcalc' || q.kind === 'floorcalc') return runForm(q.kind, api);
+  lastRoom = { t: asked, kind: q.kind, at: Date.now() };
   showPage((el) => { el.innerHTML = q.kind === 'paint' ? paintHtml(q, esc) : floorHtml(q, esc); });
   return 'home';
 }
 
-export { homeOf, paintMath, floorMath, buyOf };
+export { homeOf, followOf, paintMath, floorMath, buyOf };
+export function _setLastRoom(t, kind) { lastRoom = t ? { t: clean(t), kind, at: Date.now() } : null; }
 export default {
   name: 'home',
   examples: [
@@ -322,8 +411,9 @@ export default {
     'how many square feet is a 12x15 room',
     'how much concrete for a 10x10 slab 4 inches thick',
     'what is the ocean floor',
-    'best paint colors for a bedroom'
+    'best paint colors for a bedroom',
+    'the ceiling too'
   ],
-  match(lower, text) { return !!homeOf(text); },
+  match(lower, text) { if (homeOf(text)) return true; const f = followOf(text); return !!(f && homeOf(f)); },
   run
 };
