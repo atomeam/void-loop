@@ -67,6 +67,15 @@ nodes:
     date: 2026-10-07
     tracks: [living-figures]
     claim: "54 x 54 x 13 mm, 17.1 g, 0.5 W idle / 1.5 W full load, wake word + ASR + Qwen2.5-0.5B + TTS with no cloud; 359.8 ms first token and 10.32 tokens/s (M5Stack model page, accessed 2026-10-07). Answers toy problem 1 at the part level. Too large for a 38 mm body, so the mind lives in the figure's home base; that layout is the next bench test."
+  - id: slicer-slot-3mf-layout
+    kind: shared-part
+    status: established
+    part: 3MF layout that opens as five named material slots in a consumer slicer
+    title: "OrcaSlicer v2.4.2 3MF importer (src/libslic3r/Format/bbs_3mf.cpp)"
+    url: https://github.com/OrcaSlicer/OrcaSlicer/blob/v2.4.2/src/libslic3r/Format/bbs_3mf.cpp
+    date: 2026-07-07
+    tracks: [printing-working-machines, void-stage]
+    claim: "Box slot test 2026-10-07 (lib3mf 2.5.0 strict read, OrcaSlicer 2.4.2 CLI --export-3mf): five build items, each object with its own one-color m:colorgroup, keep five names on extruders 1-5. Core basematerials alone, one shared colorgroup, or one components assembly all land on extruder 1. PrusaSlicer 2.9.6 (2026-06-25) reads extruders only from Metadata/Slic3r_PE_model.config. Bambu Studio master (2026-09-22) also maps pid/pindex pairs."
   - id: printed-actuator-moves-figure-joint
     kind: shared-part
     status: hypothesis
@@ -75,10 +84,10 @@ nodes:
     claim: A printed actuator could move a miniature figure joint. The linear motor alone does not show this.
   - id: export-to-print
     kind: void-stage
-    status: blocked
+    status: hypothesis
     part: export a print file from a summoned figure
     tracks: [void-stage]
-    claim: Format is 3MF with five Core basematerials (see multimaterial-export-3mf). Still blocked on a browser emitter and a slicer open test. Magnetize handoff cites 1.5 T (MIT Sr-ferrite) or 3-4 T (bonded Neo) and a dia 1.25 cm benchtop coil path.
+    claim: Format is 3MF; the five-slot layout is tested (see slicer-slot-3mf-layout). print-file.js on main already packs valid single-part 3MF. Moves from blocked to hypothesis; becomes established once the per-part export ships and a slice test shows five tool changes. Magnetize handoff cites 1.5 T (MIT Sr-ferrite) or 3-4 T (bonded Neo) and a dia 1.25 cm benchtop coil path.
   - id: stage-figure
     kind: void-stage
     status: hypothesis
@@ -89,6 +98,7 @@ nodes:
 
 ## Cycle log
 
+- 2026-10-07 14:40 ET. Slicer-slot-3mf-layout established by a box slot test (seven variants, lib3mf strict + OrcaSlicer 2.4.2 CLI round-trip): one build item per part with its own one-color colorgroup gives five named parts on extruders 1-5; basematerials alone give one slot. PrusaSlicer 2.9.6 needs Slic3r_PE_model.config. Export-to-print unblocked to hypothesis. Corrected the 08:07 basematerials-only plan.
 - 2026-10-07 12:17 ET. Offline-character-mind-module established (M5Stack Module LLM, AX630C: 54 mm, 17 g, 1.5 W, offline wake word + ASR + 0.5B LLM + TTS at 10.3 tokens/s). Living-figures hold lifted because Motelet is on main. Babaru (16 Apr 2026) and Waylo Offline logged as consumer on-device-mind toys. Folded unmerged 08:07, 10:08 and 12:11 cycles from 2026-10-03.
 - 2026-10-03 12:11 ET. Florida-keys-reef-accretion established (Toth et al. Sci Rep DOI 10.1038/s41598-025-04818-3; −0.84 → +2.80 mm y⁻¹; USGS 10.5066/P13HMEON). GSOCS-LULCC and Australia SOC-M logged on planet-restoration track. Life-extension and 3MF work from prior cycles stay folded on this branch.
 - 2026-10-03 10:08 ET. Senolytics-mash-dq established (Nature Metabolism 1 Oct 2026; D+Q 47% vs 7% fibrosis improvement). PEARL rapamycin safety (Aging 4 Apr 2025) and semaglutide epigenetic slowing (Nat Commun 19 May 2026) logged on life-extension track. Printing/void-stage 3MF work from 08:07 stays folded on this branch.
