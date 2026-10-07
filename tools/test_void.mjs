@@ -948,6 +948,17 @@ try {
   await t.ask('how about 12x24 tiles', 700); const hfTile = await t.page(); check('home follow-up: "how about 12x24 tiles" tiles the same floor', /Tile for the room/.test(hfTile) && /93 tiles/.test(hfTile), hfTile.slice(0, 260));
   await t.ask('paint for it', 700); const hfPaint = await t.page(); check('home follow-up: "paint for it" goes back to paint for the 12x14 room, not the tile size', /Paint for the room/.test(hfPaint) && /366 sq ft/.test(hfPaint), hfPaint.slice(0, 260));
   await t.ask('paint calculator', 700); const hmCalc = await t.page(); check('home: "paint calculator" opens a live form', /Paint calculator/.test(hmCalc) && /gallons/.test(hmCalc) && /ceiling too/.test(hmCalc), hmCalc.slice(0, 220));
+  // walls: wallpaper rolls by the drop method and drywall sheets, with follow-ups that cross to and from home's paint and floor cards
+  await t.ask('how many rolls of wallpaper for a 12x12 room', 700); const wlWp = await t.page(); check('walls: wallpaper by the drop method (32 drops of 8 ft 4 in, 3 a 33-ft roll = 11 rolls, not the 7 area says)', /Wallpaper for the room/.test(wlWp) && /11 rolls/.test(wlWp) && /32 drops/.test(wlWp) && /Why not 7/.test(wlWp), wlWp.slice(0, 260));
+  await t.ask('with a 21 inch repeat', 700); const wlRep = await t.page(); check('walls follow-up: "with a 21 inch repeat" rounds each drop up to whole repeats', /21 in straight repeat/.test(wlRep) && /drops of 8 ft 9 in/.test(wlRep) && /11 rolls/.test(wlRep), wlRep.slice(0, 260));
+  await t.ask('at $45 a roll', 700); const wlCost = await t.page(); check('walls follow-up: "at $45 a roll" prices the same paper', /about \$495/.test(wlCost) && /11 rolls/.test(wlCost), wlCost.slice(0, 260));
+  await t.ask('drywall for it', 700); const wlDw = await t.page(); check('walls follow-up: "drywall for it" switches the same room to drywall sheets', /Drywall for the room/.test(wlDw) && /14 sheets/.test(wlDw) && /384 sq ft/.test(wlDw), wlDw.slice(0, 260));
+  await t.ask('the ceiling too', 700); const wlCeil = await t.page(); check('walls follow-up: "the ceiling too" adds the ceiling to the drywall (not home\'s paint)', /Drywall for the room/.test(wlCeil) && /19 sheets/.test(wlCeil) && /144 sq ft/.test(wlCeil), wlCeil.slice(0, 260));
+  await t.ask('4x12 sheets', 700); const wlLong = await t.page(); check('walls follow-up: "4x12 sheets" redoes it with longer sheets', /4 \u00d7 12 ft sheets/.test(wlLong) && /13 sheets/.test(wlLong), wlLong.slice(0, 260));
+  await t.ask('paint for it', 700); const wlPaint = await t.page(); check('walls follow-up: "paint for it" hands the same room to home', /Paint for the room/.test(wlPaint) && /12 \u00d7 12 ft room/.test(wlPaint), wlPaint.slice(0, 260));
+  await t.ask('wallpaper for it', 700); const wlBack = await t.page(); check('walls follow-up: "wallpaper for it" after a paint card uses that room', /Wallpaper for the room/.test(wlBack) && /11 rolls/.test(wlBack), wlBack.slice(0, 260));
+  await t.ask('how many sheets of drywall for a 12x14 room', 700); const wlDw2 = await t.page(); check('walls: drywall sheets, screws, tape and compound from USG\'s figures', /15 sheets/.test(wlDw2) && /416 sq ft/.test(wlDw2) && /154 ft of paper tape/.test(wlDw2) && /USG/.test(wlDw2), wlDw2.slice(0, 260));
+  await t.ask('wallpaper calculator', 700); const wlCalc = await t.page(); check('walls: "wallpaper calculator" opens a live form', /Wallpaper calculator/.test(wlCalc) && /rolls/.test(wlCalc) && /half drop/.test(wlCalc), wlCalc.slice(0, 220));
   await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
@@ -2084,7 +2095,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'home', 'sleep', 'pregnancy', 'ovulation', 'period', 'inventory', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'home', 'walls', 'sleep', 'pregnancy', 'ovulation', 'period', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
