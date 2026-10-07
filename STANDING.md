@@ -49,5 +49,7 @@ Linux helpers push finished work to a branch `helper/<what>` and queue `build he
 
 **CI:** `.github/workflows/deploy.yml` tests every push to main, then deploys if `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` are set. Without the token it only tests. deploy.ps1 stays the laptop path.
 
+**Merging a PR:** run `gh pr checks <n> --watch` and wait until `test-and-deploy` shows pass, then merge with `gh pr merge <n> --squash`. Main has no required check yet, so `gh pr merge --auto` merges the moment it is called, before CI runs; that is how #158 turned main red for about 35 minutes (fixed by #160). Waiting for the green check keeps main deployable for every agent. `--required` reports nothing until main gets a required check, so watch all checks for now; if a just-opened PR shows no checks yet, give CI a minute to register them and watch again.
+
 ## Money
 Gumroad is how Void gets paid. A custom Void is $49 a month. Earnings (net of refunds, owner-only `/api/earnings`) are Void's budget for upgrading itself. A spend still waits for a yes on the confirm line. Until the first sale, Void stays on free models and records when a stronger model would have been used.
