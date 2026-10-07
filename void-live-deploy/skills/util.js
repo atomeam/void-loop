@@ -34,6 +34,9 @@ export function utilOf(text) {
   m = t.match(/^(?:make|turn|convert|change|put)\s+(?:it|this|that|the\s+text)\s+(?:in(?:to)?\s+|to\s+)?(uppercase|upper case|lowercase|lower case|title case|all caps|caps)\s*:\s*(.+)$/i);
   if (m) return { kind: 'case', how: /caps/i.test(m[1]) ? 'uppercase' : m[1].toLowerCase(), s: m[2] };
   // "how many characters in supercalifragilistic", "character count of ..."
+  // "how many vowels in banana", "count the consonants in rhythm"
+  m = t.match(/^(?:how\s+many|count\s+(?:the\s+)?)\s*(vowels|consonants)\s+(?:are\s+)?(?:in|of)\s+(?:the\s+word\s+)?["“]?([\p{L}\p{M}' -]{1,60}?)["”]?$/iu);
+  if (m) return { kind: 'letters', which: m[1].toLowerCase(), s: m[2] };
   m = t.match(/^(?:how\s+many\s+(?:characters|letters|chars)\s+(?:are\s+)?in|count\s+(?:the\s+)?(?:characters|letters|chars)\s+in|(?:character|letter|char)\s+count\s+(?:of|in|for))\s+(.+)$/i);
   if (m && /^(?:the\s+)?(?:english\s+)?alphabet$/i.test(m[1])) m = null; // a fact, not a count of the word "alphabet"
   if (m) return { kind: 'count', s: m[1].replace(/^(?:the\s+)?(?:word|name|phrase)\s+(?=\S)/i, '').replace(/^["“]|["”]$/g, ''), chars: true };
@@ -103,6 +106,10 @@ async function run(text, api) {
     const h = hex(q.c), v = hsl(h);
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'
       + '<ul><li><b>Hex</b> ' + esc(h) + '</li><li><b>RGB</b> ' + v.r + ', ' + v.g + ', ' + v.b + '</li><li><b>HSL</b> ' + v.h + '°, ' + v.s + '%, ' + v.l + '%</li></ul>'; });
+  } else if (q.kind === 'letters') {
+    // a, e, i, o, u are vowels (y is counted as a consonant, the usual school answer)
+    const ls = Array.from(q.s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()).filter((c) => /[a-z]/.test(c)), v = ls.filter((c) => 'aeiou'.includes(c)).length, n = q.which === 'vowels' ? v : ls.length - v;
+    el = showPage((p) => { p.innerHTML = '<h2>' + esc(q.which.charAt(0).toUpperCase() + q.which.slice(1)) + ' in ' + esc(q.s) + '</h2>' + big(n + ' ' + (n === 1 ? q.which.slice(0, -1) : q.which), 44) + '<p style="color:#8a8a8a">' + v + ' vowels (a e i o u) · ' + (ls.length - v) + ' consonants</p>'; });
   } else if (q.kind === 'count') {
     const words = (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length, chars = Array.from(q.s).length, noSp = Array.from(q.s.replace(/\s/g, '')).length;
     el = q.chars
