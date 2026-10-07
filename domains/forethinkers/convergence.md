@@ -49,6 +49,15 @@ nodes:
     date: 2026-10-01
     tracks: [life-extension]
     claim: "Phase-2 RCT (n=31): intermittent dasatinib+quercetin achieved ≥1-stage fibrosis improvement without MASH worsening in 47% vs 7% placebo (P=0.02); MASH resolution 53% vs 7%. snRNA-seq showed lower senescence and fibrosis signatures. Hypothesis-generating (small n). Nature Metabolism 1 Oct 2026; NCT05506488."
+  - id: senolytic-burden-selects-responders
+    kind: shared-part
+    status: established
+    part: senescent-cell burden (T-cell p16 variant 5 or plasma SASP) picks who responds to D+Q
+    title: "Effects of intermittent senolytic therapy on bone metabolism in postmenopausal women: a phase 2 randomized controlled trial"
+    url: https://doi.org/10.1038/s41591-024-03096-2
+    date: 2024-07-02
+    tracks: [life-extension]
+    claim: "Overall primary endpoint missed (CTx P=0.611, n=60); highest p16 tertile responded (P1NP +34%, CTx -11%, radius BMD +2.7%, exploratory). Aging Cell 2025 (doi 10.1111/acel.14489): p16 variant 5 predicts response best; plasma SASP panel is a substitute. Registry check 2026-10-07 (ClinicalTrials.gov API v2, CORS open): no follow-on senolytic MASH trial registered; three prospective GLP-1 DNAm-age trials (NCT07220473, NCT07707778, NCT07293325) read out 2027."
   - id: florida-keys-reef-accretion
     kind: shared-part
     status: established
@@ -98,6 +107,7 @@ nodes:
 
 ## Cycle log
 
+- 2026-10-07 16:20 ET. Senolytic-burden-selects-responders established (Farr et al. Nat Med 2024; Aging Cell 2025 p16 variant 5). Live ClinicalTrials.gov pass: no senolytic MASH replication registered, NCT05506488 has no posted results, three prospective GLP-1 DNAm-age trials read out Apr-Dec 2027. Registry API is browser-readable, so a live trial-watch card is buildable. Stale 14:16 worktree removed (its PR #158 had merged).
 - 2026-10-07 14:40 ET. Slicer-slot-3mf-layout established by a box slot test (seven variants, lib3mf strict + OrcaSlicer 2.4.2 CLI round-trip): one build item per part with its own one-color colorgroup gives five named parts on extruders 1-5; basematerials alone give one slot. PrusaSlicer 2.9.6 needs Slic3r_PE_model.config. Export-to-print unblocked to hypothesis. Corrected the 08:07 basematerials-only plan.
 - 2026-10-07 12:17 ET. Offline-character-mind-module established (M5Stack Module LLM, AX630C: 54 mm, 17 g, 1.5 W, offline wake word + ASR + 0.5B LLM + TTS at 10.3 tokens/s). Living-figures hold lifted because Motelet is on main. Babaru (16 Apr 2026) and Waylo Offline logged as consumer on-device-mind toys. Folded unmerged 08:07, 10:08 and 12:11 cycles from 2026-10-03.
 - 2026-10-03 12:11 ET. Florida-keys-reef-accretion established (Toth et al. Sci Rep DOI 10.1038/s41598-025-04818-3; −0.84 → +2.80 mm y⁻¹; USGS 10.5066/P13HMEON). GSOCS-LULCC and Australia SOC-M logged on planet-restoration track. Life-extension and 3MF work from prior cycles stay folded on this branch.

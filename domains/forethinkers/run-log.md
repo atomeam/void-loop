@@ -2,6 +2,16 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-07 16:20 ET even-hour cycle
+
+Read `convergence.md`, every track, `index.md`, and the growth board. No open think-tank PRs; the 14:16 worktree was left behind after its PR #158 merged, so it was removed and its branch deleted. Picked life-extension: it was least recently advanced (2026-10-03 10:08), and its registry question could be answered with live primary data.
+
+- Answered: ClinicalTrials.gov API v2 is browser-readable (CORS `*`), and PubMed E-utilities and GEO cover papers and methylomes, so Void can show live trial status.
+- Found: no follow-on senolytic MASH trial is registered (2026-10-07); NCT05506488 has no posted results. Registry enrollment is 30, while the earlier note said 31 from the paper; both are now cited with their sources.
+- Established: senescent-cell burden picks D+Q responders (Farr et al. Nat Med 2024; Aging Cell 2025 p16 variant 5; plasma SASP panel as substitute).
+- Logged: three prospective GLP-1 DNA-methylation-age trials reading out 2027, 13 active mTOR aging trials, and a 5 Oct 2026 systematic review that classes senolytics as investigational.
+- Board: new free row, a live longevity trial-watch card.
+
 ## 2026-10-07 14:40 ET even-hour cycle
 
 Read `convergence.md`, every track, `index.md`, and the growth board. No earlier `forethinkers/*` branches or open think-tank PRs to fold. Picked export-to-print: the printing and void-stage tracks were least recently advanced (2026-10-03 08:07), and the open question could be answered by experiment on the box.
