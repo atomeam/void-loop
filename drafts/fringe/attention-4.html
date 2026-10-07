@@ -48,7 +48,8 @@ button:disabled{opacity:.4;cursor:default}
     return cells.slice(0,n).map(function(c){var cx=(c%cols+.5)/cols,cy=(Math.floor(c/cols)+.5)/rows;return[(cx+(Math.random()-.5)*.4/cols)*w,(cy+(Math.random()-.5)*.4/rows)*h]})}
   function round(){var kind=Math.random()<.5?'feature':'conjunction',n=SIZES[Math.floor(Math.random()*SIZES.length)],present=Math.random()<.5,F=el('field'),r=F.getBoundingClientRect(),pts=places(n,r.width-30,r.height-30);
     F.textContent='';pts.forEach(function(p,i){var s=document.createElement('span'),target=present&&i===0,red,ch;
-      if(target){ch='X';red=true}else if(kind==='feature'){ch='X';red=false}else{red=Math.random()<.5;ch=red?'O':'X'}
+      // conjunction rounds alternate red O and green X among the distractors (their places are already shuffled), so both kinds are always there
+      if(target){ch='X';red=true}else if(kind==='feature'){ch='X';red=false}else{red=(i-(present?1:0))%2===1;ch=red?'O':'X'}
       s.textContent=ch;s.style.color=red?RED:GREEN;s.style.left=(p[0]+15)+'px';s.style.top=(p[1]+15)+'px';F.appendChild(s)});
     cur={kind:kind,n:n,present:present,t0:performance.now()};el('yes').disabled=el('no').disabled=false;el('state').textContent=''}
   function answer(said){if(!cur)return;var ms=Math.round(performance.now()-cur.t0),right=said===cur.present;

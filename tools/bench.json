@@ -5019,5 +5019,6 @@
   {"ask": "review this sql: SELECT * FROM users WHERE name LIKE '%a%'", "want": "review", "says": "column|SELECT \\*|index|LIKE"},
   {"ask": "review this bash: rm -rf /tmp/$name", "want": "review", "says": "empty|unset|quote|\\$name"},
   {"ask": "review this php: include($_GET['page']);", "want": "review", "says": "include|file|path|untrusted|remote"},
-  {"ask": "review this js: new Function('return ' + input)()", "want": "review", "says": "eval|Function|run"}
+  {"ask": "review this js: new Function('return ' + input)()", "want": "review", "says": "eval|Function|run"},
+  {"ask": "what time zone is it in tokyo", "want": "skill:worldtime", "says": null}
 ]

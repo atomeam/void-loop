@@ -31,7 +31,7 @@ export function parseWorldTime(text) {
     || t.match(/^(?:what'?s|whats|what\s+is)\s+(?:the\s+)?(?:date|day)\s+(?:today\s+)?(?:in|at)\s+(.+)$/i)
     // "what is the time zone of Denver", "time zone in Tokyo", "what time zone is Denver in": the card shows the zone and offset
     || t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?time\s*zone\s+(?:of|in|for)\s+(.+)$/i)
-    || t.match(/^what\s+time\s*zone\s+is\s+(.+?)(?:\s+in)?$/i)
+    || t.match(/^what\s+time\s*zone\s+is\s+(?:it\s+in\s+)?(.+?)(?:\s+in)?$/i)
     // "is it daytime in Tokyo", "is it night in Sydney now": the card shows the local time, which answers it
     || t.match(/^is\s+it\s+(?:(?:day|night)(?:time)?|morning|afternoon|evening|dark|light|late|early)\s+(?:right\s+now\s+|now\s+)?(?:in|at)\s+(.+?)(?:\s+(?:right\s+)?now)?$/i);
   if (m) { const place = PLACE(m[1]); return place && !NOT_PLACE.test(place) ? { kind: 'now', place } : null; }

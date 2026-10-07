@@ -130,7 +130,7 @@ ok(rules('r = requests.get(url)', 'python').includes('requests-no-timeout@1') &&
 // run 42: Python 2 print, from x import *, a variable set to null then used, PHP include of request input
 ok(looksLikeCode("print 'hello'", 'python') && rules("print 'hello'", 'python').includes('py2-print@1') && !rules("print('hello')", 'python').includes('py2-print@1'), 'Python 2 print flagged, print() not');
 ok(rules('from os import *', 'python').includes('wildcard-import@1') && !rules('from os import path', 'python').includes('wildcard-import@1'), 'import * flagged, named imports not');
-ok(rules('String s = null; s.length();', 'java').includes('null-deref@1') && !rules('String s = null; s = read(); s.length();', 'java').includes('null-deref@1') && !rules('let a = null; b.go();', 'javascript').includes('null-deref@1'), 'null then .method flagged; reassigned first, or another variable, not');
+ok(rules('String s = null; s.length();', 'java').includes('null-deref@1') && !rules('String s = null; s = read(); s.length();', 'java').includes('null-deref@1') && !rules('let a = null; b.go();', 'javascript').includes('null-deref@1') && !rules('String s = null; if (s != null) s.length();', 'java').includes('null-deref@1') && !rules('let a = null; if (a) a.go();', 'javascript').includes('null-deref@1'), 'null then .method flagged; reassigned first, or another variable, not');
 ok(rules("include($_GET['page']);", 'php').includes('php-include-input@1') && !rules("include 'header.php';", 'php').includes('php-include-input@1'), 'include of request input flagged, a fixed file not');
 // keys never shown as written
 ok(!JSON.stringify(ruleReview('const token = "ghp_abcdefghijklmnopqrstuvwxyz0123";')).includes('ghp_abcdef'), 'a key in a finding is masked');
