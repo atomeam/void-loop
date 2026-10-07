@@ -929,6 +929,10 @@ try {
     await t.ask('is my period late', 600); const plate = await t.page(); check('period: "is my period late" reads the log', /Not late/.test(plate) && /in 18 days/.test(plate), plate.slice(0, 200));
     await t.ask('remove my last period', 600); const prm = await t.page(); check('period: "remove my last period" takes the newest entry off', /Took off the period/.test(prm) && /2 periods logged/.test(prm), prm.slice(0, 200));
     await t.ask('clear my period log', 500); const pcl = await t.page(); check('period: "clear my period log" empties it (nothing left in localStorage)', /Cleared your period log/.test(pcl) && (await t.p.evaluate(() => localStorage.getItem('a2m.void.cycle.v1'))) === null, pcl.slice(0, 160)); }
+  await t.ask('how much paint do i need for a 12x14 room', 700); const hmPaint = await t.page(); check('home: paint for a room (perimeter x 8 ft, less 1 door and 2 windows, 2 coats at 350 sq ft a gallon)', /Paint for the room/.test(hmPaint) && /366 sq ft/.test(hmPaint) && /2\.09 gallons/.test(hmPaint) && /2 gallons \+ 1 quart/.test(hmPaint) && /Sherwin-Williams/.test(hmPaint), hmPaint.slice(0, 260));
+  await t.ask('how many 12x24 tiles for a 10x12 floor', 700); const hmTile = await t.page(); check('home: tiles for a floor from the tile size, 10% waste', /Tile for the room/.test(hmTile) && /66 tiles/.test(hmTile) && /132 sq ft/.test(hmTile) && /Baseboard/.test(hmTile), hmTile.slice(0, 260));
+  await t.ask('how much carpet for a 12x14 room', 700); const hmCarpet = await t.page(); check('home: carpet in square yards off a 12-ft roll', /Carpet for the room/.test(hmCarpet) && /19 sq yd/.test(hmCarpet) && /12-ft roll/.test(hmCarpet) && /no seams/.test(hmCarpet), hmCarpet.slice(0, 260));
+  await t.ask('paint calculator', 700); const hmCalc = await t.page(); check('home: "paint calculator" opens a live form', /Paint calculator/.test(hmCalc) && /gallons/.test(hmCalc) && /ceiling too/.test(hmCalc), hmCalc.slice(0, 220));
   await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
@@ -2065,7 +2069,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'sleep', 'pregnancy', 'ovulation', 'period', 'inventory', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'home', 'sleep', 'pregnancy', 'ovulation', 'period', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',
