@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · take the helper's word (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled,input:disabled{opacity:.4;cursor:default}
+canvas{width:100%;height:220px;border:1px solid rgba(255,255,255,.12);border-radius:12px;display:block}
+#advice{color:#7cf}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>take the helper's word · draft · not published</h1>
+  <p class="note">A cloud of dots shows for one second. Guess how many there were. Then a helper gives its own guess, and you give your final answer. The helper is made up: its guesses are off by about as much as people's usually are, sometimes high, sometimes low. Studies of advice find that people move only about a quarter or a third of the way toward an adviser, even one as good as they are (Yaniv, 2004), while simply averaging the two guesses is usually more accurate than either one (Soll and Larrick, 2009). This page measures how far you move (0% = kept your guess, 100% = took the helper's) and whether your final answers beat your first ones. Everything stays in this browser.</p>
+  <canvas id="dots" width="600" height="220" aria-label="a cloud of dots, shown for one second"></canvas>
+  <div class="row"><button id="go" type="button">show dots</button></div>
+  <div class="row"><label for="first" class="note">your guess</label><input id="first" inputmode="numeric" autocomplete="off" style="width:7em" disabled><button id="ask" type="button" disabled>see the helper's guess</button></div>
+  <div id="advice" aria-live="polite"></div>
+  <div class="row"><label for="final" class="note">your final answer</label><input id="final" inputmode="numeric" autocomplete="off" style="width:7em" disabled><button id="done" type="button" disabled>done</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.advice.v1',st={trials:[]},cur=null;
+  function ok(t){return t&&[t.truth,t.first,t.advice,t.final].every(function(x){return typeof x==='number'&&x>0&&isFinite(x)})}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(ok)}catch(_){}
+  function el(id){return document.getElementById(id)}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-300)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your rounds (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  function gauss(){var u=1-Math.random(),v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+  // weight of advice: how far the final answer moved from the first guess toward the advice, kept between 0 and 1 (null when the two guesses were the same)
+  function woa(first,advice,final){if(advice===first)return null;return Math.min(1,Math.max(0,(final-first)/(advice-first)))}
+  // error on a log scale, so 50 for 100 and 200 for 100 count the same
+  function err(guess,truth){return Math.abs(Math.log(guess/truth))}
+  function median(a){if(!a.length)return null;var b=a.slice().sort(function(x,y){return x-y}),h=b.length>>1;return b.length%2?b[h]:(b[h-1]+b[h])/2}
+  function summary(trials){var w=trials.map(function(t){return woa(t.first,t.advice,t.final)}).filter(function(x){return x!=null});
+    function mean(f){return trials.length?trials.reduce(function(s,t){return s+f(t)},0)/trials.length:null}
+    return{n:trials.length,woa:median(w),first:mean(function(t){return err(t.first,t.truth)}),advice:mean(function(t){return err(t.advice,t.truth)}),
+      final:mean(function(t){return err(t.final,t.truth)}),average:mean(function(t){return err((t.first+t.advice)/2,t.truth)})}}
+  function draw(n){var c=el('dots'),g=c.getContext('2d'),i;g.clearRect(0,0,c.width,c.height);g.fillStyle='#d8d8dc';
+    for(i=0;i<n;i++){g.beginPath();g.arc(8+Math.random()*(c.width-16),8+Math.random()*(c.height-16),3,0,2*Math.PI);g.fill()}}
+  function num(id){var v=Number(String(el(id).value).replace(/[^\d.]/g,''));return v>0&&isFinite(v)?Math.round(v):null}
+  el('go').addEventListener('click',function(){if(cur)return;var n=40+Math.floor(Math.random()*161);
+    // the helper: right on average, off by about 20% either way, like a typical person on this task
+    cur={truth:n,advice:Math.max(1,Math.round(n*Math.exp(.2*gauss())))};el('go').disabled=true;el('advice').textContent='';el('state').textContent='';
+    draw(n);setTimeout(function(){draw(0);el('first').disabled=el('ask').disabled=false;el('first').value='';el('first').focus()},1000)});
+  el('ask').addEventListener('click',function(){if(!cur||cur.first)return;var f=num('first');if(!f){el('state').textContent='type a number first';return}
+    cur.first=f;el('first').disabled=el('ask').disabled=true;el('advice').textContent='the helper guessed '+cur.advice;el('final').disabled=el('done').disabled=false;el('final').value='';el('final').focus()});
+  el('done').addEventListener('click',function(){if(!cur||!cur.first)return;var f=num('final');if(!f){el('state').textContent='type your final answer';return}
+    cur.final=f;st.trials.push({truth:cur.truth,first:cur.first,advice:cur.advice,final:cur.final,at:Date.now()});save();
+    var w=woa(cur.first,cur.advice,cur.final);el('state').textContent='there were '+cur.truth+' dots'+(w==null?'':' · you moved '+Math.round(w*100)+'% of the way to the helper');
+    cur=null;el('final').disabled=el('done').disabled=true;el('go').disabled=false;el('go').focus();score()});
+  [['first','ask'],['final','done']].forEach(function(p){el(p[0]).addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();el(p[1]).click()}})});
+  function score(){var s=summary(st.trials);if(!s.n){el('score').textContent='';return}var pct=function(e){return Math.round((Math.exp(e)-1)*100)+'%'};
+    el('score').textContent=s.n+' round'+(s.n>1?'s':'')+(s.woa==null?'':' · you usually move '+Math.round(s.woa*100)+'% of the way to the helper')
+      +(s.n>=10?'\ntypical miss: your first guess '+pct(s.first)+' · the helper '+pct(s.advice)+' · your final answer '+pct(s.final)+' · halfway between your guess and the helper '+pct(s.average):'\nabout 10 rounds before comparing misses')}
+  score();
+  // made-up rounds: moving halfway is 50%, past the helper counts as 100%, and halfway answers beat both guesses when they miss on opposite sides
+  function selftest(){if(woa(100,200,150)!==.5||woa(100,200,250)!==1||woa(100,200,80)!==0||woa(100,100,120)!==null)return'woa is off';
+    var s=summary([{truth:100,first:80,advice:125,final:102.5},{truth:100,first:125,advice:80,final:102.5}]);
+    if(Math.abs(s.first-Math.log(1.25))>1e-12||!(s.average<s.first)||s.woa!==.5)return'summary gave '+JSON.stringify(s);
+    if(median([3,1,2])!==2||median([4,1,3,2])!==2.5)return'median is off';return true}
+  window.__advice={woa:woa,err:err,summary:summary,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

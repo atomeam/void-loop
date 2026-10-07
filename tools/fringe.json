@@ -1133,5 +1133,30 @@
     ],
     "sha256": "ecd131cd24fccc327074a88764174d1b6342efb187bbc56bde54d95822e23534",
     "emit": false
+  },
+  {
+    "run": 46,
+    "at": "2026-10-07T15:44:00Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-5.html",
+    "sources": [
+      {
+        "claim": "People revising an estimate after advice move on average only about 20-30% of the way toward the adviser (egocentric discounting), even when the adviser is about as accurate as they are",
+        "source": "https://doi.org/10.1016/j.obhdp.2003.08.002",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Averaging one's own estimate with another person's is usually more accurate than choosing either, because their errors partly cancel",
+        "source": "https://doi.org/10.1037/a0015145",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing their own weight of advice next to the averaging result makes people lean more on a machine helper of known accuracy",
+        "source": "drafts/fringe/human-machine-co-agency-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "4e5f5e9ae7f5bf8559455b073afe0d03c9af6893707e11b2f2aca62de2257155",
+    "emit": false
   }
 ]
