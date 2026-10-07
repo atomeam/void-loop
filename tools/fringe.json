@@ -1108,5 +1108,30 @@
     ],
     "sha256": "079de5e300fc45c9f95c862e67738f1893d06a5403fdfa221b585596fab113d2",
     "emit": false
+  },
+  {
+    "run": 45,
+    "at": "2026-10-07T14:44:24Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger-5.html",
+    "sources": [
+      {
+        "claim": "Flexible analysis (testing several outcomes and reporting the one that worked) raises the false-positive rate far above the nominal 5%",
+        "source": "https://doi.org/10.1177/0956797611417632",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "With k independent tests at level alpha, the chance of at least one false positive is 1 - (1 - alpha)^k, and testing each at alpha / k (Bonferroni) holds it at or below alpha",
+        "source": "https://en.wikipedia.org/wiki/Bonferroni_correction",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Watching false findings appear in made-up noise makes people slower to accept a single weak signal in their own logs",
+        "source": "drafts/fringe/weak-signal-hypothesis-ledger-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "ecd131cd24fccc327074a88764174d1b6342efb187bbc56bde54d95822e23534",
+    "emit": false
   }
 ]
