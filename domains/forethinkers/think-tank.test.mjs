@@ -25,6 +25,22 @@ test("map seed: motor is established and joint stays hypothesis", () => {
     assert.equal(bench.status, "established");
     assert.equal(establishedOk(bench), true);
   }
+  const fmt = map.find((n) => n.id === "multimaterial-export-3mf");
+  if (fmt) {
+    assert.equal(fmt.status, "established");
+    assert.equal(establishedOk(fmt), true);
+  }
+  const seno = map.find((n) => n.id === "senolytics-mash-dq");
+  if (seno) {
+    assert.equal(seno.status, "established");
+    assert.equal(establishedOk(seno), true);
+  }
+  const mind = map.find((n) => n.id === "offline-character-mind-module");
+  if (mind) {
+    assert.equal(mind.status, "established");
+    assert.equal(establishedOk(mind), true);
+    assert.deepEqual(mind.tracks, ["living-figures"]);
+  }
   const joint = map.find((n) => n.id === "printed-actuator-moves-figure-joint");
   assert.equal(joint.status, "hypothesis");
   assert.deepEqual(joint.tracks, ["printing-working-machines", "living-figures"]);
