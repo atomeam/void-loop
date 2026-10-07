@@ -11,15 +11,15 @@ urine collectors, small and fun on the stage, with zoom to inspect it up close. 
 - **Why:** the first piece of the two-part summons (Direction 2026-10-03). The first thing people ask Void shows both parts at once, card and 3D figure, and says what A-to-Mind is in one line.
 - **Reuse:** self page (`wantsSelfPage` / `showSelfPage` in void.html), 3D shapes and materialize animation from `skills\make.js`, page close handling, the `prefers-reduced-motion` check void.html already makes for the stars.
 - **Done when:** "what are you?" shows the card plus the 3D slogan beside it with the exact slogan text; closing the card takes the slogan with it; reduced motion shows it still; the empty page loads as fast as before; `node tools\test_void.mjs` gains one check for it and stays green.
-- **claim:** building helper/slogan-3d
-- **claim_until:** 2026-10-03
+- **claim:** DONE, live at 9640898 (skills/slogan3d.js)
+- **claim_until:**
 
 ### Next #17 — a light 3D layer and one roaming figure
 - **What:** one light 3D layer behind the stage, using three.js served from the site itself and loaded lazily the first time a figure is summoned, with one base figure that roams on its own: it wanders the void, notices the cursor and turns toward it, and walks around cards so they stay readable. Add a reduced-motion setting (follows `prefers-reduced-motion`, plus an ask such as "less motion") that holds figures still, and asks such as "send them away" or "send the figure away" that clear figures, with undo.
 - **Why:** this is the shared engine every two-part summon rides on. Lazy loading keeps the empty page fast, and reduced motion plus send-away keep each visitor in charge of their own Void.
 - **Reuse:** stage layering, undo stack, personal layer in localStorage, the media-query pattern from Next #7 applied to `prefers-reduced-motion`.
 - **Done when:** the empty page loads zero 3D code (network log); summoning a test figure loads the layer, and the figure wanders and follows the cursor; reduced motion holds it still; "send them away" clears it and undo brings it back; tests gain a lazy-load check and stays green.
-- **claim:** free
+- **claim:** DONE, live at 483dd29 (light 3D layer and roaming void sprite)
 - **claim_until:**
 
 ### Next #18 — base bodies dressed from the card
@@ -27,7 +27,7 @@ urine collectors, small and fun on the stage, with zoom to inspect it up close. 
 - **Why:** one body set dressed from data covers every subject, so figures scale to everything without hand-made models.
 - **Reuse:** the #17 layer, card data from the article page (Wikipedia summary type and description), `colorFrom`.
 - **Done when:** summoning a person, an animal, a place, an object and an idea each brings the matching body in the subject's colors, with a prop and a line of its own; tests cover the body pick for five sample cards and stay green.
-- **claim:** DONE (helper/base-bodies)
+- **claim:** DONE, live at da014c1 (helper/base-bodies)
 - **claim_until:**
 
 ### Next #19 — behavior scripts from Workers AI, with a fallback
@@ -35,7 +35,7 @@ urine collectors, small and fun on the stage, with zoom to inspect it up close. 
 - **Why:** this is the brain that lets each figure think for itself and do things true to its subject, at the scale of everything people summon, while staying on free models.
 - **Reuse:** the Workers AI binding `/api/will` and `/api/answer` already use, D1 for the per-subject cache, the #17 drives.
 - **Done when:** a new summon gets an AI script once and reuses it after; with AI switched off the fallback runs and the figure still acts; a script naming unknown actions is trimmed to the known ones; tests cover both paths and stay green.
-- **claim:** DONE (helper/behavior-scripts-v2)
+- **claim:** DONE, live at c1eb16b (helper/behavior-scripts-v2)
 - **claim_until:**
 
 ### Next #20 — figures react to each other
@@ -43,8 +43,8 @@ urine collectors, small and fun on the stage, with zoom to inspect it up close. 
 - **Why:** a Void where figures meet and interact feels alive, so every extra summon is worth calling.
 - **Reuse:** #17 drives, #19 scripts (add a "reacts to" field), the fallback scripts.
 - **Done when:** two summons with matching scripts visibly interact (the police figure chases the troublemaker off the stage); reduced motion holds both still; tests check the reaction pick and stay green.
-- **claim:** building helper/figures-react
-- **claim_until:** 2026-10-05
+- **claim:** DONE, live at 82a7bcc (greet, follow, chase, flee, argue, team up)
+- **claim_until:**
 
 ### Next #21 — cartoon tone pass for grim subjects
 - **What:** when a card's subject is grim or gross (crime, disease, disasters, shock performers), its script and styling go full cartoon: lumpy rubbery bodies, bright silly splats, slapstick fights and comic exits, the way South Park handles them. Example: a GG Allin card brings a chaotic little lumpy cartoon GG with a mic who stage-dives off cards, throws tiny cartoon splats, picks fights with other summons and gets chased off by a summoned police card.
