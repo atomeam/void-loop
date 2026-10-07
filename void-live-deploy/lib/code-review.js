@@ -188,7 +188,10 @@ const RULES = [
     'indexOf returns -1 when the item is missing (which counts as true) and 0 when it is first (which counts as false), so this check is backwards in both cases. Use list.includes(x), or compare: list.indexOf(x) !== -1.'],
   ['listener-called', 'bug', JS, (m, r) => /\.addEventListener\s*\(/.test(m) && /\.addEventListener\s*\(\s*(['"`])[\w:-]+\1\s*,\s*[\w$.]+\s*\(\s*\)\s*[,)]/.test(r), // handler(): a factory with arguments, makeHandler(1), is fine
     'the handler is called right away (handler()) and its result is what gets attached, so nothing happens on the event. Pass the function itself: addEventListener("click", handler), or wrap it: () => handler(arg).'],
-  ['float-equality', 'bug', [...JS, 'python', 'java', 'csharp'], (m) => /\d\.\d*[1-9]\d*\s*(?:[-+*/]\s*[\d.]+[^=!<>]*)?[=!]==?|[=!]==?\s*-?\d*\.\d*[1-9]/.test(m.replace(/['"`][^'"`]*['"`]/g, '""')),
+  ['float-equality', 'bug', [...JS, 'python', 'java', 'csharp'], (m) => { const c = m.replace(/['"`][^'"`]*['"`]/g, '""'); // 1.25, 0.5, 0.75 are exact in binary: == on them alone is safe
+    if (!/\d\.\d*[1-9]\d*\s*(?:[-+*/]\s*[\d.]+[^=!<>]*)?[=!]==?|[=!]==?\s*-?\d*\.\d*[1-9]/.test(c)) return false;
+    const decs = c.match(/\d*\.\d+/g) || [];
+    return !decs.length || !decs.every((d) => { const v = Number(d); return [1, 2, 4, 8, 16, 32].some((k) => Number.isInteger(v * k)); }); },
     'decimal numbers are stored in binary, so sums like 0.1 + 0.2 come out as 0.30000000000000004 and an exact == fails. Compare with a small tolerance: Math.abs(a - b) < 1e-9 (math.isclose in Python), or work in whole cents.'],
   ['drop-table', 'risk', ['sql', 'shell', 'code'], (m) => /^\s*(?:DROP\s+(?:TABLE|DATABASE|SCHEMA)\b|TRUNCATE\s+(?:TABLE\s+)?[\w."`[\]]+)/i.test(m),
     'this deletes the table (or database) and every row in it, and there is no undo. Take a backup first, and in a migration say exactly what you mean: DROP TABLE IF EXISTS old_name.'],

@@ -5130,5 +5130,15 @@
   {"ask": "im due march 3 what trimester am i in", "want": "skill:pregnancy"},
   {"ask": "due date if my last period was march 1 and my cycle is 35 days", "want": "skill:pregnancy"},
   {"ask": "what week of pregnancy am i if my due date is april 20", "want": "skill:pregnancy"},
-  {"ask": "due date if conceived jan 10", "want": "skill:pregnancy"}
+  {"ask": "due date if conceived jan 10", "want": "skill:pregnancy"},
+  {"ask": "group the clock and the note", "want": "skill:group", "says": "grouped the clock and the note", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer"]},
+  {"ask": "group everything", "want": "skill:group", "says": "grouped", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer"]},
+  {"ask": "stick the clock and the timer together", "want": "skill:group", "says": "grouped the clock and the timer", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer"]},
+  {"ask": "make a group of the clock and the timer", "want": "skill:group", "says": "grouped", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer"]},
+  {"ask": "move the group to the top left", "want": "skill:group", "says": "moved the group", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "group the clock and the note"]},
+  {"ask": "make the group bigger", "want": "skill:group", "says": "bigger", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "group the clock and the note"]},
+  {"ask": "what is in the group", "want": "skill:group", "says": "the clock and the note", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "group the clock and the note"]},
+  {"ask": "ungroup", "want": "skill:group", "says": "ungrouped", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "group the clock and the note"]},
+  {"ask": "take the clock out of the group", "want": "skill:group", "says": "out of the group", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "group everything"]},
+  {"ask": "bring the group to the front", "want": "skill:layer", "says": "front", "before": ["make a clock", "add a sticky that says hi", "make a 5 minute timer", "group the clock and the note"]}
 ]

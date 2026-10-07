@@ -760,7 +760,12 @@ Object.values(things).forEach((th) => {
           render();
           cur = stage.querySelector('[data-id="' + th.id + '"]') || el; // render() replaced the element; move the live one
           cur.style.transform = 'translateY(-18px) rotate(-6deg)'; // lifted in the hand
+          // grouped things (skills/group.js) ride along with the one in the hand
+          mates = th.group ? Object.values(things).filter((t) => t !== th && t.group === th.group && t.kind !== 'figure')
+            .map((t) => ({ t, ox: t.x, oy: t.y, el: stage.querySelector('[data-id="' + CSS.escape(t.id) + '"]') })) : [];
         };
+        let mates = [];
+        const moveMates = (dx, dy) => { for (const m of mates) { m.t.x = m.ox + dx; m.t.y = m.oy + dy; if (m.el) { m.el.style.left = m.t.x + 'px'; m.el.style.top = m.t.y + 'px'; } } };
         if (!editable) begin();
         const move = (ev) => {
           if (!cur) { if (Math.hypot(ev.clientX - startX, ev.clientY - startY) < 5) return; begin(); }
@@ -770,6 +775,7 @@ Object.values(things).forEach((th) => {
           vx = (ev.clientX - lastX) / dt; vy = (ev.clientY - lastY) / dt; lastX = ev.clientX; lastY = ev.clientY; lastT = now;
           cur.style.left = th.x + 'px';
           cur.style.top = th.y + 'px';
+          moveMates(th.x - origX, th.y - origY);
         };
         const up = () => {
           window.removeEventListener('pointermove', move);
@@ -782,11 +788,14 @@ Object.values(things).forEach((th) => {
             th.x = Math.max(0, th.x); th.y = Math.max(0, th.y);
             cur.style.transform = '';
             cur.style.left = th.x + 'px'; cur.style.top = th.y + 'px';
+            moveMates(th.x - origX, th.y - origY);
+            for (const m of mates) { m.t.x = Math.max(0, m.t.x); m.t.y = Math.max(0, m.t.y); if (m.el) { m.el.style.left = m.t.x + 'px'; m.el.style.top = m.t.y + 'px'; } }
             try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
             save();
             return;
           }
           takeUndoSnapshot();
+          moveMates(0, 0); // a throw takes only the one in the hand; the rest of its group stays put
           let px = th.x, py = th.y, tvx = vx || (th.x < 0 ? -1.2 : 1.2), tvy = vy || -0.4, spin = tvx * 40;
           let prev = performance.now();
           const step = (t) => {

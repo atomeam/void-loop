@@ -12,7 +12,7 @@ const FRONT_RE = new RegExp(String.raw`^(?:please\s+)?(?:bring|move|put|pull|pla
 const BACK_RE = new RegExp(String.raw`^(?:please\s+)?(?:send|move|put|push|place)\s+(.*?)\s*` + BACK_END + '$');
 
 // Everyday names for each stage kind (the same words batch asks use), singular and plural.
-const KIND_WORDS = [
+export const KIND_WORDS = [
   ['notepad', /^notepads?$/],
   ['image', /^(?:images?|pictures?|photos?)$/],
   ['link', /^links?$/],
@@ -52,6 +52,11 @@ export function pickIds(order, target, selected, where) {
     if (selected && list.some((t) => t.id === selected)) return [selected];
     return [list[list.length - 1].id]; // "it" = the newest / topmost thing
   }
+  if (/^(?:group|grouped (?:things|ones|stuff|items)|bunch|cluster)$/.test(target.word)) { // "bring the group to the front": every member of the group (skills/group.js)
+    const sel = list.find((t) => t.id === selected && t.group);
+    const g = sel ? sel.group : list.filter((t) => t.group).map((t) => t.group).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0)).pop(); // newest group (text ids)
+    return g ? list.filter((t) => t.group === g).map((t) => t.id) : [];
+  }
   const w = target.word.replace(/s$/, '');
   const hits = list.filter((t) => (target.kind ? t.kind === target.kind : (t.kind === target.word || t.kind === w || String(t.name || t.title || '').toLowerCase() === target.word)));
   if (!hits.length) return [];
@@ -79,7 +84,7 @@ async function run(text, api) {
   const order = Object.values(live);
   if (!order.length) { if (api.say) api.say('the void is empty · summon something first'); return 'layer'; }
   const ids = pickIds(order, hit.target, st.selected ? st.selected() : null, hit.where);
-  if (!ids.length) { if (api.say) api.say('no ' + hit.target.word + ' on the stage'); return 'layer'; }
+  if (!ids.length) { if (api.say) api.say(/^(?:group|grouped|bunch|cluster)/.test(hit.target.word) ? 'nothing is grouped yet · try "group the clock and the note"' : 'no ' + hit.target.word + ' on the stage'); return 'layer'; }
   const next = reorder(live, ids, hit.where);
   if (!next.changed) { if (api.say) api.say(hit.where === 'front' ? 'already in front' : 'already at the back'); return 'layer'; }
   for (const k of Object.keys(live)) delete live[k]; // same object the page holds: reinsert in the new draw order
@@ -94,7 +99,8 @@ async function run(text, api) {
 export default {
   name: 'layer',
   examples: ['bring the clock to the front', 'send the note to the back', 'bring it to the front', 'send it to the back',
-    'move the timer behind everything', 'put the sticky in front of everything', 'bring all the notes to the front', 'send this to the back'],
+    'move the timer behind everything', 'put the sticky in front of everything', 'bring all the notes to the front', 'send this to the back',
+    'bring the group to the front', 'send the group to the back'],
   nearMisses: ['put the clock on top', 'move the clock to the top left', 'send it away', 'what is the front of a ship',
     'bring me a coffee', 'send an email to sam', 'send it forward'],
   layerOf,
