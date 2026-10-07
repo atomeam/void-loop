@@ -24,9 +24,10 @@ input[type=range]{flex:1 1 200px;padding:0}
 <main>
   <h1>guess the link · draft · not published</h1>
   <p class="note">Each cloud of dots has a hidden correlation, from 0 (no link) to 1 (a perfect line). Slide to your guess and check it. Studies find people judge these by eye fairly well near 0 and near 1, but tend to guess too low in the middle: a real 0.5 often looks like 0.3 (Cleveland and others, 1982; Rensink and Baldridge, 2010). This page keeps your guesses so you can see whether you do the same. Everything stays in this browser.</p>
-  <svg id="plot" viewBox="0 0 100 100" role="img" aria-label="scatter plot of 100 dots"></svg>
+  <svg id="plot" viewBox="0 0 100 100" role="img" aria-label="scatter plot of 100 dots; use hear the cloud to listen to it"></svg>
   <div class="row"><label for="g">your guess</label><input id="g" type="range" min="0" max="1" step="0.01" value="0.5"><output id="gv" for="g">0.50</output></div>
-  <div class="row"><button id="check" type="button">check</button><button id="next" type="button">new cloud</button></div>
+  <div class="row"><button id="check" type="button">check</button><button id="next" type="button">new cloud</button><button id="hear" type="button">hear the cloud</button></div>
+  <div id="warn" role="alert" hidden></div>
   <div id="state" aria-live="polite"></div>
   <div id="score" class="note" aria-live="polite"></div>
 </main>
@@ -34,7 +35,7 @@ input[type=range]{flex:1 1 200px;padding:0}
 (function(){
   var KEY='a2m.fringe.corrguess.v1',st={trials:[]},cur=null;
   try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&isFinite(t.r)&&isFinite(t.guess)})}catch(_){}
-  function save(){try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-500)}))}catch(_){}}
+  function save(){var w=document.getElementById('warn');try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-500)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your guesses (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
   function gauss(){var u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
   // the sample correlation of the points actually drawn (so the answer is what is on screen, not the target it was made from)
   function pearson(pts){var n=pts.length,mx=0,my=0,sxy=0,sxx=0,syy=0;pts.forEach(function(p){mx+=p[0];my+=p[1]});mx/=n;my/=n;
@@ -47,13 +48,20 @@ input[type=range]{flex:1 1 200px;padding:0}
   function draw(pts){var svg=el('plot'),xs=pts.map(function(p){return p[0]}),ys=pts.map(function(p){return p[1]}),
     x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),y0=Math.min.apply(null,ys),y1=Math.max.apply(null,ys),NS='http://www.w3.org/2000/svg';svg.textContent='';
     pts.forEach(function(p){var c=document.createElementNS(NS,'circle');c.setAttribute('cx',(6+88*(p[0]-x0)/(x1-x0||1)).toFixed(2));c.setAttribute('cy',(94-88*(p[1]-y0)/(y1-y0||1)).toFixed(2));c.setAttribute('r','1.3');c.setAttribute('fill','#7cf');svg.appendChild(c)})}
-  function next(){var pts=cloud(Math.random()*.98,100);cur={pts:pts,r:Math.round(Math.abs(pearson(pts))*100)/100};if(pearson(pts)<0)pts.forEach(function(p){p[1]=-p[1]});
+  var last=null;
+  function next(){var pts=cloud(Math.random()*.98,100);last=pts;cur={pts:pts,r:Math.round(Math.abs(pearson(pts))*100)/100};if(pearson(pts)<0)pts.forEach(function(p){p[1]=-p[1]});
     draw(pts);el('check').disabled=false;el('state').textContent='';el('g').focus()}
   el('g').addEventListener('input',function(){el('gv').textContent=(+el('g').value).toFixed(2)});
   el('check').addEventListener('click',function(){if(!cur)return;var g=+el('g').value,e=g-cur.r;st.trials.push({r:cur.r,guess:g,at:Date.now()});save();
     el('state').textContent='it was '+cur.r.toFixed(2)+' · you said '+g.toFixed(2)+' · '+(Math.abs(e)<.05?'close':e<0?'too low by '+(-e).toFixed(2):'too high by '+e.toFixed(2));
     el('check').disabled=true;cur=null;score()});
   el('next').addEventListener('click',next);
+  // the cloud as sound, for anyone who cannot see it: the dots left to right, each a short note, higher on the plot is higher;
+  // a strong link sounds like a steady climb or fall, no link like a random scatter of notes (the answer is never spoken)
+  var ac=null;el('hear').addEventListener('click',function(){var pts=(cur&&cur.pts)||last;if(!pts)return;if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A){el('state').textContent='this browser cannot play sound';return}ac=new A()}
+    ac.resume();var ys=pts.map(function(p){return p[1]}),y0=Math.min.apply(null,ys),y1=Math.max.apply(null,ys),t=ac.currentTime+.05;
+    pts.slice().sort(function(a,b){return a[0]-b[0]}).forEach(function(p,i){var o=ac.createOscillator(),g=ac.createGain(),at=t+i*.06;o.frequency.value=220*Math.pow(4,(p[1]-y0)/(y1-y0||1));
+      g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.12,at+.01);g.gain.linearRampToValueAtTime(0,at+.05);o.connect(g);g.connect(ac.destination);o.start(at);o.stop(at+.06)})});
   function score(){if(!st.trials.length){el('score').textContent='';return}var m=st.trials.reduce(function(s,t){return s+Math.abs(t.guess-t.r)},0)/st.trials.length;
     el('score').textContent=st.trials.length+' guess'+(st.trials.length>1?'es':'')+' · off by '+m.toFixed(2)+' on average\n'+bands(st.trials).map(function(b){return b.label+': '+(b.n?(b.bias>=0?'+':'')+b.bias.toFixed(2)+' ('+b.n+')':'no guesses yet')}).join(' · ')
       +(st.trials.length<20?'\nabout 20 guesses before the bands mean much; minus means you guessed low':'')}

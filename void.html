@@ -3984,7 +3984,7 @@ return { ok: true, detail: 'timer-reset' };
       const mul = () => { let v = pow(); while (peek() === '*' || peek() === '/') { const o = take(), r = pow(); v = o === '*' ? v * r : v / r; } return v; };
       const add = () => { let v = mul(); while (peek() === '+' || peek() === '-') { const o = take(), r = mul(); v = o === '+' ? v + r : v - r; } return v; };
       try { const v = add(); if (i !== tk.length || !isFinite(v)) return null; const shown = Math.abs(v) >= 1e15 ? v.toExponential(6) : String(+v.toPrecision(12));
-        return { value: shown, note: e.replace(/3\.141592653589793/g, 'π').replace(/\s*r\s*/g, ' √').replace(/\s+/g, ' ').trim() + ' = ' + shown }; } catch (_) { return null; }
+        return { value: shown, note: e.replace(/(?<![\d.])3\.141592653589793(?![\d.])/g, 'π').replace(/\s*r\s*/g, ' √').replace(/\s+/g, ' ').trim() + ' = ' + shown }; } catch (_) { return null; }
     }
     function wantsCalc(lower) {
       if (wordMath(lower)) return true;
