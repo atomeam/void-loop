@@ -9,6 +9,7 @@
 // Asks run BENCH_PAR at a time (default 6), each in its own browser context, so the order and the result don't change;
 // each waits until the page has logged its answer (at least 1.6 s, at most 4 s), so a busy machine doesn't miss one.
 import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'; import crypto from 'node:crypto'; import path from 'node:path'; import { chromium } from 'playwright-core';
+import { CAPITALS, CURRENCIES } from '../void-live-deploy/skills/country.js';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
 // --probe file.json: try candidate asks (same shape) without touching bench.json; prints only the misses, so a big batch
@@ -48,7 +49,11 @@ async function one({ ask: a, want, says, before }) {
     if (u.includes('translate.googleapis.com')) return r.fulfill(json([[['hola', 'hello']]]));
     if (u.includes('api.datamuse.com/sug')) return r.fulfill(json([{ word: 'necessary', score: 1 }]));
     if (u.includes('api.datamuse.com')) return r.fulfill(json([{ word: 'glad' }, { word: 'joyful' }, { word: 'cheerful' }, { word: 'content' }]));
-    if (u.includes('restcountries.com')) return r.fulfill(json([{ name: { common: 'Australia', official: 'Commonwealth of Australia' }, capital: ['Canberra'], population: 25687041, currencies: { AUD: { name: 'Australian dollar', symbol: '$' } }, languages: { eng: 'English' }, area: 7692024, flag: '🇦🇺', region: 'Oceania', subregion: 'Australia and New Zealand' }]));
+    if (u.includes('restcountries.com')) { // the country asked for, from Void's own built-in lists (Australia in full)
+      const n = decodeURIComponent((u.match(/\/name\/([^?]+)/) || [])[1] || '').toLowerCase();
+      if (n === 'australia' || !CAPITALS[n]) return r.fulfill(json([{ name: { common: 'Australia', official: 'Commonwealth of Australia' }, capital: ['Canberra'], population: 25687041, currencies: { AUD: { name: 'Australian dollar', symbol: '$' } }, languages: { eng: 'English' }, area: 7692024, flag: '🇦🇺', region: 'Oceania', subregion: 'Australia and New Zealand' }]));
+      const t = n.replace(/\b\w/g, (x) => x.toUpperCase());
+      return r.fulfill(json([{ name: { common: t, official: t }, capital: [CAPITALS[n]], population: 1000000, currencies: CURRENCIES[n] ? { X: { name: CURRENCIES[n] } } : {}, languages: { x: 'Local' }, area: 100000, flag: '' }])); }
     if (u.includes('icanhazdadjoke.com')) return r.fulfill(json({ id: 'x1', joke: 'I only know 25 letters of the alphabet. I don\'t know y.' }));
     if (u.includes('themealdb.com')) return r.fulfill(json({ meals: [{ idMeal: '1', strMeal: 'Pancakes', strArea: 'American', strCategory: 'Dessert', strInstructions: 'Mix.\nCook.', strIngredient1: 'Flour', strMeasure1: '100g' }] }));
     if (u.includes('api.coingecko.com')) { const ids = (new URL(u).searchParams.get('ids') || 'bitcoin').split(','); // whichever coin was asked

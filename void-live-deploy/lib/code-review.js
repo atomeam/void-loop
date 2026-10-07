@@ -48,6 +48,9 @@ export function looksLikeCode(code, lang) {
   if (/[{};]\s*$/m.test(s)) n++;
   if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert|val|guard|DROP|ALTER|TRUNCATE)\b/.test(s)) n++;
   if (/^\s*print\s+['"]/m.test(s)) n++; // Python 2's print 'x'
+  if (/^\s*(?:FROM|RUN|COPY|ADD|ENV|ARG|EXPOSE|CMD|ENTRYPOINT|WORKDIR|USER|HEALTHCHECK)\s+\S/m.test(s)) n++; // a Dockerfile instruction (upper case, as written)
+  if (lang === 'yaml' && /^\s*(?:-\s+)?[\w.-]+:(?:\s|$)/m.test(s)) n++; // key: value
+  if (lang === 'lua' && /\blocal\s+\w|\bfunction\b|^\s*end\s*$/m.test(s)) n++;
   if (/[=!<>]=|=>|->|\+\+|&&|\|\||::|:=|\w\(|\)\s*[{:]|\w\.\w+\s*[-+*/]?=[^=]/.test(s)) n++;
   if (/^(?: {2,}|\t)\S/m.test(s)) n++;
   if (/^\s*(?:#!|<\?php|<[a-z]+[\s>]|#include|@\w+)/m.test(s)) n++;
@@ -57,7 +60,7 @@ export function looksLikeCode(code, lang) {
 }
 
 // the language when the ask names it: "is this python code ok"
-const NAMED = [['python', /\bpython\b|\bpy\b/], ['typescript', /\btypescript\b|\bts\b/], ['javascript', /\bjavascript\b|\bjs\b|\bnode(?:\.?js)?\b|\breact\b/], ['sql', /\bsql\b|\bquery\b/], ['shell', /\bbash\b|\bshell\b|\bsh\b|\bzsh\b/], ['go', /\bgolang\b|\bgo\s+code\b|\bgo\s*:|\b(?:this|my|the|some)\s+go\s*$/], ['rust', /\brust\b/], ['java', /\bjava\b/], ['csharp', /\bc#|\bc\s*sharp\b/], ['php', /\bphp\b/], ['ruby', /\bruby\b/], ['kotlin', /\bkotlin\b/], ['swift', /\bswift\b/], ['c', /\bc\+\+|\bcpp\b|\bc\s+code\b|\bc\s*:|\b(?:this|my|the|some)\s+c\s*$/]];
+const NAMED = [['dockerfile', /\bdocker\s*file\b|\bcontainerfile\b/], ['yaml', /\bya?ml\b/], ['lua', /\blua\b/], ['perl', /\bperl\b/], ['python', /\bpython\b|\bpy\b/], ['typescript', /\btypescript\b|\bts\b/], ['javascript', /\bjavascript\b|\bjs\b|\bnode(?:\.?js)?\b|\breact\b/], ['sql', /\bsql\b|\bquery\b/], ['shell', /\bbash\b|\bshell\b|\bsh\b|\bzsh\b/], ['go', /\bgolang\b|\bgo\s+code\b|\bgo\s*:|\b(?:this|my|the|some)\s+go\s*$/], ['rust', /\brust\b/], ['java', /\bjava\b/], ['csharp', /\bc#|\bc\s*sharp\b/], ['php', /\bphp\b/], ['ruby', /\bruby\b/], ['kotlin', /\bkotlin\b/], ['swift', /\bswift\b/], ['c', /\bc\+\+|\bcpp\b|\bc\s+code\b|\bc\s*:|\b(?:this|my|the|some)\s+c\s*$/]];
 export function langNamed(ask) { const a = String(ask || '').toLowerCase(); for (const [l, re] of NAMED) if (re.test(a)) return l; return null; }
 
 export function langOf(code) {
@@ -82,7 +85,7 @@ const C_LIKE = new Set(['javascript', 'typescript', 'java', 'csharp', 'c', 'go',
 
 // strings and comments become spaces (quotes kept, line breaks kept), so a rule never fires on text inside a string or a comment
 export function mask(code, lang) {
-  const s = String(code || ''), py = lang === 'python', sh = lang === 'shell' || lang === 'ruby', sql = lang === 'sql';
+  const s = String(code || ''), py = lang === 'python', sh = /^(?:shell|ruby|dockerfile|yaml|perl)$/.test(lang), sql = lang === 'sql' || lang === 'lua';
   let out = '', i = 0;
   const blank = (t) => t.replace(/[^\n]/g, ' ');
   while (i < s.length) {
@@ -228,9 +231,17 @@ const RULES = [
     'an unsafe block turns off Rust\'s checks: a wrong raw pointer here is undefined behaviour (crashes or silent memory corruption). Keep it as small as possible and write a // SAFETY: comment saying why it holds; prefer a safe API (references, Box, slices) if there is one.'],
   ['verify-false', 'risk', ['python', ...JS], (m) => /\bverify\s*=\s*False\b|rejectUnauthorized\s*:\s*false\b|NODE_TLS_REJECT_UNAUTHORIZED/.test(m),
     'certificate checks are turned off, so anyone on the network can read or change this traffic. Fix the certificate (or point to the right CA bundle) instead.'],
+  ['curl-insecure', 'risk', ['shell', 'dockerfile'], (m, r) => /\b(?:curl\b[^|;\n]*\s(?:-[a-zA-Z]*k[a-zA-Z]*|--insecure)(?=\s|$)|wget\b[^|;\n]*\s--no-check-certificate\b)/.test(r),
+    '-k (--insecure) turns off the certificate check, so anyone between you and the server can read or change what comes back. Fix the certificate instead, or point curl at it with --cacert'],
+  ['docker-latest', 'risk', ['dockerfile'], (m, r, x) => { const k = r.match(/^\s*FROM\s+(?:--platform=\S+\s+)?(\S+)/i); return !!k && !/@sha256:/.test(k[1]) && k[1] !== 'scratch' && !/^\$/.test(k[1]) && (/:latest$/i.test(k[1]) || !/:[^/]+$/.test(k[1])) && !new RegExp('\\bAS\\s+' + k[1].replace(/[^\w.-]/g, '') + '\\s*$', 'im').test(x.prev()); }, // FROM build names an earlier stage, not an image
+    'no fixed version: :latest (or no tag) means each build can pull a different image, so a build that worked yesterday can break today. Pin a version tag, such as node:20-slim, or a digest'],
+  ['perl-shell-interp', 'risk', ['perl'], (m, r) => /\b(?:system|exec)\s*\(?\s*"[^"]*[$@]\w|`[^`]*\$\w|\bqx\s*[({\/][^)}\/]*\$\w/.test(r),
+    'a variable inside one shell string: a file name such as "x; rm -rf ~" runs as a command. Pass the program and its arguments separately: system("rm", "--", $file)'],
+  ['lua-global', 'style', ['lua'], (m, r, x) => { const k = m.match(/^\s*([A-Za-z_]\w*)\s*=[^=]/); return !!k && !/^(?:_G|_ENV)$/.test(k[1]) && !new RegExp('\\blocal\\s+(?:function\\s+|[\\w\\s,]*,\\s*)?' + k[1] + '\\b|\\bfunction\\b[^\\n]*\\([^)]*\\b' + k[1] + '\\b|\\bfor\\s+(?:[\\w\\s,]*,\\s*)?' + k[1] + '\\b').test(x.prev()); },
+    'without local this makes a global: any other file that uses the same name changes it too. Write local x = ... the first time'],
   ['rm-rf-var', 'risk', ['shell'], (m, r) => /\brm\s+-[a-z]*r[a-z]*f?[a-z]*\s+(?:"?\$\{?\w+\}?"?\/?)(?:\s|$|\/)/i.test(r) && !/\$\{\w+:\?/.test(r),
     'rm -rf with a variable: if the variable is empty or unset, this deletes from the current folder or from /. Guard it: rm -rf "${DIR:?}" (stops if DIR is empty).'],
-  ['curl-pipe-sh', 'risk', ['shell'], (m, r) => /\b(?:curl|wget)\b[^|]*\|\s*(?:sudo\s+)?(?:ba|z)?sh\b/.test(r),
+  ['curl-pipe-sh', 'risk', ['shell', 'dockerfile'], (m, r) => /\b(?:curl|wget)\b[^|]*\|\s*(?:sudo\s+)?(?:ba|z)?sh\b/.test(r),
     'piping a download straight into a shell runs whatever the server sends, unseen. Download it, read it, then run it.'],
   ['chmod-777', 'risk', ['shell', 'python'], (m, r, x) => x.lang === 'python' ? /\bos\.chmod\s*\([^,]+,\s*(?:0o?777|511|stat\.S_IRWXO\b)/.test(m) : /\bchmod\s+(?:-{1,2}[a-zA-Z][\w-]*(?:=\S+)?\s+)*(?:0?777|a\+rwx|o\+w)\b/.test(m),
     'this lets every other user on the machine change these files (777 and a+rwx also let them read and run them), so another account or a compromised service can rewrite them. Give only what is needed: chmod 755 for folders and programs, 644 for files.'],
@@ -264,6 +275,8 @@ function hasSecret(r, lang) {
     const before = r.slice(0, s.index), min = PASSNAME.test(before) ? 4 : 8; // people's passwords are often short; random keys are not
     if (v.length >= min && /^[^\s${}<>]+$/.test(v) && !/^(?:https?:\/\/|\/|\.|[\w-]+\.(?:js|json|html|css|md|txt|py|sh)$)/i.test(v) && !/^(?:x{3,}|\*{3,}|your[_-]|<|changeme|placeholder|example|test|dummy|redacted|password|secret|none|null|true|false)/i.test(v) && KEYNAME.test(before)) return true;
   }
+  if (lang === 'yaml' && /^\s*(?:-\s+)?[\w.-]*(?:password|passwd|secret|token|api[_-]?key|private[_-]?key)[\w.-]*\s*:\s*(?!["']?(?:\$|\{\{|<|!|xxx|\*\*\*|changeme|example|your[_-]))["']?[^\s"'#]{4,}/i.test(r)) return true;
+  if (lang === 'dockerfile' && /^\s*(?:ENV|ARG)\s+[A-Z0-9_]*(?:KEY|SECRET|TOKEN|PASSWORD|PASS|PWD)[A-Z0-9_]*[= ](?!["']?\$)[^\s"'$]{4,}/i.test(r)) return true;
   if ((lang === 'shell' || lang === 'code') && /^\s*(?:export\s+)?[A-Z][A-Z0-9_]*(?:KEY|SECRET|TOKEN|PASSWORD|PASS|PWD)[A-Z0-9_]*=(?!["']?\$)[^\s"'$]{8,}/.test(r)) return true;
   return /\b[a-z][\w+.-]*:\/\/[^\s:@/'"`]+:[^\s@/'"`$]{3,}@/.test(r) && !/:\$\{|:\{\{/.test(r);
 }
@@ -283,6 +296,8 @@ export function ruleReview(code, opts = {}) {
     const r = rawLines[i], m = maskedLines[i] || '';
     if (!r.trim()) continue;
     const ctx = { lang: as,
+      // the masked lines above this one, so a rule can see what was declared earlier
+      prev: () => maskedLines.slice(0, i).join('\n'),
       next: (k) => { let n = 0; for (let j = i + 1; j < rawLines.length; j++) if (rawLines[j].trim() && ++n === k) return maskedLines[j] || ''; return ''; },
       statement: () => { let st = ''; for (let j = i; j < rawLines.length && j < i + 12; j++) { st += ' ' + (maskedLines[j] || ''); if (/;\s*$/.test(maskedLines[j] || '')) break; } return st; },
       // the raw text of the { … } object this line sits in (up to 12 lines either way), so a rule can see sibling options on other lines
