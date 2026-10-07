@@ -4772,7 +4772,7 @@
   {"ask": "how many feet in 3 yards", "want": "calc", "says": "\\b9\\b"},
   {"ask": "how many kg in 200 pounds", "want": "calc", "says": "90\\.7"},
   {"ask": "convert 25 celsius to fahrenheit", "want": "calc", "says": "\\b77\\b"},
-  {"ask": "convert 0 fahrenheit to celsius", "want": "calc", "says": "-?17\\.7|-?17\\.8"},
+  {"ask": "convert 0 fahrenheit to celsius", "want": "calc", "says": "-17\\.7|-17\\.8"},
   {"ask": "what is 35% of 80", "want": "calc", "says": "\\b28\\b"},
   {"ask": "what is 2.5% of 400", "want": "calc", "says": "\\b10\\b"},
   {"ask": "what is 40 plus 10 percent", "want": "calc", "says": "\\b44\\b"},

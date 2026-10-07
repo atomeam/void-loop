@@ -51,11 +51,14 @@ input[type=range]{flex:1 1 220px;padding:0}
   // the press: a click sound and a flash at time t0 (audio clock), the beep at t0 + delay
   function fire(){var t0=ac.currentTime+.01,P=el('press');click(t0);beep(t0+cur.delay/1000);P.classList.add('lit');setTimeout(function(){P.classList.remove('lit')},120);
     P.disabled=true;setTimeout(function(){el('ask').hidden=false;el('est').focus()},cur.delay+400)}
-  el('go').addEventListener('click',function(){if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A){el('state').textContent='this browser cannot play sound, so this page cannot run here';return}ac=new A()}
-    ac.resume().then(function(){if(ac.state!=='running'){el('state').textContent='the sound did not start; tap again';return}
+  // one trial at a time: the latch is set before resume() so a second tap while audio wakes up cannot start a second trial
+  var starting=false;
+  el('go').addEventListener('click',function(){if(starting||cur)return;if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A){el('state').textContent='this browser cannot play sound, so this page cannot run here';return}ac=new A()}
+    starting=true;el('go').disabled=true;var fail=function(){starting=false;el('go').disabled=false;el('state').textContent='the sound did not start; tap again'};
+    ac.resume().then(function(){if(ac.state!=='running'){fail();return}starting=false;
       cur={kind:nextKind(st.trials),delay:DELAYS[Math.floor(Math.random()*DELAYS.length)]};el('go').disabled=true;el('ask').hidden=true;var P=el('press');
       if(cur.kind==='you'){P.className='';P.textContent='press when you like';P.disabled=false;el('state').textContent='your trial: press the button whenever you choose'}
-      else{P.className='machine';P.textContent='the machine will press';P.disabled=true;el('state').textContent='machine trial: wait, the page will press it';setTimeout(fire,1000+Math.random()*2500)}})});
+      else{P.className='machine';P.textContent='the machine will press';P.disabled=true;el('state').textContent='machine trial: wait, the page will press it';setTimeout(fire,1000+Math.random()*2500)}},fail)});
   el('press').addEventListener('click',function(){if(cur&&cur.kind==='you')fire()});
   el('est').addEventListener('input',function(){el('ev').textContent=el('est').value+' ms'});
   el('ok').addEventListener('click',function(){if(!cur)return;var e=+el('est').value;st.trials.push({kind:cur.kind,delay:cur.delay,est:e,at:Date.now()});save();
