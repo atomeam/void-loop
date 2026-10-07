@@ -12,6 +12,7 @@
 //   node tools/fringe.mjs          checks the ledger (exit 1 on any broken rule); CI runs this
 //   node tools/fringe.mjs --next   prints the families the next run may pick
 //   node tools/fringe.mjs --hash drafts/fringe/x.html   prints the sha256 to record
+//   node tools/fringe.mjs --rehash drafts/fringe/x.html refreshes a recorded draft's sha256 after a review fix
 //   node tools/fringe.mjs --publish  writes the live copy of every emit:true draft
 //   node tools/fringe.mjs --record drafts/fringe/x.html sources.json   appends the next run (family from the file name,
 //     run number, time, sha256, emit:false) in the ledger's own 2-space style, then checks the ledger
@@ -93,6 +94,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
     writeFileSync(resolve(root, 'tools/fringe.json'), JSON.stringify(runs, null, 2) + '\n');
     console.log(`recorded run ${runs.length}: ${family}`);
+  }
+  else if (arg === '--rehash') {
+    // a recorded draft fixed after review: refresh its sha256 (the run, its sources and emit stay as they were)
+    const draft = process.argv[3], runs = load(), r = runs.filter((x) => x.draft === draft).pop();
+    if (!r) { console.error('no run records ' + draft); process.exit(1); }
+    const before = r.sha256; r.sha256 = hash(draft);
+    writeFileSync(resolve(root, 'tools/fringe.json'), JSON.stringify(runs, null, 2) + '\n');
+    console.log(before === r.sha256 ? 'run ' + r.run + ': unchanged' : 'run ' + r.run + ': sha256 refreshed for ' + draft);
   }
   else if (arg === '--publish') {
     mkdirSync(resolve(root, 'void-live-deploy/fringe'), { recursive: true });
