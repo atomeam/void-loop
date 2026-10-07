@@ -2262,7 +2262,7 @@
   },
   {
     "ask": "how much water should i drink a day",
-    "want": "answer|article"
+    "want": "skill:nutrition|answer|article"
   },
   {
     "ask": "time in tokyo when it's 9am in new york",
@@ -5225,6 +5225,23 @@
   {"ask": "herringbone hardwood for a 12x16 room", "want": "skill:home"},
   {"ask": "laminate for 250 sq ft", "want": "skill:home"},
   {"ask": "flooring calculator", "want": "skill:home"},
+  {"ask": "how many calories should i eat a day", "want": "skill:nutrition"},
+  {"ask": "how many calories should i eat to lose weight", "want": "skill:nutrition"},
+  {"ask": "calories for a 30 year old male 5'10 180 lbs moderately active", "want": "skill:nutrition"},
+  {"ask": "how many calories should a 25 year old woman 165 cm 60 kg eat to lose weight", "want": "skill:nutrition"},
+  {"ask": "i am 40 and weigh 200 pounds and am 6 foot, how many calories should i eat", "want": "skill:nutrition"},
+  {"ask": "what is my bmr 25 female 165 cm 60 kg", "want": "skill:nutrition"},
+  {"ask": "tdee calculator", "want": "skill:nutrition"},
+  {"ask": "calorie calculator", "want": "skill:nutrition"},
+  {"ask": "maintenance calories", "want": "skill:nutrition"},
+  {"ask": "how much protein do i need", "want": "skill:nutrition"},
+  {"ask": "how much protein do i need if i weigh 180 pounds", "want": "skill:nutrition"},
+  {"ask": "how much protein to build muscle 80kg", "want": "skill:nutrition"},
+  {"ask": "how much protein does a 70 year old need", "want": "skill:nutrition"},
+  {"ask": "how much water should i drink", "want": "skill:nutrition"},
+  {"ask": "how many glasses of water should i drink a day", "want": "skill:nutrition"},
+  {"ask": "how much water should a pregnant woman drink", "want": "skill:nutrition"},
+  {"ask": "daily water intake", "want": "skill:nutrition"},
   {"ask": "how many rolls of wallpaper for a 12x14 room", "want": "skill:walls"},
   {"ask": "how much wallpaper do i need for a 10x12 bedroom with 9 foot ceilings", "want": "skill:walls"},
   {"ask": "wallpaper for an accent wall 12 feet wide", "want": "skill:walls"},
