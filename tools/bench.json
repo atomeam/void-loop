@@ -3299,7 +3299,7 @@
   },
   {
     "ask": "how much sleep do i need",
-    "want": "answer|said|article"
+    "want": "skill:sleep|answer|said|article"
   },
   {
     "ask": "normal body temperature",
@@ -5096,5 +5096,19 @@
   {"ask": "whats the capital of new zealand", "want": "skill:country", "says": "Wellington"},
   {"ask": "what is the meaning of the word nostalgia", "want": "skill:define", "says": null},
   {"ask": "synonyms of happy", "want": "skill:words", "says": null},
-  {"ask": "20 percent of 150", "want": "calc", "says": "30"}
+  {"ask": "20 percent of 150", "want": "calc", "says": "30"},
+  {"ask": "if i wake up at 7am when should i go to sleep", "want": "skill:sleep"},
+  {"ask": "what time should i go to bed to wake up at 6:30", "want": "skill:sleep"},
+  {"ask": "I need to wake up at 6 am, what time should I go to bed?", "want": "skill:sleep"},
+  {"ask": "what time should i go to sleep if i want to wake up at 5:45", "want": "skill:sleep"},
+  {"ask": "if i go to bed at 11pm when should i wake up", "want": "skill:sleep"},
+  {"ask": "when should i wake up if i go to sleep now", "want": "skill:sleep"},
+  {"ask": "if i go to bed at 10:30 when should i wake up", "want": "skill:sleep"},
+  {"ask": "sleep calculator", "want": "skill:sleep"},
+  {"ask": "bedtime calculator", "want": "skill:sleep"},
+  {"ask": "how much sleep does a teenager need", "want": "skill:sleep"},
+  {"ask": "how many hours of sleep should a 5 year old get", "want": "skill:sleep"},
+  {"ask": "how much sleep does a newborn need", "want": "skill:sleep"},
+  {"ask": "how much sleep does a 70 year old need", "want": "skill:sleep"},
+  {"ask": "remind me to go to bed at 11pm", "want": "skill:calendar|skill:remind|timer"}
 ]
