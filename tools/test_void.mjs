@@ -482,6 +482,38 @@ try {
       dragging && order[order.length - 1] === 'first' && !(await V.p.evaluate(() => document.documentElement.classList.contains('dragging'))) && !(await V.p.evaluate(() => String(getSelection()))),
       JSON.stringify({ dragging, order }));
     await V.ctx.close(); }
+  // Board Next #3, grouping half (skills/group.js): "group the clock and the note" ties them together, dragging one carries the
+  // other the same distance, the group moves and resizes as one, "bring the group to the front" layers it, "ungroup" lets go.
+  { const G = await fresh();
+    await G.ask('make a clock', 400); await G.ask('add a sticky that says grouped', 400); await G.ask('make a 5 minute timer', 400);
+    await G.ask('group the clock and the note', 900);
+    const said = await G.whisper();
+    let st = await G.state();
+    const ck = st.find((x) => x.kind === 'clock'), nt = st.find((x) => x.kind === 'sticky'), tm = st.find((x) => x.kind === 'timer');
+    const tied = !!ck.group && ck.group === nt.group && !tm.group;
+    const box = await G.p.$eval('.clock', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 10, y: b.top + 10 }; });
+    await G.p.mouse.move(box.x, box.y); await G.p.mouse.down(); await G.p.mouse.move(box.x + 60, box.y + 40, { steps: 6 }); await G.p.mouse.up(); await G.p.waitForTimeout(200);
+    st = await G.state();
+    const ck2 = st.find((x) => x.kind === 'clock'), nt2 = st.find((x) => x.kind === 'sticky'), tm2 = st.find((x) => x.kind === 'timer');
+    const carried = ck2.x - ck.x === 60 && nt2.x - nt.x === 60 && nt2.y - nt.y === 40 && tm2.x === tm.x && tm2.y === tm.y;
+    await G.ask('move the group to the top left', 700);
+    st = await G.state();
+    const ck3 = st.find((x) => x.kind === 'clock'), nt3 = st.find((x) => x.kind === 'sticky');
+    const cornered = Math.min(ck3.x, nt3.x) === 24 && Math.min(ck3.y, nt3.y) === 24 && (nt3.x - ck3.x) === (nt2.x - ck2.x);
+    await G.ask('make the group bigger', 700);
+    const ck4 = (await G.state()).find((x) => x.kind === 'clock');
+    const bigger = ck4.size === Math.round((Number(ck3.size) || 48) * 1.25);
+    await G.ask('bring the group to the front', 700);
+    const order = Object.keys(await G.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
+    const ids = (await G.state()).reduce((m, x) => (m[x.id] = x.kind, m), {});
+    const front = ids[order[0]] === 'timer';
+    await G.ask('ungroup', 700);
+    const loose = (await G.state()).every((x) => !x.group);
+    await G.p.reload(); await G.p.waitForTimeout(700);
+    check('group: "group the clock and the note" ties them (the timer stays loose), dragging the clock carries the note the same distance, "move the group to the top left" keeps their spacing, "make the group bigger" scales them, "bring the group to the front" layers both, "ungroup" lets go, and it all survives a reload',
+      /grouped/.test(said) && tied && carried && cornered && bigger && front && loose && (await G.state()).length === 3 && !G.errors.length,
+      JSON.stringify({ said, tied, carried, cornered, bigger, front, loose, order, ids, e: G.errors }));
+    await G.ctx.close(); }
   // Public Voids: "publish my void as @name" puts a paid Void's look and kept cards (as text) at /@name, after the person's own yes.
   { const DB = sqliteD1(), env = { DB, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'index.html'), 'utf8')) } };
     await voidMe.ensureTables(env);
@@ -857,6 +889,9 @@ try {
   await t.ask('i conceived on january 10 2026 when is my baby due', 700); const conPg = await t.page(); check('pregnancy: due date from conception (+ 266 days)', /Due date/.test(conPg) && /October 3, 2026/.test(conPg) && !/on your calendar/i.test(conPg), conPg.slice(0, 220));
   await t.ask('ivf due date 5 day transfer on may 2 2026', 700); const ivfPg = await t.page(); check('pregnancy: IVF due date (5-day transfer + 261 days)', /January 18, 2027/.test(ivfPg) && /5-day embryo transfer/.test(ivfPg), ivfPg.slice(0, 220));
   await t.ask('my due date is june 1 how far along am i', 700); const farPg = await t.page(); check('pregnancy: how far along from a known due date', /How far along/.test(farPg) && /weeks?/.test(farPg) && /June 1/.test(farPg) && !/on your calendar/i.test(farPg), farPg.slice(0, 220));
+  await t.ask('when am i ovulating if my last period was march 1 2026', 700); const ovPg = await t.page(); check('ovulation: fertile window and ovulation day from the last period (next period - 14; six days ending on ovulation, Wilcox NEJM 1995)', /Fertile window/.test(ovPg) && /fertile March 10 \u2013 March 15/.test(ovPg) && /ovulation March 15/.test(ovPg) && /NEJM/.test(ovPg) && /ACOG/.test(ovPg) && !/on your calendar|don't know this yet/i.test(ovPg), ovPg.slice(0, 220));
+  await t.ask('my cycle is 26 to 32 days and my last period was october 1 2026 when am i fertile', 700); const ovRg = await t.page(); check('ovulation: irregular cycles as a range (shortest - 18 to longest - 11)', /October 8\u201321, 2026/.test(ovRg) && /shortest cycle minus 18/.test(ovRg), ovRg.slice(0, 220));
+  await t.ask('ovulation calculator', 700); const ovCalc = await t.page(); check('ovulation: "ovulation calculator" opens a live form', /Ovulation calculator/.test(ovCalc) && /luteal phase/.test(ovCalc) && /Ovulation:/.test(ovCalc), ovCalc.slice(0, 220));
   await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
   { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
@@ -1993,7 +2028,7 @@ try {
   const nsMods = [];
   for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
-  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'sleep', 'pregnancy', 'inventory', 'part', 'figure'];
+  const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'sleep', 'pregnancy', 'ovulation', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
     const mod = nsMods.find((s) => s.name === name);
     check(name + ': listed with examples and near misses; examples route only to it',

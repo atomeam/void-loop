@@ -16,8 +16,9 @@
 - **What:** group + move/resize as unit; z-order
 - **Why:** composes targeting + drag; follows shipped multi-object
 - **Reuse:** ~40%
-- **Status 2026-10-07 (grok builder): z-order half shipped** (`skills/layer.js`, PR #152): "bring the clock to the front", "send the note to the back", "send it to the back", "bring all the notes to the front" reorder the stage and survive a reload; "put the clock on top" stays a position move. Still open: group things and move or resize them as one.
-- **claim:** free (grouping half)
+- **Status 2026-10-07 (grok builder): z-order half shipped** (`skills/layer.js`, PR #152): "bring the clock to the front", "send the note to the back", "send it to the back", "bring all the notes to the front" reorder the stage and survive a reload; "put the clock on top" stays a position move.
+- **Status 2026-10-07 13:40 ET (grok builder): grouping half shipped** (`skills/group.js` + drag-along in `bindDrag`): "group the clock and the note", "group everything", "group all the notes", "stick the clock and the timer together", "glue the clock to the note" tie things together; dragging one carries the rest the same distance (a throw takes only the one in the hand); "move the group to the top left / left a bit / down 100px / to the middle" keeps their spacing; "make the group bigger / smaller / twice as big" scales spacing and sizes; "bring the group to the front" / "send the group to the back" (layer.js); "what is in the group"; "take the clock out of the group"; "ungroup". Saved with the stage, so groups survive a reload. Next #3 is complete.
+- **claim:** DONE (both halves: layer.js at PR #152, group.js this PR)
 - **claim_until:**
 - **AutoSalvage note:** intent-canvas Node model (position_x/y/width/height/z_index) + KIND_COMPONENTS dispatch + onUpdate(Partial<Node>) is effectively the grouping/z-order infrastructure — absorb patterns when this ships
 
