@@ -244,13 +244,14 @@ const RULES = [
     'eval runs its text as a command again, so a value such as "x; rm -rf ~" in that variable runs too. Call the command directly with its arguments, or use an array: "${args[@]}"'],
   ['ps-invoke-expression', 'risk', ['powershell'], (m, r) => /\b(?:Invoke-Expression|iex)\b[^#\n]*\$/i.test(r),
     'Invoke-Expression runs a string as code, so whatever that variable holds (text a user typed, a downloaded script) runs with your rights. Call the command directly with & and its arguments, or parse the value first'],
-  ['tf-open-ingress', 'risk', ['terraform'], (m, r) => /\b(?:cidr_blocks|ipv6_cidr_blocks|source_ranges|source_address_prefix(?:es)?)\s*=\s*\[?[^\]\n]*"(?:0\.0\.0\.0\/0|::\/0|\*)"/.test(r),
+  // only inbound rules: an egress block, type = "egress" or direction = "EGRESS" opens the way out, not in
+  ['tf-open-ingress', 'risk', ['terraform'], (m, r, x) => !/\b(?:type\s*=\s*"egress"|direction\s*=\s*"EGRESS")/i.test(x.object()) && ((x.prev() + '\n' + m).match(/\b(?:ingress|egress)\b/g) || ['ingress']).pop() !== 'egress' && /\b(?:cidr_blocks|ipv6_cidr_blocks|source_ranges|source_address_prefix(?:es)?)\s*=\s*\[?[^\]\n]*"(?:0\.0\.0\.0\/0|::\/0|\*)"/.test(r),
     '0.0.0.0/0 opens this to the whole internet. Fine for a public web port (80, 443); for SSH, databases or admin ports, allow only the addresses that need it'],
   ['grant-all', 'risk', ['sql'], (m) => /\bGRANT\s+ALL\b/i.test(m),
     'GRANT ALL gives this account every right (dropping tables, changing users), so one leaked password or injection can do anything. Grant only what the app needs, such as SELECT, INSERT, UPDATE on its own tables, and avoid \'%\' (any host) where you can'],
-  ['blank-no-opener', 'style', ['html', ...JS], (m, r) => /\btarget\s*=\s*["']?_blank\b/i.test(r) && !/\brel\s*=\s*["'{][^"'}]*\bno(?:opener|referrer)\b/i.test(r),
+  ['blank-no-opener', 'style', ['html', ...JS], (m, r) => /\btarget\s*=\s*["']?_blank\b/i.test(r) && !/[\s"'{]rel\s*=\s*["'{][^"'}]*\bno(?:opener|referrer)\b/i.test(r), // a real rel attribute, not data-rel
     'target="_blank" without rel="noopener": in older browsers the new tab can reach back through window.opener and send this page somewhere else. Add rel="noopener noreferrer" (new browsers already act this way)'],
-  ['img-no-alt', 'style', ['html', ...JS], (m, r) => /<img\b(?![^>]*\balt\s*=)[^>]*>/i.test(r),
+  ['img-no-alt', 'style', ['html', ...JS], (m, r) => /<img\b(?![^>]*[\s"']alt\s*=)[^>]*>/i.test(r), // a real alt attribute, not data-alt
     'an image with no alt text: screen readers say the file name or nothing at all. Add alt="what it shows", or alt="" if it is only decoration'],
   ['rm-rf-var', 'risk', ['shell'], (m, r) => /\brm\s+-[a-z]*r[a-z]*f?[a-z]*\s+(?:"?\$\{?\w+\}?"?\/?)(?:\s|$|\/)/i.test(r) && !/\$\{\w+:\?/.test(r),
     'rm -rf with a variable: if the variable is empty or unset, this deletes from the current folder or from /. Guard it: rm -rf "${DIR:?}" (stops if DIR is empty).'],

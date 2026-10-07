@@ -14,8 +14,9 @@ p.note{color:#8a8a92;font-size:13px;margin:0}
 button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 14px;cursor:pointer}
 button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
 table{border-collapse:collapse;width:100%;font-size:13px}
-td{padding:3px 6px;border-bottom:1px solid rgba(255,255,255,.08)}
-td.p{text-align:right}
+td,th{padding:3px 6px;border-bottom:1px solid rgba(255,255,255,.08)}
+th{font-weight:normal;color:#8a8a92;text-align:left}
+td.p,th.p{text-align:right}
 tr.hit td{color:#fc9}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 #state,#score{white-space:pre-line}
@@ -26,7 +27,7 @@ tr.hit td{color:#fc9}
   <h1>ten looks at noise · draft · not published</h1>
   <p class="note">Each "study" makes up two groups of 20 people and measures ten things about them. Every number is random: the groups do not differ in anything. The page then tests each of the ten for a difference, the usual way, and marks any result below p = 0.05 as a "finding". With one look, a false finding turns up 5% of the time. With ten looks it turns up about 40% of the time (1 − 0.95¹⁰), which is how checking many things and reporting the one that worked fills journals with effects that are not there (Simmons, Nelson and Simonsohn, 2011). Tick the box to demand p &lt; 0.005 instead, one tenth of 0.05 for ten looks (the Bonferroni correction), and watch the false findings drop back to about 5%. Keep a weak signal in the ledger as a hypothesis until it survives the looks it took to find it. Everything stays in this browser.</p>
   <div class="row"><button id="go" type="button">run a study</button><button id="many" type="button">run 100</button><label class="note"><input id="strict" type="checkbox"> correct for ten looks (p &lt; 0.005)</label></div>
-  <table id="table" aria-label="the ten measures of the last study"></table>
+  <table aria-label="the ten measures of the last study"><thead><tr><th scope="col">measure</th><th scope="col" class="p">p</th></tr></thead><tbody id="table"></tbody></table>
   <div id="warn" role="alert" hidden></div>
   <div id="state" aria-live="polite"></div>
   <div id="score" class="note" aria-live="polite"></div>
@@ -48,8 +49,10 @@ tr.hit td{color:#fc9}
   function familyRate(k,alpha){return 1-Math.pow(1-alpha,k)}
   function study(){return MEASURES.map(function(name){var a=[],b=[],i;for(i=0;i<N;i++){a.push(gauss());b.push(gauss())}var r=pDiff(a,b);return{name:name,p:r.p,z:r.z}})}
   function count(rows){var any=rows.some(function(r){return r.p<ALPHA}),strict=rows.some(function(r){return r.p<ALPHA/MEASURES.length});st.studies++;if(any)st.any++;if(strict)st.anyStrict++}
+  // three decimals, but never rounded up to the cut-off it passed (0.0049 is shown as < 0.005, not 0.005)
+  function fmt(p,cut){var s=p.toFixed(3);return p<.001?'< 0.001':p<cut&&+s>=cut?'< '+cut:'= '+s}
   function show(rows){var cut=el('strict').checked?ALPHA/MEASURES.length:ALPHA,T=el('table');T.textContent='';
-    rows.forEach(function(r){var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');if(r.p<cut)tr.className='hit';a.textContent=r.name+(r.p<cut?' · "finding": group A '+(r.z>0?'higher':'lower'):'');b.className='p';b.textContent='p = '+r.p.toFixed(3);tr.appendChild(a);tr.appendChild(b);T.appendChild(tr)});
+    rows.forEach(function(r){var tr=document.createElement('tr'),a=document.createElement('td'),b=document.createElement('td');if(r.p<cut)tr.className='hit';a.textContent=r.name+(r.p<cut?' · "finding": group A '+(r.z>0?'higher':'lower'):'');b.className='p';b.textContent='p '+fmt(r.p,cut);tr.appendChild(a);tr.appendChild(b);T.appendChild(tr)});
     var hits=rows.filter(function(r){return r.p<cut}).length;el('state').textContent=hits?hits+' "finding'+(hits>1?'s':'')+'" in pure noise':'nothing below '+cut+' this time'}
   el('go').addEventListener('click',function(){last=study();count(last);save();show(last);draw()});
   el('many').addEventListener('click',function(){for(var i=0;i<100;i++){last=study();count(last)}save();show(last);draw()});
@@ -64,8 +67,8 @@ tr.hit td{color:#fc9}
   function selftest(){if(Math.abs(phi(0)-.5)>1e-7||Math.abs(phi(1.959964)-.975)>1e-6||Math.abs(phi(-1)-.158655)>1e-6)return'phi is off';
     if(Math.abs(familyRate(10,.05)-.401263)>1e-6||Math.abs(familyRate(1,.05)-.05)>1e-12)return'familyRate is off';
     var r=pDiff([1,1,1,1],[0,0,0,0]);if(Math.abs(r.z-Math.SQRT2)>1e-12||Math.abs(r.p-.157299)>1e-5)return'pDiff gave '+JSON.stringify(r);
-    var s=study();if(s.length!==10||s.some(function(x){return!(x.p>=0&&x.p<=1)}))return'study made a bad p';return true}
-  window.__looks={phi:phi,pDiff:pDiff,familyRate:familyRate,study:study,selftest:selftest}; // for checks
+    var s=study();if(s.length!==10||s.some(function(x){return!(x.p>=0&&x.p<=1)}))return'study made a bad p';if(fmt(.0049,.005)!=='< 0.005'||fmt(.04996,.05)!=='< 0.05'||fmt(.2,.05)!=='= 0.200')return'fmt rounds a finding up to its cut-off';return true}
+  window.__looks={fmt:fmt,phi:phi,pDiff:pDiff,familyRate:familyRate,study:study,selftest:selftest}; // for checks
 })();
 </script>
 </body>
