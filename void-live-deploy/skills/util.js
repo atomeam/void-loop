@@ -35,7 +35,7 @@ export function utilOf(text) {
   if (m) return { kind: 'case', how: /caps/i.test(m[1]) ? 'uppercase' : m[1].toLowerCase(), s: m[2] };
   // "how many characters in supercalifragilistic", "character count of ..."
   // "how many vowels in banana", "count the consonants in rhythm"
-  m = t.match(/^(?:how\s+many|count\s+(?:the\s+)?)\s*(vowels|consonants)\s+(?:are\s+)?(?:in|of)\s+(?:the\s+word\s+)?["“]?([\p{L}' -]{1,60}?)["”]?$/iu);
+  m = t.match(/^(?:how\s+many|count\s+(?:the\s+)?)\s*(vowels|consonants)\s+(?:are\s+)?(?:in|of)\s+(?:the\s+word\s+)?["“]?([\p{L}\p{M}' -]{1,60}?)["”]?$/iu);
   if (m) return { kind: 'letters', which: m[1].toLowerCase(), s: m[2] };
   m = t.match(/^(?:how\s+many\s+(?:characters|letters|chars)\s+(?:are\s+)?in|count\s+(?:the\s+)?(?:characters|letters|chars)\s+in|(?:character|letter|char)\s+count\s+(?:of|in|for))\s+(.+)$/i);
   if (m && /^(?:the\s+)?(?:english\s+)?alphabet$/i.test(m[1])) m = null; // a fact, not a count of the word "alphabet"

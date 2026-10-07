@@ -118,6 +118,10 @@ ok(rules('$hash = md5($password);', 'php').includes('weak-hash@1') && rules('h =
 ok(rules("app.use(cors({ origin: '*', credentials: true }))", 'javascript').includes('cors-any@1') && !rules("app.use(cors({ origin: '*' }))", 'javascript').includes('cors-any@1') && !rules("cors({ origin: ['https://a.example'], credentials: true })", 'javascript').includes('cors-any@1'), 'CORS * with credentials flagged, * alone or a listed origin not');
 ok(rules('app.run(debug=True)', 'python').includes('debug-true@1') && rules('DEBUG = True', 'python').includes('debug-true@1') && !rules('app.run(debug=os.environ.get("DEBUG") == "1")', 'python').includes('debug-true@1'), 'debug=True flagged, debug from the environment not');
 ok(rules("jwt.verify(token, secret, { algorithms: ['none'] })", 'javascript').includes('jwt-none@1') && !rules("jwt.verify(token, secret, { algorithms: ['HS256'] })", 'javascript').includes('jwt-none@1'), 'JWT algorithm none flagged, HS256 not');
+ok(!rules('etag = md5(body) // skip password check', 'javascript').includes('weak-hash@1') && rules('$h = sha1($pwd . $salt);', 'php').includes('weak-hash@1'), 'weak-hash looks at what is hashed, not at other words on the line');
+{ const multi = ruleReview("app.use(cors({\n  origin: '*',\n  credentials: true,\n}))", { lang: 'javascript' }).findings.some((f) => f.rule === 'cors-any');
+  const apart = ruleReview("const a = { origin: '*' };\nconst b = { credentials: true };", { lang: 'javascript' }).findings.some((f) => f.rule === 'cors-any');
+  ok(multi && !apart, 'CORS * with credentials found across lines of one object, not across two objects'); }
 // keys never shown as written
 ok(!JSON.stringify(ruleReview('const token = "ghp_abcdefghijklmnopqrstuvwxyz0123";')).includes('ghp_abcdef'), 'a key in a finding is masked');
 // the pull-request review skips tests in every language the repo writes (their fixtures are bad code on purpose), and nothing else by accident

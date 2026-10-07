@@ -54,13 +54,15 @@ button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2
   // what to show next: a "now" item once one fresh puzzle has gone by, a "later" item once its break is over, else a fresh puzzle
   function pick(t){var due=st.queue.filter(function(q){return q.group==='now'?sinceNow>=1:t-q.at>=BREAK});if(due.length)return{i:due[0].i,back:due[0]};
     var fresh=[];for(var i=0;i<P.length;i++)if(!st.done[i]&&!st.queue.some(function(q){return q.i===i}))fresh.push(i);
-    return fresh.length?{i:fresh[Math.floor(Math.random()*fresh.length)],back:null}:null}
+    if(fresh.length)return{i:fresh[Math.floor(Math.random()*fresh.length)],back:null};
+    // no fresh puzzle left to put in between: a waiting "now" puzzle still comes back, but its result is not counted (it did not come back after another puzzle)
+    var now=st.queue.filter(function(q){return q.group==='now'});return now.length?{i:now[0].i,back:now[0],uncounted:true}:null}
   function show(){cur=pick(Date.now());var waiting=st.queue.filter(function(q){return q.group==='later'}).length;
     if(!cur){el('triad').textContent='';el('tag').textContent='';el('state').textContent=waiting?'only passed puzzles are left: come back after their five-minute break':'all puzzles used. Clear this page\'s site data to start over.';el('ans').disabled=el('go').disabled=el('pass').disabled=true;return}
     el('ans').disabled=el('go').disabled=el('pass').disabled=false;
-    el('triad').textContent=P[cur.i].slice(0,3).join(' · ');el('tag').textContent=cur.back?(cur.back.group==='later'?'back after a break':'back straight away'):'';el('ans').value='';el('ans').focus()}
+    el('triad').textContent=P[cur.i].slice(0,3).join(' · ');el('tag').textContent=cur.back?(cur.uncounted?'back (not counted: no other puzzle came in between)':cur.back.group==='later'?'back after a break':'back straight away'):'';el('ans').value='';el('ans').focus()}
   function finish(solved){var i=cur.i,back=cur.back;
-    if(back){st.queue=st.queue.filter(function(q){return q!==back});st.log.push({group:back.group,solved:solved,at:Date.now()});st.done[i]=true;if(back.group==='now')sinceNow=0}
+    if(back){st.queue=st.queue.filter(function(q){return q!==back});if(!cur.uncounted)st.log.push({group:back.group,solved:solved,at:Date.now()});st.done[i]=true;if(back.group==='now')sinceNow=0}
     else{if(solved)st.done[i]=true;sinceNow++}
     save();draw();show()}
   el('go').addEventListener('click',function(){if(!cur)return;var a=P[cur.i][3];

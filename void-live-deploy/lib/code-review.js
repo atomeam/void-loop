@@ -193,9 +193,9 @@ const RULES = [
     'looping over the output of ls splits file names with spaces into pieces (and breaks on other odd names). Let the shell list them: for f in *.txt; do echo "$f"; done'],
   ['unquoted-test', 'bug', ['shell'], (m) => /(?:^|[;&|\s])\[\s+\$\{?\w+\}?\s+(?:==?|!=|-eq|-ne|-lt|-gt|-le|-ge)\s/.test(m),
     'an unquoted $variable inside [ ]: if it is empty, the test becomes [ == 1 ] and fails with an error. Quote it: [ "$x" = 1 ] (and use = inside [ ]; == only works in bash).'],
-  ['weak-hash', 'risk', ['*'], (m, r) => /\b(?:md5|sha1)\b|createHash\s*\(\s*['"`](?:md5|sha1)['"`]/i.test(r) && /pass(?:word|wd)?\b|\bpw\b|\bpwd\b/i.test(r),
+  ['weak-hash', 'risk', ['*'], (m, r) => /\b(?:md5|sha1)\s*\([^)]*(?:pass(?:word|wd)?|\bpw|pwd)\b|createHash\s*\(\s*['"`](?:md5|sha1)['"`]\s*\)\s*\.update\s*\([^)]*(?:pass(?:word|wd)?|\bpw|pwd)\b/i.test(r), // the password must be what is hashed, not just named on the line
     'md5 and sha1 are fast hashes, so a leaked table of password hashes can be cracked in hours. Use a slow password hash: password_hash() in PHP, bcrypt or argon2 in JavaScript, hashlib.scrypt or argon2 in Python.'],
-  ['cors-any', 'risk', JS, (m, r) => /\borigin\s*:\s*(?:(['"`])\*\1|true\b)/.test(r) && /\bcredentials\s*:\s*true\b/.test(r),
+  ['cors-any', 'risk', JS, (m, r, x) => /\borigin\s*:\s*(?:(['"`])\*\1|true\b)/.test(r) && /\bcredentials\s*:\s*true\b/.test(x.object()), // both options in the same { … }, on one line or several
     'CORS that allows any origin together with credentials lets any site make logged-in requests on behalf of your users. List the origins you trust: origin: ["https://app.example.com"].'],
   ['debug-true', 'risk', ['python'], (m) => /\.run\s*\([^)]*\bdebug\s*=\s*True\b|^\s*DEBUG\s*=\s*True\b/.test(m),
     'debug mode shows full error pages, and Flask\'s debugger can run code from the browser. Keep it for your own machine; read it from an environment variable so production runs with it off.'],
@@ -260,6 +260,10 @@ export function ruleReview(code, opts = {}) {
     const ctx = { lang: as,
       next: (k) => { let n = 0; for (let j = i + 1; j < rawLines.length; j++) if (rawLines[j].trim() && ++n === k) return maskedLines[j] || ''; return ''; },
       statement: () => { let st = ''; for (let j = i; j < rawLines.length && j < i + 12; j++) { st += ' ' + (maskedLines[j] || ''); if (/;\s*$/.test(maskedLines[j] || '')) break; } return st; },
+      // the raw text of the { … } object this line sits in (up to 12 lines either way), so a rule can see sibling options on other lines
+      object: () => { const lo = Math.max(0, i - 12), w = rawLines.slice(lo, i + 13).join('\n'); let at = rawLines.slice(lo, i).reduce((a, l) => a + l.length + 1, 0) + (rawLines[i].indexOf('{') >= 0 ? rawLines[i].indexOf('{') + 1 : 0), d = 0, s = 0, e = w.length;
+        for (let k = at - 1; k >= 0; k--) { const c = w[k]; if (c === '}') d++; else if (c === '{') { if (!d) { s = k; break; } d--; } }
+        d = 0; for (let k = s + 1; k < w.length; k++) { const c = w[k]; if (c === '{') d++; else if (c === '}') { if (!d) { e = k + 1; break; } d--; } } return w.slice(s, e); },
     };
     for (const [id, kind, langs, test, message] of RULES) {
       if (!(langs.includes('*') || langs.includes(as))) continue;
