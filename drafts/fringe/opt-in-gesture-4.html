@@ -34,7 +34,7 @@ button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
 <script>
 (function(){
   var KEY='a2m.fringe.fitts.v1',st={taps:[]},cur=null;
-  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.taps))st.taps=j.taps.filter(function(t){return t&&isFinite(t.d)&&isFinite(t.w)&&isFinite(t.ms)&&typeof t.hit==='boolean'})}catch(_){}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.taps))st.taps=j.taps.filter(function(t){return t&&typeof t.d==='number'&&t.d>0&&isFinite(t.d)&&typeof t.w==='number'&&t.w>0&&isFinite(t.w)&&typeof t.ms==='number'&&t.ms>=0&&isFinite(t.ms)&&typeof t.hit==='boolean'})}catch(_){}
   function el(id){return document.getElementById(id)}
   function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({taps:st.taps.slice(-400)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your taps (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
   // index of difficulty in bits, Shannon form (MacKenzie, 1992): log2(distance / width + 1)

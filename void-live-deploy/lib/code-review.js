@@ -183,7 +183,7 @@ const RULES = [
     'indexOf returns -1 when the item is missing (which counts as true) and 0 when it is first (which counts as false), so this check is backwards in both cases. Use list.includes(x), or compare: list.indexOf(x) !== -1.'],
   ['listener-called', 'bug', JS, (m, r) => /\.addEventListener\s*\(/.test(m) && /\.addEventListener\s*\(\s*(['"`])[\w:-]+\1\s*,\s*[\w$.]+\s*\(\s*\)\s*[,)]/.test(r), // handler(): a factory with arguments, makeHandler(1), is fine
     'the handler is called right away (handler()) and its result is what gets attached, so nothing happens on the event. Pass the function itself: addEventListener("click", handler), or wrap it: () => handler(arg).'],
-  ['float-equality', 'bug', [...JS, 'python', 'java', 'csharp'], (m) => /\d\.\d*[1-9]\d*\s*[-+*/]\s*[\d.]+[^=!<>]*[=!]==?|[=!]==?\s*-?\d*\.\d*[1-9]/.test(m.replace(/['"`][^'"`]*['"`]/g, '""')),
+  ['float-equality', 'bug', [...JS, 'python', 'java', 'csharp'], (m) => /\d\.\d*[1-9]\d*\s*(?:[-+*/]\s*[\d.]+[^=!<>]*)?[=!]==?|[=!]==?\s*-?\d*\.\d*[1-9]/.test(m.replace(/['"`][^'"`]*['"`]/g, '""')),
     'decimal numbers are stored in binary, so sums like 0.1 + 0.2 come out as 0.30000000000000004 and an exact == fails. Compare with a small tolerance: Math.abs(a - b) < 1e-9 (math.isclose in Python), or work in whole cents.'],
   ['verify-false', 'risk', ['python', ...JS], (m) => /\bverify\s*=\s*False\b|rejectUnauthorized\s*:\s*false\b|NODE_TLS_REJECT_UNAUTHORIZED/.test(m),
     'certificate checks are turned off, so anyone on the network can read or change this traffic. Fix the certificate (or point to the right CA bundle) instead.'],

@@ -20,7 +20,7 @@ for (const a of asks) {
   errs.length = 0; const before = await page.evaluate(() => document.body.innerText);
   await page.fill('#input', a); await page.keyboard.press('Enter'); await page.waitForTimeout(1500);
   const said = await page.$eval('#whisper', (e) => e.textContent).catch(() => '');
-  const last = (await page.evaluate(() => { try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); } catch (_) { return []; } })).filter((x) => String(x.ask).trim() === a.trim()).pop();
+  const last = (await page.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } })).filter((x) => String(x.ask).trim() === a.trim()).pop();
   const after = await page.evaluate(() => document.body.innerText);
   const shown = after.startsWith(before) ? after.slice(before.length) : after.slice(-400);
   console.log('> ' + a + '\n  by: ' + (last ? last.note || '(no note)' : '(nothing logged)') + (said ? '\n  said: ' + said.trim().slice(0, 200) : '') + '\n  shows: ' + shown.replace(/\s*\n\s*/g, ' / ').trim().slice(0, 300) + (errs.length ? '\n  ERROR: ' + errs.join(' | ') : ''));

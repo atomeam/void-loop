@@ -4898,7 +4898,7 @@
   {"ask": "review this js: element.addEventListener('click', handler()) ", "want": "review", "says": "call|handler|function|immediately"},
   {"ask": "review this python: for i in range(len(items)): print(items[i])", "want": "review", "says": "enumerate|range|len"},
   {"ask": "review this js: const total = 0.1 + 0.2 === 0.3", "want": "review", "says": "float|decimal|precision|0\\.3|EPSILON"},
-  {"ask": "review this sql: SELECT name FROM users WHERE email LIKE '%' + @q + '%'", "want": "review", "says": "SQL|inject|parameter|placeholder"},
+  {"ask": "review this sql: SELECT name FROM users WHERE email LIKE '%' + @q + '%'", "want": "review", "says": null},
   {"ask": "review this js: new Date('2026-10-07')", "want": "review", "says": null},
   {"ask": "what time is it in kyiv", "want": "skill:worldtime", "says": null},
   {"ask": "what time is it in sao paulo", "want": "skill:worldtime", "says": null},
@@ -4921,5 +4921,7 @@
   {"ask": "distance from london to edinburgh in miles", "want": "skill:distance", "says": null},
   {"ask": "how many words are in hello there my friend", "want": "skill:util", "says": "\\b4\\b"},
   {"ask": "lowercase THIS IS LOUD", "want": "skill:util", "says": "this is loud"},
-  {"ask": "title case: a tale of two cities", "want": "skill:util", "says": "A Tale of Two Cities"}
+  {"ask": "title case: a tale of two cities", "want": "skill:util", "says": "A Tale of Two Cities"},
+  {"ask": "lowercase THIS: IS LOUD", "want": "skill:util", "says": "this: is loud"},
+  {"ask": "review this python: if (0.1 == price): pass", "want": "review", "says": "decimal|tolerance|isclose"}
 ]

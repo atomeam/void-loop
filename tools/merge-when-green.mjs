@@ -34,7 +34,7 @@ while (Date.now() < end) {
     // takes a few minutes to say it has started, and in that gap this used to merge before it looked (#141)
     const asked = all.filter((c) => c.user && c.user.login !== 'coderabbitai[bot]' && /@coderabbitai\s+(?:full\s+)?review\b/i.test(c.body || '')).map((c) => Date.parse(c.created_at));
     const lastAsk = asked.length ? Math.max(...asked) : 0, answered = reviews.some((r) => Date.parse(r.submitted_at) >= lastAsk);
-    const busy = cr.some((c) => /review in progress by coderabbit|Currently processing new changes/.test(c.body || '')) || (lastAsk && !answered && Date.now() - lastAsk < 10 * 60e3);
+    const busy = cr.some((c) => /review in progress by coderabbit|Currently processing new changes/.test(c.body || '')) || (lastAsk && !answered); // the wait itself is bounded by greenAt below, so a request made long before green still gets its window
     if (busy && Date.now() - greenAt < 10 * 60e3) { await wait(30e3); continue; }
     const found = reviews.map((r) => +((r.body || '').match(/Actionable comments posted:\s*(\d+)/) || [0, 0])[1]).reduce((a, b) => a + b, 0);
     // a push may not have reached the PR yet: if the head moved since this loop read it, look again instead of stopping on the old head
