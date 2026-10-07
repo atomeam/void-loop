@@ -46,7 +46,7 @@ export function looksLikeCode(code, lang) {
   if (s.trim().length < 8) return false;
   let n = 0;
   if (/[{};]\s*$/m.test(s)) n++;
-  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert)\b/.test(s)) n++;
+  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert|val|guard)\b/.test(s)) n++;
   if (/[=!<>]=|=>|->|\+\+|&&|\|\||::|:=|\w\(|\)\s*[{:]|\w\.\w+\s*[-+*/]?=[^=]/.test(s)) n++;
   if (/^(?: {2,}|\t)\S/m.test(s)) n++;
   if (/^\s*(?:#!|<\?php|<[a-z]+[\s>]|#include|@\w+)/m.test(s)) n++;
@@ -56,7 +56,7 @@ export function looksLikeCode(code, lang) {
 }
 
 // the language when the ask names it: "is this python code ok"
-const NAMED = [['python', /\bpython\b|\bpy\b/], ['typescript', /\btypescript\b|\bts\b/], ['javascript', /\bjavascript\b|\bjs\b|\bnode(?:\.?js)?\b|\breact\b/], ['sql', /\bsql\b|\bquery\b/], ['shell', /\bbash\b|\bshell\b|\bsh\b|\bzsh\b/], ['go', /\bgolang\b|\bgo\s+code\b|\bgo\s*:/], ['rust', /\brust\b/], ['java', /\bjava\b/], ['csharp', /\bc#|\bc\s*sharp\b/], ['php', /\bphp\b/], ['ruby', /\bruby\b/], ['c', /\bc\+\+|\bcpp\b|\bc\s+code\b/]];
+const NAMED = [['python', /\bpython\b|\bpy\b/], ['typescript', /\btypescript\b|\bts\b/], ['javascript', /\bjavascript\b|\bjs\b|\bnode(?:\.?js)?\b|\breact\b/], ['sql', /\bsql\b|\bquery\b/], ['shell', /\bbash\b|\bshell\b|\bsh\b|\bzsh\b/], ['go', /\bgolang\b|\bgo\s+code\b|\bgo\s*:|\b(?:this|my|the|some)\s+go\s*$/], ['rust', /\brust\b/], ['java', /\bjava\b/], ['csharp', /\bc#|\bc\s*sharp\b/], ['php', /\bphp\b/], ['ruby', /\bruby\b/], ['kotlin', /\bkotlin\b/], ['swift', /\bswift\b/], ['c', /\bc\+\+|\bcpp\b|\bc\s+code\b|\bc\s*:|\b(?:this|my|the|some)\s+c\s*$/]];
 export function langNamed(ask) { const a = String(ask || '').toLowerCase(); for (const [l, re] of NAMED) if (re.test(a)) return l; return null; }
 
 export function langOf(code) {
@@ -77,7 +77,7 @@ export function langOf(code) {
   if (/\b(?:function|const|let|var|=>|console\.|document\.|require\(|import\s.+\sfrom\s|export\s+(?:default|const|function))\b|=>/.test(s)) return 'javascript';
   return 'code';
 }
-const C_LIKE = new Set(['javascript', 'typescript', 'java', 'csharp', 'c', 'go', 'rust', 'php', 'css', 'code']);
+const C_LIKE = new Set(['javascript', 'typescript', 'java', 'csharp', 'c', 'go', 'rust', 'php', 'kotlin', 'swift', 'css', 'code']);
 
 // strings and comments become spaces (quotes kept, line breaks kept), so a rule never fires on text inside a string or a comment
 export function mask(code, lang) {
@@ -163,6 +163,20 @@ const RULES = [
     'a pattern built from a variable: if it comes from a user, characters like . * ( are read as regex, and a crafted pattern can hang the page (ReDoS). Escape it first: new RegExp(s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))'],
   ['weak-random', 'risk', ['python', ...JS], (m) => /\b(?:token|password|passwd|secret|nonce|salt|otp|session_?id|api_?key|reset_?code)\w*\s*=.*(?:\brandom\.(?:random|randint|choice|choices|randrange|getrandbits)\s*\(|\bMath\.random\s*\()/i.test(m),
     'random.random and Math.random are predictable, so a token made with them can be guessed. Use secrets.token_urlsafe() in Python, or crypto.randomUUID() / crypto.getRandomValues() in JavaScript.'],
+  ['c-unsafe-string', 'risk', ['c'], (m) => /\b(?:gets|strcpy|strcat|sprintf)\s*\(/.test(m),
+    'gets, strcpy, strcat and sprintf write without checking the size of the buffer, so a long input overflows it (a crash, or a way in for an attacker). Use fgets(buf, sizeof buf, stdin), snprintf, or copy with an explicit length.'],
+  ['unwrap', 'style', ['rust'], (m) => /\.unwrap\s*\(\s*\)/.test(m),
+    'unwrap() panics (crashes the program) when the value is None or an Err. Handle it with match / if let, pass it up with ?, or use expect("why this cannot fail").'],
+  ['force-unwrap', 'risk', ['kotlin', 'swift'], (m, r, x) => x.lang === 'kotlin' ? /!!/.test(m) : /[\w)\]]!(?![=!])/.test(m.replace(/!=/g, '')),
+    'a force unwrap (!! in Kotlin, ! in Swift) crashes the app when the value is null/nil. Handle the missing case: ?. with ?: in Kotlin, if let / guard let or ?? in Swift.'],
+  ['string-eq', 'bug', ['java'], (m) => /[=!]=\s*"|"\s*[=!]=/.test(m),
+    'in Java, == on strings checks whether they are the same object, not the same text, so equal strings can compare false. Use "yes".equals(s) (safe when s is null).'],
+  ['var-loop-closure', 'bug', JS, (m) => /\bfor\s*\(\s*var\s+\w+[^)]*\)\s*(?:\{[^}]*|[^;{]*)(?:=>|\bfunction\b)/.test(m), // the callback inside the loop body, not later on the same line
+    'a var in a for loop is shared by every pass, so callbacks created in the loop all see its final value. Declare it with let: for (let i = 0; …).'],
+  ['json-parse-storage', 'bug', JS, (m) => /\bJSON\.parse\s*\(\s*(?:window\.)?(?:localStorage|sessionStorage)\.getItem\s*\(/.test(m) && !/\btry\b/.test(m),
+    'JSON.parse throws on text that is not valid JSON (an old format, a hand edit, a half-written save), and that stops the page. Wrap it in try/catch and fall back to a default.'],
+  ['busy-loop', 'bug', ['python'], (m, r, x) => /^\s*while\s+(?:True|1)\s*:\s*pass\b/.test(m) || (/^\s*while\s+(?:True|1)\s*:\s*$/.test(m) && /^\s*pass\s*$/.test(x.next(1))),
+    'while True: pass spins forever at full speed, using a whole CPU core and never stopping. Wait on something (time.sleep, an event, input) or add a condition that ends the loop.'],
   ['verify-false', 'risk', ['python', ...JS], (m) => /\bverify\s*=\s*False\b|rejectUnauthorized\s*:\s*false\b|NODE_TLS_REJECT_UNAUTHORIZED/.test(m),
     'certificate checks are turned off, so anyone on the network can read or change this traffic. Fix the certificate (or point to the right CA bundle) instead.'],
   ['rm-rf-var', 'risk', ['shell'], (m, r) => /\brm\s+-[a-z]*r[a-z]*f?[a-z]*\s+(?:"?\$\{?\w+\}?"?\/?)(?:\s|$|\/)/i.test(r) && !/\$\{\w+:\?/.test(r),

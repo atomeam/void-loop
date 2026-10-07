@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 // node tools/review.test.mjs: the code reviewer (void-live-deploy/lib/code-review.js) finds what it should and stays quiet on clean code.
 import { isReviewAsk, codeOf, langOf, ruleReview, looksLikeCode, autoFix, skippedInReview, langNamed } from '../void-live-deploy/lib/code-review.js';
 let bad = 0;
@@ -83,6 +84,24 @@ ok(rules(`$q = "SELECT * FROM t WHERE id=" . $_GET['id'];`, 'php').includes('sql
 ok(rules('assert user.is_admin', 'python').includes('assert-check@1') && !rules('assert x > 0', 'python').includes('assert-check@1'), 'assert as an access check flagged, a plain assert not');
 ok(rules('const re = new RegExp(userInput)', 'javascript').includes('regexp-input@1') && !rules('const re = new RegExp("^a")', 'javascript').includes('regexp-input@1'), 'RegExp from a variable flagged, from a literal not');
 ok(rules('token = random.random()', 'python').includes('weak-random@1') && rules('const resetCode = Math.random()', 'javascript').includes('weak-random@1') && !rules('const t = Math.random()', 'javascript').includes('weak-random@1'), 'predictable random for a token flagged, for anything else not');
+// run 38: C string functions, Rust unwrap, Kotlin/Swift force unwraps, Java string ==, var in loop closures, JSON.parse of storage, a busy loop
+ok(langNamed('review this c') === 'c' && langNamed('review this go') === 'go' && langNamed('review this code') !== 'c' && langNamed('review this c: gets(buf);') === 'c' && langNamed('review this c#: x') === 'csharp' && rules('gets(buf);', 'c').includes('c-unsafe-string@1') && rules('strcpy(d, s);', 'c').includes('c-unsafe-string@1') && !rules('fgets(buf, sizeof buf, stdin);', 'c').includes('c-unsafe-string@1') && !rules('strncpy(d, s, n);', 'c').includes('c-unsafe-string@1'), 'gets/strcpy flagged in C, fgets/strncpy not');
+ok(rules('let v = x.unwrap();', 'rust').includes('unwrap@1') && !rules('let v = x.unwrap_or(0);', 'rust').includes('unwrap@1'), 'unwrap() flagged, unwrap_or not');
+ok(rules('val n = user!!.name', 'kotlin').includes('force-unwrap@1') && !rules('val n = user?.name ?: ""', 'kotlin').includes('force-unwrap@1') && !rules('if (a != b) {}', 'kotlin').includes('force-unwrap@1'), 'Kotlin !! flagged, ?. and != not');
+ok(rules('let n = Int(s)!', 'swift').includes('force-unwrap@1') && !rules('if a != b { }', 'swift').includes('force-unwrap@1') && !rules('if !done { }', 'swift').includes('force-unwrap@1') && !rules('let n = Int(s) ?? 0', 'swift').includes('force-unwrap@1'), 'Swift force unwrap flagged, != / !done / ?? not');
+ok(rules('if (s == "yes") {}', 'java').includes('string-eq@1') && !rules('if ("yes".equals(s)) {}', 'java').includes('string-eq@1') && !rules('if (s == null) {}', 'java').includes('string-eq@1'), 'Java string == flagged, equals and == null not');
+ok(rules('for (var i = 0; i < 5; i++) setTimeout(() => log(i))', 'javascript').includes('var-loop-closure@1') && !rules('for (let i = 0; i < 5; i++) setTimeout(() => log(i))', 'javascript').includes('var-loop-closure@1') && rules('for (var i = 0; i < 3; i++) { btn[i].onclick = function () { go(i) } }', 'javascript').includes('var-loop-closure@1') && !rules('for (var i = 2; i < n; i++) t.push(i * 2); return t.sort(function (a, b) { return a - b })', 'javascript').includes('var-loop-closure@1'), 'var captured by loop callbacks flagged, let not');
+ok(rules("const s = JSON.parse(localStorage.getItem('x'))", 'javascript').includes('json-parse-storage@1') && !rules("try { s = JSON.parse(localStorage.getItem('x')) } catch (_) {}", 'javascript').includes('json-parse-storage@1'), 'unguarded JSON.parse of storage flagged, inside try not');
+ok(rules('while True: pass', 'python').includes('busy-loop@1') && rules('while True:\n    pass', 'python').includes('busy-loop@1') && !rules('while True:\n    time.sleep(1)', 'python').includes('busy-loop@1'), 'while True: pass flagged, a loop that sleeps not');
+// the page names the language from the ask's title, cut at the first colon ("review this c"), so every review ask in the
+// bench must name the same language that way as it does in full; a mismatch is a probe miss nobody can see locally
+{
+  const bench = JSON.parse(fs.readFileSync(new URL('./bench.json', import.meta.url), 'utf8'));
+  for (const b of bench.filter((x) => /(^|\|)review(\||$)/.test(x.want) && /:/.test(x.ask))) {
+    const full = langNamed(b.ask.split(':')[0] + ':'), title = langNamed(b.ask.split('\n')[0].replace(/:\s*$/, '').split(':')[0]);
+    ok(full === title, 'the page names the same language as the full ask: ' + b.ask.slice(0, 40) + ' (' + full + ' vs ' + title + ')');
+  }
+}
 // keys never shown as written
 ok(!JSON.stringify(ruleReview('const token = "ghp_abcdefghijklmnopqrstuvwxyz0123";')).includes('ghp_abcdef'), 'a key in a finding is masked');
 // the pull-request review skips tests in every language the repo writes (their fixtures are bad code on purpose), and nothing else by accident

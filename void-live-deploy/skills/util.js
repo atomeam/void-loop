@@ -6,6 +6,7 @@
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
   // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
   'title case': (s) => { const w = s.toLowerCase().split(/(\s+)/), last = w.length - 1; return w.map((x, i) => (i && i !== last && SMALL.has(x)) ? x : x.replace(/^\p{L}/u, (c) => c.toUpperCase())).join(''); },
+  'capitalize words': (s) => s.replace(/(^|\s)(\p{L})/gu, (_, a, c) => a + c.toUpperCase()),
   reverse: (s) => Array.from(s).reverse().join(''), 'reverse words': (s) => s.trim().split(/\s+/).reverse().join(' ') };
 const SMALL = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'so', 'yet', 'at', 'by', 'in', 'of', 'on', 'to', 'up', 'as', 'via', 'vs']);
 // syllables by vowel groups, with the usual English corrections (silent final e, -le, -ed); right for most words, labelled "about"
@@ -35,7 +36,7 @@ export function utilOf(text) {
   // "how many characters in supercalifragilistic", "character count of ..."
   m = t.match(/^(?:how\s+many\s+(?:characters|letters|chars)\s+(?:are\s+)?in|count\s+(?:the\s+)?(?:characters|letters|chars)\s+in|(?:character|letter|char)\s+count\s+(?:of|in|for))\s+(.+)$/i);
   if (m && /^(?:the\s+)?(?:english\s+)?alphabet$/i.test(m[1])) m = null; // a fact, not a count of the word "alphabet"
-  if (m) return { kind: 'count', s: m[1].replace(/^["“]|["”]$/g, ''), chars: true };
+  if (m) return { kind: 'count', s: m[1].replace(/^(?:the\s+)?(?:word|name|phrase)\s+(?=\S)/i, '').replace(/^["“]|["”]$/g, ''), chars: true };
   if (/^(?:generate|make|give\s+me|create|new)\s+(?:a\s+|an\s+)?(?:uuid|guid|unique\s+id)$|^(?:uuid|guid)$/i.test(t)) return { kind: 'uuid' };
   m = t.match(/^(?:an?\s+)?emojis?\s+(?:for|of|that\s+means)\s+([a-z ]{2,20})$/i);
   if (m && EMOJI[m[1].trim().toLowerCase()]) return { kind: 'emoji', w: m[1].trim().toLowerCase() };
@@ -57,6 +58,9 @@ export function utilOf(text) {
   // "how many syllables in banana", "syllables in elephant"
   m = l.match(/^(?:how\s+many\s+)?syllables?\s+(?:are\s+)?(?:in|does)\s+(?:the\s+word\s+)?["“']?([a-z'-]{1,30})["”']?(?:\s+have)?$|^how\s+many\s+syllables\s+does\s+["“']?([a-z'-]{1,30})["”']?\s+have$/);
   if (m) return { kind: 'syllables', w: m[1] || m[2] };
+  // "capitalize every word in the cat sat on the mat": each word starts with a capital, small words too
+  m = t.match(/^(?:capitali[sz]e|uppercase)\s+(?:every|each|all\s+the|the\s+first\s+letter\s+of\s+(?:every|each))\s+words?\s+(?:in|of)\s*:?\s+(.+)$/i);
+  if (m) return { kind: 'case', how: 'capitalize words', s: m[1] };
   m = t.match(/^(uppercase|upper case|lowercase|lower case|title case|reverse)\s*:?\s+(?:this:?\s+)?(.+)$/i);
   if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2]) && !/^(?:\d+(?:\.\d+)?\s*)?(?:percentage|percent|%)/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] }; // "reverse percentage ..." is maths
   if (/^(?:what(?:'s| is)\s+)?(?:the\s+)?moon\s+phase(?:\s+(?:tonight|today|now))?$|^(?:what\s+)?phase\s+(?:is\s+)?(?:of\s+)?the\s+moon(?:\s+in)?(?:\s+(?:tonight|today|now))?$|^is\s+it\s+a\s+full\s+moon(?:\s+tonight)?$|^when\s+is\s+the\s+next\s+(?:full|new)\s+moon$|^next\s+full\s+moon$/.test(l)) return { kind: 'moon' };
