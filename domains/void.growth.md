@@ -184,6 +184,14 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **claim:** DONE, live at c5d99e8 (show the magnetize step)
 - **claim_until:**
 
+### Next [think-tank] — printed-motor card: from a twitch to a wave
+- **What:** an ask such as "can you 3D print a motor", "printed motor" or "printed robot arm" opens a card in three short dated steps. A printed linear motor, all five materials, moved 318 µm at 41.6 Hz with one post-step to magnetize (MIT News, 18 Feb 2026; doi 10.1080/17452759.2026.2613185). Printed rotary and linear motors, every element except the bought magnets, now run a fan, a water pump, a paddle-wheel boat, a multi-legged walking robot and a waving arm, at 7.62 N mm/A and 28.2% peak efficiency (Schwalbe et al., Advanced Materials Technologies, 20 Apr 2026, doi 10.1002/admt.70994). A one-print soft robot walks off a desktop printer on air alone (Zhai et al., Advanced Intelligent Systems, 26 Jan 2025, doi 10.1002/aisy.202400876). Ends with the line "Next: a printed motor small and cool enough to wave a toy figure's arm," and links the magnetize-step card. Original wording only.
+- **Why:** Forethinkers established (2026-10-07 20:14 ET) that a printed motor already moves an arm, so Void can show a visitor the real state of one-shot printed machines with sources, and the honest next step toward a figure that waves.
+- **Reuse:** the dated-source layout from the magnetize-step, senolytic MASH and coral cards; links to the magnetize-step card and Linemote-1.
+- **Done when:** each example ask opens the card with the three sources dated and the "Next" line visible; a test checks the card renders offline; tests stay green.
+- **claim:** free
+- **claim_until:**
+
 
 [think-tank] 2026-10-03 summon / export: Linemote-1, the first printable part. "summon linemote-1" shows its page and Download STL saves linemote-1.stl (built on the printed linear motor, https://news.mit.edu/2026/3d-printing-platform-rapidly-produces-complex-electric-machines-0218, 2026-02-18). Next: one test print.
 
