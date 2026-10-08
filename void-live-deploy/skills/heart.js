@@ -178,18 +178,33 @@ async function run(text, api) {
     if (q.rest && q.rest >= (q.max || 220 - q.age)) q.rest = null;
     last = { q, at: Date.now() };
     shareBody({ age: q.age }, 'heart', mem ? mem.kind : null);
-    showPage((el) => { el.innerHTML = zonesHtml(q, esc); });
+    const zel = showPage((el) => { el.innerHTML = zonesHtml(q, esc); });
+    heartMini(api, zel, zoneBpm(q));
     return 'heart';
   }
   if (q.kind === 'rest' && !q.form) {
     last = { q, at: Date.now() };
     shareBody({}, 'heart', mem ? mem.kind : null);
-    showPage((el) => { el.innerHTML = restHtml(q, esc); });
+    const rel = showPage((el) => { el.innerHTML = restHtml(q, esc); });
+    heartMini(api, rel, q.rest || 70);
     return 'heart';
   }
   const el = showPage((p) => { p.innerHTML = (q.form ? '<h2>Heart rate zone calculator</h2><div class="sub">your target heart rate and five training zones</div>' : chartHtml(esc)) + '<div id="hr-form"></div>' + SRC; });
   formHtml(el, q, esc);
+  heartMini(api, el, 70);
   return 'heart';
+}
+// the rate the 3D heart beats at: the middle of the asked zone, else of the 50-85% target band
+function zoneBpm(q) {
+  const max = q.max || (220 - q.age), pick = q.zone ? ZONES[q.zone - 1] : null, b = pick ? band(max, q.rest, pick.lo, pick.hi) : band(max, q.rest, 0.5, 0.85);
+  return Math.round((b[0] + b[1]) / 2);
+}
+// a glossy heart beating at that rate beside an ECG monitor (skills/mini/heart.js), in a band at the top of the card
+function heartMini(api, el, bpm) {
+  if (!el || !api.stage || !api.stage.miniature) return;
+  const band = document.createElement('div'); band.className = 'vmini'; band.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 160 : 190) + 'px;margin:0 0 6px';
+  el.prepend(band);
+  api.stage.miniature(band, 'heart', { bpm }, { key: 'heart:' + Date.now().toString(36), label: '3D heart beating at ' + bpm + ' bpm' }).catch(() => band.remove());
 }
 
 export { askOf, followOf, zonesHtml, band };

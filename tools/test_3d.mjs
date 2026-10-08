@@ -238,6 +238,21 @@ export async function run3dChecks({ check, fresh }) {
     await F.ctx.close();
   }
 
+  // ---- card miniatures: the heart beats at the card's rate beside an ECG monitor
+  {
+    const F = await fresh();
+    const lastHeart = () => F.p.evaluate(() => { const ls = window.__voidMini.list().filter((x) => x.kind === 'heart' && x.draws > 0); const l = ls[ls.length - 1]; return l && !!document.querySelector('.vpage.on .vmini canvas') ? { key: l.key, ...window.__voidMini.state(l.key) } : false; });
+    await F.ask('is a resting heart rate of 55 good', 700);
+    const rest = await until(async () => { const s = await lastHeart(); return s && s.bpm === 55 ? s : false; }, 60000);
+    const beating = rest && await F.p.evaluate((k) => { const a = window.__voidMini.state(k).phase; return new Promise((res) => setTimeout(() => res(window.__voidMini.state(k).phase !== a), 500)); }, rest.key);
+    await F.ask('heart rate zones for a 40 year old', 700);
+    // the page's big number is the target band "a-b bpm": the heart beats at its middle
+    const zones = await until(async () => { const s = await lastHeart(); if (!s || s.key === rest.key) return false; const m = (await F.page()).match(/(\d+)\s*[\u2013-]\s*(\d+)\s*bpm/); return m && s.bpm === Math.round((+m[1] + +m[2]) / 2) ? { ...s, band: m[0] } : false; }, 60000);
+    check('miniatures: "is a resting heart rate of 55 good" beats the 3D heart at 55 bpm and it keeps beating; "heart rate zones for a 40 year old" beats a new one at the middle of the target band on the card',
+      !!rest && !!beating && !!zones && !F.errors.length, JSON.stringify({ rest, beating, zones, e: F.errors }));
+    await F.ctx.close();
+  }
+
   await runRulesChecks(check);
   // ---- chess and checkers: routing, the real 3D board takes taps, Void replies, and a flat board where WebGL can't run
   {

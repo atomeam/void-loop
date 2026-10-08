@@ -122,6 +122,7 @@ any card whose miniature takes input:
 | `calculator` | the calculator stage card ("calculate 12*7") | solar pocket calculator: a new sum presses its keys one by one, the seven-segment LCD follows the typing, then `=` and the result |
 | `notepad` | the notepad stage card ("make a notepad") | yellow legal pad with gummed red binding, ruled sheet and red margin; the card's title and text are handwritten on it and rewrite as you type; a sharpened pencil beside it |
 | `piggybank` | savings goals ("how long to save 50000 if i save 500 a month", "how much to save a month for 1 million in 30 years", "savings calculator") | blown-glass piggy bank filling with coins from where you start to the goal while coins drop through the slot; silver paid in, gold growth (the colours of the `savings` coin stacks); the calculator's piggy follows its inputs |
+| `heart` | heart rate ("heart rate zones for a 40 year old", "is a resting heart rate of 55 good", "heart rate zone calculator") | glossy red heart on a walnut stand beating lub-dub at the card's rate (the middle of the asked zone or target band, or your resting rate) beside a bedside monitor with a live ECG trace and bpm |
 
 Stage cards (the calculator) mount into a small host inside the card with `stageApi.miniature(host, kind, data, { key: kind + ':' + th.id })`: render() rebuilds the card DOM, and the same key moves the live miniature into the new host and calls `update(data)` instead of building it again.
 Tests read a kind's own `state()` with `window.__voidMini.state(key)`.
