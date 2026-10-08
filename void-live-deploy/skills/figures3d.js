@@ -361,6 +361,7 @@ function poseSprite(f, now) {
   if (p.tail && p.tail.rotation) p.tail.rotation.z = still ? 0 : Math.sin(b.t * 2.6) * 0.18 - b.vx / SPEED * 0.25;
   if (p.pool && p.pool.position) { p.pool.position.y = -R * 2.1 - bob - hop; if (p.pool.scale && p.pool.scale.setScalar) p.pool.scale.setScalar(1 - (bob + hop) / 60); }
   if (p.bubble) p.bubble.material.opacity = still ? 1 : 0.97 + Math.sin(b.t * 2) * 0.03; // near-opaque: a see-through bubble read grey and faint
+  if (p.bubble) { const half = R * 4.6 + 10; p.bubble.position.x = Math.max(half - b.x, Math.min(R * 3.6, innerWidth - half - b.x)); } // the bubble stays on screen near an edge
 }
 
 
