@@ -1053,6 +1053,8 @@ function mountList(th) {
       addRow.appendChild(addInput);
       addRow.appendChild(addButton);
       el.appendChild(addRow);
+      // the 3D clipboard beside the list (skills/mini/list.js): its paper shows the items, and ticking one sends the pencil to tick it
+      stageApi.miniature(el, 'list', { title: th.title || '', items: (th.items || []).map((i) => ({ text: i.text, done: !!i.done })) }, { key: th.id, place: 'beside', width: 150, height: 180, label: '3D clipboard' }).catch(() => {});
 
       bindDrag(el, th);
       stage.appendChild(el);

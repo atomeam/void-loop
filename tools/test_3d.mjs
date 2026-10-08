@@ -189,4 +189,18 @@ export async function run3dChecks({ check, fresh }) {
     check('chess and checkers: without WebGL each shows a flat 64-square board and a click still plays a move', flat === 64 && !!moved && flatC === 64, JSON.stringify({ flat, moved, flatC, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- the list's clipboard: mounts beside the list, and ticking an item sends the pencil to tick it on the paper
+  {
+    const F = await fresh();
+    await F.ask('make a grocery list with eggs, milk, bread');
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'list'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => { const g = await import('/skills/mini/list.js'); const a = g.rowsOf([{ text: 'eggs' }, { text: 'milk', done: true }]);
+      return { rows: JSON.stringify(a), nd: g.newlyDone(a, g.rowsOf([{ text: 'eggs', done: true }, { text: 'milk', done: true }])), none: g.newlyDone(a, a), moved: g.newlyDone(a, g.rowsOf([{ text: 'milk', done: true }])), cap: g.rowsOf(Array.from({ length: 12 }, (_, i) => ({ text: 'x' + i }))).length }; });
+    const before = drawn ? drawn.draws : 0;
+    const box = await F.p.$$('.list-entry input[type=checkbox]'); if (box[1]) await box[1].click();
+    const inked = await until(() => F.p.evaluate((b) => window.__voidMini.list().find((x) => x.kind === 'list').draws > b + 8, before), 15000);
+    check('3D list: a grocery list gets a clipboard beside it; rowsOf/newlyDone find the ticked line (not a removed one), the paper shows at most 7 lines, and ticking milk on the card animates the pencil (many redraws)',
+      !!drawn && r.rows === '[{"text":"eggs","done":false},{"text":"milk","done":true}]' && r.nd === 0 && r.none === -1 && r.moved === -1 && r.cap === 7 && inked && !F.errors.length, JSON.stringify({ drawn, r, inked, e: F.errors }));
+    await F.ctx.close();
+  }
 }
