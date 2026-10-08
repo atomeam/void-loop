@@ -20,7 +20,7 @@
  * missing scripts fall back to the base-body defaults. Nearby figures trigger greet/follow/chase/flee/argue/team; reduced motion holds all still.
  */
 import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
-import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups, brainMesh, creatureMesh, CREATURE_KINDS } from './sdfmesh.js';
+import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups, brainMesh, creatureMesh, CREATURE_KINDS, foodMesh } from './sdfmesh.js';
 import { makeCloud, cloudGeometry, cloudShade, makePrecip, makeGlow } from './sky3d.js';
 import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, climateAt, CONDITIONS, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey } from './scripts.js';
 export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
@@ -708,7 +708,18 @@ function poseCreature(f, still) {
   p.legs.forEach((l, i) => { l.rotation.z = Math.sin(ph + (i === 0 || i === 3 ? 0 : Math.PI)) * amp; });
   if (p.tail) p.tail.rotation.y = still ? 0 : Math.sin(b.t * (p.creature.kind === 'dog' ? 9 : 2.2) + G.phase) * (p.creature.kind === 'dog' ? 0.5 : 0.25);
 }
-const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater, brain: buildBrain, cat: buildCreature, dog: buildCreature, mouse: buildCreature, rabbit: buildCreature };
+// real foods (skills/sdfmesh.js foodField): a bone, a wedge of cheese, a carrot, a banana; colour lives in the vertices
+function buildFood(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const m = foodMesh(R, (spec.seed ?? 1) >>> 0, spec.kindOf), geo = new T.BufferGeometry();
+  geo.setAttribute('position', new T.BufferAttribute(m.positions, 3)); geo.setAttribute('normal', new T.BufferAttribute(m.normals, 3));
+  geo.setAttribute('color', new T.BufferAttribute(m.colors, 3)); geo.setIndex(new T.BufferAttribute(m.indices, 1)); geo.computeBoundingSphere();
+  const k = spec.kindOf, mat = new T.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: k === 'banana' ? 0.45 : k === 'cheese' ? 0.6 : k === 'carrot' ? 0.55 : 0.75, clearcoat: k === 'banana' ? 0.3 : 0, sheen: k === 'carrot' ? 0.3 : 0 });
+  const mesh = new T.Mesh(geo, mat); mesh.rotation.y = -0.5; body.add(mesh);
+  const parts = elementParts(body, { kind: k }); parts.geos.push(geo); parts.mats.push(mat);
+  return { obj: g, parts };
+}
+const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater, brain: buildBrain, cat: buildCreature, dog: buildCreature, mouse: buildCreature, rabbit: buildCreature, bone: buildFood, cheese: buildFood, carrot: buildFood, banana: buildFood };
 // run a thing's conditions for one frame and show the result: rain, snow and lightning, a darkening cloud, melting ice,
 // a flower growing under the rain. Returns true while something is visibly happening.
 function stepElement(f, dt, now, still, others) {

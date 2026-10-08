@@ -95,3 +95,16 @@ test('cats, dogs, mice and rabbits are real animals from a seed: species builds 
   assert.equal(CREATURE(28, 1, 'unicorn'), null);
   for (const k of CREATURE_KINDS) assert.equal(CREATURE(28, 3, k).rig.legs.length, 4);
 });
+test('bones, cheese, carrots and bananas are real foods from a seed, each coloured like the real thing', async () => {
+  const { foodMesh, foodField, FOOD_KINDS } = await import('../void-live-deploy/skills/sdfmesh.js');
+  assert.deepEqual(FOOD_KINDS, ['bone', 'cheese', 'carrot', 'banana']);
+  for (const k of FOOD_KINDS) {
+    const a = foodMesh(28, 2, k, 32), c = foodMesh(28, 3, k, 32);
+    assert.ok(a.positions.length > 300, k + ' has a surface');
+    assert.notDeepEqual(Array.from(a.positions.slice(0, 30)), Array.from(c.positions.slice(0, 30)), k + ' varies by seed');
+  }
+  const mean = (k) => { const m = foodMesh(28, 2, k, 32), s = [0, 0, 0]; for (let i = 0; i < m.colors.length; i += 3) for (let j = 0; j < 3; j++) s[j] += m.colors[i + j]; return s.map((v) => v / (m.colors.length / 3)); };
+  const carrot = mean('carrot'), banana = mean('banana');
+  assert.ok(carrot[0] > carrot[2] * 2, 'a carrot is orange'); assert.ok(banana[0] > banana[2] * 1.5 && banana[1] > banana[2] * 1.4, 'a banana is yellow');
+  assert.equal(foodField(28, 1, 'pizza'), null);
+});

@@ -418,6 +418,68 @@ export function creatureMesh(R, seed, kind, cells = 60) {
   CCACHE.set(key, out); while (CCACHE.size > 16) CCACHE.delete(CCACHE.keys().next().value);
   return out;
 }
+/**
+ * Real foods, as seeded fields with their own surface colour: a bone (a femur: a shaft flaring into two knobbed ends),
+ * a wedge of cheese (a holed wedge with a waxed rind), a carrot (a tapering, ringed root with its green tops) and a
+ * banana (a curved, five-sided fruit, green-tinged at the stem, brown at the tip, freckled when ripe). Each seed changes
+ * size, curve, holes and ripeness, so no two match; a seed always rebuilds the same one. Resting on y = -0.95R.
+ */
+export const FOOD_KINDS = ['bone', 'cheese', 'carrot', 'banana'];
+const sdBox = (p, c, h) => { const qx = Math.abs(p[0] - c[0]) - h[0], qy = Math.abs(p[1] - c[1]) - h[1], qz = Math.abs(p[2] - c[2]) - h[2]; return Math.hypot(Math.max(qx, 0), Math.max(qy, 0), Math.max(qz, 0)) + Math.min(Math.max(qx, qy, qz), 0); };
+export function foodField(R, seed, kind) {
+  const r = mulberry32(seed), u = (a, b) => a + (b - a) * r(), g = -0.95 * R, P = [0, 0, 0];
+  const hex = (h) => [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255];
+  if (kind === 'bone') {
+    const L = R * u(0.75, 0.95), sh = R * u(0.075, 0.095), k = R * u(0.11, 0.14), y = g + k * 1.1;
+    const d = (x, yy, z) => { P[0] = x; P[1] = yy; P[2] = z; let v = sdCapsule(P, [-L, y, 0], [L, y, 0], sh, sh);
+      for (const sx of [-1, 1]) for (const sz of [-1, 1]) v = smin(v, sdSphere(P, [sx * L, y, sz * k * 0.62], k), R * 0.07);
+      return v + R * 0.004 * Math.sin(x * 40 / R) * Math.sin(z * 37 / R); };
+    const base = hex('#ece3cf');
+    return { d, bounds: { min: [-L - k * 2, g - R * 0.05, -k * 2], max: [L + k * 2, y + k * 1.6, k * 2] }, color: (x, yy) => { const t = 0.92 + 0.08 * Math.sin(x * 9 / R + yy * 7 / R); return base.map((c, i) => c * t * (i === 2 ? 0.97 : 1)); } };
+  }
+  if (kind === 'cheese') {
+    const w = R * u(0.55, 0.75), h = R * u(0.3, 0.42), depth = R * u(0.38, 0.5), y0 = g + h, slope = h / w;
+    const topAt = (x) => y0 + h - (x + w) * slope * 0.9 / 0.7 * 0.7; // the sloped top's height above x
+    const holes = Array.from({ length: 7 + Math.floor(r() * 6) }, (_, i) => { const x = u(-w * 0.85, w * 0.6), face = i % 3; // the two cut sides and the sloped top
+      return { c: face === 2 ? [x, topAt(x), u(-depth * 0.7, depth * 0.7)] : [x, g + u(0.15, 0.85) * (topAt(x) - g), face ? depth : -depth], r: R * u(0.06, 0.12) }; });
+    const d = (x, yy, z) => { P[0] = x; P[1] = yy; P[2] = z; let v = sdBox(P, [0, y0, 0], [w, h, depth]);
+      const top = (yy - y0 - h) + (x + w) * slope * 0.9; v = Math.max(v, top * 0.7); // the wedge: the top slopes down to the thin edge
+      for (const o of holes) v = Math.max(v, -sdSphere(P, o.c, o.r));
+      return v; };
+    const rind = hex('#e0a12f'), paste = hex('#f3d36b').map((c, i) => c * u(0.95, 1.03));
+    return { d, bounds: { min: [-w * 1.2, g - R * 0.05, -depth * 1.2], max: [w * 1.2, y0 + h * 1.3, depth * 1.2] }, color: (x, yy, z) => (Math.abs(z) > depth * 0.93 || yy < g + R * 0.03 ? rind : paste) };
+  }
+  if (kind === 'carrot') {
+    const L = R * u(0.8, 1.05), r0 = R * u(0.14, 0.19), bend = u(-0.12, 0.12), y = g + r0, rings = u(26, 34) / R;
+    const d = (x, yy, z) => { P[0] = x; P[1] = yy; P[2] = z; let v = sdCapsule(P, [-L * 0.5, y, 0], [L * 0.5, y + bend * R, bend * R * 0.5], r0, R * 0.02);
+      for (let i = 0; i < 4; i++) { const a = -0.6 + i * 0.4; v = smin(v, sdCapsule(P, [-L * 0.5, y, 0], [-L * 0.5 - R * 0.45 * Math.cos(a), y + R * 0.4 + R * 0.1 * Math.sin(i), R * 0.25 * Math.sin(a)], R * 0.025, R * 0.012), R * 0.03); }
+      return v + R * 0.006 * Math.sin(x * rings) * (x > -L * 0.5 ? 1 : 0); };
+    const orange = hex('#e66f1e'), green = hex('#4f7d2c');
+    return { d, bounds: { min: [-L * 0.5 - R * 0.6, g - R * 0.05, -R * 0.4], max: [L * 0.6, y + R * 0.6, R * 0.4] }, color: (x, yy) => (x < -L * 0.5 - R * 0.03 ? green : orange.map((c) => c * (0.93 + 0.07 * Math.sin(x * rings)))) };
+  }
+  if (kind === 'banana') {
+    const L = R * u(0.85, 1.05), r0 = R * u(0.12, 0.15), arc = u(0.3, 0.5), ripe = r(), y = g + r0;
+    const pts = Array.from({ length: 7 }, (_, i) => { const t = i / 6 - 0.5; return [t * L * 2, y + (1 - 4 * t * t) * arc * R * 0.5, 0]; });
+    const d = (x, yy, z) => { P[0] = x; P[1] = yy; P[2] = z; let v = Infinity;
+      for (let i = 0; i < 6; i++) { const t0 = Math.abs(i / 6 - 0.5) * 2, t1 = Math.abs((i + 1) / 6 - 0.5) * 2; v = smin(v, sdCapsule(P, pts[i], pts[i + 1], r0 * (1 - t0 * t0 * 0.75), r0 * (1 - t1 * t1 * 0.75)), R * 0.04); }
+      const ang = Math.atan2(z, yy - y); return v + R * 0.008 * Math.abs(Math.sin(ang * 2.5)); }; // five faint ridges
+    const yellow = hex('#f2d03f'), green = hex('#a7b84a'), brown = hex('#5a3d1c');
+    return { d, bounds: { min: [-L * 1.15, g - R * 0.05, -r0 * 1.4], max: [L * 1.15, y + arc * R * 0.6 + r0 * 1.4, r0 * 1.4] },
+      color: (x, yy, z) => { const t = x / L; if (Math.abs(t) > 0.93) return brown; if (t < -0.7 && ripe < 0.5) return green;
+        const spot = ripe > 0.6 && Math.sin(x * 47 / R + z * 31 / R) * Math.sin(yy * 53 / R) > 0.82; return spot ? brown : yellow; } };
+  }
+  return null;
+}
+const FCACHE = new Map();
+export function foodMesh(R, seed, kind, cells = 64) {
+  const key = kind + ':' + (seed >>> 0) + ':' + R + ':' + cells;
+  if (FCACHE.has(key)) return FCACHE.get(key);
+  const F = foodField(R, seed >>> 0, kind); if (!F) return null;
+  const span = Math.max(...[0, 1, 2].map((i) => F.bounds.max[i] - F.bounds.min[i])), m = mesh(F.d, F.bounds, span / cells), P = m.positions, colors = new Float32Array(P.length);
+  for (let v = 0; v < P.length; v += 3) { const c = F.color(P[v], P[v + 1], P[v + 2]); colors[v] = c[0]; colors[v + 1] = c[1]; colors[v + 2] = c[2]; }
+  const out = { ...m, colors }; FCACHE.set(key, out); while (FCACHE.size > 16) FCACHE.delete(FCACHE.keys().next().value);
+  return out;
+}
 // grid bounds that hold a shape list, with a margin for the blends (a carved shape only takes away, so it never grows them)
 export function boundsOf(shapes, margin) {
   const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
