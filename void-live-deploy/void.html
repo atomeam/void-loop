@@ -3919,7 +3919,7 @@ return { ok: true, detail: 'timer-reset' };
       m = t.match(/^(?:(?:the\s+)?(?:sales\s+)?tax\s+(?:of\s+)?)?(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:sales\s+)?tax\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)$|^(?:the\s+)?(?:sales\s+)?tax\s+(?:of\s+)?(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)$/);
       if (m) { const r = +(m[1] || m[3]), amt = +(m[2] || m[4]), tax = Math.round(amt * r) / 100; return { value: '$' + (amt + tax).toFixed(2), note: r + '% tax on $' + amt.toFixed(2) + ' is $' + tax.toFixed(2) + ' · total $' + (amt + tax).toFixed(2) }; }
       // "0.75 as a fraction": the simplest fraction within a tiny tolerance (continued fractions)
-      m = t.match(/^(-?\d*\.\d+|-?\d+)\s+(?:as|in|to)\s+(?:a\s+)?fraction$/);
+      m = t.match(/^(?:convert\s+|what(?:'s|\s+is)\s+|turn\s+)?(-?\d*\.\d+|-?\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?fraction$/);
       if (m) { const x = +m[1]; let h1 = 1, h0 = 0, k1 = 0, k0 = 1, b = x;
         for (let i = 0; i < 32; i++) { const a = Math.floor(b); [h1, h0] = [a * h1 + h0, h1]; [k1, k0] = [a * k1 + k0, k1]; if (Math.abs(x - h1 / k1) < 1e-9 || b === a) break; b = 1 / (b - a); }
         return { value: h1 + '/' + k1, note: m[1] + ' = ' + h1 + '/' + k1 }; }

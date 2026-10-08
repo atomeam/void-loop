@@ -5371,5 +5371,7 @@
   {"ask": "how many miles is 10k", "want": "calc", "says": "6.2"},
   {"ask": "if its 3pm in new york what time is it in paris", "want": "skill:worldtime", "says": null},
   {"ask": "what should i wear today", "want": "skill:weather", "says": null},
-  {"ask": "split a 240 bill between 4 people", "want": "calc|skill:tip", "says": "60"}
+  {"ask": "split a 240 bill between 4 people", "want": "calc|skill:tip", "says": "60"},
+  {"ask": "car payment for 25000 at 7% for 60 months", "want": "skill:loan", "says": "495"},
+  {"ask": "convert 0.75 to a fraction", "want": "calc", "says": "3/4"}
 ]
