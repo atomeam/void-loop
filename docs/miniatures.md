@@ -90,3 +90,21 @@ miniature: mount it with sample data, wait for `window.__voidMini.list()[0].draw
 To tap something in a test, `window.__voidMini.project(key, [x, y, z])` turns a point in the miniature's scene into client
 pixels for `page.mouse.click`, so the test taps exactly what a visitor sees. The headless browser renders with
 SwiftShader (a first frame can take several seconds), so wait on `draws`, never on a fixed delay.
+
+## Playable miniatures: chess and checkers
+
+`skills/mini/chess.js` and `skills/mini/checkers.js` are the first miniatures you can play. Read them as the pattern for
+any card whose miniature takes input:
+
+- The card owns the state and the rules (`skills/chess-rules.js`, `skills/checkers-rules.js`, plain JS that the tests
+  run without a browser); the miniature only shows `data` and reports taps through `data.onSquare(sq, candidates)`.
+  Keeping the rules out of the 3D code means the same game also runs on the flat fallback board where WebGL is missing.
+- Taps report every square along the ray, nearest first (`tapSquares` in `skills/mini/tabletop.js`), and the card picks
+  the first one that means something. A tall piece in front never swallows a tap meant for the one behind it.
+- When the data carries the move that just happened (`last`), the miniature animates it (a lift and glide, captured
+  pieces set beside the board); any other change re-lays the scene. Animate what the visitor did, re-lay everything else.
+- `skills/mini/tabletop.js` holds the shared wooden table, board coordinates, highlight decals and tweens; reuse it for
+  any other board game so they all sit on the same table under the same light.
+- Search work that takes more than a frame goes in a Web Worker (`skills/chess-worker.js`) or waits until the
+  animation has landed, so the pieces never stutter.
+
