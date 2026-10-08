@@ -5368,5 +5368,8 @@
   {"ask": "when did the cold war end", "want": "answer|article", "says": null},
   {"ask": "set an alarm for 7am", "want": "timer", "says": null},
   {"ask": "wake me up at 6:30", "want": "timer", "says": null},
-  {"ask": "how many miles is 10k", "want": "calc", "says": "6.2"}
+  {"ask": "how many miles is 10k", "want": "calc", "says": "6.2"},
+  {"ask": "if its 3pm in new york what time is it in paris", "want": "skill:worldtime", "says": null},
+  {"ask": "what should i wear today", "want": "skill:weather", "says": null},
+  {"ask": "split a 240 bill between 4 people", "want": "calc|skill:tip", "says": "60"}
 ]

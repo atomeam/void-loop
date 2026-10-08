@@ -108,6 +108,7 @@ export function parseCalendar(text) {
   if (/\b(timer|clock|sticky|notepad|counter|countdown|shape|calculator)\b/i.test(t)) return null;
   if (/^(?:the\s+|today'?s\s+)?(?:\w+\s+)?(?:news|headlines|top\s+stories)\b/i.test(t)) return null; // the news skill ("tech news today" is not an event)
   if (/\b(hours?\s+between|days?\s+between|time\s+difference|how\s+many\s+(hours|days)|how\s+long\s+until)\b/i.test(t)) return null; // world time and the calculator answer these
+  if (/\bwhat\s+time\s+(?:is\s+it|will\s+it\s+be)\b/i.test(t)) return null; // "if it's 3pm in new york what time is it in paris" is world time
   if (/^\d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/i.test(t) || /\b(sunrise|sunset|time zone|timezone)\b/i.test(t)) return null; // "3pm London to Tokyo" is world time; an event starts with what it is
   if (/^(?:please\s+)?(?:wake\s+me(?:\s+up)?|(?:set|make|start)\s+(?:an?\s+|my\s+)?alarm|alarm)\s+(?:for|at)\s+\d/i.test(t)) return null; // an alarm rings: the timer counts down to it
   const w = parseWhenText(t);
