@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · one in a hundred (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+input[type=number]{width:6em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#case,#tree,#score{white-space:pre-line}
+#tree{color:#bfe3ff}
+</style>
+</head>
+<body>
+<main>
+  <h1>one in a hundred · draft · not published</h1>
+  <p class="note">A sign shows up: a test comes back positive, an alarm goes off, a hunch feels strong. How likely is the thing behind it, really? The answer leans heavily on how rare the thing is to begin with, and people tend to skip that part (Kahneman and Tversky, 1973). Put the same facts as counts of people instead of percentages and far more people get it right (Gigerenzer and Hoffrage, 1995). Each round gives you a case in percentages. Guess, then see it as counts out of 1,000. The page keeps how far off your guesses are, so you can see whether that habit shrinks. Everything stays in this browser.</p>
+  <div id="case"></div>
+  <div class="row"><label for="guess">your guess, in %</label><input id="guess" type="number" min="0" max="100" step="1"><button id="check" type="button">check</button><button id="next" type="button">new case</button></div>
+  <div id="tree" aria-live="polite"></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.baserate.v1',st={rounds:[]},cur=null,THINGS=['a rare condition','a fault in a machine','a fraudulent payment','a real intruder','a defective part'];
+  function el(id){return document.getElementById(id)}
+  function ok(r){return r&&isFinite(r.guess)&&isFinite(r.truth)}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.rounds))st.rounds=j.rounds.filter(ok)}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({rounds:st.rounds.slice(-200)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your rounds (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // Bayes: of everyone who shows the sign, the share who really have the thing
+  function posterior(base,hit,falseAlarm){var p=base*hit,q=(1-base)*falseAlarm;return p+q?p/(p+q):0}
+  // the same case as whole people out of n (rounded the way a person would count them)
+  function counts(base,hit,falseAlarm,n){var have=Math.round(n*base),without=n-have,tp=Math.round(have*hit),fp=Math.round(without*falseAlarm);return{n:n,have:have,without:without,tp:tp,fp:fp,share:tp+fp?tp/(tp+fp):0}}
+  function pick(a){return a[Math.floor(Math.random()*a.length)]}
+  function newCase(){cur={thing:pick(THINGS),base:pick([0.005,0.01,0.02,0.05,0.1]),hit:pick([0.8,0.9,0.95,0.99]),fa:pick([0.02,0.05,0.1,0.2])};
+    var pc=function(x){return (Math.round(x*1000)/10)+'%'};
+    el('case').textContent=pc(cur.base)+' of cases have '+cur.thing+'.\nWhen it is there, the sign shows '+pc(cur.hit)+' of the time.\nWhen it is not there, the sign still shows '+pc(cur.fa)+' of the time.\nThe sign shows. How likely is it that '+cur.thing+' is really there?';
+    el('tree').textContent='';el('guess').value='';el('guess').focus()}
+  el('check').addEventListener('click',function(){if(!cur)return;var g=+el('guess').value;if(!isFinite(g)||el('guess').value===''){el('tree').textContent='type a guess first';return}
+    var t=posterior(cur.base,cur.hit,cur.fa),c=counts(cur.base,cur.hit,cur.fa,1000);
+    el('tree').textContent='out of 1,000 cases: '+c.have+' have '+cur.thing+', and the sign shows for '+c.tp+' of them\n'+c.without+' do not, and the sign still shows for '+c.fp+' of them\nso of the '+(c.tp+c.fp)+' times the sign shows, '+c.tp+' are real: about '+Math.round(t*100)+'% (you said '+g+'%)';
+    st.rounds.push({guess:g/100,truth:t,at:Date.now()});save();cur=null;draw()});
+  el('next').addEventListener('click',newCase);
+  // the average gap between guess and truth, early rounds against the latest ones
+  function summary(rounds){if(!rounds.length)return null;var err=function(xs){return xs.reduce(function(s,r){return s+Math.abs(r.guess-r.truth)},0)/xs.length},half=Math.floor(rounds.length/2);
+    return{n:rounds.length,err:err(rounds),early:half?err(rounds.slice(0,half)):null,late:half?err(rounds.slice(half)):null,over:rounds.filter(function(r){return r.guess>r.truth}).length/rounds.length}}
+  function draw(){var s=summary(st.rounds);if(!s){el('score').textContent='';return}var pts=function(x){return Math.round(x*100)+' points'};
+    el('score').textContent=s.n+' round'+(s.n>1?'s':'')+' · your guesses were off by '+pts(s.err)+' on average · too high '+Math.round(s.over*100)+'% of the time'
+      +(s.early!=null?'\nfirst half '+pts(s.early)+' off, second half '+pts(s.late)+' off':'')+(s.n<10?'\nabout 10 rounds before comparing halves':'')}
+  newCase();draw();
+  // made-up cases: the classic 1% / 80% / 9.6% case is about 7.8%, counts out of 1,000 agree, a sure sign gives 100%, and the summary is right
+  function selftest(){var t=posterior(0.01,0.8,0.096);if(Math.abs(t-0.0776)>0.001)return'posterior gave '+t;
+    var c=counts(0.01,0.8,0.096,1000);if(c.have!==10||c.tp!==8||c.fp!==95)return'counts gave '+JSON.stringify(c);if(Math.abs(c.share-8/103)>1e-12)return'count share wrong';
+    if(posterior(0.05,0.9,0)!==1)return'no false alarms should mean certainty';
+    var s=summary([{guess:0.8,truth:0.1},{guess:0.5,truth:0.1},{guess:0.2,truth:0.1},{guess:0.1,truth:0.1}]);if(Math.abs(s.early-0.55)>1e-12||Math.abs(s.late-0.05)>1e-12||s.over!==0.75)return'summary gave '+JSON.stringify(s);return true}
+  window.__baserate={posterior:posterior,counts:counts,summary:summary,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>
