@@ -309,7 +309,7 @@ export async function run3dChecks({ check, fresh }) {
   {
     const F = await fresh();
     const lifted = {};
-    for (const [ask, kind] of [['play tic tac toe', 'tictactoe'], ['play othello', 'othello'], ['play mancala', 'mancala'], ['play aggravation', 'aggravation']]) {
+    for (const [ask, kind] of [['play tic tac toe', 'tictactoe'], ['play othello', 'othello'], ['play mancala', 'mancala'], ['play aggravation', 'aggravation'], ['play connect 4', 'connect4']]) {
       await F.ask('close', 200); await F.ask(ask, 600);
       const ready = await until(() => F.p.evaluate((k) => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === k); return l && l.ready && l.draws > 0; }, kind), 90000);
       lifted[kind] = ready && await F.p.evaluate((k) => { const c = document.querySelector('.' + k + '-side'), b = document.querySelector('.free-board .' + k + '-view'); return !!c && !!b && c.closest('.side-card') === c; }, kind);
@@ -319,8 +319,8 @@ export async function run3dChecks({ check, fresh }) {
         lifted.played = await until(async () => { const t = (await F.state()).find((x) => x.kind === 'tictactoe'); return t && t.state.board[4] === 'X' && t.state.board.filter(Boolean).length === 2; }, 15000);
       }
     }
-    check('lift3d: tic-tac-toe, Othello, mancala and Aggravation each stand a 3D board in the void with their card separate; tapping the carved tic-tac-toe board\'s centre plays X there and Void answers',
-      lifted.tictactoe && lifted.othello && lifted.mancala && lifted.aggravation && !!lifted.played && !F.errors.length, JSON.stringify({ lifted, e: F.errors }));
+    check('lift3d: tic-tac-toe, Othello, mancala, Aggravation and Connect Four each stand a 3D board in the void with their card separate; tapping the carved tic-tac-toe board\'s centre plays X there and Void answers',
+      lifted.tictactoe && lifted.othello && lifted.mancala && lifted.aggravation && lifted.connect4 && !!lifted.played && !F.errors.length, JSON.stringify({ lifted, e: F.errors }));
     await F.ctx.close();
   }
   // ---- the Magic 8 Ball is a ball in the void: asking again shakes the same ball for a new answer
@@ -394,8 +394,8 @@ export async function run3dChecks({ check, fresh }) {
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
     await F.ctx.close();
   }
   {

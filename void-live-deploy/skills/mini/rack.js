@@ -52,6 +52,10 @@ function motif(x, m, cx, cy, s) {
   } else if (m === 'mancala') {
     x.fillStyle = '#8a5a2c'; x.beginPath(); x.roundRect(cx - h, cy - h * 0.55, s, s * 0.55, s * 0.1); x.fill();
     for (let i = 0; i < 4; i++) for (let r = 0; r < 2; r++) { const px = cx - h + s * (0.2 + i * 0.2), py = cy - h * 0.55 + s * (0.15 + r * 0.25); disc(x, px, py, s * 0.07, '#5b3716'); disc(x, px - 3, py - 2, s * 0.022, ['#4fb3d9', '#e35d6a', '#f2c14e', '#7bd389'][(i + r) % 4]); }
+  } else if (m === 'connect4') { // the blue frame with a few discs in
+    x.fillStyle = '#2b5fd9'; x.beginPath(); x.roundRect(cx - h, cy - h * 0.85, s, s * 0.85, s * 0.05); x.fill(); const q = s / 7;
+    const filled = { 38: '#e0303e', 37: '#f2c230', 31: '#e0303e', 39: '#f2c230', 30: '#f2c230', 24: '#e0303e' };
+    for (let r = 0; r < 6; r++) for (let c = 0; c < 7; c++) disc(x, cx - h + (c + 0.5) * q, cy - h * 0.85 + (r + 0.5) * q * 0.85, q * 0.34, filled[r * 7 + c] || '#0d1a33');
   } else if (m === 'fireworks') { // bursts in the five colours
     ['#e2453c', '#efc23a', '#3fae5a', '#3d7fe0', '#eceae4'].forEach((col, k) => { const bx = cx + (k - 2) * h * 0.38, by = cy - h * 0.2 + (k % 2) * h * 0.4; x.strokeStyle = col; x.lineWidth = 4;
       for (let a = 0; a < 10; a++) { const t = (a / 10) * Math.PI * 2; x.beginPath(); x.moveTo(bx + Math.cos(t) * h * 0.06, by + Math.sin(t) * h * 0.06); x.lineTo(bx + Math.cos(t) * h * 0.2, by + Math.sin(t) * h * 0.2); x.stroke(); } });

@@ -158,7 +158,8 @@
   "monopoly",
   "battleship",
   "poker",
-  "fireworks"
+  "fireworks",
+  "connect4"
  ],
  "minis": [
   "aggravation",
@@ -167,6 +168,7 @@
   "checkers",
   "chess",
   "clock",
+  "connect4",
   "countdown",
   "counter",
   "eightball",

@@ -11,6 +11,7 @@ export const GAMES = [
   { id: 'checkers', title: 'Checkers', ask: 'play checkers', color: '#8f2d22', ink: '#fff3e0', motif: 'checkers' },
   { id: 'go', title: 'Go', ask: 'play go', color: '#d9a85a', ink: '#2a1a0a', motif: 'go' },
   { id: 'othello', title: 'Othello', ask: 'play othello', color: '#1b6b40', ink: '#f4f1ea', motif: 'othello' },
+  { id: 'connect4', title: 'Connect Four', ask: 'play connect 4', color: '#1f4fbf', ink: '#fff4c2', motif: 'connect4' },
   { id: 'tictactoe', title: 'Tic-tac-toe', ask: 'play tic tac toe', color: '#c0562e', ink: '#fff6e6', motif: 'tictactoe' },
   { id: 'mancala', title: 'Mancala', ask: 'play mancala', color: '#6b4426', ink: '#f6e3c4', motif: 'mancala' },
   { id: 'aggravation', title: 'Aggravation', ask: 'play aggravation', color: '#2f5fa8', ink: '#fdf6e3', motif: 'aggravation' },
