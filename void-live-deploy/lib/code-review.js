@@ -57,7 +57,7 @@ export function looksLikeCode(code, lang) {
   if (/^\s*(?:#!|<\?php|<[a-z]+[\s>]|#include|@\w+)/m.test(s)) n++;
   if (/^\s*(?:const\s+|let\s+|var\s+)?[A-Za-z_$][\w$.]*\s*:?=\s*(?:["'`\[{]|-?\d|true\b|false\b|null\b|nil\b|None\b)[^\n]*$/.test(s.trim())) n += 2; // the whole paste is one assignment: password = "…" (or Go's password := "…")
   if (/^\s*[\w$.]+\([^()]*\)\s*;?\s*$/.test(s) && /[.(_$]|[a-z][A-Z]/.test(s.replace(/\(.*/, '(').slice(0, 60))) n++; // the whole paste is one call: eval(userInput)
-  return n >= 2 || (n >= 1 && (!!lang || /^(?:shell|sql|python)$/.test(langOf(s)))) || /^\s*(?:sudo\s+)?(?:rm|cp|mv|chmod|chown|curl|wget|git|npm|pip|docker|kubectl|eval)\s+-?\S/m.test(s);
+  return n >= 2 || (n >= 1 && (!!lang || /^(?:shell|sql|python)$/.test(langOf(s)))) || /^\s*(?:sudo\s+)?(?:rm|cp|mv|chmod|chown|curl|wget|git|npm|pip|docker|kubectl|eval)\s+-?\S/m.test(s) || (lang === 'shell' && /^\s*(?:cat|grep|sed|awk|find|ls|echo|export|source)\s+\S/m.test(s));
 }
 
 // the language when the ask names it: "is this python code ok"
@@ -260,6 +260,14 @@ const RULES = [
     'an image with no alt text: screen readers say the file name or nothing at all. Add alt="what it shows", or alt="" if it is only decoration'],
   ['image-latest', 'risk', ['yaml'], (m, r) => { const k = r.match(/^\s*(?:-\s+)?image:\s*["']?([^\s"'#]+)/); return !!k && !/@sha256:|^\$|\{\{/.test(k[1]) && (/:latest$/i.test(k[1]) || !/:[^/]+$/.test(k[1])); },
     'no fixed version: :latest (or no tag) means each deploy can pull a different image, so what worked yesterday can break today. Pin a version tag, such as postgres:16, or a digest'],
+  ['ts-any', 'style', ['typescript'], (m) => /(?::\s*any\b(?!\s*[\w$])|\bas\s+any\b|<any>)/.test(m),
+    'any switches type checking off for this value, so a wrong field or call is only found when it fails at run time. Give it a real type, or unknown and narrow it before use'],
+  ['go-ignored-err', 'risk', ['go'], (m) => /^\s*_\s*=\s*[\w.]+\s*\(/.test(m) || /\b\w+\s*,\s*_\s*:?=\s*[\w.]+\s*\(/.test(m),
+    'an error thrown away with _: when the call fails the code carries on with empty or half-filled values and nothing says why. Check it: if err != nil { return err }'],
+  ['css-important', 'style', ['css'], (m) => /!\s*important\b/i.test(m),
+    '!important wins over every other rule, so the next change needs another !important to beat it. Use a more specific selector, or put the rule later'],
+  ['useless-cat', 'style', ['shell'], (m) => /(?:^|[;&|]\s*)cat\s+("?)\$?\{?[\w./-]+\}?\1\s*\|\s*(?:grep|awk|sed|head|tail|wc|sort|cut)\b/.test(m),
+    'cat file | grep runs an extra process for nothing: grep foo "$file" reads the file itself. Quote the variable ("$file") too, so a name with spaces or an empty value does not break the command'],
   ['docker-root', 'risk', ['dockerfile'], (m) => /^\s*USER\s+(?:root|0)(?::\S+)?\s*$/i.test(m),
     'the container runs as root, so a break-in through the app gets full rights inside it (and an easier path to the host). Create a user and switch to it: RUN useradd -m app, then USER app'],
   ['rm-rf-var', 'risk', ['shell'], (m, r) => /\brm\s+-[a-z]*r[a-z]*f?[a-z]*\s+(?:"?\$\{?\w+\}?"?\/?)(?:\s|$|\/)/i.test(r) && !/\$\{\w+:\?/.test(r),

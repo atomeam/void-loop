@@ -43,6 +43,12 @@ export function parseWorldTime(text) {
     if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: m[1] ? m[1].toLowerCase().replace(/\./g, '').replace(/\s+/g, '') : 'now', from, to };
     return null;
   }
+  // "if it's 3pm in new york what time is it in paris"
+  m = t.match(new RegExp('^(?:if|when)\\s+it(?:\'?s|\\s+is)\\s+' + TIME + '\\s+in\\s+(.+?),?\\s+what\\s+time\\s+(?:is\\s+it|will\\s+it\\s+be)\\s+in\\s+(.+)$', 'i'));
+  if (m) {
+    const from = PLACE(m[2]), to = PLACE(m[3]);
+    if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: m[1].toLowerCase().replace(/\./g, '').replace(/\s+/g, ''), from, to };
+  }
   m = t.match(new RegExp('^(?:convert\\s+|what\\s+is\\s+|what\'s\\s+)?' + TIME + '\\s+(?:in\\s+)?(.+?)\\s+(?:to|in)\\s+(.+?)(?:\\s+time)?$', 'i'));
   if (m) {
     const from = PLACE(m[2]), to = PLACE(m[3]);
@@ -50,7 +56,7 @@ export function parseWorldTime(text) {
     return null;
   }
   m = t.match(/^(?:(?:when|what\s+time)\s+is\s+|what's\s+|whats\s+)?(?:the\s+)?(?:(today's|tomorrow's)\s+)?(sunrise|sunset|sun\s+rise|sun\s+set|dawn|dusk)\s+(?:(?:today|tomorrow)\s+)?(?:in|at|for)\s+(.+)$/i)
-    || t.match(/^(?:(when)\s+)?does\s+the\s+sun\s+(rise|set)\s+(?:(?:today|tomorrow)\s+)?(?:in|at)\s+(.+)$/i);
+    || t.match(/^(?:(when|what\s+time)\s+)?does\s+the\s+sun\s+(rise|set)\s+(?:(?:today|tomorrow)\s+)?(?:in|at)\s+(.+?)(?:\s+(?:today|tonight|tomorrow))?$/i);
   if (m) {
     const which = /rise|dawn/i.test(m[2]) ? 'sunrise' : 'sunset', place = PLACE(m[3]);
     const tomorrow = /tomorrow/i.test(t);

@@ -15,7 +15,7 @@ const WX = {
 function weatherPlace(text) {
   const m = text.match(/\b(?:in|at|for|near)\s+([^?.!]+)$/i);
   if (m) return m[1].replace(/\b(today|tomorrow|now|right now|this week)\b/ig, '').trim();
-  const t = text.replace(/[?.!]/g, '').replace(/\b(what'?s|what is|the|weather|forecast|temperature|like|today|now|is it|will it|going to|rain|snow|raining|snowing|sunny|windy|cloudy|how|cold|hot|warm|here|outside)\b/ig, ' ').trim();
+  const t = text.replace(/[?.!]/g, '').replace(/\b(what'?s|what is|the|weather|forecast|temperature|like|today|now|is it|will it|going to|rain|snow|raining|snowing|sunny|windy|cloudy|how|cold|hot|warm|here|outside|what should i wear|do i|should i|will i|need|bring|take|an?|umbrella|raincoat|jacket|coat)\b/ig, ' ').trim();
   return t;
 }
 
@@ -88,7 +88,10 @@ export default {
     return /\b(weather|forecast|temperature)\b/.test(lower)
       || /\b(is it|will it|going to)\s+(rain|snow)\b/.test(lower)
       || /^is\s+it\s+(raining|snowing|sunny|windy|cloudy|hot|cold)\b/.test(lower)
-      || /\bhow\s+(cold|hot|warm)\s+is\s+it\b/.test(lower);
+      || /\bhow\s+(cold|hot|warm)\s+is\s+it\b/.test(lower)
+      // "do i need an umbrella today in seattle", "should i bring a jacket": the forecast answers it
+      || /^what\s+should\s+i\s+wear\b(?!\s+(?:to|for|with)\b)/.test(lower)
+      || /^(?:do|will|should)\s+i\s+(?:need|bring|take)\s+(?:an?\s+)?(?:umbrella|raincoat|rain\s+jacket|jacket|coat)\b/.test(lower);
   },
   run
 };

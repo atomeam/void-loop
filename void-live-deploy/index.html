@@ -1638,7 +1638,24 @@ function applyClockAlters(c, lower) {
       return Object.prototype.hasOwnProperty.call(words, token) ? words[token] : 0;
     }
 
+    // "set an alarm for 7am", "wake me up at 6:30": a timer that rings at the next 7:00 (no am/pm: the next one of the two)
+    function alarmMs(lower, now = new Date()) {
+      const m = String(lower || '').trim().replace(/[?.!]+$/, '').match(/^(?:please\s+)?(?:(?:set|make|start)\s+(?:an?\s+|my\s+)?alarm|alarm|wake\s+me(?:\s+up)?)\s+(?:for|at)\s+(\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)?(?:\s+(?:tomorrow|tonight|today))?(?:\s+please)?$/);
+      if (!m) return 0;
+      let h = +m[1]; const min = +(m[2] || 0), ap = (m[3] || '').replace(/\./g, '');
+      if (h > 23 || min > 59 || (ap && (h < 1 || h > 12))) return 0;
+      if (ap === 'pm' && h < 12) h += 12;
+      if (ap === 'am' && h === 12) h = 0;
+      const at = new Date(now); at.setSeconds(0, 0); at.setHours(h, min);
+      const step = ap || h > 12 || h === 0 ? 24 : 12;
+      while (at <= now) at.setHours(at.getHours() + step);
+      if (/\btomorrow\b/.test(lower) && at.getDate() === now.getDate()) at.setDate(at.getDate() + 1);
+      return at - now;
+    }
+
     function parseDuration(text) {
+      const alarm = alarmMs(text);
+      if (alarm) return alarm;
       const lower = (text || '').toLowerCase()
         .replace(/[-‐‑‒–—]/g, ' ')
         .replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
@@ -1720,6 +1737,7 @@ function applyClockAlters(c, lower) {
       if (mentionsTimer && /\b(pause|stop|hold|wait|freeze|suspend)\b/.test(lower)) return false;
       if (mentionsTimer && duration === 0 && (/\b(start|begin|go|resume|continue|run|launch|activate|reset|restart|redo)\b/.test(lower) || /\bstart\s+over\b/.test(lower))) return false;
       if (duration > 0 && (mentionsTimer || isDurationRequest(lower))) return true;
+      if (alarmMs(lower)) return true;
       if (duration > 0 && /^(?:please\s+)?(?:remind|wake|ping|alert|buzz)\s+me\b.*\bin\s+\S+\s*(?:minutes?|mins?|hours?|hrs?|seconds?|secs?)\b/.test(lower)) return true; // "remind me to stretch in 20 minutes"
       if (/^(?:an?\s+)?(?:timer|countdown)(?:\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
       if (/\b(make|add|create|set|start|spawn|put|place|drop|show|open|give\s+me|i\s+need|i'?d\s+like)\b.*\b(timer|countdown)\b/.test(lower)) return true;
@@ -3278,6 +3296,11 @@ return { ok: true, detail: 'timer-reset' };
     function unitOf(w) { w = String(w).trim().replace(/\.$/, ''); return MORE_UNITS.find((u) => u.re.test(w)) || null; }
     function wordMath(lower) {
       let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
+      // thousands commas are part of the number: "15% of 2,500" read as 2 and gave 0.3 (only a run of exactly three digits after each comma)
+      t = t.replace(/\b(\d{1,3})((?:,\d{3})+)(?![\d,])/g, (_, h, rest) => h + rest.replace(/,/g, ''));
+      // kitchen fractions before a unit: "3/4 cup", "1/2 teaspoon", "2 1/2 cups"
+      t = t.replace(/\b(?:(\d+)\s+)?(\d+)\/(\d+)\s+(?=(?:cups?|teaspoons?|tablespoons?|tsp|tbsp|pounds?|lbs?|ounces?|oz|gallons?|quarts?|pints?|miles?|inch(?:es)?|feet|foot|yards?|hours?|liters?|litres?)\b)/g,
+        (all, w, a, b) => +b ? String(Math.round(((+w || 0) + a / b) * 10000) / 10000) + ' ' : all);
       // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
       t = t.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
       // "a quarter cup", "half a cup", "a third of a cup" -> numbers the converters can read
@@ -3763,7 +3786,7 @@ return { ok: true, detail: 'timer-reset' };
       if (m) { const mx = 220 - +m[1], z = (a, b) => Math.round(mx * a) + '–' + Math.round(mx * b);
         return { value: 'max ' + mx + ' bpm', note: 'moderate ' + z(0.5, 0.7) + ' · vigorous ' + z(0.7, 0.85) + ' bpm (the 220 − age estimate; a doctor can give yours)' }; }
       // race distances: "how many miles is a 5k", "a marathon in km"
-      m = t.match(/^(?:how\s+(?:many|far|long)\s+(miles|km|kilometers|kilometres)?\s*(?:is|are)\s+(?:a|an|the)\s+|(?:a|an|the)\s+)?(5k|10k|half\s+marathon|marathon|ultra(?:marathon)?|mile)(?:\s+(?:in|to)\s+(miles|km|kilometers|kilometres))?$/);
+      m = t.match(/^(?:how\s+(?:many|far|long)\s+(miles|km|kilometers|kilometres)?\s*(?:is|are)\s+(?:(?:a|an|the)\s+)?|(?:a|an|the)\s+)?(5k|10k|half\s+marathon|marathon|ultra(?:marathon)?|mile)(?:\s+(?:in|to)\s+(miles|km|kilometers|kilometres))?$/);
       if (m && /how|in|to/.test(t)) { const KM = { '5k': 5, '10k': 10, 'half marathon': 21.0975, marathon: 42.195, ultramarathon: 50, ultra: 50, mile: 1.609344 }[m[2].replace(/\s+/g, ' ')], u = (m[1] || m[3] || 'miles');
         const v = /k/.test(u) ? KM : KM / 1.609344; return { value: (Math.round(v * 100) / 100) + (/k/.test(u) ? ' km' : ' miles'), note: 'a ' + m[2] + ' is ' + KM + ' km' }; }
       // ---- homework maths ----
@@ -3898,7 +3921,7 @@ return { ok: true, detail: 'timer-reset' };
       m = t.match(/^(?:(?:the\s+)?(?:sales\s+)?tax\s+(?:of\s+)?)?(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:sales\s+)?tax\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)$|^(?:the\s+)?(?:sales\s+)?tax\s+(?:of\s+)?(\d+(?:\.\d+)?)\s*(?:%|percent)\s+(?:on|for)\s+\$?(\d+(?:\.\d+)?)$/);
       if (m) { const r = +(m[1] || m[3]), amt = +(m[2] || m[4]), tax = Math.round(amt * r) / 100; return { value: '$' + (amt + tax).toFixed(2), note: r + '% tax on $' + amt.toFixed(2) + ' is $' + tax.toFixed(2) + ' · total $' + (amt + tax).toFixed(2) }; }
       // "0.75 as a fraction": the simplest fraction within a tiny tolerance (continued fractions)
-      m = t.match(/^(-?\d*\.\d+|-?\d+)\s+(?:as|in|to)\s+(?:a\s+)?fraction$/);
+      m = t.match(/^(?:convert\s+|what(?:'s|\s+is)\s+|turn\s+)?(-?\d*\.\d+|-?\d+)\s+(?:as|in|to|into)\s+(?:a\s+)?fraction$/);
       if (m) { const x = +m[1]; let h1 = 1, h0 = 0, k1 = 0, k0 = 1, b = x;
         for (let i = 0; i < 32; i++) { const a = Math.floor(b); [h1, h0] = [a * h1 + h0, h1]; [k1, k0] = [a * k1 + k0, k1]; if (Math.abs(x - h1 / k1) < 1e-9 || b === a) break; b = 1 / (b - a); }
         return { value: h1 + '/' + k1, note: m[1] + ' = ' + h1 + '/' + k1 }; }
@@ -3963,7 +3986,7 @@ return { ok: true, detail: 'timer-reset' };
       if (m && CALC_MONTHS[m[1]] != null) { const y = m[2] ? +m[2] : new Date().getFullYear(), n = new Date(y, CALC_MONTHS[m[1]] + 1, 0).getDate(); return { value: String(n), note: n + ' days in ' + new Date(y, CALC_MONTHS[m[1]], 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) }; }
       m = t.match(/^what\s+time\s+(?:will\s+it\s+be|is\s+it)\s+in\s+(\d{1,4})\s+(hours?|hrs?|minutes?|mins?)$/);
       if (m) { const d = new Date(Date.now() + +m[1] * (/^h/.test(m[2]) ? 36e5 : 6e4)); return { value: d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }), note: 'in ' + m[1] + ' ' + m[2] + ', ' + d.toLocaleDateString([], { weekday: 'long' }) }; }
-      m = t.match(/^(?:split|divide)\s+[$€£]?(\d+(?:\.\d+)?)\s+(?:between|among|amongst|by|into|for)\s+(\d{1,4})(?:\s+(?:people|persons|ways|friends|of\s+us))?$/);
+      m = t.match(/^(?:split|divide)\s+(?:a\s+|the\s+|our\s+)?[$€£]?(\d+(?:\.\d+)?)(?:\s+(?:dollars?|euros?|pounds?))?(?:\s+(?:bill|check|tab|cheque))?\s+(?:between|among|amongst|by|into|for)\s+(\d{1,4})(?:\s+(?:people|persons|ways|friends|of\s+us))?$/);
       if (m && +m[2] > 0) { const v = +m[1] / +m[2]; return { value: v.toFixed(2).replace(/\.00$/, ''), note: m[1] + ' split ' + m[2] + ' ways' + (Math.round(v * 100) / 100 * +m[2] !== +m[1] ? ' (rounded to the cent)' : '') }; }
       m = t.match(/^(?:what\s+)?day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?([a-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s*(\d{4}))?$/);
       if (m && CALC_MONTHS[m[1]] != null) {
@@ -5062,10 +5085,25 @@ return { ok: true, detail: 'timer-reset' };
     let typoFix = null;
     const TYPO_WORDS = { waht: 'what', whta: 'what', wht: 'what', tiem: 'time', tmie: 'time', captial: 'capital', capitla: 'capital', definiton: 'definition', defintion: 'definition', defenition: 'definition',
       synonim: 'synonym', synonims: 'synonyms', synomym: 'synonym', traslate: 'translate', tranlate: 'translate', transalte: 'translate', precent: 'percent', percnet: 'percent', pecent: 'percent',
-      wheather: 'weather', weahter: 'weather', waether: 'weather', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
+      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', wats: 'whats', defin: 'define', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
     const TYPO_LONG = ['definition', 'synonym', 'synonyms', 'translate', 'temperature', 'tomorrow', 'population', 'kilometers', 'kilometres', 'antonym', 'pronounce'];
+    // the short forms people type: "12*15=", "ephemeral meaning", "synonyms happy", "tip 20% 85", "random number 1-10",
+    // "days till christmas", "capital france", "usd to eur" read as the full ask
+    const CODES = 'usd|eur|gbp|jpy|cad|aud|chf|cny|inr|mxn|nzd|sek|nok|dkk|krw|brl|zar|sgd|hkd|try|pln|thb';
+    const CITIES = 'tokyo|london|paris|new york|nyc|los angeles|la|chicago|sydney|melbourne|dubai|berlin|madrid|rome|moscow|beijing|shanghai|hong kong|singapore|seoul|mumbai|delhi|new delhi|toronto|vancouver|mexico city|sao paulo|cairo|istanbul|bangkok|manila|jakarta|lagos|nairobi|denver|seattle|miami|boston|dallas|houston|phoenix|honolulu|hawaii|california|texas|florida|amsterdam|dublin|lisbon|athens|stockholm|oslo|zurich|vienna|prague|warsaw|buenos aires|lima|bogota|santiago|auckland|perth|tel aviv|riyadh|karachi|dhaka|taipei|hanoi|kuala lumpur';
+    function shortForms(t) {
+      if (/^[\d\s.,+\-*/x×÷^()%]+=\s*$/i.test(t)) return t.replace(/\s*=\s*$/, '');
+      return t.replace(/^([a-z]{3,})\s+(?:meaning|definition)\s*[?.!]*$/i, 'define $1')
+        .replace(/^(synonyms?|antonyms?|rhymes?)\s+(?!for\b|of\b|with\b)([a-z]+)\s*[?.!]*$/i, '$1 for $2')
+        .replace(/^tip\s+(\d+(?:\.\d+)?)\s*%\s+(?:on\s+)?\$?(\d+(?:\.\d+)?)\s*$/i, '$1% tip on $2')
+        .replace(/^(?:a\s+)?random\s+number\s+(?:from\s+)?(-?\d+)\s*(?:-|to)\s*(-?\d+)\s*$/i, 'random number between $1 and $2')
+        .replace(/^((?:how\s+many\s+)?(?:days|weeks|sleeps))\s+(?:till|til|untill)\s+/i, '$1 until ')
+        .replace(/^(capital|currency|population)\s+(?!of\b|city\b|gains?\b|letters?\b|one\b|punishment\b|cities\b|growth\b|density\b)([a-z][a-z ]{2,30}?)\s*[?.!]*$/i, '$1 of $2')
+        .replace(new RegExp('^(?:time\\s+(?:in\\s+|at\\s+)?(' + CITIES + ')|(' + CITIES + ')\\s+time)(?:\\s+now|\\s+right\\s+now)?\\s*[?.!]*$', 'i'), (_, a, b) => 'what time is it in ' + (a || b))
+        .replace(new RegExp('^(' + CODES + ')\\s+(?:to|in|into)\\s+(' + CODES + ')\\s*[?.!]*$', 'i'), '1 $1 to $2');
+    }
     function fixTypos(text) {
-      const t = String(text || '');
+      const t = shortForms(String(text || '').trim());
       if (t.length > 120 || /[\n⏎:{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix)\b/i.test(t) || t.split(/\s+/).length > 12) return t;
       let out = t.replace(/[A-Za-z]+/g, (w) => {
         const lw = w.toLowerCase();
@@ -5156,7 +5194,7 @@ return { ok: true, detail: 'timer-reset' };
     function rnd(n) { const a = new Uint32Array(1); const lim = Math.floor(4294967296 / n) * n; let x; do { crypto.getRandomValues(a); x = a[0]; } while (x >= lim); return x % n; }
     function chanceOf(l) {
       l = l.replace(/[?.!]+$/, '').replace(/,?\s+please$/, '');
-      if (/^(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin$|^heads\s+or\s+tails$|^(?:a\s+)?coin\s+(?:flip|toss)$/.test(l)) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip' };
+      if (/^(?:can\s+you\s+|could\s+you\s+)?(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin(?:\s+for\s+me)?(?:[,:]?\s+heads\s+or\s+tails)?$|^heads\s+or\s+tails$|^(?:a\s+)?coin\s+(?:flip|toss)$/.test(l)) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip' };
       let m = l.match(/^(?:please\s+)?roll\s+(?:(a|an|one|two|three|four|five|six|\d{1,2})\s+)?(?:dice|die|d(\d{1,3})s?|(\d{1,3})[- ]sided\s+di(?:c)?e)$/);
       if (m) { const W = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }; const n = Math.min(10, W[m[1]] || +m[1] || 1), s = Math.min(1000, +(m[2] || m[3]) || 6);
         const r = Array.from({ length: n }, () => rnd(s) + 1); return { title: n > 1 ? n + ' dice' : 'Die', big: r.join('  '), note: (n > 1 ? 'total ' + r.reduce((a, b) => a + b, 0) + ' · ' : '') + 'd' + s }; }
@@ -5205,6 +5243,8 @@ return { ok: true, detail: 'timer-reset' };
     }
     // Age: "how old is someone born in 1990", "how old am i if i was born on may 3 1990", "age if born 1985"
     function ageOf(l) {
+      // the year first: "if i was born in 1990 how old am i", "i was born on may 3 1990, how old am i"
+      l = l.replace(/[?.!]+$/, '').replace(/^(?:if\s+)?i\s+was\s+born\s+(in|on)\s+(.+?),?\s+how\s+old\s+(?:am\s+i|would\s+i\s+be)(?:\s+now|\s+today)?$/, 'how old am i if i was born $1 $2');
       const m = l.replace(/[?.!]+$/, '').match(/^(?:how\s+old\s+(?:is\s+(?:someone|a\s+person|somebody)|am\s+i|would\s+i\s+be|are\s+you)\s+(?:if\s+(?:i\s+was|you(?:'re|\s+were)|they\s+were)\s+)?|age\s+(?:if|of\s+someone)\s+)born\s+(?:in|on)?\s*(.+)$/);
       if (!m) return null;
       const s = m[1].trim(), now = new Date(), yOnly = /^\d{4}$/.test(s);
