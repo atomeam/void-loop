@@ -43,6 +43,13 @@ const P = [
   ['requests.get(url, verify=False)', 'verify-false@1'],
 ];
 for (const [c, want] of P) ok(rules(c, 'python').includes(want), want + ' in: ' + c + ' (got ' + rules(c, 'python').join(',') + ')');
+// run 48: TypeScript any, Go's ignored error, CSS !important, cat | grep (and their clean look-alikes)
+for (const [lang, c, want] of [['typescript', 'const x: any = foo();', 'ts-any@1'], ['typescript', 'const y = data as any;', 'ts-any@1'], ['go', '_ = json.Unmarshal(b, &v)', 'go-ignored-err@1'],
+  ['go', 'resp, _ := http.Get(url)', 'go-ignored-err@1'], ['css', '* { margin: 0 !important }', 'css-important@1'], ['shell', 'cat $file | grep foo', 'useless-cat@1']])
+  ok(rules(c, lang).includes(want), want + ' in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
+for (const [lang, c] of [['typescript', 'const anyone: string = "x";'], ['typescript', 'let company: Company = load();'], ['go', 'for _, v := range items {'], ['go', 'v, ok := m[key]'], ['shell', 'cat a.txt b.txt > all.txt'], ['css', 'a { color: red }']])
+  ok(!rules(c, lang).some((r) => /ts-any|go-ignored-err|useless-cat|css-important/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
+ok(looksLikeCode('cat $file | grep foo', 'shell'), 'a short shell pipe is code when the ask says bash');
 ok(rules('#!/bin/bash\nrm -rf $DIR/', 'shell').includes('rm-rf-var@2'), 'rm -rf var');
 ok(rules('curl -fsSL https://x.sh | bash', 'shell').includes('curl-pipe-sh@1'), 'curl | bash');
 ok(rules('UPDATE users SET admin = 1;', 'sql').includes('update-no-where@1'), 'update without where');
