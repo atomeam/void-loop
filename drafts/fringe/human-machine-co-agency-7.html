@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · watch the autopilot (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+.dials{display:flex;gap:12px;justify-content:center}
+.dial{width:84px;height:84px;border-radius:50%;border:2px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px;background:#0d0d10}
+.dial.bad{border-color:#e0584a;color:#e0584a}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>watch the autopilot · draft · not published</h1>
+  <p class="note">Three gauges sometimes drift out of range (they turn red). An autopilot resets them for you, but not every time. When it misses one, tap that gauge (or press 1, 2 or 3) before it times out. Each block runs about a minute. In some blocks the autopilot is equally good all the way through. In others it switches between better and worse every few seconds. Parasuraman, Molloy and Singh (1993) found people caught far fewer of the automation’s misses when it was steadily reliable than when its reliability changed. They called this automation-induced complacency. This page counts the misses you catch in each kind of block. Everything stays in this browser.</p>
+  <div class="dials"><button class="dial" data-i="0" aria-label="gauge 1">1</button><button class="dial" data-i="1" aria-label="gauge 2">2</button><button class="dial" data-i="2" aria-label="gauge 3">3</button></div>
+  <div><button id="go" type="button">start a block</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.complacency.v1',EVENTS=20,GAP=3000,WINDOW=2500,st={blocks:[]},run=null;
+  function el(id){return document.getElementById(id)}
+  function ok(b){return b&&(b.kind==='steady'||b.kind==='changing')&&b.misses>=0&&b.caught>=0&&b.caught<=b.misses}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.blocks))st.blocks=j.blocks.filter(ok)}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({blocks:st.blocks.slice(-100)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your blocks (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // how reliable the autopilot is at event i: steady blocks hold 0.875; changing blocks swap between 0.56 and 0.875 every 5 events
+  function reliability(kind,i){return kind==='steady'?0.875:(Math.floor(i/5)%2?0.56:0.875)}
+  // a block's plan: which gauge drifts at each event and whether the autopilot catches it (drawn from that event's reliability)
+  function plan(kind,r){var ev=[];for(var i=0;i<EVENTS;i++)ev.push({gauge:Math.floor(r()*3),fixed:r()<reliability(kind,i)});return ev}
+  function summary(blocks){var g=function(kind){var bs=blocks.filter(function(b){return b.kind===kind}),m=0,c=0,f=0;bs.forEach(function(b){m+=b.misses;c+=b.caught;f+=b.falseTaps||0});return{blocks:bs.length,misses:m,caught:c,rate:m?c/m:null,falseTaps:f}};return{steady:g('steady'),changing:g('changing')}}
+  function dials(){return document.querySelectorAll('.dial')}
+  function step(){if(run.i>=EVENTS){finish();return}var e=run.ev[run.i];run.i++;var d=dials()[e.gauge];d.classList.add('bad');run.live={e:e,d:d,caught:false};
+    if(e.fixed)setTimeout(function(){if(run&&run.live&&run.live.e===e){d.classList.remove('bad');run.live=null}},600+Math.random()*900);
+    else{run.misses++;setTimeout(function(){if(run&&run.live&&run.live.e===e){d.classList.remove('bad');run.live=null}},WINDOW)}
+    run.timer=setTimeout(step,GAP)}
+  function tap(i){if(!run)return;var l=run.live;if(l&&!l.e.fixed&&l.e.gauge===i&&!l.caught){l.caught=true;run.caught++;l.d.classList.remove('bad');run.live=null;el('state').textContent='caught one'}else run.falseTaps++}
+  function finish(){var b={kind:run.kind,misses:run.misses,caught:run.caught,falseTaps:run.falseTaps,at:Date.now()};st.blocks.push(b);save();
+    el('state').textContent='the autopilot missed '+b.misses+' of '+EVENTS+'; you caught '+b.caught+(b.falseTaps?' · '+b.falseTaps+' taps on gauges that were fine':'');run=null;el('go').disabled=false;draw()}
+  el('go').addEventListener('click',function(){if(run)return;var s=summary(st.blocks),kind=s.steady.blocks<=s.changing.blocks?(Math.random()<0.5?'steady':'changing'):'steady';if(s.changing.blocks<s.steady.blocks)kind='changing';
+    run={kind:kind,ev:plan(kind,Math.random),i:0,misses:0,caught:0,falseTaps:0,live:null};el('go').disabled=true;el('state').textContent='watch the gauges';run.timer=setTimeout(step,1200)});
+  [].forEach.call(dials(),function(d){d.addEventListener('click',function(){tap(+d.dataset.i)})});
+  document.addEventListener('keydown',function(e){if(/^[123]$/.test(e.key))tap(+e.key-1)});
+  function draw(){var s=summary(st.blocks);if(!s.steady.blocks&&!s.changing.blocks){el('score').textContent='';return}var pct=function(x){return x==null?'–':Math.round(x*100)+'%'};
+    el('score').textContent='steady autopilot: you caught '+pct(s.steady.rate)+' of its misses ('+s.steady.caught+' of '+s.steady.misses+', '+s.steady.blocks+' blocks)\nchanging autopilot: you caught '+pct(s.changing.rate)+' ('+s.changing.caught+' of '+s.changing.misses+', '+s.changing.blocks+' blocks)'
+      +(s.steady.blocks<3||s.changing.blocks<3?'\nabout three blocks of each before comparing':'')}
+  draw();
+  // made-up checks: steady blocks hold 0.875 throughout, changing ones alternate every 5 events; plans have 20 events; summary rates are caught / missed
+  function selftest(){if(reliability('steady',7)!==0.875||reliability('changing',2)!==0.875||reliability('changing',7)!==0.56)return'reliability schedule wrong';
+    var a=1,r=function(){a=(a+0x6d2b79f5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296};
+    var miss=0,n=0;for(var k=0;k<400;k++){plan('steady',r).forEach(function(e){n++;if(!e.fixed)miss++})}if(Math.abs(miss/n-0.125)>0.02)return'steady miss rate should be about 12.5%, got '+(miss/n);
+    var p=plan('changing',r);if(p.length!==EVENTS||p.some(function(e){return e.gauge<0||e.gauge>2}))return'plan shape wrong';
+    var s=summary([{kind:'steady',misses:4,caught:1},{kind:'steady',misses:4,caught:2},{kind:'changing',misses:8,caught:6,falseTaps:2}]);
+    if(Math.abs(s.steady.rate-0.375)>1e-12||Math.abs(s.changing.rate-0.75)>1e-12||s.changing.falseTaps!==2)return'summary gave '+JSON.stringify(s);return true}
+  window.__complacency={reliability:reliability,plan:plan,summary:summary,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

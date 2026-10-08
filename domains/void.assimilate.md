@@ -32,7 +32,7 @@ Rows get added whenever AutoSalvage or an agent finds another old project. Nothi
 | show the board | live | empty board: one plain line + a few example asks; samples never count |
 | what did you do today? | live (row 4) | today skill: local loop log on this device (ask + note); spend/budget later |
 | confirm line (plan item 7) | core | from ApprovalEvent v0: one line before any send/book/spend; changed request or no answer = doesn't run |
-| status | skill | each component; Momentum = workflow execution and event delivery |
+| status | live (run 59-60, skills/status.js) | each component, checked on the spot from this browser: skills (the page's own load check run again, missing ones named), storage, 3D, the offline layer, online, and each outside source pinged once with its time; the translation service is not pinged (daily quota); nothing about the visitor is sent or kept. Momentum (workflow execution, event delivery) has no Void counterpart yet |
 | uptime page | page off the front | history, incidents, subscribe |
 | show me a sample run | optional skill | read-only FrostShare run; never touches the board |
 Dropped: front-page headline, subheading, buttons, sample board panel, pricing, demo embed, portal card.

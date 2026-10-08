@@ -1483,5 +1483,30 @@
     ],
     "sha256": "83e3d8a3ccd462c47288494ce53ca975603fd3400928b08fca8700a67ebf19e3",
     "emit": false
+  },
+  {
+    "run": 60,
+    "at": "2026-10-08T17:45:01Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-7.html",
+    "sources": [
+      {
+        "claim": "People monitoring an automated system detected far fewer of its failures when its reliability stayed constant than when it varied over time (automation-induced complacency)",
+        "source": "https://doi.org/10.1207/s15327108ijap0301_1",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Complacency and automation bias appear when attention is spread over several tasks and are not limited to novices",
+        "source": "https://doi.org/10.1177/0018720810376055",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own catch rate for an autopilot's misses is lower in steady blocks than in changing blocks, and seeing that gap changes how closely they watch",
+        "source": "drafts/fringe/human-machine-co-agency-7.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "70f4fd9b5506ecbe04ad5540b616da7726b04e0965b208010c7b1a3a58387997",
+    "emit": false
   }
 ]
