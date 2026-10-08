@@ -27,8 +27,9 @@ const ROAM = /^(?:please\s+)?(?:more\s+motion|let\s+(?:them|the\s+(?:figures?|sp
 // eats it; "bring a cat" and "add a mouse", and the cat gives chase. Each arrives with the body and colour its kind wears.
 const NATURE_LOOK = { zombie: ['person', '#7d9a5a'], brain: ['object', '#e9a3b4'], cat: ['animal', '#e39a4f'], mouse: ['animal', '#b9b3ad'],
   dog: ['animal', '#a8784c'], bone: ['object', '#efe8da'], fish: ['animal', '#5fa8d8'], cheese: ['object', '#f2c94c'], rabbit: ['animal', '#e8e1d8'],
-  carrot: ['object', '#ef8a2c'], monkey: ['animal', '#8a5a3a'], banana: ['object', '#f5d84a'], shark: ['animal', '#7c8fa3'], bee: ['animal', '#f2c230'], flower: ['object', '#ef6fa0'] };
-const NATURE_SUMMON = /^(?:please\s+)?(?:summon|bring(?:\s+(?:out|in))?|add|spawn|make|drop|put|release|let\s+loose|give\s+me|show\s+me)\s+(?:me\s+)?(?:a|an|some|another|one\s+more|the)?\s*([a-z]+(?:\s[a-z]+)?)(?:\s+(?:on\s+the\s+stage|here|in))?(?:\s+please)?$/;
+  carrot: ['object', '#ef8a2c'], monkey: ['animal', '#8a5a3a'], banana: ['object', '#f5d84a'], shark: ['animal', '#7c8fa3'], bee: ['animal', '#f2c230'], flower: ['object', '#ef6fa0'],
+  cloud: ['object', '#eef1f4', 0.3], sun: ['object', '#ffc23a', 0.05], fire: ['object', '#ff6a1a', 0.05], ice: ['object', '#cfeaff', 0.05], water: ['place', '#2e6d96', 0.05] }; // third: walking pace (clouds drift, a fire stays put)
+const NATURE_SUMMON = /^(?:please\s+)?(?:summon|bring(?:\s+(?:out|in))?|add|spawn|make|drop|put|release|let\s+loose|give\s+me|show\s+me)\s+(?:me\s+)?(?:(?:an|a|some|another|one\s+more|the)\s+)?([a-z]+(?:\s[a-z]+)?)(?:\s+(?:on\s+the\s+stage|here|in))?(?:\s+please)?$/;
 // Every summon is an individual: a random seed picks its shade, size and build, so no two zombies match; "clone it"
 // copies the seed, so a clone is identical. Pure: the same seed always gives the same look (tests rely on it).
 export function lookFor(kind, seed) {
@@ -46,7 +47,9 @@ const CLONE = /^(?:please\s+)?(?:clone|copy|duplicate|twin)\s+(?:it|that|this|hi
 
 export function natureSummon(t) {
   const m = NATURE_SUMMON.exec(t); if (!m) return null;
-  const noun = m[1], kind = natureOf(noun.split(' ').pop()).tags.find((x) => NATURE_LOOK[x]); // the last word is the thing: "a dog picture" is not a dog
+  const noun = m[1], last = noun.split(' ').pop(), find = (w) => natureOf(w).tags.find((x) => NATURE_LOOK[x]);
+  // the last word is the thing ("a dog picture" is not a dog); a two-word name ("ice cube", "storm cloud") counts whole
+  const kind = find(last) || (/^(?:pictures?|photos?|images?|drawings?|videos?|movies?|films?|songs?|facts?|names?|recipes?|emojis?|costumes?|toys?|games?)$/.test(last) ? null : find(noun));
   return kind ? { act: 'summon', kind, title: noun } : null;
 }
 
@@ -70,7 +73,8 @@ async function run(text, api) {
   if (!q) return 'none';
   const { say } = api;
   if (q.act === 'summon' && q.kind) {
-    const body = NATURE_LOOK[q.kind][0], seed = (Math.random() * 4294967296) >>> 0, look = lookFor(q.kind, seed);
+    const [body, , pace] = NATURE_LOOK[q.kind], seed = (Math.random() * 4294967296) >>> 0, look = lookFor(q.kind, seed);
+    if (pace) look.pace = +(look.pace * pace).toFixed(3);
     const th = api.summon && api.summon('figure', { body, ...look, seed, kindOf: q.kind, title: q.title, script: fallbackScript(body, q.title) });
     if (!th) { say('the stage is full'); return 'figures'; }
     say('a ' + q.title + ' is here, one of a kind');
@@ -113,7 +117,7 @@ async function run(text, api) {
 
 export default {
   name: 'figures',
-  examples: ['summon a sprite', 'bring a friend', 'show me a 3D buddy', 'send them away', 'dismiss figures', 'less motion', 'summon a zombie', 'add a brain', 'bring a cat', 'add a mouse', 'clone the zombie'],
+  examples: ['summon a sprite', 'bring a friend', 'show me a 3D buddy', 'send them away', 'dismiss figures', 'less motion', 'summon a zombie', 'add a brain', 'bring a cat', 'add a mouse', 'clone the zombie', 'add a cloud', 'add a sea', 'add an ice cube', 'add a campfire'],
   nearMisses: ['what is a sprite', 'how do I make friends', 'show me a figure of the heart', 'summon a figure', 'summon motelet', 'send an email to sam', 'what is reduced motion', 'sprite soda'],
   match(lower, text) { return !!figuresOf(text); },
   run,

@@ -5,6 +5,7 @@
  * data: { code: WMO weather code, temp: °C, unit: 'C' | 'F', isDay: bool, wind: km/h }
  */
 import { MODELS } from './tabletop.js';
+import { makeCloud, cloudGeometry, makePrecip, makeGlow } from '../sky3d.js';
 
 const kindOf = (c) => (c >= 95 ? 'storm' : (c >= 71 && c <= 77) || c === 85 || c === 86 ? 'snow' : (c >= 51 && c <= 67) || (c >= 80 && c <= 82) ? 'rain'
   : c === 45 || c === 48 ? 'fog' : c === 3 ? 'overcast' : c === 2 ? 'partly' : 'clear');
@@ -67,25 +68,18 @@ export default async function build(ctx, data) {
   // ---- sky things
   const sunMat = M(new THREE.MeshBasicMaterial({ color: '#ffd77a' })), moonMat = M(new THREE.MeshStandardMaterial({ color: '#dfe3ea', emissive: '#9aa4b8', emissiveIntensity: 0.6, roughness: 1 }));
   const orb = new THREE.Mesh(G(new THREE.SphereGeometry(0.014, 32, 16)), sunMat); orb.position.set(-0.075, 0.125, -0.07); orb.userData.noContactShadow = true;
-  const glowC = document.createElement('canvas'); glowC.width = glowC.height = 128; { const g = glowC.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, 'rgba(255,220,140,0.9)'); gr.addColorStop(0.3, 'rgba(255,200,110,0.35)'); gr.addColorStop(1, 'rgba(255,200,110,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); }
-  const glowT = new THREE.CanvasTexture(glowC); own.t.push(glowT);
-  const glow = new THREE.Sprite(M(new THREE.SpriteMaterial({ map: glowT, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending }))); glow.scale.setScalar(0.09); orb.add(glow);
+  const glow = makeGlow(THREE); own.t.push(glow.material.map); M(glow.material); glow.scale.setScalar(0.09); orb.add(glow);
   root.add(orb);
   const cloudMat = M(new THREE.MeshStandardMaterial({ color: '#f4f6f8', roughness: 1 }));
-  const puffG = G(new THREE.IcosahedronGeometry(1, 2));
+  const puffG = G(cloudGeometry(THREE));
   const clouds = [];
-  const makeCloud = (x, y, z, s) => { const c = new THREE.Group(); c.position.set(x, y, z);
-    for (const [px, py, pz, r] of [[0, 0, 0, 0.018], [0.018, -0.003, 0.004, 0.014], [-0.017, -0.004, -0.002, 0.013], [0.006, 0.008, -0.004, 0.013], [-0.006, -0.002, 0.01, 0.012]]) { const p = new THREE.Mesh(puffG, cloudMat); p.position.set(px * s, py * s, pz * s); p.scale.setScalar(r * s); p.castShadow = true; p.userData.noContactShadow = true; c.add(p); }
-    c.userData.x0 = x; root.add(c); clouds.push(c); return c; };
-  makeCloud(0.02, 0.15, -0.02, 1.2); makeCloud(-0.05, 0.135, 0.03, 0.9); makeCloud(0.065, 0.14, 0.02, 0.85);
-  // ---- precipitation: instanced streaks or flakes, recycled from cloud height to the ground
-  const N = phone ? 220 : 420;
-  const dropG = G(new THREE.CylinderGeometry(0.0003, 0.0003, 0.007, 4)), flakeG = G(new THREE.IcosahedronGeometry(0.0012, 0));
-  const dropMat = M(new THREE.MeshBasicMaterial({ color: '#b8c8dc', transparent: true, opacity: 0.6 })), flakeMat = M(new THREE.MeshStandardMaterial({ color: '#ffffff', roughness: 0.6, emissive: '#555555' }));
-  const drops = new THREE.InstancedMesh(dropG, dropMat, N), flakes = new THREE.InstancedMesh(flakeG, flakeMat, N);
-  drops.userData.noContactShadow = flakes.userData.noContactShadow = true; drops.frustumCulled = flakes.frustumCulled = false;
+  // seeded cumulus from skills/sky3d.js (the same clouds the stage summons), each one its own shape, flat underneath
+  const addCloud = (x, y, z, s, seed) => { const c = makeCloud(THREE, { seed, size: 0.06 * s, mat: cloudMat, geo: puffG }); c.position.set(x, y, z); c.userData.x0 = x; root.add(c); clouds.push(c); return c; };
+  addCloud(0.02, 0.15, -0.02, 1.2, 11); addCloud(-0.05, 0.135, 0.03, 0.9, 23); addCloud(0.065, 0.14, 0.02, 0.85, 37);
+  // ---- precipitation: instanced streaks or flakes, recycled from cloud height to the ground (skills/sky3d.js)
+  const precip = makePrecip(THREE, { n: phone ? 220 : 420, box: { w: R * 1.9, d: R * 1.9, round: true, top: 0.14, bottom: 0.03 }, speed: 0.32 });
+  const drops = precip.drops, flakes = precip.flakes;
   root.add(drops, flakes);
-  const P = Array.from({ length: N }, () => { const a = Math.random() * Math.PI * 2, r = Math.sqrt(Math.random()) * R * 0.95; return { x: Math.cos(a) * r, z: Math.sin(a) * r, y: 0.03 + Math.random() * 0.11, s: 0.8 + Math.random() * 0.4, ph: Math.random() * 6.28 }; });
   const fogC = document.createElement('canvas'); fogC.width = fogC.height = 128; { const g = fogC.getContext('2d'), gr = g.createRadialGradient(64, 64, 0, 64, 64, 64); gr.addColorStop(0, 'rgba(225,230,236,0.8)'); gr.addColorStop(1, 'rgba(225,230,236,0)'); g.fillStyle = gr; g.fillRect(0, 0, 128, 128); }
   const fogT = new THREE.CanvasTexture(fogC); own.t.push(fogT);
   const fogs = [];
@@ -93,7 +87,6 @@ export default async function build(ctx, data) {
   const flash = new THREE.PointLight('#cfd8ff', 0, 1, 2); flash.position.set(0, 0.2, 0.05); root.add(flash);
   // ---- apply the forecast
   let st = {}, kind = 'clear', boltT = 0;
-  const dummy = new THREE.Object3D();
   function apply(d) {
     st = { code: +d.code || 0, temp: d.temp == null ? 15 : +d.temp, unit: d.unit === 'F' ? 'F' : 'C', isDay: d.isDay !== false, wind: +d.wind || 0 };
     kind = kindOf(st.code);
@@ -103,7 +96,7 @@ export default async function build(ctx, data) {
     cloudMat.color.set(kind === 'storm' ? '#6d737c' : wet ? '#9aa1aa' : kind === 'snow' ? '#e6e9ee' : '#f4f6f8');
     lawnMat.color.set(kind === 'snow' ? '#f3f5f8' : st.temp < 2 ? '#7d8f72' : '#5f8f3e');
     leafMat.color.set(kind === 'snow' ? '#5d7f62' : '#3f7a35');
-    drops.visible = wet; flakes.visible = kind === 'snow';
+    precip.set(wet ? 'rain' : kind === 'snow' ? 'snow' : null);
     for (const f of fogs) f.visible = kind === 'fog';
     winMat.emissiveIntensity = day ? (grey ? 0.3 : 0) : 2.2;
     keyLight.color.set(day ? (grey ? '#e6ecf2' : '#fff1d8') : '#9fb2d8');
@@ -128,18 +121,11 @@ export default async function build(ctx, data) {
       if (ctx.still && kind !== 'rain' && kind !== 'snow' && kind !== 'storm') return false; // weather that is happening keeps happening
       for (const c of clouds) c.position.x = c.userData.x0 + Math.sin(t * 0.15 + c.userData.x0 * 40) * 0.01 * (1 + lean);
       for (const tr of trees) tr.rotation.z = Math.sin(t * 1.6 + tr.position.x * 30) * 0.03 * (0.4 + lean * 2);
-      if (drops.visible || flakes.visible) {
-        const snow = flakes.visible, m = snow ? flakes : drops, v = snow ? 0.018 : 0.32;
-        for (let i = 0; i < N; i++) { const q = P[i]; q.y -= v * q.s * dt;
-          if (q.y < 0.03) { q.y = 0.13 + Math.random() * 0.02; }
-          const sx = snow ? Math.sin(t * 1.5 + q.ph) * 0.004 : 0;
-          dummy.position.set(q.x + sx + lean * (q.y - 0.03) * 0.3, q.y, q.z); dummy.rotation.set(0, 0, snow ? t + q.ph : -lean * 0.6); dummy.updateMatrix(); m.setMatrixAt(i, dummy.matrix); }
-        m.instanceMatrix.needsUpdate = true;
-      }
+      if (precip.on) precip.step(dt, t, lean);
       if (kind === 'storm') { boltT -= dt; if (boltT < -3 - Math.random() * 4) boltT = 0.18; flash.intensity = boltT > 0 ? 6 * (boltT / 0.18) : 0; }
       for (const f of fogs) if (f.visible) f.position.x += Math.sin(t * 0.3 + f.position.z * 20) * 0.00008;
       return 'view';
     },
-    dispose() { for (const g of own.g) g.dispose(); for (const m of own.m) m.dispose(); for (const t of own.t) t.dispose(); drops.dispose(); flakes.dispose(); },
+    dispose() { for (const g of own.g) g.dispose(); for (const m of own.m) m.dispose(); for (const t of own.t) t.dispose(); precip.dispose(); },
   };
 }

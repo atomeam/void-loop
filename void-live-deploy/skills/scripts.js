@@ -17,6 +17,7 @@ export const KNOWN_REACTS = ['greet', 'follow', 'chase', 'flee', 'argue', 'team'
 export const KNOWN_TAGS = [
   'police', 'troublemaker', 'animal', 'person', 'place', 'object', 'idea', 'sprite', 'chef', 'friend',
   'zombie', 'brain', 'cat', 'mouse', 'dog', 'bone', 'fish', 'cheese', 'rabbit', 'carrot', 'monkey', 'banana', 'shark', 'bee', 'flower', 'food',
+  'cloud', 'sun', 'fire', 'ice', 'water',
 ];
 
 /** Map fancy script actions onto the visual acts the #17 brain already knows how to play. */
@@ -61,7 +62,55 @@ export const NATURES = [
   [/\bsharks?\b/i, ['shark'], { fish: 'eat' }],
   [/\b(bees?|bumblebees?)\b/i, ['bee'], { flower: 'follow' }],
   [/\b(flowers?|roses?|daisy|daisies|tulips?)\b/i, ['flower'], {}],
+  [/\b(clouds?|storm\s?clouds?|rain\s?clouds?|cumulus|thunderheads?)\b/i, ['cloud'], {}],
+  [/\bsun\b/i, ['sun'], {}],
+  [/\b(fires?|campfires?|bonfires?|flames?)\b/i, ['fire'], {}],
+  [/\b(ice|ice\s?cubes?|icebergs?|ice\s?blocks?)\b/i, ['ice'], {}],
+  [/\b(sea|ocean|lake|pond|puddle)\b/i, ['water'], {}],
 ];
+
+// Conditions: some things act only when the conditions are right. A cloud gathers water from the air (faster over a
+// sea or lake), and once it is heavy and the air is humid enough it rains, or snows if the air is freezing, then
+// lightens and stops; a hot sun or a fire dries it out instead. Ice melts above freezing (fast beside a fire) and is
+// gone when it has melted. A flower under rain grows. Everything here is pure: the stage feeds it where things are.
+// climateAt: the air around one thing, from the things near it (distance in stage px).
+export function climateAt(self, others, base = { temp: 14, humidity: 0.55 }) {
+  let temp = base.temp, humidity = base.humidity, rainedOn = false, sun = 0;
+  for (const o of others || []) {
+    if (!o || o === self || o.id === self.id || !o.kind) continue;
+    const dx = (o.x || 0) - (self.x || 0), dy = (o.y || 0) - (self.y || 0), d = Math.hypot(dx, dy);
+    const near = (r) => Math.max(0, 1 - d / r);
+    if (o.kind === 'sun') { const k = near(420); temp += 16 * k; humidity -= 0.3 * k; sun = Math.max(sun, k); }
+    else if (o.kind === 'fire') { const k = near(200); temp += 24 * k; humidity -= 0.15 * k; }
+    else if (o.kind === 'ice') temp -= 16 * near(200);
+    else if (o.kind === 'water') humidity += 0.45 * near(320);
+    // falling rain lands on what is under the cloud (stage y grows downward)
+    if (o.kind === 'cloud' && o.state && o.state.falling === 'rain' && Math.abs(dx) < 70 && dy < 0 && dy > -260) rainedOn = true;
+  }
+  return { temp: Math.round(temp * 10) / 10, humidity: Math.max(0, Math.min(1, humidity)), rainedOn, sun };
+}
+export function precipFor(temp) { return temp <= 0 ? 'snow' : temp <= 3 ? 'sleet' : 'rain'; }
+export const CONDITIONS = {
+  cloud: {
+    start: () => ({ water: 0.35, falling: null, storm: false }),
+    step(st, env, dt) {
+      let water = st.water + dt * 0.06 * Math.max(0, env.humidity - 0.3) - (env.temp > 28 ? dt * 0.04 : 0);
+      let falling = st.falling;
+      if (!falling && water >= 0.75 && env.humidity >= 0.45) falling = precipFor(env.temp);
+      if (falling) { falling = precipFor(env.temp); water -= dt * 0.07; if (water <= 0.3) falling = null; }
+      water = Math.max(0, Math.min(1, water));
+      return { water, falling, storm: falling === 'rain' && water > 0.85 && env.temp >= 20 };
+    },
+  },
+  ice: {
+    start: () => ({ melt: 0 }),
+    step(st, env, dt) { const melt = Math.max(0, Math.min(1, st.melt + dt * (env.temp > 0 ? env.temp * 0.0012 : env.temp * 0.002))); return { melt, gone: melt >= 1 }; },
+  },
+  flower: {
+    start: () => ({ grow: 0 }),
+    step(st, env, dt) { return { grow: Math.min(1, st.grow + (env.rainedOn ? dt * 0.12 : 0)) }; },
+  },
+};
 export function natureOf(subject) {
   const tags = [], reactsTo = {};
   for (const [re, t, r] of NATURES) if (re.test(String(subject || ''))) { tags.push(...t); Object.assign(reactsTo, r); }
@@ -207,6 +256,6 @@ export function pickNearbyReaction(self, others, maxDist = 220) {
 
 export default {
   KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, ACTION_TO_ACT, FALLBACKS,
-  subjectKey, tagsFor, fallbackScript, trimScript, pickIdleAction, visualAct, allowsDrive, natureOf, NATURES,
+  subjectKey, tagsFor, fallbackScript, trimScript, pickIdleAction, visualAct, allowsDrive, natureOf, NATURES, climateAt, precipFor, CONDITIONS,
   pickReaction, pickNearbyReaction,
 };

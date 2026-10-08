@@ -364,4 +364,21 @@ export async function run3dChecks({ check, fresh }) {
       !!drawn && r.inPage && r.n === 24 && r.same && r.other && r.lean > 0.12 && broke && !F.errors.length, JSON.stringify({ drawn, r, broke, e: F.errors }));
     await F.ctx.close();
   }
+
+  // ---- the stage sandbox: every summon is its own individual (seed and kind reach the 3D figure), a cloud rains once it
+  // has gathered enough water, and a zombie finds a brain and eats it
+  {
+    const F = await fresh();
+    const figs = () => F.p.evaluate(() => (window.__void3d ? window.__void3d.state().figures : []));
+    await F.ask('summon a zombie', 600); await F.ask('summon a zombie', 600); await F.ask('add a cloud', 600);
+    const three = await until(async () => { const f = await figs(); return f.length === 3 && f.every((x) => x.seed != null && x.kindOf) ? f : false; }, 30000);
+    const zs = (three || []).filter((x) => x.kindOf === 'zombie');
+    const rained = await until(async () => { const c = (await figs()).find((x) => x.kindOf === 'cloud'); return c && c.nature && c.nature.falling === 'rain' ? c.nature : false; }, 90000);
+    await F.ask('add a brain', 600);
+    const brainIn = await until(async () => (await figs()).some((x) => x.kindOf === 'brain'), 20000);
+    const eaten = brainIn && await until(async () => !(await figs()).some((x) => x.kindOf === 'brain'), 90000);
+    check('sandbox: two zombies arrive as two individuals (different seeds), a cloud gathers water and rains, and a zombie finds the brain and eats it',
+      !!three && zs.length === 2 && zs[0].seed !== zs[1].seed && !!rained && !!eaten && !F.errors.length, JSON.stringify({ three: !!three, seeds: zs.map((z) => z.seed), rained, brainIn, eaten, e: F.errors }));
+    await F.ctx.close();
+  }
 }
