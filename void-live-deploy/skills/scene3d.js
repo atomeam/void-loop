@@ -150,7 +150,7 @@ function loop(t) {
     let dirty = h.dirty;
     if (h.controls && h.controls.update(dt)) dirty = true;
     if (h.anim.length) { for (const a of h.anim.splice(0)) a(); dirty = true; for (const c of h.contacts) c.dirty = true; }
-    if (h.inst && h.inst.tick) { try { if (h.inst.tick(dt, t / 1000) !== false) { dirty = true; for (const c of h.contacts) c.dirty = true; } } catch (e) { console.warn('[miniature ' + h.kind + '] tick', e); h.inst.tick = null; } again = true; }
+    if (h.inst && h.inst.tick) { try { const r = h.inst.tick(dt, t / 1000); if (r !== false) { dirty = true; if (r !== 'view') for (const c of h.contacts) c.dirty = true; } /* 'view': redraw, shadows unchanged */ } catch (e) { console.warn('[miniature ' + h.kind + '] tick', e); h.inst.tick = null; } again = true; }
     if (h.moving) again = true;
     if (dirty) draw(h);
     if (h.dirty) again = true;

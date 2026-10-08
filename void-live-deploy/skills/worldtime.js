@@ -194,7 +194,7 @@ async function run(text, api) {
       }
       rows.push({ name: 'You', tz: youTz, you: true });
       const draw = () => {
-        const at = new Date(), yo = offsetMin(youTz, at);
+        const at = new Date(), yo = offsetMin(youTz, at), keep = el.querySelector(':scope > .vmini');
         el.innerHTML = '<h2 class="wt">World clock</h2>'
           + '<div class="wclock">' + rows.map((r) => {
             const off = offsetMin(r.tz, at), day = ymdIn(r.tz, at).join('-'), yday = ymdIn(youTz, at).join('-');
@@ -203,8 +203,10 @@ async function run(text, api) {
           }).join('') + '</div>'
           + (el._missing && el._missing.length ? '<p class="sub">I couldn\'t find ' + esc(el._missing.join(', ')) + '.</p>' : '')
           + SRC;
+        if (keep) el.prepend(keep); // the clock miniature keeps running across text redraws
       };
       draw();
+      clockMini(api, el, rows.slice(0, 4).map((r) => ({ tz: r.tz, label: r.name })));
       // it keeps time while it is open, then stops
       const tick = setInterval(() => { if (!api._pageStill(el)) return clearInterval(tick); draw(); }, 15000);
       return 'worldtime';
@@ -219,6 +221,7 @@ async function run(text, api) {
         + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + esc(fmtTime(r.timezone, now)) + '</div>'
         + '<div class="sub">' + esc(fmtDay(r.timezone, now)) + ' · ' + esc(r.timezone.replace(/_/g, ' ')) + ' · ' + gmt(off) + ' · ' + esc(diffWords(off - youOff)) + '</div>'
         + SRC;
+      clockMini(api, el, [{ tz: r.timezone, label: r.name }]);
       return 'worldtime';
     }
     if (q.kind === 'convert') {
@@ -243,6 +246,7 @@ async function run(text, api) {
         + '<div class="sub">in ' + esc(label(b)) + ' · ' + esc(fmtDay(b.timezone, at)) + esc(shift) + ' · ' + gmt(offsetMin(a.timezone, at)) + ' → ' + gmt(offsetMin(b.timezone, at)) + '</div>'
         + '<p class="wt-gap">' + esc(gapLine) + '.</p>'
         + SRC;
+      clockMini(api, el, [{ tz: a.timezone, label: a.name }, { tz: b.timezone, label: b.name }], nowMode ? undefined : at.getTime());
       return 'worldtime';
     }
     // sunrise / sunset
@@ -270,6 +274,17 @@ async function run(text, api) {
     el.innerHTML = '<h2>' + esc(title) + '</h2><p>The time service didn\'t answer just now. Ask again in a moment.</p>';
     return 'none';
   }
+}
+
+// the card's 3D miniature (skills/mini/clock.js): a brass desk clock per place, keeping that place's time. It sits in a
+// band at the top of the page and survives the page redrawing its text; without WebGL the band just goes away.
+function clockMini(api, el, clocks, at) {
+  if (!api.stage || !api.stage.miniature) return;
+  let host = el.querySelector(':scope > .vmini');
+  if (!host) { host = document.createElement('div'); host.className = 'vmini'; host.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 168 : 210) + 'px;margin:0 0 6px'; }
+  el.prepend(host);
+  el.dataset.mk = el.dataset.mk || Math.random().toString(36).slice(2, 9);
+  api.stage.miniature(host, 'clock', { clocks, at }, { key: 'clock:' + el.dataset.mk, label: 'Clock showing the time in ' + clocks.map((c) => c.label).join(', ') }).catch(() => host.remove());
 }
 
 export default {

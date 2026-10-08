@@ -755,7 +755,7 @@ try {
     const namesE = Array.from(new Set(Array.from(figSrcE.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBE = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + namesE.map((n) => n + '=U').join(',') + ';';
-    await E.ctx.route(/cdn\.jsdelivr\.net\/npm\/three@/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBE }));
+    await E.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBE }));
     await E.ctx.route(/en\.wikipedia\.org\/w\/api\.php/, (r) => { const u = decodeURIComponent(r.request().url());
       if (/generator=search/.test(u)) return r.fulfill(json({ query: { pages: { 11: { index: 1, title: 'Air Jordan', description: 'Brand of basketball shoes' }, 12: { index: 2, title: 'Michael Jordan', description: 'American basketball player (born 1963)' } } } }));
       return r.fulfill(json({ query: { search: [{ title: /snorgleblat/.test(u) ? 'Blat' : 'Air Jordan' }] } })); });
@@ -2319,7 +2319,7 @@ try {
     const freeSpot = B3.pickTarget(world, rng);
     check('figures (#17): the brain walks around a card to reach the far side without entering it, turns to look at a nearby cursor, and holds a still pose with reduced motion; a new figure lands on a free spot',
       reached && inside === 0 && nb.mode === 'notice' && nb.yaw > 0.1 && nb.lookX > 0.3 && sb.x === 600 && sb.y === 500 && sb.mode === 'still' && !B3.insideAny(freeSpot.x, freeSpot.y, [card], 20)
-      && /^https:\/\/cdn\.jsdelivr\.net\/npm\/three@\d+\.\d+\.\d+\/build\/three\.module\.min\.js$/.test(B3.THREE_URL),
+      && B3.THREE_URL === '/vendor/three-r180/build/three.module.min.js',
       JSON.stringify({ reached, inside, at: [Math.round(fb.x), Math.round(fb.y)], notice: nb.mode, yaw: nb.yaw, still: [sb.x, sb.y, sb.mode], url: B3.THREE_URL }));
     // In the browser three.js is a stand-in module (every class a harmless stub) built from the names figures3d.js uses.
     const names = Array.from(new Set(Array.from(figSrc.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
@@ -2327,8 +2327,8 @@ try {
       + 'const U=new Proxy(function(){},h);export const ' + names.map((n) => n + '=U').join(',') + ';';
     const withThree = async (T) => {
       const hits = [];
-      T.p.on('request', (r) => { const u = r.url(); if (/three@|three\.module|figures3d|stage3d/.test(u)) hits.push(u.replace(/^.*\/\/[^/]+/, '')); });
-      await T.ctx.route(/cdn\.jsdelivr\.net\/npm\/three@/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB }));
+      T.p.on('request', (r) => { const u = r.url(); if (/three-r180|three\.module|figures3d|stage3d/.test(u)) hits.push(u.replace(/^.*\/\/[^/]+/, '')); });
+      await T.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB }));
       return hits;
     };
     const F = await fresh(); const hits = await withThree(F);
@@ -2347,7 +2347,7 @@ try {
     const moved = await until(async () => { const v = await s3(); const q = v && v.figures[0]; return q && p0 && Math.hypot(q.x - p0.x, q.y - p0.y) > 3 ? q : false; }, 6000);
     const canvas = await F.p.evaluate(() => { const c = document.getElementById('void-3d'), s = c && getComputedStyle(c); return c ? { pe: s.pointerEvents, z: s.zIndex, before: c.nextElementSibling && c.nextElementSibling.id } : null; });
     check('figures (#17): "summon a sprite" puts one figure on the stage (a stage item in this browser), loads figures3d.js and the pinned three.js only now, adds a click-through canvas behind the cards, and the figure roams',
-      !!up && (await figsIn()) === 1 && hits.some((u) => /\/skills\/figures3d\.js$/.test(u)) && hits.some((u) => /three@[\d.]+\/build\/three\.module\.min\.js$/.test(u))
+      !!up && (await figsIn()) === 1 && hits.some((u) => /\/skills\/figures3d\.js$/.test(u)) && hits.some((u) => /\/vendor\/three-r180\/build\/three\.module\.min\.js$/.test(u))
       && canvas && canvas.pe === 'none' && canvas.z === '0' && canvas.before === 'stage' && !!moved && /sprite/.test(said) && !F.errors.length,
       JSON.stringify({ up, hits, canvas, moved, said, e: F.errors }));
     await F.ask('bring a friend', 600);
@@ -2425,12 +2425,12 @@ try {
     };
     const A18 = await fresh();
     const hits18 = [];
-    A18.p.on('request', (r) => { const u = r.url(); if (/three@|three\.module|figures3d|bodies\.js/.test(u)) hits18.push(u.replace(/^.*\/\/[^/]+/, '')); });
+    A18.p.on('request', (r) => { const u = r.url(); if (/three-r180|three\.module|figures3d|bodies\.js/.test(u)) hits18.push(u.replace(/^.*\/\/[^/]+/, '')); });
     const figSrc18 = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
     const names18 = Array.from(new Set(Array.from(figSrc18.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUB18 = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + names18.map((n) => n + '=U').join(',') + ';';
-    await A18.ctx.route(/cdn\.jsdelivr\.net\/npm\/three@/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB18 }));
+    await A18.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB18 }));
     await A18.ctx.route(/en\.wikipedia\.org/, async (rt) => {
       const u = rt.request().url();
       if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(json({ query: { search: [{ title: 'Marie Curie' }] } }));
@@ -2550,12 +2550,12 @@ try {
     };
     const A19 = await fresh();
     const hits19 = [];
-    A19.p.on('request', (r) => { const u = r.url(); if (/three@|figures3d|bodies\.js|scripts\.js|figurescript/.test(u)) hits19.push(u.replace(/^.*\/\/[^/]+/, '')); });
+    A19.p.on('request', (r) => { const u = r.url(); if (/three-r180|figures3d|bodies\.js|scripts\.js|figurescript/.test(u)) hits19.push(u.replace(/^.*\/\/[^/]+/, '')); });
     const figSrc19 = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
     const names19 = Array.from(new Set(Array.from(figSrc19.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUB19 = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + names19.map((n) => n + '=U').join(',') + ';';
-    await A19.ctx.route(/cdn\.jsdelivr\.net\/npm\/three@/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB19 }));
+    await A19.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUB19 }));
     await A19.ctx.route(/en\.wikipedia\.org/, async (rt) => {
       const u = rt.request().url();
       if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(json({ query: { search: [{ title: 'Marie Curie' }] } }));
