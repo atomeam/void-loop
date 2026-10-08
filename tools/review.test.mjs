@@ -68,6 +68,16 @@ for (const [lang, c] of [['javascript', 'useEffect(() => { fetchData() }, [])'],
   ['go', 'm := make(map[string]int); m["a"] = 1'], ['go', 'defer f.Close()'], ['go', 'if err := json.Unmarshal(body, &v); err != nil { return err }'],
   ['java', 'if (str == null) {}'], ['java', 'for (String s : list) out.add(s);'], ['python', 'try:\n    go()\nexcept Exception as e:\n    raise Exception("failed") from e']])
   ok(!rules(c, lang).some((r) => /effect-no-deps|stale-setstate|dangerous-html|typeof-unquoted|empty-catch|go-nil-map|go-defer-loop|go-unchecked-decode|equals-null|remove-in-foreach|raise-no-from/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
+// C#, Kotlin, Swift, PHP, Ruby, Terraform, Dockerfile and Kubernetes YAML checks (probe 3)
+for (const [lang, c, want] of [['csharp', 'async void Save() { await db.SaveAsync(); }', 'cs-async-void@1'], ['csharp', 'var r = client.GetAsync(url).Result;', 'cs-sync-over-async@1'], ['csharp', 'if (s == null || s == "") {}', 'cs-null-or-empty@1'],
+  ['kotlin', 'GlobalScope.launch { load() }', 'kt-globalscope@1'], ['swift', 'DispatchQueue.main.sync { update() }', 'swift-main-sync@1'], ['php', "$x = unserialize($_COOKIE['data']);", 'php-unserialize-input@1'],
+  ['php', 'if ($a == $b) {}', 'php-loose-eq@1'], ['php', 'extract($_POST);', 'php-extract-input@1'], ['ruby', 'cfg = YAML.load(input)', 'ruby-yaml-load@1'], ['terraform', 'acl = "public-read"', 'tf-public-acl@1'],
+  ['dockerfile', 'ADD https://example.com/app.tar.gz /app/', 'docker-add-url@1'], ['yaml', 'runAsUser: 0', 'yaml-run-as-root@1'], ['yaml', 'hostNetwork: true', 'yaml-host-namespace@1']])
+  ok(rules(c, lang).includes(want), want + ' in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
+for (const [lang, c] of [['csharp', 'async void OnClick(object sender, EventArgs e) { await Go(); }'], ['csharp', 'var r = await client.GetAsync(url);'], ['csharp', 'if (string.IsNullOrEmpty(s)) {}'], ['kotlin', 'viewModelScope.launch { load() }'],
+  ['swift', 'DispatchQueue.main.async { update() }'], ['php', '$x = json_decode($_COOKIE["data"]);'], ['php', 'if ($a === $b) {}'], ['php', '$c = $a <= $b;'], ['ruby', 'cfg = YAML.safe_load(input)'], ['terraform', 'acl = "private"'],
+  ['dockerfile', 'ADD app.tar.gz /app/'], ['yaml', 'runAsUser: 1000'], ['yaml', 'hostNetwork: false']])
+  ok(!rules(c, lang).some((r) => /cs-async-void|cs-sync-over-async|cs-null-or-empty|kt-globalscope|swift-main-sync|php-unserialize-input|php-loose-eq|php-extract-input|ruby-yaml-load|tf-public-acl|docker-add-url|yaml-run-as-root|yaml-host-namespace/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
 // inline review comments on PRs (tools/review-post.mjs): a line that already has Void's comment for the same checks is not posted again
 { const { postedKeys, fresh } = await import('./review-post.mjs');
   const keys = postedKeys([{ path: 'a.py', line: 4, body: '<!-- void-review-inline bare-except except-pass -->\n**risk**' }, { path: 'b.js', original_line: 9, body: '<!-- void-review-inline eval -->' }, { path: 'c.js', line: 1, body: 'a person wrote this' }]);
