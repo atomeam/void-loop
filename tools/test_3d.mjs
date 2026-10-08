@@ -1,10 +1,52 @@
 // Checks for Void's shared 3D scene (skills/scene3d.js, docs/miniatures.md) and the playable 3D board games built on it.
-// Called from tools/test_void.mjs with its browser helpers.
+// Called from tools/test_void.mjs with its browser helpers; the pure rules checks also run alone: node tools/test_3d.mjs --rules
 import fs from 'node:fs';
 import path from 'node:path';
+import { pathToFileURL } from 'node:url';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const until = async (fn, ms = 8000) => { const end = Date.now() + ms; for (;;) { try { const v = await fn(); if (v) return v; } catch (_) {} if (Date.now() > end) return false; await new Promise((r) => setTimeout(r, 150)); } };
+
+// ---- the rules engines, without a browser: perft counts and known positions
+export async function runRulesChecks(check) {
+  const C = await import(pathToFileURL(path.join(root, 'skills', 'chess-rules.js')).href);
+  const K = await import(pathToFileURL(path.join(root, 'skills', 'checkers-rules.js')).href);
+  const perft = (s, d) => (d === 0 ? 1 : C.legalMoves(s).reduce((n, m) => n + perft(C.apply(s, m), d - 1), 0));
+  const P = [[C.START, 3, 8902], ['r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1', 2, 2039], ['8/2p5/3p4/KP5r/1R3p1k/8/4P1P1/8 w - - 0 1', 3, 2812], ['r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1', 2, 264]];
+  const got = P.map(([f, d]) => perft(C.fromFEN(f), d));
+  check('chess rules: perft matches the published counts (start, Kiwipete, endgame, promotions) so every move generator rule is right', got.every((n, i) => n === P[i][2]), JSON.stringify(got));
+  const play = (f, ms) => ms.reduce((s, m) => C.play(s, m), typeof f === 'string' ? C.fromFEN(f) : f);
+  const fool = play(C.create(), ['f2f3', 'e7e5', 'g2g4', 'd8h4']);
+  const stale = C.fromFEN('7k/5Q2/6K1/8/8/8/8/8 b - - 0 1');
+  const ep = play(C.create(), ['e2e4', 'a7a6', 'e4e5', 'd7d5']); const epMove = C.legalMoves(ep).find((m) => m.ep);
+  const afterEp = C.play(ep, 'e5d6');
+  const castle = C.fromFEN('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1'), blocked = C.fromFEN('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1'.replace('8/8/8/8/8/8', '8/8/8/8/8/5r2'));
+  const castled = C.play(castle, 'e1g1'), promo = C.fromFEN('8/P7/8/8/8/8/8/k6K w - - 0 1');
+  const mateIn1 = C.bestMove(C.fromFEN('6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1'), { depth: 3, ms: 3000 });
+  check('chess rules: fool\u2019s mate is checkmate, a lone king boxed in is stalemate, en passant takes the pawn, castling moves the rook and is refused through an attacked square, a pawn on the 7th promotes four ways, and Void finds a back-rank mate',
+    C.status(fool) === 'checkmate' && C.status(stale) === 'stalemate' && epMove && C.sqName(epMove.to) === 'd6' && afterEp.board[C.sqIndex('d5')] === null && afterEp.board[C.sqIndex('d6')] === 'P'
+    && castled.board[C.sqIndex('f1')] === 'R' && castled.board[C.sqIndex('g1')] === 'K' && !castled.castle.includes('K') && C.legalMoves(castle).some((m) => m.castle === 'q')
+    && !C.legalMoves(blocked).some((m) => m.castle === 'k') && C.legalMoves(promo).filter((m) => m.promo).length === 4 && mateIn1 && C.sqName(mateIn1.to) === 'd8',
+    JSON.stringify({ fool: C.status(fool), stale: C.status(stale), ep: !!epMove, mate: mateIn1 && C.sqName(mateIn1.from) + C.sqName(mateIn1.to) }));
+  const start = K.create();
+  const forced = K.fromRows(['........', '........', '........', '........', '...l....', '..d.....', '......d.', '........']); // a man can take: every move is a capture
+  const multi = K.fromRows(['........', '........', '...l.l..', '........', '...l....', '..d.....', '........', '........']);
+  const crowning = K.fromRows(['........', '..l.l...', '...d....', '........', '........', '........', '........', '........']); // the jump to the far row crowns and ends the move
+  const king = K.fromRows(['........', '........', '........', '........', '...D....', '........', '........', 'l.......']);
+  const fm = K.legalMoves(forced), mm = K.legalMoves(multi), cm = K.legalMoves(crowning), km = K.legalMoves(king);
+  const afterCrown = cm.length ? K.apply(crowning, cm[0]) : null;
+  const stuck = K.fromRows(['........', '........', '........', '........', '........', '..l.....', '.l......', 'd.......'], 'd'); // boxed in: no step, and the jump lands on a man
+  const ai = K.bestMove(K.fromRows(['........', '........', '........', '........', '...l....', '..d.....', '........', '........'], 'd'), { depth: 4, ms: 2000 });
+  check('checkers rules: 7 opening moves, a capture is forced, a man keeps jumping (both double-jump routes offered), crowning ends the move, a king steps backward, a side with no move loses, and Void takes a free man',
+    K.legalMoves(start).length === 7 && fm.length && fm.every((m) => m.captures.length) && mm.length === 2 && mm.every((m) => m.captures.length === 2)
+    && cm.length === 2 && cm.every((m) => m.crown && m.path.length === 1) && afterCrown && afterCrown.board[cm[0].path[0]] === 'D'
+    && km.some((m) => (m.path[0] >> 3) < 3) && K.status(stuck) === 'light-wins' && ai && ai.captures.length === 1,
+    JSON.stringify({ fm, mm: mm.length, cm, km: km.length, stuck: K.status(stuck), ai }));
+}
+if (process.argv.includes('--rules')) {
+  let bad = 0; await runRulesChecks((name, ok, got) => { console.log((ok ? 'pass ' : 'FAIL ') + name + (ok ? '' : '  -> ' + got)); if (!ok) bad++; });
+  process.exit(bad ? 1 : 0);
+}
 
 export async function run3dChecks({ check, fresh }) {
   const index = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
@@ -102,4 +144,49 @@ export async function run3dChecks({ check, fresh }) {
     await F.ctx.close();
   }
 
+  await runRulesChecks(check);
+  // ---- chess and checkers: routing, the real 3D board takes taps, Void replies, and a flat board where WebGL can't run
+  {
+    const F = await fresh();
+    await F.ask('play chess', 600); await F.ask('chess', 600);
+    const cards = await F.p.$$eval('.chess-card', (d) => d.length);
+    const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'chess'); return l && l.ready && l.draws > 0 ? l : false; }), 90000);
+    // tap where a visitor would: the pawn's head (the king in front hides e2's square), then the empty e4 square
+    const sq = async (name, lift) => F.p.evaluate(([n, y]) => { const k = window.__voidMini.keys().find((x) => x.startsWith('chess:')); const f = 'abcdefgh'.indexOf(n[0]), r = +n[1] - 1;
+      return window.__voidMini.project(k, [(3.5 - f) * 0.0579, 0.0174 + y, (r - 3.5) * 0.0579]); }, [name, lift]);
+    const tap = async (name, lift = 0) => { const pt = await sq(name, lift); await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(250); };
+    if (ready) { await tap('e2', 0.04); await tap('e4'); }
+    const moved = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.s.board[28] === 'P' ? c : false; }, 20000);
+    const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 40000);
+    const pix = await F.p.evaluate(() => { const c = document.querySelector('.chess-card canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 16) if (d[i] + d[i + 1] + d[i + 2] > 60) n++; return n / (d.length / 16); });
+    const shot = await F.p.evaluate(() => [...document.querySelectorAll('.void-mini')].map((m) => m.dataset.kind));
+    check('chess: the 3D wooden set draws on the card, tapping e2 then e4 on the canvas plays 1. e4, and Void answers with a legal move',
+      !!ready && !!moved && !!replied && pix > 0.2 && shot.includes('chess') && !F.errors.length, JSON.stringify({ ready, moved: !!moved, replied, pix, shot, e: F.errors }));
+    await F.ask('play checkers', 600);
+    const ck = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'checkers'); return l && l.ready && l.draws > 0 ? l : false; }), 90000);
+    let jumped = false;
+    if (ck) {
+      const tapC = async (n) => { const pt = await F.p.evaluate((n) => { const k = window.__voidMini.keys().find((x) => x.startsWith('checkers:')); const f = 'abcdefgh'.indexOf(n[0]), r = +n[1] - 1; return window.__voidMini.project(k, [(3.5 - f) * 0.0579, 0.0174, (r - 3.5) * 0.0579]); }, n); await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(250); };
+      await tapC('c3'); await tapC('d4');
+      jumped = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'checkers'); return c && c.state.s.board[27] === 'd' && c.state.moves >= 2 && c.state.s.turn === 'd' ? true : false; }, 30000);
+    }
+    check('checkers: "play checkers" lays turned wooden men on the same board; tapping c3 then d4 moves your man and Void replies', !!ck && !!jumped && !F.errors.length, JSON.stringify({ ck, jumped, e: F.errors }));
+    // questions about chess are still questions (they open a page, which would cover the boards, so they come last)
+    await F.ask('who invented chess', 400); await F.ask('chess rules', 400); await F.ask('checkers rules', 400);
+    const after = await F.p.evaluate(() => ({ chess: document.querySelectorAll('.chess-card').length, checkers: document.querySelectorAll('.checkers-card').length }));
+    check('chess: "play chess" and "chess" summon one board (asked twice, still one); "who invented chess", "chess rules" and "checkers rules" add no board', cards === 1 && after.chess === 1 && after.checkers === 1, JSON.stringify({ cards, after }));
+    await F.ctx.close();
+  }
+  {
+    // no WebGL at all: both games fall back to a flat board of buttons that plays the same way
+    const F = await fresh(() => { const g = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (t, ...a) { return /webgl/.test(t) ? null : g.call(this, t, ...a); }; });
+    await F.ask('play chess', 600);
+    const flat = await until(() => F.p.$$eval('.chess-flat button', (b) => b.length), 20000);
+    if (flat) { await F.p.click('.chess-flat button[data-sq="12"]'); await F.p.click('.chess-flat button[data-sq="28"]'); }
+    const moved = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.s.board[28] === 'P'; }, 8000);
+    await F.ask('play checkers', 600);
+    const flatC = await until(() => F.p.$$eval('.checkers-flat button', (b) => b.length), 20000);
+    check('chess and checkers: without WebGL each shows a flat 64-square board and a click still plays a move', flat === 64 && !!moved && flatC === 64, JSON.stringify({ flat, moved, flatC, e: F.errors }));
+    await F.ctx.close();
+  }
 }
