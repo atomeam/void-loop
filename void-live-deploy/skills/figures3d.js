@@ -393,7 +393,8 @@ function poseZombie(f, w, hop, still) {
   p.head.rotation.x = 0.08 + Math.sin(b.t * 0.9 + G.phase * 2) * G.loll * 0.6;
   const lift = b.wave > 0 ? -0.5 * Math.min(1, b.wave) : 0, grab = b.mode === 'notice' ? -0.15 : 0; // a tap or the cursor: the arms come up
   p.arms.forEach((a, i) => {
-    const hangs = z.hang === (i ? 1 : -1);
+    const hangs = z.hang === (i ? 1 : -1) || z.hang === 2;
+    if (z.living) { a.rotation.x = Math.sin(ph + i * Math.PI) * 0.32 * moving + lift; a.rotation.z = 0; return; } // a person: arms swing against the legs
     a.rotation.x = (hangs ? Math.sin(ph + i * Math.PI) * 0.22 * (0.3 + moving) : Math.sin(ph * 0.5 + i * 2.1) * 0.08 + lift + grab);
     a.rotation.z = Math.sin(ph + i) * 0.05;
   });
@@ -518,29 +519,6 @@ function smoothBody(kind) {
   g.setIndex(new THREE.BufferAttribute(m.indices.slice(), 1));
   g.computeBoundingSphere();
   return g;
-}
-function buildPerson(spec) {
-  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
-  const col = hexColor(spec.color); const { skin, ink, shine, mats } = softMats(col);
-  const parts = { mats, geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
-  // head, neck, shoulders, torso, legs and feet are one smooth mesh; the arms swing from the shoulders
-  const fused = new T.Mesh(geo(smoothBody('person')), skin); body.add(fused);
-  const eyes = makeEyes(parts, ink, shine, R * 1.0, R * 0.4); eyes.scale.setScalar(0.9); body.add(eyes);
-  const arms = [];
-  const armGeo = geo(new T.CapsuleGeometry(R * 0.11, R * 0.42, 6, 12));
-  const handGeo = geo(new T.SphereGeometry(R * 0.13, 14, 10));
-  for (const s of [-1, 1]) {
-    const pivot = new T.Group(); pivot.position.set(s * R * 0.6, R * 0.36, 0);
-    const arm = new T.Mesh(armGeo, skin); arm.position.set(s * R * 0.1, -R * 0.32, 0); arm.rotation.z = s * 0.22; pivot.add(arm);
-    const hand = new T.Mesh(handGeo, skin); hand.position.set(s * R * 0.2, -R * 0.66, R * 0.02); pivot.add(hand);
-    body.add(pivot); arms.push(pivot);
-  }
-  attachProp(body, parts, spec.prop, { x: R * 0.85, y: -R * 0.15, z: R * 0.25 });
-  addSpeech(g, parts, spec.line);
-  const auraMat = new T.SpriteMaterial({ map: softTexture('rgba(255,255,255,0.5)', 'rgba(255,255,255,0)'), color: new T.Color(col), transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: 0.28 });
-  const aura = new T.Sprite(auraMat); aura.scale.set(R * 4.5, R * 4.5, 1); aura.position.z = -R; g.add(aura); parts.mats.push(auraMat);
-  Object.assign(parts, { body, eyes, arms, antenna: body, glow: skin, lamp: { intensity: 0 }, tail: body, pool: { position: { y: 0 }, scale: { setScalar() {} } }, aura });
-  return { obj: g, parts };
 }
 function buildAnimal(spec) {
   const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
@@ -791,21 +769,30 @@ function zombiePart(rig, part, m, at) {
   g.computeBoundingSphere();
   return g;
 }
-function buildZombie(spec) {
+// a person from a card ("who is Marie Curie") is the same seeded adult body, alive: upright, whole, clean, the card's
+// colour on the shirt, natural skin, clear eyes, an even walk (skills/sdfmesh.js ZOMBIE with living = true)
+function buildPerson(spec) { return buildZombie(spec, true); }
+function buildZombie(spec, living = false) {
   const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
-  const Z = zombieMesh(R, seedOf(spec)), rig = Z.rig, col = hexColor(spec.kindOf === 'zombie' ? null : spec.color, rig.skin); // the seed's own skin: realistic, not the summon's flat colour
+  const Z = zombieMesh(R, seedOf(spec), 52, living), rig = Z.rig, col = rig.skin; // the seed's own skin: realistic, never the summon's flat colour
   // matte, mottled skin (the blotches are vertex colours) with a faint red sheen for blood under the skin; dull, stained cloth
-  const skin = new T.MeshPhysicalMaterial({ color: col, roughness: 0.8, metalness: 0, vertexColors: true, sheen: 0.4, sheenColor: new T.Color(0x8a3b36), sheenRoughness: 0.75,
+  const skin = new T.MeshPhysicalMaterial({ color: col, roughness: living ? 0.6 : 0.8, metalness: 0, vertexColors: true, sheen: 0.4, sheenColor: new T.Color(living ? 0xe8b0a0 : 0x8a3b36), sheenRoughness: 0.75,
     emissive: new T.Color(col).multiplyScalar(0.05), emissiveIntensity: 1 }); // a little self-light only: more reads as plastic
-  const shirt = new T.MeshStandardMaterial({ color: rig.shirt, roughness: 0.95, vertexColors: true, emissive: new T.Color(rig.shirt).multiplyScalar(0.1) });
+  const shirtHex = living && spec.color ? hexColor(spec.color, rig.shirt) : rig.shirt;
+  const shirt = new T.MeshStandardMaterial({ color: shirtHex, roughness: 0.95, vertexColors: true, emissive: new T.Color(shirtHex).multiplyScalar(0.1) });
   const pants = new T.MeshStandardMaterial({ color: rig.pants, roughness: 0.95, vertexColors: true, emissive: new T.Color(rig.pants).multiplyScalar(0.1) });
   const raw = new T.MeshStandardMaterial({ color: 0x2a0d10, roughness: 0.55, vertexColors: true });
   const set = [skin, shirt, pants, raw], parts = { mats: set.slice(), geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
   body.add(new T.Mesh(geo(zombiePart(rig, 'body', Z.body)), set));
   const head = new T.Group(); head.position.set(...rig.neck); body.add(head);
   head.add(new T.Mesh(geo(zombiePart(rig, 'head', Z.head, rig.neck)), set));
+  if (rig.hair != null) { // hair: a cap over the crown and the back of the head, in a seeded natural colour
+    const hairMat = new T.MeshPhysicalMaterial({ color: rig.hair, roughness: 0.55, sheen: 1, sheenColor: new T.Color(rig.hair).lerp(new T.Color(0xffffff), 0.3) }); parts.mats.push(hairMat);
+    const cap = new T.Mesh(geo(new T.SphereGeometry(rig.headR * 1.04, 28, 18, 0, Math.PI * 2, 0, Math.PI * 0.5)), hairMat);
+    cap.position.set(rig.head[0] - rig.neck[0], rig.head[1] - rig.neck[1] + rig.headR * 0.12, rig.head[2] - rig.neck[2] - rig.headR * 0.08); cap.scale.set(0.9, 1.15, 1.02); cap.rotation.x = -0.35; head.add(cap);
+  }
   // eyes sit deep in the dark sockets: pale and clouded, almost lost in shadow, or a faint green glow
-  const eyeMat = rig.eyeKind === 2 ? new T.MeshStandardMaterial({ color: 0x9fe08a, emissive: 0x6fdc4a, emissiveIntensity: 0.7, roughness: 0.4 })
+  const eyeMat = rig.eyeKind === 3 ? new T.MeshPhysicalMaterial({ color: 0x2b2018, roughness: 0.05, clearcoat: 1 }) : rig.eyeKind === 2 ? new T.MeshStandardMaterial({ color: 0x9fe08a, emissive: 0x6fdc4a, emissiveIntensity: 0.7, roughness: 0.4 })
     : new T.MeshStandardMaterial({ color: rig.eyeKind === 0 ? 0xc9cbbf : 0x4a4038, roughness: 0.35, emissive: rig.eyeKind === 0 ? 0x2a2c26 : 0x000000 });
   parts.mats.push(eyeMat);
   const eyes = new T.Group(), ball = geo(new T.SphereGeometry(rig.headR * 0.17, 10, 8));
