@@ -220,3 +220,9 @@ for (const f of ['tools/ouroboros.py', 'tools/void_lens.py', 'void-live-deploy/l
   ok(!skippedInReview(f), 'real code is still reviewed: ' + f);
 console.log(bad ? bad + ' failed' : 'review: all passed');
 process.exit(bad ? 1 : 0);
+// run 54: XML namespace and package-type names (xmlns="http://…", schemas.microsoft.com, schemas.openxmlformats.org) are identifiers, never fetched
+for (const c of ['const m = \'<model xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">\';', 'const t = \'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\';',
+  'const r = \'<Relationship Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>\';', 'const x = \'<svg xmlns:xl="http://ns.vendor-xml.net/x">\';'])
+  ok(!rules(c, 'javascript').some((r) => /plain-http/.test(r)), 'no plain-http for: ' + c + ' (got ' + rules(c, 'javascript').join(',') + ')');
+for (const c of ['fetch("http://schemas.microsoft.com.evil.net/x");', 'const feed = "http://api.vendor-xml.net/feed";', 'img.src = "http://cdn.shop.net/a.png"; // xmlns="https://ok"'])
+  ok(rules(c, 'javascript').includes('plain-http@1'), 'still plain-http: ' + c);
