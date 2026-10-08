@@ -3152,6 +3152,10 @@ return { ok: true, detail: 'timer-reset' };
       if (focus && el && el.querySelector) { const f = el.querySelector('li.focus'); if (f && f.scrollIntoView) f.scrollIntoView({ block: 'center' }); }
       // Next #16: 3D slogan beside the self card (not the menu, not a how-to focus). Closes with the card.
       if (!asMenu && !focus && el) {
+        // Void's own body (skills/mini/void.js): angular, fractured, faceless, the same entity every visit; tap it to break it
+        const self = document.createElement('div'); self.className = 'void-self'; self.style.cssText = 'height:220px;margin:4px 0 8px';
+        const h = el.querySelector('h2'); if (h) h.after(self); else el.prepend(self);
+        stageApi.miniature(self, 'void', {}, { key: 'void-self', place: 'inside', label: 'Void, as itself: a fractured angular form; tap it' }).catch(() => self.remove());
         const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         import('/skills/slogan3d.js').then((m) => {
           if (vpageEl !== el) return;

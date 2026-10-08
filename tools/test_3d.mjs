@@ -346,4 +346,22 @@ export async function run3dChecks({ check, fresh }) {
       !!drawn && r.inPage && r.lines === 'Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56' && r.s.people === 3 && r.s.gold >= 1 && r.s.silver > r.s.gold && r.one.gold === 0 && r.many === 8 && !F.errors.length, JSON.stringify({ drawn, r, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- Void's own body on its self page: one fixed seed (the same entity everywhere), asymmetric, tap breaks it apart
+  {
+    const F = await fresh();
+    await F.ask('void', 900);
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'void'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => {
+      const v = await import('/skills/mini/void.js'), a = v.plan(), b = v.plan(), c = v.plan(12345);
+      const mean = a.reduce((m, s) => [m[0] + s.d[0], m[1] + s.d[1], m[2] + s.d[2]], [0, 0, 0]).map((x) => x / a.length);
+      return { n: a.length, same: JSON.stringify(a) === JSON.stringify(b), other: JSON.stringify(a) !== JSON.stringify(c), lean: Math.hypot(...mean), inPage: !!document.querySelector('.vpage .void-self canvas') };
+    });
+    const before = drawn ? drawn.draws : 0;
+    const pt = drawn && await F.p.evaluate((k) => window.__voidMini.project(k, [0, 0.075, 0]), drawn.key);
+    if (pt) await F.p.mouse.click(pt.x, pt.y);
+    const broke = await until(() => F.p.evaluate((b) => window.__voidMini.list().find((x) => x.kind === 'void').draws > b + 4, before), 15000);
+    check('3D Void: its self page shows its own body, built from one fixed seed (the same 24 shards every time; another seed differs), lopsided by design (the shard directions lean to one side), and a tap breaks it apart and back',
+      !!drawn && r.inPage && r.n === 24 && r.same && r.other && r.lean > 0.12 && broke && !F.errors.length, JSON.stringify({ drawn, r, broke, e: F.errors }));
+    await F.ctx.close();
+  }
 }
