@@ -11,6 +11,7 @@ const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? proces
 const base = arg('--base', 'origin/main'), head = arg('--head', 'HEAD'), deep = arg('--deep', '');
 const git = (...a) => execFileSync('git', a, { encoding: 'utf8', maxBuffer: 64 << 20 });
 
+const YAML_RULES = new Set(['image-latest', 'hardcoded-secret']);
 const LANG = { js: 'javascript', mjs: 'javascript', cjs: 'javascript', jsx: 'javascript', ts: 'typescript', tsx: 'typescript', py: 'python', sh: 'shell', bash: 'shell', sql: 'sql', go: 'go', rs: 'rust', java: 'java', cs: 'csharp', c: 'c', h: 'c', cpp: 'c', php: 'php', rb: 'ruby', ps1: 'powershell', tf: 'terraform', lua: 'lua', pl: 'perl', pm: 'perl', html: 'javascript', htm: 'javascript', yml: 'yaml', yaml: 'yaml' };
 // generated or data files: the same lines in three copies (void.html is copied to the deploy folder) are reviewed once
 // tests are skipped too: their fixtures are bad code on purpose. A file holding "void-review: skip-file" is skipped (the rules themselves).
@@ -30,13 +31,16 @@ function added() {
 const files = added(), report = [];
 for (const [file, lines] of Object.entries(files)) {
   if (skippedInReview(file) || !lines.size) continue;
-  const ext = (file.match(/\.([\w]+)$/) || [])[1] || '', lang = LANG[ext.toLowerCase()];
-  if (!lang || lang === 'yaml') continue;
+  // a Dockerfile has no extension (Dockerfile, api.Dockerfile, Dockerfile.dev)
+  const ext = (file.match(/\.([\w]+)$/) || [])[1] || '', base = file.split('/').pop(), lang = /^(?:[\w.-]+\.)?Dockerfile(?:\.[\w-]+)?$/i.test(base) ? 'dockerfile' : LANG[ext.toLowerCase()];
+  if (!lang) continue;
   let text = ''; try { text = git('show', head + ':' + file); } catch (_) { continue; }
   if (text.length > 2e6 || /void-review: skip-file/.test(text)) continue;
   // every line's findings (no collapsing of repeats), then only the ones on lines this PR adds
   const res = ruleReview(text, { lang, max: 5000, collapse: false });
-  for (const f of res.findings.filter((f) => lines.has(f.line))) report.push({ file, ...f });
+  // YAML (workflows, compose files) gets only the checks written for YAML: the general ones are tuned for code
+  const own = (f) => lang !== 'yaml' || YAML_RULES.has(f.rule);
+  for (const f of res.findings.filter((f) => lines.has(f.line) && own(f))) report.push({ file, ...f });
 }
 const ORDER = { bug: 0, risk: 1, style: 2, note: 3 };
 report.sort((a, b) => ORDER[a.kind] - ORDER[b.kind] || a.file.localeCompare(b.file) || a.line - b.line);

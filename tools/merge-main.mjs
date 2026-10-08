@@ -1,6 +1,6 @@
 // Bring origin/main into the current branch. Several agents append to the same records at once (tools/bench.json,
 // tools/grown.json, domains/void.agents.log.md), so a branch that sat for an hour almost always "conflicts" there even
-// though both sides only added lines. Those three are resolved here by keeping both sides (ours first, then theirs
+// though both sides only added lines. Those three are resolved here by keeping both sides (main's file as it is, then this branch's new entries
 // that are new; an ask already present is not repeated). Any other conflicted file stops the merge for a person.
 //   node tools/merge-main.mjs            fetch, merge, resolve the append-only records, commit
 import { execSync } from 'node:child_process';
@@ -20,14 +20,17 @@ if (other.length) { console.error('conflicts need a person: ' + other.join(', ')
 const side = (n, f) => { try { return execSync(`git show :${n}:${f}`, { encoding: 'utf8' }); } catch (_) { return ''; } };
 for (const f of conflicted) {
   if (APPEND_JSON.includes(f)) {
-    const ours = JSON.parse(side(2, f) || '[]'), theirs = JSON.parse(side(3, f) || '[]');
-    const seen = new Set(ours.map((x) => String(x.ask).toLowerCase()));
-    const all = ours.concat(theirs.filter((x) => !seen.has(String(x.ask).toLowerCase()) && seen.add(String(x.ask).toLowerCase())));
-    // one object per line, the files' own style (tools/append.mjs)
+    // main's file stays exactly as it is (its formatting, and any ask main edited: run 47 found a merge that had put an
+    // old "want" back), and only the asks this branch added are appended, one per line in the files' own style
+    const theirsText = side(3, f) || '[]\n', theirs = JSON.parse(theirsText), ours = JSON.parse(side(2, f) || '[]');
+    const seen = new Set(theirs.map((x) => String(x.ask).toLowerCase()));
+    const mine = ours.filter((x) => !seen.has(String(x.ask).toLowerCase()) && seen.add(String(x.ask).toLowerCase()));
     const line = (o) => '  {' + Object.entries(o).map(([k, v]) => JSON.stringify(k) + ': ' + JSON.stringify(v)).join(', ') + '}';
-    writeFileSync(f, '[\n' + all.map(line).join(',\n') + '\n]\n');
+    const body = theirsText.trimEnd().replace(/\]$/, '').trimEnd();
+    writeFileSync(f, mine.length ? (theirs.length ? body + ',\n' : '[\n') + mine.map(line).join(',\n') + '\n]\n' : theirsText);
     JSON.parse(readFileSync(f, 'utf8'));
-    console.log(`${f}: kept both sides (${ours.length} ours + ${all.length - ours.length} theirs)`);
+    const all = theirs.concat(mine);
+    console.log(`${f}: kept main's file and added this branch's ${mine.length} new (${all.length} total)`);
   } else {
     const base = side(1, f), ours = side(2, f), theirs = side(3, f);
     const added = (s) => s.startsWith(base) ? s.slice(base.length) : s.split('\n').filter((l) => !base.split('\n').includes(l)).join('\n');
