@@ -93,6 +93,7 @@ function what(file) {
   if (/^tools\/test[_-]|\.test\.m?js$/.test(file)) return 'tests';
   if (/^void-live-deploy\/models\//.test(file)) return '3D model or texture';
   if (/^void-live-deploy\/vendor\//.test(file)) return 'vendored library';
+  if (/(?:^|\/)action\.ya?ml$/.test(file)) return 'GitHub Action';
   if (/^\.github\//.test(file)) return 'CI';
   if (/^docs\/|\.md$/.test(file)) return 'docs';
   if (/^drafts\//.test(file)) return 'draft (not on the site)';
