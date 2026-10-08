@@ -1358,5 +1358,30 @@
     ],
     "sha256": "b2d6c459e9be852700cf29d970bc505286a2c58496336c16c00ffa4c8028503a",
     "emit": false
+  },
+  {
+    "run": 55,
+    "at": "2026-10-08T12:50:27Z",
+    "family": "opt-in-gesture",
+    "draft": "drafts/fringe/opt-in-gesture-5.html",
+    "sources": [
+      {
+        "claim": "Windows counts two clicks as a double click when the second comes within the double-click time, 500 ms by default",
+        "source": "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdoubleclicktime",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Mobile browsers waited about 300 ms after a tap to see whether a second tap (double-tap to zoom) followed",
+        "source": "https://developer.chrome.com/blog/300ms-tap-delay-gone-away",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A double-tap window fitted to one person's own double taps and separate tap pairs makes fewer errors for them than a fixed 300 or 500 ms window",
+        "source": "drafts/fringe/opt-in-gesture-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "2ee0c5775ca51252395bee15315d33835b92695444f2f8b7ad260e7c071e4179",
+    "emit": false
   }
 ]

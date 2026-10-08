@@ -5455,5 +5455,11 @@
   {"ask": "pentamote-1", "want": "skill:motorbody", "says": "five-material printed linear motor body"},
   {"ask": "download a 3mf of the printed motor", "want": "skill:motorbody", "says": "Download 3MF"},
   {"ask": "show the five-material motor", "want": "skill:motorbody", "says": "soft-magnetic"},
-  {"ask": "export the multi-material motor as a print file", "want": "skill:motorbody", "says": "PrusaSlicer"}
+  {"ask": "export the multi-material motor as a print file", "want": "skill:motorbody", "says": "PrusaSlicer"},
+  {"ask": "can you 3d print a motor", "want": "skill:printedmotor", "says": "from a twitch to a wave"},
+  {"ask": "printed motor", "want": "skill:printedmotor", "says": "41\\.6 Hz"},
+  {"ask": "printed robot arm", "want": "skill:printedmotor", "says": "waving arm"},
+  {"ask": "3d printed motors", "want": "skill:printedmotor", "says": "28\\.2%"},
+  {"ask": "is it possible to 3d print an electric motor", "want": "skill:printedmotor", "says": "Next: a printed motor"},
+  {"ask": "tell me about printed actuators", "want": "skill:printedmotor", "says": "2025-01-26"}
 ]
