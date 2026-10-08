@@ -12,10 +12,11 @@ export const KNOWN_ACTIONS = [
   'spin', 'sniff', 'glow', 'point', 'orbit', 'read', 'nod',
 ];
 /** How one figure responds when another tagged figure is nearby (Next #20). */
-export const KNOWN_REACTS = ['greet', 'follow', 'chase', 'flee', 'argue', 'team'];
+export const KNOWN_REACTS = ['greet', 'follow', 'chase', 'flee', 'argue', 'team', 'eat'];
 /** Role tags a script may claim; others match against these in reactsTo. */
 export const KNOWN_TAGS = [
   'police', 'troublemaker', 'animal', 'person', 'place', 'object', 'idea', 'sprite', 'chef', 'friend',
+  'zombie', 'brain', 'cat', 'mouse', 'dog', 'bone', 'fish', 'cheese', 'rabbit', 'carrot', 'monkey', 'banana', 'shark', 'bee', 'flower', 'food',
 ];
 
 /** Map fancy script actions onto the visual acts the #17 brain already knows how to play. */
@@ -41,6 +42,32 @@ const SUBJECT_TAGS = [
   [/\b(chef|cook|baker)\b/i, 'chef'],
 ];
 
+// Natures: what a thing is to the others, so things on the stage act like themselves with no AI and no setup.
+// A zombie finds a brain and eats it; a cat chases a mouse and flees a dog; a mouse eats cheese and flees a cat.
+// Each row: the subject pattern, the tags it carries, and how it reacts to others' tags ('eat' consumes what it catches).
+export const NATURES = [
+  [/\b(zombies?|ghouls?|undead|walkers?)\b/i, ['zombie'], { brain: 'eat', person: 'chase' }],
+  [/\bbrains?\b/i, ['brain', 'food'], {}],
+  [/\b(cats?|kittens?|kitty)\b/i, ['cat'], { mouse: 'chase', fish: 'eat', dog: 'flee' }],
+  [/\b(mouse|mice|rats?)\b/i, ['mouse'], { cheese: 'eat', cat: 'flee' }],
+  [/\b(dogs?|puppy|puppies|pup)\b/i, ['dog'], { cat: 'chase', bone: 'eat' }],
+  [/\bbones?\b/i, ['bone', 'food'], {}],
+  [/\b(fish|goldfish|salmon|tuna)\b/i, ['fish', 'food'], { shark: 'flee' }],
+  [/\bcheese\b/i, ['cheese', 'food'], {}],
+  [/\b(rabbits?|bunny|bunnies|hares?)\b/i, ['rabbit'], { carrot: 'eat', dog: 'flee' }],
+  [/\bcarrots?\b/i, ['carrot', 'food'], {}],
+  [/\b(monkeys?|apes?|chimps?)\b/i, ['monkey'], { banana: 'eat' }],
+  [/\bbananas?\b/i, ['banana', 'food'], {}],
+  [/\bsharks?\b/i, ['shark'], { fish: 'eat' }],
+  [/\b(bees?|bumblebees?)\b/i, ['bee'], { flower: 'follow' }],
+  [/\b(flowers?|roses?|daisy|daisies|tulips?)\b/i, ['flower'], {}],
+];
+export function natureOf(subject) {
+  const tags = [], reactsTo = {};
+  for (const [re, t, r] of NATURES) if (re.test(String(subject || ''))) { tags.push(...t); Object.assign(reactsTo, r); }
+  return { tags, reactsTo };
+}
+
 function uniq(list) {
   const out = []; const seen = new Set();
   for (const x of list || []) {
@@ -63,6 +90,7 @@ export function tagsFor(body = 'sprite', subject = null) {
   const out = [];
   const hay = String(subject || '');
   for (const [re, tag] of SUBJECT_TAGS) if (re.test(hay)) out.push(tag);
+  out.push(...natureOf(hay).tags);
   const b = FALLBACKS[body] ? body : 'sprite';
   out.push(b);
   return uniq(out).filter((t) => KNOWN_TAGS.includes(t));
@@ -78,6 +106,7 @@ export function fallbackScript(body = 'sprite', subject = null) {
   if (tags.includes('police')) reactsTo = { ...reactsTo, troublemaker: 'chase' };
   if (tags.includes('troublemaker')) reactsTo = { ...reactsTo, police: 'flee' };
   if (tags.includes('chef')) reactsTo = { ...reactsTo, person: 'greet' };
+  reactsTo = { ...reactsTo, ...natureOf(subject).reactsTo }; // its nature wins over the body's polite default
   return {
     drives: base.drives.slice(),
     actions: base.actions.slice(),
@@ -166,11 +195,11 @@ export function pickNearbyReaction(self, others, maxDist = 220) {
   let best = null;
   for (const o of others) {
     if (!o || o === self || o.id === self.id) continue;
-    if (o.leaving || o.chasedOff) continue;
+    if (o.leaving || o.chasedOff || o.eaten) continue;
     const d = Math.hypot((o.x || 0) - (self.x || 0), (o.y || 0) - (self.y || 0));
-    if (d > maxDist) continue;
     const react = pickReaction(self.script, o.script);
     if (!react) continue;
+    if (d > (react === 'eat' ? maxDist * 5 : maxDist)) continue; // food is smelled from across the stage: a hunter finds it
     if (!best || d < best.d) best = { other: o, react, d };
   }
   return best ? { other: best.other, react: best.react } : null;
@@ -178,6 +207,6 @@ export function pickNearbyReaction(self, others, maxDist = 220) {
 
 export default {
   KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, ACTION_TO_ACT, FALLBACKS,
-  subjectKey, tagsFor, fallbackScript, trimScript, pickIdleAction, visualAct, allowsDrive,
+  subjectKey, tagsFor, fallbackScript, trimScript, pickIdleAction, visualAct, allowsDrive, natureOf, NATURES,
   pickReaction, pickNearbyReaction,
 };

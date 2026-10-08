@@ -880,7 +880,7 @@ Object.values(things).forEach((th) => {
         const figs = Object.values(things).filter((t) => t.kind === 'figure');
         if (opts.hide) { for (const f of figs) delete things[f.id]; if (figs.length) { save(); render(); } return figs.length; }
         if (figs.length >= 6) return null;
-        const th = { id: uid('figure'), kind: 'figure', body: opts.body || 'sprite', color: opts.color || null, prop: opts.prop || null, line: opts.line || null, title: opts.title || null, script: opts.script || null, x: 0, y: 0 };
+        const th = { id: uid('figure'), kind: 'figure', body: opts.body || 'sprite', color: opts.color || null, prop: opts.prop || null, line: opts.line || null, title: opts.title || null, script: opts.script || null, seed: opts.seed ?? ((Math.random() * 4294967296) >>> 0), kindOf: opts.kindOf || null, size: opts.size || null, wide: opts.wide || null, tall: opts.tall || null, pace: opts.pace || null, x: 0, y: 0 };
         things[th.id] = th; save(); render(); return th;
       }
       if (stageKinds[kind]) { // skill kinds: each ask adds one more; it stays until thrown off the screen

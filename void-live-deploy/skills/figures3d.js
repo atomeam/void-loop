@@ -35,13 +35,19 @@ const MAX_ZOOM = 6;
 const PAD = R * 1.3 + 42; // how far a goal sits from any card, just outside where cards start to push
 
 // ---------- the brain: plain numbers in screen px (y grows downward) ----------
+// a figure summoned without a look still differs from the last one: its seed (or id) picks a size, build and pace
+export function variation(seed) {
+  let a = seed >>> 0; const r = () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  return { size: 0.88 + r() * 0.24, wide: 0.9 + r() * 0.2, tall: 0.9 + r() * 0.2, pace: 0.85 + r() * 0.3 };
+}
+function hashId(id) { let h = 2166136261; for (const ch of String(id)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; }
 export function makeBrain(spec = {}, rng = Math.random) {
   const body = spec.body || 'sprite';
   const script = spec.script ? trimScript(spec.script, body, spec.title || null) : null;
   return { id: spec.id || 'fig_' + Math.random().toString(36).slice(2, 8), x: spec.x ?? 200, y: spec.y ?? 200, vx: 0, vy: 0,
     tx: spec.x ?? 200, ty: spec.y ?? 200, mode: 'idle', modeT: 0.6 + rng() * 1.2, act: 'look', yaw: 0, lookX: 0, lookY: 0,
     blinkT: 0, nextBlink: 1.5 + rng() * 3, bob: rng() * 6.28, hop: 0, spin: 0, noticed: false, wave: 0, slide: 0, t: 0,
-    script, body, react: null, reactId: null, reactT: 0, chasedOff: false };
+    script, body, react: null, reactId: null, reactT: 0, chasedOff: false, pace: +spec.pace || 1 }; // pace: this individual's walking speed
 }
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export function insideAny(x, y, rects, pad = 0) {
@@ -99,7 +105,7 @@ export function stepFigure(f, dt, world, rng = Math.random) {
     if (near && (!f.react || f.reactId !== near.other.id || f.react !== near.react)) {
       f.react = near.react; f.reactId = near.other.id; f.reactT = 2.4 + rng() * 1.6;
       if (near.react === 'greet' || near.react === 'argue') { f.mode = near.react; f.hop = 1; f.wave = 1; f.act = 'wave'; }
-      else if (near.react === 'chase' || near.react === 'follow' || near.react === 'flee' || near.react === 'team') {
+      else if (near.react === 'chase' || near.react === 'follow' || near.react === 'flee' || near.react === 'team' || near.react === 'eat') {
         f.mode = near.react; f.modeT = 3;
       }
     }
@@ -113,14 +119,16 @@ export function stepFigure(f, dt, world, rng = Math.random) {
         f.vx *= Math.pow(0.05, dt); f.vy *= Math.pow(0.05, dt);
         if (f.act === 'wave') f.wave = Math.max(f.wave, 0.6);
       }
-    } else if (f.mode === 'chase' || f.mode === 'follow' || f.mode === 'flee' || f.mode === 'team') {
-      const o = (world.others || []).find((x) => x && x.id === f.reactId && !x.chasedOff);
+    } else if (f.mode === 'chase' || f.mode === 'follow' || f.mode === 'flee' || f.mode === 'team' || f.mode === 'eat') {
+      const o = (world.others || []).find((x) => x && x.id === f.reactId && !x.chasedOff && !x.eaten);
+      if (f.mode === 'eat' && o) f.reactT = Math.max(f.reactT, 0.5); // a hunter does not give up on food it can see
       if (!o || f.reactT <= 0) { f.mode = 'idle'; f.modeT = 0.8 + rng() * 1.2; f.react = null; f.reactId = null; }
       else {
         const dx0 = o.x - f.x, dy0 = o.y - f.y, dist = Math.hypot(dx0, dy0) || 1;
         let tx = o.x, ty = o.y, spd = SPEED;
         if (f.mode === 'flee') { tx = f.x - dx0; ty = f.y - dy0; spd = SPEED * 1.25; }
         else if (f.mode === 'chase') { spd = SPEED * 1.45; }
+        else if (f.mode === 'eat') { spd = SPEED * 1.15; } // a steady, single-minded walk to the food
         else if (f.mode === 'team') { // stick near, not on top
           if (dist < R * 2.2) { tx = f.x; ty = f.y; }
           else { tx = o.x - (dx0 / dist) * R * 2; ty = o.y - (dy0 / dist) * R * 2; }
@@ -129,6 +137,8 @@ export function stepFigure(f, dt, world, rng = Math.random) {
         }
         if (f.mode === 'chase' && dist < R * 1.6) { // caught: chase the other off the stage
           o.chasedOff = true; f.mode = 'idle'; f.modeT = 1.2; f.react = null; f.reactId = null; f.hop = 1; f.wave = 1;
+        } else if (f.mode === 'eat' && dist < R * 1.3) { // reached the food: eat it (it shrinks away where it lies)
+          o.eaten = true; o.chasedOff = true; f.ate = (f.ate || 0) + 1; f.mode = 'idle'; f.modeT = 1.6; f.react = null; f.reactId = null; f.hop = 1; f.act = 'look';
         } else {
           f.tx = tx; f.ty = ty;
           const gx = f.tx - f.x, gy = f.ty - f.y, gd = Math.hypot(gx, gy) || 1;
@@ -184,7 +194,7 @@ export function stepFigure(f, dt, world, rng = Math.random) {
       }
     }
   }
-  f.x += f.vx * dt; f.y += f.vy * dt;
+  f.x += f.vx * dt * (f.pace || 1); f.y += f.vy * dt * (f.pace || 1);
   if (b) { f.x = clamp(f.x, b.l, b.r); f.y = clamp(f.y, b.t, b.b); }
   f.yaw += (wantYaw - f.yaw) * Math.min(1, dt * 5);
   return f;
@@ -338,7 +348,7 @@ function poseSprite(f, now) {
   if (f.leaving) s = Math.max(0, 1 - (now - f.leaving) / 280);
   else if (!still) { const a = Math.min(1, (now - f.born) / 650); s = a >= 1 ? 1 : 1 + Math.sin(a * Math.PI * 1.25) * 0.18 * (1 - a) - (1 - a) * (1 - a) * 0.9; s = Math.max(0.01, s); }
   f.obj.position.set(w.x, w.y + bob + hop, 0);
-  f.obj.scale.setScalar(s);
+  const sz = +f.spec.size || 1; f.obj.scale.set(s * sz * (+f.spec.wide || 1), s * sz * (+f.spec.tall || 1), s * sz); // this individual's size and build (from its seed)
   p.body.rotation.y = b.yaw + (b.spin > 0 ? (1 - b.spin) * Math.PI * 2 : 0) + b.lookX * 0.25;
   p.body.rotation.x = -b.lookY * 0.18 + (still ? 0 : Math.sin(b.bob * 0.5) * 0.03);
   p.body.rotation.z = still ? 0 : -b.vx / SPEED * 0.12;
@@ -591,7 +601,7 @@ export async function addFigure(spec = {}) {
   const n = figures.size, color = spec.color || PALETTE[n % PALETTE.length];
   const body = spec.body || 'sprite';
   const script = spec.script ? trimScript(spec.script, body, spec.title || null) : null;
-  const brain = makeBrain({ id, x: spec.x, y: spec.y, body, script, title: spec.title || null });
+  const brain = makeBrain({ id, x: spec.x, y: spec.y, body, script, title: spec.title || null, pace: spec.pace || 1 });
   if (spec.x == null || spec.y == null) { // a free spot away from cards and from the friends already here
     const w = worldNow(), near = [...figures.values()].map((o) => ({ l: o.brain.x - R * 2, r: o.brain.x + R * 2, t: o.brain.y - R * 2, b: o.brain.y + R * 2 }));
     const p = pickTarget({ ...w, rects: w.rects.concat(near) }); brain.x = brain.tx = p.x; brain.y = brain.ty = p.y;
@@ -627,7 +637,8 @@ export async function syncFigures(list) {
   for (const d of want) {
     const f = figures.get(d.id);
     if (f && f.leaving) { disposeFigure(f); figures.delete(d.id); }
-    if (!figures.has(d.id)) await addFigure({ id: d.id, body: d.body, color: d.color || undefined, prop: d.prop || undefined, line: d.line || undefined, script: d.script || undefined, title: d.title || undefined });
+    if (!figures.has(d.id)) { const v = d.size ? {} : variation(d.seed ?? hashId(d.id)); // every figure is an individual, even ones summoned without a look
+      await addFigure({ id: d.id, body: d.body, color: d.color || undefined, prop: d.prop || undefined, line: d.line || undefined, script: d.script || undefined, title: d.title || undefined, size: d.size || v.size, wide: d.wide || v.wide, tall: d.tall || v.tall, pace: d.pace || v.pace, seed: d.seed ?? undefined }); }
     else {
       if (d.script && (!f.spec.script || JSON.stringify(f.spec.script) !== JSON.stringify(d.script))) {
         const sc = trimScript(d.script, d.body || 'sprite', d.title || null);
