@@ -38,6 +38,10 @@ ok(!rules('for (var k in at) el.setAttribute(k, at[k]);', 'javascript').includes
 ok(!rules('for (const k in o) if (Object.prototype.hasOwnProperty.call(o, k)) out.push(k);', 'javascript').includes('for-in-array@1'), 'for…in with a hasOwnProperty guard not flagged');
 ok(!rules("p.innerHTML = which === 'heat' ? heatHtml(esc) : accretionHtml(esc);", 'javascript').includes('inner-html@1'), 'innerHTML from builders handed esc not flagged');
 ok(rules('p.innerHTML = cardHtml(data);', 'javascript').includes('inner-html@1'), 'innerHTML from a builder without esc still flagged');
+// run 53: a plain string with quotes inside, and a builder handed the escaper among other arguments, are not flagged
+ok(!rules(`const el = showPage((p) => { p.innerHTML = '<h2>Watch</h2><div class="sub">checking…</div>'; });`, 'javascript').includes('inner-html@1'), 'innerHTML of a plain string with inner quotes not flagged');
+ok(!rules("el.innerHTML = cardHtml(esc, data, 'live');", 'javascript').includes('inner-html@1'), 'innerHTML from a builder handed esc among other arguments not flagged');
+ok(rules("el.innerHTML = cardHtml(data, 'live');", 'javascript').includes('inner-html@1') && rules('el.innerHTML = `<b>${name}</b>`;', 'javascript').includes('inner-html@1'), 'a builder without esc and a template with a value still flagged');
 for (const [c, want] of T) ok(rules(c).includes(want), want + ' in: ' + c + ' (got ' + rules(c).join(',') + ')');
 const P = [
   ['def add(x, items=[]):\n    items.append(x)\n    return items', 'mutable-default@1'],

@@ -127,7 +127,7 @@ const RULES = [
     'for…in walks property names as strings (and inherited ones), not array values. For an array use for (const x of list), or for (let i = 0; i < list.length; i++).'],
   ['eval', 'risk', [...JS, 'python', 'php', 'ruby'], (m) => /(?:^|[^\w$.])(?:eval|exec)\s*\(|\bnew\s+Function\s*\(/.test(m),
     'eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anything. Parse the data instead (JSON.parse, a lookup table, ast.literal_eval in Python).'],
-  ['inner-html', 'risk', JS, (m, r) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !/\.(?:innerHTML|outerHTML)\s*\+?=\s*(['"`])[^'"`$]*\1\s*;?\s*$/.test(r) && !/\besc(?:ape)?(?:Html)?\s*\(|\(\s*esc(?:ape)?(?:Html)?\s*\)|DOMPurify|sanitize/i.test(r), // esc called, or handed to an HTML builder (card(esc))
+  ['inner-html', 'risk', JS, (m, r) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !/\.(?:innerHTML|outerHTML)\s*\+?=\s*(?:'[^'$]*'|"[^"$]*"|`[^`$]*`)\s*;?\s*(?:\}\s*\)?\s*;?\s*)?$/.test(r) && !/\besc(?:ape)?(?:Html)?\s*\(|[(,]\s*esc(?:ape)?(?:Html)?\s*[,)]|DOMPurify|sanitize/i.test(r), // a plain string, esc called, or handed to an HTML builder (card(esc, data))
     'putting a variable into innerHTML lets any HTML in it run (a script tag, an onerror handler): an XSS hole if the text can come from a user. Use textContent, or escape the text first.'],
   ['document-write', 'risk', JS, (m) => /\bdocument\.write(?:ln)?\s*\(/.test(m),
     'document.write wipes the whole page if it runs after loading, and writes raw HTML (XSS risk). Build elements with createElement and textContent.'],
