@@ -5422,5 +5422,19 @@
   {"ask": "review this go: var m map[string]int; m[\"a\"] = 1", "want": "review", "says": "nil map|make"},
   {"ask": "review this go: json.Unmarshal(body, &v)", "want": "review", "says": "error|err"},
   {"ask": "review this java: if (str.equals(null)) {}", "want": "review", "says": "null"},
-  {"ask": "review this java: List<String> list = new ArrayList(); for (String s : list) list.remove(s);", "want": "review", "says": "ConcurrentModification|remove|iterat"}
+  {"ask": "review this java: List<String> list = new ArrayList(); for (String s : list) list.remove(s);", "want": "review", "says": "ConcurrentModification|remove|iterat"},
+  {"ask": "review this c#: async void Save() { await db.SaveAsync(); }", "want": "review", "says": "async void|Task"},
+  {"ask": "review this c#: var r = client.GetAsync(url).Result;", "want": "review", "says": "Result|deadlock|await"},
+  {"ask": "review this c#: if (s == null || s == \"\")", "want": "review", "says": "IsNullOrEmpty"},
+  {"ask": "review this kotlin: GlobalScope.launch { load() }", "want": "review", "says": "GlobalScope|scope|leak"},
+  {"ask": "review this swift: DispatchQueue.main.sync { update() }", "want": "review", "says": "deadlock|sync"},
+  {"ask": "review this php: $x = unserialize($_COOKIE['data']);", "want": "review", "says": "unserialize|object|inject"},
+  {"ask": "review this php: if ($a == $b) {}", "want": "review", "says": "===|strict|loose"},
+  {"ask": "review this php: extract($_POST);", "want": "review", "says": "extract|overwrite"},
+  {"ask": "review this ruby: YAML.load(input)", "want": "review", "says": "safe_load|YAML"},
+  {"ask": "review this terraform: acl = \"public-read\"", "want": "review", "says": "public"},
+  {"ask": "review this dockerfile: ADD https://example.com/app.tar.gz /app/", "want": "review", "says": "ADD|COPY|checksum"},
+  {"ask": "review this yaml: runAsUser: 0", "want": "review", "says": "root"},
+  {"ask": "review this yaml: hostNetwork: true", "want": "review", "says": "host"},
+  {"ask": "review this sql: GRANT ALL PRIVILEGES ON *.* TO 'app'@'%'", "want": "review", "says": "GRANT|privilege"}
 ]

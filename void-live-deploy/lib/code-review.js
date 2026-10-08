@@ -46,7 +46,7 @@ export function looksLikeCode(code, lang) {
   if (s.trim().length < 8) return false;
   let n = 0;
   if (/[{};]\s*$/m.test(s)) n++;
-  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert|val|guard|DROP|ALTER|TRUNCATE)\b/.test(s)) n++;
+  if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert|val|guard|DROP|ALTER|TRUNCATE|GRANT|REVOKE)\b/.test(s)) n++;
   if (/^\s*print\s+['"]/m.test(s)) n++; // Python 2's print 'x'
   if (/^\s*(?:FROM|RUN|COPY|ADD|ENV|ARG|EXPOSE|CMD|ENTRYPOINT|WORKDIR|USER|HEALTHCHECK)\s+\S/m.test(s)) n++; // a Dockerfile instruction (upper case, as written)
   if (lang === 'yaml' && /^\s*(?:-\s+)?[\w.-]+:(?:\s|$)/m.test(s)) n++; // key: value
@@ -270,6 +270,32 @@ const RULES = [
     'Runtime.exec with a variable command: when any of it comes from a user, they choose what runs. Use ProcessBuilder with a fixed program and the arguments as separate strings'],
   ['yaml-privileged', 'risk', ['yaml'], (m) => /^\s*(?:-\s+)?privileged:\s*true\b/.test(m),
     'privileged: true gives the container root on the host machine: a bug in it becomes a way out of the container. Grant only the capabilities it needs (securityContext.capabilities.add)'],
+  ['cs-async-void', 'bug', ['csharp'], (m) => /\basync\s+void\s+\w+\s*\((?![^)]*EventArgs)/.test(m),
+    'async void can\'t be awaited, and an exception in it crashes the process instead of reaching the caller. Return Task: async Task Save() (async void is only for event handlers)'],
+  ['cs-sync-over-async', 'risk', ['csharp'], (m) => /\w+Async\([^()]*(?:\([^()]*\)[^()]*)*\)\s*\.\s*(?:Result\b|Wait\(\s*\)|GetAwaiter\(\s*\)\s*\.\s*GetResult\(\s*\))/.test(m),
+    'blocking on an async call (.Result / .Wait()) can deadlock in UI and ASP.NET code and ties up a thread while it waits. await it instead: var r = await client.GetAsync(url)'],
+  ['cs-null-or-empty', 'style', ['csharp'], (m) => /\b(\w+)\s*==\s*null\s*\|\|\s*\1\s*==\s*(?:""|string\.Empty)/.test(m),
+    'string.IsNullOrEmpty(s) says the same thing in one call (or IsNullOrWhiteSpace to treat "  " as empty too)'],
+  ['kt-globalscope', 'risk', ['kotlin'], (m) => /\bGlobalScope\.(?:launch|async)\b/.test(m),
+    'a GlobalScope coroutine is never cancelled with the screen or request that started it, so it leaks and can touch dead UI. Launch it in a lifecycle scope: viewModelScope.launch { ... }'],
+  ['swift-main-sync', 'bug', ['swift'], (m) => /\bDispatchQueue\.main\.sync\b/.test(m),
+    'DispatchQueue.main.sync called from the main thread waits for itself forever (a deadlock). Use DispatchQueue.main.async'],
+  ['php-unserialize-input', 'risk', ['php'], (m) => /\bunserialize\s*\([^;]*\$_(?:GET|POST|COOKIE|REQUEST)\b/.test(m),
+    'unserialize on visitor data can build any object your code knows, which attackers chain into running code (PHP object injection). Use json_decode for data from outside'],
+  ['php-loose-eq', 'style', ['php'], (m) => /\$\w+\s*(?<![=!<>])==(?!=)\s*\$?\w|\w\s*(?<![=!<>])==(?!=)\s*\$\w+/.test(m),
+    '== converts types before comparing ("abc" == 0 was true before PHP 8, "1e3" == "1000" still is). Use === to compare value and type'],
+  ['php-extract-input', 'risk', ['php'], (m) => /\bextract\s*\(\s*\$_(?:GET|POST|REQUEST|COOKIE|SERVER)\b/.test(m),
+    'extract($_POST) turns every form field into a variable, so a visitor can overwrite $isAdmin or any other. Read the fields you expect by name'],
+  ['ruby-yaml-load', 'risk', ['ruby'], (m) => /\b(?:YAML|Psych)\.load\s*\(/.test(m),
+    'YAML.load can build arbitrary Ruby objects from the text (on older Psych), which turns untrusted YAML into code execution. Use YAML.safe_load'],
+  ['tf-public-acl', 'risk', ['terraform'], (m, r) => /\bacl\s*=\s*"public-read(?:-write)?"/.test(r),
+    'a public-read bucket lets anyone on the internet list and download every object in it. Keep it private and share through signed URLs or a CDN with access control'],
+  ['docker-add-url', 'style', ['dockerfile'], (m) => /^\s*ADD\s+(?:--\S+\s+)*https?:\/\//i.test(m),
+    'ADD with a URL downloads without checking what arrived. Use RUN curl with a checksum check (or ADD --checksum=sha256:...), and COPY for local files'],
+  ['yaml-run-as-root', 'risk', ['yaml'], (m) => /^\s*(?:-\s+)?runAsUser:\s*0\b/.test(m),
+    'runAsUser: 0 runs the container as root, so a bug in it can do anything root can. Pick a non-zero user and set runAsNonRoot: true'],
+  ['yaml-host-namespace', 'risk', ['yaml'], (m) => /^\s*(?:-\s+)?host(?:Network|PID|IPC):\s*true\b/.test(m),
+    'sharing the host\'s network (or process list) lets the container see and reach everything on the node. Leave hostNetwork / hostPID / hostIPC off unless it is a system agent that needs them'],
   ['effect-no-deps', 'risk', JS, (m) => /\buseEffect\(\s*(?:async\s*)?\(\s*\)\s*=>\s*(?:\{[^{}]*\}|[^,()]+\([^()]*\))\s*\)/.test(m),
     'useEffect with no dependency list runs after every render; if it sets state (a fetch that stores its result), it loops. Pass the values it depends on, or [] to run once: useEffect(() => { ... }, [])'],
   ['stale-setstate', 'bug', JS, (m) => { const k = m.match(/\b(set[A-Z]\w*)\(\s*(\w+)\s*[-+*]\s*[\w.]+\s*\)/); return !!k && new RegExp('\\b' + k[1] + '\\(\\s*' + k[2] + '\\s*[-+*]', 'g').test(m.slice(m.indexOf(k[0]) + k[0].length)); },

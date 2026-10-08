@@ -13,7 +13,7 @@ const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? proces
 const base = arg('--base', 'origin/main'), head = arg('--head', 'HEAD'), deep = arg('--deep', '');
 const git = (...a) => execFileSync('git', a, { encoding: 'utf8', maxBuffer: 64 << 20 });
 
-const YAML_RULES = new Set(['image-latest', 'hardcoded-secret']);
+const YAML_RULES = new Set(['image-latest', 'hardcoded-secret', 'yaml-privileged', 'yaml-run-as-root', 'yaml-host-namespace']); // the checks written for YAML (the general ones are tuned for code)
 const LANG = { js: 'javascript', mjs: 'javascript', cjs: 'javascript', jsx: 'javascript', ts: 'typescript', tsx: 'typescript', py: 'python', sh: 'shell', bash: 'shell', sql: 'sql', go: 'go', rs: 'rust', java: 'java', cs: 'csharp', c: 'c', h: 'c', cpp: 'c', php: 'php', rb: 'ruby', ps1: 'powershell', tf: 'terraform', lua: 'lua', pl: 'perl', pm: 'perl', html: 'javascript', htm: 'javascript', yml: 'yaml', yaml: 'yaml' };
 // generated or data files: the same lines in three copies (void.html is copied to the deploy folder) are reviewed once
 // tests are skipped too: their fixtures are bad code on purpose. A file holding "void-review: skip-file" is skipped (the rules themselves).
