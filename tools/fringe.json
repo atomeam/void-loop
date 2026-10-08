@@ -1158,5 +1158,30 @@
     ],
     "sha256": "9c78ea4232344f0aec6034095ddba35e4222c3eb74c2d48176601fe080b901ee",
     "emit": false
+  },
+  {
+    "run": 47,
+    "at": "2026-10-07T23:43:17Z",
+    "family": "private-incubation-log",
+    "draft": "drafts/fringe/private-incubation-log-5.html",
+    "sources": [
+      {
+        "claim": "People remember interrupted tasks better than finished ones (the Zeigarnik effect; recall ratio about 1.9 in the original study)",
+        "source": "https://doi.org/10.1007/BF02409636",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Replications are mixed: a 2023 meta-analysis found no reliable memory advantage for unfinished tasks, though a tendency to return to them held up better",
+        "source": "Ghibellini and Meier (2023), The hypothesis of the Zeigarnik effect revisited: a meta-analysis, Humanities and Social Sciences Communications",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Logging which of one's own stuck problems stay on the mind helps decide which to leave unfinished on purpose before a break",
+        "source": "drafts/fringe/private-incubation-log-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "1cdeeb397e776be6a19503d423609214c3273f93c61e4143a2ec3790568b2b4f",
+    "emit": false
   }
 ]

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · unfinished business (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input,textarea{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled,input:disabled{opacity:.4;cursor:default}
+#puzzle{font-size:30px;letter-spacing:.25em;color:#7cf;min-height:1.3em}
+textarea{width:100%;box-sizing:border-box;min-height:7em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>unfinished business · draft · not published</h1>
+  <p class="note">Ten scrambled words, one at a time. Unscramble each one and press Enter. Half of them are taken away after 15 seconds whether or not you are done, and you never see their answer. After a short pause, write down every puzzle you can remember: the word or its scrambled letters both count. In 1927 Bluma Zeigarnik reported that people remember interrupted tasks better than finished ones. Later attempts to repeat this found the effect small and unreliable (a 2023 review of the studies found no clear memory advantage). So this page tests the idea on you rather than assuming it: it compares how many interrupted and finished puzzles you recall. Everything stays in this browser.</p>
+  <div id="puzzle" aria-live="polite"></div>
+  <div class="row"><label for="ans" class="note">the word</label><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" style="flex:1 1 160px" disabled><button id="go" type="button">start</button></div>
+  <div id="recallBox" hidden><label for="recall" class="note">every puzzle you remember, one per line or separated by spaces</label><textarea id="recall" spellcheck="false" autocapitalize="off"></textarea><div class="row"><button id="done" type="button">done</button></div></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var WORDS=['apple','chair','plant','river','storm','bread','clock','tiger','music','ocean','sugar','lemon','house','train','money','smile','cloud','horse','paper','brick'];
+  var N=10,LIMIT=15e3,PAUSE=30e3,KEY='a2m.fringe.zeigarnik.v1',st={sessions:[]},run=null;
+  function okS(s){return s&&['intN','intHit','finN','finHit'].every(function(k){return typeof s[k]==='number'&&s[k]>=0&&isFinite(s[k])})&&s.intHit<=s.intN&&s.finHit<=s.finN}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.sessions))st.sessions=j.sessions.filter(okS)}catch(_){}
+  function el(id){return document.getElementById(id)}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({sessions:st.sessions.slice(-100)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your sessions (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var k=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[k];a[k]=t}return a}
+  // a scramble that is never the word itself
+  function scramble(w){var s=w;for(var t=0;t<20&&s===w;t++)s=shuffle(w.split('')).join('');return s}
+  function key(w){return String(w).toLowerCase().replace(/[^a-z]/g,'').split('').sort().join('')}
+  // which puzzles a recall list names: the word or any arrangement of its letters counts, each puzzle once
+  function recalled(text,items){var said=String(text||'').toLowerCase().split(/[^a-z]+/).filter(Boolean).map(key),got={};
+    items.forEach(function(it,i){if(said.indexOf(key(it.word))>=0)got[i]=true});return got}
+  // pooled recall for interrupted and finished puzzles, and their ratio (Zeigarnik's quotient: above 1 = interrupted remembered better)
+  function summary(ss){var t={intN:0,intHit:0,finN:0,finHit:0};ss.forEach(function(s){for(var k in t)t[k]+=s[k]});
+    var ri=t.intN?t.intHit/t.intN:null,rf=t.finN?t.finHit/t.finN:null;return{sessions:ss.length,intRate:ri,finRate:rf,ratio:ri!=null&&rf?ri/rf:null,t:t}}
+  function show(){var it=run.items[run.i];el('puzzle').textContent=it.shown;el('ans').value='';el('ans').disabled=false;el('ans').focus();
+    el('state').textContent='puzzle '+(run.i+1)+' of '+N;
+    if(it.cut)run.timer=setTimeout(function(){it.status='interrupted';next('taken away')},LIMIT)}
+  function next(msg){clearTimeout(run.timer);el('state').textContent=msg;run.i++;el('ans').disabled=true;
+    if(run.i<N){setTimeout(show,700);return}
+    el('puzzle').textContent='';var left=PAUSE/1000;el('state').textContent='a short pause: count backwards from 300 in threes, in your head ('+left+' s)';
+    run.pause=setInterval(function(){left--;el('state').textContent='a short pause: count backwards from 300 in threes, in your head ('+left+' s)';
+      if(left<=0){clearInterval(run.pause);el('state').textContent='now write down every puzzle you remember';el('recallBox').hidden=false;el('recall').value='';el('recall').focus()}},1000)}
+  el('go').addEventListener('click',function(){if(run)return;var words=shuffle(WORDS).slice(0,N),cut=shuffle([0,1,2,3,4,5,6,7,8,9]).slice(0,N/2);
+    run={i:0,items:words.map(function(w,i){return{word:w,shown:scramble(w),cut:cut.indexOf(i)>=0,status:null}})};el('go').disabled=true;el('score').textContent='';show()});
+  el('ans').addEventListener('keydown',function(ev){if(ev.key!=='Enter'||!run||run.i>=N)return;ev.preventDefault();var it=run.items[run.i];
+    // a finished puzzle ends solved, or with its answer shown when you give up (an empty Enter); interrupted ones never show the answer
+    if(key(el('ans').value)===key(it.word)&&el('ans').value.trim()){it.status='finished';next('yes: '+it.word)}
+    else if(!el('ans').value.trim()&&!it.cut){it.status='finished';next('it was '+it.word)}
+    else el('state').textContent='not that one'+(it.cut?'':' (press Enter on an empty box to see the answer)')});
+  el('done').addEventListener('click',function(){if(!run||run.i<N)return;var got=recalled(el('recall').value,run.items),s={intN:0,intHit:0,finN:0,finHit:0,at:Date.now()};
+    run.items.forEach(function(it,i){if(it.status==='interrupted'){s.intN++;if(got[i])s.intHit++}else if(it.status==='finished'){s.finN++;if(got[i])s.finHit++}});
+    st.sessions.push(s);st.sessions=st.sessions.slice(-100);save();el('recallBox').hidden=true;el('go').disabled=false;el('go').textContent='another ten';
+    el('state').textContent='you recalled '+s.intHit+' of '+s.intN+' interrupted and '+s.finHit+' of '+s.finN+' finished puzzles';run=null;draw()});
+  function draw(){var s=summary(st.sessions);if(!s.sessions){el('score').textContent='';return}var pct=function(x){return Math.round(x*100)+'%'};
+    el('score').textContent=s.sessions+' session'+(s.sessions>1?'s':'')+' · interrupted recalled '+(s.intRate==null?'–':pct(s.intRate))+' · finished recalled '+(s.finRate==null?'–':pct(s.finRate))
+      +(s.sessions<3?'\nabout 3 sessions before comparing':s.ratio==null?'':'\nratio '+s.ratio.toFixed(2)+(s.ratio>1.15?': interrupted puzzles stayed with you more':s.ratio<0.87?': finished puzzles stayed with you more':': about the same'))}
+  draw();
+  // made-up sessions and recall lists: scrambles count, each puzzle once, and the ratio is interrupted over finished recall
+  function selftest(){var items=[{word:'apple'},{word:'chair'},{word:'river'}],got=recalled('Apple\nhcair  apple xyz',items);
+    if(!got[0]||!got[1]||got[2])return'recalled gave '+JSON.stringify(got);
+    var s=summary([{intN:5,intHit:4,finN:5,finHit:2},{intN:5,intHit:2,finN:5,finHit:2}]);if(Math.abs(s.intRate-.6)>1e-12||Math.abs(s.finRate-.4)>1e-12||Math.abs(s.ratio-1.5)>1e-12)return'summary gave '+JSON.stringify(s);
+    for(var i=0;i<50;i++)if(scramble('apple')==='apple')return'scramble returned the word';return true}
+  window.__zeigarnik={recalled:recalled,summary:summary,scramble:scramble,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>
