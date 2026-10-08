@@ -40,12 +40,17 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card chess-card';
   el.dataset.id = th.id;
   el.style.cssText = 'position:absolute;left:' + th.x + 'px;top:' + th.y + 'px;width:' + W + 'px;padding:10px;border:1px solid var(--line);border-radius:16px;background:rgba(12,12,13,0.94);text-align:center;cursor:grab;user-select:none;box-shadow:0 18px 50px rgba(0,0,0,.45)';
+  // a desktop board stands on the stage itself (no frame, no table rectangle); the controls are a slim strip under it, and
+  // the strip is what you drag. Phones keep the framed card (a free board beside the screen edge would run off it).
+  const free = !phone;
+  if (free) el.classList.add('free-board'); // the stage's shared card look (background, border, padding) stays off
+  if (free) el.style.cssText = 'position:absolute;left:' + th.x + 'px;top:' + th.y + 'px;width:' + W + 'px;text-align:center;user-select:none;background:transparent;border:0;box-shadow:none;padding:0';
   const head = document.createElement('div');
   head.style.cssText = 'color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:2px 0 8px';
   head.textContent = 'Chess · you are white';
   const view = document.createElement('div');
   view.className = 'chess-view';
-  view.style.cssText = 'position:relative;width:100%;height:' + H + 'px;border-radius:11px;overflow:hidden;background:#0c0c0d';
+  view.style.cssText = free ? 'position:relative;width:100%;height:' + Math.round(H * 0.86) + 'px' : 'position:relative;width:100%;height:' + H + 'px;border-radius:11px;overflow:hidden;background:#0c0c0d';
   const status = document.createElement('div');
   status.className = 'chess-status';
   status.setAttribute('aria-live', 'polite');
@@ -69,7 +74,7 @@ function mount(th, stageApi) {
     const s = st().s, chk = R.inCheck(s) ? s.board.indexOf(s.turn === 'w' ? 'K' : 'k') : -1;
     const seen = new Set();
     const targets = targetsOf(st().sel).filter((m) => (seen.has(m.to) ? false : seen.add(m.to))).map((m) => ({ to: m.to, capture: !!m.captured }));
-    return { board: s.board, last: s.last || null, selected: st().sel, targets, check: chk, onSquare };
+    return { free, board: s.board, last: s.last || null, selected: st().sel, targets, check: chk, onSquare };
   }
   function paint() {
     const s = st().s, code = R.status(s), busy = thinking.has(th.id);
@@ -148,7 +153,14 @@ function mount(th, stageApi) {
     // undo your move and Void's reply together, so it is your turn again
     let n = st().s.turn === 'w' && h.length >= 2 ? 2 : 1; st().s = h[h.length - n]; st().hist = h.slice(0, h.length - n); st().moves = st().moves.slice(0, -n); st().sel = -1; save(); paint(); voidTurn(); });
 
-  el.append(head, view, status, moves, bar);
+  if (free) {
+    const strip = document.createElement('div');
+    strip.className = 'chess-strip';
+    strip.style.cssText = 'display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:-10px;padding:7px 10px 7px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(12,12,13,0.86);backdrop-filter:blur(8px);cursor:grab;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:92%';
+    head.style.padding = '0'; status.style.margin = '0'; bar.style.marginTop = '0';
+    strip.append(head, status, moves, bar);
+    el.append(view, strip);
+  } else el.append(head, view, status, moves, bar);
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   paint();

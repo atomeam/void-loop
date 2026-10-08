@@ -559,7 +559,7 @@
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
       background-size: 200px 200px; }
     /* cards on the stage share one look: rounded, softly lit, a gentle shadow */
-    .thing.kept-card:not(.game-card):not(.cartoon-card), .thing.calendar-card { border-radius: 16px !important; border-color: var(--card-line) !important;
+    .thing.kept-card:not(.game-card):not(.cartoon-card):not(.free-board), .thing.calendar-card { border-radius: 16px !important; border-color: var(--card-line) !important;
       background: var(--card-bg) !important; box-shadow: var(--card-shadow); padding: 14px 16px !important; font-size: var(--fs-s) !important; }
     .thing.game-card { position: absolute; padding: 18px 18px 16px; border-radius: var(--radius); background: var(--card-bg); border: 1px solid var(--card-line);
       box-shadow: var(--card-shadow); color: var(--ink); font-size: var(--fs-s); line-height: 1.45; text-align: left; user-select: none; filter: none; max-width: calc(100vw - 20px); }

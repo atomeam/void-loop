@@ -12,7 +12,7 @@ const NAMES = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: '
 export default async function build(ctx, data) {
   const { THREE, root, phone } = ctx;
   const url = MODELS + (phone ? 'chess-set-wood-v1-1k.glb' : 'chess-set-wood-v1-2k.glb');
-  const [{ scene: set }, tbl] = await Promise.all([ctx.loadGLTF(url), table(ctx, { bg: data.bg || '#0c0c0d' })]);
+  const [{ scene: set }, tbl] = await Promise.all([ctx.loadGLTF(url), table(ctx, { bg: data.bg || '#0c0c0d', free: !!data.free })]);
   const templates = {}; let board = null;
   for (const o of [...set.children]) {
     const m = /^piece_(\w+)_(white|black)$/.exec(o.name);
@@ -81,6 +81,7 @@ export default async function build(ctx, data) {
   ctx.addContactShadow({ y: 0, size: 1.0, height: 0.05, opacity: 0.75, blur: 2.4, darkness: 1 });
   ctx.addContactShadow({ y: TOP_Y + 0.0002, size: HALF * 2, height: 0.05, opacity: 0.85, blur: 2.6, darkness: 1.2, exclude: [board, set], res: phone ? 512 : 1024 });
   update(data);
+  if (data.free) ctx.addContactShadow({ y: 0.0005, size: 0.62, opacity: 0.7, blur: 3.2, darkness: 0.9, exclude: [] }); // standing on the stage: its own soft shadow
   ctx.frame(board, { view: data.view || [0, 0.86, -1], pad: 0.74, ground: false, minZoom: 0.45, maxZoom: 1.5, light: [-0.55, 1.35, -0.45] });
   return {
     update,
