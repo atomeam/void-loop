@@ -726,6 +726,7 @@ try {
   { const P = await fresh();
     await P.ctx.route(/open-meteo\.com|wikipedia\.org/, (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: '{}' }));
     await P.ctx.route(/frankfurter\.dev/, (r) => r.fulfill({ status: 503, headers: { 'access-control-allow-origin': '*' }, body: 'down' }));
+    await P.ctx.route(/wiktionary\.org|usgs\.gov|nager\.at|coingecko\.com|clinicaltrials\.gov/, (r) => r.abort()); // the rest unreachable, whatever the machine's network allows
     await P.ask('void status', 400);
     const done = await (async () => { for (let i = 0; i < 40; i++) { const t = await P.page(); if (/Outside sources · \d+ of \d+ answering/.test(t)) return t; await P.p.waitForTimeout(250); } return P.page(); })();
     const want = (await P.p.evaluate(() => fetch('/skills/index.json').then((r) => r.json()))).length;
