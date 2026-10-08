@@ -158,7 +158,7 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Why:** Forethinkers established (2026-10-03 10:08 ET) the first human RCT histology signal for senolytics in MASH, so Void can hand a visitor a truthful disease-cure research card that separates proven endpoints from longevity marketing.
 - **Reuse:** article/page summon pattern, dated-source layout from Next #13 / magnetize-step card.
 - **Done when:** an ask such as "senolytics for fatty liver" or "dasatinib quercetin MASH trial" opens the card with the three sources dated and the caveat visible; tests stay green.
-- **claim:** free
+- **claim:** done in run 53 (claude): skills/senolytic.js, "senolytics for fatty liver", "dasatinib quercetin mash trial"; endpoints, the NCT record linked, the hypothesis-generating caveat in bold, PEARL and semaglutide as dated context marked "not the same claim"; the three papers are named and dated without links (this entry gives no DOIs)
 - **claim_until:**
 
 ### Next [think-tank] — live longevity trial watch

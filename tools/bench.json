@@ -5442,5 +5442,9 @@
   {"ask": "does planting coral work", "want": "skill:coral", "says": "Whether it lasts depends on whether the corals survive the heat"},
   {"ask": "can coral survive heatwaves", "want": "skill:coral", "says": "not published yet"},
   {"ask": "flonduran coral", "want": "skill:coral", "says": "Mote BleachWatch"},
-  {"ask": "heat tolerant coral", "want": "skill:coral", "says": "1\\.9 °C more heat tolerant"}
+  {"ask": "heat tolerant coral", "want": "skill:coral", "says": "1\\.9 °C more heat tolerant"},
+  {"ask": "senolytics for fatty liver", "want": "skill:senolytic", "says": "47% on the drugs vs 7% on placebo"},
+  {"ask": "dasatinib quercetin mash trial", "want": "skill:senolytic", "says": "hypothesis-generating"},
+  {"ask": "senolytic liver trial", "want": "skill:senolytic", "says": "NCT05506488"},
+  {"ask": "dasatinib and quercetin for mash", "want": "skill:senolytic", "says": "MASH resolved in 53% vs 7%"}
 ]
