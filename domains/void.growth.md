@@ -142,7 +142,7 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Why:** Forethinkers established (2026-10-03 12:11 ET) a measurable ocean restoration result with open primary data, so Void can hand a visitor a truthful planet-restoration card that separates rapid small-scale accretion gains from ecosystem-scale promises.
 - **Reuse:** article/page summon pattern, dated-source layout from magnetize-step / senolytic MASH cards.
 - **Done when:** an ask such as "coral restoration Florida Keys" or "reef accretion potential" opens the card with the three DOIs dated and the 2023 die-off visible; tests stay green.
-- **claim:** free
+- **claim:** done in run 52 (claude): skills/coral.js, "coral restoration florida keys", "reef accretion potential", "does planting coral work"; the three DOIs dated, the 2023 die-off and the takeaway visible, links to the heat-survival card; GSOCS-LULCC named without a link (no source URL in this entry)
 - **claim_until:**
 
 ### Next [think-tank] — coral heat-survival card: can restored reefs live through the next heatwave?
@@ -150,7 +150,7 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Why:** Forethinkers answered (2026-10-07 18:07 ET) the planet-restoration question of whether fast coral restoration survives bleaching years: in Florida it did not, and heat tolerance is now the deciding factor. The card gives a visitor the honest arc, from loss to rescue to the live field test, and the next date to watch.
 - **Reuse:** the dated-source layout from the senolytic MASH, magnetize-step and trial-watch cards; the Florida Keys reef-accretion card links here.
 - **Done when:** each example ask opens the card with the five sources dated, the "not published yet" line visible, and the BleachWatch action shown; a test checks the card renders offline; tests stay green.
-- **claim:** free
+- **claim:** done in run 52 (claude): skills/coral.js, "can coral survive heatwaves", "flonduran coral", "heat tolerant coral"; five dated sources, the "not published yet" line and the BleachWatch action; bench asks render it offline
 - **claim_until:**
 
 ### Next [think-tank] — senolytic MASH trial card
