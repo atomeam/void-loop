@@ -57,6 +57,17 @@ for (const [lang, c, want] of [['javascript', 'const data = await fetch(url); co
 for (const [lang, c] of [['javascript', 'const json = await res.json();'], ['javascript', 'const out = arr.map(x => { return x * 2 })'], ['javascript', 'const out = arr.map(x => x * 2)'], ['javascript', 'res.redirect("/home")'],
   ['c', 'printf("%s", user_input);'], ['c', 'printf("hello\\n");'], ['javascript', 'arr.forEach(x => { log(x) })']])
   ok(!rules(c, lang).some((r) => /unawaited-body|callback-no-return|open-redirect|format-string/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
+// React hooks, typeof undefined, empty catch {}, Go nil maps / defer in loops / unchecked decode, Java equals(null) / remove in for-each, Python raise without from
+for (const [lang, c, want] of [['javascript', 'useEffect(() => { fetchData() })', 'effect-no-deps@1'], ['javascript', 'setCount(count + 1); setCount(count + 1);', 'stale-setstate@1'],
+  ['javascript', '<div dangerouslySetInnerHTML={{ __html: comment }} />', 'dangerous-html@1'], ['javascript', 'if (typeof x === undefined) {}', 'typeof-unquoted@1'], ['javascript', 'try { JSON.parse(s) } catch {}', 'empty-catch@1'],
+  ['go', 'var m map[string]int; m["a"] = 1', 'go-nil-map@1'], ['go', 'for _, f := range files { defer f.Close() }', 'go-defer-loop@1'], ['go', 'json.Unmarshal(body, &v)', 'go-unchecked-decode@1'],
+  ['java', 'if (str.equals(null)) {}', 'equals-null@1'], ['java', 'for (String s : list) list.remove(s);', 'remove-in-foreach@1'], ['python', 'try:\n    go()\nexcept Exception as e:\n    raise Exception("failed")', 'raise-no-from@3']])
+  ok(rules(c, lang).includes(want), want + ' in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
+for (const [lang, c] of [['javascript', 'useEffect(() => { fetchData() }, [])'], ['javascript', 'setCount((c) => c + 1); setCount((c) => c + 1);'], ['javascript', 'setA(a + 1); setB(b + 1);'],
+  ['javascript', '<div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(comment) }} />'], ['javascript', 'if (typeof x === "undefined") {}'], ['javascript', 'try { go() } catch (_) {}'],
+  ['go', 'm := make(map[string]int); m["a"] = 1'], ['go', 'defer f.Close()'], ['go', 'if err := json.Unmarshal(body, &v); err != nil { return err }'],
+  ['java', 'if (str == null) {}'], ['java', 'for (String s : list) out.add(s);'], ['python', 'try:\n    go()\nexcept Exception as e:\n    raise Exception("failed") from e']])
+  ok(!rules(c, lang).some((r) => /effect-no-deps|stale-setstate|dangerous-html|typeof-unquoted|empty-catch|go-nil-map|go-defer-loop|go-unchecked-decode|equals-null|remove-in-foreach|raise-no-from/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
 // inline review comments on PRs (tools/review-post.mjs): a line that already has Void's comment for the same checks is not posted again
 { const { postedKeys, fresh } = await import('./review-post.mjs');
   const keys = postedKeys([{ path: 'a.py', line: 4, body: '<!-- void-review-inline bare-except except-pass -->\n**risk**' }, { path: 'b.js', original_line: 9, body: '<!-- void-review-inline eval -->' }, { path: 'c.js', line: 1, body: 'a person wrote this' }]);

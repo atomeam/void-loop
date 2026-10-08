@@ -5412,5 +5412,15 @@
   {"ask": "review this js: const data = await fetch(url); const json = data.json();", "want": "review", "says": "await|promise"},
   {"ask": "review this js: arr.map(x => { x * 2 })", "want": "review", "says": "return|undefined"},
   {"ask": "review this js: res.redirect(req.query.next)", "want": "review", "says": "redirect|open"},
-  {"ask": "review this c: printf(user_input);", "want": "review", "says": "format|printf"}
+  {"ask": "review this c: printf(user_input);", "want": "review", "says": "format|printf"},
+  {"ask": "review this js: useEffect(() => { fetchData() })", "want": "review", "says": "depend|every render|\\[\\]"},
+  {"ask": "review this js: const [count, setCount] = useState(0); setCount(count + 1); setCount(count + 1);", "want": "review", "says": "previous|updater|c =>|prev"},
+  {"ask": "review this js: <div dangerouslySetInnerHTML={{ __html: comment }} />", "want": "review", "says": "XSS|dangerously|sanitize"},
+  {"ask": "review this js: if (typeof x === undefined) {}", "want": "review", "says": "'undefined'|string|typeof"},
+  {"ask": "review this js: try { JSON.parse(s) } catch {}", "want": "review", "says": "empty|swallow|catch"},
+  {"ask": "review this python: except Exception as e: raise Exception('failed')", "want": "review", "says": "from e|cause|chain"},
+  {"ask": "review this go: var m map[string]int; m[\"a\"] = 1", "want": "review", "says": "nil map|make"},
+  {"ask": "review this go: json.Unmarshal(body, &v)", "want": "review", "says": "error|err"},
+  {"ask": "review this java: if (str.equals(null)) {}", "want": "review", "says": "null"},
+  {"ask": "review this java: List<String> list = new ArrayList(); for (String s : list) list.remove(s);", "want": "review", "says": "ConcurrentModification|remove|iterat"}
 ]
