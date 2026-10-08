@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { parseVoice, currentAsks, questionFor, knowsFacts, voiceFacts } from '../void-live-deploy/lib/voice.js';
+import { VOICE_SYSTEM, parseVoice, currentAsks, questionFor, knowsFacts, voiceFacts } from '../void-live-deploy/lib/voice.js';
 import { isSelfAsk, selfFacts } from '../void-live-deploy/lib/self-context.js';
 import * as reflect from '../void-live-deploy/functions/api/reflect.js';
 import { writeLog, entryBlock } from './reflect.mjs';
@@ -32,7 +32,8 @@ test('Void\'s reply is kept word for word; only secrets are redacted; nothing sa
   assert.equal(parseVoice(JSON.stringify({ thoughts: 'ok then', asks: 'not a list', striking: 'yes' })).striking, false);
 });
 
-test('the questions Void is asked', () => {
+test('the questions Void is asked; Void describes itself only from its canon and code', () => {
+  assert.match(VOICE_SYSTEM, /never make up a motto, quest or identity/);
   assert.match(questionFor('daily'), /go next.*weakest.*game/);
   assert.equal(questionFor('build', 'incident brief'), 'This just shipped: "incident brief". What do you think of it, and how would you make it better?');
 });
@@ -95,4 +96,11 @@ test('the log keeps every block as written, adds new ones oldest first, and the 
   assert.ok(two.indexOf('voice:' + a.at) < two.indexOf('voice:' + b.at));
   assert.equal(writeLog(two, [b, a], currentAsks([b, a])), two);
   assert.match(entryBlock(b), /after a build/);
+});
+
+test('the canon: Adam\'s motto and VoidQuest are read with their version; "(not written yet)" stays unknown', async () => {
+  const { readCanon } = await import('./self-context.mjs');
+  assert.deepEqual(readCanon('version: 3\n\n## Motto\nOne win at a time.\n\n## VoidQuest\nLearn every game, one at a time.\n'), { version: 3, motto: 'One win at a time.', voidquest: 'Learn every game, one at a time.' });
+  assert.deepEqual(readCanon('version: 1\n\n## Motto\n(not written yet)\n\n## VoidQuest\n(not written yet)\n'), { version: 1, motto: null, voidquest: null });
+  assert.match(knowsFacts({ canon: { version: 1, motto: null, voidquest: 'Learn games.' } }), /My canon \(v1\): motto: not written yet, so I do not know it; VoidQuest: Learn games\./);
 });

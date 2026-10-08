@@ -20,8 +20,16 @@ export function rackOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+i\s+play|do\s+you\s+have|are\s+there)$|^(?:any\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+|your\s+)?(?:3d\s+)?(?:game|games|board\s*game|board\s*games)\s+(?:rack|shelf|shelves|cabinet|closet|cupboard)$|^(?:show\s+(?:me\s+)?)(?:the\s+|your\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
+  // a board game Void can't play yet, asked for as a game ("play monopoly", "monopoly board game"): say so plainly, record
+  // the request, and show the rack. A bare name ("monopoly") stays a question about the word.
+  const m = /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open)\s+(?:a\s+|an\s+|some\s+)?(?:game\s+of\s+)?([a-z][a-z' ]{1,24}?)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$|^([a-z][a-z' ]{1,24}?)\s+board\s*game$/.exec(t);
+  const name = m && (m[1] || m[2]);
+  if (name && SOON[name]) return { kind: 'rack', wanted: SOON[name] };
   return null;
 }
+// board games people ask for that Void doesn't play yet (Monopoly is next, Adam 2026-10-08); each ask is recorded
+export const SOON = { monopoly: 'Monopoly', battleship: 'Battleship', scrabble: 'Scrabble', risk: 'Risk', clue: 'Clue', cluedo: 'Cluedo', catan: 'Catan', 'settlers of catan': 'Catan',
+  backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', sorry: 'Sorry!', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
 
 const HINT = 'try: chess · checkers · go · tic tac toe · othello · connect 4 · mancala · aggravation · rock paper scissors · magic 8 ball';
 
@@ -63,14 +71,16 @@ function mount(th, stageApi) {
 }
 
 async function run(text, api) {
-  if (!rackOf(text)) return 'none';
+  const q = rackOf(text);
+  if (!q) return 'none';
+  if (q.wanted && api.reportMiss) api.reportMiss(text, 'game not built yet: ' + q.wanted); // the request lands on the miss board
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'rack');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); }
   else {
     const phone = Math.min(innerWidth, innerHeight) < 560, w = phone ? Math.min(innerWidth - 20, 380) : 440, both = phone ? w : w + 280;
     api.summon('rack', { x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 60 });
   }
-  api.say(HINT);
+  api.say(q.wanted ? q.wanted + ' isn’t here yet · your ask is noted · these are ready: tap a box' : HINT);
   return 'rack';
 }
 
@@ -78,8 +88,8 @@ export default {
   name: 'rack',
   rackOf,
   GAMES,
-  examples: ['games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf'],
-  nearMisses: ['play chess', 'play go', 'video games', 'games for kids', 'what is game theory', 'hunger games'],
+  examples: ['games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf', 'play monopoly', 'monopoly board game', 'play battleship'],
+  nearMisses: ['play chess', 'play go', 'video games', 'games for kids', 'what is game theory', 'hunger games', 'monopoly', 'what is a monopoly', 'play music', 'play sorry by justin bieber'],
   match(lower, text) { return !!rackOf(text); },
   run,
   stageKinds: { rack: { mount } },
