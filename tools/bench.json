@@ -5477,5 +5477,10 @@
   {"ask": "release notes for v1.4.0", "want": "skill:releasenotes", "says": "## v1\\.4\\.0"},
   {"ask": "make a changelog", "want": "skill:releasenotes", "says": "Unreleased"},
   {"ask": "draft release notes ⏎ feat: add search ⏎ fix: crash on save", "want": "skill:releasenotes", "says": "### Fixed"},
-  {"ask": "changelog from these commits ⏎ a1b2c3d Add dark mode ⏎ 9f8e7d6 Remove the old export", "want": "skill:releasenotes", "says": "### Removed"}
+  {"ask": "changelog from these commits ⏎ a1b2c3d Add dark mode ⏎ 9f8e7d6 Remove the old export", "want": "skill:releasenotes", "says": "### Removed"},
+  {"ask": "void status", "want": "skill:status", "says": "Void status"},
+  {"ask": "system status", "want": "skill:status", "says": "Skills"},
+  {"ask": "is void working", "want": "skill:status", "says": "Outside sources"},
+  {"ask": "health check", "want": "skill:status", "says": "Storage in this browser"},
+  {"ask": "are the sources up", "want": "skill:status", "says": "Void status"}
 ]

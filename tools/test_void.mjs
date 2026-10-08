@@ -722,6 +722,20 @@ try {
         && Math.abs(vol - 372.25) < 0.5 && span.join() === '22,13,5' && !P.errors.length,
       [lm.slice(0, 80), d ? d.suggestedFilename() : 'no download', facets, vol.toFixed(2), span.join('x'), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
+  // void status: every skill loads, the browser checks show, and each outside source reads up or down as it really answers
+  { const P = await fresh();
+    await P.ctx.route(/open-meteo\.com|wikipedia\.org/, (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: '{}' }));
+    await P.ctx.route(/frankfurter\.dev/, (r) => r.fulfill({ status: 503, headers: { 'access-control-allow-origin': '*' }, body: 'down' }));
+    await P.ctx.route(/wiktionary\.org|usgs\.gov|nager\.at|coingecko\.com|clinicaltrials\.gov/, (r) => r.abort()); // the rest unreachable, whatever the machine's network allows
+    await P.ask('void status', 400);
+    const done = await (async () => { for (let i = 0; i < 40; i++) { const t = await P.page(); if (/Outside sources · \d+ of \d+ answering/.test(t)) return t; await P.p.waitForTimeout(250); } return P.page(); })();
+    const want = (await P.p.evaluate(() => fetch('/skills/index.json').then((r) => r.json()))).length;
+    const probe = await P.p.evaluate(() => localStorage.getItem('a2m.void.status.probe'));
+    check('status: "void status" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage',
+      new RegExp(want + ' of ' + want + ' load').test(done) && /Storage in this browser/.test(done) && /3D/.test(done) && /Outside sources · 3 of 9 answering/.test(done)
+        && /Frankfurter\s+for currency · answered HTTP 503/.test(done) && /USGS\s+for earthquakes · could not be reached from this browser/.test(done) && probe === null && !P.errors.length,
+      [done.replace(/\s+/g, ' ').slice(0, 400), want, probe, P.errors.join(';')].join(' | '));
+    await P.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   { const P = await fresh();
     await P.ask('release notes for v1.4.0 ⏎ a1b2c3d feat(api): add search (#41) ⏎ fix: crash on empty list ⏎ Merge pull request #42 from x/y', 900);
