@@ -14,24 +14,25 @@ export const GAMES = [
   { id: 'tictactoe', title: 'Tic-tac-toe', ask: 'play tic tac toe', color: '#c0562e', ink: '#fff6e6', motif: 'tictactoe' },
   { id: 'mancala', title: 'Mancala', ask: 'play mancala', color: '#6b4426', ink: '#f6e3c4', motif: 'mancala' },
   { id: 'aggravation', title: 'Aggravation', ask: 'play aggravation', color: '#2f5fa8', ink: '#fdf6e3', motif: 'aggravation' },
+  { id: 'monopoly', title: 'Monopoly', ask: 'play monopoly', color: '#c8e3c4', ink: '#1d3b25', motif: 'monopoly' },
 ];
 
 export function rackOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+i\s+play|do\s+you\s+have|are\s+there)$|^(?:any\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+|your\s+)?(?:3d\s+)?(?:game|games|board\s*game|board\s*games)\s+(?:rack|shelf|shelves|cabinet|closet|cupboard)$|^(?:show\s+(?:me\s+)?)(?:the\s+|your\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
-  // a board game Void can't play yet, asked for as a game ("play monopoly", "monopoly board game"): say so plainly, record
-  // the request, and show the rack. A bare name ("monopoly") stays a question about the word.
+  // a board game Void can't play yet, asked for as a game ("play battleship", "scrabble board game"): say so plainly, record
+  // the request, and show the rack. A bare name ("battleship") stays a question about the word.
   const m = /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open)\s+(?:a\s+|an\s+|some\s+)?(?:game\s+of\s+)?([a-z][a-z' ]{1,24}?)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$|^([a-z][a-z' ]{1,24}?)\s+board\s*game$/.exec(t);
   const name = m && (m[1] || m[2]);
   if (name && SOON[name]) return { kind: 'rack', wanted: SOON[name] };
   return null;
 }
-// board games people ask for that Void doesn't play yet (Monopoly is next, Adam 2026-10-08); each ask is recorded
-export const SOON = { monopoly: 'Monopoly', battleship: 'Battleship', scrabble: 'Scrabble', risk: 'Risk', clue: 'Clue', cluedo: 'Cluedo', catan: 'Catan', 'settlers of catan': 'Catan',
+// board games people ask for that Void doesn't play yet (Battleship is next, Adam 2026-10-08); each ask is recorded
+export const SOON = { battleship: 'Battleship', scrabble: 'Scrabble', risk: 'Risk', clue: 'Clue', cluedo: 'Cluedo', catan: 'Catan', 'settlers of catan': 'Catan',
   backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', sorry: 'Sorry!', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
 
-const HINT = 'try: chess · checkers · go · tic tac toe · othello · connect 4 · mancala · aggravation · rock paper scissors · magic 8 ball';
+const HINT = 'try: chess · checkers · go · monopoly · tic tac toe · othello · connect 4 · mancala · aggravation · rock paper scissors · magic 8 ball';
 
 function mount(th, stageApi) {
   const phone = Math.min(innerWidth, innerHeight) < 560;
@@ -88,8 +89,8 @@ export default {
   name: 'rack',
   rackOf,
   GAMES,
-  examples: ['games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf', 'play monopoly', 'monopoly board game', 'play battleship'],
-  nearMisses: ['play chess', 'play go', 'video games', 'games for kids', 'what is game theory', 'hunger games', 'monopoly', 'what is a monopoly', 'play music', 'play sorry by justin bieber'],
+  examples: ['games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf', 'play battleship', 'scrabble board game'],
+  nearMisses: ['play chess', 'play go', 'video games', 'games for kids', 'what is game theory', 'hunger games', 'play monopoly', 'what is a monopoly', 'play music', 'play sorry by justin bieber'],
   match(lower, text) { return !!rackOf(text); },
   run,
   stageKinds: { rack: { mount } },

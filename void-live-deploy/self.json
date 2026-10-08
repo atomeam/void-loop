@@ -154,7 +154,8 @@
   "checkers",
   "chess",
   "aggravation",
-  "go"
+  "go",
+  "monopoly"
  ],
  "minis": [
   "aggravation",
@@ -169,6 +170,7 @@
   "heart",
   "list",
   "mancala",
+  "monopoly",
   "notepad",
   "othello",
   "paper",

@@ -52,6 +52,11 @@ function motif(x, m, cx, cy, s) {
   } else if (m === 'mancala') {
     x.fillStyle = '#8a5a2c'; x.beginPath(); x.roundRect(cx - h, cy - h * 0.55, s, s * 0.55, s * 0.1); x.fill();
     for (let i = 0; i < 4; i++) for (let r = 0; r < 2; r++) { const px = cx - h + s * (0.2 + i * 0.2), py = cy - h * 0.55 + s * (0.15 + r * 0.25); disc(x, px, py, s * 0.07, '#5b3716'); disc(x, px - 3, py - 2, s * 0.022, ['#4fb3d9', '#e35d6a', '#f2c14e', '#7bd389'][(i + r) % 4]); }
+  } else if (m === 'monopoly') { // a corner of the board: a ring of spaces with colour bands round a green centre
+    x.fillStyle = '#eef4ea'; x.fillRect(cx - h, cy - h, s, s); x.fillStyle = '#cfe2c8'; x.fillRect(cx - h * 0.62, cy - h * 0.62, s * 0.62, s * 0.62);
+    const bands = ['#8a5a3c', '#9fd3ef', '#d9559c', '#f08a2c', '#d9353a', '#f2d23a', '#2f9b57', '#1f4fa8'], q = s / 8;
+    for (let k = 0; k < 4; k++) { x.fillStyle = bands[k]; x.fillRect(cx - h + q * (k * 2 + 0.2), cy - h * 0.82, q * 1.6, q * 0.5); x.fillStyle = bands[k + 4]; x.fillRect(cx - h + q * (k * 2 + 0.2), cy + h * 0.66, q * 1.6, q * 0.5); }
+    x.fillStyle = '#7b6cff'; x.beginPath(); x.arc(cx + q, cy, q * 0.5, 0, Math.PI * 2); x.fill(); x.fillStyle = '#e9e4d8'; x.beginPath(); x.arc(cx - q, cy, q * 0.5, 0, Math.PI * 2); x.fill();
   } else if (m === 'aggravation') {
     x.fillStyle = '#f3e6c8'; x.beginPath(); for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2 - Math.PI / 2, rr = i % 2 ? h * 0.48 : h; x.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); } x.closePath(); x.fill();
     ['#d64545', '#3a78d4', '#3fa35b', '#e0b13a'].forEach((col, i) => { const a = (i / 4) * Math.PI * 2 - Math.PI / 4; disc(x, cx + Math.cos(a) * h * 0.45, cy + Math.sin(a) * h * 0.45, s * 0.06, col); });

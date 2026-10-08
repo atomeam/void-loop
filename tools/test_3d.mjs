@@ -338,6 +338,19 @@ export async function run3dChecks({ check, fresh }) {
       JSON.stringify({ ready, first, again, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- Monopoly: the property board stands in the void, the card beside it; a roll walks your pawn, buying waits for you
+  {
+    const F = await fresh();
+    await F.ask('play monopoly', 600);
+    const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'monopoly'); return l && l.ready && l.draws > 0; }), 90000);
+    const sep = await F.p.evaluate(() => !!document.querySelector('.free-board .monopoly-view') && !!document.querySelector('.side-card.monopoly-side'));
+    if (ready) await F.p.click('.mono-roll');
+    const moved = await until(async () => { const t = (await F.state()).find((x) => x.kind === 'monopoly'); return t && t.state.moves >= 1 ? t.state : false; }, 10000);
+    const owned = moved && Object.keys(moved.owner).filter((i) => moved.owner[i] === 0).length;
+    check('monopoly: "play monopoly" stands the property board in 3D in the void with its card separate; Roll moves your pawn and buys nothing for you',
+      !!ready && sep && !!moved && moved.players[0].pos > 0 && owned === 0 && !F.errors.length, JSON.stringify({ ready, sep, pos: moved && moved.players[0].pos, phase: moved && moved.phase, owned, e: F.errors }));
+    await F.ctx.close();
+  }
   // ---- the game rack: "games" stands a 3D shelf of the seven board games in the void; picking one puts the rack away and opens it
   {
     const F = await fresh();
@@ -346,8 +359,8 @@ export async function run3dChecks({ check, fresh }) {
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation) ; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation, monopoly) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
     await F.ctx.close();
   }
   {
