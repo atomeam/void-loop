@@ -3403,6 +3403,21 @@ return { ok: true, detail: 'timer-reset' };
       // eggs: "how long to boil an egg", "how long do you boil eggs", "soft boiled egg time"
       if (/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:hard\s+|soft\s+)?boil\s+(?:an?\s+|the\s+)?eggs?(?:\s+for)?$|^(?:hard|soft|medium)[\s-]boiled\s+eggs?\s+(?:time|how\s+long)$|^how\s+long\s+(?:for|to\s+make)\s+(?:a\s+)?(?:hard|soft)[\s-]boiled\s+eggs?$/.test(t))
         return { value: 'soft 6 min\nmedium 8 min\nhard 10–12 min', note: 'large eggs lowered into water already boiling, then into cold water; add a minute straight from the fridge' };
+      // "2 hours and 15 minutes in minutes", "1 hr 30 min to hours"
+      m = t.match(/^(?:what(?:'s|\s+is)\s+|convert\s+)?(\d+)\s*(?:hours?|hrs?|h)\s*(?:and\s+)?(\d+)\s*(?:minutes?|mins?|m)\s+(?:in|to|into)\s+(minutes?|mins|seconds?|secs|hours?|hrs)$/);
+      if (m) { const min = +m[1] * 60 + +m[2], u = m[3].charAt(0) === 's' ? 'seconds' : m[3].charAt(0) === 'h' ? 'hours' : 'minutes';
+        const v = u === 'seconds' ? min * 60 : u === 'hours' ? Math.round(min / 60 * 1000) / 1000 : min;
+        return { value: v.toLocaleString() + ' ' + u, note: m[1] + ' h ' + m[2] + ' min = ' + min + ' minutes' }; }
+      // "gas mileage 300 miles 10 gallons", "mpg for 300 miles on 10 gallons", "300 miles on 10 gallons"
+      m = t.match(/^(?:what(?:'s|\s+is)\s+(?:my\s+|the\s+)?)?(?:(?:gas\s+)?mileage|mpg|miles\s+per\s+gallon)\s+(?:for\s+|on\s+|if\s+i\s+drove\s+)?(\d+(?:\.\d+)?)\s*(?:miles?|mi)\s+(?:on\s+|with\s+|and\s+|using\s+)?(\d+(?:\.\d+)?)\s*(?:gallons?|gal)$|^(\d+(?:\.\d+)?)\s*(?:miles?|mi)\s+(?:on|with|using)\s+(\d+(?:\.\d+)?)\s*(?:gallons?|gal)(?:\s+(?:mpg|mileage|is\s+how\s+many\s+mpg))?$/);
+      if (m) { const mi = +(m[1] || m[3]), gal = +(m[2] || m[4]); if (gal > 0) { const mpg = Math.round(mi / gal * 10) / 10, l100 = Math.round(235.215 / (mi / gal) * 10) / 10;
+        return { value: mpg + ' mpg', note: mi + ' miles ÷ ' + gal + ' gallons · ' + l100 + ' L/100 km' }; } }
+      // "how many weekdays in november", "business days in march 2027": Monday to Friday (public holidays not taken off)
+      m = t.match(/^(?:how\s+many\s+)?(weekdays|week\s+days|work\s*days|business\s+days|working\s+days)\s+(?:are\s+)?(?:there\s+)?in\s+(january|february|march|april|may|june|july|august|september|october|november|december)(?:\s+(\d{4}))?$/);
+      if (m) { const MO = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'], mo = MO.indexOf(m[2]), now = new Date();
+        const y = m[3] ? +m[3] : (mo < now.getMonth() ? now.getFullYear() + 1 : now.getFullYear()), last = new Date(y, mo + 1, 0).getDate(); let n = 0;
+        for (let d = 1; d <= last; d++) { const w = new Date(y, mo, d).getDay(); if (w > 0 && w < 6) n++; }
+        return { value: n + ' weekdays', note: m[2].charAt(0).toUpperCase() + m[2].slice(1) + ' ' + y + ': ' + last + ' days, Monday to Friday counted; public holidays not taken off' }; }
       // "how many hours until 5pm", "how many minutes till 9:30": from now on this device's clock (no am/pm: the next one)
       m = t.match(/^how\s+many\s+(hours|minutes|mins)\s+(?:is\s+it\s+)?(?:until|till|til|to)\s+(?:(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?|(noon|midnight))(?:\s+(?:today|tonight))?$/);
       if (m) { const now = new Date(), at = new Date(now); let h = 0, mi = 0;
@@ -5112,6 +5127,7 @@ return { ok: true, detail: 'timer-reset' };
         .replace(/^tip\s+(\d+(?:\.\d+)?)\s*%\s+(?:on\s+)?\$?(\d+(?:\.\d+)?)\s*$/i, '$1% tip on $2')
         .replace(/^(?:a\s+)?random\s+number\s+(?:from\s+)?(-?\d+)\s*(?:-|to)\s*(-?\d+)\s*$/i, 'random number between $1 and $2')
         .replace(/^((?:how\s+many\s+)?(?:days|weeks|sleeps))\s+(?:till|til|untill)\s+/i, '$1 until ')
+        .replace(/^(?:what(?:'s|\s+is)\s+)?my\s+age\s+in\s+(days|weeks|months)\s+(?:if\s+i\s+was\s+)?born\s+(?:on\s+|in\s+)?(.+?)\s*[?.!]*$/i, 'how many $1 old am i if i was born on $2')
         .replace(/^(?:start\s+|begin\s+)?(?:a\s+)?pomodoro(?:\s+timer)?(?:\s+please)?\s*[.!]*$/i, 'set a timer for 25 minutes')
         .replace(/^(?:to\s*-?\s*do|todo)(?:\s+list)?\s*:\s*(.+)$/i, 'make a to-do list with $1')
         .replace(/^(capital|currency|population)\s+(?!of\b|city\b|gains?\b|letters?\b|one\b|punishment\b|cities\b|growth\b|density\b)([a-z][a-z ]{2,30}?)\s*[?.!]*$/i, '$1 of $2')
