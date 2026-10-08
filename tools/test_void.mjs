@@ -2951,6 +2951,8 @@ try {
   check('router: nothing on the page changes (no router, route or escalation code in void.html; the confirm line checks above still pass)',
     !/api\/routes|escalat|lib\/router|bge-m3|qwen/i.test(html) && fs.readFileSync(path.join(root, 'void.html'), 'utf8') === html, '');
   }
+  // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
+  await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh });
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));
 }

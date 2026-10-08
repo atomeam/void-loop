@@ -733,7 +733,9 @@ Object.values(things).forEach((th) => {
       selectedId = th.id; save(); render(); return th;
     }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
-    const stageApi = { stage, things: () => things, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot() };
+    const stageApi = { stage, things: () => things, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
+      // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
+      miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)) };
 
     // Click any stage object or person and it lifts in the hand. A flick throws it off the
     // screen and it's gone (a real toss: gravity, spin, carried off); a slow drop sets it back down.
