@@ -1079,6 +1079,14 @@ function mountNotepad(th) {
       area.addEventListener('pointerdown', (e) => e.stopPropagation());
       area.addEventListener('input', () => { th.text = area.value || ''; save(); });
 
+      // a yellow legal pad on the desk with this note handwritten on it (skills/mini/notepad.js); it rewrites as you type
+      const padHost = document.createElement('div'); padHost.className = 'notepad-mini'; padHost.style.cssText = 'height:190px;margin:-4px -6px 8px';
+      el.appendChild(padHost);
+      const padData = () => ({ title: th.title || '', text: th.text || '' });
+      cardMini(padHost, 'notepad', padData(), { key: 'notepad:' + th.id, label: '3D notepad' }).then((h) => {
+        let t = 0; const later = () => { clearTimeout(t); t = setTimeout(() => h.update(padData()), 250); };
+        area.addEventListener('input', later); title.addEventListener('input', later);
+      }).catch(() => padHost.remove());
       el.appendChild(title);
       el.appendChild(area);
       bindDrag(el, th);

@@ -205,6 +205,23 @@ export async function run3dChecks({ check, fresh }) {
     await F.ctx.close();
   }
 
+  // ---- card miniatures: the notepad shows the note in handwriting and rewrites as you type
+  {
+    const F = await fresh();
+    const r = await F.p.evaluate(async () => {
+      const m = await import('/skills/scene3d.js'); const d = document.createElement('div'); d.style.cssText = 'position:fixed;left:20px;top:20px;width:300px;height:220px;z-index:9'; document.body.appendChild(d);
+      const np = await m.mountMiniature(d, 'notepad', { title: 'Call', text: 'call mom about sunday dinner and pick up milk, eggs and basil on the way home' }, { key: 'tnp' });
+      const a = np.inst.state(); np.update({ title: 'Call', text: 'short' }); const b = np.inst.state(); return { a, b };
+    });
+    await F.ask('make a notepad', 600);
+    const pad = await until(() => F.p.evaluate(() => { const l = window.__voidMini.list().find((x) => x.kind === 'notepad' && x.key.startsWith('notepad:note')); return l && l.draws > 0 && !!document.querySelector('.notepad .void-mini canvas') ? l.key : false; }), 60000);
+    let typed = false;
+    if (pad) { await F.p.fill('.notepad-textarea', 'buy flowers for the party and call the florist tomorrow morning'); typed = await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.lines >= 1 && /flowers/.test(s.text) ? s : false; }, pad), 20000); }
+    check('miniatures: the legal pad writes the note across its ruled lines and rewrites when it changes; "make a notepad" puts it on the notepad card and typing in the card rewrites the pad',
+      r.a.lines >= 2 && r.b.lines === 1 && !!pad && !!typed && !F.errors.length, JSON.stringify({ ...r, pad, typed, e: F.errors }));
+    await F.ctx.close();
+  }
+
   await runRulesChecks(check);
   // ---- chess and checkers: routing, the real 3D board takes taps, Void replies, and a flat board where WebGL can't run
   {
