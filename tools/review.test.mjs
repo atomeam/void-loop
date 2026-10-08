@@ -50,6 +50,13 @@ for (const [lang, c, want] of [['typescript', 'const x: any = foo();', 'ts-any@1
 for (const [lang, c] of [['typescript', 'const anyone: string = "x";'], ['typescript', 'let company: Company = load();'], ['go', 'for _, v := range items {'], ['go', 'v, ok := m[key]'], ['shell', 'cat a.txt b.txt > all.txt'], ['css', 'a { color: red }']])
   ok(!rules(c, lang).some((r) => /ts-any|go-ignored-err|useless-cat|css-important/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
 ok(looksLikeCode('cat $file | grep foo', 'shell'), 'a short shell pipe is code when the ask says bash');
+// run 48: one-line except: pass, exec with a built command, request echoed back, token in localStorage, Runtime.exec, privileged containers
+for (const [lang, c, want] of [['python', 'except Exception as e: pass', 'except-pass@1'], ['javascript', 'child_process.exec("ls " + dir)', 'js-exec-concat@1'], ['javascript', 'exec(`rm ${f}`)', 'js-exec-concat@1'],
+  ['javascript', 'res.send(req.query.name)', 'reflected-input@1'], ['javascript', 'localStorage.setItem("token", jwt)', 'token-in-storage@1'], ['java', 'Runtime.getRuntime().exec(cmd);', 'java-runtime-exec@1'], ['yaml', 'privileged: true', 'yaml-privileged@1']])
+  ok(rules(c, lang).includes(want), want + ' in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
+for (const [lang, c] of [['javascript', 'execFile("ls", [dir])'], ['javascript', 'const m = re.exec(str)'], ['javascript', 'res.json({ name: req.query.name })'], ['javascript', 'localStorage.setItem("theme", "dark")'],
+  ['java', 'Runtime.getRuntime().exec("ls");'], ['yaml', 'privileged: false'], ['python', 'except ValueError:\n    raise']])
+  ok(!rules(c, lang).some((r) => /except-pass|js-exec-concat|reflected-input|token-in-storage|java-runtime-exec|yaml-privileged/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
 ok(rules('#!/bin/bash\nrm -rf $DIR/', 'shell').includes('rm-rf-var@2'), 'rm -rf var');
 ok(rules('curl -fsSL https://x.sh | bash', 'shell').includes('curl-pipe-sh@1'), 'curl | bash');
 ok(rules('UPDATE users SET admin = 1;', 'sql').includes('update-no-where@1'), 'update without where');
