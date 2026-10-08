@@ -643,7 +643,7 @@
     .mc-store .mc-n { bottom: 6px; }
     .mc-board > .mc-pit:nth-child(-n+7):not(.mc-store) .mc-n { bottom: auto; top: calc(var(--pit) * -.3); }
     /* aggravation */
-    .ag-wrap svg { display: block; width: 100%; height: auto; border-radius: 18px; box-shadow: 0 16px 34px rgba(0,0,0,.55); }
+    .ag-wrap svg { display: block; width: min(100%, max(260px, calc(100dvh - var(--dock-space, 120px) - 270px))); height: auto; border-radius: 18px; box-shadow: 0 16px 34px rgba(0,0,0,.55); }
     .ag-marble { transition: transform .42s var(--ease); }
     .ag-marble .ag-ring { stroke: transparent; stroke-width: 2.2; }
     .ag-marble.can { cursor: pointer; }
