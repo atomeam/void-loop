@@ -52,6 +52,26 @@ function motif(x, m, cx, cy, s) {
   } else if (m === 'mancala') {
     x.fillStyle = '#8a5a2c'; x.beginPath(); x.roundRect(cx - h, cy - h * 0.55, s, s * 0.55, s * 0.1); x.fill();
     for (let i = 0; i < 4; i++) for (let r = 0; r < 2; r++) { const px = cx - h + s * (0.2 + i * 0.2), py = cy - h * 0.55 + s * (0.15 + r * 0.25); disc(x, px, py, s * 0.07, '#5b3716'); disc(x, px - 3, py - 2, s * 0.022, ['#4fb3d9', '#e35d6a', '#f2c14e', '#7bd389'][(i + r) % 4]); }
+  } else if (m === 'connect4') { // the blue frame with a few discs in
+    x.fillStyle = '#2b5fd9'; x.beginPath(); x.roundRect(cx - h, cy - h * 0.85, s, s * 0.85, s * 0.05); x.fill(); const q = s / 7;
+    const filled = { 38: '#e0303e', 37: '#f2c230', 31: '#e0303e', 39: '#f2c230', 30: '#f2c230', 24: '#e0303e' };
+    for (let r = 0; r < 6; r++) for (let c = 0; c < 7; c++) disc(x, cx - h + (c + 0.5) * q, cy - h * 0.85 + (r + 0.5) * q * 0.85, q * 0.34, filled[r * 7 + c] || '#0d1a33');
+  } else if (m === 'fireworks') { // bursts in the five colours
+    ['#e2453c', '#efc23a', '#3fae5a', '#3d7fe0', '#eceae4'].forEach((col, k) => { const bx = cx + (k - 2) * h * 0.38, by = cy - h * 0.2 + (k % 2) * h * 0.4; x.strokeStyle = col; x.lineWidth = 4;
+      for (let a = 0; a < 10; a++) { const t = (a / 10) * Math.PI * 2; x.beginPath(); x.moveTo(bx + Math.cos(t) * h * 0.06, by + Math.sin(t) * h * 0.06); x.lineTo(bx + Math.cos(t) * h * 0.2, by + Math.sin(t) * h * 0.2); x.stroke(); } });
+  } else if (m === 'poker') { // two cards fanned over a chip
+    disc(x, cx + h * 0.5, cy + h * 0.55, s * 0.13, '#c0262b', '#f4f1ea');
+    for (const [dx, rot, t] of [[-h * 0.22, -0.18, 'A♠'], [h * 0.22, 0.18, 'K♥']]) { x.save(); x.translate(cx + dx, cy - h * 0.05); x.rotate(rot); x.fillStyle = '#fbfaf5'; x.fillRect(-s * 0.2, -s * 0.28, s * 0.4, s * 0.56); x.fillStyle = t.includes('♥') ? '#c0262b' : '#15161a'; x.font = `bold ${Math.round(s * 0.16)}px Georgia, serif`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(t, 0, 0); x.restore(); }
+  } else if (m === 'battleship') { // a blue grid with a grey hull and two pegs
+    x.fillStyle = '#2a7fae'; x.fillRect(cx - h, cy - h, s, s); x.strokeStyle = 'rgba(220,240,255,.6)'; x.lineWidth = 2; const q = s / 6;
+    for (let k = 1; k < 6; k++) { x.beginPath(); x.moveTo(cx - h + k * q, cy - h); x.lineTo(cx - h + k * q, cy + h); x.moveTo(cx - h, cy - h + k * q); x.lineTo(cx + h, cy - h + k * q); x.stroke(); }
+    x.fillStyle = '#9aa4ab'; x.beginPath(); x.roundRect(cx - h + q * 0.6, cy - q * 0.4, q * 3.8, q * 0.8, q * 0.4); x.fill();
+    disc(x, cx + q * 1.5, cy - q * 1.5, q * 0.3, '#d8302b'); disc(x, cx - q * 1.5, cy + q * 1.5, q * 0.3, '#f4f4f0');
+  } else if (m === 'monopoly') { // a corner of the board: a ring of spaces with colour bands round a green centre
+    x.fillStyle = '#eef4ea'; x.fillRect(cx - h, cy - h, s, s); x.fillStyle = '#cfe2c8'; x.fillRect(cx - h * 0.62, cy - h * 0.62, s * 0.62, s * 0.62);
+    const bands = ['#8a5a3c', '#9fd3ef', '#d9559c', '#f08a2c', '#d9353a', '#f2d23a', '#2f9b57', '#1f4fa8'], q = s / 8;
+    for (let k = 0; k < 4; k++) { x.fillStyle = bands[k]; x.fillRect(cx - h + q * (k * 2 + 0.2), cy - h * 0.82, q * 1.6, q * 0.5); x.fillStyle = bands[k + 4]; x.fillRect(cx - h + q * (k * 2 + 0.2), cy + h * 0.66, q * 1.6, q * 0.5); }
+    x.fillStyle = '#7b6cff'; x.beginPath(); x.arc(cx + q, cy, q * 0.5, 0, Math.PI * 2); x.fill(); x.fillStyle = '#e9e4d8'; x.beginPath(); x.arc(cx - q, cy, q * 0.5, 0, Math.PI * 2); x.fill();
   } else if (m === 'aggravation') {
     x.fillStyle = '#f3e6c8'; x.beginPath(); for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2 - Math.PI / 2, rr = i % 2 ? h * 0.48 : h; x.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); } x.closePath(); x.fill();
     ['#d64545', '#3a78d4', '#3fa35b', '#e0b13a'].forEach((col, i) => { const a = (i / 4) * Math.PI * 2 - Math.PI / 4; disc(x, cx + Math.cos(a) * h * 0.45, cy + Math.sin(a) * h * 0.45, s * 0.06, col); });

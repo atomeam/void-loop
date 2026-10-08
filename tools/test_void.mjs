@@ -971,6 +971,7 @@ try {
     }
     // the two-step app: "make me an app", then what it should do; and one line that says it all at once
     await R.p.goto(base); await R.p.waitForTimeout(500); await R.p.evaluate(() => localStorage.clear());
+    await R.ask('clear', 300); // a game the last grown ask stood on the stage is still in the reloaded page's memory: start from an empty stage
     await R.ask('make me an app', 600); await R.ask('something for my groceries and a timer', 900);
     const two = (await R.state()).map((x) => x.kind).sort().join(','), twoSay = await R.whisper();
     await R.ask('build me a pomodoro app with notes', 900); const one = (await R.state()).map((x) => x.kind).sort().join(',');
