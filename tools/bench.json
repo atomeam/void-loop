@@ -5466,5 +5466,11 @@
   {"ask": "check this ci workflow ⏎ jobs: ⏎ deploy: ⏎ runs-on: ubuntu-latest ⏎ steps: ⏎ - uses: some-org/deploy-action@v2", "want": "review", "says": "full commit SHA"},
   {"ask": "review my github actions workflow ⏎ on: ⏎ pull_request_target: ⏎ jobs: ⏎ t: ⏎ runs-on: ubuntu-latest ⏎ steps: ⏎ - uses: actions/checkout@v4 ⏎ with: ⏎ ref: ${{ github.event.pull_request.head.sha }}", "want": "review", "says": "pull_request_target"},
   {"ask": "audit this workflow file ⏎ permissions: write-all ⏎ jobs: ⏎ b: ⏎ runs-on: ubuntu-latest ⏎ steps: ⏎ - run: npm test", "want": "review", "says": "write-all"},
-  {"ask": "audit my github actions", "want": "review|asked for code", "says": "Paste the code"}
+  {"ask": "audit my github actions", "want": "review|asked for code", "says": "Paste the code"},
+  {"ask": "write an incident brief", "want": "skill:incident", "says": "blameless"},
+  {"ask": "incident report for the login outage", "want": "skill:incident", "says": "Login outage"},
+  {"ask": "postmortem template", "want": "skill:incident", "says": "Incident brief"},
+  {"ask": "write a postmortem for the checkout outage", "want": "skill:incident", "says": "Checkout outage"},
+  {"ask": "post-incident review", "want": "skill:incident", "says": "Not known yet"},
+  {"ask": "incident brief: payments down", "want": "skill:incident", "says": "Payments down"}
 ]
