@@ -183,5 +183,10 @@
   "tip",
   "void",
   "weather"
- ]
+ ],
+ "canon": {
+  "version": 1,
+  "motto": null,
+  "voidquest": null
+ }
 }

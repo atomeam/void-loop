@@ -66,6 +66,8 @@ export function knowsFacts(self) {
   const parts = [];
   if (self && Array.isArray(self.games) && self.games.length) parts.push('Games I can play: ' + self.games.map((g) => GAME_NAMES[g] || g).join(', '));
   if (self && Array.isArray(self.minis) && self.minis.length) parts.push('Cards with a live 3D miniature of themselves: ' + self.minis.join(', '));
+  const c = self && self.canon;
+  if (c) parts.push('My canon (v' + c.version + '): motto: ' + (c.motto || 'not written yet, so I do not know it') + '; VoidQuest: ' + (c.voidquest || 'not written yet, so I do not know it'));
   return parts.join('\n');
 }
 

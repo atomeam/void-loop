@@ -96,3 +96,10 @@ test('the log keeps every block as written, adds new ones oldest first, and the 
   assert.equal(writeLog(two, [b, a], currentAsks([b, a])), two);
   assert.match(entryBlock(b), /after a build/);
 });
+
+test('the canon: Adam\'s motto and VoidQuest are read with their version; "(not written yet)" stays unknown', async () => {
+  const { readCanon } = await import('./self-context.mjs');
+  assert.deepEqual(readCanon('version: 3\n\n## Motto\nOne win at a time.\n\n## VoidQuest\nLearn every game, one at a time.\n'), { version: 3, motto: 'One win at a time.', voidquest: 'Learn every game, one at a time.' });
+  assert.deepEqual(readCanon('version: 1\n\n## Motto\n(not written yet)\n\n## VoidQuest\n(not written yet)\n'), { version: 1, motto: null, voidquest: null });
+  assert.match(knowsFacts({ canon: { version: 1, motto: null, voidquest: 'Learn games.' } }), /My canon \(v1\): motto: not written yet, so I do not know it; VoidQuest: Learn games\./);
+});

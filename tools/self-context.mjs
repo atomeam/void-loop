@@ -15,7 +15,14 @@ const clip = (s, n) => String(s || '').replace(/\s+/g, ' ').trim().slice(0, n);
 // skills that are games Void plays with you (names as in skills/index.json)
 export const GAMES = ['tictactoe', 'othello', 'mancala', 'checkers', 'chess', 'aggravation', 'go'];
 
-export function buildSelf(llms, inbox, { skills = [], minis = [] } = {}) {
+// domains/void.canon.md: Adam's words about what Void is (motto, VoidQuest), versioned; '(not written yet)' stays unknown
+export function readCanon(text) {
+  const t = String(text || ''), sec = (h) => clip((new RegExp('^## ' + h + '\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1], 600);
+  const known = (v) => (v && !/^\(not written yet\)$/i.test(v) ? v : null);
+  return { version: +((/^version:\s*(\d+)/m.exec(t) || [])[1] || 0), motto: known(sec('Motto')), voidquest: known(sec('VoidQuest')) };
+}
+
+export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null } = {}) {
   const about = clip((/^>\s*(.+)$/m.exec(llms) || [])[1], 300);
   const rows = [];
   for (const line of inbox.split('\n')) {
@@ -29,13 +36,14 @@ export function buildSelf(llms, inbox, { skills = [], minis = [] } = {}) {
   return {
     about, shipped: rows.filter((r) => r.state === 'shipped'), open: rows.filter((r) => r.state !== 'shipped'),
     games: GAMES.filter((g) => skills.includes(g)), minis: minis.filter((m) => m !== 'sample').sort(),
+    ...(canon ? { canon } : {}),
   };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const skills = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8'));
   const minis = readdirSync(resolve(root, 'void-live-deploy/skills/mini')).filter((f) => /^[a-z0-9-]+\.js$/.test(f)).map((f) => f.slice(0, -3));
-  const self = buildSelf(readFileSync(resolve(root, 'void-live-deploy/llms.txt'), 'utf8'), readFileSync(resolve(root, 'domains/growth-inbox.md'), 'utf8'), { skills, minis });
+  const self = buildSelf(readFileSync(resolve(root, 'void-live-deploy/llms.txt'), 'utf8'), readFileSync(resolve(root, 'domains/growth-inbox.md'), 'utf8'), { skills, minis, canon: existsSync(resolve(root, 'domains/void.canon.md')) ? readCanon(readFileSync(resolve(root, 'domains/void.canon.md'), 'utf8')) : null });
   const text = JSON.stringify(self, null, 1) + '\n';
   if (process.argv.includes('--check')) {
     const same = existsSync(out) && readFileSync(out, 'utf8') === text;
