@@ -1165,6 +1165,9 @@ function mountCalc(th) {
         }, 250);
       }
 
+      // the 3D hourglass beside the timer (skills/mini/timer.js): its sand follows remaining/startedAt, a fresh run turns it over
+      stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: 'beside', width: 120, height: 160, label: '3D hourglass' }).catch(() => {});
+
 bindDrag(el, th);
       stage.appendChild(el);
     }

@@ -65,5 +65,27 @@ export async function run3dChecks({ check, fresh }) {
       !!drawn && r.inCard && r.d3 === 3 && r.d0 === 0 && r.bad === null && r.saved && flipped && !F.errors.length, JSON.stringify({ drawn, r, flipped, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
+  {
+    const F = await fresh();
+    await F.ask('set a timer for 1 minute');
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'timer'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => {
+      const g = await import('/skills/mini/timer.js'); const now = 1e6;
+      const el = document.querySelector('.thing.timer'), beside = el && el.querySelector('.void-mini[data-kind="timer"] canvas');
+      return { beside: !!beside, half: g.leftFraction({ duration: 60000, remaining: 60000, running: true, startedAt: now - 30000 }, now), paused: g.leftFraction({ duration: 60000, remaining: 15000, running: false }, now),
+        done: g.leftFraction({ duration: 60000, remaining: 1000, running: true, startedAt: now - 5000 }, now), none: g.leftFraction({ duration: 0, remaining: 5 }, now) };
+    });
+    // run it nearly out, then start a fresh minute: the glass turns over (several redraws in a row)
+    const key = drawn && drawn.key;
+    await F.p.evaluate(async (k) => { const m = await import('/skills/scene3d.js'); const host = document.querySelector('.thing.timer'); await m.mountMiniature(host, 'timer', { duration: 60000, remaining: 1000, running: false, startedAt: 0 }, { key: k, place: 'beside', width: 120, height: 160 }); }, key);
+    await F.p.waitForTimeout(400);
+    const before = await F.p.evaluate(() => window.__voidMini.list().find((x) => x.kind === 'timer').draws);
+    await F.p.evaluate(async (k) => { const m = await import('/skills/scene3d.js'); const host = document.querySelector('.thing.timer'); await m.mountMiniature(host, 'timer', { duration: 60000, remaining: 60000, running: true, startedAt: Date.now() }, { key: k, place: 'beside', width: 120, height: 160 }); }, key);
+    const turned = await until(() => F.p.evaluate((b) => window.__voidMini.list().find((x) => x.kind === 'timer').draws > b + 2, before), 15000);
+    check('3D timer: "set a timer for 1 minute" puts a 3D hourglass beside the timer; leftFraction follows remaining and startedAt (half, paused, done, no duration); a fresh run turns the glass over',
+      !!drawn && r.beside && Math.abs(r.half - 0.5) < 1e-9 && r.paused === 0.25 && r.done === 0 && r.none === 0 && turned && !F.errors.length, JSON.stringify({ drawn, r, turned, e: F.errors }));
+    await F.ctx.close();
+  }
 
 }
