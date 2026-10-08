@@ -5391,5 +5391,11 @@
   {"ask": "random number 1-10", "want": "chance", "says": null},
   {"ask": "days till christmas", "want": "holiday|calc|skill:countdown|skill:holidays", "says": null},
   {"ask": "usd to eur", "want": "calc|answer|skill:currency|skill:fx", "says": null},
-  {"ask": "capital france", "want": "skill:country", "says": "Paris"}
+  {"ask": "capital france", "want": "skill:country", "says": "Paris"},
+  {"ask": "what is the boiling point of water in fahrenheit", "want": "calc", "says": "212"},
+  {"ask": "freezing point of water", "want": "calc", "says": "32"},
+  {"ask": "what temperature does water boil", "want": "calc", "says": "212"},
+  {"ask": "boiling point of water in kelvin", "want": "calc", "says": "373.15"},
+  {"ask": "will it freeze tonight in boston", "want": "skill:weather", "says": null},
+  {"ask": "is it going to storm today", "want": "skill:weather", "says": null}
 ]

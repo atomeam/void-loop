@@ -3403,6 +3403,10 @@ return { ok: true, detail: 'timer-reset' };
       // eggs: "how long to boil an egg", "how long do you boil eggs", "soft boiled egg time"
       if (/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:hard\s+|soft\s+)?boil\s+(?:an?\s+|the\s+)?eggs?(?:\s+for)?$|^(?:hard|soft|medium)[\s-]boiled\s+eggs?\s+(?:time|how\s+long)$|^how\s+long\s+(?:for|to\s+make)\s+(?:a\s+)?(?:hard|soft)[\s-]boiled\s+eggs?$/.test(t))
         return { value: 'soft 6 min\nmedium 8 min\nhard 10–12 min', note: 'large eggs lowered into water already boiling, then into cold water; add a minute straight from the fridge' };
+      // "boiling point of water in fahrenheit", "what temperature does water freeze": at sea level
+      m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?(boiling|freezing)\s+point\s+(?:of\s+)?water(?:\s+(?:in|at)\s+(fahrenheit|celsius|centigrade|kelvin|f|c|k))?$|^(?:at\s+)?what\s+temp(?:erature)?\s+does\s+water\s+(boil|freeze)(?:\s+(?:in|at)\s+(fahrenheit|celsius|kelvin|f|c|k))?$/);
+      if (m) { const boil = /boil/.test(m[1] || m[3]), u = (m[2] || m[4] || '').charAt(0), F = boil ? 212 : 32, C = boil ? 100 : 0, K = boil ? 373.15 : 273.15;
+        return { value: u === 'c' ? C + ' °C' : u === 'k' ? K + ' K' : u === 'f' ? F + ' °F' : F + ' °F (' + C + ' °C)', note: 'water ' + (boil ? 'boils' : 'freezes') + ' at ' + F + ' °F = ' + C + ' °C = ' + K + ' K at sea level' + (boil ? '; lower up high (about 203 °F in Denver)' : '') }; }
       // height: "5 feet 10 inches in cm", "6'2 in cm", "5 ft 10 in to meters"
       m = t.match(/^(?:convert\s+)?(\d{1,2})\s*(?:'|’|ft|feet|foot)\s*(?:and\s+)?(\d{1,2}(?:\.\d+)?)?\s*(?:"|”|''|in|inch|inches)?\s+(?:in|to|into)\s+(cm|centimet(?:er|re)s?|m|met(?:er|re)s?)$/);
       if (m) { const inch = +m[1] * 12 + +(m[2] || 0), cm = Math.round(inch * 2.54 * 10) / 10, toM = /^m/.test(m[3]);
