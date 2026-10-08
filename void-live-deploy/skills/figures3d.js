@@ -20,7 +20,7 @@
  * missing scripts fall back to the base-body defaults. Nearby figures trigger greet/follow/chase/flee/argue/team; reduced motion holds all still.
  */
 import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
-import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups, brainMesh } from './sdfmesh.js';
+import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups, brainMesh, creatureMesh, CREATURE_KINDS } from './sdfmesh.js';
 import { makeCloud, cloudGeometry, cloudShade, makePrecip, makeGlow } from './sky3d.js';
 import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, climateAt, CONDITIONS, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey } from './scripts.js';
 export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
@@ -374,6 +374,7 @@ function poseSprite(f, now) {
   if (p.bubble) p.bubble.material.opacity = still ? 1 : 0.97 + Math.sin(b.t * 2) * 0.03; // near-opaque: a see-through bubble read grey and faint
   if (p.bubble) { const half = R * 4.6 + 10; p.bubble.position.x = Math.max(half - b.x, Math.min(R * 3.6, innerWidth - half - b.x)); } // the bubble stays on screen near an edge
   if (p.zombie) poseZombie(f, w, hop, still);
+  if (p.creature) poseCreature(f, still);
 }
 // A zombie shambles: a slow, lopsided step (the bad leg dips deeper), a side sway, the head lolling on its own beat,
 // the reaching arms bobbing out of step. Every number comes from the seed's gait, so each zombie walks its own way.
@@ -675,7 +676,39 @@ function buildBrain(spec) {
   const parts = elementParts(body, { kind: 'brain' }); parts.geos.push(geo); parts.mats.push(mat);
   return { obj: g, parts };
 }
-const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater, brain: buildBrain };
+// real animals (skills/sdfmesh.js CREATURE): species build, seeded proportions and coat, small dark eyes, legs that walk
+function creaturePart(m) {
+  const T = THREE, g = new T.BufferGeometry();
+  g.setAttribute('position', new T.BufferAttribute(m.positions.slice(), 3)); g.setAttribute('normal', new T.BufferAttribute(m.normals.slice(), 3));
+  g.setAttribute('color', new T.BufferAttribute(m.colors, 3)); g.setIndex(new T.BufferAttribute(m.indices.slice(), 1)); g.computeBoundingSphere();
+  return g;
+}
+function buildCreature(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const C = creatureMesh(R, (spec.seed ?? 1) >>> 0, spec.kindOf), rig = C.rig;
+  const fur = new T.MeshPhysicalMaterial({ color: rig.coat, roughness: rig.kind === 'mouse' ? 0.7 : 0.85, vertexColors: true, sheen: 1, sheenRoughness: 0.6, sheenColor: new T.Color(rig.coat).lerp(new T.Color(0xffffff), 0.4) });
+  const eyeMat = new T.MeshPhysicalMaterial({ color: rig.kind === 'cat' ? 0x9a8a2a : 0x14100c, roughness: 0.05, clearcoat: 1 }), noseMat = new T.MeshStandardMaterial({ color: rig.kind === 'mouse' || rig.kind === 'rabbit' ? 0xc98a8a : 0x241c1a, roughness: 0.4 });
+  const parts = { mats: [fur, eyeMat, noseMat], geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
+  const torso = new T.Mesh(geo(creaturePart(C.body)), fur); body.add(torso);
+  const eyeGeo = geo(new T.SphereGeometry(rig.eyeR, 14, 10)), eyes = new T.Group();
+  for (const e of rig.eyes) { const m = new T.Mesh(eyeGeo, eyeMat); m.position.set(...e); eyes.add(m); } body.add(eyes);
+  const nose = new T.Mesh(geo(new T.SphereGeometry(rig.eyeR * 0.9, 12, 8)), noseMat); nose.position.set(...rig.nose); nose.scale.set(0.8, 0.7, 1.1); body.add(nose);
+  const legs = rig.legs.map((l) => { const pv = new T.Group(); pv.position.set(...l.pivot); const gm = creaturePart(C[l.part]); gm.translate(-l.pivot[0], -l.pivot[1], -l.pivot[2]); pv.add(new T.Mesh(geo(gm), fur)); body.add(pv); return pv; });
+  let tail = null; if (C.tail) { tail = new T.Group(); tail.position.set(...rig.tailRoot); const gm = creaturePart(C.tail); gm.translate(-rig.tailRoot[0], -rig.tailRoot[1], -rig.tailRoot[2]); tail.add(new T.Mesh(geo(gm), fur)); body.add(tail); }
+  addSpeech(g, parts, spec.line);
+  Object.assign(parts, { body, eyes: null, arms: [], antenna: null, glow: null, lamp: { intensity: 0 }, tail, pool: null, creature: rig, legs });
+  return { obj: g, parts };
+}
+// a four-legged walk: diagonal pairs swing together, the tail sways (a cat's slow, a dog's quick), held still when still
+function poseCreature(f, still) {
+  const b = f.brain, p = f.parts, G = p.creature.gait, moving = Math.min(1, Math.hypot(b.vx, b.vy) / SPEED);
+  p.body.rotation.y = b.vx < 0 ? Math.PI : 0; // it faces the way it walks
+  p.body.rotation.z = 0; p.body.rotation.x = 0;
+  const ph = b.bob * 2.2 * G.pace + G.phase, amp = still ? 0 : 0.5 * moving;
+  p.legs.forEach((l, i) => { l.rotation.z = Math.sin(ph + (i === 0 || i === 3 ? 0 : Math.PI)) * amp; });
+  if (p.tail) p.tail.rotation.y = still ? 0 : Math.sin(b.t * (p.creature.kind === 'dog' ? 9 : 2.2) + G.phase) * (p.creature.kind === 'dog' ? 0.5 : 0.25);
+}
+const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater, brain: buildBrain, cat: buildCreature, dog: buildCreature, mouse: buildCreature, rabbit: buildCreature };
 // run a thing's conditions for one frame and show the result: rain, snow and lightning, a darkening cloud, melting ice,
 // a flower growing under the rain. Returns true while something is visibly happening.
 function stepElement(f, dt, now, still, others) {
