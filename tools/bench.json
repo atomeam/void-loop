@@ -5408,5 +5408,9 @@
   {"ask": "what is 2 hours and 15 minutes in minutes", "want": "calc", "says": "135"},
   {"ask": "how many weekdays in november", "want": "calc|today", "says": "2[01]"},
   {"ask": "gas mileage 300 miles 10 gallons", "want": "calc|skill:fuel", "says": "30"},
-  {"ask": "what is my age in days born march 5 1990", "want": "calc|age", "says": null}
+  {"ask": "what is my age in days born march 5 1990", "want": "calc|age", "says": null},
+  {"ask": "review this js: const data = await fetch(url); const json = data.json();", "want": "review", "says": "await|promise"},
+  {"ask": "review this js: arr.map(x => { x * 2 })", "want": "review", "says": "return|undefined"},
+  {"ask": "review this js: res.redirect(req.query.next)", "want": "review", "says": "redirect|open"},
+  {"ask": "review this c: printf(user_input);", "want": "review", "says": "format|printf"}
 ]

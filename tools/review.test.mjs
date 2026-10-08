@@ -50,6 +50,13 @@ for (const [lang, c, want] of [['typescript', 'const x: any = foo();', 'ts-any@1
 for (const [lang, c] of [['typescript', 'const anyone: string = "x";'], ['typescript', 'let company: Company = load();'], ['go', 'for _, v := range items {'], ['go', 'v, ok := m[key]'], ['shell', 'cat a.txt b.txt > all.txt'], ['css', 'a { color: red }']])
   ok(!rules(c, lang).some((r) => /ts-any|go-ignored-err|useless-cat|css-important/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
 ok(looksLikeCode('cat $file | grep foo', 'shell'), 'a short shell pipe is code when the ask says bash');
+// unawaited fetch body, a callback that returns nothing, open redirects, format strings (and their clean look-alikes)
+for (const [lang, c, want] of [['javascript', 'const data = await fetch(url); const json = data.json();', 'unawaited-body@1'], ['javascript', 'const out = arr.map(x => { x * 2 })', 'callback-no-return@1'],
+  ['javascript', 'const big = list.filter((n) => { n > 3; })', 'callback-no-return@1'], ['javascript', 'res.redirect(req.query.next)', 'open-redirect@1'], ['c', 'printf(user_input);', 'format-string@1'], ['c', 'fprintf(stderr, msg);', 'format-string@1']])
+  ok(rules(c, lang).includes(want), want + ' in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
+for (const [lang, c] of [['javascript', 'const json = await res.json();'], ['javascript', 'const out = arr.map(x => { return x * 2 })'], ['javascript', 'const out = arr.map(x => x * 2)'], ['javascript', 'res.redirect("/home")'],
+  ['c', 'printf("%s", user_input);'], ['c', 'printf("hello\\n");'], ['javascript', 'arr.forEach(x => { log(x) })']])
+  ok(!rules(c, lang).some((r) => /unawaited-body|callback-no-return|open-redirect|format-string/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
 // inline review comments on PRs (tools/review-post.mjs): a line that already has Void's comment for the same checks is not posted again
 { const { postedKeys, fresh } = await import('./review-post.mjs');
   const keys = postedKeys([{ path: 'a.py', line: 4, body: '<!-- void-review-inline bare-except except-pass -->\n**risk**' }, { path: 'b.js', original_line: 9, body: '<!-- void-review-inline eval -->' }, { path: 'c.js', line: 1, body: 'a person wrote this' }]);
