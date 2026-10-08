@@ -157,7 +157,8 @@
   "go",
   "monopoly",
   "battleship",
-  "poker"
+  "poker",
+  "fireworks"
  ],
  "minis": [
   "aggravation",
@@ -169,6 +170,7 @@
   "countdown",
   "counter",
   "eightball",
+  "fireworks",
   "go",
   "heart",
   "list",

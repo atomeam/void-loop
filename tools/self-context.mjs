@@ -13,7 +13,7 @@ const out = resolve(root, 'void-live-deploy/self.json');
 const clip = (s, n) => String(s || '').replace(/\s+/g, ' ').trim().slice(0, n);
 
 // skills that are games Void plays with you (names as in skills/index.json)
-export const GAMES = ['tictactoe', 'othello', 'mancala', 'checkers', 'chess', 'aggravation', 'go', 'monopoly', 'battleship', 'poker'];
+export const GAMES = ['tictactoe', 'othello', 'mancala', 'checkers', 'chess', 'aggravation', 'go', 'monopoly', 'battleship', 'poker', 'fireworks'];
 
 // domains/void.canon.md: Adam's words about what Void is (motto, VoidQuest), versioned; '(not written yet)' stays unknown
 export function readCanon(text) {

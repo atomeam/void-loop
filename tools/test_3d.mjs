@@ -374,6 +374,18 @@ export async function run3dChecks({ check, fresh }) {
       !!ready && shown.cards === 4 && shown.faces.filter(Boolean).length === 2 && shown.faces.length === 4 && !F.errors.length, JSON.stringify({ ready, shown, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- Fireworks (co-op): Void's cards face you, yours face Void; tapping one of Void's cards offers a hint
+  {
+    const F = await fresh();
+    await F.ask('play fireworks', 600);
+    const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'fireworks'); return l && l.ready && l.draws > 0; }), 90000);
+    const faces = await F.p.evaluate(() => ({ void: [...document.querySelectorAll('.fw-void .fw-card')].map((b) => b.textContent), you: [...document.querySelectorAll('.fw-you .fw-card')].map((b) => b.textContent) }));
+    await F.p.evaluate(() => document.querySelector('.fw-void .fw-card').click());
+    const offer = await until(() => F.p.evaluate(() => !!document.querySelector('.fw-hint-color') && !!document.querySelector('.fw-hint-rank')), 3000);
+    check('fireworks: "play fireworks" stands the co-op table in the void with its card separate; you can read Void\'s cards but not yours; picking one of Void\'s offers a hint',
+      !!ready && faces.void.every((t) => /^[1-5]$/.test(t)) && faces.you.every((t) => t === '?') && !!offer && !F.errors.length, JSON.stringify({ ready, faces, offer, e: F.errors }));
+    await F.ctx.close();
+  }
   // ---- the game rack: "games" stands a 3D shelf of the seven board games in the void; picking one puts the rack away and opens it
   {
     const F = await fresh();
@@ -382,8 +394,8 @@ export async function run3dChecks({ check, fresh }) {
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation, battleship, poker, monopoly) ; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation,battleship,poker,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
     await F.ctx.close();
   }
   {
