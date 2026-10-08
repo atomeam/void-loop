@@ -282,6 +282,43 @@ export function zombieGroups(rig, part, m) {
   }
   return { indices, groups, colors };
 }
+/**
+ * A brain: two hemispheres with a deep fissure between them, a ridged cerebellum underneath at the back and the brainstem,
+ * the cortex folded into meandering gyri. The folds are grooves along the zero set of a seeded, domain-warped wave sum,
+ * so every seed folds differently and one seed always folds the same. Returns { positions, normals, indices, colors }:
+ * the colours darken the grooves (sulci), as real tissue reads. Cached by seed.
+ */
+const BCACHE = new Map();
+export function brainField(R, seed) {
+  const r = mulberry32(seed), u = (a, b) => a + (b - a) * r();
+  const ph = [u(0, 6.3), u(0, 6.3), u(0, 6.3), u(0, 6.3)], f = u(15, 18) / R, warp = u(1.4, 1.9), amp = R * u(0.04, 0.05);
+  const wide = u(0.95, 1.06), long = u(0.96, 1.05), tall = u(0.94, 1.04);
+  const hemi = (x, y, z, s) => sdEllipsoid([x, y, z], [s * R * 0.25 * wide, R * 0.06, R * 0.02], [R * 0.3 * wide, R * 0.4 * tall, R * 0.62 * long]);
+  const cereb = (x, y, z) => sdEllipsoid([x, y, z], [0, -R * 0.26, -R * 0.4 * long], [R * 0.4 * wide, R * 0.17, R * 0.22]);
+  const stem = (x, y, z) => sdCapsule([x, y, z], [0, -R * 0.2, -R * 0.22], [0, -R * 0.62, -R * 0.3], R * 0.1, R * 0.075);
+  const fold = (x, y, z) => { // 0 on a ridge, up to 1 in a groove
+    const n = Math.sin(f * x + warp * Math.sin(f * 0.8 * y + ph[0])) + Math.sin(f * y + warp * Math.sin(f * 0.8 * z + ph[1])) + Math.sin(f * z + warp * Math.sin(f * 0.8 * x + ph[2]));
+    return Math.max(0, 1 - Math.abs(n) / 0.42);
+  };
+  const ridges = (y, z) => Math.max(0, 1 - Math.abs(Math.sin((y + z * 0.4) * f * 1.6 + ph[3])) / 0.5); // the cerebellum's fine parallel folds
+  const d = (x, y, z) => {
+    let c = smin(hemi(x, y, z, -1), hemi(x, y, z, 1), R * 0.05);
+    if (y > -R * 0.12) c = Math.max(c, -(Math.abs(x) - R * 0.018)); // the longitudinal fissure splits the top
+    c += amp * fold(x, y, z);
+    let cb = cereb(x, y, z) + amp * 0.5 * ridges(y, z);
+    return smin(smin(c, cb, R * 0.04), stem(x, y, z), R * 0.06);
+  };
+  return { d, fold, bounds: { min: [-R * 0.75, -R * 0.75, -R * 0.8], max: [R * 0.75, R * 0.55, R * 0.8] } };
+}
+export function brainMesh(R, seed, cells = 72) {
+  const key = (seed >>> 0) + ':' + R + ':' + cells;
+  if (BCACHE.has(key)) return BCACHE.get(key);
+  const B = brainField(R, seed >>> 0), span = Math.max(...[0, 1, 2].map((i) => B.bounds.max[i] - B.bounds.min[i]));
+  const m = mesh(B.d, B.bounds, span / cells), P = m.positions, colors = new Float32Array(P.length);
+  for (let v = 0; v < P.length; v += 3) { const g = B.fold(P[v], P[v + 1], P[v + 2]); colors[v] = 1 - g * 0.42; colors[v + 1] = 1 - g * 0.5; colors[v + 2] = 1 - g * 0.46; }
+  const out = { ...m, colors }; BCACHE.set(key, out); while (BCACHE.size > 8) BCACHE.delete(BCACHE.keys().next().value);
+  return out;
+}
 // grid bounds that hold a shape list, with a margin for the blends (a carved shape only takes away, so it never grows them)
 export function boundsOf(shapes, margin) {
   const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
