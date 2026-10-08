@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · a link that is not there (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+input[type=number]{width:5em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#card{min-height:4.5em;border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>a link that is not there · draft · not published</h1>
+  <p class="note">You will read 39 short acts, each done by someone from group A or group B. Then you guess how many of each group's acts were unkind. In the classic study (Hamilton and Gifford, 1976), both groups had the same share of unkind acts, but people linked the smaller group with them: two rare things seen together stand out and get remembered as a pattern. A review of later studies found the same pull (Mullen and Johnson, 1990). This page tests whether it happens to you. Everything stays in this browser.</p>
+  <div id="card" aria-live="polite">press start</div>
+  <div class="row"><button id="go" type="button">start</button></div>
+  <form id="ask" hidden>
+    <div class="row"><label for="ba">unkind acts by group A, out of <span id="na"></span></label><input id="ba" type="number" min="0" required></div>
+    <div class="row"><label for="bb">unkind acts by group B, out of <span id="nb"></span></label><input id="bb" type="number" min="0" required></div>
+    <div class="row"><button type="submit">check</button></div>
+  </form>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.illusory.v1',st={runs:[]};
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.runs))st.runs=j.runs.filter(function(r){return r&&isFinite(r.pa)&&isFinite(r.pb)})}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(_){}}
+  var GOOD=['helped a neighbour carry shopping','returned a lost wallet','visited a friend in hospital','cleaned up after a picnic','gave up a seat on the bus','lent a ladder','tutored a child for free','held the door in the rain','fed a neighbour’s cat','shovelled a shared path','thanked the bus driver','picked up litter','called a lonely aunt','fixed a stranger’s bike chain','shared an umbrella','donated old coats','watered a neighbour’s plants','paid for a friend’s coffee'];
+  var BAD=['cut into a queue','left rubbish in the park','shouted at a waiter','kept money found on the street','parked across a driveway','was rude to a delivery driver','broke a promise to help','took credit for a friend’s work'];
+  // the classic design: A has 18 kind and 8 unkind acts, B has 9 and 4, so both groups are 4/13 unkind (about 31%)
+  var DESIGN={A:[18,8],B:[9,4]};
+  function shuffle(a,rnd){for(var i=a.length-1;i>0;i--){var k=Math.floor(rnd()*(i+1)),t=a[i];a[i]=a[k];a[k]=t}return a}
+  function deck(rnd){var out=[];['A','B'].forEach(function(g){var n=DESIGN[g];for(var i=0;i<n[0];i++)out.push({g:g,bad:false,act:GOOD[Math.floor(rnd()*GOOD.length)]});for(var k=0;k<n[1];k++)out.push({g:g,bad:true,act:BAD[Math.floor(rnd()*BAD.length)]})});return shuffle(out,rnd)}
+  // phi: the correlation in a 2x2 table (group by kind/unkind). The design's phi is exactly 0: there is no link to find.
+  function phi(a,b,c,d){var den=Math.sqrt((a+b)*(c+d)*(a+c)*(b+d));return den?(a*d-b*c)/den:0}
+  // the bias: how much more unkind you remembered group B to be than group A, in percentage points
+  function bias(r){return r.pb-r.pa}
+  var el=function(id){return document.getElementById(id)},cards=null,at=0;
+  el('na').textContent=DESIGN.A[0]+DESIGN.A[1];el('nb').textContent=DESIGN.B[0]+DESIGN.B[1];
+  el('ba').max=DESIGN.A[0]+DESIGN.A[1];el('bb').max=DESIGN.B[0]+DESIGN.B[1];
+  el('go').addEventListener('click',function(){
+    if(!cards){cards=deck(Math.random);at=0;el('ask').hidden=true;el('state').textContent='';}
+    if(at<cards.length){var c=cards[at++];el('card').textContent=at+' of '+cards.length+'\nsomeone from group '+c.g+' '+c.act+'.';el('go').textContent=at<cards.length?'next':'done';return}
+    el('card').textContent='now, from memory:';el('go').hidden=true;el('ask').hidden=false;el('ba').focus();
+  });
+  el('ask').addEventListener('submit',function(e){e.preventDefault();
+    var na=DESIGN.A[0]+DESIGN.A[1],nb=DESIGN.B[0]+DESIGN.B[1],a=Math.max(0,Math.min(na,+el('ba').value||0)),b=Math.max(0,Math.min(nb,+el('bb').value||0));
+    var r={pa:100*a/na,pb:100*b/nb,at:Date.now()};st.runs.push(r);save();
+    el('state').textContent='the truth: both groups were '+Math.round(100*DESIGN.A[1]/na)+'% unkind (A '+DESIGN.A[1]+' of '+na+', B '+DESIGN.B[1]+' of '+nb+')\nyou remembered A as '+Math.round(r.pa)+'% and B as '+Math.round(r.pb)+'%'
+      +(bias(r)>5?'\nB, the smaller group, came out worse: the illusory link':bias(r)<-5?'\nA came out worse this time':'\nabout even: no false link this time');
+    cards=null;el('go').hidden=false;el('go').textContent='start again';score()});
+  function score(){if(!st.runs.length){el('score').textContent='';return}var m=st.runs.reduce(function(s,r){return s+bias(r)},0)/st.runs.length;
+    el('score').textContent=st.runs.length+' run'+(st.runs.length>1?'s':'')+' · on average you remembered B as '+(m>=0?m.toFixed(0)+' points worse':(-m).toFixed(0)+' points better')+' than A'
+      +(st.runs.length<5?'\na few runs before this means much; the effect is a lean, not a rule':'')}
+  score();
+  // made-up data: the design has no link (phi 0, equal shares), a deck has the right counts, and a biased recall reads as positive
+  function selftest(){
+    if(Math.abs(phi(DESIGN.A[0],DESIGN.A[1],DESIGN.B[0],DESIGN.B[1]))>1e-12)return 'the design should have phi 0';
+    if(Math.abs(DESIGN.A[1]/(DESIGN.A[0]+DESIGN.A[1])-DESIGN.B[1]/(DESIGN.B[0]+DESIGN.B[1]))>1e-12)return 'the two groups should share one rate';
+    var s=1,rnd=function(){s=(s*16807)%2147483647;return s/2147483647},d=deck(rnd),cnt={A0:0,A1:0,B0:0,B1:0};d.forEach(function(c){cnt[c.g+(c.bad?1:0)]++});
+    if(d.length!==39||cnt.A0!==18||cnt.A1!==8||cnt.B0!==9||cnt.B1!==4)return 'the deck has the wrong counts: '+JSON.stringify(cnt);
+    if(!(phi(18,8,6,7)>0)||!(phi(18,8,9,4)===0))return 'phi has the wrong sign';
+    if(!(bias({pa:20,pb:45})>0))return 'bias sign';
+    return true}
+  window.__illusory={phi:phi,deck:deck,bias:bias,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>
