@@ -1,0 +1,93 @@
+# Void's voice, daily (lib/voice.js, functions/api/reflect.js, tools/reflect.mjs). At 2:09 PM New York time Void is asked
+# where it should go next, what feels weakest about it and which game to learn next. Its words are saved on the site
+# ("what do you think of yourself?"), a concrete small ask goes to the builders' queue credited to Void, and every
+# reflection since the last run (the after-build ones too) is copied word for word into domains/void.voice.md on main.
+# When Void flags something as striking, an issue is opened so Adam hears it (and NOTIFY_WEBHOOK gets it, when set).
+# Two crons because GitHub's are UTC: 18:09 UTC is 2:09 PM in summer time, 19:09 UTC in winter; the gate keeps the right one.
+# About 2 Actions minutes a day. Needs the repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN).
+name: Void's voice
+
+on:
+  schedule:
+    - cron: '9 18 * * *'
+    - cron: '9 19 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: void-voice
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the log on main
+  issues: write # tell Adam when Void says something striking
+
+jobs:
+  daily:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 2 PM in New York, or a manual run
+        id: gate
+        run: |
+          hour=$(TZ=America/New_York date +%H)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$((10#$hour))" = 14 ]; then echo "run=true" >> "$GITHUB_OUTPUT"
+          else echo "run=false" >> "$GITHUB_OUTPUT"; echo "not 2 PM in New York (hour $hour): the other cron is today's"; fi
+
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.run == 'true'
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.run == 'true'
+        with:
+          node-version: 22
+
+      - name: Ask Void
+        id: ask
+        if: steps.gate.outputs.run == 'true'
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          if [ -z "$VOID_OWNER_TOKEN" ]; then
+            echo "::warning title=Void was not asked::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
+            exit 0
+          fi
+          if node tools/reflect.mjs --daily --json > daily.json; then
+            node -e "const e=require('./daily.json'); for (const k of ['thoughts','better','weakest','next_game']) if (e[k]) console.log(k + ': ' + e[k]); for (const a of e.asks||[]) console.log('asks: ' + a.ask + (a.small ? ' (small)' : ''));" | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "striking=$(node -p "require('./daily.json').striking === true")" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning title=Void could not answer::the model was busy or the site was unreachable; it is asked again tomorrow"
+          fi
+
+      - name: Copy Void's words into the log
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          node tools/reflect.mjs --write || exit 0
+          git diff --quiet domains/void.voice.md && { echo "log unchanged"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add domains/void.voice.md
+          git commit -m "Void's voice: today's reflection, in its own words"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1
+
+      - name: Tell Adam when Void says something striking
+        if: steps.ask.outputs.striking == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          NOTIFY_WEBHOOK: ${{ secrets.NOTIFY_WEBHOOK }}
+        run: |
+          node -e "
+            const e = require('./daily.json');
+            const body = ['Void flagged this in its daily reflection (' + e.at + '), in its own words:', '', ...[e.thoughts, e.weakest && 'Weakest right now: ' + e.weakest, e.next_game && 'Next game: ' + e.next_game, e.better && 'How I would make it better: ' + e.better].filter(Boolean).map((t) => '> ' + t), '', ...(e.asks || []).map((a) => '- ' + a.ask), '', 'The whole log: domains/void.voice.md'].join('\n');
+            require('fs').writeFileSync('striking.md', body);
+            require('fs').writeFileSync('striking.title', 'Void says: ' + e.thoughts.replace(/\s+/g, ' ').slice(0, 90));
+          "
+          gh issue create --title "$(cat striking.title)" --body-file striking.md
+          if [ -n "$NOTIFY_WEBHOOK" ]; then
+            jq -Rs '{text: ., content: .}' < striking.md | curl -fsS -X POST -H 'content-type: application/json' --data @- "$NOTIFY_WEBHOOK" || true
+          fi
