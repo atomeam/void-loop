@@ -753,6 +753,26 @@ try {
         && f3.length === 3 && f3.some((f) => f.m === 'chair') && f3.some((f) => f.pose === 'hold') && !G.errors.length,
       [w1, w2, w3, JSON.stringify(f1.map((f) => f.m + ':' + f.pose)), spun && spun.yaw, d ? d.suggestedFilename() : 'no download', vol.toFixed(0), tall.toFixed(2), s2.length + '/' + s1.length, JSON.stringify(f3.map((f) => f.m + ':' + f.pose)), G.errors.join(';')].join(' | '));
     await G.ctx.close(); }
+  // Motelet remembers you, on this device: it asks your name once, greets you by name after a reload and asks after the
+  // last thing you summoned; "Motelet, forget me" clears it and it asks again; nothing leaves the browser
+  { const M = await fresh(); const out = [];
+    M.ctx.on('request', (r) => { if (!/^https?:\/\/(127\.0\.0\.1|localhost)/.test(r.url())) out.push(r.url()); });
+    await M.ask('summon motelet', 700); const asked = await M.whisper();
+    await M.ask('my name is Sam', 500); const met = await M.whisper();
+    await M.ask('a chair', 600);
+    const kept = await M.p.evaluate(() => localStorage.getItem('a2m.motelet.memory.v1'));
+    await M.p.reload(); await M.p.waitForTimeout(1200);
+    await M.ask('summon motelet', 700); const greeted = await M.whisper();
+    await M.ask('motelet, forget me', 500); const forgot = await M.whisper();
+    const gone = await M.p.evaluate(() => localStorage.getItem('a2m.motelet.memory.v1'));
+    await M.p.reload(); await M.p.waitForTimeout(1200);
+    await M.ask('summon motelet', 700); const again = await M.whisper();
+    check('figure: Motelet asks your name once, greets you by name after a reload with your last summon ("did you bring the chair back?"), and "Motelet, forget me" clears it so it asks again; kept in this browser only',
+      /what's your name/.test(asked) && /nice to meet you, Sam/.test(met) && /"name":"Sam"/.test(kept || '') && /"last":"chair"/.test(kept || '')
+        && /hi Sam, did you bring the chair back/.test(greeted) && /forgets you/.test(forgot) && gone === null && /what's your name/.test(again)
+        && !out.some((u) => /motelet|Sam/i.test(u)) && !M.errors.length,
+      [asked, met, kept, greeted, forgot, gone, again, out.filter((u) => /motelet|Sam/i.test(u)).join(','), M.errors.join(';')].join(' | '));
+    await M.ctx.close(); }
   // "who is X" prefers the person; a loose match says so in one line; the board counts one ask in different words once.
   { const E = await fresh(); const sums = [];
     // #18 two-part summon loads figures3d + three.js on an article; keep the suite offline with the same stub #17 uses.
