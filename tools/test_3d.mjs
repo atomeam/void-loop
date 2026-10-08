@@ -203,4 +203,20 @@ export async function run3dChecks({ check, fresh }) {
       !!drawn && r.rows === '[{"text":"eggs","done":false},{"text":"milk","done":true}]' && r.nd === 0 && r.none === -1 && r.moved === -1 && r.cap === 7 && inked && !F.errors.length, JSON.stringify({ drawn, r, inked, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- the savings page's coin stacks: silver paid in, gold growth on top, rising one stack after another
+  {
+    const F = await fresh();
+    await F.ask('how much will i have if i save 300 a month for 30 years at 7%', 900);
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'savings'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => {
+      const g = await import('/skills/mini/savings.js'), sk = await import('/skills/savings.js');
+      const cols = sk.coinCols(0, 300, 7, 360), st = g.coinsFor(cols);
+      const flat = g.coinsFor([{ label: 'a', paid: 100, total: 100 }, { label: 'b', paid: 200, total: 200 }]);
+      return { n: cols.length, labels: cols.map((c) => c.label).join(','), last: Math.round(cols[5].total), tallest: st[5].silver + st[5].gold, goldGrows: st.every((s, i) => i === 0 || s.gold >= st[i - 1].gold), noGold: flat.every((s) => s.gold === 0), inPage: !!document.querySelector('.vpage .savings-mini canvas') };
+    });
+    const rose = drawn && await until(() => F.p.evaluate(() => window.__voidMini.list().find((x) => x.kind === 'savings').draws > 6), 15000);
+    check('3D savings: "save 300 a month for 30 years at 7%" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn',
+      !!drawn && r.inPage && r.n === 6 && r.labels === '5 yrs,10 yrs,15 yrs,20 yrs,25 yrs,30 yrs' && r.last === 365991 && r.tallest === 34 && r.goldGrows && r.noGold && rose && !F.errors.length, JSON.stringify({ drawn, r, rose, e: F.errors }));
+    await F.ctx.close();
+  }
 }

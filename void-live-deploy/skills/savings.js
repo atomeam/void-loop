@@ -82,6 +82,16 @@ function monthlyFor(start, ratePct, months, goal) {
   if (need <= 0) return 0;
   return r === 0 ? need / months : need * r / (g - 1);
 }
+// up to six evenly spaced points for the coin stacks: what was paid in and the balance by then
+export function coinCols(start, monthly, ratePct, months) {
+  const n = Math.min(6, Math.max(1, months));
+  const out = [];
+  for (let k = 1; k <= n; k++) {
+    const m = Math.round(months * k / n);
+    out.push({ label: m % 12 === 0 ? (m / 12) + (m === 12 ? ' yr' : ' yrs') : m < 12 ? m + ' mo' : (Math.round(m / 12 * 10) / 10) + ' yrs', paid: start + monthly * m, total: grow(start, monthly, ratePct, m) });
+  }
+  return out;
+}
 const money = (n) => '$' + (Math.round(n * 100) / 100).toLocaleString('en-US', { minimumFractionDigits: n < 1000 && n % 1 ? 2 : 0, maximumFractionDigits: n < 1000 ? 2 : 0 });
 const span = (months) => { if (!Number.isFinite(months)) return 'never at this pace'; const y = Math.floor(months / 12), mo = months % 12; return [y ? y + (y === 1 ? ' year' : ' years') : '', mo ? mo + (mo === 1 ? ' month' : ' months') : ''].filter(Boolean).join(' ') || 'right away'; };
 const RATES = (rate) => (Number.isFinite(rate) ? [Math.max(0, rate - 2), rate, rate + 2] : [0, 4, 7]);
@@ -120,7 +130,16 @@ function render(q, api) {
       + '<table style="border-collapse:collapse;margin:8px 0">' + row(['Rate', 'A month', 'Start 5 years later'], true)
       + RATES(q.rate).map((r) => row([r + '%', money(monthlyFor(q.start, r, months, q.goal)), months > 60 ? money(monthlyFor(q.start, r, months - 60, q.goal)) : '\u2013'])).join('') + '</table>';
   }
-  showPage((el) => { el.innerHTML = html + SRC; });
+  const page = showPage((el) => { el.innerHTML = html + SRC; });
+  // growth: coin stacks over time beside the numbers (skills/mini/savings.js), silver paid in and gold growth on top
+  if (q.want === 'grow' && page && api.stage && api.stage.miniature) {
+    const cols = coinCols(q.start, monthly, rate, months);
+    if (cols.length > 1) {
+      const slot = document.createElement('div'); slot.className = 'savings-mini'; slot.style.cssText = 'height:190px;margin:10px 0 4px;border-radius:10px;overflow:hidden';
+      const at = page.querySelector('table'); if (at) at.before(slot); else page.appendChild(slot);
+      api.stage.miniature(slot, 'savings', { cols }, { key: 'savings-page', place: 'inside', label: '3D coin stacks: what you put in and what growth added' }).catch(() => slot.remove());
+    }
+  }
   return 'savings';
 }
 
