@@ -20,7 +20,7 @@
  * missing scripts fall back to the base-body defaults. Nearby figures trigger greet/follow/chase/flee/argue/team; reduced motion holds all still.
  */
 import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
-import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups } from './sdfmesh.js';
+import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups, brainMesh } from './sdfmesh.js';
 import { makeCloud, cloudGeometry, cloudShade, makePrecip, makeGlow } from './sky3d.js';
 import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, climateAt, CONDITIONS, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey } from './scripts.js';
 export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
@@ -664,7 +664,18 @@ function buildWater(spec) {
   const parts = elementParts(body, { kind: 'water', water }); parts.geos.push(geo); parts.mats.push(mat);
   return { obj: g, parts };
 }
-const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater };
+// a real brain (skills/sdfmesh.js brainMesh): seeded folds, darker in the grooves, the wet pinkish grey of fresh tissue
+function buildBrain(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const m = brainMesh(R, (spec.seed ?? 1) >>> 0), geo = new T.BufferGeometry();
+  geo.setAttribute('position', new T.BufferAttribute(m.positions, 3)); geo.setAttribute('normal', new T.BufferAttribute(m.normals, 3));
+  geo.setAttribute('color', new T.BufferAttribute(m.colors, 3)); geo.setIndex(new T.BufferAttribute(m.indices, 1)); geo.computeBoundingSphere();
+  const mat = new T.MeshPhysicalMaterial({ color: 0xd8a6a2, roughness: 0.42, metalness: 0, vertexColors: true, clearcoat: 0.7, clearcoatRoughness: 0.35, sheen: 0.5, sheenColor: new T.Color(0xf2c9c4) });
+  const brain = new T.Mesh(geo, mat); brain.rotation.y = -1.15; brain.rotation.x = 0.15; brain.position.y = -R * 0.55; body.add(brain); // three-quarter side: the lobes and the cerebellum read
+  const parts = elementParts(body, { kind: 'brain' }); parts.geos.push(geo); parts.mats.push(mat);
+  return { obj: g, parts };
+}
+const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater, brain: buildBrain };
 // run a thing's conditions for one frame and show the result: rain, snow and lightning, a darkening cloud, melting ice,
 // a flower growing under the rain. Returns true while something is visibly happening.
 function stepElement(f, dt, now, still, others) {

@@ -76,3 +76,11 @@ test('two zombies leave each other alone and both go for the brain, even when th
   assert.equal(pickNearbyReaction(z1, [man, brain]).react, 'eat');
   assert.equal(pickNearbyReaction(z1, [man]).react, 'chase');
 });
+test('a brain is folded from its seed: the same seed folds the same, another seed folds differently, grooves are darker', async () => {
+  const { brainMesh } = await import('../void-live-deploy/skills/sdfmesh.js');
+  const a = brainMesh(28, 3, 40), b = brainMesh(28, 3, 40), c = brainMesh(28, 4, 40);
+  assert.equal(a, b); // cached: the same seed is the same mesh
+  assert.notEqual(a.positions.length, 0);
+  assert.notDeepEqual(Array.from(a.positions.slice(0, 60)), Array.from(c.positions.slice(0, 60)));
+  assert.ok(Math.min(...a.colors) < 0.8 && Math.max(...a.colors) > 0.95, 'sulci darker than gyri');
+});
