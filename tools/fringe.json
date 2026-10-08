@@ -1208,5 +1208,30 @@
     ],
     "sha256": "5b99dee3167f635900b9313b8ff8f7f2f9e27bcc44c1b94e9036c7d7f2d0dc77",
     "emit": false
+  },
+  {
+    "run": 49,
+    "at": "2026-10-08T06:42:20Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention-5.html",
+    "sources": [
+      {
+        "claim": "In rapid serial visual presentation, a second target 200-500 ms after a correctly reported first target is often missed (the attentional blink), while one right after it (lag 1) is spared",
+        "source": "https://doi.org/10.1037/0096-1523.18.3.849",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Reviews find the attentional blink robust across many tasks and stimuli, with large individual differences",
+        "source": "https://doi.org/10.3758/APP.71.8.1683",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's one-person version shows the dip at 200-300 ms in an individual over about 40 rounds",
+        "source": "drafts/fringe/attention-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "c3c1bfe370635f8e5ffb0a721ab77fe64a91e0c24cc3ec49c47c11bc1d6a5cfc",
+    "emit": false
   }
 ]
