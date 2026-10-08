@@ -910,7 +910,8 @@ Object.values(things).forEach((th) => {
     const stageApi = { stage, things: () => things, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
-      center: (id) => { selectedId = id; render(); centreThing(id); } };
+      center: (id) => { selectedId = id; render(); centreThing(id); },
+      ask: (t) => handle(String(t || '')) }; // a card that opens something (the game rack's boxes) asks for it as if typed
 
     // Click any stage object or person and it lifts in the hand. A flick throws it off the
     // screen and it's gone (a real toss: gravity, spin, carried off); a slow drop sets it back down.
@@ -3049,7 +3050,7 @@ return { ok: true, detail: 'timer-reset' };
       if (/^(?:i'?m|i\s+am)\s+bored$|^(?:entertain\s+me|i'?m\s+so\s+bored)$/.test(l)) return 'try: play othello · play mancala · magic 8 ball · knock knock · tell me a fun fact';
       if (/^(?:tell\s+me\s+)?(?:a\s+)?(?:fun|random|cool|interesting)\s+fact$|^tell\s+me\s+something\s+(?:interesting|i\s+don'?t\s+know)$/.test(l)) return pick(FUN_FACTS);
       if (/^(?:motivate\s+me|inspire\s+me|i\s+need\s+motivation|give\s+me\s+(?:some\s+)?motivation|encourage\s+me)$/.test(l)) return pick(CHEERS);
-      if (/^(?:let'?s\s+)?play\s+(?:a\s+)?game$|^what\s+games?\s+(?:can\s+i\s+play|do\s+you\s+have)$|^(?:any\s+)?games\??$/.test(l)) return 'try: chess · checkers · tic tac toe · othello · connect 4 · mancala · aggravation · rock paper scissors · magic 8 ball';
+      // "games", "play a game", "what games do you have": the 3D game rack (skills/rack.js) answers these now, with the same hint
       { const AS = { cow: 'moo', dog: 'woof', cat: 'meow', pig: 'oink', sheep: 'baa', duck: 'quack', horse: 'neigh', chicken: 'cluck', rooster: 'cock-a-doodle-doo', owl: 'hoot', lion: 'roar', frog: 'ribbit', goat: 'maa', bee: 'buzz', snake: 'hiss', mouse: 'squeak', donkey: 'hee-haw', wolf: 'howl', bird: 'tweet', turkey: 'gobble' };
         const a = l.match(/^what\s+(?:sound|noise)\s+does\s+an?\s+([a-z]+)\s+make$|^what\s+does\s+an?\s+([a-z]+)\s+say$/); if (a && AS[a[1] || a[2]]) return 'a ' + (a[1] || a[2]) + ' says ' + AS[a[1] || a[2]];
         const LG = { spider: '8 legs', ant: '6 legs', bee: '6 legs', insect: '6 legs', fly: '6 legs', butterfly: '6 legs', dog: '4 legs', cat: '4 legs', horse: '4 legs', cow: '4 legs', bird: '2 legs', chicken: '2 legs', duck: '2 legs', human: '2 legs', person: '2 legs', octopus: '8 arms', crab: '10 legs (8 walking legs and 2 claws)', lobster: '10 legs', starfish: '5 arms, usually', snake: 'none', fish: 'none', kangaroo: '2 legs (plus a strong tail)' };
@@ -3210,6 +3211,29 @@ return { ok: true, detail: 'timer-reset' };
       el.innerHTML = '<h2>What I want to become</h2><div class="sub">I choose this myself, from what people ask me and everything I\'m made of.</div>'
         + '<ul>' + w.wants.map((x) => '<li><b>' + esc(x.i_want) + '</b> <span style="color:#8a8a8a">— ' + esc(x.because) + '</span></li>').join('') + '</ul>'
         + '<div class="src">Source: my will · chosen ' + esc(new Date(w.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '</div>';
+    }
+    // Void's voice: what it thinks of itself, in its own words (GET /api/reflect, lib/voice.js). Asked after every build and once a day.
+    function wantsVoice(lower) {
+      return /^(so\s+)?(what\s+do\s+you\s+(really\s+)?think\s+(of|about)\s+yourself|how\s+do\s+you\s+feel\s+about\s+yourself|what('?s|\s+is|\s+feels)\s+(the\s+)?weakest\s+(thing\s+|part\s+)?(about|in|of)\s+you|your\s+(reflections?|self[- ]review)|what\s+would\s+you\s+change\s+about\s+yourself|how\s+would\s+you\s+make\s+yourself\s+better)\s*[?.!]?$/.test(lower);
+    }
+    async function showVoice() {
+      const el = showPage((p) => { p.innerHTML = '<h2>What I think of myself</h2><div class="sub">…</div>'; });
+      let v = null;
+      try { v = await fetch('/api/reflect').then((r) => r.json()); } catch (_) {}
+      if (vpageEl !== el) return;
+      const list = (v && Array.isArray(v.entries)) ? v.entries : [];
+      if (!list.length) { el.innerHTML = '<h2>What I think of myself</h2><p>I haven\'t been asked yet. I\'m asked after everything that ships, and once a day where I should go next.</p>'; return; }
+      const when = (t) => esc(new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }));
+      const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
+      let h = '<h2>What I think of myself</h2><div class="sub">My own words, kept as I said them. The people who build me read them first.</div>';
+      if (daily) h += '<p><b>' + esc(daily.thoughts) + '</b></p>'
+        + (daily.weakest ? '<p><span style="color:#8a8a8a">Weakest right now:</span> ' + esc(daily.weakest) + '</p>' : '')
+        + (daily.next_game ? '<p><span style="color:#8a8a8a">Next game I want to learn:</span> ' + esc(daily.next_game) + '</p>' : '')
+        + (daily.better ? '<p><span style="color:#8a8a8a">How I\'d get better:</span> ' + esc(daily.better) + '</p>' : '');
+      if (build) h += '<p><span style="color:#8a8a8a">On what just shipped (' + esc(build.shipped || '') + '):</span> ' + esc(build.thoughts) + (build.better ? ' ' + esc(build.better) : '') + '</p>';
+      const asks = (v.asks || []).slice(0, 4);
+      if (asks.length) h += '<div class="sub">What I\'ve asked for</div><ul>' + asks.map((a) => '<li>' + esc(a.ask) + '</li>').join('') + '</ul>';
+      el.innerHTML = h + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
     }
     function wantsArticle(lower) {
       return /^(please\s+)?((what|who|where|when)\s+(is|are|was|were)\b|tell\s+me\s+about\b|explain\b|define\b|describe\b|look\s+up\b)/.test(lower);
@@ -5603,6 +5627,7 @@ return { ok: true, detail: 'timer-reset' };
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
+      if (wantsVoice(lower0)) { showVoice(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
       if (wantsSelfPage(lower0)) { showSelfPage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
@@ -5635,7 +5660,7 @@ return { ok: true, detail: 'timer-reset' };
     const hintsEl = document.getElementById('hints');
     const CORE_HINTS = ['what can you do', 'make a clock', 'make a 5 minute timer', 'add a sticky that says ', 'make a list', 'open a notepad',
       'make a calculator', 'make a counter', 'draw a circle', 'what is a black hole', 'define ', '15% of 80', '5 miles in km', '100 usd in eur',
-      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'menu', 'undo', 'what do you want to be', 'remember me', 'sign in', 'am i signed in', 'sign out', 'forget me', 'keep this', 'call this ', 'take this off', 'same again', 'close', 'read it aloud'];
+      'make it blue', 'make everything bigger', 'clear', 'make my void deep blue', 'add stars', 'quieter font', 'reset my void', 'menu', 'undo', 'what do you want to be', 'what do you think of yourself', 'remember me', 'sign in', 'am i signed in', 'sign out', 'forget me', 'keep this', 'call this ', 'take this off', 'same again', 'close', 'read it aloud'];
     let hintList = [], hintSel = -1;
     function allHints() {
       const out = CORE_HINTS.slice();

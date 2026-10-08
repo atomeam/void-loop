@@ -10,6 +10,8 @@
  *
  * Pit numbering: 0-5 are yours along the bottom (left to right), 6-11 are Void's along the top (right to left). Stores are [you, Void].
  */
+import { lift3d } from './lift3d.js';
+
 const SEEDS = 4;
 const PITS = 12;
 // counter-clockwise round the board: your row left to right, your store (right), Void's row right to left
@@ -207,6 +209,9 @@ function mount(th, stageApi) {
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   schedule();
+  // the board stands in the void in 3D (skills/mini/mancala.js), the rest of the card beside it; the 2D board stays the fallback
+  lift3d(th, stageApi, el, { kind: 'mancala', board: grid, title: 'Mancala', W: 520, H: 250,
+    snapshot: () => ({ pits: th.state.pits.slice(), store: th.state.store.slice(), playable: [...grid.querySelectorAll('button.mc-pit:not(:disabled)')].map((b) => +b.dataset.i) }) });
 }
 
 async function run(text, api) {

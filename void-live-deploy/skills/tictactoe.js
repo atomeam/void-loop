@@ -5,6 +5,8 @@
  * You are X and Void is O: after each tap Void answers with its best move (full minimax, so it never loses).
  * The status line calls the result. New game resets.
  */
+import { lift3d } from './lift3d.js';
+
 export function createTicTacToeState() {
   return {
     board: Array(9).fill(null),
@@ -144,6 +146,9 @@ function mount(th, stageApi) {
   paint();
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
+  // the board stands in the void in 3D (skills/mini/tictactoe.js), the rest of the card beside it; the 2D board stays the fallback
+  lift3d(th, stageApi, el, { kind: 'tictactoe', board: grid, title: 'Tic-tac-toe', W: 380, H: 320,
+    snapshot: () => ({ board: th.state.board.slice(), win: winLine(th.state.board) || [] }) });
 }
 
 async function run(text, api) {

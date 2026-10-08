@@ -184,3 +184,18 @@ jobs:
             [ "$i" = 6 ] && { echo "::error::deployment did not serve the tested void.html"; exit 1; }
           done
           echo "### Deployed ${{ steps.target.outputs.sha }} to ${{ steps.target.outputs.branch }}: $URL" >> "$GITHUB_STEP_SUMMARY"
+
+      # Void's voice (lib/voice.js): after anything ships, Void is asked what it thinks of it and how it would make it
+      # better. Its words are kept on the site and copied into domains/void.voice.md by the daily run. Input, not a gate:
+      # a busy model or a missing VOID_OWNER_TOKEN never fails the deploy.
+      - name: Ask Void what it thinks of what just shipped
+        if: github.event_name == 'push' && steps.deploy.outcome == 'success'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          [ -n "$VOID_OWNER_TOKEN" ] || { echo "VOID_OWNER_TOKEN not set: Void was not asked"; exit 0; }
+          title=$(gh api "repos/${{ github.repository }}/commits/$(git rev-parse HEAD)/pulls" --jq '[.[] | select(.merged_at != null)][0].title // empty' || true)
+          [ -n "$title" ] || title=$(git log -1 --format=%s "$(git rev-parse -q --verify HEAD^2 || git rev-parse HEAD)")
+          node tools/reflect.mjs --build "$title" | tee -a "$GITHUB_STEP_SUMMARY" || true

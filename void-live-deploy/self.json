@@ -137,14 +137,50 @@
    "state": "shipped",
    "date": "2026-10-07",
    "ask": "group the clock and the note",
-   "from": "board Next #3, grouped objects / layers"
+   "from": "board Next #3, grouping half: drag one and they all move, \"move the group to the top left\", \"make the group bigger\", \"br"
   },
   {
    "state": "shipped",
    "date": "2026-10-07",
    "ask": "label the clock kitchen",
-   "from": "board Later: text annotation / labels"
+   "from": "board Later, text annotation / labels: tags that ride with a thing, free labels"
   }
  ],
- "open": []
+ "open": [],
+ "games": [
+  "tictactoe",
+  "othello",
+  "mancala",
+  "checkers",
+  "chess",
+  "aggravation",
+  "go"
+ ],
+ "minis": [
+  "aggravation",
+  "calculator",
+  "checkers",
+  "chess",
+  "clock",
+  "countdown",
+  "counter",
+  "go",
+  "heart",
+  "list",
+  "mancala",
+  "notepad",
+  "othello",
+  "paper",
+  "pentamote",
+  "piggybank",
+  "rack",
+  "savings",
+  "stopwatch",
+  "tabletop",
+  "tictactoe",
+  "timer",
+  "tip",
+  "void",
+  "weather"
+ ]
 }

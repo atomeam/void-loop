@@ -6,6 +6,7 @@
  * and the side with more discs wins.
  * Void plays by a position table (corners high, the squares next to corners low) plus the discs it flips.
  */
+import { lift3d } from './lift3d.js';
 const N = 8;
 const DIRS = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
@@ -164,6 +165,9 @@ function mount(th, stageApi) {
   voidTurn(); // a board reloaded mid-game on Void's turn picks up where it was
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
+  // the board stands in the void in 3D (skills/mini/othello.js), the rest of the card beside it; the 2D board stays the fallback
+  lift3d(th, stageApi, el, { kind: 'othello', board: grid, title: 'Othello', W: 440, H: 360,
+    snapshot: () => ({ board: th.state.board.slice(), legal: [...grid.querySelectorAll('.oth-cell.legal')].map((b) => +b.dataset.i) }) });
 }
 
 async function run(text, api) {
