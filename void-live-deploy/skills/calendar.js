@@ -109,6 +109,7 @@ export function parseCalendar(text) {
   if (/^(?:the\s+|today'?s\s+)?(?:\w+\s+)?(?:news|headlines|top\s+stories)\b/i.test(t)) return null; // the news skill ("tech news today" is not an event)
   if (/\b(hours?\s+between|days?\s+between|time\s+difference|how\s+many\s+(hours|days)|how\s+long\s+until)\b/i.test(t)) return null; // world time and the calculator answer these
   if (/^\d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/i.test(t) || /\b(sunrise|sunset|time zone|timezone)\b/i.test(t)) return null; // "3pm London to Tokyo" is world time; an event starts with what it is
+  if (/^(?:please\s+)?(?:wake\s+me(?:\s+up)?|(?:set|make|start)\s+(?:an?\s+|my\s+)?alarm|alarm)\s+(?:for|at)\s+\d/i.test(t)) return null; // an alarm rings: the timer counts down to it
   const w = parseWhenText(t);
   // "remind me to call mom" with no when: it goes on today, so it is kept rather than lost
   if (!w) { const r = t.match(/^(?:please\s+)?remind\s+me\s+(?:to|about)\s+(.{2,80})$/i); if (r) { const d = new Date(); d.setHours(0, 0, 0, 0); return { kind: 'add', title: tidy(r[1]), at: d, allDay: true, raw: t }; } }

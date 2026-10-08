@@ -1636,7 +1636,24 @@ function applyClockAlters(c, lower) {
       return Object.prototype.hasOwnProperty.call(words, token) ? words[token] : 0;
     }
 
+    // "set an alarm for 7am", "wake me up at 6:30": a timer that rings at the next 7:00 (no am/pm: the next one of the two)
+    function alarmMs(lower, now = new Date()) {
+      const m = String(lower || '').trim().replace(/[?.!]+$/, '').match(/^(?:please\s+)?(?:(?:set|make|start)\s+(?:an?\s+|my\s+)?alarm|alarm|wake\s+me(?:\s+up)?)\s+(?:for|at)\s+(\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)?(?:\s+(?:tomorrow|tonight|today))?(?:\s+please)?$/);
+      if (!m) return 0;
+      let h = +m[1]; const min = +(m[2] || 0), ap = (m[3] || '').replace(/\./g, '');
+      if (h > 23 || min > 59 || (ap && (h < 1 || h > 12))) return 0;
+      if (ap === 'pm' && h < 12) h += 12;
+      if (ap === 'am' && h === 12) h = 0;
+      const at = new Date(now); at.setSeconds(0, 0); at.setHours(h, min);
+      const step = ap || h > 12 || h === 0 ? 24 : 12;
+      while (at <= now) at.setHours(at.getHours() + step);
+      if (/\btomorrow\b/.test(lower) && at.getDate() === now.getDate()) at.setDate(at.getDate() + 1);
+      return at - now;
+    }
+
     function parseDuration(text) {
+      const alarm = alarmMs(text);
+      if (alarm) return alarm;
       const lower = (text || '').toLowerCase()
         .replace(/[-‐‑‒–—]/g, ' ')
         .replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
@@ -1718,6 +1735,7 @@ function applyClockAlters(c, lower) {
       if (mentionsTimer && /\b(pause|stop|hold|wait|freeze|suspend)\b/.test(lower)) return false;
       if (mentionsTimer && duration === 0 && (/\b(start|begin|go|resume|continue|run|launch|activate|reset|restart|redo)\b/.test(lower) || /\bstart\s+over\b/.test(lower))) return false;
       if (duration > 0 && (mentionsTimer || isDurationRequest(lower))) return true;
+      if (alarmMs(lower)) return true;
       if (duration > 0 && /^(?:please\s+)?(?:remind|wake|ping|alert|buzz)\s+me\b.*\bin\s+\S+\s*(?:minutes?|mins?|hours?|hrs?|seconds?|secs?)\b/.test(lower)) return true; // "remind me to stretch in 20 minutes"
       if (/^(?:an?\s+)?(?:timer|countdown)(?:\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
       if (/\b(make|add|create|set|start|spawn|put|place|drop|show|open|give\s+me|i\s+need|i'?d\s+like)\b.*\b(timer|countdown)\b/.test(lower)) return true;
@@ -3766,7 +3784,7 @@ return { ok: true, detail: 'timer-reset' };
       if (m) { const mx = 220 - +m[1], z = (a, b) => Math.round(mx * a) + '–' + Math.round(mx * b);
         return { value: 'max ' + mx + ' bpm', note: 'moderate ' + z(0.5, 0.7) + ' · vigorous ' + z(0.7, 0.85) + ' bpm (the 220 − age estimate; a doctor can give yours)' }; }
       // race distances: "how many miles is a 5k", "a marathon in km"
-      m = t.match(/^(?:how\s+(?:many|far|long)\s+(miles|km|kilometers|kilometres)?\s*(?:is|are)\s+(?:a|an|the)\s+|(?:a|an|the)\s+)?(5k|10k|half\s+marathon|marathon|ultra(?:marathon)?|mile)(?:\s+(?:in|to)\s+(miles|km|kilometers|kilometres))?$/);
+      m = t.match(/^(?:how\s+(?:many|far|long)\s+(miles|km|kilometers|kilometres)?\s*(?:is|are)\s+(?:(?:a|an|the)\s+)?|(?:a|an|the)\s+)?(5k|10k|half\s+marathon|marathon|ultra(?:marathon)?|mile)(?:\s+(?:in|to)\s+(miles|km|kilometers|kilometres))?$/);
       if (m && /how|in|to/.test(t)) { const KM = { '5k': 5, '10k': 10, 'half marathon': 21.0975, marathon: 42.195, ultramarathon: 50, ultra: 50, mile: 1.609344 }[m[2].replace(/\s+/g, ' ')], u = (m[1] || m[3] || 'miles');
         const v = /k/.test(u) ? KM : KM / 1.609344; return { value: (Math.round(v * 100) / 100) + (/k/.test(u) ? ' km' : ' miles'), note: 'a ' + m[2] + ' is ' + KM + ' km' }; }
       // ---- homework maths ----
