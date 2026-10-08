@@ -1233,5 +1233,30 @@
     ],
     "sha256": "c3c1bfe370635f8e5ffb0a721ab77fe64a91e0c24cc3ec49c47c11bc1d6a5cfc",
     "emit": false
+  },
+  {
+    "run": 50,
+    "at": "2026-10-08T07:45:05Z",
+    "family": "sensory-substitution",
+    "draft": "drafts/fringe/sensory-substitution-5.html",
+    "sources": [
+      {
+        "claim": "Classifying a visual target as high or low is faster when an irrelevant tone's pitch matches its position (high tone with high target)",
+        "source": "https://doi.org/10.1167/10.1.6",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Pitch-elevation is among the most robust crossmodal correspondences across studies and populations",
+        "source": "https://doi.org/10.3758/s13414-010-0073-7",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's one-person version shows a positive matched-mismatched gap with an interval above 0 after about 60 trials",
+        "source": "drafts/fringe/sensory-substitution-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "aca9f38212f43a0bef758e2866cedf172627a5062c3835928a7411512806c225",
+    "emit": false
   }
 ]

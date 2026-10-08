@@ -118,3 +118,14 @@ test('fish, sharks, bees and flowers are real from a seed: a tail that sweeps, w
   assert.equal(JSON.stringify(lifeParts(28, 4, 'shark').parts), JSON.stringify(lifeParts(28, 4, 'shark').parts));
   assert.equal(lifeParts(28, 1, 'dragon'), null);
 });
+test('a person from a card is the same seeded adult body, alive and whole; zombies are unchanged', async () => {
+  const { ZOMBIE } = await import('../void-live-deploy/skills/sdfmesh.js');
+  const p = ZOMBIE(28, 7, true), z = ZOMBIE(28, 7);
+  assert.equal(p.rig.living, true); assert.equal(z.rig.living, false);
+  assert.equal(p.rig.wounds.length, 0, 'no wounds on the living'); assert.ok(z.rig.wounds.length > 0);
+  assert.ok(p.rig.hair != null && z.rig.hair == null, 'people have hair');
+  assert.equal(p.rig.hang, 2, 'both arms at the sides'); assert.equal(p.rig.drag, 0, 'no dragged leg');
+  assert.ok(p.rig.hunch < z.rig.hunch, 'upright');
+  assert.equal(JSON.stringify(ZOMBIE(28, 7)), JSON.stringify(z), 'a zombie seed still rebuilds the same zombie');
+  const skins = new Set(); for (let s = 0; s < 60; s++) skins.add(ZOMBIE(28, s, true).rig.skin); assert.ok(skins.size >= 5, 'a range of real skin tones');
+});

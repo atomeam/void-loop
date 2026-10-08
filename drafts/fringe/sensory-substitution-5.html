@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · high notes go up (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#field{position:relative;height:200px;border:1px solid rgba(255,255,255,.12);border-radius:12px}
+#dot{position:absolute;left:50%;width:22px;height:22px;margin-left:-11px;border-radius:50%;background:#e8e8ec;display:none}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>high notes go up · draft · not published</h1>
+  <p class="note">A dot appears high or low while a tone plays, high or low. Press ↑ or ↓ (or tap the buttons) for where the dot is, as fast as you can; ignore the tone. Many people answer faster when the tone matches the dot (a high tone with a high dot) than when it doesn't, a link between pitch and height found across many studies (Evans and Treisman, 2010; reviewed by Spence, 2011). This page measures that gap for you. Use sound. Everything stays in this browser.</p>
+  <div id="field" aria-hidden="true"><div id="dot"></div></div>
+  <div class="row"><button id="go" type="button">start 20 trials</button><button id="up" type="button" disabled>↑ high</button><button id="down" type="button" disabled>↓ low</button></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.pitchheight.v1',st={trials:[]},ac=null,cur=null,left=0,timer=null;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&isFinite(t.rt)})}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(_){}}
+  // the effect: median time on mismatched trials minus median on matched ones, right answers only, 150-2000 ms
+  function median(a){if(!a.length)return null;var s=a.slice().sort(function(x,y){return x-y}),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2}
+  function effect(trials){var ok=trials.filter(function(t){return t.right&&t.rt>=150&&t.rt<=2000});
+    var c=ok.filter(function(t){return t.match}).map(function(t){return t.rt}),i=ok.filter(function(t){return!t.match}).map(function(t){return t.rt});
+    return {match:median(c),mismatch:median(i),n:[c.length,i.length],gap:c.length&&i.length?median(i)-median(c):null}}
+  // a bootstrap interval for the gap: resample both sets 1000 times
+  function interval(trials,rnd){var ok=trials.filter(function(t){return t.right&&t.rt>=150&&t.rt<=2000}),c=ok.filter(function(t){return t.match}).map(function(t){return t.rt}),i=ok.filter(function(t){return!t.match}).map(function(t){return t.rt});
+    if(c.length<5||i.length<5)return null;var g=[],pick=function(a){var o=[];for(var k=0;k<a.length;k++)o.push(a[Math.floor(rnd()*a.length)]);return o};
+    for(var b=0;b<1000;b++)g.push(median(pick(i))-median(pick(c)));g.sort(function(x,y){return x-y});return [g[25],g[974]]}
+  var el=function(id){return document.getElementById(id)};
+  function tone(high){try{if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A)return;ac=new A()}ac.resume();var o=ac.createOscillator(),g=ac.createGain(),t=ac.currentTime;
+    o.frequency.value=high?1200:300;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.15,t+.01);g.gain.linearRampToValueAtTime(0,t+.25);o.connect(g);g.connect(ac.destination);o.start(t);o.stop(t+.26)}catch(_){}}
+  function next(){if(left<=0){el('up').disabled=el('down').disabled=true;el('go').disabled=false;el('state').textContent='done';score();return}
+    left--;el('dot').style.display='none';timer=setTimeout(function(){var up=Math.random()<.5,high=Math.random()<.5;cur={up:up,match:up===high,t0:performance.now()};
+      el('dot').style.top=up?'30px':'148px';el('dot').style.display='block';tone(high)},500+Math.random()*700)}
+  function answer(up){if(!cur)return;var rt=performance.now()-cur.t0;st.trials.push({rt:Math.round(rt),match:cur.match,right:up===cur.up});save();
+    el('state').textContent=(up===cur.up?'right':'wrong')+' · '+Math.round(rt)+' ms';cur=null;next()}
+  el('go').addEventListener('click',function(){left=20;el('go').disabled=true;el('up').disabled=el('down').disabled=false;tone(true);next()});
+  el('up').addEventListener('click',function(){answer(true)});el('down').addEventListener('click',function(){answer(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowUp'){e.preventDefault();answer(true)}else if(e.key==='ArrowDown'){e.preventDefault();answer(false)}});
+  function score(){if(!st.trials.length){el('score').textContent='';return}var e=effect(st.trials),ci=interval(st.trials,Math.random);
+    el('score').textContent=st.trials.length+' trials · matched '+(e.match==null?'-':Math.round(e.match)+' ms')+' · mismatched '+(e.mismatch==null?'-':Math.round(e.mismatch)+' ms')
+      +(e.gap==null?'':'\nthe gap: '+Math.round(e.gap)+' ms'+(ci?' (95% interval '+Math.round(ci[0])+' to '+Math.round(ci[1])+')':''))+(st.trials.length<60?'\nabout 60 trials before the gap means much':'')}
+  score();
+  // made-up data: matched trials 40 ms faster give a positive gap whose interval excludes 0; wrong and too-slow answers are left out
+  function selftest(){var s=3,rnd=function(){s=(s*16807)%2147483647;return s/2147483647},fake=[];
+    for(var k=0;k<60;k++){fake.push({rt:420+rnd()*60,match:true,right:true});fake.push({rt:460+rnd()*60,match:false,right:true})}
+    fake.push({rt:5000,match:true,right:true},{rt:100,match:false,right:false});
+    var e=effect(fake),ci=interval(fake,rnd);if(!(e.gap>25&&e.gap<55))return 'gap should be near 40 ms, got '+e.gap;if(!(ci&&ci[0]>0))return 'the interval should exclude 0';
+    if(e.n[0]!==60||e.n[1]!==60)return 'outliers and wrong answers must be left out';return true}
+  window.__pitchheight={effect:effect,interval:interval,median:median,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>
