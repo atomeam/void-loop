@@ -84,10 +84,10 @@ test('a brain is folded from its seed: the same seed folds the same, another see
   assert.notDeepEqual(Array.from(a.positions.slice(0, 60)), Array.from(c.positions.slice(0, 60)));
   assert.ok(Math.min(...a.colors) < 0.8 && Math.max(...a.colors) > 0.95, 'sulci darker than gyri');
 });
-test('cats, dogs, mice and rabbits are real animals from a seed: species builds differ, a seed repeats, coats vary', async () => {
+test('cats, dogs, mice, rabbits and monkeys are real animals from a seed: species builds differ, a seed repeats, coats vary', async () => {
   const { CREATURE, CREATURE_KINDS, boundsOf } = await import('../void-live-deploy/skills/sdfmesh.js');
   const size = (k, s) => { const b = boundsOf(CREATURE(28, s, k), 0); return [b.max[0] - b.min[0], b.max[1] - b.min[1]]; };
-  assert.deepEqual(CREATURE_KINDS, ['cat', 'dog', 'mouse', 'rabbit']);
+  assert.deepEqual(CREATURE_KINDS, ['cat', 'dog', 'mouse', 'rabbit', 'monkey']);
   assert.equal(JSON.stringify(CREATURE(28, 5, 'cat')), JSON.stringify(CREATURE(28, 5, 'cat')));
   assert.ok(size('mouse', 1)[1] < size('cat', 1)[1] && size('cat', 1)[1] < size('dog', 1)[1] + 1, 'a mouse stands lower than a cat');
   const coats = new Set(); for (let s = 0; s < 40; s++) coats.add(CREATURE(28, s, 'cat').rig.coat + CREATURE(28, s, 'cat').rig.pattern);

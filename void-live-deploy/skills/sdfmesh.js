@@ -326,12 +326,13 @@ export function brainMesh(R, seed, cells = 72) {
  * and a coat drawn from the seed (tabby stripes, calico or dog patches, agouti brown). Facing +x, feet on y = -0.95R.
  * Parts: body (torso, neck, head), four legs (pivot at the hip or shoulder) and the tail (pivot at its root).
  */
-export const CREATURE_KINDS = ['cat', 'dog', 'mouse', 'rabbit'];
+export const CREATURE_KINDS = ['cat', 'dog', 'mouse', 'rabbit', 'monkey'];
 const COATS = {
   cat: [['#d9893c', 'tabby'], ['#8a8a8a', 'tabby'], ['#2a2724', 'solid'], ['#f1ece4', 'solid'], ['#7a6048', 'tabby'], ['#efe7dc', 'calico']],
   dog: [['#c49a63', 'solid'], ['#2b2522', 'solid'], ['#7a4a2a', 'solid'], ['#f0ebe2', 'patches'], ['#d8b07a', 'patches'], ['#3a3330', 'tan']],
   mouse: [['#8d8378', 'solid'], ['#6e5a48', 'solid'], ['#eeeae4', 'solid'], ['#a4998c', 'solid']],
   rabbit: [['#8a6e52', 'agouti'], ['#efebe5', 'solid'], ['#8f8a86', 'agouti'], ['#4a3a2e', 'solid']],
+  monkey: [['#8a6a48', 'face'], ['#6e5a44', 'face'], ['#a08868', 'face'], ['#4e3e30', 'face']],
 };
 export function CREATURE(R, seed, kind) {
   const rnd = mulberry32(seed), u = (a, b) => a + (b - a) * rnd(), jit = (v, k = 0.08) => v * u(1 - k, 1 + k);
@@ -340,6 +341,7 @@ export function CREATURE(R, seed, kind) {
     dog:    { len: 1.0, leg: 0.6, tr: 0.25, head: 0.19, muz: u(0.14, 0.24), neck: 0.2, tail: u(0.4, 0.6), tailR: 0.055, legR: 0.075, ear: rnd() < 0.5 ? 'flop' : 'up', earL: 0.17 },
     mouse:  { len: 0.5, leg: 0.12, tr: 0.17, head: 0.12, muz: 0.11, neck: 0.04, tail: 0.85, tailR: 0.016, legR: 0.03, ear: 'round', earL: 0.1 },
     rabbit: { len: 0.62, leg: 0.22, tr: 0.27, head: 0.15, muz: 0.06, neck: 0.06, tail: 0.1, tailR: 0.075, legR: 0.06, ear: 'long', earL: 0.45 },
+    monkey: { len: 0.6, leg: 0.4, tr: 0.21, head: 0.2, muz: 0.03, neck: 0.06, tail: 0.9, tailR: 0.035, legR: 0.055, ear: 'side', earL: 0.07, lift: 0.15 },
   }[kind] || null;
   if (!sp) return null;
   const len = jit(sp.len), leg = jit(sp.leg), tr = jit(sp.tr, 0.12), hr = jit(sp.head, 0.06), muz = jit(sp.muz, 0.12), legR = jit(sp.legR, 0.1);
@@ -360,6 +362,7 @@ export function CREATURE(R, seed, kind) {
     else if (sp.ear === 'up') shapes.push({ part: 'body', type: 'capsule', a: base, b: [base[0] - X(0.01), base[1] + X(sp.earL), base[2] + X(zs * 0.04)], ra: X(hr * 0.32), rb: X(0.012), k: X(0.03) });
     else if (sp.ear === 'flop') shapes.push({ part: 'body', type: 'capsule', a: [base[0], base[1] - X(0.02), X(zs * hr * 0.75)], b: [base[0] + X(0.02), base[1] - X(sp.earL), X(zs * hr * 1.0)], ra: X(hr * 0.3), rb: X(hr * 0.25), k: X(0.03) });
     else if (sp.ear === 'round') shapes.push({ part: 'body', type: 'ellipsoid', c: [base[0] - X(0.02), base[1] + X(sp.earL * 0.6), base[2] + X(zs * 0.04)], r: [X(sp.earL * 0.25), X(sp.earL), X(sp.earL)], k: X(0.02) });
+    else if (sp.ear === 'side') shapes.push({ part: 'body', type: 'ellipsoid', c: [hc[0] - X(hr * 0.1), hc[1] + X(hr * 0.1), X(zs * hr * 1.0)], r: [X(sp.earL * 0.6), X(sp.earL), X(sp.earL * 0.25)], k: X(0.02) });
     else shapes.push({ part: 'body', type: 'capsule', a: base, b: [base[0] - X(0.08), base[1] + X(jit(sp.earL)), base[2] + X(zs * 0.05)], ra: X(hr * 0.33), rb: X(hr * 0.22), k: X(0.03) });
   }
   // legs: the pivot at the top, the foot on the ground; a rabbit's hind legs are long and folded
@@ -375,12 +378,16 @@ export function CREATURE(R, seed, kind) {
   const root = P(back - 0.02, ty + tr * 0.35, 0), tl = jit(sp.tail, 0.1), curl = u(0.3, 0.9);
   if (kind === 'rabbit') shapes.push({ part: 'tail', type: 'sphere', c: [root[0] - X(0.03), root[1], 0], r: X(sp.tailR) });
   else {
-    const mid = [root[0] - X(tl * 0.5), root[1] + X(kind === 'mouse' ? -0.12 : tl * 0.15 * curl), 0], tip = [root[0] - X(tl * (kind === 'cat' ? 0.7 : 0.95)), root[1] + X(kind === 'mouse' ? -0.18 : tl * (kind === 'cat' ? 0.6 : 0.35) * curl), 0];
+    const mid = [root[0] - X(tl * 0.5), root[1] + X(kind === 'mouse' ? -0.12 : tl * 0.15 * curl), 0], tip = [root[0] - X(tl * (kind === 'cat' ? 0.7 : 0.95)), root[1] + X(kind === 'mouse' ? -0.18 : tl * (kind === 'cat' ? 0.6 : kind === 'monkey' ? 0.75 : 0.35) * curl), 0];
     shapes.push({ part: 'tail', type: 'capsule', a: root, b: mid, ra: X(sp.tailR * 1.2), rb: X(sp.tailR), k: X(0.03) }, { part: 'tail', type: 'capsule', a: mid, b: tip, ra: X(sp.tailR), rb: X(sp.tailR * (kind === 'mouse' ? 0.4 : 0.75)), k: X(0.02) });
   }
+  // a monkey stands higher at the shoulders (its arms are longer): lift everything toward the front, feet stay down
+  if (sp.lift) { const lift = (p) => { if (p[1] > X(ground + 0.08)) p[1] += X(sp.lift) * Math.max(0, Math.min(1, (p[0] / X(front) + 0.3) / 1.3)); };
+    for (const sh of shapes) if (sh.part !== 'tail') for (const k of ['c', 'a', 'b']) if (sh[k]) lift(sh[k]);
+    lift(hc); lift(muzTip); for (const l of legs) lift(l.pivot); }
   const coats = COATS[kind], [coat, pattern] = coats[Math.floor(rnd() * coats.length) % coats.length];
   const eyes = [-1, 1].map((zs) => [hc[0] + X(hr * 0.55), hc[1] + X(hr * 0.2), X(zs * hr * 0.55)]);
-  shapes.rig = { R, seed: seed >>> 0, kind, coat, pattern, eyes, eyeR: X(hr * (kind === 'mouse' ? 0.2 : 0.14)), nose: muzTip, legs, tailRoot: root,
+  shapes.rig = { R, seed: seed >>> 0, kind, coat, pattern, head: hc, headR: X(hr), eyes, eyeR: X(hr * (kind === 'mouse' ? 0.2 : 0.14)), nose: muzTip, legs, tailRoot: root,
     stripes: u(14, 22) / R, ph: [u(0, 6.3), u(0, 6.3), u(0, 6.3)], patch: [u(4, 7) / R, u(4, 7) / R], belly: ty - tr * 0.4, gait: { pace: u(0.85, 1.15), phase: u(0, 6.3) } };
   return shapes;
 }
@@ -398,8 +405,9 @@ export function coatColors(rig, P) {
     else if (rig.pattern === 'calico') c = n > 0.45 ? orange : n < -0.55 ? black : [1, 1, 1];
     else if (rig.pattern === 'patches') c = n > 0.35 ? (rig.ph[2] > 3 ? black : tan) : [1, 1, 1];
     else if (rig.pattern === 'tan') c = y < rig.belly + R * 0.05 || x > rig.nose[0] - R * 0.12 ? tan : [1, 1, 1];
+    else if (rig.pattern === 'face') c = x > rig.head[0] + rig.headR * 0.3 && Math.hypot(x - rig.head[0], y - rig.head[1], z) < rig.headR * 1.4 ? tint(hex('#e2c2aa')) : [1, 1, 1]; // a bare, paler face
     else if (rig.pattern === 'agouti') { const t = Math.sin(x * 61 / R + z * 47 / R + y * 53 / R); c = t > 0.6 ? [1.25, 1.18, 1.08] : t < -0.6 ? [0.75, 0.72, 0.7] : [1, 1, 1]; }
-    if (rig.pattern !== 'solid' && rig.pattern !== 'tan' && y < rig.belly - R * 0.02) c = c.map((q, i) => (q + white[i]) / 2); // paler belly
+    if (rig.pattern !== 'solid' && rig.pattern !== 'tan' && rig.pattern !== 'face' && y < rig.belly - R * 0.02) c = c.map((q, i) => (q + white[i]) / 2); // paler belly
     out[v] = c[0]; out[v + 1] = c[1]; out[v + 2] = c[2];
   }
   return out;

@@ -744,7 +744,7 @@ function poseLife(f, still) {
   if (L.kind === 'flower') f.parts.body.rotation.set(0, 0, still ? 0 : Math.sin(b.t * 0.9) * 0.04); // a slight sway in the air
   if (L.fly && !still) f.obj.position.y += Math.sin(b.t * 5) * 3;
 }
-const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater, brain: buildBrain, cat: buildCreature, dog: buildCreature, mouse: buildCreature, rabbit: buildCreature, bone: buildFood, cheese: buildFood, carrot: buildFood, banana: buildFood, fish: buildLife, shark: buildLife, bee: buildLife, flower: buildLife };
+const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater, brain: buildBrain, cat: buildCreature, dog: buildCreature, mouse: buildCreature, rabbit: buildCreature, monkey: buildCreature, bone: buildFood, cheese: buildFood, carrot: buildFood, banana: buildFood, fish: buildLife, shark: buildLife, bee: buildLife, flower: buildLife };
 // run a thing's conditions for one frame and show the result: rain, snow and lightning, a darkening cloud, melting ice,
 // a flower growing under the rain. Returns true while something is visibly happening.
 function stepElement(f, dt, now, still, others) {
