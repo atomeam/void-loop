@@ -153,7 +153,8 @@
   "mancala",
   "checkers",
   "chess",
-  "aggravation"
+  "aggravation",
+  "go"
  ],
  "minis": [
   "calculator",
@@ -162,12 +163,14 @@
   "clock",
   "countdown",
   "counter",
+  "go",
   "heart",
   "list",
   "notepad",
   "paper",
   "pentamote",
   "piggybank",
+  "rack",
   "savings",
   "stopwatch",
   "tabletop",

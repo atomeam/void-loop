@@ -13,7 +13,7 @@ const out = resolve(root, 'void-live-deploy/self.json');
 const clip = (s, n) => String(s || '').replace(/\s+/g, ' ').trim().slice(0, n);
 
 // skills that are games Void plays with you (names as in skills/index.json)
-export const GAMES = ['tictactoe', 'othello', 'mancala', 'checkers', 'chess', 'aggravation'];
+export const GAMES = ['tictactoe', 'othello', 'mancala', 'checkers', 'chess', 'aggravation', 'go'];
 
 export function buildSelf(llms, inbox, { skills = [], minis = [] } = {}) {
   const about = clip((/^>\s*(.+)$/m.exec(llms) || [])[1], 300);

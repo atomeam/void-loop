@@ -60,7 +60,7 @@ export function currentAsks(entries, n = 6) {
   return out;
 }
 
-const GAME_NAMES = { tictactoe: 'tic-tac-toe', othello: 'Othello', mancala: 'mancala', chess: 'chess', checkers: 'checkers', aggravation: 'Aggravation' };
+const GAME_NAMES = { tictactoe: 'tic-tac-toe', othello: 'Othello', mancala: 'mancala', chess: 'chess', checkers: 'checkers', aggravation: 'Aggravation', go: 'Go' };
 // what Void knows about itself beyond selfFacts: its games and its card miniatures (self.json, tools/self-context.mjs)
 export function knowsFacts(self) {
   const parts = [];

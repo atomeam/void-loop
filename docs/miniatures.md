@@ -122,6 +122,8 @@ any card whose miniature takes input:
 | `calculator` | the calculator stage card ("calculate 12*7") | solar pocket calculator: a new sum presses its keys one by one, the seven-segment LCD follows the typing, then `=` and the result |
 | `notepad` | the notepad stage card ("make a notepad") | yellow legal pad with gummed red binding, ruled sheet and red margin; the card's title and text are handwritten on it and rewrite as you type; a sharpened pencil beside it |
 | `piggybank` | savings goals ("how long to save 50000 if i save 500 a month", "how much to save a month for 1 million in 30 years", "savings calculator") | blown-glass piggy bank filling with coins from where you start to the goal while coins drop through the slot; silver paid in, gold growth (the colours of the `savings` coin stacks); the calculator's piggy follows its inputs |
+| `go` | the Go board ("play go", "play baduk") | a 9×9 kaya goban standing in the void with slate and shell stones; the newest stone drops in and wears a red ring; dead stones go translucent once play ends; its card is separate (`skills/side-card.js`) |
+| `rack` | the game rack ("games", "what games do you have", "play a game") | a walnut shelf of boxed board games with drawn covers; tap a box and it slides out, the rack is put away and that game opens |
 | `heart` | heart rate ("heart rate zones for a 40 year old", "is a resting heart rate of 55 good", "heart rate zone calculator") | glossy red heart on a walnut stand beating lub-dub at the card's rate (the middle of the asked zone or target band, or your resting rate) beside a bedside monitor with a live ECG trace and bpm |
 
 Stage cards (the calculator) mount into a small host inside the card with `stageApi.miniature(host, kind, data, { key: kind + ':' + th.id })`: render() rebuilds the card DOM, and the same key moves the live miniature into the new host and calls `update(data)` instead of building it again.
@@ -130,3 +132,11 @@ Tests read a kind's own `state()` with `window.__voidMini.state(key)`.
 Page cards (weather, worldtime) put the miniature in a `.vmini` band at the top of the page: create the band, `el.prepend`
 it, call `api.stage.miniature(band, kind, data, { key })`, and remove the band in `.catch` so a browser without WebGL
 shows the plain card. A page that redraws its text keeps the band by re-prepending it (see `clockMini` in worldtime.js).
+
+## Boards in the void, cards beside them
+
+A game's board stands in the void as a 3D object with no card around it, and its card (whose turn, buttons, counts) is a
+separate panel you move on its own (Adam, 2026-10-08). `skills/side-card.js` gives you both halves: `grip(label)` is the
+slim handle under the board (the canvas takes taps and orbits), and `sideCard(th, stageApi, card, { boardW, boardH })`
+places the card beside the board, or under it on a narrow screen, and remembers where it was left in `th.card`. Go, the
+game rack, and the desktop chess and checkers boards use it.
