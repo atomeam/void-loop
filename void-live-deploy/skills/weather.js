@@ -57,9 +57,10 @@ async function run(text, api) {
       return place ? 'none' : 'weather';
     }
     const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.latitude + '&longitude=' + loc.longitude
-      + '&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_hours=8&forecast_days=1&timezone=auto';
+      + '&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_hours=8&forecast_days=1&timezone=auto';
     const w = await fetch(u).then((r) => r.json());
     if (!api._pageStill(el)) return 'weather';
+    queueMicrotask(() => weatherMini(api, el, w, loc, place)); // after the card's text is in: the diorama goes on top
     const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
     const T = (c) => Math.round(f ? c * 9 / 5 + 32 : c) + '°';
     const c = w.current, d = w.daily, h = w.hourly;
@@ -76,6 +77,17 @@ async function run(text, api) {
     el.innerHTML = '<h2>Weather</h2><p>The weather service didn\'t answer just now. Ask again in a moment.</p>';
     return 'none';
   }
+}
+
+// the card's 3D miniature (skills/mini/weather.js): a diorama with the sky the forecast reports, rain or snow falling,
+// day or night by the place's own clock, and a thermometer at the real temperature. Without WebGL the band goes away.
+function weatherMini(api, el, w, loc, place) {
+  const c = w && w.current; if (!c || !api.stage || !api.stage.miniature || !api._pageStill(el)) return;
+  const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
+  const host = document.createElement('div'); host.className = 'vmini'; host.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 180 : 230) + 'px;margin:0 0 6px';
+  el.prepend(host);
+  api.stage.miniature(host, 'weather', { code: c.weather_code, temp: c.temperature_2m, unit: f ? 'F' : 'C', isDay: c.is_day !== 0, wind: c.wind_speed_10m },
+    { key: 'weather:' + Math.random().toString(36).slice(2, 9), label: 'Weather diorama: ' + (WX[c.weather_code] || 'weather') + ', ' + Math.round(c.temperature_2m) + '°C' }).catch(() => host.remove());
 }
 
 export default {

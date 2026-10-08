@@ -1,6 +1,6 @@
 /**
  * figures3d — Void's light 3D layer and its roaming figures (board Next #17). Not a skill: nothing imports this file until a figure is on the stage,
- * so the empty page loads no 3D code at all. On first use it loads three.js from a pinned CDN build and puts one transparent
+ * so the empty page loads no 3D code at all. On first use it loads the bundled three.js (/vendor/three-r180, shared with scene3d.js) and puts one transparent
  * WebGL canvas behind the cards, over the black stage. Pointer events pass through to the cards; the page asks this layer
  * whether a figure is under the pointer, and only then does a click, wheel or pinch go to the figure.
  *
@@ -25,7 +25,7 @@ import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pic
 export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
 export { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey };
 export const THREE_VERSION = '0.180.0';
-export const THREE_URL = 'https://cdn.jsdelivr.net/npm/three@' + THREE_VERSION + '/build/three.module.min.js';
+export const THREE_URL = '/vendor/three-r180/build/three.module.min.js'; // the same bundled copy scene3d.js uses: one three.js on the page
 export const MOTION_KEY = 'a2m.void.motion.v1';
 const PALETTE = [0x9d8cff, 0x6ee7c8, 0xffa98a, 0x7cc4ff, 0xff8fc7, 0xc6f27a];
 const R = 28;            // body radius in CSS px: a figure is about 80 px tall on the stage

@@ -32,7 +32,7 @@ export default async function build(ctx, data) {
   ctx.frame(root, { view: [0, 0.6, 1] }); // fit the camera, key light, shadow box and ground to the model
   return {
     update(d) { /* data changed: change the model, then the scene redraws */ },
-    tick(dt, t) { /* every frame while visible; return false when nothing changed this frame */ },
+    tick(dt, t) { /* every frame while visible; return false when nothing changed, 'view' when only small parts moved (a clock hand: redraw without recomputing the soft shadows) */ },
     dispose() { /* free what you made (geometries, materials, textures) */ },
   };
 }
@@ -110,3 +110,15 @@ any card whose miniature takes input:
 - Search work that takes more than a frame goes in a Web Worker (`skills/chess-worker.js`) or waits until the
   animation has landed, so the pieces never stutter.
 
+
+## Card miniatures that ship today
+
+| kind | card | what it does |
+|---|---|---|
+| `clock` | worldtime ("time in Tokyo", "world clock", "3pm London to Tokyo") | brass desk clock per place, hands on that zone's real time with a sweeping second hand; a converted time stops the hands at that moment |
+| `weather` | weather ("weather in Oslo") | diorama: sun or moon by local day/night, clouds, rain or snow falling, fog, lightning, wind in the trees, thermometer at the real temperature |
+| `chess`, `checkers` | the playable boards | see above |
+
+Page cards (weather, worldtime) put the miniature in a `.vmini` band at the top of the page: create the band, `el.prepend`
+it, call `api.stage.miniature(band, kind, data, { key })`, and remove the band in `.catch` so a browser without WebGL
+shows the plain card. A page that redraws its text keeps the band by re-prepending it (see `clockMini` in worldtime.js).

@@ -69,7 +69,8 @@ export async function run3dChecks({ check, fresh }) {
       return { settings, badKind };
     });
     const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); return l && l[0] && l[0].draws > 0 && l[0].ready ? l[0] : false; }));
-    const pix = await F.p.evaluate(() => { const c = document.querySelector('#t3host canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 20) n++; return n / (c.width * c.height); });
+    const pixOf = () => F.p.evaluate(() => { const c = document.querySelector('#t3host canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 20) n++; return n / (c.width * c.height); });
+    const pix = (await until(async () => { const v = await pixOf(); return v > 0.03 ? v : 0; }, 20000)) || (await pixOf()); // a slow software renderer can hand over its first frame late
     check('3D scene: a miniature mounts on demand (vendored three.js r180 and skills/mini/sample.js load only now) with ACES, sRGB, PCF soft shadows, a room environment map, contact shadows, orbit and zoom, and GLTFLoader with meshopt and KTX2; bad kinds are refused',
       !!drawn && Object.values(r.settings).every(Boolean) && r.badKind && pix > 0.03 && hits.some((u) => /\/vendor\/three-r180\/build\/three\.module\.min\.js$/.test(u)) && hits.some((u) => /\/skills\/mini\/sample\.js$/.test(u)) && !F.errors.length,
       JSON.stringify({ r, drawn, pix, hits, e: F.errors }));
@@ -141,6 +142,34 @@ export async function run3dChecks({ check, fresh }) {
     const value = (await F.state()).find((x) => x.kind === 'counter');
     check('3D counter: "make a counter" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card',
       !!drawn && r.a === '1234' && r.b === '0007' && r.c === '0012' && r.d === '3456' && value && value.value === 1 && !F.errors.length, JSON.stringify({ drawn, r, pt, value, e: F.errors }));
+    await F.ctx.close();
+  }
+
+  // ---- card miniatures: the clock keeps the asked zone's time, the weather diorama shows the forecast
+  {
+    const F = await fresh();
+    const r = await F.p.evaluate(async () => {
+      const m = await import('/skills/scene3d.js'); const host = (id) => { const d = document.createElement('div'); d.id = id; d.style.cssText = 'position:fixed;left:20px;top:20px;width:360px;height:220px;z-index:9'; document.body.appendChild(d); return d; };
+      const c = await m.mountMiniature(host('mc'), 'clock', { clocks: [{ tz: 'Asia/Tokyo', label: 'Tokyo' }, { tz: 'America/New_York', label: 'New York' }] }, { key: 'tclock' });
+      const fixed = Date.UTC(2026, 0, 15, 6, 30, 0); // 15:30 in Tokyo, 01:30 in New York
+      const c2 = await m.mountMiniature(host('mc2'), 'clock', { clocks: [{ tz: 'Asia/Tokyo', label: 'Tokyo' }], at: fixed }, { key: 'tclock2' });
+      const now = new Date(), tok = new Intl.DateTimeFormat('en-US', { timeZone: 'Asia/Tokyo', hour: 'numeric', minute: 'numeric', hourCycle: 'h23' }).formatToParts(now);
+      const hh = +tok.find((x) => x.type === 'hour').value, mm = +tok.find((x) => x.type === 'minute').value;
+      const st = c.inst.state(), st2 = c2.inst.state(); const T = Math.PI * 2, near = (a, b, tol) => { const d = Math.abs(((a - b) % T + T + T / 2) % T - T / 2); return d < tol; };
+      const w = await m.mountMiniature(host('mw'), 'weather', { code: 63, temp: 12, isDay: true, wind: 20 }, { key: 'twx' });
+      const rain = w.inst.state(); w.update({ code: 73, temp: -4, isDay: false }); const snow = w.inst.state(); w.update({ code: 0, temp: 30, isDay: true }); const sun = w.inst.state(); w.update({ code: 45, temp: 8, isDay: true }); const fog = w.inst.state();
+      return { live: near(st[0].minute, (mm / 60) * T, 0.12) && near(st[0].hour, ((hh % 12 + mm / 60) / 12) * T, 0.05), twoZones: Math.abs(st[0].hour - st[1].hour) > 0.1,
+        fixed: near(st2[0].hour, (3.5 / 12) * T, 0.01) && near(st2[0].minute, Math.PI, 0.01) && near(st2[0].second, 0, 0.01), rain, snow, sun, fog };
+    });
+    const drawn = await until(() => F.p.evaluate(() => window.__voidMini.list().filter((x) => x.draws > 0).length >= 3), 60000);
+    check('miniatures: the brass clock\u2019s hands show the real time in each asked zone (two zones differ), and a fixed moment ("3:30pm Tokyo") stops them exactly there',
+      r.live && r.twoZones && r.fixed && !!drawn && !F.errors.length, JSON.stringify({ live: r.live, two: r.twoZones, fixed: r.fixed, drawn, e: F.errors }));
+    check('miniatures: the weather diorama rains under grey clouds, snows at night with lit windows, shows the sun on a clear day with a taller thermometer column, and fogs over in fog',
+      r.rain.rain && !r.rain.sun && r.rain.clouds >= 2 && r.snow.snow && r.snow.windows > 1 && !r.snow.rain && r.sun.sun && !r.sun.rain && r.sun.clouds === 0 && r.sun.column > r.snow.column && r.fog.fog,
+      JSON.stringify({ rain: r.rain, snow: r.snow, sun: r.sun, fog: r.fog }));
+    await F.ask('weather in Lisbon', 600);
+    const wx = await until(() => F.p.evaluate(() => { const l = window.__voidMini.list().find((x) => x.kind === 'weather' && x.key.startsWith('weather:')); return l && l.draws > 0 && !!document.querySelector('.vpage.on .vmini canvas'); }), 60000);
+    check('miniatures: "weather in Lisbon" puts the live diorama at the top of the weather card', !!wx && !F.errors.length, JSON.stringify({ wx, e: F.errors }));
     await F.ctx.close();
   }
 

@@ -37,13 +37,14 @@ export async function table(ctx, { bg = '#0d0d0f' } = {}) {
     loadTexture(MODELS + 'wood-v1/table-normal.webp', { repeat: rep }),
     loadTexture(MODELS + 'wood-v1/table-rough.webp', { repeat: rep }),
   ]);
-  const mat = new THREE.MeshStandardMaterial({ map, normalMap: nor, roughnessMap: rough, roughness: 1.15, color: '#d8c8b8', normalScale: new THREE.Vector2(0.5, 0.5), envMap: scene.environment, envMapIntensity: 0.28 });
-  // a dim reflection: at this grazing angle a full-strength studio environment turns the far table into grey haze
+  const mat = new THREE.MeshPhysicalMaterial({ map, normalMap: nor, roughnessMap: rough, roughness: 1.6, color: '#d8c8b8', normalScale: new THREE.Vector2(0.5, 0.5), envMap: scene.environment, envMapIntensity: 0.14, specularIntensity: 0.35 });
+  // a dim, rough, low-specular finish (an oiled table, not a lacquered one): at this grazing angle any shine turns the far
+  // edge into grey haze, and the fog melts that edge into the card instead
   const top = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.4).rotateX(-Math.PI / 2), mat);
   top.receiveShadow = true; top.userData.noContactShadow = true; top.name = 'table';
   scene.add(top);
   scene.background = new THREE.Color(bg);
-  scene.fog = new THREE.Fog(bg, phone ? 0.95 : 1.05, phone ? 1.9 : 2.1); // the far edge of the table melts into the card
+  scene.fog = new THREE.Fog(bg, 0.8, 1.75); // the far edge of the table melts into the card
   return { top, dispose() { top.geometry.dispose(); mat.dispose(); map.dispose(); nor.dispose(); rough.dispose(); } };
 }
 
