@@ -395,4 +395,23 @@ export async function run3dChecks({ check, fresh }) {
       !!three && zs.length === 2 && zs[0].seed !== zs[1].seed && !!rained && !!eaten && !F.errors.length, JSON.stringify({ three: !!three, seeds: zs.map((z) => z.seed), rained, brainIn, eaten, e: F.errors }));
     await F.ctx.close();
   }
+
+  // ---- collector detail (Next #22): a figure arrives light, re-meshes finer one tier at a time as you zoom in on it, and
+  // drops back to the light tier (same triangle count as before) when you zoom out
+  {
+    const F = await fresh();
+    const cat = () => F.p.evaluate(() => (window.__void3d ? window.__void3d.state().figures.find((x) => x.kindOf === 'cat') : null) || null);
+    await F.ask('add a cat', 600);
+    const light = await until(async () => { const c = await cat(); return c && c.tris > 0 ? c : false; }, 30000);
+    await F.ask('zoom in on the figure', 400);
+    const one = light && await until(async () => { const c = await cat(); return c && c.detail === 1 ? c : false; }, 20000);
+    await F.ask('zoom in on the figure', 400);
+    const two = one && await until(async () => { const c = await cat(); return c && c.detail === 2 ? c : false; }, 20000);
+    await F.ask('zoom out on the figure', 300); await F.ask('zoom out on the figure', 300);
+    const back = two && await until(async () => { const c = await cat(); return c && c.detail === 0 ? c : false; }, 20000);
+    check('collector detail: a cat arrives at the light tier, zooming in on it re-meshes it finer twice (more triangles each step), and zooming out returns the light mesh (same triangle count) with the same seed',
+      !!light && light.detail === 0 && !!one && one.tris > light.tris * 1.6 && !!two && two.tris > one.tris * 1.4 && !!back && back.tris === light.tris && back.seed === light.seed && !F.errors.length,
+      JSON.stringify({ light: light && [light.detail, light.tris], one: one && one.tris, two: two && two.tris, back: back && back.tris, e: F.errors }));
+    await F.ctx.close();
+  }
 }

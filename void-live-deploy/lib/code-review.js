@@ -227,8 +227,8 @@ const RULES = [
   ['wildcard-import', 'style', ['python'], (m) => /^\s*from\s+[\w.]+\s+import\s+\*/.test(m),
     'import * pulls every name from the module into yours, so it is unclear where a name comes from and one can silently replace another (os.open hides the built-in open). Import the names you use: from os import path, getcwd.'],
   ['null-deref', 'bug', ['java', 'csharp', ...JS], (m) => { const k = m.match(/\b(\w+)\s*=\s*null\s*;(?![^;]*\b\1\s*=)([^;]*;?[^;]*?)\b\1\s*\.\s*\w+/); if (!k) return false;
-      // a null check between the two (if (s != null), if (s), s && …) makes the call safe
-      const v = k[1].replace(/\$/g, '\\$'); return !new RegExp('\\b' + v + '\\s*!==?\\s*null|\\bnull\\s*!==?\\s*' + v + '\\b|\\bif\\s*\\(\\s*' + v + '\\s*\\)|\\b' + v + '\\s*&&').test(k[2]); },
+      // a null check between the two (if (s != null), if (s), s && …, !s || …, s == null || …, s ? … : …) makes the call safe
+      const v = k[1].replace(/\$/g, '\\$'); return !new RegExp('\\b' + v + '\\s*!==?\\s*null|\\bnull\\s*!==?\\s*' + v + '\\b|\\bif\\s*\\(\\s*' + v + '\\s*\\)|\\b' + v + '\\s*&&|!\\s*' + v + '\\s*\\|\\||\\b' + v + '\\s*===?\\s*null\\s*\\|\\||\\b' + v + '\\s*\\?(?!\\.)').test(k[2]); },
     'the variable is set to null and then used with a dot, so this line throws (a NullPointerException in Java, a TypeError in JavaScript). Give it a value first, or check: if (s != null).'],
   ['php-include-input', 'risk', ['php'], (m, r) => /\b(?:include|require)(?:_once)?\b\s*\(?[^;]*\$_(?:GET|POST|REQUEST|COOKIE)\b/.test(r),
     'the file to include comes from the request, so a visitor chooses which file runs: ../../etc/passwd to read files, or a URL to run their own code. Map allowed names to files: $pages = ["home" => "home.php"]; include $pages[$_GET["page"]] ?? "home.php";'],

@@ -1383,5 +1383,30 @@
     ],
     "sha256": "2ee0c5775ca51252395bee15315d33835b92695444f2f8b7ad260e7c071e4179",
     "emit": false
+  },
+  {
+    "run": 56,
+    "at": "2026-10-08T13:45:37Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention-6.html",
+    "sources": [
+      {
+        "claim": "Naming the ink colour of a colour word is slower when the word names a different colour (the Stroop effect)",
+        "source": "https://doi.org/10.1037/h0054651",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Half a century of Stroop studies finds the interference robust across many variations of the task",
+        "source": "https://doi.org/10.1037/0033-2909.109.2.163",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's own Stroop cost, logged per sitting with the hour of day, is higher at their tired times and can tell them when focused work will cost more",
+        "source": "drafts/fringe/attention-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "f069d54c6fe2718533d6a51d7d88b533797ba2b06eb4af887b796204dc1a1b17",
+    "emit": false
   }
 ]

@@ -283,7 +283,7 @@ export function mountStage3D() {
 
 function debugState() {
   return { mounted: !!stage, canvas: !!document.getElementById('void-3d'), animating: !!(stage && stage.raf), still: motionStill(), zoom: ui.zoom, zoomTo: ui.zoomTo,
-    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null, kindOf: f.spec.kindOf || null, seed: f.spec.seed ?? null, nature: f.nature || null, climate: f.climate || null })) };
+    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null, kindOf: f.spec.kindOf || null, detail: f.spec.detail | 0, tris: trisOf(f), seed: f.spec.seed ?? null, nature: f.nature || null, climate: f.climate || null })) };
 }
 
 // --- the void sprite: a soft, glossy little blob with big shiny eyes, rosy cheeks, a glowing antenna bulb and a wispy tail ---
@@ -647,7 +647,7 @@ function buildWater(spec) {
 // a real brain (skills/sdfmesh.js brainMesh): seeded folds, darker in the grooves, the wet pinkish grey of fresh tissue
 function buildBrain(spec) {
   const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
-  const m = brainMesh(R, (spec.seed ?? 1) >>> 0), geo = new T.BufferGeometry();
+  const m = brainMesh(R, (spec.seed ?? 1) >>> 0, cellsFor(spec, 72)), geo = new T.BufferGeometry();
   geo.setAttribute('position', new T.BufferAttribute(m.positions, 3)); geo.setAttribute('normal', new T.BufferAttribute(m.normals, 3));
   geo.setAttribute('color', new T.BufferAttribute(m.colors, 3)); geo.setIndex(new T.BufferAttribute(m.indices, 1)); geo.computeBoundingSphere();
   const mat = new T.MeshPhysicalMaterial({ color: 0xd8a6a2, roughness: 0.42, metalness: 0, vertexColors: true, clearcoat: 0.7, clearcoatRoughness: 0.35, sheen: 0.5, sheenColor: new T.Color(0xf2c9c4) });
@@ -664,7 +664,7 @@ function creaturePart(m) {
 }
 function buildCreature(spec) {
   const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
-  const C = creatureMesh(R, (spec.seed ?? 1) >>> 0, spec.kindOf), rig = C.rig;
+  const C = creatureMesh(R, (spec.seed ?? 1) >>> 0, spec.kindOf, cellsFor(spec, 60)), rig = C.rig;
   const fur = new T.MeshPhysicalMaterial({ color: rig.coat, roughness: rig.kind === 'mouse' ? 0.7 : 0.85, vertexColors: true, sheen: 1, sheenRoughness: 0.6, sheenColor: new T.Color(rig.coat).lerp(new T.Color(0xffffff), 0.4) });
   const eyeMat = new T.MeshPhysicalMaterial({ color: rig.kind === 'cat' ? 0x9a8a2a : 0x14100c, roughness: 0.05, clearcoat: 1 }), noseMat = new T.MeshStandardMaterial({ color: rig.kind === 'mouse' || rig.kind === 'rabbit' ? 0xc98a8a : 0x241c1a, roughness: 0.4 });
   const parts = { mats: [fur, eyeMat, noseMat], geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
@@ -690,7 +690,7 @@ function poseCreature(f, still) {
 // real foods (skills/sdfmesh.js foodField): a bone, a wedge of cheese, a carrot, a banana; colour lives in the vertices
 function buildFood(spec) {
   const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
-  const m = foodMesh(R, (spec.seed ?? 1) >>> 0, spec.kindOf), geo = new T.BufferGeometry();
+  const m = foodMesh(R, (spec.seed ?? 1) >>> 0, spec.kindOf, cellsFor(spec, 64)), geo = new T.BufferGeometry();
   geo.setAttribute('position', new T.BufferAttribute(m.positions, 3)); geo.setAttribute('normal', new T.BufferAttribute(m.normals, 3));
   geo.setAttribute('color', new T.BufferAttribute(m.colors, 3)); geo.setIndex(new T.BufferAttribute(m.indices, 1)); geo.computeBoundingSphere();
   const k = spec.kindOf, mat = new T.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: k === 'banana' ? 0.45 : k === 'cheese' ? 0.6 : k === 'carrot' ? 0.55 : 0.75, clearcoat: k === 'banana' ? 0.3 : 0, sheen: k === 'carrot' ? 0.3 : 0 });
@@ -701,7 +701,7 @@ function buildFood(spec) {
 // fish, sharks, bees and flowers (skills/sdfmesh.js lifeParts): coloured in the vertices; a tail that sweeps, wings that beat
 function buildLife(spec) {
   const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
-  const M = lifeMesh(R, (spec.seed ?? 1) >>> 0, spec.kindOf), info = M.info, k = info.kind;
+  const M = lifeMesh(R, (spec.seed ?? 1) >>> 0, spec.kindOf, cellsFor(spec, 64)), info = M.info, k = info.kind;
   const mat = new T.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: k === 'fish' || k === 'shark' ? 0.3 : 0.6, clearcoat: k === 'fish' ? 0.8 : 0.2, sheen: k === 'bee' ? 1 : 0, sheenColor: new T.Color(0xf2d27a) });
   const wingMat = new T.MeshPhysicalMaterial({ color: 0xdfe8ef, transparent: true, opacity: 0.35, roughness: 0.1, side: T.DoubleSide, depthWrite: false });
   const parts = { mats: [mat, wingMat], geos: [] };
@@ -774,7 +774,7 @@ function zombiePart(rig, part, m, at) {
 function buildPerson(spec) { return buildZombie(spec, true); }
 function buildZombie(spec, living = false) {
   const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
-  const Z = zombieMesh(R, seedOf(spec), 52, living), rig = Z.rig, col = rig.skin; // the seed's own skin: realistic, never the summon's flat colour
+  const Z = zombieMesh(R, seedOf(spec), cellsFor(spec, 52), living), rig = Z.rig, col = rig.skin; // the seed's own skin: realistic, never the summon's flat colour
   // matte, mottled skin (the blotches are vertex colours) with a faint red sheen for blood under the skin; dull, stained cloth
   const skin = new T.MeshPhysicalMaterial({ color: col, roughness: living ? 0.6 : 0.8, metalness: 0, vertexColors: true, sheen: 0.4, sheenColor: new T.Color(living ? 0xe8b0a0 : 0x8a3b36), sheenRoughness: 0.75,
     emissive: new T.Color(col).multiplyScalar(0.05), emissiveIntensity: 1 }); // a little self-light only: more reads as plastic
@@ -809,6 +809,32 @@ function buildZombie(spec, living = false) {
   const aura = new T.Sprite(auraMat); aura.scale.set(R * 4.5, R * 4.5, 1); aura.position.z = -R; g.add(aura); parts.mats.push(auraMat);
   Object.assign(parts, { body, head, eyes, eyesHome: eyes.position.clone(), arms, antenna: null, glow: null, eyeGlow: rig.eyeKind === 2 ? eyeMat : null, lamp: { intensity: 0 }, tail: null, pool: null, aura, zombie: rig });
   return { obj: g, parts };
+}
+
+// Next #22, collector detail: bodies meshed from distance fields (people, zombies, animals, food, fish, bees, flowers, the brain)
+// re-mesh finer as the visitor zooms in on them, one tier at a time once the glide settles, and drop back to the light tier
+// as soon as they are no longer the one zoomed on, so memory stays low. Tier 0 is what every figure arrives as.
+export const DETAIL = [1, 1.5, 2];
+export const tierForZoom = (z) => (z >= 2.6 ? 2 : z >= 1.6 ? 1 : 0);
+const cellsFor = (spec, base) => Math.round(base * (DETAIL[spec.detail | 0] || 1));
+const sdfBody = (spec) => (ELEMENTS[spec.kindOf] ? [buildBrain, buildCreature, buildFood, buildLife].includes(ELEMENTS[spec.kindOf]) : isZombie(spec) || String(spec.body || '').toLowerCase() === 'person');
+function trisOf(f) { return Math.round(f.parts.geos.reduce((n, g) => n + (g.index ? g.index.count : g.attributes && g.attributes.position ? g.attributes.position.count : 0), 0) / 3); }
+// the tier one figure should have now: one step toward its target per call; null when it is already there
+function nextTier(f, zoomId, zoomTo) {
+  if (f.leaving || !sdfBody(f.spec)) return null;
+  const have = f.spec.detail | 0, want = zoomId === f.brain.id ? tierForZoom(zoomTo) : 0;
+  return want === have ? null : want < have ? want : have + 1;
+}
+function retier(f, t, now) {
+  const built = buildFigure({ ...f.spec, detail: t });
+  disposeFigure(f); f.obj = built.obj; f.parts = built.parts; f.spec.detail = t;
+  stage.scene.add(f.obj); poseSprite(f, now);
+}
+// at most one rebuild a frame, and none while the camera is still gliding; true while some figure still has a step to take
+function settleDetail(now) {
+  if (Math.abs(ui.zoom - ui.zoomTo) > 0.002) return true;
+  for (const f of figures.values()) { const t = nextTier(f, ui.zoomId, ui.zoomTo); if (t != null) { retier(f, t, now); return true; } }
+  return false;
 }
 
 function buildFigure(spec) {
@@ -999,6 +1025,7 @@ function frame(ts) {
   if (!figures.has(ui.zoomId)) { ui.zoomId = null; ui.zoomTo = 1; }
   ui.zoom = still ? ui.zoomTo : ui.zoom + (ui.zoomTo - ui.zoom) * Math.min(1, dt * 7);
   if (Math.abs(ui.zoom - ui.zoomTo) < 0.002) ui.zoom = ui.zoomTo; else moving = true;
+  if (settleDetail(now)) moving = true;
   ui.cam = camFor(ui.zoom);
   stage.camera.position.set(ui.cam.x, ui.cam.y, stage.home / ui.zoom);
   for (const x of extras) { try { if (x.update) { x.update(dt, now / 1000); if (!still) moving = true; } } catch (_) {} }

@@ -118,7 +118,7 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Reuse:** #18 styling, #19 script prompt and fallback scripts, #20 reactions.
 - **Done when:** sample grim subjects (GG Allin, a plague, a shipwreck) each bring a cartoon figure with comic actions and splats drawn as bright cartoon blobs; the Workers AI prompt asks for cartoon slapstick; tests check the grim samples come out in cartoon style and stay green.
 - **superseded (Adam, 2026-10-08):** "we are going for realistic not cute". Everything that appears is realistic, one of a kind, clonable and acts on its nature (STANDING.md); grim subjects are not turned into cartoons. Do not build this.
-- **claim:** first pass live at f249d1a (cartoon version of a hard subject); free for the full pass in Done when
+- **claim:** closed: superseded 2026-10-08 (see the line above); the first pass at f249d1a stays only until realistic bodies cover its subjects
 - **claim_until:**
 
 ### Next #22 — collector-grade detail and zoom, with level-of-detail loading
@@ -126,7 +126,7 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Why:** collectors and curious visitors get a miniature worth studying, while everyone else still gets a small, fun figure on the stage that arrives instantly.
 - **Reuse:** the #17 layer (three.js LOD objects and progressive texture loading), #18 base bodies as the light tier, the reduced-motion setting for the zoom move.
 - **Done when:** a summoned figure first loads only its light tier (network log); zooming in streams higher-detail tiers and the figure visibly sharpens; zooming out releases them; the empty page still loads zero 3D code; tests check the tier order and stay green.
-- **claim:** first pass live at 6af476e (zoom in on the figure, progressive detail); free for the 8K tiers in Done when
+- **claim:** DONE 2026-10-08 run 56 (skills/figures3d.js detail tiers): every body meshed from distance fields (people, zombies, animals, food, fish, bees, flowers, the brain) arrives at the light tier and re-meshes at 1.5× then 2× resolution as you zoom in on it, one step at a time once the glide settles, then drops back to the light mesh the moment it is no longer the one zoomed on; nothing is downloaded (the bodies are built in the browser, so "8K textures" became finer geometry). A 3D test checks the order (light, finer, finer, light again with the same triangles and seed). Next: the same tiers for the sprite and the place/object/idea bodies.
 - **claim_until:**
 
 ### Next [think-tank] — Motelet remembers you, on this device
