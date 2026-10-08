@@ -1458,5 +1458,30 @@
     ],
     "sha256": "ffc7a1797dbe926db4f515d9caa7d951d9499fa5e142082538534a51aaa4a69e",
     "emit": false
+  },
+  {
+    "run": 59,
+    "at": "2026-10-08T16:44:39Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger-7.html",
+    "sources": [
+      {
+        "claim": "People judging how likely something is from a sign tend to neglect how rare it was to begin with (base-rate neglect)",
+        "source": "https://doi.org/10.1037/h0034747",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Stating the same information as natural frequencies (counts out of a whole) instead of percentages makes far more people reason correctly about it",
+        "source": "https://doi.org/10.1037/0033-295X.102.4.684",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing each of one's own percentage guesses redrawn as counts out of 1,000 shrinks one's base-rate error over rounds",
+        "source": "drafts/fringe/weak-signal-hypothesis-ledger-7.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "83e3d8a3ccd462c47288494ce53ca975603fd3400928b08fca8700a67ebf19e3",
+    "emit": false
   }
 ]
