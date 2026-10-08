@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · the streak fades (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input[type=range]{flex:1 1 200px;padding:0}
+svg{width:100%;max-width:520px;height:auto;border:1px solid rgba(255,255,255,.12);border-radius:12px}
+#out{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>the streak fades · draft · not published</h1>
+  <p class="note">A thousand people take the same test twice. Each score is part real skill and part luck on the day. Pick out the top tenth from the first try and look at their second try: they come back toward the middle, though nobody changed. That is regression to the mean, first described by Galton (1886) and still a common trap when judging a treatment, a coach or a hunch by its best moments (Barnett, van der Pols and Dobson, 2005). Slide how much of the score is skill and watch how far the top group falls back.</p>
+  <div class="row"><label for="skill">skill share</label><input id="skill" type="range" min="0" max="100" step="5" value="50"><output id="sv" for="skill">50%</output></div>
+  <div class="row"><button id="again" type="button">new thousand people</button></div>
+  <svg id="plot" viewBox="0 0 520 220" role="img" aria-label="the top tenth's average on the first and second try, against everyone's average"></svg>
+  <div id="out" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var el=function(id){return document.getElementById(id)},NS='http://www.w3.org/2000/svg',seed=Date.now()%2147483647||1;
+  // mulberry32: well-mixed draws (a plain multiplicative generator made paired normals skew the result)
+  function rng(s){var a=s>>>0||1;return function(){a=(a+0x6d2b79f5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+  function normal(r){var u=1-r(),v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+  // n people: a fixed skill and fresh luck each try, mixed so the score has variance 1 whatever the skill share k (0..1)
+  function simulate(n,k,r){var a=Math.sqrt(k),b=Math.sqrt(1-k),people=[];for(var i=0;i<n;i++){var s=normal(r);people.push({t1:a*s+b*normal(r),t2:a*s+b*normal(r)})}return people}
+  // the top tenth on try one: their average then, their average on try two, and how much of the gap was kept
+  function regress(people,top){var sorted=people.slice().sort(function(x,y){return y.t1-x.t1}),g=sorted.slice(0,Math.max(1,Math.round(people.length*(top||0.1))));
+    var m1=g.reduce(function(s,p){return s+p.t1},0)/g.length,m2=g.reduce(function(s,p){return s+p.t2},0)/g.length;return {first:m1,second:m2,kept:m1?m2/m1:0}}
+  function draw(res){var svg=el('plot');while(svg.firstChild)svg.removeChild(svg.firstChild);
+    var y=function(v){return 190-v*60},add=function(tag,at){var e=document.createElementNS(NS,tag);for(var k in at)e.setAttribute(k,at[k]);svg.appendChild(e);return e};
+    add('line',{x1:40,x2:500,y1:y(0),y2:y(0),stroke:'#55555c','stroke-dasharray':'4 4'});var t=add('text',{x:44,y:y(0)-6,fill:'#8a8a92','font-size':12});t.textContent='everyone’s average';
+    [['first try',res.first,150],['second try',res.second,370]].forEach(function(b){var h=Math.max(1,res.first?b[1]*60:1);add('rect',{x:b[2]-40,y:y(Math.max(0,b[1])),width:80,height:Math.max(1,y(0)-y(Math.max(0,b[1]))),fill:'#7cc4ff'});
+      var l=add('text',{x:b[2],y:210,fill:'#d8d8dc','font-size':12,'text-anchor':'middle'});l.textContent=b[0];var v=add('text',{x:b[2],y:y(Math.max(0,b[1]))-6,fill:'#d8d8dc','font-size':12,'text-anchor':'middle'});v.textContent=b[1].toFixed(2)+' sd'})}
+  function update(){var k=+el('skill').value/100;el('sv').textContent=Math.round(k*100)+'%';var res=regress(simulate(1000,k,rng(seed)),0.1);draw(res);
+    el('out').textContent='the top tenth scored '+res.first.toFixed(2)+' standard deviations above average on the first try and '+res.second.toFixed(2)+' on the second: they kept '+Math.round(res.kept*100)+'% of their lead.'
+      +'\nwith a skill share of '+Math.round(k*100)+'% you would expect them to keep about '+Math.round(k*100)+'%: the rest was luck, and luck does not repeat.'}
+  el('skill').addEventListener('input',update);el('again').addEventListener('click',function(){seed=(seed*48271)%2147483647||1;update()});
+  update();
+  // made-up checks: with pure luck the top group falls back to about 0, with pure skill it keeps its lead, at 50% it keeps about half
+  function selftest(){var r=rng(7),luck=regress(simulate(4000,0,r)),skill=regress(simulate(4000,1,r)),half=regress(simulate(4000,0.5,r));
+    if(Math.abs(luck.second)>0.12)return 'pure luck should fall back to 0, got '+luck.second;if(Math.abs(skill.kept-1)>1e-9)return 'pure skill should keep its lead';
+    if(Math.abs(half.kept-0.5)>0.08)return 'half skill should keep about half, got '+half.kept;if(!(luck.first>1.5))return 'the top tenth should start well above average';return true}
+  window.__regress={simulate:simulate,regress:regress,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>
