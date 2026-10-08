@@ -20,8 +20,9 @@
  * missing scripts fall back to the base-body defaults. Nearby figures trigger greet/follow/chase/flee/argue/team; reduced motion holds all still.
  */
 import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
-import { PERSON, ANIMAL, bodyMesh } from './sdfmesh.js';
-import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey } from './scripts.js';
+import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups } from './sdfmesh.js';
+import { makeCloud, cloudGeometry, cloudShade, makePrecip, makeGlow } from './sky3d.js';
+import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, climateAt, CONDITIONS, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey } from './scripts.js';
 export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
 export { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey };
 export const THREE_VERSION = '0.180.0';
@@ -35,13 +36,19 @@ const MAX_ZOOM = 6;
 const PAD = R * 1.3 + 42; // how far a goal sits from any card, just outside where cards start to push
 
 // ---------- the brain: plain numbers in screen px (y grows downward) ----------
+// a figure summoned without a look still differs from the last one: its seed (or id) picks a size, build and pace
+export function variation(seed) {
+  let a = seed >>> 0; const r = () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  return { size: 0.88 + r() * 0.24, wide: 0.9 + r() * 0.2, tall: 0.9 + r() * 0.2, pace: 0.85 + r() * 0.3 };
+}
+function hashId(id) { let h = 2166136261; for (const ch of String(id)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; }
 export function makeBrain(spec = {}, rng = Math.random) {
   const body = spec.body || 'sprite';
   const script = spec.script ? trimScript(spec.script, body, spec.title || null) : null;
   return { id: spec.id || 'fig_' + Math.random().toString(36).slice(2, 8), x: spec.x ?? 200, y: spec.y ?? 200, vx: 0, vy: 0,
     tx: spec.x ?? 200, ty: spec.y ?? 200, mode: 'idle', modeT: 0.6 + rng() * 1.2, act: 'look', yaw: 0, lookX: 0, lookY: 0,
     blinkT: 0, nextBlink: 1.5 + rng() * 3, bob: rng() * 6.28, hop: 0, spin: 0, noticed: false, wave: 0, slide: 0, t: 0,
-    script, body, react: null, reactId: null, reactT: 0, chasedOff: false };
+    script, body, react: null, reactId: null, reactT: 0, chasedOff: false, pace: +spec.pace || 1 }; // pace: this individual's walking speed
 }
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export function insideAny(x, y, rects, pad = 0) {
@@ -99,7 +106,7 @@ export function stepFigure(f, dt, world, rng = Math.random) {
     if (near && (!f.react || f.reactId !== near.other.id || f.react !== near.react)) {
       f.react = near.react; f.reactId = near.other.id; f.reactT = 2.4 + rng() * 1.6;
       if (near.react === 'greet' || near.react === 'argue') { f.mode = near.react; f.hop = 1; f.wave = 1; f.act = 'wave'; }
-      else if (near.react === 'chase' || near.react === 'follow' || near.react === 'flee' || near.react === 'team') {
+      else if (near.react === 'chase' || near.react === 'follow' || near.react === 'flee' || near.react === 'team' || near.react === 'eat') {
         f.mode = near.react; f.modeT = 3;
       }
     }
@@ -113,14 +120,16 @@ export function stepFigure(f, dt, world, rng = Math.random) {
         f.vx *= Math.pow(0.05, dt); f.vy *= Math.pow(0.05, dt);
         if (f.act === 'wave') f.wave = Math.max(f.wave, 0.6);
       }
-    } else if (f.mode === 'chase' || f.mode === 'follow' || f.mode === 'flee' || f.mode === 'team') {
-      const o = (world.others || []).find((x) => x && x.id === f.reactId && !x.chasedOff);
+    } else if (f.mode === 'chase' || f.mode === 'follow' || f.mode === 'flee' || f.mode === 'team' || f.mode === 'eat') {
+      const o = (world.others || []).find((x) => x && x.id === f.reactId && !x.chasedOff && !x.eaten);
+      if (f.mode === 'eat' && o) f.reactT = Math.max(f.reactT, 0.5); // a hunter does not give up on food it can see
       if (!o || f.reactT <= 0) { f.mode = 'idle'; f.modeT = 0.8 + rng() * 1.2; f.react = null; f.reactId = null; }
       else {
         const dx0 = o.x - f.x, dy0 = o.y - f.y, dist = Math.hypot(dx0, dy0) || 1;
         let tx = o.x, ty = o.y, spd = SPEED;
         if (f.mode === 'flee') { tx = f.x - dx0; ty = f.y - dy0; spd = SPEED * 1.25; }
         else if (f.mode === 'chase') { spd = SPEED * 1.45; }
+        else if (f.mode === 'eat') { spd = SPEED * 1.15; } // a steady, single-minded walk to the food
         else if (f.mode === 'team') { // stick near, not on top
           if (dist < R * 2.2) { tx = f.x; ty = f.y; }
           else { tx = o.x - (dx0 / dist) * R * 2; ty = o.y - (dy0 / dist) * R * 2; }
@@ -129,6 +138,8 @@ export function stepFigure(f, dt, world, rng = Math.random) {
         }
         if (f.mode === 'chase' && dist < R * 1.6) { // caught: chase the other off the stage
           o.chasedOff = true; f.mode = 'idle'; f.modeT = 1.2; f.react = null; f.reactId = null; f.hop = 1; f.wave = 1;
+        } else if (f.mode === 'eat' && dist < R * 1.3) { // reached the food: eat it (it shrinks away where it lies)
+          o.eaten = true; o.chasedOff = true; f.ate = (f.ate || 0) + 1; f.mode = 'idle'; f.modeT = 1.6; f.react = null; f.reactId = null; f.hop = 1; f.act = 'look';
         } else {
           f.tx = tx; f.ty = ty;
           const gx = f.tx - f.x, gy = f.ty - f.y, gd = Math.hypot(gx, gy) || 1;
@@ -184,7 +195,7 @@ export function stepFigure(f, dt, world, rng = Math.random) {
       }
     }
   }
-  f.x += f.vx * dt; f.y += f.vy * dt;
+  f.x += f.vx * dt * (f.pace || 1); f.y += f.vy * dt * (f.pace || 1);
   if (b) { f.x = clamp(f.x, b.l, b.r); f.y = clamp(f.y, b.t, b.b); }
   f.yaw += (wantYaw - f.yaw) * Math.min(1, dt * 5);
   return f;
@@ -272,7 +283,7 @@ export function mountStage3D() {
 
 function debugState() {
   return { mounted: !!stage, canvas: !!document.getElementById('void-3d'), animating: !!(stage && stage.raf), still: motionStill(), zoom: ui.zoom, zoomTo: ui.zoomTo,
-    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null })) };
+    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null, kindOf: f.spec.kindOf || null, seed: f.spec.seed ?? null, nature: f.nature || null, climate: f.climate || null })) };
 }
 
 // --- the void sprite: a soft, glossy little blob with big shiny eyes, rosy cheeks, a glowing antenna bulb and a wispy tail ---
@@ -338,7 +349,7 @@ function poseSprite(f, now) {
   if (f.leaving) s = Math.max(0, 1 - (now - f.leaving) / 280);
   else if (!still) { const a = Math.min(1, (now - f.born) / 650); s = a >= 1 ? 1 : 1 + Math.sin(a * Math.PI * 1.25) * 0.18 * (1 - a) - (1 - a) * (1 - a) * 0.9; s = Math.max(0.01, s); }
   f.obj.position.set(w.x, w.y + bob + hop, 0);
-  f.obj.scale.setScalar(s);
+  const sz = (+f.spec.size || 1) * (f.growth || 1); f.obj.scale.set(s * sz * (+f.spec.wide || 1), s * sz * (+f.spec.tall || 1), s * sz); // this individual's size and build (from its seed)
   p.body.rotation.y = b.yaw + (b.spin > 0 ? (1 - b.spin) * Math.PI * 2 : 0) + b.lookX * 0.25;
   p.body.rotation.x = -b.lookY * 0.18 + (still ? 0 : Math.sin(b.bob * 0.5) * 0.03);
   p.body.rotation.z = still ? 0 : -b.vx / SPEED * 0.12;
@@ -362,6 +373,29 @@ function poseSprite(f, now) {
   if (p.pool && p.pool.position) { p.pool.position.y = -R * 2.1 - bob - hop; if (p.pool.scale && p.pool.scale.setScalar) p.pool.scale.setScalar(1 - (bob + hop) / 60); }
   if (p.bubble) p.bubble.material.opacity = still ? 1 : 0.97 + Math.sin(b.t * 2) * 0.03; // near-opaque: a see-through bubble read grey and faint
   if (p.bubble) { const half = R * 4.6 + 10; p.bubble.position.x = Math.max(half - b.x, Math.min(R * 3.6, innerWidth - half - b.x)); } // the bubble stays on screen near an edge
+  if (p.zombie) poseZombie(f, w, hop, still);
+}
+// A zombie shambles: a slow, lopsided step (the bad leg dips deeper), a side sway, the head lolling on its own beat,
+// the reaching arms bobbing out of step. Every number comes from the seed's gait, so each zombie walks its own way.
+function poseZombie(f, w, hop, still) {
+  const b = f.brain, p = f.parts, z = p.zombie, G = z.gait;
+  p.body.rotation.y += z.turn; // a three-quarter turn: the forward reach and the hunch read from the front camera
+  p.eyes.position.copy(p.eyesHome);
+  if (still) { p.body.rotation.z = 0; p.head.rotation.set(0, 0, 0); for (const a of p.arms) a.rotation.set(0, 0, 0); return; }
+  const moving = Math.min(1, Math.hypot(b.vx, b.vy) / SPEED), ph = b.bob * 1.4 * G.pace + G.phase, step = Math.sin(ph);
+  const dip = Math.abs(step) * (step > 0 ? 2 + 4 * G.limp : 1.5) * (0.35 + moving * 0.65);
+  f.obj.position.y = w.y + hop - dip;
+  p.body.rotation.z = step * G.sway * (0.6 + moving) + (step > 0 ? z.drag * 0.05 * G.limp * moving : 0);
+  p.body.rotation.x = Math.abs(step) * 0.05 * moving - b.lookY * 0.08;
+  p.head.rotation.z = Math.sin(b.t * 0.7 + G.phase) * G.loll + step * 0.06;
+  p.head.rotation.x = 0.08 + Math.sin(b.t * 0.9 + G.phase * 2) * G.loll * 0.6;
+  const lift = b.wave > 0 ? -0.5 * Math.min(1, b.wave) : 0, grab = b.mode === 'notice' ? -0.15 : 0; // a tap or the cursor: the arms come up
+  p.arms.forEach((a, i) => {
+    const hangs = z.hang === (i ? 1 : -1);
+    a.rotation.x = (hangs ? Math.sin(ph + i * Math.PI) * 0.22 * (0.3 + moving) : Math.sin(ph * 0.5 + i * 2.1) * 0.08 + lift + grab);
+    a.rotation.z = Math.sin(ph + i) * 0.05;
+  });
+  if (p.eyeGlow) p.eyeGlow.emissiveIntensity = 0.7 + Math.sin(b.t * 1.3) * 0.15;
 }
 
 
@@ -570,7 +604,149 @@ function buildIdea(spec) {
   return { obj: g, parts };
 }
 
+// ---------- elements: realistic, no faces. A cumulus cloud of soft lobes with a flatter base, the sun, a campfire,
+// a block of ice and a patch of water. What they do comes from CONDITIONS in skills/scripts.js (the cloud rains when it
+// is heavy and the air is humid, snows when it is freezing; ice melts above freezing; a flower under rain grows). ----------
+function seeded(seed) { let a = (seed >>> 0) || 1; return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+function elementParts(body, extra) { return Object.assign({ body, geos: [], mats: [], pool: null }, extra); }
+function buildCloud(spec) { // the same seeded cumulus and rain the weather card draws (skills/sky3d.js), at stage size
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const mat = new T.MeshStandardMaterial({ color: 0xf4f6f8, roughness: 1, metalness: 0, emissive: 0xffffff, emissiveIntensity: 0 }), geo = cloudGeometry(T);
+  body.add(makeCloud(T, { seed: spec.seed || 1, size: R * 4.2, mat, geo }));
+  const precip = makePrecip(T, { n: 140, box: { w: R * 3.4, d: R * 1.2, top: -R * 0.3, bottom: -R * 6 }, speed: 260, drop: [0.8, 11], flake: 2.2 });
+  g.add(precip.drops, precip.flakes);
+  const boltGeo = new T.BufferGeometry(); boltGeo.setAttribute('position', new T.BufferAttribute(new Float32Array(8 * 3), 3));
+  const boltMat = new T.LineBasicMaterial({ color: 0xf2f6ff }); const bolt = new T.Line(boltGeo, boltMat); bolt.visible = false; bolt.frustumCulled = false; g.add(bolt);
+  const parts = elementParts(body, { kind: 'cloud', mat, precip, bolt, flash: 0 }); parts.geos.push(geo, boltGeo, precip); parts.mats.push(mat, boltMat);
+  return { obj: g, parts };
+}
+function buildSun(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const mat = new T.MeshBasicMaterial({ color: 0xfff1c4 }); const geo = new T.SphereGeometry(R * 0.9, 48, 32);
+  body.add(new T.Mesh(geo, mat));
+  const halo = makeGlow(T);
+  halo.scale.set(R * 5, R * 5, 1); body.add(halo);
+  const parts = elementParts(body, { kind: 'sun', halo }); parts.geos.push(geo); parts.mats.push(mat, halo.material);
+  return { obj: g, parts };
+}
+function buildFire(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body); const r = seeded(spec.seed);
+  const wood = new T.MeshStandardMaterial({ color: 0x4a2f1c, roughness: 0.95 }), char = new T.MeshStandardMaterial({ color: 0x1c1512, roughness: 1, emissive: 0x3a0e00, emissiveIntensity: 0.6 });
+  const logGeo = new T.CylinderGeometry(R * 0.16, R * 0.18, R * 1.9, 10), stone = new T.DodecahedronGeometry(R * 0.2, 0);
+  const parts = elementParts(body, { kind: 'fire', flames: [] }); parts.geos.push(logGeo, stone); parts.mats.push(wood, char);
+  for (let i = 0; i < 4; i++) { const l = new T.Mesh(logGeo, i % 2 ? wood : char); l.rotation.set(Math.PI / 2 - 0.5, (i / 4) * Math.PI * 2 + r() * 0.3, 0, 'YXZ'); l.position.y = -R * 0.85; body.add(l); }
+  for (let i = 0; i < 9; i++) { const st = new T.Mesh(stone, wood); const a = (i / 9) * Math.PI * 2; st.position.set(Math.cos(a) * R * 1.05, -R * 1.25, Math.sin(a) * R * 0.6); st.scale.setScalar(0.8 + r() * 0.5); body.add(st); }
+  const flameGeo = new T.ConeGeometry(R * 0.32, R * 1.3, 12, 1, true); parts.geos.push(flameGeo);
+  [[0xffd27a, 0.55, 1], [0xff8a2a, 0.75, 1.3], [0xd8401a, 0.95, 1.55]].forEach(([c, w, h], i) => {
+    const m = new T.MeshBasicMaterial({ color: c, transparent: true, opacity: 0.85 - i * 0.18, blending: T.AdditiveBlending, depthWrite: false, side: T.DoubleSide }); parts.mats.push(m);
+    for (let j = 0; j < 3; j++) { const f = new T.Mesh(flameGeo, m); f.scale.set(w + r() * 0.2, h, w); f.position.set((j - 1) * R * 0.28, -R * 0.35 + h * R * 0.2, (r() - 0.5) * R * 0.2); body.add(f); parts.flames.push({ f, h, ph: r() * 6 }); }
+  });
+  return { obj: g, parts };
+}
+function buildIce(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const mat = new T.MeshPhysicalMaterial({ color: 0xdff2ff, roughness: 0.06, metalness: 0, transmission: 0.92, thickness: R, ior: 1.31, transparent: true, opacity: 0.9, clearcoat: 1 });
+  const geo = new T.BoxGeometry(R * 1.3, R * 1.3, R * 1.3, 2, 2, 2);
+  const p = geo.attributes.position, r = seeded(spec.seed); for (let i = 0; i < p.count; i++) p.setXYZ(i, p.getX(i) * (0.94 + r() * 0.1), p.getY(i) * (0.94 + r() * 0.1), p.getZ(i) * (0.94 + r() * 0.1)); geo.computeVertexNormals();
+  const block = new T.Mesh(geo, mat); block.rotation.set(0.35, 0.6, 0); body.add(block);
+  const wetMat = new T.MeshPhysicalMaterial({ color: 0x9cc8e6, roughness: 0.05, transparent: true, opacity: 0.55, clearcoat: 1 }), wetGeo = new T.CircleGeometry(R * 1.4, 40);
+  const puddle = new T.Mesh(wetGeo, wetMat); puddle.rotation.x = -Math.PI / 2 + 0.35; puddle.position.y = -R * 0.95; puddle.scale.setScalar(0.2); g.add(puddle);
+  const parts = elementParts(body, { kind: 'ice', block, puddle }); parts.geos.push(geo, wetGeo); parts.mats.push(mat, wetMat);
+  return { obj: g, parts };
+}
+function buildWater(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const geo = new T.CircleGeometry(R * 2.6, 64), p = geo.attributes.position, r = seeded(spec.seed);
+  const ph = [r() * 6.28, r() * 6.28, r() * 6.28]; // a smooth shoreline: a few slow waves round the edge, not noise
+  for (let i = 1; i < p.count; i++) { const a = Math.atan2(p.getY(i), p.getX(i)), k = 0.9 + 0.07 * Math.sin(2 * a + ph[0]) + 0.04 * Math.sin(3 * a + ph[1]) + 0.025 * Math.sin(5 * a + ph[2]); p.setXY(i, p.getX(i) * k * 1.4, p.getY(i) * k); }
+  const mat = new T.MeshPhysicalMaterial({ color: 0x1f5f86, roughness: 0.08, metalness: 0.1, clearcoat: 1, clearcoatRoughness: 0.05, transparent: true, opacity: 0.92 });
+  const water = new T.Mesh(geo, mat); water.rotation.x = -Math.PI / 2 + 0.45; body.add(water);
+  const parts = elementParts(body, { kind: 'water', water }); parts.geos.push(geo); parts.mats.push(mat);
+  return { obj: g, parts };
+}
+const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater };
+// run a thing's conditions for one frame and show the result: rain, snow and lightning, a darkening cloud, melting ice,
+// a flower growing under the rain. Returns true while something is visibly happening.
+function stepElement(f, dt, now, still, others) {
+  const kind = f.spec.kindOf, cond = CONDITIONS[kind]; if (!cond) return false;
+  if (!f.nature) f.nature = cond.start();
+  const env = climateAt({ id: f.brain.id, x: f.brain.x, y: f.brain.y }, others);
+  f.nature = cond.step(f.nature, env, dt); f.climate = env;
+  const p = f.parts, st = f.nature;
+  if (kind === 'cloud' && p.mat) {
+    p.mat.color.set(cloudShade(st.water));
+    p.precip.set(st.falling); if (p.precip.on) p.precip.step(still ? 0 : dt, now / 1000);
+    // a storm: lightning now and then (never with less motion)
+    if (st.storm && !still && p.flash <= 0 && Math.random() < dt * 0.35) {
+      p.flash = 0.18; const b = p.bolt.geometry.attributes.position; let x = (Math.random() - 0.5) * R * 2, y = -R * 0.4;
+      for (let i = 0; i < 8; i++) { b.setXYZ(i, x, y, R * 0.6); x += (Math.random() - 0.5) * R * 0.9; y -= R * 0.75; } b.needsUpdate = true;
+    }
+    p.flash = Math.max(0, p.flash - dt); p.bolt.visible = p.flash > 0; p.mat.emissiveIntensity = p.flash > 0 ? 0.6 : 0;
+    return !!st.falling || p.flash > 0;
+  }
+  if (kind === 'ice' && p.block) {
+    const k = Math.max(0.02, Math.cbrt(1 - st.melt)); p.block.scale.setScalar(k); p.block.position.y = -R * 0.65 * (1 - k); p.puddle.scale.setScalar(0.2 + st.melt * 0.9);
+    if (st.gone && !f.leaving) f.leaving = now;
+    return st.melt > 0 && st.melt < 1;
+  }
+  if (kind === 'flower') { const g = 1 + st.grow * 0.7; f.growth = g; return env.rainedOn; }
+  return false;
+}
+// ---------- a zombie: its own seeded body (skills/sdfmesh.js ZOMBIE), so each summon is a new individual ----------
+export const isZombie = (spec) => !!spec && (spec.kindOf === 'zombie' || /\b(?:zombies?|undead|ghouls?)\b/i.test(spec.title || ''));
+// the seed the figure carries; an older figure without one gets a steady seed from its id, so it looks the same after a reload
+export function seedOf(spec) {
+  if (spec.seed != null && Number.isFinite(Number(spec.seed))) return Number(spec.seed) >>> 0;
+  let h = 2166136261; for (const ch of String(spec.id || spec.title || 'zombie')) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  return h >>> 0;
+}
+function zombiePart(rig, part, m, at) {
+  const T = THREE, { indices, groups, colors } = zombieGroups(rig, part, m), g = new T.BufferGeometry();
+  g.setAttribute('position', new T.BufferAttribute(m.positions.slice(), 3));
+  g.setAttribute('normal', new T.BufferAttribute(m.normals.slice(), 3));
+  g.setAttribute('color', new T.BufferAttribute(colors, 3));
+  g.setIndex(new T.BufferAttribute(indices, 1));
+  for (const gr of groups) g.addGroup(gr.start, gr.count, gr.mat);
+  if (at) g.translate(-at[0], -at[1], -at[2]); // hang the part from its pivot (the neck, a shoulder)
+  g.computeBoundingSphere();
+  return g;
+}
+function buildZombie(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const Z = zombieMesh(R, seedOf(spec)), rig = Z.rig, col = hexColor(spec.kindOf === 'zombie' ? null : spec.color, rig.skin); // the seed's own skin: realistic, not the summon's flat colour
+  // matte, mottled skin (the blotches are vertex colours) with a faint red sheen for blood under the skin; dull, stained cloth
+  const skin = new T.MeshPhysicalMaterial({ color: col, roughness: 0.8, metalness: 0, vertexColors: true, sheen: 0.4, sheenColor: new T.Color(0x8a3b36), sheenRoughness: 0.75,
+    emissive: new T.Color(col).multiplyScalar(0.05), emissiveIntensity: 1 }); // a little self-light only: more reads as plastic
+  const shirt = new T.MeshStandardMaterial({ color: rig.shirt, roughness: 0.95, vertexColors: true, emissive: new T.Color(rig.shirt).multiplyScalar(0.1) });
+  const pants = new T.MeshStandardMaterial({ color: rig.pants, roughness: 0.95, vertexColors: true, emissive: new T.Color(rig.pants).multiplyScalar(0.1) });
+  const raw = new T.MeshStandardMaterial({ color: 0x2a0d10, roughness: 0.55, vertexColors: true });
+  const set = [skin, shirt, pants, raw], parts = { mats: set.slice(), geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
+  body.add(new T.Mesh(geo(zombiePart(rig, 'body', Z.body)), set));
+  const head = new T.Group(); head.position.set(...rig.neck); body.add(head);
+  head.add(new T.Mesh(geo(zombiePart(rig, 'head', Z.head, rig.neck)), set));
+  // eyes sit deep in the dark sockets: pale and clouded, almost lost in shadow, or a faint green glow
+  const eyeMat = rig.eyeKind === 2 ? new T.MeshStandardMaterial({ color: 0x9fe08a, emissive: 0x6fdc4a, emissiveIntensity: 0.7, roughness: 0.4 })
+    : new T.MeshStandardMaterial({ color: rig.eyeKind === 0 ? 0xc9cbbf : 0x4a4038, roughness: 0.35, emissive: rig.eyeKind === 0 ? 0x2a2c26 : 0x000000 });
+  parts.mats.push(eyeMat);
+  const eyes = new T.Group(), ball = geo(new T.SphereGeometry(rig.headR * 0.17, 10, 8));
+  for (const e of rig.eyes) { const m = new T.Mesh(ball, eyeMat); m.position.set(e[0] - rig.neck[0], e[1] - rig.neck[1], e[2] - rig.neck[2] - rig.headR * 0.06); eyes.add(m); }
+  head.add(eyes);
+  const arms = ['armL', 'armR'].map((k, i) => {
+    const S = rig.shoulders[i], pivot = new T.Group(); pivot.position.set(...S);
+    pivot.add(new T.Mesh(geo(zombiePart(rig, k, Z[k], S)), set)); body.add(pivot); return pivot;
+  });
+  attachProp(body, parts, spec.prop, { x: rig.hands[1][0], y: rig.hands[1][1], z: rig.hands[1][2] });
+  addSpeech(g, parts, spec.line);
+  // a dim aura in the skin colour, so a grey body still reads on the black stage
+  const auraMat = new T.SpriteMaterial({ map: softTexture('rgba(255,255,255,0.5)', 'rgba(255,255,255,0)'), color: new T.Color(col), transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: 0.16 });
+  const aura = new T.Sprite(auraMat); aura.scale.set(R * 4.5, R * 4.5, 1); aura.position.z = -R; g.add(aura); parts.mats.push(auraMat);
+  Object.assign(parts, { body, head, eyes, eyesHome: eyes.position.clone(), arms, antenna: null, glow: null, eyeGlow: rig.eyeKind === 2 ? eyeMat : null, lamp: { intensity: 0 }, tail: null, pool: null, aura, zombie: rig });
+  return { obj: g, parts };
+}
+
 function buildFigure(spec) {
+  if (ELEMENTS[spec.kindOf]) return ELEMENTS[spec.kindOf](spec);
+  if (isZombie(spec)) return buildZombie(spec);
   const body = String(spec.body || 'sprite').toLowerCase();
   if (body === 'person') return buildPerson(spec);
   if (body === 'animal') return buildAnimal(spec);
@@ -591,7 +767,7 @@ export async function addFigure(spec = {}) {
   const n = figures.size, color = spec.color || PALETTE[n % PALETTE.length];
   const body = spec.body || 'sprite';
   const script = spec.script ? trimScript(spec.script, body, spec.title || null) : null;
-  const brain = makeBrain({ id, x: spec.x, y: spec.y, body, script, title: spec.title || null });
+  const brain = makeBrain({ id, x: spec.x, y: spec.y, body, script, title: spec.title || null, pace: spec.pace || 1 });
   if (spec.x == null || spec.y == null) { // a free spot away from cards and from the friends already here
     const w = worldNow(), near = [...figures.values()].map((o) => ({ l: o.brain.x - R * 2, r: o.brain.x + R * 2, t: o.brain.y - R * 2, b: o.brain.y + R * 2 }));
     const p = pickTarget({ ...w, rects: w.rects.concat(near) }); brain.x = brain.tx = p.x; brain.y = brain.ty = p.y;
@@ -619,7 +795,7 @@ export function removeFigures(ids) {
   return n;
 }
 export async function syncFigures(list) {
-  desired = (list || []).map((t) => ({ id: t.id, body: t.body || 'sprite', color: t.color || null, prop: t.prop || null, line: t.line || null, script: t.script || null, title: t.title || null, x: t.sx, y: t.sy }));
+  desired = (list || []).map((t) => ({ id: t.id, body: t.body || 'sprite', color: t.color || null, prop: t.prop || null, line: t.line || null, script: t.script || null, title: t.title || null, x: t.sx, y: t.sy, seed: t.seed ?? null, kindOf: t.kindOf || null, size: t.size || null, wide: t.wide || null, tall: t.tall || null, pace: t.pace || null }));
   if (!desired.length && !stage) return;
   await mountStage3D();
   const want = desired, ids = want.map((d) => d.id);
@@ -627,7 +803,8 @@ export async function syncFigures(list) {
   for (const d of want) {
     const f = figures.get(d.id);
     if (f && f.leaving) { disposeFigure(f); figures.delete(d.id); }
-    if (!figures.has(d.id)) await addFigure({ id: d.id, body: d.body, color: d.color || undefined, prop: d.prop || undefined, line: d.line || undefined, script: d.script || undefined, title: d.title || undefined });
+    if (!figures.has(d.id)) { const v = d.size ? {} : variation(d.seed ?? hashId(d.id)); // every figure is an individual, even ones summoned without a look
+      await addFigure({ id: d.id, body: d.body, color: d.color || undefined, prop: d.prop || undefined, line: d.line || undefined, script: d.script || undefined, title: d.title || undefined, size: d.size || v.size, wide: d.wide || v.wide, tall: d.tall || v.tall, pace: d.pace || v.pace, seed: d.seed ?? undefined, kindOf: d.kindOf || undefined }); }
     else {
       if (d.script && (!f.spec.script || JSON.stringify(f.spec.script) !== JSON.stringify(d.script))) {
         const sc = trimScript(d.script, d.body || 'sprite', d.title || null);
@@ -739,6 +916,7 @@ function frame(ts) {
   const still = motionStill(), world = worldNow();
   world.still = still; world.cursor = ui.cursor; world.others = [...figures.values()].map((f) => f.brain);
   let moving = false;
+  const elems = [...figures.values()].filter((f) => f.spec.kindOf && !f.leaving).map((f) => ({ id: f.brain.id, x: f.brain.x, y: f.brain.y, kind: f.spec.kindOf, state: f.nature || null }));
   for (const [id, f] of figures) {
     if (f.leaving && now - f.leaving > 300) { disposeFigure(f); figures.delete(id); continue; }
     if (f.brain.chasedOff && !f.leaving) { // Next #20: a chase that caught this figure sends them off
@@ -747,6 +925,7 @@ function frame(ts) {
     }
     stepFigure(f.brain, dt, { ...world, posing: ui.zoomId === id && ui.zoomTo > 1 });
     poseSprite(f, now);
+    if (f.spec.kindOf && CONDITIONS[f.spec.kindOf] && !f.leaving && stepElement(f, dt, now, still, elems)) moving = true;
     if (!still || f.leaving) moving = true;
   }
   // zoom: dolly the camera in and glide over the focused figure, so it grows and comes to the middle of the screen

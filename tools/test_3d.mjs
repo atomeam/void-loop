@@ -248,8 +248,12 @@ export async function run3dChecks({ check, fresh }) {
     await F.ask('heart rate zones for a 40 year old', 700);
     // the page's big number is the target band "a-b bpm": the heart beats at its middle
     const zones = await until(async () => { const s = await lastHeart(); if (!s || s.key === rest.key) return false; const m = (await F.page()).match(/(\d+)\s*[\u2013-]\s*(\d+)\s*bpm/); return m && s.bpm === Math.round((+m[1] + +m[2]) / 2) ? { ...s, band: m[0] } : false; }, 60000);
-    check('miniatures: "is a resting heart rate of 55 good" beats the 3D heart at 55 bpm and it keeps beating; "heart rate zones for a 40 year old" beats a new one at the middle of the target band on the card',
-      !!rest && !!beating && !!zones && !F.errors.length, JSON.stringify({ rest, beating, zones, e: F.errors }));
+    // the one heart: the monitor's QRS spike comes just before the ventricles' squeeze peaks, on the same clock, and a beat lasts 60 / bpm
+    const sync = await F.p.evaluate(async () => { const h = await import('/skills/mini/heart.js'); let qrs = 0, best = -9, peak = 0, top = -1;
+      for (let i = 0; i < 1000; i++) { const t = i / 1000, e = h.ecgAt(t, 60), b = h.beatPhase(t, 60); if (e > best) { best = e; qrs = t; } if (b > top) { top = b; peak = t; } }
+      return { qrs, peak, ok: qrs < peak && peak - qrs < 0.25 && Math.abs(h.beatPhase(0.3, 72) - h.beatPhase(0.3 + 60 / 72, 72)) < 1e-9 && h.atriaPhase(0.03, 60) > 0 }; });
+    check('miniatures: "is a resting heart rate of 55 good" beats the 3D heart at 55 bpm and it keeps beating; "heart rate zones for a 40 year old" beats a new one at the middle of the target band on the card; the ECG spike leads the squeeze on one clock',
+      !!rest && !!beating && !!zones && sync.ok && !F.errors.length, JSON.stringify({ rest, beating, zones, sync, e: F.errors }));
     await F.ctx.close();
   }
 
@@ -340,6 +344,41 @@ export async function run3dChecks({ check, fresh }) {
     });
     check('3D tip: "20% tip on 86.40 split between 3 people" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks',
       !!drawn && r.inPage && r.lines === 'Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56' && r.s.people === 3 && r.s.gold >= 1 && r.s.silver > r.s.gold && r.one.gold === 0 && r.many === 8 && !F.errors.length, JSON.stringify({ drawn, r, e: F.errors }));
+    await F.ctx.close();
+  }
+  // ---- Void's own body on its self page: one fixed seed (the same entity everywhere), asymmetric, tap breaks it apart
+  {
+    const F = await fresh();
+    await F.ask('void', 900);
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'void'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => {
+      const v = await import('/skills/mini/void.js'), a = v.plan(), b = v.plan(), c = v.plan(12345);
+      const mean = a.reduce((m, s) => [m[0] + s.d[0], m[1] + s.d[1], m[2] + s.d[2]], [0, 0, 0]).map((x) => x / a.length);
+      return { n: a.length, same: JSON.stringify(a) === JSON.stringify(b), other: JSON.stringify(a) !== JSON.stringify(c), lean: Math.hypot(...mean), inPage: !!document.querySelector('.vpage .void-self canvas') };
+    });
+    const before = drawn ? drawn.draws : 0;
+    const pt = drawn && await F.p.evaluate((k) => window.__voidMini.project(k, [0, 0.075, 0]), drawn.key);
+    if (pt) await F.p.mouse.click(pt.x, pt.y);
+    const broke = await until(() => F.p.evaluate((b) => window.__voidMini.list().find((x) => x.kind === 'void').draws > b + 4, before), 15000);
+    check('3D Void: its self page shows its own body, built from one fixed seed (the same 24 shards every time; another seed differs), lopsided by design (the shard directions lean to one side), and a tap breaks it apart and back',
+      !!drawn && r.inPage && r.n === 24 && r.same && r.other && r.lean > 0.12 && broke && !F.errors.length, JSON.stringify({ drawn, r, broke, e: F.errors }));
+    await F.ctx.close();
+  }
+
+  // ---- the stage sandbox: every summon is its own individual (seed and kind reach the 3D figure), a cloud rains once it
+  // has gathered enough water, and a zombie finds a brain and eats it
+  {
+    const F = await fresh();
+    const figs = () => F.p.evaluate(() => (window.__void3d ? window.__void3d.state().figures : []));
+    await F.ask('summon a zombie', 600); await F.ask('summon a zombie', 600); await F.ask('add a cloud', 600);
+    const three = await until(async () => { const f = await figs(); return f.length === 3 && f.every((x) => x.seed != null && x.kindOf) ? f : false; }, 30000);
+    const zs = (three || []).filter((x) => x.kindOf === 'zombie');
+    const rained = await until(async () => { const c = (await figs()).find((x) => x.kindOf === 'cloud'); return c && c.nature && c.nature.falling === 'rain' ? c.nature : false; }, 90000);
+    await F.ask('add a brain', 600);
+    const brainIn = await until(async () => (await figs()).some((x) => x.kindOf === 'brain'), 20000);
+    const eaten = brainIn && await until(async () => !(await figs()).some((x) => x.kindOf === 'brain'), 90000);
+    check('sandbox: two zombies arrive as two individuals (different seeds), a cloud gathers water and rains, and a zombie finds the brain and eats it',
+      !!three && zs.length === 2 && zs[0].seed !== zs[1].seed && !!rained && !!eaten && !F.errors.length, JSON.stringify({ three: !!three, seeds: zs.map((z) => z.seed), rained, brainIn, eaten, e: F.errors }));
     await F.ctx.close();
   }
 }

@@ -1183,5 +1183,30 @@
     ],
     "sha256": "1cdeeb397e776be6a19503d423609214c3273f93c61e4143a2ec3790568b2b4f",
     "emit": false
+  },
+  {
+    "run": 48,
+    "at": "2026-10-08T05:02:40Z",
+    "family": "correlation-view",
+    "draft": "drafts/fringe/correlation-view-4.html",
+    "sources": [
+      {
+        "claim": "When a smaller group and rarer behaviours share the same proportion, people still judge the smaller group as more linked with the rare (undesirable) behaviours",
+        "source": "https://doi.org/10.1016/S0022-1031(76)80006-6",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A meta-analysis finds the distinctiveness-based illusory correlation reliable across studies, with moderate size",
+        "source": "https://doi.org/10.1111/j.2044-8309.1990.tb00839.x",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's one-person version shows the same lean in an individual over repeated runs",
+        "source": "drafts/fringe/correlation-view-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "5b99dee3167f635900b9313b8ff8f7f2f9e27bcc44c1b94e9036c7d7f2d0dc77",
+    "emit": false
   }
 ]
