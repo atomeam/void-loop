@@ -71,6 +71,11 @@ function statsOf(t) {
   if (/\b(?:lose|losing|lost|cut(?:ting)?|deficit|weight\s+loss|slim\s+down|drop|shed|diet(?:ing)?|fat\s+loss|lean\s+out)\b/.test(t)) s.goal = 'lose';
   else if (/\b(?:gain|gaining|bulk(?:ing)?|surplus|put\s+on\s+weight|build\s+muscle|weight\s+gain)\b/.test(t)) s.goal = 'gain';
   else if (/\bmaintain|maintenance|stay\s+the\s+same\b/.test(t)) s.goal = 'keep';
+  if (!s.goal && /\bkeep\s+(?:my\s+|the\s+same\s+)?weight\b/.test(t)) s.goal = 'keep';
+  if ((m = t.match(/\b(0?\.25|a\s+quarter\s+(?:of\s+)?a|0?\.5|half\s+(?:a|of\s+a)|1|one|a|2|two)\s*(lbs?|pounds?|kgs?|kilos?|kilograms?)\s*(?:a|per|each|every)\s+week\b/))) {
+    const n = /quarter|25/.test(m[1]) ? 0.25 : /half|5/.test(m[1]) ? 0.5 : /2|two/.test(m[1]) ? 2 : 1;
+    s.rate = { n, kg: /^k/.test(m[2]) };
+  }
   if (/\bpregnan(?:t|cy)\b/.test(t)) s.preg = 'preg';
   if (/\bbreast-?\s?feeding|nursing|lactating\b/.test(t)) s.preg = 'bf';
   if (/\b(?:build(?:ing)?\s+muscle|muscle\s+(?:gain|growth|building)|bulk(?:ing)?|lift(?:ing)?|weight\s*lifting|gym|bodybuild(?:ing|er)|strength\s+train(?:ing)?)\b/.test(t)) s.lift = true;
@@ -131,7 +136,7 @@ function calRows(tdee, sex, metric) {
 }
 function calc(s) {
   const act = s.act || ACT[1];
-  const one = (sex) => { const b = bmr(s, sex); return { sex, bmr: r10(b), tdee: r10(b * act.f), rows: calRows(b * act.f, sex, s.metric) }; };
+  const one = (sex) => { const b = bmr(s, sex); return { sex, bmr: r10(b), tdee: r10(b * act.f), rows: calRows(b * act.f, sex, s.metric || (s.rate && s.rate.kg)) }; };
   return { act, out: s.sex ? [one(s.sex)] : [one('m'), one('f')] };
 }
 
@@ -141,7 +146,9 @@ function calHtml(s, esc) {
   const { act, out } = calc(s), main = out[0];
   const who = [s.age ? s.age + ' years' : 'age 30 (assumed)', s.sex === 'm' ? 'male' : s.sex === 'f' ? 'female' : null,
     s.ftin || Math.round(s.cm) + ' cm', s.lb ? fmt(s.lb) + ' lb' : fmt(s.kg, 1) + ' kg'].filter(Boolean).join(', ');
-  const goal = s.goal === 'lose' ? (s.metric ? 'Lose 0.5 kg a week' : 'Lose 1 lb a week') : s.goal === 'gain' ? (s.metric ? 'Gain 0.25 kg a week' : 'Gain 0.5 lb a week') : 'Keep your weight';
+  const want = s.rate && s.goal !== 'keep' ? (s.goal === 'gain' ? 'Gain ' : 'Lose ') + s.rate.n + (s.rate.kg ? ' kg' : ' lb') + ' a week' : null;
+  const goal = want && main.rows.some((r) => r.label === want) ? want
+    : s.goal === 'lose' || (s.rate && !s.goal) ? (s.metric ? 'Lose 0.5 kg a week' : 'Lose 1 lb a week') : s.goal === 'gain' ? (s.metric ? 'Gain 0.25 kg a week' : 'Gain 0.5 lb a week') : 'Keep your weight';
   const pick = (o) => o.rows.find((r) => r.label === goal);
   const head = out.length === 1 ? fmt(pick(main).kcal) : fmt(pick(out[0]).kcal) + ' / ' + fmt(pick(out[1]).kcal);
   const table = (o) => '<ul>' + o.rows.map((r) => '<li>' + (r.label === goal ? '<b>' : '') + esc(r.label) + ': ' + fmt(r.kcal) + ' calories a day'
@@ -173,6 +180,9 @@ function calForm(el, s, esc) {
     + '<div id="nu-out" aria-live="polite"></div>';
   const q = (id) => box.querySelector('#' + id), out = q('nu-out');
   if (s.sex) q('nu-sex').value = s.sex;
+  if (s.kg) { if (s.metric) { q('nu-u').value = 'm'; q('nu-w').value = Math.round(s.kg); } else q('nu-w').value = Math.round(s.lb || s.kg / LB); }
+  if (s.cm) { q('nu-cm').value = Math.round(s.cm); q('nu-ft').value = Math.floor(s.cm / 2.54 / 12); q('nu-in').value = Math.round(s.cm / 2.54 % 12) % 12; }
+  if (s.act) q('nu-act').value = String(ACT.indexOf(s.act));
   const upd = () => {
     const metric = q('nu-u').value === 'm';
     q('nu-hus').hidden = metric; q('nu-hm').hidden = !metric; q('nu-wu').textContent = metric ? 'kg' : 'lb';
@@ -231,23 +241,93 @@ function h2oHtml(s, t, esc) {
     + GREY + 'The old "8 glasses a day" is close for women and a little low for men. About a fifth of the water you need comes from food, and coffee, tea and milk count. Pale yellow pee means you are drinking enough; thirst is a fine guide for most healthy people.</p>' + rule + SRC_H2O;
 }
 
+// Page memory (30 min, this page only): the last body numbers, so follow-ups can change one thing and redo the card.
+// "what if i'm very active", "to lose 2 pounds a week", "i'm a woman", "i weigh 200", "and protein", "and water".
+// Other body skills (heart.js) read the same numbers with lastStatsOf() and share theirs with shareBody().
+const FOLLOW_MS = 30 * 60 * 1000;
+let last = null; // { s, kind, owner, at }
+const BODY = ['kg', 'lb', 'cm', 'ftin', 'age', 'sex', 'metric', 'act', 'goal', 'rate', 'preg', 'lift', 'old'];
+function hasBody(s) { return !!(s.kg || s.cm || s.age || s.sex); }
+function remember(s, kind, owner) {
+  const keep = {}; for (const k of BODY) if (s[k] != null) keep[k] = s[k];
+  last = { s: keep, kind, owner: owner || 'nutrition', at: Date.now() };
+}
+export function lastStatsOf() { return last && Date.now() - last.at <= FOLLOW_MS ? last : null; }
+export function shareBody(patch, owner, kind) { // another body skill adds what it learned (age, sex) and says it spoke last
+  const prev = lastStatsOf(), s = Object.assign({}, prev ? prev.s : {}, patch || {});
+  remember(s, kind || (prev ? prev.kind : null), owner);
+}
+function waterText(s) { return s.preg === 'preg' ? 'pregnant' : s.preg === 'bf' ? 'breastfeeding' : s.sex === 'f' ? 'women' : s.sex === 'm' ? 'men' : ''; }
+const STRIP = [
+  /\b(?:0?\.25|a\s+quarter\s+(?:of\s+)?a|0?\.5|half\s+(?:a|of\s+a)|1|one|a|2|two)\s*(?:lbs?|pounds?|kgs?|kilos?|kilograms?)\s*(?:a|per|each|every)\s+week\b/g,
+  /\b\d{2,3}(?:\.\d+)?\s*(?:lbs?|pounds?|kgs?|kilos?|kilograms?)\b/g,
+  /\b[4-7]\s*(?:'|ft\.?|foot|feet)(?:\s*(?:1[01]|\d(?:\.\d)?)(?![\d.])\s*(?:"|''|in\.?|inch(?:es)?)?)?/g,
+  /\b(?:1[2-9]\d|2[0-2]\d)\s*(?:cm|centimet(?:er|re)s?)\b/g, /\b[12][.,]\d{1,2}\s*(?:m|met(?:er|re)s?)\b/g,
+  /\b(?:1[3-9]|[2-9]\d)\s*(?:-\s*)?(?:years?|yrs?|y\/?o)(?:\s*-?\s*old)?\b/g, /\bage(?:d)?\s*(?:1[3-9]|[2-9]\d)\b/g,
+  /\b(?:i\s*(?:am|'m|m)|im)\s+(?:a\s+)?(?:1[3-9]|[2-9]\d)\b/g, /\bweigh(?:ing)?\s+\d{2,3}(?:\.\d+)?\b/g,
+  /\b(?:male|female|man|woman|men|women|guy|girl|lady|boy|dude)\b/g, /\b(?:pregnant|breast-?\s?feeding|nursing)\b/g,
+  /\b(?:lose|losing|lost|cut(?:ting)?|deficit|weight\s+loss|slim\s+down|drop|shed|diet(?:ing)?|fat\s+loss|lean\s+out|gain|gaining|bulk(?:ing)?|surplus|put\s+on\s+weight|build\s+muscle|weight\s+gain|maintain|maintenance|keep\s+(?:my\s+|the\s+same\s+)?weight|stay\s+the\s+same|lift(?:ing)?|gym|strength\s+train(?:ing)?)\b/g
+];
+const FILL = /\b(?:i'm|i'd|im|what|how|about|if|and|but|so|now|ok|okay|then|instead|too|i|am|was|were|a|an|for|at|to|make|it|me|my|weight|weigh|want|wanna|like|would|be|is|say|let's|lets|please|actually|really|years?|old|tall|with|someone|who|person|the|same|numbers?|change|set|update|use|go|try|rather|just|only|do|exercise|work|out|active)\b/g;
+function followOf(text) {
+  const prev = lastStatsOf();
+  if (!prev) return null;
+  const t = clean(text).replace(/[,.;:]+/g, ' ').replace(/\s+/g, ' ').trim();
+  if (!t || t.length > 90) return null;
+  let m;
+  // another card for the same person
+  if ((m = t.match(/^(?:(?:and|now|ok|okay|so|but)\s+)?(?:(?:what|how)\s+about\s+|and\s+|how\s+much\s+|how\s+many\s+|show\s+(?:me\s+)?)?(?:my\s+|the\s+)?(protein|water|calories|bmr|tdee)(?:\s+(?:too|then|for\s+me|a\s+day|intake|as\s+well|should\s+i\s+(?:eat|drink|have)(?:\s+a\s+day)?))?$/))) {
+    const kind = m[1] === 'protein' ? 'pro' : m[1] === 'water' ? 'h2o' : 'cal';
+    const s = Object.assign({}, prev.s);
+    return { kind, s, t: kind === 'h2o' ? waterText(s) : '', follow: true };
+  }
+  if (prev.owner !== 'nutrition' || !prev.kind) return null; // stat-only follow-ups belong to whichever body card spoke last
+  // one or more numbers changed: strip what we understand; anything left over means it is some other ask
+  let rest = t; for (const re of STRIP) rest = rest.replace(re, ' ');
+  for (const a of [...ACT].reverse()) rest = rest.replace(new RegExp(a.re.source, 'g'), ' ');
+  rest = rest.replace(FILL, ' ').replace(/['"]/g, ' ').trim();
+  if (rest) return null;
+  const d = statsOf(t);
+  if (!Object.keys(d).length) return null;
+  const s = Object.assign({}, prev.s);
+  if (d.kg) { s.kg = d.kg; delete s.lb; if (d.lb) s.lb = d.lb; s.metric = !!d.metric; }
+  if (d.cm) { s.cm = d.cm; delete s.ftin; if (d.ftin) s.ftin = d.ftin; }
+  for (const k of ['age', 'sex', 'act', 'goal', 'rate', 'preg', 'lift']) if (d[k] != null) s[k] = d[k];
+  if (d.rate && !d.goal && !s.goal) s.goal = 'lose';
+  if (d.goal && !d.rate) delete s.rate;
+  if (d.sex === 'm') delete s.preg;
+  s.old = !!(s.age && s.age >= 65);
+  return { kind: prev.kind, s, t: prev.kind === 'h2o' ? waterText(s) : '', follow: true };
+}
+
 async function run(text, api) {
   const { showPage, esc } = api;
-  const q = askOf(text);
+  let q = askOf(text);
+  if (!q) q = followOf(text);
   if (!q) return 'none';
   const s = q.s; s.t = q.t;
+  // "how much protein do i need" after giving your numbers uses them
+  const prev = lastStatsOf(); let reused = '';
+  if (!q.follow && !q.form && !hasBody(s) && prev && hasBody(prev.s) && /\b(?:i|my|me)\b/.test(clean(text))) {
+    for (const k of BODY) if (s[k] == null && prev.s[k] != null) s[k] = prev.s[k];
+    if (q.kind === 'h2o' && !WATER.some((r) => r.re.test(q.t || ''))) q.t = waterText(s);
+    reused = 'your numbers from the last ask';
+  }
+  if (q.follow) reused = 'your last numbers with the change';
+  const note = reused ? GREY + 'Worked out from ' + esc(reused) + '. Change one thing at a time, like "what if i\'m very active", "to lose 2 pounds a week", "i\'m a woman", "i weigh 200", or ask "and protein", "and water" or "my heart rate zones".</p>' : '';
+  if (hasBody(s) || s.act || s.goal) remember(s, q.kind);
   if (q.kind === 'cal') {
-    if (s.kg && s.cm) { showPage((el) => { el.innerHTML = calHtml(s, esc); }); return 'nutrition'; }
-    const el = showPage((p) => { p.innerHTML = (q.form ? '<h2>Calorie calculator</h2><div class="sub">your calories a day (Mifflin-St Jeor)</div>' : calGeneral(esc)) + '<div id="nu-form"></div>' + SRC_CAL; });
+    if (s.kg && s.cm) { showPage((el) => { el.innerHTML = calHtml(s, esc).replace(SRC_CAL, note + SRC_CAL); }); return 'nutrition'; }
+    const el = showPage((p) => { p.innerHTML = (q.form ? '<h2>Calorie calculator</h2><div class="sub">your calories a day (Mifflin-St Jeor)</div>' : calGeneral(esc)) + '<div id="nu-form"></div>' + note + SRC_CAL; });
     calForm(el, s, esc);
     return 'nutrition';
   }
-  if (q.kind === 'pro') { showPage((el) => { el.innerHTML = proHtml(s, esc); }); return 'nutrition'; }
-  showPage((el) => { el.innerHTML = h2oHtml(s, q.t, esc); });
+  if (q.kind === 'pro') { showPage((el) => { el.innerHTML = proHtml(s, esc).replace(SRC_PRO, note + SRC_PRO); }); return 'nutrition'; }
+  showPage((el) => { el.innerHTML = h2oHtml(s, q.t, esc).replace(SRC_H2O, note + SRC_H2O); });
   return 'nutrition';
 }
 
-export { askOf, statsOf, calc, bmr };
+export { askOf, statsOf, calc, bmr, followOf, clean };
 export default {
   name: 'nutrition',
   examples: [
@@ -268,6 +348,6 @@ export default {
     'how much water is in the ocean',
     'what is my bmi 5 foot 10 180 pounds'
   ],
-  match(lower, text) { return !!askOf(text); },
+  match(lower, text) { return !!askOf(text) || !!followOf(text); },
   run
 };

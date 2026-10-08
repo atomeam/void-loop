@@ -2257,7 +2257,7 @@
   },
   {
     "ask": "what is my heart rate zone at 40",
-    "want": "calc|answer",
+    "want": "calc|answer|skill:heart",
     "says": "18[0-9]|1[0-9]{2}"
   },
   {
@@ -5291,5 +5291,19 @@
   {"ask": "renovate a 15x20 living room with 9 foot ceilings", "want": "skill:room"},
   {"ask": "materials for a 11x13 nursery makeover", "want": "skill:room"},
   {"ask": "paint and flooring for a 12 by 16 office", "want": "skill:room"},
-  {"ask": "spruce up a 10x10 bedroom with paint and new carpet", "want": "skill:room"}
+  {"ask": "spruce up a 10x10 bedroom with paint and new carpet", "want": "skill:room"},
+  {"ask": "what is my target heart rate", "want": "skill:heart"},
+  {"ask": "heart rate zones for a 40 year old", "want": "skill:heart"},
+  {"ask": "max heart rate for a 55 year old", "want": "skill:heart"},
+  {"ask": "fat burning heart rate for a 35 year old", "want": "skill:heart"},
+  {"ask": "heart rate zones age 40 resting heart rate 60", "want": "skill:heart"},
+  {"ask": "what is a normal resting heart rate", "want": "skill:heart"},
+  {"ask": "is a resting heart rate of 55 good", "want": "skill:heart"},
+  {"ask": "heart rate zone calculator", "want": "skill:heart"},
+  {"ask": "target heart rate for a 60 year old", "want": "skill:heart"},
+  {"ask": "what is zone 2 heart rate for a 45 year old", "want": "skill:heart"},
+  {"ask": "what should my heart rate be when exercising", "want": "skill:heart"},
+  {"ask": "cardio heart rate for a 28 year old", "want": "skill:heart"},
+  {"ask": "target heart rate calculator", "want": "skill:heart"},
+  {"ask": "my resting heart rate is 72", "want": "skill:heart"}
 ]
