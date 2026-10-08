@@ -773,6 +773,22 @@ try {
         && !out.some((u) => /motelet|Sam/i.test(u)) && !M.errors.length,
       [asked, met, kept, greeted, forgot, gone, again, out.filter((u) => /motelet|Sam/i.test(u)).join(','), M.errors.join(';')].join(' | '));
     await M.ctx.close(); }
+  // the longevity trial watch reads ClinicalTrials.gov live (stubbed here): every watchlist trial shows its status and
+  // primary-completion date with the time of the check; with the registry unreachable it shows the saved snapshot and its date
+  { const W = await fresh(); let live = true;
+    await W.ctx.route(/clinicaltrials\.gov\/api\/v2\/studies\//, (r) => { if (!live) return r.abort();
+      const id = r.request().url().match(/NCT\d+/)[0];
+      return r.fulfill(json({ hasResults: id === 'NCT05506488', protocolSection: { identificationModule: { briefTitle: 'Trial ' + id }, statusModule: { overallStatus: 'ACTIVE_NOT_RECRUITING', primaryCompletionDateStruct: { date: '2027-03' } }, designModule: { enrollmentInfo: { count: 40 } } } })); });
+    await W.ask('trial watch', 1500); const page1 = await W.page();
+    const ids = ['NCT05506488', 'NCT07144293', 'NCT07220473', 'NCT07707778', 'NCT07293325', 'NCT06727305', 'NCT07191353'];
+    live = false; await W.p.reload(); await W.p.waitForTimeout(1000);
+    await W.ask('trial watch', 1500); const page2 = await W.page();
+    check('trial watch: "trial watch" reads every watchlist trial live (status, enrollment, primary completion, results) with the time of the check; with the registry unreachable it shows the last saved check and its date',
+      ids.every((id) => page1.includes(id)) && /Checked live from ClinicalTrials\.gov on/.test(page1) && (page1.match(/active not recruiting/g) || []).length === 7
+        && /primary completion 2027-03/.test(page1) && /results posted/.test(page1) && /No follow-up senolytic liver trial is registered yet/.test(page1)
+        && /could not be reached; showing the last check, from/.test(page2) && ids.every((id) => page2.includes(id)) && !W.errors.length,
+      [page1.slice(0, 160), page2.slice(0, 120), W.errors.join(';')].join(' | '));
+    await W.ctx.close(); }
   // "who is X" prefers the person; a loose match says so in one line; the board counts one ask in different words once.
   { const E = await fresh(); const sums = [];
     // #18 two-part summon loads figures3d + three.js on an article; keep the suite offline with the same stub #17 uses.
