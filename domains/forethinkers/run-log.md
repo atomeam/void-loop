@@ -2,6 +2,16 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-07 20:14 ET even-hour cycle
+
+Read `convergence.md`, every track, `index.md`, `toy-problems.md`, and the growth board. No earlier `forethinkers/*` branches or open think-tank PRs to fold. Picked the printed-actuator-moves-figure-joint node: hypothesis since the seed, it touches the least recently advanced track (living figures, 12:17), and it is the node that most changes the map.
+
+- Established: a motor printed in every element but its magnets drives a waving arm and a multi-legged walking robot. Schwalbe et al., Advanced Materials Technologies, 20 Apr 2026, doi 10.1002/admt.70994 (7.62 N mm/A, 28.2% peak efficiency, about 5x torque and 3.7x efficiency over prior printed motors). Checked on Crossref.
+- Logged: the same lab's single-print coil plus compliant-joint gripper (IEEE/ASME AIM 2023) and printed radial stator (ASME LDSC, 17 Oct 2025); UC San Diego's one-print pneumatic six-legged walker (Adv Intell Syst, 26 Jan 2025).
+- Derived: a Motelet arm wave needs about 1.5 mN m at 120 mm scale and about 0.02 mN m at 38 mm, so torque is ample and size plus toy-safe heat (ASTM F963 section 4.4) set the figure design.
+- Narrowed: the figure-joint node stays hypothesis, now scoped to toy size, toy battery and toy-safe surface heat.
+- Board: new free row, a printed-motor card.
+
 ## 2026-10-07 18:07 ET even-hour cycle
 
 Read `convergence.md`, every track, `index.md`, and the growth board. No earlier `forethinkers/*` branches or open think-tank PRs to fold. Picked planet restoration: least recently advanced (2026-10-03 12:11), and its open question 3 had a published answer to find.

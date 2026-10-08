@@ -94,12 +94,21 @@ nodes:
     date: 2026-07-07
     tracks: [printing-working-machines, void-stage]
     claim: "Box slot test 2026-10-07 (lib3mf 2.5.0 strict read, OrcaSlicer 2.4.2 CLI --export-3mf): five build items, each object with its own one-color m:colorgroup, keep five names on extruders 1-5. Core basematerials alone, one shared colorgroup, or one components assembly all land on extruder 1. PrusaSlicer 2.9.6 (2026-06-25) reads extruders only from Metadata/Slic3r_PE_model.config. Bambu Studio master (2026-09-22) also maps pid/pindex pairs."
+  - id: printed-motor-waves-arm
+    kind: shared-part
+    status: established
+    part: 3D-printed electric motor (every element but the permanent magnets) driving a waving arm and a multi-legged walking robot
+    title: "Fully 3D-Printed Wave-Wound Electromagnetic Motors"
+    url: https://doi.org/10.1002/admt.70994
+    date: 2026-04-20
+    tracks: [printing-working-machines, living-figures]
+    claim: "Schwalbe, Mettes, Francke, Allen, Mazumdar (Georgia Tech), Advanced Materials Technologies e70994, 20 Apr 2026, CC BY 4.0 (abstract via Crossref, read 2026-10-07). Printed stator, housing, bearings and sensing circuit (silver nanoparticle ink, thermally conductive insulating polymer, surface-mount parts); bought magnets. Axial flux motor 7.62 N mm/A peak torque constant, 28.2% peak efficiency, about 5x the torque and 3.7x the efficiency of prior printed motors. Demos: fan, water pump, paddle-wheel boat, multi-legged walking robot, waving arm. Earlier steps from the same lab: single-print coil actuator plus compliant-joint gripper, 46 mN over 4 mm at 6.3 W, 4.2 W continuous at 140 C (Mettes et al., IEEE/ASME AIM 2023, doi 10.1109/AIM46323.2023.10196155). Fluidic path: UC San Diego one-print TPU six-legged walker on an air supply (Zhai et al., Adv Intell Syst, 26 Jan 2025, doi 10.1002/aisy.202400876)."
   - id: printed-actuator-moves-figure-joint
     kind: shared-part
     status: hypothesis
-    part: printed actuator in a figure joint
+    part: printed actuator in a figure joint at toy size and toy-safe heat
     tracks: [printing-working-machines, living-figures]
-    claim: A printed actuator could move a miniature figure joint. The linear motor alone does not show this.
+    claim: "A printed motor now moves a robot arm (see printed-motor-waves-arm), so the open part is the figure: a printed motor small enough for a 38 mm to 120 mm body, run from a toy battery, with outer surfaces kept within ASTM F963 section 4.4 thermal limits. Printed coils run hot (140 C at 4.2 W in the AIM 2023 coil), so the motor needs low duty cycle or a printed thermal path to the base. Derived torque need for a Motelet arm wave is small (see living-figures track)."
   - id: export-to-print
     kind: void-stage
     status: hypothesis
@@ -116,6 +125,7 @@ nodes:
 
 ## Cycle log
 
+- 2026-10-07 20:14 ET. Printed-motor-waves-arm established (Schwalbe et al., Advanced Materials Technologies, 20 Apr 2026, doi 10.1002/admt.70994): a motor printed in every element but its magnets drives a waving arm and a multi-legged walking robot, 7.62 N mm/A, 28.2% efficiency. The figure-joint node stays hypothesis with a narrower gap: toy size, toy battery, toy-safe surface heat. Logged the AIM 2023 single-print coil-plus-gripper and the UC San Diego one-print pneumatic walker as the two earlier routes. No earlier think-tank branches or PRs to fold.
 - 2026-10-07 18:07 ET. Florida-acropora-functional-extinction established (Manzello et al. Science 23 Oct 2025): the 2023 heatwave killed 97.8-100% of Keys Acropora, answering planet-restoration question 3. Logged gene banks (Muller et al. Conserv Biol 2025), Durusdinium +1.9 C elkhorn (Coral Reefs 2025), the Baker et al. Science AGF forum, and the Flonduran field trials (Miami July 2025, Dry Tortugas April 2026). No earlier think-tank branches or PRs to fold.
 - 2026-10-07 16:20 ET. Senolytic-burden-selects-responders established (Farr et al. Nat Med 2024; Aging Cell 2025 p16 variant 5). Live ClinicalTrials.gov pass: no senolytic MASH replication registered, NCT05506488 has no posted results, three prospective GLP-1 DNAm-age trials read out Apr-Dec 2027. Registry API is browser-readable, so a live trial-watch card is buildable. Stale 14:16 worktree removed (its PR #158 had merged).
 - 2026-10-07 14:40 ET. Slicer-slot-3mf-layout established by a box slot test (seven variants, lib3mf strict + OrcaSlicer 2.4.2 CLI round-trip): one build item per part with its own one-color colorgroup gives five named parts on extruders 1-5; basematerials alone give one slot. PrusaSlicer 2.9.6 needs Slic3r_PE_model.config. Export-to-print unblocked to hypothesis. Corrected the 08:07 basematerials-only plan.
