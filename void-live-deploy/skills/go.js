@@ -87,10 +87,10 @@ export function resume(state) {
 // as the other side's. Before play has ended it is an estimate (final: false) and names no winner.
 export function countPosition(state) {
   const { size } = state, dead = new Set(state.dead), board = state.board.map((v, i) => (dead.has(i) ? 0 : v));
-  const area = { 1: 0, 2: 0 }, seen = new Set();
+  const area = { 1: 0, 2: 0 }, stones = { 1: 0, 2: 0 }, seen = new Set();
   let neutral = 0;
   for (let i = 0; i < board.length; i++) {
-    if (board[i]) { area[board[i]]++; continue; }
+    if (board[i]) { area[board[i]]++; stones[board[i]]++; continue; }
     if (seen.has(i)) continue;
     const region = [], touch = new Set(), todo = [i]; seen.add(i);
     while (todo.length) {
@@ -103,7 +103,9 @@ export function countPosition(state) {
     if (touch.size === 1) area[[...touch][0]] += region.length; else neutral += region.length;
   }
   const black = area[1], white = area[2] + KOMI, final = state.status === 'ended';
-  const out = { black, white, komi: KOMI, neutral, final };
+  // the explanation: what each side's number is made of
+  const why = { black: { stones: stones[1], territory: area[1] - stones[1] }, white: { stones: stones[2], territory: area[2] - stones[2], komi: KOMI } };
+  const out = { black, white, komi: KOMI, neutral, final, why };
   if (final) out.result = black > white ? 'B+' + (black - white) : 'W+' + (white - black);
   return out;
 }
@@ -112,7 +114,7 @@ export function goOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/\bgo fish\b|\bgo kart|\bpokemon go\b|\bgo (?:to|home|out|back|away)\b/.test(t)) return null;
   if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+|teach\s+me\s+(?:to\s+play\s+)?)?(?:play|start|open|summon|make|show|learn)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:go|baduk|weiqi|wei qi|igo)(?:\s+(?:game|board))?(?:\s+(?:with|against)\s+(?:me|a friend|my friend|void|you))?$/.test(t)
-    && !/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?go$/.test(t)) return { kind: 'game' }; // "let's go" is not a game
+    && !/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)go$/.test(t)) return { kind: 'game' }; // bare "go" is the game (Adam typed it); "let's go" is not
   if (/^(?:a\s+)?(?:9x9\s+|nine by nine\s+)?go board$|^(?:the\s+)?board game go$/.test(t)) return { kind: 'game' };
   return null;
 }
@@ -175,8 +177,11 @@ function mount(th, stageApi) {
     count.hidden = false;
     // built from nodes, not an HTML string: the numbers come from a saved board, which may have been shared
     const line = (tag, text, cls) => { const n = document.createElement(tag); n.textContent = text; if (cls) n.className = cls; return n; };
+    const w = c.why, dead = th.state.dead.length;
     count.replaceChildren(line('b', 'Black ' + c.black), document.createTextNode(' · '), line('b', 'White ' + c.white),
-      document.createTextNode(' '), line('span', '(' + (c.white - c.komi) + ' + ' + c.komi + ' komi)'),
+      line('div', 'Black: ' + w.black.stones + ' stones + ' + w.black.territory + ' points only Black surrounds. White: ' + w.white.stones + ' stones + '
+        + w.white.territory + ' points only White surrounds + ' + w.white.komi + ' komi for moving second.' + (c.neutral ? ' ' + c.neutral + ' points touch both colours and count for nobody.' : '')
+        + (dead ? ' ' + dead + ' stones marked dead count for the other side.' : '')),
       c.final ? line('div', (c.result[0] === 'B' ? 'Black' : 'White') + ' wins by ' + c.result.slice(2) + '.', 'go-result')
         : line('div', 'An estimate of the board as it stands, not a result. Play goes on.'));
   });
@@ -302,8 +307,8 @@ export default {
   countPosition,
   toggleDead,
   suite,
-  examples: ['play go', "let's play go", 'a game of go', 'go board', 'play baduk', 'teach me to play go', 'the board game go'],
-  nearMisses: ['go to the store', 'play go fish', "let's go", 'go home', 'how far did you go', 'go', 'pokemon go'],
+  examples: ['go', 'play go', "let's play go", 'a game of go', 'go board', 'play baduk', 'teach me to play go', 'the board game go'],
+  nearMisses: ['go to the store', 'play go fish', "let's go", 'go home', 'how far did you go', 'go go go', 'pokemon go'],
   match(lower, text) { return !!goOf(text); },
   run,
   stageKinds: { go: { mount } },

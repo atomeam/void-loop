@@ -17,6 +17,8 @@
  *
  * Positions: 'b' base, 0..55 a track hole, 'c' the centre, 'h0'..'h3' home (h3 is the deepest).
  */
+import { lift3d } from './lift3d.js';
+
 export const COLORS = ['red', 'blue', 'green', 'yellow'];
 export const HEX = { red: '#d93a3f', blue: '#2f6fd8', green: '#2c9c5a', yellow: '#e9b52a' };
 export const TRACK = 56, SIDE = 14, MARBLES = 4, HOME = 4;
@@ -361,6 +363,22 @@ function mount(th, stageApi) {
   schedule();
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
+  // the board stands in the void in 3D (skills/mini/aggravation.js), the rest of the card beside it; the 2D board stays the fallback
+  let still = null; // the board without its marbles and targets, as an SVG string: the 3D board's top
+  lift3d(th, stageApi, el, { kind: 'aggravation', board, title: 'Aggravation', W: 460, H: 400, snapshot: () => {
+    if (!still) {
+      const copy = board.cloneNode(true);
+      for (const n of copy.querySelectorAll('.ag-marbles > *, .ag-targets > *')) n.remove();
+      copy.setAttribute('xmlns', NS); copy.setAttribute('width', '400'); copy.setAttribute('height', '400');
+      still = new XMLSerializer().serializeToString(copy);
+    }
+    const xy = (n) => { const m = /translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(n.style.transform || ''); return m ? [+m[1], +m[2]] : [0, 0]; };
+    return {
+      svg: still,
+      marbles: [...board.querySelectorAll('.ag-marble')].map((n) => { const [x, y] = xy(n); return { sel: '[data-k="' + n.dataset.k + '"]', x, y, color: HEX[COLORS[+n.dataset.k.split(':')[0]]], can: n.classList.contains('can'), picked: n.classList.contains('picked'), last: n.classList.contains('last') }; }),
+      targets: [...board.querySelectorAll('.ag-target')].map((n, i) => ({ sel: '.ag-targets > :nth-child(' + (i + 1) + ')', x: +n.getAttribute('cx'), y: +n.getAttribute('cy') })),
+    };
+  } });
 }
 
 async function run(text, api) {

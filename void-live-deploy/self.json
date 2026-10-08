@@ -157,6 +157,7 @@
   "go"
  ],
  "minis": [
+  "aggravation",
   "calculator",
   "checkers",
   "chess",
@@ -166,7 +167,9 @@
   "go",
   "heart",
   "list",
+  "mancala",
   "notepad",
+  "othello",
   "paper",
   "pentamote",
   "piggybank",
@@ -174,6 +177,7 @@
   "savings",
   "stopwatch",
   "tabletop",
+  "tictactoe",
   "timer",
   "tip",
   "void",

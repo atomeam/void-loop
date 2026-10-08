@@ -56,6 +56,10 @@ function mount(th, stageApi) {
   status.className = 'chess-status';
   status.setAttribute('aria-live', 'polite');
   status.style.cssText = 'font-size:13px;margin:8px 0 2px;min-height:18px';
+  // what each side has under attack right now: an observation after every move, never a suggestion (chess-rules threats())
+  const underAttack = document.createElement('div');
+  underAttack.className = 'chess-threats';
+  underAttack.style.cssText = 'color:var(--muted);font-size:11px;min-height:15px;margin:2px 0 4px';
   const moves = document.createElement('div');
   moves.style.cssText = 'color:var(--muted);font-size:11px;min-height:15px;white-space:nowrap;overflow:hidden';
   const bar = document.createElement('div'); bar.style.cssText = 'display:flex;gap:8px;justify-content:center;margin-top:8px';
@@ -85,6 +89,9 @@ function mount(th, stageApi) {
     txt = txt.trim(); moves.title = txt;
     moves.textContent = txt.length > (phone ? 44 : 70) ? '… ' + txt.slice(-(phone ? 44 : 70)).replace(/^\S*\s/, '') : txt; // the latest moves, cut at a word
     back.disabled = !list.length; back.style.opacity = list.length ? '1' : '.4';
+    const say = (ts) => ts.slice(0, 3).map((t) => t.piece + ' ' + t.square + (t.piece === 'king' ? ' (check)' : t.defended ? '' : ', undefended')).join(', ');
+    const mine = R.threats(s, 'w'), theirs = R.threats(s, 'b');
+    underAttack.textContent = mine.length || theirs.length ? 'Under attack · yours: ' + (say(mine) || 'none') + ' · Void’s: ' + (say(theirs) || 'none') : 'Nothing is under attack';
     if (mini) mini.update(data()); else if (flat) flat();
   }
   function doMove(m) {
@@ -160,9 +167,9 @@ function mount(th, stageApi) {
     card = document.createElement('div');
     card.className = 'chess-side';
     head.style.padding = '0 0 6px'; status.style.margin = '0 0 4px'; bar.style.justifyContent = 'flex-start';
-    card.append(head, status, moves, bar);
+    card.append(head, status, underAttack, moves, bar);
     el.append(view, grip('Chess'));
-  } else el.append(head, view, status, moves, bar);
+  } else el.append(head, view, status, underAttack, moves, bar);
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   if (card) sideCard(th, stageApi, card, { boardW: W, boardH: Math.round(H * 0.86) + 24, w: 300 });

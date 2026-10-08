@@ -6,8 +6,8 @@ const at = (s) => { const c = 'ABCDEFGHJ'.indexOf(s[0]), r = 9 - +s.slice(1); re
 const play = (st, ...pts) => pts.reduce((s, p) => (p === 'pass' ? pass(s) : placeStone(s, at(p)).nextState), st);
 
 test('asks for the board game Go open it; "let\'s go" and other goes do not', () => {
-  for (const t of ['play go', "let's play go", 'a game of go', 'go board', 'play baduk', 'teach me to play go', 'the board game go', 'play go with a friend']) assert.ok(goOf(t), t);
-  for (const t of ["let's go", 'go', 'go home', 'play go fish', 'pokemon go', 'go to the store', 'i want to go', 'can we go']) assert.equal(goOf(t), null, t);
+  for (const t of ['go', 'Go', 'play go', "let's play go", 'a game of go', 'go board', 'play baduk', 'teach me to play go', 'the board game go', 'play go with a friend']) assert.ok(goOf(t), t);
+  for (const t of ["let's go", 'go go go', 'go home', 'play go fish', 'pokemon go', 'go to the store', 'i want to go', 'can we go']) assert.equal(goOf(t), null, t);
 });
 
 test('a placement is a move, not a verdict: no count moves, no winner, the other seat plays next', () => {
@@ -45,7 +45,7 @@ test('a pass wins nothing; two in a row end play; a count before then is an esti
   assert.throws(() => pass(pass(s)) && placeStone(pass(pass(s)), at('A1')), /ended/);
   s = play(s, 'pass');
   assert.equal(s.status, 'ended');
-  assert.deepEqual(countPosition(s), { black: 81, white: KOMI, komi: KOMI, neutral: 0, final: true, result: 'B+74' });
+  assert.deepEqual(countPosition(s), { black: 81, white: KOMI, komi: KOMI, neutral: 0, final: true, result: 'B+74', why: { black: { stones: 1, territory: 80 }, white: { stones: 0, territory: 0, komi: KOMI } } });
 });
 
 test('after play ends, dead groups are marked by the players, count for the other side, and play can resume', () => {
