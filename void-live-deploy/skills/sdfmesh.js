@@ -8,6 +8,7 @@
  *   field(shapes, k)            -> (x, y, z) => signed distance (negative inside)
  *   mesh(f, bounds, cell)       -> { positions: Float32Array, normals: Float32Array, indices: Uint32Array }
  *   PERSON(R), ANIMAL(R)        -> shape lists for the two living bodies, in figure units (R = body radius)
+ *   ZOMBIE(R, seed), zombieMesh -> a seeded zombie: every proportion, wound and torn hem from mulberry32(seed); meshes cached by seed
  */
 const len3 = (x, y, z) => Math.sqrt(x * x + y * y + z * z);
 
@@ -26,12 +27,22 @@ export function sdCapsule(p, a, b, ra, rb = ra) { // a tapered capsule from a (r
 // polynomial smooth minimum: k is how wide the blend between two shapes is
 export function smin(a, b, k) { if (k <= 0) return Math.min(a, b); const h = Math.max(k - Math.abs(a - b), 0) / k; return Math.min(a, b) - h * h * k * 0.25; }
 
+const sdOf = (s) => s.type === 'sphere' ? (p) => sdSphere(p, s.c, s.r)
+  : s.type === 'ellipsoid' ? (p) => sdEllipsoid(p, s.c, s.r)
+  : (p) => sdCapsule(p, s.a, s.b, s.ra, s.rb ?? s.ra);
+// Shapes marked cut:true are carved out after every other shape is blended (a bite, a missing ear). A list may carry
+// .lumps = { amp, f:[fx,fy,fz], ph:[a,b,c] }: low-frequency waves added to the distance, so skin reads lumpy, not polished.
 export function field(shapes, k) {
-  const fns = shapes.map((s) => s.type === 'sphere' ? (p) => sdSphere(p, s.c, s.r)
-    : s.type === 'ellipsoid' ? (p) => sdEllipsoid(p, s.c, s.r)
-    : (p) => sdCapsule(p, s.a, s.b, s.ra, s.rb ?? s.ra));
-  const ks = shapes.map((s) => s.k ?? k), p = [0, 0, 0];
-  return (x, y, z) => { p[0] = x; p[1] = y; p[2] = z; let d = fns[0](p); for (let i = 1; i < fns.length; i++) d = smin(d, fns[i](p), ks[i]); return d; };
+  const adds = shapes.filter((s) => !s.cut), cuts = shapes.filter((s) => s.cut);
+  const fns = adds.map(sdOf), ks = adds.map((s) => s.k ?? k), cfs = cuts.map(sdOf), cks = cuts.map((s) => s.k ?? k * 0.4), p = [0, 0, 0];
+  const L = shapes.lumps;
+  return (x, y, z) => {
+    p[0] = x; p[1] = y; p[2] = z; let d = fns[0](p);
+    for (let i = 1; i < fns.length; i++) d = smin(d, fns[i](p), ks[i]);
+    for (let i = 0; i < cfs.length; i++) d = -smin(-d, cfs[i](p), cks[i]); // smooth subtraction
+    if (L) d += L.amp * (Math.sin(x * L.f[0] + L.ph[0]) * Math.sin(y * L.f[1] + L.ph[1]) + Math.sin(z * L.f[2] + L.ph[2] + x * L.f[1] * 0.5) * 0.6);
+    return d;
+  };
 }
 
 /** Surface nets over a grid covering bounds = { min:[x,y,z], max:[x,y,z] } with the given cell size. */
@@ -110,11 +121,173 @@ export function ANIMAL(R) {
     { type: 'capsule', a: [-R * 0.85, R * 0.15, 0], b: [-R * 1.15, R * 0.42, 0], ra: R * 0.12, rb: R * 0.07, k: R * 0.15 }, // tail root
   ];
 }
-// grid bounds that hold a shape list, with a margin for the blends
+/** A small seeded PRNG (mulberry32): the same seed always gives the same stream, so a zombie can be cloned exactly. */
+export function mulberry32(seed) {
+  let a = seed >>> 0;
+  return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+}
+// desaturated skins (grey-green, ashen, jaundiced, blue-grey) and worn, dull clothes: realistic, never candy colours
+const SKINS = [0x8b9579, 0x98a0a0, 0xa29d7e, 0x7f8f74, 0x9c958d, 0x878f86, 0xa8a291, 0x7b8780];
+const SHIRTS = [0xaaa494, 0x45536b, 0x6e3b35, 0x575a3d, 0x626262, 0x7f6c3a, 0x4a706b, 0x56465a, 0x8d8272];
+const PANTS = [0x2f3a4e, 0x47392b, 0x2a2a2d, 0x645c48, 0x394536, 0x4a4552];
+/**
+ * A zombie: an adult person-like shape list (head about 1/7 of the height) where every proportion is drawn from
+ * mulberry32(seed), so no two seeds share a silhouette and one seed always rebuilds the same body. Height, build, hunch
+ * and side lean, head tilt, a higher shoulder, arms reaching or one hanging, a bent dragged leg, a slack jaw, sunken
+ * cheeks and eye sockets, a bite, a lost ear and torn clothes all vary. Shapes carry part: 'body' | 'head' | 'armL' |
+ * 'armR' so the head can loll and the arms sway (zombieMesh meshes each part on its own); cuts carve every part.
+ * The list also carries .lumps (lumpy skin) and .rig (pivots, eyes, gait, clothes) for the 3D layer.
+ */
+export function ZOMBIE(R, seed) {
+  const rnd = mulberry32(seed), u = (a, b) => a + (b - a) * rnd(), side = () => (rnd() < 0.5 ? -1 : 1), pick = (a) => a[Math.floor(rnd() * a.length) % a.length];
+  // every draw happens here, in a fixed order, so a seed always means the same zombie
+  const hunch = u(0.08, 0.5), lean = u(-0.12, 0.12), height = u(0.88, 1.08), build = u(0.84, 1.16), gaunt = u(0.68, 1), belly = rnd() < 0.3 ? u(0.06, 0.16) : 0;
+  const shY = u(0.04, 0.14), shSide = side(), headR = u(0.17, 0.195), headLong = u(1.12, 1.26), tilt = side() * u(0.12, 0.42), jaw = u(0.08, 0.2);
+  const armLen = u(0.92, 1.1), armT = u(0.055, 0.075), legT = u(0.085, 0.11);
+  const hang = rnd() < 0.4 ? side() : 0, pitch = [u(-0.15, 0.45), u(-0.15, 0.45)], spread = [u(-0.12, 0.22), u(-0.12, 0.22)], droop = [u(0.2, 0.7), u(0.2, 0.7)];
+  const drag = side(), dragK = u(0.45, 1), biteSide = side(), biteR = u(0.09, 0.14), earGone = rnd() < 0.6 ? side() : 0, chunk = rnd() < 0.55;
+  const lumps = { amp: R * u(0.012, 0.024), f: [u(3, 5) / R, u(3, 5) / R, u(3, 5) / R], ph: [u(0, 6.3), u(0, 6.3), u(0, 6.3)] };
+  const eyeKind = Math.floor(rnd() * 3), skin = pick(SKINS), shirt = pick(SHIRTS), pants = pick(PANTS);
+  const shirtBottom = u(-0.05, 0.38), waist = u(0.22, 0.34), sleeve = [rnd() < 0.3 ? 0 : u(0.25, 1), rnd() < 0.3 ? 0 : u(0.25, 1)], cuff = [u(-1.32, -0.75), u(-1.32, -0.75)];
+  const holes = Array.from({ length: 1 + Math.floor(rnd() * 3) }, () => ({ x: u(-0.3, 0.3), y: u(0.15, 0.8), z: rnd() < 0.7 ? 0.25 : -0.25, r: u(0.05, 0.11) }));
+  const rag = [u(7, 13), u(0, 6.3), u(0.04, 0.08)], gait = { limp: u(0.35, 1), pace: u(0.7, 1.05), loll: u(0.08, 0.2), sway: u(0.04, 0.1), phase: u(0, 6.3) };
+  const turn = side() * u(0.2, 0.45), mottle = { f: [u(5, 9) / R, u(5, 9) / R, u(5, 9) / R], ph: [u(0, 6.3), u(0, 6.3), u(0, 6.3)], hue: Math.floor(rnd() * 3), stain: u(0.3, 0.7) };
+  // ---- the skeleton, in figure units (y up, z toward the viewer); taller or shorter, the feet stay on PERSON's ground
+  const Y = (y) => ((y + 1.5) * height - 1.5) * R, V = (x, y, z) => [x * R * build, Y(y), z * R], gw = 0.85 + 0.15 * gaunt;
+  const add = (x, y, w) => [x[0] + y * w[0], x[1] + y * w[1], x[2] + y * w[2]];
+  const norm = (v) => { const l = Math.hypot(v[0], v[1], v[2]) || 1; return [v[0] / l, v[1] / l, v[2] / l]; };
+  const pelvis = V(lean * 0.3, 0.12, 0), chest = V(lean, 0.62, hunch * 0.28);
+  const shL = V(-0.42 + lean, 0.93 + (shSide < 0 ? shY : 0), hunch * 0.36), shR = V(0.42 + lean, 0.93 + (shSide > 0 ? shY : 0), hunch * 0.36);
+  const neck = V(lean * 1.2, 0.98, hunch * 0.42), h0 = V(lean * 1.3, 1.1 - hunch * 0.2, hunch * 0.78 + 0.02);
+  const st = Math.sin(tilt), ct = Math.cos(tilt), hr = headR * R;
+  const hc = [h0[0] + st * hr * 1.0, h0[1] + ct * hr * 1.0, h0[2] + 0.03 * R];
+  const hp = (ox, oy, oz) => [hc[0] + (ox * ct + oy * st) * hr, hc[1] + (-ox * st + oy * ct) * hr, hc[2] + oz * hr]; // head-local, tilted
+  const shapes = [
+    { part: 'body', type: 'ellipsoid', c: pelvis, r: [R * 0.34 * gw * build, R * 0.22, R * 0.22] },
+    { part: 'body', type: 'ellipsoid', c: chest, r: [R * (0.3 * gaunt + 0.08) * build, R * 0.34 * height, R * (0.19 * gaunt + 0.06)], k: R * 0.22 },
+    { part: 'body', type: 'capsule', a: pelvis, b: chest, ra: R * 0.24 * gw, rb: R * (0.18 * gaunt + 0.06), k: R * 0.2 },
+    { part: 'body', type: 'capsule', a: shL, b: shR, ra: R * 0.1, k: R * 0.2 },
+    { part: 'body', type: 'capsule', a: neck, b: h0, ra: R * 0.075, rb: R * 0.065, k: R * 0.12 },
+  ];
+  if (belly) shapes.push({ part: 'body', type: 'ellipsoid', c: V(lean * 0.5, 0.3, 0.1 + belly), r: [R * 0.28 * build, R * 0.24, R * (0.18 + belly)], k: R * 0.2 });
+  // the head: long, a heavy brow, hard cheekbones over hollow cheeks, a slack jaw, a nose; one ear may be gone
+  shapes.push(
+    { part: 'head', type: 'capsule', a: neck, b: h0, ra: R * 0.065, k: R * 0.08 },
+    { part: 'head', type: 'ellipsoid', c: hc, r: [hr * 0.86, hr * headLong, hr * 0.96], k: R * 0.08 },
+    { part: 'head', type: 'ellipsoid', c: hp(0, 0.3, 0.72), r: [hr * 0.84, hr * 0.18, hr * 0.3], k: R * 0.05 },
+    { part: 'head', type: 'ellipsoid', c: hp(0, -0.72 - jaw * 1.6, 0.34), r: [hr * 0.6, hr * 0.32, hr * 0.5], k: R * 0.07 },
+    { part: 'head', type: 'ellipsoid', c: hp(0, -0.08, 0.96), r: [hr * 0.15, hr * 0.3, hr * 0.2], k: R * 0.03 },
+  );
+  for (const s of [-1, 1]) shapes.push({ part: 'head', type: 'ellipsoid', c: hp(s * 0.56, -0.08, 0.6), r: [hr * 0.22, hr * 0.15, hr * 0.22], k: R * 0.03 }); // cheekbones
+  for (const s of [-1, 1]) if (s !== earGone) shapes.push({ part: 'head', type: 'ellipsoid', c: hp(s * 0.88, 0, -0.05), r: [hr * 0.14, hr * 0.32, hr * 0.22], k: R * 0.03 });
+  // the arms: reaching forward (pitched down a little, the hand drooping at the wrist), or one hanging at the side
+  const hands = [], elbows = [];
+  [[-1, shL], [1, shR]].forEach(([s, S], i) => {
+    const part = s < 0 ? 'armL' : 'armR', L = armLen * R * height, hangs = hang === s;
+    const dir = hangs ? norm([s * 0.1, -1, 0.1]) : norm([s * spread[i], -Math.sin(pitch[i]), Math.cos(pitch[i])]);
+    const dir2 = hangs ? norm([0, -1, 0.35]) : norm([dir[0], dir[1] - droop[i] * 0.5, dir[2]]);
+    const el = add(S, 0.58 * L, dir), wr = add(el, 0.5 * L, dir2), dh = hangs ? dir2 : norm([dir2[0], dir2[1] - droop[i], dir2[2]]);
+    const hand = add(wr, 0.07 * R, dh), tip = add(hand, 0.12 * R, norm([dh[0], dh[1] - 0.5, dh[2]]));
+    shapes.push(
+      { part, type: 'sphere', c: S, r: R * 0.1, k: R * 0.06 },
+      { part, type: 'capsule', a: S, b: el, ra: R * armT * 1.25, rb: R * armT * 0.95, k: R * 0.05 },
+      { part, type: 'capsule', a: el, b: wr, ra: R * armT, rb: R * armT * 0.72, k: R * 0.04 },
+      { part, type: 'ellipsoid', c: hand, r: [R * 0.07, R * 0.04, R * 0.08], k: R * 0.04 },
+      { part, type: 'capsule', a: hand, b: tip, ra: R * 0.035, rb: R * 0.02, k: R * 0.03 }, // curled fingers
+    );
+    hands.push(hand); elbows.push(el);
+  });
+  // the legs: one straight, one bent at the knee with the foot dragging behind, toe down and turned in
+  for (const s of [-1, 1]) {
+    const hip = V(s * 0.18, 0.05, 0), dr = s === drag;
+    const knee = dr ? V(s * (0.22 + 0.04 * dragK), -0.7, 0.12 * dragK) : V(s * 0.2, -0.72, 0.03);
+    const ankle = dr ? V(s * 0.2, -1.36 + 0.05 * dragK, -0.32 * dragK) : V(s * 0.22, -1.38, 0);
+    const toe = dr ? add(ankle, R, [-s * 0.06, -0.1, 0.1]) : add(ankle, R, [0, -0.08, 0.2]);
+    shapes.push(
+      { part: 'body', type: 'capsule', a: hip, b: knee, ra: R * legT * 1.4, rb: R * legT, k: R * 0.14 },
+      { part: 'body', type: 'capsule', a: knee, b: ankle, ra: R * legT, rb: R * legT * 0.65, k: R * 0.05 },
+      { part: 'body', type: 'capsule', a: ankle, b: toe, ra: R * 0.07, rb: R * 0.06, k: R * 0.05 },
+    );
+  }
+  // what is missing: a bite out of one shoulder, maybe a chunk from the side, the lost ear; then the sunken eye
+  // sockets, the hollow cheeks and the open mouth
+  const S = biteSide < 0 ? shL : shR;
+  const wounds = [{ c: [S[0] - biteSide * 0.03 * R, S[1] + 0.09 * R, S[2] + 0.07 * R], r: biteR * R }];
+  if (chunk) wounds.push({ c: V(-biteSide * 0.33 + lean, 0.45, 0.13 + hunch * 0.2), r: R * 0.09 });
+  if (earGone) wounds.push({ c: hp(earGone * 0.92, 0, -0.05), r: hr * 0.3 });
+  for (const w of wounds) shapes.push({ cut: true, type: 'sphere', c: w.c, r: w.r, k: R * 0.03 });
+  const eyes = [-1, 1].map((s) => hp(s * 0.36, 0.1, 0.88)), sockets = eyes.map((c) => ({ c, r: hr * 0.27 }));
+  const mouth = hp(0, -0.55 - jaw * 1.1, 0.88), mouthR = [hr * 0.34, hr * (0.06 + jaw * 0.7), hr * 0.3];
+  for (const w of sockets) shapes.push({ cut: true, type: 'sphere', c: w.c, r: w.r, k: R * 0.02 });
+  for (const s of [-1, 1]) shapes.push({ cut: true, type: 'sphere', c: hp(s * 0.66, -0.42, 0.62), r: hr * 0.24, k: R * 0.03 }); // sunken cheeks
+  shapes.push({ cut: true, type: 'ellipsoid', c: mouth, r: mouthR, k: R * 0.02 });
+  shapes.lumps = lumps;
+  shapes.rig = { R, seed: seed >>> 0, hunch, tilt, height, build, neck: h0, head: hc, headR: hr, eyes, eyeKind, shoulders: [shL, shR], elbows, hands,
+    armLen: armLen * R * height * 1.08, hang, drag, turn, gait, skin, shirt, pants, mottle, rag,
+    neckline: Math.min(shL[1], shR[1]) + 0.03 * R, shirtBottom: Y(shirtBottom), waist: Y(waist), sleeve, cuff: cuff.map(Y),
+    holes: holes.map((h) => ({ c: V(h.x + lean, h.y, h.z + hunch * 0.2), r: h.r * R })),
+    wounds: wounds.map((w) => ({ c: w.c, r: w.r * 1.15 })).concat(sockets.map((w) => ({ c: w.c, r: w.r * 0.95 })), [{ c: mouth, r: Math.max(...mouthR) * 1.05 }]) };
+  return shapes;
+}
+// Meshing costs time (tens of ms), so each seed's meshes are kept; a dozen covers a full stage (6) plus clones.
+const ZCACHE = new Map();
+/** The four part meshes of one zombie (body, head, armL, armR) on one shared grid, plus its rig. Cached by seed. */
+export function zombieMesh(R, seed, cells = 52) {
+  const key = (seed >>> 0) + ':' + R + ':' + cells;
+  if (ZCACHE.has(key)) { const m = ZCACHE.get(key); ZCACHE.delete(key); ZCACHE.set(key, m); return m; }
+  const shapes = ZOMBIE(R, seed >>> 0), all = boundsOf(shapes, R * 0.25);
+  const cell = Math.max(all.max[0] - all.min[0], all.max[1] - all.min[1], all.max[2] - all.min[2]) / cells, out = { rig: shapes.rig };
+  for (const part of ['body', 'head', 'armL', 'armR']) {
+    const own = shapes.filter((s) => s.part === part), sub = own.concat(shapes.filter((s) => s.cut)); sub.lumps = shapes.lumps;
+    // the head and the thin arms are small next to the body: a finer grid there keeps the face (brow, sockets, jaw) and the hands readable
+    out[part] = mesh(field(sub, R * 0.2), boundsOf(own, R * 0.12), part === 'head' ? cell * 0.45 : part === 'body' ? cell : cell * 0.6);
+  }
+  ZCACHE.set(key, out); while (ZCACHE.size > 12) ZCACHE.delete(ZCACHE.keys().next().value);
+  return out;
+}
+/**
+ * Which material each triangle of a zombie part gets: 0 skin, 1 shirt, 2 trousers, 3 raw (bites, sockets, the mouth),
+ * as indices regrouped by material plus groups [{ start, count, mat }] for a three.js multi-material mesh; and a colour
+ * per vertex (multiplied into each material): mottled blotches on the skin, stains and grime rising from the feet.
+ * Hems are ragged (a fast wave around the body for fraying, a slow one for the tear) and the shirt has holes.
+ */
+export function zombieGroups(rig, part, m) {
+  const P = m.positions, I = m.indices, buckets = [[], [], [], []], [rk, rp, ra] = rig.rag, R = rig.R, M = rig.mottle;
+  const near = (x, y, z, list, f) => list.some((w) => Math.hypot(x - w.c[0], y - w.c[1], z - w.c[2]) < w.r * f);
+  for (let t = 0; t < I.length; t += 3) {
+    let x = 0, y = 0, z = 0;
+    for (let j = 0; j < 3; j++) { const v = I[t + j] * 3; x += P[v]; y += P[v + 1]; z += P[v + 2]; }
+    x /= 3; y /= 3; z /= 3;
+    const a = Math.atan2(z, x), wave = (Math.sin(a * rk + rp) * ra + Math.sin(a * 3 + rp * 2) * ra * 0.8 + Math.sin(a * 31 + y) * 0.015) * R;
+    let mat = 0;
+    if (near(x, y, z, rig.wounds, 1)) mat = 3;
+    else if (part === 'body') {
+      if (y < rig.neckline + wave * 0.5 && y > rig.shirtBottom + wave && !near(x, y, z, rig.holes, 1)) mat = 1;
+      else if (y < rig.waist + wave * 0.3 && y > rig.cuff[x < 0 ? 0 : 1] + wave) mat = 2;
+    } else if (part === 'armL' || part === 'armR') {
+      const i = part === 'armL' ? 0 : 1, s = rig.shoulders[i];
+      if (rig.sleeve[i] > 0 && Math.hypot(x - s[0], y - s[1], z - s[2]) < rig.sleeve[i] * rig.armLen + wave) mat = 1;
+    }
+    buckets[mat].push(I[t], I[t + 1], I[t + 2]);
+  }
+  const indices = new Uint32Array(I.length), groups = []; let at = 0;
+  buckets.forEach((b, mat) => { if (b.length) { indices.set(b, at); groups.push({ start: at, count: b.length, mat }); at += b.length; } });
+  // per-vertex tint: blotches (bruise purple, bile green or grey) and grime that thickens toward the ground
+  const tint = [[0.86, 0.72, 0.84], [0.8, 0.86, 0.62], [0.7, 0.7, 0.72]][M.hue], colors = new Float32Array(P.length);
+  for (let v = 0; v < P.length; v += 3) {
+    const x = P[v], y = P[v + 1], z = P[v + 2];
+    const n = Math.sin(x * M.f[0] + M.ph[0]) * Math.sin(y * M.f[1] + M.ph[1]) * Math.sin(z * M.f[2] + M.ph[2]) + Math.sin((x + y) * M.f[2] * 1.7 + M.ph[1]) * 0.4;
+    const blot = Math.max(0, n) * 0.9, dirt = Math.max(0, Math.min(1, (-y / R - 0.4) / 1.1)) * M.stain;
+    for (let c = 0; c < 3; c++) colors[v + c] = (1 - blot * (1 - tint[c])) * (1 - dirt * [0.35, 0.45, 0.55][c]);
+  }
+  return { indices, groups, colors };
+}
+// grid bounds that hold a shape list, with a margin for the blends (a carved shape only takes away, so it never grows them)
 export function boundsOf(shapes, margin) {
   const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
   const grow = (c, r) => { for (let i = 0; i < 3; i++) { min[i] = Math.min(min[i], c[i] - r); max[i] = Math.max(max[i], c[i] + r); } };
   for (const s of shapes) {
+    if (s.cut) continue;
     if (s.type === 'sphere') grow(s.c, s.r);
     else if (s.type === 'ellipsoid') grow(s.c, Math.max(...s.r));
     else { grow(s.a, s.ra); grow(s.b, s.rb ?? s.ra); }

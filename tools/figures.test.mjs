@@ -57,3 +57,22 @@ test('ice melts above freezing, faster by a fire, and a flower under rain grows'
   assert.ok(run('flower', under, 5).st.grow > 0.5);
   assert.equal(run('flower', climateAt({ x: 0, y: 0 }, []), 5).st.grow, 0);
 });
+test('a zombie is a seeded adult body: the same seed rebuilds it exactly, another seed differs, and the head is adult-sized', async () => {
+  const { ZOMBIE, boundsOf } = await import('../void-live-deploy/skills/sdfmesh.js');
+  const R = 28, a = ZOMBIE(R, 101), b = ZOMBIE(R, 101), c = ZOMBIE(R, 2024);
+  assert.deepEqual(JSON.stringify(a), JSON.stringify(b));
+  assert.notEqual(JSON.stringify(a.rig), JSON.stringify(c.rig));
+  for (const seed of [1, 5, 101, 2024, 31337, 900001]) {
+    const z = ZOMBIE(R, seed), box = boundsOf(z, 0), tall = box.max[1] - box.min[1];
+    assert.ok((z.rig.headR * 2) / tall < 0.2, 'head ' + (z.rig.headR * 2 / tall).toFixed(2) + ' of the height: adult, not a big baby head');
+    assert.ok(z.some((s) => s.cut), 'wounds and sockets are carved');
+  }
+});
+test('two zombies leave each other alone and both go for the brain, even when the other zombie is nearer', () => {
+  const z1 = { id: 'z1', x: 0, y: 0, script: fallbackScript('person', 'zombie') }, z2 = { id: 'z2', x: 40, y: 0, script: fallbackScript('person', 'zombie') };
+  const brain = { id: 'b', x: 600, y: 0, script: fallbackScript('object', 'brain') }, man = { id: 'm', x: 30, y: 0, script: fallbackScript('person', 'a man') };
+  assert.equal(pickNearbyReaction(z1, [z2, brain]).other.id, 'b');
+  assert.equal(pickNearbyReaction(z1, [z2]), null);
+  assert.equal(pickNearbyReaction(z1, [man, brain]).react, 'eat');
+  assert.equal(pickNearbyReaction(z1, [man]).react, 'chase');
+});

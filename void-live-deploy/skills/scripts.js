@@ -235,6 +235,9 @@ export function pickReaction(selfScript, otherScript) {
   return null;
 }
 
+// two things of the same nature (both zombies, both cats): their nature tags overlap, 'food' aside
+const NATURE_TAGS = new Set(NATURES.flatMap(([, t]) => t).filter((t) => t !== 'food'));
+function sameKind(a, b) { const ta = (a && a.tags) || [], tb = new Set((b && b.tags) || []); return ta.some((t) => NATURE_TAGS.has(t) && tb.has(t)); }
 /**
  * Among nearby others, pick the best (nearest) reaction target.
  * Returns { other, react } or null. Distance is screen px.
@@ -248,8 +251,10 @@ export function pickNearbyReaction(self, others, maxDist = 220) {
     const d = Math.hypot((o.x || 0) - (self.x || 0), (o.y || 0) - (self.y || 0));
     const react = pickReaction(self.script, o.script);
     if (!react) continue;
+    if ((react === 'chase' || react === 'eat') && sameKind(self.script, o.script)) continue; // a zombie does not hunt a zombie
     if (d > (react === 'eat' ? maxDist * 5 : maxDist)) continue; // food is smelled from across the stage: a hunter finds it
-    if (!best || d < best.d) best = { other: o, react, d };
+    const rank = react === 'eat' ? 0 : 1; // hunger first: food in reach beats a nearer chase
+    if (!best || rank < best.rank || (rank === best.rank && d < best.d)) best = { other: o, react, d, rank };
   }
   return best ? { other: best.other, react: best.react } : null;
 }

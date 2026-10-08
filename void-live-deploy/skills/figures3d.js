@@ -20,7 +20,7 @@
  * missing scripts fall back to the base-body defaults. Nearby figures trigger greet/follow/chase/flee/argue/team; reduced motion holds all still.
  */
 import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
-import { PERSON, ANIMAL, bodyMesh } from './sdfmesh.js';
+import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups } from './sdfmesh.js';
 import { makeCloud, cloudGeometry, cloudShade, makePrecip, makeGlow } from './sky3d.js';
 import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, climateAt, CONDITIONS, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey } from './scripts.js';
 export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
@@ -373,6 +373,29 @@ function poseSprite(f, now) {
   if (p.pool && p.pool.position) { p.pool.position.y = -R * 2.1 - bob - hop; if (p.pool.scale && p.pool.scale.setScalar) p.pool.scale.setScalar(1 - (bob + hop) / 60); }
   if (p.bubble) p.bubble.material.opacity = still ? 1 : 0.97 + Math.sin(b.t * 2) * 0.03; // near-opaque: a see-through bubble read grey and faint
   if (p.bubble) { const half = R * 4.6 + 10; p.bubble.position.x = Math.max(half - b.x, Math.min(R * 3.6, innerWidth - half - b.x)); } // the bubble stays on screen near an edge
+  if (p.zombie) poseZombie(f, w, hop, still);
+}
+// A zombie shambles: a slow, lopsided step (the bad leg dips deeper), a side sway, the head lolling on its own beat,
+// the reaching arms bobbing out of step. Every number comes from the seed's gait, so each zombie walks its own way.
+function poseZombie(f, w, hop, still) {
+  const b = f.brain, p = f.parts, z = p.zombie, G = z.gait;
+  p.body.rotation.y += z.turn; // a three-quarter turn: the forward reach and the hunch read from the front camera
+  p.eyes.position.copy(p.eyesHome);
+  if (still) { p.body.rotation.z = 0; p.head.rotation.set(0, 0, 0); for (const a of p.arms) a.rotation.set(0, 0, 0); return; }
+  const moving = Math.min(1, Math.hypot(b.vx, b.vy) / SPEED), ph = b.bob * 1.4 * G.pace + G.phase, step = Math.sin(ph);
+  const dip = Math.abs(step) * (step > 0 ? 2 + 4 * G.limp : 1.5) * (0.35 + moving * 0.65);
+  f.obj.position.y = w.y + hop - dip;
+  p.body.rotation.z = step * G.sway * (0.6 + moving) + (step > 0 ? z.drag * 0.05 * G.limp * moving : 0);
+  p.body.rotation.x = Math.abs(step) * 0.05 * moving - b.lookY * 0.08;
+  p.head.rotation.z = Math.sin(b.t * 0.7 + G.phase) * G.loll + step * 0.06;
+  p.head.rotation.x = 0.08 + Math.sin(b.t * 0.9 + G.phase * 2) * G.loll * 0.6;
+  const lift = b.wave > 0 ? -0.5 * Math.min(1, b.wave) : 0, grab = b.mode === 'notice' ? -0.15 : 0; // a tap or the cursor: the arms come up
+  p.arms.forEach((a, i) => {
+    const hangs = z.hang === (i ? 1 : -1);
+    a.rotation.x = (hangs ? Math.sin(ph + i * Math.PI) * 0.22 * (0.3 + moving) : Math.sin(ph * 0.5 + i * 2.1) * 0.08 + lift + grab);
+    a.rotation.z = Math.sin(ph + i) * 0.05;
+  });
+  if (p.eyeGlow) p.eyeGlow.emissiveIntensity = 0.7 + Math.sin(b.t * 1.3) * 0.15;
 }
 
 
@@ -669,8 +692,61 @@ function stepElement(f, dt, now, still, others) {
   if (kind === 'flower') { const g = 1 + st.grow * 0.7; f.growth = g; return env.rainedOn; }
   return false;
 }
+// ---------- a zombie: its own seeded body (skills/sdfmesh.js ZOMBIE), so each summon is a new individual ----------
+export const isZombie = (spec) => !!spec && (spec.kindOf === 'zombie' || /\b(?:zombies?|undead|ghouls?)\b/i.test(spec.title || ''));
+// the seed the figure carries; an older figure without one gets a steady seed from its id, so it looks the same after a reload
+export function seedOf(spec) {
+  if (spec.seed != null && Number.isFinite(Number(spec.seed))) return Number(spec.seed) >>> 0;
+  let h = 2166136261; for (const ch of String(spec.id || spec.title || 'zombie')) h = Math.imul(h ^ ch.charCodeAt(0), 16777619);
+  return h >>> 0;
+}
+function zombiePart(rig, part, m, at) {
+  const T = THREE, { indices, groups, colors } = zombieGroups(rig, part, m), g = new T.BufferGeometry();
+  g.setAttribute('position', new T.BufferAttribute(m.positions.slice(), 3));
+  g.setAttribute('normal', new T.BufferAttribute(m.normals.slice(), 3));
+  g.setAttribute('color', new T.BufferAttribute(colors, 3));
+  g.setIndex(new T.BufferAttribute(indices, 1));
+  for (const gr of groups) g.addGroup(gr.start, gr.count, gr.mat);
+  if (at) g.translate(-at[0], -at[1], -at[2]); // hang the part from its pivot (the neck, a shoulder)
+  g.computeBoundingSphere();
+  return g;
+}
+function buildZombie(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const Z = zombieMesh(R, seedOf(spec)), rig = Z.rig, col = hexColor(spec.kindOf === 'zombie' ? null : spec.color, rig.skin); // the seed's own skin: realistic, not the summon's flat colour
+  // matte, mottled skin (the blotches are vertex colours) with a faint red sheen for blood under the skin; dull, stained cloth
+  const skin = new T.MeshPhysicalMaterial({ color: col, roughness: 0.8, metalness: 0, vertexColors: true, sheen: 0.4, sheenColor: new T.Color(0x8a3b36), sheenRoughness: 0.75,
+    emissive: new T.Color(col).multiplyScalar(0.05), emissiveIntensity: 1 }); // a little self-light only: more reads as plastic
+  const shirt = new T.MeshStandardMaterial({ color: rig.shirt, roughness: 0.95, vertexColors: true, emissive: new T.Color(rig.shirt).multiplyScalar(0.1) });
+  const pants = new T.MeshStandardMaterial({ color: rig.pants, roughness: 0.95, vertexColors: true, emissive: new T.Color(rig.pants).multiplyScalar(0.1) });
+  const raw = new T.MeshStandardMaterial({ color: 0x2a0d10, roughness: 0.55, vertexColors: true });
+  const set = [skin, shirt, pants, raw], parts = { mats: set.slice(), geos: [] }; const geo = (x) => { parts.geos.push(x); return x; };
+  body.add(new T.Mesh(geo(zombiePart(rig, 'body', Z.body)), set));
+  const head = new T.Group(); head.position.set(...rig.neck); body.add(head);
+  head.add(new T.Mesh(geo(zombiePart(rig, 'head', Z.head, rig.neck)), set));
+  // eyes sit deep in the dark sockets: pale and clouded, almost lost in shadow, or a faint green glow
+  const eyeMat = rig.eyeKind === 2 ? new T.MeshStandardMaterial({ color: 0x9fe08a, emissive: 0x6fdc4a, emissiveIntensity: 0.7, roughness: 0.4 })
+    : new T.MeshStandardMaterial({ color: rig.eyeKind === 0 ? 0xc9cbbf : 0x4a4038, roughness: 0.35, emissive: rig.eyeKind === 0 ? 0x2a2c26 : 0x000000 });
+  parts.mats.push(eyeMat);
+  const eyes = new T.Group(), ball = geo(new T.SphereGeometry(rig.headR * 0.17, 10, 8));
+  for (const e of rig.eyes) { const m = new T.Mesh(ball, eyeMat); m.position.set(e[0] - rig.neck[0], e[1] - rig.neck[1], e[2] - rig.neck[2] - rig.headR * 0.06); eyes.add(m); }
+  head.add(eyes);
+  const arms = ['armL', 'armR'].map((k, i) => {
+    const S = rig.shoulders[i], pivot = new T.Group(); pivot.position.set(...S);
+    pivot.add(new T.Mesh(geo(zombiePart(rig, k, Z[k], S)), set)); body.add(pivot); return pivot;
+  });
+  attachProp(body, parts, spec.prop, { x: rig.hands[1][0], y: rig.hands[1][1], z: rig.hands[1][2] });
+  addSpeech(g, parts, spec.line);
+  // a dim aura in the skin colour, so a grey body still reads on the black stage
+  const auraMat = new T.SpriteMaterial({ map: softTexture('rgba(255,255,255,0.5)', 'rgba(255,255,255,0)'), color: new T.Color(col), transparent: true, depthWrite: false, blending: T.AdditiveBlending, opacity: 0.16 });
+  const aura = new T.Sprite(auraMat); aura.scale.set(R * 4.5, R * 4.5, 1); aura.position.z = -R; g.add(aura); parts.mats.push(auraMat);
+  Object.assign(parts, { body, head, eyes, eyesHome: eyes.position.clone(), arms, antenna: null, glow: null, eyeGlow: rig.eyeKind === 2 ? eyeMat : null, lamp: { intensity: 0 }, tail: null, pool: null, aura, zombie: rig });
+  return { obj: g, parts };
+}
+
 function buildFigure(spec) {
   if (ELEMENTS[spec.kindOf]) return ELEMENTS[spec.kindOf](spec);
+  if (isZombie(spec)) return buildZombie(spec);
   const body = String(spec.body || 'sprite').toLowerCase();
   if (body === 'person') return buildPerson(spec);
   if (body === 'animal') return buildAnimal(spec);
