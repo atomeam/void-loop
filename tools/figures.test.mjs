@@ -108,3 +108,13 @@ test('bones, cheese, carrots and bananas are real foods from a seed, each colour
   assert.ok(carrot[0] > carrot[2] * 2, 'a carrot is orange'); assert.ok(banana[0] > banana[2] * 1.5 && banana[1] > banana[2] * 1.4, 'a banana is yellow');
   assert.equal(foodField(28, 1, 'pizza'), null);
 });
+test('fish, sharks, bees and flowers are real from a seed: a tail that sweeps, wings that beat, petals that vary', async () => {
+  const { lifeMesh, lifeParts, LIFE_KINDS } = await import('../void-live-deploy/skills/sdfmesh.js');
+  assert.deepEqual(LIFE_KINDS, ['fish', 'shark', 'bee', 'flower']);
+  assert.ok(lifeMesh(28, 1, 'fish', 32).tail && lifeMesh(28, 1, 'shark', 32).tail, 'swimmers have a tail part');
+  assert.ok(lifeMesh(28, 1, 'bee', 32).wingL && lifeMesh(28, 1, 'bee', 32).wingR, 'a bee has two wings');
+  const petals = new Set(); for (let s = 0; s < 30; s++) petals.add(lifeParts(28, s, 'flower').parts.body.length);
+  assert.ok(petals.size >= 3, 'flowers vary in petal count');
+  assert.equal(JSON.stringify(lifeParts(28, 4, 'shark').parts), JSON.stringify(lifeParts(28, 4, 'shark').parts));
+  assert.equal(lifeParts(28, 1, 'dragon'), null);
+});

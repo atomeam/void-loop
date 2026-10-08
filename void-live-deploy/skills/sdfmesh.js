@@ -480,6 +480,74 @@ export function foodMesh(R, seed, kind, cells = 64) {
   const out = { ...m, colors }; FCACHE.set(key, out); while (FCACHE.size > 16) FCACHE.delete(FCACHE.keys().next().value);
   return out;
 }
+/**
+ * Swimmers, a bee and a flower, as seeded part lists with surface colour.
+ * fish: a streamlined body (goldfish, salmon or mackerel, from the seed), dorsal and pectoral fins, a forked tail
+ * (its own part, so it sweeps); shark: grey above and white below, a tall dorsal fin, a pointed snout, a tail whose top
+ * lobe is longer; bee: head, thorax and a striped abdomen, with two wing parts that beat; flower: a stem with two
+ * leaves, a seeded number of petals in a seeded colour round a darker centre. Facing +x; they hover or stand on y = -0.95R.
+ */
+export const LIFE_KINDS = ['fish', 'shark', 'bee', 'flower'];
+export function lifeParts(R, seed, kind) {
+  const r = mulberry32(seed), u = (a, b) => a + (b - a) * r(), X = (v) => v * R;
+  const hex = (h) => [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255];
+  const mix = (a, b, t) => a.map((v, i) => v + (b[i] - v) * t);
+  if (kind === 'fish' || kind === 'shark') {
+    const shark = kind === 'shark', L = X(shark ? u(1.0, 1.2) : u(0.5, 0.65)), H = L * (shark ? 0.2 : u(0.26, 0.34)), y = X(-0.2);
+    const look = shark ? ['#7c8a96', '#eef0f0'] : [['#e8822a', '#f6c26a'], ['#8c9aa3', '#e9d2cc'], ['#3d6b8a', '#dfe6ea']][Math.floor(r() * 3)];
+    const back = hex(look[0]), belly = hex(look[1]);
+    const body = [
+      { type: 'ellipsoid', c: [0, y, 0], r: [L * 0.5, H * 0.5, H * (shark ? 0.42 : 0.3)] },
+      { type: 'ellipsoid', c: [L * 0.32, y - H * 0.04, 0], r: [L * (shark ? 0.24 : 0.18), H * 0.4, H * (shark ? 0.34 : 0.27)], k: X(0.04) },
+      { type: 'capsule', a: [-L * 0.3, y, 0], b: [-L * 0.55, y, 0], ra: H * 0.25, rb: H * 0.07, k: X(0.04) }, // the tail stalk
+      { type: 'ellipsoid', c: [-L * 0.02, y + H * (shark ? 0.62 : 0.5), 0], r: [L * (shark ? 0.1 : 0.17), H * (shark ? 0.45 : 0.28), X(0.012)], k: X(0.03) }, // dorsal fin
+      ...[-1, 1].map((zs) => ({ type: 'ellipsoid', c: [L * 0.18, y - H * 0.3, zs * H * 0.32], r: [L * (shark ? 0.12 : 0.08), X(0.01), H * (shark ? 0.45 : 0.25)], k: X(0.02) })), // pectoral fins
+    ];
+    const tx = -L * 0.55, tail = shark
+      ? [{ type: 'capsule', a: [tx, y, 0], b: [tx - L * 0.2, y + H * 0.75, 0], ra: H * 0.12, rb: X(0.01), k: X(0.03) }, { type: 'capsule', a: [tx, y, 0], b: [tx - L * 0.12, y - H * 0.45, 0], ra: H * 0.1, rb: X(0.01), k: X(0.03) }]
+      : [{ type: 'ellipsoid', c: [tx - L * 0.08, y + H * 0.22, 0], r: [L * 0.1, H * 0.3, X(0.01)], k: X(0.02) }, { type: 'ellipsoid', c: [tx - L * 0.08, y - H * 0.22, 0], r: [L * 0.1, H * 0.3, X(0.01)], k: X(0.02) }];
+    const color = (x, yy) => { const t = Math.max(0, Math.min(1, (yy - (y - H * 0.4)) / (H * 0.8))); let c = mix(belly, back, t);
+      if (!shark && Math.sin(x * 70 / R) * Math.sin(yy * 60 / R) > 0.7) c = c.map((v) => v * 1.12); return c; }; // scale glints
+    return { parts: { body, tail }, pivots: { tail: [tx, y, 0] }, eye: [L * 0.38, y + H * 0.1, H * (shark ? 0.22 : 0.17)], eyeR: H * (shark ? 0.05 : 0.09), color, kind, swim: true };
+  }
+  if (kind === 'bee') {
+    const s = u(0.9, 1.1), y = X(0.1), B = (v) => X(v * s);
+    const body = [{ type: 'sphere', c: [B(0.17), y, 0], r: B(0.075) }, { type: 'ellipsoid', c: [B(0.05), y, 0], r: [B(0.09), B(0.085), B(0.085)], k: B(0.03) },
+      { type: 'ellipsoid', c: [B(-0.13), y - B(0.02), 0], r: [B(0.14), B(0.1), B(0.1)], k: B(0.03) }, { type: 'capsule', a: [B(-0.26), y - B(0.03), 0], b: [B(-0.3), y - B(0.04), 0], ra: B(0.02), rb: B(0.003), k: B(0.01) },
+      ...[-1, 1].map((zs) => ({ type: 'capsule', a: [B(0.22), y + B(0.04), zs * B(0.03)], b: [B(0.3), y + B(0.13), zs * B(0.07)], ra: B(0.008), k: B(0.01) }))]; // antennae
+    const wing = (zs) => [{ type: 'ellipsoid', c: [B(0.0), y + B(0.1), zs * B(0.14)], r: [B(0.12), B(0.006), B(0.07)] }];
+    const black = hex('#1d1a15'), gold = hex('#e7b32a');
+    const color = (x) => (x < B(-0.02) ? (Math.sin((x - B(-0.02)) / B(0.055) * Math.PI) > 0 ? gold : black) : x < B(0.12) ? mix(gold, hex('#7a5a1a'), 0.5) : black);
+    return { parts: { body, wingL: wing(1), wingR: wing(-1) }, pivots: { wingL: [0, y + B(0.08), B(0.06)], wingR: [0, y + B(0.08), -B(0.06)] }, eye: [B(0.2), y + B(0.02), B(0.05)], eyeR: B(0.025), color, kind, fly: true };
+  }
+  if (kind === 'flower') {
+    const h = X(u(1.0, 1.35)), g = X(-0.95), top = g + h, n = 5 + Math.floor(r() * 4) * (r() < 0.3 ? 2 : 1), pr = X(u(0.24, 0.32));
+    const petal = hex(['#d6304a', '#f2c230', '#f4f0ea', '#a24bd0', '#ef6fa0', '#f08a2a'][Math.floor(r() * 6)]), centre = hex(r() < 0.5 ? '#3a2412' : '#e6b81e'), green = hex('#3f7a2e');
+    const head = [X(u(-0.05, 0.05)), top, X(0.04)], lean = u(-0.1, 0.1);
+    const body = [{ type: 'capsule', a: [0, g, 0], b: head, ra: X(0.03), rb: X(0.022) },
+      ...[-1, 1].map((zs) => ({ type: 'capsule', a: [0, g + h * (0.3 + zs * 0.05), 0], b: [zs * X(0.22), g + h * (0.42 + zs * 0.05), X(0.03)], ra: X(0.05), rb: X(0.012), k: X(0.03) })), // leaves
+      { type: 'ellipsoid', c: [head[0], head[1], head[2] + X(0.03)], r: [X(0.085), X(0.085), X(0.045)], k: X(0.02) }];
+    for (let i = 0; i < n; i++) { const a = (i / n) * Math.PI * 2 + lean, tip = [head[0] + Math.cos(a) * pr, head[1] + Math.sin(a) * pr, head[2] + X(0.02)];
+      body.push({ type: 'capsule', a: [head[0] + Math.cos(a) * pr * 0.25, head[1] + Math.sin(a) * pr * 0.25, head[2]], b: tip, ra: pr * 0.26, rb: pr * 0.14, k: X(0.02) }); } // petals open toward the viewer
+    const color = (x, yy, z) => (yy < top - pr * 1.05 ? green : Math.hypot(x - head[0], yy - head[1]) < X(0.09) && z > head[2] ? centre : Math.hypot(x - head[0], yy - head[1]) < pr * 1.1 ? petal : green);
+    return { parts: { body }, pivots: {}, color, kind, stand: true };
+  }
+  return null;
+}
+const LCACHE = new Map();
+export function lifeMesh(R, seed, kind, cells = 64) {
+  const key = kind + ':' + (seed >>> 0) + ':' + R + ':' + cells;
+  if (LCACHE.has(key)) return LCACHE.get(key);
+  const L = lifeParts(R, seed >>> 0, kind); if (!L) return null;
+  const all = Object.values(L.parts).flat(), b = boundsOf(all, R * 0.08), cell = Math.max(b.max[0] - b.min[0], b.max[1] - b.min[1], b.max[2] - b.min[2]) / cells, out = { info: L };
+  for (const [part, shapes] of Object.entries(L.parts)) {
+    const m = mesh(field(shapes, R * 0.05), boundsOf(shapes, R * 0.05), part === 'body' ? cell : cell * 0.5), P = m.positions, colors = new Float32Array(P.length);
+    for (let v = 0; v < P.length; v += 3) { const c = L.color(P[v], P[v + 1], P[v + 2]); colors[v] = c[0]; colors[v + 1] = c[1]; colors[v + 2] = c[2]; }
+    out[part] = { ...m, colors };
+  }
+  LCACHE.set(key, out); while (LCACHE.size > 16) LCACHE.delete(LCACHE.keys().next().value);
+  return out;
+}
 // grid bounds that hold a shape list, with a margin for the blends (a carved shape only takes away, so it never grows them)
 export function boundsOf(shapes, margin) {
   const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
