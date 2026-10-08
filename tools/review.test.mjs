@@ -31,6 +31,13 @@ const T = [
   ['const key = "sk-abcdefghijklmnopqrstuvwx";', 'hardcoded-secret@1'],
   ['fetch("http://api.weather-data.net/data");', 'plain-http@1'],
 ];
+// run 52: for…in over an array is flagged, over an object (a hasOwnProperty guard, the key used as a name) is not;
+// innerHTML from a builder handed the escaper (card(esc)) is not flagged, a plain variable still is
+ok(rules('for (var i in list) total += list[i];', 'javascript').includes('for-in-array@1'), 'for…in over an array flagged');
+ok(!rules('for (var k in at) el.setAttribute(k, at[k]);', 'javascript').includes('for-in-array@1'), 'for…in setting attributes from an object not flagged');
+ok(!rules('for (const k in o) if (Object.prototype.hasOwnProperty.call(o, k)) out.push(k);', 'javascript').includes('for-in-array@1'), 'for…in with a hasOwnProperty guard not flagged');
+ok(!rules("p.innerHTML = which === 'heat' ? heatHtml(esc) : accretionHtml(esc);", 'javascript').includes('inner-html@1'), 'innerHTML from builders handed esc not flagged');
+ok(rules('p.innerHTML = cardHtml(data);', 'javascript').includes('inner-html@1'), 'innerHTML from a builder without esc still flagged');
 for (const [c, want] of T) ok(rules(c).includes(want), want + ' in: ' + c + ' (got ' + rules(c).join(',') + ')');
 const P = [
   ['def add(x, items=[]):\n    items.append(x)\n    return items', 'mutable-default@1'],
