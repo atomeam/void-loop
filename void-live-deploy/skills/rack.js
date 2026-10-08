@@ -15,6 +15,7 @@ export const GAMES = [
   { id: 'mancala', title: 'Mancala', ask: 'play mancala', color: '#6b4426', ink: '#f6e3c4', motif: 'mancala' },
   { id: 'aggravation', title: 'Aggravation', ask: 'play aggravation', color: '#2f5fa8', ink: '#fdf6e3', motif: 'aggravation' },
   { id: 'battleship', title: 'Battleship', ask: 'play battleship', color: '#1d4e6e', ink: '#e8f4ff', motif: 'battleship' },
+  { id: 'poker', title: 'Poker', ask: 'play poker', color: '#17563a', ink: '#f2e6c9', motif: 'poker' },
   { id: 'monopoly', title: 'Monopoly', ask: 'play monopoly', color: '#c8e3c4', ink: '#1d3b25', motif: 'monopoly' },
 ];
 

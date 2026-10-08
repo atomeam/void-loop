@@ -156,7 +156,8 @@
   "aggravation",
   "go",
   "monopoly",
-  "battleship"
+  "battleship",
+  "poker"
  ],
  "minis": [
   "aggravation",
@@ -178,6 +179,7 @@
   "paper",
   "pentamote",
   "piggybank",
+  "poker",
   "rack",
   "savings",
   "stopwatch",

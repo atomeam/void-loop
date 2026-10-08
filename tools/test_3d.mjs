@@ -364,6 +364,16 @@ export async function run3dChecks({ check, fresh }) {
       !!ready && hidden.voidCells === 17 && hidden.lit === 0 && !!fired && !F.errors.length, JSON.stringify({ ready, hidden, fired: !!fired, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- Poker: the felt table in the void; your cards show, Void's stay face down until a showdown
+  {
+    const F = await fresh();
+    await F.ask('play poker', 600);
+    const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'poker'); return l && l.ready && l.draws > 0; }), 90000);
+    const shown = await F.p.evaluate(() => ({ cards: window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('poker:'))).cards, faces: [...document.querySelectorAll('.pk-table .pk-card')].map((c) => c.textContent) }));
+    check('poker: "play poker" stands the card table in the void with its card separate; your two cards show, Void\'s two stay face down',
+      !!ready && shown.cards === 4 && shown.faces.filter(Boolean).length === 2 && shown.faces.length === 4 && !F.errors.length, JSON.stringify({ ready, shown, e: F.errors }));
+    await F.ctx.close();
+  }
   // ---- the game rack: "games" stands a 3D shelf of the seven board games in the void; picking one puts the rack away and opens it
   {
     const F = await fresh();
@@ -372,8 +382,8 @@ export async function run3dChecks({ check, fresh }) {
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation, battleship, monopoly) ; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation,battleship,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation, battleship, poker, monopoly) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation,battleship,poker,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
     await F.ctx.close();
   }
   {

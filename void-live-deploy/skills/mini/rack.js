@@ -52,6 +52,9 @@ function motif(x, m, cx, cy, s) {
   } else if (m === 'mancala') {
     x.fillStyle = '#8a5a2c'; x.beginPath(); x.roundRect(cx - h, cy - h * 0.55, s, s * 0.55, s * 0.1); x.fill();
     for (let i = 0; i < 4; i++) for (let r = 0; r < 2; r++) { const px = cx - h + s * (0.2 + i * 0.2), py = cy - h * 0.55 + s * (0.15 + r * 0.25); disc(x, px, py, s * 0.07, '#5b3716'); disc(x, px - 3, py - 2, s * 0.022, ['#4fb3d9', '#e35d6a', '#f2c14e', '#7bd389'][(i + r) % 4]); }
+  } else if (m === 'poker') { // two cards fanned over a chip
+    disc(x, cx + h * 0.5, cy + h * 0.55, s * 0.13, '#c0262b', '#f4f1ea');
+    for (const [dx, rot, t] of [[-h * 0.22, -0.18, 'A♠'], [h * 0.22, 0.18, 'K♥']]) { x.save(); x.translate(cx + dx, cy - h * 0.05); x.rotate(rot); x.fillStyle = '#fbfaf5'; x.fillRect(-s * 0.2, -s * 0.28, s * 0.4, s * 0.56); x.fillStyle = t.includes('♥') ? '#c0262b' : '#15161a'; x.font = `bold ${Math.round(s * 0.16)}px Georgia, serif`; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(t, 0, 0); x.restore(); }
   } else if (m === 'battleship') { // a blue grid with a grey hull and two pegs
     x.fillStyle = '#2a7fae'; x.fillRect(cx - h, cy - h, s, s); x.strokeStyle = 'rgba(220,240,255,.6)'; x.lineWidth = 2; const q = s / 6;
     for (let k = 1; k < 6; k++) { x.beginPath(); x.moveTo(cx - h + k * q, cy - h); x.lineTo(cx - h + k * q, cy + h); x.moveTo(cx - h, cy - h + k * q); x.lineTo(cx + h, cy - h + k * q); x.stroke(); }
