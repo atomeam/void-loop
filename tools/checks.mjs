@@ -8,7 +8,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const run = (args) => { const r = spawnSync(process.execPath, args, { cwd: resolve(here, '..'), encoding: 'utf8', timeout: 900000 });
+const run = (args) => { const r = spawnSync(process.execPath, args, { cwd: resolve(here, '..'), encoding: 'utf8', timeout: 1800000 }); // 30 min: the full bench takes about 20 on a slow shared machine
   return { ok: r.status === 0, out: ((r.stdout || '') + (r.stderr || '')).trim().split('\n').filter((l) => !/ExperimentalWarning|trace-warnings/.test(l)) }; };
 const results = [];
 for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.mjs'], ['calendar', 'test_calendar.mjs'], ['glyphs', 'test_glyphs.mjs'], ['review', 'review.test.mjs'], ['figures', 'figures.test.mjs'], ['motorbody', 'motorbody.test.mjs'], ['drafts', 'draft-check.mjs']]) {

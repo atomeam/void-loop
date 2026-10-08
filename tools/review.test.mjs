@@ -226,3 +226,8 @@ for (const c of ['const m = \'<model xmlns="http://schemas.microsoft.com/3dmanuf
   ok(!rules(c, 'javascript').some((r) => /plain-http/.test(r)), 'no plain-http for: ' + c + ' (got ' + rules(c, 'javascript').join(',') + ')');
 for (const c of ['fetch("http://schemas.microsoft.com.evil.net/x");', 'const feed = "http://api.vendor-xml.net/feed";', 'img.src = "http://cdn.shop.net/a.png"; // xmlns="https://ok"'])
   ok(rules(c, 'javascript').includes('plain-http@1'), 'still plain-http: ' + c);
+// run 56: a null start guarded by short-circuit or a ternary is not a null dereference (the best-so-far loop); unguarded still is
+for (const c of ['var best=null;xs.forEach(function(w){if(!best||w.t<best.t)best=w});', 'let m = null; if (m == null || m.size < 2) m = next();', 'let r = null; const n = r ? r.length : 0;'])
+  ok(!rules(c, 'javascript').includes('null-deref@1'), 'no null-deref for: ' + c);
+for (const c of ['let best = null; if (best.t > 1) go();', 'let r = null; const n = r?.x || r.length;'])
+  ok(rules(c, 'javascript').includes('null-deref@1'), 'still null-deref: ' + c);
