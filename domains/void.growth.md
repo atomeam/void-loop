@@ -190,7 +190,7 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Why:** Forethinkers established (2026-10-07 20:14 ET) that a printed motor already moves an arm, so Void can show a visitor the real state of one-shot printed machines with sources, and the honest next step toward a figure that waves.
 - **Reuse:** the dated-source layout from the magnetize-step, senolytic MASH and coral cards; links to the magnetize-step card and Linemote-1.
 - **Done when:** each example ask opens the card with the three sources dated and the "Next" line visible; a test checks the card renders offline; tests stay green.
-- **claim:** free
+- **claim:** DONE 2026-10-08 run 55 (skills/printedmotor.js): "can you 3d print a motor", "printed motor", "printed robot arm" show the three dated steps and the "Next" line, with the Pentamote-1 miniature moving on the card and links to the magnetize step, Pentamote-1 and Linemote-1; browser test checks it offline.
 - **claim_until:**
 
 

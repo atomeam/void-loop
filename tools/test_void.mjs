@@ -721,6 +721,16 @@ try {
         && Math.abs(vol - 372.25) < 0.5 && span.join() === '22,13,5' && !P.errors.length,
       [lm.slice(0, 80), d ? d.suggestedFilename() : 'no download', facets, vol.toFixed(2), span.join('x'), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
+  // printed motors, from a twitch to a wave: three dated steps, the honest next step, and links on (works offline: fresh() blocks outside requests)
+  { const P = await fresh();
+    await P.ask('can you 3d print a motor', 900); const pm = await P.page();
+    const asks = await P.p.$$eval('.vpage.on a[data-ask]', (as) => as.map((a) => a.getAttribute('data-ask')).join('|')).catch(() => '');
+    await P.p.click('.vpage.on a[data-ask="show the magnetize step"]').catch(() => {}); await P.p.waitForTimeout(700); const mg = await P.page();
+    check('printedmotor: "can you 3d print a motor" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the "Next" line, and links that open the magnetize step, Pentamote-1 and Linemote-1',
+      /from a twitch to a wave/.test(pm) && /318 µm back and forth at 41\.6 Hz/.test(pm) && /2026-02-18/.test(pm) && /28\.2%/.test(pm) && /2026-04-20/.test(pm) && /2025-01-26/.test(pm)
+        && /Next: a printed motor small and cool enough to wave a toy figure’s arm\./.test(pm) && asks === 'show the magnetize step|pentamote-1|summon linemote-1' && /Magnetize step/.test(mg) && !P.errors.length,
+      [pm.slice(0, 80), asks, mg.slice(0, 40), P.errors.join(';')].join(' | '));
+    await P.ctx.close(); }
   // Pentamote-1: the five-material motor body page, and its 3MF (five named parts, one colour group each, PrusaSlicer config)
   { const P = await fresh();
     await P.ask('download the printed motor as 3mf', 900); const pm = await P.page();
