@@ -50,6 +50,11 @@ for (const [lang, c, want] of [['typescript', 'const x: any = foo();', 'ts-any@1
 for (const [lang, c] of [['typescript', 'const anyone: string = "x";'], ['typescript', 'let company: Company = load();'], ['go', 'for _, v := range items {'], ['go', 'v, ok := m[key]'], ['shell', 'cat a.txt b.txt > all.txt'], ['css', 'a { color: red }']])
   ok(!rules(c, lang).some((r) => /ts-any|go-ignored-err|useless-cat|css-important/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
 ok(looksLikeCode('cat $file | grep foo', 'shell'), 'a short shell pipe is code when the ask says bash');
+// inline review comments on PRs (tools/review-post.mjs): a line that already has Void's comment for the same checks is not posted again
+{ const { postedKeys, fresh } = await import('./review-post.mjs');
+  const keys = postedKeys([{ path: 'a.py', line: 4, body: '<!-- void-review-inline bare-except except-pass -->\n**risk**' }, { path: 'b.js', original_line: 9, body: '<!-- void-review-inline eval -->' }, { path: 'c.js', line: 1, body: 'a person wrote this' }]);
+  const out = fresh([{ path: 'a.py', line: 4, rules: ['bare-except', 'except-pass'] }, { path: 'a.py', line: 4, rules: ['bare-except'] }, { path: 'b.js', line: 9, rules: ['eval'] }, { path: 'c.js', line: 1, rules: ['eval'] }], keys);
+  ok(keys.size === 2 && out.length === 2 && out[0].rules.join() === 'bare-except' && out[1].path === 'c.js', 'review-post skips lines that already carry the same checks: ' + JSON.stringify(out)); }
 // run 48: one-line except: pass, exec with a built command, request echoed back, token in localStorage, Runtime.exec, privileged containers
 for (const [lang, c, want] of [['python', 'except Exception as e: pass', 'except-pass@1'], ['javascript', 'child_process.exec("ls " + dir)', 'js-exec-concat@1'], ['javascript', 'exec(`rm ${f}`)', 'js-exec-concat@1'],
   ['javascript', 'res.send(req.query.name)', 'reflected-input@1'], ['javascript', 'localStorage.setItem("token", jwt)', 'token-in-storage@1'], ['java', 'Runtime.getRuntime().exec(cmd);', 'java-runtime-exec@1'], ['yaml', 'privileged: true', 'yaml-privileged@1']])

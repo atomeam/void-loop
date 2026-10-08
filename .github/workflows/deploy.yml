@@ -116,7 +116,8 @@ jobs:
 
       # Void reviews its own pull requests: tools/review-pr.mjs runs the code checks a-to-mind.com runs when a visitor asks
       # Void to review code (void-live-deploy/lib/code-review.js) on the lines the PR adds, and keeps one PR comment
-      # (marked <!-- void-review -->) up to date. It informs; it never fails the PR.
+      # (marked <!-- void-review -->) up to date: a walkthrough of what changed, then the findings; bugs and risks also go on
+      # their lines as inline review comments (tools/review-post.mjs). It informs; it never fails the PR.
       - name: Void's review of the lines this PR adds
         if: github.event_name == 'pull_request'
         continue-on-error: true
@@ -136,6 +137,9 @@ jobs:
           else
             echo "$body" | gh api -X POST "repos/$REPO/issues/$PR/comments" --input - > /dev/null
           fi
+          # then each bug or risk as an inline comment on its line, with a one-click suggested fix where Void has a safe one
+          node tools/review-pr.mjs --base "origin/$BASE" --head HEAD --inline > void-inline.json
+          node tools/review-post.mjs void-inline.json --repo "$REPO" --pr "$PR" --sha "$(git rev-parse HEAD)"
 
       - name: Deploy target
         id: target

@@ -248,4 +248,18 @@ export async function run3dChecks({ check, fresh }) {
       !!drawn && r.inPage && r.n === 6 && r.labels === '5 yrs,10 yrs,15 yrs,20 yrs,25 yrs,30 yrs' && r.last === 365991 && r.tallest === 34 && r.goldGrows && r.noGold && rose && !F.errors.length, JSON.stringify({ drawn, r, rose, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- the tip page's receipt and coins: the receipt lists bill, tip, total and each share; one coin stack per person
+  {
+    const F = await fresh();
+    await F.ask('20% tip on 86.40 split between 3 people', 900);
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'tip'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => {
+      const g = await import('/skills/mini/tip.js'), d = { bill: 86.4, tip: 17.28, total: 103.68, people: 3, pct: 20 };
+      const one = g.stackFor({ bill: 40, tip: 0, total: 40, people: 1 });
+      return { lines: g.receiptLines(d).map((l) => l.join(' ')).join(' | '), s: g.stackFor(d), one, many: g.stackFor({ bill: 900, tip: 90, total: 990, people: 30 }).people, inPage: !!document.querySelector('.vpage .tip-mini canvas') };
+    });
+    check('3D tip: "20% tip on 86.40 split between 3 people" puts a receipt and coins on the page; the receipt reads Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56; three stacks with gold tip coins on top; no tip means no gold; at most 8 stacks',
+      !!drawn && r.inPage && r.lines === 'Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56' && r.s.people === 3 && r.s.gold >= 1 && r.s.silver > r.s.gold && r.one.gold === 0 && r.many === 8 && !F.errors.length, JSON.stringify({ drawn, r, e: F.errors }));
+    await F.ctx.close();
+  }
 }
