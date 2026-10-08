@@ -5397,5 +5397,10 @@
   {"ask": "what temperature does water boil", "want": "calc", "says": "212"},
   {"ask": "boiling point of water in kelvin", "want": "calc", "says": "373.15"},
   {"ask": "will it freeze tonight in boston", "want": "skill:weather", "says": null},
-  {"ask": "is it going to storm today", "want": "skill:weather", "says": null}
+  {"ask": "is it going to storm today", "want": "skill:weather", "says": null},
+  {"ask": "how many hours until 5pm", "want": "calc", "says": "hours"},
+  {"ask": "how many minutes till 9:30", "want": "calc", "says": "minutes"},
+  {"ask": "pomodoro", "want": "timer", "says": null},
+  {"ask": "todo: buy milk, call bank, pay rent", "want": "list", "says": null},
+  {"ask": "is today a holiday", "want": "skill:holidays", "says": null}
 ]

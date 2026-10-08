@@ -3403,6 +3403,16 @@ return { ok: true, detail: 'timer-reset' };
       // eggs: "how long to boil an egg", "how long do you boil eggs", "soft boiled egg time"
       if (/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:hard\s+|soft\s+)?boil\s+(?:an?\s+|the\s+)?eggs?(?:\s+for)?$|^(?:hard|soft|medium)[\s-]boiled\s+eggs?\s+(?:time|how\s+long)$|^how\s+long\s+(?:for|to\s+make)\s+(?:a\s+)?(?:hard|soft)[\s-]boiled\s+eggs?$/.test(t))
         return { value: 'soft 6 min\nmedium 8 min\nhard 10–12 min', note: 'large eggs lowered into water already boiling, then into cold water; add a minute straight from the fridge' };
+      // "how many hours until 5pm", "how many minutes till 9:30": from now on this device's clock (no am/pm: the next one)
+      m = t.match(/^how\s+many\s+(hours|minutes|mins)\s+(?:is\s+it\s+)?(?:until|till|til|to)\s+(?:(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?|(noon|midnight))(?:\s+(?:today|tonight))?$/);
+      if (m) { const now = new Date(), at = new Date(now); let h = 0, mi = 0;
+        if (m[5]) h = m[5] === 'noon' ? 12 : 0;
+        else { h = +m[2]; mi = +(m[3] || 0); const ap = (m[4] || '').replace(/\./g, ''); if (h > 23 || mi > 59 || (ap && (h < 1 || h > 12))) return null; if (ap === 'pm' && h < 12) h += 12; if (ap === 'am' && h === 12) h = 0; }
+        at.setHours(h, mi, 0, 0);
+        const twelve = !m[5] && !m[4] && h < 12;
+        while (at <= now) at.setHours(at.getHours() + (twelve ? 12 : 24));
+        const min = Math.round((at - now) / 60000), hh = Math.floor(min / 60), rest = min % 60;
+        return { value: /^min/.test(m[1]) ? min + ' minutes' : (Math.round(min / 6) / 10) + ' hours', note: hh + ' h ' + rest + ' min until ' + at.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + (at.getDate() !== now.getDate() ? ' tomorrow' : '') + ', by this device\'s clock' }; }
       // "boiling point of water in fahrenheit", "what temperature does water freeze": at sea level
       m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?(boiling|freezing)\s+point\s+(?:of\s+)?water(?:\s+(?:in|at)\s+(fahrenheit|celsius|centigrade|kelvin|f|c|k))?$|^(?:at\s+)?what\s+temp(?:erature)?\s+does\s+water\s+(boil|freeze)(?:\s+(?:in|at)\s+(fahrenheit|celsius|kelvin|f|c|k))?$/);
       if (m) { const boil = /boil/.test(m[1] || m[3]), u = (m[2] || m[4] || '').charAt(0), F = boil ? 212 : 32, C = boil ? 100 : 0, K = boil ? 373.15 : 273.15;
@@ -5102,6 +5112,8 @@ return { ok: true, detail: 'timer-reset' };
         .replace(/^tip\s+(\d+(?:\.\d+)?)\s*%\s+(?:on\s+)?\$?(\d+(?:\.\d+)?)\s*$/i, '$1% tip on $2')
         .replace(/^(?:a\s+)?random\s+number\s+(?:from\s+)?(-?\d+)\s*(?:-|to)\s*(-?\d+)\s*$/i, 'random number between $1 and $2')
         .replace(/^((?:how\s+many\s+)?(?:days|weeks|sleeps))\s+(?:till|til|untill)\s+/i, '$1 until ')
+        .replace(/^(?:start\s+|begin\s+)?(?:a\s+)?pomodoro(?:\s+timer)?(?:\s+please)?\s*[.!]*$/i, 'set a timer for 25 minutes')
+        .replace(/^(?:to\s*-?\s*do|todo)(?:\s+list)?\s*:\s*(.+)$/i, 'make a to-do list with $1')
         .replace(/^(capital|currency|population)\s+(?!of\b|city\b|gains?\b|letters?\b|one\b|punishment\b|cities\b|growth\b|density\b)([a-z][a-z ]{2,30}?)\s*[?.!]*$/i, '$1 of $2')
         .replace(new RegExp('^(?:time\\s+(?:in\\s+|at\\s+)?(' + CITIES + ')|(' + CITIES + ')\\s+time)(?:\\s+now|\\s+right\\s+now)?\\s*[?.!]*$', 'i'), (_, a, b) => 'what time is it in ' + (a || b))
         .replace(new RegExp('^(' + CODES + ')\\s+(?:to|in|into)\\s+(' + CODES + ')\\s*[?.!]*$', 'i'), '1 $1 to $2');
