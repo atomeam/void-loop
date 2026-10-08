@@ -26,12 +26,17 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card checkers-card';
   el.dataset.id = th.id;
   el.style.cssText = 'position:absolute;left:' + th.x + 'px;top:' + th.y + 'px;width:' + W + 'px;padding:10px;border:1px solid var(--line);border-radius:16px;background:rgba(12,12,13,0.94);text-align:center;cursor:grab;user-select:none;box-shadow:0 18px 50px rgba(0,0,0,.45)';
+  // a desktop board stands on the stage itself (no frame, no table rectangle); the controls are a slim strip under it, and
+  // the strip is what you drag. Phones keep the framed card (a free board beside the screen edge would run off it).
+  const free = !phone;
+  if (free) el.classList.add('free-board'); // the stage's shared card look (background, border, padding) stays off
+  if (free) el.style.cssText = 'position:absolute;left:' + th.x + 'px;top:' + th.y + 'px;width:' + W + 'px;text-align:center;user-select:none;background:transparent;border:0;box-shadow:none;padding:0';
   const head = document.createElement('div');
   head.style.cssText = 'color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:2px 0 8px';
   head.textContent = 'Checkers · you are dark';
   const view = document.createElement('div');
   view.className = 'checkers-view';
-  view.style.cssText = 'position:relative;width:100%;height:' + H + 'px;border-radius:11px;overflow:hidden;background:#0c0c0d';
+  view.style.cssText = free ? 'position:relative;width:100%;height:' + Math.round(H * 0.86) + 'px' : 'position:relative;width:100%;height:' + H + 'px;border-radius:11px;overflow:hidden;background:#0c0c0d';
   const status = document.createElement('div');
   status.className = 'checkers-status'; status.setAttribute('aria-live', 'polite');
   status.style.cssText = 'font-size:13px;margin:8px 0 2px;min-height:18px';
@@ -49,7 +54,7 @@ function mount(th, stageApi) {
   function data() {
     const s = st().s, mine = s.turn === 'd' && !thinking.has(th.id) && K.status(s) === 'playing';
     const next = [...new Set(pending().map((m) => m.path[st().hops.length]).filter((q) => q !== undefined))];
-    return { board: s.board, last: s.last || null, selected: st().sel, hops: st().hops, targets: next,
+    return { free, board: s.board, last: s.last || null, selected: st().sel, hops: st().hops, targets: next,
       movable: mine && st().sel < 0 ? [...new Set(K.legalMoves(s).map((m) => m.from))] : [], onSquare };
   }
   function paint() {
@@ -118,7 +123,14 @@ function mount(th, stageApi) {
   back.addEventListener('click', (e) => { e.stopPropagation(); const h = st().hist || []; if (!h.length) return; thinking.delete(th.id);
     const n = st().s.turn === 'd' && h.length >= 2 ? 2 : 1; st().s = h[h.length - n]; st().hist = h.slice(0, h.length - n); st().sel = -1; st().hops = []; save(); paint(); voidTurn(); });
 
-  el.append(head, view, status, bar);
+  if (free) {
+    const strip = document.createElement('div');
+    strip.className = 'checkers-strip';
+    strip.style.cssText = 'display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:-10px;padding:7px 10px 7px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(12,12,13,0.86);backdrop-filter:blur(8px);cursor:grab;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:92%';
+    head.style.padding = '0'; status.style.margin = '0'; bar.style.marginTop = '0';
+    strip.append(head, status, bar);
+    el.append(view, strip);
+  } else el.append(head, view, status, bar);
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   paint();

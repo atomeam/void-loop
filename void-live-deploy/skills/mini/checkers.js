@@ -22,7 +22,7 @@ export default async function build(ctx, data) {
   const { THREE, root, phone, loadTexture } = ctx;
   const url = MODELS + (phone ? 'chess-board-wood-v1-1k.glb' : 'chess-board-wood-v1-2k.glb');
   const tex = (n, srgb) => loadTexture(MODELS + 'wood-v1/' + n + '.webp', { srgb });
-  const [{ scene: set }, tbl, oakC, oakR, roseC] = await Promise.all([ctx.loadGLTF(url), table(ctx, { bg: data.bg || '#0c0c0d' }),
+  const [{ scene: set }, tbl, oakC, oakR, roseC] = await Promise.all([ctx.loadGLTF(url), table(ctx, { bg: data.bg || '#0c0c0d', free: !!data.free }),
     tex('oak-color', true), tex('oak-rough', false), tex('rosewood-color', true)]);
   const board = set.getObjectByName('board') || set;
   board.traverse((o) => { if (o.isMesh) { o.receiveShadow = true; o.castShadow = true; } });
@@ -92,6 +92,7 @@ export default async function build(ctx, data) {
   ctx.addContactShadow({ y: 0, size: 1.0, height: 0.05, opacity: 0.75, blur: 2.4, darkness: 1 });
   ctx.addContactShadow({ y: TOP_Y + 0.0002, size: HALF * 2, height: 0.025, opacity: 0.8, blur: 2.2, darkness: 1.2, exclude: [set], res: phone ? 512 : 1024 });
   update(data);
+  if (data.free) ctx.addContactShadow({ y: 0.0005, size: 0.62, opacity: 0.7, blur: 3.2, darkness: 0.9, exclude: [] }); // standing on the stage: its own soft shadow
   ctx.frame(board, { view: data.view || [0, 0.95, -1], pad: 0.74, ground: false, minZoom: 0.45, maxZoom: 1.5, light: [-0.55, 1.35, -0.45] });
   return {
     update,

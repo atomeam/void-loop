@@ -28,9 +28,11 @@ export function tapSquares(hits) {
 }
 export const tapSquare = (hits) => tapSquares(hits)[0] ?? -1;
 
-/** A big wooden table that fades into the card's colour, so the set sits on furniture, not in a void. */
-export async function table(ctx, { bg = '#0d0d0f' } = {}) {
+/** A big wooden table that fades into the card's colour, so the set sits on furniture, not in a void (or none: free). */
+// free: no table at all, so the board stands on the stage with its own soft shadow (the card is only a control strip)
+export async function table(ctx, { bg = '#0d0d0f', free = false } = {}) {
   const { THREE, scene, loadTexture, phone } = ctx;
+  if (free) { scene.background = null; scene.fog = null; return { top: null, dispose() {} }; }
   const rep = [3, 3];
   const [map, nor, rough] = await Promise.all([
     loadTexture(MODELS + 'wood-v1/table-color.webp', { srgb: true, repeat: rep }),
