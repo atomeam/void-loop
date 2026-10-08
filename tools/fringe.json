@@ -1333,5 +1333,30 @@
     ],
     "sha256": "548fd0af4576af73773a8fd8015b4c21df474c51f51c764bfa0ec12583b3e72a",
     "emit": false
+  },
+  {
+    "run": 54,
+    "at": "2026-10-08T12:05:23Z",
+    "family": "private-incubation-log",
+    "draft": "drafts/fringe/private-incubation-log-6.html",
+    "sources": [
+      {
+        "claim": "Misleading cues planted beside remote-associate puzzles lowered first-try solving, and an incubation interval helped mostly by letting the fixation fade",
+        "source": "https://doi.org/10.2307/1422851",
+        "confidence": "claim"
+      },
+      {
+        "claim": "An incubation break improved remote-associate solving only for people who had first been given misleading cues",
+        "source": "https://doi.org/10.3758/BF03193308",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Logging one's own second-try solves after a wrong lead, with and without a break, shows whether stepping away helps this person mainly when they are stuck on a wrong idea",
+        "source": "drafts/fringe/private-incubation-log-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "b2d6c459e9be852700cf29d970bc505286a2c58496336c16c00ffa4c8028503a",
+    "emit": false
   }
 ]
