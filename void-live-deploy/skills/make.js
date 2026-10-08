@@ -193,7 +193,7 @@ async function run(text, api) {
 
 export default {
   name: 'make',
-  examples: ['play connect 4', 'make me a connect 4 game', 'make a 3d torus', 'show me a gold 3d diamond', 'connect four', 'timing game', 'uap timeline'],
+  examples: ['make a 3d torus', 'show me a gold 3d diamond', 'timing game', 'uap timeline'], // Connect 4 is its own game now (skills/connect4.js), ahead of this in the index
   nearMisses: ['what is connect 4', 'who invented tic tac toe', 'how to make a 3d model', 'make a list', 'what is a uap', 'news filter settings'],
   match(lower, text) { return !!makeOf(text); },
   run,

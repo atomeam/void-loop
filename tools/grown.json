@@ -18,5 +18,5 @@
   {"ask": "ça marche comment ?", "missed": "2026-10-01", "now": "says how Void works, in French", "expect": "page", "text": "C’est Void"},
   {"ask": "capital of australia", "missed": "2026-10-03", "now": "answers Canberra even when the live country service (REST Countries) fails or is slow, from a built-in list of capitals", "expect": "page", "text": "Canberra"},
   {"ask": "what time is it", "missed": "2026-10-03", "now": "shows the time here, ticking, with the date and time zone (no place named, so not world time)", "expect": "page", "text": "Time"},
-  {"ask": "connect 4", "missed": "2026-10-03", "now": "opens a playable Connect 4 against Void", "expect": "page", "text": "Connect 4"}
+  {"ask": "connect 4", "missed": "2026-10-03", "now": "opens Connect Four against Void as a game on the stage (a 3D frame in the void, its card beside it, a reason for each disc Void drops)", "expect": "stage", "text": "connect4"}
 ]

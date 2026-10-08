@@ -765,7 +765,7 @@
   },
   {
     "ask": "play connect 4",
-    "want": "skill:make"
+    "want": "skill:connect4"
   },
   {
     "ask": "lets play tic tac toe",
@@ -805,7 +805,7 @@
   },
   {
     "ask": "make me a connect four game",
-    "want": "skill:make"
+    "want": "skill:connect4"
   },
   {
     "ask": "timing game",
@@ -1800,7 +1800,7 @@
   },
   {
     "ask": "play connect four",
-    "want": "skill:make"
+    "want": "skill:connect4"
   },
   {
     "ask": "what's 18% of 250",
