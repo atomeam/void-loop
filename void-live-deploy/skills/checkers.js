@@ -5,6 +5,7 @@
  * The rules live in skills/checkers-rules.js (forced captures, multi-jumps, crowning, a king moves both ways).
  * Where WebGL can't run the same game shows as a flat board of buttons, so the card always works.
  */
+import { grip, sideCard } from './side-card.js';
 import * as K from './checkers-rules.js';
 
 export function checkersOf(text) {
@@ -26,8 +27,8 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card checkers-card';
   el.dataset.id = th.id;
   el.style.cssText = 'position:absolute;left:' + th.x + 'px;top:' + th.y + 'px;width:' + W + 'px;padding:10px;border:1px solid var(--line);border-radius:16px;background:rgba(12,12,13,0.94);text-align:center;cursor:grab;user-select:none;box-shadow:0 18px 50px rgba(0,0,0,.45)';
-  // a desktop board stands on the stage itself (no frame, no table rectangle); the controls are a slim strip under it, and
-  // the strip is what you drag. Phones keep the framed card (a free board beside the screen edge would run off it).
+  // a desktop board stands in the void itself (no frame, no table rectangle); its controls are a separate card beside it,
+  // and the grip under the board is what moves the board. Phones keep the framed card (a free board beside the screen edge would run off it).
   const free = !phone;
   if (free) el.classList.add('free-board'); // the stage's shared card look (background, border, padding) stays off
   if (free) el.style.cssText = 'position:absolute;left:' + th.x + 'px;top:' + th.y + 'px;width:' + W + 'px;text-align:center;user-select:none;background:transparent;border:0;box-shadow:none;padding:0';
@@ -123,16 +124,18 @@ function mount(th, stageApi) {
   back.addEventListener('click', (e) => { e.stopPropagation(); const h = st().hist || []; if (!h.length) return; thinking.delete(th.id);
     const n = st().s.turn === 'd' && h.length >= 2 ? 2 : 1; st().s = h[h.length - n]; st().hist = h.slice(0, h.length - n); st().sel = -1; st().hops = []; save(); paint(); voidTurn(); });
 
+  let card = null;
   if (free) {
-    const strip = document.createElement('div');
-    strip.className = 'checkers-strip';
-    strip.style.cssText = 'display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:-10px;padding:7px 10px 7px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(12,12,13,0.86);backdrop-filter:blur(8px);cursor:grab;box-shadow:0 10px 30px rgba(0,0,0,.4);max-width:92%';
-    head.style.padding = '0'; status.style.margin = '0'; bar.style.marginTop = '0';
-    strip.append(head, status, bar);
-    el.append(view, strip);
+    // the board stands in the void on its own; its card (whose move, buttons) is separate and moves on its own (skills/side-card.js)
+    card = document.createElement('div');
+    card.className = 'checkers-side';
+    head.style.padding = '0 0 6px'; status.style.margin = '0 0 4px'; bar.style.justifyContent = 'flex-start';
+    card.append(head, status, bar);
+    el.append(view, grip('Checkers'));
   } else el.append(head, view, status, bar);
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
+  if (card) sideCard(th, stageApi, card, { boardW: W, boardH: Math.round(H * 0.86) + 24, w: 300 });
   paint();
   const fallback = () => { if (flat) return; flat = flatBoard(); paint(); };
   if (stageApi.miniature) {
@@ -148,7 +151,8 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'checkers');
   if (existing) { if (q.fresh) existing.state = freshState(); api.stage.render(); return 'checkers'; }
   const phone = Math.min(innerWidth, innerHeight) < 560, w = phone ? Math.min(innerWidth - 20, 420) : 560;
-  api.summon('checkers', { state: freshState(), x: Math.max(10, Math.round((innerWidth - w) / 2)), y: phone ? 56 : 48 });
+  const both = !phone && innerWidth >= w + 340 ? w + 320 : w; // the board and its separate card side by side when they fit
+  api.summon('checkers', { state: freshState(), x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 48 });
   api.say('Checkers · you are dark and move first · tap a man, then where it lands');
   return 'checkers';
 }

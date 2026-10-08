@@ -26,6 +26,7 @@ export const LIMITS = {
   handoff: { rpm: 30, body: 262144 }, // agent drop-links; 256 KB matches functions/api/handoff.js
   figurescript: { rpm: 60, body: 4000 }, // Next #19: behavior script for a summoned figure (AI once, then D1 cache)
   memory: { rpm: 30, body: 262144 }, // owner-only: what Void remembers (tools/ouroboros.py push); 256 KB matches MAX_BODY in lib/memory-core.js
+  reflect: { rpm: 30, body: 2000 }, // Void's voice: public GET of its reflections, owner POST asks it what it thinks (lib/voice.js)
 };
 export const DEFAULT_LIMIT = { rpm: 60, body: 16000 };
 export const FAIL_MAX = 10; // wrong keys (401/403) per connection per minute before every /api call from it is refused

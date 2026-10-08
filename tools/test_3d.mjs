@@ -290,6 +290,51 @@ export async function run3dChecks({ check, fresh }) {
     check('chess: "play chess" and "chess" summon one board (asked twice, still one); "who invented chess", "chess rules" and "checkers rules" add no board', cards === 1 && after.chess === 1 && after.checkers === 1, JSON.stringify({ cards, after }));
     await F.ctx.close();
   }
+  // ---- Go: the 3D goban stands in the void with its card separate; a tap places a stone and changes no count
+  {
+    const F = await fresh();
+    await F.ask('play go', 600);
+    const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'go'); return l && l.ready && l.draws > 0 ? l : false; }), 90000);
+    const tapGo = async (col, row) => { const pt = await F.p.evaluate(([c, r]) => { const k = window.__voidMini.keys().find((x) => x.startsWith('go:')); return window.__voidMini.project(k, [(4 - c) * 0.0237, 0.034, (4 - r) * 0.0237]); }, [col, row]); await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(300); };
+    if (ready) { await tapGo(4, 4); await tapGo(2, 6); }
+    const g = await until(async () => { const st = await F.state(); const t = st.find((x) => x.kind === 'go'); return t && t.state.moveCount === 2 ? t.state : false; }, 15000);
+    const layout = await F.p.evaluate(() => { const b = document.querySelector('.go-board-wrap'), c = document.querySelector('.side-card'); return { sep: !!b && !!c && !b.contains(c) && !c.contains(b), status: c ? c.innerText : '' }; });
+    await F.p.click('.go-count'); const counted = await F.p.$eval('.go-countout', (e) => e.innerText).catch(() => '');
+    check('go: "play go" stands a 3D goban in the void with its card separate; tapping E5 then C3 places Black then White, no capture count moves, no winner; Count position gives an estimate only when asked',
+      !!ready && !!g && g.board[40] === 1 && g.board[56] === 2 && g.captured[1] === 0 && g.captured[2] === 0 && layout.sep && /Black to play/.test(layout.status)
+        && /not a result/.test(counted) && !/wins/.test(counted) && !F.errors.length, JSON.stringify({ ready, g: g && { b: g.board.filter(Boolean).length, c: g.captured }, layout, counted, e: F.errors }));
+    await F.ctx.close();
+  }
+  // ---- every flat game stands in 3D in the void (skills/lift3d.js): its 2D board hides, the card is separate, a 3D tap plays
+  {
+    const F = await fresh();
+    const lifted = {};
+    for (const [ask, kind] of [['play tic tac toe', 'tictactoe'], ['play othello', 'othello'], ['play mancala', 'mancala'], ['play aggravation', 'aggravation']]) {
+      await F.ask('close', 200); await F.ask(ask, 600);
+      const ready = await until(() => F.p.evaluate((k) => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === k); return l && l.ready && l.draws > 0; }, kind), 90000);
+      lifted[kind] = ready && await F.p.evaluate((k) => { const c = document.querySelector('.' + k + '-side'), b = document.querySelector('.free-board .' + k + '-view'); return !!c && !!b && c.closest('.side-card') === c; }, kind);
+      if (kind === 'tictactoe' && ready) { // tap the centre square on the carved board: X lands there and Void answers
+        const pt = await F.p.evaluate(() => { const k = window.__voidMini.keys().find((x) => x.startsWith('tictactoe:')); return window.__voidMini.project(k, [0, 0.026, 0]); });
+        await F.p.mouse.click(pt.x, pt.y);
+        lifted.played = await until(async () => { const t = (await F.state()).find((x) => x.kind === 'tictactoe'); return t && t.state.board[4] === 'X' && t.state.board.filter(Boolean).length === 2; }, 15000);
+      }
+    }
+    check('lift3d: tic-tac-toe, Othello, mancala and Aggravation each stand a 3D board in the void with their card separate; tapping the carved tic-tac-toe board\'s centre plays X there and Void answers',
+      lifted.tictactoe && lifted.othello && lifted.mancala && lifted.aggravation && !!lifted.played && !F.errors.length, JSON.stringify({ lifted, e: F.errors }));
+    await F.ctx.close();
+  }
+  // ---- the game rack: "games" stands a 3D shelf of the seven board games in the void; picking one puts the rack away and opens it
+  {
+    const F = await fresh();
+    await F.ask('what games do you have', 600); // the hint line itself is checked in test_void.mjs ("the games hint names every game"), where no 3D frame holds the page
+    const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'rack'); return l && l.ready && l.draws > 0 ? l : false; }), 90000);
+    const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
+    await F.p.click('.rack-pick[data-game="go"]');
+    const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    await F.ctx.close();
+  }
   {
     // no WebGL at all: both games fall back to a flat board of buttons that plays the same way
     const F = await fresh(() => { const g = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (t, ...a) { return /webgl/.test(t) ? null : g.call(this, t, ...a); }; });

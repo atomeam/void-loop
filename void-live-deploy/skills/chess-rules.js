@@ -4,6 +4,7 @@
  *   create() / fromFEN(fen) / toFEN(s)    a position { board, turn: 'w'|'b', castle: 'KQkq', ep, half, full, keys }
  *   legalMoves(s) -> [{ from, to, piece, captured, promo, castle, ep }]   (every rule: castling through check, en passant, promotion)
  *   play(s, move | 'e2e4' | 'e7e8q') -> new position   status(s) -> 'playing' | 'check' | 'checkmate' | 'stalemate' | 'draw-50' | 'draw-material' | 'draw-repetition'
+ *   threats(s, color) -> [{ sq, square, piece, defended }]   what the other side attacks now (an observation, never advice)
  *   bestMove(s, { depth, ms }) -> move     a small alpha-beta search (material + piece-square tables, captures searched to quiet)
  */
 const VAL = { p: 100, n: 320, b: 335, r: 500, q: 900, k: 0 };
@@ -54,6 +55,18 @@ export function attacked(board, sq, by) {
     while (ff >= 0 && ff < 8 && rr >= 0 && rr < 8) { const p = board[rr * 8 + ff]; if (p) { if (p === a || p === b) return true; break; } ff += df; rr += dr; }
   }
   return false;
+}
+// An observation, not advice: each piece of `color` the other side attacks right now, most valuable first, and whether one
+// of its own pieces covers it. The card shows this after every move; it never says what to play about it.
+const NAMES = { p: 'pawn', n: 'knight', b: 'bishop', r: 'rook', q: 'queen', k: 'king' };
+export function threats(s, color) {
+  const foe = color === 'w' ? 'b' : 'w', out = [];
+  s.board.forEach((p, sq) => {
+    if (!p || (p === p.toUpperCase() ? 'w' : 'b') !== color || !attacked(s.board, sq, foe)) return;
+    out.push({ sq, square: sqName(sq), piece: NAMES[p.toLowerCase()], defended: p.toLowerCase() !== 'k' && attacked(s.board, sq, color) });
+  });
+  const v = (t) => (t.piece === 'king' ? 1e4 : VAL[t.piece[0] === 'k' ? 'n' : t.piece[0]]);
+  return out.sort((a, b) => v(b) - v(a));
 }
 export function inCheck(s, color = s.turn) { const k = s.board.indexOf(color === 'w' ? 'K' : 'k'); return k >= 0 && attacked(s.board, k, color === 'w' ? 'b' : 'w'); }
 
