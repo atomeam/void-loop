@@ -121,6 +121,7 @@ const SEAT = { 1: 'Black', 2: 'White' };
 
 function mount(th, stageApi) {
   style();
+  if (!th.state || th.state.size !== 9 || !Array.isArray(th.state.board) || th.state.board.length !== 81) th.state = createGoState(9); // a saved or shared board that isn't a 9×9 Go board starts fresh
   const N = th.state.size;
   const phone = Math.min(innerWidth, innerHeight) < 560;
   const BW = phone ? Math.min(innerWidth - 20, 400) : 460, BH = Math.round(BW * 0.82);
@@ -172,9 +173,12 @@ function mount(th, stageApi) {
     e.stopPropagation();
     const c = countPosition(th.state);
     count.hidden = false;
-    count.innerHTML = '<b>Black ' + c.black + '</b> · <b>White ' + c.white + '</b> <span>(' + (c.white - c.komi) + ' + ' + c.komi + ' komi)</span>'
-      + (c.final ? '<div class="go-result">' + (c.result[0] === 'B' ? 'Black' : 'White') + ' wins by ' + c.result.slice(2) + '.</div>'
-        : '<div>An estimate of the board as it stands, not a result. Play goes on.</div>');
+    // built from nodes, not an HTML string: the numbers come from a saved board, which may have been shared
+    const line = (tag, text, cls) => { const n = document.createElement(tag); n.textContent = text; if (cls) n.className = cls; return n; };
+    count.replaceChildren(line('b', 'Black ' + c.black), document.createTextNode(' · '), line('b', 'White ' + c.white),
+      document.createTextNode(' '), line('span', '(' + (c.white - c.komi) + ' + ' + c.komi + ' komi)'),
+      c.final ? line('div', (c.result[0] === 'B' ? 'Black' : 'White') + ' wins by ' + c.result.slice(2) + '.', 'go-result')
+        : line('div', 'An estimate of the board as it stands, not a result. Play goes on.'));
   });
   again.addEventListener('click', (e) => { e.stopPropagation(); th.state = createGoState(N); said = ''; count.hidden = true; paint(); save(); });
   function paint() {
@@ -203,15 +207,16 @@ function flatBoard(host, N, getState, tap) {
   const frame = document.createElement('div'); frame.className = 'go-frame';
   const svg = document.createElementNS(svgNS, 'svg');
   svg.setAttribute('viewBox', `0 0 ${W} ${W}`); svg.setAttribute('class', 'go-flat'); svg.setAttribute('role', 'grid');
-  let lines = '';
+  // every node is made with createElementNS (no HTML strings): a saved board, maybe shared, can't inject markup
+  const make = (tag, attrs, parent, text) => { const n = document.createElementNS(svgNS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); if (text !== undefined) n.textContent = text; parent.appendChild(n); return n; };
+  const linesG = make('g', { class: 'go-lines' }, svg);
   for (let k = 0; k < N; k++) {
     const p = pad + k * S;
-    lines += `<line x1="${pad}" y1="${p}" x2="${W - pad}" y2="${p}"/><line x1="${p}" y1="${pad}" x2="${p}" y2="${W - pad}"/>`;
-    lines += `<text x="${p}" y="${pad - 16}">${LETTERS[k]}</text><text x="${pad - 18}" y="${p + 4}">${N - k}</text>`;
+    make('line', { x1: pad, y1: p, x2: W - pad, y2: p }, linesG); make('line', { x1: p, y1: pad, x2: p, y2: W - pad }, linesG);
+    make('text', { x: p, y: pad - 16 }, linesG, LETTERS[k]); make('text', { x: pad - 18, y: p + 4 }, linesG, String(N - k));
   }
-  const star = N === 9 ? [20, 24, 40, 56, 60] : [];
-  svg.innerHTML = `<g class="go-lines">${lines}${star.map((i) => `<circle cx="${pad + (i % N) * S}" cy="${pad + Math.floor(i / N) * S}" r="3.5"/>`).join('')}</g><g class="go-stones"></g>`;
-  const stonesG = svg.querySelector('.go-stones'), points = [];
+  for (const i of N === 9 ? [20, 24, 40, 56, 60] : []) make('circle', { cx: pad + (i % N) * S, cy: pad + Math.floor(i / N) * S, r: 3.5 }, linesG);
+  const stonesG = make('g', { class: 'go-stones' }, svg), points = [];
   for (let i = 0; i < N * N; i++) {
     const b = document.createElementNS(svgNS, 'rect');
     b.setAttribute('x', pad + (i % N) * S - S / 2); b.setAttribute('y', pad + Math.floor(i / N) * S - S / 2);
@@ -223,13 +228,13 @@ function flatBoard(host, N, getState, tap) {
   frame.appendChild(svg); host.style.height = 'auto'; host.appendChild(frame);
   return function paint() {
     const st = getState(), dead = new Set(st.dead);
-    let html = '';
+    stonesG.replaceChildren();
     for (let i = 0; i < N * N; i++) {
       const v = st.board[i];
-      if (v) html += `<circle class="go-stone ${v === 1 ? 'b' : 'w'}${dead.has(i) ? ' dead' : ''}" cx="${pad + (i % N) * S}" cy="${pad + Math.floor(i / N) * S}" r="${S * 0.46}" data-p="${i}"/>`;
+      if (v) make('circle', { class: 'go-stone ' + (v === 1 ? 'b' : 'w') + (dead.has(i) ? ' dead' : ''), cx: pad + (i % N) * S, cy: pad + Math.floor(i / N) * S, r: S * 0.46 }, stonesG);
     }
-    if (st.last >= 0) html += `<circle class="go-mark" cx="${pad + (st.last % N) * S}" cy="${pad + Math.floor(st.last / N) * S}" r="${S * 0.15}"/>`;
-    stonesG.innerHTML = html;
+    const last = Number(st.last);
+    if (last >= 0 && last < N * N) make('circle', { class: 'go-mark', cx: pad + (last % N) * S, cy: pad + Math.floor(last / N) * S, r: S * 0.15 }, stonesG);
     for (let i = 0; i < N * N; i++) points[i].classList.toggle('open', st.status === 'playing' && !st.board[i]);
   };
 }
