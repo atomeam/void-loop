@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { parseVoice, currentAsks, questionFor, knowsFacts, voiceFacts } from '../void-live-deploy/lib/voice.js';
+import { VOICE_SYSTEM, parseVoice, currentAsks, questionFor, knowsFacts, voiceFacts } from '../void-live-deploy/lib/voice.js';
 import { isSelfAsk, selfFacts } from '../void-live-deploy/lib/self-context.js';
 import * as reflect from '../void-live-deploy/functions/api/reflect.js';
 import { writeLog, entryBlock } from './reflect.mjs';
@@ -32,7 +32,8 @@ test('Void\'s reply is kept word for word; only secrets are redacted; nothing sa
   assert.equal(parseVoice(JSON.stringify({ thoughts: 'ok then', asks: 'not a list', striking: 'yes' })).striking, false);
 });
 
-test('the questions Void is asked', () => {
+test('the questions Void is asked; Void describes itself only from its canon and code', () => {
+  assert.match(VOICE_SYSTEM, /never make up a motto, quest or identity/);
   assert.match(questionFor('daily'), /go next.*weakest.*game/);
   assert.equal(questionFor('build', 'incident brief'), 'This just shipped: "incident brief". What do you think of it, and how would you make it better?');
 });

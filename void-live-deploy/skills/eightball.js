@@ -4,6 +4,9 @@
  * now summons this ball with the answer instead of opening a page. This file gives the stage its 'eightball' kind: a 3D
  * ball (skills/mini/eightball.js) standing in the void; tap it, or ask again, and it shakes for a new answer. Where WebGL
  * can't run it is a flat black ball with the same blue triangle.
+ * Every answer is an event, not just random text: question (when one was asked) -> shake -> an answer chosen from the
+ * classic 20 -> shown on the ball -> kept in th.history (the last 20) and in the page's ask history (stageApi.log).
+ * The ball never presents an answer as knowledge: its caption says it is a random pick.
  */
 import { grip } from './side-card.js';
 
@@ -11,6 +14,7 @@ export const ANSWERS = ['It is certain', 'Without a doubt', 'Yes, definitely', '
   'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again',
   "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful', 'No'];
 export const pick = (rnd = Math.random) => ANSWERS[Math.floor(rnd() * ANSWERS.length)];
+const seenShake = new Map(); // ball id -> the shake count already shown, so a re-render after a new ask shakes before it tells
 
 function mount(th, stageApi) {
   const S = 240;
@@ -26,11 +30,19 @@ function mount(th, stageApi) {
   el.append(view, said, grip('Magic 8 Ball · tap to shake'));
   let mini = null;
   const data = () => ({ answer: th.answer, n: th.n || 0, onShake: shake });
-  function shake() {
-    th.answer = pick(); th.n = (th.n || 0) + 1;
+  function shake() { // a tap: a shake with no new question
+    th.answer = pick(); th.n = (th.n || 0) + 1; th.question = null; seenShake.set(th.id, th.n);
+    th.history = [...(th.history || []), { q: null, a: th.answer, at: new Date().toISOString(), how: 'shaken' }].slice(-20);
     stageApi.save && stageApi.save();
+    stageApi.log && stageApi.log({ domain: 'void.stage', ask: 'shake the magic 8 ball', score: 'pass', note: 'chance' });
+    caption(true);
+    if (mini) { mini.update(data()); setTimeout(() => caption(), 1500); } else flat();
+  }
+  function caption(hidden) { // the question it was asked, then the answer once it has risen
     said.textContent = '';
-    if (mini) { mini.update(data()); setTimeout(() => { said.textContent = th.answer; }, 1500); } else flat();
+    if (th.question) { const q = document.createElement('div'); q.style.cssText = 'color:var(--muted,#8a8a8a);font-size:12px'; q.textContent = '“' + th.question + '”'; said.appendChild(q); }
+    if (!hidden) said.appendChild(document.createTextNode(th.answer));
+    said.title = 'a random pick from the classic 20 answers, not a prediction';
   }
   function flat() { // no WebGL: a black ball with the blue triangle
     view.innerHTML = '';
@@ -40,9 +52,12 @@ function mount(th, stageApi) {
     w.style.cssText = 'width:96px;height:96px;border-radius:50%;background:#06122e;display:flex;align-items:center;justify-content:center;color:#e8f0ff;font:bold 11px Arial,sans-serif;text-transform:uppercase;text-align:center;padding:8px;box-sizing:border-box';
     w.textContent = th.answer;
     b.appendChild(w); b.addEventListener('click', (e) => { e.stopPropagation(); shake(); });
-    view.appendChild(b); said.textContent = th.answer;
+    view.appendChild(b); caption();
   }
-  said.textContent = th.answer;
+  const fresh = seenShake.has(th.id) && seenShake.get(th.id) !== (th.n || 0); // asked again: the ball shakes before it tells
+  seenShake.set(th.id, th.n || 0);
+  caption(fresh);
+  if (fresh) setTimeout(() => caption(), 1500);
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   if (stageApi.miniature) {

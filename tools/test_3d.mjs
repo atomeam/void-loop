@@ -332,8 +332,9 @@ export async function run3dChecks({ check, fresh }) {
     await F.ask('ask the magic 8 ball will it rain', 600);
     const again = (await F.state()).filter((t) => t.kind === 'eightball');
     const { ANSWERS } = await import(new URL('../void-live-deploy/skills/eightball.js', import.meta.url).href);
-    check('eightball: "magic 8 ball" spawns one 3D Magic 8 Ball in the void with one of the 20 classic answers; asking again shakes the same ball (one ball, a new shake)',
-      !!ready && first.length === 1 && ANSWERS.includes(first[0].answer) && again.length === 1 && again[0].n === 1 && ANSWERS.includes(again[0].answer) && !F.errors.length,
+    check('eightball: "magic 8 ball" spawns one 3D Magic 8 Ball in the void with one of the 20 classic answers; asking again shakes the same ball (one ball, a new shake), and each answer is kept in the ball\'s history with its question',
+      !!ready && first.length === 1 && ANSWERS.includes(first[0].answer) && again.length === 1 && again[0].n === 1 && ANSWERS.includes(again[0].answer)
+        && again[0].history.length === 2 && again[0].history[1].q === 'will it rain' && again[0].history[1].how === 'asked' && again[0].history[0].q === null && !F.errors.length,
       JSON.stringify({ ready, first, again, e: F.errors }));
     await F.ctx.close();
   }

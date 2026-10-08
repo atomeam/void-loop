@@ -911,7 +911,8 @@ Object.values(things).forEach((th) => {
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
-      ask: (t) => handle(String(t || '')) }; // a card that opens something (the game rack's boxes) asks for it as if typed
+      ask: (t) => handle(String(t || '')), // a card that opens something (the game rack's boxes) asks for it as if typed
+      log: (a) => loopLog(a) }; // a stage thing's own event (a shaken 8 ball) goes in the same history as asks
 
     // Click any stage object or person and it lifts in the hand. A flick throws it off the
     // screen and it's gone (a real toss: gravity, spin, carried off); a slow drop sets it back down.
@@ -5569,8 +5570,12 @@ return { ok: true, detail: 'timer-reset' };
       if (wantsTimeNow(l)) { showTimeNow(); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'timenow' }); return true; }
       { const c = chanceOf(l);
         // the Magic 8 Ball is a ball in the void (skills/eightball.js): asking again shakes the same ball for a new answer
+        // each ask is an event: the question, a shake, the answer chosen from the 20, shown on the ball, kept in its history
         if (c && c.eight) { await skillsReady; if (stageKinds.eightball) { const ball = Object.values(things).find((t) => t.kind === 'eightball');
-          if (ball) { ball.answer = c.big; ball.n = (ball.n || 0) + 1; save(); render(); } else summonThing('eightball', { answer: c.big, n: 0, center: true });
+          const q = text.replace(/^\s*(?:ask\s+the\s+|shake\s+the\s+)?magic\s+8[\s-]?ball\s*[,:?-]*\s*/i, '').trim().slice(0, 140) || null;
+          const ev = { q, a: c.big, at: new Date().toISOString(), how: 'asked' };
+          if (ball) { ball.answer = c.big; ball.question = q; ball.n = (ball.n || 0) + 1; ball.history = [...(ball.history || []), ev].slice(-20); save(); render(); }
+          else summonThing('eightball', { answer: c.big, question: q, n: 0, history: [ev], center: true });
           say(c.big); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
         if (c) { showPage((p) => { p.innerHTML = '<h2>' + esc(c.title) + '</h2><div style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
       if (await handleAppAsk(text, l)) return true;
