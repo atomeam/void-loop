@@ -346,6 +346,20 @@ export async function run3dChecks({ check, fresh }) {
       !!drawn && r.inPage && r.lines === 'Bill $86.40 | Tip 20% $17.28 | Total $103.68 | Each (3) $34.56' && r.s.people === 3 && r.s.gold >= 1 && r.s.silver > r.s.gold && r.one.gold === 0 && r.many === 8 && !F.errors.length, JSON.stringify({ drawn, r, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- Pentamote-1: the motor body from the same boxes as its 3MF; the magnet slab shuttles over coils lit in three-phase order
+  {
+    const F = await fresh();
+    await F.ask('pentamote-1', 900);
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'pentamote'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => {
+      const g = await import('/skills/mini/pentamote.js'), q = g.driveAt(0.5), z = g.driveAt(0), third = g.driveAt(2 / 3);
+      return { quarter: +q.d.toFixed(6), rest: +z.d.toFixed(6), first: z.glow.map((x) => +x.toFixed(3)), next: third.glow.indexOf(Math.max(...third.glow)), inPage: !!document.querySelector('.vpage .pentamote-mini canvas') };
+    });
+    const moves = drawn && await until(() => F.p.evaluate(() => window.__voidMini.list().find((x) => x.kind === 'pentamote').draws > 6), 15000);
+    check('3D Pentamote-1: "pentamote-1" draws the motor body on its page; the slab is at +0.5 mm a quarter period in and centred at rest, coil 1 glows first and coil 2 next, and it keeps moving',
+      !!drawn && r.inPage && r.quarter === 0.5 && r.rest === 0 && r.first[0] === 0.55 && r.first[1] === 0 && r.next === 1 && moves && !F.errors.length, JSON.stringify({ drawn, r, moves, e: F.errors }));
+    await F.ctx.close();
+  }
   // ---- Void's own body on its self page: one fixed seed (the same entity everywhere), asymmetric, tap breaks it apart
   {
     const F = await fresh();

@@ -5449,5 +5449,11 @@
   {"ask": "dasatinib and quercetin for mash", "want": "skill:senolytic", "says": "MASH resolved in 53% vs 7%"},
   {"ask": "trial watch", "want": "skill:trialwatch", "says": "Longevity trial watch"},
   {"ask": "longevity trials", "want": "skill:trialwatch", "says": "NCT05506488"},
-  {"ask": "is anyone repeating the senolytic liver trial", "want": "skill:trialwatch", "says": "Longevity trial watch"}
+  {"ask": "is anyone repeating the senolytic liver trial", "want": "skill:trialwatch", "says": "Longevity trial watch"},
+  {"ask": "download the printed motor as 3mf", "want": "skill:motorbody", "says": "Pentamote-1"},
+  {"ask": "show the multi-material print file", "want": "skill:motorbody", "says": "extruder 5"},
+  {"ask": "pentamote-1", "want": "skill:motorbody", "says": "five-material printed linear motor body"},
+  {"ask": "download a 3mf of the printed motor", "want": "skill:motorbody", "says": "Download 3MF"},
+  {"ask": "show the five-material motor", "want": "skill:motorbody", "says": "soft-magnetic"},
+  {"ask": "export the multi-material motor as a print file", "want": "skill:motorbody", "says": "PrusaSlicer"}
 ]

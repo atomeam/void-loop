@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · the wrong lead (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled,input:disabled{opacity:.4;cursor:default}
+#puzzle{font-size:22px;color:#7cf;min-height:1.4em}
+#lead{color:#c98;font-size:13px;min-height:1.2em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>the wrong lead · draft · not published</h1>
+  <p class="note">Each puzzle is three words with one word that goes with all of them (cottage, swiss, cake: cheese). Some come with a misleading hint beside each word, the way Smith and Blankenship (1991) planted wrong leads. You get 20 seconds. Any you miss come back for a second try, either straight away or after a one-minute break. One study found a break helped only the people who had been misled, as if the break works by letting the wrong lead fade (Vul and Pashler, 2007). This page keeps your own count of second-try solves in all four cases, so you can see whether a break helps you, and when. Everything stays in this browser.</p>
+  <div id="puzzle" aria-live="polite"></div>
+  <div id="lead"></div>
+  <div class="row"><label for="ans" class="note">the word</label><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" style="flex:1 1 160px" disabled><button id="go" type="button">start eight</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  // compound remote associates (the classic three-word kind) with a wrong lead per word: an associate of that word that is not the answer
+  var ITEMS=[['cottage swiss cake','cheese','house army birthday'],['cream skate water','ice','sour board fall'],['show life row','boat','tv style column'],['night wrist stop','watch','day band sign'],
+    ['duck fold dollar','bill','pond paper sign'],['dew comb bee','honey','drop hair sting'],['fountain baking pop','soda','pen bread corn'],['preserve ranger tropical','forest','jam power fruit'],
+    ['aid rubber wagon','band','first duck train'],['flake mobile cone','snow','corn phone pine'],['cracker fly fighter','fire','nut fish street'],['safety cushion point','pin','belt seat view'],
+    ['river note account','bank','boat book user'],['print berry bird','blue','finger straw cage'],['pie luck belly','pot','apple charm dance'],['time hair stretch','long','zone cut yoga'],
+    ['sore shoulder sweat','cold','throat bag shirt'],['dream break light','day','team fast house'],['political surprise line','party','power gift up'],['measure worm video','tape','cup earth game']];
+  var N=8,LIMIT=20e3,BREAK=60e3,KEY='a2m.fringe.wronglead.v1',st={tries:[]},run=null;
+  var CELLS=['misled+break','misled+now','plain+break','plain+now'];
+  function el(id){return document.getElementById(id)}
+  function ok(t){return t&&CELLS.indexOf(t.cell)>=0&&typeof t.solved==='boolean'}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.tries))st.tries=j.tries.filter(ok)}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({tries:st.tries.slice(-400)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your tries (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var k=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[k];a[k]=t}return a}
+  var norm=function(s){return String(s||'').toLowerCase().replace(/[^a-z]/g,'')};
+  // second-try solve rate in each of the four cases, and how much a break adds when misled and when not
+  function summary(tries){var c={};CELLS.forEach(function(k){c[k]={n:0,solved:0}});tries.forEach(function(t){c[t.cell].n++;if(t.solved)c[t.cell].solved++});
+    var rate=function(k){return c[k].n?c[k].solved/c[k].n:null},gain=function(a,b){var x=rate(a),y=rate(b);return x==null||y==null?null:x-y};
+    return{cells:c,rates:CELLS.map(rate),breakGainMisled:gain('misled+break','misled+now'),breakGainPlain:gain('plain+break','plain+now'),n:tries.length}}
+  // half the puzzles misled, and each puzzle's second try (if it needs one) already decided, half after a break: no choosing after the fact
+  function plan(items){var pick=shuffle(items).slice(0,N),mis=shuffle([0,1,2,3,4,5,6,7]).slice(0,N/2),brk=shuffle([0,1,2,3,4,5,6,7]).slice(0,N/2);
+    return pick.map(function(it,i){return{words:it[0],answer:it[1],leads:it[2],misled:mis.indexOf(i)>=0,later:brk.indexOf(i)>=0,first:null}})}
+  function ask(it,second){el('puzzle').textContent=it.words.split(' ').join(' · ');
+    el('lead').textContent=it.misled&&!second?'hints: '+it.leads.split(' ').join(' · '):'';
+    el('ans').value='';el('ans').disabled=false;el('ans').focus();clearTimeout(run.timer);
+    run.timer=setTimeout(function(){answer(false)},LIMIT)}
+  function current(){return run.queue[run.at]}
+  function answer(solved){var q=current(),it=q.it;clearTimeout(run.timer);el('ans').disabled=true;
+    if(!q.second){it.first=solved;el('state').textContent=solved?'yes: '+it.answer:'time’s up · it comes back '+(it.later?'after the break':'right away');
+      if(!solved)(it.later?run.later:run.queue).splice(it.later?run.later.length:run.at+1,0,{it:it,second:true})}
+    else{st.tries.push({cell:(it.misled?'misled':'plain')+'+'+(it.later?'break':'now'),solved:solved,at:Date.now()});save();
+      el('state').textContent=(solved?'yes: ':'it was ')+it.answer}
+    run.at++;setTimeout(step,900)}
+  function step(){if(run.at<run.queue.length){ask(current().it,current().second);return}
+    if(run.later.length){var left=BREAK/1000,q=run.later;run.later=[];run.queue=run.queue.concat(q);el('puzzle').textContent='';el('lead').textContent='';
+      el('state').textContent='a break: look away from the puzzles ('+left+' s)';run.brk=setInterval(function(){left--;el('state').textContent='a break: look away from the puzzles ('+left+' s)';
+        if(left<=0){clearInterval(run.brk);step()}},1000);return}
+    el('puzzle').textContent='';el('lead').textContent='';el('go').disabled=false;el('go').textContent='eight more';run=null;draw()}
+  el('go').addEventListener('click',function(){if(run)return;var items=plan(ITEMS);run={queue:items.map(function(it){return{it:it,second:false}}),later:[],at:0};el('go').disabled=true;step()});
+  el('ans').addEventListener('keydown',function(ev){if(ev.key!=='Enter'||!run)return;ev.preventDefault();if(el('ans').disabled)return;
+    if(norm(el('ans').value)===norm(current().it.answer))answer(true);else el('state').textContent='not that one'});
+  function draw(){var s=summary(st.tries);if(!s.n){el('score').textContent='';return}var pct=function(x){return x==null?'–':Math.round(x*100)+'%'};
+    el('score').textContent='second tries solved: '+CELLS.map(function(k,i){return k+' '+pct(s.rates[i])+' ('+s.cells[k].n+')'}).join(' · ')
+      +'\na break added '+(s.breakGainMisled==null?'–':Math.round(s.breakGainMisled*100)+' points')+' after a wrong lead, and '+(s.breakGainPlain==null?'–':Math.round(s.breakGainPlain*100)+' points')+' without one'
+      +(s.n<40?'\nabout 40 second tries before this means much':'')}
+  draw();
+  // made-up tries: rates per case and the two break gains; and a plan always misleads half and breaks half
+  function selftest(){var t=[],add=function(cell,n,k){for(var i=0;i<n;i++)t.push({cell:cell,solved:i<k})};
+    add('misled+break',10,6);add('misled+now',10,2);add('plain+break',10,5);add('plain+now',10,5);
+    var s=summary(t);if(Math.abs(s.breakGainMisled-0.4)>1e-12||Math.abs(s.breakGainPlain)>1e-12||s.n!==40)return'summary gave '+JSON.stringify(s);
+    for(var r=0;r<30;r++){var p=plan(ITEMS),m=p.filter(function(x){return x.misled}).length,l=p.filter(function(x){return x.later}).length;if(p.length!==N||m!==N/2||l!==N/2)return'plan gave '+m+' misled and '+l+' later'}
+    if(ITEMS.some(function(it){return it[0].split(' ').length!==3||it[2].split(' ').length!==3||it[2].split(' ').indexOf(it[1])>=0}))return'an item is malformed or its lead gives the answer away';return true}
+  window.__wronglead={summary:summary,plan:plan,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

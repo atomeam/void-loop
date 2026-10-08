@@ -721,6 +721,21 @@ try {
         && Math.abs(vol - 372.25) < 0.5 && span.join() === '22,13,5' && !P.errors.length,
       [lm.slice(0, 80), d ? d.suggestedFilename() : 'no download', facets, vol.toFixed(2), span.join('x'), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
+  // Pentamote-1: the five-material motor body page, and its 3MF (five named parts, one colour group each, PrusaSlicer config)
+  { const P = await fresh();
+    await P.ask('download the printed motor as 3mf', 900); const pm = await P.page();
+    const dl = P.p.waitForEvent('download', { timeout: 5000 }).catch(() => null);
+    await P.p.click('.vpage.on [data-pentamote-3mf]').catch(() => {}); const d = await dl;
+    const zip = d ? fs.readFileSync(await d.path()) : Buffer.alloc(0), txt = zip.toString('latin1');
+    const names = [...txt.matchAll(/<object id="\d+" type="model" name="([^"]+)" pid="(\d+)" pindex="0">/g)].map((m) => m[1] + ':' + m[2]).join(',');
+    const extruders = [...txt.matchAll(/key="extruder" value="(\d)"/g)].map((m) => m[1]).join('');
+    const ask = await P.p.$eval('.vpage.on a[data-ask]', (a) => a.getAttribute('data-ask')).catch(() => '');
+    check('motorbody: "download the printed motor as 3mf" shows Pentamote-1 with its five materials on extruders 1-5 and the magnetize link, and Download 3MF saves pentamote-1.3mf with five named parts, one colour group each, and the PrusaSlicer extruder config',
+      /Pentamote-1/.test(pm) && /extruder 5\s+flexible/.test(pm) && /not yet printed or tested/.test(pm) && /2026-02-18/.test(pm) && ask === 'show the magnetize step'
+        && !!d && d.suggestedFilename() === 'pentamote-1.3mf' && txt.startsWith('PK') && names === 'dielectric:2,conductive:3,soft-magnetic:4,hard-magnetic:5,flexible:6'
+        && /Metadata\/Slic3r_PE_model\.config/.test(txt) && extruders === '1122334455' && !P.errors.length,
+      [pm.slice(0, 80), d ? d.suggestedFilename() : 'no download', names, extruders, ask, P.errors.join(';')].join(' | '));
+    await P.ctx.close(); }
   // figures first: a chair, then Motelet sits on it; a cup, then the next Motelet picks it up; a third stands; spin;
   // the print file is the body as it is on the stage; flung off the screen a figure is gone; the rest come back after a reload
   { const G = await fresh();
