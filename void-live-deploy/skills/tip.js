@@ -116,7 +116,7 @@ async function run(text, api) {
   const subBits = [moneyFmt(q.bill, q.currency)];
   if (q.pct > 0) subBits.push((Math.round(q.pct * 10) / 10) + '% tip');
   if (q.people >= 2) subBits.push(q.people + ' people');
-  showPage((el) => {
+  const page = showPage((el) => {
     let html = '<h2>' + esc(title) + '</h2>'
       + '<div class="sub">' + esc(subBits.join(' \u00b7 ')) + '</div>';
     if (q.wantsSplit) {
@@ -144,6 +144,12 @@ async function run(text, api) {
     html += '<div class="src">Formula: tip = bill \u00d7 pct / 100; total = bill + tip; per person = total \u00f7 people \u00b7 as of Oct 2026</div>';
     el.innerHTML = html;
   });
+  // the receipt and each person's coins (skills/mini/tip.js); where WebGL can't run the page stays as it is
+  if (page && api.stage && api.stage.miniature) {
+    const slot = document.createElement('div'); slot.className = 'tip-mini'; slot.style.cssText = 'height:170px;margin:10px 0 4px;border-radius:10px;overflow:hidden';
+    const list = page.querySelector('ul'); if (list) list.after(slot); else page.appendChild(slot);
+    api.stage.miniature(slot, 'tip', { bill: q.bill, tip: r.tip, total: r.total, people: q.people, pct: q.pct, currency: (moneyFmt(0, q.currency).match(/^[^\d]*/) || [''])[0] || '$' }, { key: 'tip-page', place: 'inside', label: '3D receipt and coins' }).catch(() => slot.remove());
+  }
   return 'tip';
 }
 
