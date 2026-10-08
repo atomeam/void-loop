@@ -294,4 +294,5 @@ export function projectPoint(key, [x, y, z]) {
   const v = new h.E.THREE.Vector3(x, y, z).project(h.camera), r = h.canvas.getBoundingClientRect();
   return { x: r.left + (v.x + 1) / 2 * r.width, y: r.top + (1 - v.y) / 2 * r.height };
 }
-if (typeof window !== 'undefined') window.__voidMini = { list: liveMiniatures, keys: () => [...live.keys()], project: projectPoint };
+if (typeof window !== 'undefined') window.__voidMini = { list: liveMiniatures, keys: () => [...live.keys()], project: projectPoint,
+  state: (key) => { const h = live.get(key); try { return h && h.inst && h.inst.state ? h.inst.state() : null; } catch (_) { return null; } } }; // a kind's own state(), for tests

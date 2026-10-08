@@ -173,6 +173,38 @@ export async function run3dChecks({ check, fresh }) {
     await F.ctx.close();
   }
 
+  // ---- card miniatures, batch 2: the stopwatch runs with its card, the calculator types the sum
+  {
+    const F = await fresh();
+    const r = await F.p.evaluate(async () => {
+      const m = await import('/skills/scene3d.js'); const host = (id) => { const d = document.createElement('div'); d.id = id; d.style.cssText = 'position:fixed;left:20px;top:20px;width:300px;height:240px;z-index:9'; document.body.appendChild(d); return d; };
+      const now = Date.now(), T = Math.PI * 2;
+      let presses = 0; const sw = await m.mountMiniature(host('ms'), 'stopwatch', { read: () => ({ ms: 90500, running: false }), press: () => presses++ }, { key: 'tsw' });
+      const s = sw.inst.state();
+      const calc = await import('/skills/mini/calculator.js');
+      const cm = await m.mountMiniature(host('mc'), 'calculator', { expression: '12*7', result: '84', typed: true }, { key: 'tcalc' });
+      const typing = cm.inst.state();
+      return { sw: { second: Math.abs(s.second - (30.5 / 60) * T) < 0.02, minute: Math.abs(s.minute - (1.5083 / 30) * T) < 0.02 }, typing,
+        keys: calc.keysFor('15% of 240').join(''), keys2: calc.keysFor('(3 + 4) * 2 / 7 - 1').join('') };
+    });
+    const typed = await until(() => F.p.evaluate(() => { const s = window.__voidMini.state('tcalc'); return s && !s.pending && s.display === '84' ? s : false; }), 30000);
+    check('miniatures: the stopwatch\u2019s sweep hand and 30-minute register read 1:30.5; the calculator presses 1, 2, \u00d7, 7, = and then shows 84 ("15% of 240" types 15%\u00d7240)',
+      r.sw.second && r.sw.minute && r.typing.pending > 0 && !!typed && r.keys === '15%\u00d7240' && r.keys2 === '3+4\u00d72\u00f77\u22121' && !F.errors.length, JSON.stringify({ sw: r.sw, typing: r.typing, typed, keys: r.keys, keys2: r.keys2, e: F.errors }));
+    await F.ask('make a calculator', 600);
+    const card = await until(() => F.p.evaluate(() => { const l = window.__voidMini.list().find((x) => x.kind === 'calculator' && x.key.startsWith('calculator:calc')); return l && l.draws > 0 && !!document.querySelector('.calc-card .void-mini canvas') ? window.__voidMini.state(l.key) : false; }), 60000);
+    await F.ask('calculate 12*7', 600);
+    const page = await until(() => F.p.evaluate(() => { const l = window.__voidMini.list().find((x) => x.kind === 'calculator' && x.key.startsWith('calculator:page')); const s = l && window.__voidMini.state(l.key); return l && l.draws > 0 && !!document.querySelector('.vpage.on .vmini canvas') && s && s.display === '84' && !s.pending ? s : false; }), 60000);
+    const cc = card && page ? { card, page } : false;
+    await F.ask('start a stopwatch', 600);
+    const sw = await until(() => F.p.evaluate(() => { const l = window.__voidMini.list().find((x) => x.kind === 'stopwatch' && /^stopwatch:\d/.test(x.key)); const s = l && window.__voidMini.state(l.key); return l && l.draws > 0 && !!document.querySelector('.vpage.on .vmini canvas') && s && s.ms > 300 ? s : false; }), 60000);
+    check('miniatures: "make a calculator" puts a pocket calculator on its card, "calculate 12*7" types it on a calculator\u2019s keys to 84 on the answer card, "start a stopwatch" runs a 3D stopwatch on its card',
+      !!cc && !!sw && !F.errors.length, JSON.stringify({ cc, sw, e: F.errors }));
+    await F.p.reload(); await F.p.waitForTimeout(700); // render() runs on load before stageApi exists: the cards must still mount
+    const back = await until(() => F.p.evaluate(() => !!document.querySelector('.calc-card .void-mini canvas') && document.querySelectorAll('.thing').length >= 1), 60000);
+    check('miniatures: after a reload the calculator comes back with its 3D miniature (render() runs on load before stageApi exists)', !!back && !F.errors.length, JSON.stringify({ back, e: F.errors }));
+    await F.ctx.close();
+  }
+
   await runRulesChecks(check);
   // ---- chess and checkers: routing, the real 3D board takes taps, Void replies, and a flat board where WebGL can't run
   {

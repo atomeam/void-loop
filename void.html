@@ -1235,7 +1235,10 @@ function mountList(th) {
       stage.appendChild(el);
     }
 
-function mountCalc(th) {
+// a card's 3D miniature (skills/scene3d.js). A hoisted function, not stageApi.miniature: render() runs on load before stageApi exists
+    function cardMini(host, kind, data, opts) { return import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)); }
+    var calcTyped = null; // the calculator sum just asked for (var: render can run before this line)
+    function mountCalc(th) {
       const el = document.createElement('div');
       el.className = 'thing calc-card';
       el.dataset.id = th.id;
@@ -1269,6 +1272,11 @@ function mountCalc(th) {
       el.appendChild(title);
       el.appendChild(expression);
       el.appendChild(result);
+      // a 3D pocket calculator whose keys press out the sum, then show the result (skills/mini/calculator.js)
+      const calcHost = document.createElement('div'); calcHost.className = 'calc-mini'; calcHost.style.cssText = 'height:150px;margin:-4px -6px 8px';
+      el.insertBefore(calcHost, title);
+      cardMini(calcHost, 'calculator', { expression: th.expression || '', result: th.result || '', typed: calcTyped === th.id + '|' + th.expression },
+        { key: 'calculator:' + th.id, label: '3D calculator' + (th.result ? ' showing ' + th.result : '') }).catch(() => calcHost.remove());
       bindDrag(el, th);
       stage.appendChild(el);
     }
@@ -2610,6 +2618,7 @@ say('nothing selected to remove');
         const calc = ensureCalc();
         calc.expression = calcExpression;
         calc.result = formatCalcResult(computed.value);
+        calcTyped = calc.id + '|' + calcExpression; // its miniature plays the key presses once
         save(); render();
         return { ok: true, detail: 'calc-computed' };
       }
@@ -4248,12 +4257,21 @@ return { ok: true, detail: 'timer-reset' };
       if (/^what\s+day\s+(is|will)\s+(?:be\s+)?(?:the\s+)?(\d{1,2}|\b(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\b)/i.test(lower)) return true;
       return false;
     }
+    // plain arithmetic ("12*7 = 84", "15% of 240 = 36") gets a pocket calculator that types the sum (skills/mini/calculator.js)
+    function calcMini(el, note) {
+      const m = /^(.+?)\s*=\s*(-?[\d.,]+(?:e[+-]?\d+)?)$/i.exec(String(note || ''));
+      if (!m || !/\d/.test(m[1]) || !/^[\d\s.,+\-*/x×÷()%^]+$|^[\d.,]+\s*%\s*of\s*[\d.,]+$/i.test(m[1].trim())) return;
+      const band = document.createElement('div'); band.className = 'vmini'; band.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 168 : 210) + 'px;margin:0 0 6px';
+      el.prepend(band);
+      cardMini(band, 'calculator', { expression: m[1].replace(/,/g, ''), result: m[2].replace(/,/g, ''), typed: true },
+        { key: 'calculator:page' + Date.now().toString(36), label: '3D calculator showing ' + m[2] }).catch(() => band.remove());
+    }
     async function showCalc(query) {
       const lower = calcNormalize(query.toLowerCase());
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; });
 
       let hit = false;
-      const setV = (big, note, src) => { if (vpageEl === el) el.innerHTML = '<h2>Calculated</h2><div style="' + bigStyle(big) + '">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); };
+      const setV = (big, note, src) => { if (vpageEl === el) { el.innerHTML = '<h2>Calculated</h2><div style="' + bigStyle(big) + '">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); calcMini(el, note); } };
       lastAskRaw = String(query || '');
       const wm = wordMath(query.toLowerCase());
       if (wm) { setV(wm.value, wm.note); return 'calc'; }
@@ -5484,6 +5502,12 @@ return { ok: true, detail: 'timer-reset' };
       const now = () => acc + (running ? performance.now() - t0 : 0);
       const tick = () => { if (vpageEl !== el) return; el.querySelector('.sw').textContent = fmt(now()); raf = requestAnimationFrame(tick); };
       raf = requestAnimationFrame(tick);
+      { // a chrome stopwatch on the desk that runs with this card: tap the crown to start or stop, the pusher to reset (skills/mini/stopwatch.js)
+        const band = document.createElement('div'); band.className = 'vmini'; band.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 168 : 210) + 'px;margin:0 0 6px';
+        el.prepend(band);
+        cardMini(band, 'stopwatch', { read: () => ({ ms: now(), running }), press: () => el.querySelector('.sw-go').click(), reset: () => el.querySelector('.sw-reset').click() },
+          { key: 'stopwatch:' + Date.now(), label: '3D stopwatch' }).catch(() => band.remove());
+      }
       el.querySelector('.sw-go').addEventListener('click', (e) => { if (running) { acc = now(); running = false; e.target.textContent = 'start'; } else { t0 = performance.now(); running = true; e.target.textContent = 'stop'; } });
       el.querySelector('.sw-lap').addEventListener('click', () => { laps.push(now()); el.querySelector('.sw-laps').innerHTML = laps.map((x, i) => '<li>' + fmt(x - (laps[i - 1] || 0)) + ' <span style="color:#8a8a8a">· ' + fmt(x) + '</span></li>').join(''); });
       el.querySelector('.sw-reset').addEventListener('click', () => { acc = 0; t0 = performance.now(); laps = []; el.querySelector('.sw-laps').innerHTML = ''; el.querySelector('.sw').textContent = '0:00.0'; });

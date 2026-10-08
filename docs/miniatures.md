@@ -118,6 +118,11 @@ any card whose miniature takes input:
 | `clock` | worldtime ("time in Tokyo", "world clock", "3pm London to Tokyo") | brass desk clock per place, hands on that zone's real time with a sweeping second hand; a converted time stops the hands at that moment |
 | `weather` | weather ("weather in Oslo") | diorama: sun or moon by local day/night, clouds, rain or snow falling, fog, lightning, wind in the trees, thermometer at the real temperature |
 | `chess`, `checkers` | the playable boards | see above |
+| `stopwatch` | the stopwatch page ("start a stopwatch") | chrome stopwatch lying on the desk, sweep hand and 30-minute register read the card's time; tap the crown to start or stop, the pusher to reset |
+| `calculator` | the calculator stage card ("calculate 12*7") | solar pocket calculator: a new sum presses its keys one by one, the seven-segment LCD follows the typing, then `=` and the result |
+
+Stage cards (the calculator) mount into a small host inside the card with `stageApi.miniature(host, kind, data, { key: kind + ':' + th.id })`: render() rebuilds the card DOM, and the same key moves the live miniature into the new host and calls `update(data)` instead of building it again.
+Tests read a kind's own `state()` with `window.__voidMini.state(key)`.
 
 Page cards (weather, worldtime) put the miniature in a `.vmini` band at the top of the page: create the band, `el.prepend`
 it, call `api.stage.miniature(band, kind, data, { key })`, and remove the band in `.catch` so a browser without WebGL
