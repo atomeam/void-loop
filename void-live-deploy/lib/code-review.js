@@ -120,11 +120,14 @@ const RULES = [
     'typeof never returns that word, so this check never passes. It returns one of: "undefined", "object", "boolean", "number", "bigint", "string", "symbol", "function".'],
   ['foreach-async', 'bug', JS, (m) => /\.forEach\(\s*async\b/.test(m),
     'forEach does not wait for async callbacks: the code after it runs before they finish, and their errors are lost. Use for (const x of items) { await … } or await Promise.all(items.map(async …)).'],
-  ['for-in-array', 'risk', JS, (m) => /\bfor\s*\(\s*(?:const|let|var)\s+\w+\s+in\s+\w+/.test(m),
+  // for…in over an object is right: skip it when the line shows object iteration (a hasOwnProperty guard, or the key
+  // used as a name: setAttribute(k, …), setProperty(k, …))
+  ['for-in-array', 'risk', JS, (m) => { const f = m.match(/\bfor\s*\(\s*(?:const|let|var)\s+(\w+)\s+in\s+\w+/); if (!f) return false; const k = f[1];
+    return !new RegExp('hasOwn(?:Property)?(?:\\.call)?\\s*\\(\\s*(?:\\w+\\s*,\\s*)?' + k + '\\s*\\)|\\b(?:setAttribute|setAttributeNS|setProperty)\\s*\\(\\s*(?:[^,()]+,\\s*)?' + k + '\\s*,').test(m); },
     'for…in walks property names as strings (and inherited ones), not array values. For an array use for (const x of list), or for (let i = 0; i < list.length; i++).'],
   ['eval', 'risk', [...JS, 'python', 'php', 'ruby'], (m) => /(?:^|[^\w$.])(?:eval|exec)\s*\(|\bnew\s+Function\s*\(/.test(m),
     'eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anything. Parse the data instead (JSON.parse, a lookup table, ast.literal_eval in Python).'],
-  ['inner-html', 'risk', JS, (m, r) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !/\.(?:innerHTML|outerHTML)\s*\+?=\s*(['"`])[^'"`$]*\1\s*;?\s*$/.test(r) && !/\besc(?:ape)?(?:Html)?\s*\(|DOMPurify|sanitize/i.test(r),
+  ['inner-html', 'risk', JS, (m, r) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !/\.(?:innerHTML|outerHTML)\s*\+?=\s*(['"`])[^'"`$]*\1\s*;?\s*$/.test(r) && !/\besc(?:ape)?(?:Html)?\s*\(|\(\s*esc(?:ape)?(?:Html)?\s*\)|DOMPurify|sanitize/i.test(r), // esc called, or handed to an HTML builder (card(esc))
     'putting a variable into innerHTML lets any HTML in it run (a script tag, an onerror handler): an XSS hole if the text can come from a user. Use textContent, or escape the text first.'],
   ['document-write', 'risk', JS, (m) => /\bdocument\.write(?:ln)?\s*\(/.test(m),
     'document.write wipes the whole page if it runs after loading, and writes raw HTML (XSS risk). Build elements with createElement and textContent.'],
