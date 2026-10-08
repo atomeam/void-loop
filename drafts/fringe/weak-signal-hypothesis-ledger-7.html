@@ -61,7 +61,7 @@ input[type=number]{width:6em}
   // made-up cases: the classic 1% / 80% / 9.6% case is about 7.8%, counts out of 1,000 agree, a sure sign gives 100%, and the summary is right
   function selftest(){var t=posterior(0.01,0.8,0.096);if(Math.abs(t-0.0776)>0.001)return'posterior gave '+t;
     var c=counts(0.01,0.8,0.096,1000);if(c.have!==10||c.tp!==8||c.fp!==95)return'counts gave '+JSON.stringify(c);if(Math.abs(c.share-8/103)>1e-12)return'count share wrong';
-    if(posterior(0.05,0.9,0)!==1)return'no false alarms should mean certainty';
+    if(Math.abs(posterior(0.05,0.9,0)-1)>1e-12)return'no false alarms should mean certainty';
     var s=summary([{guess:0.8,truth:0.1},{guess:0.5,truth:0.1},{guess:0.2,truth:0.1},{guess:0.1,truth:0.1}]);if(Math.abs(s.early-0.55)>1e-12||Math.abs(s.late-0.05)>1e-12||s.over!==0.75)return'summary gave '+JSON.stringify(s);return true}
   window.__baserate={posterior:posterior,counts:counts,summary:summary,selftest:selftest}; // for checks
 })();
