@@ -1433,5 +1433,30 @@
     ],
     "sha256": "423e6055aeb397555677a332443979bc7a324233f7549e41f10e94703fbd273e",
     "emit": false
+  },
+  {
+    "run": 58,
+    "at": "2026-10-08T15:45:11Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-7.html",
+    "sources": [
+      {
+        "claim": "When people reproduce intervals drawn from a range, short ones come out too long and long ones too short (central tendency, Vierordt's law), and the pull grows with timing uncertainty as a Bayesian observer would predict",
+        "source": "https://doi.org/10.1038/nn.2590",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Vierordt's 1868 study of the time sense first reported that short durations are overestimated and long ones underestimated around an indifference point",
+        "source": "https://doi.org/10.1080/09541440802453006",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own reproduction slope and indifference point, fitted from their tries, show how strongly their timing leans on what is usual",
+        "source": "drafts/fringe/interval-timing-7.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "ffc7a1797dbe926db4f515d9caa7d951d9499fa5e142082538534a51aaa4a69e",
+    "emit": false
   }
 ]

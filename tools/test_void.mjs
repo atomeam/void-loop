@@ -721,6 +721,23 @@ try {
         && Math.abs(vol - 372.25) < 0.5 && span.join() === '22,13,5' && !P.errors.length,
       [lm.slice(0, 80), d ? d.suggestedFilename() : 'no download', facets, vol.toFixed(2), span.join('x'), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
+  // an incident brief: fill the form, the durations and the Markdown follow; the draft survives a reload and "clear" empties it
+  { const P = await fresh();
+    await P.ask('incident report for the login outage', 900);
+    const set = async (sel, v) => { await P.p.fill('.vpage.on ' + sel, v); };
+    await set('[data-k="started"]', '2026-10-08T14:00'); await set('[data-k="detected"]', '2026-10-08T14:12'); await set('[data-k="resolved"]', '2026-10-08T16:05');
+    await P.p.selectOption('.vpage.on [data-k="severity"]', 'SEV2').catch(() => {});
+    await set('[data-k="impact"]', 'All sign-ins failed'); await set('[data-list="next"][data-c="what"]', 'Add a canary'); await set('[data-list="next"][data-c="owner"]', 'Sam');
+    const md = await P.p.$eval('.vpage.on .inc-md', (e) => e.textContent).catch(() => ''), dur = await P.p.$eval('.vpage.on .inc-durations', (e) => e.textContent).catch(() => '');
+    await P.p.reload(); await P.p.waitForTimeout(700); await P.ask('write an incident brief', 900);
+    const kept = await P.p.$eval('.vpage.on [data-k="impact"]', (e) => e.value).catch(() => '');
+    await P.p.click('.vpage.on [data-clear]').catch(() => {}); await P.p.waitForTimeout(200);
+    const cleared = await P.p.evaluate(() => localStorage.getItem('a2m.void.incident.v1'));
+    check('incident: "incident report for the login outage" opens a blameless brief titled "Login outage"; times give 12 min to detect and 2 h 5 min to resolve, the Markdown carries severity, impact, "Not known yet" and the owner, the draft survives a reload, and clear empties it',
+      /^# Incident brief: Login outage/.test(md) && /SEV2/.test(md) && /12 min to detect/.test(md) && /2 h 5 min to resolve/.test(md) && /All sign-ins failed/.test(md) && /_Not known yet\._/.test(md) && /Add a canary \(owner: Sam\)/.test(md)
+        && dur === '12 min to detect · 2 h 5 min to resolve' && kept === 'All sign-ins failed' && cleared === null && !P.errors.length,
+      [md.slice(0, 80), dur, kept, cleared, P.errors.join(';')].join(' | '));
+    await P.ctx.close(); }
   // printed motors, from a twitch to a wave: three dated steps, the honest next step, and links on (works offline: fresh() blocks outside requests)
   { const P = await fresh();
     await P.ask('can you 3d print a motor', 900); const pm = await P.page();
