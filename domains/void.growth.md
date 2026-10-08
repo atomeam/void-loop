@@ -158,7 +158,7 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Why:** Forethinkers established (2026-10-03 10:08 ET) the first human RCT histology signal for senolytics in MASH, so Void can hand a visitor a truthful disease-cure research card that separates proven endpoints from longevity marketing.
 - **Reuse:** article/page summon pattern, dated-source layout from Next #13 / magnetize-step card.
 - **Done when:** an ask such as "senolytics for fatty liver" or "dasatinib quercetin MASH trial" opens the card with the three sources dated and the caveat visible; tests stay green.
-- **claim:** free
+- **claim:** done in run 53 (claude): skills/senolytic.js, "senolytics for fatty liver", "dasatinib quercetin mash trial"; endpoints, the NCT record linked, the hypothesis-generating caveat in bold, PEARL and semaglutide as dated context marked "not the same claim"; the three papers are named and dated without links (this entry gives no DOIs)
 - **claim_until:**
 
 ### Next [think-tank] — live longevity trial watch
@@ -166,7 +166,7 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Why:** Forethinkers found (2026-10-07 16:20 ET) that the registry API is browser-readable and that the senolytic MASH signal has no registered successor, while GLP-1 epigenetic slowing has three prospective trials reading out in 2027. A live card lets a visitor see which longevity results are being repeated, which are not, and when answers are due, straight from the primary registry. This is the honest companion to the senolytic MASH trial card.
 - **Reuse:** the dated-source layout from the senolytic MASH and magnetize-step cards, and existing live-fetch skill patterns (weather, quake) for timeout and offline fallback.
 - **Done when:** "trial watch" opens the card with every watchlist NCT id showing status and primary-completion date from a live fetch; a browser test stubs the API response and checks the rows, the check timestamp, and the offline snapshot path; tests stay green.
-- **claim:** free
+- **claim:** done in run 53 (claude): skills/trialwatch.js, "trial watch", "longevity trials", "is anyone repeating the senolytic liver trial"; seven watchlist trials read live from the ClinicalTrials.gov API v2 with an 8 s timeout, the time of the check, the senolytic "no follow-up registered yet" line; each good check saved in this browser and shown with its date when the registry is unreachable; browser test in tools/test_void.mjs stubs the API for both paths
 - **claim_until:**
 
 ### Next [think-tank] — multi-material 3MF download for a printed motor body
