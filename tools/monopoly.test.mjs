@@ -94,3 +94,12 @@ test('thousands of seeded moves: money only moves by the rules and never goes be
   }
   assert.ok(s.moves > 20);
 });
+
+test('Void starts a trade when you hold the street it needs for a set: an offer with a reason, nothing moves until you answer', () => {
+  let s = fresh(); s.owner[1] = 1; s.owner[3] = 0; s.turn = 1; s.phase = 'end';
+  s = M.voidTurn(s);
+  assert.deepEqual({ space: s.proposal.space, cash: s.proposal.cash }, { space: 3, cash: 110 }); assert.match(s.proposal.why, /complete its brown set/);
+  assert.equal(s.owner[3], 0, 'an offer moves nothing');
+  const no = M.answer(s, false); assert.equal(no.owner[3], 0); assert.equal(no.proposal, null);
+  const yes = M.answer(s, true); assert.equal(yes.owner[3], 1); assert.equal(yes.players[0].money, 1610); assert.equal(yes.players[1].money, 1390);
+});

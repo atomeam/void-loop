@@ -13,7 +13,8 @@
  *   create({ voids = 1, seed }) -> state      roll(s) -> s      buy(s, yes) -> s      build(s, i) -> s      endTurn(s) -> s
  *   payJail(s) -> s      offer(s, { space, cash }) -> { s, accepted, why }      voidTurn(s) -> s (one whole Void turn)
  *   rentFor(s, i, diceSum) -> number      canBuild(s, p, i) -> bool      worth(s, p) -> number
- * Not yet: auctions, mortgages, trades Void starts, house shortages.
+ *   answer(s, yes) -> s      your answer to an offer Void made you (s.proposal): nothing moves until you answer
+ * Not yet: auctions, mortgages, house shortages.
  */
 export const START_MONEY = 1500, GO_PAY = 200, JAIL = 10, GO_TO_JAIL = 30, JAIL_FINE = 50;
 
@@ -69,7 +70,7 @@ export function create({ voids = 1, seed = (Math.random() * 4294967296) >>> 0 } 
   const n = Math.max(1, Math.min(3, voids | 0 || 1));
   const s = {
     players: [{ name: 'You', seat: 'you', money: START_MONEY, pos: 0, jail: 0, free: 0, out: false }],
-    owner: {}, houses: {}, turn: 0, phase: 'roll', dice: null, doubles: 0, pending: null, rng: seed >>> 0, moves: 0, log: [], winner: null,
+    owner: {}, houses: {}, turn: 0, phase: 'roll', dice: null, doubles: 0, pending: null, proposal: null, rng: seed >>> 0, moves: 0, log: [], winner: null,
   };
   for (let k = 0; k < n; k++) s.players.push({ name: n === 1 ? 'Void' : 'Void ' + (k + 1), seat: 'void', money: START_MONEY, pos: 0, jail: 0, free: 0, out: false });
   s.decks = { chance: shuffled(s, CHANCE.length), chest: shuffled(s, CHEST.length) };
@@ -248,9 +249,34 @@ export function voidTurn(s0) {
         const options = owned(s, p).filter((i) => canBuild(s, p, i) && s.players[p].money - SPACES[i].h >= RESERVE).sort((a, b) => (s.houses[a] || 0) - (s.houses[b] || 0) || SPACES[b].p - SPACES[a].p);
         if (options.length) { s = build(s, options[0]); s.log[s.log.length - 1].why = 'it owns the whole ' + SPACES[options[0]].g + ' set and keeps ' + RESERVE + ' in reserve'; built = true; }
       }
+      propose(s, p);
       s = endTurn(s);
     }
   }
+  return s;
+}
+
+// Void starts a trade when you hold the one street it needs to finish a set: an offer, open until you answer it
+function propose(s, p) {
+  if (s.proposal || s.players[0].out) return;
+  const cash = s.players[p].money;
+  for (const g of Object.keys(GROUP)) {
+    const mine = GROUP[g].filter((j) => s.owner[j] === p), yours = GROUP[g].filter((j) => s.owner[j] === 0);
+    if (mine.length !== GROUP[g].length - 1 || yours.length !== 1 || s.houses[yours[0]]) continue;
+    const i = yours[0], price = Math.ceil(SPACES[i].p * 1.8 / 10) * 10;
+    if (cash - price < RESERVE) continue;
+    s.proposal = { from: p, space: i, cash: price, why: 'it would complete its ' + g + ' set, so it is worth more to Void than its ' + SPACES[i].p + ' price' };
+    say(s, p, 'offered you ' + price + ' for ' + SPACES[i].n, { why: s.proposal.why });
+    return;
+  }
+}
+export function answer(s0, yes) {
+  const s = clone(s0), o = s.proposal;
+  if (!o) return s0;
+  s.proposal = null;
+  const ok = yes && s.owner[o.space] === 0 && !s.houses[o.space] && s.players[o.from].money >= o.cash && !s.players[o.from].out;
+  if (ok) { s.owner[o.space] = o.from; s.players[o.from].money -= o.cash; s.players[0].money += o.cash; say(s, 0, 'accepted ' + o.cash + ' for ' + SPACES[o.space].n); }
+  else say(s, 0, 'declined the offer for ' + SPACES[o.space].n + (yes ? ' (it no longer stands)' : ''));
   return s;
 }
 

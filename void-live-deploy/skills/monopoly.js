@@ -61,6 +61,12 @@ function mount(th, stageApi) {
   const endB = btn('End turn', 'mono-end', () => act(M.endTurn(th.state)));
   const newB = btn('New game', 'mono-new', () => { th.state = M.create({ voids: th.state.players.length - 1 }); picked = -1; offerOut.textContent = ''; save(); paint(); });
   acts.append(rollB, buyB, skipB, jailB, endB, newB);
+  // an offer Void made you: it waits, with Void's reason, until you answer; nothing moves before that
+  const prop = document.createElement('div'); prop.className = 'mono-proposal'; prop.style.cssText = 'display:none;font-size:12px;margin:6px 0;padding:6px 8px;border-radius:10px;background:rgba(123,108,255,.12)';
+  const propText = document.createElement('div');
+  const acceptB = btn('Accept', 'mono-accept', () => act(M.answer(th.state, true))), declineB = btn('Decline', 'mono-decline', () => act(M.answer(th.state, false)));
+  const propBtns = document.createElement('div'); propBtns.style.cssText = 'display:flex;gap:6px;margin-top:4px'; propBtns.append(acceptB, declineB);
+  prop.append(propText, propBtns);
   const detail = document.createElement('div'); detail.className = 'mono-detail'; detail.style.cssText = 'font-size:12px;min-height:16px;margin:4px 0';
   const offerRow = document.createElement('div'); offerRow.className = 'mono-offer'; offerRow.style.cssText = 'display:none;gap:6px;align-items:center;font-size:12px;margin:4px 0';
   const cashIn = document.createElement('input'); cashIn.type = 'number'; cashIn.min = '1'; cashIn.step = '10'; cashIn.style.cssText = 'width:80px;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:3px 6px';
@@ -108,6 +114,9 @@ function mount(th, stageApi) {
     status.textContent = s.phase === 'over' ? (s.winner === 0 ? 'You win!' : s.players[s.winner].name + ' wins.')
       : !me ? pl.name + ' is playing…' : s.phase === 'buy' ? 'You landed on ' + M.SPACES[s.pending.buy].n + '. Buy it? It is your choice.'
         : s.phase === 'end' ? 'Your turn is done unless you build or make an offer.' : pl.jail ? 'You are in Jail: roll doubles, or pay to leave.' : 'Your roll' + (s.doubles ? ' again (doubles)' : '');
+    const o = s.proposal;
+    prop.style.display = o && s.phase !== 'over' ? 'block' : 'none';
+    if (o) propText.textContent = s.players[o.from].name + ' offers you ' + o.cash + ' for ' + M.SPACES[o.space].n + ', because ' + o.why + '. It is your choice.';
     // the picked space: what it is, and what you can do about it now
     detail.textContent = ''; offerRow.style.display = 'none'; buildB.remove();
     if (picked >= 0) {
@@ -124,7 +133,7 @@ function mount(th, stageApi) {
       log.appendChild(line);
     }
   }
-  el.append(wrap, status, money, acts, detail, offerRow, offerOut, foot, log);
+  el.append(wrap, status, money, prop, acts, detail, offerRow, offerOut, foot, log);
   paint();
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
