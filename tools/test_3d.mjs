@@ -248,8 +248,12 @@ export async function run3dChecks({ check, fresh }) {
     await F.ask('heart rate zones for a 40 year old', 700);
     // the page's big number is the target band "a-b bpm": the heart beats at its middle
     const zones = await until(async () => { const s = await lastHeart(); if (!s || s.key === rest.key) return false; const m = (await F.page()).match(/(\d+)\s*[\u2013-]\s*(\d+)\s*bpm/); return m && s.bpm === Math.round((+m[1] + +m[2]) / 2) ? { ...s, band: m[0] } : false; }, 60000);
-    check('miniatures: "is a resting heart rate of 55 good" beats the 3D heart at 55 bpm and it keeps beating; "heart rate zones for a 40 year old" beats a new one at the middle of the target band on the card',
-      !!rest && !!beating && !!zones && !F.errors.length, JSON.stringify({ rest, beating, zones, e: F.errors }));
+    // the one heart: the monitor's QRS spike comes just before the ventricles' squeeze peaks, on the same clock, and a beat lasts 60 / bpm
+    const sync = await F.p.evaluate(async () => { const h = await import('/skills/mini/heart.js'); let qrs = 0, best = -9, peak = 0, top = -1;
+      for (let i = 0; i < 1000; i++) { const t = i / 1000, e = h.ecgAt(t, 60), b = h.beatPhase(t, 60); if (e > best) { best = e; qrs = t; } if (b > top) { top = b; peak = t; } }
+      return { qrs, peak, ok: qrs < peak && peak - qrs < 0.25 && Math.abs(h.beatPhase(0.3, 72) - h.beatPhase(0.3 + 60 / 72, 72)) < 1e-9 && h.atriaPhase(0.03, 60) > 0 }; });
+    check('miniatures: "is a resting heart rate of 55 good" beats the 3D heart at 55 bpm and it keeps beating; "heart rate zones for a 40 year old" beats a new one at the middle of the target band on the card; the ECG spike leads the squeeze on one clock',
+      !!rest && !!beating && !!zones && sync.ok && !F.errors.length, JSON.stringify({ rest, beating, zones, sync, e: F.errors }));
     await F.ctx.close();
   }
 
