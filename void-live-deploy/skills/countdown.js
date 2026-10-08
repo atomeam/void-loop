@@ -5,12 +5,12 @@
  */
 export function countdownOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:how many )?days until new year$/i.test(t)) return { kind: 'newyear' };
+  if (/^(?:how many )?(?:days|weeks) until new year$/i.test(t)) return { kind: 'newyear' };
   if (/^days until (?:jan(?:uary)?\.?\s+1|january 1)$/i.test(t)) return { kind: 'newyear' };
-  const m = t.match(/^(?:how many )?days until ([a-z]+\s+\d{1,2})$/i);
+  const m = t.match(/^(?:how many )?(?:days|weeks) until ([a-z]+\s+\d{1,2})$/i);
   if (m && realDay(m[1])) return { kind: 'named', label: m[1] };
   // "days until valentines day": named days the holiday list doesn't answer (christmas and halloween stay with it)
-  const v = t.match(/^(?:how many )?days (?:until|till|to) (.+)$/i);
+  const v = t.match(/^(?:how many )?(?:days|weeks) (?:until|till|to) (.+)$/i);
   if (v) { const w = v[1].toLowerCase().replace(/^the /, '').replace(/['’]/g, ''); if (OWN.has(w) && NAMED[w]) return { kind: 'named', label: NAMED[w][0], date: NAMED[w][1] }; }
   // "days until my birthday on march 3": a named day with its date
   const b = t.match(/^(?:(?:how many )?days (?:until|till|to)|(?:a |start a )?countdown (?:to|until|till)) (?:my |our |the )?([a-z' ]{2,40}?) (?:on|is on|is) ([a-z]+ \d{1,2})$/i);
@@ -62,6 +62,11 @@ export function daysLine(n) {
   if (n < 0) return Math.abs(n) + (Math.abs(n) === 1 ? ' day ago' : ' days ago');
   return n + (n === 1 ? ' day' : ' days');
 }
+// "how many weeks until december 25": 78 days also reads as 11 weeks, 1 day
+export function weeksLine(n) {
+  const w = Math.floor(n / 7), d = n % 7;
+  return w + (w === 1 ? ' week' : ' weeks') + (d ? ', ' + d + (d === 1 ? ' day' : ' days') : '');
+}
 // the outcome card: title, the count, the date — one child per line, so "copy" (stageApi.addCopy) reads naturally
 function mount(th, stageApi) {
   const el = document.createElement('div');
@@ -77,7 +82,7 @@ function mount(th, stageApi) {
   big.textContent = daysLine(th.days);
   const date = document.createElement('div');
   date.style.cssText = 'color:var(--muted);font-size:11px';
-  date.textContent = th.dateText;
+  date.textContent = (th.days >= 14 ? weeksLine(th.days) + ' · ' : '') + th.dateText;
   el.appendChild(head); el.appendChild(big); el.appendChild(date);
   stageApi.bindDrag(el, th);
   stageApi.addCopy(el);

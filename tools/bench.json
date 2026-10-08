@@ -5330,5 +5330,17 @@
   {"ask": "25 percent off 80", "want": "calc", "says": "60"},
   {"ask": "lowercase HELLO", "want": "skill:util", "says": "hello"},
   {"ask": "count the words in the quick brown fox", "want": "skill:util", "says": "4"},
-  {"ask": "pick a random number between 1 and 10", "want": "chance", "says": null}
+  {"ask": "pick a random number between 1 and 10", "want": "chance", "says": null},
+  {"ask": "whats 15% of 2,500", "want": "calc", "says": "375"},
+  {"ask": "1,234,567 times 2", "want": "calc", "says": "2,?469,?134"},
+  {"ask": "what's 3/4 cup in tablespoons", "want": "calc", "says": "12"},
+  {"ask": "2 1/2 cups in ml", "want": "calc", "says": "591"},
+  {"ask": "if i was born in 1990 how old am i", "want": "calc|age", "says": "3[56]"},
+  {"ask": "i was born on may 3 1990, how old am i", "want": "calc|age", "says": "3[56]"},
+  {"ask": "flip a coin heads or tails", "want": "chance", "says": null},
+  {"ask": "how many weeks until december 25", "want": "skill:countdown", "says": "weeks"},
+  {"ask": "do i need an umbrella today in seattle", "want": "skill:weather", "says": null},
+  {"ask": "should i bring a jacket", "want": "skill:weather", "says": null},
+  {"ask": "what time does the sun set in miami", "want": "skill:worldtime", "says": null},
+  {"ask": "when did the cold war end", "want": "answer|article", "says": null}
 ]

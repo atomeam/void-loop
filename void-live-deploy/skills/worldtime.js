@@ -50,7 +50,7 @@ export function parseWorldTime(text) {
     return null;
   }
   m = t.match(/^(?:(?:when|what\s+time)\s+is\s+|what's\s+|whats\s+)?(?:the\s+)?(?:(today's|tomorrow's)\s+)?(sunrise|sunset|sun\s+rise|sun\s+set|dawn|dusk)\s+(?:(?:today|tomorrow)\s+)?(?:in|at|for)\s+(.+)$/i)
-    || t.match(/^(?:(when)\s+)?does\s+the\s+sun\s+(rise|set)\s+(?:(?:today|tomorrow)\s+)?(?:in|at)\s+(.+)$/i);
+    || t.match(/^(?:(when|what\s+time)\s+)?does\s+the\s+sun\s+(rise|set)\s+(?:(?:today|tomorrow)\s+)?(?:in|at)\s+(.+?)(?:\s+(?:today|tonight|tomorrow))?$/i);
   if (m) {
     const which = /rise|dawn/i.test(m[2]) ? 'sunrise' : 'sunset', place = PLACE(m[3]);
     const tomorrow = /tomorrow/i.test(t);

@@ -3276,6 +3276,11 @@ return { ok: true, detail: 'timer-reset' };
     function unitOf(w) { w = String(w).trim().replace(/\.$/, ''); return MORE_UNITS.find((u) => u.re.test(w)) || null; }
     function wordMath(lower) {
       let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
+      // thousands commas are part of the number: "15% of 2,500" read as 2 and gave 0.3 (only a run of exactly three digits after each comma)
+      t = t.replace(/\b(\d{1,3})((?:,\d{3})+)(?![\d,])/g, (_, h, rest) => h + rest.replace(/,/g, ''));
+      // kitchen fractions before a unit: "3/4 cup", "1/2 teaspoon", "2 1/2 cups"
+      t = t.replace(/\b(?:(\d+)\s+)?(\d+)\/(\d+)\s+(?=(?:cups?|teaspoons?|tablespoons?|tsp|tbsp|pounds?|lbs?|ounces?|oz|gallons?|quarts?|pints?|miles?|inch(?:es)?|feet|foot|yards?|hours?|liters?|litres?)\b)/g,
+        (all, w, a, b) => +b ? String(Math.round(((+w || 0) + a / b) * 10000) / 10000) + ' ' : all);
       // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
       t = t.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
       // "a quarter cup", "half a cup", "a third of a cup" -> numbers the converters can read
@@ -5154,7 +5159,7 @@ return { ok: true, detail: 'timer-reset' };
     function rnd(n) { const a = new Uint32Array(1); const lim = Math.floor(4294967296 / n) * n; let x; do { crypto.getRandomValues(a); x = a[0]; } while (x >= lim); return x % n; }
     function chanceOf(l) {
       l = l.replace(/[?.!]+$/, '').replace(/,?\s+please$/, '');
-      if (/^(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin$|^heads\s+or\s+tails$|^(?:a\s+)?coin\s+(?:flip|toss)$/.test(l)) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip' };
+      if (/^(?:can\s+you\s+|could\s+you\s+)?(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin(?:\s+for\s+me)?(?:[,:]?\s+heads\s+or\s+tails)?$|^heads\s+or\s+tails$|^(?:a\s+)?coin\s+(?:flip|toss)$/.test(l)) return { title: 'Coin', big: rnd(2) ? 'Heads' : 'Tails', note: 'one fair flip' };
       let m = l.match(/^(?:please\s+)?roll\s+(?:(a|an|one|two|three|four|five|six|\d{1,2})\s+)?(?:dice|die|d(\d{1,3})s?|(\d{1,3})[- ]sided\s+di(?:c)?e)$/);
       if (m) { const W = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6 }; const n = Math.min(10, W[m[1]] || +m[1] || 1), s = Math.min(1000, +(m[2] || m[3]) || 6);
         const r = Array.from({ length: n }, () => rnd(s) + 1); return { title: n > 1 ? n + ' dice' : 'Die', big: r.join('  '), note: (n > 1 ? 'total ' + r.reduce((a, b) => a + b, 0) + ' · ' : '') + 'd' + s }; }
@@ -5203,6 +5208,8 @@ return { ok: true, detail: 'timer-reset' };
     }
     // Age: "how old is someone born in 1990", "how old am i if i was born on may 3 1990", "age if born 1985"
     function ageOf(l) {
+      // the year first: "if i was born in 1990 how old am i", "i was born on may 3 1990, how old am i"
+      l = l.replace(/[?.!]+$/, '').replace(/^(?:if\s+)?i\s+was\s+born\s+(in|on)\s+(.+?),?\s+how\s+old\s+(?:am\s+i|would\s+i\s+be)(?:\s+now|\s+today)?$/, 'how old am i if i was born $1 $2');
       const m = l.replace(/[?.!]+$/, '').match(/^(?:how\s+old\s+(?:is\s+(?:someone|a\s+person|somebody)|am\s+i|would\s+i\s+be|are\s+you)\s+(?:if\s+(?:i\s+was|you(?:'re|\s+were)|they\s+were)\s+)?|age\s+(?:if|of\s+someone)\s+)born\s+(?:in|on)?\s*(.+)$/);
       if (!m) return null;
       const s = m[1].trim(), now = new Date(), yOnly = /^\d{4}$/.test(s);
