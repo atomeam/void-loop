@@ -306,9 +306,14 @@ async function catalogRoute(r) {
 }
 
 async function fresh(...inits) {
-  const at = inits[0] && typeof inits[0] === 'object' && inits[0].base ? inits.shift().base : base;
+  const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
+  const at = opt.base || base;
   const ctx = await browser.newContext();
   for (const init of inits) await ctx.addInitScript(init);
+  // Card miniatures (skills/scene3d.js) stay off here, so cards keep their 2D look as on a device without WebGL: the
+  // headless browser draws WebGL in software and a first 3D frame can hold the page for seconds, which would make the
+  // asks below miss their fixed waits. tools/test_3d.mjs turns them on with fresh({ mini3d: true }).
+  if (!opt.mini3d) await ctx.route(/\/skills\/scene3d\.js(?:\?|$)/, (r) => r.fulfill({ status: 404, body: '' }));
   await ctx.route(/^https?:\/\/(?!(?:127\.0\.0\.1|localhost)[:/])/, (r) => {
     const u = r.request().url();
     if (u.includes('translate.googleapis.com')) return r.fulfill(json([[['hola', 'hello']]]));
@@ -2952,7 +2957,7 @@ try {
     !/api\/routes|escalat|lib\/router|bge-m3|qwen/i.test(html) && fs.readFileSync(path.join(root, 'void.html'), 'utf8') === html, '');
   }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
-  await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh });
+  await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true }, ...a) });
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));
 }

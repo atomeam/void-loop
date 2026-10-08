@@ -62,6 +62,8 @@ export function daysLine(n) {
   if (n < 0) return Math.abs(n) + (Math.abs(n) === 1 ? ' day ago' : ' days ago');
   return n + (n === 1 ? ' day' : ' days');
 }
+// a local date as YYYY-MM-DD, so the miniature can keep counting after the card was made
+function isoDay(d) { return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 // "how many weeks until december 25": 78 days also reads as 11 weeks, 1 day
 export function weeksLine(n) {
   const w = Math.floor(n / 7), d = n % 7;
@@ -84,6 +86,17 @@ function mount(th, stageApi) {
   date.style.cssText = 'color:var(--muted);font-size:11px';
   date.textContent = (th.days >= 14 ? weeksLine(th.days) + ' · ' : '') + th.dateText;
   el.appendChild(head); el.appendChild(big); el.appendChild(date);
+  // the 3D desk calendar (skills/mini/countdown.js) under the count; where WebGL can't run the card keeps its plain look
+  if (stageApi.miniature) {
+    const slot = document.createElement('div');
+    slot.className = 'countdown-mini';
+    slot.style.cssText = 'height:150px;margin:10px -6px 0;border-radius:8px;overflow:hidden';
+    el.appendChild(slot);
+    // the same key on every re-render moves the live calendar here and passes it the new data; nothing is kept on th,
+    // because the stage saves th as JSON
+    stageApi.miniature(slot, 'countdown', { days: th.days, label: th.label, target: th.target || null }, { key: th.id, place: 'inside' })
+      .catch(() => { slot.remove(); });
+  }
   stageApi.bindDrag(el, th);
   stageApi.addCopy(el);
   stageApi.stage.appendChild(el);
@@ -92,16 +105,17 @@ async function run(text, api) {
   const hit = countdownOf(text);
   if (!hit) return 'none';
   const now = new Date();
-  const target = hit.kind === 'newyear' ? newYearDate(now) : namedDate(hit.date || hit.label, now);
-  if (!target) return 'none';
+  const target0 = hit.kind === 'newyear' ? newYearDate(now) : namedDate(hit.date || hit.label, now);
+  if (!target0) return 'none';
   const label = hit.kind === 'newyear' ? 'New Year' : titleOf(hit.label);
-  const days = daysUntil(target, now), dText = dateText(target);
+  const days = daysUntil(target0, now), dText = dateText(target0);
   const things = api.stage.things();
   const existing = Object.values(things).find((t) => t.kind === 'countdown' && t.label === label);
-  if (existing) { existing.days = days; existing.dateText = dText; api.stage.save(); api.stage.render(); }
+  const target = isoDay(target0);
+  if (existing) { existing.days = days; existing.dateText = dText; existing.target = target; api.stage.save(); api.stage.render(); }
   else { // a second distinct countdown (new year, then a birthday) gets its own spot, not stacked on the first
     const n = Object.values(things).filter((t) => t.kind === 'countdown').length;
-    api.summon('countdown', { label, days, dateText: dText, x: 40 + n * 24, y: 60 + n * 24 });
+    api.summon('countdown', { label, days, dateText: dText, target, x: 40 + n * 24, y: 60 + n * 24 });
   }
   return 'countdown';
 }

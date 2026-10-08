@@ -5402,5 +5402,11 @@
   {"ask": "how many minutes till 9:30", "want": "calc", "says": "minutes"},
   {"ask": "pomodoro", "want": "timer", "says": null},
   {"ask": "todo: buy milk, call bank, pay rent", "want": "list", "says": null},
-  {"ask": "is today a holiday", "want": "skill:holidays", "says": null}
+  {"ask": "is today a holiday", "want": "skill:holidays", "says": null},
+  {"ask": "whats 3/4 cup in tablespoons", "want": "calc", "says": "12"},
+  {"ask": "whats 1/2 cup in ml", "want": "calc", "says": "118"},
+  {"ask": "what is 2 hours and 15 minutes in minutes", "want": "calc", "says": "135"},
+  {"ask": "how many weekdays in november", "want": "calc|today", "says": "2[01]"},
+  {"ask": "gas mileage 300 miles 10 gallons", "want": "calc|skill:fuel", "says": "30"},
+  {"ask": "what is my age in days born march 5 1990", "want": "calc|age", "says": null}
 ]

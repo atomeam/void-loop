@@ -104,7 +104,7 @@ export function parseCalendar(text) {
     return { kind: 'hide' };
   }
   // an add needs a when in it: "call Sam next Tuesday at 4", "dentist Oct 12 at 3pm", "gym at 7pm", "pay rent in 3 days"
-  if (/^(?:what|who|why|how|when|where|is|are|does|do|can|define|translate|weather|time|map|make|set|start)\b/i.test(t)) return null;
+  if (/^(?:what|whats|who|whos|why|how|hows|when|whens|where|wheres|is|are|does|do|can|define|translate|weather|time|map|make|set|start)\b/i.test(t)) return null;
   if (/\b(timer|clock|sticky|notepad|counter|countdown|shape|calculator)\b/i.test(t)) return null;
   if (/^(?:the\s+|today'?s\s+)?(?:\w+\s+)?(?:news|headlines|top\s+stories)\b/i.test(t)) return null; // the news skill ("tech news today" is not an event)
   if (/\b(hours?\s+between|days?\s+between|time\s+difference|how\s+many\s+(hours|days)|how\s+long\s+until)\b/i.test(t)) return null; // world time and the calculator answer these

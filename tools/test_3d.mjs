@@ -87,6 +87,63 @@ export async function run3dChecks({ check, fresh }) {
       /miniature: \(host, kind, data, opts\) => import\('\/skills\/scene3d\.js'\)\.then\(\(m\) => m\.mountMiniature\(host, kind, data, opts\)\)/.test(html), '');
     await F.ctx.close();
   }
+  // ---- the countdown card's desk calendar: mounts on the card, counts from its target date, flips when the count changes
+  {
+    const F = await fresh();
+    await F.ask('days until december 25');
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'countdown'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => {
+      const mini = await import('/skills/mini/countdown.js');
+      const today = new Date(); const iso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      const in3 = new Date(today); in3.setDate(in3.getDate() + 3);
+      const card = document.querySelector('.countdown-card'), slot = card && card.querySelector('.countdown-mini canvas');
+      const th = Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).find((t) => t.kind === 'countdown');
+      return { inCard: !!slot, d3: mini.daysTo(iso(in3), today), d0: mini.daysTo(iso(today), today), bad: mini.daysTo('soon'), saved: !!th && /^\d{4}-\d{2}-\d{2}$/.test(th.target || '') && !('_mini' in th) };
+    });
+    const before = drawn ? drawn.draws : 0;
+    await F.p.evaluate(async () => { const m = await import('/skills/scene3d.js'); const k = m.liveMiniatures().find((x) => x.kind === 'countdown').key; const card = document.querySelector('.countdown-card .countdown-mini'); const d = new Date(); d.setDate(d.getDate() + 3); const t = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      await m.mountMiniature(card, 'countdown', { days: 3, label: 'Moved', target: t }, { key: k }); });
+    const flipped = await until(() => F.p.evaluate((b) => { const c = window.__voidMini.list().find((x) => x.kind === 'countdown'); return c && c.draws > b + 2; }, before), 15000);
+    check('3D countdown: "days until december 25" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)',
+      !!drawn && r.inCard && r.d3 === 3 && r.d0 === 0 && r.bad === null && r.saved && flipped && !F.errors.length, JSON.stringify({ drawn, r, flipped, e: F.errors }));
+    await F.ctx.close();
+  }
+  // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
+  {
+    const F = await fresh();
+    await F.ask('set a timer for 1 minute');
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'timer'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => {
+      const g = await import('/skills/mini/timer.js'); const now = 1e6;
+      const el = document.querySelector('.thing.timer'), beside = el && el.querySelector('.void-mini[data-kind="timer"] canvas');
+      return { beside: !!beside, half: g.leftFraction({ duration: 60000, remaining: 60000, running: true, startedAt: now - 30000 }, now), paused: g.leftFraction({ duration: 60000, remaining: 15000, running: false }, now),
+        done: g.leftFraction({ duration: 60000, remaining: 1000, running: true, startedAt: now - 5000 }, now), none: g.leftFraction({ duration: 0, remaining: 5 }, now) };
+    });
+    // run it nearly out, then start a fresh minute: the glass turns over (several redraws in a row)
+    const key = drawn && drawn.key;
+    await F.p.evaluate(async (k) => { const m = await import('/skills/scene3d.js'); const host = document.querySelector('.thing.timer'); await m.mountMiniature(host, 'timer', { duration: 60000, remaining: 1000, running: false, startedAt: 0 }, { key: k, place: 'beside', width: 120, height: 160 }); }, key);
+    await F.p.waitForTimeout(400);
+    const before = await F.p.evaluate(() => window.__voidMini.list().find((x) => x.kind === 'timer').draws);
+    await F.p.evaluate(async (k) => { const m = await import('/skills/scene3d.js'); const host = document.querySelector('.thing.timer'); await m.mountMiniature(host, 'timer', { duration: 60000, remaining: 60000, running: true, startedAt: Date.now() }, { key: k, place: 'beside', width: 120, height: 160 }); }, key);
+    const turned = await until(() => F.p.evaluate((b) => window.__voidMini.list().find((x) => x.kind === 'timer').draws > b + 2, before), 15000);
+    check('3D timer: "set a timer for 1 minute" puts a 3D hourglass beside the timer; leftFraction follows remaining and startedAt (half, paused, done, no duration); a fresh run turns the glass over',
+      !!drawn && r.beside && Math.abs(r.half - 0.5) < 1e-9 && r.paused === 0.25 && r.done === 0 && r.none === 0 && turned && !F.errors.length, JSON.stringify({ drawn, r, turned, e: F.errors }));
+    await F.ctx.close();
+  }
+  // ---- the counter's tally counter: mounts beside it, shows the value on four strips, and its plunger counts one up
+  {
+    const F = await fresh();
+    await F.ask('make a counter');
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'counter'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => { const g = await import('/skills/mini/counter.js'); return { a: g.wheelDigits(1234).join(''), b: g.wheelDigits(7).join(''), c: g.wheelDigits(-12).join(''), d: g.wheelDigits(123456).join('') }; });
+    // tap the plunger in the 3D view (the button sits 0.0765 m up in the miniature's scene)
+    const pt = drawn && await F.p.evaluate((k) => window.__voidMini.project(k, [0, 0.0765, 0]), drawn.key);
+    if (pt) { await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(400); }
+    const value = (await F.state()).find((x) => x.kind === 'counter');
+    check('3D counter: "make a counter" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card',
+      !!drawn && r.a === '1234' && r.b === '0007' && r.c === '0012' && r.d === '3456' && value && value.value === 1 && !F.errors.length, JSON.stringify({ drawn, r, pt, value, e: F.errors }));
+    await F.ctx.close();
+  }
 
   // ---- card miniatures: the clock keeps the asked zone's time, the weather diorama shows the forecast
   {
@@ -159,6 +216,36 @@ export async function run3dChecks({ check, fresh }) {
     await F.ask('play checkers', 600);
     const flatC = await until(() => F.p.$$eval('.checkers-flat button', (b) => b.length), 20000);
     check('chess and checkers: without WebGL each shows a flat 64-square board and a click still plays a move', flat === 64 && !!moved && flatC === 64, JSON.stringify({ flat, moved, flatC, e: F.errors }));
+    await F.ctx.close();
+  }
+  // ---- the list's clipboard: mounts beside the list, and ticking an item sends the pencil to tick it on the paper
+  {
+    const F = await fresh();
+    await F.ask('make a grocery list with eggs, milk, bread');
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'list'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => { const g = await import('/skills/mini/list.js'); const a = g.rowsOf([{ text: 'eggs' }, { text: 'milk', done: true }]);
+      return { rows: JSON.stringify(a), nd: g.newlyDone(a, g.rowsOf([{ text: 'eggs', done: true }, { text: 'milk', done: true }])), none: g.newlyDone(a, a), moved: g.newlyDone(a, g.rowsOf([{ text: 'milk', done: true }])), cap: g.rowsOf(Array.from({ length: 12 }, (_, i) => ({ text: 'x' + i }))).length }; });
+    const before = drawn ? drawn.draws : 0;
+    const box = await F.p.$$('.list-entry input[type=checkbox]'); if (box[1]) await box[1].click();
+    const inked = await until(() => F.p.evaluate((b) => window.__voidMini.list().find((x) => x.kind === 'list').draws > b + 8, before), 15000);
+    check('3D list: a grocery list gets a clipboard beside it; rowsOf/newlyDone find the ticked line (not a removed one), the paper shows at most 7 lines, and ticking milk on the card animates the pencil (many redraws)',
+      !!drawn && r.rows === '[{"text":"eggs","done":false},{"text":"milk","done":true}]' && r.nd === 0 && r.none === -1 && r.moved === -1 && r.cap === 7 && inked && !F.errors.length, JSON.stringify({ drawn, r, inked, e: F.errors }));
+    await F.ctx.close();
+  }
+  // ---- the savings page's coin stacks: silver paid in, gold growth on top, rising one stack after another
+  {
+    const F = await fresh();
+    await F.ask('how much will i have if i save 300 a month for 30 years at 7%', 900);
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'savings'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => {
+      const g = await import('/skills/mini/savings.js'), sk = await import('/skills/savings.js');
+      const cols = sk.coinCols(0, 300, 7, 360), st = g.coinsFor(cols);
+      const flat = g.coinsFor([{ label: 'a', paid: 100, total: 100 }, { label: 'b', paid: 200, total: 200 }]);
+      return { n: cols.length, labels: cols.map((c) => c.label).join(','), last: Math.round(cols[5].total), tallest: st[5].silver + st[5].gold, goldGrows: st.every((s, i) => i === 0 || s.gold >= st[i - 1].gold), noGold: flat.every((s) => s.gold === 0), inPage: !!document.querySelector('.vpage .savings-mini canvas') };
+    });
+    const rose = drawn && await until(() => F.p.evaluate(() => window.__voidMini.list().find((x) => x.kind === 'savings').draws > 6), 15000);
+    check('3D savings: "save 300 a month for 30 years at 7%" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn',
+      !!drawn && r.inPage && r.n === 6 && r.labels === '5 yrs,10 yrs,15 yrs,20 yrs,25 yrs,30 yrs' && r.last === 365991 && r.tallest === 34 && r.goldGrows && r.noGold && rose && !F.errors.length, JSON.stringify({ drawn, r, rose, e: F.errors }));
     await F.ctx.close();
   }
 }

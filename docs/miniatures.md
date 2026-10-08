@@ -12,13 +12,15 @@ time, a weather diorama that rains or shines). This file is the API for building
 
 ```js
 stageApi.miniature(slotEl, 'clock', { tz: th.tz }, { key: th.id, place: 'inside' })
-  .then((mini) => { th._mini = mini; })
   .catch(() => { /* no WebGL: keep the card's 2D look */ });
+// Don't keep the returned handle on th (th._mini = mini): the stage saves things with JSON.stringify, and the
+// handle holds the canvas and scene, so every save would throw. Mounting again with the same key returns it.
 ```
 
    Skills reach the same function as `api.stage.miniature(...)`. Pass the card's id as `key`: the stage re-renders
    cards often, and the same key moves the live miniature into the new element instead of rebuilding it.
-3. When the card's data changes, call `mini.update(newData)`. When the card is thrown away, do nothing: a miniature
+3. When the card's data changes, the next render mounts again with the same key and new data, which calls the
+   miniature's `update(newData)` for you. When the card is thrown away, do nothing: a miniature
    whose element stays off the page for about 1.5 s frees itself. Call `mini.dispose()` only to remove it on purpose.
 
 ## The build function
