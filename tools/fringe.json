@@ -1283,5 +1283,30 @@
     ],
     "sha256": "20b8af11aa8376985d06160362975c01d3185bc5b4bded429ac1696c6e9be502",
     "emit": false
+  },
+  {
+    "run": 52,
+    "at": "2026-10-08T09:44:31Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger-6.html",
+    "sources": [
+      {
+        "claim": "Extreme measurements tend to be followed by ones closer to the average when chance contributes to the measure (regression toward the mean)",
+        "source": "https://doi.org/10.2307/2841583",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Regression to the mean is a common source of misjudged effects in repeated measurements and before-after comparisons, and can be handled with a control group or adjustment",
+        "source": "https://doi.org/10.1093/ije/dyh299",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's simulation shows the top tenth keeping about as much of its lead as the skill share",
+        "source": "drafts/fringe/weak-signal-hypothesis-ledger-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "7b15ea4a51e9c73d190c9e949581ff4acac4a7b8a537e1b530e109dd4a77ed3e",
+    "emit": false
   }
 ]

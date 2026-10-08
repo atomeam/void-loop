@@ -5436,5 +5436,11 @@
   {"ask": "review this dockerfile: ADD https://example.com/app.tar.gz /app/", "want": "review", "says": "ADD|COPY|checksum"},
   {"ask": "review this yaml: runAsUser: 0", "want": "review", "says": "root"},
   {"ask": "review this yaml: hostNetwork: true", "want": "review", "says": "host"},
-  {"ask": "review this sql: GRANT ALL PRIVILEGES ON *.* TO 'app'@'%'", "want": "review", "says": "GRANT|privilege"}
+  {"ask": "review this sql: GRANT ALL PRIVILEGES ON *.* TO 'app'@'%'", "want": "review", "says": "GRANT|privilege"},
+  {"ask": "coral restoration florida keys", "want": "skill:coral", "says": "\\+2\\.80 mm a year"},
+  {"ask": "reef accretion potential", "want": "skill:coral", "says": "97\\.8–100%"},
+  {"ask": "does planting coral work", "want": "skill:coral", "says": "Whether it lasts depends on whether the corals survive the heat"},
+  {"ask": "can coral survive heatwaves", "want": "skill:coral", "says": "not published yet"},
+  {"ask": "flonduran coral", "want": "skill:coral", "says": "Mote BleachWatch"},
+  {"ask": "heat tolerant coral", "want": "skill:coral", "says": "1\\.9 °C more heat tolerant"}
 ]
