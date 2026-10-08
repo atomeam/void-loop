@@ -319,6 +319,105 @@ export function brainMesh(R, seed, cells = 72) {
   const out = { ...m, colors }; BCACHE.set(key, out); while (BCACHE.size > 8) BCACHE.delete(BCACHE.keys().next().value);
   return out;
 }
+/**
+ * Real animals: a cat, a dog, a mouse or a rabbit with the build its species has (a cat's small round head, upright
+ * pointed ears and long tail; a dog's long muzzle, deep chest and ears that stand or flop; a mouse's big round ears and
+ * bare tail; a rabbit's hunched body, long ears and big hind legs), each proportion nudged by the seed so no two match,
+ * and a coat drawn from the seed (tabby stripes, calico or dog patches, agouti brown). Facing +x, feet on y = -0.95R.
+ * Parts: body (torso, neck, head), four legs (pivot at the hip or shoulder) and the tail (pivot at its root).
+ */
+export const CREATURE_KINDS = ['cat', 'dog', 'mouse', 'rabbit'];
+const COATS = {
+  cat: [['#d9893c', 'tabby'], ['#8a8a8a', 'tabby'], ['#2a2724', 'solid'], ['#f1ece4', 'solid'], ['#7a6048', 'tabby'], ['#efe7dc', 'calico']],
+  dog: [['#c49a63', 'solid'], ['#2b2522', 'solid'], ['#7a4a2a', 'solid'], ['#f0ebe2', 'patches'], ['#d8b07a', 'patches'], ['#3a3330', 'tan']],
+  mouse: [['#8d8378', 'solid'], ['#6e5a48', 'solid'], ['#eeeae4', 'solid'], ['#a4998c', 'solid']],
+  rabbit: [['#8a6e52', 'agouti'], ['#efebe5', 'solid'], ['#8f8a86', 'agouti'], ['#4a3a2e', 'solid']],
+};
+export function CREATURE(R, seed, kind) {
+  const rnd = mulberry32(seed), u = (a, b) => a + (b - a) * rnd(), jit = (v, k = 0.08) => v * u(1 - k, 1 + k);
+  const sp = {
+    cat:    { len: 0.82, leg: 0.4, tr: 0.24, head: 0.18, muz: 0.05, neck: 0.1, tail: 0.8, tailR: 0.06, legR: 0.06, ear: 'point', earL: 0.14 },
+    dog:    { len: 1.0, leg: 0.6, tr: 0.25, head: 0.19, muz: u(0.14, 0.24), neck: 0.2, tail: u(0.4, 0.6), tailR: 0.055, legR: 0.075, ear: rnd() < 0.5 ? 'flop' : 'up', earL: 0.17 },
+    mouse:  { len: 0.5, leg: 0.12, tr: 0.17, head: 0.12, muz: 0.11, neck: 0.04, tail: 0.85, tailR: 0.016, legR: 0.03, ear: 'round', earL: 0.1 },
+    rabbit: { len: 0.62, leg: 0.22, tr: 0.27, head: 0.15, muz: 0.06, neck: 0.06, tail: 0.1, tailR: 0.075, legR: 0.06, ear: 'long', earL: 0.45 },
+  }[kind] || null;
+  if (!sp) return null;
+  const len = jit(sp.len), leg = jit(sp.leg), tr = jit(sp.tr, 0.12), hr = jit(sp.head, 0.06), muz = jit(sp.muz, 0.12), legR = jit(sp.legR, 0.1);
+  const ground = -0.95, ty = ground + leg + tr * 0.75, X = (v) => v * R, P = (x, y, z) => [X(x), X(y), X(z)];
+  const hunch = kind === 'rabbit' ? 0.12 : 0, front = len / 2, back = -len / 2;
+  const shapes = [
+    { part: 'body', type: 'ellipsoid', c: P(back * 0.35, ty + hunch, 0), r: [X(len * 0.42), X(tr * (kind === 'rabbit' ? 1.05 : 0.9)), X(tr * 0.85)] },
+    { part: 'body', type: 'ellipsoid', c: P(front * 0.55, ty + tr * 0.08, 0), r: [X(len * 0.32), X(tr * (kind === 'dog' ? 1.05 : 0.92)), X(tr * 0.8)], k: X(0.12) },
+  ];
+  const neckTop = P(front + sp.neck * 0.55, ty + tr * 0.55 + sp.neck * 0.6, 0), hc = [neckTop[0] + X(hr * 0.35), neckTop[1] + X(hr * 0.35), 0];
+  shapes.push({ part: 'body', type: 'capsule', a: P(front * 0.75, ty + tr * 0.25, 0), b: neckTop, ra: X(tr * 0.55), rb: X(hr * 0.75), k: X(0.08) });
+  shapes.push({ part: 'body', type: 'ellipsoid', c: hc, r: [X(hr * (kind === 'dog' ? 1.05 : 1)), X(hr * 0.92), X(hr * 0.9)], k: X(0.06) });
+  const muzTip = [hc[0] + X(hr * 0.75 + muz), hc[1] - X(hr * (kind === 'mouse' ? 0.15 : 0.3)), 0];
+  shapes.push({ part: 'body', type: 'capsule', a: [hc[0] + X(hr * 0.4), hc[1] - X(hr * 0.2), 0], b: muzTip, ra: X(hr * (kind === 'dog' ? 0.5 : 0.45)), rb: X(hr * (kind === 'mouse' ? 0.12 : 0.3)), k: X(0.05) });
+  for (const zs of [-1, 1]) { // ears
+    const base = [hc[0] - X(hr * 0.15), hc[1] + X(hr * 0.7), X(zs * hr * 0.5)];
+    if (sp.ear === 'point') shapes.push({ part: 'body', type: 'capsule', a: base, b: [base[0] + X(0.01), base[1] + X(sp.earL), base[2] + X(zs * 0.03)], ra: X(hr * 0.38), rb: X(0.008), k: X(0.03) });
+    else if (sp.ear === 'up') shapes.push({ part: 'body', type: 'capsule', a: base, b: [base[0] - X(0.01), base[1] + X(sp.earL), base[2] + X(zs * 0.04)], ra: X(hr * 0.32), rb: X(0.012), k: X(0.03) });
+    else if (sp.ear === 'flop') shapes.push({ part: 'body', type: 'capsule', a: [base[0], base[1] - X(0.02), X(zs * hr * 0.75)], b: [base[0] + X(0.02), base[1] - X(sp.earL), X(zs * hr * 1.0)], ra: X(hr * 0.3), rb: X(hr * 0.25), k: X(0.03) });
+    else if (sp.ear === 'round') shapes.push({ part: 'body', type: 'ellipsoid', c: [base[0] - X(0.02), base[1] + X(sp.earL * 0.6), base[2] + X(zs * 0.04)], r: [X(sp.earL * 0.25), X(sp.earL), X(sp.earL)], k: X(0.02) });
+    else shapes.push({ part: 'body', type: 'capsule', a: base, b: [base[0] - X(0.08), base[1] + X(jit(sp.earL)), base[2] + X(zs * 0.05)], ra: X(hr * 0.33), rb: X(hr * 0.22), k: X(0.03) });
+  }
+  // legs: the pivot at the top, the foot on the ground; a rabbit's hind legs are long and folded
+  const legs = [];
+  [[front * 0.7, 1, 'legFL'], [front * 0.7, -1, 'legFR'], [back * 0.65, 1, 'legBL'], [back * 0.65, -1, 'legBR']].forEach(([x, zs, part]) => {
+    const hind = x < 0, top = P(x, ty - tr * 0.3, zs * tr * 0.55), foot = P(x + (hind && kind === 'rabbit' ? 0.12 : 0.02), ground + legR * 0.6, zs * tr * 0.55);
+    const r0 = X(legR * (hind ? (kind === 'rabbit' ? 2.2 : 1.35) : 1.15)), knee = [(top[0] + foot[0]) / 2 + X(hind ? -0.05 : 0.01), (top[1] + foot[1]) / 2, top[2]];
+    shapes.push({ part, type: 'capsule', a: top, b: knee, ra: r0, rb: X(legR * 0.9), k: X(0.05) }, { part, type: 'capsule', a: knee, b: foot, ra: X(legR * 0.85), rb: X(legR * 0.7), k: X(0.03) },
+      { part, type: 'ellipsoid', c: [foot[0] + X(legR * 0.6), foot[1], foot[2]], r: [X(legR * (kind === 'rabbit' && hind ? 2.4 : 1.3)), X(legR * 0.6), X(legR * 0.9)], k: X(0.03) });
+    legs.push({ part, pivot: top });
+  });
+  // the tail: long and curving up for a cat, out and up for a dog, bare and trailing for a mouse, a puff for a rabbit
+  const root = P(back - 0.02, ty + tr * 0.35, 0), tl = jit(sp.tail, 0.1), curl = u(0.3, 0.9);
+  if (kind === 'rabbit') shapes.push({ part: 'tail', type: 'sphere', c: [root[0] - X(0.03), root[1], 0], r: X(sp.tailR) });
+  else {
+    const mid = [root[0] - X(tl * 0.5), root[1] + X(kind === 'mouse' ? -0.12 : tl * 0.15 * curl), 0], tip = [root[0] - X(tl * (kind === 'cat' ? 0.7 : 0.95)), root[1] + X(kind === 'mouse' ? -0.18 : tl * (kind === 'cat' ? 0.6 : 0.35) * curl), 0];
+    shapes.push({ part: 'tail', type: 'capsule', a: root, b: mid, ra: X(sp.tailR * 1.2), rb: X(sp.tailR), k: X(0.03) }, { part: 'tail', type: 'capsule', a: mid, b: tip, ra: X(sp.tailR), rb: X(sp.tailR * (kind === 'mouse' ? 0.4 : 0.75)), k: X(0.02) });
+  }
+  const coats = COATS[kind], [coat, pattern] = coats[Math.floor(rnd() * coats.length) % coats.length];
+  const eyes = [-1, 1].map((zs) => [hc[0] + X(hr * 0.55), hc[1] + X(hr * 0.2), X(zs * hr * 0.55)]);
+  shapes.rig = { R, seed: seed >>> 0, kind, coat, pattern, eyes, eyeR: X(hr * (kind === 'mouse' ? 0.2 : 0.14)), nose: muzTip, legs, tailRoot: root,
+    stripes: u(14, 22) / R, ph: [u(0, 6.3), u(0, 6.3), u(0, 6.3)], patch: [u(4, 7) / R, u(4, 7) / R], belly: ty - tr * 0.4, gait: { pace: u(0.85, 1.15), phase: u(0, 6.3) } };
+  return shapes;
+}
+// the coat as vertex colours (multiplied into the coat colour): tabby stripes, calico or dog patches, agouti ticking,
+// a paler belly and muzzle where the species has one
+export function coatColors(rig, P) {
+  const out = new Float32Array(P.length), R = rig.R, base = rig.coat;
+  const hex = (h) => [parseInt(h.slice(1, 3), 16) / 255, parseInt(h.slice(3, 5), 16) / 255, parseInt(h.slice(5, 7), 16) / 255], b = hex(base);
+  const tint = (c) => [c[0] / Math.max(0.05, b[0]), c[1] / Math.max(0.05, b[1]), c[2] / Math.max(0.05, b[2])];
+  const dark = tint(b.map((v) => v * 0.45)), orange = tint(hex('#d9893c')), black = tint(hex('#2a2724')), white = tint(hex('#f2eee8')), tan = tint(hex('#b07a45'));
+  for (let v = 0; v < P.length; v += 3) {
+    const x = P[v], y = P[v + 1], z = P[v + 2]; let c = [1, 1, 1];
+    const n = Math.sin(x * rig.patch[0] + rig.ph[0]) * Math.sin(z * rig.patch[1] + y * rig.patch[0] * 0.7 + rig.ph[1]) + Math.sin((x - y) * rig.patch[1] * 1.3 + rig.ph[2]) * 0.5;
+    if (rig.pattern === 'tabby' && Math.sin(x * rig.stripes + Math.sin(y * rig.stripes * 0.3 + rig.ph[0]) * 1.5 + rig.ph[1]) > 0.45) c = dark;
+    else if (rig.pattern === 'calico') c = n > 0.45 ? orange : n < -0.55 ? black : [1, 1, 1];
+    else if (rig.pattern === 'patches') c = n > 0.35 ? (rig.ph[2] > 3 ? black : tan) : [1, 1, 1];
+    else if (rig.pattern === 'tan') c = y < rig.belly + R * 0.05 || x > rig.nose[0] - R * 0.12 ? tan : [1, 1, 1];
+    else if (rig.pattern === 'agouti') { const t = Math.sin(x * 61 / R + z * 47 / R + y * 53 / R); c = t > 0.6 ? [1.25, 1.18, 1.08] : t < -0.6 ? [0.75, 0.72, 0.7] : [1, 1, 1]; }
+    if (rig.pattern !== 'solid' && rig.pattern !== 'tan' && y < rig.belly - R * 0.02) c = c.map((q, i) => (q + white[i]) / 2); // paler belly
+    out[v] = c[0]; out[v + 1] = c[1]; out[v + 2] = c[2];
+  }
+  return out;
+}
+const CCACHE = new Map();
+export function creatureMesh(R, seed, kind, cells = 60) {
+  const key = kind + ':' + (seed >>> 0) + ':' + R + ':' + cells;
+  if (CCACHE.has(key)) return CCACHE.get(key);
+  const shapes = CREATURE(R, seed >>> 0, kind); if (!shapes) return null;
+  const all = boundsOf(shapes, R * 0.15), cell = Math.max(all.max[0] - all.min[0], all.max[1] - all.min[1], all.max[2] - all.min[2]) / cells, out = { rig: shapes.rig };
+  for (const part of ['body', 'legFL', 'legFR', 'legBL', 'legBR', 'tail']) {
+    const own = shapes.filter((s) => s.part === part); if (!own.length) continue;
+    const m = mesh(field(own, R * 0.12), boundsOf(own, R * 0.08), part === 'body' ? cell : cell * 0.6);
+    out[part] = { ...m, colors: coatColors(shapes.rig, m.positions) };
+  }
+  CCACHE.set(key, out); while (CCACHE.size > 16) CCACHE.delete(CCACHE.keys().next().value);
+  return out;
+}
 // grid bounds that hold a shape list, with a margin for the blends (a carved shape only takes away, so it never grows them)
 export function boundsOf(shapes, margin) {
   const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
