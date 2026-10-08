@@ -1022,10 +1022,15 @@ Object.values(things).forEach((th) => {
         } else {
           text = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: th.seconds ? '2-digit' : undefined });
         }
-        el.textContent = text;
+        face.textContent = text;
       };
+      const face = document.createElement('span'); // the time lives in its own span, so the 3D clock beside it survives each tick
+      el.appendChild(face);
       tick();
       el._timer = setInterval(tick, 250);
+      // the brass desk clock beside it (skills/mini/clock.js), keeping the same time in this device's zone
+      let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {}
+      if (tz) stageApi.miniature(el, 'clock', { clocks: [{ tz, label: 'Here' }] }, { key: th.id, place: 'beside', width: 150, height: 160, label: '3D desk clock showing the time here' }).catch(() => {});
       bindDrag(el, th);
       stage.appendChild(el);
     }
