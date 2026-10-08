@@ -6,9 +6,9 @@
 const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
 
 const TAKES = {
-  'gg allin': { name: 'Lumpy Mic', line: 'a rubbery cartoon singer stage-dives off a card and bonks a pie' },
-  plague: { name: 'Sneeze Blob', line: 'a bright green cartoon blob sneezes confetti and slips on a banana' },
-  shipwreck: { name: 'Bathtub Boat', line: 'a rubber dinghy cartoon waves from a teacup and loses its tiny hat' }
+  'gg allin': { name: 'Lumpy Mic', line: 'a rubbery cartoon singer stage-dives off a card and bonks a pie', color: '#ff7a59' },
+  plague: { name: 'Sneeze Blob', line: 'a bright green cartoon blob sneezes confetti and slips on a banana', color: '#5fd35a' },
+  shipwreck: { name: 'Bathtub Boat', line: 'a rubber dinghy cartoon waves from a teacup and loses its tiny hat', color: '#ffb703' }
 };
 
 export function cartoonOf(text) {
@@ -21,17 +21,19 @@ export function cartoonOf(text) {
 
 export function cartoonTake(subject) {
   const key = String(subject || '').toLowerCase();
-  const known = TAKES[key] || { name: 'Cartoon Lump', line: 'a bright rubbery cartoon lump trips, bows, and throws a pie' };
+  const known = TAKES[key] || { name: 'Cartoon Lump', line: 'a bright rubbery cartoon lump trips, bows, and throws a pie', color: '#ffb703' };
   const grim = /\b(death|corpse|blood|gore|kill)\b/i.test(known.line + known.name);
-  return { tone: 'cartoon', grim: false, name: known.name, line: known.line, subject: key, html: '', published: false, ok: !grim };
+  // the figure is painted the colour its line promises (the plague blob is green, not the default yellow)
+  return { tone: 'cartoon', grim: false, name: known.name, line: known.line, color: known.color, subject: key, html: '', published: false, ok: !grim };
 }
 
 function mount(th, stageApi) {
   const el = document.createElement('div');
   el.className = 'thing kept-card cartoon-card';
   el.dataset.id = th.id;
-  el.style.cssText = 'position:absolute;left:' + th.x + 'px;top:' + th.y + 'px;width:200px;padding:14px 16px;border:1px solid var(--line);border-radius:12px;background:rgba(255,244,214,0.94);color:#1c1c1c;font-size:13px';
+  el.style.cssText = 'position:absolute;left:' + th.x + 'px;top:' + th.y + 'px;width:220px;padding:14px 16px;border:1px solid rgba(120,90,40,.25);border-radius:16px;background:linear-gradient(160deg,#fff8e6,#f6e7c4);color:#2a2418;font-size:13px;line-height:1.45;box-shadow:0 18px 40px rgba(0,0,0,.45)';
   const head = document.createElement('div');
+  head.style.cssText = 'font-weight:600;font-size:15px;margin-bottom:4px';
   head.textContent = th.name;
   const line = document.createElement('div');
   line.textContent = th.line;
@@ -46,7 +48,7 @@ async function run(text, api) {
   const take = cartoonTake(hit.subject);
   if (api.summon) {
     api.summon('cartoon', { name: take.name, line: take.line, subject: take.subject, x: 48, y: 72 });
-    api.summon('figure', { body: 'sprite', title: take.name, line: take.line, color: '#ffb703' });
+    api.summon('figure', { body: 'sprite', title: take.name, line: take.line, color: take.color });
   }
   if (api.say) api.say(take.name + ' · ' + take.line);
   return 'cartoon';
@@ -65,7 +67,7 @@ export default {
     const hit = cartoonOf('cartoon version of a plague');
     const take = cartoonTake(hit && hit.subject);
     const empty = cartoonOf('');
-    const ok = !!hit && !empty && take.tone === 'cartoon' && take.grim === false && take.ok && take.published === false && !/\b(death|corpse|blood|gore)\b/i.test(take.line) && cartoonOf('what is a cartoon') === null;
+    const ok = !!hit && !empty && take.tone === 'cartoon' && take.color === '#5fd35a' && take.grim === false && take.ok && take.published === false && !/\b(death|corpse|blood|gore)\b/i.test(take.line) && cartoonOf('what is a cartoon') === null;
     return { ok, got: take && take.line };
   }
 };

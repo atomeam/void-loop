@@ -42,17 +42,18 @@ export function makeOf(text) {
   return null;
 }
 
-const FRAME_CSS = ':root{color-scheme:dark}html,body{margin:0;height:100%;background:#0b0b13;color:#e6e6ea;font:14px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;overflow:hidden;user-select:none}'
-  + '.bar{display:flex;justify-content:space-between;align-items:center;padding:6px 4px;color:#9a9aa6}'
-  + 'button{font:inherit;color:#e6e6ea;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);border-radius:14px;padding:4px 12px;cursor:pointer}';
+const FRAME_CSS = ':root{color-scheme:dark}html,body{margin:0;height:100%;background:transparent;color:#e6e8f0;font:14px/1.4 ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;overflow:hidden;user-select:none}'
+  + '.bar{display:flex;justify-content:space-between;align-items:center;gap:10px;height:44px;padding:0 2px;color:#c9cdda}'
+  + '.bar span{display:flex;align-items:center;gap:8px}.bar i{width:10px;height:10px;border-radius:50%;background:#e0303e;box-shadow:0 0 0 2px rgba(255,255,255,.12)}'
+  + 'button{font:inherit;font-size:13px;color:#e6e8f0;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:6px 14px;cursor:pointer;transition:background .2s}button:hover{background:rgba(255,255,255,.13)}';
 
 function connect4Doc() {
   return '<!doctype html><html><head><meta charset="utf-8"><style>' + FRAME_CSS
-    + 'canvas{display:block;margin:0 auto;max-width:100%;height:auto;touch-action:manipulation;cursor:pointer}</style></head><body>'
-    + '<div class="bar"><span id="s">your move · you are red</span><button id="r">new game</button></div><canvas id="c" width="490" height="470"></canvas><script>'
-    + `(function(){var C=7,R=6,S=70,c=document.getElementById('c'),x=c.getContext('2d'),st=document.getElementById('s');
+    + 'canvas{display:block;margin:0 auto;width:auto;height:calc(100vh - 46px);max-width:100%;object-fit:contain;touch-action:manipulation;cursor:pointer}</style></head><body>'
+    + '<div class="bar"><span><i id="d"></i><b id="s" style="font-weight:500">Your move</b></span><button id="r">New game</button></div><canvas id="c" width="980" height="900"></canvas><script>'
+    + `(function(){var C=7,R=6,S=70,c=document.getElementById('c'),x=c.getContext('2d'),st=document.getElementById('s'),dot=document.getElementById('d');
 var b,turn,over,drops,hover=-1;
-function reset(){b=[];for(var i=0;i<R;i++)b.push([0,0,0,0,0,0,0]);turn=1;over=false;drops=[];st.textContent='your move · you are red';}
+function reset(){b=[];for(var i=0;i<R;i++)b.push([0,0,0,0,0,0,0]);turn=1;over=false;drops=[];st.textContent='Your move';dot.style.background='#e0303e';}
 function row(bb,col){for(var r=R-1;r>=0;r--)if(!bb[r][col])return r;return -1}
 function win(bb,p){var d=[[0,1],[1,0],[1,1],[1,-1]];for(var r=0;r<R;r++)for(var k=0;k<C;k++)if(bb[r][k]===p)for(var j=0;j<4;j++){var ok=1;for(var n=1;n<4;n++){var rr=r+d[j][0]*n,kk=k+d[j][1]*n;if(rr<0||rr>=R||kk<0||kk>=C||bb[rr][kk]!==p){ok=0;break}}if(ok)return [[r,k],[r+d[j][0]*3,k+d[j][1]*3]]}return null}
 function full(bb){for(var k=0;k<C;k++)if(!bb[0][k])return false;return true}
@@ -65,20 +66,23 @@ if(maxi){var v=-1e9;for(var i=0;i<7;i++){var k=ORDER[i],r=row(bb,k);if(r<0)conti
 var v=1e9;for(var i=0;i<7;i++){var k=ORDER[i],r=row(bb,k);if(r<0)continue;bb[r][k]=1;v=Math.min(v,mm(bb,depth-1,al,be,true));bb[r][k]=0;be=Math.min(be,v);if(al>=be)break}return v}
 function best(){var bk=-1,bv=-1e9;for(var i=0;i<7;i++){var k=ORDER[i],r=row(b,k);if(r<0)continue;b[r][k]=2;var v=mm(b,5,-1e9,1e9,false);b[r][k]=0;if(v>bv){bv=v;bk=k}}return bk}
 function play(k,p){var r=row(b,k);if(r<0)return false;b[r][k]=p;drops.push({r:r,k:k,p:p,y:-S/2,t:performance.now()});return true}
-function after(p){var w=win(b,p);if(w){over=w;st.textContent=p===1?'you win! four in a row':'Void wins this one';return true}if(full(b)){over=true;st.textContent='a draw';return true}return false}
+function after(p){var w=win(b,p);if(w){over=w;st.textContent=p===1?'You win! Four in a row':'Void wins this one';return true}if(full(b)){over=true;st.textContent='A draw';return true}return false}
 c.addEventListener('pointermove',function(e){var q=c.getBoundingClientRect();hover=Math.floor((e.clientX-q.left)/q.width*C)});
 c.addEventListener('pointerleave',function(){hover=-1});
-c.addEventListener('click',function(e){if(over||turn!==1)return;var q=c.getBoundingClientRect(),k=Math.floor((e.clientX-q.left)/q.width*C);if(!play(k,1))return;if(after(1))return;turn=2;st.textContent='Void is thinking…';
-setTimeout(function(){var k2=best();if(k2>=0)play(k2,2);if(!after(2)){turn=1;st.textContent='your move'}},420)});
+c.addEventListener('click',function(e){if(over||turn!==1)return;var q=c.getBoundingClientRect(),k=Math.floor((e.clientX-q.left)/q.width*C);if(!play(k,1))return;if(after(1))return;turn=2;st.textContent='Void is thinking…';dot.style.background='#f2c230';
+setTimeout(function(){var k2=best();if(k2>=0)play(k2,2);if(!after(2)){turn=1;st.textContent='Your move';dot.style.background='#e0303e'}},420)});
 document.getElementById('r').onclick=reset;
-function disc(cx,cy,p,a){var g=x.createRadialGradient(cx-10,cy-12,4,cx,cy,30);if(p===1){g.addColorStop(0,'#ff8a8a');g.addColorStop(1,'#c41f2e')}else{g.addColorStop(0,'#fff1a0');g.addColorStop(1,'#d4a017')}x.globalAlpha=a;x.fillStyle=g;x.beginPath();x.arc(cx,cy,28,0,7);x.fill();x.globalAlpha=1}
-function draw(now){x.clearRect(0,0,c.width,c.height);var top=20;
-if(hover>=0&&!over&&turn===1&&row(b,hover)>=0)disc(hover*S+S/2,top-2,1,.35);
-x.fillStyle='#1d3fa8';x.beginPath();x.roundRect?x.roundRect(0,top+16,C*S,R*S,16):x.rect(0,top+16,C*S,R*S);x.fill();
-for(var r=0;r<R;r++)for(var k=0;k<C;k++){var cx=k*S+S/2,cy=top+16+r*S+S/2,p=b[r][k],d=null;for(var i=0;i<drops.length;i++)if(drops[i].r===r&&drops[i].k===k)d=drops[i];
-x.fillStyle='#050510';x.beginPath();x.arc(cx,cy,28,0,7);x.fill();
-if(p){if(d){var t=Math.min(1,(now-d.t)/420),e=1-Math.pow(1-t,3),yy=-20+(cy+20)*e;if(t<1){x.save();x.beginPath();x.arc(cx,cy,28,0,7);x.restore();disc(cx,yy,p,1)}else disc(cx,cy,p,1)}else disc(cx,cy,p,1)}}
-if(over&&over.length){var a=over[0],z=over[1];x.strokeStyle='rgba(255,255,255,.9)';x.lineWidth=6;x.lineCap='round';x.beginPath();x.moveTo(a[1]*S+S/2,top+16+a[0]*S+S/2);x.lineTo(z[1]*S+S/2,top+16+z[0]*S+S/2);x.stroke()}
+function disc(cx,cy,p,a){x.globalAlpha=a;x.save();x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=6;x.shadowOffsetY=3;var g=x.createRadialGradient(cx-9,cy-11,3,cx,cy,30);if(p===1){g.addColorStop(0,'#ff8f8f');g.addColorStop(.55,'#e0303e');g.addColorStop(1,'#9c1421')}else{g.addColorStop(0,'#fff3b0');g.addColorStop(.55,'#f2c230');g.addColorStop(1,'#b8860b')}x.fillStyle=g;x.beginPath();x.arc(cx,cy,28,0,7);x.fill();x.restore();
+x.strokeStyle=p===1?'rgba(110,8,20,.55)':'rgba(130,90,0,.5)';x.lineWidth=2;x.beginPath();x.arc(cx,cy,20,0,7);x.stroke();x.strokeStyle='rgba(255,255,255,.28)';x.lineWidth=1.5;x.beginPath();x.arc(cx,cy,24.5,3.6,5.2);x.stroke();x.globalAlpha=1}
+function hole(cx,cy){var g=x.createRadialGradient(cx,cy-6,10,cx,cy,30);g.addColorStop(0,'#0b0d18');g.addColorStop(1,'#04050b');x.fillStyle=g;x.beginPath();x.arc(cx,cy,28,0,7);x.fill();x.strokeStyle='rgba(0,0,30,.6)';x.lineWidth=3;x.beginPath();x.arc(cx,cy,29,0,7);x.stroke();x.strokeStyle='rgba(160,190,255,.22)';x.lineWidth=1.5;x.beginPath();x.arc(cx,cy,30.5,.4,2.7);x.stroke()}
+function draw(now){x.setTransform(2,0,0,2,0,0);x.clearRect(0,0,490,450);var top=14,by=top+16;
+if(hover>=0&&!over&&turn===1&&row(b,hover)>=0)disc(hover*S+S/2,top+2,1,.4);
+x.save();x.shadowColor='rgba(0,0,0,.5)';x.shadowBlur=18;x.shadowOffsetY=8;var bg=x.createLinearGradient(0,by,0,by+R*S);bg.addColorStop(0,'#3a66e0');bg.addColorStop(.5,'#2348c0');bg.addColorStop(1,'#17318f');x.fillStyle=bg;x.beginPath();x.roundRect?x.roundRect(2,by,C*S-4,R*S,18):x.rect(2,by,C*S-4,R*S);x.fill();x.restore();
+x.strokeStyle='rgba(255,255,255,.22)';x.lineWidth=1.5;x.beginPath();x.roundRect?x.roundRect(3,by+1,C*S-6,R*S-2,17):x.rect(3,by+1,C*S-6,R*S-2);x.stroke();
+for(var r=0;r<R;r++)for(var k=0;k<C;k++){var cx=k*S+S/2,cy=by+r*S+S/2,p=b[r][k],d=null;for(var i=0;i<drops.length;i++)if(drops[i].r===r&&drops[i].k===k)d=drops[i];
+hole(cx,cy);
+if(p){if(d){var t=Math.min(1,(now-d.t)/420),e=t<1?1-Math.pow(1-t,3):1,yy=top+(cy-top)*e;if(t<1){x.save();x.beginPath();x.arc(cx,cy,28,0,7);x.clip();disc(cx,yy,p,1);x.restore()}else disc(cx,cy,p,1)}else disc(cx,cy,p,1)}}
+if(over&&over.length){var a=over[0],z=over[1];x.strokeStyle='rgba(255,255,255,.92)';x.lineWidth=7;x.lineCap='round';x.shadowColor='rgba(255,255,255,.6)';x.shadowBlur=12;x.beginPath();x.moveTo(a[1]*S+S/2,by+a[0]*S+S/2);x.lineTo(z[1]*S+S/2,by+z[0]*S+S/2);x.stroke();x.shadowBlur=0}
 requestAnimationFrame(draw)}
 reset();requestAnimationFrame(draw);window.__c4={get board(){return b},get over(){return over},play:function(k){c.dispatchEvent(new MouseEvent('click',{clientX:c.getBoundingClientRect().left+(k+.5)*c.getBoundingClientRect().width/C}))}};})();`
     + '</script></body></html>';
@@ -144,7 +148,8 @@ function ensureStyle() {
     + '.vmake::after{content:"";position:absolute;left:0;right:0;height:38%;top:-40%;pointer-events:none;background:linear-gradient(180deg,rgba(124,204,255,0),rgba(124,204,255,.22),rgba(124,204,255,0));animation:vscan 1.2s ease-out .1s both}'
     + '@keyframes vmat{0%{opacity:0;transform:rotateX(58deg) translateY(40px) scale(.72);filter:blur(14px) brightness(2.2)}55%{opacity:1;filter:blur(2px) brightness(1.4)}100%{opacity:1;transform:none;filter:none}}'
     + '@keyframes vscan{0%{top:-40%}100%{top:110%}}'
-    + '@media (prefers-reduced-motion:reduce){.vmake iframe,.vmake::after{animation:none}}';
+    + '@media (prefers-reduced-motion:reduce){.vmake iframe,.vmake::after{animation:none}}'
+    + '.vmake iframe.vmake-c4{aspect-ratio:490/496;height:auto;width:min(100%, calc((100dvh - var(--dock-space, 120px) - 150px) * 490 / 496));margin:0 auto;background:none}';
   document.head.appendChild(s);
 }
 
@@ -167,9 +172,9 @@ async function run(text, api) {
     return 'make';
   }
   if (q.kind === 'game') {
-    title = q.label; h = 520;
+    title = q.label; h = 0;
     doc = connect4Doc();
-    sub = 'You are red. Void looks five moves ahead.';
+    sub = 'You are red. Void plays yellow and looks five moves ahead.';
   } else {
     const rgb = COLORS[q.color] || [124, 180, 255];
     const cap = (w) => w[0].toUpperCase() + w.slice(1); title = q.color ? cap(q.color) + ' ' + q.word : cap(q.word); h = 360;
@@ -179,7 +184,7 @@ async function run(text, api) {
   const f = document.createElement('iframe');
   f.setAttribute('sandbox', 'allow-scripts');
   f.setAttribute('title', title);
-  f.style.height = h + 'px';
+  if (h) f.style.height = h + 'px'; else f.className = 'vmake-c4';
   f.srcdoc = doc;
   const box = el.querySelector('.vmake');
   if (box) box.appendChild(f);

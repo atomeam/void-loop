@@ -360,7 +360,7 @@ function poseSprite(f, now) {
   if (p.arms && p.arms[1]) p.arms[1].rotation.z = still ? 0 : Math.sin(b.bob) * 0.18 + (b.mode === 'notice' ? 0.3 : 0) + wave;
   if (p.tail && p.tail.rotation) p.tail.rotation.z = still ? 0 : Math.sin(b.t * 2.6) * 0.18 - b.vx / SPEED * 0.25;
   if (p.pool && p.pool.position) { p.pool.position.y = -R * 2.1 - bob - hop; if (p.pool.scale && p.pool.scale.setScalar) p.pool.scale.setScalar(1 - (bob + hop) / 60); }
-  if (p.bubble) p.bubble.material.opacity = still ? 0.95 : 0.85 + Math.sin(b.t * 2) * 0.08;
+  if (p.bubble) p.bubble.material.opacity = still ? 1 : 0.97 + Math.sin(b.t * 2) * 0.03; // near-opaque: a see-through bubble read grey and faint
 }
 
 
@@ -395,33 +395,37 @@ function makeEyes(parts, ink, shine, y = R * 0.2, z = R * 0.72) {
   return eyes;
 }
 function bubbleTexture(line) {
-  const T = THREE, c = document.createElement('canvas'); c.width = 512; c.height = 160;
+  const T = THREE, W = 1024, H = 400, c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d');
-  g.clearRect(0, 0, 512, 160);
-  // soft bubble
-  g.fillStyle = 'rgba(255,255,255,0.92)';
-  g.strokeStyle = 'rgba(20,24,40,0.35)';
-  g.lineWidth = 4;
-  const r = 28; g.beginPath();
-  g.moveTo(r, 12); g.arcTo(500, 12, 500, 120, r); g.arcTo(500, 120, 40, 120, r);
-  g.lineTo(70, 120); g.lineTo(48, 148); g.lineTo(90, 120); g.arcTo(12, 120, 12, 12, r); g.closePath();
-  g.fill(); g.stroke();
-  g.fillStyle = '#1a1c28'; g.font = '600 28px system-ui,Segoe UI,sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
-  const words = String(line || '…').split(/\s+/), lines = []; let cur = '';
-  for (const w of words) {
-    const t = cur ? cur + ' ' + w : w;
-    if (g.measureText(t).width > 430 && cur) { lines.push(cur); cur = w; } else cur = t;
+  g.clearRect(0, 0, W, H);
+  // soft bubble with a tail toward the figure
+  g.shadowColor = 'rgba(0,0,0,0.35)'; g.shadowBlur = 18; g.shadowOffsetY = 6;
+  g.fillStyle = 'rgba(250,251,255,0.96)';
+  const r = 54, L = 14, Tp = 14, R2 = W - 14, B = H - 84; g.beginPath();
+  g.moveTo(L + r, Tp); g.arcTo(R2, Tp, R2, B, r); g.arcTo(R2, B, L, B, r);
+  g.lineTo(150, B); g.lineTo(96, H - 16); g.lineTo(196, B); g.arcTo(L, B, L, Tp, r); g.arcTo(L, Tp, R2, Tp, r); g.closePath();
+  g.fill(); g.shadowColor = 'transparent';
+  g.strokeStyle = 'rgba(30,34,60,0.18)'; g.lineWidth = 3; g.stroke();
+  g.fillStyle = '#1b1e2c'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  // the biggest type that fits in at most three lines
+  let size = 64, lines = [];
+  for (; size >= 40; size -= 4) {
+    g.font = '600 ' + size + 'px system-ui,-apple-system,Segoe UI,sans-serif';
+    const words = String(line || '…').split(/\s+/); lines = []; let cur = '';
+    for (const w of words) { const t = cur ? cur + ' ' + w : w; if (g.measureText(t).width > W - 120 && cur) { lines.push(cur); cur = w; } else cur = t; }
+    if (cur) lines.push(cur);
+    if (lines.length <= 3) break;
   }
-  if (cur) lines.push(cur);
-  const shown = lines.slice(0, 3);
-  const startY = 66 - (shown.length - 1) * 16;
-  shown.forEach((ln, i) => g.fillText(ln, 256, startY + i * 32));
-  const tex = new T.CanvasTexture(c); tex.colorSpace = T.SRGBColorSpace; return tex;
+  let shown = lines.slice(0, 3);
+  if (lines.length > 3) shown[2] = shown[2].replace(/\s*\S*$/, '') + '…';
+  const lh = size * 1.18, midY = (Tp + B) / 2, startY = midY - (shown.length - 1) * lh / 2;
+  shown.forEach((ln, i) => g.fillText(ln, W / 2, startY + i * lh));
+  const tex = new T.CanvasTexture(c); tex.colorSpace = T.SRGBColorSpace; tex.anisotropy = 4; return tex;
 }
 function addSpeech(g, parts, line) {
   if (!line) return null;
-  const T = THREE, mat = new T.SpriteMaterial({ map: bubbleTexture(line), transparent: true, depthWrite: false });
-  const sp = new T.Sprite(mat); sp.scale.set(R * 5.2, R * 1.65, 1); sp.position.set(R * 1.6, R * 2.6, R * 0.2);
+  const T = THREE, mat = new T.SpriteMaterial({ map: bubbleTexture(line), transparent: true, depthWrite: false, toneMapped: false });
+  const sp = new T.Sprite(mat); sp.scale.set(R * 9.2, R * 3.6, 1); sp.position.set(R * 3.6, R * 3.4, R * 0.2);
   g.add(sp); parts.mats.push(mat); parts.bubble = sp; return sp;
 }
 function buildPropMesh(kind, mats, geos) {
@@ -633,6 +637,17 @@ export async function syncFigures(list) {
       }
     }
   }
+}
+/** "zoom in on the figure": glide the camera toward one figure. level 0 = the whole stage, 3 = a close-up. */
+export function zoomToFigure(id, level) {
+  const live = [...figures.values()].filter((f) => !f.leaving), f = (id && figures.get(id)) || live[live.length - 1];
+  if (!f) return null;
+  const lv = Math.max(0, Math.min(3, Number(level) || 0));
+  ui.zoomId = lv > 0 ? f.brain.id : null;
+  ui.zoomTo = [1, 1.8, 2.7, 3.8][lv];
+  if (motionStill()) ui.zoom = ui.zoomTo;
+  requestRender();
+  return ui.zoomTo;
 }
 export async function mountInScene(mounter) {
   const s = await mountStage3D();

@@ -810,20 +810,20 @@ try {
     await H.ask('close', 300); await H.ask('what are you', 900); const self = await H.page();
     const slogan = await H.p.evaluate(async () => {
       const want = 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.';
-      let wrap = null, f = null, iframeText = '', srcHas = false;
+      let wrap = null, text = '', inPage = false, fits = false;
       for (let i = 0; i < 20; i++) {
         wrap = document.querySelector('.vslogan');
-        f = wrap && wrap.querySelector('iframe');
-        srcHas = !!(f && (f.srcdoc || '').includes(want));
-        try { iframeText = f && f.contentWindow && f.contentWindow.__slogan ? f.contentWindow.__slogan.text : ''; } catch (_) { iframeText = ''; }
-        if (wrap && srcHas) break;
+        text = wrap ? wrap.innerText.replace(/\s+/g, ' ').trim() : '';
+        if (wrap && text === want) break;
         await new Promise((r) => setTimeout(r, 100));
       }
-      return { has: !!wrap, srcHas, iframeText, count: document.querySelectorAll('.vslogan').length };
+      if (wrap) { const pg = document.querySelector('.vpage.on'), a = wrap.getBoundingClientRect(), b = pg && pg.getBoundingClientRect();
+        inPage = !!(pg && pg.contains(wrap)); fits = !!(b && a.left >= b.left && a.right <= b.right + 0.5 && a.right <= innerWidth); }
+      return { has: !!wrap, text, inPage, fits, count: document.querySelectorAll('.vslogan').length };
     });
     check('"what are you" is the self page', /Ask, and it appears/.test(self) && !net.length, self.slice(0, 80));
-    check('"what are you" mounts the 3D slogan beside the card with the exact A-to-Mind line',
-      slogan.has && slogan.count === 1 && (slogan.srcHas || slogan.iframeText === 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.'),
+    check('"what are you" shows the A-to-Mind slogan as real text inside the self card (exact line, never cut off on the right)',
+      slogan.has && slogan.count === 1 && slogan.text === 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.' && slogan.inPage && slogan.fits,
       JSON.stringify(slogan).slice(0, 220));
     await H.ask('close', 300);
     const gone = await H.p.evaluate(() => document.querySelectorAll('.vslogan').length);
@@ -2264,8 +2264,41 @@ try {
     const status = await Q.p.$eval('.othello-card', (e) => e.innerText).catch(() => '');
     check('othello: opening has 4 legal moves for black, a move flips, an illegal square is refused; "play othello" summons a board, your move lands and Void replies',
       oth.legalMoves(s0.board, 1).join() === '19,26,37,44' && after.board[27] === 1 && after.turn === 2 && illegal
-        && before === 8 && !!st && /your move/.test(status) && Q.errors.length === 0,
+        && before === 8 && !!st && /your move/i.test(status) && Q.errors.length === 0,
       JSON.stringify({ before, status, errs: Q.errors }));
+    await Q.ctx.close(); }
+
+  // polish (2026-10-07): boards arrive centred and clear of the ask bar (desktop and phone), long pages stop above it,
+  // Aggravation is a real star board with a locked roll and computer players, "play 3d tic tac toe" gets a board (no hang),
+  // the games hint names every game, and a finished ask leaves no stray "done" under the input
+  { const agg = await import(new URL('../void-live-deploy/skills/aggravation.js', import.meta.url).href);
+    const unit = agg.default.suite();
+    const Q = await fresh();
+    const geo = (sel) => Q.p.evaluate((sel) => { const e = document.querySelector(sel), r = document.getElementById('row').getBoundingClientRect(); if (!e) return null; const b = e.getBoundingClientRect();
+      return { left: b.left, right: b.right, top: b.top, bottom: b.bottom, rowTop: r.top, vw: innerWidth }; }, sel);
+    const fair = (g) => !!g && g.bottom <= g.rowTop - 4 && g.top >= 0 && g.left >= 0 && g.right <= g.vw && Math.abs((g.left + g.right) / 2 - g.vw / 2) <= 2;
+    await Q.ask('play aggravation', 700);
+    const aDesk = await geo('.aggravation-card');
+    const holes = await Q.p.$$eval('.aggravation-card [data-hole]', (d) => d.length).catch(() => 0);
+    const marbles = await Q.p.$$eval('.aggravation-card .ag-marble', (d) => d.length).catch(() => 0);
+    const rollOn = await Q.p.$eval('.ag-roll', (b) => !b.disabled).catch(() => false);
+    await Q.p.$eval('.ag-roll', (b) => b.click()).catch(() => {}); await Q.p.waitForTimeout(150);
+    const rolled = (await Q.state()).find((t) => t.kind === 'aggravation');
+    const pending = rolled && rolled.state.dice != null && agg.movesFor(rolled.state, 0, rolled.state.dice).length > 0;
+    const lockedAfter = await Q.p.$eval('.ag-roll', (b) => b.disabled).catch(() => false);
+    const hint = await (async () => { await Q.ask('what games do you have', 400); return Q.whisper(); })();
+    await Q.ask('play 3d tic tac toe', 700);
+    const ttt = (await Q.state()).some((t) => t.kind === 'tictactoe'), tttPage = await Q.page();
+    const tDesk = await geo('.tictactoe-card'), leftover = await Q.whisper();
+    await Q.ask('what are you', 900); const selfDesk = await geo('.vpage.on');
+    await Q.p.setViewportSize({ width: 390, height: 844 }); await Q.p.waitForTimeout(300);
+    const selfPhone = await geo('.vpage.on');
+    await Q.ask('close', 300); await Q.ask('play othello', 700); const oPhone = await geo('.othello-card');
+    check('polish: boards arrive centred and clear of the ask bar (desktop + phone); long pages stop above it; Aggravation is a 56-hole star board with bases, homes, shortcut corners and a centre, rule engine passes, roll locks while a move is pending; "play 3d tic tac toe" gets the board, no answer page; the games hint names every game; no stray "done"',
+      unit.ok && fair(aDesk) && fair(tDesk) && fair(oPhone) && !!selfDesk && selfDesk.bottom <= selfDesk.rowTop - 4 && !!selfPhone && selfPhone.bottom <= selfPhone.rowTop - 4
+        && holes === 56 + 1 + 4 * 4 + 4 * 4 && marbles === 16 && rollOn && (!pending || lockedAfter)
+        && ttt && !tttPage && ['tic tac toe', 'othello', 'connect 4', 'mancala', 'aggravation'].every((g) => hint.includes(g)) && leftover !== 'done' && Q.errors.length === 0,
+      JSON.stringify({ unit: unit.got, aDesk, tDesk, oPhone, selfDesk, selfPhone, holes, marbles, rollOn, pending, lockedAfter, hint, ttt, tttPage: tttPage.slice(0, 60), leftover, errs: Q.errors }).slice(0, 900));
     await Q.ctx.close(); }
 
   const liMod = nsMods.find((s) => s.name === 'local-inference');

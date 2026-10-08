@@ -478,7 +478,7 @@
     @media (prefers-reduced-motion: reduce) { html[data-fx="nebula"] #row::before { opacity: 0; } }
     @media (prefers-reduced-motion: reduce) {
       .thing, .vpage, .thing.arrive { animation: none !important; transition: opacity .2s ease !important; }
-      .vpage, .vpage.on { transform: translate(-50%, -46%); filter: none; }
+      .vpage, .vpage.on { transform: translate(-50%, -50%); filter: none; }
       html.no-gl[data-fx="nebula"] body::before { animation: none; }
       html, #void-glow, #void-stars, #void-aura, #void-swarm, #row { transition: none !important; }
       #void-depth, #input { animation: none !important; }
@@ -513,6 +513,159 @@
     }
     #void-stars-far { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0; }
     #void-stars-far.on { opacity: .55; }
+    /* ---- polish (2026-10-07): one type scale, calm cards that never sit under the ask bar ---- */
+    :root {
+      --font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Inter, Roboto, "Helvetica Neue", system-ui, sans-serif;
+      --fs-xs: 12px; --fs-s: 13px; --fs-m: 15px; --fs-l: 17px; --fs-xl: 22px;
+      --ink: #e9ebf2; --ink-2: #b9bdcb; --ink-3: #8b90a0;
+      --card-bg: linear-gradient(160deg, rgba(36,40,58,.90), rgba(14,15,24,.94) 48%, rgba(22,26,46,.92));
+      --card-line: rgba(255,255,255,.08);
+      --card-shadow: 0 30px 70px rgba(0,0,0,.55), 0 6px 18px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.07);
+      --radius: 20px;
+      --ease: cubic-bezier(.2,.8,.2,1);
+      --dock-space: calc(118px + env(safe-area-inset-bottom, 0px)); /* measured live from the ask bar (script below) */
+    }
+    html, body, body.void-quiet, #input, button, .vpage, .thing { font-family: var(--font); }
+    body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
+    /* answer pages: centred in the space above the ask bar, scroll inside instead of running under it */
+    .vpage {
+      top: calc((100vh - var(--dock-space)) / 2 + 4px);
+      top: calc((100dvh - var(--dock-space)) / 2 + 4px);
+      max-height: calc(100vh - var(--dock-space) - 40px);
+      max-height: calc(100dvh - var(--dock-space) - 40px);
+      width: min(560px, calc(100vw - 24px));
+      padding: 24px 26px 20px; border-radius: var(--radius);
+      font-size: var(--fs-m); line-height: 1.55; color: var(--ink);
+      scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.18) transparent; overscroll-behavior: contain;
+      transform: translate(-50%, -50%) perspective(1200px) rotateX(calc(var(--rx, 0deg) + 6deg)) rotateY(var(--ry, 0deg)) translateZ(-90px);
+    }
+    .vpage.on { transform: translate(-50%, -50%) perspective(1200px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(0); }
+    .vpage.vp-tight { width: min(440px, calc(100vw - 24px)); }
+    .vpage h2 { font-size: var(--fs-xl); font-weight: 600; letter-spacing: -.005em; line-height: 1.25; margin: 0 0 4px; }
+    .vpage .sub { font-size: var(--fs-s); color: var(--ink-3); margin-bottom: 14px; }
+    .vpage p, .vpage ul { color: #d5d8e2; }
+    .vpage .src { font-size: var(--fs-xs); color: var(--ink-3); }
+    .vpage::-webkit-scrollbar { width: 8px; } .vpage::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 8px; }
+    @media (max-width: 480px) {
+      .vpage { width: calc(100vw - 20px); padding: 20px 18px 16px; }
+      .vpage h2 { font-size: 20px; }
+    }
+    /* the status line under the ask bar: a quiet, centred caption that fades, never a stray left-aligned word */
+    #whisper { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; margin-top: 8px; transition: opacity .25s ease; }
+    #whisper:empty { opacity: 0; }
+    /* smooth background: the grain lives on its own unscaled layer, so the dark gradient dithers instead of banding or streaking */
+    #void-depth::after { content: none; }
+    body::after { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05; mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 200px 200px; }
+    /* cards on the stage share one look: rounded, softly lit, a gentle shadow */
+    .thing.kept-card:not(.game-card):not(.cartoon-card), .thing.calendar-card { border-radius: 16px !important; border-color: var(--card-line) !important;
+      background: var(--card-bg) !important; box-shadow: var(--card-shadow); padding: 14px 16px !important; font-size: var(--fs-s) !important; }
+    .thing.game-card { position: absolute; padding: 18px 18px 16px; border-radius: var(--radius); background: var(--card-bg); border: 1px solid var(--card-line);
+      box-shadow: var(--card-shadow); color: var(--ink); font-size: var(--fs-s); line-height: 1.45; text-align: left; user-select: none; filter: none; max-width: calc(100vw - 20px); }
+    .thing.game-card.lift { filter: none; box-shadow: 0 40px 90px rgba(0,0,0,.6), 0 0 0 1px rgba(150,175,255,.18), inset 0 1px 0 rgba(255,255,255,.08); }
+    .thing.game-card.arrive { animation: gameArrive .6s var(--ease) both; }
+    @keyframes gameArrive { from { opacity: 0; transform: translateY(14px) scale(.97); } to { opacity: 1; transform: none; } }
+    .g-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; cursor: grab; }
+    .g-title { font-size: var(--fs-l); font-weight: 600; letter-spacing: -.005em; color: var(--ink); }
+    .g-sub { font-size: var(--fs-xs); color: var(--ink-3); }
+    .g-board { display: flex; justify-content: center; margin: 14px 0 14px; }
+    .g-bar { display: flex; align-items: center; gap: 12px; min-height: 36px; }
+    .g-status { flex: 1; display: flex; align-items: center; gap: 8px; font-size: var(--fs-s); color: var(--ink-2); min-width: 0; }
+    .g-dot { width: 10px; height: 10px; border-radius: 50%; flex: none; box-shadow: 0 0 0 2px rgba(255,255,255,.1), 0 0 10px currentColor; }
+    .g-btn { font: inherit; font-size: var(--fs-s); color: var(--ink); background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.13);
+      border-radius: 999px; padding: 7px 16px; cursor: pointer; transition: background .2s ease, transform .2s var(--ease), opacity .2s ease; white-space: nowrap; }
+    .g-btn:hover:not(:disabled) { background: rgba(255,255,255,.13); }
+    .g-btn:active:not(:disabled) { transform: scale(.97); }
+    .g-btn:disabled { opacity: .38; cursor: default; }
+    .g-btn:focus-visible, .g-seg button:focus-visible, .ttt-cell:focus-visible, .oth-cell:focus-visible, .mc-pit:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 2px; }
+    .g-primary { background: linear-gradient(180deg, #f1f3ff, #c9d0f2); color: #141622; border-color: transparent; font-weight: 600; box-shadow: 0 4px 14px rgba(120,140,255,.25); }
+    .g-primary:hover:not(:disabled) { background: linear-gradient(180deg, #fff, #d6dcf7); }
+    .g-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+    .g-seg { display: inline-flex; align-items: center; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); }
+    .g-seg span { color: var(--ink-3); font-size: var(--fs-xs); padding: 0 6px 0 8px; }
+    .g-seg button { font: inherit; font-size: var(--fs-xs); color: var(--ink-2); background: none; border: 0; border-radius: 999px; padding: 5px 11px; cursor: pointer; }
+    .g-seg button.on { background: rgba(255,255,255,.14); color: var(--ink); }
+    .g-rules { margin-top: 12px; font-size: var(--fs-xs); line-height: 1.5; color: var(--ink-3); }
+    /* tic-tac-toe: a carved maple board, lacquered pieces */
+    .tictactoe-card { width: min(330px, calc(100vw - 20px)); }
+    .ttt-board { --cell: min(96px, calc((100vw - 76px) / 3)); display: grid; grid-template-columns: repeat(3, var(--cell)); grid-template-rows: repeat(3, var(--cell)); padding: 0; border-radius: 18px; overflow: hidden;
+      background:
+        linear-gradient(90deg, transparent calc(var(--cell) - 2px), #4a2a12 calc(var(--cell) - 2px), #4a2a12 calc(var(--cell) + 2px), rgba(255,225,180,.35) calc(var(--cell) + 2px), transparent calc(var(--cell) + 3px),
+          transparent calc(2 * var(--cell) - 2px), #4a2a12 calc(2 * var(--cell) - 2px), #4a2a12 calc(2 * var(--cell) + 2px), rgba(255,225,180,.35) calc(2 * var(--cell) + 2px), transparent calc(2 * var(--cell) + 3px)),
+        linear-gradient(180deg, transparent calc(var(--cell) - 2px), #4a2a12 calc(var(--cell) - 2px), #4a2a12 calc(var(--cell) + 2px), rgba(255,225,180,.35) calc(var(--cell) + 2px), transparent calc(var(--cell) + 3px),
+          transparent calc(2 * var(--cell) - 2px), #4a2a12 calc(2 * var(--cell) - 2px), #4a2a12 calc(2 * var(--cell) + 2px), rgba(255,225,180,.35) calc(2 * var(--cell) + 2px), transparent calc(2 * var(--cell) + 3px)),
+        repeating-linear-gradient(95deg, rgba(120,70,30,.10) 0 2px, transparent 2px 9px, rgba(90,50,20,.08) 9px 10px, transparent 10px 23px),
+        radial-gradient(120% 90% at 30% 20%, #e2b47c, #c48a4f 55%, #9a6332);
+      box-shadow: 0 14px 30px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,240,210,.5), inset 0 -3px 6px rgba(70,35,10,.45); }
+    .ttt-cell { padding: 10%; border: 0; background: none; cursor: pointer; border-radius: 12px; transition: background .2s ease; }
+    .ttt-cell:hover:not(:disabled) { background: rgba(255,240,215,.16); }
+    .ttt-cell:disabled { cursor: default; }
+    .ttt-cell svg { display: block; width: 100%; height: 100%; filter: drop-shadow(0 2px 2px rgba(60,30,10,.35)); }
+    .ttt-cell.placed svg { animation: piecePop .32s var(--ease) both; }
+    .ttt-cell.win { background: radial-gradient(closest-side, rgba(255,250,220,.55), transparent); }
+    @keyframes piecePop { from { transform: scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
+    /* othello: green baize in a walnut frame */
+    .othello-card { width: min(408px, calc(100vw - 20px)); }
+    .oth-frame { padding: 10px; border-radius: 14px; background: linear-gradient(145deg, #6b4428, #3d2414); box-shadow: 0 14px 30px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,220,180,.3), inset 0 -2px 4px rgba(0,0,0,.4); }
+    .oth-board { --cell: min(42px, calc((100vw - 92px) / 8)); display: grid; grid-template-columns: repeat(8, var(--cell)); grid-template-rows: repeat(8, var(--cell)); border-radius: 4px; overflow: hidden;
+      background: radial-gradient(120% 100% at 35% 25%, #2f9a5c, #1f7445 55%, #165a35); box-shadow: inset 0 0 0 1px rgba(0,0,0,.5), inset 0 2px 8px rgba(0,0,0,.35); }
+    .oth-cell { padding: 0; border: 0; background: transparent; box-shadow: inset 0 0 0 .5px rgba(5,40,20,.75); display: flex; align-items: center; justify-content: center; cursor: default; perspective: 300px; }
+    .oth-cell.legal { cursor: pointer; }
+    .oth-cell.legal:hover { background: rgba(255,255,255,.08); }
+    .oth-disc { width: 80%; height: 80%; border-radius: 50%; }
+    .oth-disc.black { background: radial-gradient(circle at 35% 30%, #5a5d66, #1b1c21 45%, #050506); box-shadow: 0 2px 0 #000, 0 4px 6px rgba(0,0,0,.45); }
+    .oth-disc.white { background: radial-gradient(circle at 35% 30%, #ffffff, #eceae4 45%, #c7c3b8); box-shadow: 0 2px 0 #8f8a7f, 0 4px 6px rgba(0,0,0,.4); }
+    .oth-disc.flip { animation: discFlip .45s var(--ease); }
+    .oth-disc.drop { animation: piecePop .3s var(--ease); }
+    @keyframes discFlip { 0% { transform: rotateY(0); } 50% { transform: rotateY(90deg); } 100% { transform: rotateY(0); } }
+    .oth-hint { width: 26%; height: 26%; border-radius: 50%; background: rgba(0,0,0,.28); box-shadow: 0 0 0 1.5px rgba(255,255,255,.25); }
+    .oth-score { display: flex; align-items: center; gap: 6px; font-variant-numeric: tabular-nums; font-weight: 600; color: var(--ink); }
+    .oth-chip { width: 14px; height: 14px; border-radius: 50%; margin-left: 4px; }
+    .oth-chip.black { background: radial-gradient(circle at 35% 30%, #5a5d66, #050506); box-shadow: 0 0 0 1px rgba(255,255,255,.2); }
+    .oth-chip.white { background: radial-gradient(circle at 35% 30%, #fff, #c7c3b8); }
+    /* mancala: a carved board with glass beads */
+    .mancala-card { width: min(476px, calc(100vw - 20px)); }
+    .mc-board { --pit: min(46px, calc((100vw - 124px) / 8)); display: grid; grid-template-columns: calc(var(--pit) * 1.05) repeat(6, var(--pit)) calc(var(--pit) * 1.05); grid-template-rows: var(--pit) var(--pit);
+      gap: calc(var(--pit) * .16); padding: calc(var(--pit) * .28); border-radius: calc(var(--pit) * .9);
+      background: repeating-linear-gradient(90deg, rgba(110,60,25,.10) 0 2px, transparent 2px 11px, rgba(80,40,15,.08) 11px 12px, transparent 12px 27px), radial-gradient(120% 120% at 30% 20%, #d6a066, #b27840 55%, #8a5428);
+      box-shadow: 0 14px 30px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,235,200,.45), inset 0 -3px 6px rgba(60,30,10,.45); }
+    .mc-pit { position: relative; padding: 0; border: 0; border-radius: 50%; cursor: pointer; color: inherit;
+      background: radial-gradient(circle at 50% 38%, #3b2010, #5e3519 62%, #8a5527 92%); box-shadow: inset 0 3px 7px rgba(0,0,0,.65), 0 1px 0 rgba(255,230,190,.35); transition: box-shadow .2s ease, transform .2s var(--ease); }
+    .mc-pit:hover:not(:disabled) { box-shadow: inset 0 3px 7px rgba(0,0,0,.65), 0 0 0 2px rgba(255,236,200,.7); }
+    .mc-pit:disabled { cursor: default; }
+    .mc-store { grid-row: span 2; border-radius: 999px; }
+    .mc-seeds { position: absolute; inset: 12%; }
+    .mc-seeds i { position: absolute; width: calc(var(--pit) * .2); height: calc(var(--pit) * .2); margin: calc(var(--pit) * -.1) 0 0 calc(var(--pit) * -.1); border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.9), var(--b) 40%, color-mix(in srgb, var(--b) 55%, #000)); box-shadow: 0 1px 2px rgba(0,0,0,.6); }
+    .mc-n { position: absolute; left: 50%; bottom: calc(var(--pit) * -.3); transform: translateX(-50%); min-width: 18px; padding: 0 5px; border-radius: 999px; font: 600 11px/16px var(--font);
+      font-variant-numeric: tabular-nums; color: #2b1607; background: rgba(255,236,205,.85); box-shadow: 0 1px 2px rgba(0,0,0,.35); pointer-events: none; }
+    .mc-store .mc-n { bottom: 6px; }
+    .mc-board > .mc-pit:nth-child(-n+7):not(.mc-store) .mc-n { bottom: auto; top: calc(var(--pit) * -.3); }
+    /* aggravation */
+    .ag-wrap svg { display: block; width: 100%; height: auto; border-radius: 18px; box-shadow: 0 16px 34px rgba(0,0,0,.55); }
+    .ag-marble { transition: transform .42s var(--ease); }
+    .ag-marble .ag-ring { stroke: transparent; stroke-width: 2.2; }
+    .ag-marble.can { cursor: pointer; }
+    .ag-marble.can .ag-ring { stroke: rgba(255,255,255,.9); animation: agPulse 1.1s ease-in-out infinite; }
+    .ag-marble.picked .ag-ring { stroke: #fff; stroke-width: 3; animation: none; }
+    .ag-target { fill: rgba(255,255,255,.22); stroke: #fff; stroke-width: 2.2; cursor: pointer; animation: agPulse 1.1s ease-in-out infinite; }
+    @keyframes agPulse { 50% { opacity: .35; } }
+    .ag-die { width: 42px; height: 42px; flex: none; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); padding: 7px; gap: 1px; border-radius: 10px;
+      background: linear-gradient(145deg, #ffffff, #e2e3ea); box-shadow: 0 0 0 2px var(--ag-col, #888), 0 6px 14px rgba(0,0,0,.45), inset 0 -2px 3px rgba(0,0,0,.12); }
+    .ag-die i { border-radius: 50%; }
+    .ag-die i.on { background: radial-gradient(circle at 40% 35%, #4a4d5a, #111218); }
+    .ag-die.blank { opacity: .6; }
+    .ag-die.tumble { animation: dieTumble .5s var(--ease); }
+    @keyframes dieTumble { 0% { transform: rotate(-200deg) scale(.6); } 70% { transform: rotate(12deg) scale(1.06); } 100% { transform: none; } }
+    @media (prefers-reduced-motion: reduce) {
+      .thing.game-card.arrive, .ttt-cell.placed svg, .oth-disc.flip, .oth-disc.drop, .ag-die.tumble, .ag-marble.can .ag-ring, .ag-target, #whisper { animation: none !important; }
+      .ag-marble, .mc-pit, .g-btn { transition: none !important; }
+    }
+    @media (max-width: 480px) {
+      .thing.game-card { padding: 16px 14px 14px; }
+      .g-board { margin: 12px 0; }
+    }
   </style>
 </head>
 <body>
@@ -546,6 +699,14 @@
 
     const stage = document.getElementById('stage');
     const input = document.getElementById('input');
+    // how much of the screen the ask bar takes from the bottom: answer pages and boards are centred above it, never under it
+    const askRow = document.getElementById('row');
+    function dockSpace() {
+      const top = askRow ? askRow.getBoundingClientRect().top : 0;
+      if (top > 0) document.documentElement.style.setProperty('--dock-space', Math.ceil(innerHeight - top + 14) + 'px');
+      return top > 0 ? top : innerHeight - 110;
+    }
+    dockSpace(); addEventListener('resize', dockSpace); if (window.visualViewport) visualViewport.addEventListener('resize', dockSpace);
     // First visit: until someone has asked anything, the quiet hint text shows what Void can do, one real ask at a time.
     // It stops for good after the first ask, while typing, and for reduced motion (then it's one static example).
     (function firstHints() {
@@ -724,7 +885,10 @@ Object.values(things).forEach((th) => {
       }
       if (stageKinds[kind]) { // skill kinds: each ask adds one more; it stays until thrown off the screen
         const th = Object.assign({ id: uid(kind), kind, x: 40, y: 60 }, opts);
-        things[th.id] = th; selectedId = th.id; save(); render(); return th;
+        const centre = !!th.center; delete th.center;
+        things[th.id] = th; selectedId = th.id; save(); render();
+        if (centre) centreThing(th.id);
+        return th;
       }
       if (kind !== 'calendar') return null;
       let th = Object.values(things).find((t) => t.kind === kind);
@@ -732,10 +896,21 @@ Object.values(things).forEach((th) => {
       if (!th) { th = { id: uid(kind), kind, x: Math.max(16, Math.min(stage.clientWidth - 300, stage.clientWidth - 340)), y: 60 }; things[th.id] = th; }
       selectedId = th.id; save(); render(); return th;
     }
+    // a board or card that asks for the middle: centred left to right, and in the room above the ask bar (phone or desktop)
+    function centreThing(id) {
+      const th = things[id], el = th && stage.querySelector('[data-id="' + CSS.escape(id) + '"]');
+      if (!el) { if (th) render(); return; }
+      const room = dockSpace() - stage.getBoundingClientRect().top - 12;
+      th.x = Math.max(8, Math.round((stage.clientWidth - el.offsetWidth) / 2));
+      th.y = Math.max(8, Math.round((room - el.offsetHeight) / 2));
+      el.style.left = th.x + 'px'; el.style.top = th.y + 'px';
+      save();
+    }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
     const stageApi = { stage, things: () => things, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
-      miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)) };
+      miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
+      center: (id) => { selectedId = id; render(); centreThing(id); } };
 
     // Click any stage object or person and it lifts in the hand. A flick throws it off the
     // screen and it's gone (a real toss: gravity, spin, carried off); a slow drop sets it back down.
@@ -2849,10 +3024,10 @@ return { ok: true, detail: 'timer-reset' };
       if (/^(?:are\s+you\s+(?:an?\s+)?(?:ai|bot|robot|human|real|a\s+person|alive|chatgpt|sentient))$/.test(l)) return 'software, not a person: I make things appear when you ask';
       if (/^(?:good\s*night|night\s+night|nighty\s+night|sleep\s+well|bye|goodbye|see\s+you|see\s+ya|later)(?:\s+void)?$/.test(l)) return /night/.test(l) ? 'good night' : 'see you';
       if (/^(?:you'?re|you\s+are)\s+(?:awesome|great|amazing|cool|the\s+best|smart|helpful)$|^(?:i\s+love\s+you|love\s+you|nice|cool|awesome|great\s+job|good\s+job|well\s+done)(?:\s+void)?$/.test(l)) return 'thank you';
-      if (/^(?:i'?m|i\s+am)\s+bored$|^(?:entertain\s+me|i'?m\s+so\s+bored)$/.test(l)) return 'try: play othello · magic 8 ball · knock knock · tell me a fun fact';
+      if (/^(?:i'?m|i\s+am)\s+bored$|^(?:entertain\s+me|i'?m\s+so\s+bored)$/.test(l)) return 'try: play othello · play mancala · magic 8 ball · knock knock · tell me a fun fact';
       if (/^(?:tell\s+me\s+)?(?:a\s+)?(?:fun|random|cool|interesting)\s+fact$|^tell\s+me\s+something\s+(?:interesting|i\s+don'?t\s+know)$/.test(l)) return pick(FUN_FACTS);
       if (/^(?:motivate\s+me|inspire\s+me|i\s+need\s+motivation|give\s+me\s+(?:some\s+)?motivation|encourage\s+me)$/.test(l)) return pick(CHEERS);
-      if (/^(?:let'?s\s+)?play\s+(?:a\s+)?game$|^what\s+games?\s+(?:can\s+i\s+play|do\s+you\s+have)$|^(?:any\s+)?games\??$/.test(l)) return 'try: play othello · tic tac toe · connect 4 · rock paper scissors · magic 8 ball';
+      if (/^(?:let'?s\s+)?play\s+(?:a\s+)?game$|^what\s+games?\s+(?:can\s+i\s+play|do\s+you\s+have)$|^(?:any\s+)?games\??$/.test(l)) return 'try: tic tac toe · othello · connect 4 · mancala · aggravation · rock paper scissors · magic 8 ball';
       { const AS = { cow: 'moo', dog: 'woof', cat: 'meow', pig: 'oink', sheep: 'baa', duck: 'quack', horse: 'neigh', chicken: 'cluck', rooster: 'cock-a-doodle-doo', owl: 'hoot', lion: 'roar', frog: 'ribbit', goat: 'maa', bee: 'buzz', snake: 'hiss', mouse: 'squeak', donkey: 'hee-haw', wolf: 'howl', bird: 'tweet', turkey: 'gobble' };
         const a = l.match(/^what\s+(?:sound|noise)\s+does\s+an?\s+([a-z]+)\s+make$|^what\s+does\s+an?\s+([a-z]+)\s+say$/); if (a && AS[a[1] || a[2]]) return 'a ' + (a[1] || a[2]) + ' says ' + AS[a[1] || a[2]];
         const LG = { spider: '8 legs', ant: '6 legs', bee: '6 legs', insect: '6 legs', fly: '6 legs', butterfly: '6 legs', dog: '4 legs', cat: '4 legs', horse: '4 legs', cow: '4 legs', bird: '2 legs', chicken: '2 legs', duck: '2 legs', human: '2 legs', person: '2 legs', octopus: '8 arms', crab: '10 legs (8 walking legs and 2 claws)', lobster: '10 legs', starfish: '5 arms, usually', snake: 'none', fish: 'none', kangaroo: '2 legs (plus a strong tail)' };
@@ -2944,7 +3119,7 @@ return { ok: true, detail: 'timer-reset' };
         seen.add(sk.name);
         groups[1][1].unshift([sk.name === 'place' ? 'map' : sk.name, sk.examples[0], sk.examples.slice(1, 3).join(' · ')]);
       }
-      const row = ([k, ask, more]) => '<li' + (focus && k === focus ? ' class="focus" style="background:rgba(150,175,255,.10);border-radius:8px;padding:4px 6px;margin:0 -6px"' : '') + '>' + (ask ? '<a href="#" data-ask="' + esc(ask) + '" style="color:var(--fg);text-decoration:none"><b>' + esc(k) + '</b> <span style="color:#9a9a9a">— ' + esc(ask) + '</span></a>' : '<b>' + esc(k) + '</b>') + (more ? ' <span style="color:#6a6a6a">· ' + esc(more) + '</span>' : '') + '</li>';
+      const row = ([k, ask, more]) => '<li' + (focus && k === focus ? ' class="focus" style="background:rgba(150,175,255,.10);border-radius:8px;padding:4px 6px;margin:0 -6px"' : '') + '>' + (ask ? '<a href="#" data-ask="' + esc(ask) + '" style="color:var(--fg);text-decoration:none"><b>' + esc(k) + '</b> <span style="color:#9a9a9a">— ' + esc(ask) + '</span></a>' : '<b>' + esc(k) + '</b>') + (more ? ' <span style="color:#80869a">· ' + esc(more) + '</span>' : '') + '</li>';
       const el = showPage((p) => {
         p.innerHTML = '<h2>' + (asMenu ? 'Menu' : 'Void') + '</h2>' + (lead ? '<p class="lead" style="font-size:17px;margin:4px 0 10px">' + esc(lead) + '</p>' : '') + '<div class="sub">' + (asMenu ? 'Pick one, or just type.' : 'Ask, and it appears.') + '</div>'
           + (asMenu ? '' : '<p>Type what you want. Things arrive on the stage; drag them, change them, or clear them away. Tap any line to try it.</p>')
@@ -2993,7 +3168,7 @@ return { ok: true, detail: 'timer-reset' };
       el.innerHTML = '<h2>' + esc(text) + '</h2>' + fixHtml(j.answer)
         + '<div class="src">' + (srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
       addCopy(el);
-      say('done');
+      say('');
       return 'answer';
     }
     // Will engine: Void says what it wants to become next (chosen by Void from everything that exists).
@@ -4370,7 +4545,7 @@ return { ok: true, detail: 'timer-reset' };
           say(/weather|place|map/.test(skill.name) ? 'looking up' : skill.name === 'translate' ? 'translating' : 'working');
           const before = whisper.textContent;
           const src = await skill.run(text, api);
-          if (whisper.textContent === before) say(src === 'none' ? (navigator.onLine === false ? "you're offline · this one needs the internet" : "couldn't") : 'done'); // a skill that said something keeps its line
+          if (whisper.textContent === before) say(src === 'none' ? (navigator.onLine === false ? "you're offline · this one needs the internet" : "couldn't") : ''); // a skill that said something keeps its line; a finished one clears it
           if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + skill.name });
           if (src === 'none') reportMiss(text, 'skill:' + skill.name);
           return true;
@@ -5776,7 +5951,8 @@ return { ok: true, detail: 'timer-reset' };
     addEventListener('void-fx', fxGo); fxGo();
     // depth: summoned things arrive from the dark and tilt toward you
     if (!reduce) {
-      new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.classList && n.classList.contains('thing') && !n.dataset.seen) { n.dataset.seen = '1'; if (performance.now() > 1500) { n.classList.add('arrive'); setTimeout(() => n.classList.remove('arrive'), 800); } } })
+      const arrived = new Set(Object.keys(things));
+      new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.classList && n.classList.contains('thing') && n.dataset.id && !arrived.has(n.dataset.id)) { arrived.add(n.dataset.id); if (performance.now() > 1500) { n.classList.add('arrive'); setTimeout(() => n.classList.remove('arrive'), 800); } } })
         .observe(document.getElementById('stage'), { childList: true });
       let hot = null;
       addEventListener('pointermove', (e) => {

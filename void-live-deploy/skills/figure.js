@@ -209,8 +209,9 @@ function mount(th, S) {
   if (th.ax == null) { th.ax = th.x; th.ay = th.y; }
   const { ax, ay, yaw } = anchorOf(th, things);
   const { tris, box: [x0, y0, x1, y1] } = drawList(bodyFor(th, things), yaw);
-  const w = x1 - x0, h = y1 - y0, dpr = Math.min(2, window.devicePixelRatio || 1);
-  th.x = ax + x0; th.y = ay + y0; th.bx = x0; th.by = y0;
+  const k = 1 + 0.45 * Math.max(0, Math.min(3, Number(th.lod) || 0)); // "zoom in on the figure" (skills/zoom-figure.js) draws it bigger, sharp, around its feet
+  const w = (x1 - x0) * k, h = (y1 - y0) * k, dpr = Math.min(2, window.devicePixelRatio || 1);
+  th.x = ax + x0 * k; th.y = ay + y0 * k; th.bx = x0 * k; th.by = y0 * k;
   const el = document.createElement('div');
   el.className = 'thing fig3d' + (th.model === 'motelet' && !th.on ? ' idle' : '');
   el.dataset.id = th.id; el.dataset.model = th.model; el.dataset.pose = th.model === 'motelet' ? (th.on && things[th.on] ? 'sit' : th.holds && things[th.holds] ? 'hold' : 'stand') : '';
@@ -220,7 +221,7 @@ function mount(th, S) {
   cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + 'px'; cv.style.height = h + 'px';
   const g = cv.getContext('2d');
   if (g) {
-    g.scale(dpr, dpr); g.translate(-x0, -y0); g.lineJoin = 'round';
+    g.scale(dpr * k, dpr * k); g.translate(-x0, -y0); g.lineJoin = 'round';
     for (const t of tris) {
       g.beginPath(); g.moveTo(t.P[0][0], t.P[0][1]); g.lineTo(t.P[1][0], t.P[1][1]); g.lineTo(t.P[2][0], t.P[2][1]); g.closePath();
       g.fillStyle = t.fill; g.strokeStyle = t.fill; g.lineWidth = 0.6; g.fill(); g.stroke();

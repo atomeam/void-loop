@@ -91,28 +91,28 @@ export function othelloOf(text) {
 
 function mount(th, stageApi) {
   const el = document.createElement('div');
-  el.className = 'thing kept-card othello-card';
+  el.className = 'thing kept-card game-card othello-card';
   el.dataset.id = th.id;
-  el.style.cssText = 'position:absolute;left:' + th.x + 'px;top:' + th.y + 'px;width:260px;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(12,12,12,0.92);text-align:center;cursor:grab;user-select:none';
-  const head = document.createElement('div');
-  head.style.cssText = 'color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em';
-  head.textContent = 'Othello';
-  const grid = document.createElement('div');
-  grid.style.cssText = 'display:grid;grid-template-columns:repeat(8,28px);grid-template-rows:repeat(8,28px);gap:2px;margin:10px auto 6px;width:max-content;background:#0e3b24;padding:3px;border-radius:6px';
-  const status = document.createElement('div');
-  status.style.cssText = 'font-size:13px;margin:4px 0 6px';
+  el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px';
+  el.innerHTML = '<div class="g-head"><span class="g-title">Othello</span><span class="g-sub">you are black</span></div>';
+  const wrap = document.createElement('div'); wrap.className = 'g-board';
+  const frame = document.createElement('div'); frame.className = 'oth-frame';
+  const grid = document.createElement('div'); grid.className = 'oth-board';
+  frame.appendChild(grid); wrap.appendChild(frame);
+  const bar = document.createElement('div'); bar.className = 'g-bar';
+  const score = document.createElement('div'); score.className = 'oth-score';
+  const status = document.createElement('div'); status.className = 'g-status'; status.setAttribute('aria-live', 'polite');
   const again = document.createElement('button');
-  again.type = 'button';
-  again.textContent = 'new game';
-  again.style.cssText = 'font:inherit;color:inherit;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:3px 12px;cursor:pointer';
+  again.type = 'button'; again.className = 'g-btn'; again.textContent = 'New game';
+  bar.append(score, status, again);
   const cells = [];
   let thinking = null;
   for (let i = 0; i < N * N; i++) {
     const b = document.createElement('button');
     b.type = 'button';
     b.dataset.i = i;
+    b.className = 'oth-cell';
     b.setAttribute('aria-label', 'square ' + 'abcdefgh'[i % N] + (Math.floor(i / N) + 1));
-    b.style.cssText = 'padding:0;border:0;border-radius:3px;background:#17643d;cursor:pointer;display:flex;align-items:center;justify-content:center';
     b.addEventListener('pointerdown', (e) => e.stopPropagation());
     b.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -128,12 +128,14 @@ function mount(th, stageApi) {
     if (th.state.status !== 'playing' || th.state.turn !== 2) return;
     thinking = setTimeout(() => {
       thinking = null;
+      if (!el.isConnected) return; // the stage redrew: the new card carries on
       const m = voidMove(th.state.board, 2);
       if (m >= 0) th.state = resolveMove(th.state, m).nextState;
       paint(); stageApi.save && stageApi.save();
       voidTurn(); // you had no move, so Void goes again
-    }, 380);
+    }, 520);
   }
+  let prev = null;
   function paint() {
     const legal = th.state.status === 'playing' && th.state.turn === 1 ? new Set(legalMoves(th.state.board, 1)) : new Set();
     for (let i = 0; i < N * N; i++) {
@@ -141,19 +143,23 @@ function mount(th, stageApi) {
       c.textContent = '';
       if (v || legal.has(i)) {
         const d = document.createElement('span');
-        d.style.cssText = 'width:22px;height:22px;border-radius:50%;' + (v === 1 ? 'background:radial-gradient(circle at 35% 30%,#555,#0a0a0a)' : v === 2 ? 'background:radial-gradient(circle at 35% 30%,#fff,#bdbdbd)' : 'width:8px;height:8px;background:rgba(255,255,255,.28)');
+        d.className = v === 1 ? 'oth-disc black' : v === 2 ? 'oth-disc white' : 'oth-hint';
+        if (v && prev && prev[i] && prev[i] !== v) d.classList.add('flip');
+        if (v && prev && !prev[i]) d.classList.add('drop');
         c.appendChild(d);
       }
-      c.style.cursor = legal.has(i) ? 'pointer' : 'default';
+      c.classList.toggle('legal', legal.has(i));
     }
+    prev = th.state.board.slice();
     const { black, white } = countDiscs(th.state.board), s = th.state.status;
-    status.textContent = (s === 'playing'
-      ? (th.state.turn === 1 ? (th.state.passed ? 'Void had no move · ' : '') + 'your move (black)' : 'Void is thinking…')
-      : s === 'draw' ? 'a draw' : s === 'black_wins' ? 'you win' : 'Void wins') + ' · ' + black + '–' + white;
+    score.innerHTML = '<span class="oth-chip black"></span>' + black + '<span class="oth-chip white"></span>' + white;
+    status.textContent = s === 'playing'
+      ? (th.state.turn === 1 ? (th.state.passed ? 'Void had no move · ' : '') + 'Your move' : 'Void is thinking…')
+      : s === 'draw' ? 'A draw' : s === 'black_wins' ? 'You win!' : 'Void wins';
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
-  again.addEventListener('click', (e) => { e.stopPropagation(); clearTimeout(thinking); thinking = null; th.state = createOthelloState(); paint(); stageApi.save && stageApi.save(); });
-  el.appendChild(head); el.appendChild(grid); el.appendChild(status); el.appendChild(again);
+  again.addEventListener('click', (e) => { e.stopPropagation(); clearTimeout(thinking); thinking = null; th.state = createOthelloState(); prev = null; paint(); stageApi.save && stageApi.save(); });
+  el.append(wrap, bar);
   paint();
   voidTurn(); // a board reloaded mid-game on Void's turn picks up where it was
   stageApi.bindDrag(el, th);
@@ -163,8 +169,8 @@ function mount(th, stageApi) {
 async function run(text, api) {
   if (!othelloOf(text)) return 'none';
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'othello');
-  if (existing) { api.stage.render(); return 'othello'; } // one board at a time
-  api.summon('othello', { state: createOthelloState(), x: 60, y: 70 });
+  if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'othello'; } // one board at a time
+  api.summon('othello', { state: createOthelloState(), center: true });
   api.say('Othello · you are black · tap a dotted square to flip Void’s discs');
   return 'othello';
 }

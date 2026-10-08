@@ -64,12 +64,13 @@ async function run(text, api) {
     const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
     const T = (c) => Math.round(f ? c * 9 / 5 + 32 : c) + '°';
     const c = w.current, d = w.daily, h = w.hourly;
-    const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center;min-width:44px"><div style="color:#8a8a8a;font-size:12px">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div>' + T(h.temperature_2m[i]) + '</div><div style="color:#8a8a8a;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
+    const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center;min-width:0"><div style="color:#8b90a0;font-size:12px;white-space:nowrap">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div style="font-weight:500">' + T(h.temperature_2m[i]) + '</div><div style="color:#8b90a0;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
+    el.classList.add('vp-tight'); // a weather card is a glance: tight, no empty right half
     el.innerHTML = '<h2>' + esc(loc.name) + '</h2>'
       + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + '</div>'
       + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
       + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
-      + '<div style="display:flex;gap:6px;overflow-x:auto;padding:6px 0 2px">' + hours + '</div>'
+      + '<div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px;padding:10px 0 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)">' + hours + '</div>'
       + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>' + (loc.guessed ? ' · place from your time zone; ask "weather in …" for another' : '') + '</div>';
     return 'weather';
   } catch (_) {
