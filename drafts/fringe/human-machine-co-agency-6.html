@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · one miss and it's out (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+input{width:6em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+svg{width:100%;max-width:360px;aspect-ratio:1/1;border:1px solid rgba(255,255,255,.12);border-radius:12px}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>one miss and it's out · draft · not published</h1>
+  <p class="note">Dots flash for a moment. Type how many you think there were, then choose whose estimate counts this round: yours, or a helper's that you see only after choosing. The helper is unbiased and usually close, but it misses sometimes. Studies find people drop a helper after seeing it err, even when it beats them on average (Dietvorst, Simmons and Massey, 2015), though others find people prefer algorithmic advice before they see it fail (Logg, Minson and Moore, 2019). This page measures both: whose estimates were closer, and how much more often you leave the helper after it loses a round than after you lose one. Everything stays in this browser.</p>
+  <svg id="dots" viewBox="0 0 100 100" aria-hidden="true"></svg>
+  <form id="ask" class="row" hidden><label for="mine">how many?</label><input id="mine" type="number" min="1" required><button type="submit" data-pick="me">mine counts</button><button type="submit" data-pick="helper">the helper's counts</button></form>
+  <div class="row"><button id="go" type="button">show the dots</button></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.aversion.v1',st={rounds:[]},cur=null,NS='http://www.w3.org/2000/svg';
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.rounds))st.rounds=j.rounds.filter(function(r){return r&&isFinite(r.truth)})}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(_){}}
+  function normal(r){var u=1-r(),v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+  // the helper: unbiased, 12% spread, and one round in six a 35% miss (so it visibly errs now and then)
+  function helperGuess(truth,r){var e=r()<1/6?(r()<.5?-1:1)*0.35:normal(r)*0.12;return Math.max(1,Math.round(truth*(1+e)))}
+  // the two numbers: mean absolute % error for you and the helper, and the leave rates after each kind of round
+  function summary(rounds){var pe=function(g,t){return Math.abs(g-t)/t},n=rounds.length;if(!n)return null;
+    var me=rounds.reduce(function(s,x){return s+pe(x.mine,x.truth)},0)/n,hp=rounds.reduce(function(s,x){return s+pe(x.helper,x.truth)},0)/n;
+    var afterHelperLost={left:0,n:0},afterMeLost={left:0,n:0};
+    for(var i=1;i<n;i++){var prev=rounds[i-1];if(prev.pick!=='helper')continue;var lost=pe(prev.helper,prev.truth)>pe(prev.mine,prev.truth),bucket=lost?afterHelperLost:afterMeLost;bucket.n++;if(rounds[i].pick!=='helper')bucket.left++}
+    return {n:n,myErr:me,helperErr:hp,helperShare:rounds.filter(function(x){return x.pick==='helper'}).length/n,
+      leaveAfterHelperLost:afterHelperLost.n?afterHelperLost.left/afterHelperLost.n:null,leaveAfterHelperWon:afterMeLost.n?afterMeLost.left/afterMeLost.n:null,nLost:afterHelperLost.n,nWon:afterMeLost.n}}
+  var el=function(id){return document.getElementById(id)};
+  function draw(n){var svg=el('dots');while(svg.firstChild)svg.removeChild(svg.firstChild);for(var i=0;i<n;i++){var c=document.createElementNS(NS,'circle');c.setAttribute('cx',4+Math.random()*92);c.setAttribute('cy',4+Math.random()*92);c.setAttribute('r',1.2);c.setAttribute('fill','#e8e8ec');svg.appendChild(c)}}
+  el('go').addEventListener('click',function(){var truth=40+Math.floor(Math.random()*160);cur={truth:truth,helper:helperGuess(truth,Math.random)};draw(truth);el('go').disabled=true;el('state').textContent='';
+    setTimeout(function(){draw(0);el('ask').hidden=false;el('mine').value='';el('mine').focus()},900)});
+  el('ask').addEventListener('submit',function(e){e.preventDefault();if(!cur)return;var pick=(e.submitter&&e.submitter.dataset.pick)||'me',mine=Math.max(1,+el('mine').value||1);
+    st.rounds.push({truth:cur.truth,mine:mine,helper:cur.helper,pick:pick,at:Date.now()});save();
+    var pe=function(g){return Math.round(Math.abs(g-cur.truth)/cur.truth*100)};
+    el('state').textContent='there were '+cur.truth+' · you said '+mine+' ('+pe(mine)+'% off) · the helper said '+cur.helper+' ('+pe(cur.helper)+'% off) · '+(pick==='helper'?'the helper’s':'yours')+' counted';
+    cur=null;el('ask').hidden=true;el('go').disabled=false;score()});
+  function score(){var s=summary(st.rounds);if(!s){el('score').textContent='';return}
+    el('score').textContent=s.n+' rounds · you were '+Math.round(s.myErr*100)+'% off on average, the helper '+Math.round(s.helperErr*100)+'% · you let the helper count '+Math.round(s.helperShare*100)+'% of the time'
+      +(s.leaveAfterHelperLost!=null&&s.leaveAfterHelperWon!=null?'\nafter you used the helper and it lost the round, you left it '+Math.round(s.leaveAfterHelperLost*100)+'% of the time ('+s.nLost+'); after it won, '+Math.round(s.leaveAfterHelperWon*100)+'% ('+s.nWon+')':'')
+      +(s.n<30?'\nabout 30 rounds before this means much':'')}
+  score();
+  // made-up checks: the helper beats a noisy guesser on average; a player who always drops the helper after a loss shows a high leave rate there
+  function selftest(){var s=5,r=function(){s=(s*48271)%2147483647;return s/2147483647},err=0,n=3000,big=0;
+    for(var i=0;i<n;i++){var t=100,h=helperGuess(t,r);err+=Math.abs(h-t)/t;if(Math.abs(h-t)>=30)big++}
+    if(!(err/n>0.08&&err/n<0.2))return 'helper error should be about 13%, got '+(err/n);if(!(big/n>0.12&&big/n<0.22))return 'about one in six helper rounds should be a big miss, got '+(big/n);
+    var rs=[],lostLast=false;for(var k=0;k<40;k++){var helperLoses=k%4===0;rs.push({truth:100,mine:helperLoses?100:130,helper:helperLoses?140:100,pick:lostLast?'me':'helper'});lostLast=helperLoses}
+    var m=summary(rs);if(!(m.leaveAfterHelperLost===1&&m.leaveAfterHelperWon===0))return 'leave rates computed wrong: '+JSON.stringify(m);return true}
+  window.__aversion={helperGuess:helperGuess,summary:summary,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

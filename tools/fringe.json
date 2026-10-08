@@ -1308,5 +1308,30 @@
     ],
     "sha256": "7b15ea4a51e9c73d190c9e949581ff4acac4a7b8a537e1b530e109dd4a77ed3e",
     "emit": false
+  },
+  {
+    "run": 53,
+    "at": "2026-10-08T10:45:18Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-6.html",
+    "sources": [
+      {
+        "claim": "People who see an algorithm err become less likely to use it than a human forecaster who errs, even when the algorithm is more accurate (algorithm aversion)",
+        "source": "https://doi.org/10.1037/xge0000033",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Before seeing it fail, people often weight algorithmic advice more than human advice (algorithm appreciation)",
+        "source": "https://doi.org/10.1016/j.obhdp.2018.12.005",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's one-person version shows a higher leave rate after the helper loses a round than after it wins, about 30 rounds in",
+        "source": "drafts/fringe/human-machine-co-agency-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "548fd0af4576af73773a8fd8015b4c21df474c51f51c764bfa0ec12583b3e72a",
+    "emit": false
   }
 ]
