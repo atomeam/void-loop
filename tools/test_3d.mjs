@@ -87,5 +87,19 @@ export async function run3dChecks({ check, fresh }) {
       !!drawn && r.beside && Math.abs(r.half - 0.5) < 1e-9 && r.paused === 0.25 && r.done === 0 && r.none === 0 && turned && !F.errors.length, JSON.stringify({ drawn, r, turned, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- the counter's tally counter: mounts beside it, shows the value on four strips, and its plunger counts one up
+  {
+    const F = await fresh();
+    await F.ask('make a counter');
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'counter'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
+    const r = await F.p.evaluate(async () => { const g = await import('/skills/mini/counter.js'); return { a: g.wheelDigits(1234).join(''), b: g.wheelDigits(7).join(''), c: g.wheelDigits(-12).join(''), d: g.wheelDigits(123456).join('') }; });
+    // tap the plunger in the 3D view (the button sits 0.0765 m up in the miniature's scene)
+    const pt = drawn && await F.p.evaluate((k) => window.__voidMini.project(k, [0, 0.0765, 0]), drawn.key);
+    if (pt) { await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(400); }
+    const value = (await F.state()).find((x) => x.kind === 'counter');
+    check('3D counter: "make a counter" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card',
+      !!drawn && r.a === '1234' && r.b === '0007' && r.c === '0012' && r.d === '3456' && value && value.value === 1 && !F.errors.length, JSON.stringify({ drawn, r, pt, value, e: F.errors }));
+    await F.ctx.close();
+  }
 
 }

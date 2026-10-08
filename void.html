@@ -1216,6 +1216,8 @@ bindDrag(el, th);
       el.appendChild(value);
       el.appendChild(inc);
       el.appendChild(label);
+      // the 3D tally counter beside it (skills/mini/counter.js): its wheels roll to the value, and pressing its plunger counts one up
+      stageApi.miniature(el, 'counter', { value: th.value || 0, onPress: () => { th.value = (th.value || 0) + 1; save(); render(); } }, { key: th.id, place: 'beside', width: 120, height: 140, label: '3D tally counter' }).catch(() => {});
       bindDrag(el, th);
       stage.appendChild(el);
     }
