@@ -5083,10 +5083,25 @@ return { ok: true, detail: 'timer-reset' };
     let typoFix = null;
     const TYPO_WORDS = { waht: 'what', whta: 'what', wht: 'what', tiem: 'time', tmie: 'time', captial: 'capital', capitla: 'capital', definiton: 'definition', defintion: 'definition', defenition: 'definition',
       synonim: 'synonym', synonims: 'synonyms', synomym: 'synonym', traslate: 'translate', tranlate: 'translate', transalte: 'translate', precent: 'percent', percnet: 'percent', pecent: 'percent',
-      wheather: 'weather', weahter: 'weather', waether: 'weather', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
+      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', wats: 'whats', defin: 'define', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
     const TYPO_LONG = ['definition', 'synonym', 'synonyms', 'translate', 'temperature', 'tomorrow', 'population', 'kilometers', 'kilometres', 'antonym', 'pronounce'];
+    // the short forms people type: "12*15=", "ephemeral meaning", "synonyms happy", "tip 20% 85", "random number 1-10",
+    // "days till christmas", "capital france", "usd to eur" read as the full ask
+    const CODES = 'usd|eur|gbp|jpy|cad|aud|chf|cny|inr|mxn|nzd|sek|nok|dkk|krw|brl|zar|sgd|hkd|try|pln|thb';
+    const CITIES = 'tokyo|london|paris|new york|nyc|los angeles|la|chicago|sydney|melbourne|dubai|berlin|madrid|rome|moscow|beijing|shanghai|hong kong|singapore|seoul|mumbai|delhi|new delhi|toronto|vancouver|mexico city|sao paulo|cairo|istanbul|bangkok|manila|jakarta|lagos|nairobi|denver|seattle|miami|boston|dallas|houston|phoenix|honolulu|hawaii|california|texas|florida|amsterdam|dublin|lisbon|athens|stockholm|oslo|zurich|vienna|prague|warsaw|buenos aires|lima|bogota|santiago|auckland|perth|tel aviv|riyadh|karachi|dhaka|taipei|hanoi|kuala lumpur';
+    function shortForms(t) {
+      if (/^[\d\s.,+\-*/x×÷^()%]+=\s*$/i.test(t)) return t.replace(/\s*=\s*$/, '');
+      return t.replace(/^([a-z]{3,})\s+(?:meaning|definition)\s*[?.!]*$/i, 'define $1')
+        .replace(/^(synonyms?|antonyms?|rhymes?)\s+(?!for\b|of\b|with\b)([a-z]+)\s*[?.!]*$/i, '$1 for $2')
+        .replace(/^tip\s+(\d+(?:\.\d+)?)\s*%\s+(?:on\s+)?\$?(\d+(?:\.\d+)?)\s*$/i, '$1% tip on $2')
+        .replace(/^(?:a\s+)?random\s+number\s+(?:from\s+)?(-?\d+)\s*(?:-|to)\s*(-?\d+)\s*$/i, 'random number between $1 and $2')
+        .replace(/^((?:how\s+many\s+)?(?:days|weeks|sleeps))\s+(?:till|til|untill)\s+/i, '$1 until ')
+        .replace(/^(capital|currency|population)\s+(?!of\b|city\b|gains?\b|letters?\b|one\b|punishment\b|cities\b|growth\b|density\b)([a-z][a-z ]{2,30}?)\s*[?.!]*$/i, '$1 of $2')
+        .replace(new RegExp('^(?:time\\s+(?:in\\s+|at\\s+)?(' + CITIES + ')|(' + CITIES + ')\\s+time)(?:\\s+now|\\s+right\\s+now)?\\s*[?.!]*$', 'i'), (_, a, b) => 'what time is it in ' + (a || b))
+        .replace(new RegExp('^(' + CODES + ')\\s+(?:to|in|into)\\s+(' + CODES + ')\\s*[?.!]*$', 'i'), '1 $1 to $2');
+    }
     function fixTypos(text) {
-      const t = String(text || '');
+      const t = shortForms(String(text || '').trim());
       if (t.length > 120 || /[\n⏎:{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix)\b/i.test(t) || t.split(/\s+/).length > 12) return t;
       let out = t.replace(/[A-Za-z]+/g, (w) => {
         const lw = w.toLowerCase();

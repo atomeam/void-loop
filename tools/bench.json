@@ -5377,5 +5377,19 @@
   {"ask": "review this ts: const x: any = foo()", "want": "review", "says": "any"},
   {"ask": "review this go: _ = json.Unmarshal(b, &v)", "want": "review", "says": "error|ignore|_"},
   {"ask": "review this bash: cat $file | grep foo", "want": "review", "says": "quote|\\$file|useless"},
-  {"ask": "review this css: * { margin: 0 !important }", "want": "review", "says": "important"}
+  {"ask": "review this css: * { margin: 0 !important }", "want": "review", "says": "important"},
+  {"ask": "wats 12 x 15", "want": "calc", "says": "180"},
+  {"ask": "12*15=", "want": "calc", "says": "180"},
+  {"ask": "wether in boston", "want": "skill:weather", "says": null},
+  {"ask": "time tokyo", "want": "skill:worldtime", "says": null},
+  {"ask": "london time", "want": "skill:worldtime", "says": null},
+  {"ask": "defin ephemeral", "want": "skill:define", "says": null},
+  {"ask": "ephemeral meaning", "want": "skill:define", "says": null},
+  {"ask": "ephemeral definition", "want": "skill:define", "says": null},
+  {"ask": "synonyms happy", "want": "skill:words", "says": null},
+  {"ask": "tip 20% 85", "want": "skill:tip|calc", "says": "17"},
+  {"ask": "random number 1-10", "want": "chance", "says": null},
+  {"ask": "days till christmas", "want": "holiday|calc|skill:countdown|skill:holidays", "says": null},
+  {"ask": "usd to eur", "want": "calc|answer|skill:currency|skill:fx", "says": null},
+  {"ask": "capital france", "want": "skill:country", "says": "Paris"}
 ]
