@@ -1258,5 +1258,30 @@
     ],
     "sha256": "aca9f38212f43a0bef758e2866cedf172627a5062c3835928a7411512806c225",
     "emit": false
+  },
+  {
+    "run": 51,
+    "at": "2026-10-08T08:44:31Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-6.html",
+    "sources": [
+      {
+        "claim": "A filled interval (a continuous tone) is judged longer than an equal empty interval marked only by its start and end",
+        "source": "https://doi.org/10.3758/BF03203902",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The filled-duration illusion appears across duration ranges and is explained by a faster internal clock during filled intervals",
+        "source": "https://doi.org/10.1037/0096-1523.33.3.716",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's one-person version shows the filled one picked above 50% on equal rounds after about 30 of them",
+        "source": "drafts/fringe/interval-timing-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "20b8af11aa8376985d06160362975c01d3185bc5b4bded429ac1696c6e9be502",
+    "emit": false
   }
 ]

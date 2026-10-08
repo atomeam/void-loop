@@ -117,6 +117,7 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Why:** hard subjects turn into something people laugh at and share, and keeping every figure a cartoon keeps each visitor's Void welcoming.
 - **Reuse:** #18 styling, #19 script prompt and fallback scripts, #20 reactions.
 - **Done when:** sample grim subjects (GG Allin, a plague, a shipwreck) each bring a cartoon figure with comic actions and splats drawn as bright cartoon blobs; the Workers AI prompt asks for cartoon slapstick; tests check the grim samples come out in cartoon style and stay green.
+- **superseded (Adam, 2026-10-08):** "we are going for realistic not cute". Everything that appears is realistic, one of a kind, clonable and acts on its nature (STANDING.md); grim subjects are not turned into cartoons. Do not build this.
 - **claim:** first pass live at f249d1a (cartoon version of a hard subject); free for the full pass in Done when
 - **claim_until:**
 
@@ -133,7 +134,7 @@ Void is the front door. Blank until asked; then anything can be summoned: an exp
 - **Why:** Forethinkers established (2026-10-07 12:17 ET) that a toy-sized offline mind now exists (M5Stack Module LLM, AX630C: 54 mm, 17 g, 1.5 W, wake word + ASR + 0.5B LLM + TTS, https://docs.m5stack.com/en/module/Module-LLM, accessed 2026-10-07), so the physical figure's memory of its kid will live on the toy. Building the same memory on the stage first proves the behaviour (toy problem 4: it stays) and keeps the visitor's data on their own device.
 - **Reuse:** `void-live-deploy/skills/figure.js` (Motelet), the `store()` helper pattern in `skills/figures.js`, existing figure greet behaviour from Next #20.
 - **Done when:** summon Motelet, give a name, reload the page, summon Motelet again and it greets by name with the last summon; "forget me" then reload and it asks again; a browser test covers both paths with the network blocked; tests stay green.
-- **claim:** free
+- **claim:** done in run 51 (claude): name and last summon kept in this browser only; "Motelet, forget me" or "forget my name" clears it (plain "forget me" stays the account's, which deletes passkeys and synced data); a bare word counts as a name only right after Motelet asks and only when written like one ("Sam"); browser test in tools/test_void.mjs
 - **claim_until:**
 
 ### Next [think-tank] — Florida Keys reef-accretion card
