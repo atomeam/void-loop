@@ -231,3 +231,17 @@ for (const c of ['var best=null;xs.forEach(function(w){if(!best||w.t<best.t)best
   ok(!rules(c, 'javascript').includes('null-deref@1'), 'no null-deref for: ' + c);
 for (const c of ['let best = null; if (best.t > 1) go();', 'let r = null; const n = r?.x || r.length;'])
   ok(rules(c, 'javascript').includes('null-deref@1'), 'still null-deref: ' + c);
+// run 57: GitHub Actions workflows (GitHub's security hardening guide): a pasted workflow is read as YAML, and five risks are found
+{
+  const wf = ['on:', '  pull_request_target:', 'permissions: write-all', 'jobs:', '  build:', '    runs-on: ubuntu-latest', '    steps:', '      - uses: actions/checkout@v4', '        with:',
+    '          ref: ${{ github.event.pull_request.head.sha }}', '      - uses: some-org/deploy-action@v2', '      - uses: other/tool@main', '      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6',
+    '      - env:', '          TITLE: ${{ github.event.issue.title }}', '        run: |', '          echo "${{ github.event.issue.title }}"', '          echo "$TITLE"', '          echo ${{ secrets.DEPLOY_KEY }}',
+    '      - if: ${{ github.event.pull_request.title != \'\' }}', '        run: npm test'].join('\n');
+  ok(langOf(wf) === 'yaml', 'a workflow is yaml, got ' + langOf(wf));
+  const got = ruleReview(wf).findings.map((f) => f.line + ':' + f.rule).sort().join(' ');
+  ok(got === ['10:gha-prt-checkout', '11:gha-unpinned-action', '12:gha-unpinned-action', '17:gha-script-injection', '19:gha-secret-echo', '3:gha-write-all'].sort().join(' '), 'workflow findings: ' + got);
+  // the same checkout under pull_request (not _target) is fine; a k8s manifest is yaml too
+  ok(!ruleReview(wf.replace('pull_request_target', 'pull_request')).findings.some((f) => f.rule === 'gha-prt-checkout'), 'pull_request checkout is fine');
+  ok(langOf('apiVersion: v1\nkind: Pod\nspec:\n  containers:\n    - image: nginx') === 'yaml', 'a k8s manifest is yaml');
+  ok(isReviewAsk('audit my github actions') && isReviewAsk('check this CI workflow') && isReviewAsk('review my GitHub Actions workflow') && !isReviewAsk('is my workflow good') && !isReviewAsk('check my actions'), 'actions review asks');
+}

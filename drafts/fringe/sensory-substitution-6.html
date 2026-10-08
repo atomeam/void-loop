@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · keep the beat (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#dot{width:64px;height:64px;border-radius:50%;margin:8px auto;background:#1a1a1e;transition:background 40ms}
+#dot.on{background:#7cf}
+#pad{height:120px;border:1px dashed rgba(255,255,255,.25);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#8a8a92;user-select:none;touch-action:manipulation}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>keep the beat · draft · not published</h1>
+  <p class="note">Tap along with a steady beat: one you hear (a click), one you see (a flashing dot), or both at once. People keep time far more steadily with sound than with a flash, and when both come together the sound mostly decides (Repp and Penel, 2002; Repp’s 2005 review of tapping studies). That is the question behind giving one sense’s job to another: timing may travel well into hearing and badly into sight. This page measures your own spread, how far your taps wander around the beat, in each mode. Tap the pad, or press Space with it focused. Everything stays in this browser.</p>
+  <div class="row"><button type="button" data-m="sound">sound</button><button type="button" data-m="flash">flash</button><button type="button" data-m="both">both</button></div>
+  <div id="dot" aria-hidden="true"></div>
+  <div id="pad" tabindex="0" role="button" aria-label="tap pad">tap here with the beat</div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var IOI=600,BEATS=24,SKIP=4,KEY='a2m.fringe.beat.v1',MODES=['sound','flash','both'],st={trials:[]},run=null,ac=null;
+  function el(id){return document.getElementById(id)}
+  function ok(t){return t&&MODES.indexOf(t.mode)>=0&&isFinite(t.sd)&&isFinite(t.mean)&&t.n>0}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(ok)}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-200)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your trials (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // each tap against its nearest beat (ms, negative = early); taps more than half a beat from any beat are dropped, and so is the warm-up
+  function asynchronies(beats,taps,skip){var out=[];taps.forEach(function(t){var best=null;for(var i=skip;i<beats.length;i++){var d=t-beats[i];if(best==null||Math.abs(d)<Math.abs(best))best=d}if(best!=null&&Math.abs(best)<IOI/2)out.push(best)});return out}
+  function stats(a){if(!a.length)return null;var m=a.reduce(function(s,x){return s+x},0)/a.length,v=a.reduce(function(s,x){return s+(x-m)*(x-m)},0)/Math.max(1,a.length-1);return{n:a.length,mean:m,sd:Math.sqrt(v)}}
+  function median(a){if(!a.length)return null;var s=a.slice().sort(function(x,y){return x-y}),k=s.length>>1;return s.length%2?s[k]:(s[k-1]+s[k])/2}
+  function click(at){if(!ac)return;var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=1000;g.gain.setValueAtTime(0.0001,at);g.gain.exponentialRampToValueAtTime(0.4,at+0.002);g.gain.exponentialRampToValueAtTime(0.0001,at+0.04);o.connect(g);g.connect(ac.destination);o.start(at);o.stop(at+0.05)}
+  function buttons(on){[].forEach.call(document.querySelectorAll('[data-m]'),function(b){b.disabled=!on})}
+  function start(mode){if(run)return;var sound=mode!=='flash';
+    if(sound){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();if(ac.resume)ac.resume()}catch(_){ac=null}if(!ac){el('state').textContent='this browser cannot play the click; try flash';return}}
+    // beats are scheduled on the page clock; the click is scheduled on the audio clock at the same moments
+    var t0=performance.now()+800,a0=sound?ac.currentTime+0.8:0;run={mode:mode,beats:[],taps:[],timers:[]};buttons(false);el('state').textContent='get ready: '+mode;el('pad').focus();
+    for(var i=0;i<BEATS;i++){var bt=t0+i*IOI;run.beats.push(bt);if(sound)click(a0+i*IOI/1000);
+      if(mode!=='sound')run.timers.push(setTimeout(function(){var d=el('dot');d.classList.add('on');setTimeout(function(){d.classList.remove('on')},80)},bt-performance.now()))}
+    run.timers.push(setTimeout(finish,t0+BEATS*IOI+300-performance.now()))}
+  function finish(){var r=run;run=null;buttons(true);var s=stats(asynchronies(r.beats,r.taps,SKIP));
+    if(!s||s.n<8){el('state').textContent='not enough taps near the beat to measure ('+(s?s.n:0)+')';return}
+    st.trials.push({mode:r.mode,n:s.n,mean:s.mean,sd:s.sd,at:Date.now()});save();
+    el('state').textContent=r.mode+': '+s.n+' taps · on average '+Math.abs(Math.round(s.mean))+' ms '+(s.mean<0?'early':'late')+' · spread '+Math.round(s.sd)+' ms';draw()}
+  function tap(){if(run)run.taps.push(performance.now());var p=el('pad');p.style.background='rgba(124,204,255,.08)';setTimeout(function(){p.style.background=''},60)}
+  [].forEach.call(document.querySelectorAll('[data-m]'),function(b){b.addEventListener('click',function(){start(b.dataset.m)})});
+  el('pad').addEventListener('pointerdown',function(e){if(e.button===0||e.pointerType!=='mouse')tap()});
+  el('pad').addEventListener('keydown',function(e){if(e.key===' '&&!e.repeat){e.preventDefault();tap()}});
+  function draw(){if(!st.trials.length){el('score').textContent='';return}
+    el('score').textContent='your usual spread: '+MODES.map(function(m){var xs=st.trials.filter(function(t){return t.mode===m}).map(function(t){return t.sd});return m+' '+(xs.length?Math.round(median(xs))+' ms ('+xs.length+')':'–')}).join(' · ')
+      +(st.trials.length<9?'\nabout three tries of each mode before comparing':'')}
+  draw();
+  // made-up beats and taps: early and late taps are signed right, far taps and the warm-up are dropped, and the spread is a sample SD
+  function selftest(){var beats=[0,600,1200,1800,2400,3000],taps=[1190,1830,2380,3010,2700,10],a=asynchronies(beats,taps,2);
+    if(a.join(',')!=='-10,30,-20,10')return'asynchronies gave '+a.join(',');var s=stats([-10,30,-20,10]);
+    if(Math.abs(s.mean-2.5)>1e-9||Math.abs(s.sd-Math.sqrt(1475/3))>1e-9)return'stats gave '+JSON.stringify(s);if(stats([])!==null)return'empty stats should be null';return true}
+  window.__beat={asynchronies:asynchronies,stats:stats,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

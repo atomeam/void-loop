@@ -1408,5 +1408,30 @@
     ],
     "sha256": "f069d54c6fe2718533d6a51d7d88b533797ba2b06eb4af887b796204dc1a1b17",
     "emit": false
+  },
+  {
+    "run": 57,
+    "at": "2026-10-08T14:46:23Z",
+    "family": "sensory-substitution",
+    "draft": "drafts/fringe/sensory-substitution-6.html",
+    "sources": [
+      {
+        "claim": "People tap in time with an auditory beat far more steadily than with a visual flash, and when both are given together the auditory beat mostly governs the timing",
+        "source": "https://doi.org/10.1037/0096-1523.28.5.1085",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Decades of tapping studies show auditory metronomes give smaller and steadier asynchronies than visual ones",
+        "source": "https://doi.org/10.3758/BF03206433",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own tapping spread with sound, flash and both shows which sense carries timing best for them, a guide to which sense a substitution device should use for timing",
+        "source": "drafts/fringe/sensory-substitution-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "423e6055aeb397555677a332443979bc7a324233f7549e41f10e94703fbd273e",
+    "emit": false
   }
 ]

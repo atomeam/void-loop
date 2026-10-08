@@ -5461,5 +5461,10 @@
   {"ask": "printed robot arm", "want": "skill:printedmotor", "says": "waving arm"},
   {"ask": "3d printed motors", "want": "skill:printedmotor", "says": "28\\.2%"},
   {"ask": "is it possible to 3d print an electric motor", "want": "skill:printedmotor", "says": "Next: a printed motor"},
-  {"ask": "tell me about printed actuators", "want": "skill:printedmotor", "says": "2025-01-26"}
+  {"ask": "tell me about printed actuators", "want": "skill:printedmotor", "says": "2025-01-26"},
+  {"ask": "audit my github actions ⏎ jobs: ⏎ build: ⏎ runs-on: ubuntu-latest ⏎ steps: ⏎ - uses: actions/checkout@v4 ⏎ - run: echo \"${{ github.event.issue.title }}\"", "want": "review", "says": "Pass it through env"},
+  {"ask": "check this ci workflow ⏎ jobs: ⏎ deploy: ⏎ runs-on: ubuntu-latest ⏎ steps: ⏎ - uses: some-org/deploy-action@v2", "want": "review", "says": "full commit SHA"},
+  {"ask": "review my github actions workflow ⏎ on: ⏎ pull_request_target: ⏎ jobs: ⏎ t: ⏎ runs-on: ubuntu-latest ⏎ steps: ⏎ - uses: actions/checkout@v4 ⏎ with: ⏎ ref: ${{ github.event.pull_request.head.sha }}", "want": "review", "says": "pull_request_target"},
+  {"ask": "audit this workflow file ⏎ permissions: write-all ⏎ jobs: ⏎ b: ⏎ runs-on: ubuntu-latest ⏎ steps: ⏎ - run: npm test", "want": "review", "says": "write-all"},
+  {"ask": "audit my github actions", "want": "review|asked for code", "says": "Paste the code"}
 ]
