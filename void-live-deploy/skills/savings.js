@@ -140,7 +140,21 @@ function render(q, api) {
       api.stage.miniature(slot, 'savings', { cols }, { key: 'savings-page', place: 'inside', label: '3D coin stacks: what you put in and what growth added' }).catch(() => slot.remove());
     }
   }
+  // a goal: a glass piggy bank fills from where you start to the goal (skills/mini/piggybank.js), silver paid in, gold growth
+  if ((q.want === 'time' || q.want === 'need') && page && q.goal > 0) {
+    const months2 = q.want === 'time' ? monthsTo(q.start, monthly, rate, q.goal) : months;
+    const add = q.want === 'time' ? monthly : monthlyFor(q.start, rate, months, q.goal);
+    const paidIn = Number.isFinite(months2) ? q.start + add * months2 : NaN;
+    const reach = Number.isFinite(months2) ? 1 : Math.min(1, grow(q.start, monthly, rate, 600) / q.goal); // never: as far as 50 years gets
+    piggyMini(api, page, { from: Math.min(1, q.start / q.goal), fill: reach, gold: Number.isFinite(paidIn) ? Math.max(0, Math.min(1, 1 - paidIn / q.goal)) : 0 });
+  }
   return 'savings';
+}
+function piggyMini(api, page, data) {
+  if (!api.stage || !api.stage.miniature) return null;
+  const slot = document.createElement('div'); slot.className = 'vmini'; slot.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 168 : 200) + 'px;margin:0 0 6px';
+  page.prepend(slot);
+  return api.stage.miniature(slot, 'piggybank', data, { key: 'piggybank:' + Date.now().toString(36), label: '3D glass piggy bank filling toward the goal' }).catch(() => { slot.remove(); return null; });
 }
 
 const isCalcAsk = (text) => /^(?:a\s+|open\s+(?:a\s+|the\s+)?|show\s+(?:me\s+)?(?:a\s+|the\s+)?)?(?:savings?|compound\s+interest|investment|retirement\s+savings|savings\s+goal)\s+calculator$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
@@ -160,7 +174,10 @@ function runCalc(api) {
     let txt = 'Balance: ' + money(total) + '\nYou put in ' + money(paid) + ' \u00b7 growth ' + money(total - paid);
     if (g > 0) txt += '\nGoal ' + money(g) + ': ' + span(monthsTo(s, a, r, g)) + ' at this pace, or ' + money(monthlyFor(s, r, n, g)) + ' a month to get there in ' + span(n);
     out.textContent = txt; out.style.whiteSpace = 'pre-line';
+    const pd = { fill: g > 0 ? Math.min(1, total / g) : 0.85, gold: total > 0 ? Math.max(0, (total - paid) / total) : 0 };
+    if (pig) pig.then((h) => h && h.update(pd)); else pig = piggyMini(api, el, { from: 0, ...pd });
   };
+  let pig = null;
   el.querySelectorAll('input').forEach((i) => i.addEventListener('input', upd)); upd();
   return 'savings';
 }

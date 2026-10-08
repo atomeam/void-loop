@@ -222,6 +222,22 @@ export async function run3dChecks({ check, fresh }) {
     await F.ctx.close();
   }
 
+  // ---- card miniatures: the glass piggy bank fills toward a savings goal
+  {
+    const F = await fresh();
+    const r = await F.p.evaluate(async () => {
+      const m = await import('/skills/scene3d.js'); const d = document.createElement('div'); d.style.cssText = 'position:fixed;left:20px;top:20px;width:320px;height:220px;z-index:9'; document.body.appendChild(d);
+      const h = await m.mountMiniature(d, 'piggybank', { fill: 0.5, gold: 0.25 }, { key: 'tpig' });
+      const half = h.inst.state(); h.update({ fill: 1, gold: 0 }); await new Promise((res) => setTimeout(res, 50)); return { half };
+    });
+    const full = await until(() => F.p.evaluate(() => { const s = window.__voidMini.state('tpig'); return s && s.level === 1 && s.coins === s.total && s.gold === 0 ? s : false; }), 20000);
+    await F.ask('how long to save 50000 if i save 500 a month', 700);
+    const goal = await until(() => F.p.evaluate(() => { const l = window.__voidMini.list().find((x) => x.kind === 'piggybank' && x.key.startsWith('piggybank:')); const s = l && window.__voidMini.state(l.key); return l && l.draws > 0 && !!document.querySelector('.vpage.on .vmini canvas') && s && s.level === 1 ? s : false; }), 60000);
+    check('miniatures: the glass piggy bank holds half its coins at half (a quarter of them gold growth), fills to the top at the goal, and "how long to save 50000 if i save 500 a month" fills one on the answer',
+      Math.abs(r.half.coins / r.half.total - 0.5) < 0.01 && Math.abs(r.half.gold / r.half.coins - 0.25) < 0.02 && !!full && !!goal && !F.errors.length, JSON.stringify({ half: r.half, full, goal, e: F.errors }));
+    await F.ctx.close();
+  }
+
   await runRulesChecks(check);
   // ---- chess and checkers: routing, the real 3D board takes taps, Void replies, and a flat board where WebGL can't run
   {
