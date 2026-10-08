@@ -3298,8 +3298,8 @@ return { ok: true, detail: 'timer-reset' };
       let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
       // thousands commas are part of the number: "15% of 2,500" read as 2 and gave 0.3 (only a run of exactly three digits after each comma)
       t = t.replace(/\b(\d{1,3})((?:,\d{3})+)(?![\d,])/g, (_, h, rest) => h + rest.replace(/,/g, ''));
-      // kitchen fractions before a unit: "3/4 cup", "1/2 teaspoon", "2 1/2 cups"
-      t = t.replace(/\b(?:(\d+)\s+)?(\d+)\/(\d+)\s+(?=(?:cups?|teaspoons?|tablespoons?|tsp|tbsp|pounds?|lbs?|ounces?|oz|gallons?|quarts?|pints?|miles?|inch(?:es)?|feet|foot|yards?|hours?|liters?|litres?)\b)/g,
+      // kitchen fractions before a unit when converting: "3/4 cup in tablespoons", "2 1/2 cups to ml" ("half of 3/4 cup" stays a fraction: 3/8)
+      t = t.replace(/\b(?:(\d+)\s+)?(\d+)\/(\d+)\s+(?=(?:cups?|teaspoons?|tablespoons?|tsp|tbsp|pounds?|lbs?|ounces?|oz|gallons?|quarts?|pints?|miles?|inch(?:es)?|feet|foot|yards?|hours?|liters?|litres?)\b(?=.*\b(?:in|to|into)\s+\w))/g,
         (all, w, a, b) => +b ? String(Math.round(((+w || 0) + a / b) * 10000) / 10000) + ' ' : all);
       // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
       t = t.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
