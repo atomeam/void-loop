@@ -351,6 +351,19 @@ export async function run3dChecks({ check, fresh }) {
       !!ready && sep && !!moved && moved.players[0].pos > 0 && owned === 0 && !F.errors.length, JSON.stringify({ ready, sep, pos: moved && moved.players[0].pos, phase: moved && moved.phase, owned, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- Battleship: the folding case in the void; a tap on the upright board fires; Void's fleet never reaches the page
+  {
+    const F = await fresh();
+    await F.ask('play battleship', 600);
+    const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'battleship'); return l && l.ready && l.draws > 0; }), 90000);
+    const hidden = await F.p.evaluate(() => { const st = Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).find((t) => t.kind === 'battleship'); const voidCells = st.state.fleet.void.flatMap((s) => s.cells);
+      const lit = [...document.querySelectorAll('.bs-target button')].filter((b) => b.querySelector('i') || b.style.background !== 'rgb(29, 106, 147)').length; return { voidCells: voidCells.length, lit }; });
+    if (ready) { const pt = await F.p.evaluate(() => { const k = window.__voidMini.keys().find((x) => x.startsWith('battleship:')); return window.__voidMini.project(k, [0.0964, 0.2372, 0.1268]); }); await F.p.mouse.click(pt.x, pt.y); }
+    const fired = await until(async () => { const t = (await F.state()).find((x) => x.kind === 'battleship'); return t && t.state.shots.you[0] ? t.state : false; }, 10000);
+    check('battleship: "play battleship" stands the folding case in the void with its card separate; before any shot nothing of Void\'s fleet shows; tapping A1 on the upright board fires there',
+      !!ready && hidden.voidCells === 17 && hidden.lit === 0 && !!fired && !F.errors.length, JSON.stringify({ ready, hidden, fired: !!fired, e: F.errors }));
+    await F.ctx.close();
+  }
   // ---- the game rack: "games" stands a 3D shelf of the seven board games in the void; picking one puts the rack away and opens it
   {
     const F = await fresh();
@@ -359,8 +372,8 @@ export async function run3dChecks({ check, fresh }) {
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation, monopoly) ; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation, battleship, monopoly) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation,battleship,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
     await F.ctx.close();
   }
   {

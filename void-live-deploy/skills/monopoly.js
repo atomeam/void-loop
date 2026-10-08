@@ -102,7 +102,7 @@ function mount(th, stageApi) {
       b.style.outline = i === picked ? '2px solid #ffd76a' : '';
     });
     money.textContent = '';
-    s.players.forEach((p, k) => { const m = document.createElement('span'); m.innerHTML = ''; const dot = document.createElement('b'); dot.style.cssText = 'display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;background:' + SEAT_COLORS[k]; m.append(dot, document.createTextNode(p.name + ' ' + p.money + (p.out ? ' (out)' : p.jail ? ' (in Jail)' : ''))); if (k === s.turn) m.style.fontWeight = '700'; money.appendChild(m); });
+    s.players.forEach((p, k) => { const m = document.createElement('span'); const dot = document.createElement('b'); dot.style.cssText = 'display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;background:' + SEAT_COLORS[k]; m.append(dot, document.createTextNode(p.name + ' ' + p.money + (p.out ? ' (out)' : p.jail ? ' (in Jail)' : ''))); if (k === s.turn) m.style.fontWeight = '700'; money.appendChild(m); });
     const pl = s.players[s.turn];
     rollB.hidden = !(me && s.phase === 'roll');
     buyB.hidden = skipB.hidden = !(me && s.phase === 'buy');

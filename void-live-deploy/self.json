@@ -155,10 +155,12 @@
   "chess",
   "aggravation",
   "go",
-  "monopoly"
+  "monopoly",
+  "battleship"
  ],
  "minis": [
   "aggravation",
+  "battleship",
   "calculator",
   "checkers",
   "chess",

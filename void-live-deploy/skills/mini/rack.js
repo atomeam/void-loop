@@ -52,6 +52,11 @@ function motif(x, m, cx, cy, s) {
   } else if (m === 'mancala') {
     x.fillStyle = '#8a5a2c'; x.beginPath(); x.roundRect(cx - h, cy - h * 0.55, s, s * 0.55, s * 0.1); x.fill();
     for (let i = 0; i < 4; i++) for (let r = 0; r < 2; r++) { const px = cx - h + s * (0.2 + i * 0.2), py = cy - h * 0.55 + s * (0.15 + r * 0.25); disc(x, px, py, s * 0.07, '#5b3716'); disc(x, px - 3, py - 2, s * 0.022, ['#4fb3d9', '#e35d6a', '#f2c14e', '#7bd389'][(i + r) % 4]); }
+  } else if (m === 'battleship') { // a blue grid with a grey hull and two pegs
+    x.fillStyle = '#2a7fae'; x.fillRect(cx - h, cy - h, s, s); x.strokeStyle = 'rgba(220,240,255,.6)'; x.lineWidth = 2; const q = s / 6;
+    for (let k = 1; k < 6; k++) { x.beginPath(); x.moveTo(cx - h + k * q, cy - h); x.lineTo(cx - h + k * q, cy + h); x.moveTo(cx - h, cy - h + k * q); x.lineTo(cx + h, cy - h + k * q); x.stroke(); }
+    x.fillStyle = '#9aa4ab'; x.beginPath(); x.roundRect(cx - h + q * 0.6, cy - q * 0.4, q * 3.8, q * 0.8, q * 0.4); x.fill();
+    disc(x, cx + q * 1.5, cy - q * 1.5, q * 0.3, '#d8302b'); disc(x, cx - q * 1.5, cy + q * 1.5, q * 0.3, '#f4f4f0');
   } else if (m === 'monopoly') { // a corner of the board: a ring of spaces with colour bands round a green centre
     x.fillStyle = '#eef4ea'; x.fillRect(cx - h, cy - h, s, s); x.fillStyle = '#cfe2c8'; x.fillRect(cx - h * 0.62, cy - h * 0.62, s * 0.62, s * 0.62);
     const bands = ['#8a5a3c', '#9fd3ef', '#d9559c', '#f08a2c', '#d9353a', '#f2d23a', '#2f9b57', '#1f4fa8'], q = s / 8;
