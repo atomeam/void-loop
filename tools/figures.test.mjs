@@ -84,14 +84,37 @@ test('a brain is folded from its seed: the same seed folds the same, another see
   assert.notDeepEqual(Array.from(a.positions.slice(0, 60)), Array.from(c.positions.slice(0, 60)));
   assert.ok(Math.min(...a.colors) < 0.8 && Math.max(...a.colors) > 0.95, 'sulci darker than gyri');
 });
-test('cats, dogs, mice and rabbits are real animals from a seed: species builds differ, a seed repeats, coats vary', async () => {
+test('cats, dogs, mice, rabbits and monkeys are real animals from a seed: species builds differ, a seed repeats, coats vary', async () => {
   const { CREATURE, CREATURE_KINDS, boundsOf } = await import('../void-live-deploy/skills/sdfmesh.js');
   const size = (k, s) => { const b = boundsOf(CREATURE(28, s, k), 0); return [b.max[0] - b.min[0], b.max[1] - b.min[1]]; };
-  assert.deepEqual(CREATURE_KINDS, ['cat', 'dog', 'mouse', 'rabbit']);
+  assert.deepEqual(CREATURE_KINDS, ['cat', 'dog', 'mouse', 'rabbit', 'monkey']);
   assert.equal(JSON.stringify(CREATURE(28, 5, 'cat')), JSON.stringify(CREATURE(28, 5, 'cat')));
   assert.ok(size('mouse', 1)[1] < size('cat', 1)[1] && size('cat', 1)[1] < size('dog', 1)[1] + 1, 'a mouse stands lower than a cat');
   const coats = new Set(); for (let s = 0; s < 40; s++) coats.add(CREATURE(28, s, 'cat').rig.coat + CREATURE(28, s, 'cat').rig.pattern);
   assert.ok(coats.size >= 4, 'cats come in several coats');
   assert.equal(CREATURE(28, 1, 'unicorn'), null);
   for (const k of CREATURE_KINDS) assert.equal(CREATURE(28, 3, k).rig.legs.length, 4);
+});
+test('bones, cheese, carrots and bananas are real foods from a seed, each coloured like the real thing', async () => {
+  const { foodMesh, foodField, FOOD_KINDS } = await import('../void-live-deploy/skills/sdfmesh.js');
+  assert.deepEqual(FOOD_KINDS, ['bone', 'cheese', 'carrot', 'banana']);
+  for (const k of FOOD_KINDS) {
+    const a = foodMesh(28, 2, k, 32), c = foodMesh(28, 3, k, 32);
+    assert.ok(a.positions.length > 300, k + ' has a surface');
+    assert.notDeepEqual(Array.from(a.positions.slice(0, 30)), Array.from(c.positions.slice(0, 30)), k + ' varies by seed');
+  }
+  const mean = (k) => { const m = foodMesh(28, 2, k, 32), s = [0, 0, 0]; for (let i = 0; i < m.colors.length; i += 3) for (let j = 0; j < 3; j++) s[j] += m.colors[i + j]; return s.map((v) => v / (m.colors.length / 3)); };
+  const carrot = mean('carrot'), banana = mean('banana');
+  assert.ok(carrot[0] > carrot[2] * 2, 'a carrot is orange'); assert.ok(banana[0] > banana[2] * 1.5 && banana[1] > banana[2] * 1.4, 'a banana is yellow');
+  assert.equal(foodField(28, 1, 'pizza'), null);
+});
+test('fish, sharks, bees and flowers are real from a seed: a tail that sweeps, wings that beat, petals that vary', async () => {
+  const { lifeMesh, lifeParts, LIFE_KINDS } = await import('../void-live-deploy/skills/sdfmesh.js');
+  assert.deepEqual(LIFE_KINDS, ['fish', 'shark', 'bee', 'flower']);
+  assert.ok(lifeMesh(28, 1, 'fish', 32).tail && lifeMesh(28, 1, 'shark', 32).tail, 'swimmers have a tail part');
+  assert.ok(lifeMesh(28, 1, 'bee', 32).wingL && lifeMesh(28, 1, 'bee', 32).wingR, 'a bee has two wings');
+  const petals = new Set(); for (let s = 0; s < 30; s++) petals.add(lifeParts(28, s, 'flower').parts.body.length);
+  assert.ok(petals.size >= 3, 'flowers vary in petal count');
+  assert.equal(JSON.stringify(lifeParts(28, 4, 'shark').parts), JSON.stringify(lifeParts(28, 4, 'shark').parts));
+  assert.equal(lifeParts(28, 1, 'dragon'), null);
 });

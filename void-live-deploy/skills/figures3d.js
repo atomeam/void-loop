@@ -20,7 +20,7 @@
  * missing scripts fall back to the base-body defaults. Nearby figures trigger greet/follow/chase/flee/argue/team; reduced motion holds all still.
  */
 import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
-import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups, brainMesh, creatureMesh, CREATURE_KINDS } from './sdfmesh.js';
+import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups, brainMesh, creatureMesh, CREATURE_KINDS, foodMesh, lifeMesh } from './sdfmesh.js';
 import { makeCloud, cloudGeometry, cloudShade, makePrecip, makeGlow } from './sky3d.js';
 import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, climateAt, CONDITIONS, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey } from './scripts.js';
 export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
@@ -375,6 +375,7 @@ function poseSprite(f, now) {
   if (p.bubble) { const half = R * 4.6 + 10; p.bubble.position.x = Math.max(half - b.x, Math.min(R * 3.6, innerWidth - half - b.x)); } // the bubble stays on screen near an edge
   if (p.zombie) poseZombie(f, w, hop, still);
   if (p.creature) poseCreature(f, still);
+  if (p.life) poseLife(f, still);
 }
 // A zombie shambles: a slow, lopsided step (the bad leg dips deeper), a side sway, the head lolling on its own beat,
 // the reaching arms bobbing out of step. Every number comes from the seed's gait, so each zombie walks its own way.
@@ -708,7 +709,42 @@ function poseCreature(f, still) {
   p.legs.forEach((l, i) => { l.rotation.z = Math.sin(ph + (i === 0 || i === 3 ? 0 : Math.PI)) * amp; });
   if (p.tail) p.tail.rotation.y = still ? 0 : Math.sin(b.t * (p.creature.kind === 'dog' ? 9 : 2.2) + G.phase) * (p.creature.kind === 'dog' ? 0.5 : 0.25);
 }
-const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater, brain: buildBrain, cat: buildCreature, dog: buildCreature, mouse: buildCreature, rabbit: buildCreature };
+// real foods (skills/sdfmesh.js foodField): a bone, a wedge of cheese, a carrot, a banana; colour lives in the vertices
+function buildFood(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const m = foodMesh(R, (spec.seed ?? 1) >>> 0, spec.kindOf), geo = new T.BufferGeometry();
+  geo.setAttribute('position', new T.BufferAttribute(m.positions, 3)); geo.setAttribute('normal', new T.BufferAttribute(m.normals, 3));
+  geo.setAttribute('color', new T.BufferAttribute(m.colors, 3)); geo.setIndex(new T.BufferAttribute(m.indices, 1)); geo.computeBoundingSphere();
+  const k = spec.kindOf, mat = new T.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: k === 'banana' ? 0.45 : k === 'cheese' ? 0.6 : k === 'carrot' ? 0.55 : 0.75, clearcoat: k === 'banana' ? 0.3 : 0, sheen: k === 'carrot' ? 0.3 : 0 });
+  const mesh = new T.Mesh(geo, mat); mesh.rotation.y = -0.5; body.add(mesh);
+  const parts = elementParts(body, { kind: k }); parts.geos.push(geo); parts.mats.push(mat);
+  return { obj: g, parts };
+}
+// fish, sharks, bees and flowers (skills/sdfmesh.js lifeParts): coloured in the vertices; a tail that sweeps, wings that beat
+function buildLife(spec) {
+  const T = THREE, g = new T.Group(), body = new T.Group(); g.add(body);
+  const M = lifeMesh(R, (spec.seed ?? 1) >>> 0, spec.kindOf), info = M.info, k = info.kind;
+  const mat = new T.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: true, roughness: k === 'fish' || k === 'shark' ? 0.3 : 0.6, clearcoat: k === 'fish' ? 0.8 : 0.2, sheen: k === 'bee' ? 1 : 0, sheenColor: new T.Color(0xf2d27a) });
+  const wingMat = new T.MeshPhysicalMaterial({ color: 0xdfe8ef, transparent: true, opacity: 0.35, roughness: 0.1, side: T.DoubleSide, depthWrite: false });
+  const parts = { mats: [mat, wingMat], geos: [] };
+  const part = (name, m) => { const geo = creaturePart(M[name]); const at = info.pivots[name]; if (at) geo.translate(-at[0], -at[1], -at[2]); parts.geos.push(geo);
+    const mesh = new T.Mesh(geo, name.startsWith('wing') ? wingMat : mat); if (!at) { body.add(mesh); return mesh; } const pv = new T.Group(); pv.position.set(...at); pv.add(mesh); body.add(pv); return pv; };
+  part('body');
+  const tail = M.tail ? part('tail') : null, wings = ['wingL', 'wingR'].filter((n) => M[n]).map((n) => part(n));
+  if (info.eye) { const eyeMat = new T.MeshPhysicalMaterial({ color: 0x0c0c0e, roughness: 0.05, clearcoat: 1 }), eg = new T.SphereGeometry(info.eyeR, 12, 8); parts.mats.push(eyeMat); parts.geos.push(eg);
+    for (const zs of [1, -1]) { const e = new T.Mesh(eg, eyeMat); e.position.set(info.eye[0], info.eye[1], zs * info.eye[2]); body.add(e); } }
+  Object.assign(parts, { body, eyes: null, arms: [], antenna: null, glow: null, lamp: { intensity: 0 }, tail: null, pool: null, life: { kind: k, tail, wings, swim: info.swim, fly: info.fly } });
+  return { obj: g, parts };
+}
+function poseLife(f, still) {
+  const b = f.brain, L = f.parts.life;
+  if (L.swim || L.fly) f.parts.body.rotation.y = b.vx < 0 ? Math.PI : 0;
+  if (L.tail) L.tail.rotation.y = still ? 0 : Math.sin(b.t * (L.kind === 'shark' ? 3 : 7)) * 0.45;
+  for (const [i, w] of L.wings.entries()) w.rotation.x = still ? 0 : Math.sin(b.t * 60) * 0.7 * (i ? -1 : 1);
+  if (L.kind === 'flower') f.parts.body.rotation.set(0, 0, still ? 0 : Math.sin(b.t * 0.9) * 0.04); // a slight sway in the air
+  if (L.fly && !still) f.obj.position.y += Math.sin(b.t * 5) * 3;
+}
+const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: buildIce, water: buildWater, brain: buildBrain, cat: buildCreature, dog: buildCreature, mouse: buildCreature, rabbit: buildCreature, monkey: buildCreature, bone: buildFood, cheese: buildFood, carrot: buildFood, banana: buildFood, fish: buildLife, shark: buildLife, bee: buildLife, flower: buildLife };
 // run a thing's conditions for one frame and show the result: rain, snow and lightning, a darkening cloud, melting ice,
 // a flower growing under the rain. Returns true while something is visibly happening.
 function stepElement(f, dt, now, still, others) {
