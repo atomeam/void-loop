@@ -722,6 +722,17 @@ try {
         && Math.abs(vol - 372.25) < 0.5 && span.join() === '22,13,5' && !P.errors.length,
       [lm.slice(0, 80), d ? d.suggestedFilename() : 'no download', facets, vol.toFixed(2), span.join('x'), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
+  // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
+  { const P = await fresh();
+    await P.ask('release notes for v1.4.0 ⏎ a1b2c3d feat(api): add search (#41) ⏎ fix: crash on empty list ⏎ Merge pull request #42 from x/y', 900);
+    const md1 = await P.p.$eval('.vpage.on .rn-md', (e) => e.textContent).catch(() => '');
+    await P.p.fill('.vpage.on [data-l]', 'feat!: drop Node 16\nRemove the old export');
+    const md2 = await P.p.$eval('.vpage.on .rn-md', (e) => e.textContent).catch(() => '');
+    check('releasenotes: "release notes for v1.4.0" with pasted commits gives "## v1.4.0", Added (with the api scope and PR number) and Fixed, drops the merge; retyping the list re-sorts it (breaking first, then Removed)',
+      /^## v1\.4\.0 - \d{4}-\d{2}-\d{2}\n\n### Added\n- \*\*api:\*\* Add search \(#41\)\n\n### Fixed\n- Crash on empty list\n$/.test(md1)
+        && /### Breaking changes\n- Drop Node 16\n\n### Removed\n- Remove the old export\n$/.test(md2) && !P.errors.length,
+      [JSON.stringify(md1), JSON.stringify(md2), P.errors.join(';')].join(' | '));
+    await P.ctx.close(); }
   // an incident brief: fill the form, the durations and the Markdown follow; the draft survives a reload and "clear" empties it
   { const P = await fresh();
     await P.ask('incident report for the login outage', 900);

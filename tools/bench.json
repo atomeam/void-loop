@@ -5472,5 +5472,10 @@
   {"ask": "postmortem template", "want": "skill:incident", "says": "Incident brief"},
   {"ask": "write a postmortem for the checkout outage", "want": "skill:incident", "says": "Checkout outage"},
   {"ask": "post-incident review", "want": "skill:incident", "says": "Not known yet"},
-  {"ask": "incident brief: payments down", "want": "skill:incident", "says": "Payments down"}
+  {"ask": "incident brief: payments down", "want": "skill:incident", "says": "Payments down"},
+  {"ask": "write release notes for my repo", "want": "skill:releasenotes", "says": "Keep a Changelog"},
+  {"ask": "release notes for v1.4.0", "want": "skill:releasenotes", "says": "## v1\\.4\\.0"},
+  {"ask": "make a changelog", "want": "skill:releasenotes", "says": "Unreleased"},
+  {"ask": "draft release notes ⏎ feat: add search ⏎ fix: crash on save", "want": "skill:releasenotes", "says": "### Fixed"},
+  {"ask": "changelog from these commits ⏎ a1b2c3d Add dark mode ⏎ 9f8e7d6 Remove the old export", "want": "skill:releasenotes", "says": "### Removed"}
 ]
