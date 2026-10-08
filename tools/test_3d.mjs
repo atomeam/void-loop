@@ -305,17 +305,34 @@ export async function run3dChecks({ check, fresh }) {
         && /not a result/.test(counted) && !/wins/.test(counted) && !F.errors.length, JSON.stringify({ ready, g: g && { b: g.board.filter(Boolean).length, c: g.captured }, layout, counted, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- every flat game stands in 3D in the void (skills/lift3d.js): its 2D board hides, the card is separate, a 3D tap plays
+  {
+    const F = await fresh();
+    const lifted = {};
+    for (const [ask, kind] of [['play tic tac toe', 'tictactoe'], ['play othello', 'othello'], ['play mancala', 'mancala'], ['play aggravation', 'aggravation']]) {
+      await F.ask('close', 200); await F.ask(ask, 600);
+      const ready = await until(() => F.p.evaluate((k) => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === k); return l && l.ready && l.draws > 0; }, kind), 90000);
+      lifted[kind] = ready && await F.p.evaluate((k) => { const c = document.querySelector('.' + k + '-side'), b = document.querySelector('.free-board .' + k + '-view'); return !!c && !!b && c.closest('.side-card') === c; }, kind);
+      if (kind === 'tictactoe' && ready) { // tap the centre square on the carved board: X lands there and Void answers
+        const pt = await F.p.evaluate(() => { const k = window.__voidMini.keys().find((x) => x.startsWith('tictactoe:')); return window.__voidMini.project(k, [0, 0.026, 0]); });
+        await F.p.mouse.click(pt.x, pt.y);
+        lifted.played = await until(async () => { const t = (await F.state()).find((x) => x.kind === 'tictactoe'); return t && t.state.board[4] === 'X' && t.state.board.filter(Boolean).length === 2; }, 15000);
+      }
+    }
+    check('lift3d: tic-tac-toe, Othello, mancala and Aggravation each stand a 3D board in the void with their card separate; tapping the carved tic-tac-toe board\'s centre plays X there and Void answers',
+      lifted.tictactoe && lifted.othello && lifted.mancala && lifted.aggravation && !!lifted.played && !F.errors.length, JSON.stringify({ lifted, e: F.errors }));
+    await F.ctx.close();
+  }
   // ---- the game rack: "games" stands a 3D shelf of the seven board games in the void; picking one puts the rack away and opens it
   {
     const F = await fresh();
-    await F.ask('what games do you have', 600);
-    const hint = await F.whisper();
+    await F.ask('what games do you have', 600); // the hint line itself is checked in test_void.mjs ("the games hint names every game"), where no 3D frame holds the page
     const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'rack'); return l && l.ready && l.draws > 0 ? l : false; }), 90000);
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation) with the hint; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation' && /go · tic tac toe/.test(hint) && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, hint, opened, e: F.errors }));
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, tic-tac-toe, mancala, aggravation) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,tictactoe,mancala,aggravation' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
     await F.ctx.close();
   }
   {
