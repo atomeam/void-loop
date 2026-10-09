@@ -162,6 +162,15 @@ export async function run3dChecks({ check, fresh }) {
     check('gear explainer miniature: draws real pixels, its pair follows the data (16:32 -> 24:32), a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while paused, under reduced motion too, and unmounting frees it',
       ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
   }
+  // ---- the moon explainer (explainer.moon-phases) through the same contract: the Moon at 30°, then moved to 200°
+  {
+    const M = await import(pathToFileURL(path.join(root, 'skills', 'moon-phases-rules.js')).href);
+    const c = await miniContract(fresh, { kind: 'moon', a: { state: M.create({ orbitAngleDegrees: 30 }) }, b: { state: M.create({ orbitAngleDegrees: 200 }) }, settledWhen: 'dragging' });
+    const near = (x, y) => Math.abs(x - y) < 0.01;
+    const ok = (r) => r.drawn && r.colours > 40 && r.same && r.stateA && near(r.stateA.angle, 30) && near(r.stateB.angle, 200) && r.stateB.moon[2] > 0 && r.redrew && r.settled && r.idleDraws === 0 && r.freed;
+    check('moon explainer miniature: draws real pixels, the Moon follows the data (30° -> 200°, now on the far side), a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while paused, under reduced motion too, and unmounting frees it',
+      ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
+  }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
   {
     const F = await fresh();

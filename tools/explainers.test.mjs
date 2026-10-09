@@ -220,3 +220,24 @@ test('explainer.moon-phases/discovery-hides-readouts-keeps-observations-and-inpu
   assert.deepEqual(vd.inputs, vn.inputs); assert.ok(vd.controls.includes('reveal-rule'));
   assert.deepEqual(M.observations(d), M.observations(s));
 });
+
+// the moon card (skills/moon.js): its drawings come from the rules, so they cannot disagree with them
+test('moon card: the Earth-view drawing is exactly the region the rules call lit', async () => {
+  const { litPath } = await import('../void-live-deploy/skills/moon.js');
+  const inside = (pts, x, y) => { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const [xi, yi] = pts[i], [xj, yj] = pts[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; };
+  for (const a of [10, 45, 90, 135, 170, 190, 225, 270, 315, 350]) {
+    const s = moonAt(a), pts = litPath(s, undefined, 1, 400).slice(1, -1).split('L').map((p) => p.split(' ').map(Number));
+    let wrong = 0;
+    for (let x = -0.95; x <= 0.95; x += 0.1) for (let y = -0.85; y <= 0.85; y += 0.1) if (Math.abs(x - Math.cos(a * Math.PI / 180) * Math.sqrt(1 - y * y)) > 0.03 && Math.abs(x + Math.cos(a * Math.PI / 180) * Math.sqrt(1 - y * y)) > 0.03 && x * x + y * y < 0.97 && inside(pts, x, y) !== M.litInEarthView(s, x, y)) wrong++;
+    assert.equal(wrong, 0, 'drawing and rules disagree at ' + a + '°');
+  }
+});
+
+test('moon card: "Tonight" agrees with the moon-phase answer Void already gives', async () => {
+  const { tonightAngle } = await import('../void-live-deploy/skills/moon.js');
+  const { moonPhase } = await import('../void-live-deploy/skills/util.js');
+  for (const d of [new Date('2026-10-09T19:00:00Z'), new Date('2026-01-03T10:00:00Z'), new Date('2025-06-11T07:44:00Z')]) {
+    const m = moonPhase(d), a = tonightAngle(d.getTime() / 1000);
+    assert.equal(M.PHASES.find((x) => x.id === M.phaseName(moonAt(a))).label, m.name, d.toISOString());
+  }
+});
