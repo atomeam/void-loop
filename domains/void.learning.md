@@ -7,7 +7,7 @@ Everything here works offline: no accounts, no tracking, no outside model call.
 priority 1 alongside the gear miniature."
 
 **Blocked on:** the three explainer specs (gear pair, moon phases, lock cutaway) are not in this repo yet. Commit them
-here beside this file, with Adam's four edits applied (below), before building the explainers.
+here beside this file, with Adam's five edits applied (below), before building the explainers.
 
 ## Rules for every card here
 
@@ -56,8 +56,20 @@ items:
       prompt: "What fraction is illuminated?"
       answerLabel: "50%"
       tolerance: 0.001
-      options:               # text items only: stable ids + labels; the answer is one of the ids
+  - id: phaseName              # a text item: assessed only as a choice, from the source's own options
+    label: Phase
+    value: waxing-crescent
+    valueType: text
+    meaning: The phase as seen from Earth
+    displayValue: "Waxing crescent"
+    assessment:
+      enabled: true
+      prompt: "Which phase is this?"
+      answerLabel: "Waxing crescent"
+      options:                 # stable ids + labels; the answer is one of the ids
+        - { id: new-moon, label: "New moon" }
         - { id: waxing-crescent, label: "Waxing crescent" }
+        - { id: first-quarter, label: "First quarter" }
       answerId: waxing-crescent
 ```
 
