@@ -28,6 +28,8 @@ export const LIMITS = {
   memory: { rpm: 30, body: 262144 }, // owner-only: what Void remembers (tools/ouroboros.py push); 256 KB matches MAX_BODY in lib/memory-core.js
   review: { rpm: 60, body: 70000 }, // Void's code review API (lib/review-api.js): the instant checks free, the closer read with a Pro key
   reflect: { rpm: 30, body: 2000 }, // Void's voice: public GET of its reflections, owner POST asks it what it thinks (lib/voice.js)
+  automations: { rpm: 60, body: 2200000 }, // owner-only: Void's own automations; a pull-request rule carries up to 20 files of 100 KB
+  hook: { rpm: 60, body: 64000 }, // webhooks into an automation (functions/api/hook/[id].js); MAX_EVENT in lib/automations.js
 };
 export const DEFAULT_LIMIT = { rpm: 60, body: 16000 };
 export const FAIL_MAX = 10; // wrong keys (401/403) per connection per minute before every /api call from it is refused

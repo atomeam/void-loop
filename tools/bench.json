@@ -5522,5 +5522,11 @@
   {"ask": "mystery moon", "want": "skill:moon"},
   {"ask": "moon phases", "want": "skill:moon"},
   {"ask": "explain tonight's moon", "want": "skill:moon"},
-  {"ask": "moon phase tonight", "want": "skill:util"}
+  {"ask": "moon phase tonight", "want": "skill:util"},
+  {"ask": "my automations", "want": "skill:automations"},
+  {"ask": "show my automations", "want": "skill:automations"},
+  {"ask": "automations", "want": "skill:automations"},
+  {"ask": "new automation", "want": "skill:automations"},
+  {"ask": "create an automation", "want": "skill:automations"},
+  {"ask": "what automations do i have", "want": "skill:automations"}
 ]
