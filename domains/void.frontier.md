@@ -15,6 +15,7 @@ Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as 
      - **claim (suite split):** open.
    - **spec (miniature):** the gear-pair explainer, #17 below (`domains/void.explainers.md`): its required tests first, then the geometry; moon, lock, quiz and challenge follow it (#17).
    - **claim (miniature):** open.
+   - **tool (claude 2026-10-09, not the spec above):** `miniContract` in `tools/test_3d.mjs` runs any miniature through a behaviour contract (real pixels, `state()` follows the data, a remount keeps the live one, the change shows on the canvas, no idle redraws once settled, reduced motion lands the change at once, unmount frees it); the countdown's calendar passes it and is written up in `docs/miniatures.md`. The gear explainer can be run through it alongside its own `explainer.gear-pair/<case>` tests; it does not close this step.
 2. **A small execution record for actions:** owner, state, result, error. Every action Void takes (or stubs) writes one; nothing is "done" without its record.
 3. **One bounded business workflow:** a customer request becomes an editable proposal, shown on screen, proven with the owner's own details. The send step stays stubbed behind the confirm line.
 4. **One explicitly requested standing watch:** scheduling, persistence, evidence, notification. Only what the person asked to be watched.

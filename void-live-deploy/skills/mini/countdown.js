@@ -93,6 +93,7 @@ export default function build(ctx, data) {
 
   return {
     get days() { return days; },
+    state() { return { days, label, flipping: !!flip }; }, // what it shows, for the behaviour contract (tools/test_3d.mjs miniContract)
     update(d) {
       if (d.target !== undefined) target = d.target;
       const next = target != null && daysTo(target) != null ? daysTo(target) : (d.days ?? days);
