@@ -107,7 +107,7 @@ async function one({ ask: a, want, says, before }) {
   // "says": a pattern the visible answer must contain (the right ability AND the right value: "7 cubed" -> 343)
   let shown = '';
   // a card can finish drawing after the answer is logged: wait until the value shows (or 2.5 s), then read the page
-  if (routed && says) { await p.waitForFunction((re) => new RegExp(re, 'i').test(document.body.innerText), says, { timeout: 2500, polling: 100 }).catch(() => {});
+  if (routed && says) { await p.waitForFunction((re) => new RegExp(re, 'i').test(document.body.innerText), says, { timeout: 2500, polling: 100 }).catch(() => {}); // void-review: ok (says is a regex by design, written in bench.json, as valueOk below)
     shown = said + '\n' + await p.evaluate(() => { const i = document.getElementById('input'); return document.body.innerText.replace(i ? i.value : '', ''); }).catch(() => ''); }
   // a review card shows the pasted code back: take that echo out first, so "says" must be in the review itself, not in the code
   // (other cards may rightly repeat the ask: a note shows its text, a spelling answer shows the word)
