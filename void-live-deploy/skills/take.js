@@ -9,7 +9,8 @@
 
 // games Void plays, and the family each belongs to: an article about a cousin offers Void's own game
 const GAMES = [
-  { re: /\b(?:sorry!?(?: \(game\))?|ludo|parcheesi|pachisi|chaupar|trouble \(board game\)|frustration|mensch ärgere dich nicht|uckers|aggravation)\b/i, ask: 'play aggravation', label: (t) => /aggravation/i.test(t) ? 'Play Aggravation with Void' : 'Play Aggravation with Void (same family: race your marbles home, send others back)' },
+  { re: /^sorry!?(?: \(game\))?$/i, ask: 'play sorry', label: () => 'Play Sorry! with Void' },
+  { re: /\b(?:ludo|parcheesi|pachisi|chaupar|trouble \(board game\)|frustration|mensch ärgere dich nicht|uckers|aggravation)\b/i, ask: 'play aggravation', label: (t) => /aggravation/i.test(t) ? 'Play Aggravation with Void' : 'Play Aggravation with Void (same family: race your marbles home, send others back)' },
   { re: /\bchess\b/i, ask: 'play chess', label: () => 'Play chess with Void' },
   { re: /\b(?:checkers|draughts)\b/i, ask: 'play checkers', label: () => 'Play checkers with Void' },
   { re: /\bgo \(game\)|\bweiqi\b|\bbaduk\b/i, ask: 'play go', label: () => 'Play Go with Void' },
