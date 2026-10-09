@@ -40,7 +40,7 @@ function svgEl(tag, attrs, parent) { const e = document.createElementNS(NS, tag)
 const key = (p) => JSON.stringify(p);
 
 function boardSvg() {
-  const s = svgEl('svg', { viewBox: '-200 -200 400 400', class: 'so-board', role: 'img', 'aria-label': 'Sorry! board' });
+  const s = svgEl('svg', { viewBox: '-200 -200 400 400', class: 'so-board', role: 'img', 'aria-label': 'Back to Start board' });
   const defs = svgEl('defs', {}, s);
   defs.innerHTML = '<linearGradient id="soBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4ede0"/><stop offset="1" stop-color="#e3d6bf"/></linearGradient>'
     + '<filter id="soShadow" x="-50%" y="-50%" width="200%" height="200%"><feDropShadow dx="0" dy="1.4" stdDeviation="1.2" flood-color="#000" flood-opacity=".5"/></filter>'
@@ -65,14 +65,17 @@ function boardSvg() {
     const [sx, sy] = startCentre(c); svgEl('circle', { cx: r1(sx), cy: r1(sy), r: 19, fill: '#fff', stroke: HEX[col], 'stroke-width': 3 }, s);
     svgEl('text', { x: r1(sx), y: r1(sy - 21.5), 'text-anchor': 'middle', 'font-size': 7, 'font-weight': 700, fill: HEX[col], 'font-family': 'system-ui, sans-serif' }, s).textContent = 'START';
   });
-  // the middle: the name, in the style of the box
-  svgEl('text', { x: 0, y: 10, 'text-anchor': 'middle', 'font-size': 34, 'font-weight': 800, fill: '#c8202c', 'font-family': 'Georgia, serif', 'font-style': 'italic', transform: 'rotate(-28)' }, s).textContent = 'Sorry!';
+  // the middle: Void's own name for it, set across the board like a vintage box lid (Void brand, not the original's logo)
+  const lid = svgEl('g', { transform: 'rotate(-28)' }, s);
+  svgEl('text', { x: 0, y: -4, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, 'letter-spacing': 3, fill: '#1d2a52', 'font-family': 'Georgia, serif' }, lid).textContent = 'BACK TO';
+  svgEl('text', { x: 0, y: 26, 'text-anchor': 'middle', 'font-size': 32, 'font-weight': 800, 'letter-spacing': 2, fill: '#c8202c', 'font-family': 'Georgia, serif' }, lid).textContent = 'START';
+  svgEl('text', { x: 0, y: 42, 'text-anchor': 'middle', 'font-size': 7, 'letter-spacing': 2, fill: '#1d2a52', opacity: '.7', 'font-family': 'system-ui, sans-serif' }, lid).textContent = 'A VOID GAME';
   svgEl('g', { class: 'so-targets' }, s);
   svgEl('g', { class: 'so-pawns' }, s);
   return s;
 }
 
-const CARD_TEXT = { 1: 'Leave Start, or move 1', 2: 'Leave Start, or move 2 · draw again', 3: 'Move 3', 4: 'Move back 4', 5: 'Move 5', 7: 'Move 7, or split it between two pawns', 8: 'Move 8', 10: 'Move 10, or back 1', 11: 'Move 11, or swap with a rival', 12: 'Move 12', sorry: 'Sorry! From Start, take a rival’s square' };
+const CARD_TEXT = { 1: 'Leave Start, or move 1', 2: 'Leave Start, or move 2 · draw again', 3: 'Move 3', 4: 'Move back 4', 5: 'Move 5', 7: 'Move 7, or split it between two pawns', 8: 'Move 8', 10: 'Move 10, or back 1', 11: 'Move 11, or swap with a rival', 12: 'Move 12', sorry: 'Bump! From Start, take a rival’s square' };
 const timers = new WeakMap(), painters = new WeakMap();
 // the draw pile looks like the box's own deck: a red back with the logo face down, a cream face that flips over when you
 // draw, and Draw glowing while it is the move to make (Adam: "capture the nostalgia of the physical board")
@@ -94,7 +97,7 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card game-card sorry-card';
   el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(452px, calc(100vw - 20px))';
-  el.innerHTML = '<div class="g-head"><span class="g-title">Sorry!</span><span class="g-sub"></span></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title">Back to Start</span><span class="g-sub"></span></div>';
   const sub = el.querySelector('.g-sub');
   const board = boardSvg();
   const wrap = document.createElement('div'); wrap.className = 'g-board so-wrap'; wrap.appendChild(board);
@@ -110,7 +113,7 @@ function mount(th, stageApi) {
   const again = document.createElement('button'); again.type = 'button'; again.className = 'g-btn'; again.textContent = 'New game';
   foot.append(opp, again);
   const rules = document.createElement('div'); rules.className = 'g-rules';
-  rules.textContent = 'Draw a card and move. Only a 1 or 2 leaves Start; a 2 draws again. 4 goes back, 10 goes 10 or back 1, 7 can be split between two pawns, 11 can swap with a rival, and Sorry! sends a rival home from your Start. Land on someone and they go back to Start. Stop on another colour’s triangle and you slide, sweeping everyone off it. Exact count Home.';
+  rules.textContent = 'Draw a card and move. Only a 1 or 2 leaves Start; a 2 draws again. 4 goes back, 10 goes 10 or back 1, 7 can be split between two pawns, 11 can swap with a rival, and Bump! sends a rival home from your Start. Land on someone and they go back to Start. Stop on another colour’s triangle and you slide, sweeping everyone off it. Exact count Home.';
   el.append(wrap, bar, foot, rules);
   for (const b of el.querySelectorAll('button')) b.addEventListener('pointerdown', (e) => e.stopPropagation());
   wrap.addEventListener('pointerdown', (e) => { if (e.target.closest('[data-pick], [data-to]')) e.stopPropagation(); });
@@ -145,12 +148,12 @@ function mount(th, stageApi) {
     const show = picked != null ? moves.filter((mv) => mv.pawn === picked) : [];
     show.forEach((mv, i) => { const [x, y] = mv.to === 'H' ? pawnXY(s.human, mv.pawn, 'H') : squareXY(mv.to, s.human); const t = svgEl('circle', { cx: r1(x), cy: r1(y), r: 9.5, class: 'ag-target', 'data-to': String(i) }, tg); t.setAttribute('role', 'button'); t.setAttribute('aria-label', (mv.kind === 'split' ? 'split: ' + mv.split + ' here' : mv.kind) + ' to ' + key(mv.to)); });
     // face down (the deck's back) until a card is drawn; a newly drawn card flips over
-    const face = s.card == null ? '' : s.card === 'sorry' ? 'Sorry!' : String(s.card);
+    const face = s.card == null ? '' : s.card === 'sorry' ? 'Bump!' : String(s.card);
     if (face !== card.dataset.face) {
       card.dataset.face = face;
-      card.textContent = face || 'Sorry!';
+      card.textContent = face || 'VOID';
       card.classList.toggle('back', !face);
-      card.style.fontSize = face === 'Sorry!' ? '13px' : '';
+      card.style.fontSize = face === 'Bump!' || !face ? '13px' : '';
       if (face && !reduced()) { card.classList.remove('flip'); void card.offsetWidth; card.classList.add('flip'); }
       if (face) flip();
     }
@@ -165,10 +168,10 @@ function mount(th, stageApi) {
     if (s.winner != null) line = s.winner === s.human ? 'You win! All four home.' : COLORS[s.winner] + ' wins this one.';
     else if (humanTurn()) {
       const bumpedMe = s.last && s.last.bumped && s.last.bumped.includes(s.human) && s.last.color !== s.human;
-      line = s.card == null ? (bumpedMe ? 'Sorry! ' + COLORS[s.last.color] + ' sent you back · ' : '') + 'Your draw'
+      line = s.card == null ? (bumpedMe ? 'Bumped! ' + COLORS[s.last.color] + ' sent you back · ' : '') + 'Your draw'
         : s.split ? 'Now move another pawn ' + s.split.rest
         : moves.length ? CARD_TEXT[s.card] + (picked != null ? ' · pick a glowing square' : ' · pick a pawn') : CARD_TEXT[s.card] + ' · no move, the card is lost';
-    } else line = who(s.turn)[0].toUpperCase() + who(s.turn).slice(1) + (s.card != null ? ' drew ' + (s.card === 'sorry' ? 'Sorry!' : s.card) : ' is drawing…');
+    } else line = who(s.turn)[0].toUpperCase() + who(s.turn).slice(1) + (s.card != null ? ' drew ' + (s.card === 'sorry' ? 'Bump!' : s.card) : ' is drawing…');
     status.appendChild(document.createTextNode(line));
   }
   painters.set(th, paint);
@@ -204,7 +207,7 @@ function mount(th, stageApi) {
   stageApi.stage.appendChild(el);
   // in 3D: the same wooden board as Aggravation (skills/mini/aggravation.js) with this board on top and pawns standing on it
   let still = null;
-  lift3d(th, stageApi, el, { kind: 'aggravation', board, title: 'Sorry!', W: 460, H: 400, label: '3D Sorry! board: tap a pawn to play; drag to look around', snapshot: () => {
+  lift3d(th, stageApi, el, { kind: 'aggravation', board, title: 'Back to Start', W: 460, H: 400, label: '3D Back to Start board: tap a pawn to play; drag to look around', snapshot: () => {
     if (!still) {
       const copy = board.cloneNode(true);
       for (const n of copy.querySelectorAll('.so-pawns > *, .so-targets > *')) n.remove();
@@ -225,7 +228,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'sorry');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'sorry'; }
   api.summon('sorry', { state: createState(), center: true });
-  api.say('Sorry! · you are red · draw a 1 or 2 to leave Start');
+  api.say('Back to Start (plays like Sorry!) · you are red · draw a 1 or 2 to leave Start');
   return 'sorry';
 }
 
