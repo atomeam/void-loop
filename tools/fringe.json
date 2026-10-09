@@ -1583,5 +1583,30 @@
     ],
     "sha256": "3772dae19e8a907aaacc6ff93aed343cf0fa81a47976ef0c6456cf14843a4841",
     "emit": false
+  },
+  {
+    "run": 64,
+    "at": "2026-10-09T19:44:24Z",
+    "family": "anomalous-event-timeline",
+    "draft": "drafts/fringe/anomalous-event-timeline-4.html",
+    "sources": [
+      {
+        "claim": "In a self-exciting point process each event raises the chance of more soon after, so events cluster beyond what independent random arrivals give",
+        "source": "https://doi.org/10.1093/biomet/58.1.83",
+        "confidence": "claim"
+      },
+      {
+        "claim": "For events arriving independently at random, daily counts have variance about equal to their mean (index of dispersion near 1), testable with a chi-square statistic",
+        "source": "https://en.wikipedia.org/wiki/Index_of_dispersion",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own log of odd moments bunches more than chance, as attention after one makes the next more noticeable, measured on this page",
+        "source": "drafts/fringe/anomalous-event-timeline-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "865d5201758252cc6fdb6d8228998d3da9ca85df1886036118d90871f51bcb2a",
+    "emit": false
   }
 ]

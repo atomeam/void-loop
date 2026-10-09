@@ -23,7 +23,28 @@ const base = 'http://127.0.0.1:' + server.address().port + '/';
 const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const results = [];
-const check = (name, ok, got) => { results.push({ name, ok: !!ok, got }); };
+// A hang fails loudly (owner, 2026-10-09, frontier build order step 1, suite split (4)): a per-check timeout and a
+// whole-suite budget. Either one ends the run red within seconds of being passed, prints every result so far, and names
+// the last page opened and the last ask typed, so a stuck page is found in minutes instead of when the job is killed.
+// VOID_CHECK_TIMEOUT_MS (default 5 min) is the longest stretch with no check finishing; VOID_SUITE_BUDGET_MS (default
+// 28 min, plus the bench's 10 when it runs inside the suite) the whole run. The FAIL names stay the same from run to run,
+// so verify-main's revert can tell a hang that is already red from a new one (tools/revert-target.mjs).
+const STALL_MS = Number(process.env.VOID_CHECK_TIMEOUT_MS) || 300000;
+const BUDGET_MS = Number(process.env.VOID_SUITE_BUDGET_MS) || (process.env.VOID_SKIP_BENCH ? 28 : 38) * 60000;
+const watch = { t0: Date.now(), lastAt: Date.now(), lastCheck: '(none yet)', page: '(none yet)', ask: '', gaps: [] };
+const check = (name, ok, got) => { const now = Date.now(); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); };
+function stopLoudly(why) {
+  for (const r of results) console.log((r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
+  console.log('FAIL ' + why + '  -> last page opened: ' + watch.page + (watch.ask ? '; last ask: ' + JSON.stringify(watch.ask) : '') + '; last check finished: ' + watch.lastCheck + '; ' + Math.round((Date.now() - watch.t0) / 1000) + ' s in');
+  console.log(`${results.filter((r) => r.ok).length}/${results.length + 1} passed`);
+  process.exit(1);
+}
+const watchdog = setInterval(() => {
+  const now = Date.now();
+  if (now - watch.t0 > BUDGET_MS) stopLoudly('suite budget: the whole suite ran past ' + Math.round(BUDGET_MS / 1000) + ' s');
+  else if (now - watch.lastAt > STALL_MS) stopLoudly('check timeout: no check finished within ' + Math.round(STALL_MS / 1000) + ' s');
+}, 5000);
+watchdog.unref();
 // Poll instead of guessing a delay: the shared box is often busy, fixed sleeps flake.
 const until = async (fn, ms = 4000) => { const end = Date.now() + ms; for (;;) { try { const v = await fn(); if (v) return v; } catch (_) {} if (Date.now() > end) return false; await new Promise((r) => setTimeout(r, 150)); } };
 // Voice stubs: a fake SpeechRecognition that "hears" window.__said, and speechSynthesis that records what it would say.
@@ -382,8 +403,9 @@ async function fresh(...inits) {
   const p = await ctx.newPage();
   const errors = [];
   p.on('pageerror', (e) => errors.push(e.message));
+  p.on('framenavigated', (f) => { if (f === p.mainFrame()) { watch.page = f.url(); watch.ask = ''; } });
   await p.goto(at); await p.waitForTimeout(700);
-  const ask = async (t, w = 450) => { await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w); };
+  const ask = async (t, w = 450) => { watch.ask = t; await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w); };
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
   const page = () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
   const whisper = () => p.$eval('#whisper', (e) => e.textContent);
@@ -3125,7 +3147,10 @@ try {
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));
 }
+clearInterval(watchdog);
 await browser.close(); server.close();
+// the slowest stretches between checks: where making the suite faster (suite split (3)) pays most
+for (const [ms, name] of watch.gaps.slice().sort((a, b) => b[0] - a[0]).slice(0, 5)) console.log('slow ' + Math.round(ms / 1000) + ' s before: ' + name.slice(0, 100));
 const bad = results.filter((r) => !r.ok);
 for (const r of results) console.log((r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
 console.log(`${results.length - bad.length}/${results.length} passed`);
