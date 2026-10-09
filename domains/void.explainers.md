@@ -53,9 +53,10 @@ Common rules:
     their accessible equivalents;
   - kept: input controls and their values, the motion and markers, instructions, units, schematic and safety notes, and
     an always-available "Reveal the rule".
-- **Every explainer's observations include its input parameters**, as non-assessed items, so a captured trial can be
-  reproduced: gear `driverTeeth`, `drivenTeeth`; moon `orbitAngleDegrees`; lock `keyPreset`, `insertionFraction`,
-  `plugAngleDegrees`. A future explainer lists its inputs the same way.
+- **Every explainer's observations include the inputs that set its measured results**, as non-assessed items, so a
+  captured trial can be reproduced: gear `driverTeeth`, `drivenTeeth`; moon `orbitAngleDegrees`; lock `keyPreset`,
+  `insertionFraction`, `plugAngleDegrees`. Display and playback inputs that change no result (`driverAngle`,
+  `driverSpeed`, `cycleDuration`) are not required. A future explainer lists its result-setting inputs the same way.
 - Required per explainer: `explainer.<kind>/discovery-hides-readouts-keeps-observations-and-inputs`.
 
 ---
