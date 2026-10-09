@@ -2402,6 +2402,38 @@ try {
       !!card && card.hasCopy && /^(copied|select and copy)$/.test(copied) && st && st.days === wantDays && card.text.includes(cdFull.daysLine(wantDays)) && !!survived && Q.errors.length === 0,
       JSON.stringify({ card, st, wantDays, copied, errs: Q.errors }));
     await Q.ctx.close(); }
+  // a press on a button in a card is a click when the pointer is let go where it went down, even if the card slid the
+  // button out from under it (cards tilt toward the pointer and ease into it); dragging away still cancels, the keyboard
+  // still clicks once, and a click that lands on the button is never doubled. The card is moved directly, not by timing.
+  { const Z = await fresh();
+    const probe = (h, pos) => Z.p.evaluate(([h, pos]) => { document.querySelector('#press-probe')?.remove(); const c = document.createElement('div'); c.id = 'press-probe'; c.className = 'thing kept-card game-card';
+      c.style.cssText = 'left:420px;top:20px;width:440px;height:' + h + 'px;display:flex;flex-direction:column;justify-content:' + pos + ';padding:12px;transition:none';
+      const b = document.createElement('button'); b.className = 'g-btn g-primary'; b.id = 'press-probe-btn'; b.textContent = 'press'; window.__pressHits = 0; window.__cardClicks = 0;
+      b.addEventListener('click', () => window.__pressHits++); b.addEventListener('pointerdown', (e) => e.stopPropagation()); c.addEventListener('click', (e) => { if (e.target === c) window.__cardClicks++; });
+      c.append(b); document.getElementById('stage').append(c); const r = b.getBoundingClientRect(); return [r.x, r.y, r.width, r.height]; }, [h, pos]);
+    const hits = () => Z.p.evaluate(() => [window.__pressHits, window.__cardClicks]);
+    let wrong = [], n = 0;
+    for (const h of [300, 480]) for (const pos of ['flex-end', 'center']) for (const tilt of [[0, 0], [6, -5]]) {
+      const r = await probe(h, pos);
+      for (const fx of [0.2, 0.5, 0.8]) {
+        await Z.p.evaluate(() => { const c = document.getElementById('press-probe'); c.style.left = '420px'; c.style.removeProperty('--rx'); c.style.removeProperty('--ry'); });
+        await Z.p.mouse.move(r[0] + r[2] * fx, r[1] + r[3] / 2); await Z.p.mouse.down();
+        await Z.p.evaluate(([rx, ry]) => { const c = document.getElementById('press-probe'); c.style.setProperty('--rx', rx + 'deg'); c.style.setProperty('--ry', ry + 'deg'); c.style.left = '720px'; }, tilt); // the card slides away
+        await Z.p.mouse.up(); n++;
+      }
+      const [b, c] = await hits(); if (b !== 3 || c !== 0) wrong.push(h + ' ' + pos + ' ' + tilt + ': ' + b + ' clicks, ' + c + ' on the card');
+    }
+    let r = await probe(300, 'center'); // a still card: one click each, never two
+    for (const fx of [0.2, 0.5, 0.8]) { await Z.p.mouse.move(r[0] + r[2] * fx, r[1] + r[3] / 2); await Z.p.mouse.down(); await Z.p.mouse.up(); }
+    const still = await hits();
+    r = await probe(300, 'center'); // dragging away from the button cancels it
+    await Z.p.mouse.move(r[0] + r[2] / 2, r[1] + r[3] / 2); await Z.p.mouse.down(); await Z.p.mouse.move(r[0] + r[2] / 2 + 60, r[1] + r[3] / 2 + 60, { steps: 4 }); await Z.p.mouse.up();
+    const dragged = await hits();
+    await Z.p.focus('#press-probe-btn'); await Z.p.keyboard.press('Enter'); // the keyboard still clicks once
+    const keyed = await hits();
+    check('cards: a press on a button in a card is a click even when the card slides it away, never doubled; dragging away cancels; the keyboard clicks once',
+      !wrong.length && n === 24 && still[0] === 3 && dragged[0] === 0 && keyed[0] === 1, JSON.stringify({ wrong, n, still, dragged, keyed }));
+    await Z.ctx.close(); }
 
   // othello: real rules (4 starting discs, a move must flip, 8 directions), and Void answers your move on the card
   { const oth = await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
