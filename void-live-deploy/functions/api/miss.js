@@ -2,8 +2,11 @@
 // Stores only the words typed (normalized, max 200 chars), counts, first/last time, and which fallback ran.
 // No IPs, cookies or user agents are stored. The connection is hashed only for a 60s rate-limit window.
 // Storage: D1 (void_misses). Older rows still in KV are merged in by /api/misses until they expire.
+// Void learns from it by itself (lib/learn.js): the second miss of the same ask, or one Void says is not built yet,
+// becomes a `miss:<slug>` job in the build queue at once, so the builders see it without anyone in between.
 import { redact } from '../../lib/automation-fix.js';
 import { isNoise } from '../../lib/noise.js';
+import { learnFromMiss } from '../../lib/learn.js';
 const MAX_LEN = 200;
 const RL_MAX = 20; // writes per connection per minute
 
@@ -15,7 +18,7 @@ function norm(t) {
   return String(t || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().toLowerCase().slice(0, MAX_LEN);
 }
 
-export async function onRequestPost({ request: req, env }) {
+export async function onRequestPost({ request: req, env, waitUntil }) {
   let body = {};
   try { body = JSON.parse((await req.text()).slice(0, 1000)); } catch (_) { return new Response('bad', { status: 400 }); }
   const ask = redact(norm(body.ask)); // a key typed into Void never lands on the miss list
@@ -41,5 +44,7 @@ export async function onRequestPost({ request: req, env }) {
       ON CONFLICT(id) DO UPDATE SET count = count + 1, last = excluded.last, fallback = COALESCE(NULLIF(excluded.fallback, ''), fallback)`)
       .bind(id, ask, now, now, fallback).run();
   } catch (_) { return new Response('miss list unavailable', { status: 503 }); }
+  // after the answer is sent: does this miss earn a job? (a queue hiccup never fails the miss itself)
+  waitUntil(env.DB.prepare('SELECT ask, count, last, fallback FROM void_misses WHERE id = ?').bind(id).first().then((row) => row && learnFromMiss(env, row)).catch(() => {}));
   return new Response(null, { status: 204 });
 }
