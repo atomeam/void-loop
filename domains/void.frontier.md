@@ -163,16 +163,23 @@ Each item is something no other site does, built on what Void already has. Work 
 - **claim:** (later: after #17)
 
 ## 20. "Explain it with sound": hear the ratio
-- **What:** an optional sound for an explainer, starting with the gear pair: a soft click each time a gear's revolution marker crosses its reference, so a visitor hears the driven gear click half as often as a 16-tooth driver turning a 32-tooth gear. Accepted by Adam, 2026-10-09, as a later item after #19, not a dependency of the gear explainer.
-- **Why it holds together:** the clicks come from marker crossings in the explainer's authoritative state, never from a timer of their own, so the sound cannot drift from what the scene shows.
-- **Contract:** every explainer that offers it takes `sound` (text, `off | on`, default `off`, `live`), presentation-only like `presentation`: it changes only what the explainer plays, never its state, controls, `observations` or `explanation`. No new output port: the ratio a visitor hears is the one already in `drivenTurnsPerDriverTurn`. Sounds are made on the spot with Web Audio (`skills/sfx.js`), no files.
-- **Does it help?** Asked by explicit feedback on the card once it is live, never by tracking.
+- **What (the ideation agent's proposal):** each gear has one visible revolution marker and one fixed reference point; when its marker crosses that point, the gear makes a distinct, soft synthesized click. A 16-tooth driver turning a 32-tooth gear gives two driver clicks for each driven click during continuous rotation, and changing tooth counts changes the rhythm. A visitor can ask "make the second gear click half as often". Another way to explore the same relationship, not a separate sound-driven mechanism. Accepted by Adam, 2026-10-09, as a later item after #19, not a dependency of the gear explainer.
+- **Boundaries:**
+  - Off by default; starts only on an explicit visitor action. Mute and volume controls; gentle, distinguishable sounds for the two gears.
+  - Clicks are revolution-marker crossings, never tooth contacts, derived from authoritative motion, never a playback timer of their own, so the sound cannot drift from the scene.
+  - Below the sound-rate limit, one audible click per crossing. Rapid manual dragging still detects every crossing, but excess clicks may be dropped, never queued for later.
+  - Pausing autoplay stops autoplay clicks; deliberate manual movement can still click.
+  - Turning sound on takes the current marker positions as the start: crossings made while sound was off are never replayed.
+  - No microphone, recording, account or tracking. Everything the sound conveys stays available visually and in text.
+- **Contract:** every explainer that offers it takes `sound` (text, `off | on`, default `off`, `live`), presentation-only like `presentation`: it changes only what the explainer plays, never its state, controls, `observations` or `explanation`. No new output port: the ratio a visitor hears is the one already in `drivenTurnsPerDriverTurn`. Sounds are made on the spot with Web Audio (`skills/sfx.js`), no files. Not part of #17: `void.explainers.md` does not list `sound`.
+- **The design question:** does hearing the rhythm help a visitor notice the ratio (not: does it sound pleasant)? Asked by explicit feedback on the card once it is live, never inferred from tracking.
 - **Required tests (gear first, then per explainer that offers sound):**
   ```text
   explainer.gear-pair/sound-off-by-default-explicit-start
-  explainer.gear-pair/sound-pause-stops-clicks
-  explainer.gear-pair/sound-drag-rate-limited
-  explainer.gear-pair/sound-clicks-per-revolution-equal-marker-crossings
+  explainer.gear-pair/sound-pause-stops-autoplay-clicks
+  explainer.gear-pair/sound-drag-rate-limited-no-backlog
+  explainer.gear-pair/sound-clicks-match-crossings-below-rate-limit
+  explainer.gear-pair/sound-enable-does-not-replay-past-crossings
   ```
 - **First piece:** the gear pair. Build order unchanged.
 - **claim:** (later: after #19)

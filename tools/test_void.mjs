@@ -2428,7 +2428,7 @@ try {
     check('polish: boards arrive centred and clear of the ask bar (desktop + phone); long pages stop above it; Aggravation is a 56-hole star board with bases, homes, shortcut corners and a centre, rule engine passes, roll locks while a move is pending; "play 3d tic tac toe" gets the board, no answer page; the games hint names every game; no stray "done"',
       unit.ok && fair(aDesk) && fair(tDesk) && fair(oPhone) && !!selfDesk && selfDesk.bottom <= selfDesk.rowTop - 4 && !!selfPhone && selfPhone.bottom <= selfPhone.rowTop - 4
         && holes === 56 + 1 + 4 * 4 + 4 * 4 && marbles === 16 && rollOn && (!pending || lockedAfter)
-        && ttt && !tttPage && ['tic tac toe', 'othello', 'connect 4', 'mancala', 'aggravation'].every((g) => hint.includes(g)) && leftover !== 'done' && Q.errors.length === 0,
+        && ttt && !tttPage && ['tic tac toe', 'reversi', 'four in a row', 'mancala', 'star marbles', 'back to start'].every((g) => hint.includes(g)) && leftover !== 'done' && Q.errors.length === 0,
       JSON.stringify({ unit: unit.got, aDesk, tDesk, oPhone, selfDesk, selfPhone, holes, marbles, rollOn, pending, lockedAfter, hint, ttt, tttPage: tttPage.slice(0, 60), leftover, errs: Q.errors }).slice(0, 900));
     await Q.ctx.close(); }
 
