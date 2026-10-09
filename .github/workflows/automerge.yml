@@ -1,6 +1,6 @@
 # GitHub merges ready PRs by itself, so no session sits and watches CI (tools/automerge.mjs, tools/pr-ready.mjs).
 # Only PRs labelled "automerge" from this repository (never forks). Ready = the void-review check clean on the head (seconds),
-# nothing that already finished failed, no CodeRabbit finding open. Nothing else is waited on: the full suite runs on main
+# nothing that already finished failed. CodeRabbit is an extra and never blocks. Nothing else is waited on: the full suite runs on main
 # right after the deploy and reverts a commit that fails it (deploy.yml, verify-main). It looks again whenever anything that could change the answer happens, and once an hour.
 name: Void automerge
 

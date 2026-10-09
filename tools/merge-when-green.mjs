@@ -1,8 +1,8 @@
 // Merge a PR once it is ready (tools/pr-ready.mjs: Void's review check found no bugs or risks on its current head, nothing
-// that finished failed, no CodeRabbit finding open; the suite runs on main after the deploy). Most PRs no longer need this: label them "automerge" (or run
+// that finished failed; the suite runs on main after the deploy; CodeRabbit is an extra and never blocks). Most PRs no longer need this: label them "automerge" (or run
 // `node tools/automerge.mjs <pr> --label`) and .github/workflows/automerge.yml merges them on GitHub, with no session waiting.
 // This is the same check polled from a session, for when you want to see the merge happen. If the head moves (a new push),
-// it follows the new head; a failed check or CodeRabbit finding stops it (exit 1 / exit 3); if the PR closes it stops.
+// it follows the new head; a failed check or Void's review stops it (exit 1); if the PR closes it stops.
 // CodeRabbit is never waited on or re-asked when rate-limited. Uses the gh available in the session.
 //   node tools/merge-when-green.mjs 85            poll every 30 s, up to 40 min
 import { execFileSync } from 'node:child_process';
@@ -23,7 +23,7 @@ while (Date.now() < end) {
   if (r.state === 'stop') {
     // a push may not have reached the PR yet: if the head moved since, look again instead of stopping on the old head
     if (r.sha && gh(`repos/${repo}/pulls/${pr}`).head.sha !== r.sha) { await wait(10e3); continue; }
-    console.log(`#${pr} ${r.why}`); process.exit(/CodeRabbit/.test(r.why) ? 3 : 1);
+    console.log(`#${pr} ${r.why}`); process.exit(1);
   }
   if (r.state === 'merge') {
     if (r.draft) execFileSync('gh', ['api', '-X', 'POST', `repos/${repo}/pulls/${pr}/ccr/ready_for_review`], { encoding: 'utf8' });
