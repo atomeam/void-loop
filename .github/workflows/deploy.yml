@@ -168,7 +168,13 @@ jobs:
             head -c 300 live.tmp; echo; return 1
           }
           ok=0
-          check / void.html || ok=1
+          # the page itself: the zone's edge adds a few hundred bytes to HTML on the domain only (run 37977126734: 938
+          # bytes more than void.html, while the skill files matched exactly), so the page is checked for being Void and
+          # the difference is printed; the byte-exact files below are what prove this deploy is the one being served
+          code=$(curl -s -L -o live.tmp -w '%{http_code}' "https://a-to-mind.com/?v=$SHA") || code=000
+          if [ "$code" = "200" ] && grep -q '<title>Void · A-to-Mind</title>' live.tmp; then
+            cmp -s live.tmp void.html && echo "a-to-mind.com/ matches void.html" || { echo "::notice::a-to-mind.com/ is Void but $(( $(wc -c < live.tmp) - $(wc -c < void.html) )) bytes differ from void.html (added at the edge):"; diff void.html live.tmp | head -c 1500; echo; }
+          else echo "::error::a-to-mind.com/ HTTP $code is not Void"; head -c 300 live.tmp; echo; ok=1; fi
           check /skills/index.json void-live-deploy/skills/index.json || ok=1
           check /skills/sorry.js void-live-deploy/skills/sorry.js || ok=1
           [ "$ok" = 0 ] && echo "### a-to-mind.com serves $SHA" >> "$GITHUB_STEP_SUMMARY"
