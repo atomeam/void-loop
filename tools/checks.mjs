@@ -34,7 +34,7 @@ for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.m
 { const r = run([resolve(here, 'bench.mjs'), '--score']); let b = null; try { b = JSON.parse(r.out[r.out.length - 1]); } catch (_) {}
   const best = JSON.parse(readFileSync(resolve(here, 'bench.best.json'), 'utf8'));
   const ok = !!b && b.score >= best.score && b.total >= best.total;
-  results.push(['bench', ok, b ? `${b.score}/${b.total} (floor ${best.score})${b.wrong.length ? ' wrong: ' + b.wrong.join(' | ') : ''}` : r.out.slice(-2).join(' ')]); }
+  results.push(['bench', ok, b ? `${b.score}/${b.total} (floor ${best.score})${b.cached ? ' (nothing it reads changed since the passing run at ' + b.cached + '; not replayed: --fresh forces it)' : ''}${b.wrong.length ? ' wrong: ' + b.wrong.join(' | ') : ''}` : r.out.slice(-2).join(' ')]); }
 { // the board reader must drop anything key-like before it prints (tools/misses.mjs)
   const { redact } = await import('./misses.mjs');
   const cases = [['unlock abcdEFGH12345678zz', null], ['my key is Zx9kQ2mP7vR4tY8wL3nB', null], ['mail sam@example.com', 'mail [email]'],
