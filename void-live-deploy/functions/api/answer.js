@@ -16,6 +16,7 @@ import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/co
 import { DEFAULT_MODEL, PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { isSelfAsk, readSelf, selfFacts, SELF_RULE } from '../../lib/self-context.js';
+import { prepareDraft, draftPrompt, ruleDraft, DRAFT_SYSTEM, DRAFT_MAX } from '../../lib/draft.js';
 const MODEL = DEFAULT_MODEL;
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -132,6 +133,29 @@ async function takeAnswer(request, env, body) {
   } catch (e) { await recordShortfall(env, 'take', reasonOf(e)); return Response.json({ take: null, note: 'model busy' }); }
 }
 
+// Draft from a tab (the Void extension, lib/draft.js): the side panel's one click hands the page the tab's title, address and
+// selected text; the page asks here. Masked before the model sees it, never cached, never written to D1 (page text is the
+// visitor's). No model, or a model that fails: the rules draft, so the panel always gets something it can use.
+async function draftAnswer(request, env, body) {
+  const p = prepareDraft(body, redact);
+  if (p.error) return Response.json({ draft: null, note: p.error }, { status: p.status });
+  if (await rateLimited(request, env)) return Response.json({ draft: null, note: 'slow down' }, { status: 429 });
+  const base = { intent: p.intent, from: { title: p.title, host: p.host }, masked: p.masked, cut: p.cut, at: new Date().toISOString() };
+  const on = modelsOn(env);
+  if (on) {
+    try {
+      const r = await env.AI.run(MODEL, {
+        messages: [{ role: 'system', content: DRAFT_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: draftPrompt(p) }],
+        max_tokens: 900, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
+      });
+      const draft = redact(noThink(pick(r))).trim().slice(0, DRAFT_MAX);
+      if (draft) return Response.json({ ...base, draft, model: 'gemma' });
+      await recordShortfall(env, 'draft', 'empty');
+    } catch (e) { await recordShortfall(env, 'draft', reasonOf(e)); }
+  }
+  return Response.json({ ...base, draft: ruleDraft(p), model: 'rules', note: on ? 'model busy, drafted by rule' : 'no model, drafted by rule' });
+}
+
 export async function onRequestPost({ request, env, waitUntil }) {
   const t0 = Date.now();
   let body = {};
@@ -139,6 +163,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body && body.mode === 'fix') return fixAnswer(request, env, body);
   if (body && body.mode === 'review') return reviewAnswer(request, env, body);
   if (body && body.mode === 'take') return takeAnswer(request, env, body);
+  if (body && body.mode === 'draft') return draftAnswer(request, env, body);
   const typed = norm(body.ask), ask = redact(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);
