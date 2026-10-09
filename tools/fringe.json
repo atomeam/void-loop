@@ -1558,5 +1558,30 @@
     ],
     "sha256": "abbee70fce5312f8cf0eb1bbbba4bd7e0d105e463d2d52ca040d2257e167e90d",
     "emit": false
+  },
+  {
+    "run": 63,
+    "at": "2026-10-09T19:08:18Z",
+    "family": "correlation-view",
+    "draft": "drafts/fringe/correlation-view-5.html",
+    "sources": [
+      {
+        "claim": "Restricting a sample to a narrow range of one variable lowers the observed correlation, by an amount Thorndike's case II formula predicts from the spread kept",
+        "source": "https://doi.org/10.1037/0021-9010.85.1.112",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Validity coefficients computed among already-selected people (admitted, hired) understate the predictor's correlation in the full applicant pool",
+        "source": "https://doi.org/10.1037/0021-9010.85.1.112",
+        "confidence": "claim"
+      },
+      {
+        "claim": "People looking at a shaded band of a scatter plot under-predict how much weaker its correlation is, measured on this page",
+        "source": "drafts/fringe/correlation-view-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "3772dae19e8a907aaacc6ff93aed343cf0fa81a47976ef0c6456cf14843a4841",
+    "emit": false
   }
 ]
