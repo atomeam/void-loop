@@ -56,7 +56,7 @@ def gather(cap=60, with_done=False):
             cands.append({"kind": "old part of me", "title": f"learn \"{cells[0]}\"", "why": cells[2][:150], "weight": 15})
     # 4. everything else on Victus the ingest marked as a capability
     try:
-        ing = json.loads((ROOT / "victus-ingest.json").read_text(encoding="utf-8", errors="replace"))
+        ing = json.loads((ROOT / "archive" / "victus" / "victus-ingest.json").read_text(encoding="utf-8", errors="replace"))
         items = ing.get("items") or ing.get("classified") or (ing if isinstance(ing, list) else [])
         for it in items:
             if str(it.get("loop_object", it.get("object", ""))).lower().startswith("capability"):
