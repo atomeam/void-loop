@@ -193,6 +193,17 @@ const RULES = [
   // taught by an extra reviewer (tools/review-learn.mjs, PR #142): saved data that parses but is not a list ({} or null) crashes the array call
   ['json-array-shape', 'bug', JS, (m, r) => /\bJSON\.parse\s*\(\s*(?:(?:window\.)?(?:localStorage|sessionStorage)\.getItem\s*\([^()]*\)\s*(?:\|\|\s*(['"`])\[\]\1\s*)?|[^()]*\|\|\s*(['"`])\[\]\2\s*)\)\s*\.\s*(?:filter|map|forEach|find|findIndex|some|every|reduce|flatMap|includes|slice|concat|join)\s*\(/.test(r) && !/Array\.isArray/.test(r),
     'JSON.parse succeeds on saved text like {} or null, and then the array call throws ("filter is not a function"). Check the shape first: const v = JSON.parse(text); const list = Array.isArray(v) ? v : [];'],
+  // taught by an extra reviewer (tools/review-learn.mjs, PR #149): a network command run synchronously with no timeout can hang the whole run
+  ['exec-no-timeout', 'style', JS, (m, r) => /\b(?:execFileSync|execSync|spawnSync)\s*\(\s*(['"`])(?:git|gh|curl|wget|ssh|npm|npx)\b(?:[^'"`]*\b(?:push|fetch|pull|clone|ls-remote|api|install)\b)?[^'"`]*\1\s*,\s*(?:\[[^\]]*\b(?:push|fetch|pull|clone|ls-remote|api|install)\b|\.\.\.|\w+\s*,)/.test(r) && !/\btimeout\s*:/.test(r),
+    'a git, gh, curl or npm call run synchronously with no timeout waits forever when the network stalls, and so does everything after it (a retry loop never gets to retry). Pass a timeout: execFileSync(cmd, args, { timeout: 120e3 }).'],
+  // taught by an extra reviewer (tools/review-learn.mjs, PR #148): a data table with no header cells reads as a grid of unlabeled values to a screen reader
+  ['table-no-header', 'style', JS, (m, r, x) => {
+    if (!/<table\b/i.test(r) || /<t(?:h|head)\b|role=["']presentation/i.test(r)) return false;
+    if (/<\/table>/i.test(r)) return /<td\b/i.test(r); // the whole table on one line (a template string)
+    for (let k = 1; k <= 12; k++) { const l = x.nextRaw(k); if (/<t(?:h|head)\b/i.test(l)) return false; if (!l || /<\/table>/i.test(l)) return true; }
+    return false; // a long table whose header is out of sight: say nothing
+  },
+    'this table has no header cells (<th>), so a screen reader reads its values with nothing to say which column they belong to. Add a header row: <thead><tr><th scope="col">Measure</th>…</tr></thead>.'],
   ['busy-loop', 'bug', ['python'], (m, r, x) => /^\s*while\s+(?:True|1)\s*:\s*pass\b/.test(m) || (/^\s*while\s+(?:True|1)\s*:\s*$/.test(m) && /^\s*pass\s*$/.test(x.next(1))),
     'while True: pass spins forever at full speed, using a whole CPU core and never stopping. Wait on something (time.sleep, an event, input) or add a condition that ends the loop.'],
   ['sort-no-compare', 'style', JS, (m) => /\.sort\s*\(\s*\)/.test(m),
@@ -434,6 +445,8 @@ export function ruleReview(code, opts = {}) {
       // the masked lines above this one, so a rule can see what was declared earlier
       prev: () => maskedLines.slice(0, i).join('\n'),
       next: (k) => { let n = 0; for (let j = i + 1; j < rawLines.length; j++) if (rawLines[j].trim() && ++n === k) return maskedLines[j] || ''; return ''; },
+      // the same, as written (markup inside strings stays visible: a table built in a template string)
+      nextRaw: (k) => { let n = 0; for (let j = i + 1; j < rawLines.length; j++) if (rawLines[j].trim() && ++n === k) return rawLines[j]; return ''; },
       statement: () => { let st = ''; for (let j = i; j < rawLines.length && j < i + 12; j++) { st += ' ' + (maskedLines[j] || ''); if (/;\s*$/.test(maskedLines[j] || '')) break; } return st; },
       // the raw text of the { … } object this line sits in (up to 12 lines either way), so a rule can see sibling options on other lines
       object: () => { const lo = Math.max(0, i - 12), w = rawLines.slice(lo, i + 13).join('\n'); let at = rawLines.slice(lo, i).reduce((a, l) => a + l.length + 1, 0) + (rawLines[i].indexOf('{') >= 0 ? rawLines[i].indexOf('{') + 1 : 0), d = 0, s = 0, e = w.length;
