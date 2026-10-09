@@ -1,17 +1,17 @@
 // Is a pull request ready to merge? One answer for the two things that merge: .github/workflows/automerge.yml (GitHub merges
 // on its own, no session waiting) and tools/merge-when-green.mjs (the same check, polled from a session).
-//   readiness(gh, repo, pr, { now, greenSince }) -> { state: 'merge' | 'wait' | 'stop', why, sha, draft }
+//   readiness(gh, repo, pr) -> { state: 'merge' | 'wait' | 'stop', why, sha, draft }
 // gh(path) is a GET against the GitHub API returning parsed JSON (injected, so tools/pr-ready.test.mjs runs on fakes).
-// Ready means, on the PR's current head:
-//   test-and-deploy passed (and bench, when that job ran); the void-review check passed (Void's own review, the first one:
-//   no bugs or risks in the added lines, .github/workflows/void-review.yml); and CodeRabbit is settled: no review of this
-//   head still running (it gets up to 10 min after green), no actionable findings on this head, no CodeRabbit thread
-//   without an answer. CodeRabbit stays a reviewer whose findings get fixed or answered; it is just not waited on forever.
+// Ship now, test after (Adam, 2026-10-09: nothing waits). Ready means, on the PR's current head: the void-review check
+//   passed (Void's own review, seconds: no bugs or risks in the added lines, .github/workflows/void-review.yml); no check
+//   that already finished has failed (test-and-deploy, bench); and no CodeRabbit finding open (no actionable findings on
+//   this head, no CodeRabbit thread without an answer). Nothing else is waited on: not the suite, not the benchmark, not
+//   CodeRabbit (on its free plan it is rate-limited and posts only a summary). The full suite runs on main right after the
+//   deploy, and a failure there reverts the merge and redeploys (deploy.yml, verify-main).
 export const CR = 'coderabbitai[bot]';
-export const CR_GRACE_MS = 10 * 60e3;
 const OK = ['success', 'skipped', 'neutral'];
 
-export function readiness(gh, repo, pr, { now = Date.now(), greenSince = 0 } = {}) {
+export function readiness(gh, repo, pr) {
   const p = gh(`repos/${repo}/pulls/${pr}`);
   if (p.merged) return { state: 'stop', why: 'already merged', merged: true };
   if (p.state !== 'open') return { state: 'stop', why: 'PR is ' + p.state };
@@ -20,19 +20,11 @@ export function readiness(gh, repo, pr, { now = Date.now(), greenSince = 0 } = {
   const runs = [latest('test-and-deploy'), latest('bench'), latest('void-review')].filter(Boolean);
   const failed = runs.find((r) => r.status === 'completed' && !OK.includes(r.conclusion) && r.conclusion !== 'cancelled');
   if (failed) return { ...base, state: 'stop', why: `${failed.name} ${failed.conclusion}: ${failed.html_url}` };
-  const td = runs.find((r) => r.name === 'test-and-deploy');
-  if (!td || td.status !== 'completed' || td.conclusion !== 'success') return { ...base, state: 'wait', why: 'test-and-deploy not finished' };
-  const pending = runs.find((r) => r.status !== 'completed' || r.conclusion === 'cancelled');
-  if (pending) return { ...base, state: 'wait', why: pending.name + ' not finished' };
-  // green: CodeRabbit gets its say
-  const green = greenSince || Date.parse(td.completed_at) || now;
-  const comments = gh(`repos/${repo}/issues/${pr}/comments?per_page=100`) || [], cr = comments.filter((c) => c.user && c.user.login === CR);
+  // the one wait: Void's own review, which reports in seconds (a PR from before that check falls back on the suite)
+  const gate = runs.find((r) => r.name === 'void-review') || runs.find((r) => r.name === 'test-and-deploy');
+  if (!gate || gate.status !== 'completed' || gate.conclusion !== 'success') return { ...base, state: 'wait', why: (gate ? gate.name : 'void-review') + ' not finished' };
+  // whatever CodeRabbit has posted by now counts; nothing waits for more
   const reviews = (gh(`repos/${repo}/pulls/${pr}/reviews?per_page=100`) || []).filter((r) => r.user && r.user.login === CR && r.commit_id === sha);
-  // a review asked for ("@coderabbitai review") and not yet posted counts as under way: it takes minutes to say it started (#141)
-  const asked = comments.filter((c) => c.user && c.user.login !== CR && /@coderabbitai\s+(?:full\s+)?review\b/i.test(c.body || '')).map((c) => Date.parse(c.created_at));
-  const lastAsk = asked.length ? Math.max(...asked) : 0, answered = reviews.some((r) => Date.parse(r.submitted_at) >= lastAsk);
-  const busy = cr.some((c) => /review in progress by coderabbit|Currently processing new changes/.test(c.body || '')) || (lastAsk && !answered);
-  if (busy && now - green < CR_GRACE_MS) return { ...base, state: 'wait', why: 'CodeRabbit is still reviewing', retryAt: green + CR_GRACE_MS };
   const rc = gh(`repos/${repo}/pulls/${pr}/comments?per_page=100`) || [];
   const replied = new Set(rc.filter((c) => c.in_reply_to_id && c.user && c.user.login !== CR).map((c) => c.in_reply_to_id));
   const open = rc.filter((c) => !c.in_reply_to_id && c.user && c.user.login === CR && !replied.has(c.id));
@@ -42,5 +34,5 @@ export function readiness(gh, repo, pr, { now = Date.now(), greenSince = 0 } = {
   const threadsHere = rc.filter((c) => !c.in_reply_to_id && c.user && c.user.login === CR && (c.original_commit_id || c.commit_id) === sha).length;
   if (found > threadsHere) return { ...base, state: 'stop', why: `CodeRabbit left ${found} finding(s) on ${sha.slice(0, 7)}, ${found - threadsHere} outside any thread: fix them and push` };
   if (open.length) return { ...base, state: 'stop', why: `${open.length} CodeRabbit thread(s) have no answer yet: fix or reply on each` };
-  return { ...base, state: 'merge', why: 'CI green, Void found no bugs or risks, CodeRabbit settled' };
+  return { ...base, state: 'merge', why: 'Void found no bugs or risks, nothing failed, no CodeRabbit finding open (the suite runs on main after the deploy)' };
 }

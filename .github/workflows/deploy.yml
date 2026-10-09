@@ -1,11 +1,12 @@
 # Test and deploy Void to the Cloudflare Pages project "a-to-mind" (a-to-mind.com) with wrangler (direct upload, no GitHub
 # Pages). tools/deploy.ps1 stays the laptop fallback. Built to fit GitHub Free's 2,000 Linux minutes a month (~65 a day):
-#   PR, code changed    the full suite (no benchmark: see bench.yml and the weekly watchdog), a preview deploy (Void's review is its own workflow, void-review.yml)
-#   PR, docs only       the quick checks (seconds); no browser suite, no preview
-#   push to main        deploy. The full suite runs again only when the commit is not a merged PR whose head passed
-#                       test-and-deploy (a direct push, or a PR merged without a green check); the daily watchdog re-tests main
+# Ship now, test after (Adam, 2026-10-09: nothing waits). A PR merges as soon as Void's review is clean (automerge.yml,
+# tools/pr-ready.mjs); main deploys in about a minute; the full suite then runs on what shipped (verify-main), and a failure
+# reverts that commit on main and redeploys.
+#   PR, code changed    the quick checks (seconds) and a preview deploy (Void's review is its own workflow, void-review.yml)
+#   PR, docs only       the quick checks; no preview
+#   push to main        the quick checks, deploy, then verify-main: the full suite on that commit; red = revert + redeploy
 #   manual run          the full suite (bench optional), then deploy; after_merge=true (automerge.yml) = as a push to main
-# test-and-deploy is the merge gate and always reports, on every PR.
 name: Void deploy
 
 on:
@@ -25,11 +26,6 @@ on:
         type: boolean
         default: false
 
-concurrency:
-  # one run per PR: a new push cancels the older run of that PR at once. Production keeps one group and never cancels.
-  group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
 permissions:
   contents: read
   checks: read # to see that a merged PR's head already passed (see "What needs testing")
@@ -39,6 +35,11 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # one run per PR: a new push cancels the older run of that PR at once. Production keeps one group and never cancels.
+    # (Per job, so the suite after a deploy, verify-main, never holds up the next deploy.)
+    concurrency:
+      group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     env:
       CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
@@ -58,7 +59,10 @@ jobs:
           EVENT: ${{ github.event_name == 'workflow_dispatch' && inputs.after_merge && 'push' || github.event_name }}
           BASE: ${{ github.event.pull_request.base.ref }}
         run: |
-          suite=true
+          # the full suite before the deploy only on a plain manual run; a PR and main get the quick checks (main is
+          # tested right after its deploy, in verify-main)
+          suite=false
+          [ "$EVENT" = "workflow_dispatch" ] && suite=true
           if [ "$EVENT" = "pull_request" ]; then
             # Docs only: every changed file is markdown, and none of the few markdown files the suite reads.
             files=$(git diff --name-only "$(git merge-base "origin/$BASE" HEAD)" HEAD)
@@ -72,27 +76,8 @@ jobs:
                 *) light=false ;;
               esac
             done <<< "$files"
-            if [ "$light" = true ]; then
-              suite=false
-              echo "### Docs-only PR: quick checks only, no browser suite" >> "$GITHUB_STEP_SUMMARY"
-            fi
+            [ "$light" = true ] && echo "### Docs-only PR: quick checks only, no preview" >> "$GITHUB_STEP_SUMMARY"
             echo "light=$light" >> "$GITHUB_OUTPUT"
-          elif [ "$EVENT" = "push" ]; then
-            # A merge commit's second parent, or the PR a squash merge came from: when that head passed test-and-deploy,
-            # main is not tested twice (the quick checks still run, and the daily watchdog runs the full suite on main).
-            head=$(git rev-parse HEAD)
-            pr_head=$(git rev-parse -q --verify HEAD^2 || true)
-            if [ -z "$pr_head" ]; then
-              pr_head=$(gh api "repos/${{ github.repository }}/commits/$head/pulls" --jq '[.[] | select(.merged_at != null and .base.ref == "main")][0].head.sha // empty' || true)
-            fi
-            if [ -n "$pr_head" ]; then
-              ok=$(gh api "repos/${{ github.repository }}/commits/$pr_head/check-runs?check_name=test-and-deploy" \
-                --jq '[.check_runs[] | select(.status == "completed")] | sort_by(.id) | last | .conclusion // ""' || true)
-              if [ "$ok" = "success" ]; then
-                suite=false
-                echo "### Not re-tested: merged PR head $pr_head passed test-and-deploy" >> "$GITHUB_STEP_SUMMARY"
-              fi
-            fi
           fi
           echo "suite=$suite" >> "$GITHUB_OUTPUT"
           echo "suite=$suite"
@@ -178,3 +163,62 @@ jobs:
           title=$(gh api "repos/${{ github.repository }}/commits/$(git rev-parse HEAD)/pulls" --jq '[.[] | select(.merged_at != null)][0].title // empty' || true)
           [ -n "$title" ] || title=$(git log -1 --format=%s "$(git rev-parse -q --verify HEAD^2 || git rev-parse HEAD)")
           node tools/reflect.mjs --build "$title" | tee -a "$GITHUB_STEP_SUMMARY" || true
+
+  # Ship now, test after: the full suite on the commit that just went live. Red means that commit is reverted on main and
+  # main is deployed again, so a breaking merge stays live only for the length of the suite (about 15 min). The revert is
+  # marked with a Void-auto-revert trailer and is never itself tested and reverted. Its own concurrency group: the next
+  # merge deploys at once, without waiting for this suite.
+  verify-main:
+    needs: test-and-deploy
+    if: (github.event_name == 'push' || inputs.after_merge) && needs.test-and-deploy.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: void-verify-main
+      cancel-in-progress: false
+    permissions:
+      contents: write # push the revert
+      actions: write # start the deploy of the reverted main
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: An automatic revert is not tested again
+        id: skip
+        run: |
+          if git log -1 --format=%B | grep -q '^Void-auto-revert:'; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Automatic revert: not re-tested" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Test what shipped (full suite)
+        id: test
+        if: steps.skip.outputs.skip != 'true'
+        uses: ./.github/actions/void-test
+        with:
+          bench: skip
+
+      - name: Red after the deploy - revert it on main and deploy again
+        if: failure() && steps.test.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          sha=$(git rev-parse HEAD)
+          subject=$(git log -1 --format=%s "$sha")
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin main
+          git checkout -q -B main origin/main
+          if git rev-parse -q --verify "$sha^2" >/dev/null; then parent="-m 1"; else parent=""; fi
+          if ! git revert --no-commit $parent "$sha"; then
+            git revert --abort || true
+            echo "::error title=Not reverted::$sha failed the suite after it shipped, and reverting it on main conflicts with what merged since. Revert it by hand."
+            echo "### $sha failed after shipping; automatic revert conflicted: revert it by hand" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          git commit -q -m "Revert \"$subject\"" -m "It shipped and then failed the full suite (verify-main, run ${{ github.run_id }}), so it is taken back off the site." -m "Void-auto-revert: $sha"
+          git push origin main
+          gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true
+          echo "::error title=Reverted::$sha shipped and failed the suite; it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."
+          echo "### $sha failed the suite after shipping: reverted on main and redeployed" >> "$GITHUB_STEP_SUMMARY"
