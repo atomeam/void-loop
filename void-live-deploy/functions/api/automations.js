@@ -19,7 +19,7 @@ export const onRequestPost = guard(async ({ request, env }) => {
   if (b.run) {
     const r = await A.get(env, b.id);
     if (!r) return Response.json({ error: 'no such rule' }, { status: 404 });
-    const out = await A.run(env, r.rule, b.event && typeof b.event === 'object' ? b.event : {}, 'manual');
+    const out = await A.run(env, r.rule, b.event && typeof b.event === 'object' ? b.event : { manual: true, at: new Date().toISOString() }, 'manual'); // Run now carries the time, like a tick
     return Response.json({ run: out, ...(await view(env)) });
   }
   const saved = await A.save(env, b.rule, { rotate: !!b.rotate });
