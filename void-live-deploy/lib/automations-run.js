@@ -5,6 +5,7 @@
  * issues on the allowed repos). Without the token a GitHub step fails with that reason in the log, nothing else.
  * A webhook rule has its own secret: shown once when it is made (or rotated), kept only as a SHA-256.
  */
+import { track } from './actions.js';
 import { validate, steps, matches, MAX_EVENT } from './automations.js';
 import { sameSecret } from './guard.js';
 
@@ -123,7 +124,8 @@ export async function run(env, rule, event, trigger, opts = {}) {
   if (!matches(rule, ev)) return { ok: true, skipped: 'the event does not match' };
   const log = []; let ok = true;
   for (const s of steps(rule, ev)) {
-    try { log.push({ action: s.action, ok: true, said: String(await act(env, s, opts)).slice(0, 300) }); }
+    // every step is an action with its execution record (lib/actions.js): written before the step runs, settled after
+    try { log.push({ action: s.action, ok: true, said: String((await track(env, { owner: 'owner', kind: 'automation.' + s.action, ref: rule.id + ' ' + trigger }, () => act(env, s, opts))).value).slice(0, 300) }); }
     catch (e) { ok = false; log.push({ action: s.action, ok: false, said: String((e && e.message) || e).slice(0, 300) }); break; }
   }
   await ensure(env);
