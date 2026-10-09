@@ -20,6 +20,7 @@ A rule an agent wrote and signed with Adam's name, without his words, is removed
 
 ## Where things live
 - **What Void couldn't answer (the board):** the page sends every unanswered ask to https://a-to-mind.com/api/miss (Pages Function in `void-live-deploy\\functions\\api\\`, live since 2026-09-25). Read it in Void with "unlock <key>" then "show the board", or on the Victus in `domains\\void.misses.md` (refreshed daily 6:47 am; git-ignored, since the repo is public), or with `node tools/misses.mjs` (prints the new ones, needs VOID_MISSES_TOKEN).
+- **Void learns from the board by itself (2026-10-09, Void's own want #1):** `void-live-deploy/lib/learn.js`. The second miss of the same ask, or one Void says is "not built yet", becomes a `miss:<slug>` job in the build queue straight from `/api/miss`, at most 3 open at once, never the same target twice; `node tools/learn.mjs` sweeps the whole week by hand (`--dry` to look). Builders claim them like any job. The daily sweep + Hermes Agent drafting workflow is parked at `tools/learn.workflow.yml` until someone moves it to `.github/workflows/` (needs a push with workflow scope).
 - Live Void source: `C:\\Users\\adamm\\a-to-mind-loop\\void.html` → Cloudflare Pages project `a-to-mind` → https://a-to-mind.com
 - Deploy copy: `void-live-deploy\\` (copy `void.html` to `index.html` and `void.html` there). Also sync `C:\\Users\\adamm\\a-to-mind.com\\index.html`.
 - Deploy: from `void-live-deploy`: `npx wrangler pages deploy . --project-name=a-to-mind --commit-dirty=true`
