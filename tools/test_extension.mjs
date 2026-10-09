@@ -21,6 +21,10 @@ function check(name, ok, info) { if (ok) { pass++; console.log('pass ' + name); 
 const extDir = fs.mkdtempSync(path.join(os.tmpdir(), 'void-ext-'));
 for (const f of fs.readdirSync(path.join(repo, 'extension'))) if (!f.endsWith('.zip')) fs.copyFileSync(path.join(repo, 'extension', f), path.join(extDir, f));
 const man = JSON.parse(fs.readFileSync(path.join(extDir, 'manifest.json'), 'utf8'));
+{ const bg = fs.readFileSync(path.join(repo, 'extension', 'background.js'), 'utf8');
+  const titles = [...bg.matchAll(/contextMenus\.create\(\{[^}]*title: '([^']+)'/g)].map((m) => m[1]);
+  check('menus: each one says whether the page stays in the browser or is sent to Void, and the old "Ask Void about \'…\'" (selection sent as an ask) is gone',
+    titles.length === 3 && titles.every((t) => /stays in your browser|sends it to Void/.test(t)) && !/ask-void|Ask Void about “%s”/.test(bg), titles); }
 check('manifest: only activeTab and scripting reach into pages (no host permissions shipped)', man.permissions.includes('activeTab') && man.permissions.includes('scripting') && !man.host_permissions && !man.optional_host_permissions, man.permissions);
 man.host_permissions = ['<all_urls>'];
 fs.writeFileSync(path.join(extDir, 'manifest.json'), JSON.stringify(man));
@@ -104,6 +108,14 @@ await V.evaluate(() => window.postMessage({ type: 'void-ext:tab', tab: { title: 
 await V.waitForTimeout(500);
 const card3 = await V.evaluate(() => (document.querySelector('.tab-card') || {}).innerText || '');
 check('trust: in the panel, a tab message from the Void page itself is ignored (only the extension\'s panel is heard)', /Fixture page/.test(card3) && !/forged/.test(card3), card3.slice(0, 120));
+
+// "Ask Void about this page" (sent to Void, #134): the answer card says the page left the browser for this answer
+await sw.evaluate(() => chrome.storage.session.set({ ask: { q: 'What is this page about?', page: { title: 'Fixture page', url: 'https://fixture.test/', selection: '', field: '', text: 'fixture text' }, at: Date.now() } }));
+await V.waitForSelector('.page-sent', { timeout: 10000 }).catch(() => {});
+const sent = await V.evaluate(() => (document.querySelector('.page-sent') || {}).textContent || '');
+const answerPosts = out.filter((x) => /a-to-mind\.com\/api\/answer /.test(x) && x.includes('fixture text'));
+check('sent to Void: "Ask Void about this page" posts the page to /api/answer and the card flags it ("sent to a-to-mind.com for this answer")',
+  /sent to a-to-mind\.com for this answer/.test(sent) && answerPosts.length === 1, { sent, posts: answerPosts.length });
 
 // outside the panel, Void takes no tab from anyone: the same message posted on a-to-mind.com itself does nothing
 const plain = await ctx.newPage();

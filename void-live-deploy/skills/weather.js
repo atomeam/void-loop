@@ -2,7 +2,9 @@
  * weather skill — Open-Meteo, no key
  * Contract: { name, examples, match(lower, text), run(text, api) }
  * api: { showPage, esc, say, reportMiss, loopLog }
+ * The card stays current on its own: skills/live.js re-fetches the forecast every 15 minutes while it is up.
  */
+import { keepLive } from './live.js';
 const WX = {
   0: 'Clear', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Overcast',
   45: 'Fog', 48: 'Fog', 51: 'Light drizzle', 53: 'Drizzle', 55: 'Heavy drizzle',
@@ -58,20 +60,28 @@ async function run(text, api) {
     }
     const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.latitude + '&longitude=' + loc.longitude
       + '&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_hours=8&forecast_days=1&timezone=auto';
-    const w = await fetch(u).then((r) => r.json());
-    if (!api._pageStill(el)) return 'weather';
-    queueMicrotask(() => weatherMini(api, el, w, loc, place)); // after the card's text is in: the diorama goes on top
     const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
     const T = (c) => Math.round(f ? c * 9 / 5 + 32 : c) + '°';
-    const c = w.current, d = w.daily, h = w.hourly;
-    const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center;min-width:0"><div style="color:#8b90a0;font-size:12px;white-space:nowrap">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div style="font-weight:500">' + T(h.temperature_2m[i]) + '</div><div style="color:#8b90a0;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
-    el.classList.add('vp-tight'); // a weather card is a glance: tight, no empty right half
-    el.innerHTML = '<h2>' + esc(loc.name) + '</h2>'
-      + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + '</div>'
-      + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
-      + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
-      + '<div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px;padding:10px 0 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)">' + hours + '</div>'
-      + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>' + (loc.guessed ? ' · place from your time zone; ask "weather in …" for another' : '') + '</div>';
+    // fetch and draw, in place: the first time here, then every 15 minutes while the card is up (skills/live.js), so a
+    // card left open shows the weather now, not the weather when it was asked
+    const draw = async () => {
+      const w = await fetch(u).then((r) => r.json());
+      if (!api._pageStill(el)) return;
+      const c = w.current, d = w.daily, h = w.hourly;
+      if (!c || !d || !h) throw new Error('no forecast');
+      queueMicrotask(() => weatherMini(api, el, w, loc, place)); // after the card's text is in: the diorama goes on top
+      const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center;min-width:0"><div style="color:#8b90a0;font-size:12px;white-space:nowrap">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div style="font-weight:500">' + T(h.temperature_2m[i]) + '</div><div style="color:#8b90a0;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
+      el.classList.add('vp-tight'); // a weather card is a glance: tight, no empty right half
+      el.innerHTML = '<h2>' + esc(loc.name) + '</h2>'
+        + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + '</div>'
+        + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
+        + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
+        + '<div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px;padding:10px 0 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)">' + hours + '</div>'
+        + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>' + (loc.guessed ? ' · place from your time zone; ask "weather in …" for another' : '') + '</div>';
+    };
+    await draw();
+    if (!api._pageStill(el)) return 'weather';
+    keepLive(api, el, { name: 'weather', every: 15 * 60e3, refresh: draw });
     return 'weather';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
@@ -87,8 +97,10 @@ function weatherMini(api, el, w, loc, place) {
   const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
   const host = document.createElement('div'); host.className = 'vmini'; host.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 180 : 230) + 'px;margin:0 0 6px';
   el.prepend(host);
+  // one key per card: a refresh (live.js) redraws the text and re-attaches the same diorama with the new forecast, instead of building a second one
+  el._wxKey = el._wxKey || 'weather:' + Math.random().toString(36).slice(2, 9);
   api.stage.miniature(host, 'weather', { code: c.weather_code, temp: c.temperature_2m, unit: f ? 'F' : 'C', isDay: c.is_day !== 0, wind: c.wind_speed_10m },
-    { key: 'weather:' + Math.random().toString(36).slice(2, 9), label: 'Weather diorama: ' + (WX[c.weather_code] || 'weather') + ', ' + Math.round(c.temperature_2m) + '°C' }).catch(() => host.remove());
+    { key: el._wxKey, label: 'Weather diorama: ' + (WX[c.weather_code] || 'weather') + ', ' + Math.round(c.temperature_2m) + '°C' }).catch(() => host.remove());
 }
 
 export default {

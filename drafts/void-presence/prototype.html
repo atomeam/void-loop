@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Void · presence prototype</title>
+<!--
+  Prototype only: nothing here is wired into void.html. Four mechanics on one page, tuned for a deep-blue minimal void:
+    1. Attentional gravity  the nebula leans toward the pointer; typing tightens and darkens it around the pill; idle, it exhales and finally stops drawing
+    2. Synaptic deep-lighting  rare, slow pulses trace a hidden branching network at ~2-3% opacity
+    3. Event horizon  Enter pulls the text into the depth and sends one ripple through the nebula
+    4. Exotic matter  the pill's rim picks up an oil-slick sheen and a slight chromatic split only when the pointer is near
+  Query: ?k=0.5 scales every effect (0 = off), ?still=1 shows the reduced-motion version. prefers-reduced-motion is honoured.
+-->
+<style>
+  :root { --bg: #03060d; --fg: #cfd8f0; --muted: #5d6a8c; --ang: 0deg; --near: 0; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); font: 16px/1.4 system-ui, sans-serif; overflow: hidden; }
+  canvas { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+  #bg { z-index: 0; }
+  #syn { z-index: 1; will-change: transform; }
+  .fallback #bg { display: none; }
+  .fallback body { background: radial-gradient(60% 50% at 50% 45%, #07122a, var(--bg) 70%); }
+  #stage { position: fixed; inset: 0; z-index: 2; display: grid; place-items: center; perspective: 700px; perspective-origin: 50% 45%; }
+  #row { position: relative; width: min(640px, calc(100vw - 32px)); display: flex; align-items: center; gap: 8px;
+         padding: 8px 10px 8px 20px; border-radius: 999px;
+         background: rgba(7, 12, 26, .66); -webkit-backdrop-filter: blur(14px) saturate(1.25); backdrop-filter: blur(14px) saturate(1.25);
+         box-shadow: inset 0 0 0 1px rgba(120, 150, 255, .09), 0 12px 48px rgba(0, 10, 50, .55); }
+  /* exotic matter: an oil-slick rim that only catches the light near the pointer */
+  #row::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1.5px; pointer-events: none;
+         background: conic-gradient(from var(--ang), #3fb4ff, #9a7bff, #ff6fb1, #45e8c8, #3fb4ff);
+         -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+         mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); opacity: calc(var(--near) * .6); filter: saturate(1.4); }
+  #row::after { content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none;
+         box-shadow: calc(var(--near) * 2.2px) 0 0 rgba(255, 70, 130, .16), calc(var(--near) * -2.2px) 0 0 rgba(70, 200, 255, .20); opacity: var(--near); }
+  #input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--fg); font: inherit; caret-color: #8fb4ff; }
+  #input::placeholder { color: var(--muted); }
+  #go { border: 0; border-radius: 999px; background: rgba(40, 58, 110, .45); color: #9db8ff; padding: 8px 14px; font: inherit; cursor: pointer; }
+  #go:hover, #go:focus-visible { background: rgba(60, 84, 150, .6); outline: 0; }
+  .eaten { position: fixed; z-index: 3; pointer-events: none; white-space: nowrap; color: var(--fg); font: inherit; transform-origin: 50% 50%; will-change: transform, filter, opacity; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  @media (prefers-reduced-motion: reduce) { #row::before, #row::after { opacity: 0; } }
+</style>
+</head>
+<body>
+<canvas id="bg" aria-hidden="true"></canvas>
+<canvas id="syn" aria-hidden="true"></canvas>
+<div id="stage">
+  <form id="row" role="search" autocomplete="off">
+    <input id="input" type="text" placeholder="Ask the Void" aria-label="Ask the Void" enterkeyhint="go" autocomplete="off" spellcheck="false">
+    <button id="go" type="submit">Ask</button>
+  </form>
+</div>
+<div class="sr" role="status" aria-live="polite" id="status"></div>
+<script>
+(() => {
+  const q = new URLSearchParams(location.search);
+  const K = Math.max(0, Math.min(2, parseFloat(q.get('k') ?? '1') || 0));                 // master intensity
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || q.get('still') === '1';
+  const $ = (id) => document.getElementById(id);
+  const bg = $('bg'), syn = $('syn'), row = $('row'), input = $('input'), status = $('status');
+  const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+  const smooth = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+
+  // ---- shared state: where attention is, how hard the user is typing, when anything last happened
+  const S = { px: .5, py: .45, mx: .5, my: .45, attn: 0, last: performance.now(), ripple: -1, parx: 0, pary: 0 };
+  const wake = () => { S.last = performance.now(); kick(); };
+
+  // ---- 1. the nebula (WebGL, low-res, low-power) with attentional gravity, focus and the horizon ripple
+  const gl = bg.getContext('webgl', { antialias: false, powerPreference: 'low-power' });
+  let U = null;
+  if (gl) {
+    const vs = 'attribute vec2 p;void main(){gl_Position=vec4(p,0.,1.);}';
+    const fs = `precision mediump float;uniform vec2 r;uniform float t;uniform vec2 m;uniform vec2 p;uniform float a;uniform float rt;uniform float k;
+      float h(vec2 p){return fract(sin(dot(p,vec2(127.1,311.7)))*43758.5453);}
+      float n(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h(i),h(i+vec2(1,0)),f.x),mix(h(i+vec2(0,1)),h(i+vec2(1,1)),f.x),f.y);}
+      float fb(vec2 p){float v=0.,a=.5;for(int i=0;i<5;i++){v+=a*n(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return v;}
+      void main(){
+        vec2 uv=(gl_FragCoord.xy-.5*r)/r.y;
+        vec2 dp=uv-p;float dl=length(dp);float wave=0.;
+        if(rt>=0.){float R=rt*.6;wave=exp(-pow((dl-R)*8.,2.))*exp(-rt*1.5);uv-=normalize(dp+1e-4)*wave*.06*k;}
+        vec2 dm=m-uv;float gm=exp(-dot(dm,dm)*6.);vec2 q=uv+normalize(dm+1e-4)*gm*.03*k;
+        vec2 dq=p-uv;float gq=exp(-dot(dq,dq)*4.);q+=normalize(dq+1e-4)*gq*.05*a*k;
+        float T=t*.016;float f1=fb(q*1.5+vec2(T,-T*.6));float f2=fb(q*2.3+f1*1.2-vec2(T*.7,T));
+        float neb=smoothstep(.32,.95,f2);
+        vec3 c=vec3(.012,.022,.05)+vec3(.03,.07,.20)*neb*.9+vec3(.05,.03,.14)*pow(f1,3.)*.5;
+        float d=length(uv-p);c*=1.-a*.45*k*smoothstep(.15,.9,d);c+=vec3(.02,.05,.14)*a*k*exp(-d*5.)*.6;
+        c+=vec3(.2,.5,1.)*wave*.12*k;
+        c*=1.-smoothstep(.3,1.2,length(uv))*.5;
+        float s=step(.9988,h(floor(gl_FragCoord.xy*.5)))*(.3+.7*n(gl_FragCoord.xy*.03+t*.1));c+=s*.28;
+        c+=(h(gl_FragCoord.xy+t)-.5)/255.;
+        gl_FragColor=vec4(c,1.);}`;
+    const sh = (tp, src) => { const s = gl.createShader(tp); gl.shaderSource(s, src); gl.compileShader(s); return s; };
+    const pr = gl.createProgram(); gl.attachShader(pr, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, fs)); gl.linkProgram(pr);
+    if (gl.getProgramParameter(pr, gl.LINK_STATUS)) {
+      gl.useProgram(pr);
+      gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+      const loc = gl.getAttribLocation(pr, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+      U = Object.fromEntries(['r', 't', 'm', 'p', 'a', 'rt', 'k'].map((k) => [k, gl.getUniformLocation(pr, k)]));
+    }
+  }
+  if (!U) document.documentElement.classList.add('fallback');
+  const scale = .6;
+  const size = () => { bg.width = Math.round(innerWidth * scale); bg.height = Math.round(innerHeight * scale); syn.width = innerWidth; syn.height = innerHeight; if (gl) gl.viewport(0, 0, bg.width, bg.height); buildNet(); kick(); };
+
+  // ---- 2. synaptic deep-lighting: a hidden branching network that only ever shows as a slow pulse at a few percent opacity
+  let net = [], pulses = [];
+  const buildNet = () => {
+    net = []; const W = innerWidth, H = innerHeight; let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    const grow = (path, x, y, ang, len, depth) => {
+      const x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len, np = path.concat([[x2, y2]]);
+      if (depth === 0) { net.push(np); return; }
+      grow(np, x2, y2, ang + (rnd() - .5) * .7, len * .82, depth - 1);
+      if (rnd() < .62) grow(np, x2, y2, ang + (rnd() < .5 ? -1 : 1) * (.45 + rnd() * .6), len * .72, depth - 1);
+    };
+    for (let i = 0; i < 7; i++) { const edge = rnd(), x = edge < .5 ? rnd() * W : (rnd() < .5 ? 0 : W), y = edge < .5 ? (rnd() < .5 ? 0 : H) : rnd() * H;
+      grow([[x, y]], x, y, Math.atan2(H * .5 - y, W * .5 - x) + (rnd() - .5), Math.min(W, H) * .16, 6); }
+    pulses = [];
+  };
+  const pathLen = (p) => { let L = 0; for (let i = 1; i < p.length; i++) L += Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]); return L; };
+  const sctx = syn.getContext('2d');
+  const stepSynapse = (dt) => {
+    if (!net.length || reduce || K === 0) { sctx.clearRect(0, 0, syn.width, syn.height); return; }
+    if (pulses.length < 2 && Math.random() < dt * .35) { const p = net[Math.floor(Math.random() * net.length)]; pulses.push({ p, L: pathLen(p), at: 0, hue: Math.random() < .6 ? '90,200,255' : '170,130,255' }); }
+    sctx.clearRect(0, 0, syn.width, syn.height); sctx.lineCap = 'round';
+    pulses = pulses.filter((u) => { u.at += dt * 70; const tail = 160; if (u.at - tail > u.L) return false;
+      const a0 = Math.max(0, u.at - tail), a1 = Math.min(u.L, u.at); let acc = 0;
+      for (let i = 1; i < u.p.length; i++) { const x0 = u.p[i - 1][0], y0 = u.p[i - 1][1], x1 = u.p[i][0], y1 = u.p[i][1], seg = Math.hypot(x1 - x0, y1 - y0), s0 = acc, s1 = acc + seg; acc = s1;
+        if (s1 < a0 || s0 > a1 || seg === 0) continue;
+        const f0 = Math.max(0, (a0 - s0) / seg), f1 = Math.min(1, (a1 - s0) / seg), head = (s0 + f1 * seg - a0) / tail;       // 0 at the tail, 1 at the head
+        sctx.strokeStyle = `rgba(${u.hue},${(.045 * head * K).toFixed(4)})`; sctx.lineWidth = 3.2;
+        sctx.beginPath(); sctx.moveTo(x0 + (x1 - x0) * f0, y0 + (y1 - y0) * f0); sctx.lineTo(x0 + (x1 - x0) * f1, y0 + (y1 - y0) * f1); sctx.stroke();
+        sctx.strokeStyle = `rgba(${u.hue},${(.07 * head * K).toFixed(4)})`; sctx.lineWidth = 1; sctx.stroke(); }
+      return true; });
+  };
+
+  // ---- the loop: ~30 fps while anything is alive, and it stops drawing completely once the Void has been left alone a while
+  let raf = 0, t0 = performance.now(), lastDraw = 0;
+  const pillCenter = () => { const b = row.getBoundingClientRect(); return [(b.left + b.width / 2 - innerWidth / 2) / innerHeight, (innerHeight / 2 - (b.top + b.height / 2)) / innerHeight, b]; };
+  const draw = (now) => {
+    raf = 0;
+    const idle = (now - S.last) / 1000, dt = Math.min(.1, (now - lastDraw) / 1000 || .033);
+    if (now - lastDraw >= 30 || reduce) {
+      lastDraw = now;
+      S.attn *= Math.exp(-dt / 4);                                       // typing focus fades over a few seconds
+      const calm = reduce ? 0 : 1 - smooth(6, 20, idle) * .85;           // the exhale: time itself slows when left alone
+      S.px += (S.mx - S.px) * .035; S.py += (S.my - S.py) * .035;        // heavy damping: the Void is slow to look
+      const [cx, cy] = pillCenter(), a = clamp(S.attn + (document.activeElement === input ? .12 : 0), 0, 1) * calm;
+      if (S.ripple >= 0) { S.ripple += dt; if (S.ripple > 3.2) S.ripple = -1; }
+      if (gl && U) {
+        gl.uniform2f(U.r, bg.width, bg.height); gl.uniform1f(U.t, reduce ? 40 : (now - t0) / 1000 * (.2 + .8 * calm)); gl.uniform2f(U.m, (S.px - .5) * innerWidth / innerHeight, (.5 - S.py));
+        gl.uniform2f(U.p, cx, cy); gl.uniform1f(U.a, a); gl.uniform1f(U.rt, S.ripple); gl.uniform1f(U.k, K); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+      }
+      stepSynapse(dt);
+      syn.style.transform = `translate(${((.5 - S.px) * 10).toFixed(2)}px,${((.5 - S.py) * 10).toFixed(2)}px)`;   // the network sits deeper, so it shifts less than the glass
+    }
+    const alive = !reduce && !document.hidden && (idle < 40 || S.ripple >= 0 || pulses.length);
+    if (alive) raf = requestAnimationFrame(draw);
+  };
+  function kick() { if (!raf && !document.hidden) raf = requestAnimationFrame(draw); }
+
+  // ---- 4. exotic matter: the rim wakes up as the pointer nears the pill
+  const rim = (e) => {
+    const b = row.getBoundingClientRect(), cx = b.left + b.width / 2, cy = b.top + b.height / 2;
+    const dx = Math.max(Math.abs(e.clientX - cx) - b.width / 2, 0), dy = Math.max(Math.abs(e.clientY - cy) - b.height / 2, 0), dist = Math.hypot(dx, dy);
+    row.style.setProperty('--near', reduce ? '0' : (K * Math.pow(clamp(1 - dist / 240, 0, 1), 1.6)).toFixed(3));
+    row.style.setProperty('--ang', ((Math.atan2(e.clientY - cy, e.clientX - cx) * 180 / Math.PI) + 90).toFixed(1) + 'deg');
+  };
+  addEventListener('pointermove', (e) => { S.mx = e.clientX / innerWidth; S.my = e.clientY / innerHeight; rim(e); wake(); }, { passive: true });
+  addEventListener('pointerleave', () => row.style.setProperty('--near', '0'));
+  input.addEventListener('input', () => { S.attn = clamp(S.attn + .14, 0, 1); wake(); });
+  input.addEventListener('focus', wake);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) wake(); });
+  addEventListener('resize', size);
+
+  // ---- 3. the event horizon: Enter pulls the words into the depth and sends a ripple through the nebula
+  row.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const text = input.value.trim(); if (!text) return;
+    status.textContent = 'Void received: ' + text; input.value = '';
+    if (reduce || K === 0) { wake(); return; }
+    const b = input.getBoundingClientRect(), ghost = document.createElement('div'), cs = getComputedStyle(input);
+    ghost.className = 'eaten'; ghost.textContent = text; ghost.style.left = b.left + 'px'; ghost.style.top = b.top + 'px'; ghost.style.height = b.height + 'px'; ghost.style.lineHeight = b.height + 'px';
+    ghost.style.font = cs.font; ghost.style.maxWidth = b.width + 'px'; ghost.style.overflow = 'hidden'; document.body.appendChild(ghost);
+    const dx = innerWidth / 2 - (b.left + Math.min(b.width, ghost.scrollWidth) / 2), dy = innerHeight * .42 - (b.top + b.height / 2);
+    ghost.animate([{ transform: 'translate3d(0,0,0) scale(1)', filter: 'blur(0px)', opacity: 1 },
+                   { transform: `translate3d(${dx * .5}px,${dy * .5}px,-260px) scale(.55)`, filter: 'blur(2px)', opacity: .85, offset: .55 },
+                   { transform: `translate3d(${dx}px,${dy}px,-900px) scale(.03)`, filter: 'blur(8px)', opacity: 0 }],
+                  { duration: 1250, easing: 'cubic-bezier(.55,0,.85,.45)', fill: 'forwards' }).finished.then(() => ghost.remove(), () => ghost.remove());
+    S.ripple = 0; S.attn = 1; wake();
+  });
+
+  size(); wake();
+  window.__void = S;   // for the tests: read-only inspection of the state
+})();
+</script>
+</body>
+</html>

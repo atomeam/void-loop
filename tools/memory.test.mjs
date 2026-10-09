@@ -164,3 +164,17 @@ test('the guard lets a full-size push through: /api/memory has its own limit, at
   assert.equal(res.status, 200);
   assert.deepEqual(await res.json(), { saved: 12, rejected: 0 });
 });
+
+test('ask: a plain question gets a plain answer from what Void remembers, filler words ignored, partial matches ranked', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec(), rec({ id: 'beta-1234abcd', name: 'beta', summary: 'Rust parser.', links: ['rust'], remote: '' })] } });
+  const get = async (q) => (await call(api.onRequestGet, env, { url: 'https://x/api/memory?ask=' + encodeURIComponent(q) })).json();
+  const a = await get('what did I build with react?');
+  assert.deepEqual(a.matches, ['alpha-1234abcd']);
+  assert.match(a.answer, /alpha/);
+  const b = await get('rust and react');
+  assert.equal(b.matches.length, 2, 'no project has both words, so both partial matches come back');
+  assert.match((await get('rust')).answer, /no remote copy/);
+  assert.match((await get('zzzz')).answer, /Nothing I remember/);
+  assert.deepEqual((await get('')).matches, []);
+});

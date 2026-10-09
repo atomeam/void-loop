@@ -5528,5 +5528,8 @@
   {"ask": "automations", "want": "skill:automations"},
   {"ask": "new automation", "want": "skill:automations"},
   {"ask": "create an automation", "want": "skill:automations"},
-  {"ask": "what automations do i have", "want": "skill:automations"}
+  {"ask": "what automations do i have", "want": "skill:automations"},
+  {"ask": "weather in paris now", "want": "skill:weather", "says": "refreshes every 15 min"},
+  {"ask": "top stories today", "want": "skill:news", "says": "refreshes every 30 min"},
+  {"ask": "hacker news", "want": "skill:news", "says": "refreshes every 10 min"}
 ]
