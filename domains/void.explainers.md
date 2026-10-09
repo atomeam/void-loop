@@ -130,6 +130,7 @@ per driven turn). Never an unlabeled "2:1".
 | Takes | `driverSpeed` | number | Degrees per second |
 | Takes | `presentation` | text | normal / discovery (live); display only |
 | Gives | `drivenTurnsPerDriverTurn` | number | Positive ratio magnitude, turns-per-turn |
+| Gives | `drivenTurnsPerDriverTurnSigned` | number | Signed ratio, turns-per-turn; negative for the opposite direction |
 | Gives | `explanation` | text | Explanation of current configuration |
 | Gives | `observations` | list | void.observations.v1 |
 | Gives | `model` | model | Geometry parameters and current pose |
@@ -142,7 +143,9 @@ per driven turn). Never an unlabeled "2:1".
 - `rotationDirection`: text, options `same` / `opposite`, answerId `opposite`. Prompt: "Do the two gears turn in the
   same or opposite direction?"
 
-Not assessed: `driverTeeth`, `drivenTeeth` (the inputs), `centerDistance`.
+Not assessed: `driverTeeth`, `drivenTeeth` (the inputs), `centerDistance`, and `drivenTurnsPerDriverTurnSigned` (number,
+unit `turns-per-turn`, negative for the opposite direction: −N_driver / N_driven). Combining the magnitude with the
+direction is gear knowledge, so the gear gives it and a taker such as the #19 notebook never computes it.
 
 In discovery mode the gear hides its explanation and both ratio readouts; tooth counts, rotation controls, the motion and
 the revolution markers stay.
