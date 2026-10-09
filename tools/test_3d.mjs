@@ -154,6 +154,14 @@ export async function run3dChecks({ check, fresh }) {
     check('reference miniature (countdown): draws real pixels, its state follows the data (12 -> 11), a remount by key moves the live one (nothing rebuilt), the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands with no flip, and unmounting frees it',
       ok(c.moving, false) && ok(c.still, true) && c.moving.stateRight.flipping === true && !c.errors.length, JSON.stringify(c));
   }
+  // ---- the gear explainer (explainer.gear-pair) through the same contract: a 16-32 pair, then the driver changed to 24 teeth
+  {
+    const G = await import(pathToFileURL(path.join(root, 'skills', 'gear-pair-rules.js')).href);
+    const c = await miniContract(fresh, { kind: 'gears', a: { state: G.create({ driverTeeth: 16, drivenTeeth: 32 }) }, b: { state: G.turnDriver(G.create({ driverTeeth: 24, drivenTeeth: 32 }), 30) }, settledWhen: 'dragging' });
+    const ok = (r) => r.drawn && r.colours > 40 && r.same && r.stateA && r.stateA.built === '16:32' && r.stateB.built === '24:32' && r.redrew && r.settled && r.idleDraws === 0 && r.freed;
+    check('gear explainer miniature: draws real pixels, its pair follows the data (16:32 -> 24:32), a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while paused, under reduced motion too, and unmounting frees it',
+      ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
+  }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
   {
     const F = await fresh();
