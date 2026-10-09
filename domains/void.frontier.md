@@ -126,6 +126,14 @@ Each item is something no other site does, built on what Void already has. Work 
 - **Done when:** the gear, moon and lock payloads each pass into the quiz and the challenge unchanged, and every required test is in the suite.
 - **claim:**
 
+## 18. "Can you make it do this?": goals you meet by changing the miniature
+- **What:** a goal mode for the explainers of #17, not another standalone system. The visitor asks "give me a challenge with this"; a short goal appears beside the miniature ("make the driven gear turn half as fast as the driver", "move the Moon to a waxing phase with half its face lit", "choose the key and bring the lock to ready"); they use the miniature's own controls; **Check** compares the card's current observations with the goal, and the feedback says what matches and what still needs changing. A hint explains the relationship without giving away the configuration. No time pressure by default, no hidden grading.
+- **Why it is special:** the miniature becomes both the lesson and the visitor's answer: explore it → explain it → answer about it → make it satisfy a goal.
+- **Contract needs (settle before building):** a declared way for a taker to request a fresh `observations` snapshot from its source card (the quiz and the challenge of #17 stay snapshot consumers and never ask); a goal is a list of conditions on declared observation fields (`id`, comparison, target, tolerance in the item's unit), evaluated from `void.observations.v1` alone: no mesh inspection, no per-explainer adapter.
+- **First piece:** the gear goal "make the driven gear turn half as fast as the driver" (`drivenTurnsPerDriverTurn` = 0.5 ± 0.01), with its required tests written first, after #17's gear explainer and quiz ship.
+- **Done when:** one goal per explainer passes through the same goal card with no adapter, and each is a named required test.
+- **claim:** (later: after #17)
+
 ## Already built from the 2026-10-09 idea list
 - **Your own Void persists:** the stage is kept and syncs across devices with a passkey (plan item 6). What it does while you are away is #4.
 
