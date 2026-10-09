@@ -283,7 +283,7 @@ export function mountStage3D() {
 
 function debugState() {
   return { mounted: !!stage, canvas: !!document.getElementById('void-3d'), animating: !!(stage && stage.raf), still: motionStill(), zoom: ui.zoom, zoomTo: ui.zoomTo,
-    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null, kindOf: f.spec.kindOf || null, detail: f.spec.detail | 0, tris: trisOf(f), seed: f.spec.seed ?? null, nature: f.nature || null, climate: f.climate || null })) };
+    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null, kindOf: f.spec.kindOf || null, detail: f.spec.detail | 0, tris: trisOf(f), seed: f.spec.seed ?? null, nature: f.nature || null, climate: f.climate || null, held: !!f.brain.held, flying: !!f.toss })), grab: ui.grab ? { id: ui.grab.f.brain.id, moved: ui.grab.moved } : null };
 }
 
 // --- the void sprite: a soft, glossy little blob with big shiny eyes, rosy cheeks, a glowing antenna bulb and a wispy tail ---
@@ -949,21 +949,52 @@ function camFor(k) {
   const fw = toWorld(z.brain.x, z.brain.y), m = Math.min(1, k - 1);
   return { x: fw.x * m, y: (fw.y + R * 0.3) * m };
 }
+// Grab and throw, like any stage object (void.html bindDrag): press on a figure to pick it up, a flick (or letting go off
+// the screen) throws it off with gravity and spin and it is gone; a slow drop sets it down where it is.
+export const TOSS_SPEED = 0.9; // px per ms, the same flick the stage uses
+export function tossVerdict({ x, y, vx, vy }, W, H) {
+  const off = x < 0 || y < 0 || x > W || y > H;
+  return { thrown: Math.hypot(vx || 0, vy || 0) >= TOSS_SPEED || off };
+}
 let pointerBound = false;
 function bindPointer() {
   if (pointerBound) return; pointerBound = true;
   const st = document.getElementById('stage');
   addEventListener('pointermove', (e) => {
+    const g = ui.grab;
+    if (g) {
+      if (!g.moved && Math.hypot(e.clientX - g.sx, e.clientY - g.sy) >= 5) { g.moved = true; g.f.brain.held = true; }
+      if (g.moved) {
+        const now = performance.now(), dt = Math.max(16, now - g.t);
+        g.vx = (e.clientX - g.lx) / dt; g.vy = (e.clientY - g.ly) / dt; g.lx = e.clientX; g.ly = e.clientY; g.t = now;
+        g.f.brain.x = e.clientX + g.ox; g.f.brain.y = e.clientY + g.oy; g.f.brain.vx = g.f.brain.vy = 0;
+        requestRender();
+      }
+    }
     ui.cursor = { x: e.clientX, y: e.clientY };
     const over = onBareStage(e) && figureAt(e.clientX, e.clientY);
     if (st) st.style.cursor = over ? 'pointer' : '';
   }, { passive: true });
   document.addEventListener('pointerleave', () => { ui.cursor = null; });
+  addEventListener('pointerup', () => {
+    const g = ui.grab; ui.grab = null;
+    if (!g || !g.moved) return;
+    const b = g.f.brain;
+    if (tossVerdict({ x: b.x, y: b.y, vx: g.vx, vy: g.vy }, innerWidth, innerHeight).thrown && !motionStill()) {
+      g.f.toss = { vx: g.vx * 1000, vy: g.vy * 1000, spin: (g.vx >= 0 ? 1 : -1) * (4 + Math.hypot(g.vx, g.vy) * 3) };
+    } else if (tossVerdict({ x: b.x, y: b.y, vx: g.vx, vy: g.vy }, innerWidth, innerHeight).thrown) { gone(g.f); }
+    else { b.held = false; b.x = clamp(b.x, R, innerWidth - R); b.y = clamp(b.y, R, innerHeight - R); }
+    requestRender();
+  }, true);
   addEventListener('blur', () => { ui.cursor = null; });
   addEventListener('pointerdown', (e) => {
     if (!onBareStage(e)) return;
     const f = figureAt(e.clientX, e.clientY);
-    if (f) { f.brain.hop = 1; f.brain.wave = 1; requestRender(); } // a tap says hello back
+    if (f && ui.zoom <= 1.02 && e.button <= 0) { // pick it up (a tap without moving still says hello back)
+      e.preventDefault();
+      ui.grab = { f, sx: e.clientX, sy: e.clientY, lx: e.clientX, ly: e.clientY, t: performance.now(), ox: f.brain.x - e.clientX, oy: f.brain.y - e.clientY, vx: 0, vy: 0, moved: false };
+      f.brain.hop = 1; f.brain.wave = 1; requestRender();
+    } else if (f) { f.brain.hop = 1; f.brain.wave = 1; requestRender(); } // a tap says hello back
     else if (ui.zoomTo > 1) { ui.zoomTo = 1; requestRender(); }   // a tap on the bare void steps back out
   }, true);
   const zoomBy = (f, factor) => {
@@ -1002,6 +1033,12 @@ export function requestRender() {
   stage.dirty = true;
   if (!stage.raf) stage.raf = requestAnimationFrame(frame);
 }
+// a thrown figure is gone: off the 3D layer, and out of the stage's things (void.html listens)
+function gone(f) {
+  const id = f.brain.id; if (ui.zoomId === id) { ui.zoomId = null; ui.zoomTo = 1; }
+  disposeFigure(f); figures.delete(id);
+  try { document.dispatchEvent(new CustomEvent('void:figure-thrown', { detail: { id } })); } catch (_) {}
+}
 function frame(ts) {
   stage.raf = 0;
   if (document.hidden) return;
@@ -1016,7 +1053,13 @@ function frame(ts) {
       if (still) { disposeFigure(f); figures.delete(id); continue; }
       f.leaving = now; f.brain.chasedOff = false;
     }
-    stepFigure(f.brain, dt, { ...world, posing: ui.zoomId === id && ui.zoomTo > 1 });
+    if (f.toss) { // flying off: gravity, spin, and gone once it is past the edge
+      f.brain.x += f.toss.vx * dt; f.toss.vy += 2600 * dt; f.brain.y += f.toss.vy * dt; f.tossSpin = (f.tossSpin || 0) + f.toss.spin * dt;
+      poseSprite(f, now); f.obj.rotation.z = -f.tossSpin; moving = true;
+      if (f.brain.x < -R * 4 || f.brain.x > innerWidth + R * 4 || f.brain.y > innerHeight + R * 4 || f.brain.y < -innerHeight) gone(f);
+      continue;
+    }
+    if (!f.brain.held) stepFigure(f.brain, dt, { ...world, posing: ui.zoomId === id && ui.zoomTo > 1 });
     poseSprite(f, now);
     if (f.spec.kindOf && CONDITIONS[f.spec.kindOf] && !f.leaving && stepElement(f, dt, now, still, elems)) moving = true;
     if (!still || f.leaving) moving = true;

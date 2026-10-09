@@ -109,12 +109,36 @@ async function reviewAnswer(request, env, body) {
   return Response.json({ answer: null, findings, lang: res.lang, review: 'rules', note: modelsOn(env) ? 'model busy' : null });
 }
 
+// Void's take on an article (the article page shows it above the Wikipedia summary, skills/take.js): not a repeat of the
+// summary, but what Void itself thinks is worth knowing. One per title, kept 7 days in the edge cache; no model, no take.
+const TAKE_SYSTEM = 'You are Void. You are given an encyclopedia summary of a subject. Give your own take in two or three short sentences: what the summary does not say that is worth knowing, a sharper point, a practical angle, a common misconception, or what to look at next. Do not repeat or paraphrase the summary. No preamble, no hedging, no lists, plain text only.';
+async function takeAnswer(request, env, body) {
+  const title = norm(body.title).slice(0, 160), desc = norm(body.description).slice(0, 200);
+  const extract = String(body.extract || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 1600);
+  if (title.length < 2 || extract.length < 20) return new Response('empty', { status: 400 });
+  if (!modelsOn(env)) return Response.json({ take: null, note: 'models off' });
+  const cacheReq = new Request(new URL(request.url).origin + '/__void-answer/take/' + await sha(title.toLowerCase()));
+  try { const hit = await caches.default.match(cacheReq); if (hit) return Response.json({ take: await hit.text(), cached: true }); } catch (_) {}
+  if (await rateLimited(request, env)) return Response.json({ take: null, note: 'slow down' }, { status: 429 });
+  try {
+    const r = await env.AI.run(MODEL, {
+      messages: [{ role: 'system', content: TAKE_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: 'Subject: ' + title + (desc ? ' (' + desc + ')' : '') + '\n\nSummary:\n' + extract }],
+      max_tokens: 260, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
+    });
+    const take = redact(noThink(pick(r))).replace(/\s+/g, ' ').trim().slice(0, 700);
+    if (!take) throw new Error('empty');
+    try { await caches.default.put(cacheReq, new Response(take, { headers: { 'cache-control': 'max-age=604800' } })); } catch (_) {}
+    return Response.json({ take });
+  } catch (e) { await recordShortfall(env, 'take', reasonOf(e)); return Response.json({ take: null, note: 'model busy' }); }
+}
+
 export async function onRequestPost({ request, env, waitUntil }) {
   const t0 = Date.now();
   let body = {};
   try { body = JSON.parse((await request.text()).slice(0, 20000)); } catch (_) { return new Response('bad', { status: 400 }); }
   if (body && body.mode === 'fix') return fixAnswer(request, env, body);
   if (body && body.mode === 'review') return reviewAnswer(request, env, body);
+  if (body && body.mode === 'take') return takeAnswer(request, env, body);
   const typed = norm(body.ask), ask = redact(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
   const key = await sha(ask.toLowerCase());

@@ -53,6 +53,22 @@ export function natureSummon(t) {
   return kind ? { act: 'summon', kind, title: noun } : null;
 }
 
+// An article's figure is the thing itself (Adam, 2026-10-09): a page about cats brings a real cat, about a banana a real
+// banana. Matched on the title's last word, then the whole title ("Honey bee" is a bee, "Great white shark" a shark);
+// null when Void has no real model of it yet, so the page brings no stand-in.
+export function realFigureFor(card, seed = (Math.random() * 4294967296) >>> 0) {
+  const title = String((card && card.title) || '').replace(/\s*\(.*\)$/, '').trim().toLowerCase();
+  if (!title || title.split(/\s+/).length > 4) return null;
+  // a work or a brand named after the thing ("Cat (musical)", "Shark Tank") is not the thing
+  if (/\((?!animal|food|plant|fruit|vegetable)[^)]*\)\s*$/i.test(String(card.title || '')) || /\b(?:musical|film|movie|song|album|novel|book|band|series|show|play|opera|company|game|episode|character|brand|software|magazine|team|club)\b/i.test(String(card.description || ''))) return null;
+  const find = (w) => natureOf(w).tags.find((x) => NATURE_LOOK[x]);
+  const kind = find(title.split(/\s+/).pop()) || find(title);
+  if (!kind) return null;
+  const [body, , pace] = NATURE_LOOK[kind], look = lookFor(kind, seed);
+  if (pace) look.pace = +(look.pace * pace).toFixed(3);
+  return { body, ...look, seed, kindOf: kind, title: card.title, script: fallbackScript(body, card.title) };
+}
+
 export function figuresOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (!t) return null;

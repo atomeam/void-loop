@@ -5488,6 +5488,11 @@
   {"ask": "void growth", "want": "skill:growth"},
   {"ask": "show me the growth ledger", "want": "skill:growth"},
   {"ask": "what's new with void", "want": "skill:growth"},
+  {"ask": "play sorry", "want": "skill:sorry"},
+  {"ask": "sorry board game", "want": "skill:sorry"},
+  {"ask": "let's play sorry", "want": "skill:sorry"},
+  {"ask": "a game of sorry", "want": "skill:sorry"},
+  {"ask": "i'm sorry", "want": "said"},
   {"ask": "I need to ship the product page by Friday", "want": "skill:intent"},
   {"ask": "I have to finish my essay by October 20", "want": "skill:intent"},
   {"ask": "I need to prepare a talk by next week and tell Sam", "want": "skill:intent"}

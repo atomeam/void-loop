@@ -100,6 +100,7 @@ Each item is something no other site does, built on what Void already has. Work 
 ## 14. The forge: type or sketch a thing, hold it, print it
 - **What:** type or sketch an object and Void makes a 3D model of it you can spin and inspect up close (the inspect the figures already have, `skills/figures3d.js` zoom), then "print it" downloads a file sized for a home printer. Use whatever makes the best model: the in-browser distance-field bodies (`skills/sdfmesh.js`), a text-to-3D or image-to-3D model, or both. The stage's printable 3MF (`skills/print-file.js`, `print-download.js`) is the start of the print half; add STL.
 - **Why it is special:** the on-ramp to the living-toy line: what you imagine becomes something you hold.
+- **Gets better on its own (Adam, 2026-10-09):** an article whose subject Void cannot make for real brings no stand-in and posts a `figure` miss ("make a real Sorry! (game)"); `node tools/misses.mjs` lists them, most-asked first, and each run that takes this item builds the top one as a real figure (`skills/figures.js` NATURE_LOOK and its body in `figures3d.js`, a test in `tools/figures.test.mjs`). The real-figure list grows with every run.
 - **First piece:** "make me a <thing>" for things no figure covers yet, as a spinning model with a "print it" STL.
 - **Done when:** ten things never built before come out recognisable, inspectable and printable.
 - **claim:**
