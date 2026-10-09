@@ -4587,6 +4587,9 @@ return { ok: true, detail: 'timer-reset' };
       return learnedSkills;
     }
     const skillsReady = loadLearnedSkills().finally(() => { skillsLoaded = true; });
+    // A summon from code, not the box (BASE.md: the old void-proxy command bar's route): document.dispatchEvent(new CustomEvent('void:summon', { detail: 'growth' }))
+    // runs that ask exactly as if it were typed. Only a short line of text is taken.
+    document.addEventListener('void:summon', (e) => { const d = e && e.detail; if (typeof d === 'string' && d.trim() && d.length <= 120) handle(d); });
 
     async function runLearnedSkills(text, lower0) {
       for (const skill of learnedSkills) {

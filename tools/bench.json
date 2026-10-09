@@ -5482,5 +5482,10 @@
   {"ask": "system status", "want": "skill:status", "says": "Skills"},
   {"ask": "is void working", "want": "skill:status", "says": "Outside sources"},
   {"ask": "health check", "want": "skill:status", "says": "Storage in this browser"},
-  {"ask": "are the sources up", "want": "skill:status", "says": "Void status"}
+  {"ask": "are the sources up", "want": "skill:status", "says": "Void status"},
+  {"ask": "growth", "want": "skill:growth"},
+  {"ask": "how have you grown", "want": "skill:growth"},
+  {"ask": "void growth", "want": "skill:growth"},
+  {"ask": "show me the growth ledger", "want": "skill:growth"},
+  {"ask": "what's new with void", "want": "skill:growth"}
 ]
