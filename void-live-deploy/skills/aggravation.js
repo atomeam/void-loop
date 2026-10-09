@@ -18,6 +18,7 @@
  * Positions: 'b' base, 0..55 a track hole, 'c' the centre, 'h0'..'h3' home (h3 is the deepest).
  */
 import { lift3d } from './lift3d.js';
+import { rattle } from './sfx.js';
 
 export const COLORS = ['red', 'blue', 'green', 'yellow'];
 export const HEX = { red: '#d93a3f', blue: '#2f6fd8', green: '#2c9c5a', yellow: '#e9b52a' };
@@ -184,7 +185,7 @@ export function botMove(state, c, d) {
 
 export function aggravationOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|start|open|make)?\s*(?:me\s+)?(?:a\s+)?(?:game\s+of\s+)?aggravation(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you|the\s+computer|bots?))?$/i.test(t)) return { kind: 'game' };
+  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|start|open|make)?\s*(?:me\s+)?(?:a\s+)?(?:game\s+of\s+)?(?:aggravation|star\s+marbles)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you|the\s+computer|bots?))?$/i.test(t)) return { kind: 'game' };
   return null;
 }
 
@@ -212,7 +213,7 @@ const NS = 'http://www.w3.org/2000/svg';
 function svgEl(tag, attrs, parent) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
 
 function boardSvg() {
-  const s = svgEl('svg', { viewBox: '-200 -200 400 400', class: 'ag-board', role: 'img', 'aria-label': 'Aggravation board' });
+  const s = svgEl('svg', { viewBox: '-200 -200 400 400', class: 'ag-board', role: 'img', 'aria-label': 'Star Marbles board' });
   const defs = svgEl('defs', {}, s);
   defs.innerHTML = '<linearGradient id="agWood" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9925a"/><stop offset=".5" stop-color="#b07a45"/><stop offset="1" stop-color="#8f5d31"/></linearGradient>'
     + '<linearGradient id="agInlay" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a3a22"/><stop offset="1" stop-color="#3c2414"/></linearGradient>'
@@ -263,7 +264,7 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card game-card aggravation-card';
   el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(452px, calc(100vw - 20px))';
-  el.innerHTML = '<div class="g-head"><span class="g-title">Aggravation</span><span class="g-sub"></span></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title">Star Marbles</span><span class="g-sub"></span></div>';
   const sub = el.querySelector('.g-sub');
   const board = boardSvg();
   const wrap = document.createElement('div'); wrap.className = 'g-board ag-wrap'; wrap.appendChild(board);
@@ -319,6 +320,8 @@ function mount(th, stageApi) {
     [...die.children].forEach((pip, i) => pip.classList.toggle('on', face.includes(i)));
     die.style.setProperty('--ag-col', HEX[COLORS[s.turn]]);
     die.classList.toggle('blank', !s.dice);
+    if (s.dice && die.dataset.had !== '1' && die.dataset.painted === '1') rattle(); // a fresh roll (anyone's) rattles; not on reopening
+    die.dataset.had = s.dice ? '1' : ''; die.dataset.painted = '1';
     rollBtn.disabled = !humanTurn() || s.dice != null;
     sub.textContent = s.seats.length - 1 + ' computer player' + (s.seats.length > 2 ? 's' : '');
     for (const b of opp.querySelectorAll('button')) b.classList.toggle('on', Number(b.dataset.opp) === s.seats.length - 1);
@@ -365,7 +368,7 @@ function mount(th, stageApi) {
   stageApi.stage.appendChild(el);
   // the board stands in the void in 3D (skills/mini/aggravation.js), the rest of the card beside it; the 2D board stays the fallback
   let still = null; // the board without its marbles and targets, as an SVG string: the 3D board's top
-  lift3d(th, stageApi, el, { kind: 'aggravation', board, title: 'Aggravation', W: 460, H: 400, snapshot: () => {
+  lift3d(th, stageApi, el, { kind: 'aggravation', board, title: 'Star Marbles', W: 460, H: 400, snapshot: () => {
     if (!still) {
       const copy = board.cloneNode(true);
       for (const n of copy.querySelectorAll('.ag-marbles > *, .ag-targets > *')) n.remove();
@@ -375,6 +378,8 @@ function mount(th, stageApi) {
     const xy = (n) => { const m = /translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(n.style.transform || ''); return m ? [+m[1], +m[2]] : [0, 0]; };
     return {
       svg: still,
+      // every hole on the board, so the 3D board is drilled where the marbles sit
+      holes: [...board.querySelectorAll('[data-hole]')].map((n) => ({ x: +n.getAttribute('cx'), y: +n.getAttribute('cy'), r: +n.getAttribute('r') })),
       marbles: [...board.querySelectorAll('.ag-marble')].map((n) => { const [x, y] = xy(n); return { sel: '[data-k="' + n.dataset.k + '"]', x, y, color: HEX[COLORS[+n.dataset.k.split(':')[0]]], can: n.classList.contains('can'), picked: n.classList.contains('picked'), last: n.classList.contains('last') }; }),
       targets: [...board.querySelectorAll('.ag-target')].map((n, i) => ({ sel: '.ag-targets > :nth-child(' + (i + 1) + ')', x: +n.getAttribute('cx'), y: +n.getAttribute('cy') })),
     };
@@ -386,7 +391,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'aggravation');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'aggravation'; }
   api.summon('aggravation', { state: createState(), center: true });
-  api.say('Aggravation · you are red · roll a 1 or 6 to leave base');
+  api.say('Star Marbles (plays like Aggravation) · you are red · roll a 1 or 6 to leave base');
   return 'aggravation';
 }
 

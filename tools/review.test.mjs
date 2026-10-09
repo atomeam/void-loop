@@ -42,6 +42,13 @@ ok(rules('p.innerHTML = cardHtml(data);', 'javascript').includes('inner-html@1')
 ok(!rules(`const el = showPage((p) => { p.innerHTML = '<h2>Watch</h2><div class="sub">checking…</div>'; });`, 'javascript').includes('inner-html@1'), 'innerHTML of a plain string with inner quotes not flagged');
 ok(!rules("el.innerHTML = cardHtml(esc, data, 'live');", 'javascript').includes('inner-html@1'), 'innerHTML from a builder handed esc among other arguments not flagged');
 ok(rules("el.innerHTML = cardHtml(data, 'live');", 'javascript').includes('inner-html@1') && rules('el.innerHTML = `<b>${name}</b>`;', 'javascript').includes('inner-html@1'), 'a builder without esc and a template with a value still flagged');
+// innerHTML built only from fixed text (literals, numbers, ALL_CAPS constants, the item of a map over a literal list) is not a risk
+for (const c of [`opp.innerHTML = '<span>vs</span>' + [1, 2, 3].map((n) => '<button data-opp="' + n + '">' + n + ' bot' + (n > 1 ? 's' : '') + '</button>').join('');`,
+  "defs.innerHTML = '<a>'\n    + COLORS.map((c) => '<g id=\"' + c + '\" fill=\"' + HEX[c] + '\"/>').join('');", 'el.innerHTML = COLORS.map((c) => `<i>${c.label}</i>`).join(\'\');', "el.innerHTML = '<b>' + MAX + '</b>';"])
+  ok(!rules(c, 'javascript').includes('inner-html@1'), 'innerHTML from fixed text not flagged: ' + c);
+for (const c of ["el.innerHTML = '<b>' + name + '</b>';", "el.innerHTML = '<b>'\n  + data.name + '</b>';", "el.innerHTML = names.map((n) => '<li>' + n + '</li>').join('');",
+  "el.innerHTML = [1, 2].map((n) => '<li>' + n + e.target.value + '</li>').join('');", 'el.innerHTML = `<b>${name}</b>`;', "el.innerHTML = '<b>' + getName() + '</b>';", "el.innerHTML = COLORS.map((c) => c + user).join('');"])
+  ok(rules(c, 'javascript').includes('inner-html@1'), 'innerHTML with a value from outside still flagged: ' + c);
 for (const [c, want] of T) ok(rules(c).includes(want), want + ' in: ' + c + ' (got ' + rules(c).join(',') + ')');
 const P = [
   ['def add(x, items=[]):\n    items.append(x)\n    return items', 'mutable-default@1'],

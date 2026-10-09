@@ -114,7 +114,7 @@ any card whose miniature takes input:
 
 ## The reference miniature: the countdown's calendar
 
-`skills/mini/countdown.js` is the reference for a living miniature: copy its shape, and run a new kind through the same
+`skills/mini/countdown.js` is the reference for how a living miniature behaves (the gear-pair explainer, frontier #17, is the reference for explainers, with its own required tests): copy its shape, and run a new kind through the same
 behaviour contract before it ships. It is small (one file, built from code, no downloads), its state comes only from the
 card's data, and every rule below is checked in `tools/test_3d.mjs` by `miniContract(fresh, { kind, a, b })`.
 

@@ -29,7 +29,7 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card game-card battleship-card';
   el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(460px, calc(100vw - 20px))';
-  el.innerHTML = '<div class="g-head"><span class="g-title">Battleship</span><span class="g-sub">you against Void</span></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title">Sea Battle</span><span class="g-sub">you against Void</span></div>';
   const wrap = document.createElement('div'); wrap.className = 'g-board';
   const boards = document.createElement('div'); boards.className = 'bs-boards'; boards.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:10px';
   const target = grid('bs-target', 'Void’s waters: tap to fire'), ocean = grid('bs-ocean', 'your fleet');
@@ -80,7 +80,7 @@ function mount(th, stageApi) {
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   voidPlays();
-  lift3d(th, stageApi, el, { kind: 'battleship', board: target, title: 'Battleship', W: 480, H: 420,
+  lift3d(th, stageApi, el, { kind: 'battleship', board: target, title: 'Sea Battle', W: 480, H: 420,
     snapshot: () => { const v = B.view(th.state, 'you'); return { own: v.own, target: { shots: v.target.shots, sunk: v.target.sunk } }; } });
 }
 
@@ -89,7 +89,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'battleship');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'battleship'; }
   api.summon('battleship', { state: B.create(), x: Math.max(10, Math.round(innerWidth / 2 - 400)), y: 40 });
-  api.say('Battleship · your ships are placed · tap Void’s waters to fire; a hit fires again');
+  api.say('Sea Battle (plays like Battleship) · your ships are placed · tap Void’s waters to fire; a hit fires again');
   return 'battleship';
 }
 

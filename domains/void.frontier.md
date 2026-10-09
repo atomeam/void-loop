@@ -9,12 +9,19 @@ Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as 
 ## Build order (owner, 2026-10-09)
 
 1. **Living miniature reference implementation**, and **fix verify-main's revert so it reverts the commit that actually broke the failing check** (on 2026-10-09 it reverted #217 for a rack check #215 broke). Both vendor-free; do them now, side by side: every later auto-merge is only safe if the revert targets the right commit.
+   - **status (owner, 2026-10-09):** stays priority 1 until it has handled a real red verify-main correctly (reverted the breaking commit, or reported when unclear); unit tests alone do not close it.
    - **claim (revert):** claude 2026-10-09: shipped. `tools/revert-target.mjs` (tests: `tools/revert-target.test.mjs`): each red verify-main names its failed checks as annotations; the next red run walks main's first parents to where each check first went red and reverts that commit, or reports when the record is unclear (unverified commits in between, an old run with no names, checks that broke at different commits). On today's history it reports instead of reverting #217. **Limits:** runs before this change have no recorded names, so the first red run after it reports rather than reverts; at most 9 names fit per run (more = unclear). **Next step:** none needed unless a report shows a pattern worth automating.
-   - **claim (miniature):** claude 2026-10-09: shipped. The countdown's flip calendar (`skills/mini/countdown.js`, now with `state()`) is the reference; `miniContract` in `tools/test_3d.mjs` runs any kind through the behaviour contract (draws real pixels, state follows data, a remount keeps the live one, the change shows on the canvas, it settles with no idle redraws, reduced motion lands the change at once, unmount frees it), written up in `docs/miniatures.md` ("The reference miniature"). **Limits:** only the countdown runs the contract so far; kinds without a `state()` can't. **Next step:** give each shipped miniature a `state()` and a contract line, one per run, starting with the timer and the counter.
+   - **suite split (owner, 2026-10-09; part of the revert-fix work):** a 20-minute benchmark inside a merge gate is the wrong shape (speed on a shared runner is noisy: a speed gate either flakes or proves nothing). (1) The required merge gate is the correctness suite only, run with `VOID_SKIP_BENCH=1`. (2) The benchmark becomes its own non-blocking job, nightly and on demand, committing its numbers as repo data so trends show on the growth board like the fringe ledger; an operation that must stay fast gets its own test with a generous absolute budget instead. (3) Make the correctness suite fast rather than partial: run its pages across parallel workers and reuse one browser context per group of checks where isolation isn't needed. `tools/test_void.mjs` is its own runner, not Playwright Test, so `--shard` doesn't apply as is: this means splitting its sections across worker processes. (4) A per-check timeout and a whole-suite budget that fail loudly, naming the last page opened, so a hang is red in minutes. The full correctness suite stays on every PR: no affected-only runs under auto-merge.
+     - **claim (suite split):** open.
+   - **spec (miniature):** the gear-pair explainer, #17 below (`domains/void.explainers.md`): its required tests first, then the geometry; moon, lock, quiz and challenge follow it (#17).
+   - **claim (miniature):** open.
+   - **tool (claude 2026-10-09, not the spec above):** `miniContract` in `tools/test_3d.mjs` runs any miniature through a behaviour contract (real pixels, `state()` follows the data, a remount keeps the live one, the change shows on the canvas, no idle redraws once settled, reduced motion lands the change at once, unmount frees it); the countdown's calendar passes it and is written up in `docs/miniatures.md`. The gear explainer can be run through it alongside its own `explainer.gear-pair/<case>` tests; it does not close this step.
 2. **A small execution record for actions:** owner, state, result, error. Every action Void takes (or stubs) writes one; nothing is "done" without its record.
 3. **One bounded business workflow:** a customer request becomes an editable proposal, shown on screen, proven with the owner's own details. The send step stays stubbed behind the confirm line.
 4. **One explicitly requested standing watch:** scheduling, persistence, evidence, notification. Only what the person asked to be watched.
 5. **One playable toy on the shared scene:** generated appearance kept separate from tested behaviour and authoritative state. No Unity, multiplayer or voice until the single-player toy works.
+
+**Reviewer (owner, 2026-10-09):** a second Claude session reviews **after merge**: it reads the actual merged SHA against the committed specs, reports concrete mismatches with file references and reproduction evidence, and opens focused fix PRs through the normal pipeline. It is not a required check and adds no gate; making its verdict required would be a separate, explicit owner decision. It also keeps one short file of the settled contract (port rules, modes, naming, tests first) as a faithful record of decisions already made, not new ones. Reports keep three things apart: merged, deployed (finished, smoke-checked), and verified (verify-main green on that SHA). Specs committed never means a feature is built.
 
 After these, the numbered items below in their earlier order: 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
 
@@ -133,6 +140,72 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **First piece:** push-to-talk on a held key, and a streaming voice for answers, chosen to match Void's sculpt (`domains/void.sculpt.md`).
 - **Done when:** a whole conversation with Void, summons included, works by voice alone.
 - **claim:**
+
+## 17. Explain, then learn: explainer cards that hand off to a quiz and a five-minute challenge
+- **What:** three explainer miniatures (a gear pair, the moon's phases, a lock cutaway) that each give `explanation: text`, `observations: list` and `model: model`, and two cards that take `observations` from any of them: "quiz me on this" and "give me five minutes with this". Full specs and every required test name: `domains/void.explainers.md` and `domains/void.learning.md`.
+- **Why it is special:** the first typed handoff between cards: one card's output becomes another card's input through a shared contract, with no adapter per card.
+- **Specs:** the explainers in `domains/void.explainers.md`, the quiz, the challenge and the shared contract in `domains/void.learning.md`. Tests first, then build.
+- **First piece:** the gear explainer, its required tests written before its geometry (`explainer.gear-pair/<case>`).
+- **Done when:** the gear, moon and lock payloads each pass into the quiz and the challenge unchanged, and every required test is in the suite.
+- **claim:**
+
+## 18. "Can you make it do this?": goals you meet by changing the miniature
+- **What:** a goal mode for the explainers of #17, not another standalone system. The visitor asks "give me a challenge with this"; a short goal appears beside the miniature ("make the driven gear turn half as fast as the driver", "move the Moon to a waxing phase with half its face lit", "choose the key and bring the lock to ready"); they use the miniature's own controls; **Check** compares the card's current observations with the goal, and the feedback says what matches and what still needs changing. A hint explains the relationship without giving away the configuration. No time pressure by default, no hidden grading.
+- **Why it is special:** the miniature becomes both the lesson and the visitor's answer: explore it → explain it → answer about it → make it satisfy a goal.
+- **Contract (decided by Adam, 2026-10-09):**
+  - **Taken ports declare `mode: snapshot | live`.** Sources always give their current state and never address a taker; the stage delivers one copy to a snapshot port and every change to a live port. The quiz and the challenge declare `snapshot`; the goal card declares `live` on `observations`. Sources stay unaware of their takers, which is what keeps "no per-explainer adapter" true, and the stage is the one place both modes live.
+  - **A goal** is a list of conditions on declared observation fields (`id`, comparison, target, tolerance in the item's unit), evaluated from `void.observations.v1` alone: no mesh inspection, no per-explainer adapter.
+  - **Every goal is reachable with the visitor's own controls, as a test.** Each goal carries its source's parameter constraints, and the required test `goal/<source>/<goal>-reachable-within-controls` asserts that some setting inside the declared ranges satisfies every condition.
+- **First piece:** the gear goal "make the driven gear turn half as fast as the driver" (`drivenTurnsPerDriverTurn` = 0.5 ± 0.01), with its required tests written first, after #17's gear explainer and quiz ship.
+- **Done when:** one goal per explainer passes through the same goal card with no adapter, and each is a named required test.
+- **claim:** (later: after #17)
+
+## 19. "Find the rule": discovery mode for an explainer
+- **What:** an optional mode where Void shows a miniature with its explanation and readouts hidden. The visitor experiments, captures the trials they choose into a small experiment notebook, predicts the next result before running it, then compares; "Reveal the rule" shows the explanation and ties it to their own trials. Goal mode (#18) is "make it do this"; this is "figure out why it does this".
+- **First example, the mystery gear pair:** the notebook records captured trials (driver teeth, driven teeth, driver turns, driven turns: 16/32/1/−0.5, 24/24/1/−1, 32/16/1/−2), then Void asks "before you turn it: with a 12-tooth driver and a 36-tooth driven gear, how far will the driven gear turn?" The visitor predicts, runs it, compares.
+- **Why it is special:** the visitor's own experiments become the learning material ("I predicted that, and now I can explain it"), with no new model or scene, and a new handoff: "turn my experiments into a quiz" (the notebook gives `observations` from captured trials only).
+- **Boundaries:** the explanation and ratio readouts are hidden in this mode only, never removed from the normal explainer; capturing a trial is explicit (no hidden interaction log); trials are ephemeral unless the visitor asks to keep them, as in #17; predictions are numeric or choice answers (no model grading); "Reveal" is always there, with no forced guessing and no penalty. Start with gears; extend only where a miniature supports real experiments.
+- **Contract (settled by Adam, 2026-10-09; in `void.explainers.md`'s shared section, built with #17):** every explainer takes `presentation` (text, `normal | discovery`, default `normal`, `live`), which changes only what it draws, never its state, controls, `observations` or `explanation`; and every explainer's observations include its inputs as non-assessed items, so a captured trial is reproducible. The notebook gives `presentation` (an ordinary handoff the other way: the explainer never knows who set it) and takes `observations` in `live` mode. No scene-control API: the explainer owns its presentation, the stage routes declared ports, the notebook owns only the trials the visitor captures.
+- **Notebook behaviour:** a live update only replaces the notebook's in-memory candidate, never adds a trial; Capture copies one coherent source revision (inputs and measured result) and later source changes never touch it; a prediction attaches to a trial only when the visitor submits it; the notebook gives `observations` of captured trials only, following the assessment contract, so "turn my experiments into a quiz" needs no adapter.
+- **Prediction wording (signed):** "For one positive driver turn, how many driven turns occur? Use a negative number for the opposite direction." It keeps the signed trial result apart from the gear's positive ratio magnitude.
+- **Signed result (decided by Adam, 2026-10-09):** the gear gives a non-assessed `drivenTurnsPerDriverTurnSigned` (turns-per-turn, negative for the opposite direction), so the notebook records −0.5 and checks a signed prediction without combining magnitude and direction itself. The assessed items (`drivenTurnsPerDriverTurn`, `rotationDirection`) and the quiz are unchanged.
+- **Required tests (written first):**
+  ```text
+  discovery/gear-presentation-defaults-to-normal
+  discovery/gear-hides-answer-readouts-and-accessible-equivalents
+  discovery/gear-keeps-input-controls-and-motion-visible
+  discovery/presentation-does-not-change-state-or-observations
+  discovery/reveal-restores-normal-without-resetting-experiment
+  discovery/notebook-live-updates-do-not-create-trials
+  discovery/capture-copies-one-source-revision
+  discovery/source-changes-do-not-mutate-captured-trials
+  discovery/prediction-preserves-sign-and-unit-convention
+  handoff/discovery-captured-trials-to-quiz-no-adapter
+  ```
+- **First piece:** the mystery gear pair with a three-trial notebook and one prediction, its required tests written first, after #17's gear explainer and quiz.
+- **claim:** (later: after #17)
+
+## 20. "Explain it with sound": hear the ratio
+- **What (the ideation agent's proposal):** each gear has one visible revolution marker and one fixed reference point; when its marker crosses that point, the gear makes a distinct, soft synthesized click. A 16-tooth driver turning a 32-tooth gear gives two driver clicks for each driven click during continuous rotation, and changing tooth counts changes the rhythm. A visitor can ask "make the second gear click half as often". Another way to explore the same relationship, not a separate sound-driven mechanism. Accepted by Adam, 2026-10-09, as a later item after #19, not a dependency of the gear explainer.
+- **Boundaries:**
+  - Off by default; starts only on an explicit visitor action. Mute and volume controls; gentle, distinguishable sounds for the two gears.
+  - Clicks are revolution-marker crossings, never tooth contacts, derived from authoritative motion, never a playback timer of their own, so the sound cannot drift from the scene.
+  - Below the sound-rate limit, one audible click per crossing. Rapid manual dragging still detects every crossing, but excess clicks may be dropped, never queued for later.
+  - Pausing autoplay stops autoplay clicks; deliberate manual movement can still click.
+  - Turning sound on takes the current marker positions as the start: crossings made while sound was off are never replayed.
+  - No microphone, recording, account or tracking. Everything the sound conveys stays available visually and in text.
+- **Contract:** every explainer that offers it takes `sound` (text, `off | on`, default `off`, `live`), presentation-only like `presentation`: it changes only what the explainer plays, never its state, controls, `observations` or `explanation`. No new output port: the ratio a visitor hears is the one already in `drivenTurnsPerDriverTurn`. Sounds are made on the spot with Web Audio (`skills/sfx.js`), no files. Not part of #17: `void.explainers.md` does not list `sound`.
+- **The design question:** does hearing the rhythm help a visitor notice the ratio (not: does it sound pleasant)? Asked by explicit feedback on the card once it is live, never inferred from tracking.
+- **Required tests (gear first, then per explainer that offers sound):**
+  ```text
+  explainer.gear-pair/sound-off-by-default-explicit-start
+  explainer.gear-pair/sound-pause-stops-autoplay-clicks
+  explainer.gear-pair/sound-drag-rate-limited-no-backlog
+  explainer.gear-pair/sound-clicks-match-crossings-below-rate-limit
+  explainer.gear-pair/sound-enable-does-not-replay-past-crossings
+  ```
+- **First piece:** the gear pair. Build order unchanged.
+- **claim:** (later: after #19)
 
 ## Candidate capability map (2026-10-09)
 

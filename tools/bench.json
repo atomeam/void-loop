@@ -5495,5 +5495,12 @@
   {"ask": "i'm sorry", "want": "said"},
   {"ask": "I need to ship the product page by Friday", "want": "skill:intent"},
   {"ask": "I have to finish my essay by October 20", "want": "skill:intent"},
-  {"ask": "I need to prepare a talk by next week and tell Sam", "want": "skill:intent"}
+  {"ask": "I need to prepare a talk by next week and tell Sam", "want": "skill:intent"},
+  {"ask": "play back to start", "want": "skill:sorry"},
+  {"ask": "back to start game", "want": "skill:sorry"},
+  {"ask": "play star marbles", "want": "skill:aggravation"},
+  {"ask": "star marbles", "want": "skill:aggravation"},
+  {"ask": "play the landlord's game", "want": "skill:monopoly"},
+  {"ask": "play sea battle", "want": "skill:battleship"},
+  {"ask": "play four in a row", "want": "skill:connect4"}
 ]

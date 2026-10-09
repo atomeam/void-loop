@@ -61,7 +61,7 @@ export function currentAsks(entries, n = 6) {
   return out;
 }
 
-const GAME_NAMES = { tictactoe: 'tic-tac-toe', othello: 'Othello', mancala: 'mancala', chess: 'chess', checkers: 'checkers', aggravation: 'Aggravation', go: 'Go', monopoly: 'Monopoly', battleship: 'Battleship', poker: 'poker', fireworks: 'Fireworks (co-op)', connect4: 'Connect Four' };
+const GAME_NAMES = { tictactoe: 'tic-tac-toe', othello: 'Reversi', mancala: 'mancala', chess: 'chess', checkers: 'checkers', aggravation: 'Star Marbles', sorry: 'Back to Start', go: 'Go', monopoly: 'The Landlord’s Game', battleship: 'Sea Battle', poker: 'poker', fireworks: 'Fireworks (co-op)', connect4: 'Four in a Row' };
 // what Void knows about itself beyond selfFacts: its games and its card miniatures (self.json, tools/self-context.mjs)
 export function knowsFacts(self) {
   const parts = [];
