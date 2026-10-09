@@ -8,6 +8,8 @@
  *       opts: { boardW, boardH, w = 280, gap = 20 }
  */
 import { howTo } from './howto.js';
+import { soundButton } from './sfx.js';
+const SOUNDS = new Set(['sorry', 'aggravation']); // games that make table sounds so far
 
 export function grip(label) {
   const g = document.createElement('div');
@@ -35,6 +37,8 @@ export function sideCard(th, stageApi, card, { boardW = 420, boardH = 420, w = 2
   if (!th.card) th.card = { x: at.x, y: at.y }; // from now on the card stays where it is when the board moves
   card.classList.add('side-card');
   howTo(card, th.kind); // every game's card: a "How to play" that opens by itself the first time
+  const head = card.querySelector('.g-head');
+  if (SOUNDS.has(th.kind) && head && !head.querySelector('.sfx-btn')) head.appendChild(soundButton());
   card.dataset.of = th.id; // not data-id: the stage's own drag and lookups stay on the board
   card.style.position = 'absolute';
   card.style.left = at.x + 'px'; card.style.top = at.y + 'px';

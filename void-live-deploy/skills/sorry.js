@@ -6,6 +6,7 @@
  * "sorry", "play sorry", "sorry!", "a game of sorry".
  */
 import { lift3d } from './lift3d.js';
+import { flip } from './sfx.js';
 import { COLORS, HEX, TRACK, SIDE, PAWNS, SAFE, SLIDES, startExit, safeEntry, createState, draw, movesFor, play, pass, botMove } from './sorry-rules.js';
 
 export function sorryOf(text) {
@@ -151,6 +152,7 @@ function mount(th, stageApi) {
       card.classList.toggle('back', !face);
       card.style.fontSize = face === 'Sorry!' ? '13px' : '';
       if (face && !reduced()) { card.classList.remove('flip'); void card.offsetWidth; card.classList.add('flip'); }
+      if (face) flip();
     }
     drawBtn.disabled = !humanTurn() || s.card != null;
     drawBtn.classList.toggle('ready', !drawBtn.disabled);

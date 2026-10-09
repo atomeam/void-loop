@@ -18,6 +18,7 @@
  * Positions: 'b' base, 0..55 a track hole, 'c' the centre, 'h0'..'h3' home (h3 is the deepest).
  */
 import { lift3d } from './lift3d.js';
+import { rattle } from './sfx.js';
 
 export const COLORS = ['red', 'blue', 'green', 'yellow'];
 export const HEX = { red: '#d93a3f', blue: '#2f6fd8', green: '#2c9c5a', yellow: '#e9b52a' };
@@ -319,6 +320,8 @@ function mount(th, stageApi) {
     [...die.children].forEach((pip, i) => pip.classList.toggle('on', face.includes(i)));
     die.style.setProperty('--ag-col', HEX[COLORS[s.turn]]);
     die.classList.toggle('blank', !s.dice);
+    if (s.dice && die.dataset.had !== '1' && die.dataset.painted === '1') rattle(); // a fresh roll (anyone's) rattles; not on reopening
+    die.dataset.had = s.dice ? '1' : ''; die.dataset.painted = '1';
     rollBtn.disabled = !humanTurn() || s.dice != null;
     sub.textContent = s.seats.length - 1 + ' computer player' + (s.seats.length > 2 ? 's' : '');
     for (const b of opp.querySelectorAll('button')) b.classList.toggle('on', Number(b.dataset.opp) === s.seats.length - 1);
@@ -375,6 +378,8 @@ function mount(th, stageApi) {
     const xy = (n) => { const m = /translate\(([-\d.]+)px,\s*([-\d.]+)px\)/.exec(n.style.transform || ''); return m ? [+m[1], +m[2]] : [0, 0]; };
     return {
       svg: still,
+      // every hole on the board, so the 3D board is drilled where the marbles sit
+      holes: [...board.querySelectorAll('[data-hole]')].map((n) => ({ x: +n.getAttribute('cx'), y: +n.getAttribute('cy'), r: +n.getAttribute('r') })),
       marbles: [...board.querySelectorAll('.ag-marble')].map((n) => { const [x, y] = xy(n); return { sel: '[data-k="' + n.dataset.k + '"]', x, y, color: HEX[COLORS[+n.dataset.k.split(':')[0]]], can: n.classList.contains('can'), picked: n.classList.contains('picked'), last: n.classList.contains('last') }; }),
       targets: [...board.querySelectorAll('.ag-target')].map((n, i) => ({ sel: '.ag-targets > :nth-child(' + (i + 1) + ')', x: +n.getAttribute('cx'), y: +n.getAttribute('cy') })),
     };

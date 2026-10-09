@@ -8,6 +8,7 @@
  * x, y are in the card's SVG units (-200..200, y down).
  */
 import { tweens } from './tabletop.js';
+import { clack } from '../sfx.js';
 
 const U = 0.001, HALF = 0.2, H = 0.022, MR = 0.0072; // 1 SVG unit = 1 mm: a 40 cm board, 14 mm marbles
 export default async function build(ctx, data) {
@@ -26,9 +27,30 @@ export default async function build(ctx, data) {
   });
   const topM = new THREE.MeshPhysicalMaterial({ map: topMap, roughness: 0.5, clearcoat: 0.45, clearcoatRoughness: 0.3 });
   const sideM = new THREE.MeshPhysicalMaterial({ color: '#8f5d31', roughness: 0.55, clearcoat: 0.3 });
-  const board = new THREE.Mesh(new THREE.BoxGeometry(HALF * 2, H, HALF * 2), [sideM, sideM, topM, sideM, sideM, sideM]);
-  board.position.y = H / 2; board.castShadow = board.receiveShadow = true; board.userData.isBoard = true; root.add(board);
   const pawns = data.piece === 'pawn';
+  // a marble board is drilled: the top is cut with a hole at every hole, and a dark wooden cup sits under each one, so a
+  // marble rests down in its hole like on the real board (Adam: "the board should have pits for the marbles").
+  // Sorry!'s board is flat squares, so it keeps a plain top.
+  const holes = !pawns && Array.isArray(data.holes) ? data.holes : [], PIT = MR * 0.86, DEEP = 0.006;
+  const hidden = new THREE.MeshBasicMaterial({ visible: false });
+  const board = new THREE.Mesh(new THREE.BoxGeometry(HALF * 2, H, HALF * 2), [sideM, sideM, holes.length ? hidden : topM, sideM, sideM, sideM]);
+  board.position.y = H / 2; board.castShadow = board.receiveShadow = true; board.userData.isBoard = true; root.add(board);
+  let top = null, pits = null;
+  if (holes.length) {
+    const shape = new THREE.Shape(); shape.moveTo(-HALF, -HALF); shape.lineTo(HALF, -HALF); shape.lineTo(HALF, HALF); shape.lineTo(-HALF, HALF); shape.lineTo(-HALF, -HALF);
+    // shape (sx, sy) lands at world (sx, H, -sy) once laid flat; a hole at card (x, y) is world (-x, -y) in metres
+    for (const h of holes) { const p = new THREE.Path(); p.absarc(-h.x * U, h.y * U, PIT, 0, Math.PI * 2, true); shape.holes.push(p); }
+    const g = new THREE.ShapeGeometry(shape, 10).rotateX(-Math.PI / 2);
+    const pos = g.attributes.position, uv = g.attributes.uv; // the same mapping as the box's top face, so the card's art lines up
+    for (let i = 0; i < pos.count; i++) uv.setXY(i, (pos.getX(i) + HALF) / (2 * HALF), (HALF - pos.getZ(i)) / (2 * HALF));
+    top = new THREE.Mesh(g, topM); top.position.y = H; top.receiveShadow = true; top.userData.isBoard = true; root.add(top);
+    const cupGeo = new THREE.LatheGeometry([[PIT, 0], [PIT * 0.99, -DEEP * 0.3], [PIT * 0.86, -DEEP * 0.75], [PIT * 0.45, -DEEP * 0.97], [0, -DEEP]].map(([r, y]) => new THREE.Vector2(r, y)), 28);
+    const cupM = new THREE.MeshStandardMaterial({ color: '#3b2415', roughness: 0.85, side: THREE.DoubleSide });
+    pits = new THREE.InstancedMesh(cupGeo, cupM, holes.length); pits.receiveShadow = true; pits.userData.isBoard = true;
+    const m4 = new THREE.Matrix4();
+    holes.forEach((h, i) => { m4.makeTranslation(-h.x * U, H, -h.y * U); pits.setMatrixAt(i, m4); });
+    root.add(pits);
+  }
   // a Sorry! pawn: turned plastic, a wide foot, a waist, a collar and a round head (about 24 mm tall)
   const pawnProfile = [[0, 0], [0.0078, 0], [0.0082, 0.0012], [0.0074, 0.0026], [0.0046, 0.0046], [0.0033, 0.0098], [0.0029, 0.0136], [0.0052, 0.0146], [0.0052, 0.0156], [0.0031, 0.0166], [0.0046, 0.0184], [0.0049, 0.0204], [0.004, 0.0226], [0.0022, 0.0238], [0, 0.0242]].map(([r, y]) => new THREE.Vector2(r, y));
   const ballGeo = pawns ? new THREE.LatheGeometry(pawnProfile, 48) : new THREE.SphereGeometry(MR, 40, 24);
@@ -44,7 +66,7 @@ export default async function build(ctx, data) {
   const toM = new THREE.MeshBasicMaterial({ color: '#5fe1ff', transparent: true, opacity: 1, depthWrite: false });
   const toGlowM = new THREE.MeshBasicMaterial({ color: '#5fe1ff', transparent: true, opacity: 0.35, depthWrite: false });
   const marbles = new Map(), rings = new THREE.Group(), balls = new THREE.Group(); root.add(rings, balls);
-  const tw = tweens(), REST = pawns ? H : H + MR * 0.55;
+  const tw = tweens(), REST = pawns ? H : holes.length ? H + Math.sqrt(MR * MR - PIT * PIT) : H + MR * 0.55; // a marble sits down in its hole
   function paint(d) {
     const seen = new Set();
     for (const m of d.marbles || []) {
@@ -52,7 +74,11 @@ export default async function build(ctx, data) {
       let o = marbles.get(m.sel);
       const to = at(m.x, m.y, REST + (m.picked ? 0.012 : 0));
       if (!o) { o = new THREE.Mesh(ballGeo, matFor(m.color)); o.castShadow = true; o.position.copy(to); balls.add(o); marbles.set(m.sel, o); }
-      else if (o.position.distanceTo(to) > 1e-5) tw.add(o, to, { dur: o.position.distanceTo(to) > 0.03 ? 0.5 : 0.18, hop: o.position.distanceTo(to) > 0.03 ? 0.02 : 0 });
+      else if (o.position.distanceTo(to) > 1e-5) {
+        // the piece lands with a sound: a long move (or being sent home) knocks harder than a nudge or a lift
+        const far = o.position.distanceTo(to), lift = Math.abs(to.y - o.position.y) > 1e-4 && far < 0.02;
+        tw.add(o, to, { dur: far > 0.03 ? 0.5 : 0.18, hop: far > 0.03 ? 0.02 : 0, done: lift ? null : () => clack(0.35 + Math.min(0.65, far * 4), pawns ? 'plastic' : 'glass') });
+      }
       o.userData.sel = m.can ? m.sel : null;
     }
     for (const [k, o] of marbles) if (!seen.has(k)) { balls.remove(o); marbles.delete(k); }
@@ -82,6 +108,6 @@ export default async function build(ctx, data) {
     update(d) { paint(d); ctx.requestRender(); },
     tick(dt) { return tw.tick(dt) ? 'view' : false; },
     state() { return { marbles: marbles.size, rings: rings.children.length }; },
-    dispose() { for (const x of [ballGeo, ringGeo, glowGeo, board.geometry]) x.dispose(); for (const m of [topM, sideM, canM, toM, toGlowM, ...Object.values(glass)]) m.dispose(); topMap.dispose(); },
+    dispose() { for (const x of [ballGeo, ringGeo, glowGeo, board.geometry, top && top.geometry, pits && pits.geometry]) if (x) x.dispose(); for (const m of [topM, sideM, canM, toM, toGlowM, hidden, pits && pits.material, ...Object.values(glass)]) if (m) m.dispose(); if (pits) pits.dispose(); topMap.dispose(); },
   };
 }
