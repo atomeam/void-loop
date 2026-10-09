@@ -5129,7 +5129,7 @@ return { ok: true, detail: 'timer-reset' };
       }
       return { g, products: await catalogP };
     }
-    const PAID_ADDS = 'more model answers, private skills and a higher cap on actions you confirm';
+    const PAID_ADDS = 'more model answers, Pro code review, private skills and a higher cap on actions you confirm';
     const PAID_LEAD = "(?:please\\s+)?(?:(?:i\\s+(?:want|need|would\\s+like)|i'?d\\s+like|can\\s+i|could\\s+i|how\\s+(?:do|can)\\s+i|let\\s+me|give\\s+me|get\\s+me)(?:\\s+to)?(?:\\s+(?:have|get))?\\s+)?";
     const PAID_CORE = [
       "upgrade(?: me| my void| void| my account| my plan)?(?: to (?:paid|pro|premium)(?: void)?)?",
@@ -5280,8 +5280,8 @@ return { ok: true, detail: 'timer-reset' };
       } catch (_) {}
       if (vpageEl !== el) return 'review';
       const deep = el.querySelector('[data-deep]');
-      if (deep) deep.outerHTML = j && j.answer ? '<h3 style="margin:16px 0 6px;font-weight:500">A closer read</h3>' + fixHtml(j.answer) + '<div class="src">Quick checks by Void, closer read by Void\'s model · keys and passwords were masked before it was read</div>'
-        : '<div class="src">Quick checks by Void' + (j && j.note === 'slow down' ? ' · the closer read is busy, ask again in a minute' : ' · the closer read is not available right now') + ' · keys and passwords are masked</div>';
+      if (deep) deep.outerHTML = j && j.answer ? '<h3 style="margin:16px 0 6px;font-weight:500">A closer read</h3>' + fixHtml(j.answer) + '<div class="src">Quick checks by Void, closer read by Void\'s model · keys and passwords were masked before it was read · <a href="/code-review/">review every pull request this way</a></div>'
+        : '<div class="src">Quick checks by Void' + (j && j.note === 'slow down' ? ' · the closer read is busy, ask again in a minute' : ' · the closer read is not available right now') + ' · keys and passwords are masked · <a href="/code-review/">review every pull request this way</a></div>';
       return 'review';
     }
     async function handleReviewAsk(text, full) {

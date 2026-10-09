@@ -384,7 +384,7 @@ const RULES = [
 const KEYNAME = /(?:api[_-]?key|apikey|secret|client[_-]?secret|password|passwd|pwd|access[_-]?token|refresh[_-]?token|auth[_-]?token|token|private[_-]?key)\w*["']?\s*:?[:=]\s*$/i;
 const PASSNAME = /(?:password|passwd|pwd)\w*["']?\s*:?[:=]\s*$/i;
 function hasSecret(r, lang) {
-  const strs = [...r.matchAll(/(["'`])((?:\\.|(?!\1).)*)\1/g)];
+  const strs = [...r.matchAll(/(["'`])((?:\\.|(?!\1)[^\\])*)\1/g)];
   for (const s of strs) {
     const v = s[2];
     if (redact(v) !== v && !/^\[redacted/.test(v)) return true;
@@ -401,6 +401,22 @@ const ORDER = { bug: 0, risk: 1, style: 2, note: 3 };
 // planted fake keys, planted TODOs). Test names in every language this repo writes: test_*, *_test.py|js|mjs, *.test.js|mjs.
 export const REVIEW_SKIP = /^(?:void-live-deploy\/(?:index|void)\.html|tools\/(?:bench|grown|fringe)(?:\.best)?\.json|.*\.(?:json|md|txt|lock|svg|png|jpg|gif|ico|woff2?)|(?:.*\/)?(?:test_[^/]*|[^/]*_test\.(?:py|m?js)|[^/]*\.test\.m?js))$/;
 export const skippedInReview = (path) => REVIEW_SKIP.test(String(path || ''));
+// The line numbers (1-based) inside <textarea> and <pre> blocks of an HTML page, open and close lines included: they hold
+// text to show (sample code, a snippet to copy), not code the page runs, so a pull-request review leaves them out.
+export function textLines(src) {
+  const out = new Set(); let open = null;
+  src.forEach((l, i) => {
+    let rest = l, inside = open !== null;
+    for (;;) {
+      if (open === null) { const m = rest.match(/<(textarea|pre)\b[^>]*>/i); if (!m) break; open = m[1].toLowerCase(); inside = true; rest = rest.slice(m.index + m[0].length); }
+      const c = rest.search(new RegExp('</' + open + '\\s*>', 'i')); if (c < 0) break;
+      rest = rest.slice(c + open.length + 3); open = null;
+    }
+    if (inside || open !== null) out.add(i + 1);
+  });
+  return out;
+}
+
 export const KIND_WORD = { bug: 'bug', risk: 'risk', style: 'style', note: 'note' };
 
 // The quick checks: [{ line, kind, rule, message, text }] most serious first, at most `max`. `text` is the line as written, keys masked.
