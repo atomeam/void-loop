@@ -2,10 +2,11 @@
 # Pages). tools/deploy.ps1 stays the laptop fallback. Built to fit GitHub Free's 2,000 Linux minutes a month (~65 a day):
 # Ship now, test after (Adam, 2026-10-09: nothing waits). A PR merges as soon as Void's review is clean (automerge.yml,
 # tools/pr-ready.mjs); main deploys in about a minute; the full suite then runs on what shipped (verify-main), and a failure
-# reverts that commit on main and redeploys.
+# reverts the commit that broke it on main and redeploys.
 #   PR, code changed    the quick checks (seconds) and a preview deploy (Void's review is its own workflow, void-review.yml)
 #   PR, docs only       the quick checks; no preview
-#   push to main        the quick checks, deploy, then verify-main: the full suite on that commit; red = revert + redeploy
+#   push to main        the quick checks, deploy, then verify-main: the full suite on that commit; red = revert the commit
+#                       that broke the failed checks (tools/revert-target.mjs; unclear = reported, not guessed) + redeploy
 #   manual run          the full suite (bench optional), then deploy; after_merge=true (automerge.yml) = as a push to main
 name: Void deploy
 
@@ -179,6 +180,7 @@ jobs:
     permissions:
       contents: write # push the revert
       actions: write # start the deploy of the reverted main
+      checks: read # the failed checks earlier red runs named (tools/revert-target.mjs)
     steps:
       - uses: actions/checkout@v4
         with:
@@ -199,12 +201,27 @@ jobs:
         with:
           bench: skip
 
-      - name: Red after the deploy - revert it on main and deploy again
+      - name: Name the failed checks (the next red run reads them to find the commit that broke each one)
+        if: failure() && steps.test.outcome == 'failure'
+        run: node tools/revert-target.mjs --annotate test-output.txt || true
+
+      - name: Red after the deploy - revert the commit that broke it, on main, and deploy again
         if: failure() && steps.test.outcome == 'failure'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          sha=$(git rev-parse HEAD)
+          tested=$(git rev-parse HEAD)
+          # Not always the tested commit: when a failed check was already red before it, the commit where that check
+          # first went red is the one to take back (tools/revert-target.mjs). An unclear record is reported, not guessed.
+          pick=$(node tools/revert-target.mjs --pick "$tested" test-output.txt) || pick='{"action":"report","why":"could not read the verify record"}'
+          action=$(node -e 'console.log(JSON.parse(process.argv[1]).action)' "$pick")
+          why=$(node -e 'console.log(JSON.parse(process.argv[1]).why)' "$pick")
+          if [ "$action" != "revert" ]; then
+            echo "::error title=Not reverted::$tested failed the suite after it shipped, but which commit broke it is unclear: $why. Look at the failed checks and revert by hand."
+            echo "### $tested failed after shipping; not reverted automatically: $why" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          sha=$(node -e 'console.log(JSON.parse(process.argv[1]).sha)' "$pick")
           subject=$(git log -1 --format=%s "$sha")
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -213,12 +230,12 @@ jobs:
           if git rev-parse -q --verify "$sha^2" >/dev/null; then parent="-m 1"; else parent=""; fi
           if ! git revert --no-commit $parent "$sha"; then
             git revert --abort || true
-            echo "::error title=Not reverted::$sha failed the suite after it shipped, and reverting it on main conflicts with what merged since. Revert it by hand."
-            echo "### $sha failed after shipping; automatic revert conflicted: revert it by hand" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error title=Not reverted::$sha broke the suite ($why), and reverting it on main conflicts with what merged since. Revert it by hand."
+            echo "### $sha broke the suite ($why); automatic revert conflicted: revert it by hand" >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
-          git commit -q -m "Revert \"$subject\"" -m "It shipped and then failed the full suite (verify-main, run ${{ github.run_id }}), so it is taken back off the site." -m "Void-auto-revert: $sha"
+          git commit -q -m "Revert \"$subject\"" -m "It shipped and the full suite failed on main (verify-main, run ${{ github.run_id }}, testing $tested): $why. So it is taken back off the site." -m "Void-auto-revert: $sha"
           git push origin main
           gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true
-          echo "::error title=Reverted::$sha shipped and failed the suite; it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."
-          echo "### $sha failed the suite after shipping: reverted on main and redeployed" >> "$GITHUB_STEP_SUMMARY"
+          echo "::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."
+          echo "### $sha broke the suite after shipping ($why): reverted on main and redeployed" >> "$GITHUB_STEP_SUMMARY"
