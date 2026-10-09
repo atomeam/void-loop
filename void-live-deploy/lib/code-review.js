@@ -190,6 +190,9 @@ const RULES = [
     'a var in a for loop is shared by every pass, so callbacks created in the loop all see its final value. Declare it with let: for (let i = 0; …).'],
   ['json-parse-storage', 'bug', JS, (m) => /\bJSON\.parse\s*\(\s*(?:window\.)?(?:localStorage|sessionStorage)\.getItem\s*\(/.test(m) && !/\btry\b/.test(m),
     'JSON.parse throws on text that is not valid JSON (an old format, a hand edit, a half-written save), and that stops the page. Wrap it in try/catch and fall back to a default.'],
+  // taught by an extra reviewer (tools/review-learn.mjs, PR #142): saved data that parses but is not a list ({} or null) crashes the array call
+  ['json-array-shape', 'bug', JS, (m, r) => /\bJSON\.parse\s*\(\s*(?:(?:window\.)?(?:localStorage|sessionStorage)\.getItem\s*\([^()]*\)\s*(?:\|\|\s*(['"`])\[\]\1\s*)?|[^()]*\|\|\s*(['"`])\[\]\2\s*)\)\s*\.\s*(?:filter|map|forEach|find|findIndex|some|every|reduce|flatMap|includes|slice|concat|join)\s*\(/.test(r) && !/Array\.isArray/.test(r),
+    'JSON.parse succeeds on saved text like {} or null, and then the array call throws ("filter is not a function"). Check the shape first: const v = JSON.parse(text); const list = Array.isArray(v) ? v : [];'],
   ['busy-loop', 'bug', ['python'], (m, r, x) => /^\s*while\s+(?:True|1)\s*:\s*pass\b/.test(m) || (/^\s*while\s+(?:True|1)\s*:\s*$/.test(m) && /^\s*pass\s*$/.test(x.next(1))),
     'while True: pass spins forever at full speed, using a whole CPU core and never stopping. Wait on something (time.sleep, an event, input) or add a condition that ends the loop.'],
   ['sort-no-compare', 'style', JS, (m) => /\.sort\s*\(\s*\)/.test(m),
