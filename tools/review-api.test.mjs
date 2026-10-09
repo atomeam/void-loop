@@ -90,13 +90,13 @@ test('Void Code Review Pro on its own: a Gumroad license key, checked with Gumro
   const gumroad = async (url, init) => { asked.push(String(init.body)); const k = new URLSearchParams(init.body).get('license_key'); return k === LIC ? Response.json({ success: true, purchase }) : Response.json({ success: false, message: 'That license does not exist for the provided product.' }, { status: 404 }); };
   const env = await envWith({ ai: ai('closer read') });
   env.fetchGumroad = gumroad;
-  const notYet = await (await call(api.onRequestPost, env, { code: BUGGY }, LIC)).json();
-  assert.equal(notYet.tier, 'free'); assert.match(notYet.note, /not on sale on its own yet/);
-  assert.equal(asked.length, 0, 'no product id: Gumroad is not asked');
-  env.GUMROAD_REVIEW_PRODUCT_ID = 'prod123==';
+  // the store catalog knows the product by its permalink (dkmcjk) and holds Gumroad's long id for it
+  const { ensureStoreTables } = await import('../void-live-deploy/lib/store-db.js');
+  await ensureStoreTables(env);
+  env.DB.db.prepare("INSERT INTO void_catalog (slug, data, available, updated) VALUES ('dkmcjk', ?, 1, 'now')").run(JSON.stringify({ id: 'prod123==', short: 'dkmcjk', name: 'Void Code Review Pro' }));
   const r = await (await call(api.onRequestPost, env, { code: BUGGY }, LIC)).json();
   assert.equal(r.tier, 'pro'); assert.equal(r.review, 'model'); assert.ok(r.left > 0);
-  assert.match(asked[0], /product_id=prod123/); assert.match(asked[0], /increment_uses_count=false/);
+  assert.match(asked[0], /product_id=prod123/); assert.ok(!/product_permalink/.test(asked[0])); assert.match(asked[0], /increment_uses_count=false/);
   await call(api.onRequestPost, env, { code: BUGGY }, LIC.toLowerCase());
   assert.equal(asked.length, 1, 'the answer is remembered (and the key is case-blind)');
   assert.equal(env.DB.db.prepare('SELECT COUNT(*) AS n FROM void_licenses WHERE hash LIKE ?').get('%' + LIC + '%').n, 0, 'only a hash of the license is kept');
@@ -106,7 +106,14 @@ test('Void Code Review Pro on its own: a Gumroad license key, checked with Gumro
   assert.equal(after.tier, 'free'); assert.match(after.note, /refunded/); assert.ok(after.findings.length, 'the free checks still run');
   assert.equal((await call(api.onRequestPost, env, { code: BUGGY }, 'FFFFFFFF-FFFFFFFF-FFFFFFFF-FFFFFFFF')).status, 401);
   const offer = await (await api.onRequestGet({ request: new Request('https://a-to-mind.com/api/review?offer'), env })).json();
-  assert.match(offer.standalone.url, /gumroad\.com\/l\//); assert.match(offer.included.url, /yinmj/);
+  assert.equal(offer.standalone.url, 'https://moonbeam846.gumroad.com/l/dkmcjk'); assert.match(offer.included.url, /yinmj/);
+});
+
+test('before the catalog has seen the product, the license is checked by its permalink instead', async () => {
+  const { askGumroad } = await import('../void-live-deploy/lib/products.js');
+  let body = '';
+  const r = await askGumroad('', 'A1B2C3D4-E5F60718-293A4B5C-6D7E8F90', async (u, init) => { body = String(init.body); return Response.json({ success: true, purchase: {} }); }, 'dkmcjk');
+  assert.equal(r.ok, true); assert.match(body, /product_permalink=dkmcjk/); assert.ok(!/product_id/.test(body));
 });
 
 test('the owner always gets the closer read, free, with no daily cap', async () => {
