@@ -32,7 +32,11 @@ export default async function build(ctx, data) {
     words.forEach((w, k) => g.fillText(w, x + cp / 2, y + cp * 0.5 + (k - (words.length - 1) / 2) * fs * 1.1));
     if (sp.p) { g.font = `${Math.round(fs * 0.9)}px Arial, sans-serif`; g.fillText(String(sp.p), x + cp / 2, y + cp * 0.86); }
   });
-  g.fillStyle = '#2b4a33'; g.font = `700 ${Math.round(cp * 0.9)}px Georgia, serif`; g.textAlign = 'center'; g.fillText('MONOPOLY', px / 2, px / 2);
+  // Void's own lid in the middle (not the original's logo): THE LANDLORD'S GAME, set like a vintage box
+  g.fillStyle = '#2b4a33'; g.textAlign = 'center';
+  g.font = `700 ${Math.round(cp * 0.32)}px Georgia, serif`; g.fillText('THE', px / 2, px / 2 - cp * 0.62);
+  g.font = `700 ${Math.round(cp * 0.7)}px Georgia, serif`; g.fillText('LANDLORD’S GAME', px / 2, px / 2 + cp * 0.1);
+  g.font = `${Math.round(cp * 0.2)}px system-ui, sans-serif`; g.fillText('A  VOID  GAME', px / 2, px / 2 + cp * 0.5);
   const c2 = document.createElement('canvas'); c2.width = c2.height = px;
   const g2 = c2.getContext('2d'); g2.translate(px, px); g2.rotate(Math.PI); g2.drawImage(flat, 0, 0);
   const topMap = new THREE.CanvasTexture(c2); topMap.colorSpace = THREE.SRGBColorSpace; topMap.anisotropy = 8;
@@ -40,13 +44,34 @@ export default async function build(ctx, data) {
   const edgeM = new THREE.MeshPhysicalMaterial({ color: '#2b4a33', roughness: 0.6 });
   const board = new THREE.Mesh(new THREE.BoxGeometry(B, H, B), [edgeM, edgeM, topM, edgeM, edgeM, edgeM]);
   board.position.y = H / 2; board.castShadow = board.receiveShadow = true; board.userData.isBoard = true; root.add(board);
-  // pawns: a turned piece per seat, in the seat's colour
-  const pawnGeo = new THREE.LatheGeometry([[0, 0], [0.009, 0], [0.009, 0.002], [0.005, 0.004], [0.0032, 0.012], [0.0045, 0.0145], [0.0045, 0.016]].map(([x, y]) => new THREE.Vector2(x, y)), 40);
-  const headGeo = new THREE.SphereGeometry(0.0052, 24, 16);
+  // tokens: die-cast pewter pieces, Void's own set (a lantern, a teapot, an anchor, a house key; Adam: "the pieces should
+  // all be accurate", in Void's brand), each on a plinth ringed with its seat's enamel colour so you can tell them apart
+  const pewter = new THREE.MeshStandardMaterial({ color: '#c3c7cd', metalness: 0.9, roughness: 0.32 });
+  const amber = new THREE.MeshStandardMaterial({ color: '#ffcf7a', emissive: '#ff9a2e', emissiveIntensity: 0.35, roughness: 0.4 });
+  const geos = [];
+  const G = (g) => { geos.push(g); return g; };
+  const part = (g, m, x, y, z, rx = 0, ry = 0, rz = 0) => { const o = new THREE.Mesh(G(g), m); o.position.set(x, y, z); o.rotation.set(rx, ry, rz); o.castShadow = true; return o; };
+  const TOKENS = [
+    (t) => t.add(part(new THREE.CylinderGeometry(0.0036, 0.004, 0.0016, 24), pewter, 0, 0.0024, 0), part(new THREE.CylinderGeometry(0.0032, 0.0032, 0.0085, 20), amber, 0, 0.0073, 0), // a lantern
+      ...[0, 1, 2, 3].map((i) => part(new THREE.CylinderGeometry(0.0005, 0.0005, 0.009, 6), pewter, Math.cos(i * Math.PI / 2 + Math.PI / 4) * 0.0034, 0.0073, Math.sin(i * Math.PI / 2 + Math.PI / 4) * 0.0034)),
+      part(new THREE.ConeGeometry(0.0046, 0.0038, 24), pewter, 0, 0.0136, 0), part(new THREE.TorusGeometry(0.0017, 0.0005, 8, 20), pewter, 0, 0.0168, 0)),
+    (t) => t.add(part(new THREE.SphereGeometry(0.0052, 24, 16).scale(1, 0.82, 1), pewter, 0, 0.0064, 0), // a teapot
+      part(new THREE.CylinderGeometry(0.0022, 0.003, 0.0012, 20), pewter, 0, 0.0104, 0), part(new THREE.SphereGeometry(0.0009, 12, 8), pewter, 0, 0.0115, 0),
+      part(new THREE.CylinderGeometry(0.0006, 0.0011, 0.0062, 10), pewter, 0.0062, 0.0074, 0, 0, 0, -0.95), part(new THREE.TorusGeometry(0.0027, 0.0007, 8, 20, Math.PI * 1.2), pewter, -0.0052, 0.0066, 0, 0, 0, Math.PI * 0.4)),
+    (t) => t.add(part(new THREE.CylinderGeometry(0.0008, 0.0008, 0.0125, 10), pewter, 0, 0.0083, 0), part(new THREE.BoxGeometry(0.0078, 0.0011, 0.0011), pewter, 0, 0.0128, 0), // an anchor
+      part(new THREE.TorusGeometry(0.0016, 0.0005, 8, 20), pewter, 0, 0.0158, 0), part(new THREE.TorusGeometry(0.0042, 0.0008, 8, 24, Math.PI), pewter, 0, 0.0068, 0, 0, 0, Math.PI),
+      part(new THREE.ConeGeometry(0.0011, 0.0024, 8), pewter, 0.0043, 0.0074, 0), part(new THREE.ConeGeometry(0.0011, 0.0024, 8), pewter, -0.0043, 0.0074, 0)),
+    (t) => t.add(part(new THREE.TorusGeometry(0.003, 0.0009, 10, 24), pewter, 0, 0.0126, 0), part(new THREE.CylinderGeometry(0.0008, 0.0008, 0.0082, 10), pewter, 0, 0.0055, 0), // a house key
+      part(new THREE.BoxGeometry(0.0032, 0.0011, 0.0011), pewter, 0.0016, 0.0026, 0), part(new THREE.BoxGeometry(0.0022, 0.0011, 0.0011), pewter, 0.0011, 0.0043, 0)),
+  ];
+  const plinthGeo = G(new THREE.CylinderGeometry(0.0052, 0.0058, 0.0016, 28)), bandGeo = G(new THREE.TorusGeometry(0.0056, 0.0006, 8, 32).rotateX(Math.PI / 2));
   const pawns = (data.players || []).map((_, k) => {
-    const m = new THREE.MeshPhysicalMaterial({ color: SEATS[k], roughness: 0.3, metalness: 0.4, clearcoat: 0.6 });
-    const o = new THREE.Group(), body = new THREE.Mesh(pawnGeo, m), head = new THREE.Mesh(headGeo, m);
-    head.position.y = 0.02; body.castShadow = head.castShadow = true; o.add(body, head); root.add(o);
+    const m = new THREE.MeshStandardMaterial({ color: SEATS[k], roughness: 0.25, metalness: 0.1 }); // the seat's enamel
+    const o = new THREE.Group(), t = new THREE.Group();
+    const plinth = new THREE.Mesh(plinthGeo, pewter); plinth.position.y = 0.0008; plinth.castShadow = true;
+    const band = new THREE.Mesh(bandGeo, m); band.position.y = 0.0009;
+    TOKENS[k % TOKENS.length](t); t.rotation.y = Math.PI / 6;
+    o.add(plinth, band, t); o.scale.setScalar(1.15); root.add(o);
     return { o, m, pos: -1 };
   });
   const offset = (k) => [(k % 2 ? 1 : -1) * C * 0.18, (k < 2 ? -1 : 1) * C * 0.18]; // seats share a space side by side
@@ -107,6 +132,6 @@ export default async function build(ctx, data) {
     update(d) { paint(d); ctx.requestRender(); },
     tick(dt) { return tw.tick(dt); },
     state() { return { pawns: pawns.map((p) => p.pos), marks: marks.children.length, builds: builds.children.length, dice: dice.length }; },
-    dispose() { for (const x of [board.geometry, pawnGeo, headGeo, houseGeo, roofGeo, hotelGeo, markGeo, ringGeo, dieGeo]) x.dispose(); for (const m of [topM, edgeM, greenM, redM, ringM, ...faces, ...pawns.map((p) => p.m)]) { if (m.map) m.map.dispose(); m.dispose(); } topMap.dispose(); },
+    dispose() { for (const x of [board.geometry, ...geos, houseGeo, roofGeo, hotelGeo, markGeo, ringGeo, dieGeo]) x.dispose(); for (const m of [topM, edgeM, pewter, amber, greenM, redM, ringM, ...faces, ...pawns.map((p) => p.m)]) { if (m.map) m.map.dispose(); m.dispose(); } topMap.dispose(); },
   };
 }

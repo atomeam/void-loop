@@ -47,7 +47,7 @@ function mount(th, stageApi) {
     board.appendChild(b); return b;
   });
   const mid = document.createElement('div'); mid.style.cssText = 'grid-row:2/11;grid-column:2/11;background:#cfe2c8;display:flex;align-items:center;justify-content:center;color:#2b4a33;font:700 18px Georgia,serif;letter-spacing:.08em';
-  mid.textContent = 'MONOPOLY'; board.appendChild(mid);
+  mid.textContent = 'THE LANDLORD’S GAME'; board.appendChild(mid);
   wrap.appendChild(board);
   // the card: whose turn, money, what you can do now, your property, an offer to Void, the log with Void's reasons
   const status = document.createElement('div'); status.className = 'g-status mono-status'; status.setAttribute('aria-live', 'polite'); status.style.display = 'block';

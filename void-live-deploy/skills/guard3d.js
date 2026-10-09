@@ -13,7 +13,7 @@
  *   setGpu(name)              scene3d.js reports the graphics card once its renderer exists
  *   contextLost() / contextRestored()
  */
-const ACTIVE = 'void.3d.active', OFF = 'void.3d.off', LAST = 'void.3d.crash';
+const ACTIVE = 'void.3d.active', OFF = 'void.3d.off', LAST = 'void.3d.crash', GPU = 'void.3d.gpu';
 const live = new Set();
 let gpu = '', lostTimer = 0;
 
@@ -23,14 +23,14 @@ const write = (k, v) => { try { if (!ss()) return; if (v == null) ss().removeIte
 
 function note(kind, why) {
   const ua = typeof navigator !== 'undefined' ? navigator.userAgent : '';
-  write(LAST, { kind, why: String(why || '').slice(0, 300), gpu, ua, at: new Date().toISOString() });
+  write(LAST, { kind, why: String(why || '').slice(0, 300), gpu: gpu || read(GPU, ''), ua, at: new Date().toISOString() });
 }
 function turnOff(kind, why) { const off = read(OFF, []); if (!off.includes(kind)) off.push(kind); write(OFF, off); note(kind, why); }
 const mark = () => write(ACTIVE, live.size ? [...live] : null);
 
 // the page came back with a 3D board still marked up: it died while drawing one
 const died = read(ACTIVE, null);
-if (Array.isArray(died) && died.length) for (const k of died) turnOff(k, 'the page stopped while the 3D ' + k + ' board was running');
+if (Array.isArray(died) && died.length) for (const k of died) turnOff(k, 'the page stopped while the 3D board was running');
 write(ACTIVE, null);
 
 if (typeof addEventListener === 'function') {
@@ -45,7 +45,7 @@ export function end(kind) { live.delete(kind); mark(); }
 export function isOff(kind) { return read(OFF, []).includes(kind); }
 export function retry(kind) { write(OFF, read(OFF, []).filter((k) => k !== kind)); }
 export function lastCrash() { return read(LAST, null); }
-export function setGpu(name) { gpu = String(name || '').slice(0, 120); }
+export function setGpu(name) { gpu = String(name || '').slice(0, 120); write(GPU, gpu); } // kept, so a page that died can still say which card it was
 export function contextLost() {
   clearTimeout(lostTimer);
   // a context that comes back is fine (scene3d redraws everything); one that stays gone is a crash

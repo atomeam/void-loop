@@ -89,7 +89,13 @@ export function howTo(card, kind) {
   btn.addEventListener('click', (e) => { e.stopPropagation(); show(panel.hidden); markSeen(kind); });
   go.addEventListener('click', (e) => { e.stopPropagation(); show(false); markSeen(kind); });
   const head = card.querySelector('.g-head');
-  if (head) { head.style.display = 'flex'; head.style.alignItems = 'center'; head.style.gap = '8px'; head.appendChild(btn); head.after(panel); }
+  if (head) {
+    // title and button on one line, the subtitle on its own line under them, so a long name never squeezes into a column
+    head.style.display = 'flex'; head.style.alignItems = 'center'; head.style.flexWrap = 'wrap'; head.style.columnGap = '8px';
+    const title = head.querySelector('.g-title'); if (title) { title.style.flex = '1 1 0'; title.style.minWidth = '0'; }
+    const sub = head.querySelector('.g-sub'); if (sub) { sub.style.order = '3'; sub.style.flexBasis = '100%'; sub.style.marginLeft = '0'; }
+    head.appendChild(btn); head.after(panel);
+  }
   else { card.prepend(panel); card.prepend(btn); }
   // the long rules paragraph stays, folded away: the steps above are what you need to start
   const rules = card.querySelector('.g-rules');
