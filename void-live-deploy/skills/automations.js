@@ -16,7 +16,8 @@ export function automationsOf(text) {
 
 const el = (tag, css, text) => { const e = document.createElement(tag); if (css) e.style.cssText = css; if (text != null) e.textContent = text; return e; };
 const MUTED = 'color:var(--muted,#9a9aa2)';
-const describe = (r) => (r.when.on === 'webhook' ? 'When the webhook is called' : 'When you press Run now') + (r.when.match ? ' and ' + Object.entries(r.when.match).map(([k, v]) => k + ' is ' + v).join(', ') : '');
+const every = (m) => (m % 1440 === 0 ? (m === 1440 ? 'Every day' : 'Every ' + m / 1440 + ' days') : m % 60 === 0 ? (m === 60 ? 'Every hour' : 'Every ' + m / 60 + ' hours') : 'Every ' + m + ' minutes');
+const describe = (r) => (r.when.on === 'webhook' ? 'When the webhook is called' : r.when.on === 'schedule' ? every(r.when.every) + ' (and when you press Run now)' : 'When you press Run now') + (r.when.match ? ' and ' + Object.entries(r.when.match).map(([k, v]) => k + ' is ' + v).join(', ') : '');
 const STEP_TEXT = { note: (s) => 'note: ' + s.text, 'queue.add': (s) => 'add a job: ' + s.ask, 'github.comment': (s) => 'comment on ' + s.repo + ' #' + s.issue,
   'github.pr': (s) => 'open a pull request on ' + s.repo + ' (' + s.files.length + ' file' + (s.files.length === 1 ? '' : 's') + ', branch ' + s.branch + ')', 'http.post': (s) => 'post to ' + s.url };
 const stepText = (s) => (STEP_TEXT[s.action] ? STEP_TEXT[s.action](s) : s.action);
