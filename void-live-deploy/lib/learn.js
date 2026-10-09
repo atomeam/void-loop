@@ -1,7 +1,9 @@
 // Void learns skills by itself (its own want, domains/void.will.md #1; frontier item 2): an ask people typed that Void
 // could not answer becomes a job for the builders, with no one in between. Two doors into the same brain:
 //   - at miss time: functions/api/miss.js calls learnFromMiss() after it records a miss; once the same ask has been
-//     missed twice (two people, or two different minutes), or Void itself said "not built yet", it is queued at once.
+//     missed MIN_COUNT times across at least two different days, it is queued at once. Only what the server counted
+//     is trusted here: /api/miss is open to anyone, and its `fallback` field is whatever the browser sent, so it never
+//     queues a job by itself (one POST saying "not built yet" must not put a stranger's words in front of the builders).
 //   - on a sweep: tools/learn.mjs reads the whole board and queues the top ones (plan()), for a daily run or by hand.
 // A job is a row in void_queue with target `miss:<slug>`; builders claim it like any other (`python tools/void_queue.py
 // claim`). At most OPEN_MAX miss jobs are open at once, so the queue never floods, and a target already queued, built
@@ -11,7 +13,7 @@ import { isNoise } from './noise.js';
 
 export const OPEN_MAX = 3; // open miss jobs at once
 export const DAYS = 7; // how far back a sweep reads the board
-export const MIN_COUNT = 2; // misses before an ask is queued at miss time
+export const MIN_COUNT = 3; // misses before an ask is queued at miss time, spread over two days at least
 const MAX_WORDS = 12, MAX_CHARS = 80; // what a person types in Void's input; longer is pasted text, not an ask
 const KEYLIKE = /(?=[A-Za-z0-9_-]{16,})(?=[A-Za-z_-]*\d)(?=[\d_-]*[A-Za-z])[A-Za-z0-9_-]{16,}/; // same as tools/misses.mjs
 
@@ -78,9 +80,11 @@ export async function queueMiss(env, c) {
   return id;
 }
 
-// the miss-time door: row is the void_misses row just written ({ ask, count, last, fallback })
+// the miss-time door: row is the void_misses row just written ({ ask, count, first, last, fallback })
+const day = (t) => String(t || '').slice(0, 10);
+export const spansDays = (row) => !!day(row && row.first) && !!day(row && row.last) && day(row.first) !== day(row.last);
 export async function learnFromMiss(env, row) {
   const c = learnable(row);
-  if (!c || !(c.count >= MIN_COUNT || unbuilt(c.fallback))) return null;
+  if (!c || c.count < MIN_COUNT || !spansDays(row)) return null; // the browser-sent fallback is never trusted here
   return queueMiss(env, c);
 }

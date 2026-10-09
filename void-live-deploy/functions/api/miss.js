@@ -2,8 +2,9 @@
 // Stores only the words typed (normalized, max 200 chars), counts, first/last time, and which fallback ran.
 // No IPs, cookies or user agents are stored. The connection is hashed only for a 60s rate-limit window.
 // Storage: D1 (void_misses). Older rows still in KV are merged in by /api/misses until they expire.
-// Void learns from it by itself (lib/learn.js): the second miss of the same ask, or one Void says is not built yet,
-// becomes a `miss:<slug>` job in the build queue at once, so the builders see it without anyone in between.
+// Void learns from it by itself (lib/learn.js): an ask missed 3 times over at least two days becomes a `miss:<slug>`
+// job in the build queue at once, so the builders see it without anyone in between. The browser-sent fallback never
+// queues a job by itself: this endpoint is open to anyone.
 import { redact } from '../../lib/automation-fix.js';
 import { isNoise } from '../../lib/noise.js';
 import { learnFromMiss } from '../../lib/learn.js';
@@ -44,7 +45,11 @@ export async function onRequestPost({ request: req, env, waitUntil }) {
       ON CONFLICT(id) DO UPDATE SET count = count + 1, last = excluded.last, fallback = COALESCE(NULLIF(excluded.fallback, ''), fallback)`)
       .bind(id, ask, now, now, fallback).run();
   } catch (_) { return new Response('miss list unavailable', { status: 503 }); }
-  // after the answer is sent: does this miss earn a job? (a queue hiccup never fails the miss itself)
-  waitUntil(env.DB.prepare('SELECT ask, count, last, fallback FROM void_misses WHERE id = ?').bind(id).first().then((row) => row && learnFromMiss(env, row)).catch(() => {}));
+  // after the answer is sent: does this miss earn a job? Best effort: a queue hiccup, a D1 stand-in without
+  // bound .first(), or a runtime without waitUntil never fails the miss itself.
+  const learn = (async () => {
+    try { const row = await env.DB.prepare('SELECT ask, count, first, last, fallback FROM void_misses WHERE id = ?').bind(id).first(); if (row) await learnFromMiss(env, row); } catch (_) {}
+  })();
+  if (typeof waitUntil === 'function') waitUntil(learn);
   return new Response(null, { status: 204 });
 }
