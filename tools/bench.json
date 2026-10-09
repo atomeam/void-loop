@@ -5531,5 +5531,9 @@
   {"ask": "what automations do i have", "want": "skill:automations"},
   {"ask": "weather in paris now", "want": "skill:weather", "says": "refreshes every 15 min"},
   {"ask": "top stories today", "want": "skill:news", "says": "refreshes every 30 min"},
-  {"ask": "hacker news", "want": "skill:news", "says": "refreshes every 10 min"}
+  {"ask": "hacker news", "want": "skill:news", "says": "refreshes every 10 min"},
+  {"ask": "play tic tac toe with void", "want": "skill:tictactoe"},
+  {"ask": "tic tac toe against void", "want": "skill:tictactoe"},
+  {"ask": "play noughts and crosses", "want": "skill:tictactoe"},
+  {"ask": "i want to play tic tac toe against the computer", "want": "skill:tictactoe"}
 ]
