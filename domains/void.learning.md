@@ -1,6 +1,6 @@
 # Learning cards: explainers that hand off to a quiz and a five-minute challenge
 
-Approved as build input by Adam, 2026-10-09. Proposed specs, not built yet. Frontier item #17 (`domains/void.frontier.md`).
+Approved as build input by Adam, 2026-10-09 (two reviews; both sets of edits are applied here). Proposed specs, not built yet. Frontier item #17 (`domains/void.frontier.md`).
 Everything here works offline: no accounts, no tracking, no outside model call.
 
 **Build order:** gear explainer → moon explainer → lock explainer → quiz → five-minute challenge. Adam: "Revert fix stays at
@@ -27,6 +27,12 @@ here beside this file, with Adam's four edits applied (below), before building t
    to the on-scene schematic note.
 4. Gear: the centre distance is derived, `(driverTeeth + drivenTeeth) * toothPitch / 2`, and asserted in the
    tooth-count-change test (no disconnected gears after the tooth count changes).
+5. **Addenda: which items are assessable** (Adam, second review). Without them the quiz meets nothing eligible on day one
+   and shows its empty state. Each explainer spec names its assessable items, with approved prompt wording:
+   - gear: `drivenTurnsPerDriverTurn` (number)
+   - moon: `illuminatedFraction` (number), `phaseName` (text; options: the eight phase names, new moon, waxing crescent,
+     first quarter, waxing gibbous, full moon, waning gibbous, last quarter, waning crescent)
+   - lock: `alignedPinCount` (number), `mechanismState` (text; options: the five mechanism states the lock spec names)
 
 ## 1. The shared observation contract
 
@@ -50,6 +56,9 @@ items:
       prompt: "What fraction is illuminated?"
       answerLabel: "50%"
       tolerance: 0.001
+      options:               # text items only: stable ids + labels; the answer is one of the ids
+        - { id: waxing-crescent, label: "Waxing crescent" }
+      answerId: waxing-crescent
 ```
 
 - `valueType` is `number` or `text` to start.
@@ -61,17 +70,18 @@ items:
 - No assessable items gives a plain empty state, never made-up questions.
 - The envelope is still a `list` port; `schema` and `source` are its metadata.
 
-### Open points (from the review before commit; settle them in the contract before building the takers)
+- **Settled (Adam, second review):** a text item that can be assessed carries `assessment.options` (stable `id` plus
+  `label`) and `assessment.answerId`. Free-text grading stays out of version 1, so a text item without options is never
+  a question.
 
-1. **Choice questions need a place for their options.** The quiz may only use options the source gives, but the item has
-   no field for them. Proposed: `assessment.options: [{ id, label }]` and `assessment.answerId`.
-2. **What the tolerance is measured in.** Proposed: absolute, in the item's own `unit` (0.001 of a fraction). The test
+### Open points (settle in the contract before building the takers)
+
+1. **What the tolerance is measured in.** Proposed: absolute, in the item's own `unit` (0.001 of a fraction). The test
    `learning.quiz/numeric-answer-respects-unit-and-tolerance` asserts it.
-3. **Text items.** Free-text grading is out of scope in version 1, so a `text` item can only be assessed as a choice
-   question (it needs `options`). Say so in the contract.
-4. **"Nothing retained" against Void's stage.** Void saves every stage card and its state in the browser
-   (`a2m.void.loop.v1` and the stage store), so a quiz on the stage would be kept by default. These two cards must opt out:
-   keep at most the snapshot, never the answers, unless the visitor asks to keep them.
+2. **"Nothing retained" against Void's stage.** Void saves every stage card with its state in the browser
+   (`a2m.void.state.v1`), and for someone signed in with a passkey the stage syncs to their other devices through the
+   server. So a quiz on the stage would keep its answers, and sync them, by default. These two cards must opt out: keep at
+   most the snapshot, never the answers, unless the visitor asks to keep them. A required test should assert it.
 
 ## 2. Quiz card: "Quiz me on this"
 
@@ -121,12 +131,13 @@ accessible text controls. No animation delays answering or hides the result.
 | Takes | `observations` | `list` | The assessable snapshot |
 | Takes | `explanation` | `text` | Optional context from the source, labelled as such |
 | Takes | `questionCount` | `number` | How many questions |
-| Gives | `observations` | `list` | Per-question results; assessment off by default |
+| Gives | `observations` | `list` | Per-question results: assessment stays on for missed items (the original prompt, answer, options and tolerance) and is off for correct ones |
 | Gives | `explanation` | `text` | The review and the corrections |
 | Gives | `score` | `number` | Fraction correct, 0–1 |
 | Gives | `model` | `model` | The deck's spec and its current state |
 
-Next handoff, for example: "turn the questions I missed into a five-minute challenge".
+Next handoff, for example: "turn the questions I missed into a five-minute challenge". That works because the missed
+items stay assessable; the challenge's empty state then means a perfect score, which is the right message anyway.
 
 **Required tests:**
 ```text
@@ -221,11 +232,19 @@ learning.five-minute-challenge/restart-clears-attempt
 learning.five-minute-challenge/keyboard-completes-entire-activity
 ```
 
-## The first end-to-end handoff
+## The first end-to-end handoffs
 
 ```text
 Gear explainer gives observations:list → "Quiz me on this" → the quiz takes observations:list → answers → feedback → done
+Quiz gives its missed items as observations:list → "turn the questions I missed into a five-minute challenge"
 ```
 
-The first integration test hands the gear card's real exported payload to the quiz with no gear-specific adapter, then
-repeats it with the moon and lock payloads. That is the proof the handoff is one shared contract, not three special cases.
+Each hands the source card's real exported payload over with no card-specific adapter. These four are the first tests of
+the architecture rule itself, and they gate the merge like every other required test:
+
+```text
+handoff/gear-to-quiz-no-adapter
+handoff/moon-to-quiz-no-adapter
+handoff/lock-to-quiz-no-adapter
+handoff/quiz-missed-to-challenge
+```
