@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 // node tools/review.test.mjs: the code reviewer (void-live-deploy/lib/code-review.js) finds what it should and stays quiet on clean code.
-import { isReviewAsk, codeOf, langOf, ruleReview, looksLikeCode, autoFix, skippedInReview, langNamed } from '../void-live-deploy/lib/code-review.js';
+import { isReviewAsk, codeOf, langOf, ruleReview, looksLikeCode, autoFix, skippedInReview, langNamed, textLines } from '../void-live-deploy/lib/code-review.js';
 let bad = 0;
 const ok = (c, msg) => { if (!c) { bad++; console.log('FAIL ' + msg); } };
 const rules = (code, lang) => ruleReview(code, lang ? { lang } : {}).findings.map((f) => f.rule + '@' + f.line);
@@ -218,8 +218,6 @@ for (const f of ['tools/ouroboros_test.py', 'tools/void_lens_test.py', 'tools/me
   ok(skippedInReview(f), 'a test file is not reviewed: ' + f);
 for (const f of ['tools/ouroboros.py', 'tools/void_lens.py', 'void-live-deploy/lib/memory-core.js', 'tools/latest.py', 'tools/contest.mjs', 'tools/testing_notes.py', 'void-live-deploy/functions/api/memory.js'])
   ok(!skippedInReview(f), 'real code is still reviewed: ' + f);
-console.log(bad ? bad + ' failed' : 'review: all passed');
-process.exit(bad ? 1 : 0);
 // run 54: XML namespace and package-type names (xmlns="http://…", schemas.microsoft.com, schemas.openxmlformats.org) are identifiers, never fetched
 for (const c of ['const m = \'<model xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">\';', 'const t = \'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\';',
   'const r = \'<Relationship Type="http://schemas.microsoft.com/3dmanufacturing/2013/01/3dmodel"/>\';', 'const x = \'<svg xmlns:xl="http://ns.vendor-xml.net/x">\';'])
@@ -245,3 +243,23 @@ for (const c of ['let best = null; if (best.t > 1) go();', 'let r = null; const 
   ok(langOf('apiVersion: v1\nkind: Pod\nspec:\n  containers:\n    - image: nginx') === 'yaml', 'a k8s manifest is yaml');
   ok(isReviewAsk('audit my github actions') && isReviewAsk('check this CI workflow') && isReviewAsk('review my GitHub Actions workflow') && !isReviewAsk('is my workflow good') && !isReviewAsk('check my actions'), 'actions review asks');
 }
+// speed: Void's reviewer is the first reviewer on every PR, so it has to be fast. A string with many backslashes (a regex like
+// /\s+\w+\s+/ written out) once sent the string finder into exponential backtracking: one line of go.js took 2.5 s, and
+// code-review.js itself never finished. Each case below must finish in well under a second.
+{
+  const slow = [];
+  for (const [name, code] of [
+    ['backslashes in a string', "if (/^(?:a\\s+|b\\s+|c\\s+|d\\s+|e\\s+|f\\s+|g\\s+|h\\s+|i\\s+)?(?:x|y)$/.test(t) && t !== 'go' && t !== \"let's\") return { kind: 'x' };"],
+    ['an unclosed quote then backslashes', "const s = 'it\\'s " + '\\d'.repeat(200) + ";"],
+    ['a long minified line', 'var a=' + Array.from({ length: 3000 }, (_, i) => '"k' + i + '\\n"').join('+') + ';'],
+    ['the reviewer reading itself', fs.readFileSync(new URL('../void-live-deploy/lib/code-review.js', import.meta.url), 'utf8')],
+  ]) { const t = performance.now(); ruleReview(code, { lang: 'javascript', max: 5000, collapse: false }); const ms = performance.now() - t; if (ms > 800) slow.push(name + ' ' + Math.round(ms) + ' ms'); }
+  ok(!slow.length, 'review too slow: ' + slow.join(', '));
+}
+// an HTML page's <textarea> and <pre> hold text, not code: a PR review leaves those lines out
+{
+  const page = ['<p>hi</p>', '<textarea id="code">if (x = 5) {', '  el.innerHTML = name;', '}</textarea>', '<script>', 'if (y = 6) go();', '</script>', '<pre>eval(input)</pre>', '<pre class="a">', 'q = "SELECT " + id', '</pre><p>after</p>'];
+  ok([...textLines(page)].join(',') === '2,3,4,8,9,10,11', 'text lines: ' + [...textLines(page)].join(','));
+}
+console.log(bad ? bad + ' failed' : 'review: all passed');
+process.exit(bad ? 1 : 0);

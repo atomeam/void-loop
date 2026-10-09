@@ -26,6 +26,9 @@ const TABLES = [
   'CREATE TABLE IF NOT EXISTS void_owner_passkeys (id TEXT PRIMARY KEY, at TEXT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS void_mine (user_id TEXT PRIMARY KEY, data TEXT NOT NULL, rev INTEGER NOT NULL, updated TEXT NOT NULL)',
   // Plan item 12 (paid Void): a passkey account's tier. No row = 'free'. Only /api/gumroad writes it, after Gumroad's API confirms the sale.
+  // Void Pro code review keys (lib/review-api.js, /api/review): only the SHA-256 of a key; made here so 'forget me' can always remove them
+  'CREATE TABLE IF NOT EXISTS void_review_keys (hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, prefix TEXT NOT NULL, at TEXT NOT NULL, used TEXT, day TEXT, uses INTEGER NOT NULL DEFAULT 0, total INTEGER NOT NULL DEFAULT 0)',
+  'CREATE INDEX IF NOT EXISTS void_review_keys_user ON void_review_keys (user_id)',
   PAGE_TABLE, // a published Void (/@name): made here too so 'forget me' can always remove it
   "CREATE TABLE IF NOT EXISTS void_accounts (user_id TEXT PRIMARY KEY, tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'paid')), sale_id TEXT UNIQUE, subscription_id TEXT, updated TEXT NOT NULL)",
 ];

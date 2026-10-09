@@ -1,16 +1,20 @@
-// node tools/review-pr.mjs [--base origin/main] [--head HEAD] [--json] [--inline] [--deep URL]
+// node tools/review-pr.mjs [--base origin/main] [--head HEAD] [--json] [--inline] [--gate] [--deep URL]
 // Void reviews a pull request with the same checks it runs for visitors (void-live-deploy/lib/code-review.js): each changed
 // file is checked as a whole, and only findings on lines this change added are reported, so old code doesn't drown the new.
-// --deep URL also asks Void's answer engine (POST URL with mode 'review') for a read of the added code; it is best-effort.
+// --deep URL also asks for the model's closer read of the added code (https://a-to-mind.com/api/review, the Pro review: send the
+// key in VOID_REVIEW_KEY; or Void's answer engine, /api/answer with mode 'review'); it is best-effort.
 // Prints markdown (the PR comment: a walkthrough of what changed, then the findings) or JSON. --inline prints the
 // review comments for GitHub instead: one per line with a bug or risk, with a one-click suggested change when Void's
-// safe automatic fix (autoFix) rewrites that line. Exit code is always 0: the review informs, CI decides.
+// safe automatic fix (autoFix) rewrites that line. --gate makes Void's review a merge gate: exit 1 when the added lines carry a
+// bug or a risk (the "void-review" check, .github/workflows/void-review.yml). A line that is right as written says so with
+// "void-review: ok" in a comment on it, and is left out. Otherwise the exit code is 0: the review informs.
 import { execFileSync } from 'node:child_process';
-import { ruleReview, langOf, skippedInReview, autoFix } from '../void-live-deploy/lib/code-review.js';
+import { ruleReview, langOf, skippedInReview, autoFix, textLines } from '../void-live-deploy/lib/code-review.js';
 import { redact } from '../void-live-deploy/lib/automation-fix.js';
 
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const base = arg('--base', 'origin/main'), head = arg('--head', 'HEAD'), deep = arg('--deep', '');
+const started = performance.now();
 const git = (...a) => execFileSync('git', a, { encoding: 'utf8', maxBuffer: 64 << 20 });
 
 const YAML_RULES = new Set(['image-latest', 'hardcoded-secret', 'yaml-privileged', 'yaml-run-as-root', 'yaml-host-namespace']); // the checks written for YAML (the general ones are tuned for code)
@@ -31,6 +35,7 @@ function added() {
 }
 
 const files = added(), report = [], langs = {};
+let scanned = 0;
 for (const [file, lines] of Object.entries(files)) {
   if (skippedInReview(file) || !lines.size) continue;
   // a Dockerfile has no extension (Dockerfile, api.Dockerfile, Dockerfile.dev)
@@ -43,7 +48,10 @@ for (const [file, lines] of Object.entries(files)) {
   const res = ruleReview(text, { lang, max: 5000, collapse: false });
   // YAML (workflows, compose files) gets only the checks written for YAML: the general ones are tuned for code
   const own = (f) => lang !== 'yaml' || YAML_RULES.has(f.rule);
-  for (const f of res.findings.filter((f) => lines.has(f.line) && own(f))) report.push({ file, ...f });
+  const src = text.split('\n'), waived = (n) => /void-review:\s*ok\b/.test(src[n - 1] || '');
+  const prose = /\.html?$/i.test(file) ? textLines(src) : new Set(); // an HTML page's <textarea> and <pre> hold text (sample code to show), not code it runs
+  for (const f of res.findings.filter((f) => lines.has(f.line) && own(f) && !waived(f.line) && !prose.has(f.line))) report.push({ file, ...f });
+  scanned += lines.size;
 }
 const ORDER = { bug: 0, risk: 1, style: 2, note: 3 };
 report.sort((a, b) => ORDER[a.kind] - ORDER[b.kind] || a.file.localeCompare(b.file) || a.line - b.line);
@@ -53,7 +61,8 @@ if (deep && Object.keys(files).length) {
   try {
     const diff = redact(git('diff', '--unified=3', '--no-color', base + '...' + head, '--', ...Object.keys(files).filter((f) => !skippedInReview(f) && LANG[(f.match(/\.([\w]+)$/) || [])[1]]))).slice(0, 12000);
     if (diff.trim()) {
-      const r = await fetch(deep, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'review', ask: 'review this pull request', code: diff, diff: true }), signal: AbortSignal.timeout(60000) });
+      const headers = { 'content-type': 'application/json' }; if (process.env.VOID_REVIEW_KEY) headers.authorization = 'Bearer ' + process.env.VOID_REVIEW_KEY.trim();
+      const r = await fetch(deep, { method: 'POST', headers, body: JSON.stringify({ mode: 'review', ask: 'review this pull request', code: diff, diff }), signal: AbortSignal.timeout(60000) });
       const j = r.ok ? await r.json() : null;
       if (j && j.answer && j.review === 'model') deepText = String(j.answer).trim();
     }
@@ -115,7 +124,9 @@ function walkthrough() {
   return out;
 }
 
-if (process.argv.includes('--json')) { console.log(JSON.stringify({ base, head, findings: report, deep: deepText || null }, null, 1)); process.exit(0); }
+const ms = Math.max(1, Math.round(performance.now() - started)), blocking = report.filter((f) => f.kind === 'bug' || f.kind === 'risk').length;
+const gate = process.argv.includes('--gate') && blocking ? 1 : 0;
+if (process.argv.includes('--json')) { console.log(JSON.stringify({ base, head, findings: report, deep: deepText || null, lines: scanned, ms, blocking }, null, 1)); process.exit(gate); }
 const n = { bug: 0, risk: 0, style: 0, note: 0 }; report.forEach((f) => n[f.kind]++);
 const out = ['<!-- void-review -->', '### Void\'s review', '', ...walkthrough()];
 if (!report.length) out.push('The quick checks found nothing in the lines this PR adds.');
@@ -128,5 +139,7 @@ else {
   if (minor.length) out.push('', '<details><summary>' + minor.length + ' style point' + (minor.length > 1 ? 's' : '') + ' and notes</summary>', '', ...minor.slice(0, 30).map(item), '', '</details>');
 }
 if (deepText) out.push('', '#### A closer read', '', deepText);
-out.push('', '<sub>Pattern checks from void-live-deploy/lib/code-review.js, the same ones a-to-mind.com runs when someone asks Void to review code. Bugs and risks are worth a look; style is a suggestion.</sub>');
+out.push('', blocking ? '**Blocking:** ' + blocking + ' bug' + (blocking > 1 ? 's and risks' : ' or risk') + ' to fix first (or mark a line that is right as written with a `void-review: ok` comment).' : '**Not blocking:** no bugs or risks in the added lines.');
+out.push('', '<sub>Reviewed ' + scanned + ' added line' + (scanned === 1 ? '' : 's') + ' in ' + (ms < 1000 ? ms + ' ms' : (ms / 1000).toFixed(1) + ' s') + (deepText ? ' (plus the closer read)' : '') + '. Pattern checks from void-live-deploy/lib/code-review.js, the same ones a-to-mind.com runs when someone asks Void to review code. Bugs and risks are worth a look; style is a suggestion.</sub>');
 console.log(out.join('\n'));
+process.exit(gate);

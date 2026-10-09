@@ -1,10 +1,10 @@
 # Test and deploy Void to the Cloudflare Pages project "a-to-mind" (a-to-mind.com) with wrangler (direct upload, no GitHub
 # Pages). tools/deploy.ps1 stays the laptop fallback. Built to fit GitHub Free's 2,000 Linux minutes a month (~65 a day):
-#   PR, code changed    the full suite (no benchmark: see bench.yml and the weekly watchdog), Void's review comment, a preview deploy
-#   PR, docs only       the quick checks (seconds), Void's review comment; no browser suite, no preview
+#   PR, code changed    the full suite (no benchmark: see bench.yml and the weekly watchdog), a preview deploy (Void's review is its own workflow, void-review.yml)
+#   PR, docs only       the quick checks (seconds); no browser suite, no preview
 #   push to main        deploy. The full suite runs again only when the commit is not a merged PR whose head passed
 #                       test-and-deploy (a direct push, or a PR merged without a green check); the daily watchdog re-tests main
-#   manual run          the full suite (bench optional), then deploy
+#   manual run          the full suite (bench optional), then deploy; after_merge=true (automerge.yml) = as a push to main
 # test-and-deploy is the merge gate and always reports, on every PR.
 name: Void deploy
 
@@ -20,6 +20,10 @@ on:
         description: Also run the everyday benchmark (about 15-25 min more)
         type: boolean
         default: false
+      after_merge:
+        description: Started by automerge.yml right after it merged a PR (deploys like a push to main)
+        type: boolean
+        default: false
 
 concurrency:
   # one run per PR: a new push cancels the older run of that PR at once. Production keeps one group and never cancels.
@@ -29,7 +33,7 @@ concurrency:
 permissions:
   contents: read
   checks: read # to see that a merged PR's head already passed (see "What needs testing")
-  pull-requests: write # Void's one review comment on the PR
+  pull-requests: read # which PR a merge commit came from
 
 jobs:
   test-and-deploy:
@@ -51,7 +55,7 @@ jobs:
         id: plan
         env:
           GH_TOKEN: ${{ github.token }}
-          EVENT: ${{ github.event_name }}
+          EVENT: ${{ github.event_name == 'workflow_dispatch' && inputs.after_merge && 'push' || github.event_name }}
           BASE: ${{ github.event.pull_request.base.ref }}
         run: |
           suite=true
@@ -114,32 +118,7 @@ jobs:
           cp void.html void-live-deploy/void.html
           node tools/self-context.mjs # Void's facts about itself for /api/answer (growth inbox, llms.txt)
 
-      # Void reviews its own pull requests: tools/review-pr.mjs runs the code checks a-to-mind.com runs when a visitor asks
-      # Void to review code (void-live-deploy/lib/code-review.js) on the lines the PR adds, and keeps one PR comment
-      # (marked <!-- void-review -->) up to date: a walkthrough of what changed, then the findings; bugs and risks also go on
-      # their lines as inline review comments (tools/review-post.mjs). It informs; it never fails the PR.
-      - name: Void's review of the lines this PR adds
-        if: github.event_name == 'pull_request'
-        continue-on-error: true
-        env:
-          GH_TOKEN: ${{ github.token }}
-          PR: ${{ github.event.pull_request.number }}
-          REPO: ${{ github.repository }}
-          BASE: ${{ github.event.pull_request.base.ref }}
-        run: |
-          node tools/review-pr.mjs --base "origin/$BASE" --head HEAD > void-review.md
-          cat void-review.md >> "$GITHUB_STEP_SUMMARY"
-          body=$(jq -Rs '{body: .}' < void-review.md)
-          id=$(gh api "repos/$REPO/issues/$PR/comments?per_page=100" --paginate \
-            --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- void-review -->")))][0].id // empty' | head -n1)
-          if [ -n "$id" ]; then
-            echo "$body" | gh api -X PATCH "repos/$REPO/issues/comments/$id" --input - > /dev/null
-          else
-            echo "$body" | gh api -X POST "repos/$REPO/issues/$PR/comments" --input - > /dev/null
-          fi
-          # then each bug or risk as an inline comment on its line, with a one-click suggested fix where Void has a safe one
-          node tools/review-pr.mjs --base "origin/$BASE" --head HEAD --inline > void-inline.json
-          node tools/review-post.mjs void-inline.json --repo "$REPO" --pr "$PR" --sha "$(git rev-parse HEAD)"
+      # Void's review of the PR runs in its own fast workflow and is a merge gate there (.github/workflows/void-review.yml).
 
       - name: Deploy target
         id: target
@@ -189,7 +168,7 @@ jobs:
       # better. Its words are kept on the site and copied into domains/void.voice.md by the daily run. Input, not a gate:
       # a busy model or a missing VOID_OWNER_TOKEN never fails the deploy.
       - name: Ask Void what it thinks of what just shipped
-        if: github.event_name == 'push' && steps.deploy.outcome == 'success'
+        if: (github.event_name == 'push' || inputs.after_merge) && steps.deploy.outcome == 'success'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
