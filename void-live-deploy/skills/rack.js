@@ -15,6 +15,7 @@ export const GAMES = [
   { id: 'tictactoe', title: 'Tic-tac-toe', ask: 'play tic tac toe', color: '#c0562e', ink: '#fff6e6', motif: 'tictactoe' },
   { id: 'mancala', title: 'Mancala', ask: 'play mancala', color: '#6b4426', ink: '#f6e3c4', motif: 'mancala' },
   { id: 'aggravation', title: 'Aggravation', ask: 'play aggravation', color: '#2f5fa8', ink: '#fdf6e3', motif: 'aggravation' },
+  { id: 'sorry', title: 'Sorry!', ask: 'play sorry', color: '#c8202c', ink: '#fff8e7', motif: 'aggravation' },
   { id: 'battleship', title: 'Battleship', ask: 'play battleship', color: '#1d4e6e', ink: '#e8f4ff', motif: 'battleship' },
   { id: 'poker', title: 'Poker', ask: 'play poker', color: '#17563a', ink: '#f2e6c9', motif: 'poker' },
   { id: 'fireworks', title: 'Fireworks', ask: 'play fireworks', color: '#1b2233', ink: '#ffe9a8', motif: 'fireworks' },
@@ -34,9 +35,9 @@ export function rackOf(text) {
 }
 // board games people ask for that Void doesn't play yet; each ask is recorded
 export const SOON = { scrabble: 'Scrabble', risk: 'Risk', clue: 'Clue', cluedo: 'Cluedo', catan: 'Catan', 'settlers of catan': 'Catan',
-  backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', sorry: 'Sorry!', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
+  backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
 
-const HINT = 'try: chess · checkers · go · monopoly · tic tac toe · othello · connect 4 · mancala · aggravation · rock paper scissors · magic 8 ball';
+const HINT = 'try: chess · checkers · go · monopoly · tic tac toe · othello · connect 4 · mancala · aggravation · sorry · rock paper scissors · magic 8 ball';
 
 function mount(th, stageApi) {
   const phone = Math.min(innerWidth, innerHeight) < 560;

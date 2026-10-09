@@ -4,7 +4,8 @@ import { relatedAsks, takeHtml } from '../void-live-deploy/skills/take.js';
 import { realFigureFor } from '../void-live-deploy/skills/figures.js';
 
 test('an article offers what Void can do about its subject', () => {
-  assert.deepEqual(relatedAsks({ title: 'Sorry! (game)', description: 'Board game', extract: 'Sorry! is a board game that is based on the older game Ludo.' }).map((a) => a.ask), ['play aggravation']);
+  assert.deepEqual(relatedAsks({ title: 'Sorry! (game)', description: 'Board game', extract: 'Sorry! is a board game that is based on the older game Ludo.' }).map((a) => a.ask), ['play sorry', 'play aggravation']);
+  assert.deepEqual(relatedAsks({ title: 'Ludo', description: 'Board game' }).map((a) => a.ask), ['play aggravation']);
   assert.deepEqual(relatedAsks({ title: 'Lisbon', description: 'Capital city of Portugal' }).map((a) => a.ask), ['weather in Lisbon', 'map of Lisbon', 'time in Lisbon']);
   assert.deepEqual(relatedAsks({ title: 'Paella', description: 'Spanish rice dish' }).map((a) => a.ask), ['recipe for paella']);
   assert.deepEqual(relatedAsks({ title: 'Albert Einstein', description: 'German-born physicist' }), []);

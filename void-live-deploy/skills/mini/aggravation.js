@@ -3,7 +3,8 @@
  * painted lanes, bases, gold shortcut rings, holes) drawn onto the wood, with glass marbles sitting in the holes. Marbles
  * you can move glow; the one you picked lifts; where it can go shows as glowing rings; a move glides hole to hole. The
  * card keeps every rule, the die and the bots (skills/aggravation.js); taps press the card's own marbles and targets.
- * data: { svg: '<svg …>' (the static board), marbles: [{ sel, x, y, color, can, picked, last }], targets: [{ sel, x, y }], onTap(selector) }
+ * data: { svg: '<svg …>' (the static board), marbles: [{ sel, x, y, color, can, picked, last }], targets: [{ sel, x, y }], onTap(selector),
+ *         piece: 'pawn' for standing plastic pawns instead of glass marbles (skills/sorry.js) }
  * x, y are in the card's SVG units (-200..200, y down).
  */
 import { tweens } from './tabletop.js';
@@ -27,14 +28,19 @@ export default async function build(ctx, data) {
   const sideM = new THREE.MeshPhysicalMaterial({ color: '#8f5d31', roughness: 0.55, clearcoat: 0.3 });
   const board = new THREE.Mesh(new THREE.BoxGeometry(HALF * 2, H, HALF * 2), [sideM, sideM, topM, sideM, sideM, sideM]);
   board.position.y = H / 2; board.castShadow = board.receiveShadow = true; board.userData.isBoard = true; root.add(board);
-  const ballGeo = new THREE.SphereGeometry(MR, 40, 24);
+  const pawns = data.piece === 'pawn';
+  // a Sorry! pawn: turned plastic, a wide foot, a waist, a collar and a round head (about 24 mm tall)
+  const pawnProfile = [[0, 0], [0.0078, 0], [0.0082, 0.0012], [0.0074, 0.0026], [0.0046, 0.0046], [0.0033, 0.0098], [0.0029, 0.0136], [0.0052, 0.0146], [0.0052, 0.0156], [0.0031, 0.0166], [0.0046, 0.0184], [0.0049, 0.0204], [0.004, 0.0226], [0.0022, 0.0238], [0, 0.0242]].map(([r, y]) => new THREE.Vector2(r, y));
+  const ballGeo = pawns ? new THREE.LatheGeometry(pawnProfile, 48) : new THREE.SphereGeometry(MR, 40, 24);
   const glass = {};
-  const matFor = (col) => glass[col] || (glass[col] = new THREE.MeshPhysicalMaterial({ color: col, roughness: 0.06, transmission: 0.45, thickness: 0.01, ior: 1.5, clearcoat: 1, clearcoatRoughness: 0.05 }));
+  const matFor = (col) => glass[col] || (glass[col] = pawns
+    ? new THREE.MeshPhysicalMaterial({ color: col, roughness: 0.32, clearcoat: 0.7, clearcoatRoughness: 0.18, sheen: 0.2 })
+    : new THREE.MeshPhysicalMaterial({ color: col, roughness: 0.06, transmission: 0.45, thickness: 0.01, ior: 1.5, clearcoat: 1, clearcoatRoughness: 0.05 }));
   const ringGeo = new THREE.RingGeometry(MR * 1.25, MR * 1.6, 40).rotateX(-Math.PI / 2);
   const canM = new THREE.MeshBasicMaterial({ color: '#fff3c2', transparent: true, opacity: 0.75 });
   const toM = new THREE.MeshBasicMaterial({ color: '#9fe8ff', transparent: true, opacity: 0.85 });
   const marbles = new Map(), rings = new THREE.Group(), balls = new THREE.Group(); root.add(rings, balls);
-  const tw = tweens(), REST = H + MR * 0.55;
+  const tw = tweens(), REST = pawns ? H : H + MR * 0.55;
   function paint(d) {
     const seen = new Set();
     for (const m of d.marbles || []) {
