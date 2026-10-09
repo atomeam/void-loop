@@ -3044,7 +3044,7 @@ return { ok: true, detail: 'timer-reset' };
     const pick = (a) => a[Math.floor(Math.random() * a.length)];
     function smallTalk(l) {
       if (/^(?:thanks|thank\s+you|thx|ty|cheers|thanks\s+(?:void|a\s+lot|so\s+much)|thank\s+you\s+(?:void|so\s+much))$/.test(l)) return 'anytime';
-      if (/^(?:sorry|so\s+sorry|i'?m\s+sorry|my\s+bad|oops\s+sorry|apologies)(?:\s+void)?$/.test(l)) return 'no worries · (play sorry for the board game)';
+      if (/^(?:so\s+sorry|i'?m\s+(?:so\s+)?sorry|i\s+am\s+(?:so\s+)?sorry|my\s+bad|oops\s+sorry|apologies|sorry\s+(?:about\s+that|my\s+bad))(?:\s+void)?$/.test(l)) return 'no worries'; // a bare "sorry" stays a lookup: the titles called Sorry, the board game among them
       if (/^(?:how\s+are\s+you|how'?s\s+it\s+going|how\s+are\s+you\s+doing|how\s+do\s+you\s+do|you\s+ok)(?:\s+(?:today|void))?$/.test(l)) return 'quiet and ready. what do you need?';
       if (/^(?:what'?s|what\s+is)\s+your\s+name$|^who\s+are\s+you$/.test(l)) return 'Void, by A-to-Mind. ask for anything';
       if (/^(?:who\s+(?:made|built|created|designed)\s+you|who'?s\s+your\s+(?:maker|creator))$/.test(l)) return 'A-to-Mind made me: Adam, building with a crew of AI agents';

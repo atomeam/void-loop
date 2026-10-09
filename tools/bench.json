@@ -5492,6 +5492,5 @@
   {"ask": "sorry board game", "want": "skill:sorry"},
   {"ask": "let's play sorry", "want": "skill:sorry"},
   {"ask": "a game of sorry", "want": "skill:sorry"},
-  {"ask": "sorry", "want": "said"},
   {"ask": "i'm sorry", "want": "said"}
 ]
