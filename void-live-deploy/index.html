@@ -3290,6 +3290,17 @@ return { ok: true, detail: 'timer-reset' };
           el.innerHTML = '<h2>Which ' + esc(topic) + '?</h2><div class="sub">' + esc(j.title || hit.title) + ' can mean several things. Pick one.</div>'
             + (opts.length ? '<ul class="choices">' + opts.map((o) => '<li><a href="#" data-ask="' + esc('tell me about ' + o.title) + '">' + esc(o.title) + (o.note ? ' <small>· ' + esc(o.note) + '…</small>' : '') + '</a></li>').join('') + '</ul>' : '<p>' + esc(j.extract || '') + '</p>')
             + '<div class="src">Source: <a href="' + esc(page) + '" target="_blank" rel="noopener">Wikipedia</a> (all the meanings)</div>';
+          // Void's own input here too (skills/take.js): a meaning Void can act on comes first, with the action beside it
+          import('/skills/take.js').then((T) => {
+            if (vpageEl !== el) return;
+            const ul = el.querySelector('ul.choices'); if (!ul) return;
+            [...ul.children].forEach((li, i) => {
+              const o = opts[i], act = o && T.relatedAsks({ title: o.title, description: '', extract: o.note })[0];
+              if (!act) return;
+              li.insertAdjacentHTML('beforeend', ' <a href="#" class="take-act" data-ask="' + esc(act.ask) + '" style="white-space:nowrap">· ' + esc(act.label.replace(/\s*\(.*$/, '')) + ' →</a>');
+              ul.prepend(li);
+            });
+          }).catch(() => {});
           say('which one?');
           return 'wikipedia';
         }
