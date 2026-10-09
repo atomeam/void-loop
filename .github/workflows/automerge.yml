@@ -1,7 +1,6 @@
 # GitHub merges ready PRs by itself, so no session sits and watches CI (tools/automerge.mjs, tools/pr-ready.mjs).
 # Only PRs labelled "automerge" from this repository (never forks). Ready = test-and-deploy (and bench) green on the head,
-# the void-review check clean, CodeRabbit settled: its review of the head finished (or 10 minutes past green), its
-# findings fixed or answered. It looks again whenever anything that could change the answer happens, and once an hour.
+# the void-review check clean, no CodeRabbit finding open (it is never waited on; a finding it posts is fixed or answered). It looks again whenever anything that could change the answer happens, and once an hour.
 name: Void automerge
 
 on:
@@ -17,7 +16,7 @@ on:
   pull_request:
     types: [labeled]
   schedule:
-    - cron: "17 * * * *" # a review that finished quietly, or CodeRabbit's 10 minutes running out
+    - cron: "17 * * * *" # a check or review that finished without waking this workflow
   workflow_dispatch:
 
 concurrency:
