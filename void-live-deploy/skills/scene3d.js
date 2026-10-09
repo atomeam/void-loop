@@ -18,6 +18,7 @@
  * PCF shadows, a cool sky fill, and blurred contact shadows under the model. Models: GLTFLoader with meshopt and KTX2.
  * three.js r180 is vendored under /vendor/three-r180 (add-ons import it by relative path, so they resolve without an importmap).
  */
+import * as guard from './guard3d.js';
 const V = '/vendor/three-r180/';
 export const THREE_URL = V + 'build/three.module.min.js';
 export const MOTION_KEY = 'a2m.void.motion.v1';
@@ -59,11 +60,12 @@ export function engine() {
     room.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); }); pmrem.dispose();
     const gltf = new lib.GLTFLoader(); gltf.setMeshoptDecoder(lib.MeshoptDecoder);
     const ktx2 = new lib.KTX2Loader().setTranscoderPath(V + 'addons/libs/basis/').detectSupport(renderer); gltf.setKTX2Loader(ktx2);
+    try { const gl = renderer.getContext(), dbg = gl.getExtension('WEBGL_debug_renderer_info'); guard.setGpu(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)); } catch (_) {}
     const E = { lib, THREE, renderer, canvas, env, gltf, ktx2, w: 0, h: 0, models: new Map(), textures: new Map(), maxAniso: renderer.capabilities.getMaxAnisotropy(), lost: false };
     // a lost context (a GPU reset, the driver's watchdog) used to leave every miniature dead until a reload: wait it out, then
     // recompile and redraw them all (three.js rebuilds its own GPU state when the context comes back)
-    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); E.lost = true; });
-    canvas.addEventListener('webglcontextrestored', () => { E.lost = false; for (const h of live.values()) { h.needsCompile = true; h.dirty = true; for (const c of h.contacts) c.dirty = true; } wake(); });
+    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); E.lost = true; guard.contextLost(); });
+    canvas.addEventListener('webglcontextrestored', () => { E.lost = false; guard.contextRestored(); for (const h of live.values()) { h.needsCompile = true; h.dirty = true; for (const c of h.contacts) c.dirty = true; } wake(); });
     return E;
   })().catch((e) => { engineP = null; throw e; });
   return engineP;

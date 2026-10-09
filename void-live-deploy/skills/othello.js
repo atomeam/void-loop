@@ -95,7 +95,7 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card game-card othello-card';
   el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px';
-  el.innerHTML = '<div class="g-head"><span class="g-title">Othello</span><span class="g-sub">you are black</span></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title">Reversi</span><span class="g-sub">you are black</span></div>';
   const wrap = document.createElement('div'); wrap.className = 'g-board';
   const frame = document.createElement('div'); frame.className = 'oth-frame';
   const grid = document.createElement('div'); grid.className = 'oth-board';
@@ -166,7 +166,7 @@ function mount(th, stageApi) {
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   // the board stands in the void in 3D (skills/mini/othello.js), the rest of the card beside it; the 2D board stays the fallback
-  lift3d(th, stageApi, el, { kind: 'othello', board: grid, title: 'Othello', W: 440, H: 360,
+  lift3d(th, stageApi, el, { kind: 'othello', board: grid, title: 'Reversi', W: 440, H: 360,
     snapshot: () => ({ board: th.state.board.slice(), legal: [...grid.querySelectorAll('.oth-cell.legal')].map((b) => +b.dataset.i) }) });
 }
 
@@ -175,7 +175,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'othello');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'othello'; } // one board at a time
   api.summon('othello', { state: createOthelloState(), center: true });
-  api.say('Othello · you are black · tap a dotted square to flip Void’s discs');
+  api.say('Reversi (plays like Othello) · you are black · tap a dotted square to flip Void’s discs');
   return 'othello';
 }
 

@@ -12,11 +12,26 @@
  *     snapshot  () -> data for skills/mini/<kind>.js; the mini calls data.onTap(selector) to press a 2D element
  */
 import { grip, sideCard } from './side-card.js';
+import * as guard from './guard3d.js';
 
 const up = new Set(); // miniature keys already drawing: a re-render swaps to 3D at once instead of flashing the 2D board
 
+// the flat board, after a 3D one crashed: say so plainly, show what broke (to pass on), and offer 3D again
+function flatNote(el, kind, stageApi) {
+  const c = guard.lastCrash(), n = document.createElement('div'); n.className = 'g-rules lift3d-off';
+  n.style.cssText = 'margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(255,190,120,.08);border:1px solid rgba(255,190,120,.25)';
+  const line = document.createElement('div'); line.textContent = 'Playing on the flat board: the 3D board stopped last time, so this one always works.';
+  const detail = document.createElement('div'); detail.style.cssText = 'margin-top:4px;font-size:11px;opacity:.75;user-select:text';
+  if (c) detail.textContent = 'What happened (send this to Void’s builders): ' + [c.why, c.gpu && 'graphics: ' + c.gpu, c.ua].filter(Boolean).join(' · ');
+  const again = document.createElement('button'); again.type = 'button'; again.className = 'g-btn'; again.textContent = 'Try 3D again'; again.style.marginTop = '6px';
+  again.addEventListener('pointerdown', (e) => e.stopPropagation());
+  again.addEventListener('click', (e) => { e.stopPropagation(); guard.retry(kind); stageApi.render && stageApi.render(); });
+  n.append(line, detail, again); el.appendChild(n);
+}
+
 export function lift3d(th, stageApi, el, { kind, board, title, W, H, snapshot, label }) {
   if (!stageApi.miniature || typeof document === 'undefined') return;
+  if (guard.isOff(kind)) { flatNote(el, kind, stageApi); return; } // it crashed here before: the flat board, which always works
   const key = kind + ':' + th.id;
   const view = document.createElement('div');
   view.className = kind + '-view lift3d-view';
@@ -54,6 +69,19 @@ export function lift3d(th, stageApi, el, { kind, board, title, W, H, snapshot, l
   const obs = new MutationObserver(() => { if (mini) mini.update(data()); });
   obs.observe(board, { subtree: true, childList: true, attributes: true, characterData: true });
   stageApi.miniature(view, kind, data(), { key, label: label || ('3D ' + title + ' board: tap to play; drag to look around'), maxPolar: 1.2, minPolar: 0.12 })
-    .then((h) => { mini = h; up.add(key); lift(); h.update(data()); })
+    .then((h) => {
+      mini = h; up.add(key); lift(); h.update(data());
+      guard.begin(kind);
+      const dispose = h.dispose.bind(h); h.dispose = () => { guard.end(kind); return dispose(); };
+      // the 3D board died for good (a GPU reset that didn't come back): put the game back on its flat board now
+      const down = (e) => {
+        if (!e.detail || !e.detail.kinds.includes(kind)) return;
+        removeEventListener('void:3d-down', down);
+        if (!view.isConnected) return;
+        obs.disconnect(); up.delete(key); try { h.dispose(); } catch (_) {}
+        stageApi.render && stageApi.render();
+      };
+      addEventListener('void:3d-down', down);
+    })
     .catch((e) => { obs.disconnect(); up.delete(key); console.warn('[' + kind + '] 3D unavailable, flat board', e); });
 }

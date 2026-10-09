@@ -31,8 +31,8 @@ export const HOWTO = {
   aggravation: { goal: 'Race all four of your marbles from base to home.',
     steps: ['You are red. Press Roll.', 'A 1 or a 6 brings a marble out of base.', 'Tap a glowing marble, then a glowing hole, to move it.', 'Land on a rival and it goes back to its base.'],
     tip: 'The gold rings are shortcuts: they skip across the board.' },
-  sorry: { goal: 'Get all four of your red pawns from Start to Home.',
-    steps: ['Press Draw to turn over a card.', 'A 1 or a 2 moves a pawn out of Start. A 2 also lets you draw again.', 'Tap a glowing pawn, then a glowing square, to move it.', 'Land on someone and they go back to Start. Sorry!'],
+  sorry: { goal: 'Get all four of your red pawns from Start to Home (it plays like Sorry!).',
+    steps: ['Press Draw to turn over a card.', 'A 1 or a 2 moves a pawn out of Start. A 2 also lets you draw again.', 'Tap a glowing pawn, then a glowing square, to move it.', 'Land on someone and they go back to Start. Bumped!'],
     tip: 'Stop on a triangle in another colour and you slide to its end, knocking everyone off.' },
   battleship: { goal: 'Sink all five of Void’s hidden ships first.',
     steps: ['Your fleet is placed for you.', 'Tap a square in Void’s waters to fire.', 'A hit shows red, a miss white. Keep firing around a hit to find the rest of the ship.', 'Void fires back and shows its reasoning.'],
@@ -89,7 +89,13 @@ export function howTo(card, kind) {
   btn.addEventListener('click', (e) => { e.stopPropagation(); show(panel.hidden); markSeen(kind); });
   go.addEventListener('click', (e) => { e.stopPropagation(); show(false); markSeen(kind); });
   const head = card.querySelector('.g-head');
-  if (head) { head.style.display = 'flex'; head.style.alignItems = 'center'; head.style.gap = '8px'; head.appendChild(btn); head.after(panel); }
+  if (head) {
+    // title and button on one line, the subtitle on its own line under them, so a long name never squeezes into a column
+    head.style.display = 'flex'; head.style.alignItems = 'center'; head.style.flexWrap = 'wrap'; head.style.columnGap = '8px';
+    const title = head.querySelector('.g-title'); if (title) { title.style.flex = '1 1 0'; title.style.minWidth = '0'; }
+    const sub = head.querySelector('.g-sub'); if (sub) { sub.style.order = '3'; sub.style.flexBasis = '100%'; sub.style.marginLeft = '0'; }
+    head.appendChild(btn); head.after(panel);
+  }
   else { card.prepend(panel); card.prepend(btn); }
   // the long rules paragraph stays, folded away: the steps above are what you need to start
   const rules = card.querySelector('.g-rules');

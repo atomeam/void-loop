@@ -9,16 +9,16 @@
 
 // games Void plays, and the family each belongs to: an article about a cousin offers Void's own game
 const GAMES = [
-  { re: /^sorry!?(?: \(game\))?$/i, ask: 'play sorry', label: () => 'Play Sorry! with Void' },
-  { re: /\b(?:ludo|parcheesi|pachisi|chaupar|trouble \(board game\)|frustration|mensch ärgere dich nicht|uckers|aggravation)\b/i, ask: 'play aggravation', label: (t) => /aggravation/i.test(t) ? 'Play Aggravation with Void' : 'Play Aggravation with Void (same family: race your marbles home, send others back)' },
+  { re: /^sorry!?(?: \(game\))?$/i, ask: 'play sorry', label: () => 'Play Back to Start with Void (plays like Sorry!)' },
+  { re: /\b(?:ludo|parcheesi|pachisi|chaupar|trouble \(board game\)|frustration|mensch ärgere dich nicht|uckers|aggravation)\b/i, ask: 'play aggravation', label: (t) => /aggravation/i.test(t) ? 'Play Star Marbles with Void (plays like Aggravation)' : 'Play Star Marbles with Void (same family: race your marbles home, send others back)' },
   { re: /\bchess\b/i, ask: 'play chess', label: () => 'Play chess with Void' },
   { re: /\b(?:checkers|draughts)\b/i, ask: 'play checkers', label: () => 'Play checkers with Void' },
   { re: /\bgo \(game\)|\bweiqi\b|\bbaduk\b/i, ask: 'play go', label: () => 'Play Go with Void' },
-  { re: /\b(?:othello|reversi)\b/i, ask: 'play othello', label: () => 'Play Othello with Void' },
-  { re: /\bconnect four\b|\bconnect 4\b/i, ask: 'connect 4', label: () => 'Play Connect Four with Void' },
+  { re: /\b(?:othello|reversi)\b/i, ask: 'play othello', label: () => 'Play Reversi with Void' },
+  { re: /\bconnect four\b|\bconnect 4\b/i, ask: 'connect 4', label: () => 'Play Four in a Row with Void (plays like Connect Four)' },
   { re: /\btic[- ]tac[- ]toe\b|\bnoughts and crosses\b/i, ask: 'tic tac toe', label: () => 'Play tic-tac-toe with Void' },
-  { re: /\bmonopoly\b/i, ask: 'play monopoly', label: () => 'Play Monopoly with Void' },
-  { re: /\bbattleship\b/i, ask: 'play battleship', label: () => 'Play Battleship with Void' },
+  { re: /\bmonopoly\b/i, ask: 'play monopoly', label: () => 'Play The Landlord’s Game with Void (plays like Monopoly)' },
+  { re: /\bbattleship\b/i, ask: 'play battleship', label: () => 'Play Sea Battle with Void (plays like Battleship)' },
   { re: /\b(?:poker|texas hold ?'?em)\b/i, ask: 'play poker', label: () => "Play heads-up Hold'em with Void" },
   { re: /\b(?:mancala|kalah|oware|bao)\b/i, ask: 'play mancala', label: () => 'Play mancala with Void' },
   { re: /\bhanabi\b/i, ask: 'play fireworks', label: () => 'Play Fireworks (Hanabi) with Void' },

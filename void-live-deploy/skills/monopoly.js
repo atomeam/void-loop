@@ -33,7 +33,7 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card game-card monopoly-card';
   el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(470px, calc(100vw - 20px))';
-  el.innerHTML = '<div class="g-head"><span class="g-title">Monopoly</span><span class="g-sub">you against Void</span></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title">The Landlord’s Game</span><span class="g-sub">you against Void</span></div>';
   const wrap = document.createElement('div'); wrap.className = 'g-board';
   const board = document.createElement('div'); board.className = 'mono-board';
   board.style.cssText = 'display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(11,1fr);aspect-ratio:1;gap:1px;background:#1d2a22;border-radius:8px;padding:2px;font-size:6.5px;line-height:1.05';
@@ -47,7 +47,7 @@ function mount(th, stageApi) {
     board.appendChild(b); return b;
   });
   const mid = document.createElement('div'); mid.style.cssText = 'grid-row:2/11;grid-column:2/11;background:#cfe2c8;display:flex;align-items:center;justify-content:center;color:#2b4a33;font:700 18px Georgia,serif;letter-spacing:.08em';
-  mid.textContent = 'MONOPOLY'; board.appendChild(mid);
+  mid.textContent = 'THE LANDLORD’S GAME'; board.appendChild(mid);
   wrap.appendChild(board);
   // the card: whose turn, money, what you can do now, your property, an offer to Void, the log with Void's reasons
   const status = document.createElement('div'); status.className = 'g-status mono-status'; status.setAttribute('aria-live', 'polite'); status.style.display = 'block';
@@ -139,7 +139,7 @@ function mount(th, stageApi) {
   stageApi.stage.appendChild(el);
   voidPlays(); // a reloaded game on a Void turn carries on
   // the board stands in the void in 3D (skills/mini/monopoly.js), the card beside it; this flat board stays the fallback
-  lift3d(th, stageApi, el, { kind: 'monopoly', board, title: 'Monopoly', W: 520, H: 440,
+  lift3d(th, stageApi, el, { kind: 'monopoly', board, title: 'The Landlord’s Game', W: 520, H: 440,
     snapshot: () => ({ owner: { ...th.state.owner }, houses: { ...th.state.houses }, players: th.state.players.map((p) => ({ pos: p.pos, out: p.out })), picked, dice: th.state.dice }) });
 }
 
@@ -148,7 +148,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'monopoly');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'monopoly'; }
   api.summon('monopoly', { state: M.create({ voids: 1 }), x: Math.max(10, Math.round(innerWidth / 2 - 420)), y: 40 });
-  api.say('Monopoly · you against Void · roll to start; buying is always your choice');
+  api.say('The Landlord’s Game (plays like Monopoly) · you against Void · roll to start; buying is always your choice');
   return 'monopoly';
 }
 
