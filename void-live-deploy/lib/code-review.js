@@ -114,6 +114,32 @@ export function mask(code, lang) {
 const JS = ['javascript', 'typescript'];
 // event fields anyone outside the repo can set (GitHub's list of untrusted input), as they appear inside ${{ }}
 const GHA_UNTRUSTED = /\$\{\{[^}]*\b(?:github\.event\.(?:issue\.(?:title|body)|pull_request\.(?:title|body|head\.(?:ref|label)|head\.repo\.default_branch)|comment\.body|review\.body|review_comment\.body|discussion\.(?:title|body)|head_commit\.(?:message|author\.(?:email|name))|commits\b[^}]*\.(?:message|author\.(?:email|name))|workflow_run\.(?:head_branch|head_commit\.message)|pages\b[^}]*\.page_name)|github\.head_ref)\b/;
+// innerHTML built only from fixed text: string literals, numbers, ALL_CAPS constants (HEX[c], COLORS), and the item of a
+// .map over a literal array or a constant ([1, 2, 3].map((n) => '<b>' + n + '</b>')). Nothing in it can come from a user,
+// so it can't carry HTML anyone else wrote. Any other name (text, data.name, e.target.value, a call) keeps the finding.
+const SAFE_METHODS = /^(?:map|join|filter|slice|concat|flat|flatMap|reverse|toFixed|toString|toUpperCase|toLowerCase|trim|padStart|padEnd|repeat|length)$/;
+function constantHtml(st, rawSt) {
+  const at = st.search(/\.(?:innerHTML|outerHTML)\s*\+?=/); if (at < 0) return false;
+  const from = st.indexOf('=', at) + 1;
+  let end = st.length, d = 0;
+  for (let k = from; k < st.length; k++) { const c = st[k]; if ('([{'.includes(c)) d++; else if (')]}'.includes(c)) { if (!d) { end = k; break; } d--; } else if (c === ';' && !d) { end = k; break; } }
+  let rhs = st.slice(from, end);
+  // a template literal's ${…} is blanked by the mask: put its expressions back as code
+  const raw = (rawSt || '').slice(from, end);
+  for (const t of raw.matchAll(/\$\{([^}]*)\}/g)) rhs += ' + (' + t[1] + ')';
+  rhs = rhs.replace(/(['"`])\s*\1/g, ' ').replace(/\b\d[\d_]*(?:\.\d+)?(?:e[+-]?\d+)?\b/gi, ' ');
+  const safe = new Set(['true', 'false', 'null', 'undefined']);
+  for (const p of rhs.matchAll(/(?:\[[^\][a-zA-Z_$]*\]|\b[A-Z][A-Z0-9_]*\b(?:\s*\.\s*[A-Za-z_$][\w$]*)*)\s*\.\s*(?:map|flatMap|filter|forEach)\s*\(\s*(?:\(([^)]*)\)|([A-Za-z_$][\w$]*))\s*=>/g))
+    for (const n of (p[1] || p[2] || '').split(',')) if (n.trim()) safe.add(n.trim());
+  for (const t of rhs.matchAll(/(\.\s*)?([A-Za-z_$][\w$]*)((?:\s*\.\s*[A-Za-z_$][\w$]*)*)/g)) {
+    const [, dot, root, rest] = t, props = rest.split('.').map((w) => w.trim()).filter(Boolean);
+    if (dot) { if (!SAFE_METHODS.test(root) || !props.every((w) => SAFE_METHODS.test(w))) return false; continue; }
+    if (/^[A-Z][A-Z0-9_]*$/.test(root)) continue; // a constant, and anything read off it
+    if (safe.has(root)) continue; // an item of a fixed list, and what is read off it
+    return false;
+  }
+  return true;
+}
 const RULES = [
   ['assign-in-condition', 'bug', [...JS, 'java', 'csharp', 'c', 'php'], (m) => /\b(?:if|while)\s*\(\s*!?\s*[A-Za-z_$][\w$.[\]]*\s*=\s*[^=>]/.test(m),
     'an assignment (=) inside the condition: it sets the value and is then always true or false. To compare, use === (or == outside JavaScript).'],
@@ -132,7 +158,7 @@ const RULES = [
     'for…in walks property names as strings (and inherited ones), not array values. For an array use for (const x of list), or for (let i = 0; i < list.length; i++).'],
   ['eval', 'risk', [...JS, 'python', 'php', 'ruby'], (m) => /(?:^|[^\w$.])(?:eval|exec)\s*\(|\bnew\s+Function\s*\(/.test(m),
     'eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anything. Parse the data instead (JSON.parse, a lookup table, ast.literal_eval in Python).'],
-  ['inner-html', 'risk', JS, (m, r) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !/\.(?:innerHTML|outerHTML)\s*\+?=\s*(?:'[^'$]*'|"[^"$]*"|`[^`$]*`)\s*;?\s*(?:\}\s*\)?\s*;?\s*)?$/.test(r) && !/\besc(?:ape)?(?:Html)?\s*\(|[(,]\s*esc(?:ape)?(?:Html)?\s*[,)]|DOMPurify|sanitize/i.test(r), // a plain string, esc called, or handed to an HTML builder (card(esc, data))
+  ['inner-html', 'risk', JS, (m, r, x) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !constantHtml(x.statement(), x.rawStatement()) && !/\besc(?:ape)?(?:Html)?\s*\(|[(,]\s*esc(?:ape)?(?:Html)?\s*[,)]|DOMPurify|sanitize/i.test(r), // only fixed text, esc called, or handed to an HTML builder (card(esc, data))
     'putting a variable into innerHTML lets any HTML in it run (a script tag, an onerror handler): an XSS hole if the text can come from a user. Use textContent, or escape the text first.'],
   ['document-write', 'risk', JS, (m) => /\bdocument\.write(?:ln)?\s*\(/.test(m),
     'document.write wipes the whole page if it runs after loading, and writes raw HTML (XSS risk). Build elements with createElement and textContent.'],
@@ -448,6 +474,8 @@ export function ruleReview(code, opts = {}) {
       // the same, as written (markup inside strings stays visible: a table built in a template string)
       nextRaw: (k) => { let n = 0; for (let j = i + 1; j < rawLines.length; j++) if (rawLines[j].trim() && ++n === k) return rawLines[j]; return ''; },
       statement: () => { let st = ''; for (let j = i; j < rawLines.length && j < i + 12; j++) { st += ' ' + (maskedLines[j] || ''); if (/;\s*$/.test(maskedLines[j] || '')) break; } return st; },
+      // the same statement as written, character for character (the mask keeps lengths), so a rule can read inside a template's ${…}
+      rawStatement: () => { let st = ''; for (let j = i; j < rawLines.length && j < i + 12; j++) { st += ' ' + rawLines[j]; if (/;\s*$/.test(maskedLines[j] || '')) break; } return st; },
       // the raw text of the { … } object this line sits in (up to 12 lines either way), so a rule can see sibling options on other lines
       object: () => { const lo = Math.max(0, i - 12), w = rawLines.slice(lo, i + 13).join('\n'); let at = rawLines.slice(lo, i).reduce((a, l) => a + l.length + 1, 0) + (rawLines[i].indexOf('{') >= 0 ? rawLines[i].indexOf('{') + 1 : 0), d = 0, s = 0, e = w.length;
         for (let k = at - 1; k >= 0; k--) { const c = w[k]; if (c === '}') d++; else if (c === '{') { if (!d) { s = k; break; } d--; } }
