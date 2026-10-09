@@ -4,7 +4,8 @@ Approved as build input by Adam, 2026-10-09 (two reviews; both sets of edits are
 Everything here works offline: no accounts, no tracking, no outside model call.
 
 **Build order:** gear explainer → moon explainer → lock explainer → quiz → five-minute challenge. Adam: "Revert fix stays at
-priority 1 alongside the gear miniature."
+priority 1 alongside the gear miniature." (The revert fix shipped in #221, `tools/revert-target.mjs`; the gear explainer is
+step 1's "living miniature reference implementation" in the frontier's build order.)
 
 **The three explainer specs** (gear pair, moon phases, lock cutaway) are in `domains/void.explainers.md`, with every edit
 below and the final clarifications applied.
