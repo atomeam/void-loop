@@ -12,7 +12,7 @@
 import { ensureTables, bad, good, session, tierOf } from '../../lib/void-me.js';
 import { ownerOk } from '../../lib/guard.js';
 import { KEY_RE, MAX_KEYS, PRO_DAILY, BUY_URL, keyHash, newKey, today, quick, closerRead } from '../../lib/review-api.js';
-import { productById, productIdOf, forSale, buyUrl, LICENSE_RE, LICENSE_TTL_MS, LICENSE_TABLE, askGumroad } from '../../lib/products.js';
+import { productById, resolveProductId, forSale, buyUrl, LICENSE_RE, LICENSE_TTL_MS, LICENSE_TABLE, askGumroad } from '../../lib/products.js';
 
 const PRODUCT = productById('code-review');
 const ready = ensureTables; // void_review_keys is one of the account tables (lib/void-me.js)
@@ -34,13 +34,12 @@ async function access(request, env, now = Date.now()) {
       spend: () => env.DB.prepare('UPDATE void_review_keys SET uses = CASE WHEN day = ? THEN uses + 1 ELSE 1 END, day = ?, total = total + 1, used = ? WHERE hash = ?').bind(today(now), today(now), new Date(now).toISOString(), hash).run() };
   }
   if (LICENSE_RE.test(t)) { // Void Code Review Pro bought on its own: Gumroad says whether the license is good, remembered for a few hours
-    const pid = productIdOf(PRODUCT, env);
-    if (!pid) return free('Void Code Review Pro is not on sale on its own yet');
+    if (!forSale(PRODUCT)) return free('Void Code Review Pro is not on sale on its own yet');
     await licenses(env);
     const hash = await keyHash('license:' + t.toUpperCase());
     let row = await env.DB.prepare('SELECT ok, why, checked, day, uses FROM void_licenses WHERE hash = ?').bind(hash).first();
     if (!row || now - Number(row.checked) > LICENSE_TTL_MS) {
-      const g = await askGumroad(pid, t.toUpperCase(), env.fetchGumroad || fetch); // env.fetchGumroad: tests only (tools/review-api.test.mjs)
+      const g = await askGumroad(await resolveProductId(PRODUCT, env), t.toUpperCase(), env.fetchGumroad || fetch, PRODUCT.gumroad.slug); // env.fetchGumroad: tests only (tools/review-api.test.mjs)
       if (g.ok !== null) {
         await env.DB.prepare('INSERT INTO void_licenses (hash, product, ok, why, checked) VALUES (?, ?, ?, ?, ?) ON CONFLICT(hash) DO UPDATE SET ok = excluded.ok, why = excluded.why, checked = excluded.checked').bind(hash, PRODUCT.id, g.ok ? 1 : 0, g.why, now).run();
         row = { ...(row || {}), ok: g.ok ? 1 : 0, why: g.why, checked: now };
@@ -87,7 +86,7 @@ export async function onRequestPost({ request, env }) {
 
 export async function onRequestGet({ request, env }) {
   if (new URL(request.url).searchParams.has('offer')) {
-    return Response.json({ product: PRODUCT.name, adds: PRODUCT.adds, included: { in: 'Void Pro', url: 'https://moonbeam846.gumroad.com/l/yinmj' }, standalone: forSale(PRODUCT, env) ? { url: buyUrl(PRODUCT) } : null }, { headers: { 'cache-control': 'public, max-age=300' } });
+    return Response.json({ product: PRODUCT.name, adds: PRODUCT.adds, included: { in: 'Void Pro', url: 'https://moonbeam846.gumroad.com/l/yinmj' }, standalone: forSale(PRODUCT) ? { url: buyUrl(PRODUCT) } : null }, { headers: { 'cache-control': 'public, max-age=300' } });
   }
   try {
     await ready(env);

@@ -167,7 +167,7 @@ jobs:
   var standaloneSlug = '', catalog = [];
   function money(p) { return '$' + (p.price_cents / 100).toFixed(p.price_cents % 100 ? 2 : 0) + ({ monthly: ' a month', yearly: ' a year' }[p.recurrence] || ''); }
   function showPrices() {
-    var v = catalog.find(function (x) { return x.slug === 'yinmj'; }), c = standaloneSlug && catalog.find(function (x) { return x.slug === standaloneSlug; });
+    var v = catalog.find(function (x) { return x.slug === 'yinmj'; }), c = standaloneSlug && catalog.find(function (x) { return x.slug === standaloneSlug || String(x.url || '').split('/l/')[1] === standaloneSlug; });
     if (v && v.price_cents) document.getElementById('price').textContent = money(v);
     if (c && c.price_cents) document.getElementById('sprice').textContent = money(c);
   }
