@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · the blink (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+input{width:4em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#stream{height:110px;display:flex;align-items:center;justify-content:center;font-size:56px;border:1px solid rgba(255,255,255,.12);border-radius:12px}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>the blink · draft · not published</h1>
+  <p class="note">Letters flash in one place, about ten a second. Two digits hide among them. Afterwards, type both digits. When the second digit comes 200 to 500 ms after the first, many people miss it, though they catch it when it comes right after the first or much later. This is the attentional blink (Raymond, Shapiro and Arnell, 1992; reviewed by Dux and Marois, 2009). The page tracks how often you catch the second digit at each gap, counting only rounds where you got the first. Everything stays in this browser. Fast flashing: skip this if flicker bothers you.</p>
+  <div id="stream" aria-hidden="true">+</div>
+  <div class="row"><button id="go" type="button">start a round</button></div>
+  <form id="ask" class="row" hidden><label for="d1">first digit</label><input id="d1" inputmode="numeric" maxlength="1" required><label for="d2">second digit</label><input id="d2" inputmode="numeric" maxlength="1"><button type="submit">check</button></form>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.blink.v1',st={trials:[]},MS=100,LAGS=[1,2,3,5,8],cur=null;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&LAGS.indexOf(t.lag)>=0})}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(_){}}
+  var LET='BCDFGHJKLMNPRSTVWXZ';
+  // a round: 18 letters, the first digit at position 4 to 6, the second `lag` items later; the two digits differ
+  function round(rnd,lag){var n=18,p1=4+Math.floor(rnd()*3),d1=1+Math.floor(rnd()*9),d2=1+Math.floor(rnd()*8);if(d2>=d1)d2++;
+    var items=[];for(var i=0;i<n;i++)items.push(LET[Math.floor(rnd()*LET.length)]);items[p1]=String(d1);items[p1+lag]=String(d2);return {items:items,d1:d1,d2:d2,lag:lag}}
+  // the curve: for each gap, how often the second digit was caught, counting only rounds where the first was right
+  function curve(trials){return LAGS.map(function(l){var t=trials.filter(function(x){return x.lag===l&&x.ok1});var hit=t.filter(function(x){return x.ok2}).length;return {lag:l,ms:l*MS,n:t.length,rate:t.length?hit/t.length:null}})}
+  // the blink: the dip at gaps 2-3 (200-300 ms) below the mean of gap 1 and gap 8
+  function blink(c){var g=function(l){var x=c.filter(function(q){return q.lag===l})[0];return x&&x.rate!=null?x.rate:null};var a=[g(2),g(3)].filter(function(v){return v!=null}),b=[g(1),g(8)].filter(function(v){return v!=null});
+    if(!a.length||!b.length)return null;return b.reduce(function(s,v){return s+v},0)/b.length-a.reduce(function(s,v){return s+v},0)/a.length}
+  var el=function(id){return document.getElementById(id)};
+  el('go').addEventListener('click',function(){
+    var lag=LAGS[Math.floor(Math.random()*LAGS.length)];cur=round(Math.random,lag);el('go').disabled=true;el('ask').hidden=true;el('state').textContent='';
+    var i=0,show=function(){if(i<cur.items.length){el('stream').textContent=cur.items[i++];setTimeout(show,MS)}else{el('stream').textContent='+';el('ask').hidden=false;el('d1').value='';el('d2').value='';el('d1').focus()}};
+    el('stream').textContent='+';setTimeout(show,600)});
+  el('ask').addEventListener('submit',function(e){e.preventDefault();if(!cur)return;
+    var a=el('d1').value.trim(),b=el('d2').value.trim(),got=[a,b],ok1=got.indexOf(String(cur.d1))>=0,ok2=got.indexOf(String(cur.d2))>=0;
+    st.trials.push({lag:cur.lag,ok1:ok1,ok2:ok2,at:Date.now()});save();
+    el('state').textContent='the digits were '+cur.d1+' and '+cur.d2+', '+cur.lag*MS+' ms apart · first '+(ok1?'caught':'missed')+', second '+(ok2?'caught':'missed');
+    cur=null;el('go').disabled=false;el('ask').hidden=true;score()});
+  function score(){if(!st.trials.length){el('score').textContent='';return}var c=curve(st.trials),b=blink(c);
+    el('score').textContent=st.trials.length+' round'+(st.trials.length>1?'s':'')+'\n'+c.map(function(q){return q.ms+' ms: '+(q.rate==null?'no rounds yet':Math.round(q.rate*100)+'% ('+q.n+')')}).join(' · ')
+      +(b==null?'':'\nthe dip at 200-300 ms: '+Math.round(b*100)+' points below the ends')+(st.trials.length<40?'\nabout 40 rounds before the curve means much':'')}
+  score();
+  // made-up data: a deck has its digits at the right gap, and a blink-shaped set of answers gives a positive dip
+  function selftest(){
+    var s=7,rnd=function(){s=(s*16807)%2147483647;return s/2147483647};
+    for(var k=0;k<20;k++){var lag=LAGS[k%LAGS.length],r=round(rnd,lag),i1=r.items.indexOf(String(r.d1)),i2=r.items.indexOf(String(r.d2));if(i1<0||i2-i1!==lag||r.d1===r.d2)return 'a round put its digits in the wrong place'}
+    var fake=[];LAGS.forEach(function(l){for(var i=0;i<10;i++)fake.push({lag:l,ok1:true,ok2:(l===2||l===3)?i<4:i<9})});
+    var c=curve(fake),b=blink(c);if(!(b>0.4))return 'a blink-shaped curve should dip, got '+b;
+    if(curve([{lag:2,ok1:false,ok2:true}])[1].n!==0)return 'rounds with the first digit missed must not count';
+    return true}
+  window.__blink={round:round,curve:curve,blink:blink,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

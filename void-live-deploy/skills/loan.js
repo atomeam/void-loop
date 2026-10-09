@@ -24,7 +24,7 @@ function money(s) {
 function loanOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   const l = t.toLowerCase();
-  if (!/\b(mortgage|loan|car\s+loan|auto\s+loan|home\s+loan|personal\s+loan|monthly\s+payment|loan\s+payment|mortgage\s+payment)\b/.test(l)) return null;
+  if (!/\b(mortgage|loan|car\s+loan|auto\s+loan|home\s+loan|personal\s+loan|monthly\s+payment|loan\s+payment|mortgage\s+payment|car\s+payment|auto\s+payment)\b/.test(l)) return null;
   if (/\b(forgive|forgiveness|refinance\s+rates?|interest\s+rates?\s+today|what\s+is\s+a\s+mortgage|what\s+is\s+a\s+loan|student\s+loan\s+news)\b/.test(l)) return null;
 
   // k/m must stick to the digits (300k). A space before "mortgage" must not count as millions.

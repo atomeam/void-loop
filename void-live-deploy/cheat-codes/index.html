@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Cheat Codes: 12 Tricks for Zero-Cost Infrastructure</title>
+    <meta name="description" content="A guide to building and hosting autonomous AI agents, local models, and edge databases entirely on free-tier infrastructure.">
+    <link rel="canonical" href="https://a-to-mind.com/cheat-codes/">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TechArticle",
+      "headline": "AI Cheat Codes: 12 Tricks for Zero-Cost Infrastructure",
+      "author": { "@type": "Organization", "name": "Void" },
+      "publisher": {
+        "@type": "Organization",
+        "name": "A-to-Mind",
+        "logo": { "@type": "ImageObject", "url": "https://a-to-mind.com/icon-512.png" }
+      },
+      "mainEntityOfPage": "https://a-to-mind.com/cheat-codes/",
+      "datePublished": "2026-10-06",
+      "dateModified": "2026-10-06"
+    }
+    </script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; line-height: 1.6; max-width: 800px; margin: 0 auto; padding: 2rem; background: #0a0a0a; color: #ededed; }
+        h1, h2 { color: #ffffff; }
+        a { color: #58a6ff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+        code { background: #1f1f1f; padding: 0.2rem 0.4rem; border-radius: 4px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <p><a href="/">&larr; Void · A-to-Mind</a></p>
+    <article>
+        <h1>AI Cheat Codes: 12 Tricks for Zero-Cost Infrastructure</h1>
+        <p>Building autonomous AI infrastructure doesn't require massive cloud budgets. By routing traffic through edge networks and offloading execution to local hardware, you can run continuous autonomous loops for free.</p>
+
+        <h2>1. Host Static Assets for Free</h2>
+        <p>Deploy your frontend via <a href="https://developers.cloudflare.com/pages/">Cloudflare Pages</a>. Static requests are free and unmetered, which decouples your UI from backend compute costs.</p>
+
+        <h2>2. Use Edge Workers for Logic</h2>
+        <p>Instead of running a paid VPS, deploy routing logic to <a href="https://developers.cloudflare.com/workers/platform/limits/">Cloudflare Workers</a>. The free tier allows 100,000 requests per day with 10ms of CPU time per invocation.</p>
+
+        <h2>3. Shift Databases to the Edge</h2>
+        <p>Avoid expensive managed SQL instances by using <a href="https://developers.cloudflare.com/d1/platform/pricing/">Cloudflare D1</a>. The free tier provides 5 million rows read per day, 100,000 rows written per day, and 5 GB of storage.</p>
+
+        <h2>4. Compress Codebase Context</h2>
+        <p>Before passing code to an LLM, use <a href="https://github.com/yamadashy/repomix">Repomix</a> with its code-compression option, which keeps signatures and structure and drops function bodies. Fewer tokens in means a smaller API bill.</p>
+
+        <h2>5. Cold Archive to S3-Compatible Storage</h2>
+        <p>Store project archives and large blobs in <a href="https://developers.cloudflare.com/r2/pricing/">Cloudflare R2</a>. The free tier includes 10 GB of storage per month, with zero egress fees for retrieval.</p>
+
+        <h2>6. Run Background Tasks Locally</h2>
+        <p>Reserve paid API tokens for complex reasoning. For basic data extraction and formatting, run small (around 8B-parameter) models locally via <a href="https://ollama.com/">Ollama</a> at $0 API cost.</p>
+
+        <h2>7. Purge Local Weight Caches</h2>
+        <p>Local AI dev quickly fills up hard drives. Regularly clear stale Hugging Face downloads with <code>hf cache prune</code> to recover gigabytes of space. Not sure where the space went? The free, read-only <a href="https://github.com/atomeam/void-loop/blob/main/tools/void_lens.py">void-lens scanner</a> lists your caches, stale <code>node_modules</code>, model weights and virtual disks, and prints the exact command for each. It deletes nothing and uploads nothing.</p>
+
+        <h2>8. Prune Docker Wisely</h2>
+        <p>When reclaiming disk space from containerized agent runners, use <code>docker system prune -a</code> without the <code>--volumes</code> flag to clear cache while preserving database volumes.</p>
+
+        <h2>9. Compact WSL Virtual Disks</h2>
+        <p>Deleting files in Windows Subsystem for Linux (WSL) does not automatically shrink the virtual disk. Run <code>wsl --shutdown</code>, then use the Windows <code>diskpart</code> tool to compact the <code>ext4.vhdx</code> file.</p>
+
+        <h2>10. Generate AST Digests</h2>
+        <p>Instead of feeding entire code files to your AI, generate Abstract Syntax Tree (AST) markdown digests. This gives the model the architecture map it needs without blowing past the context window.</p>
+
+        <h2>11. Build Local Verification Hooks</h2>
+        <p>Save CI minutes and deploys by running deterministic validation checks (like <code>node tools/checks.mjs</code>) locally before pushing to production.</p>
+
+        <h2>12. Instant Indexing via API</h2>
+        <p>Don't wait weeks for search engines to crawl your new pages. Use the <a href="https://www.indexnow.org/">IndexNow API</a> to notify Bing, Yandex and other participating engines the moment your site deploys. Google does not participate.</p>
+    </article>
+</body>
+</html>

@@ -1,12 +1,30 @@
 {
   "manifest_version": 3,
   "name": "Void",
-  "version": "0.1.0",
-  "description": "Void by A-to-Mind in your side panel. Ask for anything; select text and ask Void about it.",
-  "icons": { "16": "icon.png", "48": "icon.png", "128": "icon.png" },
-  "action": { "default_title": "Open Void" },
-  "side_panel": { "default_path": "sidepanel.html" },
-  "background": { "service_worker": "background.js" },
-  "permissions": ["sidePanel", "contextMenus", "storage"],
-  "omnibox": { "keyword": "void" }
+  "version": "0.2.0",
+  "description": "Void by A-to-Mind in your side panel. Ask for anything; ask Void about the page you are on, a selection or the draft you are writing.",
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+  "action": {
+    "default_title": "Open Void"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": [
+    "sidePanel",
+    "contextMenus",
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "omnibox": {
+    "keyword": "void"
+  }
 }

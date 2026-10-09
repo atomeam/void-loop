@@ -2,7 +2,9 @@
  * weather skill — Open-Meteo, no key
  * Contract: { name, examples, match(lower, text), run(text, api) }
  * api: { showPage, esc, say, reportMiss, loopLog }
+ * The card stays current on its own: skills/live.js re-fetches the forecast every 15 minutes while it is up.
  */
+import { keepLive } from './live.js';
 const WX = {
   0: 'Clear', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Overcast',
   45: 'Fog', 48: 'Fog', 51: 'Light drizzle', 53: 'Drizzle', 55: 'Heavy drizzle',
@@ -15,7 +17,7 @@ const WX = {
 function weatherPlace(text) {
   const m = text.match(/\b(?:in|at|for|near)\s+([^?.!]+)$/i);
   if (m) return m[1].replace(/\b(today|tomorrow|now|right now|this week)\b/ig, '').trim();
-  const t = text.replace(/[?.!]/g, '').replace(/\b(what'?s|what is|the|weather|forecast|temperature|like|today|now|is it|will it|going to|rain|snow|raining|snowing|sunny|windy|cloudy|how|cold|hot|warm|here|outside)\b/ig, ' ').trim();
+  const t = text.replace(/[?.!]/g, '').replace(/\b(what'?s|what is|the|weather|forecast|temperature|like|today|now|is it|will it|going to|rain|snow|raining|snowing|sunny|windy|cloudy|how|cold|hot|warm|here|outside|what should i wear|do i|should i|will i|need|bring|take|an?|umbrella|raincoat|jacket|coat)\b/ig, ' ').trim();
   return t;
 }
 
@@ -57,19 +59,29 @@ async function run(text, api) {
       return place ? 'none' : 'weather';
     }
     const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.latitude + '&longitude=' + loc.longitude
-      + '&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_hours=8&forecast_days=1&timezone=auto';
-    const w = await fetch(u).then((r) => r.json());
-    if (!api._pageStill(el)) return 'weather';
+      + '&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_hours=8&forecast_days=1&timezone=auto';
     const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
     const T = (c) => Math.round(f ? c * 9 / 5 + 32 : c) + '°';
-    const c = w.current, d = w.daily, h = w.hourly;
-    const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center;min-width:44px"><div style="color:#8a8a8a;font-size:12px">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div>' + T(h.temperature_2m[i]) + '</div><div style="color:#8a8a8a;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
-    el.innerHTML = '<h2>' + esc(loc.name) + '</h2>'
-      + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + '</div>'
-      + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
-      + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
-      + '<div style="display:flex;gap:6px;overflow-x:auto;padding:6px 0 2px">' + hours + '</div>'
-      + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>' + (loc.guessed ? ' · place from your time zone; ask "weather in …" for another' : '') + '</div>';
+    // fetch and draw, in place: the first time here, then every 15 minutes while the card is up (skills/live.js), so a
+    // card left open shows the weather now, not the weather when it was asked
+    const draw = async () => {
+      const w = await fetch(u).then((r) => r.json());
+      if (!api._pageStill(el)) return;
+      const c = w.current, d = w.daily, h = w.hourly;
+      if (!c || !d || !h) throw new Error('no forecast');
+      queueMicrotask(() => weatherMini(api, el, w, loc, place)); // after the card's text is in: the diorama goes on top
+      const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center;min-width:0"><div style="color:#8b90a0;font-size:12px;white-space:nowrap">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div style="font-weight:500">' + T(h.temperature_2m[i]) + '</div><div style="color:#8b90a0;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
+      el.classList.add('vp-tight'); // a weather card is a glance: tight, no empty right half
+      el.innerHTML = '<h2>' + esc(loc.name) + '</h2>'
+        + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + '</div>'
+        + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
+        + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
+        + '<div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px;padding:10px 0 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)">' + hours + '</div>'
+        + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>' + (loc.guessed ? ' · place from your time zone; ask "weather in …" for another' : '') + '</div>';
+    };
+    await draw();
+    if (!api._pageStill(el)) return 'weather';
+    keepLive(api, el, { name: 'weather', every: 15 * 60e3, refresh: draw });
     return 'weather';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
@@ -78,17 +90,34 @@ async function run(text, api) {
   }
 }
 
+// the card's 3D miniature (skills/mini/weather.js): a diorama with the sky the forecast reports, rain or snow falling,
+// day or night by the place's own clock, and a thermometer at the real temperature. Without WebGL the band goes away.
+function weatherMini(api, el, w, loc, place) {
+  const c = w && w.current; if (!c || !api.stage || !api.stage.miniature || !api._pageStill(el)) return;
+  const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
+  const host = document.createElement('div'); host.className = 'vmini'; host.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 180 : 230) + 'px;margin:0 0 6px';
+  el.prepend(host);
+  // one key per card: a refresh (live.js) redraws the text and re-attaches the same diorama with the new forecast, instead of building a second one
+  el._wxKey = el._wxKey || 'weather:' + Math.random().toString(36).slice(2, 9);
+  api.stage.miniature(host, 'weather', { code: c.weather_code, temp: c.temperature_2m, unit: f ? 'F' : 'C', isDay: c.is_day !== 0, wind: c.wind_speed_10m },
+    { key: el._wxKey, label: 'Weather diorama: ' + (WX[c.weather_code] || 'weather') + ', ' + Math.round(c.temperature_2m) + '°C' }).catch(() => host.remove());
+}
+
 export default {
   name: 'weather',
   examples: ['weather in Tokyo', 'weather here', 'will it rain tomorrow', 'temperature in London', 'forecast for New York'],
   match(lower, text) {
     if (/\b(pollen|allerg)/.test(lower)) return false;
+    if (/\bwater\s+(?:boils?|freezes?)\b|\bdoes\s+water\s+(?:boil|freeze)\b|\b(?:boiling|freezing)\s+point\b/.test(lower)) return false; // a fact the calculator answers
     // food and body temperatures are not the weather ("temperature to cook chicken", "body temperature"), but "temperature in Turkey" still is
     if (/\btemp(?:erature)?\b/.test(lower) && (/\b(cook|cooked|bake|roast|oven|internal|body|fever)\b/.test(lower) || /\btemp(?:erature)?\s+(?:for|of|should)\s+(?:a\s+|the\s+)?(chicken|pork|beef|steak|turkey|fish|salmon|burgers?|eggs?|ham|lamb|leftovers)\b/.test(lower) || /\b(chicken|pork|beef|steak|fish|salmon|burgers?)\s+(?:be|is)\s+(?:done|cooked)/.test(lower))) return false;
     return /\b(weather|forecast|temperature)\b/.test(lower)
-      || /\b(is it|will it|going to)\s+(rain|snow)\b/.test(lower)
+      || /\b(is it|will it|going to)\s+(rain|snow|freeze|frost|storm|hail|sleet)\b/.test(lower)
       || /^is\s+it\s+(raining|snowing|sunny|windy|cloudy|hot|cold)\b/.test(lower)
-      || /\bhow\s+(cold|hot|warm)\s+is\s+it\b/.test(lower);
+      || /\bhow\s+(cold|hot|warm)\s+is\s+it\b/.test(lower)
+      // "do i need an umbrella today in seattle", "should i bring a jacket": the forecast answers it
+      || /^what\s+should\s+i\s+wear\b(?!\s+(?:to|for|with)\b)/.test(lower)
+      || /^(?:do|will|should)\s+i\s+(?:need|bring|take)\s+(?:an?\s+)?(?:umbrella|raincoat|rain\s+jacket|jacket|coat)\b/.test(lower);
   },
   run
 };

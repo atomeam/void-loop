@@ -1,7 +1,11 @@
-# Void reviews its own pull requests: tools/review-pr.mjs runs the same code checks a-to-mind.com runs when a visitor
-# asks Void to review code (void-live-deploy/lib/code-review.js), on the lines each PR adds, and keeps one PR comment
-# (marked <!-- void-review -->) up to date. Pattern checks only: no model call, no secrets, nothing that costs money.
-# The comment informs; it never fails the PR (CI and the bench decide that).
+# Void reviews every pull request first, in seconds: tools/review-pr.mjs runs the code checks a-to-mind.com runs when a
+# visitor asks Void to review code (void-live-deploy/lib/code-review.js) on the lines the PR adds. It keeps one PR comment
+# (marked <!-- void-review -->) up to date, puts each bug or risk on its line with a one-click fix where a safe one exists
+# (tools/review-post.mjs), and then is a merge gate: the "void-review" check fails while the added lines carry a bug or a
+# risk. A line that is right as written says so with a "void-review: ok" comment. No npm install, no browser: the whole
+# job is a checkout and one node script, so it reports long before the suite (test-and-deploy) does.
+# It is the main review and the one check a PR waits on before it merges (automerge.yml); the suite runs on main after the
+# deploy. Every other reviewer (CodeRabbit) is an extra: reported, never waited on, never blocking.
 name: Void review
 
 on:
@@ -15,36 +19,43 @@ concurrency:
 
 permissions:
   contents: read
-  pull-requests: write # to post or update Void's one review comment
+  pull-requests: write
 
 jobs:
-  review:
+  void-review:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.sha }}
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - name: Review the lines this PR adds
-        run: node tools/review-pr.mjs --base "origin/${{ github.event.pull_request.base.ref }}" --head HEAD > void-review.md
-      - name: Post or update the review comment
-        # a PR from a fork gets a read-only token: the review still runs and shows in the job summary
-        continue-on-error: true
+          fetch-depth: 0 # the diff needs the base
+
+      - name: Void reviews the lines this PR adds
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
           REPO: ${{ github.repository }}
+          BASE: ${{ github.event.pull_request.base.ref }}
+          # ours, free, always: the owner key gets the closer read with no daily cap (functions/api/review.js); empty on forks
+          VOID_REVIEW_KEY: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
+          deep=(); [ -n "$VOID_REVIEW_KEY" ] && deep=(--deep https://a-to-mind.com/api/review)
+          node tools/review-pr.mjs --base "origin/$BASE" --head HEAD "${deep[@]}" > void-review.md || true
           cat void-review.md >> "$GITHUB_STEP_SUMMARY"
           body=$(jq -Rs '{body: .}' < void-review.md)
           id=$(gh api "repos/$REPO/issues/$PR/comments?per_page=100" --paginate \
-            --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- void-review -->")))][0].id // empty' | head -n1)
+            --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- void-review -->")))][0].id // empty' | head -n1) || true
           if [ -n "$id" ]; then
-            echo "$body" | gh api -X PATCH "repos/$REPO/issues/comments/$id" --input - > /dev/null
+            echo "$body" | gh api -X PATCH "repos/$REPO/issues/comments/$id" --input - > /dev/null || true
           else
-            echo "$body" | gh api -X POST "repos/$REPO/issues/$PR/comments" --input - > /dev/null
+            echo "$body" | gh api -X POST "repos/$REPO/issues/$PR/comments" --input - > /dev/null || true
           fi
+          node tools/review-pr.mjs --base "origin/$BASE" --head HEAD --inline > void-inline.json || echo '[]' > void-inline.json
+          node tools/review-post.mjs void-inline.json --repo "$REPO" --pr "$PR" --sha "$(git rev-parse HEAD)"
+
+      - name: Gate on bugs and risks
+        env:
+          BASE: ${{ github.event.pull_request.base.ref }}
+        run: |
+          node tools/review-pr.mjs --base "origin/$BASE" --head HEAD --gate > /dev/null || { echo "::error title=Void review::bugs or risks in the added lines (see Void's review comment); fix them or mark a line that is right as written with a void-review: ok comment"; exit 1; }

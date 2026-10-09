@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · come back to it (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+#triad{font-size:22px;color:#7cf;letter-spacing:.03em}
+#tag{font-size:12px;color:#fc9}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>come back to it · draft · not published</h1>
+  <p class="note">Each puzzle is three words that all go with one more word: cottage, swiss, cake → cheese. When you are stuck, press "pass". Half of the puzzles you pass come back right after the next one; the other half come back only after a break of at least five minutes. Studies find that stepping away from a problem helps a little, more for creative problems like these (the "incubation" effect; Sio and Ormerod, 2009, a review of 117 studies). This page compares the two halves on your own puzzles, so you can see whether a break helps you. The puzzles are the kind used in the Remote Associates Test (Mednick, 1962). Everything stays in this browser.</p>
+  <div id="tag"></div>
+  <div id="triad" aria-live="polite"></div>
+  <div class="row"><label for="ans" class="note">the word</label><input id="ans" autocomplete="off" autocapitalize="off" spellcheck="false" style="flex:1 1 160px"><button id="go" type="button">check</button><button id="pass" type="button">pass</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  // classic triads with one accepted answer each (the commonly published solutions)
+  var P=[['cottage','swiss','cake','cheese'],['cream','skate','water','ice'],['loser','throat','spot','sore'],['show','life','row','boat'],['night','wrist','stop','watch'],
+    ['duck','fold','dollar','bill'],['rocking','wheel','high','chair'],['dew','comb','bee','honey'],['fountain','baking','pop','soda'],['preserve','ranger','tropical','forest'],
+    ['aid','rubber','wagon','band'],['flake','mobile','cone','snow'],['cracker','fly','fighter','fire'],['safety','cushion','point','pin'],['cane','daddy','plum','sugar'],
+    ['dream','break','light','day'],['fish','mine','rush','gold'],['measure','worm','video','tape'],['high','district','house','school'],['sense','courtesy','place','common'],
+    ['worm','shelf','end','book'],['flower','friend','scout','girl'],['river','note','account','bank'],['print','berry','bird','blue'],['pie','luck','belly','pot'],
+    ['date','alley','fold','blind'],['opera','hand','dish','soap'],['cadet','capsule','ship','space'],['stick','maker','point','match'],['widow','bite','monkey','spider']];
+  var KEY='a2m.fringe.incubate.v1',BREAK=5*60e3,st={done:{},queue:[],log:[]},cur=null,sinceNow=0;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&typeof j.done==='object'&&j.done&&Array.isArray(j.queue)&&Array.isArray(j.log)){st.done=j.done;
+    st.queue=j.queue.filter(function(q){return q&&P[q.i]&&(q.group==='now'||q.group==='later')&&typeof q.at==='number'});
+    st.log=j.log.filter(function(x){return x&&(x.group==='now'||x.group==='later')&&typeof x.solved==='boolean'})}}catch(_){}
+  function el(id){return document.getElementById(id)}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify(st));w.hidden=true}catch(_){w.textContent='this browser is not saving your puzzles (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // an answer matches if it is the word, ignoring case, spaces and a trailing plural s
+  function matches(given,answer){var g=String(given||'').toLowerCase().replace(/[^a-z]/g,'');return g===answer||g===answer+'s'}
+  // solve rate on return for each group; the incubation effect shows as "later" above "now"
+  function summary(log){function s(g){var t=log.filter(function(x){return x.group===g}),k=t.filter(function(x){return x.solved}).length;return{n:t.length,k:k,rate:t.length?k/t.length:null}}
+    var now=s('now'),later=s('later');return{now:now,later:later,diff:now.n&&later.n?later.rate-now.rate:null}}
+  // what to show next: a "now" item once one fresh puzzle has gone by, a "later" item once its break is over, else a fresh puzzle
+  function pick(t){var due=st.queue.filter(function(q){return q.group==='now'?sinceNow>=1:t-q.at>=BREAK});if(due.length)return{i:due[0].i,back:due[0]};
+    var fresh=[];for(var i=0;i<P.length;i++)if(!st.done[i]&&!st.queue.some(function(q){return q.i===i}))fresh.push(i);
+    if(fresh.length)return{i:fresh[Math.floor(Math.random()*fresh.length)],back:null};
+    // no fresh puzzle left to put in between: a waiting "now" puzzle still comes back, but its result is not counted (it did not come back after another puzzle)
+    var now=st.queue.filter(function(q){return q.group==='now'});return now.length?{i:now[0].i,back:now[0],uncounted:true}:null}
+  function show(){cur=pick(Date.now());var waiting=st.queue.filter(function(q){return q.group==='later'}).length;
+    if(!cur){el('triad').textContent='';el('tag').textContent='';el('state').textContent=waiting?'only passed puzzles are left: come back after their five-minute break':'all puzzles used. Clear this page\'s site data to start over.';el('ans').disabled=el('go').disabled=el('pass').disabled=true;return}
+    el('ans').disabled=el('go').disabled=el('pass').disabled=false;
+    el('triad').textContent=P[cur.i].slice(0,3).join(' · ');el('tag').textContent=cur.back?(cur.uncounted?'back (not counted: no other puzzle came in between)':cur.back.group==='later'?'back after a break':'back straight away'):'';el('ans').value='';el('ans').focus()}
+  function finish(solved){var i=cur.i,back=cur.back;
+    if(back){st.queue=st.queue.filter(function(q){return q!==back});if(!cur.uncounted)st.log.push({group:back.group,solved:solved,at:Date.now()});st.done[i]=true;if(back.group==='now')sinceNow=0}
+    else{if(solved)st.done[i]=true;sinceNow++}
+    save();draw();show()}
+  el('go').addEventListener('click',function(){if(!cur)return;var a=P[cur.i][3];
+    if(matches(el('ans').value,a)){el('state').textContent='yes: '+a;finish(true)}else if(cur.back){el('state').textContent='it was '+a;finish(false)}else el('state').textContent='not that one; try again, or pass'});
+  el('ans').addEventListener('keydown',function(ev){if(ev.key==='Enter'){ev.preventDefault();el('go').click()}});
+  el('pass').addEventListener('click',function(){if(!cur)return;
+    if(cur.back){el('state').textContent='it was '+P[cur.i][3];finish(false);return}
+    // random half and half, so the two groups differ only in the break
+    var g=Math.random()<.5?'now':'later';st.queue.push({i:cur.i,group:g,at:Date.now()});sinceNow=0;
+    el('state').textContent=g==='now'?'passed: it comes back after the next puzzle':'passed: it comes back after a break of five minutes or more';save();show()});
+  function draw(){var s=summary(st.log);if(!st.log.length){el('score').textContent='';return}
+    function line(name,x){return name+': '+(x.n?x.k+' of '+x.n+' solved ('+Math.round(x.rate*100)+'%)':'none back yet')}
+    el('score').textContent=line('back straight away',s.now)+'\n'+line('back after a break',s.later)
+      +(s.now.n>=5&&s.later.n>=5?'\n'+(s.diff>0?'the break helped by '+Math.round(s.diff*100)+' points':s.diff<0?'the break did not help this time ('+Math.round(-s.diff*100)+' points lower)':'no difference'):'\nabout 5 of each before comparing')}
+  // when only passed puzzles are left, look again every 30 s so a finished break brings its puzzle back on its own
+  setInterval(function(){if(!cur)show()},30e3);
+  show();draw();
+  // made-up logs and answers: a break that helps shows a positive difference, and answers match case- and plural-blind
+  function selftest(){var log=[];for(var k=0;k<10;k++){log.push({group:'now',solved:k<3});log.push({group:'later',solved:k<6})}var s=summary(log);
+    if(Math.abs(s.now.rate-.3)>1e-12||Math.abs(s.later.rate-.6)>1e-12||Math.abs(s.diff-.3)>1e-12)return'summary gave '+JSON.stringify(s);
+    if(!matches(' Cheese ','cheese')||!matches('cheeses','cheese')||matches('chess','cheese'))return'matches is wrong';
+    if(P.some(function(p){return p.length!==4||p.some(function(w){return!/^[a-z]+$/.test(w)})}))return'a puzzle is malformed';return true}
+  window.__incubate={matches:matches,summary:summary,P:P,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

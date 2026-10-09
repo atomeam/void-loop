@@ -748,5 +748,865 @@
     ],
     "sha256": "9bb90f46ea3dd0f4c7be35fe702c7a91da539d6c608d066accdfa8e073aaa2d0",
     "emit": false
+  },
+  {
+    "run": 31,
+    "at": "2026-10-06T22:49:07Z",
+    "family": "sensory-substitution",
+    "draft": "drafts/fringe/sensory-substitution-3.html",
+    "sources": [
+      {
+        "claim": "Blind people trained with a tactile vision substitution system learned to recognise objects and their positions through touch",
+        "source": "https://doi.org/10.1038/221963a0",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The vOICe maps image height to pitch and left-right position to time and stereo, and users can learn to read images from sound",
+        "source": "https://doi.org/10.1109/10.121642",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's miss distance on this two-cue sound task (pitch for height, stereo for side) shrinks over a few dozen trials at home",
+        "source": "drafts/fringe/sensory-substitution-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "f30dd6b4147eb4784c69348040cd8aeb9efb38fd6177104989b570f8454c8d6d",
+    "emit": false
+  },
+  {
+    "run": 32,
+    "at": "2026-10-07T00:20:00Z",
+    "family": "quiet-signal-filter",
+    "draft": "drafts/fringe/quiet-signal-filter-3.html",
+    "sources": [
+      {
+        "claim": "Signal detection theory separates sensitivity (d') from response bias (criterion) in yes/no detection, so a listener who says yes more often is not scored as hearing better",
+        "source": "https://archive.org/details/signaldetectiont0000gree",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The log-linear correction (add 0.5 to counts, 1 to totals) keeps hit and false-alarm rates of 0 or 1 usable and biases d' less than other fixes",
+        "source": "https://doi.org/10.3758/BF03203619",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A 2-down 1-up staircase settles near the level where about 71% of signals are detected",
+        "source": "https://doi.org/10.1121/1.1912375",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's own d' for a faint tone in hiss, measured at home with ordinary headphones over about 30 trials, is stable enough to compare day to day",
+        "source": "drafts/fringe/quiet-signal-filter-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "85d16b253449573fb4ee14d692ac67fc17ac13379495b10a4e6a835c8bb1ce30",
+    "emit": false
+  },
+  {
+    "run": 33,
+    "at": "2026-10-07T01:42:54Z",
+    "family": "correlation-view",
+    "draft": "drafts/fringe/correlation-view-3.html",
+    "sources": [
+      {
+        "claim": "People judging correlation from scatterplots tend to underestimate moderate correlations, and judgments improve toward r = 1",
+        "source": "https://doi.org/10.1126/science.216.4550.1138",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Perceived correlation in scatterplots follows a consistent law across observers, with the largest underestimation at middle values",
+        "source": "https://doi.org/10.1109/TVCG.2010.152",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's own middle-band underestimate can be seen in about twenty guesses on a phone screen",
+        "source": "drafts/fringe/correlation-view-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "d438ad171f8287ae906d96b372364571a4ba751195bc87fdc0fd3d5d976f6606",
+    "emit": false
+  },
+  {
+    "run": 34,
+    "at": "2026-10-07T02:42:26Z",
+    "family": "non-lexical-intent",
+    "draft": "drafts/fringe/non-lexical-intent-3.html",
+    "sources": [
+      {
+        "claim": "People match a made-up word like 'maluma' to a rounded shape and 'takete' to a jagged one far more often than chance",
+        "source": "https://archive.org/details/gestaltpsycholog00khle",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The bouba-kiki match holds across speakers of 25 languages and 10 writing systems, though more weakly in some",
+        "source": "https://doi.org/10.1098/rstb.2020.0390",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Voiceless stops and front vowels lean 'sharp', and sonorants with back rounded vowels lean 'round'",
+        "source": "https://doi.org/10.3389/fpsyg.2013.00185",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's own match rate with randomly built words and randomly drawn shapes, over a few dozen rounds, is clearly above 50%",
+        "source": "drafts/fringe/non-lexical-intent-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "683d0444b873ef9bc4bfd42d6e2618e49749c68b794eaad49e9da9d820414919",
+    "emit": false
+  },
+  {
+    "run": 35,
+    "at": "2026-10-07T03:42:55Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger-4.html",
+    "sources": [
+      {
+        "claim": "With a large enough number of chances, any outrageous thing is likely to happen (the law of truly large numbers); many striking coincidences have ordinary explanations",
+        "source": "https://doi.org/10.1080/01621459.1989.10478847",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The chance of at least one event in n independent tries, each with chance p, is 1 - (1 - p)^n",
+        "source": "https://doi.org/10.1080/01621459.1989.10478847",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing their own chance-only count lowers how much weight people give a single striking coincidence",
+        "source": "drafts/fringe/weak-signal-hypothesis-ledger-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "0d4f3c429e374a5fba7e612b76cb10dc97d1a64dea741ac9843a334ea5788410",
+    "emit": false
+  },
+  {
+    "run": 36,
+    "at": "2026-10-07T04:42:38Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-4.html",
+    "sources": [
+      {
+        "claim": "When people cause a tone by a voluntary key press, the felt gap between press and tone is shorter than when the same events are not self-caused (intentional binding)",
+        "source": "https://doi.org/10.1038/nn827",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Intentional binding is widely used as an implicit measure of the sense of agency, though what it measures is debated",
+        "source": "https://doi.org/10.1016/j.concog.2012.01.002",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A browser version with a machine-initiated press as the comparison shows the same direction of effect in about 20 trials per condition",
+        "source": "drafts/fringe/human-machine-co-agency-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "146394b766b20c520ecc86832c5bece933652b973696a8239bfe831dba6f74bf",
+    "emit": false
+  },
+  {
+    "run": 37,
+    "at": "2026-10-07T06:03:53Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-4.html",
+    "sources": [
+      {
+        "claim": "When people reproduce time intervals drawn from a range, their reproductions are pulled toward the middle of that range: short intervals are overestimated and long ones underestimated (central tendency, Vierordt's law)",
+        "source": "https://doi.org/10.1038/nn.2590",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The variability of timed responses grows roughly in proportion to the interval being timed (the scalar property)",
+        "source": "https://doi.org/10.1037/0033-295X.84.3.279",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing their own slope below 1 helps people notice that their sense of duration is pulled toward recent experience",
+        "source": "drafts/fringe/interval-timing-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "841b6cb28423be77d1a8f7a18e84a87e928749404ea07347aed5cf491d0b0acf",
+    "emit": false
+  },
+  {
+    "run": 38,
+    "at": "2026-10-07T06:45:23Z",
+    "family": "anomalous-event-timeline",
+    "draft": "drafts/fringe/anomalous-event-timeline-3.html",
+    "sources": [
+      {
+        "claim": "Flying-bomb hits on south London, believed to be aimed at particular districts, fitted a random (Poisson) distribution",
+        "source": "https://doi.org/10.1017/S0020268100035435",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "People see streaks and clusters in random sequences and read them as meaningful (the clustering illusion)",
+        "source": "https://doi.org/10.1016/0010-0285(85)90010-6",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Comparing a personal log of odd events against same-size random timelines changes how much people read into a run of events",
+        "source": "drafts/fringe/anomalous-event-timeline-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "03583674948f13b1cd811b9f0cb5abab87420687ceeb4d093c22fa59d056e45c",
+    "emit": false
+  },
+  {
+    "run": 39,
+    "at": "2026-10-07T07:43:27Z",
+    "family": "opt-in-gesture",
+    "draft": "drafts/fringe/opt-in-gesture-4.html",
+    "sources": [
+      {
+        "claim": "The time to move to a target grows linearly with the index of difficulty, log2 of distance over width (Fitts's law)",
+        "source": "https://doi.org/10.1037/h0055392",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The Shannon form log2(D/W + 1) fits pointing data well and gives throughput in bits per second",
+        "source": "https://doi.org/10.1207/s15327051hci0701_3",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing their own time and miss rate by target size changes how people size confirm and destructive buttons",
+        "source": "drafts/fringe/opt-in-gesture-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "3f8edd881599d5d81f12ae445b2435c15ec00bd58b0d9d8204decccf85b5bc00",
+    "emit": false
+  },
+  {
+    "run": 40,
+    "at": "2026-10-07T08:42:48Z",
+    "family": "private-incubation-log",
+    "draft": "drafts/fringe/private-incubation-log-4.html",
+    "sources": [
+      {
+        "claim": "Setting a problem aside for a while (an incubation period) improves later solving on average, with larger effects for creative, divergent problems",
+        "source": "https://doi.org/10.1037/a0014212",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Three-word remote-associate puzzles measure finding a word that links distant ideas",
+        "source": "https://doi.org/10.1037/h0048850",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Comparing their own solve rates after an immediate return and after a break changes when people choose to step away from a hard problem",
+        "source": "drafts/fringe/private-incubation-log-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "e4c791483b32de1077bde28676a7e3a1d756d1451da49f1d92f301526d9178df",
+    "emit": false
+  },
+  {
+    "run": 41,
+    "at": "2026-10-07T09:42:27Z",
+    "family": "miss-board",
+    "draft": "drafts/fringe/miss-board-3.html",
+    "sources": [
+      {
+        "claim": "About 80% of misspellings are a single insertion, deletion, substitution or transposition of adjacent letters",
+        "source": "https://doi.org/10.1145/363958.363994",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Allowing one edit when matching recovers most misspelled queries; the optimal string alignment distance counts an adjacent swap as one edit",
+        "source": "https://doi.org/10.1145/363958.363994",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing which kinds of slips they make under time pressure changes how people judge a tool that misses their typos",
+        "source": "drafts/fringe/miss-board-3.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "7d77c79a703e7abd03cffde42ebcbaadb749ffa4765de9d51f46202db77ddd3b",
+    "emit": false
+  },
+  {
+    "run": 42,
+    "at": "2026-10-07T10:42:33Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention-4.html",
+    "sources": [
+      {
+        "claim": "Search for a target defined by one feature (colour alone) is about as fast whatever the number of items; search for a conjunction of features slows with each item added",
+        "source": "https://doi.org/10.1016/0010-0285(80)90005-5",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Search slopes form a continuum rather than two clean classes; feature searches cluster near 0 ms per item and conjunction searches higher",
+        "source": "https://doi.org/10.1111/1467-9280.00006",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Measuring their own cost per item changes how people judge cluttered screens and alerts",
+        "source": "drafts/fringe/attention-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "843191640e42502e035e8086b5d020563dd66c5266e31299ffb5b2a7583a165d",
+    "emit": false
+  },
+  {
+    "run": 43,
+    "at": "2026-10-07T11:42:59Z",
+    "family": "sensory-substitution",
+    "draft": "drafts/fringe/sensory-substitution-4.html",
+    "sources": [
+      {
+        "claim": "Tapping in time with an auditory metronome is more stable than with a visual (flashing) one; asynchrony variability to flashes is roughly two to three times larger",
+        "source": "https://doi.org/10.3758/BF03206433",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "People tend to tap slightly before an auditory beat (negative mean asynchrony)",
+        "source": "https://doi.org/10.3758/BF03206433",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing their own ear-versus-eye timing changes how people judge visual-only cues as stand-ins for sound",
+        "source": "drafts/fringe/sensory-substitution-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "cbfe96717c29b801da084d4cfa27f359bb1487a450aa80399a9df10a14821f6d",
+    "emit": false
+  },
+  {
+    "run": 44,
+    "at": "2026-10-07T13:47:17Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-5.html",
+    "sources": [
+      {
+        "claim": "An unexpected (oddball) item in a run of repeated items is judged to last longer than a repeated item of the same physical length",
+        "source": "https://doi.org/10.3758/BF03196844",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Repeated, predictable items seem shorter, and the size of the effect tracks how predictable the item is (repetition suppression as one proposed cause)",
+        "source": "https://doi.org/10.1371/journal.pone.0001264",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A personal oddball expansion measured on a phone or laptop screen, with frame-rounded lengths, is stable enough across sessions to compare one person over time",
+        "source": "drafts/fringe/interval-timing-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "079de5e300fc45c9f95c862e67738f1893d06a5403fdfa221b585596fab113d2",
+    "emit": false
+  },
+  {
+    "run": 45,
+    "at": "2026-10-07T14:44:24Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger-5.html",
+    "sources": [
+      {
+        "claim": "Flexible analysis (testing several outcomes and reporting the one that worked) raises the false-positive rate far above the nominal 5%",
+        "source": "https://doi.org/10.1177/0956797611417632",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "With k independent tests at level alpha, the chance of at least one false positive is 1 - (1 - alpha)^k, and testing each at alpha / k (Bonferroni) holds it at or below alpha",
+        "source": "https://en.wikipedia.org/wiki/Bonferroni_correction",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Watching false findings appear in made-up noise makes people slower to accept a single weak signal in their own logs",
+        "source": "drafts/fringe/weak-signal-hypothesis-ledger-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "ecd131cd24fccc327074a88764174d1b6342efb187bbc56bde54d95822e23534",
+    "emit": false
+  },
+  {
+    "run": 46,
+    "at": "2026-10-07T15:44:00Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-5.html",
+    "sources": [
+      {
+        "claim": "People revising an estimate after advice move on average only about 20-30% of the way toward the adviser (egocentric discounting), even when the adviser is about as accurate as they are",
+        "source": "https://doi.org/10.1016/j.obhdp.2003.08.002",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Averaging one's own estimate with another person's is usually more accurate than choosing either, because their errors partly cancel",
+        "source": "https://doi.org/10.1037/a0015145",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing their own weight of advice next to the averaging result makes people lean more on a machine helper of known accuracy",
+        "source": "drafts/fringe/human-machine-co-agency-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "9c78ea4232344f0aec6034095ddba35e4222c3eb74c2d48176601fe080b901ee",
+    "emit": false
+  },
+  {
+    "run": 47,
+    "at": "2026-10-07T23:43:17Z",
+    "family": "private-incubation-log",
+    "draft": "drafts/fringe/private-incubation-log-5.html",
+    "sources": [
+      {
+        "claim": "People remember interrupted tasks better than finished ones (the Zeigarnik effect; recall ratio about 1.9 in the original study)",
+        "source": "https://doi.org/10.1007/BF02409636",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Replications are mixed: a 2023 meta-analysis found no reliable memory advantage for unfinished tasks, though a tendency to return to them held up better",
+        "source": "Ghibellini and Meier (2023), The hypothesis of the Zeigarnik effect revisited: a meta-analysis, Humanities and Social Sciences Communications",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Logging which of one's own stuck problems stay on the mind helps decide which to leave unfinished on purpose before a break",
+        "source": "drafts/fringe/private-incubation-log-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "1cdeeb397e776be6a19503d423609214c3273f93c61e4143a2ec3790568b2b4f",
+    "emit": false
+  },
+  {
+    "run": 48,
+    "at": "2026-10-08T05:02:40Z",
+    "family": "correlation-view",
+    "draft": "drafts/fringe/correlation-view-4.html",
+    "sources": [
+      {
+        "claim": "When a smaller group and rarer behaviours share the same proportion, people still judge the smaller group as more linked with the rare (undesirable) behaviours",
+        "source": "https://doi.org/10.1016/S0022-1031(76)80006-6",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A meta-analysis finds the distinctiveness-based illusory correlation reliable across studies, with moderate size",
+        "source": "https://doi.org/10.1111/j.2044-8309.1990.tb00839.x",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's one-person version shows the same lean in an individual over repeated runs",
+        "source": "drafts/fringe/correlation-view-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "5b99dee3167f635900b9313b8ff8f7f2f9e27bcc44c1b94e9036c7d7f2d0dc77",
+    "emit": false
+  },
+  {
+    "run": 49,
+    "at": "2026-10-08T06:42:20Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention-5.html",
+    "sources": [
+      {
+        "claim": "In rapid serial visual presentation, a second target 200-500 ms after a correctly reported first target is often missed (the attentional blink), while one right after it (lag 1) is spared",
+        "source": "https://doi.org/10.1037/0096-1523.18.3.849",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Reviews find the attentional blink robust across many tasks and stimuli, with large individual differences",
+        "source": "https://doi.org/10.3758/APP.71.8.1683",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's one-person version shows the dip at 200-300 ms in an individual over about 40 rounds",
+        "source": "drafts/fringe/attention-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "c3c1bfe370635f8e5ffb0a721ab77fe64a91e0c24cc3ec49c47c11bc1d6a5cfc",
+    "emit": false
+  },
+  {
+    "run": 50,
+    "at": "2026-10-08T07:45:05Z",
+    "family": "sensory-substitution",
+    "draft": "drafts/fringe/sensory-substitution-5.html",
+    "sources": [
+      {
+        "claim": "Classifying a visual target as high or low is faster when an irrelevant tone's pitch matches its position (high tone with high target)",
+        "source": "https://doi.org/10.1167/10.1.6",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Pitch-elevation is among the most robust crossmodal correspondences across studies and populations",
+        "source": "https://doi.org/10.3758/s13414-010-0073-7",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's one-person version shows a positive matched-mismatched gap with an interval above 0 after about 60 trials",
+        "source": "drafts/fringe/sensory-substitution-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "aca9f38212f43a0bef758e2866cedf172627a5062c3835928a7411512806c225",
+    "emit": false
+  },
+  {
+    "run": 51,
+    "at": "2026-10-08T08:44:31Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-6.html",
+    "sources": [
+      {
+        "claim": "A filled interval (a continuous tone) is judged longer than an equal empty interval marked only by its start and end",
+        "source": "https://doi.org/10.3758/BF03203902",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The filled-duration illusion appears across duration ranges and is explained by a faster internal clock during filled intervals",
+        "source": "https://doi.org/10.1037/0096-1523.33.3.716",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's one-person version shows the filled one picked above 50% on equal rounds after about 30 of them",
+        "source": "drafts/fringe/interval-timing-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "20b8af11aa8376985d06160362975c01d3185bc5b4bded429ac1696c6e9be502",
+    "emit": false
+  },
+  {
+    "run": 52,
+    "at": "2026-10-08T09:44:31Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger-6.html",
+    "sources": [
+      {
+        "claim": "Extreme measurements tend to be followed by ones closer to the average when chance contributes to the measure (regression toward the mean)",
+        "source": "https://doi.org/10.2307/2841583",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Regression to the mean is a common source of misjudged effects in repeated measurements and before-after comparisons, and can be handled with a control group or adjustment",
+        "source": "https://doi.org/10.1093/ije/dyh299",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's simulation shows the top tenth keeping about as much of its lead as the skill share",
+        "source": "drafts/fringe/weak-signal-hypothesis-ledger-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "7b15ea4a51e9c73d190c9e949581ff4acac4a7b8a537e1b530e109dd4a77ed3e",
+    "emit": false
+  },
+  {
+    "run": 53,
+    "at": "2026-10-08T10:45:18Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-6.html",
+    "sources": [
+      {
+        "claim": "People who see an algorithm err become less likely to use it than a human forecaster who errs, even when the algorithm is more accurate (algorithm aversion)",
+        "source": "https://doi.org/10.1037/xge0000033",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Before seeing it fail, people often weight algorithmic advice more than human advice (algorithm appreciation)",
+        "source": "https://doi.org/10.1016/j.obhdp.2018.12.005",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "This page's one-person version shows a higher leave rate after the helper loses a round than after it wins, about 30 rounds in",
+        "source": "drafts/fringe/human-machine-co-agency-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "548fd0af4576af73773a8fd8015b4c21df474c51f51c764bfa0ec12583b3e72a",
+    "emit": false
+  },
+  {
+    "run": 54,
+    "at": "2026-10-08T12:05:23Z",
+    "family": "private-incubation-log",
+    "draft": "drafts/fringe/private-incubation-log-6.html",
+    "sources": [
+      {
+        "claim": "Misleading cues planted beside remote-associate puzzles lowered first-try solving, and an incubation interval helped mostly by letting the fixation fade",
+        "source": "https://doi.org/10.2307/1422851",
+        "confidence": "claim"
+      },
+      {
+        "claim": "An incubation break improved remote-associate solving only for people who had first been given misleading cues",
+        "source": "https://doi.org/10.3758/BF03193308",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Logging one's own second-try solves after a wrong lead, with and without a break, shows whether stepping away helps this person mainly when they are stuck on a wrong idea",
+        "source": "drafts/fringe/private-incubation-log-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "b2d6c459e9be852700cf29d970bc505286a2c58496336c16c00ffa4c8028503a",
+    "emit": false
+  },
+  {
+    "run": 55,
+    "at": "2026-10-08T12:50:27Z",
+    "family": "opt-in-gesture",
+    "draft": "drafts/fringe/opt-in-gesture-5.html",
+    "sources": [
+      {
+        "claim": "Windows counts two clicks as a double click when the second comes within the double-click time, 500 ms by default",
+        "source": "https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdoubleclicktime",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Mobile browsers waited about 300 ms after a tap to see whether a second tap (double-tap to zoom) followed",
+        "source": "https://developer.chrome.com/blog/300ms-tap-delay-gone-away",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A double-tap window fitted to one person's own double taps and separate tap pairs makes fewer errors for them than a fixed 300 or 500 ms window",
+        "source": "drafts/fringe/opt-in-gesture-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "2ee0c5775ca51252395bee15315d33835b92695444f2f8b7ad260e7c071e4179",
+    "emit": false
+  },
+  {
+    "run": 56,
+    "at": "2026-10-08T13:45:37Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention-6.html",
+    "sources": [
+      {
+        "claim": "Naming the ink colour of a colour word is slower when the word names a different colour (the Stroop effect)",
+        "source": "https://doi.org/10.1037/h0054651",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Half a century of Stroop studies finds the interference robust across many variations of the task",
+        "source": "https://doi.org/10.1037/0033-2909.109.2.163",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's own Stroop cost, logged per sitting with the hour of day, is higher at their tired times and can tell them when focused work will cost more",
+        "source": "drafts/fringe/attention-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "f069d54c6fe2718533d6a51d7d88b533797ba2b06eb4af887b796204dc1a1b17",
+    "emit": false
+  },
+  {
+    "run": 57,
+    "at": "2026-10-08T14:46:23Z",
+    "family": "sensory-substitution",
+    "draft": "drafts/fringe/sensory-substitution-6.html",
+    "sources": [
+      {
+        "claim": "People tap in time with an auditory beat far more steadily than with a visual flash, and when both are given together the auditory beat mostly governs the timing",
+        "source": "https://doi.org/10.1037/0096-1523.28.5.1085",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Decades of tapping studies show auditory metronomes give smaller and steadier asynchronies than visual ones",
+        "source": "https://doi.org/10.3758/BF03206433",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own tapping spread with sound, flash and both shows which sense carries timing best for them, a guide to which sense a substitution device should use for timing",
+        "source": "drafts/fringe/sensory-substitution-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "423e6055aeb397555677a332443979bc7a324233f7549e41f10e94703fbd273e",
+    "emit": false
+  },
+  {
+    "run": 58,
+    "at": "2026-10-08T15:45:11Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-7.html",
+    "sources": [
+      {
+        "claim": "When people reproduce intervals drawn from a range, short ones come out too long and long ones too short (central tendency, Vierordt's law), and the pull grows with timing uncertainty as a Bayesian observer would predict",
+        "source": "https://doi.org/10.1038/nn.2590",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Vierordt's 1868 study of the time sense first reported that short durations are overestimated and long ones underestimated around an indifference point",
+        "source": "https://doi.org/10.1080/09541440802453006",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own reproduction slope and indifference point, fitted from their tries, show how strongly their timing leans on what is usual",
+        "source": "drafts/fringe/interval-timing-7.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "ffc7a1797dbe926db4f515d9caa7d951d9499fa5e142082538534a51aaa4a69e",
+    "emit": false
+  },
+  {
+    "run": 59,
+    "at": "2026-10-08T16:44:39Z",
+    "family": "weak-signal-hypothesis-ledger",
+    "draft": "drafts/fringe/weak-signal-hypothesis-ledger-7.html",
+    "sources": [
+      {
+        "claim": "People judging how likely something is from a sign tend to neglect how rare it was to begin with (base-rate neglect)",
+        "source": "https://doi.org/10.1037/h0034747",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Stating the same information as natural frequencies (counts out of a whole) instead of percentages makes far more people reason correctly about it",
+        "source": "https://doi.org/10.1037/0033-295X.102.4.684",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing each of one's own percentage guesses redrawn as counts out of 1,000 shrinks one's base-rate error over rounds",
+        "source": "drafts/fringe/weak-signal-hypothesis-ledger-7.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "83e3d8a3ccd462c47288494ce53ca975603fd3400928b08fca8700a67ebf19e3",
+    "emit": false
+  },
+  {
+    "run": 60,
+    "at": "2026-10-08T17:45:01Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-7.html",
+    "sources": [
+      {
+        "claim": "People monitoring an automated system detected far fewer of its failures when its reliability stayed constant than when it varied over time (automation-induced complacency)",
+        "source": "https://doi.org/10.1207/s15327108ijap0301_1",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Complacency and automation bias appear when attention is spread over several tasks and are not limited to novices",
+        "source": "https://doi.org/10.1177/0018720810376055",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own catch rate for an autopilot's misses is lower in steady blocks than in changing blocks, and seeing that gap changes how closely they watch",
+        "source": "drafts/fringe/human-machine-co-agency-7.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "9018de125e61bcf959c79b2fc6e359373839883ce9b7a706341f6d194aba664e",
+    "emit": false
+  },
+  {
+    "run": 61,
+    "at": "2026-10-09T15:47:05Z",
+    "family": "non-lexical-intent",
+    "draft": "drafts/fringe/non-lexical-intent-4.html",
+    "sources": [
+      {
+        "claim": "People read goals and intentions into simple geometric shapes moving on a screen",
+        "source": "https://doi.org/10.2307/1416950",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Detecting a chase among moving dots falls steeply as the chaser's heading is allowed to wander further off the direct line (chasing subtlety), approaching chance near 90 degrees",
+        "source": "https://doi.org/10.1016/j.cogpsych.2008.12.002",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own d' for spotting a chase drops with chasing subtlety in the same way, measured on this page",
+        "source": "drafts/fringe/non-lexical-intent-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "fb23dc7bf1a29876658668bb5d22eefb3072b1bbf108493d9272487070741740",
+    "emit": false
+  },
+  {
+    "run": 62,
+    "at": "2026-10-09T17:44:45Z",
+    "family": "quiet-signal-filter",
+    "draft": "drafts/fringe/quiet-signal-filter-4.html",
+    "sources": [
+      {
+        "claim": "In a threshold system, a moderate amount of added noise can make a sub-threshold signal more detectable than either no noise or a lot of noise (stochastic resonance)",
+        "source": "https://doi.org/10.1103/RevModPhys.70.223",
+        "confidence": "claim"
+      },
+      {
+        "claim": "People viewing sub-threshold images rendered through a noisy threshold perceive them best at an intermediate noise level",
+        "source": "https://doi.org/10.1103/PhysRevLett.78.1186",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own accuracy at telling an upright from a flat faint bar peaks at a middle noise level on this page",
+        "source": "drafts/fringe/quiet-signal-filter-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "abbee70fce5312f8cf0eb1bbbba4bd7e0d105e463d2d52ca040d2257e167e90d",
+    "emit": false
+  },
+  {
+    "run": 63,
+    "at": "2026-10-09T19:08:18Z",
+    "family": "correlation-view",
+    "draft": "drafts/fringe/correlation-view-5.html",
+    "sources": [
+      {
+        "claim": "Restricting a sample to a narrow range of one variable lowers the observed correlation, by an amount Thorndike's case II formula predicts from the spread kept",
+        "source": "https://doi.org/10.1037/0021-9010.85.1.112",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Validity coefficients computed among already-selected people (admitted, hired) understate the predictor's correlation in the full applicant pool",
+        "source": "https://doi.org/10.1037/0021-9010.85.1.112",
+        "confidence": "claim"
+      },
+      {
+        "claim": "People looking at a shaded band of a scatter plot under-predict how much weaker its correlation is, measured on this page",
+        "source": "drafts/fringe/correlation-view-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "3772dae19e8a907aaacc6ff93aed343cf0fa81a47976ef0c6456cf14843a4841",
+    "emit": false
+  },
+  {
+    "run": 64,
+    "at": "2026-10-09T19:44:24Z",
+    "family": "anomalous-event-timeline",
+    "draft": "drafts/fringe/anomalous-event-timeline-4.html",
+    "sources": [
+      {
+        "claim": "In a self-exciting point process each event raises the chance of more soon after, so events cluster beyond what independent random arrivals give",
+        "source": "https://doi.org/10.1093/biomet/58.1.83",
+        "confidence": "claim"
+      },
+      {
+        "claim": "For events arriving independently at random, daily counts have variance about equal to their mean (index of dispersion near 1), testable with a chi-square statistic",
+        "source": "https://en.wikipedia.org/wiki/Index_of_dispersion",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own log of odd moments bunches more than chance, as attention after one makes the next more noticeable, measured on this page",
+        "source": "drafts/fringe/anomalous-event-timeline-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "865d5201758252cc6fdb6d8228998d3da9ca85df1886036118d90871f51bcb2a",
+    "emit": false
   }
 ]

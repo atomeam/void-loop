@@ -41,7 +41,9 @@ async function run(text, api) {
   th.lod = nextLod(th.lod, hit.act);
   if (api.stage.save) api.stage.save();
   if (api.stage.render) api.stage.render();
-  if (api.say) api.say('detail ' + th.lod);
+  // a 3D buddy (kind 'figure'): the camera glides in on it; a drawn figure (fig3d) redraws bigger
+  if (th.kind === 'figure' && typeof document !== 'undefined') import('/skills/figures3d.js').then((m) => m.zoomToFigure && m.zoomToFigure(th.id, th.lod)).catch(() => {});
+  if (api.say) api.say(th.lod === 0 ? 'zoomed out' : th.lod === LOD_MAX ? 'as close as it goes' : 'closer');
   return 'zoom-figure';
 }
 

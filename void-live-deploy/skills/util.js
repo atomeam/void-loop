@@ -6,6 +6,7 @@
 const CASES = { uppercase: (s) => s.toUpperCase(), 'upper case': (s) => s.toUpperCase(), lowercase: (s) => s.toLowerCase(), 'lower case': (s) => s.toLowerCase(),
   // title case keeps the small words small unless they open or close the title ("The Lord of the Rings")
   'title case': (s) => { const w = s.toLowerCase().split(/(\s+)/), last = w.length - 1; return w.map((x, i) => (i && i !== last && SMALL.has(x)) ? x : x.replace(/^\p{L}/u, (c) => c.toUpperCase())).join(''); },
+  'capitalize words': (s) => s.replace(/(^|\s)(\p{L})/gu, (_, a, c) => a + c.toUpperCase()),
   reverse: (s) => Array.from(s).reverse().join(''), 'reverse words': (s) => s.trim().split(/\s+/).reverse().join(' ') };
 const SMALL = new Set(['a', 'an', 'the', 'and', 'but', 'or', 'nor', 'for', 'so', 'yet', 'at', 'by', 'in', 'of', 'on', 'to', 'up', 'as', 'via', 'vs']);
 // syllables by vowel groups, with the usual English corrections (silent final e, -le, -ed); right for most words, labelled "about"
@@ -33,9 +34,12 @@ export function utilOf(text) {
   m = t.match(/^(?:make|turn|convert|change|put)\s+(?:it|this|that|the\s+text)\s+(?:in(?:to)?\s+|to\s+)?(uppercase|upper case|lowercase|lower case|title case|all caps|caps)\s*:\s*(.+)$/i);
   if (m) return { kind: 'case', how: /caps/i.test(m[1]) ? 'uppercase' : m[1].toLowerCase(), s: m[2] };
   // "how many characters in supercalifragilistic", "character count of ..."
-  m = t.match(/^(?:how\s+many\s+(?:characters|letters|chars)\s+(?:are\s+)?in|(?:character|letter|char)\s+count\s+(?:of|in|for))\s+(.+)$/i);
+  // "how many vowels in banana", "count the consonants in rhythm"
+  m = t.match(/^(?:how\s+many|count\s+(?:the\s+)?)\s*(vowels|consonants)\s+(?:are\s+)?(?:in|of)\s+(?:the\s+word\s+)?["“]?([\p{L}\p{M}' -]{1,60}?)["”]?$/iu);
+  if (m) return { kind: 'letters', which: m[1].toLowerCase(), s: m[2] };
+  m = t.match(/^(?:how\s+many\s+(?:characters|letters|chars)\s+(?:are\s+)?in|count\s+(?:the\s+)?(?:characters|letters|chars)\s+in|(?:character|letter|char)\s+count\s+(?:of|in|for))\s+(.+)$/i);
   if (m && /^(?:the\s+)?(?:english\s+)?alphabet$/i.test(m[1])) m = null; // a fact, not a count of the word "alphabet"
-  if (m) return { kind: 'count', s: m[1].replace(/^["“]|["”]$/g, ''), chars: true };
+  if (m) return { kind: 'count', s: m[1].replace(/^(?:the\s+)?(?:word|name|phrase)\s+(?=\S)/i, '').replace(/^["“]|["”]$/g, ''), chars: true };
   if (/^(?:generate|make|give\s+me|create|new)\s+(?:a\s+|an\s+)?(?:uuid|guid|unique\s+id)$|^(?:uuid|guid)$/i.test(t)) return { kind: 'uuid' };
   m = t.match(/^(?:an?\s+)?emojis?\s+(?:for|of|that\s+means)\s+([a-z ]{2,20})$/i);
   if (m && EMOJI[m[1].trim().toLowerCase()]) return { kind: 'emoji', w: m[1].trim().toLowerCase() };
@@ -57,7 +61,12 @@ export function utilOf(text) {
   // "how many syllables in banana", "syllables in elephant"
   m = l.match(/^(?:how\s+many\s+)?syllables?\s+(?:are\s+)?(?:in|does)\s+(?:the\s+word\s+)?["“']?([a-z'-]{1,30})["”']?(?:\s+have)?$|^how\s+many\s+syllables\s+does\s+["“']?([a-z'-]{1,30})["”']?\s+have$/);
   if (m) return { kind: 'syllables', w: m[1] || m[2] };
+  // "capitalize every word in the cat sat on the mat": each word starts with a capital, small words too
+  m = t.match(/^(?:capitali[sz]e|uppercase)\s+(?:every|each|all\s+the|the\s+first\s+letter\s+of\s+(?:every|each))\s+words?\s+(?:in|of)\s*:?\s+(.+)$/i);
+  if (m) return { kind: 'case', how: 'capitalize words', s: m[1] };
   m = t.match(/^(uppercase|upper case|lowercase|lower case|title case|reverse)\s*:?\s+(?:this:?\s+)?(.+)$/i);
+  // "this" is filler ("uppercase this: hello") only when typed as a word, not when it is part of the text ("lowercase THIS IS LOUD")
+  if (m) { const f = t.match(/^\S+(?:\s+case)?\s*:?\s+(this:?\s+)/i); if (f && f[1].trim().replace(/:$/, '') !== 'this') m[2] = f[1] + m[2]; }
   if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2]) && !/^(?:\d+(?:\.\d+)?\s*)?(?:percentage|percent|%)/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] }; // "reverse percentage ..." is maths
   if (/^(?:what(?:'s| is)\s+)?(?:the\s+)?moon\s+phase(?:\s+(?:tonight|today|now))?$|^(?:what\s+)?phase\s+(?:is\s+)?(?:of\s+)?the\s+moon(?:\s+in)?(?:\s+(?:tonight|today|now))?$|^is\s+it\s+a\s+full\s+moon(?:\s+tonight)?$|^when\s+is\s+the\s+next\s+(?:full|new)\s+moon$|^next\s+full\s+moon$/.test(l)) return { kind: 'moon' };
   m = l.match(/^(?:give\s+me\s+)?(?:some\s+|(\d{1,2})\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+(\d{1,2})\s+paragraphs?)?$/);
@@ -97,6 +106,10 @@ async function run(text, api) {
     const h = hex(q.c), v = hsl(h);
     el = showPage((p) => { p.innerHTML = '<h2>' + esc(NAMED[q.c] ? q.c : h) + '</h2><div style="height:110px;border-radius:12px;margin:8px 0;background:' + esc(h) + ';border:1px solid rgba(255,255,255,.15)"></div>'
       + '<ul><li><b>Hex</b> ' + esc(h) + '</li><li><b>RGB</b> ' + v.r + ', ' + v.g + ', ' + v.b + '</li><li><b>HSL</b> ' + v.h + '°, ' + v.s + '%, ' + v.l + '%</li></ul>'; });
+  } else if (q.kind === 'letters') {
+    // a, e, i, o, u are vowels (y is counted as a consonant, the usual school answer)
+    const ls = Array.from(q.s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()).filter((c) => /[a-z]/.test(c)), v = ls.filter((c) => 'aeiou'.includes(c)).length, n = q.which === 'vowels' ? v : ls.length - v;
+    el = showPage((p) => { p.innerHTML = '<h2>' + esc(q.which.charAt(0).toUpperCase() + q.which.slice(1)) + ' in ' + esc(q.s) + '</h2>' + big(n + ' ' + (n === 1 ? q.which.slice(0, -1) : q.which), 44) + '<p style="color:#8a8a8a">' + v + ' vowels (a e i o u) · ' + (ls.length - v) + ' consonants</p>'; });
   } else if (q.kind === 'count') {
     const words = (q.s.match(/[\p{L}\p{N}'’-]+/gu) || []).length, chars = Array.from(q.s).length, noSp = Array.from(q.s.replace(/\s/g, '')).length;
     el = q.chars

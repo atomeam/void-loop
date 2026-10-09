@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · who pressed it (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#press{width:140px;height:140px;border-radius:50%;font-size:15px}
+#press.machine{border-color:#fc9;color:#fc9}
+#press.lit{background:rgba(124,204,255,.35)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input[type=range]{flex:1 1 220px;padding:0}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>who pressed it · draft · not published</h1>
+  <p class="note">Each trial: something presses the button, and a moment later a beep sounds. Then you guess how long the gap was. On "you" trials you press it yourself, whenever you like. On "machine" trials you wait and the page presses it for you, at a moment you don't choose. In lab studies the gap feels shorter when people cause it themselves: "intentional binding" (Haggard, Clark and Kalogeras, 2002), often used as a measure of the felt sense of being the one who did it. This page compares your own guesses for the two kinds. Use headphones; everything stays in this browser.</p>
+  <div class="row"><button id="press" type="button" disabled>start</button></div>
+  <div id="ask" hidden>
+    <div class="row"><label for="est">the gap felt like</label><input id="est" type="range" min="50" max="900" step="10" value="400"><output id="ev" for="est">400 ms</output></div>
+    <div class="row"><button id="ok" type="button">that long</button></div>
+  </div>
+  <div class="row"><button id="go" type="button">next trial</button></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.binding.v1',st={trials:[]},ac=null,cur=null,DELAYS=[150,250,400,550,700];
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&(t.kind==='you'||t.kind==='machine')&&isFinite(t.delay)&&isFinite(t.est)})}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-400)}))}catch(_){}}
+  function el(id){return document.getElementById(id)}
+  function beep(at){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=1000;g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.2,at+.005);g.gain.setValueAtTime(.2,at+.05);g.gain.linearRampToValueAtTime(0,at+.06);o.connect(g);g.connect(ac.destination);o.start(at);o.stop(at+.07)}
+  function click(at){var b=ac.createBuffer(1,ac.sampleRate*.01|0,ac.sampleRate),d=b.getChannelData(0);for(var i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length)*.4;var s=ac.createBufferSource();s.buffer=b;s.connect(ac.destination);s.start(at)}
+  // the kind least used so far comes next, so the two stay balanced; the delay is drawn from five fixed values
+  function nextKind(trials){var y=trials.filter(function(t){return t.kind==='you'}).length,m=trials.length-y;return y===m?(Math.random()<.5?'you':'machine'):(y<m?'you':'machine')}
+  // mean signed error (guess minus real gap) for each kind; binding shows as "you" guessing shorter than "machine"
+  function summary(trials){function s(k){var t=trials.filter(function(x){return x.kind===k});return{n:t.length,err:t.length?t.reduce(function(a,x){return a+(x.est-x.delay)},0)/t.length:null}}var y=s('you'),m=s('machine');return{you:y,machine:m,binding:y.n&&m.n?m.err-y.err:null}}
+  // the press: a click sound and a flash at time t0 (audio clock), the beep at t0 + delay
+  function fire(){var t0=ac.currentTime+.01,P=el('press');click(t0);beep(t0+cur.delay/1000);P.classList.add('lit');setTimeout(function(){P.classList.remove('lit')},120);
+    P.disabled=true;setTimeout(function(){el('ask').hidden=false;el('est').focus()},cur.delay+400)}
+  // one trial at a time: the latch is set before resume() so a second tap while audio wakes up cannot start a second trial
+  var starting=false;
+  el('go').addEventListener('click',function(){if(starting||cur)return;if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A){el('state').textContent='this browser cannot play sound, so this page cannot run here';return}ac=new A()}
+    starting=true;el('go').disabled=true;var fail=function(){starting=false;el('go').disabled=false;el('state').textContent='the sound did not start; tap again'};
+    ac.resume().then(function(){if(ac.state!=='running'){fail();return}starting=false;
+      cur={kind:nextKind(st.trials),delay:DELAYS[Math.floor(Math.random()*DELAYS.length)]};el('go').disabled=true;el('ask').hidden=true;var P=el('press');
+      if(cur.kind==='you'){P.className='';P.textContent='press when you like';P.disabled=false;el('state').textContent='your trial: press the button whenever you choose'}
+      else{P.className='machine';P.textContent='the machine will press';P.disabled=true;el('state').textContent='machine trial: wait, the page will press it';setTimeout(fire,1000+Math.random()*2500)}},fail)});
+  el('press').addEventListener('click',function(){if(cur&&cur.kind==='you')fire()});
+  el('est').addEventListener('input',function(){el('ev').textContent=el('est').value+' ms'});
+  el('ok').addEventListener('click',function(){if(!cur)return;var e=+el('est').value;st.trials.push({kind:cur.kind,delay:cur.delay,est:e,at:Date.now()});save();
+    el('state').textContent='the gap was '+cur.delay+' ms · you said '+e+' ms';cur=null;el('ask').hidden=true;el('go').disabled=false;el('go').focus();var P=el('press');P.className='';P.textContent='start';draw()});
+  function draw(){var s=summary(st.trials);if(!st.trials.length){el('score').textContent='';return}
+    function line(name,x){return name+': '+(x.n?(x.err>=0?'+':'')+Math.round(x.err)+' ms on average ('+x.n+')':'no trials yet')}
+    el('score').textContent=line('you pressed',s.you)+'\n'+line('machine pressed',s.machine)
+      +(s.binding!=null&&s.you.n>=10&&s.machine.n>=10?'\nyour gaps felt '+Math.abs(Math.round(s.binding))+' ms '+(s.binding>0?'shorter':'longer')+' when you pressed'+(s.binding>0?', the binding effect':', the opposite of the usual result'):'\nabout 10 of each kind before comparing')}
+  draw();
+  window.__binding={nextKind:nextKind,summary:summary,DELAYS:DELAYS}; // for checks
+})();
+</script>
+</body>
+</html>

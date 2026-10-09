@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · the narrow slice (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+canvas{width:100%;max-width:420px;aspect-ratio:1/1;align-self:center;border:1px solid rgba(255,255,255,.12);border-radius:8px;background:#0b0b0e}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>the narrow slice · draft · not published</h1>
+  <p class="note">Each round shows a cloud of points with its correlation, then shades a band: only the points whose x falls in it. Before you see the band's own correlation, guess whether it is stronger, about the same, or weaker. Looking only inside a narrow range of x usually makes the link look weaker than it is (range restriction: Thorndike, 1949; Sackett and Yang, 2000), which is why, for example, test scores can look useless among people who were all admitted on those scores. This page counts how often you see it coming. A hypothesis about your own reading of charts, nothing more. Everything stays in this browser.</p>
+  <canvas id="c" width="420" height="420" aria-label="scatter plot"></canvas>
+  <div class="row"><button id="go" type="button">new round</button><button id="up" type="button" disabled>stronger</button><button id="same" type="button" disabled>about the same</button><button id="down" type="button" disabled>weaker</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.rangerestrict.v1',N=400,st={trials:[]},cur=null;
+  function el(id){return document.getElementById(id)}
+  function ok(t){return t&&['up','same','down'].indexOf(t.said)>=0&&['up','same','down'].indexOf(t.truth)>=0}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(ok)}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-300)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your rounds (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  function rng(seed){var a=seed>>>0;return function(){a=(a+0x6d2b79f5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+  function gauss(r){var u=1-r(),v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+  // n points from a bivariate normal with correlation rho
+  function cloud(n,rho,r){var p=[];for(var i=0;i<n;i++){var x=gauss(r),e=gauss(r);p.push([x,rho*x+Math.sqrt(1-rho*rho)*e])}return p}
+  function pearson(p){var n=p.length,mx=0,my=0;p.forEach(function(q){mx+=q[0];my+=q[1]});mx/=n;my/=n;var sxy=0,sxx=0,syy=0;p.forEach(function(q){var a=q[0]-mx,b=q[1]-my;sxy+=a*b;sxx+=a*a;syy+=b*b});return sxx&&syy?sxy/Math.sqrt(sxx*syy):0}
+  function sd(a){var n=a.length,m=a.reduce(function(s,x){return s+x},0)/n;return Math.sqrt(a.reduce(function(s,x){return s+(x-m)*(x-m)},0)/n)}
+  // Thorndike's case II: the correlation expected inside a slice whose x spread is u times the full spread
+  function restricted(rho,u){return rho*u/Math.sqrt(1-rho*rho+rho*rho*u*u)}
+  // the band's truth: stronger / about the same (within 0.05) / weaker
+  function verdict(full,band){return band>full+0.05?'up':band<full-0.05?'down':'same'}
+  var g=el('c').getContext('2d'),W=420;
+  function draw(p,lo,hi){g.clearRect(0,0,W,W);var px=function(v){return W/2+v*W/7};g.fillStyle='rgba(124,204,255,.08)';if(lo!=null)g.fillRect(px(lo),0,px(hi)-px(lo),W);
+    p.forEach(function(q){var inBand=lo!=null&&q[0]>=lo&&q[0]<=hi;g.fillStyle=lo==null||inBand?'#9ec8ff':'rgba(158,200,255,.25)';g.beginPath();g.arc(px(q[0]),W-px(q[1]),2.2,0,Math.PI*2);g.fill()})}
+  function buttons(answering){el('go').disabled=answering;['up','same','down'].forEach(function(id){el(id).disabled=!answering})}
+  el('go').addEventListener('click',function(){if(cur)return;var r=rng((Math.random()*4294967296)>>>0),rho=0.4+Math.random()*0.5,p=cloud(N,rho,r),w=0.6+Math.random()*1.4,c=-1.2+Math.random()*2.4,lo=c-w/2,hi=c+w/2;
+    var band=p.filter(function(q){return q[0]>=lo&&q[0]<=hi});if(band.length<20){lo=-0.8;hi=0.8;band=p.filter(function(q){return q[0]>=lo&&q[0]<=hi})}
+    var full=pearson(p),b=pearson(band);cur={full:full,band:b,truth:verdict(full,b)};draw(p,lo,hi);buttons(true);
+    el('state').textContent='all points: r = '+full.toFixed(2)+'\nthe shaded band ('+band.length+' points): stronger, about the same, or weaker?'});
+  function answer(said){if(!cur)return;var t={said:said,truth:cur.truth,full:+cur.full.toFixed(3),band:+cur.band.toFixed(3),at:Date.now()};st.trials.push(t);save();
+    el('state').textContent='the band: r = '+cur.band.toFixed(2)+' ('+({up:'stronger',same:'about the same',down:'weaker'})[t.truth]+') · you said '+({up:'stronger',same:'about the same',down:'weaker'})[said];cur=null;buttons(false);score()}
+  ['up','same','down'].forEach(function(id){el(id).addEventListener('click',function(){answer(id)})});
+  function summary(trials){var weaker=trials.filter(function(t){return t.truth==='down'}),saw=weaker.filter(function(t){return t.said==='down'}).length;return{rounds:trials.length,weakerRounds:weaker.length,sawItComing:saw,rate:weaker.length?saw/weaker.length:null}}
+  function score(){var s=summary(st.trials);el('score').textContent=s.rounds?'in '+s.weakerRounds+' rounds the band was weaker; you called '+s.sawItComing+' of them'+(s.rate==null?'':' ('+Math.round(s.rate*100)+'%)')+(s.rounds<20?'\nabout twenty rounds before reading much into it':''):''}
+  score();
+  // made-up checks: a cloud drawn at rho has r near rho; a narrow band is weaker, close to Thorndike's case II;
+  // the verdict and the summary count as they say
+  function selftest(){
+    var r=rng(42),p=cloud(4000,0.7,r),full=pearson(p);if(Math.abs(full-0.7)>0.04)return'full cloud r should be near 0.7, got '+full;
+    var band=p.filter(function(q){return q[0]>=0.5&&q[0]<=1.5}),rb=pearson(band),u=sd(band.map(function(q){return q[0]}))/sd(p.map(function(q){return q[0]}));
+    if(!(rb<full-0.2))return'a narrow band should be clearly weaker: '+rb+' vs '+full;
+    if(Math.abs(rb-restricted(full,u))>0.08)return'the band r should follow case II: '+rb+' vs '+restricted(full,u);
+    if(Math.abs(restricted(0.5,1)-0.5)>1e-12)return'with no restriction case II should give back rho';
+    if(verdict(0.7,0.3)!=='down'||verdict(0.5,0.52)!=='same'||verdict(0.3,0.5)!=='up')return'verdict is off';
+    var s=summary([{said:'down',truth:'down'},{said:'same',truth:'down'},{said:'up',truth:'up'}]);if(s.weakerRounds!==2||s.sawItComing!==1||Math.abs(s.rate-0.5)>1e-12)return'summary gave '+JSON.stringify(s);
+    return true}
+  window.__rangerestrict={cloud:cloud,pearson:pearson,restricted:restricted,verdict:verdict,summary:summary,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

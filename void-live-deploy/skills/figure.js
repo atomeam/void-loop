@@ -14,13 +14,36 @@ const FIGURE_RE = /^(?:please\s+)?(?:(?:summon|add|bring|show(?:\s+me)?|make|put
 const SPIN_RE = /^(?:spin|turn|rotate)\s+(?:motelet|it|the\s+(?:chair|cup|mug|figure|book|lamp))(?:\s+(?:around|round))?$/;
 const EXPORT_RE = /^(?:download|export|print|save)\s+(?:the\s+)?motelet(?:'s)?(?:\s+(?:stl|file|print\s+file|body))?$|^motelet\s+(?:stl|print\s+file)$/;
 
+// Motelet remembers you, on this device (domains/void.growth.md, Next [think-tank]): the first time it is summoned it
+// asks your name; it keeps the name, and once you have given it the last thing you summoned, in this browser only
+// (localStorage, never sent anywhere). Next visit it greets you by name and asks after that thing. "Motelet, forget me"
+// or "forget my name" clears it ("forget me" alone stays the account's: it deletes passkeys and synced data).
+export const MEM_KEY = 'a2m.motelet.memory.v1';
+export function loadMem() { try { const m = JSON.parse(localStorage.getItem(MEM_KEY) || 'null'); return m && typeof m.name === 'string' && m.name ? m : null; } catch (_) { return null; } }
+function saveMem(m) { try { if (m) localStorage.setItem(MEM_KEY, JSON.stringify(m)); else localStorage.removeItem(MEM_KEY); } catch (_) {} }
+let asking = false; // Motelet just asked for a name: the next ask may be the answer (only the next one)
+const FORGET_RE = /^(?:motelet,?\s+forget\s+(?:me|my\s+name|who\s+i\s+am)|forget\s+my\s+name)$/;
+const NAME_RE = /^(?:my\s+name\s+is|my\s+name's|i'?m|i\s+am|call\s+me|it'?s|this\s+is)\s+([a-z][a-z'-]{0,19}(?:\s+[a-z][a-z'-]{0,19})?)$/;
+const NOT_NAMES = new Set(['clear', 'menu', 'undo', 'close', 'help', 'hi', 'hello', 'hey', 'yes', 'no', 'ok', 'okay', 'thanks', 'stop', 'quiet', 'nothing', 'nevermind', 'motelet', 'fine', 'good', 'here', 'back']);
+export function nameOf(text, original) {
+  const t = CLEAN(text); let m = t.match(NAME_RE), raw = null;
+  // a bare word is a name only when written like one ("Sam"): lowercase "weather" stays an ask for the rest of Void
+  if (m) raw = m[1]; else if (/^[a-z][a-z'-]{1,19}$/.test(t) && !NOT_NAMES.has(t) && /^[A-Z]/.test(String(original || '').trim())) raw = t;
+  if (!raw) return null;
+  const src = String(original || raw).trim().replace(/[?!.]+$/, ''), tail = src.slice(src.length - raw.length); // keep the person's own capitals
+  return (tail.toLowerCase() === raw ? tail : raw).split(/\s+/).map((w) => w[0].toUpperCase() + w.slice(1)).join(' ');
+}
+export function setAsking(v) { asking = !!v; }
+
 export function parseAsk(text) {
   const t = CLEAN(text);
   let m;
+  if (FORGET_RE.test(t)) return { act: 'forget' };
   if ((m = t.match(OBJECT_RE))) return { act: 'object', model: m[1] === 'mug' ? 'cup' : m[1] };
   if (FIGURE_RE.test(t)) return { act: 'figure' };
   if (SPIN_RE.test(t)) return { act: 'spin', what: (t.match(/chair|cup|mug|book|lamp/) || [''])[0].replace('mug', 'cup') };
   if (EXPORT_RE.test(t)) return { act: 'export' };
+  if (asking) { const name = nameOf(t, text); if (name) return { act: 'name', name }; }
   return null;
 }
 
@@ -209,8 +232,9 @@ function mount(th, S) {
   if (th.ax == null) { th.ax = th.x; th.ay = th.y; }
   const { ax, ay, yaw } = anchorOf(th, things);
   const { tris, box: [x0, y0, x1, y1] } = drawList(bodyFor(th, things), yaw);
-  const w = x1 - x0, h = y1 - y0, dpr = Math.min(2, window.devicePixelRatio || 1);
-  th.x = ax + x0; th.y = ay + y0; th.bx = x0; th.by = y0;
+  const k = 1 + 0.45 * Math.max(0, Math.min(3, Number(th.lod) || 0)); // "zoom in on the figure" (skills/zoom-figure.js) draws it bigger, sharp, around its feet
+  const w = (x1 - x0) * k, h = (y1 - y0) * k, dpr = Math.min(2, window.devicePixelRatio || 1);
+  th.x = ax + x0 * k; th.y = ay + y0 * k; th.bx = x0 * k; th.by = y0 * k;
   const el = document.createElement('div');
   el.className = 'thing fig3d' + (th.model === 'motelet' && !th.on ? ' idle' : '');
   el.dataset.id = th.id; el.dataset.model = th.model; el.dataset.pose = th.model === 'motelet' ? (th.on && things[th.on] ? 'sit' : th.holds && things[th.holds] ? 'hold' : 'stand') : '';
@@ -220,7 +244,7 @@ function mount(th, S) {
   cv.width = w * dpr; cv.height = h * dpr; cv.style.width = w + 'px'; cv.style.height = h + 'px';
   const g = cv.getContext('2d');
   if (g) {
-    g.scale(dpr, dpr); g.translate(-x0, -y0); g.lineJoin = 'round';
+    g.scale(dpr * k, dpr * k); g.translate(-x0, -y0); g.lineJoin = 'round';
     for (const t of tris) {
       g.beginPath(); g.moveTo(t.P[0][0], t.P[0][1]); g.lineTo(t.P[1][0], t.P[1][1]); g.lineTo(t.P[2][0], t.P[2][1]); g.closePath();
       g.fillStyle = t.fill; g.strokeStyle = t.fill; g.lineWidth = 0.6; g.fill(); g.stroke();
@@ -311,6 +335,7 @@ async function run(text, api) {
     return { ax: Math.round(W / 2), ay: Math.round(Hh * 0.62) };
   };
   if (ask.act === 'object') {
+    const mem = loadMem(); if (mem) saveMem({ ...mem, last: ask.model }); // remembered only for someone who gave their name
     const p = spot();
     const th = api.summon('fig3d', { model: ask.model, x: p.ax, y: p.ay, ax: p.ax, ay: p.ay, yaw: 0 });
     // a figure standing with nothing to do uses the new thing
@@ -325,8 +350,20 @@ async function run(text, api) {
     if (!fig) return 'none';
     const did = settle(fig, S.things());
     S.save(); S.render();
-    api.say('Motelet ' + did);
+    const mem = loadMem();
+    if (mem) api.say('Motelet ' + did + ' · hi ' + mem.name + (mem.last ? ', did you bring the ' + mem.last + ' back?' : ', good to see you again'));
+    else { asking = true; api.say('Motelet ' + did + ' · hi, I\'m Motelet. what\'s your name? ("I\'m Sam")'); }
     return 'figure:motelet';
+  }
+  if (ask.act === 'name') {
+    asking = false; saveMem({ name: ask.name, last: null });
+    api.say('nice to meet you, ' + ask.name + ' · Motelet will remember, in this browser only ("Motelet, forget me" clears it)');
+    return 'figure:name';
+  }
+  if (ask.act === 'forget') {
+    const had = loadMem(); saveMem(null); asking = false;
+    api.say(had ? 'Motelet forgets you: your name and your last summon are gone from this browser' : 'Motelet has nothing of yours to forget');
+    return 'figure:forget';
   }
   if (ask.act === 'spin') {
     const target = ask.what ? lastOf(things, (t) => t.kind === 'fig3d' && t.model === ask.what) : lastOf(things, (t) => t.kind === 'fig3d' && t.model === 'motelet') || lastOf(things, (t) => t.kind === 'fig3d');
@@ -359,6 +396,8 @@ export default {
     'download motelet',
     'summon a figure',
     'a figure',
+    'motelet, forget me',
+    'forget my name',
   ],
   nearMisses: [
     'world cup',
@@ -367,8 +406,11 @@ export default {
     'chair yoga',
     'summon linemote-1',
     'what is a figure of speech',
+    'forget me',
+    'sam',
+    'my name is sam',
   ],
-  match(lower, text) { return !!parseAsk(text); },
+  match(lower, text) { const a = parseAsk(text); if (asking && (!a || a.act !== 'name')) asking = false; return !!a; },
   run,
   stageKinds: { fig3d: { mount, dropped, thrown, throwable: true } },
 };

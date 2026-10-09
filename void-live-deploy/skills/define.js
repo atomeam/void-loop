@@ -7,7 +7,7 @@ const ABBR_HELD = new Set(['lol', 'asap', 'brb', 'btw', 'fyi', 'imo', 'imho', 't
 export function wordOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   const m = t.match(/^(?:please\s+)?define\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
-    || t.match(/^(?:what(?:'s|\s+is)\s+the\s+)?(?:meaning|definition)\s+of\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
+    || t.match(/^(?:what(?:['’]?s|\s+is)\s+the\s+)?(?:meaning|definition)\s+of\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
     || t.match(/^what\s+does\s+(?:the\s+word\s+)?["“]?(.+?)["”]?\s+mean$/i)
     || t.match(/^what\s+is\s+the\s+meaning\s+of\s+["“]?(.+?)["”]?$/i);
   if (!m) return null;

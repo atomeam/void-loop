@@ -25,14 +25,14 @@ Rows get added whenever AutoSalvage or an agent finds another old project. Nothi
 ## From the September spec pack (Site Operator, 2026-09-27)
 | ask | becomes | notes |
 | --- | --- | --- |
-| write release notes for my repo | skill | drafts notes; posting anywhere waits for the confirm line |
-| audit my GitHub Actions | skill | read-only; findings by file and line |
-| write an incident brief | skill | timeline, impact, cause if known, next steps |
+| write release notes for my repo | live (run 59, skills/releasenotes.js) | drafts notes only: paste commits or PR titles (git log --oneline works), sorted under Keep a Changelog headings from Conventional Commits prefixes or first words, breaking first, merges and version bumps left out, live Markdown to copy; posting anywhere still waits for the confirm line |
+| audit my GitHub Actions | live (run 57, the review card) | read-only; paste a workflow after "audit my github actions" and Void flags untrusted event text in scripts, third-party actions on movable tags, pull_request_target checking out PR code, write-all tokens and printed secrets, each with its line and fix |
+| write an incident brief | live (run 58, skills/incident.js) | timeline, impact, cause if known, next steps: status, SEV1-4 in plain words, started/detected/mitigated/resolved with time to detect/mitigate/resolve, next steps with owners, live Markdown to copy; blameless; the draft stays in this browser until "clear"; nothing is sent |
 | plan <objective> | skill | steps, spend cap, which steps need a confirm, before anything runs |
 | show the board | live | empty board: one plain line + a few example asks; samples never count |
 | what did you do today? | live (row 4) | today skill: local loop log on this device (ask + note); spend/budget later |
 | confirm line (plan item 7) | core | from ApprovalEvent v0: one line before any send/book/spend; changed request or no answer = doesn't run |
-| status | skill | each component; Momentum = workflow execution and event delivery |
+| status | live (run 59-60, skills/status.js) | each component, checked on the spot from this browser: skills (the page's own load check run again, missing ones named), storage, 3D, the offline layer, online, and each outside source pinged once with its time; the translation service is not pinged (daily quota); nothing about the visitor is sent or kept. Momentum (workflow execution, event delivery) has no Void counterpart yet |
 | uptime page | page off the front | history, incidents, subscribe |
 | show me a sample run | optional skill | read-only FrostShare run; never touches the board |
 Dropped: front-page headline, subheading, buttons, sample board panel, pricing, demo embed, portal card.

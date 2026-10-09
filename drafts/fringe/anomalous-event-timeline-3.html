@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · is it a cluster (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+textarea,button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+textarea{min-height:9em;resize:vertical;box-sizing:border-box;width:100%}
+button{cursor:pointer}
+textarea:focus-visible,button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+label{font-size:13px;color:#8a8a92}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+svg{width:100%;height:46px;border:1px solid rgba(255,255,255,.12);border-radius:10px}
+#out{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>is it a cluster · draft · not published</h1>
+  <p class="note">Odd things often seem to come in waves: three strange lights in one week, then nothing for months. But chance alone makes clumps too. Spread events at random over a stretch of time and some land close together while long gaps open up elsewhere. In 1946, R. D. Clarke showed that the flying bombs falling on south London, which people believed were aimed at certain districts, matched a purely random (Poisson) pattern. Seeing patterns in randomness is the "clustering illusion" (Gilovich, Vallone and Tversky, 1985). Paste your own dates below. The page measures how uneven the gaps between them are, then compares that with 2,000 random timelines that have the same number of events over the same span. It cannot say what the events were, only whether their timing is more bunched than chance. Nothing leaves this browser.</p>
+  <label for="dates">one date per line: 2026-03-14, or 2026-03-14 22:10</label>
+  <textarea id="dates" spellcheck="false"></textarea>
+  <div class="row"><button id="check" type="button">check the timing</button><button id="again" type="button">another chance timeline</button><button id="example" type="button">try an example</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div><label>your events</label><svg id="mine" viewBox="0 0 100 20" preserveAspectRatio="none" role="img" aria-label="your events on a timeline"></svg></div>
+  <div><label>the same number at random over the same span</label><svg id="chance" viewBox="0 0 100 20" preserveAspectRatio="none" role="img" aria-label="random events on a timeline, for comparison"></svg></div>
+  <div id="out" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.cluster.v1',last=null;
+  function el(id){return document.getElementById(id)}
+  // dates as ms since 1970 (UTC, so a clock change never moves an event); lines that are not dates are listed back, never guessed
+  function parse(text){var ok=[],bad=[];String(text||'').split(/\n/).forEach(function(line){var s=line.trim();if(!s)return;
+    var m=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2}))?$/);if(!m){bad.push(s);return}
+    var t=Date.UTC(+m[1],+m[2]-1,+m[3],m[4]?+m[4]:12,m[5]?+m[5]:0),d=new Date(t);
+    if(d.getUTCMonth()!==+m[2]-1||d.getUTCDate()!==+m[3]||(m[4]&&+m[4]>23))bad.push(s);else ok.push(t)});
+    ok.sort(function(a,b){return a-b});return{times:ok,bad:bad}}
+  // unevenness of the gaps: their standard deviation divided by their mean (CV). Evenly spaced is 0; random (Poisson) is near 1; bunched is above 1
+  function cv(times){if(times.length<3)return NaN;var g=[],i;for(i=1;i<times.length;i++)g.push(times[i]-times[i-1]);var m=g.reduce(function(a,x){return a+x},0)/g.length;if(!(m>0))return NaN;
+    var v=g.reduce(function(a,x){return a+(x-m)*(x-m)},0)/g.length;return Math.sqrt(v)/m}
+  // a random timeline: first and last events where yours are, the others spread uniformly between them
+  function randomLike(times,rand){rand=rand||Math.random;var a=times[0],b=times[times.length-1],t=[a,b];for(var i=2;i<times.length;i++)t.push(a+rand()*(b-a));return t.sort(function(x,y){return x-y})}
+  // share of random timelines at least as uneven as yours (with the usual +1 so it is never exactly 0)
+  function pValue(times,sims,rand){var c=cv(times),k=0;for(var i=0;i<sims;i++)if(cv(randomLike(times,rand))>=c-1e-12)k++;return(k+1)/(sims+1)}
+  function strip(svg,times){var NS='http://www.w3.org/2000/svg',a=times[0],b=times[times.length-1];svg.textContent='';
+    times.forEach(function(t){var x=b>a?2+96*(t-a)/(b-a):50,l=document.createElementNS(NS,'line');l.setAttribute('x1',x.toFixed(2));l.setAttribute('x2',x.toFixed(2));l.setAttribute('y1','3');l.setAttribute('y2','17');
+      l.setAttribute('stroke','#7cf');l.setAttribute('stroke-width','.6');l.setAttribute('vector-effect','non-scaling-stroke');svg.appendChild(l)})}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,el('dates').value);w.hidden=true}catch(_){w.textContent='this browser is not keeping your dates (storage is full or blocked): copy them somewhere before you close the page';w.hidden=false}}
+  try{var saved=localStorage.getItem(KEY);if(saved)el('dates').value=saved}catch(_){}
+  function days(ms){var d=ms/864e5;return d<2?(ms/36e5).toFixed(1)+' hours':Math.round(d).toLocaleString()+' days'}
+  function check(){var r=parse(el('dates').value),o=el('out');save();
+    if(r.times.length<5){o.textContent=(r.bad.length?'not read as dates: '+r.bad.slice(0,3).join(' · ')+(r.bad.length>3?' …':'')+'\n':'')+'at least 5 dates are needed to say anything about timing';el('mine').textContent='';el('chance').textContent='';last=null;return}
+    var t=r.times,c=cv(t),p=pValue(t,2000);last=t;strip(el('mine'),t);strip(el('chance'),randomLike(t));
+    o.textContent=t.length+' events over '+days(t[t.length-1]-t[0])+(r.bad.length?' ('+r.bad.length+' line'+(r.bad.length>1?'s':'')+' not read as dates)':'')
+      +'\nunevenness of the gaps: '+c.toFixed(2)+' (evenly spaced 0 · random about 1 · bunched above 1)'
+      +'\n'+Math.round(p*2000)+' of 2,000 random timelines were at least this uneven (p = '+(p<.001?'< 0.001':p.toFixed(3))+')'
+      +'\n'+(p<.01?'more bunched than chance usually makes. That says the timing has a pattern, not what causes it: when you look harder, after one event, or around one place or season, can do it too.':p<.1?'a little more bunched than most random timelines, not enough to rule chance out.':'chance alone makes timelines like this all the time.')}
+  el('check').addEventListener('click',check);
+  el('again').addEventListener('click',function(){if(last)strip(el('chance'),randomLike(last))});
+  el('example').addEventListener('click',function(){var base=Date.UTC(2025,0,1),out=[];for(var i=0;i<14;i++){var d=new Date(base+Math.random()*365*864e5);out.push(d.toISOString().slice(0,10))}
+    el('dates').value=out.sort().join('\n');check()});
+  // made-up timelines: even spacing is never bunched, tight bursts always are, and the parser refuses impossible dates
+  function selftest(){var even=[],burst=[],i,seed=7,rand=function(){seed=(seed*16807)%2147483647;return seed/2147483647};
+    for(i=0;i<20;i++)even.push(i*864e5);for(i=0;i<20;i++)burst.push((i<10?i*36e5:200*864e5+i*36e5));burst.push(400*864e5);burst.sort(function(a,b){return a-b});
+    if(!(cv(even)<1e-9))return'even spacing gave '+cv(even);if(!(pValue(even,500,rand)>.99))return'even spacing looked bunched';
+    if(!(pValue(burst,500,rand)<.01))return'two tight bursts did not look bunched';
+    var r=parse('2026-02-30\n2026-03-01 23:59\nhello\n2026-03-01 24:00');if(r.times.length!==1||r.bad.length!==3)return'parse gave '+JSON.stringify(r);return true}
+  window.__cluster={parse:parse,cv:cv,randomLike:randomLike,pValue:pValue,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

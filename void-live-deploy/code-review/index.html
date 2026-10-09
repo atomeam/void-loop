@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Void Code Review: instant code review for every pull request</title>
+  <meta name="description" content="Void reviews a whole pull request in about a second: 125 checks for bugs, security risks and risky habits in 22 languages, inline comments with one-click fixes, and a merge gate. Free GitHub Action; Code Review Pro (on its own, or in Void Pro) adds an AI closer read.">
+  <link rel="canonical" href="https://a-to-mind.com/code-review/">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <meta property="og:title" content="Void Code Review">
+  <meta property="og:description" content="A whole pull request reviewed in about a second. Bugs, security risks, one-click fixes, a merge gate. Free GitHub Action; Pro adds an AI closer read.">
+  <meta property="og:url" content="https://a-to-mind.com/code-review/">
+  <meta property="og:image" content="https://a-to-mind.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Void Code Review",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "GitHub Actions, any browser",
+    "url": "https://a-to-mind.com/code-review/",
+    "description": "Instant code review for pull requests: 125 checks for bugs, security risks and risky habits in 22 languages, inline comments with one-click fixes, a merge gate, and an AI closer read with Void Pro.",
+    "publisher": { "@type": "Organization", "name": "A-to-Mind", "url": "https://a-to-mind.com/" },
+    "offers": [
+      { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD" },
+      { "@type": "Offer", "name": "Void Pro (includes Code Review Pro)", "url": "https://moonbeam846.gumroad.com/l/yinmj" }
+    ]
+  }
+  </script>
+  <style>
+    :root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --card: #141414; --accent: #7aa7ff; --bug: #ff7b72; --risk: #f2c230; --ok: #56d364; }
+    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --card: #ffffff; --accent: #2457c5; --bug: #c0362c; --risk: #9a6b00; --ok: #1f7a33; } }
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, sans-serif; }
+    main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+    a { color: var(--accent); }
+    h1 { font-size: clamp(28px, 6vw, 42px); line-height: 1.15; margin: 18px 0 10px; }
+    h2 { font-size: 22px; margin: 40px 0 10px; }
+    .lead { font-size: 18px; color: var(--muted); max-width: 640px; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 24px 0; }
+    .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+    .stat b { display: block; font-size: 24px; }
+    .stat span { color: var(--muted); font-size: 13px; }
+    pre, textarea { font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    pre { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; overflow-x: auto; }
+    textarea { width: 100%; min-height: 180px; background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 12px; }
+    button, .buy { font: 600 15px system-ui, sans-serif; border-radius: 8px; border: 1px solid var(--line); background: var(--card); color: var(--ink); padding: 9px 16px; cursor: pointer; text-decoration: none; display: inline-block; }
+    .primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+    .plan { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+    .plan h3 { margin: 0 0 4px; }
+    .plan .price { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .plan ul { padding-left: 18px; margin: 8px 0 14px; }
+    #out { margin-top: 12px; }
+    .f { border-left: 3px solid var(--line); padding: 4px 10px; margin: 6px 0; }
+    .f.bug { border-color: var(--bug); } .f.risk { border-color: var(--risk); }
+    .kind { font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: .04em; }
+    .muted { color: var(--muted); font-size: 14px; }
+    #keys li { font-family: ui-monospace, monospace; font-size: 13px; }
+    #newkey { word-break: break-all; }
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="/">&larr; Void · A-to-Mind</a></p>
+  <h1>Code review that finishes before you switch tabs.</h1>
+  <p class="lead">Void reviews every pull request the moment it opens: the bugs, security holes and risky habits in the lines you added, each one on its line with a one-click fix where a safe one exists, and a merge gate that holds a PR until they're fixed.</p>
+  <div class="stats">
+    <div class="stat"><b>~1 s</b><span>for a whole pull request</span></div>
+    <div class="stat"><b>125</b><span>checks: 31 bugs, 71 risks, 22 style</span></div>
+    <div class="stat"><b>22</b><span>languages, plus GitHub workflows, Dockerfiles, Terraform</span></div>
+    <div class="stat"><b>0</b><span>setup: one step in a workflow</span></div>
+  </div>
+
+  <h2>Try it</h2>
+  <p class="muted">Paste code (keys and passwords are masked before anything is shown). This runs the same checks the GitHub Action runs.</p>
+  <textarea id="code" spellcheck="false" aria-label="code to review">function login(user, pass) {
+  const q = "SELECT * FROM users WHERE name = '" + user + "'";
+  if (pass = user.password) {
+    document.getElementById('hi').innerHTML = 'Welcome ' + user.name;
+  }
+  return db.query(q);
+}</textarea>
+  <p><button class="primary" id="run" type="button">Review it</button> <span id="took" class="muted"></span></p>
+  <div id="out" aria-live="polite"></div>
+
+  <h2>Add it to a repository</h2>
+  <p>Save this as <code>.github/workflows/void-review.yml</code>. Every pull request gets a walkthrough of what changed, the findings, and inline comments with suggested fixes.</p>
+  <pre>on: pull_request
+permissions: { contents: read, pull-requests: write }
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: atomeam/void-loop/review@main
+        with:
+          gate: 'true'                               # fail the check on bugs and risks
+          void-key: ${{ secrets.VOID_REVIEW_KEY }}   # Void Pro: the closer read (optional)</pre>
+  <p class="muted">A line that is right as written can say so with a <code>void-review: ok</code> comment, and the gate leaves it out.</p>
+
+  <h2 id="pro">Plans</h2>
+  <div class="plans">
+    <div class="plan">
+      <h3>Free</h3>
+      <div class="price">$0</div>
+      <ul>
+        <li>All 125 instant checks, every language</li>
+        <li>PR walkthrough, inline comments, one-click fixes</li>
+        <li>The merge gate</li>
+        <li>This page and the API, no account</li>
+      </ul>
+    </div>
+    <div class="plan">
+      <h3>Code Review Pro</h3>
+      <div class="price" id="sprice">On its own</div>
+      <ul>
+        <li>Everything in Free</li>
+        <li>The closer read: an AI reviewer confirms the real findings, drops the wrong ones and finds what patterns miss</li>
+        <li>Up to 300 closer reads a day</li>
+        <li>No account: your license key is your key</li>
+      </ul>
+      <a class="buy primary" id="sbuy" href="#pro" hidden rel="noopener">Buy Code Review Pro</a>
+      <p class="muted" id="ssoon">Opening soon on its own. It is in Void Pro today.</p>
+    </div>
+    <div class="plan">
+      <h3>Void Pro</h3>
+      <div class="price" id="price">Paid Void</div>
+      <ul>
+        <li>Code Review Pro included, up to 5 keys</li>
+        <li>Plus everything else paid Void adds: more model answers, private skills, a higher cap on actions you confirm</li>
+      </ul>
+      <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/yinmj" rel="noopener">Get Void Pro</a>
+    </div>
+  </div>
+
+  <h2>Your review keys</h2>
+  <div id="keyarea"><p class="muted">Checking whether you are signed in to Void…</p></div>
+
+  <h2>The API</h2>
+  <pre>curl -s https://a-to-mind.com/api/review \
+  -H 'content-type: application/json' \
+  -H "authorization: Bearer $VOID_REVIEW_KEY" \
+  -d '{"code": "if (x = 5) { go() }"}'</pre>
+  <p class="muted">Leave out the authorization line for the free checks.</p>
+  <p class="muted">Send <code>{"code": …}</code> or a unified diff as <code>{"diff": …}</code> (then only the added lines are checked, with the new file's line numbers). You get <code>findings</code> (line, kind, rule, message) and, with a Code Review Pro license key (or a key from Void Pro), the closer read in <code>answer</code>.</p>
+</main>
+<script>
+(function () {
+  'use strict';
+  var GUMROAD = 'https://moonbeam846.gumroad.com/l/yinmj';
+  var me = null; try { me = JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null'); } catch (e) { me = null; }
+  var el = function (tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
+  var auth = function (h) { h = h || {}; h['content-type'] = 'application/json'; if (me && me.token) h.authorization = 'Bearer ' + me.token; return h; };
+
+  // buying while signed in carries your Void's id, so the purchase unlocks that Void
+  if (me && me.userId) { try { var u = new URL(GUMROAD); u.searchParams.set('void', me.userId); document.getElementById('buy').href = u.href; } catch (_) {} }
+  fetch('/api/review?offer').then(function (r) { return r.json(); }).then(function (o) {
+    if (!o || !o.standalone || !/^https:\/\//.test(o.standalone.url)) return;
+    var b = document.getElementById('sbuy'); b.href = o.standalone.url; b.hidden = false; document.getElementById('ssoon').hidden = true;
+    standaloneSlug = (o.standalone.url.match(/\/l\/([^/?#]+)/) || [])[1] || '';
+    showPrices();
+  }).catch(() => {});
+  var standaloneSlug = '', catalog = [];
+  function money(p) { return '$' + (p.price_cents / 100).toFixed(p.price_cents % 100 ? 2 : 0) + ({ monthly: ' a month', yearly: ' a year' }[p.recurrence] || ''); }
+  function showPrices() {
+    var v = catalog.find(function (x) { return x.slug === 'yinmj'; }), c = standaloneSlug && catalog.find(function (x) { return x.slug === standaloneSlug || String(x.url || '').split('/l/')[1] === standaloneSlug; });
+    if (v && v.price_cents) document.getElementById('price').textContent = money(v);
+    if (c && c.price_cents) document.getElementById('sprice').textContent = money(c);
+  }
+  fetch('/api/catalog').then(function (r) { return r.json(); }).then(function (j) { catalog = j.products || []; showPrices(); }).catch(() => {});
+
+  document.getElementById('run').addEventListener('click', function () {
+    var out = document.getElementById('out'), took = document.getElementById('took'), code = document.getElementById('code').value;
+    out.textContent = ''; took.textContent = 'reviewing…';
+    var t0 = performance.now();
+    fetch('/api/review', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ code: code }) })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        took.textContent = j.ok ? 'reviewed ' + j.lines + ' lines in ' + Math.round(performance.now() - t0) + ' ms (checks: ' + j.ms + ' ms)' : (j.error || 'could not review that');
+        if (!j.ok) return;
+        if (!j.findings.length) { out.appendChild(el('p', null, 'Nothing found by the quick checks.')); return; }
+        j.findings.forEach(function (f) {
+          var d = el('div', 'f ' + f.kind); d.appendChild(el('span', 'kind', f.kind + ' · line ' + f.line + ' '));
+          d.appendChild(el('span', null, f.message)); out.appendChild(d);
+        });
+      })
+      .catch(function () { took.textContent = 'could not reach Void just now'; });
+  });
+
+  var area = document.getElementById('keyarea');
+  function keys() {
+    area.textContent = '';
+    if (!me || !me.token) {
+      var p = el('p', 'muted'); p.appendChild(document.createTextNode('Sign in to Void first: open '));
+      var a = el('a', null, 'a-to-mind.com'); a.href = '/'; p.appendChild(a);
+      p.appendChild(document.createTextNode(' and say "sign in" (a passkey, no password). Then come back here for your key.'));
+      area.appendChild(p); return;
+    }
+    fetch('/api/review', { headers: auth() }).then(function (r) { return r.json().then(function (j) { return [r.status, j]; }); }).then(function (x) {
+      var s = x[0], j = x[1];
+      if (s !== 200) { area.appendChild(el('p', 'muted', s === 401 ? 'Your sign-in has expired: sign in again at a-to-mind.com.' : 'Keys are unavailable right now.')); return; }
+      if (j.tier !== 'paid') { area.appendChild(el('p', 'muted', 'You are signed in on the free plan. Keys here come with Void Pro; Code Review Pro bought on its own needs no key from this page (its license key is the key).')); return; }
+      var ul = el('ul'); ul.id = 'keys';
+      (j.keys || []).forEach(function (k) {
+        var li = el('li', null, k.prefix + '…  made ' + String(k.at).slice(0, 10) + ' · ' + (k.total || 0) + ' closer reads ');
+        var rm = el('button', null, 'revoke'); rm.type = 'button';
+        rm.addEventListener('click', function () { fetch('/api/review', { method: 'DELETE', headers: auth(), body: JSON.stringify({ prefix: k.prefix }) }).then(keys); });
+        li.appendChild(rm); ul.appendChild(li);
+      });
+      if ((j.keys || []).length) area.appendChild(ul);
+      var mk = el('button', 'primary', 'Make a review key'); mk.type = 'button';
+      mk.addEventListener('click', function () {
+        fetch('/api/review', { method: 'POST', headers: auth(), body: JSON.stringify({ action: 'key' }) }).then(function (r) { return r.json(); }).then(function (k) {
+          if (!k.key) { area.appendChild(el('p', 'muted', k.error || 'could not make a key')); return; }
+          keys();
+          setTimeout(function () {
+            var box = el('p'); box.appendChild(el('strong', null, 'Your new key (shown once): '));
+            box.appendChild(el('code', null, k.key)).id = 'newkey';
+            box.appendChild(el('span', 'muted', ' Add it to your repository as the secret VOID_REVIEW_KEY.'));
+            area.appendChild(box);
+          }, 300);
+        });
+      });
+      area.appendChild(mk);
+    }).catch(function () { area.appendChild(el('p', 'muted', 'Keys are unavailable right now.')); });
+  }
+  keys();
+})();
+</script>
+</body>
+</html>

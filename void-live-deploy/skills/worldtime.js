@@ -24,14 +24,16 @@ export function parseWorldTime(text) {
   // "jet lag from LA to London": the clock difference, now
   m = t.match(/^(?:how\s+(?:bad|much)\s+is\s+(?:the\s+)?)?jet\s*lag\s+(?:from|between)\s+(.+?)\s+(?:to|and)\s+(.+)$/i);
   if (m) { const from = PLACE(m[1]), to = PLACE(m[2]); if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: 'now', from, to }; }
-  m = t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?(?:current\s+|local\s+)?time\s+(?:is\s+it\s+)?(?:right\s+now\s+)?(?:in|at)\s+(.+)$/i)
-    || t.match(/^what\s+time\s+is\s+it\s+(?:right\s+now\s+)?(?:in|at)\s+(.+)$/i)
+  m = t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?(?:current\s+|local\s+)?time\s+(?:is\s+it\s+)?(?:right\s+now\s+|now\s+)?(?:over\s+)?(?:in|at)\s+(.+)$/i)
+    || t.match(/^what\s+time\s+is\s+it\s+(?:right\s+now\s+|now\s+)?(?:over\s+|out\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^(?:current|local)\s+time\s+(?:in|at|for)\s+(.+)$/i)
     || t.match(/^what\s+(?:day|date)\s+is\s+it\s+(?:today\s+)?(?:in|at)\s+(.+)$/i)
     || t.match(/^(?:what'?s|whats|what\s+is)\s+(?:the\s+)?(?:date|day)\s+(?:today\s+)?(?:in|at)\s+(.+)$/i)
     // "what is the time zone of Denver", "time zone in Tokyo", "what time zone is Denver in": the card shows the zone and offset
     || t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?time\s*zone\s+(?:of|in|for)\s+(.+)$/i)
-    || t.match(/^what\s+time\s*zone\s+is\s+(.+?)(?:\s+in)?$/i);
+    || t.match(/^what\s+time\s*zone\s+is\s+(?:it\s+in\s+)?(.+?)(?:\s+in)?$/i)
+    // "is it daytime in Tokyo", "is it night in Sydney now": the card shows the local time, which answers it
+    || t.match(/^is\s+it\s+(?:(?:day|night)(?:time)?|morning|afternoon|evening|dark|light|late|early)\s+(?:right\s+now\s+|now\s+)?(?:in|at)\s+(.+?)(?:\s+(?:right\s+)?now)?$/i);
   if (m) { const place = PLACE(m[1]); return place && !NOT_PLACE.test(place) ? { kind: 'now', place } : null; }
   // "hours between 3pm London and Tokyo", "time difference between London and Tokyo" (no time = now)
   m = t.match(new RegExp('^(?:how\\s+many\\s+)?hours?\\s+(?:difference\\s+)?between\\s+(?:' + TIME + '\\s+(?:in\\s+)?)?(.+?)\\s+and\\s+(.+?)(?:\\s+time)?$', 'i'))
@@ -41,6 +43,12 @@ export function parseWorldTime(text) {
     if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: m[1] ? m[1].toLowerCase().replace(/\./g, '').replace(/\s+/g, '') : 'now', from, to };
     return null;
   }
+  // "if it's 3pm in new york what time is it in paris"
+  m = t.match(new RegExp('^(?:if|when)\\s+it(?:\'?s|\\s+is)\\s+' + TIME + '\\s+in\\s+(.+?),?\\s+what\\s+time\\s+(?:is\\s+it|will\\s+it\\s+be)\\s+in\\s+(.+)$', 'i'));
+  if (m) {
+    const from = PLACE(m[2]), to = PLACE(m[3]);
+    if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: m[1].toLowerCase().replace(/\./g, '').replace(/\s+/g, ''), from, to };
+  }
   m = t.match(new RegExp('^(?:convert\\s+|what\\s+is\\s+|what\'s\\s+)?' + TIME + '\\s+(?:in\\s+)?(.+?)\\s+(?:to|in)\\s+(.+?)(?:\\s+time)?$', 'i'));
   if (m) {
     const from = PLACE(m[2]), to = PLACE(m[3]);
@@ -48,7 +56,7 @@ export function parseWorldTime(text) {
     return null;
   }
   m = t.match(/^(?:(?:when|what\s+time)\s+is\s+|what's\s+|whats\s+)?(?:the\s+)?(?:(today's|tomorrow's)\s+)?(sunrise|sunset|sun\s+rise|sun\s+set|dawn|dusk)\s+(?:(?:today|tomorrow)\s+)?(?:in|at|for)\s+(.+)$/i)
-    || t.match(/^(?:(when)\s+)?does\s+the\s+sun\s+(rise|set)\s+(?:(?:today|tomorrow)\s+)?(?:in|at)\s+(.+)$/i);
+    || t.match(/^(?:(when|what\s+time)\s+)?does\s+the\s+sun\s+(rise|set)\s+(?:(?:today|tomorrow)\s+)?(?:in|at)\s+(.+?)(?:\s+(?:today|tonight|tomorrow))?$/i);
   if (m) {
     const which = /rise|dawn/i.test(m[2]) ? 'sunrise' : 'sunset', place = PLACE(m[3]);
     const tomorrow = /tomorrow/i.test(t);
@@ -186,7 +194,7 @@ async function run(text, api) {
       }
       rows.push({ name: 'You', tz: youTz, you: true });
       const draw = () => {
-        const at = new Date(), yo = offsetMin(youTz, at);
+        const at = new Date(), yo = offsetMin(youTz, at), keep = el.querySelector(':scope > .vmini');
         el.innerHTML = '<h2 class="wt">World clock</h2>'
           + '<div class="wclock">' + rows.map((r) => {
             const off = offsetMin(r.tz, at), day = ymdIn(r.tz, at).join('-'), yday = ymdIn(youTz, at).join('-');
@@ -195,8 +203,10 @@ async function run(text, api) {
           }).join('') + '</div>'
           + (el._missing && el._missing.length ? '<p class="sub">I couldn\'t find ' + esc(el._missing.join(', ')) + '.</p>' : '')
           + SRC;
+        if (keep) el.prepend(keep); // the clock miniature keeps running across text redraws
       };
       draw();
+      clockMini(api, el, rows.slice(0, 4).map((r) => ({ tz: r.tz, label: r.name })));
       // it keeps time while it is open, then stops
       const tick = setInterval(() => { if (!api._pageStill(el)) return clearInterval(tick); draw(); }, 15000);
       return 'worldtime';
@@ -211,6 +221,7 @@ async function run(text, api) {
         + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + esc(fmtTime(r.timezone, now)) + '</div>'
         + '<div class="sub">' + esc(fmtDay(r.timezone, now)) + ' · ' + esc(r.timezone.replace(/_/g, ' ')) + ' · ' + gmt(off) + ' · ' + esc(diffWords(off - youOff)) + '</div>'
         + SRC;
+      clockMini(api, el, [{ tz: r.timezone, label: r.name }]);
       return 'worldtime';
     }
     if (q.kind === 'convert') {
@@ -235,6 +246,7 @@ async function run(text, api) {
         + '<div class="sub">in ' + esc(label(b)) + ' · ' + esc(fmtDay(b.timezone, at)) + esc(shift) + ' · ' + gmt(offsetMin(a.timezone, at)) + ' → ' + gmt(offsetMin(b.timezone, at)) + '</div>'
         + '<p class="wt-gap">' + esc(gapLine) + '.</p>'
         + SRC;
+      clockMini(api, el, [{ tz: a.timezone, label: a.name }, { tz: b.timezone, label: b.name }], nowMode ? undefined : at.getTime());
       return 'worldtime';
     }
     // sunrise / sunset
@@ -262,6 +274,17 @@ async function run(text, api) {
     el.innerHTML = '<h2>' + esc(title) + '</h2><p>The time service didn\'t answer just now. Ask again in a moment.</p>';
     return 'none';
   }
+}
+
+// the card's 3D miniature (skills/mini/clock.js): a brass desk clock per place, keeping that place's time. It sits in a
+// band at the top of the page and survives the page redrawing its text; without WebGL the band just goes away.
+function clockMini(api, el, clocks, at) {
+  if (!api.stage || !api.stage.miniature) return;
+  let host = el.querySelector(':scope > .vmini');
+  if (!host) { host = document.createElement('div'); host.className = 'vmini'; host.style.cssText = 'height:' + (Math.min(innerWidth, innerHeight) < 560 ? 168 : 210) + 'px;margin:0 0 6px'; }
+  el.prepend(host);
+  el.dataset.mk = el.dataset.mk || Math.random().toString(36).slice(2, 9);
+  api.stage.miniature(host, 'clock', { clocks, at }, { key: 'clock:' + el.dataset.mk, label: 'Clock showing the time in ' + clocks.map((c) => c.label).join(', ') }).catch(() => host.remove());
 }
 
 export default {

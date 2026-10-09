@@ -5,6 +5,8 @@
  * You are X and Void is O: after each tap Void answers with its best move (full minimax, so it never loses).
  * The status line calls the result. New game resets.
  */
+import { lift3d } from './lift3d.js';
+
 export function createTicTacToeState() {
   return {
     board: Array(9).fill(null),
@@ -75,34 +77,38 @@ export function bestMove(state) {
 
 export function tictactoeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open|summon)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+|some\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:tic[\s-]*tac[\s-]*toe|noughts\s+and\s+crosses|x'?s?\s+and\s+o'?s?)(?:\s+game)?(?:\s+(?:with|against|vs\.?|versus)\s+(?:void|me|you|the\s+computer|a\.?i\.?))?$/i.test(t)) return { kind: 'game' };
+  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open|summon)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+|some\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:(?:3d|3-d|three[\s-]?d)\s+)?(?:tic[\s-]*tac[\s-]*toe|noughts\s+and\s+crosses|x'?s?\s+and\s+o'?s?)(?:\s+game)?$/i.test(t)) return { kind: 'game' };
   return null;
 }
 
-const BOARD_CSS = 'display:grid;grid-template-columns:repeat(3,44px);grid-template-rows:repeat(3,44px);gap:4px;margin:10px auto 6px;width:max-content';
+const X_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><path d="M27 27L73 73M73 27L27 73" stroke="#7a1d1c" stroke-width="15" stroke-linecap="round" transform="translate(1.5,3)" opacity=".55"/><path d="M27 27L73 73M73 27L27 73" stroke="url(#tttX)" stroke-width="14" stroke-linecap="round"/><path d="M29 27L71 69M71 27L35 63" stroke="rgba(255,255,255,.35)" stroke-width="3" stroke-linecap="round"/><defs><linearGradient id="tttX" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e5534b"/><stop offset="1" stop-color="#a8231f"/></linearGradient></defs></svg>';
+const O_SVG = '<svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="51.5" cy="53" r="24" fill="none" stroke="#5b4a2e" stroke-width="13" opacity=".5"/><circle cx="50" cy="50" r="24" fill="none" stroke="url(#tttO)" stroke-width="13"/><path d="M33 40A20 20 0 0 1 52 30" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="3" stroke-linecap="round"/><defs><linearGradient id="tttO" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fbf6e9"/><stop offset="1" stop-color="#cdbf9f"/></linearGradient></defs></svg>';
+
+function winLine(board) {
+  for (const w of WINNING_COMBOS) { const [a, b, c] = w; if (board[a] && board[a] === board[b] && board[a] === board[c]) return w; }
+  return null;
+}
 
 function mount(th, stageApi) {
   const el = document.createElement('div');
-  el.className = 'thing kept-card tictactoe-card';
+  el.className = 'thing kept-card game-card tictactoe-card';
   el.dataset.id = th.id;
-  el.style.cssText = 'position:absolute;left:' + th.x + 'px;top:' + th.y + 'px;width:180px;padding:12px;border:1px solid var(--line);border-radius:12px;background:rgba(12,12,12,0.92);text-align:center;cursor:grab;user-select:none';
-  const head = document.createElement('div');
-  head.style.cssText = 'color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em';
-  head.textContent = 'Tic-tac-toe';
-  const status = document.createElement('div');
-  status.style.cssText = 'font-size:13px;margin-top:6px';
-  const grid = document.createElement('div');
-  grid.style.cssText = BOARD_CSS;
+  el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px';
+  el.innerHTML = '<div class="g-head"><span class="g-title">Tic-tac-toe</span><span class="g-sub">you are X</span></div>';
+  const wrap = document.createElement('div'); wrap.className = 'g-board';
+  const grid = document.createElement('div'); grid.className = 'ttt-board';
+  wrap.appendChild(grid);
+  const bar = document.createElement('div'); bar.className = 'g-bar';
+  const status = document.createElement('div'); status.className = 'g-status'; status.setAttribute('aria-live', 'polite');
   const again = document.createElement('button');
-  again.type = 'button';
-  again.textContent = 'new game';
-  again.style.cssText = 'font:inherit;color:inherit;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:3px 12px;cursor:pointer';
+  again.type = 'button'; again.className = 'g-btn'; again.textContent = 'New game';
+  bar.append(status, again);
   const cells = [];
   for (let i = 0; i < 9; i++) {
     const b = document.createElement('button');
     b.type = 'button';
     b.dataset.i = i;
-    b.style.cssText = 'font:20px ui-monospace,monospace;color:inherit;background:rgba(255,255,255,.04);border:1px solid var(--line);border-radius:8px;cursor:pointer';
+    b.className = 'ttt-cell';
     b.addEventListener('pointerdown', (e) => e.stopPropagation());
     b.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -115,30 +121,41 @@ function mount(th, stageApi) {
       if (was.status === 'playing') setTimeout(() => {
         if (th.state !== was) return; // new game or board gone in the meantime
         const m = bestMove(was);
-        if (m !== null) { th.state = resolveMove(was, m).nextState; paint(); }
-      }, 350);
+        if (m !== null) { th.state = resolveMove(was, m).nextState; paint(); stageApi.save && stageApi.save(); }
+      }, 420);
     });
     cells.push(b);
     grid.appendChild(b);
   }
+  const shown = Array(9).fill(null);
   function paint() {
-    for (let i = 0; i < 9; i++) { cells[i].textContent = th.state.board[i] || ''; cells[i].disabled = th.state.board[i] !== null || th.state.status !== 'playing' || th.state.currentPlayer !== 'X';
-      cells[i].setAttribute('aria-label', 'row ' + (Math.floor(i / 3) + 1) + ', column ' + (i % 3 + 1) + ': ' + (th.state.board[i] || 'empty')); }
-    status.textContent = th.state.status === 'playing' ? (th.state.currentPlayer === 'X' ? 'your move' : 'Void is thinking') : th.state.status === 'draw' ? 'draw' : th.state.status.replace('_', ' ');
+    const line = winLine(th.state.board);
+    for (let i = 0; i < 9; i++) {
+      const v = th.state.board[i];
+      if (shown[i] !== v) { cells[i].innerHTML = v === 'X' ? X_SVG : v === 'O' ? O_SVG : ''; cells[i].classList.toggle('placed', !!v); shown[i] = v; }
+      cells[i].disabled = v !== null || th.state.status !== 'playing' || th.state.currentPlayer !== 'X';
+      cells[i].classList.toggle('win', !!(line && line.includes(i)));
+      cells[i].setAttribute('aria-label', 'row ' + (Math.floor(i / 3) + 1) + ', column ' + (i % 3 + 1) + ': ' + (v || 'empty'));
+    }
+    const s = th.state.status;
+    status.textContent = s === 'playing' ? (th.state.currentPlayer === 'X' ? 'Your move' : 'Void is thinking…') : s === 'draw' ? 'A draw. Void never loses.' : s === 'X_wins' ? 'You win!' : 'Void wins this one.';
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
-  again.addEventListener('click', (e) => { e.stopPropagation(); th.state = createTicTacToeState(); paint(); });
-  el.appendChild(head); el.appendChild(grid); el.appendChild(status); el.appendChild(again);
+  again.addEventListener('click', (e) => { e.stopPropagation(); th.state = createTicTacToeState(); paint(); stageApi.save && stageApi.save(); });
+  el.append(wrap, bar);
   paint();
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
+  // the board stands in the void in 3D (skills/mini/tictactoe.js), the rest of the card beside it; the 2D board stays the fallback
+  lift3d(th, stageApi, el, { kind: 'tictactoe', board: grid, title: 'Tic-tac-toe', W: 380, H: 320,
+    snapshot: () => ({ board: th.state.board.slice(), win: winLine(th.state.board) || [] }) });
 }
 
 async function run(text, api) {
   if (!tictactoeOf(text)) return 'none';
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'tictactoe');
-  if (existing) { api.stage.render(); return 'tictactoe'; } // one board at a time
-  api.summon('tictactoe', { state: createTicTacToeState(), x: 60, y: 70 });
+  if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'tictactoe'; } // one board at a time
+  api.summon('tictactoe', { state: createTicTacToeState(), center: true });
   api.say('tic-tac-toe · you are X · tap a square');
   return 'tictactoe';
 }
@@ -149,7 +166,7 @@ export default {
   createTicTacToeState,
   resolveMove,
   bestMove,
-  examples: ['lets play tic tac toe', 'tic tac toe', 'play tic tac toe', 'a game of tic tac toe', 'noughts and crosses'],
+  examples: ['lets play tic tac toe', 'tic tac toe', 'play tic tac toe', 'a game of tic tac toe', 'noughts and crosses', 'play 3d tic tac toe'],
   nearMisses: ['who invented tic tac toe', 'tic tac toe rules', 'connect 4', 'what is connect 4'],
   match(lower, text) { return !!tictactoeOf(text); },
   run,

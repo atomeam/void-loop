@@ -1,0 +1,48 @@
+# GitHub merges ready PRs by itself, so no session sits and watches CI (tools/automerge.mjs, tools/pr-ready.mjs).
+# Only PRs labelled "automerge" from this repository (never forks). Ready = the void-review check clean on the head (seconds),
+# nothing that already finished failed. CodeRabbit is an extra and never blocks. Nothing else is waited on: the full suite runs on main
+# right after the deploy and reverts a commit that fails it (deploy.yml, verify-main). It looks again whenever anything that could change the answer happens, and once an hour.
+name: Void automerge
+
+on:
+  workflow_run:
+    workflows: ["Void deploy", "Void review", "Void bench"]
+    types: [completed]
+  pull_request_review:
+    types: [submitted]
+  pull_request_review_comment:
+    types: [created]
+  issue_comment:
+    types: [created, edited]
+  pull_request:
+    types: [labeled]
+  schedule:
+    - cron: "17 * * * *" # a check or review that finished without waking this workflow
+  workflow_dispatch:
+
+concurrency:
+  group: void-automerge
+  cancel-in-progress: false
+
+permissions:
+  contents: write # merge
+  pull-requests: write # mark a draft ready
+  checks: read
+  actions: write # start the deploy of main after a merge
+
+jobs:
+  automerge:
+    # issue comments on plain issues never matter here
+    if: github.event_name != 'issue_comment' || github.event.issue.pull_request
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: tools
+      - name: Merge what is ready
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: node tools/automerge.mjs

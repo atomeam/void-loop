@@ -2,6 +2,7 @@
  * show skill — a TV show from TVMaze (no key)
  * "tv show severance", "what network is the office on", "when did breaking bad end".
  */
+const HISTORY = /\b(?:wars?|ww\s?[12i]+|world\s+war|revolution|battle|siege|depression|recession|prohibition|apartheid|slavery|segregation|pandemic|epidemic|plague|lockdown|empire|dynasty|reign|era|age|colonial\w*|occupation|crusades?|genocide|holocaust|famine|strike|crisis|rule|regime|monarchy|soviet\s+union|ussr|daylight\s+saving|school|summer|winter|the\s+\d{4}s)\b/i;
 export function showOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   let m = t.match(/^(?:tv\s+show|the\s+tv\s+show|show\s+me\s+the\s+tv\s+show)\s+(.{2,60})$/i);
@@ -9,7 +10,8 @@ export function showOf(text) {
   m = t.match(/^what\s+network\s+is\s+(.{2,60}?)\s+on$/i);
   if (m) return m[1];
   m = t.match(/^when\s+did\s+(.{2,60}?)\s+end$/i);
-  if (m && !/the\s+world|it\s+all/.test(m[1])) return m[1];
+  // history is not television: "when did world war 2 end", "when did the cold war end", "when did prohibition end"
+  if (m && !/the\s+world|it\s+all/.test(m[1]) && !HISTORY.test(m[1])) return m[1];
   return null;
 }
 async function run(text, api) {

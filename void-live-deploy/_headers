@@ -9,6 +9,12 @@
   Cache-Control: no-cache
   Service-Worker-Allowed: /
 
+/vendor/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/models/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /skills/*
   Cache-Control: public, max-age=60, must-revalidate
 

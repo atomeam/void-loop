@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · pulled to the middle (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#lamp{width:72px;height:72px;border-radius:50%;margin:8px auto;background:#1a1a1e}
+#lamp.on{background:#ffd23a}
+#pad{height:120px;border:1px dashed rgba(255,255,255,.25);border-radius:14px;display:flex;align-items:center;justify-content:center;color:#8a8a92;user-select:none;touch-action:none}
+#pad.hold{background:rgba(124,204,255,.12)}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>pulled to the middle · draft · not published</h1>
+  <p class="note">The lamp lights for a while, somewhere between half a second and a second and a half. Then press and hold the pad (or Space) for as long as you think it was lit. Over many tries most people make short times too long and long times too short, as if every guess is pulled toward the middle of the times they have seen. Vierordt described this in 1868, and Jazayeri and Shadlen (2010) showed the pull grows when timing is less certain, the way a careful guesser would lean on what is usual. This page fits a line through your own tries: a slope of 1 means no pull, below 1 means pulled to the middle, and the crossing point is the time you get exactly right. Everything stays in this browser.</p>
+  <div id="lamp" aria-hidden="true"></div>
+  <div id="pad" tabindex="0" role="button" aria-label="hold to reproduce the time">hold here</div>
+  <div><button id="go" type="button">light it</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var LO=500,HI=1500,KEY='a2m.fringe.vierordt.v1',st={tries:[]},phase='idle',shown=0,downAt=0;
+  function el(id){return document.getElementById(id)}
+  function ok(t){return t&&isFinite(t.d)&&isFinite(t.r)&&t.d>=LO&&t.d<=HI&&t.r>50&&t.r<5000}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.tries))st.tries=j.tries.filter(ok)}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({tries:st.tries.slice(-300)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your tries (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // least squares: held = a + b × shown; the crossing point (where held = shown) is a / (1 - b) when the slope is below 1
+  function fit(tries){var n=tries.length;if(n<2)return null;var mx=0,my=0;tries.forEach(function(t){mx+=t.d;my+=t.r});mx/=n;my/=n;
+    var sxx=0,sxy=0;tries.forEach(function(t){sxx+=(t.d-mx)*(t.d-mx);sxy+=(t.d-mx)*(t.r-my)});if(!sxx)return null;var b=sxy/sxx,a=my-b*mx;
+    return{n:n,slope:b,intercept:a,cross:b<0.999?a/(1-b):null}}
+  function shortLong(tries){var s=tries.filter(function(t){return t.d<850}),l=tries.filter(function(t){return t.d>1150}),m=function(xs){return xs.length?xs.reduce(function(a,t){return a+(t.r-t.d)},0)/xs.length:null};return{short:m(s),long:m(l),ns:s.length,nl:l.length}}
+  el('go').addEventListener('click',function(){if(phase!=='idle')return;phase='showing';el('go').disabled=true;el('state').textContent='watch';shown=Math.round(LO+Math.random()*(HI-LO));
+    setTimeout(function(){el('lamp').classList.add('on');setTimeout(function(){el('lamp').classList.remove('on');phase='ready';el('state').textContent='now hold the pad for as long';el('pad').focus()},shown)},600+Math.random()*600)});
+  function down(){if(phase!=='ready')return;phase='holding';downAt=performance.now();el('pad').classList.add('hold')}
+  function up(){if(phase!=='holding')return;var r=Math.round(performance.now()-downAt);el('pad').classList.remove('hold');phase='idle';el('go').disabled=false;
+    var t={d:shown,r:r,at:Date.now()};if(ok(t)){st.tries.push(t);save()}el('state').textContent='it was lit '+shown+' ms; you held '+r+' ms ('+(r>=shown?'+':'')+(r-shown)+' ms)';draw()}
+  el('pad').addEventListener('pointerdown',function(e){e.preventDefault();down()});el('pad').addEventListener('pointerup',up);el('pad').addEventListener('pointercancel',up);el('pad').addEventListener('pointerleave',up);
+  document.addEventListener('keydown',function(e){if(e.key===' '&&!e.repeat&&phase==='ready'){e.preventDefault();down()}});document.addEventListener('keyup',function(e){if(e.key===' '){e.preventDefault();up()}});
+  function draw(){var f=fit(st.tries),sl=shortLong(st.tries);if(!f){el('score').textContent=st.tries.length?st.tries.length+' try so far':'';return}
+    el('score').textContent=f.n+' tries · slope '+f.slope.toFixed(2)+(f.slope<0.9?' (pulled to the middle)':f.slope>1.1?' (pushed outward)':' (close to no pull)')+(f.cross!=null&&f.cross>0&&f.cross<3000?' · you get about '+Math.round(f.cross)+' ms exactly right':'')
+      +(sl.short!=null&&sl.long!=null?'\nshort times you held '+(sl.short>=0?'+':'')+Math.round(sl.short)+' ms on average, long times '+(sl.long>=0?'+':'')+Math.round(sl.long)+' ms':'')+(f.n<30?'\nabout 30 tries before the slope means much':'')}
+  draw();
+  // made-up tries: a perfect timer has slope 1 and no crossing; a pulled one (held = 300 + 0.7 × shown) gives slope 0.7 and crosses at 1000 ms
+  function selftest(){var perfect=[600,900,1200,1400].map(function(d){return{d:d,r:d}}),p=fit(perfect);if(Math.abs(p.slope-1)>1e-9||p.cross!==null)return'perfect timer gave '+JSON.stringify(p);
+    var pulled=[500,700,1000,1300,1500].map(function(d){return{d:d,r:300+0.7*d}}),q=fit(pulled);if(Math.abs(q.slope-0.7)>1e-9||Math.abs(q.cross-1000)>1e-6)return'pulled timer gave '+JSON.stringify(q);
+    var sl=shortLong(pulled);if(!(sl.short>0&&sl.long<0))return'short should run long and long short, got '+JSON.stringify(sl);if(fit([{d:700,r:700}])!==null)return'one try should not fit';return true}
+  window.__vierordt={fit:fit,shortLong:shortLong,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

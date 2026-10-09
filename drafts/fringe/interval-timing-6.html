@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · full time, empty time (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>full time, empty time · draft · not published</h1>
+  <p class="note">Each round plays two stretches of time, one after the other. One is filled with a steady tone; the other is empty, marked only by a click at its start and a click at its end. Say which lasted longer. On most rounds they are exactly equal. Many people still hear the filled one as longer: the filled-duration illusion (Thomas and Brown, 1974; Wearden and others, 2007). This page counts how often you pick the filled one when the two are equal, against the 50% you would get by guessing. Use sound. Everything stays in this browser.</p>
+  <div class="row"><button id="go" type="button">play a round</button><button id="first" type="button" disabled>the first was longer</button><button id="second" type="button" disabled>the second was longer</button></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.filledtime.v1',st={trials:[]},ac=null,cur=null;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&typeof t.equal==='boolean'})}catch(_){}
+  function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(_){}}
+  // a round: a base of 400-900 ms; 3 rounds in 4 the two are equal, else one is 30% longer (catch rounds that check you are listening)
+  function round(rnd){var base=400+Math.floor(rnd()*500),filledFirst=rnd()<.5,equal=rnd()<.75,longer=equal?null:(rnd()<.5?'filled':'empty');
+    return {base:base,filledFirst:filledFirst,equal:equal,filledMs:longer==='filled'?Math.round(base*1.3):base,emptyMs:longer==='empty'?Math.round(base*1.3):base}}
+  // the illusion: on equal rounds, how often "filled" was picked, with an exact one-sided binomial p against 0.5
+  function binomP(k,n){var p=0,c=1;for(var i=0;i<=n;i++){if(i>0)c=c*(n-i+1)/i;if(i>=k)p+=c}return p/Math.pow(2,n)}
+  function result(trials){var eq=trials.filter(function(t){return t.equal}),k=eq.filter(function(t){return t.pickedFilled}).length,c=trials.filter(function(t){return!t.equal}),ok=c.filter(function(t){return t.right}).length;
+    return {n:eq.length,k:k,rate:eq.length?k/eq.length:null,p:eq.length?binomP(k,eq.length):null,catchN:c.length,catchRight:c.length?ok/c.length:null}}
+  var el=function(id){return document.getElementById(id)};
+  function play(r){if(!ac){var A=window.AudioContext||window.webkitAudioContext;if(!A){el('state').textContent='this browser cannot play sound';return 0}ac=new A()}ac.resume();
+    var t=ac.currentTime+.2,gap=.7,click=function(at){var o=ac.createOscillator(),g=ac.createGain();o.frequency.value=1500;g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.25,at+.002);g.gain.linearRampToValueAtTime(0,at+.012);o.connect(g);g.connect(ac.destination);o.start(at);o.stop(at+.015)},
+      tone=function(at,ms){var o=ac.createOscillator(),g=ac.createGain(),d=ms/1000;o.frequency.value=500;g.gain.setValueAtTime(0,at);g.gain.linearRampToValueAtTime(.12,at+.008);g.gain.setValueAtTime(.12,at+d-.008);g.gain.linearRampToValueAtTime(0,at+d);o.connect(g);g.connect(ac.destination);o.start(at);o.stop(at+d+.01)};
+    var first=r.filledFirst?r.filledMs:r.emptyMs,second=r.filledFirst?r.emptyMs:r.filledMs;
+    if(r.filledFirst){tone(t,first);click(t+first/1000+gap);click(t+first/1000+gap+second/1000)}else{click(t);click(t+first/1000);tone(t+first/1000+gap,second)}
+    return (first+second)/1000+gap+.3}
+  el('go').addEventListener('click',function(){cur=round(Math.random);var secs=play(cur);el('state').textContent='listen…';el('go').disabled=true;
+    setTimeout(function(){el('first').disabled=el('second').disabled=false;el('state').textContent='which lasted longer?'},secs*1000)});
+  function answer(firstLonger){if(!cur)return;var pickedFilled=firstLonger===cur.filledFirst,right=cur.equal?null:((cur.filledMs>cur.emptyMs)===pickedFilled);
+    st.trials.push({equal:cur.equal,pickedFilled:pickedFilled,right:right,at:Date.now()});save();
+    el('state').textContent=cur.equal?'they were exactly equal ('+cur.base+' ms); you picked the '+(pickedFilled?'filled':'empty')+' one':'the '+(cur.filledMs>cur.emptyMs?'filled':'empty')+' one really was longer · '+(right?'right':'missed');
+    cur=null;el('first').disabled=el('second').disabled=true;el('go').disabled=false;score()}
+  el('first').addEventListener('click',function(){answer(true)});el('second').addEventListener('click',function(){answer(false)});
+  function score(){var r=result(st.trials);if(!st.trials.length){el('score').textContent='';return}
+    el('score').textContent=(r.n?'equal rounds: you picked the filled one '+r.k+' of '+r.n+' ('+Math.round(r.rate*100)+'%) · chance alone gives a result this high with p = '+r.p.toFixed(3):'no equal rounds yet')
+      +(r.catchN?'\ncatch rounds right: '+Math.round(r.catchRight*100)+'% of '+r.catchN:'')+(r.n<30?'\nabout 30 equal rounds before this means much':'')}
+  score();
+  // made-up data: 24 of 30 equal rounds picked filled gives a small p; 15 of 30 gives about 0.57; rounds have the right shape
+  function selftest(){var s=11,rnd=function(){s=(s*16807)%2147483647;return s/2147483647},n=0;
+    for(var k=0;k<200;k++){var r=round(rnd);if(r.equal){n++;if(r.filledMs!==r.emptyMs)return 'equal rounds must be equal'}else if(Math.max(r.filledMs,r.emptyMs)!==Math.round(r.base*1.3))return 'catch rounds should be 30% longer'}
+    if(n<120||n>180)return 'about 3 in 4 rounds should be equal, got '+n;
+    var fake=[];for(var i=0;i<30;i++)fake.push({equal:true,pickedFilled:i<24});var a=result(fake);if(!(a.p<0.001))return 'a strong illusion should give a small p, got '+a.p;
+    fake=[];for(i=0;i<30;i++)fake.push({equal:true,pickedFilled:i<15});a=result(fake);if(Math.abs(a.p-0.5722)>0.001)return 'half and half should give p near 0.572, got '+a.p;
+    return true}
+  window.__filledtime={round:round,result:result,binomP:binomP,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

@@ -25,11 +25,30 @@ test("map seed: motor is established and joint stays hypothesis", () => {
     assert.equal(bench.status, "established");
     assert.equal(establishedOk(bench), true);
   }
+  const fmt = map.find((n) => n.id === "multimaterial-export-3mf");
+  if (fmt) {
+    assert.equal(fmt.status, "established");
+    assert.equal(establishedOk(fmt), true);
+  }
+  const seno = map.find((n) => n.id === "senolytics-mash-dq");
+  if (seno) {
+    assert.equal(seno.status, "established");
+    assert.equal(establishedOk(seno), true);
+  }
+  const mind = map.find((n) => n.id === "offline-character-mind-module");
+  if (mind) {
+    assert.equal(mind.status, "established");
+    assert.equal(establishedOk(mind), true);
+    assert.deepEqual(mind.tracks, ["living-figures"]);
+  }
   const joint = map.find((n) => n.id === "printed-actuator-moves-figure-joint");
   assert.equal(joint.status, "hypothesis");
   assert.deepEqual(joint.tracks, ["printing-working-machines", "living-figures"]);
+  // export-to-print advances as think-tank cycles land (blocked, then hypothesis, then established),
+  // so check that its status is valid and that "established" carries a source, like the nodes above.
   const exp = map.find((n) => n.id === "export-to-print");
-  assert.equal(exp.status, "blocked");
+  assert.ok(["blocked", "hypothesis", "established"].includes(exp.status), `export-to-print status ${exp.status}`);
+  if (exp.status === "established") assert.equal(establishedOk(exp), true);
 });
 
 test("fan-out touches two tracks, not four", () => {

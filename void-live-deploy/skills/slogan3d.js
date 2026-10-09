@@ -1,29 +1,10 @@
 /**
- * Next #16 — 3D slogan on "what are you?"
- * Drawn with the same canvas / materialize pattern as skills/make.js (no three.js yet).
- * Mounts beside the self page; removed when that page closes.
+ * Next #16 — the slogan on "what are you?"
+ * Shown as type at the top of the self page (a canvas drawing of it was blurry, boxed in white and cut off on the right,
+ * and missing on phones). sloganDoc (the old canvas version) stays exported for anything that frames it.
+ * Removed when that page closes.
  */
 export const SLOGAN = 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.';
-const STYLE_ID = 'vmake-style';
-
-function ensureMakeStyle() {
-  if (typeof document === 'undefined' || document.getElementById(STYLE_ID)) return;
-  const s = document.createElement('style');
-  s.id = STYLE_ID;
-  s.textContent = '.vmake{position:relative;border-radius:14px;overflow:hidden;margin-top:8px;perspective:900px}'
-    + '.vmake iframe{display:block;width:100%;border:0;border-radius:14px;background:radial-gradient(ellipse at center,rgba(120,140,255,.08),rgba(0,0,0,0) 70%);transform-origin:50% 60%;animation:vmat 1.1s cubic-bezier(.16,1,.3,1) both}'
-    + '.vmake::after{content:"";position:absolute;left:0;right:0;height:38%;top:-40%;pointer-events:none;background:linear-gradient(180deg,rgba(124,204,255,0),rgba(124,204,255,.22),rgba(124,204,255,0));animation:vscan 1.2s ease-out .1s both}'
-    + '@keyframes vmat{0%{opacity:0;transform:rotateX(58deg) translateY(40px) scale(.72);filter:blur(14px) brightness(2.2)}55%{opacity:1;filter:blur(2px) brightness(1.4)}100%{opacity:1;transform:none;filter:none}}'
-    + '@keyframes vscan{0%{top:-40%}100%{top:110%}}'
-    + '@media (prefers-reduced-motion:reduce){.vmake iframe,.vmake::after{animation:none}}'
-    + '.vslogan{position:fixed;z-index:49;left:calc(50% + min(300px, 28vw));top:42%;transform:translateY(-50%);width:min(340px, calc(50vw - 40px));pointer-events:none}'
-    + '.vslogan .vmake{margin:0}'
-    + '.vslogan iframe{height:220px}'
-    + '@media (max-width:980px){.vslogan{left:50%;top:auto;bottom:108px;transform:translateX(-50%);width:min(560px, calc(100vw - 32px))}}'
-    + '@media (prefers-reduced-motion:reduce){.vslogan{transition:none}}';
-  document.head.appendChild(s);
-}
-
 /** Canvas 3D slogan: floating shards assemble into extruded text (make.js style, no libs). */
 export function sloganDoc(opts = {}) {
   const reduce = !!opts.reduce;
@@ -52,23 +33,40 @@ export function sloganDoc(opts = {}) {
     + '</script></body></html>';
 }
 
-/** Mount the slogan beside the self page. Returns the slogan root (removed on close). */
+const SLOGAN_STYLE_ID = 'vslogan-style';
+function ensureSloganStyle() {
+  if (typeof document === 'undefined' || document.getElementById(SLOGAN_STYLE_ID)) return;
+  const s = document.createElement('style');
+  s.id = SLOGAN_STYLE_ID;
+  // set in type, not painted on a canvas: crisp at any size, never cut off, the same on a phone
+  s.textContent = '.vslogan{position:relative;margin:4px 0 18px;padding:18px 20px 16px;border-radius:16px;overflow:hidden;'
+    + 'background:radial-gradient(120% 140% at 0% 0%,rgba(130,150,255,.16),rgba(0,0,0,0) 60%),radial-gradient(120% 140% at 100% 100%,rgba(190,130,255,.14),rgba(0,0,0,0) 60%),rgba(255,255,255,.03);'
+    + 'box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset 0 1px 0 rgba(255,255,255,.08)}'
+    + '.vslogan .vs-brand{display:block;font-size:30px;line-height:1.1;font-weight:700;letter-spacing:-.02em;'
+    + 'background:linear-gradient(100deg,#f3f5ff 0%,#c9d3ff 35%,#d9c3ff 55%,#f3f5ff 75%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;'
+    + 'filter:drop-shadow(0 2px 10px rgba(140,160,255,.25));animation:vsShine 7s ease-in-out infinite}'
+    + '.vslogan .vs-line{display:block;margin-top:6px;font-size:17px;line-height:1.35;font-weight:500;color:#dfe3f2;letter-spacing:-.005em}'
+    + '.vslogan .vs-line + .vs-line{margin-top:2px;color:#a9afc4;font-weight:400}'
+    + '@keyframes vsShine{0%,100%{background-position:100% 0}50%{background-position:0% 0}}'
+    + '@media (max-width:480px){.vslogan{padding:16px 16px 14px}.vslogan .vs-brand{font-size:26px}.vslogan .vs-line{font-size:16px}}'
+    + '@media (prefers-reduced-motion:reduce){.vslogan .vs-brand{animation:none;background-position:0 0}}';
+  document.head.appendChild(s);
+}
+
+/** Mount the slogan at the top of the self page (HTML text, so it stays sharp and fits any screen). Removed with the page. */
 export function mountSlogan(pageEl, opts = {}) {
   if (typeof document === 'undefined' || !pageEl) return null;
-  ensureMakeStyle();
+  ensureSloganStyle();
   document.querySelectorAll('.vslogan').forEach((n) => n.remove());
   const wrap = document.createElement('div');
   wrap.className = 'vslogan';
-  wrap.setAttribute('aria-hidden', 'true');
-  const box = document.createElement('div');
-  box.className = 'vmake';
-  const f = document.createElement('iframe');
-  f.setAttribute('sandbox', 'allow-scripts');
-  f.setAttribute('title', 'A-to-Mind slogan');
-  f.srcdoc = sloganDoc({ reduce: !!opts.reduce });
-  box.appendChild(f);
-  wrap.appendChild(box);
-  document.body.appendChild(wrap);
+  wrap.dataset.text = SLOGAN;
+  if (opts.reduce) wrap.dataset.reduce = '1';
+  const [brand, ...rest] = SLOGAN.split(/(?<=\.)\s+/);
+  const b = document.createElement('span'); b.className = 'vs-brand'; b.textContent = brand; wrap.appendChild(b);
+  for (const line of rest) { const l = document.createElement('span'); l.className = 'vs-line'; l.textContent = line; wrap.appendChild(l); }
+  const after = pageEl.querySelector('.sub');
+  if (after && after.parentNode === pageEl) after.after(wrap); else pageEl.prepend(wrap);
   pageEl._slogan = wrap;
   return wrap;
 }

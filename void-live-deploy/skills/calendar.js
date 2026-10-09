@@ -104,11 +104,13 @@ export function parseCalendar(text) {
     return { kind: 'hide' };
   }
   // an add needs a when in it: "call Sam next Tuesday at 4", "dentist Oct 12 at 3pm", "gym at 7pm", "pay rent in 3 days"
-  if (/^(?:what|who|why|how|when|where|is|are|does|do|can|define|translate|weather|time|map|make|set|start)\b/i.test(t)) return null;
+  if (/^(?:what|whats|who|whos|why|how|hows|when|whens|where|wheres|is|are|does|do|can|define|translate|weather|time|map|make|set|start)\b/i.test(t)) return null;
   if (/\b(timer|clock|sticky|notepad|counter|countdown|shape|calculator)\b/i.test(t)) return null;
   if (/^(?:the\s+|today'?s\s+)?(?:\w+\s+)?(?:news|headlines|top\s+stories)\b/i.test(t)) return null; // the news skill ("tech news today" is not an event)
   if (/\b(hours?\s+between|days?\s+between|time\s+difference|how\s+many\s+(hours|days)|how\s+long\s+until)\b/i.test(t)) return null; // world time and the calculator answer these
+  if (/\bwhat\s+time\s+(?:is\s+it|will\s+it\s+be)\b/i.test(t)) return null; // "if it's 3pm in new york what time is it in paris" is world time
   if (/^\d{1,2}(?::\d{2})?\s*(?:am|pm)?\b/i.test(t) || /\b(sunrise|sunset|time zone|timezone)\b/i.test(t)) return null; // "3pm London to Tokyo" is world time; an event starts with what it is
+  if (/^(?:please\s+)?(?:wake\s+me(?:\s+up)?|(?:set|make|start)\s+(?:an?\s+|my\s+)?alarm|alarm)\s+(?:for|at)\s+\d/i.test(t)) return null; // an alarm rings: the timer counts down to it
   const w = parseWhenText(t);
   // "remind me to call mom" with no when: it goes on today, so it is kept rather than lost
   if (!w) { const r = t.match(/^(?:please\s+)?remind\s+me\s+(?:to|about)\s+(.{2,80})$/i); if (r) { const d = new Date(); d.setHours(0, 0, 0, 0); return { kind: 'add', title: tidy(r[1]), at: d, allDay: true, raw: t }; } }

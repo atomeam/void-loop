@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · find the red X (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 14px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#field{position:relative;height:300px;border:1px solid rgba(255,255,255,.12);border-radius:12px;overflow:hidden}
+#field span{position:absolute;font-size:22px;font-weight:bold;transform:translate(-50%,-50%);line-height:1}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>find the red X · draft · not published</h1>
+  <p class="note">Is there a red X? Answer as fast as you can: "yes" (or the J key) or "no" (or F). In some rounds the others are all green, so a red X jumps out at once. In others the others are green Xs and red Os, so you have to check them. Treisman and Gelade (1980) found that the first kind takes about the same time however many items there are, while the second gets slower with every item added, as if attention visits them one by one. This page measures how many milliseconds each extra item costs you in each kind of round. It needs colour vision for red and green, so it is not a fair test for everyone. Everything stays in this browser.</p>
+  <div id="field" role="img" aria-label="a field of coloured letters"></div>
+  <div class="row"><button id="go" type="button">start</button><button id="no" type="button" disabled>no (F)</button><button id="yes" type="button" disabled>yes (J)</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var SIZES=[4,12,24],RED='#ff5a4d',GREEN='#3fbf5f',KEY='a2m.fringe.vsearch.v1',st={trials:[]},cur=null,starting=false;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&(t.kind==='feature'||t.kind==='conjunction')&&typeof t.n==='number'&&typeof t.ms==='number'&&t.ms>0&&typeof t.present==='boolean'&&typeof t.right==='boolean'})}catch(_){}
+  function el(id){return document.getElementById(id)}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-600)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your rounds (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // least-squares slope of time against the number of items: milliseconds each extra item costs
+  function slope(pts){var n=pts.length;if(n<2)return null;var mx=0,my=0,sxy=0,sxx=0;pts.forEach(function(p){mx+=p[0];my+=p[1]});mx/=n;my/=n;
+    pts.forEach(function(p){sxy+=(p[0]-mx)*(p[1]-my);sxx+=(p[0]-mx)*(p[0]-mx)});return sxx?sxy/sxx:null}
+  // only right answers on rounds where the target was there, as in the original study
+  function summary(trials){function s(k){var t=trials.filter(function(x){return x.kind===k&&x.present&&x.right});return{n:t.length,slope:slope(t.map(function(x){return[x.n,x.ms]}))}}
+    var all=trials.length,wrong=trials.filter(function(x){return!x.right}).length;return{feature:s('feature'),conjunction:s('conjunction'),errors:all?wrong/all:0}}
+  // places for n items on a jittered grid, so nothing overlaps
+  function places(n,w,h){var cols=Math.ceil(Math.sqrt(n*w/h)),rows=Math.ceil(n/cols),cells=[],i;for(i=0;i<cols*rows;i++)cells.push(i);
+    for(i=cells.length-1;i>0;i--){var k=Math.floor(Math.random()*(i+1)),t=cells[i];cells[i]=cells[k];cells[k]=t}
+    return cells.slice(0,n).map(function(c){var cx=(c%cols+.5)/cols,cy=(Math.floor(c/cols)+.5)/rows;return[(cx+(Math.random()-.5)*.4/cols)*w,(cy+(Math.random()-.5)*.4/rows)*h]})}
+  function round(){var kind=Math.random()<.5?'feature':'conjunction',n=SIZES[Math.floor(Math.random()*SIZES.length)],present=Math.random()<.5,F=el('field'),r=F.getBoundingClientRect(),pts=places(n,r.width-30,r.height-30);
+    F.textContent='';pts.forEach(function(p,i){var s=document.createElement('span'),target=present&&i===0,red,ch;
+      // conjunction rounds alternate red O and green X among the distractors (their places are already shuffled), so both kinds are always there
+      if(target){ch='X';red=true}else if(kind==='feature'){ch='X';red=false}else{red=(i-(present?1:0))%2===1;ch=red?'O':'X'}
+      s.textContent=ch;s.style.color=red?RED:GREEN;s.style.left=(p[0]+15)+'px';s.style.top=(p[1]+15)+'px';F.appendChild(s)});
+    cur={kind:kind,n:n,present:present,t0:performance.now()};el('yes').disabled=el('no').disabled=false;el('state').textContent=''}
+  function answer(said){if(!cur)return;var ms=Math.round(performance.now()-cur.t0),right=said===cur.present;
+    st.trials.push({kind:cur.kind,n:cur.n,present:cur.present,right:right,ms:ms,at:Date.now()});save();
+    el('state').textContent=(right?'right':'not quite: there '+(cur.present?'was':'was no')+' red X')+' · '+ms+' ms with '+cur.n+' items';
+    cur=null;el('yes').disabled=el('no').disabled=true;el('field').textContent='';draw();
+    // a short blank pause, then the next round starts by itself
+    setTimeout(function(){if(!cur)round()},700)}
+  el('go').addEventListener('click',function(){if(starting||cur)return;starting=true;el('go').disabled=true;el('go').textContent='running';setTimeout(function(){starting=false;round()},500)});
+  el('yes').addEventListener('click',function(){answer(true)});el('no').addEventListener('click',function(){answer(false)});
+  document.addEventListener('keydown',function(ev){if(!cur||ev.repeat)return;var k=ev.key.toLowerCase();if(k==='j'){ev.preventDefault();answer(true)}else if(k==='f'){ev.preventDefault();answer(false)}});
+  function draw(){var s=summary(st.trials);if(!st.trials.length){el('score').textContent='';return}
+    function line(name,x){return name+': '+(x.n>=6&&x.slope!=null?Math.round(x.slope)+' ms per extra item ('+x.n+' rounds)':'about 6 right "yes" rounds needed ('+x.n+' so far)')}
+    el('score').textContent=line('red among green',s.feature)+'\n'+line('red X among green Xs and red Os',s.conjunction)+'\n'+Math.round(s.errors*100)+'% wrong overall'}
+  draw();
+  // made-up rounds: a flat line gives a slope of 0, rounds costing 25 ms per item give 25, and wrong or "no" rounds are left out
+  function selftest(){var t=[],i;SIZES.forEach(function(n){for(i=0;i<3;i++){t.push({kind:'feature',n:n,present:true,right:true,ms:500});t.push({kind:'conjunction',n:n,present:true,right:true,ms:400+25*n})}});
+    t.push({kind:'conjunction',n:24,present:true,right:false,ms:9999});t.push({kind:'conjunction',n:4,present:false,right:true,ms:9999});
+    var s=summary(t);if(Math.abs(s.feature.slope)>1e-9||Math.abs(s.conjunction.slope-25)>1e-9||s.conjunction.n!==9)return'summary gave '+JSON.stringify(s);
+    var p=places(24,300,200);if(p.length!==24||p.some(function(q){return q[0]<0||q[0]>300||q[1]<0||q[1]>200}))return'places out of the field';return true}
+  window.__vsearch={slope:slope,summary:summary,places:places,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

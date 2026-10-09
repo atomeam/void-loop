@@ -1,5 +1,5 @@
 _archive*/
-node_modules/
+node_modules
 .wrangler/
 *.log
 .void-lock
@@ -11,3 +11,4 @@ domains/inputs/**/raw/
 # real asks people typed: kept on the machine that pulls them, never in this public repo (tools/pull_misses.py, tools/misses.mjs)
 domains/void.misses.md
 domains/void.jobs.json
+dist/

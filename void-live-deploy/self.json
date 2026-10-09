@@ -76,58 +76,127 @@
   {
    "state": "shipped",
    "date": "2026-10-03",
+   "ask": "make my void light",
+   "from": "board later, light look"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-03",
    "ask": "what did you do today",
    "from": "plan item 8, ledger as a skill"
   },
   {
    "state": "shipped",
    "date": "2026-10-03",
-   "ask": "a figure that sits on the chair",
-   "from": "figures-first, use what is already there"
-  }
- ],
- "open": [
-  {
-   "state": "open",
-   "date": "2026-10-03",
-   "ask": "make my void light",
-   "from": "board later, light look"
-  },
-  {
-   "state": "open",
-   "date": "2026-10-03",
    "ask": "dismiss this",
    "from": "figures-first, send it away"
   },
   {
-   "state": "open",
+   "state": "shipped",
+   "date": "2026-10-03",
+   "ask": "a figure that sits on the chair",
+   "from": "figures-first, use what is already there"
+  },
+  {
+   "state": "shipped",
    "date": "2026-10-04",
    "ask": "download the print file",
    "from": "export-to-print, file stays valid offline"
   },
   {
-   "state": "open",
+   "state": "shipped",
    "date": "2026-10-04",
    "ask": "cartoon version of a hard subject",
    "from": "two-part summons, funny not grim"
   },
   {
-   "state": "open",
+   "state": "shipped",
    "date": "2026-10-04",
    "ask": "zoom in on the figure",
    "from": "collector detail, progressive"
   },
   {
-   "state": "open",
+   "state": "shipped",
    "date": "2026-10-04",
    "ask": "what can this figure do",
    "from": "figure stays on brand"
   },
   {
-   "state": "open",
+   "state": "shipped",
    "date": "2026-10-04",
    "ask": "show the countdown",
    "from": "days until a date"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-07",
+   "ask": "bring the clock to the front",
+   "from": "board Next #3, grouped objects / layers"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-07",
+   "ask": "group the clock and the note",
+   "from": "board Next #3, grouping half: drag one and they all move, \"move the group to the top left\", \"make the group bigger\", \"br"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-07",
+   "ask": "label the clock kitchen",
+   "from": "board Later, text annotation / labels: tags that ride with a thing, free labels"
   }
- ]
+ ],
+ "open": [],
+ "games": [
+  "tictactoe",
+  "othello",
+  "mancala",
+  "checkers",
+  "chess",
+  "aggravation",
+  "go",
+  "monopoly",
+  "battleship",
+  "poker",
+  "fireworks",
+  "connect4"
+ ],
+ "minis": [
+  "aggravation",
+  "battleship",
+  "calculator",
+  "checkers",
+  "chess",
+  "clock",
+  "connect4",
+  "countdown",
+  "counter",
+  "eightball",
+  "fireworks",
+  "go",
+  "heart",
+  "list",
+  "mancala",
+  "monopoly",
+  "notepad",
+  "othello",
+  "paper",
+  "pentamote",
+  "piggybank",
+  "poker",
+  "rack",
+  "savings",
+  "stopwatch",
+  "tabletop",
+  "tictactoe",
+  "timer",
+  "tip",
+  "void",
+  "weather"
+ ],
+ "canon": {
+  "version": 1,
+  "motto": null,
+  "voidquest": null
+ }
 }

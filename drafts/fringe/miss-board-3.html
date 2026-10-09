@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · one slip away (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#word{font-size:26px;color:#7cf;letter-spacing:.04em;min-height:1.4em}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>one slip away · draft · not published</h1>
+  <p class="note">A word flashes for a moment; type it as fast as you can and press Enter. Speed brings typos, and this page sorts each one. In a classic study of misspellings, Damerau (1964) found that about 80% were a single slip: one letter added, one left out, one swapped for another, or two neighbours switched. That is why a search box that forgives one slip finds most of what people meant, and why an assistant that does not misses them. This page counts how many of your own slips are single ones, and of which kind. Everything stays in this browser.</p>
+  <div id="word" aria-live="polite"></div>
+  <div class="row"><label for="typed" class="note">what you saw</label><input id="typed" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="flex:1 1 180px" disabled><button id="go" type="button">start</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var WORDS=['necessary','separate','definitely','receive','weather','calendar','tomorrow','beginning','different','restaurant','business','government','environment','embarrass','occasion',
+    'immediately','rhythm','privilege','accommodate','maintenance','conscience','temperature','vacuum','guarantee','millennium','questionnaire','surprise','library','february','pronunciation'];
+  var KEY='a2m.fringe.slips.v1',st={trials:[]},cur=null,timer=null,busy=false;
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(function(t){return t&&typeof t.word==='string'&&typeof t.typed==='string'&&typeof t.kind==='string'})}catch(_){}
+  function el(id){return document.getElementById(id)}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-400)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your trials (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // optimal string alignment distance (Damerau): insert, delete, substitute, and swapping two neighbours each cost 1
+  function dist(a,b){var m=a.length,n=b.length,d=[],i,k;for(i=0;i<=m;i++){d.push([i]);for(k=1;k<=n;k++)d[i][k]=i?0:k}
+    for(i=1;i<=m;i++)for(k=1;k<=n;k++){var c=a[i-1]===b[k-1]?0:1;d[i][k]=Math.min(d[i-1][k]+1,d[i][k-1]+1,d[i-1][k-1]+c);
+      if(i>1&&k>1&&a[i-1]===b[k-2]&&a[i-2]===b[k-1])d[i][k]=Math.min(d[i][k],d[i-2][k-2]+1)}return d[m][n]}
+  // what kind of slip turns the word into what was typed: exact, one of the four single slips, or more than one
+  function kind(word,typed){if(typed===word)return'exact';if(dist(word,typed)!==1)return'more';
+    if(typed.length===word.length+1)return'added';if(typed.length===word.length-1)return'left out';
+    var diff=[];for(var i=0;i<word.length;i++)if(word[i]!==typed[i])diff.push(i);return diff.length===2&&diff[1]===diff[0]+1?'swapped':'wrong letter'}
+  function summary(trials){var errs=trials.filter(function(t){return t.kind!=='exact'}),c={'added':0,'left out':0,'wrong letter':0,'swapped':0,'more':0};
+    errs.forEach(function(t){c[t.kind]=(c[t.kind]||0)+1});return{n:trials.length,errors:errs.length,counts:c,single:errs.length?(errs.length-c.more)/errs.length:null}}
+  function flash(){busy=false;cur={word:WORDS[Math.floor(Math.random()*WORDS.length)],t0:0};el('word').textContent=cur.word;el('typed').value='';el('typed').disabled=false;el('typed').focus();el('go').disabled=true;
+    // the word shows for 700 ms, then the box is all you have: a quick look and quick typing, like real asks
+    timer=setTimeout(function(){el('word').textContent='· · ·';cur.t0=performance.now()},700)}
+  el('go').addEventListener('click',function(){if(busy||cur)return;busy=true;el('state').textContent='';flash()});
+  el('typed').addEventListener('keydown',function(ev){if(ev.key!=='Enter'||!cur)return;ev.preventDefault();clearTimeout(timer);
+    var typed=el('typed').value.trim().toLowerCase();if(!typed)return;var k=kind(cur.word,typed),ms=cur.t0?Math.round(performance.now()-cur.t0):0;
+    st.trials.push({word:cur.word,typed:typed,kind:k,ms:ms,at:Date.now()});save();
+    el('state').textContent=k==='exact'?'right: '+cur.word:'you typed "'+typed+'" for "'+cur.word+'": '+(k==='more'?'more than one slip':'one slip, '+k);
+    cur=null;el('typed').disabled=true;el('go').disabled=false;el('go').textContent='next word';el('go').focus();draw()});
+  function draw(){var s=summary(st.trials);if(!s.n){el('score').textContent='';return}
+    el('score').textContent=s.n+' word'+(s.n>1?'s':'')+' · '+s.errors+' with a slip'
+      +(s.errors?'\nadded '+s.counts['added']+' · left out '+s.counts['left out']+' · wrong letter '+s.counts['wrong letter']+' · swapped '+s.counts['swapped']+' · more than one '+s.counts.more:'')
+      +(s.errors>=10?'\n'+Math.round(s.single*100)+'% of your slips were a single one (Damerau found about 80%)':s.errors?'\nabout 10 slips before comparing with Damerau':'')}
+  draw();
+  // made-up pairs with known answers for each kind of slip
+  function selftest(){var cases=[['receive','receive','exact'],['receive','recieve','swapped'],['receive','receeve','wrong letter'],['receive','recive','left out'],['receive','receivve','added'],['receive','reseeve','more']];
+    for(var i=0;i<cases.length;i++){var k=kind(cases[i][0],cases[i][1]);if(k!==cases[i][2])return cases[i][1]+' gave '+k+', not '+cases[i][2]}
+    if(dist('ca','ac')!==1||dist('kitten','sitting')!==3)return'dist is wrong';
+    var s=summary([{kind:'exact'},{kind:'swapped'},{kind:'more'},{kind:'added'}]);if(s.errors!==3||Math.abs(s.single-2/3)>1e-12)return'summary gave '+JSON.stringify(s);return true}
+  window.__slips={dist:dist,kind:kind,summary:summary,WORDS:WORDS,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

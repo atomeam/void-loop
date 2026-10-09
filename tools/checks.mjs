@@ -8,10 +8,10 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const run = (args) => { const r = spawnSync(process.execPath, args, { cwd: resolve(here, '..'), encoding: 'utf8', timeout: 900000 });
+const run = (args) => { const r = spawnSync(process.execPath, args, { cwd: resolve(here, '..'), encoding: 'utf8', timeout: 1800000 }); // 30 min: the full bench takes about 20 on a slow shared machine
   return { ok: r.status === 0, out: ((r.stdout || '') + (r.stderr || '')).trim().split('\n').filter((l) => !/ExperimentalWarning|trace-warnings/.test(l)) }; };
 const results = [];
-for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.mjs'], ['calendar', 'test_calendar.mjs'], ['glyphs', 'test_glyphs.mjs'], ['review', 'review.test.mjs']]) {
+for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.mjs'], ['calendar', 'test_calendar.mjs'], ['glyphs', 'test_glyphs.mjs'], ['review', 'review.test.mjs'], ['figures', 'figures.test.mjs'], ['motorbody', 'motorbody.test.mjs'], ['incident', 'incident.test.mjs'], ['releasenotes', 'releasenotes.test.mjs'], ['intent', 'intent.test.mjs'], ['revert-target', 'revert-target.test.mjs'], ['status', 'status.test.mjs'], ['growth', 'growth.test.mjs'], ['review-learn', 'review-learn.test.mjs'], ['take', 'take.test.mjs'], ['sorry', 'sorry.test.mjs'], ['voice', 'voice.test.mjs'], ['pr-ready', 'pr-ready.test.mjs'], ['review-api', 'review-api.test.mjs'], ['go', 'go.test.mjs'], ['monopoly', 'monopoly.test.mjs'], ['battleship', 'battleship.test.mjs'], ['poker', 'poker.test.mjs'], ['fireworks', 'fireworks.test.mjs'], ['connect4', 'connect4.test.mjs'], ['explainers', 'explainers.test.mjs'], ['learn', 'learn.test.mjs'], ['learn-draft', 'learn-draft.test.mjs'], ['automations', 'automations.test.mjs'], ['drafts', 'draft-check.mjs']]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
 // Every script parses, and no text file was re-encoded through a Windows code page (a merge did both to main once:
@@ -23,10 +23,18 @@ for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.m
   results.push(['files', !garbled.length && !broken.length, garbled.length || broken.length
     ? [garbled.length && 'garbled text in ' + garbled.join(', '), broken.length && 'does not parse: ' + broken.join(', ')].filter(Boolean).join('; ')
     : files.length + ' files: clean text, every script parses']); }
+// nothing installed is ever tracked: a node_modules symlink from a worktree once got committed, and copying that commit
+// back replaced the real folder with a link to itself
+{ const bad = spawnSync('git', ['ls-files', '--', 'node_modules', 'node_modules/*'], { cwd: resolve(here, '..'), encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
+  results.push(['tracked', !bad.length, bad.length ? 'git tracks ' + bad.slice(0, 3).join(', ') + ': git rm --cached it (a worktree runs its own npm ci, never a link)' : 'no installed files tracked']); }
+// the bench and the deploy serve void-live-deploy/index.html: an edit to void.html that was not copied there is tested stale, silently
+{ const read = (f) => readFileSync(resolve(here, '..', f), 'utf8').replace(/\r\n/g, '\n'), src = read('void.html');
+  const stale = ['void-live-deploy/index.html', 'void-live-deploy/void.html'].filter((f) => read(f) !== src);
+  results.push(['copies', !stale.length, stale.length ? stale.join(' and ') + ' differ from void.html: cp void.html void-live-deploy/index.html && cp void.html void-live-deploy/void.html' : 'void.html and both deploy copies match']); }
 { const r = run([resolve(here, 'bench.mjs'), '--score']); let b = null; try { b = JSON.parse(r.out[r.out.length - 1]); } catch (_) {}
   const best = JSON.parse(readFileSync(resolve(here, 'bench.best.json'), 'utf8'));
   const ok = !!b && b.score >= best.score && b.total >= best.total;
-  results.push(['bench', ok, b ? `${b.score}/${b.total} (floor ${best.score})${b.wrong.length ? ' wrong: ' + b.wrong.join(' | ') : ''}` : r.out.slice(-2).join(' ')]); }
+  results.push(['bench', ok, b ? `${b.score}/${b.total} (floor ${best.score})${b.cached ? ' (nothing it reads changed since the passing run at ' + b.cached + '; not replayed: --fresh forces it)' : ''}${b.wrong.length ? ' wrong: ' + b.wrong.join(' | ') : ''}` : r.out.slice(-2).join(' ')]); }
 { // the board reader must drop anything key-like before it prints (tools/misses.mjs)
   const { redact } = await import('./misses.mjs');
   const cases = [['unlock abcdEFGH12345678zz', null], ['my key is Zx9kQ2mP7vR4tY8wL3nB', null], ['mail sam@example.com', 'mail [email]'],
