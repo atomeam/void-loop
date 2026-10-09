@@ -1608,5 +1608,30 @@
     ],
     "sha256": "865d5201758252cc6fdb6d8228998d3da9ca85df1886036118d90871f51bcb2a",
     "emit": false
+  },
+  {
+    "run": 65,
+    "at": "2026-10-09T20:44:40Z",
+    "family": "miss-board",
+    "draft": "drafts/fringe/miss-board-4.html",
+    "sources": [
+      {
+        "claim": "The probability that the next observation is of a species not yet seen is estimated by the share of species seen exactly once (Good-Turing)",
+        "source": "https://doi.org/10.1093/biomet/40.3-4.237",
+        "confidence": "claim"
+      },
+      {
+        "claim": "The total number of classes in a population, seen or not, can be estimated from the counts of classes seen once and twice (Chao1)",
+        "source": "https://www.jstor.org/stable/4615964",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Applied to a miss board, the share of kinds seen once predicts the share of next week's misses that are new kinds",
+        "source": "drafts/fringe/miss-board-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "37b31932b5ed8013266b8f5cd7b8daef3604955c5b049ca397ab1f9aa81daebb",
+    "emit": false
   }
 ]
