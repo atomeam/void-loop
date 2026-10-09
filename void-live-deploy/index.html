@@ -874,6 +874,8 @@ Object.values(things).forEach((th) => {
       figures3dP.then((m) => m.syncFigures(figs)).catch(() => { figures3dP = null; if (figs.length) say("3D can't show in this browser"); });
     }
 
+    // a figure thrown off the screen in the 3D layer (figures3d.js) is gone from the stage too, like any thrown thing
+    document.addEventListener('void:figure-thrown', (e) => { const id = e && e.detail && e.detail.id; if (id && things[id] && things[id].kind === 'figure') { takeUndoSnapshot(); delete things[id]; save(); render(); } });
     function summonThing(kind, opts = {}) {
       
       if (kind === 'figure') {
@@ -3294,16 +3296,34 @@ return { ok: true, detail: 'timer-reset' };
         el.innerHTML = '<h2>' + esc(j.title || hit.title) + '</h2>'
           + (j.description ? '<div class="sub">' + esc(j.description) + '</div>' : '')
           + (thinMatch(topic, (j.title || hit.title) + ' ' + (j.description || '')) ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">Closest match I found for “' + esc(topic) + '”.</p>' : '')
+          + '<div class="take-slot"></div>'
           + (j.thumbnail && j.thumbnail.source ? '<img alt="" src="' + esc(j.thumbnail.source) + '">' : '')
           + '<p>' + esc(j.extract || '') + '</p>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
         addCopy(el);
+        // Void's own input on top of the summary (skills/take.js): what Void can do about it at once, then its take (/api/answer, mode 'take')
+        import('/skills/take.js').then((T) => {
+          const slot = el.querySelector('.take-slot'); if (!slot) return;
+          const card = { title: j.title || hit.title, description: j.description || '', extract: j.extract || '' }, asks = T.relatedAsks(card);
+          const paint = (take) => { if (vpageEl === el) slot.innerHTML = T.takeHtml(esc, take, asks); };
+          paint('');
+          fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'take', ...card }) })
+            .then((r) => (r.ok ? r.json() : null)).then((o) => { if (o && o.take) paint(o.take); }).catch(() => {});
+        }).catch(() => {});
         // Next #18/#19: two-part summon — the card, plus a base body dressed from this summary, then a behavior script (AI once, cached; fallback without AI).
         try {
-          Promise.all([import('/skills/bodies.js'), import('/skills/scripts.js')]).then(([m, S]) => {
+          Promise.all([import('/skills/bodies.js'), import('/skills/scripts.js'), import('/skills/figures.js')]).then(([m, S, F]) => {
             if (vpageEl !== el) return;
             const card = { title: j.title || hit.title, description: j.description || '', extract: j.extract || '', type: j.type || '' };
+            // the figure is the thing itself (Adam, 2026-10-09): a real cat for a page about cats; a person gets the human body;
+            // anything Void cannot build for real yet brings no stand-in (domains/void.frontier.md #14, the forge, is how it will)
+            const real = F.realFigureFor(card);
+            if (real) { summonThing('figure', real); return; }
             const dressed = m.dressFromCard(card);
+            // a thing Void cannot make for real yet goes on the miss board as a figure to learn ('figure' misses), so the
+            // most-wanted things get built first and Void keeps getting better at making them (frontier #14)
+            if (dressed.body === 'animal' || dressed.body === 'object' || /\b(?:game|toy|instrument|tool|vehicle|device|machine|plant|fruit|vegetable|dish|food|building|ship|aircraft|car|weapon|furniture)\b/i.test(card.description)) reportMiss('make a real ' + card.title.replace(/\s*\(.*\)$/, ''), 'figure');
+            if (dressed.body !== 'person') return;
             dressed.script = S.fallbackScript(dressed.body, card.title); // acts at once; /api/figurescript may upgrade later
             const fig = summonThing('figure', dressed);
             if (!fig) return;

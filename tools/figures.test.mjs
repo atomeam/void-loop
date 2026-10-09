@@ -129,3 +129,11 @@ test('a person from a card is the same seeded adult body, alive and whole; zombi
   assert.equal(JSON.stringify(ZOMBIE(28, 7)), JSON.stringify(z), 'a zombie seed still rebuilds the same zombie');
   const skins = new Set(); for (let s = 0; s < 60; s++) skins.add(ZOMBIE(28, s, true).rig.skin); assert.ok(skins.size >= 5, 'a range of real skin tones');
 });
+
+test('a figure in the 3D layer is thrown by a flick or by letting go off the screen; a slow drop sets it down', async () => {
+  const { tossVerdict, TOSS_SPEED } = await import('../void-live-deploy/skills/figures3d.js');
+  assert.equal(tossVerdict({ x: 400, y: 300, vx: 1.2, vy: 0 }, 1280, 800).thrown, true);
+  assert.equal(tossVerdict({ x: 400, y: 300, vx: 0.2, vy: 0.1 }, 1280, 800).thrown, false);
+  assert.equal(tossVerdict({ x: -10, y: 300, vx: 0, vy: 0 }, 1280, 800).thrown, true);
+  assert.equal(TOSS_SPEED, 0.9);
+});
