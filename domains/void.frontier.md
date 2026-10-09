@@ -75,7 +75,7 @@ Each item is something no other site does, built on what Void already has. Work 
 - **Why it is special:** a sentence becomes a build order, not a search.
 - **First piece:** a planner (the answer engine with a fixed list of the skills it may call and their argument shapes, Clef for the yes/no calls) that turns three outcome asks into a list of existing asks, run in order and grouped; the bench gets those three asks.
 - **Done when:** three outcome-shaped asks each bring a sensible group of summons, all from existing skills, with nothing outward-facing done without a yes.
-- **claim:**
+- **claim:** claude 2026-10-09: first piece shipped. `skills/intent.js` (tests: `tools/intent.test.mjs`, browser check in `tools/test_void.mjs`): an outcome with a deadline ("I need to … by Friday", "in 2 weeks", "the 20th", "end of the month"; "and tell Sam") runs four existing asks in order (countdown, `make a list with` dated steps worked back from the day, the calendar, a sticky draft to the person, marked not sent) and groups what they put on the stage. No model: the planner is a fixed list of asks and step templates by kind of outcome (ship, write, talk, exam, move, event). **Next step:** outcomes it can't template (no deadline, or an unusual kind) go to the answer engine with the fixed list of asks it may call and their shapes, Clef for the yes/no calls; and a goal said as a noun ("the product page launch on Friday").
 
 ## 11. Bring someone into your Void
 - **What:** plan item 10, the live half. "invite someone" makes a link; whoever opens it appears in your Void as a faint presence, and both of you can summon, move and edit the same things live (a Durable Object per shared Void, WebSockets). Leaving ends it; your own Void stays yours.
