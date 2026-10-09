@@ -87,13 +87,15 @@ export function keepLive(api, el, { name = 'card', every = 15 * 60e3, refresh })
     else if (!s.busy && !s.paused) timer = setTimeout(tick, SLICE); // hidden or offline: the events below wake it, this is the fallback
   }
   const wake = () => { if (!s.stopped) tick(); };
-  if (typeof document !== 'undefined') { document.addEventListener('visibilitychange', wake); addEventListener('online', wake); addEventListener('offline', wake); }
+  // the same guard adds and removes them, so stop() always takes off exactly what was put on
+  const onWorld = (on) => { if (typeof window === 'undefined') return; const f = on ? 'addEventListener' : 'removeEventListener';
+    window[f]('online', wake); window[f]('offline', wake); if (typeof document !== 'undefined') document[f]('visibilitychange', wake); };
+  onWorld(true);
   const handle = {
     now() { if (!s.stopped && !s.busy) { clearTimeout(timer); timer = 0; return run(); } return Promise.resolve(); },
     pause() { s.paused = true; clearTimeout(timer); timer = 0; stamp(); },
     resume() { s.paused = false; stamp(); tick(); },
-    stop() { s.stopped = true; clearTimeout(timer); timer = 0;
-      if (typeof document !== 'undefined') { document.removeEventListener('visibilitychange', wake); removeEventListener('online', wake); removeEventListener('offline', wake); } },
+    stop() { s.stopped = true; clearTimeout(timer); timer = 0; onWorld(false); },
     stamp,
     state() { const e = env(); return { name, every: s.every, lastAt: s.lastAt, failures: s.failures, paused: s.paused, busy: s.busy, updates: s.updates, stopped: s.stopped, next: plan(s, e) }; }
   };
