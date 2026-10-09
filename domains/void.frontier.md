@@ -2,7 +2,7 @@
 
 Written 2026-10-09 (Adam: "we should not sit still"). A run that finds no ask from Void, no real miss and no open inbox row takes the top unclaimed item here instead of stopping. "No work found" is not an outcome any more.
 
-**Build order (2026-10-09):** 1 (in progress) → 10 → 3 → 11 → 4 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8. Intent summoning and the visible growth/will come first: they are what makes a stranger stop and ask "what is this".
+**Build order (2026-10-09):** 1 (in progress) → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8. Intent summoning and the visible growth/will come first: they are what makes a stranger stop and ask "what is this".
 
 Each item is something no other site does, built on what Void already has. Work them in order; claim one by writing your slug and the date on its **claim** line, ship the smallest piece that changes what a visitor sees, log it with `node tools/grow.mjs`, and leave the next step written on the item. Several runs can work one item: the claim names the piece, not the whole thing.
 
@@ -97,11 +97,28 @@ Each item is something no other site does, built on what Void already has. Work 
 - **Done when:** a routine can be saved, run, offered, and taken by a second visitor, with the author's name on it.
 - **claim:**
 
-## Not added (2026-10-09 idea list), and why
-- **Your own Void persists:** built (plan item 6: passkeys; the stage is kept and syncs across devices). What is left is #4 here.
-- **Ambient voice:** built (the mic and spoken answers in void.html). A voice of Void's own is a Sculpt Layer question for Adam (`domains/void.sculpt.md`).
-- **3D forge from text:** the print file is built (`print-file.js`, `print-download.js`); bodies are made in the browser by rule, so no outside text-to-3D service. Better summons come from figures work.
-- **Make it real (print on demand, NFT, a Stripe link):** Adam's call. STANDING.md: Gumroad is how Void gets paid, prices are manual, and spends wait for a yes.
+## 14. The forge: type or sketch a thing, hold it, print it
+- **What:** type or sketch an object and Void makes a 3D model of it you can spin and inspect up close (the inspect the figures already have, `skills/figures3d.js` zoom), then "print it" downloads a file sized for a home printer. Use whatever makes the best model: the in-browser distance-field bodies (`skills/sdfmesh.js`), a text-to-3D or image-to-3D model, or both. The stage's printable 3MF (`skills/print-file.js`, `print-download.js`) is the start of the print half; add STL.
+- **Why it is special:** the on-ramp to the living-toy line: what you imagine becomes something you hold.
+- **First piece:** "make me a <thing>" for things no figure covers yet, as a spinning model with a "print it" STL.
+- **Done when:** ten things never built before come out recognisable, inspectable and printable.
+- **claim:**
+
+## 15. Make it real
+- **What:** any summoned object gets "make it real": a 3D print ordered from a print-on-demand service, a sticker or poster, or minted as an NFT, paid in one step (Gumroad is wired today, `lib/gumroad.js`; a Stripe link is the other option).
+- **Why it is special:** Void turns into a storefront without ever looking like one.
+- **First piece:** "order this as a poster" for any card or figure, through one print-on-demand API, with the price shown before paying.
+- **Done when:** a visitor can turn a summon into a real thing that arrives at their door, and the sale lands in the ledger.
+- **claim:**
+
+## 16. Void's own voice, always there
+- **What:** hold a key and speak; Void answers in its own low voice and summons as it talks, with nothing on screen until something is asked. The mic and spoken answers exist in void.html (`speechSynthesis`); this gives Void a voice of its own (a streaming text-to-speech worker) and lets it talk while it builds.
+- **First piece:** push-to-talk on a held key, and a streaming voice for answers, chosen to match Void's sculpt (`domains/void.sculpt.md`).
+- **Done when:** a whole conversation with Void, summons included, works by voice alone.
+- **claim:**
+
+## Already built from the 2026-10-09 idea list
+- **Your own Void persists:** the stage is kept and syncs across devices with a passkey (plan item 6). What it does while you are away is #4.
 
 ## How a run uses this
 1. Void's own asks first (`node tools/reflect.mjs`), then real misses, then an inbox row, then the top unfinished Next item, as AGENTS.md says.
