@@ -416,7 +416,8 @@ try {
   let t = await fresh();
   check('surface is empty on arrival', (await t.p.$$eval('#stage > *', (d) => d.length)) === 0 && !(await t.page()));
   check('noscript text stays hidden', !(await t.p.evaluate(() => document.body.innerText)).includes('It needs JavaScript'));
-  await t.ask('make a clock'); check('make a clock', (await t.state()).some((x) => x.kind === 'clock'));
+  // the first ask of a fresh page: wait for the clock to land rather than 450 ms (on a loaded runner it once took longer and the whole run went red)
+  await t.ask('make a clock'); check('make a clock', await until(async () => (await t.state()).some((x) => x.kind === 'clock'), 6000));
   await t.ask('make a 5 minute timer'); await t.ask('make a 2 minute timer');
   check('second timer adds (007)', (await t.state()).filter((x) => x.kind === 'timer').length === 2);
   await t.ask('add a sticky that says a'); await t.ask('another note that says b');
