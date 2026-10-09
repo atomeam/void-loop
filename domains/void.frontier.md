@@ -1,10 +1,26 @@
 # The frontier: what keeps Void moving
 
-Written 2026-10-09 (Adam: "we should not sit still"). A run that finds no ask from Void, no real miss and no open inbox row takes the top unclaimed item here instead of stopping. "No work found" is not an outcome any more.
+Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as a **candidate capability map** (owner decisions, 2026-10-09). A run that finds no ask from Void, no real miss and no open inbox row takes the top unclaimed step of the build order below instead of stopping.
 
-**Build order (2026-10-09):** 1 (in progress) → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8. Intent summoning and the visible growth/will come first: they are what makes a stranger stop and ask "what is this".
+**The current milestone outranks everything in this file:** beautiful, behaving 3D miniatures on the shared engine (`docs/miniatures.md`), auto-merge and deploy when the existing required tests pass, no new human approval gates.
 
-Each item is something no other site does, built on what Void already has. Work them in order; claim one by writing your slug and the date on its **claim** line, ship the smallest piece that changes what a visitor sees, log it with `node tools/grow.mjs`, and leave the next step written on the item. Several runs can work one item: the claim names the piece, not the whole thing.
+**A tool in an agent's session is not a capability on a-to-mind.com.** The connectors listed below are attached to Claude sessions, not to Void's runtime; a visitor's browser reaches none of them. Presence of a tool never marks a feature live. Every connector-backed item carries the execution check (below) and starts at `status: discovered`.
+
+## Build order (owner, 2026-10-09)
+
+1. **Living miniature reference implementation**, and **fix verify-main's revert so it reverts the commit that actually broke the failing check** (on 2026-10-09 it reverted #217 for a rack check #215 broke). Both vendor-free; do them now, side by side: every later auto-merge is only safe if the revert targets the right commit.
+   - **claim (revert):** claude 2026-10-09: shipped. `tools/revert-target.mjs` (tests: `tools/revert-target.test.mjs`): each red verify-main names its failed checks as annotations; the next red run walks main's first parents to where each check first went red and reverts that commit, or reports when the record is unclear (unverified commits in between, an old run with no names, checks that broke at different commits). On today's history it reports instead of reverting #217. **Limits:** runs before this change have no recorded names, so the first red run after it reports rather than reverts; at most 9 names fit per run (more = unclear). **Next step:** none needed unless a report shows a pattern worth automating.
+   - **claim (miniature):** open.
+2. **A small execution record for actions:** owner, state, result, error. Every action Void takes (or stubs) writes one; nothing is "done" without its record.
+3. **One bounded business workflow:** a customer request becomes an editable proposal, shown on screen, proven with the owner's own details. The send step stays stubbed behind the confirm line.
+4. **One explicitly requested standing watch:** scheduling, persistence, evidence, notification. Only what the person asked to be watched.
+5. **One playable toy on the shared scene:** generated appearance kept separate from tested behaviour and authoritative state. No Unity, multiplayer or voice until the single-player toy works.
+
+After these, the numbered items below in their earlier order: 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
+
+**Infrastructure (owner):** reuse Cloudflare D1, KV and Vectorize. No new vendor (no Qdrant, no Inngest) until a working feature demonstrates a need this stack can't meet. Memory is an explicit "remember this" only. Learning across visitors means shared, tested skills, never pooled private content. Void stays empty until asked; no silent behaviour tracking.
+
+Claim an item by writing your slug and the date on its **claim** line, ship the smallest piece that changes what a visitor sees, log it with `node tools/grow.mjs`, and leave the next step written on the item. Several runs can work one item: the claim names the piece, not the whole thing.
 
 ## 1. A reviewer that gets better every week, in public
 - **What:** Void's review is the main one; CodeRabbit and any other reviewer are extras (Adam, 2026-10-09). Every finding an extra makes that Void's review missed becomes a lesson. A tool (`tools/review-learn.mjs`) reads the extras' findings on merged PRs, asks whether `lib/code-review.js` flagged the same line, and writes each miss as a candidate case. A run turns a real miss into a rule plus a case in `tools/review.test.mjs`; a false alarm from the extra is noted and dropped.
@@ -30,7 +46,7 @@ Each item is something no other site does, built on what Void already has. Work 
 
 ## 4. A world that keeps living while you are away
 - **What:** your stage remembers time. When you come back, what you summoned has lived on by its nature and conditions (`NATURES`, `CONDITIONS`, `climateAt` in `skills/scripts.js`): the cloud rained, the flower under it grew, the ice melted, the zombie wandered off to find a brain. Elapsed time is simulated from each thing's seed, so it is the same story on every device, with a one-line "while you were away" note.
-- **Why it is special:** summons have lives between visits; no other site's objects do.
+- **Why it is special:** summons have lives between visits.
 - **First piece:** a pure `advance(things, ms)` in `skills/scripts.js` with tests, run once on load against the last-saved time.
 - **Done when:** three natures change visibly across a reload an hour apart, deterministically, with the note.
 - **claim:**
@@ -85,14 +101,14 @@ Each item is something no other site does, built on what Void already has. Work 
 - **claim:**
 
 ## 12. Paste anything, get a better version
-- **What:** paste a URL or drop a file and Void rebuilds it as a living thing in the void: a PDF becomes a card you can ask questions of, a site becomes a dissected blueprint (its sections, its claims, what it gets wrong, sourced), better than the source it draws on. (Not `tools/void_lens.py`, the disk scanner; pick another name.)
+- **What:** paste a URL or drop a file and Void rebuilds it as a living thing in the void: a PDF becomes a card you can ask questions of, a site becomes a dissected blueprint (its sections, its claims, what it gets wrong, sourced). (Not `tools/void_lens.py`, the disk scanner; pick another name.)
 - **First piece:** a dropped PDF becomes a card that answers questions about it, in the browser, nothing uploaded.
 - **Done when:** a PDF and a public URL each become a card that answers three questions about them with the line it came from.
 - **claim:**
 
 ## 13. Skills that spread between Voids
 - **What:** when a visitor teaches their Void something (a named routine of existing asks: "my morning: weather here, my calendar, a 25-minute timer"), they can offer it to everyone; offered routines appear for other visitors with attribution, opt-in. Only routines made of existing asks spread, never code, so nothing anyone shares can do more than Void already does.
-- **Why it is special:** what one Void learns, every Void gets (the plan's promise), with a flywheel a copy can't have.
+- **Why it is special:** what one Void learns, every Void gets (the plan's promise), as shared tested routines, never pooled private content.
 - **First piece:** "call this my morning" saves the last few asks as a routine in this browser; "my morning" runs it.
 - **Done when:** a routine can be saved, run, offered, and taken by a second visitor, with the author's name on it.
 - **claim:**
@@ -118,11 +134,45 @@ Each item is something no other site does, built on what Void already has. Work 
 - **Done when:** a whole conversation with Void, summons included, works by voice alone.
 - **claim:**
 
+## Candidate capability map (2026-10-09)
+
+A map of what the connectors in agents' sessions could become, split by who can act on it today. Nothing here is live. **Execution check** on every connector-backed item: runtime access (can a-to-mind.com reach it at all), authentication (whose account), isolation (whose data it touches, per visitor), action boundary (what it may do without a yes on the confirm line), cost, persistence (where state lives), evidence (what proves it works), status. Status values: `discovered` → `proved` (works for the owner, with evidence) → `live` (a visitor can use it).
+
+### A. Agents can use now (in their own sessions, nothing reaches a visitor)
+- **Void Ops (the loop's own health).** Cloudflare and Vercel connectors read deploys, logs and Workers state; Void's own pieces (the void-review gate, verify-main with auto-revert, the watchdog) do the rest. First piece: build order step 1 (the revert finds the breaking commit).
+  - runtime access: agents only · authentication: the owner's connected accounts · isolation: repo and owner infra only · action boundary: read-only; changes go through PRs · cost: none new · persistence: the repo, workflow logs · evidence: a red check reverts the commit that broke it, shown in a test · status: discovered
+- **Void Eyes for the Forethinkers.** Agents gather signals with Tavily, Exa or Parallel and commit them as repo data, fringe-ledger style (each with its source and a confidence). Nothing reaches a visitor's browser from a connector.
+  - runtime access: agents only · authentication: the owner's connected accounts · isolation: public sources only · action boundary: read-only · cost: the connectors' own plans · persistence: committed data files · evidence: a track card cites committed signals with dates · status: discovered
+
+### B. Needs the owner (an account, a key and a spending cap) — nothing needed yet
+None of these is needed this week. Each would run on Void's server with its own key, and anything outward-facing goes through the confirm line, on the visitor's own accounts when it acts for a visitor.
+- **Run my company** (invoices, leads, proposals, CRM: Zapier, ActiveCampaign, Apollo, CRMs). Build order step 3 proves the request → proposal half with the owner's details and no connector; the send step stays stubbed.
+  - runtime access: none today · authentication: the visitor's own accounts (OAuth), never ours · isolation: per visitor · action boundary: draft only; every send needs a yes · cost: per connector, owner sets the cap · persistence: D1 · evidence: an editable proposal from a real request, send stubbed · status: discovered
+- **Void Press** (SEO briefs, social scheduling, design variants: SearchFit, Postiz, Canva, Adobe).
+  - runtime access: none today · authentication: the visitor's accounts · isolation: per visitor · action boundary: drafts only; publishing needs a yes · cost: per connector · persistence: D1 · evidence: none yet · status: discovered
+- **Void Voice and Reach** (calls, texts, email, meetings: Twilio, Zoom).
+  - runtime access: none today · authentication: an owner account with a number · isolation: per call, transcript to the requester only · action boundary: every call or message needs a yes · cost: per minute or message, owner cap · persistence: transcripts in D1 · evidence: none yet · status: discovered
+- **Standing watches on outside data** (Bright Data, Nimble, market data). Build order step 4 starts with a watch on free public sources Void already reads.
+  - runtime access: none today · authentication: owner account · isolation: per visitor, only what they asked to watch · action boundary: read-only; notification only to the person who asked · cost: per request, owner cap · persistence: D1 · evidence: none yet · status: discovered
+- **Void Money and Deals** (cap tables, market data: Carta, LSEG, finance packs).
+  - runtime access: none today · authentication: the visitor's accounts · isolation: per visitor · action boundary: read-only · cost: per connector · persistence: none until asked · evidence: none yet · status: discovered
+- **Forge pipeline beyond the browser** (Unity builds, Figma UI, video): only after build order step 5's single-player toy works on the shared scene.
+  - runtime access: none today · authentication: owner accounts · isolation: per toy · action boundary: build only · cost: per build · persistence: R2 · evidence: none yet · status: discovered
+- **Vendor memory and durable flows** (Qdrant, Inngest, model training): not until a working feature shows D1, KV or Vectorize can't do it.
+  - status: discovered (deferred by owner decision)
+
+### C. Void can do offline (no connector, shipped like any skill)
+- **Builder:** "summon me a website" as a static page Void writes and lets you download, with a card that explains how it is built.
+- **Learn:** study cards, quizzes and a study plan as local skills.
+- **Life:** a CV tailored to a pasted job ad, interview questions, offer comparison, all on the page.
+- **Workshop:** import a Linear, Notion or Trello export file the visitor gives and rebuild it as a board in their Void; nothing connects live.
+- **Brain on Cloudflare:** "remember this" stores one thing the person chose, in D1 behind their passkey, and "forget it" removes it.
+
 ## Already built from the 2026-10-09 idea list
 - **Your own Void persists:** the stage is kept and syncs across devices with a passkey (plan item 6). What it does while you are away is #4.
 
 ## How a run uses this
 1. Void's own asks first (`node tools/reflect.mjs`), then real misses, then an inbox row, then the top unfinished Next item, as AGENTS.md says.
-2. If none of those is actionable: the first item in the build order (top of this file) whose claim is empty or older than a day.
+2. If none of those is actionable: the first step of the build order (top of this file) not yet done, then the first numbered item whose claim is empty or older than a day. Nothing here outranks the current milestone.
 3. Ship the smallest visible piece, `node tools/grow.mjs`, write the next step on the item, push, label, move on.
-4. When an item is done, mark it done here with the commit, and add a new one at the bottom. The list never runs out: anyone who sees something only Void could do adds it.
+4. When an item is done, mark it done here with the commit, and add a new one at the bottom. The list never runs out: anyone who sees something worth building adds it.
