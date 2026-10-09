@@ -22,10 +22,14 @@ const reply = (to) => ({ id: 900 + to, in_reply_to_id: to, user: { login: 'atome
 ok(R().state === 'merge', 'green CI, clean Void review, quiet CodeRabbit: merge');
 ok(R({ checks: [run('test-and-deploy'), run('void-review', 'failure')] }).state === 'stop', "Void's review found a bug: stop");
 ok(R({ checks: [run('test-and-deploy'), run('void-review', null, 'in_progress')] }).state === 'wait', "Void's review still running: wait");
-ok(R({ checks: [run('test-and-deploy', null, 'in_progress'), run('void-review')] }).state === 'wait', 'suite still running: wait');
+ok(R({ checks: [run('test-and-deploy', null, 'in_progress'), run('void-review')] }).state === 'merge', 'suite still running: merge, no wait (it runs again on main)');
+ok(R({ checks: [run('void-review')] }).state === 'merge', 'suite not started yet: merge, no wait');
+ok(R({ checks: [run('test-and-deploy'), run('void-review'), run('bench', null, 'in_progress')] }).state === 'merge', 'bench still running: merge, no wait');
+ok(R({ checks: [] }).state === 'wait', 'no check reported yet: wait for Void\'s review');
 ok(R({ checks: [run('test-and-deploy', 'failure'), run('void-review')] }).state === 'stop', 'suite failed: stop');
 ok(R({ checks: [run('test-and-deploy'), run('void-review'), run('bench', 'failure')] }).state === 'stop', 'bench failed: stop');
 ok(R({ checks: [run('test-and-deploy')] }).state === 'merge', 'a PR from before the void-review check: the suite decides');
+ok(R({ checks: [run('test-and-deploy', null, 'in_progress')] }).state === 'wait', 'no void-review check and the suite still running: wait');
 ok(R({ checks: [run('test-and-deploy', 'failure', 'completed', 1), run('test-and-deploy', 'success', 'completed', 2), run('void-review')] }).state === 'merge', 'the newest run counts');
 // CodeRabbit
 // CodeRabbit is never waited on: still reviewing, asked and not posted, or rate-limited all merge on green

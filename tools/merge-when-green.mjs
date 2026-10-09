@@ -1,5 +1,5 @@
-// Merge a PR once it is ready (tools/pr-ready.mjs: test-and-deploy and bench pass on its current head, Void's review check
-// found no bugs or risks, no CodeRabbit finding open). Most PRs no longer need this: label them "automerge" (or run
+// Merge a PR once it is ready (tools/pr-ready.mjs: Void's review check found no bugs or risks on its current head, nothing
+// that finished failed, no CodeRabbit finding open; the suite runs on main after the deploy). Most PRs no longer need this: label them "automerge" (or run
 // `node tools/automerge.mjs <pr> --label`) and .github/workflows/automerge.yml merges them on GitHub, with no session waiting.
 // This is the same check polled from a session, for when you want to see the merge happen. If the head moves (a new push),
 // it follows the new head; a failed check or CodeRabbit finding stops it (exit 1 / exit 3); if the PR closes it stops.
@@ -28,7 +28,7 @@ while (Date.now() < end) {
   if (r.state === 'merge') {
     if (r.draft) execFileSync('gh', ['api', '-X', 'POST', `repos/${repo}/pulls/${pr}/ccr/ready_for_review`], { encoding: 'utf8' });
     const m = gh('-X', 'PUT', `repos/${repo}/pulls/${pr}/merge`, '-f', 'merge_method=merge', '-f', `sha=${r.sha}`);
-    console.log(m.merged ? `merged #${pr} at ${r.sha.slice(0, 7)} (CI green, Void's review clean)` : `merge refused: ${m.message}`);
+    console.log(m.merged ? `merged #${pr} at ${r.sha.slice(0, 7)} (Void's review clean)` : `merge refused: ${m.message}`);
     process.exit(m.merged ? 0 : 1);
   }
   await wait(30e3);
