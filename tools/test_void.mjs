@@ -521,6 +521,30 @@ try {
       /grouped/.test(said) && tied && carried && cornered && bigger && front && loose && (await G.state()).length === 3 && !G.errors.length,
       JSON.stringify({ said, tied, carried, cornered, bigger, front, loose, order, ids, e: G.errors }));
     await G.ctx.close(); }
+  // Summon by intent (frontier #10, skills/intent.js): an outcome with a deadline runs asks Void already answers (countdown,
+  // dated checklist, calendar day, a draft to the person named) and groups what they put on the stage. Nothing is sent.
+  { const I = await fresh(); const net = [];
+    I.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer|approval)$/.test(u)) net.push(u.replace(/^.*\/\/[^/]+/, '')); });
+    await I.ask('I need to ship the product page by Friday and tell Sam', 2500);
+    const said = await I.whisper();
+    const st = await I.state();
+    const kinds = st.map((x) => x.kind).sort();
+    const groups = new Set(st.map((x) => x.group));
+    const list = st.find((x) => x.kind === 'list'), draft = st.find((x) => x.kind === 'sticky');
+    const agenda = await I.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').map((e) => e.title));
+    const cd = st.find((x) => x.kind === 'countdown');
+    const box = await I.p.$eval('[data-id="' + cd.id + '"]', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 12, y: b.top + 12 }; });
+    await I.p.mouse.move(box.x, box.y); await I.p.mouse.down(); await I.p.mouse.move(box.x + 50, box.y + 30, { steps: 6 }); await I.p.mouse.up(); await I.p.waitForTimeout(200);
+    const moved = (await I.state()).find((x) => x.kind === 'list');
+    const planNet = net.slice(); // read now: the ask below has no day, so it goes on to the answer engine as before
+    await I.ask('I need to finish my essay', 600); // no day: not a plan
+    const after = (await I.state()).length;
+    check('intent: "I need to ship the product page by Friday and tell Sam" brings a countdown, a dated checklist ending on the day, the day on the calendar and a draft to Sam, as one group (drag one, all move); nothing sent, no model, no miss; an outcome with no day is not a plan',
+      /planned "ship the product page"/.test(said) && /nothing sent/.test(said) && ['countdown', 'list', 'sticky'].every((k) => kinds.includes(k)) && groups.size === 1 && !groups.has(undefined)
+      && list.items.length === 5 && /^ship the product page \(fri \d+\)$/.test(list.items[4].text) && /^draft to Sam \(not sent\)/.test(draft.text) && agenda.some((t) => /ship the product page/i.test(t))
+      && moved.x - list.x === 50 && moved.y - list.y === 30 && after === st.length && !planNet.length && !I.errors.length,
+      JSON.stringify({ said, kinds, groups: [...groups], items: list && list.items.map((i) => i.text), draft: draft && draft.text, agenda, planNet, e: I.errors }));
+    await I.ctx.close(); }
   // Labels and arrows (skills/label.js, board "Later": text annotation / labels): "label the clock kitchen" tags it, an arrow
   // drawn by label names joins two things and follows a drag, a free label can be an arrow's end, "undo" and reload behave.
   { const L = await fresh();

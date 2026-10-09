@@ -1508,5 +1508,30 @@
     ],
     "sha256": "9018de125e61bcf959c79b2fc6e359373839883ce9b7a706341f6d194aba664e",
     "emit": false
+  },
+  {
+    "run": 61,
+    "at": "2026-10-09T15:47:05Z",
+    "family": "non-lexical-intent",
+    "draft": "drafts/fringe/non-lexical-intent-4.html",
+    "sources": [
+      {
+        "claim": "People read goals and intentions into simple geometric shapes moving on a screen",
+        "source": "https://doi.org/10.2307/1416950",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Detecting a chase among moving dots falls steeply as the chaser's heading is allowed to wander further off the direct line (chasing subtlety), approaching chance near 90 degrees",
+        "source": "https://doi.org/10.1016/j.cogpsych.2008.12.002",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own d' for spotting a chase drops with chasing subtlety in the same way, measured on this page",
+        "source": "drafts/fringe/non-lexical-intent-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "fb23dc7bf1a29876658668bb5d22eefb3072b1bbf108493d9272487070741740",
+    "emit": false
   }
 ]

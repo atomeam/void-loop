@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · is something chasing (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+canvas{width:100%;aspect-ratio:4/3;background:#0b0b0e;border:1px solid rgba(255,255,255,.12);border-radius:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>is something chasing · draft · not published</h1>
+  <p class="note">Ten dots drift for four seconds. In about half the rounds one dot is chasing another; in the rest none is. After each round say which it was. The chaser does not always head straight at its target: it may wander up to some angle off the direct line (the "chasing subtlety"). Gao, Newman and Scholl (2009) found people spot a chase easily when the chaser heads straight at its target and barely above chance once it can wander 90° off; Heider and Simmel (1944) showed people read intent into plain moving shapes. This page counts how often you are right at each angle. It is a hypothesis about your own eyes, nothing more. Everything stays in this browser.</p>
+  <canvas id="c" width="480" height="360" aria-label="moving dots"></canvas>
+  <div class="row"><button id="go" type="button">play a round</button><button id="yes" type="button" disabled>a chase</button><button id="no" type="button" disabled>no chase</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.chasing.v1',W=480,H=360,N=10,STEPS=240,SPEED=1.6,ANGLES=[0,30,60,90],st={trials:[]},round=null;
+  function el(id){return document.getElementById(id)}
+  function ok(t){return t&&ANGLES.indexOf(t.angle)>=0&&typeof t.chase==='boolean'&&typeof t.said==='boolean'}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.trials))st.trials=j.trials.filter(ok)}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({trials:st.trials.slice(-400)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your rounds (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  // a seeded generator, so a round can be replayed and checked
+  function rng(seed){var a=seed>>>0;return function(){a=(a+0x6d2b79f5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+  // One round's motion. Every dot drifts with a heading that turns a little each step and bounces off the walls.
+  // On a chase round dot 0 (the chaser) heads at dot 1 plus a random offset of up to +-angle degrees each step.
+  function world(chase,angle,r){
+    var d=[];for(var i=0;i<N;i++)d.push({x:20+r()*(W-40),y:20+r()*(H-40),h:r()*Math.PI*2});
+    if(chase){var dx=d[1].x-d[0].x,dy=d[1].y-d[0].y;if(Math.hypot(dx,dy)<160){d[0].x=(d[1].x+W/2)%W;d[0].y=(d[1].y+H/2)%H}}
+    return{d:d,chase:chase,angle:angle,r:r};
+  }
+  function step(w){
+    var d=w.d,r=w.r;
+    for(var i=0;i<N;i++){
+      var p=d[i];
+      if(w.chase&&i===0){var off=(r()*2-1)*w.angle*Math.PI/180;p.h=Math.atan2(d[1].y-p.y,d[1].x-p.x)+off}
+      else p.h+=(r()*2-1)*0.35;
+      p.x+=Math.cos(p.h)*SPEED;p.y+=Math.sin(p.h)*SPEED;
+      if(p.x<6||p.x>W-6){p.h=Math.PI-p.h;p.x=Math.max(6,Math.min(W-6,p.x))}
+      if(p.y<6||p.y>H-6){p.h=-p.h;p.y=Math.max(6,Math.min(H-6,p.y))}
+    }
+  }
+  function gap(w){return Math.hypot(w.d[0].x-w.d[1].x,w.d[0].y-w.d[1].y)}
+  // hits, false alarms and d' per angle; the log-linear correction keeps d' finite at 0 or 100% (Hautus 1995)
+  function z(p){var a=[2.50662823884,-18.61500062529,41.39119773534,-25.44106049637],b=[-8.4735109309,23.08336743743,-21.06224101826,3.13082909833],c=[0.3374754822726147,0.9761690190917186,0.1607979714918209,0.0276438810333863,0.0038405729373609,0.0003951896511919,0.0000321767881768,0.0000002888167364,0.0000003960315187],y=p-0.5,x,r;
+    if(Math.abs(y)<0.42){r=y*y;return y*(((a[3]*r+a[2])*r+a[1])*r+a[0])/((((b[3]*r+b[2])*r+b[1])*r+b[0])*r+1)}
+    r=p;if(y>0)r=1-p;r=Math.log(-Math.log(r));x=c[0]+r*(c[1]+r*(c[2]+r*(c[3]+r*(c[4]+r*(c[5]+r*(c[6]+r*(c[7]+r*c[8])))))));return y<0?-x:x}
+  function summary(trials){var out={};ANGLES.forEach(function(a){var s=trials.filter(function(t){return t.angle===a}),ch=s.filter(function(t){return t.chase}),no=s.filter(function(t){return !t.chase}),h=ch.filter(function(t){return t.said}).length,f=no.filter(function(t){return t.said}).length;
+    out[a]={n:s.length,hit:ch.length?h/ch.length:null,fa:no.length?f/no.length:null,dprime:ch.length&&no.length?z((h+0.5)/(ch.length+1))-z((f+0.5)/(no.length+1)):null}});return out}
+  var ctx=el('c').getContext('2d');
+  function draw(w){ctx.clearRect(0,0,W,H);ctx.fillStyle='#9ec8ff';for(var i=0;i<N;i++){ctx.beginPath();ctx.arc(w.d[i].x,w.d[i].y,6,0,Math.PI*2);ctx.fill()}}
+  function buttons(answering){el('go').disabled=answering||!!(round&&round.playing);el('yes').disabled=!answering;el('no').disabled=!answering}
+  el('go').addEventListener('click',function(){if(round)return;
+    var chase=Math.random()<0.5,angle=ANGLES[Math.floor(Math.random()*ANGLES.length)],w=world(chase,angle,rng((Math.random()*4294967296)>>>0)),k=0;
+    round={w:w,playing:true};buttons(false);el('state').textContent='watch';
+    (function tick(){if(!round)return;step(w);draw(w);k++;if(k<STEPS)requestAnimationFrame(tick);else{round.playing=false;ctx.clearRect(0,0,W,H);el('state').textContent='was something chasing?';buttons(true)}})()});
+  function answer(said){if(!round||round.playing)return;var t={chase:round.w.chase,angle:round.w.angle,said:said,at:Date.now()};st.trials.push(t);save();
+    el('state').textContent=(said===t.chase?'right':'not this time')+' · '+(t.chase?'one dot was chasing, up to '+t.angle+'° off the line':'nothing was chasing');round=null;buttons(false);draw2()}
+  el('yes').addEventListener('click',function(){answer(true)});el('no').addEventListener('click',function(){answer(false)});
+  function draw2(){var s=summary(st.trials),pct=function(x){return x==null?'–':Math.round(x*100)+'%'},lines=[];
+    ANGLES.forEach(function(a){var r=s[a];if(r.n)lines.push('up to '+a+'° off: saw '+pct(r.hit)+' of chases, called '+pct(r.fa)+' of calm rounds a chase'+(r.dprime==null?'':', d\' '+r.dprime.toFixed(2))+' ('+r.n+' rounds)')});
+    el('score').textContent=lines.length?lines.join('\n')+(st.trials.length<40?'\nabout ten rounds at each angle before comparing':''):''}
+  draw2();
+  // made-up checks: a straight chaser closes the gap more than a 90° one, which closes more than no chaser; d' is 0 when
+  // hits equal false alarms and positive when hits are higher; z() matches the normal table
+  function selftest(){
+    if(Math.abs(z(0.975)-1.96)>1e-3||Math.abs(z(0.5))>1e-9||Math.abs(z(0.16)+0.9945)>1e-3)return'z() is off the normal table';
+    var mean=function(chase,angle){var tot=0;for(var s=1;s<=60;s++){var w=world(chase,angle,rng(s*7919));for(var k=0;k<STEPS;k++)step(w);tot+=gap(w)}return tot/60};
+    var g0=mean(true,0),g90=mean(true,90),gn=mean(false,0);
+    if(!(g0+20<g90))return'a straight chase should end closer than a 90° one: '+g0.toFixed(1)+' vs '+g90.toFixed(1);
+    if(!(g90+20<gn))return'a 90° chase should still end closer than no chase: '+g90.toFixed(1)+' vs '+gn.toFixed(1);
+    var even=summary([{angle:0,chase:true,said:true},{angle:0,chase:true,said:false},{angle:0,chase:false,said:true},{angle:0,chase:false,said:false}])[0];
+    if(Math.abs(even.dprime)>1e-9||Math.abs(even.hit-0.5)>1e-12)return'even answers should give d\' 0, got '+JSON.stringify(even);
+    var good=summary([{angle:30,chase:true,said:true},{angle:30,chase:true,said:true},{angle:30,chase:false,said:false},{angle:30,chase:false,said:false}])[30];
+    if(!(good.dprime>0.5))return'all right answers should give a clearly positive d\', got '+good.dprime;
+    return true}
+  window.__chasing={world:world,step:step,gap:gap,summary:summary,z:z,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>
