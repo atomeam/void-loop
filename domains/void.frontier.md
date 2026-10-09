@@ -9,7 +9,7 @@ Each item is something no other site does, built on what Void already has. Work 
 - **Why it is special:** a code reviewer whose catch rate against the others is measured on every PR and rises, shown live on /code-review/ ("caught 41 of 44 that other reviewers found this month").
 - **First piece:** `tools/review-learn.mjs --since 30d` printing Void-missed findings from merged PRs (GitHub API, no secrets in the repo), plus the catch-rate number.
 - **Done when:** the catch rate is computed weekly, shown on /code-review/, and at least three rules came from it.
-- **claim:**
+- **claim:** claude 2026-10-09: first piece shipped. `node tools/review-learn.mjs --from 120` (tests: `tools/review-learn.test.mjs`). Baseline on merged PRs #122-#207: CodeRabbit left 55 findings; Void flagged 17 of the 47 that count (36%). Rule 1 taught: `json-array-shape` (#142, bench.mjs:67), now 18 of 47 (38%). Most misses are app logic no pattern check sees. **Next step:** teach the pattern-shaped misses in the list (unbounded `execFileSync` in a retry loop, #149 push.mjs:7; a `<table>` without header cells, #148), then run the rate weekly (watchdog.yml) and show it on /code-review/.
 
 ## 2. Void builds its own skills from what it could not answer
 - **What:** close Void's oldest want (`domains/void.will.md` #1). The miss board (`tools/misses.mjs`) feeds a drafter that groups misses by intent, writes a probe batch in `tools/bench.json` shape and a skill stub, and opens the job. A run builds it, ships it (ship now, test after) and logs a `grow` entry that says which visitor asks it answers now.
