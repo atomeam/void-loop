@@ -36,9 +36,13 @@ export default async function build(ctx, data) {
   const matFor = (col) => glass[col] || (glass[col] = pawns
     ? new THREE.MeshPhysicalMaterial({ color: col, roughness: 0.32, clearcoat: 0.7, clearcoatRoughness: 0.18, sheen: 0.2 })
     : new THREE.MeshPhysicalMaterial({ color: col, roughness: 0.06, transmission: 0.45, thickness: 0.01, ior: 1.5, clearcoat: 1, clearcoatRoughness: 0.05 }));
-  const ringGeo = new THREE.RingGeometry(MR * 1.25, MR * 1.6, 40).rotateX(-Math.PI / 2);
-  const canM = new THREE.MeshBasicMaterial({ color: '#fff3c2', transparent: true, opacity: 0.75 });
-  const toM = new THREE.MeshBasicMaterial({ color: '#9fe8ff', transparent: true, opacity: 0.85 });
+  // where you can play has to read at a glance from across the table: a wide bright ring with a soft glow filling it
+  // (drawn once per move, no animation, so waiting on you costs the GPU nothing)
+  const ringGeo = new THREE.RingGeometry(MR * 1.35, MR * (pawns ? 2.0 : 1.75), 48).rotateX(-Math.PI / 2);
+  const glowGeo = new THREE.CircleGeometry(MR * (pawns ? 1.9 : 1.65), 48).rotateX(-Math.PI / 2);
+  const canM = new THREE.MeshBasicMaterial({ color: '#ffd76a', transparent: true, opacity: 0.95, depthWrite: false });
+  const toM = new THREE.MeshBasicMaterial({ color: '#5fe1ff', transparent: true, opacity: 1, depthWrite: false });
+  const toGlowM = new THREE.MeshBasicMaterial({ color: '#5fe1ff', transparent: true, opacity: 0.35, depthWrite: false });
   const marbles = new Map(), rings = new THREE.Group(), balls = new THREE.Group(); root.add(rings, balls);
   const tw = tweens(), REST = pawns ? H : H + MR * 0.55;
   function paint(d) {
@@ -54,7 +58,10 @@ export default async function build(ctx, data) {
     for (const [k, o] of marbles) if (!seen.has(k)) { balls.remove(o); marbles.delete(k); }
     for (const r of [...rings.children]) rings.remove(r);
     for (const m of d.marbles || []) if (m.can && !m.picked) { const r = new THREE.Mesh(ringGeo, canM); r.position.copy(at(m.x, m.y, H + 0.0006)); rings.add(r); }
-    for (const t of d.targets || []) { const r = new THREE.Mesh(ringGeo, toM); r.position.copy(at(t.x, t.y, H + 0.0008)); r.userData.sel = t.sel; rings.add(r); }
+    for (const t of d.targets || []) {
+      const r = new THREE.Mesh(ringGeo, toM); r.position.copy(at(t.x, t.y, H + 0.0008)); r.userData.sel = t.sel; rings.add(r);
+      const f = new THREE.Mesh(glowGeo, toGlowM); f.position.copy(at(t.x, t.y, H + 0.0007)); f.userData.sel = t.sel; rings.add(f);
+    }
   }
   paint(data);
   ctx.onTap((hits) => {
@@ -67,12 +74,14 @@ export default async function build(ctx, data) {
     const t = near(d.targets || []) || near((d.marbles || []).filter((m) => m.can));
     if (t && d.onTap) d.onTap(t.sel);
   });
-  ctx.addContactShadow({ y: 0.0005, size: HALF * 3.2, opacity: 0.7, blur: 3.2, darkness: 0.9, exclude: [] });
+  // the soft shadow is the board's alone: the pieces cast their own through the key light, so a piece sliding redraws only
+  // the view, never the blurred shadow pass (that pass on every frame of every bot move was the heaviest thing on a phone)
+  ctx.addContactShadow({ y: 0.0005, size: HALF * 3.2, opacity: 0.7, blur: 3.2, darkness: 0.9, exclude: [balls, rings] });
   ctx.frame(board, { view: [0, 1.4, -1], pad: 0.76, ground: 'none', minZoom: 0.5, maxZoom: 2, light: [-0.55, 1.4, -0.4] });
   return {
     update(d) { paint(d); ctx.requestRender(); },
-    tick(dt) { return tw.tick(dt); },
+    tick(dt) { return tw.tick(dt) ? 'view' : false; },
     state() { return { marbles: marbles.size, rings: rings.children.length }; },
-    dispose() { for (const x of [ballGeo, ringGeo, board.geometry]) x.dispose(); for (const m of [topM, sideM, canM, toM, ...Object.values(glass)]) m.dispose(); topMap.dispose(); },
+    dispose() { for (const x of [ballGeo, ringGeo, glowGeo, board.geometry]) x.dispose(); for (const m of [topM, sideM, canM, toM, toGlowM, ...Object.values(glass)]) m.dispose(); topMap.dispose(); },
   };
 }
