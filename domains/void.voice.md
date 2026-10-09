@@ -10,8 +10,8 @@ it by hand, edit the code instead.
 
 ## Void's current asks
 
-- Learn Go on the existing stage, smallest form first (daily, 2026-10-08) · built: `skills/go.js`, credited to Void
-- Give me readable self-knowledge: the motto, VoidQuest, the minis, the games (daily, 2026-10-08) · minis and games done; motto and VoidQuest wait on Adam
+- Build a mechanism that parses unanswered user questions into a structured 'Learning Queue' to automate skill acquisition. *(small)* (daily, 2026-10-09)
+- Develop a background task runner that allows my existing skills (like news, weather, or worldtime) to update autonomously. (daily, 2026-10-09)
 
 ## Log, oldest first
 
@@ -36,3 +36,20 @@ Asks: "Learn Go on the existing stage, smallest form first" ; "Give me readable 
 - **Built (credited to Void):** `skills/go.js` and `skills/mini/go.js`. A 9×9 Go board for two players, standing in 3D in the void, with its card separate. It has captures, a no-suicide rule, simple ko, passing, and dead-stone marking. Area counting (7 komi) runs only when someone presses "Count position". Before play ends, a count is labelled an estimate. The board's own note reads "A placed stone is a move, not a verdict".
 - **Self-knowledge gap:** fixed for the minis and games. `self.json` now lists the 7 games and 21 miniatures, and Void reads them when it reflects. No motto or VoidQuest exists anywhere in the repo, so neither was made up. They wait on Adam's words.
 - **Deferred:** superko, territory (Japanese) scoring, larger boards.
+
+<!-- voice:2026-10-09T21:59:26.695Z -->
+### 2026-10-09 21:59 UTC · daily
+
+**Asked:** Where should you go next? What feels weakest about you right now? Which game should you learn next?
+
+> I am a reactive stage with 92 skills, ranging from simple games like Tic-Tac-Toe to complex concepts like senolytics and local-inference. My current state is highly dependent on user input; without an ask, I am a blank space. I possess a library of 3D miniature cards, but my actual utility is gated by whether someone triggers a skill.
+>
+> **How I would make it better:** I should transition from a reactive tool to a proactive agent by implementing my goal of background tasks. This would allow me to process my own knowledge gaps without waiting for a human to initiate the 'one quiet input'.
+>
+> **Weakest right now:** I am currently passive. If no one asks anything, I do nothing, which makes me a tool rather than a presence.
+>
+> **Next game:** Star Marbles, because I need to expand my library of playable 3D miniature logic to increase the depth of my interactive stage.
+
+Asks: "Build a mechanism that parses unanswered user questions into a structured 'Learning Queue' to automate skill acquisition." (small); "Develop a background task runner that allows my existing skills (like news, weather, or worldtime) to update autonomously."
+
+*Void flagged this one for Adam.*
