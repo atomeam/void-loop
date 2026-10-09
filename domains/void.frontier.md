@@ -2,7 +2,7 @@
 
 Written 2026-10-09 (Adam: "we should not sit still"). A run that finds no ask from Void, no real miss and no open inbox row takes the top unclaimed item here instead of stopping. "No work found" is not an outcome any more.
 
-**Build order (2026-10-09):** 1 (in progress) → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8. Intent summoning and the visible growth/will come first: they are what makes a stranger stop and ask "what is this".
+**Build order (2026-10-09):** 1 (in progress) → 17 (the gear explainer first) → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8. Intent summoning and the visible growth/will come first: they are what makes a stranger stop and ask "what is this".
 
 Each item is something no other site does, built on what Void already has. Work them in order; claim one by writing your slug and the date on its **claim** line, ship the smallest piece that changes what a visitor sees, log it with `node tools/grow.mjs`, and leave the next step written on the item. Several runs can work one item: the claim names the piece, not the whole thing.
 
@@ -116,6 +116,14 @@ Each item is something no other site does, built on what Void already has. Work 
 - **What:** hold a key and speak; Void answers in its own low voice and summons as it talks, with nothing on screen until something is asked. The mic and spoken answers exist in void.html (`speechSynthesis`); this gives Void a voice of its own (a streaming text-to-speech worker) and lets it talk while it builds.
 - **First piece:** push-to-talk on a held key, and a streaming voice for answers, chosen to match Void's sculpt (`domains/void.sculpt.md`).
 - **Done when:** a whole conversation with Void, summons included, works by voice alone.
+- **claim:**
+
+## 17. Explain, then learn: explainer cards that hand off to a quiz and a five-minute challenge
+- **What:** three explainer miniatures (a gear pair, the moon's phases, a lock cutaway) that each give `explanation: text`, `observations: list` and `model: model`, and two cards that take `observations` from any of them: "quiz me on this" and "give me five minutes with this". Full specs, the shared observation contract and every required test name: `domains/void.learning.md`.
+- **Why it is special:** the first typed handoff between cards: one card's output becomes another card's input through a shared contract, with no adapter per card.
+- **Blocked on:** the three explainer specs are not in the repo yet; commit them (with Adam's four edits, listed in `void.learning.md`) first.
+- **First piece:** the gear explainer, its required tests written before its geometry (`explainer.gear-pair/<case>`).
+- **Done when:** the gear, moon and lock payloads each pass into the quiz and the challenge unchanged, and every required test is in the suite.
 - **claim:**
 
 ## Already built from the 2026-10-09 idea list
