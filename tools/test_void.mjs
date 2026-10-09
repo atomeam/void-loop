@@ -2402,6 +2402,21 @@ try {
       !!card && card.hasCopy && /^(copied|select and copy)$/.test(copied) && st && st.days === wantDays && card.text.includes(cdFull.daysLine(wantDays)) && !!survived && Q.errors.length === 0,
       JSON.stringify({ card, st, wantDays, copied, errs: Q.errors }));
     await Q.ctx.close(); }
+  // a pressed button inside a tilted card: .thing is preserve-3d and tilts toward the pointer, and a button that shrank on press
+  // moved its own hit area, so a press at the bottom of a tall card was released on the parent and the click was lost
+  { const Z = await fresh();
+    let lost = 0, n = 0;
+    for (const h of [300, 600]) for (const pos of ['flex-end', 'center']) {
+      await Z.p.evaluate(([h, pos]) => { document.querySelector('#press-probe')?.remove(); const c = document.createElement('div'); c.id = 'press-probe'; c.className = 'thing kept-card game-card';
+        c.style.cssText = 'left:420px;top:60px;width:440px;height:' + h + 'px;display:flex;flex-direction:column;justify-content:' + pos + ';padding:12px';
+        const b = document.createElement('button'); b.className = 'g-btn g-primary'; b.id = 'press-probe-btn'; b.textContent = 'press'; window.__pressHits = 0;
+        b.addEventListener('click', () => window.__pressHits++); b.addEventListener('pointerdown', (e) => e.stopPropagation()); c.append(b); document.getElementById('stage').append(c); }, [h, pos]);
+      const r = await Z.p.evaluate(() => { const b = document.getElementById('press-probe-btn').getBoundingClientRect(); return [b.x, b.y, b.width, b.height]; });
+      for (const fx of [0.2, 0.5, 0.8]) { await Z.p.mouse.move(r[0] + r[2] * fx, r[1] + r[3] / 2, { steps: 4 }); await Z.p.mouse.down(); await Z.p.mouse.up(); n++; }
+      lost += 3 - await Z.p.evaluate(() => window.__pressHits);
+    }
+    check('cards: a press on a button anywhere in a tall card is a click (a tilted card no longer drops it)', lost === 0 && n === 12, lost + ' of ' + n + ' clicks lost');
+    await Z.ctx.close(); }
 
   // othello: real rules (4 starting discs, a move must flip, 8 directions), and Void answers your move on the card
   { const oth = await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
