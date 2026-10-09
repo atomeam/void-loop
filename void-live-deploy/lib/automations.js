@@ -5,7 +5,9 @@
  * network, no D1: tools/automations.test.mjs runs it in node. lib/automations-run.js does the D1 and the calls.
  *
  * A rule: { id, name, enabled, when: { on, match? }, do: [step, ...] }
- *   when.on     'webhook'  POST /api/hook/<id> with the rule's secret (header x-void-hook); the JSON body is the event
+ *   when.on     'webhook'  POST /api/hook/<id> with the rule's secret (header x-void-hook); the JSON body is the event.
+ *                          A rule runs at most RUN_CAP_DAY times a day from hooks (a leaked secret stops there), and the
+ *                          same ask is not queued twice inside QUEUE_DEDUPE_MS, so a looping sender cannot spend the build queue
  *               'manual'   only "Run now" (the card, or POST /api/automations { id, run: true })
  *               'schedule' every when.every minutes (15 to 10080), run by the clock: POST /api/automations/tick, which an
  *                          Actions cron calls every 15 minutes today (.github/workflows/void-tick.yml) and a Worker can later
@@ -27,6 +29,8 @@
 export const SCHEMA = 'void.automation.v1';
 export const TRIGGERS = ['webhook', 'manual', 'schedule'];
 export const EVERY_MIN = 15, EVERY_MAX = 10080; // minutes between scheduled runs: the clock ticks every 15, a week at most
+export const RUN_CAP_DAY = 200; // webhook runs of one rule a day, however often the sender knocks (AUTOMATION_RUN_CAP overrides)
+export const QUEUE_DEDUPE_MS = 6 * 3600e3; // queue.add: the same ask for the same target is not queued again inside this window
 export const ACTIONS = ['note', 'queue.add', 'github.comment', 'github.pr', 'http.post'];
 export const MAX_STEPS = 5, MAX_FILES = 20, MAX_FILE_BYTES = 100000, MAX_TEXT = 4000, MAX_NAME = 60, MAX_EVENT = 64000; // a GitHub webhook body is often 20 to 40 KB
 export const DEFAULT_REPOS = ['atomeam/void-loop'];
