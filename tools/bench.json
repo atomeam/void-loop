@@ -5508,5 +5508,7 @@
   {"ask": "how do gears work", "want": "skill:gears"},
   {"ask": "make one gear turn twice as fast", "want": "skill:gears"},
   {"ask": "what happens with 12 teeth and 24 teeth", "want": "skill:gears", "says": "12-tooth gear makes two turns"},
-  {"ask": "gear ratio", "want": "skill:gears"}
+  {"ask": "gear ratio", "want": "skill:gears"},
+  {"ask": "find the rule", "want": "skill:gears"},
+  {"ask": "mystery gears", "want": "skill:gears"}
 ]
