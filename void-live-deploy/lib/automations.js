@@ -7,6 +7,9 @@
  * A rule: { id, name, enabled, when: { on, match? }, do: [step, ...] }
  *   when.on     'webhook'  POST /api/hook/<id> with the rule's secret (header x-void-hook); the JSON body is the event
  *               'manual'   only "Run now" (the card, or POST /api/automations { id, run: true })
+ *               'schedule' every when.every minutes (15 to 10080), run by the clock: POST /api/automations/tick, which an
+ *                          Actions cron calls every 15 minutes today (.github/workflows/void-tick.yml) and a Worker can later
+ *                          (the route stays the same, only who calls it changes); the event is { tick: true, at }
  *   when.match  optional { 'a.b': 'value' }: every listed field of the event must equal its value (strings compared)
  *   do          1 to MAX_STEPS steps, run in order; the first that fails stops the rest
  * Steps (any string field may use {{event.a.b}}, filled from the event; a missing field fills as empty):
@@ -22,7 +25,8 @@
  * public https hosts. Event data can fill text in but never chooses the repo, the branch prefix or a file path's root.
  */
 export const SCHEMA = 'void.automation.v1';
-export const TRIGGERS = ['webhook', 'manual'];
+export const TRIGGERS = ['webhook', 'manual', 'schedule'];
+export const EVERY_MIN = 15, EVERY_MAX = 10080; // minutes between scheduled runs: the clock ticks every 15, a week at most
 export const ACTIONS = ['note', 'queue.add', 'github.comment', 'github.pr', 'http.post'];
 export const MAX_STEPS = 5, MAX_FILES = 20, MAX_FILE_BYTES = 100000, MAX_TEXT = 4000, MAX_NAME = 60, MAX_EVENT = 64000; // a GitHub webhook body is often 20 to 40 KB
 export const DEFAULT_REPOS = ['atomeam/void-loop'];
@@ -49,6 +53,15 @@ export function matches(rule, event) {
   const m = rule && rule.when && rule.when.match;
   if (!m) return true;
   return Object.entries(m).every(([p, want]) => str(pick(event, p)) === str(want));
+}
+
+/** is a scheduled rule due? lastRun: ISO time of its last run (any trigger), or null. The clock ticks about every 15
+ * minutes and GitHub's crons run late, so a rule is due SLACK_MS early rather than skip a whole tick. */
+export const SLACK_MS = 3 * 60e3;
+export function due(rule, lastRun, now = Date.now()) {
+  if (!rule || !rule.enabled || !rule.when || rule.when.on !== 'schedule') return false;
+  const last = lastRun ? Date.parse(lastRun) : NaN;
+  return !Number.isFinite(last) || now - last >= rule.when.every * 60e3 - SLACK_MS;
 }
 
 // a path inside the repo: relative, no '..', no hidden git or workflow files
@@ -82,6 +95,10 @@ export function validate(input, env) {
   const w = isObj(input.when) ? input.when : {};
   if (!TRIGGERS.includes(w.on)) bad('when.on is one of: ' + TRIGGERS.join(', '));
   rule.when.on = w.on;
+  if (w.on === 'schedule') {
+    if (!Number.isInteger(w.every) || w.every < EVERY_MIN || w.every > EVERY_MAX) bad('when.every is whole minutes from ' + EVERY_MIN + ' to ' + EVERY_MAX + ' (1440 is a day)');
+    rule.when.every = w.every;
+  }
   if (w.match !== undefined) {
     if (!isObj(w.match) || Object.keys(w.match).length > 10) bad('when.match is up to 10 { "field.path": "value" } pairs');
     else { rule.when.match = {}; for (const [k, v] of Object.entries(w.match)) { if (!/^[\w.-]{1,80}$/.test(k) || (typeof v !== 'string' && typeof v !== 'number' && typeof v !== 'boolean')) bad('when.match ' + k + ': a field path and a plain value'); else rule.when.match[k] = v; } }
@@ -147,5 +164,6 @@ export function steps(rule, event = {}) {
 export const TEMPLATES = [
   { name: 'Webhook to the build queue', when: { on: 'webhook' }, do: [{ action: 'queue.add', ask: 'from a webhook: {{event.ask}}', target: 'hook' }] },
   { name: 'Comment on a pull request', when: { on: 'webhook', match: { action: 'labeled' } }, do: [{ action: 'github.comment', repo: 'atomeam/void-loop', issue: '{{event.pull_request.number}}', body: 'Void saw this pull request labelled {{event.label.name}}.' }] },
+  { name: 'Every morning, a note', when: { on: 'schedule', every: 1440 }, do: [{ action: 'note', text: 'Void was here at {{event.at}}' }] },
   { name: 'Open a pull request with a file', when: { on: 'manual' }, do: [{ action: 'github.pr', repo: 'atomeam/void-loop', base: 'main', branch: 'void/automation-note', title: 'A note from Void', body: 'Opened by a Void automation.', files: [{ path: 'domains/automation-note.md', content: 'Written by a Void automation.\n' }] }] },
 ];

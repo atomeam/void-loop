@@ -5,7 +5,7 @@
  * issues on the allowed repos). Without the token a GitHub step fails with that reason in the log, nothing else.
  * A webhook rule has its own secret: shown once when it is made (or rotated), kept only as a SHA-256.
  */
-import { validate, steps, matches, MAX_EVENT } from './automations.js';
+import { validate, steps, matches, due, MAX_EVENT } from './automations.js';
 import { sameSecret } from './guard.js';
 
 export const TABLES = [
@@ -131,4 +131,20 @@ export async function run(env, rule, event, trigger, opts = {}) {
   await env.DB.prepare('INSERT INTO void_automation_runs (id, rule_id, at, trigger, ok, log) VALUES (?, ?, ?, ?, ?, ?)').bind(id, rule.id, now(), trigger, ok ? 1 : 0, JSON.stringify(log)).run();
   await env.DB.prepare('DELETE FROM void_automation_runs WHERE id NOT IN (SELECT id FROM void_automation_runs ORDER BY at DESC LIMIT ?)').bind(KEEP_RUNS).run();
   return { ok, log };
+}
+
+/** the clock: run every scheduled rule that is due, one after another; the event is { tick: true, at }. Returns what ran. */
+export async function tick(env, now = Date.now(), opts = {}) {
+  await ensure(env);
+  const rows = (await env.DB.prepare("SELECT id, enabled, rule FROM void_automations WHERE enabled = 1").all()).results || [];
+  const last = (await env.DB.prepare('SELECT rule_id, MAX(at) AS at FROM void_automation_runs GROUP BY rule_id').all()).results || [];
+  const lastOf = Object.fromEntries(last.map((r) => [r.rule_id, r.at]));
+  const at = new Date(now).toISOString(), ran = [];
+  for (const r of rows) {
+    const rule = { ...JSON.parse(r.rule), id: r.id, enabled: !!r.enabled };
+    if (!due(rule, lastOf[r.id] || null, now)) continue;
+    const out = await run(env, rule, { tick: true, at }, 'schedule', opts);
+    ran.push({ id: r.id, ok: out.ok, ...(out.skipped ? { skipped: out.skipped } : {}) });
+  }
+  return { at, checked: rows.length, ran };
 }

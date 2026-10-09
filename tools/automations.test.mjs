@@ -7,6 +7,7 @@ import * as R from '../void-live-deploy/lib/automations.js';
 import * as A from '../void-live-deploy/lib/automations-run.js';
 import * as api from '../void-live-deploy/functions/api/automations.js';
 import * as hook from '../void-live-deploy/functions/api/hook/[id].js';
+import * as tickApi from '../void-live-deploy/functions/api/automations/tick.js';
 
 const env0 = {};
 const pr = (over = {}) => ({ name: 'pr', when: { on: 'manual' }, do: [{ action: 'github.pr', repo: 'atomeam/void-loop', branch: 'void/x', title: 't', files: [{ path: 'domains/a.md', content: 'a' }], ...over }] });
@@ -73,6 +74,8 @@ function fakeEnv(extra = {}) {
       throw new Error('unexpected first ' + sql);
     },
     all: async () => {
+      if (/FROM void_automations WHERE enabled = 1/.test(sql)) return { results: t.void_automations.filter((r) => r.enabled) };
+      if (/GROUP BY rule_id/.test(sql)) { const m = {}; for (const r of t.void_automation_runs) if (!m[r.rule_id] || r.at > m[r.rule_id]) m[r.rule_id] = r.at; return { results: Object.entries(m).map(([rule_id, at]) => ({ rule_id, at })) }; }
       if (/FROM void_automations/.test(sql)) return { results: t.void_automations };
       if (/FROM void_automation_runs/.test(sql)) return { results: [...t.void_automation_runs].reverse() };
       throw new Error('unexpected all ' + sql);
@@ -166,4 +169,39 @@ test('a webhook: the right secret runs the rule; a wrong one, a missing rule or 
   assert.equal(viaQuery.status, 200, 'senders that cannot set headers (GitHub) put the secret in ?key=');
   const manual = await A.save(env, { name: 'manual only', when: { on: 'manual' }, do: [{ action: 'note', text: 'n' }] });
   assert.equal((await call(manual.rule.id, 'anything')).status, 403, 'a manual rule has no webhook');
+});
+
+test('the clock: a schedule rule needs whole minutes from 15 to a week, and is due once its time has come round', () => {
+  const sched = (every) => R.validate({ name: 's', when: { on: 'schedule', every }, do: [{ action: 'note', text: 'n' }] }, env0);
+  assert.ok(sched(15).ok); assert.ok(sched(1440).ok); assert.ok(sched(10080).ok);
+  for (const every of [undefined, 5, 14, 10081, 60.5, '60']) assert.ok(!sched(every).ok, 'every ' + every);
+  const rule = { ...sched(60).rule, enabled: true }, now = Date.parse('2026-10-09T12:00:00Z'), ago = (m) => new Date(now - m * 60e3).toISOString();
+  assert.ok(R.due(rule, null, now), 'never run: due');
+  assert.ok(!R.due(rule, ago(30), now), 'half an hour ago: not yet');
+  assert.ok(R.due(rule, ago(58), now), 'a late cron does not skip a whole tick');
+  assert.ok(!R.due({ ...rule, enabled: false }, null, now), 'switched off: never');
+  assert.ok(!R.due({ ...rule, when: { on: 'manual' } }, null, now), 'only schedule rules');
+});
+
+test('the clock: tick runs only the scheduled rules that are due, logs each as a schedule run, and is owner-only', async () => {
+  const { env, t } = fakeEnv();
+  const hourly = await A.save(env, { name: 'hourly', when: { on: 'schedule', every: 60 }, do: [{ action: 'queue.add', ask: 'hourly at {{event.at}}', target: 'hourly' }] });
+  await A.save(env, { name: 'daily', when: { on: 'schedule', every: 1440 }, do: [{ action: 'note', text: 'daily' }] });
+  const off = await A.save(env, { name: 'off', enabled: false, when: { on: 'schedule', every: 15 }, do: [{ action: 'note', text: 'never' }] });
+  await A.save(env, R.TEMPLATES[0]); // a webhook rule: the clock never runs it
+  const t0 = Date.parse('2026-10-09T12:00:00Z');
+  const first = await A.tick(env, t0);
+  assert.deepEqual(first.ran.map((r) => r.id).sort(), [hourly.rule.id, (await A.list(env)).rules.find((r) => r.name === 'daily').id].sort());
+  assert.equal(t.void_queue[0].ask, 'hourly at 2026-10-09T12:00:00.000Z', 'the event carries the tick time');
+  assert.ok(t.void_automation_runs.every((r) => r.trigger === 'schedule'));
+  assert.ok(!first.ran.some((r) => r.id === off.rule.id), 'a switched-off rule never runs');
+  t.void_automation_runs.forEach((r) => { r.at = new Date(t0).toISOString(); });
+  assert.equal((await A.tick(env, t0 + 15 * 60e3)).ran.length, 0, 'a quarter of an hour later nothing is due');
+  t.void_queue.length = 0;
+  const later = await A.tick(env, t0 + 61 * 60e3);
+  assert.deepEqual(later.ran.map((r) => r.id), [hourly.rule.id], 'an hour later only the hourly one');
+  const req = (key) => new Request('https://a-to-mind.com/api/automations/tick', { method: 'POST', headers: key ? { authorization: 'Bearer ' + key } : {} });
+  for (const key of ['', 'wrong']) assert.equal((await tickApi.onRequestPost({ request: req(key), env })).status, 401);
+  const ok = await tickApi.onRequestPost({ request: req('owner-key'), env });
+  assert.equal(ok.status, 200); assert.equal((await ok.json()).checked, 4 - 1, 'the enabled rules');
 });
