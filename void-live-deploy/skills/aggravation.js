@@ -185,7 +185,7 @@ export function botMove(state, c, d) {
 
 export function aggravationOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|start|open|make)?\s*(?:me\s+)?(?:a\s+)?(?:game\s+of\s+)?aggravation(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you|the\s+computer|bots?))?$/i.test(t)) return { kind: 'game' };
+  if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|start|open|make)?\s*(?:me\s+)?(?:a\s+)?(?:game\s+of\s+)?(?:aggravation|star\s+marbles)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you|the\s+computer|bots?))?$/i.test(t)) return { kind: 'game' };
   return null;
 }
 

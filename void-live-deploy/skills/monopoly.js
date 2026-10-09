@@ -10,8 +10,8 @@ import { lift3d } from './lift3d.js';
 
 export function monopolyOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)\s+(?:a\s+|some\s+)?(?:game\s+of\s+)?(?:monopoly|property\s+trading|the\s+property\s+game|a\s+property\s+game)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game' };
-  if (/^(?:a\s+)?game\s+of\s+monopoly$|^(?:a\s+)?monopoly\s+(?:board\s*)?game$|^(?:a\s+)?property\s+(?:trading\s+)?(?:board\s+)?game$/.test(t)) return { kind: 'game' };
+  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)\s+(?:a\s+|some\s+)?(?:game\s+of\s+)?(?:monopoly|property\s+trading|the\s+property\s+game|a\s+property\s+game|(?:the\s+)?landlord[’']?s?\s+game)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game' };
+  if (/^(?:the\s+)?landlord[’']?s?\s+game$|^(?:a\s+)?game\s+of\s+monopoly$|^(?:a\s+)?monopoly\s+(?:board\s*)?game$|^(?:a\s+)?property\s+(?:trading\s+)?(?:board\s+)?game$/.test(t)) return { kind: 'game' };
   return null;
 }
 
