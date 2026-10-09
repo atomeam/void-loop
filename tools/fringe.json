@@ -1533,5 +1533,30 @@
     ],
     "sha256": "fb23dc7bf1a29876658668bb5d22eefb3072b1bbf108493d9272487070741740",
     "emit": false
+  },
+  {
+    "run": 62,
+    "at": "2026-10-09T17:44:45Z",
+    "family": "quiet-signal-filter",
+    "draft": "drafts/fringe/quiet-signal-filter-4.html",
+    "sources": [
+      {
+        "claim": "In a threshold system, a moderate amount of added noise can make a sub-threshold signal more detectable than either no noise or a lot of noise (stochastic resonance)",
+        "source": "https://doi.org/10.1103/RevModPhys.70.223",
+        "confidence": "claim"
+      },
+      {
+        "claim": "People viewing sub-threshold images rendered through a noisy threshold perceive them best at an intermediate noise level",
+        "source": "https://doi.org/10.1103/PhysRevLett.78.1186",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own accuracy at telling an upright from a flat faint bar peaks at a middle noise level on this page",
+        "source": "drafts/fringe/quiet-signal-filter-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "abbee70fce5312f8cf0eb1bbbba4bd7e0d105e463d2d52ca040d2257e167e90d",
+    "emit": false
   }
 ]

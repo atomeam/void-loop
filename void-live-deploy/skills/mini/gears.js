@@ -4,13 +4,16 @@
  * the card's flat drawing (gear-pair-rules.js toothOutline), and every frame poses both gears from the card's one
  * authoritative state (data.state(), data.now()): nothing is accumulated here, so the pair never drifts. Drag a gear
  * to turn it (data.onDrag(which, degrees, end)); drag the space around it to look around.
- * data: { state: () => gear state, now: () => seconds, onDrag(which, deg, end) }
+ * data: { state: gear state, or () => gear state; now?: () => seconds (default: the clock); onDrag?(which, deg, end) }
+ * (plain data works too, so the behaviour contract in tools/test_3d.mjs can drive it)
  */
 import * as G from '../gear-pair-rules.js';
 
 const T = 0.008, LIFT = 0.006, MARGIN = 0.03; // gear thickness, the gap under the gears, the plate's border round the pair
 export default async function build(ctx, data) {
   const { THREE, root } = ctx;
+  const stateOf = (d) => (typeof d.state === 'function' ? d.state() : d.state);
+  const nowOf = (d) => (typeof d.now === 'function' ? d.now() : Date.now() / 1000);
   const rad = (d) => (d % 360) * Math.PI / 180;
   const brass = new THREE.MeshStandardMaterial({ color: '#c9a24a', metalness: 0.85, roughness: 0.33 });
   const steel = new THREE.MeshStandardMaterial({ color: '#aab3be', metalness: 0.9, roughness: 0.28 });
@@ -50,10 +53,10 @@ export default async function build(ctx, data) {
   }
   const frame = () => ctx.frame(plate, { view: [0, 1.15, 1], pad: 0.8, ground: 'none', minZoom: 0.5, maxZoom: 2.5, light: [-0.5, 1.4, 0.6] });
   function apply() {
-    const d = ctx.handle.data, s = d.state();
+    const d = ctx.handle.data, s = stateOf(d);
     let rebuilt = false;
     if (s.driverTeeth + ':' + s.drivenTeeth !== built) { rebuild(s); rebuilt = true; }
-    const p = G.pose(s, d.now());
+    const p = G.pose(s, nowOf(d));
     parts.driver.rotation.y = rad(p.driverAngleDegrees); parts.driven.rotation.y = rad(p.drivenAngleDegrees);
     return rebuilt;
   }
@@ -108,12 +111,12 @@ export default async function build(ctx, data) {
     update() { ctx.requestRender(); },
     // every frame: pose from the authoritative state; draw only when something moved (playing, dragging, or a change)
     tick() {
-      const s = ctx.handle.data.state(), key = s.revision + ':' + s.driverTeeth + ':' + s.drivenTeeth;
+      const s = stateOf(ctx.handle.data), key = s.revision + ':' + s.driverTeeth + ':' + s.drivenTeeth + ':' + s.base;
       if (!s.playing && !dragging && key === lastKey) return false;
       lastKey = key;
       return apply() ? true : 'view'; // a rebuilt pair needs its shadows redrawn; a turn only needs the view
     },
-    state() { return { built, dragging: !!dragging, driver: parts.driver.rotation.y, driven: parts.driven.rotation.y }; },
+    state() { const s = stateOf(ctx.handle.data); return { built, dragging: !!dragging, playing: !!s.playing, driver: parts.driver.rotation.y, driven: parts.driven.rotation.y }; },
     dispose() { host.removeEventListener('pointerdown', down, { capture: true }); up(); for (const x of parts.geos) x.dispose(); plate.geometry.dispose(); for (const m of [brass, steel, dark, marker, wood]) m.dispose(); },
   };
 }
