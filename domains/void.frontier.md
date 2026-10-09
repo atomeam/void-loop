@@ -119,9 +119,9 @@ Each item is something no other site does, built on what Void already has. Work 
 - **claim:**
 
 ## 17. Explain, then learn: explainer cards that hand off to a quiz and a five-minute challenge
-- **What:** three explainer miniatures (a gear pair, the moon's phases, a lock cutaway) that each give `explanation: text`, `observations: list` and `model: model`, and two cards that take `observations` from any of them: "quiz me on this" and "give me five minutes with this". Full specs, the shared observation contract and every required test name: `domains/void.learning.md`.
+- **What:** three explainer miniatures (a gear pair, the moon's phases, a lock cutaway) that each give `explanation: text`, `observations: list` and `model: model`, and two cards that take `observations` from any of them: "quiz me on this" and "give me five minutes with this". Full specs and every required test name: `domains/void.explainers.md` and `domains/void.learning.md`.
 - **Why it is special:** the first typed handoff between cards: one card's output becomes another card's input through a shared contract, with no adapter per card.
-- **Blocked on:** the three explainer specs are not in the repo yet; commit them (with Adam's five edits, listed in `void.learning.md`) first.
+- **Specs:** the explainers in `domains/void.explainers.md`, the quiz, the challenge and the shared contract in `domains/void.learning.md`. Tests first, then build.
 - **First piece:** the gear explainer, its required tests written before its geometry (`explainer.gear-pair/<case>`).
 - **Done when:** the gear, moon and lock payloads each pass into the quiz and the challenge unchanged, and every required test is in the suite.
 - **claim:**

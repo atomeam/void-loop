@@ -6,33 +6,37 @@ Everything here works offline: no accounts, no tracking, no outside model call.
 **Build order:** gear explainer → moon explainer → lock explainer → quiz → five-minute challenge. Adam: "Revert fix stays at
 priority 1 alongside the gear miniature."
 
-**Blocked on:** the three explainer specs (gear pair, moon phases, lock cutaway) are not in this repo yet. Commit them
-here beside this file, with Adam's five edits applied (below), before building the explainers.
+**The three explainer specs** (gear pair, moon phases, lock cutaway) are in `domains/void.explainers.md`, with every edit
+below and the final clarifications applied.
 
 ## Rules for every card here
 
 - **Ports have one name each:** explainer cards give `explanation: text`, `observations: list`, `model: model`. Not
   `phaseObservations` or `pinObservations`. A card that takes `observations` never needs to know which card sent it.
 - **Tests first.** Every acceptance example is a required test named `<kind>/<case>` (for example
-  `explainer.gear-pair/16-driving-32`). Write the tests from the acceptance list before the geometry. Auto-merge is gated
+  `explainer.gear-pair/16-driving-32-half-turn-backward`). Write the tests from the acceptance list before the geometry. Auto-merge is gated
   only on tests that exist, so a card whose acceptance is prose only ships with no gate at all.
 - **Derive from one authoritative state, never accumulate per frame** (the gear angle, the challenge timer).
 
-### Adam's edits to the three explainer specs (apply before committing them)
+### Adam's edits to the three explainer specs (applied in void.explainers.md)
 
 1. Port names unified: gives `explanation: text`, `observations: list`, `model: model`. Rename `phaseObservations` and
    `pinObservations` to `observations`.
 2. Every acceptance example becomes a required test named `explainer.<kind>/<case>`.
 3. Moon: add the convention "right limb lit while waxing, northern-hemisphere view" to the spec's `conventions` block and
    to the on-scene schematic note.
-4. Gear: the centre distance is derived, `(driverTeeth + drivenTeeth) * toothPitch / 2`, and asserted in the
-   tooth-count-change test (no disconnected gears after the tooth count changes).
+4. Gear: the centre distance is derived: each pitch radius is `teeth * pitchDiameterPerTooth / 2` and
+   `centerDistance = driverPitchRadius + drivenPitchRadius`, asserted in the tooth-count-change test (no disconnected
+   gears after the tooth count changes). The ratio's unit is `turns-per-turn`.
 5. **Addenda: which items are assessable** (Adam, second review). Without them the quiz meets nothing eligible on day one
    and shows its empty state. Each explainer spec names its assessable items, with approved prompt wording:
-   - gear: `drivenTurnsPerDriverTurn` (number)
-   - moon: `illuminatedFraction` (number), `phaseName` (text; options: the eight phase names, new moon, waxing crescent,
-     first quarter, waxing gibbous, full moon, waning gibbous, last quarter, waning crescent)
-   - lock: `alignedPinCount` (number), `mechanismState` (text; options: the five mechanism states the lock spec names)
+   - gear: `drivenTurnsPerDriverTurn` (number), `rotationDirection` (text: same / opposite)
+   - moon: `illuminatedFraction` (number), `phaseName` (text; the eight phase names), `waxingOrWaning` (text; not
+     assessable exactly at new or full Moon)
+   - lock: `alignedPinCount` (number), `mechanismState` (text; withdrawn / inserting / blocked / ready / turned),
+     `canTurn` (text; a hypothetical about full insertion at the starting angle)
+6. Assessment prompts describe the captured snapshot, never "now"; the source fills in its `{placeholders}` on export.
+7. The lock has exactly five public states; full insertion is a condition, classified straight away as ready or blocked.
 
 ## 1. The shared observation contract
 
@@ -86,14 +90,17 @@ items:
   `label`) and `assessment.answerId`. Free-text grading stays out of version 1, so a text item without options is never
   a question.
 
-### Open points (settle in the contract before building the takers)
+### Decided (Adam, 2026-10-09)
 
-1. **What the tolerance is measured in.** Proposed: absolute, in the item's own `unit` (0.001 of a fraction). The test
+1. **Tolerance is absolute, in the item's own unit.** Each explainer sets it per item (void.explainers.md). The test
    `learning.quiz/numeric-answer-respects-unit-and-tolerance` asserts it.
-2. **"Nothing retained" against Void's stage.** Void saves every stage card with its state in the browser
+2. **The quiz and the challenge are ephemeral by default.** Void saves every stage card with its state in the browser
    (`a2m.void.state.v1`), and for someone signed in with a passkey the stage syncs to their other devices through the
-   server. So a quiz on the stage would keep its answers, and sync them, by default. These two cards must opt out: keep at
-   most the snapshot, never the answers, unless the visitor asks to keep them. A required test should assert it.
+   server. These two cards opt out of both. Only an explicit request from the visitor keeps (and syncs) the state of the
+   one card they chose; keeping one card never silently keeps another learning card. Explainers keep their state like
+   any other card.
+   - `*/state-not-persisted-by-default` covers both the browser save and the signed-in server sync.
+   - `*/explicit-keep-retains-only-that-card` covers the exception: the chosen card is kept and synced, the others are not.
 
 ## 2. Quiz card: "Quiz me on this"
 
@@ -166,6 +173,8 @@ learning.quiz/completion-reports-correct-and-missed
 learning.quiz/retry-includes-only-missed-items
 learning.quiz/reset-clears-attempt
 learning.quiz/keyboard-completes-entire-quiz
+learning.quiz/state-not-persisted-by-default
+learning.quiz/explicit-keep-retains-only-that-card
 ```
 
 ## 3. Five-minute challenge: "Give me five minutes with this"
@@ -215,7 +224,7 @@ rather than a second timing engine. The source miniature stays open to inspect.
 - Reaching zero ends it cleanly once, unfinished rounds included. Finishing every round early completes it at once.
 - Revealing an answer makes that round ineligible for a later scored prediction.
 - Reflections are optional and unscored. The summary describes results, not traits.
-- Refreshing or closing the page leaves no hidden memory behind.
+- Refreshing or closing the page leaves no hidden memory behind (see Decided, point 2).
 
 | Direction | Port | Type | Meaning |
 |---|---|---|---|
@@ -242,6 +251,8 @@ learning.five-minute-challenge/source-change-preserves-snapshot
 learning.five-minute-challenge/finish-now-reports-partial-results
 learning.five-minute-challenge/restart-clears-attempt
 learning.five-minute-challenge/keyboard-completes-entire-activity
+learning.five-minute-challenge/state-not-persisted-by-default
+learning.five-minute-challenge/explicit-keep-retains-only-that-card
 ```
 
 ## The first end-to-end handoffs
