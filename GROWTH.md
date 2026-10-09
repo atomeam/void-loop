@@ -17,6 +17,6 @@ node tools/grow.mjs idea "a tide chart for any harbour" --by grok
 | `idea` | from the idea stream, not built yet |
 | `finding` | research or a test turned something up |
 
-`--by` is who did it (a lowercase slug, `claude` by default); `--ref` an https link to the PR, commit or page. The time is now, in UTC. Write `what` in plain words, the way you would tell Adam.
+`--by` is who did it (a lowercase slug, `claude` by default); `--ref` an https link to the PR, commit or page. The time is now, in UTC. Write `what` in plain words, the way you would tell Adam. A line is written when the thing is live, not when it is started: no "WIP" or "needs a manual check" lines; add it in the PR that ships the change, or once it has shipped.
 
 The file is append-only: never edit or remove a line. `node tools/grow.mjs --check` validates it (`tools/checks.mjs` runs that through `tools/growth.test.mjs`), the shape is `void-live-deploy/void.growth.schema.json`, and `node tools/merge-main.mjs` keeps both sides' new entries when two branches add at once.
