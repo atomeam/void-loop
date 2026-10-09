@@ -142,7 +142,23 @@ Each item is something no other site does, built on what Void already has. Work 
 - **First example, the mystery gear pair:** the notebook records captured trials (driver teeth, driven teeth, driver turns, driven turns: 16/32/1/−0.5, 24/24/1/−1, 32/16/1/−2), then Void asks "before you turn it: with a 12-tooth driver and a 36-tooth driven gear, how far will the driven gear turn?" The visitor predicts, runs it, compares.
 - **Why it is special:** the visitor's own experiments become the learning material ("I predicted that, and now I can explain it"), with no new model or scene, and a new handoff: "turn my experiments into a quiz" (the notebook gives `observations` from captured trials only).
 - **Boundaries:** the explanation and ratio readouts are hidden in this mode only, never removed from the normal explainer; capturing a trial is explicit (no hidden interaction log); trials are ephemeral unless the visitor asks to keep them, as in #17; predictions are numeric or choice answers (no model grading); "Reveal" is always there, with no forced guessing and no penalty. Start with gears; extend only where a miniature supports real experiments.
-- **Contract needs (settle before building):** hiding the explanation and readouts has to be something the explainer itself declares (for example a taken `presentation: normal | discovery` port), because the notebook only reads `observations` and must not reach into the scene. The notebook takes `observations` in `live` mode (#18) and copies one item set per explicit capture.
+- **Contract (settled by Adam, 2026-10-09; in `void.explainers.md`'s shared section, built with #17):** every explainer takes `presentation` (text, `normal | discovery`, default `normal`, `live`), which changes only what it draws, never its state, controls, `observations` or `explanation`; and every explainer's observations include its inputs as non-assessed items, so a captured trial is reproducible. The notebook gives `presentation` (an ordinary handoff the other way: the explainer never knows who set it) and takes `observations` in `live` mode. No scene-control API: the explainer owns its presentation, the stage routes declared ports, the notebook owns only the trials the visitor captures.
+- **Notebook behaviour:** a live update only replaces the notebook's in-memory candidate, never adds a trial; Capture copies one coherent source revision (inputs and measured result) and later source changes never touch it; a prediction attaches to a trial only when the visitor submits it; the notebook gives `observations` of captured trials only, following the assessment contract, so "turn my experiments into a quiz" needs no adapter.
+- **Prediction wording (signed):** "For one positive driver turn, how many driven turns occur? Use a negative number for the opposite direction." It keeps the signed trial result apart from the gear's positive ratio magnitude.
+- **Open (for Adam):** the signed result needs a signed observation from the gear. The gear gives a positive `drivenTurnsPerDriverTurn` and a separate `rotationDirection`; for the notebook to record −0.5 or check a signed prediction it would have to combine them, which is gear-specific logic. Proposed: the gear also gives a non-assessed `drivenTurnsPerDriverTurnSigned` (turns-per-turn, negative for the opposite direction).
+- **Required tests (written first):**
+  ```text
+  discovery/gear-presentation-defaults-to-normal
+  discovery/gear-hides-answer-readouts-and-accessible-equivalents
+  discovery/gear-keeps-input-controls-and-motion-visible
+  discovery/presentation-does-not-change-state-or-observations
+  discovery/reveal-restores-normal-without-resetting-experiment
+  discovery/notebook-live-updates-do-not-create-trials
+  discovery/capture-copies-one-source-revision
+  discovery/source-changes-do-not-mutate-captured-trials
+  discovery/prediction-preserves-sign-and-unit-convention
+  handoff/discovery-captured-trials-to-quiz-no-adapter
+  ```
 - **First piece:** the mystery gear pair with a three-trial notebook and one prediction, its required tests written first, after #17's gear explainer and quiz.
 - **claim:** (later: after #17)
 

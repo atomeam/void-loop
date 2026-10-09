@@ -31,6 +31,32 @@ Common rules:
   after the visitor moves the source miniature.
 - **Tolerance is absolute, in the item's own unit** (set per item below).
 - Explainers keep their stage state like any other card; the quiz and the challenge do not, by default (void.learning.md).
+- **Every explainer takes `presentation`** (Adam, 2026-10-09, for discovery mode, frontier #19):
+
+  ```yaml
+  takes:
+    presentation:
+      type: text
+      meaning: Supported display mode; does not change physical state
+      constraints:
+        allowed: [normal, discovery]
+      default: normal
+      mode: live    # a later change (Reveal the rule) must arrive; a snapshot port would get one copy only
+  ```
+
+  It changes only what the explainer draws on its own card: never its state, its controls, or what its `observations`
+  and `explanation` ports give. So in discovery mode observations keep flowing with real values while the readouts are
+  hidden, and "Reveal the rule" just shows the `explanation` text that was being given all along. The visitor's "find
+  the rule" sets it to `discovery` through the stage; Reveal sets it back to `normal` the same way. Discovery hides the
+  answer, not the information needed to investigate it:
+  - hidden: the generated explanation, calculated readouts that give the answer away, and answer-bearing tooltips and
+    their accessible equivalents;
+  - kept: input controls and their values, the motion and markers, instructions, units, schematic and safety notes, and
+    an always-available "Reveal the rule".
+- **Every explainer's observations include its input parameters**, as non-assessed items, so a captured trial can be
+  reproduced: gear `driverTeeth`, `drivenTeeth`; moon `orbitAngleDegrees`; lock `keyPreset`, `insertionFraction`,
+  `plugAngleDegrees`. A future explainer lists its inputs the same way.
+- Required per explainer: `explainer.<kind>/discovery-hides-readouts-keeps-observations-and-inputs`.
 
 ---
 
@@ -101,6 +127,7 @@ per driven turn). Never an unlabeled "2:1".
 | Takes | `drivenTeeth` | number | Integer tooth count, 12–48 |
 | Takes | `driverAngle` | number | Degrees |
 | Takes | `driverSpeed` | number | Degrees per second |
+| Takes | `presentation` | text | normal / discovery (live); display only |
 | Gives | `drivenTurnsPerDriverTurn` | number | Positive ratio magnitude, turns-per-turn |
 | Gives | `explanation` | text | Explanation of current configuration |
 | Gives | `observations` | list | void.observations.v1 |
@@ -114,7 +141,10 @@ per driven turn). Never an unlabeled "2:1".
 - `rotationDirection`: text, options `same` / `opposite`, answerId `opposite`. Prompt: "Do the two gears turn in the
   same or opposite direction?"
 
-Not assessed: `driverTeeth`, `drivenTeeth`, `centerDistance`.
+Not assessed: `driverTeeth`, `drivenTeeth` (the inputs), `centerDistance`.
+
+In discovery mode the gear hides its explanation and both ratio readouts; tooth counts, rotation controls, the motion and
+the revolution markers stay.
 
 ### Required tests
 
@@ -126,6 +156,7 @@ Not assessed: `driverTeeth`, `drivenTeeth`, `centerDistance`.
 - `explainer.gear-pair/pause-stops-autoplay-manual-remains`
 - `explainer.gear-pair/long-run-no-ratio-drift`
 - `explainer.gear-pair/observations-schema-valid`
+- `explainer.gear-pair/discovery-hides-readouts-keeps-observations-and-inputs`
 
 ---
 
@@ -198,6 +229,7 @@ orbital period and 29.5-day phase cycle separately.
 | Takes | `orbitAngle` | number | Degrees under this card's convention |
 | Takes | `cycleDuration` | duration | Animation duration per cycle |
 | Takes | `phaseName` | text | Validated phase shortcut |
+| Takes | `presentation` | text | normal / discovery (live); display only |
 | Gives | `illuminatedFraction` | number | 0–1 |
 | Gives | `phaseName` | text | Current named phase |
 | Gives | `explanation` | text | Position, visibility, waxing/waning |
@@ -219,6 +251,8 @@ orbital period and 29.5-day phase cycle separately.
   - exactly new (0°) or full (180°): `assessment.enabled = false` for this item; the phase-name and fraction questions
     stay available there.
 
+Not assessed: `orbitAngleDegrees` (the input).
+
 ### Required tests
 
 - `explainer.moon-phases/0-new-0-percent`
@@ -232,6 +266,7 @@ orbital period and 29.5-day phase cycle separately.
 - `explainer.moon-phases/waxing-lit-limb-right`
 - `explainer.moon-phases/waxing-or-waning-not-assessed-at-new-or-full`
 - `explainer.moon-phases/observations-schema-valid`
+- `explainer.moon-phases/discovery-hides-readouts-keeps-observations-and-inputs`
 
 ---
 
@@ -305,6 +340,7 @@ straight away as `ready` or `blocked`.
 | Takes | `keyPreset` | text | Validated demonstration preset |
 | Takes | `insertionFraction` | number | 0–1 |
 | Takes | `requestedPlugAngle` | number | Degrees |
+| Takes | `presentation` | text | normal / discovery (live); display only |
 | Gives | `alignedPinCount` | number | Integer 0–5 |
 | Gives | `mechanismState` | text | withdrawn / inserting / blocked / ready / turned |
 | Gives | `explanation` | text | Why rotation is allowed or blocked |
@@ -322,6 +358,8 @@ straight away as `ready` or `blocked`.
   insertion. Prompt: "If this demonstration key is fully inserted and the plug is at its starting angle, will the plug
   be allowed to turn?" Answer: `yes` for `matching`; `no` for either mismatched preset.
 
+Not assessed: `keyPreset`, `insertionFraction`, `plugAngleDegrees` (the inputs).
+
 ### Required tests
 
 - `explainer.pin-lock/matching-key-all-five-aligned-rotation-allowed`
@@ -334,6 +372,7 @@ straight away as `ready` or `blocked`.
 - `explainer.pin-lock/cutaway-changes-presentation-not-state`
 - `explainer.pin-lock/key-removal-requires-plug-at-start`
 - `explainer.pin-lock/observations-schema-valid`
+- `explainer.pin-lock/discovery-hides-readouts-keeps-observations-and-inputs`
 
 ---
 
