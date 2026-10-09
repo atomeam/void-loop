@@ -257,11 +257,24 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch -q origin main
           git checkout -q -B main origin/main
+          # an earlier red run may already have taken it back (two merges tested in a row, both red for the same reason)
+          done_by=$(git log --format=%h --grep="^Void-auto-revert: $sha" -n 1 origin/main)
+          if [ -n "$done_by" ]; then
+            echo "::error title=Already reverted::$tested failed the suite, and the commit that broke it ($sha: $why) is already reverted on main ($done_by). Nothing more to take back; the next deploy of main is tested again."
+            echo "### $tested failed the suite; the commit that broke it ($sha) is already reverted on main ($done_by)" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
           if git rev-parse -q --verify "$sha^2" >/dev/null; then parent="-m 1"; else parent=""; fi
           if ! git revert --no-commit $parent "$sha"; then
             git revert --abort || true
             echo "::error title=Not reverted::$sha broke the suite ($why), and reverting it on main conflicts with what merged since. Revert it by hand."
             echo "### $sha broke the suite ($why); automatic revert conflicted: revert it by hand" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          if git diff --cached --quiet; then
+            git revert --abort || true
+            echo "::error title=Not reverted::$sha broke the suite ($why), but reverting it changes nothing on main any more. Look at what main carries now."
+            echo "### $sha broke the suite ($why); its revert is empty on main now: look by hand" >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
           git commit -q -m "Revert \"$subject\"" -m "It shipped and the full suite failed on main (verify-main, run ${{ github.run_id }}, testing $tested): $why. So it is taken back off the site." -m "Void-auto-revert: $sha"
