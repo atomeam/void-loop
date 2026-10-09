@@ -162,6 +162,21 @@ Each item is something no other site does, built on what Void already has. Work 
 - **First piece:** the mystery gear pair with a three-trial notebook and one prediction, its required tests written first, after #17's gear explainer and quiz.
 - **claim:** (later: after #17)
 
+## 20. "Explain it with sound": hear the ratio
+- **What:** an optional sound for an explainer, starting with the gear pair: a soft click each time a gear's revolution marker crosses its reference, so a visitor hears the driven gear click half as often as a 16-tooth driver turning a 32-tooth gear. Accepted by Adam, 2026-10-09, as a later item after #19, not a dependency of the gear explainer.
+- **Why it holds together:** the clicks come from marker crossings in the explainer's authoritative state, never from a timer of their own, so the sound cannot drift from what the scene shows.
+- **Contract:** every explainer that offers it takes `sound` (text, `off | on`, default `off`, `live`), presentation-only like `presentation`: it changes only what the explainer plays, never its state, controls, `observations` or `explanation`. No new output port: the ratio a visitor hears is the one already in `drivenTurnsPerDriverTurn`. Sounds are made on the spot with Web Audio (`skills/sfx.js`), no files.
+- **Does it help?** Asked by explicit feedback on the card once it is live, never by tracking.
+- **Required tests (gear first, then per explainer that offers sound):**
+  ```text
+  explainer.gear-pair/sound-off-by-default-explicit-start
+  explainer.gear-pair/sound-pause-stops-clicks
+  explainer.gear-pair/sound-drag-rate-limited
+  explainer.gear-pair/sound-clicks-per-revolution-equal-marker-crossings
+  ```
+- **First piece:** the gear pair. Build order unchanged.
+- **claim:** (later: after #19)
+
 ## Already built from the 2026-10-09 idea list
 - **Your own Void persists:** the stage is kept and syncs across devices with a passkey (plan item 6). What it does while you are away is #4.
 
