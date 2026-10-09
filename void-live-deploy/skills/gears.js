@@ -11,9 +11,11 @@ import { lift3d } from './lift3d.js';
 const now = () => Date.now() / 1000;
 const clampTeeth = (n) => Math.max(G.TEETH_MIN, Math.min(G.TEETH_MAX, Math.round(n)));
 
-/** what the ask means: null, or { driverTeeth?, drivenTeeth? } for a start */
+/** what the ask means: null, { driverTeeth?, drivenTeeth? } for a start, or { presentation } for discovery mode */
 export function gearsOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  // discovery mode (frontier #19): the answer is hidden, the gears and their controls stay; Reveal brings it back
+  if (/^(?:let\s+me\s+)?(?:find|figure\s+out|discover)\s+(?:the\s+)?(?:gear\s+)?(?:rule|ratio)(?:\s+(?:myself|for\s+the\s+gears|of\s+the\s+gears))?$|^(?:gears?|gear\s+pair)\s+(?:discovery|mystery)(?:\s+mode)?$|^(?:mystery|discovery)\s+gears?$/.test(t)) return { presentation: 'discovery' };
   if (/^(?:(?:please|can you|could you)\s+)?(?:explain|show(?:\s+me)?|teach\s+me|let\s+me\s+(?:play\s+with|turn|see))\s+(?:how\s+)?(?:two\s+|a\s+pair\s+of\s+|some\s+)?gears?(?:\s+(?:work|i\s+can\s+turn|turning|meshing|that\s+mesh))?$|^how\s+do\s+gears\s+work$|^(?:a\s+)?gear\s+(?:pair|train|ratio|ratios)(?:\s+explainer)?$|^gears$/.test(t)) return {};
   if (/^make\s+(?:one|the\s+(?:second|driven|other))\s+gear\s+(?:turn|spin|go)\s+twice\s+as\s+fast$/.test(t)) return { driverTeeth: 32, drivenTeeth: 16 };
   if (/^make\s+(?:one|the\s+(?:second|driven|other))\s+gear\s+(?:turn|spin|go)\s+half\s+as\s+fast$/.test(t)) return { driverTeeth: 16, drivenTeeth: 32 };
@@ -70,8 +72,12 @@ function mount(th, stageApi) {
   labels.append(labelsBox, 'labels: teeth, direction, ratio');
   const readouts = document.createElement('div'); readouts.className = 'gears-readouts'; readouts.style.cssText = 'margin-top:10px;display:grid;grid-template-columns:1fr auto;gap:2px 10px';
   const expl = document.createElement('div'); expl.className = 'gears-explanation g-status'; expl.setAttribute('aria-live', 'polite'); expl.style.cssText = 'display:block;margin-top:8px';
-  const note = document.createElement('div'); note.className = 'g-rules'; note.textContent = 'Simplified demonstration profile, not a manufacturing model. Meshing teeth are the same size, so a gear with more teeth is bigger and turns slower.';
-  el.append(wrap, sDriver.box, sDriven.box, turnRow, speedRow, labels, readouts, expl, note);
+  const reveal = btn('Reveal the rule', 'g-primary gears-reveal', () => commit(G.setPresentation(th.state, 'normal')));
+  reveal.style.marginTop = '10px';
+  const hint = document.createElement('div'); hint.className = 'gears-discovery g-status'; hint.style.cssText = 'display:block;margin-top:8px';
+  hint.textContent = 'Find the rule: change the teeth and count the turns with the red markers. How far does the driven gear turn for one turn of the driver?';
+  const note = document.createElement('div'); note.className = 'g-rules'; const NOTE = 'Simplified demonstration profile, not a manufacturing model.', RULE = ' Meshing teeth are the same size, so a gear with more teeth is bigger and turns slower.';
+  el.append(wrap, sDriver.box, sDriven.box, turnRow, speedRow, labels, readouts, expl, hint, reveal, note);
 
   // the flat drawing: rebuilt when the tooth counts change, posed from the rules every paint
   let built = '', gDriver = null, gDriven = null, raf = 0;
@@ -123,7 +129,11 @@ function mount(th, stageApi) {
     playBtn.textContent = G.isPlaying(s) ? 'Pause' : 'Play';
     speed.value = String(s.speed); labelsBox.checked = !!s.showLabels;
     readouts.textContent = '';
-    const rows = s.showLabels ? [['Driver teeth', s.driverTeeth], ['Driven teeth', s.drivenTeeth], ['Direction', 'opposite']].concat(v.readouts.map((r) => [r.label, r.value])) : [];
+    const discovery = s.presentation === 'discovery';
+    // discovery hides the answer (the ratios, the explanation, the direction a quiz asks about), never the inputs or the controls
+    const rows = s.showLabels ? [['Driver teeth', s.driverTeeth], ['Driven teeth', s.drivenTeeth]].concat(discovery ? [] : [['Direction', 'opposite']], v.readouts.map((r) => [r.label, r.value])) : [];
+    hint.style.display = reveal.style.display = discovery ? '' : 'none';
+    note.textContent = NOTE + (discovery ? '' : RULE); // the rule itself stays hidden until Reveal
     for (const [k, val] of rows) { const a = document.createElement('span'); a.style.color = 'var(--muted,#9a9aa2)'; a.textContent = k; const b = document.createElement('span'); b.style.fontWeight = '700'; b.textContent = String(val); readouts.append(a, b); }
     expl.textContent = v.explanation || '';
     poseFlat();
@@ -142,6 +152,14 @@ async function run(text, api) {
   const q = gearsOf(text);
   if (!q) return 'none';
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'gears');
+  if (q.presentation) {
+    // display only: the gears, their state and what the card gives a taker stay exactly as they were
+    if (existing) existing.state = G.setPresentation(existing.state || G.create(), q.presentation);
+    else api.summon('gears', { state: G.setPresentation(G.create(), q.presentation), center: true });
+    if (existing) { api.stage.save && api.stage.save(); api.stage.render(); if (api.stage.center) api.stage.center(existing.id); }
+    api.say('Find the rule · the ratios are hidden · turn the gears, count the marker turns · Reveal the rule when ready');
+    return 'gears';
+  }
   if (existing) {
     if (q.driverTeeth) { existing.state = G.setTeeth(existing.state || G.create(), q); api.stage.save && api.stage.save(); api.stage.render(); }
     if (api.stage.center) api.stage.center(existing.id); else api.stage.render();
@@ -154,7 +172,7 @@ async function run(text, api) {
 export default {
   name: 'gears',
   gearsOf,
-  examples: ['explain gears', 'show me two gears i can turn', 'how do gears work', 'gear ratio', 'make one gear turn twice as fast', 'what happens with 12 teeth and 24 teeth', 'gears'],
+  examples: ['find the rule', 'mystery gears', 'explain gears', 'show me two gears i can turn', 'how do gears work', 'gear ratio', 'make one gear turn twice as fast', 'what happens with 12 teeth and 24 teeth', 'gears'],
   nearMisses: ['gears of war', 'bike gears', 'shift gears', 'gear up', 'what is a gear', 'buy gear'],
   match(lower, text) { return !!gearsOf(text); },
   run,
