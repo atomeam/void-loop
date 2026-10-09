@@ -18,6 +18,7 @@
  * PCF shadows, a cool sky fill, and blurred contact shadows under the model. Models: GLTFLoader with meshopt and KTX2.
  * three.js r180 is vendored under /vendor/three-r180 (add-ons import it by relative path, so they resolve without an importmap).
  */
+import * as guard from './guard3d.js';
 const V = '/vendor/three-r180/';
 export const THREE_URL = V + 'build/three.module.min.js';
 export const MOTION_KEY = 'a2m.void.motion.v1';
@@ -59,8 +60,13 @@ export function engine() {
     room.traverse((o) => { if (o.geometry) o.geometry.dispose(); if (o.material) o.material.dispose(); }); pmrem.dispose();
     const gltf = new lib.GLTFLoader(); gltf.setMeshoptDecoder(lib.MeshoptDecoder);
     const ktx2 = new lib.KTX2Loader().setTranscoderPath(V + 'addons/libs/basis/').detectSupport(renderer); gltf.setKTX2Loader(ktx2);
-    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); });
-    return { lib, THREE, renderer, canvas, env, gltf, ktx2, w: 0, h: 0, models: new Map(), textures: new Map(), maxAniso: renderer.capabilities.getMaxAnisotropy() };
+    try { const gl = renderer.getContext(), dbg = gl.getExtension('WEBGL_debug_renderer_info'); guard.setGpu(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)); } catch (_) {}
+    const E = { lib, THREE, renderer, canvas, env, gltf, ktx2, w: 0, h: 0, models: new Map(), textures: new Map(), maxAniso: renderer.capabilities.getMaxAnisotropy(), lost: false };
+    // a lost context (a GPU reset, the driver's watchdog) used to leave every miniature dead until a reload: wait it out, then
+    // recompile and redraw them all (three.js rebuilds its own GPU state when the context comes back)
+    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); E.lost = true; guard.contextLost(); });
+    canvas.addEventListener('webglcontextrestored', () => { E.lost = false; guard.contextRestored(); for (const h of live.values()) { h.needsCompile = true; h.dirty = true; for (const c of h.contacts) c.dirty = true; } wake(); });
+    return E;
   })().catch((e) => { engineP = null; throw e; });
   return engineP;
 }
@@ -103,7 +109,7 @@ function contactShadows(E, size, { res = 512, opacity = 0.62, blur = 3, darkness
     blurPlane.visible = false;
   };
   return {
-    group, plane, dirty: true,
+    group, plane, dirty: true, materials: [plane.material, depth, hB, vB], // compiled ahead of the first draw (warmUp)
     render(r, scene) {
       const bg = scene.background, cc = r.getClearAlpha(); scene.background = null; plane.visible = false;
       const hidden = []; scene.traverse((o) => { if ((o.userData.noContactShadow || exclude.includes(o)) && o.visible) { o.visible = false; hidden.push(o); } });
@@ -152,10 +158,22 @@ function loop(t) {
     if (h.anim.length) { for (const a of h.anim.splice(0)) a(); dirty = true; for (const c of h.contacts) c.dirty = true; }
     if (h.inst && h.inst.tick) { try { const r = h.inst.tick(dt, t / 1000); if (r !== false) { dirty = true; if (r !== 'view') for (const c of h.contacts) c.dirty = true; } /* 'view': redraw, shadows unchanged */ } catch (e) { console.warn('[miniature ' + h.kind + '] tick', e); h.inst.tick = null; } again = true; }
     if (h.moving) again = true;
-    if (dirty) draw(h);
-    if (h.dirty) again = true;
+    if (dirty && !h.E.lost) { if (h.needsCompile && h.E.renderer.compileAsync) { h.dirty = true; warmUp(h); } else if (!h.compiling) draw(h); }
+    if (h.dirty && !h.compiling && !h.E.lost) again = true;
   }
   if (again) raf = requestAnimationFrame(loop); else last = 0;
+}
+// Shaders compile before a miniature draws, off the main thread where the browser can (KHR_parallel_shader_compile, in
+// Chrome on a real GPU). Compiling them inside the first render froze the whole page for seconds per board (every 3D game
+// on first open, and again on its first move), long enough on some GPUs for the driver to reset and the page to crash.
+function warmUp(h) {
+  if (h.compiling) return;
+  h.compiling = true; h.needsCompile = false;
+  const { renderer: r, THREE } = h.E, extra = new THREE.Scene(); // the contact-shadow passes, drawn with materials no mesh in the scene wears
+  for (const c of h.contacts) for (const m of c.materials) extra.add(new THREE.Mesh(c.plane.geometry, m));
+  Promise.all([r.compileAsync(h.scene, h.camera), extra.children.length ? r.compileAsync(extra, h.camera, h.scene) : null])
+    .catch((e) => console.warn('[miniature ' + h.kind + '] compile', e))
+    .finally(() => { h.compiling = false; h.dirty = true; wake(); });
 }
 function draw(h) {
   const E = h.E, r = E.renderer, pw = h.canvas.width, ph = h.canvas.height;
@@ -208,10 +226,10 @@ export async function mountMiniature(host, kind, data = {}, opts = {}) {
     controls.minPolarAngle = opts.minPolar ?? 0.12; controls.maxPolarAngle = opts.maxPolar ?? 1.38;
   }
   const h = {
-    key, kind, E, wrap, canvas, scene, camera, controls, root, keyLight, sky, data, draws: 0, gone: 0, dirty: true, visible: true, ready: false,
+    key, kind, E, wrap, canvas, scene, camera, controls, root, keyLight, sky, data, draws: 0, gone: 0, dirty: true, visible: true, ready: false, needsCompile: true, compiling: false,
     anim: [], moving: false, exposure: opts.exposure ?? 1.0, contact: null, contacts: [], cssW: 0, cssH: 0, inst: null, taps: [],
     attach(host2) { if (host2 && wrap.parentNode !== host2) host2.appendChild(wrap); h.dirty = true; wake(); },
-    update(d) { h.data = d; if (h.inst && h.inst.update) { try { h.inst.update(d); } catch (e) { console.warn('[miniature ' + kind + '] update', e); } } h.requestRender(); },
+    update(d) { h.data = d; h.needsCompile = true; if (h.inst && h.inst.update) { try { h.inst.update(d); } catch (e) { console.warn('[miniature ' + kind + '] update', e); } } h.requestRender(); },
     requestRender(opts2 = {}) { h.dirty = true; if (opts2.shadows !== false) for (const c of h.contacts) c.dirty = true; wake(); },
     /** Another blurred contact shadow, e.g. pieces on a board: { y, size, exclude: [objects that must not cast it], opacity, blur, darkness, height }. */
     addContactShadow(o = {}) { const c = contactShadows(E, o.size || 1, o); c.group.position.y = o.y || 0; if (o.x || o.z) c.group.position.set(o.x || 0, o.y || 0, o.z || 0); scene.add(c.group); h.contacts.push(c); h.requestRender(); return c; },

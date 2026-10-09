@@ -4,7 +4,8 @@
 # (tools/review-post.mjs), and then is a merge gate: the "void-review" check fails while the added lines carry a bug or a
 # risk. A line that is right as written says so with a "void-review: ok" comment. No npm install, no browser: the whole
 # job is a checkout and one node script, so it reports long before the suite (test-and-deploy) does.
-# CodeRabbit still reviews as before; .github/workflows/automerge.yml waits for its threads to be answered too.
+# It is the main review and the one check a PR waits on before it merges (automerge.yml); the suite runs on main after the
+# deploy. Every other reviewer (CodeRabbit) is an extra: reported, never waited on, never blocking.
 name: Void review
 
 on:

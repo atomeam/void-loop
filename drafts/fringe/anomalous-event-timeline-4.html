@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · one odd thing after another (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+canvas{width:100%;height:90px;background:#0b0b0e;border:1px solid rgba(255,255,255,.12);border-radius:8px}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>one odd thing after another · draft · not published</h1>
+  <p class="note">Tap "something odd just happened" whenever something strikes you as strange: a coincidence, a déjà vu, a light you can't place. Over days the page asks one question of your log: do your odd moments come in bursts more than chance would give? If they arrived at random, the number per day would vary about as much as its average (an index of dispersion near 1, Fisher's test). If noticing one makes the next more likely, they bunch (a self-exciting process, Hawkes, 1971), and the index climbs above 1. Bunching would say more about attention than about the world; it is a hypothesis about your own noticing, nothing more. Your log stays in this browser.</p>
+  <div class="row"><button id="tap" type="button">something odd just happened</button><button id="undo" type="button">undo the last one</button></div>
+  <canvas id="c" width="600" height="90" aria-label="your odd moments by day"></canvas>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.oddlog.v1',DAY=86400000,st={at:[]};
+  function el(id){return document.getElementById(id)}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.at))st.at=j.at.filter(function(x){return typeof x==='number'&&isFinite(x)}).sort(function(a,b){return a-b})}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({at:st.at.slice(-2000)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your log (storage is full or blocked): it counts for now but will be gone after a reload';w.hidden=false}}
+  // counts per whole day from the first entry to today (days with none count as 0)
+  function perDay(at,now){if(!at.length)return[];var d0=Math.floor(at[0]/DAY),d1=Math.floor(now/DAY),c=[];for(var d=d0;d<=d1;d++)c.push(0);at.forEach(function(t){var i=Math.floor(t/DAY)-d0;if(i>=0&&i<c.length)c[i]++});return c}
+  // Fisher's index of dispersion: sample variance over mean; about 1 for events at random (Poisson), above 1 when they bunch
+  function dispersion(c){var n=c.length;if(n<2)return null;var m=c.reduce(function(s,x){return s+x},0)/n;if(!m)return null;var v=c.reduce(function(s,x){return s+(x-m)*(x-m)},0)/(n-1);return{index:v/m,chi2:(n-1)*v/m,df:n-1,mean:m}}
+  // one-sided p for the chi-square statistic (Wilson-Hilferty normal approximation): small = more bunched than chance
+  function pBunch(chi2,df){var z=(Math.pow(chi2/df,1/3)-(1-2/(9*df)))/Math.sqrt(2/(9*df));return 0.5*erfc(z/Math.SQRT2)}
+  function erfc(x){var t=1/(1+0.5*Math.abs(x)),y=t*Math.exp(-x*x-1.26551223+t*(1.00002368+t*(0.37409196+t*(0.09678418+t*(-0.18628806+t*(0.27886807+t*(-1.13520398+t*(1.48851587+t*(-0.82215223+t*0.17087277)))))))));return x>=0?y:2-y}
+  var g=el('c').getContext('2d');
+  function draw(c){g.clearRect(0,0,600,90);if(!c.length)return;var w=Math.max(2,Math.min(30,600/c.length)),mx=Math.max.apply(null,c)||1,show=c.slice(-Math.floor(600/w));g.fillStyle='#9ec8ff';show.forEach(function(v,i){var h=v/mx*80;g.fillRect(i*w+1,88-h,w-2,h)})}
+  function score(){var now=Date.now(),c=perDay(st.at,now),d=dispersion(c);draw(c);
+    if(!st.at.length){el('score').textContent='';return}
+    var lines=[st.at.length+' odd moments over '+c.length+' day'+(c.length===1?'':'s')];
+    if(d)lines.push('index of dispersion '+d.index.toFixed(2)+' (1 is chance; above 1 bunches)'+(c.length>=14?' · chance of this much bunching if they were random: '+pBunch(d.chi2,d.df).toFixed(3):''));
+    if(c.length<14)lines.push('about two weeks of logging before the index means much');
+    el('score').textContent=lines.join('\n')}
+  el('tap').addEventListener('click',function(){st.at.push(Date.now());save();el('state').textContent='logged';score()});
+  el('undo').addEventListener('click',function(){if(!st.at.length){el('state').textContent='nothing to undo';return}st.at.pop();save();el('state').textContent='removed the last one';score()});
+  score();
+  function rng(seed){var a=seed>>>0;return function(){a=(a+0x6d2b79f5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+  // made-up logs: random arrivals give an index near 1; a self-exciting log (each event may spark more within a day) bunches
+  function poissonLog(days,rate,r){var at=[],t=0;for(;;){t+=-Math.log(1-r())/rate*DAY;if(t>days*DAY)break;at.push(t)}return at}
+  function hawkesLog(days,base,branch,r){var at=poissonLog(days,base,r),q=at.slice();while(q.length){var p=q.pop(),k=0,L=Math.exp(-branch),u=r();var prob=L;while(u>prob){k++;L*=branch/k;prob+=L}for(var i=0;i<k;i++){var c=p+(-Math.log(1-r()))*DAY*0.3;if(c<days*DAY){at.push(c);q.push(c)}}}return at.sort(function(a,b){return a-b})}
+  function selftest(){
+    var r=rng(11),pc=perDay(poissonLog(200,2,r),199*DAY),pd=dispersion(pc);if(Math.abs(pd.index-1)>0.3)return'random arrivals should give an index near 1, got '+pd.index;
+    var hc=perDay(hawkesLog(200,1,0.6,r),199*DAY),hd=dispersion(hc);if(!(hd.index>1.4))return'a self-exciting log should bunch, got '+hd.index;
+    if(!(pBunch(hd.chi2,hd.df)<0.01))return'the bunched log should be unlikely by chance';
+    if(!(pBunch(pd.chi2,pd.df)>0.01))return'the random log should not look bunched';
+    if(dispersion([3])!==null||dispersion([0,0,0])!==null)return'too little data should give no index';
+    var c=perDay([0,1000,DAY*2+5],DAY*2+10);if(c.join()!=='2,0,1')return'perDay gave '+c.join();
+    return true}
+  window.__oddlog={perDay:perDay,dispersion:dispersion,pBunch:pBunch,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

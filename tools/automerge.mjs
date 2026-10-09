@@ -1,8 +1,8 @@
 // Merge on GitHub's side, so no session has to sit and watch a PR (.github/workflows/automerge.yml runs this on every CI
 // finish, every review and every answer to one). It looks at each open PR labelled "automerge" (or the one PR given),
 // asks tools/pr-ready.mjs whether it is ready, and merges the ready ones. A merge made with the workflow's own token does
-// not start the push-to-main deploy, so it starts that deploy itself (workflow_dispatch, after_merge=true: it deploys
-// without re-running the suite the PR head already passed).
+// not start the push-to-main deploy, so it starts that deploy itself (workflow_dispatch, after_merge=true: it deploys at
+// once, then runs the full suite on what shipped and reverts it if it fails).
 //   node tools/automerge.mjs                 every open PR labelled automerge (in the workflow)
 //   node tools/automerge.mjs 205             just that one
 //   node tools/automerge.mjs 205 --label     from a session: add the label and go (GitHub merges it when it is ready)
@@ -17,7 +17,7 @@ const gh = (path) => JSON.parse(run(['api', path]) || 'null');
 if (process.argv.includes('--label')) {
   if (!one) { console.error('usage: node tools/automerge.mjs <pr> --label'); process.exit(2); }
   run(['api', '-X', 'POST', `repos/${repo}/issues/${one}/labels`, '--input', '-'], JSON.stringify({ labels: [LABEL] }));
-  console.log(`#${one} labelled ${LABEL}: GitHub merges it once CI is green, Void's review is clean and CodeRabbit is settled`);
+  console.log(`#${one} labelled ${LABEL}: GitHub merges it as soon as Void's review is clean; the suite runs on main after the deploy`);
   process.exit(0);
 }
 
@@ -27,7 +27,7 @@ for (const p of prs) {
   if (!p || p.state !== 'open' || !(p.labels || []).some((l) => l.name === LABEL)) continue;
   if (p.head.repo && p.head.repo.full_name !== repo) { console.log(`#${p.number}: from a fork, never merged automatically`); continue; }
   const r = readiness(gh, repo, p.number);
-  console.log(`#${p.number}: ${r.state} (${r.why})`);
+  console.log(`#${p.number}: ${r.state} (${r.why})` + (r.extra ? ' · ' + r.extra : ''));
   if (r.state !== 'merge') continue;
   try {
     if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);

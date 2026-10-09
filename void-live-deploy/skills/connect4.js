@@ -19,7 +19,7 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card game-card connect4-card';
   el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(400px, calc(100vw - 20px))';
-  el.innerHTML = '<div class="g-head"><span class="g-title">Connect Four</span><span class="g-sub">you are red</span></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title">Four in a Row</span><span class="g-sub">you are red</span></div>';
   const wrap = document.createElement('div'); wrap.className = 'g-board';
   const frame = document.createElement('div'); frame.className = 'c4-frame';
   frame.style.cssText = 'display:grid;grid-template-columns:repeat(7,1fr);gap:4px;background:#1f4fbf;border-radius:10px;padding:6px';
@@ -56,7 +56,7 @@ function mount(th, stageApi) {
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   voidPlays();
-  lift3d(th, stageApi, el, { kind: 'connect4', board: frame, title: 'Connect Four', W: 440, H: 380,
+  lift3d(th, stageApi, el, { kind: 'connect4', board: frame, title: 'Four in a Row', W: 440, H: 380,
     snapshot: () => ({ board: th.state.board.slice(), last: th.state.last, win: th.state.over && th.state.over !== 'draw' ? K.winLine(th.state.board, th.state.over === 'you' ? 1 : 2) : null }) });
 }
 
@@ -65,7 +65,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'connect4');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'connect4'; }
   api.summon('connect4', { state: K.create(), x: Math.max(10, Math.round(innerWidth / 2 - 380)), y: 50 });
-  api.say('Connect Four · you are red · tap a column');
+  api.say('Four in a Row (plays like Connect Four) · you are red · tap a column');
   return 'connect4';
 }
 

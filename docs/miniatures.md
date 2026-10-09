@@ -2,7 +2,8 @@
 
 Every card can show a small, detailed 3D version of itself that behaves like the real thing (a clock whose hands keep
 time, a weather diorama that rains or shines). This file is the API for building one. The engine is
-`void-live-deploy/skills/scene3d.js`; the template miniature is `void-live-deploy/skills/mini/sample.js`.
+`void-live-deploy/skills/scene3d.js`; the template miniature is `void-live-deploy/skills/mini/sample.js`, and the reference for
+how a finished one behaves is the countdown's calendar (see "The reference miniature" below).
 
 ## Quick start
 
@@ -110,6 +111,27 @@ any card whose miniature takes input:
 - Search work that takes more than a frame goes in a Web Worker (`skills/chess-worker.js`) or waits until the
   animation has landed, so the pieces never stutter.
 
+
+## The reference miniature: the countdown's calendar
+
+`skills/mini/countdown.js` is the reference for how a living miniature behaves (the gear-pair explainer, frontier #17, is the reference for explainers, with its own required tests): copy its shape, and run a new kind through the same
+behaviour contract before it ships. It is small (one file, built from code, no downloads), its state comes only from the
+card's data, and every rule below is checked in `tools/test_3d.mjs` by `miniContract(fresh, { kind, a, b })`.
+
+| rule | how the countdown does it | how the contract checks it |
+|---|---|---|
+| state comes from data only | `days` from `data.target` (local date) or `data.days`; nothing else is kept | `state()` after mounting with `a`, then with `b` |
+| a change is shown, not just stored | the old leaf flips up over the rings and the new count is underneath | the canvas pixels differ after the update |
+| re-render keeps the live one | the card mounts again with the same key | the same handle comes back (nothing rebuilt) |
+| idle costs nothing | `tick` returns `false` once the flip has landed | no redraws for 1.5 s once settled |
+| reduced motion | `ctx.still`: the new count lands at once, no flip | under `prefers-reduced-motion` the state is settled right after the update |
+| it cleans up | `dispose` frees its geometries, materials and canvas textures | `unmountMiniature` removes it from the live list |
+| it can be inspected | `state()` returns `{ days, label, flipping }` | the contract reads it with `window.__voidMini.state(key)` |
+
+To check a new kind: give it a `state()` that returns what it shows (plus a `flipping`-style flag while it animates; pass
+its name as `settledWhen`), then add one `miniContract` call in `tools/test_3d.mjs` with two data values that should look
+different. A kind that carries live information (a clock's hands) redraws while idle by design; check its idle rule
+yourself instead of asserting `idleDraws === 0`.
 
 ## Card miniatures that ship today
 

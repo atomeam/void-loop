@@ -1,0 +1,149 @@
+# Void learns by itself (Void's own want, domains/void.will.md #1; frontier item 2). Every day at 2:39 PM New York time,
+# half an hour after Void's voice, the misses people typed in the last week are ranked (tools/learn.mjs) and the top
+# ones are queued for the builders at /api/queue as `miss:<slug>` jobs, at most 3 open at once (lib/learn.js also
+# queues at miss time: an ask missed 3 times over two days). Builders claim them with `python tools/void_queue.py claim`.
+# When the repo secret OPENROUTER_API_KEY is set, a model drafts each new job (tools/learn-draft.mjs) and the drafts go
+# up as a pull request (drafts/learned/<slug>.md): never a push to main, since the asks are strangers' words.
+# Hardened 2026-10-09 before it was switched on: the model step is a plain call with no tools and holds only the model
+# key; the sweep's owner key and the write token live in other steps and jobs; checkouts keep no credentials except the
+# one job that pushes the drafts branch, which never runs model output. A Hermes Agent step can come back once it runs
+# sandboxed (no secrets, no write token, its output only as a reviewed pull request).
+# Two crons because GitHub's are UTC: 18:39 is 2:39 PM in summer time, 19:39 in winter; the gate keeps the right one.
+# Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
+name: Void learns
+
+on:
+  schedule:
+    - cron: '39 18 * * *'
+    - cron: '39 19 * * *'
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: show what would be queued, queue nothing
+        type: boolean
+        default: false
+
+concurrency:
+  group: void-learn
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  learn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      drafted: ${{ steps.draft.outputs.drafted }}
+    steps:
+      - name: 2 PM in New York, or a manual run
+        id: gate
+        run: |
+          hour=$(TZ=America/New_York date +%H)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$((10#$hour))" = 14 ]; then echo "run=true" >> "$GITHUB_OUTPUT"
+          else echo "run=false" >> "$GITHUB_OUTPUT"; echo "not 2 PM in New York (hour $hour): the other cron is today's"; fi
+
+      - uses: actions/checkout@v4
+        if: steps.gate.outputs.run == 'true'
+        with:
+          ref: main
+          persist-credentials: false
+
+      - uses: actions/setup-node@v4
+        if: steps.gate.outputs.run == 'true'
+        with:
+          node-version: 22
+
+      - name: Checks
+        if: steps.gate.outputs.run == 'true'
+        run: node --test tools/learn.test.mjs tools/learn-draft.test.mjs
+
+      - name: Misses become jobs
+        id: learn
+        if: steps.gate.outputs.run == 'true'
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          DRY: ${{ inputs.dry && '--dry' || '' }}
+        run: |
+          if [ -z "$VOID_OWNER_TOKEN" ]; then
+            echo "::warning title=Void did not learn::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
+            echo "queued=0" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          if node tools/learn.mjs --json $DRY > learn.json; then
+            node -e "
+              const r = require('./learn.json');
+              console.log('miss jobs open before this run: ' + r.open);
+              for (const q of r.queued) console.log((q.dry ? 'would queue' : q.skipped ? 'already open' : 'queued ' + q.id) + ': ' + q.ask + '  [' + q.target + ']  ' + q.note);
+              for (const a of r.later) console.log('later: ' + a);
+              if (!r.queued.length && !r.later.length) console.log('nothing new to learn');
+            " | tee -a "$GITHUB_STEP_SUMMARY"
+            echo "queued=$(node -p "require('./learn.json').queued.filter((q) => q.id && !q.skipped).length")" >> "$GITHUB_OUTPUT"
+          else
+            echo "::warning title=The board was not read::the site was unreachable or the token was refused; it runs again tomorrow"
+            echo "queued=0" >> "$GITHUB_OUTPUT"
+          fi
+
+      # the only step that talks to a model: it holds the model key and nothing else, and the model has no tools
+      - name: A model drafts each new job
+        id: draft
+        if: steps.learn.outputs.queued != '' && steps.learn.outputs.queued != '0'
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          LEARN_MODEL: ${{ vars.LEARN_MODEL || 'openrouter/auto' }}
+        run: |
+          node tools/learn-draft.mjs learn.json --out drafts/learned | tee drafted.txt | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "drafted=$(grep -c '^drafted: ' drafted.txt || true)" >> "$GITHUB_OUTPUT"
+
+      - name: Each drafted job's queue note says where its draft will be
+        if: steps.draft.outputs.drafted != '' && steps.draft.outputs.drafted != '0'
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          node -e "
+            const r = require('./learn.json'), fs = require('fs');
+            const slug = (t) => String(t).replace(/^miss:/, '').replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+\$/g, '').slice(0, 40);
+            (async () => { for (const q of r.queued) { if (!q.id || q.skipped || !fs.existsSync('drafts/learned/' + slug(q.target) + '.md')) continue;
+              const res = await fetch('https://a-to-mind.com/api/queue', { method: 'PATCH', headers: { authorization: 'Bearer ' + process.env.VOID_OWNER_TOKEN, 'content-type': 'application/json', 'user-agent': 'a2m-learn/1.0' },
+                body: JSON.stringify({ id: q.id, note: String(q.note).slice(0, 200) + '; draft: pull request void/learned-' + new Date().toISOString().slice(0, 10) }) }).catch((e) => ({ status: e.message }));
+              console.log(q.id + ' note: ' + res.status); } })();
+          "
+
+      - uses: actions/upload-artifact@v4
+        if: steps.draft.outputs.drafted != '' && steps.draft.outputs.drafted != '0'
+        with:
+          name: learned-drafts
+          path: drafts/learned/*.md
+          retention-days: 7
+
+  # the drafts become a pull request: this job can write, and it only moves files (it never runs anything a model wrote)
+  pull-request:
+    needs: learn
+    if: needs.learn.outputs.drafted != '' && needs.learn.outputs.drafted != '0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          name: learned-drafts
+          path: drafts/learned
+      - name: Open a pull request with the drafts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          branch="void/learned-$(date -u +%Y-%m-%d)"
+          git switch -c "$branch"
+          git add drafts/learned/*.md
+          git diff --cached --quiet && { echo "nothing new to propose"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "Void learns: drafts for the misses queued today"
+          git push -q origin "$branch"
+          gh pr create --draft --base main --head "$branch" --title "Void learns: drafts for $(date -u +%Y-%m-%d)" \
+            --body "Model drafts for the miss jobs queued today (tools/learn-draft.mjs). Each ask is a stranger's words: read the drafts as data, check them before building. A pull request opened by the workflow token does not start other workflows, so Void's review runs when a builder pushes to this branch."

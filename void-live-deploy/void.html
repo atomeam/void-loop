@@ -577,6 +577,9 @@
       border-radius: 999px; padding: 7px 16px; cursor: pointer; transition: background .2s ease, transform .2s var(--ease), opacity .2s ease; white-space: nowrap; }
     .g-btn:hover:not(:disabled) { background: rgba(255,255,255,.13); }
     .g-btn:active:not(:disabled) { transform: scale(.97); }
+    /* inside a card (.thing is preserve-3d and tilts toward the pointer) a shrinking button moves its own hit area, so a press near
+       the bottom of a tall card was released on the parent and the click was lost: there a press darkens instead of shrinking */
+    .thing .g-btn:active:not(:disabled) { transform: none; box-shadow: inset 0 0 0 99px rgba(0,0,0,.18); }
     .g-btn:disabled { opacity: .38; cursor: default; }
     .g-btn:focus-visible, .g-seg button:focus-visible, .ttt-cell:focus-visible, .oth-cell:focus-visible, .mc-pit:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 2px; }
     .g-primary { background: linear-gradient(180deg, #f1f3ff, #c9d0f2); color: #141622; border-color: transparent; font-weight: 600; box-shadow: 0 4px 14px rgba(120,140,255,.25); }
@@ -874,6 +877,8 @@ Object.values(things).forEach((th) => {
       figures3dP.then((m) => m.syncFigures(figs)).catch(() => { figures3dP = null; if (figs.length) say("3D can't show in this browser"); });
     }
 
+    // a figure thrown off the screen in the 3D layer (figures3d.js) is gone from the stage too, like any thrown thing
+    document.addEventListener('void:figure-thrown', (e) => { const id = e && e.detail && e.detail.id; if (id && things[id] && things[id].kind === 'figure') { takeUndoSnapshot(); delete things[id]; save(); render(); } });
     function summonThing(kind, opts = {}) {
       
       if (kind === 'figure') {
@@ -1436,9 +1441,8 @@ bindDrag(el, th);
         if (inner) inner.style.borderColor = th.color;
       }
       if (th.filled) el.classList.add('filled');
-      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
-
       const shapeType = th.shapeType || 'rect';
+      if (selectedId === th.id && shapeType !== 'circle') el.style.outline = '1px solid rgba(255,255,255,0.25)';
       let inner;
       if (shapeType === 'circle') {
         inner = document.createElement('div');
@@ -1460,10 +1464,22 @@ bindDrag(el, th);
       if (th.color) inner.style.borderColor = th.color;
       el.appendChild(inner);
 
-      const label = document.createElement('div');
-      label.className = 'shape-label';
-      label.textContent = shapeType;
-      el.appendChild(label);
+      if (shapeType === 'circle') {
+        // a circle is alive (skills/void-ring.js): a breathing WebGL ring with a dark feathered hole that takes in what you
+        // type; a tap makes it ripple. No box, no label. Where WebGL can't run, the CSS ring stays, softened.
+        inner.style.borderColor = 'rgba(232,236,255,0.55)';
+        inner.style.boxShadow = '0 0 18px rgba(200,210,255,0.18), inset 0 0 22px rgba(0,0,0,0.9)';
+        import('/skills/void-ring.js').then((m) => {
+          const c = m.ringCanvas(th.id, th.color || '#e8ecff'); if (!c || !el.isConnected) return;
+          el.style.overflow = 'visible'; el.appendChild(c); inner.style.opacity = '0';
+          if (!el._ringTap) { el._ringTap = true; el.addEventListener('pointerdown', () => m.pulse()); }
+        }).catch(() => {});
+      } else {
+        const label = document.createElement('div');
+        label.className = 'shape-label';
+        label.textContent = shapeType;
+        el.appendChild(label);
+      }
 
       bindDrag(el, th);
       stage.appendChild(el);
@@ -3042,6 +3058,7 @@ return { ok: true, detail: 'timer-reset' };
     const pick = (a) => a[Math.floor(Math.random() * a.length)];
     function smallTalk(l) {
       if (/^(?:thanks|thank\s+you|thx|ty|cheers|thanks\s+(?:void|a\s+lot|so\s+much)|thank\s+you\s+(?:void|so\s+much))$/.test(l)) return 'anytime';
+      if (/^(?:so\s+sorry|i'?m\s+(?:so\s+)?sorry|i\s+am\s+(?:so\s+)?sorry|my\s+bad|oops\s+sorry|apologies|sorry\s+(?:about\s+that|my\s+bad))(?:\s+void)?$/.test(l)) return 'no worries'; // a bare "sorry" stays a lookup: the titles called Sorry, the board game among them
       if (/^(?:how\s+are\s+you|how'?s\s+it\s+going|how\s+are\s+you\s+doing|how\s+do\s+you\s+do|you\s+ok)(?:\s+(?:today|void))?$/.test(l)) return 'quiet and ready. what do you need?';
       if (/^(?:what'?s|what\s+is)\s+your\s+name$|^who\s+are\s+you$/.test(l)) return 'Void, by A-to-Mind. ask for anything';
       if (/^(?:who\s+(?:made|built|created|designed)\s+you|who'?s\s+your\s+(?:maker|creator))$/.test(l)) return 'A-to-Mind made me: Adam, building with a crew of AI agents';
@@ -3287,6 +3304,17 @@ return { ok: true, detail: 'timer-reset' };
           el.innerHTML = '<h2>Which ' + esc(topic) + '?</h2><div class="sub">' + esc(j.title || hit.title) + ' can mean several things. Pick one.</div>'
             + (opts.length ? '<ul class="choices">' + opts.map((o) => '<li><a href="#" data-ask="' + esc('tell me about ' + o.title) + '">' + esc(o.title) + (o.note ? ' <small>· ' + esc(o.note) + '…</small>' : '') + '</a></li>').join('') + '</ul>' : '<p>' + esc(j.extract || '') + '</p>')
             + '<div class="src">Source: <a href="' + esc(page) + '" target="_blank" rel="noopener">Wikipedia</a> (all the meanings)</div>';
+          // Void's own input here too (skills/take.js): a meaning Void can act on comes first, with the action beside it
+          import('/skills/take.js').then((T) => {
+            if (vpageEl !== el) return;
+            const ul = el.querySelector('ul.choices'); if (!ul) return;
+            [...ul.children].forEach((li, i) => {
+              const o = opts[i], act = o && T.relatedAsks({ title: o.title, description: '', extract: o.note })[0];
+              if (!act) return;
+              li.insertAdjacentHTML('beforeend', ' <a href="#" class="take-act" data-ask="' + esc(act.ask) + '" style="white-space:nowrap">· ' + esc(act.label.replace(/\s*\(.*$/, '')) + ' →</a>');
+              ul.prepend(li);
+            });
+          }).catch(() => {});
           say('which one?');
           return 'wikipedia';
         }
@@ -3294,16 +3322,34 @@ return { ok: true, detail: 'timer-reset' };
         el.innerHTML = '<h2>' + esc(j.title || hit.title) + '</h2>'
           + (j.description ? '<div class="sub">' + esc(j.description) + '</div>' : '')
           + (thinMatch(topic, (j.title || hit.title) + ' ' + (j.description || '')) ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">Closest match I found for “' + esc(topic) + '”.</p>' : '')
+          + '<div class="take-slot"></div>'
           + (j.thumbnail && j.thumbnail.source ? '<img alt="" src="' + esc(j.thumbnail.source) + '">' : '')
           + '<p>' + esc(j.extract || '') + '</p>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
         addCopy(el);
+        // Void's own input on top of the summary (skills/take.js): what Void can do about it at once, then its take (/api/answer, mode 'take')
+        import('/skills/take.js').then((T) => {
+          const slot = el.querySelector('.take-slot'); if (!slot) return;
+          const card = { title: j.title || hit.title, description: j.description || '', extract: j.extract || '' }, asks = T.relatedAsks(card);
+          const paint = (take) => { if (vpageEl === el) slot.innerHTML = T.takeHtml(esc, take, asks); };
+          paint('');
+          fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'take', ...card }) })
+            .then((r) => (r.ok ? r.json() : null)).then((o) => { if (o && o.take) paint(o.take); }).catch(() => {});
+        }).catch(() => {});
         // Next #18/#19: two-part summon — the card, plus a base body dressed from this summary, then a behavior script (AI once, cached; fallback without AI).
         try {
-          Promise.all([import('/skills/bodies.js'), import('/skills/scripts.js')]).then(([m, S]) => {
+          Promise.all([import('/skills/bodies.js'), import('/skills/scripts.js'), import('/skills/figures.js')]).then(([m, S, F]) => {
             if (vpageEl !== el) return;
             const card = { title: j.title || hit.title, description: j.description || '', extract: j.extract || '', type: j.type || '' };
+            // the figure is the thing itself (Adam, 2026-10-09): a real cat for a page about cats; a person gets the human body;
+            // anything Void cannot build for real yet brings no stand-in (domains/void.frontier.md #14, the forge, is how it will)
+            const real = F.realFigureFor(card);
+            if (real) { summonThing('figure', real); return; }
             const dressed = m.dressFromCard(card);
+            // a thing Void cannot make for real yet goes on the miss board as a figure to learn ('figure' misses), so the
+            // most-wanted things get built first and Void keeps getting better at making them (frontier #14)
+            if (dressed.body === 'animal' || dressed.body === 'object' || /\b(?:game|toy|instrument|tool|vehicle|device|machine|plant|fruit|vegetable|dish|food|building|ship|aircraft|car|weapon|furniture)\b/i.test(card.description)) reportMiss('make a real ' + card.title.replace(/\s*\(.*\)$/, ''), 'figure');
+            if (dressed.body !== 'person') return;
             dressed.script = S.fallbackScript(dressed.body, card.title); // acts at once; /api/figurescript may upgrade later
             const fig = summonThing('figure', dressed);
             if (!fig) return;
@@ -4587,6 +4633,9 @@ return { ok: true, detail: 'timer-reset' };
       return learnedSkills;
     }
     const skillsReady = loadLearnedSkills().finally(() => { skillsLoaded = true; });
+    // A summon from code, not the box (BASE.md: the old void-proxy command bar's route): document.dispatchEvent(new CustomEvent('void:summon', { detail: 'growth' }))
+    // runs that ask exactly as if it were typed. Only a short line of text is taken.
+    document.addEventListener('void:summon', (e) => { const d = e && e.detail; if (typeof d === 'string' && d.trim() && d.length <= 120) handle(d); });
 
     async function runLearnedSkills(text, lower0) {
       for (const skill of learnedSkills) {
@@ -6025,6 +6074,20 @@ return { ok: true, detail: 'timer-reset' };
       if (dep && !reduce) addEventListener('pointermove', (e) => { gx = 30 + 40 * e.clientX / innerWidth; gy = 25 + 35 * e.clientY / innerHeight; if (!dr) dr = requestAnimationFrame(step); }, { passive: true }); }
     const fxGo = () => { const f = fxNow(); if (f === 'nebula') startNebula(); if (f === 'swarm') startSwarm(); };
     addEventListener('void-fx', fxGo); fxGo();
+    // a press on a button in a card is a click when the pointer is let go where it went down (within a few pixels): the card
+    // tilts toward the pointer and eases into it, so the button can slide out from under a pointer that never moved, and the
+    // browser then sends the click to the card beside it. That stray click is dropped and the button gets its one click.
+    // Dragging away from a button still cancels it, and a keyboard press is untouched (it never goes through here).
+    { let held = null, stray = false;
+      document.addEventListener('pointerdown', (e) => { const b = e.target && e.target.closest && e.target.closest('.thing button'); held = b && !b.disabled && e.isPrimary && e.button === 0 ? { b, x: e.clientX, y: e.clientY } : null; }, true);
+      document.addEventListener('pointerup', (e) => {
+        const h = held; held = null;
+        if (!h || !e.isPrimary || Math.hypot(e.clientX - h.x, e.clientY - h.y) > 8 || !h.b.isConnected || h.b.disabled) return;
+        const over = document.elementFromPoint(e.clientX, e.clientY);
+        if (over && h.b.contains(over)) return; // the browser's own click lands on the button
+        stray = true; setTimeout(() => { stray = false; }, 0); h.b.click();
+      }, true);
+      document.addEventListener('click', (e) => { if (stray && e.isTrusted) { stray = false; e.stopPropagation(); e.preventDefault(); } }, true); }
     // depth: summoned things arrive from the dark and tilt toward you
     if (!reduce) {
       const arrived = new Set(Object.keys(things));

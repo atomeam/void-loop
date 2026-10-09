@@ -23,7 +23,28 @@ const base = 'http://127.0.0.1:' + server.address().port + '/';
 const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const results = [];
-const check = (name, ok, got) => { results.push({ name, ok: !!ok, got }); };
+// A hang fails loudly (owner, 2026-10-09, frontier build order step 1, suite split (4)): a per-check timeout and a
+// whole-suite budget. Either one ends the run red within seconds of being passed, prints every result so far, and names
+// the last page opened and the last ask typed, so a stuck page is found in minutes instead of when the job is killed.
+// VOID_CHECK_TIMEOUT_MS (default 5 min) is the longest stretch with no check finishing; VOID_SUITE_BUDGET_MS (default
+// 28 min, plus the bench's 10 when it runs inside the suite) the whole run. The FAIL names stay the same from run to run,
+// so verify-main's revert can tell a hang that is already red from a new one (tools/revert-target.mjs).
+const STALL_MS = Number(process.env.VOID_CHECK_TIMEOUT_MS) || 300000;
+const BUDGET_MS = Number(process.env.VOID_SUITE_BUDGET_MS) || (process.env.VOID_SKIP_BENCH ? 28 : 38) * 60000;
+const watch = { t0: Date.now(), lastAt: Date.now(), lastCheck: '(none yet)', page: '(none yet)', ask: '', gaps: [] };
+const check = (name, ok, got) => { const now = Date.now(); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); };
+function stopLoudly(why) {
+  for (const r of results) console.log((r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
+  console.log('FAIL ' + why + '  -> last page opened: ' + watch.page + (watch.ask ? '; last ask: ' + JSON.stringify(watch.ask) : '') + '; last check finished: ' + watch.lastCheck + '; ' + Math.round((Date.now() - watch.t0) / 1000) + ' s in');
+  console.log(`${results.filter((r) => r.ok).length}/${results.length + 1} passed`);
+  process.exit(1);
+}
+const watchdog = setInterval(() => {
+  const now = Date.now();
+  if (now - watch.t0 > BUDGET_MS) stopLoudly('suite budget: the whole suite ran past ' + Math.round(BUDGET_MS / 1000) + ' s');
+  else if (now - watch.lastAt > STALL_MS) stopLoudly('check timeout: no check finished within ' + Math.round(STALL_MS / 1000) + ' s');
+}, 5000);
+watchdog.unref();
 // Poll instead of guessing a delay: the shared box is often busy, fixed sleeps flake.
 const until = async (fn, ms = 4000) => { const end = Date.now() + ms; for (;;) { try { const v = await fn(); if (v) return v; } catch (_) {} if (Date.now() > end) return false; await new Promise((r) => setTimeout(r, 150)); } };
 // Voice stubs: a fake SpeechRecognition that "hears" window.__said, and speechSynthesis that records what it would say.
@@ -382,8 +403,9 @@ async function fresh(...inits) {
   const p = await ctx.newPage();
   const errors = [];
   p.on('pageerror', (e) => errors.push(e.message));
+  p.on('framenavigated', (f) => { if (f === p.mainFrame()) { watch.page = f.url(); watch.ask = ''; } });
   await p.goto(at); await p.waitForTimeout(700);
-  const ask = async (t, w = 450) => { await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w); };
+  const ask = async (t, w = 450) => { watch.ask = t; await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w); };
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
   const page = () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
   const whisper = () => p.$eval('#whisper', (e) => e.textContent);
@@ -521,6 +543,30 @@ try {
       /grouped/.test(said) && tied && carried && cornered && bigger && front && loose && (await G.state()).length === 3 && !G.errors.length,
       JSON.stringify({ said, tied, carried, cornered, bigger, front, loose, order, ids, e: G.errors }));
     await G.ctx.close(); }
+  // Summon by intent (frontier #10, skills/intent.js): an outcome with a deadline runs asks Void already answers (countdown,
+  // dated checklist, calendar day, a draft to the person named) and groups what they put on the stage. Nothing is sent.
+  { const I = await fresh(); const net = [];
+    I.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer|approval)$/.test(u)) net.push(u.replace(/^.*\/\/[^/]+/, '')); });
+    await I.ask('I need to ship the product page by Friday and tell Sam', 2500);
+    const said = await I.whisper();
+    const st = await I.state();
+    const kinds = st.map((x) => x.kind).sort();
+    const groups = new Set(st.map((x) => x.group));
+    const list = st.find((x) => x.kind === 'list'), draft = st.find((x) => x.kind === 'sticky');
+    const agenda = await I.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').map((e) => e.title));
+    const cd = st.find((x) => x.kind === 'countdown');
+    const box = await I.p.$eval('[data-id="' + cd.id + '"]', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 12, y: b.top + 12 }; });
+    await I.p.mouse.move(box.x, box.y); await I.p.mouse.down(); await I.p.mouse.move(box.x + 50, box.y + 30, { steps: 6 }); await I.p.mouse.up(); await I.p.waitForTimeout(200);
+    const moved = (await I.state()).find((x) => x.kind === 'list');
+    const planNet = net.slice(); // read now: the ask below has no day, so it goes on to the answer engine as before
+    await I.ask('I need to finish my essay', 600); // no day: not a plan
+    const after = (await I.state()).length;
+    check('intent: "I need to ship the product page by Friday and tell Sam" brings a countdown, a dated checklist ending on the day, the day on the calendar and a draft to Sam, as one group (drag one, all move); nothing sent, no model, no miss; an outcome with no day is not a plan',
+      /planned "ship the product page"/.test(said) && /nothing sent/.test(said) && ['countdown', 'list', 'sticky'].every((k) => kinds.includes(k)) && groups.size === 1 && !groups.has(undefined)
+      && list.items.length === 5 && /^ship the product page \(fri \d+\)$/.test(list.items[4].text) && /^draft to Sam \(not sent\)/.test(draft.text) && agenda.some((t) => /ship the product page/i.test(t))
+      && moved.x - list.x === 50 && moved.y - list.y === 30 && after === st.length && !planNet.length && !I.errors.length,
+      JSON.stringify({ said, kinds, groups: [...groups], items: list && list.items.map((i) => i.text), draft: draft && draft.text, agenda, planNet, e: I.errors }));
+    await I.ctx.close(); }
   // Labels and arrows (skills/label.js, board "Later": text annotation / labels): "label the clock kitchen" tags it, an arrow
   // drawn by label names joins two things and follows a drag, a free label can be an arrow's end, "undo" and reload behave.
   { const L = await fresh();
@@ -2356,6 +2402,38 @@ try {
       !!card && card.hasCopy && /^(copied|select and copy)$/.test(copied) && st && st.days === wantDays && card.text.includes(cdFull.daysLine(wantDays)) && !!survived && Q.errors.length === 0,
       JSON.stringify({ card, st, wantDays, copied, errs: Q.errors }));
     await Q.ctx.close(); }
+  // a press on a button in a card is a click when the pointer is let go where it went down, even if the card slid the
+  // button out from under it (cards tilt toward the pointer and ease into it); dragging away still cancels, the keyboard
+  // still clicks once, and a click that lands on the button is never doubled. The card is moved directly, not by timing.
+  { const Z = await fresh();
+    const probe = (h, pos) => Z.p.evaluate(([h, pos]) => { document.querySelector('#press-probe')?.remove(); const c = document.createElement('div'); c.id = 'press-probe'; c.className = 'thing kept-card game-card';
+      c.style.cssText = 'left:420px;top:20px;width:440px;height:' + h + 'px;display:flex;flex-direction:column;justify-content:' + pos + ';padding:12px;transition:none';
+      const b = document.createElement('button'); b.className = 'g-btn g-primary'; b.id = 'press-probe-btn'; b.textContent = 'press'; window.__pressHits = 0; window.__cardClicks = 0;
+      b.addEventListener('click', () => window.__pressHits++); b.addEventListener('pointerdown', (e) => e.stopPropagation()); c.addEventListener('click', (e) => { if (e.target === c) window.__cardClicks++; });
+      c.append(b); document.getElementById('stage').append(c); const r = b.getBoundingClientRect(); return [r.x, r.y, r.width, r.height]; }, [h, pos]);
+    const hits = () => Z.p.evaluate(() => [window.__pressHits, window.__cardClicks]);
+    let wrong = [], n = 0;
+    for (const h of [300, 480]) for (const pos of ['flex-end', 'center']) for (const tilt of [[0, 0], [6, -5]]) {
+      const r = await probe(h, pos);
+      for (const fx of [0.2, 0.5, 0.8]) {
+        await Z.p.evaluate(() => { const c = document.getElementById('press-probe'); c.style.left = '420px'; c.style.removeProperty('--rx'); c.style.removeProperty('--ry'); });
+        await Z.p.mouse.move(r[0] + r[2] * fx, r[1] + r[3] / 2); await Z.p.mouse.down();
+        await Z.p.evaluate(([rx, ry]) => { const c = document.getElementById('press-probe'); c.style.setProperty('--rx', rx + 'deg'); c.style.setProperty('--ry', ry + 'deg'); c.style.left = '720px'; }, tilt); // the card slides away
+        await Z.p.mouse.up(); n++;
+      }
+      const [b, c] = await hits(); if (b !== 3 || c !== 0) wrong.push(h + ' ' + pos + ' ' + tilt + ': ' + b + ' clicks, ' + c + ' on the card');
+    }
+    let r = await probe(300, 'center'); // a still card: one click each, never two
+    for (const fx of [0.2, 0.5, 0.8]) { await Z.p.mouse.move(r[0] + r[2] * fx, r[1] + r[3] / 2); await Z.p.mouse.down(); await Z.p.mouse.up(); }
+    const still = await hits();
+    r = await probe(300, 'center'); // dragging away from the button cancels it
+    await Z.p.mouse.move(r[0] + r[2] / 2, r[1] + r[3] / 2); await Z.p.mouse.down(); await Z.p.mouse.move(r[0] + r[2] / 2 + 60, r[1] + r[3] / 2 + 60, { steps: 4 }); await Z.p.mouse.up();
+    const dragged = await hits();
+    await Z.p.focus('#press-probe-btn'); await Z.p.keyboard.press('Enter'); // the keyboard still clicks once
+    const keyed = await hits();
+    check('cards: a press on a button in a card is a click even when the card slides it away, never doubled; dragging away cancels; the keyboard clicks once',
+      !wrong.length && n === 24 && still[0] === 3 && dragged[0] === 0 && keyed[0] === 1, JSON.stringify({ wrong, n, still, dragged, keyed }));
+    await Z.ctx.close(); }
 
   // othello: real rules (4 starting discs, a move must flip, 8 directions), and Void answers your move on the card
   { const oth = await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
@@ -2404,7 +2482,7 @@ try {
     check('polish: boards arrive centred and clear of the ask bar (desktop + phone); long pages stop above it; Aggravation is a 56-hole star board with bases, homes, shortcut corners and a centre, rule engine passes, roll locks while a move is pending; "play 3d tic tac toe" gets the board, no answer page; the games hint names every game; no stray "done"',
       unit.ok && fair(aDesk) && fair(tDesk) && fair(oPhone) && !!selfDesk && selfDesk.bottom <= selfDesk.rowTop - 4 && !!selfPhone && selfPhone.bottom <= selfPhone.rowTop - 4
         && holes === 56 + 1 + 4 * 4 + 4 * 4 && marbles === 16 && rollOn && (!pending || lockedAfter)
-        && ttt && !tttPage && ['tic tac toe', 'othello', 'connect 4', 'mancala', 'aggravation'].every((g) => hint.includes(g)) && leftover !== 'done' && Q.errors.length === 0,
+        && ttt && !tttPage && ['tic tac toe', 'reversi', 'four in a row', 'mancala', 'star marbles', 'back to start'].every((g) => hint.includes(g)) && leftover !== 'done' && Q.errors.length === 0,
       JSON.stringify({ unit: unit.got, aDesk, tDesk, oPhone, selfDesk, selfPhone, holes, marbles, rollOn, pending, lockedAfter, hint, ttt, tttPage: tttPage.slice(0, 60), leftover, errs: Q.errors }).slice(0, 900));
     await Q.ctx.close(); }
 
@@ -3101,7 +3179,10 @@ try {
 } catch (e) {
   check('suite ran to the end', false, String(e && e.message));
 }
+clearInterval(watchdog);
 await browser.close(); server.close();
+// the slowest stretches between checks: where making the suite faster (suite split (3)) pays most
+for (const [ms, name] of watch.gaps.slice().sort((a, b) => b[0] - a[0]).slice(0, 5)) console.log('slow ' + Math.round(ms / 1000) + ' s before: ' + name.slice(0, 100));
 const bad = results.filter((r) => !r.ok);
 for (const r of results) console.log((r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
 console.log(`${results.length - bad.length}/${results.length} passed`);

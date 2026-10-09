@@ -7,6 +7,44 @@ import { pathToFileURL } from 'node:url';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const until = async (fn, ms = 8000) => { const end = Date.now() + ms; for (;;) { try { const v = await fn(); if (v) return v; } catch (_) {} if (Date.now() > end) return false; await new Promise((r) => setTimeout(r, 150)); } };
 
+// ---- the miniature behaviour contract (docs/miniatures.md, "The reference miniature"): any kind can be run through it.
+// It mounts the kind on its own host with data a, then b under the same key, and reads what the engine and the kind's
+// own state() say: it draws real pixels, its state follows the data, a remount moves the live one (nothing rebuilt),
+// a change shows on the canvas, it settles (no redraws while idle), with reduced motion a change lands at once,
+// and unmounting frees it. Returns the facts; the caller decides what the kind's state should be.
+export async function miniContract(fresh, { kind, a, b, settledWhen = 'flipping' }) {
+  const run = async (F, reduce) => F.p.evaluate(async ({ kind, a, b, reduce, settledWhen }) => {
+    const m = await import('/skills/scene3d.js');
+    const wait = async (fn, ms) => { const end = performance.now() + ms; for (;;) { const v = fn(); if (v) return v; if (performance.now() > end) return false; await new Promise((r) => setTimeout(r, 100)); } };
+    const key = 'contract:' + kind + (reduce ? ':still' : '');
+    const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:16px;top:16px;width:260px;height:210px;z-index:9';
+    document.body.appendChild(host);
+    const me = () => m.liveMiniatures().find((x) => x.key === key);
+    const state = () => window.__voidMini.state(key);
+    const pixels = () => { const c = host.querySelector('canvas'); if (!c || !c.width) return { colours: 0, sig: '' }; const g = c.getContext('2d'), d = g.getImageData(0, 0, c.width, c.height).data, seen = new Set(); let sig = 0;
+      for (let i = 0; i < d.length; i += 4 * 7) { seen.add((d[i] >> 3) + ',' + (d[i + 1] >> 3) + ',' + (d[i + 2] >> 3)); sig = (sig * 31 + d[i] + d[i + 1] * 3 + d[i + 2] * 7) % 1000000007; } return { colours: seen.size, sig: String(sig) }; };
+    const settle = () => wait(() => { const s = state(); return !(s && s[settledWhen]); }, 8000);
+    const h1 = await m.mountMiniature(host, kind, a, { key });
+    const drawn = await wait(() => { const x = me(); return x && x.ready && x.draws > 0; }, 60000);
+    await settle(); await new Promise((r) => setTimeout(r, 300));
+    const pa = pixels(), sa = state();
+    const h2 = await m.mountMiniature(host, kind, b, { key });
+    const right = state(); // straight after the update: still mid-animation unless reduced motion
+    const changedAt = await wait(() => pixels().sig !== pa.sig, 15000);
+    const settled = !!(await settle());
+    await new Promise((r) => setTimeout(r, 400));
+    const d0 = me().draws; await new Promise((r) => setTimeout(r, 1500)); const d1 = me().draws;
+    const sb = state(), pb = pixels();
+    const freed = m.unmountMiniature(key) && !me();
+    host.remove();
+    return { drawn: !!drawn, colours: pa.colours, same: h1 === h2, stateA: sa, stateRight: right, stateB: sb, redrew: !!changedAt && pb.sig !== pa.sig, settled, idleDraws: d1 - d0, freed };
+  }, { kind, a, b, reduce, settledWhen });
+  const F = await fresh(); const moving = await run(F, false); const errors = F.errors.slice(); await F.ctx.close();
+  const S = await fresh(); await S.p.emulateMedia({ reducedMotion: 'reduce' }); await S.p.reload(); await S.p.waitForTimeout(700);
+  const still = await run(S, true); errors.push(...S.errors); await S.ctx.close();
+  return { moving, still, errors };
+}
+
 // ---- the rules engines, without a browser: perft counts and known positions
 export async function runRulesChecks(check) {
   const C = await import(pathToFileURL(path.join(root, 'skills', 'chess-rules.js')).href);
@@ -107,6 +145,31 @@ export async function run3dChecks({ check, fresh }) {
     check('3D countdown: "days until december 25" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)',
       !!drawn && r.inCard && r.d3 === 3 && r.d0 === 0 && r.bad === null && r.saved && flipped && !F.errors.length, JSON.stringify({ drawn, r, flipped, e: F.errors }));
     await F.ctx.close();
+  }
+  // ---- the reference miniature: the countdown's calendar passes the behaviour contract every miniature should
+  {
+    const c = await miniContract(fresh, { kind: 'countdown', a: { days: 12, label: 'Launch' }, b: { days: 11, label: 'Launch' } });
+    const ok = (r, still) => r.drawn && r.colours > 40 && r.same && r.stateA && r.stateA.days === 12 && r.stateB.days === 11 && r.stateB.label === 'Launch'
+      && r.redrew && r.settled && r.idleDraws === 0 && r.freed && (still ? r.stateRight.flipping === false : true);
+    check('reference miniature (countdown): draws real pixels, its state follows the data (12 -> 11), a remount by key moves the live one (nothing rebuilt), the change shows on the canvas, it settles with no redraws while idle, under reduced motion the change lands with no flip, and unmounting frees it',
+      ok(c.moving, false) && ok(c.still, true) && c.moving.stateRight.flipping === true && !c.errors.length, JSON.stringify(c));
+  }
+  // ---- the gear explainer (explainer.gear-pair) through the same contract: a 16-32 pair, then the driver changed to 24 teeth
+  {
+    const G = await import(pathToFileURL(path.join(root, 'skills', 'gear-pair-rules.js')).href);
+    const c = await miniContract(fresh, { kind: 'gears', a: { state: G.create({ driverTeeth: 16, drivenTeeth: 32 }) }, b: { state: G.turnDriver(G.create({ driverTeeth: 24, drivenTeeth: 32 }), 30) }, settledWhen: 'dragging' });
+    const ok = (r) => r.drawn && r.colours > 40 && r.same && r.stateA && r.stateA.built === '16:32' && r.stateB.built === '24:32' && r.redrew && r.settled && r.idleDraws === 0 && r.freed;
+    check('gear explainer miniature: draws real pixels, its pair follows the data (16:32 -> 24:32), a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while paused, under reduced motion too, and unmounting frees it',
+      ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
+  }
+  // ---- the moon explainer (explainer.moon-phases) through the same contract: the Moon at 30°, then moved to 200°
+  {
+    const M = await import(pathToFileURL(path.join(root, 'skills', 'moon-phases-rules.js')).href);
+    const c = await miniContract(fresh, { kind: 'moon', a: { state: M.create({ orbitAngleDegrees: 30 }) }, b: { state: M.create({ orbitAngleDegrees: 200 }) }, settledWhen: 'dragging' });
+    const near = (x, y) => Math.abs(x - y) < 0.01;
+    const ok = (r) => r.drawn && r.colours > 40 && r.same && r.stateA && near(r.stateA.angle, 30) && near(r.stateB.angle, 200) && r.stateB.moon[2] > 0 && r.redrew && r.settled && r.idleDraws === 0 && r.freed;
+    check('moon explainer miniature: draws real pixels, the Moon follows the data (30° -> 200°, now on the far side), a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while paused, under reduced motion too, and unmounting frees it',
+      ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
   }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
   {
@@ -394,8 +457,8 @@ export async function run3dChecks({ check, fresh }) {
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, sorry, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,sorry,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
     await F.ctx.close();
   }
   {

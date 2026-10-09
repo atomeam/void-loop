@@ -1,11 +1,13 @@
 # Test and deploy Void to the Cloudflare Pages project "a-to-mind" (a-to-mind.com) with wrangler (direct upload, no GitHub
 # Pages). tools/deploy.ps1 stays the laptop fallback. Built to fit GitHub Free's 2,000 Linux minutes a month (~65 a day):
-#   PR, code changed    the full suite (no benchmark: see bench.yml and the weekly watchdog), a preview deploy (Void's review is its own workflow, void-review.yml)
-#   PR, docs only       the quick checks (seconds); no browser suite, no preview
-#   push to main        deploy. The full suite runs again only when the commit is not a merged PR whose head passed
-#                       test-and-deploy (a direct push, or a PR merged without a green check); the daily watchdog re-tests main
+# Ship now, test after (Adam, 2026-10-09: nothing waits). A PR merges as soon as Void's review is clean (automerge.yml,
+# tools/pr-ready.mjs); main deploys in about a minute; the full suite then runs on what shipped (verify-main), and a failure
+# reverts the commit that broke it on main and redeploys.
+#   PR, code changed    the quick checks (seconds) and a preview deploy (Void's review is its own workflow, void-review.yml)
+#   PR, docs only       the quick checks; no preview
+#   push to main        the quick checks, deploy, then verify-main: the full suite on that commit; red = revert the commit
+#                       that broke the failed checks (tools/revert-target.mjs; unclear = reported, not guessed) + redeploy
 #   manual run          the full suite (bench optional), then deploy; after_merge=true (automerge.yml) = as a push to main
-# test-and-deploy is the merge gate and always reports, on every PR.
 name: Void deploy
 
 on:
@@ -25,11 +27,6 @@ on:
         type: boolean
         default: false
 
-concurrency:
-  # one run per PR: a new push cancels the older run of that PR at once. Production keeps one group and never cancels.
-  group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
-
 permissions:
   contents: read
   checks: read # to see that a merged PR's head already passed (see "What needs testing")
@@ -39,6 +36,11 @@ jobs:
   test-and-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # one run per PR: a new push cancels the older run of that PR at once. Production keeps one group and never cancels.
+    # (Per job, so the suite after a deploy, verify-main, never holds up the next deploy.)
+    concurrency:
+      group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}
+      cancel-in-progress: ${{ github.event_name == 'pull_request' }}
     env:
       CF_READY: ${{ secrets.CLOUDFLARE_API_TOKEN != '' && secrets.CLOUDFLARE_ACCOUNT_ID != '' }}
     steps:
@@ -58,7 +60,10 @@ jobs:
           EVENT: ${{ github.event_name == 'workflow_dispatch' && inputs.after_merge && 'push' || github.event_name }}
           BASE: ${{ github.event.pull_request.base.ref }}
         run: |
-          suite=true
+          # the full suite before the deploy only on a plain manual run; a PR and main get the quick checks (main is
+          # tested right after its deploy, in verify-main)
+          suite=false
+          [ "$EVENT" = "workflow_dispatch" ] && suite=true
           if [ "$EVENT" = "pull_request" ]; then
             # Docs only: every changed file is markdown, and none of the few markdown files the suite reads.
             files=$(git diff --name-only "$(git merge-base "origin/$BASE" HEAD)" HEAD)
@@ -72,27 +77,8 @@ jobs:
                 *) light=false ;;
               esac
             done <<< "$files"
-            if [ "$light" = true ]; then
-              suite=false
-              echo "### Docs-only PR: quick checks only, no browser suite" >> "$GITHUB_STEP_SUMMARY"
-            fi
+            [ "$light" = true ] && echo "### Docs-only PR: quick checks only, no preview" >> "$GITHUB_STEP_SUMMARY"
             echo "light=$light" >> "$GITHUB_OUTPUT"
-          elif [ "$EVENT" = "push" ]; then
-            # A merge commit's second parent, or the PR a squash merge came from: when that head passed test-and-deploy,
-            # main is not tested twice (the quick checks still run, and the daily watchdog runs the full suite on main).
-            head=$(git rev-parse HEAD)
-            pr_head=$(git rev-parse -q --verify HEAD^2 || true)
-            if [ -z "$pr_head" ]; then
-              pr_head=$(gh api "repos/${{ github.repository }}/commits/$head/pulls" --jq '[.[] | select(.merged_at != null and .base.ref == "main")][0].head.sha // empty' || true)
-            fi
-            if [ -n "$pr_head" ]; then
-              ok=$(gh api "repos/${{ github.repository }}/commits/$pr_head/check-runs?check_name=test-and-deploy" \
-                --jq '[.check_runs[] | select(.status == "completed")] | sort_by(.id) | last | .conclusion // ""' || true)
-              if [ "$ok" = "success" ]; then
-                suite=false
-                echo "### Not re-tested: merged PR head $pr_head passed test-and-deploy" >> "$GITHUB_STEP_SUMMARY"
-              fi
-            fi
           fi
           echo "suite=$suite" >> "$GITHUB_OUTPUT"
           echo "suite=$suite"
@@ -164,6 +150,36 @@ jobs:
           done
           echo "### Deployed ${{ steps.target.outputs.sha }} to ${{ steps.target.outputs.branch }}: $URL" >> "$GITHUB_STEP_SUMMARY"
 
+      # The smoke check above reads the deployment's own preview address. This one reads the real domain: after a main
+      # deploy, a-to-mind.com itself must serve the files just deployed (2026-10-09: a visitor saw old answers there while
+      # every deploy reported success). A query string per commit gets past any edge cache; a mismatch fails loudly.
+      - name: The live domain serves this deploy
+        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
+        env:
+          SHA: ${{ steps.target.outputs.sha }}
+        run: |
+          check() { # $1 = path on the site, $2 = the deployed file it must match
+            for i in 1 2 3 4 5 6 7 8; do
+              code=$(curl -s -L -o live.tmp -w '%{http_code}' "https://a-to-mind.com$1?v=$SHA") || code=000
+              if [ "$code" = "200" ] && cmp -s live.tmp "$2"; then echo "a-to-mind.com$1 matches the deploy"; return 0; fi
+              echo "attempt $i: a-to-mind.com$1 HTTP $code, $(wc -c < live.tmp 2>/dev/null || echo 0) bytes"; sleep 15
+            done
+            echo "::error::a-to-mind.com$1 is not serving this deploy ($SHA): the production domain is behind or something else answers it"
+            head -c 300 live.tmp; echo; return 1
+          }
+          ok=0
+          # the page itself: the zone's edge adds a few hundred bytes to HTML on the domain only (run 37977126734: 938
+          # bytes more than void.html, while the skill files matched exactly), so the page is checked for being Void and
+          # the difference is printed; the byte-exact files below are what prove this deploy is the one being served
+          code=$(curl -s -L -o live.tmp -w '%{http_code}' "https://a-to-mind.com/?v=$SHA") || code=000
+          if [ "$code" = "200" ] && grep -q '<title>Void · A-to-Mind</title>' live.tmp; then
+            cmp -s live.tmp void.html && echo "a-to-mind.com/ matches void.html" || { echo "::notice::a-to-mind.com/ is Void but $(( $(wc -c < live.tmp) - $(wc -c < void.html) )) bytes differ from void.html (added at the edge):"; diff void.html live.tmp | head -c 1500; echo; }
+          else echo "::error::a-to-mind.com/ HTTP $code is not Void"; head -c 300 live.tmp; echo; ok=1; fi
+          check /skills/index.json void-live-deploy/skills/index.json || ok=1
+          check /skills/sorry.js void-live-deploy/skills/sorry.js || ok=1
+          [ "$ok" = 0 ] && echo "### a-to-mind.com serves $SHA" >> "$GITHUB_STEP_SUMMARY"
+          exit $ok
+
       # Void's voice (lib/voice.js): after anything ships, Void is asked what it thinks of it and how it would make it
       # better. Its words are kept on the site and copied into domains/void.voice.md by the daily run. Input, not a gate:
       # a busy model or a missing VOID_OWNER_TOKEN never fails the deploy.
@@ -178,3 +194,91 @@ jobs:
           title=$(gh api "repos/${{ github.repository }}/commits/$(git rev-parse HEAD)/pulls" --jq '[.[] | select(.merged_at != null)][0].title // empty' || true)
           [ -n "$title" ] || title=$(git log -1 --format=%s "$(git rev-parse -q --verify HEAD^2 || git rev-parse HEAD)")
           node tools/reflect.mjs --build "$title" | tee -a "$GITHUB_STEP_SUMMARY" || true
+
+  # Ship now, test after: the full suite on the commit that just went live. Red means that commit is reverted on main and
+  # main is deployed again, so a breaking merge stays live only for the length of the suite (about 15 min). The revert is
+  # marked with a Void-auto-revert trailer and is never itself tested and reverted. Its own concurrency group: the next
+  # merge deploys at once, without waiting for this suite.
+  verify-main:
+    needs: test-and-deploy
+    if: (github.event_name == 'push' || inputs.after_merge) && needs.test-and-deploy.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: void-verify-main
+      cancel-in-progress: false
+    permissions:
+      contents: write # push the revert
+      actions: write # start the deploy of the reverted main
+      checks: read # the failed checks earlier red runs named (tools/revert-target.mjs)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: An automatic revert is not tested again
+        id: skip
+        run: |
+          if git log -1 --format=%B | grep -q '^Void-auto-revert:'; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Automatic revert: not re-tested" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Test what shipped (full suite)
+        id: test
+        if: steps.skip.outputs.skip != 'true'
+        uses: ./.github/actions/void-test
+        with:
+          bench: skip
+
+      - name: Name the failed checks (the next red run reads them to find the commit that broke each one)
+        if: failure() && steps.test.outcome == 'failure'
+        run: node tools/revert-target.mjs --annotate test-output.txt || true
+
+      - name: Red after the deploy - revert the commit that broke it, on main, and deploy again
+        if: failure() && steps.test.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tested=$(git rev-parse HEAD)
+          # Not always the tested commit: when a failed check was already red before it, the commit where that check
+          # first went red is the one to take back (tools/revert-target.mjs). An unclear record is reported, not guessed.
+          pick=$(node tools/revert-target.mjs --pick "$tested" test-output.txt) || pick='{"action":"report","why":"could not read the verify record"}'
+          action=$(node -e 'console.log(JSON.parse(process.argv[1]).action)' "$pick")
+          why=$(node -e 'console.log(JSON.parse(process.argv[1]).why)' "$pick")
+          if [ "$action" != "revert" ]; then
+            echo "::error title=Not reverted::$tested failed the suite after it shipped, but which commit broke it is unclear: $why. Look at the failed checks and revert by hand."
+            echo "### $tested failed after shipping; not reverted automatically: $why" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          sha=$(node -e 'console.log(JSON.parse(process.argv[1]).sha)' "$pick")
+          subject=$(git log -1 --format=%s "$sha")
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch -q origin main
+          git checkout -q -B main origin/main
+          # an earlier red run may already have taken it back (two merges tested in a row, both red for the same reason)
+          done_by=$(git log --format=%h --grep="^Void-auto-revert: $sha" -n 1 origin/main)
+          if [ -n "$done_by" ]; then
+            echo "::error title=Already reverted::$tested failed the suite, and the commit that broke it ($sha: $why) is already reverted on main ($done_by). Nothing more to take back; the next deploy of main is tested again."
+            echo "### $tested failed the suite; the commit that broke it ($sha) is already reverted on main ($done_by)" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          if git rev-parse -q --verify "$sha^2" >/dev/null; then parent="-m 1"; else parent=""; fi
+          if ! git revert --no-commit $parent "$sha"; then
+            git revert --abort || true
+            echo "::error title=Not reverted::$sha broke the suite ($why), and reverting it on main conflicts with what merged since. Revert it by hand."
+            echo "### $sha broke the suite ($why); automatic revert conflicted: revert it by hand" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          if git diff --cached --quiet; then
+            git revert --abort || true
+            echo "::error title=Not reverted::$sha broke the suite ($why), but reverting it changes nothing on main any more. Look at what main carries now."
+            echo "### $sha broke the suite ($why); its revert is empty on main now: look by hand" >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+          git commit -q -m "Revert \"$subject\"" -m "It shipped and the full suite failed on main (verify-main, run ${{ github.run_id }}, testing $tested): $why. So it is taken back off the site." -m "Void-auto-revert: $sha"
+          git push origin main
+          gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true
+          echo "::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."
+          echo "### $sha broke the suite after shipping ($why): reverted on main and redeployed" >> "$GITHUB_STEP_SUMMARY"

@@ -10,15 +10,16 @@ export const GAMES = [
   { id: 'chess', title: 'Chess', ask: 'play chess', color: '#2c2f38', ink: '#f4e9d2', motif: 'chess' },
   { id: 'checkers', title: 'Checkers', ask: 'play checkers', color: '#8f2d22', ink: '#fff3e0', motif: 'checkers' },
   { id: 'go', title: 'Go', ask: 'play go', color: '#d9a85a', ink: '#2a1a0a', motif: 'go' },
-  { id: 'othello', title: 'Othello', ask: 'play othello', color: '#1b6b40', ink: '#f4f1ea', motif: 'othello' },
-  { id: 'connect4', title: 'Connect Four', ask: 'play connect 4', color: '#1f4fbf', ink: '#fff4c2', motif: 'connect4' },
+  { id: 'othello', title: 'Reversi', ask: 'play othello', color: '#1b6b40', ink: '#f4f1ea', motif: 'othello' },
+  { id: 'connect4', title: 'Four in a Row', ask: 'play connect 4', color: '#1f4fbf', ink: '#fff4c2', motif: 'connect4' },
   { id: 'tictactoe', title: 'Tic-tac-toe', ask: 'play tic tac toe', color: '#c0562e', ink: '#fff6e6', motif: 'tictactoe' },
   { id: 'mancala', title: 'Mancala', ask: 'play mancala', color: '#6b4426', ink: '#f6e3c4', motif: 'mancala' },
-  { id: 'aggravation', title: 'Aggravation', ask: 'play aggravation', color: '#2f5fa8', ink: '#fdf6e3', motif: 'aggravation' },
-  { id: 'battleship', title: 'Battleship', ask: 'play battleship', color: '#1d4e6e', ink: '#e8f4ff', motif: 'battleship' },
+  { id: 'aggravation', title: 'Star Marbles', ask: 'play aggravation', color: '#2f5fa8', ink: '#fdf6e3', motif: 'aggravation' },
+  { id: 'sorry', title: 'Back to Start', ask: 'play sorry', color: '#c8202c', ink: '#fff8e7', motif: 'aggravation' },
+  { id: 'battleship', title: 'Sea Battle', ask: 'play battleship', color: '#1d4e6e', ink: '#e8f4ff', motif: 'battleship' },
   { id: 'poker', title: 'Poker', ask: 'play poker', color: '#17563a', ink: '#f2e6c9', motif: 'poker' },
   { id: 'fireworks', title: 'Fireworks', ask: 'play fireworks', color: '#1b2233', ink: '#ffe9a8', motif: 'fireworks' },
-  { id: 'monopoly', title: 'Monopoly', ask: 'play monopoly', color: '#c8e3c4', ink: '#1d3b25', motif: 'monopoly' },
+  { id: 'monopoly', title: 'The Landlord’s Game', ask: 'play monopoly', color: '#c8e3c4', ink: '#1d3b25', motif: 'monopoly' },
 ];
 
 export function rackOf(text) {
@@ -34,9 +35,9 @@ export function rackOf(text) {
 }
 // board games people ask for that Void doesn't play yet; each ask is recorded
 export const SOON = { scrabble: 'Scrabble', risk: 'Risk', clue: 'Clue', cluedo: 'Cluedo', catan: 'Catan', 'settlers of catan': 'Catan',
-  backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', sorry: 'Sorry!', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
+  backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
 
-const HINT = 'try: chess · checkers · go · monopoly · tic tac toe · othello · connect 4 · mancala · aggravation · rock paper scissors · magic 8 ball';
+const HINT = 'try: chess · checkers · go · monopoly · tic tac toe · reversi · four in a row · mancala · star marbles · back to start · rock paper scissors · magic 8 ball';
 
 function mount(th, stageApi) {
   const phone = Math.min(innerWidth, innerHeight) < 560;

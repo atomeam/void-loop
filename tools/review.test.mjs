@@ -42,6 +42,13 @@ ok(rules('p.innerHTML = cardHtml(data);', 'javascript').includes('inner-html@1')
 ok(!rules(`const el = showPage((p) => { p.innerHTML = '<h2>Watch</h2><div class="sub">checking…</div>'; });`, 'javascript').includes('inner-html@1'), 'innerHTML of a plain string with inner quotes not flagged');
 ok(!rules("el.innerHTML = cardHtml(esc, data, 'live');", 'javascript').includes('inner-html@1'), 'innerHTML from a builder handed esc among other arguments not flagged');
 ok(rules("el.innerHTML = cardHtml(data, 'live');", 'javascript').includes('inner-html@1') && rules('el.innerHTML = `<b>${name}</b>`;', 'javascript').includes('inner-html@1'), 'a builder without esc and a template with a value still flagged');
+// innerHTML built only from fixed text (literals, numbers, ALL_CAPS constants, the item of a map over a literal list) is not a risk
+for (const c of [`opp.innerHTML = '<span>vs</span>' + [1, 2, 3].map((n) => '<button data-opp="' + n + '">' + n + ' bot' + (n > 1 ? 's' : '') + '</button>').join('');`,
+  "defs.innerHTML = '<a>'\n    + COLORS.map((c) => '<g id=\"' + c + '\" fill=\"' + HEX[c] + '\"/>').join('');", 'el.innerHTML = COLORS.map((c) => `<i>${c.label}</i>`).join(\'\');', "el.innerHTML = '<b>' + MAX + '</b>';"])
+  ok(!rules(c, 'javascript').includes('inner-html@1'), 'innerHTML from fixed text not flagged: ' + c);
+for (const c of ["el.innerHTML = '<b>' + name + '</b>';", "el.innerHTML = '<b>'\n  + data.name + '</b>';", "el.innerHTML = names.map((n) => '<li>' + n + '</li>').join('');",
+  "el.innerHTML = [1, 2].map((n) => '<li>' + n + e.target.value + '</li>').join('');", 'el.innerHTML = `<b>${name}</b>`;', "el.innerHTML = '<b>' + getName() + '</b>';", "el.innerHTML = COLORS.map((c) => c + user).join('');"])
+  ok(rules(c, 'javascript').includes('inner-html@1'), 'innerHTML with a value from outside still flagged: ' + c);
 for (const [c, want] of T) ok(rules(c).includes(want), want + ' in: ' + c + ' (got ' + rules(c).join(',') + ')');
 const P = [
   ['def add(x, items=[]):\n    items.append(x)\n    return items', 'mutable-default@1'],
@@ -150,6 +157,21 @@ ok(rules('let n = Int(s)!', 'swift').includes('force-unwrap@1') && !rules('if a 
 ok(rules('if (s == "yes") {}', 'java').includes('string-eq@1') && !rules('if ("yes".equals(s)) {}', 'java').includes('string-eq@1') && !rules('if (s == null) {}', 'java').includes('string-eq@1'), 'Java string == flagged, equals and == null not');
 ok(rules('for (var i = 0; i < 5; i++) setTimeout(() => log(i))', 'javascript').includes('var-loop-closure@1') && !rules('for (let i = 0; i < 5; i++) setTimeout(() => log(i))', 'javascript').includes('var-loop-closure@1') && rules('for (var i = 0; i < 3; i++) { btn[i].onclick = function () { go(i) } }', 'javascript').includes('var-loop-closure@1') && !rules('for (var i = 2; i < n; i++) t.push(i * 2); return t.sort(function (a, b) { return a - b })', 'javascript').includes('var-loop-closure@1') && !rules('for (var i = 0; i < n; i++) if (!q.some(function (x) { return x.i === i })) out.push(i);', 'javascript').includes('var-loop-closure@1') && rules('for (var i = 0; i < 3; i++) fns.push(function () { return i })', 'javascript').includes('var-loop-closure@1'), 'var captured by loop callbacks flagged, let not');
 ok(rules("const s = JSON.parse(localStorage.getItem('x'))", 'javascript').includes('json-parse-storage@1') && !rules("try { s = JSON.parse(localStorage.getItem('x')) } catch (_) {}", 'javascript').includes('json-parse-storage@1'), 'unguarded JSON.parse of storage flagged, inside try not');
+ok(rules("const l = JSON.parse(localStorage.getItem('log') || '[]').filter((x) => x.ok)", 'javascript').includes('json-array-shape@1')
+  && rules("const n = JSON.parse(sessionStorage.getItem('n')).map(f)", 'javascript').includes('json-array-shape@1')
+  && !rules("const v = JSON.parse(localStorage.getItem('log') || '[]'); const l = (Array.isArray(v) ? v : []).filter(f)", 'javascript').includes('json-array-shape@1')
+  && !rules("const have = new Set(JSON.parse(text).map((x) => x.ask))", 'javascript').includes('json-array-shape@1'),
+  'an array call straight on parsed saved data is flagged (valid JSON that is not a list throws); a shape check or a repo file is not');
+ok(rules("const git = (...a) => execFileSync('git', a, { encoding: 'utf8' });", 'javascript').includes('exec-no-timeout@1')
+  && rules("execFileSync('gh', ['api', '-X', 'POST', path]);", 'javascript').includes('exec-no-timeout@1')
+  && !rules("const git = (...a) => execFileSync('git', a, { encoding: 'utf8', timeout: 120e3 });", 'javascript').includes('exec-no-timeout@1')
+  && !rules("const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' });", 'javascript').includes('exec-no-timeout@1'),
+  'a network git/gh call with no timeout is flagged (a git wrapper too); a timeout, or a local git command, is not');
+ok(rules('<table id="t">\n  <tr><td>a</td><td>1</td></tr>\n</table>', 'javascript').includes('table-no-header@1')
+  && !rules('<table>\n  <thead><tr><th scope="col">Measure</th></tr></thead>\n</table>', 'javascript').includes('table-no-header@1')
+  && !rules("el.innerHTML = '<table><tr><th>Name</th></tr></table>';", 'javascript').includes('table-no-header@1')
+  && !rules('<table role="presentation"><tr><td>x</td></tr></table>', 'javascript').includes('table-no-header@1'),
+  'a table with no header cells is flagged; a header row, a header in the same string, or a layout table is not');
 ok(rules('while True: pass', 'python').includes('busy-loop@1') && rules('while True:\n    pass', 'python').includes('busy-loop@1') && !rules('while True:\n    time.sleep(1)', 'python').includes('busy-loop@1'), 'while True: pass flagged, a loop that sleeps not');
 // the page names the language from the ask's title, cut at the first colon ("review this c"), so every review ask in the
 // bench must name the same language that way as it does in full; a mismatch is a probe miss nobody can see locally

@@ -1508,5 +1508,105 @@
     ],
     "sha256": "9018de125e61bcf959c79b2fc6e359373839883ce9b7a706341f6d194aba664e",
     "emit": false
+  },
+  {
+    "run": 61,
+    "at": "2026-10-09T15:47:05Z",
+    "family": "non-lexical-intent",
+    "draft": "drafts/fringe/non-lexical-intent-4.html",
+    "sources": [
+      {
+        "claim": "People read goals and intentions into simple geometric shapes moving on a screen",
+        "source": "https://doi.org/10.2307/1416950",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Detecting a chase among moving dots falls steeply as the chaser's heading is allowed to wander further off the direct line (chasing subtlety), approaching chance near 90 degrees",
+        "source": "https://doi.org/10.1016/j.cogpsych.2008.12.002",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own d' for spotting a chase drops with chasing subtlety in the same way, measured on this page",
+        "source": "drafts/fringe/non-lexical-intent-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "fb23dc7bf1a29876658668bb5d22eefb3072b1bbf108493d9272487070741740",
+    "emit": false
+  },
+  {
+    "run": 62,
+    "at": "2026-10-09T17:44:45Z",
+    "family": "quiet-signal-filter",
+    "draft": "drafts/fringe/quiet-signal-filter-4.html",
+    "sources": [
+      {
+        "claim": "In a threshold system, a moderate amount of added noise can make a sub-threshold signal more detectable than either no noise or a lot of noise (stochastic resonance)",
+        "source": "https://doi.org/10.1103/RevModPhys.70.223",
+        "confidence": "claim"
+      },
+      {
+        "claim": "People viewing sub-threshold images rendered through a noisy threshold perceive them best at an intermediate noise level",
+        "source": "https://doi.org/10.1103/PhysRevLett.78.1186",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own accuracy at telling an upright from a flat faint bar peaks at a middle noise level on this page",
+        "source": "drafts/fringe/quiet-signal-filter-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "abbee70fce5312f8cf0eb1bbbba4bd7e0d105e463d2d52ca040d2257e167e90d",
+    "emit": false
+  },
+  {
+    "run": 63,
+    "at": "2026-10-09T19:08:18Z",
+    "family": "correlation-view",
+    "draft": "drafts/fringe/correlation-view-5.html",
+    "sources": [
+      {
+        "claim": "Restricting a sample to a narrow range of one variable lowers the observed correlation, by an amount Thorndike's case II formula predicts from the spread kept",
+        "source": "https://doi.org/10.1037/0021-9010.85.1.112",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Validity coefficients computed among already-selected people (admitted, hired) understate the predictor's correlation in the full applicant pool",
+        "source": "https://doi.org/10.1037/0021-9010.85.1.112",
+        "confidence": "claim"
+      },
+      {
+        "claim": "People looking at a shaded band of a scatter plot under-predict how much weaker its correlation is, measured on this page",
+        "source": "drafts/fringe/correlation-view-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "3772dae19e8a907aaacc6ff93aed343cf0fa81a47976ef0c6456cf14843a4841",
+    "emit": false
+  },
+  {
+    "run": 64,
+    "at": "2026-10-09T19:44:24Z",
+    "family": "anomalous-event-timeline",
+    "draft": "drafts/fringe/anomalous-event-timeline-4.html",
+    "sources": [
+      {
+        "claim": "In a self-exciting point process each event raises the chance of more soon after, so events cluster beyond what independent random arrivals give",
+        "source": "https://doi.org/10.1093/biomet/58.1.83",
+        "confidence": "claim"
+      },
+      {
+        "claim": "For events arriving independently at random, daily counts have variance about equal to their mean (index of dispersion near 1), testable with a chi-square statistic",
+        "source": "https://en.wikipedia.org/wiki/Index_of_dispersion",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own log of odd moments bunches more than chance, as attention after one makes the next more noticeable, measured on this page",
+        "source": "drafts/fringe/anomalous-event-timeline-4.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "865d5201758252cc6fdb6d8228998d3da9ca85df1886036118d90871f51bcb2a",
+    "emit": false
   }
 ]

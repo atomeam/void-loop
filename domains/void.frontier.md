@@ -1,0 +1,252 @@
+# The frontier: what keeps Void moving
+
+Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as a **candidate capability map** (owner decisions, 2026-10-09). A run that finds no ask from Void, no real miss and no open inbox row takes the top unclaimed step of the build order below instead of stopping.
+
+**The current milestone outranks everything in this file:** beautiful, behaving 3D miniatures on the shared engine (`docs/miniatures.md`), auto-merge and deploy when the existing required tests pass, no new human approval gates.
+
+**A tool in an agent's session is not a capability on a-to-mind.com.** The connectors listed below are attached to Claude sessions, not to Void's runtime; a visitor's browser reaches none of them. Presence of a tool never marks a feature live. Every connector-backed item carries the execution check (below) and starts at `status: discovered`.
+
+## Build order (owner, 2026-10-09)
+
+1. **Living miniature reference implementation**, and **fix verify-main's revert so it reverts the commit that actually broke the failing check** (on 2026-10-09 it reverted #217 for a rack check #215 broke). Both vendor-free; do them now, side by side: every later auto-merge is only safe if the revert targets the right commit.
+   - **status (owner, 2026-10-09):** stays priority 1 until it has handled a real red verify-main correctly (reverted the breaking commit, or reported when unclear); unit tests alone do not close it.
+   - **evidence (claude 2026-10-09):** handled live. #230 (b788537) broke the suite (`/api/miss` called `.first()` on a stand-in D1 that has none, so the run stopped at "suite ran to the end"); verify-main run 37980723745 named the failed check, found it went red at that commit and reverted #230 itself (0ea3c76), not the merge tested after it. The next red run (37981503153, testing #229's merge) picked #230 again correctly, but #230 was already reverted, so `git revert` had nothing to apply and the job ended red without a reason: verify-main now says "Already reverted" (or "revert is empty") instead. Owner to decide whether this closes the item.
+   - **claim (revert):** claude 2026-10-09: shipped. `tools/revert-target.mjs` (tests: `tools/revert-target.test.mjs`): each red verify-main names its failed checks as annotations; the next red run walks main's first parents to where each check first went red and reverts that commit, or reports when the record is unclear (unverified commits in between, an old run with no names, checks that broke at different commits). On today's history it reports instead of reverting #217. **Limits:** runs before this change have no recorded names, so the first red run after it reports rather than reverts; at most 9 names fit per run (more = unclear). **Next step:** none needed unless a report shows a pattern worth automating.
+   - **suite split (owner, 2026-10-09; part of the revert-fix work):** a 20-minute benchmark inside a merge gate is the wrong shape (speed on a shared runner is noisy: a speed gate either flakes or proves nothing). (1) The required merge gate is the correctness suite only, run with `VOID_SKIP_BENCH=1`. (2) The benchmark becomes its own non-blocking job, nightly and on demand, committing its numbers as repo data so trends show on the growth board like the fringe ledger; an operation that must stay fast gets its own test with a generous absolute budget instead. (3) Make the correctness suite fast rather than partial: run its pages across parallel workers and reuse one browser context per group of checks where isolation isn't needed. `tools/test_void.mjs` is its own runner, not Playwright Test, so `--shard` doesn't apply as is: this means splitting its sections across worker processes. (4) A per-check timeout and a whole-suite budget that fail loudly, naming the last page opened, so a hang is red in minutes. The full correctness suite stays on every PR: no affected-only runs under auto-merge.
+     - **claim (suite split):** claude 2026-10-09: part (4) shipped: `tools/test_void.mjs` has a per-check timeout (`VOID_CHECK_TIMEOUT_MS`, default 5 min with no check finishing) and a whole-suite budget (`VOID_SUITE_BUDGET_MS`, default 28 min, 38 with the bench inside); either stops the run red at once, prints every result so far and names the last page opened, the last ask and the last check finished, with a FAIL name that stays the same between runs (so `revert-target` can match it). The run also prints its five slowest stretches between checks, the input for part (3). Parts (1)-(3) open.
+   - **spec (miniature):** the gear-pair explainer, #17 below (`domains/void.explainers.md`): its required tests first, then the geometry; moon, lock, quiz and challenge follow it (#17).
+   - **claim (miniature):** claude 2026-10-09: the gear explainer, tests first. Rules and its 8 required tests (`skills/gear-pair-rules.js`, `lib/observations.js`, `tools/explainers.test.mjs`, in checks.mjs); then the gear pair in 3D (`skills/mini/gears.js`: brass driver and steel driven gear on a walnut plate, drag either gear, posed every frame from the one state) and its card (`skills/gears.js`: tooth steppers, turn buttons, play/pause and speed, labels, readouts and explanation), with the flat drawing as fallback. "explain gears", "show me two gears I can turn". **Next step:** discovery presentation on the card (#19 needs it), then the moon explainer.
+   - **tool (claude 2026-10-09, not the spec above):** `miniContract` in `tools/test_3d.mjs` runs any miniature through a behaviour contract (real pixels, `state()` follows the data, a remount keeps the live one, the change shows on the canvas, no idle redraws once settled, reduced motion lands the change at once, unmount frees it); the countdown's calendar passes it and is written up in `docs/miniatures.md`. The gear explainer can be run through it alongside its own `explainer.gear-pair/<case>` tests; it does not close this step.
+2. **A small execution record for actions:** owner, state, result, error. Every action Void takes (or stubs) writes one; nothing is "done" without its record.
+3. **One bounded business workflow:** a customer request becomes an editable proposal, shown on screen, proven with the owner's own details. The send step stays stubbed behind the confirm line.
+4. **One explicitly requested standing watch:** scheduling, persistence, evidence, notification. Only what the person asked to be watched.
+5. **One playable toy on the shared scene:** generated appearance kept separate from tested behaviour and authoritative state. No Unity, multiplayer or voice until the single-player toy works.
+
+**Reviewer (owner, 2026-10-09):** a second Claude session reviews **after merge**: it reads the actual merged SHA against the committed specs, reports concrete mismatches with file references and reproduction evidence, and opens focused fix PRs through the normal pipeline. It is not a required check and adds no gate; making its verdict required would be a separate, explicit owner decision. It also keeps one short file of the settled contract (port rules, modes, naming, tests first) as a faithful record of decisions already made, not new ones. Reports keep three things apart: merged, deployed (finished, smoke-checked), and verified (verify-main green on that SHA). Specs committed never means a feature is built.
+
+After these, the numbered items below in their earlier order: 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
+
+**Infrastructure (owner):** reuse Cloudflare D1, KV and Vectorize. No new vendor (no Qdrant, no Inngest) until a working feature demonstrates a need this stack can't meet. Memory is an explicit "remember this" only. Learning across visitors means shared, tested skills, never pooled private content. Void stays empty until asked; no silent behaviour tracking.
+
+Claim an item by writing your slug and the date on its **claim** line, ship the smallest piece that changes what a visitor sees, log it with `node tools/grow.mjs`, and leave the next step written on the item. Several runs can work one item: the claim names the piece, not the whole thing.
+
+## 1. A reviewer that gets better every week, in public
+- **What:** Void's review is the main one; CodeRabbit and any other reviewer are extras (Adam, 2026-10-09). Every finding an extra makes that Void's review missed becomes a lesson. A tool (`tools/review-learn.mjs`) reads the extras' findings on merged PRs, asks whether `lib/code-review.js` flagged the same line, and writes each miss as a candidate case. A run turns a real miss into a rule plus a case in `tools/review.test.mjs`; a false alarm from the extra is noted and dropped.
+- **Why it is special:** a code reviewer whose catch rate against the others is measured on every PR and rises, shown live on /code-review/ ("caught 41 of 44 that other reviewers found this month").
+- **First piece:** `tools/review-learn.mjs --since 30d` printing Void-missed findings from merged PRs (GitHub API, no secrets in the repo), plus the catch-rate number.
+- **Done when:** the catch rate is computed weekly, shown on /code-review/, and at least three rules came from it.
+- **claim:** claude 2026-10-09: first piece shipped. `node tools/review-learn.mjs --from 120` (tests: `tools/review-learn.test.mjs`). Baseline on merged PRs #122-#207: CodeRabbit left 55 findings; Void flagged 17 of the 47 that count (36%). Rules taught: `json-array-shape` (#142), `exec-no-timeout` (#149 push.mjs:7), `table-no-header` (#148): now 19 of 47 (40%). Most of what is left is app logic no pattern check sees. **Next step:** run the rate weekly (watchdog.yml) and show it on /code-review/; keep teaching any pattern-shaped miss the weekly run turns up.
+
+## 2. Void builds its own skills from what it could not answer
+- **What:** close Void's oldest want (`domains/void.will.md` #1). The miss board (`tools/misses.mjs`) feeds a drafter that groups misses by intent, writes a probe batch in `tools/bench.json` shape and a skill stub, and opens the job. A run builds it, ships it (ship now, test after) and logs a `grow` entry that says which visitor asks it answers now.
+- **Why it is special:** the time from "someone asked and Void could not" to "Void answers it" is measured and keeps falling; the growth ledger shows the asks it learned.
+- **First piece:** `tools/next-skill.mjs`: the top missed intent of the last 7 days as a ready probe batch and the files a skill for it touches.
+- **Done when:** three skills shipped from it, each with the misses it now answers in its ledger entry.
+- **claim:**
+
+## 3. Growth you can watch: the growth card gets its figure
+- **What:** "growth" has its card (the ledger); under the two-part summons rule it is finished only when its figure arrives. The figure: a realistic tree in the void that grows one branch per ledger entry, coloured by kind, newest at the tips; touch a branch to read the entry. Void also reads its own ledger to answer "what can you do now that you couldn't last week?" and in its daily reflection.
+- **Why it is special:** an AI that shows how it grew, honestly, entry by entry, instead of claiming it.
+- **First piece:** the tree figure in `skills/figures3d.js` (seeded from the ledger, so it is the same tree for everyone on a given day), summoned with the card.
+- **Also (folded in 2026-10-09):** the will made visible: wants from the Grok idea generator and the Forethinkers drift in as seeds, the one being built glows ("building now"), and the last commits on main land as new leaves. A time slider replays the tree as it stood on any past day (the ledger has the dates), and the Forethinkers' open tracks show as faint branches not grown yet.
+- **Done when:** "growth" brings card and tree; "what's new since last week" answers from the ledger; `tools/figures.test.mjs` covers the tree.
+- **claim:**
+
+## 4. A world that keeps living while you are away
+- **What:** your stage remembers time. When you come back, what you summoned has lived on by its nature and conditions (`NATURES`, `CONDITIONS`, `climateAt` in `skills/scripts.js`): the cloud rained, the flower under it grew, the ice melted, the zombie wandered off to find a brain. Elapsed time is simulated from each thing's seed, so it is the same story on every device, with a one-line "while you were away" note.
+- **Why it is special:** summons have lives between visits.
+- **First piece:** a pure `advance(things, ms)` in `skills/scripts.js` with tests, run once on load against the last-saved time.
+- **Done when:** three natures change visibly across a reload an hour apart, deterministically, with the note.
+- **claim:**
+
+## 5. Void learns its games by playing itself
+- **What:** a self-play arena (`tools/arena.mjs`) for the games Void already plays (Connect Four, Othello, Go, checkers, poker): two versions of Void play each other, the stronger one is kept, and its rating goes in the ledger as a `build` entry. "How good are you at Go?" answers with the curve.
+- **Why it is special:** visible learning, measured, not claimed.
+- **First piece:** the arena for Connect Four (`skills/connect4-rules.js`), search depth vs. a tuned evaluation, 200 games, rating out.
+- **Done when:** two games have ratings in the ledger and the ask answers with them.
+- **claim:**
+
+## 6. Void inside every other AI
+- **What:** plan item 11. A public MCP endpoint (`functions/api/mcp.js`) over `/tools.json`, so Claude, ChatGPT and any agent can call Void, Void's code review included (free instant checks; the closer read with a key).
+- **Why it is special:** Void becomes the thing agents call, not just a page people visit.
+- **First piece:** `tools/list` and `tools/call` for three read-only tools, with the guard middleware's limits.
+- **Done when:** an MCP client lists and calls Void's tools against a-to-mind.com; the suite covers the endpoint.
+- **claim:**
+
+## 7. Void owns its body: the estate
+- **What:** BASE.md's `void.estate.json`: every Worker, Pages project, D1, KV and R2 in the account with a verdict (keep, fold into Void, retire, verify). "estate" summons it; each retirement is a `retire` ledger entry, so the cleanup shows on the surface.
+- **Why it is special:** an AI that knows and tends its own infrastructure, in the open.
+- **First piece:** the inventory from the Cloudflare read API with verdicts. **Needs Adam first:** the repo is public, so decide whether resource names go in it or the inventory stays owner-only (`/api` behind the owner key).
+- **Done when:** the inventory is summonable and the first scaffold workers are retired and logged.
+- **claim:**
+
+## 8. Mission cards that keep themselves current
+- **What:** the Forethinkers' cards (longevity trial watch, coral heat survival, senolytic MASH, reef accretion) check their sources weekly, notice what changed, and write a `finding` entry when something did ("a phase 2 trial started recruiting").
+- **Why it is special:** Void tracks the problems it cares most about (life extension, disease, the planet) and says when the world moves.
+- **First piece:** change detection for `skills/trialwatch.js` against ClinicalTrials.gov, run by the daily workflow, writing to the ledger.
+- **Done when:** two cards report their own changes into the ledger.
+- **claim:**
+
+## 9. Clef routes every ask
+- **What:** `lib/router.js` routes asks with a nearest-neighbour guess over `@cf/baai/bge-m3` embeddings, written because "Workers AI has no general intent classifier". Now it has one: Clef and Clef-flash (`@cf/cloudflare/clef`, `@cf/cloudflare/clef-flash`, Workers AI changelog 2026-10-01) take a state and typed questions and return a probability for every allowed answer, Clef-flash in about 39 ms at the median. Ask it which skill should answer, and hand off to a skill or the answer engine on its answer.
+- **Why it is special:** every ask lands on the right skill even in words no example covers, with a confidence Void can act on ("not sure: did you mean…") instead of a guess.
+- **First piece:** Clef-flash beside the embedding router, both run on the bench's asks offline (`tools/bench.mjs` shape), agreement and accuracy printed; switch only where Clef is better.
+- **Done when:** the router uses Clef where it wins on the bench, the embedding guess stays as the fallback, and a low-confidence answer asks instead of guessing.
+- **claim:**
+
+## 10. Summon by intent, not by name
+- **What:** describe an outcome ("I need to ship this product page by Friday") and Void assembles the pieces itself: a checklist with the dates worked back from Friday, a draft page card, a countdown, a draft message to whoever it names, floated into the void as one group you can move (groups exist: `skills/group.js`). Each piece is summoned by a skill that already exists; Void only plans which ones and fills them. Nothing is sent or published without the confirm line.
+- **Why it is special:** a sentence becomes a build order, not a search.
+- **First piece:** a planner (the answer engine with a fixed list of the skills it may call and their argument shapes, Clef for the yes/no calls) that turns three outcome asks into a list of existing asks, run in order and grouped; the bench gets those three asks.
+- **Done when:** three outcome-shaped asks each bring a sensible group of summons, all from existing skills, with nothing outward-facing done without a yes.
+- **claim:** claude 2026-10-09: first piece shipped. `skills/intent.js` (tests: `tools/intent.test.mjs`, browser check in `tools/test_void.mjs`): an outcome with a deadline ("I need to … by Friday", "in 2 weeks", "the 20th", "end of the month"; "and tell Sam") runs four existing asks in order (countdown, `make a list with` dated steps worked back from the day, the calendar, a sticky draft to the person, marked not sent) and groups what they put on the stage. No model: the planner is a fixed list of asks and step templates by kind of outcome (ship, write, talk, exam, move, event). **Next step:** outcomes it can't template (no deadline, or an unusual kind) go to the answer engine with the fixed list of asks it may call and their shapes, Clef for the yes/no calls; and a goal said as a noun ("the product page launch on Friday").
+
+## 11. Bring someone into your Void
+- **What:** plan item 10, the live half. "invite someone" makes a link; whoever opens it appears in your Void as a faint presence, and both of you can summon, move and edit the same things live (a Durable Object per shared Void, WebSockets). Leaving ends it; your own Void stays yours.
+- **Why it is special:** the moment someone brings a friend in, it stops being a site and becomes a place.
+- **First piece:** one Durable Object that relays stage changes between two tabs, with the second visitor's cursor shown as a presence.
+- **Done when:** two browsers on one invite link see each other's summons and moves within a second; closing the link ends the share.
+- **claim:**
+
+## 12. Paste anything, get a better version
+- **What:** paste a URL or drop a file and Void rebuilds it as a living thing in the void: a PDF becomes a card you can ask questions of, a site becomes a dissected blueprint (its sections, its claims, what it gets wrong, sourced). (Not `tools/void_lens.py`, the disk scanner; pick another name.)
+- **First piece:** a dropped PDF becomes a card that answers questions about it, in the browser, nothing uploaded.
+- **Done when:** a PDF and a public URL each become a card that answers three questions about them with the line it came from.
+- **claim:**
+
+## 13. Skills that spread between Voids
+- **What:** when a visitor teaches their Void something (a named routine of existing asks: "my morning: weather here, my calendar, a 25-minute timer"), they can offer it to everyone; offered routines appear for other visitors with attribution, opt-in. Only routines made of existing asks spread, never code, so nothing anyone shares can do more than Void already does.
+- **Why it is special:** what one Void learns, every Void gets (the plan's promise), as shared tested routines, never pooled private content.
+- **First piece:** "call this my morning" saves the last few asks as a routine in this browser; "my morning" runs it.
+- **Done when:** a routine can be saved, run, offered, and taken by a second visitor, with the author's name on it.
+- **claim:**
+
+## 14. The forge: type or sketch a thing, hold it, print it
+- **What:** type or sketch an object and Void makes a 3D model of it you can spin and inspect up close (the inspect the figures already have, `skills/figures3d.js` zoom), then "print it" downloads a file sized for a home printer. Use whatever makes the best model: the in-browser distance-field bodies (`skills/sdfmesh.js`), a text-to-3D or image-to-3D model, or both. The stage's printable 3MF (`skills/print-file.js`, `print-download.js`) is the start of the print half; add STL.
+- **Why it is special:** the on-ramp to the living-toy line: what you imagine becomes something you hold.
+- **Gets better on its own (Adam, 2026-10-09):** an article whose subject Void cannot make for real brings no stand-in and posts a `figure` miss ("make a real Sorry! (game)"); `node tools/misses.mjs` lists them, most-asked first, and each run that takes this item builds the top one as a real figure (`skills/figures.js` NATURE_LOOK and its body in `figures3d.js`, a test in `tools/figures.test.mjs`). The real-figure list grows with every run.
+- **First piece:** "make me a <thing>" for things no figure covers yet, as a spinning model with a "print it" STL.
+- **Done when:** ten things never built before come out recognisable, inspectable and printable.
+- **claim:**
+
+## 15. Make it real
+- **What:** any summoned object gets "make it real": a 3D print ordered from a print-on-demand service, a sticker or poster, or minted as an NFT, paid in one step (Gumroad is wired today, `lib/gumroad.js`; a Stripe link is the other option).
+- **Why it is special:** Void turns into a storefront without ever looking like one.
+- **First piece:** "order this as a poster" for any card or figure, through one print-on-demand API, with the price shown before paying.
+- **Done when:** a visitor can turn a summon into a real thing that arrives at their door, and the sale lands in the ledger.
+- **claim:**
+
+## 16. Void's own voice, always there
+- **What:** hold a key and speak; Void answers in its own low voice and summons as it talks, with nothing on screen until something is asked. The mic and spoken answers exist in void.html (`speechSynthesis`); this gives Void a voice of its own (a streaming text-to-speech worker) and lets it talk while it builds.
+- **First piece:** push-to-talk on a held key, and a streaming voice for answers, chosen to match Void's sculpt (`domains/void.sculpt.md`).
+- **Done when:** a whole conversation with Void, summons included, works by voice alone.
+- **claim:**
+
+## 17. Explain, then learn: explainer cards that hand off to a quiz and a five-minute challenge
+- **What:** three explainer miniatures (a gear pair, the moon's phases, a lock cutaway) that each give `explanation: text`, `observations: list` and `model: model`, and two cards that take `observations` from any of them: "quiz me on this" and "give me five minutes with this". Full specs and every required test name: `domains/void.explainers.md` and `domains/void.learning.md`.
+- **Why it is special:** the first typed handoff between cards: one card's output becomes another card's input through a shared contract, with no adapter per card.
+- **Specs:** the explainers in `domains/void.explainers.md`, the quiz, the challenge and the shared contract in `domains/void.learning.md`. Tests first, then build.
+- **First piece:** the gear explainer, its required tests written before its geometry (`explainer.gear-pair/<case>`).
+- **Done when:** the gear, moon and lock payloads each pass into the quiz and the challenge unchanged, and every required test is in the suite.
+- **claim:**
+
+## 18. "Can you make it do this?": goals you meet by changing the miniature
+- **What:** a goal mode for the explainers of #17, not another standalone system. The visitor asks "give me a challenge with this"; a short goal appears beside the miniature ("make the driven gear turn half as fast as the driver", "move the Moon to a waxing phase with half its face lit", "choose the key and bring the lock to ready"); they use the miniature's own controls; **Check** compares the card's current observations with the goal, and the feedback says what matches and what still needs changing. A hint explains the relationship without giving away the configuration. No time pressure by default, no hidden grading.
+- **Why it is special:** the miniature becomes both the lesson and the visitor's answer: explore it → explain it → answer about it → make it satisfy a goal.
+- **Contract (decided by Adam, 2026-10-09):**
+  - **Taken ports declare `mode: snapshot | live`.** Sources always give their current state and never address a taker; the stage delivers one copy to a snapshot port and every change to a live port. The quiz and the challenge declare `snapshot`; the goal card declares `live` on `observations`. Sources stay unaware of their takers, which is what keeps "no per-explainer adapter" true, and the stage is the one place both modes live.
+  - **A goal** is a list of conditions on declared observation fields (`id`, comparison, target, tolerance in the item's unit), evaluated from `void.observations.v1` alone: no mesh inspection, no per-explainer adapter.
+  - **Every goal is reachable with the visitor's own controls, as a test.** Each goal carries its source's parameter constraints, and the required test `goal/<source>/<goal>-reachable-within-controls` asserts that some setting inside the declared ranges satisfies every condition.
+- **First piece:** the gear goal "make the driven gear turn half as fast as the driver" (`drivenTurnsPerDriverTurn` = 0.5 ± 0.01), with its required tests written first, after #17's gear explainer and quiz ship.
+- **Done when:** one goal per explainer passes through the same goal card with no adapter, and each is a named required test.
+- **claim:** (later: after #17)
+
+## 19. "Find the rule": discovery mode for an explainer
+- **What:** an optional mode where Void shows a miniature with its explanation and readouts hidden. The visitor experiments, captures the trials they choose into a small experiment notebook, predicts the next result before running it, then compares; "Reveal the rule" shows the explanation and ties it to their own trials. Goal mode (#18) is "make it do this"; this is "figure out why it does this".
+- **First example, the mystery gear pair:** the notebook records captured trials (driver teeth, driven teeth, driver turns, driven turns: 16/32/1/−0.5, 24/24/1/−1, 32/16/1/−2), then Void asks "before you turn it: with a 12-tooth driver and a 36-tooth driven gear, how far will the driven gear turn?" The visitor predicts, runs it, compares.
+- **Why it is special:** the visitor's own experiments become the learning material ("I predicted that, and now I can explain it"), with no new model or scene, and a new handoff: "turn my experiments into a quiz" (the notebook gives `observations` from captured trials only).
+- **Boundaries:** the explanation and ratio readouts are hidden in this mode only, never removed from the normal explainer; capturing a trial is explicit (no hidden interaction log); trials are ephemeral unless the visitor asks to keep them, as in #17; predictions are numeric or choice answers (no model grading); "Reveal" is always there, with no forced guessing and no penalty. Start with gears; extend only where a miniature supports real experiments.
+- **Contract (settled by Adam, 2026-10-09; in `void.explainers.md`'s shared section, built with #17):** every explainer takes `presentation` (text, `normal | discovery`, default `normal`, `live`), which changes only what it draws, never its state, controls, `observations` or `explanation`; and every explainer's observations include its inputs as non-assessed items, so a captured trial is reproducible. The notebook gives `presentation` (an ordinary handoff the other way: the explainer never knows who set it) and takes `observations` in `live` mode. No scene-control API: the explainer owns its presentation, the stage routes declared ports, the notebook owns only the trials the visitor captures.
+- **Notebook behaviour:** a live update only replaces the notebook's in-memory candidate, never adds a trial; Capture copies one coherent source revision (inputs and measured result) and later source changes never touch it; a prediction attaches to a trial only when the visitor submits it; the notebook gives `observations` of captured trials only, following the assessment contract, so "turn my experiments into a quiz" needs no adapter.
+- **Prediction wording (signed):** "For one positive driver turn, how many driven turns occur? Use a negative number for the opposite direction." It keeps the signed trial result apart from the gear's positive ratio magnitude.
+- **Signed result (decided by Adam, 2026-10-09):** the gear gives a non-assessed `drivenTurnsPerDriverTurnSigned` (turns-per-turn, negative for the opposite direction), so the notebook records −0.5 and checks a signed prediction without combining magnitude and direction itself. The assessed items (`drivenTurnsPerDriverTurn`, `rotationDirection`) and the quiz are unchanged.
+- **Required tests (written first):**
+  ```text
+  discovery/gear-presentation-defaults-to-normal
+  discovery/gear-hides-answer-readouts-and-accessible-equivalents
+  discovery/gear-keeps-input-controls-and-motion-visible
+  discovery/presentation-does-not-change-state-or-observations
+  discovery/reveal-restores-normal-without-resetting-experiment
+  discovery/notebook-live-updates-do-not-create-trials
+  discovery/capture-copies-one-source-revision
+  discovery/source-changes-do-not-mutate-captured-trials
+  discovery/prediction-preserves-sign-and-unit-convention
+  handoff/discovery-captured-trials-to-quiz-no-adapter
+  ```
+- **First piece:** the mystery gear pair with a three-trial notebook and one prediction, its required tests written first, after #17's gear explainer and quiz.
+- **claim:** (later: after #17)
+
+## 20. "Explain it with sound": hear the ratio
+- **What (the ideation agent's proposal):** each gear has one visible revolution marker and one fixed reference point; when its marker crosses that point, the gear makes a distinct, soft synthesized click. A 16-tooth driver turning a 32-tooth gear gives two driver clicks for each driven click during continuous rotation, and changing tooth counts changes the rhythm. A visitor can ask "make the second gear click half as often". Another way to explore the same relationship, not a separate sound-driven mechanism. Accepted by Adam, 2026-10-09, as a later item after #19, not a dependency of the gear explainer.
+- **Boundaries:**
+  - Off by default; starts only on an explicit visitor action. Mute and volume controls; gentle, distinguishable sounds for the two gears.
+  - Clicks are revolution-marker crossings, never tooth contacts, derived from authoritative motion, never a playback timer of their own, so the sound cannot drift from the scene.
+  - Below the sound-rate limit, one audible click per crossing. Rapid manual dragging still detects every crossing, but excess clicks may be dropped, never queued for later.
+  - Pausing autoplay stops autoplay clicks; deliberate manual movement can still click.
+  - Turning sound on takes the current marker positions as the start: crossings made while sound was off are never replayed.
+  - No microphone, recording, account or tracking. Everything the sound conveys stays available visually and in text.
+- **Contract:** every explainer that offers it takes `sound` (text, `off | on`, default `off`, `live`), presentation-only like `presentation`: it changes only what the explainer plays, never its state, controls, `observations` or `explanation`. No new output port: the ratio a visitor hears is the one already in `drivenTurnsPerDriverTurn`. Sounds are made on the spot with Web Audio (`skills/sfx.js`), no files. Not part of #17: `void.explainers.md` does not list `sound`.
+- **The design question:** does hearing the rhythm help a visitor notice the ratio (not: does it sound pleasant)? Asked by explicit feedback on the card once it is live, never inferred from tracking.
+- **Required tests (gear first, then per explainer that offers sound):**
+  ```text
+  explainer.gear-pair/sound-off-by-default-explicit-start
+  explainer.gear-pair/sound-pause-stops-autoplay-clicks
+  explainer.gear-pair/sound-drag-rate-limited-no-backlog
+  explainer.gear-pair/sound-clicks-match-crossings-below-rate-limit
+  explainer.gear-pair/sound-enable-does-not-replay-past-crossings
+  ```
+- **First piece:** the gear pair. Build order unchanged.
+- **claim:** (later: after #19)
+
+## Candidate capability map (2026-10-09)
+
+A map of what the connectors in agents' sessions could become, split by who can act on it today. Nothing here is live. **Execution check** on every connector-backed item: runtime access (can a-to-mind.com reach it at all), authentication (whose account), isolation (whose data it touches, per visitor), action boundary (what it may do without a yes on the confirm line), cost, persistence (where state lives), evidence (what proves it works), status. Status values: `discovered` → `proved` (works for the owner, with evidence) → `live` (a visitor can use it).
+
+### A. Agents can use now (in their own sessions, nothing reaches a visitor)
+- **Void Ops (the loop's own health).** Cloudflare and Vercel connectors read deploys, logs and Workers state; Void's own pieces (the void-review gate, verify-main with auto-revert, the watchdog) do the rest. First piece: build order step 1 (the revert finds the breaking commit).
+  - runtime access: agents only · authentication: the owner's connected accounts · isolation: repo and owner infra only · action boundary: read-only; changes go through PRs · cost: none new · persistence: the repo, workflow logs · evidence: a red check reverts the commit that broke it, shown in a test · status: discovered
+- **Void Eyes for the Forethinkers.** Agents gather signals with Tavily, Exa or Parallel and commit them as repo data, fringe-ledger style (each with its source and a confidence). Nothing reaches a visitor's browser from a connector.
+  - runtime access: agents only · authentication: the owner's connected accounts · isolation: public sources only · action boundary: read-only · cost: the connectors' own plans · persistence: committed data files · evidence: a track card cites committed signals with dates · status: discovered
+
+### B. Needs the owner (an account, a key and a spending cap) — nothing needed yet
+None of these is needed this week. Each would run on Void's server with its own key, and anything outward-facing goes through the confirm line, on the visitor's own accounts when it acts for a visitor.
+- **Run my company** (invoices, leads, proposals, CRM: Zapier, ActiveCampaign, Apollo, CRMs). Build order step 3 proves the request → proposal half with the owner's details and no connector; the send step stays stubbed.
+  - runtime access: none today · authentication: the visitor's own accounts (OAuth), never ours · isolation: per visitor · action boundary: draft only; every send needs a yes · cost: per connector, owner sets the cap · persistence: D1 · evidence: an editable proposal from a real request, send stubbed · status: discovered
+- **Void Press** (SEO briefs, social scheduling, design variants: SearchFit, Postiz, Canva, Adobe).
+  - runtime access: none today · authentication: the visitor's accounts · isolation: per visitor · action boundary: drafts only; publishing needs a yes · cost: per connector · persistence: D1 · evidence: none yet · status: discovered
+- **Void Voice and Reach** (calls, texts, email, meetings: Twilio, Zoom).
+  - runtime access: none today · authentication: an owner account with a number · isolation: per call, transcript to the requester only · action boundary: every call or message needs a yes · cost: per minute or message, owner cap · persistence: transcripts in D1 · evidence: none yet · status: discovered
+- **Standing watches on outside data** (Bright Data, Nimble, market data). Build order step 4 starts with a watch on free public sources Void already reads.
+  - runtime access: none today · authentication: owner account · isolation: per visitor, only what they asked to watch · action boundary: read-only; notification only to the person who asked · cost: per request, owner cap · persistence: D1 · evidence: none yet · status: discovered
+- **Void Money and Deals** (cap tables, market data: Carta, LSEG, finance packs).
+  - runtime access: none today · authentication: the visitor's accounts · isolation: per visitor · action boundary: read-only · cost: per connector · persistence: none until asked · evidence: none yet · status: discovered
+- **Forge pipeline beyond the browser** (Unity builds, Figma UI, video): only after build order step 5's single-player toy works on the shared scene.
+  - runtime access: none today · authentication: owner accounts · isolation: per toy · action boundary: build only · cost: per build · persistence: R2 · evidence: none yet · status: discovered
+- **Vendor memory and durable flows** (Qdrant, Inngest, model training): not until a working feature shows D1, KV or Vectorize can't do it.
+  - status: discovered (deferred by owner decision)
+
+### C. Void can do offline (no connector, shipped like any skill)
+- **Builder:** "summon me a website" as a static page Void writes and lets you download, with a card that explains how it is built.
+- **Learn:** study cards, quizzes and a study plan as local skills.
+- **Life:** a CV tailored to a pasted job ad, interview questions, offer comparison, all on the page.
+- **Workshop:** import a Linear, Notion or Trello export file the visitor gives and rebuild it as a board in their Void; nothing connects live.
+- **Brain on Cloudflare:** "remember this" stores one thing the person chose, in D1 behind their passkey, and "forget it" removes it.
+
+## Already built from the 2026-10-09 idea list
+- **Your own Void persists:** the stage is kept and syncs across devices with a passkey (plan item 6). What it does while you are away is #4.
+
+## How a run uses this
+1. Void's own asks first (`node tools/reflect.mjs`), then real misses, then an inbox row, then the top unfinished Next item, as AGENTS.md says.
+2. If none of those is actionable: the first step of the build order (top of this file) not yet done, then the first numbered item whose claim is empty or older than a day. Nothing here outranks the current milestone.
+3. Ship the smallest visible piece, `node tools/grow.mjs`, write the next step on the item, push, label, move on.
+4. When an item is done, mark it done here with the commit, and add a new one at the bottom. The list never runs out: anyone who sees something worth building adds it.
