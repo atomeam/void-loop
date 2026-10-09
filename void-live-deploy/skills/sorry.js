@@ -73,11 +73,22 @@ function boardSvg() {
 
 const CARD_TEXT = { 1: 'Leave Start, or move 1', 2: 'Leave Start, or move 2 · draw again', 3: 'Move 3', 4: 'Move back 4', 5: 'Move 5', 7: 'Move 7, or split it between two pawns', 8: 'Move 8', 10: 'Move 10, or back 1', 11: 'Move 11, or swap with a rival', 12: 'Move 12', sorry: 'Sorry! From Start, take a rival’s square' };
 const timers = new WeakMap(), painters = new WeakMap();
+// the draw pile looks like the box's own deck: a red back with the logo face down, a cream face that flips over when you
+// draw, and Draw glowing while it is the move to make (Adam: "capture the nostalgia of the physical board")
+const SO_CSS = '.so-card{position:relative;transform-style:preserve-3d;transition:box-shadow .2s}'
+  + '.so-card.back{background:repeating-linear-gradient(135deg,#b8141f 0 6px,#c8202c 6px 12px)!important;color:#fff8e7!important;border-color:#fff8e7!important;font:italic 800 13px Georgia,serif!important;box-shadow:0 2px 0 #8e0f18,0 4px 0 #6f0b12,0 6px 10px rgba(0,0,0,.45)!important}'
+  + '.so-card.flip{animation:so-flip .42s cubic-bezier(.2,.7,.2,1)}'
+  + '@keyframes so-flip{0%{transform:rotateY(90deg) translateY(-6px) scale(1.06)}60%{transform:rotateY(-8deg) scale(1.04)}100%{transform:none}}'
+  + '.so-draw.ready{box-shadow:0 0 0 0 rgba(255,214,120,.7);animation:so-ready 1.6s ease-out infinite;background:#ffe2a1!important;color:#2a1c06!important}'
+  + '@keyframes so-ready{0%{box-shadow:0 0 0 0 rgba(255,214,120,.65)}80%,100%{box-shadow:0 0 0 12px rgba(255,214,120,0)}}'
+  + '@media (prefers-reduced-motion: reduce){.so-card.flip,.so-draw.ready{animation:none}}';
+function soStyle() { if (typeof document === 'undefined' || document.getElementById('sorry-style')) return; const st = document.createElement('style'); st.id = 'sorry-style'; st.textContent = SO_CSS; document.head.appendChild(st); }
 function later(th, fn, ms) { clearTimeout(timers.get(th)); timers.set(th, setTimeout(() => { timers.delete(th); fn(); }, ms)); }
 const reduced = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (_) { return false; } };
 
 function mount(th, stageApi) {
   if (!th.state || th.state.v !== 1) th.state = createState();
+  soStyle();
   const el = document.createElement('div');
   el.className = 'thing kept-card game-card sorry-card';
   el.dataset.id = th.id;
@@ -94,7 +105,7 @@ function mount(th, stageApi) {
   bar.append(card, status, drawBtn);
   const foot = document.createElement('div'); foot.className = 'g-foot';
   const opp = document.createElement('div'); opp.className = 'g-seg'; opp.setAttribute('role', 'group'); opp.setAttribute('aria-label', 'computer players');
-  opp.innerHTML = '<span>vs</span>' + [1, 2, 3].map((n) => '<button type="button" data-opp="' + n + '">' + n + ' bot' + (n > 1 ? 's' : '') + '</button>').join(''); // void-review: ok (only the numbers 1-3)
+  opp.innerHTML = '<span>vs</span>' + [1, 2, 3].map((n) => '<button type="button" data-opp="' + n + '">' + n + ' bot' + (n > 1 ? 's' : '') + '</button>').join('');
   const again = document.createElement('button'); again.type = 'button'; again.className = 'g-btn'; again.textContent = 'New game';
   foot.append(opp, again);
   const rules = document.createElement('div'); rules.className = 'g-rules';
@@ -132,9 +143,17 @@ function mount(th, stageApi) {
     tg.innerHTML = '';
     const show = picked != null ? moves.filter((mv) => mv.pawn === picked) : [];
     show.forEach((mv, i) => { const [x, y] = mv.to === 'H' ? pawnXY(s.human, mv.pawn, 'H') : squareXY(mv.to, s.human); const t = svgEl('circle', { cx: r1(x), cy: r1(y), r: 9.5, class: 'ag-target', 'data-to': String(i) }, tg); t.setAttribute('role', 'button'); t.setAttribute('aria-label', (mv.kind === 'split' ? 'split: ' + mv.split + ' here' : mv.kind) + ' to ' + key(mv.to)); });
-    card.textContent = s.card == null ? (s.shown == null ? '?' : s.shown === 'sorry' ? 'S!' : s.shown) : s.card === 'sorry' ? 'S!' : s.card;
-    card.style.opacity = s.card == null ? '.55' : '1';
+    // face down (the deck's back) until a card is drawn; a newly drawn card flips over
+    const face = s.card == null ? '' : s.card === 'sorry' ? 'Sorry!' : String(s.card);
+    if (face !== card.dataset.face) {
+      card.dataset.face = face;
+      card.textContent = face || 'Sorry!';
+      card.classList.toggle('back', !face);
+      card.style.fontSize = face === 'Sorry!' ? '13px' : '';
+      if (face && !reduced()) { card.classList.remove('flip'); void card.offsetWidth; card.classList.add('flip'); }
+    }
     drawBtn.disabled = !humanTurn() || s.card != null;
+    drawBtn.classList.toggle('ready', !drawBtn.disabled);
     sub.textContent = s.seats.length - 1 + ' computer player' + (s.seats.length > 2 ? 's' : '');
     for (const b of opp.querySelectorAll('button')) b.classList.toggle('on', Number(b.dataset.opp) === s.seats.length - 1);
     const who = (c) => (c === s.human ? 'you' : COLORS[c]);

@@ -7,6 +7,8 @@
  *                                       lets it be dragged on its own and remembers where it was left
  *       opts: { boardW, boardH, w = 280, gap = 20 }
  */
+import { howTo } from './howto.js';
+
 export function grip(label) {
   const g = document.createElement('div');
   g.className = 'board-grip';
@@ -32,6 +34,7 @@ export function sideCard(th, stageApi, card, { boardW = 420, boardH = 420, w = 2
     : beside ? { x: th.x + boardW + gap, y: th.y + Math.round(boardH * 0.18) } : { x: Math.max(8, th.x + Math.round((boardW - Math.min(w, vw - 16)) / 2)), y: th.y + boardH + gap };
   if (!th.card) th.card = { x: at.x, y: at.y }; // from now on the card stays where it is when the board moves
   card.classList.add('side-card');
+  howTo(card, th.kind); // every game's card: a "How to play" that opens by itself the first time
   card.dataset.of = th.id; // not data-id: the stage's own drag and lookups stay on the board
   card.style.position = 'absolute';
   card.style.left = at.x + 'px'; card.style.top = at.y + 'px';
