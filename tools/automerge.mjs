@@ -27,7 +27,7 @@ for (const p of prs) {
   if (!p || p.state !== 'open' || !(p.labels || []).some((l) => l.name === LABEL)) continue;
   if (p.head.repo && p.head.repo.full_name !== repo) { console.log(`#${p.number}: from a fork, never merged automatically`); continue; }
   const r = readiness(gh, repo, p.number);
-  console.log(`#${p.number}: ${r.state} (${r.why})`);
+  console.log(`#${p.number}: ${r.state} (${r.why})` + (r.extra ? ' · ' + r.extra : ''));
   if (r.state !== 'merge') continue;
   try {
     if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);

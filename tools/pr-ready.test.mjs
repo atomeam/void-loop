@@ -37,10 +37,12 @@ ok(R({ comments: [{ user: { login: CR }, body: 'review in progress by coderabbit
 ok(R({ comments: [{ user: { login: 'atomeam' }, body: '@coderabbitai review', created_at: '2026-10-09T12:00:30Z' }] }).state === 'merge', 'a review asked for and not posted yet: merge, no wait');
 ok(R({ comments: [{ user: { login: CR }, body: '> [!WARNING]\n> ## Review limit reached' }] }).state === 'merge', 'CodeRabbit rate-limited: merge, no wait');
 ok(R({ reviews: [crReview(0)] }).state === 'merge', 'a clean CodeRabbit review: merge');
-ok(R({ reviews: [crReview(1)], threads: [thread(1)] }).state === 'stop', 'a CodeRabbit finding with no answer: stop');
+ok(R({ reviews: [crReview(1)], threads: [thread(1)] }).state === 'merge', 'a CodeRabbit finding with no answer: merge, Void decides');
+ok(/1 finding.*1 thread/.test(R({ reviews: [crReview(1)], threads: [thread(1)] }).extra), 'the CodeRabbit finding is reported as an extra');
 ok(R({ reviews: [crReview(1)], threads: [thread(1), reply(1)] }).state === 'merge', 'a CodeRabbit finding answered on its thread: merge');
-ok(R({ reviews: [crReview(2)], threads: [thread(1), reply(1)] }).state === 'stop', 'a finding outside any thread: stop until a push fixes it');
-ok(R({ threads: [thread(1, { original_commit_id: 'old' })] }).state === 'stop', 'an old thread nobody answered still blocks');
+ok(R({ reviews: [crReview(2)], threads: [thread(1), reply(1)] }).state === 'merge', 'a finding outside any thread: merge, reported');
+ok(R({ threads: [thread(1, { original_commit_id: 'old' })] }).state === 'merge', 'an old unanswered CodeRabbit thread no longer blocks');
+ok(R().extra === '', 'no extra note when CodeRabbit found nothing');
 ok(R({ pr: { state: 'closed' } }).state === 'stop' && R({ pr: { merged: true } }).merged, 'closed and merged PRs');
 ok(R({ pr: { draft: true } }).draft === true, 'a draft is reported so it can be marked ready');
 
