@@ -394,8 +394,8 @@ export async function run3dChecks({ check, fresh }) {
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, sorry, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,sorry,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
     await F.ctx.close();
   }
   {
