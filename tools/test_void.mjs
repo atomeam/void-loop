@@ -105,6 +105,7 @@ function memoryMeD1({ broken = false } = {}) {
     if (/^DELETE FROM void_mine WHERE user_id = \?$/.test(sql)) { need('void_mine'); return ch(T.mine.delete(a[0]) ? 1 : 0); }
     if (/^DELETE FROM void_accounts WHERE user_id = \?$/.test(sql)) { need('void_accounts'); return ch(T.accounts.delete(a[0]) ? 1 : 0); }
     if (/^DELETE FROM void_pages WHERE user_id = \?$/.test(sql)) { need('void_pages'); return ch(0); }
+    if (/^DELETE FROM void_review_keys WHERE user_id = \?$/.test(sql)) { need('void_review_keys'); return ch(0); }
     if (/^INSERT INTO void_owner_passkeys \(id, at\) VALUES \(\?, \?\) ON CONFLICT\(id\) DO NOTHING$/.test(sql)) { need('void_owner_passkeys'); if (T.owners.has(a[0])) return ch(0); T.owners.set(a[0], { id: a[0], at: a[1] }); return ch(1); }
     if (/^DELETE FROM void_owner_passkeys WHERE id IN \(SELECT id FROM void_passkeys WHERE user_id = \?\)$/.test(sql)) { if (!tables.has('void_owner_passkeys')) tables.add('void_owner_passkeys'); return delWhere(T.owners, (v) => { const p = T.passkeys.get(v.id); return !!p && p.user_id === a[0]; }); }
     throw new Error('unexpected sql: ' + sql);
