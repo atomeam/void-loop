@@ -2385,6 +2385,17 @@ try {
       && typeof ai === 'number' && ai >= 0 && ai < 64 && v2.includes(ai),
     othMod ? othMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing othello');
 
+  // make: a 3D shape and Connect 4 draw in their frames without a script error (a broken frame script once shipped:
+  // "continue." for "continue;" inside the shape renderer threw "Unexpected token '.'" while every other check stayed green)
+  { const M = await fresh();
+    await M.ask('make a 3d torus', 1500); const torus = await M.page();
+    await M.ask('play connect 4', 1500); const c4 = await M.page();
+    const frames = M.p.frames().length;
+    check('make: "make a 3d torus" and "play connect 4" each open a frame with no script error',
+      /torus/i.test(torus) && /connect 4|connect four/i.test(c4) && frames >= 2 && !M.errors.length,
+      JSON.stringify({ torus: torus.slice(0, 60), c4: c4.slice(0, 60), frames, errs: M.errors }));
+    await M.ctx.close(); }
+
   // outcome card: the count is a stage thing now (not a popup page) — it keeps the right day count, copies as
   // plain text (stageApi.addCopy, reused rather than a one-off button), and survives a reload like any other thing
   { const Q = await fresh();
