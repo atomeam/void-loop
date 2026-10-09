@@ -114,3 +114,109 @@ test('explainer.gear-pair/discovery-hides-readouts-keeps-observations-and-inputs
   assert.equal(G.explanation(disc), G.explanation(s));
   assert.equal(G.check({ presentation: 'loud' }).ok, false);
 });
+
+// ---------------- moon phases ----------------
+import * as M from '../void-live-deploy/skills/moon-phases-rules.js';
+
+const moonAt = (deg) => M.create({ orbitAngleDegrees: deg });
+// the Earth-view disc, sampled: how much of the near side the view shows lit
+const sampledFraction = (s) => { let lit = 0, all = 0; const n = 160; for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) { const x = (i + 0.5) / n * 2 - 1, y = (j + 0.5) / n * 2 - 1; if (x * x + y * y > 1) continue; all++; if (M.litInEarthView(s, x, y)) lit++; } return lit / all; };
+
+test('explainer.moon-phases/0-new-0-percent', () => {
+  const s = moonAt(0);
+  assert.ok(near(M.illuminatedFraction(s), 0)); assert.equal(M.phaseName(s), 'new-moon');
+  assert.ok(sampledFraction(s) < 0.01, 'the Earth view shows no lit part');
+});
+
+test('explainer.moon-phases/90-first-quarter-50-percent', () => {
+  const s = moonAt(90);
+  assert.ok(near(M.illuminatedFraction(s), 0.5)); assert.equal(M.phaseName(s), 'first-quarter');
+  assert.ok(Math.abs(sampledFraction(s) - 0.5) < 0.02);
+});
+
+test('explainer.moon-phases/180-full-100-percent', () => {
+  const s = moonAt(180);
+  assert.ok(near(M.illuminatedFraction(s), 1)); assert.equal(M.phaseName(s), 'full-moon');
+  assert.ok(sampledFraction(s) > 0.99);
+});
+
+test('explainer.moon-phases/270-last-quarter-50-percent', () => {
+  const s = moonAt(270);
+  assert.ok(near(M.illuminatedFraction(s), 0.5)); assert.equal(M.phaseName(s), 'last-quarter');
+  assert.ok(Math.abs(sampledFraction(s) - 0.5) < 0.02);
+  // the same fraction as first quarter, the other limb: waxing and waning come from the position, not the fraction
+  assert.notEqual(M.waxingOrWaning(s), M.waxingOrWaning(moonAt(90)));
+});
+
+test('explainer.moon-phases/lit-side-faces-light', () => {
+  // wherever the Moon is in its orbit, its lit hemisphere faces the Sun (a fixed direction), never the Earth
+  for (const a of [0, 33, 90, 145, 180, 222, 270, 333]) {
+    const s = moonAt(a), n = M.litHemisphereNormal(s), sun = M.SUN_DIRECTION;
+    assert.ok(near(n[0] * sun[0] + n[1] * sun[1] + n[2] * sun[2], 1), 'lit side faces the light at ' + a);
+  }
+  // and the view's fraction is the formula for every position
+  for (const a of [10, 45, 120, 200, 300]) assert.ok(Math.abs(sampledFraction(moonAt(a)) - (1 - Math.cos(a * Math.PI / 180)) / 2) < 0.02, 'fraction at ' + a);
+});
+
+test('explainer.moon-phases/overview-camera-does-not-change-earth-view', () => {
+  const s = moonAt(123);
+  const a = M.earthView(s, { azimuth: 0, elevation: 30 }), b = M.earthView(s, { azimuth: 170, elevation: 80 });
+  assert.deepEqual(a, b); // the Earth view comes from the state alone, never from where the overview camera is
+});
+
+test('explainer.moon-phases/wrap-360-to-0-no-jump', () => {
+  const s = M.turnMoon(moonAt(359.9), 0.2);
+  assert.ok(near(M.orbitAngle(s), 0.1, 1e-9), 'normalized to 0.1, got ' + M.orbitAngle(s));
+  assert.ok(Math.abs(M.illuminatedFraction(s) - M.illuminatedFraction(moonAt(359.9))) < 1e-4, 'no jump in the lit fraction');
+  assert.equal(M.phaseName(s), 'new-moon'); assert.equal(M.phaseName(moonAt(359.9)), 'new-moon');
+  assert.ok(near(M.orbitAngle(M.turnMoon(moonAt(10), -20)), 350), 'and back the other way');
+});
+
+test('explainer.moon-phases/explanation-never-cites-earth-shadow', () => {
+  for (let a = 0; a < 360; a += 15) {
+    const e = M.explanation(moonAt(a));
+    assert.doesNotMatch(e, /shadow/i, 'at ' + a + ': ' + e);
+    assert.match(e, /sun/i);
+  }
+});
+
+test('explainer.moon-phases/waxing-lit-limb-right', () => {
+  for (const a of [20, 60, 90, 140]) { const s = moonAt(a); assert.equal(M.earthView(s).litLimb, 'right'); assert.ok(M.litInEarthView(s, 0.98, 0), 'right limb lit at ' + a); assert.ok(!M.litInEarthView(s, -0.98, 0), 'left limb dark at ' + a); }
+  for (const a of [220, 270, 320]) { const s = moonAt(a); assert.equal(M.earthView(s).litLimb, 'left'); assert.ok(M.litInEarthView(s, -0.98, 0)); }
+  assert.match(M.SCENE_NOTE, /Right limb lit while waxing \(northern-hemisphere view\)/);
+  assert.equal(M.CONVENTIONS.waxingLitLimb, 'right');
+});
+
+test('explainer.moon-phases/waxing-or-waning-not-assessed-at-new-or-full', () => {
+  const item = (s) => M.observations(s).items.find((x) => x.id === 'waxingOrWaning');
+  for (const a of [0, 180]) assert.equal(item(moonAt(a)).assessment.enabled, false, 'not assessed at ' + a);
+  assert.equal(item(moonAt(45)).assessment.answerId, 'waxing'); assert.equal(item(moonAt(45)).assessment.enabled, true);
+  assert.equal(item(moonAt(225)).assessment.answerId, 'waning');
+  // the phase-name and fraction questions stay available at the turning points
+  for (const a of [0, 180]) { const o = M.observations(moonAt(a)); assert.equal(o.items.find((x) => x.id === 'phaseName').assessment.enabled, true); assert.equal(o.items.find((x) => x.id === 'illuminatedFraction').assessment.enabled, true); }
+});
+
+test('explainer.moon-phases/observations-schema-valid', () => {
+  const o = M.observations(moonAt(120));
+  const v = validateObservations(o); assert.ok(v.ok, v.errors.join('; '));
+  const f = o.items.find((x) => x.id === 'illuminatedFraction');
+  assert.equal(f.unit, 'fraction'); assert.equal(f.assessment.tolerance, 0.02);
+  assert.match(f.assessment.prompt, /captured orbital position of 120°/);
+  const p = o.items.find((x) => x.id === 'phaseName');
+  assert.deepEqual(p.assessment.options.map((x) => x.id), ['new-moon', 'waxing-crescent', 'first-quarter', 'waxing-gibbous', 'full-moon', 'waning-gibbous', 'last-quarter', 'waning-crescent']);
+  assert.equal(p.assessment.answerId, 'waxing-gibbous');
+  const input = o.items.find((x) => x.id === 'orbitAngleDegrees');
+  assert.ok(input && !(input.assessment && input.assessment.enabled), 'the input is listed, not assessed');
+});
+
+test('explainer.moon-phases/discovery-hides-readouts-keeps-observations-and-inputs', () => {
+  const s = moonAt(200), d = M.setPresentation(s, 'discovery');
+  const vn = M.view(s), vd = M.view(d);
+  assert.ok(vn.explanation && vn.readouts.length >= 2);
+  assert.equal(vd.explanation, null); assert.equal(vd.readouts.length, 0);
+  // the answer is hidden (phase, fraction, waxing or waning); the schematic note, which names the convention, stays
+  assert.doesNotMatch(JSON.stringify({ ...vd, notes: [] }), /gibbous|crescent|full moon|waning|waxing|\d\s*%/i);
+  assert.deepEqual(vd.notes, vn.notes);
+  assert.deepEqual(vd.inputs, vn.inputs); assert.ok(vd.controls.includes('reveal-rule'));
+  assert.deepEqual(M.observations(d), M.observations(s));
+});
