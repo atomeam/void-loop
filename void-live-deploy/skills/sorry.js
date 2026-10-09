@@ -105,7 +105,7 @@ function mount(th, stageApi) {
   bar.append(card, status, drawBtn);
   const foot = document.createElement('div'); foot.className = 'g-foot';
   const opp = document.createElement('div'); opp.className = 'g-seg'; opp.setAttribute('role', 'group'); opp.setAttribute('aria-label', 'computer players');
-  opp.innerHTML = '<span>vs</span>' + [1, 2, 3].map((n) => '<button type="button" data-opp="' + n + '">' + n + ' bot' + (n > 1 ? 's' : '') + '</button>').join(''); // void-review: ok (only the numbers 1-3)
+  opp.innerHTML = '<span>vs</span>' + [1, 2, 3].map((n) => '<button type="button" data-opp="' + n + '">' + n + ' bot' + (n > 1 ? 's' : '') + '</button>').join('');
   const again = document.createElement('button'); again.type = 'button'; again.className = 'g-btn'; again.textContent = 'New game';
   foot.append(opp, again);
   const rules = document.createElement('div'); rules.className = 'g-rules';
