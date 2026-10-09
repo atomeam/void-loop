@@ -121,3 +121,15 @@ export function view(s) {
     notes: ['Simplified demonstration profile, not a manufacturing model.'],
   };
 }
+
+/** a simplified tooth outline for drawing (2D and 3D share it): a closed polygon [[x, y], …] around the origin, tooth 0
+ * centred on +x, in the gear's own units (pitch radius r, module m = pitch diameter per tooth). Labelled a demonstration
+ * profile: straight-flanked teeth, not involutes. */
+export function toothOutline(teeth, r, m = PITCH_DIAMETER_PER_TOOTH) {
+  const step = 2 * Math.PI / teeth, tip = r + m, root = r - 1.25 * m, pts = [];
+  for (let i = 0; i < teeth; i++) {
+    const a = i * step;
+    for (const [rad, f] of [[root, -0.5], [root, -0.27], [tip, -0.13], [tip, 0.13], [root, 0.27]]) pts.push([rad * Math.cos(a + f * step), rad * Math.sin(a + f * step)]);
+  }
+  return pts;
+}
