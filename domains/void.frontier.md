@@ -9,7 +9,7 @@ Each item is something no other site does, built on what Void already has. Work 
 - **Why it is special:** a code reviewer whose catch rate against the others is measured on every PR and rises, shown live on /code-review/ ("caught 41 of 44 that other reviewers found this month").
 - **First piece:** `tools/review-learn.mjs --since 30d` printing Void-missed findings from merged PRs (GitHub API, no secrets in the repo), plus the catch-rate number.
 - **Done when:** the catch rate is computed weekly, shown on /code-review/, and at least three rules came from it.
-- **claim:** claude 2026-10-09: first piece shipped. `node tools/review-learn.mjs --from 120` (tests: `tools/review-learn.test.mjs`). Baseline on merged PRs #122-#207: CodeRabbit left 55 findings; Void flagged 17 of the 47 that count (36%). Rule 1 taught: `json-array-shape` (#142, bench.mjs:67), now 18 of 47 (38%). Most misses are app logic no pattern check sees. **Next step:** teach the pattern-shaped misses in the list (unbounded `execFileSync` in a retry loop, #149 push.mjs:7; a `<table>` without header cells, #148), then run the rate weekly (watchdog.yml) and show it on /code-review/.
+- **claim:** claude 2026-10-09: first piece shipped. `node tools/review-learn.mjs --from 120` (tests: `tools/review-learn.test.mjs`). Baseline on merged PRs #122-#207: CodeRabbit left 55 findings; Void flagged 17 of the 47 that count (36%). Rules taught: `json-array-shape` (#142), `exec-no-timeout` (#149 push.mjs:7), `table-no-header` (#148): now 19 of 47 (40%). Most of what is left is app logic no pattern check sees. **Next step:** run the rate weekly (watchdog.yml) and show it on /code-review/; keep teaching any pattern-shaped miss the weekly run turns up.
 
 ## 2. Void builds its own skills from what it could not answer
 - **What:** close Void's oldest want (`domains/void.will.md` #1). The miss board (`tools/misses.mjs`) feeds a drafter that groups misses by intent, writes a probe batch in `tools/bench.json` shape and a skill stub, and opens the job. A run builds it, ships it (ship now, test after) and logs a `grow` entry that says which visitor asks it answers now.
@@ -58,6 +58,13 @@ Each item is something no other site does, built on what Void already has. Work 
 - **Why it is special:** Void tracks the problems it cares most about (life extension, disease, the planet) and says when the world moves.
 - **First piece:** change detection for `skills/trialwatch.js` against ClinicalTrials.gov, run by the daily workflow, writing to the ledger.
 - **Done when:** two cards report their own changes into the ledger.
+- **claim:**
+
+## 9. Clef routes every ask
+- **What:** `lib/router.js` routes asks with a nearest-neighbour guess over `@cf/baai/bge-m3` embeddings, written because "Workers AI has no general intent classifier". Now it has one: Clef and Clef-flash (`@cf/cloudflare/clef`, `@cf/cloudflare/clef-flash`, Workers AI changelog 2026-10-01) take a state and typed questions and return a probability for every allowed answer, Clef-flash in about 39 ms at the median. Ask it which skill should answer, and hand off to a skill or the answer engine on its answer.
+- **Why it is special:** every ask lands on the right skill even in words no example covers, with a confidence Void can act on ("not sure: did you mean…") instead of a guess.
+- **First piece:** Clef-flash beside the embedding router, both run on the bench's asks offline (`tools/bench.mjs` shape), agreement and accuracy printed; switch only where Clef is better.
+- **Done when:** the router uses Clef where it wins on the bench, the embedding guess stays as the fallback, and a low-confidence answer asks instead of guessing.
 - **claim:**
 
 ## How a run uses this

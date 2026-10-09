@@ -155,6 +155,16 @@ ok(rules("const l = JSON.parse(localStorage.getItem('log') || '[]').filter((x) =
   && !rules("const v = JSON.parse(localStorage.getItem('log') || '[]'); const l = (Array.isArray(v) ? v : []).filter(f)", 'javascript').includes('json-array-shape@1')
   && !rules("const have = new Set(JSON.parse(text).map((x) => x.ask))", 'javascript').includes('json-array-shape@1'),
   'an array call straight on parsed saved data is flagged (valid JSON that is not a list throws); a shape check or a repo file is not');
+ok(rules("const git = (...a) => execFileSync('git', a, { encoding: 'utf8' });", 'javascript').includes('exec-no-timeout@1')
+  && rules("execFileSync('gh', ['api', '-X', 'POST', path]);", 'javascript').includes('exec-no-timeout@1')
+  && !rules("const git = (...a) => execFileSync('git', a, { encoding: 'utf8', timeout: 120e3 });", 'javascript').includes('exec-no-timeout@1')
+  && !rules("const sha = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' });", 'javascript').includes('exec-no-timeout@1'),
+  'a network git/gh call with no timeout is flagged (a git wrapper too); a timeout, or a local git command, is not');
+ok(rules('<table id="t">\n  <tr><td>a</td><td>1</td></tr>\n</table>', 'javascript').includes('table-no-header@1')
+  && !rules('<table>\n  <thead><tr><th scope="col">Measure</th></tr></thead>\n</table>', 'javascript').includes('table-no-header@1')
+  && !rules("el.innerHTML = '<table><tr><th>Name</th></tr></table>';", 'javascript').includes('table-no-header@1')
+  && !rules('<table role="presentation"><tr><td>x</td></tr></table>', 'javascript').includes('table-no-header@1'),
+  'a table with no header cells is flagged; a header row, a header in the same string, or a layout table is not');
 ok(rules('while True: pass', 'python').includes('busy-loop@1') && rules('while True:\n    pass', 'python').includes('busy-loop@1') && !rules('while True:\n    time.sleep(1)', 'python').includes('busy-loop@1'), 'while True: pass flagged, a loop that sleeps not');
 // the page names the language from the ask's title, cut at the first colon ("review this c"), so every review ask in the
 // bench must name the same language that way as it does in full; a mismatch is a probe miss nobody can see locally
