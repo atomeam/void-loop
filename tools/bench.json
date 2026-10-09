@@ -5510,5 +5510,17 @@
   {"ask": "what happens with 12 teeth and 24 teeth", "want": "skill:gears", "says": "12-tooth gear makes two turns"},
   {"ask": "gear ratio", "want": "skill:gears"},
   {"ask": "find the rule", "want": "skill:gears"},
-  {"ask": "mystery gears", "want": "skill:gears"}
+  {"ask": "mystery gears", "want": "skill:gears"},
+  {"ask": "explain moon phases", "want": "skill:moon"},
+  {"ask": "how do moon phases work", "want": "skill:moon"},
+  {"ask": "what causes the phases of the moon", "want": "skill:moon"},
+  {"ask": "why does the moon have phases", "want": "skill:moon"},
+  {"ask": "why is a half moon called a quarter moon", "want": "skill:moon", "says": "quarter of the way round the orbit"},
+  {"ask": "show me the difference between waxing and waning", "want": "skill:moon"},
+  {"ask": "let me move the moon around earth", "want": "skill:moon"},
+  {"ask": "are moon phases caused by earth's shadow", "want": "skill:moon", "says": "always lights the half of the Moon that faces it"},
+  {"ask": "mystery moon", "want": "skill:moon"},
+  {"ask": "moon phases", "want": "skill:moon"},
+  {"ask": "explain tonight's moon", "want": "skill:moon"},
+  {"ask": "moon phase tonight", "want": "skill:util"}
 ]
