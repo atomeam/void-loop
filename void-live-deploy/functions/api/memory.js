@@ -1,8 +1,8 @@
-// Void's memory: GET /api/memory?q=react&limit=20 · ?id=<record id> (with its stored digest) · ?view=topics · ?related=<record id> · POST { source, records: [...] } (up to 200) · DELETE /api/memory?id=...
+// Void's memory: GET /api/memory?q=react&limit=20 · ?id=<record id> (with its stored digest) · ?ask=what did I build with react · ?view=topics · ?related=<record id> · POST { source, records: [...] } (up to 200) · DELETE /api/memory?id=...
 // Owner token only. Records come from tools such as tools/ouroboros.py (`ouroboros.py push`); each is validated and re-redacted
 // (lib/memory-core.js), and the tables are created on first use. Without D1 this answers 503 and changes nothing.
 import { ownerOk } from '../../lib/guard.js';
-import { ensure, upsert, search, byId, topics, related, forget, MAX_BATCH, MAX_BODY } from '../../lib/memory-core.js';
+import { ensure, upsert, search, ask, byId, topics, related, forget, MAX_BATCH, MAX_BODY } from '../../lib/memory-core.js';
 
 const guard = (fn) => async (ctx) => {
   if (!(await ownerOk(ctx.request, ctx.env))) return new Response('no', { status: 401 });
@@ -17,6 +17,7 @@ export const onRequestGet = guard(async ({ request, env }) => {
     const rel = await related(env, u.searchParams.get('related'), u.searchParams.get('limit'));
     return rel ? Response.json({ related: rel }) : new Response('no such record', { status: 404 });
   }
+  if (u.searchParams.get('ask') != null) return Response.json(await ask(env, u.searchParams.get('ask'), u.searchParams.get('limit')));
   if (u.searchParams.get('id')) return Response.json({ memory: await byId(env, u.searchParams.get('id')) }); // exact record, with its sha256: what a client checks before it lets go of a source
   return Response.json({ memory: await search(env, u.searchParams.get('q'), u.searchParams.get('limit')) });
 });

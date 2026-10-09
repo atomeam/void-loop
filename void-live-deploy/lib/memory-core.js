@@ -76,6 +76,22 @@ export async function search(env, q, limit = 20) {
   const { results } = await env.DB.prepare(`SELECT id, kind, name, summary, links, state, remote, last_commit, digest, sha256, updated FROM void_memory${where ? ' WHERE ' + where : ''} ORDER BY updated DESC LIMIT ?`).bind(...args, n).all();
   return results.map((r) => ({ ...r, links: JSON.parse(r.links || '[]') }));
 }
+// ---- ask: a plain question in, a plain answer out. No model: the words that matter are matched against what Void remembers.
+const STOP = new Set('a an the i me my we our you your of on in at to for with and or is are was were do did does have has had what which who where when how why show tell list find about built build made make project projects thing things'.split(' '));
+export async function ask(env, q, limit = 5) {
+  const words = [...new Set(String(q || '').toLowerCase().split(/[^a-z0-9+#.]+/).filter((w) => w.length > 1 && !STOP.has(w)))].slice(0, 6);
+  const n = Math.max(1, Math.min(20, parseInt(limit, 10) || 5));
+  let hits = words.length ? await search(env, words.join(' '), n) : [];
+  if (!hits.length && words.length > 1) { // no project has every word: rank by how many words each one matches
+    const seen = new Map();
+    for (const w of words) for (const r of await search(env, w, 50)) { const e = seen.get(r.id) || { r, c: 0 }; e.c++; seen.set(r.id, e); }
+    hits = [...seen.values()].sort((a, b) => b.c - a.c || String(b.r.updated).localeCompare(String(a.r.updated))).slice(0, n).map((e) => e.r);
+  }
+  if (!hits.length) return { answer: words.length ? 'Nothing I remember matches ' + words.join(', ') + '.' : 'Ask me about a project, a tool or a year.', matches: [] };
+  const line = (r) => '• ' + r.name + (r.links.length ? ' (' + r.links.slice(0, 4).join(', ') + ')' : '') + (r.summary ? ': ' + String(r.summary).slice(0, 140) : '')
+    + (r.last_commit ? ' · last change ' + String(r.last_commit).slice(0, 10) : '') + (r.remote ? ' · backed up at ' + r.remote : ' · no remote copy');
+  return { answer: 'I remember ' + hits.length + ' match' + (hits.length > 1 ? 'es' : '') + ':\n' + hits.map(line).join('\n'), matches: hits.map((r) => r.id) };
+}
 export async function byId(env, id) {
   const r = await env.DB.prepare('SELECT id, kind, name, summary, links, state, remote, last_commit, digest, sha256, body, body_sha256, updated FROM void_memory WHERE id = ?').bind(String(id).slice(0, 80)).first();
   return r ? [{ ...r, links: JSON.parse(r.links || '[]') }] : [];
