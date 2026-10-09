@@ -6,8 +6,15 @@
 //   node tools/bench.mjs --last 10  replays only the last 10 asks (fast while growing a new round; the score and floor use all)
 //   node tools/bench.mjs --probe c.json  tries candidate asks from a file, prints only the misses (bench.json untouched; asks it already has are skipped)
 //   node tools/bench.mjs --again         probes only the asks the last --probe missed
+//   node tools/bench.mjs --score --fresh  runs even when the cache below says nothing it reads has changed
+// A full --score run that reaches the floor (tools/bench.best.json) is remembered under a hash of everything the benchmark
+// reads: the files it serves (void-live-deploy, the server functions aside: /api is stubbed), bench.json, this file, the
+// browser and today's date (some answers count days). The next --score run with the same hash prints that result at once
+// instead of replaying 1900 asks: a change that never touches the page (a server route, a doc, a workflow) costs nothing.
+// Only a passing run is remembered, so a failure is never skipped; CI and the weekly watchdog still run the real thing.
 // Asks run BENCH_PAR at a time (default 6), each in its own browser context, so the order and the result don't change;
-// each waits until the page has logged its answer (at least 1.6 s, at most 4 s), so a busy machine doesn't miss one.
+// each waits for the page to log its answer (at most 4 s) and, when an ask has "says", for that value to show (at most 2.5 s more):
+// no fixed sleeps, so a fast answer is read at once and a busy machine still doesn't miss one.
 import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'; import crypto from 'node:crypto'; import path from 'node:path'; import { chromium } from 'playwright-core';
 import { CAPITALS, CURRENCIES } from '../void-live-deploy/skills/country.js';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
@@ -25,6 +32,23 @@ if (probeFile) { const have = new Set(JSON.parse(fs.readFileSync(path.join(here,
 // A repeated ask would count twice and inflate the score: refuse it.
 { const seen = new Set(), dup = asks.map((a) => a.ask.toLowerCase()).filter((k) => seen.has(k) || !seen.add(k));
   if (dup.length) { console.error('bench.json repeats: ' + dup.join(' | ')); process.exit(1); } }
+// the cache key: every file the benchmark serves or reads, plus the browser and the day
+function benchKey() {
+  const h = crypto.createHash('sha256');
+  const walk = (d) => { for (const n of fs.readdirSync(d).sort()) { const f = path.join(d, n), rel = path.relative(root, f);
+    if (rel === 'functions' || n.startsWith('.')) continue;
+    if (fs.statSync(f).isDirectory()) walk(f); else { h.update(rel + '\0'); h.update(fs.readFileSync(f)); } } };
+  walk(root);
+  for (const f of ['bench.json', 'bench.mjs']) h.update(fs.readFileSync(path.join(here, f)));
+  h.update(String(exeForKey()) + '\0' + new Date().toISOString().slice(0, 10));
+  return h.digest('hex');
+}
+const exeForKey = () => [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe'].find((p) => p && fs.existsSync(p));
+const CACHE = path.join(os.tmpdir(), 'void-bench-pass-' + crypto.createHash('sha1').update(here).digest('hex').slice(0, 10) + '.json'); // one per checkout
+const cacheable = process.argv.includes('--score') && !probeFile && !process.argv.includes('--last');
+const key = cacheable ? benchKey() : '';
+if (cacheable && !process.argv.includes('--fresh')) { try { const c = JSON.parse(fs.readFileSync(CACHE, 'utf8'));
+  if (c.key === key && c.result) { console.log(JSON.stringify({ ...c.result, cached: c.at })); process.exit(0); } } catch (_) {} }
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json' };
 const server = http.createServer((req, res) => { let p = decodeURIComponent(new URL(req.url, 'http://x').pathname); if (p === '/') p = '/index.html'; const f = path.join(root, p);
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': types[path.extname(f)] || 'text/plain' }); fs.createReadStream(f).pipe(res); }).listen(0);
@@ -66,20 +90,25 @@ async function one({ ask: a, want, says, before }) {
   await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => { const u = r.request().url(); if (/\/api\/miss$/.test(u)) miss.push(1);
     if (/\/api\/answer$/.test(u)) return r.fulfill(json({ answer: 'A generic answer.', sources: [] }));
     return r.fulfill({ status: 204, body: '' }); });
-  const p = await ctx.newPage(); await p.goto(base); await p.waitForTimeout(600);
+  // no fixed sleeps: goto resolves after the page's inline script has bound the input, and handle() itself waits for the skills
+  const p = await ctx.newPage(); await p.goto(base);
+  const logged = (q, ms) => p.waitForFunction((q) => { const w = document.getElementById('whisper'); if (w && w.textContent) window.__said = w.textContent; // keep the last whisper: it fades
+    try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) && l.some((x) => String(x.ask).trim() === q.trim()); } catch (_) { return false; } }, q, { timeout: ms, polling: 50 }).catch(() => {});
   // "before": setup asks run first (a list to check off, a timer to pause), so asks that act on earlier ones are tested too
-  for (const b0 of before || []) { await p.fill('#input', b0); await p.keyboard.press('Enter'); await p.waitForTimeout(900); await p.keyboard.press('Escape').catch(() => {}); }
-  await p.fill('#input', a); await p.keyboard.press('Enter'); await p.waitForTimeout(1600);
-  const said = await p.$eval('#whisper', (e) => e.textContent).catch(() => ''); // read before it fades
-  // the page's own loop log; a log that does not parse reads as empty (a miss), never a crash of the whole run
-  await p.waitForFunction((q) => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) && l.some((x) => String(x.ask).trim() === q.trim()); } catch (_) { return false; } }, a, { timeout: 2400 }).catch(() => {});
+  for (const b0 of before || []) { await p.fill('#input', b0); await p.keyboard.press('Enter'); await logged(b0, 2400); await p.keyboard.press('Escape').catch(() => {}); }
+  await p.evaluate(() => { window.__said = ''; });
+  // wait for the answer itself (the page's own loop log), not a guessed time; a log that does not parse reads as empty (a miss)
+  await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, 4000);
+  const said = await p.evaluate(() => { const w = document.getElementById('whisper'); return (w && w.textContent) || window.__said || ''; }).catch(() => '');
   const log = await p.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } });
   const last = log.filter((x) => String(x.ask).trim() === a.trim()).pop();
   const note = last ? String(last.note || '') : (said && !miss.length ? 'said' : '');
   const routed = !miss.length && new RegExp('^(' + want + ')').test(note);
   // "says": a pattern the visible answer must contain (the right ability AND the right value: "7 cubed" -> 343)
   let shown = '';
-  if (routed && says) shown = said + '\n' + await p.evaluate(() => { const i = document.getElementById('input'); return document.body.innerText.replace(i ? i.value : '', ''); }).catch(() => '');
+  // a card can finish drawing after the answer is logged: wait until the value shows (or 2.5 s), then read the page
+  if (routed && says) { await p.waitForFunction((re) => new RegExp(re, 'i').test(document.body.innerText), says, { timeout: 2500, polling: 100 }).catch(() => {}); // void-review: ok (says is a regex by design, written in bench.json, as valueOk below)
+    shown = said + '\n' + await p.evaluate(() => { const i = document.getElementById('input'); return document.body.innerText.replace(i ? i.value : '', ''); }).catch(() => ''); }
   // a review card shows the pasted code back: take that echo out first, so "says" must be in the review itself, not in the code
   // (other cards may rightly repeat the ask: a note shows its text, a spelling answer shows the word)
   if (/(^|\|)review(\||$)/.test(want)) { const echoes = [a, a.includes(':') ? a.slice(a.indexOf(':') + 1) : ''].map((x) => x.trim()).filter((x) => x.length >= 4);
@@ -93,7 +122,11 @@ const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || 6);
 let next = 0;
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]); } }));
 await browser.close(); server.close();
-if (process.argv.includes('--score')) { console.log(JSON.stringify({ score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by) })); process.exit(0); }
+if (process.argv.includes('--score')) {
+  const result = { score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by) };
+  let floor = Infinity; try { floor = JSON.parse(fs.readFileSync(path.join(here, 'bench.best.json'), 'utf8')).score; } catch (_) {}
+  if (cacheable && result.score >= floor) try { fs.writeFileSync(CACHE, JSON.stringify({ key, at: new Date().toISOString(), result })); } catch (_) {}
+  console.log(JSON.stringify(result)); process.exit(0); }
 for (const x of out) if (!probeFile || !x.right) console.log((x.right ? '  ok  ' : ' ---- ') + x.ask.padEnd(42) + ' ' + (x.by + (x.right ? '' : '   (wants ' + x.want + ')')));
 const n = out.filter((x) => x.right).length;
 // with --last N only part of the list ran: the asks that did not run stay in the replay file
