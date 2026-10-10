@@ -4,8 +4,13 @@ import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';
 import { draftOnClaim } from '../../lib/job-draft.js';
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
+// The columns the owner's view carries, named one by one: a column added later (the way `draft` was) is shown only
+// once it is listed here, never by accident. Every handler is owner-gated (`guard`); nothing public reads this table.
+const COLS = 'id, ask, target, state, note, at, updated, draft';
+const ensureDraft = (env) => env.DB.prepare('ALTER TABLE void_queue ADD COLUMN draft TEXT').run().catch(() => {});
 const view = async (env) => {
-  const { results } = await env.DB.prepare('SELECT * FROM void_queue ORDER BY at DESC LIMIT 20').all();
+  await ensureDraft(env);
+  const { results } = await env.DB.prepare('SELECT ' + COLS + ' FROM void_queue ORDER BY at DESC LIMIT 20').all();
   const hb = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'heartbeat'").first('v');
   return { items: results.reverse().map((r) => ({ ...r, note: r.note || '' })), heartbeat: hb || null };
 };
@@ -37,7 +42,8 @@ export const onRequestPost = guard(async (ctx) => {
   const { request, env } = ctx;
   const b = await body(request);
   const ask = String(b.ask || '').slice(0, 200), target = String(b.target || 'next').slice(0, 40);
-  const open = await env.DB.prepare("SELECT * FROM void_queue WHERE target = ? AND state IN ('queued','building') LIMIT 1").bind(target).first();
+  await ensureDraft(env);
+  const open = await env.DB.prepare("SELECT " + COLS + " FROM void_queue WHERE target = ? AND state IN ('queued','building') LIMIT 1").bind(target).first();
   if (open) return Response.json({ item: open, ...(await view(env)) });
   const item = { id: Date.now().toString(36), ask, target, state: 'queued', note: '', at: new Date().toISOString() };
   // the execution record (lib/actions.js): written before the job is queued; no record, no job
@@ -56,6 +62,7 @@ export const onRequestPatch = guard(async ({ request, env }) => {
   // a claim: { target | id, state: 'building', from: 'queued' } moves the job only if it is still in `from`, in one statement,
   // so of two builders claiming at once exactly one gets it; the other is told who holds it (409) or that there is none (404)
   if (b.from && (b.target || b.id)) {
+    await ensureDraft(env);
     const from = String(b.from).slice(0, 20), target = b.target ? String(b.target).slice(0, 40) : null;
     // the claimer is named at the front of the note, keeping what the note already said (a miss job's counts, say)
     const by = b.by ? String(b.by).slice(0, 60) : null;
@@ -63,8 +70,8 @@ export const onRequestPatch = guard(async ({ request, env }) => {
       ? "UPDATE void_queue SET state = COALESCE(?, state), note = CASE WHEN ? IS NULL THEN COALESCE(?, note) ELSE substr('claimed by ' || ? || CASE WHEN COALESCE(note, '') = '' THEN '' ELSE ' · ' || note END, 1, 300) END, updated = ? WHERE id = (SELECT id FROM void_queue WHERE target = ? AND state = ? ORDER BY at LIMIT 1)"
       : "UPDATE void_queue SET state = COALESCE(?, state), note = CASE WHEN ? IS NULL THEN COALESCE(?, note) ELSE substr('claimed by ' || ? || CASE WHEN COALESCE(note, '') = '' THEN '' ELSE ' · ' || note END, 1, 300) END, updated = ? WHERE id = ? AND state = ?")
       .bind(state, by, note, by, now, target || String(b.id), from).run();
-    const row = target ? await env.DB.prepare('SELECT * FROM void_queue WHERE target = ? ORDER BY updated DESC LIMIT 1').bind(target).first()
-      : await env.DB.prepare('SELECT * FROM void_queue WHERE id = ?').bind(String(b.id)).first();
+    const row = target ? await env.DB.prepare('SELECT ' + COLS + ' FROM void_queue WHERE target = ? ORDER BY updated DESC LIMIT 1').bind(target).first()
+      : await env.DB.prepare('SELECT ' + COLS + ' FROM void_queue WHERE id = ?').bind(String(b.id)).first();
     if (!r.meta.changes) return row ? Response.json({ held: row }, { status: 409 }) : new Response('not found', { status: 404 });
     // a claimed serve job carrying a buyer's reply drafts its own proposal (lib/job-draft.js); a draft failure
     // never breaks the claim — the claimer is told either way in the same reply

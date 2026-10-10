@@ -63,3 +63,35 @@ test('claim by id only from the stated state; the old PATCH (no from) still sets
   assert.deepEqual([row(env, 'j1').state, row(env, 'j1').note], ['live', 'shipped']);
   assert.equal((await patch(env, { id: 'nope', state: 'live' })).status, 404);
 });
+
+test('no token, no board: an unauthenticated read returns 401 and never a job body, draft or reply text', async () => {
+  const env = envOf();
+  env.DB.raw.prepare('ALTER TABLE void_queue ADD COLUMN draft TEXT').run();
+  env.DB.raw.prepare('INSERT INTO void_queue VALUES (?, ?, ?, ?, ?, ?, ?, ?)').run('j1',
+    'serve Full Stack Audit for acme.com: wait for their reply to the receipt · reply received: https://a-to-mind.com/api/handoff?id=' + 'a'.repeat(32) + '&raw=1',
+    'sale:s-1', 'queued', '', '2026-10-10T00:00:01Z', '2026-10-10T00:00:01Z', '# Proposal: fix the Zapier zap\n\nTo: acme.com');
+  for (const req of [
+    new Request('https://x/api/queue'),
+    new Request('https://x/api/queue', { headers: { authorization: 'Bearer wrong-token' } }),
+    new Request('https://x/api/queue', { method: 'PATCH', body: JSON.stringify({ target: 'sale:s-1', state: 'building', from: 'queued', by: 'nobody' }) }),
+    new Request('https://x/api/queue', { method: 'POST', body: JSON.stringify({ ask: 'x', target: 'sale:s-1' }) }),
+  ]) {
+    const fn = { GET: Q.onRequestGet, PATCH: Q.onRequestPatch, POST: Q.onRequestPost }[req.method];
+    const res = await fn({ env, request: req, waitUntil: () => {} });
+    assert.equal(res.status, 401, req.method);
+    const text = await res.text();
+    for (const leak of ['Proposal', 'reply received', 'acme.com', 'handoff', 'sale:s-1']) assert.ok(!text.includes(leak), req.method + ' leaks ' + leak);
+  }
+  assert.equal(row(env, 'j1').state, 'queued', 'an unauthenticated claim moved nothing');
+});
+
+test('the owner view names its columns one by one: exactly the listed ones, so a future column stays unseen until listed', async () => {
+  const env = envOf(); job(env, 'j1', 'step:5');
+  env.DB.raw.prepare('ALTER TABLE void_queue ADD COLUMN secret_later TEXT').run();
+  env.DB.raw.prepare('UPDATE void_queue SET secret_later = ?').run('not for any view');
+  const res = await Q.onRequestGet({ env, request: new Request('https://x/api/queue', { headers: { authorization: 'Bearer ' + TOKEN } }) });
+  assert.equal(res.status, 200);
+  const { items } = await res.json();
+  assert.deepEqual(Object.keys(items[0]).sort(), ['ask', 'at', 'draft', 'id', 'note', 'state', 'target', 'updated']);
+  assert.ok(!JSON.stringify(items).includes('not for any view'));
+});
