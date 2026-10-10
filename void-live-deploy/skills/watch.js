@@ -54,8 +54,9 @@ function mount(th, stageApi) {
   };
   const paint = () => {
     list.textContent = '';
-    if (!data.watches.length) list.append(el('div', MUTED, 'Nothing is watched. Ask: "tell me when it\'s below 0 in Oslo", "let me know if https://… says sold out", "watch https://… for changes".'));
-    for (const w of data.watches) {
+    const watches = (data && data.watches) || []; // an answer with no list (a 204, an outage page) shows none, never a TypeError
+    if (!watches.length) list.append(el('div', MUTED, 'Nothing is watched. Ask: "tell me when it\'s below 0 in Oslo", "let me know if https://… says sold out", "watch https://… for changes".'));
+    for (const w of watches) {
       const row = el('div', 'padding:8px 10px;border:1px solid rgba(255,255,255,.12);border-radius:10px' + (w.enabled ? '' : ';opacity:.6')); row.className = 'watch-row'; row.dataset.watch = w.id;
       const top = el('div', 'display:flex;align-items:center;gap:8px;flex-wrap:wrap');
       top.append(el('strong', 'flex:1', describe(w.watch) + (w.enabled ? '' : ' (paused)')));
@@ -82,7 +83,7 @@ function mount(th, stageApi) {
   (async () => {
     status.textContent = 'loading…';
     try {
-      if (th.ask) { const ask = th.ask; delete th.ask; stageApi.save(); const j = await call('POST', { ask }); data = j; paint(); status.textContent = 'Watching for ' + describe(j.saved.do[0].watch) + ' · checked once now'; }
+      if (th.ask) { const ask = th.ask; delete th.ask; stageApi.save(); const j = await call('POST', { ask }); data = j; paint(); const made = j && j.saved && j.saved.do && j.saved.do[0]; status.textContent = made ? 'Watching for ' + describe(made.watch) + ' · checked once now' : 'The watch service did not say it kept this watch; ask again in a moment.'; }
       else await load();
       if (card.isConnected) keepLive({}, card, { name: 'watches', every: 60e3, refresh: load, present: () => card.isConnected });
     } catch (e) { status.textContent = e.message; }

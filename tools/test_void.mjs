@@ -1153,6 +1153,7 @@ try {
   // the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the asker's scope and the card shows
   // its first check as evidence; "my watches" lists them with pause and stop; a visitor without a key is told whose it is
   { const V = await fresh();
+    await V.ctx.route(/\/api\/watch(?:\?|$)/, (r) => r.fulfill({ status: 401, body: 'no' })); // as functions/api/watch.js answers a stranger
     await V.ask("tell me when it's below 0 in Oslo", 900);
     const visitor = await V.p.$eval('.watch-card .watch-status', (e) => e.textContent).catch(() => '');
     await V.ctx.close();
@@ -1171,7 +1172,8 @@ try {
     const row = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
     await W.p.click('.watch-toggle'); await until(async () => /paused/.test(await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '')), 3000);
     const paused = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
-    W.p.once('dialog', (d) => d.accept()); await W.p.click('.watch-stop'); await until(async () => !(await W.p.$('.watch-row')), 3000);
+    // on, not once: with page.once the confirm is auto-dismissed in this Playwright (confirm() returns false, nothing is stopped)
+    W.p.on('dialog', (d) => d.accept()); await W.p.click('.watch-stop'); await until(async () => !(await W.p.$('.watch-row')), 3000);
     const empty = await W.p.$eval('.watch-list', (e) => e.innerText).catch(() => '');
     check('watch: "tell me when it\'s below 0 in Oslo" makes a watch (POST with the ask and the owner\'s key), the card shows it with its first check as evidence (a match, told on the stage), Pause pauses, Stop asks then removes it; a visitor is told watches are the owner\'s',
       /Unlock Void|owner/.test(visitor) && calls[0] && calls[0].method === 'POST' && calls[0].body.ask === "tell me when it's below 0 in Oslo" && /^Bearer owner-k$/.test(calls[0].auth)
