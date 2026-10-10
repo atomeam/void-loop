@@ -1,13 +1,17 @@
 /**
  * actions skill — the execution record as a card (frontier build order step 2; lib/actions.js keeps one record per action
  * Void takes or stubs: owner, kind, ref, state running → done | failed | stubbed, result or error; /api/actions serves
- * them to the owner). The card lists the newest records with a mark per state, a tally line, a switch to see only what
- * failed, and Refresh. Nothing here takes an action; it only shows what Void did. Owner-only: without the owner's key or
- * session the card says so and fetches nothing.
+ * them to the owner). The card lists the newest 30 records with a mark per state, a tally line, a switch to see only what
+ * failed, Show more for the next 30, and Refresh; it keeps itself live (skills/live.js, every minute) so a record that
+ * is running settles on screen by itself. Nothing here takes an action; it only shows what Void did. Owner-only: without
+ * the owner's key or session the card says so and fetches nothing.
  * "my actions", "show my actions", "action log", "the execution record", "what actions did you take". "what did you do today" stays
  * with the today skill (Void's recent actions from this device's loop log); this card is the server-side record.
  */
+import { keepLive } from './live.js';
+
 const OWNER_KEY = 'a2m.void.owner.v1';
+export const PAGE = 30, EVERY = 60e3;
 const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || ''; } catch (_) { return ''; } };
 
 export function actionsOf(text) {
@@ -65,27 +69,40 @@ function mount(th, stageApi) {
   stageApi.stage.appendChild(card);
   if (!tok) { status.textContent = 'The record is the owner’s. Unlock Void first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
 
-  let rows = [], onlyFailed = false;
+  let rows = [], onlyFailed = false, more = true;
   const paint = () => {
     list.textContent = '';
     const shown = onlyFailed ? rows.filter((r) => r.state === 'failed') : rows;
     if (!shown.length) list.append(el('div', MUTED, onlyFailed ? 'Nothing failed.' : 'No actions recorded yet.'));
-    for (const r of shown.slice(0, 30)) { const d = el('div', r.state === 'failed' ? 'color:#ff8a8a' : r.state === 'running' ? MUTED : '', lineOf(r)); d.className = 'actions-row'; d.dataset.state = r.state; list.append(d); }
+    for (const r of shown) { const d = el('div', r.state === 'failed' ? 'color:#ff8a8a' : r.state === 'running' ? MUTED : '', lineOf(r)); d.className = 'actions-row'; d.dataset.state = r.state; list.append(d); }
     status.textContent = tallyText(tally(rows));
+    moreBtn.style.display = more && !onlyFailed ? '' : 'none';
   };
+  const get = async (limit, offset) => {
+    const r = await fetch('/api/actions?limit=' + limit + '&offset=' + offset, { headers: { authorization: 'Bearer ' + tok } });
+    if (!r.ok) throw new Error(r.status === 401 ? 'only the owner can read the record' : r.status === 503 ? 'no database behind this copy of Void' : 'the record answered ' + r.status);
+    const data = await r.json().catch(() => ({}));
+    return Array.isArray(data.actions) ? data.actions : [];
+  };
+  // the newest rows again, as many as are on screen (at least one page): a running record settles in place
   const load = async () => {
     status.textContent = 'loading…';
-    try {
-      const r = await fetch('/api/actions?limit=200', { headers: { authorization: 'Bearer ' + tok } });
-      if (!r.ok) throw new Error(r.status === 401 ? 'only the owner can read the record' : r.status === 503 ? 'no database behind this copy of Void' : 'the record answered ' + r.status);
-      rows = (await r.json()).actions || []; paint();
-    } catch (e) { status.textContent = e.message; }
+    try { const want = Math.max(PAGE, rows.length); const got = await get(want, 0); rows = got; more = got.length >= want; paint(); }
+    catch (e) { status.textContent = e.message; throw e; }
+  };
+  // the next page of older rows under the ones shown
+  const showMore = async () => {
+    moreBtn.disabled = true;
+    try { const got = await get(PAGE, rows.length); rows = rows.concat(got); more = got.length >= PAGE; paint(); }
+    catch (e) { status.textContent = e.message; }
+    moreBtn.disabled = false;
   };
   const bar = el('div', 'display:flex;gap:6px;flex-wrap:wrap;margin-top:10px');
   const failedBtn = btn('Only failed', 'actions-failed', () => { onlyFailed = !onlyFailed; failedBtn.textContent = onlyFailed ? 'Show all' : 'Only failed'; paint(); });
-  bar.append(failedBtn, btn('Refresh', 'actions-refresh', load));
+  const moreBtn = btn('Show more', 'actions-more', showMore);
+  bar.append(failedBtn, moreBtn, btn('Refresh', 'actions-refresh', () => (card._live ? card._live.now() : load())));
   card.append(bar);
-  load();
+  load().then(() => { if (card.isConnected) keepLive({}, card, { name: 'actions', every: EVERY, refresh: load, present: () => card.isConnected }); }).catch(() => {});
 }
 
 async function run(text, api) {

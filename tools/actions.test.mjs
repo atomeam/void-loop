@@ -95,6 +95,11 @@ test('/api/actions: owner only, newest first, filter by owner', async () => {
   assert.deepEqual(all.map((r) => r.kind), ['b', 'a']);
   const mine = (await (await call('https://x/api/actions?owner=owner')).json()).actions;
   assert.deepEqual(mine.map((r) => r.kind), ['a']);
+  // paging: limit and offset walk the record newest first; a bad offset is 0
+  assert.deepEqual((await (await call('https://x/api/actions?limit=1')).json()).actions.map((r) => r.kind), ['b']);
+  assert.deepEqual((await (await call('https://x/api/actions?limit=1&offset=1')).json()).actions.map((r) => r.kind), ['a']);
+  assert.deepEqual((await (await call('https://x/api/actions?limit=5&offset=2')).json()).actions, []);
+  assert.deepEqual((await (await call('https://x/api/actions?offset=nope')).json()).actions.map((r) => r.kind), ['b', 'a']);
   assert.equal((await api.onRequestGet({ env: { READ_TOKEN: TOKEN }, request: new Request('https://x/api/actions', { headers: { authorization: 'Bearer ' + TOKEN } }) })).status, 503);
 });
 
