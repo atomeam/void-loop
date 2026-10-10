@@ -50,6 +50,30 @@ test('forge: every thing meshes into a closed, outward-facing, printable body', 
   }
 });
 
+test('forge: printCheck says what a slicer will find, for every thing, from the mesh alone', () => {
+  for (const k of KEYS) {
+    const m = F.build(k), c = F.printCheck(m);
+    assert.ok(c.ok && c.fits && c.closed && c.outward, k + ' is printable as it is: ' + c.notes.join(' · '));
+    assert.equal(c.triangles, m.indices.length / 3);
+    assert.ok(c.volumeCm3 > 50 && c.volumeCm3 < 700, k + ' volume ' + c.volumeCm3 + ' cm³');
+    assert.equal(c.grams, Math.round(c.volumeCm3 * F.PLA_G_PER_CM3), k + ' grams follow the volume');
+    assert.equal(c.supports, c.overhangPct >= F.OVERHANG_PCT); assert.equal(c.brim, !c.stands);
+    assert.equal(c.notes.length, 5); assert.match(c.notes[0], /fits a 180 mm bed/); assert.match(c.notes[2], /watertight/);
+    assert.match(c.notes[3], c.supports ? /print with supports/ : /no supports needed/);
+    assert.match(c.notes[1], c.stands ? /stands on its base/ : /print with a brim/);
+  }
+  // the table top, the sail and the canopy lean out over nothing: supports; a vase, a lighthouse and a house print plain
+  for (const k of ['table', 'boat', 'tree']) assert.ok(F.printCheck(F.build(k)).supports, k + ' needs supports');
+  for (const k of ['vase', 'lighthouse', 'house', 'bottle']) assert.ok(!F.printCheck(F.build(k)).supports, k + ' prints without supports');
+  // a rocket on its fin tips and a boat on its keel want a brim; a house and a lighthouse stand on a wide base
+  for (const k of ['rocket', 'boat']) assert.ok(F.printCheck(F.build(k)).brim, k + ' gets a brim');
+  for (const k of ['house', 'lighthouse', 'vase', 'teapot']) assert.ok(F.printCheck(F.build(k)).stands, k + ' stands');
+  // a made-up open shell is not watertight and faces nowhere: one triangle
+  const one = F.printCheck({ positions: new Float32Array([0, 0, 0, 10, 0, 0, 0, 10, 0]), indices: [0, 1, 2], size: [10, 10, 0] });
+  assert.ok(!one.closed && !one.ok, 'an open sheet is not printable');
+  assert.match(one.notes[2], /open edges: 3/);
+});
+
 test('forge: the bottle and the vase are hollow and open at the neck; the snowman has its arms out', () => {
   const B = F.build('bottle').positions; let inside = 0, mouth = 0;
   for (let i = 0; i < B.length; i += 3) { const r = Math.hypot(B[i], B[i + 2]); if (r > 22 && r < 29 && B[i + 1] > 20 && B[i + 1] < 90) inside++; if (r < 8 && B[i + 1] > 110) mouth++; }

@@ -69,6 +69,7 @@ for (const [name, file] of [
   ['gaps', 'gaps.test.mjs'],
   ['sky', 'sky.test.mjs'],
   ['aurora', 'aurora.test.mjs'],
+  ['drone', 'drone.test.mjs'],
   ['automations', 'automations.test.mjs'],
   ['actions', 'actions.test.mjs'],
   ['ringer', 'ringer.test.mjs'],
