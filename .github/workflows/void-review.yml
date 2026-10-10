@@ -18,6 +18,10 @@ on:
         description: The PR to review. automerge.yml dispatches this on a PR's branch after merging main into it, because a push made with the workflow's token starts no pull_request run.
         required: true
         type: string
+      report_only:
+        description: Only print the review in the log (no comment, no inline notes, no gate). For measuring the closer read on a merged PR (its diff is taken against the base it was merged on).
+        type: boolean
+        default: false
 
 concurrency:
   group: void-review-${{ github.event.pull_request.number || inputs.pr }}
@@ -42,11 +46,12 @@ jobs:
           EVENT_BASE: ${{ github.event.pull_request.base.ref }}
           INPUT_PR: ${{ inputs.pr }}
         run: |
+          # baseref: what the diff is taken against; origin/<base branch> for an open PR, the base commit the PR was merged on for a merged one
           if [ -n "$EVENT_PR" ]; then
-            printf 'number=%s\nsha=%s\nbase=%s\n' "$EVENT_PR" "$EVENT_SHA" "$EVENT_BASE" >> "$GITHUB_OUTPUT"
+            printf 'number=%s\nsha=%s\nbase=%s\nbaseref=origin/%s\n' "$EVENT_PR" "$EVENT_SHA" "$EVENT_BASE" "$EVENT_BASE" >> "$GITHUB_OUTPUT"
           else
             [[ "$INPUT_PR" =~ ^[0-9]+$ ]] || { echo "::error::pr must be a number"; exit 1; }
-            gh api "repos/$REPO/pulls/$INPUT_PR" --jq '"number=\(.number)\nsha=\(.head.sha)\nbase=\(.base.ref)"' >> "$GITHUB_OUTPUT"
+            gh api "repos/$REPO/pulls/$INPUT_PR" --jq '"number=\(.number)\nsha=\(.head.sha)\nbase=\(.base.ref)\nbaseref=\(if .merged then .base.sha else "origin/" + .base.ref end)"' >> "$GITHUB_OUTPUT"
           fi
       - uses: actions/checkout@v4
         with:
@@ -58,13 +63,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ steps.pr.outputs.number }}
           REPO: ${{ github.repository }}
-          BASE: ${{ steps.pr.outputs.base }}
+          BASEREF: ${{ steps.pr.outputs.baseref }}
+          REPORT_ONLY: ${{ inputs.report_only }}
           # ours, free, always: the owner key gets the closer read with no daily cap (functions/api/review.js); empty on forks
           VOID_REVIEW_KEY: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
           deep=(); [ -n "$VOID_REVIEW_KEY" ] && deep=(--deep https://a-to-mind.com/api/review)
-          node tools/review-pr.mjs --base "origin/$BASE" --head HEAD "${deep[@]}" > void-review.md || true
+          node tools/review-pr.mjs --base "$BASEREF" --head HEAD "${deep[@]}" > void-review.md || true
           cat void-review.md >> "$GITHUB_STEP_SUMMARY"
+          if [ "$REPORT_ONLY" = "true" ]; then echo "report only: nothing posted"; cat void-review.md; exit 0; fi
           body=$(jq -Rs '{body: .}' < void-review.md)
           id=$(gh api "repos/$REPO/issues/$PR/comments?per_page=100" --paginate \
             --jq '[.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- void-review -->")))][0].id // empty' | head -n1) || true
@@ -73,11 +80,12 @@ jobs:
           else
             echo "$body" | gh api -X POST "repos/$REPO/issues/$PR/comments" --input - > /dev/null || true
           fi
-          node tools/review-pr.mjs --base "origin/$BASE" --head HEAD --inline > void-inline.json || echo '[]' > void-inline.json
+          node tools/review-pr.mjs --base "$BASEREF" --head HEAD --inline > void-inline.json || echo '[]' > void-inline.json
           node tools/review-post.mjs void-inline.json --repo "$REPO" --pr "$PR" --sha "$(git rev-parse HEAD)"
 
       - name: Gate on bugs and risks
+        if: ${{ inputs.report_only != true }}
         env:
-          BASE: ${{ steps.pr.outputs.base }}
+          BASEREF: ${{ steps.pr.outputs.baseref }}
         run: |
-          node tools/review-pr.mjs --base "origin/$BASE" --head HEAD --gate > /dev/null || { echo "::error title=Void review::bugs or risks in the added lines (see Void's review comment); fix them or mark a line that is right as written with a void-review: ok comment"; exit 1; }
+          node tools/review-pr.mjs --base "$BASEREF" --head HEAD --gate > /dev/null || { echo "::error title=Void review::bugs or risks in the added lines (see Void's review comment); fix them or mark a line that is right as written with a void-review: ok comment"; exit 1; }
