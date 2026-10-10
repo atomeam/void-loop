@@ -100,6 +100,47 @@ export function build(key) {
   return model;
 }
 
+export const PLA_G_PER_CM3 = 1.24; // solid PLA; a slicer's shells-and-infill print weighs less
+export const OVERHANG_PCT = 5; // past this share of its surface leaning out beyond 45°, say "print with supports"
+
+/** what a slicer will find: does it fit the bed, stand on it (else a brim), hold water, face outward; how much material; where it leans out (supports).
+ *  Pure, from the mesh alone; the card and the test both read it. overhangPct is the share of the surface (the base face
+ *  excepted) whose normal points down more than 45° from the vertical: a home printer bridges less than that without supports. */
+export function printCheck(model) {
+  const P = model.positions, I = model.indices, n = I.length / 3;
+  let vol = 0, area = 0, base = 0, over = 0, bad = 0;
+  let bx0 = Infinity, bx1 = -Infinity, bz0 = Infinity, bz1 = -Infinity;
+  const edges = new Map();
+  for (let t = 0; t < I.length; t += 3) {
+    const a = I[t] * 3, b = I[t + 1] * 3, c = I[t + 2] * 3;
+    vol += (P[a] * (P[b + 1] * P[c + 2] - P[b + 2] * P[c + 1]) - P[a + 1] * (P[b] * P[c + 2] - P[b + 2] * P[c]) + P[a + 2] * (P[b] * P[c + 1] - P[b + 1] * P[c])) / 6;
+    const ux = P[b] - P[a], uy = P[b + 1] - P[a + 1], uz = P[b + 2] - P[a + 2], wx = P[c] - P[a], wy = P[c + 1] - P[a + 1], wz = P[c + 2] - P[a + 2];
+    const nx = uy * wz - uz * wy, ny = uz * wx - ux * wz, nz = ux * wy - uy * wx, l = Math.hypot(nx, ny, nz);
+    for (const [p, q] of [[I[t], I[t + 1]], [I[t + 1], I[t + 2]], [I[t + 2], I[t]]]) { const e = p < q ? p * 4194304 + q : q * 4194304 + p; edges.set(e, (edges.get(e) || 0) + 1); }
+    if (!l) continue;
+    const A = l / 2; area += A;
+    if (P[a + 1] < 0.8 && P[b + 1] < 0.8 && P[c + 1] < 0.8) { // on the bed
+      base += A;
+      for (const k of [a, b, c]) { bx0 = Math.min(bx0, P[k]); bx1 = Math.max(bx1, P[k]); bz0 = Math.min(bz0, P[k + 2]); bz1 = Math.max(bz1, P[k + 2]); }
+      continue;
+    }
+    if (ny / l < -Math.SQRT1_2) over += A;
+  }
+  for (const c of edges.values()) if (c !== 2) bad++;
+  const size = model.size, fits = Math.max(...size) <= BED_MM, closed = edges.size > 0 && bad / edges.size < 0.001, outward = vol > 0;
+  const spread = base > 0 ? [(bx1 - bx0) / (size[0] || 1), (bz1 - bz0) / (size[2] || 1)] : [0, 0];
+  const baseCm2 = Math.round(base / 10) / 10, stands = base >= 1000 || (spread[0] >= 0.4 && spread[1] >= 0.4 && base >= 80);
+  const volumeCm3 = Math.round(Math.abs(vol) / 100) / 10, grams = Math.round(volumeCm3 * PLA_G_PER_CM3), overhangPct = Math.round(area ? 100 * over / area : 0);
+  const supports = overhangPct >= OVERHANG_PCT;
+  const notes = [fits ? 'fits a ' + BED_MM + ' mm bed' : 'too big for a ' + BED_MM + ' mm bed (' + size.map(Math.round).join(' × ') + ' mm)',
+    stands ? 'stands on its base (' + baseCm2 + ' cm²)' : 'a small base for its height (' + baseCm2 + ' cm²): print with a brim',
+    closed ? 'watertight' : 'open edges: ' + bad + ' (a slicer may need to mend it)',
+    supports ? 'leans out past 45° on ' + overhangPct + '% of it: print with supports' : 'no supports needed (overhangs on ' + overhangPct + '%)',
+    volumeCm3 + ' cm³, about ' + grams + ' g in solid PLA'];
+  // ok: a slicer takes it as it is; a brim or supports are settings, not faults
+  return { fits, stands, brim: !stands, closed, outward, baseCm2, volumeCm3, grams, overhangPct, supports, triangles: n, ok: fits && closed && outward, notes };
+}
+
 /** binary STL in millimetres, Z up (the model's y), each facet with its own normal */
 export function stl(model) {
   const P = model.positions, I = model.indices, n = I.length / 3;
