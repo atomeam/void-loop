@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseExtra, caughtBy, learnFromPr, summary, langOfPath, EXTRA } from './review-learn.mjs';
+import { parseExtra, caughtBy, learnFromPr, summary, langOfPath, EXTRA, closerReadOf, phantomsIn } from './review-learn.mjs';
 
 test('the extra reviewer\'s severity and title are read from both of its formats', () => {
   assert.deepEqual(parseExtra('**🗄️ Data Integrity & Integration** | **🟡 Minor** | **⚡ Quick win**\n\n**Reject invalid estimates instead of changing them.**\n\nIf a participant…'),
@@ -38,4 +38,17 @@ test('each extra finding on a merged PR is checked against Void\'s review of the
   assert.equal(summary([]).rate, null);
   assert.equal(langOfPath('a/b.MJS'), 'javascript');
   assert.equal(langOfPath('README.md'), null);
+});
+
+test("Void's own closer read: a 'not defined' claim about a name the file imports, or a claim about the mask, counts as a false finding the filter removes", () => {
+  const body = "<!-- void-review -->\n### Void's review\n\n#### A closer read\n\n* **Line 149 (answer.js):** `redact` is not defined in `answer.js`. This will cause a ReferenceError.\n\n* **Line 3 (answer.js):** `frobnicate` is not defined.\n\n* **Line 28:** `TOKEN` is assigned using `[redacted]`, which is not a valid value.\n\n**Not blocking:** none.\n\n<sub>Reviewed</sub>";
+  const fileAt = (p, sha) => (p.endsWith('answer.js') && sha === 'sha1' ? "import { redact } from '../../lib/automation-fix.js';\nexport async function onRequestPost() {}\n" : 'const TOKEN = 1;');
+  const rows = phantomsIn(254, body, ['void-live-deploy/functions/api/answer.js', 'tools/x.mjs'], 'sha1', fileAt);
+  assert.equal(rows.length, 3);
+  assert.deepEqual(rows.map((r) => r.false), [true, false, true]);
+  assert.deepEqual(rows.map((r) => r.dropped), [true, false, true]);
+  assert.deepEqual(rows[0].files, ['void-live-deploy/functions/api/answer.js']);
+  assert.equal(rows[2].mask, true);
+  assert.equal(closerReadOf('no marker'), null);
+  assert.equal(phantomsIn(1, '<!-- void-review -->\nno closer read here', [], 'x', () => null).length, 0);
 });
