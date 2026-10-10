@@ -556,6 +556,8 @@
     /* the status line under the ask bar: a quiet, centred caption that fades, never a stray left-aligned word */
     #whisper { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; margin-top: 8px; transition: opacity .25s ease; }
     #whisper:empty { opacity: 0; }
+    #away-note { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; transition: opacity .25s ease; }
+    #away-note:empty { opacity: 0; }
     /* smooth background: the grain lives on its own unscaled layer, so the dark gradient dithers instead of banding or streaking */
     #void-depth::after { content: none; }
     body::after { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05; mix-blend-mode: overlay;
@@ -691,6 +693,7 @@
       <button id="go" type="button" aria-label="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
+    <div id="away-note" role="status" aria-live="polite"></div>
   </div>
   <script>
     // Private learning log — never shown as product claims.
@@ -6191,21 +6194,33 @@ return { ok: true, detail: 'timer-reset' };
     let awayMs = 0; try { const t = +localStorage.getItem(AWAY_KEY); awayMs = t > 0 ? Date.now() - t : 0; } catch (_) {} // read before this visit saves anything
     load();
     render();
-    // the world lives on while you are away: what has conditions (a cloud, ice, a flower) moves forward by the time since the
-    // stage was last left, the same way for everyone (advance in skills/scripts.js), and one line says what happened
+    // the world lives on while you are away: what has conditions (a cloud, ice, a flower) and what reacts to something near
+    // (a zombie and a brain, a cat and a mouse) moves forward by the time since the stage was last left, the same way for
+    // everyone (advance in skills/scripts.js), from where each figure last stood; one line says what happened
+    const awayNote = document.getElementById('away-note');
+    function tellAway(text) { if (!awayNote || !text) return; awayNote.textContent = text; clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { awayNote.textContent = ''; }, 9000); }
     if (!PAGE && awayMs > 0) import('/skills/scripts.js').then((m) => {
-      const figs = Object.values(things).filter((t) => t && t.kind === 'figure' && t.kindOf && m.CONDITIONS[t.kindOf]);
+      const figs = Object.values(things).filter((t) => t && t.kind === 'figure' && t.kindOf);
       if (!figs.length || awayMs < m.AWAY_MIN_MS) return;
-      const r = m.advance(figs.map((t) => ({ id: t.id, kindOf: t.kindOf, x: t.x, y: t.y, seed: t.seed, nature: t.nature, title: t.title })), awayMs);
+      const r = m.advance(figs.map((t) => ({ id: t.id, kindOf: t.kindOf, x: t.x, y: t.y, at: t.at, seed: t.seed, nature: t.nature, title: t.title })), awayMs, { bounds: { w: innerWidth, h: innerHeight } });
       const stamp = Date.now();
-      for (const n of r.things) if (things[n.id]) things[n.id].nature = { ...n.nature, adv: stamp };
-      save(); syncFigures();
+      for (const n of r.things) {
+        if (!things[n.id]) continue;
+        if (n.gone) { delete things[n.id]; continue; }
+        if (n.nature) things[n.id].nature = n.nature;
+        if (n.at) things[n.id].at = n.at;
+        things[n.id].adv = stamp;
+      }
+      save(); render();
       window.__voidAway = { ms: awayMs, note: r.note, changes: r.changes };
-      if (r.note) say(r.note);
+      tellAway(r.note);
     }).catch(() => {});
-    // leaving: keep the live conditions, so the next visit continues from here (and stamp the time)
+    // leaving: keep where each figure stands and the live conditions it has, so the next visit continues from here (and stamp the time)
     function rememberWorld() {
-      try { if (figures3d && figures3d.natures) for (const [id, st] of Object.entries(figures3d.natures())) if (things[id]) things[id].nature = st; save(); } catch (_) {}
+      try {
+        if (figures3d && figures3d.world) for (const [id, w] of Object.entries(figures3d.world())) if (things[id]) { things[id].at = { x: w.x, y: w.y }; if (w.nature) things[id].nature = w.nature; }
+        save();
+      } catch (_) {}
     }
     document.addEventListener('visibilitychange', () => { if (document.hidden) rememberWorld(); });
     window.addEventListener('pagehide', rememberWorld);
