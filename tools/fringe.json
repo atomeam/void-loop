@@ -1683,5 +1683,30 @@
     ],
     "sha256": "674480f57e802586aa692a4b90b1a21facd338dba32dda2ac85960d0f2ce2a67",
     "emit": false
+  },
+  {
+    "run": 68,
+    "at": "2026-10-10T07:50:27Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-8.html",
+    "sources": [
+      {
+        "claim": "Variability in timing grows in proportion to the interval timed (the scalar property of interval timing)",
+        "source": "https://doi.org/10.1037/0033-295X.84.3.279",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Across many studies the scalar property holds roughly for intervals from about a few hundred milliseconds to seconds, with departures at the extremes",
+        "source": "https://doi.org/10.3758/APP.72.3.561",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own spread share (sd/mean) and how level it stays across lengths is steady enough from sitting to sitting to be a personal timing signature",
+        "source": "drafts/fringe/interval-timing-8.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "c27716db547cd5eafa5a715e1103b6ecbfff803e5bf297e66614f3fe766e0d7d",
+    "emit": false
   }
 ]

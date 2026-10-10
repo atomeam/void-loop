@@ -273,8 +273,10 @@ export async function run3dChecks({ check, fresh }) {
       await F.p.mouse.up();
     }
     const after = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.shots === 1 && !s.rolling ? s : false; }, key), 20000);
-    check('Ringer: on the 3D ring, pressing the shooter and pulling it straight back aims at the middle with the pull as power (orbit held while pulling); letting go flicks it, one shot',
-      !!key && !!mid && mid.pulling && Math.abs(mid.angle - Math.PI / 2) < 0.2 && mid.power > 0.5 && mid.shots === 0 && !!after && after.shots === 1 && !after.pulling && F.errors.length === 0,
+    check('Ringer: on the 3D ring, pressing the shooter and pulling it straight back aims at the middle with the pull as power (orbit held while pulling), a chalk arc fills with the power and the aim line reaches where the shot would stop; letting go flicks it, one shot',
+      !!key && !!mid && mid.pulling && Math.abs(mid.angle - Math.PI / 2) < 0.2 && mid.power > 0.5 && mid.shots === 0 && !!after && after.shots === 1 && !after.pulling && F.errors.length === 0
+        // while pulling: the chalk arc shows the power and the aim line is drawn to where the shot would stop (ringer-rules.js reach)
+        && mid.arc && Math.abs(mid.arcSweep - mid.power) < 1e-3 && Math.abs(mid.aimLength - mid.reach) < 1e-6 && !after.arc,
       JSON.stringify({ key, at, mid, after, errors: F.errors.slice(0, 3) }));
     await F.ctx.close();
   }

@@ -107,3 +107,20 @@ test('drag to flick: the shot goes opposite the pull, power grows with the pull 
   assert.equal(shot.shots, 1); assert.ok(shot.out >= 1, 'a full pull straight back breaks the cross');
   assert.equal(R.pull(R.flick(s), 0, 0).phase, 'rolling', 'no pulling mid-roll');
 });
+
+test('reach: the aim line shows where a shot that meets nothing stops (friction, or caught at FAR), checked against the rolling itself', () => {
+  const s0 = R.create(6), sh = s0.marbles[0];
+  const alone = (s) => ({ ...s, marbles: [s.marbles[0]] }); // no targets: the shooter meets nothing
+  for (const [power, angle] of [[0, Math.PI / 2], [0.3, Math.PI / 2], [1, Math.PI / 2], [0.5, Math.PI / 2 + 0.6], [0.2, -Math.PI / 2]]) {
+    const s = R.setPower(R.aim(alone(s0), angle), power), r = R.reach(s);
+    // where it stopped rolling (settling then puts a shot that got nothing back at the edge)
+    let n = R.flick(s), end = n.marbles[0];
+    for (let i = 0; i < 4000 && n.phase === 'rolling'; i++) { end = n.marbles[0]; n = R.step(n, 1 / 480); }
+    // the rolling steps at 1/480 s and stops under STOP m/s, so it lands within a few millimetres of the formula
+    assert.ok(Math.hypot(end.x - r.x, end.y - r.y) < 0.006, power + '@' + angle.toFixed(2) + ': reach ' + JSON.stringify(r) + ' rolled to ' + end.x.toFixed(4) + ',' + end.y.toFixed(4));
+  }
+  const soft = R.reach(R.setPower(s0, 0)), hard = R.reach(R.setPower(s0, 1));
+  assert.ok(Math.abs(soft.d - R.SPEED_MIN ** 2 / (2 * R.DECEL)) < 1e-12, 'a soft flick rolls v^2/2a');
+  assert.ok(hard.d < R.SPEED_MAX ** 2 / (2 * R.DECEL) && Math.abs(Math.hypot(hard.x, hard.y) - R.FAR) < 1e-9, 'a full flick across the ring is caught at FAR');
+  assert.ok(Math.hypot(sh.x, sh.y) > 0, 'the shooter starts at the edge');
+});

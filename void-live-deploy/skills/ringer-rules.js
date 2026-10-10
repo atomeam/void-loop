@@ -50,6 +50,14 @@ export function pull(s, x, y) {
   return { ...s, angle: Math.atan2(dy, dx), power: clamp(len / PULL_MAX, 0, 1) };
 }
 export const pullLength = (s, x, y) => { const sh = shooterOf(s); return Math.hypot(sh.x - x, sh.y - y); };
+// Where the shooter would stop if it met nothing: rolling friction takes v^2 / (2 DECEL), and a marble that reaches FAR from
+// the middle is caught there. The aim line is drawn this long, so what it shows is what the dirt will do. Pure.
+export function reach(s) {
+  const sh = shooterOf(s), ux = Math.cos(s.angle), uy = Math.sin(s.angle), v = speedFor(s.power), free = (v * v) / (2 * DECEL);
+  const b = sh.x * ux + sh.y * uy, c = sh.x * sh.x + sh.y * sh.y - FAR * FAR, disc = b * b - c;
+  const toFar = disc >= 0 ? -b + Math.sqrt(disc) : Infinity, d = Math.max(0, Math.min(free, toFar));
+  return { x: sh.x + ux * d, y: sh.y + uy * d, d };
+}
 
 /** Flick the shooter along the aim at the chosen power. */
 export function flick(s) {
