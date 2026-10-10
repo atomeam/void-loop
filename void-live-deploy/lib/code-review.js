@@ -140,6 +140,23 @@ function constantHtml(st, rawSt) {
   }
   return true;
 }
+// A value pasted into the SQL text, judged next to the SQL literal itself: the literal is followed or preceded by a
+// concatenation, formatted with % or .format(), or interpolated inside (template `${}`, f-string {}, PHP "$x", Ruby #{}).
+// A concatenation elsewhere on the line (a bound value, a log message after .bind(...)) is not the query.
+function sqlPasted(r, lang) {
+  const re = /(['"`])((?:\\.|(?!\1)[^\\])*?)\1/g; let m;
+  while ((m = re.exec(r))) {
+    const q = m[1], body = m[2], before = r.slice(0, m.index), after = r.slice(m.index + m[0].length);
+    if (!/(?:^|[\s(])(?:SELECT|INSERT\s+INTO|UPDATE\s+\w+\s+SET|DELETE\s+FROM)\b/i.test(body)) continue;
+    if (/^\s*(?:\+\s*[\w$(]|\.\s*\$|\.\s*format\s*\(|%\s*[\w(])/.test(after)) return true;
+    if (/[\w$)\]]\s*\+\s*$/.test(before) || /\$[\w\]'"[]*\s*\.\s*$/.test(before)) return true;
+    if (q === '`' && /\$\{/.test(body)) return true;
+    if (/\bf$/.test(before) && /\{/.test(body)) return true;
+    if (lang === 'php' && q === '"' && /\$[A-Za-z_]/.test(body)) return true;
+    if (lang === 'ruby' && q === '"' && /#\{/.test(body)) return true;
+  }
+  return false;
+}
 const RULES = [
   ['assign-in-condition', 'bug', [...JS, 'java', 'csharp', 'c', 'php'], (m) => /\b(?:if|while)\s*\(\s*!?\s*[A-Za-z_$][\w$.[\]]*\s*=\s*[^=>]/.test(m),
     'an assignment (=) inside the condition: it sets the value and is then always true or false. To compare, use === (or == outside JavaScript).'],
@@ -409,8 +426,7 @@ const RULES = [
     'DELETE without WHERE removes every row in the table. Add a WHERE (or use TRUNCATE if that is really what you want).'],
   ['select-star', 'style', ['sql'], (m) => /\bSELECT\s+\*\s+FROM\b/i.test(m),
     'SELECT * returns every column, so the query breaks or slows down when columns are added. Name the columns you use.'],
-  ['sql-concat', 'risk', ['*'], (m, r, x) => /(['"`]|\bf['"])\s*(?:SELECT\b[\s\S]*\bFROM|INSERT\s+INTO|UPDATE\s+\w+\s+SET|DELETE\s+FROM)\b/i.test(r)
-      && (/['"]\s*\+\s*[\w$]|[\w$)\]]\s*\+\s*['"]/.test(r) || /['"]\s*\.\s*\$|\$[\w\]'"[]+\s*\.\s*['"]/.test(r) || (x.lang === 'php' && /"[^"]*\$[A-Za-z_]/.test(r)) || (x.lang === 'ruby' && /"[^"]*#\{/.test(r)) || /`[^`]*\$\{/.test(r) || /\bf['"][^'"]*\{/.test(r) || /['"]\s*%\s*[\w(]/.test(r) || /\.format\s*\(/.test(r)),
+  ['sql-concat', 'risk', ['*'], (m, r, x) => sqlPasted(r, x.lang),
     'the SQL is built by pasting values into the text: a value like \' OR 1=1 -- changes the query (SQL injection). Use placeholders and pass the values separately: query("… WHERE id = ?", [id]).'],
   ['hardcoded-secret', 'risk', ['*'], (m, r, x) => hasSecret(r, x.lang),
     'a key, token or password is written into the code. Anyone who sees the code (or the repo history) has it. Move it to an environment variable or a secret store, and change the key if this code was ever shared.'],

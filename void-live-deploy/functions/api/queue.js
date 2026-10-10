@@ -1,6 +1,7 @@
 // Void's build queue (D1): the owner asks Void to update itself; the laptop builder picks it up.
 // GET -> { items, heartbeat } · POST { ask, target } · PATCH { id?, state?, note?, heartbeat? } — all owner token.
 import { ownerOk } from '../../lib/guard.js';
+import { track } from '../../lib/actions.js';
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 const view = async (env) => {
   const { results } = await env.DB.prepare('SELECT * FROM void_queue ORDER BY at DESC LIMIT 20').all();
@@ -22,9 +23,13 @@ function wakeBuilder(ctx, item) {
   if (!env.BUILDER_WEBHOOK_URL) return;
   const headers = { 'content-type': 'application/json' };
   if (env.BUILDER_WEBHOOK_KEY) { headers.authorization = 'Bearer ' + env.BUILDER_WEBHOOK_KEY; headers['x-webhook-key'] = env.BUILDER_WEBHOOK_KEY; }
-  ctx.waitUntil(fetch(env.BUILDER_WEBHOOK_URL, { method: 'POST', headers, body: JSON.stringify({ source: 'void', item }) })
-    .then((r) => ctx.env.DB.prepare('UPDATE void_queue SET note = ? WHERE id = ? AND state = ?').bind(r.ok ? 'builder woken' : 'builder wake failed ' + r.status, item.id, 'queued').run())
-    .catch(() => {}));
+  // its execution record (lib/actions.js): builder.wake, done or failed with the builder's answer
+  ctx.waitUntil(track(env, { owner: 'owner', kind: 'builder.wake', ref: item.id }, async () => {
+    const r = await fetch(env.BUILDER_WEBHOOK_URL, { method: 'POST', headers, body: JSON.stringify({ source: 'void', item }) });
+    await ctx.env.DB.prepare('UPDATE void_queue SET note = ? WHERE id = ? AND state = ?').bind(r.ok ? 'builder woken' : 'builder wake failed ' + r.status, item.id, 'queued').run();
+    if (!r.ok) throw new Error('the builder answered ' + r.status);
+    return 'builder woken';
+  }).catch(() => {}));
 }
 
 export const onRequestPost = guard(async (ctx) => {
@@ -34,7 +39,11 @@ export const onRequestPost = guard(async (ctx) => {
   const open = await env.DB.prepare("SELECT * FROM void_queue WHERE target = ? AND state IN ('queued','building') LIMIT 1").bind(target).first();
   if (open) return Response.json({ item: open, ...(await view(env)) });
   const item = { id: Date.now().toString(36), ask, target, state: 'queued', note: '', at: new Date().toISOString() };
-  await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(item.id, ask, target, 'queued', '', item.at, item.at).run();
+  // the execution record (lib/actions.js): written before the job is queued; no record, no job
+  await track(env, { owner: 'owner', kind: 'queue.add', ref: target }, async () => {
+    await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(item.id, ask, target, 'queued', '', item.at, item.at).run();
+    return 'queued ' + item.id + ': ' + ask;
+  });
   wakeBuilder(ctx, item);
   return Response.json({ item, ...(await view(env)) });
 });

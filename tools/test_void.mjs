@@ -68,7 +68,7 @@ const approvalFn = await import(new URL('../void-live-deploy/functions/api/appro
 const OWNER = 'test-owner-key-0123456789';
 function memoryD1({ broken = false } = {}) {
   // Like D1: the tables don't exist until /api/approval makes them; broken = the database can't be reached.
-  const approvals = new Map(), ledger = [], tables = new Set();
+  const approvals = new Map(), ledger = [], actions = new Map(), tables = new Set();
   const need = (t) => { if (broken) throw new Error('D1 unavailable'); if (!tables.has(t)) throw new Error('no such table: ' + t); };
   const exec = (sql, a) => {
     if (broken) throw new Error('D1 unavailable');
@@ -78,11 +78,13 @@ function memoryD1({ broken = false } = {}) {
     if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { need('void_approvals'); const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return { meta: { changes: 0 } }; approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
     if (/^UPDATE void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[3], { state: a[0], record: a[1] }); return { meta: { changes: 1 } }; }
     if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2] }); return { meta: { changes: 1 } }; }
+    if (/^INSERT INTO void_actions/.test(sql)) { need('void_actions'); actions.set(a[0], { kind: a[2], ref: a[3], state: a[4], result: a[5], error: a[6] }); return { meta: { changes: 1 } }; } // the execution record (lib/actions.js)
+    if (/^DELETE FROM void_actions/.test(sql)) { need('void_actions'); return { meta: { changes: 0 } }; }
     throw new Error('unexpected sql: ' + sql);
   };
   const first = (sql, a) => { if (/^SELECT state, record FROM void_approvals/.test(sql)) { need('void_approvals'); return approvals.get(a[0]) || null; } throw new Error('unexpected sql: ' + sql); };
   const stmt = (sql, a = []) => ({ sql, a, bind: (...b) => stmt(sql, b), run: async () => exec(sql, a), first: async () => first(sql, a) });
-  return { approvals, ledger, tables, prepare: (sql) => stmt(sql), batch: async (list) => list.map((q) => exec(q.sql, q.a)) };
+  return { approvals, ledger, actions, tables, prepare: (sql) => stmt(sql), batch: async (list) => list.map((q) => exec(q.sql, q.a)) };
 }
 const gate = { env: { READ_TOKEN: OWNER, DB: memoryD1() }, calls: [], ran: [] };
 approvalFn.executors['email.send'] = async (args) => { gate.ran.push(args); return { id: 'sent-' + gate.ran.length }; };
@@ -269,6 +271,8 @@ function memoryStoreD1({ broken = false } = {}) {
     if (/^INSERT INTO void_shortfalls \(day, place, reason, n, last\) VALUES \(\?, \?, \?, 1, \?\) ON CONFLICT\(day, place, reason\) DO UPDATE SET n = n \+ 1, last = excluded\.last$/.test(sql)) { need('void_shortfalls'); const k = a.slice(0, 3).join('|'), r = T.shortfalls.get(k); T.shortfalls.set(k, { day: a[0], place: a[1], reason: a[2], n: r ? r.n + 1 : 1, last: a[3] }); return ch(1); }
     if (/^INSERT INTO void_kv \(k, v\) VALUES \('will', \?\) ON CONFLICT/.test(sql)) { T.kv.set('will', a[0]); return ch(1); }
     if (/^INSERT INTO void_queue \(id, ask, target, state, note, at, updated\) VALUES/.test(sql)) { T.queue.set(a[0], { id: a[0], ask: a[1], target: a[2], state: a[3], note: a[4] }); return ch(1); }
+    if (/^INSERT INTO void_actions/.test(sql)) return ch(1); // the execution record (lib/actions.js) around every queue write
+    if (/^DELETE FROM void_actions/.test(sql)) return ch(0);
     if (/^UPDATE void_accounts SET tier = \?, updated = \? WHERE subscription_id = \? OR sale_id = \?$/.test(sql)) { need('void_accounts'); let n = 0; for (const r of T.accounts.values()) if ((r.subscription_id && r.subscription_id === a[2]) || (r.sale_id && r.sale_id === a[3])) { r.tier = a[0]; r.updated = a[1]; n += 1; } return ch(n); }
     throw new Error('unexpected sql: ' + sql);
   };
@@ -941,6 +945,42 @@ try {
     check('owner board: what Void earned (net, sales), its milestones and the free-model shortfalls sit on top of the board',
       /Earned \$98\.00/.test(bp) && /2 sales/.test(bp) && /sales-1/.test(bp) && /fell short 3 times/.test(bp) && /make me an app/.test(bp) && !O.errors.length, bp.slice(0, 200));
     await O.ctx.close(); }
+  // the owner's actions card (skills/actions.js) reads the execution record (lib/actions.js) and shows every kind of action,
+  // not only automation steps: here a queue.add from the miss board (lib/learn.js) and a stubbed confirm-line send
+  { const A = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const recs = [
+      { id: 'act-1', owner: 'void', kind: 'queue.add', ref: 'miss:learn-to-handle-tides', state: 'done', result: 'queued k1: learn to handle "tides"', error: null, started: '2026-10-10T00:10:00Z', finished: '2026-10-10T00:10:00Z' },
+      { id: 'act-2', owner: 'owner', kind: 'confirm.email.send', ref: 'appr-1', state: 'stubbed', result: 'approved, but email.send is not connected yet: nothing was sent', error: null, started: '2026-10-10T00:05:00Z', finished: '2026-10-10T00:05:00Z' },
+      { id: 'act-3', owner: 'owner', kind: 'automation.note', ref: 'daily schedule', state: 'done', result: 'wrote a note', error: null, started: '2026-10-10T00:00:00Z', finished: '2026-10-10T00:00:01Z' },
+    ];
+    let auth = '';
+    await A.ctx.route(/\/api\/actions(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ actions: recs })); });
+    await A.ask('my actions', 900);
+    const card = await A.p.$eval('.actions-card', (e) => e.innerText).catch(() => '');
+    const kinds = await A.p.$$eval('.actions-row', (r) => r.map((x) => x.dataset.state));
+    check('actions card: the owner\'s record shows actions beyond automations (a miss-board job and a stubbed confirm-line send), with the tally and the bearer',
+      /queue\.add · miss:learn-to-handle-tides/.test(card) && /○ .*confirm\.email\.send · appr-1 · approved, but email\.send is not connected/.test(card) && /2 done · 1 stubbed/.test(card)
+      && kinds.join(',') === 'done,stubbed,done' && /^Bearer owner-k$/.test(auth) && !A.errors.length, card.slice(0, 300) + ' | ' + auth);
+    await A.ctx.close(); }
+  // the card keeps itself live (skills/live.js, every minute): a record that is running when the card opens settles to done
+  // on screen after one tick with nobody pressing Refresh; it fetches a page of 30 and Show more brings the next 30
+  { const L = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const rec = (i, state) => ({ id: 'act-' + i, owner: 'owner', kind: i ? 'automation.note' : 'automation.http.post', ref: 'r' + i, state, result: state === 'done' ? 'did it' : null, error: null, started: new Date(1760000000000 - i * 60000).toISOString(), finished: state === 'done' ? '2026-10-10T00:10:00Z' : null });
+    let all = [rec(0, 'running'), ...Array.from({ length: 40 }, (_, i) => rec(i + 1, 'done'))]; const calls = [];
+    await L.ctx.route(/\/api\/actions(?:\?|$)/, (r) => { const u = new URL(r.request().url()); const limit = +u.searchParams.get('limit'), offset = +u.searchParams.get('offset') || 0; calls.push(limit + '/' + offset); return r.fulfill(json({ actions: all.slice(offset, offset + limit) })); });
+    await L.p.clock.install();
+    await L.ask('my actions', 900);
+    const states = () => L.p.$$eval('.actions-row', (r) => r.map((x) => x.dataset.state));
+    const before = await states();
+    all = all.map((r) => (r.id === 'act-0' ? { ...r, state: 'done', result: 'posted', finished: '2026-10-10T00:11:00Z' } : r));
+    await L.p.clock.runFor(61e3); await until(async () => (await states())[0] === 'done', 3000);
+    const after = await states(); const cap = await L.p.$eval('.actions-card .vlive', (e) => e.textContent).catch(() => '');
+    await L.p.click('.actions-more'); await until(async () => (await states()).length === 41, 3000);
+    const paged = (await states()).length, moreHidden = await L.p.$eval('.actions-more', (b) => b.style.display === 'none');
+    check('actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides',
+      before[0] === 'running' && before.length === 30 && after[0] === 'done' && after.length === 30 && /^updated .* · refreshes every 1 min/.test(cap) && paged === 41 && moreHidden
+      && calls.slice(0, 3).join(',') === '30/0,30/0,30/30' && !L.errors.length, JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, errs: L.errors }));
+    await L.ctx.close(); }
   // "unlock <key>" is the first thing handled: pasted with or without the space (or "unlock" twice) it is saved on this
   // device and nothing carrying the key leaves the page (it once went to the answer model and the miss board).
   { meEnv.READ_TOKEN = '0123456789abcdef0123456789abcdef'; const U = await fresh(); const leaked = []; // the server checks the key first (owner login) U.p.on('request', (r) => { if (/0123456789abcdef0123/.test(r.url() + (r.postData() || ''))) leaked.push(r.url()); });
@@ -2926,6 +2966,8 @@ try {
         if (/^INSERT INTO void_kv \(k, v\) VALUES \(\?, \?\) ON CONFLICT\(k\) DO UPDATE SET v = CAST\(CAST\(v AS REAL\)/.test(sql)) { need('void_kv'); kv.set(a[0], String((Number(kv.get(a[0])) || 0) + Number(a[1]))); return ch(1); }
         if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2], entry: JSON.parse(a[4]) }); return ch(1); }
         if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2] }); return ch(1); }
+        if (/^INSERT INTO void_actions/.test(sql)) { need('void_actions'); return ch(1); } // the execution record (lib/actions.js) around an approved action
+        if (/^DELETE FROM void_actions/.test(sql)) return ch(0);
         if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return ch(0); approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
         if (/^UPDATE void_approvals/.test(sql)) { approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
         throw new Error('unexpected sql: ' + sql);

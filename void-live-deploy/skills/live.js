@@ -9,9 +9,11 @@
  * under the card says when it last updated and how often it refreshes, with pause and resume. Nothing ticks while the
  * tab is hidden, and no timer survives the card: a pending wait re-checks the stage at least every half minute.
  *
- * Contract: keepLive(api, el, { name, every, refresh }) -> handle { now(), pause(), resume(), stop(), state() }
+ * Contract: keepLive(api, el, { name, every, refresh, present }) -> handle { now(), pause(), resume(), stop(), state() }
  *   every    ms between refreshes (never under 10 s)
  *   refresh  async () => void: fetch again and redraw the card in place (never showPage: the card is the same element)
+ *   present  () => boolean, optional: is the card still up? The default asks api._pageStill(el), which is the page card;
+ *            a stage thing (a kept card in the void) passes its own, e.g. () => el.isConnected
  * The scheduling maths (plan, nextDelay, caption) is pure, so tools/live.test.mjs runs it in Node.
  */
 export const MIN_EVERY = 10e3, MAX_BACKOFF = 8, SLICE = 30e3;
@@ -52,14 +54,15 @@ export function caption(s, env, clock) {
 
 const clock = (t) => new Date(t).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
 
-export function keepLive(api, el, { name = 'card', every = 15 * 60e3, refresh }) {
+export function keepLive(api, el, { name = 'card', every = 15 * 60e3, refresh, present }) {
   if (typeof refresh !== 'function') throw new TypeError('keepLive needs a refresh function');
+  const still = typeof present === 'function' ? present : () => api._pageStill(el);
   const s = { every: Math.max(MIN_EVERY, +every || 0), lastAt: Date.now(), failures: 0, failedAt: 0, paused: false, busy: false, updates: 0, stopped: false };
   let timer = 0;
-  const env = () => ({ now: Date.now(), present: !s.stopped && api._pageStill(el), visible: typeof document === 'undefined' || document.visibilityState !== 'hidden', online: typeof navigator === 'undefined' ? true : navigator.onLine });
+  const env = () => ({ now: Date.now(), present: !s.stopped && still(), visible: typeof document === 'undefined' || document.visibilityState !== 'hidden', online: typeof navigator === 'undefined' ? true : navigator.onLine });
   // the line under the card: re-made after every redraw (a skill's innerHTML takes it out), touched only when something changed
   function stamp() {
-    if (!api._pageStill(el)) return;
+    if (!still()) return;
     let f = el.querySelector('.vlive');
     if (!f) { f = document.createElement('div'); f.className = 'vlive'; f.style.cssText = 'color:#8b90a0;font-size:12px;margin-top:8px'; el.appendChild(f); }
     const text = caption(s, env(), clock), want = text + (s.paused ? ' resume' : ' pause');
@@ -72,7 +75,7 @@ export function keepLive(api, el, { name = 'card', every = 15 * 60e3, refresh })
   }
   async function run() {
     s.busy = true; stamp();
-    try { await refresh(); if (api._pageStill(el)) { s.lastAt = Date.now(); s.failures = 0; s.updates++; } }
+    try { await refresh(); if (still()) { s.lastAt = Date.now(); s.failures = 0; s.updates++; } }
     catch (_) { s.failures++; s.failedAt = Date.now(); }
     s.busy = false; stamp(); tick();
   }
@@ -87,13 +90,15 @@ export function keepLive(api, el, { name = 'card', every = 15 * 60e3, refresh })
     else if (!s.busy && !s.paused) timer = setTimeout(tick, SLICE); // hidden or offline: the events below wake it, this is the fallback
   }
   const wake = () => { if (!s.stopped) tick(); };
-  if (typeof document !== 'undefined') { document.addEventListener('visibilitychange', wake); addEventListener('online', wake); addEventListener('offline', wake); }
+  // the same guard adds and removes them, so stop() always takes off exactly what was put on
+  const onWorld = (on) => { if (typeof window === 'undefined') return; const f = on ? 'addEventListener' : 'removeEventListener';
+    window[f]('online', wake); window[f]('offline', wake); if (typeof document !== 'undefined') document[f]('visibilitychange', wake); };
+  onWorld(true);
   const handle = {
     now() { if (!s.stopped && !s.busy) { clearTimeout(timer); timer = 0; return run(); } return Promise.resolve(); },
     pause() { s.paused = true; clearTimeout(timer); timer = 0; stamp(); },
     resume() { s.paused = false; stamp(); tick(); },
-    stop() { s.stopped = true; clearTimeout(timer); timer = 0;
-      if (typeof document !== 'undefined') { document.removeEventListener('visibilitychange', wake); removeEventListener('online', wake); removeEventListener('offline', wake); } },
+    stop() { s.stopped = true; clearTimeout(timer); timer = 0; onWorld(false); },
     stamp,
     state() { const e = env(); return { name, every: s.every, lastAt: s.lastAt, failures: s.failures, paused: s.paused, busy: s.busy, updates: s.updates, stopped: s.stopped, next: plan(s, e) }; }
   };

@@ -190,6 +190,7 @@
       max-height: 320px;
       object-fit: contain;
     }
+    body:not(.in-ext-panel) .vput { display: none; } /* "into the page" shows only in the extension's side panel */
     .link-card {
       width: 280px;
       padding: 14px 16px;
@@ -788,6 +789,7 @@ Object.values(things).forEach((th) => {
         else if (th.kind === 'shape') mountShape(th);
         else if (th.kind === 'kept') mountKept(th);
         else if (th.kind === 'calendar') mountCalendar(th);
+        else if (th.kind === 'tab') mountTab(th);
         else if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
       decorate();
@@ -910,6 +912,74 @@ Object.values(things).forEach((th) => {
       th.y = Math.max(8, Math.round((room - el.offsetHeight) / 2));
       el.style.left = th.x + 'px'; el.style.top = th.y + 'px';
       save();
+    }
+    // --- The Void extension's side panel (extension/): Void reads the tab you point it at (Alt+Shift+V or the right-click menu)
+    // and drafts into the box you were typing in. Messages are taken only from the panel of this extension (its id is pinned by
+    // the key in extension/manifest.json). Page text stays in this browser: it lives in memory here, never in the saved stage
+    // (which syncs to /api/mine when you're signed in), and no ask, log or lookup carries it.
+    const EXT_ORIGIN = 'chrome-extension://dcjdpaeachfmfndklkiglgebfflamhkg';
+    const ext = { on: false, tab: null, seq: 0, waiting: {} };
+    const inPanel = window.parent !== window;
+    function extSend(msg) { if (inPanel) { try { window.parent.postMessage(msg, EXT_ORIGIN); } catch (_) {} } }
+    function extDraft(text) {
+      return new Promise((resolve) => {
+        if (!ext.on) return resolve({ ok: false, why: 'no-panel' });
+        if (!ext.tab) return resolve({ ok: false, why: 'no-tab' });
+        const id = ++ext.seq; ext.waiting[id] = resolve;
+        setTimeout(() => { if (ext.waiting[id]) { delete ext.waiting[id]; resolve({ ok: false, why: 'no-reply' }); } }, 5000);
+        extSend({ type: 'void-ext:draft', id, text: String(text) });
+      });
+    }
+    const DRAFT_WHY = { 'no-panel': 'open Void in its side panel to draft into a page', 'no-tab': 'point Void at the page first: Alt+Shift+V there',
+      'no-field': 'click into the box on the page first, then try again', 'no-access': 'that tab moved on or closed: press Alt+Shift+V there again' };
+    const draftSaid = (r) => (r && r.ok ? 'in the page · nothing was sent' : DRAFT_WHY[(r && r.why) || ''] || "couldn't put it in the page");
+    window.addEventListener('message', (e) => {
+      if (!inPanel || e.origin !== EXT_ORIGIN || e.source !== window.parent || !e.data || typeof e.data !== 'object') return;
+      const m = e.data;
+      if (m.type === 'void-ext:hello') { ext.on = true; document.body.classList.add('in-ext-panel'); }
+      else if (m.type === 'void-ext:tab' && m.tab && typeof m.tab === 'object') {
+        ext.on = true; document.body.classList.add('in-ext-panel');
+        const t = m.tab, s = (v, n) => String(v == null ? '' : v).slice(0, n);
+        ext.tab = { title: s(t.title, 200), url: s(t.url, 500), selection: s(t.selection, 5000), readable: t.readable !== false,
+          field: t.field && typeof t.field === 'object' ? { tag: s(t.field.tag, 20), name: s(t.field.name, 80) } : null };
+        let th = Object.values(things).find((x) => x.kind === 'tab');
+        if (!th) { // a card that never serializes (toJSON gives nothing): not in localStorage, not in /api/mine, not in undo
+          th = { id: uid('tab'), kind: 'tab', x: 24, y: 24 }; Object.defineProperty(th, 'toJSON', { value: () => undefined }); things[th.id] = th;
+        }
+        selectedId = th.id; save(); render();
+        say('read the tab · it stays in this browser');
+      } else if (m.type === 'void-ext:drafted' && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
+    });
+    extSend({ type: 'void-ext:ready' });
+    function mountTab(th) {
+      const t = ext.tab;
+      const el = document.createElement('div');
+      el.className = 'thing tab-card';
+      el.dataset.id = th.id;
+      el.style.cssText += ';left:' + th.x + 'px;top:' + th.y + 'px;width:320px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(12,12,12,0.92);font-size:13px';
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+      const head = document.createElement('div');
+      head.style.cssText = 'color:var(--muted);font-size:12px;margin-bottom:6px;cursor:grab';
+      head.textContent = 'this tab · stays in this browser';
+      el.appendChild(head);
+      const body = document.createElement('div');
+      if (t) {
+        let host = ''; try { host = new URL(t.url).host; } catch (_) {}
+        body.innerHTML = '<div class="tab-title" style="font-size:15px">' + esc(t.title || host || t.url) + '</div>'
+          + '<div style="color:var(--muted);font-size:12px;margin-bottom:6px">' + esc(host) + '</div>'
+          + (t.selection ? '<blockquote class="tab-sel" style="margin:0 0 8px;padding-left:8px;border-left:2px solid var(--line);max-height:120px;overflow:auto;white-space:pre-wrap">' + esc(t.selection) + '</blockquote>' : '<p style="margin:0 0 8px;color:var(--muted)">nothing selected</p>')
+          + (t.readable ? '' : '<p style="margin:0 0 8px;color:var(--muted)">Chrome keeps extensions out of this page: only its title and address came through.</p>')
+          + '<textarea class="tab-draft" rows="3" placeholder="a draft for the page" style="width:100%;box-sizing:border-box;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:6px;font:inherit"></textarea>'
+          + '<div style="display:flex;gap:8px;align-items:center;margin-top:6px"><button type="button" class="tab-put vcopy">put in the page</button><span class="tab-said" style="color:var(--muted);font-size:12px">'
+          + esc(t.field ? 'goes into: ' + (t.field.name || t.field.tag) : 'goes into the box you click on the page') + '</span></div>'
+          + '<div style="color:var(--muted);font-size:11px;margin-top:6px">Not saved, not sent anywhere. You press send on the page yourself.</div>';
+        const put = body.querySelector('.tab-put'), ta = body.querySelector('.tab-draft'), said = body.querySelector('.tab-said');
+        put.addEventListener('click', async () => { if (!ta.value.trim()) { said.textContent = 'write the draft first'; return; } said.textContent = 'putting it in…'; said.textContent = draftSaid(await extDraft(ta.value)); });
+      }
+      el.appendChild(body);
+      body.addEventListener('pointerdown', (e) => { if (e.target.closest('textarea, button, blockquote')) e.stopPropagation(); });
+      bindDrag(el, th);
+      stage.appendChild(el);
     }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
     const stageApi = { stage, things: () => things, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
@@ -3117,6 +3187,15 @@ return { ok: true, detail: 'timer-reset' };
         b.textContent = ok ? 'copied' : 'select and copy'; setTimeout(() => { b.textContent = 'copy'; }, 1600);
       });
       el.appendChild(b);
+      if (!inPanel) return; // in the extension's side panel, an answer can also go straight into the page you pointed Void at
+      const p = document.createElement('button'); p.type = 'button'; p.className = 'tr-copy vcopy vput'; p.textContent = 'into the page'; p.style.cssText = 'margin-top:10px;margin-left:8px';
+      p.addEventListener('pointerdown', (e) => e.stopPropagation()); // on a stage card a press starts a drag, which redraws the card before the click lands
+      p.addEventListener('click', async () => {
+        const c = el.cloneNode(true); c.querySelectorAll('button, .src').forEach((x) => x.remove());
+        const txt = Array.from(c.children).map((x) => x.innerText || x.textContent).map((x) => x.trim()).filter(Boolean).join('\n\n');
+        say(draftSaid(await extDraft(txt)));
+      });
+      el.appendChild(p);
     }
     function esc(t) { const d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
     function wantsMenu(lower) {
@@ -3200,7 +3279,8 @@ return { ok: true, detail: 'timer-reset' };
     const pageHost = (u) => { try { return /^https?:\/\//i.test(String(u)) ? new URL(u).hostname : ''; } catch (_) { return ''; } };
     // page: the tab the Void extension read for this ask (title, url, selection, field, text); answered about that page, not the web
     async function showAnswer(text, page) {
-      const about = page && page.title ? '<div class="sub">about: ' + esc(page.title) + '</div>' : '';
+      // a page sent for an answer left the browser: say so on the card (Adam, 2026-10-09: local by default, flag what leaves)
+      const about = page ? (page.title ? '<div class="sub">about: ' + esc(page.title) + '</div>' : '') + '<div class="sub page-sent">this page was sent to a-to-mind.com for this answer · not kept</div>' : '';
       const el = showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<div class="sub">thinking…</div>'; });
       say(page ? 'reading the page' : 'looking up');
       let j = null;
@@ -5807,7 +5887,7 @@ return { ok: true, detail: 'timer-reset' };
         if (!ctx0) { handle(q0); return; }
         let done = false;
         const onCtx = (e) => {
-          if (done || e.source !== window.parent || !/^chrome-extension:\/\//.test(e.origin) || !e.data || e.data.type !== 'void.ctx') return;
+          if (done || e.source !== window.parent || e.origin !== EXT_ORIGIN || !e.data || e.data.type !== 'void.ctx') return; // only this extension's panel (its id is pinned)
           done = true; removeEventListener('message', onCtx);
           const pg = e.data.page || {}, cut = (v, n) => String(v || '').slice(0, n);
           showAnswer(cut(e.data.q || q0, 300), { title: cut(pg.title, 200), url: cut(pg.url, 500), selection: cut(pg.selection, 2000), field: cut(pg.field, 4000), text: cut(pg.text, 8000), unreadable: !!pg.unreadable });
