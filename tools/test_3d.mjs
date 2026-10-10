@@ -171,6 +171,17 @@ export async function run3dChecks({ check, fresh }) {
     check('moon explainer miniature: draws real pixels, the Moon follows the data (30° -> 200°, now on the far side), a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while paused, under reduced motion too, and unmounting frees it',
       ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
   }
+  // ---- the lock explainer (explainer.pin-lock) through the same contract: the matching key half in, then fully in and turned 60°
+  {
+    const Lk = await import(pathToFileURL(path.join(root, 'skills', 'lock-rules.js')).href);
+    const a = Lk.setInsertion(Lk.create({ keyPreset: 'matching' }), 0.5), b = Lk.turnTo(Lk.setInsertion(Lk.create({ keyPreset: 'matching' }), 1), 60);
+    const c = await miniContract(fresh, { kind: 'lock', a: { state: a }, b: { state: b }, settledWhen: 'dragging' });
+    const ok = (r) => r.drawn && r.colours > 40 && r.same && r.stateA && r.stateA.state === 'inserting' && r.stateA.insertion === 0.5
+      && r.stateB.state === 'turned' && r.stateB.angle === 60 && r.stateB.aligned === 5 && r.stateB.driverY.every((y) => y === Lk.SHEAR + Lk.DRIVER / 2)
+      && r.redrew && r.settled && r.idleDraws === 0 && r.freed;
+    check('lock explainer miniature: draws real pixels (brass housing and plug, steel pins, springs, the key), poses from the one state (half in, then fully in and turned 60° with every driver pin waiting at the shear line), a remount by key moves the live one, it settles with no redraws, under reduced motion too, and unmounting frees it',
+      ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
+  }
   // ---- Ringer (build-order step 5) through the same contract: a new game, then the same game after a hard shot has settled
   {
     const Rr = await import(pathToFileURL(path.join(root, 'skills', 'ringer-rules.js')).href);
