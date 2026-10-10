@@ -43,4 +43,5 @@ jobs:
         if: always() && steps.seed.outputs.hid != ''
         env:
           READ_TOKEN: ${{ secrets.READ_TOKEN }}
-        run: curl -sf -X DELETE "$SITE/api/rehearsal" -H "Authorization: Bearer $READ_TOKEN"
+        run: |
+          curl -sf -X DELETE "$SITE/api/rehearsal" -H "Authorization: Bearer $READ_TOKEN"
