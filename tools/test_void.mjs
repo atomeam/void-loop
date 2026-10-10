@@ -13,7 +13,8 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'applic
 const server = http.createServer((req, res) => {
   let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   if (p === '/') p = '/index.html';
-  const f = path.join(root, p);
+  let f = path.join(root, p);
+  if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); }
   res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' });
   fs.createReadStream(f).pipe(res);
@@ -997,6 +998,18 @@ try {
     check('memory card: a signed-in member (no owner key) sends their own session as the bearer and sees their answer', /mine \(py\)/.test(card) && /^Bearer member-session-token-/.test(auth) && !P.errors.length, card.slice(0, 200) + ' | ' + auth);
     await P.ctx.close(); }
   // "remember that <fact>" keeps one line (POST with the bearer), "forget that <fact>" removes it (DELETE by the same note id); without a key neither fetches
+  // "what you told me": a signed-in member's ask carries their session to /api/answer, and an answer that used a note says so on the card; a visitor's carries nothing
+  { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    let auth = null;
+    await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
+    await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
+    check('what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Void', /^Bearer member-session-token-/.test(auth || '') && /from what you told me · written by Void/.test(card) && !T.errors.length, (auth || '') + ' | ' + card.slice(0, 200));
+    await T.ctx.close(); }
+  { const V2 = await fresh(); let auth = null;
+    await V2.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization; return r.fulfill(json({ answer: 'Sunlight scatters.', sources: [] })); });
+    await V2.ask('why is the sky blue', 900); const card = await V2.p.evaluate(() => document.body.innerText);
+    check('what you told me: a visitor with no key sends no authorization and the card never claims a note', auth === undefined && !/from what you told me/.test(card) && !V2.errors.length, String(auth) + ' | ' + card.slice(0, 120));
+    await V2.ctx.close(); }
   { const K = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const calls = [];
     await K.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { const q = r.request(); calls.push({ m: q.method(), u: new URL(q.url()).search, a: q.headers().authorization || '', b: q.postData() || '' }); return r.fulfill(json(q.method() === 'DELETE' ? { removed: 1 } : { saved: 1, rejected: 0 })); });
@@ -1133,6 +1146,18 @@ try {
     await P.p.goto(base + 'handoff.html?id=' + '0'.repeat(32)); await P.p.waitForTimeout(400); const nf = await P.p.$eval('#msg', (e) => e.textContent);
     await P.p.goto(base + 'surface.html'); await P.p.waitForTimeout(300); await P.p.fill('#i', 'a sky of cards'); await P.p.keyboard.press('Enter'); await P.p.waitForTimeout(200);
     const card = await P.p.$eval('#cards .vc', (e) => e.textContent).catch(() => '');
+    // /code-review/'s scoreboard line reads review-stats.json (written weekly by watchdog.yml from tools/review-learn.mjs); without the file it stays hidden
+    const S = await fresh();
+    await S.ctx.route(/\/review-stats\.json(?:\?|$)/, (rt) => rt.fulfill(json({ at: '2026-10-12T10:20:00Z', since: '30d', rulesFlagged: 7, closerFound: 9, falseDropped: 2, learned: 3, learnedFromExtras: 3 })));
+    await S.p.goto(base + 'code-review/'); await until(async () => !(await S.p.$eval('#learning', (e) => e.hidden).catch(() => true)), 4000);
+    const learnLine = await S.p.$eval('#learning', (e) => e.hidden ? '' : e.textContent).catch(() => '');
+    const N = await fresh();
+    await N.ctx.route(/\/review-stats\.json(?:\?|$)/, (rt) => rt.fulfill({ status: 404, body: '' }));
+    await N.p.goto(base + 'code-review/'); await N.p.waitForTimeout(500);
+    const learnHidden = await N.p.$eval('#learning', (e) => e.hidden).catch(() => false);
+    check('code-review: the scoreboard line renders from review-stats.json ("this month Void\'s rules caught N of M findings its closer read made; K rules learned") and stays hidden without the file',
+      learnLine === "This month Void's rules caught 7 of 9 findings its closer read made; 3 rules learned from it, 2 false claims of its own filtered out." && learnHidden === true, JSON.stringify({ learnLine, learnHidden }));
+    await S.ctx.close(); await N.ctx.close();
     const heads = ['handoff.html', 'surface.html'].map((f) => fs.readFileSync(path.join(root, f), 'utf8')).every((h) => /<meta name="robots" content="noindex, nofollow">/.test(h));
     const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
     check('/handoff drops a file with the write token and opens it (name, body, id in the URL); an unknown id says so; /surface is a noindex preview that shows what you type; neither page becomes the offline front page',
