@@ -79,6 +79,8 @@ export const ASSIMILATE_LIVE = [
 export function inventoryOf(text) {
   const t = CLEAN(text);
   if (!t) return null;
+  if (/^(?:what\s+(?:can|could)\s+(?:you|i|void|the\s+forge)\s+(?:3d[\s-]?)?(?:print|make)(?:\s+for\s+me)?|show\s+(?:me\s+)?what\s+you\s+can\s+(?:3d[\s-]?)?print|list\s+(?:the\s+)?printable\s+things|what\s+physical\s+things\s+can\s+you\s+make|what\s+(?:things\s+)?(?:are|is)\s+printable)$/i.test(t)
+    && !/^what\s+can\s+(?:you|i|void)\s+make$/i.test(t)) return { kind: 'printable' };
   let m = t.match(/^(?:have\s+we\s+built|did\s+we\s+build|is\s+there\s+already|do\s+we\s+already\s+have|already\s+built)\s+(.+)$/i);
   if (m) {
     const q = m[1].replace(/^(?:a|an|the)\s+/i, '').trim();
@@ -88,6 +90,31 @@ export function inventoryOf(text) {
     return { kind: 'all' };
   }
   return null;
+}
+
+/** What Void can make in the world right now: every forge thing whose file passes the same check "print it" runs
+ *  (forge-rules.js verifyStl, the file read back and held to its model), with its size and solid-PLA weight; one that
+ *  fails is held back with the reason. Computed from the recipes on each ask: nothing about anyone is kept. */
+export async function printable(verify) {
+  const F = await import('./forge-rules.js');
+  const check = verify || F.verifyStl, ready = [], held = [];
+  for (const key of Object.keys(F.THINGS)) {
+    const m = F.build(key), v = check(F.stl(m), m);
+    if (!v.ok) { held.push({ key, label: m.label, why: v.problems.join(' · ') }); continue; }
+    const pc = F.printCheck(m);
+    ready.push({ key, label: m.label, size: m.size.map((x) => Math.round(x)).join(' × ') + ' mm', grams: pc.grams, supports: pc.supports, ask: 'make me a ' + m.label.toLowerCase() });
+  }
+  return { ready, held, total: ready.length + held.length, bed: F.BED_MM };
+}
+export function printableHtml(esc, p) {
+  const rows = p.ready.map((r) => '<li><b>' + esc(r.label) + '</b> — ' + esc(r.size) + ', about ' + r.grams + ' g in solid PLA' + (r.supports ? ', with supports' : '') + ' · say “' + esc(r.ask) + '”</li>').join('');
+  const held = p.held.map((r) => '<li><b>' + esc(r.label) + '</b> — ' + esc(r.why) + '</li>').join('');
+  return '<h2>What I can print</h2>'
+    + '<div class="sub">Printable now · ' + p.ready.length + ' of ' + p.total + ' checked · each file read back and held to its model (watertight, facing out, inside a ' + p.bed + ' mm bed) before it is listed</div>'
+    + '<ul>' + rows + '</ul>'
+    + (held.length ? '<div class="sub">Held back (their files did not pass)</div><ul>' + held + '</ul>' : '')
+    + '<div class="sub">And the stage itself</div><ul><li><b>The stage</b> — every 3D figure on it as one 3MF · say “export a print file”</li></ul>'
+    + '<div class="src">Source: the forge recipes (skills/forge-rules.js), checked on this ask · nothing about you is kept</div>';
 }
 
 function hay(row) {
@@ -140,8 +167,9 @@ async function run(text, api) {
   const { showPage, esc, loopLog } = api;
   const hit = inventoryOf(text);
   if (!hit) return 'none';
-  const el = showPage((p) => { p.innerHTML = pageHtml(esc, hit); });
-  if (loopLog) loopLog({ domain: 'void.inventory', ask: text, score: 'pass', note: hit.kind === 'query' ? 'query:' + hit.q : 'all' });
+  const p = hit.kind === 'printable' ? await printable() : null;
+  const el = showPage((page) => { page.innerHTML = p ? printableHtml(esc, p) : pageHtml(esc, hit); });
+  if (loopLog) loopLog({ domain: 'void.inventory', ask: text, score: 'pass', note: hit.kind === 'query' ? 'query:' + hit.q : hit.kind });
   return el ? 'inventory' : 'inventory';
 }
 
@@ -155,6 +183,8 @@ export default {
     'have we built passkeys',
     'did we build the confirm line',
     'what can i reuse',
+    'what can you print',
+    'what can the forge make',
   ],
   nearMisses: [
     'build inventory',
@@ -164,6 +194,8 @@ export default {
     'show the map',
     'what are you building',
     'make an inventory app',
+    'print it',
+    'what can you do',
   ],
   match(lower, text) { return !!inventoryOf(text); },
   run,
