@@ -966,6 +966,23 @@ try {
       /queue\.add · miss:learn-to-handle-tides/.test(card) && /○ .*confirm\.email\.send · appr-1 · approved, but email\.send is not connected/.test(card) && /2 done · 1 stubbed/.test(card)
       && kinds.join(',') === 'done,stubbed,done' && /^Bearer owner-k$/.test(auth) && !A.errors.length, card.slice(0, 300) + ' | ' + auth);
     await A.ctx.close(); }
+  // the memory card (skills/memory.js): the owner's key goes as a bearer to /api/memory?ask=, the API's answer shows as rows, and without
+  // the key it says so and fetches nothing
+  { const M = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    let auth = '', asked = '';
+    await M.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; asked = new URL(r.request().url()).searchParams.get('ask'); return r.fulfill(json({ answer: 'I remember 1 match:\n\u2022 alpha (React, py): A tiny tool. \u00b7 last change 2025-01-01 \u00b7 backed up at https://github.com/o/alpha', matches: ['alpha-1234abcd'] })); });
+    await M.ask('what did I build with react', 900);
+    const card = await M.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
+    const rows = await M.p.$$eval('.memory-row', (r) => r.length);
+    check('memory card: "what did I build with react" asks /api/memory?ask= with the owner bearer and shows each match with its tech, change and remote copy',
+      /alpha \(React, py\)/.test(card) && /I remember 1 match/.test(card) && /no remote copy|backed up at/.test(card) && rows === 1 && /^Bearer owner-k$/.test(auth) && asked === 'react' && !M.errors.length, card.slice(0, 300) + ' | ' + auth + ' | ' + asked);
+    await M.ctx.close(); }
+  { const N = await fresh(); let fetched = 0;
+    await N.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { fetched++; return r.fulfill(json({ answer: 'x' })); });
+    await N.ask('what did I build with react', 900);
+    const card = await N.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
+    check('memory card: without the owner key it says so and fetches nothing', /Unlock Void first/.test(card) && fetched === 0 && !N.errors.length, card.slice(0, 200) + ' | fetched ' + fetched);
+    await N.ctx.close(); }
   // the card keeps itself live (skills/live.js, every minute): a record that is running when the card opens settles to done
   // on screen after one tick with nobody pressing Refresh; it fetches a page of 30 and Show more brings the next 30
   { const L = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
