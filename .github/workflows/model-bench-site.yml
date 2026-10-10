@@ -1,0 +1,42 @@
+# The model bake-off through the site's own Workers AI binding (functions/api/bench.js): no Cloudflare token in this
+# workflow at all — tools/model-bench.mjs runs with --via https://a-to-mind.com/api/bench and the owner token. Manual
+# only: every call spends the account's Workers AI neurons. --via needs the challenger ids spelled out (the catalog
+# listing needs the REST API this workflow deliberately does not hold). The table and verdict go to the job summary;
+# the full results are the artifact; acting on the verdict (lib/models.js) is a normal PR afterwards.
+name: Model bench (via site)
+on:
+  workflow_dispatch:
+    inputs:
+      models:
+        description: challenger model ids, comma separated (the current default always runs too)
+        required: true
+      only:
+        description: limit to some ask kinds (fact,howto,reason,self,page; empty = all)
+        default: ''
+permissions: {}
+concurrency: model-bench-site
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: the bake-off, through /api/bench
+        env:
+          VIA_TOKEN: ${{ secrets.READ_TOKEN }}
+        run: |
+          node tools/model-bench.mjs --via https://a-to-mind.com/api/bench \
+            --models "${{ inputs.models }}" ${{ inputs.only && format('--only {0}', inputs.only) || '' }} \
+            --md bench-table.md --out bench-results.json
+          cat bench-table.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: model-bench-results
+          path: |
+            bench-table.md
+            bench-results.json
+          if-no-files-found: ignore

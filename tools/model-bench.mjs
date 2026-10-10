@@ -240,7 +240,7 @@ async function run(model, messages) {
   const t0 = Date.now();
   if (VIA) { // through the wrangler-dev Worker: one reply, so the first-token time is the total time
     try {
-      const j = await (await fetch(VIA, { method: 'POST', signal: AbortSignal.timeout(TIMEOUT_MS), body: JSON.stringify({ model, messages, max_tokens: 1200 }) })).json();
+      const j = await (await fetch(VIA, { method: 'POST', signal: AbortSignal.timeout(TIMEOUT_MS), headers: { 'content-type': 'application/json', ...(process.env.VIA_TOKEN ? { authorization: 'Bearer ' + process.env.VIA_TOKEN } : {}) }, body: JSON.stringify({ model, messages, max_tokens: 1200 }) })).json(); // VIA_TOKEN: the owner token when VIA is the site's own /api/bench
       if (!j.ok) return { error: String(j.error || 'no reply').slice(0, 200), ms: Date.now() - t0 };
       const r = j.result || {}, text = String(r.response ?? r.choices?.[0]?.message?.content ?? r.result?.response ?? '');
       return { text, ttft: Date.now() - t0, ms: Date.now() - t0 };
