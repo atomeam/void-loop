@@ -50,7 +50,7 @@ for (const [name, file] of [
   ['ringer', 'ringer.test.mjs'],
   ['queue', 'queue.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],
-  ['services', 'services.test.mjs'],
+  ['services', 'services.test.mjs'], ['sale-jobs', 'sale-jobs.test.mjs'],
   ['proposal', 'proposal.test.mjs'],
   ['memory-card', 'memory-card.test.mjs'],
   ['told-me', 'told-me.test.mjs'],
