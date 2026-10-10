@@ -13,6 +13,7 @@ import * as R from '../ringer-rules.js';
 
 export default async function build(ctx, data) {
   const { THREE, root } = ctx;
+  const sh0 = (s) => s.marbles[0];
   const stateOf = (d) => (typeof d.state === 'function' ? d.state() : d.state);
   const made = []; // geometries, materials and textures to free
   const keep = (x) => { made.push(x); return x; };
@@ -61,16 +62,30 @@ export default async function build(ctx, data) {
     builtSeed = s.seed;
   }
 
-  // the aim: a faint chalk-white line from the shooter, as long as the power
+  // the aim: a faint chalk-white line from the shooter to where it would stop if it met nothing (ringer-rules.js reach), so
+  // a stronger flick draws a longer line and the line is honest about the dirt; while pulling, a chalk arc round the shooter
+  // fills with the power (a full circle is full power)
   const aimMat = keep(new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.55, depthWrite: false }));
   const aimLine = new THREE.Mesh(keep(new THREE.BoxGeometry(1, 0.0006, 0.0018)), aimMat); root.add(aimLine);
+  const arcMat = keep(new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.7, depthWrite: false, side: THREE.DoubleSide }));
+  let arc = null, arcPower = -1;
+  function powerArc(power, sh) {
+    if (Math.abs(power - arcPower) > 1e-3 || !arc) {
+      if (arc) { root.remove(arc); arc.geometry.dispose(); }
+      const r0 = sh.r * 1.9, sweep = Math.max(0.02, power) * Math.PI * 2;
+      arc = new THREE.Mesh(new THREE.RingGeometry(r0, r0 + 0.0016, 64, 1, 0, sweep).rotateX(-Math.PI / 2), arcMat); root.add(arc);
+      arcPower = power;
+    }
+    arc.position.set(sh.x, 0.0013, -sh.y);
+    arc.visible = true;
+  }
 
   const axis = new THREE.Vector3(), q = new THREE.Quaternion();
-  let sig = '';
+  let sig = '', pulling = false;
   function pose() {
     const s = stateOf(ctx.handle ? ctx.handle.data : data);
     if (!s || !s.marbles) return false;
-    const now = [s.seed, s.t, s.phase, s.angle, s.power, s.shots].join('|');
+    const now = [s.seed, s.t, s.phase, s.angle, s.power, s.shots, pulling].join('|');
     if (now === sig) return false;
     if (s.seed !== builtSeed) buildMarbles(s);
     s.marbles.forEach((m, i) => {
@@ -80,10 +95,11 @@ export default async function build(ctx, data) {
       grp.userData.x = m.x; grp.userData.y = m.y;
       grp.position.set(m.x, m.r, -m.y);
     });
-    const sh = s.marbles[0], len = 0.04 + 0.14 * s.power;
+    const sh = s.marbles[0], gap = sh.r * 1.4, len = Math.max(0.004, R.reach(s).d - gap);
     aimLine.visible = s.phase === 'aim' && !s.over;
     aimLine.scale.x = len; aimLine.rotation.y = s.angle;
-    aimLine.position.set(sh.x + Math.cos(s.angle) * (len / 2 + sh.r * 1.4), 0.0012, -(sh.y + Math.sin(s.angle) * (len / 2 + sh.r * 1.4)));
+    aimLine.position.set(sh.x + Math.cos(s.angle) * (len / 2 + gap), 0.0012, -(sh.y + Math.sin(s.angle) * (len / 2 + gap)));
+    if (pulling && aimLine.visible) powerArc(s.power, sh); else if (arc) arc.visible = false;
     sig = now;
     return true;
   }
@@ -102,7 +118,6 @@ export default async function build(ctx, data) {
     ray.setFromCamera(ndc, ctx.camera);
     return ray.ray.intersectPlane(plane, hit) ? [hit.x, -hit.z] : null;
   };
-  let pulling = false;
   const host = ctx.canvas.parentElement || ctx.canvas;
   const down = (e) => {
     if (e.button > 0) return;
@@ -112,7 +127,7 @@ export default async function build(ctx, data) {
     if (!hits.length) return; // not on the shooter: a tap aims, a drag looks around
     e.stopPropagation(); e.preventDefault();
     if (ctx.controls) ctx.controls.enabled = false;
-    pulling = true; ctx.canvas.style.cursor = 'grabbing';
+    pulling = true; ctx.canvas.style.cursor = 'grabbing'; if (pose()) ctx.requestRender();
     addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
   };
   const move = (e) => {
@@ -123,7 +138,7 @@ export default async function build(ctx, data) {
   const up = (e) => {
     if (!pulling) return;
     removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
-    pulling = false; ctx.canvas.style.cursor = '';
+    pulling = false; ctx.canvas.style.cursor = ''; if (pose()) ctx.requestRender();
     if (ctx.controls) ctx.controls.enabled = true;
     const d = ctx.handle.data;
     if (e.type === 'pointerup' && d.onRelease) d.onRelease();
@@ -135,7 +150,7 @@ export default async function build(ctx, data) {
   return {
     update() { if (pose()) ctx.requestRender(); },
     tick() { return pose(); },
-    state() { const s = stateOf(ctx.handle.data); return { marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible, pulling, angle: s.angle, power: s.power }; },
-    dispose() { host.removeEventListener('pointerdown', down, { capture: true }); for (const m of mats) m.dispose(); for (const x of made) x.dispose(); },
+    state() { const s = stateOf(ctx.handle.data); return { marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible, pulling, angle: s.angle, power: s.power, aimLength: aimLine.visible ? aimLine.scale.x + sh0(s).r * 1.4 : 0, reach: R.reach(s).d, arc: !!(arc && arc.visible), arcSweep: arc && arc.visible ? Math.max(0.02, arcPower) : 0 }; },
+    dispose() { if (arc) arc.geometry.dispose(); host.removeEventListener('pointerdown', down, { capture: true }); for (const m of mats) m.dispose(); for (const x of made) x.dispose(); },
   };
 }
