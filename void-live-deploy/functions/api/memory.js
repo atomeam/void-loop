@@ -1,23 +1,10 @@
 // Void's memory: GET /api/memory?q=react&limit=20 · ?id=<record id> (with its stored digest) · ?ask=what did I build with react · ?view=topics · ?related=<record id> · POST { source, records: [...] } (up to 200) · DELETE /api/memory?id=...
 // Owner token, or a paid member's session (their own memory only). Records come from tools such as tools/ouroboros.py (`ouroboros.py push`); each is validated and re-redacted
 // (lib/memory-core.js), and the tables are created on first use. Without D1 this answers 503 and changes nothing.
-import { ownerOk } from '../../lib/guard.js';
-import { ensureTables, session, tierOf } from '../../lib/void-me.js';
+import { scopeOf } from '../../lib/memory-scope.js';
 import { ensure, upsert, search, ask, byId, topics, related, forget, MAX_BATCH, MAX_BODY, MEMBER_MAX } from '../../lib/memory-core.js';
 
-// Who is asking, and whose memory that is: the owner (READ_TOKEN or an owner session) reads and writes the owner's; a signed-in paid member
-// (their passkey session, tier 'paid' as /api/gumroad recorded it) reads and writes only their own, behind their own account id.
-// A free account answers 403, anyone else 401, and a member can never reach the owner's rows or another member's.
-const scopeOf = async ({ request, env }) => {
-  if (await ownerOk(request, env)) return { scope: '' };
-  if (!env.DB) return null;
-  try {
-    await ensureTables(env);
-    const me = await session(request, env);
-    if (!me) return null;
-    return (await tierOf(env, me.userId)) === 'paid' ? { scope: me.userId } : { free: true };
-  } catch (_) { return null; }
-};
+// Who is asking, and whose memory that is: lib/memory-scope.js (owner, paid member, free account, stranger).
 const guard = (fn) => async (ctx) => {
   const who = await scopeOf(ctx);
   if (!who) return new Response('no', { status: 401 });
