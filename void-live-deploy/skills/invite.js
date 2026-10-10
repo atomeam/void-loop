@@ -25,12 +25,12 @@ async function run(text, api) {
     showPage((p) => { p.innerHTML = '<h2>Invite someone</h2><p>No invite just now: ' + esc((j && j.error) || 'try again') + '.</p>'; });
     return 'none';
   }
-  showPage((p) => { // void-review: ok: the link is esc()'d, everything else is fixed text
+  const el = showPage((p) => {
     p.innerHTML = '<h2>Invite someone</h2><p>Whoever opens this link appears in your Void as a faint presence, and what either of you summons shows on both.</p>'
-      + '<p><a href="' + esc(j.link) + '" target="_blank" rel="noopener">' + esc(j.link) + '</a></p>'
-      + '<p>Close the tab to end it. Your own Void stays yours: nothing of theirs is saved here.</p>'
-      + '<div class="src">' + (j.live ? 'Live across devices.' : 'The live relay is not on yet: for now, tabs in this browser share.') + '</div>';
+      + '<p><a target="_blank" rel="noopener"></a></p><p>Close the tab to end it. Your own Void stays yours: nothing of theirs is saved here.</p><div class="src"></div>';
   });
+  const a = el && el.querySelector('a');
+  if (a) { a.href = j.link; a.textContent = j.link; el.querySelector('.src').textContent = j.live ? 'Live across devices.' : 'The live relay is not on yet: for now, tabs in this browser share.'; }
   document.dispatchEvent(new CustomEvent('void:share-join', { detail: j.room }));
   return 'invite';
 }
