@@ -3,6 +3,8 @@
 // Shared by the page (import('/lib/approval-core.js')) and the server (functions/api/approval.js) so the
 // policy, the wording and the fingerprint can never drift apart. Read-only asks never reach this file's gate.
 
+import { PAID_MODEL } from './models.js';
+
 export const POLICY_VERSION = 'void-confirm-v0.1';
 export const EVENT_REQUESTED = 'a2m.approval.requested';
 export const EVENT_DECISION = 'a2m.approval.decision';
@@ -115,10 +117,10 @@ export function parseGatedAsk(text) {
   if ((m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|yourself|you)\\s+(?:to\\s+)?(?:pay|spend)\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)\\s+(?:on|for)\\s+' + MODELS + EARNED + '$', 'i')))
       || (m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|yourself|you)\\s+(?:to\\s+)?pay\\s+for\\s+' + MODELS + '\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)' + EARNED + '$', 'i')))) {
     const cost = parseCost(m[1]);
-    if (cost && cost.currency === 'USD') return { toolName: 'models.spend', args: { model: '@cf/deepseek-ai/deepseek-v4-flash-0731', cost, per: m[2].toLowerCase() } };
+    if (cost && cost.currency === 'USD') return { toolName: 'models.spend', args: { model: PAID_MODEL, cost, per: m[2].toLowerCase() } };
   }
   if (new RegExp('^(?:stop|don\'?t)\\s+(?:void\\s+)?(?:paying|pay|spending)\\s+(?:for|on)\\s+' + MODELS + '$', 'i').test(s)) {
-    return { toolName: 'models.spend', args: { model: '@cf/deepseek-ai/deepseek-v4-flash-0731', cost: { amount: 0, currency: 'USD' }, per: 'month' } };
+    return { toolName: 'models.spend', args: { model: PAID_MODEL, cost: { amount: 0, currency: 'USD' }, per: 'month' } };
   }
   if ((m = s.match(new RegExp('^(?:pay|send)\\s+' + COST + '\\s+to\\s+(.+)$', 'i'))) || (m = s.match(new RegExp('^pay\\s+(.+?)\\s+' + COST + '$', 'i')))) {
     const costFirst = /^\s*[$\u20ac\u00a3\d]/.test(m[1]);
