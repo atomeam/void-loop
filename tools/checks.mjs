@@ -33,6 +33,7 @@ for (const [name, file] of [
   ['bench-load', 'bench-load.test.mjs'],
   ['merge-main', 'merge-main.test.mjs'],
   ['prepush', 'prepush.test.mjs'],
+  ['astro', 'astro.test.mjs'],
   ['take', 'take.test.mjs'],
   ['sorry', 'sorry.test.mjs'],
   ['voice', 'voice.test.mjs'],
