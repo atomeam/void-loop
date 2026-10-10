@@ -1027,28 +1027,35 @@ try {
       post && del && /^Bearer owner-k$/.test(post.a) && rec.kind === 'note' && rec.summary === 'I prefer tabs over spaces' && del.u === '?id=' + rec.id && /Remembered: I prefer tabs over spaces/.test(said1) && /Forgotten: I prefer tabs over spaces/.test(said2) && !K.errors.length,
       JSON.stringify({ calls, errs: K.errors }));
     await K.ctx.close(); }
-  // a world that keeps living while you are away (advance in skills/scripts.js): summon a cloud and a flower, leave for an hour (the saved time is
-  // faked back), come back, and one line says what happened; a quick reload says nothing. three.js is stubbed as in the article check above.
+  // a world that keeps living while you are away (advance in skills/scripts.js): summon a cloud, a flower, a zombie and a brain, leave for an hour (the
+  // saved time is faked back; the figures are put where they last stood, the flower under the cloud's rain and the zombie some way from the brain),
+  // come back, and one line says what happened where a visitor sees it (#away-note, which a failing 3D layer cannot overwrite); a quick reload says nothing.
+  // three.js is stubbed as in the article check above.
   { const W = await fresh(); const figSrcW = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
     const namesW = Array.from(new Set(Array.from(figSrcW.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBW = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + namesW.map((n) => n + '=U').join(',') + ';';
     await W.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBW }));
-    await W.ask('summon a cloud', 1500); await W.ask('summon a flower', 1500);
+    for (const a of ['summon a cloud', 'summon a flower', 'summon a zombie', 'summon a brain']) await W.ask(a, 1500);
     const kept = await W.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'figure').map((t) => t.kindOf).sort().join(','));
     await W.p.close();
     const errsW = [];
-    await W.ctx.addInitScript(() => { try { if (!sessionStorage.getItem('away-faked')) { sessionStorage.setItem('away-faked', '1'); localStorage.setItem('a2m.void.away.v1', String(Date.now() - 36e5)); } } catch (_) {} }); // once, in the next page that opens
+    await W.ctx.addInitScript(() => { try { if (sessionStorage.getItem('away-faked')) return; sessionStorage.setItem('away-faked', '1');
+      const st = JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}'), where = { cloud: [300, 100], flower: [310, 250], zombie: [100, 300], brain: [500, 300] };
+      for (const t of Object.values(st)) if (t.kind === 'figure' && where[t.kindOf]) t.at = { x: where[t.kindOf][0], y: where[t.kindOf][1] };
+      localStorage.setItem('a2m.void.state.v1', JSON.stringify(st)); localStorage.setItem('a2m.void.away.v1', String(Date.now() - 36e5)); } catch (_) {} }); // once, in the next page that opens
     const back = await W.ctx.newPage(); back.on('pageerror', (e) => errsW.push(String(e && e.message || e)));
     await back.goto(base); await back.waitForTimeout(1500);
     const away = await back.evaluate(() => window.__voidAway || null);
-    const whisper = await back.evaluate(() => (document.getElementById('whisper') || {}).textContent || '');
-    const natured = await back.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.nature).length);
-    check('away: a cloud and a flower summoned, an hour gone: the page comes back with "While you were away (1 hour): the cloud rained" and both carry their moved-on state',
-      kept === 'cloud,flower' && away && /^While you were away \(1 hour\): /.test(away.note) && /the cloud rained/.test(away.note) && Math.abs(away.ms - 36e5) < 60e3 && natured === 2 && !errsW.length,
-      JSON.stringify({ kept, away, whisper, natured, errsW }));
+    const line = await back.evaluate(() => (document.getElementById('away-note') || {}).textContent || '');
+    const left = await back.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'figure').map((t) => ({ k: t.kindOf, at: t.at, grow: t.nature && t.nature.grow })));
+    const flower = left.find((t) => t.k === 'flower'), zombie = left.find((t) => t.k === 'zombie');
+    check('away: a cloud, a flower, a zombie and a brain left for an hour: the line says "the cloud rained, the flower grew, the zombie found the brain", the brain is gone, the zombie stands where it was, the flower grew',
+      kept === 'brain,cloud,flower,zombie' && away && away.note === 'While you were away (1 hour): the cloud rained, the flower grew, the zombie found the brain.' && line === away.note && Math.abs(away.ms - 36e5) < 60e3
+      && !left.some((t) => t.k === 'brain') && zombie && Math.hypot(zombie.at.x - 500, zombie.at.y - 300) < 3 && flower && flower.grow > 0.5 && !errsW.length,
+      JSON.stringify({ kept, away, line, left, errsW }));
     await back.reload(); await back.waitForTimeout(800);
-    check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway), '');
+    check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway && !(document.getElementById('away-note') || {}).textContent), '');
     await W.ctx.close(); }
   { const G = await fresh(); let n = 0;
     await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
