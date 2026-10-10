@@ -43,6 +43,23 @@ export function lookFor(kind, seed) {
   const color = '#' + [r1, g1, b1].map((c) => Math.round((c + m) * 255).toString(16).padStart(2, '0')).join('');
   return { color, size: +(0.8 + r() * 0.42).toFixed(3), wide: +(0.84 + r() * 0.32).toFixed(3), tall: +(0.86 + r() * 0.3).toFixed(3), pace: +(0.8 + r() * 0.45).toFixed(3) };
 }
+// Ringer's marbles (skills/ringer.js, mini/ringer.js): real kinds of glass marble, each an individual from the game's seed
+// and its place in the cross, so the same game always looks the same and a new game brings new marbles. A cat's eye has a
+// clear body with three coloured vanes; a swirl a tinted body with ribbons; a clearie is plain tinted glass; the shooter is
+// a milky agate, bigger and more worn (it is the one that gets knocked about). Chips and scuffs are real wear: roughness.
+const MARBLE_KINDS = ['cats-eye', 'cats-eye', 'swirl', 'swirl', 'clearie'];
+const VANES = ['#d8262f', '#f28c1c', '#f2c94c', '#2f9e44', '#1c7ed6', '#5f3dc4', '#e8e8e8', '#0b7285'];
+const TINTS = ['#e9f4f7', '#d9f2e3', '#dfe8fb', '#f5ecd9', '#cfe6ea', '#e6dcf2'];
+export function marbleLook(seed, id) {
+  let a = ((seed >>> 0) ^ Math.imul((id >>> 0) + 1, 0x9e3779b1)) >>> 0;
+  const r = () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  const pick = (list) => list[Math.floor(r() * list.length)];
+  if (id === 0) return { kind: 'agate', glass: pick(['#c9b8a3', '#b9c4cc', '#d6c3b0']), vanes: [pick(['#7a4a2a', '#5a6470', '#8a3b2f'])], clarity: 0.12, wear: +(0.35 + r() * 0.3).toFixed(3), twist: +(r() * 6.283).toFixed(3) };
+  const kind = pick(MARBLE_KINDS), n = kind === 'clearie' ? 0 : kind === 'cats-eye' ? 3 : 2;
+  const vanes = Array.from({ length: n }, () => pick(VANES));
+  return { kind, glass: pick(TINTS), vanes, clarity: +(kind === 'swirl' ? 0.55 + r() * 0.2 : 0.85 + r() * 0.12).toFixed(3), wear: +(r() * 0.25).toFixed(3), twist: +(r() * 6.283).toFixed(3) };
+}
+
 const CLONE = /^(?:please\s+)?(?:clone|copy|duplicate|twin)\s+(?:it|that|this|him|her|them|(?:the|that|this|my)\s+([a-z]+(?:\s[a-z]+)?))$|^(?:make|give\s+me)\s+(?:a\s+)?(?:copy|clone|twin)\s+of\s+(?:it|that|(?:the|that|my)\s+([a-z]+(?:\s[a-z]+)?))$/;
 
 export function natureSummon(t) {

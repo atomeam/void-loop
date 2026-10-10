@@ -5548,5 +5548,11 @@
   {"ask": "play tic tac toe with void", "want": "skill:tictactoe"},
   {"ask": "tic tac toe against void", "want": "skill:tictactoe"},
   {"ask": "play noughts and crosses", "want": "skill:tictactoe"},
-  {"ask": "i want to play tic tac toe against the computer", "want": "skill:tictactoe"}
+  {"ask": "i want to play tic tac toe against the computer", "want": "skill:tictactoe"},
+  {"ask": "play marbles", "want": "skill:ringer"},
+  {"ask": "marbles", "want": "skill:ringer"},
+  {"ask": "shoot marbles", "want": "skill:ringer"},
+  {"ask": "ringer", "want": "skill:ringer"},
+  {"ask": "let's play marbles", "want": "skill:ringer"},
+  {"ask": "play ringer", "want": "skill:ringer"}
 ]
