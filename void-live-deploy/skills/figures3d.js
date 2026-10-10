@@ -887,8 +887,22 @@ export function removeFigures(ids) {
   requestRender();
   return n;
 }
-/** Where every figure is and the live conditions it has ({ id: { x, y, nature } }), so the page can keep them for the next visit (and advance() can carry on from there). */
-export function world() { const out = {}; for (const [id, f] of figures) if (!f.leaving) out[id] = { x: Math.round(f.brain.x), y: Math.round(f.brain.y), nature: f.nature ? { ...f.nature } : null }; return out; }
+/** Where every figure is and the live conditions it has ({ id: { x, y, nature, adv } }), so the page can keep them for the next visit (and advance() can carry on from there). */
+export function world() { const out = {}; for (const [id, f] of figures) if (!f.leaving) out[id] = { x: Math.round(f.brain.x), y: Math.round(f.brain.y), nature: f.nature ? { ...f.nature } : null, adv: f.advSeen || null }; return out; }
+/** Write a world snapshot onto the stage things ({ id: thing }): each figure's own place (`at`) and live conditions. A thing advance() has just moved
+ *  (its `adv` stamp) keeps advance's place until the 3D layer has taken it (w.adv matches). Returns how many places were written. */
+export function foldWorld(things, snap) {
+  let n = 0;
+  for (const [id, w] of Object.entries(snap || {})) {
+    const t = things && things[id]; if (!t || !w) continue;
+    if (t.adv && w.adv !== t.adv) continue;
+    if (Number.isFinite(w.x) && Number.isFinite(w.y)) { t.at = { x: w.x, y: w.y }; n += 1; }
+    if (w.nature) t.nature = w.nature;
+  }
+  return n;
+}
+/** The page's own save path calls this, so where each figure stands is kept as often as the scene itself is saved, not only when the tab hides. */
+export function keepPlaces(things) { return foldWorld(things, world()); }
 export async function syncFigures(list) {
   desired = (list || []).map((t) => ({ id: t.id, body: t.body || 'sprite', color: t.color || null, prop: t.prop || null, line: t.line || null, script: t.script || null, title: t.title || null, x: t.at ? t.at.x : t.sx, y: t.at ? t.at.y : t.sy, adv: t.adv || null, seed: t.seed ?? null, kindOf: t.kindOf || null, size: t.size || null, wide: t.wide || null, tall: t.tall || null, pace: t.pace || null, nature: t.nature || null }));
   if (!desired.length && !stage) return;
@@ -899,7 +913,7 @@ export async function syncFigures(list) {
     const f = figures.get(d.id);
     if (f && f.leaving) { disposeFigure(f); figures.delete(d.id); }
     if (!figures.has(d.id)) { const v = d.size ? {} : variation(d.seed ?? hashId(d.id)); // every figure is an individual, even ones summoned without a look
-      await addFigure({ id: d.id, body: d.body, color: d.color || undefined, prop: d.prop || undefined, line: d.line || undefined, script: d.script || undefined, title: d.title || undefined, size: d.size || v.size, wide: d.wide || v.wide, tall: d.tall || v.tall, pace: d.pace || v.pace, seed: d.seed ?? undefined, kindOf: d.kindOf || undefined, nature: d.nature || undefined });
+      await addFigure({ id: d.id, body: d.body, color: d.color || undefined, prop: d.prop || undefined, line: d.line || undefined, script: d.script || undefined, title: d.title || undefined, size: d.size || v.size, wide: d.wide || v.wide, tall: d.tall || v.tall, pace: d.pace || v.pace, seed: d.seed ?? undefined, kindOf: d.kindOf || undefined, nature: d.nature || undefined, x: d.x == null ? undefined : Math.max(0, Math.min(innerWidth, d.x)), y: d.y == null ? undefined : Math.max(0, Math.min(innerHeight, d.y)) }); // x, y: where it was last left (kept on the screen it is on now)
       const born = figures.get(d.id); if (born) born.advSeen = d.adv; } // already placed from where it was left: nothing more to apply
     else {
       if (d.adv && d.adv !== f.advSeen) { // the world moved on while you were away (advance in scripts.js): take its state and its place
