@@ -1010,13 +1010,24 @@ Object.values(things).forEach((th) => {
       m = t.replace(/[.!]+$/, '').match(/^(?:click|press|tap)\s+(?:the\s+)?["“']?(.+?)["”']?(?:\s+button)?$/i);
       return m ? { action: 'click', label: m[1].trim(), text: '' } : null;
     }
+    // a short run: two or three steps, split at ";" or "then" only where a new step starts (a ";" in the text to fill stays in it) ("fill Reply with Hi; click Save", "… then click Save")
+    function stepsOf(text) {
+      const parts = String(text || '').trim().split(/(?:\s*;\s*|,?\s+(?:and\s+)?then\s+)(?=(?:fill|type into|put into|click|press|tap)\s)/i).filter((x) => x.trim());
+      if (parts.length > 3) return 'too-many';
+      const steps = parts.map(stepOf);
+      return steps.length && steps.every(Boolean) ? steps : null;
+    }
     const ACT_WHY = { 'not-allowed': 'that site is not on your list: add it under “sites Void may act on” below, then ask again', 'said-no': 'you said no · nothing changed · recorded',
       'no-record': 'no record, no action: unlock Void as the owner first, then ask again', 'not-found': 'no field or button with that label on the page',
       ambiguous: 'more than one thing on the page has that label: name it more exactly', submits: 'that button sends its form: press it yourself',
       'no-access': 'that tab moved on or closed: press Alt+Shift+V there again', 'no-tab': 'point Void at the page first: Alt+Shift+V there', busy: 'one step at a time: answer the open card first',
-      'bad-step': 'say it as “fill <field> with <text>” or “click <button>”' };
-    const actSaid = (m) => (m && m.ok ? (m.did === 'clicked' ? 'clicked' : 'filled') + ' it on ' + (m.host || 'the page') + ' · recorded · you send it yourself' : ACT_WHY[(m && m.why) || ''] || "couldn't do that step");
-    function extPropose(step) { if (!ext.on) return false; extSend({ type: 'void-ext:propose', step }); return true; }
+      'bad-step': 'say it as “fill <field> with <text>” or “click <button>”', 'too-many': 'three steps at most: split the rest into another run' };
+    const actSaid = (m) => {
+      if (m && m.of > 1) return m.ok ? 'all ' + m.of + ' steps done on ' + (m.host || 'the page') + ' · recorded · you send it yourself'
+        : 'stopped at step ' + m.at + ' of ' + m.of + ' (' + (m.done ? m.done + ' done before it' : 'nothing done') + '; nothing after it ran): ' + (ACT_WHY[m.why || ''] || "couldn't do that step");
+      return m && m.ok ? (m.did === 'clicked' ? 'clicked' : 'filled') + ' it on ' + (m.host || 'the page') + ' · recorded · you send it yourself' : ACT_WHY[(m && m.why) || ''] || "couldn't do that step";
+    };
+    function extPropose(step) { if (!ext.on) return false; extSend(Array.isArray(step) ? (step.length === 1 ? { type: 'void-ext:propose', step: step[0] } : { type: 'void-ext:propose', steps: step }) : { type: 'void-ext:propose', step }); return true; }
     async function extRecord(m) {
       const reply = (r) => extSend({ type: 'void-ext:recorded', id: m.id, ...r });
       const tok = ownerToken();
@@ -1055,7 +1066,7 @@ Object.values(things).forEach((th) => {
           + '<div style="display:flex;gap:8px;align-items:center;margin-top:6px"><button type="button" class="tab-put vcopy">put in the page</button><span class="tab-said" style="color:var(--muted);font-size:12px">'
           + esc(t.field ? 'goes into: ' + (t.field.name || t.field.tag) : 'goes into the box you click on the page') + '</span></div>'
           + '<div class="tab-foot" style="color:var(--muted);font-size:11px;margin-top:6px"></div>'
-          + '<div style="display:flex;gap:6px;margin-top:10px"><input class="tab-step" placeholder="a step for Void: fill Reply with … / click Save" style="flex:1;min-width:0;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:5px 6px;font:inherit"><button type="button" class="tab-propose vcopy">propose</button></div>'
+          + '<div style="display:flex;gap:6px;margin-top:10px"><input class="tab-step" placeholder="a step for Void: fill Reply with … / click Save (up to 3, split by ;)" style="flex:1;min-width:0;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:5px 6px;font:inherit"><button type="button" class="tab-propose vcopy">propose</button></div>'
           + '<div class="tab-act-said" style="color:var(--muted);font-size:12px;margin-top:4px">Void acts only on a site you allowed, and only after your yes in the panel.</div>';
         const put = body.querySelector('.tab-put'), ta = body.querySelector('.tab-draft'), said = body.querySelector('.tab-said'), foot = body.querySelector('.tab-foot');
         const footLine = () => { foot.textContent = ext.sent ? 'Not saved. ' + ext.sent + ' You press send on the page yourself.' : 'Not saved, not sent anywhere. You press send on the page yourself.'; };
@@ -1082,7 +1093,7 @@ Object.values(things).forEach((th) => {
         }));
         const stepIn = body.querySelector('.tab-step'), actSp = body.querySelector('.tab-act-said');
         stepIn.value = ext.stepText || ''; stepIn.addEventListener('input', () => { ext.stepText = stepIn.value; }); // a redraw of the stage keeps what you typed
-        body.querySelector('.tab-propose').addEventListener('click', () => { const st = stepOf(stepIn.value); if (!st) { actSp.textContent = ACT_WHY['bad-step']; return; } actSp.textContent = extPropose(st) ? 'asking you in the panel…' : DRAFT_WHY['no-panel']; });
+        body.querySelector('.tab-propose').addEventListener('click', () => { const st = stepsOf(stepIn.value); if (!Array.isArray(st)) { actSp.textContent = ACT_WHY[st || 'bad-step']; return; } actSp.textContent = extPropose(st) ? 'asking you in the panel…' : DRAFT_WHY['no-panel']; });
       }
       el.appendChild(body);
       body.addEventListener('pointerdown', (e) => { if (e.target.closest('textarea, input, button, blockquote')) e.stopPropagation(); });

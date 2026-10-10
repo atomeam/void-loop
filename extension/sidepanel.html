@@ -13,6 +13,11 @@
     #act .k{color:#9a9aa2;font-size:12px}
     #act .v{margin:2px 0 8px;word-break:break-word}
     #act .row{display:flex;gap:8px}
+    #act .act-steps{margin:0 0 8px;padding-left:20px;color:#9a9aa2}
+    #act .act-steps .now{color:#e8e8ec}
+    #act .act-steps .done::after{content:" · done"}
+    #act .act-steps .failed::after{content:" · refused"}
+    #act .act-steps .no::after{content:" · you said no"}
     button{font:inherit;color:inherit;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:5px 14px;cursor:pointer}
     button.yes{background:#1d3b26;border-color:#2f6b40}
     #sites{border-top:1px solid #222;padding:6px 10px;max-height:40%;overflow:auto}
@@ -26,10 +31,11 @@
   <iframe id="void" src="https://a-to-mind.com/" allow="microphone; clipboard-write; publickey-credentials-get *; publickey-credentials-create *"></iframe>
   <div id="act" role="dialog" aria-label="Void wants to act on this page">
     <div class="k">Void wants to act on</div><div class="v act-site"></div>
-    <div class="k act-what-k">step</div><div class="v act-what"></div>
+    <ol class="act-steps" hidden></ol>
+    <div class="k act-count">step</div><div class="v act-what"></div>
     <div class="k act-text-k">text</div><div class="v act-text"></div>
     <div class="row"><button type="button" class="yes act-yes">Yes, do it</button><button type="button" class="act-no">No</button></div>
-    <div class="k" style="margin-top:8px">One step. It never submits a form or presses Enter; you do that.</div>
+    <div class="k" style="margin-top:8px">One step at a time, a yes for each. It never submits a form or presses Enter; you do that.</div>
   </div>
   <details id="sites">
     <summary>sites Void may act on (<span class="n">0</span>)</summary>
