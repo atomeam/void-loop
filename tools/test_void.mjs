@@ -1103,11 +1103,13 @@ try {
       createOscillator() { const rec = this.rec; return { connect() {}, start() { rec.osc++; }, stop() {}, type: '', frequency: { value: 0, setTargetAtTime() {}, setValueAtTime() {} }, detune: { value: 0 } }; } };`;
     const S = await fresh({ content: fake }); await S.p.waitForTimeout(400);
     const read = () => S.p.evaluate(() => { const d = window.__au.all.find((c) => c.osc > 0), b = document.getElementById('sound'); return { drones: window.__au.all.filter((c) => c.osc > 0).length, osc: d ? d.osc : 0, last: d ? d.master[d.master.length - 1] : null, pressed: b && b.getAttribute('aria-pressed'), label: b && b.getAttribute('aria-label') }; });
+    const hiddenAtFirst = await S.p.evaluate(() => { const b = document.getElementById('sound'); return !!b && b.offsetParent === null; }); // the void is bare on arrival
+    await S.p.mouse.move(40, 40); await S.p.waitForTimeout(100);
     const before = await read(); await S.p.click('#sound'); await S.p.waitForTimeout(400);
     const on = await read(); await S.p.click('#sound'); await S.p.waitForTimeout(200);
     const off = await read(); await S.p.click('#sound'); await S.p.waitForTimeout(200);
     const again = await read();
-    check('sound: off until a tap (no oscillator, a visible speaker button that says so); the tap builds one drone of four voices at a quiet volume; the same button mutes to silence and unmutes without building another', before.osc === 0 && before.pressed === 'false' && /on/i.test(before.label || '')
+    check('sound: off until a tap (no oscillator; the speaker button is not on the bare page and appears with the first move, with a label that says so); the tap builds one drone of four voices at a quiet volume; the same button mutes to silence and unmutes without building another', hiddenAtFirst && before.osc === 0 && before.pressed === 'false' && /on/i.test(before.label || '')
       && on.drones === 1 && on.osc === 4 && on.pressed === 'true' && on.last > 0 && on.last <= 0.06
       && off.pressed === 'false' && off.last === 0 && again.pressed === 'true' && again.drones === 1 && again.osc === 4 && again.last > 0 && !S.errors.length, JSON.stringify({ before, on, off, again, errs: S.errors }));
     await S.ctx.close(); }
