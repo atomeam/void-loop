@@ -2,6 +2,10 @@
 # Only PRs labelled "automerge" from this repository (never forks). Ready = the void-review check clean on the head (seconds),
 # nothing that already finished failed. CodeRabbit is an extra and never blocks. Nothing else is waited on: the full suite runs on main
 # right after the deploy and reverts a commit that fails it (deploy.yml, verify-main). It looks again whenever anything that could change the answer happens, and once an hour.
+# A PR that conflicts with main gets no pull_request runs at all (GitHub skips them), so a labelled one would sit silently forever
+# (2026-10-10). For such a PR the bot merges main into the branch itself (tools/merge-main.mjs from main's checkout settles the
+# append-only records), pushes the merge commit (never forced) and starts Void's review on the new head; a conflict outside those
+# records comes back as one comment on the PR naming the files.
 name: Void automerge
 
 on:
@@ -25,10 +29,10 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write # merge
-  pull-requests: write # mark a draft ready
+  contents: write # merge; push the merge of main to a conflicted PR's branch
+  pull-requests: write # mark a draft ready; the one conflict comment
   checks: read
-  actions: write # start the deploy of main after a merge
+  actions: write # start the deploy of main after a merge; start Void's review on a head the bot pushed
 
 jobs:
   automerge:
@@ -40,8 +44,12 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
-          sparse-checkout: tools
-      - name: Merge what is ready
+          fetch-depth: 0 # merging main into a conflicted PR's branch needs the history on both sides
+      - name: The bot's name on the merge commits it pushes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+      - name: Merge what is ready (and main into what conflicts)
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
