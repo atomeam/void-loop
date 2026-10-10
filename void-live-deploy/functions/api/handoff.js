@@ -83,14 +83,18 @@ export async function onRequest({ request, env }) {
     await env.DB.prepare('INSERT INTO handoff (id, name, author, body, created, job) VALUES (?, ?, ?, ?, ?, ?)').bind(id, name, author, body, now, job).run();
     const link = `${url.origin}/api/handoff?id=${id}&raw=1`;
     if (job) {
-      const row = await env.DB.prepare('SELECT id, state FROM void_queue WHERE target = ? LIMIT 1').bind(job).first().catch(() => null);
+      const row = await env.DB.prepare('SELECT id, state, ask FROM void_queue WHERE target = ? LIMIT 1').bind(job).first().catch(() => null);
       if (!row) return reply({ id, url: link, expires: now + TTL_SECONDS, error: 'job not found: the handoff is stored, nothing was appended' }, 404);
+      // the sender checked against the job: the job's ask names the buyer's domain (lib/sale-jobs.js jobAsk); a reply
+      // from another domain is still kept (people answer from personal addresses), but the owner is told
+      const named = /^serve .+ for ([a-z0-9.-]+):/.exec(String(row.ask || ''));
+      const differs = named && author && author !== named[1] ? ' (sender ' + author + ' differs from the job\'s ' + named[1] + ')' : '';
       let appended = '';
       try {
         const { value } = await track(env, { owner: 'gumroad', kind: 'sale.reply', ref: job + ' from ' + (author || 'unknown') }, async () => {
           await env.DB.prepare("UPDATE void_queue SET ask = substr(ask || ' · reply received: ' || ?, 1, 1500), updated = ? WHERE id = ?")
             .bind(link, new Date().toISOString(), row.id).run();
-          return 'reply received: ' + link + ' appended to job ' + row.id;
+          return 'reply received: ' + link + ' appended to job ' + row.id + differs;
         });
         appended = value;
       } catch (e) { appended = 'job not updated: ' + ((e && e.message) || e); } // the handoff itself is stored either way
