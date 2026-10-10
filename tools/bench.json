@@ -5697,5 +5697,9 @@
   {"ask": "load a 3dgs scan", "want": "skill:splat"},
   {"ask": "open a .splat file", "want": "skill:splat"},
   {"ask": "gaussian splatting viewer", "want": "skill:splat"},
-  {"ask": "view a splat scan", "want": "skill:splat"}
+  {"ask": "view a splat scan", "want": "skill:splat"},
+  {"ask": "what can you print", "want": "skill:inventory"},
+  {"ask": "what can you 3d print?", "want": "skill:inventory"},
+  {"ask": "what can the forge make", "want": "skill:inventory"},
+  {"ask": "list printable things", "want": "skill:inventory"}
 ]

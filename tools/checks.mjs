@@ -70,6 +70,7 @@ for (const [name, file] of [
   ['advance', 'advance.test.mjs'],
   ['gaps', 'gaps.test.mjs'],
   ['sky', 'sky.test.mjs'],
+  ['inventory', 'inventory.test.mjs'],
   ['aurora', 'aurora.test.mjs'],
   ['drone', 'drone.test.mjs'],
   ['cf-scope', 'cf-scope.test.mjs'],
