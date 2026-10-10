@@ -1,0 +1,47 @@
+# Deploy the standalone Workers (email-worker, share-worker) on merge, with a token scoped to Workers Scripts edit
+# only (CLOUDFLARE_WORKERS_TOKEN) — the Pages deploy keeps its own narrower token, and neither can do the other's job.
+# HANDOFF_TOKEN is pushed to void-email as a worker secret from the repo secret of the same name, so the worker can
+# POST a buyer's reply to /api/handoff. Missing secrets skip loudly instead of failing the merge.
+name: deploy workers
+on:
+  push:
+    branches: [main]
+    paths: ['email-worker/**', 'share-worker/**', '.github/workflows/deploy-workers.yml']
+  workflow_dispatch: {}
+permissions: {}
+concurrency: deploy-workers
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_WORKERS_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: token present?
+        id: tok
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::warning title=Workers not deployed::repo secret CLOUDFLARE_WORKERS_TOKEN is not set (a token with only Workers Scripts: Edit). Add it and re-run."
+            echo "have=no" >> "$GITHUB_OUTPUT"
+          else echo "have=yes" >> "$GITHUB_OUTPUT"; fi
+      - name: deploy void-email
+        if: steps.tok.outputs.have == 'yes'
+        run: cd email-worker && npx wrangler@3.114.17 deploy
+      - name: deploy void-share
+        if: steps.tok.outputs.have == 'yes'
+        run: cd share-worker && npx wrangler@3.114.17 deploy
+      - name: give void-email the handoff token
+        if: steps.tok.outputs.have == 'yes'
+        env:
+          HANDOFF_TOKEN: ${{ secrets.HANDOFF_TOKEN }}
+        run: |
+          if [ -z "$HANDOFF_TOKEN" ]; then
+            echo "::warning title=Handoff token not set::repo secret HANDOFF_TOKEN is missing, so void-email can forward mail but cannot post replies to /api/handoff. Add it (the same value as the Pages secret) and re-run."
+          else
+            cd email-worker && printf '%s' "$HANDOFF_TOKEN" | npx wrangler@3.114.17 secret put HANDOFF_TOKEN
+          fi
