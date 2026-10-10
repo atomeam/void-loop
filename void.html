@@ -370,6 +370,12 @@
       font-size: 0.55em; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
       white-space: nowrap; pointer-events: none;
     }
+    /* a world (board: the sky first): a skill's canvas behind the stage while its card is open; it fades in over the void and out again when the card closes */
+    #void-world { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .5s ease; }
+    #void-world.on { opacity: 1; }
+    html.has-world #stage { cursor: grab; touch-action: none; }
+    html.has-world .vpage { max-height: min(58vh, calc(100vh - 140px)); background: linear-gradient(160deg, rgba(10,14,28,0.62), rgba(10,14,28,0.40)); }
+    @media (prefers-reduced-motion: reduce) { #void-world { transition: none; } }
     .vpage {
       position: fixed; left: 50%; top: 46%;
       transform: translate(-50%, -46%) scale(0.98);
@@ -3310,9 +3316,59 @@ return { ok: true, detail: 'timer-reset' };
 
     // summoned page: a calm floating page; ephemeral, not saved
     let vpageEl = null;
+    // ---- Worlds: a card can own the stage's background while it is open. api.world(card, factory) -> instance (or null).
+    // factory({ canvas, reduced, lowPower }) returns { start(), destroy(), resize(), drag(dx, dy), zoom(factor), tap(x, y) -> true when it landed on something }.
+    // The canvas sits under the stage and the card (z-index 0, after the void's own layers, so it covers them); it fades in, and when the card
+    // closes it fades out and is removed, which leaves the void exactly as it was. Reduced motion: no fade (CSS), and the world is told to hold still.
+    let worldCur = null;
+    const lowPowerNow = () => { try { const c = navigator.connection; return !!((c && c.saveData) || (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2)); } catch (_) { return false; } };
+    function closeWorld(now) {
+      const w = worldCur; if (!w) return false; worldCur = null;
+      document.documentElement.classList.remove('has-world'); w.canvas.classList.remove('on');
+      window.removeEventListener('resize', w.onResize);
+      const gone = () => { try { w.inst && w.inst.destroy && w.inst.destroy(); } catch (_) {} w.canvas.remove(); };
+      if (now) gone(); else setTimeout(gone, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 520);
+      return true;
+    }
+    function openWorld(card, factory) {
+      if (vpageEl !== card || typeof factory !== 'function') return null;
+      closeWorld(true);
+      const canvas = document.createElement('canvas'); canvas.id = 'void-world'; canvas.setAttribute('aria-hidden', 'true');
+      document.body.insertBefore(canvas, stage);
+      let inst = null;
+      try { inst = factory({ canvas, reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches, lowPower: lowPowerNow() }); } catch (e) { console.error('[Void] world failed:', e && e.message); }
+      if (!inst) { canvas.remove(); return null; }
+      const w = { card, canvas, inst, onResize: () => { try { inst.resize && inst.resize(); } catch (_) {} } };
+      worldCur = w; window.addEventListener('resize', w.onResize);
+      window.__voidWorld = () => (worldCur ? worldCur.inst : null); // for the tests: the world that owns the stage right now
+      document.documentElement.classList.add('has-world');
+      try { inst.start && inst.start(); } catch (e) { console.error('[Void] world start failed:', e && e.message); }
+      requestAnimationFrame(() => canvas.classList.add('on'));
+      return inst;
+    }
+    // a drag on the empty stage looks around the world, two fingers zoom it, a tap lands on something or (on nothing) dismisses the card as before
+    function worldGesture(e) {
+      const w = worldCur; if (!w || !w.inst) return;
+      const pts = new Map([[e.pointerId, { x: e.clientX, y: e.clientY }]]); let moved = false, pinch = 0;
+      const move = (ev) => {
+        const p = pts.get(ev.pointerId); if (!p) return;
+        const dx = ev.clientX - p.x, dy = ev.clientY - p.y; p.x = ev.clientX; p.y = ev.clientY;
+        if (pts.size >= 2) { const [a, b] = [...pts.values()], d = Math.hypot(a.x - b.x, a.y - b.y); if (pinch && d > 0) w.inst.zoom && w.inst.zoom(pinch / d); pinch = d; moved = true; return; }
+        if (!moved && Math.hypot(ev.clientX - e.clientX, ev.clientY - e.clientY) < 6) return;
+        moved = true; w.inst.drag && w.inst.drag(dx, dy);
+      };
+      const down = (ev) => { if (ev.target === stage) { pts.set(ev.pointerId, { x: ev.clientX, y: ev.clientY }); pinch = 0; } };
+      const up = (ev) => {
+        pts.delete(ev.pointerId); if (pts.size) return; w.gesture = false;
+        window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); stage.removeEventListener('pointerdown', down);
+        if (!moved && ev.type === 'pointerup') { let hit = false; try { hit = !!(w.inst.tap && w.inst.tap(ev.clientX, ev.clientY)); } catch (_) {} if (!hit) closePage(); }
+      };
+      window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up); stage.addEventListener('pointerdown', down);
+    }
+    stage.addEventListener('wheel', (e) => { if (e.target === stage && worldCur && worldCur.inst && worldCur.inst.zoom) { e.preventDefault(); worldCur.inst.zoom(e.deltaY > 0 ? 1.1 : 0.9); } }, { passive: false });
     function closePage() {
       if (!vpageEl) return false;
-      const el = vpageEl; vpageEl = null;
+      const el = vpageEl; vpageEl = null; closeWorld();
       if (el._slogan && el._slogan.parentNode) el._slogan.parentNode.removeChild(el._slogan);
       el._slogan = null;
       document.querySelectorAll('.vslogan').forEach((n) => n.remove());
@@ -3699,7 +3755,7 @@ return { ok: true, detail: 'timer-reset' };
         fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback }), keepalive: true }).catch(() => {});
       } catch (_) {}
     }
-    stage.addEventListener('pointerdown', (e) => { if (e.target === stage) closePage(); });
+    stage.addEventListener('pointerdown', (e) => { if (e.target !== stage) return; if (worldCur && worldCur.inst) { if (!worldCur.gesture) { worldCur.gesture = true; worldGesture(e); } } else closePage(); });
 
     // weather page (Open-Meteo, no key)
     const WX = {0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',56:'Freezing drizzle',57:'Freezing drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Showers',81:'Showers',82:'Heavy showers',85:'Snow showers',86:'Snow showers',95:'Thunderstorm',96:'Thunderstorm, hail',99:'Thunderstorm, hail'};
@@ -4984,6 +5040,7 @@ return { ok: true, detail: 'timer-reset' };
             reportMiss,
             loopLog,
             _pageStill: (el) => vpageEl === el,
+            world: openWorld,
             summon: summonThing,
             stage: stageApi,
             refreshThings: () => render(), // the 3D calendar redraws the stage card after an edit

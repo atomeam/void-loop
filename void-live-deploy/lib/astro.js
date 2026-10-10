@@ -140,6 +140,21 @@ export function riseSet(body, dayStart, lat, lon) {
   return out;
 }
 
+// every crossing of the horizon between two times: [{ t: Date, type: 'rise' | 'set' }], oldest first (ten-minute steps, then bisection)
+export function crossings(body, from, to, lat, lon) {
+  const h0 = body === 'moon' ? 0.125 : -0.833, out = [];
+  const alt = (x) => (body === 'moon' ? moonHor(x, lat, lon).alt : sunHor(x, lat, lon).alt) - h0;
+  let a = ms(from), fa = alt(a); const end = ms(to);
+  while (a < end) {
+    const b = Math.min(a + 600000, end), fb = alt(b);
+    if ((fa < 0) !== (fb < 0)) {
+      let lo = a, hi = b; for (let k = 0; k < 30; k++) { const mid = (lo + hi) / 2; if ((alt(mid) < 0) === (fa < 0)) lo = mid; else hi = mid; }
+      out.push({ t: new Date((lo + hi) / 2), type: fb >= 0 ? 'rise' : 'set' });
+    }
+    a = b; fa = fb;
+  }
+  return out;
+}
 // the sky's colour from the sun's altitude: [zenith, horizon] as rgb arrays, blending through twilight to night
 const STOPS = [
   [-18, [3, 5, 16], [6, 9, 26]], [-12, [8, 14, 42], [28, 36, 78]], [-6, [24, 40, 96], [214, 120, 98]], [-1, [58, 96, 168], [244, 168, 112]],

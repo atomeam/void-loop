@@ -281,7 +281,7 @@
   },
   {
     "ask": "what is the moon phase tonight",
-    "want": "skill:util"
+    "want": "skill:moontonight"
   },
   {
     "ask": "how many mb in a gb",
@@ -1208,7 +1208,7 @@
   },
   {
     "ask": "what phase is the moon",
-    "want": "skill:util"
+    "want": "skill:moontonight"
   },
   {
     "ask": "how do you say thank you in japanese",
@@ -2188,7 +2188,7 @@
   },
   {
     "ask": "what is the moon phase",
-    "want": "skill:util"
+    "want": "skill:moontonight"
   },
   {
     "ask": "emoji for happy",
@@ -2200,7 +2200,7 @@
   },
   {
     "ask": "is it a full moon tonight",
-    "want": "skill:util"
+    "want": "skill:moontonight"
   },
   {
     "ask": "what season is it",
@@ -3848,7 +3848,7 @@
   },
   {
     "ask": "when is the next full moon",
-    "want": "skill:util|calc",
+    "want": "skill:moontonight",
     "says": "\\d"
   },
   {
@@ -5522,7 +5522,7 @@
   {"ask": "mystery moon", "want": "skill:moon"},
   {"ask": "moon phases", "want": "skill:moon"},
   {"ask": "explain tonight's moon", "want": "skill:moon"},
-  {"ask": "moon phase tonight", "want": "skill:util"},
+  {"ask": "moon phase tonight", "want": "skill:moontonight"},
   {"ask": "my automations", "want": "skill:automations"},
   {"ask": "show my automations", "want": "skill:automations"},
   {"ask": "automations", "want": "skill:automations"},

@@ -68,7 +68,7 @@ export function utilOf(text) {
   // "this" is filler ("uppercase this: hello") only when typed as a word, not when it is part of the text ("lowercase THIS IS LOUD")
   if (m) { const f = t.match(/^\S+(?:\s+case)?\s*:?\s+(this:?\s+)/i); if (f && f[1].trim().replace(/:$/, '') !== 'this') m[2] = f[1] + m[2]; }
   if (m && !/^(the\s+)?(list|timer|clock|note|sticky)\b/i.test(m[2]) && !/^(?:\d+(?:\.\d+)?\s*)?(?:percentage|percent|%)/i.test(m[2])) return { kind: 'case', how: m[1].toLowerCase(), s: m[2] }; // "reverse percentage ..." is maths
-  if (/^(?:what(?:'s| is)\s+)?(?:the\s+)?moon\s+phase(?:\s+(?:tonight|today|now))?$|^(?:what\s+)?phase\s+(?:is\s+)?(?:of\s+)?the\s+moon(?:\s+in)?(?:\s+(?:tonight|today|now))?$|^is\s+it\s+a\s+full\s+moon(?:\s+tonight)?$|^when\s+is\s+the\s+next\s+(?:full|new)\s+moon$|^next\s+full\s+moon$/.test(l)) return { kind: 'moon' };
+  // the moon (phase, next full and new) is skills/moontonight.js now: lib/astro.js, good to minutes; the mean-cycle sum below was off by hours
   m = l.match(/^(?:give\s+me\s+)?(?:some\s+|(\d{1,2})\s+paragraphs?\s+(?:of\s+)?)?(?:lorem\s+ipsum|placeholder\s+text|dummy\s+text)(?:\s+(\d{1,2})\s+paragraphs?)?$/);
   if (m) return { kind: 'lorem', n: Math.max(1, Math.min(10, +(m[1] || m[2]) || 1)) };
   return null;
@@ -80,7 +80,7 @@ function hex(c) { c = NAMED[c] || c; c = c.replace('#', ''); if (c.length === 3)
 function hsl(h) { const r = parseInt(h.slice(1, 3), 16) / 255, g = parseInt(h.slice(3, 5), 16) / 255, b = parseInt(h.slice(5, 7), 16) / 255; const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn; let H = 0;
   if (d) H = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4; H = Math.round(H * 60 + 360) % 360; const L = (mx + mn) / 2, S = d ? d / (1 - Math.abs(2 * L - 1)) : 0;
   return { r: Math.round(r * 255), g: Math.round(g * 255), b: Math.round(b * 255), h: H, s: Math.round(S * 100), l: Math.round(L * 100) }; }
-export function moonPhase(d = new Date()) { // days since a known new moon (2000-01-06 18:14 UTC), mean synodic month
+export function moonPhase(d = new Date()) { // kept for the explainer's test (tools/explainers.test.mjs); the moon skill uses lib/astro.js. Days since a known new moon (2000-01-06 18:14 UTC), mean synodic month
   const syn = 29.530588853, age = ((d.getTime() - Date.UTC(2000, 0, 6, 18, 14)) / 864e5 % syn + syn) % syn, f = age / syn;
   const names = ['New moon', 'Waxing crescent', 'First quarter', 'Waxing gibbous', 'Full moon', 'Waning gibbous', 'Last quarter', 'Waning crescent'];
   return { age, name: names[Math.floor(f * 8 + 0.5) % 8], lit: Math.round((1 - Math.cos(2 * Math.PI * f)) / 2 * 100), nextFull: new Date(d.getTime() + ((syn / 2 - age + syn) % syn) * 864e5) };
@@ -138,9 +138,6 @@ async function run(text, api) {
   } else if (q.kind === 'textbin') {
     const bin = Array.from(new TextEncoder().encode(q.s)).map((b) => b.toString(2).padStart(8, '0')).join(' ');
     el = showPage((p) => { p.innerHTML = '<h2>In binary</h2>' + big(bin, 20) + copyBtn + '<p style="color:#8a8a8a">“' + esc(q.s) + '” as 8-bit UTF-8 bytes</p>'; });
-  } else if (q.kind === 'moon') {
-    const m = moonPhase();
-    el = showPage((p) => { p.innerHTML = '<h2>The moon</h2>' + big(m.name, 44) + '<p style="color:#8a8a8a">' + m.lit + '% lit · ' + m.age.toFixed(1) + ' days into its cycle · next full moon ' + esc(m.nextFull.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' })) + '</p><div class="sub">worked out from the mean lunar cycle; within about a day</div>'; });
   } else if (q.kind === 'lorem') {
     el = showPage((p) => { p.innerHTML = '<h2>Lorem ipsum</h2><div class="util-out">' + Array.from({ length: q.n || 1 }, () => '<p>' + esc(LOREM) + '</p>').join('\n\n') + '</div>' + copyBtn; });
   }
@@ -150,8 +147,8 @@ async function run(text, api) {
 }
 export default {
   name: 'util',
-  examples: ['generate a password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'moon phase tonight'],
-  nearMisses: ['what is a palindrome', 'reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of'],
+  examples: ['generate a password', 'qr code for a-to-mind.com', 'what color is #ff8800', 'word count of hello world', 'lorem ipsum'],
+  nearMisses: ['what is a palindrome', 'reset my password', 'what is a qr code', 'make my void blue', 'what is the moon made of', 'moon phase tonight'],
   match(lower, text) { return !!utilOf(text); },
   run
 };
