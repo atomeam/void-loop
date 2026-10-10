@@ -51,6 +51,7 @@ for (const [name, file] of [
   ['sky-math', 'sky-math.test.mjs'],
   ['misses-snapshot', 'misses-snapshot.test.mjs'],
   ['night-sky', 'night-sky.test.mjs'],
+  ['sky-card', 'sky-card.test.mjs'],
   ['learn', 'learn.test.mjs'],
   ['learn-draft', 'learn-draft.test.mjs'],
   ['learn-e2e', 'learn.e2e.test.mjs'],
