@@ -16,6 +16,7 @@ export const LIMITS = {
   routes: { rpm: 30, body: 0 }, // owner-only: the router's decisions (GET)
   earnings: { rpm: 30, body: 0 },
   queue: { rpm: 60, body: 4000 },
+  bench: { rpm: 30, body: 400 }, // owner-only model bake-off chunks (functions/api/bench.js): 8 asks a call
   share: { rpm: 30, body: 200 }, // invites (POST, a signed-in member) and joining one (a WebSocket per tab)
   approval: { rpm: 60, body: 8000 },
   will: { rpm: 60, body: 64000 },
