@@ -117,3 +117,10 @@ test('a member\'s machine-pushed projects (Ouroboros, by Void key) answer throug
   assert.equal(b.told, undefined); assert.ok(!/loginpage/.test(lastUser(calls)), 'another member never sees it');
 });
 test.after(() => { globalThis.fetch = realFetch; });
+
+test('a visitor\'s ask (no bearer) never reaches D1 for what they told Void: no tables made, no lookup', async () => {
+  const DB = d1();
+  const r = await answerApi.toldMe(new Request('https://a-to-mind.com/api/answer', { method: 'POST' }), { DB, READ_TOKEN: TOKEN }, 'why is the sky blue');
+  assert.equal(r, null);
+  assert.deepEqual(DB.seen, [], 'not one statement: ' + DB.seen.join(' | '));
+});
