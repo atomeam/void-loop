@@ -125,7 +125,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** the moment someone brings a friend in, it stops being a site and becomes a place.
 - **First piece:** one Durable Object that relays stage changes between two tabs, with the second visitor's cursor shown as a presence.
 - **Done when:** two browsers on one invite link see each other's summons and moves within a second; closing the link ends the share.
-- **claim:**
+- **claim:** claude 2026-10-10: the first piece (one Durable Object that relays stage changes between two tabs, the second visitor's cursor shown as a presence), invite links made by a signed-in member.
 
 ## 12. Paste anything, get a better version
 - **What:** paste a URL or drop a file and Void rebuilds it as a living thing in the void: a PDF becomes a card you can ask questions of, a site becomes a dissected blueprint (its sections, its claims, what it gets wrong, sourced). (Not `tools/void_lens.py`, the disk scanner; pick another name.)
