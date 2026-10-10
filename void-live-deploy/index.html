@@ -981,6 +981,16 @@ Object.values(things).forEach((th) => {
         extSend({ type: 'void-ext:draft', id, text: String(text) });
       });
     }
+    // "draft for me: proposal": the panel reads the thread text of the tab you pointed Void at, now, once (extension/page.js voidReadThread)
+    function extThread() {
+      return new Promise((resolve) => {
+        if (!ext.on) return resolve({ ok: false, why: 'no-panel' });
+        if (!ext.tab) return resolve({ ok: false, why: 'no-tab' });
+        const id = ++ext.seq; ext.waiting[id] = resolve;
+        setTimeout(() => { if (ext.waiting[id]) { delete ext.waiting[id]; resolve({ ok: false, why: 'no-reply' }); } }, 5000);
+        extSend({ type: 'void-ext:thread', id });
+      });
+    }
     const DRAFT_WHY = { 'no-panel': 'open Void in its side panel to draft into a page', 'no-tab': 'point Void at the page first: Alt+Shift+V there',
       'no-field': 'click into the box on the page first, then try again', 'no-access': 'that tab moved on or closed: press Alt+Shift+V there again' };
     const draftSaid = (r) => (r && r.ok ? 'in the page · nothing was sent' : DRAFT_WHY[(r && r.why) || ''] || "couldn't put it in the page");
@@ -1000,7 +1010,7 @@ Object.values(things).forEach((th) => {
         ext.draft = ''; ext.sent = '';
         selectedId = th.id; save(); render();
         say('read the tab · it stays in this browser');
-      } else if (m.type === 'void-ext:drafted' && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
+      } else if ((m.type === 'void-ext:drafted' || m.type === 'void-ext:threaded') && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
       else if (m.type === 'void-ext:record') extRecord(m); // B3: the panel asks Void to write the step's execution record
       else if (m.type === 'void-ext:acted' && !(m.auto && m.why === 'not-allowed')) { const t = actSaid(m); say(t); const sp = document.querySelector('.tab-act-said'); if (sp) sp.textContent = t; } // a proposal Void made itself, off the list, stays silent
     });
@@ -1044,6 +1054,24 @@ Object.values(things).forEach((th) => {
         reply(r.ok ? { ok: true, recordId: j.id, state: j.state } : { ok: false, why: j.error || 'HTTP ' + r.status });
       } catch (_) { reply({ ok: false, why: 'offline' }); }
     }
+    // A customer email becomes a proposal in your reply box, after your yes: the thread you are reading (read now, sent once to
+    // /api/answer mode proposal, not kept) drafts the proposal card (skills/proposal.js), and on a site on your allow list Void
+    // proposes "fill <the box you were in> with <the proposal as plain text>" as the same B3 card, Yes / No and record. You send.
+    // Off the list the proposal stays in its card (copy, download), and nothing is said about acting.
+    async function proposalFromTab(tab, said, footLine) {
+      said.textContent = 'reading the thread…';
+      const r = await extThread();
+      if (!r.ok || !r.text) { said.textContent = r.why === 'no-text' ? 'no text on this page to draft from' : DRAFT_WHY[r.why || ''] || "couldn't read the thread: press Alt+Shift+V there again"; return; }
+      said.textContent = 'asking Void for a proposal…';
+      let d = null, L = null;
+      try { await skillsReady; const P = await import('/skills/proposal.js'); L = await import('/lib/proposal.js'); d = await P.draft(r.text); } catch (e) { said.textContent = (e && e.message) || 'Void couldn’t draft just now'; return; }
+      ext.sent = 'The text of this thread was sent to a-to-mind.com for a proposal draft · not kept there.'; footLine();
+      // the card keeps the drafted proposal (yours to edit), never the thread itself
+      const th = summonThing('proposal', { center: true, fields: d.fields, model: d.model, to: L.addressIn(r.text).to || '' });
+      const sp = document.querySelector('.tab-said');
+      if (sp) sp.textContent = 'proposal from Void' + (d.model === 'rules' ? ' (by rule, no model just now)' : '') + ' · in the proposal card, yours to edit';
+      if (th && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: L.toPlain(d.fields), auto: true });
+    }
     function mountTab(th) {
       const t = ext.tab;
       const el = document.createElement('div');
@@ -1066,7 +1094,7 @@ Object.values(things).forEach((th) => {
           // draft for me (sends it to Void): the title, address and selection go to Void's answer engine once (mode draft, lib/draft.js), the draft
           // comes back into the box above for "put in the page" or copy, and the card says what left. What is in the box goes along as a note.
           + '<div class="tab-ask" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;color:var(--muted);font-size:12px">draft for me:'
-          + ['reply', 'summary', 'notes', 'rewrite'].map((k) => '<button type="button" class="tab-ask-' + k + ' vcopy" data-intent="' + k + '"' + (k === 'rewrite' && !t.selection ? ' disabled title="select the text to rewrite first"' : '') + '>' + k + '</button>').join('')
+          + ['reply', 'summary', 'notes', 'rewrite', 'proposal'].map((k) => '<button type="button" class="tab-ask-' + k + ' vcopy" data-intent="' + k + '"' + (k === 'rewrite' && !t.selection ? ' disabled title="select the text to rewrite first"' : '') + '>' + k + '</button>').join('')
           + '<span>(sends it to Void)</span></div>'
           + '<div style="display:flex;gap:8px;align-items:center;margin-top:6px"><button type="button" class="tab-put vcopy">put in the page</button><span class="tab-said" style="color:var(--muted);font-size:12px">'
           + esc(t.field ? 'goes into: ' + (t.field.name || t.field.tag) : 'goes into the box you click on the page') + '</span></div>'
@@ -1080,6 +1108,7 @@ Object.values(things).forEach((th) => {
         put.addEventListener('click', async () => { if (!ta.value.trim()) { said.textContent = 'write the draft first'; return; } said.textContent = 'putting it in…'; said.textContent = draftSaid(await extDraft(ta.value)); });
         body.querySelectorAll('.tab-ask button').forEach((b) => b.addEventListener('click', async () => {
           const intent = b.dataset.intent, tab = ext.tab; if (!tab) return;
+          if (intent === 'proposal') return proposalFromTab(tab, said, footLine);
           said.textContent = 'asking Void for a ' + intent + '…';
           let j = null;
           try {

@@ -21,6 +21,18 @@ function voidReadTab() {
   return { title: document.title.slice(0, 200), url: location.href.slice(0, 500), selection: selection.trim().slice(0, 5000), field };
 }
 
+// "draft for me: proposal" (sends it to Void): the text of the thread you are reading, once, when you press it. Gmail keeps the
+// open thread in its main region; any other page gives its body. The box you are writing in is left out (that is your reply).
+function voidReadThread() {
+  const root = document.querySelector('[role="main"]') || document.body;
+  if (!root) return { ok: false, why: 'no-text' };
+  const mine = window.__voidField && root.contains(window.__voidField) ? window.__voidField : null;
+  let text = root.innerText || '';
+  if (mine) { const typed = mine.value != null ? mine.value : mine.innerText || ''; if (typed) text = text.replace(typed, ''); }
+  text = text.replace(/[ \t]+/g, ' ').replace(/\s*\n\s*/g, '\n').trim().slice(0, 8000);
+  return text ? { ok: true, text } : { ok: false, why: 'no-text' };
+}
+
 // B2: put Void's draft into the box you were typing in, the way typing would. It never presses send, submits a form or clicks anything.
 function voidPutDraft(text) {
   const live = (e) => e && e.isConnected && (e.isContentEditable || (/^(?:textarea|input)$/i.test(e.tagName) && !e.disabled && !e.readOnly));
