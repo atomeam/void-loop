@@ -39,7 +39,7 @@ window.addEventListener('message', (e) => {
 const $ = (s) => document.querySelector(s);
 const hostOf = (u) => { try { return new URL(u).host; } catch (_) { return ''; } };
 const getAllow = async () => ((await chrome.storage.local.get('allow')).allow || []);
-const setAllow = (list) => chrome.storage.local.set({ allow: [...new Set(list)].sort() });
+const setAllow = (list) => chrome.storage.local.set({ allow: [...new Set(list)].sort((a, b) => a.localeCompare(b)) }); // host names, in alphabetical order
 
 async function paintSites() {
   const allow = await getAllow(), host = tab ? hostOf(tab.url) : '';
