@@ -192,6 +192,18 @@ function sqlPasted(r, lang) {
   }
   return false;
 }
+// Git's conflict markers left in a file: a merge committed half-done (#291 put them in the growth ledger, which then could
+// not be read on the live site). The start and end lines always count; a bare ======= only in a file that also has a start
+// line, since Markdown underlines a heading with = signs. Every changed file is checked, of any type (tools/review-pr.mjs),
+// and the whole tree before a push (tools/checks.mjs) and after merging main (tools/merge-main.mjs).
+const MARK_EDGE = /^(?:<{7}|>{7})(?: |$)/, MARK_MID = /^={7}$/;
+export function conflictMarkers(text) {
+  const lines = String(text || '').split('\n'), out = [], started = lines.some((l) => /^<{7}(?: |$)/.test(l));
+  lines.forEach((l, i) => { if (MARK_EDGE.test(l) || (started && MARK_MID.test(l))) out.push({ line: i + 1, text: l.slice(0, 80) }); });
+  return out;
+}
+export const CONFLICT_MESSAGE = 'a git conflict marker: this file was committed in the middle of a merge, so it is broken (JSON will not parse, code will not run). Settle the conflict (node tools/merge-main.mjs keeps both sides of the append-only records) and remove every marker line.';
+
 const RULES = [
   ['assign-in-condition', 'bug', [...JS, 'java', 'csharp', 'c', 'php', 'python'], (m) => /\b(?:if|while)\s*\(\s*!?\s*[A-Za-z_$][\w$.[\]]*\s*=\s*[^=>]/.test(m) || /^\s*if\s+[A-Za-z_$]\w*\s*=\s/.test(m),
     'an assignment (=) inside the condition: it sets the value and is then always true or false. To compare, use === (or == outside JavaScript).'],
@@ -507,6 +519,7 @@ const RULES = [
     'SELECT * returns every column, so the query breaks or slows down when columns are added. Name the columns you use.'],
   ['sql-concat', 'risk', ['*'], (m, r, x) => sqlPasted(r, x.lang),
     'the SQL is built by pasting values into the text: a value like \' OR 1=1 -- changes the query (SQL injection). Use placeholders and pass the values separately: query("… WHERE id = ?", [id]).'],
+  ['conflict-markers', 'bug', ['*'], (m, r, x) => MARK_EDGE.test(r) || (MARK_MID.test(r) && /^<{7}(?: |$)/m.test(x.all())), CONFLICT_MESSAGE],
   ['hardcoded-secret', 'risk', ['*'], (m, r, x) => hasSecret(r, x.lang),
     'a key, token or password is written into the code. Anyone who sees the code (or the repo history) has it. Move it to an environment variable or a secret store, and change the key if this code was ever shared.'],
   ['plain-http', 'risk', ['*'], (m, r) => /(?<!xmlns(?::[\w-]+)?=)['"`]http:\/\/(?!localhost\b|127\.0\.0\.1|0\.0\.0\.0|\[::1\]|[\w-]+\.local\b|[\w.-]*example\.(?:com|org|net)\b|(?:www\.)?w3\.org\b|schemas\.(?:microsoft\.com|openxmlformats\.org)\/)[\w-]+\.[\w.-]+/.test(r), // XML namespace and package-type names are identifiers, never fetched

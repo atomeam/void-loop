@@ -1004,6 +1004,9 @@ try {
   // "remember that <fact>" keeps one line (POST with the bearer), "forget that <fact>" removes it (DELETE by the same note id); without a key neither fetches
   // "what you told me": a signed-in member's ask carries their session to /api/answer, and an answer that used a note says so on the card; a visitor's carries nothing
   { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    // as in the memory card's member check: answer the page's load-time /api/mine sync for this made-up session, then load again
+    await T.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
+    await T.p.reload(); await T.p.waitForTimeout(700);
     let auth = null;
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
@@ -1186,6 +1189,22 @@ try {
       && /url\.pathname === '\/'/.test(sw) && !P.errors.length,
       JSON.stringify({ shown, meta, idInUrl, nf, card, heads, errors: P.errors }));
     await P.ctx.close(); }
+  // Every service has its page (/one-time-fix/ and friends, the way Code Review Pro has /code-review/): it loads,
+  // shows the live price from /api/catalog (the fix is stubbed at $26 to prove the live read, not the fallback), and
+  // links its Gumroad product.
+  { const SVC = [['one-time-fix', 'eozcma', 2600, null, '$26'], ['keep-it-running', 'keep-it-running-membership', 4900, 'monthly', '$49 a month'], ['full-stack-audit', 'full-stack-audit', 32500, null, '$325'], ['first-automation-setup', 'first-automation-setup', 10000, null, '$100']];
+    const cat = { products: SVC.map(([, slug, cents, rec]) => ({ slug, price_cents: cents, recurrence: rec, url: 'https://moonbeam846.gumroad.com/l/' + slug, available: true })) };
+    const V = await fresh(); const got = [];
+    await V.ctx.route(/\/api\/catalog(?:\?|$)/, (rt) => rt.fulfill(json(cat)));
+    for (const [id, slug, , , want] of SVC) {
+      await V.p.goto(base + id + '/');
+      const price = await until(async () => { const t = await V.p.$eval('#price', (e) => e.textContent).catch(() => ''); return t === want ? t : ''; }, 4000) || await V.p.$eval('#price', (e) => e.textContent).catch(() => '');
+      const buy = await V.p.$eval('#buy', (e) => ({ href: e.href, hidden: e.hidden, rel: e.rel })).catch(() => null);
+      const h1 = await V.p.$eval('h1', (e) => e.textContent).catch(() => '');
+      got.push({ id, price, ok: price === want && !!buy && buy.href === 'https://moonbeam846.gumroad.com/l/' + slug && !buy.hidden && /noopener/.test(buy.rel) && h1.length > 10 });
+    }
+    check('every service has its page: it loads, shows the live price from /api/catalog, and links its Gumroad product', got.every((g) => g.ok) && !V.errors.length, JSON.stringify(got) + ' ' + V.errors.join(' | '));
+    await V.ctx.close(); }
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
