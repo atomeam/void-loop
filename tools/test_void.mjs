@@ -477,6 +477,12 @@ try {
   // start only when someone asks in their own Void, and "calm my void" stops them. Card physics: a grabbed card comes to the front.
   { const V = await fresh();
     const pub = await V.p.evaluate(() => { const d = document.getElementById('void-depth'), cs = d && getComputedStyle(d); return { aura: !!document.getElementById('void-aura'), swarm: !!document.getElementById('void-swarm'), fx: document.documentElement.dataset.fx, depth: !!cs && /radial-gradient/.test(cs.backgroundImage) && cs.animationName === 'depthBreath', pill: getComputedStyle(document.getElementById('row')).backdropFilter }; });
+    { // lag on every device (2026-10-10): a breathing caret-color repainted the input 60 times a second forever (16% of a phone's main
+      // thread at rest, half of each keystroke's delay). What runs forever on the empty page may only move what the GPU moves.
+      const forever = await V.p.evaluate(() => document.getAnimations().filter((a) => a.effect && a.effect.getComputedTiming().iterations === Infinity)
+        .map((a) => ({ name: a.animationName || '', props: [...new Set(a.effect.getKeyframes().flatMap((k) => Object.keys(k).filter((x) => !/^(offset|easing|composite|computedOffset)$/.test(x))))] })));
+      check('speed: what animates forever on the empty page moves only transform and opacity (nothing repaints every frame)', forever.every((a) => a.props.every((x) => /^(transform|opacity)$/.test(x))), JSON.stringify(forever));
+    }
     await V.p.mouse.move(640, 380); await V.p.mouse.move(1100, 500, { steps: 6 });
     const tracked = await until(async () => { const v = await V.p.evaluate(() => document.getElementById('void-depth').style.getPropertyValue('--dx')); return parseFloat(v) > 55 ? v : false; }, 3000) || '';
     const fx = async () => V.p.evaluate(() => ({ look: (JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}')).fx, aura: !!document.querySelector('#void-aura.on'), swarm: !!document.querySelector('#void-swarm.on'), gl: !document.documentElement.classList.contains('no-gl') && !!document.createElement('canvas').getContext('webgl') }));

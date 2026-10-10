@@ -444,7 +444,7 @@
         radial-gradient(38vmax 30vmax at var(--dx, 50%) var(--dy, 42%), color-mix(in srgb, var(--void-glow, var(--sky-glow, #0b0b10)) 55%, #1a2350 45%) 0%, transparent 70%),
         radial-gradient(60vmax 45vmax at 50% 118%, rgba(40,52,110,.16), transparent 70%),
         radial-gradient(50vmax 40vmax at 12% -10%, rgba(70,40,120,.10), transparent 70%);
-      opacity: .55; animation: depthBreath 14s ease-in-out infinite alternate; }
+      opacity: .55; animation: depthBreath 14s steps(70) infinite alternate; will-change: transform, opacity; } /* steps: ~5 redraws a second, too slow a drift to see the steps; a smooth 60 fps breath made every keystroke wait an extra frame (2026-10-10) */
     @keyframes depthBreath { to { opacity: .8; transform: scale(1.04); } }
     /* film grain dithers the dark gradient so it never bands into rings */
     #void-depth::after { content: ''; position: absolute; inset: 0; opacity: .07; mix-blend-mode: overlay;
@@ -454,8 +454,7 @@
       box-shadow: inset 0 1px 0 rgba(255,255,255,.07), inset 0 -1px 0 rgba(0,0,0,.4), 0 18px 50px rgba(0,0,0,.45);
       transition: box-shadow .42s cubic-bezier(.34,1.56,.64,1), border-color .3s ease, transform .42s cubic-bezier(.34,1.56,.64,1); }
     #row:focus-within { transform: translateY(-1px) scale(1.006); }
-    #input { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; caret-color: #cfd8ff; caret-animation: manual; animation: caretBreath 1.6s ease-in-out infinite; }
-    @keyframes caretBreath { 0%, 100% { caret-color: rgba(207,216,255,1); } 50% { caret-color: rgba(207,216,255,.18); } }
+    #input { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; caret-color: #cfd8ff; } /* the caret blinks the browser's way: a breathing caret-color repainted the input 60 times a second, forever, 16% of a phone's main thread at rest and half of each keystroke's delay (2026-10-10) */
     .vpage { transform: translate(-50%, -46%) perspective(1200px) rotateX(calc(var(--rx, 0deg) + 10deg)) rotateY(var(--ry, 0deg)) translateZ(-140px);
       transition: opacity .5s ease, transform .6s cubic-bezier(.2,.8,.2,1), filter .6s ease; filter: blur(4px);
       background: linear-gradient(160deg, rgba(34,38,56,0.82), rgba(12,13,20,0.86) 45%, rgba(20,24,44,0.84)); backdrop-filter: blur(22px) saturate(1.2);
