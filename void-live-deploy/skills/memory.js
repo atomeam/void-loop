@@ -10,9 +10,10 @@
  */
 import { keepLive } from './live.js';
 
-const OWNER_KEY = 'a2m.void.owner.v1';
+const OWNER_KEY = 'a2m.void.owner.v1', ME_KEY = 'a2m.void.me.v1';
 export const EVERY = 5 * 60e3;
-const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || ''; } catch (_) { return ''; } };
+// the owner's key, else this device's member session (a signed-in paid member reads only their own memory; the server decides which)
+const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || (JSON.parse(localStorage.getItem(ME_KEY) || 'null') || {}).token || ''; } catch (_) { return ''; } };
 // a topic that is a person or a pronoun is not a project ("what do you remember about me")
 const NOT_TOPIC = /^(?:me|you|us|it|that|this|them|him|her|everything|anything|nothing|myself|yourself)$/;
 
@@ -56,7 +57,7 @@ function mount(th, stageApi) {
   const tok = ownerToken();
   stageApi.bindDrag(card, th);
   stageApi.stage.appendChild(card);
-  if (!tok) { status.textContent = 'What Void remembers is the owner’s. Unlock Void first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
+  if (!tok) { status.textContent = 'What Void remembers is for the owner and paid members. Unlock Void first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
 
   const paint = (answer) => {
     list.textContent = '';
@@ -66,7 +67,7 @@ function mount(th, stageApi) {
     status.textContent = 'asking…';
     try {
       const r = await fetch(askUrl(th.q), { headers: { authorization: 'Bearer ' + tok } });
-      if (!r.ok) throw new Error(r.status === 401 ? 'only the owner can read what Void remembers' : r.status === 503 ? 'no database behind this copy of Void' : 'memory answered ' + r.status);
+      if (!r.ok) throw new Error(r.status === 401 ? 'only the owner can read what Void remembers' : r.status === 403 ? 'what Void remembers is for paid members' : r.status === 503 ? 'no database behind this copy of Void' : 'memory answered ' + r.status);
       const data = await r.json().catch(() => ({}));
       paint(data.answer); status.textContent = '';
     } catch (e) { status.textContent = e.message; throw e; }
