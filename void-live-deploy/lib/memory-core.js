@@ -83,7 +83,7 @@ export async function search(env, q, limit = 20, scope = '') {
   const n = Math.max(1, Math.min(50, parseInt(limit, 10) || 20));
   const where = ['owner_id = ?'].concat(terms.map(() => "(lower(name) LIKE ? ESCAPE '\\' OR lower(summary) LIKE ? ESCAPE '\\' OR lower(links) LIKE ? ESCAPE '\\')")).join(' AND ');
   const args = [scope].concat(terms.flatMap((t) => [like(t), like(t), like(t)]));
-  const { results } = await env.DB.prepare(`SELECT id, kind, name, summary, links, state, remote, last_commit, digest, sha256, updated FROM void_memory WHERE ${where} ORDER BY updated DESC LIMIT ?`).bind(...args, n).all();
+  const { results } = await env.DB.prepare(`SELECT id, kind, name, summary, links, state, remote, last_commit, digest, sha256, updated FROM void_memory WHERE ${where} ORDER BY updated DESC LIMIT ?`).bind(...args, n).all(); // void-review: ok (where is fixed fragments with ? placeholders; every value is bound)
   return results.map((r) => ({ ...r, id: shown(r.id, scope), links: JSON.parse(r.links || '[]') }));
 }
 // ---- ask: a plain question in, a plain answer out. No model: the words that matter are matched against what Void remembers.
