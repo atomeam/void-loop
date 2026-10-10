@@ -79,8 +79,8 @@ test('the moon: tonight and the next phases agree with the almanac, and the pict
   assert.deepEqual(m.moonAsk('next new moon in Oslo'), { kind: 'next', phase: 'new', place: 'Oslo' });
   const a = m.moonAnswer(date, LONDON);
   assert.match(a.lines[0], /^Waning gibbous: 8\d% of the moon is lit, 1\d days into the cycle\.$/);
-  near(+a.full, Date.parse('2025-11-05T13:19:46Z'), 30 * 60000);                   // the almanac's full moon
-  near(+a.neu, Date.parse('2025-10-21T12:25:00Z'), 30 * 60000);
+  near(+a.full, Date.parse('2025-11-05T13:19:46Z'), 3 * 60000);                    // the almanac's full moon
+  near(+a.neu, Date.parse('2025-10-21T12:25:00Z'), 3 * 60000);
   const next = m.nextPhaseAnswer(date, LONDON, 'full');
   assert.match(next.lines[0], /^The next full moon is Wednesday, November 5, 2025, at 1:\d\d PM \(in 26 days\)\.$/);
   // the lit side: waxing is on the right in the north, on the left in the south; full and new are a disc and a dark disc

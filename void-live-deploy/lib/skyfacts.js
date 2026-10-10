@@ -38,7 +38,7 @@ export function events(body, date, lat, lon) {
     if (c.t.getTime() <= t) out[c.type === 'rise' ? 'lastRise' : 'lastSet'] = c.t;
     else if (!out[c.type === 'rise' ? 'nextRise' : 'nextSet']) out[c.type === 'rise' ? 'nextRise' : 'nextSet'] = c.t;
   }
-  const up = (body === 'moon' ? A.moonHor(date, lat, lon).alt - 0.125 : A.sunHor(date, lat, lon).alt + 0.833) > 0;
+  const up = (body === 'moon' ? A.moonHor(date, lat, lon).alt : A.sunHor(date, lat, lon).alt) + 0.833 > 0;
   out.state = !list.length ? (up ? 'always up' : 'always down') : up ? 'up' : 'down';
   return out;
 }

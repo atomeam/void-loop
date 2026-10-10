@@ -25,7 +25,7 @@ export function moonAnswer(date, place) {
   const lines = [`${ph.name[0].toUpperCase()}${ph.name.slice(1)}: ${pct(ph.illumination)} of the moon is lit, ${ph.ageDays.toFixed(0)} days into the cycle.`];
   lines.push(mh.alt > 0 ? `It is ${Math.round(mh.alt)}° above the horizon now, to the ${compassWord(mh.az)}.` : 'It is below the horizon now.');
   if (ev.state === 'always up' || ev.state === 'always down') lines.push(ev.state === 'always up' ? 'It stays above the horizon all day here.' : 'It stays below the horizon all day here.');
-  else { const bits = []; if (ev.nextRise) bits.push(`rises ${dayWord(ev.nextRise, date, tz)} at ${fmtTime(ev.nextRise, tz)}`); if (ev.nextSet) bits.push(`sets ${dayWord(ev.nextSet, date, tz)} at ${fmtTime(ev.nextSet, tz)}`); bits.sort(); if (ev.nextRise && ev.nextSet && ev.nextSet < ev.nextRise) bits.reverse(); lines.push('The next time it ' + bits.join(', then ') + '.'); }
+  else { const bits = [ev.nextRise && [ev.nextRise, `rises ${dayWord(ev.nextRise, date, tz)} at ${fmtTime(ev.nextRise, tz)}`], ev.nextSet && [ev.nextSet, `sets ${dayWord(ev.nextSet, date, tz)} at ${fmtTime(ev.nextSet, tz)}`]].filter(Boolean).sort((x, y) => x[0] - y[0]).map((x) => x[1]); lines.push('The next time it ' + bits.join(', then ') + '.'); }
   const full = A.nextPhase(date, 'full'), neu = A.nextPhase(date, 'new');
   lines.push(`Next full moon: ${dayWord(full, date, tz)}, ${fmtTime(full, tz)} (${inWords(full - date)}). Next new moon: ${dayWord(neu, date, tz)}, ${fmtTime(neu, tz)} (${inWords(neu - date)}).`);
   return { lines, ph, full, neu };
@@ -46,10 +46,10 @@ async function run(text, api) {
   const date = new Date();
   if (ask.kind === 'next') {
     const a = nextPhaseAnswer(date, place, ask.phase), ph = A.moonPhase(date);
-    el.innerHTML = `${moonSvg(ph.illumination, ph.waxing, place.lat < 0)}<h2>Next ${esc(ask.phase)} moon</h2><div class="sub">${esc(place.name)}</div>${a.lines.map((l) => `<p>${esc(l)}</p>`).join('')}<p class="src">Computed from the moon's orbit (good to about 15 minutes). <a href="#" data-ask="moon tonight">Tonight's moon</a></p>`;
+    el.innerHTML = `${moonSvg(ph.illumination, ph.waxing, place.lat < 0)}<h2>Next ${esc(ask.phase)} moon</h2><div class="sub">${esc(place.name)}</div>${a.lines.map((l) => `<p>${esc(l)}</p>`).join('')}<p class="src">Computed from the moon's orbit (good to a few minutes). <a href="#" data-ask="moon tonight">Tonight's moon</a></p>`;
   } else {
     const a = moonAnswer(date, place);
-    el.innerHTML = `${moonSvg(a.ph.illumination, a.ph.waxing, place.lat < 0)}<h2>The moon tonight</h2><div class="sub">${esc(place.name)}</div>${a.lines.map((l) => `<p>${esc(l)}</p>`).join('')}<p class="src">Computed from the moon's orbit (good to about 15 minutes). <a href="#" data-ask="next full moon">Next full moon</a></p>${SKY_LINK}`;
+    el.innerHTML = `${moonSvg(a.ph.illumination, a.ph.waxing, place.lat < 0)}<h2>The moon tonight</h2><div class="sub">${esc(place.name)}</div>${a.lines.map((l) => `<p>${esc(l)}</p>`).join('')}<p class="src">Computed from the moon's orbit (good to a few minutes). <a href="#" data-ask="next full moon">Next full moon</a></p>${SKY_LINK}`;
   }
   say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'moontonight' });
   return 'moontonight';

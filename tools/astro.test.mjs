@@ -23,20 +23,20 @@ test('the fixtures come from the oracle and cover what is compared', () => {
 test('sun, planets and stars sit where the independent almanac puts them', () => {
   for (const r of F.bodies) {
     const t = new Date(r.when), s = A.sunHor(t, r.lat, r.lon);
-    near(s.alt, r.sun.alt, 0.05, `sun altitude ${r.place} ${r.when}`);
+    near(s.alt, r.sun.alt, 0.03, `sun altitude ${r.place} ${r.when}`);
     if (r.sun.alt > -85) near(dAz(s.az, r.sun.az), 0, 0.05, `sun azimuth ${r.place} ${r.when}`);
-    for (const p of A.PLANETS) near(A.planetHor(p, t, r.lat, r.lon).alt, r[p].alt, 0.2, `${p} altitude ${r.place} ${r.when}`);
+    for (const p of A.PLANETS) near(A.planetHor(p, t, r.lat, r.lon).alt, r[p].alt, 0.12, `${p} altitude ${r.place} ${r.when}`);
     const m = A.moonHor(t, r.lat, r.lon);
-    near(m.alt, r.moon.alt, 0.4, `moon altitude ${r.place} ${r.when}`);
-    near(dAz(m.az, r.moon.az), 0, 0.8, `moon azimuth ${r.place} ${r.when}`);
+    near(m.alt, r.moon.alt, 0.05, `moon altitude ${r.place} ${r.when}`);
+    near(dAz(m.az, r.moon.az), 0, 0.05, `moon azimuth ${r.place} ${r.when}`);
   }
-  for (const r of F.stars) near(A.starHor(r.ra, r.dec, new Date(r.when), r.lat, r.lon).alt, r.alt, 0.05, `${r.name} altitude ${r.place} ${r.when}`);
+  for (const r of F.stars) near(A.starHor(r.ra, r.dec, new Date(r.when), r.lat, r.lon).alt, r.alt, 0.03, `${r.name} altitude ${r.place} ${r.when}`);
 });
 
-test('sunrise and sunset agree to the minute, moonrise and moonset to a quarter of an hour', () => {
+test('sunrise, sunset, moonrise and moonset agree with the almanac to within a minute', () => {
   let n = 0;
   for (const r of F.riseSet) {
-    const day = Date.parse(r.day), o = A.riseSet(r.body, day, r.lat, r.lon), tol = r.body === 'sun' ? 2 : 25;
+    const day = Date.parse(r.day), o = A.riseSet(r.body, day, r.lat, r.lon), tol = 1;
     for (const k of ['rise', 'set']) {
       if (r[k] && Date.parse(r[k]) < day + 86400000 - 30 * 60000 && Date.parse(r[k]) > day + 30 * 60000) { assert.ok(o[k], `${r.place} ${r.day} ${r.body} ${k} found`); near(Math.abs(+o[k] - Date.parse(r[k])) / 60000, 0, tol, `${r.place} ${r.day} ${r.body} ${k} (minutes)`); n++; }
     }
@@ -75,11 +75,11 @@ test('the moon\'s phase matches recorded dates', () => {
   assert.equal(at('2024-10-10T12:00:00Z').name, 'first quarter', 'seven hours before the first quarter of 2024-10-10 18:55 UTC');
   assert.equal(at('2024-10-21T12:00:00Z').name, 'waning gibbous', 'four days after the full moon');
   assert.equal(at('2024-10-24T12:00:00Z').name, 'last quarter', 'four hours after the last quarter of 2024-10-24 08:03 UTC');
-  for (const r of F.moon) { near(A.moonPhase(new Date(r.when)).elongation, r.elongation, 0.3, `elongation ${r.when}`); near(A.moonPhase(new Date(r.when)).illumination, r.illumination, 0.005, `illumination ${r.when}`); }
+  for (const r of F.moon) { near(A.moonPhase(new Date(r.when)).elongation, r.elongation, 0.05, `elongation ${r.when}`); near(A.moonPhase(new Date(r.when)).illumination, r.illumination, 0.002, `illumination ${r.when}`); }
 });
 
-test('the next full moon, new moon and quarters land within 40 minutes of the almanac', () => {
-  for (const r of F.phases) near(Math.abs(+A.nextPhase(new Date(r.from), r.phase) - Date.parse(r.at)) / 60000, 0, 40, `${r.phase} after ${r.from} (minutes)`);
+test('the next full moon, new moon and quarters land within 3 minutes of the almanac', () => {
+  for (const r of F.phases) near(Math.abs(+A.nextPhase(new Date(r.from), r.phase) - Date.parse(r.at)) / 60000, 0, 3, `${r.phase} after ${r.from} (minutes)`);
   assert.equal(A.nextPhase(new Date(), 'blue'), null);
 });
 
