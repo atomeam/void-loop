@@ -800,6 +800,45 @@ Object.values(things).forEach((th) => {
       decorate();
       syncFigures();
       announceNew();
+      requestAnimationFrame(() => layoutStage()); // after any centring the summoner asked for
+    }
+    // Cards stop landing on top of each other (lib/placement.js, 2026-10-10): a card that just arrived takes the nearest free
+    // spot from where it was asked to land; a card that grows (a draft filling the tab card, a 3D miniature loading) moves the
+    // cards it now covers; a card the person dragged stays where they put it; a saved layout is never reshuffled on load.
+    let placement = null; import('/lib/placement.js').then((m) => { placement = m; layoutStage(); }).catch(() => {});
+    let laidOut = null; const cardSize = new Map(), grownIds = new Set(), centred = new Set();
+    const sizeWatch = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
+      for (const e of entries) {
+        const id = e.target.dataset && e.target.dataset.id; if (!id || !things[id]) continue;
+        const w = e.target.offsetWidth, h = e.target.offsetHeight, was = cardSize.get(id);
+        if (was && (h > was.h + 4 || w > was.w + 4)) grownIds.add(id);
+        cardSize.set(id, { w, h });
+      }
+      if (grownIds.size) requestAnimationFrame(() => layoutStage());
+    }) : null;
+    function layoutStage() {
+      if (!placement || PAGE || document.documentElement.classList.contains('dragging')) return;
+      const els = [...stage.querySelectorAll(':scope > .thing[data-id]')].filter((el) => things[el.dataset.id] && el.offsetWidth);
+      if (sizeWatch) { sizeWatch.disconnect(); els.forEach((el) => sizeWatch.observe(el)); }
+      const first = !laidOut; if (first) laidOut = new Set();
+      // a 3D board's own card (skills/side-card.js: whose move, the buttons, how to play) is placed with its board, as one
+      // rectangle, and moves with it; otherwise a board moved aside leaves its card behind, on top of whatever comes next
+      const sideOf = (id) => stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(id) + '"]');
+      const cards = els.map((el) => { const th = things[el.dataset.id], side = sideOf(th.id);
+        let x = el.offsetLeft, y = el.offsetTop, r = x + el.offsetWidth, b = y + el.offsetHeight;
+        if (side && side.offsetWidth) { x = Math.min(x, side.offsetLeft); y = Math.min(y, side.offsetTop); r = Math.max(r, side.offsetLeft + side.offsetWidth); b = Math.max(b, side.offsetTop + side.offsetHeight); }
+        const mid = centred.has(th.id); // asked for the middle: it holds its spot like a card that grew, and its neighbours move
+        return { id: th.id, x, y, w: r - x, h: b - y, pinned: !!th.pinned, fresh: !first && !mid && !laidOut.has(th.id), grew: mid || grownIds.has(th.id) }; });
+      cards.forEach((c) => { laidOut.add(c.id); centred.delete(c.id); }); grownIds.clear(); // a card not on the stage yet keeps its claim on the middle
+      const moves = placement.arrange(cards, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) });
+      let moved = false;
+      for (const [id, p] of Object.entries(moves)) {
+        const th = things[id], el = stage.querySelector('[data-id="' + CSS.escape(id) + '"]'), c = cards.find((k) => k.id === id); if (!th || !el || !c) continue;
+        const dx = p.x - c.x, dy = p.y - c.y, side = sideOf(id);
+        th.x = el.offsetLeft + dx; th.y = el.offsetTop + dy; el.style.left = th.x + 'px'; el.style.top = th.y + 'px'; moved = true;
+        if (side) { const sx = side.offsetLeft + dx, sy = side.offsetTop + dy; side.style.left = sx + 'px'; side.style.top = sy + 'px'; th.card = { x: sx, y: sy }; }
+      }
+      if (moved) { decorate(); save(); }
     }
     // A thing that just arrived on the stage (a list, a timer, a game board) is read out once, like an answer page
     let seenIds = null;
@@ -898,6 +937,7 @@ Object.values(things).forEach((th) => {
       if (stageKinds[kind]) { // skill kinds: each ask adds one more; it stays until thrown off the screen
         const th = Object.assign({ id: uid(kind), kind, x: 40, y: 60 }, opts);
         const centre = !!th.center; delete th.center;
+        if (th.hold) centred.add(th.id); delete th.hold; // a board that worked out the middle itself holds it, like a centred one
         things[th.id] = th; selectedId = th.id; save(); render();
         if (centre) centreThing(th.id);
         return th;
@@ -910,6 +950,7 @@ Object.values(things).forEach((th) => {
     }
     // a board or card that asks for the middle: centred left to right, and in the room above the ask bar (phone or desktop)
     function centreThing(id) {
+      centred.add(id); // a board that asks for the middle keeps it; the cards it covers move (layoutStage)
       const th = things[id], el = th && stage.querySelector('[data-id="' + CSS.escape(id) + '"]');
       if (!el) { if (th) render(); return; }
       const room = dockSpace() - stage.getBoundingClientRect().top - 12;
@@ -1115,6 +1156,7 @@ Object.values(things).forEach((th) => {
             cur.style.left = th.x + 'px'; cur.style.top = th.y + 'px';
             moveMates(th.x - origX, th.y - origY);
             for (const m of mates) { m.t.x = Math.max(0, m.t.x); m.t.y = Math.max(0, m.t.y); if (m.el) { m.el.style.left = m.t.x + 'px'; m.el.style.top = m.t.y + 'px'; } }
+            if (th.x !== origX || th.y !== origY) { th.pinned = true; for (const m of mates) m.t.pinned = true; } // put there by hand: the stage never moves it (lib/placement.js)
             decorate();
             try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
             save();
