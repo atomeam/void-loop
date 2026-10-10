@@ -96,7 +96,7 @@
     if (row.price_cents) document.getElementById('price').textContent = money(row);
     if (row.available === false) { document.getElementById('buy').hidden = true; document.getElementById('unavailable').hidden = false; return; }
     if (/^https:\/\//.test(row.url || '')) document.getElementById('buy').href = row.url;
-  }).catch(function () {}); // offline: the page's own price and link stand
+  }).catch(function (e) { console.warn('['+'one-time-fix'+'] the live price could not load; the page\'s own price and link stand', e); });
 })();
 </script>
 </body>
