@@ -1143,6 +1143,42 @@ try {
         && /^Done:/.test(done) && /more teeth turns fewer times/.test(hint) && !/\b(?:12|16|24|32)\b/.test(hint) && saved.includes('gears') && !saved.includes('goal') && !Y.errors.length,
       JSON.stringify({ goalText, nowBefore, notYet, nowAfter, done, hint, saved, errs: Y.errors }));
     await Y.ctx.close(); }
+  // the same goal card on the Moon (frontier #18, no adapter): its orbit slider never saves while dragged, so the stage's
+  // capture-phase notice is what keeps the card live; first quarter (90°) is a waxing half, 270° is half lit but waning
+  { const X = await fresh();
+    await X.ask('explain moon phases', 900); await X.ask('give me a challenge with this', 900);
+    const goalText = await X.p.$eval('.goal-card .goal-text', (e) => e.textContent).catch(() => '');
+    const slide = (deg) => X.p.$eval('.moon-orbit', (r, d) => { r.value = String(d); r.dispatchEvent(new Event('input', { bubbles: true })); }, deg);
+    await slide(270); await X.p.waitForTimeout(150);
+    const nowWaning = await X.p.$eval('.goal-card .goal-now', (e) => e.textContent).catch(() => '');
+    await X.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await X.p.waitForTimeout(100);
+    const waning = await X.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    await slide(90); await X.p.waitForTimeout(150);
+    const nowWaxing = await X.p.$eval('.goal-card .goal-now', (e) => e.textContent).catch(() => '');
+    await X.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await X.p.waitForTimeout(100);
+    const done = await X.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    check('goal card on the Moon: the same card sets "a waxing phase with half its face lit"; dragging the orbit slider updates it live; 270° is half lit but waning (not yet, says which), 90° is done',
+      /waxing phase with half its face lit/.test(goalText) && /Waning/i.test(nowWaning) && /^Not yet:/.test(waning) && /still to change: Waxing or waning/.test(waning) && /matches: Lit fraction/.test(waning)
+        && /Waxing/.test(nowWaxing) && /^Done:/.test(done) && !X.errors.length, JSON.stringify({ goalText, nowWaning, waning, nowWaxing, done, errs: X.errors }));
+    await X.ctx.close(); }
+  // and on the lock (frontier #18, the third explainer, still no adapter): a choice of key and a slider, checked by the
+  // lock's own state word; a mismatched key all the way in is blocked (not yet), the matching key all the way in is ready
+  { const W = await fresh();
+    await W.ask('how does a lock work', 900); await W.ask('give me a challenge with this', 900);
+    const goalText = await W.p.$eval('.goal-card .goal-text', (e) => e.textContent).catch(() => '');
+    const key = (k) => W.p.$eval('.lock-key[data-key="' + k + '"]', (b) => b.click());
+    const insert = (v) => W.p.$eval('.lock-insertion', (r, x) => { r.value = String(x); r.dispatchEvent(new Event('input', { bubbles: true })); }, v);
+    await key('one-mismatch').catch(() => {}); await insert(100).catch(() => {}); await W.p.waitForTimeout(150);
+    await W.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await W.p.waitForTimeout(100);
+    const blocked = await W.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    await insert(0).catch(() => {}); await key('matching').catch(() => {}); await insert(100).catch(() => {}); await W.p.waitForTimeout(150); // keys change only withdrawn
+    const nowReady = await W.p.$eval('.goal-card .goal-now', (e) => e.textContent).catch(() => '');
+    await W.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await W.p.waitForTimeout(100);
+    const done = await W.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    check('goal card on the lock: "choose the key and bring the lock to ready"; a mismatched key all the way in is not yet (still to change: lock state), the matching key all the way in is done, live',
+      /bring the lock to ready/.test(goalText) && /^Not yet:/.test(blocked) && /still to change: Lock state/.test(blocked) && /Lock state Ready/.test(nowReady) && /^Done:/.test(done) && !W.errors.length,
+      JSON.stringify({ goalText, blocked, nowReady, done, errs: W.errors }));
+    await W.ctx.close(); }
   const ranBeforeProposal = gate.ran.length;
   // the proposal card (skills/proposal.js, build order step 3): a pasted customer request becomes an editable proposal with
   // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent

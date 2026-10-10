@@ -715,6 +715,9 @@
     let minePushT = 0, minePulled = 0, mineQuiet = false, pendingForget = null, pkRetryFn = null;
 
     const stage = document.getElementById('stage');
+    // live takers (frontier #18) also hear changes a card does not save (a slider being dragged, a stepper that stops the
+    // click): the stage notices any input or press on a card, in the capture phase, and announces it once the card has acted
+    for (const ev of ['input', 'click', 'pointerup']) stage.addEventListener(ev, () => setTimeout(() => { try { dispatchEvent(new CustomEvent('void:stage-change')); } catch (_) {} }, 0), true);
     const input = document.getElementById('input');
     // how much of the screen the ask bar takes from the bottom: answer pages and boards are centred above it, never under it
     const askRow = document.getElementById('row');
