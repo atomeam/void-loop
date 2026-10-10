@@ -5,7 +5,8 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { applySwitch, planSwitch, ledgerLine, reviewFollows } from './model-switch.mjs';
-import { PATH_MODELS } from '../void-live-deploy/lib/models.js';
+import { PATH_MODELS, FREE_MODEL } from '../void-live-deploy/lib/models.js';
+const short = (m) => m.split('/').pop().replace(/[.]/g, '\\.'); // the current answer model, whichever it is
 
 const SRC = fs.readFileSync(new URL('../void-live-deploy/lib/models.js', import.meta.url), 'utf8');
 const TABLE = '| model | right |\n|:--|--:|\n| `@cf/google/gemma-4-26b-a4b-it` | 30/37 |\n| `@cf/zai-org/glm-4.7-flash` | 34/37 |\n';
@@ -20,7 +21,7 @@ test('a winning verdict sets the answer path\'s model, and only that path', asyn
   const m = await import(dir + '/models.js');
   assert.equal(m.models('answer'), '@cf/zai-org/glm-4.7-flash');
   for (const p of ['will', 'review', 'figurescript']) assert.equal(m.models(p), PATH_MODELS[p], p + ' keeps its model');
-  assert.equal(m.FREE_MODEL, PATH_MODELS.answer, 'the previous model stays named in the file');
+  assert.equal(m.FREE_MODEL, FREE_MODEL, 'FREE_MODEL itself is left as it was, so the free model stays named in the file');
   assert.throws(() => applySwitch(SRC, "x'; process.exit(1); '"), /not a Workers AI model id/);
   assert.throws(() => applySwitch(SRC, PATH_MODELS.answer), /already/);
 });
@@ -38,8 +39,8 @@ test('the PR: branch, title, the table, the previous model and the one-line reve
 });
 
 test('every run gets its line in the growth ledger: the date, the models that ran, the verdict', () => {
-  assert.match(ledgerLine(win), /^model bake-off 2026-10-10 \(gemma-4-26b-a4b-it, glm-4\.7-flash\): switch to glm-4\.7-flash, /);
-  assert.match(ledgerLine({ ...keep, rows: [{ model: PATH_MODELS.answer }, { model: '@cf/openai/gpt-oss-20b' }] }), /^model bake-off 2026-10-10 \(gemma-4-26b-a4b-it, gpt-oss-20b\): keep /);
+  assert.match(ledgerLine(win), new RegExp('^model bake-off 2026-10-10 \\(' + short(PATH_MODELS.answer) + ', glm-4\\.7-flash\\): switch to glm-4\\.7-flash, '));
+  assert.match(ledgerLine({ ...keep, rows: [{ model: PATH_MODELS.answer }, { model: '@cf/openai/gpt-oss-20b' }] }), new RegExp('^model bake-off 2026-10-10 \\(' + short(PATH_MODELS.answer) + ', gpt-oss-20b\\): keep '));
   assert.ok(ledgerLine({ at: '2026-10-10', verdict: { why: 'x'.repeat(999) }, rows: [] }).length < 320);
 });
 
