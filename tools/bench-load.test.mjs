@@ -34,12 +34,12 @@ test('the limit is the larger of the factor and the slack over the baseline', ()
 });
 
 test('inconclusive needs misses AND a p95 over the limit; no baseline is conclusive', () => {
-  const baseline = { p95: 200 }, slow = { p95: 900 }, quiet = { p95: 210 };
-  assert.equal(verdict({ misses: 4, latency: slow, baseline }).inconclusive, true);
-  assert.match(verdict({ misses: 4, latency: slow, baseline }).line, /^inconclusive: machine under load \(p95 900ms vs baseline 200ms\); re-run alone$/);
-  assert.equal(verdict({ misses: 0, latency: slow, baseline }).inconclusive, false, 'slow but nothing missed: the score is right');
-  assert.equal(verdict({ misses: 4, latency: quiet, baseline }).inconclusive, false, 'misses on a quiet machine are real');
-  assert.equal(verdict({ misses: 4, latency: slow, baseline: undefined }).inconclusive, false, 'no baseline yet');
+  const baseline = { p95: 200, pages: 3, cores: 4 }, slow = { p95: 900 }, quiet = { p95: 210 };
+  assert.equal(verdict({ misses: 4, latency: slow, baseline, pages: 3 }).inconclusive, true);
+  assert.match(verdict({ misses: 4, latency: slow, baseline, pages: 3 }).line, /^inconclusive: machine under load \(p95 900ms vs baseline 200ms\); re-run alone$/);
+  assert.equal(verdict({ misses: 0, latency: slow, baseline, pages: 3 }).inconclusive, false, 'slow but nothing missed: the score is right');
+  assert.equal(verdict({ misses: 4, latency: quiet, baseline, pages: 3 }).inconclusive, false, 'misses on a quiet machine are real');
+  assert.equal(verdict({ misses: 4, latency: slow, baseline: undefined, pages: 3 }).inconclusive, false, 'no baseline yet');
   assert.equal(verdict({ misses: 4, latency: slow, baseline: { p95: 200, pages: 3, cores: 4 }, pages: 6, cores: 8 }).inconclusive, false, 'a baseline from another parallelism cannot judge this run');
   assert.equal(verdict({ misses: 4, latency: slow, baseline: { p95: 200, pages: 3, cores: 4 }, pages: 3, cores: 4 }).inconclusive, true);
   assert.equal(verdict({ misses: 4, latency: slow, baseline: { p95: 200, pages: 3, cores: 4 }, pages: 3, cores: 8 }).inconclusive, true, 'other cores, same pages: compared');
@@ -90,7 +90,7 @@ const bench = (best, extra = {}) => spawnSync(process.execPath, [join(here, 'ben
 const lastLine = (o) => JSON.parse(o.trim().split('\n').pop());
 
 test('bench.mjs measures latency and stays conclusive with no baseline or a generous one', () => {
-  for (const latency of [undefined, { local: { p50: 1, p95: 600000 } }]) {
+  for (const latency of [undefined, { local: { p50: 1, p95: 600000, pages: 2, cores: 4 } }]) {
     const r = bench(write('b1.json', { score: 1, total: 2, latency }));
     assert.equal(r.status, 0, r.stderr);
     const res = lastLine(r.stdout);
@@ -105,13 +105,13 @@ test('bench.mjs measures latency and stays conclusive with no baseline or a gene
 
 test('bench.mjs with misses and a baseline no machine meets says inconclusive, exits 0, and writes nothing', () => {
   const last = resolve(here, 'bench.last.json'), existed = existsSync(last), kept = existed ? readFileSync(last, 'utf8') : null;
-  const r = spawnSync(process.execPath, [join(here, 'bench.mjs'), '--json'], { encoding: 'utf8', timeout: 120000, env: { ...process.env, BENCH_ASKS: asks, BENCH_BEST: write('b2.json', { score: 1, total: 2, latency: { local: { p50: 0.01, p95: 0.01 } } }), BENCH_PAR: '2', CI: '' } });
+  const r = spawnSync(process.execPath, [join(here, 'bench.mjs'), '--json'], { encoding: 'utf8', timeout: 120000, env: { ...process.env, BENCH_ASKS: asks, BENCH_BEST: write('b2.json', { score: 1, total: 2, latency: { local: { p50: 0.01, p95: 0.01, pages: 2, cores: 4 } } }), BENCH_PAR: '2', CI: '' } });
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /inconclusive: machine under load \(p95 \d+ms vs baseline 0ms\); re-run alone/);
   assert.match(r.stdout, /bench\.last\.json kept as it was/);
   assert.equal(existsSync(last), existed, 'no bench.last.json appeared');
   if (existed) assert.equal(readFileSync(last, 'utf8'), kept, 'a conclusive run\'s misses were not overwritten');
-  const s = bench(write('b3.json', { score: 1, total: 2, latency: { local: { p50: 0.01, p95: 0.01 } } }));
+  const s = bench(write('b3.json', { score: 1, total: 2, latency: { local: { p50: 0.01, p95: 0.01, pages: 2, cores: 4 } } }));
   assert.equal(s.status, 0, s.stderr);
   assert.equal(lastLine(s.stdout).inconclusive, true);
   assert.match(s.stderr, /^inconclusive: machine under load/m);

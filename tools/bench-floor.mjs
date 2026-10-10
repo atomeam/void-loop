@@ -4,6 +4,7 @@
 // nothing; a conclusive one at or above the floor also tightens the latency baseline for its environment (nextLatency). The margin leaves room for the few asks whose answer depends on the day.
 //   node tools/bench-floor.mjs bench-score.json            print what would happen
 //   node tools/bench-floor.mjs bench-score.json --write    and write tools/bench.best.json when it would rise
+//   --baseline-only    with --write, record the latency baseline and leave the floor where it is
 //   --floor path.json  read and write a different floor file (the tests)
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -30,9 +31,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (!resultFile) { console.error('usage: node tools/bench-floor.mjs bench-score.json [--write] [--floor path.json]'); process.exit(2); }
   const result = JSON.parse(readFileSync(resolve(resultFile), 'utf8')), floor = JSON.parse(readFileSync(floorFile, 'utf8'));
   if (result.inconclusive) { console.log(`inconclusive result (${result.note || 'machine under load'}): the floor and the latency baseline stay`); process.exit(0); }
-  const next = nextFloor(result, floor), latency = nextLatency(result, floor);
+  const next = args.includes('--baseline-only') ? null : nextFloor(result, floor), latency = nextLatency(result, floor);
   if (latency) console.log(`latency baseline (${result.env}) ${floor.latency && floor.latency[result.env] ? 'tightens from p95 ' + floor.latency[result.env].p95 + 'ms ' : 'is recorded '}at p95 ${result.latency.p95}ms (p50 ${result.latency.p50}ms)`);
-  if (!next) console.log(`floor stays at ${floor.score}/${floor.total} (this run: ${result.score}/${result.total}, margin ${MARGIN})`);
+  if (!next) console.log(`${args.includes('--baseline-only') ? 'floor left alone (--baseline-only), it is' : 'floor stays'} at ${floor.score}/${floor.total} (this run: ${result.score}/${result.total}, margin ${MARGIN})`);
   else console.log(`floor rises from ${floor.score}/${floor.total} to ${next.score}/${next.total} (this run: ${result.score}/${result.total}, margin ${MARGIN})`);
   if ((next || latency) && args.includes('--write')) writeFileSync(floorFile, JSON.stringify({ ...floor, ...(next || {}), ...(latency ? { latency } : {}), ...(next ? { date: new Date().toISOString().slice(0, 10) } : {}) }) + '\n');
 }

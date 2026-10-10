@@ -125,7 +125,7 @@ async function one({ ask: a, want, says, before }) {
   return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms };
 }
 // default: one page fewer than the cores, at most 6. At 6 on a 4-core machine the bench saturated itself (answers took 2.8 s at the median, 3.7 s at p95
-// of the 4 s it waits, two of five misses in a clean run were timing, and the full run took 20 min against about 15 at 3): no headroom to see load in
+// of the 4 s it waits, two of five misses in a clean run were timing, and a full run takes about 20 min either way, it is CPU-bound): no headroom to see load in
 const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cpus().length - 1));
 let next = 0;
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]); } }));
