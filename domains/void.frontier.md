@@ -114,7 +114,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** every ask lands on the right skill even in words no example covers, with a confidence Void can act on ("not sure: did you mean…") instead of a guess.
 - **First piece:** Clef-flash beside the embedding router, both run on the bench's asks offline (`tools/bench.mjs` shape), agreement and accuracy printed; switch only where Clef is better.
 - **Done when:** the router uses Clef where it wins on the bench, the embedding guess stays as the fallback, and a low-confidence answer asks instead of guessing.
-- **claim:**
+- **claim:** builder (claude) 2026-10-10: the first piece: Clef-flash beside the embedding router on the bench's asks, run through the site's own Workers AI binding (owner-only, the way /api/bench runs), agreement and accuracy printed per skill; no switch until Clef wins on the bench.
 
 ## 10. Summon by intent, not by name
 - **What:** describe an outcome ("I need to ship this product page by Friday") and Void assembles the pieces itself: a checklist with the dates worked back from Friday, a draft page card, a countdown, a draft message to whoever it names, floated into the void as one group you can move (groups exist: `skills/group.js`). Each piece is summoned by a skill that already exists; Void only plans which ones and fills them. Nothing is sent or published without the confirm line.
