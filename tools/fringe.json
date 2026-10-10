@@ -1733,5 +1733,30 @@
     ],
     "sha256": "c080cbbcfbe63a7715b336f3a10175f7d515c261c58e31348db9dd0f510b8131",
     "emit": false
+  },
+  {
+    "run": 70,
+    "at": "2026-10-10T09:43:24Z",
+    "family": "quiet-signal-filter",
+    "draft": "drafts/fringe/quiet-signal-filter-5.html",
+    "sources": [
+      {
+        "claim": "A cumulative sum of deviations from a target, less an allowance, detects a small sustained shift in a process mean faster than looking at single readings (Page's CUSUM)",
+        "source": "https://doi.org/10.1093/biomet/41.1-2.100",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "CUSUM with an allowance of half a standard deviation and a decision interval of about five standard deviations is a common choice for detecting a one-sd shift",
+        "source": "https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc323.htm",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Run on a person's own daily numbers, CUSUM flags a lasting change before the person would have noticed it",
+        "source": "drafts/fringe/quiet-signal-filter-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "ccc18854c744580c551692a826ea5195cea8bcb5405c9095486d5faf5c11cf92",
+    "emit": false
   }
 ]

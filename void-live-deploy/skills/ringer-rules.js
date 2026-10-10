@@ -117,11 +117,19 @@ export function step(s, dt) {
 /** Step until everything stops (at most `limit` seconds). */
 export function settle(s, limit = 30) { let n = s; for (let t = 0; n.phase === 'rolling' && t < limit; t += 1 / 60) n = step(n, 1 / 60); return n; }
 
+// A new game that keeps the best score: the fewest shots that cleared a ring so far (the game's own record, nothing else). Pure.
+export function newGame(s, seed) {
+  const was = s && Number.isFinite(s.best) ? s.best : null, now = s && s.over ? s.shots : null;
+  const best = was == null ? now : now == null ? was : Math.min(was, now);
+  return { ...create(seed), best };
+}
+const plural = (n) => n + ' shot' + (n === 1 ? '' : 's');
 export function summary(s) {
-  if (s.over) return 'Ring cleared: all ' + COUNT + ' marbles in ' + s.shots + ' shot' + (s.shots === 1 ? '' : 's');
+  const best = Number.isFinite(s.best) ? s.best : null;
+  if (s.over) return 'Ring cleared: all ' + COUNT + ' marbles in ' + plural(s.shots) + (best == null ? '' : s.shots < best ? ' · a new best (it was ' + best + ')' : s.shots === best ? ' · equals your best' : ' · your best is ' + best);
   if (s.phase === 'rolling') return 'Rolling…';
   const got = s.out + ' of ' + COUNT + ' knocked out · ' + s.shots + ' shot' + (s.shots === 1 ? '' : 's');
-  if (!s.shots) return 'Tap where to aim, set the power, then Flick';
+  if (!s.shots) return 'Tap where to aim, set the power, then Flick' + (best == null ? '' : ' · best clear: ' + plural(best));
   const inside = inRing(shooterOf(s)) && s.shotOut > 0;
   return got + (s.shotOut ? ' · that one got ' + s.shotOut : ' · missed') + (inside ? ' · shoot again from where it stopped' : '');
 }
