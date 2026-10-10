@@ -46,7 +46,7 @@ PowerShell: `Select-String`, `curl.exe`, `Copy-Item -Force`. The console mangles
 
 ## Void's build queue
 The owner can type "update yourself", "ship the next item" or "build 007" in Void (after unlock). That queues one item at /api/queue, and Void's status line shows queued / building / live / needs you / laptop offline.
-Every builder run starts with `python tools\\void_queue.py claim`. If it prints an item, build that one. Test, deploy, mark the board, then `python tools\\void_queue.py done <id> live` (or `needs-you "why"`). `domains\\void.queue.md` mirrors the queue.
+Every builder run starts with `python tools\\void_queue.py claim`. If it prints an item, build that one. Claim first, build second (owner, 2026-10-10): before building a frontier step, merge its claim as a one-line PR on `domains\\void.frontier.md` labelled automerge (that line is for people), and claim its queue job by name with `python tools\\void_queue.py claim <target>` (that is for the race: the claim is one statement on the server, so of two builders exactly one gets the job, and the other is told who holds it and exits 1). A claim that appears on your item mid-run means stop and take the next unclaimed one. Test, deploy, mark the board, then `python tools\\void_queue.py done <id> live` (or `needs-you "why"`). `domains\\void.queue.md` mirrors the queue.
 
 Linux helpers push finished work to a branch `helper/<what>` and open a PR into main; it merges once Void's review is clean (CI no longer ships `helper/*` branches by itself).
 
