@@ -5568,5 +5568,10 @@
   {"ask": "quiz me on this", "want": "skill:quiz"},
   {"ask": "quiz me", "want": "skill:quiz"},
   {"ask": "test me on that", "want": "skill:quiz"},
-  {"ask": "quiz me on the gears", "want": "skill:quiz"}
+  {"ask": "quiz me on the gears", "want": "skill:quiz"},
+  {"ask": "what do you sell", "want": "skill:services"},
+  {"ask": "hire you", "want": "skill:services"},
+  {"ask": "what do you offer", "want": "skill:services"},
+  {"ask": "can i hire you", "want": "skill:services"},
+  {"ask": "what's for sale", "want": "skill:services"}
 ]
