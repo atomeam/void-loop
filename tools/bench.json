@@ -5577,5 +5577,9 @@
   {"ask": "pricing", "want": "skill:services", "says": "Paid Void"},
   {"ask": "price list", "want": "skill:services", "says": "Paid Void"},
   {"ask": "what does void cost", "want": "skill:services", "says": "Paid Void"},
-  {"ask": "how much is void", "want": "skill:services", "says": "Paid Void"}
+  {"ask": "how much is void", "want": "skill:services", "says": "Paid Void"},
+  {"ask": "give me five minutes with this", "want": "skill:challenge"},
+  {"ask": "give me 5 minutes with that", "want": "skill:challenge"},
+  {"ask": "turn the questions i missed into a five-minute challenge", "want": "skill:challenge"},
+  {"ask": "challenge me on the ones i missed", "want": "skill:challenge"}
 ]

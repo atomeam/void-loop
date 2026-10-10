@@ -1049,7 +1049,7 @@ Object.values(things).forEach((th) => {
       stage.appendChild(el);
     }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
-    const stageApi = { stage, things: () => things, kinds: () => stageKinds, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
+    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
@@ -1438,6 +1438,38 @@ function mountList(th) {
       stage.appendChild(el);
     }
 
+    // the timer's face (progress ring, m:ss, a state word), one look for every countdown on the stage: the timer card
+    // and the five-minute challenge (skills/challenge.js, through stageApi.timerFace) both draw with it
+    function timerFace(el) {
+      const ring = document.createElement('svg');
+      ring.setAttribute('width', '32');
+      ring.setAttribute('height', '32');
+      ring.setAttribute('viewBox', '0 0 32 32');
+      const bg = document.createElement('circle');
+      bg.setAttribute('cx', '16'); bg.setAttribute('cy', '16'); bg.setAttribute('r', '14');
+      bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', 'rgba(255,255,255,0.08)'); bg.setAttribute('stroke-width', '2');
+      const fg = document.createElement('circle');
+      fg.setAttribute('cx', '16'); fg.setAttribute('cy', '16'); fg.setAttribute('r', '14');
+      fg.setAttribute('fill', 'none');
+      fg.setAttribute('stroke-width', '2');
+      fg.setAttribute('stroke-linecap', 'round');
+      fg.setAttribute('stroke-dasharray', String(2 * Math.PI * 14));
+      fg.setAttribute('transform', 'rotate(-90 16 16)');
+      ring.appendChild(bg); ring.appendChild(fg);
+      const timeSpan = document.createElement('span');
+      const label = document.createElement('span');
+      label.className = 'timer-label';
+      el.appendChild(ring);
+      el.appendChild(timeSpan);
+      el.appendChild(label);
+      return (remaining, total, word) => {
+        const p = total > 0 ? remaining / total : 0;
+        timeSpan.textContent = Math.floor(remaining / 60000) + ':' + String(Math.floor((remaining % 60000) / 1000)).padStart(2, '0');
+        label.textContent = word;
+        fg.setAttribute('stroke', p > 0.15 ? '#5dffa5' : '#ff5c5c');
+        fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - p)));
+      };
+    }
     function mountTimer(th) {
       const el = document.createElement('div');
       el.className = 'thing timer';
@@ -1451,51 +1483,14 @@ function mountList(th) {
 
       const remaining = th.running ? Math.max(0, th.remaining - (Date.now() - th.startedAt)) : th.remaining;
       const total = th.duration;
-      const pct = total > 0 ? remaining / total : 0;
-      const mins = Math.floor(remaining / 60000);
-      const secs = Math.floor((remaining % 60000) / 1000);
-      const display = mins + ':' + String(secs).padStart(2, '0');
-
-      const timeSpan = document.createElement('span');
-      timeSpan.textContent = display;
-
-      const label = document.createElement('span');
-      label.className = 'timer-label';
-      label.textContent = th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused');
-
-      // progress ring
-      const ring = document.createElement('svg');
-      ring.setAttribute('width', '32');
-      ring.setAttribute('height', '32');
-      ring.setAttribute('viewBox', '0 0 32 32');
-      const bg = document.createElement('circle');
-      bg.setAttribute('cx', '16'); bg.setAttribute('cy', '16'); bg.setAttribute('r', '14');
-      bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', 'rgba(255,255,255,0.08)'); bg.setAttribute('stroke-width', '2');
-      const fg = document.createElement('circle');
-      fg.setAttribute('cx', '16'); fg.setAttribute('cy', '16'); fg.setAttribute('r', '14');
-      fg.setAttribute('fill', 'none'); fg.setAttribute('stroke', pct > 0.15 ? '#5dffa5' : '#ff5c5c');
-      fg.setAttribute('stroke-width', '2');
-      fg.setAttribute('stroke-linecap', 'round');
-      fg.setAttribute('stroke-dasharray', String(2 * Math.PI * 14));
-      fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - pct)));
-      fg.setAttribute('transform', 'rotate(-90 16 16)');
-      ring.appendChild(bg); ring.appendChild(fg);
-
-      el.appendChild(ring);
-      el.appendChild(timeSpan);
-      el.appendChild(label);
+      const face = timerFace(el);
+      face(remaining, total, th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused'));
 
       // tick while running
       if (th.running) {
         el._tickInterval = setInterval(() => {
           const rem = Math.max(0, th.remaining - (Date.now() - th.startedAt));
-          const m = Math.floor(rem / 60000);
-          const s = Math.floor((rem % 60000) / 1000);
-          timeSpan.textContent = m + ':' + String(s).padStart(2, '0');
-          label.textContent = rem > 0 ? 'running' : 'done';
-          const p = total > 0 ? rem / total : 0;
-          fg.setAttribute('stroke', p > 0.15 ? '#5dffa5' : '#ff5c5c');
-          fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - p)));
+          face(rem, total, rem > 0 ? 'running' : 'done');
           if (rem <= 0) {
             clearInterval(el._tickInterval);
             th.running = false;
