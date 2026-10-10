@@ -78,9 +78,9 @@ window.addEventListener('message', (e) => {
 
 let open = null;
 async function propose(raw) {
-  const step = { action: raw.action === 'click' ? 'click' : raw.action === 'fill' ? 'fill' : '', label: String(raw.label || '').slice(0, 120).trim(), text: String(raw.text || '').slice(0, 2000) };
+  const step = { action: raw.action === 'click' ? 'click' : raw.action === 'fill' ? 'fill' : '', label: String(raw.label || '').slice(0, 120).trim(), text: String(raw.text || '').slice(0, 20000) };
   const host = tab ? hostOf(tab.url) : '';
-  const tell = (said) => toVoid({ type: 'void-ext:acted', ...said });
+  const tell = (said) => toVoid({ type: 'void-ext:acted', auto: !!raw.auto, ...said }); // auto: Void proposed it from a draft, nobody typed it
   if (!step.action || !step.label) return tell({ ok: false, why: 'bad-step' });
   if (!host) return tell({ ok: false, why: 'no-tab' });
   if (!(await getAllow()).includes(host)) return tell({ ok: false, why: 'not-allowed', host }); // no card at all

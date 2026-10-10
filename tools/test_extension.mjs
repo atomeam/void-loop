@@ -116,7 +116,9 @@ await V.fill('#input', 'days until new year');
 await V.press('#input', 'Enter');
 await V.waitForSelector('.vput', { state: 'visible', timeout: 10000 }).catch(() => {});
 await page.evaluate(() => { const t = document.getElementById('reply'); t.value = ''; t.focus(); });
-const vputErr = await V.click('.vput', { timeout: 5000 }).then(() => '', (e) => String(e.message).split('\n')[0]);
+// pressed directly, as the draft check does: the tab card above has grown (draft buttons, the B3 step box) and can lie over
+// the countdown card, so a pointer click may land on the wrong card; what is tested is the button's own effect
+const vputErr = await V.evaluate(() => { const b = document.querySelector('.vput'); if (!b) return 'no button'; b.click(); return ''; });
 const vputs = await V.evaluate(() => Array.from(document.querySelectorAll('.vput')).map((b) => ({ shown: !!b.offsetParent, in: (b.parentElement.className || '') })));
 await page.waitForFunction(() => document.getElementById('reply').value.length > 0, null, { timeout: 5000 }).catch(() => {});
 const box2 = await page.evaluate(() => document.getElementById('reply').value);
@@ -203,6 +205,24 @@ await V.waitForFunction(() => /press it yourself/.test((document.querySelector('
 const rec3 = records[2] || {};
 check('B3: even after Yes, a button that would submit its form is refused (you press send yourself), and the record says it failed',
   !(await page.evaluate(() => window.submitted)) && rec3.state === 'failed' && /submits/.test(rec3.result || ''), { records, said: await actSaid() });
+
+// B3 joined to the drafts: a "draft for me: reply" on an allowed site comes back as a proposed step, the same card with the
+// draft in it; on a site not on the list the draft stays copy-only, with no card and nothing said about acting
+const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
+await draftReply();
+await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
+const replyDraft = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
+const autoCard = await panel.evaluate(() => ({ on: document.getElementById('act').classList.contains('on'), what: document.querySelector('.act-what').textContent, text: document.querySelector('.act-text').textContent, site: document.querySelector('.act-site').textContent }));
+await press('.act-no', async () => !(await cardOn()));
+await sw.evaluate(() => chrome.storage.local.set({ allow: [] }));
+await page.waitForTimeout(200);
+await draftReply();
+await page.waitForTimeout(800);
+const offList = { on: await cardOn(), said: await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || ''), act: await actSaid(), box: await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '') };
+check('B3 from a draft: a "draft for me: reply" on an allowed site yields the Yes / No card to fill the box you were in with the draft; on a site not listed, no card and the draft stays copy-only',
+  autoCard.on && replyDraft.length > 0 && autoCard.text === replyDraft && /Reply/.test(autoCard.what) && autoCard.site === 'fixture.test'
+  && !offList.on && /^reply from Void/.test(offList.said) && !/not on your list/.test(offList.act) && offList.box.length > 0,
+  { autoCard, replyDraft: replyDraft.slice(0, 80), offList });
 
 // "Ask Void about this page" (sent to Void, #134): the answer card says the page left the browser for this answer
 await sw.evaluate(() => chrome.storage.session.set({ ask: { q: 'What is this page about?', page: { title: 'Fixture page', url: 'https://fixture.test/', selection: '', field: '', text: 'fixture text' }, at: Date.now() } }));

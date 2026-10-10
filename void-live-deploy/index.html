@@ -951,7 +951,7 @@ Object.values(things).forEach((th) => {
         say('read the tab · it stays in this browser');
       } else if (m.type === 'void-ext:drafted' && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
       else if (m.type === 'void-ext:record') extRecord(m); // B3: the panel asks Void to write the step's execution record
-      else if (m.type === 'void-ext:acted') { const t = actSaid(m); say(t); const sp = document.querySelector('.tab-act-said'); if (sp) sp.textContent = t; }
+      else if (m.type === 'void-ext:acted' && !(m.auto && m.why === 'not-allowed')) { const t = actSaid(m); say(t); const sp = document.querySelector('.tab-act-said'); if (sp) sp.textContent = t; } // a proposal Void made itself, off the list, stays silent
     });
     extSend({ type: 'void-ext:ready' });
     // B3: Void proposes one step for the page (fill a field, or click a button, by its visible label); the extension's own
@@ -1029,6 +1029,9 @@ Object.values(things).forEach((th) => {
           if (!j || !j.draft) { said.textContent = (j && j.note) || 'Void couldn’t draft just now. Try again in a moment.'; return; }
           ext.draft = j.draft; ta.value = j.draft; ta.rows = Math.min(12, Math.max(3, j.draft.split('\n').length + 1));
           said.textContent = intent + ' from Void' + (j.model === 'rules' ? ' (by rule, no model just now)' : '') + (j.masked ? ' · keys in the text were masked' : '') + (j.cut ? ' · the selection was cut' : '') + ' · put it in the page, or copy it';
+          // B3 joined to the draft: a reply for the box you were in becomes a proposed step, the same Yes / No card in the panel
+          // and the same record; the panel shows it only on a site on your list (off the list it says nothing: copy as before)
+          if (intent === 'reply' && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: j.draft, auto: true });
         }));
         const stepIn = body.querySelector('.tab-step'), actSp = body.querySelector('.tab-act-said');
         stepIn.value = ext.stepText || ''; stepIn.addEventListener('input', () => { ext.stepText = stepIn.value; }); // a redraw of the stage keeps what you typed
