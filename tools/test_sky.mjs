@@ -41,15 +41,15 @@ async function open(opts = {}) {
   return page;
 }
 const ask = async (page, text) => { await page.fill('#input', text); await page.keyboard.press('Enter'); };
-const openSky = async (page) => { await ask(page, 'sky'); await page.waitForSelector('#void-world.on', { timeout: 15000 }); await page.waitForFunction(() => window.__voidWorld && window.__voidWorld() && window.__voidWorld().items().length >= 0 && document.querySelector('.skyc .skynow'), null, { timeout: 15000 }); await page.waitForTimeout(250); };
+const openSky = async (page) => { await ask(page, 'sky'); await page.waitForSelector('#void-card-world.on', { timeout: 15000 }); await page.waitForFunction(() => window.__voidWorld && window.__voidWorld() && window.__voidWorld().items().length >= 0 && document.querySelector('.skyc .skynow'), null, { timeout: 15000 }); await page.waitForTimeout(250); };
 // the brightest and the darkest of a few pixels from the world canvas, as [r, g, b]
-const pixel = (page, fx, fy) => page.evaluate(([fx, fy]) => { const c = document.getElementById('void-world'), x = c.getContext('2d').getImageData(Math.floor(c.width * fx), Math.floor(c.height * fy), 1, 1).data; return [x[0], x[1], x[2]]; }, [fx, fy]);
-const lit = (page) => page.evaluate(() => { const c = document.getElementById('void-world'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] > 170 && d[i + 1] > 170 && d[i + 2] > 170) n++; return n; });
+const pixel = (page, fx, fy) => page.evaluate(([fx, fy]) => { const c = document.getElementById('void-card-world'), x = c.getContext('2d').getImageData(Math.floor(c.width * fx), Math.floor(c.height * fy), 1, 1).data; return [x[0], x[1], x[2]]; }, [fx, fy]);
+const lit = (page) => page.evaluate(() => { const c = document.getElementById('void-card-world'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] > 170 && d[i + 1] > 170 && d[i + 2] > 170) n++; return n; });
 
 // ---- noon ----
 {
   const page = await open({ at: '2026-06-21T11:00:00Z' });
-  check('before the sky is asked for, there is no world: the void is the void', await page.evaluate(() => !document.getElementById('void-world') && !document.documentElement.classList.contains('has-world')), '');
+  check('before the sky is asked for, there is no world: the void is the void', await page.evaluate(() => !document.getElementById('void-card-world') && !document.documentElement.classList.contains('has-world')), '');
   await openSky(page);
   const card = await page.evaluate(() => { const c = document.querySelector('.vpage'); return { text: c.innerText, chips: [...c.querySelectorAll('.skychips a')].map((a) => a.getAttribute('data-ask')), form: !!c.querySelector('form.skyplace input'), sim: /simulation/i.test(c.innerText) }; });
   check('the card has the definition, the take, the live row and the chips', /everything you can see above the horizon/.test(card.text) && /A take\./.test(card.text) && /3 minutes 56 seconds/.test(card.text) && /Right now, where you are/.test(card.text) && card.chips.length === 7, JSON.stringify(card.chips));
@@ -59,7 +59,7 @@ const lit = (page) => page.evaluate(() => { const c = document.getElementById('v
   check('the stage is a blue sky at noon', top[2] > 150 && top[2] > top[0] + 40, JSON.stringify(top));
   check('no stars in a noon sky (none drawn, none to tap)', await page.evaluate(() => window.__voidWorld().items().every((i) => i.kind !== 'star')), '');
   check('the sun is in view, clear of the card', await page.evaluate(() => { const c = document.querySelector('.vpage').getBoundingClientRect(), s = window.__voidWorld().items().find((i) => i.kind === 'sun'); return !!s && (s.x < c.left - 10 || s.x > c.right + 10 || s.y < c.top - 10 || s.y > c.bottom + 10); }), JSON.stringify(await page.evaluate(() => window.__voidWorld().items().filter((i) => i.kind === 'sun'))));
-  check('the void\'s own layers are still there under it (the world covers them, it does not remove them)', await page.evaluate(() => !!document.getElementById('void-stars') && getComputedStyle(document.getElementById('void-world')).zIndex === '0' && document.getElementById('void-world').nextElementSibling.id === 'stage'), '');
+  check('the void\'s own layers are still there under it (the world covers them, it does not remove them)', await page.evaluate(() => !!document.getElementById('void-stars') && getComputedStyle(document.getElementById('void-card-world')).zIndex === '0' && document.getElementById('void-card-world').nextElementSibling.id === 'stage'), '');
   if (shots) { fs.mkdirSync(path.resolve(here, '..', 'docs', 'img'), { recursive: true }); await page.screenshot({ path: path.resolve(here, '..', 'docs', 'img', 'sky-noon.png') }); }
   // dragging looks around: the view's azimuth changes by about the drag in degrees, and a tap on empty sky does NOT close the card after a drag
   const v0 = await page.evaluate(() => window.__voidWorld().view());
@@ -72,8 +72,8 @@ const lit = (page) => page.evaluate(() => { const c = document.getElementById('v
   // close: a tap on empty sky (no star under it) closes the card, and the stage goes back to the void
   await page.mouse.click(120, 560);
   await page.waitForFunction(() => !document.querySelector('.vpage'), null, { timeout: 5000 });
-  await page.waitForFunction(() => !document.getElementById('void-world'), null, { timeout: 5000 });
-  check('closing the card gives the void back: no world, no class, an empty stage', await page.evaluate(() => !document.getElementById('void-world') && !document.documentElement.classList.contains('has-world') && document.getElementById('stage').children.length === 0 && !window.__voidWorld()), '');
+  await page.waitForFunction(() => !document.getElementById('void-card-world'), null, { timeout: 5000 });
+  check('closing the card gives the void back: no world, no class, an empty stage', await page.evaluate(() => !document.getElementById('void-card-world') && !document.documentElement.classList.contains('has-world') && document.getElementById('stage').children.length === 0 && !window.__voidWorld()), '');
   check('no page errors at noon', page._errors.length === 0, page._errors.join(' | '));
   await page._ctx.close();
 }
@@ -101,10 +101,10 @@ const lit = (page) => page.evaluate(() => { const c = document.getElementById('v
   await page.waitForFunction(() => /The moon tonight/.test(document.querySelector('.vpage') ? document.querySelector('.vpage').innerText : ''), null, { timeout: 8000 });
   const moon = await page.evaluate(() => document.querySelector('.vpage').innerText);
   check('the "Tonight\'s moon" chip answers with the moon (phase, rise, set, next full moon)', /% of the moon is lit/.test(moon) && /rises|sets/.test(moon) && /Next full moon/.test(moon), moon);
-  await page.waitForFunction(() => !document.getElementById('void-world'), null, { timeout: 4000 }).catch(() => {});
-  check('that card does not own the stage: the world is gone, the void is back', await page.evaluate(() => !document.getElementById('void-world') && !document.documentElement.classList.contains('has-world')), '');
+  await page.waitForFunction(() => !document.getElementById('void-card-world'), null, { timeout: 4000 }).catch(() => {});
+  check('that card does not own the stage: the world is gone, the void is back', await page.evaluate(() => !document.getElementById('void-card-world') && !document.documentElement.classList.contains('has-world')), '');
   for (const [chip, re] of [['sunrise and sunset', /Sunrise|Sunset/], ['next eclipse', /eclipse/i], ['meteor showers this month', /meteor|shower/i], ['what\'s that constellation', /constellation/i], ['aurora forecast', /aurora|northern lights/i], ['next full moon', /next full moon/i]]) {
-    await ask(page, 'sky'); await page.waitForSelector('#void-world.on'); await page.waitForSelector('.skychips a');
+    await ask(page, 'sky'); await page.waitForSelector('#void-card-world.on'); await page.waitForSelector('.skychips a');
     await page.click(`.skychips a[data-ask="${chip.replace(/"/g, '\\"')}"]`);
     await page.waitForFunction((r) => { const c = document.querySelector('.vpage'); return c && !c.classList.contains('skyc') && new RegExp(r, 'i').test(c.innerText); }, re.source, { timeout: 8000 }).catch(() => {});
     const t = await page.evaluate(() => (document.querySelector('.vpage') || {}).innerText || '');
@@ -167,7 +167,7 @@ const lit = (page) => page.evaluate(() => { const c = document.getElementById('v
   const south = await page.evaluate(() => ({ sub: document.querySelector('.vpage .sub').innerText, place: window.__voidWorld().state().place, take: document.querySelector('.skytake').innerText }));
   check('"change location" moves the sky to Sydney (south latitude, a south celestial pole in the take)', south.place.lat < -30 && /south horizon/.test(south.take), JSON.stringify(south));
   await page.keyboard.press('Escape'); await page.waitForFunction(() => !document.querySelector('.vpage'), null, { timeout: 4000 });
-  check('Escape closes the card and the void comes back', await page.evaluate(() => new Promise((r) => setTimeout(() => r(!document.getElementById('void-world')), 800))), '');
+  check('Escape closes the card and the void comes back', await page.evaluate(() => new Promise((r) => setTimeout(() => r(!document.getElementById('void-card-world')), 800))), '');
   check('no page errors with the keyboard', page._errors.length === 0, page._errors.join(' | '));
   await page._ctx.close();
 }
@@ -176,11 +176,11 @@ const lit = (page) => page.evaluate(() => { const c = document.getElementById('v
 {
   const page = await open({ at: '2026-01-15T22:00:00Z', reduced: true });
   await openSky(page);
-  const a = await page.evaluate(() => ({ mode: window.__voidWorld().mode, t: getComputedStyle(document.getElementById('void-world')).transitionDuration }));
+  const a = await page.evaluate(() => ({ mode: window.__voidWorld().mode, t: getComputedStyle(document.getElementById('void-card-world')).transitionDuration }));
   check('reduced motion: told to hold still, and the world appears without a fade', a.mode.reduced === true && /^0s$/.test(a.t), JSON.stringify(a));
-  const before = await page.evaluate(() => document.getElementById('void-world').toDataURL().length);
+  const before = await page.evaluate(() => document.getElementById('void-card-world').toDataURL().length);
   await page.waitForTimeout(1500);
-  check('reduced motion: the scene does not change by itself', (await page.evaluate(() => document.getElementById('void-world').toDataURL().length)) === before, '');
+  check('reduced motion: the scene does not change by itself', (await page.evaluate(() => document.getElementById('void-card-world').toDataURL().length)) === before, '');
   const vv = await page.evaluate(() => window.__voidWorld().view());
   await page.focus('[data-look="left"]'); await page.keyboard.press('Enter');
   check('reduced motion: it still redraws when asked (a look button)', (await page.evaluate(() => window.__voidWorld().view().az0)) !== vv.az0 && (await lit(page)) > 20, '');

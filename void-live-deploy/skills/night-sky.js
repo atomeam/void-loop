@@ -125,7 +125,8 @@ async function run(text, api) {
 export default {
   name: 'nightsky',
   nightSkyOf,
-  examples: ['show me the sky', 'show the night sky', "what's in the sky tonight", 'what is in the sky right now', 'night sky', 'hide the sky'],
+  // the show asks ("show me the sky", "night sky") now open the sky card with its world (skills/sky.js, listed first), so only the hide ask is routed here
+  examples: ['hide the sky'],
   nearMisses: ['why is the sky blue', 'sky news', 'skyrim', 'the sky is the limit', 'blue sky thinking', 'moon phase tonight', 'show me the stars of the show'],
   match(lower, text) { return !!nightSkyOf(text); },
   run,
