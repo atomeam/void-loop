@@ -918,7 +918,7 @@ Object.values(things).forEach((th) => {
     // the key in extension/manifest.json). Page text stays in this browser: it lives in memory here, never in the saved stage
     // (which syncs to /api/mine when you're signed in), and no ask, log or lookup carries it.
     const EXT_ORIGIN = 'chrome-extension://dcjdpaeachfmfndklkiglgebfflamhkg';
-    const ext = { on: false, tab: null, seq: 0, waiting: {} };
+    const ext = { on: false, tab: null, seq: 0, waiting: {}, draft: '', sent: '' }; // draft and sent: the card's box and its flag, in memory only, so a redraw keeps them
     const inPanel = window.parent !== window;
     function extSend(msg) { if (inPanel) { try { window.parent.postMessage(msg, EXT_ORIGIN); } catch (_) {} } }
     function extDraft(text) {
@@ -946,6 +946,7 @@ Object.values(things).forEach((th) => {
         if (!th) { // a card that never serializes (toJSON gives nothing): not in localStorage, not in /api/mine, not in undo
           th = { id: uid('tab'), kind: 'tab', x: 24, y: 24 }; Object.defineProperty(th, 'toJSON', { value: () => undefined }); things[th.id] = th;
         }
+        ext.draft = ''; ext.sent = '';
         selectedId = th.id; save(); render();
         say('read the tab · it stays in this browser');
       } else if (m.type === 'void-ext:drafted' && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
@@ -1000,13 +1001,35 @@ Object.values(things).forEach((th) => {
           + (t.selection ? '<blockquote class="tab-sel" style="margin:0 0 8px;padding-left:8px;border-left:2px solid var(--line);max-height:120px;overflow:auto;white-space:pre-wrap">' + esc(t.selection) + '</blockquote>' : '<p style="margin:0 0 8px;color:var(--muted)">nothing selected</p>')
           + (t.readable ? '' : '<p style="margin:0 0 8px;color:var(--muted)">Chrome keeps extensions out of this page: only its title and address came through.</p>')
           + '<textarea class="tab-draft" rows="3" placeholder="a draft for the page" style="width:100%;box-sizing:border-box;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:6px;font:inherit"></textarea>'
+          // draft for me (sends it to Void): the title, address and selection go to Void's answer engine once (mode draft, lib/draft.js), the draft
+          // comes back into the box above for "put in the page" or copy, and the card says what left. What is in the box goes along as a note.
+          + '<div class="tab-ask" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;color:var(--muted);font-size:12px">draft for me:'
+          + ['reply', 'summary', 'notes', 'rewrite'].map((k) => '<button type="button" class="tab-ask-' + k + ' vcopy" data-intent="' + k + '"' + (k === 'rewrite' && !t.selection ? ' disabled title="select the text to rewrite first"' : '') + '>' + k + '</button>').join('')
+          + '<span>(sends it to Void)</span></div>'
           + '<div style="display:flex;gap:8px;align-items:center;margin-top:6px"><button type="button" class="tab-put vcopy">put in the page</button><span class="tab-said" style="color:var(--muted);font-size:12px">'
           + esc(t.field ? 'goes into: ' + (t.field.name || t.field.tag) : 'goes into the box you click on the page') + '</span></div>'
-          + '<div style="color:var(--muted);font-size:11px;margin-top:6px">Not saved, not sent anywhere. You press send on the page yourself.</div>'
+          + '<div class="tab-foot" style="color:var(--muted);font-size:11px;margin-top:6px"></div>'
           + '<div style="display:flex;gap:6px;margin-top:10px"><input class="tab-step" placeholder="a step for Void: fill Reply with … / click Save" style="flex:1;min-width:0;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:5px 6px;font:inherit"><button type="button" class="tab-propose vcopy">propose</button></div>'
           + '<div class="tab-act-said" style="color:var(--muted);font-size:12px;margin-top:4px">Void acts only on a site you allowed, and only after your yes in the panel.</div>';
-        const put = body.querySelector('.tab-put'), ta = body.querySelector('.tab-draft'), said = body.querySelector('.tab-said');
+        const put = body.querySelector('.tab-put'), ta = body.querySelector('.tab-draft'), said = body.querySelector('.tab-said'), foot = body.querySelector('.tab-foot');
+        const footLine = () => { foot.textContent = ext.sent ? 'Not saved. ' + ext.sent + ' You press send on the page yourself.' : 'Not saved, not sent anywhere. You press send on the page yourself.'; };
+        ta.value = ext.draft; footLine();
+        ta.addEventListener('input', () => { ext.draft = ta.value; });
         put.addEventListener('click', async () => { if (!ta.value.trim()) { said.textContent = 'write the draft first'; return; } said.textContent = 'putting it in…'; said.textContent = draftSaid(await extDraft(ta.value)); });
+        body.querySelectorAll('.tab-ask button').forEach((b) => b.addEventListener('click', async () => {
+          const intent = b.dataset.intent, tab = ext.tab; if (!tab) return;
+          said.textContent = 'asking Void for a ' + intent + '…';
+          let j = null;
+          try {
+            const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'draft', intent, title: tab.title, url: tab.url, selection: tab.selection, note: ta.value.trim().slice(0, 300) }) });
+            if (r.ok || r.status === 400 || r.status === 429) j = await r.json();
+          } catch (_) {}
+          if (!ta.isConnected) return; // the card was redrawn or closed meanwhile
+          ext.sent = 'The title, address and selection were sent to a-to-mind.com for a ' + intent + ' draft · not kept there.'; footLine();
+          if (!j || !j.draft) { said.textContent = (j && j.note) || 'Void couldn’t draft just now. Try again in a moment.'; return; }
+          ext.draft = j.draft; ta.value = j.draft; ta.rows = Math.min(12, Math.max(3, j.draft.split('\n').length + 1));
+          said.textContent = intent + ' from Void' + (j.model === 'rules' ? ' (by rule, no model just now)' : '') + (j.masked ? ' · keys in the text were masked' : '') + (j.cut ? ' · the selection was cut' : '') + ' · put it in the page, or copy it';
+        }));
         const stepIn = body.querySelector('.tab-step'), actSp = body.querySelector('.tab-act-said');
         stepIn.value = ext.stepText || ''; stepIn.addEventListener('input', () => { ext.stepText = stepIn.value; }); // a redraw of the stage keeps what you typed
         body.querySelector('.tab-propose').addEventListener('click', () => { const st = stepOf(stepIn.value); if (!st) { actSp.textContent = ACT_WHY['bad-step']; return; } actSp.textContent = extPropose(st) ? 'asking you in the panel…' : DRAFT_WHY['no-panel']; });

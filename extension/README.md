@@ -13,6 +13,7 @@ Void in the browser's side panel. It works with the page you are on in two ways,
 - These read the title, the address, your selection, the text field you are in and up to 8,000 characters of visible text, and send them to Void's answer engine (`/api/answer`, field `page`), never in the address bar.
 - Secrets in the page (keys, tokens, passwords in links) are masked before the model sees them, and nothing about the page is stored. Password fields are never read.
 - The answer card says "this page was sent to a-to-mind.com for this answer".
+- On the tab card (after Alt+Shift+V), "draft for me: reply · summary · notes · rewrite (sends it to Void)": the title, address and selected text go to Void's answer engine once (`/api/answer`, `mode: 'draft'`, `void-live-deploy/lib/draft.js`; the address kept to host and path, keys masked, nothing stored), and the draft comes back into the card's box, ready for "put in the page" or copy. Whatever is in the box goes along as a note to Void. The card then says what was sent and for what. With no model, a plain rules draft comes back instead of nothing.
 
 **Acts for you (B3).** One step at a time, on a site you allowed, after your yes.
 - In the tab card, write a step for Void: "fill Reply with Thanks, see you Friday" or "click Save". Void proposes it; it does nothing itself.

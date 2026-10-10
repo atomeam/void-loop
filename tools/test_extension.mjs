@@ -7,6 +7,7 @@ import { chromium } from 'playwright-core';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+const answerFn = await import(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url).href);
 
 const repo = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..');
 const live = path.join(repo, 'void-live-deploy');
@@ -25,15 +26,21 @@ const man = JSON.parse(fs.readFileSync(path.join(extDir, 'manifest.json'), 'utf8
   const titles = [...bg.matchAll(/contextMenus\.create\(\{[^}]*title: '([^']+)'/g)].map((m) => m[1]);
   check('menus: each one says whether the page stays in the browser or is sent to Void, and the old "Ask Void about \'…\'" (selection sent as an ask) is gone',
     titles.length === 3 && titles.every((t) => /stays in your browser|sends it to Void/.test(t)) && !/ask-void|Ask Void about “%s”/.test(bg), titles); }
-{ const { execFileSync } = await import('node:child_process');
-  const listed = execFileSync('python3', ['-c', 'import sys,zipfile,hashlib;z=zipfile.ZipFile(sys.argv[1]);print("\\n".join(n+" "+hashlib.sha256(z.read(n)).hexdigest() for n in sorted(z.namelist())))', path.join(repo, 'extension', 'void-extension.zip')], { encoding: 'utf8' }).trim().split('\n');
-  const { createHash } = await import('node:crypto');
-  const folder = fs.readdirSync(path.join(repo, 'extension')).filter((f) => f !== 'void-extension.zip').sort().map((f) => f + ' ' + createHash('sha256').update(fs.readFileSync(path.join(repo, 'extension', f))).digest('hex'));
-  check('zip: extension/void-extension.zip holds exactly the folder\'s files, byte for byte (rebuild it after any change)', JSON.stringify(listed) === JSON.stringify(folder), { zip: listed.map((x) => x.split(' ')[0]), folder: folder.map((x) => x.split(' ')[0]), stale: listed.filter((x) => !folder.includes(x)).map((x) => x.split(' ')[0]) }); }
 check('manifest: only activeTab and scripting reach into pages (no host permissions shipped)', man.permissions.includes('activeTab') && man.permissions.includes('scripting') && !man.host_permissions && !man.optional_host_permissions, man.permissions);
 man.host_permissions = ['<all_urls>'];
 fs.writeFileSync(path.join(extDir, 'manifest.json'), JSON.stringify(man));
 
+{ // the zip people install must be the folder, byte for byte (the two drifted apart for days once)
+  const { spawnSync } = await import('node:child_process');
+  const zip = path.join(repo, 'extension', 'void-extension.zip'), names = fs.readdirSync(path.join(repo, 'extension')).filter((f) => !f.endsWith('.zip')).sort();
+  const list = spawnSync('unzip', ['-Z1', zip], { encoding: 'utf8' });
+  if (list.error) console.log('skip zip check: unzip is not installed here');
+  else {
+    const inZip = list.stdout.trim().split('\n').sort();
+    const same = inZip.join() === names.join() && names.every((f) => spawnSync('unzip', ['-p', zip, f]).stdout.equals(fs.readFileSync(path.join(repo, 'extension', f))));
+    check('zip: void-extension.zip holds the folder byte for byte (re-zip: cd extension && zip -X void-extension.zip ' + names.join(' ') + ')', same, { inZip, names });
+  }
+}
 const userDir = fs.mkdtempSync(path.join(os.tmpdir(), 'void-ext-user-'));
 const ctx = await chromium.launchPersistentContext(userDir, { executablePath: exe, headless: true, args: ['--disable-extensions-except=' + extDir, '--load-extension=' + extDir] });
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml', '.txt': 'text/plain' };
@@ -56,6 +63,10 @@ await ctx.route(/^https?:\/\//, (r) => {
       const rec = records.find((x) => x.id === b.id);
       if (b.op === 'end' && rec && rec.state === 'running') { rec.state = b.state; rec.result = b.text; return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ id: rec.id, state: rec.state }) }); }
       return r.fulfill({ status: 409, contentType: 'application/json', body: '{}' });
+    }
+    if (u.pathname.startsWith('/api/answer') && /"mode":"draft"/.test(r.request().postData() || '')) { // the tab card's "draft for me": the real handler, no model
+      return answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', body: r.request().postData() }), env: { AI: undefined } })
+        .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
     }
     if (u.pathname.startsWith('/api/')) return r.fulfill({ status: 404, contentType: 'application/json', body: '{}' });
     const f = u.pathname === '/' || u.pathname === '/index.html' ? path.join(repo, 'void.html') : path.join(live, decodeURIComponent(u.pathname));
@@ -117,6 +128,23 @@ const stored = await V.evaluate(() => JSON.stringify(Object.fromEntries(Object.k
 check('local only: the saved stage (synced when signed in) holds no page text, no draft and no tab card at all', !stored.includes('PLUM-7731') && !stored.includes(DRAFT) && !/"kind":"tab"/.test(stored) && /days until|countdown/i.test(stored), stored.slice(0, 200));
 const leaked = out.filter((x) => x.includes('PLUM-7731') || x.includes(encodeURIComponent('PLUM-7731')) || x.includes(DRAFT) || x.includes(encodeURIComponent(DRAFT)));
 check('local only: no request anywhere carried the page text or the draft', leaked.length === 0, leaked.slice(0, 3));
+
+// "draft for me" on the tab card (sends it to Void, lib/draft.js): the card's box fills with the draft (rules draft here, no model),
+// the card flags what left and for what, and the one request carried the title, address and selection, nothing else of the page
+await V.evaluate(() => { const t = document.querySelector('.tab-draft'); t.value = 'keep it short'; t.dispatchEvent(new Event('input', { bubbles: true })); });
+const beforeDraft = out.length;
+await V.evaluate(() => document.querySelector('.tab-ask-summary').click()); // the countdown card above lifts over the tab card, so a pointer click would land on its canvas
+await V.waitForFunction(() => /from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+const dSaid = await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '');
+const dBox = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
+const dFoot = await V.evaluate(() => (document.querySelector('.tab-foot') || {}).textContent || '');
+const dPosts = out.slice(beforeDraft).filter((x) => /a-to-mind\.com\/api\/answer /.test(x));
+let dBody = null; try { dBody = JSON.parse(dPosts[0].slice(dPosts[0].indexOf(' ') + 1)); } catch (_) {}
+check('draft for me: the summary comes back into the card\'s box, the card says it is from Void and what was sent, and the one request carried mode draft with the title, address, the selection (none now) and the box as a note',
+  /summary from Void/.test(dSaid) && /Fixture page/.test(dBox) && /sent to a-to-mind\.com for a summary draft · not kept there/.test(dFoot)
+  && dPosts.length === 1 && dBody && dBody.mode === 'draft' && dBody.intent === 'summary' && dBody.title === 'Fixture page' && dBody.url === 'https://fixture.test/' && dBody.note === 'keep it short' && !('text' in dBody) && !('field' in dBody),
+  { dSaid, dBox: dBox.slice(0, 120), dFoot, dBody });
+check('draft for me: rewrite is disabled with nothing selected', await V.evaluate(() => !!(document.querySelector('.tab-ask-rewrite') || {}).disabled));
 
 // inside the panel, a message that doesn't come from the panel itself (here: the page posting to itself) changes nothing
 await V.evaluate(() => window.postMessage({ type: 'void-ext:tab', tab: { title: 'forged', url: 'https://evil.test/', selection: 'forged' } }, '*'));
