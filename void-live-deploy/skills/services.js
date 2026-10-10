@@ -51,12 +51,12 @@ async function run(text, api) {
   const q = servicesOf(text);
   if (!q) return 'none';
   // the fallback card first, so the page never waits on the store; the live prices land over it when the catalog answers
-  const el = showPage((p) => { p.innerHTML = cardHtml(esc, null); }); // void-review: ok (every variable went through esc in rowHtml; the rest is this file's own literals)
+  const el = showPage((p) => { p.innerHTML = cardHtml(esc, null); });
   try {
     const r = await fetch('/api/catalog');
     const j = r.ok ? await r.json() : null;
     const catalog = j && Array.isArray(j.products) ? j.products : null;
-    if (catalog && api._pageStill(el)) el.innerHTML = cardHtml(esc, catalog); // void-review: ok (same builder, same esc)
+    if (catalog && api._pageStill(el)) el.innerHTML = cardHtml(esc, catalog);
   } catch (_) { /* offline or no catalog: the fallback card stands */ }
   return 'services';
 }
