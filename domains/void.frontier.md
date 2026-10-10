@@ -181,7 +181,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
   - **Every goal is reachable with the visitor's own controls, as a test.** Each goal carries its source's parameter constraints, and the required test `goal/<source>/<goal>-reachable-within-controls` asserts that some setting inside the declared ranges satisfies every condition.
 - **First piece:** the gear goal "make the driven gear turn half as fast as the driver" (`drivenTurnsPerDriverTurn` = 0.5 ± 0.01), with its required tests written first, after #17's gear explainer and quiz ship.
 - **Done when:** one goal per explainer passes through the same goal card with no adapter, and each is a named required test.
-- **claim:** (later: after #17)
+- **claim:** claude (worldtime-void-extension-5h5if1) 2026-10-10: #17 is done, so the first piece: the goal card ("give me a challenge with this"), live ports beside snapshot ports on the stage, goals as conditions on `void.observations.v1` fields, and the gear goal `drivenTurnsPerDriverTurn` = 0.5 ± 0.01 with `goal/gear/half-speed-reachable-within-controls` written first.
 
 ## 19. "Find the rule": discovery mode for an explainer
 - **What:** an optional mode where Void shows a miniature with its explanation and readouts hidden. The visitor experiments, captures the trials they choose into a small experiment notebook, predicts the next result before running it, then compares; "Reveal the rule" shows the explanation and ties it to their own trials. Goal mode (#18) is "make it do this"; this is "figure out why it does this".
