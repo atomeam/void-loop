@@ -173,11 +173,14 @@
   "counter",
   "eightball",
   "fireworks",
+  "gears",
   "go",
+  "growthtree",
   "heart",
   "list",
   "mancala",
   "monopoly",
+  "moon",
   "notepad",
   "othello",
   "paper",
@@ -185,6 +188,7 @@
   "piggybank",
   "poker",
   "rack",
+  "ringer",
   "savings",
   "stopwatch",
   "tabletop",
@@ -198,5 +202,34 @@
   "version": 1,
   "motto": null,
   "voidquest": null
+ },
+ "tracks": [
+  {
+   "name": "Living action figures",
+   "last": "2026-10-07"
+  },
+  {
+   "name": "One-shot printing of working machines",
+   "last": "2026-10-07"
+  },
+  {
+   "name": "Life extension and disease cures",
+   "last": "2026-10-07"
+  },
+  {
+   "name": "Planet restoration",
+   "last": "2026-10-07"
+  },
+  {
+   "name": "Void stage handoff",
+   "last": "2026-10-07"
+  }
+ ],
+ "building": {
+  "at": "2026-10-10T01:49:51Z",
+  "date": "2026-10-10",
+  "by": "claude",
+  "item": "Growth you can watch: the growth card gets its figure",
+  "what": "two pieces shipped. (1, #288) \"growth\" brings its tree inside the card: skills/growth-tree.js lays the ledger out, one branch per entry, oldest the trunk, newest at the tips, each seeded by its own entry so the tree is t"
  }
 }
