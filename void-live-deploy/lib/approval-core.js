@@ -22,8 +22,9 @@ export const GATED = {
   'email.send': { rule: 'send.email', kind: 'send', service: 'email', board: 'send an email' },
   'message.send': { rule: 'send.message', kind: 'send', service: 'messaging', board: 'send a message' },
   'release.publish': { rule: 'send.post', kind: 'send', service: 'GitHub', board: 'post release notes' },
-  // The proposal card's send (skills/proposal.js, build order step 3). Sending is not connected: a yes records that nothing
-  // went out, and the ask itself writes a stubbed execution record (lib/actions.js), ref the customer's domain.
+  // The proposal card's send (skills/proposal.js, build order step 3). The executor is lib/email-send.js (dry run until
+  // EMAIL_LIVE=send); the ask itself still writes a stubbed execution record (lib/actions.js), ref the customer's domain,
+  // and the card attaches the exact draft to the ask so the fingerprint — and the yes — cover that text and no other.
   'proposal.send': { rule: 'send.proposal', kind: 'send', service: 'email', board: 'send a proposal', stub: (a) => String((a && a.to) || '').replace(/^.*@/, '').toLowerCase() },
   'calendar.book': { rule: 'book.calendar', kind: 'book', service: 'your calendar', board: 'add to my calendar' },
   'booking.make': { rule: 'book.booking', kind: 'book', service: 'booking', board: 'make a booking' },
