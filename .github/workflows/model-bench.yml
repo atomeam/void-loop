@@ -30,10 +30,10 @@ on:
         description: PR number to post the table and verdict to (empty = job summary only)
         default: ''
         type: string
-      token2:
-        description: Use the CLOUDFLARE_API_TOKEN2 secret instead of CLOUDFLARE_API_TOKEN (whichever one has Workers AI permission)
-        type: boolean
-        default: false
+      site:
+        description: The site that runs the bench (its /api/bench)
+        default: 'https://a-to-mind.com'
+        type: string
 
 permissions:
   contents: write # the switch PR's branch; the ledger line on main for a keep
@@ -46,11 +46,10 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      CLOUDFLARE_API_TOKEN: ${{ inputs.token2 && secrets.CLOUDFLARE_API_TOKEN2 || secrets.CLOUDFLARE_API_TOKEN }}
+      READ_TOKEN: ${{ secrets.READ_TOKEN }}
+      SITE: ${{ inputs.site }}
       GH_TOKEN: ${{ github.token }}
       PR: ${{ inputs.pr }}
-      BENCH_TOKEN_NAME: ${{ inputs.token2 && 'CLOUDFLARE_API_TOKEN2' || 'CLOUDFLARE_API_TOKEN' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -60,7 +59,7 @@ jobs:
         id: check
         run: |
           set +e
-          node tools/model-bench.mjs --check > check.txt 2>&1; code=$?
+          node tools/model-bench.mjs --check --site "$SITE" > check.txt 2>&1; code=$?
           cat check.txt
           if [ "$code" = 0 ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; exit 0; fi
           echo "ok=false" >> "$GITHUB_OUTPUT"
@@ -75,8 +74,9 @@ jobs:
           CAP: ${{ inputs.max_neurons }}
         run: |
           set -o pipefail
-          args=(--out model-bench.json --md table.md --top "${TOP:-3}" --max-neurons "${CAP:-8000}")
-          if [ -n "$MODELS" ]; then args+=(--models "$MODELS"); fi
+          args=(--site "$SITE" --out model-bench.json --md table.md --top "${TOP:-3}" --max-neurons "${CAP:-8000}")
+          # models named by hand run even when the binding lists no price for them (the cap still counts the priced ones)
+          if [ -n "$MODELS" ]; then args+=(--models "$MODELS" --allow-unpriced); fi
           node tools/model-bench.mjs "${args[@]}" 2>&1 | tee model-bench.txt
           { echo '### Model bench'; echo; cat table.md; echo; echo "<sub>Run ${GITHUB_RUN_ID} on ${GITHUB_SHA::7}: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}</sub>"; } > model-bench.md
           cat model-bench.md >> "$GITHUB_STEP_SUMMARY"
