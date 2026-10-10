@@ -16,6 +16,7 @@ export const LIMITS = {
   routes: { rpm: 30, body: 0 }, // owner-only: the router's decisions (GET)
   earnings: { rpm: 30, body: 0 },
   queue: { rpm: 60, body: 4000 },
+  share: { rpm: 30, body: 200 }, // invites (POST, a signed-in member) and joining one (a WebSocket per tab)
   approval: { rpm: 60, body: 8000 },
   will: { rpm: 60, body: 64000 },
   catalog: { rpm: 60, body: 1000 },
@@ -173,6 +174,7 @@ export async function guard(ctx) {
     req = new Request(request, { body: bytes.byteLength ? bytes : null });
   }
   const res = await ctx.next(req);
+  if (res.status === 101 || res.webSocket) return res; // an invite's WebSocket (functions/api/share/): rewrapping it would drop the socket
   if (res.status === 401 || res.status === 403) await bump(url.origin, 'fail:' + conn);
   const out = new Response(res.body, res);
   out.headers.set('x-content-type-options', 'nosniff');

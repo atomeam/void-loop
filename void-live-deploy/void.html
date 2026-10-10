@@ -561,6 +561,8 @@
     /* the status line under the ask bar: a quiet, centred caption that fades, never a stray left-aligned word */
     #whisper { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; margin-top: 8px; transition: opacity .25s ease; }
     #whisper:empty { opacity: 0; }
+    /* someone else in your Void (frontier #11): their cursor, a faint glow that follows them */
+    .void-presence { position: fixed; z-index: 40; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, color-mix(in srgb, var(--fg) 45%, transparent) 0%, transparent 70%); box-shadow: 0 0 14px color-mix(in srgb, var(--fg) 25%, transparent); transition: left .08s linear, top .08s linear; }
     #away-note { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; transition: opacity .25s ease; }
     #away-note:empty { opacity: 0; }
     /* smooth background: the grain lives on its own unscaled layer, so the dark gradient dithers instead of banding or streaking */
@@ -742,6 +744,7 @@
 
     /** @type {Record<string, any>} */
     let things = {};
+    let share = null, relayAsk = null, relayingIn = false, shareKnown = null; const presences = new Map(); // a shared Void (frontier #11, shareJoin): declared before the first save()
     let selectedId = null;
     // stage kinds a skill file brings (3D figures and objects): { kind: { mount(th, S), dropped?(th, S), thrown?(th, S), throwable } }
     const stageKinds = {};
@@ -767,6 +770,7 @@
       try { localStorage.setItem(AWAY_KEY, String(Date.now())); } catch (_) {}
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
       mineChanged();
+      shareNoticeNew();
     }
     function loopLog(attempt) {
       // an ask read with its typos fixed is logged as it was typed, so the miss board and the bench see the real ask
@@ -4903,6 +4907,34 @@ return { ok: true, detail: 'timer-reset' };
     // A summon from code, not the box (BASE.md: the old void-proxy command bar's route): document.dispatchEvent(new CustomEvent('void:summon', { detail: 'growth' }))
     // runs that ask exactly as if it were typed. Only a short line of text is taken.
     document.addEventListener('void:summon', (e) => { const d = e && e.detail; if (typeof d === 'string' && d.trim() && d.length <= 120) handle(d); });
+    // --- Bring someone into your Void (frontier #11): "invite someone" (skills/invite.js) or a link with ?with=<room> joins the
+    // invite's room (lib/share-client.js). The others' cursors are faint presences; a summon that put something on your stage
+    // runs again on theirs, and theirs on yours. Only those two pass (lib/share.js). Closing the tab ends it.
+    function sharePresence(id, x, y) {
+      let el = presences.get(id);
+      if (!el) { el = document.createElement('div'); el.className = 'void-presence'; el.setAttribute('aria-hidden', 'true'); document.body.appendChild(el); presences.set(id, el); }
+      el.style.left = (x * innerWidth) + 'px'; el.style.top = (y * innerHeight) + 'px';
+    }
+    function shareGone(id) { const el = presences.get(id); if (el) el.remove(); presences.delete(id); }
+    function shareNoticeNew() {
+      const ids = Object.keys(things), had = shareKnown; shareKnown = new Set(ids);
+      if (!share || !had || !relayAsk || !ids.some((id) => !had.has(id))) return;
+      share.summoned(relayAsk); relayAsk = null; // one ask goes once, however many things it made
+    }
+    function shareRun(ask) { relayingIn = true; try { handle(ask); } finally { relayingIn = false; } }
+    function shareJoin(room) {
+      if (share || typeof room !== 'string') return;
+      shareKnown = new Set(Object.keys(things));
+      share = { summoned() {}, cursor() {}, leave() {} };
+      import('/lib/share-client.js').then((m) => {
+        share = m.join(room, { summon: shareRun, presence: sharePresence, gone: shareGone, note: (t) => say(t) });
+        let last = 0;
+        addEventListener('pointermove', (e) => { const now = Date.now(); if (now - last < 50) return; last = now; share.cursor(e.clientX / innerWidth, e.clientY / innerHeight); }, { passive: true });
+        addEventListener('pagehide', () => share.leave());
+      }).catch(() => { share = null; say("sharing can't start in this browser"); });
+    }
+    document.addEventListener('void:share-join', (e) => shareJoin(e && e.detail));
+    { const r = new URLSearchParams(location.search).get('with'); if (r && /^[A-Za-z0-9_-]{16}\.[A-Za-z0-9_-]{16}$/.test(r) && !PAGE) skillsReady.then(() => shareJoin(r)); }
 
     async function runLearnedSkills(text, lower0) {
       for (const skill of learnedSkills) {
@@ -5920,6 +5952,7 @@ return { ok: true, detail: 'timer-reset' };
     async function handle(raw) {
       const typed = (raw || '').trim();
       if (!typed) return;
+      relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Void; one that came from it does not go back
       const text = fixTypos(typed); typoFix = text !== typed ? { from: typed, to: text } : null;
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
