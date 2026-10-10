@@ -140,6 +140,15 @@ function constantHtml(st, rawSt) {
   }
   return true;
 }
+// A template SQL literal whose only ${…} are bare names standing where a whole clause goes (right after WHERE, AND, OR or HAVING), with the
+// values bound separately (a ? placeholder in the text and .bind(...) after it): `… WHERE ${where} ORDER BY … LIMIT ?`.bind(...args, n). The
+// names are fragments the code assembled from fixed text; a value pasted into a comparison (WHERE id = ${id}), inside quotes, or in place of a
+// table or column name is still flagged.
+function clauseFragmentsBound(body, after) {
+  if (!/\?/.test(body) || !/^\s*\.\s*bind\s*\(/.test(after.replace(/^\s*\)/, ''))) return false;
+  const holes = [...body.matchAll(/\$\{([^}]*)\}/g)];
+  return holes.every((h) => /^\s*[A-Za-z_$][\w$]*\s*$/.test(h[1]) && /\b(?:WHERE|AND|OR|HAVING)\s+$/i.test(body.slice(0, h.index)));
+}
 // A value pasted into the SQL text, judged next to the SQL literal itself: the literal is followed or preceded by a
 // concatenation, formatted with % or .format(), or interpolated inside (template `${}`, f-string {}, PHP "$x", Ruby #{}).
 // A concatenation elsewhere on the line (a bound value, a log message after .bind(...)) is not the query.
@@ -150,7 +159,7 @@ function sqlPasted(r, lang) {
     if (!/(?:^|[\s(])(?:SELECT|INSERT\s+INTO|UPDATE\s+\w+\s+SET|DELETE\s+FROM)\b/i.test(body)) continue;
     if (/^\s*(?:\+\s*[\w$(]|\.\s*\$|\.\s*format\s*\(|%\s*[\w(])/.test(after)) return true;
     if (/[\w$)\]]\s*\+\s*$/.test(before) || /\$[\w\]'"[]*\s*\.\s*$/.test(before)) return true;
-    if (q === '`' && /\$\{/.test(body)) return true;
+    if (q === '`' && /\$\{/.test(body) && !clauseFragmentsBound(body, after)) return true;
     if (/\bf$/.test(before) && /\{/.test(body)) return true;
     if (lang === 'php' && q === '"' && /\$[A-Za-z_]/.test(body)) return true;
     if (lang === 'ruby' && q === '"' && /#\{/.test(body)) return true;
