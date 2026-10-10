@@ -6,9 +6,9 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { handoffIdIn, draftOnClaim } from '../void-live-deploy/lib/job-draft.js';
+import { handoffIdIn, draftOnClaim, draftFromThread, domainOf } from '../void-live-deploy/lib/job-draft.js';
 import { PRICE_BLANK } from '../void-live-deploy/lib/proposal.js';
-import { onRequestPatch } from '../void-live-deploy/functions/api/queue.js';
+import { onRequestPatch, onRequestPost } from '../void-live-deploy/functions/api/queue.js';
 
 const TOKEN = 'owner-token-for-tests';
 const HID = 'a'.repeat(32);
@@ -121,5 +121,55 @@ test('the claim endpoint itself answers with the draft line and the drafted job'
   assert.equal(j.claimed.id, 'j1');
   assert.match(String(j.draft || ''), /^draft proposal on job j1 for sunrisebakery\.example/, JSON.stringify(j.draft));
   assert.ok(job(DB).draft.includes(PRICE_BLANK));
+  assert.equal(recs(DB).length, 1);
+});
+
+// The two ways a sale job gets its proposal: the claim (from the reply the intake handoff stored) and the owner's own mail
+// thread (the extension's "draft for me: proposal", POST /api/queue op draft-from-thread). Same record, same draft.
+const recShape = (r) => ({ owner: r.owner, kind: r.kind, ref: r.ref, state: r.state, result: r.result });
+const THREAD = 'Re: receipt\nFrom: Maria <maria@SunriseBakery.example>\n' + REQUEST;
+
+test('a mail thread from the sale job\'s domain and the claim write identical proposal.draft records and the same draft on the job', async () => {
+  const A = d1(); seed(A); const a = await draftOnClaim({ DB: A }, row(A));
+  const B = d1(); seed(B); const b = await draftFromThread({ DB: B }, { from: 'maria@SunriseBakery.example', request: REQUEST });
+  assert.deepEqual(b, { matched: true, job: 'j1', target: 'sale:s-1', line: a });
+  assert.equal(recs(A).length, 1); assert.equal(recs(B).length, 1);
+  assert.deepEqual(recShape(recs(B)[0]), recShape(recs(A)[0]));
+  assert.equal(job(B).draft, job(A).draft, 'the same Markdown on the job');
+  assert.equal(recs(A)[0].ref, 'sale:s-1 for sunrisebakery.example');
+});
+
+test('whichever comes first, the job gets one draft and one record: the claim after a thread draft, a thread draft after a claim', async () => {
+  const A = d1(); seed(A);
+  await draftFromThread({ DB: A }, { from: 'sunrisebakery.example', request: THREAD });
+  assert.equal(await draftOnClaim({ DB: A }, row(A)), 'draft already on the job');
+  const B = d1(); seed(B);
+  await draftOnClaim({ DB: B }, row(B));
+  const again = await draftFromThread({ DB: B }, { from: 'maria@sunrisebakery.example', request: THREAD });
+  assert.equal(again.line, 'draft already on the job');
+  assert.equal(recs(A).length, 1); assert.equal(recs(B).length, 1);
+});
+
+test('a thread from another domain, or a sale job with no reply from it, matches nothing and writes nothing', async () => {
+  const A = d1(); seed(A);
+  assert.deepEqual(await draftFromThread({ DB: A }, { from: 'someone@elsewhere.example', request: REQUEST }), { matched: false });
+  const B = d1(); seed(B, { reply: false });
+  assert.deepEqual(await draftFromThread({ DB: B }, { from: 'maria@sunrisebakery.example', request: REQUEST }), { matched: false });
+  assert.deepEqual(await draftFromThread({ DB: A }, { from: 'not a domain', request: REQUEST }), { matched: false });
+  assert.equal(recs(A).length + recs(B).length + recs(A, 'proposal.skipped').length, 0);
+  assert.equal(job(A).draft ?? null, null);
+  assert.equal(domainOf('Maria <maria@www.SunriseBakery.example>'), 'sunrisebakery.example');
+});
+
+test('POST /api/queue draft-from-thread is the owner\'s only, and queues nothing', async () => {
+  const DB = d1(); seed(DB);
+  const env = { DB, READ_TOKEN: TOKEN };
+  const call = (auth) => onRequestPost({ request: new Request('https://x/api/queue', { method: 'POST', headers: { 'content-type': 'application/json', ...(auth ? { authorization: 'Bearer ' + auth } : {}) }, body: JSON.stringify({ op: 'draft-from-thread', from: 'maria@sunrisebakery.example', request: REQUEST }) }), env, waitUntil() {} });
+  assert.equal((await call(null)).status, 401);
+  assert.equal((await call('wrong')).status, 401);
+  assert.equal(recs(DB).length, 0, 'a stranger drafts nothing');
+  const r = await call(TOKEN); const j = await r.json();
+  assert.equal(j.matched, true); assert.equal(j.job, 'j1');
+  assert.equal(DB.raw.prepare('SELECT COUNT(*) n FROM void_queue').get().n, 1, 'no job was queued');
   assert.equal(recs(DB).length, 1);
 });
