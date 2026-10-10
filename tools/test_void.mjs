@@ -2724,8 +2724,13 @@ try {
   { const agg = await import(new URL('../void-live-deploy/skills/aggravation.js', import.meta.url).href);
     const unit = agg.default.suite();
     const Q = await fresh();
-    const geo = (sel) => Q.p.evaluate((sel) => { const e = document.querySelector(sel), r = document.getElementById('row').getBoundingClientRect(); if (!e) return null; const b = e.getBoundingClientRect();
+    // measured once the card has stopped moving: it arrives with a transform transition (.35-.6 s), and on a busy runner a
+    // fixed wait can read it mid-flight (19 px off centre in verify run 38017904620). Up to 3 s for two equal reads in a row.
+    const geo1 = (sel) => Q.p.evaluate((sel) => { const e = document.querySelector(sel), r = document.getElementById('row').getBoundingClientRect(); if (!e) return null; const b = e.getBoundingClientRect();
       return { left: b.left, right: b.right, top: b.top, bottom: b.bottom, rowTop: r.top, vw: innerWidth }; }, sel);
+    const geo = async (sel) => { let last = await geo1(sel); const end = Date.now() + 3000;
+      while (Date.now() < end) { await Q.p.waitForTimeout(150); const g = await geo1(sel); if (JSON.stringify(g) === JSON.stringify(last)) return g; last = g; }
+      return last; };
     const fair = (g) => !!g && g.bottom <= g.rowTop - 4 && g.top >= 0 && g.left >= 0 && g.right <= g.vw && Math.abs((g.left + g.right) / 2 - g.vw / 2) <= 2;
     await Q.ask('play aggravation', 700);
     const aDesk = await geo('.aggravation-card');

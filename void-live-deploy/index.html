@@ -455,6 +455,10 @@
     #input:focus, #input:focus-visible { outline: none; }
     #row:focus-within { border-color: rgba(150,175,255,.6); box-shadow: 0 0 0 1px rgba(150,175,255,.10), 0 0 40px rgba(110,140,255,.12), 0 20px 60px rgba(0,0,0,.5); }
     #dock { background: linear-gradient(to top, color-mix(in srgb, var(--void-bg, #050505) 92%, transparent) 55%, transparent); z-index: 5; }
+    /* the dock's top is a fade you see through: a card's button showing there takes the click; only what is in the dock
+       (the suggestions, the ask bar, the status lines) catches the pointer */
+    #dock { pointer-events: none; }
+    #dock > * { pointer-events: auto; }
     #hints { backdrop-filter: blur(10px); }
     /* the same ask again: the page that is already open answers with a brief glow instead of a second fetch */
     @keyframes vpage-again { 0% { box-shadow: 0 0 0 1px rgba(150,175,255,.45), 0 0 60px rgba(110,140,255,.30); } 100% { box-shadow: none; } }

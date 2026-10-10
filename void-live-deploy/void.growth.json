@@ -251,5 +251,6 @@
   {"at": "2026-10-10T02:59:47Z", "by": "claude", "kind": "fix", "what": "main green: the week-ago growth tree check records the week-ago pose in the page, frame by frame, instead of polling for a one-second window it could miss"},
   {"at": "2026-10-10T03:02:01Z", "by": "mimo", "kind": "build", "what": "the map's repo table is verified against GitHub"},
   {"at": "2026-10-10T03:04:13Z", "by": "claude", "kind": "build", "what": "invite someone: a signed-in Void makes a link, and whoever opens it is a faint presence on your stage; what either of you summons shows on both (tabs in one browser today, across devices once the relay is deployed)"},
-  {"at": "2026-10-10T03:07:40Z", "by": "claude", "kind": "grow", "what": "a buyer's reply becomes a draft proposal on its job, waiting on the confirm line", "ref": "https://github.com/atomeam/void-loop/pull/364"}
+  {"at": "2026-10-10T03:07:40Z", "by": "claude", "kind": "grow", "what": "a buyer's reply becomes a draft proposal on its job, waiting on the confirm line", "ref": "https://github.com/atomeam/void-loop/pull/364"},
+  {"at": "2026-10-10T03:08:21Z", "by": "claude", "kind": "fix", "what": "main green: the ask bar's see-through fade no longer swallows clicks: a card's button showing there (the actions card's Show more) takes the click; only what is in the dock catches the pointer"}
 ]
