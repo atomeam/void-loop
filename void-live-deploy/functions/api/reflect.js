@@ -5,6 +5,7 @@
 //   -> the saved entry. A concrete small ask is queued for the builders (target 'voice:...'), one open at a time.
 // When the model is busy nothing is saved: Void's words are never made up for it.
 import { ownerOk } from '../../lib/guard.js';
+import { track } from '../../lib/actions.js';
 import { DEFAULT_MODEL } from '../../lib/router.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
@@ -48,9 +49,13 @@ export async function onRequestPost({ request, env }) {
   if (small) {
     const open = await env.DB.prepare("SELECT id FROM void_queue WHERE target LIKE 'voice:%' AND state IN ('queued','building') LIMIT 1").first();
     if (!open) {
-      queued = Date.now().toString(36);
-      await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-        .bind(queued, small.ask, 'voice:' + slug(small.ask), 'queued', 'Void asked for this (' + kind + ' reflection ' + at.slice(0, 10) + '). Credit Void.', at, at).run();
+      queued = Date.now().toString(36); const target = 'voice:' + slug(small.ask);
+      // the execution record (lib/actions.js): written before the job is queued; no record, no job
+      await track(env, { owner: 'void', kind: 'queue.add', ref: target }, async () => {
+        await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
+          .bind(queued, small.ask, target, 'queued', 'Void asked for this (' + kind + ' reflection ' + at.slice(0, 10) + '). Credit Void.', at, at).run();
+        return 'queued ' + queued + ': ' + small.ask;
+      });
     }
   }
   return Response.json({ ...entry, queued });

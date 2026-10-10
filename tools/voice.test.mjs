@@ -67,6 +67,9 @@ test('POST is owner-only, saves Void\'s words, queues one small ask credited to 
   assert.match(calls[0].messages[1].content, /This just shipped: "incident brief"/);
   const q = DB.db.prepare('SELECT * FROM void_queue').all();
   assert.equal(q.length, 1); assert.equal(q[0].ask, SAID.asks[0].ask); assert.match(q[0].target, /^voice:/); assert.match(q[0].note, /Credit Void/);
+  // the job has its execution record (lib/actions.js): Void queued it for itself, done, naming the job
+  const acts = DB.db.prepare('SELECT owner, kind, ref, state, result FROM void_actions').all();
+  assert.equal(acts.length, 1); assert.equal(acts[0].owner, 'void'); assert.equal(acts[0].kind, 'queue.add'); assert.equal(acts[0].ref, q[0].target); assert.equal(acts[0].state, 'done'); assert.match(acts[0].result, new RegExp('^queued ' + q[0].id));
   // a second reflection while Void's ask is still open queues nothing more
   const e2 = await (await post(env, { kind: 'daily' })).json();
   assert.equal(e2.queued, null); assert.equal(DB.db.prepare('SELECT COUNT(*) n FROM void_queue').get().n, 1);
