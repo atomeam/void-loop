@@ -143,7 +143,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Gets better on its own (Adam, 2026-10-09):** an article whose subject Void cannot make for real brings no stand-in and posts a `figure` miss ("make a real Sorry! (game)"); `node tools/misses.mjs` lists them, most-asked first, and each run that takes this item builds the top one as a real figure (`skills/figures.js` NATURE_LOOK and its body in `figures3d.js`, a test in `tools/figures.test.mjs`). The real-figure list grows with every run.
 - **First piece:** "make me a <thing>" for things no figure covers yet, as a spinning model with a "print it" STL.
 - **Done when:** ten things never built before come out recognisable, inspectable and printable.
-- **claim:**
+- **claim:** claude 2026-10-10: first piece: "make me a <thing>" for things no figure covers yet, as a spinning model with a "print it" STL.
 
 ## 15. Make it real
 - **What:** any summoned object gets "make it real": a 3D print ordered from a print-on-demand service, a sticker or poster, or minted as an NFT, paid in one step (Gumroad is wired today, `lib/gumroad.js`; a Stripe link is the other option).
