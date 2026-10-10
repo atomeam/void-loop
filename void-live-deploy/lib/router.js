@@ -24,9 +24,9 @@
 import { redact } from './automation-fix.js';
 import { readEarnings } from './earnings.js';
 
-export const EMBED_MODEL = '@cf/baai/bge-m3';
-export const DEFAULT_MODEL = '@cf/google/gemma-4-26b-a4b-it';
-export const PAID_MODEL = '@cf/deepseek-ai/deepseek-v4-flash-0731'; // needs a paid billing method: only from earnings, under an approved standing spend
+import { EMBED_MODEL, PAID_MODEL, models } from './models.js';
+export { EMBED_MODEL, PAID_MODEL };
+export const DEFAULT_MODEL = models('answer'); // kept for older imports; the name lives in lib/models.js
 export const BUDGET_MS = 300; // the longest the router may hold an answer, counted from the start of the request
 export const STRONG_TIMEOUT_MS = 20000; // a paid call that takes longer is dropped (and costs nothing); then Gemma answers
 export const EXAMPLES_TIMEOUT_MS = 10000; // a stuck embedding call is dropped, so the next ask tries again

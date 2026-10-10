@@ -95,6 +95,11 @@ test('/api/actions: owner only, newest first, filter by owner', async () => {
   assert.deepEqual(all.map((r) => r.kind), ['b', 'a']);
   const mine = (await (await call('https://x/api/actions?owner=owner')).json()).actions;
   assert.deepEqual(mine.map((r) => r.kind), ['a']);
+  // paging: limit and offset walk the record newest first; a bad offset is 0
+  assert.deepEqual((await (await call('https://x/api/actions?limit=1')).json()).actions.map((r) => r.kind), ['b']);
+  assert.deepEqual((await (await call('https://x/api/actions?limit=1&offset=1')).json()).actions.map((r) => r.kind), ['a']);
+  assert.deepEqual((await (await call('https://x/api/actions?limit=5&offset=2')).json()).actions, []);
+  assert.deepEqual((await (await call('https://x/api/actions?offset=nope')).json()).actions.map((r) => r.kind), ['b', 'a']);
   assert.equal((await api.onRequestGet({ env: { READ_TOKEN: TOKEN }, request: new Request('https://x/api/actions', { headers: { authorization: 'Bearer ' + TOKEN } }) })).status, 503);
 });
 
@@ -161,4 +166,33 @@ test('the confirm line: an approved action runs inside its record (done); a yes 
   assert.deepEqual(a.map((x) => [x.owner, x.kind, x.state]), [['owner', 'confirm.message.send', 'done'], ['owner', 'confirm.email.send', 'stubbed']]);
   assert.match(a[0].result, /msg-1/); assert.match(a[1].result, /email\.send is not connected yet: nothing was sent/);
   assert.ok(a.every((x) => /^[0-9a-f-]{36}$/.test(x.ref)), 'ref is the approval id');
+});
+
+test('POST /api/actions writes the record of an action the extension takes in the owner\'s tab (B3): owner only, extension.* kinds only, running before the action and ended once', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const post = (body, auth = true) => api.onRequestPost({ env, request: new Request('https://x/api/actions', { method: 'POST', headers: auth ? { authorization: 'Bearer ' + TOKEN } : {}, body: JSON.stringify(body) }) });
+  assert.equal((await post({ op: 'begin', kind: 'extension.act', ref: 'x' }, false)).status, 401, 'a stranger writes nothing');
+  assert.equal((await post({ op: 'begin', kind: 'automation.note', ref: 'x' })).status, 400, 'nothing posted here poses as a server action');
+  const b = await (await post({ op: 'begin', kind: 'extension.act', ref: 'docs.test · Reply' })).json();
+  assert.equal(b.state, 'running');
+  assert.equal(rows(env)[0].state, 'running', 'the record exists before the action');
+  const e = await (await post({ op: 'end', id: b.id, state: 'done', text: 'filled Reply on docs.test' })).json();
+  assert.equal(e.state, 'done');
+  assert.equal((await post({ op: 'end', id: b.id, state: 'failed', text: 'again' })).status, 409, 'a record ends once');
+  const s = await (await post({ op: 'stub', kind: 'extension.act', ref: 'docs.test · Save', text: 'would have clicked Save; the owner said no' })).json();
+  assert.equal(s.state, 'stubbed');
+  const all = rows(env);
+  assert.deepEqual(all.map((r) => [r.kind, r.ref, r.state]), [['extension.act', 'docs.test · Reply', 'done'], ['extension.act', 'docs.test · Save', 'stubbed']]);
+  assert.ok(all.every((r) => R.problems(r).length === 0), JSON.stringify(all.map(R.problems)));
+  const srv = R.begin({ owner: 'owner', kind: 'automation.note', ref: 'r' });
+  await env.DB.prepare('INSERT INTO void_actions (id, owner, kind, ref, state, result, error, started, finished) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)').bind(srv.id, srv.owner, srv.kind, srv.ref, srv.state, null, null, srv.started, null).run();
+  assert.equal((await post({ op: 'end', id: srv.id, state: 'done', text: 'x' })).status, 404, 'the extension cannot end a server action\'s record');
+});
+
+test('every /api route has its explicit limit (the fast twin of the browser suite\'s defences check, which caught /api/actions only after merge)', async () => {
+  const { LIMITS } = await import('../void-live-deploy/lib/guard.js');
+  const { readdirSync } = await import('node:fs');
+  const routes = readdirSync(new URL('../void-live-deploy/functions/api/', import.meta.url)).filter((f) => /^[a-z]+\.js$/.test(f)).map((f) => f.replace(/\.js$/, ''));
+  assert.ok(routes.includes('actions'));
+  assert.deepEqual(routes.filter((r) => !LIMITS[r]), [], 'routes with no limit in lib/guard.js LIMITS');
 });

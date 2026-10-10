@@ -95,7 +95,9 @@ async function one({ ask: a, want, says, before }) {
   const logged = (q, ms) => p.waitForFunction((q) => { const w = document.getElementById('whisper'); if (w && w.textContent) window.__said = w.textContent; // keep the last whisper: it fades
     try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) && l.some((x) => String(x.ask).trim() === q.trim()); } catch (_) { return false; } }, q, { timeout: ms, polling: 50 }).catch(() => {});
   // "before": setup asks run first (a list to check off, a timer to pause), so asks that act on earlier ones are tested too
-  for (const b0 of before || []) { await p.fill('#input', b0); await p.keyboard.press('Enter'); await logged(b0, 2400); await p.keyboard.press('Escape').catch(() => {}); }
+  for (const b0 of before || []) { await p.fill('#input', b0); await p.keyboard.press('Enter'); await logged(b0, 2400);
+    // Esc only closes an open page: pressed after every setup ask it is a double Esc (two within 450 ms), which undoes the last thing made, so a fast run lost the sticky a group or label ask needed
+    if (await p.locator('.vpage').count()) await p.keyboard.press('Escape').catch(() => {}); }
   await p.evaluate(() => { window.__said = ''; });
   // wait for the answer itself (the page's own loop log), not a guessed time; a log that does not parse reads as empty (a miss)
   await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, 4000);

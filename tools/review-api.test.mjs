@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as api from '../void-live-deploy/functions/api/review.js';
 import { ensureTables, sessionId } from '../void-live-deploy/lib/void-me.js';
-import { quick, KEY_RE, PRO_DAILY, keyHash, today } from '../void-live-deploy/lib/review-api.js';
+import { quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX } from '../void-live-deploy/lib/review-api.js';
 
 function d1() {
   const db = new DatabaseSync(':memory:');
@@ -125,4 +125,84 @@ test('the owner always gets the closer read, free, with no daily cap', async () 
   }
   const wrong = await (await call(api.onRequestPost, env, { code: BUGGY }, 'not-the-owner-key-000')).json();
   assert.equal(wrong.tier, 'free');
+});
+
+// The closer read sees only the diff: without the file's imports it called `redact` and `INJECTION_RULE` missing on #254 and the
+// "[redacted]" mask a syntax error on #256. The imports go along now, the prompt says so, and the filter catches a model that ignores it.
+const PHANTOM_READ = '### Bugs\n\n*   **Line 149 (answer.js):** The `draftAnswer` function uses `redact` inside the `try` block, but `redact` is not defined in the local scope of `answer.js`. This will cause a ReferenceError and crash the request.\n    *   **Fix:** import it.\n    ```javascript\n    import { redact } from \'../../lib/automation-fix.js\';\n    ```\n\n*   **Line 144 (answer.js):** `INJECTION_RULE` is used but is not imported or defined in the provided snippet. This will cause a ReferenceError.\n\n*   **Line 150 (answer.js):** `frobnicate(p)` is called but `frobnicate` is not defined anywhere.\n\n### Security\n\n*   **Line 28:** `TOKEN` is assigned using `[redacted]`, which is not a valid value and will throw a SyntaxError.\n\n### Readability\n\n*   **Line 11:** the array is long.';
+test('closer read on a diff: the touched file\'s imports go to the model with the rule, a "not defined" claim about an imported name or about the mask is dropped, and a genuinely undefined name stays', async () => {
+  const calls = []; const env = await envWith({ ai: ai(PHANTOM_READ, calls) }); env.READ_TOKEN = 'owner-secret-0123456789';
+  const diff = 'diff --git a/answer.js b/answer.js\n--- a/answer.js\n+++ b/answer.js\n@@ -140,3 +140,6 @@\n async function draftAnswer(request, env, body) {\n+  const p = prepareDraft(body, redact);\n+  const m = [{ role: \'system\', content: DRAFT_SYSTEM + INJECTION_RULE }];\n+  return frobnicate(p);\n }\n';
+  const r = await (await call(api.onRequestPost, env, { diff, imports: { 'answer.js': ["import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';", "import { prepareDraft, DRAFT_SYSTEM } from '../../lib/draft.js';"] } }, env.READ_TOKEN)).json();
+  assert.equal(r.review, 'model');
+  const sys = calls[0].messages[0].content, user = calls[0].messages[1].content;
+  assert.ok(user.includes(DIFF_RULE), 'the diff rule'); assert.ok(user.includes('answer.js:\n  import { redact, INJECTION_RULE }'), 'the imports'); assert.ok(sys.includes(MASK_RULE), 'the mask rule');
+  assert.doesNotMatch(r.answer, /Line 149|Line 144|\[redacted\]|SyntaxError/);
+  assert.match(r.answer, /frobnicate/);
+  assert.match(r.answer, /### Bugs/); assert.doesNotMatch(r.answer, /### Security/); assert.match(r.answer, /### Readability/);
+});
+
+test('the phantom filter on its own handles a model that ignores the rule: names a file imports or declares, in both languages', () => {
+  const known = declaredNames("import { redact } from './x.js';\nimport * as G from './g.js';\nimport D, { e as f } from './d.js';\nconst { a, b: c } = require('y');\nexport async function helper() {}\nclass K {}\nconst [p, q] = pair();\nfrom os import path as P\nimport json\ndef run():\n  pass\nLIMIT = 3\n");
+  for (const n of ['redact', 'G', 'D', 'f', 'a', 'c', 'helper', 'K', 'p', 'q', 'P', 'json', 'run', 'LIMIT']) assert.ok(known.has(n), n);
+  assert.ok(!known.has('b') && !known.has('e'));
+  assert.deepEqual(phantomNames('`redact` is not defined here', known), ['redact']);
+  assert.deepEqual(phantomNames('`nothere` is not defined here', known), []);
+  assert.deepEqual(phantomNames('`redact` could be slow', known), []);
+  assert.deepEqual(phantomNames('`x` is set to `[redacted]`, which is not valid', known), ['mask']);
+  assert.equal(dropPhantoms('### Bugs\n\n* `redact` is not defined.\n\n### Style\n\n* long line', known), '### Style\n\n* long line');
+  assert.equal(dropPhantoms('* `nothere` is not defined.', known), '* `nothere` is not defined.');
+  assert.equal(dropPhantoms('all fine', new Set()), 'all fine');
+  // a paragraph that also names a real undeclared identifier (used as a bare call in the code) is a finding to keep
+  const code = 'const p = redact(x);\nreturn frobnicate(p);\nconst o = { messages: [] };';
+  assert.deepEqual(phantomNames('`redact` is fine but `frobnicate` is not defined', known, code), []);
+  assert.deepEqual(phantomNames('`redact` is used in the `messages` array but is not defined (see `answer.js`, inside the `try` block)', known, code), ['redact']);
+});
+
+test('imports from the request are cleaned and capped before they reach the prompt', () => {
+  assert.equal(cleanImports(null), null); assert.equal(cleanImports([1]), null); assert.equal(cleanImports({ 'a.js': [] }), null);
+  const big = cleanImports({ 'a.js': Array.from({ length: 100 }, (_, i) => 'import x' + i + ' from "y";'), 'b.js': ['x'.repeat(400)] });
+  assert.equal(big['a.js'].length, 60); assert.equal(big['b.js'][0].length, 300);
+  assert.ok(cleanImports({ 'a.js': Array.from({ length: 50 }, () => 'i'.repeat(300)) })['a.js'].length <= 20);
+  assert.match(importsText({ 'a.js': ['import a from "b";'] }), /^What each touched file imports or declares at top level \(outside the diff\):\na\.js:\n  import a from "b";$/);
+});
+
+// #262: the diff ran past MODEL_CODE_MAX, the old hard cut landed inside a fringe draft's flash() line, and the closer read
+// reported the function "truncated/cut off in the middle of a line" (it was whole in the file). Now the model sees whole lines
+// and a note saying the rest was left out, the prompt says what the note means, and a cut-off claim is dropped when it ran anyway.
+const FLASH = "  function flash(delayMs) { setTimeout(() => { el('dot').style.visibility = 'visible'; setTimeout(() => { el('dot').style.visibility = 'hidden'; }, 17); }, delayMs); }";
+const READ_262 = '### Bugs\n*   **Line 75 (inferred):** The `flash` function is truncated/cut off in the middle of a line. This will cause a syntax error and prevent the entire script from executing.\n    *   **Fix:** Ensure the `setTimeout` and function closures are fully written.\n\n### Performance\n*   **Line 30:** `counts` is recomputed on every addition; keep a running map.';
+const longDiff = () => { // the flash() line straddles MODEL_CODE_MAX, as it did on #262
+  const pad = '+  const keep = 1; // padding line that makes the diff long enough\n'; let d = 'diff --git a/drafts/fringe/sensory-substitution-7.html b/drafts/fringe/sensory-substitution-7.html\n';
+  while (d.length < MODEL_CODE_MAX - 60) d += pad;
+  return d + '+' + FLASH + '\n' + pad.repeat(40);
+};
+
+test('a long diff is shortened for the model at a line boundary with a note; nothing is cut in half', () => {
+  const d = longDiff(), shown = clipForModel(d);
+  assert.ok(d.indexOf(FLASH) < MODEL_CODE_MAX && d.indexOf(FLASH) + FLASH.length > MODEL_CODE_MAX, 'the test diff straddles the limit');
+  assert.equal(shown.clipped, true);
+  const lines = shown.text.split('\n'), note = lines.pop();
+  assert.match(note, /^\[41 more lines of this change not shown here: shortened to fit, not cut off\]$/);
+  assert.ok(lines.every((l) => d.split('\n').includes(l)), 'every line shown is a whole line of the diff');
+  assert.ok(!shown.text.includes('function flash'), 'the straddling line is left out whole, not half shown');
+  assert.deepEqual(clipForModel('short\ncode'), { text: 'short\ncode', clipped: false });
+});
+
+test('closer read on #262\'s long diff: the clip rule goes to the model, its "cut off" finding is dropped, its real finding stays', async () => {
+  const calls = []; const env = await envWith({ ai: ai(READ_262, calls) }); env.READ_TOKEN = 'owner-secret-0123456789';
+  const r = await (await call(api.onRequestPost, env, { diff: longDiff() }, env.READ_TOKEN)).json();
+  const user = calls[0].messages[1].content;
+  assert.ok(user.includes(CLIP_RULE) && /not shown here: shortened to fit, not cut off\]\n```$/.test(user), 'the rule and the note');
+  assert.doesNotMatch(r.answer, /truncated|cut off|### Bugs/);
+  assert.match(r.answer, /### Performance[\s\S]*running map/);
+});
+
+test('a cut-off claim about code that was not shortened is kept: only a clipped input silences it', async () => {
+  assert.match(dropPhantoms(READ_262, new Set(), FLASH, false), /truncated/);
+  assert.doesNotMatch(dropPhantoms(READ_262, new Set(), FLASH, true), /truncated/);
+  const calls = []; const env = await envWith({ ai: ai(READ_262, calls) }); env.READ_TOKEN = 'owner-secret-0123456789';
+  const r = await (await call(api.onRequestPost, env, { diff: 'diff --git a/x.html b/x.html\n+' + FLASH + '\n' }, env.READ_TOKEN)).json();
+  assert.ok(!calls[0].messages[1].content.includes(CLIP_RULE));
+  assert.match(r.answer, /truncated/);
 });

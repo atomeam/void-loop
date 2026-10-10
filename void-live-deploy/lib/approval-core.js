@@ -3,6 +3,8 @@
 // Shared by the page (import('/lib/approval-core.js')) and the server (functions/api/approval.js) so the
 // policy, the wording and the fingerprint can never drift apart. Read-only asks never reach this file's gate.
 
+import { PAID_MODEL } from './models.js';
+
 export const POLICY_VERSION = 'void-confirm-v0.1';
 export const EVENT_REQUESTED = 'a2m.approval.requested';
 export const EVENT_DECISION = 'a2m.approval.decision';
@@ -20,6 +22,9 @@ export const GATED = {
   'email.send': { rule: 'send.email', kind: 'send', service: 'email', board: 'send an email' },
   'message.send': { rule: 'send.message', kind: 'send', service: 'messaging', board: 'send a message' },
   'release.publish': { rule: 'send.post', kind: 'send', service: 'GitHub', board: 'post release notes' },
+  // The proposal card's send (skills/proposal.js, build order step 3). Sending is not connected: a yes records that nothing
+  // went out, and the ask itself writes a stubbed execution record (lib/actions.js), ref the customer's domain.
+  'proposal.send': { rule: 'send.proposal', kind: 'send', service: 'email', board: 'send a proposal', stub: (a) => String((a && a.to) || '').replace(/^.*@/, '').toLowerCase() },
   'calendar.book': { rule: 'book.calendar', kind: 'book', service: 'your calendar', board: 'add to my calendar' },
   'booking.make': { rule: 'book.booking', kind: 'book', service: 'booking', board: 'make a booking' },
   'order.place': { rule: 'spend.order', kind: 'spend', service: 'shopping', board: 'buy something' },
@@ -66,6 +71,7 @@ export function confirmLine(toolName, args) {
     case 'email.send': return `Send this email to ${a.to}?`;
     case 'message.send': return `Send this message to ${a.to}?`;
     case 'release.publish': return `Post these release notes to ${a.where}?`;
+    case 'proposal.send': return a.title ? `Send the proposal “${a.title}” to ${a.to}?` : `Send the proposal to ${a.to}?`;
     case 'calendar.book': return `Add “${a.what}” to your calendar${a.when ? ' ' + a.when : ''}?`;
     case 'booking.make': return `Book ${a.what}${cost ? ' for ' + cost : ''}?`;
     case 'order.place': return cost ? `Buy ${a.item} for ${cost}?` : `Buy ${a.item}? The price isn't known yet.`;
@@ -105,6 +111,10 @@ export function parseGatedAsk(text) {
   const t = String(text || '').trim().replace(/\s+/g, ' ');
   const s = t.replace(/^(?:please\s+|(?:can|could|would|will)\s+you\s+(?:please\s+)?)/i, '').replace(/\s*(?:please)?[.!?]*$/i, '');
   let m;
+  // "send this proposal "Fix the double orders" to maria@x.com" (the proposal card's button; the title is optional)
+  if ((m = s.match(/^send\s+(?:this|the|my)\s+proposal(?:\s+[\u201c"](.{1,80}?)[\u201d"])?\s+to\s+([\w.+-]+@[\w-]+(?:\.[\w-]+)+)$/i))) {
+    return { toolName: 'proposal.send', args: { to: m[2], title: clip(m[1] || '', 80) } };
+  }
   if ((m = s.match(/^(?:send|write and send)\s+(?:an?\s+)?(?:e-?mail|mail)\s+to\s+(.+?)(?:\s+(?:saying|that says|to say|about|with)\s+(.+))?$/i))
       || (m = s.match(/^e-?mail\s+(.+?)(?:\s+(?:saying|that says|to say|about|with)\s+(.+))?$/i))) {
     return { toolName: 'email.send', args: { to: clip(m[1], 120), body: clip(m[2], 2000) } };
@@ -115,10 +125,10 @@ export function parseGatedAsk(text) {
   if ((m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|yourself|you)\\s+(?:to\\s+)?(?:pay|spend)\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)\\s+(?:on|for)\\s+' + MODELS + EARNED + '$', 'i')))
       || (m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|yourself|you)\\s+(?:to\\s+)?pay\\s+for\\s+' + MODELS + '\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)' + EARNED + '$', 'i')))) {
     const cost = parseCost(m[1]);
-    if (cost && cost.currency === 'USD') return { toolName: 'models.spend', args: { model: '@cf/deepseek-ai/deepseek-v4-flash-0731', cost, per: m[2].toLowerCase() } };
+    if (cost && cost.currency === 'USD') return { toolName: 'models.spend', args: { model: PAID_MODEL, cost, per: m[2].toLowerCase() } };
   }
   if (new RegExp('^(?:stop|don\'?t)\\s+(?:void\\s+)?(?:paying|pay|spending)\\s+(?:for|on)\\s+' + MODELS + '$', 'i').test(s)) {
-    return { toolName: 'models.spend', args: { model: '@cf/deepseek-ai/deepseek-v4-flash-0731', cost: { amount: 0, currency: 'USD' }, per: 'month' } };
+    return { toolName: 'models.spend', args: { model: PAID_MODEL, cost: { amount: 0, currency: 'USD' }, per: 'month' } };
   }
   if ((m = s.match(new RegExp('^(?:pay|send)\\s+' + COST + '\\s+to\\s+(.+)$', 'i'))) || (m = s.match(new RegExp('^pay\\s+(.+?)\\s+' + COST + '$', 'i')))) {
     const costFirst = /^\s*[$\u20ac\u00a3\d]/.test(m[1]);

@@ -3,10 +3,40 @@
 <head>
   <meta charset="utf-8">
   <title>Void</title>
-  <style>html,body{margin:0;height:100%;background:#000}iframe{border:0;width:100%;height:100%;display:block}</style>
+  <style>
+    html,body{margin:0;height:100%;background:#000;color:#e8e8ec;font:13px/1.4 system-ui,sans-serif}
+    body{display:flex;flex-direction:column}
+    iframe{border:0;width:100%;flex:1;display:block}
+    /* B3: the card and the allow list belong to the extension, not to the page in the frame: only your click here says yes */
+    #act{display:none;position:fixed;left:10px;right:10px;bottom:52px;padding:12px;border:1px solid #444;border-radius:12px;background:#111;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+    #act.on{display:block}
+    #act .k{color:#9a9aa2;font-size:12px}
+    #act .v{margin:2px 0 8px;word-break:break-word}
+    #act .row{display:flex;gap:8px}
+    button{font:inherit;color:inherit;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);border-radius:999px;padding:5px 14px;cursor:pointer}
+    button.yes{background:#1d3b26;border-color:#2f6b40}
+    #sites{border-top:1px solid #222;padding:6px 10px;max-height:40%;overflow:auto}
+    #sites summary{cursor:pointer;color:#9a9aa2}
+    #sites ul{list-style:none;margin:6px 0;padding:0}
+    #sites li{display:flex;justify-content:space-between;align-items:center;padding:2px 0}
+    #sites .x{padding:0 8px}
+  </style>
 </head>
 <body>
   <iframe id="void" src="https://a-to-mind.com/" allow="microphone; clipboard-write; publickey-credentials-get *; publickey-credentials-create *"></iframe>
+  <div id="act" role="dialog" aria-label="Void wants to act on this page">
+    <div class="k">Void wants to act on</div><div class="v act-site"></div>
+    <div class="k act-what-k">step</div><div class="v act-what"></div>
+    <div class="k act-text-k">text</div><div class="v act-text"></div>
+    <div class="row"><button type="button" class="yes act-yes">Yes, do it</button><button type="button" class="act-no">No</button></div>
+    <div class="k" style="margin-top:8px">One step. It never submits a form or presses Enter; you do that.</div>
+  </div>
+  <details id="sites">
+    <summary>sites Void may act on (<span class="n">0</span>)</summary>
+    <ul class="list"></ul>
+    <button type="button" class="add" hidden></button>
+    <div class="k none" style="color:#9a9aa2">None yet. Void acts only on a site you add here, and only after your yes.</div>
+  </details>
   <script src="sidepanel.js"></script>
 </body>
 </html>

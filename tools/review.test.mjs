@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 // node tools/review.test.mjs: the code reviewer (void-live-deploy/lib/code-review.js) finds what it should and stays quiet on clean code.
+import { redact } from '../void-live-deploy/lib/automation-fix.js';
 import { isReviewAsk, codeOf, langOf, ruleReview, looksLikeCode, autoFix, skippedInReview, langNamed, textLines } from '../void-live-deploy/lib/code-review.js';
 let bad = 0;
 const ok = (c, msg) => { if (!c) { bad++; console.log('FAIL ' + msg); } };
@@ -41,6 +42,7 @@ ok(rules('p.innerHTML = cardHtml(data);', 'javascript').includes('inner-html@1')
 // run 53: a plain string with quotes inside, and a builder handed the escaper among other arguments, are not flagged
 ok(!rules(`const el = showPage((p) => { p.innerHTML = '<h2>Watch</h2><div class="sub">checking…</div>'; });`, 'javascript').includes('inner-html@1'), 'innerHTML of a plain string with inner quotes not flagged');
 ok(!rules("el.innerHTML = cardHtml(esc, data, 'live');", 'javascript').includes('inner-html@1'), 'innerHTML from a builder handed esc among other arguments not flagged');
+ok(!rules('said.innerHTML = entryHtml(api.esc, e);', 'javascript').includes('inner-html@1') && rules('said.innerHTML = entryHtml(api.escaped_name, e);', 'javascript').includes('inner-html@1'), 'a builder handed api.esc not flagged; a lookalike name still is');
 ok(rules("el.innerHTML = cardHtml(data, 'live');", 'javascript').includes('inner-html@1') && rules('el.innerHTML = `<b>${name}</b>`;', 'javascript').includes('inner-html@1'), 'a builder without esc and a template with a value still flagged');
 // innerHTML built only from fixed text (literals, numbers, ALL_CAPS constants, the item of a map over a literal list) is not a risk
 for (const c of [`opp.innerHTML = '<span>vs</span>' + [1, 2, 3].map((n) => '<button data-opp="' + n + '">' + n + ' bot' + (n > 1 ? 's' : '') + '</button>').join('');`,
@@ -113,6 +115,26 @@ ok(rules('curl -fsSL https://x.sh | bash', 'shell').includes('curl-pipe-sh@1'), 
 ok(rules('UPDATE users SET admin = 1;', 'sql').includes('update-no-where@1'), 'update without where');
 ok(!rules('UPDATE users SET admin = 1\nWHERE id = 3;', 'sql').includes('update-no-where@1'), 'update with where on the next line');
 ok(rules('DELETE FROM sessions;', 'sql').includes('delete-no-where@1'), 'delete without where');
+// learned from Void's closer read (tools/review-learn.mjs, 2026-10-10): each a line it must flag, a near-miss it must leave alone
+ok(rules("for (const r of rows) {\n  const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM t WHERE owner = ?').bind(r.id).first();\n  out.push(n);\n}", 'javascript').includes('query-in-loop@2')
+  && rules("for (const id of ids) { const u = await fetch('https://api.example.com/users/' + id); got.push(await u.json()); }", 'javascript').includes('query-in-loop@1')
+  && rules("items.forEach(async (it) => {\n  await db.query('UPDATE t SET seen = 1 WHERE id = ?', [it.id]);\n});", 'javascript').includes('query-in-loop@2')
+  && !rules("await env.DB.batch(ok.map((r) => env.DB.prepare('INSERT INTO t (id) VALUES (?)').bind(r.id)));", 'javascript').includes('query-in-loop@1')
+  && !rules("for (const r of rows) { ids.push(r.id); }\nconst { results } = await env.DB.prepare('SELECT id FROM t WHERE id IN (' + ids.map(() => '?').join(',') + ')').bind(...ids).all();", 'javascript').some((f) => f.startsWith('query-in-loop'))
+  && !rules("const rows = await db.query('SELECT id FROM t');\nfor (const r of rows) {\n  total += r.n;\n}", 'javascript').some((f) => f.startsWith('query-in-loop')),
+  'query-in-loop: an awaited query or fetch inside for/while/forEach is flagged; a batch of prepared statements, a query after the loop and a loop with no query are not: ' + JSON.stringify([rules("for (const r of rows) {\n  const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM t WHERE owner = ?').bind(r.id).first();\n}", 'javascript'), rules("await env.DB.batch(ok.map((r) => env.DB.prepare('INSERT INTO t (id) VALUES (?)').bind(r.id)));", 'javascript')]));
+ok(rules("const sql = 'SELECT id FROM t WHERE ' + clauses.join(' AND ') + ' ORDER BY id';", 'javascript').includes('where-join-empty@1')
+  && rules('const sql = `SELECT id FROM t WHERE ${where.join(" AND ")}`;', 'javascript').includes('where-join-empty@1')
+  && !rules("const sql = 'SELECT id FROM t' + (clauses.length ? ' WHERE ' + clauses.join(' AND ') : '') + ' ORDER BY id';", 'javascript').includes('where-join-empty@1')
+  && !rules('const q = `SELECT id FROM t${where ? " WHERE " + where : ""} ORDER BY updated DESC`;', 'javascript').includes('where-join-empty@1')
+  && !rules("const sql = 'SELECT id FROM t WHERE id IN (' + ids.map(() => '?').join(',') + ')';", 'javascript').includes('where-join-empty@1'),
+  'where-join-empty: a WHERE pasted straight from a joined list is flagged; a guarded one and a join inside IN (…) are not: ' + JSON.stringify(rules("const sql = 'SELECT id FROM t WHERE ' + clauses.join(' AND ');", 'javascript')));
+ok(rules("ta.rows = Math.min(12, Math.max(3, j.draft.split('\\n').length + 1));", 'javascript').includes('split-to-count@1')
+  && rules("const words = text.split(' ').length;", 'javascript').includes('split-to-count@1')
+  && !rules("const parts = line.split(',');\nif (parts.length !== 2) return null;", 'javascript').some((f) => f.startsWith('split-to-count'))
+  && !rules("if (s.split('/').length === 3) go();", 'javascript').includes('split-to-count@1')
+  && !rules("const n = (s.match(/\\n/g) || []).length + 1;", 'javascript').includes('split-to-count@1'),
+  'split-to-count: .split(sep).length used as a count is flagged; a split kept for its pieces, a length compared to a number, and the match count are not: ' + JSON.stringify(rules("const words = text.split(' ').length;", 'javascript')));
 // clean code says nothing
 const CLEAN = [
   ['javascript', 'const total = items.reduce((a, b) => a + b, 0);\nif (total === 0) return null;\nif (x == null) return;\nel.textContent = name;\nel.innerHTML = "<b>fixed</b>";\nconst n = parseInt(s, 10);\nfor (const x of list) console.log(x);\nconst msg = "if (a = b) is a classic bug";\n// eval(x) in a comment\ntry { go(); } catch (e) { log(e); }\nconst url = "https://example.com";\nconst q = db.prepare("SELECT id FROM t WHERE id = ?").bind(id);'],
@@ -126,6 +148,11 @@ for (const c of ['await deliver(plan, { token: opts.token ?? process.env.BRIDGE_
 ok(rules('const password = "hunter2hunter2";', 'javascript').includes('hardcoded-secret@1'), 'a password string');
 ok(rules('export STRIPE_SECRET_KEY=abcd1234efgh5678', 'shell').includes('hardcoded-secret@1'), 'a shell secret');
 ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').includes('hardcoded-secret@1'), 'a password in a URL');
+{ // a token read from the environment: no finding, and the closer read is shown the lookup, not a "[redacted]" that reads as a hard-coded key
+  const env = 'const ACCOUNT = process.env.CLOUDFLARE_ACCOUNT_ID, TOKEN = process.env.CLOUDFLARE_API_TOKEN;', lit = 'const TOKEN = "sk_live_abcdef1234567890XYZ";';
+  ok(!rules(env, 'javascript').includes('hardcoded-secret@1') && redact(env) === env, 'an env lookup is no hard-coded secret and is not masked: ' + redact(env));
+  ok(rules(lit, 'javascript').includes('hardcoded-secret@1') && redact(lit) === 'const TOKEN = "[redacted]";', 'a literal token is flagged and masked: ' + redact(lit));
+}
 // fixes Void makes by itself
 const fx = (c, lang) => autoFix(c, lang ? { lang } : {}).code;
 ok(fx('if (a == b) { var n = parseInt(s); }', 'javascript') === 'if (a == b) { var n = parseInt(s); }', 'js: == / var / parseInt stay warnings, never rewritten ("5" == 5, a var used after its block, parseInt("0x10"))');
@@ -191,6 +218,16 @@ ok(!rules("&& groupOf('make the group bigger').by === 1.25 && x", 'javascript').
 ok(!rules('if (woa(1, 2, 1.5) !== .5) fail();', 'javascript').includes('float-equality@1') && !rules('if (median(xs) === 2.25) ok();', 'javascript').includes('float-equality@1') && rules('if (x === 0.3) {}', 'javascript').includes('float-equality@1'), 'selftest-style comparisons with .5 and 2.25 not flagged; 0.3 still is');
 ok(rules('os.chmod(path, 0o777)', 'python').includes('chmod-777@1') && !rules('os.chmod(path, 0o644)', 'python').includes('chmod-777@1') && rules('chmod 777 f', 'shell').includes('chmod-777@1'), 'os.chmod 0o777 flagged in Python, 0o644 not, shell still flagged');
 ok(!rules("SELECT name FROM users WHERE email LIKE '%' + @q + '%'", 'sql').includes('sql-concat@1'), 'a LIKE pattern built around an @parameter is not SQL injection');
+// a template SQL literal whose only ${} are bare clause fragments right after WHERE/AND/OR/HAVING, with the values bound (a ? placeholder and .bind): not pasted
+{ const BT = '`';
+  const flags = (code) => rules(code, 'javascript').includes('sql-concat@1');
+  ok(!flags('const { results } = await env.DB.prepare(' + BT + 'SELECT id, kind, name, summary, links, state, remote, last_commit, digest, sha256, updated FROM void_memory WHERE ${where} ORDER BY updated DESC LIMIT ?' + BT + ').bind(...args, n).all();'), 'the memory search query (fixed fragments, every value bound) is not SQL built by pasting');
+  ok(!flags('const { results } = await env.DB.prepare(' + BT + 'SELECT a FROM t WHERE ${where} ORDER BY n LIMIT ?' + BT + ').bind(...args, 5).all();') && !flags('db.prepare(' + BT + 'SELECT a FROM t WHERE id = ? AND ${cond}' + BT + ').bind(id)'), 'a clause fragment after WHERE or AND with the values bound is fine');
+  ok(flags('db.prepare(' + BT + 'SELECT a FROM t WHERE name = ${name} AND id = ?' + BT + ').bind(id)'), 'a value pasted into a comparison still flags even when other values are bound');
+  ok(flags('db.prepare(' + BT + "SELECT a FROM t WHERE name = '${name}' AND id = ?" + BT + ').bind(id)'), 'a value pasted inside quotes still flags');
+  ok(flags('db.prepare(' + BT + 'SELECT a FROM t WHERE ${where}' + BT + ').all()'), 'a clause fragment with nothing bound still flags');
+  ok(flags('db.prepare(' + BT + 'SELECT a FROM ${table} WHERE id = ?' + BT + ').bind(id)'), 'a table name pasted in still flags');
+  ok(flags('db.prepare(' + BT + 'SELECT a FROM t WHERE ${build(x)} AND id = ?' + BT + ').bind(id)'), 'a call inside the hole still flags'); }
 ok(!rules("await ctx.env.DB.prepare('UPDATE void_queue SET note = ? WHERE id = ? AND state = ?').bind(r.ok ? 'builder woken' : 'builder wake failed ' + r.status, item.id, 'queued').run();", 'javascript').includes('sql-concat@1')
   && !rules("const r = await db.query('SELECT a FROM t WHERE id = ?', [prefix + id]);", 'javascript').includes('sql-concat@1')
   && rules("const q = 'SELECT ' + cols + ' FROM t';", 'javascript').includes('sql-concat@1')

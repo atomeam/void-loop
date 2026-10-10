@@ -65,10 +65,27 @@ export async function track(env, { owner, kind, ref }, fn, opts = {}) {
   return { record: rec, value };
 }
 
-/** The newest records first, for the owner. */
-export async function recent(env, { limit = 100, owner } = {}) {
+// An action taken outside the server (the extension acting in the owner's tab, B3) can't run inside track(), so its record
+// is written in two calls with the same contract: open() writes it `running` before the action (no record, no action) and
+// close() ends it once, done | failed | stubbed.
+export async function open(env, { owner, kind, ref }) {
   await env.DB.prepare(TABLE).run();
-  const n = Math.max(1, Math.min(500, Number(limit) || 100));
-  const q = owner ? env.DB.prepare('SELECT * FROM void_actions WHERE owner = ? ORDER BY started DESC LIMIT ?').bind(owner, n) : env.DB.prepare('SELECT * FROM void_actions ORDER BY started DESC LIMIT ?').bind(n);
+  const rec = begin({ owner, kind, ref });
+  await write(env, rec);
+  return rec;
+}
+export async function close(env, id, state, text) {
+  const row = await env.DB.prepare('SELECT * FROM void_actions WHERE id = ?').bind(String(id || '')).first();
+  if (!row) throw new Error('no record ' + id);
+  const rec = settle(row, state, text);
+  await write(env, rec);
+  return rec;
+}
+
+/** The newest records first, for the owner; offset skips that many newest (a card pages 30 at a time). */
+export async function recent(env, { limit = 100, offset = 0, owner } = {}) {
+  await env.DB.prepare(TABLE).run();
+  const n = Math.max(1, Math.min(500, Number(limit) || 100)), skip = Math.max(0, Math.min(KEEP, Math.floor(Number(offset)) || 0));
+  const q = owner ? env.DB.prepare('SELECT * FROM void_actions WHERE owner = ? ORDER BY started DESC LIMIT ? OFFSET ?').bind(owner, n, skip) : env.DB.prepare('SELECT * FROM void_actions ORDER BY started DESC LIMIT ? OFFSET ?').bind(n, skip);
   return ((await q.all()).results || []);
 }

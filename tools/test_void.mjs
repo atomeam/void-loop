@@ -13,7 +13,8 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'applic
 const server = http.createServer((req, res) => {
   let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   if (p === '/') p = '/index.html';
-  const f = path.join(root, p);
+  let f = path.join(root, p);
+  if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); }
   res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' });
   fs.createReadStream(f).pipe(res);
@@ -378,6 +379,10 @@ async function fresh(...inits) {
     if (u.includes('/api/will')) return r.fulfill(json({ at: '2026-09-27T23:00:00Z', wants: [{ kind: 'people asked', title: 'learn x', i_want: 'I want to answer every question about tides.', because: 'asked 9 times' }] }));
     if (u.includes('/api/answer')) {
       const body = JSON.parse(r.request().postData() || '{}'), ask = body.ask || '';
+      if (body.mode === 'proposal') { // the proposal card (lib/proposal.js): the real route with no model = the rules draft
+        return answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env: fixEnv, waitUntil() {} })
+          .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
+      }
       if (body.mode === 'fix') {
         fixCalls.push(body);
         return answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env: fixEnv })
@@ -516,6 +521,18 @@ try {
       dragging && order[order.length - 1] === 'first' && !(await V.p.evaluate(() => document.documentElement.classList.contains('dragging'))) && !(await V.p.evaluate(() => String(getSelection()))),
       JSON.stringify({ dragging, order }));
     await V.ctx.close(); }
+  // synapses: the faint branching network lives in the nebula look only: the aura's shader linked (no no-gl) and the network canvas is
+  // on and drawing something, it clears and goes off when the look changes, and reduced motion never turns it on
+  { const Y = await fresh();
+    const syn = async () => Y.p.evaluate(() => { const c = document.getElementById('void-syn'); let drawn = 0; if (c && c.width) { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; for (let i = 3; i < d.length; i += 4) if (d[i]) { drawn++; break; } } return { on: !!document.querySelector('#void-syn.on'), exists: !!c, drawn, noGl: document.documentElement.classList.contains('no-gl') }; });
+    const pub = await syn();
+    await Y.ask('add a nebula', 800); await Y.p.mouse.move(400, 300); await Y.p.mouse.move(700, 420, { steps: 6 });
+    const nb = await until(async () => { const v = await syn(); return v.on && v.drawn ? v : false; }, 9000) || await syn();
+    await Y.ask('calm my void', 800); const off = await until(async () => { const v = await syn(); return !v.on ? v : false; }, 3000) || await syn();
+    await Y.ctx.close();
+    const R = await fresh(); await R.p.emulateMedia({ reducedMotion: 'reduce' }); await R.ask('add a nebula', 800); const rd = await R.p.evaluate(() => !!document.querySelector('#void-syn.on')); await R.ctx.close();
+    check('synapses: the public homepage has no network canvas; with the nebula look the aura shader linked and the network canvas is on and drawing; "calm my void" turns it off; reduced motion never turns it on',
+      !pub.exists && (nb.noGl || (nb.on && nb.drawn)) && !off.on && !rd && !Y.errors.length && !R.errors.length, JSON.stringify({ pub, nb, off, rd, e: Y.errors.concat(R.errors) })); }
   // Board Next #3, grouping half (skills/group.js): "group the clock and the note" ties them together, dragging one carries the
   // other the same distance, the group moves and resizes as one, "bring the group to the front" layers it, "ungroup" lets go.
   { const G = await fresh();
@@ -962,6 +979,117 @@ try {
       /queue\.add · miss:learn-to-handle-tides/.test(card) && /○ .*confirm\.email\.send · appr-1 · approved, but email\.send is not connected/.test(card) && /2 done · 1 stubbed/.test(card)
       && kinds.join(',') === 'done,stubbed,done' && /^Bearer owner-k$/.test(auth) && !A.errors.length, card.slice(0, 300) + ' | ' + auth);
     await A.ctx.close(); }
+  // the memory card (skills/memory.js): the owner's key goes as a bearer to /api/memory?ask=, the API's answer shows as rows, and without
+  // the key it says so and fetches nothing
+  { const M = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    let auth = '', asked = '';
+    await M.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; asked = new URL(r.request().url()).searchParams.get('ask'); return r.fulfill(json({ answer: 'I remember 1 match:\n\u2022 alpha (React, py): A tiny tool. \u00b7 last change 2025-01-01 \u00b7 backed up at https://github.com/o/alpha', matches: ['alpha-1234abcd'] })); });
+    await M.ask('what did I build with react', 900);
+    const card = await M.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
+    const rows = await M.p.$$eval('.memory-row', (r) => r.length);
+    check('memory card: "what did I build with react" asks /api/memory?ask= with the owner bearer and shows each match with its tech, change and remote copy',
+      /alpha \(React, py\)/.test(card) && /I remember 1 match/.test(card) && /no remote copy|backed up at/.test(card) && rows === 1 && /^Bearer owner-k$/.test(auth) && asked === 'react' && !M.errors.length, card.slice(0, 300) + ' | ' + auth + ' | ' + asked);
+    await M.ctx.close(); }
+  { const P = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    let auth = '';
+    await P.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'I remember 1 match:\n\u2022 mine (py): A tiny tool. \u00b7 no remote copy', matches: ['m'] })); });
+    await P.ask('what do you remember about python', 900);
+    const card = await P.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
+    check('memory card: a signed-in member (no owner key) sends their own session as the bearer and sees their answer', /mine \(py\)/.test(card) && /^Bearer member-session-token-/.test(auth) && !P.errors.length, card.slice(0, 200) + ' | ' + auth);
+    await P.ctx.close(); }
+  // "remember that <fact>" keeps one line (POST with the bearer), "forget that <fact>" removes it (DELETE by the same note id); without a key neither fetches
+  // "what you told me": a signed-in member's ask carries their session to /api/answer, and an answer that used a note says so on the card; a visitor's carries nothing
+  { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    let auth = null;
+    await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
+    await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
+    check('what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Void', /^Bearer member-session-token-/.test(auth || '') && /from what you told me · written by Void/.test(card) && !T.errors.length, (auth || '') + ' | ' + card.slice(0, 200));
+    await T.ctx.close(); }
+  { const V2 = await fresh(); let auth = null;
+    await V2.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization; return r.fulfill(json({ answer: 'Sunlight scatters.', sources: [] })); });
+    await V2.ask('why is the sky blue', 900); const card = await V2.p.evaluate(() => document.body.innerText);
+    check('what you told me: a visitor with no key sends no authorization and the card never claims a note', auth === undefined && !/from what you told me/.test(card) && !V2.errors.length, String(auth) + ' | ' + card.slice(0, 120));
+    await V2.ctx.close(); }
+  { const K = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const calls = [];
+    await K.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { const q = r.request(); calls.push({ m: q.method(), u: new URL(q.url()).search, a: q.headers().authorization || '', b: q.postData() || '' }); return r.fulfill(json(q.method() === 'DELETE' ? { removed: 1 } : { saved: 1, rejected: 0 })); });
+    await K.ask('remember that I prefer tabs over spaces', 900); const said1 = await K.p.evaluate(() => document.body.innerText);
+    await K.ask('forget that I prefer tabs over spaces', 900); const said2 = await K.p.evaluate(() => document.body.innerText);
+    const post = calls.find((c) => c.m === 'POST'), del = calls.find((c) => c.m === 'DELETE'), rec = post && JSON.parse(post.b).records[0];
+    check('memory: "remember that <fact>" POSTs one note with the bearer, "forget that <fact>" DELETEs the same note id, and each says what it did',
+      post && del && /^Bearer owner-k$/.test(post.a) && rec.kind === 'note' && rec.summary === 'I prefer tabs over spaces' && del.u === '?id=' + rec.id && /Remembered: I prefer tabs over spaces/.test(said1) && /Forgotten: I prefer tabs over spaces/.test(said2) && !K.errors.length,
+      JSON.stringify({ calls, errs: K.errors }));
+    await K.ctx.close(); }
+  { const G = await fresh(); let n = 0;
+    await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
+    await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
+    check('memory: without a key "remember that …" says to unlock Void first and sends nothing', /Unlock Void first/.test(said) && n === 0 && !G.errors.length, said.slice(0, 200) + ' | ' + n);
+    await G.ctx.close(); }
+  { const N = await fresh(); let fetched = 0;
+    await N.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { fetched++; return r.fulfill(json({ answer: 'x' })); });
+    await N.ask('what did I build with react', 900);
+    const card = await N.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
+    check('memory card: without the owner key it says so and fetches nothing', /Unlock Void first/.test(card) && fetched === 0 && !N.errors.length, card.slice(0, 200) + ' | fetched ' + fetched);
+    await N.ctx.close(); }
+  // the card keeps itself live (skills/live.js, every minute): a record that is running when the card opens settles to done
+  // on screen after one tick with nobody pressing Refresh; it fetches a page of 30 and Show more brings the next 30
+  { const L = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const rec = (i, state) => ({ id: 'act-' + i, owner: 'owner', kind: i ? 'automation.note' : 'automation.http.post', ref: 'r' + i, state, result: state === 'done' ? 'did it' : null, error: null, started: new Date(1760000000000 - i * 60000).toISOString(), finished: state === 'done' ? '2026-10-10T00:10:00Z' : null });
+    let all = [rec(0, 'running'), ...Array.from({ length: 40 }, (_, i) => rec(i + 1, 'done'))]; const calls = [];
+    await L.ctx.route(/\/api\/actions(?:\?|$)/, (r) => { const u = new URL(r.request().url()); const limit = +u.searchParams.get('limit'), offset = +u.searchParams.get('offset') || 0; calls.push(limit + '/' + offset); return r.fulfill(json({ actions: all.slice(offset, offset + limit) })); });
+    await L.p.clock.install();
+    await L.ask('my actions', 900);
+    const states = () => L.p.$$eval('.actions-row', (r) => r.map((x) => x.dataset.state));
+    const before = await states();
+    all = all.map((r) => (r.id === 'act-0' ? { ...r, state: 'done', result: 'posted', finished: '2026-10-10T00:11:00Z' } : r));
+    await L.p.clock.runFor(61e3); await until(async () => (await states())[0] === 'done', 3000);
+    const after = await states(); const cap = await L.p.$eval('.actions-card .vlive', (e) => e.textContent).catch(() => '');
+    await L.p.click('.actions-more'); await until(async () => (await states()).length === 41, 3000);
+    const paged = (await states()).length, moreHidden = await L.p.$eval('.actions-more', (b) => b.style.display === 'none');
+    check('actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides',
+      before[0] === 'running' && before.length === 30 && after[0] === 'done' && after.length === 30 && /^updated .* · refreshes every 1 min/.test(cap) && paged === 41 && moreHidden
+      && calls.slice(0, 3).join(',') === '30/0,30/0,30/30' && !L.errors.length, JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, errs: L.errors }));
+    await L.ctx.close(); }
+  // the quiz (skills/quiz.js, frontier #17) is a learning card: never in the saved stage after a reload unless the visitor
+  // kept that one card ("keep this quiz"); the gears it quizzed on are saved as always (void.html keptThings)
+  { const Z = await fresh();
+    await Z.ask('explain gears', 900); await Z.ask('quiz me on this', 900);
+    const saved = () => Z.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).map((t) => t.kind));
+    const shown = await Z.p.$eval('.quiz-card .quiz-prompt', (e) => e.innerText).catch(() => '');
+    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    const afterReload = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
+    await Z.ask('quiz me on this', 900); await Z.ask('keep this quiz', 600);
+    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    const afterKeep = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
+    check('quiz card: asks the gear card\'s own question, is not in the saved stage after a reload, and is after "keep this quiz"',
+      /16-tooth driver and a 32-tooth driven gear/.test(shown) && afterReload.saved.includes('gears') && !afterReload.saved.includes('quiz') && afterReload.cards === 0
+      && afterKeep.saved.filter((k) => k === 'quiz').length === 1 && afterKeep.cards === 1, JSON.stringify({ shown, afterReload, afterKeep }));
+    await Z.ctx.close(); }
+  const ranBeforeProposal = gate.ran.length;
+  // the proposal card (skills/proposal.js, build order step 3): a pasted customer request becomes an editable proposal with
+  // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent
+  { const P = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '");' });
+    const REQ = 'Hi Adam,\n\nWe run a small bakery in Portland and our online orders come in through Shopify. We need the Zapier zap that copies each order into our Google Sheet fixed: since last week every order shows up twice and the morning bake list is wrong. We would also like someone to check the whole flow once a month so it does not break again before the holidays.\n\nCan you tell us what you would do and when you could start?\n\nThanks,\nMaria\nmaria@sunrisebakery.example';
+    const actionsBefore = gate.env.DB.actions.size, callsBefore = gate.calls.length;
+    await P.p.fill('#input', 'turn this into a proposal:\n' + REQ); await P.p.keyboard.press('Enter');
+    await until(async () => P.p.$eval('.proposal-field[data-field="title"]', (e) => e.value).catch(() => ''), 6000);
+    const field = (k) => P.p.$eval('.proposal-field[data-field="' + k + '"]', (e) => e.value).catch(() => '');
+    const drafted = { title: await field('title'), asked: await field('asked'), scope: await field('scope'), price: await field('price'), timeline: await field('timeline'), next: await field('next'), to: await P.p.$eval('.proposal-to', (e) => e.value).catch(() => '') };
+    await P.p.fill('.proposal-field[data-field="title"]', 'Fix the double orders'); await P.p.waitForTimeout(200);
+    const kept = await P.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).find((t) => t.kind === 'proposal'));
+    await P.p.click('.proposal-send'); await P.p.waitForTimeout(900);
+    const line = await P.whisper();
+    const rec = [...gate.env.DB.actions.values()].slice(actionsBefore).find((a) => a.kind === 'proposal.send');
+    check('proposal card: the pasted request becomes the proposal\'s fields (what they asked for, scope, a blank price line, timeline, next step, the customer\'s address), an edit is kept, Send asks the confirm line and records a stubbed proposal.send for the customer\'s domain, nothing sent',
+      /^Proposal: the Zapier zap/.test(drafted.title) && /check the whole flow once a month/.test(drafted.asked) && /^- We need the Zapier zap/.test(drafted.scope) && /out of scope\]$/.test(drafted.scope)
+      && drafted.price === '[price: left for the owner to fill in]' && /^\[/.test(drafted.timeline) && /Reply with a yes/.test(drafted.next) && drafted.to === 'maria@sunrisebakery.example'
+      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === REQ
+      && line === 'Send the proposal \u201cFix the double orders\u201d to maria@sunrisebakery.example? Yes / No'
+      && gate.calls.slice(callsBefore).some((c) => c.type === 'a2m.approval.requested' && c.toolName === 'proposal.send' && c.args.to === 'maria@sunrisebakery.example')
+      && rec && rec.state === 'stubbed' && rec.ref === 'sunrisebakery.example' && /nothing is sent/.test(rec.result || '') && gate.ran.length === ranBeforeProposal && !P.errors.length,
+      JSON.stringify({ drafted, kept: kept && { title: kept.fields && kept.fields.title }, line, rec, errs: P.errors }).slice(0, 600));
+    await P.ask('no', 600);
+    await P.ctx.close(); }
   // "unlock <key>" is the first thing handled: pasted with or without the space (or "unlock" twice) it is saved on this
   // device and nothing carrying the key leaves the page (it once went to the answer model and the miss board).
   { meEnv.READ_TOKEN = '0123456789abcdef0123456789abcdef'; const U = await fresh(); const leaked = []; // the server checks the key first (owner login) U.p.on('request', (r) => { if (/0123456789abcdef0123/.test(r.url() + (r.postData() || ''))) leaked.push(r.url()); });
@@ -1033,6 +1161,18 @@ try {
     await P.p.goto(base + 'handoff.html?id=' + '0'.repeat(32)); await P.p.waitForTimeout(400); const nf = await P.p.$eval('#msg', (e) => e.textContent);
     await P.p.goto(base + 'surface.html'); await P.p.waitForTimeout(300); await P.p.fill('#i', 'a sky of cards'); await P.p.keyboard.press('Enter'); await P.p.waitForTimeout(200);
     const card = await P.p.$eval('#cards .vc', (e) => e.textContent).catch(() => '');
+    // /code-review/'s scoreboard line reads review-stats.json (written weekly by watchdog.yml from tools/review-learn.mjs); without the file it stays hidden
+    const S = await fresh();
+    await S.ctx.route(/\/review-stats\.json(?:\?|$)/, (rt) => rt.fulfill(json({ at: '2026-10-12T10:20:00Z', since: '30d', rulesFlagged: 7, closerFound: 9, falseDropped: 2, learned: 3, learnedFromExtras: 3 })));
+    await S.p.goto(base + 'code-review/'); await until(async () => !(await S.p.$eval('#learning', (e) => e.hidden).catch(() => true)), 4000);
+    const learnLine = await S.p.$eval('#learning', (e) => e.hidden ? '' : e.textContent).catch(() => '');
+    const N = await fresh();
+    await N.ctx.route(/\/review-stats\.json(?:\?|$)/, (rt) => rt.fulfill({ status: 404, body: '' }));
+    await N.p.goto(base + 'code-review/'); await N.p.waitForTimeout(500);
+    const learnHidden = await N.p.$eval('#learning', (e) => e.hidden).catch(() => false);
+    check('code-review: the scoreboard line renders from review-stats.json ("this month Void\'s rules caught N of M findings its closer read made; K rules learned") and stays hidden without the file',
+      learnLine === "This month Void's rules caught 7 of 9 findings its closer read made; 3 rules learned from it, 2 false claims of its own filtered out." && learnHidden === true, JSON.stringify({ learnLine, learnHidden }));
+    await S.ctx.close(); await N.ctx.close();
     const heads = ['handoff.html', 'surface.html'].map((f) => fs.readFileSync(path.join(root, f), 'utf8')).every((h) => /<meta name="robots" content="noindex, nofollow">/.test(h));
     const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
     check('/handoff drops a file with the write token and opens it (name, body, id in the URL); an unknown id says so; /surface is a noindex preview that shows what you type; neither page becomes the offline front page',
@@ -1264,11 +1404,24 @@ try {
   await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
   check('"what can you do" and the menu open', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg), selfPg.slice(0, 60));
   const OUT_LINE = 'Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
-  const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pricing', 'pay', 'how much does Void cost?', 'go pro', 'buy paid void', 'void monthly'];
+  const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
   for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
   check('paid: signed out, every paid ask gets the price, what it adds and "remember me" first (no page, no checkout opened)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
     outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
+  // A price question is different: the membership sentence stays first, and the services card opens under it.
+  const priceAsks = ['pricing', 'how much does Void cost?'];
+  const priceGot = [];
+  for (const a of priceAsks) {
+    await P.p.$eval('#whisper', (e) => { e.textContent = ''; });
+    await P.ask(a, 0);
+    priceGot.push(await until(async () => { const w = await P.whisper(); return /Paid Void/.test(w) ? w : ''; }, 6000) || await P.whisper());
+    priceGot.push(!!(await until(async () => /What Void sells/.test((await P.page()) || '') && (await P.page()), 5000)));
+    await P.ask('close');
+  }
+  check('paid: signed out, a price question says the membership line AND opens the services card under it',
+    priceGot[0] === OUT_LINE && priceGot[1] === true && priceGot[2] === OUT_LINE && priceGot[3] === true,
+    JSON.stringify(priceGot).slice(0, 400));
   // Asks a product covers: Void's own answer, then one line with the product, its live price and its link (matched from the live
   // catalog's names and descriptions; nothing about products is hard-coded in the page). Nothing opens by itself.
   const productAsks = [
@@ -1447,12 +1600,19 @@ try {
   // Plan item 12, signed in with a passkey: $49 a month (live from the store), what it adds, and Void Monthly's link carrying the account id.
   const GUM = 'https://moonbeam846.gumroad.com/l/yinmj';
   const IN_LINK = 'Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · buy it on Gumroad';
-  const inAsks = ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
+  const inAsks = ['upgrade', 'pay', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
   const inGot = [];
   for (const a of inAsks) { await A.ask(a, 0); inGot.push(await until(async () => { const w = await A.whisper(); return /Paid Void|paid Void|your Void is paid/.test(w) ? w : ''; }, 5000) || await A.whisper()); }
   const aLink = await A.p.$eval('#whisper a', (a) => ({ href: a.href, target: a.target, rel: a.rel })).catch(() => null);
   check('paid: signed in, paid asks give $49 a month, what it adds and the Void Monthly link with the account id (never opened by itself)', inGot.every((w) => w === IN_LINK) && aLink && aLink.href === GUM + '?void=' + encodeURIComponent(meA.userId) && aLink.target === '_blank' && /noopener/.test(aLink.rel) && !(await A.page()) && A.ctx.pages().length === 1 && db().accounts.size === 0,
     inGot.map((w, i) => inAsks[i] + '=' + w).join(' | ') + ' ' + JSON.stringify(aLink));
+  await A.ask('pricing', 0);
+  const inPriceW = await until(async () => { const w = await A.whisper(); return /Paid Void/.test(w) ? w : ''; }, 6000) || await A.whisper();
+  const inPricePg = await until(async () => /What Void sells/.test((await A.page()) || '') && (await A.page()), 5000);
+  check('paid: signed in, "pricing" keeps the membership line and shows the services card with the plan row',
+    inPriceW === IN_LINK && /What Void sells/.test(inPricePg || '') && /Keep-It-Running Plan/.test(inPricePg || ''),
+    inPriceW + ' | ' + String(inPricePg || '').slice(0, 160));
+  await A.ask('close');
   // With a passkey, an outbound action still stops on the confirm line (a passkey never skips it; visitors still can't send).
   const ranBeforePk = gate.ran.length, askedBeforePk = gate.calls.filter((c) => c.type === 'a2m.approval.requested').length;
   await B.ask('send an email to jane@x.com saying hi', 0);
