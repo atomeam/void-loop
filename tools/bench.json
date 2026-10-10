@@ -5573,5 +5573,9 @@
   {"ask": "hire you", "want": "skill:services"},
   {"ask": "what do you offer", "want": "skill:services"},
   {"ask": "can i hire you", "want": "skill:services"},
-  {"ask": "what's for sale", "want": "skill:services"}
+  {"ask": "what's for sale", "want": "skill:services"},
+  {"ask": "pricing", "want": "skill:services", "says": "Paid Void"},
+  {"ask": "price list", "want": "skill:services", "says": "Paid Void"},
+  {"ask": "what does void cost", "want": "skill:services", "says": "Paid Void"},
+  {"ask": "how much is void", "want": "skill:services", "says": "Paid Void"}
 ]

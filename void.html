@@ -5358,11 +5358,11 @@ return { ok: true, detail: 'timer-reset' };
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
       return vm && vm.available !== false ? 'Paid Void is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Void adds ' + PAID_ADDS;
     }
-    async function handlePaidAsk(lower) {
+    async function handlePaidAsk(lower, logIt = true) { // logIt false: a price question logs once, as the services card (alsoShowPricedServices)
       if (!isPaidAsk(lower)) return false;
       if (!me || !me.token) { // signed out: the price and what it adds, then how to buy (the purchase attaches to your Void's passkey)
         say((await paidLine()) + ' · say “remember me” first, then ask again to buy');
-        loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
+        if (logIt) loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
       if ((await meTier()) === 'paid') { say('your Void is paid: ' + PAID_ADDS); return true; }
       const { g, products } = await storeCatalog();
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Void, as the store has it now
@@ -5373,8 +5373,22 @@ return { ok: true, detail: 'timer-reset' };
         whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
         const shown = whisper.innerHTML; setTimeout(() => { if (whisper.innerHTML === shown) whisper.textContent = ''; }, 30000);
       }
-      loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: url ? 'gumroad link' : 'not open' });
+      if (logIt) loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: url ? 'gumroad link' : 'not open' });
       return true;
+    }
+    // A price question shows everything for sale: handlePaidAsk said the membership sentence (it stays first), and the
+    // services card (skills/services.js) lists the hands-on services under it. The card is logged as the answer so the
+    // record carries both. "fix my automation" stays with the fix flow: that is a request for work, not a price.
+    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|a-to-mind) cost|how much (?:is|does) (?:void|a-to-mind)(?: cost)?)$/;
+    function isPriceQuestion(lower) { return PRICE_QUESTION_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
+    async function alsoShowPricedServices(text) {
+      if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);
+      const svc = learnedSkills.find((sk) => sk && sk.name === 'services');
+      if (!svc) return;
+      try {
+        const src = await svc.run(text, { showPage, esc, say: () => {}, _pageStill: (el) => vpageEl === el });
+        if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + svc.name });
+      } catch (_) {}
     }
     // The optional product line: only when the live catalog has something for this ask, after Void's own answer (or fix).
     function productLine(g, p) {
@@ -5825,7 +5839,8 @@ return { ok: true, detail: 'timer-reset' };
       { const k = howToThing(lower0); if (k) { currentAsk = text; showSelfPage(false, k); say('here'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'how-to ' + k }); return; } }
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
-      if (await handlePaidAsk(lower0)) return;
+      if (isPriceQuestion(lower0)) { if (await handlePaidAsk(lower0, false)) { await alsoShowPricedServices(text); return; } }
+      else if (await handlePaidAsk(lower0)) return;
       { const full = restorePaste(text); if (await handleReviewAsk(text, full)) return; if (await handleFixAsk(text, full)) return; }
       if (handleVoiceAsk(lower0)) return;
       if (await handleGatedAsk(text)) return;
