@@ -137,5 +137,5 @@ export default {
   nearMisses: ['give me five minutes', 'five minute timer', 'set a timer for five minutes', 'give me a challenge', 'five minutes from now', 'wait five minutes'],
   match(lower, text) { return !!challengeOf(text); },
   run,
-  stageKinds: { challenge: { mount, ephemeral: true, learning: true, gives: { observations: (th) => C.gives(th.state, Date.now()).observations, explanation: (th) => C.gives(th.state, Date.now()).explanation } } },
+  stageKinds: { challenge: { mount, ephemeral: true, learning: true, takes: { observations: 'snapshot' }, gives: { observations: (th) => C.gives(th.state, Date.now()).observations, explanation: (th) => C.gives(th.state, Date.now()).explanation } } },
 };

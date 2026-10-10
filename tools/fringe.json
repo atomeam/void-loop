@@ -1758,5 +1758,25 @@
     ],
     "sha256": "ccc18854c744580c551692a826ea5195cea8bcb5405c9095486d5faf5c11cf92",
     "emit": false
+  },
+  {
+    "run": 71,
+    "at": "2026-10-10T10:48:11Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-8.html",
+    "sources": [
+      {
+        "claim": "People responding to one stimulus type beside a partner who responds to the other show a spatial compatibility effect that largely disappears when they do the same single-key task alone (the joint Simon effect)",
+        "source": "https://doi.org/10.1016/S0010-0277(02)00025-6",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A visible machine partner on screen draws a joint-Simon cost from a person, and that cost is steady enough per person to read their sense of acting with a machine",
+        "source": "drafts/fringe/human-machine-co-agency-8.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "41c47ae2b650671a990f68c5f274b006ca79fc468f35e1b8018a214d5601fd6f",
+    "emit": false
   }
 ]

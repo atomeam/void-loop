@@ -771,6 +771,9 @@
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
       mineChanged();
       shareNoticeNew();
+      // live takers (frontier #18: a goal card takes its source's observations live) re-read their source on every change;
+      // snapshot takers (the quiz, the challenge) took one copy and never listen
+      try { dispatchEvent(new CustomEvent('void:stage-change')); } catch (_) {}
     }
     function loopLog(attempt) {
       // an ask read with its typos fixed is logged as it was typed, so the miss board and the bench see the real ask
