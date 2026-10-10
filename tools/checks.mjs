@@ -59,6 +59,7 @@ for (const [name, file] of [
   ['draft', 'draft.test.mjs'],
   ['drafts', 'draft-check.mjs'],
   ['extension', 'test_extension.mjs'],
+  ['placement', 'placement.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
