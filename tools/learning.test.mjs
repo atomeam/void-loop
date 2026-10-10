@@ -1,7 +1,7 @@
 // node tools/learning.test.mjs: the required tests for the quiz card (domains/void.learning.md §2), named
 // learning.quiz/<case>, plus the handoff itself: an explainer's observations pass into the quiz unchanged.
 // Fixtures are the real payloads the gear and Moon cards give (skills/gear-pair-rules.js, skills/moon-phases-rules.js);
-// the lock is not built yet, so its fixture is written from its spec's addendum (domains/void.explainers.md §3).
+// and skills/lock-rules.js, the three explainers' own exported payloads.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import * as Q from '../void-live-deploy/skills/quiz-rules.js';
@@ -10,23 +10,14 @@ import gearsSkill from '../void-live-deploy/skills/gears.js';
 import moonSkill from '../void-live-deploy/skills/moon.js';
 import * as G from '../void-live-deploy/skills/gear-pair-rules.js';
 import * as M from '../void-live-deploy/skills/moon-phases-rules.js';
+import * as L from '../void-live-deploy/skills/lock-rules.js';
+import lockSkill from '../void-live-deploy/skills/lock.js';
 import { validateObservations } from '../void-live-deploy/lib/observations.js';
 
 const gearObs = () => G.observations(G.create({ driverTeeth: 16, drivenTeeth: 32 }));
 const moonObs = () => M.observations(M.setOrbit(M.create(), 60, 0), 0); // a waxing crescent, captured at 60°
-const lockObs = () => ({
-  schema: 'void.observations.v1', source: { cardId: 'lock-1', revision: 3 },
-  items: [
-    { id: 'alignedPinCount', label: 'Aligned pins', value: 5, valueType: 'number', unit: 'pins', meaning: 'Pin stacks whose shear line meets the plug', displayValue: '5',
-      assessment: { enabled: true, prompt: 'With the correct key inserted all the way, how many pin stacks are aligned at the shear line?', answerLabel: '5', tolerance: 0 } },
-    { id: 'mechanismState', label: 'State', value: 'ready', valueType: 'text', meaning: 'The lock\'s state', displayValue: 'Ready',
-      assessment: { enabled: true, prompt: 'With the correct key fully inserted at 0°, what state is the lock in?', answerLabel: 'Ready',
-        options: ['withdrawn', 'inserting', 'blocked', 'ready', 'turned'].map((id) => ({ id, label: id[0].toUpperCase() + id.slice(1) })), answerId: 'ready' } },
-    { id: 'canTurn', label: 'Can turn', value: 'yes', valueType: 'text', meaning: 'Whether full insertion lets the plug turn', displayValue: 'Yes',
-      assessment: { enabled: true, prompt: 'Fully inserted, could the correct key turn the plug?', answerLabel: 'Yes', options: [{ id: 'yes', label: 'Yes' }, { id: 'no', label: 'No' }], answerId: 'yes' } },
-    { id: 'keyPreset', label: 'Key', value: 'correct', valueType: 'text', meaning: 'Which key (an input)', displayValue: 'Correct' },
-  ],
-});
+// the real lock card's payload (skills/lock-rules.js): the matching key fully inserted, ready
+const lockObs = () => L.observations(L.setInsertion(L.create({ keyPreset: 'matching' }), 1));
 const started = (p, opts) => Q.take(Q.create(opts), p);
 const cur = (s) => s.questions[s.current];
 const answerRight = (s) => { const q = cur(s); return Q.answer(s, q.answer); };
@@ -390,8 +381,8 @@ test('learning.five-minute-challenge/explicit-keep-retains-only-that-card', () =
 
 // ---------------- the first end-to-end handoffs (void.learning.md) ----------------
 
-const handoffKinds = () => ({ ...gearsSkill.stageKinds, ...moonSkill.stageKinds, ...quiz.stageKinds, ...challenge.stageKinds });
-for (const [name, th] of [['gear', () => ({ id: 'g', kind: 'gears', state: G.create({ driverTeeth: 24, drivenTeeth: 12 }) })], ['moon', () => ({ id: 'm', kind: 'moon', state: M.setOrbit(M.create(), 270, 0) })]]) {
+const handoffKinds = () => ({ ...gearsSkill.stageKinds, ...moonSkill.stageKinds, ...lockSkill.stageKinds, ...quiz.stageKinds, ...challenge.stageKinds });
+for (const [name, th] of [['gear', () => ({ id: 'g', kind: 'gears', state: G.create({ driverTeeth: 24, drivenTeeth: 12 }) })], ['moon', () => ({ id: 'm', kind: 'moon', state: M.setOrbit(M.create(), 270, 0) })], ['lock', () => ({ id: 'l', kind: 'lock', state: L.setInsertion(L.create({ keyPreset: 'one-mismatch' }), 1) })]]) {
   test('handoff/' + name + '-to-quiz-no-adapter', () => {
     const kinds = handoffKinds(), src = th();
     const p = payloadOf(sourceOf({ [src.id]: src }, kinds, null), kinds);
@@ -432,4 +423,18 @@ test('challenge: summoned by the asks people type, not by look-alikes', () => {
     assert.equal(challengeOf(a), null, a);
   for (const e of challenge.examples) assert.ok(challenge.match(e.toLowerCase(), e), e);
   for (const e of challenge.nearMisses) assert.ok(!challenge.match(e.toLowerCase(), e), e);
+});
+
+test('handoff/lock-to-challenge-no-adapter', () => {
+  const kinds = handoffKinds(), src = { id: 'l', kind: 'lock', state: L.setInsertion(L.create({ keyPreset: 'several-mismatch' }), 1) };
+  const p = payloadOf(sourceOf({ l: src }, kinds, null), kinds);
+  const c = C.take(C.create(), p.observations, p.explanation);
+  assert.equal(c.status, 'ready'); assert.deepEqual(c.snapshot, p.observations);
+  assert.deepEqual(c.rounds.map((r) => r.id), ['alignedPinCount', 'mechanismState', 'canTurn']);
+  let s = C.start(c, T0);
+  s = C.reveal(C.predict(s, 2, T0 + 1000), T0 + 2000);       // two pairs aligned
+  s = C.reveal(C.predict(s, 'blocked', T0 + 3000), T0 + 4000);
+  s = C.reveal(C.predict(s, 'no', T0 + 5000), T0 + 6000);
+  assert.equal(s.status, 'completed'); assert.match(C.summary(s), /3 of 3 predictions matched/);
+  assert.match(C.summary(s), /Takeaway: Pin pair 1 is misaligned: its key pin still crosses the shear line/);
 });

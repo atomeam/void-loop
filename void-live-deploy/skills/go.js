@@ -268,7 +268,7 @@ async function run(text, api) {
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'go'; } // one board at a time
   const phone = Math.min(innerWidth, innerHeight) < 560, bw = phone ? Math.min(innerWidth - 20, 400) : 460;
   const both = phone ? bw : bw + 20 + 290; // the board and its card side by side
-  api.summon('go', { state: createGoState(9), x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 48 });
+  api.summon('go', { state: createGoState(9), hold: true, x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 48 });
   api.say('Go · two players, Black first · a stone is a move; press Count position when you want the count');
   return 'go';
 }
