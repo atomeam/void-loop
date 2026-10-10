@@ -20,9 +20,9 @@ export const PRODUCTS = [
     gumroad: { productId: '', slug: 'dkmcjk', envVar: 'GUMROAD_REVIEW_PRODUCT_ID' }, // made 2026-10-09
     daily: 300,
   },
-  // Hands-on services (2026-10-10): work the crew does for a buyer, sold the same Gumroad way. `price` is the shown
-  // price and stays manual: Adam sets it here and on Gumroad. An empty slug = Adam has not made that Gumroad product
-  // yet, so it is not on sale; the pricing card (skills/services.js) then says so instead of linking.
+  // Hands-on services (2026-10-10): work the crew does for a buyer, sold the same Gumroad way. All four are in the
+  // live store. `price` is the fallback the card shows when the live catalog (/api/catalog) is unreachable; on the
+  // page the card reads the live price, so Gumroad stays the one place Adam changes a price.
   {
     id: 'one-time-fix',
     name: 'One-Time Fix',
@@ -40,17 +40,17 @@ export const PRODUCTS = [
     page: 'https://a-to-mind.com/',
     adds: 'your automations watched around the clock, repairs when something breaks, a monthly plain-words report',
     includedIn: '',
-    gumroad: { productId: '', slug: '', envVar: 'GUMROAD_PLAN_PRODUCT_ID' }, // no Gumroad product yet
+    gumroad: { productId: '', slug: 'keep-it-running-membership', envVar: 'GUMROAD_PLAN_PRODUCT_ID' },
     daily: 0,
   },
   {
     id: 'full-stack-audit',
     name: 'Full Stack Audit',
-    price: '$300',
+    price: '$325',
     page: 'https://a-to-mind.com/',
     adds: 'a top-to-bottom review of every automation you have, with a written repair plan ranked by priority',
     includedIn: '',
-    gumroad: { productId: '', slug: '', envVar: 'GUMROAD_AUDIT_PRODUCT_ID' }, // no Gumroad product yet
+    gumroad: { productId: '', slug: 'full-stack-audit', envVar: 'GUMROAD_AUDIT_PRODUCT_ID' },
     daily: 0,
   },
   {
@@ -60,7 +60,7 @@ export const PRODUCTS = [
     page: 'https://a-to-mind.com/',
     adds: 'your first automation built for you, end to end, from the task you do by hand',
     includedIn: '',
-    gumroad: { productId: '', slug: '', envVar: 'GUMROAD_SETUP_PRODUCT_ID' }, // no Gumroad product yet
+    gumroad: { productId: '', slug: 'first-automation-setup', envVar: 'GUMROAD_SETUP_PRODUCT_ID' },
     daily: 0,
   },
 ];
