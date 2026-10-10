@@ -1,6 +1,6 @@
 // What can the Cloudflare tokens CI already holds read? (usage meter in the owner view, frontier "metabolism"). Report-only: it prints one line per
 // token and capability, never the token itself, and always exits 0. Run by .github/workflows/cf-scope.yml (workflow_dispatch) with the repo's secrets.
-//   node tools/cf-scope.mjs            reads CLOUDFLARE_API_TOKEN, CLOUDFLARE_WORKERS_TOKEN and CLOUDFLARE_ACCOUNT_ID from the environment
+//   node tools/cf-scope.mjs            reads CLOUDFLARE_API_TOKEN, CLOUDFLARE_WORKERS_TOKEN, CLOUDFLARE_ANALYTICS_TOKEN (a read-only token with Account Analytics: Read, for the usage meter) and CLOUDFLARE_ACCOUNT_ID from the environment
 //   node tools/cf-scope.mjs --json
 import { pathToFileURL } from 'node:url';
 const API = 'https://api.cloudflare.com/client/v4';
@@ -25,7 +25,7 @@ export function judge(status, body) {
 
 export async function probe(env, fetcher = fetch, now = new Date()) {
   const rows = [], id = env.CLOUDFLARE_ACCOUNT_ID;
-  const tokens = [['CLOUDFLARE_API_TOKEN', env.CLOUDFLARE_API_TOKEN], ['CLOUDFLARE_WORKERS_TOKEN', env.CLOUDFLARE_WORKERS_TOKEN]];
+  const tokens = [['CLOUDFLARE_API_TOKEN', env.CLOUDFLARE_API_TOKEN], ['CLOUDFLARE_WORKERS_TOKEN', env.CLOUDFLARE_WORKERS_TOKEN], ['CLOUDFLARE_ANALYTICS_TOKEN', env.CLOUDFLARE_ANALYTICS_TOKEN]];
   const to = day(now), from = day(new Date(now.getTime() - 2 * 864e5));
   const call = async (token, path, body) => {
     try {
