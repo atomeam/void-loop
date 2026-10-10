@@ -12,6 +12,7 @@
 //   node tools/model-bench.mjs --dry                  no network: canned answers, to check the harness and the scoring
 //   node tools/model-bench.mjs --asks more.json       add the asks in a file (same shape as ASKS; patterns as "/re/flags" or a plain word;
 //                                                      page: a page object, or "Q3" / "DRAFT" / "RECIPE")
+//   node tools/model-bench.mjs --asks f --asks-literal  the same, for a file not written by hand (misses, other sessions): words only, no regex
 //   node tools/model-bench.mjs --max-neurons 8000     the spend cap (default 8000 of the 10,000 free neurons a day): models run cheapest
 //                                                      first by the catalog's price, and one that would pass the cap is not run
 //   node tools/model-bench.mjs --check                one catalog call and one 1-token run: exit 0 when the token can bench, 3 (with the
@@ -138,19 +139,28 @@ async function catalog() {
 
 
 // ---- ask files, counts, spend ----
-// a pattern from a file: "/re/flags" is a regex, anything else is that word or phrase, any case
-function toRe(p) {
+// A pattern from a file is data: ask files will come from the misses snapshot and other sessions, so a pattern is checked
+// before it is ever compiled. "/re/flags" is a regex only when it is short (PATTERN_MAX) and has no nested quantifier (a
+// quantified group with a quantifier inside: (a+)+, (x*)*, ([a-z]{1,9})+, the shapes that backtrack forever); anything
+// else is that word or phrase, any case. literalOnly (--asks-literal, for files not written by hand) takes no regex at all.
+export const PATTERN_MAX = 200;
+const NESTED = /\((?:[^()]|\([^()]*\))*[*+}](?:[^()]|\([^()]*\))*\)\s*(?:[*+]|\{\d*,)/;
+function toRe(p, literalOnly) {
   const m = /^\/(.*)\/([a-z]*)$/s.exec(String(p));
-  return m ? new RegExp(m[1], m[2]) : new RegExp('\\b' + esc(String(p)) + '\\b', 'i'); // void-review: ok (an ask file is written in this repo; a /re/ pattern is meant as a regex)
+  if (!m) return new RegExp('(?:^|\\W)' + esc(String(p)) + '(?=\\W|$)', 'i');
+  if (literalOnly) throw new Error('literal patterns only in this file: ' + String(p).slice(0, 40));
+  if (m[1].length > PATTERN_MAX) throw new Error(`pattern too long (${m[1].length} > ${PATTERN_MAX})`);
+  if (NESTED.test(m[1].replace(/\\./g, 'x'))) throw new Error('nested quantifier in ' + String(p).slice(0, 40));
+  return new RegExp(m[1], m[2]); // void-review: ok (checked above: length cap, no nested quantifier; literal-only files never get here)
 }
-export function loadAsks(list) {
+export function loadAsks(list, { literalOnly = false } = {}) {
   if (!Array.isArray(list)) throw new Error('an ask file is a JSON list of asks');
   return list.map((a, i) => {
     try {
       if (!a || typeof a.ask !== 'string' || !a.ask.trim() || typeof a.kind !== 'string') throw new Error('needs kind and ask');
       const page = typeof a.page === 'string' ? PAGES[a.page] : a.page;
       if (a.page && !page) throw new Error('no page named ' + a.page);
-      return { kind: a.kind, ask: a.ask.trim(), must: (a.must || []).map(toRe), mustNot: (a.mustNot || []).map(toRe), ...(page ? { page } : {}) };
+      return { kind: a.kind, ask: a.ask.trim(), must: (a.must || []).map((x) => toRe(x, literalOnly)), mustNot: (a.mustNot || []).map((x) => toRe(x, literalOnly)), ...(page ? { page } : {}) };
     } catch (e) { throw new Error(`ask ${i}: ${e.message}`); }
   });
 }
@@ -205,12 +215,15 @@ export function markdown({ asks, rows, verdict: v, plan }) {
 }
 
 // before anything is spent: can this token list the catalog (Workers AI Read) and run a model (Workers AI Edit)?
-export async function checkAccess({ fetch: get = fetch, runFetch = fetch } = {}) {
+export async function checkAccess({ fetch: get = fetch, runFetch = fetch, token = TOKEN, account = ACCOUNT } = {}) {
+  // which secret the workflow handed in (model-bench.yml sets BENCH_TOKEN_NAME); an empty one is said as such, not as a scope
+  const secret = process.env.BENCH_TOKEN_NAME || 'CLOUDFLARE_API_TOKEN';
+  if (!token || !account) return { ok: false, why: `${!token ? secret : 'CLOUDFLARE_ACCOUNT_ID'} is empty: set the repository secret` };
   const why = async (r, scope) => {
     let j = null; try { j = await r.json(); } catch (_) {}
     const codes = ((j && j.errors) || []).map((e) => e.code);
     if (codes.includes(7003) || r.status === 404) return { ok: false, why: 'the account id is wrong or missing: check the CLOUDFLARE_ACCOUNT_ID secret' };
-    if (r.status === 401 || r.status === 403 || codes.includes(10000)) return { ok: false, why: `the token lacks the "Account > Workers AI > ${scope}" permission (it needs Workers AI Read and Workers AI Edit): add it to the token, or run with token2` };
+    if (r.status === 401 || r.status === 403 || codes.includes(10000)) return { ok: false, why: `${secret} lacks the "Account > Workers AI > ${scope}" permission (it needs Workers AI Read and Workers AI Edit): add both to that token${secret === 'CLOUDFLARE_API_TOKEN' ? ', or run with token2' : ''}` };
     return { ok: false, why: `HTTP ${r.status}: ${JSON.stringify((j && j.errors) || j).slice(0, 200)}` };
   };
   try {
@@ -318,7 +331,7 @@ async function main() {
   }
   const only = (opt('--only', '') || '').split(',').filter(Boolean);
   const file = opt('--asks', '');
-  const asks = ASKS.concat(file ? loadAsks(JSON.parse(fs.readFileSync(file, 'utf8'))) : []).filter((a) => !only.length || only.includes(a.kind));
+  const asks = ASKS.concat(file ? loadAsks(JSON.parse(fs.readFileSync(file, 'utf8')), { literalOnly: flag('--asks-literal') }) : []).filter((a) => !only.length || only.includes(a.kind));
   const cap = Number(opt('--max-neurons', '8000'));
   const plan = planRun([DEFAULT_MODEL, ...challengers.filter((m) => m !== DEFAULT_MODEL)], asks, prices, { cap: Number.isFinite(cap) ? cap : 8000, keep: [DEFAULT_MODEL], allowUnpriced: DRY || !!VIA || flag('--allow-unpriced') });
   console.log(`asks: ${asks.length} (${countLine(asks)})`);
