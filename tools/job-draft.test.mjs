@@ -41,7 +41,7 @@ const seed = (DB, { reply = true, hid = HID } = {}) => {
     .run(hid, 'Re receipt [sale:s-1]', 'sunrisebakery.example', REQUEST, Math.floor(Date.now() / 1000), 'sale:s-1');
 };
 const job = (DB) => DB.raw.prepare("SELECT * FROM void_queue WHERE id = 'j1'").get();
-const recs = (DB) => { try { return DB.raw.prepare("SELECT * FROM void_actions WHERE kind = 'proposal.draft' ORDER BY started").all(); } catch (_) { return []; } };
+const recs = (DB, kind = 'proposal.draft') => { try { return DB.raw.prepare('SELECT * FROM void_actions WHERE kind = ? ORDER BY started').all(kind); } catch (_) { return []; } };
 const row = (DB) => ({ ...job(DB) });
 
 test('the reply link on a job body is found, the last one when there are two', () => {
@@ -79,17 +79,35 @@ test('a second claim reuses the draft: nothing new, no second record', async () 
   assert.equal(recs(DB).length, 1);
 });
 
-test('a job without a reply, a non-sale job, and an expired reply draft nothing', async () => {
+test('nothing drafted is never silent on a sale job: no reply and an expired reply each write a proposal.skipped record', async () => {
   const DB = d1(); seed(DB, { reply: false });
   const env = { DB };
-  assert.equal(await draftOnClaim(env, row(DB)), '');
-  assert.equal(await draftOnClaim(env, { id: 'x', target: 'next', ask: 'reply received: https://a-to-mind.com/api/handoff?id=' + HID + '&raw=1' }), '');
+  assert.equal(await draftOnClaim(env, row(DB)), 'no reply yet: job j1 still waits on the buyer');
   assert.equal(job(DB).draft ?? null, null);
   assert.equal(recs(DB).length, 0);
+  let sk = recs(DB, 'proposal.skipped');
+  assert.equal(sk.length, 1); assert.equal(sk[0].state, 'done'); assert.equal(sk[0].ref, 'sale:s-1');
+  assert.match(sk[0].result, /^no reply yet/);
   const DB2 = d1(); seed(DB2); DB2.raw.prepare('DELETE FROM handoff').run();
-  assert.equal(await draftOnClaim({ DB: DB2 }, row(DB2)), 'no draft: the reply link has expired');
+  assert.equal(await draftOnClaim({ DB: DB2 }, row(DB2)), 'reply expired: the link on job j1 is past its 7 days');
   assert.equal(job(DB2).draft ?? null, null);
-  assert.equal(recs(DB2).length, 0, 'no record without a reply to draft from');
+  assert.equal(recs(DB2).length, 0, 'no draft record without a reply to draft from');
+  sk = recs(DB2, 'proposal.skipped');
+  assert.equal(sk.length, 1); assert.match(sk[0].result, /^reply expired/);
+});
+
+test('a non-sale claim stays silent (builders claim miss: and step: jobs all day), and a drafting error settles failed', async () => {
+  const DB = d1();
+  assert.equal(await draftOnClaim({ DB }, { id: 'x', target: 'next', ask: 'reply received: https://a-to-mind.com/api/handoff?id=' + HID + '&raw=1' }), '');
+  assert.equal(recs(DB, 'proposal.skipped').length, 0); assert.equal(recs(DB).length, 0);
+  const DB2 = d1(); seed(DB2);
+  DB2.raw.prepare('UPDATE handoff SET body = ?').run('too short'); // under prepareProposal's 20-character floor
+  const line = await draftOnClaim({ DB: DB2 }, row(DB2));
+  assert.match(line, /^no draft: nothing to draft from the reply/);
+  assert.equal(job(DB2).draft ?? null, null);
+  const f = recs(DB2);
+  assert.equal(f.length, 1); assert.equal(f[0].state, 'failed');
+  assert.match(f[0].error, /nothing to draft from the reply/);
 });
 
 test('the claim endpoint itself answers with the draft line and the drafted job', async () => {
