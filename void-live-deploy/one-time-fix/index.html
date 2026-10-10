@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>One-Time Fix: one broken automation, repaired with proof</title>
+  <meta name="description" content="Send the workflow that quietly stopped - the zap that will not fire, the orders that stopped syncing, the form that goes nowhere. We diagnose it, fix it, and show you proof it runs again. $25 flat.">
+  <link rel="canonical" href="https://a-to-mind.com/one-time-fix/">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <meta property="og:title" content="One-Time Fix">
+  <meta property="og:description" content="Send the workflow that quietly stopped - the zap that will not fire, the orders that stopped syncing, the form that goes nowhere. We diagnose it, fix it, and show you proof it runs again. $25 flat.">
+  <meta property="og:url" content="https://a-to-mind.com/one-time-fix/">
+  <meta property="og:image" content="https://a-to-mind.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "One-Time Fix",
+  "url": "https://a-to-mind.com/one-time-fix/",
+  "description": "Send the workflow that quietly stopped - the zap that will not fire, the orders that stopped syncing, the form that goes nowhere. We diagnose it, fix it, and show you proof it runs again. $25 flat.",
+  "provider": {
+    "@type": "Organization",
+    "name": "A-to-Mind",
+    "url": "https://a-to-mind.com/"
+  },
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "One-Time Fix",
+      "url": "https://moonbeam846.gumroad.com/l/eozcma",
+      "priceCurrency": "USD",
+      "price": "25"
+    }
+  ]
+}
+  </script>
+  <style>
+    :root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --card: #141414; --accent: #7aa7ff; --ok: #56d364; }
+    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --card: #ffffff; --accent: #2457c5; --ok: #1f7a33; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, sans-serif; }
+    main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+    a { color: var(--accent); }
+    h1 { font-size: clamp(28px, 6vw, 40px); line-height: 1.15; margin: 18px 0 10px; }
+    h2 { font-size: 22px; margin: 40px 0 10px; }
+    .lead { font-size: 18px; color: var(--muted); max-width: 640px; }
+    ul { padding-left: 20px; } li { margin: 6px 0; }
+    .plan { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; margin: 24px 0; max-width: 420px; }
+    .plan .price { font-size: 26px; font-weight: 700; }
+    .plan .note { color: var(--muted); font-size: 14px; margin: 2px 0 14px; }
+    .buy { font: 600 15px system-ui, sans-serif; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: #fff; padding: 10px 18px; text-decoration: none; display: inline-block; }
+    .muted { color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="/">&larr; Void &middot; A-to-Mind</a></p>
+  <h1>One broken automation, fixed fast.</h1>
+  <p class="lead">A workflow that used to run your day quietly stopped: orders not syncing, emails not sending, a form going nowhere. Send it to us. We find the actual cause, repair it, and you get proof it works - not just our word for it.</p>
+
+  <div class="plan">
+    <h2 style="margin:0 0 4px">One-Time Fix</h2>
+    <div class="price" id="price">$25</div>
+    <p class="note">flat, the whole price</p>
+    <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/eozcma" rel="noopener">Buy &mdash; One-Time Fix</a>
+    <p class="muted" id="unavailable" hidden>Not on sale right now &mdash; email <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
+  </div>
+
+  <h2>What you send after buying</h2>
+  <ul>
+    <li>Buy it, then reply to your receipt with what stopped working, in your own words.</li>
+    <li>Screenshots help; jargon is not required. &quot;The orders stopped showing up in the sheet&quot; is plenty.</li>
+    <li>If we need access to something, we ask for the minimum and tell you why. You can revoke it the moment the work is done.</li>
+  </ul>
+
+  <h2>What you get back</h2>
+  <ul>
+    <li>A plain-words diagnosis: what was actually wrong.</li>
+    <li>The repair, tested end to end.</li>
+    <li>Before-and-after proof it runs - a short report with a test run and screenshots you can forward to anyone.</li>
+  </ul>
+
+  <h2>Is this the right one?</h2>
+  <p>One workflow with one trigger and its steps - a single zap, scenario or connection. Problem spans several? The Full Stack Audit is built for that.</p>
+  <p class="muted">Not sure? <a href="/?q=what%20do%20you%20sell">Ask Void</a> &mdash; it shows everything for sale with live prices &mdash; or email <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a> before you buy.</p>
+</main>
+<script>
+(function () {
+  'use strict';
+  var SLUG = 'eozcma';
+  function money(x) { return '$' + (x.price_cents / 100).toFixed(x.price_cents % 100 ? 2 : 0) + ({ monthly: ' a month', yearly: ' a year' }[x.recurrence] || ''); }
+  fetch('/api/catalog').then(function (r) { return r.json(); }).then(function (j) {
+    var row = (j.products || []).find(function (x) { return x.slug === SLUG || String(x.url || '').split('/l/')[1] === SLUG; });
+    if (!row) return; // the page's own price and link stand
+    if (row.price_cents) document.getElementById('price').textContent = money(row);
+    if (row.available === false) { document.getElementById('buy').hidden = true; document.getElementById('unavailable').hidden = false; return; }
+    if (/^https:\/\//.test(row.url || '')) document.getElementById('buy').href = row.url;
+  }).catch(function () {}); // offline: the page's own price and link stand
+})();
+</script>
+</body>
+</html>

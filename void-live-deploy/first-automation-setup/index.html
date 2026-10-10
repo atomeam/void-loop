@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>First Automation Setup: your first automation, built for you</title>
+  <meta name="description" content="Tell us the task you do by hand twice a week. We build the automation end to end with the tools you already use, test it, and hand it over in plain English. $100.">
+  <link rel="canonical" href="https://a-to-mind.com/first-automation-setup/">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <meta property="og:title" content="First Automation Setup">
+  <meta property="og:description" content="Tell us the task you do by hand twice a week. We build the automation end to end with the tools you already use, test it, and hand it over in plain English. $100.">
+  <meta property="og:url" content="https://a-to-mind.com/first-automation-setup/">
+  <meta property="og:image" content="https://a-to-mind.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "First Automation Setup",
+  "url": "https://a-to-mind.com/first-automation-setup/",
+  "description": "Tell us the task you do by hand twice a week. We build the automation end to end with the tools you already use, test it, and hand it over in plain English. $100.",
+  "provider": {
+    "@type": "Organization",
+    "name": "A-to-Mind",
+    "url": "https://a-to-mind.com/"
+  },
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "First Automation Setup",
+      "url": "https://moonbeam846.gumroad.com/l/first-automation-setup",
+      "priceCurrency": "USD",
+      "price": "100"
+    }
+  ]
+}
+  </script>
+  <style>
+    :root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --card: #141414; --accent: #7aa7ff; --ok: #56d364; }
+    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --card: #ffffff; --accent: #2457c5; --ok: #1f7a33; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, sans-serif; }
+    main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+    a { color: var(--accent); }
+    h1 { font-size: clamp(28px, 6vw, 40px); line-height: 1.15; margin: 18px 0 10px; }
+    h2 { font-size: 22px; margin: 40px 0 10px; }
+    .lead { font-size: 18px; color: var(--muted); max-width: 640px; }
+    ul { padding-left: 20px; } li { margin: 6px 0; }
+    .plan { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; margin: 24px 0; max-width: 420px; }
+    .plan .price { font-size: 26px; font-weight: 700; }
+    .plan .note { color: var(--muted); font-size: 14px; margin: 2px 0 14px; }
+    .buy { font: 600 15px system-ui, sans-serif; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: #fff; padding: 10px 18px; text-decoration: none; display: inline-block; }
+    .muted { color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="/">&larr; Void &middot; A-to-Mind</a></p>
+  <h1>Your first automation, built for you.</h1>
+  <p class="lead">If you do anything twice a week by hand, it can probably run itself. You do not need to know what any of this is called - describe your day, and we will find the robot in it.</p>
+
+  <div class="plan">
+    <h2 style="margin:0 0 4px">First Automation Setup</h2>
+    <div class="price" id="price">$100</div>
+    <p class="note">built, tested and handed over</p>
+    <a class="buy" id="buy" href="https://moonbeam846.gumroad.com/l/first-automation-setup" rel="noopener">Buy &mdash; First Automation Setup</a>
+    <p class="muted" id="unavailable" hidden>Not on sale right now &mdash; email <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a>.</p>
+  </div>
+
+  <h2>What you send after buying</h2>
+  <ul>
+    <li>Buy it, then reply to your receipt describing the task you hate: copying orders into a spreadsheet, sending the same reminder, sorting files.</li>
+    <li>Tell us the tools you already use. We build with those - no new subscriptions unless you want one.</li>
+  </ul>
+
+  <h2>What you get back</h2>
+  <ul>
+    <li>One repetitive task automated end to end - from trigger to done, tested and running.</li>
+    <li>A plain-English handoff: you will know exactly what it does and how to change it.</li>
+    <li>The same proof standard as every job: a test run showing it working.</li>
+  </ul>
+
+  <h2>Is this the right one?</h2>
+  <p>Anyone starting from zero. Most of our setup customers have never set up an automation before.</p>
+  <p class="muted">Not sure? <a href="/?q=what%20do%20you%20sell">Ask Void</a> &mdash; it shows everything for sale with live prices &mdash; or email <a href="mailto:atom@a-to-mind.com">atom@a-to-mind.com</a> before you buy.</p>
+</main>
+<script>
+(function () {
+  'use strict';
+  var SLUG = 'first-automation-setup';
+  function money(x) { return '$' + (x.price_cents / 100).toFixed(x.price_cents % 100 ? 2 : 0) + ({ monthly: ' a month', yearly: ' a year' }[x.recurrence] || ''); }
+  fetch('/api/catalog').then(function (r) { return r.json(); }).then(function (j) {
+    var row = (j.products || []).find(function (x) { return x.slug === SLUG || String(x.url || '').split('/l/')[1] === SLUG; });
+    if (!row) return; // the page's own price and link stand
+    if (row.price_cents) document.getElementById('price').textContent = money(row);
+    if (row.available === false) { document.getElementById('buy').hidden = true; document.getElementById('unavailable').hidden = false; return; }
+    if (/^https:\/\//.test(row.url || '')) document.getElementById('buy').href = row.url;
+  }).catch(function () {}); // offline: the page's own price and link stand
+})();
+</script>
+</body>
+</html>
