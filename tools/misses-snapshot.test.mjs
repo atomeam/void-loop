@@ -38,3 +38,14 @@ test('stop words and short words are not terms; an old miss outside the window i
   const s = snapshot([row('tide a', 1, '2026-09-01T00:00'), row('tide b'), row('tide c'), row('tide d')], { since: '2026-10-01' });
   assert.deepEqual(s.terms.find((t) => t.term === 'tide'), { term: 'tide', asks: 3, misses: 3 });
 });
+
+test('a word only ever written with a capital (a name, a place) is never listed, however many asks contain it; written in lower case once, it may be', () => {
+  const rows = ['ask Priya about the tide', 'did Priya call about the tide', 'Priya says the tide is high', 'make me a Priya', 'make me a Priya', 'make me a Priya please']
+    .map((ask, i) => ({ ask: ask + ' ' + i, count: 1 }));
+  const s = snapshot(rows);
+  assert.ok(!s.terms.some((t) => t.term === 'priya'), JSON.stringify(s.terms));
+  assert.ok(!s.make.some((t) => t.term === 'priya'), JSON.stringify(s.make));
+  assert.ok(s.terms.some((t) => t.term === 'tide'));
+  const once = snapshot(rows.concat([{ ask: 'priya is a word here', count: 1 }]));
+  assert.ok(once.terms.some((t) => t.term === 'priya'), 'seen in lower case once');
+});
