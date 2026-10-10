@@ -32,6 +32,7 @@ for (const [name, file] of [
   ['bench-floor', 'bench-floor.test.mjs'],
   ['bench-load', 'bench-load.test.mjs'],
   ['merge-main', 'merge-main.test.mjs'],
+  ['prepush', 'prepush.test.mjs'],
   ['take', 'take.test.mjs'],
   ['sorry', 'sorry.test.mjs'],
   ['voice', 'voice.test.mjs'],
@@ -50,6 +51,7 @@ for (const [name, file] of [
   ['learn', 'learn.test.mjs'],
   ['learn-draft', 'learn-draft.test.mjs'],
   ['learn-e2e', 'learn.e2e.test.mjs'],
+  ['model-bench', 'model-bench.test.mjs'],
   ['next-skill', 'next-skill.test.mjs'],
   ['share', 'share.test.mjs'],
   ['advance', 'advance.test.mjs'],
@@ -58,7 +60,7 @@ for (const [name, file] of [
   ['ringer', 'ringer.test.mjs'],
   ['queue', 'queue.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],
-  ['services', 'services.test.mjs'], ['sale-jobs', 'sale-jobs.test.mjs'], ['reply-to-job', 'reply-to-job.test.mjs'],
+  ['services', 'services.test.mjs'], ['sale-jobs', 'sale-jobs.test.mjs'], ['reply-to-job', 'reply-to-job.test.mjs'], ['email-worker', 'email-worker.test.mjs'],
   ['proposal', 'proposal.test.mjs'], ['job-draft', 'job-draft.test.mjs'],
   ['memory-card', 'memory-card.test.mjs'],
   ['told-me', 'told-me.test.mjs'],
@@ -102,7 +104,7 @@ for (const [name, file] of [
 if (process.env.VOID_SKIP_BENCH) results.push(['bench', true, 'skipped: CI runs it (bench.yml)']);
 else { const r = run([resolve(here, 'bench.mjs'), '--score']); let b = null; try { b = JSON.parse(r.out.filter((l) => l.startsWith('{')).pop()); } catch (_) {} // stderr is merged in: the JSON is the last line that starts with {
   const best = JSON.parse(readFileSync(resolve(here, 'bench.best.json'), 'utf8'));
-  const ok = !!b && (b.inconclusive || (b.score >= best.score && b.total >= best.total)); // inconclusive: the machine was under load (tools/bench-load.mjs), so the score says nothing; it is not a failure and not a pass
+  const ok = !!b && b.score >= best.score && b.total >= best.total; // score counts a miss that passed alone as a pass and lists only the ones that reproduce alone (tools/bench-load.mjs): below the floor is a real failure, load or not
   results.push(['bench', ok, b ? `${b.inconclusive ? b.note + ' - ' : ''}${b.score}/${b.total} (floor ${best.score})${b.cached ? ' (nothing it reads changed since the passing run at ' + b.cached + '; not replayed: --fresh forces it)' : ''}${b.wrong.length ? ' wrong: ' + b.wrong.join(' | ') : ''}` : r.out.slice(-2).join(' ')]); }
 { // the board reader must drop anything key-like before it prints (tools/misses.mjs)
   const { redact } = await import('./misses.mjs');

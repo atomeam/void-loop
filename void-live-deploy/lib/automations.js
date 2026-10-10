@@ -31,6 +31,11 @@
  */
 import { validateWatch, describe, TELLS, DEFAULT_EVERY } from './watch.js';
 
+// What a hook can cost (#250): a rule runs at most RUN_CAP_DAY times a day from webhooks (AUTOMATION_RUN_CAP overrides it), and the same
+// ask for the same target is not queued again inside QUEUE_DEDUPE_MS. Both were named in that change but never defined, so every hook
+// run threw ReferenceError (tools/automations.test.mjs, red on main from the merge until now).
+export const RUN_CAP_DAY = 200;
+export const QUEUE_DEDUPE_MS = 6 * 3600e3;
 export const SCHEMA = 'void.automation.v1';
 export const TRIGGERS = ['webhook', 'manual', 'schedule'];
 export const EVERY_MIN = 15, EVERY_MAX = 10080; // minutes between scheduled runs: the clock ticks every 15, a week at most
@@ -65,8 +70,6 @@ export function matches(rule, event) {
 /** is a scheduled rule due? lastRun: ISO time of its last run (any trigger), or null. The clock ticks about every 15
  * minutes and GitHub's crons run late, so a rule is due SLACK_MS early rather than skip a whole tick. */
 export const SLACK_MS = 3 * 60e3;
-export const RUN_CAP_DAY = 200;              // webhook runs of one rule per day (AUTOMATION_RUN_CAP overrides): a leaked secret stops here
-export const QUEUE_DEDUPE_MS = 6 * 3600e3;    // queue.add does not queue the same ask for the same target twice inside six hours
 export function due(rule, lastRun, now = Date.now()) {
   if (!rule || !rule.enabled || !rule.when || rule.when.on !== 'schedule') return false;
   const last = lastRun ? Date.parse(lastRun) : NaN;

@@ -77,3 +77,12 @@ test('a plain handoff is unchanged: stored as sent, no redaction, no record, no 
   assert.equal(h.job, null);
   assert.equal(recs(DB).length, 0);
 });
+
+test('a reply from another domain still lands, and the owner is told the sender differs from the job', async () => {
+  const DB = d1(); seedJob(DB, 's-5');
+  const r = await (await post(DB, { name: 'Re receipt [sale.s-5]', author: 'maria@gmail.com', body: 'answering from my personal address, it is Maria from acme', job: 'sale:s-5' })).json();
+  assert.match(String(r.job || ''), /appended to job j1 \(sender gmail\.com differs from the job's acme\.com\)$/, JSON.stringify(r));
+  assert.match(job(DB).ask, /reply received: .* $|reply received: https/);
+  const a = recs(DB);
+  assert.equal(a.length, 1); assert.match(a[0].result, /differs from the job's acme\.com/);
+});

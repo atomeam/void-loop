@@ -138,11 +138,12 @@ export function dropPhantoms(answer, known, code = '', clipped = false) {
 // in one checkable shape, one per line, each ending with the code line quoted, and quoteCheck() drops any finding whose quote is not
 // in the code shown at that file (the pasted code, or the diff's lines of that file). A finding with no quote is dropped the same way.
 // The prose after the list stays for the person. tools/review-learn.mjs reads the same shape back (parseFinding).
-export const QUOTE_RULE = 'Answer in two parts. First the findings, one per line, in exactly this shape and nothing else on the line:\n'
-  + 'file:line — kind — one sentence — `the code line, quoted exactly as it appears`\n'
-  + 'kind is bug, risk or style. file:line is the file and the new-file line number as the diff shows them (for pasted code, just "line N"). '
-  + 'The quoted line is copied from the code shown, character for character, from the line you mean: a finding whose line you cannot quote is not a finding, leave it out. '
-  + 'Write the single word none when there is nothing to report. Then one blank line and a short plain summary for the person, with the fix for each finding.';
+export const QUOTE_RULE = 'Answer in two parts. First the findings, one per line, each in this shape and nothing else on the line: the file and new-file line number as the diff shows them (for pasted code just the line number), then the kind (bug, risk or style), then one sentence, then the code line copied character for character from the code shown, in backticks, the four joined by " — ". '
+  + 'For example (never copy this example, it is not about this code): lib/jobs.js:42 — bug — The parse is unguarded, so bad JSON throws here. — `const v = JSON.parse(raw);` '
+  + 'A finding whose line you cannot quote from the code shown is not a finding: leave it out. Write the single word none when there is nothing to report. '
+  + 'Then one blank line and a short plain summary for the person with the fix for each finding, and nothing in it that is not in the list: a problem that is not worth a quoted line is not worth a sentence either.';
+// the shape as the first prompt wrote it; a model echoes it now and then, and an echo is not a finding
+const TEMPLATE_QUOTE = /^the code line, quoted exactly as it appears$/i, EXAMPLE_QUOTE = /^const v = JSON\.parse\(raw\);$/;
 const KINDS = new Set(['bug', 'risk', 'style', 'security', 'performance', 'readability', 'note', 'nit']);
 const SEP = /\s+[—–]\s+|\s+-\s+|\s*—\s*/;
 /** one line of the answer as a finding: { file, line, kind, sentence, quote } or null. The quote is the trailing backticked span. */
@@ -151,7 +152,8 @@ export function parseFinding(text) {
   const parts = line.split(SEP).map((x) => x.trim()).filter(Boolean);
   if (parts.length < 3) return null;
   const loc = parts[0].replace(/^[\s*\-•>]+|^\d+[.)]\s+/g, '').replace(/^\*\*|\*\*$/g, '').replace(/`/g, '').trim();
-  const lm = loc.match(/^(?:([\w./\\-]+?):)?\s*(?:line\s+)?L?(\d{1,6})\s*:?$/i); if (!lm) return null;
+  // "file:line" written literally (the model kept the placeholder) is a finding with no place: the quote alone has to place it
+  const lm = /^file:line$/i.test(loc) ? [loc, '', '0'] : loc.match(/^(?:([\w./\\-]+?):)?\s*(?:line\s+)?L?(\d{1,6})\s*:?$/i); if (!lm) return null;
   const kind = parts[1].replace(/\*/g, '').toLowerCase().replace(/^\((.*)\)$/, '$1').trim();
   if (!KINDS.has(kind)) return null;
   const last = parts[parts.length - 1], qm = parts.length > 3 ? last.match(/^`([^`]+)`\.?$/) : null;
@@ -183,22 +185,29 @@ export function quoteCheck(answer, evidence) {
   const out = []; let kept = 0, dropped = 0;
   const files = Object.keys(evidence || {});
   for (const raw of String(answer || '').split('\n')) {
+    // "none" (alone, or after a literal file:line) and an echo of the shape itself are not findings and not claims: they go, uncounted
+    if (/^[\s*\-•>]*(?:file:line\s*[—–-]+\s*)?none\.?\s*$/i.test(raw) || /\bfile:line\b.*[—–-]\s*kind\s*[—–-].*one sentence/i.test(raw)) continue;
     const f = parseFinding(raw);
     if (!f) { out.push(raw); continue; }
     if (!f.quote || !norm(f.quote)) { dropped++; continue; } // no quote, no finding
-    let ev = evidence[f.file]; if (!ev && f.file) { const k = files.find((x) => x && (x.endsWith('/' + f.file) || f.file.endsWith('/' + x) || x.split('/').pop() === f.file.split('/').pop())); ev = k ? evidence[k] : null; }
-    if (!ev && !f.file) ev = files.length === 2 && evidence[''].length === 0 ? evidence[files[1]] : evidence['']; // pasted code, or a one-file diff named by line only
-    if (!ev) { dropped++; continue; }
+    if (TEMPLATE_QUOTE.test(f.quote.trim()) || EXAMPLE_QUOTE.test(f.quote.trim()) && !files.some((k) => (evidence[k] || []).some(([, t]) => norm(t) === norm(f.quote)))) { dropped++; continue; } // the shape or the example echoed back
     const q = norm(f.quote), exact = q.length < 8;
-    const hits = ev.filter(([, t]) => { const n = norm(t); return exact ? n === q : n.includes(q) || (n.length >= 8 && q.includes(n)); });
+    const match = ([, t]) => { const n = norm(t); return exact ? n === q : n.includes(q) || (n.length >= 8 && q.includes(n)); };
+    const placeless = !f.file && !f.line; // a literal file:line: the quote decides the file
+    let ev = placeless ? null : evidence[f.file]; if (!ev && f.file) { const k = files.find((x) => x && (x.endsWith('/' + f.file) || f.file.endsWith('/' + x) || x.split('/').pop() === f.file.split('/').pop())); ev = k ? evidence[k] : null; }
+    if (!ev && !f.file && !placeless) ev = files.length === 2 && evidence[''].length === 0 ? evidence[files[1]] : evidence['']; // pasted code, or a one-file diff named by line only
+    let hits = ev ? ev.filter(match) : [], inFile = f.file;
+    if (!hits.length && placeless) for (const k of files) { const h = (evidence[k] || []).filter(match); if (h.length) { hits = h; inFile = k; break; } }
     if (!hits.length) { dropped++; continue; }
     kept++;
+    const locRe = /(^[\s*\-•>]*(?:\d+[.)]\s+)?`?)((?:[\w./\\-]+?:)?\s*(?:line\s+)?L?\d{1,6}|file:line)/i;
+    if (placeless) { out.push('', raw.trim().replace(locRe, '$1' + (inFile ? inFile + ':' : 'line ') + hits[0][0]), ''); continue; } // the place the quote gave it
     if (hits.some(([n]) => Math.abs(n - f.line) <= 3)) { out.push('', raw.trim(), ''); continue; }
     const at = hits[0][0]; // the quote sits elsewhere: the line number is corrected, the finding stays
     out.push('', raw.trim().replace(/(^[\s*\-•>]*(?:\d+[.)]\s+)?`?(?:[\w./\\-]+?:)?\s*(?:line\s+)?L?)\d{1,6}/i, '$1' + at), '');
   }
   let text = out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
-  if (/^none\.?$/i.test(text) || (!text && !dropped)) text = 'Nothing to report on a closer read.';
+  if (/^none\.?$/i.test(text) || (!text && !dropped) || (!kept && !dropped && /^(?:the code (?:is|looks) fine\.?|nothing to report\.?|looks good\.?)$/i.test(text))) text = 'Nothing to report on a closer read.';
   if (!text) text = 'Nothing the closer read could quote from the code: ' + dropped + ' claim' + (dropped === 1 ? ' about lines not in it was' : 's about lines not in it were') + ' dropped.';
   return { text, kept, dropped };
 }

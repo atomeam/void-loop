@@ -241,6 +241,14 @@ test('quoteCheck on its own: the shape it reads, pasted code by line number, a s
   const q2 = quoteCheck('lib/q.js:21 — bug — invented. — `nothing like this`', ev);
   assert.equal(q2.kept, 0); assert.equal(q2.dropped, 1); assert.match(q2.text, /could quote from the code: 1 claim about lines not in it was dropped/);
   assert.equal(quoteCheck('### Bugs\n\nProse only, the old shape, with no finding lines.', ev).text, '### Bugs\n\nProse only, the old shape, with no finding lines.');
+  // what the live model did on 2026-10-10: the literal placeholder, the shape echoed back, "file:line — none"
+  const q3 = quoteCheck('file:line — bug — the parse is unguarded. — `  const v = JSON.parse(raw).filter(Boolean);`\nfile:line — kind — one sentence — `the code line, quoted exactly as it appears`\nfile:line — none\n\nThe code is fine.', ev);
+  assert.equal(q3.kept, 1); assert.equal(q3.dropped, 0);
+  assert.match(q3.text, /^lib\/q\.js:22 — bug — the parse is unguarded\./m, 'a literal file:line is placed by its quote');
+  assert.doesNotMatch(q3.text, /file:line|one sentence/, 'the echoed shape and the placeholder are gone');
+  assert.equal(quoteCheck('file:line — none\n\nThe code is fine.', ev).text, 'Nothing to report on a closer read.');
+  assert.equal(quoteCheck('lib/jobs.js:42 — bug — The parse is unguarded, so bad JSON throws here. — `const v = JSON.parse(raw);`', ev).kept, 0, 'the prompt\'s own example is not a finding about this code');
+  assert.match(QUOTE_RULE, /never copy this example/);
 });
 
 test('a bearer that is not the owner: the answer is the free tier with no reason, and the exact reason goes to the function log only, never the token', async () => {
