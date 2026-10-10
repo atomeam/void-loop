@@ -275,10 +275,12 @@ export async function run3dChecks({ check, fresh }) {
       await F.p.mouse.up();
     }
     const after = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.shots === 1 && !s.rolling ? s : false; }, key), 20000);
-    check('Ringer: on the 3D ring, pressing the shooter and pulling it straight back aims at the middle with the pull as power (orbit held while pulling), a chalk arc fills with the power and the aim line reaches where the shot would stop; letting go flicks it, one shot',
+    check('Ringer: on the 3D ring, pressing the shooter and pulling it straight back aims at the middle with the pull as power (orbit held while pulling), a chalk arc fills with the power, the aim line reaches where the shot would stop and the ghost of the shot shows the marble it would hit; letting go flicks it, one shot',
       !!key && !!mid && mid.pulling && Math.abs(mid.angle - Math.PI / 2) < 0.2 && mid.power > 0.5 && mid.shots === 0 && !!after && after.shots === 1 && !after.pulling && F.errors.length === 0
         // while pulling: the chalk arc shows the power and the aim line is drawn to where the shot would stop (ringer-rules.js reach)
-        && mid.arc && Math.abs(mid.arcSweep - mid.power) < 1e-3 && Math.abs(mid.aimLength - mid.reach) < 1e-6 && !after.arc,
+        && mid.arc && Math.abs(mid.arcSweep - mid.power) < 1e-3 && Math.abs(mid.aimLength - mid.reach) < 1e-6 && !after.arc
+        // the ghost of the shot shows while pulling, with the marble on the cross it would hit, and the camera is held
+        && !!mid.ghost && mid.ghost.hits >= 1 && mid.held && !mid.cameraFree && after.cameraFree,
       JSON.stringify({ key, at, mid, after, errors: F.errors.slice(0, 3) }));
     await F.ctx.close();
   }
@@ -289,14 +291,14 @@ export async function run3dChecks({ check, fresh }) {
     const F = await fresh();
     await F.ask('play marbles', 600);
     const key = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'ringer'); return c && c.ready && c.draws > 0 ? c.key : false; }), 30000);
-    // a fixed spot on the ground, measured from the ring's centre in ring widths on screen (the card lifts and grows while
-    // pressed, so page pixels move even when the camera does not): where it lands shows whether the camera moved
-    const mark = [Rr.RING * 0.9, 0, -Rr.RING * 0.9];
+    // where the camera is (the miniature's own camera, not page pixels: the card tilts and lifts toward the pointer, which
+    // moves the canvas on the page while the camera stays put)
     const proj = (p) => F.p.evaluate(([k, q]) => window.__voidMini.project(k, q), [key, p]);
-    const view = () => F.p.evaluate(([k, q, r]) => { const P = (p) => window.__voidMini.project(k, p), a = P(q), c = P([0, 0, 0]), e = P([r, 0, 0]), w = P([-r, 0, 0]), u = Math.hypot(e.x - w.x, e.y - w.y); return { x: (a.x - c.x) / u, y: (a.y - c.y) / u }; }, [key, mark, Rr.RING]);
+    const view = () => F.p.evaluate((k) => { const c = window.__voidMini.state(k).camera; return { x: c[0], y: c[1], z: c[2] }; }, key);
     const drag = async (a, b) => { await F.p.mouse.move(a.x, a.y); await F.p.mouse.down(); for (let i = 1; i <= 8; i++) await F.p.mouse.move(a.x + (b.x - a.x) * i / 8, a.y + (b.y - a.y) * i / 8); };
     let r = null;
     if (key) {
+      const cam = (p, q) => Math.hypot(p.x - q.x, p.y - q.y, p.z - q.z);
       const m0 = await view(), a = await proj([Rr.RING * 0.5, 0, 0]), b = await proj([-Rr.RING * 0.5, 0, -Rr.RING * 0.3]);
       await drag(a, b);
       const mid = await F.p.evaluate((k) => window.__voidMini.state(k), key), m1 = await view();
@@ -307,12 +309,14 @@ export async function run3dChecks({ check, fresh }) {
       await drag(o, { x: o.x + 120, y: o.y }); await F.p.mouse.up(); await F.p.waitForTimeout(500);
       const m3 = await view();
       const want = Math.atan2(Rr.RING * 0.3 - -(Rr.RING + Rr.SHOOTER), -Rr.RING * 0.5), d = (x) => Math.abs(Math.atan2(Math.sin(x - want), Math.cos(x - want)));
-      r = { m0, m1, m2, m3, mid, end, still: Math.hypot(m2.x - m0.x, m2.y - m0.y) < 0.004 && Math.hypot(m1.x - m0.x, m1.y - m0.y) < 0.004, aimed: d(end.angle) < 0.05, orbited: Math.hypot(m3.x - m2.x, m3.y - m2.y) > 0.03 };
+      r = { m0, m1, m2, m3, mid, end, still: cam(m2, m0) < 1e-6 && cam(m1, m0) < 1e-6, aimed: d(end.angle) < 0.05, orbited: cam(m3, m2) > 1e-3 };
     }
     check('Ringer: on the 3D ring, a drag inside the chalk ring aims where it ends and the camera holds still (aiming wins over orbiting, no shot, no pull); a drag on the dirt outside the ring still looks around',
       !!r && r.still && r.aimed && r.end.shots === 0 && !r.mid.pulling && r.orbited && F.errors.length === 0, JSON.stringify({ key, r, errors: F.errors.slice(0, 3) }));
     await F.ctx.close();
   }
+  // ---- Ringer by touch (real touch events through Chromium's touch emulation; tools/touch-webkit.mjs runs the same in WebKit)
+  await ringerTouch({ check, fresh, touchInput: chromiumTouch });
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
   {
     const F = await fresh();
@@ -743,4 +747,77 @@ export async function run3dChecks({ check, fresh }) {
       JSON.stringify({ light: light && [light.detail, light.tris], one: one && one.tris, two: two && two.tris, back: back && back.tris, e: F.errors }));
     await F.ctx.close();
   }
+}
+
+// ---- Ringer by touch: a finger's jitter on the 3D ring. A wobbly tap inside the ring aims without turning the camera;
+// every way a touch can end gives the camera back (lifted outside the ring, cancelled by the browser, a second finger
+// landing, the window losing focus); while a finger aims a short ghost of the shot follows it and fades once it lifts.
+// touchInput(F) gives { start(points), move(points), end(), cancel(), orbit(a, b) }: Chromium sends real touch events
+// (chromiumTouch below), WebKit, which has no touch emulation, sends touch-type pointer events (tools/touch-webkit.mjs).
+export async function chromiumTouch(F) {
+  const cdp = await F.ctx.newCDPSession(F.p);
+  await cdp.send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 5 });
+  const tp = (p) => ({ x: Math.round(p.x), y: Math.round(p.y), id: p.id || 0, radiusX: 6, radiusY: 6, force: 1 });
+  const send = (type, pts) => cdp.send('Input.dispatchTouchEvent', { type, touchPoints: pts.map(tp) });
+  const t = { start: (pts) => send('touchStart', pts), move: (pts) => send('touchMove', pts), end: () => send('touchEnd', []), cancel: () => send('touchCancel', []) };
+  t.orbit = async (a, b) => { await t.start([a]); for (let i = 1; i <= 6; i++) await t.move([{ x: a.x + (b.x - a.x) * i / 6, y: a.y + (b.y - a.y) * i / 6 }]); await t.end(); };
+  return t;
+}
+export async function ringerTouch({ check, fresh, touchInput, label = '' }) {
+  const Rr = await import(pathToFileURL(path.join(root, 'skills', 'ringer-rules.js')).href);
+  const F = await fresh();
+  await F.ask('play marbles', 600);
+  const key = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'ringer'); return c && c.ready && c.draws > 0 ? c.key : false; }), 30000);
+  const T = await touchInput(F);
+  let seed = 7; const jit = () => { seed = (seed * 16807) % 2147483647; return (seed / 2147483647 - 0.5) * 8; }; // ±4 px
+  const proj = (p) => F.p.evaluate(([k, q]) => window.__voidMini.project(k, q), [key, p]);
+  const st = () => F.p.evaluate((k) => window.__voidMini.state(k), key);
+  // the miniature's own camera (the card tilts toward a finger on the page, so page pixels move while the camera stays put)
+  const view = () => F.p.evaluate((k) => window.__voidMini.state(k).camera, key);
+  const moved = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+  const sh = [0, -(Rr.RING + Rr.SHOOTER)], angleTo = (x, y) => Math.atan2(y - sh[1], x - sh[0]);
+  const near = (a, b) => Math.abs(Math.atan2(Math.sin(a - b), Math.cos(a - b))) < 0.08;
+  // a finger going from a to b with jitter on every step (and a wobble before it starts moving)
+  const stroke = async (a, b, steps = 8) => { await T.start([a]); for (let i = 0; i < 3; i++) await T.move([{ x: a.x + jit(), y: a.y + jit() }]); for (let i = 1; i <= steps; i++) await T.move([{ x: a.x + (b.x - a.x) * i / steps + jit(), y: a.y + (b.y - a.y) * i / steps + jit() }]); };
+  const r = {};
+  if (key) {
+    await F.p.waitForTimeout(300);
+    // 1) a wobbly tap inside the ring: aims there, the camera never moves, and the lock ends with the lift
+    const v0 = await view(), tapAt = await proj([0.08, 0, -0.05]);
+    await stroke(tapAt, tapAt, 2); const midTap = await st(); await T.end(); await F.p.waitForTimeout(200);
+    const tap = await st(), v1 = await view();
+    r.tap = { held: midTap.held, cameraFreeMid: midTap.cameraFree, free: tap.cameraFree && !tap.held, aimed: near(tap.angle, angleTo(0.08, 0.05)), still: moved(v0, v1) < 1e-6, shots: tap.shots };
+    // 2) a drag that starts inside the ring and lifts outside it (past the canvas edge): aim follows by direction, the ghost
+    //    follows the finger while it aims, then fades after the lift, and the camera is free again
+    const a = await proj([0, 0, 0]), b = await proj([0.22, 0, -0.5]);
+    await stroke(a, b); const midDrag = await st(); await T.end();
+    const faded = await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return !!s && s.ghost === null; }, key), 3000);
+    const drag = await st(), v2 = await view();
+    r.drag = { ghostMid: midDrag.ghost, faded, free: drag.cameraFree && !drag.held, aimed: near(drag.angle, angleTo(0.22, 0.5)), still: moved(v1, v2) < 1e-6, shots: drag.shots };
+    // 3) the browser cancels the touch (it took the gesture, or a call came in): the camera is free, no shot, and a drag on
+    //    the dirt outside the ring turns the camera at once
+    await stroke(await proj([-0.06, 0, 0.02]), await proj([-0.1, 0, -0.08]), 4); const midCancel = await st();
+    await T.cancel(); await F.p.waitForTimeout(150);
+    const cancel = await st(), o = await proj([-0.06, 0, -(Rr.RING + 0.06)]), v3 = await view();
+    await T.orbit(o, { x: o.x + 110, y: o.y }); await F.p.waitForTimeout(500);
+    r.cancel = { heldMid: midCancel.held, free: cancel.cameraFree && !cancel.held, shots: cancel.shots, orbitsAfter: moved(v3, await view()) > 1e-3 };
+    // 4) a second finger lands mid-aim: the game steps aside for the camera
+    const c1 = await proj([0.05, 0, 0.05]), c2 = await proj([-Rr.RING * 1.2, 0, Rr.RING * 0.4]);
+    await T.start([c1]); await T.move([{ x: c1.x + jit(), y: c1.y + jit() }]); const midTwo = await st();
+    await T.start([c1, { ...c2, id: 1 }]); await F.p.waitForTimeout(100); const two = await st();
+    await T.end(); await F.p.waitForTimeout(150);
+    r.two = { heldMid: midTwo.held, free: two.cameraFree && !two.held, shots: (await st()).shots };
+    // 5) the window loses focus mid-aim (a notification, switching apps): free again
+    await T.start([c1]); const midBlur = await st();
+    await F.p.evaluate(() => window.dispatchEvent(new Event('blur'))); const blur = await st();
+    await T.end();
+    r.blur = { heldMid: midBlur.held, free: blur.cameraFree && !blur.held };
+  }
+  check('Ringer by touch' + label + ': a jittery tap inside the ring aims without turning the camera; a drag lifted outside the ring aims by direction with a ghost of the shot that fades after the lift; a cancelled touch, a second finger and a lost window focus each give the camera back (no shot), and the dirt outside the ring still turns it',
+    !!key && r.tap.held && !r.tap.cameraFreeMid && r.tap.free && r.tap.aimed && r.tap.still && r.tap.shots === 0
+      && !!r.drag.ghostMid && r.drag.ghostMid.dots > 3 && !!r.drag.faded && r.drag.free && r.drag.aimed && r.drag.still && r.drag.shots === 0
+      && r.cancel.heldMid && r.cancel.free && r.cancel.shots === 0 && r.cancel.orbitsAfter
+      && r.two.heldMid && r.two.free && r.two.shots === 0 && r.blur.heldMid && r.blur.free && F.errors.length === 0,
+    JSON.stringify({ key, r, errors: F.errors.slice(0, 3) }));
+  await F.ctx.close();
 }

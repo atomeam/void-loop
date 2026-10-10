@@ -117,6 +117,27 @@ export function step(s, dt) {
 /** Step until everything stops (at most `limit` seconds). */
 export function settle(s, limit = 30) { let n = s; for (let t = 0; n.phase === 'rolling' && t < limit; t += 1 / 60) n = step(n, 1 / 60); return n; }
 
+// The ghost of a shot (the 3D ring draws it while you aim): the first `seconds` of what the flick at the current aim and
+// power would do, run through the same flick and step as the real roll, so it is the roll's own start, not a guess.
+// Paths are sampled every `every` seconds: the shooter's, and each marble it sets moving. A shot that stops sooner ends
+// at its last rolling sample (the step that stops it also puts a missed shooter back at the edge, which is not a path).
+// Pure; the state is not changed.
+export function ghost(s, seconds = 0.6, every = 1 / 30) {
+  if (!s || s.phase !== 'aim' || s.over) return null;
+  let n = flick(s);
+  const at = (ms) => ms.map((m) => [m.x, m.y]), paths = [at(n.marbles)];
+  for (let t = 0; t < seconds - 1e-9; t += every) {
+    const next = step(n, Math.min(every, seconds - t)); if (next.phase !== 'rolling') break;
+    n = next; paths.push(at(n.marbles));
+  }
+  const track = (i) => paths.map((p) => p[i]), hits = [];
+  for (let i = 1; i < s.marbles.length; i++) {
+    if (s.marbles[i].out) continue;
+    const p = track(i); if (p.some(([x, y]) => x !== p[0][0] || y !== p[0][1])) hits.push({ id: s.marbles[i].id, path: p });
+  }
+  return { shooter: track(0), hits };
+}
+
 // A new game that keeps the best score: the fewest shots that cleared a ring so far (the game's own record, nothing else). Pure.
 export function newGame(s, seed) {
   const was = s && Number.isFinite(s.best) ? s.best : null, now = s && s.over ? s.shots : null;

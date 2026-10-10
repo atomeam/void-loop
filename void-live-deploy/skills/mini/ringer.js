@@ -98,11 +98,27 @@ export default async function build(ctx, data) {
   const thumbAt = (power) => -K * (1.6 + 1.6 * power); // the thumb's tip just behind the marble, drawn back as the power grows
   let handPose = { visible: false, back: 0 };
   const axis = new THREE.Vector3(), q = new THREE.Quaternion();
+  // the ghost of the shot: while a finger aims or pulls, small chalk dots trace the first 0.6 s of what letting go would do
+  // (ringer-rules.js ghost, the roll's own flick and step): the shooter's path in white, each marble it would hit in amber.
+  // Letting go fades them out (at once under reduced motion)
+  const GHOST_MAX = 200, ghostMat = keep(new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0, depthWrite: false }));
+  const ghostDots = new THREE.InstancedMesh(keep(new THREE.CircleGeometry(0.0017, 10).rotateX(-Math.PI / 2)), ghostMat, GHOST_MAX);
+  ghostDots.setColorAt(0, new THREE.Color('#ffffff')); // the colour buffer exists from the first compile, so amber dots need no recompile
+  ghostDots.count = 0; ghostDots.visible = false; ghostDots.frustumCulled = false; root.add(ghostDots);
+  const GHOST_ON = 0.6, GHOST_FADE = 0.35, white = new THREE.Color('#ffffff'), amber = new THREE.Color('#ffb648'), dotAt = new THREE.Matrix4();
+  let ghostSeen = { dots: 0, hits: 0 };
+  function drawGhost(s) {
+    const g = R.ghost(s); let n = 0;
+    const lay = (path, col) => { for (let i = 1; i < path.length && n < GHOST_MAX; i++) { dotAt.makeTranslation(path[i][0], 0.0014, -path[i][1]); ghostDots.setMatrixAt(n, dotAt); ghostDots.setColorAt(n, col); n++; } };
+    if (g) { lay(g.shooter, white); for (const h of g.hits) lay(h.path, amber); }
+    ghostDots.count = n; ghostDots.instanceMatrix.needsUpdate = true; if (ghostDots.instanceColor) ghostDots.instanceColor.needsUpdate = true;
+    ghostSeen = { dots: n, hits: g ? g.hits.length : 0 };
+  }
   let sig = '', pulling = false, aiming = false;
   function pose() {
     const s = stateOf(ctx.handle ? ctx.handle.data : data);
     if (!s || !s.marbles) return false;
-    const now = [s.seed, s.t, s.phase, s.angle, s.power, s.shots, pulling].join('|');
+    const now = [s.seed, s.t, s.phase, s.angle, s.power, s.shots, pulling, aiming].join('|');
     if (now === sig) return false;
     if (s.seed !== builtSeed) buildMarbles(s);
     s.marbles.forEach((m, i) => {
@@ -123,6 +139,8 @@ export default async function build(ctx, data) {
       thumb.position.set(thumbAt(s.power) - K * 1.1, sh.r, 0);
     }
     handPose = { visible: hand.visible, back: hand.visible ? -thumbAt(s.power) : 0 };
+    if ((pulling || aiming) && aimLine.visible) { drawGhost(s); ghostDots.visible = true; ghostMat.opacity = GHOST_ON; }
+    else if (ghostDots.visible && ctx.still) { ghostDots.visible = false; ghostMat.opacity = 0; }
     sig = now;
     return true;
   }
@@ -145,7 +163,12 @@ export default async function build(ctx, data) {
     return ray.ray.intersectPlane(plane, hit) ? [hit.x, -hit.z] : null;
   };
   const host = ctx.canvas.parentElement || ctx.canvas;
+  // the camera is held only while one pointer aims or pulls, and every way that pointer can end lets it go: up, cancel (the
+  // browser took the gesture, a call or notification came in), lost capture, a second finger landing (two fingers belong to
+  // the camera), the window losing focus or the page being hidden. A missed release would leave the board unable to turn.
+  let lockId = null;
   const down = (e) => {
+    if (lockId !== null) { if (e.pointerId !== lockId) release(e); return; } // a second finger: the game steps aside
     if (e.button > 0) return;
     const s = stateOf(ctx.handle.data), shooter = marbles.children[0];
     if (!s || s.phase !== 'aim' || s.over || !shooter) return;
@@ -153,25 +176,39 @@ export default async function build(ctx, data) {
     const p = onShooter ? null : onGround(e);
     if (!onShooter && !(p && Math.hypot(p[0], p[1]) <= R.RING)) return; // outside the ring: a tap aims, a drag looks around
     e.stopPropagation(); e.preventDefault();
+    lockId = e.pointerId;
     if (ctx.controls) ctx.controls.enabled = false;
-    if (onShooter) { pulling = true; ctx.canvas.style.cursor = 'grabbing'; if (pose()) ctx.requestRender(); }
+    try { ctx.canvas.setPointerCapture(e.pointerId); } catch (_) { /* a synthetic pointer: the window listeners still see it */ }
+    addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', release);
+    ctx.canvas.addEventListener('lostpointercapture', release); addEventListener('blur', release); document.addEventListener('visibilitychange', hidden);
+    if (onShooter) { pulling = true; ctx.canvas.style.cursor = 'grabbing'; }
     else { aiming = true; const d = ctx.handle.data; if (d.onAim) d.onAim(p[0], p[1]); }
-    addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+    if (pose()) ctx.requestRender();
   };
+  // a drag that leaves the ring keeps aiming by direction (the aim is an angle from the shooter, so a spot past the line
+  // points the same way); a pointer above the horizon meets no ground, and the aim holds where it was
   const move = (e) => {
-    if (!pulling && !aiming) return;
+    if (e.pointerId !== lockId) return;
     const p = onGround(e), d = ctx.handle.data;
     if (p && pulling && d.onPull) d.onPull(p[0], p[1]);
     if (p && aiming && d.onAim) d.onAim(p[0], p[1]);
   };
-  const up = (e) => {
-    if (!pulling && !aiming) return;
-    removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
-    const wasPulling = pulling; pulling = false; aiming = false; ctx.canvas.style.cursor = ''; if (pose()) ctx.requestRender();
+  const up = (e) => { if (e.pointerId === lockId) release(e, true); };
+  const hidden = (e) => { if (document.hidden) release(e); };
+  // let go of the camera; only a real pointerup of the pulling pointer flicks, every other ending keeps the aim and saves it
+  function release(e, letGo = false) {
+    if (lockId === null) return;
+    if (e && e.type === 'lostpointercapture' && e.pointerId !== lockId) return;
+    const id = lockId; lockId = null;
+    removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', release);
+    ctx.canvas.removeEventListener('lostpointercapture', release); removeEventListener('blur', release); document.removeEventListener('visibilitychange', hidden);
+    try { if (ctx.canvas.hasPointerCapture && ctx.canvas.hasPointerCapture(id)) ctx.canvas.releasePointerCapture(id); } catch (_) { /* already gone */ }
+    const wasPulling = pulling; pulling = false; aiming = false; ctx.canvas.style.cursor = '';
     if (ctx.controls) ctx.controls.enabled = true;
-    const d = ctx.handle.data;
-    if (wasPulling) { if (e.type === 'pointerup' && d.onRelease) d.onRelease(); } else if (d.onAimEnd) d.onAimEnd();
-  };
+    if (pose()) ctx.requestRender();
+    const d = (ctx.handle && ctx.handle.data) || {};
+    if (wasPulling && letGo && d.onRelease) d.onRelease(); else if (d.onAimEnd) d.onAimEnd();
+  }
   if (ctx.controls) ctx.controls.mouseButtons.RIGHT = ctx.THREE.MOUSE.ROTATE; // pan is off, so the right button looks around too
   host.addEventListener('pointerdown', down, { capture: true });
 
@@ -179,8 +216,16 @@ export default async function build(ctx, data) {
   ctx.frame(ring, { view: [0, 1.15, 0.7], pad: 1, ground: 'none', minZoom: 0.6, maxZoom: 8, light: [-0.6, 1.4, 0.5] }); // fit the ring itself: the marbles read at card size
   return {
     update() { if (pose()) ctx.requestRender(); },
-    tick() { return pose(); },
-    state() { if (pose()) ctx.requestRender(); /* read what the current state poses, not the last frame drawn */ const s = stateOf(ctx.handle.data); return { marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible, pulling, angle: s.angle, power: s.power, aimLength: aimLine.visible ? aimLine.scale.x + sh0(s).r * 1.4 : 0, reach: R.reach(s).d, arc: !!(arc && arc.visible), arcSweep: arc && arc.visible ? Math.max(0.02, arcPower) : 0, hand: handPose.visible, thumbBack: handPose.back, handBehind: handPose.visible ? (() => { const v = new THREE.Vector3(); hand.children[0].getWorldPosition(v); const sh = sh0(s); return (v.x - sh.x) * Math.cos(s.angle) + (-v.z - sh.y) * Math.sin(s.angle) < 0; })() : false }; },
-    dispose() { if (arc) arc.geometry.dispose(); host.removeEventListener('pointerdown', down, { capture: true }); for (const m of mats) m.dispose(); for (const x of made) x.dispose(); },
+    tick(dt) {
+      let r = pose();
+      if (ghostDots.visible && !pulling && !aiming) { // fading out after letting go
+        ghostMat.opacity = Math.max(0, ghostMat.opacity - (dt || 1 / 60) * GHOST_ON / GHOST_FADE);
+        if (ghostMat.opacity <= 0) ghostDots.visible = false;
+        r = true;
+      }
+      return r;
+    },
+    state() { if (pose()) ctx.requestRender(); /* read what the current state poses, not the last frame drawn */ const s = stateOf(ctx.handle.data); return { held: lockId !== null, cameraFree: !ctx.controls || ctx.controls.enabled, camera: ctx.camera.position.toArray(), ghost: ghostDots.visible ? { dots: ghostSeen.dots, hits: ghostSeen.hits, opacity: ghostMat.opacity } : null, marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible, pulling, angle: s.angle, power: s.power, aimLength: aimLine.visible ? aimLine.scale.x + sh0(s).r * 1.4 : 0, reach: R.reach(s).d, arc: !!(arc && arc.visible), arcSweep: arc && arc.visible ? Math.max(0.02, arcPower) : 0, hand: handPose.visible, thumbBack: handPose.back, handBehind: handPose.visible ? (() => { const v = new THREE.Vector3(); hand.children[0].getWorldPosition(v); const sh = sh0(s); return (v.x - sh.x) * Math.cos(s.angle) + (-v.z - sh.y) * Math.sin(s.angle) < 0; })() : false }; },
+    dispose() { release(); if (arc) arc.geometry.dispose(); ghostDots.dispose(); host.removeEventListener('pointerdown', down, { capture: true }); for (const m of mats) m.dispose(); for (const x of made) x.dispose(); },
   };
 }
