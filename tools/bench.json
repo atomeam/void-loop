@@ -5538,5 +5538,10 @@
   {"ask": "the execution record", "want": "skill:actions"},
   {"ask": "what actions did you take", "want": "skill:actions"},
   {"ask": "show me the record of your actions", "want": "skill:actions"},
-  {"ask": "void's actions", "want": "skill:actions"}
+  {"ask": "void's actions", "want": "skill:actions"},
+  {"ask": "what did I build with react", "want": "skill:memory"},
+  {"ask": "what do you remember about the parser", "want": "skill:memory"},
+  {"ask": "remember anything about rust", "want": "skill:memory"},
+  {"ask": "ask my memory about python", "want": "skill:memory"},
+  {"ask": "which projects have I written in go", "want": "skill:memory"}
 ]
