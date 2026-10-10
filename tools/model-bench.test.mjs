@@ -80,3 +80,21 @@ test('a hostile pattern is refused at load: too long, nested quantifiers; a lite
   const lit = loadAsks([{ kind: 'fact', ask: 'x', must: ['Canberra'], mustNot: ['a.b*'] }], { literalOnly: true })[0];
   assert.ok(lit.must[0].test('it is canberra.') && lit.mustNot[0].test('see a.b* here') && !lit.mustNot[0].test('aab'), 'a word is matched as written, never as a regex');
 });
+
+// --site: the bench runs inside the site (POST /api/bench with READ_TOKEN): the check, the catalog and the runs go through it
+import { siteProbe, siteRun } from './model-bench.mjs';
+test('site mode: the probe names what is wrong, and a model runs in chunks mapped back to the asks', async () => {
+  const reply = (status, body) => async () => new Response(JSON.stringify(body), { status });
+  assert.match((await siteProbe('https://x', '', reply(200, {}))).why, /READ_TOKEN is empty/);
+  assert.match((await siteProbe('https://x', 'k', reply(401, { error: 'owner only' }))).why, /rejected READ_TOKEN/);
+  assert.match((await siteProbe('https://x', 'k', reply(405, ''))).why, /not deployed/);
+  const ok = await siteProbe('https://x', 'k', reply(200, { ok: true, asks: 37, chunk: 8, catalog: [{ id: '@cf/a/b', price: [{ unit: 'per M input tokens', price: 0.1 }, { unit: 'per M output tokens', price: 0.2 }] }] }));
+  assert.equal(ok.ok, true); assert.equal(ok.chunk, 8); assert.deepEqual(ok.catalog[0].price, { in: 0.1, out: 0.2 });
+  const seen = [];
+  const fake = async (url, init) => { const b = JSON.parse(init.body); seen.push([b.from, b.to]); return new Response(JSON.stringify({ results: Array.from({ length: Math.min(b.to, 19) - b.from }, (_, k) => (b.from + k === 5 ? { i: 5, error: 'boom', ms: 3 } : { i: b.from + k, text: 'a' + (b.from + k), ms: 10 })) })); };
+  const out = await siteRun('https://x', 'k', '@cf/a/b', 19, 8, fake);
+  assert.deepEqual(seen, [[0, 8], [8, 16], [16, 19]]);
+  assert.equal(out.length, 19); assert.equal(out[3].text, 'a3'); assert.equal(out[3].ttft, 10); assert.equal(out[5].error, 'boom');
+  const down = await siteRun('https://x', 'k', '@cf/a/b', 3, 8, async () => new Response('bad gateway', { status: 502 }));
+  assert.ok(down.every((r) => /HTTP 502/.test(r.error)), 'a failed chunk is an error on each of its asks');
+});
