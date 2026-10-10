@@ -22,6 +22,9 @@ export const GATED = {
   'email.send': { rule: 'send.email', kind: 'send', service: 'email', board: 'send an email' },
   'message.send': { rule: 'send.message', kind: 'send', service: 'messaging', board: 'send a message' },
   'release.publish': { rule: 'send.post', kind: 'send', service: 'GitHub', board: 'post release notes' },
+  // The proposal card's send (skills/proposal.js, build order step 3). Sending is not connected: a yes records that nothing
+  // went out, and the ask itself writes a stubbed execution record (lib/actions.js), ref the customer's domain.
+  'proposal.send': { rule: 'send.proposal', kind: 'send', service: 'email', board: 'send a proposal', stub: (a) => String((a && a.to) || '').replace(/^.*@/, '').toLowerCase() },
   'calendar.book': { rule: 'book.calendar', kind: 'book', service: 'your calendar', board: 'add to my calendar' },
   'booking.make': { rule: 'book.booking', kind: 'book', service: 'booking', board: 'make a booking' },
   'order.place': { rule: 'spend.order', kind: 'spend', service: 'shopping', board: 'buy something' },
@@ -68,6 +71,7 @@ export function confirmLine(toolName, args) {
     case 'email.send': return `Send this email to ${a.to}?`;
     case 'message.send': return `Send this message to ${a.to}?`;
     case 'release.publish': return `Post these release notes to ${a.where}?`;
+    case 'proposal.send': return a.title ? `Send the proposal “${a.title}” to ${a.to}?` : `Send the proposal to ${a.to}?`;
     case 'calendar.book': return `Add “${a.what}” to your calendar${a.when ? ' ' + a.when : ''}?`;
     case 'booking.make': return `Book ${a.what}${cost ? ' for ' + cost : ''}?`;
     case 'order.place': return cost ? `Buy ${a.item} for ${cost}?` : `Buy ${a.item}? The price isn't known yet.`;
@@ -107,6 +111,10 @@ export function parseGatedAsk(text) {
   const t = String(text || '').trim().replace(/\s+/g, ' ');
   const s = t.replace(/^(?:please\s+|(?:can|could|would|will)\s+you\s+(?:please\s+)?)/i, '').replace(/\s*(?:please)?[.!?]*$/i, '');
   let m;
+  // "send this proposal "Fix the double orders" to maria@x.com" (the proposal card's button; the title is optional)
+  if ((m = s.match(/^send\s+(?:this|the|my)\s+proposal(?:\s+[\u201c"](.{1,80}?)[\u201d"])?\s+to\s+([\w.+-]+@[\w-]+(?:\.[\w-]+)+)$/i))) {
+    return { toolName: 'proposal.send', args: { to: m[2], title: clip(m[1] || '', 80) } };
+  }
   if ((m = s.match(/^(?:send|write and send)\s+(?:an?\s+)?(?:e-?mail|mail)\s+to\s+(.+?)(?:\s+(?:saying|that says|to say|about|with)\s+(.+))?$/i))
       || (m = s.match(/^e-?mail\s+(.+?)(?:\s+(?:saying|that says|to say|about|with)\s+(.+))?$/i))) {
     return { toolName: 'email.send', args: { to: clip(m[1], 120), body: clip(m[2], 2000) } };

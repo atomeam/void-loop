@@ -18,6 +18,7 @@ import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, paidAccess,
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { isSelfAsk, readSelf, selfFacts, SELF_RULE } from '../../lib/self-context.js';
 import { prepareDraft, draftPrompt, ruleDraft, DRAFT_SYSTEM, DRAFT_MAX } from '../../lib/draft.js';
+import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_SYSTEM } from '../../lib/proposal.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -157,6 +158,28 @@ async function draftAnswer(request, env, body) {
   return Response.json({ ...base, draft: ruleDraft(p), model: 'rules', note: on ? 'model busy, drafted by rule' : 'no model, drafted by rule' });
 }
 
+// The proposal (lib/proposal.js, frontier build order step 3): a pasted customer request -> the fields of an editable
+// proposal. The model when it is on, the rules when it is off or fails; the price is never drafted; nothing is stored.
+async function proposalAnswer(request, env, body) {
+  const p = prepareProposal(body, redact);
+  if (p.error) return Response.json({ fields: null, note: p.error }, { status: p.status });
+  if (await rateLimited(request, env)) return Response.json({ fields: null, note: 'slow down' }, { status: 429 });
+  const base = { from: { to: p.to, host: p.host }, masked: p.masked, cut: p.cut, at: new Date().toISOString() };
+  const on = modelsOn(env);
+  if (on) {
+    try {
+      const r = await env.AI.run(MODEL, {
+        messages: [{ role: 'system', content: PROPOSAL_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: proposalPrompt(p) }],
+        max_tokens: 1200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
+      });
+      const fields = parseProposal(redact(noThink(pick(r))));
+      if (fields) return Response.json({ ...base, fields, model: 'gemma' });
+      await recordShortfall(env, 'proposal', 'empty');
+    } catch (e) { await recordShortfall(env, 'proposal', reasonOf(e)); }
+  }
+  return Response.json({ ...base, fields: ruleProposal(p), model: 'rules', note: on ? 'model busy, drafted by rule' : 'no model, drafted by rule' });
+}
+
 export async function onRequestPost({ request, env, waitUntil }) {
   const t0 = Date.now();
   let body = {};
@@ -165,6 +188,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body && body.mode === 'review') return reviewAnswer(request, env, body);
   if (body && body.mode === 'take') return takeAnswer(request, env, body);
   if (body && body.mode === 'draft') return draftAnswer(request, env, body);
+  if (body && body.mode === 'proposal') return proposalAnswer(request, env, body);
   const typed = norm(body.ask), ask = redact(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);
