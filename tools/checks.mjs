@@ -48,6 +48,7 @@ for (const [name, file] of [
   ['learning', 'learning.test.mjs'],
   ['goal', 'goal.test.mjs'],
   ['forge', 'forge.test.mjs'],
+  ['misses-snapshot', 'misses-snapshot.test.mjs'],
   ['learn', 'learn.test.mjs'],
   ['learn-draft', 'learn-draft.test.mjs'],
   ['learn-e2e', 'learn.e2e.test.mjs'],
