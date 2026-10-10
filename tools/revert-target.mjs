@@ -3,6 +3,9 @@
 // #215 broke the rack check, its revert conflicted, and the next red run reverted #217, which had nothing to do with it.
 // So each red run names its failing checks as annotations, and the next red run walks back along main's first parents
 // to the commit where each failing check first went red. When the record is unclear, it reports instead of guessing.
+// Since every merge gets its own verify run (deploy.yml, one concurrency group per head), two red suites can finish at the
+// same time, so before a revert the tool checks the target is still live on main (on its first-parent line and not already
+// reverted) and that the failed checks are still red on main's newest verified head; otherwise it reports.
 //   node tools/revert-target.mjs --annotate test-output.txt      prints the ::error annotations naming the failed checks
 //   node tools/revert-target.mjs --pick <sha> test-output.txt    prints {"action":"revert"|"report","sha","why"} as JSON
 import { readFileSync } from 'node:fs';
@@ -76,6 +79,36 @@ export function pickRevert({ tested, failing, history }) {
   return { action: 'revert', sha: shas[0], why: verdicts.map(label).join(', ') + ' already failed at ' + shas[0] + ', where it first went red; ' + tested + ' did not break it' };
 }
 
+/**
+ * Is the revert target still live on main? Pure.
+ *   target: the sha to revert; mainLine: main's first-parent shas, newest first; body(sha): the commit message
+ *   -> { live: true } | { live: false, why }   (gone from main's line, or a newer commit carries Void-auto-revert: <target>)
+ */
+export function stillLive(target, mainLine, body) {
+  if (!mainLine.includes(target)) return { live: false, why: target + ' is not on main\'s first-parent line any more' };
+  for (const s of mainLine) {
+    if (s === target) break;
+    const m = /^Void-auto-revert:\s*(\S+)/m.exec(body(s) || '');
+    // the workflow writes the full sha; an abbreviated one still matches when it is at least a short sha (7) long
+    if (m && (m[1] === target || (m[1].length >= 7 && (target.startsWith(m[1]) || m[1].startsWith(target))))) return { live: false, why: target + ' is already reverted on main (' + s.slice(0, 7) + ')' };
+  }
+  return { live: true };
+}
+
+/**
+ * Are the failed checks still red on main's newest verified head? Pure.
+ *   checks: the tested run's failed checks ([] = outside the named checks); latest: verifiedState of main's newest head
+ *   with a finished suite (null = none newer than the tested run, whose word then stands)
+ *   -> { red: true } | { red: false, why }
+ */
+export function stillRed(checks, latest) {
+  if (!latest || latest.state === 'unknown') return { red: true };
+  if (latest.state === 'pass') return { red: false, why: 'main\'s newest verified head ' + latest.sha.slice(0, 7) + ' passed the suite' };
+  if (!latest.failing) return { red: true }; // red, names not recorded: nothing says it healed
+  const still = (checks.length ? checks : [null]).every((c) => (c === null ? latest.failing.length === 0 : latest.failing.includes(c)));
+  return still ? { red: true } : { red: false, why: 'main\'s newest verified head ' + latest.sha.slice(0, 7) + ' no longer fails ' + (checks.length ? checks.map((c) => '"' + c + '"').join(', ') : 'the suite the same way') };
+}
+
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: 'utf8', timeout: 60000, stdio: ['ignore', 'pipe', 'pipe'] });
 const gh = (path) => JSON.parse(run('gh', ['api', path]));
 
@@ -102,12 +135,32 @@ export function historyOf(tested, repo, depth = 15, api = gh) {
   return shas.map((s) => verifiedState(s, repo, api));
 }
 
+/** main's newest head with a finished suite (pass or fail), walking first parents from origin/main; null when none */
+export function newestVerified(repo, mainLine, api = gh, body) {
+  for (const s of mainLine) { const v = verifiedState(s, repo, api, body); if (v.state !== 'unknown') return v; }
+  return null;
+}
+
+/** the pick, then the two liveness checks against main as it is now (fetched); a target that is not live is reported */
+export function pickLive({ tested, failing, history, mainLine, body, repo, api = gh }) {
+  const pick = pickRevert({ tested, failing, history });
+  if (pick.action !== 'revert') return pick;
+  const live = stillLive(pick.sha, mainLine, body);
+  if (!live.live) return { action: 'report', sha: pick.sha, why: pick.why + '; but ' + live.why };
+  const red = stillRed(failing, newestVerified(repo, mainLine, api, body));
+  if (!red.red) return { action: 'report', sha: pick.sha, why: pick.why + '; but ' + red.why };
+  return pick;
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [mode, a, b] = process.argv.slice(2);
   if (mode === '--annotate') { for (const l of annotations(failingChecks(readFileSync(a, 'utf8')))) console.log(l); }
   else if (mode === '--pick') {
     const repo = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop';
     const tested = run('git', ['rev-parse', a]).trim();
-    console.log(JSON.stringify(pickRevert({ tested, failing: failingChecks(readFileSync(b, 'utf8')), history: historyOf(tested, repo) })));
+    try { run('git', ['fetch', '-q', 'origin', 'main']); } catch (_) {}
+    const mainLine = run('git', ['rev-list', '--first-parent', '--max-count=60', 'origin/main']).trim().split('\n').filter(Boolean);
+    const body = (s) => run('git', ['log', '-1', '--format=%B', s]);
+    console.log(JSON.stringify(pickLive({ tested, failing: failingChecks(readFileSync(b, 'utf8')), history: historyOf(tested, repo), mainLine, body, repo })));
   } else { console.error('usage: node tools/revert-target.mjs --annotate <test-output> | --pick <sha> <test-output>'); process.exit(2); }
 }
