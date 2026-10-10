@@ -208,3 +208,42 @@ test('the clock: tick runs only the scheduled rules that are due, logs each as a
   const ok = await tickApi.onRequestPost({ request: req('owner-key'), env });
   assert.equal(ok.status, 200); assert.equal((await ok.json()).checked, 4 - 1, 'the enabled rules');
 });
+
+// redact() (lib/automation-fix.js) is shared: the reviewer masks code with it before the closer read, the answer path masks
+// what people paste. A token read from the environment names a secret, it is not one, so it stays; a literal is still masked.
+import { redact } from '../void-live-deploy/lib/automation-fix.js';
+import { quick, closerRead } from '../void-live-deploy/lib/review-api.js';
+const ENV_LOOKUP = 'const ACCOUNT = process.env.CLOUDFLARE_ACCOUNT_ID, TOKEN = process.env.CLOUDFLARE_API_TOKEN;';
+const LITERAL = 'const TOKEN = "sk_live_abcdef1234567890XYZ";';
+async function modelSees(code) {
+  let sent = '';
+  const env = { AI: { run: async (_m, { messages }) => { sent = messages[1].content; return { response: 'ok' }; } } };
+  const q = quick({ code, lang: 'javascript' });
+  await closerRead(env, { ask: 'review this code', code: q.code, lang: q.lang, res: q.res });
+  return { rules: q.findings.map((f) => f.rule), sent };
+}
+
+test('redact/review: a token read from the environment is no hard-coded secret, and the closer read sees the lookup as written', async () => {
+  const env = await modelSees(ENV_LOOKUP);
+  assert.ok(!env.rules.includes('hardcoded-secret'), env.rules.join(','));
+  assert.ok(env.sent.includes('TOKEN = process.env.CLOUDFLARE_API_TOKEN') && !env.sent.includes('[redacted]'), env.sent);
+  const lit = await modelSees(LITERAL);
+  assert.ok(lit.rules.includes('hardcoded-secret'), lit.rules.join(','));
+  assert.ok(lit.sent.includes('TOKEN = "[redacted]"') && !lit.sent.includes('abcdef1234567890'), lit.sent);
+});
+
+test('redact: env lookups in any language stay as written; literal values are still masked', () => {
+  for (const s of ['api_key = os.environ["API_KEY"]', 'token = os.getenv("GH_TOKEN")', 'const token = Deno.env.get("TOKEN")', 'token: ${{ secrets.GITHUB_TOKEN }}', 'token: ${{secrets.GITHUB_TOKEN}}', 'TOKEN=$GITHUB_TOKEN', 'password=${DB_PASSWORD}', 'apiKey: import.meta.env.VITE_KEY', 'token = env.API_TOKEN', 'secret := os.Getenv("SECRET")', 'String token = System.getenv("TOKEN");'])
+    assert.equal(redact(s), s);
+  for (const [s, out] of [['TOKEN=s3cr3tvalue99', 'TOKEN=[redacted]'], ['password = "hunter2hunter2"', 'password = "[redacted]"'], ['token: "envelope-abc-123"', 'token: "[redacted]"'], ['password=$up3rS3cret!', 'password=[redacted]'], ['secret = processXYZsecret', 'secret = [redacted]']])
+    assert.equal(redact(s), out);
+});
+
+test('redact/answer: a pasted config with a literal key is still masked, its env lookups kept', () => {
+  const pasted = 'my zap fails, config:\nAPI_KEY=abcd1234efgh5678\nwebhook_secret: whsec_' + 'A'.repeat(24) + '\ntoken = process.env.ZAP_TOKEN\nclient_secret: "q9w8e7r6t5y4"';
+  const r = redact(pasted);
+  assert.ok(!/abcd1234efgh5678|whsec_A|q9w8e7r6t5y4/.test(r), r);
+  assert.match(r, /API_KEY=\[redacted\]/);
+  assert.match(r, /client_secret: "\[redacted\]"/);
+  assert.match(r, /token = process\.env\.ZAP_TOKEN/);
+});
