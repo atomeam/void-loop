@@ -176,5 +176,6 @@ export default {
   nearMisses: ['gears of war', 'bike gears', 'shift gears', 'gear up', 'what is a gear', 'buy gear'],
   match(lower, text) { return !!gearsOf(text); },
   run,
-  stageKinds: { gears: { mount } },
+  // the ports a taker (the quiz) reads off this card, unchanged: void.observations.v1 and the explanation text
+  stageKinds: { gears: { mount, gives: { observations: (th) => G.observations(th.state || G.create()), explanation: (th) => G.explanation(th.state || G.create()) } } },
 };
