@@ -32,6 +32,10 @@ const T = [
   ['const key = "sk-abcdefghijklmnopqrstuvwx";', 'hardcoded-secret@1'],
   ['fetch("http://api.weather-data.net/data");', 'plain-http@1'],
 ];
+// an import of a file named skills-… is not a key: "sk" must be followed by a separator
+ok(!rules("import { unlistedSkills } from './skills-unlisted.mjs';", 'javascript').includes('hardcoded-secret@1'), 'a skills-… file name is not a secret');
+ok(rules('const k = "sk_abcdefghijklmnopqrstuvwx";', 'javascript').includes('hardcoded-secret@1'), 'sk_ key still flagged');
+ok(rules('const t = "ghp_abcdefghijklmnopqrstuvwx";', 'javascript').includes('hardcoded-secret@1'), 'ghp_ token still flagged');
 // run 52: for…in over an array is flagged, over an object (a hasOwnProperty guard, the key used as a name) is not;
 // innerHTML from a builder handed the escaper (card(esc)) is not flagged, a plain variable still is
 ok(rules('for (var i in list) total += list[i];', 'javascript').includes('for-in-array@1'), 'for…in over an array flagged');

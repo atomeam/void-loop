@@ -15,7 +15,7 @@ export const RETIRED = [
 export async function unlistedSkills(dir, retired = RETIRED) {
   const listed = new Set(JSON.parse(readFileSync(resolve(dir, 'index.json'), 'utf8')));
   const found = [];
-  for (const f of readdirSync(dir).filter((x) => x.endsWith('.js')).sort()) {
+  for (const f of readdirSync(dir).filter((x) => x.endsWith('.js')).sort((a, b) => a.localeCompare(b))) {
     const n = f.slice(0, -3);
     if (listed.has(n) || retired.includes(n)) continue;
     let d; try { d = (await import(pathToFileURL(resolve(dir, f)).href)).default; } catch (_) { continue; } // a browser-only module that cannot load here is not a skill file we can judge
