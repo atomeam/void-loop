@@ -111,6 +111,58 @@ export const CONDITIONS = {
     step(st, env, dt) { return { grow: Math.min(1, st.grow + (env.rainedOn ? dt * 0.12 : 0)) }; },
   },
 };
+// advance: the world lives on while you are away. Every thing with conditions (a cloud, ice, a flower) is stepped forward
+// by `ms` of simulated time with the same CONDITIONS and climateAt the stage runs live, in fixed steps, so the same things
+// and the same ms always end the same on every device. Each thing's seed gives it a steady pace of its own (0.9x to 1.1x),
+// which is the only thing a seed changes here. things: [{ id, kindOf|kind, x, y, seed?, nature?, title? }]. Returns
+// { things: the same things with their `nature` moved forward, changes: [{ id, kind, what }], note: one line or '' }.
+// Nothing is ever read from the clock or from Math.random, so a test can say exactly what an hour does.
+export const AWAY_MIN_MS = 60e3; // under a minute away there is nothing to tell
+export const AWAY_MAX_MS = 24 * 36e5; // a day is as far as the world is replayed
+export const AWAY_STEP_S = 5; // seconds per simulated step
+const paceOf = (seed) => { let h = (Number(seed) || 0) >>> 0; h = Math.imul(h ^ (h >>> 16), 2246822507) >>> 0; h = Math.imul(h ^ (h >>> 13), 3266489909) >>> 0; return 0.9 + 0.2 * (((h ^ (h >>> 16)) >>> 0) / 4294967296); };
+const kindOfThing = (t) => String((t && (t.kindOf || t.kind)) || '');
+export function awayText(ms) {
+  const m = Math.round(ms / 6e4);
+  if (m < 60) return m + ' min';
+  const h = Math.round(m / 60);
+  return h < 48 ? (h === 1 ? '1 hour' : h + ' hours') : Math.round(h / 24) + ' days';
+}
+export function advance(things, ms) {
+  const list = Array.isArray(things) ? things.filter((t) => t && t.id != null) : [];
+  const away = Math.max(0, Math.min(AWAY_MAX_MS, Math.floor(Number(ms) || 0)));
+  const live = list.filter((t) => CONDITIONS[kindOfThing(t)]);
+  if (!away || !live.length) return { things: list.map((t) => ({ ...t })), changes: [], note: '' };
+  const cur = new Map(live.map((t) => [t.id, t.nature ? { ...t.nature } : CONDITIONS[kindOfThing(t)].start()]));
+  const first = new Map([...cur].map(([id, st]) => [id, { ...st }]));
+  const fell = new Map(), rainedOn = new Map();
+  let left = away / 1000;
+  while (left > 1e-9) {
+    const dt = Math.min(AWAY_STEP_S, left); left -= dt;
+    const others = live.map((t) => ({ id: t.id, x: t.x || 0, y: t.y || 0, kind: kindOfThing(t), state: cur.get(t.id) }));
+    const next = new Map();
+    for (const t of live) {
+      const env = climateAt({ id: t.id, x: t.x || 0, y: t.y || 0 }, others);
+      const st = CONDITIONS[kindOfThing(t)].step(cur.get(t.id), env, dt * paceOf(t.seed));
+      next.set(t.id, st);
+      if (st.falling) fell.set(t.id, st.falling);
+      if (env.rainedOn) rainedOn.set(t.id, (rainedOn.get(t.id) || 0) + dt);
+    }
+    for (const [id, st] of next) cur.set(id, st);
+  }
+  const changes = [];
+  for (const t of live) {
+    const k = kindOfThing(t), a = first.get(t.id), b = cur.get(t.id);
+    if (k === 'cloud' && fell.has(t.id)) changes.push({ id: t.id, kind: k, what: fell.get(t.id) === 'snow' ? 'snowed' : 'rained' });
+    else if (k === 'ice' && b.melt - a.melt >= 0.05) changes.push({ id: t.id, kind: k, what: b.gone ? 'melted away' : 'melted' });
+    else if (k === 'flower' && b.grow - a.grow >= 0.05) changes.push({ id: t.id, kind: k, what: 'grew' });
+  }
+  const groups = new Map();
+  for (const c of changes) { const key = c.kind + '|' + c.what; const g = groups.get(key) || { ...c, n: 0 }; g.n += 1; groups.set(key, g); }
+  const parts = [...groups.values()].map((g) => (g.n > 1 ? g.n + ' ' + g.kind + 's ' : 'the ' + g.kind + ' ') + g.what);
+  const note = parts.length ? 'While you were away (' + awayText(away) + '): ' + parts.join(', ') + '.' : '';
+  return { things: list.map((t) => (cur.has(t.id) ? { ...t, nature: cur.get(t.id) } : { ...t })), changes, note };
+}
 export function natureOf(subject) {
   const tags = [], reactsTo = {};
   for (const [re, t, r] of NATURES) if (re.test(String(subject || ''))) { tags.push(...t); Object.assign(reactsTo, r); }
@@ -261,6 +313,6 @@ export function pickNearbyReaction(self, others, maxDist = 220) {
 
 export default {
   KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, ACTION_TO_ACT, FALLBACKS,
-  subjectKey, tagsFor, fallbackScript, trimScript, pickIdleAction, visualAct, allowsDrive, natureOf, NATURES, climateAt, precipFor, CONDITIONS,
+  subjectKey, tagsFor, fallbackScript, trimScript, pickIdleAction, visualAct, allowsDrive, natureOf, NATURES, climateAt, precipFor, CONDITIONS, advance, awayText,
   pickReaction, pickNearbyReaction,
 };
