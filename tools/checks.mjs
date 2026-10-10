@@ -31,6 +31,7 @@ for (const [name, file] of [
   ['review-learn', 'review-learn.test.mjs'],
   ['bench-floor', 'bench-floor.test.mjs'],
   ['bench-load', 'bench-load.test.mjs'],
+  ['merge-main', 'merge-main.test.mjs'],
   ['take', 'take.test.mjs'],
   ['sorry', 'sorry.test.mjs'],
   ['voice', 'voice.test.mjs'],

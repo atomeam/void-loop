@@ -81,3 +81,15 @@ jobs:
           BASE: ${{ steps.pr.outputs.base }}
         run: |
           node tools/review-pr.mjs --base "origin/$BASE" --head HEAD --gate > /dev/null || { echo "::error title=Void review::bugs or risks in the added lines (see Void's review comment); fix them or mark a line that is right as written with a void-review: ok comment"; exit 1; }
+
+      # a PR that touches the skills must leave every skill file registered in skills/index.json (tools/skills-unlisted.mjs, run by skills-check):
+      # a merge once dropped "services" from the index and nine pricing asks fell through. It blocks the merge here, not only the next local run.
+      - name: Every skill file is still listed (only when the PR touches skills/)
+        env:
+          BASE: ${{ steps.pr.outputs.base }}
+        run: |
+          if git diff --name-only "origin/$BASE...HEAD" | grep -q '^void-live-deploy/skills/'; then
+            node tools/skills-check.mjs || { echo "::error title=Void review::a skill file is not listed in void-live-deploy/skills/index.json (or a skill collides): see the lines above; add it to the index, or to RETIRED in tools/skills-unlisted.mjs with a reason"; exit 1; }
+          else
+            echo "this PR does not touch void-live-deploy/skills/"
+          fi
