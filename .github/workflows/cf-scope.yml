@@ -1,0 +1,23 @@
+# What can the Cloudflare tokens this repo already holds read? Run by hand; prints one line per token and capability (never a token) and the
+# verdict for the owner-view usage meter. tools/cf-scope.mjs, tested in tools/cf-scope.test.mjs.
+name: Cloudflare token scopes
+on: workflow_dispatch
+permissions:
+  contents: read
+jobs:
+  scopes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Probe the tokens
+        shell: bash
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_WORKERS_TOKEN: ${{ secrets.CLOUDFLARE_WORKERS_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          node tools/cf-scope.mjs | tee scopes.txt
+          { echo '### Cloudflare token scopes'; echo '```'; cat scopes.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
