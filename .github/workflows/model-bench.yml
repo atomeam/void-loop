@@ -46,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      READ_TOKEN: ${{ secrets.READ_TOKEN }}
+      READ_TOKEN: ${{ secrets.READ_TOKEN || secrets.VOID_OWNER_TOKEN }} # the Pages READ_TOKEN; learn.yml and void-tick.yml call it VOID_OWNER_TOKEN
       SITE: ${{ inputs.site }}
       GH_TOKEN: ${{ github.token }}
       PR: ${{ inputs.pr }}

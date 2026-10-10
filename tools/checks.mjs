@@ -59,13 +59,14 @@ for (const [name, file] of [
   ['next-skill', 'next-skill.test.mjs'],
   ['share', 'share.test.mjs'],
   ['advance', 'advance.test.mjs'],
+  ['gaps', 'gaps.test.mjs'],
   ['sky', 'sky.test.mjs'],
   ['automations', 'automations.test.mjs'],
   ['actions', 'actions.test.mjs'],
   ['ringer', 'ringer.test.mjs'],
   ['queue', 'queue.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],
-  ['services', 'services.test.mjs'], ['sale-jobs', 'sale-jobs.test.mjs'], ['reply-to-job', 'reply-to-job.test.mjs'], ['email-worker', 'email-worker.test.mjs'], ['rehearsal-route', 'rehearsal-route.test.mjs'],
+  ['services', 'services.test.mjs'], ['sale-jobs', 'sale-jobs.test.mjs'], ['reply-to-job', 'reply-to-job.test.mjs'], ['email-worker', 'email-worker.test.mjs'], ['rehearsal-route', 'rehearsal-route.test.mjs'], ['email-send', 'email-send.test.mjs'],
   ['proposal', 'proposal.test.mjs'], ['job-draft', 'job-draft.test.mjs'],
   ['memory-card', 'memory-card.test.mjs'],
   ['told-me', 'told-me.test.mjs'],
@@ -75,6 +76,8 @@ for (const [name, file] of [
   ['drafts', 'draft-check.mjs'],
   ['extension', 'test_extension.mjs'],
   ['placement', 'placement.test.mjs'],
+  ['skills-index', 'skills-index.test.mjs'],
+  ['heavy', 'heavy.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
@@ -103,6 +106,9 @@ for (const [name, file] of [
 { const read = (f) => readFileSync(resolve(here, '..', f), 'utf8').replace(/\r\n/g, '\n'), src = read('void.html');
   const stale = ['void-live-deploy/index.html', 'void-live-deploy/void.html'].filter((f) => read(f) !== src);
   results.push(['copies', !stale.length, stale.length ? stale.join(' and ') + ' differ from void.html: cp void.html void-live-deploy/index.html && cp void.html void-live-deploy/void.html' : 'void.html and both deploy copies match']); }
+// skills/index.json is generated from skills/order/ (tools/skills-index.mjs): a skill added without its order file, or an order file
+// without the index rewritten, is caught here, not on the page
+{ const r = run([resolve(here, 'skills-index.mjs'), '--check']); results.push(['index', r.ok, r.out[r.out.length - 1] || '']); }
 // VOID_SKIP_BENCH (the same switch tools/test_void.mjs honours): the benchmark is not a merge gate (owner, 2026-10-09, the suite split in
 // domains/void.frontier.md); CI runs it as its own job (.github/workflows/bench.yml) and reports the number on the PR, and a drop below
 // the floor is a fix PR, never a wait. Without the variable this row replays it as before.
