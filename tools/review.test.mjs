@@ -217,6 +217,16 @@ ok(!rules("&& groupOf('make the group bigger').by === 1.25 && x", 'javascript').
 ok(!rules('if (woa(1, 2, 1.5) !== .5) fail();', 'javascript').includes('float-equality@1') && !rules('if (median(xs) === 2.25) ok();', 'javascript').includes('float-equality@1') && rules('if (x === 0.3) {}', 'javascript').includes('float-equality@1'), 'selftest-style comparisons with .5 and 2.25 not flagged; 0.3 still is');
 ok(rules('os.chmod(path, 0o777)', 'python').includes('chmod-777@1') && !rules('os.chmod(path, 0o644)', 'python').includes('chmod-777@1') && rules('chmod 777 f', 'shell').includes('chmod-777@1'), 'os.chmod 0o777 flagged in Python, 0o644 not, shell still flagged');
 ok(!rules("SELECT name FROM users WHERE email LIKE '%' + @q + '%'", 'sql').includes('sql-concat@1'), 'a LIKE pattern built around an @parameter is not SQL injection');
+// a template SQL literal whose only ${} are bare clause fragments right after WHERE/AND/OR/HAVING, with the values bound (a ? placeholder and .bind): not pasted
+{ const BT = '`';
+  const flags = (code) => rules(code, 'javascript').includes('sql-concat@1');
+  ok(!flags('const { results } = await env.DB.prepare(' + BT + 'SELECT id, kind, name, summary, links, state, remote, last_commit, digest, sha256, updated FROM void_memory WHERE ${where} ORDER BY updated DESC LIMIT ?' + BT + ').bind(...args, n).all();'), 'the memory search query (fixed fragments, every value bound) is not SQL built by pasting');
+  ok(!flags('const { results } = await env.DB.prepare(' + BT + 'SELECT a FROM t WHERE ${where} ORDER BY n LIMIT ?' + BT + ').bind(...args, 5).all();') && !flags('db.prepare(' + BT + 'SELECT a FROM t WHERE id = ? AND ${cond}' + BT + ').bind(id)'), 'a clause fragment after WHERE or AND with the values bound is fine');
+  ok(flags('db.prepare(' + BT + 'SELECT a FROM t WHERE name = ${name} AND id = ?' + BT + ').bind(id)'), 'a value pasted into a comparison still flags even when other values are bound');
+  ok(flags('db.prepare(' + BT + "SELECT a FROM t WHERE name = '${name}' AND id = ?" + BT + ').bind(id)'), 'a value pasted inside quotes still flags');
+  ok(flags('db.prepare(' + BT + 'SELECT a FROM t WHERE ${where}' + BT + ').all()'), 'a clause fragment with nothing bound still flags');
+  ok(flags('db.prepare(' + BT + 'SELECT a FROM ${table} WHERE id = ?' + BT + ').bind(id)'), 'a table name pasted in still flags');
+  ok(flags('db.prepare(' + BT + 'SELECT a FROM t WHERE ${build(x)} AND id = ?' + BT + ').bind(id)'), 'a call inside the hole still flags'); }
 ok(!rules("await ctx.env.DB.prepare('UPDATE void_queue SET note = ? WHERE id = ? AND state = ?').bind(r.ok ? 'builder woken' : 'builder wake failed ' + r.status, item.id, 'queued').run();", 'javascript').includes('sql-concat@1')
   && !rules("const r = await db.query('SELECT a FROM t WHERE id = ?', [prefix + id]);", 'javascript').includes('sql-concat@1')
   && rules("const q = 'SELECT ' + cols + ' FROM t';", 'javascript').includes('sql-concat@1')

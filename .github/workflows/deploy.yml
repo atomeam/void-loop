@@ -195,17 +195,20 @@ jobs:
           [ -n "$title" ] || title=$(git log -1 --format=%s "$(git rev-parse -q --verify HEAD^2 || git rev-parse HEAD)")
           node tools/reflect.mjs --build "$title" | tee -a "$GITHUB_STEP_SUMMARY" || true
 
-  # Ship now, test after: the full suite on the commit that just went live. Red means that commit is reverted on main and
-  # main is deployed again, so a breaking merge stays live only for the length of the suite (about 15 min). The revert is
-  # marked with a Void-auto-revert trailer and is never itself tested and reverted. Its own concurrency group: the next
-  # merge deploys at once, without waiting for this suite.
+  # Ship now, test after: the full suite on the commit that just went live. Red means the commit that broke the failed
+  # checks is reverted on main and main is deployed again, so a breaking merge stays live only for the length of the suite
+  # (about 15 min). The revert is marked with a Void-auto-revert trailer and is never itself tested and reverted. One
+  # concurrency group per head (2026-10-10): every merge gets its own suite, in parallel, so a busy evening no longer
+  # leaves most merges unverified (one shared group kept only the newest pending run). Two red suites at once are safe:
+  # before reverting, the tool checks its target is still on main and not already reverted, and that the failed checks
+  # are still red on main's newest verified head (tools/revert-target.mjs); otherwise it reports.
   verify-main:
     needs: test-and-deploy
     if: (github.event_name == 'push' || inputs.after_merge) && needs.test-and-deploy.result == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     concurrency:
-      group: void-verify-main
+      group: void-verify-main-${{ github.sha }}
       cancel-in-progress: false
     permissions:
       contents: write # push the revert
@@ -242,7 +245,9 @@ jobs:
         run: |
           tested=$(git rev-parse HEAD)
           # Not always the tested commit: when a failed check was already red before it, the commit where that check
-          # first went red is the one to take back (tools/revert-target.mjs). An unclear record is reported, not guessed.
+          # first went red is the one to take back (tools/revert-target.mjs). An unclear record is reported, not guessed,
+          # and so is a target that is no longer live on main (gone, or already reverted by another suite that ran at the
+          # same time) or a check that main's newest verified head no longer fails.
           pick=$(node tools/revert-target.mjs --pick "$tested" test-output.txt) || pick='{"action":"report","why":"could not read the verify record"}'
           action=$(node -e 'console.log(JSON.parse(process.argv[1]).action)' "$pick")
           why=$(node -e 'console.log(JSON.parse(process.argv[1]).why)' "$pick")

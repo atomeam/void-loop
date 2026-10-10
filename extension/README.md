@@ -15,9 +15,17 @@ Void in the browser's side panel. It works with the page you are on in two ways,
 - The answer card says "this page was sent to a-to-mind.com for this answer".
 - On the tab card (after Alt+Shift+V), "draft for me: reply · summary · notes · rewrite (sends it to Void)": the title, address and selected text go to Void's answer engine once (`/api/answer`, `mode: 'draft'`, `void-live-deploy/lib/draft.js`; the address kept to host and path, keys masked, nothing stored), and the draft comes back into the card's box, ready for "put in the page" or copy. Whatever is in the box goes along as a note to Void. The card then says what was sent and for what. With no model, a plain rules draft comes back instead of nothing.
 
+**Acts for you (B3).** One step at a time, on a site you allowed, after your yes.
+- In the tab card, write a step for Void: "fill Reply with Thanks, see you Friday" or "click Save". Void proposes it; it does nothing itself.
+- The panel (the extension, not the page in its frame) shows the step as a card: the site, the field or button by its visible label, and the text. Nothing happens until you press Yes there.
+- It acts only on a site on your list, "sites Void may act on" at the bottom of the panel. The list is empty until you add a site, lives in the extension's own storage, and only you edit it there; the page in the frame can't. A site not on the list gets no card at all.
+- A step never submits a form or presses Enter. A field is filled the way typing would fill it; a button that would send its form is refused, and you press it yourself. Two things with the same label is a refusal too.
+- Void proposes the step itself after a "draft for me: reply": on a site on your list, the reply comes back as the same card, "fill <the box you were in> with <the draft>", with the same Yes / No and the same record. Off the list the draft stays copy-only, as before, and nothing is said about acting.
+- Every step leaves an execution record (`/api/actions`, kind `extension.act`, ref "site · label"), written as running before the step and ended done or failed after; a No is recorded as stubbed. The owner sees them in Void's actions card ("my actions"). Without the owner's key there is no record, so there is no action.
+
 Chrome's own pages, the Web Store and some PDFs can't be read; Void says so. The old "Ask Void about '…'" menu, which sent the selection as an ask, is gone (Adam, 2026-10-09).
 
-**Reach.** Only `activeTab` and `scripting`: the extension gets into a tab only when you press the shortcut or use a menu there, only that tab, and only until it navigates. There is no access to every site. Acting on pages (clicking, multi-step) is B3, which waits for a per-site allow list and a yes before every change.
+**Reach.** Only `activeTab` and `scripting`: the extension gets into a tab only when you press the shortcut or use a menu there, only that tab, and only until it navigates. There is no access to every site. Acting on pages is B3 (above): one step at a time, a per-site allow list, and a yes before every change. Multi-step runs are not built.
 
 **Who talks to whom.** The panel (`sidepanel.js`) is the only door between Void and the extension. It takes messages only from the Void frame at https://a-to-mind.com. Void (`void.html`) takes them only from this extension's id, `dcjdpaeachfmfndklkiglgebfflamhkg`, which the `key` in `manifest.json` pins. The private half of that key was not kept: it's only needed to pack a .crx for the Web Store, and Void stays off the store.
 
