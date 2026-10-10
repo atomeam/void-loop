@@ -79,6 +79,21 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   return true;
 });
 
+// "draft for me: proposal": the thread text of the tab that was last read, only when you press it in the tab card (through the
+// panel), and only while Chrome still lets us in there. Void sends it once to its answer engine for the proposal draft.
+chrome.runtime.onMessage.addListener((msg, sender, reply) => {
+  if (sender.id !== chrome.runtime.id || !msg || msg.type !== 'thread') return;
+  (async () => {
+    const { tab } = await chrome.storage.session.get('tab');
+    if (!tab || tab.tabId == null) return reply({ ok: false, why: 'no-tab' });
+    try {
+      const [r] = await chrome.scripting.executeScript({ target: { tabId: tab.tabId }, func: voidReadThread });
+      reply((r && r.result) || { ok: false, why: 'no-result' });
+    } catch (e) { reply({ ok: false, why: 'no-access' }); }
+  })();
+  return true;
+});
+
 // B3: one step you said yes to in the panel's card, on the tab you last pointed Void at, and only when that site is on your
 // allow list (chrome.storage.local "allow", hosts, empty until you add one in the panel). The panel checks the list before it
 // shows the card; this checks it again before anything runs, so nothing but the list and your yes decides.

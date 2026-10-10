@@ -11,7 +11,8 @@ import { spawnSync } from 'node:child_process';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
 const server = http.createServer((req, res) => {
-  let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+  // a path that is no URL (a doubled slash, '//?x', reads as a host) is a 400 for that request, never a crash of the whole suite
+  let p; try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (_) { res.writeHead(400); return res.end(); }
   if (p === '/') p = '/index.html';
   let f = path.join(root, p);
   if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
@@ -1027,6 +1028,53 @@ try {
       post && del && /^Bearer owner-k$/.test(post.a) && rec.kind === 'note' && rec.summary === 'I prefer tabs over spaces' && del.u === '?id=' + rec.id && /Remembered: I prefer tabs over spaces/.test(said1) && /Forgotten: I prefer tabs over spaces/.test(said2) && !K.errors.length,
       JSON.stringify({ calls, errs: K.errors }));
     await K.ctx.close(); }
+  // a world that keeps living while you are away (advance in skills/scripts.js): summon a cloud, a flower, a zombie and a brain, leave for an hour (the
+  // saved time is faked back; the figures are put where they last stood, the flower under the cloud's rain and the zombie some way from the brain),
+  // come back, and one line says what happened where a visitor sees it (#away-note, which a failing 3D layer cannot overwrite); a quick reload says nothing.
+  // three.js is stubbed as in the article check above.
+  { const W = await fresh(); const figSrcW = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const namesW = Array.from(new Set(Array.from(figSrcW.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUBW = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + namesW.map((n) => n + '=U').join(',') + ';';
+    await W.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBW }));
+    for (const a of ['summon a cloud', 'summon a flower', 'summon a zombie', 'summon a brain']) await W.ask(a, 1500);
+    const kept = await W.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'figure').map((t) => t.kindOf).sort().join(','));
+    await W.p.close();
+    const errsW = [];
+    await W.ctx.addInitScript(() => { try { if (sessionStorage.getItem('away-faked')) return; sessionStorage.setItem('away-faked', '1');
+      const st = JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}'), where = { cloud: [300, 100], flower: [310, 250], zombie: [100, 300], brain: [500, 300] };
+      for (const t of Object.values(st)) if (t.kind === 'figure' && where[t.kindOf]) t.at = { x: where[t.kindOf][0], y: where[t.kindOf][1] };
+      localStorage.setItem('a2m.void.state.v1', JSON.stringify(st)); localStorage.setItem('a2m.void.away.v1', String(Date.now() - 36e5)); } catch (_) {} }); // once, in the next page that opens
+    const back = await W.ctx.newPage(); back.on('pageerror', (e) => errsW.push(String(e && e.message || e)));
+    await back.goto(base); await back.waitForTimeout(1500);
+    const away = await back.evaluate(() => window.__voidAway || null);
+    const line = await back.evaluate(() => (document.getElementById('away-note') || {}).textContent || '');
+    const left = await back.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'figure').map((t) => ({ k: t.kindOf, at: t.at, grow: t.nature && t.nature.grow })));
+    const flower = left.find((t) => t.k === 'flower'), zombie = left.find((t) => t.k === 'zombie');
+    check('away: a cloud, a flower, a zombie and a brain left for an hour: the line says "the cloud rained, the flower grew, the zombie found the brain", the brain is gone, the zombie stands where it was, the flower grew',
+      kept === 'brain,cloud,flower,zombie' && away && away.note === 'While you were away (1 hour): the cloud rained, the flower grew, the zombie found the brain.' && line === away.note && Math.abs(away.ms - 36e5) < 60e3
+      && !left.some((t) => t.k === 'brain') && zombie && Math.hypot(zombie.at.x - 500, zombie.at.y - 300) < 3 && flower && flower.grow > 0.5 && !errsW.length,
+      JSON.stringify({ kept, away, line, left, errsW }));
+    await back.reload(); await back.waitForTimeout(800);
+    check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway && !(document.getElementById('away-note') || {}).textContent), '');
+    await W.ctx.close(); }
+  { // frontier #11: two tabs on one invite link (?with=<room>). Here the live relay is not there (no Durable Object in this
+    // local server), so the tabs share through a BroadcastChannel: a clock summoned in one appears in the other, and the
+    // other tab's cursor shows as a faint presence; closing that tab takes the presence away.
+    const room = 'aaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbb', S = await fresh({ base: base + '?with=' + room });
+    const B = await S.ctx.newPage(); const errsS = []; B.on('pageerror', (e) => errsS.push(String(e && e.message || e)));
+    await B.goto(base + '?with=' + room); await B.waitForTimeout(900);
+    const saidA = await S.whisper();
+    await S.ask('clock', 900);
+    const onB = await B.$$eval('.thing', (n) => n.length); // on B's own stage (both tabs share one localStorage, so the saved state proves nothing)
+    await B.mouse.move(300, 200); await B.mouse.move(320, 220); await S.p.waitForTimeout(300);
+    const dot = await S.p.$eval('.void-presence', (e) => ({ x: parseFloat(e.style.left), y: parseFloat(e.style.top) })).catch(() => null);
+    await B.close(); await S.p.waitForTimeout(300);
+    const after = await S.p.$$eval('.void-presence', (n) => n.length);
+    check('shared Void: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence',
+      /tabs in this browser/.test(saidA) && onB === 1 && dot && Math.abs(dot.x - 320) < 40 && Math.abs(dot.y - 220) < 40 && after === 0 && !errsS.length && !S.errors.length,
+      JSON.stringify({ saidA, onB, dot, after, errsS, errs: S.errors }));
+    await S.ctx.close(); }
   { const G = await fresh(); let n = 0;
     await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
     await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
@@ -1102,6 +1150,35 @@ try {
       JSON.stringify({ drafted: { ...drafted, asked: drafted.asked.slice(0, 40), scope: drafted.scope.slice(0, 40) + '…' + drafted.scope.slice(-30) }, kept: kept && { title: kept.fields && kept.fields.title, request: kept.request === pastedREQ || kept.request }, line, rec: rec && { state: rec.state, ref: rec.ref, result: rec.result }, errs: P.errors }).slice(0, 900));
     await P.ask('no', 600);
     await P.ctx.close(); }
+  // the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the asker's scope and the card shows
+  // its first check as evidence; "my watches" lists them with pause and stop; a visitor without a key is told whose it is
+  { const V = await fresh();
+    await V.ask("tell me when it's below 0 in Oslo", 900);
+    const visitor = await V.p.$eval('.watch-card .watch-status', (e) => e.textContent).catch(() => '');
+    await V.ctx.close();
+    const W = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const calls = []; let watches = [];
+    const rec = (id) => ({ id: 'act-w1', owner: 'owner', kind: 'watch.check', ref: id, state: 'done', result: 'MATCH · -3°C in Oslo · watching for below 0°C in Oslo · told on the stage', error: null, started: '2026-10-10T09:00:00Z', finished: '2026-10-10T09:00:01Z' });
+    await W.ctx.route(/\/api\/watch(?:\?|$)/, (r) => {
+      const q = r.request(); const b = JSON.parse(q.postData() || '{}'); calls.push({ method: q.method(), auth: q.headers().authorization || '', body: b });
+      if (q.method() === 'POST') watches = [{ id: 'w1', name: 'Watch: below 0°C in Oslo', enabled: true, every: 15, watch: { kind: 'weather', place: 'Oslo', op: '<', value: 0, unit: 'c' }, tell: 'note', last: { at: '2026-10-10T09:00:01Z', matchedAt: '2026-10-10T09:00:01Z' }, checks: [rec('w1')] }];
+      if (q.method() === 'PATCH') watches = watches.map((w) => ({ ...w, enabled: !!b.enabled }));
+      if (q.method() === 'DELETE') watches = [];
+      return r.fulfill(json({ ...(q.method() === 'POST' ? { saved: { id: 'w1', do: [{ action: 'watch', watch: watches[0].watch }] }, check: { ok: true } } : {}), watches }));
+    });
+    await W.ask("tell me when it's below 0 in Oslo", 900);
+    await until(async () => W.p.$eval('.watch-row .watch-last', (e) => e.textContent).catch(() => ''), 5000);
+    const row = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
+    await W.p.click('.watch-toggle'); await until(async () => /paused/.test(await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '')), 3000);
+    const paused = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
+    W.p.once('dialog', (d) => d.accept()); await W.p.click('.watch-stop'); await until(async () => !(await W.p.$('.watch-row')), 3000);
+    const empty = await W.p.$eval('.watch-list', (e) => e.innerText).catch(() => '');
+    check('watch: "tell me when it\'s below 0 in Oslo" makes a watch (POST with the ask and the owner\'s key), the card shows it with its first check as evidence (a match, told on the stage), Pause pauses, Stop asks then removes it; a visitor is told watches are the owner\'s',
+      /Unlock Void|owner/.test(visitor) && calls[0] && calls[0].method === 'POST' && calls[0].body.ask === "tell me when it's below 0 in Oslo" && /^Bearer owner-k$/.test(calls[0].auth)
+      && /below 0°C in Oslo/.test(row) && /★ .*MATCH · -3°C in Oslo/.test(row) && /\(paused\)/.test(paused) && calls.some((c) => c.method === 'PATCH' && c.body.enabled === false)
+      && calls.some((c) => c.method === 'DELETE' && c.body.id === 'w1') && /Nothing is watched/.test(empty) && !W.errors.length,
+      JSON.stringify({ visitor, row: row.slice(0, 160), paused: paused.slice(0, 80), empty: empty.slice(0, 60), calls: calls.map((c) => c.method), errs: W.errors }));
+    await W.ctx.close(); }
   // "unlock <key>" is the first thing handled: pasted with or without the space (or "unlock" twice) it is saved on this
   // device and nothing carrying the key leaves the page (it once went to the answer model and the miss board).
   { meEnv.READ_TOKEN = '0123456789abcdef0123456789abcdef'; const U = await fresh(); const leaked = []; // the server checks the key first (owner login) U.p.on('request', (r) => { if (/0123456789abcdef0123/.test(r.url() + (r.postData() || ''))) leaked.push(r.url()); });
@@ -2680,8 +2757,13 @@ try {
   { const agg = await import(new URL('../void-live-deploy/skills/aggravation.js', import.meta.url).href);
     const unit = agg.default.suite();
     const Q = await fresh();
-    const geo = (sel) => Q.p.evaluate((sel) => { const e = document.querySelector(sel), r = document.getElementById('row').getBoundingClientRect(); if (!e) return null; const b = e.getBoundingClientRect();
+    // measured once the card has stopped moving: it arrives with a transform transition (.35-.6 s), and on a busy runner a
+    // fixed wait can read it mid-flight (19 px off centre in verify run 38017904620). Up to 3 s for two equal reads in a row.
+    const geo1 = (sel) => Q.p.evaluate((sel) => { const e = document.querySelector(sel), r = document.getElementById('row').getBoundingClientRect(); if (!e) return null; const b = e.getBoundingClientRect();
       return { left: b.left, right: b.right, top: b.top, bottom: b.bottom, rowTop: r.top, vw: innerWidth }; }, sel);
+    const geo = async (sel) => { let last = await geo1(sel); const end = Date.now() + 3000;
+      while (Date.now() < end) { await Q.p.waitForTimeout(150); const g = await geo1(sel); if (JSON.stringify(g) === JSON.stringify(last)) return g; last = g; }
+      return last; };
     const fair = (g) => !!g && g.bottom <= g.rowTop - 4 && g.top >= 0 && g.left >= 0 && g.right <= g.vw && Math.abs((g.left + g.right) / 2 - g.vw / 2) <= 2;
     await Q.ask('play aggravation', 700);
     const aDesk = await geo('.aggravation-card');

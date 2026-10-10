@@ -27,6 +27,10 @@ window.addEventListener('message', (e) => {
   const m = e.data;
   if (m.type === 'void-ext:ready') { toVoid({ type: 'void-ext:hello', version: chrome.runtime.getManifest().version }); send(); }
   else if (m.type === 'void.ctx.ready' && pending) { toVoid({ type: 'void.ctx', q: pending.q, page: pending.page }); pending = null; }
+  else if (m.type === 'void-ext:thread') { // "draft for me: proposal": the thread text, read now, for Void to send once
+    chrome.runtime.sendMessage({ type: 'thread' }).then((r) => toVoid({ type: 'void-ext:threaded', id: m.id, ...(r || { ok: false, why: 'no-reply' }) }))
+      .catch(() => toVoid({ type: 'void-ext:threaded', id: m.id, ok: false, why: 'no-reply' }));
+  }
   else if (m.type === 'void-ext:draft' && typeof m.text === 'string') {
     chrome.runtime.sendMessage({ type: 'draft', text: m.text }).then((r) => toVoid({ type: 'void-ext:drafted', id: m.id, ...(r || { ok: false, why: 'no-reply' }) }))
       .catch(() => toVoid({ type: 'void-ext:drafted', id: m.id, ok: false, why: 'no-reply' }));

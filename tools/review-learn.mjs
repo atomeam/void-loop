@@ -10,7 +10,7 @@
 import { execFileSync } from 'node:child_process';
 import { ruleReview, skippedInReview, LEARNED } from '../void-live-deploy/lib/code-review.js';
 import { writeFileSync } from 'node:fs';
-import { declaredNames, phantomNames, dropPhantoms } from '../void-live-deploy/lib/review-api.js';
+import { declaredNames, phantomNames, dropPhantoms, parseFinding } from '../void-live-deploy/lib/review-api.js';
 
 export const EXTRA = 'coderabbitai[bot]';
 export const WINDOW = 3;
@@ -135,23 +135,31 @@ export function placeBySymbol(paragraph, added, files) {
   return null;
 }
 const PRAISE = /\b(?:correctly|is fine|looks fine|is sound|is good|good practice|well handled|no bug|no issue|not a bug|is acceptable|is correct)\b/i;
+// a paragraph with no claim in it: the closer read saying it has read, that there is nothing, or what kind of file this is. Neither placed
+// nor unplaced: listed under `empty`, out of every count (2026-10-10)
+const EMPTY = /^(?:I have reviewed|I reviewed|I've reviewed|(?:bugs?|security|performance|readability|risks?|style)\s*:?\s*none\b|none\.?$|no (?:bugs|issues|problems|logic errors|security)|nothing to report|the (?:provided |supplied |given )?(?:diff|code|changes?|file|pull request) (?:is|are|consists|shows|contains|looks|appears|introduces? no)|the changes are purely|verdict|note on pattern check|overall,? the|in summary|the code is fine|looks fine|this (?:is|looks) (?:fine|correct|a documentation))/i;
+export const isEmptyClaim = (sentence) => { const t = String(sentence || '').trim(); return !t || t.split(/\s+/).length < 3 || EMPTY.test(t) || PRAISE.test(t); };
+// the closer read's new shape (lib/review-api.js QUOTE_RULE) puts one finding per line; a paragraph of several becomes one each
+const splitFindings = (text) => text.split(/\n[ \t]*\n/).flatMap((p) => { const ls = p.split('\n'); return ls.filter((l) => parseFinding(l)).length > 1 ? ls : [p]; });
 export function lessonsIn(pr, body, fileNames, sha, fileAt, ranges = {}, added = {}) {
   const text = closerReadOf(body); if (!text) return [];
   const files = fileNames.filter((f) => langOfPath(f) && !skippedInReview(f)), out = [];
-  for (const p of text.split(/\n[ \t]*\n/)) {
+  for (const p of splitFindings(text)) {
+    const shaped = parseFinding(p); // the quoted shape: file:line — kind — sentence — `code`
     // "Line 12", or the file:line form the closer read also uses ("`tools/checks.mjs:13`: The loop …")
-    const lm = p.match(/\bLine\s+(\d{1,5})\b/i) || p.match(/\.[a-z]{1,5}:(\d{1,5})\b/i);
+    const lm = shaped ? [null, String(shaped.line)] : p.match(/\bLine\s+(\d{1,5})\b/i) || p.match(/\.[a-z]{1,5}:(\d{1,5})\b/i);
     // no line named: the symbol it quotes places it, when exactly one added hunk carries that symbol (2026-10-10); a paragraph
     // that quotes symbols but none of them lands in one file is counted as unplaced, one with neither line nor symbol is not a finding
     const bySym = placeBySymbol(p, added, files);
-    if (!lm && !bySym && !symbolsIn(p).length) continue;
     // the finding's own sentence: the first line that is not a heading, without the "Line N (file):" lead
     const body0 = p.split('\n').map((l) => l.trim()).filter((l) => l && !/^#{1,6}\s/.test(l) && !/^\*\*[^*]{2,40}\*\*:?$/.test(l))[0] || '';
-    const sentence = body0.replace(/\*\*/g, '').replace(/^[\s*-]+/, '').replace(/^(?:bug|security|performance|readability|risk)\b[^:]*:\s*/i, '').replace(/^Line\s+\d+\s*(?:\([^)]*\))?\s*[:,]?\s*/i, '').trim().split(/(?<=[.!?])\s/)[0].slice(0, 160);
-    if (!sentence || PRAISE.test(sentence)) continue; // praise is not a lesson
+    const sentence = shaped ? shaped.sentence.split(/(?<=[.!?])\s/)[0].slice(0, 160)
+      : body0.replace(/\*\*/g, '').replace(/^[\s*-]+/, '').replace(/^(?:bug|security|performance|readability|risk)\b[^:]*:\s*/i, '').replace(/^Line\s+\d+\s*(?:\([^)]*\))?\s*[:,]?\s*/i, '').trim().split(/(?<=[.!?])\s/)[0].slice(0, 160);
+    if (isEmptyClaim(sentence)) { if (sentence) out.push({ pr, sentence, empty: true }); continue; } // no claim: not a lesson, counted apart
+    if (!lm && !bySym && !symbolsIn(p).length) continue;
     if (!lm && !bySym) { out.push({ pr, line: 0, sentence, placed: false }); continue; }
     let line = lm ? +lm[1] : bySym.line;
-    const named = files.filter((f) => p.includes(f) || p.includes(f.split('/').pop()));
+    const named = files.filter((f) => (shaped && shaped.file && (f === shaped.file || f.endsWith('/' + shaped.file) || f.split('/').pop() === shaped.file.split('/').pop())) || p.includes(f) || p.includes(f.split('/').pop()));
     // else the file whose added hunks cover the line (the closer read numbers lines in the new file)
     const covering = named.length ? named : files.filter((f) => (ranges[f] || []).some(([a, b]) => line >= a - WINDOW && line <= b + WINDOW));
     let cands = covering.length ? covering : files;
@@ -172,8 +180,8 @@ export function lessonsIn(pr, body, fileNames, sha, fileAt, ranges = {}, added =
   return out;
 }
 export function lessonSummary(lessons) {
-  const placed = lessons.filter((l) => l.placed), caught = placed.filter((l) => l.caught);
-  return { closerFound: placed.length, rulesFlagged: caught.length, unplaced: lessons.length - placed.length, bySymbol: placed.filter((l) => l.symbol).length, candidates: placed.filter((l) => !l.caught) };
+  const placed = lessons.filter((l) => l.placed), caught = placed.filter((l) => l.caught), empty = lessons.filter((l) => l.empty);
+  return { closerFound: placed.length, rulesFlagged: caught.length, unplaced: lessons.length - placed.length - empty.length, empty: empty.length, bySymbol: placed.filter((l) => l.symbol).length, candidates: placed.filter((l) => !l.caught) };
 }
 
 export function summary(rows) {
@@ -212,7 +220,7 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split('/').pop()
   const s = summary(rows), falsePh = phantoms.filter((r) => r.false), dropped = falsePh.filter((r) => r.dropped), ls = lessonSummary(lessons);
   const learned = LEARNED.filter((l) => l.from === 'closer read').length, learnedFromExtras = LEARNED.filter((l) => l.from === 'extras').length;
   const stats = { at: new Date().toISOString(), since: since ? since + 'd' : null, from: prs.length ? Math.min(...prs) : null, to: prs.length ? Math.max(...prs) : null, prs: prs.length,
-    rulesFlagged: ls.rulesFlagged, closerFound: ls.closerFound, unplaced: ls.unplaced, bySymbol: ls.bySymbol, falseDropped: dropped.length, learned, learnedFromExtras, extrasFindings: rows.length, extrasRate: s.rate };
+    rulesFlagged: ls.rulesFlagged, closerFound: ls.closerFound, unplaced: ls.unplaced, empty: ls.empty, bySymbol: ls.bySymbol, falseDropped: dropped.length, learned, learnedFromExtras, extrasFindings: rows.length, extrasRate: s.rate };
   if (statsPath) writeFileSync(statsPath, JSON.stringify(stats, null, 2) + '\n');
   if (process.argv.includes('--json')) { console.log(JSON.stringify({ ...s, rows, closerRead: { claims: phantoms.length, false: falsePh.length, dropped: dropped.length, phantoms }, lessons: { ...ls }, stats }, null, 1)); process.exit(0); }
   console.log(`Void's review against the extras, merged PRs #${Math.min(...prs)}-#${Math.max(...prs)}: ${s.findings} findings by ${EXTRA}`);
@@ -222,8 +230,9 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split('/').pop()
   for (const r of list) console.log(`  #${r.pr} ${r.path}:${r.line} [${r.severity}] ${r.title}`);
   console.log(`\nVoid's closer read on the same PRs: ${phantoms.length} claim(s) that a name is missing or that the mask is a bug; ${falsePh.length} false (the file imports or declares the name, or it is the mask); dropPhantoms removes ${dropped.length} of those`);
   for (const r of falsePh) console.log(`  #${r.pr} ${r.files.map((f) => f.split('/').pop()).join(',')}: ${r.claim}`);
-  console.log(`\nLessons from Void's closer read (the extras are silent): it named a line ${ls.closerFound} time(s) the rules could be checked on (${ls.bySymbol} placed by the symbol it quoted); the rules had flagged ${ls.rulesFlagged} of them within ${WINDOW} lines; ${ls.unplaced} could not be placed on one file`);
-  for (const l of lessons.filter((x) => !x.placed)) console.log(`  unplaced #${l.pr} line ${l.line}: ${l.sentence}`);
+  console.log(`\nLessons from Void's closer read (the extras are silent): it named a line ${ls.closerFound} time(s) the rules could be checked on (${ls.bySymbol} placed by the symbol it quoted); the rules had flagged ${ls.rulesFlagged} of them within ${WINDOW} lines; ${ls.unplaced} could not be placed on one file; ${ls.empty} paragraph(s) made no claim (counted apart)`);
+  for (const l of lessons.filter((x) => !x.placed && !x.empty)) console.log(`  unplaced #${l.pr} line ${l.line}: ${l.sentence}`);
+  for (const l of lessons.filter((x) => x.empty)) console.log(`  empty #${l.pr}: ${l.sentence}`);
   if (ls.candidates.length) console.log('Candidate cases (each a rule to teach lib/code-review.js, with the id it would need):');
   for (const l of ls.candidates) console.log(`  #${l.pr} ${l.path}:${l.line} [${l.ruleId}] ${l.sentence}`);
   console.log(`Learned so far: ${learned} from the closer read, ${learnedFromExtras} from the extras` + (statsPath ? `; stats written to ${statsPath}` : ''));

@@ -1,7 +1,7 @@
 // Void's facts about itself, for the answer engine (void-live-deploy/lib/self-context.js): what it is (llms.txt), and the
 // growth inbox (domains/growth-inbox.md: what shipped, what is still open), its games and the cards that have a 3D miniature
-// (so its opinions of itself are informed: lib/voice.js), and for the growth tree the think tank's open tracks and the claim
-// being built now (domains/forethinkers/index.md, domains/void.frontier.md). Skills, the will and its reflections are read live at answer time.
+// (so its opinions of itself are informed: lib/voice.js), and for the growth tree the think tank's open tracks, the claim
+// being built now (domains/forethinkers/index.md, domains/void.frontier.md) and the last commits on main (git log). Skills, the will and its reflections are read live at answer time.
 // Writes void-live-deploy/self.json. The deploy workflow runs this before every deploy, so the file never goes stale there.
 //   node tools/self-context.mjs          write the file
 //   node tools/self-context.mjs --check  exit 1 if the committed file differs from what would be written
@@ -44,7 +44,7 @@ export function readBuilding(text, lineTimes = {}) {
   String(text || '').split('\n').forEach((line, i) => {
     const h = /^##\s+(?:\d+\.\s+)?(.+)$/.exec(line); if (h) item = clip(h[1], 80);
     const m = /^\s*-?\s*\*\*claim[^*]*:\*\*\s*(\S[^:]*?)\s(\d{4}-\d\d-\d\d):\s*(.+)$/.exec(line);
-    if (!m) return;
+    if (!m || /^\W*(?:done|closed)\b/i.test(m[3])) return; // a finished item is not being built
     const at = lineTimes[i + 1] || m[2] + 'T00:00:00Z', key = at + '|' + String(i).padStart(6, '0');
     if (!best || key > best.key) best = { key, at, date: m[2], by: clip(m[1], 40), item: item.replace(/[`*]/g, ''), what: clip(m[3].replace(/[`*]/g, ''), 220) };
   });
@@ -52,7 +52,14 @@ export function readBuilding(text, lineTimes = {}) {
   const { key, ...b } = best; return b;
 }
 
-export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, tracks = null, building = null } = {}) {
+// the last commits on main (git log --no-merges --format=%cI%x09%s), newest first: the growth tree's new leaves, each read by
+// touching it. Merge commits are skipped (their subject only names a branch); a subject is clipped and keeps no Markdown.
+export function readCommits(log, n = 20) {
+  return String(log || '').split('\n').map((l) => l.split('\t')).filter(([at, subject]) => at && subject && !isNaN(Date.parse(at)))
+    .slice(0, n).map(([at, subject]) => ({ at: new Date(Date.parse(at)).toISOString().replace('.000', ''), subject: clip(subject.replace(/[`*]/g, ''), 140) }));
+}
+
+export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, tracks = null, building = null, commits = null } = {}) {
   const about = clip((/^>\s*(.+)$/m.exec(llms) || [])[1], 300);
   const rows = [];
   for (const line of inbox.split('\n')) {
@@ -69,6 +76,7 @@ export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, 
     ...(canon ? { canon } : {}),
     ...(tracks ? { tracks } : {}),
     ...(building ? { building } : {}),
+    ...(commits && commits.length ? { commits } : {}),
   };
 }
 
@@ -80,7 +88,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const blame = spawnSync('git', ['blame', '--line-porcelain', '--', 'domains/void.frontier.md'], { cwd: root, encoding: 'utf8', timeout: 20000 });
   if (blame.status === 0) { let t = 0; for (const l of blame.stdout.split('\n')) { const h = /^[0-9a-f]{40} \d+ (\d+)/.exec(l); if (h) lineTimes.next = +h[1]; const c = /^committer-time (\d+)/.exec(l); if (c) t = +c[1]; if (l.startsWith('\t')) { lineTimes[lineTimes.next] = new Date(t * 1000).toISOString().replace('.000', ''); } } delete lineTimes.next; }
   const self = buildSelf(readFileSync(resolve(root, 'void-live-deploy/llms.txt'), 'utf8'), readFileSync(resolve(root, 'domains/growth-inbox.md'), 'utf8'), { skills, minis, canon: existsSync(resolve(root, 'domains/void.canon.md')) ? readCanon(readFileSync(resolve(root, 'domains/void.canon.md'), 'utf8')) : null,
-    tracks: existsSync(tank) ? readTracks(readFileSync(tank, 'utf8')) : null, building: existsSync(frontier) ? readBuilding(readFileSync(frontier, 'utf8'), lineTimes) : null });
+    tracks: existsSync(tank) ? readTracks(readFileSync(tank, 'utf8')) : null, building: existsSync(frontier) ? readBuilding(readFileSync(frontier, 'utf8'), lineTimes) : null,
+    commits: readCommits(spawnSync('git', ['log', '--no-merges', '-20', '--format=%cI%x09%s', 'HEAD'], { cwd: root, encoding: 'utf8', timeout: 20000 }).stdout) });
   const text = JSON.stringify(self, null, 1) + '\n';
   if (process.argv.includes('--check')) {
     const same = existsSync(out) && readFileSync(out, 'utf8') === text;
