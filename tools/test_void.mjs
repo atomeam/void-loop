@@ -516,6 +516,18 @@ try {
       dragging && order[order.length - 1] === 'first' && !(await V.p.evaluate(() => document.documentElement.classList.contains('dragging'))) && !(await V.p.evaluate(() => String(getSelection()))),
       JSON.stringify({ dragging, order }));
     await V.ctx.close(); }
+  // synapses: the faint branching network lives in the nebula look only: the aura's shader linked (no no-gl) and the network canvas is
+  // on and drawing something, it clears and goes off when the look changes, and reduced motion never turns it on
+  { const Y = await fresh();
+    const syn = async () => Y.p.evaluate(() => { const c = document.getElementById('void-syn'); let drawn = 0; if (c && c.width) { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; for (let i = 3; i < d.length; i += 4) if (d[i]) { drawn++; break; } } return { on: !!document.querySelector('#void-syn.on'), exists: !!c, drawn, noGl: document.documentElement.classList.contains('no-gl') }; });
+    const pub = await syn();
+    await Y.ask('add a nebula', 800); await Y.p.mouse.move(400, 300); await Y.p.mouse.move(700, 420, { steps: 6 });
+    const nb = await until(async () => { const v = await syn(); return v.on && v.drawn ? v : false; }, 9000) || await syn();
+    await Y.ask('calm my void', 800); const off = await until(async () => { const v = await syn(); return !v.on ? v : false; }, 3000) || await syn();
+    await Y.ctx.close();
+    const R = await fresh(); await R.p.emulateMedia({ reducedMotion: 'reduce' }); await R.ask('add a nebula', 800); const rd = await R.p.evaluate(() => !!document.querySelector('#void-syn.on')); await R.ctx.close();
+    check('synapses: the public homepage has no network canvas; with the nebula look the aura shader linked and the network canvas is on and drawing; "calm my void" turns it off; reduced motion never turns it on',
+      !pub.exists && (nb.noGl || (nb.on && nb.drawn)) && !off.on && !rd && !Y.errors.length && !R.errors.length, JSON.stringify({ pub, nb, off, rd, e: Y.errors.concat(R.errors) })); }
   // Board Next #3, grouping half (skills/group.js): "group the clock and the note" ties them together, dragging one carries the
   // other the same distance, the group moves and resizes as one, "bring the group to the front" layers it, "ungroup" lets go.
   { const G = await fresh();
