@@ -271,6 +271,8 @@ function memoryStoreD1({ broken = false } = {}) {
     if (/^INSERT INTO void_shortfalls \(day, place, reason, n, last\) VALUES \(\?, \?, \?, 1, \?\) ON CONFLICT\(day, place, reason\) DO UPDATE SET n = n \+ 1, last = excluded\.last$/.test(sql)) { need('void_shortfalls'); const k = a.slice(0, 3).join('|'), r = T.shortfalls.get(k); T.shortfalls.set(k, { day: a[0], place: a[1], reason: a[2], n: r ? r.n + 1 : 1, last: a[3] }); return ch(1); }
     if (/^INSERT INTO void_kv \(k, v\) VALUES \('will', \?\) ON CONFLICT/.test(sql)) { T.kv.set('will', a[0]); return ch(1); }
     if (/^INSERT INTO void_queue \(id, ask, target, state, note, at, updated\) VALUES/.test(sql)) { T.queue.set(a[0], { id: a[0], ask: a[1], target: a[2], state: a[3], note: a[4] }); return ch(1); }
+    if (/^INSERT INTO void_actions/.test(sql)) return ch(1); // the execution record (lib/actions.js) around every queue write
+    if (/^DELETE FROM void_actions/.test(sql)) return ch(0);
     if (/^UPDATE void_accounts SET tier = \?, updated = \? WHERE subscription_id = \? OR sale_id = \?$/.test(sql)) { need('void_accounts'); let n = 0; for (const r of T.accounts.values()) if ((r.subscription_id && r.subscription_id === a[2]) || (r.sale_id && r.sale_id === a[3])) { r.tier = a[0]; r.updated = a[1]; n += 1; } return ch(n); }
     throw new Error('unexpected sql: ' + sql);
   };
@@ -2945,6 +2947,8 @@ try {
         if (/^INSERT INTO void_kv \(k, v\) VALUES \(\?, \?\) ON CONFLICT\(k\) DO UPDATE SET v = CAST\(CAST\(v AS REAL\)/.test(sql)) { need('void_kv'); kv.set(a[0], String((Number(kv.get(a[0])) || 0) + Number(a[1]))); return ch(1); }
         if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2], entry: JSON.parse(a[4]) }); return ch(1); }
         if (/^INSERT INTO void_approvals/.test(sql)) { need('void_approvals'); approvals.set(a[0], { state: a[1], record: a[2] }); return ch(1); }
+        if (/^INSERT INTO void_actions/.test(sql)) { need('void_actions'); return ch(1); } // the execution record (lib/actions.js) around an approved action
+        if (/^DELETE FROM void_actions/.test(sql)) return ch(0);
         if (/^UPDATE void_approvals .*AND state = 'pending'/.test(sql)) { const r = approvals.get(a[3]); if (!r || r.state !== 'pending') return ch(0); approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
         if (/^UPDATE void_approvals/.test(sql)) { approvals.set(a[3], { state: a[0], record: a[1] }); return ch(1); }
         throw new Error('unexpected sql: ' + sql);
