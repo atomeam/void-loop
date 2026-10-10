@@ -1,4 +1,5 @@
 // node tools/review-learn.mjs [--from 120] [--to 210] [--json] [--all]
+// Also counts Void's own closer read's false 'not defined' and mask claims on those PRs (phantomsIn, 2026-10-10).
 // Void's review is the main one; the other reviewers are extras (domains/void.frontier.md #1). This reads every finding an
 // extra (CodeRabbit) left on the merged PRs in the range, runs Void's own checks (void-live-deploy/lib/code-review.js) on
 // the file as it stood at that commit, and says whether Void flagged the same spot (a finding within 3 lines). It prints
@@ -7,6 +8,7 @@
 //   --all   also list nitpicks and trivial findings (left out of the rate by default)
 import { execFileSync } from 'node:child_process';
 import { ruleReview, skippedInReview } from '../void-live-deploy/lib/code-review.js';
+import { declaredNames, phantomNames, dropPhantoms } from '../void-live-deploy/lib/review-api.js';
 
 export const EXTRA = 'coderabbitai[bot]';
 export const WINDOW = 3;
@@ -48,6 +50,34 @@ export function learnFromPr(pr, comments, fileAt) {
   return out;
 }
 
+export const VOID_BOT = 'github-actions[bot]';
+// Void's own closer read, checked the same way as the extras (2026-10-10): a claim that a name is missing ("not defined",
+// "not imported", ReferenceError) when the file at that commit imports or declares it, or a claim about the "[redacted]" mask, is
+// a false finding. lib/review-api.js dropPhantoms() takes these out of every closer read now; this counts the ones that reached
+// past PRs and how many the filter removes, so the number exists from here on.
+export function closerReadOf(body) {
+  const b = String(body || ''); if (!b.startsWith('<!-- void-review -->')) return null;
+  const i = b.indexOf('#### A closer read'); if (i < 0) return null;
+  const rest = b.slice(i + '#### A closer read'.length), j = rest.search(/\n\*\*Not blocking|\n<sub>/);
+  return (j < 0 ? rest : rest.slice(0, j)).trim();
+}
+const CLAIM_RE = /\[redacted\]|\bnot\s+(?:defined|imported|declared)|\bnever\s+(?:defined|imported)|ReferenceError|missing\s+(?:an?\s+)?import|\bis\s+undefined/i;
+// one PR's closer read: each paragraph that claims a name is missing or blames the mask, with whether it is false against the files
+export function phantomsIn(pr, body, files, sha, fileAt) {
+  const text = closerReadOf(body); if (!text) return [];
+  const out = [];
+  for (const p of text.split(/\n[ \t]*\n/)) {
+    if (!CLAIM_RE.test(p)) continue;
+    const names = [...new Set([...p.matchAll(/`([A-Za-z_$][\w$]*)(?:\.[\w$]+)*`/g)].map((m) => m[1]))];
+    const named = files.filter((f) => p.includes(f) || p.includes(f.split('/').pop())), cands = named.length ? named : files;
+    const known = new Set(); let code = '';
+    for (const f of cands) { const t = fileAt(f, sha); if (t != null) { code += t + '\n'; for (const n of declaredNames(t)) known.add(n); } }
+    const ph = phantomNames(p, known, code);
+    out.push({ pr, claim: p.split('\n')[0].replace(/\*\*/g, '').replace(/^[\s*-]+/, '').trim().slice(0, 140), names, files: cands.slice(0, 3), false: ph.length > 0, mask: ph.includes('mask'), dropped: dropPhantoms(p, known, code) === '' });
+  }
+  return out;
+}
+
 export function summary(rows) {
   const scored = rows.filter((r) => r.reviewed && counts(r.severity)), caught = scored.filter((r) => r.caught);
   return { findings: rows.length, scored: scored.length, caught: caught.length, rate: scored.length ? Math.round((caught.length / scored.length) * 100) : null,
@@ -66,16 +96,25 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split('/').pop()
     for (const p of got) if (p.merged_at && p.number >= from && p.number <= to) prs.push(p.number);
     if (got.length < 100 || got.every((p) => p.number < from)) break;
   }
-  let rows = [];
+  let rows = [], phantoms = [];
   for (const n of prs.sort((a, b) => a - b)) {
     let comments = []; try { comments = JSON.parse(gh(`repos/${repo}/pulls/${n}/comments?per_page=100`)); } catch (_) { continue; }
     rows = rows.concat(learnFromPr(n, comments, fileAt));
+    try { // Void's own closer read on that PR (the last void-review comment), against the files at the PR's head
+      const issue = JSON.parse(gh(`repos/${repo}/issues/${n}/comments?per_page=100`)).filter((c) => c.user && c.user.login === VOID_BOT && String(c.body || '').startsWith('<!-- void-review -->')).pop();
+      if (issue) {
+        const pull = JSON.parse(gh(`repos/${repo}/pulls/${n}`)), files = JSON.parse(gh(`repos/${repo}/pulls/${n}/files?per_page=100`)).map((f) => f.filename);
+        phantoms = phantoms.concat(phantomsIn(n, issue.body, files, pull.head.sha, fileAt));
+      }
+    } catch (_) {}
   }
-  const s = summary(rows);
-  if (process.argv.includes('--json')) { console.log(JSON.stringify({ ...s, rows }, null, 1)); process.exit(0); }
+  const s = summary(rows), falsePh = phantoms.filter((r) => r.false), dropped = falsePh.filter((r) => r.dropped);
+  if (process.argv.includes('--json')) { console.log(JSON.stringify({ ...s, rows, closerRead: { claims: phantoms.length, false: falsePh.length, dropped: dropped.length, phantoms } }, null, 1)); process.exit(0); }
   console.log(`Void's review against the extras, merged PRs #${Math.min(...prs)}-#${Math.max(...prs)}: ${s.findings} findings by ${EXTRA}`);
   console.log(s.rate == null ? 'nothing Void could review yet' : `Void flagged ${s.caught} of ${s.scored} (${s.rate}%) of the ones that count (nitpicks and trivial left out); ${s.notReviewable} were in files Void does not review`);
   const list = process.argv.includes('--all') ? rows.filter((r) => r.reviewed && !r.caught) : s.missed;
   if (list.length) console.log('\nMissed (each is a rule to teach lib/code-review.js, or a wrong call by the extra):');
   for (const r of list) console.log(`  #${r.pr} ${r.path}:${r.line} [${r.severity}] ${r.title}`);
+  console.log(`\nVoid's closer read on the same PRs: ${phantoms.length} claim(s) that a name is missing or that the mask is a bug; ${falsePh.length} false (the file imports or declares the name, or it is the mask); dropPhantoms removes ${dropped.length} of those`);
+  for (const r of falsePh) console.log(`  #${r.pr} ${r.files.map((f) => f.split('/').pop()).join(',')}: ${r.claim}`);
 }

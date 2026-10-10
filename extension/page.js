@@ -39,3 +39,48 @@ function voidPutDraft(text) {
   }
   return { ok: true, field: el.isContentEditable ? 'editable' : el.tagName.toLowerCase() };
 }
+
+// B3: one step you said yes to, on a site you allowed: fill a field with text, or click a button, each named by its visible
+// label. It never submits a form or presses Enter: a field is filled the way typing would fill it, and a button that would
+// submit its form is refused (you press it yourself). Two elements matching the label is a refusal too: it acts on one thing.
+function voidAct(step) {
+  const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  const want = norm(step && step.label);
+  if (!want || !step || (step.action !== 'fill' && step.action !== 'click')) return { ok: false, why: 'bad-step' };
+  const shown = (e) => !!(e.offsetWidth || e.offsetHeight || e.getClientRects().length) && getComputedStyle(e).visibility !== 'hidden';
+  const labelOf = (e) => {
+    const names = [e.getAttribute('aria-label'), e.getAttribute('placeholder'), e.getAttribute('title'), e.getAttribute('name'), e.id]; // the id last: voidReadTab names a box by it when nothing else does
+    if (e.id) { const l = document.querySelector('label[for="' + CSS.escape(e.id) + '"]'); if (l) names.push(l.textContent); }
+    const wrap = e.closest('label'); if (wrap) names.push(wrap.textContent);
+    if (step.action === 'click') names.push(e.textContent, e.value);
+    return names.map(norm).filter(Boolean);
+  };
+  const pool = step.action === 'fill'
+    ? [...document.querySelectorAll('textarea, input, [contenteditable=""], [contenteditable="true"]')].filter((e) => e.isContentEditable || e.tagName === 'TEXTAREA' || /^(?:text|search|email|url|tel|)$/i.test(e.getAttribute('type') || ''))
+    : [...document.querySelectorAll('button, [role="button"], input[type="button"]')];
+  const usable = pool.filter((e) => shown(e) && !e.disabled && !e.readOnly);
+  let hits = usable.filter((e) => labelOf(e).includes(want));
+  if (!hits.length) hits = usable.filter((e) => labelOf(e).some((n) => n.includes(want)));
+  if (!hits.length) return { ok: false, why: 'not-found' };
+  if (hits.length > 1) return { ok: false, why: 'ambiguous', count: hits.length };
+  const el = hits[0];
+  if (step.action === 'click') {
+    const submits = el.tagName === 'BUTTON' ? (el.getAttribute('type') || 'submit').toLowerCase() === 'submit' && !!el.form : false;
+    if (submits) return { ok: false, why: 'submits' };
+    el.click();
+    return { ok: true, did: 'clicked' };
+  }
+  const text = String(step.text == null ? '' : step.text).slice(0, 20000);
+  el.focus();
+  // typing's own path first (it fires the input events a page listens for); setting the value is the fallback, with the event typing would send
+  if (el.isContentEditable) { const r = document.createRange(); r.selectNodeContents(el); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+  else if (el.select) el.select();
+  let typed = false; try { typed = document.execCommand('insertText', false, text); } catch (_) {}
+  const now = () => (el.isContentEditable ? el.textContent : el.value);
+  if (!typed || now() !== text) {
+    if (el.isContentEditable) el.textContent = text; else el.value = text;
+    el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
+  }
+  el.dispatchEvent(new Event('change', { bubbles: true }));
+  return { ok: true, did: 'filled' };
+}

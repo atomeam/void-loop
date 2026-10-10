@@ -11,7 +11,7 @@
 // DELETE { prefix }        (Bearer session)   -> { ok } (that key stops working)
 import { ensureTables, bad, good, session, tierOf } from '../../lib/void-me.js';
 import { ownerOk } from '../../lib/guard.js';
-import { KEY_RE, MAX_KEYS, PRO_DAILY, BUY_URL, keyHash, newKey, today, quick, closerRead } from '../../lib/review-api.js';
+import { KEY_RE, MAX_KEYS, PRO_DAILY, BUY_URL, keyHash, newKey, today, quick, closerRead, cleanImports } from '../../lib/review-api.js';
 import { productById, resolveProductId, forSale, buyUrl, LICENSE_RE, LICENSE_TTL_MS, LICENSE_TABLE, askGumroad } from '../../lib/products.js';
 
 const PRODUCT = productById('code-review');
@@ -77,7 +77,7 @@ export async function onRequestPost({ request, env }) {
   if (a.left <= 0) return good({ ...out, note: 'today\'s closer reads are used; the instant checks still run' });
   if (!modelsOn(env)) return good({ ...out, note: 'the model is off right now; the instant checks are above' });
   try {
-    const answer = await closerRead(env, { ask: b.ask, code: q.code, lang: q.lang, diff: !!b.diff, res: q.res });
+    const answer = await closerRead(env, { ask: b.ask, code: q.code, lang: q.lang, diff: !!b.diff, res: q.res, imports: cleanImports(b.imports) }); // imports: each touched file's import lines (tools/review-pr.mjs), so a diff review never calls one missing
     if (!answer) return good({ ...out, note: 'model busy' });
     await a.spend();
     return good({ ...out, answer, review: 'model', ...(Number.isFinite(a.left) ? { left: a.left - 1 } : {}) });
