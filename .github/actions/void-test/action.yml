@@ -109,6 +109,3 @@ runs:
           tail -n 1 bench-out.txt > bench-score.json
         fi
         node -e "const b=require('./bench-score.json'),f=require('./tools/bench.best.json');const ok=b.score>=f.score&&b.total>=f.total;if(b.inconclusive)console.log(b.note+' ('+b.score+'/'+b.total+', not counted)');else console.log(b.score+'/'+b.total+' (floor '+f.score+')');if(b.wrong.length)console.log('misses that reproduce alone: '+b.wrong.join(' | '));if(b.loadMisses&&b.loadMisses.length)console.log('passed alone (load): '+b.loadMisses.join(' | '));process.exit(ok?0:1)" | tee -a "$GITHUB_STEP_SUMMARY"
-          node tools/bench.mjs --score | tail -n 1 > bench-score.json
-        fi
-        node -e "const b=require('./bench-score.json'),f=require('./tools/bench.best.json');if(b.inconclusive){console.log(b.note+' ('+b.score+'/'+b.total+', not counted)');process.exit(0)}console.log(b.score+'/'+b.total+' (floor '+f.score+')');if(b.wrong.length)console.log('wrong: '+b.wrong.join(' | '));process.exit(b.score>=f.score&&b.total>=f.total?0:1)" | tee -a "$GITHUB_STEP_SUMMARY"
