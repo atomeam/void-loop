@@ -89,15 +89,15 @@ export async function search(env, q, limit = 20, scope = '') {
 // ---- ask: a plain question in, a plain answer out. No model: the words that matter are matched against what Void remembers.
 const STOP = new Set('a an the i me my we our you your of on in at to for with and or is are was were do did does have has had what which who where when how why show tell list find about built build made make project projects thing things'.split(' '));
 // the rows that match a plain question (and the words that were matched): what ask() answers from and what the answer path reads.
-// With nothing matching every word, a row must still match at least minShare of them (ask() takes any one; the answer path half, and two).
-export async function lookup(env, q, limit = 5, scope = '', minShare = 1) {
+// With nothing matching every word, a row must still match at least minShare of them and minCount of them (ask() takes any one; the answer path half, and two).
+export async function lookup(env, q, limit = 5, scope = '', minShare = 0, minCount = 1) {
   const words = [...new Set(String(q || '').toLowerCase().split(/[^a-z0-9+#.]+/).filter((w) => w.length > 1 && !STOP.has(w)))].slice(0, 6);
   const n = Math.max(1, Math.min(20, parseInt(limit, 10) || 5));
   let hits = words.length ? await search(env, words.join(' '), n, scope) : [];
   if (!hits.length && words.length > 1) { // no project has every word: rank by how many words each one matches
     const seen = new Map();
     for (const w of words) for (const r of await search(env, w, 50, scope)) { const e = seen.get(r.id) || { r, c: 0 }; e.c++; seen.set(r.id, e); }
-    hits = [...seen.values()].filter((e) => e.c >= Math.min(words.length, Math.max(1, Math.ceil(words.length * minShare)))).sort((a, b) => b.c - a.c || String(b.r.updated).localeCompare(String(a.r.updated))).slice(0, n).map((e) => e.r);
+    hits = [...seen.values()].filter((e) => e.c >= Math.min(words.length, Math.max(minCount, Math.ceil(words.length * minShare)))).sort((a, b) => b.c - a.c || String(b.r.updated).localeCompare(String(a.r.updated))).slice(0, n).map((e) => e.r);
   }
   return { words, hits };
 }

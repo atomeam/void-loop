@@ -192,7 +192,7 @@ export async function toldMe(request, env, ask) {
     const who = await scopeOf({ request, env });
     if (!who || who.free || !env.DB) return null;
     await ensureMemory(env);
-    const { hits } = await memoryLookup(env, ask, TOLD_MAX, who.scope, 0.5);
+    const { hits } = await memoryLookup(env, ask, TOLD_MAX, who.scope, 0.5, 2);
     const lines = hits.slice(0, TOLD_MAX).map((r) => redact(r.kind === 'note' ? r.summary : r.name + (r.links.length ? ' (' + r.links.slice(0, 4).join(', ') + ')' : '') + (r.summary ? ': ' + r.summary : '')).replace(/\s+/g, ' ').trim().slice(0, TOLD_LINE)).filter(Boolean);
     return lines.length ? lines : null;
   } catch (_) { return null; }
