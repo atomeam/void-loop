@@ -244,9 +244,13 @@ export async function run3dChecks({ check, fresh }) {
   // ---- "what can you do now that you couldn't last week?": the tree stands as it was a week ago, then this week's tips grow in
   {
     const F = await fresh();
+    // the week-ago tree stands for about a second; polling from here can miss it, because each evaluate waits behind a
+    // software-WebGL frame that takes about as long, so the page records the first week-ago pose itself, frame by frame
+    await F.p.evaluate(() => { window.__weekAgo = null; const look = () => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); if (s && s.until && !window.__weekAgo) window.__weekAgo = s; if (!window.__weekAgo) requestAnimationFrame(look); }; requestAnimationFrame(look); });
     await F.ask("what can you do now that you couldn't last week?");
     const seen = { weekAgo: null, today: null };
-    await until(async () => { const s = await F.p.evaluate(() => window.__voidMini && window.__voidMini.state('growth-tree')); if (s && s.until && !seen.weekAgo) seen.weekAgo = s; if (s && s.until === null && !s.growing) seen.today = s; return seen.today; }, 60000);
+    await until(async () => { const s = await F.p.evaluate(() => window.__voidMini && window.__voidMini.state('growth-tree')); if (s && s.until === null && !s.growing) seen.today = s; return seen.today; }, 60000);
+    seen.weekAgo = await F.p.evaluate(() => window.__weekAgo);
     const day = await F.p.evaluate(() => { const d = document.querySelector('.vpage .growth-day'); return d && d.textContent; });
     const n = await F.p.evaluate(async () => (await import('/skills/growth-tree.js')).layout(await (await fetch('/void.growth.json')).json()).branches.length);
     check('"what can you do now that you couldn\'t last week?": the card\'s tree first stands as it was a week ago (fewer branches), then grows to today with this week\'s tips, the readout ending on today',
