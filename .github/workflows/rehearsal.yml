@@ -1,43 +1,46 @@
 # The commercial chain rehearsed on the deployed site (tools/rehearsal.mjs): started by hand, never on a schedule.
-# The buyer's reply is a handoff row: pass a pre-seeded id, or leave the input empty and the run seeds one itself with
-# the deploy token (wrangler d1 execute; HANDOFF_TOKEN is not a repo secret, so the row cannot go in over HTTP) and
-# removes it at the end. The log is the evidence: the deployed SHA and each step's observed record.
+# The buyer's reply is seeded through the site itself (/api/rehearsal, owner token) — the deploy token holds no D1
+# scope, by design — and the same route cleans it up at the end. The log is the evidence: the deployed SHA and each
+# step's observed record.
 name: rehearsal
 on:
   workflow_dispatch:
     inputs:
       handoff_id:
-        description: a pre-seeded handoff id (32 hex); empty = the run seeds and cleans up its own
+        description: a pre-seeded handoff id; empty = the run seeds its own through /api/rehearsal
         required: false
         default: ''
 permissions: {}
 concurrency: rehearsal
+env:
+  SITE: https://a-to-mind.com
 jobs:
   rehearse:
     runs-on: ubuntu-latest
     timeout-minutes: 8
-    env:
-      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: seed the buyer's reply (only when no id was passed)
+      - name: seed the buyer's reply through the site (only when no id was passed)
         id: seed
         if: inputs.handoff_id == ''
+        env:
+          READ_TOKEN: ${{ secrets.READ_TOKEN }}
         run: |
-          HID=$(openssl rand -hex 16)
-          BODY="Hi Adam, this is the rehearsal reply standing in for a buyer. We run a small test bakery and we need the Zapier zap that copies each order into our Google Sheet fixed: every order shows up twice and the morning bake list is wrong. Can you tell us what you would do and when you could start?"
-          npx wrangler@3.114.17 d1 execute a-to-mind-board --remote --command \
-            "INSERT INTO handoff (id, name, author, body, created, job) VALUES ('$HID', 'rehearsal reply [sale:rehearsal]', 'rehearsal.example', '$BODY', unixepoch(), 'sale:rehearsal')" \
-            || { echo "::error::could not seed the handoff row: the deploy token has no D1 write scope — seed one by hand and pass its id as the input"; exit 1; }
-          echo "hid=$HID" >> "$GITHUB_OUTPUT"
+          r=$(curl -sf -X POST "$SITE/api/rehearsal" -H "Authorization: Bearer $READ_TOKEN") \
+            || { echo "::error::could not seed the rehearsal reply: /api/rehearsal refused (deployed yet? token right?)"; exit 1; }
+          echo "$r"
+          hid=$(node -e "console.log(JSON.parse(process.argv[1]).id || '')" "$r")
+          [ -n "$hid" ] || { echo "::error::no id in the seed answer"; exit 1; }
+          echo "hid=$hid" >> "$GITHUB_OUTPUT"
       - name: the chain, live
         env:
           READ_TOKEN: ${{ secrets.READ_TOKEN }}
         run: node tools/rehearsal.mjs "${{ inputs.handoff_id || steps.seed.outputs.hid }}"
-      - name: remove the seeded row (the records and the closed job stay; they are the evidence)
+      - name: remove the seeded reply (the records and the closed job stay; they are the evidence)
         if: always() && steps.seed.outputs.hid != ''
-        run: npx wrangler@3.114.17 d1 execute a-to-mind-board --remote --command "DELETE FROM handoff WHERE id = '${{ steps.seed.outputs.hid }}'"
+        env:
+          READ_TOKEN: ${{ secrets.READ_TOKEN }}
+        run: curl -sf -X DELETE "$SITE/api/rehearsal" -H "Authorization: Bearer $READ_TOKEN"

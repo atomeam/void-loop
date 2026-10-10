@@ -6,7 +6,12 @@ import { draftOnClaim, draftFromThread } from '../../lib/job-draft.js';
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 // The owner's view names its columns one by one in each query: a column added later (the way `draft` was) is shown
 // only once it is written in, never by accident. Every handler is owner-gated (`guard`); nothing public reads this table.
-const ensureDraft = (env) => env.DB.prepare('ALTER TABLE void_queue ADD COLUMN draft TEXT').run().catch(() => {});
+let draftColumnEnsured = false; // per isolate: the ALTER runs once, not on every request (reviewer's note on #385)
+const ensureDraft = async (env) => {
+  if (draftColumnEnsured) return;
+  await env.DB.prepare('ALTER TABLE void_queue ADD COLUMN draft TEXT').run().catch(() => {});
+  draftColumnEnsured = true;
+};
 const view = async (env) => {
   await ensureDraft(env);
   const { results } = await env.DB.prepare('SELECT id, ask, target, state, note, at, updated, draft FROM void_queue ORDER BY at DESC LIMIT 20').all();
