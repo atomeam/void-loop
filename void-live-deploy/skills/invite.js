@@ -25,7 +25,7 @@ async function run(text, api) {
     showPage((p) => { p.innerHTML = '<h2>Invite someone</h2><p>No invite just now: ' + esc((j && j.error) || 'try again') + '.</p>'; });
     return 'none';
   }
-  showPage((p) => {
+  showPage((p) => { // void-review: ok: the link is esc()'d, everything else is fixed text
     p.innerHTML = '<h2>Invite someone</h2><p>Whoever opens this link appears in your Void as a faint presence, and what either of you summons shows on both.</p>'
       + '<p><a href="' + esc(j.link) + '" target="_blank" rel="noopener">' + esc(j.link) + '</a></p>'
       + '<p>Close the tab to end it. Your own Void stays yours: nothing of theirs is saved here.</p>'
