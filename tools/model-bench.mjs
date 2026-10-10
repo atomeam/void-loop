@@ -141,7 +141,7 @@ async function catalog() {
 // a pattern from a file: "/re/flags" is a regex, anything else is that word or phrase, any case
 function toRe(p) {
   const m = /^\/(.*)\/([a-z]*)$/s.exec(String(p));
-  return m ? new RegExp(m[1], m[2]) : new RegExp('\\b' + esc(String(p)) + '\\b', 'i');
+  return m ? new RegExp(m[1], m[2]) : new RegExp('\\b' + esc(String(p)) + '\\b', 'i'); // void-review: ok (an ask file is written in this repo; a /re/ pattern is meant as a regex)
 }
 export function loadAsks(list) {
   if (!Array.isArray(list)) throw new Error('an ask file is a JSON list of asks');
