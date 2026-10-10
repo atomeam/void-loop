@@ -1556,11 +1556,13 @@ try {
   t = await fresh();
   const sent = (type) => gate.calls.filter((c) => c.type === type);
   const lastDecision = () => sent('a2m.approval.decision').slice(-1)[0] || {};
+  // the gate is shared by the whole run: the proposal card's Send has already asked once, so count from here
+  const callsAt = gate.calls.length, requestedAt = sent('a2m.approval.requested').length;
   await t.ask('send an email to jane@x.com saying hi', 700);
-  check('confirm line: visitors cannot send', /person at the screen/.test(await t.whisper()) && gate.calls.length === 0, await t.whisper());
+  check('confirm line: visitors cannot send', /person at the screen/.test(await t.whisper()) && gate.calls.length === callsAt, await t.whisper());
   await t.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
   await t.ask('send an email to jane@x.com saying hi', 900);
-  check('confirm line shows before a send (item 7)', (await t.whisper()) === 'Send this email to jane@x.com? Yes / No' && sent('a2m.approval.requested').length === 1 && gate.ran.length === 0, await t.whisper());
+  check('confirm line shows before a send (item 7)', (await t.whisper()) === 'Send this email to jane@x.com? Yes / No' && sent('a2m.approval.requested').length === requestedAt + 1 && gate.ran.length === 0, await t.whisper());
   await t.ask('no', 800);
   check('confirm line: no = it does not run', /^ok, nothing sent$/.test(await t.whisper()) && lastDecision().decision === 'reject' && !!lastDecision().reason && gate.ran.length === 0, await t.whisper());
   await t.ask('send an email to jane@x.com saying hi', 900); await t.p.click('#whisper [data-vc="yes"]'); await t.p.waitForTimeout(800);
