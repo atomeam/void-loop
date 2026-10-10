@@ -13,9 +13,11 @@ export const LIMITS = {
   answer: { rpm: 30, body: 20000 }, // /api/answer also keeps its own tighter 12 a minute for model calls
   miss: { rpm: 30, body: 1000 },
   misses: { rpm: 30, body: 0 },
+  aurora: { rpm: 30, body: 0 }, // GET only, no input, edge-cached 15 min: the most a stranger can do is read a number
   routes: { rpm: 30, body: 0 }, // owner-only: the router's decisions (GET)
   earnings: { rpm: 30, body: 0 },
   queue: { rpm: 60, body: 4000 },
+  bench: { rpm: 30, body: 400 }, // owner-only model bake-off chunks (functions/api/bench.js): 8 asks a call
   share: { rpm: 30, body: 200 }, // invites (POST, a signed-in member) and joining one (a WebSocket per tab)
   approval: { rpm: 60, body: 8000 },
   will: { rpm: 60, body: 64000 },
@@ -25,11 +27,13 @@ export const LIMITS = {
   publish: { rpm: 20, body: 40000 }, // a paid Void's public page (/@name)
   gumroad: { rpm: 120, body: 50000 },
   handoff: { rpm: 30, body: 262144 }, // agent drop-links; 256 KB matches functions/api/handoff.js
+  rehearsal: { rpm: 10, body: 500 }, // owner-only: seed and clean the rehearsal's stand-in reply (functions/api/rehearsal.js)
   figurescript: { rpm: 60, body: 4000 }, // Next #19: behavior script for a summoned figure (AI once, then D1 cache)
   memory: { rpm: 30, body: 262144 }, // owner-only: what Void remembers (tools/ouroboros.py push); 256 KB matches MAX_BODY in lib/memory-core.js
   review: { rpm: 60, body: 70000 }, // Void's code review API (lib/review-api.js): the instant checks free, the closer read with a Pro key
   reflect: { rpm: 30, body: 2000 }, // Void's voice: public GET of its reflections, owner POST asks it what it thinks (lib/voice.js)
   automations: { rpm: 60, body: 2200000 }, // owner-only: Void's own automations; a pull-request rule carries up to 20 files of 100 KB
+  where: { rpm: 20, body: 0 }, // the connection's own coarse place (functions/api/where.js): GET, no input, never cached
   hook: { rpm: 60, body: 64000 },
   actions: { rpm: 60, body: 4000 },
   watch: { rpm: 30, body: 8000 }, // the owner's or a paid member's standing watches (functions/api/watch.js) // owner-only: the execution record (lib/actions.js); GET reads it, POST writes an extension.* record (B3); nothing here takes an action // webhooks into an automation (functions/api/hook/[id].js); MAX_EVENT in lib/automations.js

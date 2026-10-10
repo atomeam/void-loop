@@ -163,6 +163,19 @@ ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').in
   ok(!rules(env, 'javascript').includes('hardcoded-secret@1') && redact(env) === env, 'an env lookup is no hard-coded secret and is not masked: ' + redact(env));
   ok(rules(lit, 'javascript').includes('hardcoded-secret@1') && redact(lit) === 'const TOKEN = "[redacted]";', 'a literal token is flagged and masked: ' + redact(lit));
 }
+{ // the name of an environment variable is no secret: an ALL_CAPS_NAME in quotes names where the key lives (model-bench's
+  // "secret ? x : 'CLOUDFLARE_ACCOUNT_ID'" read as a hard-coded key, 2026-10-10); a literal value is still a finding
+  for (const named of ["const why = `${!token ? secret : 'CLOUDFLARE_ACCOUNT_ID'} is empty`;", "const secret = process.env.NAME || 'CLOUDFLARE_API_TOKEN';", "const tokenName = 'GITHUB_TOKEN';"])
+    ok(!rules(named, 'javascript').includes('hardcoded-secret@1') && redact(named) === named, 'an env var name is no secret and is not masked: ' + named + ' -> ' + redact(named));
+  ok(rules("const secret = 'Zx9qLm42RtWv';", 'javascript').includes('hardcoded-secret@1') && redact("secret: 'Zx9qLm42RtWv'") === "secret: '[redacted]'", 'a literal secret still is, and is masked');
+  ok(rules("const token = 'ABCD1234EFGH5678';", 'javascript').includes('hardcoded-secret@1'), 'an all-caps value with no underscore is no env name');
+  // narrowed (2026-10-10, owner): only an env-shaped name is kept: upper case and underscores, no digits, short, ending in
+  // _KEY/_TOKEN/_SECRET/_ID/_URL/_PASSWORD, and never as the value of a password field
+  for (const lit of ["PASSWORD: 'MY_SECRET_PASSWORD'", "password = 'DB_ADMIN_PASSWORD'", "secret: 'AKIAIOSFODNN7EXAMPLE'", "token: 'ABCD_1234_EFGH_TOKEN'", "secret: 'SOME_VERY_LONG_NAME_THAT_GOES_ON_AND_ON_AND_ON_TOKEN'", "token: 'NOT_AN_ENV_NAME'"])
+    ok(redact(lit) !== lit && /\[redacted\]/.test(redact(lit)) && rules('const x = { ' + lit + ' };', 'javascript').includes('hardcoded-secret@1'), 'still masked and flagged: ' + lit + ' -> ' + redact(lit));
+  for (const name of ["secret: 'GITHUB_TOKEN'", "token: 'CLOUDFLARE_API_TOKEN'", "apiKey: 'OPENWEATHER_KEY'", "secret = 'WEBHOOK_SECRET'"])
+    ok(redact(name) === name, 'an env-shaped name is kept: ' + name + ' -> ' + redact(name));
+}
 // fixes Void makes by itself
 const fx = (c, lang) => autoFix(c, lang ? { lang } : {}).code;
 ok(fx('if (a == b) { var n = parseInt(s); }', 'javascript') === 'if (a == b) { var n = parseInt(s); }', 'js: == / var / parseInt stay warnings, never rewritten ("5" == 5, a var used after its block, parseInt("0x10"))');
@@ -221,6 +234,10 @@ ok(rules('while True: pass', 'python').includes('busy-loop@1') && rules('while T
 }
 // run 39: sort() without a compare, indexOf used as a truth test, a handler called instead of passed, exact == on decimals, os.chmod 0o777
 ok(rules('arr.sort()', 'javascript').includes('sort-no-compare@1') && !rules('arr.sort((a, b) => a - b)', 'javascript').includes('sort-no-compare@1'), 'sort() flagged, sort with a compare not');
+// a typed array sorts numerically with no compare: a receiver declared as one (this line or the one above) is not flagged; a plain array, another name and a call result still are
+{ const flagged = (c) => rules(c, 'javascript').some((r) => r.startsWith('sort-no-compare@'));
+  ok(!flagged('const v = new Float32Array(n); v.sort();') && !flagged('const ds = new Float32Array(count);\nds.sort();') && !flagged('let $a = new Uint8Array(4);\n$a.sort();') && !flagged('const big = new BigInt64Array(3);\nbig.sort();') && !flagged('const u = new Uint16Array(3);\nu.sort();') && !flagged('const i = new Int32Array(3);\ni.sort();') && !flagged('const c = new Uint8ClampedArray(3);\nc.sort();'), 'typed-array sort() is not flagged');
+  ok(flagged('const list = [10, 9, 1];\nlist.sort();') && flagged('const v = new Float32Array(3);\nother.sort();') && flagged('const v = new Array(3);\nv.sort();') && flagged('getList().sort();') && flagged('const a = new Float32Array(3);\nconst b = [3, 1];\nb.sort();'), 'plain arrays, other names and call results are still flagged'); }
 ok(rules('if (arr.indexOf(x)) {}', 'javascript').includes('indexof-truthy@1') && rules('if (!s.indexOf("a") && ok) {}', 'javascript').includes('indexof-truthy@1') && !rules('if (arr.indexOf(x) !== -1) {}', 'javascript').includes('indexof-truthy@1') && !rules('if (arr.indexOf(x) > 0) {}', 'javascript').includes('indexof-truthy@1'), 'indexOf as a truth test flagged, compared indexOf not');
 ok(rules("el.addEventListener('click', handler())", 'javascript').includes('listener-called@1') && !rules("el.addEventListener('click', handler)", 'javascript').includes('listener-called@1') && !rules("el.addEventListener('click', makeHandler(1), false)", 'javascript').includes('listener-called@1') && !rules("el.addEventListener('click', () => go())", 'javascript').includes('listener-called@1'), 'handler() passed to addEventListener flagged, a function, a factory or an arrow not');
 ok(rules('const ok = 0.1 + 0.2 === 0.3', 'javascript').includes('float-equality@1') && rules('if price == 0.1:', 'python').includes('float-equality@1') && !rules('if (x === 1) {}', 'javascript').includes('float-equality@1') && !rules('if (v === 1.0) {}', 'javascript').includes('float-equality@1') && !rules('if (s === "0.5") {}', 'javascript').includes('float-equality@1') && !rules('if (a <= 0.5) {}', 'javascript').includes('float-equality@1') && rules('if (0.1 == price):', 'python').includes('float-equality@1') && !rules('if (0.5 <= x) {}', 'javascript').includes('float-equality@1'), 'exact == on a decimal flagged; whole numbers, 1.0, strings and <= not');

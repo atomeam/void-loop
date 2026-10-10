@@ -1,4 +1,5 @@
-// Which commit verify-main should revert when the full suite goes red on main (verify.yml; until 2026-10-10 deploy.yml).
+// Which commit the browser-suite job should revert when the suite goes red on main (verify.yml; the job was verify-main until
+// 2026-10-10, and deploy.yml's before that).
 // Reverting the commit that was just tested is wrong when the failing check was already red before it: on 2026-10-09
 // #215 broke the rack check, its revert conflicted, and the next red run reverted #217, which had nothing to do with it.
 // So each red run names its failing checks as annotations, and the next red run walks back along main's first parents
@@ -16,6 +17,9 @@ export const TITLE = 'verify-main failed check';
 // the workflows that have run verify-main: its own since 2026-10-10, the deploy before (older verdicts still count)
 export const VERIFY_WORKFLOWS = ['Void verify', 'Void deploy'];
 export const COUNT_TITLE = 'verify-main failed checks';
+// the job whose verdict the revert reads: browser-suite since 2026-10-10 (verify.yml split the fast tests off into python-tests,
+// so a Python test red on the runner no longer hides the suite); verify-main before, and those verdicts still count
+export const SUITE_JOBS = ['browser-suite', 'verify-main'];
 const MAX_NAMES = 9; // GitHub keeps 10 error annotations per step: up to 9 names plus the count
 const NAME_LEN = 160;
 
@@ -126,7 +130,7 @@ export function verifiedState(sha, repo, api = gh, body = (s) => run('git', ['lo
   const runs = (api('repos/' + repo + '/actions/runs?head_sha=' + sha + '&per_page=20').workflow_runs || [])
     .filter((r) => VERIFY_WORKFLOWS.includes(r.name) && r.event !== 'pull_request');
   for (const r of runs) {
-    const job = (api('repos/' + repo + '/actions/runs/' + r.id + '/jobs').jobs || []).find((j) => j.name === 'verify-main');
+    const job = (api('repos/' + repo + '/actions/runs/' + r.id + '/jobs').jobs || []).find((j) => SUITE_JOBS.includes(j.name));
     if (!job || job.status !== 'completed') continue;
     if (job.conclusion === 'success') return { sha, state: 'pass', failing: [] };
     if (job.conclusion === 'failure') {
@@ -151,19 +155,19 @@ export function newestVerified(repo, mainLine, api = gh, body) {
 
 /** the pick, then the two liveness checks against main as it is now (fetched); a target that is not live is reported */
 export function pickLive({ tested, failing, history, mainLine, body, repo, api = gh }) {
-  const pick = pickRevert({ tested, failing, history });
+  const pick = { job: SUITE_JOBS[0], ...pickRevert({ tested, failing, history }) }; // job: which job's verdict this is (the python-tests job reverts nothing)
   if (pick.action !== 'revert') return pick;
   const live = stillLive(pick.sha, mainLine, body);
-  if (!live.live) return { action: 'report', sha: pick.sha, why: pick.why + '; but ' + live.why };
+  if (!live.live) return { ...pick, action: 'report', why: pick.why + '; but ' + live.why };
   const red = stillRed(failing, newestVerified(repo, mainLine, api, body));
-  if (!red.red) return { action: 'report', sha: pick.sha, why: pick.why + '; but ' + red.why };
+  if (!red.red) return { ...pick, action: 'report', why: pick.why + '; but ' + red.why };
   return pick;
 }
 
 // A step before the suite can fail (a Python tool's tests, the extension check): then there is no suite output, no check to
 // name and nothing to revert by. Said plainly, instead of crashing into "could not read the verify record".
 export const NO_SUITE = 'the full suite never ran: a step before it failed (see this run\'s log), so there is no failed check to revert by';
-export const noSuitePick = () => ({ action: 'report', why: NO_SUITE });
+export const noSuitePick = () => ({ job: SUITE_JOBS[0], action: 'report', why: NO_SUITE });
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [mode, a, b] = process.argv.slice(2);

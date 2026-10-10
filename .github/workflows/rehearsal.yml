@@ -1,0 +1,47 @@
+# The commercial chain rehearsed on the deployed site (tools/rehearsal.mjs): started by hand, never on a schedule.
+# The buyer's reply is seeded through the site itself (/api/rehearsal, owner token) — the deploy token holds no D1
+# scope, by design — and the same route cleans it up at the end. The log is the evidence: the deployed SHA and each
+# step's observed record.
+name: rehearsal
+on:
+  workflow_dispatch:
+    inputs:
+      handoff_id:
+        description: a pre-seeded handoff id; empty = the run seeds its own through /api/rehearsal
+        required: false
+        default: ''
+permissions: {}
+concurrency: rehearsal
+env:
+  SITE: https://a-to-mind.com
+jobs:
+  rehearse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: seed the buyer's reply through the site (only when no id was passed)
+        id: seed
+        if: inputs.handoff_id == ''
+        env:
+          READ_TOKEN: ${{ secrets.READ_TOKEN || secrets.VOID_OWNER_TOKEN }} # the Pages READ_TOKEN; stored here as VOID_OWNER_TOKEN (model-bench.yml does the same)
+        run: |
+          r=$(curl -sf -X POST "$SITE/api/rehearsal" -H "Authorization: Bearer $READ_TOKEN") \
+            || { echo "::error::could not seed the rehearsal reply: /api/rehearsal refused (deployed yet? token right?)"; exit 1; }
+          echo "$r"
+          hid=$(node -e "console.log(JSON.parse(process.argv[1]).id || '')" "$r")
+          [ -n "$hid" ] || { echo "::error::no id in the seed answer"; exit 1; }
+          echo "hid=$hid" >> "$GITHUB_OUTPUT"
+      - name: the chain, live
+        env:
+          READ_TOKEN: ${{ secrets.READ_TOKEN || secrets.VOID_OWNER_TOKEN }} # the Pages READ_TOKEN; stored here as VOID_OWNER_TOKEN (model-bench.yml does the same)
+        run: node tools/rehearsal.mjs "${{ inputs.handoff_id || steps.seed.outputs.hid }}"
+      - name: remove the seeded reply (the records and the closed job stay; they are the evidence)
+        if: always() && steps.seed.outputs.hid != ''
+        env:
+          READ_TOKEN: ${{ secrets.READ_TOKEN || secrets.VOID_OWNER_TOKEN }} # the Pages READ_TOKEN; stored here as VOID_OWNER_TOKEN (model-bench.yml does the same)
+        run: |
+          curl -sf -X DELETE "$SITE/api/rehearsal" -H "Authorization: Bearer $READ_TOKEN"

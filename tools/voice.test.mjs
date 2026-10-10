@@ -137,7 +137,8 @@ test('the current asks leave out every ask a growth-ledger entry answers (its as
   assert.deepEqual(openAsks(asks, []).length, 2);
   // the real ledger answers both asks of 2026-10-09 (lib/learn.js and skills/live.js)
   const real = JSON.parse(readFileSync(new URL('../void-live-deploy/void.growth.json', import.meta.url), 'utf8'));
-  const oct9 = [{ ask: "Build a mechanism that parses unanswered user questions into a structured 'Learning Queue' to automate skill acquisition." }, { ask: 'Develop a background task runner that allows my existing skills (like news, weather, or worldtime) to update autonomously.' }];
+  const oct9 = currentAsks([{ at: '2026-10-09T21:59:26.695Z', kind: 'daily', asks: [{ ask: "Build a mechanism that parses unanswered user questions into a structured 'Learning Queue' to automate skill acquisition." }, { ask: 'Develop a background task runner that allows my existing skills (like news, weather, or worldtime) to update autonomously.' }] }]);
+  assert.deepEqual(oct9.map((a) => a.id), ['ask-20261009-2159-1', 'ask-20261009-2159-2']);
   assert.equal(openAsks(oct9, real).length, 0);
 });
 
@@ -147,6 +148,38 @@ test('the asks are stamped with the day they were read; an unreachable site keep
   assert.match(fresh, /_Read from \/api\/reflect on 2026-10-10\. Asks a growth-ledger entry answers/);
   assert.deepEqual(asksInLog(fresh), [{ ask: 'Learn backgammon.', small: true, kind: 'daily', at: '2026-10-09' }], 'the list can be read back from the file');
   const stale = writeLog(fresh, [], asksInLog(fresh), { failed: '2026-10-12' });
-  assert.match(stale, /_Read from \/api\/reflect on 2026-10-10; the site could not be reached on 2026-10-12, so this may be out of date\./);
+  assert.match(stale, /_Read from \/api\/reflect on 2026-10-10; the site has been unreachable since 2026-10-12\./);
+  assert.match(stale, /- unknown, site unreachable since 2026-10-12 \(the asks below are the last ones read, minus any built since\)\n- Learn backgammon\./);
   assert.match(writeLog('', [], [], {}), /## Void's current asks\n\n- \(none open\)/);
+});
+
+test('an ask has a stable id from its reflection, so a reworded ask still leaves the list once a ledger entry names the id', () => {
+  const e = { at: '2026-10-09T21:59:26.695Z', kind: 'daily', asks: [{ ask: 'Build a queue of what Void missed.' }, { ask: 'Learn backgammon.' }] };
+  const asks = currentAsks([e]);
+  assert.deepEqual(asks.map((a) => a.id), ['ask-20261009-2159-1', 'ask-20261009-2159-2']);
+  const reworded = currentAsks([{ ...e, asks: [{ ask: 'Turn the missed asks into a learning queue (reworded).' }, e.asks[1]] }]);
+  assert.equal(reworded[0].id, asks[0].id, 'the id does not depend on the words');
+  const ledger = [{ kind: 'grow', what: 'built it', asked: 'ask-20261009-2159-1' }];
+  assert.deepEqual(openAsks(reworded, ledger).map((a) => a.ask), ['Learn backgammon.']);
+  // the id is written on the line and read back from the file
+  const text = writeLog('', [], asks, { read: '2026-10-10' });
+  assert.match(text, /- Learn backgammon\. \(daily, 2026-10-09\) `ask-20261009-2159-2`/);
+  assert.deepEqual(asksInLog(text).map((a) => a.id), ['ask-20261009-2159-1', 'ask-20261009-2159-2']);
+});
+
+test('an unreachable site is "unknown", never "(none open)", unless the last good read was empty; the date is the first failure', () => {
+  // never read, site down: unknown
+  const never = writeLog('', [], [], { failed: '2026-10-10' });
+  assert.match(never, /## Void's current asks\n\n_Not read from \/api\/reflect by this writer yet: the site has been unreachable since 2026-10-10\.[^\n]*\n\n- unknown, site unreachable since 2026-10-10\n/);
+  assert.doesNotMatch(never, /\(none open\)/);
+  // still down two days later: the date stays the first failure
+  assert.match(writeLog(never, [], [], { failed: '2026-10-12' }), /- unknown, site unreachable since 2026-10-10\n/);
+  // the last good read was empty: still "(none open)", and the note says the site is down
+  const emptyRead = writeLog('', [], [], { read: '2026-10-11' });
+  assert.match(emptyRead, /\n- \(none open\)\n/);
+  const downAfterEmpty = writeLog(emptyRead, [], [], { failed: '2026-10-12' });
+  assert.match(downAfterEmpty, /_Read from \/api\/reflect on 2026-10-11; the site has been unreachable since 2026-10-12\./);
+  assert.match(downAfterEmpty, /\n- \(none open\)\n/); assert.doesNotMatch(downAfterEmpty, /unknown/);
+  // a good read clears the unknown line
+  assert.doesNotMatch(writeLog(never, [], [{ ask: 'Learn backgammon.', kind: 'daily', at: '2026-10-13' }], { read: '2026-10-13' }), /unknown/);
 });

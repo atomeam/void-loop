@@ -1,45 +1,129 @@
 # The live model bake-off (tools/model-bench.mjs), run by hand: Void's answer prompts sent to the current free model and the
-# challengers on real Workers AI, scored and timed, with a verdict. Manual only (Actions > Model bench > Run workflow), because
-# every call spends Workers AI neurons (40 asks x models). Needs the repo secrets CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN
-# (the token needs Workers AI run/read permission). Nothing is written to D1 and nothing is deployed; the table is in the job
-# summary and the full results are the artifact.
+# challengers on real Workers AI, scored and timed, with a verdict. Manual only (Actions > Model bench > Run workflow, or
+# gh workflow run model-bench.yml -f pr=256), because every call spends Workers AI neurons. Before it spends anything it
+# checks the token once (--check): a token without Workers AI Read/Edit ends the job green with the missing scope named.
+# Models run cheapest first by the catalog's price, and one that would pass max_neurons is not run. The table, the plan and
+# the verdict go to the job summary and, with a pr number, to that PR as a comment (the repo is public: these are model
+# scores only). Nothing is written to D1 and nothing is deployed; the full results are the artifact.
+# Then the verdict is acted on (tools/model-switch.mjs): a challenger that wins under the thresholds becomes a PR that sets the
+# answer path's model in lib/models.js (the table, the previous model and the one-line revert in its body), labelled for
+# automerge, with Void's review started on it (a PR opened by this token starts no run by itself); a "keep" only posts the
+# table. Either way the run's date, models and verdict go in the growth ledger (in the switch PR, or on main for a keep).
 name: Model bench
 
 on:
   workflow_dispatch:
     inputs:
-      models:
-        description: Challenger model ids, comma separated (empty = the 3 newest in the catalog)
-        default: '@cf/nvidia/nemotron-3-120b-a12b,@cf/zai-org/glm-4.7-flash,@cf/openai/gpt-oss-20b'
+      top:
+        description: How many of the newest catalog models to challenge the default with (when models is empty)
+        default: '3'
         type: string
-      token2:
-        description: Use the CLOUDFLARE_API_TOKEN2 secret instead of CLOUDFLARE_API_TOKEN (whichever one has Workers AI permission)
-        type: boolean
-        default: false
+      models:
+        description: Challenger model ids, comma separated (empty = the top newest in the catalog)
+        default: ''
+        type: string
+      max_neurons:
+        description: Spend cap for the run, in neurons (the free allowance is 10,000 a day)
+        default: '8000'
+        type: string
+      pr:
+        description: PR number to post the table and verdict to (empty = job summary only)
+        default: ''
+        type: string
+      site:
+        description: The site that runs the bench (its /api/bench)
+        default: 'https://a-to-mind.com'
+        type: string
 
 permissions:
-  contents: read
+  contents: write # the switch PR's branch; the ledger line on main for a keep
+  pull-requests: write
+  issues: write
+  actions: write # start Void's review on the switch PR
 
 jobs:
   bench:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      READ_TOKEN: ${{ secrets.READ_TOKEN || secrets.VOID_OWNER_TOKEN }} # the Pages READ_TOKEN; learn.yml and void-tick.yml call it VOID_OWNER_TOKEN
+      SITE: ${{ inputs.site }}
+      GH_TOKEN: ${{ github.token }}
+      PR: ${{ inputs.pr }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Check the token can bench
+        id: check
+        run: |
+          set +e
+          node tools/model-bench.mjs --check --site "$SITE" > check.txt 2>&1; code=$?
+          cat check.txt
+          if [ "$code" = 0 ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; exit 0; fi
+          echo "ok=false" >> "$GITHUB_OUTPUT"
+          { echo '### Model bench: not run'; echo; cat check.txt; } > model-bench.md
+          cat model-bench.md >> "$GITHUB_STEP_SUMMARY"
+          if [[ "$PR" =~ ^[0-9]+$ ]]; then gh pr comment "$PR" --body-file model-bench.md; fi
       - name: Run the bench
+        if: steps.check.outputs.ok == 'true'
         env:
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          CLOUDFLARE_API_TOKEN: ${{ inputs.token2 && secrets.CLOUDFLARE_API_TOKEN2 || secrets.CLOUDFLARE_API_TOKEN }}
           MODELS: ${{ inputs.models }}
+          TOP: ${{ inputs.top }}
+          CAP: ${{ inputs.max_neurons }}
         run: |
           set -o pipefail
-          args=(--out model-bench.json)
-          if [ -n "$MODELS" ]; then args+=(--models "$MODELS"); fi
+          args=(--site "$SITE" --out model-bench.json --md table.md --top "${TOP:-3}" --max-neurons "${CAP:-8000}")
+          # models named by hand run even when the binding lists no price for them (the cap still counts the priced ones)
+          if [ -n "$MODELS" ]; then args+=(--models "$MODELS" --allow-unpriced); fi
           node tools/model-bench.mjs "${args[@]}" 2>&1 | tee model-bench.txt
-          { echo '```'; cat model-bench.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          { echo '### Model bench'; echo; cat table.md; echo; echo "<sub>Run ${GITHUB_RUN_ID} on ${GITHUB_SHA::7}: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}</sub>"; } > model-bench.md
+          cat model-bench.md >> "$GITHUB_STEP_SUMMARY"
+          { echo; echo '<details><summary>Full output</summary>'; echo; echo '```'; cat model-bench.txt; echo '```'; echo '</details>'; } >> "$GITHUB_STEP_SUMMARY"
+          if [[ "$PR" =~ ^[0-9]+$ ]]; then gh pr comment "$PR" --body-file model-bench.md; fi
+      - name: Act on the verdict
+        if: steps.check.outputs.ok == 'true' && hashFiles('model-bench.json') != ''
+        run: |
+          set -e
+          cp model-bench.json table.md "$RUNNER_TEMP/"
+          node tools/model-switch.mjs "$RUNNER_TEMP/model-bench.json" "$RUNNER_TEMP/table.md" > "$RUNNER_TEMP/switch.txt"
+          cat "$RUNNER_TEMP/switch.txt"
+          val() { sed -n "s/^$1=//p" "$RUNNER_TEMP/switch.txt"; }
+          ledger="$(val ledger)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ "$(val switch)" = 1 ]; then
+            branch="$(val branch)-run${GITHUB_RUN_ID}" # a rerun never collides with an earlier switch branch
+            git switch -c "$branch"
+            node tools/grow.mjs build "$ledger" --by model-bench
+            git add void-live-deploy/lib/models.js void-live-deploy/void.growth.json
+            git commit -q -m "$(val title)"
+            git push -q origin "$branch"
+            if url="$(gh pr create --base main --head "$branch" --title "$(val title)" --body-file switch-body.md 2>pr-error.txt)"; then
+              n="${url##*/}"
+              gh pr edit "$n" --add-label automerge
+              gh workflow run void-review.yml --ref "$branch" -f pr="$n"
+              note="Switch PR opened from this run: $url"
+            else
+              # this repository does not let Actions open PRs (Settings > Actions > General > "Allow GitHub Actions to create and
+              # approve pull requests"): the branch is pushed, and the link to open its PR goes where the table went
+              cat pr-error.txt
+              note="The verdict says switch, and the branch is pushed, but Actions may not open PRs here: open it from ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/compare/main...${branch}?expand=1 (body: the table above, the previous model and the one-line revert are in switch-body.md of run ${GITHUB_RUN_ID}), or allow Actions to create pull requests in Settings > Actions > General."
+            fi
+            echo "**$note**" >> "$GITHUB_STEP_SUMMARY"
+            if [[ "$PR" =~ ^[0-9]+$ ]]; then gh pr comment "$PR" --body "$note"; fi
+          else
+            for i in 1 2 3 4; do
+              git fetch -q origin main && git reset -q --hard origin/main
+              node tools/grow.mjs finding "$ledger" --by model-bench
+              git add void-live-deploy/void.growth.json
+              git commit -q -m "Growth ledger: the model bake-off's run and verdict (tools/model-switch.mjs)"
+              git push -q origin HEAD:main && exit 0
+              sleep $((2 ** i))
+            done
+            exit 1
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -47,3 +131,6 @@ jobs:
           path: |
             model-bench.json
             model-bench.txt
+            model-bench.md
+            switch-body.md
+          if-no-files-found: ignore

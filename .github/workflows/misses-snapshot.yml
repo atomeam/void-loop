@@ -1,0 +1,48 @@
+# The public miss snapshot (tools/misses-snapshot.mjs), daily: what Void could not answer, as terms and counts seen in at
+# least three different asks, committed to main as domains/void.misses.json so a session without the owner token (any
+# cloud session) can pick the next skill or forge thing from it. No ask text is ever written. When the board can't be read
+# the step says exactly why (no secret, or the HTTP status) and the file is left as it was.
+name: Miss snapshot
+
+on:
+  schedule:
+    - cron: '23 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: misses-snapshot
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the snapshot on main
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read the board and write the snapshot
+        env:
+          VOID_MISSES_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          if [ -z "$VOID_MISSES_TOKEN" ]; then
+            echo "::warning title=Miss snapshot not refreshed::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN, which opens the owner-only GET /api/misses) is not set."
+            exit 0
+          fi
+          node tools/misses-snapshot.mjs || { echo "::warning title=Miss snapshot not refreshed::the board could not be read (the reason is the line above)"; exit 0; }
+          git diff --quiet domains/void.misses.json && { echo "snapshot unchanged"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add domains/void.misses.json
+          git commit -m "Miss snapshot: terms and counts from the board (no ask text)"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1

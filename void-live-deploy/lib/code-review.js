@@ -4,7 +4,7 @@
 // habits, with line numbers), then the model reads the whole thing. Keys and passwords in the paste are masked before
 // anything is shown, logged or sent (redact, lib/automation-fix.js). The checks are tuned to say nothing rather than
 // something wrong: each one looks for a pattern that is almost always a real problem.
-import { redact } from './automation-fix.js';
+import { redact, envName } from './automation-fix.js';
 
 // "review my code", "code review", "check this script", "what's wrong with my function", "is this query safe", "find bugs in this"
 const NOUN = '(?:code|script|function|snippet|program|pull\\s+request|pr|diff|class|method|query|sql|component|module|file|regex|github\\s+action|(?:ci|actions?|github)\\s+workflow|workflow\\s+(?:file|ya?ml))'; // "audit my github actions", "check this ci workflow"
@@ -340,7 +340,12 @@ const RULES = [
     'this table has no header cells (<th>), so a screen reader reads its values with nothing to say which column they belong to. Add a header row: <thead><tr><th scope="col">Measure</th>…</tr></thead>.'],
   ['busy-loop', 'bug', ['python'], (m, r, x) => /^\s*while\s+(?:True|1)\s*:\s*pass\b/.test(m) || (/^\s*while\s+(?:True|1)\s*:\s*$/.test(m) && /^\s*pass\s*$/.test(x.next(1))),
     'while True: pass spins forever at full speed, using a whole CPU core and never stopping. Wait on something (time.sleep, an event, input) or add a condition that ends the loop.'],
-  ['sort-no-compare', 'style', JS, (m) => /\.sort\s*\(\s*\)/.test(m),
+  // a typed array (Float32Array, Uint8Array...) sorts numerically with no compare, so a receiver declared as one just above is not a finding
+  ['sort-no-compare', 'style', JS, (m, r, x) => {
+    if (!/\.sort\s*\(\s*\)/.test(m)) return false;
+    const recv = /([\w$]+)\s*\.sort\s*\(\s*\)/.exec(m);
+    return !(recv && new RegExp('\\b(?:const|let|var)\\s+' + recv[1].replace(/\$/g, '\\$') + '\\s*=\\s*new\\s+(?:Float(?:32|64)|Int(?:8|16|32)|Uint(?:8|16|32)|Uint8Clamped|Big(?:Int|Uint)64)Array\\b').test(x.prev() + '\n' + m));
+  },
     'sort() with no compare function sorts as text, so numbers come out wrong: [10, 9, 1] becomes [1, 10, 9]. For numbers pass one: list.sort((a, b) => a - b).'],
   ['indexof-truthy', 'bug', JS, (m) => /\b(?:if|while)\s*\(\s*!?\s*[\w$.[\]]+\.indexOf\s*\([^()]*\)\s*(?:\)|&&|\|\|)/.test(m),
     'indexOf returns -1 when the item is missing (which counts as true) and 0 when it is first (which counts as false), so this check is backwards in both cases. Use list.includes(x), or compare: list.indexOf(x) !== -1.'],
@@ -600,7 +605,7 @@ function hasSecret(r, lang) {
     const v = s[2];
     if (redact(v) !== v && !/^\[redacted/.test(v)) return true;
     const before = r.slice(0, s.index), min = PASSNAME.test(before) ? 4 : 8; // people's passwords are often short; random keys are not
-    if (v.length >= min && /^[^\s${}<>]+$/.test(v) && !/^(?:https?:\/\/|\/|\.|[\w-]+\.(?:js|json|html|css|md|txt|py|sh)$)/i.test(v) && !/^(?:x{3,}|\*{3,}|your[_-]|<|changeme|placeholder|example|test|dummy|redacted|password|secret|none|null|true|false)/i.test(v) && KEYNAME.test(before)) return true;
+    if (v.length >= min && /^[^\s${}<>]+$/.test(v) && !/^(?:https?:\/\/|\/|\.|[\w-]+\.(?:js|json|html|css|md|txt|py|sh)$)/i.test(v) && !/^(?:x{3,}|\*{3,}|your[_-]|<|changeme|placeholder|example|test|dummy|redacted|password|secret|none|null|true|false)/i.test(v) && !envName(v, before.slice(-40)) && KEYNAME.test(before)) return true; // an env-shaped name (automation-fix.js envName) names a variable, not a key
   }
   if (lang === 'yaml' && /^\s*(?:-\s+)?[\w.-]*(?:password|passwd|secret|token|api[_-]?key|private[_-]?key)[\w.-]*\s*:\s*(?!["']?(?:\$|\{\{|<|!|xxx|\*\*\*|changeme|example|your[_-]))["']?[^\s"'#]{4,}/i.test(r)) return true;
   if (lang === 'dockerfile' && /^\s*(?:ENV|ARG)\s+[A-Z0-9_]*(?:KEY|SECRET|TOKEN|PASSWORD|PASS|PWD)[A-Z0-9_]*[= ](?!["']?\$)[^\s"'$]{4,}/i.test(r)) return true;

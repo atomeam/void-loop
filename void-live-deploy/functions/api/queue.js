@@ -1,11 +1,22 @@
 // Void's build queue (D1): the owner asks Void to update itself; the laptop builder picks it up.
-// GET -> { items, heartbeat } · POST { ask, target } · PATCH { id?, state?, note?, heartbeat? } — all owner token.
+// GET -> { items, heartbeat } · POST { ask, target } · POST { op: 'draft-from-thread', from, request } · PATCH { id?, state?, note?, heartbeat? } — all owner token.
 import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';
-import { draftOnClaim } from '../../lib/job-draft.js';
+import { draftOnClaim, draftFromThread } from '../../lib/job-draft.js';
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
+// The owner's view names its columns one by one in each query: a column added later (the way `draft` was) is shown
+// only once it is written in, never by accident. Every handler is owner-gated (`guard`); nothing public reads this table.
+// once per database binding in this isolate, not on every request (reviewer's note on #385); keyed by the binding, not one
+// flag for the isolate, so a second database (each test's own, a re-bound D1) still gets its column
+const draftColumnEnsured = new WeakSet();
+const ensureDraft = async (env) => {
+  if (draftColumnEnsured.has(env.DB)) return;
+  await env.DB.prepare('ALTER TABLE void_queue ADD COLUMN draft TEXT').run().catch(() => {});
+  draftColumnEnsured.add(env.DB);
+};
 const view = async (env) => {
-  const { results } = await env.DB.prepare('SELECT * FROM void_queue ORDER BY at DESC LIMIT 20').all();
+  await ensureDraft(env);
+  const { results } = await env.DB.prepare('SELECT id, ask, target, state, note, at, updated, draft FROM void_queue ORDER BY at DESC LIMIT 20').all();
   const hb = await env.DB.prepare("SELECT v FROM void_kv WHERE k = 'heartbeat'").first('v');
   return { items: results.reverse().map((r) => ({ ...r, note: r.note || '' })), heartbeat: hb || null };
 };
@@ -36,8 +47,12 @@ function wakeBuilder(ctx, item) {
 export const onRequestPost = guard(async (ctx) => {
   const { request, env } = ctx;
   const b = await body(request);
+  // the owner's mail thread from the extension ("draft for me: proposal"): when the sender's domain is a sale job's, the draft
+  // goes onto that job the way a claim drafts it (lib/job-draft.js draftFromThread); nothing is queued here
+  if (b.op === 'draft-from-thread') return Response.json(await draftFromThread(env, { from: String(b.from || '').slice(0, 200), request: String(b.request || '').slice(0, 8000) }));
   const ask = String(b.ask || '').slice(0, 200), target = String(b.target || 'next').slice(0, 40);
-  const open = await env.DB.prepare("SELECT * FROM void_queue WHERE target = ? AND state IN ('queued','building') LIMIT 1").bind(target).first();
+  await ensureDraft(env);
+  const open = await env.DB.prepare("SELECT id, ask, target, state, note, at, updated, draft FROM void_queue WHERE target = ? AND state IN ('queued','building') LIMIT 1").bind(target).first();
   if (open) return Response.json({ item: open, ...(await view(env)) });
   const item = { id: Date.now().toString(36), ask, target, state: 'queued', note: '', at: new Date().toISOString() };
   // the execution record (lib/actions.js): written before the job is queued; no record, no job
@@ -56,6 +71,7 @@ export const onRequestPatch = guard(async ({ request, env }) => {
   // a claim: { target | id, state: 'building', from: 'queued' } moves the job only if it is still in `from`, in one statement,
   // so of two builders claiming at once exactly one gets it; the other is told who holds it (409) or that there is none (404)
   if (b.from && (b.target || b.id)) {
+    await ensureDraft(env);
     const from = String(b.from).slice(0, 20), target = b.target ? String(b.target).slice(0, 40) : null;
     // the claimer is named at the front of the note, keeping what the note already said (a miss job's counts, say)
     const by = b.by ? String(b.by).slice(0, 60) : null;
@@ -63,8 +79,8 @@ export const onRequestPatch = guard(async ({ request, env }) => {
       ? "UPDATE void_queue SET state = COALESCE(?, state), note = CASE WHEN ? IS NULL THEN COALESCE(?, note) ELSE substr('claimed by ' || ? || CASE WHEN COALESCE(note, '') = '' THEN '' ELSE ' · ' || note END, 1, 300) END, updated = ? WHERE id = (SELECT id FROM void_queue WHERE target = ? AND state = ? ORDER BY at LIMIT 1)"
       : "UPDATE void_queue SET state = COALESCE(?, state), note = CASE WHEN ? IS NULL THEN COALESCE(?, note) ELSE substr('claimed by ' || ? || CASE WHEN COALESCE(note, '') = '' THEN '' ELSE ' · ' || note END, 1, 300) END, updated = ? WHERE id = ? AND state = ?")
       .bind(state, by, note, by, now, target || String(b.id), from).run();
-    const row = target ? await env.DB.prepare('SELECT * FROM void_queue WHERE target = ? ORDER BY updated DESC LIMIT 1').bind(target).first()
-      : await env.DB.prepare('SELECT * FROM void_queue WHERE id = ?').bind(String(b.id)).first();
+    const row = target ? await env.DB.prepare('SELECT id, ask, target, state, note, at, updated, draft FROM void_queue WHERE target = ? ORDER BY updated DESC LIMIT 1').bind(target).first()
+      : await env.DB.prepare('SELECT id, ask, target, state, note, at, updated, draft FROM void_queue WHERE id = ?').bind(String(b.id)).first();
     if (!r.meta.changes) return row ? Response.json({ held: row }, { status: 409 }) : new Response('not found', { status: 404 });
     // a claimed serve job carrying a buyer's reply drafts its own proposal (lib/job-draft.js); a draft failure
     // never breaks the claim — the claimer is told either way in the same reply

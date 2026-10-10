@@ -19,19 +19,21 @@ const SITE = process.env.VOID_SITE || 'https://a-to-mind.com';
 const MARK = (at) => `<!-- voice:${at} -->`;
 const LEDGER = resolve(root, 'void-live-deploy/void.growth.json');
 const norm = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-/** the asks no growth-ledger entry answers yet: an entry answers an ask when its `asked` is the ask, word for word */
+/** the asks no growth-ledger entry answers yet: an entry answers an ask when its `asked` is the ask's id (ask-…, stable
+ * however the words change) or, for entries written before ids, the ask word for word */
 export function openAsks(asks, ledger) {
   const done = new Set((ledger || []).filter((e) => e && e.asked).map((e) => norm(e.asked)));
-  return (asks || []).filter((a) => a && !done.has(norm(a.ask)));
+  return (asks || []).filter((a) => a && !(a.id && done.has(norm(a.id))) && !done.has(norm(a.ask)));
 }
 const readLedger = () => { try { return JSON.parse(readFileSync(LEDGER, 'utf8')); } catch (_) { return []; } };
-const ASK_LINE = /^- (.+?)( \*\(small\)\*)? \((daily|after a build), (\d{4}-\d\d-\d\d)\)$/;
+const ASK_LINE = /^- (.+?)( \*\(small\)\*)? \((daily|after a build), (\d{4}-\d\d-\d\d)\)(?: `(ask-[0-9-]+)`)?$/;
 /** the asks as the file has them now (for a run that can't reach the site) */
 export function asksInLog(text) {
   const m = /## Void's current asks\n\n([\s\S]*?)\n\n## /.exec(String(text || ''));
   if (!m) return [];
-  return m[1].split('\n').map((l) => ASK_LINE.exec(l)).filter(Boolean).map((x) => ({ ask: x[1], small: !!x[2], kind: x[3] === 'daily' ? 'daily' : 'build', at: x[4] }));
+  return m[1].split('\n').map((l) => ASK_LINE.exec(l)).filter(Boolean).map((x) => ({ ...(x[5] ? { id: x[5] } : {}), ask: x[1], small: !!x[2], kind: x[3] === 'daily' ? 'daily' : 'build', at: x[4] }));
 }
+const unreachableSince = (text) => (/^- unknown, site unreachable since (\d{4}-\d\d-\d\d)/m.exec(String(text || '')) || [])[1] || null;
 const stampOf = (text) => (/^_Read from \/api\/reflect on (\d{4}-\d\d-\d\d)/m.exec(String(text || '')) || [])[1] || null;
 
 const HEAD = `# Void's voice: what Void thinks of itself, in its own words
@@ -63,9 +65,16 @@ export function writeLog(text, entries, asks, stamp = {}) {
   for (const b of old) blocks.set(/<!-- voice:([^ ]+) -->/.exec(b)[1], b.trimEnd() + '\n');
   for (const e of entries || []) if (e && e.at && !blocks.has(e.at)) blocks.set(e.at, entryBlock(e));
   const ordered = [...blocks.keys()].sort().map((k) => blocks.get(k));
-  const askLines = (asks || []).length ? asks.map((a) => `- ${a.ask}${a.small ? ' *(small)*' : ''} (${a.kind === 'daily' ? 'daily' : 'after a build'}, ${String(a.at).slice(0, 10)})`).join('\n') : '- (none open)';
+  const lines = (asks || []).map((a) => `- ${a.ask}${a.small ? ' *(small)*' : ''} (${a.kind === 'daily' ? 'daily' : 'after a build'}, ${String(a.at).slice(0, 10)})${a.id ? ' `' + a.id + '`' : ''}`);
   const read = stamp.read || stampOf(text), left = 'Asks a growth-ledger entry answers (its `asked` field) are left out.';
-  const failed = stamp.failed ? `the site could not be reached on ${stamp.failed}, so this may be out of date` : '';
+  // an unreachable site is not an empty list: "(none open)" only when the last good read was empty; else "unknown",
+  // dated from the first failed run in a row (a later failure keeps that date)
+  const since = stamp.failed ? (unreachableSince(text) || stamp.failed) : null;
+  const lastGoodWasEmpty = !!read && /\n- \(none open\)\n/.test(String(text || '')) && !asksInLog(text).length;
+  const unknown = !!since && !(lastGoodWasEmpty && !lines.length);
+  if (unknown) lines.unshift(`- unknown, site unreachable since ${since}` + (lines.length ? ' (the asks below are the last ones read, minus any built since)' : ''));
+  const askLines = lines.length ? lines.join('\n') : '- (none open)';
+  const failed = since ? `the site has been unreachable since ${since}` : '';
   const note = read ? `_Read from /api/reflect on ${read}${failed ? '; ' + failed : ''}. ${left}_\n\n` : failed ? `_Not read from /api/reflect by this writer yet: ${failed}. ${left}_\n\n` : '';
   return `${HEAD}\n## Void's current asks\n\n${note}${askLines}\n\n## Log, oldest first\n\n${ordered.join('\n')}`;
 }
@@ -107,7 +116,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     } else {
       const v = await call('GET'), asks = openAsks(v.asks, readLedger());
       console.log("Void's current asks:");
-      for (const a of asks) console.log(`  - ${a.ask}${a.small ? ' (small)' : ''}  [${a.kind}, ${String(a.at).slice(0, 10)}]`);
+      for (const a of asks) console.log(`  - ${a.ask}${a.small ? ' (small)' : ''}  [${a.kind}, ${String(a.at).slice(0, 10)}${a.id ? ', ' + a.id : ''}]`);
       if (!asks.length) console.log('  (none yet)');
       if (v.entries && v.entries[0]) show(v.entries[0]);
     }

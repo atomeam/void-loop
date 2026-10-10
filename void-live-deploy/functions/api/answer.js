@@ -256,7 +256,7 @@ async function pageAnswer(request, env, ask, pg) {
     { role: 'user', content: `Question: ${ask}\n\nThe page:\n${parts.join('\n\n')}` },
   ];
   try {
-    const r = await env.AI.run(MODEL, { messages, max_tokens: 2200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+    const r = await env.AI.run(MODEL, { messages, ...ANSWER_RUN });
     const answer = redact(noThink(pick(r)));
     if (!answer) throw new Error('empty');
     return Response.json({ answer, sources: [], at: new Date().toISOString(), page: true });
@@ -269,7 +269,10 @@ async function pageAnswer(request, env, ask, pg) {
 // Sources are help, not a cage: cite one when it actually answers the question, but never refuse just because
 // none matched (they're only Wikipedia searches; a script, a plan, a proof, a poem has no Wikipedia page at all).
 export const ANSWER_SYSTEM = 'You are Void. Answer the question directly and completely, from what you know. Use a numbered source only when it genuinely answers part of the question, citing it inline like [1]; when the sources do not cover it, answer anyway from your own knowledge and reasoning. Never refuse or say you lack sources: that is only true if you genuinely cannot help at all. For code, write the whole thing in a fenced code block with the language named, then a short explanation after. Keep plain answers to 2 to 6 sentences unless the question needs more (a full script, a step-by-step, a worked example). No preamble, no markdown headings. ' + INJECTION_RULE;
-const noThink = (t) => String(t || '').replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/^[\s\S]*<\/think>/i, '').trim();
+// How an answer is asked for (the main answer and the page answer), shared with the model bake-off (functions/api/bench.js) so
+// a challenger is measured the way Void runs it: thinking off, low reasoning effort, the same token budget.
+export const ANSWER_RUN = { max_tokens: 2200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
+export const noThink = (t) => String(t || '').replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/^[\s\S]*<\/think>/i, '').trim();
 function within(p, ms) { let t; return Promise.race([p, new Promise((_, rej) => { t = setTimeout(() => rej(new Error('timeout')), ms); })]).finally(() => clearTimeout(t)); }
 
 // The model path (on unless VOID_ANSWER_MODELS=off).
@@ -325,7 +328,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const log = (extra) => later(logRoute(env, { ask, masked, route: route.kind, skill: route.skill, score: route.score, scores: route.scores, ms: route.ms, waited, model, outcome, would, ...extra }));
   if (!answer) {
     try {
-      const r = await env.AI.run(MODEL, { messages, max_tokens: 2200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' });
+      const r = await env.AI.run(MODEL, { messages, ...ANSWER_RUN });
       answer = redact(String(pick(r)).trim());
       model = MODEL;
       if (!answer) throw new Error('empty');
