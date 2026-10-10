@@ -253,6 +253,27 @@ export async function run3dChecks({ check, fresh }) {
       !!seen.weekAgo && !!seen.today && seen.weekAgo.branches < seen.today.branches && seen.today.branches === n && /^today, /.test(day || '') && !F.errors.length, JSON.stringify({ seen, day, n, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- Ringer drag to flick: press the shooter on the 3D ring, pull it straight back and let go: one shot, aimed opposite the pull
+  {
+    const Rr = await import(pathToFileURL(path.join(root, 'skills', 'ringer-rules.js')).href);
+    const F = await fresh();
+    await F.ask('play marbles', 600);
+    const key = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'ringer'); return c && c.ready && c.draws > 0 ? c.key : false; }), 30000);
+    const z0 = Rr.RING + Rr.SHOOTER; // a new game's shooter sits at the edge, ring centre (0, 0); the ground's y is the state's -y
+    const at = key && await F.p.evaluate(([k, a, b]) => ({ from: window.__voidMini.project(k, a), to: window.__voidMini.project(k, b) }), [key, [0, Rr.SHOOTER, z0], [0, 0, z0 + Rr.PULL_MAX * 0.8]]);
+    let mid = null;
+    if (at && at.from && at.to) {
+      await F.p.mouse.move(at.from.x, at.from.y); await F.p.mouse.down();
+      for (let i = 1; i <= 6; i++) await F.p.mouse.move(at.from.x + (at.to.x - at.from.x) * i / 6, at.from.y + (at.to.y - at.from.y) * i / 6);
+      mid = await F.p.evaluate((k) => window.__voidMini.state(k), key);
+      await F.p.mouse.up();
+    }
+    const after = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.shots === 1 && !s.rolling ? s : false; }, key), 20000);
+    check('Ringer: on the 3D ring, pressing the shooter and pulling it straight back aims at the middle with the pull as power (orbit held while pulling); letting go flicks it, one shot',
+      !!key && !!mid && mid.pulling && Math.abs(mid.angle - Math.PI / 2) < 0.2 && mid.power > 0.5 && mid.shots === 0 && !!after && after.shots === 1 && !after.pulling && F.errors.length === 0,
+      JSON.stringify({ key, at, mid, after, errors: F.errors.slice(0, 3) }));
+    await F.ctx.close();
+  }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
   {
     const F = await fresh();
@@ -429,6 +450,21 @@ export async function run3dChecks({ check, fresh }) {
       jumped = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'checkers'); return c && c.state.s.board[27] === 'd' && c.state.moves >= 2 && c.state.s.turn === 'd' ? true : false; }, 30000);
     }
     check('checkers: "play checkers" lays turned wooden men on the same board; tapping c3 then d4 moves your man and Void replies', !!ck && !!jumped && !F.errors.length, JSON.stringify({ ck, jumped, e: F.errors }));
+    // two boards on a 1280-wide stage don't both fit with their cards: the one pushed aside shrinks instead of half-covering the
+    // new one, and a tap on it brings it back (the other then shrinks in its place)
+    const boards = () => F.p.evaluate(() => {
+      const box = (n) => { const r = n.getBoundingClientRect(); return { x: r.x, y: r.y, r: r.right, b: r.bottom }; };
+      const of = (kind) => { const el = [...document.querySelectorAll('#stage > .thing[data-id]')].find((e) => e.dataset.id.startsWith(kind + '_')); if (!el) return null;
+        const side = document.querySelector('#stage > .side-card[data-of="' + el.dataset.id + '"]'); return { small: el.classList.contains('shrunk'), w: Math.round(el.getBoundingClientRect().width), parts: [box(el)].concat(side ? [box(side)] : []) }; };
+      const c = of('chess'), k = of('checkers'), hit = (a, b) => a.x < b.r && b.x < a.r && a.y < b.b && b.y < a.b;
+      return { stageW: document.getElementById('stage').clientWidth, chess: c, checkers: k, overlap: !!(c && k) && c.parts.some((a) => k.parts.some((b) => hit(a, b))) }; });
+    const shrunk = await until(async () => { const s = await boards(); return s.chess && s.chess.small && s.checkers && !s.checkers.small ? s : false; }, 8000) || await boards();
+    const smallAt = await F.p.evaluate(() => { const e = [...document.querySelectorAll('#stage > .thing.shrunk')].find((x) => x.dataset.id.startsWith('chess_')); if (!e) return null; const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    if (smallAt) await F.p.mouse.click(smallAt.x, smallAt.y);
+    const back = await until(async () => { const s = await boards(); return s.chess && !s.chess.small && s.checkers && s.checkers.small ? s : false; }, 8000) || await boards();
+    check('two boards on a 1280 stage: chess then checkers, the chess board moves aside shrunk (its card with it) and neither overlaps; a tap on the small chess board brings it back to full size and checkers shrinks instead',
+      shrunk.stageW === 1280 && !!shrunk.chess && shrunk.chess.small && !shrunk.checkers.small && !shrunk.overlap && !!smallAt && back.chess && !back.chess.small && back.chess.w >= 500 && back.checkers.small && !back.overlap && !F.errors.length,
+      JSON.stringify({ shrunk, back, e: F.errors }));
     // questions about chess are still questions (they open a page, which would cover the boards, so they come last)
     await F.ask('who invented chess', 400); await F.ask('chess rules', 400); await F.ask('checkers rules', 400);
     const after = await F.p.evaluate(() => ({ chess: document.querySelectorAll('.chess-card').length, checkers: document.querySelectorAll('.checkers-card').length }));
@@ -539,8 +575,8 @@ export async function run3dChecks({ check, fresh }) {
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, sorry, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,sorry,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, ringer, sorry, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,ringer,sorry,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
     await F.ctx.close();
   }
   {

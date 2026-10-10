@@ -64,7 +64,7 @@ report.sort((a, b) => ORDER[a.kind] - ORDER[b.kind] || a.file.localeCompare(b.fi
 // assignments (Python); redacted like the diff, at most 60 a file
 const TOP_LINE = /^(?:import\b|export\s+\{[^}]*\}\s*from\b|(?:export\s+)?(?:const|let|var)\s+(?:\{[^}]*\}|\[[^\]]*\]|[\w$]+)\s*=|(?:export\s+)?(?:async\s+)?function\s*\*?\s*[\w$]+|(?:export\s+)?class\s+[\w$]+|from\s+\S+\s+import\b|(?:async\s+)?def\s+\w+|class\s+\w+|[A-Za-z_]\w*\s*(?::\s*\w+)?\s*=\s)/;
 function topLines(file) { try { return redact(git('show', head + ':' + file)).split('\n').filter((l) => TOP_LINE.test(l)).map((l) => l.slice(0, 300)).slice(0, 60); } catch (_) { return []; } }
-let deepText = '', deepQuoted = null; // quoted: { kept, dropped } from lib/review-api.js quoteCheck (findings that quoted a line of the diff, claims about lines not in it)
+let deepText = '', deepQuoted = null, deepWhy = ''; // quoted: { kept, dropped } from lib/review-api.js quoteCheck; deepWhy: why there is no closer read (the API's note, the status, the error)
 if (deep && Object.keys(files).length) {
   try {
     const deepFiles = Object.keys(files).filter((f) => !skippedInReview(f) && LANG[(f.match(/\.([\w]+)$/) || [])[1]]);
@@ -77,8 +77,9 @@ if (deep && Object.keys(files).length) {
       const r = await fetch(deep, { method: 'POST', headers, body: JSON.stringify({ mode: 'review', ask: 'review this pull request', code: diff, diff, imports }), signal: AbortSignal.timeout(60000) });
       const j = r.ok ? await r.json() : null;
       if (j && j.answer && j.review === 'model') { deepText = String(j.answer).trim(); deepQuoted = j.quoted || null; }
+      else deepWhy = j ? String(j.note || j.upgrade || j.error || ('review: ' + j.review + ', tier ' + j.tier)).slice(0, 160) : 'HTTP ' + r.status;
     }
-  } catch (_) {}
+  } catch (e) { deepWhy = String(e && e.message || e).slice(0, 160); }
 }
 
 // --inline: GitHub review comments, one per line with a bug or risk (however many checks fire on it), with a suggested
@@ -138,7 +139,7 @@ function walkthrough() {
 
 const ms = Math.max(1, Math.round(performance.now() - started)), blocking = report.filter((f) => f.kind === 'bug' || f.kind === 'risk').length;
 const gate = process.argv.includes('--gate') && blocking ? 1 : 0;
-if (process.argv.includes('--json')) { console.log(JSON.stringify({ base, head, findings: report, deep: deepText || null, quoted: deepQuoted, lines: scanned, ms, blocking }, null, 1)); process.exit(gate); }
+if (process.argv.includes('--json')) { console.log(JSON.stringify({ base, head, findings: report, deep: deepText || null, quoted: deepQuoted, deepWhy: deepWhy || null, lines: scanned, ms, blocking }, null, 1)); process.exit(gate); }
 const n = { bug: 0, risk: 0, style: 0, note: 0 }; report.forEach((f) => n[f.kind]++);
 const out = ['<!-- void-review -->', '### Void\'s review', '', ...walkthrough()];
 if (!report.length) out.push('The quick checks found nothing in the lines this PR adds.');
@@ -152,6 +153,6 @@ else {
 }
 if (deepText) out.push('', '#### A closer read', '', deepText);
 out.push('', blocking ? '**Blocking:** ' + blocking + ' bug' + (blocking > 1 ? 's and risks' : ' or risk') + ' to fix first (or mark a line that is right as written with a `void-review: ok` comment).' : '**Not blocking:** no bugs or risks in the added lines.');
-out.push('', '<sub>Reviewed ' + scanned + ' added line' + (scanned === 1 ? '' : 's') + ' in ' + (ms < 1000 ? ms + ' ms' : (ms / 1000).toFixed(1) + ' s') + (deepText ? ' (plus the closer read' + (deepQuoted ? ': ' + deepQuoted.kept + ' finding' + (deepQuoted.kept === 1 ? '' : 's') + ' quoted from the diff, ' + deepQuoted.dropped + ' claim' + (deepQuoted.dropped === 1 ? '' : 's') + ' about lines not in it dropped' : '') + ')' : '') + '. Pattern checks from void-live-deploy/lib/code-review.js, the same ones a-to-mind.com runs when someone asks Void to review code. Bugs and risks are worth a look; style is a suggestion.</sub>');
+out.push('', '<sub>Reviewed ' + scanned + ' added line' + (scanned === 1 ? '' : 's') + ' in ' + (ms < 1000 ? ms + ' ms' : (ms / 1000).toFixed(1) + ' s') + (deepText ? ' (plus the closer read' + (deepQuoted ? ': ' + deepQuoted.kept + ' finding' + (deepQuoted.kept === 1 ? '' : 's') + ' quoted from the diff, ' + deepQuoted.dropped + ' claim' + (deepQuoted.dropped === 1 ? '' : 's') + ' about lines not in it dropped' : '') + ')' : deepWhy ? ' (no closer read: ' + deepWhy.replace(/</g, '&lt;') + ')' : '') + '. Pattern checks from void-live-deploy/lib/code-review.js, the same ones a-to-mind.com runs when someone asks Void to review code. Bugs and risks are worth a look; style is a suggestion.</sub>');
 console.log(out.join('\n'));
 process.exit(gate);

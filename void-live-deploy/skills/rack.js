@@ -15,6 +15,7 @@ export const GAMES = [
   { id: 'tictactoe', title: 'Tic-tac-toe', ask: 'play tic tac toe', color: '#c0562e', ink: '#fff6e6', motif: 'tictactoe' },
   { id: 'mancala', title: 'Mancala', ask: 'play mancala', color: '#6b4426', ink: '#f6e3c4', motif: 'mancala' },
   { id: 'aggravation', title: 'Star Marbles', ask: 'play aggravation', color: '#2f5fa8', ink: '#fdf6e3', motif: 'aggravation' },
+  { id: 'ringer', title: 'Ringer', ask: 'play marbles', color: '#6e5238', ink: '#f3eedf', motif: 'ringer' },
   { id: 'sorry', title: 'Back to Start', ask: 'play sorry', color: '#c8202c', ink: '#fff8e7', motif: 'aggravation' },
   { id: 'battleship', title: 'Sea Battle', ask: 'play battleship', color: '#1d4e6e', ink: '#e8f4ff', motif: 'battleship' },
   { id: 'poker', title: 'Poker', ask: 'play poker', color: '#17563a', ink: '#f2e6c9', motif: 'poker' },
@@ -37,7 +38,7 @@ export function rackOf(text) {
 export const SOON = { scrabble: 'Scrabble', risk: 'Risk', clue: 'Clue', cluedo: 'Cluedo', catan: 'Catan', 'settlers of catan': 'Catan',
   backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
 
-const HINT = 'try: chess · checkers · go · monopoly · tic tac toe · reversi · four in a row · mancala · star marbles · back to start · rock paper scissors · magic 8 ball';
+const HINT = 'try: chess · checkers · go · monopoly · tic tac toe · reversi · four in a row · mancala · star marbles · marbles · back to start · rock paper scissors · magic 8 ball';
 
 function mount(th, stageApi) {
   const phone = Math.min(innerWidth, innerHeight) < 560;

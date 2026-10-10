@@ -7,7 +7,7 @@
  * stays in the ring and you keep knocking marbles out; otherwise it goes back to the edge. Clear the ring in as few shots
  * as you can. Real sizes in metres: a 16 mm marble, a 19 mm shooter, a schoolyard ring 0.56 m across.
  *   create(seed) -> state                aim(s, angle) / aimAt(s, x, y) / setPower(s, p) -> s
- *   flick(s) -> s (rolling)              step(s, dt) -> s (back to 'aim' once everything has stopped)
+ *   pull(s, x, y) -> s (drag to flick)   flick(s) -> s (rolling)   step(s, dt) -> s (back to 'aim' once everything has stopped)
  *   settle(s) -> s (steps until it stops, for tests and a hidden board)      summary(s) -> text
  */
 export const RING = 0.28, MARBLE = 0.008, SHOOTER = 0.0095, GAP = 0.04, COUNT = 13;
@@ -38,6 +38,18 @@ export function aim(s, angle) { return s.phase !== 'aim' || s.over ? s : { ...s,
 export function aimAt(s, x, y) { const sh = shooterOf(s); return (x === sh.x && y === sh.y) ? s : aim(s, Math.atan2(y - sh.y, x - sh.x)); }
 export function setPower(s, p) { return s.phase !== 'aim' || s.over ? s : { ...s, power: clamp(+p || 0, 0, 1) }; }
 export const speedFor = (power) => SPEED_MIN + (SPEED_MAX - SPEED_MIN) * clamp(power, 0, 1);
+
+// Drag to flick (the 3D ring): press the shooter, pull back like a knuckle flick, let go. The shot goes opposite the pull,
+// and its power grows with the pull up to PULL_MAX; a pull shorter than PULL_MIN is not a shot (a tap, or a change of mind).
+export const PULL_MAX = 0.12, PULL_MIN = 0.008;
+/** Aim and power from where the pointer is while pulling back (x, y on the ground, metres). */
+export function pull(s, x, y) {
+  if (s.phase !== 'aim' || s.over) return s;
+  const sh = shooterOf(s), dx = sh.x - x, dy = sh.y - y, len = Math.hypot(dx, dy);
+  if (len < 1e-9) return s;
+  return { ...s, angle: Math.atan2(dy, dx), power: clamp(len / PULL_MAX, 0, 1) };
+}
+export const pullLength = (s, x, y) => { const sh = shooterOf(s); return Math.hypot(sh.x - x, sh.y - y); };
 
 /** Flick the shooter along the aim at the chosen power. */
 export function flick(s) {
