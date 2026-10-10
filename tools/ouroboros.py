@@ -469,8 +469,10 @@ def _rmtree(p: Path) -> list[str]:
     left: list[str] = []
 
     def fix(func, path, _exc):
+        # add the write bit and keep the rest: replacing the mode (S_IWRITE | S_IREAD) took a folder's search bit away, so on
+        # macOS or Linux a folder still holding a file another program has open could no longer even be entered
         try:
-            os.chmod(path, stat.S_IWRITE | stat.S_IREAD)
+            os.chmod(path, os.stat(path).st_mode | stat.S_IWRITE | stat.S_IREAD)
             func(path)
         except OSError:
             left.append(str(path))
