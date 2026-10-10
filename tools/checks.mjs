@@ -65,6 +65,7 @@ for (const [name, file] of [
   ['sky', 'sky.test.mjs'],
   ['aurora', 'aurora.test.mjs'],
   ['drone', 'drone.test.mjs'],
+  ['cf-scope', 'cf-scope.test.mjs'],
   ['automations', 'automations.test.mjs'],
   ['actions', 'actions.test.mjs'],
   ['ringer', 'ringer.test.mjs'],
