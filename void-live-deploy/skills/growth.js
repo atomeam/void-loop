@@ -4,6 +4,8 @@
  * next deploy makes it summonable here. Kinds: grow (a new thing), build (better at one), fix, retire, idea and finding
  * (the idea stream, not built yet). Filter by kind; 40 at a time. Read from this site only; nothing is sent or kept.
  */
+import { timeline } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
+
 export const LEDGER_URL = '/void.growth.json';
 export const KIND_LABEL = { grow: 'new', build: 'better', fix: 'fixed', retire: 'retired', idea: 'idea', finding: 'finding' };
 export const KIND_COLOR = { grow: '#3fbf6a', build: '#5b8def', fix: '#e0a24a', retire: '#8a8a92', idea: '#b07ce8', finding: '#4ac0c8' };
@@ -103,17 +105,38 @@ function plantTree(el, api, list) {
   const stage = api.stage;
   if (!stage || typeof stage.miniature !== 'function' || typeof document === 'undefined') return;
   const slot = document.createElement('div'); slot.className = 'growth-tree'; slot.style.cssText = 'height:300px;margin:6px 0 4px';
+  // the time slider: the first entry alone, then every day to today (skills/growth-tree.js timeline)
+  const stops = timeline(list), when = document.createElement('div'); when.className = 'growth-when'; when.style.cssText = 'display:flex;align-items:center;gap:10px;margin:0 0 6px;font-size:13px;color:#8a8a92';
+  const range = document.createElement('input'); range.type = 'range'; range.min = '0'; range.max = String(Math.max(0, stops.length - 1)); range.step = '1'; range.value = range.max;
+  range.setAttribute('aria-label', 'Grow the tree as it stood on a past day'); range.style.cssText = 'flex:1;min-width:0;accent-color:#a0805a';
+  const day = document.createElement('span'); day.className = 'growth-day'; day.style.cssText = 'white-space:nowrap;font-variant-numeric:tabular-nums';
+  when.append(range, day);
   const said = document.createElement('div'); said.className = 'growth-picked'; said.style.cssText = 'min-height:18px;margin:0 0 8px;line-height:1.45;font-size:13px;color:#8a8a92';
-  said.textContent = 'One branch for every change, the oldest at the trunk, the newest at the tips. Touch a branch to read it.';
-  el.append(slot, said);
-  let selected = null;
-  const mount = () => stage.miniature(slot, 'growthtree', { entries: list, selected, onPick }, { key: TREE_KEY, place: 'inside', label: 'Void\u2019s growth as a tree: one branch per change; touch a branch to read it' });
+  const hint = 'One branch for every change, the oldest at the trunk, the newest at the tips; its berries are its kind. Touch a branch to read it.';
+  said.textContent = hint;
+  el.append(slot, when, said);
+  let selected = null, self = null;
+  const at = () => stops[+range.value] || null, today = () => +range.value >= stops.length - 1;
+  const showDay = () => { const s = at(); day.textContent = s ? (today() ? 'today, ' : +range.value === 0 ? 'the first change, ' : '') + s.day + ' · ' + s.count + (s.count === 1 ? ' change' : ' changes') : ''; };
+  // what is not grown yet shows only today: the think tank's open tracks (faint) and the claim being built (glowing)
+  // one mount at a time: a second call while the first is still loading three.js would build a second tree under the same key
+  let queue = null;
+  const mount = () => (queue = (queue || Promise.resolve()).catch(() => {}).then(() => stage.miniature(slot, 'growthtree', { entries: list, until: today() ? null : at() && at().until, tracks: today() && self ? self.tracks : null, building: today() && self ? self.building : null, selected, onPick, onPickGhost },
+    { key: TREE_KEY, place: 'inside', label: 'Void’s growth as a tree: one branch per change; touch a branch to read it' })));
   function onPick(index) {
     const e = list[index]; if (!e) return;
     selected = index; said.style.color = ''; said.innerHTML = entryHtml(api.esc, e);
     mount().catch(() => {});
   }
-  mount().catch(() => { slot.remove(); said.remove(); });
+  function onPickGhost(g) {
+    said.style.color = '';
+    said.textContent = g.kind === 'building' ? 'Building now: ' + (g.item ? g.item + ' (' + g.what + ')' : g.what) : 'Not grown yet: ' + g.what + ', a track the think tank is working on' + (g.at ? ' (last advanced ' + g.at + ')' : '') + '.';
+  }
+  range.addEventListener('input', () => { showDay(); selected = null; said.style.color = '#8a8a92'; said.textContent = hint; mount().catch(() => {}); });
+  range.addEventListener('pointerdown', (e) => e.stopPropagation()); // dragging the slider is not dragging the card
+  showDay();
+  mount().catch(() => { slot.remove(); when.remove(); said.remove(); });
+  fetch('/self.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && (j.tracks || j.building)) { self = j; if (today()) mount().catch(() => {}); } }).catch(() => {});
 }
 
 // checked by tools/skills-check.mjs on every run: the page's maths on made-up entries
