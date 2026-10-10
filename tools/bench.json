@@ -5627,5 +5627,10 @@
   {"ask": "watch https://example.com/news for changes", "want": "skill:watch"},
   {"ask": "tell me when https://example.com changes", "want": "skill:watch"},
   {"ask": "my watches", "want": "skill:watch"},
-  {"ask": "what are you watching for me", "want": "skill:watch"}
+  {"ask": "what are you watching for me", "want": "skill:watch"},
+  {"ask": "give me a challenge with this", "want": "skill:goal"},
+  {"ask": "give me a goal with this", "want": "skill:goal"},
+  {"ask": "challenge me with this", "want": "skill:goal"},
+  {"ask": "set me a challenge with the gears", "want": "skill:goal"},
+  {"ask": "can you make it do something", "want": "skill:goal"}
 ]

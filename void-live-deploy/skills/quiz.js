@@ -131,5 +131,5 @@ export default {
   match(lower, text) { return !!quizOf(text); },
   run,
   // ephemeral: never saved or synced unless kept; it gives its per-question results, missed items still assessable
-  stageKinds: { quiz: { mount, ephemeral: true, learning: true, gives: { observations: (th) => Q.gives(th.state).observations, explanation: (th) => Q.gives(th.state).explanation } } },
+  stageKinds: { quiz: { mount, ephemeral: true, learning: true, takes: { observations: 'snapshot' }, gives: { observations: (th) => Q.gives(th.state).observations, explanation: (th) => Q.gives(th.state).explanation } } },
 };

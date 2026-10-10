@@ -45,6 +45,7 @@ for (const [name, file] of [
   ['connect4', 'connect4.test.mjs'],
   ['explainers', 'explainers.test.mjs'],
   ['learning', 'learning.test.mjs'],
+  ['goal', 'goal.test.mjs'],
   ['forge', 'forge.test.mjs'],
   ['learn', 'learn.test.mjs'],
   ['learn-draft', 'learn-draft.test.mjs'],

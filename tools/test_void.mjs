@@ -1120,6 +1120,29 @@ try {
       /16-tooth driver and a 32-tooth driven gear/.test(shown) && afterReload.saved.includes('gears') && !afterReload.saved.includes('quiz') && afterReload.cards === 0
       && afterKeep.saved.filter((k) => k === 'quiz').length === 1 && afterKeep.cards === 1, JSON.stringify({ shown, afterReload, afterKeep }));
     await Z.ctx.close(); }
+  // the goal card (skills/goal.js, frontier #18): "give me a challenge with this" beside the gears sets the first goal they
+  // do not already meet; the card takes their observations live (the stage's change event), so its "Now" line follows the
+  // gears' own steppers, and Check says what still needs changing, then that it is done
+  { const Y = await fresh();
+    await Y.ask('explain gears', 900);
+    await Y.p.$$eval('.gears-more', (b) => b[0].click()); await Y.p.waitForTimeout(200); // driver 16 -> 17: no longer half speed
+    await Y.ask('give me a challenge with this', 900);
+    const goalText = await Y.p.$eval('.goal-card .goal-text', (e) => e.textContent).catch(() => '');
+    const nowBefore = await Y.p.$eval('.goal-card .goal-now', (e) => e.textContent).catch(() => '');
+    await Y.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await Y.p.waitForTimeout(150);
+    const notYet = await Y.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    await Y.p.$$eval('.gears-less', (b) => b[0].click()); await Y.p.waitForTimeout(200); // driver back to 16: half speed
+    const nowAfter = await Y.p.$eval('.goal-card .goal-now', (e) => e.textContent).catch(() => '');
+    await Y.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await Y.p.waitForTimeout(150);
+    const done = await Y.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    await Y.p.$eval('.goal-card .goal-hint-btn', (b) => b.click()).catch(() => {});
+    const hint = await Y.p.$eval('.goal-card .goal-hint', (e) => (e.hidden ? '' : e.textContent)).catch(() => '');
+    const saved = await Y.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).map((t) => t.kind));
+    check('goal card: "give me a challenge with this" beside the gears sets "half as fast" (not already met); its Now line follows the gears\' own steppers live; Check says what still needs changing, then done; the hint gives no setting; the card is not saved',
+      /half as fast/.test(goalText) && /0\.53/.test(nowBefore) && /^Not yet:/.test(notYet) && /too high/.test(notYet) && /Driven turns per driver turn 0\.5\b/.test(nowAfter)
+        && /^Done:/.test(done) && /more teeth turns fewer times/.test(hint) && !/\b(?:12|16|24|32)\b/.test(hint) && saved.includes('gears') && !saved.includes('goal') && !Y.errors.length,
+      JSON.stringify({ goalText, nowBefore, notYet, nowAfter, done, hint, saved, errs: Y.errors }));
+    await Y.ctx.close(); }
   const ranBeforeProposal = gate.ran.length;
   // the proposal card (skills/proposal.js, build order step 3): a pasted customer request becomes an editable proposal with
   // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent
