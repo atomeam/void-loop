@@ -144,6 +144,12 @@
    "date": "2026-10-07",
    "ask": "label the clock kitchen",
    "from": "board Later, text annotation / labels: tags that ride with a thing, free labels"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-10",
+   "ask": "before rotating the GitHub token: `gh secret list` shows VOID_OWNER_TOKEN set 2026-10-09T21:58Z and the voice daily ran ",
+   "from": "map PR #344"
   }
  ],
  "open": [],
@@ -173,11 +179,16 @@
   "counter",
   "eightball",
   "fireworks",
+  "forge",
+  "gears",
   "go",
+  "growthtree",
   "heart",
   "list",
+  "lock",
   "mancala",
   "monopoly",
+  "moon",
   "notepad",
   "othello",
   "paper",
@@ -185,6 +196,7 @@
   "piggybank",
   "poker",
   "rack",
+  "ringer",
   "savings",
   "stopwatch",
   "tabletop",
@@ -195,8 +207,129 @@
   "weather"
  ],
  "canon": {
-  "version": 1,
+  "version": 2,
   "motto": null,
-  "voidquest": null
- }
+  "voidquest": null,
+  "terms": [
+   {
+    "term": "the forge",
+    "means": "Void's maker: you type (or sketch) an object, Void builds a 3D model of it you can spin and inspect up close, and \"print it\" downloads an STL sized for a home printer (inside a 180 mm cube). Each thing is a recipe of shapes blended into one mesh with a flat base (skills/forge-rules.js, skills/forge.js). Ten things so far: rocket, vase, bottle, table, snowman, lighthouse, teapot, house, sailboat, t"
+   },
+   {
+    "term": "frontier #14",
+    "means": "the item on Void's frontier that the forge answers (\"type or sketch a thing, hold it, print it\", domains/void.frontier.md). Done when ten things never built before come out recognisable, inspectable and printable; after that, each run builds the most-asked \"make me a ...\" that nothing answers yet."
+   }
+  ]
+ },
+ "tracks": [
+  {
+   "name": "Living action figures",
+   "last": "2026-10-07"
+  },
+  {
+   "name": "One-shot printing of working machines",
+   "last": "2026-10-07"
+  },
+  {
+   "name": "Life extension and disease cures",
+   "last": "2026-10-07"
+  },
+  {
+   "name": "Planet restoration",
+   "last": "2026-10-07"
+  },
+  {
+   "name": "Void stage handoff",
+   "last": "2026-10-07"
+  }
+ ],
+ "building": {
+  "at": "2026-10-10T03:04:14Z",
+  "date": "2026-10-10",
+  "by": "claude",
+  "item": "Bring someone into your Void",
+  "what": "the first piece (one Durable Object that relays stage changes between two tabs, the second visitor's cursor shown as a presence), invite links made by a signed-in member. Shipped 2026-10-10: share-worker/ (the ShareRoom "
+ },
+ "commits": [
+  {
+   "at": "2026-10-10T13:26:37Z",
+   "subject": "Away: log, growth ledger and frontier next step for the scene record (asked by Void)"
+  },
+  {
+   "at": "2026-10-10T12:49:46Z",
+   "subject": "Away: last place kept on the scene's own save; the run is one scene.advance record in the sender's scope (asked by Void); figures are create"
+  },
+  {
+   "at": "2026-10-10T12:46:15Z",
+   "subject": "growth: VOID_OWNER_TOKEN is set but rejected (401 on tick); skip rotation, rematch Pages READ_TOKEN"
+  },
+  {
+   "at": "2026-10-10T12:43:30Z",
+   "subject": "Main green: the Monopoly 3D check allows a first roll that draws Advance to Go"
+  },
+  {
+   "at": "2026-10-10T12:01:07Z",
+   "subject": "Void's voice: today's reflection, in its own words"
+  },
+  {
+   "at": "2026-10-10T11:46:06Z",
+   "subject": "frontier #18 done: a Moon goal and a lock goal through the same goal card"
+  },
+  {
+   "at": "2026-10-10T10:50:41Z",
+   "subject": "checks: run tools/goal.test.mjs with the fast checks"
+  },
+  {
+   "at": "2026-10-10T10:49:24Z",
+   "subject": "frontier #18 first piece: the goal card, live ports, and two gear goals"
+  },
+  {
+   "at": "2026-10-10T10:43:41Z",
+   "subject": "frontier #18: claim the first piece (the goal card and the gear half-speed goal)"
+  },
+  {
+   "at": "2026-10-10T09:44:33Z",
+   "subject": "Ringer fifth piece: New game keeps your best clear"
+  },
+  {
+   "at": "2026-10-10T09:02:04Z",
+   "subject": "Ringer fourth piece: a hand knuckles down behind the shooter"
+  },
+  {
+   "at": "2026-10-10T07:51:37Z",
+   "subject": "Ringer third piece: the aim line reaches where the shot would stop; a power arc while pulling"
+  },
+  {
+   "at": "2026-10-10T06:44:02Z",
+   "subject": "Verify's revert picker: a crashed run says nothing about checks it never reached"
+  },
+  {
+   "at": "2026-10-10T04:51:29Z",
+   "subject": "Grow line: name the real fix for the watch check's Stop"
+  },
+  {
+   "at": "2026-10-10T04:50:23Z",
+   "subject": "Watch check: press Pause and Stop through the DOM"
+  },
+  {
+   "at": "2026-10-10T04:48:09Z",
+   "subject": "Main green: the watch card survives an answer with no list; its check matches the real route"
+  },
+  {
+   "at": "2026-10-10T04:42:26Z",
+   "subject": "Reapply \"Merge pull request #367 from atomeam/helper/main-green-share-url\""
+  },
+  {
+   "at": "2026-10-10T04:01:55Z",
+   "subject": "Revert \"Merge pull request #367 from atomeam/helper/main-green-share-url\""
+  },
+  {
+   "at": "2026-10-10T03:44:00Z",
+   "subject": "Main green: the invite-link check opens the right path; the suite server survives a bad one"
+  },
+  {
+   "at": "2026-10-10T03:25:01Z",
+   "subject": "merge-main: read index sides with execFileSync"
+  }
+ ]
 }

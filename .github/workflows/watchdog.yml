@@ -15,6 +15,10 @@ on:
         description: Also run the everyday benchmark
         type: boolean
         default: true
+      stats:
+        description: Also write the reviewer's weekly stats (review-stats.json)
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -70,3 +74,40 @@ jobs:
             if (open.length) await github.rest.issues.createComment({ owner: context.repo.owner, repo: context.repo.repo, issue_number: open[0].number, body });
             else await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['watchdog'] });
             core.setFailed('main failed the check');
+
+  # The reviewer's own scoreboard, once a week (frontier #1): tools/review-learn.mjs reads Void's closer read on the PRs merged in the
+  # last 30 days, counts the findings its rules had already flagged and the false claims it filtered, and writes the numbers to
+  # void-live-deploy/review-stats.json; /code-review/ shows them ("this month Void's rules caught N of M findings its closer read
+  # made; K rules learned"). The commit goes straight to main like Void's voice does (void-voice.yml); main's deploy carries it.
+  review-stats:
+    if: github.event.schedule == '17 10 * * 0' || (github.event_name == 'workflow_dispatch' && inputs.stats)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write # the stats file on main
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Count the month (the closer read's findings against the rules)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node tools/review-learn.mjs --since 30d --stats void-live-deploy/review-stats.json | tee stats.txt
+          tail -3 stats.txt >> "$GITHUB_STEP_SUMMARY"
+      - name: Write the numbers to main
+        run: |
+          git diff --quiet void-live-deploy/review-stats.json && { echo "stats unchanged"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add void-live-deploy/review-stats.json
+          git commit -m "Review stats: this month's closer-read findings against the rules (tools/review-learn.mjs)"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1

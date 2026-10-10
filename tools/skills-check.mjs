@@ -4,6 +4,7 @@
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { unlistedSkills } from './skills-unlisted.mjs';
 
 const dir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'skills');
 const names = JSON.parse(readFileSync(resolve(dir, 'index.json'), 'utf8'));
@@ -20,5 +21,6 @@ for (const m of mods) {
     if (!r || !r.ok) bad.push(`${m.name}: suite ${r && r.got}`);
   }
 }
+for (const n of await unlistedSkills(dir)) bad.push(`${n}: a skill file that skills/index.json does not list, so it is never loaded (add it to the index, or to RETIRED in tools/skills-unlisted.mjs with the reason)`);
 if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
 console.log(`all ${mods.length} skills clean`);

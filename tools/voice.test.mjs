@@ -1,10 +1,12 @@
 import test from 'node:test';
+import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { VOICE_SYSTEM, parseVoice, currentAsks, questionFor, knowsFacts, voiceFacts } from '../void-live-deploy/lib/voice.js';
 import { isSelfAsk, selfFacts } from '../void-live-deploy/lib/self-context.js';
 import * as reflect from '../void-live-deploy/functions/api/reflect.js';
-import { writeLog, entryBlock } from './reflect.mjs';
+import { writeLog, entryBlock, openAsks, asksInLog } from './reflect.mjs';
+import { readFileSync } from 'node:fs';
 
 const OWNER = 'owner-test-key-123456';
 function d1() {
@@ -17,7 +19,9 @@ function d1() {
 const SAID = { thoughts: 'The incident brief is useful, but it forgets the brief the moment you close it.', better: 'Keep the last brief so "same again" brings it back.', asks: [{ ask: 'Make "same again" reopen the last incident brief', small: true }, { ask: 'Learn backgammon', small: false }], striking: true };
 const ai = (reply, calls = []) => ({ run: async (m, o) => { calls.push(o); if (reply instanceof Error) throw reply; return { response: typeof reply === 'string' ? reply : JSON.stringify(reply) }; } });
 const post = (env, body, key = OWNER) => reflect.onRequestPost({ request: new Request('https://a-to-mind.com/api/reflect', { method: 'POST', headers: key ? { authorization: 'Bearer ' + key } : {}, body: JSON.stringify(body) }), env });
-const ASSETS = { fetch: async (rq) => (new URL(rq.url).pathname === '/self.json' ? Response.json({ about: 'A blank stage.', shipped: [], open: [], games: ['chess', 'mancala'], minis: ['clock'] }) : Response.json(['tip', 'chess'])) };
+const AGO = (d) => new Date(Date.now() - d * 86400000).toISOString().replace(/\.\d+Z$/, 'Z');
+const LEDGER = [{ at: AGO(30), by: 'claude', kind: 'grow', what: 'Chess, a month ago' }, { at: AGO(2), by: 'claude', kind: 'grow', what: 'Backgammon, the board game: you can play it now' }, { at: AGO(1), by: 'claude', kind: 'fix', what: 'the timer no longer stops at 59 s' }];
+const ASSETS = { fetch: async (rq) => { const p = new URL(rq.url).pathname; return p === '/self.json' ? Response.json({ about: 'A blank stage.', shipped: [], open: [], games: ['chess', 'mancala'], minis: ['clock'] }) : p === '/void.growth.json' ? Response.json(LEDGER) : Response.json(['tip', 'chess']); } };
 
 test('Void\'s reply is kept word for word; only secrets are redacted; nothing said = nothing kept', () => {
   const v = parseVoice('Sure! ' + JSON.stringify({ ...SAID, thoughts: SAID.thoughts + ' key sk-ant-api03-abcdefghijklmnopqrstuvwxyz0123456789' }));
@@ -65,10 +69,18 @@ test('POST is owner-only, saves Void\'s words, queues one small ask credited to 
   assert.equal(e.thoughts, SAID.thoughts); assert.equal(e.shipped, 'incident brief'); assert.ok(e.queued);
   assert.match(calls[0].messages[1].content, /Games I can play: chess, mancala/);
   assert.match(calls[0].messages[1].content, /This just shipped: "incident brief"/);
+  assert.doesNotMatch(calls[0].messages[1].content, /last 7 days/, 'a build reflection is about what shipped, not the week');
   const q = DB.db.prepare('SELECT * FROM void_queue').all();
   assert.equal(q.length, 1); assert.equal(q[0].ask, SAID.asks[0].ask); assert.match(q[0].target, /^voice:/); assert.match(q[0].note, /Credit Void/);
+  // the job has its execution record (lib/actions.js): Void queued it for itself, done, naming the job
+  const acts = DB.db.prepare('SELECT owner, kind, ref, state, result FROM void_actions').all();
+  assert.equal(acts.length, 1); assert.equal(acts[0].owner, 'void'); assert.equal(acts[0].kind, 'queue.add'); assert.equal(acts[0].ref, q[0].target); assert.equal(acts[0].state, 'done'); assert.match(acts[0].result, new RegExp('^queued ' + q[0].id));
   // a second reflection while Void's ask is still open queues nothing more
   const e2 = await (await post(env, { kind: 'daily' })).json();
+  // the daily reflection reads its own last week from the growth ledger, in the growth card's words
+  const daily = calls[calls.length - 1].messages[1].content;
+  assert.match(daily, /What changed in me in the last 7 days \(my growth ledger\): Since \d{4}-\d\d-\d\d \(the last 7 days\) I changed 2 things: 1 new thing I can do, 1 thing I fixed\. New thing I can do: Backgammon, the board game\. Thing I fixed: the timer no longer stops at 59 s\./);
+  assert.doesNotMatch(daily, /Chess, a month ago/);
   assert.equal(e2.queued, null); assert.equal(DB.db.prepare('SELECT COUNT(*) n FROM void_queue').get().n, 1);
   assert.match(calls[1].messages[1].content, /What I said about myself most recently/);
   const g = await (await reflect.onRequestGet({ env: { DB } })).json();
@@ -102,5 +114,39 @@ test('the canon: Adam\'s motto and VoidQuest are read with their version; "(not 
   const { readCanon } = await import('./self-context.mjs');
   assert.deepEqual(readCanon('version: 3\n\n## Motto\nOne win at a time.\n\n## VoidQuest\nLearn every game, one at a time.\n'), { version: 3, motto: 'One win at a time.', voidquest: 'Learn every game, one at a time.' });
   assert.deepEqual(readCanon('version: 1\n\n## Motto\n(not written yet)\n\n## VoidQuest\n(not written yet)\n'), { version: 1, motto: null, voidquest: null });
+  // terms (asked by Void, 2026-10-10: "write the formal definitions for 'the forge' and 'frontier #14' into my canon")
+  const withTerms = readCanon('version: 2\n\n## Motto\n(not written yet)\n\n## Terms\n- **the forge**: Void\'s maker.\n- **frontier #14**: the item the forge answers.\n');
+  assert.deepEqual(withTerms.terms, [{ term: 'the forge', means: 'Void\'s maker.' }, { term: 'frontier #14', means: 'the item the forge answers.' }]);
+  assert.equal(withTerms.version, 2);
+  assert.match(knowsFacts({ canon: withTerms }), /My terms \(canon v2\): the forge = Void's maker\. \| frontier #14 = the item the forge answers\./);
+  const real = readCanon(fs.readFileSync(new URL('../domains/void.canon.md', import.meta.url), 'utf8'));
+  assert.ok(real.terms.some((x) => x.term === 'the forge' && /STL/.test(x.means)) && real.terms.some((x) => x.term === 'frontier #14'), 'the canon carries both terms Void asked for');
   assert.match(knowsFacts({ canon: { version: 1, motto: null, voidquest: 'Learn games.' } }), /My canon \(v1\): motto: not written yet, so I do not know it; VoidQuest: Learn games\./);
+});
+
+test('weekFacts: the week in the growth card\'s words, nothing for a ledger that cannot be read', async () => {
+  const { weekFacts } = await import('../void-live-deploy/lib/voice.js');
+  assert.equal(weekFacts(null), ''); assert.equal(weekFacts([]), ''); assert.equal(weekFacts({}), '');
+  assert.match(weekFacts(LEDGER), /^What changed in me in the last 7 days \(my growth ledger\): Since .* I changed 2 things/);
+});
+
+test('the current asks leave out every ask a growth-ledger entry answers (its asked field), word for word', () => {
+  const asks = [{ ask: 'Build a Learning Queue.', small: true, kind: 'daily', at: '2026-10-09' }, { ask: 'Learn backgammon.', small: false, kind: 'daily', at: '2026-10-09' }];
+  const ledger = [{ kind: 'grow', what: 'x', asked: 'build a learning queue' }, { kind: 'grow', what: 'unrelated, no asked field' }];
+  assert.deepEqual(openAsks(asks, ledger).map((a) => a.ask), ['Learn backgammon.']);
+  assert.deepEqual(openAsks(asks, []).length, 2);
+  // the real ledger answers both asks of 2026-10-09 (lib/learn.js and skills/live.js)
+  const real = JSON.parse(readFileSync(new URL('../void-live-deploy/void.growth.json', import.meta.url), 'utf8'));
+  const oct9 = [{ ask: "Build a mechanism that parses unanswered user questions into a structured 'Learning Queue' to automate skill acquisition." }, { ask: 'Develop a background task runner that allows my existing skills (like news, weather, or worldtime) to update autonomously.' }];
+  assert.equal(openAsks(oct9, real).length, 0);
+});
+
+test('the asks are stamped with the day they were read; an unreachable site keeps the old stamp and says so', () => {
+  const asks = [{ ask: 'Learn backgammon.', small: true, kind: 'daily', at: '2026-10-09T10:00:00Z' }];
+  const fresh = writeLog('', [], asks, { read: '2026-10-10' });
+  assert.match(fresh, /_Read from \/api\/reflect on 2026-10-10\. Asks a growth-ledger entry answers/);
+  assert.deepEqual(asksInLog(fresh), [{ ask: 'Learn backgammon.', small: true, kind: 'daily', at: '2026-10-09' }], 'the list can be read back from the file');
+  const stale = writeLog(fresh, [], asksInLog(fresh), { failed: '2026-10-12' });
+  assert.match(stale, /_Read from \/api\/reflect on 2026-10-10; the site could not be reached on 2026-10-12, so this may be out of date\./);
+  assert.match(writeLog('', [], [], {}), /## Void's current asks\n\n- \(none open\)/);
 });

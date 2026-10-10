@@ -33,8 +33,10 @@ export function redact(text) {
     .replace(/([?&](?:key|k|api_key|apikey|token|access_token|auth|sig|signature|secret|password|pass|client_secret)=)[^&\s#"']{6,}/gi, '$1[redacted]')
     .replace(/\b(authorization\s*[:=]\s*)(bearer|basic|token)\s+[A-Za-z0-9._~+/=-]{8,}/gi, '$1$2 [redacted]')
     .replace(/\b(bearer)\s+[A-Za-z0-9._~+/=-]{16,}/gi, '$1 [redacted]')
-    .replace(/\b((?:api[_-]?key|apikey|secret|client[_-]?secret|password|passwd|pwd|access[_-]?token|refresh[_-]?token|token|private[_-]?key)["']?\s*[:=]\s*["']?)(?!\[redacted)[^\s"',}&]{6,}/gi, '$1[redacted]')
-    .replace(/\b(sk|pk|rk|ghp|gho|ghs|ghu|ghr|xox[abpr]|xapp|AKIA)[-_A-Za-z0-9]{12,}\b/g, '[redacted]')
+    // a value read from the environment (process.env.X, os.environ[...], ${{ secrets.X }}, $VAR) names the secret, it is
+    // not one: masking it made code that does the right thing read as a hard-coded "[redacted]" key to the reviewer
+    .replace(/\b((?:api[_-]?key|apikey|secret|client[_-]?secret|password|passwd|pwd|access[_-]?token|refresh[_-]?token|token|private[_-]?key)["']?\s*[:=]\s*["']?)(?!\[redacted|(?:process\.env|import\.meta\.env|Bun\.env|Deno\.env\.get\s*\(|os\.environ\b|os\.getenv\s*\(|os\.Getenv\s*\(|System\.getenv\s*\(|Environment\.GetEnvironmentVariable\s*\(|getenv\s*\(|(?:context\.|c\.)?env\s*[.[]|secrets\.|\$\{\{|\$\{[A-Za-z_]\w*\}|\$[A-Za-z_]\w*(?=[\s"',;})]|$)))[^\s"',}&]{6,}/gi, '$1[redacted]')
+    .replace(/\b(?:(?:sk|pk|rk)[-_]|gh[pousr]_|xox[abpr]-|xapp-)[-_A-Za-z0-9]{12,}\b|\bAKIA[A-Z0-9]{12,}\b/g, '[redacted]')
     .replace(/(https?:\/\/[^\s:@/]+:)[^\s@/]+@/g, '$1[redacted]@');
 }
 

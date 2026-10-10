@@ -20,6 +20,53 @@ export const PRODUCTS = [
     gumroad: { productId: '', slug: 'dkmcjk', envVar: 'GUMROAD_REVIEW_PRODUCT_ID' }, // made 2026-10-09
     daily: 300,
   },
+  // Hands-on services (2026-10-10): work the crew does for a buyer, sold the same Gumroad way. All four are in the
+  // live store. `price` is the fallback the card shows when the live catalog (/api/catalog) is unreachable; on the
+  // page the card reads the live price, so Gumroad stays the one place Adam changes a price.
+  {
+    id: 'one-time-fix',
+    name: 'One-Time Fix',
+    price: '$25',
+    page: 'https://a-to-mind.com/one-time-fix/',
+    adds: 'one broken automation, diagnosed and repaired, with proof it runs again',
+    includedIn: '',
+    gumroad: { productId: '', slug: 'eozcma', envVar: 'GUMROAD_FIX_PRODUCT_ID' }, // on sale
+    send: ['reply to your receipt with what stopped working, in your own words (screenshots help, jargon not required);', 'ask for the minimum access needed and say why; diagnose, repair, test end to end;', 'send back a plain-words report with before-and-after proof it runs.'],
+    daily: 0,
+  },
+  {
+    id: 'keep-it-running',
+    name: 'Keep-It-Running Plan',
+    price: '$49 a month',
+    page: 'https://a-to-mind.com/keep-it-running/',
+    adds: 'your automations watched around the clock, repairs when something breaks, a monthly plain-words report',
+    includedIn: '',
+    gumroad: { productId: '', slug: 'keep-it-running-membership', envVar: 'GUMROAD_PLAN_PRODUCT_ID' },
+    send: ['reply to your receipt with the automations to watch (a list, or a description of what their tools do);', 'set up round-the-clock monitoring with alerts and confirm in writing what is covered;', 'fix what breaks with proof, and send a monthly plain-words report.'],
+    daily: 0,
+  },
+  {
+    id: 'full-stack-audit',
+    name: 'Full Stack Audit',
+    price: '$325',
+    page: 'https://a-to-mind.com/full-stack-audit/',
+    adds: 'a top-to-bottom review of every automation you have, with a written repair plan ranked by priority',
+    includedIn: '',
+    gumroad: { productId: '', slug: 'full-stack-audit', envVar: 'GUMROAD_AUDIT_PRODUCT_ID' },
+    send: ['reply to your receipt with the tools they use (Zapier, Make, store, forms);', 'ask for the minimum read access and say why; inventory every workflow;', 'deliver a verdict on each (working, broken, fragile, wasteful) and a written repair plan ranked by priority.'],
+    daily: 0,
+  },
+  {
+    id: 'first-automation-setup',
+    name: 'First Automation Setup',
+    price: '$100',
+    page: 'https://a-to-mind.com/first-automation-setup/',
+    adds: 'your first automation built for you, end to end, from the task you do by hand',
+    includedIn: '',
+    gumroad: { productId: '', slug: 'first-automation-setup', envVar: 'GUMROAD_SETUP_PRODUCT_ID' },
+    send: ['reply to your receipt describing the task they do by hand and the tools they already use;', 'build the automation end to end with those tools, tested from trigger to done;', 'hand it over in plain English with a test run showing it working.'],
+    daily: 0,
+  },
 ];
 export const productById = (id) => PRODUCTS.find((p) => p.id === id) || null;
 export function productIdOf(p, env) { const v = (env && p.gumroad.envVar && env[p.gumroad.envVar]) || p.gumroad.productId; return String(v || '').trim(); }

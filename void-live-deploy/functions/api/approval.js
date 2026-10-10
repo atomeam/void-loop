@@ -14,6 +14,7 @@
 // Moving to Workflows later: domains/void.confirm-line.md.
 import { ownerOk } from '../../lib/guard.js';
 import { grantStandingSpend } from '../../lib/router.js';
+import { track } from '../../lib/actions.js';
 import {
   EVENT_REQUESTED, EVENT_DECISION, POLICY_VERSION, GATED, ORG_ID, WORKFLOW_ID, CONFIRM_TTL_MS,
   isGated, fingerprint, confirmLine, budgetImpact, checkDecision,
@@ -84,6 +85,11 @@ async function requested(env, b) {
   };
   await env.DB.prepare('INSERT INTO void_approvals (id, state, record, at, updated) VALUES (?, ?, ?, ?, ?)')
     .bind(approvalId, 'pending', JSON.stringify(rec), rec.requestedAt, rec.requestedAt).run();
+  // a tool whose send is not connected (GATED[tool].stub names the ref) records the ask itself as a stub: the owner's
+  // actions card shows the proposal that waited on the confirm line, and that nothing went out
+  if (typeof GATED[toolName].stub === 'function') {
+    try { await track(env, { owner: 'owner', kind: toolName, ref: GATED[toolName].stub(args) || toolName }, async () => {}, { stub: 'waits on the confirm line: ' + rec.line + ' Sending is not connected yet, so nothing is sent either way.' }); } catch (_) {}
+  }
   return Response.json(rec);
 }
 
@@ -92,8 +98,11 @@ async function resumeOnDecision(env, rec, event) {
   const now = await fingerprint(rec.toolName, rec.argsSnapshot);
   if (event.argsFingerprint !== rec.argsFingerprint || now !== rec.argsFingerprint) return { ran: false, error: 'fingerprint mismatch' };
   const run = executors[rec.toolName];
-  if (!run) return { ran: false, note: 'not connected' };
-  try { return { ran: true, result: await run(rec.argsSnapshot, env, rec) }; } catch (e) { return { ran: false, error: 'action failed: ' + String(e && e.message).slice(0, 120) }; }
+  // the execution record (lib/actions.js): the approved action runs inside its record (no record, no action); a tool
+  // with no executor is recorded stubbed, so the owner's card shows the yes that sent nothing
+  const who = { owner: rec.requestedBy || 'owner', kind: 'confirm.' + rec.toolName, ref: rec.approvalId };
+  if (!run) { try { await track(env, who, async () => {}, { stub: 'approved, but ' + rec.toolName + ' is not connected yet: nothing was sent' }); } catch (_) {} return { ran: false, note: 'not connected' }; }
+  try { return { ran: true, result: (await track(env, who, () => run(rec.argsSnapshot, env, rec))).value }; } catch (e) { return { ran: false, error: 'action failed: ' + String(e && e.message).slice(0, 120) }; }
 }
 
 async function decided(env, b) {

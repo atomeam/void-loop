@@ -190,6 +190,7 @@
       max-height: 320px;
       object-fit: contain;
     }
+    body:not(.in-ext-panel) .vput { display: none; } /* "into the page" shows only in the extension's side panel */
     .link-card {
       width: 280px;
       padding: 14px 16px;
@@ -415,6 +416,7 @@
       filter: blur(40px); opacity: .7; animation: auraDrift 60s ease-in-out infinite alternate; }
     @keyframes auraDrift { to { transform: translate(3%, -2%) scale(1.08); } }
     #stage { perspective: 1400px; }
+    #stage > .shrunk, #stage > .shrunk * { cursor: zoom-in; } /* a board shrunk beside a newer one: a tap brings it back */
     .thing { transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
       transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .35s ease; filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); }
     .thing.lift { --tz: 18px; filter: drop-shadow(0 26px 40px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(140,170,255,.18)); }
@@ -453,6 +455,10 @@
     #input:focus, #input:focus-visible { outline: none; }
     #row:focus-within { border-color: rgba(150,175,255,.6); box-shadow: 0 0 0 1px rgba(150,175,255,.10), 0 0 40px rgba(110,140,255,.12), 0 20px 60px rgba(0,0,0,.5); }
     #dock { background: linear-gradient(to top, color-mix(in srgb, var(--void-bg, #050505) 92%, transparent) 55%, transparent); z-index: 5; }
+    /* the dock's top is a fade you see through: a card's button showing there takes the click; only what is in the dock
+       (the suggestions, the ask bar, the status lines) catches the pointer */
+    #dock { pointer-events: none; }
+    #dock > * { pointer-events: auto; }
     #hints { backdrop-filter: blur(10px); }
     /* the same ask again: the page that is already open answers with a brief glow instead of a second fetch */
     @keyframes vpage-again { 0% { box-shadow: 0 0 0 1px rgba(150,175,255,.45), 0 0 60px rgba(110,140,255,.30); } 100% { box-shadow: none; } }
@@ -476,6 +482,8 @@
       opacity: calc(var(--near) * .6); filter: saturate(1.4); }
     .void-eaten { position: fixed; z-index: 5; pointer-events: none; white-space: nowrap; color: #cfd8f0; transform-origin: center; }
     @media (prefers-reduced-motion: reduce) { html[data-fx="nebula"] #row::before { opacity: 0; } }
+    #void-syn { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 2.4s ease; }
+    #void-syn.on { opacity: 1; }
     @media (prefers-reduced-motion: reduce) {
       .thing, .vpage, .thing.arrive { animation: none !important; transition: opacity .2s ease !important; }
       .vpage, .vpage.on { transform: translate(-50%, -50%); filter: none; }
@@ -553,6 +561,11 @@
     /* the status line under the ask bar: a quiet, centred caption that fades, never a stray left-aligned word */
     #whisper { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; margin-top: 8px; transition: opacity .25s ease; }
     #whisper:empty { opacity: 0; }
+    /* someone else in your Void (frontier #11): their cursor, a faint glow that follows them */
+    .void-presence { position: fixed; z-index: 40; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, color-mix(in srgb, var(--fg) 45%, transparent) 0%, transparent 70%); box-shadow: 0 0 14px color-mix(in srgb, var(--fg) 25%, transparent); transition: left .08s linear, top .08s linear; }
+    #away-note { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; transition: opacity .25s ease; }
+    #away-note:empty { opacity: 0; }
+    #away-note .away-see { color: var(--fg); text-underline-offset: 2px; }
     /* smooth background: the grain lives on its own unscaled layer, so the dark gradient dithers instead of banding or streaking */
     #void-depth::after { content: none; }
     body::after { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05; mix-blend-mode: overlay;
@@ -688,12 +701,14 @@
       <button id="go" type="button" aria-label="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
+    <div id="away-note" role="status" aria-live="polite"></div>
   </div>
   <script>
     // Private learning log — never shown as product claims.
     // freerEnglishParse — natural-language intent for clock (+ sticky)
     const LOOP_KEY = 'a2m.void.loop.v1';
     const STATE_KEY = 'a2m.void.state.v1';
+    const AWAY_KEY = 'a2m.void.away.v1'; // when this stage was last left or saved: the world lives on from then (advance in skills/scripts.js)
     // plan item 6: the passkey session on this device ({ token, userId, rev, sig, synced }); see "Your Void follows you" below
     const ME_KEY = 'a2m.void.me.v1';
     const PAGE = window.__VOID_PAGE__ || null; // a-to-mind.com/@name: someone's published Void (functions/[handle].js), shown, never saved over yours
@@ -701,6 +716,9 @@
     let minePushT = 0, minePulled = 0, mineQuiet = false, pendingForget = null, pkRetryFn = null;
 
     const stage = document.getElementById('stage');
+    // live takers (frontier #18) also hear changes a card does not save (a slider being dragged, a stepper that stops the
+    // click): the stage notices any input or press on a card, in the capture phase, and announces it once the card has acted
+    for (const ev of ['input', 'click', 'pointerup']) stage.addEventListener(ev, () => setTimeout(() => { try { dispatchEvent(new CustomEvent('void:stage-change')); } catch (_) {} }, 0), true);
     const input = document.getElementById('input');
     // how much of the screen the ask bar takes from the bottom: answer pages and boards are centred above it, never under it
     const askRow = document.getElementById('row');
@@ -730,6 +748,7 @@
 
     /** @type {Record<string, any>} */
     let things = {};
+    let share = null, relayAsk = null, relayingIn = false, shareKnown = null; const presences = new Map(); // a shared Void (frontier #11, shareJoin): declared before the first save()
     let selectedId = null;
     // stage kinds a skill file brings (3D figures and objects): { kind: { mount(th, S), dropped?(th, S), thrown?(th, S), throwable } }
     const stageKinds = {};
@@ -746,11 +765,20 @@
         if (raw) things = JSON.parse(raw) || {};
       } catch (_) { things = {}; }
     }
+    // a learning card (the quiz: an `ephemeral` stage kind) is never saved or synced unless the visitor kept that one card
+    // (domains/void.learning.md; the same rule as persistable() in skills/quiz-rules.js, tested in tools/learning.test.mjs)
+    function keptThings() { const out = {}; for (const [id, t] of Object.entries(things)) if (!(t && stageKinds[t.kind] && stageKinds[t.kind].ephemeral) || t.keep) out[id] = t; return out; }
     function save() {
       if (PAGE) return;
-      localStorage.setItem(STATE_KEY, JSON.stringify(things));
+      try { if (figures3d && figures3d.keepPlaces) figures3d.keepPlaces(things); } catch (_) {} // where each figure stands is kept whenever the scene is saved (figures3d.js), not only when the tab hides
+      localStorage.setItem(STATE_KEY, JSON.stringify(keptThings()));
+      try { localStorage.setItem(AWAY_KEY, String(Date.now())); } catch (_) {}
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
       mineChanged();
+      shareNoticeNew();
+      // live takers (frontier #18: a goal card takes its source's observations live) re-read their source on every change;
+      // snapshot takers (the quiz, the challenge) took one copy and never listen
+      try { dispatchEvent(new CustomEvent('void:stage-change')); } catch (_) {}
     }
     function loopLog(attempt) {
       // an ask read with its typos fixed is logged as it was typed, so the miss board and the bench see the real ask
@@ -788,11 +816,78 @@ Object.values(things).forEach((th) => {
         else if (th.kind === 'shape') mountShape(th);
         else if (th.kind === 'kept') mountKept(th);
         else if (th.kind === 'calendar') mountCalendar(th);
+        else if (th.kind === 'tab') mountTab(th);
         else if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
+      Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
       decorate();
       syncFigures();
       announceNew();
+      requestAnimationFrame(() => layoutStage()); // after any centring the summoner asked for
+    }
+    // Cards stop landing on top of each other (lib/placement.js, 2026-10-10): a card that just arrived takes the nearest free
+    // spot from where it was asked to land; a card that grows (a draft filling the tab card, a 3D miniature loading) moves the
+    // cards it now covers; a card the person dragged stays where they put it; a saved layout is never reshuffled on load.
+    let placement = null; import('/lib/placement.js').then((m) => { placement = m; layoutStage(); }).catch(() => {});
+    let laidOut = null; const cardSize = new Map(), grownIds = new Set(), centred = new Set(), geoOf = new Map();
+    // A board that no longer fits beside a newer one shrinks (lib/placement.js) instead of half-covering it; its card shrinks
+    // with it. placeThing puts a thing (and its card) where th says, at th.scale; a tap on a small board brings it back.
+    function placeThing(th) {
+      const el = stage.querySelector(':scope > .thing[data-id="' + CSS.escape(th.id) + '"]'), side = stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(th.id) + '"]');
+      const s = th.scale < 1 ? th.scale : 1;
+      for (const n of [el, side]) if (n) { n.style.transformOrigin = s < 1 ? '0 0' : ''; n.style.scale = s < 1 ? String(s) : ''; n.classList.toggle('shrunk', s < 1); }
+      if (el) { el.style.left = th.x + 'px'; el.style.top = th.y + 'px'; }
+      if (side && th.card) { side.style.left = th.card.x + 'px'; side.style.top = th.card.y + 'px'; }
+    }
+    let swallowClick = 0;
+    stage.addEventListener('pointerdown', (e) => {
+      const n = e.target.closest && e.target.closest('.thing[data-id], .side-card[data-of]'), id = n && (n.dataset.id || n.dataset.of), th = id && things[id];
+      if (!th || !(th.scale < 1)) return;
+      e.stopPropagation(); e.preventDefault(); swallowClick = Date.now() + 700; // the tap brings it back; it doesn't also play a move
+      const g = th.geo, home = th.home || { x: th.x - g.bx * th.scale, y: th.y - g.by * th.scale };
+      th.x = Math.round(home.x + g.bx); th.y = Math.round(home.y + g.by); if (th.card) th.card = { x: Math.round(home.x + g.sx), y: Math.round(home.y + g.sy) };
+      delete th.scale; delete th.geo; delete th.home;
+      placeThing(th); centred.add(id); save(); requestAnimationFrame(() => layoutStage()); // it holds its spot again; the board in front of it moves or shrinks
+    }, true);
+    stage.addEventListener('click', (e) => { if (Date.now() < swallowClick) { e.stopPropagation(); e.preventDefault(); swallowClick = 0; } }, true);
+    const sizeWatch = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
+      for (const e of entries) {
+        const id = e.target.dataset && e.target.dataset.id; if (!id || !things[id]) continue;
+        const w = e.target.offsetWidth, h = e.target.offsetHeight, was = cardSize.get(id);
+        if (was && (h > was.h + 4 || w > was.w + 4)) grownIds.add(id);
+        cardSize.set(id, { w, h });
+      }
+      if (grownIds.size) requestAnimationFrame(() => layoutStage());
+    }) : null;
+    function layoutStage() {
+      if (!placement || PAGE || document.documentElement.classList.contains('dragging')) return;
+      const els = [...stage.querySelectorAll(':scope > .thing[data-id]')].filter((el) => things[el.dataset.id] && el.offsetWidth);
+      if (sizeWatch) { sizeWatch.disconnect(); els.forEach((el) => sizeWatch.observe(el)); }
+      if (!laidOut && !els.length) return; // the stage hasn't drawn yet: the first real look is the saved layout, never fresh cards
+      const first = !laidOut; if (first) laidOut = new Set();
+      // a 3D board's own card (skills/side-card.js: whose move, the buttons, how to play) is placed with its board, as one
+      // rectangle, and moves with it; otherwise a board moved aside leaves its card behind, on top of whatever comes next
+      const sideOf = (id) => stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(id) + '"]');
+      const cards = els.map((el) => { const th = things[el.dataset.id], side = sideOf(th.id), mid = centred.has(th.id); // mid: asked for the middle, so it holds its spot like a card that grew, and its neighbours move
+        const base = { id: th.id, pinned: !!th.pinned, fresh: !first && !mid && !laidOut.has(th.id), grew: mid || grownIds.has(th.id) };
+        if (th.scale < 1 && th.geo) { const s = th.scale, g = th.geo; return { ...base, x: el.offsetLeft - g.bx * s, y: el.offsetTop - g.by * s, w: g.w, h: g.h, scale: s, home: th.home }; }
+        let x = el.offsetLeft, y = el.offsetTop, r = x + el.offsetWidth, b = y + el.offsetHeight;
+        if (side && side.offsetWidth) { x = Math.min(x, side.offsetLeft); y = Math.min(y, side.offsetTop); r = Math.max(r, side.offsetLeft + side.offsetWidth); b = Math.max(b, side.offsetTop + side.offsetHeight); }
+        geoOf.set(th.id, { bx: el.offsetLeft - x, by: el.offsetTop - y, sx: side ? side.offsetLeft - x : 0, sy: side ? side.offsetTop - y : 0, w: r - x, h: b - y });
+        return { ...base, x, y, w: r - x, h: b - y }; });
+      cards.forEach((c) => { laidOut.add(c.id); centred.delete(c.id); }); grownIds.clear(); // a card not on the stage yet keeps its claim on the middle
+      const moves = placement.arrange(cards, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) });
+      let moved = false;
+      for (const [id, p] of Object.entries(moves)) {
+        const th = things[id], c = cards.find((k) => k.id === id), g = th && (th.geo || geoOf.get(id)); if (!th || !c || !g) continue;
+        const s = p.scale ?? (th.scale || 1);
+        if (s < 1) { if (!(th.scale < 1)) th.home = { x: c.x, y: c.y }; th.scale = s; th.geo = g; } // shrunk: remember its full size and where it stood
+        else { delete th.scale; delete th.geo; delete th.home; }
+        th.x = Math.round(p.x + g.bx * s); th.y = Math.round(p.y + g.by * s);
+        if (sideOf(id)) th.card = { x: Math.round(p.x + g.sx * s), y: Math.round(p.y + g.sy * s) };
+        placeThing(th); moved = true;
+      }
+      if (moved) { decorate(); save(); }
     }
     // A thing that just arrived on the stage (a list, a timer, a game board) is read out once, like an answer page
     let seenIds = null;
@@ -891,6 +986,7 @@ Object.values(things).forEach((th) => {
       if (stageKinds[kind]) { // skill kinds: each ask adds one more; it stays until thrown off the screen
         const th = Object.assign({ id: uid(kind), kind, x: 40, y: 60 }, opts);
         const centre = !!th.center; delete th.center;
+        if (th.hold) centred.add(th.id); delete th.hold; // a board that worked out the middle itself holds it, like a centred one
         things[th.id] = th; selectedId = th.id; save(); render();
         if (centre) centreThing(th.id);
         return th;
@@ -903,6 +999,7 @@ Object.values(things).forEach((th) => {
     }
     // a board or card that asks for the middle: centred left to right, and in the room above the ask bar (phone or desktop)
     function centreThing(id) {
+      centred.add(id); // a board that asks for the middle keeps it; the cards it covers move (layoutStage)
       const th = things[id], el = th && stage.querySelector('[data-id="' + CSS.escape(id) + '"]');
       if (!el) { if (th) render(); return; }
       const room = dockSpace() - stage.getBoundingClientRect().top - 12;
@@ -911,8 +1008,178 @@ Object.values(things).forEach((th) => {
       el.style.left = th.x + 'px'; el.style.top = th.y + 'px';
       save();
     }
+    // --- The Void extension's side panel (extension/): Void reads the tab you point it at (Alt+Shift+V or the right-click menu)
+    // and drafts into the box you were typing in. Messages are taken only from the panel of this extension (its id is pinned by
+    // the key in extension/manifest.json). Page text stays in this browser: it lives in memory here, never in the saved stage
+    // (which syncs to /api/mine when you're signed in), and no ask, log or lookup carries it.
+    const EXT_ORIGIN = 'chrome-extension://dcjdpaeachfmfndklkiglgebfflamhkg';
+    const ext = { on: false, tab: null, seq: 0, waiting: {}, draft: '', sent: '' }; // draft and sent: the card's box and its flag, in memory only, so a redraw keeps them
+    const inPanel = window.parent !== window;
+    function extSend(msg) { if (inPanel) { try { window.parent.postMessage(msg, EXT_ORIGIN); } catch (_) {} } }
+    function extDraft(text) {
+      return new Promise((resolve) => {
+        if (!ext.on) return resolve({ ok: false, why: 'no-panel' });
+        if (!ext.tab) return resolve({ ok: false, why: 'no-tab' });
+        const id = ++ext.seq; ext.waiting[id] = resolve;
+        setTimeout(() => { if (ext.waiting[id]) { delete ext.waiting[id]; resolve({ ok: false, why: 'no-reply' }); } }, 5000);
+        extSend({ type: 'void-ext:draft', id, text: String(text) });
+      });
+    }
+    // "draft for me: proposal": the panel reads the thread text of the tab you pointed Void at, now, once (extension/page.js voidReadThread)
+    function extThread() {
+      return new Promise((resolve) => {
+        if (!ext.on) return resolve({ ok: false, why: 'no-panel' });
+        if (!ext.tab) return resolve({ ok: false, why: 'no-tab' });
+        const id = ++ext.seq; ext.waiting[id] = resolve;
+        setTimeout(() => { if (ext.waiting[id]) { delete ext.waiting[id]; resolve({ ok: false, why: 'no-reply' }); } }, 5000);
+        extSend({ type: 'void-ext:thread', id });
+      });
+    }
+    const DRAFT_WHY = { 'no-panel': 'open Void in its side panel to draft into a page', 'no-tab': 'point Void at the page first: Alt+Shift+V there',
+      'no-field': 'click into the box on the page first, then try again', 'no-access': 'that tab moved on or closed: press Alt+Shift+V there again' };
+    const draftSaid = (r) => (r && r.ok ? 'in the page · nothing was sent' : DRAFT_WHY[(r && r.why) || ''] || "couldn't put it in the page");
+    window.addEventListener('message', (e) => {
+      if (!inPanel || e.origin !== EXT_ORIGIN || e.source !== window.parent || !e.data || typeof e.data !== 'object') return;
+      const m = e.data;
+      if (m.type === 'void-ext:hello') { ext.on = true; document.body.classList.add('in-ext-panel'); }
+      else if (m.type === 'void-ext:tab' && m.tab && typeof m.tab === 'object') {
+        ext.on = true; document.body.classList.add('in-ext-panel');
+        const t = m.tab, s = (v, n) => String(v == null ? '' : v).slice(0, n);
+        ext.tab = { title: s(t.title, 200), url: s(t.url, 500), selection: s(t.selection, 5000), readable: t.readable !== false,
+          field: t.field && typeof t.field === 'object' ? { tag: s(t.field.tag, 20), name: s(t.field.name, 80) } : null };
+        let th = Object.values(things).find((x) => x.kind === 'tab');
+        if (!th) { // a card that never serializes (toJSON gives nothing): not in localStorage, not in /api/mine, not in undo
+          th = { id: uid('tab'), kind: 'tab', x: 24, y: 24 }; Object.defineProperty(th, 'toJSON', { value: () => undefined }); things[th.id] = th;
+        }
+        ext.draft = ''; ext.sent = '';
+        selectedId = th.id; save(); render();
+        say('read the tab · it stays in this browser');
+      } else if ((m.type === 'void-ext:drafted' || m.type === 'void-ext:threaded') && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
+      else if (m.type === 'void-ext:record') extRecord(m); // B3: the panel asks Void to write the step's execution record
+      else if (m.type === 'void-ext:acted' && !(m.auto && m.why === 'not-allowed')) { const t = actSaid(m); say(t); const sp = document.querySelector('.tab-act-said'); if (sp) sp.textContent = t; } // a proposal Void made itself, off the list, stays silent
+    });
+    extSend({ type: 'void-ext:ready' });
+    // B3: Void proposes one step for the page (fill a field, or click a button, by its visible label); the extension's own
+    // panel shows it with Yes / No and acts only on a site on the allow list kept there. Void only writes the execution record
+    // (/api/actions, kind extension.act, with the owner's key): running before the step, done or failed after, stubbed on a No.
+    function stepOf(text) {
+      const t = String(text || '').trim(); // the text to fill goes in exactly as typed, its full stop too
+      let m = t.match(/^(?:fill|type into|put into)\s+(?:the\s+)?["“']?(.+?)["”']?(?:\s+(?:field|box))?\s+with\s+([\s\S]+)$/i);
+      if (m) return { action: 'fill', label: m[1].trim(), text: m[2].trim().replace(/^["“'](.*)["”']$/s, '$1') };
+      m = t.replace(/[.!]+$/, '').match(/^(?:click|press|tap)\s+(?:the\s+)?["“']?(.+?)["”']?(?:\s+button)?$/i);
+      return m ? { action: 'click', label: m[1].trim(), text: '' } : null;
+    }
+    // a short run: two or three steps, split at ";" or "then" only where a new step starts (a ";" in the text to fill stays in it) ("fill Reply with Hi; click Save", "… then click Save")
+    function stepsOf(text) {
+      const parts = String(text || '').trim().split(/(?:\s*;\s*|,?\s+(?:and\s+)?then\s+)(?=(?:fill|type into|put into|click|press|tap)\s)/i).filter((x) => x.trim());
+      if (parts.length > 3) return 'too-many';
+      const steps = parts.map(stepOf);
+      return steps.length && steps.every(Boolean) ? steps : null;
+    }
+    const ACT_WHY = { 'not-allowed': 'that site is not on your list: add it under “sites Void may act on” below, then ask again', 'said-no': 'you said no · nothing changed · recorded',
+      'no-record': 'no record, no action: unlock Void as the owner first, then ask again', 'not-found': 'no field or button with that label on the page',
+      ambiguous: 'more than one thing on the page has that label: name it more exactly', submits: 'that button sends its form: press it yourself',
+      'no-access': 'that tab moved on or closed: press Alt+Shift+V there again', 'no-tab': 'point Void at the page first: Alt+Shift+V there', busy: 'one step at a time: answer the open card first',
+      'bad-step': 'say it as “fill <field> with <text>” or “click <button>”', 'too-many': 'three steps at most: split the rest into another run' };
+    const actSaid = (m) => {
+      if (m && m.of > 1) return m.ok ? 'all ' + m.of + ' steps done on ' + (m.host || 'the page') + ' · recorded · you send it yourself'
+        : 'stopped at step ' + m.at + ' of ' + m.of + ' (' + (m.done ? m.done + ' done before it' : 'nothing done') + '; nothing after it ran): ' + (ACT_WHY[m.why || ''] || "couldn't do that step");
+      return m && m.ok ? (m.did === 'clicked' ? 'clicked' : 'filled') + ' it on ' + (m.host || 'the page') + ' · recorded · you send it yourself' : ACT_WHY[(m && m.why) || ''] || "couldn't do that step";
+    };
+    function extPropose(step) { if (!ext.on) return false; extSend(Array.isArray(step) ? (step.length === 1 ? { type: 'void-ext:propose', step: step[0] } : { type: 'void-ext:propose', steps: step }) : { type: 'void-ext:propose', step }); return true; }
+    async function extRecord(m) {
+      const reply = (r) => extSend({ type: 'void-ext:recorded', id: m.id, ...r });
+      const tok = ownerToken();
+      if (!tok) return reply({ ok: false, why: 'not-owner' });
+      const body = m.op === 'end' ? { op: 'end', id: m.recordId, state: m.state, text: m.text } : { op: m.op, kind: m.kind, ref: m.ref, text: m.text };
+      try {
+        const r = await fetch('/api/actions', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + tok }, body: JSON.stringify(body) });
+        const j = await r.json().catch(() => ({}));
+        reply(r.ok ? { ok: true, recordId: j.id, state: j.state } : { ok: false, why: j.error || 'HTTP ' + r.status });
+      } catch (_) { reply({ ok: false, why: 'offline' }); }
+    }
+    // A customer email becomes a proposal in your reply box, after your yes: the thread you are reading (read now, sent once to
+    // /api/answer mode proposal, not kept) drafts the proposal card (skills/proposal.js), and on a site on your allow list Void
+    // proposes "fill <the box you were in> with <the proposal as plain text>" as the same B3 card, Yes / No and record. You send.
+    // Off the list the proposal stays in its card (copy, download), and nothing is said about acting.
+    async function proposalFromTab(tab, said, footLine) {
+      said.textContent = 'reading the thread…';
+      const r = await extThread();
+      if (!r.ok || !r.text) { said.textContent = r.why === 'no-text' ? 'no text on this page to draft from' : DRAFT_WHY[r.why || ''] || "couldn't read the thread: press Alt+Shift+V there again"; return; }
+      said.textContent = 'asking Void for a proposal…';
+      let d = null, L = null;
+      try { await skillsReady; const P = await import('/skills/proposal.js'); L = await import('/lib/proposal.js'); d = await P.draft(r.text); } catch (e) { said.textContent = (e && e.message) || 'Void couldn’t draft just now'; return; }
+      ext.sent = 'The text of this thread was sent to a-to-mind.com for a proposal draft · not kept there.'; footLine();
+      // the card keeps the drafted proposal (yours to edit), never the thread itself
+      const th = summonThing('proposal', { center: true, fields: d.fields, model: d.model, to: L.addressIn(r.text).to || '' });
+      const sp = document.querySelector('.tab-said');
+      if (sp) sp.textContent = 'proposal from Void' + (d.model === 'rules' ? ' (by rule, no model just now)' : '') + ' · in the proposal card, yours to edit';
+      if (th && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: L.toPlain(d.fields), auto: true });
+    }
+    function mountTab(th) {
+      const t = ext.tab;
+      const el = document.createElement('div');
+      el.className = 'thing tab-card';
+      el.dataset.id = th.id;
+      el.style.cssText += ';left:' + th.x + 'px;top:' + th.y + 'px;width:320px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(12,12,12,0.92);font-size:13px';
+      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+      const head = document.createElement('div');
+      head.style.cssText = 'color:var(--muted);font-size:12px;margin-bottom:6px;cursor:grab';
+      head.textContent = 'this tab · stays in this browser';
+      el.appendChild(head);
+      const body = document.createElement('div');
+      if (t) {
+        let host = ''; try { host = new URL(t.url).host; } catch (_) {}
+        body.innerHTML = '<div class="tab-title" style="font-size:15px">' + esc(t.title || host || t.url) + '</div>'
+          + '<div style="color:var(--muted);font-size:12px;margin-bottom:6px">' + esc(host) + '</div>'
+          + (t.selection ? '<blockquote class="tab-sel" style="margin:0 0 8px;padding-left:8px;border-left:2px solid var(--line);max-height:120px;overflow:auto;white-space:pre-wrap">' + esc(t.selection) + '</blockquote>' : '<p style="margin:0 0 8px;color:var(--muted)">nothing selected</p>')
+          + (t.readable ? '' : '<p style="margin:0 0 8px;color:var(--muted)">Chrome keeps extensions out of this page: only its title and address came through.</p>')
+          + '<textarea class="tab-draft" rows="3" placeholder="a draft for the page" style="width:100%;box-sizing:border-box;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:6px;font:inherit"></textarea>'
+          // draft for me (sends it to Void): the title, address and selection go to Void's answer engine once (mode draft, lib/draft.js), the draft
+          // comes back into the box above for "put in the page" or copy, and the card says what left. What is in the box goes along as a note.
+          + '<div class="tab-ask" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;color:var(--muted);font-size:12px">draft for me:'
+          + ['reply', 'summary', 'notes', 'rewrite', 'proposal'].map((k) => '<button type="button" class="tab-ask-' + k + ' vcopy" data-intent="' + k + '"' + (k === 'rewrite' && !t.selection ? ' disabled title="select the text to rewrite first"' : '') + '>' + k + '</button>').join('')
+          + '<span>(sends it to Void)</span></div>'
+          + '<div style="display:flex;gap:8px;align-items:center;margin-top:6px"><button type="button" class="tab-put vcopy">put in the page</button><span class="tab-said" style="color:var(--muted);font-size:12px">'
+          + esc(t.field ? 'goes into: ' + (t.field.name || t.field.tag) : 'goes into the box you click on the page') + '</span></div>'
+          + '<div class="tab-foot" style="color:var(--muted);font-size:11px;margin-top:6px"></div>'
+          + '<div style="display:flex;gap:6px;margin-top:10px"><input class="tab-step" placeholder="a step for Void: fill Reply with … / click Save (up to 3, split by ;)" style="flex:1;min-width:0;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:5px 6px;font:inherit"><button type="button" class="tab-propose vcopy">propose</button></div>'
+          + '<div class="tab-act-said" style="color:var(--muted);font-size:12px;margin-top:4px">Void acts only on a site you allowed, and only after your yes in the panel.</div>';
+        const put = body.querySelector('.tab-put'), ta = body.querySelector('.tab-draft'), said = body.querySelector('.tab-said'), foot = body.querySelector('.tab-foot');
+        const footLine = () => { foot.textContent = ext.sent ? 'Not saved. ' + ext.sent + ' You press send on the page yourself.' : 'Not saved, not sent anywhere. You press send on the page yourself.'; };
+        ta.value = ext.draft; footLine();
+        ta.addEventListener('input', () => { ext.draft = ta.value; });
+        put.addEventListener('click', async () => { if (!ta.value.trim()) { said.textContent = 'write the draft first'; return; } said.textContent = 'putting it in…'; said.textContent = draftSaid(await extDraft(ta.value)); });
+        body.querySelectorAll('.tab-ask button').forEach((b) => b.addEventListener('click', async () => {
+          const intent = b.dataset.intent, tab = ext.tab; if (!tab) return;
+          if (intent === 'proposal') return proposalFromTab(tab, said, footLine);
+          said.textContent = 'asking Void for a ' + intent + '…';
+          let j = null;
+          try {
+            const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'draft', intent, title: tab.title, url: tab.url, selection: tab.selection, note: ta.value.trim().slice(0, 300) }) });
+            if (r.ok || r.status === 400 || r.status === 429) j = await r.json();
+          } catch (_) {}
+          if (!ta.isConnected) return; // the card was redrawn or closed meanwhile
+          ext.sent = 'The title, address and selection were sent to a-to-mind.com for a ' + intent + ' draft · not kept there.'; footLine();
+          if (!j || !j.draft) { said.textContent = (j && j.note) || 'Void couldn’t draft just now. Try again in a moment.'; return; }
+          ext.draft = j.draft; ta.value = j.draft; ta.rows = Math.min(12, Math.max(3, (j.draft.match(/\n/g) || []).length + 2));
+          const notes = [j.model === 'rules' && 'by rule, no model just now', j.masked && 'keys in the text were masked', j.cut && 'the selection was cut'].filter(Boolean);
+          said.textContent = intent + ' from Void' + (notes.length ? ' (' + notes.join('; ') + ')' : '') + ' · put it in the page, or copy it';
+          // B3 joined to the draft: a reply for the box you were in becomes a proposed step, the same Yes / No card in the panel
+          // and the same record; the panel shows it only on a site on your list (off the list it says nothing: copy as before)
+          if (intent === 'reply' && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: j.draft, auto: true });
+        }));
+        const stepIn = body.querySelector('.tab-step'), actSp = body.querySelector('.tab-act-said');
+        stepIn.value = ext.stepText || ''; stepIn.addEventListener('input', () => { ext.stepText = stepIn.value; }); // a redraw of the stage keeps what you typed
+        body.querySelector('.tab-propose').addEventListener('click', () => { const st = stepsOf(stepIn.value); if (!Array.isArray(st)) { actSp.textContent = ACT_WHY[st || 'bad-step']; return; } actSp.textContent = extPropose(st) ? 'asking you in the panel…' : DRAFT_WHY['no-panel']; });
+      }
+      el.appendChild(body);
+      body.addEventListener('pointerdown', (e) => { if (e.target.closest('textarea, input, button, blockquote')) e.stopPropagation(); });
+      bindDrag(el, th);
+      stage.appendChild(el);
+    }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
-    const stageApi = { stage, things: () => things, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
+    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
@@ -978,6 +1245,7 @@ Object.values(things).forEach((th) => {
             cur.style.left = th.x + 'px'; cur.style.top = th.y + 'px';
             moveMates(th.x - origX, th.y - origY);
             for (const m of mates) { m.t.x = Math.max(0, m.t.x); m.t.y = Math.max(0, m.t.y); if (m.el) { m.el.style.left = m.t.x + 'px'; m.el.style.top = m.t.y + 'px'; } }
+            if (th.x !== origX || th.y !== origY) { th.pinned = true; for (const m of mates) m.t.pinned = true; } // put there by hand: the stage never moves it (lib/placement.js)
             decorate();
             try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
             save();
@@ -1301,6 +1569,38 @@ function mountList(th) {
       stage.appendChild(el);
     }
 
+    // the timer's face (progress ring, m:ss, a state word), one look for every countdown on the stage: the timer card
+    // and the five-minute challenge (skills/challenge.js, through stageApi.timerFace) both draw with it
+    function timerFace(el) {
+      const ring = document.createElement('svg');
+      ring.setAttribute('width', '32');
+      ring.setAttribute('height', '32');
+      ring.setAttribute('viewBox', '0 0 32 32');
+      const bg = document.createElement('circle');
+      bg.setAttribute('cx', '16'); bg.setAttribute('cy', '16'); bg.setAttribute('r', '14');
+      bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', 'rgba(255,255,255,0.08)'); bg.setAttribute('stroke-width', '2');
+      const fg = document.createElement('circle');
+      fg.setAttribute('cx', '16'); fg.setAttribute('cy', '16'); fg.setAttribute('r', '14');
+      fg.setAttribute('fill', 'none');
+      fg.setAttribute('stroke-width', '2');
+      fg.setAttribute('stroke-linecap', 'round');
+      fg.setAttribute('stroke-dasharray', String(2 * Math.PI * 14));
+      fg.setAttribute('transform', 'rotate(-90 16 16)');
+      ring.appendChild(bg); ring.appendChild(fg);
+      const timeSpan = document.createElement('span');
+      const label = document.createElement('span');
+      label.className = 'timer-label';
+      el.appendChild(ring);
+      el.appendChild(timeSpan);
+      el.appendChild(label);
+      return (remaining, total, word) => {
+        const p = total > 0 ? remaining / total : 0;
+        timeSpan.textContent = Math.floor(remaining / 60000) + ':' + String(Math.floor((remaining % 60000) / 1000)).padStart(2, '0');
+        label.textContent = word;
+        fg.setAttribute('stroke', p > 0.15 ? '#5dffa5' : '#ff5c5c');
+        fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - p)));
+      };
+    }
     function mountTimer(th) {
       const el = document.createElement('div');
       el.className = 'thing timer';
@@ -1314,51 +1614,14 @@ function mountList(th) {
 
       const remaining = th.running ? Math.max(0, th.remaining - (Date.now() - th.startedAt)) : th.remaining;
       const total = th.duration;
-      const pct = total > 0 ? remaining / total : 0;
-      const mins = Math.floor(remaining / 60000);
-      const secs = Math.floor((remaining % 60000) / 1000);
-      const display = mins + ':' + String(secs).padStart(2, '0');
-
-      const timeSpan = document.createElement('span');
-      timeSpan.textContent = display;
-
-      const label = document.createElement('span');
-      label.className = 'timer-label';
-      label.textContent = th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused');
-
-      // progress ring
-      const ring = document.createElement('svg');
-      ring.setAttribute('width', '32');
-      ring.setAttribute('height', '32');
-      ring.setAttribute('viewBox', '0 0 32 32');
-      const bg = document.createElement('circle');
-      bg.setAttribute('cx', '16'); bg.setAttribute('cy', '16'); bg.setAttribute('r', '14');
-      bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', 'rgba(255,255,255,0.08)'); bg.setAttribute('stroke-width', '2');
-      const fg = document.createElement('circle');
-      fg.setAttribute('cx', '16'); fg.setAttribute('cy', '16'); fg.setAttribute('r', '14');
-      fg.setAttribute('fill', 'none'); fg.setAttribute('stroke', pct > 0.15 ? '#5dffa5' : '#ff5c5c');
-      fg.setAttribute('stroke-width', '2');
-      fg.setAttribute('stroke-linecap', 'round');
-      fg.setAttribute('stroke-dasharray', String(2 * Math.PI * 14));
-      fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - pct)));
-      fg.setAttribute('transform', 'rotate(-90 16 16)');
-      ring.appendChild(bg); ring.appendChild(fg);
-
-      el.appendChild(ring);
-      el.appendChild(timeSpan);
-      el.appendChild(label);
+      const face = timerFace(el);
+      face(remaining, total, th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused'));
 
       // tick while running
       if (th.running) {
         el._tickInterval = setInterval(() => {
           const rem = Math.max(0, th.remaining - (Date.now() - th.startedAt));
-          const m = Math.floor(rem / 60000);
-          const s = Math.floor((rem % 60000) / 1000);
-          timeSpan.textContent = m + ':' + String(s).padStart(2, '0');
-          label.textContent = rem > 0 ? 'running' : 'done';
-          const p = total > 0 ? rem / total : 0;
-          fg.setAttribute('stroke', p > 0.15 ? '#5dffa5' : '#ff5c5c');
-          fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - p)));
+          face(rem, total, rem > 0 ? 'running' : 'done');
           if (rem <= 0) {
             clearInterval(el._tickInterval);
             th.running = false;
@@ -2528,7 +2791,7 @@ t.remaining = durationMs;
       if (/\b(remove|delete|get\s+rid\s+of|hide|clear)\b/.test(lower) && /\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return false;
       if (/^(a\s+)?(shape|rect|rectangle|circle|line|square)(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
       if (/\b(draw|sketch)\b.*\b(circle|rect|rectangle|line|square|shape)\b/.test(lower)) return true;
-      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
+      if (/\b(make|add|create|show|spawn|put|place|drop|summon)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
       if (/\b(shape|rect|rectangle|circle|line|square)\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
       if (/^shape\s*:\s*(rect|rectangle|circle|line|square)\b/i.test(raw)) return true;
       return false;
@@ -3117,6 +3380,15 @@ return { ok: true, detail: 'timer-reset' };
         b.textContent = ok ? 'copied' : 'select and copy'; setTimeout(() => { b.textContent = 'copy'; }, 1600);
       });
       el.appendChild(b);
+      if (!inPanel) return; // in the extension's side panel, an answer can also go straight into the page you pointed Void at
+      const p = document.createElement('button'); p.type = 'button'; p.className = 'tr-copy vcopy vput'; p.textContent = 'into the page'; p.style.cssText = 'margin-top:10px;margin-left:8px';
+      p.addEventListener('pointerdown', (e) => e.stopPropagation()); // on a stage card a press starts a drag, which redraws the card before the click lands
+      p.addEventListener('click', async () => {
+        const c = el.cloneNode(true); c.querySelectorAll('button, .src').forEach((x) => x.remove());
+        const txt = Array.from(c.children).map((x) => x.innerText || x.textContent).map((x) => x.trim()).filter(Boolean).join('\n\n');
+        say(draftSaid(await extDraft(txt)));
+      });
+      el.appendChild(p);
     }
     function esc(t) { const d = document.createElement('div'); d.textContent = t == null ? '' : String(t); return d.innerHTML; }
     function wantsMenu(lower) {
@@ -3197,21 +3469,27 @@ return { ok: true, detail: 'timer-reset' };
       return t.trim() || text.trim();
     }
     // Answer engine (plan item 2): asks no skill covers get a short sourced answer; excerpt if the model is busy.
-    async function showAnswer(text) {
-      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><div class="sub">thinking…</div>'; });
-      say('looking up');
+    const pageHost = (u) => { try { return /^https?:\/\//i.test(String(u)) ? new URL(u).hostname : ''; } catch (_) { return ''; } };
+    // page: the tab the Void extension read for this ask (title, url, selection, field, text); answered about that page, not the web
+    async function showAnswer(text, page) {
+      // a page sent for an answer left the browser: say so on the card (Adam, 2026-10-09: local by default, flag what leaves)
+      const about = page ? (page.title ? '<div class="sub">about: ' + esc(page.title) + '</div>' : '') + '<div class="sub page-sent">this page was sent to a-to-mind.com for this answer · not kept</div>' : '';
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<div class="sub">thinking…</div>'; });
+      say(page ? 'reading the page' : 'looking up');
       let j = null;
       try {
-        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: text }) });
+        // signed in (the owner's key or your own member session): your notes and projects are checked for this ask on the server (never for a page ask)
+        const who = page ? '' : (() => { try { return localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) { return ''; } })();
+        const r = await fetch('/api/answer', { method: 'POST', headers: who ? { 'content-type': 'application/json', authorization: 'Bearer ' + who } : { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text }) });
         if (r.ok || r.status === 429) j = await r.json();
       } catch (_) {}
       if (vpageEl !== el) return 'answer';
-      if (!j || !j.answer) { say(''); return showArticle(text); }
+      if (!j || !j.answer) { say(''); if (page) { el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<p>' + esc(j && j.note || 'I couldn’t read that page just now. Try again in a moment.') + '</p>'; return 'answer'; } return showArticle(text); }
       const srcs = (j.sources || []).map((s, i) => '<a href="' + esc(/^https:\/\//i.test(String(s.url || '')) ? s.url : '#') + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.title) + '</a>').join(' · '); // https links only
       // fenced code keeps its whitespace and gets a monospace block (fixHtml); sources are a citation when one
       // genuinely matched, not a claim that nothing else went into the answer
-      el.innerHTML = '<h2>' + esc(text) + '</h2>' + fixHtml(j.answer)
-        + '<div class="src">' + (srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
+      el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + fixHtml(j.answer)
+        + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Void' : j.told ? 'from what you told me · written by Void' + (srcs ? ' · Source: ' + srcs : '') : srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
       addCopy(el);
       say('');
       return 'answer';
@@ -3462,6 +3740,7 @@ return { ok: true, detail: 'timer-reset' };
     // "how many cups in a liter" -> "1 liter in cups"
     function calcNormalize(lower) {
       lower = lower.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
+      lower = lower.replace(/\bconvert\s+(\d+(?:\.\d+)?)\s*([a-z]+)\s+([a-z]+)\s*\??$/, 'convert $1 $2 to $3'); // "convert 3.5 miles km" reads with no preposition
       return lower.replace(/^(how\s+many\s+[a-z]+)\s+of\s+(?:water|milk|liquid)\s+/, '$1 ').replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?(?:in|per)\s+(?:a|an|one|1)\s+([a-z]+)\s*\??$/, '1 $2 in $1')
         .replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?in\s+(\d+(?:\.\d+)?)\s+([a-z]+)\s*\??$/, '$2 $3 in $1'); // "how many grams in 2.5 kilograms"
     }
@@ -4636,6 +4915,34 @@ return { ok: true, detail: 'timer-reset' };
     // A summon from code, not the box (BASE.md: the old void-proxy command bar's route): document.dispatchEvent(new CustomEvent('void:summon', { detail: 'growth' }))
     // runs that ask exactly as if it were typed. Only a short line of text is taken.
     document.addEventListener('void:summon', (e) => { const d = e && e.detail; if (typeof d === 'string' && d.trim() && d.length <= 120) handle(d); });
+    // --- Bring someone into your Void (frontier #11): "invite someone" (skills/invite.js) or a link with ?with=<room> joins the
+    // invite's room (lib/share-client.js). The others' cursors are faint presences; a summon that put something on your stage
+    // runs again on theirs, and theirs on yours. Only those two pass (lib/share.js). Closing the tab ends it.
+    function sharePresence(id, x, y) {
+      let el = presences.get(id);
+      if (!el) { el = document.createElement('div'); el.className = 'void-presence'; el.setAttribute('aria-hidden', 'true'); document.body.appendChild(el); presences.set(id, el); }
+      el.style.left = (x * innerWidth) + 'px'; el.style.top = (y * innerHeight) + 'px';
+    }
+    function shareGone(id) { const el = presences.get(id); if (el) el.remove(); presences.delete(id); }
+    function shareNoticeNew() {
+      const ids = Object.keys(things), had = shareKnown; shareKnown = new Set(ids);
+      if (!share || !had || !relayAsk || !ids.some((id) => !had.has(id))) return;
+      share.summoned(relayAsk); relayAsk = null; // one ask goes once, however many things it made
+    }
+    function shareRun(ask) { relayingIn = true; try { handle(ask); } finally { relayingIn = false; } }
+    function shareJoin(room) {
+      if (share || typeof room !== 'string') return;
+      shareKnown = new Set(Object.keys(things));
+      share = { summoned() {}, cursor() {}, leave() {} };
+      import('/lib/share-client.js').then((m) => {
+        share = m.join(room, { summon: shareRun, presence: sharePresence, gone: shareGone, note: (t) => say(t) });
+        let last = 0;
+        addEventListener('pointermove', (e) => { const now = Date.now(); if (now - last < 50) return; last = now; share.cursor(e.clientX / innerWidth, e.clientY / innerHeight); }, { passive: true });
+        addEventListener('pagehide', () => share.leave());
+      }).catch(() => { share = null; say("sharing can't start in this browser"); });
+    }
+    document.addEventListener('void:share-join', (e) => shareJoin(e && e.detail));
+    { const r = new URLSearchParams(location.search).get('with'); if (r && /^[A-Za-z0-9_-]{16}\.[A-Za-z0-9_-]{16}$/.test(r) && !PAGE) skillsReady.then(() => shareJoin(r)); }
 
     async function runLearnedSkills(text, lower0) {
       for (const skill of learnedSkills) {
@@ -4884,7 +5191,7 @@ return { ok: true, detail: 'timer-reset' };
     const mineCall = (method, body) => meFetch('/api/mine', method, body);
     function meSet(v) { me = v; try { if (v) localStorage.setItem(ME_KEY, JSON.stringify(v)); else localStorage.removeItem(ME_KEY); } catch (_) {} }
     const sig = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return s.length + ':' + (h >>> 0).toString(36); };
-    function mineSnapshot() { let entered = null; try { entered = localStorage.getItem(ENTRY_KEY); } catch (_) {} return { v: 1, state: things, look: voidLook, entered }; }
+    function mineSnapshot() { let entered = null; try { entered = localStorage.getItem(ENTRY_KEY); } catch (_) {} return { v: 1, state: keptThings(), look: voidLook, entered }; }
     const mineSig = () => sig(JSON.stringify(mineSnapshot()));
 
     const THING_KINDS = new Set(['clock', 'sticky', 'notepad', 'timer', 'counter', 'image', 'link', 'list', 'calc', 'shape', 'kept']);
@@ -5206,11 +5513,11 @@ return { ok: true, detail: 'timer-reset' };
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
       return vm && vm.available !== false ? 'Paid Void is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Void adds ' + PAID_ADDS;
     }
-    async function handlePaidAsk(lower) {
+    async function handlePaidAsk(lower, logIt = true) { // logIt false: a price question logs once, as the services card (alsoShowPricedServices)
       if (!isPaidAsk(lower)) return false;
       if (!me || !me.token) { // signed out: the price and what it adds, then how to buy (the purchase attaches to your Void's passkey)
         say((await paidLine()) + ' · say “remember me” first, then ask again to buy');
-        loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
+        if (logIt) loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
       if ((await meTier()) === 'paid') { say('your Void is paid: ' + PAID_ADDS); return true; }
       const { g, products } = await storeCatalog();
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Void, as the store has it now
@@ -5221,8 +5528,22 @@ return { ok: true, detail: 'timer-reset' };
         whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
         const shown = whisper.innerHTML; setTimeout(() => { if (whisper.innerHTML === shown) whisper.textContent = ''; }, 30000);
       }
-      loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: url ? 'gumroad link' : 'not open' });
+      if (logIt) loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: url ? 'gumroad link' : 'not open' });
       return true;
+    }
+    // A price question shows everything for sale: handlePaidAsk said the membership sentence (it stays first), and the
+    // services card (skills/services.js) lists the hands-on services under it. The card is logged as the answer so the
+    // record carries both. "fix my automation" stays with the fix flow: that is a request for work, not a price.
+    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|a-to-mind) cost|how much (?:is|does) (?:void|a-to-mind)(?: cost)?)$/;
+    function isPriceQuestion(lower) { return PRICE_QUESTION_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
+    async function alsoShowPricedServices(text) {
+      if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);
+      const svc = learnedSkills.find((sk) => sk && sk.name === 'services');
+      if (!svc) return;
+      try {
+        const src = await svc.run(text, { showPage, esc, say: () => {}, _pageStill: (el) => vpageEl === el });
+        if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + svc.name });
+      } catch (_) {}
     }
     // The optional product line: only when the live catalog has something for this ask, after Void's own answer (or fix).
     function productLine(g, p) {
@@ -5405,7 +5726,7 @@ return { ok: true, detail: 'timer-reset' };
     let typoFix = null;
     const TYPO_WORDS = { waht: 'what', whta: 'what', wht: 'what', tiem: 'time', tmie: 'time', captial: 'capital', capitla: 'capital', definiton: 'definition', defintion: 'definition', defenition: 'definition',
       synonim: 'synonym', synonims: 'synonyms', synomym: 'synonym', traslate: 'translate', tranlate: 'translate', transalte: 'translate', precent: 'percent', percnet: 'percent', pecent: 'percent',
-      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', wats: 'whats', defin: 'define', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
+      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', weathr: 'weather', aggrevation: 'aggravation', agravation: 'aggravation', wats: 'whats', defin: 'define', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
     const TYPO_LONG = ['definition', 'synonym', 'synonyms', 'translate', 'temperature', 'tomorrow', 'population', 'kilometers', 'kilometres', 'antonym', 'pronounce'];
     // the short forms people type: "12*15=", "ephemeral meaning", "synonyms happy", "tip 20% 85", "random number 1-10",
     // "days till christmas", "capital france", "usd to eur" read as the full ask
@@ -5639,6 +5960,7 @@ return { ok: true, detail: 'timer-reset' };
     async function handle(raw) {
       const typed = (raw || '').trim();
       if (!typed) return;
+      relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Void; one that came from it does not go back
       const text = fixTypos(typed); typoFix = text !== typed ? { from: typed, to: text } : null;
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
@@ -5673,7 +5995,8 @@ return { ok: true, detail: 'timer-reset' };
       { const k = howToThing(lower0); if (k) { currentAsk = text; showSelfPage(false, k); say('here'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'how-to ' + k }); return; } }
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
-      if (await handlePaidAsk(lower0)) return;
+      if (isPriceQuestion(lower0)) { if (await handlePaidAsk(lower0, false)) { await alsoShowPricedServices(text); return; } }
+      else if (await handlePaidAsk(lower0)) return;
       { const full = restorePaste(text); if (await handleReviewAsk(text, full)) return; if (await handleFixAsk(text, full)) return; }
       if (handleVoiceAsk(lower0)) return;
       if (await handleGatedAsk(text)) return;
@@ -5797,7 +6120,22 @@ return { ok: true, detail: 'timer-reset' };
       }
     });
     // A link (?q=) runs its ask, except a send, booking or spend: that one is only typed into the box for the person to ask.
-    { const q0 = new URLSearchParams(location.search).get('q'); if (q0) { history.replaceState(null, '', location.pathname); skillsReady.then(async () => { const core = await approvalReady; if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; } handle(q0); }); } }
+    // From the Void extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
+    // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
+    { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
+      if (q0) { history.replaceState(null, '', location.pathname); skillsReady.then(async () => { const core = await approvalReady; if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; }
+        if (!ctx0) { handle(q0); return; }
+        let done = false;
+        const onCtx = (e) => {
+          if (done || e.source !== window.parent || e.origin !== EXT_ORIGIN || !e.data || e.data.type !== 'void.ctx') return; // only this extension's panel (its id is pinned)
+          done = true; removeEventListener('message', onCtx);
+          const pg = e.data.page || {}, cut = (v, n) => String(v || '').slice(0, n);
+          showAnswer(cut(e.data.q || q0, 300), { title: cut(pg.title, 200), url: cut(pg.url, 500), selection: cut(pg.selection, 2000), field: cut(pg.field, 4000), text: cut(pg.text, 8000), unreadable: !!pg.unreadable });
+        };
+        addEventListener('message', onCtx);
+        window.parent.postMessage({ type: 'void.ctx.ready' }, '*'); // carries nothing; the page itself only comes back from an extension
+        setTimeout(() => { if (!done) { done = true; removeEventListener('message', onCtx); handle(q0); } }, 4000);
+      }); } }
 
     // --- Void everywhere (plan item 4): share to Void, installable app, address bar (opensearch.xml), voice ---
     // Share target (manifest share_target -> /?share_title=&share_text=&share_url=): a link becomes a link card, words become an ask.
@@ -5955,8 +6293,45 @@ return { ok: true, detail: 'timer-reset' };
       }
     })();
 
+    let awayMs = 0; try { const t = +localStorage.getItem(AWAY_KEY); awayMs = t > 0 ? Date.now() - t : 0; } catch (_) {} // read before this visit saves anything
     load();
     render();
+    // the world lives on while you are away: what has conditions (a cloud, ice, a flower) and what reacts to something near
+    // (a zombie and a brain, a cat and a mouse) moves forward by the time since the stage was last left, the same way for
+    // everyone (advance in skills/scripts.js), from where each figure last stood; one line says what happened
+    const awayNote = document.getElementById('away-note');
+    // the line under the whisper; with `recorded` it also links to the record ("my actions"), which only exists for the owner and paid members
+    function tellAway(text, recorded) {
+      if (!awayNote || !text) return;
+      awayNote.textContent = text;
+      if (recorded) { const a = document.createElement('a'); a.href = '#'; a.className = 'away-see'; a.textContent = ' · see what happened'; a.addEventListener('click', (e) => { e.preventDefault(); document.dispatchEvent(new CustomEvent('void:summon', { detail: 'my actions' })); }); awayNote.append(a); }
+      clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { awayNote.textContent = ''; }, 9000);
+    }
+    if (!PAGE && awayMs > 0) import('/skills/scripts.js').then((m) => {
+      const figs = Object.values(things).filter((t) => t && t.kind === 'figure' && t.kindOf);
+      if (!figs.length || awayMs < m.AWAY_MIN_MS) return;
+      const r = m.advance(figs.map((t) => ({ id: t.id, kindOf: t.kindOf, x: t.x, y: t.y, at: t.at, seed: t.seed, nature: t.nature, title: t.title })), awayMs, { bounds: { w: innerWidth, h: innerHeight } });
+      const stamp = Date.now();
+      for (const n of r.things) {
+        if (!things[n.id]) continue;
+        if (n.gone) { delete things[n.id]; continue; }
+        if (n.nature) things[n.id].nature = n.nature;
+        if (n.at) things[n.id].at = n.at;
+        things[n.id].adv = stamp;
+      }
+      save(); render();
+      window.__voidAway = { ms: awayMs, note: r.note, changes: r.changes };
+      tellAway(r.note);
+      // asked by Void: what happened while you were away is also an execution record (lib/scene-advance.js, kind scene.advance), in your own scope
+      // ("my actions" shows it); only the owner and paid members can write one, so a visitor with no key sends nothing and the note stands alone
+      let tok = ''; try { tok = localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) {}
+      if (tok && r.changes.length) fetch('/api/actions', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + tok }, body: JSON.stringify({ op: 'scene', note: r.note, changes: r.changes }) })
+        .then((res) => (res.ok ? res.json() : null)).then((j) => { if (j && j.id) tellAway(r.note, true); }).catch(() => {});
+    }).catch(() => {});
+    // leaving: keep where each figure stands and the live conditions it has, so the next visit continues from here (and stamp the time)
+    function rememberWorld() { try { save(); } catch (_) {} } // save() folds in the places and stamps the time
+    document.addEventListener('visibilitychange', () => { if (document.hidden) rememberWorld(); });
+    window.addEventListener('pagehide', rememberWorld);
     if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s Void'), 400);
     window.addEventListener('resize', () => render());
   </script>
@@ -6141,6 +6516,57 @@ return { ok: true, detail: 'timer-reset' };
     // Enter on a highlighted hint only picks the hint (it does not submit), so nothing sinks then
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter' && !e.isComposing && !document.querySelector('#hints.on .sel')) sink(); }, true);
     if (go) go.addEventListener('click', sink, true);
+  })();
+  </script>
+  <script>
+  // ---- Synapses: a hidden branching network that only ever shows as a slow pulse at a few percent opacity (nebula look only, off with reduced motion) ----
+  (function () {
+    const reduceQ = matchMedia('(prefers-reduced-motion: reduce)'), reduce = () => reduceQ.matches;
+    const on = () => document.documentElement.dataset.fx === 'nebula' && !reduce();
+    let cv = null, ctx = null, net = [], pulses = [], raf = 0, last = 0, lastInput = performance.now();
+    const build = () => {
+      net = []; pulses = []; const W = innerWidth, H = innerHeight; let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+      const grow = (path, x, y, ang, len, depth) => {
+        const x2 = x + Math.cos(ang) * len, y2 = y + Math.sin(ang) * len, np = path.concat([[x2, y2]]);
+        if (depth === 0) { net.push(np); return; }
+        grow(np, x2, y2, ang + (rnd() - .5) * .7, len * .82, depth - 1);
+        if (rnd() < .62) grow(np, x2, y2, ang + (rnd() < .5 ? -1 : 1) * (.45 + rnd() * .6), len * .72, depth - 1);
+      };
+      for (let i = 0; i < 7; i++) { const edge = rnd(), x = edge < .5 ? rnd() * W : (rnd() < .5 ? 0 : W), y = edge < .5 ? (rnd() < .5 ? 0 : H) : rnd() * H;
+        grow([[x, y]], x, y, Math.atan2(H * .5 - y, W * .5 - x) + (rnd() - .5), Math.min(W, H) * .16, 6); }
+    };
+    const size = () => { if (!cv) return; cv.width = innerWidth; cv.height = innerHeight; build(); };
+    const len = (p) => { let L = 0; for (let i = 1; i < p.length; i++) L += Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]); return L; };
+    const step = (dt) => {
+      if (pulses.length < 2 && Math.random() < dt * .35) { const p = net[Math.floor(Math.random() * net.length)]; pulses.push({ p, L: len(p), at: 0, hue: Math.random() < .6 ? '90,200,255' : '170,130,255' }); }
+      ctx.clearRect(0, 0, cv.width, cv.height); ctx.lineCap = 'round';
+      pulses = pulses.filter((u) => { u.at += dt * 70; const tail = 160; if (u.at - tail > u.L) return false;
+        const a0 = Math.max(0, u.at - tail), a1 = Math.min(u.L, u.at); let acc = 0;
+        for (let i = 1; i < u.p.length; i++) { const x0 = u.p[i - 1][0], y0 = u.p[i - 1][1], x1 = u.p[i][0], y1 = u.p[i][1], seg = Math.hypot(x1 - x0, y1 - y0), s0 = acc, s1 = acc + seg; acc = s1;
+          if (s1 < a0 || s0 > a1 || seg === 0) continue;
+          const f0 = Math.max(0, (a0 - s0) / seg), f1 = Math.min(1, (a1 - s0) / seg), head = (s0 + f1 * seg - a0) / tail;
+          ctx.strokeStyle = 'rgba(' + u.hue + ',' + (.045 * head).toFixed(4) + ')'; ctx.lineWidth = 3.2;
+          ctx.beginPath(); ctx.moveTo(x0 + (x1 - x0) * f0, y0 + (y1 - y0) * f0); ctx.lineTo(x0 + (x1 - x0) * f1, y0 + (y1 - y0) * f1); ctx.stroke();
+          ctx.strokeStyle = 'rgba(' + u.hue + ',' + (.07 * head).toFixed(4) + ')'; ctx.lineWidth = 1; ctx.stroke(); }
+        return true; });
+    };
+    // ~30 fps while a pulse is alive, and it stops drawing completely once the Void has been left alone for 40 seconds
+    const draw = (now) => {
+      raf = 0;
+      if (!cv || !on()) { if (ctx) ctx.clearRect(0, 0, cv.width, cv.height); return; }
+      if (now - last >= 33) { const dt = Math.min(.1, (now - last) / 1000); last = now; step(dt); }
+      if (!document.hidden && (now - lastInput < 40000 || pulses.length)) raf = requestAnimationFrame(draw);
+    };
+    const kick = () => { lastInput = performance.now(); if (cv && !raf && !document.hidden && on()) raf = requestAnimationFrame(draw); };
+    const sync = () => {
+      if (on() && !cv) { cv = document.createElement('canvas'); cv.id = 'void-syn'; cv.setAttribute('aria-hidden', 'true'); document.body.prepend(cv); ctx = cv.getContext('2d'); if (!ctx) { cv.remove(); cv = null; return; } size(); }
+      if (cv) { cv.classList.toggle('on', on()); kick(); }
+    };
+    addEventListener('void-fx', sync); addEventListener('resize', size);
+    addEventListener('pointermove', kick, { passive: true }); addEventListener('keydown', kick, true);
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) kick(); });
+    reduceQ.addEventListener('change', sync);
+    sync();
   })();
   </script>
 </body>

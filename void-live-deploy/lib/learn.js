@@ -9,6 +9,7 @@
 // claim`). At most OPEN_MAX miss jobs are open at once, so the queue never floods, and a target already queued, built
 // or given up on is never queued twice. Asks stay short and redacted before they go anywhere: the queue is mirrored into
 // the public repo (domains/void.queue.md), so a pasted transcript or a key never becomes a job.
+import { track } from './actions.js';
 import { isNoise } from './noise.js';
 
 export const OPEN_MAX = 3; // open miss jobs at once
@@ -75,8 +76,12 @@ export async function queueMiss(env, c) {
   const seen = await env.DB.prepare('SELECT id FROM void_queue WHERE target = ? LIMIT 1').bind(job.target).first();
   if (seen) return null;
   const id = Date.now().toString(36), at = new Date().toISOString();
-  await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-    .bind(id, job.ask, job.target, 'queued', job.note, at, at).run();
+  // the execution record (lib/actions.js): written before the job is queued; no record, no job
+  await track(env, { owner: 'void', kind: 'queue.add', ref: job.target }, async () => {
+    await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
+      .bind(id, job.ask, job.target, 'queued', job.note, at, at).run();
+    return 'queued ' + id + ': ' + job.ask;
+  });
   return id;
 }
 

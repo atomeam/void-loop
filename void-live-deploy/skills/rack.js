@@ -15,6 +15,7 @@ export const GAMES = [
   { id: 'tictactoe', title: 'Tic-tac-toe', ask: 'play tic tac toe', color: '#c0562e', ink: '#fff6e6', motif: 'tictactoe' },
   { id: 'mancala', title: 'Mancala', ask: 'play mancala', color: '#6b4426', ink: '#f6e3c4', motif: 'mancala' },
   { id: 'aggravation', title: 'Star Marbles', ask: 'play aggravation', color: '#2f5fa8', ink: '#fdf6e3', motif: 'aggravation' },
+  { id: 'ringer', title: 'Ringer', ask: 'play marbles', color: '#6e5238', ink: '#f3eedf', motif: 'ringer' },
   { id: 'sorry', title: 'Back to Start', ask: 'play sorry', color: '#c8202c', ink: '#fff8e7', motif: 'aggravation' },
   { id: 'battleship', title: 'Sea Battle', ask: 'play battleship', color: '#1d4e6e', ink: '#e8f4ff', motif: 'battleship' },
   { id: 'poker', title: 'Poker', ask: 'play poker', color: '#17563a', ink: '#f2e6c9', motif: 'poker' },
@@ -24,7 +25,7 @@ export const GAMES = [
 
 export function rackOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+i\s+play|do\s+you\s+have|are\s+there)$|^(?:any\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
+  if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+(?:i|we)\s+play|do\s+you\s+have|are\s+there)(?:\s+on\s+this\s+site|\s+here)?$|^(?:any\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+|your\s+)?(?:3d\s+)?(?:game|games|board\s*game|board\s*games)\s+(?:rack|shelf|shelves|cabinet|closet|cupboard)$|^(?:show\s+(?:me\s+)?)(?:the\s+|your\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
   // a board game Void can't play yet, asked for as a game ("play scrabble", "scrabble board game"): say so plainly, record
   // the request, and show the rack. A bare name ("scrabble") stays a question about the word.
@@ -37,7 +38,7 @@ export function rackOf(text) {
 export const SOON = { scrabble: 'Scrabble', risk: 'Risk', clue: 'Clue', cluedo: 'Cluedo', catan: 'Catan', 'settlers of catan': 'Catan',
   backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
 
-const HINT = 'try: chess · checkers · go · monopoly · tic tac toe · reversi · four in a row · mancala · star marbles · back to start · rock paper scissors · magic 8 ball';
+const HINT = 'try: chess · checkers · go · monopoly · tic tac toe · reversi · four in a row · mancala · star marbles · marbles · back to start · rock paper scissors · magic 8 ball';
 
 function mount(th, stageApi) {
   const phone = Math.min(innerWidth, innerHeight) < 560;
@@ -84,7 +85,7 @@ async function run(text, api) {
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); }
   else {
     const phone = Math.min(innerWidth, innerHeight) < 560, w = phone ? Math.min(innerWidth - 20, 380) : 440, both = phone ? w : w + 280;
-    api.summon('rack', { x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 60 });
+    api.summon('rack', { hold: true, x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 60 });
   }
   api.say(q.wanted ? q.wanted + ' isn’t here yet · your ask is noted · these are ready: tap a box' : HINT);
   return 'rack';

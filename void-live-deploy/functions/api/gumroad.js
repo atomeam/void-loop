@@ -17,6 +17,7 @@ import { unlockFor, sellerMatches } from '../../lib/gumroad.js';
 import { ensureStoreTables } from '../../lib/store-db.js';
 import { ensureTables } from '../../lib/void-me.js';
 import { parsePing, readEarnings, recordMilestones } from '../../lib/earnings.js';
+import { saleToJob } from '../../lib/sale-jobs.js';
 
 const DOWN = ['refund', 'dispute', 'cancellation', 'subscription_ended'];
 const UP_AGAIN = ['subscription_restarted', 'dispute_won'];
@@ -86,9 +87,13 @@ export async function onRequestPost({ request, env }) {
       effect = u.meta && u.meta.changes ? 'tier ' + unlock.tier + ' (' + resource + ')' : resource + ': no linked Void';
     }
     await env.DB.prepare('UPDATE void_sales SET verified = ?, effect = ?, void_id = ? WHERE id = ?').bind(verified, effect, voidId, id).run();
+    // a service sale becomes work on the board (lib/sale-jobs.js): one record, one job, keyed on the sale id. Its
+    // failure never breaks the ping (a 503 here would make Gumroad retry a sale that was recorded).
+    let service = '';
+    try { service = await saleToJob(env, p, resource); } catch (e) { service = 'job not queued: ' + ((e && e.message) || e); }
     // the running total (all products, net of refunds); a milestone is recorded the first time it's crossed, never again
     let crossed = [];
     try { crossed = await recordMilestones(env, await readEarnings(env)); } catch (_) {}
-    return reply(200, { ok: true, effect, ...(crossed.length ? { milestones: crossed } : {}) });
+    return reply(200, { ok: true, effect, ...(service ? { service } : {}), ...(crossed.length ? { milestones: crossed } : {}) });
   } catch (_) { return reply(503, { ok: false, error: 'not recorded, Gumroad will retry' }); }
 }

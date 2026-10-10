@@ -241,3 +241,120 @@ test('moon card: "Tonight" agrees with the moon-phase answer Void already gives'
     assert.equal(M.PHASES.find((x) => x.id === M.phaseName(moonAt(a))).label, m.name, d.toISOString());
   }
 });
+
+// ---------------- pin lock ----------------
+import * as L from '../void-live-deploy/skills/lock-rules.js';
+const lockIn = (keyPreset, f = 1) => L.setInsertion(L.create({ keyPreset }), f);
+
+test('explainer.pin-lock/matching-key-all-five-aligned-rotation-allowed', () => {
+  const s = lockIn('matching');
+  assert.equal(L.alignedPinCount(s), 5);
+  assert.equal(L.mechanismState(s), 'ready');
+  for (let i = 0; i < L.PINS; i++) assert.equal(L.keyPinTop(s, i), L.SHEAR, 'pair ' + (i + 1) + ' meets the shear line');
+  const t = L.turnTo(s, 90);
+  assert.equal(t.angle, 90); assert.equal(L.mechanismState(t), 'turned');
+  assert.match(L.explanation(s), /All five pin pairs meet at the shear line/);
+});
+
+test('explainer.pin-lock/mismatched-key-blocked-names-obstructing-pin', () => {
+  const one = lockIn('one-mismatch');
+  assert.equal(L.mechanismState(one), 'blocked'); assert.equal(L.alignedPinCount(one), 4);
+  const t = L.turnTo(one, 45);
+  assert.equal(t.angle, 0, 'the plug does not move');
+  assert.deepEqual(t.lastAttempt, { reason: 'misaligned', pin: 2, crossing: 'driver pin' });
+  assert.match(L.attemptNote(t), /pin pair 3 is blocking \(its driver pin crosses the shear line\)/);
+  assert.match(L.explanation(one), /Pin pair 3 is misaligned: its driver pin still crosses the shear line/);
+  const sev = lockIn('several-mismatch');
+  assert.equal(L.mechanismState(sev), 'blocked'); assert.equal(L.alignedPinCount(sev), 2);
+  assert.deepEqual(L.obstruction(sev), { pin: 0, crossing: 'key pin' }, 'over-lifted: the key pin crosses');
+});
+
+test('explainer.pin-lock/partial-insertion-cannot-unlock', () => {
+  for (const f of [0, 0.2, 0.5, 0.8, 0.999]) {
+    const s = lockIn('matching', f);
+    assert.notEqual(L.mechanismState(s), 'ready', 'at ' + f);
+    const t = L.turnTo(s, 30);
+    assert.equal(t.angle, 0, 'no rotation at ' + f);
+    if (f > 0) assert.deepEqual(t.lastAttempt, { reason: 'not-fully-inserted' });
+  }
+  assert.equal(L.mechanismState(lockIn('matching', 0.5)), 'inserting');
+});
+
+test('explainer.pin-lock/full-insertion-is-ready-or-blocked-never-a-sixth-state', () => {
+  assert.equal(L.STATES.length, 5);
+  for (const k of Object.keys(L.PRESETS)) {
+    assert.ok(['ready', 'blocked'].includes(L.mechanismState(lockIn(k))), k);
+    for (let f = 0; f <= 1.0001; f += 0.05) assert.ok(L.STATES.includes(L.mechanismState(lockIn(k, Math.min(1, f)))), k + ' at ' + f);
+  }
+  assert.equal(L.mechanismState(L.create()), 'withdrawn');
+});
+
+test('explainer.pin-lock/turned-returns-to-ready-at-start-angle', () => {
+  const t = L.turnTo(lockIn('matching'), 60);
+  assert.equal(L.mechanismState(t), 'turned');
+  const back = L.turnTo(t, 0);
+  assert.equal(back.angle, 0); assert.equal(L.mechanismState(back), 'ready');
+  assert.equal(L.turnTo(t, 200).angle, L.MAX_ANGLE, 'the turn stops at its end');
+});
+
+test('explainer.pin-lock/plug-rotation-carries-components', () => {
+  const p = L.pose(L.turnTo(lockIn('matching'), 40));
+  assert.equal(p.plug.angle, 40); assert.equal(p.key.angle, 40);
+  for (const pr of p.pairs) {
+    assert.equal(pr.keyPin.angle, 40, 'key pins turn with the plug');
+    assert.equal(pr.driverPin.angle, 0, 'driver pins stay in the housing');
+    assert.equal(pr.driverPin.bottom, L.SHEAR, 'waiting at the shear line');
+    assert.ok(pr.keyPin.bottom + pr.keyPin.length <= L.SHEAR, 'each key pin wholly in the plug');
+    assert.equal(pr.spring.bottom, pr.driverPin.bottom + pr.driverPin.length, 'the spring follows the pin, not animated on its own');
+  }
+});
+
+test('explainer.pin-lock/reset-restores-start-no-residual-motion', () => {
+  const t = L.turnTo(lockIn('matching'), 70), r = L.reset(t);
+  assert.equal(r.angle, 0); assert.equal(r.insertion, 0); assert.equal(r.lastAttempt, null);
+  assert.equal(L.mechanismState(r), 'withdrawn');
+  assert.deepEqual(L.pose(r).pairs, L.pose(L.create({ keyPreset: 'matching' })).pairs);
+  assert.deepEqual(L.observations(r).items, L.observations(L.create()).items);
+});
+
+test('explainer.pin-lock/cutaway-changes-presentation-not-state', () => {
+  const s = lockIn('one-mismatch', 0.6), c = L.setCutaway(s, 0.1);
+  assert.equal(c.cutawayAmount, 0.1);
+  assert.equal(c.revision, s.revision, 'no revision');
+  assert.deepEqual(L.observations(c), L.observations(s));
+  assert.equal(L.mechanismState(c), L.mechanismState(s));
+  assert.deepEqual(L.pose(c).pairs, L.pose(s).pairs);
+});
+
+test('explainer.pin-lock/key-removal-requires-plug-at-start', () => {
+  const t = L.turnTo(lockIn('matching'), 50);
+  assert.equal(L.setInsertion(t, 0), t, 'the key will not come out of a turned plug');
+  assert.equal(L.setInsertion(t, 0.5), t);
+  assert.equal(L.setKey(t, 'one-mismatch'), t);
+  const out = L.setInsertion(L.turnTo(t, 0), 0);
+  assert.equal(L.mechanismState(out), 'withdrawn');
+});
+
+test('explainer.pin-lock/observations-schema-valid', () => {
+  for (const s of [L.create(), lockIn('matching', 0.4), lockIn('one-mismatch'), L.turnTo(lockIn('matching'), 30)]) {
+    const obs = L.observations(s);
+    assert.deepEqual(validateObservations(obs), { ok: true, errors: [] });
+    for (const id of ['keyPreset', 'insertionFraction', 'plugAngleDegrees']) assert.ok(item(obs, id) && !item(obs, id).assessment, id + ' is a non-assessed input');
+  }
+  const o = L.observations(lockIn('one-mismatch', 1));
+  assert.equal(item(o, 'alignedPinCount').assessment.prompt, 'With the one-mismatched-cut key inserted 100% of the way, how many pin pairs are aligned at the shear line?');
+  assert.equal(item(o, 'alignedPinCount').assessment.tolerance, 0);
+  assert.equal(item(o, 'mechanismState').assessment.answerId, 'blocked');
+  assert.equal(item(o, 'canTurn').assessment.answerId, 'no');
+  assert.equal(item(L.observations(lockIn('matching', 0.3)), 'canTurn').assessment.answerId, 'yes', 'a hypothetical: right whatever the insertion');
+});
+
+test('explainer.pin-lock/discovery-hides-readouts-keeps-observations-and-inputs', () => {
+  const s = L.turnTo(lockIn('one-mismatch'), 20), d = L.setPresentation(s, 'discovery');
+  const vn = L.view(s), vd = L.view(d);
+  assert.ok(vn.explanation && vn.readouts.length === 2 && vn.note);
+  assert.equal(vd.explanation, null); assert.equal(vd.readouts.length, 0); assert.equal(vd.note, null);
+  assert.doesNotMatch(JSON.stringify({ ...vd, notes: [] }), /blocked|ready|aligned|of 5|misaligned/i);
+  assert.deepEqual(vd.inputs, vn.inputs); assert.deepEqual(vd.notes, vn.notes); assert.ok(vd.controls.includes('reveal-rule'));
+  assert.deepEqual(L.observations(d), L.observations(s));
+});

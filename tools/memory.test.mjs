@@ -4,7 +4,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as api from '../void-live-deploy/functions/api/memory.js';
-import { cleanRecord } from '../void-live-deploy/lib/memory-core.js';
+import { cleanRecord, MEMBER_MAX } from '../void-live-deploy/lib/memory-core.js';
+import { ensureTables, newSession } from '../void-live-deploy/lib/void-me.js';
+import { noteRecord, noteId } from '../void-live-deploy/skills/memory.js';
+import { newKey, keyHash } from '../void-live-deploy/lib/review-api.js';
 
 const TOKEN = 'owner-token-for-tests-1234567890';
 function d1() {
@@ -163,4 +166,134 @@ test('the guard lets a full-size push through: /api/memory has its own limit, at
   const res = await guard({ env, request: new Request('https://x/api/memory', { method: 'POST', headers: { authorization: 'Bearer ' + TOKEN, 'content-type': 'application/json' }, body: JSON.stringify(big) }), next: (req) => api.onRequestPost({ env, request: req }) });
   assert.equal(res.status, 200);
   assert.deepEqual(await res.json(), { saved: 12, rejected: 0 });
+});
+
+test('ask: a plain question gets a plain answer from what Void remembers, filler words ignored, partial matches ranked', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec(), rec({ id: 'beta-1234abcd', name: 'beta', summary: 'Rust parser.', links: ['rust'], remote: '' })] } });
+  const get = async (q) => (await call(api.onRequestGet, env, { url: 'https://x/api/memory?ask=' + encodeURIComponent(q) })).json();
+  const a = await get('what did I build with react?');
+  assert.deepEqual(a.matches, ['alpha-1234abcd']);
+  assert.match(a.answer, /alpha/);
+  const b = await get('rust and react');
+  assert.equal(b.matches.length, 2, 'no project has both words, so both partial matches come back');
+  assert.match((await get('rust')).answer, /no remote copy/);
+  assert.match((await get('zzzz')).answer, /Nothing I remember/);
+  assert.deepEqual((await get('')).matches, []);
+});
+
+// ---- members: a paid member's session reads and writes only their own memory; a free account and a stranger get nothing
+async function account(env, userId, tier) {
+  await ensureTables(env);
+  const { token, stmt } = await newSession(env, userId); await stmt.run();
+  if (tier) await env.DB.prepare('INSERT INTO void_accounts (user_id, tier, sale_id, subscription_id, updated) VALUES (?, ?, ?, NULL, ?)').bind(userId, tier, 'sale-' + userId, new Date().toISOString()).run();
+  return token;
+}
+const as = (token, fn, env, o = {}) => fn({ env, request: new Request(o.url || 'https://x/api/memory', { method: o.method || 'GET', headers: { authorization: 'Bearer ' + token }, body: o.body == null ? undefined : JSON.stringify(o.body) }) });
+
+test('members: owner, paid member, free member and stranger each get what they should, and nobody reaches another\'s rows', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const ann = await account(env, 'annAnnAnnAnnAnnAnnAnn', 'paid'), bob = await account(env, 'bobBobBobBobBobBobBob', 'paid'), free = await account(env, 'freeFreeFreeFreeFreeFr', 'free'), nobody = await account(env, 'noneNoneNoneNoneNoneNo', null);
+  await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec({ id: 'owner-1', name: 'ownerthing', links: ['react'] })] } });
+  assert.equal((await as(ann, api.onRequestPost, env, { method: 'POST', body: { records: [rec({ id: 'shared-id', name: 'annsapp', links: ['react'] })] } })).status, 200);
+  assert.equal((await as(bob, api.onRequestPost, env, { method: 'POST', body: { records: [rec({ id: 'shared-id', name: 'bobsapp', links: ['react'] })] } })).status, 200);
+  const ask = (who, q = 'what did I build with react') => (who === 'owner' ? call(api.onRequestGet, env, { url: 'https://x/api/memory?ask=' + encodeURIComponent(q) }) : as(who, api.onRequestGet, env, { url: 'https://x/api/memory?ask=' + encodeURIComponent(q) }));
+  const a = await (await ask(ann)).json(), b = await (await ask(bob)).json(), o = await (await ask('owner')).json();
+  assert.deepEqual(a.matches, ['shared-id']); assert.match(a.answer, /annsapp/); assert.ok(!/bobsapp|ownerthing/.test(a.answer), 'ann sees only her own');
+  assert.deepEqual(b.matches, ['shared-id']); assert.match(b.answer, /bobsapp/); assert.ok(!/annsapp|ownerthing/.test(b.answer));
+  assert.deepEqual(o.matches, ['owner-1'], 'the owner\'s memory holds none of the members\' rows'); assert.ok(!/annsapp|bobsapp/.test(o.answer));
+  assert.equal((await ask(free)).status, 403, 'a free account is told this is for paid members');
+  assert.equal((await ask(nobody)).status, 403, 'a signed-in account with no purchase is free');
+  assert.equal((await as('x'.repeat(43), api.onRequestGet, env, { url: 'https://x/api/memory?ask=react' })).status, 401, 'a stranger with a made-up session');
+  assert.equal((await call(api.onRequestGet, env, { auth: false, url: 'https://x/api/memory?ask=react' })).status, 401, 'no key at all');
+  assert.equal((await as(free, api.onRequestPost, env, { method: 'POST', body: { records: [rec({ id: 'f' })] } })).status, 403, 'a free account cannot write');
+  // a member's exact lookup, topics and delete reach only their own rows; the same id in another member's memory is untouched
+  const mine = await (await as(ann, api.onRequestGet, env, { url: 'https://x/api/memory?id=shared-id' })).json();
+  assert.equal(mine.memory[0].name, 'annsapp'); assert.equal(mine.memory[0].id, 'shared-id');
+  assert.equal((await (await as(ann, api.onRequestGet, env, { url: 'https://x/api/memory?id=owner-1' })).json()).memory.length, 0, 'a member cannot read the owner\'s record by id');
+  assert.equal((await (await as(ann, api.onRequestDelete, env, { method: 'DELETE', url: 'https://x/api/memory?id=owner-1' })).json()).removed, 0, 'nor delete it');
+  assert.equal((await (await as(ann, api.onRequestDelete, env, { method: 'DELETE', url: 'https://x/api/memory?id=shared-id' })).json()).removed, 1);
+  assert.deepEqual((await (await ask(bob)).json()).matches, ['shared-id'], 'bob\'s record with the same id survives ann\'s delete');
+  assert.deepEqual((await (await as(bob, api.onRequestGet, env, { url: 'https://x/api/memory?view=topics' })).json()).topics.map((t) => t.tag + ':' + t.count), ['react:1'], 'topics count only the member\'s own rows');
+  // a member cannot rename themselves into the owner's rows: an id shaped like the owner's is still stored behind the member's own prefix
+  await as(bob, api.onRequestPost, env, { method: 'POST', body: { records: [rec({ id: 'owner-1', name: 'hijack' })] } });
+  assert.match((await (await ask('owner', 'ownerthing')).json()).answer, /ownerthing/); assert.deepEqual((await (await ask('owner', 'hijack')).json()).matches, [], 'the owner never sees the member\'s row');
+});
+
+test('members: a member\'s memory is capped, and the route\'s guard limit still covers a member push', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const ann = await account(env, 'annAnnAnnAnnAnnAnnAnn', 'paid');
+  const many = (from, n) => Array.from({ length: n }, (_, i) => rec({ id: 'p' + (from + i), name: 'proj' + (from + i) }));
+  for (let at = 0; at < MEMBER_MAX; at += 100) assert.equal((await as(ann, api.onRequestPost, env, { method: 'POST', body: { records: many(at, 100) } })).status, 200);
+  const over = await as(ann, api.onRequestPost, env, { method: 'POST', body: { records: many(MEMBER_MAX, 1) } });
+  assert.equal(over.status, 413); assert.match(await over.text(), /full/);
+});
+
+test('remember that: a member keeps a plain line in their own memory, recalls it, forgets it; the same fact twice is one note; nobody else sees or removes it; it counts toward the same cap', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const ann = await account(env, 'annAnnAnnAnnAnnAnnAnn', 'paid'), bob = await account(env, 'bobBobBobBobBobBobBob', 'paid');
+  const fact = 'I prefer tabs over spaces';
+  const keep = async (who, text) => as(who, api.onRequestPost, env, { method: 'POST', body: { source: 'remember', records: [await noteRecord(text)] } });
+  assert.deepEqual(await (await keep(ann, fact)).json(), { saved: 1, rejected: 0 });
+  assert.deepEqual(await (await keep(ann, '  i prefer TABS over spaces. ')).json(), { saved: 1, rejected: 0 });
+  const ask = (who, q) => as(who, api.onRequestGet, env, { url: 'https://x/api/memory?ask=' + encodeURIComponent(q) }).then((r) => r.json());
+  const a = await ask(ann, 'what do you remember about tabs');
+  assert.equal(a.matches.length, 1, 'the same fact twice is one note, the later wording kept'); assert.match(a.answer, /^I remember 1 match:\n• i prefer TABS over spaces\. · remembered \d{4}-\d\d-\d\d$/);
+  assert.deepEqual((await ask(bob, 'what do you remember about tabs')).matches, [], 'another member does not see it');
+  assert.equal((await (await as(bob, api.onRequestDelete, env, { method: 'DELETE', url: 'https://x/api/memory?id=' + await noteId(fact) })).json()).removed, 0, 'nor remove it');
+  assert.equal((await (await as(ann, api.onRequestDelete, env, { method: 'DELETE', url: 'https://x/api/memory?id=' + await noteId('I PREFER tabs over spaces.') })).json()).removed, 1, 'the same fact in other words of case finds it');
+  assert.deepEqual((await ask(ann, 'what do you remember about tabs')).matches, []);
+  assert.equal((await (await as(ann, api.onRequestDelete, env, { method: 'DELETE', url: 'https://x/api/memory?id=' + await noteId(fact) })).json()).removed, 0, 'forgetting what is not held removes nothing');
+  // a stranger and a free account cannot store one; the owner keeps notes in the owner's memory, which no member sees
+  assert.equal((await keep('x'.repeat(43), fact)).status, 401);
+  const free = await account(env, 'freeFreeFreeFreeFreeFr', 'free'); assert.equal((await keep(free, fact)).status, 403);
+  assert.deepEqual(await (await call(api.onRequestPost, env, { method: 'POST', body: { source: 'remember', records: [await noteRecord('the owner stores a note too')] } })).json(), { saved: 1, rejected: 0 });
+  assert.equal((await (await call(api.onRequestGet, env, { url: 'https://x/api/memory?ask=owner%20note' })).json()).matches.length, 1);
+  assert.deepEqual((await ask(ann, 'owner note')).matches, []);
+  // the cap is shared with projects: notes fill the same 500
+  for (let at = 0; at < MEMBER_MAX - 1; at += 100) await as(bob, api.onRequestPost, env, { method: 'POST', body: { records: Array.from({ length: Math.min(100, MEMBER_MAX - 1 - at) }, (_, i) => rec({ id: 'p' + (at + i), name: 'proj' + (at + i) })) } });
+  assert.equal((await keep(bob, 'the five hundredth thing')).status, 200);
+  assert.equal((await keep(bob, 'one more thing than allowed')).status, 413);
+});
+
+// ---- Ouroboros for members: a machine pushes with the member's Void key (vr1.…, the paid Void key that also does code review)
+async function voidKey(env, userId, tier = 'paid') {
+  await ensureTables(env);
+  const key = newKey();
+  await env.DB.prepare('INSERT INTO void_review_keys (hash, user_id, prefix, at) VALUES (?, ?, ?, ?)').bind(await keyHash(key), userId, key.slice(0, 10), new Date().toISOString()).run();
+  if (tier && !(await env.DB.prepare('SELECT 1 AS x FROM void_accounts WHERE user_id = ?').bind(userId).first())) await env.DB.prepare('INSERT INTO void_accounts (user_id, tier, sale_id, subscription_id, updated) VALUES (?, ?, ?, NULL, ?)').bind(userId, tier, 'sale-' + userId, new Date().toISOString()).run();
+  return key;
+}
+const push = (env, token, records) => as(token, api.onRequestPost, env, { method: 'POST', body: { source: 'ouroboros', records } });
+
+test('ouroboros for members: the owner\'s push is unchanged; a member\'s key lands in their own scope only; a free account\'s key, an unknown key and no key are refused in plain words', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const annKey = await voidKey(env, 'annAnnAnnAnnAnnAnnAnn'), bobKey = await voidKey(env, 'bobBobBobBobBobBobBob'), freeKey = await voidKey(env, 'freeFreeFreeFreeFreeFr', 'free');
+  // the owner, as before
+  assert.deepEqual(await (await call(api.onRequestPost, env, { method: 'POST', body: { source: 'ouroboros', records: [rec({ id: 'owner-proj', name: 'ownerproj', links: ['rust'] })] } })).json(), { saved: 1, rejected: 0 });
+  // a member's machine pushes with their key; the same record id as another member's
+  const ann = await push(env, annKey, [rec({ id: 'shared', name: 'annsapp', links: ['react'], body: '# annsapp\nreact app' })]);
+  assert.equal(ann.status, 200); assert.deepEqual(await ann.json(), { saved: 1, rejected: 0 });
+  assert.equal((await push(env, bobKey, [rec({ id: 'shared', name: 'bobsapp', links: ['react'] })])).status, 200);
+  const askBy = (token, q) => (token === 'owner' ? call(api.onRequestGet, env, { url: 'https://x/api/memory?ask=' + encodeURIComponent(q) }) : as(token, api.onRequestGet, env, { url: 'https://x/api/memory?ask=' + encodeURIComponent(q) })).then((r) => r.json());
+  const a = await askBy(annKey, 'what did I build with react');
+  assert.deepEqual(a.matches, ['shared']); assert.match(a.answer, /annsapp/); assert.ok(!/bobsapp|ownerproj/.test(a.answer), 'the key reads back only that member\'s own');
+  assert.deepEqual((await askBy('owner', 'what did I build with react')).matches, [], 'the owner\'s memory holds none of the members\' rows');
+  assert.deepEqual((await askBy('owner', 'rust')).matches, ['owner-proj']);
+  // the read-back a push does (exact lookup by id, with the hash) works with the key and returns that member's row
+  const back = await (await as(annKey, api.onRequestGet, env, { url: 'https://x/api/memory?id=shared' })).json();
+  assert.equal(back.memory[0].name, 'annsapp'); assert.match(back.memory[0].body_sha256, /^[0-9a-f]{64}$/);
+  // refused, in plain words
+  const free = await push(env, freeKey, [rec({ id: 'x' })]); assert.equal(free.status, 403); assert.match(await free.text(), /owner and paid members: this key belongs to an account that is not on paid Void\. Make one at https:\/\/a-to-mind\.com\/code-review\/#pro/);
+  const unknown = await push(env, newKey(), [rec({ id: 'x' })]); assert.equal(unknown.status, 403); assert.match(await unknown.text(), /Void does not know this key/);
+  assert.equal((await push(env, 'not-a-key-at-all', [rec({ id: 'x' })])).status, 401);
+  assert.equal((await call(api.onRequestPost, env, { auth: false, method: 'POST', body: { records: [rec({ id: 'x' })] } })).status, 401);
+  assert.deepEqual((await askBy(annKey, 'react')).matches, ['shared'], 'a refused push wrote nothing');
+});
+
+test('ouroboros for members: the 500-project cap applies to a push by key', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() }; const key = await voidKey(env, 'annAnnAnnAnnAnnAnnAnn');
+  for (let at = 0; at < MEMBER_MAX; at += 100) assert.equal((await push(env, key, Array.from({ length: 100 }, (_, i) => rec({ id: 'p' + (at + i), name: 'proj' + (at + i) })))).status, 200);
+  const over = await push(env, key, [rec({ id: 'one-more', name: 'onemore' })]);
+  assert.equal(over.status, 413); assert.match(await over.text(), /full/);
 });

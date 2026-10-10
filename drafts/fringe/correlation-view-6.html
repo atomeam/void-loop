@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · the link turns over (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit}
+button{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+canvas{width:100%;height:260px;border:1px solid rgba(255,255,255,.08);border-radius:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>the link turns over · draft · not published</h1>
+  <p class="note">Three made-up groups of points. Inside every group, more of x goes with more of y. Pool them and the overall line can slope the other way, because the groups sit in different places: the groups with more x happen to start lower. This is Simpson's paradox (Simpson 1951; the Berkeley admissions case in Bickel, Hammel and O'Connell 1975 is the famous real one). Slide the gap between the groups and watch the pooled line turn over while every group's own line keeps its slope. Whether seeing the groups split out changes how a person reads a pooled number of their own is an open question this page asks. Nothing is saved.</p>
+  <canvas id="plot" width="1200" height="520" aria-hidden="true"></canvas>
+  <div class="row"><label for="gap">gap between groups</label><input id="gap" type="range" min="0" max="12" step="0.5" value="6" style="flex:1"><output id="gapv"></output></div>
+  <div class="row"><button id="split" type="button" aria-pressed="false">split by group</button><button id="again" type="button">new points</button></div>
+  <div id="state" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  function el(id){return document.getElementById(id)}
+  function rng(seed){return function(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}}
+  function gauss(r){var u=Math.max(1e-12,r()),v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+  // three groups, each with the same positive slope inside (y = 0.8 x + noise); group g sits g*3 to the right and g*gap lower
+  function make(seed,gap,n){var r=rng(seed),pts=[];for(var g=0;g<3;g++)for(var i=0;i<(n||20);i++){var x=g*3+r()*3;pts.push({g:g,x:x,y:0.8*(x-g*3)-g*gap+0.6*gauss(r)})}return pts}
+  // least-squares slope and Pearson r
+  function fit(pts){var n=pts.length,mx=0,my=0;pts.forEach(function(p){mx+=p.x;my+=p.y});mx/=n;my/=n;var sxy=0,sxx=0,syy=0;
+    pts.forEach(function(p){sxy+=(p.x-mx)*(p.y-my);sxx+=(p.x-mx)*(p.x-mx);syy+=(p.y-my)*(p.y-my)});return{slope:sxy/sxx,r:sxy/Math.sqrt(sxx*syy),mx:mx,my:my}}
+  function groups(pts){return[0,1,2].map(function(g){return fit(pts.filter(function(p){return p.g===g}))})}
+  var seed=(Math.random()*4294967296)>>>0,split=false,COL=['#ffd23a','#5a8cff','#45c45a'];
+  function draw(){var gap=+el('gap').value,pts=make(seed,gap),all=fit(pts),gs=groups(pts);el('gapv').textContent=gap;
+    var c=el('plot'),g=c.getContext('2d'),W=c.width,H=c.height;g.clearRect(0,0,W,H);
+    var xs=pts.map(function(p){return p.x}),ys=pts.map(function(p){return p.y}),x0=Math.min.apply(null,xs),x1=Math.max.apply(null,xs),y0=Math.min.apply(null,ys)-1,y1=Math.max.apply(null,ys)+1;
+    var sx=function(x){return 30+(x-x0)*(W-60)/(x1-x0)},sy=function(y){return H-30-(y-y0)*(H-60)/(y1-y0)};
+    pts.forEach(function(p){g.fillStyle=split?COL[p.g]:'#d8d8dc';g.beginPath();g.arc(sx(p.x),sy(p.y),6,0,7);g.fill()});
+    var line=function(f,a,b,col,w){g.strokeStyle=col;g.lineWidth=w;g.beginPath();g.moveTo(sx(a),sy(f.my+f.slope*(a-f.mx)));g.lineTo(sx(b),sy(f.my+f.slope*(b-f.mx)));g.stroke()};
+    line(all,x0,x1,'#ff5a5a',4);if(split)gs.forEach(function(f,i){line(f,i*3,i*3+3,COL[i],3)});
+    el('state').textContent='pooled: slope '+all.slope.toFixed(2)+', r '+all.r.toFixed(2)+(all.slope<0?' (more x, less y)':' (more x, more y)')+'\n'
+      +(split?'inside each group: slopes '+gs.map(function(f){return f.slope.toFixed(2)}).join(', ')+' (more x, more y in every one)':'press split by group to see each group\'s own line')}
+  el('gap').addEventListener('input',draw);
+  el('split').addEventListener('click',function(){split=!split;el('split').setAttribute('aria-pressed',String(split));draw()});
+  el('again').addEventListener('click',function(){seed=(Math.random()*4294967296)>>>0;draw()});
+  draw();
+  // made-up points: with a wide gap the pooled slope is negative while every group's slope stays positive; with no gap all agree
+  function selftest(){var wide=make(42,6),flat=make(42,0);var a=fit(wide),gs=groups(wide);
+    if(!(a.slope<0))return'pooled slope should turn negative with a wide gap: '+a.slope;
+    if(gs.some(function(f){return !(f.slope>0.4)}))return'each group should keep its positive slope: '+gs.map(function(f){return f.slope.toFixed(2)}).join(',');
+    if(!(fit(flat).slope>0))return'with no gap the pooled slope should be positive';
+    var line=fit([{x:0,y:1},{x:1,y:3},{x:2,y:5}]);if(Math.abs(line.slope-2)>1e-12||Math.abs(line.r-1)>1e-12)return'fit gave '+JSON.stringify(line);return true}
+  window.__simpson={make:make,fit:fit,groups:groups,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

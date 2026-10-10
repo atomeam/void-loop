@@ -5,10 +5,11 @@
 //   -> the saved entry. A concrete small ask is queued for the builders (target 'voice:...'), one open at a time.
 // When the model is busy nothing is saved: Void's words are never made up for it.
 import { ownerOk } from '../../lib/guard.js';
-import { DEFAULT_MODEL } from '../../lib/router.js';
+import { track } from '../../lib/actions.js';
+import { models } from '../../lib/models.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
-import { VOICE_SYSTEM, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice } from '../../lib/voice.js';
+import { VOICE_SYSTEM, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts } from '../../lib/voice.js';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 
@@ -28,10 +29,14 @@ export async function onRequestPost({ request, env }) {
   const question = questionFor(kind, shipped);
   const facts = await readSelf(env, new URL(request.url).origin);
   const before = await readVoice(env);
-  const context = selfFacts(facts); // includes its games, its miniatures and what it said about itself last time
+  let context = selfFacts(facts); // includes its games, its miniatures and what it said about itself last time
+  if (kind === 'daily') { // and its last week, from the growth ledger (a ledger that cannot be read leaves it out)
+    let ledger = null; try { const r = await env.ASSETS.fetch(new Request(new URL('/void.growth.json', request.url))); ledger = r.ok ? await r.json() : null; } catch (_) {}
+    const week = weekFacts(ledger); if (week) context += '\n' + week;
+  }
   let said = null;
   try {
-    const r = await env.AI.run(DEFAULT_MODEL, {
+    const r = await env.AI.run(models('will'), {
       messages: [{ role: 'system', content: VOICE_SYSTEM }, { role: 'user', content: 'Facts about Void:\n' + context + '\n\n' + question }],
       max_tokens: 900, chat_template_kwargs: { enable_thinking: false },
     });
@@ -48,9 +53,13 @@ export async function onRequestPost({ request, env }) {
   if (small) {
     const open = await env.DB.prepare("SELECT id FROM void_queue WHERE target LIKE 'voice:%' AND state IN ('queued','building') LIMIT 1").first();
     if (!open) {
-      queued = Date.now().toString(36);
-      await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-        .bind(queued, small.ask, 'voice:' + slug(small.ask), 'queued', 'Void asked for this (' + kind + ' reflection ' + at.slice(0, 10) + '). Credit Void.', at, at).run();
+      queued = Date.now().toString(36); const target = 'voice:' + slug(small.ask);
+      // the execution record (lib/actions.js): written before the job is queued; no record, no job
+      await track(env, { owner: 'void', kind: 'queue.add', ref: target }, async () => {
+        await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
+          .bind(queued, small.ask, target, 'queued', 'Void asked for this (' + kind + ' reflection ' + at.slice(0, 10) + '). Credit Void.', at, at).run();
+        return 'queued ' + queued + ': ' + small.ask;
+      });
     }
   }
   return Response.json({ ...entry, queued });

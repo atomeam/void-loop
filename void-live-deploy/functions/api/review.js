@@ -1,5 +1,5 @@
 // Void's code review API (lib/review-api.js). The page /code-review/ and the GitHub Action (review/action.yml) call it.
-// POST { code | diff, lang?, ask? }  -> { findings, lang, lines, ms, tier, answer?, review: 'rules' | 'model', left?, upgrade? }
+// POST { code | diff, lang?, ask? }  -> { findings, lang, lines, ms, tier, answer?, review: 'rules' | 'model', quoted?: { kept, dropped }, left?, upgrade? }
 //   Who gets the closer read (the model's review on top of the instant checks), from the Authorization header:
 //     the owner (READ_TOKEN or an owner session)      always, free, no daily cap: Void's reviewer is ours first
 //     a Void Pro key  vr1.…                           paid Void ($49 a month) includes it; minted below by a signed-in paid account
@@ -11,7 +11,7 @@
 // DELETE { prefix }        (Bearer session)   -> { ok } (that key stops working)
 import { ensureTables, bad, good, session, tierOf } from '../../lib/void-me.js';
 import { ownerOk } from '../../lib/guard.js';
-import { KEY_RE, MAX_KEYS, PRO_DAILY, BUY_URL, keyHash, newKey, today, quick, closerRead } from '../../lib/review-api.js';
+import { KEY_RE, MAX_KEYS, PRO_DAILY, BUY_URL, keyHash, newKey, today, quick, closerReadDetail, cleanImports } from '../../lib/review-api.js';
 import { productById, resolveProductId, forSale, buyUrl, LICENSE_RE, LICENSE_TTL_MS, LICENSE_TABLE, askGumroad } from '../../lib/products.js';
 
 const PRODUCT = productById('code-review');
@@ -77,10 +77,11 @@ export async function onRequestPost({ request, env }) {
   if (a.left <= 0) return good({ ...out, note: 'today\'s closer reads are used; the instant checks still run' });
   if (!modelsOn(env)) return good({ ...out, note: 'the model is off right now; the instant checks are above' });
   try {
-    const answer = await closerRead(env, { ask: b.ask, code: q.code, lang: q.lang, diff: !!b.diff, res: q.res });
-    if (!answer) return good({ ...out, note: 'model busy' });
+    const d = await closerReadDetail(env, { ask: b.ask, code: q.code, lang: q.lang, diff: !!b.diff, res: q.res, imports: cleanImports(b.imports) }); // imports: each touched file's import lines (tools/review-pr.mjs), so a diff review never calls one missing
+    if (!d.answer) return good({ ...out, note: 'model busy' });
     await a.spend();
-    return good({ ...out, answer, review: 'model', ...(Number.isFinite(a.left) ? { left: a.left - 1 } : {}) });
+    // quoted: how many findings quoted a line of the code and stayed, and how many claims about lines not in it were dropped (lib/review-api.js quoteCheck)
+    return good({ ...out, answer: d.answer, review: 'model', quoted: { kept: d.kept, dropped: d.dropped }, ...(Number.isFinite(a.left) ? { left: a.left - 1 } : {}) });
   } catch (_) { return good({ ...out, note: 'model busy' }); }
 }
 

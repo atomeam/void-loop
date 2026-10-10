@@ -1,15 +1,20 @@
-// Which commit verify-main should revert when the full suite goes red on main (deploy.yml).
+// Which commit verify-main should revert when the full suite goes red on main (verify.yml; until 2026-10-10 deploy.yml).
 // Reverting the commit that was just tested is wrong when the failing check was already red before it: on 2026-10-09
 // #215 broke the rack check, its revert conflicted, and the next red run reverted #217, which had nothing to do with it.
 // So each red run names its failing checks as annotations, and the next red run walks back along main's first parents
 // to the commit where each failing check first went red. When the record is unclear, it reports instead of guessing.
+// Since every merge gets its own verify run (deploy.yml, one concurrency group per head), two red suites can finish at the
+// same time, so before a revert the tool checks the target is still live on main (on its first-parent line and not already
+// reverted) and that the failed checks are still red on main's newest verified head; otherwise it reports.
 //   node tools/revert-target.mjs --annotate test-output.txt      prints the ::error annotations naming the failed checks
 //   node tools/revert-target.mjs --pick <sha> test-output.txt    prints {"action":"revert"|"report","sha","why"} as JSON
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
 export const TITLE = 'verify-main failed check';
+// the workflows that have run verify-main: its own since 2026-10-10, the deploy before (older verdicts still count)
+export const VERIFY_WORKFLOWS = ['Void verify', 'Void deploy'];
 export const COUNT_TITLE = 'verify-main failed checks';
 const MAX_NAMES = 9; // GitHub keeps 10 error annotations per step: up to 9 names plus the count
 const NAME_LEN = 160;
@@ -45,7 +50,8 @@ export function namesFrom(annos) {
  *   failing: the names of its failed checks ([] when the failure was outside the named browser checks)
  *   history: main's earlier commits along first parents, newest first, each
  *            { sha, state: 'pass' | 'fail' | 'unknown', failing: string[] | null }
- *            (unknown = never verified: superseded, cancelled, an auto-revert; failing null = red, names not recorded)
+ *            (unknown = never verified: superseded, cancelled, an auto-revert; failing null = red, names not recorded;
+ *            failing [] on a red commit = it failed outside the named checks, so it says nothing about a named one)
  * For each failed check, walk back: unknown commits stay suspects, a pass ends the walk (the check went red after it),
  * a red commit that also failed this check moves the blame to it, a red commit with other failures ends the walk.
  */
@@ -57,6 +63,10 @@ export function pickRevert({ tested, failing, history }) {
       if (h.state === 'unknown') { suspects.push(h.sha); continue; }
       if (h.state === 'pass') return { check, suspects };
       if (!h.failing) return { check, unclear: h.sha + ' was red before it too, and its failed checks were not recorded' };
+      // red outside the named checks (the suite crashed or stopped early): it may never have reached this check, so it
+      // says nothing about it, like an unverified commit (2026-10-10: a crash at 0bc6f43 hid the watch check, and the
+      // next commit, which only fixed the crash, was reverted for it)
+      if (check !== null && h.failing.length === 0) { suspects.push(h.sha); continue; }
       const already = check === null ? h.failing.length === 0 : h.failing.includes(check);
       if (!already) return { check, suspects };
       suspects = [h.sha];
@@ -76,14 +86,45 @@ export function pickRevert({ tested, failing, history }) {
   return { action: 'revert', sha: shas[0], why: verdicts.map(label).join(', ') + ' already failed at ' + shas[0] + ', where it first went red; ' + tested + ' did not break it' };
 }
 
+/**
+ * Is the revert target still live on main? Pure.
+ *   target: the sha to revert; mainLine: main's first-parent shas, newest first; body(sha): the commit message
+ *   -> { live: true } | { live: false, why }   (gone from main's line, or a newer commit carries Void-auto-revert: <target>)
+ */
+export function stillLive(target, mainLine, body) {
+  if (!mainLine.includes(target)) return { live: false, why: target + ' is not on main\'s first-parent line any more' };
+  for (const s of mainLine) {
+    if (s === target) break;
+    const m = /^Void-auto-revert:\s*(\S+)/m.exec(body(s) || '');
+    // the workflow writes the full sha; an abbreviated one still matches when it is at least a short sha (7) long
+    if (m && (m[1] === target || (m[1].length >= 7 && (target.startsWith(m[1]) || m[1].startsWith(target))))) return { live: false, why: target + ' is already reverted on main (' + s.slice(0, 7) + ')' };
+  }
+  return { live: true };
+}
+
+/**
+ * Are the failed checks still red on main's newest verified head? Pure.
+ *   checks: the tested run's failed checks ([] = outside the named checks); latest: verifiedState of main's newest head
+ *   with a finished suite (null = none newer than the tested run, whose word then stands)
+ *   -> { red: true } | { red: false, why }
+ */
+export function stillRed(checks, latest) {
+  if (!latest || latest.state === 'unknown') return { red: true };
+  if (latest.state === 'pass') return { red: false, why: 'main\'s newest verified head ' + latest.sha.slice(0, 7) + ' passed the suite' };
+  if (!latest.failing) return { red: true }; // red, names not recorded: nothing says it healed
+  if (checks.length && !latest.failing.length) return { red: true }; // red outside the named checks: it may not have reached them
+  const still = (checks.length ? checks : [null]).every((c) => (c === null ? latest.failing.length === 0 : latest.failing.includes(c)));
+  return still ? { red: true } : { red: false, why: 'main\'s newest verified head ' + latest.sha.slice(0, 7) + ' no longer fails ' + (checks.length ? checks.map((c) => '"' + c + '"').join(', ') : 'the suite the same way') };
+}
+
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: 'utf8', timeout: 60000, stdio: ['ignore', 'pipe', 'pipe'] });
 const gh = (path) => JSON.parse(run('gh', ['api', path]));
 
-/** What verify-main found on one commit of main, from the deploy runs of that commit. */
+/** What verify-main found on one commit of main, from that commit's runs (verify.yml, or deploy.yml before it moved). */
 export function verifiedState(sha, repo, api = gh, body = (s) => run('git', ['log', '-1', '--format=%B', s])) {
   if (/^Void-auto-revert:/m.test(body(sha))) return { sha, state: 'unknown', failing: null }; // reverts are not re-tested
   const runs = (api('repos/' + repo + '/actions/runs?head_sha=' + sha + '&per_page=20').workflow_runs || [])
-    .filter((r) => r.name === 'Void deploy' && r.event !== 'pull_request');
+    .filter((r) => VERIFY_WORKFLOWS.includes(r.name) && r.event !== 'pull_request');
   for (const r of runs) {
     const job = (api('repos/' + repo + '/actions/runs/' + r.id + '/jobs').jobs || []).find((j) => j.name === 'verify-main');
     if (!job || job.status !== 'completed') continue;
@@ -102,12 +143,41 @@ export function historyOf(tested, repo, depth = 15, api = gh) {
   return shas.map((s) => verifiedState(s, repo, api));
 }
 
+/** main's newest head with a finished suite (pass or fail), walking first parents from origin/main; null when none */
+export function newestVerified(repo, mainLine, api = gh, body) {
+  for (const s of mainLine) { const v = verifiedState(s, repo, api, body); if (v.state !== 'unknown') return v; }
+  return null;
+}
+
+/** the pick, then the two liveness checks against main as it is now (fetched); a target that is not live is reported */
+export function pickLive({ tested, failing, history, mainLine, body, repo, api = gh }) {
+  const pick = pickRevert({ tested, failing, history });
+  if (pick.action !== 'revert') return pick;
+  const live = stillLive(pick.sha, mainLine, body);
+  if (!live.live) return { action: 'report', sha: pick.sha, why: pick.why + '; but ' + live.why };
+  const red = stillRed(failing, newestVerified(repo, mainLine, api, body));
+  if (!red.red) return { action: 'report', sha: pick.sha, why: pick.why + '; but ' + red.why };
+  return pick;
+}
+
+// A step before the suite can fail (a Python tool's tests, the extension check): then there is no suite output, no check to
+// name and nothing to revert by. Said plainly, instead of crashing into "could not read the verify record".
+export const NO_SUITE = 'the full suite never ran: a step before it failed (see this run\'s log), so there is no failed check to revert by';
+export const noSuitePick = () => ({ action: 'report', why: NO_SUITE });
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [mode, a, b] = process.argv.slice(2);
-  if (mode === '--annotate') { for (const l of annotations(failingChecks(readFileSync(a, 'utf8')))) console.log(l); }
+  const out = mode === '--annotate' ? a : b;
+  if ((mode === '--annotate' || mode === '--pick') && !(out && existsSync(out))) {
+    if (mode === '--annotate') console.log('::error title=verify-main did not run the suite::' + NO_SUITE);
+    else console.log(JSON.stringify(noSuitePick()));
+  } else if (mode === '--annotate') { for (const l of annotations(failingChecks(readFileSync(a, 'utf8')))) console.log(l); }
   else if (mode === '--pick') {
     const repo = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop';
     const tested = run('git', ['rev-parse', a]).trim();
-    console.log(JSON.stringify(pickRevert({ tested, failing: failingChecks(readFileSync(b, 'utf8')), history: historyOf(tested, repo) })));
+    try { run('git', ['fetch', '-q', 'origin', 'main']); } catch (_) {}
+    const mainLine = run('git', ['rev-list', '--first-parent', '--max-count=60', 'origin/main']).trim().split('\n').filter(Boolean);
+    const body = (s) => run('git', ['log', '-1', '--format=%B', s]);
+    console.log(JSON.stringify(pickLive({ tested, failing: failingChecks(readFileSync(b, 'utf8')), history: historyOf(tested, repo), mainLine, body, repo })));
   } else { console.error('usage: node tools/revert-target.mjs --annotate <test-output> | --pick <sha> <test-output>'); process.exit(2); }
 }
