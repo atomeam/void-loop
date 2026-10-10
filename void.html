@@ -416,6 +416,7 @@
       filter: blur(40px); opacity: .7; animation: auraDrift 60s ease-in-out infinite alternate; }
     @keyframes auraDrift { to { transform: translate(3%, -2%) scale(1.08); } }
     #stage { perspective: 1400px; }
+    #stage > .shrunk, #stage > .shrunk * { cursor: zoom-in; } /* a board shrunk beside a newer one: a tap brings it back */
     .thing { transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
       transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .35s ease; filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); }
     .thing.lift { --tz: 18px; filter: drop-shadow(0 26px 40px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(140,170,255,.18)); }
@@ -797,6 +798,7 @@ Object.values(things).forEach((th) => {
         else if (th.kind === 'tab') mountTab(th);
         else if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
+      Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
       decorate();
       syncFigures();
       announceNew();
@@ -806,7 +808,27 @@ Object.values(things).forEach((th) => {
     // spot from where it was asked to land; a card that grows (a draft filling the tab card, a 3D miniature loading) moves the
     // cards it now covers; a card the person dragged stays where they put it; a saved layout is never reshuffled on load.
     let placement = null; import('/lib/placement.js').then((m) => { placement = m; layoutStage(); }).catch(() => {});
-    let laidOut = null; const cardSize = new Map(), grownIds = new Set(), centred = new Set();
+    let laidOut = null; const cardSize = new Map(), grownIds = new Set(), centred = new Set(), geoOf = new Map();
+    // A board that no longer fits beside a newer one shrinks (lib/placement.js) instead of half-covering it; its card shrinks
+    // with it. placeThing puts a thing (and its card) where th says, at th.scale; a tap on a small board brings it back.
+    function placeThing(th) {
+      const el = stage.querySelector(':scope > .thing[data-id="' + CSS.escape(th.id) + '"]'), side = stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(th.id) + '"]');
+      const s = th.scale < 1 ? th.scale : 1;
+      for (const n of [el, side]) if (n) { n.style.transformOrigin = s < 1 ? '0 0' : ''; n.style.scale = s < 1 ? String(s) : ''; n.classList.toggle('shrunk', s < 1); }
+      if (el) { el.style.left = th.x + 'px'; el.style.top = th.y + 'px'; }
+      if (side && th.card) { side.style.left = th.card.x + 'px'; side.style.top = th.card.y + 'px'; }
+    }
+    let swallowClick = 0;
+    stage.addEventListener('pointerdown', (e) => {
+      const n = e.target.closest && e.target.closest('.thing[data-id], .side-card[data-of]'), id = n && (n.dataset.id || n.dataset.of), th = id && things[id];
+      if (!th || !(th.scale < 1)) return;
+      e.stopPropagation(); e.preventDefault(); swallowClick = Date.now() + 700; // the tap brings it back; it doesn't also play a move
+      const g = th.geo, home = th.home || { x: th.x - g.bx * th.scale, y: th.y - g.by * th.scale };
+      th.x = Math.round(home.x + g.bx); th.y = Math.round(home.y + g.by); if (th.card) th.card = { x: Math.round(home.x + g.sx), y: Math.round(home.y + g.sy) };
+      delete th.scale; delete th.geo; delete th.home;
+      placeThing(th); centred.add(id); save(); requestAnimationFrame(() => layoutStage()); // it holds its spot again; the board in front of it moves or shrinks
+    }, true);
+    stage.addEventListener('click', (e) => { if (Date.now() < swallowClick) { e.stopPropagation(); e.preventDefault(); swallowClick = 0; } }, true);
     const sizeWatch = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
       for (const e of entries) {
         const id = e.target.dataset && e.target.dataset.id; if (!id || !things[id]) continue;
@@ -820,23 +842,29 @@ Object.values(things).forEach((th) => {
       if (!placement || PAGE || document.documentElement.classList.contains('dragging')) return;
       const els = [...stage.querySelectorAll(':scope > .thing[data-id]')].filter((el) => things[el.dataset.id] && el.offsetWidth);
       if (sizeWatch) { sizeWatch.disconnect(); els.forEach((el) => sizeWatch.observe(el)); }
+      if (!laidOut && !els.length) return; // the stage hasn't drawn yet: the first real look is the saved layout, never fresh cards
       const first = !laidOut; if (first) laidOut = new Set();
       // a 3D board's own card (skills/side-card.js: whose move, the buttons, how to play) is placed with its board, as one
       // rectangle, and moves with it; otherwise a board moved aside leaves its card behind, on top of whatever comes next
       const sideOf = (id) => stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(id) + '"]');
-      const cards = els.map((el) => { const th = things[el.dataset.id], side = sideOf(th.id);
+      const cards = els.map((el) => { const th = things[el.dataset.id], side = sideOf(th.id), mid = centred.has(th.id); // mid: asked for the middle, so it holds its spot like a card that grew, and its neighbours move
+        const base = { id: th.id, pinned: !!th.pinned, fresh: !first && !mid && !laidOut.has(th.id), grew: mid || grownIds.has(th.id) };
+        if (th.scale < 1 && th.geo) { const s = th.scale, g = th.geo; return { ...base, x: el.offsetLeft - g.bx * s, y: el.offsetTop - g.by * s, w: g.w, h: g.h, scale: s, home: th.home }; }
         let x = el.offsetLeft, y = el.offsetTop, r = x + el.offsetWidth, b = y + el.offsetHeight;
         if (side && side.offsetWidth) { x = Math.min(x, side.offsetLeft); y = Math.min(y, side.offsetTop); r = Math.max(r, side.offsetLeft + side.offsetWidth); b = Math.max(b, side.offsetTop + side.offsetHeight); }
-        const mid = centred.has(th.id); // asked for the middle: it holds its spot like a card that grew, and its neighbours move
-        return { id: th.id, x, y, w: r - x, h: b - y, pinned: !!th.pinned, fresh: !first && !mid && !laidOut.has(th.id), grew: mid || grownIds.has(th.id) }; });
+        geoOf.set(th.id, { bx: el.offsetLeft - x, by: el.offsetTop - y, sx: side ? side.offsetLeft - x : 0, sy: side ? side.offsetTop - y : 0, w: r - x, h: b - y });
+        return { ...base, x, y, w: r - x, h: b - y }; });
       cards.forEach((c) => { laidOut.add(c.id); centred.delete(c.id); }); grownIds.clear(); // a card not on the stage yet keeps its claim on the middle
       const moves = placement.arrange(cards, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) });
       let moved = false;
       for (const [id, p] of Object.entries(moves)) {
-        const th = things[id], el = stage.querySelector('[data-id="' + CSS.escape(id) + '"]'), c = cards.find((k) => k.id === id); if (!th || !el || !c) continue;
-        const dx = p.x - c.x, dy = p.y - c.y, side = sideOf(id);
-        th.x = el.offsetLeft + dx; th.y = el.offsetTop + dy; el.style.left = th.x + 'px'; el.style.top = th.y + 'px'; moved = true;
-        if (side) { const sx = side.offsetLeft + dx, sy = side.offsetTop + dy; side.style.left = sx + 'px'; side.style.top = sy + 'px'; th.card = { x: sx, y: sy }; }
+        const th = things[id], c = cards.find((k) => k.id === id), g = th && (th.geo || geoOf.get(id)); if (!th || !c || !g) continue;
+        const s = p.scale ?? (th.scale || 1);
+        if (s < 1) { if (!(th.scale < 1)) th.home = { x: c.x, y: c.y }; th.scale = s; th.geo = g; } // shrunk: remember its full size and where it stood
+        else { delete th.scale; delete th.geo; delete th.home; }
+        th.x = Math.round(p.x + g.bx * s); th.y = Math.round(p.y + g.by * s);
+        if (sideOf(id)) th.card = { x: Math.round(p.x + g.sx * s), y: Math.round(p.y + g.sy * s) };
+        placeThing(th); moved = true;
       }
       if (moved) { decorate(); save(); }
     }
