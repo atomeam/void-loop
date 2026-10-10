@@ -1044,7 +1044,7 @@ try {
     const away = await back.evaluate(() => window.__voidAway || null);
     const whisper = await back.evaluate(() => (document.getElementById('whisper') || {}).textContent || '');
     const natured = await back.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.nature).length);
-    check('away: a cloud and a flower summoned, an hour gone: the page comes back with "While you were away (1 hour): the cloud rained" and both carry their moved-on state (the whisper is not asserted: the stubbed three.js says \"3D can't show\" over it)',
+    check('away: a cloud and a flower summoned, an hour gone: the page comes back with "While you were away (1 hour): the cloud rained" and both carry their moved-on state',
       kept === 'cloud,flower' && away && /^While you were away \(1 hour\): /.test(away.note) && /the cloud rained/.test(away.note) && Math.abs(away.ms - 36e5) < 60e3 && natured === 2 && !errsW.length,
       JSON.stringify({ kept, away, whisper, natured, errsW }));
     await back.reload(); await back.waitForTimeout(800);
