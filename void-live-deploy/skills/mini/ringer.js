@@ -105,6 +105,15 @@ export default async function build(ctx, data) {
   const ghostDots = new THREE.InstancedMesh(keep(new THREE.CircleGeometry(0.0017, 10).rotateX(-Math.PI / 2)), ghostMat, GHOST_MAX);
   ghostDots.setColorAt(0, new THREE.Color('#ffffff')); // the colour buffer exists from the first compile, so amber dots need no recompile
   ghostDots.count = 0; ghostDots.visible = false; ghostDots.frustumCulled = false; root.add(ghostDots);
+  // the fade runs on the clock, not on frames: a card that is off screen draws no frames, and it still has to end
+  let ghostLetGo = 0;
+  const fadeGhost = () => {
+    if (!ghostDots.visible || pulling || aiming) return false;
+    if (!ghostLetGo) ghostLetGo = performance.now();
+    ghostMat.opacity = Math.max(0, GHOST_ON * (1 - (performance.now() - ghostLetGo) / (GHOST_FADE * 1000)));
+    if (ghostMat.opacity <= 0) { ghostDots.visible = false; ghostLetGo = 0; }
+    return true;
+  };
   const GHOST_ON = 0.6, GHOST_FADE = 0.35, white = new THREE.Color('#ffffff'), amber = new THREE.Color('#ffb648'), dotAt = new THREE.Matrix4();
   let ghostSeen = { dots: 0, hits: 0 };
   function drawGhost(s) {
@@ -139,8 +148,8 @@ export default async function build(ctx, data) {
       thumb.position.set(thumbAt(s.power) - K * 1.1, sh.r, 0);
     }
     handPose = { visible: hand.visible, back: hand.visible ? -thumbAt(s.power) : 0 };
-    if ((pulling || aiming) && aimLine.visible) { drawGhost(s); ghostDots.visible = true; ghostMat.opacity = GHOST_ON; }
-    else if (ghostDots.visible && ctx.still) { ghostDots.visible = false; ghostMat.opacity = 0; }
+    if ((pulling || aiming) && aimLine.visible) { drawGhost(s); ghostDots.visible = true; ghostMat.opacity = GHOST_ON; ghostLetGo = 0; }
+    else if (ghostDots.visible && ctx.still) { ghostDots.visible = false; ghostMat.opacity = 0; ghostLetGo = 0; }
     sig = now;
     return true;
   }
@@ -218,14 +227,10 @@ export default async function build(ctx, data) {
     update() { if (pose()) ctx.requestRender(); },
     tick(dt) {
       let r = pose();
-      if (ghostDots.visible && !pulling && !aiming) { // fading out after letting go
-        ghostMat.opacity = Math.max(0, ghostMat.opacity - (dt || 1 / 60) * GHOST_ON / GHOST_FADE);
-        if (ghostMat.opacity <= 0) ghostDots.visible = false;
-        r = true;
-      }
+      if (fadeGhost()) r = true; // fading out after letting go
       return r;
     },
-    state() { if (pose()) ctx.requestRender(); /* read what the current state poses, not the last frame drawn */ const s = stateOf(ctx.handle.data); return { held: lockId !== null, cameraFree: !ctx.controls || ctx.controls.enabled, camera: ctx.camera.position.toArray(), ghost: ghostDots.visible ? { dots: ghostSeen.dots, hits: ghostSeen.hits, opacity: ghostMat.opacity } : null, marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible, pulling, angle: s.angle, power: s.power, aimLength: aimLine.visible ? aimLine.scale.x + sh0(s).r * 1.4 : 0, reach: R.reach(s).d, arc: !!(arc && arc.visible), arcSweep: arc && arc.visible ? Math.max(0.02, arcPower) : 0, hand: handPose.visible, thumbBack: handPose.back, handBehind: handPose.visible ? (() => { const v = new THREE.Vector3(); hand.children[0].getWorldPosition(v); const sh = sh0(s); return (v.x - sh.x) * Math.cos(s.angle) + (-v.z - sh.y) * Math.sin(s.angle) < 0; })() : false }; },
+    state() { if (pose() | fadeGhost()) ctx.requestRender(); /* read what the current state poses, not the last frame drawn */ const s = stateOf(ctx.handle.data); return { held: lockId !== null, cameraFree: !ctx.controls || ctx.controls.enabled, camera: ctx.camera.position.toArray(), ghost: ghostDots.visible ? { dots: ghostSeen.dots, hits: ghostSeen.hits, opacity: ghostMat.opacity } : null, marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible, pulling, angle: s.angle, power: s.power, aimLength: aimLine.visible ? aimLine.scale.x + sh0(s).r * 1.4 : 0, reach: R.reach(s).d, arc: !!(arc && arc.visible), arcSweep: arc && arc.visible ? Math.max(0.02, arcPower) : 0, hand: handPose.visible, thumbBack: handPose.back, handBehind: handPose.visible ? (() => { const v = new THREE.Vector3(); hand.children[0].getWorldPosition(v); const sh = sh0(s); return (v.x - sh.x) * Math.cos(s.angle) + (-v.z - sh.y) * Math.sin(s.angle) < 0; })() : false }; },
     dispose() { release(); if (arc) arc.geometry.dispose(); ghostDots.dispose(); host.removeEventListener('pointerdown', down, { capture: true }); for (const m of mats) m.dispose(); for (const x of made) x.dispose(); },
   };
 }
