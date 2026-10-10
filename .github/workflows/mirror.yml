@@ -1,0 +1,25 @@
+# Once a week, copy the non-secret knowledge of this repo (skills, the growth ledger, docs, domains) to a second git host. tools/mirror.mjs, tested in
+# tools/mirror.test.mjs. Does nothing, and says so, until the owner sets MIRROR_URL (an https git URL) and MIRROR_TOKEN (an access token for it).
+name: Mirror
+on:
+  schedule:
+    - cron: '41 3 * * 0'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Mirror
+        shell: bash
+        env:
+          MIRROR_URL: ${{ secrets.MIRROR_URL }}
+          MIRROR_TOKEN: ${{ secrets.MIRROR_TOKEN }}
+        run: |
+          node tools/mirror.mjs | tee mirror.txt
+          { echo '### Mirror'; echo '```'; cat mirror.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
