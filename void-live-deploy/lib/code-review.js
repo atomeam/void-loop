@@ -24,7 +24,14 @@ const NOT_CODE = /\b(?:zip|area|postal|post|promo|promotional|discount|dress|mor
 export function isReviewAsk(text) {
   const s = String(text || '').trim(), first = s.split('\n')[0].replace(/\s*⏎.*$/, '').slice(0, 300);
   if (NOT_CODE.test(first)) return false;
-  return ASKS.some((re) => re.test(first));
+  if (ASKS.some((re) => re.test(first))) return true;
+  // "review this python:" with the paste on the next lines: the first line asks for a review, names a language and ends at the colon
+  if (s.includes('\n') && /:\s*$/.test(first) && /\b(?:review|check|lint|audit|critique)\b/i.test(first)) {
+    const lang = langNamed(first);
+    const rest = s.slice(s.indexOf('\n') + 1);
+    if (rest.trim() && looksLikeCode(rest, lang || undefined)) return true;
+  }
+  return false;
 }
 
 // the code itself: the lines after the ask, or what follows "review this code:" on one line
@@ -32,7 +39,7 @@ export function codeOf(text) {
   const s = String(text || '').replace(/\s*⏎\s*/g, '\n');
   const lines = s.split('\n');
   let code = '';
-  if (lines.length > 1 && isReviewAsk(lines[0])) code = lines.slice(1).join('\n');
+  if (lines.length > 1 && (isReviewAsk(lines[0]) || isReviewAsk(s))) code = lines.slice(1).join('\n');
   else if (lines.length > 1) code = s;
   else { const k = s.search(/[:?]/); code = k > 0 && k < 120 && isReviewAsk(s.slice(0, k) + ': x') ? s.slice(k + 1).trim() : (isReviewAsk(s) ? '' : s); } // "review this: <code>", "is this code safe? <code>"
   code = code.replace(/^\s*```[\w.+#-]*[ \t]*\n?/, '').replace(/\n?```\s*$/, '');
@@ -140,6 +147,25 @@ function constantHtml(st, rawSt) {
   }
   return true;
 }
+
+// The markup came from a builder in this same file whose body escapes (lis = rows.map((p) => rowHtml(p, esc)) and the
+// like): the esc call sits inside the builder, so the assignment line alone looks unescaped. Exempt when the right-hand
+// side calls a function defined in this file whose nearby body uses esc()/escape, or carries a plain name declared above
+// from esc or from such a builder. A builder whose body does not escape keeps the finding.
+const ESC_CALL = /\besc(?:ape)?(?:Html)?\s*\(|[(,]\s*esc(?:ape)?(?:Html)?\s*[,)]/;
+function builderEscapes(st, all, prev) {
+  const defEscapes = (name) => { if (SAFE_METHODS.test(name)) return false;
+    const d = all.search(new RegExp('(?:^|\\n)[^\\n]*(?:function\\s+' + name + '\\s*\\(|(?:const|let|var)\\s+' + name + '\\s*=\\s*(?:async\\s*)?(?:function\\b|\\())'));
+    return d >= 0 && ESC_CALL.test(all.slice(d, d + 1600)); };
+  const calls = (s) => [...s.matchAll(/([A-Za-z_$][\w$]*)\s*\(/g)].map((t) => t[1]);
+  const from = st.search(/\.(?:innerHTML|outerHTML)\s*\+?=/); const rhs = from < 0 ? st : st.slice(st.indexOf('=', from) + 1);
+  if (calls(rhs).some(defEscapes)) return true;
+  for (const t of rhs.matchAll(/[+(,]\s*([A-Za-z_$][\w$]*)\s*(?=[+;,)\s]|$)/g)) {
+    const d = (prev.match(new RegExp('(?:const|let|var)\\s+' + t[1] + '\\s*=[^\\n]*', 'g')) || []).pop();
+    if (d && (ESC_CALL.test(d) || calls(d).some(defEscapes))) return true;
+  }
+  return false;
+}
 // A template SQL literal whose only ${…} are bare names standing where a whole clause goes (right after WHERE, AND, OR or HAVING), with the
 // values bound separately (a ? placeholder in the text and .bind(...) after it): `… WHERE ${where} ORDER BY … LIMIT ?`.bind(...args, n). The
 // names are fragments the code assembled from fixed text; a value pasted into a comparison (WHERE id = ${id}), inside quotes, or in place of a
@@ -166,8 +192,20 @@ function sqlPasted(r, lang) {
   }
   return false;
 }
+// Git's conflict markers left in a file: a merge committed half-done (#291 put them in the growth ledger, which then could
+// not be read on the live site). The start and end lines always count; a bare ======= only in a file that also has a start
+// line, since Markdown underlines a heading with = signs. Every changed file is checked, of any type (tools/review-pr.mjs),
+// and the whole tree before a push (tools/checks.mjs) and after merging main (tools/merge-main.mjs).
+const MARK_EDGE = /^(?:<{7}|>{7})(?: |$)/, MARK_MID = /^={7}$/;
+export function conflictMarkers(text) {
+  const lines = String(text || '').split('\n'), out = [], started = lines.some((l) => /^<{7}(?: |$)/.test(l));
+  lines.forEach((l, i) => { if (MARK_EDGE.test(l) || (started && MARK_MID.test(l))) out.push({ line: i + 1, text: l.slice(0, 80) }); });
+  return out;
+}
+export const CONFLICT_MESSAGE = 'a git conflict marker: this file was committed in the middle of a merge, so it is broken (JSON will not parse, code will not run). Settle the conflict (node tools/merge-main.mjs keeps both sides of the append-only records) and remove every marker line.';
+
 const RULES = [
-  ['assign-in-condition', 'bug', [...JS, 'java', 'csharp', 'c', 'php'], (m) => /\b(?:if|while)\s*\(\s*!?\s*[A-Za-z_$][\w$.[\]]*\s*=\s*[^=>]/.test(m),
+  ['assign-in-condition', 'bug', [...JS, 'java', 'csharp', 'c', 'php', 'python'], (m) => /\b(?:if|while)\s*\(\s*!?\s*[A-Za-z_$][\w$.[\]]*\s*=\s*[^=>]/.test(m) || /^\s*if\s+[A-Za-z_$]\w*\s*=\s/.test(m),
     'an assignment (=) inside the condition: it sets the value and is then always true or false. To compare, use === (or == outside JavaScript).'],
   ['loose-equality', 'style', JS, (m) => /[^=!<>]==[^=]|!=[^=]/.test(m) && !/[=!]=\s*null\b|\bnull\s*[=!]=[^=]/.test(m),
     '== and != convert types before comparing ("0" == 0 and "" == false are both true). === and !== compare exactly.'],
@@ -184,7 +222,7 @@ const RULES = [
     'for…in walks property names as strings (and inherited ones), not array values. For an array use for (const x of list), or for (let i = 0; i < list.length; i++).'],
   ['eval', 'risk', [...JS, 'python', 'php', 'ruby'], (m) => /(?:^|[^\w$.])(?:eval|exec)\s*\(|\bnew\s+Function\s*\(/.test(m),
     'eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anything. Parse the data instead (JSON.parse, a lookup table, ast.literal_eval in Python).'],
-  ['inner-html', 'risk', JS, (m, r, x) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !constantHtml(x.statement(), x.rawStatement()) && !/\besc(?:ape)?(?:Html)?\s*\(|[(,]\s*esc(?:ape)?(?:Html)?\s*[,)]|DOMPurify|sanitize/i.test(r), // only fixed text, esc called, or handed to an HTML builder (card(esc, data))
+  ['inner-html', 'risk', JS, (m, r, x) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !constantHtml(x.statement(), x.rawStatement()) && !/\besc(?:ape)?(?:Html)?\s*\(|[(,]\s*(?:\w+\.)?esc(?:ape)?(?:Html)?\s*[,)]|DOMPurify|sanitize/i.test(r) && !builderEscapes(x.statement(), x.all(), x.prev()), // only fixed text, esc called (api.esc counts), or handed to (or built by) an escaping HTML builder (card(esc, data); rowHtml defined in this file calling esc)
     'putting a variable into innerHTML lets any HTML in it run (a script tag, an onerror handler): an XSS hole if the text can come from a user. Use textContent, or escape the text first.'],
   ['document-write', 'risk', JS, (m) => /\bdocument\.write(?:ln)?\s*\(/.test(m),
     'document.write wipes the whole page if it runs after loading, and writes raw HTML (XSS risk). Build elements with createElement and textContent.'],
@@ -204,6 +242,13 @@ const RULES = [
     'except … : pass swallows the error silently, so the program carries on with bad data. Log it or handle it.'],
   ['mutable-default', 'bug', ['python'], (m) => /^\s*def\s+\w+\s*\(.*=\s*(?:\[\s*\]|\{\s*\}|set\(\s*\)|list\(\s*\)|dict\(\s*\))\s*[,)]/.test(m),
     'a default of [] or {} is created once and shared by every call, so changes leak between calls. Use None and create it inside: def f(x=None): x = [] if x is None else x'],
+  // thin-area probes: list.sort() returns None, [i + 1] inside range(len(…)), counting into a key that is not there yet
+  ['sort-none', 'bug', ['python'], (m) => /=\s*[\w.\[\]]+\.sort\s*\(\s*\)/.test(m),
+    'sort() sorts the list in place and returns None, so this name ends up None instead of the sorted list. Call items.sort() on its own line, or use sorted(items) when you need a new list.'],
+  ['range-next', 'bug', ['python'], (m, r, x) => /\[\s*[A-Za-z_]\w*\s*\+\s*1\s*\]/.test(m) && /\brange\s*\(\s*len\s*\(/.test(x.prev() + '\n' + m) && !/\bif\b.*\+\s*1\s*<\s*len/.test(x.prev()),
+    'this reads [i + 1] while range(len(xs)) stops at len(xs) - 1, so the last pass reads one past the end of the list (an off-by-one, out of bounds). Loop over range(len(xs) - 1), or pair neighbours with zip(xs, xs[1:]).'],
+  ['dict-add-missing', 'bug', ['python'], (m) => /(\w+)\[([^\]]+)\]\s*=\s*\1\[\2\]\s*\+/.test(m),
+    'the first time this key appears, d[k] on the right-hand side does not exist yet, so this raises KeyError. Count from what is there: d[k] = d.get(k, 0) + 1 (or use collections.Counter).'],
   ['is-literal', 'bug', ['python'], (m) => /\bis\s+(?:not\s+)?(?:-?\d|['"])/.test(m),
     '"is" checks whether two things are the same object, not equal values, so it can be False for equal numbers or strings. Use == (keep "is" for None, True and False).'],
   ['eq-none', 'style', ['python'], (m) => /[=!]=\s*None\b/.test(m),
@@ -234,6 +279,26 @@ const RULES = [
     'gets, strcpy, strcat and sprintf write without checking the size of the buffer, so a long input overflows it (a crash, or a way in for an attacker). Use fgets(buf, sizeof buf, stdin), snprintf, or copy with an explicit length.'],
   ['unwrap', 'style', ['rust'], (m) => /\.unwrap\s*\(\s*\)/.test(m),
     'unwrap() panics (crashes the program) when the value is None or an Err. Handle it with match / if let, pass it up with ?, or use expect("why this cannot fail").'],
+  // thin-area probes: using a value after it was moved, indexing a vec! literal past its end
+  ['rust-moved-use', 'bug', ['rust'], (m, r, x) => {
+    const k = m.match(/\blet\s+(?:mut\s+)?\w+\s*=\s*([A-Za-z_]\w*)\s*;/);
+    if (!k || /^(?:true|false|None|Some|Ok|Err)$/.test(k[1])) return false;
+    const scope = x.prev() + '\n' + x.statement();
+    const decl = scope.match(new RegExp('\\b' + k[1] + '\\s*=\\s*([^;\\n]+)'));
+    if (!decl || !/(?:String::|vec!|Vec::|format!|Box::|HashMap::|HashSet::)|[\w.:]+\.to_(?:string|owned)\(\)/.test(decl[1])) return false;
+    const after = m.slice(k.index + k[0].length) + '\n' + [1, 2, 3, 4, 5, 6].map((j) => x.next(j)).join('\n');
+    return new RegExp('\\b' + k[1] + '\\b').test(after);
+  },
+    'the value is moved here, so using it afterwards is an ownership error (a borrow of a moved value): the compiler refuses it. Clone it (let t = s.clone()) or use the new name from here on.'],
+  ['rust-literal-index', 'bug', ['rust'], (m, r, x) => {
+    const decl = (x.prev() + '\n' + x.statement()).match(/\blet\s+(?:mut\s+)?(\w+)\s*=\s*vec!\s*\[([^\]]*)\]/);
+    if (!decl) return false;
+    const idx = m.match(new RegExp('\\b' + decl[1] + '\\s*\\[\\s*(\\d+)\\s*\\]'));
+    if (!idx) return false;
+    const n = decl[2].trim() ? decl[2].split(',').length : 0;
+    return +idx[1] >= n;
+  },
+    'this reads an index past the end of the vector (out of bounds): it panics at run time instead of returning anything. Check the length first, or use v.get(i), which gives None instead of crashing.'],
   ['force-unwrap', 'risk', ['kotlin', 'swift'], (m, r, x) => x.lang === 'kotlin' ? /!!/.test(m) : /[\w)\]]!(?![=!])/.test(m.replace(/!=/g, '')),
     'a force unwrap (!! in Kotlin, ! in Swift) crashes the app when the value is null/nil. Handle the missing case: ?. with ?: in Kotlin, if let / guard let or ?? in Swift.'],
   ['string-eq', 'bug', ['java'], (m) => /[=!]=\s*"|"\s*[=!]=/.test(m),
@@ -287,6 +352,18 @@ const RULES = [
     'accepting the "none" algorithm means a token with no signature passes, so anyone can forge one. List only the algorithm you sign with: algorithms: ["HS256"].'],
   ['go-empty-err', 'bug', ['go'], (m) => /\bif\s+err\s*!=\s*nil\s*\{\s*\}/.test(m),
     'the error is checked and then nothing is done with it, so the program carries on as if the call worked. Return it (return err, or wrap it: fmt.Errorf("reading config: %w", err)) or log it.'],
+  // thin-area probes: logging the error and carrying on with the failed result, looping to <= len(…)
+  ['go-err-log-continue', 'bug', ['go'], (m, r, x) => {
+    if (!/\bif\s+err\s*!=\s*nil\s*\{/.test(m)) return false;
+    const st = x.statement(), body = st.split('}')[0] || '';
+    if (!/(?:log|fmt)\.\w+\s*\(\s*err\s*\)/.test(body)) return false;
+    if (/\breturn\b|\bpanic\s*\(|\bos\.Exit\s*\(|\bcontinue\b|\bbreak\b/.test(body)) return false;
+    const rest = st.slice(st.indexOf('}'));
+    return !/\bpanic\s*\(|\bos\.Exit\s*\(|\breturn\s+(?:err|nil)\b/.test(rest);
+  },
+    'the error is logged but the code carries on with the failed result, so the next lines run on empty or half-filled data. Return the error (return err) or stop, instead of continuing with it.'],
+  ['len-le-loop', 'bug', ['go'], (m) => /\bfor\b[^{]*<=\s*len\s*\(/.test(m),
+    'the loop runs while i <= len(nums), but the length is len(nums) and the last valid index is one less, so the final pass reads out of bounds (an off-by-one that panics). Use i < len(nums).'],
   ['go-race', 'risk', ['go'], (m, r, x) => /\bgo\s+func\s*\([^)]*\)\s*\{[^}]*?\b[\w.]+\s*(?:\+\+|--|[+\-*/]?=(?!=))/.test(x.statement()) && !/\b(?:Lock|RLock|atomic\.|chan\b|<-)/.test(x.statement()),
     'a goroutine changes a variable that other goroutines can also touch, with no lock: a data race, so counts come out wrong at random. Use sync.Mutex, sync/atomic (atomic.AddInt64), or send the change on a channel; go run -race finds these.'],
   ['rails-where-interp', 'risk', ['ruby'], (m, r) => /\.(?:where|find_by_sql|order|having|joins|select|group|pluck|exists\?)\s*\(\s*"[^"]*#\{/.test(r),
@@ -433,14 +510,40 @@ const RULES = [
     'UPDATE without WHERE changes every row in the table. Add the WHERE that picks the rows you mean.'],
   ['delete-no-where', 'bug', ['sql', '*'], (m, r, x) => /^\s*DELETE\s+FROM\s+[\w."`[\]]+\s*;?\s*$/i.test(r) && !/\bWHERE\b/i.test(x.statement()),
     'DELETE without WHERE removes every row in the table. Add a WHERE (or use TRUNCATE if that is really what you want).'],
+  // thin-area probes: = NULL never matches, a reversed BETWEEN matches nothing
+  ['null-compare', 'bug', ['sql'], (m) => /=\s*NULL\b|<>\s*NULL\b|!=\s*NULL\b/i.test(m),
+    '= NULL is never true: NULL means unknown, so the whole comparison comes out unknown and the rows silently vanish. Use IS NULL (or IS NOT NULL).'],
+  ['between-reversed', 'bug', ['sql'], (m) => { const k = m.match(/\bBETWEEN\s+(\d+(?:\.\d+)?)\s+AND\s+(\d+(?:\.\d+)?)\b/i); return !!k && +k[1] > +k[2]; },
+    'BETWEEN 20 AND 10 is reversed, so it never matches and the query returns no rows (an empty result with no error). Swap the ends: BETWEEN 10 AND 20.'],
   ['select-star', 'style', ['sql'], (m) => /\bSELECT\s+\*\s+FROM\b/i.test(m),
     'SELECT * returns every column, so the query breaks or slows down when columns are added. Name the columns you use.'],
   ['sql-concat', 'risk', ['*'], (m, r, x) => sqlPasted(r, x.lang),
     'the SQL is built by pasting values into the text: a value like \' OR 1=1 -- changes the query (SQL injection). Use placeholders and pass the values separately: query("… WHERE id = ?", [id]).'],
+  ['conflict-markers', 'bug', ['*'], (m, r, x) => MARK_EDGE.test(r) || (MARK_MID.test(r) && /^<{7}(?: |$)/m.test(x.all())), CONFLICT_MESSAGE],
   ['hardcoded-secret', 'risk', ['*'], (m, r, x) => hasSecret(r, x.lang),
     'a key, token or password is written into the code. Anyone who sees the code (or the repo history) has it. Move it to an environment variable or a secret store, and change the key if this code was ever shared.'],
   ['plain-http', 'risk', ['*'], (m, r) => /(?<!xmlns(?::[\w-]+)?=)['"`]http:\/\/(?!localhost\b|127\.0\.0\.1|0\.0\.0\.0|\[::1\]|[\w-]+\.local\b|[\w.-]*example\.(?:com|org|net)\b|(?:www\.)?w3\.org\b|schemas\.(?:microsoft\.com|openxmlformats\.org)\/)[\w-]+\.[\w.-]+/.test(r), // XML namespace and package-type names are identifiers, never fetched
     'an http:// address sends data unencrypted, so it can be read or changed on the way. Use https:// if the server supports it.'],
+  // taught by Void's closer read (tools/review-learn.mjs, PR #273): a query awaited inside a loop runs once per item (N+1); the
+  // same PR's DB.batch(list.map((r) => DB.prepare(…))) is the shape to keep, so .map and batches are not loops here
+  ['query-in-loop', 'risk', JS, (m, r, x) => {
+    // the SQL literal is read as written (the masked line hides string contents); the loop shape on the masked line
+    if (!/\bawait\b[^;]*(?:\.(?:prepare|query|execute|exec|run|first|all|get)\s*\(\s*['"`]\s*(?:SELECT|INSERT|UPDATE|DELETE|WITH)\b|\bfetch\s*\()/i.test(r)) return false;
+    if (/\b(?:for(?:\s+await)?|while)\s*\([^;]*\)\s*\{[^}]*\bawait\b/.test(m)) return true; // loop and query on one line
+    const above = x.prev().split('\n').slice(-8); // the nearest loop opener above whose block is still open here
+    for (let i = above.length - 1; i >= 0; i--) {
+      const l = above[i]; if (!/\b(?:for(?:\s+await)?|while)\s*\(.*\)\s*\{\s*$|\.forEach\s*\(\s*(?:async\s*)?\(?[^)]*\)?\s*=>\s*\{\s*$/.test(l)) continue;
+      const between = above.slice(i + 1).join('\n'), opens = (between.match(/\{/g) || []).length, closes = (between.match(/\}/g) || []).length;
+      return opens >= closes; // the loop's block has not closed before this line
+    }
+    return false; },
+    'a query runs once per loop turn (one for every item): slow, and a cap on the loop becomes a cap on the database. Collect what you need and run one query (WHERE id IN (…)), or build the statements and run them as one batch (DB.batch(list.map(…)), Promise.all) and await once.'],
+  // taught by Void's closer read (tools/review-learn.mjs, PR #273): a WHERE pasted from a joined list breaks when the list is empty
+  ['where-join-empty', 'risk', JS, (m, r) => /\bWHERE\s*(?:['"`]\s*\+\s*|\$\{\s*)[\w$.]+\.join\s*\(/i.test(r) && !/\?\s*['"`]\s*WHERE\b|\.length\s*\?|\bwhere\s*\?|\?\s*\(?\s*['"`]\s*WHERE/i.test(r),
+    'the WHERE is built from a list that can be empty: then the SQL ends in WHERE with nothing after it (a syntax error), or the query runs without the filter you meant. Guard it: (clauses.length ? " WHERE " + clauses.join(" AND ") : "").'],
+  // taught by Void's closer read (tools/review-learn.mjs, PR #258): splitting a string only to count the pieces builds an array for nothing
+  ['split-to-count', 'style', JS, (m) => /\.split\(\s*(['"`])(?:\\n|\\t|[^'"`\\]{1,2})\1\s*\)\s*\.length\b/.test(m) && !/\.length\s*(?:[=!]==?|[<>]=?)\s*\d/.test(m),
+    'splitting just to count makes a whole array of pieces. Count the separators instead: (s.match(/\\n/g) || []).length, plus one if you counted pieces.'],
   ['todo', 'note', ['*'], (m, r) => /\b(?:TODO|FIXME|HACK|XXX)\b/.test(r),
     'a TODO/FIXME is left here: something is known to be unfinished.'],
 ];
@@ -485,6 +588,17 @@ export function textLines(src) {
 export const KIND_WORD = { bug: 'bug', risk: 'risk', style: 'style', note: 'note' };
 
 // The quick checks: [{ line, kind, rule, message, text }] most serious first, at most `max`. `text` is the line as written, keys masked.
+// The rules Void's review learned from other reviews (tools/review-learn.mjs): first from the extras (CodeRabbit, until it stopped
+// reviewing this repo on 2026-10-10: under 10 stars), then from Void's own closer read, which is the lesson source now. The weekly
+// stats (review-stats.json, shown on /code-review/) count them; a new learned rule adds a line here.
+export const LEARNED = [
+  { rule: 'json-array-shape', from: 'extras', pr: 142 },
+  { rule: 'exec-no-timeout', from: 'extras', pr: 149 },
+  { rule: 'table-no-header', from: 'extras', pr: 148 },
+  { rule: 'query-in-loop', from: 'closer read', pr: 273 },
+  { rule: 'where-join-empty', from: 'closer read', pr: 273 },
+  { rule: 'split-to-count', from: 'closer read', pr: 258 },
+];
 export function ruleReview(code, opts = {}) {
   const raw = String(code || '').replace(/\r\n?/g, '\n').slice(0, 60000), lang = opts.lang || langOf(raw);
   const as = lang === 'code' ? 'javascript' : lang; // a snippet with no clear language gets the C-style checks (JavaScript's are the broadest)
@@ -493,6 +607,8 @@ export function ruleReview(code, opts = {}) {
     const r = rawLines[i], m = maskedLines[i] || '';
     if (!r.trim()) continue;
     const ctx = { lang: as,
+      // the whole file as written, so a rule can look up a builder a line hands its markup to
+      all: () => raw,
       // the masked lines above this one, so a rule can see what was declared earlier
       prev: () => maskedLines.slice(0, i).join('\n'),
       next: (k) => { let n = 0; for (let j = i + 1; j < rawLines.length; j++) if (rawLines[j].trim() && ++n === k) return maskedLines[j] || ''; return ''; },

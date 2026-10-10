@@ -749,9 +749,12 @@
         if (raw) things = JSON.parse(raw) || {};
       } catch (_) { things = {}; }
     }
+    // a learning card (the quiz: an `ephemeral` stage kind) is never saved or synced unless the visitor kept that one card
+    // (domains/void.learning.md; the same rule as persistable() in skills/quiz-rules.js, tested in tools/learning.test.mjs)
+    function keptThings() { const out = {}; for (const [id, t] of Object.entries(things)) if (!(t && stageKinds[t.kind] && stageKinds[t.kind].ephemeral) || t.keep) out[id] = t; return out; }
     function save() {
       if (PAGE) return;
-      localStorage.setItem(STATE_KEY, JSON.stringify(things));
+      localStorage.setItem(STATE_KEY, JSON.stringify(keptThings()));
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
       mineChanged();
     }
@@ -1070,8 +1073,9 @@ Object.values(things).forEach((th) => {
           if (!ta.isConnected) return; // the card was redrawn or closed meanwhile
           ext.sent = 'The title, address and selection were sent to a-to-mind.com for a ' + intent + ' draft · not kept there.'; footLine();
           if (!j || !j.draft) { said.textContent = (j && j.note) || 'Void couldn’t draft just now. Try again in a moment.'; return; }
-          ext.draft = j.draft; ta.value = j.draft; ta.rows = Math.min(12, Math.max(3, j.draft.split('\n').length + 1));
-          said.textContent = intent + ' from Void' + (j.model === 'rules' ? ' (by rule, no model just now)' : '') + (j.masked ? ' · keys in the text were masked' : '') + (j.cut ? ' · the selection was cut' : '') + ' · put it in the page, or copy it';
+          ext.draft = j.draft; ta.value = j.draft; ta.rows = Math.min(12, Math.max(3, (j.draft.match(/\n/g) || []).length + 2));
+          const notes = [j.model === 'rules' && 'by rule, no model just now', j.masked && 'keys in the text were masked', j.cut && 'the selection was cut'].filter(Boolean);
+          said.textContent = intent + ' from Void' + (notes.length ? ' (' + notes.join('; ') + ')' : '') + ' · put it in the page, or copy it';
           // B3 joined to the draft: a reply for the box you were in becomes a proposed step, the same Yes / No card in the panel
           // and the same record; the panel shows it only on a site on your list (off the list it says nothing: copy as before)
           if (intent === 'reply' && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: j.draft, auto: true });
@@ -1086,7 +1090,7 @@ Object.values(things).forEach((th) => {
       stage.appendChild(el);
     }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
-    const stageApi = { stage, things: () => things, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
+    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
@@ -1476,6 +1480,38 @@ function mountList(th) {
       stage.appendChild(el);
     }
 
+    // the timer's face (progress ring, m:ss, a state word), one look for every countdown on the stage: the timer card
+    // and the five-minute challenge (skills/challenge.js, through stageApi.timerFace) both draw with it
+    function timerFace(el) {
+      const ring = document.createElement('svg');
+      ring.setAttribute('width', '32');
+      ring.setAttribute('height', '32');
+      ring.setAttribute('viewBox', '0 0 32 32');
+      const bg = document.createElement('circle');
+      bg.setAttribute('cx', '16'); bg.setAttribute('cy', '16'); bg.setAttribute('r', '14');
+      bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', 'rgba(255,255,255,0.08)'); bg.setAttribute('stroke-width', '2');
+      const fg = document.createElement('circle');
+      fg.setAttribute('cx', '16'); fg.setAttribute('cy', '16'); fg.setAttribute('r', '14');
+      fg.setAttribute('fill', 'none');
+      fg.setAttribute('stroke-width', '2');
+      fg.setAttribute('stroke-linecap', 'round');
+      fg.setAttribute('stroke-dasharray', String(2 * Math.PI * 14));
+      fg.setAttribute('transform', 'rotate(-90 16 16)');
+      ring.appendChild(bg); ring.appendChild(fg);
+      const timeSpan = document.createElement('span');
+      const label = document.createElement('span');
+      label.className = 'timer-label';
+      el.appendChild(ring);
+      el.appendChild(timeSpan);
+      el.appendChild(label);
+      return (remaining, total, word) => {
+        const p = total > 0 ? remaining / total : 0;
+        timeSpan.textContent = Math.floor(remaining / 60000) + ':' + String(Math.floor((remaining % 60000) / 1000)).padStart(2, '0');
+        label.textContent = word;
+        fg.setAttribute('stroke', p > 0.15 ? '#5dffa5' : '#ff5c5c');
+        fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - p)));
+      };
+    }
     function mountTimer(th) {
       const el = document.createElement('div');
       el.className = 'thing timer';
@@ -1489,51 +1525,14 @@ function mountList(th) {
 
       const remaining = th.running ? Math.max(0, th.remaining - (Date.now() - th.startedAt)) : th.remaining;
       const total = th.duration;
-      const pct = total > 0 ? remaining / total : 0;
-      const mins = Math.floor(remaining / 60000);
-      const secs = Math.floor((remaining % 60000) / 1000);
-      const display = mins + ':' + String(secs).padStart(2, '0');
-
-      const timeSpan = document.createElement('span');
-      timeSpan.textContent = display;
-
-      const label = document.createElement('span');
-      label.className = 'timer-label';
-      label.textContent = th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused');
-
-      // progress ring
-      const ring = document.createElement('svg');
-      ring.setAttribute('width', '32');
-      ring.setAttribute('height', '32');
-      ring.setAttribute('viewBox', '0 0 32 32');
-      const bg = document.createElement('circle');
-      bg.setAttribute('cx', '16'); bg.setAttribute('cy', '16'); bg.setAttribute('r', '14');
-      bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', 'rgba(255,255,255,0.08)'); bg.setAttribute('stroke-width', '2');
-      const fg = document.createElement('circle');
-      fg.setAttribute('cx', '16'); fg.setAttribute('cy', '16'); fg.setAttribute('r', '14');
-      fg.setAttribute('fill', 'none'); fg.setAttribute('stroke', pct > 0.15 ? '#5dffa5' : '#ff5c5c');
-      fg.setAttribute('stroke-width', '2');
-      fg.setAttribute('stroke-linecap', 'round');
-      fg.setAttribute('stroke-dasharray', String(2 * Math.PI * 14));
-      fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - pct)));
-      fg.setAttribute('transform', 'rotate(-90 16 16)');
-      ring.appendChild(bg); ring.appendChild(fg);
-
-      el.appendChild(ring);
-      el.appendChild(timeSpan);
-      el.appendChild(label);
+      const face = timerFace(el);
+      face(remaining, total, th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused'));
 
       // tick while running
       if (th.running) {
         el._tickInterval = setInterval(() => {
           const rem = Math.max(0, th.remaining - (Date.now() - th.startedAt));
-          const m = Math.floor(rem / 60000);
-          const s = Math.floor((rem % 60000) / 1000);
-          timeSpan.textContent = m + ':' + String(s).padStart(2, '0');
-          label.textContent = rem > 0 ? 'running' : 'done';
-          const p = total > 0 ? rem / total : 0;
-          fg.setAttribute('stroke', p > 0.15 ? '#5dffa5' : '#ff5c5c');
-          fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - p)));
+          face(rem, total, rem > 0 ? 'running' : 'done');
           if (rem <= 0) {
             clearInterval(el._tickInterval);
             th.running = false;
@@ -3390,7 +3389,9 @@ return { ok: true, detail: 'timer-reset' };
       say(page ? 'reading the page' : 'looking up');
       let j = null;
       try {
-        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text }) });
+        // signed in (the owner's key or your own member session): your notes and projects are checked for this ask on the server (never for a page ask)
+        const who = page ? '' : (() => { try { return localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) { return ''; } })();
+        const r = await fetch('/api/answer', { method: 'POST', headers: who ? { 'content-type': 'application/json', authorization: 'Bearer ' + who } : { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text }) });
         if (r.ok || r.status === 429) j = await r.json();
       } catch (_) {}
       if (vpageEl !== el) return 'answer';
@@ -3399,7 +3400,7 @@ return { ok: true, detail: 'timer-reset' };
       // fenced code keeps its whitespace and gets a monospace block (fixHtml); sources are a citation when one
       // genuinely matched, not a claim that nothing else went into the answer
       el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + fixHtml(j.answer)
-        + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Void' : srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
+        + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Void' : j.told ? 'from what you told me · written by Void' + (srcs ? ' · Source: ' + srcs : '') : srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
       addCopy(el);
       say('');
       return 'answer';
@@ -3650,6 +3651,7 @@ return { ok: true, detail: 'timer-reset' };
     // "how many cups in a liter" -> "1 liter in cups"
     function calcNormalize(lower) {
       lower = lower.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
+      lower = lower.replace(/\bconvert\s+(\d+(?:\.\d+)?)\s*([a-z]+)\s+([a-z]+)\s*\??$/, 'convert $1 $2 to $3'); // "convert 3.5 miles km" reads with no preposition
       return lower.replace(/^(how\s+many\s+[a-z]+)\s+of\s+(?:water|milk|liquid)\s+/, '$1 ').replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?(?:in|per)\s+(?:a|an|one|1)\s+([a-z]+)\s*\??$/, '1 $2 in $1')
         .replace(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?in\s+(\d+(?:\.\d+)?)\s+([a-z]+)\s*\??$/, '$2 $3 in $1'); // "how many grams in 2.5 kilograms"
     }
@@ -5072,7 +5074,7 @@ return { ok: true, detail: 'timer-reset' };
     const mineCall = (method, body) => meFetch('/api/mine', method, body);
     function meSet(v) { me = v; try { if (v) localStorage.setItem(ME_KEY, JSON.stringify(v)); else localStorage.removeItem(ME_KEY); } catch (_) {} }
     const sig = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return s.length + ':' + (h >>> 0).toString(36); };
-    function mineSnapshot() { let entered = null; try { entered = localStorage.getItem(ENTRY_KEY); } catch (_) {} return { v: 1, state: things, look: voidLook, entered }; }
+    function mineSnapshot() { let entered = null; try { entered = localStorage.getItem(ENTRY_KEY); } catch (_) {} return { v: 1, state: keptThings(), look: voidLook, entered }; }
     const mineSig = () => sig(JSON.stringify(mineSnapshot()));
 
     const THING_KINDS = new Set(['clock', 'sticky', 'notepad', 'timer', 'counter', 'image', 'link', 'list', 'calc', 'shape', 'kept']);
@@ -5394,11 +5396,11 @@ return { ok: true, detail: 'timer-reset' };
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
       return vm && vm.available !== false ? 'Paid Void is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Void adds ' + PAID_ADDS;
     }
-    async function handlePaidAsk(lower) {
+    async function handlePaidAsk(lower, logIt = true) { // logIt false: a price question logs once, as the services card (alsoShowPricedServices)
       if (!isPaidAsk(lower)) return false;
       if (!me || !me.token) { // signed out: the price and what it adds, then how to buy (the purchase attaches to your Void's passkey)
         say((await paidLine()) + ' · say “remember me” first, then ask again to buy');
-        loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
+        if (logIt) loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
       if ((await meTier()) === 'paid') { say('your Void is paid: ' + PAID_ADDS); return true; }
       const { g, products } = await storeCatalog();
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Void, as the store has it now
@@ -5409,8 +5411,22 @@ return { ok: true, detail: 'timer-reset' };
         whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
         const shown = whisper.innerHTML; setTimeout(() => { if (whisper.innerHTML === shown) whisper.textContent = ''; }, 30000);
       }
-      loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: url ? 'gumroad link' : 'not open' });
+      if (logIt) loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: url ? 'gumroad link' : 'not open' });
       return true;
+    }
+    // A price question shows everything for sale: handlePaidAsk said the membership sentence (it stays first), and the
+    // services card (skills/services.js) lists the hands-on services under it. The card is logged as the answer so the
+    // record carries both. "fix my automation" stays with the fix flow: that is a request for work, not a price.
+    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|a-to-mind) cost|how much (?:is|does) (?:void|a-to-mind)(?: cost)?)$/;
+    function isPriceQuestion(lower) { return PRICE_QUESTION_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
+    async function alsoShowPricedServices(text) {
+      if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);
+      const svc = learnedSkills.find((sk) => sk && sk.name === 'services');
+      if (!svc) return;
+      try {
+        const src = await svc.run(text, { showPage, esc, say: () => {}, _pageStill: (el) => vpageEl === el });
+        if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + svc.name });
+      } catch (_) {}
     }
     // The optional product line: only when the live catalog has something for this ask, after Void's own answer (or fix).
     function productLine(g, p) {
@@ -5593,7 +5609,7 @@ return { ok: true, detail: 'timer-reset' };
     let typoFix = null;
     const TYPO_WORDS = { waht: 'what', whta: 'what', wht: 'what', tiem: 'time', tmie: 'time', captial: 'capital', capitla: 'capital', definiton: 'definition', defintion: 'definition', defenition: 'definition',
       synonim: 'synonym', synonims: 'synonyms', synomym: 'synonym', traslate: 'translate', tranlate: 'translate', transalte: 'translate', precent: 'percent', percnet: 'percent', pecent: 'percent',
-      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', wats: 'whats', defin: 'define', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
+      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', weathr: 'weather', wats: 'whats', defin: 'define', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
     const TYPO_LONG = ['definition', 'synonym', 'synonyms', 'translate', 'temperature', 'tomorrow', 'population', 'kilometers', 'kilometres', 'antonym', 'pronounce'];
     // the short forms people type: "12*15=", "ephemeral meaning", "synonyms happy", "tip 20% 85", "random number 1-10",
     // "days till christmas", "capital france", "usd to eur" read as the full ask
@@ -5861,7 +5877,8 @@ return { ok: true, detail: 'timer-reset' };
       { const k = howToThing(lower0); if (k) { currentAsk = text; showSelfPage(false, k); say('here'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'how-to ' + k }); return; } }
       if (await handleBuildAsk(text, lower0)) return;
       if (await handleMeAsk(lower0)) return;
-      if (await handlePaidAsk(lower0)) return;
+      if (isPriceQuestion(lower0)) { if (await handlePaidAsk(lower0, false)) { await alsoShowPricedServices(text); return; } }
+      else if (await handlePaidAsk(lower0)) return;
       { const full = restorePaste(text); if (await handleReviewAsk(text, full)) return; if (await handleFixAsk(text, full)) return; }
       if (handleVoiceAsk(lower0)) return;
       if (await handleGatedAsk(text)) return;

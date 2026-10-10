@@ -62,6 +62,7 @@ runs:
         python tools/void_lens_test.py
         python tools/ouroboros_test.py
         python tools/ouroboros_pack_test.py
+        python tools/void_queue_test.py
         node --test tools/memory.test.mjs
     - name: node tools/test_extension.mjs (side panel reads the tab you point it at and drafts into it; page text stays in the browser)
       if: inputs.bench != 'only'

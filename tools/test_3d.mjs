@@ -171,6 +171,17 @@ export async function run3dChecks({ check, fresh }) {
     check('moon explainer miniature: draws real pixels, the Moon follows the data (30° -> 200°, now on the far side), a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while paused, under reduced motion too, and unmounting frees it',
       ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
   }
+  // ---- the lock explainer (explainer.pin-lock) through the same contract: the matching key half in, then fully in and turned 60°
+  {
+    const Lk = await import(pathToFileURL(path.join(root, 'skills', 'lock-rules.js')).href);
+    const a = Lk.setInsertion(Lk.create({ keyPreset: 'matching' }), 0.5), b = Lk.turnTo(Lk.setInsertion(Lk.create({ keyPreset: 'matching' }), 1), 60);
+    const c = await miniContract(fresh, { kind: 'lock', a: { state: a }, b: { state: b }, settledWhen: 'dragging' });
+    const ok = (r) => r.drawn && r.colours > 40 && r.same && r.stateA && r.stateA.state === 'inserting' && r.stateA.insertion === 0.5
+      && r.stateB.state === 'turned' && r.stateB.angle === 60 && r.stateB.aligned === 5 && r.stateB.driverY.every((y) => y === Lk.SHEAR + Lk.DRIVER / 2)
+      && r.redrew && r.settled && r.idleDraws === 0 && r.freed;
+    check('lock explainer miniature: draws real pixels (brass housing and plug, steel pins, springs, the key), poses from the one state (half in, then fully in and turned 60° with every driver pin waiting at the shear line), a remount by key moves the live one, it settles with no redraws, under reduced motion too, and unmounting frees it',
+      ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
+  }
   // ---- Ringer (build-order step 5) through the same contract: a new game, then the same game after a hard shot has settled
   {
     const Rr = await import(pathToFileURL(path.join(root, 'skills', 'ringer-rules.js')).href);
@@ -193,6 +204,39 @@ export async function run3dChecks({ check, fresh }) {
     check('Ringer: "play marbles" stands the ring in the void (14 marbles, 13 to knock out); Flick rolls it from the card\'s state until everything stops, and the card says how the shot went',
       !!up && before && before.marbles === 14 && before.left === 13 && !!after && after.out >= 1 && /knocked out · 1 shot/.test(status) && F.errors.length === 0,
       JSON.stringify({ up, before, after, status, errors: F.errors.slice(0, 3) }));
+    await F.ctx.close();
+  }
+  // ---- the growth tree (frontier #3) through the same contract: a 5-entry ledger, then a 6th entry grows in as a new tip
+  {
+    const day = (d, i, kind) => ({ at: '2026-10-0' + d + 'T1' + i + ':00:00Z', by: 'claude', kind, what: 'entry ' + i });
+    const five = [day(1, 0, 'grow'), day(2, 1, 'build'), day(3, 2, 'fix'), day(4, 3, 'idea'), day(5, 4, 'grow')];
+    const c = await miniContract(fresh, { kind: 'growthtree', a: { entries: five }, b: { entries: five.concat([day(6, 5, 'finding')]) }, settledWhen: 'growing' });
+    const ok = (r, still) => r.drawn && r.colours > 40 && r.same && r.stateA && r.stateA.branches === 5 && r.stateA.newest === 4 && r.stateB.branches === 6 && r.stateB.newest === 5
+      && r.redrew && r.settled && r.idleDraws === 0 && r.freed && (still ? r.stateRight.growing === false : true);
+    check('growth tree miniature: draws real pixels, one branch per ledger entry (5 -> 6, the new one the newest tip), a remount by key moves the live one, the new branch grows in and shows on the canvas, it settles with no redraws while idle, under reduced motion the branch is simply there, and unmounting frees it',
+      ok(c.moving, false) && ok(c.still, true) && c.moving.stateRight.growing === true && !c.errors.length, JSON.stringify(c));
+  }
+  // ---- "growth": the card brings its tree (two-part summons), and touching the trunk reads the oldest entry under it
+  {
+    const F = await fresh();
+    await F.ask('growth');
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'growthtree'); return c && c.draws > 0 && c.ready ? c : false; }), 60000);
+    const at = drawn && await F.p.evaluate(async () => {
+      const T = await import('/skills/growth-tree.js'); const list = await (await fetch('/void.growth.json')).json(); const t = T.layout(list);
+      return { pt: window.__voidMini.project('growth-tree', T.midpoint(t.branches[0])), oldest: list[t.branches[0].index].what.slice(0, 40), trunk: t.branches[0].index, n: t.branches.length, inCard: !!document.querySelector('.vpage .growth-tree canvas'), state: window.__voidMini.state('growth-tree') };
+    });
+    if (at && at.pt) await F.p.mouse.click(at.pt.x, at.pt.y);
+    const read = at && await until(() => F.p.evaluate((w) => { const s = document.querySelector('.vpage .growth-picked'); return s && s.textContent.includes(w) ? s.textContent.slice(0, 80) : false; }, at.oldest), 8000);
+    const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
+    check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
+      !!drawn && at.inCard && at.state.branches === at.n && !!read && sel && sel.selected === at.trunk && !F.errors.length, JSON.stringify({ drawn: !!drawn, at, read, sel, e: F.errors }));
+    // the time slider: at the first date the tree is one branch, at today all of them (plus the faint shoots not grown yet)
+    const slide = async (v) => { await F.p.evaluate((v) => { const r = document.querySelector('.vpage .growth-when input'); r.value = String(v); r.dispatchEvent(new Event('input', { bubbles: true })); }, v);
+      return until(() => F.p.evaluate((v) => { const s = window.__voidMini.state('growth-tree'); return s && !s.growing && (v === 0 ? s.branches === 1 : s.until === null) ? { s, day: document.querySelector('.vpage .growth-day').textContent } : false; }, v), 15000); };
+    const first = await slide(0), last = await slide(9999);
+    check('"growth": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built)',
+      !!first && first.s.branches === 1 && first.s.ghosts === 0 && /2026-09-25 · 1 change\b/.test(first.day) && !!last && last.s.branches === at.n && last.s.ghosts > 0 && last.s.building && new RegExp('today, .* · ' + at.n + ' changes').test(last.day) && !F.errors.length,
+      JSON.stringify({ first, last, e: F.errors }));
     await F.ctx.close();
   }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
