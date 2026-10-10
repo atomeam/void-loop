@@ -432,6 +432,26 @@ const RULES = [
     'a key, token or password is written into the code. Anyone who sees the code (or the repo history) has it. Move it to an environment variable or a secret store, and change the key if this code was ever shared.'],
   ['plain-http', 'risk', ['*'], (m, r) => /(?<!xmlns(?::[\w-]+)?=)['"`]http:\/\/(?!localhost\b|127\.0\.0\.1|0\.0\.0\.0|\[::1\]|[\w-]+\.local\b|[\w.-]*example\.(?:com|org|net)\b|(?:www\.)?w3\.org\b|schemas\.(?:microsoft\.com|openxmlformats\.org)\/)[\w-]+\.[\w.-]+/.test(r), // XML namespace and package-type names are identifiers, never fetched
     'an http:// address sends data unencrypted, so it can be read or changed on the way. Use https:// if the server supports it.'],
+  // taught by Void's closer read (tools/review-learn.mjs, PR #273): a query awaited inside a loop runs once per item (N+1); the
+  // same PR's DB.batch(list.map((r) => DB.prepare(…))) is the shape to keep, so .map and batches are not loops here
+  ['query-in-loop', 'risk', JS, (m, r, x) => {
+    // the SQL literal is read as written (the masked line hides string contents); the loop shape on the masked line
+    if (!/\bawait\b[^;]*(?:\.(?:prepare|query|execute|exec|run|first|all|get)\s*\(\s*['"`]\s*(?:SELECT|INSERT|UPDATE|DELETE|WITH)\b|\bfetch\s*\()/i.test(r)) return false;
+    if (/\b(?:for(?:\s+await)?|while)\s*\([^;]*\)\s*\{[^}]*\bawait\b/.test(m)) return true; // loop and query on one line
+    const above = x.prev().split('\n').slice(-8); // the nearest loop opener above whose block is still open here
+    for (let i = above.length - 1; i >= 0; i--) {
+      const l = above[i]; if (!/\b(?:for(?:\s+await)?|while)\s*\(.*\)\s*\{\s*$|\.forEach\s*\(\s*(?:async\s*)?\(?[^)]*\)?\s*=>\s*\{\s*$/.test(l)) continue;
+      const between = above.slice(i + 1).join('\n'), opens = (between.match(/\{/g) || []).length, closes = (between.match(/\}/g) || []).length;
+      return opens >= closes; // the loop's block has not closed before this line
+    }
+    return false; },
+    'a query runs once per loop turn (one for every item): slow, and a cap on the loop becomes a cap on the database. Collect what you need and run one query (WHERE id IN (…)), or build the statements and run them as one batch (DB.batch(list.map(…)), Promise.all) and await once.'],
+  // taught by Void's closer read (tools/review-learn.mjs, PR #273): a WHERE pasted from a joined list breaks when the list is empty
+  ['where-join-empty', 'risk', JS, (m, r) => /\bWHERE\s*(?:['"`]\s*\+\s*|\$\{\s*)[\w$.]+\.join\s*\(/i.test(r) && !/\?\s*['"`]\s*WHERE\b|\.length\s*\?|\bwhere\s*\?|\?\s*\(?\s*['"`]\s*WHERE/i.test(r),
+    'the WHERE is built from a list that can be empty: then the SQL ends in WHERE with nothing after it (a syntax error), or the query runs without the filter you meant. Guard it: (clauses.length ? " WHERE " + clauses.join(" AND ") : "").'],
+  // taught by Void's closer read (tools/review-learn.mjs, PR #258): splitting a string only to count the pieces builds an array for nothing
+  ['split-to-count', 'style', JS, (m) => /\.split\(\s*(['"`])(?:\\n|\\t|[^'"`\\]{1,2})\1\s*\)\s*\.length\b/.test(m) && !/\.length\s*(?:[=!]==?|[<>]=?)\s*\d/.test(m),
+    'splitting just to count makes a whole array of pieces. Count the separators instead: (s.match(/\\n/g) || []).length, plus one if you counted pieces.'],
   ['todo', 'note', ['*'], (m, r) => /\b(?:TODO|FIXME|HACK|XXX)\b/.test(r),
     'a TODO/FIXME is left here: something is known to be unfinished.'],
 ];
@@ -476,6 +496,17 @@ export function textLines(src) {
 export const KIND_WORD = { bug: 'bug', risk: 'risk', style: 'style', note: 'note' };
 
 // The quick checks: [{ line, kind, rule, message, text }] most serious first, at most `max`. `text` is the line as written, keys masked.
+// The rules Void's review learned from other reviews (tools/review-learn.mjs): first from the extras (CodeRabbit, until it stopped
+// reviewing this repo on 2026-10-10: under 10 stars), then from Void's own closer read, which is the lesson source now. The weekly
+// stats (review-stats.json, shown on /code-review/) count them; a new learned rule adds a line here.
+export const LEARNED = [
+  { rule: 'json-array-shape', from: 'extras', pr: 142 },
+  { rule: 'exec-no-timeout', from: 'extras', pr: 149 },
+  { rule: 'table-no-header', from: 'extras', pr: 148 },
+  { rule: 'query-in-loop', from: 'closer read', pr: 273 },
+  { rule: 'where-join-empty', from: 'closer read', pr: 273 },
+  { rule: 'split-to-count', from: 'closer read', pr: 258 },
+];
 export function ruleReview(code, opts = {}) {
   const raw = String(code || '').replace(/\r\n?/g, '\n').slice(0, 60000), lang = opts.lang || langOf(raw);
   const as = lang === 'code' ? 'javascript' : lang; // a snippet with no clear language gets the C-style checks (JavaScript's are the broadest)

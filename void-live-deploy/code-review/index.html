@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Void Code Review: instant code review for every pull request</title>
-  <meta name="description" content="Void reviews a whole pull request in about a second: 125 checks for bugs, security risks and risky habits in 22 languages, inline comments with one-click fixes, and a merge gate. Free GitHub Action; Code Review Pro (on its own, or in Void Pro) adds an AI closer read.">
+  <meta name="description" content="Void reviews a whole pull request in about a second: 130 checks for bugs, security risks and risky habits in 22 languages, inline comments with one-click fixes, and a merge gate. Free GitHub Action; Code Review Pro (on its own, or in Void Pro) adds an AI closer read.">
   <link rel="canonical" href="https://a-to-mind.com/code-review/">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <meta property="og:title" content="Void Code Review">
@@ -20,7 +20,7 @@
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "GitHub Actions, any browser",
     "url": "https://a-to-mind.com/code-review/",
-    "description": "Instant code review for pull requests: 125 checks for bugs, security risks and risky habits in 22 languages, inline comments with one-click fixes, a merge gate, and an AI closer read with Void Pro.",
+    "description": "Instant code review for pull requests: 130 checks for bugs, security risks and risky habits in 22 languages, inline comments with one-click fixes, a merge gate, and an AI closer read with Void Pro.",
     "publisher": { "@type": "Organization", "name": "A-to-Mind", "url": "https://a-to-mind.com/" },
     "offers": [
       { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD" },
@@ -69,10 +69,11 @@
   <p class="lead">Void reviews every pull request the moment it opens: the bugs, security holes and risky habits in the lines you added, each one on its line with a one-click fix where a safe one exists, and a merge gate that holds a PR until they're fixed.</p>
   <div class="stats">
     <div class="stat"><b>~1 s</b><span>for a whole pull request</span></div>
-    <div class="stat"><b>125</b><span>checks: 31 bugs, 71 risks, 22 style</span></div>
+    <div class="stat"><b>130</b><span>checks: 32 bugs, 73 risks, 25 style</span></div>
     <div class="stat"><b>22</b><span>languages, plus GitHub workflows, Dockerfiles, Terraform</span></div>
     <div class="stat"><b>0</b><span>setup: one step in a workflow</span></div>
   </div>
+  <p id="learning" class="muted" hidden></p>
 
   <h2>Try it</h2>
   <p class="muted">Paste code (keys and passwords are masked before anything is shown). This runs the same checks the GitHub Action runs.</p>
@@ -108,7 +109,7 @@ jobs:
       <h3>Free</h3>
       <div class="price">$0</div>
       <ul>
-        <li>All 125 instant checks, every language</li>
+        <li>All 130 instant checks, every language</li>
         <li>PR walkthrough, inline comments, one-click fixes</li>
         <li>The merge gate</li>
         <li>This page and the API, no account</li>
@@ -156,6 +157,14 @@ jobs:
   var el = function (tag, cls, text) { var n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
   var auth = function (h) { h = h || {}; h['content-type'] = 'application/json'; if (me && me.token) h.authorization = 'Bearer ' + me.token; return h; };
 
+  // the reviewer's own scoreboard (review-stats.json, written weekly by .github/workflows/watchdog.yml from tools/review-learn.mjs):
+  // how many of the findings Void's closer read made this month its rules had already flagged, and how many rules were learned from it
+  fetch('/review-stats.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).then(function (st) {
+    if (!st || typeof st.closerFound !== 'number') return;
+    var l = document.getElementById('learning');
+    l.textContent = 'This month Void\'s rules caught ' + st.rulesFlagged + ' of ' + st.closerFound + ' findings its closer read made; ' + st.learned + ' rule' + (st.learned === 1 ? '' : 's') + ' learned from it' + (st.falseDropped ? ', ' + st.falseDropped + ' false claim' + (st.falseDropped === 1 ? '' : 's') + ' of its own filtered out' : '') + '.';
+    l.hidden = false;
+  }).catch(function () {});
   // buying while signed in carries your Void's id, so the purchase unlocks that Void
   if (me && me.userId) { try { var u = new URL(GUMROAD); u.searchParams.set('void', me.userId); document.getElementById('buy').href = u.href; } catch (_) {} }
   fetch('/api/review?offer').then(function (r) { return r.json(); }).then(function (o) {
