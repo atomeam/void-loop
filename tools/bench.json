@@ -5620,5 +5620,12 @@
   {"ask": "make me a teapot", "want": "skill:forge"},
   {"ask": "make a little house", "want": "skill:forge"},
   {"ask": "3d print a sailboat", "want": "skill:forge"},
-  {"ask": "make me a tree", "want": "skill:forge"}
+  {"ask": "make me a tree", "want": "skill:forge"},
+  {"ask": "tell me when it's below 0 in Oslo", "want": "skill:watch"},
+  {"ask": "let me know if https://shop.example/x says sold out", "want": "skill:watch"},
+  {"ask": "alert me when the price on https://shop.example/y drops below 50", "want": "skill:watch"},
+  {"ask": "watch https://example.com/news for changes", "want": "skill:watch"},
+  {"ask": "tell me when https://example.com changes", "want": "skill:watch"},
+  {"ask": "my watches", "want": "skill:watch"},
+  {"ask": "what are you watching for me", "want": "skill:watch"}
 ]
