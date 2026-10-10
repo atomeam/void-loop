@@ -1,0 +1,102 @@
+/**
+ * ringer miniature — Ringer's ring standing in the void: packed dirt with grit, a chalk ring drawn by hand, thirteen
+ * glass marbles (cat's eyes with three vanes, swirls, clearies; each one its own from figures.js marbleLook) and a worn
+ * agate shooter. Built from code. Nothing is simulated here: every frame poses the marbles from the card's one state
+ * (skills/ringer-rules.js), and the spin of a rolling marble is the distance it moved over its radius.
+ * data: { state: ringer state, or () => ringer state; onAim?(x, y) (metres on the ground, ring centre 0,0) }
+ * (plain data works too, so the behaviour contract in tools/test_3d.mjs can drive it)
+ */
+import { marbleLook } from '../figures.js';
+import * as R from '../ringer-rules.js';
+
+export default async function build(ctx, data) {
+  const { THREE, root } = ctx;
+  const stateOf = (d) => (typeof d.state === 'function' ? d.state() : d.state);
+  const made = []; // geometries, materials and textures to free
+  const keep = (x) => { made.push(x); return x; };
+  const noise = (w, h, paint) => { const c = document.createElement('canvas'); c.width = w; c.height = h; paint(c.getContext('2d'), w, h); return c; };
+  let seedR = 7; const rnd = () => { seedR = (seedR * 16807) % 2147483647; return seedR / 2147483647; };
+
+  // the ground: packed brown dirt with grit and a few pebbles, a little past the ring
+  const G = R.FAR + 0.03; // out marbles are caught at R.FAR, so they always rest on the dirt
+  const dirt = keep(new THREE.CanvasTexture(noise(512, 512, (g, w, h) => {
+    g.fillStyle = '#6e5238'; g.fillRect(0, 0, w, h);
+    for (let i = 0; i < 9000; i++) { const v = 70 + rnd() * 60; g.fillStyle = 'rgba(' + (v + 40 | 0) + ',' + (v + 10 | 0) + ',' + (v - 20 | 0) + ',' + (0.15 + rnd() * 0.3).toFixed(2) + ')'; g.fillRect(rnd() * w, rnd() * h, 1 + rnd() * 2, 1 + rnd() * 2); }
+    for (let i = 0; i < 70; i++) { g.fillStyle = 'rgba(' + (120 + rnd() * 60 | 0) + ',' + (110 + rnd() * 50 | 0) + ',' + (95 + rnd() * 40 | 0) + ',0.9)'; g.beginPath(); g.ellipse(rnd() * w, rnd() * h, 1.5 + rnd() * 3, 1 + rnd() * 2.5, rnd() * 3, 0, Math.PI * 2); g.fill(); }
+  })));
+  dirt.colorSpace = THREE.SRGBColorSpace;
+  const groundMat = keep(new THREE.MeshStandardMaterial({ map: dirt, color: '#8c7a66', bumpMap: dirt, bumpScale: 1.5, roughness: 1, metalness: 0 })); // darkened under the filmic tone mapping; the grit stands up
+  const ground = new THREE.Mesh(keep(new THREE.CircleGeometry(G, 96).rotateX(-Math.PI / 2)), groundMat);
+  ground.receiveShadow = true; root.add(ground);
+
+  // the chalk ring: a hand-drawn line, patchy where the chalk skipped over the grit
+  const chalkAlpha = keep(new THREE.CanvasTexture(noise(1024, 8, (g, w, h) => { for (let x = 0; x < w; x++) { const v = 150 + rnd() * 105; g.fillStyle = 'rgb(' + v + ',' + v + ',' + v + ')'; g.fillRect(x, 0, 1, h); } })));
+  const chalkMat = keep(new THREE.MeshStandardMaterial({ color: '#f1eee4', roughness: 1, alphaMap: chalkAlpha, transparent: true, depthWrite: false }));
+  const ring = new THREE.Mesh(keep(new THREE.RingGeometry(R.RING - 0.005, R.RING + 0.005, 192, 1).rotateX(-Math.PI / 2)), chalkMat);
+  ring.position.y = 0.0006; ring.receiveShadow = true; root.add(ring);
+
+  // the marbles: built per game (the seed decides every look), posed every frame from the state
+  const sphere = keep(new THREE.SphereGeometry(1, 48, 32)), vaneGeo = keep(new THREE.SphereGeometry(1, 32, 16));
+  const marbles = new THREE.Group(); root.add(marbles);
+  let builtSeed = null, mats = [];
+  function buildMarbles(s) {
+    for (const m of mats) m.dispose(); mats = [];
+    marbles.clear();
+    for (const m of s.marbles) {
+      const look = marbleLook(s.seed, m.id), grp = new THREE.Group();
+      const glass = new THREE.MeshPhysicalMaterial({ color: look.glass, transmission: look.clarity, thickness: m.r * 2, ior: 1.52, roughness: 0.03 + look.wear * 0.3, clearcoat: 1, clearcoatRoughness: look.wear * 0.4, transparent: look.clarity > 0.2 });
+      mats.push(glass);
+      const body = new THREE.Mesh(sphere, glass); body.scale.setScalar(m.r); body.castShadow = true; grp.add(body);
+      look.vanes.forEach((c, i) => { // the coloured vanes or ribbons inside the glass
+        const vm = new THREE.MeshStandardMaterial({ color: c, roughness: 0.45 }); mats.push(vm);
+        const v = new THREE.Mesh(vaneGeo, vm); v.scale.set(m.r * 0.82, m.r * (look.kind === 'swirl' ? 0.3 : 0.1), m.r * 0.82);
+        v.rotation.set(look.twist + i * Math.PI / look.vanes.length, i * 0.7, look.kind === 'swirl' ? 0.9 : 0); grp.add(v);
+      });
+      grp.userData = { id: m.id, x: m.x, y: m.y };
+      grp.position.set(m.x, m.r, -m.y);
+      marbles.add(grp);
+    }
+    builtSeed = s.seed;
+  }
+
+  // the aim: a faint chalk-white line from the shooter, as long as the power
+  const aimMat = keep(new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.55, depthWrite: false }));
+  const aimLine = new THREE.Mesh(keep(new THREE.BoxGeometry(1, 0.0006, 0.0018)), aimMat); root.add(aimLine);
+
+  const axis = new THREE.Vector3(), q = new THREE.Quaternion();
+  let sig = '';
+  function pose() {
+    const s = stateOf(ctx.handle ? ctx.handle.data : data);
+    if (!s || !s.marbles) return false;
+    const now = [s.seed, s.t, s.phase, s.angle, s.power, s.shots].join('|');
+    if (now === sig) return false;
+    if (s.seed !== builtSeed) buildMarbles(s);
+    s.marbles.forEach((m, i) => {
+      const grp = marbles.children[i]; if (!grp) return;
+      const dx = m.x - grp.userData.x, dz = -(m.y - grp.userData.y), d = Math.hypot(dx, dz);
+      if (d > 0 && d < 0.2) { axis.set(dz, 0, -dx).normalize(); q.setFromAxisAngle(axis, d / m.r); grp.quaternion.premultiply(q); } // rolled, not slid
+      grp.userData.x = m.x; grp.userData.y = m.y;
+      grp.position.set(m.x, m.r, -m.y);
+    });
+    const sh = s.marbles[0], len = 0.04 + 0.14 * s.power;
+    aimLine.visible = s.phase === 'aim' && !s.over;
+    aimLine.scale.x = len; aimLine.rotation.y = s.angle;
+    aimLine.position.set(sh.x + Math.cos(s.angle) * (len / 2 + sh.r * 1.4), 0.0012, -(sh.y + Math.sin(s.angle) * (len / 2 + sh.r * 1.4)));
+    sig = now;
+    return true;
+  }
+  pose();
+
+  ctx.onTap((hits) => {
+    const h = hits.find((x) => x.object === ground || x.object === ring); if (!h) return;
+    const d = ctx.handle.data; if (d.onAim) d.onAim(h.point.x, -h.point.z);
+  });
+  ctx.addContactShadow({ y: 0.0008, size: G * 2.4, opacity: 0.55, blur: 2.4, darkness: 0.8, exclude: [ground, ring] });
+  ctx.frame(ring, { view: [0, 1.15, 0.7], pad: 1, ground: 'none', minZoom: 0.6, maxZoom: 8, light: [-0.6, 1.4, 0.5] }); // fit the ring itself: the marbles read at card size
+  return {
+    update() { if (pose()) ctx.requestRender(); },
+    tick() { return pose(); },
+    state() { const s = stateOf(ctx.handle.data); return { marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible }; },
+    dispose() { for (const m of mats) m.dispose(); for (const x of made) x.dispose(); },
+  };
+}

@@ -520,6 +520,18 @@ try {
       dragging && order[order.length - 1] === 'first' && !(await V.p.evaluate(() => document.documentElement.classList.contains('dragging'))) && !(await V.p.evaluate(() => String(getSelection()))),
       JSON.stringify({ dragging, order }));
     await V.ctx.close(); }
+  // synapses: the faint branching network lives in the nebula look only: the aura's shader linked (no no-gl) and the network canvas is
+  // on and drawing something, it clears and goes off when the look changes, and reduced motion never turns it on
+  { const Y = await fresh();
+    const syn = async () => Y.p.evaluate(() => { const c = document.getElementById('void-syn'); let drawn = 0; if (c && c.width) { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; for (let i = 3; i < d.length; i += 4) if (d[i]) { drawn++; break; } } return { on: !!document.querySelector('#void-syn.on'), exists: !!c, drawn, noGl: document.documentElement.classList.contains('no-gl') }; });
+    const pub = await syn();
+    await Y.ask('add a nebula', 800); await Y.p.mouse.move(400, 300); await Y.p.mouse.move(700, 420, { steps: 6 });
+    const nb = await until(async () => { const v = await syn(); return v.on && v.drawn ? v : false; }, 9000) || await syn();
+    await Y.ask('calm my void', 800); const off = await until(async () => { const v = await syn(); return !v.on ? v : false; }, 3000) || await syn();
+    await Y.ctx.close();
+    const R = await fresh(); await R.p.emulateMedia({ reducedMotion: 'reduce' }); await R.ask('add a nebula', 800); const rd = await R.p.evaluate(() => !!document.querySelector('#void-syn.on')); await R.ctx.close();
+    check('synapses: the public homepage has no network canvas; with the nebula look the aura shader linked and the network canvas is on and drawing; "calm my void" turns it off; reduced motion never turns it on',
+      !pub.exists && (nb.noGl || (nb.on && nb.drawn)) && !off.on && !rd && !Y.errors.length && !R.errors.length, JSON.stringify({ pub, nb, off, rd, e: Y.errors.concat(R.errors) })); }
   // Board Next #3, grouping half (skills/group.js): "group the clock and the note" ties them together, dragging one carries the
   // other the same distance, the group moves and resizes as one, "bring the group to the front" layers it, "ungroup" lets go.
   { const G = await fresh();
@@ -966,6 +978,46 @@ try {
       /queue\.add · miss:learn-to-handle-tides/.test(card) && /○ .*confirm\.email\.send · appr-1 · approved, but email\.send is not connected/.test(card) && /2 done · 1 stubbed/.test(card)
       && kinds.join(',') === 'done,stubbed,done' && /^Bearer owner-k$/.test(auth) && !A.errors.length, card.slice(0, 300) + ' | ' + auth);
     await A.ctx.close(); }
+  // the memory card (skills/memory.js): the owner's key goes as a bearer to /api/memory?ask=, the API's answer shows as rows, and without
+  // the key it says so and fetches nothing
+  { const M = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    let auth = '', asked = '';
+    await M.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; asked = new URL(r.request().url()).searchParams.get('ask'); return r.fulfill(json({ answer: 'I remember 1 match:\n\u2022 alpha (React, py): A tiny tool. \u00b7 last change 2025-01-01 \u00b7 backed up at https://github.com/o/alpha', matches: ['alpha-1234abcd'] })); });
+    await M.ask('what did I build with react', 900);
+    const card = await M.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
+    const rows = await M.p.$$eval('.memory-row', (r) => r.length);
+    check('memory card: "what did I build with react" asks /api/memory?ask= with the owner bearer and shows each match with its tech, change and remote copy',
+      /alpha \(React, py\)/.test(card) && /I remember 1 match/.test(card) && /no remote copy|backed up at/.test(card) && rows === 1 && /^Bearer owner-k$/.test(auth) && asked === 'react' && !M.errors.length, card.slice(0, 300) + ' | ' + auth + ' | ' + asked);
+    await M.ctx.close(); }
+  { const P = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    let auth = '';
+    await P.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'I remember 1 match:\n\u2022 mine (py): A tiny tool. \u00b7 no remote copy', matches: ['m'] })); });
+    await P.ask('what do you remember about python', 900);
+    const card = await P.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
+    check('memory card: a signed-in member (no owner key) sends their own session as the bearer and sees their answer', /mine \(py\)/.test(card) && /^Bearer member-session-token-/.test(auth) && !P.errors.length, card.slice(0, 200) + ' | ' + auth);
+    await P.ctx.close(); }
+  // "remember that <fact>" keeps one line (POST with the bearer), "forget that <fact>" removes it (DELETE by the same note id); without a key neither fetches
+  { const K = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const calls = [];
+    await K.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { const q = r.request(); calls.push({ m: q.method(), u: new URL(q.url()).search, a: q.headers().authorization || '', b: q.postData() || '' }); return r.fulfill(json(q.method() === 'DELETE' ? { removed: 1 } : { saved: 1, rejected: 0 })); });
+    await K.ask('remember that I prefer tabs over spaces', 900); const said1 = await K.p.evaluate(() => document.body.innerText);
+    await K.ask('forget that I prefer tabs over spaces', 900); const said2 = await K.p.evaluate(() => document.body.innerText);
+    const post = calls.find((c) => c.m === 'POST'), del = calls.find((c) => c.m === 'DELETE'), rec = post && JSON.parse(post.b).records[0];
+    check('memory: "remember that <fact>" POSTs one note with the bearer, "forget that <fact>" DELETEs the same note id, and each says what it did',
+      post && del && /^Bearer owner-k$/.test(post.a) && rec.kind === 'note' && rec.summary === 'I prefer tabs over spaces' && del.u === '?id=' + rec.id && /Remembered: I prefer tabs over spaces/.test(said1) && /Forgotten: I prefer tabs over spaces/.test(said2) && !K.errors.length,
+      JSON.stringify({ calls, errs: K.errors }));
+    await K.ctx.close(); }
+  { const G = await fresh(); let n = 0;
+    await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
+    await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
+    check('memory: without a key "remember that …" says to unlock Void first and sends nothing', /Unlock Void first/.test(said) && n === 0 && !G.errors.length, said.slice(0, 200) + ' | ' + n);
+    await G.ctx.close(); }
+  { const N = await fresh(); let fetched = 0;
+    await N.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { fetched++; return r.fulfill(json({ answer: 'x' })); });
+    await N.ask('what did I build with react', 900);
+    const card = await N.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
+    check('memory card: without the owner key it says so and fetches nothing', /Unlock Void first/.test(card) && fetched === 0 && !N.errors.length, card.slice(0, 200) + ' | fetched ' + fetched);
+    await N.ctx.close(); }
   // the card keeps itself live (skills/live.js, every minute): a record that is running when the card opens settles to done
   // on screen after one tick with nobody pressing Refresh; it fetches a page of 30 and Show more brings the next 30
   { const L = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });

@@ -7,6 +7,7 @@ import { chromium } from 'playwright-core';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+const answerFn = await import(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url).href);
 
 const repo = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..');
 const live = path.join(repo, 'void-live-deploy');
@@ -29,19 +30,44 @@ check('manifest: only activeTab and scripting reach into pages (no host permissi
 man.host_permissions = ['<all_urls>'];
 fs.writeFileSync(path.join(extDir, 'manifest.json'), JSON.stringify(man));
 
+{ // the zip people install must be the folder, byte for byte (the two drifted apart for days once)
+  const { spawnSync } = await import('node:child_process');
+  const zip = path.join(repo, 'extension', 'void-extension.zip'), names = fs.readdirSync(path.join(repo, 'extension')).filter((f) => !f.endsWith('.zip')).sort();
+  const list = spawnSync('unzip', ['-Z1', zip], { encoding: 'utf8' });
+  if (list.error) console.log('skip zip check: unzip is not installed here');
+  else {
+    const inZip = list.stdout.trim().split('\n').sort();
+    const same = inZip.join() === names.join() && names.every((f) => spawnSync('unzip', ['-p', zip, f]).stdout.equals(fs.readFileSync(path.join(repo, 'extension', f))));
+    check('zip: void-extension.zip holds the folder byte for byte (re-zip: cd extension && zip -X void-extension.zip ' + names.join(' ') + ')', same, { inZip, names });
+  }
+}
 const userDir = fs.mkdtempSync(path.join(os.tmpdir(), 'void-ext-user-'));
 const ctx = await chromium.launchPersistentContext(userDir, { executablePath: exe, headless: true, args: ['--disable-extensions-except=' + extDir, '--load-extension=' + extDir] });
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.png': 'image/png', '.svg': 'image/svg+xml', '.txt': 'text/plain' };
 const out = []; // every request that left for anywhere, with its body
 ctx.on('request', (r) => out.push(r.url() + ' ' + (r.postData() || '')));
 const FIXTURE = 'https://fixture.test/';
+const OWNER = 'owner-token-for-the-extension-test', records = []; // B3's execution records, as /api/actions would keep them
 await ctx.route(/^https?:\/\//, (r) => {
   const u = new URL(r.request().url());
   if (u.origin === 'https://fixture.test') {
     return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Fixture page</title><p id="p">' + SECRET + '</p>'
-      + '<form id="f" onsubmit="window.submitted=true;return false"><textarea id="reply" aria-label="Reply"></textarea><button>send</button></form>' });
+      + '<form id="f" onsubmit="window.submitted=true;return false"><textarea id="reply" aria-label="Reply"></textarea><button>send</button></form>'
+      + '<button type="button" id="save" onclick="window.saved=(window.saved||0)+1">Save</button>' });
   }
   if (u.origin === 'https://a-to-mind.com') {
+    if (u.pathname === '/api/actions' && r.request().method() === 'POST') { // the execution record, in memory (lib/actions.js keeps it in D1)
+      if (r.request().headers().authorization !== 'Bearer ' + OWNER) return r.fulfill({ status: 401, body: 'no' });
+      const b = JSON.parse(r.request().postData() || '{}');
+      if (b.op === 'begin' || b.op === 'stub') { const rec = { id: 'act-' + (records.length + 1), kind: b.kind, ref: b.ref, state: b.op === 'begin' ? 'running' : 'stubbed', result: b.op === 'stub' ? b.text : null }; records.push(rec); return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ id: rec.id, state: rec.state }) }); }
+      const rec = records.find((x) => x.id === b.id);
+      if (b.op === 'end' && rec && rec.state === 'running') { rec.state = b.state; rec.result = b.text; return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ id: rec.id, state: rec.state }) }); }
+      return r.fulfill({ status: 409, contentType: 'application/json', body: '{}' });
+    }
+    if (u.pathname.startsWith('/api/answer') && /"mode":"draft"/.test(r.request().postData() || '')) { // the tab card's "draft for me": the real handler, no model
+      return answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', body: r.request().postData() }), env: { AI: undefined } })
+        .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
+    }
     if (u.pathname.startsWith('/api/')) return r.fulfill({ status: 404, contentType: 'application/json', body: '{}' });
     const f = u.pathname === '/' || u.pathname === '/index.html' ? path.join(repo, 'void.html') : path.join(live, decodeURIComponent(u.pathname));
     if (!f.startsWith(repo) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) return r.fulfill({ status: 404, body: '' });
@@ -90,7 +116,9 @@ await V.fill('#input', 'days until new year');
 await V.press('#input', 'Enter');
 await V.waitForSelector('.vput', { state: 'visible', timeout: 10000 }).catch(() => {});
 await page.evaluate(() => { const t = document.getElementById('reply'); t.value = ''; t.focus(); });
-const vputErr = await V.click('.vput', { timeout: 5000 }).then(() => '', (e) => String(e.message).split('\n')[0]);
+// pressed directly, as the draft check does: the tab card above has grown (draft buttons, the B3 step box) and can lie over
+// the countdown card, so a pointer click may land on the wrong card; what is tested is the button's own effect
+const vputErr = await V.evaluate(() => { const b = document.querySelector('.vput'); if (!b) return 'no button'; b.click(); return ''; });
 const vputs = await V.evaluate(() => Array.from(document.querySelectorAll('.vput')).map((b) => ({ shown: !!b.offsetParent, in: (b.parentElement.className || '') })));
 await page.waitForFunction(() => document.getElementById('reply').value.length > 0, null, { timeout: 5000 }).catch(() => {});
 const box2 = await page.evaluate(() => document.getElementById('reply').value);
@@ -103,11 +131,98 @@ check('local only: the saved stage (synced when signed in) holds no page text, n
 const leaked = out.filter((x) => x.includes('PLUM-7731') || x.includes(encodeURIComponent('PLUM-7731')) || x.includes(DRAFT) || x.includes(encodeURIComponent(DRAFT)));
 check('local only: no request anywhere carried the page text or the draft', leaked.length === 0, leaked.slice(0, 3));
 
+// "draft for me" on the tab card (sends it to Void, lib/draft.js): the card's box fills with the draft (rules draft here, no model),
+// the card flags what left and for what, and the one request carried the title, address and selection, nothing else of the page
+await V.evaluate(() => { const t = document.querySelector('.tab-draft'); t.value = 'keep it short'; t.dispatchEvent(new Event('input', { bubbles: true })); });
+const beforeDraft = out.length;
+await V.evaluate(() => document.querySelector('.tab-ask-summary').click()); // the countdown card above lifts over the tab card, so a pointer click would land on its canvas
+await V.waitForFunction(() => /from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+const dSaid = await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '');
+const dBox = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
+const dFoot = await V.evaluate(() => (document.querySelector('.tab-foot') || {}).textContent || '');
+const dPosts = out.slice(beforeDraft).filter((x) => /a-to-mind\.com\/api\/answer /.test(x));
+let dBody = null; try { dBody = JSON.parse(dPosts[0].slice(dPosts[0].indexOf(' ') + 1)); } catch (_) {}
+check('draft for me: the summary comes back into the card\'s box, the card says it is from Void and what was sent, and the one request carried mode draft with the title, address, the selection (none now) and the box as a note',
+  /summary from Void/.test(dSaid) && /Fixture page/.test(dBox) && /sent to a-to-mind\.com for a summary draft · not kept there/.test(dFoot)
+  && dPosts.length === 1 && dBody && dBody.mode === 'draft' && dBody.intent === 'summary' && dBody.title === 'Fixture page' && dBody.url === 'https://fixture.test/' && dBody.note === 'keep it short' && !('text' in dBody) && !('field' in dBody),
+  { dSaid, dBox: dBox.slice(0, 120), dFoot, dBody });
+check('draft for me: rewrite is disabled with nothing selected', await V.evaluate(() => !!(document.querySelector('.tab-ask-rewrite') || {}).disabled));
+
 // inside the panel, a message that doesn't come from the panel itself (here: the page posting to itself) changes nothing
 await V.evaluate(() => window.postMessage({ type: 'void-ext:tab', tab: { title: 'forged', url: 'https://evil.test/', selection: 'forged' } }, '*'));
 await V.waitForTimeout(500);
 const card3 = await V.evaluate(() => (document.querySelector('.tab-card') || {}).innerText || '');
 check('trust: in the panel, a tab message from the Void page itself is ignored (only the extension\'s panel is heard)', /Fixture page/.test(card3) && !/forged/.test(card3), card3.slice(0, 120));
+
+// --- B3: Void proposes one step; the extension's panel shows it with Yes / No; it runs only on an allowed site and only on Yes
+await V.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
+await page.evaluate(() => { document.getElementById('reply').value = 'before'; window.submitted = false; });
+const EXACT = 'Thanks, Sam. Friday works: 10:30?';
+const propose = async (ask) => { await V.fill('.tab-step', ask); await V.click('.tab-propose'); };
+const cardOn = () => panel.evaluate(() => document.getElementById('act').classList.contains('on'));
+const actSaid = () => V.evaluate(() => (document.querySelector('.tab-act-said') || {}).textContent || '');
+await propose('fill Reply with ' + EXACT);
+await V.waitForFunction(() => /not on your list/.test((document.querySelector('.tab-act-said') || {}).textContent || ''), null, { timeout: 5000 }).catch(() => {});
+check('B3: a site not on the allow list gets no card, and nothing on the page changes',
+  !(await cardOn()) && /not on your list/.test(await actSaid()) && (await page.evaluate(() => document.getElementById('reply').value)) === 'before' && records.length === 0, { said: await actSaid(), records });
+
+// a button in the panel's own chrome, pressed until what it does has happened (headless Chromium drops some mouse events
+// on extension pages; the button's own click handler is what is under test)
+const press = async (sel, landed) => { for (let i = 0; i < 5; i++) { await panel.evaluate((q) => document.querySelector(q).click(), sel); for (let j = 0; j < 10; j++) { if (await landed()) return true; await panel.waitForTimeout(100); } } return false; };
+await panel.click('#sites summary');
+await panel.waitForSelector('#sites .add:not([hidden])', { timeout: 5000 }).catch(() => {});
+await press('#sites .add', async () => ((await sw.evaluate(() => chrome.storage.local.get('allow'))).allow || []).includes('fixture.test'));
+for (let i = 0; i < 50 && !((await sw.evaluate(() => chrome.storage.local.get('allow'))).allow || []).includes('fixture.test'); i++) await panel.waitForTimeout(100);
+await propose('fill Reply with ' + EXACT);
+await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
+const shownCard = await panel.evaluate(() => document.getElementById('act').innerText);
+await page.waitForTimeout(300);
+check('B3: on an allowed site the panel shows the card (site, the field\'s label, the text, Yes / No) and nothing changes until Yes',
+  /fixture\.test/.test(shownCard) && /Reply/.test(shownCard) && shownCard.includes(EXACT) && /Yes/.test(shownCard) && /No/.test(shownCard)
+  && (await page.evaluate(() => document.getElementById('reply').value)) === 'before' && records.length === 0, { shownCard, records });
+
+await press('.act-yes', async () => !(await cardOn()));
+await V.waitForFunction(() => /recorded/.test((document.querySelector('.tab-act-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+const filled = await page.evaluate(() => ({ v: document.getElementById('reply').value, submitted: !!window.submitted }));
+const rec1 = records[0] || {};
+check('B3: Yes fills the field exactly, submits nothing, and leaves an extension.act record: running first, then done',
+  filled.v === EXACT && !filled.submitted && records.length === 1 && rec1.kind === 'extension.act' && rec1.ref === 'fixture.test · Reply' && rec1.state === 'done' && /filled Reply on fixture\.test/.test(rec1.result) && !(await cardOn()),
+  { filled, records, said: await actSaid() });
+
+await propose('click Save');
+await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
+await press('.act-no', async () => !(await cardOn()));
+await V.waitForFunction(() => /you said no/.test((document.querySelector('.tab-act-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+const rec2 = records[1] || {};
+check('B3: No changes nothing and writes a stubbed record (what would have happened)',
+  !(await page.evaluate(() => window.saved)) && records.length === 2 && rec2.state === 'stubbed' && rec2.kind === 'extension.act' && rec2.ref === 'fixture.test · Save' && /would have clicked Save/.test(rec2.result),
+  { records, said: await actSaid() });
+
+await propose('click send');
+await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
+await press('.act-yes', async () => !(await cardOn()));
+await V.waitForFunction(() => /press it yourself/.test((document.querySelector('.tab-act-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+const rec3 = records[2] || {};
+check('B3: even after Yes, a button that would submit its form is refused (you press send yourself), and the record says it failed',
+  !(await page.evaluate(() => window.submitted)) && rec3.state === 'failed' && /submits/.test(rec3.result || ''), { records, said: await actSaid() });
+
+// B3 joined to the drafts: a "draft for me: reply" on an allowed site comes back as a proposed step, the same card with the
+// draft in it; on a site not on the list the draft stays copy-only, with no card and nothing said about acting
+const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
+await draftReply();
+await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
+const replyDraft = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
+const autoCard = await panel.evaluate(() => ({ on: document.getElementById('act').classList.contains('on'), what: document.querySelector('.act-what').textContent, text: document.querySelector('.act-text').textContent, site: document.querySelector('.act-site').textContent }));
+await press('.act-no', async () => !(await cardOn()));
+await sw.evaluate(() => chrome.storage.local.set({ allow: [] }));
+await page.waitForTimeout(200);
+await draftReply();
+await page.waitForTimeout(800);
+const offList = { on: await cardOn(), said: await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || ''), act: await actSaid(), box: await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '') };
+check('B3 from a draft: a "draft for me: reply" on an allowed site yields the Yes / No card to fill the box you were in with the draft; on a site not listed, no card and the draft stays copy-only',
+  autoCard.on && replyDraft.length > 0 && autoCard.text === replyDraft && /Reply/.test(autoCard.what) && autoCard.site === 'fixture.test'
+  && !offList.on && /^reply from Void/.test(offList.said) && !/not on your list/.test(offList.act) && offList.box.length > 0,
+  { autoCard, replyDraft: replyDraft.slice(0, 80), offList });
 
 // "Ask Void about this page" (sent to Void, #134): the answer card says the page left the browser for this answer
 await sw.evaluate(() => chrome.storage.session.set({ ask: { q: 'What is this page about?', page: { title: 'Fixture page', url: 'https://fixture.test/', selection: '', field: '', text: 'fixture text' }, at: Date.now() } }));
