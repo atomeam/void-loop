@@ -5610,5 +5610,11 @@
   {"ask": "back to start", "want": "skill:sorry"},
   {"ask": "what board games can we play here", "want": "skill:rack"},
   {"ask": "summon a square", "want": "shape"},
-  {"ask": "motelet sitting on the chair", "want": "skill:figure"}
+  {"ask": "motelet sitting on the chair", "want": "skill:figure"},
+  {"ask": "make me a rocket", "want": "skill:forge"},
+  {"ask": "3d print a vase", "want": "skill:forge"},
+  {"ask": "make me a snowman", "want": "skill:forge"},
+  {"ask": "forge a lighthouse", "want": "skill:forge"},
+  {"ask": "make a table i can print", "want": "skill:forge"},
+  {"ask": "make me a bottle", "want": "skill:forge"}
 ]
