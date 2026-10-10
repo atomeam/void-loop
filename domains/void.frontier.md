@@ -238,6 +238,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **First piece:** `skyOf(date, lat, lon)` in `skills/sky.js` (dawn, noon, dusk, night, a solstice tested), wired to the empty stage.
 - **Done when:** the tint is there on load and drifts; reduced motion holds it; the aurora signal is a Worker with a fixture.
 - **claim:** **Claim (claude, helper/sky, 2026-10-10):** the pure function and its wiring first, then the aurora Worker. **Next step:** claim written before building.
+- **claim (sky math):** claude 2026-10-10: `lib/sky-math.js`, the layer under `skyOf`: positions of the sun, moon (and its phase), the planets and the brightest stars from a date and a place, pure, with fixed-input tests against published worked examples and the sources' licenses in `docs/licenses.md`. Then the sky world (the `world` hook) and the sky card. It does not take the `skyOf`/tint piece above; `skyOf` can read the sun's altitude from it.
 
 ## 22. The list of what nobody knows: gaps become jobs
 - **What:** a weekly job reads Wikipedia's requested articles and unanswered StackExchange questions and adds the top few to the build queue as `gap:` jobs, through the existing redaction, caps and open-jobs limit (`lib/learn.js`). Fetched pages are data only: Void writes its own one-line summary of each gap, and a stranger's text is never placed in a job body.
