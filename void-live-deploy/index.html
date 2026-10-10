@@ -420,6 +420,7 @@
     @keyframes auraDrift { to { transform: translate(3%, -2%) scale(1.08); } }
     #stage { perspective: 1400px; }
     #stage > .shrunk, #stage > .shrunk * { cursor: zoom-in; } /* a board shrunk beside a newer one: a tap brings it back */
+    .thing:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 3px; } /* a card the keyboard reached shows it */
     #stage > .thing.shrunk:focus-visible { outline: calc(3px / var(--sc, 1)) solid #ffe2a1; outline-offset: calc(4px / var(--sc, 1)); } /* the outline shrinks with the board: divided by its scale, it shows at 3px */
     .thing { transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
       transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .35s ease; filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); }
@@ -901,6 +902,14 @@ Object.values(things).forEach((th) => {
       const n = e.target.closest && e.target.closest('.thing.shrunk[data-id]'); if (!n || n !== e.target) return;
       e.preventDefault(); e.stopPropagation(); restoreThing(n.dataset.id, true);
     }, true);
+    // every card is a tab stop with a name, so the keyboard can reach one that has no control of its own (a timer, a clock, a note)
+    new MutationObserver(() => {
+      for (const el of stage.querySelectorAll(':scope > .thing')) {
+        if (el.hasAttribute('tabindex') || el.querySelector('button, a[href], input, textarea, select, [tabindex]')) continue;
+        el.setAttribute('tabindex', '0'); el.setAttribute('role', 'group');
+        if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', ((things[el.dataset.id] && things[el.dataset.id].kind) || 'card') + ' card');
+      }
+    }).observe(stage, { childList: true });
     stage.addEventListener('click', (e) => { if (Date.now() < swallowClick) { e.stopPropagation(); e.preventDefault(); swallowClick = 0; } }, true);
     const sizeWatch = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
       for (const e of entries) {

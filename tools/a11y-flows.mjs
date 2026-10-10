@@ -30,13 +30,13 @@ export async function runFlows(fresh) {
     return 'twelve Tab presses never reached anything inside the stage';
   });
   await step('keyboard', 'focus-visible', 'the focused element shows where focus is', async () => {
-    const o = await K.p.evaluate(() => { const e = document.activeElement; if (!e || e === document.body) return 'nothing is focused'; const s = getComputedStyle(e); return (s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) > 0) || (s.boxShadow && s.boxShadow !== 'none') ? null : 'the focused ' + e.tagName.toLowerCase() + ' has no outline or ring'; });
+    const o = await K.p.evaluate(() => { const shows = (e) => { const s = getComputedStyle(e); return (s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) > 0) || (s.boxShadow && s.boxShadow !== 'none'); }; const e = document.activeElement; if (!e || e === document.body) return 'nothing is focused'; const row = e.closest('#row'); /* the ask box shows focus on its bar (#row:focus-within) */ return shows(e) || (row && shows(row)) ? null : 'the focused ' + e.tagName.toLowerCase() + ' has no outline or ring'; });
     return o;
   });
   await step('keyboard', 'dismiss', 'Escape (or another key) takes the card back off the stage', async () => {
-    const before = (await K.p.$$('#stage .thing')).length; await K.p.keyboard.press('Escape'); await K.p.waitForTimeout(500);
+    const before = (await K.p.$$('#stage .thing')).length; await K.p.keyboard.press('Escape'); await K.p.waitForTimeout(80); await K.p.keyboard.press('Escape'); /* Esc, Esc takes the last thing back */ await K.p.waitForTimeout(500);
     const after = (await K.p.$$('#stage .thing')).length;
-    return after < before ? null : 'Escape did not remove or close the card (' + before + ' before, ' + after + ' after); there is no keyboard way to close it';
+    return after < before ? null : 'Escape, Escape did not remove the card (' + before + ' before, ' + after + ' after)';
   });
   await K.p.focus('#input'); await K.p.keyboard.type('what is a black hole'); await K.p.keyboard.press('Enter'); await K.p.waitForTimeout(1200);
   await step('keyboard', 'ask-answer', 'a question gets an answer page', async () => (await K.p.$('.vpage.on')) ? null : 'no answer page after a question');
@@ -47,7 +47,7 @@ export async function runFlows(fresh) {
     return moved || said ? (heading ? null : 'the answer has no heading to navigate by') : 'focus stays in the ask box and the answer is not announced';
   });
   await step('keyboard', 'answer-close', 'the answer page closes from the keyboard', async () => {
-    await K.p.keyboard.press('Escape'); await K.p.waitForTimeout(500);
+    await K.p.keyboard.press('Escape'); await K.p.waitForTimeout(80); await K.p.keyboard.press('Escape'); /* Esc, Esc takes the last thing back */ await K.p.waitForTimeout(500);
     return (await K.p.$('.vpage.on')) ? 'Escape did not close the answer page' : null;
   });
   await K.ctx.close();

@@ -94,18 +94,25 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if [ "$(val switch)" = 1 ]; then
-            branch="$(val branch)"
+            branch="$(val branch)-run${GITHUB_RUN_ID}" # a rerun never collides with an earlier switch branch
             git switch -c "$branch"
             node tools/grow.mjs build "$ledger" --by model-bench
             git add void-live-deploy/lib/models.js void-live-deploy/void.growth.json
             git commit -q -m "$(val title)"
             git push -q origin "$branch"
-            url="$(gh pr create --base main --head "$branch" --title "$(val title)" --body-file switch-body.md)"
-            n="${url##*/}"
-            gh pr edit "$n" --add-label automerge
-            gh workflow run void-review.yml --ref "$branch" -f pr="$n"
-            echo "**Switch PR opened:** $url" >> "$GITHUB_STEP_SUMMARY"
-            if [[ "$PR" =~ ^[0-9]+$ ]]; then gh pr comment "$PR" --body "Switch PR opened from this run: $url"; fi
+            if url="$(gh pr create --base main --head "$branch" --title "$(val title)" --body-file switch-body.md 2>pr-error.txt)"; then
+              n="${url##*/}"
+              gh pr edit "$n" --add-label automerge
+              gh workflow run void-review.yml --ref "$branch" -f pr="$n"
+              note="Switch PR opened from this run: $url"
+            else
+              # this repository does not let Actions open PRs (Settings > Actions > General > "Allow GitHub Actions to create and
+              # approve pull requests"): the branch is pushed, and the link to open its PR goes where the table went
+              cat pr-error.txt
+              note="The verdict says switch, and the branch is pushed, but Actions may not open PRs here: open it from ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/compare/main...${branch}?expand=1 (body: the table above, the previous model and the one-line revert are in switch-body.md of run ${GITHUB_RUN_ID}), or allow Actions to create pull requests in Settings > Actions > General."
+            fi
+            echo "**$note**" >> "$GITHUB_STEP_SUMMARY"
+            if [[ "$PR" =~ ^[0-9]+$ ]]; then gh pr comment "$PR" --body "$note"; fi
           else
             for i in 1 2 3 4; do
               git fetch -q origin main && git reset -q --hard origin/main
@@ -125,4 +132,5 @@ jobs:
             model-bench.json
             model-bench.txt
             model-bench.md
+            switch-body.md
           if-no-files-found: ignore
