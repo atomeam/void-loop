@@ -10,6 +10,10 @@ export function placesOf(text) {
   if (m) return { a: m[1].trim(), b: m[2].trim() };
   const n = t.match(/^how\s+far\s+(?:away\s+)?is\s+(.+?)\s+from\s+(.+)$/i);
   if (n) return { a: n[2].trim(), b: n[1].trim() };
+  const q = t.match(/^(.+?)\s+to\s+(.+?)\s+distance$/i); // "Lyon to Turin distance"
+  if (q) return { a: q[1].trim(), b: q[2].trim() };
+  const k = t.match(/^how many\s+(?:km|kilomet(?:er|re)s?|miles?|mi)\s+from\s+(.+?)\s+to\s+(.+)$/i); // "how many km from Lyon to Turin"
+  if (k) return { a: k[1].trim(), b: k[2].trim() };
   return null;
 }
 async function geo(name) {

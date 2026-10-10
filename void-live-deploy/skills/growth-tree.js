@@ -39,39 +39,20 @@ export function chronological(list, until) {
 /**
  * The tree for a ledger: { branches, height, width } where each branch is
  * { index (in the ledger), kind, at, color, parent (branch number or -1), children, depth, start, end, dir, length,
- *   radius (at its base), tipRadius, profile ([fraction along, radius] from base to tip) }. `until` (an ISO time) grows the tree as it stood then: the time slider's hook.
+ *   radius (at its base), tipRadius, profile ([fraction along, radius] from base to tip), color (its kind: the berry),
+ *   leaf (its leaves: the season of its date) }. `until` (an ISO time) grows the tree as it stood then: the time slider's
+ *   hook. `tracks` ([{ name, last }]) and `building` ({ what, at, item }) add `ghosts`: faint shoots not grown yet.
  */
-export function layout(list, { until } = {}) {
+export function layout(list, { until, tracks, building } = {}) {
   const branches = [];
   for (const { e, index } of chronological(list, until)) {
     const r = rng(hash32(e.at + '|' + e.kind + '|' + e.what));
-    const b = { index, kind: e.kind, at: e.at, color: KIND_COLOR[e.kind] || '#9a9a9a', parent: -1, children: [], depth: 0 };
+    const b = { index, kind: e.kind, at: e.at, color: KIND_COLOR[e.kind] || '#9a9a9a', leaf: leafColor(e.at, r()), parent: -1, children: [], depth: 0 };
     if (!branches.length) { // the trunk: a slight lean, its own way
       const lean = 0.05 + 0.05 * r(), az = r() * 2 * Math.PI;
       b.dir = norm([Math.sin(lean) * Math.cos(az), Math.cos(lean), Math.sin(lean) * Math.sin(az)]);
       b.start = [0, 0, 0]; b.length = TRUNK; b.azimuth = az;
-    } else {
-      // the parent: any branch with room; the more recent, the nearer the trunk and the more side shoots it already has, the
-      // likelier, so shoots cluster along limbs and the tree spreads into a crown of tips instead of running up in chains
-      const n = branches.length;
-      let total = 0;
-      const w = branches.map((p, i) => { const ok = p.children.length < MAX_CHILDREN && p.depth < MAX_DEPTH; const x = ok ? (0.2 + i / n) * (1 + p.children.length) / (1 + 0.9 * p.depth) ** 3 : 0; total += x; return x; });
-      let pick = r() * total, pi = 0;
-      while (pi < n - 1 && (pick -= w[pi]) > 0) pi++;
-      while (pi > 0 && !w[pi]) pi--; // float rounding past the end lands back on a branch with room
-      const p = branches[pi], k = p.children.length;
-      const along = p.parent < 0 ? 0.35 + 0.6 * r() : 0.45 + 0.5 * r();
-      const spread = (28 + 26 * r()) * Math.PI / 180, az = p.azimuth + GOLDEN * (k + 1) + (r() - 0.5) * 0.6;
-      const u = norm(cross(Math.abs(p.dir[1]) > 0.9 ? [1, 0, 0] : UP, p.dir)), v = cross(p.dir, u);
-      let dir = norm(add(mul(p.dir, Math.cos(spread)), mul(add(mul(u, Math.cos(az)), mul(v, Math.sin(az))), Math.sin(spread))));
-      dir = norm(add(dir, [0, 0.22, 0])); // towards the light
-      b.parent = pi; b.depth = p.depth + 1; b.azimuth = az; b.along = along;
-      b.start = add(p.start, mul(p.dir, p.length * along));
-      b.length = TWIG + (p.length - TWIG) * (0.58 + 0.22 * r()); // shorter than its parent, never shorter than a twig
-      if (b.start[1] + dir[1] * b.length < 0.4) dir = norm(add(dir, [0, 1, 0])); // never into the ground
-      b.dir = dir;
-      p.children.push(n);
-    }
+    } else sprout(branches, b, r, branches.length);
     b.end = add(b.start, mul(b.dir, b.length));
     branches.push(b);
   }
@@ -90,9 +71,104 @@ export function layout(list, { until } = {}) {
     b.start = round(b.start); b.end = round(b.end); b.dir = round(b.dir);
     height = Math.max(height, b.end[1]); width = Math.max(width, Math.hypot(b.end[0], b.end[2]));
     b.profile = b.profile.map(([f, r]) => [Math.round(f * 1e4) / 1e4, Math.round(r * 1e6) / 1e6]);
-    delete b.azimuth; delete b.along;
   }
-  return { branches, height, width };
+  // what is not grown yet, as faint shoots off the real wood (never its parents, never in its thickness): the think tank's
+  // open tracks, and the claim being built now. Seeded by their own words, so they too stay put from day to day.
+  const ghosts = [];
+  for (const g of [...(tracks || []).map((t) => ({ kind: 'track', what: t.name, at: t.last || '' })), ...(building ? [{ kind: 'building', what: building.what, at: building.at || building.date || '', item: building.item }] : [])]) {
+    if (!branches.length || !g.what) continue;
+    const b = { kind: g.kind, what: g.what, at: g.at, ...(g.item ? { item: g.item } : {}), parent: -1, children: [], depth: 0 };
+    sprout(branches, b, rng(hash32('ghost|' + g.kind + '|' + g.what)), -1);
+    b.end = round(add(b.start, mul(b.dir, b.length))); b.start = round(b.start); b.dir = round(b.dir);
+    b.radius = TIP_RADIUS * 0.9; b.tipRadius = TIP_RADIUS * 0.5; b.profile = [[0, b.radius], [1, b.tipRadius]];
+    ghosts.push(b);
+  }
+  for (const b of branches) { delete b.azimuth; delete b.along; }
+  for (const b of ghosts) { delete b.azimuth; delete b.along; }
+  return { branches, ghosts, height, width };
+}
+
+// a new shoot on the tree: its parent, where along it, its angle and length (n: its own number, or -1 for a ghost, which
+// takes a parent but is never one, so the real tree never changes because of it)
+function sprout(branches, b, r, n) {
+  const m = branches.length;
+  let total = 0;
+  // the parent: any branch with room; the more recent, the nearer the trunk and the more side shoots it already has, the
+  // likelier, so shoots cluster along limbs and the tree spreads into a crown of tips instead of running up in chains
+  const w = branches.map((p, i) => { const ok = p.children.length < MAX_CHILDREN && p.depth < MAX_DEPTH; const x = ok ? (0.2 + i / m) * (1 + p.children.length) / (1 + 0.9 * p.depth) ** 3 : 0; total += x; return x; });
+  let pick = r() * total, pi = 0;
+  while (pi < m - 1 && (pick -= w[pi]) > 0) pi++;
+  while (pi > 0 && !w[pi]) pi--; // float rounding past the end lands back on a branch with room
+  const p = branches[pi], k = p.children.length;
+  const along = p.parent < 0 ? 0.35 + 0.6 * r() : 0.45 + 0.5 * r();
+  const spread = (28 + 26 * r()) * Math.PI / 180, az = p.azimuth + GOLDEN * (k + 1) + (r() - 0.5) * 0.6;
+  const u = norm(cross(Math.abs(p.dir[1]) > 0.9 ? [1, 0, 0] : UP, p.dir)), v = cross(p.dir, u);
+  let dir = norm(add(mul(p.dir, Math.cos(spread)), mul(add(mul(u, Math.cos(az)), mul(v, Math.sin(az))), Math.sin(spread))));
+  dir = norm(add(dir, [0, 0.22, 0])); // towards the light
+  b.parent = pi; b.depth = p.depth + 1; b.azimuth = az; b.along = along;
+  b.start = add(p.start, mul(p.dir, p.length * along));
+  b.length = TWIG + (p.length - TWIG) * (0.58 + 0.22 * r()); // shorter than its parent, never shorter than a twig
+  if (b.start[1] + dir[1] * b.length < 0.4) dir = norm(add(dir, [0, 1, 0])); // never into the ground
+  b.dir = dir;
+  if (n >= 0) p.children.push(n);
+}
+
+// leaves are real leaves, coloured by the season of their entry's date (northern hemisphere: Void lives in New York); the
+// kind is shown by a berry in the card's colour instead. `pick` (0..1) chooses within the season, so a crown is mottled.
+const SEASON = {
+  spring: ['#9cc65a', '#86b84a', '#a9cf6a'], summer: ['#3f7a2c', '#4a8a34', '#356b26'],
+  turning: ['#8a9a3a', '#a7a53c', '#6f8a33'], autumn: ['#d9a53a', '#c97a2a', '#a8452a', '#b8962e', '#c4572a'],
+  late: ['#9a4a22', '#7d3c1c', '#a8622c'], winter: ['#6b5a3a', '#7a6544', '#5e4e33'],
+};
+export function season(at) {
+  const m = new Date(Date.parse(at)).getUTCMonth() + 1;
+  return m >= 3 && m <= 5 ? 'spring' : m <= 8 && m >= 6 ? 'summer' : m === 9 ? 'turning' : m === 10 ? 'autumn' : m === 11 ? 'late' : 'winter';
+}
+export function leafColor(at, pick = 0) { const p = SEASON[season(at)]; return p[Math.min(p.length - 1, Math.floor(pick * p.length))]; }
+
+/**
+ * The time slider's stops: the moment of the first entry (the tree was one trunk), then the end of every day (UTC) from
+ * the first entry's day to `now`. Each stop: { until (ISO), day (YYYY-MM-DD), count (branches then) }; the last is today.
+ */
+export function timeline(list, now = Date.now()) {
+  const all = chronological(list);
+  if (!all.length) return [];
+  const first = all[0].e.at, stops = [{ until: first, day: first.slice(0, 10), count: chronological(list, first).length }];
+  const end = Math.max(now, all[all.length - 1].t);
+  for (let d = Date.parse(first.slice(0, 10) + 'T00:00:00Z'); d <= end; d += 86400000) {
+    const day = new Date(d).toISOString().slice(0, 10), until = day + 'T23:59:59Z';
+    stops.push({ until, day, count: all.filter((x) => x.t <= Date.parse(until)).length });
+  }
+  return stops;
+}
+
+/**
+ * "What can you do now that you couldn't last week?": the ledger's entries since `days` ago (a week by default), grouped by
+ * kind and said in plain words. The growth card shows it and the daily reflection reads it (lib/voice.js weekFacts).
+ * -> { since (YYYY-MM-DD), until (ISO, the week-ago stop for the tree), total, groups: [{ kind, label, count, items }], text }
+ */
+const WEEK_LABEL = { grow: ['new thing I can do', 'new things I can do'], build: ['thing I do better', 'things I do better'], fix: ['thing I fixed', 'things I fixed'],
+  retire: ['thing I retired', 'things I retired'], idea: ['idea', 'ideas'], finding: ['finding', 'findings'] };
+const WEEK_ORDER = ['grow', 'build', 'fix', 'retire', 'finding', 'idea'];
+// an entry's first plain phrase: up to its first colon, full stop, semicolon or bracket when that leaves enough to read, no
+// Markdown, clipped
+export function plainly(what, n = 90) {
+  const t = String(what || '').replace(/[`*]/g, '').replace(/\s+/g, ' ').trim();
+  const cut = t.search(/: |\. |; | \(| — /), head = cut >= 12 ? t.slice(0, cut) : t;
+  return head.length > n ? head.slice(0, n).replace(/\s+\S*$/, '') + '…' : head;
+}
+export function weekSummary(list, now = Date.now(), days = 7, per = 4) {
+  const from = now - days * 86400000, since = new Date(from).toISOString().slice(0, 10);
+  const recent = chronological(list).filter((x) => x.t > from).reverse(); // newest first
+  const groups = WEEK_ORDER.map((kind) => {
+    const of = recent.filter((x) => x.e.kind === kind);
+    return { kind, label: WEEK_LABEL[kind][of.length === 1 ? 0 : 1], count: of.length, items: of.slice(0, per).map((x) => plainly(x.e.what)) };
+  }).filter((g) => g.count);
+  const total = recent.length;
+  const text = !total ? 'Nothing new in my growth ledger since ' + since + '.'
+    : 'Since ' + since + ' (the last ' + days + ' days) I changed ' + total + ' thing' + (total === 1 ? '' : 's') + ': ' + groups.map((g) => g.count + ' ' + g.label).join(', ') + '. '
+      + groups.filter((g) => g.kind !== 'idea' && g.kind !== 'finding').map((g) => g.label[0].toUpperCase() + g.label.slice(1) + ': ' + g.items.join('; ') + (g.count > g.items.length ? ' (and ' + (g.count - g.items.length) + ' more)' : '') + '.').join(' ');
+  return { since, until: new Date(from).toISOString().replace(/\.\d+Z$/, 'Z'), total, groups, text };
 }
 
 /** The point halfway along a branch (what a test taps, and where the card's readout points). */

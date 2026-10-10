@@ -32,6 +32,10 @@ const T = [
   ['const key = "sk-abcdefghijklmnopqrstuvwx";', 'hardcoded-secret@1'],
   ['fetch("http://api.weather-data.net/data");', 'plain-http@1'],
 ];
+// an import of a file named skills-… is not a key: "sk" must be followed by a separator
+ok(!rules("import { unlistedSkills } from './skills-unlisted.mjs';", 'javascript').includes('hardcoded-secret@1'), 'a skills-… file name is not a secret');
+ok(rules('const k = "sk_abcdefghijklmnopqrstuvwx";', 'javascript').includes('hardcoded-secret@1'), 'sk_ key still flagged');
+ok(rules('const t = "ghp_abcdefghijklmnopqrstuvwx";', 'javascript').includes('hardcoded-secret@1'), 'ghp_ token still flagged');
 // run 52: for…in over an array is flagged, over an object (a hasOwnProperty guard, the key used as a name) is not;
 // innerHTML from a builder handed the escaper (card(esc)) is not flagged, a plain variable still is
 ok(rules('for (var i in list) total += list[i];', 'javascript').includes('for-in-array@1'), 'for…in over an array flagged');
@@ -43,6 +47,12 @@ ok(rules('p.innerHTML = cardHtml(data);', 'javascript').includes('inner-html@1')
 ok(!rules(`const el = showPage((p) => { p.innerHTML = '<h2>Watch</h2><div class="sub">checking…</div>'; });`, 'javascript').includes('inner-html@1'), 'innerHTML of a plain string with inner quotes not flagged');
 ok(!rules("el.innerHTML = cardHtml(esc, data, 'live');", 'javascript').includes('inner-html@1'), 'innerHTML from a builder handed esc among other arguments not flagged');
 ok(!rules('said.innerHTML = entryHtml(api.esc, e);', 'javascript').includes('inner-html@1') && rules('said.innerHTML = entryHtml(api.escaped_name, e);', 'javascript').includes('inner-html@1'), 'a builder handed api.esc not flagged; a lookalike name still is');
+// a builder defined in the same file whose body escapes: the esc call lives inside it, not on the assignment line
+const escBuilder = "const esc = (s) => String(s).replace(/</g, '&lt;');\nfunction rowHtml(p) { return '<b>' + esc(p.name) + '</b>'; }\nconst lis = items.map((p) => rowHtml(p)).join('');\nel.innerHTML = '<ul>' + lis + '</ul>';";
+ok(!rules(escBuilder, 'javascript').includes('inner-html@4'), 'innerHTML from a same-file builder that escapes not flagged');
+const rawBuilder = "function rowHtml(p) { return '<b>' + p.name + '</b>'; }\nconst lis = items.map((p) => rowHtml(p)).join('');\nel.innerHTML = '<ul>' + lis + '</ul>';";
+ok(rules(rawBuilder, 'javascript').includes('inner-html@3'), 'innerHTML from a same-file builder that does not escape still flagged');
+ok(!rules("function row(p) { return '<i>' + esc(p.id) + '</i>'; }\nel.innerHTML = row(item);", 'javascript').includes('inner-html@2'), 'innerHTML straight from an escaping builder call not flagged');
 ok(rules("el.innerHTML = cardHtml(data, 'live');", 'javascript').includes('inner-html@1') && rules('el.innerHTML = `<b>${name}</b>`;', 'javascript').includes('inner-html@1'), 'a builder without esc and a template with a value still flagged');
 // innerHTML built only from fixed text (literals, numbers, ALL_CAPS constants, the item of a map over a literal list) is not a risk
 for (const c of [`opp.innerHTML = '<span>vs</span>' + [1, 2, 3].map((n) => '<button data-opp="' + n + '">' + n + ' bot' + (n > 1 ? 's' : '') + '</button>').join('');`,
@@ -277,6 +287,23 @@ ok(rules('image: postgres:latest', 'yaml').includes('image-latest@1') && rules('
 ok(rules('USER root', 'dockerfile').includes('docker-root@1') && rules('USER 0', 'dockerfile').includes('docker-root@1') && !rules('USER app', 'dockerfile').includes('docker-root@1') && !rules('USER rootless', 'dockerfile').includes('docker-root@1'), 'Dockerfile USER root flagged; another user not');
 // keys never shown as written
 ok(!JSON.stringify(ruleReview('const token = "ghp_abcdefghijklmnopqrstuvwxyz0123";')).includes('ghp_abcdef'), 'a key in a finding is masked');
+// run 64: thin-area probes (a language-named ask with the paste on the next lines; Python sort-None, [i + 1] in range(len()), counting into a missing key;
+// Go log-and-carry-on, <= len(); Rust use-after-move, literal index past the end; SQL = NULL, reversed BETWEEN)
+ok(isReviewAsk('review this python:\nfor i in range(len(xs)):\n    print(xs[i+1])') && codeOf('review this python:\nfor i in range(len(xs)):\n    print(xs[i+1])') === 'for i in range(len(xs)):\n    print(xs[i+1])', 'a language-named ask with the paste on the next lines is a review of those lines');
+ok(!isReviewAsk('here is python:\nfor i in range(3):\n    print(i)'), 'a paste without a review ask is not a review');
+for (const [lang, c, want] of [['python', 'sorted_items = items.sort()', 'sort-none@1'], ['python', 'for i in range(len(xs)):\n    print(xs[i+1])', 'range-next@2'], ['python', 'd = {}\nfor k in keys:\n    d[k] = d[k] + 1', 'dict-add-missing@3'],
+  ['go', 'data, err := os.ReadFile(name)\nif err != nil {\n    log.Println(err)\n}\nreturn string(data)', 'go-err-log-continue@2'],
+  ['go', 'for i := 0; i <= len(nums); i++ { total += nums[i] }', 'len-le-loop@1'],
+  ['rust', 'let s = String::from("hi"); let t = s; println!("{}", s);', 'rust-moved-use@1'],
+  ['rust', 'let v = vec![1, 2, 3]; println!("{}", v[10]);', 'rust-literal-index@1'],
+  ['sql', 'SELECT * FROM users WHERE email = NULL', 'null-compare@1'],
+  ['sql', 'SELECT * FROM users WHERE age BETWEEN 20 AND 10', 'between-reversed@1']])
+  ok(rules(c, lang).includes(want), want + ' in ' + lang + ': ' + c.slice(0, 60) + ' (got ' + rules(c, lang).join(',') + ')');
+for (const [lang, c] of [['python', 'items.sort()\nprint(items[0])'], ['python', 'for i, x in enumerate(xs):\n    print(x)'], ['python', 'd[k] = d.get(k, 0) + 1'],
+  ['go', 'if err != nil {\n    return err\n}'], ['go', 'for i := 0; i < len(nums); i++ { total += nums[i] }'],
+  ['rust', 'let n = 5; let m = n; println!("{}", n);'], ['rust', 'let v = vec![1, 2, 3]; println!("{}", v[2]);'],
+  ['sql', 'SELECT * FROM users WHERE email IS NULL'], ['sql', 'SELECT * FROM users WHERE age BETWEEN 10 AND 20']])
+  ok(!rules(c, lang).some((r) => /sort-none|range-next|dict-add-missing|go-err-log-continue|len-le-loop|rust-moved-use|rust-literal-index|null-compare|between-reversed/.test(r)), 'no finding in ' + lang + ': ' + c.slice(0, 60) + ' (got ' + rules(c, lang).join(',') + ')');
 // the pull-request review skips tests in every language the repo writes (their fixtures are bad code on purpose), and nothing else by accident
 for (const f of ['tools/ouroboros_test.py', 'tools/void_lens_test.py', 'tools/memory.test.mjs', 'tools/test_void.mjs', 'tools/skills_test.mjs', 'tools/tictactoe.test.mjs', 'tools/sub/helper_test.js', 'tools/test_glyphs.mjs'])
   ok(skippedInReview(f), 'a test file is not reviewed: ' + f);
@@ -324,6 +351,15 @@ for (const c of ['let best = null; if (best.t > 1) go();', 'let r = null; const 
 {
   const page = ['<p>hi</p>', '<textarea id="code">if (x = 5) {', '  el.innerHTML = name;', '}</textarea>', '<script>', 'if (y = 6) go();', '</script>', '<pre>eval(input)</pre>', '<pre class="a">', 'q = "SELECT " + id', '</pre><p>after</p>'];
   ok([...textLines(page)].join(',') === '2,3,4,8,9,10,11', 'text lines: ' + [...textLines(page)].join(','));
+}
+{ // conflict markers: a bug in any file, whatever its language; a lone ======= (a Markdown heading underline) only beside a start line
+  const { conflictMarkers } = await import('../void-live-deploy/lib/code-review.js');
+  const json = '[\n  {"a": 1},\n' + '<'.repeat(7) + ' HEAD\n  {"b": 2}\n' + '='.repeat(7) + '\n  {"c": 3}\n' + '>'.repeat(7) + ' origin/main\n]';
+  ok(conflictMarkers(json).map((c) => c.line).join(',') === '3,5,7', 'markers found on lines 3, 5 and 7 of a JSON ledger: ' + JSON.stringify(conflictMarkers(json)));
+  ok(rules(json.replace(/^\[|\]$/g, ''), 'javascript').filter((r) => r.startsWith('conflict-markers@')).length === 3, 'the rule flags all three marker lines as a bug in code too');
+  const md = 'Title\n' + '='.repeat(7) + '\n\ntext ' + '<'.repeat(7) + ' not at the start\n';
+  ok(!conflictMarkers(md).length && !rules(md, 'javascript').some((r) => r.startsWith('conflict-markers@')), 'a Markdown underline and a marker that does not start a line are left alone');
+  ok(conflictMarkers('>'.repeat(7) + '\n').length === 1 && !conflictMarkers('>'.repeat(8) + ' x\n').length, 'an end marker with no branch name counts; eight > is not git\'s');
 }
 console.log(bad ? bad + ' failed' : 'review: all passed');
 process.exit(bad ? 1 : 0);

@@ -6,12 +6,61 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const run = (args) => { const r = spawnSync(process.execPath, args, { cwd: resolve(here, '..'), encoding: 'utf8', timeout: 1800000 }); // 30 min: the full bench takes about 20 on a slow shared machine
   return { ok: r.status === 0, out: ((r.stdout || '') + (r.stderr || '')).trim().split('\n').filter((l) => !/ExperimentalWarning|trace-warnings/.test(l)) }; };
 const results = [];
-for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.mjs'], ['calendar', 'test_calendar.mjs'], ['glyphs', 'test_glyphs.mjs'], ['review', 'review.test.mjs'], ['figures', 'figures.test.mjs'], ['motorbody', 'motorbody.test.mjs'], ['incident', 'incident.test.mjs'], ['releasenotes', 'releasenotes.test.mjs'], ['intent', 'intent.test.mjs'], ['revert-target', 'revert-target.test.mjs'], ['status', 'status.test.mjs'], ['growth', 'growth.test.mjs'], ['growth-tree', 'growth-tree.test.mjs'], ['review-learn', 'review-learn.test.mjs'], ['take', 'take.test.mjs'], ['sorry', 'sorry.test.mjs'], ['voice', 'voice.test.mjs'], ['pr-ready', 'pr-ready.test.mjs'], ['review-api', 'review-api.test.mjs'], ['go', 'go.test.mjs'], ['monopoly', 'monopoly.test.mjs'], ['battleship', 'battleship.test.mjs'], ['poker', 'poker.test.mjs'], ['fireworks', 'fireworks.test.mjs'], ['connect4', 'connect4.test.mjs'], ['explainers', 'explainers.test.mjs'], ['learn', 'learn.test.mjs'], ['learn-draft', 'learn-draft.test.mjs'], ['automations', 'automations.test.mjs'], ['actions', 'actions.test.mjs'], ['ringer', 'ringer.test.mjs'], ['queue', 'queue.test.mjs'], ['actions-card', 'actions-card.test.mjs'], ['proposal', 'proposal.test.mjs'], ['memory-card', 'memory-card.test.mjs'], ['live', 'live.test.mjs'], ['draft', 'draft.test.mjs'], ['drafts', 'draft-check.mjs'], ['extension', 'test_extension.mjs']]) {
+// The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
+for (const [name, file] of [
+  ['fringe', 'fringe.mjs'],
+  ['skills', 'skills-check.mjs'],
+  ['calendar', 'test_calendar.mjs'],
+  ['glyphs', 'test_glyphs.mjs'],
+  ['review', 'review.test.mjs'],
+  ['figures', 'figures.test.mjs'],
+  ['motorbody', 'motorbody.test.mjs'],
+  ['incident', 'incident.test.mjs'],
+  ['releasenotes', 'releasenotes.test.mjs'],
+  ['intent', 'intent.test.mjs'],
+  ['revert-target', 'revert-target.test.mjs'],
+  ['status', 'status.test.mjs'],
+  ['growth', 'growth.test.mjs'],
+  ['growth-tree', 'growth-tree.test.mjs'],
+  ['review-learn', 'review-learn.test.mjs'],
+  ['take', 'take.test.mjs'],
+  ['sorry', 'sorry.test.mjs'],
+  ['voice', 'voice.test.mjs'],
+  ['pr-ready', 'pr-ready.test.mjs'],
+  ['review-api', 'review-api.test.mjs'],
+  ['go', 'go.test.mjs'],
+  ['monopoly', 'monopoly.test.mjs'],
+  ['battleship', 'battleship.test.mjs'],
+  ['poker', 'poker.test.mjs'],
+  ['fireworks', 'fireworks.test.mjs'],
+  ['connect4', 'connect4.test.mjs'],
+  ['explainers', 'explainers.test.mjs'],
+  ['learning', 'learning.test.mjs'],
+  ['learn', 'learn.test.mjs'],
+  ['learn-draft', 'learn-draft.test.mjs'],
+  ['learn-e2e', 'learn.e2e.test.mjs'],
+  ['automations', 'automations.test.mjs'],
+  ['actions', 'actions.test.mjs'],
+  ['ringer', 'ringer.test.mjs'],
+  ['queue', 'queue.test.mjs'],
+  ['actions-card', 'actions-card.test.mjs'],
+  ['services', 'services.test.mjs'],
+  ['proposal', 'proposal.test.mjs'],
+  ['memory-card', 'memory-card.test.mjs'],
+  ['told-me', 'told-me.test.mjs'],
+  ['memory', 'memory.test.mjs'],
+  ['live', 'live.test.mjs'],
+  ['draft', 'draft.test.mjs'],
+  ['drafts', 'draft-check.mjs'],
+  ['extension', 'test_extension.mjs'],
+  ['placement', 'placement.test.mjs'],
+]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
 // Every script parses, and no text file was re-encoded through a Windows code page (a merge did both to main once:
@@ -27,6 +76,14 @@ for (const [name, file] of [['fringe', 'fringe.mjs'], ['skills', 'skills-check.m
 // back replaced the real folder with a link to itself
 { const bad = spawnSync('git', ['ls-files', '--', 'node_modules', 'node_modules/*'], { cwd: resolve(here, '..'), encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
   results.push(['tracked', !bad.length, bad.length ? 'git tracks ' + bad.slice(0, 3).join(', ') + ': git rm --cached it (a worktree runs its own npm ci, never a link)' : 'no installed files tracked']); }
+// no conflict marker anywhere in the tree (#291 merged one into the growth ledger): these checks run on the merged head, so a
+// merge of main made after they ran is not covered; run them again after merging main, before the push
+{ const root = resolve(here, '..'), marked = [];
+  for (const f of spawnSync('git', ['ls-files'], { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20 }).stdout.split('\n').filter(Boolean)) {
+    let t = ''; try { t = readFileSync(resolve(root, f), 'utf8'); } catch (_) { continue; }
+    if (t.length < 5e6 && !t.includes('\0')) for (const c of conflictMarkers(t)) marked.push(f + ':' + c.line);
+  }
+  results.push(['markers', !marked.length, marked.length ? 'conflict markers at ' + marked.slice(0, 5).join(', ') + ': settle the merge (node tools/merge-main.mjs) and remove them' : 'no conflict markers in the tree']); }
 // the bench and the deploy serve void-live-deploy/index.html: an edit to void.html that was not copied there is tested stale, silently
 { const read = (f) => readFileSync(resolve(here, '..', f), 'utf8').replace(/\r\n/g, '\n'), src = read('void.html');
   const stale = ['void-live-deploy/index.html', 'void-live-deploy/void.html'].filter((f) => read(f) !== src);

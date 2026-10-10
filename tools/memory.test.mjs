@@ -7,6 +7,7 @@ import * as api from '../void-live-deploy/functions/api/memory.js';
 import { cleanRecord, MEMBER_MAX } from '../void-live-deploy/lib/memory-core.js';
 import { ensureTables, newSession } from '../void-live-deploy/lib/void-me.js';
 import { noteRecord, noteId } from '../void-live-deploy/skills/memory.js';
+import { newKey, keyHash } from '../void-live-deploy/lib/review-api.js';
 
 const TOKEN = 'owner-token-for-tests-1234567890';
 function d1() {
@@ -253,4 +254,46 @@ test('remember that: a member keeps a plain line in their own memory, recalls it
   for (let at = 0; at < MEMBER_MAX - 1; at += 100) await as(bob, api.onRequestPost, env, { method: 'POST', body: { records: Array.from({ length: Math.min(100, MEMBER_MAX - 1 - at) }, (_, i) => rec({ id: 'p' + (at + i), name: 'proj' + (at + i) })) } });
   assert.equal((await keep(bob, 'the five hundredth thing')).status, 200);
   assert.equal((await keep(bob, 'one more thing than allowed')).status, 413);
+});
+
+// ---- Ouroboros for members: a machine pushes with the member's Void key (vr1.…, the paid Void key that also does code review)
+async function voidKey(env, userId, tier = 'paid') {
+  await ensureTables(env);
+  const key = newKey();
+  await env.DB.prepare('INSERT INTO void_review_keys (hash, user_id, prefix, at) VALUES (?, ?, ?, ?)').bind(await keyHash(key), userId, key.slice(0, 10), new Date().toISOString()).run();
+  if (tier && !(await env.DB.prepare('SELECT 1 AS x FROM void_accounts WHERE user_id = ?').bind(userId).first())) await env.DB.prepare('INSERT INTO void_accounts (user_id, tier, sale_id, subscription_id, updated) VALUES (?, ?, ?, NULL, ?)').bind(userId, tier, 'sale-' + userId, new Date().toISOString()).run();
+  return key;
+}
+const push = (env, token, records) => as(token, api.onRequestPost, env, { method: 'POST', body: { source: 'ouroboros', records } });
+
+test('ouroboros for members: the owner\'s push is unchanged; a member\'s key lands in their own scope only; a free account\'s key, an unknown key and no key are refused in plain words', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const annKey = await voidKey(env, 'annAnnAnnAnnAnnAnnAnn'), bobKey = await voidKey(env, 'bobBobBobBobBobBobBob'), freeKey = await voidKey(env, 'freeFreeFreeFreeFreeFr', 'free');
+  // the owner, as before
+  assert.deepEqual(await (await call(api.onRequestPost, env, { method: 'POST', body: { source: 'ouroboros', records: [rec({ id: 'owner-proj', name: 'ownerproj', links: ['rust'] })] } })).json(), { saved: 1, rejected: 0 });
+  // a member's machine pushes with their key; the same record id as another member's
+  const ann = await push(env, annKey, [rec({ id: 'shared', name: 'annsapp', links: ['react'], body: '# annsapp\nreact app' })]);
+  assert.equal(ann.status, 200); assert.deepEqual(await ann.json(), { saved: 1, rejected: 0 });
+  assert.equal((await push(env, bobKey, [rec({ id: 'shared', name: 'bobsapp', links: ['react'] })])).status, 200);
+  const askBy = (token, q) => (token === 'owner' ? call(api.onRequestGet, env, { url: 'https://x/api/memory?ask=' + encodeURIComponent(q) }) : as(token, api.onRequestGet, env, { url: 'https://x/api/memory?ask=' + encodeURIComponent(q) })).then((r) => r.json());
+  const a = await askBy(annKey, 'what did I build with react');
+  assert.deepEqual(a.matches, ['shared']); assert.match(a.answer, /annsapp/); assert.ok(!/bobsapp|ownerproj/.test(a.answer), 'the key reads back only that member\'s own');
+  assert.deepEqual((await askBy('owner', 'what did I build with react')).matches, [], 'the owner\'s memory holds none of the members\' rows');
+  assert.deepEqual((await askBy('owner', 'rust')).matches, ['owner-proj']);
+  // the read-back a push does (exact lookup by id, with the hash) works with the key and returns that member's row
+  const back = await (await as(annKey, api.onRequestGet, env, { url: 'https://x/api/memory?id=shared' })).json();
+  assert.equal(back.memory[0].name, 'annsapp'); assert.match(back.memory[0].body_sha256, /^[0-9a-f]{64}$/);
+  // refused, in plain words
+  const free = await push(env, freeKey, [rec({ id: 'x' })]); assert.equal(free.status, 403); assert.match(await free.text(), /owner and paid members: this key belongs to an account that is not on paid Void\. Make one at https:\/\/a-to-mind\.com\/code-review\/#pro/);
+  const unknown = await push(env, newKey(), [rec({ id: 'x' })]); assert.equal(unknown.status, 403); assert.match(await unknown.text(), /Void does not know this key/);
+  assert.equal((await push(env, 'not-a-key-at-all', [rec({ id: 'x' })])).status, 401);
+  assert.equal((await call(api.onRequestPost, env, { auth: false, method: 'POST', body: { records: [rec({ id: 'x' })] } })).status, 401);
+  assert.deepEqual((await askBy(annKey, 'react')).matches, ['shared'], 'a refused push wrote nothing');
+});
+
+test('ouroboros for members: the 500-project cap applies to a push by key', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() }; const key = await voidKey(env, 'annAnnAnnAnnAnnAnnAnn');
+  for (let at = 0; at < MEMBER_MAX; at += 100) assert.equal((await push(env, key, Array.from({ length: 100 }, (_, i) => rec({ id: 'p' + (at + i), name: 'proj' + (at + i) })))).status, 200);
+  const over = await push(env, key, [rec({ id: 'one-more', name: 'onemore' })]);
+  assert.equal(over.status, 413); assert.match(await over.text(), /full/);
 });

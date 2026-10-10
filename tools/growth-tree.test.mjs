@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { layout, chronological, midpoint, KIND_COLOR, TIP_RADIUS, PIPE, TRUNK } from '../void-live-deploy/skills/growth-tree.js';
+import { layout, chronological, midpoint, timeline, season, leafColor, KIND_COLOR, TIP_RADIUS, PIPE, TRUNK } from '../void-live-deploy/skills/growth-tree.js';
 
 const KINDS = ['grow', 'build', 'fix', 'idea', 'finding', 'retire'];
 // 40 entries over 8 days, out of order in the file (the ledger allows that), plus three it must skip
@@ -91,5 +91,75 @@ test('the real ledger makes a whole tree: a branch for every entry, a few metres
   assert.ok(R.height > 2 && R.height < 8 && R.width < 5, R.height + ' x ' + R.width);
   assert.ok(R.branches.every((b) => [...b.start, ...b.end, b.radius].every(Number.isFinite)));
   assert.ok(Math.max(...R.branches.map((b) => b.depth)) <= 8);
-  assert.deepEqual(layout([]), { branches: [], height: 0, width: 0 });
+  assert.deepEqual(layout([]), { branches: [], ghosts: [], height: 0, width: 0 });
+});
+
+test('leaves are real leaves, coloured by the season of their date; the kind stays on the branch for its berry', () => {
+  assert.deepEqual(['2026-04-02T00:00:00Z', '2026-07-01T00:00:00Z', '2026-09-10T00:00:00Z', '2026-10-05T00:00:00Z', '2026-11-20T00:00:00Z', '2026-01-15T00:00:00Z'].map(season), ['spring', 'summer', 'turning', 'autumn', 'late', 'winter']);
+  for (const b of T.branches) {
+    assert.ok(/^#[0-9a-f]{6}$/.test(b.leaf));
+    assert.equal(leafColor(b.at, 0), leafColor(b.at, 0), 'the same day, the same palette');
+    assert.ok(!Object.values(KIND_COLOR).includes(b.leaf), 'no leaf in a kind colour (no blue or purple leaves)');
+  }
+  const octo = T.branches.filter((b) => season(b.at) === 'autumn').map((b) => b.leaf);
+  assert.ok(new Set(octo).size > 1, 'an autumn crown is mottled, not one flat colour');
+});
+
+test('ghosts: the open tracks and the claim being built are faint shoots off the real wood, and change nothing about it', () => {
+  const tracks = [{ name: 'Living action figures', last: '2026-10-07' }, { name: 'Planet restoration', last: '2026-10-07' }];
+  const building = { what: 'the time slider', at: '2026-10-10T02:00:00Z', item: 'Growth you can watch' };
+  const G = layout(FIXTURE, { tracks, building });
+  assert.deepEqual(G.branches, T.branches, 'the real tree is exactly the same with or without them');
+  assert.deepEqual(G.ghosts.map((g) => g.kind + ':' + g.what), ['track:Living action figures', 'track:Planet restoration', 'building:the time slider']);
+  for (const g of G.ghosts) {
+    const p = G.branches[g.parent];
+    assert.ok(p && !p.children.includes(g), 'grows from a real branch but is never one of its children');
+    const along = [0, 1, 2].reduce((s, k) => s + (g.start[k] - p.start[k]) * p.dir[k], 0) / p.length;
+    assert.ok(along > 0.3 && along < 1 && g.radius < TIP_RADIUS);
+  }
+  assert.deepEqual(layout(FIXTURE, { tracks, building }).ghosts, G.ghosts, 'they stay put');
+  assert.equal(G.ghosts[2].item, 'Growth you can watch');
+  assert.deepEqual(layout([], { tracks, building }).ghosts, [], 'no tree, nothing to grow from');
+});
+
+test('the time slider: the first stop is the first entry alone, then the end of every day to today; the last stop is the whole tree', () => {
+  const now = Date.parse('2026-10-12T08:00:00Z'), stops = timeline(FIXTURE, now);
+  assert.equal(stops[0].count, 1);
+  assert.equal(layout(FIXTURE, { until: stops[0].until }).branches.length, 1);
+  assert.equal(stops[0].until, chronological(FIXTURE)[0].e.at);
+  assert.deepEqual(stops.slice(1).map((s) => s.day), ['2026-10-01', '2026-10-02', '2026-10-03', '2026-10-04', '2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08', '2026-10-09', '2026-10-10', '2026-10-11', '2026-10-12']);
+  for (const s of stops) assert.equal(layout(FIXTURE, { until: s.until }).branches.length, s.count);
+  assert.equal(stops[stops.length - 1].count, valid.length);
+  for (let i = 1; i < stops.length; i++) assert.ok(stops[i].count >= stops[i - 1].count, 'the tree only grows');
+  assert.deepEqual(timeline([]), []);
+});
+
+test('self.json carries the think tank\'s tracks and the claim being built now (tools/self-context.mjs)', async () => {
+  const { readTracks, readBuilding } = await import('./self-context.mjs');
+  const index = '| Track | File | Role |\n| --- | --- | --- |\n| Living action figures | `tracks/a.md` | Joints. Last advanced 2026-10-07 20:14 (arm). |\n| Planet restoration | `tracks/b.md` | Air. Last advanced 2026-10-06 (coral). |\n';
+  assert.deepEqual(readTracks(index), [{ name: 'Living action figures', last: '2026-10-07' }, { name: 'Planet restoration', last: '2026-10-06' }]);
+  const frontier = '## 3. Growth you can watch\n- **claim:** claude 2026-10-10: the `tree`, **shipped**\n## 4. A world\n- **claim:**\n## 5. Games\n- **claim:** claude 2026-10-09: self-play\n   - **claim (b):** grok 2026-10-10: a second piece\n';
+  // without history, the latest date wins, then the lowest line; with git blame times, the line written last wins
+  assert.deepEqual(readBuilding(frontier), { at: '2026-10-10T00:00:00Z', date: '2026-10-10', by: 'grok', item: 'Games', what: 'a second piece' });
+  assert.deepEqual(readBuilding(frontier, { 2: '2026-10-10T05:00:00Z', 7: '2026-10-10T01:00:00Z' }), { at: '2026-10-10T05:00:00Z', date: '2026-10-10', by: 'claude', item: 'Growth you can watch', what: 'the tree, shipped' });
+  assert.equal(readBuilding('## 1. x\n- **claim:**\n'), null);
+});
+
+test('the week: entries since 7 days ago, grouped by kind, in plain words, newest first; the tree\'s week-ago stop', async () => {
+  const { weekSummary, plainly } = await import('../void-live-deploy/skills/growth-tree.js');
+  const now = Date.parse('2026-10-10T12:00:00Z'), at = (d) => new Date(now - d * 86400000).toISOString().replace(/\.\d+Z$/, 'Z');
+  const L = [{ at: at(9), kind: 'grow', what: 'Chess' }, { at: at(5), kind: 'grow', what: 'Backgammon, the board game: you can play it now' }, { at: at(3), kind: 'build', what: 'The `weather` card: hourly rain' },
+    { at: at(2), kind: 'grow', what: 'Ringer marbles. Flick and knock them out' }, { at: at(1), kind: 'fix', what: 'the timer (it stopped at 59 s)' }, { at: at(1), kind: 'idea', what: 'a sky that follows the hour' }];
+  const w = weekSummary(L, now);
+  assert.equal(w.since, '2026-10-03'); assert.equal(w.until, '2026-10-03T12:00:00Z'); assert.equal(w.total, 5);
+  assert.deepEqual(w.groups.map((g) => [g.kind, g.count, g.label]), [['grow', 2, 'new things I can do'], ['build', 1, 'thing I do better'], ['fix', 1, 'thing I fixed'], ['idea', 1, 'idea']]);
+  assert.deepEqual(w.groups[0].items, ['Ringer marbles', 'Backgammon, the board game'], 'newest first, each its first plain phrase');
+  assert.equal(w.groups[1].items[0], 'The weather card', 'no Markdown');
+  assert.equal(plainly('the timer (it stopped at 59 s)'), 'the timer (it stopped at 59 s)', 'too short to cut stays whole');
+  assert.equal(plainly('CLOUDFLARE_API_TOKEN_2 is used now'), 'CLOUDFLARE_API_TOKEN_2 is used now', 'names keep their underscores');
+  assert.match(w.text, /^Since 2026-10-03 \(the last 7 days\) I changed 5 things: 2 new things I can do, 1 thing I do better, 1 thing I fixed, 1 idea\. New things I can do: Ringer marbles; Backgammon, the board game\. Thing I do better: The weather card\. Thing I fixed: the timer \(it stopped at 59 s\)\.$/);
+  assert.ok(!/Chess/.test(w.text), 'older than a week stays out');
+  assert.equal(weekSummary(L.slice(0, 1), now).text, 'Nothing new in my growth ledger since 2026-10-03.');
+  const many = weekSummary(Array.from({ length: 9 }, (_, i) => ({ at: at(1 + i * 0.1), kind: 'grow', what: 'thing number ' + i })), now);
+  assert.match(many.text, /\(and 5 more\)/);
 });
