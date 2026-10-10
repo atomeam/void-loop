@@ -1,0 +1,14 @@
+# void-share: the Durable Object host for "invite someone" (frontier #11). The Pages project a-to-mind cannot define a
+# Durable Object itself; it binds to this Worker's ShareRoom class (void-live-deploy/wrangler.toml, SHARE).
+# Deploy: cd share-worker && npx wrangler deploy   (needs a token with Workers Scripts: Edit; the Pages-only deploy token cannot)
+name = "void-share"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+[[durable_objects.bindings]]
+name = "ROOMS"
+class_name = "ShareRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ShareRoom"] # SQLite-backed: the class the Workers free plan allows (nothing is stored in it)
