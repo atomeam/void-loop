@@ -152,7 +152,7 @@ async function run(text, api) {
   if (existing) { if (q.fresh) existing.state = freshState(); api.stage.render(); return 'checkers'; }
   const phone = Math.min(innerWidth, innerHeight) < 560, w = phone ? Math.min(innerWidth - 20, 420) : 560;
   const both = !phone && innerWidth >= w + 340 ? w + 320 : w; // the board and its separate card side by side when they fit
-  api.summon('checkers', { state: freshState(), x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 48 });
+  api.summon('checkers', { state: freshState(), hold: true, x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 48 });
   api.say('Checkers · you are dark and move first · tap a man, then where it lands');
   return 'checkers';
 }

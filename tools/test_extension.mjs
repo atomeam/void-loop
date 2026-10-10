@@ -116,9 +116,9 @@ await V.fill('#input', 'days until new year');
 await V.press('#input', 'Enter');
 await V.waitForSelector('.vput', { state: 'visible', timeout: 10000 }).catch(() => {});
 await page.evaluate(() => { const t = document.getElementById('reply'); t.value = ''; t.focus(); });
-// pressed directly, as the draft check does: the tab card above has grown (draft buttons, the B3 step box) and can lie over
-// the countdown card, so a pointer click may land on the wrong card; what is tested is the button's own effect
-const vputErr = await V.evaluate(() => { const b = document.querySelector('.vput'); if (!b) return 'no button'; b.click(); return ''; });
+// a real click, as a person makes it: the stage keeps the countdown card clear of the tab card (lib/placement.js). force only
+// skips Playwright's wait for the card to hold still (cards tilt toward the pointer); the press and release are real mouse events
+const vputErr = await V.click('.vput', { timeout: 5000, force: true }).then(() => '', (e) => String(e.message).split('\n')[0]);
 const vputs = await V.evaluate(() => Array.from(document.querySelectorAll('.vput')).map((b) => ({ shown: !!b.offsetParent, in: (b.parentElement.className || '') })));
 await page.waitForFunction(() => document.getElementById('reply').value.length > 0, null, { timeout: 5000 }).catch(() => {});
 const box2 = await page.evaluate(() => document.getElementById('reply').value);
@@ -135,7 +135,7 @@ check('local only: no request anywhere carried the page text or the draft', leak
 // the card flags what left and for what, and the one request carried the title, address and selection, nothing else of the page
 await V.evaluate(() => { const t = document.querySelector('.tab-draft'); t.value = 'keep it short'; t.dispatchEvent(new Event('input', { bubbles: true })); });
 const beforeDraft = out.length;
-await V.evaluate(() => document.querySelector('.tab-ask-summary').click()); // the countdown card above lifts over the tab card, so a pointer click would land on its canvas
+await V.click('.tab-ask-summary', { force: true }); // a real click: the countdown card no longer lands over the tab card (lib/placement.js)
 await V.waitForFunction(() => /from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
 const dSaid = await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '');
 const dBox = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
@@ -166,8 +166,9 @@ await V.waitForFunction(() => /not on your list/.test((document.querySelector('.
 check('B3: a site not on the allow list gets no card, and nothing on the page changes',
   !(await cardOn()) && /not on your list/.test(await actSaid()) && (await page.evaluate(() => document.getElementById('reply').value)) === 'before' && records.length === 0, { said: await actSaid(), records });
 
-// a button in the panel's own chrome, pressed until what it does has happened (headless Chromium drops some mouse events
-// on extension pages; the button's own click handler is what is under test)
+// a button in the panel's own chrome, pressed until what it does has happened. Not the stage overlap (that was fixed in
+// lib/placement.js and those checks click for real): with a real mouse here, about 1 run in 4 a click on this extension tab
+// never reaches its handler in headless Chromium (8 runs, 2026-10-10), so the button's own click handler is what is tested
 const press = async (sel, landed) => { for (let i = 0; i < 5; i++) { await panel.evaluate((q) => document.querySelector(q).click(), sel); for (let j = 0; j < 10; j++) { if (await landed()) return true; await panel.waitForTimeout(100); } } return false; };
 await panel.click('#sites summary');
 await panel.waitForSelector('#sites .add:not([hidden])', { timeout: 5000 }).catch(() => {});

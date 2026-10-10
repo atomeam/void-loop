@@ -84,7 +84,7 @@ async function run(text, api) {
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); }
   else {
     const phone = Math.min(innerWidth, innerHeight) < 560, w = phone ? Math.min(innerWidth - 20, 380) : 440, both = phone ? w : w + 280;
-    api.summon('rack', { x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 60 });
+    api.summon('rack', { hold: true, x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 60 });
   }
   api.say(q.wanted ? q.wanted + ' isn’t here yet · your ask is noted · these are ready: tap a box' : HINT);
   return 'rack';
