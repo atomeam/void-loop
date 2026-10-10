@@ -281,7 +281,7 @@
   },
   {
     "ask": "what is the moon phase tonight",
-    "want": "skill:util"
+    "want": "skill:moontonight"
   },
   {
     "ask": "how many mb in a gb",
@@ -1208,7 +1208,7 @@
   },
   {
     "ask": "what phase is the moon",
-    "want": "skill:util"
+    "want": "skill:moontonight"
   },
   {
     "ask": "how do you say thank you in japanese",
@@ -2188,7 +2188,7 @@
   },
   {
     "ask": "what is the moon phase",
-    "want": "skill:util"
+    "want": "skill:moontonight"
   },
   {
     "ask": "emoji for happy",
@@ -2200,7 +2200,7 @@
   },
   {
     "ask": "is it a full moon tonight",
-    "want": "skill:util"
+    "want": "skill:moontonight"
   },
   {
     "ask": "what season is it",
@@ -3848,7 +3848,7 @@
   },
   {
     "ask": "when is the next full moon",
-    "want": "skill:util|calc",
+    "want": "skill:moontonight",
     "says": "\\d"
   },
   {
@@ -5522,7 +5522,7 @@
   {"ask": "mystery moon", "want": "skill:moon"},
   {"ask": "moon phases", "want": "skill:moon"},
   {"ask": "explain tonight's moon", "want": "skill:moon"},
-  {"ask": "moon phase tonight", "want": "skill:util"},
+  {"ask": "moon phase tonight", "want": "skill:moontonight"},
   {"ask": "my automations", "want": "skill:automations"},
   {"ask": "show my automations", "want": "skill:automations"},
   {"ask": "automations", "want": "skill:automations"},
@@ -5632,5 +5632,70 @@
   {"ask": "give me a goal with this", "want": "skill:goal"},
   {"ask": "challenge me with this", "want": "skill:goal"},
   {"ask": "set me a challenge with the gears", "want": "skill:goal"},
-  {"ask": "can you make it do something", "want": "skill:goal"}
+  {"ask": "can you make it do something", "want": "skill:goal"},
+  {"ask": "sky", "want": "skill:sky"},
+  {"ask": "show me the sky", "want": "skill:sky"},
+  {"ask": "what's in the sky tonight", "want": "skill:sky"},
+  {"ask": "show me the stars", "want": "skill:sky"},
+  {"ask": "look up", "want": "skill:sky"},
+  {"ask": "sky above London", "want": "skill:sky"},
+  {"ask": "night sky", "want": "skill:sky"},
+  {"ask": "sky now", "want": "skill:sky"},
+  {"ask": "planetarium", "want": "skill:sky"},
+  {"ask": "what do i see in the night sky", "want": "skill:sky"},
+  {"ask": "moon tonight", "want": "skill:moontonight"},
+  {"ask": "what's the moon tonight", "want": "skill:moontonight"},
+  {"ask": "how much of the moon is lit tonight", "want": "skill:moontonight"},
+  {"ask": "moonrise tonight", "want": "skill:moontonight"},
+  {"ask": "next full moon", "want": "skill:moontonight"},
+  {"ask": "next first quarter moon", "want": "skill:moontonight"},
+  {"ask": "moon phase today", "want": "skill:moontonight"},
+  {"ask": "current moon phase", "want": "skill:moontonight"},
+  {"ask": "next full moon in Oslo", "want": "skill:moontonight"},
+  {"ask": "sunrise and sunset", "want": "skill:suntimes"},
+  {"ask": "what time is sunrise and sunset", "want": "skill:suntimes"},
+  {"ask": "how long is the day today", "want": "skill:suntimes"},
+  {"ask": "length of day", "want": "skill:suntimes"},
+  {"ask": "when does the sun come up", "want": "skill:suntimes"},
+  {"ask": "sunrise sunset", "want": "skill:suntimes"},
+  {"ask": "aurora forecast", "want": "skill:aurora-tonight"},
+  {"ask": "can i see the northern lights", "want": "skill:aurora-tonight"},
+  {"ask": "will i see the aurora tonight", "want": "skill:aurora-tonight"},
+  {"ask": "what is the kp index right now", "want": "skill:aurora-tonight"},
+  {"ask": "is there an aurora tonight", "want": "skill:aurora-tonight"},
+  {"ask": "aurora forecast for Tromsø", "want": "skill:aurora-tonight"},
+  {"ask": "will there be an aurora tonight", "want": "skill:aurora-tonight"},
+  {"ask": "aurora alert", "want": "skill:aurora-tonight"},
+  {"ask": "what's that constellation", "want": "skill:constellation"},
+  {"ask": "constellations tonight", "want": "skill:constellation"},
+  {"ask": "where is Orion", "want": "skill:constellation"},
+  {"ask": "find the southern cross", "want": "skill:constellation"},
+  {"ask": "is cassiopeia visible tonight", "want": "skill:constellation"},
+  {"ask": "where is ursa major", "want": "skill:constellation"},
+  {"ask": "when can i see lyra", "want": "skill:constellation"},
+  {"ask": "identify that constellation", "want": "skill:constellation"},
+  {"ask": "meteor showers this month", "want": "skill:meteors"},
+  {"ask": "when is the next meteor shower", "want": "skill:meteors"},
+  {"ask": "geminids meteor shower", "want": "skill:meteors"},
+  {"ask": "are there any meteor showers tonight", "want": "skill:meteors"},
+  {"ask": "when is the leonid meteor shower", "want": "skill:meteors"},
+  {"ask": "can i see meteors tonight", "want": "skill:meteors"},
+  {"ask": "are there meteor showers this week", "want": "skill:meteors"},
+  {"ask": "quadrantids peak", "want": "skill:meteors"},
+  {"ask": "next eclipse", "want": "skill:eclipse"},
+  {"ask": "next lunar eclipse", "want": "skill:eclipse"},
+  {"ask": "upcoming eclipses", "want": "skill:eclipse"},
+  {"ask": "next total lunar eclipse", "want": "skill:eclipse"},
+  {"ask": "solar eclipse 2026", "want": "skill:eclipse"},
+  {"ask": "when is the next annular eclipse", "want": "skill:eclipse"},
+  {"ask": "eclipse 2027", "want": "skill:eclipse"},
+  {"ask": "next eclipse of the moon", "want": "skill:eclipse"},
+  {"ask": "view a gaussian splat", "want": "skill:splat"},
+  {"ask": "open a splat file", "want": "skill:splat"},
+  {"ask": "splat viewer", "want": "skill:splat"},
+  {"ask": "show me a splat", "want": "skill:splat"},
+  {"ask": "load a 3dgs scan", "want": "skill:splat"},
+  {"ask": "open a .splat file", "want": "skill:splat"},
+  {"ask": "gaussian splatting viewer", "want": "skill:splat"},
+  {"ask": "view a splat scan", "want": "skill:splat"}
 ]

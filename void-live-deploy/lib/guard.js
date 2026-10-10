@@ -13,6 +13,7 @@ export const LIMITS = {
   answer: { rpm: 30, body: 20000 }, // /api/answer also keeps its own tighter 12 a minute for model calls
   miss: { rpm: 30, body: 1000 },
   misses: { rpm: 30, body: 0 },
+  aurora: { rpm: 30, body: 0 }, // GET only, no input, edge-cached 15 min: the most a stranger can do is read a number
   routes: { rpm: 30, body: 0 }, // owner-only: the router's decisions (GET)
   earnings: { rpm: 30, body: 0 },
   queue: { rpm: 60, body: 4000 },
@@ -32,6 +33,7 @@ export const LIMITS = {
   review: { rpm: 60, body: 70000 }, // Void's code review API (lib/review-api.js): the instant checks free, the closer read with a Pro key
   reflect: { rpm: 30, body: 2000 }, // Void's voice: public GET of its reflections, owner POST asks it what it thinks (lib/voice.js)
   automations: { rpm: 60, body: 2200000 }, // owner-only: Void's own automations; a pull-request rule carries up to 20 files of 100 KB
+  where: { rpm: 20, body: 0 }, // the connection's own coarse place (functions/api/where.js): GET, no input, never cached
   hook: { rpm: 60, body: 64000 },
   actions: { rpm: 60, body: 4000 },
   watch: { rpm: 30, body: 8000 }, // the owner's or a paid member's standing watches (functions/api/watch.js) // owner-only: the execution record (lib/actions.js); GET reads it, POST writes an extension.* record (B3); nothing here takes an action // webhooks into an automation (functions/api/hook/[id].js); MAX_EVENT in lib/automations.js
