@@ -79,6 +79,27 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   return true;
 });
 
+// B3: one step you said yes to in the panel's card, on the tab you last pointed Void at, and only when that site is on your
+// allow list (chrome.storage.local "allow", hosts, empty until you add one in the panel). The panel checks the list before it
+// shows the card; this checks it again before anything runs, so nothing but the list and your yes decides.
+const hostOf = (u) => { try { return new URL(u).host; } catch (_) { return ''; } };
+chrome.runtime.onMessage.addListener((msg, sender, reply) => {
+  if (sender.id !== chrome.runtime.id || !msg || msg.type !== 'act' || !msg.step) return;
+  (async () => {
+    const { tab } = await chrome.storage.session.get('tab');
+    const { allow = [] } = await chrome.storage.local.get('allow');
+    if (!tab || tab.tabId == null) return reply({ ok: false, why: 'no-tab' });
+    const host = hostOf(tab.url);
+    if (!host || !allow.includes(host) || host !== msg.host) return reply({ ok: false, why: 'not-allowed' });
+    const step = { action: msg.step.action, label: String(msg.step.label || '').slice(0, 120), text: String(msg.step.text || '').slice(0, 20000) };
+    try {
+      const [r] = await chrome.scripting.executeScript({ target: { tabId: tab.tabId }, func: voidAct, args: [step] });
+      reply((r && r.result) || { ok: false, why: 'no-result' });
+    } catch (e) { reply({ ok: false, why: 'no-access' }); }
+  })();
+  return true;
+});
+
 chrome.omnibox.setDefaultSuggestion({ description: 'Ask Void: %s' });
 chrome.omnibox.onInputEntered.addListener((text, disposition) => {
   const url = VOID + '?q=' + encodeURIComponent(text.trim());
