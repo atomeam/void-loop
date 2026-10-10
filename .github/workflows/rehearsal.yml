@@ -1,0 +1,25 @@
+# The commercial chain rehearsed on the deployed site (tools/rehearsal.mjs): started by hand, never on a schedule.
+# Input: the id of a pre-seeded handoff row standing in for the buyer's reply (HANDOFF_TOKEN is not a repo secret,
+# so the row is seeded through D1 first). The log is the evidence: the deployed SHA and each step's observed record.
+name: rehearsal
+on:
+  workflow_dispatch:
+    inputs:
+      handoff_id:
+        description: the seeded handoff id (32 hex)
+        required: true
+permissions: {}
+concurrency: rehearsal
+jobs:
+  rehearse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: the chain, live
+        env:
+          READ_TOKEN: ${{ secrets.READ_TOKEN }}
+        run: node tools/rehearsal.mjs "${{ inputs.handoff_id }}"

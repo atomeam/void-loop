@@ -15,7 +15,7 @@
       "what": { "type": "string", "minLength": 1, "maxLength": 4000, "description": "What changed, in plain words." },
       "ref": { "type": "string", "pattern": "^https://", "description": "Optional link: the PR, commit or page." },
       "from": { "type": "string", "description": "Optional: where a backfilled entry was copied from." },
-      "asked": { "type": "string", "minLength": 1, "description": "Optional: the ask of Void's this answers, word for word (domains/void.voice.md); tools/reflect.mjs leaves an answered ask out of the current list." }
+      "asked": { "type": "string", "minLength": 1, "description": "Optional: the id of the ask of Void's this answers (ask-YYYYMMDD-HHMM-n, shown in domains/void.voice.md; the ask's exact words also match, for older entries); tools/reflect.mjs leaves an answered ask out of the current list." }
     }
   }
 }
