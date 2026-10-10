@@ -55,10 +55,21 @@ function drawFlat(cv, model, angleDeg) {
   }
 }
 
-function download(model) {
-  const blob = new Blob([F.stl(model)], { type: 'model/stl' }), a = document.createElement('a');
+function download(model, buf) {
+  const blob = new Blob([buf], { type: 'model/stl' }), a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = fileName(model.key);
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+/** The one way a forged thing goes to print (the card's button and "print it"): its STL is written, read back and held to
+ *  the model (forge-rules.js verifyStl); only a file that passes downloads, and a failing one is refused with the reason. */
+export function printOrRefuse(model, say, verify = F.verifyStl) {
+  const buf = F.stl(model), v = verify(buf, model);
+  if (!v.ok) { say('Not printed: the ' + model.label.toLowerCase() + '\'s file did not pass its check · ' + v.problems.join(' · ')); return false; }
+  download(model, buf);
+  const pc = F.printCheck(model);
+  say('Checked and downloading ' + fileName(model.key) + ' · ' + v.triangles.toLocaleString('en') + ' facets, watertight, fits a ' + F.BED_MM + ' mm bed · ' + dims(model.size) + ' · about ' + pc.grams + ' g in solid PLA'
+    + (pc.supports ? ' · print with supports (it leans out on ' + pc.overhangPct + '% of its surface)' : ' · no supports needed') + ' · open it in any slicer');
+  return true;
 }
 
 function mount(th, stageApi) {
@@ -79,7 +90,7 @@ function mount(th, stageApi) {
   const btn = (label, cls, fn, aria) => { const b = stop(document.createElement('button')); b.type = 'button'; b.className = 'g-btn ' + cls; b.textContent = label; if (aria) b.setAttribute('aria-label', aria); b.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); return b; };
   const turn = (d) => { th.angle = ((th.angle || 0) + d + 360) % 360; drawFlat(cv, model, th.angle); if (stageApi.save) stageApi.save(); };
   row.append(btn('⟲', 'forge-left', () => turn(-30), 'turn it left'), btn('⟳', 'forge-right', () => turn(30), 'turn it right'),
-    btn('Print it (STL)', 'g-primary forge-print', () => download(model), 'download an STL of the ' + model.label.toLowerCase()));
+    btn('Print it (STL)', 'g-primary forge-print', () => printOrRefuse(model, (line) => { facts.textContent = line; }), 'check and download an STL of the ' + model.label.toLowerCase()));
   const note = document.createElement('div'); note.className = 'g-rules'; note.textContent = 'Millimetres, Z up. Open the STL in any slicer (Cura, PrusaSlicer, Bambu Studio).';
   el.append(cv, facts, row, note);
   drawFlat(cv, model, th.angle || 0);
@@ -95,10 +106,7 @@ async function run(text, api) {
   if (q.print) {
     const sel = api.stage.selected && api.stage.selected(), th = forged.find((t) => t.id === sel) || forged[forged.length - 1];
     if (!th) { api.say('Nothing forged to print yet · say "make me a rocket" (or a vase, a bottle, a table, a snowman, a lighthouse, a teapot, a house, a sailboat, a tree)'); return 'forge'; }
-    const model = F.build(th.key);
-    download(model);
-    const pc = F.printCheck(model);
-    api.say('Downloading ' + fileName(th.key) + ' · ' + dims(model.size) + ' · about ' + pc.grams + ' g in solid PLA' + (pc.supports ? ' · print with supports (it leans out on ' + pc.overhangPct + '% of its surface)' : ' · no supports needed') + ' · open it in your slicer');
+    printOrRefuse(F.build(th.key), (line) => api.say(line));
     return 'forge';
   }
   const model = F.build(q.make);
