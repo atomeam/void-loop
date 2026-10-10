@@ -14,7 +14,8 @@
       "kind": { "enum": ["grow", "build", "fix", "retire", "idea", "finding"], "description": "grow: a new thing Void can do. build: an improvement to one. fix: something broken now works. retire: something removed or folded into Void. idea / finding: from the idea stream, not yet built." },
       "what": { "type": "string", "minLength": 1, "maxLength": 4000, "description": "What changed, in plain words." },
       "ref": { "type": "string", "pattern": "^https://", "description": "Optional link: the PR, commit or page." },
-      "from": { "type": "string", "description": "Optional: where a backfilled entry was copied from." }
+      "from": { "type": "string", "description": "Optional: where a backfilled entry was copied from." },
+      "asked": { "type": "string", "minLength": 1, "description": "Optional: the ask of Void's this answers, word for word (domains/void.voice.md); tools/reflect.mjs leaves an answered ask out of the current list." }
     }
   }
 }

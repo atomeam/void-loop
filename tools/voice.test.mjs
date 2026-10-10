@@ -4,7 +4,8 @@ import { DatabaseSync } from 'node:sqlite';
 import { VOICE_SYSTEM, parseVoice, currentAsks, questionFor, knowsFacts, voiceFacts } from '../void-live-deploy/lib/voice.js';
 import { isSelfAsk, selfFacts } from '../void-live-deploy/lib/self-context.js';
 import * as reflect from '../void-live-deploy/functions/api/reflect.js';
-import { writeLog, entryBlock } from './reflect.mjs';
+import { writeLog, entryBlock, openAsks, asksInLog } from './reflect.mjs';
+import { readFileSync } from 'node:fs';
 
 const OWNER = 'owner-test-key-123456';
 function d1() {
@@ -119,4 +120,25 @@ test('weekFacts: the week in the growth card\'s words, nothing for a ledger that
   const { weekFacts } = await import('../void-live-deploy/lib/voice.js');
   assert.equal(weekFacts(null), ''); assert.equal(weekFacts([]), ''); assert.equal(weekFacts({}), '');
   assert.match(weekFacts(LEDGER), /^What changed in me in the last 7 days \(my growth ledger\): Since .* I changed 2 things/);
+});
+
+test('the current asks leave out every ask a growth-ledger entry answers (its asked field), word for word', () => {
+  const asks = [{ ask: 'Build a Learning Queue.', small: true, kind: 'daily', at: '2026-10-09' }, { ask: 'Learn backgammon.', small: false, kind: 'daily', at: '2026-10-09' }];
+  const ledger = [{ kind: 'grow', what: 'x', asked: 'build a learning queue' }, { kind: 'grow', what: 'unrelated, no asked field' }];
+  assert.deepEqual(openAsks(asks, ledger).map((a) => a.ask), ['Learn backgammon.']);
+  assert.deepEqual(openAsks(asks, []).length, 2);
+  // the real ledger answers both asks of 2026-10-09 (lib/learn.js and skills/live.js)
+  const real = JSON.parse(readFileSync(new URL('../void-live-deploy/void.growth.json', import.meta.url), 'utf8'));
+  const oct9 = [{ ask: "Build a mechanism that parses unanswered user questions into a structured 'Learning Queue' to automate skill acquisition." }, { ask: 'Develop a background task runner that allows my existing skills (like news, weather, or worldtime) to update autonomously.' }];
+  assert.equal(openAsks(oct9, real).length, 0);
+});
+
+test('the asks are stamped with the day they were read; an unreachable site keeps the old stamp and says so', () => {
+  const asks = [{ ask: 'Learn backgammon.', small: true, kind: 'daily', at: '2026-10-09T10:00:00Z' }];
+  const fresh = writeLog('', [], asks, { read: '2026-10-10' });
+  assert.match(fresh, /_Read from \/api\/reflect on 2026-10-10\. Asks a growth-ledger entry answers/);
+  assert.deepEqual(asksInLog(fresh), [{ ask: 'Learn backgammon.', small: true, kind: 'daily', at: '2026-10-09' }], 'the list can be read back from the file');
+  const stale = writeLog(fresh, [], asksInLog(fresh), { failed: '2026-10-12' });
+  assert.match(stale, /_Read from \/api\/reflect on 2026-10-10; the site could not be reached on 2026-10-12, so this may be out of date\./);
+  assert.match(writeLog('', [], [], {}), /## Void's current asks\n\n- \(none open\)/);
 });
