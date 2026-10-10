@@ -697,6 +697,7 @@
     // freerEnglishParse — natural-language intent for clock (+ sticky)
     const LOOP_KEY = 'a2m.void.loop.v1';
     const STATE_KEY = 'a2m.void.state.v1';
+    const AWAY_KEY = 'a2m.void.away.v1'; // when this stage was last left or saved: the world lives on from then (advance in skills/scripts.js)
     // plan item 6: the passkey session on this device ({ token, userId, rev, sig, synced }); see "Your Void follows you" below
     const ME_KEY = 'a2m.void.me.v1';
     const PAGE = window.__VOID_PAGE__ || null; // a-to-mind.com/@name: someone's published Void (functions/[handle].js), shown, never saved over yours
@@ -755,6 +756,7 @@
     function save() {
       if (PAGE) return;
       localStorage.setItem(STATE_KEY, JSON.stringify(keptThings()));
+      try { localStorage.setItem(AWAY_KEY, String(Date.now())); } catch (_) {}
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
       mineChanged();
     }
@@ -6186,8 +6188,27 @@ return { ok: true, detail: 'timer-reset' };
       }
     })();
 
+    let awayMs = 0; try { const t = +localStorage.getItem(AWAY_KEY); awayMs = t > 0 ? Date.now() - t : 0; } catch (_) {} // read before this visit saves anything
     load();
     render();
+    // the world lives on while you are away: what has conditions (a cloud, ice, a flower) moves forward by the time since the
+    // stage was last left, the same way for everyone (advance in skills/scripts.js), and one line says what happened
+    if (!PAGE && awayMs > 0) import('/skills/scripts.js').then((m) => {
+      const figs = Object.values(things).filter((t) => t && t.kind === 'figure' && t.kindOf && m.CONDITIONS[t.kindOf]);
+      if (!figs.length || awayMs < m.AWAY_MIN_MS) return;
+      const r = m.advance(figs.map((t) => ({ id: t.id, kindOf: t.kindOf, x: t.x, y: t.y, seed: t.seed, nature: t.nature, title: t.title })), awayMs);
+      const stamp = Date.now();
+      for (const n of r.things) if (things[n.id]) things[n.id].nature = { ...n.nature, adv: stamp };
+      save(); syncFigures();
+      window.__voidAway = { ms: awayMs, note: r.note, changes: r.changes };
+      if (r.note) say(r.note);
+    }).catch(() => {});
+    // leaving: keep the live conditions, so the next visit continues from here (and stamp the time)
+    function rememberWorld() {
+      try { if (figures3d && figures3d.natures) for (const [id, st] of Object.entries(figures3d.natures())) if (things[id]) things[id].nature = st; save(); } catch (_) {}
+    }
+    document.addEventListener('visibilitychange', () => { if (document.hidden) rememberWorld(); });
+    window.addEventListener('pagehide', rememberWorld);
     if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s Void'), 400);
     window.addEventListener('resize', () => render());
   </script>
