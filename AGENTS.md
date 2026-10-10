@@ -6,6 +6,8 @@ Read `STANDING.md` first: it explains what we are building and where things are.
 
 Then read `domains\void.growth.md` (what's next) and the last lines of `domains\void.agents.log.md` (what just happened).
 
+The short path for adding a skill, and how Void upgrades itself, is `docs/UPGRADING.md` (`node tools/new-skill.mjs`).
+
 ## Working fast (learned 2026-10-04)
 
 - `node tools/checks.mjs` runs every fast check in one go (fringe ledger, skill collisions, calendar, glyphs, void.html matching its two deploy copies, the full benchmark against its floor, the miss reader's redaction). Run it before every push; CI runs the full browser suite. The benchmark is not replayed when nothing it reads has changed since its last passing run (a hash of the served files, bench.json, the browser and the day; `node tools/bench.mjs --score --fresh` forces it), and it waits for each answer instead of sleeping a fixed time, so a change that never touches the page costs nothing and a full replay is far shorter than the old 20 minutes. Add your test on its own line in the list at the top of `tools/checks.mjs` (one entry per line, so two PRs adding tests do not conflict).
