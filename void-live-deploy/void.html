@@ -6420,16 +6420,20 @@ return { ok: true, detail: 'timer-reset' };
       const m = await import('/skills/sky-rules.js'), r = document.documentElement;
       let still = false; try { still = matchMedia('(prefers-reduced-motion: reduce)').matches || localStorage.getItem('a2m.void.motion.v1') === 'still'; } catch (_) {}
       const place = m.guessPlace(Intl.DateTimeFormat().resolvedOptions().timeZone, new Date().getTimezoneOffset());
+      // the aurora index (skills/aurora.js): one read of /api/aurora, then hourly; any failure leaves the sky as it was
+      let au = null, kp = null;
+      const aurora = async () => { try { const res = await fetch('/api/aurora'); const j = res.ok ? await res.json() : null; kp = j && typeof j.kp === 'number' ? j.kp : null; au = au || (kp != null ? await import('/skills/aurora.js') : null); if (kp != null) apply(); } catch (_) {} };
       const apply = () => {
         const sky = m.skyOf(new Date(), place);
+        if (au && kp != null) { const st = au.auroraStrength(kp, place.lat); if (st > 0) { sky.glow = au.tintWithAurora(sky.glow, st, sky.daylight); sky.aurora = { kp, strength: st }; } }
         r.style.setProperty('--sky-glow', sky.glow); r.style.setProperty('--sky-bg', sky.bg);
         if (!r.style.getPropertyValue('--void-glow')) r.classList.add('sky-on');
         window.__voidSky = { ...sky, place, drifting: !still };
         document.dispatchEvent(new CustomEvent('void:sky', { detail: window.__voidSky }));
         try { localStorage.setItem('a2m.void.sky.v1', JSON.stringify({ glow: sky.glow, bg: sky.bg })); } catch (_) {}
       };
-      apply();
-      if (!still) setInterval(apply, 5 * 60e3);
+      apply(); aurora();
+      if (!still) { setInterval(apply, 5 * 60e3); setInterval(aurora, 60 * 60e3); }
     } catch (_) {}
   })();
   // ---- Atmosphere: a slow nebula behind the void (WebGL, tinted by your look), plus depth on everything summoned ----
