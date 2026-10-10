@@ -1,0 +1,33 @@
+# Ringer by touch in WebKit, the engine under iOS Safari (tools/touch-webkit.mjs): the 3D ring's touch checks that the
+# full suite runs in Chromium, run again in WebKit whenever Ringer or these checks change.
+name: Ringer touch (WebKit)
+on:
+  pull_request:
+    paths:
+      - 'void-live-deploy/skills/ringer*.js'
+      - 'void-live-deploy/skills/mini/ringer.js'
+      - 'void-live-deploy/skills/scene3d.js'
+      - 'tools/test_3d.mjs'
+      - 'tools/touch-webkit.mjs'
+      - '.github/workflows/touch-webkit.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: touch-webkit-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  webkit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Install WebKit (+ system deps)
+        run: npx playwright-core install --with-deps webkit
+      - name: Ringer by touch in WebKit
+        run: node tools/touch-webkit.mjs

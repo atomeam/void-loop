@@ -58,8 +58,8 @@ function mount(th, stageApi) {
     e.stopPropagation(); e.preventDefault();
     aimAt(...toWorld(e));
     const move = (ev) => aimAt(...toWorld(ev));
-    const up = () => { removeEventListener('pointermove', move); removeEventListener('pointerup', up); save(); };
-    addEventListener('pointermove', move); addEventListener('pointerup', up);
+    const up = () => { removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up); save(); };
+    addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
   });
 
   // a roll: step the one state every frame until everything stops (the 3D ring reads the same state each frame)
