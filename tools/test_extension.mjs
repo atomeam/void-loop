@@ -64,7 +64,7 @@ const MAIL = {
     + '<input aria-label="Add a subject"><div data-t="body" role="textbox" contenteditable="true" aria-multiline="true" style="min-height:200px;width:560px"></div></div></div>'
     + '<script>window.redraw = () => { const old = document.querySelector("[data-t=body]"), n = old.cloneNode(false); old.replaceWith(n); };</script>',
 };
-const OWNER = 'owner-token-for-the-extension-test', records = []; // B3's execution records, as /api/actions would keep them
+const OWNER = 'owner-token-for-the-extension-test', records = [], queuePosts = []; // B3's execution records, as /api/actions would keep them
 await ctx.route(/^https?:\/\//, (r) => {
   const u = new URL(r.request().url());
   if (u.origin === 'https://fixture.test' && u.pathname.startsWith('/mail/')) return r.fulfill({ contentType: 'text/html', body: MAIL[u.pathname.slice(6)] || 'none' });
@@ -90,6 +90,12 @@ await ctx.route(/^https?:\/\//, (r) => {
     if (u.pathname.startsWith('/api/answer') && /"mode":"(?:draft|proposal)"/.test(r.request().postData() || '')) { // the tab card's "draft for me": the real handler, no model
       return answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', body: r.request().postData() }), env: { AI: undefined } })
         .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
+    }
+    if (u.pathname === '/api/queue' && r.request().method() === 'POST') { // a sale job from the thread's domain (lib/job-draft.js draftFromThread)
+      const b = JSON.parse(r.request().postData() || '{}');
+      if (b.op === 'draft-from-thread' && r.request().headers().authorization === 'Bearer ' + OWNER) { queuePosts.push(b);
+        return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ matched: true, job: 'j1', target: 'sale:s-1', line: 'draft proposal on job j1 for acme.test, waiting on the confirm line' }) }); }
+      return r.fulfill({ status: 401, body: 'no' });
     }
     if (u.pathname.startsWith('/api/')) return r.fulfill({ status: 404, contentType: 'application/json', body: '{}' });
     const f = u.pathname === '/' || u.pathname === '/index.html' ? path.join(repo, 'void.html') : path.join(live, decodeURIComponent(u.pathname));
@@ -138,6 +144,9 @@ check('B2: "put in the page" types the draft into the box you were in and submit
 await V.fill('#input', 'days until new year');
 await V.press('#input', 'Enter');
 await V.waitForSelector('.vput', { state: 'visible', timeout: 10000 }).catch(() => {});
+// the stage places a new card a frame after it appears (lib/placement.js): wait until the button stops moving, as a person's
+// hand would (a click in that first frame landed where the button had been, 2 runs in 4)
+for (let i = 0, last = ''; i < 20; i++) { const b = JSON.stringify(await V.evaluate(() => { const r = document.querySelector('.vput').getBoundingClientRect(); return [Math.round(r.x), Math.round(r.y)]; })); if (b === last) break; last = b; await V.waitForTimeout(150); }
 await page.evaluate(() => { const t = document.getElementById('reply'); t.value = ''; t.focus(); });
 // a real click, as a person makes it: the stage keeps the countdown card clear of the tab card (lib/placement.js). force only
 // skips Playwright's wait for the card to hold still (cards tilt toward the pointer); the press and release are real mouse events
@@ -358,6 +367,12 @@ for (const [app, name, redraw] of [['Gmail in French', 'gmail-fr', false], ['Gma
     && after.others.every((v) => v === '' || /^Re: /.test(v)) && records.length === r0m + 1 && rec.state === 'done',
     { app, card: { ...card, text: card.text.slice(0, 80) }, title: drafted && drafted.title, after: { body: after.body.slice(0, 120), others: after.others }, rec });
 }
+
+// the thread's sender is a sale job's buyer: the draft goes onto that job too, the same way the job's claim drafts it (owner only)
+const toJob = await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '');
+check('proposal → reply joined to the sale job: with the owner key, the thread goes once to /api/queue (draft-from-thread) with the sender\'s address, and the card says the draft is on the job for that domain',
+  queuePosts.length >= 1 && queuePosts.every((b) => b.from === 'dana@acme.test' && b.request.includes('order flow fixed by June')) && /on the job for acme\.test \(sale:s-1\)/.test(toJob),
+  { posts: queuePosts.map((b) => ({ from: b.from, n: (b.request || '').length })), toJob });
 
 // "Ask Void about this page" (sent to Void, #134): the answer card says the page left the browser for this answer
 await sw.evaluate(() => chrome.storage.session.set({ ask: { q: 'What is this page about?', page: { title: 'Fixture page', url: 'https://fixture.test/', selection: '', field: '', text: 'fixture text' }, at: Date.now() } }));
