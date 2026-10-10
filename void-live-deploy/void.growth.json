@@ -231,5 +231,6 @@
   {"at": "2026-10-10T02:24:12Z", "by": "claude", "kind": "build", "what": "Miss-board game-list phrasing: rackOf takes can-we and a trailing on-this-site/here"},
   {"at": "2026-10-10T02:24:12Z", "by": "claude", "kind": "build", "what": "Miss-board 'summon a circle': shape creation takes summon as a verb (wantsCreateShape)"},
   {"at": "2026-10-10T02:24:12Z", "by": "claude", "kind": "build", "what": "Miss-board seated figure: the figure skill takes sits/sitting/seated (act sit summons a chair when none is free, then seats Motelet)"},
-  {"at": "2026-10-10T02:24:12Z", "by": "claude", "kind": "idea", "what": "Miss-board 'answer me in Spanish: what is the weather like' needs composed answers (a skill card rendered in another language); spanish translates the ask today, weather answers in English"}
+  {"at": "2026-10-10T02:24:12Z", "by": "claude", "kind": "idea", "what": "Miss-board 'answer me in Spanish: what is the weather like' needs composed answers (a skill card rendered in another language); spanish translates the ask today, weather answers in English"},
+  {"at": "2026-10-10T02:32:17Z", "by": "claude", "kind": "fix", "what": "Ouroboros keeps a folder it could not empty enterable: when a file another program holds could not be deleted, its folder's mode was replaced with 0600 (no search bit), so on macOS or Linux the folder still holding the file could no longer be opened; it now adds the write bit and keeps the rest. This was verify-main's first red check in its own workflow (ouroboros_test.py, the held-file test)"}
 ]

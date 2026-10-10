@@ -8,7 +8,7 @@
 // reverted) and that the failed checks are still red on main's newest verified head; otherwise it reports.
 //   node tools/revert-target.mjs --annotate test-output.txt      prints the ::error annotations naming the failed checks
 //   node tools/revert-target.mjs --pick <sha> test-output.txt    prints {"action":"revert"|"report","sha","why"} as JSON
-import { readFileSync } from 'node:fs';
+import { readFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
@@ -154,9 +154,18 @@ export function pickLive({ tested, failing, history, mainLine, body, repo, api =
   return pick;
 }
 
+// A step before the suite can fail (a Python tool's tests, the extension check): then there is no suite output, no check to
+// name and nothing to revert by. Said plainly, instead of crashing into "could not read the verify record".
+export const NO_SUITE = 'the full suite never ran: a step before it failed (see this run\'s log), so there is no failed check to revert by';
+export const noSuitePick = () => ({ action: 'report', why: NO_SUITE });
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [mode, a, b] = process.argv.slice(2);
-  if (mode === '--annotate') { for (const l of annotations(failingChecks(readFileSync(a, 'utf8')))) console.log(l); }
+  const out = mode === '--annotate' ? a : b;
+  if ((mode === '--annotate' || mode === '--pick') && !(out && existsSync(out))) {
+    if (mode === '--annotate') console.log('::error title=verify-main did not run the suite::' + NO_SUITE);
+    else console.log(JSON.stringify(noSuitePick()));
+  } else if (mode === '--annotate') { for (const l of annotations(failingChecks(readFileSync(a, 'utf8')))) console.log(l); }
   else if (mode === '--pick') {
     const repo = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop';
     const tested = run('git', ['rev-parse', a]).trim();

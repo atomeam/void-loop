@@ -1,7 +1,7 @@
 // verify-main reverts the commit that broke the failing check, not whichever commit it happened to test (tools/revert-target.mjs).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { failingChecks, annotations, namesFrom, pickRevert, verifiedState, stillLive, stillRed, pickLive, TITLE, COUNT_TITLE, VERIFY_WORKFLOWS } from './revert-target.mjs';
+import { failingChecks, annotations, namesFrom, pickRevert, verifiedState, stillLive, stillRed, pickLive, TITLE, COUNT_TITLE, VERIFY_WORKFLOWS, NO_SUITE, noSuitePick } from './revert-target.mjs';
 
 const RACK = 'rack: "what games do you have" stands a 3D shelf';
 
@@ -160,4 +160,15 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   assert.doesNotMatch(deploy, /^  verify-main:/m, 'the deploy no longer carries the suite');
   assert.match(deploy, /void-deploy-\$\{\{ github\.event_name == 'pull_request' && format\('pr-\{0\}', github\.event\.pull_request\.number\) \|\| 'production' \}\}/, 'deploys stay serialized in production');
   assert.match(auto, /\['workflow', 'run', 'verify\.yml', '--repo', repo, '--ref', 'main'\]/, 'a GITHUB_TOKEN merge starts no push workflow: automerge starts the suite');
+});
+
+test('a red run whose suite never started (a step before it failed) is reported plainly, never a crash, and names no check', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const cli = (...a) => execFileSync(process.execPath, [new URL('./revert-target.mjs', import.meta.url).pathname, ...a], { encoding: 'utf8' }).trim();
+  const ann = cli('--annotate', '/no/such/test-output.txt');
+  assert.match(ann, /^::error title=verify-main did not run the suite::the full suite never ran/);
+  const pick = JSON.parse(cli('--pick', 'HEAD', '/no/such/test-output.txt'));
+  assert.deepEqual(pick, noSuitePick());
+  assert.equal(pick.action, 'report');
+  assert.deepEqual(namesFrom([{ title: 'verify-main did not run the suite', message: NO_SUITE }]).names, [], 'not read back as a failed check');
 });
