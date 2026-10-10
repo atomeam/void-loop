@@ -949,8 +949,38 @@ Object.values(things).forEach((th) => {
         selectedId = th.id; save(); render();
         say('read the tab · it stays in this browser');
       } else if (m.type === 'void-ext:drafted' && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
+      else if (m.type === 'void-ext:record') extRecord(m); // B3: the panel asks Void to write the step's execution record
+      else if (m.type === 'void-ext:acted') { const t = actSaid(m); say(t); const sp = document.querySelector('.tab-act-said'); if (sp) sp.textContent = t; }
     });
     extSend({ type: 'void-ext:ready' });
+    // B3: Void proposes one step for the page (fill a field, or click a button, by its visible label); the extension's own
+    // panel shows it with Yes / No and acts only on a site on the allow list kept there. Void only writes the execution record
+    // (/api/actions, kind extension.act, with the owner's key): running before the step, done or failed after, stubbed on a No.
+    function stepOf(text) {
+      const t = String(text || '').trim(); // the text to fill goes in exactly as typed, its full stop too
+      let m = t.match(/^(?:fill|type into|put into)\s+(?:the\s+)?["“']?(.+?)["”']?(?:\s+(?:field|box))?\s+with\s+([\s\S]+)$/i);
+      if (m) return { action: 'fill', label: m[1].trim(), text: m[2].trim().replace(/^["“'](.*)["”']$/s, '$1') };
+      m = t.replace(/[.!]+$/, '').match(/^(?:click|press|tap)\s+(?:the\s+)?["“']?(.+?)["”']?(?:\s+button)?$/i);
+      return m ? { action: 'click', label: m[1].trim(), text: '' } : null;
+    }
+    const ACT_WHY = { 'not-allowed': 'that site is not on your list: add it under “sites Void may act on” below, then ask again', 'said-no': 'you said no · nothing changed · recorded',
+      'no-record': 'no record, no action: unlock Void as the owner first, then ask again', 'not-found': 'no field or button with that label on the page',
+      ambiguous: 'more than one thing on the page has that label: name it more exactly', submits: 'that button sends its form: press it yourself',
+      'no-access': 'that tab moved on or closed: press Alt+Shift+V there again', 'no-tab': 'point Void at the page first: Alt+Shift+V there', busy: 'one step at a time: answer the open card first',
+      'bad-step': 'say it as “fill <field> with <text>” or “click <button>”' };
+    const actSaid = (m) => (m && m.ok ? (m.did === 'clicked' ? 'clicked' : 'filled') + ' it on ' + (m.host || 'the page') + ' · recorded · you send it yourself' : ACT_WHY[(m && m.why) || ''] || "couldn't do that step");
+    function extPropose(step) { if (!ext.on) return false; extSend({ type: 'void-ext:propose', step }); return true; }
+    async function extRecord(m) {
+      const reply = (r) => extSend({ type: 'void-ext:recorded', id: m.id, ...r });
+      const tok = ownerToken();
+      if (!tok) return reply({ ok: false, why: 'not-owner' });
+      const body = m.op === 'end' ? { op: 'end', id: m.recordId, state: m.state, text: m.text } : { op: m.op, kind: m.kind, ref: m.ref, text: m.text };
+      try {
+        const r = await fetch('/api/actions', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + tok }, body: JSON.stringify(body) });
+        const j = await r.json().catch(() => ({}));
+        reply(r.ok ? { ok: true, recordId: j.id, state: j.state } : { ok: false, why: j.error || 'HTTP ' + r.status });
+      } catch (_) { reply({ ok: false, why: 'offline' }); }
+    }
     function mountTab(th) {
       const t = ext.tab;
       const el = document.createElement('div');
@@ -972,12 +1002,17 @@ Object.values(things).forEach((th) => {
           + '<textarea class="tab-draft" rows="3" placeholder="a draft for the page" style="width:100%;box-sizing:border-box;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:6px;font:inherit"></textarea>'
           + '<div style="display:flex;gap:8px;align-items:center;margin-top:6px"><button type="button" class="tab-put vcopy">put in the page</button><span class="tab-said" style="color:var(--muted);font-size:12px">'
           + esc(t.field ? 'goes into: ' + (t.field.name || t.field.tag) : 'goes into the box you click on the page') + '</span></div>'
-          + '<div style="color:var(--muted);font-size:11px;margin-top:6px">Not saved, not sent anywhere. You press send on the page yourself.</div>';
+          + '<div style="color:var(--muted);font-size:11px;margin-top:6px">Not saved, not sent anywhere. You press send on the page yourself.</div>'
+          + '<div style="display:flex;gap:6px;margin-top:10px"><input class="tab-step" placeholder="a step for Void: fill Reply with … / click Save" style="flex:1;min-width:0;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:5px 6px;font:inherit"><button type="button" class="tab-propose vcopy">propose</button></div>'
+          + '<div class="tab-act-said" style="color:var(--muted);font-size:12px;margin-top:4px">Void acts only on a site you allowed, and only after your yes in the panel.</div>';
         const put = body.querySelector('.tab-put'), ta = body.querySelector('.tab-draft'), said = body.querySelector('.tab-said');
         put.addEventListener('click', async () => { if (!ta.value.trim()) { said.textContent = 'write the draft first'; return; } said.textContent = 'putting it in…'; said.textContent = draftSaid(await extDraft(ta.value)); });
+        const stepIn = body.querySelector('.tab-step'), actSp = body.querySelector('.tab-act-said');
+        stepIn.value = ext.stepText || ''; stepIn.addEventListener('input', () => { ext.stepText = stepIn.value; }); // a redraw of the stage keeps what you typed
+        body.querySelector('.tab-propose').addEventListener('click', () => { const st = stepOf(stepIn.value); if (!st) { actSp.textContent = ACT_WHY['bad-step']; return; } actSp.textContent = extPropose(st) ? 'asking you in the panel…' : DRAFT_WHY['no-panel']; });
       }
       el.appendChild(body);
-      body.addEventListener('pointerdown', (e) => { if (e.target.closest('textarea, button, blockquote')) e.stopPropagation(); });
+      body.addEventListener('pointerdown', (e) => { if (e.target.closest('textarea, input, button, blockquote')) e.stopPropagation(); });
       bindDrag(el, th);
       stage.appendChild(el);
     }
