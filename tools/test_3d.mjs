@@ -195,6 +195,32 @@ export async function run3dChecks({ check, fresh }) {
       JSON.stringify({ up, before, after, status, errors: F.errors.slice(0, 3) }));
     await F.ctx.close();
   }
+  // ---- the growth tree (frontier #3) through the same contract: a 5-entry ledger, then a 6th entry grows in as a new tip
+  {
+    const day = (d, i, kind) => ({ at: '2026-10-0' + d + 'T1' + i + ':00:00Z', by: 'claude', kind, what: 'entry ' + i });
+    const five = [day(1, 0, 'grow'), day(2, 1, 'build'), day(3, 2, 'fix'), day(4, 3, 'idea'), day(5, 4, 'grow')];
+    const c = await miniContract(fresh, { kind: 'growthtree', a: { entries: five }, b: { entries: five.concat([day(6, 5, 'finding')]) }, settledWhen: 'growing' });
+    const ok = (r, still) => r.drawn && r.colours > 40 && r.same && r.stateA && r.stateA.branches === 5 && r.stateA.newest === 4 && r.stateB.branches === 6 && r.stateB.newest === 5
+      && r.redrew && r.settled && r.idleDraws === 0 && r.freed && (still ? r.stateRight.growing === false : true);
+    check('growth tree miniature: draws real pixels, one branch per ledger entry (5 -> 6, the new one the newest tip), a remount by key moves the live one, the new branch grows in and shows on the canvas, it settles with no redraws while idle, under reduced motion the branch is simply there, and unmounting frees it',
+      ok(c.moving, false) && ok(c.still, true) && c.moving.stateRight.growing === true && !c.errors.length, JSON.stringify(c));
+  }
+  // ---- "growth": the card brings its tree (two-part summons), and touching the trunk reads the oldest entry under it
+  {
+    const F = await fresh();
+    await F.ask('growth');
+    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'growthtree'); return c && c.draws > 0 && c.ready ? c : false; }), 60000);
+    const at = drawn && await F.p.evaluate(async () => {
+      const T = await import('/skills/growth-tree.js'); const list = await (await fetch('/void.growth.json')).json(); const t = T.layout(list);
+      return { pt: window.__voidMini.project('growth-tree', T.midpoint(t.branches[0])), oldest: list[t.branches[0].index].what.slice(0, 40), trunk: t.branches[0].index, n: t.branches.length, inCard: !!document.querySelector('.vpage .growth-tree canvas'), state: window.__voidMini.state('growth-tree') };
+    });
+    if (at && at.pt) await F.p.mouse.click(at.pt.x, at.pt.y);
+    const read = at && await until(() => F.p.evaluate((w) => { const s = document.querySelector('.vpage .growth-picked'); return s && s.textContent.includes(w) ? s.textContent.slice(0, 80) : false; }, at.oldest), 8000);
+    const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
+    check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
+      !!drawn && at.inCard && at.state.branches === at.n && !!read && sel && sel.selected === at.trunk && !F.errors.length, JSON.stringify({ drawn: !!drawn, at, read, sel, e: F.errors }));
+    await F.ctx.close();
+  }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
   {
     const F = await fresh();

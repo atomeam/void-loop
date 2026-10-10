@@ -749,9 +749,12 @@
         if (raw) things = JSON.parse(raw) || {};
       } catch (_) { things = {}; }
     }
+    // a learning card (the quiz: an `ephemeral` stage kind) is never saved or synced unless the visitor kept that one card
+    // (domains/void.learning.md; the same rule as persistable() in skills/quiz-rules.js, tested in tools/learning.test.mjs)
+    function keptThings() { const out = {}; for (const [id, t] of Object.entries(things)) if (!(t && stageKinds[t.kind] && stageKinds[t.kind].ephemeral) || t.keep) out[id] = t; return out; }
     function save() {
       if (PAGE) return;
-      localStorage.setItem(STATE_KEY, JSON.stringify(things));
+      localStorage.setItem(STATE_KEY, JSON.stringify(keptThings()));
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
       mineChanged();
     }
@@ -1029,8 +1032,9 @@ Object.values(things).forEach((th) => {
           if (!ta.isConnected) return; // the card was redrawn or closed meanwhile
           ext.sent = 'The title, address and selection were sent to a-to-mind.com for a ' + intent + ' draft · not kept there.'; footLine();
           if (!j || !j.draft) { said.textContent = (j && j.note) || 'Void couldn’t draft just now. Try again in a moment.'; return; }
-          ext.draft = j.draft; ta.value = j.draft; ta.rows = Math.min(12, Math.max(3, j.draft.split('\n').length + 1));
-          said.textContent = intent + ' from Void' + (j.model === 'rules' ? ' (by rule, no model just now)' : '') + (j.masked ? ' · keys in the text were masked' : '') + (j.cut ? ' · the selection was cut' : '') + ' · put it in the page, or copy it';
+          ext.draft = j.draft; ta.value = j.draft; ta.rows = Math.min(12, Math.max(3, (j.draft.match(/\n/g) || []).length + 2));
+          const notes = [j.model === 'rules' && 'by rule, no model just now', j.masked && 'keys in the text were masked', j.cut && 'the selection was cut'].filter(Boolean);
+          said.textContent = intent + ' from Void' + (notes.length ? ' (' + notes.join('; ') + ')' : '') + ' · put it in the page, or copy it';
           // B3 joined to the draft: a reply for the box you were in becomes a proposed step, the same Yes / No card in the panel
           // and the same record; the panel shows it only on a site on your list (off the list it says nothing: copy as before)
           if (intent === 'reply' && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: j.draft, auto: true });
@@ -1045,7 +1049,7 @@ Object.values(things).forEach((th) => {
       stage.appendChild(el);
     }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
-    const stageApi = { stage, things: () => things, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
+    const stageApi = { stage, things: () => things, kinds: () => stageKinds, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
@@ -3348,7 +3352,9 @@ return { ok: true, detail: 'timer-reset' };
       say(page ? 'reading the page' : 'looking up');
       let j = null;
       try {
-        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text }) });
+        // signed in (the owner's key or your own member session): your notes and projects are checked for this ask on the server (never for a page ask)
+        const who = page ? '' : (() => { try { return localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) { return ''; } })();
+        const r = await fetch('/api/answer', { method: 'POST', headers: who ? { 'content-type': 'application/json', authorization: 'Bearer ' + who } : { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text }) });
         if (r.ok || r.status === 429) j = await r.json();
       } catch (_) {}
       if (vpageEl !== el) return 'answer';
@@ -3357,7 +3363,7 @@ return { ok: true, detail: 'timer-reset' };
       // fenced code keeps its whitespace and gets a monospace block (fixHtml); sources are a citation when one
       // genuinely matched, not a claim that nothing else went into the answer
       el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + fixHtml(j.answer)
-        + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Void' : srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
+        + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Void' : j.told ? 'from what you told me · written by Void' + (srcs ? ' · Source: ' + srcs : '') : srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
       addCopy(el);
       say('');
       return 'answer';
@@ -5030,7 +5036,7 @@ return { ok: true, detail: 'timer-reset' };
     const mineCall = (method, body) => meFetch('/api/mine', method, body);
     function meSet(v) { me = v; try { if (v) localStorage.setItem(ME_KEY, JSON.stringify(v)); else localStorage.removeItem(ME_KEY); } catch (_) {} }
     const sig = (s) => { let h = 5381; for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return s.length + ':' + (h >>> 0).toString(36); };
-    function mineSnapshot() { let entered = null; try { entered = localStorage.getItem(ENTRY_KEY); } catch (_) {} return { v: 1, state: things, look: voidLook, entered }; }
+    function mineSnapshot() { let entered = null; try { entered = localStorage.getItem(ENTRY_KEY); } catch (_) {} return { v: 1, state: keptThings(), look: voidLook, entered }; }
     const mineSig = () => sig(JSON.stringify(mineSnapshot()));
 
     const THING_KINDS = new Set(['clock', 'sticky', 'notepad', 'timer', 'counter', 'image', 'link', 'list', 'calc', 'shape', 'kept']);
