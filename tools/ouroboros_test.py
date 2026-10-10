@@ -266,7 +266,7 @@ class Ouroboros(unittest.TestCase):
             with contextlib.redirect_stdout(io.StringIO()):
                 ouroboros.main(["--version"])
 
-    def _server(self, status=200, tamper=False, no_get=False):
+    def _server(self, status=200, tamper=False, no_get=False, refusal=None):
         """A stand-in for Void's /api/memory: stores what it is sent and hands it back by id with the hash it computed itself."""
         got, store = [], {}
         class H(http.server.BaseHTTPRequestHandler):
@@ -278,6 +278,8 @@ class Ouroboros(unittest.TestCase):
                 for r in body["records"]:
                     b = r.get("body", "") + ("x" if tamper else "")
                     store[r["id"]] = {**{k: v for k, v in r.items() if k != "body"}, "body": b, "body_sha256": hashlib.sha256(b.encode()).hexdigest()}
+                if refusal is not None:  # a refusal as the real route sends it: plain text, not JSON
+                    h.send_response(status); h.send_header("content-type", "text/plain"); h.end_headers(); h.wfile.write(refusal.encode()); return
                 h._send(status, {"saved": len(body["records"]), "rejected": 0})
             def do_GET(h):
                 if no_get:
@@ -352,7 +354,12 @@ class Ouroboros(unittest.TestCase):
         with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "vr1." + "B" * 43}):
             rc, txt = call("push", ["--out", str(self.out), "--url", url])
         self.assertEqual(rc, 1)
-        self.assertIn("Void answered 403", txt); self.assertIn("owner and paid members", txt); self.assertIn("https://a-to-mind.com/code-review/#pro", txt)
+        self.assertIn("Void answered 403", txt); self.assertIn("owner and paid members", txt)
+        # the server's own sentence is read from the refusal (urlopen raises before anything consumes the body) and shown
+        srv2, _ = self._server(status=403, refusal="Void memory is for the owner and paid members: Void does not know this key. Make one at https://a-to-mind.com/code-review/#pro (signed in, on paid Void).")
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "vr1." + "C" * 43}):
+            rc, txt2 = call("push", ["--out", str(self.out), "--url", f"http://127.0.0.1:{srv2.server_address[1]}"])
+        self.assertEqual(rc, 1); self.assertIn("Void does not know this key", txt2); self.assertIn("https://a-to-mind.com/code-review/#pro", txt)
         self.assertNotIn("Void remembers", txt)
         self.assertFalse((self.out / "absorbed.json").exists(), "a refused push never writes a receipt")
         self.assertIn("paid members", ouroboros.refused_text(403, ""))
