@@ -5544,5 +5544,9 @@
   {"ask": "write a proposal for this request", "want": "skill:proposal"},
   {"ask": "draft a proposal", "want": "skill:proposal"},
   {"ask": "can you turn this email into a proposal?", "want": "skill:proposal"},
-  {"ask": "turn this into a proposal: we need our Shopify orders copied into a sheet without duplicates", "want": "skill:proposal"}
+  {"ask": "turn this into a proposal: we need our Shopify orders copied into a sheet without duplicates", "want": "skill:proposal"},
+  {"ask": "quiz me on this", "want": "skill:quiz"},
+  {"ask": "quiz me", "want": "skill:quiz"},
+  {"ask": "test me on that", "want": "skill:quiz"},
+  {"ask": "quiz me on the gears", "want": "skill:quiz"}
 ]
