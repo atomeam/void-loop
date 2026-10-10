@@ -239,6 +239,18 @@ export async function run3dChecks({ check, fresh }) {
       JSON.stringify({ first, last, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- "what can you do now that you couldn't last week?": the tree stands as it was a week ago, then this week's tips grow in
+  {
+    const F = await fresh();
+    await F.ask("what can you do now that you couldn't last week?");
+    const seen = { weekAgo: null, today: null };
+    await until(async () => { const s = await F.p.evaluate(() => window.__voidMini && window.__voidMini.state('growth-tree')); if (s && s.until && !seen.weekAgo) seen.weekAgo = s; if (s && s.until === null && !s.growing) seen.today = s; return seen.today; }, 60000);
+    const day = await F.p.evaluate(() => { const d = document.querySelector('.vpage .growth-day'); return d && d.textContent; });
+    const n = await F.p.evaluate(async () => (await import('/skills/growth-tree.js')).layout(await (await fetch('/void.growth.json')).json()).branches.length);
+    check('"what can you do now that you couldn\'t last week?": the card\'s tree first stands as it was a week ago (fewer branches), then grows to today with this week\'s tips, the readout ending on today',
+      !!seen.weekAgo && !!seen.today && seen.weekAgo.branches < seen.today.branches && seen.today.branches === n && /^today, /.test(day || '') && !F.errors.length, JSON.stringify({ seen, day, n, e: F.errors }));
+    await F.ctx.close();
+  }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
   {
     const F = await fresh();
