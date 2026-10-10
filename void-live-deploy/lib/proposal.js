@@ -17,7 +17,8 @@ export const MAX_FIELD = 1500;
 
 const ctl = (s) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, ' ');
 const oneLine = (s) => ctl(s).replace(/\s+/g, ' ').trim();
-const multi = (s) => ctl(s).replace(/\r\n?/g, '\n').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+// the page's one-line ask box keeps a paste's line breaks as ' ⏎ ' (void.html's paste handler), so those are line breaks here too
+const multi = (s) => ctl(s).replace(/\r\n?/g, '\n').replace(/[ \t]*⏎[ \t]*/g, '\n').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
 
 // "turn this into a proposal", "make a proposal from this: …", "write a proposal for <request>", "draft a proposal"
 const ASK_RE = /^(?:please\s+)?(?:(?:can|could|would)\s+you\s+(?:please\s+)?)?(?:(?:turn|make|convert)\s+(?:this|that|it|the\s+following|this\s+(?:email|request|message))\s+into\s+an?\s+(?:\w+\s+)?proposal|(?:make|write|draft|create|build|generate|prepare)\s+(?:me\s+)?an?\s+(?:\w+\s+)?proposal(?:\s+(?:from|for|out\s+of|based\s+on|about|on)\b)?)\s*(?:(?:this|that|it|the\s+following|the\s+request\s+below|this\s+(?:email|request|message))\b\s*)?[:\-–—]?\s*([\s\S]*)$/i;
