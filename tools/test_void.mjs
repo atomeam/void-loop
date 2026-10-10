@@ -991,6 +991,10 @@ try {
       /alpha \(React, py\)/.test(card) && /I remember 1 match/.test(card) && /no remote copy|backed up at/.test(card) && rows === 1 && /^Bearer owner-k$/.test(auth) && asked === 'react' && !M.errors.length, card.slice(0, 300) + ' | ' + auth + ' | ' + asked);
     await M.ctx.close(); }
   { const P = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    // the page syncs a stored session with /api/mine as it loads, and the real mine function here has never seen this made-up
+    // session: its 401 signs the device out (as it should) before the ask. Answer the sync for this session, then load again.
+    await P.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
+    await P.p.reload(); await P.p.waitForTimeout(700);
     let auth = '';
     await P.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'I remember 1 match:\n\u2022 mine (py): A tiny tool. \u00b7 no remote copy', matches: ['m'] })); });
     await P.ask('what do you remember about python', 900);
