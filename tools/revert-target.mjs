@@ -89,7 +89,8 @@ export function stillLive(target, mainLine, body) {
   for (const s of mainLine) {
     if (s === target) break;
     const m = /^Void-auto-revert:\s*(\S+)/m.exec(body(s) || '');
-    if (m && (m[1] === target || target.startsWith(m[1]) || m[1].startsWith(target))) return { live: false, why: target + ' is already reverted on main (' + s.slice(0, 7) + ')' };
+    // the workflow writes the full sha; an abbreviated one still matches when it is at least a short sha (7) long
+    if (m && (m[1] === target || (m[1].length >= 7 && (target.startsWith(m[1]) || m[1].startsWith(target))))) return { live: false, why: target + ' is already reverted on main (' + s.slice(0, 7) + ')' };
   }
   return { live: true };
 }
