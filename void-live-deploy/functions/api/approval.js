@@ -15,6 +15,7 @@
 import { ownerOk } from '../../lib/guard.js';
 import { grantStandingSpend } from '../../lib/router.js';
 import { track } from '../../lib/actions.js';
+import { sendProposal } from '../../lib/email-send.js';
 import {
   EVENT_REQUESTED, EVENT_DECISION, POLICY_VERSION, GATED, ORG_ID, WORKFLOW_ID, CONFIRM_TTL_MS,
   isGated, fingerprint, confirmLine, budgetImpact, checkDecision,
@@ -25,6 +26,8 @@ import {
 export const executors = {
   // a standing spend on a stronger model (STANDING.md): recorded only here, after the yes; the router pays only from earnings
   'models.spend': (args, env, rec) => grantStandingSpend(args, env, rec),
+  // the proposal's send (lib/email-send.js): dry run until EMAIL_LIVE=send, sender on the domain, daily cap
+  'proposal.send': (args, env) => sendProposal(args, env),
 };
 
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
@@ -88,7 +91,7 @@ async function requested(env, b) {
   // a tool whose send is not connected (GATED[tool].stub names the ref) records the ask itself as a stub: the owner's
   // actions card shows the proposal that waited on the confirm line, and that nothing went out
   if (typeof GATED[toolName].stub === 'function') {
-    try { await track(env, { owner: 'owner', kind: toolName, ref: GATED[toolName].stub(args) || toolName }, async () => {}, { stub: 'waits on the confirm line: ' + rec.line + ' Sending is not connected yet, so nothing is sent either way.' }); } catch (_) {}
+    try { await track(env, { owner: 'owner', kind: toolName, ref: GATED[toolName].stub(args) || toolName }, async () => {}, { stub: 'waits on the confirm line: ' + rec.line + (executors[toolName] ? ' Nothing goes out before the yes.' : ' Sending is not connected yet, so nothing is sent either way.') }); } catch (_) {}
   }
   return Response.json(rec);
 }

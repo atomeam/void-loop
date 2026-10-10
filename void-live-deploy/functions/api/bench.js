@@ -2,7 +2,8 @@
 // Workers AI binding, so CI needs no Workers AI token (tools/model-bench.mjs --site, .github/workflows/model-bench.yml).
 //   { model, from, to, file? }  -> { model, total, results: [{ i, text, ms } | { i, error, ms }] }
 //                                  the built-in asks from..to-1 (lib/bench-asks.js), at most CHUNK a call, with the messages
-//                                  /api/answer sends (Void's live facts for self asks, pages masked); scoring stays in the tool
+//                                  /api/answer sends, run with its options (ANSWER_RUN: thinking off, its token budget) and its
+//                                  think-stripping (Void's live facts for self asks, pages masked); scoring stays in the tool
 //   { probe: true }             -> { ok, asks, chunk, catalog }  the route is there and the key works; the text models the
 //                                  binding lists, with prices when it gives them (for the tool's spend plan)
 // What a stranger could make it do: nothing (owner only). With the key: run at most CHUNK built-in asks a call, on a free
@@ -12,6 +13,7 @@ import { buildAsks, messagesFor } from '../../lib/bench-asks.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { PAID_MODEL } from '../../lib/models.js';
 import { FINDINGS_SCHEMA } from '../../lib/review-api.js';
+import { ANSWER_RUN, noThink } from './answer.js';
 
 export const CHUNK = 8;
 const FILES = ['builtin'];
@@ -40,10 +42,10 @@ export async function onRequestPost({ request, env }) {
   if (!Number.isInteger(from) || !Number.isInteger(to) || from < 0 || to <= from || to - from > CHUNK) return json(400, { error: `from..to, at most ${CHUNK} asks` });
   const results = await Promise.all(asks.slice(from, Math.min(to, asks.length)).map(async (a, k) => {
     const t0 = Date.now();
-    try { // a review ask: the closer read's JSON mode (a model without it gets the same ask held by the prompt alone), as lib/review-api.js does
-      const base = { messages: messagesFor(a, facts), max_tokens: 1200 };
-      let r; if (a.diff) { try { r = await env.AI.run(model, { ...base, response_format: { type: 'json_schema', json_schema: FINDINGS_SCHEMA } }); } catch (_) { r = await env.AI.run(model, base); } } else r = await env.AI.run(model, base);
-      return { i: from + k, text: pick(r), ms: Date.now() - t0 }; }
+    try { // an answer ask runs as /api/answer runs it; a review ask as the closer read does: JSON mode on the findings schema (a model without it gets the same ask held by the prompt alone), as lib/review-api.js does
+      const messages = messagesFor(a, facts);
+      let r; if (a.diff) { const base = { messages, max_tokens: 1200 }; try { r = await env.AI.run(model, { ...base, response_format: { type: 'json_schema', json_schema: FINDINGS_SCHEMA } }); } catch (_) { r = await env.AI.run(model, base); } } else r = await env.AI.run(model, { messages, ...ANSWER_RUN });
+      return { i: from + k, text: noThink(pick(r)), ms: Date.now() - t0 }; }
     catch (e) { return { i: from + k, error: String((e && e.message) || e).slice(0, 200), ms: Date.now() - t0 }; }
   }));
   return json(200, { model, total: asks.length, results });

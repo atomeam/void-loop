@@ -7,7 +7,10 @@
 #   workflow_dispatch   a merge by automerge (a push made with GITHUB_TOKEN starts no workflow, so tools/automerge.mjs
 #                       starts this after merging, as it starts the deploy), or by hand
 # Red = revert the commit that broke the failed checks on main and deploy again (tools/revert-target.mjs; unclear =
-# reported, not guessed). The job keeps the name verify-main: revert-target.mjs reads earlier verdicts by that name.
+# reported, not guessed). Two jobs since 2026-10-10 (owner): python-tests (the Python tools, node unit tests, extension,
+# glyphs, calendar, growth suites) and browser-suite (tools/test_void.mjs), each reporting on its own, so one unrelated test
+# can no longer hide the suite's result (a held-file test red on the runner kept every head of main unverified for an hour).
+# The revert reads the browser-suite job (and older verdicts, named verify-main) and names the job it decided from.
 name: Void verify
 
 on:
@@ -19,14 +22,48 @@ permissions:
   contents: read
 
 jobs:
-  # Ship now, test after: the full suite on this head of main (live within minutes, or replaced by a newer deploy). Red means the commit that broke the failed
+  # Ship now, test after: the browser suite on this head of main (live within minutes, or replaced by a newer deploy). Red means the commit that broke the failed
   # checks is reverted on main and main is deployed again, so a breaking merge stays live only for the length of the suite
   # (about 15 min). The revert is marked with a Void-auto-revert trailer and is never itself tested and reverted. One
   # concurrency group per head (2026-10-10): every merge gets its own suite, in parallel, so a busy evening no longer
   # leaves most merges unverified (one shared group kept only the newest pending run). Two red suites at once are safe:
   # before reverting, the tool checks its target is still on main and not already reverted, and that the failed checks
   # are still red on main's newest verified head (tools/revert-target.mjs); otherwise it reports.
-  verify-main:
+  python-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: void-verify-fast-${{ github.sha }}
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+
+      - name: An automatic revert is not tested again
+        id: skip
+        run: |
+          if git log -1 --format=%B | grep -q '^Void-auto-revert:'; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Automatic revert: not re-tested" >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: The fast tests (Python tools, node unit tests, extension, glyphs, calendar, growth suites)
+        id: fast
+        if: steps.skip.outputs.skip != 'true'
+        uses: ./.github/actions/void-test
+        with:
+          bench: skip
+          part: fast
+
+      - name: Say which job went red (the browser suite reports on its own; nothing is reverted by a fast test alone)
+        if: failure() && steps.fast.outcome == 'failure'
+        run: |
+          echo "::error title=python-tests failed::a fast test failed on ${{ github.sha }} (see this run's log); the browser suite ran as its own job, browser-suite, and its result stands on its own. Fix it forward: nothing is reverted by a fast test alone."
+          echo "### python-tests failed on ${{ github.sha }}: a fast test is red (see the log); browser-suite reports separately" >> "$GITHUB_STEP_SUMMARY"
+          exit 1
+
+  browser-suite:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     concurrency:
@@ -55,6 +92,7 @@ jobs:
         uses: ./.github/actions/void-test
         with:
           bench: skip
+          part: suite
 
       - name: Name the failed checks (the next red run reads them to find the commit that broke each one)
         if: failure() && steps.test.outcome == 'failure'
@@ -74,7 +112,7 @@ jobs:
           action=$(node -e 'console.log(JSON.parse(process.argv[1]).action)' "$pick")
           why=$(node -e 'console.log(JSON.parse(process.argv[1]).why)' "$pick")
           if [ "$action" != "revert" ]; then
-            echo "::error title=Not reverted::$tested failed the suite after it shipped, but which commit broke it is unclear: $why. Look at the failed checks and revert by hand."
+            echo "::error title=Not reverted::$tested failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: $why. Look at the failed checks and revert by hand."
             echo "### $tested failed after shipping; not reverted automatically: $why" >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
@@ -104,7 +142,7 @@ jobs:
             echo "### $sha broke the suite ($why); its revert is empty on main now: look by hand" >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
-          git commit -q -m "Revert \"$subject\"" -m "It shipped and the full suite failed on main (verify-main in Void verify, run ${{ github.run_id }}, testing $tested): $why. So it is taken back off the site." -m "Void-auto-revert: $sha"
+          git commit -q -m "Revert \"$subject\"" -m "It shipped and the browser suite failed on main (job browser-suite in Void verify, run ${{ github.run_id }}, testing $tested): $why. So it is taken back off the site." -m "Void-auto-revert: $sha"
           git push origin main
           gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true
           echo "::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."

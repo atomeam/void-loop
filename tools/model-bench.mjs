@@ -185,7 +185,7 @@ export async function checkAccess({ fetch: get = fetch, runFetch = fetch, token 
 
 // ---- --site: the bench inside the site (functions/api/bench.js), no Workers AI token, only READ_TOKEN ----
 export async function siteProbe(site, key, get = fetch) {
-  if (!key) return { ok: false, why: 'READ_TOKEN is empty: set the repository secret' };
+  if (!key) return { ok: false, why: 'READ_TOKEN is empty: set the repository secret VOID_OWNER_TOKEN (or READ_TOKEN) to the Pages READ_TOKEN' };
   try {
     const r = await get(site + '/api/bench', { method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json' }, body: JSON.stringify({ probe: true }) });
     if (r.status === 401 || r.status === 403) return { ok: false, why: 'the site rejected READ_TOKEN (owner only): check the repository secret matches the Pages READ_TOKEN' };

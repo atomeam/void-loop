@@ -85,6 +85,41 @@ if (process.argv.includes('--rules')) {
   let bad = 0; await runRulesChecks((name, ok, got) => { console.log((ok ? 'pass ' : 'FAIL ') + name + (ok ? '' : '  -> ' + got)); if (!ok) bad++; });
   process.exit(bad ? 1 : 0);
 }
+// node tools/test_3d.mjs --browser ["regex"]: only these browser checks (minutes, not the whole suite), served from
+// void-live-deploy/ with the suite's offline outside services and Void's read-only /api data (tools/fixtures/outside.mjs); the rest of /api answers 404.
+// The regex picks which checks are printed; the rest still run (they set up state for the later ones).
+if (process.argv.includes('--browser')) {
+  const http = await import('node:http');
+  const { chromium } = await import('playwright-core');
+  const { routeOutside, voidApiReply } = await import('./fixtures/outside.mjs');
+  const TYPES = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png', '.jpg': 'image/jpeg', '.glb': 'model/gltf-binary' };
+  const server = http.createServer((req, res) => { let p = decodeURIComponent(new URL(req.url, 'http://x').pathname); if (p === '/') p = '/index.html'; const f = path.join(root, p);
+    if (!f.startsWith(root)) { res.writeHead(403); return res.end(); }
+    fs.readFile(f, (e, d) => { if (e) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream' }); res.end(d); }); }).listen(0);
+  await new Promise((r) => server.once('listening', r));
+  const base = 'http://127.0.0.1:' + server.address().port + '/';
+  const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
+  const browser = await chromium.launch({ executablePath: exe, headless: true });
+  const arg = process.argv[process.argv.indexOf('--browser') + 1], only = arg && !arg.startsWith('--') ? new RegExp(arg) : null;
+  let pass = 0, fail = 0;
+  const check = (name, ok, info) => { if (only && !only.test(name)) return; if (ok) pass++; else fail++; console.log((ok ? 'pass ' : 'FAIL ') + name + (ok ? '' : '  -> ' + String(info).slice(0, 1200))); };
+  const fresh = async (...inits) => {
+    const opt = inits[0] && typeof inits[0] === 'object' && 'mini3d' in inits[0] ? inits.shift() : {};
+    const ctx = await browser.newContext();
+    for (const init of inits) await ctx.addInitScript(init);
+    if (opt.mini3d === false) await ctx.route(/\/skills\/scene3d\.js(?:\?|$)/, (r) => r.fulfill({ status: 404, body: '' }));
+    await routeOutside(ctx);
+    await ctx.route(/^http:\/\/127\.0\.0\.1:\d+\/api\//, (r) => r.fulfill(voidApiReply(r.request().url()) || { status: 404, contentType: 'application/json', body: '{}' }));
+    const p = await ctx.newPage(); const errors = []; p.on('pageerror', (e) => errors.push(e.message));
+    await p.goto(base); await p.waitForTimeout(700);
+    const ask = async (t, w = 450) => { await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w); };
+    const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
+    return { ctx, p, ask, state, errors, page: () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => ''), whisper: () => p.$eval('#whisper', (e) => e.textContent) };
+  };
+  try { await run3dChecks({ check, fresh }); } finally { await browser.close(); server.close(); }
+  console.log(pass + '/' + (pass + fail) + ' passed');
+  process.exit(fail ? 1 : 0);
+}
 
 export async function run3dChecks({ check, fresh }) {
   const index = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
