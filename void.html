@@ -521,6 +521,9 @@
       }
     }
     #void-stars-far { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0; }
+    /* a world: one full-stage layer a skill draws behind every card (stageApi.setWorld), above the nebula */
+    #void-world { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1.2s ease; }
+    #void-world.on { opacity: 1; }
     #void-stars-far.on { opacity: .55; }
     /* ---- polish (2026-10-07): one type scale, calm cards that never sit under the ask bar ---- */
     :root {
@@ -753,6 +756,22 @@
     let selectedId = null;
     // stage kinds a skill file brings (3D figures and objects): { kind: { mount(th, S), dropped?(th, S), thrown?(th, S), throwable } }
     const stageKinds = {};
+    // worlds a skill file brings ({ mount(host, ctx) -> { update?(), dispose() } }): one full-stage layer behind the cards,
+    // one world at a time; setWorld(name, opts) swaps it, setWorld(null) clears it. Not saved: a world is what you asked for now.
+    const worlds = {};
+    let worldNow = null;
+    function setWorld(name, opts = {}) {
+      let host = document.getElementById('void-world');
+      if (worldNow) { try { worldNow.inst && worldNow.inst.dispose && worldNow.inst.dispose(); } catch (_) {} worldNow = null; }
+      if (host) { host.classList.remove('on'); host.innerHTML = ''; }
+      if (!name || !worlds[name]) return null;
+      if (!host) { host = document.createElement('div'); host.id = 'void-world'; host.setAttribute('aria-hidden', 'true'); document.body.insertBefore(host, stage); }
+      let inst = null;
+      try { inst = worlds[name].mount(host, { opts, still: !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) }); } catch (e) { console.warn('[world ' + name + ']', e); return null; }
+      worldNow = { name, inst };
+      requestAnimationFrame(() => host.classList.add('on'));
+      return worldNow;
+    }
     const stageDecorators = []; // skills that draw over the stage after each render and drag (labels and arrows: skills/label.js)
     function decorate() { for (const d of stageDecorators) { try { d(stageApi); } catch (_) {} } }
 
@@ -1220,7 +1239,7 @@ Object.values(things).forEach((th) => {
       stage.appendChild(el);
     }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
-    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
+    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, setWorld, world: () => (worldNow ? worldNow.name : null), bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
@@ -4944,6 +4963,7 @@ return { ok: true, detail: 'timer-reset' };
         if (skill && skill.name && skill.match && skill.run) learnedSkills.push(skill);
         else missing.push(index[i]);
         if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
+        if (skill && skill.world && typeof skill.world.mount === 'function') worlds[skill.name] = skill.world;
         if (skill && typeof skill.decorate === 'function') stageDecorators.push(skill.decorate);
       }
       // An index entry with no file behind it, or a file without the {name,match,run} shape, is a
