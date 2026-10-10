@@ -9,7 +9,7 @@ import { track } from '../../lib/actions.js';
 import { models } from '../../lib/models.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
-import { VOICE_SYSTEM, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice } from '../../lib/voice.js';
+import { VOICE_SYSTEM, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts } from '../../lib/voice.js';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 
@@ -29,7 +29,11 @@ export async function onRequestPost({ request, env }) {
   const question = questionFor(kind, shipped);
   const facts = await readSelf(env, new URL(request.url).origin);
   const before = await readVoice(env);
-  const context = selfFacts(facts); // includes its games, its miniatures and what it said about itself last time
+  let context = selfFacts(facts); // includes its games, its miniatures and what it said about itself last time
+  if (kind === 'daily') { // and its last week, from the growth ledger (a ledger that cannot be read leaves it out)
+    let ledger = null; try { const r = await env.ASSETS.fetch(new Request(new URL('/void.growth.json', request.url))); ledger = r.ok ? await r.json() : null; } catch (_) {}
+    const week = weekFacts(ledger); if (week) context += '\n' + week;
+  }
   let said = null;
   try {
     const r = await env.AI.run(models('will'), {

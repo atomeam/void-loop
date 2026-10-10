@@ -5601,5 +5601,9 @@
   {"ask": "why won't the wrong key turn", "want": "skill:lock"},
   {"ask": "explain the pins inside a lock", "want": "skill:lock"},
   {"ask": "how does a lock work", "want": "skill:lock"},
-  {"ask": "show the moving parts of a lock", "want": "skill:lock"}
+  {"ask": "show the moving parts of a lock", "want": "skill:lock"},
+  {"ask": "what can you do now that you couldn't last week", "want": "skill:growth"},
+  {"ask": "what's new since last week", "want": "skill:growth"},
+  {"ask": "what have you learned this week", "want": "skill:growth"},
+  {"ask": "how have you grown this week", "want": "skill:growth"}
 ]
