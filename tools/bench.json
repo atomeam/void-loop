@@ -5616,5 +5616,9 @@
   {"ask": "make me a snowman", "want": "skill:forge"},
   {"ask": "forge a lighthouse", "want": "skill:forge"},
   {"ask": "make a table i can print", "want": "skill:forge"},
-  {"ask": "make me a bottle", "want": "skill:forge"}
+  {"ask": "make me a bottle", "want": "skill:forge"},
+  {"ask": "make me a teapot", "want": "skill:forge"},
+  {"ask": "make a little house", "want": "skill:forge"},
+  {"ask": "3d print a sailboat", "want": "skill:forge"},
+  {"ask": "make me a tree", "want": "skill:forge"}
 ]
