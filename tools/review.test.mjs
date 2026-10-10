@@ -163,6 +163,19 @@ ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').in
   ok(!rules(env, 'javascript').includes('hardcoded-secret@1') && redact(env) === env, 'an env lookup is no hard-coded secret and is not masked: ' + redact(env));
   ok(rules(lit, 'javascript').includes('hardcoded-secret@1') && redact(lit) === 'const TOKEN = "[redacted]";', 'a literal token is flagged and masked: ' + redact(lit));
 }
+{ // the name of an environment variable is no secret: an ALL_CAPS_NAME in quotes names where the key lives (model-bench's
+  // "secret ? x : 'CLOUDFLARE_ACCOUNT_ID'" read as a hard-coded key, 2026-10-10); a literal value is still a finding
+  for (const named of ["const why = `${!token ? secret : 'CLOUDFLARE_ACCOUNT_ID'} is empty`;", "const secret = process.env.NAME || 'CLOUDFLARE_API_TOKEN';", "const tokenName = 'GITHUB_TOKEN';"])
+    ok(!rules(named, 'javascript').includes('hardcoded-secret@1') && redact(named) === named, 'an env var name is no secret and is not masked: ' + named + ' -> ' + redact(named));
+  ok(rules("const secret = 'Zx9qLm42RtWv';", 'javascript').includes('hardcoded-secret@1') && redact("secret: 'Zx9qLm42RtWv'") === "secret: '[redacted]'", 'a literal secret still is, and is masked');
+  ok(rules("const token = 'ABCD1234EFGH5678';", 'javascript').includes('hardcoded-secret@1'), 'an all-caps value with no underscore is no env name');
+  // narrowed (2026-10-10, owner): only an env-shaped name is kept: upper case and underscores, no digits, short, ending in
+  // _KEY/_TOKEN/_SECRET/_ID/_URL/_PASSWORD, and never as the value of a password field
+  for (const lit of ["PASSWORD: 'MY_SECRET_PASSWORD'", "password = 'DB_ADMIN_PASSWORD'", "secret: 'AKIAIOSFODNN7EXAMPLE'", "token: 'ABCD_1234_EFGH_TOKEN'", "secret: 'SOME_VERY_LONG_NAME_THAT_GOES_ON_AND_ON_AND_ON_TOKEN'", "token: 'NOT_AN_ENV_NAME'"])
+    ok(redact(lit) !== lit && /\[redacted\]/.test(redact(lit)) && rules('const x = { ' + lit + ' };', 'javascript').includes('hardcoded-secret@1'), 'still masked and flagged: ' + lit + ' -> ' + redact(lit));
+  for (const name of ["secret: 'GITHUB_TOKEN'", "token: 'CLOUDFLARE_API_TOKEN'", "apiKey: 'OPENWEATHER_KEY'", "secret = 'WEBHOOK_SECRET'"])
+    ok(redact(name) === name, 'an env-shaped name is kept: ' + name + ' -> ' + redact(name));
+}
 // fixes Void makes by itself
 const fx = (c, lang) => autoFix(c, lang ? { lang } : {}).code;
 ok(fx('if (a == b) { var n = parseInt(s); }', 'javascript') === 'if (a == b) { var n = parseInt(s); }', 'js: == / var / parseInt stay warnings, never rewritten ("5" == 5, a var used after its block, parseInt("0x10"))');

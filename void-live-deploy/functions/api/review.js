@@ -83,8 +83,8 @@ export async function onRequestPost({ request, env }) {
     const d = await closerReadDetail(env, { ask: b.ask, code: q.code, lang: q.lang, diff: !!b.diff, res: q.res, imports: cleanImports(b.imports) }); // imports: each touched file's import lines (tools/review-pr.mjs), so a diff review never calls one missing
     if (!d.answer) return good({ ...out, note: 'model busy' });
     await a.spend();
-    // quoted: how many findings quoted a line of the code and stayed, and how many claims about lines not in it were dropped (lib/review-api.js quoteCheck)
-    return good({ ...out, answer: d.answer, review: 'model', quoted: { kept: d.kept, dropped: d.dropped }, ...(Number.isFinite(a.left) ? { left: a.left - 1 } : {}) });
+    // quoted: how many findings quoted a line of the code and stayed, how many were dropped (no quote, a quote found nowhere, an echo of the shape), whether the model's JSON parsed, and how many echoes it wrote (lib/review-api.js)
+    return good({ ...out, answer: d.answer, review: 'model', quoted: { kept: d.kept, dropped: d.dropped, parsed: d.parsed !== false, echoes: d.echoes || 0 }, ...(Number.isFinite(a.left) ? { left: a.left - 1 } : {}) });
   } catch (_) { return good({ ...out, note: 'model busy' }); }
 }
 

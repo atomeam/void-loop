@@ -21,6 +21,12 @@ export function hasDetails(text) {
 }
 export function platformOf(text) { for (const [name, re] of PLATFORMS) if (re.test(String(text || ''))) return name; return null; }
 
+// The name of an environment variable, not a secret: upper case and underscores only (no digits, so no key ID like AKIA...),
+// 3 to 41 characters, ending in _KEY, _TOKEN, _SECRET, _ID, _URL or _PASSWORD, and never the value of a password field (a
+// password may well be MY_SECRET_PASSWORD). Used by redact() here and by the reviewer's hard-coded-secret check.
+export function envName(v, key = '') {
+  return /^[A-Z][A-Z_]{1,40}$/.test(String(v)) && /_(?:KEY|TOKEN|SECRET|ID|URL|PASSWORD)$/.test(v) && !/pass(?:word|wd)?\b|pwd/i.test(String(key));
+}
 // Secrets never leave the page's request as-is: tokens, keys and passwords are masked before the model or a log sees them.
 // Masks keys, tokens, passwords and secret URLs wherever they appear (pasted configs, asks, model output, the miss list).
 export function redact(text) {
@@ -35,7 +41,8 @@ export function redact(text) {
     .replace(/\b(bearer)\s+[A-Za-z0-9._~+/=-]{16,}/gi, '$1 [redacted]')
     // a value read from the environment (process.env.X, os.environ[...], ${{ secrets.X }}, $VAR) names the secret, it is
     // not one: masking it made code that does the right thing read as a hard-coded "[redacted]" key to the reviewer
-    .replace(/\b((?:api[_-]?key|apikey|secret|client[_-]?secret|password|passwd|pwd|access[_-]?token|refresh[_-]?token|token|private[_-]?key)["']?\s*[:=]\s*["']?)(?!\[redacted|(?:process\.env|import\.meta\.env|Bun\.env|Deno\.env\.get\s*\(|os\.environ\b|os\.getenv\s*\(|os\.Getenv\s*\(|System\.getenv\s*\(|Environment\.GetEnvironmentVariable\s*\(|getenv\s*\(|(?:context\.|c\.)?env\s*[.[]|secrets\.|\$\{\{|\$\{[A-Za-z_]\w*\}|\$[A-Za-z_]\w*(?=[\s"',;})]|$)))[^\s"',}&]{6,}/gi, '$1[redacted]')
+    // (a quoted env-shaped name is the same, e.g. secret ? x : 'CLOUDFLARE_ACCOUNT_ID': envName() below decides, narrowly)
+    .replace(/\b((?:api[_-]?key|apikey|secret|client[_-]?secret|password|passwd|pwd|access[_-]?token|refresh[_-]?token|token|private[_-]?key)["']?\s*[:=]\s*["']?)(?!\[redacted|(?:process\.env|import\.meta\.env|Bun\.env|Deno\.env\.get\s*\(|os\.environ\b|os\.getenv\s*\(|os\.Getenv\s*\(|System\.getenv\s*\(|Environment\.GetEnvironmentVariable\s*\(|getenv\s*\(|(?:context\.|c\.)?env\s*[.[]|secrets\.|\$\{\{|\$\{[A-Za-z_]\w*\}|\$[A-Za-z_]\w*(?=[\s"',;})]|$)))([^\s"',}&]{6,})/gi, (m, key, v) => (envName(v, key) ? m : key + '[redacted]'))
     .replace(/\b(?:(?:sk|pk|rk)[-_]|gh[pousr]_|xox[abpr]-|xapp-)[-_A-Za-z0-9]{12,}\b|\bAKIA[A-Z0-9]{12,}\b/g, '[redacted]')
     .replace(/(https?:\/\/[^\s:@/]+:)[^\s@/]+@/g, '$1[redacted]@');
 }

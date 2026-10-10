@@ -5,6 +5,10 @@
 # Models run cheapest first by the catalog's price, and one that would pass max_neurons is not run. The table, the plan and
 # the verdict go to the job summary and, with a pr number, to that PR as a comment (the repo is public: these are model
 # scores only). Nothing is written to D1 and nothing is deployed; the full results are the artifact.
+# Then the verdict is acted on (tools/model-switch.mjs): a challenger that wins under the thresholds becomes a PR that sets the
+# answer path's model in lib/models.js (the table, the previous model and the one-line revert in its body), labelled for
+# automerge, with Void's review started on it (a PR opened by this token starts no run by itself); a "keep" only posts the
+# table. Either way the run's date, models and verdict go in the growth ledger (in the switch PR, or on main for a keep).
 name: Model bench
 
 on:
@@ -26,23 +30,24 @@ on:
         description: PR number to post the table and verdict to (empty = job summary only)
         default: ''
         type: string
-      token2:
-        description: Use the CLOUDFLARE_API_TOKEN2 secret instead of CLOUDFLARE_API_TOKEN (whichever one has Workers AI permission)
-        type: boolean
-        default: false
+      site:
+        description: The site that runs the bench (its /api/bench)
+        default: 'https://a-to-mind.com'
+        type: string
 
 permissions:
-  contents: read
+  contents: write # the switch PR's branch; the ledger line on main for a keep
   pull-requests: write
   issues: write
+  actions: write # start Void's review on the switch PR
 
 jobs:
   bench:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      CLOUDFLARE_API_TOKEN: ${{ inputs.token2 && secrets.CLOUDFLARE_API_TOKEN2 || secrets.CLOUDFLARE_API_TOKEN }}
+      READ_TOKEN: ${{ secrets.READ_TOKEN || secrets.VOID_OWNER_TOKEN }} # the Pages READ_TOKEN; learn.yml and void-tick.yml call it VOID_OWNER_TOKEN
+      SITE: ${{ inputs.site }}
       GH_TOKEN: ${{ github.token }}
       PR: ${{ inputs.pr }}
     steps:
@@ -54,7 +59,7 @@ jobs:
         id: check
         run: |
           set +e
-          node tools/model-bench.mjs --check > check.txt 2>&1; code=$?
+          node tools/model-bench.mjs --check --site "$SITE" > check.txt 2>&1; code=$?
           cat check.txt
           if [ "$code" = 0 ]; then echo "ok=true" >> "$GITHUB_OUTPUT"; exit 0; fi
           echo "ok=false" >> "$GITHUB_OUTPUT"
@@ -69,13 +74,49 @@ jobs:
           CAP: ${{ inputs.max_neurons }}
         run: |
           set -o pipefail
-          args=(--out model-bench.json --md table.md --top "${TOP:-3}" --max-neurons "${CAP:-8000}")
-          if [ -n "$MODELS" ]; then args+=(--models "$MODELS"); fi
+          args=(--site "$SITE" --out model-bench.json --md table.md --top "${TOP:-3}" --max-neurons "${CAP:-8000}")
+          # models named by hand run even when the binding lists no price for them (the cap still counts the priced ones)
+          if [ -n "$MODELS" ]; then args+=(--models "$MODELS" --allow-unpriced); fi
           node tools/model-bench.mjs "${args[@]}" 2>&1 | tee model-bench.txt
           { echo '### Model bench'; echo; cat table.md; echo; echo "<sub>Run ${GITHUB_RUN_ID} on ${GITHUB_SHA::7}: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}</sub>"; } > model-bench.md
           cat model-bench.md >> "$GITHUB_STEP_SUMMARY"
           { echo; echo '<details><summary>Full output</summary>'; echo; echo '```'; cat model-bench.txt; echo '```'; echo '</details>'; } >> "$GITHUB_STEP_SUMMARY"
           if [[ "$PR" =~ ^[0-9]+$ ]]; then gh pr comment "$PR" --body-file model-bench.md; fi
+      - name: Act on the verdict
+        if: steps.check.outputs.ok == 'true' && hashFiles('model-bench.json') != ''
+        run: |
+          set -e
+          cp model-bench.json table.md "$RUNNER_TEMP/"
+          node tools/model-switch.mjs "$RUNNER_TEMP/model-bench.json" "$RUNNER_TEMP/table.md" > "$RUNNER_TEMP/switch.txt"
+          cat "$RUNNER_TEMP/switch.txt"
+          val() { sed -n "s/^$1=//p" "$RUNNER_TEMP/switch.txt"; }
+          ledger="$(val ledger)"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if [ "$(val switch)" = 1 ]; then
+            branch="$(val branch)"
+            git switch -c "$branch"
+            node tools/grow.mjs build "$ledger" --by model-bench
+            git add void-live-deploy/lib/models.js void-live-deploy/void.growth.json
+            git commit -q -m "$(val title)"
+            git push -q origin "$branch"
+            url="$(gh pr create --base main --head "$branch" --title "$(val title)" --body-file switch-body.md)"
+            n="${url##*/}"
+            gh pr edit "$n" --add-label automerge
+            gh workflow run void-review.yml --ref "$branch" -f pr="$n"
+            echo "**Switch PR opened:** $url" >> "$GITHUB_STEP_SUMMARY"
+            if [[ "$PR" =~ ^[0-9]+$ ]]; then gh pr comment "$PR" --body "Switch PR opened from this run: $url"; fi
+          else
+            for i in 1 2 3 4; do
+              git fetch -q origin main && git reset -q --hard origin/main
+              node tools/grow.mjs finding "$ledger" --by model-bench
+              git add void-live-deploy/void.growth.json
+              git commit -q -m "Growth ledger: the model bake-off's run and verdict (tools/model-switch.mjs)"
+              git push -q origin HEAD:main && exit 0
+              sleep $((2 ** i))
+            done
+            exit 1
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:

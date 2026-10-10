@@ -84,7 +84,8 @@ window.addEventListener('message', (e) => {
 // (that step is recorded as stubbed) or the first step the page refuses (recorded as failed); nothing after it runs.
 const MAX_STEPS = 3, ARM_MS = 400; // a new step's Yes ignores clicks for a moment, so one double-click can't approve two steps
 let open = null;
-const clean = (raw) => ({ action: raw && raw.action === 'click' ? 'click' : raw && raw.action === 'fill' ? 'fill' : '', label: String((raw && raw.label) || '').slice(0, 120).trim(), text: String((raw && raw.text) || '').slice(0, 20000) });
+const clean = (raw) => ({ action: raw && raw.action === 'click' ? 'click' : raw && raw.action === 'fill' ? 'fill' : '', label: String((raw && raw.label) || '').slice(0, 120).trim(), text: String((raw && raw.text) || '').slice(0, 20000),
+  ...(raw && raw.box === 'mine' && raw.action === 'fill' ? { box: 'mine' } : {}) }); // box 'mine': the box you were in, not a label search
 async function propose(raws, auto) {
   const tell = (said) => toVoid({ type: 'void-ext:acted', auto, ...said }); // auto: Void proposed it from a draft, nobody typed it
   if (!raws.length || raws.length > MAX_STEPS) return tell({ ok: false, why: raws.length ? 'too-many' : 'bad-step' });

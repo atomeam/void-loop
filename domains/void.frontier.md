@@ -156,7 +156,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** Void turns into a storefront without ever looking like one.
 - **First piece:** "order this as a poster" for any card or figure, through one print-on-demand API, with the price shown before paying.
 - **Done when:** a visitor can turn a summon into a real thing that arrives at their door, and the sale lands in the ledger.
-- **claim:**
+- **claim:** claude 2026-10-10: the first piece's visible half: "order this as a poster" for any card turns it into a print-ready poster file with the price per size shown; the order itself waits for a print-on-demand account (its key as a Pages secret) and a yes on the confirm line, named here when the piece ships.
 
 ## 16. Void's own voice, always there
 - **What:** hold a key and speak; Void answers in its own low voice and summons as it talks, with nothing on screen until something is asked. The mic and spoken answers exist in void.html (`speechSynthesis`); this gives Void a voice of its own (a streaming text-to-speech worker) and lets it talk while it builds.
@@ -235,9 +235,10 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 ## 21. A sky and a clock: the empty stage knows what time it is
 - **What:** the empty surface is the same at 3 am and at noon. It should follow the real sky: the stage tint and the nebula follow the sun's altitude at the visitor's place and the season, with no network call (a pure function of the clock and the latitude the browser already gives or the time zone implies), drifting slowly and held still with reduced motion. One exported time-of-day signal is shared (the sound piece, #4 of the senses list, reads it). Then one optional live signal, the aurora index, behind a Worker, with a recorded fixture for tests.
 - **Why it is special:** the void reacts to the real sky without anyone asking.
-- **First piece:** `skyOf(date, lat, lon)` in `skills/sky.js` (dawn, noon, dusk, night, a solstice tested), wired to the empty stage.
+- **First piece:** `skyOf(date, place)` in `skills/sky-rules.js` (dawn, noon, dusk, night, a solstice tested), wired to the empty stage.
 - **Done when:** the tint is there on load and drifts; reduced motion holds it; the aurora signal is a Worker with a fixture.
-- **claim:** **Claim (claude, helper/sky, 2026-10-10):** the pure function and its wiring first, then the aurora Worker. **Next step:** claim written before building.
+- **claim:** **Claim (claude, helper/sky, 2026-10-10):** the pure function and its wiring first, then the aurora Worker. **Shipped:** the pure `sky-rules.js` (sun altitude, season, tint, a place guessed from the time zone with no prompt), `tools/sky.test.mjs` (4), the wiring (`--sky-glow`/`--sky-bg` under the visitor's own look, cached for the first frame, a five-minute drift, held still with reduced motion or the still setting) and two browser checks; the shared signal is `window.__voidSky` and the `void:sky` event (`daylight` 0..1). **Next step:** the aurora index behind a Worker with a recorded fixture; the sound piece reads `void:sky`; `sunPosition` should read from `lib/sky-math.js` once that module lands (the claim below) instead of keeping its own half-degree formula.
+- **claim (sky math):** claude 2026-10-10: `lib/sky-math.js`, the layer under `skyOf`: positions of the sun, moon (and its phase), the planets and the brightest stars from a date and a place, pure, with fixed-input tests against published worked examples and the sources' licenses in `docs/licenses.md`. Then the sky world (the `world` hook) and the sky card. It does not take the `skyOf`/tint piece above; `skyOf` can read the sun's altitude from it.
 
 ## 22. The list of what nobody knows: gaps become jobs
 - **What:** a weekly job reads Wikipedia's requested articles and unanswered StackExchange questions and adds the top few to the build queue as `gap:` jobs, through the existing redaction, caps and open-jobs limit (`lib/learn.js`). Fetched pages are data only: Void writes its own one-line summary of each gap, and a stranger's text is never placed in a job body.
@@ -251,7 +252,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** nobody has solved "describe a spinning 3D object to someone who can't see it"; this finds where the page stops before we get there.
 - **First piece:** `tools/a11y-flows.mjs` in the suite, a log line per step.
 - **Done when:** the report names every step that fails and each has a fix queued.
-- **claim:** **Claim (claude, helper/a11y-flows, 2026-10-10):** the flows check and its report. **Next step:** claim written before building.
+- **claim:** **Claim (claude, helper/a11y-flows, 2026-10-10):** the flows check and its report. **Shipped:** `tools/a11y-flows.mjs` (13 steps: 10 keyboard, 3 reduced motion; each says whether it holds or how it falls short), `tools/a11y-run.mjs` (the flows alone, about half a minute) and a suite check that runs them and prints the report (shortfalls are findings, not failures). First report: 10 of 13 hold. **Falls short:** (1) `reach-card`: twelve Tab presses from the ask box never reach anything inside the stage, so a new card's controls cannot be reached by keyboard; (2) `focus-visible`: the focused ask box has no outline or ring; (3) `dismiss`: Escape does not close a card (it closes an answer page), so there is no keyboard way to remove one. **Next step:** fix those three one by one (each fix turns its step into a line that must hold: the check then fails if it regresses); then the persona set (screen reader, slow phone, colour blind, non-English, a child) and the spoken description of a 3D object.
 
 ## Candidate capability map (2026-10-09)
 
