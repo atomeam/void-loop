@@ -1778,5 +1778,30 @@
     ],
     "sha256": "41c47ae2b650671a990f68c5f274b006ca79fc468f35e1b8018a214d5601fd6f",
     "emit": false
+  },
+  {
+    "run": 72,
+    "at": "2026-10-10T11:44:44Z",
+    "family": "correlation-view",
+    "draft": "drafts/fringe/correlation-view-6.html",
+    "sources": [
+      {
+        "claim": "An association that holds within every subgroup can vanish or reverse when the subgroups are pooled (Simpson's paradox)",
+        "source": "https://doi.org/10.1111/j.2517-6161.1951.tb00088.x",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Berkeley's 1973 graduate admissions looked biased against women when pooled, while most departments, taken one by one, showed no such bias",
+        "source": "https://doi.org/10.1126/science.187.4175.398",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing a pooled number of one's own split out by group changes how a person reads it",
+        "source": "drafts/fringe/correlation-view-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "9a7ed47424b976f4b5f492651220c8a8953ef17ba8f36823887fc6f6f4e04faa",
+    "emit": false
   }
 ]
