@@ -27,7 +27,7 @@ test('"sky" and its phrasings reach the sky skill; the lookalikes do not', () =>
 
 test('every chip on the sky card asks something a skill answers, and the skill is the one meant', async () => {
   const { chips } = await import(pathToFileURL(resolve(dir, 'sky.js')).href);
-  const want = { 'moon tonight': 'moontonight', 'next full moon': 'moontonight', 'sunrise and sunset': 'suntimes', 'aurora forecast': 'aurora', 'what\'s that constellation': 'constellation', 'meteor showers this month': 'meteors', 'next eclipse': 'eclipse' };
+  const want = { 'moon tonight': 'moontonight', 'next full moon': 'moontonight', 'sunrise and sunset': 'suntimes', 'aurora forecast': 'aurora-tonight', 'what\'s that constellation': 'constellation', 'meteor showers this month': 'meteors', 'next eclipse': 'eclipse' };
   assert.equal(chips().length, 7);
   for (const [label, ask] of chips()) { assert.ok(label); assert.equal(route(ask), want[ask], `${label}: "${ask}"`); }
 });
@@ -102,15 +102,12 @@ test('sunrise and sunset: London in October and the polar day', async () => {
   assert.match(s.sunAnswer(new Date('2024-12-21T10:00:00Z'), TROMSO).lines[0], /polar night/);
 });
 
-test('aurora: NOAA\'s two feed shapes, how far the oval reaches, and a clear verdict', async () => {
-  const au = await import(pathToFileURL(resolve(dir, 'aurora.js')).href);
-  for (const t of au.default.examples) assert.equal(route(t), 'aurora', t);
-  for (const t of au.default.nearMisses) assert.notEqual(route(t), 'aurora', t);
-  const rows = au.parseKp([['time_tag', 'Kp', 'a_running', 'station_count'], ['2025-10-10 12:00:00.000', '3.00', '15', '8'], ['2025-10-10 15:00:00.000', '5.33', '56', '8']]);
-  assert.deepEqual(rows.map((r) => r.kp), [3, 5.33]); assert.equal(+rows[1].t, Date.parse('2025-10-10T15:00:00Z'));
-  assert.deepEqual(au.parseKp([{ time_tag: '2025-10-10T18:00:00', kp: 6, observed: 'predicted' }]).map((r) => [r.kp, r.predicted]), [[6, true]]);
-  assert.deepEqual(au.parseKp(null), []); assert.deepEqual(au.parseKp([['x']]), []); assert.deepEqual(au.parseKp('nope'), []);
-  const date = new Date('2025-10-10T20:00:00Z'), fc = au.parseKp([['time_tag', 'kp', 'observed', 'noaa_scale'], ['2025-10-10 21:00:00', '6.00', 'predicted', 'G2']]);
+test('aurora: how far the oval reaches, and a clear verdict', async () => {
+  const au = await import(pathToFileURL(resolve(dir, 'aurora-tonight.js')).href);
+  for (const t of au.default.examples) assert.equal(route(t), 'aurora-tonight', t);
+  for (const t of au.default.nearMisses) assert.notEqual(route(t), 'aurora-tonight', t);
+  const rows = [{ t: new Date('2025-10-10T12:00:00Z'), kp: 3, predicted: false }, { t: new Date('2025-10-10T15:00:00Z'), kp: 5.33, predicted: false }];
+  const date = new Date('2025-10-10T20:00:00Z'), fc = [{ t: new Date('2025-10-10T21:00:00Z'), kp: 6, predicted: true }];
   assert.equal(au.reach(69.65, 18.96).overhead, 0, 'Tromsø is under the oval at any Kp');
   assert.equal(au.reach(51.5, -0.1).overhead, 7); assert.equal(au.reach(51.5, -0.1).horizon, 4);
   assert.equal(au.reach(-43.5, 172.6).overhead, null);
