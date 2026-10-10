@@ -1004,6 +1004,9 @@ try {
   // "remember that <fact>" keeps one line (POST with the bearer), "forget that <fact>" removes it (DELETE by the same note id); without a key neither fetches
   // "what you told me": a signed-in member's ask carries their session to /api/answer, and an answer that used a note says so on the card; a visitor's carries nothing
   { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    // as in the memory card's member check: answer the page's load-time /api/mine sync for this made-up session, then load again
+    await T.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
+    await T.p.reload(); await T.p.waitForTimeout(700);
     let auth = null;
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
