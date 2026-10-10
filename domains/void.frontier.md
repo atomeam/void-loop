@@ -156,7 +156,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** Void turns into a storefront without ever looking like one.
 - **First piece:** "order this as a poster" for any card or figure, through one print-on-demand API, with the price shown before paying.
 - **Done when:** a visitor can turn a summon into a real thing that arrives at their door, and the sale lands in the ledger.
-- **claim:**
+- **claim:** claude 2026-10-10: the first piece's visible half: "order this as a poster" for any card turns it into a print-ready poster file with the price per size shown; the order itself waits for a print-on-demand account (its key as a Pages secret) and a yes on the confirm line, named here when the piece ships.
 
 ## 16. Void's own voice, always there
 - **What:** hold a key and speak; Void answers in its own low voice and summons as it talks, with nothing on screen until something is asked. The mic and spoken answers exist in void.html (`speechSynthesis`); this gives Void a voice of its own (a streaming text-to-speech worker) and lets it talk while it builds.
