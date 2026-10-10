@@ -17,7 +17,7 @@ export function auroraAsk(text) {
     || /^(?:aurora|northern lights|southern lights) (?:forecast|tonight|today|now|prediction|report)$/.test(t)
     || /^(?:can|could|will|might) (?:i|we) (?:see|spot|catch) (?:the )?(?:aurora(?: borealis| australis)?|northern lights|southern lights)(?: tonight| tomorrow| today| now| here| from here)*$/.test(t)
     || /^(?:is there|are there) (?:an )?(?:aurora|northern lights|southern lights)(?: tonight| tomorrow| today| now| here)*$/.test(t)
-    || /^(?:what(?:s| is) )?(?:the )?(?:current |latest |planetary )?kp(?: index| value| level)?(?: now| today| tonight)?$/.test(t)
+    || /^(?:what(?:s| is) )?(?:the )?(?:current |latest |planetary )?kp(?: index| value| level)?(?: now| right now| today| tonight)?$/.test(t)
     || /^(?:will there be|is there going to be) (?:an? )?(?:aurora|northern lights|southern lights)(?: tonight| tomorrow)*$/.test(t)) return { place };
   return null;
 }

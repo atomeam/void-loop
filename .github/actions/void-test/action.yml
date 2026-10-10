@@ -72,6 +72,10 @@ runs:
       if: inputs.bench != 'only'
       shell: bash
       run: node tools/test_glyphs.mjs
+    - name: node tools/test_sky.mjs (the sky world takes the stage and gives the void back, at 375 px, keyboard only, with reduced motion and on a low-power device)
+      if: inputs.bench != 'only'
+      shell: bash
+      run: node tools/test_sky.mjs
     - name: node tools/test_calendar.mjs
       if: inputs.bench != 'only'
       shell: bash

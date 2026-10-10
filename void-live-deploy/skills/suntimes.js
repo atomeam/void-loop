@@ -10,10 +10,9 @@ import { splitPlace, SKY_LINK } from '../lib/skyask.js';
 export function sunAsk(text) {
   const { core, place } = splitPlace(text); const t = core.replace(/['’]s\b/g, 's');
   if (/^(?:what(?:s| is) )?(?:the )?(?:time of |time for )?(?:sunrise|sunset|sunrise and sunset|sunrise and sunset times?|sunset and sunrise|sunrise sunset|sun rise|sun set)(?: times?| time)?(?: today| tonight| tomorrow| now)?$/.test(t)
-    || /^(?:when|what time)(?:s| is| does| will)? (?:the )?(?:sunrise|sunset|sun rise|sun set|sun go down|sun come up)(?: today| tonight| tomorrow)?$/.test(t)
+    || /^(?:when|what time)(?:s| is| does| will)? (?:the )?(?:sunrise|sunset|sunrise and sunset|sunset and sunrise|sun rise|sun set|sun go down|sun come up)(?: today| tonight| tomorrow)?$/.test(t)
     || /^(?:when|what time) (?:does|will) (?:the )?sun (?:rise|set|go down|come up)(?: today| tonight| tomorrow)?$/.test(t)
-    || /^how long (?:is|will be) (?:the )?(?:day|daylight)(?: today| tomorrow)?$/.test(t) || /^(?:daylight hours|day length|length of (?:the )?day)(?: today| tomorrow)?$/.test(t)
-    || /^(?:when is|what time is) (?:dawn|dusk|first light|last light|golden hour|twilight)(?: today| tonight| tomorrow)?$/.test(t)) return { place, text: t };
+    || /^how long (?:is|will be) (?:the )?(?:day|daylight)(?: today| tomorrow)?$/.test(t) || /^(?:daylight hours|day length|length of (?:the )?day)(?: today| tomorrow)?$/.test(t)) return { place, text: t };
   return null;
 }
 
