@@ -1062,6 +1062,35 @@ try {
       JSON.stringify({ drafted, kept: kept && { title: kept.fields && kept.fields.title }, line, rec, errs: P.errors }).slice(0, 600));
     await P.ask('no', 600);
     await P.ctx.close(); }
+  // the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the asker's scope and the card shows
+  // its first check as evidence; "my watches" lists them with pause and stop; a visitor without a key is told whose it is
+  { const V = await fresh();
+    await V.ask("tell me when it's below 0 in Oslo", 900);
+    const visitor = await V.p.$eval('.watch-card .watch-status', (e) => e.textContent).catch(() => '');
+    await V.ctx.close();
+    const W = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const calls = []; let watches = [];
+    const rec = (id) => ({ id: 'act-w1', owner: 'owner', kind: 'watch.check', ref: id, state: 'done', result: 'MATCH · -3°C in Oslo · watching for below 0°C in Oslo · told on the stage', error: null, started: '2026-10-10T09:00:00Z', finished: '2026-10-10T09:00:01Z' });
+    await W.ctx.route(/\/api\/watch(?:\?|$)/, (r) => {
+      const q = r.request(); const b = JSON.parse(q.postData() || '{}'); calls.push({ method: q.method(), auth: q.headers().authorization || '', body: b });
+      if (q.method() === 'POST') watches = [{ id: 'w1', name: 'Watch: below 0°C in Oslo', enabled: true, every: 15, watch: { kind: 'weather', place: 'Oslo', op: '<', value: 0, unit: 'c' }, tell: 'note', last: { at: '2026-10-10T09:00:01Z', matchedAt: '2026-10-10T09:00:01Z' }, checks: [rec('w1')] }];
+      if (q.method() === 'PATCH') watches = watches.map((w) => ({ ...w, enabled: !!b.enabled }));
+      if (q.method() === 'DELETE') watches = [];
+      return r.fulfill(json({ ...(q.method() === 'POST' ? { saved: { id: 'w1', do: [{ action: 'watch', watch: watches[0].watch }] }, check: { ok: true } } : {}), watches }));
+    });
+    await W.ask("tell me when it's below 0 in Oslo", 900);
+    await until(async () => W.p.$eval('.watch-row .watch-last', (e) => e.textContent).catch(() => ''), 5000);
+    const row = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
+    await W.p.click('.watch-toggle'); await until(async () => /paused/.test(await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '')), 3000);
+    const paused = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
+    W.p.once('dialog', (d) => d.accept()); await W.p.click('.watch-stop'); await until(async () => !(await W.p.$('.watch-row')), 3000);
+    const empty = await W.p.$eval('.watch-list', (e) => e.innerText).catch(() => '');
+    check('watch: "tell me when it\'s below 0 in Oslo" makes a watch (POST with the ask and the owner\'s key), the card shows it with its first check as evidence (a match, told on the stage), Pause pauses, Stop asks then removes it; a visitor is told watches are the owner\'s',
+      /Unlock Void|owner/.test(visitor) && calls[0] && calls[0].method === 'POST' && calls[0].body.ask === "tell me when it's below 0 in Oslo" && /^Bearer owner-k$/.test(calls[0].auth)
+      && /below 0°C in Oslo/.test(row) && /★ .*MATCH · -3°C in Oslo/.test(row) && /\(paused\)/.test(paused) && calls.some((c) => c.method === 'PATCH' && c.body.enabled === false)
+      && calls.some((c) => c.method === 'DELETE' && c.body.id === 'w1') && /Nothing is watched/.test(empty) && !W.errors.length,
+      JSON.stringify({ visitor, row: row.slice(0, 160), paused: paused.slice(0, 80), empty: empty.slice(0, 60), calls: calls.map((c) => c.method), errs: W.errors }));
+    await W.ctx.close(); }
   // "unlock <key>" is the first thing handled: pasted with or without the space (or "unlock" twice) it is saved on this
   // device and nothing carrying the key leaves the page (it once went to the answer model and the miss board).
   { meEnv.READ_TOKEN = '0123456789abcdef0123456789abcdef'; const U = await fresh(); const leaked = []; // the server checks the key first (owner login) U.p.on('request', (r) => { if (/0123456789abcdef0123/.test(r.url() + (r.postData() || ''))) leaked.push(r.url()); });
