@@ -1,0 +1,51 @@
+# The list of what nobody knows (frontier #22): once a week Void reads two public lists of gaps (Wikipedia's most wanted pages and Stack Exchange
+# questions nobody has answered) and queues the top few for the builders at /api/queue as `gap:` jobs, at most 2 open at once, through the same
+# kind of limits as the miss door (tools/gaps.mjs, tools/gaps.test.mjs). Only titles and counts are read; a title is used only if it is a plain
+# topic and then only as quoted data; otherwise the job is Void's own summary. No model, no key: the step that reads the lists holds nothing but
+# the owner token to queue with. Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
+name: Void looks for gaps
+
+on:
+  schedule:
+    - cron: '17 16 * * 1' # Mondays
+  workflow_dispatch:
+    inputs:
+      dry:
+        description: show what would be queued, queue nothing
+        type: boolean
+        default: false
+
+concurrency:
+  group: void-gaps
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  gaps:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Checks
+        run: node --test tools/gaps.test.mjs
+      - name: Gaps become jobs
+        shell: bash
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          DRY: ${{ inputs.dry && '--dry' || '' }}
+        run: |
+          if [ -z "$VOID_OWNER_TOKEN" ]; then
+            echo "::warning title=Void did not look for gaps::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
+            exit 0
+          fi
+          if node tools/gaps.mjs $DRY | tee -a "$GITHUB_STEP_SUMMARY"; then :; else
+            echo "::warning title=The lists were not read::a public list was unreachable or the token was refused; it runs again next week"
+          fi

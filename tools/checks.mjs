@@ -53,6 +53,8 @@ for (const [name, file] of [
   ['next-skill', 'next-skill.test.mjs'],
   ['share', 'share.test.mjs'],
   ['advance', 'advance.test.mjs'],
+  ['sky', 'sky.test.mjs'],
+  ['gaps', 'gaps.test.mjs'],
   ['automations', 'automations.test.mjs'],
   ['actions', 'actions.test.mjs'],
   ['ringer', 'ringer.test.mjs'],
