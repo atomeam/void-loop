@@ -1,8 +1,8 @@
 // Void's build queue (D1): the owner asks Void to update itself; the laptop builder picks it up.
-// GET -> { items, heartbeat } · POST { ask, target } · PATCH { id?, state?, note?, heartbeat? } — all owner token.
+// GET -> { items, heartbeat } · POST { ask, target } · POST { op: 'draft-from-thread', from, request } · PATCH { id?, state?, note?, heartbeat? } — all owner token.
 import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';
-import { draftOnClaim } from '../../lib/job-draft.js';
+import { draftOnClaim, draftFromThread } from '../../lib/job-draft.js';
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 // The owner's view names its columns one by one in each query: a column added later (the way `draft` was) is shown
 // only once it is written in, never by accident. Every handler is owner-gated (`guard`); nothing public reads this table.
@@ -40,6 +40,9 @@ function wakeBuilder(ctx, item) {
 export const onRequestPost = guard(async (ctx) => {
   const { request, env } = ctx;
   const b = await body(request);
+  // the owner's mail thread from the extension ("draft for me: proposal"): when the sender's domain is a sale job's, the draft
+  // goes onto that job the way a claim drafts it (lib/job-draft.js draftFromThread); nothing is queued here
+  if (b.op === 'draft-from-thread') return Response.json(await draftFromThread(env, { from: String(b.from || '').slice(0, 200), request: String(b.request || '').slice(0, 8000) }));
   const ask = String(b.ask || '').slice(0, 200), target = String(b.target || 'next').slice(0, 40);
   await ensureDraft(env);
   const open = await env.DB.prepare("SELECT id, ask, target, state, note, at, updated, draft FROM void_queue WHERE target = ? AND state IN ('queued','building') LIMIT 1").bind(target).first();

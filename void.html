@@ -1146,6 +1146,15 @@ Object.values(things).forEach((th) => {
       const th = summonThing('proposal', { center: true, fields: d.fields, model: d.model, to: L.addressIn(r.text).to || '' });
       const sp = document.querySelector('.tab-said');
       if (sp) sp.textContent = 'proposal from Void' + (d.model === 'rules' ? ' (by rule, no model just now)' : '') + ' · in the proposal card, yours to edit';
+      // the buyer of a sale job wrote this thread: the draft goes onto that job too, the same way the job's claim drafts it
+      // (owner only; POST /api/queue op draft-from-thread, lib/job-draft.js), so a reply read in Gmail and one routed through
+      // the intake land in the same place. A thread from anyone else attaches nothing and writes nothing.
+      const tok = ownerToken(), from = L.addressIn(r.text).to || '';
+      if (tok && from) {
+        fetch('/api/queue', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + tok }, body: JSON.stringify({ op: 'draft-from-thread', from, request: r.text }) })
+          .then((x) => (x.ok ? x.json() : null)).then((j) => { const s2 = document.querySelector('.tab-said');
+            if (j && j.matched && s2) s2.textContent += ' · on the job for ' + (from.split('@')[1] || from) + ' (' + j.target + '): ' + j.line; }).catch(() => {});
+      }
       if (th && tab.field) extPropose({ action: 'fill', label: boxName(tab.field), box: 'mine', text: L.toPlain(d.fields), auto: true });
     }
     function mountTab(th) {
