@@ -652,6 +652,23 @@ class WindowsPaths(unittest.TestCase):
             self.assertTrue((folder / "a" / "held.dll").exists(), "the held file is kept, not lost")
             self.assertFalse((folder / "a" / "free.js").exists(), "everything else is still removed")
 
+    @unittest.skipUnless(os.name == "nt", "a held file is only refused like this on Windows; the simulation above covers the other platforms")
+    def test_a_file_held_open_on_windows_is_kept_and_reported(self):
+        """The real sharing violation: a file a program has open (no FILE_SHARE_DELETE) cannot be deleted. Nothing else is simulated."""
+        with tempfile.TemporaryDirectory() as t:
+            folder = Path(t) / "held app" / "node_modules"
+            write(folder / "a" / "held.dll", "x"); write(folder / "a" / "free.js", "y")
+            holder = open(folder / "a" / "held.dll", "rb")
+            try:
+                left = ouroboros._rmtree(folder)
+                self.assertIn("held.dll", [os.path.basename(x) for x in left])
+                self.assertTrue((folder / "a" / "held.dll").exists(), "the held file is kept, not lost")
+                self.assertFalse((folder / "a" / "free.js").exists(), "everything else is still removed")
+            finally:
+                holder.close()
+            self.assertEqual(ouroboros._rmtree(folder), [], "once the program lets go the folder goes")
+            self.assertFalse(folder.exists())
+
     def test_a_file_that_cannot_be_opened_reads_as_empty(self):
         with tempfile.TemporaryDirectory() as t:
             p = Path(t) / "held file.md"
