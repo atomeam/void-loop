@@ -156,7 +156,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Specs:** the explainers in `domains/void.explainers.md`, the quiz, the challenge and the shared contract in `domains/void.learning.md`. Tests first, then build.
 - **First piece:** the gear explainer, its required tests written before its geometry (`explainer.gear-pair/<case>`).
 - **Done when:** the gear, moon and lock payloads each pass into the quiz and the challenge unchanged, and every required test is in the suite.
-- **claim:**
+- **claim:** claude 2026-10-10: gear (step 1) and moon (#229) shipped; building 'quiz me on this' next; lock and challenge open
 
 ## 18. "Can you make it do this?": goals you meet by changing the miniature
 - **What:** a goal mode for the explainers of #17, not another standalone system. The visitor asks "give me a challenge with this"; a short goal appears beside the miniature ("make the driven gear turn half as fast as the driver", "move the Moon to a waxing phase with half its face lit", "choose the key and bring the lock to ready"); they use the miniature's own controls; **Check** compares the card's current observations with the goal, and the feedback says what matches and what still needs changing. A hint explains the relationship without giving away the configuration. No time pressure by default, no hidden grading.
