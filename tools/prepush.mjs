@@ -29,7 +29,7 @@ export function problemsIn(files) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const git = (...a) => execFileSync('git', a, { cwd: process.cwd(), encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 256e6 });
+  const git = (...a) => execFileSync('git', a, { cwd: process.cwd(), encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], maxBuffer: 256e6, timeout: 120e3 });
   const at = process.argv.indexOf('--base');
   let base = at >= 0 ? process.argv[at + 1] : '';
   if (!base) { try { base = git('rev-parse', '--abbrev-ref', '--symbolic-full-name', '@{upstream}').trim(); } catch (_) { base = 'origin/main'; } }
