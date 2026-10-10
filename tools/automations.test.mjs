@@ -65,7 +65,7 @@ function fakeEnv(extra = {}) {
       if (/DELETE FROM void_automations WHERE/.test(sql)) { const n = t.void_automations.length; t.void_automations = t.void_automations.filter((x) => x.id !== a[0]); return { meta: { changes: n - t.void_automations.length } }; }
       if (/INSERT INTO void_automation_runs/.test(sql)) { t.void_automation_runs.push({ id: a[0], rule_id: a[1], at: a[2], trigger: a[3], ok: a[4], log: a[5] }); return {}; }
       if (/DELETE FROM void_automation_runs/.test(sql)) { t.void_automation_runs = t.void_automation_runs.slice(-a[0]); return {}; }
-      if (/INSERT INTO void_queue/.test(sql)) { t.void_queue.push({ id: a[0], ask: a[1], target: a[2], state: a[3] }); return {}; }
+      if (/INSERT INTO void_queue/.test(sql)) { t.void_queue.push({ id: a[0], ask: a[1], target: a[2], state: a[3], at: a[5], updated: a[6] }); return {}; }
       // every step's execution record (lib/actions.js): written as running, then settled
       if (/INSERT INTO void_actions/.test(sql)) { const row = { id: a[0], owner: a[1], kind: a[2], ref: a[3], state: a[4], result: a[5], error: a[6], started: a[7], finished: a[8] }; const i = t.void_actions.findIndex((r) => r.id === a[0]); if (i >= 0) t.void_actions[i] = row; else t.void_actions.push(row); return {}; }
       if (/DELETE FROM void_actions/.test(sql)) return {};

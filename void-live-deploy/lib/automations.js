@@ -65,6 +65,8 @@ export function matches(rule, event) {
 /** is a scheduled rule due? lastRun: ISO time of its last run (any trigger), or null. The clock ticks about every 15
  * minutes and GitHub's crons run late, so a rule is due SLACK_MS early rather than skip a whole tick. */
 export const SLACK_MS = 3 * 60e3;
+export const RUN_CAP_DAY = 200;              // webhook runs of one rule per day (AUTOMATION_RUN_CAP overrides): a leaked secret stops here
+export const QUEUE_DEDUPE_MS = 6 * 3600e3;    // queue.add does not queue the same ask for the same target twice inside six hours
 export function due(rule, lastRun, now = Date.now()) {
   if (!rule || !rule.enabled || !rule.when || rule.when.on !== 'schedule') return false;
   const last = lastRun ? Date.parse(lastRun) : NaN;
