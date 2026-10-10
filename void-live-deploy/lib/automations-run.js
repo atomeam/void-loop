@@ -9,7 +9,7 @@
  * QUEUE_DEDUPE_MS. A leaked or looping hook secret costs at most a day's cap, not the build queue.
  */
 import { track } from './actions.js';
-import { validate, steps, matches, due, MAX_EVENT } from './automations.js';
+import { validate, steps, matches, due, MAX_EVENT, RUN_CAP_DAY, QUEUE_DEDUPE_MS } from './automations.js';
 import { evaluate, pageText, checkText, describe } from './watch.js';
 import { sameSecret } from './guard.js';
 
