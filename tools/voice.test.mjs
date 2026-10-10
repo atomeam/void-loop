@@ -1,4 +1,5 @@
 import test from 'node:test';
+import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { VOICE_SYSTEM, parseVoice, currentAsks, questionFor, knowsFacts, voiceFacts } from '../void-live-deploy/lib/voice.js';
@@ -113,6 +114,13 @@ test('the canon: Adam\'s motto and VoidQuest are read with their version; "(not 
   const { readCanon } = await import('./self-context.mjs');
   assert.deepEqual(readCanon('version: 3\n\n## Motto\nOne win at a time.\n\n## VoidQuest\nLearn every game, one at a time.\n'), { version: 3, motto: 'One win at a time.', voidquest: 'Learn every game, one at a time.' });
   assert.deepEqual(readCanon('version: 1\n\n## Motto\n(not written yet)\n\n## VoidQuest\n(not written yet)\n'), { version: 1, motto: null, voidquest: null });
+  // terms (asked by Void, 2026-10-10: "write the formal definitions for 'the forge' and 'frontier #14' into my canon")
+  const withTerms = readCanon('version: 2\n\n## Motto\n(not written yet)\n\n## Terms\n- **the forge**: Void\'s maker.\n- **frontier #14**: the item the forge answers.\n');
+  assert.deepEqual(withTerms.terms, [{ term: 'the forge', means: 'Void\'s maker.' }, { term: 'frontier #14', means: 'the item the forge answers.' }]);
+  assert.equal(withTerms.version, 2);
+  assert.match(knowsFacts({ canon: withTerms }), /My terms \(canon v2\): the forge = Void's maker\. \| frontier #14 = the item the forge answers\./);
+  const real = readCanon(fs.readFileSync(new URL('../domains/void.canon.md', import.meta.url), 'utf8'));
+  assert.ok(real.terms.some((x) => x.term === 'the forge' && /STL/.test(x.means)) && real.terms.some((x) => x.term === 'frontier #14'), 'the canon carries both terms Void asked for');
   assert.match(knowsFacts({ canon: { version: 1, motto: null, voidquest: 'Learn games.' } }), /My canon \(v1\): motto: not written yet, so I do not know it; VoidQuest: Learn games\./);
 });
 

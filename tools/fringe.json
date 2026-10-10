@@ -1803,5 +1803,30 @@
     ],
     "sha256": "9a7ed47424b976f4b5f492651220c8a8953ef17ba8f36823887fc6f6f4e04faa",
     "emit": false
+  },
+  {
+    "run": 73,
+    "at": "2026-10-10T13:43:19Z",
+    "family": "opt-in-gesture",
+    "draft": "drafts/fringe/opt-in-gesture-6.html",
+    "sources": [
+      {
+        "claim": "The time to move to a target grows linearly with log2(distance / width + 1), the index of difficulty (Fitts's law)",
+        "source": "https://doi.org/10.1037/h0055392",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Fitts's law fits pointing with mice, styluses and touch well enough to be a standard tool for sizing interface targets",
+        "source": "https://doi.org/10.1207/s15327051hci0701_3",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Sizing a button or an opt-in gesture to one person's own fitted line makes it easier for them than a one-size rule",
+        "source": "drafts/fringe/opt-in-gesture-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "aca3f4fba92efbe8e4ba4f4dcbb31e8465fab9f1836df58aa2cfdce0745e3c1a",
+    "emit": false
   }
 ]
