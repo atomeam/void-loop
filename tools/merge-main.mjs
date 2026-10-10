@@ -5,7 +5,7 @@
 // branch added after the name before them (tools/merge-index.mjs); if the two sides ordered shared skills differently it stops for a person.
 // Any other conflicted file stops the merge for a person.
 //   node tools/merge-main.mjs            fetch, merge, resolve the append-only records, commit (refused while any tracked file has a conflict marker)
-import { execSync } from 'node:child_process';
+import { execSync, execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 import { mergeIndex } from './merge-index.mjs';
@@ -21,7 +21,7 @@ sh('git fetch -q origin main');
 try { sh('git merge --no-edit origin/main'); console.log('merged origin/main (no conflicts)'); process.exit(0); } catch (_) {}
 
 const conflicted = sh('git diff --name-only --diff-filter=U').split('\n').filter(Boolean);
-const sideOf = (n, f) => { try { return execSync(`git show :${n}:${f}`, { encoding: 'utf8' }); } catch (_) { return ''; } };
+const sideOf = (n, f) => { try { return execFileSync('git', ['show', `:${n}:${f}`], { encoding: 'utf8' }); } catch (_) { return ''; } };
 let indexMerged = null; // the settled index text, or null when a person has to
 if (conflicted.includes(INDEX)) { try { const l = (n) => JSON.parse(sideOf(n, INDEX) || '[]'); const m = mergeIndex(l(1), l(2), l(3));
   if (m) indexMerged = JSON.stringify(m) + (sideOf(3, INDEX).endsWith('\n') ? '\n' : ''); } catch (_) {} }
