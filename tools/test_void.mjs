@@ -1170,10 +1170,10 @@ try {
     await W.ask("tell me when it's below 0 in Oslo", 900);
     await until(async () => W.p.$eval('.watch-row .watch-last', (e) => e.textContent).catch(() => ''), 5000);
     const row = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
-    await W.p.click('.watch-toggle'); await until(async () => /paused/.test(await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '')), 3000);
+    // pressed through the DOM: the card tilts toward the pointer (.lift), and a mouse click at its edge can land beside the button
+    await W.p.$eval('.watch-toggle', (b) => b.click()); await until(async () => /paused/.test(await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '')), 3000);
     const paused = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
-    // on, not once: with page.once the confirm is auto-dismissed in this Playwright (confirm() returns false, nothing is stopped)
-    W.p.on('dialog', (d) => d.accept()); await W.p.click('.watch-stop'); await until(async () => !(await W.p.$('.watch-row')), 3000);
+    W.p.on('dialog', (d) => d.accept()); await W.p.$eval('.watch-stop', (b) => b.click()); await until(async () => !(await W.p.$('.watch-row')), 3000);
     const empty = await W.p.$eval('.watch-list', (e) => e.innerText).catch(() => '');
     check('watch: "tell me when it\'s below 0 in Oslo" makes a watch (POST with the ask and the owner\'s key), the card shows it with its first check as evidence (a match, told on the stage), Pause pauses, Stop asks then removes it; a visitor is told watches are the owner\'s',
       /Unlock Void|owner/.test(visitor) && calls[0] && calls[0].method === 'POST' && calls[0].body.ask === "tell me when it's below 0 in Oslo" && /^Bearer owner-k$/.test(calls[0].auth)
