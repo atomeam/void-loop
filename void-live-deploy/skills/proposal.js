@@ -7,7 +7,7 @@
  * (lib/proposal.js: the model when it is on, the rules when it is not; the paste goes through redact first).
  * "turn this into a proposal", "make a proposal from this", "write a proposal for this request", "draft a proposal".
  */
-import { proposalOf, prepareProposal, ruleProposal, toMarkdown, fileNameOf, addressIn, FIELDS, PRICE_BLANK } from '../lib/proposal.js';
+import { proposalOf, prepareProposal, ruleProposal, toMarkdown, toPlain, fileNameOf, addressIn, FIELDS, PRICE_BLANK } from '../lib/proposal.js';
 
 const OWNER_KEY = 'a2m.void.owner.v1';
 const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || ''; } catch (_) { return ''; } };
@@ -74,7 +74,8 @@ function mount(th, stageApi) {
       if (!ownerToken()) { status.textContent = 'Sending is the owner\'s, and it stops on the confirm line. Unlock Void first.'; return; }
       if (!addressIn(to.value).to) { status.textContent = 'Add the customer\'s address first.'; to.focus(); return; }
       status.textContent = 'asking the confirm line…';
-      stageApi.ask('send this proposal "' + String((th.fields && th.fields.title) || 'Proposal').replace(/"/g, '”').slice(0, 80) + '" to ' + addressIn(to.value).to);
+      // the exact draft rides the ask: the fingerprint covers it, so the yes is on this text and no other
+      stageApi.ask('send this proposal "' + String((th.fields && th.fields.title) || 'Proposal').replace(/"/g, '”').slice(0, 80) + '" to ' + addressIn(to.value).to, { body: toPlain(th.fields) });
     }),
     btn('Draft again', 'proposal-redraft', () => { form.style.display = 'none'; paste.style.display = ''; }),
   );

@@ -420,6 +420,7 @@
     @keyframes auraDrift { to { transform: translate(3%, -2%) scale(1.08); } }
     #stage { perspective: 1400px; }
     #stage > .shrunk, #stage > .shrunk * { cursor: zoom-in; } /* a board shrunk beside a newer one: a tap brings it back */
+    .thing:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 3px; } /* a card the keyboard reached shows it */
     #stage > .thing.shrunk:focus-visible { outline: calc(3px / var(--sc, 1)) solid #ffe2a1; outline-offset: calc(4px / var(--sc, 1)); } /* the outline shrinks with the board: divided by its scale, it shows at 3px */
     .thing { transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
       transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .35s ease; filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); }
@@ -524,6 +525,9 @@
       }
     }
     #void-stars-far { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0; }
+    /* a world: one full-stage layer a skill draws behind every card (stageApi.setWorld), above the nebula */
+    #void-world { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1.2s ease; }
+    #void-world.on { opacity: 1; }
     #void-stars-far.on { opacity: .55; }
     /* ---- polish (2026-10-07): one type scale, calm cards that never sit under the ask bar ---- */
     :root {
@@ -756,6 +760,22 @@
     let selectedId = null;
     // stage kinds a skill file brings (3D figures and objects): { kind: { mount(th, S), dropped?(th, S), thrown?(th, S), throwable } }
     const stageKinds = {};
+    // worlds a skill file brings ({ mount(host, ctx) -> { update?(), dispose() } }): one full-stage layer behind the cards,
+    // one world at a time; setWorld(name, opts) swaps it, setWorld(null) clears it. Not saved: a world is what you asked for now.
+    const worlds = {};
+    let worldNow = null;
+    function setWorld(name, opts = {}) {
+      let host = document.getElementById('void-world');
+      if (worldNow) { try { worldNow.inst && worldNow.inst.dispose && worldNow.inst.dispose(); } catch (_) {} worldNow = null; }
+      if (host) { host.classList.remove('on'); host.innerHTML = ''; }
+      if (!name || !worlds[name]) return null;
+      if (!host) { host = document.createElement('div'); host.id = 'void-world'; host.setAttribute('aria-hidden', 'true'); document.body.insertBefore(host, stage); }
+      let inst = null;
+      try { inst = worlds[name].mount(host, { opts, still: !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) }); } catch (e) { console.warn('[world ' + name + ']', e); return null; }
+      worldNow = { name, inst };
+      requestAnimationFrame(() => host.classList.add('on'));
+      return worldNow;
+    }
     const stageDecorators = []; // skills that draw over the stage after each render and drag (labels and arrows: skills/label.js)
     function decorate() { for (const d of stageDecorators) { try { d(stageApi); } catch (_) {} } }
 
@@ -882,6 +902,14 @@ Object.values(things).forEach((th) => {
       const n = e.target.closest && e.target.closest('.thing.shrunk[data-id]'); if (!n || n !== e.target) return;
       e.preventDefault(); e.stopPropagation(); restoreThing(n.dataset.id, true);
     }, true);
+    // every card is a tab stop with a name, so the keyboard can reach one that has no control of its own (a timer, a clock, a note)
+    new MutationObserver(() => {
+      for (const el of stage.querySelectorAll(':scope > .thing')) {
+        if (el.hasAttribute('tabindex') || el.querySelector('button, a[href], input, textarea, select, [tabindex]')) continue;
+        el.setAttribute('tabindex', '0'); el.setAttribute('role', 'group');
+        if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', ((things[el.dataset.id] && things[el.dataset.id].kind) || 'card') + ' card');
+      }
+    }).observe(stage, { childList: true });
     stage.addEventListener('click', (e) => { if (Date.now() < swallowClick) { e.stopPropagation(); e.preventDefault(); swallowClick = 0; } }, true);
     const sizeWatch = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
       for (const e of entries) {
@@ -1223,11 +1251,11 @@ Object.values(things).forEach((th) => {
       stage.appendChild(el);
     }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
-    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
+    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, setWorld, world: () => (worldNow ? worldNow.name : null), bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
-      ask: (t) => handle(String(t || '')), // a card that opens something (the game rack's boxes) asks for it as if typed
+      ask: (t, attach) => { confirmAttach = attach && typeof attach === 'object' ? attach : null; return handle(String(t || '')); }, // a card that opens something asks as if typed; `attach` rides a gated ask into its fingerprint (the proposal's exact draft)
       log: (a) => loopLog(a) }; // a stage thing's own event (a shaken 8 ball) goes in the same history as asks
 
     // Click any stage object or person and it lifts in the hand. A flick throws it off the
@@ -4947,6 +4975,7 @@ return { ok: true, detail: 'timer-reset' };
         if (skill && skill.name && skill.match && skill.run) learnedSkills.push(skill);
         else missing.push(index[i]);
         if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
+        if (skill && skill.world && typeof skill.world.mount === 'function') worlds[skill.name] = skill.world;
         if (skill && typeof skill.decorate === 'function') stageDecorators.push(skill.decorate);
       }
       // An index entry with no file behind it, or a file without the {name,match,run} shape, is a
@@ -5146,6 +5175,7 @@ return { ok: true, detail: 'timer-reset' };
     const YES_RE = /^(yes|y|yeah|yep|yup|sure|do it|send it|book it|buy it|pay it|go ahead|confirm)\s*[.!]?$/;
     const NO_RE = /^(no|n|nope|cancel|stop|don'?t|no thanks|never ?mind)\s*[.!]?$/;
     let pendingConfirm = null, lastConfirm = null;
+    let confirmAttach = null; // set by stageApi.ask for one ask: exact content (the proposal draft) the yes must cover
     async function approvalCall(body) {
       const r = await fetch('/api/approval', { method: 'POST', headers: { authorization: 'Bearer ' + ownerToken(), 'content-type': 'application/json' }, body: JSON.stringify(body) });
       let j = null; try { j = await r.json(); } catch (_) {}
@@ -5153,8 +5183,10 @@ return { ok: true, detail: 'timer-reset' };
     }
     async function handleGatedAsk(text) {
       const core = await Promise.race([approvalReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      const attach = confirmAttach; confirmAttach = null; // one ask only, used or not
       const ask = core && core.parseGatedAsk(text);
       if (!ask) return false;
+      if (ask.toolName === 'proposal.send' && attach && typeof attach.body === 'string') ask.args.body = String(attach.body).slice(0, 8000);
       const nothing = core.NOTHING[core.GATED[ask.toolName].kind];
       if (!ownerToken()) { say('That one is for the person at the screen, asked by hand.'); return true; }
       const fp = await core.fingerprint(ask.toolName, ask.args);
@@ -6601,8 +6633,9 @@ return { ok: true, detail: 'timer-reset' };
     };
     const size = () => { if (!cv) return; cv.width = innerWidth; cv.height = innerHeight; build(); };
     const len = (p) => { let L = 0; for (let i = 1; i < p.length; i++) L += Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]); return L; };
+    const pulse = () => { const p = net[Math.floor(Math.random() * net.length)]; if (p) pulses.push({ p, L: len(p), at: 0, hue: Math.random() < .6 ? '90,200,255' : '170,130,255' }); };
     const step = (dt) => {
-      if (pulses.length < 2 && Math.random() < dt * .35) { const p = net[Math.floor(Math.random() * net.length)]; pulses.push({ p, L: len(p), at: 0, hue: Math.random() < .6 ? '90,200,255' : '170,130,255' }); }
+      if (pulses.length < 2 && Math.random() < dt * .35) pulse();
       ctx.clearRect(0, 0, cv.width, cv.height); ctx.lineCap = 'round';
       pulses = pulses.filter((u) => { u.at += dt * 70; const tail = 160; if (u.at - tail > u.L) return false;
         const a0 = Math.max(0, u.at - tail), a1 = Math.min(u.L, u.at); let acc = 0;
@@ -6624,7 +6657,7 @@ return { ok: true, detail: 'timer-reset' };
     const kick = () => { lastInput = performance.now(); if (cv && !raf && !document.hidden && on()) raf = requestAnimationFrame(draw); };
     const sync = () => {
       if (on() && !cv) { cv = document.createElement('canvas'); cv.id = 'void-syn'; cv.setAttribute('aria-hidden', 'true'); document.body.prepend(cv); ctx = cv.getContext('2d'); if (!ctx) { cv.remove(); cv = null; return; } size(); }
-      if (cv) { cv.classList.toggle('on', on()); kick(); }
+      if (cv) { const was = cv.classList.contains('on'); cv.classList.toggle('on', on()); if (on() && !was && !pulses.length) pulse(); kick(); } // the look just turned on: the first pulse starts now, not at random seconds later
     };
     addEventListener('void-fx', sync); addEventListener('resize', size);
     addEventListener('pointermove', kick, { passive: true }); addEventListener('keydown', kick, true);
