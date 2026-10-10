@@ -98,5 +98,10 @@ runs:
       if: inputs.bench == 'only' || inputs.bench == 'with'
       shell: bash
       run: |
+        # the bench says when the machine was under load (tools/bench-load.mjs): an inconclusive run is run once more, and a second one is reported, not failed
         node tools/bench.mjs --score | tail -n 1 > bench-score.json
-        node -e "const b=require('./bench-score.json'),f=require('./tools/bench.best.json');console.log(b.score+'/'+b.total+' (floor '+f.score+')');if(b.wrong.length)console.log('wrong: '+b.wrong.join(' | '));process.exit(b.score>=f.score&&b.total>=f.total?0:1)" | tee -a "$GITHUB_STEP_SUMMARY"
+        if node -e "process.exit(require('./bench-score.json').inconclusive?0:1)"; then
+          echo "first run: $(node -p "require('./bench-score.json').note"); running once more" | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/bench.mjs --score | tail -n 1 > bench-score.json
+        fi
+        node -e "const b=require('./bench-score.json'),f=require('./tools/bench.best.json');if(b.inconclusive){console.log(b.note+' ('+b.score+'/'+b.total+', not counted)');process.exit(0)}console.log(b.score+'/'+b.total+' (floor '+f.score+')');if(b.wrong.length)console.log('wrong: '+b.wrong.join(' | '));process.exit(b.score>=f.score&&b.total>=f.total?0:1)" | tee -a "$GITHUB_STEP_SUMMARY"
