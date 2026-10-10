@@ -20,6 +20,7 @@ Void in the browser's side panel. It works with the page you are on in two ways,
 - The panel (the extension, not the page in its frame) shows the step as a card: the site, the field or button by its visible label, and the text. Nothing happens until you press Yes there.
 - It acts only on a site on your list, "sites Void may act on" at the bottom of the panel. The list is empty until you add a site, lives in the extension's own storage, and only you edit it there; the page in the frame can't. A site not on the list gets no card at all.
 - A step never submits a form or presses Enter. A field is filled the way typing would fill it; a button that would send its form is refused, and you press it yourself. Two things with the same label is a refusal too.
+- Void proposes the step itself after a "draft for me: reply": on a site on your list, the reply comes back as the same card, "fill <the box you were in> with <the draft>", with the same Yes / No and the same record. Off the list the draft stays copy-only, as before, and nothing is said about acting.
 - Every step leaves an execution record (`/api/actions`, kind `extension.act`, ref "site · label"), written as running before the step and ended done or failed after; a No is recorded as stubbed. The owner sees them in Void's actions card ("my actions"). Without the owner's key there is no record, so there is no action.
 
 Chrome's own pages, the Web Store and some PDFs can't be read; Void says so. The old "Ask Void about '…'" menu, which sent the selection as an ask, is gone (Adam, 2026-10-09).
