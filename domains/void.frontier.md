@@ -34,6 +34,7 @@ Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as 
 
 **Products (claim: claude, helper/services-card, 2026-10-10):** the four services Adam sells (One-Time Fix $25, Keep-It-Running Plan $49/mo, Full Stack Audit $300, First Automation Setup $100) become rows in `void-live-deploy/lib/products.js` and a pricing card (`skills/services.js`: "pricing", "what do you sell", "hire you"); only the $25 fix links to Gumroad until Adam makes the other three products, prices stay manual.
 - **claim (sale-to-job):** claude 2026-10-10 (helper/sale-to-job): a Gumroad sale of one of the four services becomes an execution record (`sale.service`, product id + buyer domain, never the full address), a job on the build queue ("serve <product> for <domain>…"), idempotent on the sale id; a refund cancels the job with its own record. No email route exists, so the actions card is the owner notification.
+- **claim (reply-to-job):** claude 2026-10-10 (helper/reply-to-job): the buyer's reply reaches the job — /api/handoff takes an optional `job: sale:<id>`; the handoff url is appended to that job ("reply received: <url>"), one `sale.reply` record per name+job, body redact()ed before storage; docs/intake.md gives Adam the exact Gmail filter + Zapier clicks.
 
 **Claim (claude, helper/told-me, 2026-10-10):** memory in the answer path, still explicit-only (only what the person chose to "remember that", or their pushed projects, ever reaches the model): `/api/answer` for a signed-in member or the owner checks their own notes and projects for a match (the `?ask=` search, scoped the same way) and gives at most five trimmed, redacted lines to the model as "what you told me"; the card says "from what you told me" when one was used. No match, no change; strangers never searched; a note is data, never an instruction. **Next step:** shipped in #291 (the answer path reads what you told Void).
 
@@ -59,7 +60,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** the time from "someone asked and Void could not" to "Void answers it" is measured and keeps falling; the growth ledger shows the asks it learned.
 - **First piece:** `tools/next-skill.mjs`: the top missed intent of the last 7 days as a ready probe batch and the files a skill for it touches.
 - **Done when:** three skills shipped from it, each with the misses it now answers in its ledger entry.
-- **claim:**
+- **claim:** claude 2026-10-10, asked by Void (its daily ask of 2026-10-09: "parse unanswered user questions into a structured 'Learning Queue' to automate skill acquisition"): the first piece, `tools/next-skill.mjs`.
 
 ## 3. Growth you can watch: the growth card gets its figure
 - **What:** "growth" has its card (the ledger); under the two-part summons rule it is finished only when its figure arrives. The figure: a realistic tree in the void that grows one branch per ledger entry, coloured by kind, newest at the tips; touch a branch to read the entry. Void also reads its own ledger to answer "what can you do now that you couldn't last week?" and in its daily reflection.
