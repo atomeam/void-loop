@@ -1,7 +1,10 @@
-# The everyday benchmark (tools/bench.json, 1,600+ asks on the real page, about 15-25 min on a hosted runner). It is the
+# The everyday benchmark (tools/bench.json, 1,900+ asks on the real page, about 15-25 min on a hosted runner). It is the
 # biggest CI cost, so it does not run on every PR: the routines run it locally before they open a PR (tools/checks.mjs,
 # tools/test_void.mjs), the watchdog runs it on main every Sunday, and here it runs on a PR only when the benchmark
 # harness itself changes. Run it on any branch by hand: gh workflow run bench.yml --ref <branch>
+# It also runs on main once a day, when main has moved since the last good run here (a quiet day costs seconds), and after a
+# clean run on main it raises the floor (tools/bench.best.json) by itself: tools/bench-floor.mjs, never lowering it. A drop
+# below the floor fails the run, and that is a fix PR, never a wait.
 name: Void bench
 
 on:
@@ -11,6 +14,8 @@ on:
       - tools/bench.mjs
       - .github/workflows/bench.yml
       - .github/actions/void-test/**
+  schedule:
+    - cron: '47 9 * * *' # 5:47 AM New York (EDT), when main has moved
   workflow_dispatch:
 
 concurrency:
@@ -24,11 +29,45 @@ jobs:
   bench:
     runs-on: ubuntu-latest
     timeout-minutes: 40
+    permissions:
+      contents: write # the floor file on main, after a clean run there
+      actions: read # to find the last good run
     steps:
+      - name: Main moved since the last good run?
+        id: moved
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          last=$(gh api "repos/${{ github.repository }}/actions/workflows/bench.yml/runs?branch=main&status=success&per_page=1" --jq '.workflow_runs[0].head_sha // ""' || true)
+          if [ "$last" = "${{ github.sha }}" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "### main is still ${{ github.sha }}, which the last benchmark here passed: nothing to re-run" >> "$GITHUB_STEP_SUMMARY"
+          fi
       - uses: actions/checkout@v4
+        if: steps.moved.outputs.run != 'false'
         with:
           ref: ${{ github.event.pull_request.head.sha || github.sha }}
+          fetch-depth: 0
       - name: Everyday benchmark
+        if: steps.moved.outputs.run != 'false'
         uses: ./.github/actions/void-test
         with:
           bench: only
+      - name: Raise the floor if this clean run on main beats it (never lowers it)
+        if: steps.moved.outputs.run != 'false' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        run: |
+          set -o pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in 1 2 3 4; do
+            # decide again on the newest main each time: a floor raised meanwhile (a PR, another run) is never overwritten with less
+            git fetch -q origin main && git reset -q --hard origin/main
+            node tools/bench-floor.mjs bench-score.json --write | tee -a "$GITHUB_STEP_SUMMARY"
+            git diff --quiet tools/bench.best.json && exit 0
+            git add tools/bench.best.json
+            git commit -q -m "Bench floor raised by a clean run on main (tools/bench-floor.mjs)"
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i))
+          done
+          exit 1
