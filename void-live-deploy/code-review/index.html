@@ -164,7 +164,7 @@ jobs:
     var l = document.getElementById('learning');
     l.textContent = 'This month Void\'s rules caught ' + st.rulesFlagged + ' of ' + st.closerFound + ' findings its closer read made; ' + st.learned + ' rule' + (st.learned === 1 ? '' : 's') + ' learned from it' + (st.falseDropped ? ', ' + st.falseDropped + ' false claim' + (st.falseDropped === 1 ? '' : 's') + ' of its own filtered out' : '') + '.';
     l.hidden = false;
-  }).catch(function () {});
+  }).catch(function (e) { console.warn('[code-review] the scoreboard line could not load', e); }); // the line simply stays hidden
   // buying while signed in carries your Void's id, so the purchase unlocks that Void
   if (me && me.userId) { try { var u = new URL(GUMROAD); u.searchParams.set('void', me.userId); document.getElementById('buy').href = u.href; } catch (_) {} }
   fetch('/api/review?offer').then(function (r) { return r.json(); }).then(function (o) {
