@@ -206,6 +206,56 @@ const rec3 = records[2] || {};
 check('B3: even after Yes, a button that would submit its form is refused (you press send yourself), and the record says it failed',
   !(await page.evaluate(() => window.submitted)) && rec3.state === 'failed' && /submits/.test(rec3.result || ''), { records, said: await actSaid() });
 
+// B3, a short run: two or three steps as one card, a Yes for each in turn, the same allow list and records; it stops at the
+// first No or the first step the page refuses, and nothing after that runs
+const stepNow = () => panel.evaluate(() => (document.querySelector('.act-count') || {}).textContent || '');
+const pressStep = (sel, from) => press(sel, async () => !(await cardOn()) || (await stepNow()) !== from);
+const waitStep = (s) => panel.waitForFunction((t) => (document.querySelector('.act-count') || {}).textContent === t, s, { timeout: 8000 }).catch(() => {});
+const waitSaid = (re) => V.waitForFunction((src) => new RegExp(src).test((document.querySelector('.tab-act-said') || {}).textContent || ''), re.source, { timeout: 8000 }).catch(() => {});
+const pageNow = () => page.evaluate(() => ({ reply: document.getElementById('reply').value, saved: window.saved || 0, submitted: !!window.submitted }));
+let n0 = records.length;
+await propose('click a; click b; click c; click d');
+await waitSaid(/three steps at most/);
+const tooMany = { on: await cardOn(), said: await actSaid(), added: records.length - n0 };
+await page.evaluate(() => { document.getElementById('reply').value = 'before'; window.submitted = false; });
+const saved0 = (await pageNow()).saved;
+await propose('fill Reply with First; click Save; fill Reply with Third');
+await waitStep('step 1 of 3');
+const runCard = await panel.evaluate(() => ({ list: [...document.querySelectorAll('.act-steps li')].map((l) => l.textContent), hidden: document.querySelector('.act-steps').hidden, what: document.querySelector('.act-what').textContent }));
+await pressStep('.act-yes', 'step 1 of 3'); await waitStep('step 2 of 3');
+const midRun = { on: await cardOn(), page: await pageNow() };
+await pressStep('.act-no', 'step 2 of 3'); await waitSaid(/stopped at step 2 of 3/);
+const noRun = { page: await pageNow(), recs: records.slice(n0), said: await actSaid(), on: await cardOn() };
+check('B3 run: three steps come as one card listing them all, with a Yes for each in turn; a No at step 2 stops it: step 1 done, step 2 stubbed, step 3 never runs and leaves no record; four steps are refused outright',
+  !tooMany.on && /three steps at most/.test(tooMany.said) && tooMany.added === 0
+  && runCard.list.length === 3 && !runCard.hidden && /Reply/.test(runCard.list[0]) && /Save/.test(runCard.list[1]) && /Reply/.test(runCard.what)
+  && midRun.on && midRun.page.reply === 'First'
+  && noRun.page.reply === 'First' && noRun.page.saved === saved0 && noRun.recs.length === 2
+  && noRun.recs[0].state === 'done' && noRun.recs[0].ref === 'fixture.test · Reply' && noRun.recs[1].state === 'stubbed' && noRun.recs[1].ref === 'fixture.test · Save'
+  && /1 done before it/.test(noRun.said) && !noRun.on,
+  { tooMany, runCard, midRun, noRun });
+
+n0 = records.length;
+await propose('fill Reply with Second then click send then click Save');
+await waitStep('step 1 of 3');
+await pressStep('.act-yes', 'step 1 of 3'); await waitStep('step 2 of 3');
+await pressStep('.act-yes', 'step 2 of 3'); await waitSaid(/stopped at step 2 of 3/);
+const refusedRun = { page: await pageNow(), recs: records.slice(n0), said: await actSaid(), on: await cardOn() };
+check('B3 run: a step the page refuses stops the run: step 1 done, the send button refused (a failed record, nothing submitted), step 3 never runs and leaves no record',
+  refusedRun.page.reply === 'Second' && !refusedRun.page.submitted && refusedRun.page.saved === saved0 && refusedRun.recs.length === 2
+  && refusedRun.recs[0].state === 'done' && refusedRun.recs[1].state === 'failed' && /submits/.test(refusedRun.recs[1].result || '') && /press it yourself/.test(refusedRun.said) && !refusedRun.on,
+  refusedRun);
+
+n0 = records.length;
+await propose('fill Reply with Both done, then click Save');
+await waitStep('step 1 of 2');
+await pressStep('.act-yes', 'step 1 of 2'); await waitStep('step 2 of 2');
+await pressStep('.act-yes', 'step 2 of 2'); await waitSaid(/all 2 steps done/);
+const fullRun = { page: await pageNow(), recs: records.slice(n0), said: await actSaid() };
+check('B3 run: with a Yes at every step the whole run happens, each step with its own done record',
+  fullRun.page.reply === 'Both done' && fullRun.page.saved === saved0 + 1 && fullRun.recs.length === 2 && fullRun.recs.every((r) => r.state === 'done') && /all 2 steps done on fixture\.test/.test(fullRun.said),
+  fullRun);
+
 // B3 joined to the drafts: a "draft for me: reply" on an allowed site comes back as a proposed step, the same card with the
 // draft in it; on a site not on the list the draft stays copy-only, with no card and nothing said about acting
 const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
