@@ -64,7 +64,17 @@ report.sort((a, b) => ORDER[a.kind] - ORDER[b.kind] || a.file.localeCompare(b.fi
 // assignments (Python); redacted like the diff, at most 60 a file
 const TOP_LINE = /^(?:import\b|export\s+\{[^}]*\}\s*from\b|(?:export\s+)?(?:const|let|var)\s+(?:\{[^}]*\}|\[[^\]]*\]|[\w$]+)\s*=|(?:export\s+)?(?:async\s+)?function\s*\*?\s*[\w$]+|(?:export\s+)?class\s+[\w$]+|from\s+\S+\s+import\b|(?:async\s+)?def\s+\w+|class\s+\w+|[A-Za-z_]\w*\s*(?::\s*\w+)?\s*=\s)/;
 function topLines(file) { try { return redact(git('show', head + ':' + file)).split('\n').filter((l) => TOP_LINE.test(l)).map((l) => l.slice(0, 300)).slice(0, 60); } catch (_) { return []; } }
-let deepText = '', deepQuoted = null, deepWhy = ''; // quoted: { kept, dropped } from lib/review-api.js quoteCheck; deepWhy: why there is no closer read (the API's note, the status, the error)
+let deepText = '', deepQuoted = null, deepWhy = ''; // quoted: { kept, dropped } from lib/review-api.js quoteCheck; deepWhy: which side kept the closer read away
+// The footer names only the side, never the reason: 'access' (the key was not accepted, or refused), 'model' (busy or off), 'network' (no
+// answer, or not JSON). The exact reason stays in the Pages function's own log (functions/api/review.js), read with wrangler pages
+// deployment tail, because the PR comment is public and a reason there says more about the site's setup than it should.
+const unavailableSide = (j, status) => {
+  if (!j) return status === 401 || status === 403 ? 'access' : 'network';
+  if (j.review === 'model' && j.answer) return '';
+  const note = String(j.note || '');
+  if (/model|closer reads are used/i.test(note)) return 'model';
+  return 'access';
+};
 if (deep && Object.keys(files).length) {
   try {
     const deepFiles = Object.keys(files).filter((f) => !skippedInReview(f) && LANG[(f.match(/\.([\w]+)$/) || [])[1]]);
@@ -75,11 +85,11 @@ if (deep && Object.keys(files).length) {
       // hunks, and without them the closer read called imports at the top of the file missing (#254)
       const imports = {}; for (const f of deepFiles) { const ls = topLines(f); if (ls.length) imports[f] = ls; }
       const r = await fetch(deep, { method: 'POST', headers, body: JSON.stringify({ mode: 'review', ask: 'review this pull request', code: diff, diff, imports }), signal: AbortSignal.timeout(60000) });
-      const j = r.ok ? await r.json() : null;
+      let j = null; try { j = r.ok ? await r.json() : null; } catch (_) {}
       if (j && j.answer && j.review === 'model') { deepText = String(j.answer).trim(); deepQuoted = j.quoted || null; }
-      else deepWhy = j ? String(j.note || j.upgrade || j.error || ('review: ' + j.review + ', tier ' + j.tier)).slice(0, 160) : 'HTTP ' + r.status;
+      else deepWhy = unavailableSide(j, r.status);
     }
-  } catch (e) { deepWhy = String(e && e.message || e).slice(0, 160); }
+  } catch (_) { deepWhy = 'network'; }
 }
 
 // --inline: GitHub review comments, one per line with a bug or risk (however many checks fire on it), with a suggested
@@ -153,6 +163,6 @@ else {
 }
 if (deepText) out.push('', '#### A closer read', '', deepText);
 out.push('', blocking ? '**Blocking:** ' + blocking + ' bug' + (blocking > 1 ? 's and risks' : ' or risk') + ' to fix first (or mark a line that is right as written with a `void-review: ok` comment).' : '**Not blocking:** no bugs or risks in the added lines.');
-out.push('', '<sub>Reviewed ' + scanned + ' added line' + (scanned === 1 ? '' : 's') + ' in ' + (ms < 1000 ? ms + ' ms' : (ms / 1000).toFixed(1) + ' s') + (deepText ? ' (plus the closer read' + (deepQuoted ? ': ' + deepQuoted.kept + ' finding' + (deepQuoted.kept === 1 ? '' : 's') + ' quoted from the diff, ' + deepQuoted.dropped + ' claim' + (deepQuoted.dropped === 1 ? '' : 's') + ' about lines not in it dropped' : '') + ')' : deepWhy ? ' (no closer read: ' + deepWhy.replace(/</g, '&lt;') + ')' : '') + '. Pattern checks from void-live-deploy/lib/code-review.js, the same ones a-to-mind.com runs when someone asks Void to review code. Bugs and risks are worth a look; style is a suggestion.</sub>');
+out.push('', '<sub>Reviewed ' + scanned + ' added line' + (scanned === 1 ? '' : 's') + ' in ' + (ms < 1000 ? ms + ' ms' : (ms / 1000).toFixed(1) + ' s') + (deepText ? ' (plus the closer read' + (deepQuoted ? ': ' + deepQuoted.kept + ' finding' + (deepQuoted.kept === 1 ? '' : 's') + ' quoted from the diff, ' + deepQuoted.dropped + ' claim' + (deepQuoted.dropped === 1 ? '' : 's') + ' about lines not in it dropped' : '') + ')' : deepWhy ? ' (closer read unavailable (' + deepWhy + '))' : '') + '. Pattern checks from void-live-deploy/lib/code-review.js, the same ones a-to-mind.com runs when someone asks Void to review code. Bugs and risks are worth a look; style is a suggestion.</sub>');
 console.log(out.join('\n'));
 process.exit(gate);

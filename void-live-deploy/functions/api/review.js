@@ -49,6 +49,9 @@ async function access(request, env, now = Date.now()) {
     return { tier: 'pro', left: PRODUCT.daily - (row.day === today(now) ? Number(row.uses) || 0 : 0), spend: () => env.DB.prepare('UPDATE void_licenses SET uses = CASE WHEN day = ? THEN uses + 1 ELSE 1 END, day = ?, total = total + 1 WHERE hash = ?').bind(today(now), today(now), hash).run() };
   }
   if (await ownerOk(request, env)) return { tier: 'owner', left: Infinity, spend: async () => {} };
+  // a bearer that is no key, no license and not the owner: the reason goes to the function log only (wrangler pages deployment tail),
+  // never into the answer, because the PR comment that carries the answer is public. The token itself is never logged.
+  console.log('[review] closer read access: a bearer was sent that is no review key, no license and not the owner (' + (env && env.READ_TOKEN ? 'the owner token on this deployment differs from it' : 'READ_TOKEN is not set on this deployment') + ')');
   return free();
 }
 
