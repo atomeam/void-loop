@@ -11,7 +11,8 @@ import { spawnSync } from 'node:child_process';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
 const server = http.createServer((req, res) => {
-  let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+  // a path that is no URL (a doubled slash, '//?x', reads as a host) is a 400 for that request, never a crash of the whole suite
+  let p; try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (_) { res.writeHead(400); return res.end(); }
   if (p === '/') p = '/index.html';
   let f = path.join(root, p);
   if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
@@ -1060,9 +1061,9 @@ try {
   { // frontier #11: two tabs on one invite link (?with=<room>). Here the live relay is not there (no Durable Object in this
     // local server), so the tabs share through a BroadcastChannel: a clock summoned in one appears in the other, and the
     // other tab's cursor shows as a faint presence; closing that tab takes the presence away.
-    const room = 'aaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbb', S = await fresh({ base: base + '/?with=' + room });
+    const room = 'aaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbb', S = await fresh({ base: base + '?with=' + room });
     const B = await S.ctx.newPage(); const errsS = []; B.on('pageerror', (e) => errsS.push(String(e && e.message || e)));
-    await B.goto(base + '/?with=' + room); await B.waitForTimeout(900);
+    await B.goto(base + '?with=' + room); await B.waitForTimeout(900);
     const saidA = await S.whisper();
     await S.ask('clock', 900);
     const onB = await B.$$eval('.thing', (n) => n.length); // on B's own stage (both tabs share one localStorage, so the saved state proves nothing)
@@ -1152,6 +1153,7 @@ try {
   // the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the asker's scope and the card shows
   // its first check as evidence; "my watches" lists them with pause and stop; a visitor without a key is told whose it is
   { const V = await fresh();
+    await V.ctx.route(/\/api\/watch(?:\?|$)/, (r) => r.fulfill({ status: 401, body: 'no' })); // as functions/api/watch.js answers a stranger
     await V.ask("tell me when it's below 0 in Oslo", 900);
     const visitor = await V.p.$eval('.watch-card .watch-status', (e) => e.textContent).catch(() => '');
     await V.ctx.close();
@@ -1168,9 +1170,10 @@ try {
     await W.ask("tell me when it's below 0 in Oslo", 900);
     await until(async () => W.p.$eval('.watch-row .watch-last', (e) => e.textContent).catch(() => ''), 5000);
     const row = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
-    await W.p.click('.watch-toggle'); await until(async () => /paused/.test(await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '')), 3000);
+    // pressed through the DOM: the card tilts toward the pointer (.lift), and a mouse click at its edge can land beside the button
+    await W.p.$eval('.watch-toggle', (b) => b.click()); await until(async () => /paused/.test(await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '')), 3000);
     const paused = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
-    W.p.once('dialog', (d) => d.accept()); await W.p.click('.watch-stop'); await until(async () => !(await W.p.$('.watch-row')), 3000);
+    W.p.on('dialog', (d) => d.accept()); await W.p.$eval('.watch-stop', (b) => b.click()); await until(async () => !(await W.p.$('.watch-row')), 3000);
     const empty = await W.p.$eval('.watch-list', (e) => e.innerText).catch(() => '');
     check('watch: "tell me when it\'s below 0 in Oslo" makes a watch (POST with the ask and the owner\'s key), the card shows it with its first check as evidence (a match, told on the stage), Pause pauses, Stop asks then removes it; a visitor is told watches are the owner\'s',
       /Unlock Void|owner/.test(visitor) && calls[0] && calls[0].method === 'POST' && calls[0].body.ask === "tell me when it's below 0 in Oslo" && /^Bearer owner-k$/.test(calls[0].auth)
