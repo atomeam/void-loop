@@ -252,7 +252,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** nobody has solved "describe a spinning 3D object to someone who can't see it"; this finds where the page stops before we get there.
 - **First piece:** `tools/a11y-flows.mjs` in the suite, a log line per step.
 - **Done when:** the report names every step that fails and each has a fix queued.
-- **claim:** **Claim (claude, helper/a11y-flows, 2026-10-10):** the flows check and its report. **Next step:** claim written before building.
+- **claim:** **Claim (claude, helper/a11y-flows, 2026-10-10):** the flows check and its report. **Shipped:** `tools/a11y-flows.mjs` (13 steps: 10 keyboard, 3 reduced motion; each says whether it holds or how it falls short), `tools/a11y-run.mjs` (the flows alone, about half a minute) and a suite check that runs them and prints the report (shortfalls are findings, not failures). First report: 10 of 13 hold. **Falls short:** (1) `reach-card`: twelve Tab presses from the ask box never reach anything inside the stage, so a new card's controls cannot be reached by keyboard; (2) `focus-visible`: the focused ask box has no outline or ring; (3) `dismiss`: Escape does not close a card (it closes an answer page), so there is no keyboard way to remove one. **Next step:** fix those three one by one (each fix turns its step into a line that must hold: the check then fails if it regresses); then the persona set (screen reader, slow phone, colour blind, non-English, a child) and the spoken description of a 3D object.
 
 ## Candidate capability map (2026-10-09)
 

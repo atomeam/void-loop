@@ -1144,6 +1144,15 @@ try {
       !!live && !hid && kept.length === 1 && kept[0] && Math.abs(kept[0].x - Math.round(live.x)) <= 2 && Math.abs(kept[0].y - Math.round(live.y)) <= 2 && !!again && Math.hypot(again.x - kept[0].x, again.y - kept[0].y) <= 3,
       JSON.stringify({ live: live && [live.x, live.y], kept, hid, again: again && [again.x, again.y] }));
     await L.ctx.close(); }
+  // the visitors Void would exclude (frontier #23, tools/a11y-flows.mjs): the main flows with the keyboard alone and with reduced motion, each step reporting whether it
+  // holds or where it falls short. The shortfalls are printed for the log and are findings, not failures (fixes come after); the check fails only if the flows cannot run.
+  { const { runFlows, formatReport } = await import(new URL('./a11y-flows.mjs', import.meta.url).href);
+    const report = await runFlows(fresh);
+    console.log('a11y flows (' + report.filter((x) => x.ok).length + ' of ' + report.length + ' hold):\n' + formatReport(report).split('\n').map((l) => '  ' + l).join('\n'));
+    const broken = report.filter((x) => /^could not be checked/.test(x.why || ''));
+    check('a11y: the main flows ran with the keyboard alone and with reduced motion, and every step has a verdict (shortfalls are reported in the log, as findings)',
+      report.length >= 13 && broken.length === 0 && report.every((x) => typeof x.ok === 'boolean'), JSON.stringify(broken.length ? broken : report.map((x) => [x.id, x.ok])));
+  }
   { const G = await fresh(); let n = 0;
     await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
     await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
