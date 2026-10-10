@@ -117,6 +117,55 @@ export function stage3mf(things) {
   ]);
 }
 
+/** Before the stage's print file is handed over (Void's ask: check the held file's integrity before finalizing): open the
+ *  package just built and hold it to the triangles it came from. A whole zip (its end record, every local header where the
+ *  directory says), each part's bytes matching their CRC-32 and size, the three parts a slicer needs, and a model with one
+ *  triangle per stage triangle, every coordinate a number, every corner a vertex that exists, no triangle collapsed to a
+ *  line. { ok, problems: [why, in words], triangles, parts } — pure, from the bytes alone. */
+export function verify3mf(bytes, tris) {
+  const problems = [], parts = [], b = bytes instanceof Uint8Array ? bytes : new Uint8Array(bytes || []);
+  const dv = new DataView(b.buffer, b.byteOffset, b.byteLength), files = new Map();
+  const end = b.length - 22;
+  if (end < 0 || dv.getUint32(end, true) !== 0x06054b50) return { ok: false, problems: ['the file is not a whole zip (no end record)'], triangles: 0, parts };
+  const count = dv.getUint16(end + 10, true), cenSize = dv.getUint32(end + 12, true), cenAt = dv.getUint32(end + 16, true);
+  if (cenAt + cenSize !== end) problems.push('the zip directory is not where its end record says');
+  let p = cenAt;
+  for (let i = 0; i < count && p + 46 <= end; i++) {
+    if (dv.getUint32(p, true) !== 0x02014b50) { problems.push('the zip directory is broken at entry ' + (i + 1)); break; }
+    const crc = dv.getUint32(p + 16, true), size = dv.getUint32(p + 24, true), nameLen = dv.getUint16(p + 28, true), local = dv.getUint32(p + 42, true);
+    const name = new TextDecoder().decode(b.subarray(p + 46, p + 46 + nameLen));
+    parts.push(name);
+    if (local + 30 > b.length || dv.getUint32(local, true) !== 0x04034b50) problems.push(name + ' is not where the directory says');
+    else {
+      const start = local + 30 + dv.getUint16(local + 26, true) + dv.getUint16(local + 28, true), data = b.subarray(start, start + size);
+      if (data.length !== size) problems.push(name + ' is cut short');
+      else if (crc32(data) !== crc) problems.push(name + ' does not match its checksum');
+      else files.set(name, data);
+    }
+    p += 46 + nameLen + dv.getUint16(p + 30, true) + dv.getUint16(p + 32, true);
+  }
+  for (const need of ['[Content_Types].xml', '_rels/.rels', '3D/3dmodel.model']) if (!parts.includes(need)) problems.push('the package has no ' + need);
+  let triangles = 0;
+  const model = files.get('3D/3dmodel.model');
+  if (model) {
+    const xml = new TextDecoder().decode(model);
+    const verts = [...xml.matchAll(/<vertex x="([^"]*)" y="([^"]*)" z="([^"]*)"\/>/g)], faces = [...xml.matchAll(/<triangle v1="(\d+)" v2="(\d+)" v3="(\d+)"\/>/g)];
+    triangles = faces.length;
+    const nan = verts.filter((m) => [m[1], m[2], m[3]].some((x) => !Number.isFinite(Number(x)))).length;
+    if (nan) problems.push(nan + ' vertices have a coordinate that is not a number');
+    let missing = 0, collapsed = 0;
+    for (const f of faces) {
+      const ids = [+f[1], +f[2], +f[3]];
+      if (ids.some((i) => i >= verts.length)) missing++;
+      if (new Set(ids).size < 3) collapsed++;
+    }
+    if (missing) problems.push(missing + ' triangles point at vertices that do not exist');
+    if (collapsed) problems.push(collapsed + ' triangles are collapsed to a line');
+    if (tris && triangles !== tris.length) problems.push('the model holds ' + triangles + ' triangles, the stage has ' + tris.length);
+  }
+  return { ok: !problems.length, problems, triangles, parts };
+}
+
 function save3mf(bytes) {
   const blob = new Blob([bytes], { type: 'model/3mf' });
   const a = document.createElement('a');
@@ -128,7 +177,7 @@ function save3mf(bytes) {
   setTimeout(() => URL.revokeObjectURL(a.href), 4000);
 }
 
-async function run(text, api) {
+async function run(text, api, verify = verify3mf) {
   const hit = printFileOf(text);
   if (!hit) return 'none';
   const things = api.stage && api.stage.things ? api.stage.things() : {};
@@ -137,8 +186,14 @@ async function run(text, api) {
     if (api.say) api.say('the stage is empty');
     return 'print-file';
   }
+  // the file is checked before it is handed over: only one that passes is saved
+  const v = verify(file, stageTriangles(things));
+  if (!v.ok) {
+    if (api.say) api.say('Not saved: the stage\'s print file did not pass its check · ' + v.problems.join(' · '));
+    return 'print-file';
+  }
   save3mf(file);
-  if (api.say) api.say('void-stage.3mf · ' + Object.values(things).filter((t) => t && t.kind === 'fig3d').length + ' on the stage');
+  if (api.say) api.say('Checked: void-stage.3mf · ' + Object.values(things).filter((t) => t && t.kind === 'fig3d').length + ' on the stage · ' + v.triangles + ' triangles, every part whole');
   return 'print-file';
 }
 
@@ -149,6 +204,7 @@ export default {
   printFileOf,
   stageTriangles,
   stage3mf,
+  verify3mf,
   match(lower, text) { return !!printFileOf(text); },
   run
 };
