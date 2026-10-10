@@ -28,6 +28,8 @@ test('the ways people ask for a proposal open it, and the paste is kept; look-al
   assert.equal(proposalOf('turn this into a proposal:\n' + REQUEST).request, REQUEST);
   assert.equal(proposalOf('turn this email into a proposal: we need our order flow fixed by June').request, 'we need our order flow fixed by June');
   assert.equal(proposalOf('write a proposal for this\n' + REQUEST).request, REQUEST);
+  // pasted into the page's one-line ask box: the line breaks arrive as ' ⏎ ' (blank lines fold) and the whole request is kept, not just its first line
+  assert.equal(proposalOf('turn this into a proposal: ' + REQUEST.replace(/\s*\r?\n\s*/g, ' ⏎ ')).request, REQUEST.replace(/\n{2,}/g, '\n'));
   for (const a of ['what is a proposal', 'propose a toast', 'marriage proposal ideas', 'research proposal format', 'proposal writing tips', 'how do I write a proposal', 'proposal', ''])
     assert.equal(proposalOf(a), null, a);
   for (const e of skill.examples) assert.ok(skill.match(e.toLowerCase(), e), e);

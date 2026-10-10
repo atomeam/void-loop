@@ -1125,26 +1125,29 @@ try {
   // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent
   { const P = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '");' });
     const REQ = 'Hi Adam,\n\nWe run a small bakery in Portland and our online orders come in through Shopify. We need the Zapier zap that copies each order into our Google Sheet fixed: since last week every order shows up twice and the morning bake list is wrong. We would also like someone to check the whole flow once a month so it does not break again before the holidays.\n\nCan you tell us what you would do and when you could start?\n\nThanks,\nMaria\nmaria@sunrisebakery.example';
-    // the ask box is a one-line <input>: like a real paste, each line break arrives as a space, so that is what the card keeps
-    const typedREQ = REQ.replace(/\r?\n/g, ' ');
+    // pasted the way a person pastes it: the one-line ask box keeps each line break as ' ⏎ ' (void.html's paste handler; blank
+    // lines fold) and the card keeps the whole request with its lines, not just the first one (lib/proposal.js multi)
+    const pastedREQ = REQ.replace(/\n{2,}/g, '\n');
     const actionsBefore = gate.env.DB.actions.size, callsBefore = gate.calls.length;
-    await P.p.fill('#input', 'turn this into a proposal:\n' + REQ); await P.p.keyboard.press('Enter');
+    await P.p.fill('#input', 'turn this into a proposal: '); await P.p.focus('#input');
+    await P.p.evaluate((x) => { const dt = new DataTransfer(); dt.setData('text/plain', x); document.querySelector('#input').dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true })); }, REQ);
+    await P.p.keyboard.press('Enter');
     await until(async () => P.p.$eval('.proposal-field[data-field="title"]', (e) => e.value).catch(() => ''), 6000);
     const field = (k) => P.p.$eval('.proposal-field[data-field="' + k + '"]', (e) => e.value).catch(() => '');
     const drafted = { title: await field('title'), asked: await field('asked'), scope: await field('scope'), price: await field('price'), timeline: await field('timeline'), next: await field('next'), to: await P.p.$eval('.proposal-to', (e) => e.value).catch(() => '') };
     await P.p.fill('.proposal-field[data-field="title"]', 'Fix the double orders'); await P.p.waitForTimeout(200);
     const kept = await P.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).find((t) => t.kind === 'proposal'));
-    await P.p.click('.proposal-send'); await P.p.waitForTimeout(900);
+    await P.p.$eval('.proposal-send', (b) => b.click()); await P.p.waitForTimeout(900); // a DOM click: the centred card's foot can sit under the ask dock in a short viewport
     const line = await P.whisper();
     const rec = [...gate.env.DB.actions.values()].slice(actionsBefore).find((a) => a.kind === 'proposal.send');
     check('proposal card: the pasted request becomes the proposal\'s fields (what they asked for, scope, a blank price line, timeline, next step, the customer\'s address), an edit is kept, Send asks the confirm line and records a stubbed proposal.send for the customer\'s domain, nothing sent',
       /^Proposal: the Zapier zap/.test(drafted.title) && /check the whole flow once a month/.test(drafted.asked) && /^- We need the Zapier zap/.test(drafted.scope) && /out of scope\]$/.test(drafted.scope)
       && drafted.price === '[price: left for the owner to fill in]' && /^\[/.test(drafted.timeline) && /Reply with a yes/.test(drafted.next) && drafted.to === 'maria@sunrisebakery.example'
-      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === typedREQ
+      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === pastedREQ
       && line === 'Send the proposal \u201cFix the double orders\u201d to maria@sunrisebakery.example? Yes / No'
       && gate.calls.slice(callsBefore).some((c) => c.type === 'a2m.approval.requested' && c.toolName === 'proposal.send' && c.args.to === 'maria@sunrisebakery.example')
       && rec && rec.state === 'stubbed' && rec.ref === 'sunrisebakery.example' && /nothing is sent/.test(rec.result || '') && gate.ran.length === ranBeforeProposal && !P.errors.length,
-      JSON.stringify({ drafted, kept: kept && { title: kept.fields && kept.fields.title }, line, rec, errs: P.errors }).slice(0, 600));
+      JSON.stringify({ drafted: { ...drafted, asked: drafted.asked.slice(0, 40), scope: drafted.scope.slice(0, 40) + '…' + drafted.scope.slice(-30) }, kept: kept && { title: kept.fields && kept.fields.title, request: kept.request === pastedREQ || kept.request }, line, rec: rec && { state: rec.state, ref: rec.ref, result: rec.result }, errs: P.errors }).slice(0, 900));
     await P.ask('no', 600);
     await P.ctx.close(); }
   // the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the asker's scope and the card shows
