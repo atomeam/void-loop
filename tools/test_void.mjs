@@ -1093,6 +1093,24 @@ try {
       && noon.sky.daylight > night.sky.daylight && noon.sky.drifting === true && still.sky.drifting === false && still.glow === noon.glow && moving.sky.drifting === true && !K.errors.length,
       JSON.stringify({ place, noon, night, still: still.sky && still.sky.drifting, errs: K.errors }));
     await K.ctx.close(); }
+  // sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioContext (the game sound effects in skills/sfx.js open their own on the first tap, so the drone's is the one that gets oscillators)
+  // proves nothing is built before the tap, the tap builds one drone of four voices, and the same button mutes it.
+  { const fake = `window.__au = { all: [] }; window.AudioContext = class { constructor() { this.rec = { osc: 0, master: [] }; window.__au.all.push(this.rec); this.state = 'running'; this.currentTime = 0; this.destination = {}; this.sampleRate = 8000; this.n = 0; }
+      resume() { return Promise.resolve(); } suspend() { return Promise.resolve(); } close() {}
+      createBuffer() { return { getChannelData: () => new Float32Array(8) }; } createBufferSource() { return { connect() {}, start() {}, stop() {}, playbackRate: { value: 1 } }; }
+      createGain() { const rec = this.rec, first = this.n++ === 0; return { connect() {}, gain: { value: 0, setTargetAtTime(v) { this.value = v; if (first) rec.master.push(v); }, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} } }; }
+      createBiquadFilter() { return { connect() {}, type: '', Q: { value: 0 }, frequency: { value: 0, setTargetAtTime() {}, setValueAtTime() {} } }; }
+      createOscillator() { const rec = this.rec; return { connect() {}, start() { rec.osc++; }, stop() {}, type: '', frequency: { value: 0, setTargetAtTime() {}, setValueAtTime() {} }, detune: { value: 0 } }; } };`;
+    const S = await fresh({ content: fake }); await S.p.waitForTimeout(400);
+    const read = () => S.p.evaluate(() => { const d = window.__au.all.find((c) => c.osc > 0), b = document.getElementById('sound'); return { drones: window.__au.all.filter((c) => c.osc > 0).length, osc: d ? d.osc : 0, last: d ? d.master[d.master.length - 1] : null, pressed: b && b.getAttribute('aria-pressed'), label: b && b.getAttribute('aria-label') }; });
+    const before = await read(); await S.p.click('#sound'); await S.p.waitForTimeout(400);
+    const on = await read(); await S.p.click('#sound'); await S.p.waitForTimeout(200);
+    const off = await read(); await S.p.click('#sound'); await S.p.waitForTimeout(200);
+    const again = await read();
+    check('sound: off until a tap (no oscillator, a visible speaker button that says so); the tap builds one drone of four voices at a quiet volume; the same button mutes to silence and unmutes without building another', before.osc === 0 && before.pressed === 'false' && /on/i.test(before.label || '')
+      && on.drones === 1 && on.osc === 4 && on.pressed === 'true' && on.last > 0 && on.last <= 0.06
+      && off.pressed === 'false' && off.last === 0 && again.pressed === 'true' && again.drones === 1 && again.osc === 4 && again.last > 0 && !S.errors.length, JSON.stringify({ before, on, off, again, errs: S.errors }));
+    await S.ctx.close(); }
   { const Lk = await fresh({ content: 'localStorage.setItem("a2m.void.look.v1", JSON.stringify({ bg: "#101010", glow: "#202020", fx: "off" }));' });
     await Lk.p.waitForTimeout(500);
     const v = await Lk.p.evaluate(() => ({ glow: getComputedStyle(document.documentElement).getPropertyValue('--void-glow').trim(), sky: getComputedStyle(document.documentElement).getPropertyValue('--sky-glow').trim(), on: document.documentElement.classList.contains('sky-on') }));
