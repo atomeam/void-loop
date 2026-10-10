@@ -5689,5 +5689,13 @@
   {"ask": "solar eclipse 2026", "want": "skill:eclipse"},
   {"ask": "when is the next annular eclipse", "want": "skill:eclipse"},
   {"ask": "eclipse 2027", "want": "skill:eclipse"},
-  {"ask": "next eclipse of the moon", "want": "skill:eclipse"}
+  {"ask": "next eclipse of the moon", "want": "skill:eclipse"},
+  {"ask": "view a gaussian splat", "want": "skill:splat"},
+  {"ask": "open a splat file", "want": "skill:splat"},
+  {"ask": "splat viewer", "want": "skill:splat"},
+  {"ask": "show me a splat", "want": "skill:splat"},
+  {"ask": "load a 3dgs scan", "want": "skill:splat"},
+  {"ask": "open a .splat file", "want": "skill:splat"},
+  {"ask": "gaussian splatting viewer", "want": "skill:splat"},
+  {"ask": "view a splat scan", "want": "skill:splat"}
 ]
