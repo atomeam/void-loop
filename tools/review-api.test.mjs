@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as api from '../void-live-deploy/functions/api/review.js';
 import { ensureTables, sessionId } from '../void-live-deploy/lib/void-me.js';
-import { quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, QUOTE_RULE, parseFinding, evidenceLines, quoteCheck } from '../void-live-deploy/lib/review-api.js';
+import { quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, JSON_RULE, FINDINGS_SCHEMA, parseFinding, evidenceLines, quoteCheck, parseFindingsJson, validateFindings, renderFindings } from '../void-live-deploy/lib/review-api.js';
 
 function d1() {
   const db = new DatabaseSync(':memory:');
@@ -41,7 +41,7 @@ test('a diff is checked on its added lines, with the new file\'s line numbers', 
 });
 
 test('Pro keys: only a paid account mints one; only its hash is kept; it unlocks the closer read', async () => {
-  const calls = [], env = await envWith({ ai: ai('Line 2: = should be ===.', calls) });
+  const calls = [], env = await envWith({ ai: ai(JSON.stringify({ findings: [{ file: '', line: 2, kind: 'bug', text: '= should be ===', quote: '  if (x = 5) { return eval(x); }' }] }), calls) });
   assert.equal((await call(api.onRequestPost, env, { action: 'key' })).status, 401);
   const m = await (await call(api.onRequestPost, env, { action: 'key' }, TOKEN)).json();
   assert.ok(KEY_RE.test(m.key), m.key);
@@ -129,17 +129,24 @@ test('the owner always gets the closer read, free, with no daily cap', async () 
 
 // The closer read sees only the diff: without the file's imports it called `redact` and `INJECTION_RULE` missing on #254 and the
 // "[redacted]" mask a syntax error on #256. The imports go along now, the prompt says so, and the filter catches a model that ignores it.
-const PHANTOM_READ = '### Bugs\n\n*   **Line 149 (answer.js):** The `draftAnswer` function uses `redact` inside the `try` block, but `redact` is not defined in the local scope of `answer.js`. This will cause a ReferenceError and crash the request.\n    *   **Fix:** import it.\n    ```javascript\n    import { redact } from \'../../lib/automation-fix.js\';\n    ```\n\n*   **Line 144 (answer.js):** `INJECTION_RULE` is used but is not imported or defined in the provided snippet. This will cause a ReferenceError.\n\n*   **Line 150 (answer.js):** `frobnicate(p)` is called but `frobnicate` is not defined anywhere.\n\n### Security\n\n*   **Line 28:** `TOKEN` is assigned using `[redacted]`, which is not a valid value and will throw a SyntaxError.\n\n### Readability\n\n*   **Line 11:** the array is long.';
+const PHANTOM_READ = JSON.stringify({ findings: [
+  { file: 'answer.js', line: 149, kind: 'bug', text: 'The `draftAnswer` function uses `redact`, but `redact` is not defined in answer.js. This will cause a ReferenceError.', quote: '  const p = prepareDraft(body, redact);' },
+  { file: 'answer.js', line: 144, kind: 'bug', text: '`INJECTION_RULE` is used but is not imported or defined in the provided snippet.', quote: "  const m = [{ role: 'system', content: DRAFT_SYSTEM + INJECTION_RULE }];" },
+  { file: 'answer.js', line: 150, kind: 'bug', text: '`frobnicate(p)` is called but `frobnicate` is not defined anywhere.', quote: '  return frobnicate(p);' },
+  { file: 'answer.js', line: 28, kind: 'risk', text: '`TOKEN` is assigned using `[redacted]`, which is not a valid value.', quote: "  const m = [{ role: 'system', content: DRAFT_SYSTEM + INJECTION_RULE }];" },
+] });
 test('closer read on a diff: the touched file\'s imports go to the model with the rule, a "not defined" claim about an imported name or about the mask is dropped, and a genuinely undefined name stays', async () => {
   const calls = []; const env = await envWith({ ai: ai(PHANTOM_READ, calls) }); env.READ_TOKEN = 'owner-secret-0123456789';
   const diff = 'diff --git a/answer.js b/answer.js\n--- a/answer.js\n+++ b/answer.js\n@@ -140,3 +140,6 @@\n async function draftAnswer(request, env, body) {\n+  const p = prepareDraft(body, redact);\n+  const m = [{ role: \'system\', content: DRAFT_SYSTEM + INJECTION_RULE }];\n+  return frobnicate(p);\n }\n';
   const r = await (await call(api.onRequestPost, env, { diff, imports: { 'answer.js': ["import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';", "import { prepareDraft, DRAFT_SYSTEM } from '../../lib/draft.js';"] } }, env.READ_TOKEN)).json();
   assert.equal(r.review, 'model');
   const sys = calls[0].messages[0].content, user = calls[0].messages[1].content;
-  assert.ok(user.includes(DIFF_RULE), 'the diff rule'); assert.ok(user.includes('answer.js:\n  import { redact, INJECTION_RULE }'), 'the imports'); assert.ok(sys.includes(MASK_RULE), 'the mask rule');
-  assert.doesNotMatch(r.answer, /Line 149|Line 144|\[redacted\]|SyntaxError/);
-  assert.match(r.answer, /frobnicate/);
-  assert.match(r.answer, /### Bugs/); assert.doesNotMatch(r.answer, /### Security/); assert.match(r.answer, /### Readability/);
+  assert.ok(user.includes(DIFF_RULE), 'the diff rule'); assert.ok(user.includes('answer.js:\n  import { redact, INJECTION_RULE }'), 'the imports'); assert.ok(sys.includes(MASK_RULE), 'the mask rule'); assert.ok(sys.includes(JSON_RULE), 'JSON only');
+  assert.deepEqual(calls[0].response_format, { type: 'json_schema', json_schema: FINDINGS_SCHEMA }, 'JSON mode asked for');
+  assert.doesNotMatch(r.answer, /redact` is not defined|INJECTION_RULE` is used|\[redacted\]/);
+  assert.match(r.answer, /^answer\.js:143 — bug — `frobnicate\(p\)` is called but `frobnicate` is not defined anywhere\. — `return frobnicate\(p\);`/m, 'the real finding, its line taken from the quote (150 was wrong)');
+  assert.match(r.answer, /1 finding, each quoting its line: 1 bug\./);
+  assert.deepEqual(r.quoted, { kept: 1, dropped: 3, parsed: true, echoes: 0 });
 });
 
 test('the phantom filter on its own handles a model that ignores the rule: names a file imports or declares, in both languages', () => {
@@ -171,7 +178,11 @@ test('imports from the request are cleaned and capped before they reach the prom
 // reported the function "truncated/cut off in the middle of a line" (it was whole in the file). Now the model sees whole lines
 // and a note saying the rest was left out, the prompt says what the note means, and a cut-off claim is dropped when it ran anyway.
 const FLASH = "  function flash(delayMs) { setTimeout(() => { el('dot').style.visibility = 'visible'; setTimeout(() => { el('dot').style.visibility = 'hidden'; }, 17); }, delayMs); }";
-const READ_262 = '### Bugs\n*   **Line 75 (inferred):** The `flash` function is truncated/cut off in the middle of a line. This will cause a syntax error and prevent the entire script from executing.\n    *   **Fix:** Ensure the `setTimeout` and function closures are fully written.\n\n### Performance\n*   **Line 30:** `counts` is recomputed on every addition; keep a running map.';
+const READ_262 = JSON.stringify({ findings: [
+  { file: 'drafts/fringe/sensory-substitution-7.html', line: 75, kind: 'bug', text: 'The `flash` function is truncated/cut off in the middle of a line. This will cause a syntax error.', quote: FLASH.trim() },
+  { file: 'drafts/fringe/sensory-substitution-7.html', line: 30, kind: 'style', text: '`keep` is recomputed on every addition; keep a running map.', quote: 'const keep = 1; // padding line that makes the diff long enough' },
+] });
+const READ_262_PROSE = '### Bugs\n*   **Line 75 (inferred):** The `flash` function is truncated/cut off in the middle of a line.\n\n### Performance\n*   **Line 30:** `counts` is recomputed on every addition; keep a running map.';
 const longDiff = () => { // the flash() line straddles MODEL_CODE_MAX, as it did on #262
   const pad = '+  const keep = 1; // padding line that makes the diff long enough\n'; let d = 'diff --git a/drafts/fringe/sensory-substitution-7.html b/drafts/fringe/sensory-substitution-7.html\n';
   while (d.length < MODEL_CODE_MAX - 60) d += pad;
@@ -179,14 +190,11 @@ const longDiff = () => { // the flash() line straddles MODEL_CODE_MAX, as it did
 };
 
 test('a long diff is shortened for the model at a line boundary with a note; nothing is cut in half', () => {
-  const d = longDiff(), shown = clipForModel(d);
-  assert.ok(d.indexOf(FLASH) < MODEL_CODE_MAX && d.indexOf(FLASH) + FLASH.length > MODEL_CODE_MAX, 'the test diff straddles the limit');
-  assert.equal(shown.clipped, true);
-  const lines = shown.text.split('\n'), note = lines.pop();
-  assert.match(note, /^\[41 more lines of this change not shown here: shortened to fit, not cut off\]$/);
-  assert.ok(lines.every((l) => d.split('\n').includes(l)), 'every line shown is a whole line of the diff');
-  assert.ok(!shown.text.includes('function flash'), 'the straddling line is left out whole, not half shown');
-  assert.deepEqual(clipForModel('short\ncode'), { text: 'short\ncode', clipped: false });
+  const { text, clipped } = clipForModel(longDiff());
+  assert.ok(clipped); assert.ok(text.length <= MODEL_CODE_MAX + 120);
+  assert.match(text, /\n\[\d+ more lines of this change not shown here: shortened to fit, not cut off\]$/);
+  const lines = text.split('\n'); assert.ok(lines.slice(0, -1).every((l) => l.startsWith('+') || l.startsWith('diff ')), 'every line kept is whole');
+  assert.equal(clipForModel('short').clipped, false);
 });
 
 test('closer read on #262\'s long diff: the clip rule goes to the model, its "cut off" finding is dropped, its real finding stays', async () => {
@@ -194,36 +202,58 @@ test('closer read on #262\'s long diff: the clip rule goes to the model, its "cu
   const r = await (await call(api.onRequestPost, env, { diff: longDiff() }, env.READ_TOKEN)).json();
   const user = calls[0].messages[1].content;
   assert.ok(user.includes(CLIP_RULE) && /not shown here: shortened to fit, not cut off\]\n```$/.test(user), 'the rule and the note');
-  assert.doesNotMatch(r.answer, /truncated|cut off|### Bugs/);
-  assert.match(r.answer, /### Performance[\s\S]*running map/);
+  assert.doesNotMatch(r.answer, /truncated|cut off/);
+  assert.match(r.answer, /style — `keep` is recomputed on every addition; keep a running map\. — `const keep = 1;/);
+  assert.deepEqual([r.quoted.kept, r.quoted.parsed], [1, true]);
 });
 
 test('a cut-off claim about code that was not shortened is kept: only a clipped input silences it', async () => {
-  assert.match(dropPhantoms(READ_262, new Set(), FLASH, false), /truncated/);
-  assert.doesNotMatch(dropPhantoms(READ_262, new Set(), FLASH, true), /truncated/);
+  assert.match(dropPhantoms(READ_262_PROSE, new Set(), FLASH, false), /truncated/);
+  assert.doesNotMatch(dropPhantoms(READ_262_PROSE, new Set(), FLASH, true), /truncated/);
   const calls = []; const env = await envWith({ ai: ai(READ_262, calls) }); env.READ_TOKEN = 'owner-secret-0123456789';
-  const r = await (await call(api.onRequestPost, env, { diff: 'diff --git a/x.html b/x.html\n+' + FLASH + '\n' }, env.READ_TOKEN)).json();
+  const r = await (await call(api.onRequestPost, env, { diff: 'diff --git a/drafts/fringe/sensory-substitution-7.html b/drafts/fringe/sensory-substitution-7.html\n+' + FLASH + '\n' }, env.READ_TOKEN)).json();
   assert.ok(!calls[0].messages[1].content.includes(CLIP_RULE));
   assert.match(r.answer, /truncated/);
 });
 
 const QUOTE_DIFF = 'diff --git a/lib/q.js b/lib/q.js\n--- a/lib/q.js\n+++ b/lib/q.js\n@@ -20,3 +20,6 @@\n async function load(rows) {\n+  for (const r of rows) { const n = await db.prepare(\'SELECT COUNT(*) FROM t\').first(); }\n+  const v = JSON.parse(raw).filter(Boolean);\n+  return v;\n }\n';
-test('the closer read must quote its line: a stand-in model that invents a line sees its finding dropped, one that quotes a real line keeps it (with the line number put right), and the response says how many of each', async () => {
-  const invented = 'lib/q.js:21 — bug — `rows` is reassigned inside the loop, so the second pass sees nothing. — `rows = rows.slice(1);`\n'
-    + 'lib/q.js:60 — bug — the parse is unguarded. — `const v = JSON.parse(raw).filter(Boolean);`\n'
-    + 'lib/q.js:22 — risk — a query runs inside the loop.\n'
-    + 'lib/other.js:5 — bug — the handler never awaits. — `handle();`\n\n'
-    + 'Two things to fix: guard the parse and move the query out of the loop.';
+test('the closer read answers JSON: a stand-in model that invents a line sees its finding dropped, one that quotes a real line keeps it (with the line number taken from the quote), and the summary is built by code', async () => {
+  const invented = JSON.stringify({ findings: [
+    { file: 'lib/q.js', line: 21, kind: 'bug', text: '`rows` is reassigned inside the loop, so the second pass sees nothing.', quote: 'rows = rows.slice(1);' },
+    { file: 'lib/q.js', line: 60, kind: 'bug', text: 'the parse is unguarded', quote: 'const v = JSON.parse(raw).filter(Boolean);' },
+    { file: 'lib/q.js', line: 22, kind: 'risk', text: 'a query runs inside the loop', quote: '' },
+    { file: 'lib/other.js', line: 5, kind: 'bug', text: 'the handler never awaits', quote: 'handle();' },
+  ] }) + '\n\nTwo things to fix: guard the parse and move the query out of the loop.';
   const calls = []; const env = await envWith({ ai: ai(invented, calls) }); env.READ_TOKEN = 'owner-secret-0123456789';
   const r = await (await call(api.onRequestPost, env, { diff: QUOTE_DIFF }, env.READ_TOKEN)).json();
-  assert.ok(calls[0].messages[0].content.includes(QUOTE_RULE), 'the model is asked for the shape');
   assert.equal(r.review, 'model');
   assert.doesNotMatch(r.answer, /rows\.slice|reassigned/, 'the invented line is gone');
   assert.doesNotMatch(r.answer, /other\.js|never awaits/, 'a file not in the diff is gone');
   assert.doesNotMatch(r.answer, /query runs inside/, 'a finding with no quote is gone');
-  assert.match(r.answer, /^lib\/q\.js:22 — bug — the parse is unguarded\. — `const v = JSON\.parse\(raw\)\.filter\(Boolean\);`/m, 'the real finding stays, its line number corrected from 60 to where the quote is');
-  assert.match(r.answer, /Two things to fix/, 'the summary for the person stays');
-  assert.deepEqual(r.quoted, { kept: 1, dropped: 3 });
+  assert.doesNotMatch(r.answer, /Two things to fix/, 'the model\'s prose never reaches the reader');
+  assert.match(r.answer, /^lib\/q\.js:22 — bug — the parse is unguarded\. — `const v = JSON\.parse\(raw\)\.filter\(Boolean\);`\n\n1 finding, each quoting its line: 1 bug\.$/, 'the real finding stays, its line taken from the quote, the summary from code');
+  assert.deepEqual(r.quoted, { kept: 1, dropped: 3, parsed: true, echoes: 0 });
+});
+
+test('nothing parseable is none; fences, a bare array and prose around the JSON are tolerated; echoes of the shape are counted and dropped', async () => {
+  const env = await envWith({ ai: ai('I have reviewed the diff. The code is fine, no bugs.') }); env.READ_TOKEN = 'owner-secret-0123456789';
+  const r = await (await call(api.onRequestPost, env, { diff: QUOTE_DIFF }, env.READ_TOKEN)).json();
+  assert.equal(r.answer, 'Nothing to report on a closer read.');
+  assert.deepEqual(r.quoted, { kept: 0, dropped: 0, parsed: false, echoes: 0 });
+  assert.equal(parseFindingsJson('```json\n{"findings":[]}\n```').length, 0);
+  assert.equal(parseFindingsJson('Here you go: [{"file":"a","line":1,"kind":"bug","text":"t","quote":"q"}] hope it helps').length, 1);
+  assert.equal(parseFindingsJson('{"findings": "none"}'), null);
+  assert.equal(parseFindingsJson(''), null);
+  const ev = evidenceLines(QUOTE_DIFF, true);
+  const v = validateFindings([
+    { file: 'file:line', line: 1, kind: 'bug', text: 'one plain sentence on what is wrong', quote: 'the code line copied exactly' },
+    { file: 'lib/x.js', line: 42, kind: 'bug', text: 'The parse is unguarded, so bad JSON throws here.', quote: 'const v = JSON.parse(raw);' },
+    { file: '', line: 0, kind: 'performance', text: 'a query runs inside the loop', quote: "const n = await db.prepare('SELECT COUNT(*) FROM t').first();" },
+    { file: 'q.js', line: 21, kind: 'risk', text: 'a query runs inside the loop', quote: "const n = await db.prepare('SELECT COUNT(*) FROM t').first();" },
+  ], ev);
+  assert.equal(v.echoes, 1); assert.equal(v.dropped, 3, 'the echo, the example line that is not in this code, and the repeat');
+  assert.deepEqual(v.kept.map((f) => [f.file, f.line, f.kind]), [['lib/q.js', 21, 'risk']], 'placed by its quote, kind folded to risk');
+  assert.equal(renderFindings([]), 'Nothing to report on a closer read.');
 });
 
 test('quoteCheck on its own: the shape it reads, pasted code by line number, a short quote must match a whole line, and "none"', () => {
@@ -248,7 +278,7 @@ test('quoteCheck on its own: the shape it reads, pasted code by line number, a s
   assert.doesNotMatch(q3.text, /file:line|one sentence/, 'the echoed shape and the placeholder are gone');
   assert.equal(quoteCheck('file:line — none\n\nThe code is fine.', ev).text, 'Nothing to report on a closer read.');
   assert.equal(quoteCheck('lib/jobs.js:42 — bug — The parse is unguarded, so bad JSON throws here. — `const v = JSON.parse(raw);`', ev).kept, 0, 'the prompt\'s own example is not a finding about this code');
-  assert.match(QUOTE_RULE, /never copy this example/);
+  assert.match(JSON_RULE, /Answer with JSON only/);
 });
 
 test('a bearer that is not the owner: the answer is the free tier with no reason, and the exact reason goes to the function log only, never the token', async () => {

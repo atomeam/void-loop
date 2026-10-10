@@ -134,16 +134,71 @@ export function dropPhantoms(answer, known, code = '', clipped = false) {
 }
 
 // The closer read must quote its evidence (2026-10-10). Every false claim it made tonight (#254, #256, #262, #270, #325) was about
-// code the model had not seen: a name declared outside the hunk, the mask, a line it miscounted. So the prompt asks for the findings
-// in one checkable shape, one per line, each ending with the code line quoted, and quoteCheck() drops any finding whose quote is not
-// in the code shown at that file (the pasted code, or the diff's lines of that file). A finding with no quote is dropped the same way.
-// The prose after the list stays for the person. tools/review-learn.mjs reads the same shape back (parseFinding).
-export const QUOTE_RULE = 'Answer in two parts. First the findings, one per line, each in this shape and nothing else on the line: the file and new-file line number as the diff shows them (for pasted code just the line number), then the kind (bug, risk or style), then one sentence, then the code line copied character for character from the code shown, in backticks, the four joined by " — ". '
-  + 'For example (never copy this example, it is not about this code): lib/jobs.js:42 — bug — The parse is unguarded, so bad JSON throws here. — `const v = JSON.parse(raw);` '
-  + 'A finding whose line you cannot quote from the code shown is not a finding: leave it out. Write the single word none when there is nothing to report. '
-  + 'Then one blank line and a short plain summary for the person with the fix for each finding, and nothing in it that is not in the list: a problem that is not worth a quoted line is not worth a sentence either.';
-// the shape as the first prompt wrote it; a model echoes it now and then, and an echo is not a finding
-const TEMPLATE_QUOTE = /^the code line, quoted exactly as it appears$/i, EXAMPLE_QUOTE = /^const v = JSON\.parse\(raw\);$/;
+// code the model had not seen: a name declared outside the hunk, the mask, a line it miscounted. A free model does not follow a text
+// shape reliably either (it echoed the placeholder, ignored the list, wrote prose), so the prose channel is removed structurally: the
+// model answers with JSON that matches FINDINGS_SCHEMA (Workers AI's JSON mode where the model supports it), every finding is validated
+// against the code shown (the file is in the diff, the quote sits in that file, the line number is taken from the quote), and the text
+// the person reads is built by code from the validated findings only. Nothing parseable means none. parseFinding and quoteCheck stay
+// as a second layer behind the schema, and tools/review-learn.mjs reads the rendered lines back with parseFinding.
+export const FINDINGS_SCHEMA = { type: 'object', properties: { findings: { type: 'array', items: { type: 'object',
+  properties: { file: { type: 'string' }, line: { type: 'integer' }, kind: { type: 'string', enum: ['bug', 'risk', 'style'] }, text: { type: 'string' }, quote: { type: 'string' } },
+  required: ['file', 'line', 'kind', 'text', 'quote'] } } }, required: ['findings'] };
+export const JSON_RULE = 'Answer with JSON only, no prose and no code fences, in exactly this shape: {"findings":[{"file":"lib/x.js","line":42,"kind":"bug","text":"one plain sentence on what is wrong and why it matters","quote":"the code line copied exactly"}]}. '
+  + 'file and line are the file and the new-file line number as the diff shows them (for pasted code, file is ""). kind is bug, risk or style. '
+  + 'quote is the whole code line the finding is about, copied character for character from the code shown: a finding whose line you cannot quote is not a finding, leave it out. '
+  + 'Answer {"findings":[]} when there is nothing to report.';
+const TEMPLATE_QUOTE = /^the code line,? (?:quoted exactly as it appears|copied exactly)$/i, PLACEHOLDER_TEXT = /^one (?:plain )?sentence\b/i, EXAMPLE_QUOTE = /^const v = JSON\.parse\(raw\);$/; // the shapes a model echoes back
+/** the model's answer as a list of raw findings, or null when nothing in it parses as the shape (fences and stray prose around the JSON are tolerated) */
+export function parseFindingsJson(text) {
+  let t = String(text || '').replace(/<think>[\s\S]*?<\/think>/gi, '').trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '').trim();
+  const tryParse = (x) => { try { return JSON.parse(x); } catch (_) { return undefined; } };
+  const listOf = (j) => (j && typeof j === 'object' ? (Array.isArray(j) ? j : Array.isArray(j.findings) ? j.findings : null) : null);
+  let list = listOf(tryParse(t));
+  // prose around the JSON: the outermost braces, then the outermost brackets, whichever holds the list
+  if (!list) { const a = t.indexOf('{'), b = t.lastIndexOf('}'); if (a >= 0 && b > a) list = listOf(tryParse(t.slice(a, b + 1))); }
+  if (!list) { const a = t.indexOf('['), b = t.lastIndexOf(']'); if (a >= 0 && b > a) list = listOf(tryParse(t.slice(a, b + 1))); }
+  if (!list) return null;
+  return list.filter((x) => x && typeof x === 'object' && !Array.isArray(x));
+}
+const normKind = (k) => { k = String(k || '').toLowerCase().trim(); return k === 'bug' ? 'bug' : /^(risk|security|perf|performance|data)/.test(k) ? 'risk' : 'style'; };
+const normQ = (s) => String(s || '').replace(/\s+/g, ' ').trim();
+const matchLine = (q) => { const exact = q.length < 8; return ([, t]) => { const n = normQ(t); return exact ? n === q : n.includes(q) || (n.length >= 8 && q.includes(n)); }; };
+/**
+ * validateFindings(list, evidence) -> { kept: [{ file, line, kind, text, quote }], dropped, echoes }
+ * A finding is kept only when its quote sits in the code shown, in the file it names (a basename matches; a finding naming no file is
+ * placed by its quote), and its line number is taken from where the quote sits (the one nearest the line it named). An echo of the
+ * prompt's shape, a placeholder, an empty quote or a quote found nowhere is dropped; a repeat of the same file, line and quote is one finding.
+ */
+export function validateFindings(list, evidence) {
+  const kept = [], seen = new Set(); let dropped = 0, echoes = 0;
+  const files = Object.keys(evidence || {}).filter((k) => k !== '' || (evidence[''] || []).length);
+  for (const f of list || []) {
+    const quote = normQ(f.quote), text = String(f.text || '').replace(/\s+/g, ' ').trim().slice(0, 240);
+    if (!quote || !text) { dropped++; continue; }
+    if (TEMPLATE_QUOTE.test(quote) || PLACEHOLDER_TEXT.test(text) || /^file:line$/i.test(String(f.file || '').trim())) { echoes++; dropped++; continue; }
+    const named = String(f.file || '').trim().replace(/^[./]+/, '');
+    const key = named ? files.find((k) => k === named) || files.find((k) => k && (k.endsWith('/' + named) || named.endsWith('/' + k) || k.split('/').pop() === named.split('/').pop())) || null : null;
+    const want = Number(f.line);
+    let hits = key != null ? (evidence[key] || []).filter(matchLine(quote)) : [], at = key;
+    if (!hits.length && !named && files.length === 1) { hits = (evidence[files[0]] || []).filter(matchLine(quote)); at = files[0]; }
+    if (!hits.length && !named) for (const k of files) { const h = (evidence[k] || []).filter(matchLine(quote)); if (h.length) { hits = h; at = k; break; } }
+    if (!hits.length) { dropped++; continue; }
+    const best = Number.isFinite(want) ? hits.reduce((a, b) => (Math.abs(b[0] - want) < Math.abs(a[0] - want) ? b : a)) : hits[0];
+    const id = at + ':' + best[0] + ':' + quote;
+    if (seen.has(id)) { dropped++; continue; }
+    seen.add(id);
+    kept.push({ file: at, line: best[0], kind: normKind(f.kind), text: text.replace(/\s*[.;:]\s*$/, '') + '.', quote: best[1].trim() });
+  }
+  return { kept, dropped, echoes };
+}
+/** what the person reads: one line per validated finding in the quoted shape, then a summary built by code (never by the model) */
+export function renderFindings(kept) {
+  if (!kept.length) return 'Nothing to report on a closer read.';
+  const lines = kept.map((f) => (f.file ? f.file + ':' : 'line ') + f.line + ' — ' + f.kind + ' — ' + f.text + ' — `' + f.quote.replace(/`/g, '\u02cb') + '`');
+  const n = { bug: 0, risk: 0, style: 0 }; for (const f of kept) n[f.kind]++;
+  const parts = [n.bug && n.bug + ' bug' + (n.bug > 1 ? 's' : ''), n.risk && n.risk + ' risk' + (n.risk > 1 ? 's' : ''), n.style && n.style + ' style'].filter(Boolean);
+  return lines.join('\n\n') + '\n\n' + kept.length + ' finding' + (kept.length > 1 ? 's' : '') + ', each quoting its line: ' + parts.join(', ') + '.';
+}
 const KINDS = new Set(['bug', 'risk', 'style', 'security', 'performance', 'readability', 'note', 'nit']);
 const SEP = /\s+[—–]\s+|\s+-\s+|\s*—\s*/;
 /** one line of the answer as a finding: { file, line, kind, sentence, quote } or null. The quote is the trailing backticked span. */
@@ -213,23 +268,29 @@ export function quoteCheck(answer, evidence) {
 }
 
 // The closer read by the model, told what the checks found. Keys are masked before the model sees anything. For a diff, the
-// touched files' imports come along (DIFF_RULE) and phantom findings are taken out of the answer (dropPhantoms); then every finding
-// must quote its line (QUOTE_RULE, quoteCheck). closerReadDetail -> { answer, kept, dropped }; closerRead -> the answer alone.
+// touched files' imports come along (DIFF_RULE). The model answers JSON (FINDINGS_SCHEMA; a model that refuses the schema is asked
+// once more without it), the findings are validated against the code shown and rendered by code; dropPhantoms and quoteCheck run on
+// the rendered lines as a second layer. closerReadDetail -> { answer, kept, dropped, parsed, echoes }; closerRead -> the answer alone.
 export async function closerReadDetail(env, { ask, code, lang, diff, res, imports }) {
   const im = importsText(imports), shown = clipForModel(redact(String(code || '')));
-  const r = await env.AI.run(MODEL, {
-    messages: [
-      { role: 'system', content: REVIEW_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE + ' ' + QUOTE_RULE },
-      { role: 'user', content: 'What they asked: ' + redact(String(ask || 'review this code')).slice(0, 300) + '\nLanguage (guessed): ' + lang + (diff ? '\n' + DIFF_RULE : '') + (shown.clipped ? '\n' + CLIP_RULE : '') + '\n\nQuick checks found:\n' + findingsText(res) + (im ? '\n\n' + redact(im) : '') + '\n\nThe code (keys masked):\n```\n' + shown.text + '\n```' },
-    ],
-    max_tokens: 1400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
-  });
+  const messages = [
+    { role: 'system', content: REVIEW_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE + ' ' + JSON_RULE },
+    { role: 'user', content: 'What they asked: ' + redact(String(ask || 'review this code')).slice(0, 300) + '\nLanguage (guessed): ' + lang + (diff ? '\n' + DIFF_RULE : '') + (shown.clipped ? '\n' + CLIP_RULE : '') + '\n\nQuick checks found:\n' + findingsText(res) + (im ? '\n\n' + redact(im) : '') + '\n\nThe code (keys masked):\n```\n' + shown.text + '\n```' },
+  ];
+  const base = { messages, max_tokens: 1400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
+  let r;
+  try { r = await env.AI.run(MODEL, { ...base, response_format: { type: 'json_schema', json_schema: FINDINGS_SCHEMA } }); }
+  catch (_) { r = await env.AI.run(MODEL, base); } // a model without JSON mode: the same ask, the shape held by the prompt alone
   const out = r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response));
-  if (!out) return { answer: '', kept: 0, dropped: 0 };
+  if (!out) return { answer: '', kept: 0, dropped: 0, parsed: false, echoes: 0 };
+  const list = parseFindingsJson(typeof out === 'string' ? redact(out) : JSON.stringify(out));
+  if (!list) return { answer: renderFindings([]), kept: 0, dropped: 0, parsed: false, echoes: 0 };
+  const evidence = evidenceLines(shown.text, !!diff), v = validateFindings(list, evidence);
+  // the second layer: a phantom claim (a name the file imports, the mask, a cut-off line) goes, and every rendered line must still quote
   const known = declaredNames(String(code || '') + '\n' + im);
-  // each finding line becomes its own paragraph first, so a phantom claim on one line never takes its neighbours with it
-  const spaced = redact(String(out).trim()).split('\n').map((l) => (parseFinding(l) ? '\n' + l.trim() + '\n' : l)).join('\n').replace(/\n{3,}/g, '\n\n');
-  const q = quoteCheck(dropPhantoms(spaced, known, String(code || '') + '\n' + im, shown.clipped), evidenceLines(shown.text, !!diff));
-  return { answer: q.text, kept: q.kept, dropped: q.dropped };
+  const sound = v.kept.filter((f) => dropPhantoms(f.text + ' `' + f.quote + '`', known, String(code || '') + '\n' + im, shown.clipped) !== '');
+  const q = quoteCheck(renderFindings(sound).split('\n\n').slice(0, sound.length).join('\n'), evidence);
+  const kept = Math.min(q.kept, sound.length), dropped = v.dropped + (v.kept.length - kept);
+  return { answer: renderFindings(sound.slice(0, kept)), kept, dropped, parsed: true, echoes: v.echoes };
 }
 export async function closerRead(env, opts) { return (await closerReadDetail(env, opts)).answer; }
