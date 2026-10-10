@@ -2,7 +2,7 @@
 // so the diff shows only the new line. The ledger is what "growth" summons on the surface; it is live on the next deploy.
 //   node tools/grow.mjs grow "Poker: heads-up fixed-limit Hold'em against Void"         a new thing Void can do
 //   node tools/grow.mjs fix "the timer no longer stops at 59 s" --by claude --ref https://github.com/atomeam/void-loop/pull/205
-//   node tools/grow.mjs grow "…" --asked "<Void's ask, word for word>"   this answers one of Void's asks (tools/reflect.mjs drops it from the list)
+//   node tools/grow.mjs grow "…" --asked ask-20261009-2159-1   this answers one of Void's asks: its id from the asks list (tools/reflect.mjs drops it)
 //   node tools/grow.mjs --check      the whole ledger is valid (also run by tools/checks.mjs)
 // kinds: grow, build, fix, retire, idea, finding (void-live-deploy/void.growth.schema.json)
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -24,7 +24,7 @@ export function entryProblem(e) {
   if (typeof e.what !== 'string' || !e.what.trim() || e.what.length > 4000) return '"what" must be 1 to 4000 characters';
   if (e.ref !== undefined && (typeof e.ref !== 'string' || !/^https:\/\/\S+$/.test(e.ref))) return '"ref" must be an https link';
   if (e.from !== undefined && typeof e.from !== 'string') return '"from" must be text';
-  if (e.asked !== undefined && (typeof e.asked !== 'string' || !e.asked.trim())) return '"asked" must be the ask, word for word';
+  if (e.asked !== undefined && (typeof e.asked !== 'string' || !e.asked.trim())) return '"asked" must be the ask\'s id (ask-…) from the asks list';
   return null;
 }
 
