@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { applySwitch, planSwitch, ledgerLine } from './model-switch.mjs';
+import { applySwitch, planSwitch, ledgerLine, reviewFollows } from './model-switch.mjs';
 import { PATH_MODELS } from '../void-live-deploy/lib/models.js';
 
 const SRC = fs.readFileSync(new URL('../void-live-deploy/lib/models.js', import.meta.url), 'utf8');
@@ -41,4 +41,19 @@ test('every run gets its line in the growth ledger: the date, the models that ra
   assert.match(ledgerLine(win), /^model bake-off 2026-10-10 \(gemma-4-26b-a4b-it, glm-4\.7-flash\): switch to glm-4\.7-flash, /);
   assert.match(ledgerLine({ ...keep, rows: [{ model: PATH_MODELS.answer }, { model: '@cf/openai/gpt-oss-20b' }] }), /^model bake-off 2026-10-10 \(gemma-4-26b-a4b-it, gpt-oss-20b\): keep /);
   assert.ok(ledgerLine({ at: '2026-10-10', verdict: { why: 'x'.repeat(999) }, rows: [] }).length < 320);
+});
+
+test('the review path follows the winner only when the compliance column says it follows the closer read\'s JSON shape at least as well', async () => {
+  const to = '@cf/zai-org/glm-4.7-flash', base = PATH_MODELS.answer;
+  const rows = (b, w) => [{ model: base, comply: b }, { model: to, comply: w }];
+  assert.equal(reviewFollows({ rows: rows({ asks: 2, json: 2, quotes: 2, echoes: 0 }, { asks: 2, json: 2, quotes: 2, echoes: 0 }) }, to), true);
+  assert.equal(reviewFollows({ rows: rows({ asks: 2, json: 2, quotes: 2, echoes: 0 }, { asks: 2, json: 1, quotes: 1, echoes: 1 }) }, to), false);
+  assert.equal(reviewFollows({ rows: [{ model: base }, { model: to }] }, to), false, 'no compliance column: the closer read stays');
+  const both = planSwitch({ ...win, rows: rows({ asks: 2, json: 1, quotes: 1, echoes: 0 }, { asks: 2, json: 2, quotes: 2, echoes: 0 }) }, TABLE, SRC);
+  assert.equal(both.review, true); assert.match(both.title, /^Answer engine and closer read: switch to/); assert.match(both.body, /PATH_MODELS\.review/); assert.match(both.body, /review: FREE_MODEL/);
+  const dir = fs.mkdtempSync('/tmp/ms-'); fs.writeFileSync(dir + '/models.js', applySwitch(SRC, to, { review: true }).src);
+  const m = await import(dir + '/models.js');
+  assert.equal(m.models('review'), to); assert.equal(m.models('answer'), to); assert.equal(m.models('will'), PATH_MODELS.will);
+  const only = planSwitch(win, TABLE, SRC);
+  assert.equal(only.review, false); assert.match(only.title, /^Answer engine: switch to/); assert.match(only.body, /review and figurescript paths are unchanged/);
 });

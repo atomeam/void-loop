@@ -69,7 +69,10 @@ jobs:
           VOID_REVIEW_KEY: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
           deep=(); [ -n "$VOID_REVIEW_KEY" ] && deep=(--deep https://a-to-mind.com/api/review)
-          node tools/review-pr.mjs --base "$BASEREF" --head HEAD "${deep[@]}" > void-review.md || true
+          # report only: main's tools review the PR's head, so the footer (quoted, dropped, parsed, echoes) is today's on a PR from any day
+          TOOLS=tools
+          if [ "$REPORT_ONLY" = "true" ]; then git fetch -q origin main && git worktree add -q "$RUNNER_TEMP/void-main" origin/main && TOOLS="$RUNNER_TEMP/void-main/tools"; fi
+          node "$TOOLS/review-pr.mjs" --base "$BASEREF" --head HEAD "${deep[@]}" > void-review.md || true
           cat void-review.md >> "$GITHUB_STEP_SUMMARY"
           if [ "$REPORT_ONLY" = "true" ]; then echo "report only: nothing posted"; cat void-review.md; exit 0; fi
           body=$(jq -Rs '{body: .}' < void-review.md)
