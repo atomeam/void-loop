@@ -211,5 +211,6 @@ export default {
   nearMisses: ['moon phase tonight', 'what is the moon phase today', 'when is the next full moon', 'how far is the moon', 'moon river', 'fly me to the moon'],
   match(lower, text) { return !!moonOf(text); },
   run,
-  stageKinds: { moon: { mount } },
+  // the ports a taker (the quiz) reads off this card, unchanged: void.observations.v1 and the explanation text
+  stageKinds: { moon: { mount, gives: { observations: (th) => M.observations(th.state || M.create(), now()), explanation: (th) => M.explanation(th.state || M.create(), now()) } } },
 };
