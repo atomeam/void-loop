@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as api from '../void-live-deploy/functions/api/review.js';
 import { ensureTables, sessionId } from '../void-live-deploy/lib/void-me.js';
-import { quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX } from '../void-live-deploy/lib/review-api.js';
+import { quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, QUOTE_RULE, parseFinding, evidenceLines, quoteCheck } from '../void-live-deploy/lib/review-api.js';
 
 function d1() {
   const db = new DatabaseSync(':memory:');
@@ -205,4 +205,40 @@ test('a cut-off claim about code that was not shortened is kept: only a clipped 
   const r = await (await call(api.onRequestPost, env, { diff: 'diff --git a/x.html b/x.html\n+' + FLASH + '\n' }, env.READ_TOKEN)).json();
   assert.ok(!calls[0].messages[1].content.includes(CLIP_RULE));
   assert.match(r.answer, /truncated/);
+});
+
+const QUOTE_DIFF = 'diff --git a/lib/q.js b/lib/q.js\n--- a/lib/q.js\n+++ b/lib/q.js\n@@ -20,3 +20,6 @@\n async function load(rows) {\n+  for (const r of rows) { const n = await db.prepare(\'SELECT COUNT(*) FROM t\').first(); }\n+  const v = JSON.parse(raw).filter(Boolean);\n+  return v;\n }\n';
+test('the closer read must quote its line: a stand-in model that invents a line sees its finding dropped, one that quotes a real line keeps it (with the line number put right), and the response says how many of each', async () => {
+  const invented = 'lib/q.js:21 — bug — `rows` is reassigned inside the loop, so the second pass sees nothing. — `rows = rows.slice(1);`\n'
+    + 'lib/q.js:60 — bug — the parse is unguarded. — `const v = JSON.parse(raw).filter(Boolean);`\n'
+    + 'lib/q.js:22 — risk — a query runs inside the loop.\n'
+    + 'lib/other.js:5 — bug — the handler never awaits. — `handle();`\n\n'
+    + 'Two things to fix: guard the parse and move the query out of the loop.';
+  const calls = []; const env = await envWith({ ai: ai(invented, calls) }); env.READ_TOKEN = 'owner-secret-0123456789';
+  const r = await (await call(api.onRequestPost, env, { diff: QUOTE_DIFF }, env.READ_TOKEN)).json();
+  assert.ok(calls[0].messages[0].content.includes(QUOTE_RULE), 'the model is asked for the shape');
+  assert.equal(r.review, 'model');
+  assert.doesNotMatch(r.answer, /rows\.slice|reassigned/, 'the invented line is gone');
+  assert.doesNotMatch(r.answer, /other\.js|never awaits/, 'a file not in the diff is gone');
+  assert.doesNotMatch(r.answer, /query runs inside/, 'a finding with no quote is gone');
+  assert.match(r.answer, /^lib\/q\.js:22 — bug — the parse is unguarded\. — `const v = JSON\.parse\(raw\)\.filter\(Boolean\);`/m, 'the real finding stays, its line number corrected from 60 to where the quote is');
+  assert.match(r.answer, /Two things to fix/, 'the summary for the person stays');
+  assert.deepEqual(r.quoted, { kept: 1, dropped: 3 });
+});
+
+test('quoteCheck on its own: the shape it reads, pasted code by line number, a short quote must match a whole line, and "none"', () => {
+  assert.deepEqual(parseFinding('* **lib/q.js:21** - risk - A query runs inside the loop. - `const n = await db.prepare(\'SELECT COUNT(*) FROM t\').first();`'),
+    { file: 'lib/q.js', line: 21, kind: 'risk', sentence: 'A query runs inside the loop.', quote: "const n = await db.prepare('SELECT COUNT(*) FROM t').first();" });
+  assert.equal(parseFinding('The provided diff is fine - really - yes'), null);
+  assert.equal(parseFinding('### Bugs'), null);
+  const ev = evidenceLines(QUOTE_DIFF, true);
+  assert.deepEqual(ev['lib/q.js'].map(([n]) => n), [20, 21, 22, 23, 24]);
+  assert.equal(ev['lib/q.js'][1][1], "  for (const r of rows) { const n = await db.prepare('SELECT COUNT(*) FROM t').first(); }");
+  const q1 = quoteCheck('line 2 — bug — unguarded parse. — `JSON.parse(raw)`\nline 9 — style — short. — `}`\n\nFine otherwise.', evidenceLines('const a = 1;\nconst v = JSON.parse(raw);\nrun();\n}', false));
+  assert.equal(q1.kept, 2); assert.equal(q1.dropped, 0);
+  assert.match(q1.text, /^line 4 — style — short\. — `}`/m, 'a one-character quote matches only a whole line, and the number follows it');
+  assert.deepEqual(quoteCheck('none', ev), { text: 'Nothing to report on a closer read.', kept: 0, dropped: 0 });
+  const q2 = quoteCheck('lib/q.js:21 — bug — invented. — `nothing like this`', ev);
+  assert.equal(q2.kept, 0); assert.equal(q2.dropped, 1); assert.match(q2.text, /could quote from the code: 1 claim about lines not in it was dropped/);
+  assert.equal(quoteCheck('### Bugs\n\nProse only, the old shape, with no finding lines.', ev).text, '### Bugs\n\nProse only, the old shape, with no finding lines.');
 });
