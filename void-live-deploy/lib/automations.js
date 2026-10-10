@@ -5,7 +5,9 @@
  * network, no D1: tools/automations.test.mjs runs it in node. lib/automations-run.js does the D1 and the calls.
  *
  * A rule: { id, name, enabled, when: { on, match? }, do: [step, ...] }
- *   when.on     'webhook'  POST /api/hook/<id> with the rule's secret (header x-void-hook); the JSON body is the event
+ *   when.on     'webhook'  POST /api/hook/<id> with the rule's secret (header x-void-hook); the JSON body is the event.
+ *                          A rule runs at most RUN_CAP_DAY times a day from hooks (a leaked secret stops there), and the
+ *                          same ask is not queued twice inside QUEUE_DEDUPE_MS, so a looping sender cannot spend the build queue
  *               'manual'   only "Run now" (the card, or POST /api/automations { id, run: true })
  *               'schedule' every when.every minutes (15 to 10080), run by the clock: POST /api/automations/tick, which an
  *                          Actions cron calls every 15 minutes today (.github/workflows/void-tick.yml) and a Worker can later

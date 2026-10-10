@@ -3,7 +3,10 @@
  * D1: void_automations (the rules) and void_automation_runs (what each run did, newest 200 kept). GitHub through its
  * REST API with GITHUB_TOKEN (a fine-grained token the owner sets in the Pages project: contents + pull requests +
  * issues on the allowed repos). Without the token a GitHub step fails with that reason in the log, nothing else.
- * A webhook rule has its own secret: shown once when it is made (or rotated), kept only as a SHA-256.
+ * A webhook rule has its own secret: shown once when it is made (or rotated), kept only as a SHA-256. The secret is the
+ * whole of a hook's authorisation, so the spend it can cause is fenced here too: a rule runs at most RUN_CAP_DAY times a
+ * day from webhooks (AUTOMATION_RUN_CAP), and queue.add does not queue the same ask for the same target twice inside
+ * QUEUE_DEDUPE_MS. A leaked or looping hook secret costs at most a day's cap, not the build queue.
  */
 import { track } from './actions.js';
 import { validate, steps, matches, due, MAX_EVENT } from './automations.js';
@@ -20,6 +23,14 @@ export const TABLES = [
 const ADD_SCOPE = "ALTER TABLE void_automations ADD COLUMN scope TEXT NOT NULL DEFAULT ''";
 export const KEEP_RUNS = 200;
 const now = () => new Date().toISOString();
+const dayAgo = (at) => new Date(Date.parse(at) - 864e5).toISOString();
+const runCap = (env) => { const n = Number(env && env.AUTOMATION_RUN_CAP); return Number.isFinite(n) && n > 0 ? Math.min(Math.floor(n), 100000) : RUN_CAP_DAY; };
+/** runs of this rule since this time yesterday. Every run row is one that actually ran: a refused, unmatched or too-big
+ * event writes none, so the cap counts the runs that could spend something, not the knocks that failed to match. */
+async function runsToday(env, ruleId, at = now()) {
+  const row = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_automation_runs WHERE rule_id = ? AND at >= ?').bind(String(ruleId), dayAgo(at)).first();
+  return (row && Number(row.n)) || 0;
+}
 const hex = (b) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('');
 export const sha = async (s) => hex(await crypto.subtle.digest('SHA-256', new TextEncoder().encode('void-hook:' + s)));
 const newSecret = () => hex(crypto.getRandomValues(new Uint8Array(24)));
@@ -133,6 +144,9 @@ export async function act(env, step, { fetcher = fetch } = {}) {
   if (step.action === 'queue.add') {
     const open = await env.DB.prepare("SELECT id FROM void_queue WHERE target = ? AND state IN ('queued','building') LIMIT 1").bind(step.target).first();
     if (open) return 'a job for ' + step.target + ' is already open (' + open.id + ')';
+    // the same ask for the same target finished not long ago: a replayed or looping event does not queue it again
+    const recent = await env.DB.prepare('SELECT id FROM void_queue WHERE target = ? AND lower(trim(ask)) = ? AND updated >= ? ORDER BY updated DESC LIMIT 1').bind(step.target, step.ask.trim().toLowerCase(), new Date(Date.parse(now()) - QUEUE_DEDUPE_MS).toISOString()).first();
+    if (recent) return 'the same ask for ' + step.target + ' ran not long ago (' + recent.id + ')';
     const id = Date.now().toString(36), at = now();
     await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)').bind(id, step.ask, step.target, 'queued', 'from an automation', at, at).run();
     return 'queued ' + id;
@@ -171,6 +185,7 @@ export async function run(env, rule, event, trigger, opts = {}) {
   const ev = event && typeof event === 'object' ? event : {};
   if (JSON.stringify(ev).length > MAX_EVENT) return { ok: false, skipped: 'the event is too big' };
   if (!rule.enabled && trigger !== 'manual') return { ok: false, skipped: 'the rule is switched off' };
+  if (trigger === 'webhook' && (await runsToday(env, rule.id)) >= runCap(env)) return { ok: false, skipped: 'this rule has run its ' + runCap(env) + ' times a day from webhooks' };
   if (!matches(rule, ev)) return { ok: true, skipped: 'the event does not match' };
   const log = []; let ok = true;
   for (const s of steps(rule, ev)) {

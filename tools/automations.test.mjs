@@ -72,6 +72,8 @@ function fakeEnv(extra = {}) {
       throw new Error('unexpected run ' + sql);
     },
     first: async () => {
+      if (/COUNT\(\*\).*FROM void_automation_runs/.test(sql)) return { n: t.void_automation_runs.filter((r) => r.rule_id === a[0] && r.at >= a[1]).length };
+      if (/lower\(trim\(ask\)\)/.test(sql)) return t.void_queue.find((r) => r.target === a[0] && String(r.ask).trim().toLowerCase() === a[1] && r.updated >= a[2]) || null;
       if (/FROM void_automations WHERE id/.test(sql)) return t.void_automations.find((r) => r.id === a[0]) || null;
       if (/FROM void_queue/.test(sql)) return t.void_queue.find((r) => r.target === a[0] && /queued|building/.test(r.state)) || null;
       throw new Error('unexpected first ' + sql);
@@ -172,6 +174,40 @@ test('a webhook: the right secret runs the rule; a wrong one, a missing rule or 
   assert.equal(viaQuery.status, 200, 'senders that cannot set headers (GitHub) put the secret in ?key=');
   const manual = await A.save(env, { name: 'manual only', when: { on: 'manual' }, do: [{ action: 'note', text: 'n' }] });
   assert.equal((await call(manual.rule.id, 'anything')).status, 403, 'a manual rule has no webhook');
+});
+
+test('the webhook run cap: a rule runs RUN_CAP_DAY times a day from hooks (AUTOMATION_RUN_CAP), then 429s and spends nothing', async () => {
+  const { env, t } = fakeEnv({ AUTOMATION_RUN_CAP: '1' });
+  const { rule, hookSecret } = await A.save(env, R.TEMPLATES[0]);
+  const call = (ask) => hook.onRequestPost({ request: new Request('https://a-to-mind.com/api/hook/' + rule.id, { method: 'POST', headers: { 'x-void-hook': hookSecret }, body: JSON.stringify({ ask }) }), env, params: { id: rule.id } });
+  assert.equal((await call('tides')).status, 200);
+  t.void_queue[0].state = 'done'; // that job finished: only the run cap can stop the next knock
+  const capped = await call('again');
+  assert.equal(capped.status, 429, 'the second hook run of the day is refused at a cap of 1');
+  assert.match((await capped.json()).skipped, /times a day from webhooks/);
+  assert.equal(t.void_queue.length, 1, 'the cap stops the queue from growing, not just the log');
+  assert.equal(t.void_automation_runs.length, 1, 'a refused run writes no row, so the cap cannot extend itself');
+  const byHand = await A.save(env, { name: 'by hand', when: { on: 'manual' }, do: [{ action: 'queue.add', ask: 'a manual job', target: 'by-hand' }] });
+  const out = await A.run(env, (await A.get(env, byHand.rule.id)).rule, {}, 'manual');
+  assert.ok(out.ok, JSON.stringify(out.log));
+  assert.equal(t.void_queue.length, 2, 'the cap is only on webhooks: the owner can always run a rule');
+});
+
+test('queue.add: the same ask for the same target is not queued again inside the dedupe window', async () => {
+  const { env, t } = fakeEnv();
+  const s = await A.save(env, { name: 'same ask', when: { on: 'manual' }, do: [{ action: 'queue.add', ask: 'ship the thing', target: 't' }] });
+  const rule = (await A.get(env, s.rule.id)).rule;
+  const said = async () => (await A.run(env, rule, {}, 'manual')).log[0].said;
+  assert.match(await said(), /^queued /);
+  t.void_queue[0].state = 'done'; // no longer open, so only the dedupe can catch the replay
+  assert.match(await said(), /ran not long ago/);
+  assert.equal(t.void_queue.length, 1, 'a replay inside the window queues nothing');
+  t.void_queue[0].updated = new Date(Date.now() - R.QUEUE_DEDUPE_MS - 60e3).toISOString();
+  assert.match(await said(), /^queued /);
+  assert.equal(t.void_queue.length, 2, 'after the window the same ask may run again');
+  const other = await A.save(env, { name: 'other ask', when: { on: 'manual' }, do: [{ action: 'queue.add', ask: 'a different ask', target: 't' }] });
+  for (const q of t.void_queue) { q.state = 'done'; q.updated = new Date().toISOString(); }
+  assert.match((await A.run(env, (await A.get(env, other.rule.id)).rule, {}, 'manual')).log[0].said, /^queued /, 'a different ask for the same target still queues');
 });
 
 test('the clock: a schedule rule needs whole minutes from 15 to a week, and is due once its time has come round', () => {
