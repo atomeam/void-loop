@@ -9,7 +9,7 @@ import { readFileSync } from 'node:fs';
 
 const [, , HID, SITE = 'https://a-to-mind.com'] = process.argv;
 const TOKEN = process.env.READ_TOKEN || '';
-if (!/^[a-f0-9]{32}$/.test(HID || '') || !TOKEN) { console.error('usage: READ_TOKEN=… node tools/rehearsal.mjs <handoff-id> [site]'); process.exit(2); }
+if (!/^(?:[a-f0-9]{32}|rehearsal-[a-f0-9]{22})$/.test(HID || '') || !TOKEN) { console.error('usage: READ_TOKEN=… node tools/rehearsal.mjs <handoff-id> [site]'); process.exit(2); }
 
 const runId = (process.env.GITHUB_RUN_ID || Date.now().toString(36)).toString();
 const target = 'sale:rehearsal-' + runId;

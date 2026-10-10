@@ -16,7 +16,7 @@ import { track } from './actions.js';
 
 /** the handoff id in a job's body: the id of the last `reply received:` link on it, else '' */
 export function handoffIdIn(ask) {
-  let id = '', re = /reply received: https?:\/\/[^\s]*[?&]id=([a-f0-9]{32})/g, m;
+  let id = '', re = /reply received: https?:\/\/[^\s]*[?&]id=([a-f0-9]{32}|rehearsal-[a-f0-9]{22})/g, m;
   while ((m = re.exec(String(ask || '')))) id = m[1];
   return id;
 }

@@ -61,7 +61,7 @@ for (const [name, file] of [
   ['ringer', 'ringer.test.mjs'],
   ['queue', 'queue.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],
-  ['services', 'services.test.mjs'], ['sale-jobs', 'sale-jobs.test.mjs'], ['reply-to-job', 'reply-to-job.test.mjs'], ['email-worker', 'email-worker.test.mjs'],
+  ['services', 'services.test.mjs'], ['sale-jobs', 'sale-jobs.test.mjs'], ['reply-to-job', 'reply-to-job.test.mjs'], ['email-worker', 'email-worker.test.mjs'], ['rehearsal-route', 'rehearsal-route.test.mjs'],
   ['proposal', 'proposal.test.mjs'], ['job-draft', 'job-draft.test.mjs'],
   ['memory-card', 'memory-card.test.mjs'],
   ['told-me', 'told-me.test.mjs'],
