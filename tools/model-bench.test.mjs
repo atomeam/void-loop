@@ -1,6 +1,7 @@
 // node --test tools/model-bench.test.mjs: the bench refuses a verdict when every call failed (a bad token once printed "keep gemma").
 import test from 'node:test'; import assert from 'node:assert/strict';
-import { verdict } from './model-bench.mjs';
+import { verdict, comply, score, REVIEW_ASKS, complyText } from './model-bench.mjs';
+import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
 import { DEFAULT_MODEL } from '../void-live-deploy/lib/router.js';
 
 test('no verdict when every call errored', () => {
@@ -97,4 +98,20 @@ test('site mode: the probe names what is wrong, and a model runs in chunks mappe
   assert.equal(out.length, 19); assert.equal(out[3].text, 'a3'); assert.equal(out[3].ttft, 10); assert.equal(out[5].error, 'boom');
   const down = await siteRun('https://x', 'k', '@cf/a/b', 3, 8, async () => new Response('bad gateway', { status: 502 }));
   assert.ok(down.every((r) => /HTTP 502/.test(r.error)), 'a failed chunk is an error on each of its asks');
+});
+
+test('compliance: valid JSON that quotes the diff passes, prose fails, an echo of the shape fails, a finding on a clean diff fails', () => {
+  const buggy = REVIEW_ASKS[0], clean = REVIEW_ASKS[1];
+  const good = JSON.stringify({ findings: [{ file: 'lib/pay.js', line: 12, kind: 'bug', text: 'assignment where a comparison was meant', quote: '  if (total = 0) return null;' }, { file: 'pay.js', line: 99, kind: 'risk', text: 'the coupon code is pasted into the SQL', quote: 'const q = "SELECT * FROM coupons WHERE code = \'" + order.coupon + "\'";' }] });
+  const c = comply(buggy, good);
+  assert.deepEqual([c.json, c.quotes, c.echoes, c.kept, c.dropped, c.failed], [true, true, 0, 2, 0, []]);
+  assert.equal(score(buggy, good).ok, true);
+  assert.deepEqual(score(buggy, 'I have reviewed the diff. Line 12 assigns instead of comparing.').failed, ['not JSON in the shape']);
+  const echo = JSON.stringify({ findings: [{ file: 'file:line', line: 1, kind: 'bug', text: 'one plain sentence on what is wrong', quote: 'the code line copied exactly' }] });
+  assert.deepEqual(comply(buggy, echo).failed, ['1 echo(es) of the shape', 'the planted bug was not found', 'did not quote /if \\(total = 0\\)/', 'did not quote /SELECT \\* FROM coupons/']);
+  assert.deepEqual(comply(clean, '{"findings":[]}').failed, []);
+  assert.deepEqual(comply(clean, JSON.stringify({ findings: [{ file: 'lib/sum.js', line: 2, kind: 'style', text: 'fine', quote: 'if (!Array.isArray(xs)) return 0;' }] })).failed, ['1 finding(s) on a clean diff']);
+  const invented = JSON.stringify({ findings: [{ file: 'lib/pay.js', line: 12, kind: 'bug', text: 'x', quote: 'if (total === 0) return null;' }] });
+  assert.match(comply(buggy, invented).failed[0], /quoted no line of the diff/);
+  assert.equal(complyText({ asks: 2, json: 2, quotes: 1, echoes: 0 }), '2/2 · 1/2 · 0'); assert.equal(complyText(null), '-');
 });

@@ -5,7 +5,7 @@ export const FREE_MODEL = '@cf/google/gemma-4-26b-a4b-it'; // the free chat mode
 export const PAID_MODEL = '@cf/deepseek-ai/deepseek-v4-flash-0731'; // needs a paid billing method: only from earnings, under an approved standing spend
 
 // Which free model answers on which path. A path missing here uses FREE_MODEL.
-export const PATH_MODELS = { answer: FREE_MODEL, will: FREE_MODEL, review: FREE_MODEL, figurescript: FREE_MODEL };
+export const PATH_MODELS = { answer: '@cf/openai/gpt-oss-120b', will: FREE_MODEL, review: FREE_MODEL, figurescript: FREE_MODEL };
 export const PATHS = Object.keys(PATH_MODELS);
 
 export function models(path) {
