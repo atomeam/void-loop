@@ -6,6 +6,7 @@
 // Rule for every want: if an existing tool or feature already does it, use that instead of building it.
 // `source` names where an idea came in (e.g. growth-ledger-backlog: input that passed through Void); it is kept on the want.
 import { ownerOk } from '../../lib/guard.js';
+import { track } from '../../lib/actions.js';
 import { readEarnings, budgetLine } from '../../lib/earnings.js';
 import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
 import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../lib/shortfall.js';
@@ -56,9 +57,13 @@ export async function onRequestPost({ request, env }) {
   const open = await env.DB.prepare("SELECT id FROM void_queue WHERE target LIKE 'will:%' AND state IN ('queued','building') LIMIT 1").first();
   let queued = null;
   if (!open && will.wants[0]) {
-    const w = will.wants[0]; const id = Date.now().toString(36);
-    await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-      .bind(id, w.title, 'will:' + slug(w.title), 'queued', 'Void chose this: ' + w.because, at, at).run();
+    const w = will.wants[0]; const id = Date.now().toString(36), target = 'will:' + slug(w.title);
+    // the execution record (lib/actions.js): written before the job is queued; no record, no job
+    await track(env, { owner: 'void', kind: 'queue.add', ref: target }, async () => {
+      await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
+        .bind(id, w.title, target, 'queued', 'Void chose this: ' + w.because, at, at).run();
+      return 'queued ' + id + ': ' + w.title;
+    });
     queued = id;
   }
   return Response.json({ ...will, queued, open: open ? open.id : null });

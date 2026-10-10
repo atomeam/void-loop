@@ -13,7 +13,7 @@ function d1({ failInsert = false } = {}) {
   const db = new DatabaseSync(':memory:');
   const stmt = (sql, a = []) => ({ sql, a, bind: (...b) => stmt(sql, b),
     run: async () => { if (failInsert && /^INSERT INTO void_actions/.test(sql)) throw new Error('D1 is down'); const r = db.prepare(sql).run(...a); return { meta: { changes: Number(r.changes) } }; },
-    all: async () => ({ results: db.prepare(sql).all(...a) }), first: async () => db.prepare(sql).get(...a) || null });
+    all: async () => ({ results: db.prepare(sql).all(...a) }), first: async (col) => { const r = db.prepare(sql).get(...a) || null; return col ? (r ? r[col] : null) : r; } });
   return { prepare: (sql) => stmt(sql), raw: db };
 }
 const rows = (env) => env.DB.raw.prepare('SELECT * FROM void_actions ORDER BY started').all();
@@ -96,4 +96,69 @@ test('/api/actions: owner only, newest first, filter by owner', async () => {
   const mine = (await (await call('https://x/api/actions?owner=owner')).json()).actions;
   assert.deepEqual(mine.map((r) => r.kind), ['a']);
   assert.equal((await api.onRequestGet({ env: { READ_TOKEN: TOKEN }, request: new Request('https://x/api/actions', { headers: { authorization: 'Bearer ' + TOKEN } }) })).status, 503);
+});
+
+// ---- the other action-takers run through track() (build order step 2, third piece): each writes its record ----
+import * as learn from '../void-live-deploy/lib/learn.js';
+import * as queueApi from '../void-live-deploy/functions/api/queue.js';
+import * as willApi from '../void-live-deploy/functions/api/will.js';
+import * as approvalApi from '../void-live-deploy/functions/api/approval.js';
+import { fingerprint } from '../void-live-deploy/lib/approval-core.js';
+
+const QUEUE = 'CREATE TABLE void_queue (id TEXT PRIMARY KEY, ask TEXT, target TEXT, state TEXT, note TEXT, at TEXT, updated TEXT)';
+const KV = 'CREATE TABLE void_kv (k TEXT PRIMARY KEY, v TEXT)';
+function d1full(opts) { const env = { DB: d1(opts) }; env.DB.raw.exec(QUEUE); env.DB.raw.exec(KV); env.DB.batch = async (list) => Promise.all(list.map((s) => s.run())); return env; }
+const acts = (env) => env.DB.raw.prepare('SELECT owner, kind, ref, state, result, error FROM void_actions ORDER BY started').all();
+const auth = { authorization: 'Bearer ' + TOKEN, 'content-type': 'application/json' };
+
+test('a miss-board job (lib/learn.js) is queued inside its record: owner void, kind queue.add, ref the target; no record, no job', async () => {
+  const env = d1full();
+  const c = { ask: 'tides in lisbon', count: 3, variants: ['lisbon tides'], last: '2026-10-10T00:00:00Z', target: 'miss:tides-in-lisbon' };
+  const id = await learn.queueMiss(env, c);
+  assert.ok(id);
+  assert.deepEqual(acts(env).map((a) => [a.owner, a.kind, a.ref, a.state]), [['void', 'queue.add', 'miss:tides-in-lisbon', 'done']]);
+  assert.match(acts(env)[0].result, /^queued \w+: learn to handle "tides in lisbon"/);
+  const down = d1full({ failInsert: true });
+  await assert.rejects(learn.queueMiss(down, { ...c, target: 'miss:other' }), /D1 is down/);
+  assert.equal(down.DB.raw.prepare('SELECT COUNT(*) n FROM void_queue').get().n, 0, 'no record, no job');
+});
+
+test('/api/queue POST queues the owner\'s job inside its record, and the builder wake has its own record, failed when the builder says no', async () => {
+  const env = d1full(); env.READ_TOKEN = TOKEN; env.BUILDER_WEBHOOK_URL = 'https://builder.test/hook';
+  const waits = []; const ctx = { env, request: new Request('https://x/api/queue', { method: 'POST', headers: auth, body: JSON.stringify({ ask: 'learn backgammon', target: 'next' }) }), waitUntil: (p) => waits.push(p) };
+  const realFetch = globalThis.fetch; globalThis.fetch = async () => new Response('', { status: 500 });
+  try { const r = await queueApi.onRequestPost(ctx); assert.equal(r.status, 200); await Promise.all(waits); } finally { globalThis.fetch = realFetch; }
+  const a = acts(env);
+  assert.deepEqual(a.map((x) => [x.owner, x.kind, x.ref, x.state]), [['owner', 'queue.add', 'next', 'done'], ['owner', 'builder.wake', a[1].ref, 'failed']]);
+  assert.match(a[0].result, /^queued \w+: learn backgammon$/);
+  assert.match(a[1].error, /the builder answered 500/);
+  assert.equal(env.DB.raw.prepare('SELECT note FROM void_queue').get().note, 'builder wake failed 500');
+});
+
+test('/api/will queues Void\'s top want inside its record (owner void, ref will:<slug>)', async () => {
+  const env = d1full(); env.READ_TOKEN = TOKEN; env.AI = { run: async () => { throw new Error('model busy'); } };
+  const r = await willApi.onRequestPost({ env, request: new Request('https://x/api/will', { method: 'POST', headers: auth, body: JSON.stringify({ candidates: [{ kind: 'people asked', title: 'Learn tides', why: 'asked 9 times', weight: 9 }, { kind: 'idea', title: 'Backgammon', why: 'a game', weight: 2 }] }) }) });
+  assert.equal(r.status, 200);
+  const j = await r.json(); assert.ok(j.queued, JSON.stringify(j));
+  assert.deepEqual(acts(env).map((a) => [a.owner, a.kind, a.ref, a.state]), [['void', 'queue.add', 'will:learn-tides', 'done']]);
+  assert.match(acts(env)[0].result, /^queued \w+: Learn tides$/);
+});
+
+test('the confirm line: an approved action runs inside its record (done); a yes for a tool with no executor is recorded stubbed, nothing sent', async () => {
+  const env = d1full(); env.READ_TOKEN = TOKEN;
+  const post = (body) => approvalApi.onRequestPost({ env, request: new Request('https://x/api/approval', { method: 'POST', headers: auth, body: JSON.stringify(body) }) });
+  const sent = [];
+  approvalApi.executors['message.send'] = async (args) => { sent.push(args); return { id: 'msg-1' }; };
+  try {
+    for (const [tool, args] of [['message.send', { to: 'jane', text: 'hi' }], ['email.send', { to: 'jane@x.com', subject: 'hi' }]]) {
+      const req = await (await post({ type: 'a2m.approval.requested', toolName: tool, args })).json();
+      const d = await (await post({ type: 'a2m.approval.decision', approvalId: req.approvalId, decision: 'approve', actor: 'owner', argsFingerprint: await fingerprint(tool, args) })).json();
+      assert.equal(d.ran, tool === 'message.send', JSON.stringify(d));
+    }
+  } finally { delete approvalApi.executors['message.send']; }
+  assert.equal(sent.length, 1);
+  const a = acts(env);
+  assert.deepEqual(a.map((x) => [x.owner, x.kind, x.state]), [['owner', 'confirm.message.send', 'done'], ['owner', 'confirm.email.send', 'stubbed']]);
+  assert.match(a[0].result, /msg-1/); assert.match(a[1].result, /email\.send is not connected yet: nothing was sent/);
+  assert.ok(a.every((x) => /^[0-9a-f-]{36}$/.test(x.ref)), 'ref is the approval id');
 });

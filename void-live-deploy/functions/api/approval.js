@@ -14,6 +14,7 @@
 // Moving to Workflows later: domains/void.confirm-line.md.
 import { ownerOk } from '../../lib/guard.js';
 import { grantStandingSpend } from '../../lib/router.js';
+import { track } from '../../lib/actions.js';
 import {
   EVENT_REQUESTED, EVENT_DECISION, POLICY_VERSION, GATED, ORG_ID, WORKFLOW_ID, CONFIRM_TTL_MS,
   isGated, fingerprint, confirmLine, budgetImpact, checkDecision,
@@ -92,8 +93,11 @@ async function resumeOnDecision(env, rec, event) {
   const now = await fingerprint(rec.toolName, rec.argsSnapshot);
   if (event.argsFingerprint !== rec.argsFingerprint || now !== rec.argsFingerprint) return { ran: false, error: 'fingerprint mismatch' };
   const run = executors[rec.toolName];
-  if (!run) return { ran: false, note: 'not connected' };
-  try { return { ran: true, result: await run(rec.argsSnapshot, env, rec) }; } catch (e) { return { ran: false, error: 'action failed: ' + String(e && e.message).slice(0, 120) }; }
+  // the execution record (lib/actions.js): the approved action runs inside its record (no record, no action); a tool
+  // with no executor is recorded stubbed, so the owner's card shows the yes that sent nothing
+  const who = { owner: rec.requestedBy || 'owner', kind: 'confirm.' + rec.toolName, ref: rec.approvalId };
+  if (!run) { try { await track(env, who, async () => {}, { stub: 'approved, but ' + rec.toolName + ' is not connected yet: nothing was sent' }); } catch (_) {} return { ran: false, note: 'not connected' }; }
+  try { return { ran: true, result: (await track(env, who, () => run(rec.argsSnapshot, env, rec))).value }; } catch (e) { return { ran: false, error: 'action failed: ' + String(e && e.message).slice(0, 120) }; }
 }
 
 async function decided(env, b) {
