@@ -3349,7 +3349,9 @@ return { ok: true, detail: 'timer-reset' };
       say(page ? 'reading the page' : 'looking up');
       let j = null;
       try {
-        const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text }) });
+        // signed in (the owner's key or your own member session): your notes and projects are checked for this ask on the server (never for a page ask)
+        const who = page ? '' : (() => { try { return localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) { return ''; } })();
+        const r = await fetch('/api/answer', { method: 'POST', headers: who ? { 'content-type': 'application/json', authorization: 'Bearer ' + who } : { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text }) });
         if (r.ok || r.status === 429) j = await r.json();
       } catch (_) {}
       if (vpageEl !== el) return 'answer';
@@ -3358,7 +3360,7 @@ return { ok: true, detail: 'timer-reset' };
       // fenced code keeps its whitespace and gets a monospace block (fixHtml); sources are a citation when one
       // genuinely matched, not a claim that nothing else went into the answer
       el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + fixHtml(j.answer)
-        + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Void' : srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
+        + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Void' : j.told ? 'from what you told me · written by Void' + (srcs ? ' · Source: ' + srcs : '') : srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
       addCopy(el);
       say('');
       return 'answer';
