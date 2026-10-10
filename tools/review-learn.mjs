@@ -117,10 +117,11 @@ export function addedLines(files) {
 // `frob()`), each searched for in the lines the PR added; the first symbol found in exactly one file places the finding there.
 //   placeBySymbol(paragraph, added, files) -> { path, line, symbol } | null   (line: the first added line carrying the symbol)
 const SYMBOL_STOP = new Set(['true', 'false', 'null', 'undefined', 'this', 'const', 'let', 'var', 'return', 'await', 'async', 'function', 'import', 'export', 'if', 'else', 'for', 'while', 'new', 'try', 'catch', 'string', 'number', 'object', 'array', 'main', 'origin']);
+const FILE_EXT = /\.(?:m?[jt]sx?|cjs|py|html?|ya?ml|json|md|css|sh|sql|txt|toml)$/i;
 export function symbolsIn(paragraph) {
   const out = [];
   for (const m of String(paragraph || '').matchAll(/`([A-Za-z_$][\w$]*(?:\.[A-Za-z_$][\w$]*)*)(?:\(\))?`/g)) {
-    const s = m[1]; if (s.length < 3 || SYMBOL_STOP.has(s.toLowerCase()) || out.includes(s)) continue;
+    const s = m[1]; if (s.length < 3 || SYMBOL_STOP.has(s.toLowerCase()) || FILE_EXT.test(s) || out.includes(s)) continue; // a file name is not a symbol
     out.push(s);
   }
   return out;
@@ -138,7 +139,8 @@ export function lessonsIn(pr, body, fileNames, sha, fileAt, ranges = {}, added =
   const text = closerReadOf(body); if (!text) return [];
   const files = fileNames.filter((f) => langOfPath(f) && !skippedInReview(f)), out = [];
   for (const p of text.split(/\n[ \t]*\n/)) {
-    const lm = p.match(/\bLine\s+(\d{1,5})\b/i);
+    // "Line 12", or the file:line form the closer read also uses ("`tools/checks.mjs:13`: The loop …")
+    const lm = p.match(/\bLine\s+(\d{1,5})\b/i) || p.match(/\.[a-z]{1,5}:(\d{1,5})\b/i);
     // no line named: the symbol it quotes places it, when exactly one added hunk carries that symbol (2026-10-10); a paragraph
     // that quotes symbols but none of them lands in one file is counted as unplaced, one with neither line nor symbol is not a finding
     const bySym = placeBySymbol(p, added, files);
