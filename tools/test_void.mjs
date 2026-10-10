@@ -1254,6 +1254,15 @@ try {
   await t.ask('heart rate zone calculator', 700); const hrH = await t.page(); check('heart: "heart rate zone calculator" is a live form (age 40 = 90-153)', /Heart rate zone calculator/.test(hrH) && /90\u2013153/.test(hrH) && /Zone 5/.test(hrH), hrH.slice(0, 260));
   await t.ask('20% tip on 45', 700); const tipPg = await t.page(); check('tip amount', /Tip/.test(tipPg) && /\$9/.test(tipPg) && /Total/.test(tipPg) && /\$54/.test(tipPg), tipPg.slice(0, 180));
   await t.ask('split $85 three ways with 20% tip', 700); const tipSplit = await t.page(); check('tip and split', /Tip and split|\/ person/.test(tipSplit) && /Total/.test(tipSplit) && /Tip each|Bill each/.test(tipSplit), tipSplit.slice(0, 180));
+  { // "what can you do now that you couldn't last week?" is the growth card opening on the week, from the ledger itself
+    const L = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), from = Date.now() - 7 * 86400000;
+    const n = L.filter((e) => e && e.what && Date.parse(e.at) > from).length;
+    await t.ask("what can you do now that you couldn't last week?", 900); const wkPg = await t.page();
+    await t.ask('what can you do', 600); const menuPg = await t.page();
+    check('"what can you do now that you couldn\'t last week?" opens the growth card on the last 7 days from the ledger (since the date a week ago, the count, grouped by kind in plain words), and plain "what can you do" stays with Void\'s self answer',
+      /How Void has grown/.test(wkPg) && new RegExp('Since ' + new Date(from).toISOString().slice(0, 10) + ', ' + n + ' change').test(wkPg) && /new things? I can do/.test(wkPg) && !/How Void has grown/.test(menuPg),
+      JSON.stringify({ n, wk: wkPg.slice(0, 300), menu: menuPg.slice(0, 120) }));
+  }
   await t.ask('how much will i have if i save 200 a month for 20 years at 7%', 700); const svPg = await t.page(); check('savings: 200 a month for 20 years at 7% grows to $104,185 (monthly compounding), put in vs growth and a range', /Savings growth/.test(svPg) && /\$104,185/.test(svPg) && /\$48,000/.test(svPg) && /Investor\.gov/.test(svPg) && !/don't know this yet|on your calendar/i.test(svPg), svPg.slice(0, 220));
   await t.ask('how long to save 50000 if i save 500 a month', 700); const svTime = await t.page(); check('savings: time to a goal (no rate: 0% = 8 years 4 months, with 4% and 7% beside it)', /Time to your goal/.test(svTime) && /8 years 4 months/.test(svTime) && /7%/.test(svTime), svTime.slice(0, 220));
   await t.ask('how much do i need to save a month to have 1 million in 30 years at 7%', 700); const svNeed = await t.page(); check('savings: monthly amount a goal needs ($819.69 a month for $1M in 30 years at 7%)', /Monthly savings needed/.test(svNeed) && /\$819\.69/.test(svNeed) && /Start 5 years later/.test(svNeed), svNeed.slice(0, 220));
