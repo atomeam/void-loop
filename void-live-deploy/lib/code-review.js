@@ -340,7 +340,12 @@ const RULES = [
     'this table has no header cells (<th>), so a screen reader reads its values with nothing to say which column they belong to. Add a header row: <thead><tr><th scope="col">Measure</th>…</tr></thead>.'],
   ['busy-loop', 'bug', ['python'], (m, r, x) => /^\s*while\s+(?:True|1)\s*:\s*pass\b/.test(m) || (/^\s*while\s+(?:True|1)\s*:\s*$/.test(m) && /^\s*pass\s*$/.test(x.next(1))),
     'while True: pass spins forever at full speed, using a whole CPU core and never stopping. Wait on something (time.sleep, an event, input) or add a condition that ends the loop.'],
-  ['sort-no-compare', 'style', JS, (m) => /\.sort\s*\(\s*\)/.test(m),
+  // a typed array (Float32Array, Uint8Array...) sorts numerically with no compare, so a receiver declared as one just above is not a finding
+  ['sort-no-compare', 'style', JS, (m, r, x) => {
+    if (!/\.sort\s*\(\s*\)/.test(m)) return false;
+    const recv = /([\w$]+)\s*\.sort\s*\(\s*\)/.exec(m);
+    return !(recv && new RegExp('\\b(?:const|let|var)\\s+' + recv[1].replace(/\$/g, '\\$') + '\\s*=\\s*new\\s+(?:Float(?:32|64)|Int(?:8|16|32)|Uint(?:8|16|32)|Uint8Clamped|Big(?:Int|Uint)64)Array\\b').test(x.prev() + '\n' + m));
+  },
     'sort() with no compare function sorts as text, so numbers come out wrong: [10, 9, 1] becomes [1, 10, 9]. For numbers pass one: list.sort((a, b) => a - b).'],
   ['indexof-truthy', 'bug', JS, (m) => /\b(?:if|while)\s*\(\s*!?\s*[\w$.[\]]+\.indexOf\s*\([^()]*\)\s*(?:\)|&&|\|\|)/.test(m),
     'indexOf returns -1 when the item is missing (which counts as true) and 0 when it is first (which counts as false), so this check is backwards in both cases. Use list.includes(x), or compare: list.indexOf(x) !== -1.'],
