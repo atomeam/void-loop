@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · do they know (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#q{color:#8a8a92;min-height:1.5em}
+#a{font-size:22px;min-height:1.6em}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;justify-content:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>do they know · draft · not published</h1>
+  <p class="note">Someone is asked a question and answers. You see only how the answer arrives: how long they took, and whether an "um" came first. Then say how sure you think they are, 1 (guessing) to 5 (certain). The answers are made up and none is right or wrong. In studies, listeners judge a speaker who answers late or after "um" as knowing less (Brennan and Williams 1995; Clark and Fox Tree 2002 on what "uh" and "um" signal). This page measures how much of your own judgement rides on the pause and how much on the "um". Whether those two weights are steady for one person, and differ from person to person, is an open question this page asks. Everything stays in this browser.</p>
+  <div id="q"></div>
+  <div id="a" aria-live="assertive"></div>
+  <div class="row" id="keys"><button type="button" data-r="1" disabled>1</button><button type="button" data-r="2" disabled>2</button><button type="button" data-r="3" disabled>3</button><button type="button" data-r="4" disabled>4</button><button type="button" data-r="5" disabled>5</button></div>
+  <div class="row"><button id="go" type="button">start 16</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var DELAYS=[300,1200,2400,4000],QS=[['Capital of Australia?','Canberra'],['Year the first Moon landing happened?','1969'],['Tallest mountain in Africa?','Kilimanjaro'],['How many bones in an adult human?','206'],['Who painted the Night Watch?','Rembrandt'],['Largest ocean?','The Pacific'],['Speed of sound in air, roughly?','343 metres a second'],['Chemical symbol for tin?','Sn']];
+  var KEY='a2m.fringe.fok.v1',st={sittings:[]},run=null;
+  function el(id){return document.getElementById(id)}
+  function ok(s){return s&&isFinite(s.pause)&&isFinite(s.um)}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.sittings))st.sittings=j.sittings.filter(ok)}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({sittings:st.sittings.slice(-200)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your sittings (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var k=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[k];a[k]=t}return a}
+  // every pause crossed with um / no um, twice: 16 trials, balanced, shuffled; the question is drawn at random
+  function plan(){var t=[];for(var r=0;r<2;r++)DELAYS.forEach(function(d){[false,true].forEach(function(um){t.push({delay:d,um:um})})});return shuffle(t)}
+  function mean(a){return a.reduce(function(x,y){return x+y},0)/a.length}
+  // the two weights, from a least-squares fit of rating = c + p·seconds + u·um: p is how much one second of pause moves
+  // your rating, u how much an "um" does (both usually negative). The design is balanced, so each is a plain difference.
+  function weights(trials){var xs=trials.map(function(t){return t.delay/1000}),mx=mean(xs),my=mean(trials.map(function(t){return t.rating}));
+    var sxy=0,sxx=0;trials.forEach(function(t,i){sxy+=(xs[i]-mx)*(t.rating-my);sxx+=(xs[i]-mx)*(xs[i]-mx)});
+    var withUm=trials.filter(function(t){return t.um}),without=trials.filter(function(t){return !t.um});
+    return{pause:sxx?sxy/sxx:0,um:withUm.length&&without.length?mean(withUm.map(function(t){return t.rating}))-mean(without.map(function(t){return t.rating})):0}}
+  function buttons(on){[].forEach.call(document.querySelectorAll('#keys button'),function(b){b.disabled=!on})}
+  function show(){var t=run.trials[run.i],qa=QS[Math.floor(Math.random()*QS.length)];el('q').textContent=qa[0];el('a').textContent='';buttons(false);
+    run.timer=setTimeout(function(){el('a').textContent=(t.um?'um… ':'')+qa[1];buttons(true);run.ready=true},t.delay)}
+  function rate(r){if(!run||!run.ready)return;run.ready=false;run.trials[run.i].rating=r;run.i++;if(run.i<run.trials.length){show();return}
+    var w=weights(run.trials);el('q').textContent='';el('a').textContent='';buttons(false);el('go').disabled=false;el('go').textContent='another 16';
+    w.at=Date.now();st.sittings.push(w);save();
+    el('state').textContent='this sitting: each second of pause moved your rating by '+w.pause.toFixed(2)+', an "um" by '+w.um.toFixed(2)+(Math.abs(w.pause)<0.05&&Math.abs(w.um)<0.1?'\nneither moved you much: you may have been rating the answers themselves':'');run=null;draw()}
+  el('go').addEventListener('click',function(){if(run)return;run={trials:plan(),i:0,ready:false};el('go').disabled=true;el('state').textContent='';show()});
+  el('keys').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&!b.disabled)rate(+b.dataset.r)});
+  document.addEventListener('keydown',function(e){var r=+e.key;if(r>=1&&r<=5&&run&&run.ready){e.preventDefault();rate(r)}});
+  function draw(){var ss=st.sittings;if(!ss.length){el('score').textContent='';return}
+    el('score').textContent=ss.length+' sitting'+(ss.length>1?'s':'')+' · on average a second of pause moves you '+mean(ss.map(function(s){return s.pause})).toFixed(2)+', an "um" '+mean(ss.map(function(s){return s.um})).toFixed(2)+(ss.length<4?'\nabout 4 sittings before calling it yours':'')}
+  draw();
+  // made-up ratings: a rater who docks 1 point per second and 0.5 for an "um" is read back exactly; the plan is balanced
+  function selftest(){var p=plan();if(p.length!==16||p.filter(function(t){return t.um}).length!==8||DELAYS.some(function(d){return p.filter(function(t){return t.delay===d}).length!==4}))return'plan should be balanced';
+    var tr=p.map(function(t){return{delay:t.delay,um:t.um,rating:5-t.delay/1000-(t.um?0.5:0)}});var w=weights(tr);
+    if(Math.abs(w.pause+1)>1e-9||Math.abs(w.um+0.5)>1e-9)return'weights gave '+JSON.stringify(w);
+    var flat=weights(p.map(function(t){return{delay:t.delay,um:t.um,rating:3}}));if(flat.pause!==0||flat.um!==0)return'a flat rater should weigh nothing';return true}
+  window.__fok={plan:plan,weights:weights,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

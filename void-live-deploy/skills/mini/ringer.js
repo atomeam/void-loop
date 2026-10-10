@@ -80,6 +80,22 @@ export default async function build(ctx, data) {
     arc.visible = true;
   }
 
+  // knuckling down: a hand built from code rests behind the shooter while you aim, the knuckle of the bent forefinger on the
+  // dirt and the thumb tucked behind the marble; the thumb draws back with the power (a full flick is a full cock) and the hand
+  // lifts away while the marbles roll. It is posed from the same state as everything else.
+  const skin = keep(new THREE.MeshStandardMaterial({ color: '#c99673', roughness: 0.62 }));
+  const hand = new THREE.Group(); root.add(hand);
+  const knob = keep(new THREE.SphereGeometry(1, 18, 12)), bone = keep(new THREE.CylinderGeometry(1, 1, 1, 14));
+  const part = (geo, sx, sy, sz, x, y, z) => { const m = new THREE.Mesh(geo, skin); m.scale.set(sx, sy, sz); m.position.set(x, y, z); m.castShadow = true; hand.add(m); return m; };
+  // in the hand's own frame: +x points along the aim, the shooter sits at the origin
+  const K = R.SHOOTER;
+  part(knob, K * 2.6, K * 1.2, K * 2.9, -K * 4.2, K * 1.5, 0);                         // the back of the hand
+  for (let i = 0; i < 4; i++) part(knob, K * 0.85, K * 0.8, K * 0.7, -K * 2.5, K * 0.75, (i - 1.5) * K * 1.35); // knuckles, the first one down on the dirt
+  const thumb = new THREE.Group(); hand.add(thumb);
+  const thumbBone = new THREE.Mesh(bone, skin); thumbBone.scale.set(K * 0.55, K * 2.2, K * 0.55); thumbBone.rotation.z = Math.PI / 2; thumbBone.castShadow = true; thumb.add(thumbBone);
+  const thumbTip = new THREE.Mesh(knob, skin); thumbTip.scale.setScalar(K * 0.6); thumbTip.position.x = K * 1.1; thumb.add(thumbTip);
+  const thumbAt = (power) => -K * (1.6 + 1.6 * power); // the thumb's tip just behind the marble, drawn back as the power grows
+  let handPose = { visible: false, back: 0 };
   const axis = new THREE.Vector3(), q = new THREE.Quaternion();
   let sig = '', pulling = false;
   function pose() {
@@ -100,6 +116,12 @@ export default async function build(ctx, data) {
     aimLine.scale.x = len; aimLine.rotation.y = s.angle;
     aimLine.position.set(sh.x + Math.cos(s.angle) * (len / 2 + gap), 0.0012, -(sh.y + Math.sin(s.angle) * (len / 2 + gap)));
     if (pulling && aimLine.visible) powerArc(s.power, sh); else if (arc) arc.visible = false;
+    hand.visible = aimLine.visible;
+    if (hand.visible) {
+      hand.position.set(sh.x, 0, -sh.y); hand.rotation.y = s.angle;
+      thumb.position.set(thumbAt(s.power) - K * 1.1, sh.r, 0);
+    }
+    handPose = { visible: hand.visible, back: hand.visible ? -thumbAt(s.power) : 0 };
     sig = now;
     return true;
   }
@@ -150,7 +172,7 @@ export default async function build(ctx, data) {
   return {
     update() { if (pose()) ctx.requestRender(); },
     tick() { return pose(); },
-    state() { const s = stateOf(ctx.handle.data); return { marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible, pulling, angle: s.angle, power: s.power, aimLength: aimLine.visible ? aimLine.scale.x + sh0(s).r * 1.4 : 0, reach: R.reach(s).d, arc: !!(arc && arc.visible), arcSweep: arc && arc.visible ? Math.max(0.02, arcPower) : 0 }; },
+    state() { if (pose()) ctx.requestRender(); /* read what the current state poses, not the last frame drawn */ const s = stateOf(ctx.handle.data); return { marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible, pulling, angle: s.angle, power: s.power, aimLength: aimLine.visible ? aimLine.scale.x + sh0(s).r * 1.4 : 0, reach: R.reach(s).d, arc: !!(arc && arc.visible), arcSweep: arc && arc.visible ? Math.max(0.02, arcPower) : 0, hand: handPose.visible, thumbBack: handPose.back, handBehind: handPose.visible ? (() => { const v = new THREE.Vector3(); hand.children[0].getWorldPosition(v); const sh = sh0(s); return (v.x - sh.x) * Math.cos(s.angle) + (-v.z - sh.y) * Math.sin(s.angle) < 0; })() : false }; },
     dispose() { if (arc) arc.geometry.dispose(); host.removeEventListener('pointerdown', down, { capture: true }); for (const m of mats) m.dispose(); for (const x of made) x.dispose(); },
   };
 }

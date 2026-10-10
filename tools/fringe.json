@@ -1708,5 +1708,30 @@
     ],
     "sha256": "c27716db547cd5eafa5a715e1103b6ecbfff803e5bf297e66614f3fe766e0d7d",
     "emit": false
+  },
+  {
+    "run": 69,
+    "at": "2026-10-10T09:00:37Z",
+    "family": "non-lexical-intent",
+    "draft": "drafts/fringe/non-lexical-intent-5.html",
+    "sources": [
+      {
+        "claim": "Listeners judge a speaker who answers after a longer pause or a filler as less likely to know the answer (the feeling of another's knowing)",
+        "source": "https://doi.org/10.1006/jmla.1995.1017",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Speakers use 'uh' and 'um' to signal a coming delay, 'um' a longer one",
+        "source": "https://doi.org/10.1016/S0010-0277(02)00017-3",
+        "confidence": "claim"
+      },
+      {
+        "claim": "One person's weights on pause length and on 'um' when judging another's knowing are steady across sittings and differ between people",
+        "source": "drafts/fringe/non-lexical-intent-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "c080cbbcfbe63a7715b336f3a10175f7d515c261c58e31348db9dd0f510b8131",
+    "emit": false
   }
 ]
