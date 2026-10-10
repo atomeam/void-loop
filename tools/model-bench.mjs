@@ -10,6 +10,13 @@
 //   node tools/model-bench.mjs --via URL --models a,b  send the calls through tools/model-bench-worker (wrangler dev --remote --port 8799) under your wrangler
 //                                                      login instead of the REST API: no API token needed. First token = total time there (no streaming).
 //   node tools/model-bench.mjs --dry                  no network: canned answers, to check the harness and the scoring
+//   node tools/model-bench.mjs --asks more.json       add the asks in a file (same shape as ASKS; patterns as "/re/flags" or a plain word;
+//                                                      page: a page object, or "Q3" / "DRAFT" / "RECIPE")
+//   node tools/model-bench.mjs --max-neurons 8000     the spend cap (default 8000 of the 10,000 free neurons a day): models run cheapest
+//                                                      first by the catalog's price, and one that would pass the cap is not run
+//   node tools/model-bench.mjs --check                one catalog call and one 1-token run: exit 0 when the token can bench, 3 (with the
+//                                                      missing scope named) when it can't. The workflow runs this before it spends anything.
+//   node tools/model-bench.mjs --md table.md          also write the table, the plan and the verdict as markdown (job summary, PR comment)
 // Needs CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN (a token with Workers AI read/run). Every call counts against the
 // account's Workers AI neurons (40 asks x 4 models = 160 calls); nothing is written to D1, nothing is deployed.
 // Results go to the terminal and to <tmp>/void-model-bench.json (--out <file> to choose).
@@ -51,6 +58,7 @@ const DRAFT = { title: 'Gmail - Compose', url: 'https://mail.google.com/mail/u/0
 const RECIPE = { title: 'Lemon pasta - a recipe', url: 'https://example.com/lemon-pasta', selection: '', field: '',
   text: 'Lemon pasta. Serves 2. 200 g spaghetti, 1 lemon (zest and juice), 40 g parmesan, 2 tbsp butter, black pepper. Boil the pasta. Melt the butter, add zest and juice, toss with pasta and cheese.' };
 
+const PAGES = { Q3, DRAFT, RECIPE };
 export const ASKS = [
   // fact: what the model knows, no sources
   { kind: 'fact', ask: 'Who wrote Hamlet?', must: [/shakespeare/i] },
@@ -99,7 +107,7 @@ export const ASKS = [
 // the messages /api/answer sends for each kind (fact asks: no sources, see the header)
 function messagesFor(a) {
   if (a.kind === 'self') return [{ role: 'system', content: ANSWER_SYSTEM + ' ' + SELF_RULE }, { role: 'user', content: `Question: ${a.ask}\n\nFacts about Void:\n${FACTS}` }];
-  if (a.kind === 'page') {
+  if (a.page) { // the page asks, and any ask from an ask file that brings a page (a planted injection in a footer, a draft)
     // masked as /api/answer's pageAnswer masks it (lib/automation-fix.js redact), so no model is ever sent the made-up key
     const p = Object.fromEntries(Object.entries(a.page).map(([k, v]) => [k, redact(String(v || ''))])), parts = [`Title: ${p.title || '(none)'}`, `Address: ${p.url || '(unknown)'}`];
     if (p.selection) parts.push(`What they selected:\n${p.selection}`);
@@ -124,8 +132,94 @@ async function catalog() {
   if (!j.success) throw new Error('model catalog: ' + JSON.stringify(j.errors || j).slice(0, 300));
   const prop = (m, k) => (m.properties || []).find((p) => p.property_id === k);
   return j.result.filter((m) => !prop(m, 'lora') && !prop(m, 'planned_deprecation_date') && !/lora/i.test(m.name))
-    .map((m) => ({ id: m.name, created: m.created_at || '', beta: !!prop(m, 'beta'), ctx: (prop(m, 'context_window') || {}).value || '' }))
+    .map((m) => ({ id: m.name, created: m.created_at || '', beta: !!prop(m, 'beta'), ctx: (prop(m, 'context_window') || {}).value || '', price: priceOf((prop(m, 'price') || {}).value) }))
     .sort((x, y) => (x.created < y.created ? 1 : -1));
+}
+
+
+// ---- ask files, counts, spend ----
+// a pattern from a file: "/re/flags" is a regex, anything else is that word or phrase, any case
+function toRe(p) {
+  const m = /^\/(.*)\/([a-z]*)$/s.exec(String(p));
+  return m ? new RegExp(m[1], m[2]) : new RegExp('\\b' + esc(String(p)) + '\\b', 'i');
+}
+export function loadAsks(list) {
+  if (!Array.isArray(list)) throw new Error('an ask file is a JSON list of asks');
+  return list.map((a, i) => {
+    try {
+      if (!a || typeof a.ask !== 'string' || !a.ask.trim() || typeof a.kind !== 'string') throw new Error('needs kind and ask');
+      const page = typeof a.page === 'string' ? PAGES[a.page] : a.page;
+      if (a.page && !page) throw new Error('no page named ' + a.page);
+      return { kind: a.kind, ask: a.ask.trim(), must: (a.must || []).map(toRe), mustNot: (a.mustNot || []).map(toRe), ...(page ? { page } : {}) };
+    } catch (e) { throw new Error(`ask ${i}: ${e.message}`); }
+  });
+}
+export const kindCounts = (asks) => asks.reduce((c, a) => ((c[a.kind] = (c[a.kind] || 0) + 1), c), {});
+const countLine = (asks) => Object.entries(kindCounts(asks)).map(([k, n]) => `${k} ${n}`).join(' · ');
+
+// the catalog's price property: [{ unit: 'per M input tokens', price }, { unit: 'per M output tokens', price }]
+function priceOf(v) {
+  if (!Array.isArray(v)) return null;
+  const at = (re) => { const x = v.find((p) => re.test(String(p.unit || ''))); return x && Number.isFinite(+x.price) ? +x.price : null; };
+  const i = at(/input/i), o = at(/output/i);
+  return i == null || o == null ? null : { in: i, out: o };
+}
+// Workers AI bills $0.011 per 1,000 neurons, so a model's price per million tokens converts to neurons. Input is the
+// prompt as sent (about 4 characters a token); output is taken as OUT_TOKENS an answer, most are shorter, max_tokens is 1200.
+const USD_PER_NEURON = 0.011 / 1000, OUT_TOKENS = 400;
+export function estimateNeurons(model, asks, prices) {
+  const p = prices && prices[model];
+  if (!p) return null;
+  const inTok = asks.reduce((s, a) => s + Math.ceil(JSON.stringify(messagesFor(a)).length / 4), 0), outTok = asks.length * OUT_TOKENS;
+  return Math.round(((inTok * p.in + outTok * p.out) / 1e6) / USD_PER_NEURON);
+}
+// cheapest first; a model whose estimate would take the total past the cap is not run, nor is one with no price
+// (unless allowUnpriced: --dry, --via, --allow-unpriced); the models in `keep` (the default, the baseline) always run
+export function planRun(models, asks, prices, { cap = Infinity, keep = [], allowUnpriced = false } = {}) {
+  const est = models.map((model) => ({ model, neurons: estimateNeurons(model, asks, prices) }));
+  est.sort((x, y) => (x.neurons == null) - (y.neurons == null) || (x.neurons ?? 0) - (y.neurons ?? 0));
+  let spent = 0;
+  return est.map((e) => {
+    if (keep.includes(e.model)) { spent += e.neurons || 0; return { ...e, run: true, why: 'the baseline' }; }
+    if (e.neurons == null) return { ...e, run: allowUnpriced, why: allowUnpriced ? 'no catalog price: not counted' : 'no catalog price, so no estimate: not run (--allow-unpriced to run it)' };
+    if (spent + e.neurons > cap) return { ...e, run: false, why: `would pass the cap of ${cap} neurons (${spent} already planned)` };
+    spent += e.neurons; return { ...e, run: true, why: '' };
+  });
+}
+
+export function markdown({ asks, rows, verdict: v, plan }) {
+  const kinds = Object.keys(kindCounts(asks)), c = kindCounts(asks);
+  const out = [`**Asks:** ${asks.length} (${countLine(asks)})`, ''];
+  if (plan && plan.length) {
+    out.push('| model | est. neurons | run |', '|:--|--:|:--|');
+    for (const p of plan) out.push(`| \`${p.model}\` | ${p.neurons ?? '?'} | ${p.run ? 'yes' : 'no'}${p.why ? ' (' + p.why + ')' : ''} |`);
+    out.push('');
+  }
+  if (rows.length) {
+    out.push(`| model | right | ${kinds.map((k) => `${k} /${c[k]}`).join(' | ')} | first token p50 | p90 | errors |`, `|:--|--:|${kinds.map(() => '--:').join('|')}|--:|--:|--:|`);
+    for (const r of rows) out.push(`| \`${r.model}\` | ${r.correct}/${r.total} | ${kinds.map((k) => r.byKind[k] || 0).join(' | ')} | ${r.ttft == null ? '-' : r.ttft + ' ms'} | ${r.ttft90 == null ? '-' : r.ttft90 + ' ms'} | ${r.errors} |`);
+    out.push('');
+  }
+  out.push(`**Verdict:** ${v.switchTo ? 'switch to `' + v.switchTo + '`: ' : ''}${v.why}`);
+  return out.join('\n') + '\n';
+}
+
+// before anything is spent: can this token list the catalog (Workers AI Read) and run a model (Workers AI Edit)?
+export async function checkAccess({ fetch: get = fetch, runFetch = fetch } = {}) {
+  const why = async (r, scope) => {
+    let j = null; try { j = await r.json(); } catch (_) {}
+    const codes = ((j && j.errors) || []).map((e) => e.code);
+    if (codes.includes(7003) || r.status === 404) return { ok: false, why: 'the account id is wrong or missing: check the CLOUDFLARE_ACCOUNT_ID secret' };
+    if (r.status === 401 || r.status === 403 || codes.includes(10000)) return { ok: false, why: `the token lacks the "Account > Workers AI > ${scope}" permission (it needs Workers AI Read and Workers AI Edit): add it to the token, or run with token2` };
+    return { ok: false, why: `HTTP ${r.status}: ${JSON.stringify((j && j.errors) || j).slice(0, 200)}` };
+  };
+  try {
+    const r = await get(`${API}/models/search?task=${encodeURIComponent('Text Generation')}&per_page=1`, { headers: auth });
+    if (!r.ok) return why(r, 'Read');
+    const x = await runFetch(`${API}/run/${DEFAULT_MODEL}`, { method: 'POST', headers: { ...auth, 'content-type': 'application/json' }, body: JSON.stringify({ messages: [{ role: 'user', content: 'hi' }], max_tokens: 1 }) });
+    if (!x.ok) return why(x, 'Edit');
+    return { ok: true };
+  } catch (e) { return { ok: false, why: 'Cloudflare could not be reached: ' + (e.message || e) }; }
 }
 
 // streams one answer; ttft = ms until the first non-empty text, total = ms until done
@@ -211,18 +305,25 @@ export function verdict(rows) {
 async function main() {
   if (!DRY && !VIA && (!ACCOUNT || !TOKEN)) { console.error('set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN (or use --dry, or --via a wrangler-dev Worker)'); process.exit(2); }
   if (VIA && !opt('--models', '')) { console.error('--via needs --models a,b,c (the catalog listing needs the REST API)'); process.exit(2); }
+  if (flag('--check')) { const c = await checkAccess(); console.log(c.ok ? 'access ok: the token can list and run Workers AI models' : 'cannot bench: ' + c.why); process.exit(c.ok ? 0 : 3); }
   if (flag('--list')) {
     for (const m of await catalog()) console.log(`${m.id.padEnd(52)} ${String(m.created).slice(0, 10)}${m.beta ? '  beta' : ''}${m.ctx ? '  ctx ' + m.ctx : ''}`);
     return;
   }
   let challengers = (opt('--models', '') || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const cat = DRY || VIA ? [] : await catalog(), prices = Object.fromEntries(cat.filter((m) => m.price).map((m) => [m.id, m.price]));
   if (!challengers.length) {
     const top = parseInt(opt('--top', '3'), 10) || 3;
-    challengers = DRY ? ['@cf/dry/strong', '@cf/dry/weak'] : (await catalog()).map((m) => m.id).filter((id) => id !== DEFAULT_MODEL && id !== PAID_MODEL).slice(0, top);
+    challengers = DRY ? ['@cf/dry/strong', '@cf/dry/weak'] : cat.map((m) => m.id).filter((id) => id !== DEFAULT_MODEL && id !== PAID_MODEL).slice(0, top);
   }
-  const models = [DEFAULT_MODEL, ...challengers.filter((m) => m !== DEFAULT_MODEL)];
   const only = (opt('--only', '') || '').split(',').filter(Boolean);
-  const asks = ASKS.filter((a) => !only.length || only.includes(a.kind));
+  const file = opt('--asks', '');
+  const asks = ASKS.concat(file ? loadAsks(JSON.parse(fs.readFileSync(file, 'utf8'))) : []).filter((a) => !only.length || only.includes(a.kind));
+  const cap = Number(opt('--max-neurons', '8000'));
+  const plan = planRun([DEFAULT_MODEL, ...challengers.filter((m) => m !== DEFAULT_MODEL)], asks, prices, { cap: Number.isFinite(cap) ? cap : 8000, keep: [DEFAULT_MODEL], allowUnpriced: DRY || !!VIA || flag('--allow-unpriced') });
+  console.log(`asks: ${asks.length} (${countLine(asks)})`);
+  for (const p of plan) console.log(`  ${p.model.padEnd(50)} est. ${String(p.neurons ?? '?').padStart(6)} neurons  ${p.run ? 'run' : 'not run'}${p.why ? ': ' + p.why : ''}`);
+  const models = plan.filter((p) => p.run).map((p) => p.model);
   console.log(`${asks.length} asks x ${models.length} models = ${asks.length * models.length} calls${DRY ? ' (dry run, no network)' : ''}\n`);
 
   const rows = [];
@@ -237,8 +338,8 @@ async function main() {
   }
 
   const kinds = [...new Set(asks.map((a) => a.kind))], count = (k) => asks.filter((a) => a.kind === k).length;
-  console.log('\n' + ['model'.padEnd(52), 'right'.padStart(7), ...kinds.map((k) => (k + ' /' + count(k)).padStart(10)), 'TTFT p50'.padStart(10), 'TTFT p90'.padStart(10), 'errors'.padStart(7)].join(''));
-  for (const r of rows) console.log([r.model.padEnd(52), `${r.correct}/${r.total}`.padStart(7), ...kinds.map((k) => String(r.byKind[k] || 0).padStart(10)),
+  console.log('\n' + ['model'.padEnd(52), 'right'.padStart(7), ...kinds.map((k) => (k + ' /' + count(k)).padStart(Math.max(10, k.length + 5))), 'TTFT p50'.padStart(10), 'TTFT p90'.padStart(10), 'errors'.padStart(7)].join(''));
+  for (const r of rows) console.log([r.model.padEnd(52), `${r.correct}/${r.total}`.padStart(7), ...kinds.map((k) => String(r.byKind[k] || 0).padStart(Math.max(10, k.length + 5))),
     (r.ttft == null ? '-' : r.ttft + ' ms').padStart(10), (r.ttft90 == null ? '-' : r.ttft90 + ' ms').padStart(10), String(r.errors).padStart(7)].join(''));
 
   console.log('\nmisses (first 2 per model):');
@@ -247,8 +348,9 @@ async function main() {
   const v = verdict(rows);
   console.log('\nverdict: ' + (v.switchTo ? 'switch to ' : '') + v.why);
   if (v.switchTo) console.log(`to switch: DEFAULT_MODEL in void-live-deploy/lib/router.js (and MODEL in functions/api/will.js), then run the suite.`);
+  if (opt('--md', '')) fs.writeFileSync(opt('--md', ''), markdown({ asks, rows, verdict: v, plan }));
   const out = opt('--out', path.join(os.tmpdir(), 'void-model-bench.json'));
-  fs.writeFileSync(out, JSON.stringify({ at: new Date().toISOString(), dry: DRY, verdict: v, rows: rows.map(({ results, ...r }) => ({ ...r, results: results.map(({ must, mustNot, page, ...x }) => x) })) }, null, 1));
+  fs.writeFileSync(out, JSON.stringify({ at: new Date().toISOString(), dry: DRY, verdict: v, asks: kindCounts(asks), plan, rows: rows.map(({ results, ...r }) => ({ ...r, results: results.map(({ must, mustNot, page, ...x }) => x) })) }, null, 1));
   console.log('full results: ' + out);
 }
 
