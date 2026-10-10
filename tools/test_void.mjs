@@ -378,6 +378,10 @@ async function fresh(...inits) {
     if (u.includes('/api/will')) return r.fulfill(json({ at: '2026-09-27T23:00:00Z', wants: [{ kind: 'people asked', title: 'learn x', i_want: 'I want to answer every question about tides.', because: 'asked 9 times' }] }));
     if (u.includes('/api/answer')) {
       const body = JSON.parse(r.request().postData() || '{}'), ask = body.ask || '';
+      if (body.mode === 'proposal') { // the proposal card (lib/proposal.js): the real route with no model = the rules draft
+        return answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env: fixEnv, waitUntil() {} })
+          .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
+      }
       if (body.mode === 'fix') {
         fixCalls.push(body);
         return answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }), env: fixEnv })
@@ -998,6 +1002,31 @@ try {
       before[0] === 'running' && before.length === 30 && after[0] === 'done' && after.length === 30 && /^updated .* · refreshes every 1 min/.test(cap) && paged === 41 && moreHidden
       && calls.slice(0, 3).join(',') === '30/0,30/0,30/30' && !L.errors.length, JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, errs: L.errors }));
     await L.ctx.close(); }
+  const ranBeforeProposal = gate.ran.length;
+  // the proposal card (skills/proposal.js, build order step 3): a pasted customer request becomes an editable proposal with
+  // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent
+  { const P = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '");' });
+    const REQ = 'Hi Adam,\n\nWe run a small bakery in Portland and our online orders come in through Shopify. We need the Zapier zap that copies each order into our Google Sheet fixed: since last week every order shows up twice and the morning bake list is wrong. We would also like someone to check the whole flow once a month so it does not break again before the holidays.\n\nCan you tell us what you would do and when you could start?\n\nThanks,\nMaria\nmaria@sunrisebakery.example';
+    const actionsBefore = gate.env.DB.actions.size, callsBefore = gate.calls.length;
+    await P.p.fill('#input', 'turn this into a proposal:\n' + REQ); await P.p.keyboard.press('Enter');
+    await until(async () => P.p.$eval('.proposal-field[data-field="title"]', (e) => e.value).catch(() => ''), 6000);
+    const field = (k) => P.p.$eval('.proposal-field[data-field="' + k + '"]', (e) => e.value).catch(() => '');
+    const drafted = { title: await field('title'), asked: await field('asked'), scope: await field('scope'), price: await field('price'), timeline: await field('timeline'), next: await field('next'), to: await P.p.$eval('.proposal-to', (e) => e.value).catch(() => '') };
+    await P.p.fill('.proposal-field[data-field="title"]', 'Fix the double orders'); await P.p.waitForTimeout(200);
+    const kept = await P.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).find((t) => t.kind === 'proposal'));
+    await P.p.click('.proposal-send'); await P.p.waitForTimeout(900);
+    const line = await P.whisper();
+    const rec = [...gate.env.DB.actions.values()].slice(actionsBefore).find((a) => a.kind === 'proposal.send');
+    check('proposal card: the pasted request becomes the proposal\'s fields (what they asked for, scope, a blank price line, timeline, next step, the customer\'s address), an edit is kept, Send asks the confirm line and records a stubbed proposal.send for the customer\'s domain, nothing sent',
+      /^Proposal: the Zapier zap/.test(drafted.title) && /check the whole flow once a month/.test(drafted.asked) && /^- We need the Zapier zap/.test(drafted.scope) && /out of scope\]$/.test(drafted.scope)
+      && drafted.price === '[price: left for the owner to fill in]' && /^\[/.test(drafted.timeline) && /Reply with a yes/.test(drafted.next) && drafted.to === 'maria@sunrisebakery.example'
+      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === REQ
+      && line === 'Send the proposal \u201cFix the double orders\u201d to maria@sunrisebakery.example? Yes / No'
+      && gate.calls.slice(callsBefore).some((c) => c.type === 'a2m.approval.requested' && c.toolName === 'proposal.send' && c.args.to === 'maria@sunrisebakery.example')
+      && rec && rec.state === 'stubbed' && rec.ref === 'sunrisebakery.example' && /nothing is sent/.test(rec.result || '') && gate.ran.length === ranBeforeProposal && !P.errors.length,
+      JSON.stringify({ drafted, kept: kept && { title: kept.fields && kept.fields.title }, line, rec, errs: P.errors }).slice(0, 600));
+    await P.ask('no', 600);
+    await P.ctx.close(); }
   // "unlock <key>" is the first thing handled: pasted with or without the space (or "unlock" twice) it is saved on this
   // device and nothing carrying the key leaves the page (it once went to the answer model and the miss board).
   { meEnv.READ_TOKEN = '0123456789abcdef0123456789abcdef'; const U = await fresh(); const leaked = []; // the server checks the key first (owner login) U.p.on('request', (r) => { if (/0123456789abcdef0123/.test(r.url() + (r.postData() || ''))) leaked.push(r.url()); });

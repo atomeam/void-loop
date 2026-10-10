@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 // node tools/review.test.mjs: the code reviewer (void-live-deploy/lib/code-review.js) finds what it should and stays quiet on clean code.
+import { redact } from '../void-live-deploy/lib/automation-fix.js';
 import { isReviewAsk, codeOf, langOf, ruleReview, looksLikeCode, autoFix, skippedInReview, langNamed, textLines } from '../void-live-deploy/lib/code-review.js';
 let bad = 0;
 const ok = (c, msg) => { if (!c) { bad++; console.log('FAIL ' + msg); } };
@@ -126,6 +127,11 @@ for (const c of ['await deliver(plan, { token: opts.token ?? process.env.BRIDGE_
 ok(rules('const password = "hunter2hunter2";', 'javascript').includes('hardcoded-secret@1'), 'a password string');
 ok(rules('export STRIPE_SECRET_KEY=abcd1234efgh5678', 'shell').includes('hardcoded-secret@1'), 'a shell secret');
 ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').includes('hardcoded-secret@1'), 'a password in a URL');
+{ // a token read from the environment: no finding, and the closer read is shown the lookup, not a "[redacted]" that reads as a hard-coded key
+  const env = 'const ACCOUNT = process.env.CLOUDFLARE_ACCOUNT_ID, TOKEN = process.env.CLOUDFLARE_API_TOKEN;', lit = 'const TOKEN = "sk_live_abcdef1234567890XYZ";';
+  ok(!rules(env, 'javascript').includes('hardcoded-secret@1') && redact(env) === env, 'an env lookup is no hard-coded secret and is not masked: ' + redact(env));
+  ok(rules(lit, 'javascript').includes('hardcoded-secret@1') && redact(lit) === 'const TOKEN = "[redacted]";', 'a literal token is flagged and masked: ' + redact(lit));
+}
 // fixes Void makes by itself
 const fx = (c, lang) => autoFix(c, lang ? { lang } : {}).code;
 ok(fx('if (a == b) { var n = parseInt(s); }', 'javascript') === 'if (a == b) { var n = parseInt(s); }', 'js: == / var / parseInt stay warnings, never rewritten ("5" == 5, a var used after its block, parseInt("0x10"))');

@@ -167,3 +167,11 @@ test('the confirm line: an approved action runs inside its record (done); a yes 
   assert.match(a[0].result, /msg-1/); assert.match(a[1].result, /email\.send is not connected yet: nothing was sent/);
   assert.ok(a.every((x) => /^[0-9a-f-]{36}$/.test(x.ref)), 'ref is the approval id');
 });
+
+test('every /api route has its explicit limit (the fast twin of the browser suite\'s defences check, which caught /api/actions only after merge)', async () => {
+  const { LIMITS } = await import('../void-live-deploy/lib/guard.js');
+  const { readdirSync } = await import('node:fs');
+  const routes = readdirSync(new URL('../void-live-deploy/functions/api/', import.meta.url)).filter((f) => /^[a-z]+\.js$/.test(f)).map((f) => f.replace(/\.js$/, ''));
+  assert.ok(routes.includes('actions'));
+  assert.deepEqual(routes.filter((r) => !LIMITS[r]), [], 'routes with no limit in lib/guard.js LIMITS');
+});

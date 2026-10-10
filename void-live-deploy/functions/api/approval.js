@@ -85,6 +85,11 @@ async function requested(env, b) {
   };
   await env.DB.prepare('INSERT INTO void_approvals (id, state, record, at, updated) VALUES (?, ?, ?, ?, ?)')
     .bind(approvalId, 'pending', JSON.stringify(rec), rec.requestedAt, rec.requestedAt).run();
+  // a tool whose send is not connected (GATED[tool].stub names the ref) records the ask itself as a stub: the owner's
+  // actions card shows the proposal that waited on the confirm line, and that nothing went out
+  if (typeof GATED[toolName].stub === 'function') {
+    try { await track(env, { owner: 'owner', kind: toolName, ref: GATED[toolName].stub(args) || toolName }, async () => {}, { stub: 'waits on the confirm line: ' + rec.line + ' Sending is not connected yet, so nothing is sent either way.' }); } catch (_) {}
+  }
   return Response.json(rec);
 }
 
