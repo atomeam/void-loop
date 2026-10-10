@@ -727,7 +727,7 @@ const ELEMENTS = { cloud: buildCloud, sun: buildSun, fire: buildFire, ice: build
 // a flower growing under the rain. Returns true while something is visibly happening.
 function stepElement(f, dt, now, still, others) {
   const kind = f.spec.kindOf, cond = CONDITIONS[kind]; if (!cond) return false;
-  if (!f.nature) f.nature = cond.start();
+  if (!f.nature) f.nature = f.spec.nature ? { ...f.spec.nature } : cond.start(); // a saved or advanced state (advance() in scripts.js) carries on
   const env = climateAt({ id: f.brain.id, x: f.brain.x, y: f.brain.y }, others);
   f.nature = cond.step(f.nature, env, dt); f.climate = env;
   const p = f.parts, st = f.nature;
@@ -887,8 +887,10 @@ export function removeFigures(ids) {
   requestRender();
   return n;
 }
+/** Where every figure is and the live conditions it has ({ id: { x, y, nature } }), so the page can keep them for the next visit (and advance() can carry on from there). */
+export function world() { const out = {}; for (const [id, f] of figures) if (!f.leaving) out[id] = { x: Math.round(f.brain.x), y: Math.round(f.brain.y), nature: f.nature ? { ...f.nature } : null }; return out; }
 export async function syncFigures(list) {
-  desired = (list || []).map((t) => ({ id: t.id, body: t.body || 'sprite', color: t.color || null, prop: t.prop || null, line: t.line || null, script: t.script || null, title: t.title || null, x: t.sx, y: t.sy, seed: t.seed ?? null, kindOf: t.kindOf || null, size: t.size || null, wide: t.wide || null, tall: t.tall || null, pace: t.pace || null }));
+  desired = (list || []).map((t) => ({ id: t.id, body: t.body || 'sprite', color: t.color || null, prop: t.prop || null, line: t.line || null, script: t.script || null, title: t.title || null, x: t.at ? t.at.x : t.sx, y: t.at ? t.at.y : t.sy, adv: t.adv || null, seed: t.seed ?? null, kindOf: t.kindOf || null, size: t.size || null, wide: t.wide || null, tall: t.tall || null, pace: t.pace || null, nature: t.nature || null }));
   if (!desired.length && !stage) return;
   await mountStage3D();
   const want = desired, ids = want.map((d) => d.id);
@@ -897,8 +899,14 @@ export async function syncFigures(list) {
     const f = figures.get(d.id);
     if (f && f.leaving) { disposeFigure(f); figures.delete(d.id); }
     if (!figures.has(d.id)) { const v = d.size ? {} : variation(d.seed ?? hashId(d.id)); // every figure is an individual, even ones summoned without a look
-      await addFigure({ id: d.id, body: d.body, color: d.color || undefined, prop: d.prop || undefined, line: d.line || undefined, script: d.script || undefined, title: d.title || undefined, size: d.size || v.size, wide: d.wide || v.wide, tall: d.tall || v.tall, pace: d.pace || v.pace, seed: d.seed ?? undefined, kindOf: d.kindOf || undefined }); }
+      await addFigure({ id: d.id, body: d.body, color: d.color || undefined, prop: d.prop || undefined, line: d.line || undefined, script: d.script || undefined, title: d.title || undefined, size: d.size || v.size, wide: d.wide || v.wide, tall: d.tall || v.tall, pace: d.pace || v.pace, seed: d.seed ?? undefined, kindOf: d.kindOf || undefined, nature: d.nature || undefined });
+      const born = figures.get(d.id); if (born) born.advSeen = d.adv; } // already placed from where it was left: nothing more to apply
     else {
+      if (d.adv && d.adv !== f.advSeen) { // the world moved on while you were away (advance in scripts.js): take its state and its place
+        f.advSeen = d.adv;
+        if (d.nature) f.nature = { ...d.nature };
+        if (d.x != null && d.y != null) { f.brain.x = f.brain.tx = d.x; f.brain.y = f.brain.ty = d.y; }
+      }
       if (d.script && (!f.spec.script || JSON.stringify(f.spec.script) !== JSON.stringify(d.script))) {
         const sc = trimScript(d.script, d.body || 'sprite', d.title || null);
         f.spec.script = sc; f.brain.script = sc;

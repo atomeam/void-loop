@@ -92,3 +92,18 @@ test('routing: "play marbles", "marbles", "shoot marbles", "ringer" open Ringer;
   for (const t of ringer.nearMisses) assert.equal(ringerOf(t), null, t);
   for (const t of ['Play marbles!', 'shoot some marbles', "let's play ringer", 'play marbles with me']) assert.ok(ringerOf(t), t);
 });
+
+test('drag to flick: the shot goes opposite the pull, power grows with the pull up to PULL_MAX, and nothing moves until the flick', () => {
+  const s = R.create(4), sh = s.marbles[0];
+  const back = R.pull(s, sh.x, sh.y - R.PULL_MAX / 2); // pulled straight back, away from the middle
+  assert.ok(Math.abs(back.angle - Math.PI / 2) < 1e-12, 'aimed at the middle, opposite the pull');
+  assert.ok(Math.abs(back.power - 0.5) < 1e-12);
+  assert.equal(R.pull(s, sh.x - 1, sh.y).power, 1, 'a long pull is full power, not more');
+  assert.ok(Math.abs(R.pull(s, sh.x + 0.01, sh.y).angle - Math.PI) < 1e-12, 'pulled to the right shoots left');
+  assert.equal(R.pull(s, sh.x, sh.y), s, 'no pull, no change');
+  assert.equal(back.phase, 'aim'); assert.equal(R.moving(back), false);
+  assert.ok(R.pullLength(s, sh.x, sh.y - 0.005) < R.PULL_MIN, 'a tiny pull is under the threshold');
+  const shot = R.settle(R.flick(R.pull(s, sh.x, sh.y - R.PULL_MAX)));
+  assert.equal(shot.shots, 1); assert.ok(shot.out >= 1, 'a full pull straight back breaks the cross');
+  assert.equal(R.pull(R.flick(s), 0, 0).phase, 'rolling', 'no pulling mid-roll');
+});
