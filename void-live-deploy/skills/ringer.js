@@ -52,7 +52,7 @@ function mount(th, stageApi) {
   power.addEventListener('input', () => commit(R.setPower(th.state, +power.value / 100), false));
   power.addEventListener('change', save);
   flickBtn.addEventListener('click', (e) => { e.stopPropagation(); doFlick(); });
-  again.addEventListener('click', (e) => { e.stopPropagation(); cancelAnimationFrame(loops.get(th.id)); loops.delete(th.id); commit(R.create((Math.random() * 4294967296) >>> 0)); });
+  again.addEventListener('click', (e) => { e.stopPropagation(); cancelAnimationFrame(loops.get(th.id)); loops.delete(th.id); commit(R.newGame(th.state, (Math.random() * 4294967296) >>> 0)); }); // keeps the best clear
   const toWorld = (ev) => { const b = cv.getBoundingClientRect(); return [((ev.clientX - b.left) / b.width * 2 - 1) * SPAN, -((ev.clientY - b.top) / b.height * 2 - 1) * SPAN]; };
   cv.addEventListener('pointerdown', (e) => {
     e.stopPropagation(); e.preventDefault();

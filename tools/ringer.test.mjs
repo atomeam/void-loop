@@ -124,3 +124,19 @@ test('reach: the aim line shows where a shot that meets nothing stops (friction,
   assert.ok(hard.d < R.SPEED_MAX ** 2 / (2 * R.DECEL) && Math.abs(Math.hypot(hard.x, hard.y) - R.FAR) < 1e-9, 'a full flick across the ring is caught at FAR');
   assert.ok(Math.hypot(sh.x, sh.y) > 0, 'the shooter starts at the edge');
 });
+
+test('best clear: a new game keeps the fewest shots that cleared a ring, and the summary says it', () => {
+  let s = R.create(5);
+  for (let n = 0; n < 60 && !s.over; n++) { const m = s.marbles.find((x) => !x.shooter && !x.out); s = R.settle(R.flick(R.setPower(R.aimAt(s, m.x, m.y), 1))); }
+  assert.ok(s.over); assert.equal(s.best, undefined, 'a first game has no best yet');
+  assert.doesNotMatch(R.summary(s), /best/);
+  const next = R.newGame(s, 9);
+  assert.equal(next.best, s.shots); assert.equal(next.shots, 0); assert.equal(next.over, false);
+  assert.match(R.summary(next), new RegExp('best clear: ' + s.shots + ' shot'));
+  assert.equal(R.newGame(next, 3).best, s.shots, 'an unfinished game does not change the best');
+  assert.equal(R.newGame(R.create(1), 2).best, null, 'nothing cleared, no best');
+  const beat = { ...next, over: true, shots: s.shots - 1 }, worse = { ...next, over: true, shots: s.shots + 4 }, same = { ...next, over: true, shots: s.shots };
+  assert.equal(R.newGame(beat, 1).best, s.shots - 1); assert.equal(R.newGame(worse, 1).best, s.shots);
+  assert.match(R.summary(beat), /a new best \(it was/); assert.match(R.summary(worse), /your best is/); assert.match(R.summary(same), /equals your best/);
+  assert.deepEqual({ ...R.newGame(s, 9), best: undefined }, { ...R.create(9), best: undefined }, 'otherwise a fresh game');
+});
