@@ -1,0 +1,146 @@
+// node --test tools/growth-tree.test.mjs: the layout of Void's growth tree (void-live-deploy/skills/growth-tree.js, frontier
+// #3) on a fixture ledger: one branch per entry, the same tree every time, the newest at the tips, a new entry only adds a
+// branch, and the wood is shaped like a real tree's (on its parent, above the ground, thinning by the pipe model).
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { layout, chronological, midpoint, timeline, season, leafColor, KIND_COLOR, TIP_RADIUS, PIPE, TRUNK } from '../void-live-deploy/skills/growth-tree.js';
+
+const KINDS = ['grow', 'build', 'fix', 'idea', 'finding', 'retire'];
+// 40 entries over 8 days, out of order in the file (the ledger allows that), plus three it must skip
+const FIXTURE = Array.from({ length: 40 }, (_, i) => ({ at: new Date(Date.UTC(2026, 9, 1 + (i % 8), 9 + Math.floor(i / 8), i)).toISOString().replace('.000', ''), by: 'claude', kind: KINDS[(i * 7) % 6], what: 'entry ' + i }))
+  .concat([{ at: 'not a time', by: 'x', kind: 'grow', what: 'undated' }, { at: '2026-10-02T00:00:00Z', by: 'x', kind: 'grow', what: '' }, null]);
+const valid = FIXTURE.filter((e) => e && e.what && !isNaN(Date.parse(e.at)));
+const T = layout(FIXTURE);
+const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
+
+test('one branch per dated entry; the oldest is the trunk; each keeps its ledger index and its kind colour', () => {
+  assert.equal(T.branches.length, valid.length);
+  const oldest = chronological(FIXTURE)[0];
+  assert.equal(T.branches[0].index, oldest.index);
+  assert.equal(T.branches[0].parent, -1);
+  assert.deepEqual(T.branches[0].start, [0, 0, 0]);
+  assert.equal(T.branches[0].length, TRUNK);
+  for (const b of T.branches) {
+    assert.equal(FIXTURE[b.index].at, b.at);
+    assert.equal(b.color, KIND_COLOR[FIXTURE[b.index].kind]);
+  }
+  assert.equal(new Set(T.branches.map((b) => b.index)).size, T.branches.length, 'no entry twice');
+});
+
+test('the same ledger always makes the same tree, whatever order the file lists it in', () => {
+  assert.deepEqual(layout(FIXTURE), T);
+  assert.deepEqual(JSON.stringify(layout(JSON.parse(JSON.stringify(FIXTURE)))), JSON.stringify(T));
+  const shuffled = valid.slice().reverse(), S = layout(shuffled);
+  const key = (t, list) => t.branches.map((b) => list[b.index].what + '@' + b.start.join(',') + '>' + b.end.join(',')).join('|');
+  assert.equal(key(S, shuffled), key(T, FIXTURE));
+});
+
+test('the newest are at the tips: every branch grows from an older one, and the newest entry has nothing growing from it', () => {
+  for (const b of T.branches) for (const c of b.children) assert.ok(Date.parse(T.branches[c].at) >= Date.parse(b.at), 'a child older than its parent');
+  const newest = T.branches.reduce((a, b) => (Date.parse(b.at) >= Date.parse(a.at) ? b : a));
+  assert.equal(newest.children.length, 0);
+  assert.ok(T.branches.filter((b) => !b.children.length).length >= T.branches.length / 3, 'a crown of tips, not a pole');
+});
+
+test('a new entry only adds a branch at a tip: every branch that grew before stays exactly where it was', () => {
+  const later = FIXTURE.concat([{ at: '2026-10-20T12:00:00Z', by: 'claude', kind: 'grow', what: 'the newest thing' }]);
+  const L = layout(later), added = L.branches.find((b) => b.index === later.length - 1);
+  assert.equal(L.branches.length, T.branches.length + 1);
+  assert.ok(added && added.children.length === 0);
+  for (const b of T.branches) {
+    const same = L.branches.find((x) => x.index === b.index);
+    assert.deepEqual([same.start, same.end, same.parent], [b.start, b.end, b.parent]);
+  }
+  // the tree as it stood on a past day is the tree grown from the entries up to then (the time slider's hook)
+  const until = '2026-10-04T23:59:59Z', past = layout(FIXTURE, { until });
+  assert.equal(past.branches.length, valid.filter((e) => e.at <= until).length);
+  for (const b of past.branches) assert.deepEqual(T.branches.find((x) => x.index === b.index).start, b.start);
+});
+
+test('shaped like a tree: each branch starts on its parent, nothing grows into the ground, wood thins by the pipe model', () => {
+  for (const b of T.branches) {
+    assert.ok(b.end[1] > 0.3 && b.start[1] >= 0, 'above ground');
+    assert.ok(Math.abs(Math.hypot(...b.dir) - 1) < 1e-4);
+    assert.ok(Math.abs(dist(b.start, b.end) - b.length) < 1e-4);
+    if (b.parent >= 0) {
+      const p = T.branches[b.parent], along = [0, 1, 2].reduce((s, k) => s + (b.start[k] - p.start[k]) * p.dir[k], 0) / p.length;
+      const onAxis = p.start.map((x, k) => x + p.dir[k] * p.length * along);
+      assert.ok(dist(onAxis, b.start) < 1e-4 && along > 0.3 && along < 1, 'sprouts from along its parent');
+      assert.ok(b.length < p.length && b.radius < p.radius, 'smaller than what it grows from');
+      const angle = Math.acos(Math.max(-1, Math.min(1, [0, 1, 2].reduce((s, k) => s + b.dir[k] * p.dir[k], 0)))) * 180 / Math.PI;
+      assert.ok(angle > 5 && angle < 75, 'branches off at a real angle: ' + angle);
+    }
+    // the pipe model: a branch's cross-section feeds every branch above it
+    const want = (TIP_RADIUS ** PIPE + b.children.reduce((s, c) => s + T.branches[c].radius ** PIPE, 0)) ** (1 / PIPE);
+    assert.ok(Math.abs(b.radius - want) < 1e-9);
+    // its profile runs base to tip, never thinner than a branch it carries before its highest fork, and ends in a twig
+    assert.deepEqual(b.profile[0], [0, Math.round(b.radius * 1e6) / 1e6]);
+    assert.equal(b.profile[b.profile.length - 1][0], 1);
+    for (const c of b.children) assert.ok(b.profile[1][1] >= T.branches[c].radius - 1e-6);
+  }
+  assert.ok(T.branches[0].radius === Math.max(...T.branches.map((b) => b.radius)), 'the trunk is the thickest');
+  assert.ok(T.height > TRUNK && T.width > 0.3);
+  assert.deepEqual(midpoint(T.branches[0]), [0, 1, 2].map((k) => Math.round((T.branches[0].dir[k] * TRUNK / 2) * 1e6) / 1e6));
+});
+
+test('the real ledger makes a whole tree: a branch for every entry, a few metres tall, nothing out of bounds', () => {
+  const ledger = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/void.growth.json', import.meta.url), 'utf8'));
+  const R = layout(ledger);
+  assert.equal(R.branches.length, chronological(ledger).length);
+  assert.ok(R.height > 2 && R.height < 8 && R.width < 5, R.height + ' x ' + R.width);
+  assert.ok(R.branches.every((b) => [...b.start, ...b.end, b.radius].every(Number.isFinite)));
+  assert.ok(Math.max(...R.branches.map((b) => b.depth)) <= 8);
+  assert.deepEqual(layout([]), { branches: [], ghosts: [], height: 0, width: 0 });
+});
+
+test('leaves are real leaves, coloured by the season of their date; the kind stays on the branch for its berry', () => {
+  assert.deepEqual(['2026-04-02T00:00:00Z', '2026-07-01T00:00:00Z', '2026-09-10T00:00:00Z', '2026-10-05T00:00:00Z', '2026-11-20T00:00:00Z', '2026-01-15T00:00:00Z'].map(season), ['spring', 'summer', 'turning', 'autumn', 'late', 'winter']);
+  for (const b of T.branches) {
+    assert.ok(/^#[0-9a-f]{6}$/.test(b.leaf));
+    assert.equal(leafColor(b.at, 0), leafColor(b.at, 0), 'the same day, the same palette');
+    assert.ok(!Object.values(KIND_COLOR).includes(b.leaf), 'no leaf in a kind colour (no blue or purple leaves)');
+  }
+  const octo = T.branches.filter((b) => season(b.at) === 'autumn').map((b) => b.leaf);
+  assert.ok(new Set(octo).size > 1, 'an autumn crown is mottled, not one flat colour');
+});
+
+test('ghosts: the open tracks and the claim being built are faint shoots off the real wood, and change nothing about it', () => {
+  const tracks = [{ name: 'Living action figures', last: '2026-10-07' }, { name: 'Planet restoration', last: '2026-10-07' }];
+  const building = { what: 'the time slider', at: '2026-10-10T02:00:00Z', item: 'Growth you can watch' };
+  const G = layout(FIXTURE, { tracks, building });
+  assert.deepEqual(G.branches, T.branches, 'the real tree is exactly the same with or without them');
+  assert.deepEqual(G.ghosts.map((g) => g.kind + ':' + g.what), ['track:Living action figures', 'track:Planet restoration', 'building:the time slider']);
+  for (const g of G.ghosts) {
+    const p = G.branches[g.parent];
+    assert.ok(p && !p.children.includes(g), 'grows from a real branch but is never one of its children');
+    const along = [0, 1, 2].reduce((s, k) => s + (g.start[k] - p.start[k]) * p.dir[k], 0) / p.length;
+    assert.ok(along > 0.3 && along < 1 && g.radius < TIP_RADIUS);
+  }
+  assert.deepEqual(layout(FIXTURE, { tracks, building }).ghosts, G.ghosts, 'they stay put');
+  assert.equal(G.ghosts[2].item, 'Growth you can watch');
+  assert.deepEqual(layout([], { tracks, building }).ghosts, [], 'no tree, nothing to grow from');
+});
+
+test('the time slider: the first stop is the first entry alone, then the end of every day to today; the last stop is the whole tree', () => {
+  const now = Date.parse('2026-10-12T08:00:00Z'), stops = timeline(FIXTURE, now);
+  assert.equal(stops[0].count, 1);
+  assert.equal(layout(FIXTURE, { until: stops[0].until }).branches.length, 1);
+  assert.equal(stops[0].until, chronological(FIXTURE)[0].e.at);
+  assert.deepEqual(stops.slice(1).map((s) => s.day), ['2026-10-01', '2026-10-02', '2026-10-03', '2026-10-04', '2026-10-05', '2026-10-06', '2026-10-07', '2026-10-08', '2026-10-09', '2026-10-10', '2026-10-11', '2026-10-12']);
+  for (const s of stops) assert.equal(layout(FIXTURE, { until: s.until }).branches.length, s.count);
+  assert.equal(stops[stops.length - 1].count, valid.length);
+  for (let i = 1; i < stops.length; i++) assert.ok(stops[i].count >= stops[i - 1].count, 'the tree only grows');
+  assert.deepEqual(timeline([]), []);
+});
+
+test('self.json carries the think tank\'s tracks and the claim being built now (tools/self-context.mjs)', async () => {
+  const { readTracks, readBuilding } = await import('./self-context.mjs');
+  const index = '| Track | File | Role |\n| --- | --- | --- |\n| Living action figures | `tracks/a.md` | Joints. Last advanced 2026-10-07 20:14 (arm). |\n| Planet restoration | `tracks/b.md` | Air. Last advanced 2026-10-06 (coral). |\n';
+  assert.deepEqual(readTracks(index), [{ name: 'Living action figures', last: '2026-10-07' }, { name: 'Planet restoration', last: '2026-10-06' }]);
+  const frontier = '## 3. Growth you can watch\n- **claim:** claude 2026-10-10: the `tree`, **shipped**\n## 4. A world\n- **claim:**\n## 5. Games\n- **claim:** claude 2026-10-09: self-play\n   - **claim (b):** grok 2026-10-10: a second piece\n';
+  // without history, the latest date wins, then the lowest line; with git blame times, the line written last wins
+  assert.deepEqual(readBuilding(frontier), { at: '2026-10-10T00:00:00Z', date: '2026-10-10', by: 'grok', item: 'Games', what: 'a second piece' });
+  assert.deepEqual(readBuilding(frontier, { 2: '2026-10-10T05:00:00Z', 7: '2026-10-10T01:00:00Z' }), { at: '2026-10-10T05:00:00Z', date: '2026-10-10', by: 'claude', item: 'Growth you can watch', what: 'the tree, shipped' });
+  assert.equal(readBuilding('## 1. x\n- **claim:**\n'), null);
+});

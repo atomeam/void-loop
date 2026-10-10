@@ -1,5 +1,5 @@
 // node tools/pr-ready.test.mjs: when a PR is ready to merge (tools/pr-ready.mjs), on made-up GitHub answers.
-import { readiness, CR } from './pr-ready.mjs';
+import { readiness, resolveMain, conflictNote, CR, CONFLICT_MARK, ACTIONS_BOT } from './pr-ready.mjs';
 let bad = 0;
 const ok = (c, msg) => { if (!c) { bad++; console.log('FAIL ' + msg); } };
 const SHA = 'abc1234def', T0 = Date.parse('2026-10-09T12:00:00Z');
@@ -45,6 +45,47 @@ ok(R({ threads: [thread(1, { original_commit_id: 'old' })] }).state === 'merge',
 ok(R().extra === '', 'no extra note when CodeRabbit found nothing');
 ok(R({ pr: { state: 'closed' } }).state === 'stop' && R({ pr: { merged: true } }).merged, 'closed and merged PRs');
 ok(R({ pr: { draft: true } }).draft === true, 'a draft is reported so it can be marked ready');
+
+// a PR that conflicts with main: GitHub runs no checks on it, so the bot merges main in first (resolveMain), never by force
+ok(R({ pr: { mergeable_state: 'dirty', head: { sha: SHA, ref: 'helper/x' } } }).state === 'resolve', 'dirty: resolve before anything else');
+ok(R({ pr: { mergeable_state: 'dirty', head: { sha: SHA, ref: 'helper/x' } } }).branch === 'helper/x', 'the branch to merge main into is named');
+ok(R({ pr: { mergeable_state: 'dirty', head: { sha: SHA, ref: 'helper/x' } }, checks: [run('void-review', 'failure')] }).state === 'resolve', 'dirty with a failed check: still resolve (the check ran on a head that is gone)');
+ok(R({ pr: { mergeable_state: 'clean' } }).state === 'merge' && R({ pr: { mergeable_state: 'unknown' } }).state === 'merge' && R({ pr: { mergeable_state: 'blocked' } }).state === 'merge', 'clean, unknown or blocked: untouched, the checks decide');
+function bot({ mergeMain = 'merged origin/main; resolved tools/bench.json', comments = [] } = {}) {
+  const calls = [];
+  const runF = (cmd, args, opts = {}) => {
+    calls.push([cmd, ...args]);
+    if (cmd === 'node' && /merge-main\.mjs$/.test(args[0])) { if (opts.cwd !== '/w/pr-7') throw new Error('merge-main must run in the worktree'); if (mergeMain instanceof Error) throw mergeMain; return mergeMain; }
+    if (cmd === 'git' && args[0] === 'rev-parse') return 'feedbead1234\n';
+    if (cmd === 'git' && ['push', 'merge'].includes(args[0]) && opts.cwd !== '/w/pr-7') throw new Error(args[0] + ' must run in the worktree');
+    return '';
+  };
+  const ghF = (path) => { if (/issues\/7\/comments/.test(path)) return comments; throw new Error('unexpected ' + path); };
+  const out = resolveMain(runF, ghF, { repo: 'o/r', pr: 7, branch: 'helper/x', tools: '/main/tools', dir: '/w/pr-7' });
+  return { out, calls, has: (...a) => calls.some((c) => a.every((x) => c.includes(x))) };
+}
+const conflict = new Error('exit 1'); conflict.stderr = 'conflicts need a person: void.html, tools/x.mjs (merge left in progress)\n';
+let b = bot();
+ok(b.out.state === 'pushed' && b.out.sha === 'feedbead1234', 'dirty and resolvable: main merged and pushed');
+ok(b.has('git', 'worktree', 'add', '--detach', 'origin/helper/x'), 'the branch is checked out detached in its own worktree');
+ok(b.has('node', '/main/tools/merge-main.mjs'), "merge-main.mjs runs from main's tools, not the branch's");
+ok(b.has('git', 'push', 'origin', 'HEAD:refs/heads/helper/x') && !b.calls.some((c) => c[0] === 'git' && c[1] === 'push' && c.some((x) => /^(-f|--force|--force-with-lease)/.test(x))), 'the merge commit is pushed to the branch, never forced');
+ok(b.has('gh', 'workflow', 'run', 'void-review.yml', '--ref', 'helper/x', 'pr=7'), "Void's review is started on the new head (a token push starts no run)");
+ok(!b.has('gh', 'api', '-X', 'POST'), 'no comment when it resolved');
+ok(b.calls.filter((c) => c[0] === 'git' && c[1] === 'worktree' && c[2] === 'remove').length >= 1, 'the worktree is removed afterwards');
+b = bot({ mergeMain: conflict });
+ok(b.out.state === 'conflict' && b.out.files.join() === 'void.html,tools/x.mjs', 'dirty with a real conflict: the files are named');
+ok(!b.has('git', 'push') && !b.has('gh', 'workflow'), 'nothing pushed, nothing dispatched on a real conflict');
+ok(b.has('git', 'merge', '--abort'), 'the half merge is abandoned');
+ok(b.has('gh', 'api', '-X', 'POST', 'repos/o/r/issues/7/comments') && b.out.commented, 'one comment on the PR');
+ok(conflictNote(['void.html']).startsWith(CONFLICT_MARK) && /`void.html`/.test(conflictNote(['void.html'])) && /merge-main/.test(conflictNote(['void.html'])), 'the comment names the file and the tool');
+b = bot({ mergeMain: conflict, comments: [{ id: 5, user: { login: ACTIONS_BOT }, body: conflictNote(['void.html', 'tools/x.mjs']) }] });
+ok(b.out.state === 'conflict' && !b.out.commented && !b.has('gh', 'api', '-X', 'POST') && !b.has('gh', 'api', '-X', 'PATCH'), 'the same conflict is not said twice');
+b = bot({ mergeMain: conflict, comments: [{ id: 5, user: { login: ACTIONS_BOT }, body: conflictNote(['void.html']) }] });
+ok(b.has('gh', 'api', '-X', 'PATCH', 'repos/o/r/issues/comments/5') && !b.has('gh', 'api', '-X', 'POST'), 'a changed set of files updates the one comment');
+const boom = new Error('fatal: something else'); boom.stderr = 'fatal: could not read';
+b = bot({ mergeMain: boom });
+ok(b.out.state === 'failed' && !b.has('git', 'push') && !b.has('gh', 'api', '-X', 'POST'), 'any other failure: reported, nothing pushed, no comment');
 
 console.log(bad ? bad + ' failed' : 'pr-ready: all passed');
 process.exit(bad ? 1 : 0);

@@ -13,7 +13,8 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'applic
 const server = http.createServer((req, res) => {
   let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   if (p === '/') p = '/index.html';
-  const f = path.join(root, p);
+  let f = path.join(root, p);
+  if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); }
   res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' });
   fs.createReadStream(f).pipe(res);
@@ -997,6 +998,18 @@ try {
     check('memory card: a signed-in member (no owner key) sends their own session as the bearer and sees their answer', /mine \(py\)/.test(card) && /^Bearer member-session-token-/.test(auth) && !P.errors.length, card.slice(0, 200) + ' | ' + auth);
     await P.ctx.close(); }
   // "remember that <fact>" keeps one line (POST with the bearer), "forget that <fact>" removes it (DELETE by the same note id); without a key neither fetches
+  // "what you told me": a signed-in member's ask carries their session to /api/answer, and an answer that used a note says so on the card; a visitor's carries nothing
+  { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    let auth = null;
+    await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
+    await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
+    check('what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Void', /^Bearer member-session-token-/.test(auth || '') && /from what you told me · written by Void/.test(card) && !T.errors.length, (auth || '') + ' | ' + card.slice(0, 200));
+    await T.ctx.close(); }
+  { const V2 = await fresh(); let auth = null;
+    await V2.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization; return r.fulfill(json({ answer: 'Sunlight scatters.', sources: [] })); });
+    await V2.ask('why is the sky blue', 900); const card = await V2.p.evaluate(() => document.body.innerText);
+    check('what you told me: a visitor with no key sends no authorization and the card never claims a note', auth === undefined && !/from what you told me/.test(card) && !V2.errors.length, String(auth) + ' | ' + card.slice(0, 120));
+    await V2.ctx.close(); }
   { const K = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const calls = [];
     await K.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { const q = r.request(); calls.push({ m: q.method(), u: new URL(q.url()).search, a: q.headers().authorization || '', b: q.postData() || '' }); return r.fulfill(json(q.method() === 'DELETE' ? { removed: 1 } : { saved: 1, rejected: 0 })); });
@@ -1037,6 +1050,21 @@ try {
       before[0] === 'running' && before.length === 30 && after[0] === 'done' && after.length === 30 && /^updated .* · refreshes every 1 min/.test(cap) && paged === 41 && moreHidden
       && calls.slice(0, 3).join(',') === '30/0,30/0,30/30' && !L.errors.length, JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, errs: L.errors }));
     await L.ctx.close(); }
+  // the quiz (skills/quiz.js, frontier #17) is a learning card: never in the saved stage after a reload unless the visitor
+  // kept that one card ("keep this quiz"); the gears it quizzed on are saved as always (void.html keptThings)
+  { const Z = await fresh();
+    await Z.ask('explain gears', 900); await Z.ask('quiz me on this', 900);
+    const saved = () => Z.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).map((t) => t.kind));
+    const shown = await Z.p.$eval('.quiz-card .quiz-prompt', (e) => e.innerText).catch(() => '');
+    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    const afterReload = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
+    await Z.ask('quiz me on this', 900); await Z.ask('keep this quiz', 600);
+    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    const afterKeep = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
+    check('quiz card: asks the gear card\'s own question, is not in the saved stage after a reload, and is after "keep this quiz"',
+      /16-tooth driver and a 32-tooth driven gear/.test(shown) && afterReload.saved.includes('gears') && !afterReload.saved.includes('quiz') && afterReload.cards === 0
+      && afterKeep.saved.filter((k) => k === 'quiz').length === 1 && afterKeep.cards === 1, JSON.stringify({ shown, afterReload, afterKeep }));
+    await Z.ctx.close(); }
   const ranBeforeProposal = gate.ran.length;
   // the proposal card (skills/proposal.js, build order step 3): a pasted customer request becomes an editable proposal with
   // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent
@@ -1376,11 +1404,24 @@ try {
   await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
   check('"what can you do" and the menu open', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg), selfPg.slice(0, 60));
   const OUT_LINE = 'Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
-  const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pricing', 'pay', 'how much does Void cost?', 'go pro', 'buy paid void', 'void monthly'];
+  const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
   for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
   check('paid: signed out, every paid ask gets the price, what it adds and "remember me" first (no page, no checkout opened)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
     outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
+  // A price question is different: the membership sentence stays first, and the services card opens under it.
+  const priceAsks = ['pricing', 'how much does Void cost?'];
+  const priceGot = [];
+  for (const a of priceAsks) {
+    await P.p.$eval('#whisper', (e) => { e.textContent = ''; });
+    await P.ask(a, 0);
+    priceGot.push(await until(async () => { const w = await P.whisper(); return /Paid Void/.test(w) ? w : ''; }, 6000) || await P.whisper());
+    priceGot.push(!!(await until(async () => /What Void sells/.test((await P.page()) || '') && (await P.page()), 5000)));
+    await P.ask('close');
+  }
+  check('paid: signed out, a price question says the membership line AND opens the services card under it',
+    priceGot[0] === OUT_LINE && priceGot[1] === true && priceGot[2] === OUT_LINE && priceGot[3] === true,
+    JSON.stringify(priceGot).slice(0, 400));
   // Asks a product covers: Void's own answer, then one line with the product, its live price and its link (matched from the live
   // catalog's names and descriptions; nothing about products is hard-coded in the page). Nothing opens by itself.
   const productAsks = [
@@ -1559,12 +1600,19 @@ try {
   // Plan item 12, signed in with a passkey: $49 a month (live from the store), what it adds, and Void Monthly's link carrying the account id.
   const GUM = 'https://moonbeam846.gumroad.com/l/yinmj';
   const IN_LINK = 'Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · buy it on Gumroad';
-  const inAsks = ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
+  const inAsks = ['upgrade', 'pay', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
   const inGot = [];
   for (const a of inAsks) { await A.ask(a, 0); inGot.push(await until(async () => { const w = await A.whisper(); return /Paid Void|paid Void|your Void is paid/.test(w) ? w : ''; }, 5000) || await A.whisper()); }
   const aLink = await A.p.$eval('#whisper a', (a) => ({ href: a.href, target: a.target, rel: a.rel })).catch(() => null);
   check('paid: signed in, paid asks give $49 a month, what it adds and the Void Monthly link with the account id (never opened by itself)', inGot.every((w) => w === IN_LINK) && aLink && aLink.href === GUM + '?void=' + encodeURIComponent(meA.userId) && aLink.target === '_blank' && /noopener/.test(aLink.rel) && !(await A.page()) && A.ctx.pages().length === 1 && db().accounts.size === 0,
     inGot.map((w, i) => inAsks[i] + '=' + w).join(' | ') + ' ' + JSON.stringify(aLink));
+  await A.ask('pricing', 0);
+  const inPriceW = await until(async () => { const w = await A.whisper(); return /Paid Void/.test(w) ? w : ''; }, 6000) || await A.whisper();
+  const inPricePg = await until(async () => /What Void sells/.test((await A.page()) || '') && (await A.page()), 5000);
+  check('paid: signed in, "pricing" keeps the membership line and shows the services card with the plan row',
+    inPriceW === IN_LINK && /What Void sells/.test(inPricePg || '') && /Keep-It-Running Plan/.test(inPricePg || ''),
+    inPriceW + ' | ' + String(inPricePg || '').slice(0, 160));
+  await A.ask('close');
   // With a passkey, an outbound action still stops on the confirm line (a passkey never skips it; visitors still can't send).
   const ranBeforePk = gate.ran.length, askedBeforePk = gate.calls.filter((c) => c.type === 'a2m.approval.requested').length;
   await B.ask('send an email to jane@x.com saying hi', 0);
