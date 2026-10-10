@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · the pointing arrow (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#field{display:grid;grid-template-columns:1fr 1fr 1fr;align-items:center;justify-items:center;height:120px;border:1px solid rgba(255,255,255,.08);border-radius:14px}
+.box{width:64px;height:64px;border:1px solid rgba(255,255,255,.25);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:30px}
+#cue{font-size:34px;min-width:1.2em;text-align:center}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>the pointing arrow · draft · not published</h1>
+  <p class="note">An arrow in the middle points left or right, then a star appears in one of the two boxes: press F for left or J for right (or tap the boxes) as fast as you can. Most of the time the arrow is right; sometimes it lies. People answer faster when the arrow was right and slower when it lied; Posner described this cueing effect in 1980 and it is one of the standard ways to measure where attention is pointed. The gap between the two is your own cost of having attention sent to the wrong place. This page keeps it per sitting with the hour of day, so over time you can see whether a misleading pointer costs you more at some times than others. That last part is an open question this page asks; it is not an established finding. Everything stays in this browser.</p>
+  <div id="field" aria-hidden="true"><div class="box" id="L"></div><div id="cue"></div><div class="box" id="R"></div></div>
+  <div class="row" id="keys"><button type="button" data-s="L" disabled>F left</button><button type="button" data-s="R" disabled>J right</button></div>
+  <div class="row"><button id="go" type="button">start 40</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var N=40,VALID=0.8,KEY='a2m.fringe.posner.v1',KEYS={f:'L',j:'R'},st={sittings:[]},run=null;
+  function el(id){return document.getElementById(id)}
+  function ok(s){return s&&isFinite(s.cost)&&isFinite(s.hour)&&s.hour>=0&&s.hour<24}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.sittings))st.sittings=j.sittings.filter(ok)}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({sittings:st.sittings.slice(-200)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your sittings (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var k=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[k];a[k]=t}return a}
+  // 80% of trials the arrow points where the star will be (valid), 20% the other way (invalid); sides balanced, shuffled
+  function plan(n){var t=[],valid=Math.round(n*VALID);for(var i=0;i<n;i++){var side=i%2?'R':'L',v=i<valid;t.push({side:side,cue:v?side:(side==='L'?'R':'L'),valid:v})}return shuffle(t)}
+  function median(a){if(!a.length)return null;var s=a.slice().sort(function(x,y){return x-y}),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2}
+  // one sitting: median correct-answer time after a true arrow and after a lying one, the cost (invalid minus valid), errors
+  function sitting(trials){var v=[],iv=[],wrong=0;trials.forEach(function(t){if(!t.correct){wrong++;return}(t.valid?v:iv).push(t.ms)});
+    var mv=median(v),mi=median(iv);return{valid:mv,invalid:mi,cost:mv!=null&&mi!=null?mi-mv:null,errors:wrong/trials.length}}
+  // the cost by part of day across sittings: night 0-6, morning 6-12, afternoon 12-18, evening 18-24
+  function byPart(ss){var parts=[['night',0,6],['morning',6,12],['afternoon',12,18],['evening',18,24]];
+    return parts.map(function(p){var xs=ss.filter(function(s){return s.hour>=p[1]&&s.hour<p[2]}).map(function(s){return s.cost});return{part:p[0],n:xs.length,cost:median(xs)}})}
+  function buttons(on){[].forEach.call(document.querySelectorAll('#keys button'),function(b){b.disabled=!on})}
+  function clear(){el('L').textContent='';el('R').textContent='';el('cue').textContent=''}
+  function show(){var t=run.trials[run.i];clear();buttons(false);
+    run.timer=setTimeout(function(){el('cue').textContent=t.cue==='L'?'←':'→';
+      run.timer=setTimeout(function(){el('cue').textContent='';el(t.side).textContent='★';run.at=performance.now();buttons(true)},300+Math.random()*300)},400+Math.random()*400)}
+  function answer(s){if(!run||!run.at)return;var t=run.trials[run.i];t.ms=performance.now()-run.at;t.correct=s===t.side;run.at=0;
+    el('state').textContent=t.correct?'':'the star was on the '+(t.side==='L'?'left':'right');run.i++;if(run.i<N){show();return}
+    var r=sitting(run.trials);clear();buttons(false);el('go').disabled=false;el('go').textContent='another 40';
+    if(r.cost!=null){r.hour=new Date().getHours();r.at=Date.now();st.sittings.push(r);save()}
+    el('state').textContent=r.cost==null?'too many misses to measure this time':'this sitting: after a true arrow '+Math.round(r.valid)+' ms, after a lying one '+Math.round(r.invalid)+' ms, so the wrong pointer cost you '+Math.round(r.cost)+' ms · '+Math.round(r.errors*100)+'% wrong';run=null;draw()}
+  el('go').addEventListener('click',function(){if(run)return;run={trials:plan(N),i:0,at:0};el('go').disabled=true;el('state').textContent='';show()});
+  el('keys').addEventListener('click',function(e){var b=e.target.closest('button');if(b&&!b.disabled)answer(b.dataset.s)});
+  document.addEventListener('keydown',function(e){var s=KEYS[String(e.key).toLowerCase()];if(s&&run&&run.at){e.preventDefault();answer(s)}});
+  function draw(){var ss=st.sittings;if(!ss.length){el('score').textContent='';return}
+    el('score').textContent=ss.length+' sitting'+(ss.length>1?'s':'')+' · your usual cost '+Math.round(median(ss.map(function(s){return s.cost})))+' ms\n'
+      +byPart(ss).map(function(p){return p.part+' '+(p.n?Math.round(p.cost)+' ms ('+p.n+')':'–')}).join(' · ')+(ss.length<8?'\nabout 8 sittings, spread over the day, before comparing':'')}
+  draw();
+  // made-up trials and sittings: 80% valid with the cue on the star's side, the cost is invalid minus valid on correct answers only
+  function selftest(){var p=plan(40);if(p.filter(function(t){return t.valid}).length!==32)return'plan should be 80% valid';
+    if(p.some(function(t){return t.valid!==(t.cue===t.side)}))return'a valid cue must point at the star';
+    if(p.filter(function(t){return t.side==='L'}).length!==20)return'sides should be balanced';
+    var tr=[{valid:true,correct:true,ms:300},{valid:true,correct:true,ms:320},{valid:false,correct:true,ms:360},{valid:false,correct:true,ms:380},{valid:true,correct:false,ms:200}];
+    var s=sitting(tr);if(s.valid!==310||s.invalid!==370||s.cost!==60||Math.abs(s.errors-0.2)>1e-12)return'sitting gave '+JSON.stringify(s);
+    var b=byPart([{hour:8,cost:40},{hour:9,cost:60},{hour:20,cost:90}]);if(b[1].n!==2||b[1].cost!==50||b[3].cost!==90||b[0].n!==0)return'byPart gave '+JSON.stringify(b);return true}
+  window.__posner={plan:plan,sitting:sitting,byPart:byPart,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

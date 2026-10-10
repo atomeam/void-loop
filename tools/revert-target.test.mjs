@@ -63,6 +63,23 @@ test('a failure outside the named checks: blamed only when the commit before pas
   assert.equal(pickRevert({ tested: 't', failing: [], history: [{ sha: 'r', state: 'fail', failing: [] }, { sha: 'p', state: 'pass', failing: [] }] }).sha, 'r');
 });
 
+test('2026-10-10: a red run that never reached the named checks (the suite crashed) does not clear them', () => {
+  const WATCH = 'watch: "tell me when it\'s below 0 in Oslo" makes a watch';
+  // #293 (0bc6f43) added the watch check, but the suite crashed before it; #367 (8df4042) fixed the crash, so the check ran and failed
+  const pick = pickRevert({ tested: '52eac6d', failing: [WATCH], history: [
+    { sha: '8df4042', state: 'fail', failing: [WATCH] },
+    { sha: '0bc6f43', state: 'fail', failing: [] }, // crashed: outside the named checks
+    { sha: '83b9582', state: 'fail', failing: [] },
+    { sha: 'p', state: 'pass', failing: [] },
+  ] });
+  assert.equal(pick.action, 'report', 'not a revert of 8df4042');
+  assert.match(pick.why, /went red somewhere in 8df4042, 0bc6f43, 83b9582/);
+  // with a pass right before the crash-only stretch, the blame still stays unclear instead of landing on the fix
+  assert.equal(pickRevert({ tested: 't', failing: [WATCH], history: [{ sha: 'c', state: 'fail', failing: [] }, { sha: 'p', state: 'pass', failing: [] }] }).action, 'report');
+  // and a crash-only head does not say the check healed
+  assert.deepEqual(stillRed([WATCH], { sha: '0bc6f43', state: 'fail', failing: [] }), { red: true });
+});
+
 test('what verify-main found on a commit, from its deploy runs', () => {
   const api = (path) => {
     if (path.includes('head_sha=red')) return { workflow_runs: [{ id: 1, name: 'Void deploy', event: 'push' }, { id: 9, name: 'Void deploy', event: 'pull_request' }] };

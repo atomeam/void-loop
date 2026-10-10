@@ -1658,5 +1658,30 @@
     ],
     "sha256": "1c06d6975e6d6b848d39a5c809af06f57e86b67514ba0a3321dbb83898186d07",
     "emit": false
+  },
+  {
+    "run": 67,
+    "at": "2026-10-10T06:42:55Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention-7.html",
+    "sources": [
+      {
+        "claim": "A cue that points to where a target will appear speeds the response, and a misleading cue slows it (spatial cueing)",
+        "source": "https://doi.org/10.1080/00335558008248231",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Detection of a simple signal is faster at a location attention was directed to in advance, and slower at an unexpected one",
+        "source": "https://doi.org/10.1037/0096-3445.109.2.160",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's own cost of a misleading pointer, logged per sitting with the hour of day, varies with their time of day in a way they could use",
+        "source": "drafts/fringe/attention-7.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "674480f57e802586aa692a4b90b1a21facd338dba32dda2ac85960d0f2ce2a67",
+    "emit": false
   }
 ]

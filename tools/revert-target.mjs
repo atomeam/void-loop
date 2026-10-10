@@ -50,7 +50,8 @@ export function namesFrom(annos) {
  *   failing: the names of its failed checks ([] when the failure was outside the named browser checks)
  *   history: main's earlier commits along first parents, newest first, each
  *            { sha, state: 'pass' | 'fail' | 'unknown', failing: string[] | null }
- *            (unknown = never verified: superseded, cancelled, an auto-revert; failing null = red, names not recorded)
+ *            (unknown = never verified: superseded, cancelled, an auto-revert; failing null = red, names not recorded;
+ *            failing [] on a red commit = it failed outside the named checks, so it says nothing about a named one)
  * For each failed check, walk back: unknown commits stay suspects, a pass ends the walk (the check went red after it),
  * a red commit that also failed this check moves the blame to it, a red commit with other failures ends the walk.
  */
@@ -62,6 +63,10 @@ export function pickRevert({ tested, failing, history }) {
       if (h.state === 'unknown') { suspects.push(h.sha); continue; }
       if (h.state === 'pass') return { check, suspects };
       if (!h.failing) return { check, unclear: h.sha + ' was red before it too, and its failed checks were not recorded' };
+      // red outside the named checks (the suite crashed or stopped early): it may never have reached this check, so it
+      // says nothing about it, like an unverified commit (2026-10-10: a crash at 0bc6f43 hid the watch check, and the
+      // next commit, which only fixed the crash, was reverted for it)
+      if (check !== null && h.failing.length === 0) { suspects.push(h.sha); continue; }
       const already = check === null ? h.failing.length === 0 : h.failing.includes(check);
       if (!already) return { check, suspects };
       suspects = [h.sha];
@@ -107,6 +112,7 @@ export function stillRed(checks, latest) {
   if (!latest || latest.state === 'unknown') return { red: true };
   if (latest.state === 'pass') return { red: false, why: 'main\'s newest verified head ' + latest.sha.slice(0, 7) + ' passed the suite' };
   if (!latest.failing) return { red: true }; // red, names not recorded: nothing says it healed
+  if (checks.length && !latest.failing.length) return { red: true }; // red outside the named checks: it may not have reached them
   const still = (checks.length ? checks : [null]).every((c) => (c === null ? latest.failing.length === 0 : latest.failing.includes(c)));
   return still ? { red: true } : { red: false, why: 'main\'s newest verified head ' + latest.sha.slice(0, 7) + ' no longer fails ' + (checks.length ? checks.map((c) => '"' + c + '"').join(', ') : 'the suite the same way') };
 }
