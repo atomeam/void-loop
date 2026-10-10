@@ -31,6 +31,7 @@ export const PRODUCTS = [
     adds: 'one broken automation, diagnosed and repaired, with proof it runs again',
     includedIn: '',
     gumroad: { productId: '', slug: 'eozcma', envVar: 'GUMROAD_FIX_PRODUCT_ID' }, // on sale
+    send: ['reply to your receipt with what stopped working, in your own words (screenshots help, jargon not required);', 'ask for the minimum access needed and say why; diagnose, repair, test end to end;', 'send back a plain-words report with before-and-after proof it runs.'],
     daily: 0,
   },
   {
@@ -41,6 +42,7 @@ export const PRODUCTS = [
     adds: 'your automations watched around the clock, repairs when something breaks, a monthly plain-words report',
     includedIn: '',
     gumroad: { productId: '', slug: 'keep-it-running-membership', envVar: 'GUMROAD_PLAN_PRODUCT_ID' },
+    send: ['reply to your receipt with the automations to watch (a list, or a description of what their tools do);', 'set up round-the-clock monitoring with alerts and confirm in writing what is covered;', 'fix what breaks with proof, and send a monthly plain-words report.'],
     daily: 0,
   },
   {
@@ -51,6 +53,7 @@ export const PRODUCTS = [
     adds: 'a top-to-bottom review of every automation you have, with a written repair plan ranked by priority',
     includedIn: '',
     gumroad: { productId: '', slug: 'full-stack-audit', envVar: 'GUMROAD_AUDIT_PRODUCT_ID' },
+    send: ['reply to your receipt with the tools they use (Zapier, Make, store, forms);', 'ask for the minimum read access and say why; inventory every workflow;', 'deliver a verdict on each (working, broken, fragile, wasteful) and a written repair plan ranked by priority.'],
     daily: 0,
   },
   {
@@ -61,6 +64,7 @@ export const PRODUCTS = [
     adds: 'your first automation built for you, end to end, from the task you do by hand',
     includedIn: '',
     gumroad: { productId: '', slug: 'first-automation-setup', envVar: 'GUMROAD_SETUP_PRODUCT_ID' },
+    send: ['reply to your receipt describing the task they do by hand and the tools they already use;', 'build the automation end to end with those tools, tested from trigger to done;', 'hand it over in plain English with a test run showing it working.'],
     daily: 0,
   },
 ];

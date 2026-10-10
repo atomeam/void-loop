@@ -1027,6 +1027,29 @@ try {
       post && del && /^Bearer owner-k$/.test(post.a) && rec.kind === 'note' && rec.summary === 'I prefer tabs over spaces' && del.u === '?id=' + rec.id && /Remembered: I prefer tabs over spaces/.test(said1) && /Forgotten: I prefer tabs over spaces/.test(said2) && !K.errors.length,
       JSON.stringify({ calls, errs: K.errors }));
     await K.ctx.close(); }
+  // a world that keeps living while you are away (advance in skills/scripts.js): summon a cloud and a flower, leave for an hour (the saved time is
+  // faked back), come back, and one line says what happened; a quick reload says nothing. three.js is stubbed as in the article check above.
+  { const W = await fresh(); const figSrcW = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const namesW = Array.from(new Set(Array.from(figSrcW.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUBW = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + namesW.map((n) => n + '=U').join(',') + ';';
+    await W.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBW }));
+    await W.ask('summon a cloud', 1500); await W.ask('summon a flower', 1500);
+    const kept = await W.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'figure').map((t) => t.kindOf).sort().join(','));
+    await W.p.close();
+    const errsW = [];
+    await W.ctx.addInitScript(() => { try { if (!sessionStorage.getItem('away-faked')) { sessionStorage.setItem('away-faked', '1'); localStorage.setItem('a2m.void.away.v1', String(Date.now() - 36e5)); } } catch (_) {} }); // once, in the next page that opens
+    const back = await W.ctx.newPage(); back.on('pageerror', (e) => errsW.push(String(e && e.message || e)));
+    await back.goto(base); await back.waitForTimeout(1500);
+    const away = await back.evaluate(() => window.__voidAway || null);
+    const whisper = await back.evaluate(() => (document.getElementById('whisper') || {}).textContent || '');
+    const natured = await back.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.nature).length);
+    check('away: a cloud and a flower summoned, an hour gone: the page comes back with "While you were away (1 hour): the cloud rained" and both carry their moved-on state',
+      kept === 'cloud,flower' && away && /^While you were away \(1 hour\): /.test(away.note) && /the cloud rained/.test(away.note) && Math.abs(away.ms - 36e5) < 60e3 && natured === 2 && !errsW.length,
+      JSON.stringify({ kept, away, whisper, natured, errsW }));
+    await back.reload(); await back.waitForTimeout(800);
+    check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway), '');
+    await W.ctx.close(); }
   { const G = await fresh(); let n = 0;
     await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
     await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);

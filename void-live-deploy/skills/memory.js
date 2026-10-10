@@ -23,7 +23,7 @@ const NOT_TOPIC = /^(?:me|you|us|it|that|this|them|him|her|everything|anything|n
 /** what the ask means: null, or { q } where q is what goes to /api/memory?ask= ("" asks for the prompt sentence) */
 export function memoryOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  let m = /^(?:what|which)\s+(?:projects?|apps?|tools?|things?)\s+(?:did|have)\s+i\s+(?:build|built|make|made|write|wrote|create|created|start|started)(?:\s+(?:with|in|using|on)\s+(.+))?$/.exec(t)
+  let m = /^(?:what|which)\s+(?:projects?|apps?|tools?|things?)\s+(?:did|have)\s+i\s+(?:build|built|make|made|write|wrote|written|create|created|start|started)(?:\s+(?:with|in|using|on)\s+(.+))?$/.exec(t)
     || /^what\s+did\s+i\s+(?:build|make|write|create|start)(?:\s+(?:with|in|using|on)\s+(.+))?$/.exec(t);
   if (m) return m[1] && NOT_TOPIC.test(m[1]) ? null : { q: m[1] || '' };
   // "remember that <fact>" / "forget that <fact>": a whole sentence (at least three words), so "remember the titans", "remember that song",
