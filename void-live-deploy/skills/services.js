@@ -32,7 +32,7 @@ function run(text, api) {
   if (!q) return 'none';
   const lis = SERVICES.map((p) => '<li>' + rowHtml(p, esc) + '</li>').join('');
   showPage((p) => {
-    p.innerHTML = '<h2>What Void sells</h2><ul>' + lis + '</ul>' // void-review: ok (every variable in lis went through esc in rowHtml; the rest is this file's own literals)
+    p.innerHTML = '<h2>What Void sells</h2><ul>' + lis + '</ul>'
       + '<p class="sub">Also: <a href="https://a-to-mind.com/code-review/" target="_blank" rel="noopener">Void Code Review Pro</a>,'
       + ' and your own custom Void for $49 a month. A fix starts when you reply to your receipt with what broke.</p>';
   });

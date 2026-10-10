@@ -140,6 +140,25 @@ function constantHtml(st, rawSt) {
   }
   return true;
 }
+
+// The markup came from a builder in this same file whose body escapes (lis = rows.map((p) => rowHtml(p, esc)) and the
+// like): the esc call sits inside the builder, so the assignment line alone looks unescaped. Exempt when the right-hand
+// side calls a function defined in this file whose nearby body uses esc()/escape, or carries a plain name declared above
+// from esc or from such a builder. A builder whose body does not escape keeps the finding.
+const ESC_CALL = /\besc(?:ape)?(?:Html)?\s*\(|[(,]\s*esc(?:ape)?(?:Html)?\s*[,)]/;
+function builderEscapes(st, all, prev) {
+  const defEscapes = (name) => { if (SAFE_METHODS.test(name)) return false;
+    const d = all.search(new RegExp('(?:^|\\n)[^\\n]*(?:function\\s+' + name + '\\s*\\(|(?:const|let|var)\\s+' + name + '\\s*=\\s*(?:async\\s*)?(?:function\\b|\\())'));
+    return d >= 0 && ESC_CALL.test(all.slice(d, d + 1600)); };
+  const calls = (s) => [...s.matchAll(/([A-Za-z_$][\w$]*)\s*\(/g)].map((t) => t[1]);
+  const from = st.search(/\.(?:innerHTML|outerHTML)\s*\+?=/); const rhs = from < 0 ? st : st.slice(st.indexOf('=', from) + 1);
+  if (calls(rhs).some(defEscapes)) return true;
+  for (const t of rhs.matchAll(/[+(,]\s*([A-Za-z_$][\w$]*)\s*(?=[+;,)\s]|$)/g)) {
+    const d = (prev.match(new RegExp('(?:const|let|var)\\s+' + t[1] + '\\s*=[^\\n]*', 'g')) || []).pop();
+    if (d && (ESC_CALL.test(d) || calls(d).some(defEscapes))) return true;
+  }
+  return false;
+}
 // A template SQL literal whose only ${…} are bare names standing where a whole clause goes (right after WHERE, AND, OR or HAVING), with the
 // values bound separately (a ? placeholder in the text and .bind(...) after it): `… WHERE ${where} ORDER BY … LIMIT ?`.bind(...args, n). The
 // names are fragments the code assembled from fixed text; a value pasted into a comparison (WHERE id = ${id}), inside quotes, or in place of a
@@ -184,7 +203,7 @@ const RULES = [
     'for…in walks property names as strings (and inherited ones), not array values. For an array use for (const x of list), or for (let i = 0; i < list.length; i++).'],
   ['eval', 'risk', [...JS, 'python', 'php', 'ruby'], (m) => /(?:^|[^\w$.])(?:eval|exec)\s*\(|\bnew\s+Function\s*\(/.test(m),
     'eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anything. Parse the data instead (JSON.parse, a lookup table, ast.literal_eval in Python).'],
-  ['inner-html', 'risk', JS, (m, r, x) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !constantHtml(x.statement(), x.rawStatement()) && !/\besc(?:ape)?(?:Html)?\s*\(|[(,]\s*esc(?:ape)?(?:Html)?\s*[,)]|DOMPurify|sanitize/i.test(r), // only fixed text, esc called, or handed to an HTML builder (card(esc, data))
+  ['inner-html', 'risk', JS, (m, r, x) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !constantHtml(x.statement(), x.rawStatement()) && !/\besc(?:ape)?(?:Html)?\s*\(|[(,]\s*esc(?:ape)?(?:Html)?\s*[,)]|DOMPurify|sanitize/i.test(r) && !builderEscapes(x.statement(), x.all(), x.prev()), // only fixed text, esc called, or handed to (or built by) an escaping HTML builder (card(esc, data); rowHtml defined in this file calling esc)
     'putting a variable into innerHTML lets any HTML in it run (a script tag, an onerror handler): an XSS hole if the text can come from a user. Use textContent, or escape the text first.'],
   ['document-write', 'risk', JS, (m) => /\bdocument\.write(?:ln)?\s*\(/.test(m),
     'document.write wipes the whole page if it runs after loading, and writes raw HTML (XSS risk). Build elements with createElement and textContent.'],
@@ -493,6 +512,8 @@ export function ruleReview(code, opts = {}) {
     const r = rawLines[i], m = maskedLines[i] || '';
     if (!r.trim()) continue;
     const ctx = { lang: as,
+      // the whole file as written, so a rule can look up a builder a line hands its markup to
+      all: () => raw,
       // the masked lines above this one, so a rule can see what was declared earlier
       prev: () => maskedLines.slice(0, i).join('\n'),
       next: (k) => { let n = 0; for (let j = i + 1; j < rawLines.length; j++) if (rawLines[j].trim() && ++n === k) return maskedLines[j] || ''; return ''; },
