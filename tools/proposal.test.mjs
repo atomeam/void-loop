@@ -139,3 +139,19 @@ test('a mail thread read off the page drafts from the message, not its headers: 
   assert.equal(addressIn(thread).to, 'dana@acme.test', 'the address still comes from the whole thread');
   assert.equal(mailBody('Fix our order flow\nWe need it by June.'), 'Fix our order flow\nWe need it by June.', 'a pasted request with no headers is left as it is');
 });
+
+test('one owner gate across Void: the confirm line takes the memory page\'s signed owner session, and refuses a forged one', async () => {
+  const { mintOwnerSession } = await import('../void-live-deploy/lib/guard.js');
+  const env = { READ_TOKEN: TOKEN, SALT: 'test-salt', DB: d1() };
+  const session = (await mintOwnerSession(env, 'owner-credential-1')).token; // what passkey sign-in stores in a2m.void.owner.v1
+  assert.ok(session.startsWith('vo1.'), 'an owner session, not the raw key');
+  const call = (body, tok) => approvalApi.onRequestPost({ env, request: new Request('https://x/api/approval', { method: 'POST', headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json' }, body: JSON.stringify(body) }) });
+  const args = { to: 'maria@sunrisebakery.example', title: 'Fix the double orders' };
+  const req = await (await call({ type: 'a2m.approval.requested', toolName: 'proposal.send', args, argsFingerprint: await fingerprint('proposal.send', args) }, session)).json();
+  assert.ok(req.approvalId, JSON.stringify(req));
+  const d = await (await call({ type: 'a2m.approval.decision', approvalId: req.approvalId, decision: 'approve', actor: 'owner', argsFingerprint: req.argsFingerprint }, session)).json();
+  assert.equal(d.ran, false); assert.equal(d.note, 'not connected'); // still stubbed behind the line, by design
+  const forged = (await mintOwnerSession({ READ_TOKEN: 'some-other-key-0123456789', SALT: 'test-salt' }, 'owner-credential-1')).token;
+  const no = await call({ type: 'a2m.approval.requested', toolName: 'proposal.send', args, argsFingerprint: await fingerprint('proposal.send', args) }, forged);
+  assert.equal(no.status, 401);
+});
