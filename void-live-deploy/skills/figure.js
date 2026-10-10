@@ -12,6 +12,8 @@ const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/
 const OBJECT_RE = /^(?:please\s+)?(?:(?:summon|add|put|place|make|give|show|get|bring)(?:\s+me)?\s+)?(?:a|an|one|the)?\s*(?:(?:little|tiny|small|3d|wooden)\s+)*(chair|cup|mug|book|lamp)(?:\s+(?:on|to)\s+the\s+stage)?$/;
 const FIGURE_RE = /^(?:please\s+)?(?:(?:summon|add|bring|show(?:\s+me)?|make|put|get|call|where\s+is)\s+)?(?:motelet|(?:a|the|one)\s+figure)(?:\s+(?:on|to)\s+the\s+stage)?$/;
 const SPIN_RE = /^(?:spin|turn|rotate)\s+(?:motelet|it|the\s+(?:chair|cup|mug|figure|book|lamp))(?:\s+(?:around|round))?$/;
+// a figure that sits: "a figure that sits on the chair", "motelet sitting on the chair", "seat the figure" (miss board)
+const SIT_RE = /^(?:please\s+)?(?:(?:summon|show|bring|make|put|get|seat)\s+(?:me\s+)?)?(?:a|the|one)?\s*(?:little\s+)?(?:figure|motelet)(?:\s+that)?\s+(?:sits?|sitting|seated)(?:\s+(?:down\s+)?(?:on|upon|in)(?:\s+(?:the|a))?\s*(?:chair|seat))?$|^seat\s+(?:the\s+)?(?:figure|motelet)(?:\s+(?:on\s+)?(?:the\s+)?(?:chair|seat))?$/;
 const EXPORT_RE = /^(?:download|export|print|save)\s+(?:the\s+)?motelet(?:'s)?(?:\s+(?:stl|file|print\s+file|body))?$|^motelet\s+(?:stl|print\s+file)$/;
 
 // Motelet remembers you, on this device (domains/void.growth.md, Next [think-tank]): the first time it is summoned it
@@ -41,6 +43,7 @@ export function parseAsk(text) {
   if (FORGET_RE.test(t)) return { act: 'forget' };
   if ((m = t.match(OBJECT_RE))) return { act: 'object', model: m[1] === 'mug' ? 'cup' : m[1] };
   if (FIGURE_RE.test(t)) return { act: 'figure' };
+  if (SIT_RE.test(t)) return { act: 'sit' };
   if (SPIN_RE.test(t)) return { act: 'spin', what: (t.match(/chair|cup|mug|book|lamp/) || [''])[0].replace('mug', 'cup') };
   if (EXPORT_RE.test(t)) return { act: 'export' };
   if (asking) { const name = nameOf(t, text); if (name) return { act: 'name', name }; }
@@ -355,6 +358,20 @@ async function run(text, api) {
     else { asking = true; api.say('Motelet ' + did + ' · hi, I\'m Motelet. what\'s your name? ("I\'m Sam")'); }
     return 'figure:motelet';
   }
+  if (ask.act === 'sit') {
+    // a seated figure needs a chair: a free one, else a new one beside it
+    if (!Object.values(S.things()).some((t) => t.kind === 'fig3d' && t.model === 'chair')) {
+      const c = spot();
+      api.summon('fig3d', { model: 'chair', x: c.ax + 140, y: c.ay, ax: c.ax + 140, ay: c.ay, yaw: 0 });
+    }
+    const p = spot();
+    const fig = api.summon('fig3d', { model: 'motelet', x: p.ax, y: p.ay, ax: p.ax, ay: p.ay, yaw: 0 });
+    if (!fig) return 'none';
+    const did = settle(fig, S.things());
+    S.save(); S.render();
+    api.say('Motelet ' + did);
+    return 'figure:sit';
+  }
   if (ask.act === 'name') {
     asking = false; saveMem({ name: ask.name, last: null });
     api.say('nice to meet you, ' + ask.name + ' · Motelet will remember, in this browser only ("Motelet, forget me" clears it)');
@@ -396,6 +413,7 @@ export default {
     'download motelet',
     'summon a figure',
     'a figure',
+    'a figure that sits on the chair',
     'motelet, forget me',
     'forget my name',
   ],
