@@ -105,7 +105,7 @@ function mount(th, stageApi) {
   stageApi.stage.appendChild(el);
   roll(); // a roll that was under way when the card re-rendered carries on
   const W = Math.min(440, (typeof innerWidth === 'number' ? innerWidth : 460) - 20);
-  lift3d(th, stageApi, el, { kind: 'ringer', board: wrap, title: 'Ringer', W, H: Math.round(W * 0.8), label: '3D marble ring: drag the shooter back and let go to flick; tap the dirt to aim; drag the space around to look around',
+  lift3d(th, stageApi, el, { kind: 'ringer', board: wrap, title: 'Ringer', W, H: Math.round(W * 0.8), label: '3D marble ring: drag the shooter back and let go to flick; tap or drag inside the ring to aim; drag outside the ring to look around',
     snapshot: () => ({ state: () => th.state, onAim: aimAt, onAimEnd: save, onPull: pullTo, onRelease: release }) });
 }
 

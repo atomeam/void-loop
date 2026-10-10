@@ -282,6 +282,37 @@ export async function run3dChecks({ check, fresh }) {
       JSON.stringify({ key, at, mid, after, errors: F.errors.slice(0, 3) }));
     await F.ctx.close();
   }
+  // ---- Ringer aim over orbit: a press inside the chalk ring aims and holds the camera (a drag keeps aiming, no spin); a drag
+  // on the dirt outside the ring still looks around
+  {
+    const Rr = await import(pathToFileURL(path.join(root, 'skills', 'ringer-rules.js')).href);
+    const F = await fresh();
+    await F.ask('play marbles', 600);
+    const key = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'ringer'); return c && c.ready && c.draws > 0 ? c.key : false; }), 30000);
+    // a fixed spot on the ground, measured from the ring's centre in ring widths on screen (the card lifts and grows while
+    // pressed, so page pixels move even when the camera does not): where it lands shows whether the camera moved
+    const mark = [Rr.RING * 0.9, 0, -Rr.RING * 0.9];
+    const proj = (p) => F.p.evaluate(([k, q]) => window.__voidMini.project(k, q), [key, p]);
+    const view = () => F.p.evaluate(([k, q, r]) => { const P = (p) => window.__voidMini.project(k, p), a = P(q), c = P([0, 0, 0]), e = P([r, 0, 0]), w = P([-r, 0, 0]), u = Math.hypot(e.x - w.x, e.y - w.y); return { x: (a.x - c.x) / u, y: (a.y - c.y) / u }; }, [key, mark, Rr.RING]);
+    const drag = async (a, b) => { await F.p.mouse.move(a.x, a.y); await F.p.mouse.down(); for (let i = 1; i <= 8; i++) await F.p.mouse.move(a.x + (b.x - a.x) * i / 8, a.y + (b.y - a.y) * i / 8); };
+    let r = null;
+    if (key) {
+      const m0 = await view(), a = await proj([Rr.RING * 0.5, 0, 0]), b = await proj([-Rr.RING * 0.5, 0, -Rr.RING * 0.3]);
+      await drag(a, b);
+      const mid = await F.p.evaluate((k) => window.__voidMini.state(k), key), m1 = await view();
+      await F.p.mouse.up(); await F.p.waitForTimeout(300);
+      const end = await F.p.evaluate((k) => window.__voidMini.state(k), key), m2 = await view();
+      // the dirt band outside the ring, on the far side from the shooter: a drag there orbits
+      const o = await proj([-Rr.RING * 0.2, 0, -(Rr.RING + 0.06)]);
+      await drag(o, { x: o.x + 120, y: o.y }); await F.p.mouse.up(); await F.p.waitForTimeout(500);
+      const m3 = await view();
+      const want = Math.atan2(Rr.RING * 0.3 - -(Rr.RING + Rr.SHOOTER), -Rr.RING * 0.5), d = (x) => Math.abs(Math.atan2(Math.sin(x - want), Math.cos(x - want)));
+      r = { m0, m1, m2, m3, mid, end, still: Math.hypot(m2.x - m0.x, m2.y - m0.y) < 0.004 && Math.hypot(m1.x - m0.x, m1.y - m0.y) < 0.004, aimed: d(end.angle) < 0.05, orbited: Math.hypot(m3.x - m2.x, m3.y - m2.y) > 0.03 };
+    }
+    check('Ringer: on the 3D ring, a drag inside the chalk ring aims where it ends and the camera holds still (aiming wins over orbiting, no shot, no pull); a drag on the dirt outside the ring still looks around',
+      !!r && r.still && r.aimed && r.end.shots === 0 && !r.mid.pulling && r.orbited && F.errors.length === 0, JSON.stringify({ key, r, errors: F.errors.slice(0, 3) }));
+    await F.ctx.close();
+  }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
   {
     const F = await fresh();
