@@ -90,10 +90,11 @@ function mount(th, stageApi) {
     try { const want = Math.max(PAGE, rows.length); const got = await get(want, 0); rows = got; more = got.length >= want; paint(); }
     catch (e) { status.textContent = e.message; throw e; }
   };
-  // the next page of older rows under the ones shown
+  // the next page of older rows under the ones shown; a record that landed since the last tick shifts the offset by
+  // one, so a row already on screen is not shown twice
   const showMore = async () => {
     moreBtn.disabled = true;
-    try { const got = await get(PAGE, rows.length); rows = rows.concat(got); more = got.length >= PAGE; paint(); }
+    try { const got = await get(PAGE, rows.length); const seen = new Set(rows.map((r) => r.id)); rows = rows.concat(got.filter((r) => !seen.has(r.id))); more = got.length >= PAGE; paint(); }
     catch (e) { status.textContent = e.message; }
     moreBtn.disabled = false;
   };
