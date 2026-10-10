@@ -299,5 +299,6 @@
   {"at": "2026-10-10T16:05:55Z", "by": "claude", "kind": "build", "what": "make this a poster: any open card becomes a print-ready poster file at three sizes, drawn in the browser; ordering it printed comes when a print account is connected"},
   {"at": "2026-10-10T17:05:00Z", "by": "claude", "kind": "build", "what": "a week of reading now ends in one thing to say yes or no to: every weekly digest closes with a single proposal line, and a small tool checks it is a plain sentence (no links, no orders to a model, no keys) and puts it on this board as an idea"},
   {"at": "2026-10-10T16:30:00Z", "by": "claude", "kind": "fix", "what": "the speaker button for ambient sound no longer sits on the bare first page: it appears with your first touch, move or key, so a fresh visit is still just the input"},
+  {"at": "2026-10-10T16:17:02Z", "by": "claude", "kind": "build", "what": "Void talks back: hold Space to ask by voice, and the answer is spoken in Void's one low voice, sentence by sentence (frontier #16, first piece)"},
   {"at": "2026-10-10T18:00:00Z", "by": "claude", "kind": "grow", "what": "Void can now look at a 3D scan: say \"view a gaussian splat\", drop a .splat file on the card (it is read on your device and goes nowhere) or try the demo galaxy, then drag to orbit and scroll to zoom; with reduced motion it holds still"}
 ]
