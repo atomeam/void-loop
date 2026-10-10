@@ -19,9 +19,11 @@ export function parseWorldTime(text) {
     return { kind: 'clock', places };
   }
   // "time in Tokyo when it's 9am in New York", "what time is it in London when it's 3pm in LA"
-  m = t.match(new RegExp('^(?:what\\s+)?(?:time\\s+is\\s+it|time)\\s+in\\s+(.+?)\\s+(?:when|if)\\s+it(?:\\s+is|\'?s)\\s+' + TIME + '\\s+in\\s+(.+?)$', 'i'));
+  m = t.match(new RegExp('^(?:what\\s+)?(?:time\\s+(?:is|will)\\s+it(?:\\s+be)?|time)\\s+in\\s+(.+?)\\s+(?:when|if)\\s+it(?:\\s+is|\'?s)\\s+' + TIME + '\\s+in\\s+(.+?)$', 'i'));
   if (m) { const to = PLACE(m[1]), from = PLACE(m[3]); if (to && from && !NOT_PLACE.test(to) && !NOT_PLACE.test(from)) return { kind: 'convert', time: m[2].toLowerCase().replace(/\./g, '').replace(/\s+/g, ''), from, to }; }
   // "jet lag from LA to London": the clock difference, now
+  m = t.match(/^how\s+many\s+hours\s+(?:ahead|behind)\s+is\s+(.+?)\s+(?:than|from|of)\s+(.+)$/i); // "how many hours ahead is Lagos than London"
+  if (m) { const to = PLACE(m[1]), from = PLACE(m[2]); if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: 'now', from, to }; }
   m = t.match(/^(?:how\s+(?:bad|much)\s+is\s+(?:the\s+)?)?jet\s*lag\s+(?:from|between)\s+(.+?)\s+(?:to|and)\s+(.+)$/i);
   if (m) { const from = PLACE(m[1]), to = PLACE(m[2]); if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: 'now', from, to }; }
   m = t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?(?:current\s+|local\s+)?time\s+(?:is\s+it\s+)?(?:right\s+now\s+|now\s+)?(?:over\s+)?(?:in|at)\s+(.+)$/i)
@@ -33,7 +35,7 @@ export function parseWorldTime(text) {
     || t.match(/^(?:(?:what|what's|whats)\s+(?:is\s+)?)?(?:the\s+)?time\s*zone\s+(?:of|in|for)\s+(.+)$/i)
     || t.match(/^what\s+time\s*zone\s+is\s+(?:it\s+in\s+)?(.+?)(?:\s+in)?$/i)
     // "is it daytime in Tokyo", "is it night in Sydney now": the card shows the local time, which answers it
-    || t.match(/^is\s+it\s+(?:(?:day|night)(?:time)?|morning|afternoon|evening|dark|light|late|early)\s+(?:right\s+now\s+|now\s+)?(?:in|at)\s+(.+?)(?:\s+(?:right\s+)?now)?$/i);
+    || t.match(/^is\s+it\s+(?:(?:day|night)(?:time)?|morning|afternoon|evening|dark|light|late|early)(?:\s+or\s+(?:day|night|morning|afternoon|evening|dark|light))?\s+(?:right\s+now\s+|now\s+)?(?:in|at)\s+(.+?)(?:\s+(?:right\s+)?now)?$/i);
   if (m) { const place = PLACE(m[1]); return place && !NOT_PLACE.test(place) ? { kind: 'now', place } : null; }
   // "hours between 3pm London and Tokyo", "time difference between London and Tokyo" (no time = now)
   m = t.match(new RegExp('^(?:how\\s+many\\s+)?hours?\\s+(?:difference\\s+)?between\\s+(?:' + TIME + '\\s+(?:in\\s+)?)?(.+?)\\s+and\\s+(.+?)(?:\\s+time)?$', 'i'))
@@ -55,7 +57,7 @@ export function parseWorldTime(text) {
     if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: m[1].toLowerCase().replace(/\./g, '').replace(/\s+/g, ''), from, to };
     return null;
   }
-  m = t.match(/^(?:(?:when|what\s+time)\s+is\s+|what's\s+|whats\s+)?(?:the\s+)?(?:(today's|tomorrow's)\s+)?(sunrise|sunset|sun\s+rise|sun\s+set|dawn|dusk)\s+(?:(?:today|tomorrow)\s+)?(?:in|at|for)\s+(.+)$/i)
+  m = t.match(/^(?:(?:when|what\s+time)\s+is\s+|what's\s+|whats\s+)?(?:the\s+)?(?:(today's|tomorrow's)\s+)?(sunrise|sunset|sun\s+rise|sun\s+set|dawn|dusk)(?:\s+and\s+(?:the\s+)?(?:sunrise|sunset|dawn|dusk))?\s+(?:(?:today|tomorrow)\s+)?(?:in|at|for)\s+(.+)$/i)
     || t.match(/^(?:(when|what\s+time)\s+)?does\s+the\s+sun\s+(rise|set)\s+(?:(?:today|tomorrow)\s+)?(?:in|at)\s+(.+?)(?:\s+(?:today|tonight|tomorrow))?$/i);
   if (m) {
     const which = /rise|dawn/i.test(m[2]) ? 'sunrise' : 'sunset', place = PLACE(m[3]);

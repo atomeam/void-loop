@@ -5,10 +5,10 @@
  */
 export function placesOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  const m = t.match(/^(?:what(?:'s| is)\s+the\s+)?distance\s+(?:from|between)\s+(.+?)\s+(?:to|and)\s+(.+)$/i)
-    || t.match(/^how\s+far\s+(?:is\s+it\s+)?from\s+(.+?)\s+to\s+(.+)$/i);
+  const m = t.match(/^(?:what(?:'s| is)\s+the\s+)?distance\s+(?:from|frm|between)\s+(.+?)\s+(?:to|and)\s+(.+)$/i) // "distance frm Lyon to Turin"
+    || t.match(/^how\s+far\s+(?:is\s+it\s+)?(?:from|frm)\s+(.+?)\s+to\s+(.+)$/i);
   if (m) return { a: m[1].trim(), b: m[2].trim() };
-  const n = t.match(/^how\s+far\s+(?:away\s+)?is\s+(.+?)\s+from\s+(.+)$/i);
+  const n = t.match(/^how\s+far\s+(?:away\s+)?is\s+(.+?)\s+(?:from|frm)\s+(.+)$/i); // the separator mistyped
   if (n) return { a: n[2].trim(), b: n[1].trim() };
   const q = t.match(/^(.+?)\s+to\s+(.+?)\s+distance$/i); // "Lyon to Turin distance"
   if (q) return { a: q[1].trim(), b: q[2].trim() };
