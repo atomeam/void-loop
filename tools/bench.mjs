@@ -19,6 +19,7 @@ import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'
 import { CAPITALS, CURRENCIES } from '../void-live-deploy/skills/country.js';
 import { execFileSync } from 'node:child_process';
 import { envName, latencyOf, assess } from './bench-load.mjs';
+import { acquire as acquireHeavy } from './heavy.mjs';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
 // --probe file.json: try candidate asks (same shape) without touching bench.json; prints only the misses, so a big batch
@@ -58,6 +59,7 @@ const server = http.createServer((req, res) => { let p = decodeURIComponent(new 
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); } res.writeHead(200, { 'content-type': types[path.extname(f)] || 'text/plain' }); fs.createReadStream(f).pipe(res); }).listen(0);
 const base = 'http://127.0.0.1:' + server.address().port + '/';
 const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe'].find((p) => p && fs.existsSync(p));
+const releaseHeavy = await acquireHeavy('benchmark (tools/bench.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
