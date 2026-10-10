@@ -338,6 +338,7 @@
     #mic.listening, #mic:granted { color: #fff; background: #26304a; box-shadow: 0 0 18px rgba(140,166,255,.35); }
     #mic svg { width: 16px; height: 16px; vertical-align: -3px; }
     #sound { border: 0; border-radius: 999px; background: #1d1d1d; color: #d8d8d8; padding: 7px 11px; cursor: pointer; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+    #sound[hidden] { display: none; } /* a fresh visit is the void: the speaker appears with the first touch, move or key */
     #sound:hover { background: #2a2a2a; } #sound[aria-pressed="true"] { color: #fff; background: #26304a; box-shadow: 0 0 18px rgba(140,166,255,.35); }
     #sound svg { width: 16px; height: 16px; } #sound:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 2px; }
 #whisper {
@@ -6504,7 +6505,9 @@ return { ok: true, detail: 'timer-reset' };
     const ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
     const OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
     const show = (on) => { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); btn.setAttribute('aria-label', on ? 'Mute the sound' : 'Turn on ambient sound'); btn.title = btn.getAttribute('aria-label'); btn.innerHTML = on ? ON : OFF; };
-    show(false); go.before(btn);
+    show(false); btn.hidden = true; go.before(btn);
+    const reveal = () => { btn.hidden = false; for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.removeEventListener(ev, reveal, true); };
+    for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.addEventListener(ev, reveal, { capture: true, passive: true });
     let drone = null, ctx = null, pointer = { x: 0.5, y: 0.5 }, raf = 0;
     const tune = () => { raf = 0; if (drone) drone.update(window.__voidSky || { daylight: 0 }, pointer); };
     const soon = () => { if (!raf && drone) raf = requestAnimationFrame(tune); };
