@@ -537,7 +537,8 @@ export async function run3dChecks({ check, fresh }) {
     const moved = await until(async () => { const t = (await F.state()).find((x) => x.kind === 'monopoly'); return t && t.state.moves >= 1 ? t.state : false; }, 10000);
     const owned = moved && Object.keys(moved.owner).filter((i) => moved.owner[i] === 0).length;
     check('monopoly: "play monopoly" stands the property board in 3D in the void with its card separate; Roll moves your pawn and buys nothing for you',
-      !!ready && sep && !!moved && moved.players[0].pos > 0 && owned === 0 && !F.errors.length, JSON.stringify({ ready, sep, pos: moved && moved.players[0].pos, phase: moved && moved.phase, owned, e: F.errors }));
+      // a roll of 2 or 7 from Go can draw "Advance to Go" (Community Chest, Chance) and end back on 0: the log says so
+      !!ready && sep && !!moved && (moved.players[0].pos > 0 || moved.log.some((l) => /Advance to Go/.test(l.text))) && owned === 0 && !F.errors.length, JSON.stringify({ ready, sep, pos: moved && moved.players[0].pos, phase: moved && moved.phase, owned, e: F.errors }));
     await F.ctx.close();
   }
   // ---- Battleship: the folding case in the void; a tap on the upright board fires; Void's fleet never reaches the page
