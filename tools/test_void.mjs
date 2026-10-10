@@ -1050,6 +1050,21 @@ try {
       before[0] === 'running' && before.length === 30 && after[0] === 'done' && after.length === 30 && /^updated .* · refreshes every 1 min/.test(cap) && paged === 41 && moreHidden
       && calls.slice(0, 3).join(',') === '30/0,30/0,30/30' && !L.errors.length, JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, errs: L.errors }));
     await L.ctx.close(); }
+  // the quiz (skills/quiz.js, frontier #17) is a learning card: never in the saved stage after a reload unless the visitor
+  // kept that one card ("keep this quiz"); the gears it quizzed on are saved as always (void.html keptThings)
+  { const Z = await fresh();
+    await Z.ask('explain gears', 900); await Z.ask('quiz me on this', 900);
+    const saved = () => Z.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).map((t) => t.kind));
+    const shown = await Z.p.$eval('.quiz-card .quiz-prompt', (e) => e.innerText).catch(() => '');
+    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    const afterReload = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
+    await Z.ask('quiz me on this', 900); await Z.ask('keep this quiz', 600);
+    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    const afterKeep = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
+    check('quiz card: asks the gear card\'s own question, is not in the saved stage after a reload, and is after "keep this quiz"',
+      /16-tooth driver and a 32-tooth driven gear/.test(shown) && afterReload.saved.includes('gears') && !afterReload.saved.includes('quiz') && afterReload.cards === 0
+      && afterKeep.saved.filter((k) => k === 'quiz').length === 1 && afterKeep.cards === 1, JSON.stringify({ shown, afterReload, afterKeep }));
+    await Z.ctx.close(); }
   const ranBeforeProposal = gate.ran.length;
   // the proposal card (skills/proposal.js, build order step 3): a pasted customer request becomes an editable proposal with
   // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent
@@ -1389,11 +1404,24 @@ try {
   await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
   check('"what can you do" and the menu open', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg), selfPg.slice(0, 60));
   const OUT_LINE = 'Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
-  const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pricing', 'pay', 'how much does Void cost?', 'go pro', 'buy paid void', 'void monthly'];
+  const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
   for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
   check('paid: signed out, every paid ask gets the price, what it adds and "remember me" first (no page, no checkout opened)', outGot.every((w) => w === OUT_LINE) && !(await P.page()) && P.ctx.pages().length === 1 && P.p.url() === base && (await P.p.$$eval('#whisper a', (d) => d.length)) === 0 && gate.calls.length === callsBefore && (await P.state()).length === 0 && P.errors.length === 0,
     outGot.map((w, i) => outAsks[i] + '=' + w).join(' | ') + ' ' + P.errors.join(' | '));
+  // A price question is different: the membership sentence stays first, and the services card opens under it.
+  const priceAsks = ['pricing', 'how much does Void cost?'];
+  const priceGot = [];
+  for (const a of priceAsks) {
+    await P.p.$eval('#whisper', (e) => { e.textContent = ''; });
+    await P.ask(a, 0);
+    priceGot.push(await until(async () => { const w = await P.whisper(); return /Paid Void/.test(w) ? w : ''; }, 6000) || await P.whisper());
+    priceGot.push(!!(await until(async () => /What Void sells/.test((await P.page()) || '') && (await P.page()), 5000)));
+    await P.ask('close');
+  }
+  check('paid: signed out, a price question says the membership line AND opens the services card under it',
+    priceGot[0] === OUT_LINE && priceGot[1] === true && priceGot[2] === OUT_LINE && priceGot[3] === true,
+    JSON.stringify(priceGot).slice(0, 400));
   // Asks a product covers: Void's own answer, then one line with the product, its live price and its link (matched from the live
   // catalog's names and descriptions; nothing about products is hard-coded in the page). Nothing opens by itself.
   const productAsks = [
@@ -1572,12 +1600,19 @@ try {
   // Plan item 12, signed in with a passkey: $49 a month (live from the store), what it adds, and Void Monthly's link carrying the account id.
   const GUM = 'https://moonbeam846.gumroad.com/l/yinmj';
   const IN_LINK = 'Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · buy it on Gumroad';
-  const inAsks = ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
+  const inAsks = ['upgrade', 'pay', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
   const inGot = [];
   for (const a of inAsks) { await A.ask(a, 0); inGot.push(await until(async () => { const w = await A.whisper(); return /Paid Void|paid Void|your Void is paid/.test(w) ? w : ''; }, 5000) || await A.whisper()); }
   const aLink = await A.p.$eval('#whisper a', (a) => ({ href: a.href, target: a.target, rel: a.rel })).catch(() => null);
   check('paid: signed in, paid asks give $49 a month, what it adds and the Void Monthly link with the account id (never opened by itself)', inGot.every((w) => w === IN_LINK) && aLink && aLink.href === GUM + '?void=' + encodeURIComponent(meA.userId) && aLink.target === '_blank' && /noopener/.test(aLink.rel) && !(await A.page()) && A.ctx.pages().length === 1 && db().accounts.size === 0,
     inGot.map((w, i) => inAsks[i] + '=' + w).join(' | ') + ' ' + JSON.stringify(aLink));
+  await A.ask('pricing', 0);
+  const inPriceW = await until(async () => { const w = await A.whisper(); return /Paid Void/.test(w) ? w : ''; }, 6000) || await A.whisper();
+  const inPricePg = await until(async () => /What Void sells/.test((await A.page()) || '') && (await A.page()), 5000);
+  check('paid: signed in, "pricing" keeps the membership line and shows the services card with the plan row',
+    inPriceW === IN_LINK && /What Void sells/.test(inPricePg || '') && /Keep-It-Running Plan/.test(inPricePg || ''),
+    inPriceW + ' | ' + String(inPricePg || '').slice(0, 160));
+  await A.ask('close');
   // With a passkey, an outbound action still stops on the confirm line (a passkey never skips it; visitors still can't send).
   const ranBeforePk = gate.ran.length, askedBeforePk = gate.calls.filter((c) => c.type === 'a2m.approval.requested').length;
   await B.ask('send an email to jane@x.com saying hi', 0);

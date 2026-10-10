@@ -230,3 +230,206 @@ test('quiz: summoned by the asks people type, not by look-alikes', () => {
   for (const e of quiz.examples) assert.ok(quiz.match(e.toLowerCase(), e), e);
   for (const e of quiz.nearMisses) assert.ok(!quiz.match(e.toLowerCase(), e), e);
 });
+
+// ---------------- five-minute challenge ----------------
+import * as C from '../void-live-deploy/skills/challenge-rules.js';
+import challenge, { challengeOf } from '../void-live-deploy/skills/challenge.js';
+
+const T0 = 1_000_000;
+const ready = (p, opts) => C.take(C.create(opts), p);
+const go = (p, opts) => C.start(ready(p, opts), T0);
+const roundNow = (s) => s.rounds[C.currentIndex(s)];
+const predictRight = (s, t) => C.predict(s, roundNow(s).answer, t);
+const predictWrong = (s, t) => { const r = roundNow(s); return C.predict(s, r.type === 'number' ? r.answer + r.tolerance + 1 : r.options.find((o) => o.id !== r.answer).id, t); };
+
+test('learning.five-minute-challenge/accepts-all-three-explainer-payloads', () => {
+  for (const [name, p] of [['gear', gearObs()], ['moon', moonObs()], ['lock', lockObs()]]) {
+    const s = ready(p);
+    assert.equal(s.status, 'ready', name);
+    assert.ok(s.rounds.length >= 2, name);
+    assert.ok(s.rounds.every((r) => r.prompt === p.items.find((it) => it.id === r.id).assessment.prompt), name + ': the source writes the prompt');
+  }
+});
+
+test('learning.five-minute-challenge/handoff-does-not-autostart', () => {
+  const s = ready(gearObs());
+  assert.equal(s.status, 'ready'); assert.equal(s.startedAt, null);
+  assert.equal(C.remainingMs(s, T0 + 600_000), 300_000, 'no time passes before Start');
+  assert.equal(C.tick(s, T0 + 600_000), s);
+  assert.equal(C.predict(s, 0.5, T0), s, 'nothing is scored before Start');
+});
+
+test('learning.five-minute-challenge/no-eligible-items-shows-empty-state', () => {
+  const p = gearObs(); p.items = p.items.filter((it) => !(it.assessment && it.assessment.enabled));
+  const s = ready(p);
+  assert.equal(s.status, 'empty'); assert.equal(s.rounds.length, 0);
+  assert.equal(C.start(s, T0), s, 'an empty tray cannot start');
+});
+
+test('learning.five-minute-challenge/caps-rounds-to-eligible-items', () => {
+  assert.equal(ready(gearObs(), { roundCount: 3 }).rounds.length, 2);
+  assert.equal(ready(moonObs(), { roundCount: 3 }).rounds.length, 3);
+  assert.equal(ready(moonObs(), { roundCount: 1 }).rounds.length, 1);
+  assert.equal(C.create({ roundCount: 7 }).roundCount, C.ROUNDS_MAX);
+  assert.equal(C.create({ roundCount: 0 }).roundCount, C.ROUNDS_MIN);
+});
+
+test('learning.five-minute-challenge/pause-excludes-paused-time', () => {
+  let s = go(gearObs());
+  s = C.pause(s, T0 + 60_000);
+  assert.equal(C.remainingMs(s, T0 + 60_000 + 3_600_000), 240_000, 'an hour paused costs nothing');
+  s = C.resume(s, T0 + 3_660_000);
+  assert.equal(C.remainingMs(s, T0 + 3_690_000), 210_000);
+  assert.equal(C.elapsedMs(s, T0 + 3_690_000), 90_000);
+});
+
+test('learning.five-minute-challenge/remaining-time-independent-of-frame-rate', () => {
+  const s0 = go(gearObs());
+  let fast = s0; for (let t = T0; t <= T0 + 100_000; t += 16) fast = C.tick(fast, t);
+  let slow = s0; for (let t = T0; t <= T0 + 100_000; t += 25_000) slow = C.tick(slow, t);
+  assert.equal(C.remainingMs(fast, T0 + 100_000), 200_000);
+  assert.equal(C.remainingMs(slow, T0 + 100_000), 200_000);
+  assert.equal(C.remainingMs(s0, T0 + 100_000), 200_000, 'no ticks at all: the same');
+});
+
+test('learning.five-minute-challenge/zero-time-ends-once', () => {
+  const s = predictRight(go(moonObs()), T0 + 1000);
+  const end = C.tick(s, T0 + 300_000);
+  assert.equal(end.status, 'time-ended');
+  assert.equal(C.tick(end, T0 + 400_000), end, 'a later tick changes nothing');
+  assert.equal(C.predict(end, 'waxing', T0 + 400_000), end);
+  assert.equal(C.reveal(end, T0 + 400_000), end);
+  assert.equal(C.elapsedMs(end, T0 + 999_999), 300_000);
+  assert.match(C.summary(end), /^Time is up\./);
+  assert.match(C.summary(end), /Unfinished: /, 'unfinished rounds included');
+  // a late action ends it the same way, once
+  const late = C.predict(go(moonObs()), 0.25, T0 + 301_000);
+  assert.equal(late.status, 'time-ended'); assert.equal(late.rounds[0].prediction, null);
+});
+
+test('learning.five-minute-challenge/all-rounds-finished-completes-early', () => {
+  let s = go(gearObs());
+  s = C.reveal(predictRight(s, T0 + 5_000), T0 + 6_000);
+  s = C.reveal(predictWrong(s, T0 + 9_000), T0 + 10_000);
+  assert.equal(s.status, 'completed');
+  assert.equal(C.elapsedMs(s, T0 + 200_000), 10_000, 'the clock stops at completion');
+  assert.match(C.summary(s), /^Done\. 1 of 2 predictions matched\./);
+});
+
+test('learning.five-minute-challenge/reveal-prevents-later-scored-prediction', () => {
+  let s = go(moonObs());
+  s = C.reveal(s, T0 + 1000); // revealed with no prediction
+  assert.equal(s.rounds[0].revealed, true); assert.equal(s.rounds[0].prediction, null);
+  assert.equal(C.currentIndex(s), 1, 'that round is closed; the next one is current');
+  const after = C.predict(s, s.rounds[1].answer, T0 + 2000);
+  assert.equal(after.rounds[0].prediction, null, 'the revealed round never gets a scored prediction');
+  assert.equal(after.rounds[1].correct, true);
+});
+
+test('learning.five-minute-challenge/source-change-preserves-snapshot', () => {
+  const p = moonObs();
+  const s = ready(p);
+  p.items[0].value = 0.9; p.items[0].assessment.prompt = 'changed'; p.items.length = 0;
+  assert.ok(Math.abs(s.rounds[0].answer - 0.25) < 1e-9);
+  assert.match(s.rounds[0].prompt, /captured orbital position of 60°/);
+  assert.equal(s.snapshot.items.length, 4);
+});
+
+test('learning.five-minute-challenge/finish-now-reports-partial-results', () => {
+  let s = go(moonObs());
+  s = C.reveal(predictRight(s, T0 + 2000), T0 + 3000);
+  s = C.finishNow(s, T0 + 4000);
+  assert.equal(s.status, 'ended-early');
+  const sum = C.summary(s);
+  assert.match(sum, /^Finished early\. 1 of 3 predictions matched\./);
+  assert.match(sum, /✓ Lit fraction: you predicted 0\.25, the answer was 25%/);
+  assert.match(sum, /Unfinished: phase, waxing or waning\./);
+  assert.doesNotMatch(sum, /\b(?:genius|smart|great job|expert|beginner|you are a)\b/i, 'results, not traits');
+  const g = C.gives(s, T0 + 4000);
+  assert.ok(validateObservations(g.observations).ok);
+  assert.deepEqual(g.observations.items.map((it) => it.result), ['matched', 'no-prediction', 'no-prediction']);
+  assert.equal(g.elapsed, 4);
+});
+
+test('learning.five-minute-challenge/restart-clears-attempt', () => {
+  let s = C.finishNow(predictWrong(go(gearObs()), T0 + 1000), T0 + 2000);
+  const r = C.restart(s);
+  assert.equal(r.status, 'ready'); assert.equal(r.base, 0); assert.equal(r.startedAt, null);
+  assert.ok(r.rounds.every((x) => x.prediction === null && !x.revealed));
+  assert.equal(r.rounds.length, 2, 'the same snapshot');
+});
+
+test('learning.five-minute-challenge/keyboard-completes-entire-activity', () => {
+  let s = ready(moonObs()), t = T0;
+  const key = (k) => { t += 500; s = C.onKey(s, k, t); };
+  key('Enter'); assert.equal(s.status, 'active');
+  for (const k of '25%') key(k);
+  key('Enter'); assert.equal(s.rounds[0].correct, true);
+  key('Enter'); assert.equal(s.rounds[0].revealed, true);
+  key('p'); assert.equal(s.status, 'paused'); key('p'); assert.equal(s.status, 'active');
+  key(String(s.rounds[1].options.findIndex((o) => o.id === 'waxing-crescent') + 1)); key('Enter'); key('Enter');
+  key('2'); key('Enter'); key('Enter'); // 2 = Shrinking (waning): a wrong prediction
+  assert.equal(s.status, 'completed'); assert.match(C.summary(s), /2 of 3 predictions matched/);
+  key('Escape'); assert.equal(s.status, 'ready');
+  key('Enter'); key('f'); assert.equal(s.status, 'ended-early');
+});
+
+test('learning.five-minute-challenge/state-not-persisted-by-default', () => {
+  const kinds = { ...challenge.stageKinds, ...quiz.stageKinds, ...moonSkill.stageKinds };
+  assert.equal(kinds.challenge.ephemeral, true);
+  const things = { m: { id: 'm', kind: 'moon' }, c: { id: 'c', kind: 'challenge', state: go(moonObs()) }, q: { id: 'q', kind: 'quiz' } };
+  assert.deepEqual(Object.keys(Q.persistable(things, kinds)), ['m']);
+});
+
+test('learning.five-minute-challenge/explicit-keep-retains-only-that-card', () => {
+  const kinds = { ...challenge.stageKinds, ...quiz.stageKinds };
+  const things = { c1: { id: 'c1', kind: 'challenge', keep: true }, c2: { id: 'c2', kind: 'challenge' }, q: { id: 'q', kind: 'quiz' } };
+  assert.deepEqual(Object.keys(Q.persistable(things, kinds)), ['c1'], 'keeping one learning card keeps no other');
+  assert.deepEqual(challengeOf('keep this challenge'), { keep: true });
+});
+
+// ---------------- the first end-to-end handoffs (void.learning.md) ----------------
+
+const handoffKinds = () => ({ ...gearsSkill.stageKinds, ...moonSkill.stageKinds, ...quiz.stageKinds, ...challenge.stageKinds });
+for (const [name, th] of [['gear', () => ({ id: 'g', kind: 'gears', state: G.create({ driverTeeth: 24, drivenTeeth: 12 }) })], ['moon', () => ({ id: 'm', kind: 'moon', state: M.setOrbit(M.create(), 270, 0) })]]) {
+  test('handoff/' + name + '-to-quiz-no-adapter', () => {
+    const kinds = handoffKinds(), src = th();
+    const p = payloadOf(sourceOf({ [src.id]: src }, kinds, null), kinds);
+    const s = Q.take(Q.create(), p.observations, p.explanation);
+    assert.equal(s.status, 'answering');
+    assert.deepEqual(s.snapshot, p.observations);
+  });
+}
+
+test('handoff/quiz-missed-to-challenge', () => {
+  const kinds = handoffKinds();
+  // a moon quiz with the phase missed
+  let qs = Q.take(Q.create(), moonObs());
+  qs = Q.next(answerRight(qs)); qs = Q.next(answerWrong(qs)); qs = Q.next(answerRight(qs));
+  const quizTh = { id: 'q', kind: 'quiz', state: qs }, moonTh = { id: 'm', kind: 'moon', state: M.create() };
+  const things = { m: moonTh, q: quizTh };
+  // "give me five minutes with this" picks the explainer, never the quiz; the missed ask picks the quiz
+  assert.equal(sourceOf(things, kinds, 'q'), moonTh);
+  assert.equal(sourceOf(things, kinds, null, { kind: 'quiz' }), quizTh);
+  const p = payloadOf(quizTh, kinds);
+  const before = JSON.stringify(p.observations);
+  const c = C.take(C.create(), p.observations, p.explanation);
+  assert.equal(JSON.stringify(p.observations), before, 'the quiz payload is not touched');
+  assert.equal(c.status, 'ready');
+  assert.deepEqual(c.rounds.map((r) => r.id), ['phaseName'], 'only the missed item becomes a round');
+  assert.equal(c.rounds[0].prompt, moonObs().items.find((it) => it.id === 'phaseName').assessment.prompt);
+  // a perfect quiz leaves nothing to practise: the empty state is the right message
+  let all = Q.take(Q.create(), gearObs()); all = Q.next(answerRight(all)); all = Q.next(answerRight(all));
+  assert.equal(C.take(C.create(), Q.gives(all).observations).status, 'empty');
+});
+
+test('challenge: summoned by the asks people type, not by look-alikes', () => {
+  for (const a of ['give me five minutes with this', 'Give me 5 minutes with that', 'give me five minutes with the moon', 'five minute challenge', 'a 5-minute challenge on this'])
+    assert.deepEqual(challengeOf(a), { start: true }, a);
+  for (const a of ['turn the questions I missed into a five-minute challenge', 'turn the ones i got wrong into a challenge', 'challenge me on the ones I missed'])
+    assert.deepEqual(challengeOf(a), { start: true, missed: true }, a);
+  for (const a of ['give me five minutes', 'five minute timer', 'set a timer for five minutes', 'give me a challenge', 'five minutes from now', 'wait five minutes', 'quiz me on this'])
+    assert.equal(challengeOf(a), null, a);
+  for (const e of challenge.examples) assert.ok(challenge.match(e.toLowerCase(), e), e);
+  for (const e of challenge.nearMisses) assert.ok(!challenge.match(e.toLowerCase(), e), e);
+});
