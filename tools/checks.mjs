@@ -54,7 +54,7 @@ for (const [name, file] of [
   ['queue', 'queue.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],
   ['services', 'services.test.mjs'], ['sale-jobs', 'sale-jobs.test.mjs'], ['reply-to-job', 'reply-to-job.test.mjs'],
-  ['proposal', 'proposal.test.mjs'],
+  ['proposal', 'proposal.test.mjs'], ['job-draft', 'job-draft.test.mjs'],
   ['memory-card', 'memory-card.test.mjs'],
   ['told-me', 'told-me.test.mjs'],
   ['memory', 'memory.test.mjs'],
