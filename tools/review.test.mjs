@@ -43,6 +43,12 @@ ok(rules('p.innerHTML = cardHtml(data);', 'javascript').includes('inner-html@1')
 ok(!rules(`const el = showPage((p) => { p.innerHTML = '<h2>Watch</h2><div class="sub">checking…</div>'; });`, 'javascript').includes('inner-html@1'), 'innerHTML of a plain string with inner quotes not flagged');
 ok(!rules("el.innerHTML = cardHtml(esc, data, 'live');", 'javascript').includes('inner-html@1'), 'innerHTML from a builder handed esc among other arguments not flagged');
 ok(!rules('said.innerHTML = entryHtml(api.esc, e);', 'javascript').includes('inner-html@1') && rules('said.innerHTML = entryHtml(api.escaped_name, e);', 'javascript').includes('inner-html@1'), 'a builder handed api.esc not flagged; a lookalike name still is');
+// a builder defined in the same file whose body escapes: the esc call lives inside it, not on the assignment line
+const escBuilder = "const esc = (s) => String(s).replace(/</g, '&lt;');\nfunction rowHtml(p) { return '<b>' + esc(p.name) + '</b>'; }\nconst lis = items.map((p) => rowHtml(p)).join('');\nel.innerHTML = '<ul>' + lis + '</ul>';";
+ok(!rules(escBuilder, 'javascript').includes('inner-html@4'), 'innerHTML from a same-file builder that escapes not flagged');
+const rawBuilder = "function rowHtml(p) { return '<b>' + p.name + '</b>'; }\nconst lis = items.map((p) => rowHtml(p)).join('');\nel.innerHTML = '<ul>' + lis + '</ul>';";
+ok(rules(rawBuilder, 'javascript').includes('inner-html@3'), 'innerHTML from a same-file builder that does not escape still flagged');
+ok(!rules("function row(p) { return '<i>' + esc(p.id) + '</i>'; }\nel.innerHTML = row(item);", 'javascript').includes('inner-html@2'), 'innerHTML straight from an escaping builder call not flagged');
 ok(rules("el.innerHTML = cardHtml(data, 'live');", 'javascript').includes('inner-html@1') && rules('el.innerHTML = `<b>${name}</b>`;', 'javascript').includes('inner-html@1'), 'a builder without esc and a template with a value still flagged');
 // innerHTML built only from fixed text (literals, numbers, ALL_CAPS constants, the item of a map over a literal list) is not a risk
 for (const c of [`opp.innerHTML = '<span>vs</span>' + [1, 2, 3].map((n) => '<button data-opp="' + n + '">' + n + ' bot' + (n > 1 ? 's' : '') + '</button>').join('');`,
