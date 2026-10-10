@@ -996,6 +996,22 @@ try {
     const card = await P.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
     check('memory card: a signed-in member (no owner key) sends their own session as the bearer and sees their answer', /mine \(py\)/.test(card) && /^Bearer member-session-token-/.test(auth) && !P.errors.length, card.slice(0, 200) + ' | ' + auth);
     await P.ctx.close(); }
+  // "remember that <fact>" keeps one line (POST with the bearer), "forget that <fact>" removes it (DELETE by the same note id); without a key neither fetches
+  { const K = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const calls = [];
+    await K.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { const q = r.request(); calls.push({ m: q.method(), u: new URL(q.url()).search, a: q.headers().authorization || '', b: q.postData() || '' }); return r.fulfill(json(q.method() === 'DELETE' ? { removed: 1 } : { saved: 1, rejected: 0 })); });
+    await K.ask('remember that I prefer tabs over spaces', 900); const said1 = await K.p.evaluate(() => document.body.innerText);
+    await K.ask('forget that I prefer tabs over spaces', 900); const said2 = await K.p.evaluate(() => document.body.innerText);
+    const post = calls.find((c) => c.m === 'POST'), del = calls.find((c) => c.m === 'DELETE'), rec = post && JSON.parse(post.b).records[0];
+    check('memory: "remember that <fact>" POSTs one note with the bearer, "forget that <fact>" DELETEs the same note id, and each says what it did',
+      post && del && /^Bearer owner-k$/.test(post.a) && rec.kind === 'note' && rec.summary === 'I prefer tabs over spaces' && del.u === '?id=' + rec.id && /Remembered: I prefer tabs over spaces/.test(said1) && /Forgotten: I prefer tabs over spaces/.test(said2) && !K.errors.length,
+      JSON.stringify({ calls, errs: K.errors }));
+    await K.ctx.close(); }
+  { const G = await fresh(); let n = 0;
+    await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
+    await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
+    check('memory: without a key "remember that …" says to unlock Void first and sends nothing', /Unlock Void first/.test(said) && n === 0 && !G.errors.length, said.slice(0, 200) + ' | ' + n);
+    await G.ctx.close(); }
   { const N = await fresh(); let fetched = 0;
     await N.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { fetched++; return r.fulfill(json({ answer: 'x' })); });
     await N.ask('what did I build with react', 900);

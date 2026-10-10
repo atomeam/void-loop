@@ -6,6 +6,7 @@ import { DatabaseSync } from 'node:sqlite';
 import * as api from '../void-live-deploy/functions/api/memory.js';
 import { cleanRecord, MEMBER_MAX } from '../void-live-deploy/lib/memory-core.js';
 import { ensureTables, newSession } from '../void-live-deploy/lib/void-me.js';
+import { noteRecord, noteId } from '../void-live-deploy/skills/memory.js';
 
 const TOKEN = 'owner-token-for-tests-1234567890';
 function d1() {
@@ -225,4 +226,31 @@ test('members: a member\'s memory is capped, and the route\'s guard limit still 
   for (let at = 0; at < MEMBER_MAX; at += 100) assert.equal((await as(ann, api.onRequestPost, env, { method: 'POST', body: { records: many(at, 100) } })).status, 200);
   const over = await as(ann, api.onRequestPost, env, { method: 'POST', body: { records: many(MEMBER_MAX, 1) } });
   assert.equal(over.status, 413); assert.match(await over.text(), /full/);
+});
+
+test('remember that: a member keeps a plain line in their own memory, recalls it, forgets it; the same fact twice is one note; nobody else sees or removes it; it counts toward the same cap', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const ann = await account(env, 'annAnnAnnAnnAnnAnnAnn', 'paid'), bob = await account(env, 'bobBobBobBobBobBobBob', 'paid');
+  const fact = 'I prefer tabs over spaces';
+  const keep = async (who, text) => as(who, api.onRequestPost, env, { method: 'POST', body: { source: 'remember', records: [await noteRecord(text)] } });
+  assert.deepEqual(await (await keep(ann, fact)).json(), { saved: 1, rejected: 0 });
+  assert.deepEqual(await (await keep(ann, '  i prefer TABS over spaces. ')).json(), { saved: 1, rejected: 0 });
+  const ask = (who, q) => as(who, api.onRequestGet, env, { url: 'https://x/api/memory?ask=' + encodeURIComponent(q) }).then((r) => r.json());
+  const a = await ask(ann, 'what do you remember about tabs');
+  assert.equal(a.matches.length, 1, 'the same fact twice is one note, the later wording kept'); assert.match(a.answer, /^I remember 1 match:\n• i prefer TABS over spaces\. · remembered \d{4}-\d\d-\d\d$/);
+  assert.deepEqual((await ask(bob, 'what do you remember about tabs')).matches, [], 'another member does not see it');
+  assert.equal((await (await as(bob, api.onRequestDelete, env, { method: 'DELETE', url: 'https://x/api/memory?id=' + await noteId(fact) })).json()).removed, 0, 'nor remove it');
+  assert.equal((await (await as(ann, api.onRequestDelete, env, { method: 'DELETE', url: 'https://x/api/memory?id=' + await noteId('I PREFER tabs over spaces.') })).json()).removed, 1, 'the same fact in other words of case finds it');
+  assert.deepEqual((await ask(ann, 'what do you remember about tabs')).matches, []);
+  assert.equal((await (await as(ann, api.onRequestDelete, env, { method: 'DELETE', url: 'https://x/api/memory?id=' + await noteId(fact) })).json()).removed, 0, 'forgetting what is not held removes nothing');
+  // a stranger and a free account cannot store one; the owner keeps notes in the owner's memory, which no member sees
+  assert.equal((await keep('x'.repeat(43), fact)).status, 401);
+  const free = await account(env, 'freeFreeFreeFreeFreeFr', 'free'); assert.equal((await keep(free, fact)).status, 403);
+  assert.deepEqual(await (await call(api.onRequestPost, env, { method: 'POST', body: { source: 'remember', records: [await noteRecord('the owner stores a note too')] } })).json(), { saved: 1, rejected: 0 });
+  assert.equal((await (await call(api.onRequestGet, env, { url: 'https://x/api/memory?ask=owner%20note' })).json()).matches.length, 1);
+  assert.deepEqual((await ask(ann, 'owner note')).matches, []);
+  // the cap is shared with projects: notes fill the same 500
+  for (let at = 0; at < MEMBER_MAX - 1; at += 100) await as(bob, api.onRequestPost, env, { method: 'POST', body: { records: Array.from({ length: Math.min(100, MEMBER_MAX - 1 - at) }, (_, i) => rec({ id: 'p' + (at + i), name: 'proj' + (at + i) })) } });
+  assert.equal((await keep(bob, 'the five hundredth thing')).status, 200);
+  assert.equal((await keep(bob, 'one more thing than allowed')).status, 413);
 });

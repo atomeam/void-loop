@@ -49,7 +49,7 @@ function voidAct(step) {
   if (!want || !step || (step.action !== 'fill' && step.action !== 'click')) return { ok: false, why: 'bad-step' };
   const shown = (e) => !!(e.offsetWidth || e.offsetHeight || e.getClientRects().length) && getComputedStyle(e).visibility !== 'hidden';
   const labelOf = (e) => {
-    const names = [e.getAttribute('aria-label'), e.getAttribute('placeholder'), e.getAttribute('title'), e.getAttribute('name')];
+    const names = [e.getAttribute('aria-label'), e.getAttribute('placeholder'), e.getAttribute('title'), e.getAttribute('name'), e.id]; // the id last: voidReadTab names a box by it when nothing else does
     if (e.id) { const l = document.querySelector('label[for="' + CSS.escape(e.id) + '"]'); if (l) names.push(l.textContent); }
     const wrap = e.closest('label'); if (wrap) names.push(wrap.textContent);
     if (step.action === 'click') names.push(e.textContent, e.value);

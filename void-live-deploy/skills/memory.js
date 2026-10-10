@@ -5,6 +5,7 @@
  * "nothing matches" sentence as is. It keeps itself live (skills/live.js, every 5 minutes) so a project pushed while the
  * card is open shows up by itself. Owner-only, the way the actions card is: without the owner's key or session it says
  * so and fetches nothing.
+ * "remember that <fact>" keeps one plain line in your own memory (an explicit ask: nothing is remembered otherwise) and "forget that <fact>" removes it.
  * "what did I build with react", "what do you remember about the parser", "remember anything about rust", "ask my memory
  * about python". "remember me", "memory game" and "how much memory does chrome use" are not this.
  */
@@ -15,6 +16,8 @@ export const EVERY = 5 * 60e3;
 // the owner's key, else this device's member session (a signed-in paid member reads only their own memory; the server decides which)
 const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || (JSON.parse(localStorage.getItem(ME_KEY) || 'null') || {}).token || ''; } catch (_) { return ''; } };
 // a topic that is a person or a pronoun is not a project ("what do you remember about me")
+const NO_KEY = 'What Void remembers is for the owner and paid members. Unlock Void first (unlock <key>, or sign in with your passkey), then ask again.';
+const failText = (status) => (status === 401 ? 'Only the owner can use memory.' : status === 403 ? 'What Void remembers is for paid members.' : status === 503 ? 'There is no database behind this copy of Void.' : 'Memory answered ' + status + '.');
 const NOT_TOPIC = /^(?:me|you|us|it|that|this|them|him|her|everything|anything|nothing|myself|yourself)$/;
 
 /** what the ask means: null, or { q } where q is what goes to /api/memory?ask= ("" asks for the prompt sentence) */
@@ -23,11 +26,32 @@ export function memoryOf(text) {
   let m = /^(?:what|which)\s+(?:projects?|apps?|tools?|things?)\s+(?:did|have)\s+i\s+(?:build|built|make|made|write|wrote|create|created|start|started)(?:\s+(?:with|in|using|on)\s+(.+))?$/.exec(t)
     || /^what\s+did\s+i\s+(?:build|make|write|create|start)(?:\s+(?:with|in|using|on)\s+(.+))?$/.exec(t);
   if (m) return m[1] && NOT_TOPIC.test(m[1]) ? null : { q: m[1] || '' };
+  // "remember that <fact>" / "forget that <fact>": a whole sentence (at least three words), so "remember the titans", "remember that song",
+  // "remember to call mom" and "forget it" are not this
+  const o = String(text || '').trim().replace(/[’]/g, "'"); // the fact keeps its own capitals
+  m = /^(?:(?:please|void),?\s+)?remember\s*(?:that|:)\s*(.+)$/i.exec(o);
+  if (m) return fact(m[1]) ? { remember: fact(m[1]) } : null;
+  m = /^(?:(?:please|void),?\s+)?forget\s+that\s+(.+)$/i.exec(o);
+  if (m) return fact(m[1]) ? { forget: fact(m[1]) } : null;
   m = /^what\s+do\s+you\s+remember\s+(?:about|of|on)\s+(.+)$/.exec(t)
     || /^(?:do\s+you\s+)?remember\s+anything\s+(?:about|on|of)\s+(.+)$/.exec(t)
     || /^(?:ask|search|check|query)\s+(?:my|your|void'?s)\s+memory(?:\s+(?:for|about|on|of))?\s+(.+)$/.exec(t);
   if (m) return NOT_TOPIC.test(m[1]) ? null : { q: m[1] };
   return null;
+}
+
+/** the fact in a "remember that …" ask: plain words, at least three, short enough for one line; '' when it is not a sentence to keep */
+const fact = (x) => { const f = String(x || '').trim().replace(/\s+/g, ' ').replace(/[.!?]+$/, ''); return f.split(' ').length >= 3 && f.length <= 280 ? f : ''; };
+/** a note's id: the same fact (any case, spacing, final dot) is the same note, so saying it twice keeps one and "forget that …" finds it */
+export async function noteId(text) {
+  const norm = String(text || '').toLowerCase().replace(/[^a-z0-9 ]+/g, '').replace(/\s+/g, ' ').trim();
+  const d = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(norm)));
+  return 'note-' + [...d.slice(0, 6)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+/** the record POSTed for "remember that <fact>" */
+export async function noteRecord(text) {
+  const f = String(text).trim();
+  return { id: await noteId(f), kind: 'note', name: f.slice(0, 100), summary: f.slice(0, 280), links: [], state: '', remote: '', last_commit: '' };
 }
 
 export const askUrl = (q) => '/api/memory?ask=' + encodeURIComponent(String(q || '').slice(0, 200));
@@ -57,7 +81,7 @@ function mount(th, stageApi) {
   const tok = ownerToken();
   stageApi.bindDrag(card, th);
   stageApi.stage.appendChild(card);
-  if (!tok) { status.textContent = 'What Void remembers is for the owner and paid members. Unlock Void first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
+  if (!tok) { status.textContent = NO_KEY; return; }
 
   const paint = (answer) => {
     list.textContent = '';
@@ -83,16 +107,37 @@ function mount(th, stageApi) {
 async function run(text, api) {
   const q = memoryOf(text);
   if (!q) return 'none';
+  if (q.remember || q.forget) return keepOrDrop(q, api);
   api.summon('memory', { q: q.q, center: true });
   api.say('Memory · what Void remembers about your projects');
+  return 'memory';
+}
+
+// "remember that <fact>" saves one plain line in your own memory; "forget that <fact>" removes it. Same key and scope as the card.
+async function keepOrDrop(q, api) {
+  const tok = ownerToken();
+  if (!tok) { api.say(NO_KEY); return 'memory'; }
+  const headers = { authorization: 'Bearer ' + tok };
+  try {
+    if (q.remember) {
+      const r = await fetch('/api/memory', { method: 'POST', headers: { ...headers, 'content-type': 'application/json' }, body: JSON.stringify({ source: 'remember', records: [await noteRecord(q.remember)] }) });
+      if (r.status === 413) api.say('Your memory is full. Forget something first.');
+      else if (!r.ok) api.say(failText(r.status));
+      else { const d = await r.json().catch(() => ({})); api.say(d.saved ? 'Remembered: ' + q.remember : 'I couldn’t keep that one.'); }
+    } else {
+      const r = await fetch('/api/memory?id=' + encodeURIComponent(await noteId(q.forget)), { method: 'DELETE', headers });
+      if (!r.ok) api.say(failText(r.status));
+      else { const d = await r.json().catch(() => ({})); api.say(d.removed ? 'Forgotten: ' + q.forget : 'I wasn’t holding that.'); }
+    }
+  } catch (_) { api.say('Memory is out of reach right now.'); }
   return 'memory';
 }
 
 export default {
   name: 'memory',
   memoryOf,
-  examples: ['what did I build with react', 'what do you remember about the parser', 'remember anything about rust', 'ask my memory about python'],
-  nearMisses: ['remember me', 'memory game', 'how much memory does chrome use', 'what do you remember about me', 'do you remember me', 'what did I do today', 'what do you remember'],
+  examples: ['what did I build with react', 'what do you remember about the parser', 'remember anything about rust', 'ask my memory about python', 'remember that I prefer tabs over spaces', 'forget that I prefer tabs over spaces'],
+  nearMisses: ['remember me', 'memory game', 'how much memory does chrome use', 'what do you remember about me', 'do you remember me', 'remember the titans', 'i can\'t remember', 'remember to call mom', 'remember that song', 'do you remember that', 'forget it', 'forget about it', 'forget that', 'what did I do today', 'what do you remember'],
   match(lower, text) { return !!memoryOf(text); },
   run,
   stageKinds: { memory: { mount } },

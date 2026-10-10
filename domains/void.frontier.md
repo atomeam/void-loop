@@ -61,7 +61,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **First piece:** the tree figure in `skills/figures3d.js` (seeded from the ledger, so it is the same tree for everyone on a given day), summoned with the card.
 - **Also (folded in 2026-10-09):** the will made visible: wants from the Grok idea generator and the Forethinkers drift in as seeds, the one being built glows ("building now"), and the last commits on main land as new leaves. A time slider replays the tree as it stood on any past day (the ledger has the dates), and the Forethinkers' open tracks show as faint branches not grown yet.
 - **Done when:** "growth" brings card and tree; "what's new since last week" answers from the ledger; `tools/figures.test.mjs` covers the tree.
-- **claim:**
+- **claim:** claude 2026-10-10: the tree figure (pure layout `skills/growth-tree.js`, miniature `skills/mini/growthtree.js`, summoned inside the growth card).
 
 ## 4. A world that keeps living while you are away
 - **What:** your stage remembers time. When you come back, what you summoned has lived on by its nature and conditions (`NATURES`, `CONDITIONS`, `climateAt` in `skills/scripts.js`): the cloud rained, the flower under it grew, the ice melted, the zombie wandered off to find a brain. Elapsed time is simulated from each thing's seed, so it is the same story on every device, with a one-line "while you were away" note.

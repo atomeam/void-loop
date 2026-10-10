@@ -5559,5 +5559,10 @@
   {"ask": "shoot marbles", "want": "skill:ringer"},
   {"ask": "ringer", "want": "skill:ringer"},
   {"ask": "let's play marbles", "want": "skill:ringer"},
-  {"ask": "play ringer", "want": "skill:ringer"}
+  {"ask": "play ringer", "want": "skill:ringer"},
+  {"ask": "remember that I prefer tabs over spaces", "want": "skill:memory"},
+  {"ask": "please remember that my standup is at 9:30 every day", "want": "skill:memory"},
+  {"ask": "forget that I prefer tabs over spaces", "want": "skill:memory"},
+  {"ask": "remember: the staging key lives in the team vault", "want": "skill:memory"},
+  {"ask": "void, remember that I like my reports short", "want": "skill:memory"}
 ]
