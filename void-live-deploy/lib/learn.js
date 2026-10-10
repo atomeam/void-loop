@@ -30,13 +30,21 @@ export function learnable(r) {
   if (a.length > MAX_CHARS || a.split(/\s+/).length > MAX_WORDS) return null;
   if (/[⏎\n]|\bthought\s*[·:]|^\$ |https?:\/\//i.test(a)) return null; // agent chatter pasted into the input
   if (/\b(?:asdf|qwert|zxcv)\w*|\b[bcdfghjklmnpqrstvwxz]{6,}\b/i.test(a)) return null; // keyboard mash inside a longer line
-  return { ask: a, count: +r.count || 1, last: String(r.last || ''), fallback: String(r.fallback || ''), variants: (r.variants || []).map((v) => String(v || '').slice(0, MAX_CHARS)).filter(Boolean) };
+  const count = +r.count || 1;
+  return { ask: a, count, agent: Math.max(0, Math.min(Math.floor(+r.agent) || 0, count)), last: String(r.last || ''), fallback: String(r.fallback || ''), variants: (r.variants || []).map((v) => String(v || '').slice(0, MAX_CHARS)).filter(Boolean) };
 }
 
-// rank: asked more, asked recently, and a game or a thing Void itself said it hasn't built yet
+// Where the misses of an ask came from. The page tags a miss `origin: 'agent'` when a visiting agent's WebMCP tool call
+// caused it (void.html agentAsk); /api/miss counts those in void_misses.agent. The tag is the page's word, and /api/miss is
+// open to anyone, so it is a label that only ever demotes: a stranger can leave it off, so it is no wall, and an ask is
+// never trusted more for lacking it. People = misses not tagged agent (rows from before the column read as people).
+export const peopleCount = (c) => Math.max(0, (+c.count || 0) - (+c.agent || 0));
+export const originOf = (c) => (!(+c.agent > 0) ? 'people' : +c.agent >= (+c.count || 1) ? 'agent' : 'mixed');
+
+// rank: asked more (by people), asked recently, and a game or a thing Void itself said it hasn't built yet
 export function score(c, now = Date.now()) {
   const age = (now - Date.parse(c.last || 0)) / 864e5;
-  return c.count + (c.variants.length ? 1 : 0) + (age < 2 ? 2 : age < 4 ? 1 : 0) + (unbuilt(c.fallback) ? 2 : 0);
+  return peopleCount(c) + (c.variants.length ? 1 : 0) + (age < 2 ? 2 : age < 4 ? 1 : 0) + (unbuilt(c.fallback) ? 2 : 0);
 }
 
 // rows: the board (GET /api/misses); queue: { items } (GET /api/queue); known: asks already beaten or benched
@@ -46,31 +54,47 @@ export function plan(rows, queue, { known = new Set(), now = Date.now(), days = 
   const open = items.filter((i) => /^miss:/.test(i.target) && /^(queued|building)$/.test(i.state)).length;
   const taken = new Set(items.map((i) => i.target));
   const asked = new Set(items.map((i) => String(i.ask || '').toLowerCase()));
-  const cands = [], skipped = [];
+  const cands = [], skipped = [], quarantined = [];
   for (const r of rows || []) {
     const c = learnable(r);
     if (!c) continue;
     if (c.last && c.last < since) continue;
     const t = targetOf(c.ask);
     if (known.has(c.ask.toLowerCase()) || taken.has(t) || asked.has(`learn to handle "${c.ask.toLowerCase()}"`)) { skipped.push({ ask: c.ask, why: taken.has(t) ? 'already a job' : 'already beaten or benched' }); continue; }
+    if (originOf(c) === 'agent') { quarantined.push({ ask: c.ask, count: c.count }); continue; } // only visiting agents asked it: seen, never queued
     cands.push({ ...c, target: t, score: score(c, now) });
   }
   cands.sort((a, b) => b.score - a.score || (b.last > a.last ? 1 : -1));
   const room = Math.max(0, openMax - open);
-  return { open, room, queue: cands.slice(0, room), later: cands.slice(room), skipped };
+  return { open, room, queue: cands.slice(0, room), later: cands.slice(room), skipped, quarantined };
 }
 
+// c.route (optional): what the router made of the ask, { route, skill, score } from void_routes (routeNote)
 export const jobOf = (c) => ({
   ask: `learn to handle "${c.ask}"`,
   target: c.target || targetOf(c.ask),
-  note: `asked ${c.count}× (${c.variants.length + 1} phrasing${c.variants.length ? 's' : ''}), last ${String(c.last).slice(0, 10)}${c.fallback ? '; fallback ' + c.fallback : ''}; from the miss board`.slice(0, 300),
+  note: [
+    `asked ${c.count}× (${c.variants.length + 1} phrasing${c.variants.length ? 's' : ''}), last ${String(c.last).slice(0, 10)}${c.fallback ? '; fallback ' + c.fallback : ''}`,
+    routeNote(c.route),
+    originOf(c) === 'people' ? '' : originOf(c) === 'agent' ? 'only agents asked it' : `${c.agent} of ${c.count} asks from agents`,
+    'from the miss board',
+  ].filter(Boolean).join('; ').slice(0, 300),
 });
+
+// "router skill:weather 0.78" (a skill should have caught it) · "router simple 0.41" · '' when the router never saw the ask.
+// Only the router's own fixed words and a skill name from its table can get in here: the note is mirrored into the public repo.
+export function routeNote(r) {
+  if (!r || !/^(skill|simple|hard|fallback)$/.test(String(r.route))) return '';
+  const sk = /^[a-z0-9_-]{1,24}$/.test(String(r.skill || '')) ? r.skill : '';
+  const n = Number.isFinite(+r.score) && r.score !== null ? ' ' + (+r.score).toFixed(2) : '';
+  return 'router ' + (r.route === 'skill' && sk ? 'skill:' + sk : r.route) + n;
+}
 
 // --- the D1 side (Pages Functions only) ---
 
 // queue one learnable ask unless its target was ever queued or OPEN_MAX miss jobs are open; returns the new id or null
 export async function queueMiss(env, c) {
-  const job = jobOf(c);
+  const job = jobOf({ ...c, route: c.route || (await routeOf(env, c.ask)) });
   const open = await env.DB.prepare("SELECT COUNT(*) AS n FROM void_queue WHERE target LIKE 'miss:%' AND state IN ('queued','building')").first('n');
   if (+open >= OPEN_MAX) return null;
   const seen = await env.DB.prepare('SELECT id FROM void_queue WHERE target = ? LIMIT 1').bind(job.target).first();
@@ -85,11 +109,38 @@ export async function queueMiss(env, c) {
   return id;
 }
 
+// What the router (lib/router.js, void_routes) made of this ask, or null. The router only names a skill when it decided a skill
+// should have caught the ask, so "nearest skill" exists for exactly those. Best effort: no table, no row or no D1 is null.
+export async function routeOf(env, ask) {
+  try {
+    const r = await env.DB.prepare('SELECT route, skill, score FROM void_routes WHERE ask = ? ORDER BY last DESC LIMIT 1').bind(String(ask || '').toLowerCase().slice(0, 200)).first();
+    return r && r.route ? { route: r.route, skill: r.skill || '', score: r.score } : null;
+  } catch (_) { return null; }
+}
+
+// void_misses.agent counts the misses the page tagged as a visiting agent's. Like void_queue.draft (functions/api/queue.js)
+// the column is added when first needed, once per isolate, and an error ("duplicate column") means it is already there.
+const agentColumnEnsured = new WeakSet();
+export async function ensureAgentColumn(env) {
+  if (!env || !env.DB || agentColumnEnsured.has(env.DB)) return;
+  await env.DB.prepare('ALTER TABLE void_misses ADD COLUMN agent INTEGER').run().catch(() => {});
+  agentColumnEnsured.add(env.DB);
+}
+export async function noteAgentMiss(env, id) {
+  try {
+    await ensureAgentColumn(env);
+    await env.DB.prepare('UPDATE void_misses SET agent = COALESCE(agent, 0) + 1 WHERE id = ?').bind(id).run();
+  } catch (_) {}
+}
+export async function agentCount(env, id) {
+  try { return +(await env.DB.prepare('SELECT agent FROM void_misses WHERE id = ?').bind(id).first('agent')) || 0; } catch (_) { return 0; }
+}
+
 // the miss-time door: row is the void_misses row just written ({ ask, count, first, last, fallback })
 const day = (t) => String(t || '').slice(0, 10);
 export const spansDays = (row) => !!day(row && row.first) && !!day(row && row.last) && day(row.first) !== day(row.last);
 export async function learnFromMiss(env, row) {
   const c = learnable(row);
-  if (!c || c.count < MIN_COUNT || !spansDays(row)) return null; // the browser-sent fallback is never trusted here
+  if (!c || peopleCount(c) < MIN_COUNT || !spansDays(row)) return null; // the browser-sent fallback is never trusted here; agents' misses do not count toward a job
   return queueMiss(env, c);
 }
