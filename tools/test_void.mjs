@@ -1103,6 +1103,26 @@ try {
       && /see what happened$/.test(lineM) && lineM.startsWith(posted[0].b.note) && /scene\.advance · stage/.test(cardM) && !M.errors.length,
       JSON.stringify({ posted, lineM, cardM: cardM.slice(0, 200), errs: M.errors }));
     await M.ctx.close(); }
+  // a sky and a clock (frontier #21, skills/sky-rules.js): the empty stage is tinted by the real sun where the visitor is, with no network call; it is there on
+  // load, differs between the middle of the night and noon, drifts (one timer) unless motion is reduced, and the visitor's own look still wins.
+  { const K = await fresh(); const sky = await import(new URL('../void-live-deploy/skills/sky-rules.js', import.meta.url).href);
+    const glowAt = async (when, reduce) => { await K.p.emulateMedia({ reducedMotion: reduce ? 'reduce' : 'no-preference' }); await K.p.clock.setFixedTime(when); await K.p.reload(); await K.p.waitForTimeout(500);
+      return K.p.evaluate(() => ({ glow: getComputedStyle(document.documentElement).getPropertyValue('--sky-glow').trim(), bg: getComputedStyle(document.documentElement).getPropertyValue('--sky-bg').trim(), on: document.documentElement.classList.contains('sky-on'), sky: window.__voidSky || null, layer: getComputedStyle(document.getElementById('void-glow')).opacity })); };
+    await glowAt(new Date('2026-06-21T12:00:00Z'), false); // first look at where this browser thinks it is
+    const place = (await K.p.evaluate(() => window.__voidSky)).place;
+    let hi = null, lo = null; for (let h = 0; h < 24; h += 0.25) { const t = new Date(Date.UTC(2026, 5, 21, 0, h * 60)), a = sky.skyOf(t, place).altitude; if (!hi || a > hi.a) hi = { t, a }; if (!lo || a < lo.a) lo = { t, a }; }
+    const noon = await glowAt(hi.t, false), night = await glowAt(lo.t, false), still = await glowAt(hi.t, true), moving = await glowAt(hi.t, false);
+    const rgbOf = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16));
+    check('sky: the empty stage is tinted by the real sun on load (no network): the middle of the night and the sun at its highest give different, expected colours, the glow layer shows without any interaction, reduced motion holds the tint still (no drift timer), and the shared signal is published',
+      noon.glow === sky.skyOf(hi.t, place).glow && night.glow === sky.skyOf(lo.t, place).glow && noon.glow !== night.glow && noon.bg !== night.bg && rgbOf(noon.glow)[2] > rgbOf(night.glow)[2] - 10 && noon.on && night.on && Number(noon.layer) > 0.5
+      && noon.sky.daylight > night.sky.daylight && noon.sky.drifting === true && still.sky.drifting === false && still.glow === noon.glow && moving.sky.drifting === true && !K.errors.length,
+      JSON.stringify({ place, noon, night, still: still.sky && still.sky.drifting, errs: K.errors }));
+    await K.ctx.close(); }
+  { const Lk = await fresh({ content: 'localStorage.setItem("a2m.void.look.v1", JSON.stringify({ bg: "#101010", glow: "#202020", fx: "off" }));' });
+    await Lk.p.waitForTimeout(500);
+    const v = await Lk.p.evaluate(() => ({ glow: getComputedStyle(document.documentElement).getPropertyValue('--void-glow').trim(), sky: getComputedStyle(document.documentElement).getPropertyValue('--sky-glow').trim(), on: document.documentElement.classList.contains('sky-on') }));
+    check('sky: a look the visitor chose still wins: with their own glow saved, the sky does not switch the empty-stage glow on and their colour stays the stage\'s', v.glow === '#202020' && !v.on && !Lk.errors.length, JSON.stringify({ v, errs: Lk.errors }));
+    await Lk.ctx.close(); }
   // last place survives a page that never hid: the figure's own place is written on the scene's ordinary save (here an unrelated sticky), with no pagehide and no
   // visibility change; a page opened afterwards puts the figure back there. Reduced motion keeps the figure still so the numbers are exact. three.js is stubbed.
   { const L = await fresh({ content: 'try { localStorage.setItem("a2m.void.motion.v1", "still"); } catch (_) {}' });
