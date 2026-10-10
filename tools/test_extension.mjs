@@ -48,9 +48,26 @@ const out = []; // every request that left for anywhere, with its body
 ctx.on('request', (r) => out.push(r.url() + ' ' + (r.postData() || '')));
 const FIXTURE = 'https://fixture.test/';
 const THREAD_ASK = 'Hi, we need our order flow fixed by June. Orders stop syncing to the sheet and the confirmation emails go out twice. Can you send us a proposal?';
+// Mail apps as they lay out a reply (their words, their structure; not their code): a search box, one-line To / Subject fields,
+// and the compose body, labelled in the app's language. Outlook re-draws its compose body, so the box you were in is replaced.
+const thread = (subject, from) => '<h2>' + subject + '</h2><div class="msg">' + from + ' Dana Reyes &lt;dana@acme.test&gt;<p>' + THREAD_ASK + '</p></div>';
+const MAIL = {
+  'gmail-fr': '<!doctype html><title>Flux de commandes - Gmail</title><header><input aria-label="Rechercher dans les messages" placeholder="Rechercher dans les messages"></header>'
+    + '<div role="main">' + thread('Flux de commandes', 'De :') + '<div role="dialog" aria-label="Nouveau message"><input aria-label="À"><input aria-label="Objet" value="Re: Flux de commandes">'
+    + '<div data-t="body" role="textbox" contenteditable="true" aria-label="Corps du message" aria-multiline="true" style="min-height:160px;width:520px"></div></div></div>',
+  'gmail-de': '<!doctype html><title>Bestellablauf - Gmail</title><header><input aria-label="In E-Mails suchen" placeholder="In E-Mails suchen"></header>' // two compose windows, the same label
+    + '<div role="main">' + thread('Bestellablauf', 'Von:') + '<div role="dialog" aria-label="Neue Nachricht"><input aria-label="An"><div data-t="other" role="textbox" contenteditable="true" aria-label="Nachrichtentext" aria-multiline="true" style="min-height:160px;width:520px"></div></div>'
+    + '<div role="dialog" aria-label="Neue Nachricht"><input aria-label="An"><input aria-label="Betreff" value="Re: Bestellablauf">'
+    + '<div data-t="body" role="textbox" contenteditable="true" aria-label="Nachrichtentext" aria-multiline="true" style="min-height:160px;width:520px"></div></div></div>',
+  'outlook': '<!doctype html><title>Mail - Outlook</title><div role="search"><div role="textbox" contenteditable="true" aria-label="Search" style="width:300px;height:24px"></div></div>' // a compose body with no label, re-drawn
+    + '<div role="main">' + thread('Order flow', 'From:') + '<div role="region" aria-label="Reading Pane"><div role="textbox" contenteditable="true" aria-label="To" style="width:520px;height:24px"></div>'
+    + '<input aria-label="Add a subject"><div data-t="body" role="textbox" contenteditable="true" aria-multiline="true" style="min-height:200px;width:560px"></div></div></div>'
+    + '<script>window.redraw = () => { const old = document.querySelector("[data-t=body]"), n = old.cloneNode(false); old.replaceWith(n); };</script>',
+};
 const OWNER = 'owner-token-for-the-extension-test', records = []; // B3's execution records, as /api/actions would keep them
 await ctx.route(/^https?:\/\//, (r) => {
   const u = new URL(r.request().url());
+  if (u.origin === 'https://fixture.test' && u.pathname.startsWith('/mail/')) return r.fulfill({ contentType: 'text/html', body: MAIL[u.pathname.slice(6)] || 'none' });
   if (u.origin === 'https://fixture.test' && u.pathname === '/thread') { // a mail thread, the way Gmail lays one out: the thread in main, your reply box under it
     return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Order flow - Inbox</title><nav>Inbox Starred Sent</nav><div role="main"><h2>Order flow</h2>'
       + '<div class="msg">From: Dana Reyes &lt;dana@acme.test&gt;<p>' + THREAD_ASK + '</p></div>'
@@ -317,6 +334,30 @@ check('proposal → reply: on an allowed site the same press yields the B3 card 
   && stepCard.text.includes('Scope:\n') && stepCard.text.includes('[price: left for the owner') && !/^#/m.test(stepCard.text) && beforeYes === ''
   && replyBox.includes(drafted.title) && /What they asked for:/.test(replyBox) && recP.kind === 'extension.act' && recP.ref === 'fixture.test · Message Body' && recP.state === 'done',
   { stepCard: { ...stepCard, text: stepCard.text.slice(0, 200) }, drafted: drafted && drafted.title, beforeYes, replyBox: replyBox.slice(0, 160), recP });
+
+// Mail apps beyond one English Gmail: the reply box is found as the box you were in, whatever its label says; when the app has
+// re-drawn it (Outlook), by its shape: the multi-line compose body, not the search box, not To or Subject
+for (const [app, name, redraw] of [['Gmail in French', 'gmail-fr', false], ['Gmail in German with two compose windows, the same label', 'gmail-de', false], ['Outlook on the web, a compose body with no label', 'outlook', true]]) {
+  const url = FIXTURE + 'mail/' + name;
+  await page.goto(url);
+  await page.evaluate(() => document.querySelector('[data-t=body]').focus());
+  await read(url);
+  await V.waitForFunction((t) => ((document.querySelector('.tab-card') || {}).innerText || '').includes(t), (await page.title()).split(' - ')[0], { timeout: 8000 }).catch(() => {});
+  if (redraw) await page.evaluate(() => window.redraw());
+  const n0 = await V.evaluate(() => document.querySelectorAll('.proposal-card').length), r0m = records.length;
+  await pressProposal(n0 + 1);
+  await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 8000 }).catch(() => {});
+  const card = await panel.evaluate(() => ({ on: document.getElementById('act').classList.contains('on'), what: document.querySelector('.act-what').textContent, text: document.querySelector('.act-text').textContent }));
+  const drafted = await lastProposal();
+  await press('.act-yes', async () => !(await cardOn()));
+  await V.waitForFunction(() => /recorded/.test((document.querySelector('.tab-act-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+  const after = await page.evaluate(() => ({ body: document.querySelector('[data-t=body]').innerText, others: [...document.querySelectorAll('input, [contenteditable]')].filter((e) => e.dataset.t !== 'body').map((e) => (e.tagName === 'INPUT' ? e.value : e.textContent)) }));
+  const rec = records[records.length - 1] || {};
+  check('mail apps: ' + app + (redraw ? ' (re-drawn after you pointed Void at it)' : '') + ': "draft for me: proposal" yields the step card for the reply box you were in, and Yes fills that box with the proposal and nothing else (search, To, Subject and any other compose window untouched), with a done record',
+    card.on && !!drafted && card.text.startsWith(drafted.title) && after.body.includes(drafted.title) && /What they asked for:/.test(after.body)
+    && after.others.every((v) => v === '' || /^Re: /.test(v)) && records.length === r0m + 1 && rec.state === 'done',
+    { app, card: { ...card, text: card.text.slice(0, 80) }, title: drafted && drafted.title, after: { body: after.body.slice(0, 120), others: after.others }, rec });
+}
 
 // "Ask Void about this page" (sent to Void, #134): the answer card says the page left the browser for this answer
 await sw.evaluate(() => chrome.storage.session.set({ ask: { q: 'What is this page about?', page: { title: 'Fixture page', url: 'https://fixture.test/', selection: '', field: '', text: 'fixture text' }, at: Date.now() } }));

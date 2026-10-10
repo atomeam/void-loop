@@ -1116,6 +1116,8 @@ Object.values(things).forEach((th) => {
         : 'stopped at step ' + m.at + ' of ' + m.of + ' (' + (m.done ? m.done + ' done before it' : 'nothing done') + '; nothing after it ran): ' + (ACT_WHY[m.why || ''] || "couldn't do that step");
       return m && m.ok ? (m.did === 'clicked' ? 'clicked' : 'filled') + ' it on ' + (m.host || 'the page') + ' · recorded · you send it yourself' : ACT_WHY[(m && m.why) || ''] || "couldn't do that step";
     };
+    // the box you were in, by its own label when it has one (any language); box: 'mine' fills that very box, or the mail app's compose box
+    const boxName = (f) => (f && f.name) || 'the box you were in';
     function extPropose(step) { if (!ext.on) return false; extSend(Array.isArray(step) ? (step.length === 1 ? { type: 'void-ext:propose', step: step[0] } : { type: 'void-ext:propose', steps: step }) : { type: 'void-ext:propose', step }); return true; }
     async function extRecord(m) {
       const reply = (r) => extSend({ type: 'void-ext:recorded', id: m.id, ...r });
@@ -1144,7 +1146,7 @@ Object.values(things).forEach((th) => {
       const th = summonThing('proposal', { center: true, fields: d.fields, model: d.model, to: L.addressIn(r.text).to || '' });
       const sp = document.querySelector('.tab-said');
       if (sp) sp.textContent = 'proposal from Void' + (d.model === 'rules' ? ' (by rule, no model just now)' : '') + ' · in the proposal card, yours to edit';
-      if (th && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: L.toPlain(d.fields), auto: true });
+      if (th && tab.field) extPropose({ action: 'fill', label: boxName(tab.field), box: 'mine', text: L.toPlain(d.fields), auto: true });
     }
     function mountTab(th) {
       const t = ext.tab;
@@ -1197,7 +1199,7 @@ Object.values(things).forEach((th) => {
           said.textContent = intent + ' from Void' + (notes.length ? ' (' + notes.join('; ') + ')' : '') + ' · put it in the page, or copy it';
           // B3 joined to the draft: a reply for the box you were in becomes a proposed step, the same Yes / No card in the panel
           // and the same record; the panel shows it only on a site on your list (off the list it says nothing: copy as before)
-          if (intent === 'reply' && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: j.draft, auto: true });
+          if (intent === 'reply' && tab.field) extPropose({ action: 'fill', label: boxName(tab.field), box: 'mine', text: j.draft, auto: true });
         }));
         const stepIn = body.querySelector('.tab-step'), actSp = body.querySelector('.tab-act-said');
         stepIn.value = ext.stepText || ''; stepIn.addEventListener('input', () => { ext.stepText = stepIn.value; }); // a redraw of the stage keeps what you typed
