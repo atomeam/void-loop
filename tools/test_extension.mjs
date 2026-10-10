@@ -47,9 +47,15 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'applic
 const out = []; // every request that left for anywhere, with its body
 ctx.on('request', (r) => out.push(r.url() + ' ' + (r.postData() || '')));
 const FIXTURE = 'https://fixture.test/';
+const THREAD_ASK = 'Hi, we need our order flow fixed by June. Orders stop syncing to the sheet and the confirmation emails go out twice. Can you send us a proposal?';
 const OWNER = 'owner-token-for-the-extension-test', records = []; // B3's execution records, as /api/actions would keep them
 await ctx.route(/^https?:\/\//, (r) => {
   const u = new URL(r.request().url());
+  if (u.origin === 'https://fixture.test' && u.pathname === '/thread') { // a mail thread, the way Gmail lays one out: the thread in main, your reply box under it
+    return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Order flow - Inbox</title><nav>Inbox Starred Sent</nav><div role="main"><h2>Order flow</h2>'
+      + '<div class="msg">From: Dana Reyes &lt;dana@acme.test&gt;<p>' + THREAD_ASK + '</p></div>'
+      + '<div id="body" contenteditable="true" aria-label="Message Body" style="min-height:80px;border:1px solid #ccc"></div></div>' });
+  }
   if (u.origin === 'https://fixture.test') {
     return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Fixture page</title><p id="p">' + SECRET + '</p>'
       + '<form id="f" onsubmit="window.submitted=true;return false"><textarea id="reply" aria-label="Reply"></textarea><button>send</button></form>'
@@ -64,7 +70,7 @@ await ctx.route(/^https?:\/\//, (r) => {
       if (b.op === 'end' && rec && rec.state === 'running') { rec.state = b.state; rec.result = b.text; return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ id: rec.id, state: rec.state }) }); }
       return r.fulfill({ status: 409, contentType: 'application/json', body: '{}' });
     }
-    if (u.pathname.startsWith('/api/answer') && /"mode":"draft"/.test(r.request().postData() || '')) { // the tab card's "draft for me": the real handler, no model
+    if (u.pathname.startsWith('/api/answer') && /"mode":"(?:draft|proposal)"/.test(r.request().postData() || '')) { // the tab card's "draft for me": the real handler, no model
       return answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', body: r.request().postData() }), env: { AI: undefined } })
         .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
     }
@@ -274,6 +280,43 @@ check('B3 from a draft: a "draft for me: reply" on an allowed site yields the Ye
   autoCard.on && replyDraft.length > 0 && autoCard.text === replyDraft && /Reply/.test(autoCard.what) && autoCard.site === 'fixture.test'
   && !offList.on && /^reply from Void/.test(offList.said) && !/not on your list/.test(offList.act) && offList.box.length > 0,
   { autoCard, replyDraft: replyDraft.slice(0, 80), offList });
+
+// A customer email becomes a proposal in your reply box, after your yes: "draft for me: proposal" in a mail thread sends the
+// thread once, the proposal card drafts it, and on an allowed site Void proposes filling the reply box with it as plain text
+const THREAD = FIXTURE + 'thread';
+await page.goto(THREAD);
+await page.evaluate(() => document.getElementById('body').focus());
+await read(THREAD);
+await V.waitForFunction(() => /Order flow/.test((document.querySelector('.tab-card') || {}).innerText || ''), null, { timeout: 8000 }).catch(() => {});
+const proposalPosts = () => out.filter((x) => /\/api\/answer/.test(x) && /"mode":"proposal"/.test(x));
+const lastProposal = () => V.evaluate(() => { const c = [...document.querySelectorAll('.proposal-card')].pop(); if (!c) return null;
+  const f = {}; c.querySelectorAll('[data-field]').forEach((e) => { f[e.dataset.field] = e.value; }); return { ...f, to: c.querySelector('.proposal-to').value, n: document.querySelectorAll('.proposal-card').length }; });
+const pressProposal = async (n) => { await V.evaluate(() => document.querySelector('.tab-ask-proposal').click());
+  await V.waitForFunction((k) => document.querySelectorAll('.proposal-card').length >= k && /^proposal from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), n, { timeout: 10000 }).catch(() => {}); };
+const p0 = proposalPosts().length, r0 = records.length;
+await pressProposal(1); await page.waitForTimeout(800); // the allow list is empty here
+const offP = { on: await cardOn(), card: await lastProposal(), box: await page.evaluate(() => document.getElementById('body').textContent), recs: records.length - r0,
+  foot: await V.evaluate(() => (document.querySelector('.tab-foot') || {}).textContent || ''), kept: await V.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'proposal').map((t) => ({ request: t.request || '', title: (t.fields || {}).title }))) };
+await sw.evaluate(() => chrome.storage.local.set({ allow: ['fixture.test'] }));
+await pressProposal(2);
+await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 8000 }).catch(() => {});
+const stepCard = await panel.evaluate(() => ({ on: document.getElementById('act').classList.contains('on'), what: document.querySelector('.act-what').textContent, text: document.querySelector('.act-text').textContent, site: document.querySelector('.act-site').textContent }));
+const drafted = await lastProposal();
+const beforeYes = await page.evaluate(() => document.getElementById('body').textContent);
+await press('.act-yes', async () => !(await cardOn()));
+await V.waitForFunction(() => /recorded/.test((document.querySelector('.tab-act-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+const replyBox = await page.evaluate(() => document.getElementById('body').innerText);
+const recP = records[records.length - 1] || {};
+const sentP = proposalPosts().slice(p0);
+check('proposal → reply: in a mail thread, "draft for me: proposal" sends the thread once and the proposal card drafts it (the address taken from the thread, the thread itself not kept); off the allow list that is all: no step card, the reply box untouched, no record',
+  !offP.on && !!offP.card && /order flow/i.test(offP.card.title || '') && offP.card.to === 'dana@acme.test' && offP.box === '' && offP.recs === 0 && /sent to a-to-mind\.com for a proposal draft/.test(offP.foot)
+  && offP.kept.length >= 1 && offP.kept.every((k) => !k.request) && sentP.length === 2 && sentP.every((x) => x.includes('order flow fixed by June')),
+  { offP, sent: sentP.map((x) => x.slice(0, 160)) });
+check('proposal → reply: on an allowed site the same press yields the B3 card to fill the reply box ("Message Body") with the proposal as plain text, its drafted fields in it; nothing changes until Yes, and Yes fills it, sends nothing, and leaves an extension.act record',
+  stepCard.on && stepCard.site === 'fixture.test' && /Message Body/.test(stepCard.what) && !!drafted && stepCard.text.startsWith(drafted.title) && stepCard.text.includes('What they asked for:\n' + drafted.asked)
+  && stepCard.text.includes('Scope:\n') && stepCard.text.includes('[price: left for the owner') && !/^#/m.test(stepCard.text) && beforeYes === ''
+  && replyBox.includes(drafted.title) && /What they asked for:/.test(replyBox) && recP.kind === 'extension.act' && recP.ref === 'fixture.test · Message Body' && recP.state === 'done',
+  { stepCard: { ...stepCard, text: stepCard.text.slice(0, 200) }, drafted: drafted && drafted.title, beforeYes, replyBox: replyBox.slice(0, 160), recP });
 
 // "Ask Void about this page" (sent to Void, #134): the answer card says the page left the browser for this answer
 await sw.evaluate(() => chrome.storage.session.set({ ask: { q: 'What is this page about?', page: { title: 'Fixture page', url: 'https://fixture.test/', selection: '', field: '', text: 'fixture text' }, at: Date.now() } }));
