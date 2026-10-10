@@ -230,6 +230,13 @@ export async function run3dChecks({ check, fresh }) {
     const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
     check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
       !!drawn && at.inCard && at.state.branches === at.n && !!read && sel && sel.selected === at.trunk && !F.errors.length, JSON.stringify({ drawn: !!drawn, at, read, sel, e: F.errors }));
+    // the time slider: at the first date the tree is one branch, at today all of them (plus the faint shoots not grown yet)
+    const slide = async (v) => { await F.p.evaluate((v) => { const r = document.querySelector('.vpage .growth-when input'); r.value = String(v); r.dispatchEvent(new Event('input', { bubbles: true })); }, v);
+      return until(() => F.p.evaluate((v) => { const s = window.__voidMini.state('growth-tree'); return s && !s.growing && (v === 0 ? s.branches === 1 : s.until === null) ? { s, day: document.querySelector('.vpage .growth-day').textContent } : false; }, v), 15000); };
+    const first = await slide(0), last = await slide(9999);
+    check('"growth": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built)',
+      !!first && first.s.branches === 1 && first.s.ghosts === 0 && /2026-09-25 · 1 change\b/.test(first.day) && !!last && last.s.branches === at.n && last.s.ghosts > 0 && last.s.building && new RegExp('today, .* · ' + at.n + ' changes').test(last.day) && !F.errors.length,
+      JSON.stringify({ first, last, e: F.errors }));
     await F.ctx.close();
   }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over

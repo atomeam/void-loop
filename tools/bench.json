@@ -881,7 +881,7 @@
   },
   {
     "ask": "connect 4",
-    "want": "skill:make"
+    "want": "skill:connect4"
   },
   {
     "ask": "make a blue 3d sphere",
@@ -2711,11 +2711,11 @@
   },
   {
     "ask": "play a game",
-    "want": "said|skill:make|skill:tictactoe|skill:othello|self"
+    "want": "said|skill:make|skill:tictactoe|skill:othello|skill:rack|self"
   },
   {
     "ask": "what games can i play",
-    "want": "said|self|skill:make"
+    "want": "said|self|skill:make|skill:rack"
   },
   {
     "ask": "how many legs does a spider have",
@@ -5582,6 +5582,21 @@
   {"ask": "give me 5 minutes with that", "want": "skill:challenge"},
   {"ask": "turn the questions i missed into a five-minute challenge", "want": "skill:challenge"},
   {"ask": "challenge me on the ones i missed", "want": "skill:challenge"},
+  {"ask": "review this sql: SELECT * FROM users WHERE email = NULL", "want": "review this sql"},
+  {"ask": "review this sql: SELECT * FROM users WHERE age BETWEEN 20 AND 10", "want": "review this sql"},
+  {"ask": "review this python: for i in range(len(xs)): print(xs[i+1])", "want": "review this python"},
+  {"ask": "convert 3.5 miles km", "want": "calc"},
+  {"ask": "review this python: items = [3, 1, 2]; sorted_items = items.sort(); print(sorted_items[0])", "says": "bug|risk|None|sort", "want": "review"},
+  {"ask": "review this python: d = {}; for k in keys: d[k] = d[k] + 1", "says": "bug|risk|KeyError|get|missing|default", "want": "review"},
+  {"ask": "review this go: data, err := os.ReadFile(name); if err != nil { log.Println(err) }; return string(data)", "says": "bug|risk|err|error|return|continue|failed", "want": "review"},
+  {"ask": "review this go: func sum(nums []int) int { total := 0; for i := 0; i <= len(nums); i++ { total += nums[i] }; return total }", "says": "bug|risk|off-by-one|bounds|panic|length", "want": "review"},
+  {"ask": "review this rust: let s = String::from(\"hi\"); let t = s; println!(\"{}\", s);", "says": "bug|risk|move|moved|borrow|ownership", "want": "review"},
+  {"ask": "review this rust: let v = vec![1, 2, 3]; println!(\"{}\", v[10]);", "says": "bug|risk|bounds|panic|out of|length|get", "want": "review"},
+  {"ask": "Lyon to Turin distance", "want": "skill:distance"},
+  {"ask": "how many km from Lyon to Turin", "want": "skill:distance"},
+  {"ask": "weathr in paris", "want": "skill:weather"},
+  {"ask": "5 m c", "want": "article"},
+  {"ask": "the 3 mile run", "want": "article"},
   {"ask": "show me how a key opens a lock", "want": "skill:lock"},
   {"ask": "why won't the wrong key turn", "want": "skill:lock"},
   {"ask": "explain the pins inside a lock", "want": "skill:lock"},

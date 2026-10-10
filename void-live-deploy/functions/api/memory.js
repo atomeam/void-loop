@@ -8,7 +8,7 @@ import { ensure, upsert, search, ask, byId, topics, related, forget, MAX_BATCH, 
 const guard = (fn) => async (ctx) => {
   const who = await scopeOf(ctx);
   if (!who) return new Response('no', { status: 401 });
-  if (who.free) return new Response('Void memory is for the owner and paid members', { status: 403 });
+  if (who.free) return new Response('Void memory is for the owner and paid members: ' + who.why, { status: 403 });
   if (!ctx.env.DB) return new Response('memory needs the database', { status: 503 });
   try { await ensure(ctx.env); return await fn(ctx, who.scope); } catch (_) { return new Response('memory error', { status: 500 }); }
 };

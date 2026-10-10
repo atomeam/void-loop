@@ -41,8 +41,18 @@ First run shows what it would remove and deletes nothing. Add --apply and type D
 It removes ONLY stale node_modules folders and Python virtual environments whose project still has the
 file that rebuilds them (package.json, requirements.txt, ...). `npm install` brings them back.
 
+YOUR OWN VOID (paid Void members)
+Your machine's projects can be remembered by your own Void, only yours, and then answer when you ask it things.
+  1. Get your Void key: sign in at https://a-to-mind.com (passkey, on paid Void), then make one at https://a-to-mind.com/code-review/#pro
+     (the same key does code review). It starts vr1. and is shown once.
+  2. Put them in memory, one line after the report:
+       python ouroboros.pyz push --out D:\\ouroboros-report --url https://a-to-mind.com
+     It asks for the key (typed, not echoed). Or set it once in the VOID_MEMORY_TOKEN variable.
+  3. Ask your Void: "what did I build with react" or "what do you remember about the parser".
+A free account or an unknown key is told so in plain words and nothing is sent. Your memory holds up to 500 projects.
+
 VOID MUST REMEMBER IT FIRST
-  python ouroboros.pyz push --out D:\\ouroboros-report --url https://your-void.example   (token in the VOID_MEMORY_TOKEN variable)
+  python ouroboros.pyz push --out D:\\ouroboros-report --url https://your-void.example   (your Void key or the owner token in the VOID_MEMORY_TOKEN variable)
 This sends each project's full digest to your Void, then reads every one back and compares its hash. It only says
 "Void remembers N of N" when each one matches. Ask Void what it holds with:  ouroboros.pyz recall --url ... --q react
 Only after that is it reasonable to think about removing a project, and that is always your decision.

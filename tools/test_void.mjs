@@ -991,6 +991,10 @@ try {
       /alpha \(React, py\)/.test(card) && /I remember 1 match/.test(card) && /no remote copy|backed up at/.test(card) && rows === 1 && /^Bearer owner-k$/.test(auth) && asked === 'react' && !M.errors.length, card.slice(0, 300) + ' | ' + auth + ' | ' + asked);
     await M.ctx.close(); }
   { const P = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    // the page syncs a stored session with /api/mine as it loads, and the real mine function here has never seen this made-up
+    // session: its 401 signs the device out (as it should) before the ask. Answer the sync for this session, then load again.
+    await P.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
+    await P.p.reload(); await P.p.waitForTimeout(700);
     let auth = '';
     await P.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'I remember 1 match:\n\u2022 mine (py): A tiny tool. \u00b7 no remote copy', matches: ['m'] })); });
     await P.ask('what do you remember about python', 900);
@@ -1000,6 +1004,9 @@ try {
   // "remember that <fact>" keeps one line (POST with the bearer), "forget that <fact>" removes it (DELETE by the same note id); without a key neither fetches
   // "what you told me": a signed-in member's ask carries their session to /api/answer, and an answer that used a note says so on the card; a visitor's carries nothing
   { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    // as in the memory card's member check: answer the page's load-time /api/mine sync for this made-up session, then load again
+    await T.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
+    await T.p.reload(); await T.p.waitForTimeout(700);
     let auth = null;
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
@@ -1070,6 +1077,8 @@ try {
   // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent
   { const P = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '");' });
     const REQ = 'Hi Adam,\n\nWe run a small bakery in Portland and our online orders come in through Shopify. We need the Zapier zap that copies each order into our Google Sheet fixed: since last week every order shows up twice and the morning bake list is wrong. We would also like someone to check the whole flow once a month so it does not break again before the holidays.\n\nCan you tell us what you would do and when you could start?\n\nThanks,\nMaria\nmaria@sunrisebakery.example';
+    // the ask box is a one-line <input>: like a real paste, each line break arrives as a space, so that is what the card keeps
+    const typedREQ = REQ.replace(/\r?\n/g, ' ');
     const actionsBefore = gate.env.DB.actions.size, callsBefore = gate.calls.length;
     await P.p.fill('#input', 'turn this into a proposal:\n' + REQ); await P.p.keyboard.press('Enter');
     await until(async () => P.p.$eval('.proposal-field[data-field="title"]', (e) => e.value).catch(() => ''), 6000);
@@ -1083,7 +1092,7 @@ try {
     check('proposal card: the pasted request becomes the proposal\'s fields (what they asked for, scope, a blank price line, timeline, next step, the customer\'s address), an edit is kept, Send asks the confirm line and records a stubbed proposal.send for the customer\'s domain, nothing sent',
       /^Proposal: the Zapier zap/.test(drafted.title) && /check the whole flow once a month/.test(drafted.asked) && /^- We need the Zapier zap/.test(drafted.scope) && /out of scope\]$/.test(drafted.scope)
       && drafted.price === '[price: left for the owner to fill in]' && /^\[/.test(drafted.timeline) && /Reply with a yes/.test(drafted.next) && drafted.to === 'maria@sunrisebakery.example'
-      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === REQ
+      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === typedREQ
       && line === 'Send the proposal \u201cFix the double orders\u201d to maria@sunrisebakery.example? Yes / No'
       && gate.calls.slice(callsBefore).some((c) => c.type === 'a2m.approval.requested' && c.toolName === 'proposal.send' && c.args.to === 'maria@sunrisebakery.example')
       && rec && rec.state === 'stubbed' && rec.ref === 'sunrisebakery.example' && /nothing is sent/.test(rec.result || '') && gate.ran.length === ranBeforeProposal && !P.errors.length,
