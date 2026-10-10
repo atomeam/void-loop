@@ -70,6 +70,7 @@ export function knowsFacts(self) {
   if (self && Array.isArray(self.minis) && self.minis.length) parts.push('Cards with a live 3D miniature of themselves: ' + self.minis.join(', '));
   const c = self && self.canon;
   if (c) parts.push('My canon (v' + c.version + '): motto: ' + (c.motto || 'not written yet, so I do not know it') + '; VoidQuest: ' + (c.voidquest || 'not written yet, so I do not know it'));
+  if (c && Array.isArray(c.terms) && c.terms.length) parts.push('My terms (canon v' + c.version + '): ' + c.terms.map((x) => x.term + ' = ' + x.means).join(' | '));
   return parts.join('\n');
 }
 

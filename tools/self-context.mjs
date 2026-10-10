@@ -17,11 +17,15 @@ const clip = (s, n) => String(s || '').replace(/\s+/g, ' ').trim().slice(0, n);
 // skills that are games Void plays with you (names as in skills/index.json)
 export const GAMES = ['tictactoe', 'othello', 'mancala', 'checkers', 'chess', 'aggravation', 'go', 'monopoly', 'battleship', 'poker', 'fireworks', 'connect4'];
 
-// domains/void.canon.md: Adam's words about what Void is (motto, VoidQuest), versioned; '(not written yet)' stays unknown
+// domains/void.canon.md: Adam's words about what Void is (motto, VoidQuest) and Void's terms for its parts, versioned;
+// '(not written yet)' stays unknown
 export function readCanon(text) {
   const t = String(text || ''), sec = (h) => clip((new RegExp('^## ' + h + '\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1], 600);
   const known = (v) => (v && !/^\(not written yet\)$/i.test(v) ? v : null);
-  return { version: +((/^version:\s*(\d+)/m.exec(t) || [])[1] || 0), motto: known(sec('Motto')), voidquest: known(sec('VoidQuest')) };
+  // terms: '- **name**: what it is' lines under ## Terms (Void's names for its own parts); left out when there are none
+  const terms = [...String((new RegExp('^## Terms\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
+    .map((m) => ({ term: m[1].trim().slice(0, 60), means: clip(m[2], 400) })).slice(0, 20);
+  return { version: +((/^version:\s*(\d+)/m.exec(t) || [])[1] || 0), motto: known(sec('Motto')), voidquest: known(sec('VoidQuest')), ...(terms.length ? { terms } : {}) };
 }
 
 // domains/forethinkers/index.md: the think tank's open tracks (name, when last advanced), drawn as faint branches on the
