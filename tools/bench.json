@@ -5596,5 +5596,10 @@
   {"ask": "how many km from Lyon to Turin", "want": "skill:distance"},
   {"ask": "weathr in paris", "want": "skill:weather"},
   {"ask": "5 m c", "want": "article"},
-  {"ask": "the 3 mile run", "want": "article"}
+  {"ask": "the 3 mile run", "want": "article"},
+  {"ask": "show me how a key opens a lock", "want": "skill:lock"},
+  {"ask": "why won't the wrong key turn", "want": "skill:lock"},
+  {"ask": "explain the pins inside a lock", "want": "skill:lock"},
+  {"ask": "how does a lock work", "want": "skill:lock"},
+  {"ask": "show the moving parts of a lock", "want": "skill:lock"}
 ]
