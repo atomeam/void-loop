@@ -11,7 +11,7 @@ const KEYS = Object.keys(F.THINGS);
 
 test('forge: summoned by the asks people type for the things it can make, and not by look-alikes', () => {
   for (const [ask, key] of [['make me a rocket', 'rocket'], ['Make a vase', 'vase'], ['3d print a bottle', 'bottle'], ['forge a lighthouse', 'lighthouse'], ['build me a snowman', 'snowman'],
-    ['make me a table i can print', 'table'], ['make me a 3d wine bottle', 'bottle'], ['can you make a rocket ship?', 'rocket'], ['print a clay vase', 'vase']])
+    ['make me a table i can print', 'table'], ['make me a 3d wine bottle', 'bottle'], ['can you make a rocket ship?', 'rocket'], ['print a clay vase', 'vase'], ['make me a teapot', 'teapot'], ['make a little house', 'house'], ['3d print a sailboat', 'boat'], ['make me a boat', 'boat'], ['forge an oak tree', 'tree']])
     assert.deepEqual(forgeOf(ask), { make: key }, ask);
   for (const ask of ['print it', 'Print it!', 'download the stl', 'stl file', 'give me the stl', 'save it as an stl']) assert.deepEqual(forgeOf(ask), { print: true }, ask);
   for (const ask of ['make me a coffee', 'make a reservation', 'print the page', 'table of contents', 'what is a rocket', 'make me a zombie', 'make a list', 'make a 3d torus', 'rocket league', 'make me a mug', 'make a chair'])
@@ -82,4 +82,16 @@ test('forge: building is quick enough to do on an ask, and cached after', () => 
   const t0 = Date.now(); F.build('lighthouse'); const first = Date.now() - t0;
   const t1 = Date.now(); F.build('lighthouse'); const again = Date.now() - t1;
   assert.ok(first < 4000, 'first build ' + first + ' ms'); assert.ok(again < 5, 'cached ' + again + ' ms');
+});
+
+test('forge: the second four read as themselves (teapot spout and handle, house door and windows, sailboat sail, tree canopy over a trunk)', () => {
+  const tp = F.build('teapot'); assert.ok(tp.size[0] > tp.size[2] + 40, 'spout and handle stick out: ' + tp.size);
+  const H = F.build('house').positions; let door = 0;
+  for (let i = 0; i < H.length; i += 3) if (Math.abs(H[i]) < 7 && H[i + 1] > 4 && H[i + 1] < 30 && H[i + 2] > 31 && H[i + 2] < 35) door++;
+  assert.ok(door > 20, 'a door is cut into the front wall (' + door + ')');
+  const b = F.build('boat'); assert.ok(b.size[1] > b.size[2] * 2.5, 'the mast and sail stand tall over a narrow hull: ' + b.size);
+  const T = F.build('tree').positions; let wide = 0, trunk = 0;
+  for (let i = 0; i < T.length; i += 3) { const r = Math.hypot(T[i], T[i + 2]); if (T[i + 1] > 90 && r > 40) wide++; if (T[i + 1] > 20 && T[i + 1] < 45 && r < 13) trunk++; }
+  assert.ok(wide > 100 && trunk > 50, 'a wide canopy over a narrow trunk (' + wide + ', ' + trunk + ')');
+  assert.equal(Object.keys(F.THINGS).length, 10, 'ten things, the number #14 asks for');
 });
