@@ -171,6 +171,30 @@ export async function run3dChecks({ check, fresh }) {
     check('moon explainer miniature: draws real pixels, the Moon follows the data (30° -> 200°, now on the far side), a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while paused, under reduced motion too, and unmounting frees it',
       ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
   }
+  // ---- Ringer (build-order step 5) through the same contract: a new game, then the same game after a hard shot has settled
+  {
+    const Rr = await import(pathToFileURL(path.join(root, 'skills', 'ringer-rules.js')).href);
+    const a = Rr.create(77), b = Rr.settle(Rr.flick(Rr.setPower(a, 1)));
+    const c = await miniContract(fresh, { kind: 'ringer', a: { state: a }, b: { state: b }, settledWhen: 'rolling' });
+    const ok = (r) => r.drawn && r.colours > 40 && r.same && r.stateA && r.stateA.marbles === 14 && r.stateA.left === 13 && r.stateA.aiming
+      && r.stateB.out === b.out && r.stateB.left === 13 - b.out && r.stateB.shots === 1 && r.redrew && r.settled && r.idleDraws === 0 && r.freed;
+    check('Ringer miniature: draws real pixels (dirt, chalk ring, 14 glass marbles), poses from the one state (13 in the ring, then ' + b.out + ' knocked out after a shot), a remount by key moves the live one, it settles with no redraws, under reduced motion too, and unmounting frees it',
+      b.out >= 1 && ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
+  }
+  // ---- Ringer end to end: "play marbles" stands the ring in the void, Flick rolls it from the card's own state until it stops
+  {
+    const F = await fresh();
+    await F.ask('play marbles', 600);
+    const up = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'ringer'); return c && c.ready && c.draws > 0 ? c.key : false; }), 30000);
+    const before = up && await F.p.evaluate((k) => window.__voidMini.state(k), up);
+    if (up) { await F.p.evaluate(() => { const p = document.querySelector('.ringer-power'); p.value = '100'; p.dispatchEvent(new Event('input', { bubbles: true })); }); await F.p.click('.ringer-flick'); }
+    const after = up && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.shots === 1 && !s.rolling ? s : false; }, up), 20000);
+    const status = await F.p.evaluate(() => (document.querySelector('.ringer-status') || {}).textContent || '');
+    check('Ringer: "play marbles" stands the ring in the void (14 marbles, 13 to knock out); Flick rolls it from the card\'s state until everything stops, and the card says how the shot went',
+      !!up && before && before.marbles === 14 && before.left === 13 && !!after && after.out >= 1 && /knocked out · 1 shot/.test(status) && F.errors.length === 0,
+      JSON.stringify({ up, before, after, status, errors: F.errors.slice(0, 3) }));
+    await F.ctx.close();
+  }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
   {
     const F = await fresh();
