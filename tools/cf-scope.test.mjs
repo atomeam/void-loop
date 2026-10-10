@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import { probe, judge, format } from './cf-scope.mjs';
 
 const ENV = { CLOUDFLARE_API_TOKEN: 'secret-pages-token', CLOUDFLARE_WORKERS_TOKEN: 'secret-workers-token', CLOUDFLARE_ACCOUNT_ID: 'acct123' };
+const WITH_ANALYTICS = { ...ENV, CLOUDFLARE_ANALYTICS_TOKEN: 'secret-analytics-token' };
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status });
 // the Pages token may read analytics; the Workers-only token may not (the shape Cloudflare answers with when a scope is missing)
 const fake = (canRead) => async (url, o) => {
@@ -36,4 +37,11 @@ test('cf-scope: missing secrets, network failure and junk answers are rows, not 
   for (const rep of [await probe(ENV, fake(['secret-pages-token'])), offline, junk]) { const text = format(rep) + JSON.stringify(rep); assert.ok(!/secret-pages-token|secret-workers-token|acct123/.test(text)); }
   assert.deepEqual(judge(200, { data: { x: 1 }, errors: null }), { ok: true, note: 'readable' });
   assert.equal(judge(200, { data: null, errors: [{ message: 'nope' }] }).ok, false);
+});
+
+test('cf-scope: a read-only analytics token added later is probed and named as the one that can build the meter', async () => {
+  const r = await probe(WITH_ANALYTICS, fake(['secret-analytics-token']));
+  assert.match(r.usageMeter, /can read analytics with CLOUDFLARE_ANALYTICS_TOKEN/);
+  assert.ok(!/CLOUDFLARE_API_TOKEN/.test(r.usageMeter));
+  assert.ok(!/secret-analytics-token/.test(format(r)));
 });
