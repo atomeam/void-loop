@@ -242,3 +242,19 @@ test('quoteCheck on its own: the shape it reads, pasted code by line number, a s
   assert.equal(q2.kept, 0); assert.equal(q2.dropped, 1); assert.match(q2.text, /could quote from the code: 1 claim about lines not in it was dropped/);
   assert.equal(quoteCheck('### Bugs\n\nProse only, the old shape, with no finding lines.', ev).text, '### Bugs\n\nProse only, the old shape, with no finding lines.');
 });
+
+test('a bearer that is not the owner: the answer is the free tier with no reason, and the exact reason goes to the function log only, never the token', async () => {
+  const lines = [], orig = console.log; console.log = (...a) => lines.push(a.join(' '));
+  try {
+    const env = await envWith({ ai: ai('never called') }); // no READ_TOKEN on this deployment
+    let r = await (await call(api.onRequestPost, env, { code: BUGGY }, 'wrong-owner-key-0123456789')).json();
+    assert.equal(r.tier, 'free'); assert.equal(r.review, 'rules'); assert.ok(!r.note || !/READ_TOKEN|differs|unset/.test(r.note), 'the answer carries no reason');
+    assert.ok(lines.some((l) => /closer read access/.test(l) && /READ_TOKEN is not set/.test(l)), 'unset: said in the log');
+    env.READ_TOKEN = 'the-real-owner-key-0123456789';
+    r = await (await call(api.onRequestPost, env, { code: BUGGY }, 'wrong-owner-key-0123456789')).json();
+    assert.equal(r.tier, 'free');
+    assert.ok(lines.some((l) => /closer read access/.test(l) && /differs/.test(l)), 'differing: said in the log');
+    assert.ok(lines.every((l) => !l.includes('wrong-owner-key') && !l.includes('the-real-owner-key')), 'no token in the log');
+    assert.ok(!JSON.stringify(r).includes('differs') && !JSON.stringify(r).includes('READ_TOKEN'), 'no reason in the answer');
+  } finally { console.log = orig; }
+});
