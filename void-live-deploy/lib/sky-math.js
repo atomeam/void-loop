@@ -173,9 +173,12 @@ export function horizontal(ra, dec, jdUT, lat, lonE) {
 /** everything in the sky for one moment and place: the sun, the moon and its phase, the planets, the stars */
 export function sky(date, lat, lonE) {
   const u = jd(date), e = jde(date), at = (o) => ({ ...o, ...horizontal(o.ra, o.dec, u, lat, lonE) });
+  // the moon is close enough that where you stand moves it: its horizontal parallax (up to about 1°) lowers it from the
+  // place seen from the Earth's centre, the same correction lib/astro.js moonHor makes, so both draw it in one place
+  const seen = (m) => { const h = at(m), par = asin(6378.14 / m.dist); return { ...h, alt: h.alt - par * cos(h.alt) }; };
   return {
     sun: at(sun(e)),
-    moon: { ...at(moon(e)), ...moonPhase(e) },
+    moon: { ...seen(moon(e)), ...moonPhase(e) },
     planets: PLANETS.map((name) => ({ name, ...at(planet(name, e)) })),
     stars: STARS.map((s) => ({ name: s.name, mag: s.mag, ...at(precess(s.ra, s.dec, e)) })),
   };
