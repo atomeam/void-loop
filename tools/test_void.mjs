@@ -1133,6 +1133,18 @@ try {
     await P.p.goto(base + 'handoff.html?id=' + '0'.repeat(32)); await P.p.waitForTimeout(400); const nf = await P.p.$eval('#msg', (e) => e.textContent);
     await P.p.goto(base + 'surface.html'); await P.p.waitForTimeout(300); await P.p.fill('#i', 'a sky of cards'); await P.p.keyboard.press('Enter'); await P.p.waitForTimeout(200);
     const card = await P.p.$eval('#cards .vc', (e) => e.textContent).catch(() => '');
+    // /code-review/'s scoreboard line reads review-stats.json (written weekly by watchdog.yml from tools/review-learn.mjs); without the file it stays hidden
+    const S = await fresh();
+    await S.ctx.route(/\/review-stats\.json(?:\?|$)/, (rt) => rt.fulfill(json({ at: '2026-10-12T10:20:00Z', since: '30d', rulesFlagged: 7, closerFound: 9, falseDropped: 2, learned: 3, learnedFromExtras: 3 })));
+    await S.p.goto(base + 'code-review/'); await until(async () => !(await S.p.$eval('#learning', (e) => e.hidden).catch(() => true)), 4000);
+    const learnLine = await S.p.$eval('#learning', (e) => e.hidden ? '' : e.textContent).catch(() => '');
+    const N = await fresh();
+    await N.ctx.route(/\/review-stats\.json(?:\?|$)/, (rt) => rt.fulfill({ status: 404, body: '' }));
+    await N.p.goto(base + 'code-review/'); await N.p.waitForTimeout(500);
+    const learnHidden = await N.p.$eval('#learning', (e) => e.hidden).catch(() => false);
+    check('code-review: the scoreboard line renders from review-stats.json ("this month Void\'s rules caught N of M findings its closer read made; K rules learned") and stays hidden without the file',
+      learnLine === "This month Void's rules caught 7 of 9 findings its closer read made; 3 rules learned from it, 2 false claims of its own filtered out." && learnHidden === true, JSON.stringify({ learnLine, learnHidden }));
+    await S.ctx.close(); await N.ctx.close();
     const heads = ['handoff.html', 'surface.html'].map((f) => fs.readFileSync(path.join(root, f), 'utf8')).every((h) => /<meta name="robots" content="noindex, nofollow">/.test(h));
     const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
     check('/handoff drops a file with the write token and opens it (name, body, id in the URL); an unknown id says so; /surface is a noindex preview that shows what you type; neither page becomes the offline front page',

@@ -115,6 +115,26 @@ ok(rules('curl -fsSL https://x.sh | bash', 'shell').includes('curl-pipe-sh@1'), 
 ok(rules('UPDATE users SET admin = 1;', 'sql').includes('update-no-where@1'), 'update without where');
 ok(!rules('UPDATE users SET admin = 1\nWHERE id = 3;', 'sql').includes('update-no-where@1'), 'update with where on the next line');
 ok(rules('DELETE FROM sessions;', 'sql').includes('delete-no-where@1'), 'delete without where');
+// learned from Void's closer read (tools/review-learn.mjs, 2026-10-10): each a line it must flag, a near-miss it must leave alone
+ok(rules("for (const r of rows) {\n  const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM t WHERE owner = ?').bind(r.id).first();\n  out.push(n);\n}", 'javascript').includes('query-in-loop@2')
+  && rules("for (const id of ids) { const u = await fetch('https://api.example.com/users/' + id); got.push(await u.json()); }", 'javascript').includes('query-in-loop@1')
+  && rules("items.forEach(async (it) => {\n  await db.query('UPDATE t SET seen = 1 WHERE id = ?', [it.id]);\n});", 'javascript').includes('query-in-loop@2')
+  && !rules("await env.DB.batch(ok.map((r) => env.DB.prepare('INSERT INTO t (id) VALUES (?)').bind(r.id)));", 'javascript').includes('query-in-loop@1')
+  && !rules("for (const r of rows) { ids.push(r.id); }\nconst { results } = await env.DB.prepare('SELECT id FROM t WHERE id IN (' + ids.map(() => '?').join(',') + ')').bind(...ids).all();", 'javascript').some((f) => f.startsWith('query-in-loop'))
+  && !rules("const rows = await db.query('SELECT id FROM t');\nfor (const r of rows) {\n  total += r.n;\n}", 'javascript').some((f) => f.startsWith('query-in-loop')),
+  'query-in-loop: an awaited query or fetch inside for/while/forEach is flagged; a batch of prepared statements, a query after the loop and a loop with no query are not: ' + JSON.stringify([rules("for (const r of rows) {\n  const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM t WHERE owner = ?').bind(r.id).first();\n}", 'javascript'), rules("await env.DB.batch(ok.map((r) => env.DB.prepare('INSERT INTO t (id) VALUES (?)').bind(r.id)));", 'javascript')]));
+ok(rules("const sql = 'SELECT id FROM t WHERE ' + clauses.join(' AND ') + ' ORDER BY id';", 'javascript').includes('where-join-empty@1')
+  && rules('const sql = `SELECT id FROM t WHERE ${where.join(" AND ")}`;', 'javascript').includes('where-join-empty@1')
+  && !rules("const sql = 'SELECT id FROM t' + (clauses.length ? ' WHERE ' + clauses.join(' AND ') : '') + ' ORDER BY id';", 'javascript').includes('where-join-empty@1')
+  && !rules('const q = `SELECT id FROM t${where ? " WHERE " + where : ""} ORDER BY updated DESC`;', 'javascript').includes('where-join-empty@1')
+  && !rules("const sql = 'SELECT id FROM t WHERE id IN (' + ids.map(() => '?').join(',') + ')';", 'javascript').includes('where-join-empty@1'),
+  'where-join-empty: a WHERE pasted straight from a joined list is flagged; a guarded one and a join inside IN (…) are not: ' + JSON.stringify(rules("const sql = 'SELECT id FROM t WHERE ' + clauses.join(' AND ');", 'javascript')));
+ok(rules("ta.rows = Math.min(12, Math.max(3, j.draft.split('\\n').length + 1));", 'javascript').includes('split-to-count@1')
+  && rules("const words = text.split(' ').length;", 'javascript').includes('split-to-count@1')
+  && !rules("const parts = line.split(',');\nif (parts.length !== 2) return null;", 'javascript').some((f) => f.startsWith('split-to-count'))
+  && !rules("if (s.split('/').length === 3) go();", 'javascript').includes('split-to-count@1')
+  && !rules("const n = (s.match(/\\n/g) || []).length + 1;", 'javascript').includes('split-to-count@1'),
+  'split-to-count: .split(sep).length used as a count is flagged; a split kept for its pieces, a length compared to a number, and the match count are not: ' + JSON.stringify(rules("const words = text.split(' ').length;", 'javascript')));
 // clean code says nothing
 const CLEAN = [
   ['javascript', 'const total = items.reduce((a, b) => a + b, 0);\nif (total === 0) return null;\nif (x == null) return;\nel.textContent = name;\nel.innerHTML = "<b>fixed</b>";\nconst n = parseInt(s, 10);\nfor (const x of list) console.log(x);\nconst msg = "if (a = b) is a classic bug";\n// eval(x) in a comment\ntry { go(); } catch (e) { log(e); }\nconst url = "https://example.com";\nconst q = db.prepare("SELECT id FROM t WHERE id = ?").bind(id);'],

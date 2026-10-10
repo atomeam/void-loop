@@ -1029,8 +1029,9 @@ Object.values(things).forEach((th) => {
           if (!ta.isConnected) return; // the card was redrawn or closed meanwhile
           ext.sent = 'The title, address and selection were sent to a-to-mind.com for a ' + intent + ' draft · not kept there.'; footLine();
           if (!j || !j.draft) { said.textContent = (j && j.note) || 'Void couldn’t draft just now. Try again in a moment.'; return; }
-          ext.draft = j.draft; ta.value = j.draft; ta.rows = Math.min(12, Math.max(3, j.draft.split('\n').length + 1));
-          said.textContent = intent + ' from Void' + (j.model === 'rules' ? ' (by rule, no model just now)' : '') + (j.masked ? ' · keys in the text were masked' : '') + (j.cut ? ' · the selection was cut' : '') + ' · put it in the page, or copy it';
+          ext.draft = j.draft; ta.value = j.draft; ta.rows = Math.min(12, Math.max(3, (j.draft.match(/\n/g) || []).length + 2));
+          const notes = [j.model === 'rules' && 'by rule, no model just now', j.masked && 'keys in the text were masked', j.cut && 'the selection was cut'].filter(Boolean);
+          said.textContent = intent + ' from Void' + (notes.length ? ' (' + notes.join('; ') + ')' : '') + ' · put it in the page, or copy it';
           // B3 joined to the draft: a reply for the box you were in becomes a proposed step, the same Yes / No card in the panel
           // and the same record; the panel shows it only on a site on your list (off the list it says nothing: copy as before)
           if (intent === 'reply' && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: j.draft, auto: true });
