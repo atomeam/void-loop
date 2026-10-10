@@ -48,6 +48,7 @@ export default {
   sunAsk,
   examples: ['sunrise and sunset', 'sunrise', 'sunset', 'when is sunset', 'what time is sunrise tomorrow', 'what time does the sun set', 'sunset time', 'how long is the day', 'what time is sunset today'],
   nearMisses: ['sunset boulevard', 'sunrise bank', 'sunset beach song lyrics', 'sunrise yoga', 'why is the sunset red', 'sunrise sunset lyrics fiddler on the roof', 'sun tzu', 'how far is the sun'],
-  match(lower, text) { return !!sunAsk(text); },
+  // the sun where you are; a sun ask that names a place ("sunset in Paris") is worldtime's, which reads it in that place's own time
+  match(lower, text) { const a = sunAsk(text); return !!a && !a.place; },
   run,
 };
