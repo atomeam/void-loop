@@ -6,6 +6,10 @@
 // author), and the Markdown is stored on the job's own `draft` column with one proposal.draft execution record.
 // Idempotent per job: a second claim finds the draft and reuses it, no second record. Send stays stubbed behind the
 // confirm line (skills/proposal.js, proposal.send) — nothing here sends anything. Tests: tools/job-draft.test.mjs.
+// A sale job's claim that drafts nothing is never silent: it writes a proposal.skipped record with the reason (no
+// reply yet, reply expired), and a drafting error settles the proposal.draft record failed — so on the actions card a
+// missing record can only mean the job was never a sale's. A non-sale claim writes nothing: builders claim miss: and
+// step: jobs all day, and a record per claim would drown the card.
 import { prepareProposal, ruleProposal, toMarkdown } from './proposal.js';
 import { redact } from './automation-fix.js';
 import { track } from './actions.js';
@@ -25,13 +29,17 @@ const q = (env, sql, ...a) => env.DB.prepare(sql).bind(...a);
  */
 export async function draftOnClaim(env, row) {
   if (!row || !String(row.target || '').startsWith('sale:')) return '';
+  const skipped = async (why) => {
+    const { value } = await track(env, { owner: 'void', kind: 'proposal.skipped', ref: row.target }, async () => why);
+    return value;
+  };
   const hid = handoffIdIn(row.ask);
-  if (!hid) return '';
+  if (!hid) return skipped('no reply yet: job ' + row.id + ' still waits on the buyer');
   try { await q(env, 'ALTER TABLE void_queue ADD COLUMN draft TEXT').run(); } catch (_) {}
   const prior = await q(env, 'SELECT draft FROM void_queue WHERE id = ?', row.id).first('draft');
   if (prior) return 'draft already on the job';
   const h = await q(env, 'SELECT author, body FROM handoff WHERE id = ?', hid).first();
-  if (!h) return 'no draft: the reply link has expired';
+  if (!h) return skipped('reply expired: the link on job ' + row.id + ' is past its 7 days');
   const to = h.author || ''; // the handoff stored the domain, never the address
   let out;
   try { out = await track(env, { owner: 'void', kind: 'proposal.draft', ref: row.target + ' for ' + (to || 'unknown') }, async () => {
