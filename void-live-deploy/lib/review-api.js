@@ -10,7 +10,8 @@ import { INJECTION_RULE, redact } from './automation-fix.js';
 export const KEY_RE = /^vr1\.[A-Za-z0-9_-]{43}$/;
 export const MAX_KEYS = 5, PRO_DAILY = 300, CODE_MAX = 60000, MODEL_CODE_MAX = 12000;
 export const BUY_URL = 'https://a-to-mind.com/code-review/#pro';
-export const MODEL = '@cf/google/gemma-4-26b-a4b-it';
+import { models } from './models.js';
+export const MODEL = models('review');
 
 const enc = new TextEncoder();
 const hex = (b) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('');

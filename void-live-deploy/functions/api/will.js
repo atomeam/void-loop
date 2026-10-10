@@ -10,7 +10,8 @@ import { track } from '../../lib/actions.js';
 import { readEarnings, budgetLine } from '../../lib/earnings.js';
 import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
 import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../lib/shortfall.js';
-const MODEL = '@cf/google/gemma-4-26b-a4b-it';
+import { models } from '../../lib/models.js';
+const MODEL = models('will');
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content))) || '';

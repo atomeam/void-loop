@@ -7,7 +7,8 @@ import {
   KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey, fallbackScript, trimScript,
 } from '../../skills/scripts.js';
 
-const MODEL = '@cf/google/gemma-4-26b-a4b-it';
+import { models } from '../../lib/models.js';
+const MODEL = models('figurescript');
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content))) || '';
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
 
