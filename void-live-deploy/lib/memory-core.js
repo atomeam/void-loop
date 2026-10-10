@@ -98,7 +98,7 @@ export async function ask(env, q, limit = 5, scope = '') {
     hits = [...seen.values()].sort((a, b) => b.c - a.c || String(b.r.updated).localeCompare(String(a.r.updated))).slice(0, n).map((e) => e.r);
   }
   if (!hits.length) return { answer: words.length ? 'Nothing I remember matches ' + words.join(', ') + '.' : 'Ask me about a project, a tool or a year.', matches: [] };
-  const line = (r) => '• ' + r.name + (r.links.length ? ' (' + r.links.slice(0, 4).join(', ') + ')' : '') + (r.summary ? ': ' + String(r.summary).slice(0, 140) : '')
+  const line = (r) => r.kind === 'note' ? '• ' + r.summary + ' · remembered ' + String(r.updated || '').slice(0, 10) : '• ' + r.name + (r.links.length ? ' (' + r.links.slice(0, 4).join(', ') + ')' : '') + (r.summary ? ': ' + String(r.summary).slice(0, 140) : '')
     + (r.last_commit ? ' · last change ' + String(r.last_commit).slice(0, 10) : '') + (r.remote ? ' · backed up at ' + r.remote : ' · no remote copy');
   return { answer: 'I remember ' + hits.length + ' match' + (hits.length > 1 ? 'es' : '') + ':\n' + hits.map(line).join('\n'), matches: hits.map((r) => r.id) };
 }
