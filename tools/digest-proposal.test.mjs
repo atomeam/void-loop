@@ -1,7 +1,7 @@
 // tools/digest-proposal.mjs: the last line of a digest becomes one growth-board idea, once, and only if it is a plain proposal.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { proposalOf, growthLine } from './digest-proposal.mjs';
+import { proposalOf, growthLine, appendLine } from './digest-proposal.mjs';
 
 const digest = (last) => '# Weekly digest\n\nA lot happened.\n\n- one\n- two\n\n' + last + '\n';
 
@@ -35,4 +35,12 @@ test('digest-proposal: the growth line is a valid ledger entry, written once, na
   assert.equal(e.what, "proposal from ai-landscape's weekly digest: look at tide tables");
   assert.equal(growthLine('look at tide tables', 'domains/inputs/ai-landscape/digest.md', '[\n  ' + line + '\n]', now), null, 'the same proposal is not written twice');
   assert.ok(growthLine('look at tide tables', 'domains/inputs/other/digest.md', '[\n  ' + line + '\n]', now), 'another digest may make the same proposal');
+});
+
+test('digest-proposal: appending to an empty ledger, a full one and a broken one never leaves invalid JSON', () => {
+  const line = JSON.stringify({ at: '2026-10-10T17:00:00Z', by: 'digest', kind: 'idea', what: 'x' });
+  assert.deepEqual(JSON.parse(appendLine('[]', line)), [JSON.parse(line)]);
+  assert.deepEqual(JSON.parse(appendLine('[\n]\n', line)), [JSON.parse(line)]);
+  assert.equal(JSON.parse(appendLine('[\n  {"a": 1}\n]\n', line)).length, 2);
+  assert.throws(() => appendLine('[\n  {"a": 1},\n  {broken\n]\n', line), 'a broken ledger is refused, not made worse');
 });

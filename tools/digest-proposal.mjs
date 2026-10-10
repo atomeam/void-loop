@@ -28,6 +28,14 @@ export function proposalOf(text) {
   return { proposal: p.replace(/[.!]*$/, '') };
 }
 
+/** The ledger text with one more entry, or a throw: the result is parsed before anything is written, and an empty ledger needs no comma. */
+export function appendLine(text, line) {
+  const body = String(text).replace(/\s*\]\s*$/, ''), empty = /^\s*\[\s*$/.test(body);
+  const next = body + (empty ? '' : ',') + '\n  ' + line + '\n]\n';
+  JSON.parse(next); // never leave the ledger unparseable
+  return next;
+}
+
 /** The growth line for a proposal from a digest file, or null when the ledger already has it. */
 export function growthLine(proposal, digestPath, ledgerText, now = new Date()) {
   const what = 'proposal from ' + basename(dirname(digestPath)) + "'s weekly digest: " + proposal;
@@ -44,8 +52,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
   console.log('proposal: ' + r.proposal);
   if (!line) { console.log('already on the board'); process.exit(0); }
   if (!write) { console.log('would write: ' + line); process.exit(0); }
-  const body = text.replace(/\s*\]\s*$/, '');
-  writeFileSync(ledger, body + ',\n  ' + line + '\n]\n');
-  JSON.parse(readFileSync(ledger, 'utf8')); // never leave the ledger unparseable
+  let next; try { next = appendLine(text, line); } catch (e) { console.error('not written: ' + e.message); process.exit(1); }
+  writeFileSync(ledger, next);
   console.log('written to void-live-deploy/void.growth.json');
 }
