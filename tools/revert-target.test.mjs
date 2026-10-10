@@ -1,7 +1,7 @@
 // verify-main reverts the commit that broke the failing check, not whichever commit it happened to test (tools/revert-target.mjs).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { failingChecks, annotations, namesFrom, pickRevert, verifiedState, stillLive, stillRed, pickLive, TITLE, COUNT_TITLE, VERIFY_WORKFLOWS, NO_SUITE, noSuitePick } from './revert-target.mjs';
+import { SUITE_JOBS, failingChecks, annotations, namesFrom, pickRevert, verifiedState, stillLive, stillRed, pickLive, TITLE, COUNT_TITLE, VERIFY_WORKFLOWS, NO_SUITE, noSuitePick } from './revert-target.mjs';
 
 const RACK = 'rack: "what games do you have" stands a 3D shelf';
 
@@ -150,7 +150,7 @@ test('verify-main has its own workflow (verify.yml, 2026-10-10): its runs count,
   const api = (path) => {
     if (path.includes('head_sha=new')) return { workflow_runs: [{ id: 5, name: 'Void verify', event: 'workflow_dispatch' }, { id: 6, name: 'Void deploy', event: 'workflow_dispatch' }] };
     if (path.includes('head_sha=other')) return { workflow_runs: [{ id: 7, name: 'Void review', event: 'push' }] };
-    if (path.endsWith('runs/5/jobs')) return { jobs: [{ id: 51, name: 'verify-main', status: 'completed', conclusion: 'failure' }] };
+    if (path.endsWith('runs/5/jobs')) return { jobs: [{ id: 50, name: 'python-tests', status: 'completed', conclusion: 'failure' }, { id: 51, name: 'browser-suite', status: 'completed', conclusion: 'failure' }] };
     if (path.endsWith('runs/6/jobs')) return { jobs: [{ id: 61, name: 'test-and-deploy', status: 'completed', conclusion: 'success' }] };
     if (path.endsWith('runs/7/jobs')) return { jobs: [{ id: 71, name: 'verify-main', status: 'completed', conclusion: 'failure' }] };
     if (path.includes('check-runs/51/annotations')) return [{ title: TITLE, message: RACK }, { title: COUNT_TITLE, message: '1' }];
@@ -160,6 +160,7 @@ test('verify-main has its own workflow (verify.yml, 2026-10-10): its runs count,
   assert.deepEqual(verifiedState('new', 'o/r', api, body), { sha: 'new', state: 'fail', failing: [RACK] });
   assert.equal(verifiedState('other', 'o/r', api, body).state, 'unknown', 'a job named verify-main in some other workflow is not a verdict');
   assert.deepEqual(VERIFY_WORKFLOWS, ['Void verify', 'Void deploy']);
+  assert.deepEqual(SUITE_JOBS, ['browser-suite', 'verify-main'], 'the suite job today, and the name older verdicts carry; python-tests is never read as the suite');
 });
 
 test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, which never waits for a deploy; automerge starts it', async () => {
@@ -168,9 +169,15 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   const verify = read('.github/workflows/verify.yml'), deploy = read('.github/workflows/deploy.yml'), auto = read('tools/automerge.mjs');
   assert.match(verify, /^name: Void verify$/m, 'the name VERIFY_WORKFLOWS looks for');
   assert.match(verify, /^on:\n  push:\n    branches: \[main\]\n  workflow_dispatch:/m, 'a push to main, or a dispatch (automerge, by hand)');
-  assert.match(verify, /^  verify-main:\n    runs-on:/m, 'the job keeps its name and has no needs');
+  assert.match(verify, /^  python-tests:\n    runs-on:/m, 'the fast tests are their own job (2026-10-10)');
+  assert.match(verify, /^  browser-suite:\n    runs-on:/m, 'the suite is its own job, and neither has needs');
   assert.doesNotMatch(verify, /^\s+needs:/m);
-  assert.match(verify, /group: void-verify-\$\{\{ github\.sha \}\}\n\s+cancel-in-progress: false/, 'one group per head, never cancelled');
+  assert.match(verify, /group: void-verify-fast-\$\{\{ github\.sha \}\}\n\s+cancel-in-progress: false/, 'one group per head for the fast tests');
+  assert.match(verify, /group: void-verify-\$\{\{ github\.sha \}\}\n\s+cancel-in-progress: false/, 'one group per head for the suite, never cancelled');
+  assert.match(verify, /part: fast/); assert.match(verify, /part: suite/);
+  assert.match(verify, /::error title=python-tests failed::/, 'a red fast test says so and reverts nothing');
+  const action = read('.github/actions/void-test/action.yml');
+  assert.match(action, /inputs\.part != 'suite'/); assert.match(action, /inputs\.part != 'fast'/);
   assert.match(verify, /node tools\/revert-target\.mjs --pick/);
   assert.match(verify, /Void-auto-revert: \$sha/);
   assert.match(verify, /gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/);
@@ -187,5 +194,6 @@ test('a red run whose suite never started (a step before it failed) is reported 
   const pick = JSON.parse(cli('--pick', 'HEAD', '/no/such/test-output.txt'));
   assert.deepEqual(pick, noSuitePick());
   assert.equal(pick.action, 'report');
+  assert.equal(pick.job, 'browser-suite', 'the pick says which job it is about');
   assert.deepEqual(namesFrom([{ title: 'verify-main did not run the suite', message: NO_SUITE }]).names, [], 'not read back as a failed check');
 });

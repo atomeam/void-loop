@@ -104,12 +104,12 @@ const world = {
     const opts = ctx.opts || {}, now = () => (opts.at ? new Date(opts.at) : new Date());
     let zone = ''; try { zone = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {}
     let place = opts.place || placeFromZone(zone, new Date().getTimezoneOffset()), last = null;
-    const paint = () => { last = draw(cv, now(), place); window.__voidSky = { place, sun: last && last.sun, moon: last && last.moon, planets: last && last.planets.filter((p) => p.alt > 0).map((p) => p.name) }; };
+    const paint = () => { last = draw(cv, now(), place); window.__voidSkyWorld = { place, sun: last && last.sun, moon: last && last.moon, planets: last && last.planets.filter((p) => p.alt > 0).map((p) => p.name) }; };
     paint();
     if (!opts.place && navigator.geolocation) navigator.geolocation.getCurrentPosition((p) => { place = { lat: p.coords.latitude, lonE: p.coords.longitude, rough: false }; paint(); }, () => {}, { timeout: 8000, maximumAge: 600000 });
     const iv = setInterval(paint, 60000); // the sky moves a quarter of a degree a minute: once a minute is plenty, and calm
     const onResize = () => paint(); addEventListener('resize', onResize);
-    return { update: paint, dispose() { clearInterval(iv); removeEventListener('resize', onResize); delete window.__voidSky; } };
+    return { update: paint, dispose() { clearInterval(iv); removeEventListener('resize', onResize); delete window.__voidSkyWorld; } };
   },
 };
 
