@@ -283,6 +283,23 @@ ok(rules('image: postgres:latest', 'yaml').includes('image-latest@1') && rules('
 ok(rules('USER root', 'dockerfile').includes('docker-root@1') && rules('USER 0', 'dockerfile').includes('docker-root@1') && !rules('USER app', 'dockerfile').includes('docker-root@1') && !rules('USER rootless', 'dockerfile').includes('docker-root@1'), 'Dockerfile USER root flagged; another user not');
 // keys never shown as written
 ok(!JSON.stringify(ruleReview('const token = "ghp_abcdefghijklmnopqrstuvwxyz0123";')).includes('ghp_abcdef'), 'a key in a finding is masked');
+// run 64: thin-area probes (a language-named ask with the paste on the next lines; Python sort-None, [i + 1] in range(len()), counting into a missing key;
+// Go log-and-carry-on, <= len(); Rust use-after-move, literal index past the end; SQL = NULL, reversed BETWEEN)
+ok(isReviewAsk('review this python:\nfor i in range(len(xs)):\n    print(xs[i+1])') && codeOf('review this python:\nfor i in range(len(xs)):\n    print(xs[i+1])') === 'for i in range(len(xs)):\n    print(xs[i+1])', 'a language-named ask with the paste on the next lines is a review of those lines');
+ok(!isReviewAsk('here is python:\nfor i in range(3):\n    print(i)'), 'a paste without a review ask is not a review');
+for (const [lang, c, want] of [['python', 'sorted_items = items.sort()', 'sort-none@1'], ['python', 'for i in range(len(xs)):\n    print(xs[i+1])', 'range-next@2'], ['python', 'd = {}\nfor k in keys:\n    d[k] = d[k] + 1', 'dict-add-missing@3'],
+  ['go', 'data, err := os.ReadFile(name)\nif err != nil {\n    log.Println(err)\n}\nreturn string(data)', 'go-err-log-continue@2'],
+  ['go', 'for i := 0; i <= len(nums); i++ { total += nums[i] }', 'len-le-loop@1'],
+  ['rust', 'let s = String::from("hi"); let t = s; println!("{}", s);', 'rust-moved-use@1'],
+  ['rust', 'let v = vec![1, 2, 3]; println!("{}", v[10]);', 'rust-literal-index@1'],
+  ['sql', 'SELECT * FROM users WHERE email = NULL', 'null-compare@1'],
+  ['sql', 'SELECT * FROM users WHERE age BETWEEN 20 AND 10', 'between-reversed@1']])
+  ok(rules(c, lang).includes(want), want + ' in ' + lang + ': ' + c.slice(0, 60) + ' (got ' + rules(c, lang).join(',') + ')');
+for (const [lang, c] of [['python', 'items.sort()\nprint(items[0])'], ['python', 'for i, x in enumerate(xs):\n    print(x)'], ['python', 'd[k] = d.get(k, 0) + 1'],
+  ['go', 'if err != nil {\n    return err\n}'], ['go', 'for i := 0; i < len(nums); i++ { total += nums[i] }'],
+  ['rust', 'let n = 5; let m = n; println!("{}", n);'], ['rust', 'let v = vec![1, 2, 3]; println!("{}", v[2]);'],
+  ['sql', 'SELECT * FROM users WHERE email IS NULL'], ['sql', 'SELECT * FROM users WHERE age BETWEEN 10 AND 20']])
+  ok(!rules(c, lang).some((r) => /sort-none|range-next|dict-add-missing|go-err-log-continue|len-le-loop|rust-moved-use|rust-literal-index|null-compare|between-reversed/.test(r)), 'no finding in ' + lang + ': ' + c.slice(0, 60) + ' (got ' + rules(c, lang).join(',') + ')');
 // the pull-request review skips tests in every language the repo writes (their fixtures are bad code on purpose), and nothing else by accident
 for (const f of ['tools/ouroboros_test.py', 'tools/void_lens_test.py', 'tools/memory.test.mjs', 'tools/test_void.mjs', 'tools/skills_test.mjs', 'tools/tictactoe.test.mjs', 'tools/sub/helper_test.js', 'tools/test_glyphs.mjs'])
   ok(skippedInReview(f), 'a test file is not reviewed: ' + f);

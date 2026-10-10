@@ -24,7 +24,14 @@ const NOT_CODE = /\b(?:zip|area|postal|post|promo|promotional|discount|dress|mor
 export function isReviewAsk(text) {
   const s = String(text || '').trim(), first = s.split('\n')[0].replace(/\s*⏎.*$/, '').slice(0, 300);
   if (NOT_CODE.test(first)) return false;
-  return ASKS.some((re) => re.test(first));
+  if (ASKS.some((re) => re.test(first))) return true;
+  // "review this python:" with the paste on the next lines: the first line asks for a review, names a language and ends at the colon
+  if (s.includes('\n') && /:\s*$/.test(first) && /\b(?:review|check|lint|audit|critique)\b/i.test(first)) {
+    const lang = langNamed(first);
+    const rest = s.slice(s.indexOf('\n') + 1);
+    if (rest.trim() && looksLikeCode(rest, lang || undefined)) return true;
+  }
+  return false;
 }
 
 // the code itself: the lines after the ask, or what follows "review this code:" on one line
@@ -32,7 +39,7 @@ export function codeOf(text) {
   const s = String(text || '').replace(/\s*⏎\s*/g, '\n');
   const lines = s.split('\n');
   let code = '';
-  if (lines.length > 1 && isReviewAsk(lines[0])) code = lines.slice(1).join('\n');
+  if (lines.length > 1 && (isReviewAsk(lines[0]) || isReviewAsk(s))) code = lines.slice(1).join('\n');
   else if (lines.length > 1) code = s;
   else { const k = s.search(/[:?]/); code = k > 0 && k < 120 && isReviewAsk(s.slice(0, k) + ': x') ? s.slice(k + 1).trim() : (isReviewAsk(s) ? '' : s); } // "review this: <code>", "is this code safe? <code>"
   code = code.replace(/^\s*```[\w.+#-]*[ \t]*\n?/, '').replace(/\n?```\s*$/, '');
@@ -186,7 +193,7 @@ function sqlPasted(r, lang) {
   return false;
 }
 const RULES = [
-  ['assign-in-condition', 'bug', [...JS, 'java', 'csharp', 'c', 'php'], (m) => /\b(?:if|while)\s*\(\s*!?\s*[A-Za-z_$][\w$.[\]]*\s*=\s*[^=>]/.test(m),
+  ['assign-in-condition', 'bug', [...JS, 'java', 'csharp', 'c', 'php', 'python'], (m) => /\b(?:if|while)\s*\(\s*!?\s*[A-Za-z_$][\w$.[\]]*\s*=\s*[^=>]/.test(m) || /^\s*if\s+[A-Za-z_$]\w*\s*=\s/.test(m),
     'an assignment (=) inside the condition: it sets the value and is then always true or false. To compare, use === (or == outside JavaScript).'],
   ['loose-equality', 'style', JS, (m) => /[^=!<>]==[^=]|!=[^=]/.test(m) && !/[=!]=\s*null\b|\bnull\s*[=!]=[^=]/.test(m),
     '== and != convert types before comparing ("0" == 0 and "" == false are both true). === and !== compare exactly.'],
@@ -223,6 +230,13 @@ const RULES = [
     'except … : pass swallows the error silently, so the program carries on with bad data. Log it or handle it.'],
   ['mutable-default', 'bug', ['python'], (m) => /^\s*def\s+\w+\s*\(.*=\s*(?:\[\s*\]|\{\s*\}|set\(\s*\)|list\(\s*\)|dict\(\s*\))\s*[,)]/.test(m),
     'a default of [] or {} is created once and shared by every call, so changes leak between calls. Use None and create it inside: def f(x=None): x = [] if x is None else x'],
+  // thin-area probes: list.sort() returns None, [i + 1] inside range(len(…)), counting into a key that is not there yet
+  ['sort-none', 'bug', ['python'], (m) => /=\s*[\w.\[\]]+\.sort\s*\(\s*\)/.test(m),
+    'sort() sorts the list in place and returns None, so this name ends up None instead of the sorted list. Call items.sort() on its own line, or use sorted(items) when you need a new list.'],
+  ['range-next', 'bug', ['python'], (m, r, x) => /\[\s*[A-Za-z_]\w*\s*\+\s*1\s*\]/.test(m) && /\brange\s*\(\s*len\s*\(/.test(x.prev() + '\n' + m) && !/\bif\b.*\+\s*1\s*<\s*len/.test(x.prev()),
+    'this reads [i + 1] while range(len(xs)) stops at len(xs) - 1, so the last pass reads one past the end of the list (an off-by-one, out of bounds). Loop over range(len(xs) - 1), or pair neighbours with zip(xs, xs[1:]).'],
+  ['dict-add-missing', 'bug', ['python'], (m) => /(\w+)\[([^\]]+)\]\s*=\s*\1\[\2\]\s*\+/.test(m),
+    'the first time this key appears, d[k] on the right-hand side does not exist yet, so this raises KeyError. Count from what is there: d[k] = d.get(k, 0) + 1 (or use collections.Counter).'],
   ['is-literal', 'bug', ['python'], (m) => /\bis\s+(?:not\s+)?(?:-?\d|['"])/.test(m),
     '"is" checks whether two things are the same object, not equal values, so it can be False for equal numbers or strings. Use == (keep "is" for None, True and False).'],
   ['eq-none', 'style', ['python'], (m) => /[=!]=\s*None\b/.test(m),
@@ -253,6 +267,26 @@ const RULES = [
     'gets, strcpy, strcat and sprintf write without checking the size of the buffer, so a long input overflows it (a crash, or a way in for an attacker). Use fgets(buf, sizeof buf, stdin), snprintf, or copy with an explicit length.'],
   ['unwrap', 'style', ['rust'], (m) => /\.unwrap\s*\(\s*\)/.test(m),
     'unwrap() panics (crashes the program) when the value is None or an Err. Handle it with match / if let, pass it up with ?, or use expect("why this cannot fail").'],
+  // thin-area probes: using a value after it was moved, indexing a vec! literal past its end
+  ['rust-moved-use', 'bug', ['rust'], (m, r, x) => {
+    const k = m.match(/\blet\s+(?:mut\s+)?\w+\s*=\s*([A-Za-z_]\w*)\s*;/);
+    if (!k || /^(?:true|false|None|Some|Ok|Err)$/.test(k[1])) return false;
+    const scope = x.prev() + '\n' + x.statement();
+    const decl = scope.match(new RegExp('\\b' + k[1] + '\\s*=\\s*([^;\\n]+)'));
+    if (!decl || !/(?:String::|vec!|Vec::|format!|Box::|HashMap::|HashSet::)|[\w.:]+\.to_(?:string|owned)\(\)/.test(decl[1])) return false;
+    const after = m.slice(k.index + k[0].length) + '\n' + [1, 2, 3, 4, 5, 6].map((j) => x.next(j)).join('\n');
+    return new RegExp('\\b' + k[1] + '\\b').test(after);
+  },
+    'the value is moved here, so using it afterwards is an ownership error (a borrow of a moved value): the compiler refuses it. Clone it (let t = s.clone()) or use the new name from here on.'],
+  ['rust-literal-index', 'bug', ['rust'], (m, r, x) => {
+    const decl = (x.prev() + '\n' + x.statement()).match(/\blet\s+(?:mut\s+)?(\w+)\s*=\s*vec!\s*\[([^\]]*)\]/);
+    if (!decl) return false;
+    const idx = m.match(new RegExp('\\b' + decl[1] + '\\s*\\[\\s*(\\d+)\\s*\\]'));
+    if (!idx) return false;
+    const n = decl[2].trim() ? decl[2].split(',').length : 0;
+    return +idx[1] >= n;
+  },
+    'this reads an index past the end of the vector (out of bounds): it panics at run time instead of returning anything. Check the length first, or use v.get(i), which gives None instead of crashing.'],
   ['force-unwrap', 'risk', ['kotlin', 'swift'], (m, r, x) => x.lang === 'kotlin' ? /!!/.test(m) : /[\w)\]]!(?![=!])/.test(m.replace(/!=/g, '')),
     'a force unwrap (!! in Kotlin, ! in Swift) crashes the app when the value is null/nil. Handle the missing case: ?. with ?: in Kotlin, if let / guard let or ?? in Swift.'],
   ['string-eq', 'bug', ['java'], (m) => /[=!]=\s*"|"\s*[=!]=/.test(m),
@@ -306,6 +340,18 @@ const RULES = [
     'accepting the "none" algorithm means a token with no signature passes, so anyone can forge one. List only the algorithm you sign with: algorithms: ["HS256"].'],
   ['go-empty-err', 'bug', ['go'], (m) => /\bif\s+err\s*!=\s*nil\s*\{\s*\}/.test(m),
     'the error is checked and then nothing is done with it, so the program carries on as if the call worked. Return it (return err, or wrap it: fmt.Errorf("reading config: %w", err)) or log it.'],
+  // thin-area probes: logging the error and carrying on with the failed result, looping to <= len(…)
+  ['go-err-log-continue', 'bug', ['go'], (m, r, x) => {
+    if (!/\bif\s+err\s*!=\s*nil\s*\{/.test(m)) return false;
+    const st = x.statement(), body = st.split('}')[0] || '';
+    if (!/(?:log|fmt)\.\w+\s*\(\s*err\s*\)/.test(body)) return false;
+    if (/\breturn\b|\bpanic\s*\(|\bos\.Exit\s*\(|\bcontinue\b|\bbreak\b/.test(body)) return false;
+    const rest = st.slice(st.indexOf('}'));
+    return !/\bpanic\s*\(|\bos\.Exit\s*\(|\breturn\s+(?:err|nil)\b/.test(rest);
+  },
+    'the error is logged but the code carries on with the failed result, so the next lines run on empty or half-filled data. Return the error (return err) or stop, instead of continuing with it.'],
+  ['len-le-loop', 'bug', ['go'], (m) => /\bfor\b[^{]*<=\s*len\s*\(/.test(m),
+    'the loop runs while i <= len(nums), but the length is len(nums) and the last valid index is one less, so the final pass reads out of bounds (an off-by-one that panics). Use i < len(nums).'],
   ['go-race', 'risk', ['go'], (m, r, x) => /\bgo\s+func\s*\([^)]*\)\s*\{[^}]*?\b[\w.]+\s*(?:\+\+|--|[+\-*/]?=(?!=))/.test(x.statement()) && !/\b(?:Lock|RLock|atomic\.|chan\b|<-)/.test(x.statement()),
     'a goroutine changes a variable that other goroutines can also touch, with no lock: a data race, so counts come out wrong at random. Use sync.Mutex, sync/atomic (atomic.AddInt64), or send the change on a channel; go run -race finds these.'],
   ['rails-where-interp', 'risk', ['ruby'], (m, r) => /\.(?:where|find_by_sql|order|having|joins|select|group|pluck|exists\?)\s*\(\s*"[^"]*#\{/.test(r),
@@ -452,6 +498,11 @@ const RULES = [
     'UPDATE without WHERE changes every row in the table. Add the WHERE that picks the rows you mean.'],
   ['delete-no-where', 'bug', ['sql', '*'], (m, r, x) => /^\s*DELETE\s+FROM\s+[\w."`[\]]+\s*;?\s*$/i.test(r) && !/\bWHERE\b/i.test(x.statement()),
     'DELETE without WHERE removes every row in the table. Add a WHERE (or use TRUNCATE if that is really what you want).'],
+  // thin-area probes: = NULL never matches, a reversed BETWEEN matches nothing
+  ['null-compare', 'bug', ['sql'], (m) => /=\s*NULL\b|<>\s*NULL\b|!=\s*NULL\b/i.test(m),
+    '= NULL is never true: NULL means unknown, so the whole comparison comes out unknown and the rows silently vanish. Use IS NULL (or IS NOT NULL).'],
+  ['between-reversed', 'bug', ['sql'], (m) => { const k = m.match(/\bBETWEEN\s+(\d+(?:\.\d+)?)\s+AND\s+(\d+(?:\.\d+)?)\b/i); return !!k && +k[1] > +k[2]; },
+    'BETWEEN 20 AND 10 is reversed, so it never matches and the query returns no rows (an empty result with no error). Swap the ends: BETWEEN 10 AND 20.'],
   ['select-star', 'style', ['sql'], (m) => /\bSELECT\s+\*\s+FROM\b/i.test(m),
     'SELECT * returns every column, so the query breaks or slows down when columns are added. Name the columns you use.'],
   ['sql-concat', 'risk', ['*'], (m, r, x) => sqlPasted(r, x.lang),
