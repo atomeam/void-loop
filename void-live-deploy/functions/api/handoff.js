@@ -14,7 +14,7 @@ import { domainOf } from '../../lib/sale-jobs.js';
 const MAX_BYTES = 256 * 1024;
 const JOB_RE = /^sale:[A-Za-z0-9._-]{1,80}$/;
 const TTL_SECONDS = 7 * 24 * 3600;
-const ID_RE = /^[a-f0-9]{32}$/;
+const ID_RE = /^(?:[a-f0-9]{32}|rehearsal-[a-f0-9]{22})$/; // rehearsal- ids come from /api/rehearsal (owner-seeded)
 const NAME_RE = /^[A-Za-z0-9._\- ]{1,80}$/;
 const reply = (obj, status = 200, extra = {}) =>
   new Response(JSON.stringify(obj), {
