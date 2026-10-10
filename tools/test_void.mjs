@@ -1050,6 +1050,21 @@ try {
       before[0] === 'running' && before.length === 30 && after[0] === 'done' && after.length === 30 && /^updated .* · refreshes every 1 min/.test(cap) && paged === 41 && moreHidden
       && calls.slice(0, 3).join(',') === '30/0,30/0,30/30' && !L.errors.length, JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, errs: L.errors }));
     await L.ctx.close(); }
+  // the quiz (skills/quiz.js, frontier #17) is a learning card: never in the saved stage after a reload unless the visitor
+  // kept that one card ("keep this quiz"); the gears it quizzed on are saved as always (void.html keptThings)
+  { const Z = await fresh();
+    await Z.ask('explain gears', 900); await Z.ask('quiz me on this', 900);
+    const saved = () => Z.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).map((t) => t.kind));
+    const shown = await Z.p.$eval('.quiz-card .quiz-prompt', (e) => e.innerText).catch(() => '');
+    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    const afterReload = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
+    await Z.ask('quiz me on this', 900); await Z.ask('keep this quiz', 600);
+    await Z.p.reload(); await Z.p.waitForTimeout(900);
+    const afterKeep = { saved: await saved(), cards: await Z.p.$$eval('.quiz-card', (d) => d.length) };
+    check('quiz card: asks the gear card\'s own question, is not in the saved stage after a reload, and is after "keep this quiz"',
+      /16-tooth driver and a 32-tooth driven gear/.test(shown) && afterReload.saved.includes('gears') && !afterReload.saved.includes('quiz') && afterReload.cards === 0
+      && afterKeep.saved.filter((k) => k === 'quiz').length === 1 && afterKeep.cards === 1, JSON.stringify({ shown, afterReload, afterKeep }));
+    await Z.ctx.close(); }
   const ranBeforeProposal = gate.ran.length;
   // the proposal card (skills/proposal.js, build order step 3): a pasted customer request becomes an editable proposal with
   // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent

@@ -17,8 +17,10 @@ export function quizOf(text) {
 }
 
 /** the explainer to quiz on: the selected one, else the newest on the stage whose kind gives observations */
-export function sourceOf(things, kinds, selectedId) {
-  const gives = (t) => t && kinds[t.kind] && kinds[t.kind].gives && typeof kinds[t.kind].gives.observations === 'function';
+export function sourceOf(things, kinds, selectedId, opts = {}) {
+  // explainers by default; a learning card (the quiz, the challenge) only when asked for by kind (its missed items)
+  const want = (t) => (opts.kind ? t.kind === opts.kind : !kinds[t.kind].learning);
+  const gives = (t) => t && kinds[t.kind] && kinds[t.kind].gives && typeof kinds[t.kind].gives.observations === 'function' && want(t);
   if (selectedId && gives(things[selectedId])) return things[selectedId];
   const list = Object.values(things || {}).filter(gives);
   return list.length ? list[list.length - 1] : null;
@@ -128,5 +130,6 @@ export default {
   nearMisses: ['quiz', 'pub quiz near me', 'test my internet speed', 'quiz show', 'make a quiz about france', 'i need to pass my quiz by friday'],
   match(lower, text) { return !!quizOf(text); },
   run,
-  stageKinds: { quiz: { mount, ephemeral: true } },
+  // ephemeral: never saved or synced unless kept; it gives its per-question results, missed items still assessable
+  stageKinds: { quiz: { mount, ephemeral: true, learning: true, gives: { observations: (th) => Q.gives(th.state).observations, explanation: (th) => Q.gives(th.state).explanation } } },
 };
