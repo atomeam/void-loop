@@ -72,6 +72,12 @@ function motif(x, m, cx, cy, s) {
     const bands = ['#8a5a3c', '#9fd3ef', '#d9559c', '#f08a2c', '#d9353a', '#f2d23a', '#2f9b57', '#1f4fa8'], q = s / 8;
     for (let k = 0; k < 4; k++) { x.fillStyle = bands[k]; x.fillRect(cx - h + q * (k * 2 + 0.2), cy - h * 0.82, q * 1.6, q * 0.5); x.fillStyle = bands[k + 4]; x.fillRect(cx - h + q * (k * 2 + 0.2), cy + h * 0.66, q * 1.6, q * 0.5); }
     x.fillStyle = '#7b6cff'; x.beginPath(); x.arc(cx + q, cy, q * 0.5, 0, Math.PI * 2); x.fill(); x.fillStyle = '#e9e4d8'; x.beginPath(); x.arc(cx - q, cy, q * 0.5, 0, Math.PI * 2); x.fill();
+  } else if (m === 'ringer') { // a chalk ring on dirt, the cross of marbles in it, the shooter at the edge
+    x.fillStyle = '#7a5a3c'; x.fillRect(cx - h, cy - h, s, s);
+    x.strokeStyle = '#f1eee4'; x.lineWidth = Math.max(2, s * 0.025); x.beginPath(); x.arc(cx, cy, h * 0.82, 0, Math.PI * 2); x.stroke();
+    const tints = ['#cfe6ea', '#d9f2e3', '#dfe8fb', '#f5ecd9', '#e6dcf2'], q = h * 0.17;
+    [[0, 0], [1, 0], [-1, 0], [2, 0], [-2, 0], [0, 1], [0, -1], [0, 2], [0, -2]].forEach(([i, j], k) => disc(x, cx + i * q, cy + j * q, s * 0.045, tints[k % tints.length], '#8a8f96'));
+    disc(x, cx, cy + h * 0.9, s * 0.055, '#c9b8a3', '#7a4a2a');
   } else if (m === 'aggravation') {
     x.fillStyle = '#f3e6c8'; x.beginPath(); for (let i = 0; i < 12; i++) { const a = (i / 12) * Math.PI * 2 - Math.PI / 2, rr = i % 2 ? h * 0.48 : h; x.lineTo(cx + Math.cos(a) * rr, cy + Math.sin(a) * rr); } x.closePath(); x.fill();
     ['#d64545', '#3a78d4', '#3fa35b', '#e0b13a'].forEach((col, i) => { const a = (i / 4) * Math.PI * 2 - Math.PI / 4; disc(x, cx + Math.cos(a) * h * 0.45, cy + Math.sin(a) * h * 0.45, s * 0.06, col); });
