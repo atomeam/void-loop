@@ -41,6 +41,8 @@
       if (L && L.bg) { d.style.setProperty('--void-bg', L.bg); d.style.backgroundColor = L.bg; }
       if (L && L.glow) d.style.setProperty('--void-glow', L.glow);
       if (localStorage.getItem('a2m.void.entered.v1')) d.classList.add('void-entered');
+      var K = JSON.parse(localStorage.getItem('a2m.void.sky.v1') || 'null'); // the last sky this device saw, so the first frame is already tinted; void-review: ok (inside the try above, like the look)
+      if (K && K.glow && K.bg) { d.style.setProperty('--sky-glow', K.glow); d.style.setProperty('--sky-bg', K.bg); if (!(L && L.glow)) d.classList.add('sky-on'); }
       d.classList.add('void-first');
       addEventListener('load', function () { setTimeout(function () { d.classList.remove('void-first'); }, 50); });
     } catch (e) {}
@@ -396,15 +398,16 @@
     .vpage ul { margin: 0 0 10px; padding-left: 18px; color: #d6d6d6; }
     .vpage .src { clear: both; margin-top: 12px; font-size: 12px; color: var(--muted); }
     .vpage .src a { color: var(--accent); text-decoration: none; border-bottom: 1px solid rgba(255,255,255,0.15); }
-    html { background: var(--void-bg, #050505); transition: background-color 1.5s ease; }
+    html { background: var(--void-bg, var(--sky-bg, #050505)); transition: background-color 1.5s ease; }
     html, body { background-color: transparent; }
-    html { background-color: var(--void-bg, #050505); }
+    html { background-color: var(--void-bg, var(--sky-bg, #050505)); }
     #void-glow { position: fixed; inset: 0; pointer-events: none; z-index: 0;
-      background: radial-gradient(circle at 50% 45%, var(--void-glow, #0b0b10), transparent 70%);
+      background: radial-gradient(circle at 50% 45%, var(--void-glow, var(--sky-glow, #0b0b10)), transparent 70%);
       opacity: 0; transition: opacity 1.5s ease; }
     body.void-entered #void-glow, html.void-entered #void-glow { opacity: 1; }
+    html.sky-on #void-glow { opacity: 1; } /* the real sky tints the empty stage too (skills/sky-rules.js); a look the visitor chose still wins */
     html.void-first, html.void-first #void-glow, html.void-first #void-stars { transition: none !important; }
-    html.void-first body { background: var(--void-bg, #050505); }
+    html.void-first body { background: var(--void-bg, var(--sky-bg, #050505)); }
     #void-stars { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;
       opacity: 0; transition: opacity 1.5s ease; }
     #void-stars.on { opacity: 1; }
@@ -417,8 +420,8 @@
     #void-aura { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 2.4s ease; }
     #void-aura.on { opacity: 1; }
     html.no-gl[data-fx="nebula"] body::before { content: ''; position: fixed; inset: -20%; z-index: 0; pointer-events: none;
-      background: radial-gradient(40% 35% at 30% 40%, color-mix(in srgb, var(--void-glow, #0b0b10) 70%, #1a1030), transparent 70%),
-                  radial-gradient(35% 30% at 70% 60%, color-mix(in srgb, var(--void-glow, #0b0b10) 60%, #06202a), transparent 70%);
+      background: radial-gradient(40% 35% at 30% 40%, color-mix(in srgb, var(--void-glow, var(--sky-glow, #0b0b10)) 70%, #1a1030), transparent 70%),
+                  radial-gradient(35% 30% at 70% 60%, color-mix(in srgb, var(--void-glow, var(--sky-glow, #0b0b10)) 60%, #06202a), transparent 70%);
       filter: blur(40px); opacity: .7; animation: auraDrift 60s ease-in-out infinite alternate; }
     @keyframes auraDrift { to { transform: translate(3%, -2%) scale(1.08); } }
     #stage { perspective: 1400px; }
@@ -433,7 +436,7 @@
     /* volumetric darkness: the homepage is a deep space, not a flat colour. Two slow layers; one eases after the cursor. CSS only. */
     #void-depth { position: fixed; inset: -10%; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(38vmax 30vmax at var(--dx, 50%) var(--dy, 42%), color-mix(in srgb, var(--void-glow, #0b0b10) 55%, #1a2350 45%) 0%, transparent 70%),
+        radial-gradient(38vmax 30vmax at var(--dx, 50%) var(--dy, 42%), color-mix(in srgb, var(--void-glow, var(--sky-glow, #0b0b10)) 55%, #1a2350 45%) 0%, transparent 70%),
         radial-gradient(60vmax 45vmax at 50% 118%, rgba(40,52,110,.16), transparent 70%),
         radial-gradient(50vmax 40vmax at 12% -10%, rgba(70,40,120,.10), transparent 70%);
       opacity: .55; animation: depthBreath 14s ease-in-out infinite alternate; }
@@ -461,7 +464,7 @@
     /* the ask bar itself is the focus ring: no square outline inside the rounded bar, and a border bright enough to see (>= 3:1) */
     #input:focus, #input:focus-visible { outline: none; }
     #row:focus-within { border-color: rgba(150,175,255,.6); box-shadow: 0 0 0 1px rgba(150,175,255,.10), 0 0 40px rgba(110,140,255,.12), 0 20px 60px rgba(0,0,0,.5); }
-    #dock { background: linear-gradient(to top, color-mix(in srgb, var(--void-bg, #050505) 92%, transparent) 55%, transparent); z-index: 5; }
+    #dock { background: linear-gradient(to top, color-mix(in srgb, var(--void-bg, var(--sky-bg, #050505)) 92%, transparent) 55%, transparent); z-index: 5; }
     /* the dock's top is a fade you see through: a card's button showing there takes the click; only what is in the dock
        (the suggestions, the ask bar, the status lines) catches the pointer */
     #dock { pointer-events: none; }
@@ -1122,6 +1125,8 @@ Object.values(things).forEach((th) => {
         : 'stopped at step ' + m.at + ' of ' + m.of + ' (' + (m.done ? m.done + ' done before it' : 'nothing done') + '; nothing after it ran): ' + (ACT_WHY[m.why || ''] || "couldn't do that step");
       return m && m.ok ? (m.did === 'clicked' ? 'clicked' : 'filled') + ' it on ' + (m.host || 'the page') + ' · recorded · you send it yourself' : ACT_WHY[(m && m.why) || ''] || "couldn't do that step";
     };
+    // the box you were in, by its own label when it has one (any language); box: 'mine' fills that very box, or the mail app's compose box
+    const boxName = (f) => (f && f.name) || 'the box you were in';
     function extPropose(step) { if (!ext.on) return false; extSend(Array.isArray(step) ? (step.length === 1 ? { type: 'void-ext:propose', step: step[0] } : { type: 'void-ext:propose', steps: step }) : { type: 'void-ext:propose', step }); return true; }
     async function extRecord(m) {
       const reply = (r) => extSend({ type: 'void-ext:recorded', id: m.id, ...r });
@@ -1150,7 +1155,16 @@ Object.values(things).forEach((th) => {
       const th = summonThing('proposal', { center: true, fields: d.fields, model: d.model, to: L.addressIn(r.text).to || '' });
       const sp = document.querySelector('.tab-said');
       if (sp) sp.textContent = 'proposal from Void' + (d.model === 'rules' ? ' (by rule, no model just now)' : '') + ' · in the proposal card, yours to edit';
-      if (th && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: L.toPlain(d.fields), auto: true });
+      // the buyer of a sale job wrote this thread: the draft goes onto that job too, the same way the job's claim drafts it
+      // (owner only; POST /api/queue op draft-from-thread, lib/job-draft.js), so a reply read in Gmail and one routed through
+      // the intake land in the same place. A thread from anyone else attaches nothing and writes nothing.
+      const tok = ownerToken(), from = L.addressIn(r.text).to || '';
+      if (tok && from) {
+        fetch('/api/queue', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + tok }, body: JSON.stringify({ op: 'draft-from-thread', from, request: r.text }) })
+          .then((x) => (x.ok ? x.json() : null)).then((j) => { const s2 = document.querySelector('.tab-said');
+            if (j && j.matched && s2) s2.textContent += ' · on the job for ' + (from.split('@')[1] || from) + ' (' + j.target + '): ' + j.line; }).catch(() => {});
+      }
+      if (th && tab.field) extPropose({ action: 'fill', label: boxName(tab.field), box: 'mine', text: L.toPlain(d.fields), auto: true });
     }
     function mountTab(th) {
       const t = ext.tab;
@@ -1203,7 +1217,7 @@ Object.values(things).forEach((th) => {
           said.textContent = intent + ' from Void' + (notes.length ? ' (' + notes.join('; ') + ')' : '') + ' · put it in the page, or copy it';
           // B3 joined to the draft: a reply for the box you were in becomes a proposed step, the same Yes / No card in the panel
           // and the same record; the panel shows it only on a site on your list (off the list it says nothing: copy as before)
-          if (intent === 'reply' && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: j.draft, auto: true });
+          if (intent === 'reply' && tab.field) extPropose({ action: 'fill', label: boxName(tab.field), box: 'mine', text: j.draft, auto: true });
         }));
         const stepIn = body.querySelector('.tab-step'), actSp = body.querySelector('.tab-act-said');
         stepIn.value = ext.stepText || ''; stepIn.addEventListener('input', () => { ext.stepText = stepIn.value; }); // a redraw of the stage keeps what you typed
@@ -6423,6 +6437,26 @@ return { ok: true, detail: 'timer-reset' };
     window.addEventListener('resize', () => render());
   </script>
   <script>
+  // ---- The sky: the empty stage follows the real sun (skills/sky-rules.js; frontier #21). No network call, no permission: the place is
+  // guessed from the clock and time zone. It drifts every five minutes and holds still with reduced motion or the page's still setting.
+  // window.__voidSky and the `void:sky` event carry the shared time-of-day value (daylight 0..1) for anything else that wants it (sound). ----
+  (async () => {
+    try {
+      const m = await import('/skills/sky-rules.js'), r = document.documentElement;
+      let still = false; try { still = matchMedia('(prefers-reduced-motion: reduce)').matches || localStorage.getItem('a2m.void.motion.v1') === 'still'; } catch (_) {}
+      const place = m.guessPlace(Intl.DateTimeFormat().resolvedOptions().timeZone, new Date().getTimezoneOffset());
+      const apply = () => {
+        const sky = m.skyOf(new Date(), place);
+        r.style.setProperty('--sky-glow', sky.glow); r.style.setProperty('--sky-bg', sky.bg);
+        if (!r.style.getPropertyValue('--void-glow')) r.classList.add('sky-on');
+        window.__voidSky = { ...sky, place, drifting: !still };
+        document.dispatchEvent(new CustomEvent('void:sky', { detail: window.__voidSky }));
+        try { localStorage.setItem('a2m.void.sky.v1', JSON.stringify({ glow: sky.glow, bg: sky.bg })); } catch (_) {}
+      };
+      apply();
+      if (!still) setInterval(apply, 5 * 60e3);
+    } catch (_) {}
+  })();
   // ---- Atmosphere: a slow nebula behind the void (WebGL, tinted by your look), plus depth on everything summoned ----
   (function () {
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -6471,7 +6505,7 @@ return { ok: true, detail: 'timer-reset' };
             gl.uniform1f(uAt, reduce ? 0 : att);
             const cs = getComputedStyle(document.documentElement);
             gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uT, reduce ? 40 : now / 1000); gl.uniform2f(uM, mx, my);
-            gl.uniform3fv(uG, hex(cs.getPropertyValue('--void-glow'), '0b0b10')); gl.uniform3fv(uB, hex(cs.getPropertyValue('--void-bg'), '050505'));
+            gl.uniform3fv(uG, hex(cs.getPropertyValue('--void-glow') || cs.getPropertyValue('--sky-glow'), '0b0b10')); gl.uniform3fv(uB, hex(cs.getPropertyValue('--void-bg') || cs.getPropertyValue('--sky-bg'), '050505'));
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
           }
           if (!reduce && !document.hidden && fxNow() === 'nebula') raf = requestAnimationFrame(draw);
@@ -6520,7 +6554,7 @@ return { ok: true, detail: 'timer-reset' };
         raf = 0; mx += (tx - mx) * .08; my += (ty - my) * .08;
         gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
         gl.uniform1f(uT, reduce ? 30 : now / 1000); gl.uniform2f(uM, mx, my); gl.uniform2f(uR, cv.width, cv.height); gl.uniform1f(uD, dpr);
-        gl.uniform3fv(uG, hex(getComputedStyle(document.documentElement).getPropertyValue('--void-glow')));
+        gl.uniform3fv(uG, hex(getComputedStyle(document.documentElement).getPropertyValue('--void-glow') || getComputedStyle(document.documentElement).getPropertyValue('--sky-glow')));
         gl.drawArrays(gl.POINTS, 0, N);
         if (!reduce && !document.hidden && fxNow() === 'swarm') raf = requestAnimationFrame(draw);
       };
