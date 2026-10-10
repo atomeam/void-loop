@@ -56,13 +56,21 @@ for (const [file, lines] of Object.entries(files)) {
 const ORDER = { bug: 0, risk: 1, style: 2, note: 3 };
 report.sort((a, b) => ORDER[a.kind] - ORDER[b.kind] || a.file.localeCompare(b.file) || a.line - b.line);
 
+// the lines of a file that declare names at top level: imports, requires, functions, classes, consts (JavaScript), imports, defs and
+// assignments (Python); redacted like the diff, at most 60 a file
+const TOP_LINE = /^(?:import\b|export\s+\{[^}]*\}\s*from\b|(?:export\s+)?(?:const|let|var)\s+(?:\{[^}]*\}|\[[^\]]*\]|[\w$]+)\s*=|(?:export\s+)?(?:async\s+)?function\s*\*?\s*[\w$]+|(?:export\s+)?class\s+[\w$]+|from\s+\S+\s+import\b|(?:async\s+)?def\s+\w+|class\s+\w+|[A-Za-z_]\w*\s*(?::\s*\w+)?\s*=\s)/;
+function topLines(file) { try { return redact(git('show', head + ':' + file)).split('\n').filter((l) => TOP_LINE.test(l)).map((l) => l.slice(0, 300)).slice(0, 60); } catch (_) { return []; } }
 let deepText = '';
 if (deep && Object.keys(files).length) {
   try {
-    const diff = redact(git('diff', '--unified=3', '--no-color', base + '...' + head, '--', ...Object.keys(files).filter((f) => !skippedInReview(f) && LANG[(f.match(/\.([\w]+)$/) || [])[1]]))).slice(0, 12000);
+    const deepFiles = Object.keys(files).filter((f) => !skippedInReview(f) && LANG[(f.match(/\.([\w]+)$/) || [])[1]]);
+    const diff = redact(git('diff', '--unified=3', '--no-color', base + '...' + head, '--', ...deepFiles)).slice(0, 12000);
     if (diff.trim()) {
       const headers = { 'content-type': 'application/json' }; if (process.env.VOID_REVIEW_KEY) headers.authorization = 'Bearer ' + process.env.VOID_REVIEW_KEY.trim();
-      const r = await fetch(deep, { method: 'POST', headers, body: JSON.stringify({ mode: 'review', ask: 'review this pull request', code: diff, diff }), signal: AbortSignal.timeout(60000) });
+      // each touched file's import and top-level declaration lines go along (lib/review-api.js DIFF_RULE): a diff shows only the
+      // hunks, and without them the closer read called imports at the top of the file missing (#254)
+      const imports = {}; for (const f of deepFiles) { const ls = topLines(f); if (ls.length) imports[f] = ls; }
+      const r = await fetch(deep, { method: 'POST', headers, body: JSON.stringify({ mode: 'review', ask: 'review this pull request', code: diff, diff, imports }), signal: AbortSignal.timeout(60000) });
       const j = r.ok ? await r.json() : null;
       if (j && j.answer && j.review === 'model') deepText = String(j.answer).trim();
     }
