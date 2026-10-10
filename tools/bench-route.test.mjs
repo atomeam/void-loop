@@ -8,6 +8,7 @@ import fs from 'node:fs';
 import { onRequestPost as bench, CHUNK } from '../void-live-deploy/functions/api/bench.js';
 import { buildAsks } from '../void-live-deploy/lib/bench-asks.js';
 import { PAID_MODEL, FREE_MODEL } from '../void-live-deploy/lib/models.js';
+import { ANSWER_RUN } from '../void-live-deploy/functions/api/answer.js';
 
 const KEY = 'k'.repeat(40);
 const self = JSON.parse(fs.readFileSync(new URL('../void-live-deploy/self.json', import.meta.url), 'utf8'));
@@ -53,4 +54,13 @@ test('a model that fails is an error on that ask, not a failed call; a probe say
   assert.equal(j.results.length, 2); assert.ok(j.results.every((r) => /no such model/.test(r.error)));
   const p = await (await bench({ request: post({ probe: true }), env: env() })).json();
   assert.equal(p.ok, true); assert.equal(p.asks, buildAsks({ self, skills }).length); assert.equal(p.chunk, CHUNK);
+});
+
+test('each ask runs with the answer engine\'s own options (thinking off, its token budget), and a think block is stripped', async () => {
+  const calls = [], e = env(calls);
+  e.AI.run = async (model, input) => { calls.push(input); return { response: '<think>long private reasoning</think>Canberra.' }; };
+  const j = await (await bench({ request: post({ model: FREE_MODEL, from: 1, to: 2 }), env: e })).json();
+  assert.equal(j.results[0].text, 'Canberra.', 'the reasoning is not scored as the answer');
+  for (const [k, v] of Object.entries(ANSWER_RUN)) assert.deepEqual(calls[0][k], v, k + ' as /api/answer sends it');
+  assert.equal(ANSWER_RUN.chat_template_kwargs.enable_thinking, false);
 });
