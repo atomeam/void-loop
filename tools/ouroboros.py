@@ -6,7 +6,7 @@
     python tools/ouroboros.py plan    --root C:\\Users\\you --out D:\\void-harvest       what can be freed, and what cannot yet
     python tools/ouroboros.py report  --out D:\\void-harvest                          one shareable report.html (no network)
     python tools/ouroboros.py run     --root C:\\Users\\you --out D:\\void-harvest       harvest + verify + report + plan in one go
-    python tools/ouroboros.py push    --out D:\\void-harvest --url https://a-to-mind.com   send every digest to Void, then read each back and check its hash (token in VOID_MEMORY_TOKEN)
+    python tools/ouroboros.py push    --out D:\\void-harvest --url https://a-to-mind.com   send every digest to Void, then read each back and check its hash (your Void key vr1.… or the owner token, in VOID_MEMORY_TOKEN, or asked for)
     python tools/ouroboros.py recall  --url https://a-to-mind.com --q react              ask Void what it remembers (add --id <record> to print a stored digest)
     python tools/ouroboros.py reclaim --root C:\\Users\\you --out D:\\void-harvest       dry run; add --apply to delete (asks you to type DELETE)
 
@@ -42,7 +42,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import void_lens  # noqa: E402
 
-VERSION = "0.2.0"
+VERSION = "0.3.0"
 NEVER_READ = re.compile(r"(^|[\\/])(\.env(\..*)?|.*\.(pem|key|p12|pfx|crt|cer|kdbx|keystore|jks)|id_rsa.*|id_ed25519.*|credentials(\..*)?|secrets?(\..*)?|\.npmrc|\.pypirc|\.netrc)$", re.I)
 SECRET_PATTERNS = [
     (re.compile(r"-----BEGIN [A-Z ]*PRIVATE KEY-----.*?-----END [A-Z ]*PRIVATE KEY-----", re.S), "[private key]"),
@@ -557,6 +557,33 @@ def _http(url: str, token: str, body: dict | None = None):
         return r.status, json.loads(r.read().decode())
 
 
+KEY_HELP = "Make a key at https://a-to-mind.com/code-review/#pro (signed in, on paid Void)."
+
+
+def get_token(ask: bool = True) -> str:
+    """Your Void key (vr1.…, from paid Void) or the owner token: the VOID_MEMORY_TOKEN variable if set, else (at a terminal) asked for without
+    echoing, so it never lands in your shell history or on the command line. Empty when there is none."""
+    t = os.environ.get("VOID_MEMORY_TOKEN", "").strip()
+    if t or not ask or not sys.stdin.isatty():
+        return t
+    import getpass
+    return getpass.getpass("Your Void key (starts vr1., from paid Void; owners paste the owner token): ").strip()
+
+
+def refused_text(code: int, body: str = "") -> str:
+    """A plain sentence for what Void answered (the server's own sentence when it sent one)."""
+    if code == 403:
+        return "Void memory is for the owner and paid members. " + (body.strip() or "This key's account is not on paid Void.") + " " + KEY_HELP
+    return {401: "the token was not accepted: use your Void key (vr1.…) or the owner token", 503: "memory needs the database", 413: "batch too large, or your memory is full (500 projects)"}.get(code, f"Void answered {code}")
+
+
+def _body_of(e: urllib.error.HTTPError) -> str:
+    try:
+        return e.read().decode("utf-8", "replace")[:300]
+    except OSError:
+        return ""
+
+
 def sha256_text(t: str) -> str:
     return hashlib.sha256(t.encode("utf-8")).hexdigest()
 
@@ -607,9 +634,9 @@ def cmd_push(a) -> int:
         print(f"no readable memory.jsonl and manifest.json in {out}; run harvest first", file=sys.stderr)
         return 2
     if not a.dry_run:
-        token = os.environ.get("VOID_MEMORY_TOKEN", "")
+        token = get_token()
         if not token:
-            print("set VOID_MEMORY_TOKEN to your owner token first (it is read from the environment, not the command line)", file=sys.stderr)
+            print("set VOID_MEMORY_TOKEN to your Void key (vr1.…, from paid Void) or the owner token first (it is read from the environment, never the command line). " + KEY_HELP, file=sys.stderr)
             return 2
     quiet = io.StringIO()
     with contextlib.redirect_stdout(quiet):
@@ -655,7 +682,7 @@ def cmd_push(a) -> int:
         try:
             status, res = _http(base + "/api/memory", token, {"source": "ouroboros", "records": b})
         except urllib.error.HTTPError as e:
-            print(f"Void answered {e.code}: " + {401: "the token was not accepted", 503: "memory needs the database", 413: "batch too large"}.get(e.code, str(e.reason)), file=sys.stderr)
+            print(f"Void answered {e.code}: " + refused_text(e.code, _body_of(e)), file=sys.stderr)
             return 1
         except (urllib.error.URLError, OSError, ValueError) as e:
             print(f"could not reach Void: {e}", file=sys.stderr)
@@ -695,19 +722,19 @@ def cmd_push(a) -> int:
 
 def cmd_recall(a) -> int:
     """Ask Void what it remembers. With --id, print the stored digest. Read-only."""
-    token = os.environ.get("VOID_MEMORY_TOKEN", "")
+    token = get_token()
     u = urllib.parse.urlparse(a.url)
     if u.scheme != "https" and not (u.scheme == "http" and u.hostname in ("localhost", "127.0.0.1", "::1")):
         print("--url must be https (http is allowed only for localhost)", file=sys.stderr)
         return 2
     if not token:
-        print("set VOID_MEMORY_TOKEN to your owner token first", file=sys.stderr)
+        print("set VOID_MEMORY_TOKEN to your Void key (vr1.…, from paid Void) or the owner token first. " + KEY_HELP, file=sys.stderr)
         return 2
     q = "id=" + urllib.parse.quote(a.id) if a.id else "q=" + urllib.parse.quote(a.q or "")
     try:
         status, res = _http(a.url.rstrip("/") + "/api/memory?" + q, token)
     except urllib.error.HTTPError as e:
-        print(f"Void answered {e.code}", file=sys.stderr)
+        print(f"Void answered {e.code}: " + refused_text(e.code, _body_of(e)), file=sys.stderr)
         return 1
     except (urllib.error.URLError, OSError, ValueError) as e:
         print(f"could not reach Void: {e}", file=sys.stderr)

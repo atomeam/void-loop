@@ -19,6 +19,9 @@ class Pack(unittest.TestCase):
             zipfile.ZipFile(z).extractall(ex)
             d = ex / f"ouroboros-{ouroboros.VERSION}"
             self.assertEqual(sorted(p.name for p in d.iterdir()), ["README.txt", "SHA256SUMS.txt", "ouroboros.pyz"])
+            readme = (d / "README.txt").read_text(encoding="utf-8")
+            for needle in ("YOUR OWN VOID", "vr1.", "https://a-to-mind.com/code-review/#pro", "push --out", "asks for the key", "500 projects"):
+                self.assertIn(needle, readme, "the member section of the README is missing: " + needle)
             run = lambda *a, cwd=t: subprocess.run([sys.executable, "-I", str(d / "ouroboros.pyz"), *a], capture_output=True, text=True, cwd=cwd)
             r = run("--version")
             self.assertEqual(r.returncode, 0, r.stderr)
