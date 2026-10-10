@@ -1,7 +1,7 @@
 # GitHub merges ready PRs by itself, so no session sits and watches CI (tools/automerge.mjs, tools/pr-ready.mjs).
 # Only PRs labelled "automerge" from this repository (never forks). Ready = the void-review check clean on the head (seconds),
 # nothing that already finished failed. CodeRabbit is an extra and never blocks. Nothing else is waited on: the full suite runs on main
-# right after the deploy and reverts a commit that fails it (deploy.yml, verify-main). It looks again whenever anything that could change the answer happens, and once an hour.
+# on every head of main, started by this bot after it merges, and reverts a commit that fails it (verify.yml, verify-main). It looks again whenever anything that could change the answer happens, and once an hour.
 # A PR that conflicts with main gets no pull_request runs at all (GitHub skips them), so a labelled one would sit silently forever
 # (2026-10-10). For such a PR the bot merges main into the branch itself (tools/merge-main.mjs from main's checkout settles the
 # append-only records), pushes the merge commit (never forced) and starts Void's review on the new head; a conflict outside those

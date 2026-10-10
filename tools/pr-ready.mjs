@@ -7,8 +7,8 @@
 // Ship now, test after (Adam, 2026-10-09: nothing waits). Ready means, on the PR's current head: the void-review check
 //   passed (Void's own review, seconds: no bugs or risks in the added lines, .github/workflows/void-review.yml) and no check
 //   that already finished has failed (test-and-deploy, bench). Nothing else is waited on: not the suite, not the benchmark.
-//   The full suite runs on main right after the deploy, and a failure there reverts the merge and redeploys (deploy.yml,
-//   verify-main).
+//   The full suite runs on every head of main (verify.yml, verify-main), and a failure there reverts the merge and
+//   redeploys.
 // Void's review is the main one; every other reviewer is an extra (Adam, 2026-10-09). CodeRabbit is never waited on and
 //   never blocks: what it has found on this head is reported in `extra`, and a finding Void missed is a rule to teach
 //   code-review.js (domains/void.frontier.md #1), not a reason to hold a merge.
