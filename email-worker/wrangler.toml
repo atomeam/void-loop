@@ -1,0 +1,12 @@
+# void-email: Email Routing hands this worker the replies sent to the routed address on a-to-mind.com; it forwards
+# each one to the owner's inbox and posts tagged replies ([sale:<id>] in the subject) to /api/handoff.
+# Deploy: cd email-worker && npx wrangler deploy   (needs a token with Workers Scripts: Edit; the Pages-only deploy token cannot)
+# Secret once: npx wrangler secret put HANDOFF_TOKEN      (the same secret the Pages project holds)
+# Then: Cloudflare dashboard -> a-to-mind.com -> Email -> Email Routing: enable it, verify the forward inbox as a
+# destination address, and add a routing rule sending atom@a-to-mind.com (or a dedicated address) to this worker.
+name = "void-email"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+[vars]
+FORWARD_TO = "atomicmoonbeam88@gmail.com" # the verified destination the mail is forwarded on to, so nothing is lost
