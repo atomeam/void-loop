@@ -1,10 +1,13 @@
 /**
  * services skill — what Void sells, with prices, and a Buy link for what is on sale.
  * "pricing", "what do you sell", "hire you", "fix my automation", "what does void cost".
- * The rows come from lib/products.js (the ones with a price: the hands-on services). A row with a Gumroad slug links
- * to the checkout; one without says it is not on sale yet and gives the email. Prices stay manual: Adam sets them.
+ * The rows come from lib/products.js (the ones with a price: the hands-on services). The card reads the live store
+ * (/api/catalog) for each row it can match by slug, so the shown price and link are Gumroad's own and never drift;
+ * the row's price is the fallback when the catalog is unreachable. A row with no slug and no live match is not on
+ * sale yet and gives the email. Prices stay manual: Adam sets them on Gumroad.
  */
 import { PRODUCTS, forSale, buyUrl } from '../lib/products.js';
+import { priceText } from '../lib/gumroad.js';
 
 export const SERVICES = PRODUCTS.filter((p) => p.price);
 export const CONTACT = 'atom@a-to-mind.com';
@@ -19,23 +22,42 @@ export function servicesOf(text) {
   return null;
 }
 
-// One service as a card row. esc is the page's own escaper (api.esc).
-export function rowHtml(p, esc) {
-  const base = '<b>' + esc(p.name) + '</b> · ' + esc(p.price) + ' — ' + esc(p.adds);
-  if (forSale(p)) return base + ' · <a href="' + esc(buyUrl(p)) + '" target="_blank" rel="noopener">Buy</a>';
+// The live store's row for a service, matched by its Gumroad slug (the catalog may know it by slug or by its /l/ url).
+export function liveRowFor(p, products) {
+  const s = p.gumroad.slug;
+  if (!s || !Array.isArray(products)) return null;
+  return products.find((x) => x && (x.slug === s || String(x.url || '').endsWith('/l/' + s))) || null;
+}
+
+// One service as a card row: the live price and link when the store answered, the row's own as fallback.
+// esc is the page's own escaper (api.esc).
+export function rowHtml(p, esc, live) {
+  const price = live ? priceText(live) : p.price;
+  const url = live && live.available !== false && live.url ? live.url : (!live && forSale(p) ? buyUrl(p) : '');
+  const base = '<b>' + esc(p.name) + '</b> · ' + esc(price) + ' — ' + esc(p.adds);
+  if (url) return base + ' · <a href="' + esc(url) + '" target="_blank" rel="noopener">Buy</a>';
   return base + ' · not on sale yet, email <a href="mailto:' + CONTACT + '">' + CONTACT + '</a>';
 }
 
-function run(text, api) {
+export function cardHtml(esc, catalog) {
+  const lis = SERVICES.map((p) => '<li>' + rowHtml(p, esc, liveRowFor(p, catalog)) + '</li>').join('');
+  return '<h2>What Void sells</h2><ul>' + lis + '</ul>'
+    + '<p class="sub">Also: <a href="https://a-to-mind.com/code-review/" target="_blank" rel="noopener">Void Code Review Pro</a>,'
+    + ' and your own custom Void for $49 a month. A fix starts when you reply to your receipt with what broke.</p>';
+}
+
+async function run(text, api) {
   const { showPage, esc } = api;
   const q = servicesOf(text);
   if (!q) return 'none';
-  const lis = SERVICES.map((p) => '<li>' + rowHtml(p, esc) + '</li>').join('');
-  showPage((p) => {
-    p.innerHTML = '<h2>What Void sells</h2><ul>' + lis + '</ul>' // void-review: ok (every variable in lis went through esc in rowHtml; the rest is this file's own literals)
-      + '<p class="sub">Also: <a href="https://a-to-mind.com/code-review/" target="_blank" rel="noopener">Void Code Review Pro</a>,'
-      + ' and your own custom Void for $49 a month. A fix starts when you reply to your receipt with what broke.</p>';
-  });
+  // the fallback card first, so the page never waits on the store; the live prices land over it when the catalog answers
+  const el = showPage((p) => { p.innerHTML = cardHtml(esc, null); }); // void-review: ok (every variable went through esc in rowHtml; the rest is this file's own literals)
+  try {
+    const r = await fetch('/api/catalog');
+    const j = r.ok ? await r.json() : null;
+    const catalog = j && Array.isArray(j.products) ? j.products : null;
+    if (catalog && api._pageStill(el)) el.innerHTML = cardHtml(esc, catalog); // void-review: ok (same builder, same esc)
+  } catch (_) { /* offline or no catalog: the fallback card stands */ }
   return 'services';
 }
 

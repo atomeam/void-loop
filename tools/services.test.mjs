@@ -2,7 +2,7 @@
 // Run: node --test tools/services.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import skill, { SERVICES, servicesOf, rowHtml, CONTACT } from '../void-live-deploy/skills/services.js';
+import skill, { SERVICES, servicesOf, rowHtml, liveRowFor, cardHtml, CONTACT } from '../void-live-deploy/skills/services.js';
 import { forSale, buyUrl, productById } from '../void-live-deploy/lib/products.js';
 
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -40,4 +40,26 @@ test('a row shows name, price and one plain line; Buy only when on sale, the ema
     assert.ok(!row.includes('>Buy<'), id + ' has no Buy link');
     assert.ok(!row.includes('/l/"') && !row.includes("/l/'"), id + ' never links an empty slug');
   }
+});
+
+test('the card reads the live store: a matched row shows the catalog price and link, an unavailable one the email', () => {
+  const audit = productById('full-stack-audit');
+  const catalog = [
+    { slug: 'full-stack-audit', price_cents: 32500, currency: 'usd', recurrence: null, url: 'https://moonbeam846.gumroad.com/l/full-stack-audit', available: true },
+    { slug: 'keep-it-running-membership', price_cents: 4900, currency: 'usd', recurrence: 'monthly', url: 'https://moonbeam846.gumroad.com/l/keep-it-running-membership', available: true },
+  ];
+  // the audit row has no slug yet (Adam pastes it), so nothing matches until then; a row whose slug is in the catalog overlays
+  assert.equal(liveRowFor(audit, catalog), null, 'an empty slug never matches the catalog');
+  const withSlug = { ...audit, gumroad: { ...audit.gumroad, slug: 'full-stack-audit' } };
+  const live = liveRowFor(withSlug, catalog);
+  assert.ok(live && live.price_cents === 32500);
+  const row = rowHtml(withSlug, esc, live);
+  assert.match(row, /\$325/); assert.ok(!row.includes('$300'), 'the live price replaces the fallback');
+  assert.match(row, /href="https:\/\/moonbeam846\.gumroad\.com\/l\/full-stack-audit"/);
+  const off = rowHtml(withSlug, esc, { ...live, available: false });
+  assert.match(off, /not on sale yet/); assert.ok(off.includes('mailto:' + CONTACT));
+  // url matching: a catalog row known only by its /l/ url still matches
+  assert.ok(liveRowFor(withSlug, [{ url: 'https://moonbeam846.gumroad.com/l/full-stack-audit', price_cents: 1 }]));
+  // the whole card falls back cleanly with no catalog at all
+  assert.match(cardHtml(esc, null), /What Void sells/);
 });
