@@ -5544,5 +5544,9 @@
   {"ask": "write a proposal for this request", "want": "skill:proposal"},
   {"ask": "draft a proposal", "want": "skill:proposal"},
   {"ask": "can you turn this email into a proposal?", "want": "skill:proposal"},
-  {"ask": "turn this into a proposal: we need our Shopify orders copied into a sheet without duplicates", "want": "skill:proposal"}
+  {"ask": "turn this into a proposal: we need our Shopify orders copied into a sheet without duplicates", "want": "skill:proposal"},
+  {"ask": "play tic tac toe with void", "want": "skill:tictactoe"},
+  {"ask": "tic tac toe against void", "want": "skill:tictactoe"},
+  {"ask": "play noughts and crosses", "want": "skill:tictactoe"},
+  {"ask": "i want to play tic tac toe against the computer", "want": "skill:tictactoe"}
 ]
