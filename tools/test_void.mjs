@@ -1189,6 +1189,22 @@ try {
       && /url\.pathname === '\/'/.test(sw) && !P.errors.length,
       JSON.stringify({ shown, meta, idInUrl, nf, card, heads, errors: P.errors }));
     await P.ctx.close(); }
+  // Every service has its page (/one-time-fix/ and friends, the way Code Review Pro has /code-review/): it loads,
+  // shows the live price from /api/catalog (the fix is stubbed at $26 to prove the live read, not the fallback), and
+  // links its Gumroad product.
+  { const SVC = [['one-time-fix', 'eozcma', 2600, null, '$26'], ['keep-it-running', 'keep-it-running-membership', 4900, 'monthly', '$49 a month'], ['full-stack-audit', 'full-stack-audit', 32500, null, '$325'], ['first-automation-setup', 'first-automation-setup', 10000, null, '$100']];
+    const cat = { products: SVC.map(([, slug, cents, rec]) => ({ slug, price_cents: cents, recurrence: rec, url: 'https://moonbeam846.gumroad.com/l/' + slug, available: true })) };
+    const V = await fresh(); const got = [];
+    await V.ctx.route(/\/api\/catalog(?:\?|$)/, (rt) => rt.fulfill(json(cat)));
+    for (const [id, slug, , , want] of SVC) {
+      await V.p.goto(base + id + '/');
+      const price = await until(async () => { const t = await V.p.$eval('#price', (e) => e.textContent).catch(() => ''); return t === want ? t : ''; }, 4000) || await V.p.$eval('#price', (e) => e.textContent).catch(() => '');
+      const buy = await V.p.$eval('#buy', (e) => ({ href: e.href, hidden: e.hidden, rel: e.rel })).catch(() => null);
+      const h1 = await V.p.$eval('h1', (e) => e.textContent).catch(() => '');
+      got.push({ id, price, ok: price === want && !!buy && buy.href === 'https://moonbeam846.gumroad.com/l/' + slug && !buy.hidden && /noopener/.test(buy.rel) && h1.length > 10 });
+    }
+    check('every service has its page: it loads, shows the live price from /api/catalog, and links its Gumroad product', got.every((g) => g.ok) && !V.errors.length, JSON.stringify(got) + ' ' + V.errors.join(' | '));
+    await V.ctx.close(); }
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
