@@ -1057,6 +1057,23 @@ try {
     await back.reload(); await back.waitForTimeout(800);
     check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway && !(document.getElementById('away-note') || {}).textContent), '');
     await W.ctx.close(); }
+  { // frontier #11: two tabs on one invite link (?with=<room>). Here the live relay is not there (no Durable Object in this
+    // local server), so the tabs share through a BroadcastChannel: a clock summoned in one appears in the other, and the
+    // other tab's cursor shows as a faint presence; closing that tab takes the presence away.
+    const room = 'aaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbb', S = await fresh({ base: base + '/?with=' + room });
+    const B = await S.ctx.newPage(); const errsS = []; B.on('pageerror', (e) => errsS.push(String(e && e.message || e)));
+    await B.goto(base + '/?with=' + room); await B.waitForTimeout(900);
+    const saidA = await S.whisper();
+    await S.ask('clock', 900);
+    const onB = await B.$$eval('.thing', (n) => n.length); // on B's own stage (both tabs share one localStorage, so the saved state proves nothing)
+    await B.mouse.move(300, 200); await B.mouse.move(320, 220); await S.p.waitForTimeout(300);
+    const dot = await S.p.$eval('.void-presence', (e) => ({ x: parseFloat(e.style.left), y: parseFloat(e.style.top) })).catch(() => null);
+    await B.close(); await S.p.waitForTimeout(300);
+    const after = await S.p.$$eval('.void-presence', (n) => n.length);
+    check('shared Void: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence',
+      /tabs in this browser/.test(saidA) && onB === 1 && dot && Math.abs(dot.x - 320) < 40 && Math.abs(dot.y - 220) < 40 && after === 0 && !errsS.length && !S.errors.length,
+      JSON.stringify({ saidA, onB, dot, after, errsS, errs: S.errors }));
+    await S.ctx.close(); }
   { const G = await fresh(); let n = 0;
     await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
     await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
