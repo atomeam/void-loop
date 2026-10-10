@@ -60,7 +60,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** the time from "someone asked and Void could not" to "Void answers it" is measured and keeps falling; the growth ledger shows the asks it learned.
 - **First piece:** `tools/next-skill.mjs`: the top missed intent of the last 7 days as a ready probe batch and the files a skill for it touches.
 - **Done when:** three skills shipped from it, each with the misses it now answers in its ledger entry.
-- **claim:**
+- **claim:** claude 2026-10-10, asked by Void (its daily ask of 2026-10-09: "parse unanswered user questions into a structured 'Learning Queue' to automate skill acquisition"): the first piece, `tools/next-skill.mjs`.
 
 ## 3. Growth you can watch: the growth card gets its figure
 - **What:** "growth" has its card (the ledger); under the two-part summons rule it is finished only when its figure arrives. The figure: a realistic tree in the void that grows one branch per ledger entry, coloured by kind, newest at the tips; touch a branch to read the entry. Void also reads its own ledger to answer "what can you do now that you couldn't last week?" and in its daily reflection.
