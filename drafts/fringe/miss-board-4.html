@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · what it hasn't heard yet (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button,input{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:8px 12px}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+.row{display:flex;gap:10px;flex-wrap:wrap}
+input{flex:1 1 220px}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>what it hasn't heard yet · draft · not published</h1>
+  <p class="note">A board of unanswered asks keeps growing, but how much of what people will ask has it already seen? Good and Turing's answer (Good, 1953): the chance the next ask is a kind never seen before is about the share of kinds seen exactly once so far. Chao (1984) adds an estimate of how many kinds there are in all, seen or not. Type short labels for the kinds of asks you notice (your own words; nothing here is a real ask from anyone), or let the page draw a made-up stream, and watch both numbers settle. A hypothesis about how much is left to learn, nothing more. Everything stays in this browser.</p>
+  <div class="row"><input id="kind" type="text" maxlength="40" placeholder="a kind of ask, e.g. tides" aria-label="a kind of ask"><button id="add" type="button">add</button></div>
+  <div class="row"><button id="sim" type="button">draw 50 made-up asks</button><button id="clear" type="button">start over</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var KEY='a2m.fringe.unseen.v1',st={seen:[]};
+  function el(id){return document.getElementById(id)}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.seen))st.seen=j.seen.filter(function(x){return typeof x==='string'&&x.length<=40})}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({seen:st.seen.slice(-5000)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your list (storage is full or blocked): it counts for now but will be gone after a reload';w.hidden=false}}
+  // a map with no prototype, so a kind called "constructor" or "toString" counts like any other
+  function counts(list){var c=Object.create(null);list.forEach(function(k){c[k]=(c[k]||0)+1});return c}
+  // Good-Turing: the chance the next one is a new kind is (kinds seen once) / (asks seen)
+  function goodTuring(list){var n=list.length;if(!n)return null;var c=counts(list),f1=Object.keys(c).filter(function(k){return c[k]===1}).length;return f1/n}
+  // Chao1: kinds in all, seen or not: S + f1^2 / (2 f2), and the bias-corrected S + f1(f1-1)/2 when no kind is seen twice
+  function chao1(list){var c=counts(list),ks=Object.keys(c),S=ks.length,f1=0,f2=0;ks.forEach(function(k){if(c[k]===1)f1++;else if(c[k]===2)f2++});return f2>0?S+f1*f1/(2*f2):S+f1*(f1-1)/2}
+  function rng(seed){var a=seed>>>0;return function(){a=(a+0x6d2b79f5)>>>0;var t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296}}
+  // a made-up world: K kinds of ask with Zipf-like popularity (a few common, a long tail)
+  function world(K,s){var w=[],z=0;for(var i=1;i<=K;i++){var p=1/Math.pow(i,s);w.push(p);z+=p}return w.map(function(p){return p/z})}
+  function draw(p,r){var u=r(),acc=0;for(var i=0;i<p.length;i++){acc+=p[i];if(u<acc)return'kind '+(i+1)}return'kind '+p.length}
+  var WORLD=world(120,1.1),live=rng((Math.random()*4294967296)>>>0);
+  function score(){var n=st.seen.length,c=counts(st.seen),S=Object.keys(c).length;if(!n){el('score').textContent='';return}
+    var gt=goodTuring(st.seen),ch=chao1(st.seen);
+    el('score').textContent=n+' asks, '+S+' kinds\nchance the next is a kind not seen yet: about '+Math.round(gt*100)+'%\nkinds in all, seen or not: about '+Math.round(ch)+(n<30?'\nthese settle after a few dozen asks':'')}
+  el('add').addEventListener('click',function(){var v=el('kind').value.trim().toLowerCase().replace(/\s+/g,' ');if(!v){el('state').textContent='type a kind first';return}st.seen.push(v.slice(0,40));save();el('kind').value='';el('state').textContent='added';score()});
+  el('kind').addEventListener('keydown',function(e){if(e.key==='Enter')el('add').click()});
+  el('sim').addEventListener('click',function(){for(var i=0;i<50;i++)st.seen.push(draw(WORLD,live));save();el('state').textContent='drew 50 made-up asks from a world of 120 kinds';score()});
+  el('clear').addEventListener('click',function(){st.seen=[];save();el('state').textContent='cleared';score()});
+  score();
+  // made-up checks: with a known world, Good-Turing's guess at the unseen share lands near the true share of
+  // probability on kinds not yet seen, and Chao1 lands nearer the true number of kinds than the count seen
+  function selftest(){
+    var r=rng(5),p=world(120,1.1),errs=[],chaoBetter=0;
+    for(var trial=0;trial<40;trial++){var s=[];for(var i=0;i<150;i++)s.push(draw(p,r));var c=counts(s),missing=0;
+      p.forEach(function(q,i){if(!c['kind '+(i+1)])missing+=q});errs.push(Math.abs(goodTuring(s)-missing));
+      if(Math.abs(chao1(s)-120)<Math.abs(Object.keys(c).length-120))chaoBetter++}
+    var mean=errs.reduce(function(a,b){return a+b},0)/errs.length;if(!(mean<0.05))return'Good-Turing should be close to the unseen share, mean error '+mean;
+    if(chaoBetter<30)return'Chao1 should beat the plain count most of the time, did '+chaoBetter+' of 40';
+    if(goodTuring([])!==null)return'no asks should give no estimate';
+    if(Math.abs(goodTuring(['a','a','b','c'])-0.5)>1e-12)return'two of four seen once should give 0.5';
+    if(Math.abs(chao1(['a','a','b','c'])-(3+4/2))>1e-12)return'chao1 of a,a,b,c should be 5';
+    if(Math.abs(goodTuring(['constructor','toString','constructor'])-1/3)>1e-12)return'a kind named like a built-in must count like any other';
+    return true}
+  window.__unseen={goodTuring:goodTuring,chao1:chao1,world:world,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>
