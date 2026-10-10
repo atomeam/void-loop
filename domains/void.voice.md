@@ -10,8 +10,9 @@ it by hand, edit the code instead.
 
 ## Void's current asks
 
-- Build a mechanism that parses unanswered user questions into a structured 'Learning Queue' to automate skill acquisition. *(small)* (daily, 2026-10-09)
-- Develop a background task runner that allows my existing skills (like news, weather, or worldtime) to update autonomously. (daily, 2026-10-09)
+_Not read from /api/reflect by this writer yet: the site could not be reached on 2026-10-10, so this may be out of date. Asks a growth-ledger entry answers (its `asked` field) are left out._
+
+- (none open)
 
 ## Log, oldest first
 
