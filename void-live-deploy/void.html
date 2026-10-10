@@ -1227,7 +1227,7 @@ Object.values(things).forEach((th) => {
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
-      ask: (t) => handle(String(t || '')), // a card that opens something (the game rack's boxes) asks for it as if typed
+      ask: (t, attach) => { confirmAttach = attach && typeof attach === 'object' ? attach : null; return handle(String(t || '')); }, // a card that opens something asks as if typed; `attach` rides a gated ask into its fingerprint (the proposal's exact draft)
       log: (a) => loopLog(a) }; // a stage thing's own event (a shaken 8 ball) goes in the same history as asks
 
     // Click any stage object or person and it lifts in the hand. A flick throws it off the
@@ -5146,6 +5146,7 @@ return { ok: true, detail: 'timer-reset' };
     const YES_RE = /^(yes|y|yeah|yep|yup|sure|do it|send it|book it|buy it|pay it|go ahead|confirm)\s*[.!]?$/;
     const NO_RE = /^(no|n|nope|cancel|stop|don'?t|no thanks|never ?mind)\s*[.!]?$/;
     let pendingConfirm = null, lastConfirm = null;
+    let confirmAttach = null; // set by stageApi.ask for one ask: exact content (the proposal draft) the yes must cover
     async function approvalCall(body) {
       const r = await fetch('/api/approval', { method: 'POST', headers: { authorization: 'Bearer ' + ownerToken(), 'content-type': 'application/json' }, body: JSON.stringify(body) });
       let j = null; try { j = await r.json(); } catch (_) {}
@@ -5153,8 +5154,10 @@ return { ok: true, detail: 'timer-reset' };
     }
     async function handleGatedAsk(text) {
       const core = await Promise.race([approvalReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      const attach = confirmAttach; confirmAttach = null; // one ask only, used or not
       const ask = core && core.parseGatedAsk(text);
       if (!ask) return false;
+      if (ask.toolName === 'proposal.send' && attach && typeof attach.body === 'string') ask.args.body = String(attach.body).slice(0, 8000);
       const nothing = core.NOTHING[core.GATED[ask.toolName].kind];
       if (!ownerToken()) { say('That one is for the person at the screen, asked by hand.'); return true; }
       const fp = await core.fingerprint(ask.toolName, ask.args);

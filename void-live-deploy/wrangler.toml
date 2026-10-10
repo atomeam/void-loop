@@ -9,6 +9,14 @@ pages_build_output_dir = "."
 # Paid Void + the store (plan item 12): npx wrangler pages secret put GUMROAD_PING_KEY --project-name=a-to-mind      (any long random string; also in the Ping URL)
 #                                       optional: GUMROAD_ACCESS_TOKEN (Gumroad app token, view_sales) = read each sale back from the API;
 #                                       without it a keyed ping with Atom's seller_id (lib/gumroad.js SELLER_IDS) is trusted. Optional GUMROAD_SELLER_ID overrides it.
+# The proposal's send (lib/email-send.js, behind the confirm line). To turn it on:
+#   1. Onboard a-to-mind.com to Email Service (dashboard -> Email) and verify the sender (atom@a-to-mind.com, or set SEND_FROM).
+#   2. Uncomment the binding below (Email Service send binding, named EMAIL).
+#   3. First yes runs as a dry run; set the Pages variable EMAIL_LIVE=send once the dry run reads right. EMAIL_DAILY_CAP caps sends (default 10).
+# [[send_email]]
+# binding = "EMAIL"
+# allowed_sender_addresses = ["atom@a-to-mind.com"]
+
 [[kv_namespaces]]
 binding = "MISSES"
 id = "95b089f5717a4793b2b52a852f2a8443"
