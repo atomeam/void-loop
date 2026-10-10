@@ -881,7 +881,7 @@
   },
   {
     "ask": "connect 4",
-    "want": "skill:make"
+    "want": "skill:connect4"
   },
   {
     "ask": "make a blue 3d sphere",
@@ -2711,11 +2711,11 @@
   },
   {
     "ask": "play a game",
-    "want": "said|skill:make|skill:tictactoe|skill:othello|self"
+    "want": "said|skill:make|skill:tictactoe|skill:othello|skill:rack|self"
   },
   {
     "ask": "what games can i play",
-    "want": "said|self|skill:make"
+    "want": "said|self|skill:make|skill:rack"
   },
   {
     "ask": "how many legs does a spider have",
