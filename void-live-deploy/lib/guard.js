@@ -25,6 +25,7 @@ export const LIMITS = {
   publish: { rpm: 20, body: 40000 }, // a paid Void's public page (/@name)
   gumroad: { rpm: 120, body: 50000 },
   handoff: { rpm: 30, body: 262144 }, // agent drop-links; 256 KB matches functions/api/handoff.js
+  rehearsal: { rpm: 10, body: 500 }, // owner-only: seed and clean the rehearsal's stand-in reply (functions/api/rehearsal.js)
   figurescript: { rpm: 60, body: 4000 }, // Next #19: behavior script for a summoned figure (AI once, then D1 cache)
   memory: { rpm: 30, body: 262144 }, // owner-only: what Void remembers (tools/ouroboros.py push); 256 KB matches MAX_BODY in lib/memory-core.js
   review: { rpm: 60, body: 70000 }, // Void's code review API (lib/review-api.js): the instant checks free, the closer read with a Pro key
