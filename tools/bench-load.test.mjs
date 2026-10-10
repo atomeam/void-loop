@@ -40,19 +40,21 @@ test('inconclusive needs misses AND a p95 over the limit; no baseline is conclus
   assert.equal(verdict({ misses: 0, latency: slow, baseline }).inconclusive, false, 'slow but nothing missed: the score is right');
   assert.equal(verdict({ misses: 4, latency: quiet, baseline }).inconclusive, false, 'misses on a quiet machine are real');
   assert.equal(verdict({ misses: 4, latency: slow, baseline: undefined }).inconclusive, false, 'no baseline yet');
-  assert.equal(verdict({ misses: 4, latency: slow, baseline: { p95: 200, par: 3 }, par: 6 }).inconclusive, false, 'a baseline from another parallelism cannot judge this run');
-  assert.equal(verdict({ misses: 4, latency: slow, baseline: { p95: 200, par: 3 }, par: 3 }).inconclusive, true);
+  assert.equal(verdict({ misses: 4, latency: slow, baseline: { p95: 200, pages: 3, cores: 4 }, pages: 6, cores: 8 }).inconclusive, false, 'a baseline from another parallelism cannot judge this run');
+  assert.equal(verdict({ misses: 4, latency: slow, baseline: { p95: 200, pages: 3, cores: 4 }, pages: 3, cores: 4 }).inconclusive, true);
+  assert.equal(verdict({ misses: 4, latency: slow, baseline: { p95: 200, pages: 3, cores: 4 }, pages: 3, cores: 8 }).inconclusive, true, 'other cores, same pages: compared');
+  assert.equal(verdict({ misses: 4, latency: slow, baseline: { p95: 200 }, pages: 3 }).inconclusive, false, 'a baseline that does not say its pages cannot judge');
 });
 
 test('the baseline tightens from a conclusive run at the floor, and never loosens or moves on anything else', () => {
-  const floor = { score: 1985, total: 2001, latency: { ci: { p50: 300, p95: 900, n: 2000, par: 3 } } };
-  const good = { score: 1990, total: 2001, env: 'local', par: 3, latency: { p50: 120, p95: 260, n: 1990 } };
-  assert.deepEqual(nextLatency(good, floor), { ci: { p50: 300, p95: 900, n: 2000, par: 3 }, local: { p50: 120, p95: 260, n: 1990, par: 3 } }, 'a first baseline for an environment is recorded beside the others');
+  const floor = { score: 1985, total: 2001, latency: { ci: { p50: 300, p95: 900, n: 2000, pages: 3, cores: 4 } } };
+  const good = { score: 1990, total: 2001, env: 'local', pages: 3, cores: 4, latency: { p50: 120, p95: 260, n: 1990 } };
+  assert.deepEqual(nextLatency(good, floor), { ci: { p50: 300, p95: 900, n: 2000, pages: 3, cores: 4 }, local: { p50: 120, p95: 260, n: 1990, pages: 3, cores: 4 } }, 'a first baseline for an environment is recorded beside the others');
   const tighter = { ...good, env: 'ci', latency: { p50: 200, p95: 700, n: 1990 } };
   assert.equal(nextLatency(tighter, floor).ci.p95, 700);
   assert.equal(nextLatency({ ...tighter, latency: { p50: 400, p95: 1200, n: 1990 } }, floor), null, 'a slower run never loosens it');
   assert.equal(nextLatency({ ...tighter, inconclusive: true }, floor), null, 'an inconclusive run never moves it');
-  assert.equal(nextLatency({ ...tighter, par: 6 }, floor), null, 'a run at another parallelism never swaps the baseline');
+  assert.equal(nextLatency({ ...tighter, pages: 6, cores: 8 }, floor), null, 'a run at another parallelism never swaps the baseline');
   assert.equal(nextLatency({ ...tighter, score: 1984 }, floor), null, 'a run below the floor never moves it');
   assert.equal(nextLatency({ ...tighter, latency: { p50: 1, p95: null, n: 0 } }, floor), null);
 });
@@ -60,7 +62,7 @@ test('the baseline tightens from a conclusive run at the floor, and never loosen
 // the floor tool: a conclusive fixture, an inconclusive fixture, and the floor refusing the inconclusive score
 const floorFile = () => write('best.json', { score: 1773, total: 1773, date: '2026-10-07', note: 'the floor' });
 const run = (result, floor, ...flags) => spawnSync(process.execPath, [join(here, 'bench-floor.mjs'), write('r.json', result), '--floor', floor, ...flags], { encoding: 'utf8' });
-const conclusive = { score: 1990, total: 2001, wrong: ['a -> x'], env: 'local', par: 3, latency: { p50: 110, p95: 240, n: 1990 } };
+const conclusive = { score: 1990, total: 2001, wrong: ['a -> x'], env: 'local', pages: 3, cores: 4, latency: { p50: 110, p95: 240, n: 1990 } };
 
 test('a conclusive run raises the floor and records the latency baseline for its environment', () => {
   const f = floorFile(), r = run(conclusive, f, '--write');
@@ -68,7 +70,7 @@ test('a conclusive run raises the floor and records the latency baseline for its
   assert.match(r.stdout, /latency baseline \(local\) is recorded at p95 240ms/);
   const after = JSON.parse(readFileSync(f, 'utf8'));
   assert.equal(after.score, 1985);
-  assert.deepEqual(after.latency, { local: { p50: 110, p95: 240, n: 1990, par: 3 } });
+  assert.deepEqual(after.latency, { local: { p50: 110, p95: 240, n: 1990, pages: 3, cores: 4 } });
   assert.equal(after.note, 'the floor', 'the note stays');
 });
 

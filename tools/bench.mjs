@@ -2,7 +2,7 @@
 // note from the page's own log a2m.void.loop.v1, alternatives with |). The score is how many are answered by what should answer
 // them (when an ask has "before", those setup asks run first on the same page; and, when an ask has "says", whose visible answer matches that pattern); growth is that score going up. External services are stubbed with plausible data: this measures Void, not their uptime.
 //   node tools/bench.mjs            prints each ask and what answered it, then the totals
-//   node tools/bench.mjs --score    prints only {"score","total","wrong":[...],"env","par","latency":{p50,p95,n}} (plus "inconclusive","note" when the machine was under load: tools/bench-load.mjs) (the tests read this; tools/bench.best.json is the floor)
+//   node tools/bench.mjs --score    prints only {"score","total","wrong":[...],"env","cores","pages","latency":{p50,p95,n}} (plus "inconclusive","note" when the machine was under load: tools/bench-load.mjs) (the tests read this; tools/bench.best.json is the floor)
 //   node tools/bench.mjs --last 10  replays only the last 10 asks (fast while growing a new round; the score and floor use all)
 //   node tools/bench.mjs --probe c.json  tries candidate asks from a file, prints only the misses (bench.json untouched; asks it already has are skipped)
 //   node tools/bench.mjs --again         probes only the asks the last --probe missed
@@ -133,9 +133,9 @@ await browser.close(); server.close();
 // was the machine quiet? (tools/bench-load.mjs): misses plus slow answers mean the run says nothing about Void
 let best = {}; try { best = JSON.parse(fs.readFileSync(BEST, 'utf8')); } catch (_) {}
 const env = envName(), latency = latencyOf(out.map((x) => x.ms));
-const load = verdict({ misses: out.some((x) => !x.right), latency, baseline: best.latency && best.latency[env], par: PAR });
+const load = verdict({ misses: out.some((x) => !x.right), latency, baseline: best.latency && best.latency[env], pages: PAR });
 if (process.argv.includes('--score')) {
-  const result = { score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by), env, par: PAR, latency };
+  const result = { score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by), env, cores: os.cpus().length, pages: PAR, latency };
   if (load.inconclusive) { result.inconclusive = true; result.note = load.line; console.error(load.line); }
   const floor = Number.isFinite(best.score) ? best.score : Infinity;
   if (cacheable && !load.inconclusive && result.score >= floor) try { fs.writeFileSync(CACHE, JSON.stringify({ key, at: new Date().toISOString(), result })); } catch (_) {}
