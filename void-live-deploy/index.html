@@ -749,7 +749,7 @@
     }
     // a learning card (the quiz: an `ephemeral` stage kind) is never saved or synced unless the visitor kept that one card
     // (domains/void.learning.md; the same rule as persistable() in skills/quiz-rules.js, tested in tools/learning.test.mjs)
-    function keptThings() { const out = {}; for (const id in things) { const t = things[id]; if (!(t && stageKinds[t.kind] && stageKinds[t.kind].ephemeral) || t.keep) out[id] = t; } return out; }
+    function keptThings() { const out = {}; for (const [id, t] of Object.entries(things)) if (!(t && stageKinds[t.kind] && stageKinds[t.kind].ephemeral) || t.keep) out[id] = t; return out; }
     function save() {
       if (PAGE) return;
       localStorage.setItem(STATE_KEY, JSON.stringify(keptThings()));
