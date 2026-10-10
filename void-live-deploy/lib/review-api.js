@@ -106,9 +106,23 @@ export function phantomNames(paragraph, known, code = '') {
 }
 /** the closer read with its phantom findings taken out: a paragraph (a bullet with its fix) that claims a known name is missing, or
  * blames the mask, goes; a heading left with nothing under it goes with it */
-export function dropPhantoms(answer, known, code = '') {
+// Code longer than MODEL_CODE_MAX is shortened for the model at a line boundary and ends with CLIP_NOTE, so the model never
+// sees a line cut in half (on #262 a hard cut at 12,000 characters landed inside a draft's flash() and the closer read
+// reported the function "cut off in the middle of a line"). CLIP_RULE tells the model; when it says so anyway, the
+// paragraph goes (CUT_RE), but only when the code really was shortened.
+export const CLIP_RULE = 'If the code ends with a line saying more lines are not shown, the rest was left out to fit: every line above it is complete. Never report code as truncated, cut off or incomplete because of where it ends.';
+export const clipNote = (n) => '[' + n + ' more line' + (n === 1 ? '' : 's') + ' of this change not shown here: shortened to fit, not cut off]';
+export function clipForModel(code, max = MODEL_CODE_MAX) {
+  const s = String(code || '');
+  if (s.length <= max) return { text: s, clipped: false };
+  const at = s.lastIndexOf('\n', max), head = s.slice(0, at > 0 ? at : max);
+  return { text: head + '\n' + clipNote(s.slice(head.length).split('\n').filter((l) => l.trim()).length), clipped: true };
+}
+const CUT_RE = /\b(?:truncated|cut[\s-]off|cut\s+short|incomplete\s+(?:line|function|statement|code)|ends\s+abruptly|mid-?line|in\s+the\s+middle\s+of\s+a\s+line|unterminated)\b/i;
+
+export function dropPhantoms(answer, known, code = '', clipped = false) {
   const paras = String(answer || '').split(/\n[ \t]*\n/), kept = [];
-  for (const p of paras) if (!phantomNames(p, known, code).length) kept.push(p);
+  for (const p of paras) if (!phantomNames(p, known, code).length && !(clipped && CUT_RE.test(p))) kept.push(p);
   const out = [];
   for (let i = 0; i < kept.length; i++) {
     const isHead = /^\s*(?:#{1,6}\s|\*\*[^*\n]{2,60}\*\*\s*:?\s*$)/.test(kept[i]) && kept[i].trim().split('\n').length === 1;
@@ -122,15 +136,15 @@ export function dropPhantoms(answer, known, code = '') {
 // The closer read by the model, told what the checks found. Keys are masked before the model sees anything. For a diff, the
 // touched files' imports come along (DIFF_RULE) and phantom findings are taken out of the answer (dropPhantoms).
 export async function closerRead(env, { ask, code, lang, diff, res, imports }) {
-  const im = importsText(imports);
+  const im = importsText(imports), shown = clipForModel(redact(String(code || '')));
   const r = await env.AI.run(MODEL, {
     messages: [
       { role: 'system', content: REVIEW_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE },
-      { role: 'user', content: 'What they asked: ' + redact(String(ask || 'review this code')).slice(0, 300) + '\nLanguage (guessed): ' + lang + (diff ? '\n' + DIFF_RULE : '') + '\n\nQuick checks found:\n' + findingsText(res) + (im ? '\n\n' + redact(im) : '') + '\n\nThe code (keys masked):\n```\n' + redact(String(code || '')).slice(0, MODEL_CODE_MAX) + '\n```' },
+      { role: 'user', content: 'What they asked: ' + redact(String(ask || 'review this code')).slice(0, 300) + '\nLanguage (guessed): ' + lang + (diff ? '\n' + DIFF_RULE : '') + (shown.clipped ? '\n' + CLIP_RULE : '') + '\n\nQuick checks found:\n' + findingsText(res) + (im ? '\n\n' + redact(im) : '') + '\n\nThe code (keys masked):\n```\n' + shown.text + '\n```' },
     ],
     max_tokens: 1400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
   });
   const out = r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response));
   const known = declaredNames(String(code || '') + '\n' + im);
-  return dropPhantoms(redact(String(out || '').trim()), known, String(code || '') + '\n' + im);
+  return dropPhantoms(redact(String(out || '').trim()), known, String(code || '') + '\n' + im, shown.clipped);
 }
