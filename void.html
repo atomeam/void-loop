@@ -803,7 +803,7 @@ Object.values(things).forEach((th) => {
     // spot from where it was asked to land; a card that grows (a draft filling the tab card, a 3D miniature loading) moves the
     // cards it now covers; a card the person dragged stays where they put it; a saved layout is never reshuffled on load.
     let placement = null; import('/lib/placement.js').then((m) => { placement = m; layoutStage(); }).catch(() => {});
-    let laidOut = null; const cardSize = new Map(), grownIds = new Set();
+    let laidOut = null; const cardSize = new Map(), grownIds = new Set(), centred = new Set();
     const sizeWatch = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
       for (const e of entries) {
         const id = e.target.dataset && e.target.dataset.id; if (!id || !things[id]) continue;
@@ -819,8 +819,9 @@ Object.values(things).forEach((th) => {
       if (sizeWatch) { sizeWatch.disconnect(); els.forEach((el) => sizeWatch.observe(el)); }
       const first = !laidOut; if (first) laidOut = new Set();
       const cards = els.map((el) => { const th = things[el.dataset.id];
-        return { id: th.id, x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight, pinned: !!th.pinned, fresh: !first && !laidOut.has(th.id), grew: grownIds.has(th.id) }; });
-      cards.forEach((c) => laidOut.add(c.id)); grownIds.clear();
+        const mid = centred.has(th.id); // asked for the middle: it holds its spot like a card that grew, and its neighbours move
+        return { id: th.id, x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight, pinned: !!th.pinned, fresh: !first && !mid && !laidOut.has(th.id), grew: mid || grownIds.has(th.id) }; });
+      cards.forEach((c) => laidOut.add(c.id)); grownIds.clear(); centred.clear();
       const moves = placement.arrange(cards, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) });
       let moved = false;
       for (const [id, p] of Object.entries(moves)) {
@@ -938,6 +939,7 @@ Object.values(things).forEach((th) => {
     }
     // a board or card that asks for the middle: centred left to right, and in the room above the ask bar (phone or desktop)
     function centreThing(id) {
+      centred.add(id); // a board that asks for the middle keeps it; the cards it covers move (layoutStage)
       const th = things[id], el = th && stage.querySelector('[data-id="' + CSS.escape(id) + '"]');
       if (!el) { if (th) render(); return; }
       const room = dockSpace() - stage.getBoundingClientRect().top - 12;
