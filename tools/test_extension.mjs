@@ -116,9 +116,9 @@ await V.fill('#input', 'days until new year');
 await V.press('#input', 'Enter');
 await V.waitForSelector('.vput', { state: 'visible', timeout: 10000 }).catch(() => {});
 await page.evaluate(() => { const t = document.getElementById('reply'); t.value = ''; t.focus(); });
-// pressed directly, as the draft check does: the tab card above has grown (draft buttons, the B3 step box) and can lie over
-// the countdown card, so a pointer click may land on the wrong card; what is tested is the button's own effect
-const vputErr = await V.evaluate(() => { const b = document.querySelector('.vput'); if (!b) return 'no button'; b.click(); return ''; });
+// a real click, as a person makes it: the stage keeps the countdown card clear of the tab card (lib/placement.js). force only
+// skips Playwright's wait for the card to hold still (cards tilt toward the pointer); the press and release are real mouse events
+const vputErr = await V.click('.vput', { timeout: 5000, force: true }).then(() => '', (e) => String(e.message).split('\n')[0]);
 const vputs = await V.evaluate(() => Array.from(document.querySelectorAll('.vput')).map((b) => ({ shown: !!b.offsetParent, in: (b.parentElement.className || '') })));
 await page.waitForFunction(() => document.getElementById('reply').value.length > 0, null, { timeout: 5000 }).catch(() => {});
 const box2 = await page.evaluate(() => document.getElementById('reply').value);
@@ -135,7 +135,7 @@ check('local only: no request anywhere carried the page text or the draft', leak
 // the card flags what left and for what, and the one request carried the title, address and selection, nothing else of the page
 await V.evaluate(() => { const t = document.querySelector('.tab-draft'); t.value = 'keep it short'; t.dispatchEvent(new Event('input', { bubbles: true })); });
 const beforeDraft = out.length;
-await V.evaluate(() => document.querySelector('.tab-ask-summary').click()); // the countdown card above lifts over the tab card, so a pointer click would land on its canvas
+await V.click('.tab-ask-summary', { force: true }); // a real click: the countdown card no longer lands over the tab card (lib/placement.js)
 await V.waitForFunction(() => /from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
 const dSaid = await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '');
 const dBox = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
@@ -166,8 +166,9 @@ await V.waitForFunction(() => /not on your list/.test((document.querySelector('.
 check('B3: a site not on the allow list gets no card, and nothing on the page changes',
   !(await cardOn()) && /not on your list/.test(await actSaid()) && (await page.evaluate(() => document.getElementById('reply').value)) === 'before' && records.length === 0, { said: await actSaid(), records });
 
-// a button in the panel's own chrome, pressed until what it does has happened (headless Chromium drops some mouse events
-// on extension pages; the button's own click handler is what is under test)
+// a button in the panel's own chrome, pressed until what it does has happened. Not the stage overlap (that was fixed in
+// lib/placement.js and those checks click for real): with a real mouse here, about 1 run in 4 a click on this extension tab
+// never reaches its handler in headless Chromium (8 runs, 2026-10-10), so the button's own click handler is what is tested
 const press = async (sel, landed) => { for (let i = 0; i < 5; i++) { await panel.evaluate((q) => document.querySelector(q).click(), sel); for (let j = 0; j < 10; j++) { if (await landed()) return true; await panel.waitForTimeout(100); } } return false; };
 await panel.click('#sites summary');
 await panel.waitForSelector('#sites .add:not([hidden])', { timeout: 5000 }).catch(() => {});
@@ -205,6 +206,56 @@ await V.waitForFunction(() => /press it yourself/.test((document.querySelector('
 const rec3 = records[2] || {};
 check('B3: even after Yes, a button that would submit its form is refused (you press send yourself), and the record says it failed',
   !(await page.evaluate(() => window.submitted)) && rec3.state === 'failed' && /submits/.test(rec3.result || ''), { records, said: await actSaid() });
+
+// B3, a short run: two or three steps as one card, a Yes for each in turn, the same allow list and records; it stops at the
+// first No or the first step the page refuses, and nothing after that runs
+const stepNow = () => panel.evaluate(() => (document.querySelector('.act-count') || {}).textContent || '');
+const pressStep = (sel, from) => press(sel, async () => !(await cardOn()) || (await stepNow()) !== from);
+const waitStep = (s) => panel.waitForFunction((t) => (document.querySelector('.act-count') || {}).textContent === t, s, { timeout: 8000 }).catch(() => {});
+const waitSaid = (re) => V.waitForFunction((src) => new RegExp(src).test((document.querySelector('.tab-act-said') || {}).textContent || ''), re.source, { timeout: 8000 }).catch(() => {});
+const pageNow = () => page.evaluate(() => ({ reply: document.getElementById('reply').value, saved: window.saved || 0, submitted: !!window.submitted }));
+let n0 = records.length;
+await propose('click a; click b; click c; click d');
+await waitSaid(/three steps at most/);
+const tooMany = { on: await cardOn(), said: await actSaid(), added: records.length - n0 };
+await page.evaluate(() => { document.getElementById('reply').value = 'before'; window.submitted = false; });
+const saved0 = (await pageNow()).saved;
+await propose('fill Reply with First; click Save; fill Reply with Third');
+await waitStep('step 1 of 3');
+const runCard = await panel.evaluate(() => ({ list: [...document.querySelectorAll('.act-steps li')].map((l) => l.textContent), hidden: document.querySelector('.act-steps').hidden, what: document.querySelector('.act-what').textContent }));
+await pressStep('.act-yes', 'step 1 of 3'); await waitStep('step 2 of 3');
+const midRun = { on: await cardOn(), page: await pageNow() };
+await pressStep('.act-no', 'step 2 of 3'); await waitSaid(/stopped at step 2 of 3/);
+const noRun = { page: await pageNow(), recs: records.slice(n0), said: await actSaid(), on: await cardOn() };
+check('B3 run: three steps come as one card listing them all, with a Yes for each in turn; a No at step 2 stops it: step 1 done, step 2 stubbed, step 3 never runs and leaves no record; four steps are refused outright',
+  !tooMany.on && /three steps at most/.test(tooMany.said) && tooMany.added === 0
+  && runCard.list.length === 3 && !runCard.hidden && /Reply/.test(runCard.list[0]) && /Save/.test(runCard.list[1]) && /Reply/.test(runCard.what)
+  && midRun.on && midRun.page.reply === 'First'
+  && noRun.page.reply === 'First' && noRun.page.saved === saved0 && noRun.recs.length === 2
+  && noRun.recs[0].state === 'done' && noRun.recs[0].ref === 'fixture.test · Reply' && noRun.recs[1].state === 'stubbed' && noRun.recs[1].ref === 'fixture.test · Save'
+  && /1 done before it/.test(noRun.said) && !noRun.on,
+  { tooMany, runCard, midRun, noRun });
+
+n0 = records.length;
+await propose('fill Reply with Second then click send then click Save');
+await waitStep('step 1 of 3');
+await pressStep('.act-yes', 'step 1 of 3'); await waitStep('step 2 of 3');
+await pressStep('.act-yes', 'step 2 of 3'); await waitSaid(/stopped at step 2 of 3/);
+const refusedRun = { page: await pageNow(), recs: records.slice(n0), said: await actSaid(), on: await cardOn() };
+check('B3 run: a step the page refuses stops the run: step 1 done, the send button refused (a failed record, nothing submitted), step 3 never runs and leaves no record',
+  refusedRun.page.reply === 'Second' && !refusedRun.page.submitted && refusedRun.page.saved === saved0 && refusedRun.recs.length === 2
+  && refusedRun.recs[0].state === 'done' && refusedRun.recs[1].state === 'failed' && /submits/.test(refusedRun.recs[1].result || '') && /press it yourself/.test(refusedRun.said) && !refusedRun.on,
+  refusedRun);
+
+n0 = records.length;
+await propose('fill Reply with Both done, then click Save');
+await waitStep('step 1 of 2');
+await pressStep('.act-yes', 'step 1 of 2'); await waitStep('step 2 of 2');
+await pressStep('.act-yes', 'step 2 of 2'); await waitSaid(/all 2 steps done/);
+const fullRun = { page: await pageNow(), recs: records.slice(n0), said: await actSaid() };
+check('B3 run: with a Yes at every step the whole run happens, each step with its own done record',
+  fullRun.page.reply === 'Both done' && fullRun.page.saved === saved0 + 1 && fullRun.recs.length === 2 && fullRun.recs.every((r) => r.state === 'done') && /all 2 steps done on fixture\.test/.test(fullRun.said),
+  fullRun);
 
 // B3 joined to the drafts: a "draft for me: reply" on an allowed site comes back as a proposed step, the same card with the
 // draft in it; on a site not on the list the draft stays copy-only, with no card and nothing said about acting

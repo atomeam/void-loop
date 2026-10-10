@@ -1,8 +1,8 @@
 // Merge on GitHub's side, so no session has to sit and watch a PR (.github/workflows/automerge.yml runs this on every CI
 // finish, every review and every answer to one). It looks at each open PR labelled "automerge" (or the one PR given),
 // asks tools/pr-ready.mjs whether it is ready, and merges the ready ones. A merge made with the workflow's own token does
-// not start the push-to-main deploy, so it starts that deploy itself (workflow_dispatch, after_merge=true: it deploys at
-// once, then runs the full suite on what shipped and reverts it if it fails). A PR GitHub reports dirty (it conflicts with main)
+// not start the push-to-main workflows, so it starts both itself: the deploy (deploy.yml, after_merge=true: it deploys at
+// once) and the full suite on that head (verify.yml, which reverts what broke it if it fails). A PR GitHub reports dirty (it conflicts with main)
 // gets no pull_request runs at all, so the bot merges main into it first (resolveMain in pr-ready.mjs: tools/merge-main.mjs from
 // main's checkout, the merge commit pushed to the branch, never forced, Void's review dispatched on the new head); a conflict
 // outside the append-only records comes back as one comment on the PR naming the files.
@@ -52,4 +52,7 @@ for (let p of prs) {
 if (merged) {
   try { run(['workflow', 'run', 'deploy.yml', '--repo', repo, '--ref', 'main', '-f', 'after_merge=true']); console.log('deploy of main started'); }
   catch (e) { console.log('::warning::merged, but could not start the deploy: ' + String(e.stderr || e.message).slice(0, 300)); }
+  // and the suite on that head (verify.yml): it no longer waits for the deploy, and a GITHUB_TOKEN merge starts no push workflow
+  try { run(['workflow', 'run', 'verify.yml', '--repo', repo, '--ref', 'main']); console.log('suite on main started'); }
+  catch (e) { console.log('::warning::merged, but could not start the suite: ' + String(e.stderr || e.message).slice(0, 300)); }
 }

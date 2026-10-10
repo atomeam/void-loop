@@ -144,3 +144,22 @@ test('self.json carries the think tank\'s tracks and the claim being built now (
   assert.deepEqual(readBuilding(frontier, { 2: '2026-10-10T05:00:00Z', 7: '2026-10-10T01:00:00Z' }), { at: '2026-10-10T05:00:00Z', date: '2026-10-10', by: 'claude', item: 'Growth you can watch', what: 'the tree, shipped' });
   assert.equal(readBuilding('## 1. x\n- **claim:**\n'), null);
 });
+
+test('the week: entries since 7 days ago, grouped by kind, in plain words, newest first; the tree\'s week-ago stop', async () => {
+  const { weekSummary, plainly } = await import('../void-live-deploy/skills/growth-tree.js');
+  const now = Date.parse('2026-10-10T12:00:00Z'), at = (d) => new Date(now - d * 86400000).toISOString().replace(/\.\d+Z$/, 'Z');
+  const L = [{ at: at(9), kind: 'grow', what: 'Chess' }, { at: at(5), kind: 'grow', what: 'Backgammon, the board game: you can play it now' }, { at: at(3), kind: 'build', what: 'The `weather` card: hourly rain' },
+    { at: at(2), kind: 'grow', what: 'Ringer marbles. Flick and knock them out' }, { at: at(1), kind: 'fix', what: 'the timer (it stopped at 59 s)' }, { at: at(1), kind: 'idea', what: 'a sky that follows the hour' }];
+  const w = weekSummary(L, now);
+  assert.equal(w.since, '2026-10-03'); assert.equal(w.until, '2026-10-03T12:00:00Z'); assert.equal(w.total, 5);
+  assert.deepEqual(w.groups.map((g) => [g.kind, g.count, g.label]), [['grow', 2, 'new things I can do'], ['build', 1, 'thing I do better'], ['fix', 1, 'thing I fixed'], ['idea', 1, 'idea']]);
+  assert.deepEqual(w.groups[0].items, ['Ringer marbles', 'Backgammon, the board game'], 'newest first, each its first plain phrase');
+  assert.equal(w.groups[1].items[0], 'The weather card', 'no Markdown');
+  assert.equal(plainly('the timer (it stopped at 59 s)'), 'the timer (it stopped at 59 s)', 'too short to cut stays whole');
+  assert.equal(plainly('CLOUDFLARE_API_TOKEN_2 is used now'), 'CLOUDFLARE_API_TOKEN_2 is used now', 'names keep their underscores');
+  assert.match(w.text, /^Since 2026-10-03 \(the last 7 days\) I changed 5 things: 2 new things I can do, 1 thing I do better, 1 thing I fixed, 1 idea\. New things I can do: Ringer marbles; Backgammon, the board game\. Thing I do better: The weather card\. Thing I fixed: the timer \(it stopped at 59 s\)\.$/);
+  assert.ok(!/Chess/.test(w.text), 'older than a week stays out');
+  assert.equal(weekSummary(L.slice(0, 1), now).text, 'Nothing new in my growth ledger since 2026-10-03.');
+  const many = weekSummary(Array.from({ length: 9 }, (_, i) => ({ at: at(1 + i * 0.1), kind: 'grow', what: 'thing number ' + i })), now);
+  assert.match(many.text, /\(and 5 more\)/);
+});

@@ -142,5 +142,34 @@ export function timeline(list, now = Date.now()) {
   return stops;
 }
 
+/**
+ * "What can you do now that you couldn't last week?": the ledger's entries since `days` ago (a week by default), grouped by
+ * kind and said in plain words. The growth card shows it and the daily reflection reads it (lib/voice.js weekFacts).
+ * -> { since (YYYY-MM-DD), until (ISO, the week-ago stop for the tree), total, groups: [{ kind, label, count, items }], text }
+ */
+const WEEK_LABEL = { grow: ['new thing I can do', 'new things I can do'], build: ['thing I do better', 'things I do better'], fix: ['thing I fixed', 'things I fixed'],
+  retire: ['thing I retired', 'things I retired'], idea: ['idea', 'ideas'], finding: ['finding', 'findings'] };
+const WEEK_ORDER = ['grow', 'build', 'fix', 'retire', 'finding', 'idea'];
+// an entry's first plain phrase: up to its first colon, full stop, semicolon or bracket when that leaves enough to read, no
+// Markdown, clipped
+export function plainly(what, n = 90) {
+  const t = String(what || '').replace(/[`*]/g, '').replace(/\s+/g, ' ').trim();
+  const cut = t.search(/: |\. |; | \(| — /), head = cut >= 12 ? t.slice(0, cut) : t;
+  return head.length > n ? head.slice(0, n).replace(/\s+\S*$/, '') + '…' : head;
+}
+export function weekSummary(list, now = Date.now(), days = 7, per = 4) {
+  const from = now - days * 86400000, since = new Date(from).toISOString().slice(0, 10);
+  const recent = chronological(list).filter((x) => x.t > from).reverse(); // newest first
+  const groups = WEEK_ORDER.map((kind) => {
+    const of = recent.filter((x) => x.e.kind === kind);
+    return { kind, label: WEEK_LABEL[kind][of.length === 1 ? 0 : 1], count: of.length, items: of.slice(0, per).map((x) => plainly(x.e.what)) };
+  }).filter((g) => g.count);
+  const total = recent.length;
+  const text = !total ? 'Nothing new in my growth ledger since ' + since + '.'
+    : 'Since ' + since + ' (the last ' + days + ' days) I changed ' + total + ' thing' + (total === 1 ? '' : 's') + ': ' + groups.map((g) => g.count + ' ' + g.label).join(', ') + '. '
+      + groups.filter((g) => g.kind !== 'idea' && g.kind !== 'finding').map((g) => g.label[0].toUpperCase() + g.label.slice(1) + ': ' + g.items.join('; ') + (g.count > g.items.length ? ' (and ' + (g.count - g.items.length) + ' more)' : '') + '.').join(' ');
+  return { since, until: new Date(from).toISOString().replace(/\.\d+Z$/, 'Z'), total, groups, text };
+}
+
 /** The point halfway along a branch (what a test taps, and where the card's readout points). */
 export const midpoint = (b) => round(add(b.start, mul(b.dir, b.length / 2)));

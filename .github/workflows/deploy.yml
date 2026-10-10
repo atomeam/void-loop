@@ -1,12 +1,12 @@
 # Test and deploy Void to the Cloudflare Pages project "a-to-mind" (a-to-mind.com) with wrangler (direct upload, no GitHub
 # Pages). tools/deploy.ps1 stays the laptop fallback. Built to fit GitHub Free's 2,000 Linux minutes a month (~65 a day):
 # Ship now, test after (Adam, 2026-10-09: nothing waits). A PR merges as soon as Void's review is clean (automerge.yml,
-# tools/pr-ready.mjs); main deploys in about a minute; the full suite then runs on what shipped (verify-main), and a failure
-# reverts the commit that broke it on main and redeploys.
+# tools/pr-ready.mjs); main deploys in about a minute; the full suite runs on every head of main in its own workflow
+# (verify.yml, verify-main, which no longer waits for this deploy), and a failure reverts the commit that broke it and redeploys.
 #   PR, code changed    the quick checks (seconds) and a preview deploy (Void's review is its own workflow, void-review.yml)
 #   PR, docs only       the quick checks; no preview
-#   push to main        the quick checks, deploy, then verify-main: the full suite on that commit; red = revert the commit
-#                       that broke the failed checks (tools/revert-target.mjs; unclear = reported, not guessed) + redeploy
+#   push to main        the quick checks, then deploy (one production group: deploys stay serialized and only the newest
+#                       pending one runs); the full suite is verify.yml, started by the same push, never by this deploy
 #   manual run          the full suite (bench optional), then deploy; after_merge=true (automerge.yml) = as a push to main
 name: Void deploy
 
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # one run per PR: a new push cancels the older run of that PR at once. Production keeps one group and never cancels.
-    # (Per job, so the suite after a deploy, verify-main, never holds up the next deploy.)
+    # (Only the newest pending production deploy runs; the suite is verify.yml, one run per head, so no head goes untested.)
     concurrency:
       group: void-deploy-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'production' }}
       cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -60,8 +60,8 @@ jobs:
           EVENT: ${{ github.event_name == 'workflow_dispatch' && inputs.after_merge && 'push' || github.event_name }}
           BASE: ${{ github.event.pull_request.base.ref }}
         run: |
-          # the full suite before the deploy only on a plain manual run; a PR and main get the quick checks (main is
-          # tested right after its deploy, in verify-main)
+          # the full suite before the deploy only on a plain manual run; a PR and main get the quick checks (every head of
+          # main gets the full suite in verify.yml)
           suite=false
           [ "$EVENT" = "workflow_dispatch" ] && suite=true
           if [ "$EVENT" = "pull_request" ]; then
@@ -194,96 +194,3 @@ jobs:
           title=$(gh api "repos/${{ github.repository }}/commits/$(git rev-parse HEAD)/pulls" --jq '[.[] | select(.merged_at != null)][0].title // empty' || true)
           [ -n "$title" ] || title=$(git log -1 --format=%s "$(git rev-parse -q --verify HEAD^2 || git rev-parse HEAD)")
           node tools/reflect.mjs --build "$title" | tee -a "$GITHUB_STEP_SUMMARY" || true
-
-  # Ship now, test after: the full suite on the commit that just went live. Red means the commit that broke the failed
-  # checks is reverted on main and main is deployed again, so a breaking merge stays live only for the length of the suite
-  # (about 15 min). The revert is marked with a Void-auto-revert trailer and is never itself tested and reverted. One
-  # concurrency group per head (2026-10-10): every merge gets its own suite, in parallel, so a busy evening no longer
-  # leaves most merges unverified (one shared group kept only the newest pending run). Two red suites at once are safe:
-  # before reverting, the tool checks its target is still on main and not already reverted, and that the failed checks
-  # are still red on main's newest verified head (tools/revert-target.mjs); otherwise it reports.
-  verify-main:
-    needs: test-and-deploy
-    if: (github.event_name == 'push' || inputs.after_merge) && needs.test-and-deploy.result == 'success'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    concurrency:
-      group: void-verify-main-${{ github.sha }}
-      cancel-in-progress: false
-    permissions:
-      contents: write # push the revert
-      actions: write # start the deploy of the reverted main
-      checks: read # the failed checks earlier red runs named (tools/revert-target.mjs)
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.sha }}
-          fetch-depth: 0
-
-      - name: An automatic revert is not tested again
-        id: skip
-        run: |
-          if git log -1 --format=%B | grep -q '^Void-auto-revert:'; then
-            echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Automatic revert: not re-tested" >> "$GITHUB_STEP_SUMMARY"
-          fi
-
-      - name: Test what shipped (full suite)
-        id: test
-        if: steps.skip.outputs.skip != 'true'
-        uses: ./.github/actions/void-test
-        with:
-          bench: skip
-
-      - name: Name the failed checks (the next red run reads them to find the commit that broke each one)
-        if: failure() && steps.test.outcome == 'failure'
-        run: node tools/revert-target.mjs --annotate test-output.txt || true
-
-      - name: Red after the deploy - revert the commit that broke it, on main, and deploy again
-        if: failure() && steps.test.outcome == 'failure'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          tested=$(git rev-parse HEAD)
-          # Not always the tested commit: when a failed check was already red before it, the commit where that check
-          # first went red is the one to take back (tools/revert-target.mjs). An unclear record is reported, not guessed,
-          # and so is a target that is no longer live on main (gone, or already reverted by another suite that ran at the
-          # same time) or a check that main's newest verified head no longer fails.
-          pick=$(node tools/revert-target.mjs --pick "$tested" test-output.txt) || pick='{"action":"report","why":"could not read the verify record"}'
-          action=$(node -e 'console.log(JSON.parse(process.argv[1]).action)' "$pick")
-          why=$(node -e 'console.log(JSON.parse(process.argv[1]).why)' "$pick")
-          if [ "$action" != "revert" ]; then
-            echo "::error title=Not reverted::$tested failed the suite after it shipped, but which commit broke it is unclear: $why. Look at the failed checks and revert by hand."
-            echo "### $tested failed after shipping; not reverted automatically: $why" >> "$GITHUB_STEP_SUMMARY"
-            exit 1
-          fi
-          sha=$(node -e 'console.log(JSON.parse(process.argv[1]).sha)' "$pick")
-          subject=$(git log -1 --format=%s "$sha")
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git fetch -q origin main
-          git checkout -q -B main origin/main
-          # an earlier red run may already have taken it back (two merges tested in a row, both red for the same reason)
-          done_by=$(git log --format=%h --grep="^Void-auto-revert: $sha" -n 1 origin/main)
-          if [ -n "$done_by" ]; then
-            echo "::error title=Already reverted::$tested failed the suite, and the commit that broke it ($sha: $why) is already reverted on main ($done_by). Nothing more to take back; the next deploy of main is tested again."
-            echo "### $tested failed the suite; the commit that broke it ($sha) is already reverted on main ($done_by)" >> "$GITHUB_STEP_SUMMARY"
-            exit 1
-          fi
-          if git rev-parse -q --verify "$sha^2" >/dev/null; then parent="-m 1"; else parent=""; fi
-          if ! git revert --no-commit $parent "$sha"; then
-            git revert --abort || true
-            echo "::error title=Not reverted::$sha broke the suite ($why), and reverting it on main conflicts with what merged since. Revert it by hand."
-            echo "### $sha broke the suite ($why); automatic revert conflicted: revert it by hand" >> "$GITHUB_STEP_SUMMARY"
-            exit 1
-          fi
-          if git diff --cached --quiet; then
-            git revert --abort || true
-            echo "::error title=Not reverted::$sha broke the suite ($why), but reverting it changes nothing on main any more. Look at what main carries now."
-            echo "### $sha broke the suite ($why); its revert is empty on main now: look by hand" >> "$GITHUB_STEP_SUMMARY"
-            exit 1
-          fi
-          git commit -q -m "Revert \"$subject\"" -m "It shipped and the full suite failed on main (verify-main, run ${{ github.run_id }}, testing $tested): $why. So it is taken back off the site." -m "Void-auto-revert: $sha"
-          git push origin main
-          gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true
-          echo "::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."
-          echo "### $sha broke the suite after shipping ($why): reverted on main and redeployed" >> "$GITHUB_STEP_SUMMARY"

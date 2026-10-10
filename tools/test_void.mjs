@@ -1004,6 +1004,9 @@ try {
   // "remember that <fact>" keeps one line (POST with the bearer), "forget that <fact>" removes it (DELETE by the same note id); without a key neither fetches
   // "what you told me": a signed-in member's ask carries their session to /api/answer, and an answer that used a note says so on the card; a visitor's carries nothing
   { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    // as in the memory card's member check: answer the page's load-time /api/mine sync for this made-up session, then load again
+    await T.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
+    await T.p.reload(); await T.p.waitForTimeout(700);
     let auth = null;
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
@@ -1074,6 +1077,8 @@ try {
   // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent
   { const P = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '");' });
     const REQ = 'Hi Adam,\n\nWe run a small bakery in Portland and our online orders come in through Shopify. We need the Zapier zap that copies each order into our Google Sheet fixed: since last week every order shows up twice and the morning bake list is wrong. We would also like someone to check the whole flow once a month so it does not break again before the holidays.\n\nCan you tell us what you would do and when you could start?\n\nThanks,\nMaria\nmaria@sunrisebakery.example';
+    // the ask box is a one-line <input>: like a real paste, each line break arrives as a space, so that is what the card keeps
+    const typedREQ = REQ.replace(/\r?\n/g, ' ');
     const actionsBefore = gate.env.DB.actions.size, callsBefore = gate.calls.length;
     await P.p.fill('#input', 'turn this into a proposal:\n' + REQ); await P.p.keyboard.press('Enter');
     await until(async () => P.p.$eval('.proposal-field[data-field="title"]', (e) => e.value).catch(() => ''), 6000);
@@ -1087,7 +1092,7 @@ try {
     check('proposal card: the pasted request becomes the proposal\'s fields (what they asked for, scope, a blank price line, timeline, next step, the customer\'s address), an edit is kept, Send asks the confirm line and records a stubbed proposal.send for the customer\'s domain, nothing sent',
       /^Proposal: the Zapier zap/.test(drafted.title) && /check the whole flow once a month/.test(drafted.asked) && /^- We need the Zapier zap/.test(drafted.scope) && /out of scope\]$/.test(drafted.scope)
       && drafted.price === '[price: left for the owner to fill in]' && /^\[/.test(drafted.timeline) && /Reply with a yes/.test(drafted.next) && drafted.to === 'maria@sunrisebakery.example'
-      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === REQ
+      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === typedREQ
       && line === 'Send the proposal \u201cFix the double orders\u201d to maria@sunrisebakery.example? Yes / No'
       && gate.calls.slice(callsBefore).some((c) => c.type === 'a2m.approval.requested' && c.toolName === 'proposal.send' && c.args.to === 'maria@sunrisebakery.example')
       && rec && rec.state === 'stubbed' && rec.ref === 'sunrisebakery.example' && /nothing is sent/.test(rec.result || '') && gate.ran.length === ranBeforeProposal && !P.errors.length,
@@ -1184,6 +1189,22 @@ try {
       && /url\.pathname === '\/'/.test(sw) && !P.errors.length,
       JSON.stringify({ shown, meta, idInUrl, nf, card, heads, errors: P.errors }));
     await P.ctx.close(); }
+  // Every service has its page (/one-time-fix/ and friends, the way Code Review Pro has /code-review/): it loads,
+  // shows the live price from /api/catalog (the fix is stubbed at $26 to prove the live read, not the fallback), and
+  // links its Gumroad product.
+  { const SVC = [['one-time-fix', 'eozcma', 2600, null, '$26'], ['keep-it-running', 'keep-it-running-membership', 4900, 'monthly', '$49 a month'], ['full-stack-audit', 'full-stack-audit', 32500, null, '$325'], ['first-automation-setup', 'first-automation-setup', 10000, null, '$100']];
+    const cat = { products: SVC.map(([, slug, cents, rec]) => ({ slug, price_cents: cents, recurrence: rec, url: 'https://moonbeam846.gumroad.com/l/' + slug, available: true })) };
+    const V = await fresh(); const got = [];
+    await V.ctx.route(/\/api\/catalog(?:\?|$)/, (rt) => rt.fulfill(json(cat)));
+    for (const [id, slug, , , want] of SVC) {
+      await V.p.goto(base + id + '/');
+      const price = await until(async () => { const t = await V.p.$eval('#price', (e) => e.textContent).catch(() => ''); return t === want ? t : ''; }, 4000) || await V.p.$eval('#price', (e) => e.textContent).catch(() => '');
+      const buy = await V.p.$eval('#buy', (e) => ({ href: e.href, hidden: e.hidden, rel: e.rel })).catch(() => null);
+      const h1 = await V.p.$eval('h1', (e) => e.textContent).catch(() => '');
+      got.push({ id, price, ok: price === want && !!buy && buy.href === 'https://moonbeam846.gumroad.com/l/' + slug && !buy.hidden && /noopener/.test(buy.rel) && h1.length > 10 });
+    }
+    check('every service has its page: it loads, shows the live price from /api/catalog, and links its Gumroad product', got.every((g) => g.ok) && !V.errors.length, JSON.stringify(got) + ' ' + V.errors.join(' | '));
+    await V.ctx.close(); }
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
@@ -1249,6 +1270,15 @@ try {
   await t.ask('heart rate zone calculator', 700); const hrH = await t.page(); check('heart: "heart rate zone calculator" is a live form (age 40 = 90-153)', /Heart rate zone calculator/.test(hrH) && /90\u2013153/.test(hrH) && /Zone 5/.test(hrH), hrH.slice(0, 260));
   await t.ask('20% tip on 45', 700); const tipPg = await t.page(); check('tip amount', /Tip/.test(tipPg) && /\$9/.test(tipPg) && /Total/.test(tipPg) && /\$54/.test(tipPg), tipPg.slice(0, 180));
   await t.ask('split $85 three ways with 20% tip', 700); const tipSplit = await t.page(); check('tip and split', /Tip and split|\/ person/.test(tipSplit) && /Total/.test(tipSplit) && /Tip each|Bill each/.test(tipSplit), tipSplit.slice(0, 180));
+  { // "what can you do now that you couldn't last week?" is the growth card opening on the week, from the ledger itself
+    const L = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), from = Date.now() - 7 * 86400000;
+    const n = L.filter((e) => e && e.what && Date.parse(e.at) > from).length;
+    await t.ask("what can you do now that you couldn't last week?", 900); const wkPg = await t.page();
+    await t.ask('what can you do', 600); const menuPg = await t.page();
+    check('"what can you do now that you couldn\'t last week?" opens the growth card on the last 7 days from the ledger (since the date a week ago, the count, grouped by kind in plain words), and plain "what can you do" stays with Void\'s self answer',
+      /How Void has grown/.test(wkPg) && new RegExp('Since ' + new Date(from).toISOString().slice(0, 10) + ', ' + n + ' change').test(wkPg) && /new things? I can do/.test(wkPg) && !/How Void has grown/.test(menuPg),
+      JSON.stringify({ n, wk: wkPg.slice(0, 300), menu: menuPg.slice(0, 120) }));
+  }
   await t.ask('how much will i have if i save 200 a month for 20 years at 7%', 700); const svPg = await t.page(); check('savings: 200 a month for 20 years at 7% grows to $104,185 (monthly compounding), put in vs growth and a range', /Savings growth/.test(svPg) && /\$104,185/.test(svPg) && /\$48,000/.test(svPg) && /Investor\.gov/.test(svPg) && !/don't know this yet|on your calendar/i.test(svPg), svPg.slice(0, 220));
   await t.ask('how long to save 50000 if i save 500 a month', 700); const svTime = await t.page(); check('savings: time to a goal (no rate: 0% = 8 years 4 months, with 4% and 7% beside it)', /Time to your goal/.test(svTime) && /8 years 4 months/.test(svTime) && /7%/.test(svTime), svTime.slice(0, 220));
   await t.ask('how much do i need to save a month to have 1 million in 30 years at 7%', 700); const svNeed = await t.page(); check('savings: monthly amount a goal needs ($819.69 a month for $1M in 30 years at 7%)', /Monthly savings needed/.test(svNeed) && /\$819\.69/.test(svNeed) && /Start 5 years later/.test(svNeed), svNeed.slice(0, 220));
@@ -1526,11 +1556,13 @@ try {
   t = await fresh();
   const sent = (type) => gate.calls.filter((c) => c.type === type);
   const lastDecision = () => sent('a2m.approval.decision').slice(-1)[0] || {};
+  // the gate is shared by the whole run: the proposal card's Send has already asked once, so count from here
+  const callsAt = gate.calls.length, requestedAt = sent('a2m.approval.requested').length;
   await t.ask('send an email to jane@x.com saying hi', 700);
-  check('confirm line: visitors cannot send', /person at the screen/.test(await t.whisper()) && gate.calls.length === 0, await t.whisper());
+  check('confirm line: visitors cannot send', /person at the screen/.test(await t.whisper()) && gate.calls.length === callsAt, await t.whisper());
   await t.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
   await t.ask('send an email to jane@x.com saying hi', 900);
-  check('confirm line shows before a send (item 7)', (await t.whisper()) === 'Send this email to jane@x.com? Yes / No' && sent('a2m.approval.requested').length === 1 && gate.ran.length === 0, await t.whisper());
+  check('confirm line shows before a send (item 7)', (await t.whisper()) === 'Send this email to jane@x.com? Yes / No' && sent('a2m.approval.requested').length === requestedAt + 1 && gate.ran.length === 0, await t.whisper());
   await t.ask('no', 800);
   check('confirm line: no = it does not run', /^ok, nothing sent$/.test(await t.whisper()) && lastDecision().decision === 'reject' && !!lastDecision().reason && gate.ran.length === 0, await t.whisper());
   await t.ask('send an email to jane@x.com saying hi', 900); await t.p.click('#whisper [data-vc="yes"]'); await t.p.waitForTimeout(800);

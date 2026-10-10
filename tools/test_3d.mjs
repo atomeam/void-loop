@@ -171,6 +171,17 @@ export async function run3dChecks({ check, fresh }) {
     check('moon explainer miniature: draws real pixels, the Moon follows the data (30° -> 200°, now on the far side), a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while paused, under reduced motion too, and unmounting frees it',
       ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
   }
+  // ---- the lock explainer (explainer.pin-lock) through the same contract: the matching key half in, then fully in and turned 60°
+  {
+    const Lk = await import(pathToFileURL(path.join(root, 'skills', 'lock-rules.js')).href);
+    const a = Lk.setInsertion(Lk.create({ keyPreset: 'matching' }), 0.5), b = Lk.turnTo(Lk.setInsertion(Lk.create({ keyPreset: 'matching' }), 1), 60);
+    const c = await miniContract(fresh, { kind: 'lock', a: { state: a }, b: { state: b }, settledWhen: 'dragging' });
+    const ok = (r) => r.drawn && r.colours > 40 && r.same && r.stateA && r.stateA.state === 'inserting' && r.stateA.insertion === 0.5
+      && r.stateB.state === 'turned' && r.stateB.angle === 60 && r.stateB.aligned === 5 && r.stateB.driverY.every((y) => y === Lk.SHEAR + Lk.DRIVER / 2)
+      && r.redrew && r.settled && r.idleDraws === 0 && r.freed;
+    check('lock explainer miniature: draws real pixels (brass housing and plug, steel pins, springs, the key), poses from the one state (half in, then fully in and turned 60° with every driver pin waiting at the shear line), a remount by key moves the live one, it settles with no redraws, under reduced motion too, and unmounting frees it',
+      ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
+  }
   // ---- Ringer (build-order step 5) through the same contract: a new game, then the same game after a hard shot has settled
   {
     const Rr = await import(pathToFileURL(path.join(root, 'skills', 'ringer-rules.js')).href);
@@ -226,6 +237,18 @@ export async function run3dChecks({ check, fresh }) {
     check('"growth": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built)',
       !!first && first.s.branches === 1 && first.s.ghosts === 0 && /2026-09-25 · 1 change\b/.test(first.day) && !!last && last.s.branches === at.n && last.s.ghosts > 0 && last.s.building && new RegExp('today, .* · ' + at.n + ' changes').test(last.day) && !F.errors.length,
       JSON.stringify({ first, last, e: F.errors }));
+    await F.ctx.close();
+  }
+  // ---- "what can you do now that you couldn't last week?": the tree stands as it was a week ago, then this week's tips grow in
+  {
+    const F = await fresh();
+    await F.ask("what can you do now that you couldn't last week?");
+    const seen = { weekAgo: null, today: null };
+    await until(async () => { const s = await F.p.evaluate(() => window.__voidMini && window.__voidMini.state('growth-tree')); if (s && s.until && !seen.weekAgo) seen.weekAgo = s; if (s && s.until === null && !s.growing) seen.today = s; return seen.today; }, 60000);
+    const day = await F.p.evaluate(() => { const d = document.querySelector('.vpage .growth-day'); return d && d.textContent; });
+    const n = await F.p.evaluate(async () => (await import('/skills/growth-tree.js')).layout(await (await fetch('/void.growth.json')).json()).branches.length);
+    check('"what can you do now that you couldn\'t last week?": the card\'s tree first stands as it was a week ago (fewer branches), then grows to today with this week\'s tips, the readout ending on today',
+      !!seen.weekAgo && !!seen.today && seen.weekAgo.branches < seen.today.branches && seen.today.branches === n && /^today, /.test(day || '') && !F.errors.length, JSON.stringify({ seen, day, n, e: F.errors }));
     await F.ctx.close();
   }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over

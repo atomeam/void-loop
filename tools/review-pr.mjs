@@ -9,7 +9,7 @@
 // bug or a risk (the "void-review" check, .github/workflows/void-review.yml). A line that is right as written says so with
 // "void-review: ok" in a comment on it, and is left out. Otherwise the exit code is 0: the review informs.
 import { execFileSync } from 'node:child_process';
-import { ruleReview, langOf, skippedInReview, autoFix, textLines } from '../void-live-deploy/lib/code-review.js';
+import { ruleReview, langOf, skippedInReview, autoFix, textLines, conflictMarkers, CONFLICT_MESSAGE } from '../void-live-deploy/lib/code-review.js';
 import { redact } from '../void-live-deploy/lib/automation-fix.js';
 
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
@@ -37,6 +37,10 @@ function added() {
 const files = added(), report = [], langs = {};
 let scanned = 0;
 for (const [file, lines] of Object.entries(files)) {
+  // conflict markers first, in every changed file of any type, the ones the review skips (.json, .md) included: #291 merged
+  // a growth ledger full of them because only code was read
+  if (lines.size) { let all = ''; try { all = git('show', head + ':' + file); } catch (_) {}
+    if (!all.includes('\0')) for (const c of conflictMarkers(all)) if (lines.has(c.line)) report.push({ file, line: c.line, kind: 'bug', rule: 'conflict-markers', message: CONFLICT_MESSAGE, text: c.text }); }
   if (skippedInReview(file) || !lines.size) continue;
   // a Dockerfile has no extension (Dockerfile, api.Dockerfile, Dockerfile.dev)
   const ext = (file.match(/\.([\w]+)$/) || [])[1] || '', base = file.split('/').pop(), lang = /^(?:[\w.-]+\.)?Dockerfile(?:\.[\w-]+)?$/i.test(base) ? 'dockerfile' : LANG[ext.toLowerCase()];
@@ -50,7 +54,7 @@ for (const [file, lines] of Object.entries(files)) {
   const own = (f) => lang !== 'yaml' || YAML_RULES.has(f.rule);
   const src = text.split('\n'), waived = (n) => /void-review:\s*ok\b/.test(src[n - 1] || '');
   const prose = /\.html?$/i.test(file) ? textLines(src) : new Set(); // an HTML page's <textarea> and <pre> hold text (sample code to show), not code it runs
-  for (const f of res.findings.filter((f) => lines.has(f.line) && own(f) && !waived(f.line) && !prose.has(f.line))) report.push({ file, ...f });
+  for (const f of res.findings.filter((f) => f.rule !== 'conflict-markers' && lines.has(f.line) && own(f) && !waived(f.line) && !prose.has(f.line))) report.push({ file, ...f }); // markers are reported above, once, and never waived
   scanned += lines.size;
 }
 const ORDER = { bug: 0, risk: 1, style: 2, note: 3 };
