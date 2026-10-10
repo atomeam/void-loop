@@ -54,7 +54,7 @@ jobs:
         uses: ./.github/actions/void-test
         with:
           bench: only
-      - name: Raise the floor if this clean run on main beats it (never lowers it)
+      - name: Raise the floor and tighten the latency baseline if this clean run on main earns it (never lowers either; an inconclusive run changes nothing)
         if: steps.moved.outputs.run != 'false' && github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
         run: |
           set -o pipefail
@@ -66,7 +66,7 @@ jobs:
             node tools/bench-floor.mjs bench-score.json --write | tee -a "$GITHUB_STEP_SUMMARY"
             git diff --quiet tools/bench.best.json && exit 0
             git add tools/bench.best.json
-            git commit -q -m "Bench floor raised by a clean run on main (tools/bench-floor.mjs)"
+            git commit -q -m "Bench floor or latency baseline moved by a clean run on main (tools/bench-floor.mjs)"
             git push origin HEAD:main && exit 0
             sleep $((2 ** i))
           done
