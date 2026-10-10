@@ -600,7 +600,7 @@ function hasSecret(r, lang) {
     const v = s[2];
     if (redact(v) !== v && !/^\[redacted/.test(v)) return true;
     const before = r.slice(0, s.index), min = PASSNAME.test(before) ? 4 : 8; // people's passwords are often short; random keys are not
-    if (v.length >= min && /^[^\s${}<>]+$/.test(v) && !/^(?:https?:\/\/|\/|\.|[\w-]+\.(?:js|json|html|css|md|txt|py|sh)$)/i.test(v) && !/^(?:x{3,}|\*{3,}|your[_-]|<|changeme|placeholder|example|test|dummy|redacted|password|secret|none|null|true|false)/i.test(v) && KEYNAME.test(before)) return true;
+    if (v.length >= min && /^[^\s${}<>]+$/.test(v) && !/^(?:https?:\/\/|\/|\.|[\w-]+\.(?:js|json|html|css|md|txt|py|sh)$)/i.test(v) && !/^(?:x{3,}|\*{3,}|your[_-]|<|changeme|placeholder|example|test|dummy|redacted|password|secret|none|null|true|false)/i.test(v) && !/^[A-Z][A-Z0-9]*(?:_[A-Z0-9]+)+$/.test(v) && KEYNAME.test(before)) return true; // an ALL_CAPS_NAME names an env var, not a key
   }
   if (lang === 'yaml' && /^\s*(?:-\s+)?[\w.-]*(?:password|passwd|secret|token|api[_-]?key|private[_-]?key)[\w.-]*\s*:\s*(?!["']?(?:\$|\{\{|<|!|xxx|\*\*\*|changeme|example|your[_-]))["']?[^\s"'#]{4,}/i.test(r)) return true;
   if (lang === 'dockerfile' && /^\s*(?:ENV|ARG)\s+[A-Z0-9_]*(?:KEY|SECRET|TOKEN|PASSWORD|PASS|PWD)[A-Z0-9_]*[= ](?!["']?\$)[^\s"'$]{4,}/i.test(r)) return true;

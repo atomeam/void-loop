@@ -163,6 +163,13 @@ ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').in
   ok(!rules(env, 'javascript').includes('hardcoded-secret@1') && redact(env) === env, 'an env lookup is no hard-coded secret and is not masked: ' + redact(env));
   ok(rules(lit, 'javascript').includes('hardcoded-secret@1') && redact(lit) === 'const TOKEN = "[redacted]";', 'a literal token is flagged and masked: ' + redact(lit));
 }
+{ // the name of an environment variable is no secret: an ALL_CAPS_NAME in quotes names where the key lives (model-bench's
+  // "secret ? x : 'CLOUDFLARE_ACCOUNT_ID'" read as a hard-coded key, 2026-10-10); a literal value is still a finding
+  for (const named of ["const why = `${!token ? secret : 'CLOUDFLARE_ACCOUNT_ID'} is empty`;", "const secret = process.env.NAME || 'CLOUDFLARE_API_TOKEN';", "const tokenName = 'GITHUB_TOKEN';"])
+    ok(!rules(named, 'javascript').includes('hardcoded-secret@1') && redact(named) === named, 'an env var name is no secret and is not masked: ' + named + ' -> ' + redact(named));
+  ok(rules("const secret = 'Zx9qLm42RtWv';", 'javascript').includes('hardcoded-secret@1') && redact("secret: 'Zx9qLm42RtWv'") === "secret: '[redacted]'", 'a literal secret still is, and is masked');
+  ok(rules("const token = 'ABCD1234EFGH5678';", 'javascript').includes('hardcoded-secret@1'), 'an all-caps value with no underscore is no env name');
+}
 // fixes Void makes by itself
 const fx = (c, lang) => autoFix(c, lang ? { lang } : {}).code;
 ok(fx('if (a == b) { var n = parseInt(s); }', 'javascript') === 'if (a == b) { var n = parseInt(s); }', 'js: == / var / parseInt stay warnings, never rewritten ("5" == 5, a var used after its block, parseInt("0x10"))');
