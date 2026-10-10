@@ -301,5 +301,6 @@
   {"at": "2026-10-10T16:30:00Z", "by": "claude", "kind": "fix", "what": "the speaker button for ambient sound no longer sits on the bare first page: it appears with your first touch, move or key, so a fresh visit is still just the input"},
   {"at": "2026-10-10T16:17:02Z", "by": "claude", "kind": "build", "what": "Void talks back: hold Space to ask by voice, and the answer is spoken in Void's one low voice, sentence by sentence (frontier #16, first piece)"},
   {"at": "2026-10-10T18:00:00Z", "by": "claude", "kind": "grow", "what": "Void can now look at a 3D scan: say \"view a gaussian splat\", drop a .splat file on the card (it is read on your device and goes nowhere) or try the demo galaxy, then drag to orbit and scroll to zoom; with reduced motion it holds still"},
+  {"at": "2026-10-10T15:38:31Z", "by": "claude", "kind": "fix", "what": "the public miss snapshot never lists a word nobody wrote in lower case: a name or a place typed with a capital stays out, however many asks contain it"},
   {"at": "2026-10-10T17:44:47Z", "by": "claude", "kind": "grow", "what": "Ringer in 3D: a ghost of the shot follows your finger while you aim (the shooter's path and the marbles it would hit, from the roll's own physics), and every way a touch ends gives the camera back"}
 ]

@@ -36,22 +36,24 @@ export function madeThing(ask) {
 /** board rows -> the snapshot: every count is over distinct asks, and nothing seen in fewer than MIN_ASKS asks appears */
 export function snapshot(rows, { at = new Date().toISOString(), since = null } = {}) {
   const asks = new Map(); // normalised ask -> times missed
+  const lower = new Set(); // words someone wrote in lower case: a word only ever capitalised ("Priya", "Lisbon") may name a person or a place
   for (const r of rows || []) {
     if (since && String(r.last || '') < since) continue;
     const a = redact(r.ask);
     if (a == null) continue;
+    for (const w of a.split(/[^A-Za-z]+/)) if (w && w === w.toLowerCase()) lower.add(w);
     const k = a.trim().toLowerCase().replace(/\s+/g, ' ');
     if (k) asks.set(k, (asks.get(k) || 0) + (Number(r.count) || 1));
   }
   const tally = (pick) => {
     const m = new Map();
     for (const [k, n] of asks) for (const term of pick(k)) { const e = m.get(term) || { asks: 0, misses: 0 }; e.asks++; e.misses += n; m.set(term, e); }
-    return [...m].filter(([, e]) => e.asks >= MIN_ASKS).sort((a, b) => b[1].asks - a[1].asks || b[1].misses - a[1].misses || (a[0] < b[0] ? -1 : 1))
+    return [...m].filter(([term, e]) => e.asks >= MIN_ASKS && term.split(' ').every((w) => lower.has(w))).sort((a, b) => b[1].asks - a[1].asks || b[1].misses - a[1].misses || (a[0] < b[0] ? -1 : 1))
       .slice(0, MAX_TERMS).map(([term, e]) => ({ term, asks: e.asks, misses: e.misses }));
   };
   return {
     schema: 'void.misses.v1', at, since,
-    rule: 'Terms are lower-case words of 3-16 letters from asks Void could not answer, each listed only when at least ' + MIN_ASKS + ' different asks contain it; no ask is copied. "make" lists the things in make/print asks the same way.',
+    rule: 'Terms are lower-case words of 3-16 letters from asks Void could not answer, each listed only when at least ' + MIN_ASKS + ' different asks contain it and someone wrote it in lower case (a word only ever capitalised may be a name); no ask is copied. "make" lists the things in make/print asks the same way.',
     distinctAsks: asks.size,
     terms: tally(words),
     make: tally((k) => { const t = madeThing(k); return t ? [t] : []; }),
