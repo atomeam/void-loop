@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Tests for tools/ouroboros.py on a fake machine. Run: python tools/ouroboros_test.py"""
-import contextlib, hashlib, http.server, io, json, os, subprocess, sys, tempfile, threading, time, unittest
-from pathlib import Path
+import contextlib, hashlib, http.server, io, json, os, stat, subprocess, sys, tempfile, threading, time, unittest
+from pathlib import Path, PureWindowsPath
 from unittest import mock
 
 HERE = Path(__file__).resolve().parent
@@ -555,6 +555,135 @@ class Ouroboros(unittest.TestCase):
         self.assertEqual(rc, 0, txt)
         self.assertIn("would drop", txt); self.assertIn("would KEEP beta", txt)
         self.assertEqual(before, snapshot(self.root))
+
+
+class WindowsPaths(unittest.TestCase):
+    """What a Windows machine hands Ouroboros: C:\\ roots, backslashes, drive letters, CRLF files, spaces, a file another program holds.
+    The path maths runs on PureWindowsPath so it is checked on every platform; the file work runs on the real disk
+    (on windows-latest in CI, .github/workflows/ouroboros.yml, it is the real thing)."""
+
+    def test_secret_files_are_never_read_on_a_backslash_path(self):
+        for p in (r"C:\Users\you\proj\.env", r"D:\Work\app\.env.local", r"C:\Users\you\.ssh\id_rsa", r"E:\x\cert.PEM",
+                  r"C:\Users\Jane Doe\proj\secrets.txt", r"C:\Users\you\.npmrc", "C:/Users/you/proj/.env"):
+            self.assertTrue(ouroboros.NEVER_READ.search(p), p)
+        for p in (r"C:\Users\you\environment.md", r"C:\Users\you\proj\keyboard.txt", r"C:\Users\you\proj\src\main.py"):
+            self.assertFalse(ouroboros.NEVER_READ.search(p), p)
+
+    def test_slug_of_a_windows_folder(self):
+        a = ouroboros.slug_of(PureWindowsPath(r"C:\Users\Jane Doe\dev\My Project (old)"))
+        self.assertRegex(a, r"^My-Project-old-[0-9a-f]{8}$")
+        self.assertNotIn("\\", a)
+        self.assertNotIn(" ", a)
+        # same folder name on another drive is another project
+        self.assertNotEqual(a, ouroboros.slug_of(PureWindowsPath(r"D:\Users\Jane Doe\dev\My Project (old)")))
+
+    def test_the_scanned_root_never_leaves_in_either_slash_style(self):
+        for root in (r"C:\Users\Jane Doe\dev", "C:/Users/Jane Doe/dev"):
+            with tempfile.TemporaryDirectory() as t:
+                out = Path(t)
+                (out / "d.md").write_text("see C:\\Users\\Jane Doe\\dev\\alpha and C:/Users/Jane Doe/dev/beta\n", encoding="utf-8")
+                got = ouroboros.digest_for_void(out, {"digest": "d.md"}, root)
+                self.assertEqual(got, "see <root>\\alpha and <root>/beta\n", root)
+                self.assertNotIn("Jane", got)
+
+    def test_redact_leaves_a_windows_path_alone(self):
+        for p in (r"C:\Users\Jane Doe\dev\app", r"C:\repos\x.git", r"\\server\share\old projects"):
+            self.assertEqual(ouroboros.redact(p), p)
+
+    def _repo(self, base: Path, name: str, files: dict[str, bytes]) -> Path:
+        r = base / name
+        r.mkdir(parents=True)
+        for rel, data in files.items():
+            (r / rel).parent.mkdir(parents=True, exist_ok=True)
+            (r / rel).write_bytes(data)
+        run_git(r, "init", "-q"); commit_all(r)
+        return r
+
+    def test_crlf_files_digest_without_carriage_returns(self):
+        with tempfile.TemporaryDirectory() as t:
+            r = self._repo(Path(t), "crlf", {
+                "README.md": b"# Crlf\r\n\r\nA windows-edited tool.\r\n",
+                "x.py": b"import os\r\n# TODO: second line\r\nprint(1)\r\n",
+                "requirements.txt": b"requests==2\r\nflask>=1\r\n",
+                "package.json": b'{\r\n "description": "crlf pkg",\r\n "dependencies": {"react": "1"}\r\n}\r\n',
+            })
+            d = ouroboros.digest_repo(r)
+            self.assertEqual(d["todos"], ["x.py:2: # TODO: second line"])
+            self.assertEqual(d["description"], "crlf pkg")
+            self.assertIn("react", d["tech"]); self.assertIn("requests", d["tech"]); self.assertIn("flask", d["tech"])
+            self.assertNotIn("\r", json.dumps(d))
+            self.assertEqual(ouroboros.read_text(r / "x.py", 100).count("\r\n"), 3)  # the bytes are read as they are
+
+    def test_a_path_with_spaces_goes_through_run_and_a_dry_push(self):
+        with tempfile.TemporaryDirectory() as t:
+            root, out = Path(t) / "Jane Doe" / "old projects", Path(t) / "harvest out"
+            self._repo(root, "my app (v1)", {"README.md": b"# My app\r\n\r\nHello there.\r\n", "a.py": b"print(1)\r\n"})
+            buf, err = io.StringIO(), io.StringIO()
+            with contextlib.redirect_stdout(buf), contextlib.redirect_stderr(err):
+                rc = ouroboros.main(["run", "--root", str(root), "--out", str(out), "--days", "30"])
+            self.assertEqual(rc, 0, buf.getvalue() + err.getvalue())
+            self.assertTrue((out / "report.html").is_file())
+            manifest = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
+            self.assertEqual(len(manifest["projects"]), 1)
+            self.assertIn("my app (v1)", manifest["projects"][0]["path"])
+            buf = io.StringIO()
+            with contextlib.redirect_stdout(buf), mock.patch.dict(os.environ, {}, clear=False):
+                rc = ouroboros.main(["push", "--out", str(out), "--url", "http://localhost:9", "--dry-run"])
+            self.assertEqual(rc, 0, buf.getvalue())
+            self.assertIn("dry run: would send 1 record(s)", buf.getvalue())
+            body = ouroboros.digest_for_void(out, json.loads((out / "memory.jsonl").read_text(encoding="utf-8").splitlines()[0]), manifest["root"])
+            self.assertNotIn(str(root), body)
+            self.assertNotIn("Jane Doe", body)
+
+    def test_a_file_another_program_holds_is_reported_not_fatal(self):
+        with tempfile.TemporaryDirectory() as t:
+            folder = Path(t) / "locked app" / "node_modules"
+            write(folder / "a" / "held.dll", "x"); write(folder / "a" / "free.js", "y")
+            real_unlink = os.unlink
+
+            def unlink(path, *a, **k):  # what Windows says for a file a running program has open: WinError 32 (PermissionError)
+                if os.path.basename(str(path)) == "held.dll":
+                    raise PermissionError(13, "The process cannot access the file because it is being used by another process", str(path))
+                return real_unlink(path, *a, **k)
+
+            with mock.patch("os.unlink", unlink), mock.patch("os.remove", unlink):
+                left = ouroboros._rmtree(folder)
+            self.assertIn("held.dll", [os.path.basename(x) for x in left])
+            # the folder that still holds it keeps its search bit (a replaced mode once left it 0600: on macOS or Linux it could
+            # no longer be entered; checked on the mode itself, so the test fails the same way when it runs as root)
+            self.assertTrue(os.stat(folder / "a").st_mode & stat.S_IXUSR, "the kept folder can still be entered")
+            self.assertTrue((folder / "a" / "held.dll").exists(), "the held file is kept, not lost")
+            self.assertFalse((folder / "a" / "free.js").exists(), "everything else is still removed")
+
+    @unittest.skipUnless(os.name == "nt", "a held file is only refused like this on Windows; the simulation above covers the other platforms")
+    def test_a_file_held_open_on_windows_is_kept_and_reported(self):
+        """The real sharing violation: a file a program has open (no FILE_SHARE_DELETE) cannot be deleted. Nothing else is simulated."""
+        with tempfile.TemporaryDirectory() as t:
+            folder = Path(t) / "held app" / "node_modules"
+            write(folder / "a" / "held.dll", "x"); write(folder / "a" / "free.js", "y")
+            holder = open(folder / "a" / "held.dll", "rb")
+            try:
+                left = ouroboros._rmtree(folder)
+                self.assertIn("held.dll", [os.path.basename(x) for x in left])
+                self.assertTrue((folder / "a" / "held.dll").exists(), "the held file is kept, not lost")
+                self.assertFalse((folder / "a" / "free.js").exists(), "everything else is still removed")
+            finally:
+                holder.close()
+            self.assertEqual(ouroboros._rmtree(folder), [], "once the program lets go the folder goes")
+            self.assertFalse(folder.exists())
+
+    def test_a_file_that_cannot_be_opened_reads_as_empty(self):
+        with tempfile.TemporaryDirectory() as t:
+            p = Path(t) / "held file.md"
+            p.write_text("# hello\n")
+            with mock.patch("builtins.open", side_effect=PermissionError(13, "being used by another process")):
+                self.assertEqual(ouroboros.read_text(p, 100), "")
+
+    def test_windows_drive_and_case_rules_for_the_out_inside_root_guard(self):
+        # cmd_harvest refuses an --out inside --root with `root in out.parents`; on Windows that must hold across case, not across drives
+        root = PureWindowsPath(r"C:\Users\Jane Doe")
+        self.assertIn(root, PureWindowsPath(r"c:\users\jane doe\harvest").parents)
+        self.assertNotIn(root, PureWindowsPath(r"D:\Users\Jane Doe\harvest").parents)
 
 
 if __name__ == "__main__":

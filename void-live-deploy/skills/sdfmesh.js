@@ -29,6 +29,7 @@ export function smin(a, b, k) { if (k <= 0) return Math.min(a, b); const h = Mat
 
 const sdOf = (s) => s.type === 'sphere' ? (p) => sdSphere(p, s.c, s.r)
   : s.type === 'ellipsoid' ? (p) => sdEllipsoid(p, s.c, s.r)
+  : s.type === 'box' ? (p) => sdBox(p, s.c, s.r) // the axis-aligned box defined further down (half-sizes r)
   : (p) => sdCapsule(p, s.a, s.b, s.ra, s.rb ?? s.ra);
 // Shapes marked cut:true are carved out after every other shape is blended (a bite, a missing ear). A list may carry
 // .lumps = { amp, f:[fx,fy,fz], ph:[a,b,c] }: low-frequency waves added to the distance, so skin reads lumpy, not polished.

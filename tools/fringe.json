@@ -1658,5 +1658,175 @@
     ],
     "sha256": "1c06d6975e6d6b848d39a5c809af06f57e86b67514ba0a3321dbb83898186d07",
     "emit": false
+  },
+  {
+    "run": 67,
+    "at": "2026-10-10T06:42:55Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention-7.html",
+    "sources": [
+      {
+        "claim": "A cue that points to where a target will appear speeds the response, and a misleading cue slows it (spatial cueing)",
+        "source": "https://doi.org/10.1080/00335558008248231",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Detection of a simple signal is faster at a location attention was directed to in advance, and slower at an unexpected one",
+        "source": "https://doi.org/10.1037/0096-3445.109.2.160",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A person's own cost of a misleading pointer, logged per sitting with the hour of day, varies with their time of day in a way they could use",
+        "source": "drafts/fringe/attention-7.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "674480f57e802586aa692a4b90b1a21facd338dba32dda2ac85960d0f2ce2a67",
+    "emit": false
+  },
+  {
+    "run": 68,
+    "at": "2026-10-10T07:50:27Z",
+    "family": "interval-timing",
+    "draft": "drafts/fringe/interval-timing-8.html",
+    "sources": [
+      {
+        "claim": "Variability in timing grows in proportion to the interval timed (the scalar property of interval timing)",
+        "source": "https://doi.org/10.1037/0033-295X.84.3.279",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Across many studies the scalar property holds roughly for intervals from about a few hundred milliseconds to seconds, with departures at the extremes",
+        "source": "https://doi.org/10.3758/APP.72.3.561",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own spread share (sd/mean) and how level it stays across lengths is steady enough from sitting to sitting to be a personal timing signature",
+        "source": "drafts/fringe/interval-timing-8.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "c27716db547cd5eafa5a715e1103b6ecbfff803e5bf297e66614f3fe766e0d7d",
+    "emit": false
+  },
+  {
+    "run": 69,
+    "at": "2026-10-10T09:00:37Z",
+    "family": "non-lexical-intent",
+    "draft": "drafts/fringe/non-lexical-intent-5.html",
+    "sources": [
+      {
+        "claim": "Listeners judge a speaker who answers after a longer pause or a filler as less likely to know the answer (the feeling of another's knowing)",
+        "source": "https://doi.org/10.1006/jmla.1995.1017",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Speakers use 'uh' and 'um' to signal a coming delay, 'um' a longer one",
+        "source": "https://doi.org/10.1016/S0010-0277(02)00017-3",
+        "confidence": "claim"
+      },
+      {
+        "claim": "One person's weights on pause length and on 'um' when judging another's knowing are steady across sittings and differ between people",
+        "source": "drafts/fringe/non-lexical-intent-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "c080cbbcfbe63a7715b336f3a10175f7d515c261c58e31348db9dd0f510b8131",
+    "emit": false
+  },
+  {
+    "run": 70,
+    "at": "2026-10-10T09:43:24Z",
+    "family": "quiet-signal-filter",
+    "draft": "drafts/fringe/quiet-signal-filter-5.html",
+    "sources": [
+      {
+        "claim": "A cumulative sum of deviations from a target, less an allowance, detects a small sustained shift in a process mean faster than looking at single readings (Page's CUSUM)",
+        "source": "https://doi.org/10.1093/biomet/41.1-2.100",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "CUSUM with an allowance of half a standard deviation and a decision interval of about five standard deviations is a common choice for detecting a one-sd shift",
+        "source": "https://www.itl.nist.gov/div898/handbook/pmc/section3/pmc323.htm",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Run on a person's own daily numbers, CUSUM flags a lasting change before the person would have noticed it",
+        "source": "drafts/fringe/quiet-signal-filter-5.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "ccc18854c744580c551692a826ea5195cea8bcb5405c9095486d5faf5c11cf92",
+    "emit": false
+  },
+  {
+    "run": 71,
+    "at": "2026-10-10T10:48:11Z",
+    "family": "human-machine-co-agency",
+    "draft": "drafts/fringe/human-machine-co-agency-8.html",
+    "sources": [
+      {
+        "claim": "People responding to one stimulus type beside a partner who responds to the other show a spatial compatibility effect that largely disappears when they do the same single-key task alone (the joint Simon effect)",
+        "source": "https://doi.org/10.1016/S0010-0277(02)00025-6",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "A visible machine partner on screen draws a joint-Simon cost from a person, and that cost is steady enough per person to read their sense of acting with a machine",
+        "source": "drafts/fringe/human-machine-co-agency-8.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "41c47ae2b650671a990f68c5f274b006ca79fc468f35e1b8018a214d5601fd6f",
+    "emit": false
+  },
+  {
+    "run": 72,
+    "at": "2026-10-10T11:44:44Z",
+    "family": "correlation-view",
+    "draft": "drafts/fringe/correlation-view-6.html",
+    "sources": [
+      {
+        "claim": "An association that holds within every subgroup can vanish or reverse when the subgroups are pooled (Simpson's paradox)",
+        "source": "https://doi.org/10.1111/j.2517-6161.1951.tb00088.x",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Berkeley's 1973 graduate admissions looked biased against women when pooled, while most departments, taken one by one, showed no such bias",
+        "source": "https://doi.org/10.1126/science.187.4175.398",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Seeing a pooled number of one's own split out by group changes how a person reads it",
+        "source": "drafts/fringe/correlation-view-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "9a7ed47424b976f4b5f492651220c8a8953ef17ba8f36823887fc6f6f4e04faa",
+    "emit": false
+  },
+  {
+    "run": 73,
+    "at": "2026-10-10T13:43:19Z",
+    "family": "opt-in-gesture",
+    "draft": "drafts/fringe/opt-in-gesture-6.html",
+    "sources": [
+      {
+        "claim": "The time to move to a target grows linearly with log2(distance / width + 1), the index of difficulty (Fitts's law)",
+        "source": "https://doi.org/10.1037/h0055392",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "Fitts's law fits pointing with mice, styluses and touch well enough to be a standard tool for sizing interface targets",
+        "source": "https://doi.org/10.1207/s15327051hci0701_3",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Sizing a button or an opt-in gesture to one person's own fitted line makes it easier for them than a one-size rule",
+        "source": "drafts/fringe/opt-in-gesture-6.html",
+        "confidence": "open"
+      }
+    ],
+    "sha256": "aca3f4fba92efbe8e4ba4f4dcbb31e8465fab9f1836df58aa2cfdce0745e3c1a",
+    "emit": false
   }
 ]

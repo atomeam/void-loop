@@ -1,0 +1,46 @@
+# Ouroboros is tested on Windows here, so no sale waits on a person with a Windows machine. windows-latest runs the whole
+# Python suite (tools/ouroboros_test.py includes the Windows-path suite: C:\ roots, backslashes, drive letters, CRLF files,
+# paths with spaces, a file another program holds) and then the real command line (tools/ouroboros_smoke.py):
+# `run --root <temp tree> --out <temp>` followed by `push --dry-run` against a stub Void that must see no request.
+name: Ouroboros on Windows
+
+on:
+  pull_request:
+    paths:
+      - 'tools/ouroboros*.py'
+      - 'tools/void_lens.py'
+      - 'tools/build_ouroboros_pack.py'
+      - '.github/workflows/ouroboros.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'tools/ouroboros*.py'
+      - 'tools/void_lens.py'
+      - 'tools/build_ouroboros_pack.py'
+      - '.github/workflows/ouroboros.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ouroboros-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python tests (Ouroboros, its pack, the Windows-path suite)
+        run: |
+          python tools/ouroboros_test.py
+          python tools/ouroboros_pack_test.py
+      - name: Real command line on a temp tree (run, then push --dry-run against a stub)
+        run: python tools/ouroboros_smoke.py

@@ -11,7 +11,8 @@ import { spawnSync } from 'node:child_process';
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
 const server = http.createServer((req, res) => {
-  let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
+  // a path that is no URL (a doubled slash, '//?x', reads as a host) is a 400 for that request, never a crash of the whole suite
+  let p; try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (_) { res.writeHead(400); return res.end(); }
   if (p === '/') p = '/index.html';
   let f = path.join(root, p);
   if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
@@ -1004,6 +1005,9 @@ try {
   // "remember that <fact>" keeps one line (POST with the bearer), "forget that <fact>" removes it (DELETE by the same note id); without a key neither fetches
   // "what you told me": a signed-in member's ask carries their session to /api/answer, and an answer that used a note says so on the card; a visitor's carries nothing
   { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    // as in the memory card's member check: answer the page's load-time /api/mine sync for this made-up session, then load again
+    await T.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
+    await T.p.reload(); await T.p.waitForTimeout(700);
     let auth = null;
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
@@ -1024,6 +1028,102 @@ try {
       post && del && /^Bearer owner-k$/.test(post.a) && rec.kind === 'note' && rec.summary === 'I prefer tabs over spaces' && del.u === '?id=' + rec.id && /Remembered: I prefer tabs over spaces/.test(said1) && /Forgotten: I prefer tabs over spaces/.test(said2) && !K.errors.length,
       JSON.stringify({ calls, errs: K.errors }));
     await K.ctx.close(); }
+  // a world that keeps living while you are away (advance in skills/scripts.js): summon a cloud, a flower, a zombie and a brain, leave for an hour (the
+  // saved time is faked back; the figures are put where they last stood, the flower under the cloud's rain and the zombie some way from the brain),
+  // come back, and one line says what happened where a visitor sees it (#away-note, which a failing 3D layer cannot overwrite); a quick reload says nothing.
+  // three.js is stubbed as in the article check above.
+  { const W = await fresh(); const figSrcW = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const namesW = Array.from(new Set(Array.from(figSrcW.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUBW = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + namesW.map((n) => n + '=U').join(',') + ';';
+    await W.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBW }));
+    for (const a of ['summon a cloud', 'summon a flower', 'summon a zombie', 'summon a brain']) await W.ask(a, 1500);
+    const kept = await W.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'figure').map((t) => t.kindOf).sort().join(','));
+    await W.p.close();
+    const errsW = [];
+    await W.ctx.addInitScript(() => { try { if (sessionStorage.getItem('away-faked')) return; sessionStorage.setItem('away-faked', '1');
+      const st = JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}'), where = { cloud: [300, 100], flower: [310, 250], zombie: [100, 300], brain: [500, 300] };
+      for (const t of Object.values(st)) if (t.kind === 'figure' && where[t.kindOf]) t.at = { x: where[t.kindOf][0], y: where[t.kindOf][1] };
+      localStorage.setItem('a2m.void.state.v1', JSON.stringify(st)); localStorage.setItem('a2m.void.away.v1', String(Date.now() - 36e5)); } catch (_) {} }); // once, in the next page that opens
+    let visitorPosts = 0; await W.ctx.route(/\/api\/actions(?:\?|$)/, (r) => { visitorPosts += 1; return r.fulfill({ status: 401, body: 'no' }); }); // a visitor holds no key: nothing may be sent for them
+    const back = await W.ctx.newPage(); back.on('pageerror', (e) => errsW.push(String(e && e.message || e)));
+    await back.goto(base); await back.waitForTimeout(1500);
+    const away = await back.evaluate(() => window.__voidAway || null);
+    const line = await back.evaluate(() => (document.getElementById('away-note') || {}).textContent || '');
+    const left = await back.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'figure').map((t) => ({ k: t.kindOf, at: t.at, grow: t.nature && t.nature.grow })));
+    const flower = left.find((t) => t.k === 'flower'), zombie = left.find((t) => t.k === 'zombie');
+    check('away: a cloud, a flower, a zombie and a brain left for an hour: the line says "the cloud rained, the flower grew, the zombie found the brain", the brain is gone, the zombie stands where it was, the flower grew',
+      kept === 'brain,cloud,flower,zombie' && away && away.note === 'While you were away (1 hour): the cloud rained, the flower grew, the zombie found the brain.' && line === away.note && Math.abs(away.ms - 36e5) < 60e3
+      && visitorPosts === 0 && !left.some((t) => t.k === 'brain') && zombie && Math.hypot(zombie.at.x - 500, zombie.at.y - 300) < 3 && flower && flower.grow > 0.5 && !errsW.length,
+      JSON.stringify({ kept, away, line, left, errsW, visitorPosts }));
+    await back.reload(); await back.waitForTimeout(800);
+    check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway && !(document.getElementById('away-note') || {}).textContent), '');
+    await W.ctx.close(); }
+  { // frontier #11: two tabs on one invite link (?with=<room>). Here the live relay is not there (no Durable Object in this
+    // local server), so the tabs share through a BroadcastChannel: a clock summoned in one appears in the other, and the
+    // other tab's cursor shows as a faint presence; closing that tab takes the presence away.
+    const room = 'aaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbb', S = await fresh({ base: base + '?with=' + room });
+    const B = await S.ctx.newPage(); const errsS = []; B.on('pageerror', (e) => errsS.push(String(e && e.message || e)));
+    await B.goto(base + '?with=' + room); await B.waitForTimeout(900);
+    const saidA = await S.whisper();
+    await S.ask('clock', 900);
+    const onB = await B.$$eval('.thing', (n) => n.length); // on B's own stage (both tabs share one localStorage, so the saved state proves nothing)
+    await B.mouse.move(300, 200); await B.mouse.move(320, 220); await S.p.waitForTimeout(300);
+    const dot = await S.p.$eval('.void-presence', (e) => ({ x: parseFloat(e.style.left), y: parseFloat(e.style.top) })).catch(() => null);
+    await B.close(); await S.p.waitForTimeout(300);
+    const after = await S.p.$$eval('.void-presence', (n) => n.length);
+    check('shared Void: a clock summoned in one tab on an invite link appears in the other, its cursor is a presence here, and closing it ends the presence',
+      /tabs in this browser/.test(saidA) && onB === 1 && dot && Math.abs(dot.x - 320) < 40 && Math.abs(dot.y - 220) < 40 && after === 0 && !errsS.length && !S.errors.length,
+      JSON.stringify({ saidA, onB, dot, after, errsS, errs: S.errors }));
+    await S.ctx.close(); }
+  // asked by Void: what happened while you were away is also one execution record in your own scope (lib/scene-advance.js, kind scene.advance); the away line
+  // links to it and "my actions" shows the row. Here the owner's key is set and /api/actions is answered by the page's own stand-in.
+  { const M = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const figSrcM = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const namesM = Array.from(new Set(Array.from(figSrcM.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUBM = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + namesM.map((n) => n + '=U').join(',') + ';';
+    await M.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBM }));
+    const posted = [];
+    await M.ctx.route(/\/api\/actions(?:\?|$)/, (r) => { const q = r.request();
+      if (q.method() === 'POST') { posted.push({ auth: q.headers().authorization || '', b: JSON.parse(q.postData() || '{}') }); return r.fulfill(json({ id: 'act-scene-1' })); }
+      const t = new Date().toISOString();
+      return r.fulfill(json({ actions: posted.length ? [{ id: 'act-scene-1', owner: 'owner', kind: 'scene.advance', ref: 'stage', state: 'done', result: posted[0].b.note + ' [3 changes]', error: null, started: t, finished: t }] : [] })); });
+    await M.ctx.addInitScript(() => { try { if (sessionStorage.getItem('away-faked')) return; sessionStorage.setItem('away-faked', '1');
+      const fig = (id, kindOf, x, y, seed) => ({ id, kind: 'figure', kindOf, seed, x: 0, y: 0, at: { x, y }, title: kindOf });
+      localStorage.setItem('a2m.void.state.v1', JSON.stringify({ c: fig('c', 'cloud', 300, 100, 1), f: fig('f', 'flower', 310, 250, 2), z: fig('z', 'zombie', 100, 300, 3), b: fig('b', 'brain', 500, 300, 4) }));
+      localStorage.setItem('a2m.void.away.v1', String(Date.now() - 36e5)); } catch (_) {} });
+    await M.p.reload(); await M.p.waitForTimeout(1800);
+    const lineM = await M.p.evaluate(() => (document.getElementById('away-note') || {}).textContent || '');
+    const linkM = await M.p.$('#away-note .away-see');
+    if (linkM) { await linkM.click(); await M.p.waitForTimeout(900); }
+    const cardM = await M.p.$eval('.actions-card', (e) => e.innerText).catch(() => '');
+    check('away: asked by Void: with the owner\'s key the run is sent once as one scene record (the three changes, the owner\'s bearer), the line links to it, and "my actions" shows the scene.advance row',
+      posted.length === 1 && posted[0].auth === 'Bearer owner-k' && posted[0].b.op === 'scene' && posted[0].b.changes.length === 3 && /the zombie found the brain/.test(posted[0].b.note)
+      && /see what happened$/.test(lineM) && lineM.startsWith(posted[0].b.note) && /scene\.advance · stage/.test(cardM) && !M.errors.length,
+      JSON.stringify({ posted, lineM, cardM: cardM.slice(0, 200), errs: M.errors }));
+    await M.ctx.close(); }
+  // last place survives a page that never hid: the figure's own place is written on the scene's ordinary save (here an unrelated sticky), with no pagehide and no
+  // visibility change; a page opened afterwards puts the figure back there. Reduced motion keeps the figure still so the numbers are exact. three.js is stubbed.
+  { const L = await fresh({ content: 'try { localStorage.setItem("a2m.void.motion.v1", "still"); } catch (_) {}' });
+    const figSrcL = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const namesL = Array.from(new Set(Array.from(figSrcL.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUBL = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + namesL.map((n) => n + '=U').join(',') + ';';
+    await L.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBL }));
+    await L.ask('summon a zombie', 1200);
+    const live = await until(async () => { const v = await L.p.evaluate(() => (window.__void3d ? window.__void3d.state() : null)); return v && v.figures.length === 1 ? v.figures[0] : false; }, 6000);
+    let hid = false; await L.p.evaluate(() => { window.__hid = 0; document.addEventListener('visibilitychange', () => { window.__hid += 1; }); window.addEventListener('pagehide', () => { window.__hid += 1; }); });
+    await L.ask('add a sticky that says hello', 500); // an ordinary save, nothing to do with the figure
+    const kept = await L.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'figure').map((t) => t.at || null));
+    hid = (await L.p.evaluate(() => window.__hid)) > 0;
+    await L.p.close({ runBeforeUnload: false });
+    const back = await L.ctx.newPage(); await back.goto(base);
+    const again = await until(async () => { const v = await back.evaluate(() => (window.__void3d ? window.__void3d.state() : null)); return v && v.figures.length === 1 ? v.figures[0] : false; }, 8000);
+    check('away: last place survives a page that never hid: the zombie\'s own place is saved by the scene\'s ordinary save (no pagehide, no visibility change before it) and a new page puts it back there',
+      !!live && !hid && kept.length === 1 && kept[0] && Math.abs(kept[0].x - Math.round(live.x)) <= 2 && Math.abs(kept[0].y - Math.round(live.y)) <= 2 && !!again && Math.hypot(again.x - kept[0].x, again.y - kept[0].y) <= 3,
+      JSON.stringify({ live: live && [live.x, live.y], kept, hid, again: again && [again.x, again.y] }));
+    await L.ctx.close(); }
   { const G = await fresh(); let n = 0;
     await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
     await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
@@ -1069,31 +1169,126 @@ try {
       /16-tooth driver and a 32-tooth driven gear/.test(shown) && afterReload.saved.includes('gears') && !afterReload.saved.includes('quiz') && afterReload.cards === 0
       && afterKeep.saved.filter((k) => k === 'quiz').length === 1 && afterKeep.cards === 1, JSON.stringify({ shown, afterReload, afterKeep }));
     await Z.ctx.close(); }
+  // the goal card (skills/goal.js, frontier #18): "give me a challenge with this" beside the gears sets the first goal they
+  // do not already meet; the card takes their observations live (the stage's change event), so its "Now" line follows the
+  // gears' own steppers, and Check says what still needs changing, then that it is done
+  { const Y = await fresh();
+    await Y.ask('explain gears', 900);
+    await Y.p.$$eval('.gears-more', (b) => b[0].click()); await Y.p.waitForTimeout(200); // driver 16 -> 17: no longer half speed
+    await Y.ask('give me a challenge with this', 900);
+    const goalText = await Y.p.$eval('.goal-card .goal-text', (e) => e.textContent).catch(() => '');
+    const nowBefore = await Y.p.$eval('.goal-card .goal-now', (e) => e.textContent).catch(() => '');
+    await Y.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await Y.p.waitForTimeout(150);
+    const notYet = await Y.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    await Y.p.$$eval('.gears-less', (b) => b[0].click()); await Y.p.waitForTimeout(200); // driver back to 16: half speed
+    const nowAfter = await Y.p.$eval('.goal-card .goal-now', (e) => e.textContent).catch(() => '');
+    await Y.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await Y.p.waitForTimeout(150);
+    const done = await Y.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    await Y.p.$eval('.goal-card .goal-hint-btn', (b) => b.click()).catch(() => {});
+    const hint = await Y.p.$eval('.goal-card .goal-hint', (e) => (e.hidden ? '' : e.textContent)).catch(() => '');
+    const saved = await Y.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).map((t) => t.kind));
+    check('goal card: "give me a challenge with this" beside the gears sets "half as fast" (not already met); its Now line follows the gears\' own steppers live; Check says what still needs changing, then done; the hint gives no setting; the card is not saved',
+      /half as fast/.test(goalText) && /0\.53/.test(nowBefore) && /^Not yet:/.test(notYet) && /too high/.test(notYet) && /Driven turns per driver turn 0\.5\b/.test(nowAfter)
+        && /^Done:/.test(done) && /more teeth turns fewer times/.test(hint) && !/\b(?:12|16|24|32)\b/.test(hint) && saved.includes('gears') && !saved.includes('goal') && !Y.errors.length,
+      JSON.stringify({ goalText, nowBefore, notYet, nowAfter, done, hint, saved, errs: Y.errors }));
+    await Y.ctx.close(); }
+  // the same goal card on the Moon (frontier #18, no adapter): its orbit slider never saves while dragged, so the stage's
+  // capture-phase notice is what keeps the card live; first quarter (90°) is a waxing half, 270° is half lit but waning
+  { const X = await fresh();
+    await X.ask('explain moon phases', 900); await X.ask('give me a challenge with this', 900);
+    const goalText = await X.p.$eval('.goal-card .goal-text', (e) => e.textContent).catch(() => '');
+    const slide = (deg) => X.p.$eval('.moon-orbit', (r, d) => { r.value = String(d); r.dispatchEvent(new Event('input', { bubbles: true })); }, deg);
+    await slide(270); await X.p.waitForTimeout(150);
+    const nowWaning = await X.p.$eval('.goal-card .goal-now', (e) => e.textContent).catch(() => '');
+    await X.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await X.p.waitForTimeout(100);
+    const waning = await X.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    await slide(90); await X.p.waitForTimeout(150);
+    const nowWaxing = await X.p.$eval('.goal-card .goal-now', (e) => e.textContent).catch(() => '');
+    await X.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await X.p.waitForTimeout(100);
+    const done = await X.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    check('goal card on the Moon: the same card sets "a waxing phase with half its face lit"; dragging the orbit slider updates it live; 270° is half lit but waning (not yet, says which), 90° is done',
+      /waxing phase with half its face lit/.test(goalText) && /Waning/i.test(nowWaning) && /^Not yet:/.test(waning) && /still to change: Waxing or waning/.test(waning) && /matches: Lit fraction/.test(waning)
+        && /Waxing/.test(nowWaxing) && /^Done:/.test(done) && !X.errors.length, JSON.stringify({ goalText, nowWaning, waning, nowWaxing, done, errs: X.errors }));
+    await X.ctx.close(); }
+  // and on the lock (frontier #18, the third explainer, still no adapter): a choice of key and a slider, checked by the
+  // lock's own state word; a mismatched key all the way in is blocked (not yet), the matching key all the way in is ready
+  { const W = await fresh();
+    await W.ask('how does a lock work', 900); await W.ask('give me a challenge with this', 900);
+    const goalText = await W.p.$eval('.goal-card .goal-text', (e) => e.textContent).catch(() => '');
+    const key = (k) => W.p.$eval('.lock-key[data-key="' + k + '"]', (b) => b.click());
+    const insert = (v) => W.p.$eval('.lock-insertion', (r, x) => { r.value = String(x); r.dispatchEvent(new Event('input', { bubbles: true })); }, v);
+    await key('one-mismatch').catch(() => {}); await insert(100).catch(() => {}); await W.p.waitForTimeout(150);
+    await W.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await W.p.waitForTimeout(100);
+    const blocked = await W.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    await insert(0).catch(() => {}); await key('matching').catch(() => {}); await insert(100).catch(() => {}); await W.p.waitForTimeout(150); // keys change only withdrawn
+    const nowReady = await W.p.$eval('.goal-card .goal-now', (e) => e.textContent).catch(() => '');
+    await W.p.$eval('.goal-card .goal-check', (b) => b.click()).catch(() => {}); await W.p.waitForTimeout(100);
+    const done = await W.p.$eval('.goal-card .goal-feedback', (e) => e.textContent).catch(() => '');
+    check('goal card on the lock: "choose the key and bring the lock to ready"; a mismatched key all the way in is not yet (still to change: lock state), the matching key all the way in is done, live',
+      /bring the lock to ready/.test(goalText) && /^Not yet:/.test(blocked) && /still to change: Lock state/.test(blocked) && /Lock state Ready/.test(nowReady) && /^Done:/.test(done) && !W.errors.length,
+      JSON.stringify({ goalText, blocked, nowReady, done, errs: W.errors }));
+    await W.ctx.close(); }
   const ranBeforeProposal = gate.ran.length;
   // the proposal card (skills/proposal.js, build order step 3): a pasted customer request becomes an editable proposal with
   // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent
   { const P = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '");' });
     const REQ = 'Hi Adam,\n\nWe run a small bakery in Portland and our online orders come in through Shopify. We need the Zapier zap that copies each order into our Google Sheet fixed: since last week every order shows up twice and the morning bake list is wrong. We would also like someone to check the whole flow once a month so it does not break again before the holidays.\n\nCan you tell us what you would do and when you could start?\n\nThanks,\nMaria\nmaria@sunrisebakery.example';
+    // pasted the way a person pastes it: the one-line ask box keeps each line break as ' ⏎ ' (void.html's paste handler; blank
+    // lines fold) and the card keeps the whole request with its lines, not just the first one (lib/proposal.js multi)
+    const pastedREQ = REQ.replace(/\n{2,}/g, '\n');
     const actionsBefore = gate.env.DB.actions.size, callsBefore = gate.calls.length;
-    await P.p.fill('#input', 'turn this into a proposal:\n' + REQ); await P.p.keyboard.press('Enter');
+    await P.p.fill('#input', 'turn this into a proposal: '); await P.p.focus('#input');
+    await P.p.evaluate((x) => { const dt = new DataTransfer(); dt.setData('text/plain', x); document.querySelector('#input').dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true })); }, REQ);
+    await P.p.keyboard.press('Enter');
     await until(async () => P.p.$eval('.proposal-field[data-field="title"]', (e) => e.value).catch(() => ''), 6000);
     const field = (k) => P.p.$eval('.proposal-field[data-field="' + k + '"]', (e) => e.value).catch(() => '');
     const drafted = { title: await field('title'), asked: await field('asked'), scope: await field('scope'), price: await field('price'), timeline: await field('timeline'), next: await field('next'), to: await P.p.$eval('.proposal-to', (e) => e.value).catch(() => '') };
     await P.p.fill('.proposal-field[data-field="title"]', 'Fix the double orders'); await P.p.waitForTimeout(200);
     const kept = await P.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).find((t) => t.kind === 'proposal'));
-    await P.p.click('.proposal-send'); await P.p.waitForTimeout(900);
+    await P.p.$eval('.proposal-send', (b) => b.click()); await P.p.waitForTimeout(900); // a DOM click: the centred card's foot can sit under the ask dock in a short viewport
     const line = await P.whisper();
     const rec = [...gate.env.DB.actions.values()].slice(actionsBefore).find((a) => a.kind === 'proposal.send');
     check('proposal card: the pasted request becomes the proposal\'s fields (what they asked for, scope, a blank price line, timeline, next step, the customer\'s address), an edit is kept, Send asks the confirm line and records a stubbed proposal.send for the customer\'s domain, nothing sent',
       /^Proposal: the Zapier zap/.test(drafted.title) && /check the whole flow once a month/.test(drafted.asked) && /^- We need the Zapier zap/.test(drafted.scope) && /out of scope\]$/.test(drafted.scope)
       && drafted.price === '[price: left for the owner to fill in]' && /^\[/.test(drafted.timeline) && /Reply with a yes/.test(drafted.next) && drafted.to === 'maria@sunrisebakery.example'
-      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === REQ
+      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === pastedREQ
       && line === 'Send the proposal \u201cFix the double orders\u201d to maria@sunrisebakery.example? Yes / No'
       && gate.calls.slice(callsBefore).some((c) => c.type === 'a2m.approval.requested' && c.toolName === 'proposal.send' && c.args.to === 'maria@sunrisebakery.example')
       && rec && rec.state === 'stubbed' && rec.ref === 'sunrisebakery.example' && /nothing is sent/.test(rec.result || '') && gate.ran.length === ranBeforeProposal && !P.errors.length,
-      JSON.stringify({ drafted, kept: kept && { title: kept.fields && kept.fields.title }, line, rec, errs: P.errors }).slice(0, 600));
+      JSON.stringify({ drafted: { ...drafted, asked: drafted.asked.slice(0, 40), scope: drafted.scope.slice(0, 40) + '…' + drafted.scope.slice(-30) }, kept: kept && { title: kept.fields && kept.fields.title, request: kept.request === pastedREQ || kept.request }, line, rec: rec && { state: rec.state, ref: rec.ref, result: rec.result }, errs: P.errors }).slice(0, 900));
     await P.ask('no', 600);
     await P.ctx.close(); }
+  // the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the asker's scope and the card shows
+  // its first check as evidence; "my watches" lists them with pause and stop; a visitor without a key is told whose it is
+  { const V = await fresh();
+    await V.ctx.route(/\/api\/watch(?:\?|$)/, (r) => r.fulfill({ status: 401, body: 'no' })); // as functions/api/watch.js answers a stranger
+    await V.ask("tell me when it's below 0 in Oslo", 900);
+    const visitor = await V.p.$eval('.watch-card .watch-status', (e) => e.textContent).catch(() => '');
+    await V.ctx.close();
+    const W = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const calls = []; let watches = [];
+    const rec = (id) => ({ id: 'act-w1', owner: 'owner', kind: 'watch.check', ref: id, state: 'done', result: 'MATCH · -3°C in Oslo · watching for below 0°C in Oslo · told on the stage', error: null, started: '2026-10-10T09:00:00Z', finished: '2026-10-10T09:00:01Z' });
+    await W.ctx.route(/\/api\/watch(?:\?|$)/, (r) => {
+      const q = r.request(); const b = JSON.parse(q.postData() || '{}'); calls.push({ method: q.method(), auth: q.headers().authorization || '', body: b });
+      if (q.method() === 'POST') watches = [{ id: 'w1', name: 'Watch: below 0°C in Oslo', enabled: true, every: 15, watch: { kind: 'weather', place: 'Oslo', op: '<', value: 0, unit: 'c' }, tell: 'note', last: { at: '2026-10-10T09:00:01Z', matchedAt: '2026-10-10T09:00:01Z' }, checks: [rec('w1')] }];
+      if (q.method() === 'PATCH') watches = watches.map((w) => ({ ...w, enabled: !!b.enabled }));
+      if (q.method() === 'DELETE') watches = [];
+      return r.fulfill(json({ ...(q.method() === 'POST' ? { saved: { id: 'w1', do: [{ action: 'watch', watch: watches[0].watch }] }, check: { ok: true } } : {}), watches }));
+    });
+    await W.ask("tell me when it's below 0 in Oslo", 900);
+    await until(async () => W.p.$eval('.watch-row .watch-last', (e) => e.textContent).catch(() => ''), 5000);
+    const row = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
+    // pressed through the DOM: the card tilts toward the pointer (.lift), and a mouse click at its edge can land beside the button
+    await W.p.$eval('.watch-toggle', (b) => b.click()); await until(async () => /paused/.test(await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '')), 3000);
+    const paused = await W.p.$eval('.watch-row', (e) => e.innerText).catch(() => '');
+    W.p.on('dialog', (d) => d.accept()); await W.p.$eval('.watch-stop', (b) => b.click()); await until(async () => !(await W.p.$('.watch-row')), 3000);
+    const empty = await W.p.$eval('.watch-list', (e) => e.innerText).catch(() => '');
+    check('watch: "tell me when it\'s below 0 in Oslo" makes a watch (POST with the ask and the owner\'s key), the card shows it with its first check as evidence (a match, told on the stage), Pause pauses, Stop asks then removes it; a visitor is told watches are the owner\'s',
+      /Unlock Void|owner/.test(visitor) && calls[0] && calls[0].method === 'POST' && calls[0].body.ask === "tell me when it's below 0 in Oslo" && /^Bearer owner-k$/.test(calls[0].auth)
+      && /below 0°C in Oslo/.test(row) && /★ .*MATCH · -3°C in Oslo/.test(row) && /\(paused\)/.test(paused) && calls.some((c) => c.method === 'PATCH' && c.body.enabled === false)
+      && calls.some((c) => c.method === 'DELETE' && c.body.id === 'w1') && /Nothing is watched/.test(empty) && !W.errors.length,
+      JSON.stringify({ visitor, row: row.slice(0, 160), paused: paused.slice(0, 80), empty: empty.slice(0, 60), calls: calls.map((c) => c.method), errs: W.errors }));
+    await W.ctx.close(); }
   // "unlock <key>" is the first thing handled: pasted with or without the space (or "unlock" twice) it is saved on this
   // device and nothing carrying the key leaves the page (it once went to the answer model and the miss board).
   { meEnv.READ_TOKEN = '0123456789abcdef0123456789abcdef'; const U = await fresh(); const leaked = []; // the server checks the key first (owner login) U.p.on('request', (r) => { if (/0123456789abcdef0123/.test(r.url() + (r.postData() || ''))) leaked.push(r.url()); });
@@ -1184,6 +1379,22 @@ try {
       && /url\.pathname === '\/'/.test(sw) && !P.errors.length,
       JSON.stringify({ shown, meta, idInUrl, nf, card, heads, errors: P.errors }));
     await P.ctx.close(); }
+  // Every service has its page (/one-time-fix/ and friends, the way Code Review Pro has /code-review/): it loads,
+  // shows the live price from /api/catalog (the fix is stubbed at $26 to prove the live read, not the fallback), and
+  // links its Gumroad product.
+  { const SVC = [['one-time-fix', 'eozcma', 2600, null, '$26'], ['keep-it-running', 'keep-it-running-membership', 4900, 'monthly', '$49 a month'], ['full-stack-audit', 'full-stack-audit', 32500, null, '$325'], ['first-automation-setup', 'first-automation-setup', 10000, null, '$100']];
+    const cat = { products: SVC.map(([, slug, cents, rec]) => ({ slug, price_cents: cents, recurrence: rec, url: 'https://moonbeam846.gumroad.com/l/' + slug, available: true })) };
+    const V = await fresh(); const got = [];
+    await V.ctx.route(/\/api\/catalog(?:\?|$)/, (rt) => rt.fulfill(json(cat)));
+    for (const [id, slug, , , want] of SVC) {
+      await V.p.goto(base + id + '/');
+      const price = await until(async () => { const t = await V.p.$eval('#price', (e) => e.textContent).catch(() => ''); return t === want ? t : ''; }, 4000) || await V.p.$eval('#price', (e) => e.textContent).catch(() => '');
+      const buy = await V.p.$eval('#buy', (e) => ({ href: e.href, hidden: e.hidden, rel: e.rel })).catch(() => null);
+      const h1 = await V.p.$eval('h1', (e) => e.textContent).catch(() => '');
+      got.push({ id, price, ok: price === want && !!buy && buy.href === 'https://moonbeam846.gumroad.com/l/' + slug && !buy.hidden && /noopener/.test(buy.rel) && h1.length > 10 });
+    }
+    check('every service has its page: it loads, shows the live price from /api/catalog, and links its Gumroad product', got.every((g) => g.ok) && !V.errors.length, JSON.stringify(got) + ' ' + V.errors.join(' | '));
+    await V.ctx.close(); }
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
@@ -1249,6 +1460,15 @@ try {
   await t.ask('heart rate zone calculator', 700); const hrH = await t.page(); check('heart: "heart rate zone calculator" is a live form (age 40 = 90-153)', /Heart rate zone calculator/.test(hrH) && /90\u2013153/.test(hrH) && /Zone 5/.test(hrH), hrH.slice(0, 260));
   await t.ask('20% tip on 45', 700); const tipPg = await t.page(); check('tip amount', /Tip/.test(tipPg) && /\$9/.test(tipPg) && /Total/.test(tipPg) && /\$54/.test(tipPg), tipPg.slice(0, 180));
   await t.ask('split $85 three ways with 20% tip', 700); const tipSplit = await t.page(); check('tip and split', /Tip and split|\/ person/.test(tipSplit) && /Total/.test(tipSplit) && /Tip each|Bill each/.test(tipSplit), tipSplit.slice(0, 180));
+  { // "what can you do now that you couldn't last week?" is the growth card opening on the week, from the ledger itself
+    const L = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), from = Date.now() - 7 * 86400000;
+    const n = L.filter((e) => e && e.what && Date.parse(e.at) > from).length;
+    await t.ask("what can you do now that you couldn't last week?", 900); const wkPg = await t.page();
+    await t.ask('what can you do', 600); const menuPg = await t.page();
+    check('"what can you do now that you couldn\'t last week?" opens the growth card on the last 7 days from the ledger (since the date a week ago, the count, grouped by kind in plain words), and plain "what can you do" stays with Void\'s self answer',
+      /How Void has grown/.test(wkPg) && new RegExp('Since ' + new Date(from).toISOString().slice(0, 10) + ', ' + n + ' change').test(wkPg) && /new things? I can do/.test(wkPg) && !/How Void has grown/.test(menuPg),
+      JSON.stringify({ n, wk: wkPg.slice(0, 300), menu: menuPg.slice(0, 120) }));
+  }
   await t.ask('how much will i have if i save 200 a month for 20 years at 7%', 700); const svPg = await t.page(); check('savings: 200 a month for 20 years at 7% grows to $104,185 (monthly compounding), put in vs growth and a range', /Savings growth/.test(svPg) && /\$104,185/.test(svPg) && /\$48,000/.test(svPg) && /Investor\.gov/.test(svPg) && !/don't know this yet|on your calendar/i.test(svPg), svPg.slice(0, 220));
   await t.ask('how long to save 50000 if i save 500 a month', 700); const svTime = await t.page(); check('savings: time to a goal (no rate: 0% = 8 years 4 months, with 4% and 7% beside it)', /Time to your goal/.test(svTime) && /8 years 4 months/.test(svTime) && /7%/.test(svTime), svTime.slice(0, 220));
   await t.ask('how much do i need to save a month to have 1 million in 30 years at 7%', 700); const svNeed = await t.page(); check('savings: monthly amount a goal needs ($819.69 a month for $1M in 30 years at 7%)', /Monthly savings needed/.test(svNeed) && /\$819\.69/.test(svNeed) && /Start 5 years later/.test(svNeed), svNeed.slice(0, 220));
@@ -1526,11 +1746,13 @@ try {
   t = await fresh();
   const sent = (type) => gate.calls.filter((c) => c.type === type);
   const lastDecision = () => sent('a2m.approval.decision').slice(-1)[0] || {};
+  // the gate is shared by the whole run: the proposal card's Send has already asked once, so count from here
+  const callsAt = gate.calls.length, requestedAt = sent('a2m.approval.requested').length;
   await t.ask('send an email to jane@x.com saying hi', 700);
-  check('confirm line: visitors cannot send', /person at the screen/.test(await t.whisper()) && gate.calls.length === 0, await t.whisper());
+  check('confirm line: visitors cannot send', /person at the screen/.test(await t.whisper()) && gate.calls.length === callsAt, await t.whisper());
   await t.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
   await t.ask('send an email to jane@x.com saying hi', 900);
-  check('confirm line shows before a send (item 7)', (await t.whisper()) === 'Send this email to jane@x.com? Yes / No' && sent('a2m.approval.requested').length === 1 && gate.ran.length === 0, await t.whisper());
+  check('confirm line shows before a send (item 7)', (await t.whisper()) === 'Send this email to jane@x.com? Yes / No' && sent('a2m.approval.requested').length === requestedAt + 1 && gate.ran.length === 0, await t.whisper());
   await t.ask('no', 800);
   check('confirm line: no = it does not run', /^ok, nothing sent$/.test(await t.whisper()) && lastDecision().decision === 'reject' && !!lastDecision().reason && gate.ran.length === 0, await t.whisper());
   await t.ask('send an email to jane@x.com saying hi', 900); await t.p.click('#whisper [data-vc="yes"]'); await t.p.waitForTimeout(800);
@@ -2645,8 +2867,13 @@ try {
   { const agg = await import(new URL('../void-live-deploy/skills/aggravation.js', import.meta.url).href);
     const unit = agg.default.suite();
     const Q = await fresh();
-    const geo = (sel) => Q.p.evaluate((sel) => { const e = document.querySelector(sel), r = document.getElementById('row').getBoundingClientRect(); if (!e) return null; const b = e.getBoundingClientRect();
+    // measured once the card has stopped moving: it arrives with a transform transition (.35-.6 s), and on a busy runner a
+    // fixed wait can read it mid-flight (19 px off centre in verify run 38017904620). Up to 3 s for two equal reads in a row.
+    const geo1 = (sel) => Q.p.evaluate((sel) => { const e = document.querySelector(sel), r = document.getElementById('row').getBoundingClientRect(); if (!e) return null; const b = e.getBoundingClientRect();
       return { left: b.left, right: b.right, top: b.top, bottom: b.bottom, rowTop: r.top, vw: innerWidth }; }, sel);
+    const geo = async (sel) => { let last = await geo1(sel); const end = Date.now() + 3000;
+      while (Date.now() < end) { await Q.p.waitForTimeout(150); const g = await geo1(sel); if (JSON.stringify(g) === JSON.stringify(last)) return g; last = g; }
+      return last; };
     const fair = (g) => !!g && g.bottom <= g.rowTop - 4 && g.top >= 0 && g.left >= 0 && g.right <= g.vw && Math.abs((g.left + g.right) / 2 - g.vw / 2) <= 2;
     await Q.ask('play aggravation', 700);
     const aDesk = await geo('.aggravation-card');

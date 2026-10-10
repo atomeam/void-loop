@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { proposalOf, prepareProposal, parseProposal, ruleProposal, toMarkdown, fileNameOf, addressIn, proposalPrompt, PROPOSAL_SYSTEM, FIELDS, PRICE_BLANK } from '../void-live-deploy/lib/proposal.js';
+import { proposalOf, prepareProposal, parseProposal, ruleProposal, toMarkdown, toPlain, mailBody, fileNameOf, addressIn, proposalPrompt, PROPOSAL_SYSTEM, FIELDS, PRICE_BLANK } from '../void-live-deploy/lib/proposal.js';
 import skill from '../void-live-deploy/skills/proposal.js';
 import { redact } from '../void-live-deploy/lib/automation-fix.js';
 import { GATED, confirmLine, parseGatedAsk, fingerprint } from '../void-live-deploy/lib/approval-core.js';
@@ -28,6 +28,8 @@ test('the ways people ask for a proposal open it, and the paste is kept; look-al
   assert.equal(proposalOf('turn this into a proposal:\n' + REQUEST).request, REQUEST);
   assert.equal(proposalOf('turn this email into a proposal: we need our order flow fixed by June').request, 'we need our order flow fixed by June');
   assert.equal(proposalOf('write a proposal for this\n' + REQUEST).request, REQUEST);
+  // pasted into the page's one-line ask box: the line breaks arrive as ' ⏎ ' (blank lines fold) and the whole request is kept, not just its first line
+  assert.equal(proposalOf('turn this into a proposal: ' + REQUEST.replace(/\s*\r?\n\s*/g, ' ⏎ ')).request, REQUEST.replace(/\n{2,}/g, '\n'));
   for (const a of ['what is a proposal', 'propose a toast', 'marriage proposal ideas', 'research proposal format', 'proposal writing tips', 'how do I write a proposal', 'proposal', ''])
     assert.equal(proposalOf(a), null, a);
   for (const e of skill.examples) assert.ok(skill.match(e.toLowerCase(), e), e);
@@ -118,4 +120,22 @@ test('the confirm line knows proposal.send: the ask, the line, and a stubbed exe
   const d = await (await call({ type: 'a2m.approval.decision', approvalId: req.approvalId, decision: 'approve', actor: 'owner', argsFingerprint: req.argsFingerprint })).json();
   assert.equal(d.ran, false); assert.equal(d.note, 'not connected');
   assert.deepEqual(rows().map((r) => [r.kind, r.state]), [['proposal.send', 'stubbed'], ['confirm.proposal.send', 'stubbed']]);
+});
+
+test('toPlain: the proposal as plain text for a reply box: title first, each field under its label, no Markdown marks, the price line never dropped', () => {
+  const f = { title: 'Proposal: fix the order flow', asked: 'Fix the order flow by June.', approach: 'Look, fix, hand over.', scope: '- orders\n- emails', timeline: 'two weeks', next: 'Reply yes.' };
+  const t = toPlain(f);
+  assert.ok(t.startsWith('Proposal: fix the order flow\n\nWhat they asked for:\nFix the order flow by June.'), t);
+  assert.ok(t.includes('Price:\n' + PRICE_BLANK) && t.includes('Next step:\nReply yes.'), t);
+  assert.ok(!/^#/m.test(t), 'no Markdown headings');
+});
+
+test('a mail thread read off the page drafts from the message, not its headers: no subject, From line or mail-app words in the rule draft', () => {
+  const thread = 'Order flow\nFrom: Dana Reyes <dana@acme.test>\nto me\nHi, we need our order flow fixed by June. Orders stop syncing to the sheet and the confirmation emails go out twice. Can you send us a proposal?\nReply\nForward';
+  assert.equal(mailBody(thread), 'Hi, we need our order flow fixed by June. Orders stop syncing to the sheet and the confirmation emails go out twice. Can you send us a proposal?');
+  const f = ruleProposal(prepareProposal({ request: thread }));
+  assert.ok(!/From:|dana@|Order flow\b(?! fixed)|\bReply\b|Forward/.test(f.title + f.asked + f.scope), JSON.stringify(f));
+  assert.match(f.title, /order flow fixed by June/i);
+  assert.equal(addressIn(thread).to, 'dana@acme.test', 'the address still comes from the whole thread');
+  assert.equal(mailBody('Fix our order flow\nWe need it by June.'), 'Fix our order flow\nWe need it by June.', 'a pasted request with no headers is left as it is');
 });

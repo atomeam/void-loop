@@ -2,7 +2,7 @@
 // note from the page's own log a2m.void.loop.v1, alternatives with |). The score is how many are answered by what should answer
 // them (when an ask has "before", those setup asks run first on the same page; and, when an ask has "says", whose visible answer matches that pattern); growth is that score going up. External services are stubbed with plausible data: this measures Void, not their uptime.
 //   node tools/bench.mjs            prints each ask and what answered it, then the totals
-//   node tools/bench.mjs --score    prints only {"score","total","wrong":[...]} (the tests read this; tools/bench.best.json is the floor)
+//   node tools/bench.mjs --score    prints only {"score","total","wrong":[...],"env","cores","pages","latency":{p50,p95,n}} (plus "inconclusive","note" when the machine was under load: tools/bench-load.mjs) (the tests read this; tools/bench.best.json is the floor)
 //   node tools/bench.mjs --last 10  replays only the last 10 asks (fast while growing a new round; the score and floor use all)
 //   node tools/bench.mjs --probe c.json  tries candidate asks from a file, prints only the misses (bench.json untouched; asks it already has are skipped)
 //   node tools/bench.mjs --again         probes only the asks the last --probe missed
@@ -17,6 +17,7 @@
 // no fixed sleeps, so a fast answer is read at once and a busy machine still doesn't miss one.
 import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'; import crypto from 'node:crypto'; import path from 'node:path'; import { chromium } from 'playwright-core';
 import { CAPITALS, CURRENCIES } from '../void-live-deploy/skills/country.js';
+import { envName, latencyOf, verdict } from './bench-load.mjs';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
 // --probe file.json: try candidate asks (same shape) without touching bench.json; prints only the misses, so a big batch
@@ -25,7 +26,9 @@ const root = path.resolve(here, '..', 'void-live-deploy');
 const AGAIN = path.join(os.tmpdir(), 'void-probe-misses-' + crypto.createHash('sha1').update(here).digest('hex').slice(0, 10) + '.json'); // one per checkout
 const probeFile = process.argv.includes('--again') ? AGAIN : process.argv.includes('--probe') ? process.argv[process.argv.indexOf('--probe') + 1] : null;
 if (probeFile === AGAIN && !fs.existsSync(AGAIN)) { console.log('no misses saved from a last probe: run --probe <file> first'); process.exit(0); }
-let asks = JSON.parse(fs.readFileSync(probeFile ? path.resolve(probeFile) : path.join(here, 'bench.json'), 'utf8'));
+// BENCH_ASKS and BENCH_BEST point at other files so the tests can replay a few asks against a made-up floor (tools/bench-load.test.mjs)
+const BEST = process.env.BENCH_BEST ? path.resolve(process.env.BENCH_BEST) : path.join(here, 'bench.best.json');
+let asks = JSON.parse(fs.readFileSync(probeFile ? path.resolve(probeFile) : process.env.BENCH_ASKS ? path.resolve(process.env.BENCH_ASKS) : path.join(here, 'bench.json'), 'utf8'));
 // a probe skips asks the benchmark already has (same text, ignoring case): they are answered already and only cost time
 if (probeFile) { const have = new Set(JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8')).map((x) => x.ask.trim().toLowerCase()));
   const fresh = asks.filter((x) => !have.has(x.ask.trim().toLowerCase())); if (fresh.length < asks.length) console.log((asks.length - fresh.length) + ' already in bench.json, not probed'); asks = fresh; }
@@ -45,7 +48,7 @@ function benchKey() {
 }
 const exeForKey = () => [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe'].find((p) => p && fs.existsSync(p));
 const CACHE = path.join(os.tmpdir(), 'void-bench-pass-' + crypto.createHash('sha1').update(here).digest('hex').slice(0, 10) + '.json'); // one per checkout
-const cacheable = process.argv.includes('--score') && !probeFile && !process.argv.includes('--last');
+const cacheable = process.argv.includes('--score') && !probeFile && !process.argv.includes('--last') && !process.env.BENCH_ASKS;
 const key = cacheable ? benchKey() : '';
 if (cacheable && !process.argv.includes('--fresh')) { try { const c = JSON.parse(fs.readFileSync(CACHE, 'utf8'));
   if (c.key === key && c.result) { console.log(JSON.stringify({ ...c.result, cached: c.at })); process.exit(0); } } catch (_) {} }
@@ -100,10 +103,11 @@ async function one({ ask: a, want, says, before }) {
     if (await p.locator('.vpage').count()) await p.keyboard.press('Escape').catch(() => {}); }
   await p.evaluate(() => { window.__said = ''; });
   // wait for the answer itself (the page's own loop log), not a guessed time; a log that does not parse reads as empty (a miss)
-  await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, 4000);
+  const t0 = Date.now(); await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, 4000);
   const said = await p.evaluate(() => { const w = document.getElementById('whisper'); return (w && w.textContent) || window.__said || ''; }).catch(() => '');
   const log = await p.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } });
   const last = log.filter((x) => String(x.ask).trim() === a.trim()).pop();
+  const ms = Date.now() - t0; // how long the answer took; an ask the page never logged counts at the wait it gave up after, or a loaded machine would look fast
   const note = last ? String(last.note || '') : (said && !miss.length ? 'said' : '');
   const routed = !miss.length && new RegExp('^(' + want + ')').test(note);
   // "says": a pattern the visible answer must contain (the right ability AND the right value: "7 cubed" -> 343)
@@ -118,16 +122,23 @@ async function one({ ask: a, want, says, before }) {
   const valueOk = !says || new RegExp(says, 'i').test(shown);
   const right = routed && valueOk;
   await ctx.close();
-  return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right };
+  return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms };
 }
-const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || 6);
+// default: one page fewer than the cores, at most 6. At 6 on a 4-core machine the bench saturated itself (answers took 2.8 s at the median, 3.7 s at p95
+// of the 4 s it waits, two of five misses in a clean run were timing, and a full run takes about 20 min either way, it is CPU-bound): no headroom to see load in
+const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cpus().length - 1));
 let next = 0;
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]); } }));
 await browser.close(); server.close();
+// was the machine quiet? (tools/bench-load.mjs): misses plus slow answers mean the run says nothing about Void
+let best = {}; try { best = JSON.parse(fs.readFileSync(BEST, 'utf8')); } catch (_) {}
+const env = envName(), latency = latencyOf(out.map((x) => x.ms));
+const load = verdict({ misses: out.some((x) => !x.right), latency, baseline: best.latency && best.latency[env], pages: PAR });
 if (process.argv.includes('--score')) {
-  const result = { score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by) };
-  let floor = Infinity; try { floor = JSON.parse(fs.readFileSync(path.join(here, 'bench.best.json'), 'utf8')).score; } catch (_) {}
-  if (cacheable && result.score >= floor) try { fs.writeFileSync(CACHE, JSON.stringify({ key, at: new Date().toISOString(), result })); } catch (_) {}
+  const result = { score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by), env, cores: os.cpus().length, pages: PAR, latency };
+  if (load.inconclusive) { result.inconclusive = true; result.note = load.line; console.error(load.line); }
+  const floor = Number.isFinite(best.score) ? best.score : Infinity;
+  if (cacheable && !load.inconclusive && result.score >= floor) try { fs.writeFileSync(CACHE, JSON.stringify({ key, at: new Date().toISOString(), result })); } catch (_) {}
   console.log(JSON.stringify(result)); process.exit(0); }
 for (const x of out) if (!probeFile || !x.right) console.log((x.right ? '  ok  ' : ' ---- ') + x.ask.padEnd(42) + ' ' + (x.by + (x.right ? '' : '   (wants ' + x.want + ')')));
 const n = out.filter((x) => x.right).length;
@@ -136,5 +147,6 @@ const n = out.filter((x) => x.right).length;
 if (probeFile && out.some((x) => !x.right && /asked for code/.test(x.by))) console.log('("asked for code": Void did not see code in the ask. Name the language in NAMED and give looksLikeCode a reason to count a short paste, both in void-live-deploy/lib/code-review.js)');
 if (probeFile && out.some((x) => !x.right && /^review .* 0 \(wrong value\)/.test(x.by))) console.log('("review … 0 (wrong value)": the review found nothing. Add a rule to RULES in void-live-deploy/lib/code-review.js and a case to tools/review.test.mjs)');
 if (probeFile) { const missed = asks.filter((a) => !todo.includes(a)).concat(todo.filter((_, i) => !out[i].right)); fs.writeFileSync(AGAIN, JSON.stringify(missed, null, 1)); if (missed.length) console.log('(node tools/bench.mjs --again probes just these ' + missed.length + ' after a fix)'); }
-console.log('\n' + n + ' of ' + out.length + ' answered by what should answer them.');
-if (process.argv.includes('--json')) fs.writeFileSync(path.join(here, 'bench.last.json'), JSON.stringify(out, null, 1));
+console.log('\n' + n + ' of ' + out.length + ' answered by what should answer them (answers took p50 ' + latency.p50 + 'ms, p95 ' + latency.p95 + 'ms).');
+if (load.inconclusive) console.log(load.line);
+if (process.argv.includes('--json')) { if (load.inconclusive) console.log('bench.last.json kept as it was: an inconclusive run never replaces a conclusive one'); else fs.writeFileSync(path.join(here, 'bench.last.json'), JSON.stringify(out, null, 1)); }

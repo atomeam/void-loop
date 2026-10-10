@@ -3,7 +3,9 @@
  * glass marbles (cat's eyes with three vanes, swirls, clearies; each one its own from figures.js marbleLook) and a worn
  * agate shooter. Built from code. Nothing is simulated here: every frame poses the marbles from the card's one state
  * (skills/ringer-rules.js), and the spin of a rolling marble is the distance it moved over its radius.
- * data: { state: ringer state, or () => ringer state; onAim?(x, y) (metres on the ground, ring centre 0,0) }
+ * Drag to flick: press the shooter, pull back and let go (data.onPull(x, y) while pulling, data.onRelease() on letting go);
+ * a tap on the dirt aims, and a drag anywhere else looks around.
+ * data: { state: ringer state, or () => ringer state; onAim?(x, y), onPull?(x, y), onRelease?() (metres on the ground, ring centre 0,0) }
  * (plain data works too, so the behaviour contract in tools/test_3d.mjs can drive it)
  */
 import { marbleLook } from '../figures.js';
@@ -11,6 +13,7 @@ import * as R from '../ringer-rules.js';
 
 export default async function build(ctx, data) {
   const { THREE, root } = ctx;
+  const sh0 = (s) => s.marbles[0];
   const stateOf = (d) => (typeof d.state === 'function' ? d.state() : d.state);
   const made = []; // geometries, materials and textures to free
   const keep = (x) => { made.push(x); return x; };
@@ -59,16 +62,46 @@ export default async function build(ctx, data) {
     builtSeed = s.seed;
   }
 
-  // the aim: a faint chalk-white line from the shooter, as long as the power
+  // the aim: a faint chalk-white line from the shooter to where it would stop if it met nothing (ringer-rules.js reach), so
+  // a stronger flick draws a longer line and the line is honest about the dirt; while pulling, a chalk arc round the shooter
+  // fills with the power (a full circle is full power)
   const aimMat = keep(new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.55, depthWrite: false }));
   const aimLine = new THREE.Mesh(keep(new THREE.BoxGeometry(1, 0.0006, 0.0018)), aimMat); root.add(aimLine);
+  const arcMat = keep(new THREE.MeshBasicMaterial({ color: '#ffffff', transparent: true, opacity: 0.7, depthWrite: false, side: THREE.DoubleSide }));
+  let arc = null, arcPower = -1;
+  function powerArc(power, sh) {
+    if (Math.abs(power - arcPower) > 1e-3 || !arc) {
+      if (arc) { root.remove(arc); arc.geometry.dispose(); }
+      const r0 = sh.r * 1.9, sweep = Math.max(0.02, power) * Math.PI * 2;
+      arc = new THREE.Mesh(new THREE.RingGeometry(r0, r0 + 0.0016, 64, 1, 0, sweep).rotateX(-Math.PI / 2), arcMat); root.add(arc);
+      arcPower = power;
+    }
+    arc.position.set(sh.x, 0.0013, -sh.y);
+    arc.visible = true;
+  }
 
+  // knuckling down: a hand built from code rests behind the shooter while you aim, the knuckle of the bent forefinger on the
+  // dirt and the thumb tucked behind the marble; the thumb draws back with the power (a full flick is a full cock) and the hand
+  // lifts away while the marbles roll. It is posed from the same state as everything else.
+  const skin = keep(new THREE.MeshStandardMaterial({ color: '#c99673', roughness: 0.62 }));
+  const hand = new THREE.Group(); root.add(hand);
+  const knob = keep(new THREE.SphereGeometry(1, 18, 12)), bone = keep(new THREE.CylinderGeometry(1, 1, 1, 14));
+  const part = (geo, sx, sy, sz, x, y, z) => { const m = new THREE.Mesh(geo, skin); m.scale.set(sx, sy, sz); m.position.set(x, y, z); m.castShadow = true; hand.add(m); return m; };
+  // in the hand's own frame: +x points along the aim, the shooter sits at the origin
+  const K = R.SHOOTER;
+  part(knob, K * 2.6, K * 1.2, K * 2.9, -K * 4.2, K * 1.5, 0);                         // the back of the hand
+  for (let i = 0; i < 4; i++) part(knob, K * 0.85, K * 0.8, K * 0.7, -K * 2.5, K * 0.75, (i - 1.5) * K * 1.35); // knuckles, the first one down on the dirt
+  const thumb = new THREE.Group(); hand.add(thumb);
+  const thumbBone = new THREE.Mesh(bone, skin); thumbBone.scale.set(K * 0.55, K * 2.2, K * 0.55); thumbBone.rotation.z = Math.PI / 2; thumbBone.castShadow = true; thumb.add(thumbBone);
+  const thumbTip = new THREE.Mesh(knob, skin); thumbTip.scale.setScalar(K * 0.6); thumbTip.position.x = K * 1.1; thumb.add(thumbTip);
+  const thumbAt = (power) => -K * (1.6 + 1.6 * power); // the thumb's tip just behind the marble, drawn back as the power grows
+  let handPose = { visible: false, back: 0 };
   const axis = new THREE.Vector3(), q = new THREE.Quaternion();
-  let sig = '';
+  let sig = '', pulling = false;
   function pose() {
     const s = stateOf(ctx.handle ? ctx.handle.data : data);
     if (!s || !s.marbles) return false;
-    const now = [s.seed, s.t, s.phase, s.angle, s.power, s.shots].join('|');
+    const now = [s.seed, s.t, s.phase, s.angle, s.power, s.shots, pulling].join('|');
     if (now === sig) return false;
     if (s.seed !== builtSeed) buildMarbles(s);
     s.marbles.forEach((m, i) => {
@@ -78,10 +111,17 @@ export default async function build(ctx, data) {
       grp.userData.x = m.x; grp.userData.y = m.y;
       grp.position.set(m.x, m.r, -m.y);
     });
-    const sh = s.marbles[0], len = 0.04 + 0.14 * s.power;
+    const sh = s.marbles[0], gap = sh.r * 1.4, len = Math.max(0.004, R.reach(s).d - gap);
     aimLine.visible = s.phase === 'aim' && !s.over;
     aimLine.scale.x = len; aimLine.rotation.y = s.angle;
-    aimLine.position.set(sh.x + Math.cos(s.angle) * (len / 2 + sh.r * 1.4), 0.0012, -(sh.y + Math.sin(s.angle) * (len / 2 + sh.r * 1.4)));
+    aimLine.position.set(sh.x + Math.cos(s.angle) * (len / 2 + gap), 0.0012, -(sh.y + Math.sin(s.angle) * (len / 2 + gap)));
+    if (pulling && aimLine.visible) powerArc(s.power, sh); else if (arc) arc.visible = false;
+    hand.visible = aimLine.visible;
+    if (hand.visible) {
+      hand.position.set(sh.x, 0, -sh.y); hand.rotation.y = s.angle;
+      thumb.position.set(thumbAt(s.power) - K * 1.1, sh.r, 0);
+    }
+    handPose = { visible: hand.visible, back: hand.visible ? -thumbAt(s.power) : 0 };
     sig = now;
     return true;
   }
@@ -91,12 +131,48 @@ export default async function build(ctx, data) {
     const h = hits.find((x) => x.object === ground || x.object === ring); if (!h) return;
     const d = ctx.handle.data; if (d.onAim) d.onAim(h.point.x, -h.point.z);
   });
+  // drag to flick: a press on the shooter pulls it back (orbiting stops while pulling); the pointer's spot on the dirt goes to
+  // the card, which turns it into aim and power through the rules (ringer-rules.js pull), and letting go flicks
+  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), ray = new THREE.Raycaster(), hit = new THREE.Vector3(), ndc = new THREE.Vector2();
+  const onGround = (e) => {
+    const r = ctx.canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, ctx.camera);
+    return ray.ray.intersectPlane(plane, hit) ? [hit.x, -hit.z] : null;
+  };
+  const host = ctx.canvas.parentElement || ctx.canvas;
+  const down = (e) => {
+    if (e.button > 0) return;
+    const s = stateOf(ctx.handle.data), shooter = marbles.children[0];
+    if (!s || s.phase !== 'aim' || s.over || !shooter) return;
+    const hits = ctx.pick(e.clientX, e.clientY, [shooter]) || [];
+    if (!hits.length) return; // not on the shooter: a tap aims, a drag looks around
+    e.stopPropagation(); e.preventDefault();
+    if (ctx.controls) ctx.controls.enabled = false;
+    pulling = true; ctx.canvas.style.cursor = 'grabbing'; if (pose()) ctx.requestRender();
+    addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+  };
+  const move = (e) => {
+    if (!pulling) return;
+    const p = onGround(e), d = ctx.handle.data;
+    if (p && d.onPull) d.onPull(p[0], p[1]);
+  };
+  const up = (e) => {
+    if (!pulling) return;
+    removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
+    pulling = false; ctx.canvas.style.cursor = ''; if (pose()) ctx.requestRender();
+    if (ctx.controls) ctx.controls.enabled = true;
+    const d = ctx.handle.data;
+    if (e.type === 'pointerup' && d.onRelease) d.onRelease();
+  };
+  host.addEventListener('pointerdown', down, { capture: true });
+
   ctx.addContactShadow({ y: 0.0008, size: G * 2.4, opacity: 0.55, blur: 2.4, darkness: 0.8, exclude: [ground, ring] });
   ctx.frame(ring, { view: [0, 1.15, 0.7], pad: 1, ground: 'none', minZoom: 0.6, maxZoom: 8, light: [-0.6, 1.4, 0.5] }); // fit the ring itself: the marbles read at card size
   return {
     update() { if (pose()) ctx.requestRender(); },
     tick() { return pose(); },
-    state() { const s = stateOf(ctx.handle.data); return { marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible }; },
-    dispose() { for (const m of mats) m.dispose(); for (const x of made) x.dispose(); },
+    state() { if (pose()) ctx.requestRender(); /* read what the current state poses, not the last frame drawn */ const s = stateOf(ctx.handle.data); return { marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible, pulling, angle: s.angle, power: s.power, aimLength: aimLine.visible ? aimLine.scale.x + sh0(s).r * 1.4 : 0, reach: R.reach(s).d, arc: !!(arc && arc.visible), arcSweep: arc && arc.visible ? Math.max(0.02, arcPower) : 0, hand: handPose.visible, thumbBack: handPose.back, handBehind: handPose.visible ? (() => { const v = new THREE.Vector3(); hand.children[0].getWorldPosition(v); const sh = sh0(s); return (v.x - sh.x) * Math.cos(s.angle) + (-v.z - sh.y) * Math.sin(s.angle) < 0; })() : false }; },
+    dispose() { if (arc) arc.geometry.dispose(); host.removeEventListener('pointerdown', down, { capture: true }); for (const m of mats) m.dispose(); for (const x of made) x.dispose(); },
   };
 }

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · when did it start (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible,textarea:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+textarea{font:inherit;color:inherit;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px;min-height:70px;resize:vertical}
+canvas{width:100%;height:180px;border:1px solid rgba(255,255,255,.08);border-radius:12px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#state{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>when did it start · draft · not published</h1>
+  <p class="note">A small change that lasts is easy to miss when every day bounces around more than the change itself: sleep a little shorter, a reading a little higher. Page’s cumulative-sum test (CUSUM, 1954) adds up how far each number sits above (or below) the usual level, minus an allowance for ordinary noise, and raises a flag once the running total gets too big for chance. It is not magic: on made-up series of 60 numbers this page flags about 1 flat series in 11 by mistake and catches about half of shifts as small as 0.6 of the day-to-day spread (bigger shifts more often). It is a standard tool in quality control. Paste your own numbers (one per line, or separated by commas) or try a made-up series with a hidden shift. The page says whether there is a lasting shift, which way, and about where it began. Whether this catches a change in your own numbers before you would have noticed it yourself is an open question. Nothing leaves this browser and nothing is saved.</p>
+  <textarea id="nums" aria-label="your numbers, one per line or comma separated"></textarea>
+  <div class="row"><button id="run" type="button">look for a shift</button><button id="demo" type="button">made-up series</button></div>
+  <canvas id="plot" width="1200" height="360" aria-hidden="true"></canvas>
+  <div id="state" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  function el(id){return document.getElementById(id)}
+  function parse(t){return String(t||'').split(/[\s,;]+/).map(Number).filter(function(x){return isFinite(x)&&String(x)!==''}).slice(0,2000)}
+  function mean(a){return a.reduce(function(x,y){return x+y},0)/a.length}
+  function sd(a){var m=mean(a);return Math.sqrt(a.reduce(function(x,y){return x+(y-m)*(y-m)},0)/Math.max(1,a.length-1))}
+  // the usual level comes from the first third (at least 8 numbers); the noise from successive differences over the whole series,
+  // which a single lasting step hardly moves; k = half a standard deviation of allowance, h = 7 to raise the flag. Measured on
+  // made-up 60-number series here: about 1 flat series in 11 raises a false flag, and about half of 0.6-sd shifts are caught.
+  function cusum(xs,opts){opts=opts||{};var n=Math.max(8,Math.floor(xs.length/3)),mu=mean(xs.slice(0,n)),d=0;
+    for(var j=1;j<xs.length;j++)d+=(xs[j]-xs[j-1])*(xs[j]-xs[j-1]);var s=Math.sqrt(d/Math.max(1,xs.length-1)/2)||1,k=(opts.k||0.5)*s,h=(opts.h||7)*s;
+    var hi=0,lo=0,hiStart=-1,loStart=-1,up=[],down=[];
+    for(var i=0;i<xs.length;i++){var nh=Math.max(0,hi+xs[i]-mu-k),nl=Math.max(0,lo+mu-xs[i]-k);
+      if(hi===0&&nh>0)hiStart=i;if(lo===0&&nl>0)loStart=i;hi=nh;lo=nl;up.push(hi);down.push(lo);
+      if(hi>h)return{shift:'up',at:i,began:hiStart,mu:mu,sd:s,base:n,up:up,down:down,h:h};
+      if(lo>h)return{shift:'down',at:i,began:loStart,mu:mu,sd:s,base:n,up:up,down:down,h:h}}
+    return{shift:null,mu:mu,sd:s,base:n,up:up,down:down,h:h}}
+  // a made-up series: steady noise around 7.0 (sd 0.5), then from a hidden day on, lower by step (seeded, so a check can repeat it)
+  function rng(seed){return function(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}}
+  function gauss(r){var u=Math.max(1e-12,r()),v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
+  function demo(seed,n,at,step){var r=rng(seed),xs=[];for(var i=0;i<n;i++)xs.push(Math.round((7+0.5*gauss(r)+(i>=at?step:0))*100)/100);return xs}
+  function draw(xs,res){var c=el('plot'),g=c.getContext('2d'),W=c.width,H=c.height;g.clearRect(0,0,W,H);if(!xs.length)return;
+    var lo=Math.min.apply(null,xs),hi=Math.max.apply(null,xs),sx=function(i){return 20+i*(W-40)/Math.max(1,xs.length-1)},sy=function(v){return H-20-(v-lo)*(H-40)/Math.max(1e-9,hi-lo)};
+    g.strokeStyle='#5a5a62';g.setLineDash([6,6]);g.beginPath();g.moveTo(20,sy(res.mu));g.lineTo(W-20,sy(res.mu));g.stroke();g.setLineDash([]);
+    g.strokeStyle='#d8d8dc';g.lineWidth=2;g.beginPath();xs.forEach(function(v,i){i?g.lineTo(sx(i),sy(v)):g.moveTo(sx(i),sy(v))});g.stroke();
+    if(res.shift){g.fillStyle='rgba(255,210,58,.18)';g.fillRect(sx(res.began),0,sx(xs.length-1)-sx(res.began),H);g.fillStyle='#ffd23a';g.fillRect(sx(res.at)-1,0,3,H)}}
+  function look(){var xs=parse(el('nums').value);if(xs.length<24){el('state').textContent='at least 24 numbers, please (the first third sets the usual level)';draw([],{});return}
+    var r=cusum(xs);draw(xs,r);
+    el('state').textContent='usual level '+r.mu.toFixed(2)+' ± '+r.sd.toFixed(2)+' (from the first '+r.base+')\n'
+      +(r.shift?'a lasting shift '+r.shift+': flagged at number '+(r.at+1)+', and it seems to have begun around number '+(r.began+1)+' (shaded)':'no lasting shift bigger than ordinary noise')}
+  el('run').addEventListener('click',look);
+  el('demo').addEventListener('click',function(){el('nums').value=demo((Math.random()*4294967296)>>>0,60,25+Math.floor(Math.random()*25),-0.5).join('\n');look()});
+  // made-up series: a one-sd drop from number 30 is flagged after it and dated near it; flat noise mostly stays quiet; parse ignores junk
+  function selftest(){var xs=demo(12345,60,30,-0.5),r=cusum(xs);if(r.shift!=='down')return'missed the drop: '+JSON.stringify({shift:r.shift});
+    if(r.at<30||r.began<22||r.began>38)return'dated the drop wrong: began '+r.began+', flagged '+r.at;
+    var quiet=0;for(var s=1;s<=40;s++)if(cusum(demo(s*7919,60,999,0)).shift)quiet++;if(quiet>6)return quiet+' of 40 flat series flagged';
+    if(parse('1, 2\n3 ; x 4').join()!=='1,2,3,4')return'parse gave '+parse('1, 2\n3 ; x 4').join();return true}
+  window.__cusum={cusum:cusum,demo:demo,parse:parse,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

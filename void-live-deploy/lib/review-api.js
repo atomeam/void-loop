@@ -133,18 +133,94 @@ export function dropPhantoms(answer, known, code = '', clipped = false) {
   return out.join('\n\n').trim();
 }
 
+// The closer read must quote its evidence (2026-10-10). Every false claim it made tonight (#254, #256, #262, #270, #325) was about
+// code the model had not seen: a name declared outside the hunk, the mask, a line it miscounted. So the prompt asks for the findings
+// in one checkable shape, one per line, each ending with the code line quoted, and quoteCheck() drops any finding whose quote is not
+// in the code shown at that file (the pasted code, or the diff's lines of that file). A finding with no quote is dropped the same way.
+// The prose after the list stays for the person. tools/review-learn.mjs reads the same shape back (parseFinding).
+export const QUOTE_RULE = 'Answer in two parts. First the findings, one per line, in exactly this shape and nothing else on the line:\n'
+  + 'file:line — kind — one sentence — `the code line, quoted exactly as it appears`\n'
+  + 'kind is bug, risk or style. file:line is the file and the new-file line number as the diff shows them (for pasted code, just "line N"). '
+  + 'The quoted line is copied from the code shown, character for character, from the line you mean: a finding whose line you cannot quote is not a finding, leave it out. '
+  + 'Write the single word none when there is nothing to report. Then one blank line and a short plain summary for the person, with the fix for each finding.';
+const KINDS = new Set(['bug', 'risk', 'style', 'security', 'performance', 'readability', 'note', 'nit']);
+const SEP = /\s+[—–]\s+|\s+-\s+|\s*—\s*/;
+/** one line of the answer as a finding: { file, line, kind, sentence, quote } or null. The quote is the trailing backticked span. */
+export function parseFinding(text) {
+  const line = String(text || '').trim(); if (!line || line.length > 1200) return null;
+  const parts = line.split(SEP).map((x) => x.trim()).filter(Boolean);
+  if (parts.length < 3) return null;
+  const loc = parts[0].replace(/^[\s*\-•>]+|^\d+[.)]\s+/g, '').replace(/^\*\*|\*\*$/g, '').replace(/`/g, '').trim();
+  const lm = loc.match(/^(?:([\w./\\-]+?):)?\s*(?:line\s+)?L?(\d{1,6})\s*:?$/i); if (!lm) return null;
+  const kind = parts[1].replace(/\*/g, '').toLowerCase().replace(/^\((.*)\)$/, '$1').trim();
+  if (!KINDS.has(kind)) return null;
+  const last = parts[parts.length - 1], qm = parts.length > 3 ? last.match(/^`([^`]+)`\.?$/) : null;
+  const sentence = (qm ? parts.slice(2, -1) : parts.slice(2)).join(' — ').replace(/\*\*/g, '').trim();
+  return { file: lm[1] || '', line: +lm[2], kind, sentence, quote: qm ? qm[1] : null };
+}
+/** the code the model saw, as { file: [[line, text], …] } ('' for pasted code); the diff's new-file numbering for a diff */
+export function evidenceLines(code, isDiff) {
+  const out = { '': [] }, rows = String(code || '').split('\n');
+  if (rows.length && rows[rows.length - 1] === '') rows.pop(); // the newline that ends the text is not a line
+  if (!isDiff) { out[''] = rows.map((t, i) => [i + 1, t]); return out; }
+  let file = '', n = 1;
+  for (const l of rows) {
+    const g = l.match(/^diff --git a\/(?:.+?) b\/(.+)$/) || l.match(/^\+\+\+ b\/(.+)$/); if (g) { file = g[1]; out[file] = out[file] || []; continue; }
+    if (/^(?:index |--- )/.test(l)) continue;
+    const h = l.match(/^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@/); if (h) { n = +h[1]; continue; }
+    if (l.startsWith('-') || l.startsWith('\\')) continue;
+    out[file].push([n, l.startsWith('+') || l.startsWith(' ') ? l.slice(1) : l]); n++;
+  }
+  return out;
+}
+const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim();
+/**
+ * quoteCheck(answer, evidence) -> { text, kept, dropped }: every finding-shaped line is checked against the code; a quote found in
+ * that file keeps the finding (its line number corrected when the quote sits elsewhere), a quote found nowhere or a finding with no
+ * quote is dropped. Other lines (the summary) stay. Kept findings are separated by blank lines so each is its own paragraph.
+ */
+export function quoteCheck(answer, evidence) {
+  const out = []; let kept = 0, dropped = 0;
+  const files = Object.keys(evidence || {});
+  for (const raw of String(answer || '').split('\n')) {
+    const f = parseFinding(raw);
+    if (!f) { out.push(raw); continue; }
+    if (!f.quote || !norm(f.quote)) { dropped++; continue; } // no quote, no finding
+    let ev = evidence[f.file]; if (!ev && f.file) { const k = files.find((x) => x && (x.endsWith('/' + f.file) || f.file.endsWith('/' + x) || x.split('/').pop() === f.file.split('/').pop())); ev = k ? evidence[k] : null; }
+    if (!ev && !f.file) ev = files.length === 2 && evidence[''].length === 0 ? evidence[files[1]] : evidence['']; // pasted code, or a one-file diff named by line only
+    if (!ev) { dropped++; continue; }
+    const q = norm(f.quote), exact = q.length < 8;
+    const hits = ev.filter(([, t]) => { const n = norm(t); return exact ? n === q : n.includes(q) || (n.length >= 8 && q.includes(n)); });
+    if (!hits.length) { dropped++; continue; }
+    kept++;
+    if (hits.some(([n]) => Math.abs(n - f.line) <= 3)) { out.push('', raw.trim(), ''); continue; }
+    const at = hits[0][0]; // the quote sits elsewhere: the line number is corrected, the finding stays
+    out.push('', raw.trim().replace(/(^[\s*\-•>]*(?:\d+[.)]\s+)?`?(?:[\w./\\-]+?:)?\s*(?:line\s+)?L?)\d{1,6}/i, '$1' + at), '');
+  }
+  let text = out.join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  if (/^none\.?$/i.test(text) || (!text && !dropped)) text = 'Nothing to report on a closer read.';
+  if (!text) text = 'Nothing the closer read could quote from the code: ' + dropped + ' claim' + (dropped === 1 ? ' about lines not in it was' : 's about lines not in it were') + ' dropped.';
+  return { text, kept, dropped };
+}
+
 // The closer read by the model, told what the checks found. Keys are masked before the model sees anything. For a diff, the
-// touched files' imports come along (DIFF_RULE) and phantom findings are taken out of the answer (dropPhantoms).
-export async function closerRead(env, { ask, code, lang, diff, res, imports }) {
+// touched files' imports come along (DIFF_RULE) and phantom findings are taken out of the answer (dropPhantoms); then every finding
+// must quote its line (QUOTE_RULE, quoteCheck). closerReadDetail -> { answer, kept, dropped }; closerRead -> the answer alone.
+export async function closerReadDetail(env, { ask, code, lang, diff, res, imports }) {
   const im = importsText(imports), shown = clipForModel(redact(String(code || '')));
   const r = await env.AI.run(MODEL, {
     messages: [
-      { role: 'system', content: REVIEW_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE },
+      { role: 'system', content: REVIEW_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE + ' ' + QUOTE_RULE },
       { role: 'user', content: 'What they asked: ' + redact(String(ask || 'review this code')).slice(0, 300) + '\nLanguage (guessed): ' + lang + (diff ? '\n' + DIFF_RULE : '') + (shown.clipped ? '\n' + CLIP_RULE : '') + '\n\nQuick checks found:\n' + findingsText(res) + (im ? '\n\n' + redact(im) : '') + '\n\nThe code (keys masked):\n```\n' + shown.text + '\n```' },
     ],
     max_tokens: 1400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
   });
   const out = r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response));
+  if (!out) return { answer: '', kept: 0, dropped: 0 };
   const known = declaredNames(String(code || '') + '\n' + im);
-  return dropPhantoms(redact(String(out || '').trim()), known, String(code || '') + '\n' + im, shown.clipped);
+  // each finding line becomes its own paragraph first, so a phantom claim on one line never takes its neighbours with it
+  const spaced = redact(String(out).trim()).split('\n').map((l) => (parseFinding(l) ? '\n' + l.trim() + '\n' : l)).join('\n').replace(/\n{3,}/g, '\n\n');
+  const q = quoteCheck(dropPhantoms(spaced, known, String(code || '') + '\n' + im, shown.clipped), evidenceLines(shown.text, !!diff));
+  return { answer: q.text, kept: q.kept, dropped: q.dropped };
 }
+export async function closerRead(env, opts) { return (await closerReadDetail(env, opts)).answer; }

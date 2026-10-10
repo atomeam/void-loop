@@ -171,14 +171,26 @@ export async function run3dChecks({ check, fresh }) {
     check('moon explainer miniature: draws real pixels, the Moon follows the data (30° -> 200°, now on the far side), a remount by key moves the live one, the change shows on the canvas, it settles with no redraws while paused, under reduced motion too, and unmounting frees it',
       ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
   }
+  // ---- the lock explainer (explainer.pin-lock) through the same contract: the matching key half in, then fully in and turned 60°
+  {
+    const Lk = await import(pathToFileURL(path.join(root, 'skills', 'lock-rules.js')).href);
+    const a = Lk.setInsertion(Lk.create({ keyPreset: 'matching' }), 0.5), b = Lk.turnTo(Lk.setInsertion(Lk.create({ keyPreset: 'matching' }), 1), 60);
+    const c = await miniContract(fresh, { kind: 'lock', a: { state: a }, b: { state: b }, settledWhen: 'dragging' });
+    const ok = (r) => r.drawn && r.colours > 40 && r.same && r.stateA && r.stateA.state === 'inserting' && r.stateA.insertion === 0.5
+      && r.stateB.state === 'turned' && r.stateB.angle === 60 && r.stateB.aligned === 5 && r.stateB.driverY.every((y) => y === Lk.SHEAR + Lk.DRIVER / 2)
+      && r.redrew && r.settled && r.idleDraws === 0 && r.freed;
+    check('lock explainer miniature: draws real pixels (brass housing and plug, steel pins, springs, the key), poses from the one state (half in, then fully in and turned 60° with every driver pin waiting at the shear line), a remount by key moves the live one, it settles with no redraws, under reduced motion too, and unmounting frees it',
+      ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
+  }
   // ---- Ringer (build-order step 5) through the same contract: a new game, then the same game after a hard shot has settled
   {
     const Rr = await import(pathToFileURL(path.join(root, 'skills', 'ringer-rules.js')).href);
     const a = Rr.create(77), b = Rr.settle(Rr.flick(Rr.setPower(a, 1)));
     const c = await miniContract(fresh, { kind: 'ringer', a: { state: a }, b: { state: b }, settledWhen: 'rolling' });
     const ok = (r) => r.drawn && r.colours > 40 && r.same && r.stateA && r.stateA.marbles === 14 && r.stateA.left === 13 && r.stateA.aiming
+      && r.stateA.hand && r.stateA.handBehind && Math.abs(r.stateA.thumbBack - Rr.SHOOTER * (1.6 + 1.6 * a.power)) < 1e-9 // knuckled down behind the shooter, thumb cocked to the power
       && r.stateB.out === b.out && r.stateB.left === 13 - b.out && r.stateB.shots === 1 && r.redrew && r.settled && r.idleDraws === 0 && r.freed;
-    check('Ringer miniature: draws real pixels (dirt, chalk ring, 14 glass marbles), poses from the one state (13 in the ring, then ' + b.out + ' knocked out after a shot), a remount by key moves the live one, it settles with no redraws, under reduced motion too, and unmounting frees it',
+    check('Ringer miniature: draws real pixels (dirt, chalk ring, 14 glass marbles), poses from the one state (13 in the ring with a hand knuckled down behind the shooter, then ' + b.out + ' knocked out after a shot), a remount by key moves the live one, it settles with no redraws, under reduced motion too, and unmounting frees it',
       b.out >= 1 && ok(c.moving) && ok(c.still) && !c.errors.length, JSON.stringify(c));
   }
   // ---- Ringer end to end: "play marbles" stands the ring in the void, Flick rolls it from the card's own state until it stops
@@ -188,11 +200,12 @@ export async function run3dChecks({ check, fresh }) {
     const up = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'ringer'); return c && c.ready && c.draws > 0 ? c.key : false; }), 30000);
     const before = up && await F.p.evaluate((k) => window.__voidMini.state(k), up);
     if (up) { await F.p.evaluate(() => { const p = document.querySelector('.ringer-power'); p.value = '100'; p.dispatchEvent(new Event('input', { bubbles: true })); }); await F.p.click('.ringer-flick'); }
+    const rolling = up && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.rolling ? s : false; }, up), 5000);
     const after = up && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.shots === 1 && !s.rolling ? s : false; }, up), 20000);
     const status = await F.p.evaluate(() => (document.querySelector('.ringer-status') || {}).textContent || '');
-    check('Ringer: "play marbles" stands the ring in the void (14 marbles, 13 to knock out); Flick rolls it from the card\'s state until everything stops, and the card says how the shot went',
-      !!up && before && before.marbles === 14 && before.left === 13 && !!after && after.out >= 1 && /knocked out · 1 shot/.test(status) && F.errors.length === 0,
-      JSON.stringify({ up, before, after, status, errors: F.errors.slice(0, 3) }));
+    check('Ringer: "play marbles" stands the ring in the void (14 marbles, 13 to knock out); Flick rolls it from the card\'s state until everything stops (the hand lifts away while it rolls and comes back to aim), and the card says how the shot went',
+      !!up && before && before.marbles === 14 && before.left === 13 && before.hand && !!rolling && !rolling.hand && !!after && after.hand && after.out >= 1 && /knocked out · 1 shot/.test(status) && F.errors.length === 0,
+      JSON.stringify({ up, before, rolling: rolling && { hand: rolling.hand }, after, status, errors: F.errors.slice(0, 3) }));
     await F.ctx.close();
   }
   // ---- the growth tree (frontier #3) through the same contract: a 5-entry ledger, then a 6th entry grows in as a new tip
@@ -223,9 +236,50 @@ export async function run3dChecks({ check, fresh }) {
     const slide = async (v) => { await F.p.evaluate((v) => { const r = document.querySelector('.vpage .growth-when input'); r.value = String(v); r.dispatchEvent(new Event('input', { bubbles: true })); }, v);
       return until(() => F.p.evaluate((v) => { const s = window.__voidMini.state('growth-tree'); return s && !s.growing && (v === 0 ? s.branches === 1 : s.until === null) ? { s, day: document.querySelector('.vpage .growth-day').textContent } : false; }, v), 15000); };
     const first = await slide(0), last = await slide(9999);
-    check('"growth": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built)',
-      !!first && first.s.branches === 1 && first.s.ghosts === 0 && /2026-09-25 · 1 change\b/.test(first.day) && !!last && last.s.branches === at.n && last.s.ghosts > 0 && last.s.building && new RegExp('today, .* · ' + at.n + ' changes').test(last.day) && !F.errors.length,
-      JSON.stringify({ first, last, e: F.errors }));
+    // the will has an open want (the suite's /api/will says one), so today there is at least one bud, and the commits are new leaves
+    const buds = await until(() => F.p.evaluate(() => { const s = window.__voidMini.state('growth-tree'); return s && s.buds >= 1 && s.commitLeaves > 0 ? s : false; }), 15000);
+    check('"growth": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built, at least one bud for the will\'s open want, the last commits as new leaves)',
+      !!first && first.s.branches === 1 && first.s.ghosts === 0 && /2026-09-25 · 1 change\b/.test(first.day) && !!last && last.s.branches === at.n && last.s.ghosts > 0 && last.s.building && new RegExp('today, .* · ' + at.n + ' changes').test(last.day) && !F.errors.length && !!buds,
+      JSON.stringify({ first, last, buds, e: F.errors }));
+    await F.ctx.close();
+  }
+  // ---- "what can you do now that you couldn't last week?": the tree stands as it was a week ago, then this week's tips grow in
+  {
+    const F = await fresh();
+    // the week-ago tree stands for about a second; polling from here can miss it, because each evaluate waits behind a
+    // software-WebGL frame that takes about as long, so the page records the first week-ago pose itself, frame by frame
+    await F.p.evaluate(() => { window.__weekAgo = null; const look = () => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); if (s && s.until && !window.__weekAgo) window.__weekAgo = s; if (!window.__weekAgo) requestAnimationFrame(look); }; requestAnimationFrame(look); });
+    await F.ask("what can you do now that you couldn't last week?");
+    const seen = { weekAgo: null, today: null };
+    await until(async () => { const s = await F.p.evaluate(() => window.__voidMini && window.__voidMini.state('growth-tree')); if (s && s.until === null && !s.growing) seen.today = s; return seen.today; }, 60000);
+    seen.weekAgo = await F.p.evaluate(() => window.__weekAgo);
+    const day = await F.p.evaluate(() => { const d = document.querySelector('.vpage .growth-day'); return d && d.textContent; });
+    const n = await F.p.evaluate(async () => (await import('/skills/growth-tree.js')).layout(await (await fetch('/void.growth.json')).json()).branches.length);
+    check('"what can you do now that you couldn\'t last week?": the card\'s tree first stands as it was a week ago (fewer branches), then grows to today with this week\'s tips, the readout ending on today',
+      !!seen.weekAgo && !!seen.today && seen.weekAgo.branches < seen.today.branches && seen.today.branches === n && /^today, /.test(day || '') && !F.errors.length, JSON.stringify({ seen, day, n, e: F.errors }));
+    await F.ctx.close();
+  }
+  // ---- Ringer drag to flick: press the shooter on the 3D ring, pull it straight back and let go: one shot, aimed opposite the pull
+  {
+    const Rr = await import(pathToFileURL(path.join(root, 'skills', 'ringer-rules.js')).href);
+    const F = await fresh();
+    await F.ask('play marbles', 600);
+    const key = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'ringer'); return c && c.ready && c.draws > 0 ? c.key : false; }), 30000);
+    const z0 = Rr.RING + Rr.SHOOTER; // a new game's shooter sits at the edge, ring centre (0, 0); the ground's y is the state's -y
+    const at = key && await F.p.evaluate(([k, a, b]) => ({ from: window.__voidMini.project(k, a), to: window.__voidMini.project(k, b) }), [key, [0, Rr.SHOOTER, z0], [0, 0, z0 + Rr.PULL_MAX * 0.8]]);
+    let mid = null;
+    if (at && at.from && at.to) {
+      await F.p.mouse.move(at.from.x, at.from.y); await F.p.mouse.down();
+      for (let i = 1; i <= 6; i++) await F.p.mouse.move(at.from.x + (at.to.x - at.from.x) * i / 6, at.from.y + (at.to.y - at.from.y) * i / 6);
+      mid = await F.p.evaluate((k) => window.__voidMini.state(k), key);
+      await F.p.mouse.up();
+    }
+    const after = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.shots === 1 && !s.rolling ? s : false; }, key), 20000);
+    check('Ringer: on the 3D ring, pressing the shooter and pulling it straight back aims at the middle with the pull as power (orbit held while pulling), a chalk arc fills with the power and the aim line reaches where the shot would stop; letting go flicks it, one shot',
+      !!key && !!mid && mid.pulling && Math.abs(mid.angle - Math.PI / 2) < 0.2 && mid.power > 0.5 && mid.shots === 0 && !!after && after.shots === 1 && !after.pulling && F.errors.length === 0
+        // while pulling: the chalk arc shows the power and the aim line is drawn to where the shot would stop (ringer-rules.js reach)
+        && mid.arc && Math.abs(mid.arcSweep - mid.power) < 1e-3 && Math.abs(mid.aimLength - mid.reach) < 1e-6 && !after.arc,
+      JSON.stringify({ key, at, mid, after, errors: F.errors.slice(0, 3) }));
     await F.ctx.close();
   }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
@@ -404,6 +458,21 @@ export async function run3dChecks({ check, fresh }) {
       jumped = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'checkers'); return c && c.state.s.board[27] === 'd' && c.state.moves >= 2 && c.state.s.turn === 'd' ? true : false; }, 30000);
     }
     check('checkers: "play checkers" lays turned wooden men on the same board; tapping c3 then d4 moves your man and Void replies', !!ck && !!jumped && !F.errors.length, JSON.stringify({ ck, jumped, e: F.errors }));
+    // two boards on a 1280-wide stage don't both fit with their cards: the one pushed aside shrinks instead of half-covering the
+    // new one, and a tap on it brings it back (the other then shrinks in its place)
+    const boards = () => F.p.evaluate(() => {
+      const box = (n) => { const r = n.getBoundingClientRect(); return { x: r.x, y: r.y, r: r.right, b: r.bottom }; };
+      const of = (kind) => { const el = [...document.querySelectorAll('#stage > .thing[data-id]')].find((e) => e.dataset.id.startsWith(kind + '_')); if (!el) return null;
+        const side = document.querySelector('#stage > .side-card[data-of="' + el.dataset.id + '"]'); return { small: el.classList.contains('shrunk'), w: Math.round(el.getBoundingClientRect().width), parts: [box(el)].concat(side ? [box(side)] : []) }; };
+      const c = of('chess'), k = of('checkers'), hit = (a, b) => a.x < b.r && b.x < a.r && a.y < b.b && b.y < a.b;
+      return { stageW: document.getElementById('stage').clientWidth, chess: c, checkers: k, overlap: !!(c && k) && c.parts.some((a) => k.parts.some((b) => hit(a, b))) }; });
+    const shrunk = await until(async () => { const s = await boards(); return s.chess && s.chess.small && s.checkers && !s.checkers.small ? s : false; }, 8000) || await boards();
+    const smallAt = await F.p.evaluate(() => { const e = [...document.querySelectorAll('#stage > .thing.shrunk')].find((x) => x.dataset.id.startsWith('chess_')); if (!e) return null; const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    if (smallAt) await F.p.mouse.click(smallAt.x, smallAt.y);
+    const back = await until(async () => { const s = await boards(); return s.chess && !s.chess.small && s.checkers && s.checkers.small ? s : false; }, 8000) || await boards();
+    check('two boards on a 1280 stage: chess then checkers, the chess board moves aside shrunk (its card with it) and neither overlaps; a tap on the small chess board brings it back to full size and checkers shrinks instead',
+      shrunk.stageW === 1280 && !!shrunk.chess && shrunk.chess.small && !shrunk.checkers.small && !shrunk.overlap && !!smallAt && back.chess && !back.chess.small && back.chess.w >= 500 && back.checkers.small && !back.overlap && !F.errors.length,
+      JSON.stringify({ shrunk, back, e: F.errors }));
     // questions about chess are still questions (they open a page, which would cover the boards, so they come last)
     await F.ask('who invented chess', 400); await F.ask('chess rules', 400); await F.ask('checkers rules', 400);
     const after = await F.p.evaluate(() => ({ chess: document.querySelectorAll('.chess-card').length, checkers: document.querySelectorAll('.checkers-card').length }));
@@ -468,7 +537,8 @@ export async function run3dChecks({ check, fresh }) {
     const moved = await until(async () => { const t = (await F.state()).find((x) => x.kind === 'monopoly'); return t && t.state.moves >= 1 ? t.state : false; }, 10000);
     const owned = moved && Object.keys(moved.owner).filter((i) => moved.owner[i] === 0).length;
     check('monopoly: "play monopoly" stands the property board in 3D in the void with its card separate; Roll moves your pawn and buys nothing for you',
-      !!ready && sep && !!moved && moved.players[0].pos > 0 && owned === 0 && !F.errors.length, JSON.stringify({ ready, sep, pos: moved && moved.players[0].pos, phase: moved && moved.phase, owned, e: F.errors }));
+      // a roll of 2 or 7 from Go can draw "Advance to Go" (Community Chest, Chance) and end back on 0: the log says so
+      !!ready && sep && !!moved && (moved.players[0].pos > 0 || moved.log.some((l) => /Advance to Go/.test(l.text))) && owned === 0 && !F.errors.length, JSON.stringify({ ready, sep, pos: moved && moved.players[0].pos, phase: moved && moved.phase, owned, e: F.errors }));
     await F.ctx.close();
   }
   // ---- Battleship: the folding case in the void; a tap on the upright board fires; Void's fleet never reaches the page
@@ -514,8 +584,8 @@ export async function run3dChecks({ check, fresh }) {
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, sorry, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,sorry,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, ringer, sorry, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,ringer,sorry,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
     await F.ctx.close();
   }
   {

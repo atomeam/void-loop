@@ -6,6 +6,7 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const run = (args) => { const r = spawnSync(process.execPath, args, { cwd: resolve(here, '..'), encoding: 'utf8', timeout: 1800000 }); // 30 min: the full bench takes about 20 on a slow shared machine
@@ -28,6 +29,9 @@ for (const [name, file] of [
   ['growth', 'growth.test.mjs'],
   ['growth-tree', 'growth-tree.test.mjs'],
   ['review-learn', 'review-learn.test.mjs'],
+  ['bench-floor', 'bench-floor.test.mjs'],
+  ['bench-load', 'bench-load.test.mjs'],
+  ['merge-main', 'merge-main.test.mjs'],
   ['take', 'take.test.mjs'],
   ['sorry', 'sorry.test.mjs'],
   ['voice', 'voice.test.mjs'],
@@ -41,15 +45,21 @@ for (const [name, file] of [
   ['connect4', 'connect4.test.mjs'],
   ['explainers', 'explainers.test.mjs'],
   ['learning', 'learning.test.mjs'],
+  ['goal', 'goal.test.mjs'],
+  ['forge', 'forge.test.mjs'],
   ['learn', 'learn.test.mjs'],
   ['learn-draft', 'learn-draft.test.mjs'],
+  ['learn-e2e', 'learn.e2e.test.mjs'],
+  ['next-skill', 'next-skill.test.mjs'],
+  ['share', 'share.test.mjs'],
+  ['advance', 'advance.test.mjs'],
   ['automations', 'automations.test.mjs'],
   ['actions', 'actions.test.mjs'],
   ['ringer', 'ringer.test.mjs'],
   ['queue', 'queue.test.mjs'],
   ['actions-card', 'actions-card.test.mjs'],
-  ['services', 'services.test.mjs'],
-  ['proposal', 'proposal.test.mjs'],
+  ['services', 'services.test.mjs'], ['sale-jobs', 'sale-jobs.test.mjs'], ['reply-to-job', 'reply-to-job.test.mjs'],
+  ['proposal', 'proposal.test.mjs'], ['job-draft', 'job-draft.test.mjs'],
   ['memory-card', 'memory-card.test.mjs'],
   ['told-me', 'told-me.test.mjs'],
   ['memory', 'memory.test.mjs'],
@@ -57,6 +67,7 @@ for (const [name, file] of [
   ['draft', 'draft.test.mjs'],
   ['drafts', 'draft-check.mjs'],
   ['extension', 'test_extension.mjs'],
+  ['placement', 'placement.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
@@ -73,6 +84,14 @@ for (const [name, file] of [
 // back replaced the real folder with a link to itself
 { const bad = spawnSync('git', ['ls-files', '--', 'node_modules', 'node_modules/*'], { cwd: resolve(here, '..'), encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
   results.push(['tracked', !bad.length, bad.length ? 'git tracks ' + bad.slice(0, 3).join(', ') + ': git rm --cached it (a worktree runs its own npm ci, never a link)' : 'no installed files tracked']); }
+// no conflict marker anywhere in the tree (#291 merged one into the growth ledger): these checks run on the merged head, so a
+// merge of main made after they ran is not covered; run them again after merging main, before the push
+{ const root = resolve(here, '..'), marked = [];
+  for (const f of spawnSync('git', ['ls-files'], { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20 }).stdout.split('\n').filter(Boolean)) {
+    let t = ''; try { t = readFileSync(resolve(root, f), 'utf8'); } catch (_) { continue; }
+    if (t.length < 5e6 && !t.includes('\0')) for (const c of conflictMarkers(t)) marked.push(f + ':' + c.line);
+  }
+  results.push(['markers', !marked.length, marked.length ? 'conflict markers at ' + marked.slice(0, 5).join(', ') + ': settle the merge (node tools/merge-main.mjs) and remove them' : 'no conflict markers in the tree']); }
 // the bench and the deploy serve void-live-deploy/index.html: an edit to void.html that was not copied there is tested stale, silently
 { const read = (f) => readFileSync(resolve(here, '..', f), 'utf8').replace(/\r\n/g, '\n'), src = read('void.html');
   const stale = ['void-live-deploy/index.html', 'void-live-deploy/void.html'].filter((f) => read(f) !== src);
@@ -81,10 +100,10 @@ for (const [name, file] of [
 // domains/void.frontier.md); CI runs it as its own job (.github/workflows/bench.yml) and reports the number on the PR, and a drop below
 // the floor is a fix PR, never a wait. Without the variable this row replays it as before.
 if (process.env.VOID_SKIP_BENCH) results.push(['bench', true, 'skipped: CI runs it (bench.yml)']);
-else { const r = run([resolve(here, 'bench.mjs'), '--score']); let b = null; try { b = JSON.parse(r.out[r.out.length - 1]); } catch (_) {}
+else { const r = run([resolve(here, 'bench.mjs'), '--score']); let b = null; try { b = JSON.parse(r.out.filter((l) => l.startsWith('{')).pop()); } catch (_) {} // stderr is merged in: the JSON is the last line that starts with {
   const best = JSON.parse(readFileSync(resolve(here, 'bench.best.json'), 'utf8'));
-  const ok = !!b && b.score >= best.score && b.total >= best.total;
-  results.push(['bench', ok, b ? `${b.score}/${b.total} (floor ${best.score})${b.cached ? ' (nothing it reads changed since the passing run at ' + b.cached + '; not replayed: --fresh forces it)' : ''}${b.wrong.length ? ' wrong: ' + b.wrong.join(' | ') : ''}` : r.out.slice(-2).join(' ')]); }
+  const ok = !!b && (b.inconclusive || (b.score >= best.score && b.total >= best.total)); // inconclusive: the machine was under load (tools/bench-load.mjs), so the score says nothing; it is not a failure and not a pass
+  results.push(['bench', ok, b ? `${b.inconclusive ? b.note + ' - ' : ''}${b.score}/${b.total} (floor ${best.score})${b.cached ? ' (nothing it reads changed since the passing run at ' + b.cached + '; not replayed: --fresh forces it)' : ''}${b.wrong.length ? ' wrong: ' + b.wrong.join(' | ') : ''}` : r.out.slice(-2).join(' ')]); }
 { // the board reader must drop anything key-like before it prints (tools/misses.mjs)
   const { redact } = await import('./misses.mjs');
   const cases = [['unlock abcdEFGH12345678zz', null], ['my key is Zx9kQ2mP7vR4tY8wL3nB', null], ['mail sam@example.com', 'mail [email]'],
@@ -98,5 +117,5 @@ else { const r = run([resolve(here, 'bench.mjs'), '--score']); let b = null; try
   const bad = cases.filter(([a, want]) => isNoise(a) !== want);
   results.push(['noise', !bad.length && py, !py ? 'tools/will.py no longer uses the noise list' : bad.length ? 'noise wrong for: ' + bad.map((c) => c[0]).join(' | ') : cases.length + ' noise cases ok (miss board and will)']); }
 if (process.env.VOID_SKIP_BENCH && !results.some(([n, , l]) => n === 'bench' && /^skipped/.test(l))) results.push(['self', false, 'VOID_SKIP_BENCH is set but the bench row did not say skipped']);
-for (const [n, ok, line] of results) console.log((ok ? 'ok   ' : 'FAIL ') + n.padEnd(9) + line);
+for (const [n, ok, line] of results) console.log((ok ? (/^inconclusive/.test(line) ? 'inconclusive ' : 'ok   ') : 'FAIL ') + n.padEnd(9) + line);
 process.exit(results.every((r) => r[1]) ? 0 : 1);

@@ -111,6 +111,120 @@ export const CONDITIONS = {
     step(st, env, dt) { return { grow: Math.min(1, st.grow + (env.rainedOn ? dt * 0.12 : 0)) }; },
   },
 };
+// advance: the world lives on while you are away. Two things happen to what you left on the stage, with no clock and no
+// Math.random, so the same things and the same ms end the same on every device:
+//  1. conditions: a cloud, ice and a flower are stepped with the same CONDITIONS and climateAt the stage runs live;
+//  2. reactions: the NATURES that are reactions play out between the things that are there: a zombie walks to a brain and
+//     eats it, a dog goes for a bone, a cat catches a mouse (the mouse flees, a cat flees a dog), a bee finds a flower.
+// Fixed steps of AWAY_STEP_S seconds; each seed gives a thing a steady pace of its own (0.9x to 1.1x) and that is all a
+// seed changes. things: [{ id, kindOf|kind, x, y, at?: { x, y }, seed?, nature?, title? }]: `at` is where the figure last
+// was (its own place, which beats the card's x, y). opts.bounds { w, h } is the stage (default 1200 x 700). Returns
+// { things: the same things moved on (an eaten one carries gone: true), changes: [{ id, kind, what, with? }], note }.
+export const AWAY_MIN_MS = 60e3; // under a minute away there is nothing to tell
+export const AWAY_MAX_MS = 24 * 36e5; // a day is as far as the world is replayed
+export const AWAY_STEP_S = 5; // seconds per simulated step
+export const WALK_PX_S = { zombie: 14, cat: 60, dog: 70, mouse: 55, rabbit: 50, monkey: 45, shark: 40, fish: 30, bee: 80 }; // how fast each walks
+const NEAR_PX = 24, FLEE_SEES_PX = 300;
+const paceOf = (seed) => { let h = (Number(seed) || 0) >>> 0; h = Math.imul(h ^ (h >>> 16), 2246822507) >>> 0; h = Math.imul(h ^ (h >>> 13), 3266489909) >>> 0; return 0.9 + 0.2 * (((h ^ (h >>> 16)) >>> 0) / 4294967296); };
+const kindOfThing = (t) => String((t && (t.kindOf || t.kind)) || '');
+const placeOf = (t) => (t.at && Number.isFinite(t.at.x) && Number.isFinite(t.at.y) ? { x: t.at.x, y: t.at.y } : { x: Number(t.x) || 0, y: Number(t.y) || 0 });
+export function awayText(ms) {
+  const m = Math.round(ms / 6e4);
+  if (m < 60) return m + ' min';
+  const h = Math.round(m / 60);
+  return h < 48 ? (h === 1 ? '1 hour' : h + ' hours') : Math.round(h / 24) + ' days';
+}
+const REACTION_WORDS = { eat: 'found', follow: 'found', chase: 'caught' };
+export function advance(things, ms, opts = {}) {
+  const list = Array.isArray(things) ? things.filter((t) => t && t.id != null) : [];
+  const away = Math.max(0, Math.min(AWAY_MAX_MS, Math.floor(Number(ms) || 0)));
+  const W = Math.max(100, Number(opts.bounds && opts.bounds.w) || 1200), H = Math.max(100, Number(opts.bounds && opts.bounds.h) || 700);
+  const nat = new Map(list.map((t) => [t.id, natureOf(kindOfThing(t))]));
+  const conds = list.filter((t) => CONDITIONS[kindOfThing(t)]);
+  const actors = list.filter((t) => Object.keys(nat.get(t.id).reactsTo).length);
+  if (!away || (!conds.length && !actors.length)) return { things: list.map((t) => ({ ...t })), changes: [], note: '' };
+  const cur = new Map(conds.map((t) => [t.id, t.nature ? { ...t.nature } : CONDITIONS[kindOfThing(t)].start()]));
+  const first = new Map([...cur].map(([id, st]) => [id, { ...st }]));
+  const fell = new Map();
+  const pos = new Map(list.map((t) => [t.id, placeOf(t)]));
+  const moved = new Set(), gone = new Set(), done = new Set(), reacted = [];
+  const tagsOf = (id) => nat.get(id).tags;
+  const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+  const walk = (id, from, to, step, away_) => { // one step toward (or away from) a point, kept on the stage
+    const d = dist(from, to); if (d < 1e-9) return from;
+    const k = (away_ ? -1 : 1) * Math.min(step, away_ ? step : d) / d;
+    moved.add(id);
+    return { x: Math.max(0, Math.min(W, from.x + (to.x - from.x) * k)), y: Math.max(0, Math.min(H, from.y + (to.y - from.y) * k)) };
+  };
+  let left = away / 1000;
+  while (left > 1e-9) {
+    const dt = Math.min(AWAY_STEP_S, left); left -= dt;
+    // 1. conditions
+    const others = conds.map((t) => ({ id: t.id, x: pos.get(t.id).x, y: pos.get(t.id).y, kind: kindOfThing(t), state: cur.get(t.id) }));
+    const next = new Map();
+    for (const t of conds) {
+      const p = pos.get(t.id);
+      const env = climateAt({ id: t.id, x: p.x, y: p.y }, others);
+      const st = CONDITIONS[kindOfThing(t)].step(cur.get(t.id), env, dt * paceOf(t.seed));
+      next.set(t.id, st);
+      if (st.falling) fell.set(t.id, st.falling);
+    }
+    for (const [id, st] of next) cur.set(id, st);
+    // 2. reactions, in the order the things were left
+    for (const a of actors) {
+      if (gone.has(a.id)) continue;
+      const step = (WALK_PX_S[kindOfThing(a)] || 40) * paceOf(a.seed) * dt, me = pos.get(a.id), rx = nat.get(a.id).reactsTo;
+      // afraid first: a chaser close by (not one that has already caught this one) and it runs
+      let chaser = null, cd = FLEE_SEES_PX;
+      for (const o of actors) {
+        if (o === a || gone.has(o.id) || done.has(o.id + '>' + a.id)) continue;
+        const ro = nat.get(o.id).reactsTo;
+        if (!tagsOf(a.id).some((tg) => ro[tg] === 'chase')) continue;
+        if (!Object.entries(rx).some(([tg, r]) => r === 'flee' && tagsOf(o.id).includes(tg))) continue;
+        const d = dist(me, pos.get(o.id)); if (d < cd) { cd = d; chaser = o; }
+      }
+      if (chaser) { pos.set(a.id, walk(a.id, me, pos.get(chaser.id), step, true)); continue; }
+      // otherwise go for the nearest thing it reacts to
+      let goal = null, how = null, gd = Infinity;
+      for (const o of list) {
+        if (o === a || gone.has(o.id) || done.has(a.id + '>' + o.id)) continue;
+        const r = Object.entries(rx).find(([tg, v]) => v !== 'flee' && tagsOf(o.id).includes(tg));
+        if (!r) continue;
+        const d = dist(me, pos.get(o.id)); if (d < gd) { gd = d; goal = o; how = r[1]; }
+      }
+      if (!goal) continue;
+      const near = Math.max(NEAR_PX, step);
+      if (gd <= near) {
+        pos.set(a.id, { ...pos.get(goal.id) }); moved.add(a.id); // it ends beside what it caught or found
+        done.add(a.id + '>' + goal.id);
+        reacted.push({ id: a.id, kind: kindOfThing(a), what: REACTION_WORDS[how] || 'found', with: kindOfThing(goal) });
+        if (how === 'eat') gone.add(goal.id);
+      } else pos.set(a.id, walk(a.id, me, pos.get(goal.id), step, false));
+    }
+  }
+  const changes = [];
+  for (const t of conds) {
+    const k = kindOfThing(t), a = first.get(t.id), b = cur.get(t.id);
+    if (k === 'cloud' && fell.has(t.id)) changes.push({ id: t.id, kind: k, what: fell.get(t.id) === 'snow' ? 'snowed' : 'rained' });
+    else if (k === 'ice' && b.melt - a.melt >= 0.05) changes.push({ id: t.id, kind: k, what: b.gone ? 'melted away' : 'melted' });
+    else if (k === 'flower' && b.grow - a.grow >= 0.05) changes.push({ id: t.id, kind: k, what: 'grew' });
+  }
+  changes.push(...reacted);
+  const groups = new Map();
+  for (const c of changes) { const key = c.kind + '|' + c.what + '|' + (c.with || ''); const g = groups.get(key) || { ...c, n: 0 }; g.n += 1; groups.set(key, g); }
+  const parts = [...groups.values()].map((g) => (g.n > 1 ? g.n + ' ' + g.kind + 's ' : 'the ' + g.kind + ' ') + g.what + (g.with ? ' the ' + g.with : ''));
+  const note = parts.length ? 'While you were away (' + awayText(away) + '): ' + parts.join(', ') + '.' : '';
+  return {
+    things: list.map((t) => {
+      const out = { ...t };
+      if (cur.has(t.id)) out.nature = cur.get(t.id);
+      if (moved.has(t.id)) { const p = pos.get(t.id); out.at = { x: Math.round(p.x), y: Math.round(p.y) }; }
+      if (gone.has(t.id)) out.gone = true;
+      return out;
+    }),
+    changes, note,
+  };
+}
 export function natureOf(subject) {
   const tags = [], reactsTo = {};
   for (const [re, t, r] of NATURES) if (re.test(String(subject || ''))) { tags.push(...t); Object.assign(reactsTo, r); }
@@ -261,6 +375,6 @@ export function pickNearbyReaction(self, others, maxDist = 220) {
 
 export default {
   KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, ACTION_TO_ACT, FALLBACKS,
-  subjectKey, tagsFor, fallbackScript, trimScript, pickIdleAction, visualAct, allowsDrive, natureOf, NATURES, climateAt, precipFor, CONDITIONS,
+  subjectKey, tagsFor, fallbackScript, trimScript, pickIdleAction, visualAct, allowsDrive, natureOf, NATURES, climateAt, precipFor, CONDITIONS, advance, awayText,
   pickReaction, pickNearbyReaction,
 };

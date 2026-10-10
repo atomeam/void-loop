@@ -416,6 +416,7 @@
       filter: blur(40px); opacity: .7; animation: auraDrift 60s ease-in-out infinite alternate; }
     @keyframes auraDrift { to { transform: translate(3%, -2%) scale(1.08); } }
     #stage { perspective: 1400px; }
+    #stage > .shrunk, #stage > .shrunk * { cursor: zoom-in; } /* a board shrunk beside a newer one: a tap brings it back */
     .thing { transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
       transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .35s ease; filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); }
     .thing.lift { --tz: 18px; filter: drop-shadow(0 26px 40px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(140,170,255,.18)); }
@@ -454,6 +455,10 @@
     #input:focus, #input:focus-visible { outline: none; }
     #row:focus-within { border-color: rgba(150,175,255,.6); box-shadow: 0 0 0 1px rgba(150,175,255,.10), 0 0 40px rgba(110,140,255,.12), 0 20px 60px rgba(0,0,0,.5); }
     #dock { background: linear-gradient(to top, color-mix(in srgb, var(--void-bg, #050505) 92%, transparent) 55%, transparent); z-index: 5; }
+    /* the dock's top is a fade you see through: a card's button showing there takes the click; only what is in the dock
+       (the suggestions, the ask bar, the status lines) catches the pointer */
+    #dock { pointer-events: none; }
+    #dock > * { pointer-events: auto; }
     #hints { backdrop-filter: blur(10px); }
     /* the same ask again: the page that is already open answers with a brief glow instead of a second fetch */
     @keyframes vpage-again { 0% { box-shadow: 0 0 0 1px rgba(150,175,255,.45), 0 0 60px rgba(110,140,255,.30); } 100% { box-shadow: none; } }
@@ -556,6 +561,11 @@
     /* the status line under the ask bar: a quiet, centred caption that fades, never a stray left-aligned word */
     #whisper { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; margin-top: 8px; transition: opacity .25s ease; }
     #whisper:empty { opacity: 0; }
+    /* someone else in your Void (frontier #11): their cursor, a faint glow that follows them */
+    .void-presence { position: fixed; z-index: 40; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, color-mix(in srgb, var(--fg) 45%, transparent) 0%, transparent 70%); box-shadow: 0 0 14px color-mix(in srgb, var(--fg) 25%, transparent); transition: left .08s linear, top .08s linear; }
+    #away-note { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; transition: opacity .25s ease; }
+    #away-note:empty { opacity: 0; }
+    #away-note .away-see { color: var(--fg); text-underline-offset: 2px; }
     /* smooth background: the grain lives on its own unscaled layer, so the dark gradient dithers instead of banding or streaking */
     #void-depth::after { content: none; }
     body::after { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05; mix-blend-mode: overlay;
@@ -691,12 +701,14 @@
       <button id="go" type="button" aria-label="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
+    <div id="away-note" role="status" aria-live="polite"></div>
   </div>
   <script>
     // Private learning log — never shown as product claims.
     // freerEnglishParse — natural-language intent for clock (+ sticky)
     const LOOP_KEY = 'a2m.void.loop.v1';
     const STATE_KEY = 'a2m.void.state.v1';
+    const AWAY_KEY = 'a2m.void.away.v1'; // when this stage was last left or saved: the world lives on from then (advance in skills/scripts.js)
     // plan item 6: the passkey session on this device ({ token, userId, rev, sig, synced }); see "Your Void follows you" below
     const ME_KEY = 'a2m.void.me.v1';
     const PAGE = window.__VOID_PAGE__ || null; // a-to-mind.com/@name: someone's published Void (functions/[handle].js), shown, never saved over yours
@@ -704,6 +716,9 @@
     let minePushT = 0, minePulled = 0, mineQuiet = false, pendingForget = null, pkRetryFn = null;
 
     const stage = document.getElementById('stage');
+    // live takers (frontier #18) also hear changes a card does not save (a slider being dragged, a stepper that stops the
+    // click): the stage notices any input or press on a card, in the capture phase, and announces it once the card has acted
+    for (const ev of ['input', 'click', 'pointerup']) stage.addEventListener(ev, () => setTimeout(() => { try { dispatchEvent(new CustomEvent('void:stage-change')); } catch (_) {} }, 0), true);
     const input = document.getElementById('input');
     // how much of the screen the ask bar takes from the bottom: answer pages and boards are centred above it, never under it
     const askRow = document.getElementById('row');
@@ -733,6 +748,7 @@
 
     /** @type {Record<string, any>} */
     let things = {};
+    let share = null, relayAsk = null, relayingIn = false, shareKnown = null; const presences = new Map(); // a shared Void (frontier #11, shareJoin): declared before the first save()
     let selectedId = null;
     // stage kinds a skill file brings (3D figures and objects): { kind: { mount(th, S), dropped?(th, S), thrown?(th, S), throwable } }
     const stageKinds = {};
@@ -754,9 +770,15 @@
     function keptThings() { const out = {}; for (const [id, t] of Object.entries(things)) if (!(t && stageKinds[t.kind] && stageKinds[t.kind].ephemeral) || t.keep) out[id] = t; return out; }
     function save() {
       if (PAGE) return;
+      try { if (figures3d && figures3d.keepPlaces) figures3d.keepPlaces(things); } catch (_) {} // where each figure stands is kept whenever the scene is saved (figures3d.js), not only when the tab hides
       localStorage.setItem(STATE_KEY, JSON.stringify(keptThings()));
+      try { localStorage.setItem(AWAY_KEY, String(Date.now())); } catch (_) {}
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
       mineChanged();
+      shareNoticeNew();
+      // live takers (frontier #18: a goal card takes its source's observations live) re-read their source on every change;
+      // snapshot takers (the quiz, the challenge) took one copy and never listen
+      try { dispatchEvent(new CustomEvent('void:stage-change')); } catch (_) {}
     }
     function loopLog(attempt) {
       // an ask read with its typos fixed is logged as it was typed, so the miss board and the bench see the real ask
@@ -797,9 +819,75 @@ Object.values(things).forEach((th) => {
         else if (th.kind === 'tab') mountTab(th);
         else if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
+      Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
       decorate();
       syncFigures();
       announceNew();
+      requestAnimationFrame(() => layoutStage()); // after any centring the summoner asked for
+    }
+    // Cards stop landing on top of each other (lib/placement.js, 2026-10-10): a card that just arrived takes the nearest free
+    // spot from where it was asked to land; a card that grows (a draft filling the tab card, a 3D miniature loading) moves the
+    // cards it now covers; a card the person dragged stays where they put it; a saved layout is never reshuffled on load.
+    let placement = null; import('/lib/placement.js').then((m) => { placement = m; layoutStage(); }).catch(() => {});
+    let laidOut = null; const cardSize = new Map(), grownIds = new Set(), centred = new Set(), geoOf = new Map();
+    // A board that no longer fits beside a newer one shrinks (lib/placement.js) instead of half-covering it; its card shrinks
+    // with it. placeThing puts a thing (and its card) where th says, at th.scale; a tap on a small board brings it back.
+    function placeThing(th) {
+      const el = stage.querySelector(':scope > .thing[data-id="' + CSS.escape(th.id) + '"]'), side = stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(th.id) + '"]');
+      const s = th.scale < 1 ? th.scale : 1;
+      for (const n of [el, side]) if (n) { n.style.transformOrigin = s < 1 ? '0 0' : ''; n.style.scale = s < 1 ? String(s) : ''; n.classList.toggle('shrunk', s < 1); }
+      if (el) { el.style.left = th.x + 'px'; el.style.top = th.y + 'px'; }
+      if (side && th.card) { side.style.left = th.card.x + 'px'; side.style.top = th.card.y + 'px'; }
+    }
+    let swallowClick = 0;
+    stage.addEventListener('pointerdown', (e) => {
+      const n = e.target.closest && e.target.closest('.thing[data-id], .side-card[data-of]'), id = n && (n.dataset.id || n.dataset.of), th = id && things[id];
+      if (!th || !(th.scale < 1)) return;
+      e.stopPropagation(); e.preventDefault(); swallowClick = Date.now() + 700; // the tap brings it back; it doesn't also play a move
+      const g = th.geo, home = th.home || { x: th.x - g.bx * th.scale, y: th.y - g.by * th.scale };
+      th.x = Math.round(home.x + g.bx); th.y = Math.round(home.y + g.by); if (th.card) th.card = { x: Math.round(home.x + g.sx), y: Math.round(home.y + g.sy) };
+      delete th.scale; delete th.geo; delete th.home;
+      placeThing(th); centred.add(id); save(); requestAnimationFrame(() => layoutStage()); // it holds its spot again; the board in front of it moves or shrinks
+    }, true);
+    stage.addEventListener('click', (e) => { if (Date.now() < swallowClick) { e.stopPropagation(); e.preventDefault(); swallowClick = 0; } }, true);
+    const sizeWatch = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
+      for (const e of entries) {
+        const id = e.target.dataset && e.target.dataset.id; if (!id || !things[id]) continue;
+        const w = e.target.offsetWidth, h = e.target.offsetHeight, was = cardSize.get(id);
+        if (was && (h > was.h + 4 || w > was.w + 4)) grownIds.add(id);
+        cardSize.set(id, { w, h });
+      }
+      if (grownIds.size) requestAnimationFrame(() => layoutStage());
+    }) : null;
+    function layoutStage() {
+      if (!placement || PAGE || document.documentElement.classList.contains('dragging')) return;
+      const els = [...stage.querySelectorAll(':scope > .thing[data-id]')].filter((el) => things[el.dataset.id] && el.offsetWidth);
+      if (sizeWatch) { sizeWatch.disconnect(); els.forEach((el) => sizeWatch.observe(el)); }
+      if (!laidOut && !els.length) return; // the stage hasn't drawn yet: the first real look is the saved layout, never fresh cards
+      const first = !laidOut; if (first) laidOut = new Set();
+      // a 3D board's own card (skills/side-card.js: whose move, the buttons, how to play) is placed with its board, as one
+      // rectangle, and moves with it; otherwise a board moved aside leaves its card behind, on top of whatever comes next
+      const sideOf = (id) => stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(id) + '"]');
+      const cards = els.map((el) => { const th = things[el.dataset.id], side = sideOf(th.id), mid = centred.has(th.id); // mid: asked for the middle, so it holds its spot like a card that grew, and its neighbours move
+        const base = { id: th.id, pinned: !!th.pinned, fresh: !first && !mid && !laidOut.has(th.id), grew: mid || grownIds.has(th.id) };
+        if (th.scale < 1 && th.geo) { const s = th.scale, g = th.geo; return { ...base, x: el.offsetLeft - g.bx * s, y: el.offsetTop - g.by * s, w: g.w, h: g.h, scale: s, home: th.home }; }
+        let x = el.offsetLeft, y = el.offsetTop, r = x + el.offsetWidth, b = y + el.offsetHeight;
+        if (side && side.offsetWidth) { x = Math.min(x, side.offsetLeft); y = Math.min(y, side.offsetTop); r = Math.max(r, side.offsetLeft + side.offsetWidth); b = Math.max(b, side.offsetTop + side.offsetHeight); }
+        geoOf.set(th.id, { bx: el.offsetLeft - x, by: el.offsetTop - y, sx: side ? side.offsetLeft - x : 0, sy: side ? side.offsetTop - y : 0, w: r - x, h: b - y });
+        return { ...base, x, y, w: r - x, h: b - y }; });
+      cards.forEach((c) => { laidOut.add(c.id); centred.delete(c.id); }); grownIds.clear(); // a card not on the stage yet keeps its claim on the middle
+      const moves = placement.arrange(cards, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) });
+      let moved = false;
+      for (const [id, p] of Object.entries(moves)) {
+        const th = things[id], c = cards.find((k) => k.id === id), g = th && (th.geo || geoOf.get(id)); if (!th || !c || !g) continue;
+        const s = p.scale ?? (th.scale || 1);
+        if (s < 1) { if (!(th.scale < 1)) th.home = { x: c.x, y: c.y }; th.scale = s; th.geo = g; } // shrunk: remember its full size and where it stood
+        else { delete th.scale; delete th.geo; delete th.home; }
+        th.x = Math.round(p.x + g.bx * s); th.y = Math.round(p.y + g.by * s);
+        if (sideOf(id)) th.card = { x: Math.round(p.x + g.sx * s), y: Math.round(p.y + g.sy * s) };
+        placeThing(th); moved = true;
+      }
+      if (moved) { decorate(); save(); }
     }
     // A thing that just arrived on the stage (a list, a timer, a game board) is read out once, like an answer page
     let seenIds = null;
@@ -898,6 +986,7 @@ Object.values(things).forEach((th) => {
       if (stageKinds[kind]) { // skill kinds: each ask adds one more; it stays until thrown off the screen
         const th = Object.assign({ id: uid(kind), kind, x: 40, y: 60 }, opts);
         const centre = !!th.center; delete th.center;
+        if (th.hold) centred.add(th.id); delete th.hold; // a board that worked out the middle itself holds it, like a centred one
         things[th.id] = th; selectedId = th.id; save(); render();
         if (centre) centreThing(th.id);
         return th;
@@ -910,6 +999,7 @@ Object.values(things).forEach((th) => {
     }
     // a board or card that asks for the middle: centred left to right, and in the room above the ask bar (phone or desktop)
     function centreThing(id) {
+      centred.add(id); // a board that asks for the middle keeps it; the cards it covers move (layoutStage)
       const th = things[id], el = th && stage.querySelector('[data-id="' + CSS.escape(id) + '"]');
       if (!el) { if (th) render(); return; }
       const room = dockSpace() - stage.getBoundingClientRect().top - 12;
@@ -935,6 +1025,16 @@ Object.values(things).forEach((th) => {
         extSend({ type: 'void-ext:draft', id, text: String(text) });
       });
     }
+    // "draft for me: proposal": the panel reads the thread text of the tab you pointed Void at, now, once (extension/page.js voidReadThread)
+    function extThread() {
+      return new Promise((resolve) => {
+        if (!ext.on) return resolve({ ok: false, why: 'no-panel' });
+        if (!ext.tab) return resolve({ ok: false, why: 'no-tab' });
+        const id = ++ext.seq; ext.waiting[id] = resolve;
+        setTimeout(() => { if (ext.waiting[id]) { delete ext.waiting[id]; resolve({ ok: false, why: 'no-reply' }); } }, 5000);
+        extSend({ type: 'void-ext:thread', id });
+      });
+    }
     const DRAFT_WHY = { 'no-panel': 'open Void in its side panel to draft into a page', 'no-tab': 'point Void at the page first: Alt+Shift+V there',
       'no-field': 'click into the box on the page first, then try again', 'no-access': 'that tab moved on or closed: press Alt+Shift+V there again' };
     const draftSaid = (r) => (r && r.ok ? 'in the page · nothing was sent' : DRAFT_WHY[(r && r.why) || ''] || "couldn't put it in the page");
@@ -954,7 +1054,7 @@ Object.values(things).forEach((th) => {
         ext.draft = ''; ext.sent = '';
         selectedId = th.id; save(); render();
         say('read the tab · it stays in this browser');
-      } else if (m.type === 'void-ext:drafted' && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
+      } else if ((m.type === 'void-ext:drafted' || m.type === 'void-ext:threaded') && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
       else if (m.type === 'void-ext:record') extRecord(m); // B3: the panel asks Void to write the step's execution record
       else if (m.type === 'void-ext:acted' && !(m.auto && m.why === 'not-allowed')) { const t = actSaid(m); say(t); const sp = document.querySelector('.tab-act-said'); if (sp) sp.textContent = t; } // a proposal Void made itself, off the list, stays silent
     });
@@ -969,13 +1069,24 @@ Object.values(things).forEach((th) => {
       m = t.replace(/[.!]+$/, '').match(/^(?:click|press|tap)\s+(?:the\s+)?["“']?(.+?)["”']?(?:\s+button)?$/i);
       return m ? { action: 'click', label: m[1].trim(), text: '' } : null;
     }
+    // a short run: two or three steps, split at ";" or "then" only where a new step starts (a ";" in the text to fill stays in it) ("fill Reply with Hi; click Save", "… then click Save")
+    function stepsOf(text) {
+      const parts = String(text || '').trim().split(/(?:\s*;\s*|,?\s+(?:and\s+)?then\s+)(?=(?:fill|type into|put into|click|press|tap)\s)/i).filter((x) => x.trim());
+      if (parts.length > 3) return 'too-many';
+      const steps = parts.map(stepOf);
+      return steps.length && steps.every(Boolean) ? steps : null;
+    }
     const ACT_WHY = { 'not-allowed': 'that site is not on your list: add it under “sites Void may act on” below, then ask again', 'said-no': 'you said no · nothing changed · recorded',
       'no-record': 'no record, no action: unlock Void as the owner first, then ask again', 'not-found': 'no field or button with that label on the page',
       ambiguous: 'more than one thing on the page has that label: name it more exactly', submits: 'that button sends its form: press it yourself',
       'no-access': 'that tab moved on or closed: press Alt+Shift+V there again', 'no-tab': 'point Void at the page first: Alt+Shift+V there', busy: 'one step at a time: answer the open card first',
-      'bad-step': 'say it as “fill <field> with <text>” or “click <button>”' };
-    const actSaid = (m) => (m && m.ok ? (m.did === 'clicked' ? 'clicked' : 'filled') + ' it on ' + (m.host || 'the page') + ' · recorded · you send it yourself' : ACT_WHY[(m && m.why) || ''] || "couldn't do that step");
-    function extPropose(step) { if (!ext.on) return false; extSend({ type: 'void-ext:propose', step }); return true; }
+      'bad-step': 'say it as “fill <field> with <text>” or “click <button>”', 'too-many': 'three steps at most: split the rest into another run' };
+    const actSaid = (m) => {
+      if (m && m.of > 1) return m.ok ? 'all ' + m.of + ' steps done on ' + (m.host || 'the page') + ' · recorded · you send it yourself'
+        : 'stopped at step ' + m.at + ' of ' + m.of + ' (' + (m.done ? m.done + ' done before it' : 'nothing done') + '; nothing after it ran): ' + (ACT_WHY[m.why || ''] || "couldn't do that step");
+      return m && m.ok ? (m.did === 'clicked' ? 'clicked' : 'filled') + ' it on ' + (m.host || 'the page') + ' · recorded · you send it yourself' : ACT_WHY[(m && m.why) || ''] || "couldn't do that step";
+    };
+    function extPropose(step) { if (!ext.on) return false; extSend(Array.isArray(step) ? (step.length === 1 ? { type: 'void-ext:propose', step: step[0] } : { type: 'void-ext:propose', steps: step }) : { type: 'void-ext:propose', step }); return true; }
     async function extRecord(m) {
       const reply = (r) => extSend({ type: 'void-ext:recorded', id: m.id, ...r });
       const tok = ownerToken();
@@ -986,6 +1097,24 @@ Object.values(things).forEach((th) => {
         const j = await r.json().catch(() => ({}));
         reply(r.ok ? { ok: true, recordId: j.id, state: j.state } : { ok: false, why: j.error || 'HTTP ' + r.status });
       } catch (_) { reply({ ok: false, why: 'offline' }); }
+    }
+    // A customer email becomes a proposal in your reply box, after your yes: the thread you are reading (read now, sent once to
+    // /api/answer mode proposal, not kept) drafts the proposal card (skills/proposal.js), and on a site on your allow list Void
+    // proposes "fill <the box you were in> with <the proposal as plain text>" as the same B3 card, Yes / No and record. You send.
+    // Off the list the proposal stays in its card (copy, download), and nothing is said about acting.
+    async function proposalFromTab(tab, said, footLine) {
+      said.textContent = 'reading the thread…';
+      const r = await extThread();
+      if (!r.ok || !r.text) { said.textContent = r.why === 'no-text' ? 'no text on this page to draft from' : DRAFT_WHY[r.why || ''] || "couldn't read the thread: press Alt+Shift+V there again"; return; }
+      said.textContent = 'asking Void for a proposal…';
+      let d = null, L = null;
+      try { await skillsReady; const P = await import('/skills/proposal.js'); L = await import('/lib/proposal.js'); d = await P.draft(r.text); } catch (e) { said.textContent = (e && e.message) || 'Void couldn’t draft just now'; return; }
+      ext.sent = 'The text of this thread was sent to a-to-mind.com for a proposal draft · not kept there.'; footLine();
+      // the card keeps the drafted proposal (yours to edit), never the thread itself
+      const th = summonThing('proposal', { center: true, fields: d.fields, model: d.model, to: L.addressIn(r.text).to || '' });
+      const sp = document.querySelector('.tab-said');
+      if (sp) sp.textContent = 'proposal from Void' + (d.model === 'rules' ? ' (by rule, no model just now)' : '') + ' · in the proposal card, yours to edit';
+      if (th && tab.field && tab.field.name) extPropose({ action: 'fill', label: tab.field.name, text: L.toPlain(d.fields), auto: true });
     }
     function mountTab(th) {
       const t = ext.tab;
@@ -1009,12 +1138,12 @@ Object.values(things).forEach((th) => {
           // draft for me (sends it to Void): the title, address and selection go to Void's answer engine once (mode draft, lib/draft.js), the draft
           // comes back into the box above for "put in the page" or copy, and the card says what left. What is in the box goes along as a note.
           + '<div class="tab-ask" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;color:var(--muted);font-size:12px">draft for me:'
-          + ['reply', 'summary', 'notes', 'rewrite'].map((k) => '<button type="button" class="tab-ask-' + k + ' vcopy" data-intent="' + k + '"' + (k === 'rewrite' && !t.selection ? ' disabled title="select the text to rewrite first"' : '') + '>' + k + '</button>').join('')
+          + ['reply', 'summary', 'notes', 'rewrite', 'proposal'].map((k) => '<button type="button" class="tab-ask-' + k + ' vcopy" data-intent="' + k + '"' + (k === 'rewrite' && !t.selection ? ' disabled title="select the text to rewrite first"' : '') + '>' + k + '</button>').join('')
           + '<span>(sends it to Void)</span></div>'
           + '<div style="display:flex;gap:8px;align-items:center;margin-top:6px"><button type="button" class="tab-put vcopy">put in the page</button><span class="tab-said" style="color:var(--muted);font-size:12px">'
           + esc(t.field ? 'goes into: ' + (t.field.name || t.field.tag) : 'goes into the box you click on the page') + '</span></div>'
           + '<div class="tab-foot" style="color:var(--muted);font-size:11px;margin-top:6px"></div>'
-          + '<div style="display:flex;gap:6px;margin-top:10px"><input class="tab-step" placeholder="a step for Void: fill Reply with … / click Save" style="flex:1;min-width:0;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:5px 6px;font:inherit"><button type="button" class="tab-propose vcopy">propose</button></div>'
+          + '<div style="display:flex;gap:6px;margin-top:10px"><input class="tab-step" placeholder="a step for Void: fill Reply with … / click Save (up to 3, split by ;)" style="flex:1;min-width:0;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:5px 6px;font:inherit"><button type="button" class="tab-propose vcopy">propose</button></div>'
           + '<div class="tab-act-said" style="color:var(--muted);font-size:12px;margin-top:4px">Void acts only on a site you allowed, and only after your yes in the panel.</div>';
         const put = body.querySelector('.tab-put'), ta = body.querySelector('.tab-draft'), said = body.querySelector('.tab-said'), foot = body.querySelector('.tab-foot');
         const footLine = () => { foot.textContent = ext.sent ? 'Not saved. ' + ext.sent + ' You press send on the page yourself.' : 'Not saved, not sent anywhere. You press send on the page yourself.'; };
@@ -1023,6 +1152,7 @@ Object.values(things).forEach((th) => {
         put.addEventListener('click', async () => { if (!ta.value.trim()) { said.textContent = 'write the draft first'; return; } said.textContent = 'putting it in…'; said.textContent = draftSaid(await extDraft(ta.value)); });
         body.querySelectorAll('.tab-ask button').forEach((b) => b.addEventListener('click', async () => {
           const intent = b.dataset.intent, tab = ext.tab; if (!tab) return;
+          if (intent === 'proposal') return proposalFromTab(tab, said, footLine);
           said.textContent = 'asking Void for a ' + intent + '…';
           let j = null;
           try {
@@ -1041,7 +1171,7 @@ Object.values(things).forEach((th) => {
         }));
         const stepIn = body.querySelector('.tab-step'), actSp = body.querySelector('.tab-act-said');
         stepIn.value = ext.stepText || ''; stepIn.addEventListener('input', () => { ext.stepText = stepIn.value; }); // a redraw of the stage keeps what you typed
-        body.querySelector('.tab-propose').addEventListener('click', () => { const st = stepOf(stepIn.value); if (!st) { actSp.textContent = ACT_WHY['bad-step']; return; } actSp.textContent = extPropose(st) ? 'asking you in the panel…' : DRAFT_WHY['no-panel']; });
+        body.querySelector('.tab-propose').addEventListener('click', () => { const st = stepsOf(stepIn.value); if (!Array.isArray(st)) { actSp.textContent = ACT_WHY[st || 'bad-step']; return; } actSp.textContent = extPropose(st) ? 'asking you in the panel…' : DRAFT_WHY['no-panel']; });
       }
       el.appendChild(body);
       body.addEventListener('pointerdown', (e) => { if (e.target.closest('textarea, input, button, blockquote')) e.stopPropagation(); });
@@ -1115,6 +1245,7 @@ Object.values(things).forEach((th) => {
             cur.style.left = th.x + 'px'; cur.style.top = th.y + 'px';
             moveMates(th.x - origX, th.y - origY);
             for (const m of mates) { m.t.x = Math.max(0, m.t.x); m.t.y = Math.max(0, m.t.y); if (m.el) { m.el.style.left = m.t.x + 'px'; m.el.style.top = m.t.y + 'px'; } }
+            if (th.x !== origX || th.y !== origY) { th.pinned = true; for (const m of mates) m.t.pinned = true; } // put there by hand: the stage never moves it (lib/placement.js)
             decorate();
             try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
             save();
@@ -2660,7 +2791,7 @@ t.remaining = durationMs;
       if (/\b(remove|delete|get\s+rid\s+of|hide|clear)\b/.test(lower) && /\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return false;
       if (/^(a\s+)?(shape|rect|rectangle|circle|line|square)(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
       if (/\b(draw|sketch)\b.*\b(circle|rect|rectangle|line|square|shape)\b/.test(lower)) return true;
-      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
+      if (/\b(make|add|create|show|spawn|put|place|drop|summon)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
       if (/\b(shape|rect|rectangle|circle|line|square)\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
       if (/^shape\s*:\s*(rect|rectangle|circle|line|square)\b/i.test(raw)) return true;
       return false;
@@ -4784,6 +4915,34 @@ return { ok: true, detail: 'timer-reset' };
     // A summon from code, not the box (BASE.md: the old void-proxy command bar's route): document.dispatchEvent(new CustomEvent('void:summon', { detail: 'growth' }))
     // runs that ask exactly as if it were typed. Only a short line of text is taken.
     document.addEventListener('void:summon', (e) => { const d = e && e.detail; if (typeof d === 'string' && d.trim() && d.length <= 120) handle(d); });
+    // --- Bring someone into your Void (frontier #11): "invite someone" (skills/invite.js) or a link with ?with=<room> joins the
+    // invite's room (lib/share-client.js). The others' cursors are faint presences; a summon that put something on your stage
+    // runs again on theirs, and theirs on yours. Only those two pass (lib/share.js). Closing the tab ends it.
+    function sharePresence(id, x, y) {
+      let el = presences.get(id);
+      if (!el) { el = document.createElement('div'); el.className = 'void-presence'; el.setAttribute('aria-hidden', 'true'); document.body.appendChild(el); presences.set(id, el); }
+      el.style.left = (x * innerWidth) + 'px'; el.style.top = (y * innerHeight) + 'px';
+    }
+    function shareGone(id) { const el = presences.get(id); if (el) el.remove(); presences.delete(id); }
+    function shareNoticeNew() {
+      const ids = Object.keys(things), had = shareKnown; shareKnown = new Set(ids);
+      if (!share || !had || !relayAsk || !ids.some((id) => !had.has(id))) return;
+      share.summoned(relayAsk); relayAsk = null; // one ask goes once, however many things it made
+    }
+    function shareRun(ask) { relayingIn = true; try { handle(ask); } finally { relayingIn = false; } }
+    function shareJoin(room) {
+      if (share || typeof room !== 'string') return;
+      shareKnown = new Set(Object.keys(things));
+      share = { summoned() {}, cursor() {}, leave() {} };
+      import('/lib/share-client.js').then((m) => {
+        share = m.join(room, { summon: shareRun, presence: sharePresence, gone: shareGone, note: (t) => say(t) });
+        let last = 0;
+        addEventListener('pointermove', (e) => { const now = Date.now(); if (now - last < 50) return; last = now; share.cursor(e.clientX / innerWidth, e.clientY / innerHeight); }, { passive: true });
+        addEventListener('pagehide', () => share.leave());
+      }).catch(() => { share = null; say("sharing can't start in this browser"); });
+    }
+    document.addEventListener('void:share-join', (e) => shareJoin(e && e.detail));
+    { const r = new URLSearchParams(location.search).get('with'); if (r && /^[A-Za-z0-9_-]{16}\.[A-Za-z0-9_-]{16}$/.test(r) && !PAGE) skillsReady.then(() => shareJoin(r)); }
 
     async function runLearnedSkills(text, lower0) {
       for (const skill of learnedSkills) {
@@ -5567,8 +5726,7 @@ return { ok: true, detail: 'timer-reset' };
     let typoFix = null;
     const TYPO_WORDS = { waht: 'what', whta: 'what', wht: 'what', tiem: 'time', tmie: 'time', captial: 'capital', capitla: 'capital', definiton: 'definition', defintion: 'definition', defenition: 'definition',
       synonim: 'synonym', synonims: 'synonyms', synomym: 'synonym', traslate: 'translate', tranlate: 'translate', transalte: 'translate', precent: 'percent', percnet: 'percent', pecent: 'percent',
-      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', weathr: 'weather', wethr: 'weather', wats: 'whats', wat: 'what',
-      defne: 'define', defin: 'define', tempature: 'temperature', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
+      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', weathr: 'weather', aggrevation: 'aggravation', agravation: 'aggravation', wats: 'whats', defin: 'define', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
     const TYPO_LONG = ['definition', 'synonym', 'synonyms', 'translate', 'temperature', 'tomorrow', 'population', 'kilometers', 'kilometres', 'antonym', 'pronounce'];
     // the short forms people type: "12*15=", "ephemeral meaning", "synonyms happy", "tip 20% 85", "random number 1-10",
     // "days till christmas", "capital france", "usd to eur" read as the full ask
@@ -5802,6 +5960,7 @@ return { ok: true, detail: 'timer-reset' };
     async function handle(raw) {
       const typed = (raw || '').trim();
       if (!typed) return;
+      relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Void; one that came from it does not go back
       const text = fixTypos(typed); typoFix = text !== typed ? { from: typed, to: text } : null;
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
@@ -6134,8 +6293,45 @@ return { ok: true, detail: 'timer-reset' };
       }
     })();
 
+    let awayMs = 0; try { const t = +localStorage.getItem(AWAY_KEY); awayMs = t > 0 ? Date.now() - t : 0; } catch (_) {} // read before this visit saves anything
     load();
     render();
+    // the world lives on while you are away: what has conditions (a cloud, ice, a flower) and what reacts to something near
+    // (a zombie and a brain, a cat and a mouse) moves forward by the time since the stage was last left, the same way for
+    // everyone (advance in skills/scripts.js), from where each figure last stood; one line says what happened
+    const awayNote = document.getElementById('away-note');
+    // the line under the whisper; with `recorded` it also links to the record ("my actions"), which only exists for the owner and paid members
+    function tellAway(text, recorded) {
+      if (!awayNote || !text) return;
+      awayNote.textContent = text;
+      if (recorded) { const a = document.createElement('a'); a.href = '#'; a.className = 'away-see'; a.textContent = ' · see what happened'; a.addEventListener('click', (e) => { e.preventDefault(); document.dispatchEvent(new CustomEvent('void:summon', { detail: 'my actions' })); }); awayNote.append(a); }
+      clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { awayNote.textContent = ''; }, 9000);
+    }
+    if (!PAGE && awayMs > 0) import('/skills/scripts.js').then((m) => {
+      const figs = Object.values(things).filter((t) => t && t.kind === 'figure' && t.kindOf);
+      if (!figs.length || awayMs < m.AWAY_MIN_MS) return;
+      const r = m.advance(figs.map((t) => ({ id: t.id, kindOf: t.kindOf, x: t.x, y: t.y, at: t.at, seed: t.seed, nature: t.nature, title: t.title })), awayMs, { bounds: { w: innerWidth, h: innerHeight } });
+      const stamp = Date.now();
+      for (const n of r.things) {
+        if (!things[n.id]) continue;
+        if (n.gone) { delete things[n.id]; continue; }
+        if (n.nature) things[n.id].nature = n.nature;
+        if (n.at) things[n.id].at = n.at;
+        things[n.id].adv = stamp;
+      }
+      save(); render();
+      window.__voidAway = { ms: awayMs, note: r.note, changes: r.changes };
+      tellAway(r.note);
+      // asked by Void: what happened while you were away is also an execution record (lib/scene-advance.js, kind scene.advance), in your own scope
+      // ("my actions" shows it); only the owner and paid members can write one, so a visitor with no key sends nothing and the note stands alone
+      let tok = ''; try { tok = localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) {}
+      if (tok && r.changes.length) fetch('/api/actions', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + tok }, body: JSON.stringify({ op: 'scene', note: r.note, changes: r.changes }) })
+        .then((res) => (res.ok ? res.json() : null)).then((j) => { if (j && j.id) tellAway(r.note, true); }).catch(() => {});
+    }).catch(() => {});
+    // leaving: keep where each figure stands and the live conditions it has, so the next visit continues from here (and stamp the time)
+    function rememberWorld() { try { save(); } catch (_) {} } // save() folds in the places and stamps the time
+    document.addEventListener('visibilitychange', () => { if (document.hidden) rememberWorld(); });
+    window.addEventListener('pagehide', rememberWorld);
     if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s Void'), 400);
     window.addEventListener('resize', () => render());
   </script>

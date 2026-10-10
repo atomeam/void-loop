@@ -47,9 +47,15 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'applic
 const out = []; // every request that left for anywhere, with its body
 ctx.on('request', (r) => out.push(r.url() + ' ' + (r.postData() || '')));
 const FIXTURE = 'https://fixture.test/';
+const THREAD_ASK = 'Hi, we need our order flow fixed by June. Orders stop syncing to the sheet and the confirmation emails go out twice. Can you send us a proposal?';
 const OWNER = 'owner-token-for-the-extension-test', records = []; // B3's execution records, as /api/actions would keep them
 await ctx.route(/^https?:\/\//, (r) => {
   const u = new URL(r.request().url());
+  if (u.origin === 'https://fixture.test' && u.pathname === '/thread') { // a mail thread, the way Gmail lays one out: the thread in main, your reply box under it
+    return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Order flow - Inbox</title><nav>Inbox Starred Sent</nav><div role="main"><h2>Order flow</h2>'
+      + '<div class="msg">From: Dana Reyes &lt;dana@acme.test&gt;<p>' + THREAD_ASK + '</p></div>'
+      + '<div id="body" contenteditable="true" aria-label="Message Body" style="min-height:80px;border:1px solid #ccc"></div></div>' });
+  }
   if (u.origin === 'https://fixture.test') {
     return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Fixture page</title><p id="p">' + SECRET + '</p>'
       + '<form id="f" onsubmit="window.submitted=true;return false"><textarea id="reply" aria-label="Reply"></textarea><button>send</button></form>'
@@ -64,7 +70,7 @@ await ctx.route(/^https?:\/\//, (r) => {
       if (b.op === 'end' && rec && rec.state === 'running') { rec.state = b.state; rec.result = b.text; return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ id: rec.id, state: rec.state }) }); }
       return r.fulfill({ status: 409, contentType: 'application/json', body: '{}' });
     }
-    if (u.pathname.startsWith('/api/answer') && /"mode":"draft"/.test(r.request().postData() || '')) { // the tab card's "draft for me": the real handler, no model
+    if (u.pathname.startsWith('/api/answer') && /"mode":"(?:draft|proposal)"/.test(r.request().postData() || '')) { // the tab card's "draft for me": the real handler, no model
       return answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', body: r.request().postData() }), env: { AI: undefined } })
         .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
     }
@@ -116,9 +122,9 @@ await V.fill('#input', 'days until new year');
 await V.press('#input', 'Enter');
 await V.waitForSelector('.vput', { state: 'visible', timeout: 10000 }).catch(() => {});
 await page.evaluate(() => { const t = document.getElementById('reply'); t.value = ''; t.focus(); });
-// pressed directly, as the draft check does: the tab card above has grown (draft buttons, the B3 step box) and can lie over
-// the countdown card, so a pointer click may land on the wrong card; what is tested is the button's own effect
-const vputErr = await V.evaluate(() => { const b = document.querySelector('.vput'); if (!b) return 'no button'; b.click(); return ''; });
+// a real click, as a person makes it: the stage keeps the countdown card clear of the tab card (lib/placement.js). force only
+// skips Playwright's wait for the card to hold still (cards tilt toward the pointer); the press and release are real mouse events
+const vputErr = await V.click('.vput', { timeout: 5000, force: true }).then(() => '', (e) => String(e.message).split('\n')[0]);
 const vputs = await V.evaluate(() => Array.from(document.querySelectorAll('.vput')).map((b) => ({ shown: !!b.offsetParent, in: (b.parentElement.className || '') })));
 await page.waitForFunction(() => document.getElementById('reply').value.length > 0, null, { timeout: 5000 }).catch(() => {});
 const box2 = await page.evaluate(() => document.getElementById('reply').value);
@@ -135,7 +141,7 @@ check('local only: no request anywhere carried the page text or the draft', leak
 // the card flags what left and for what, and the one request carried the title, address and selection, nothing else of the page
 await V.evaluate(() => { const t = document.querySelector('.tab-draft'); t.value = 'keep it short'; t.dispatchEvent(new Event('input', { bubbles: true })); });
 const beforeDraft = out.length;
-await V.evaluate(() => document.querySelector('.tab-ask-summary').click()); // the countdown card above lifts over the tab card, so a pointer click would land on its canvas
+await V.click('.tab-ask-summary', { force: true }); // a real click: the countdown card no longer lands over the tab card (lib/placement.js)
 await V.waitForFunction(() => /from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
 const dSaid = await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '');
 const dBox = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
@@ -166,8 +172,9 @@ await V.waitForFunction(() => /not on your list/.test((document.querySelector('.
 check('B3: a site not on the allow list gets no card, and nothing on the page changes',
   !(await cardOn()) && /not on your list/.test(await actSaid()) && (await page.evaluate(() => document.getElementById('reply').value)) === 'before' && records.length === 0, { said: await actSaid(), records });
 
-// a button in the panel's own chrome, pressed until what it does has happened (headless Chromium drops some mouse events
-// on extension pages; the button's own click handler is what is under test)
+// a button in the panel's own chrome, pressed until what it does has happened. Not the stage overlap (that was fixed in
+// lib/placement.js and those checks click for real): with a real mouse here, about 1 run in 4 a click on this extension tab
+// never reaches its handler in headless Chromium (8 runs, 2026-10-10), so the button's own click handler is what is tested
 const press = async (sel, landed) => { for (let i = 0; i < 5; i++) { await panel.evaluate((q) => document.querySelector(q).click(), sel); for (let j = 0; j < 10; j++) { if (await landed()) return true; await panel.waitForTimeout(100); } } return false; };
 await panel.click('#sites summary');
 await panel.waitForSelector('#sites .add:not([hidden])', { timeout: 5000 }).catch(() => {});
@@ -206,6 +213,56 @@ const rec3 = records[2] || {};
 check('B3: even after Yes, a button that would submit its form is refused (you press send yourself), and the record says it failed',
   !(await page.evaluate(() => window.submitted)) && rec3.state === 'failed' && /submits/.test(rec3.result || ''), { records, said: await actSaid() });
 
+// B3, a short run: two or three steps as one card, a Yes for each in turn, the same allow list and records; it stops at the
+// first No or the first step the page refuses, and nothing after that runs
+const stepNow = () => panel.evaluate(() => (document.querySelector('.act-count') || {}).textContent || '');
+const pressStep = (sel, from) => press(sel, async () => !(await cardOn()) || (await stepNow()) !== from);
+const waitStep = (s) => panel.waitForFunction((t) => (document.querySelector('.act-count') || {}).textContent === t, s, { timeout: 8000 }).catch(() => {});
+const waitSaid = (re) => V.waitForFunction((src) => new RegExp(src).test((document.querySelector('.tab-act-said') || {}).textContent || ''), re.source, { timeout: 8000 }).catch(() => {});
+const pageNow = () => page.evaluate(() => ({ reply: document.getElementById('reply').value, saved: window.saved || 0, submitted: !!window.submitted }));
+let n0 = records.length;
+await propose('click a; click b; click c; click d');
+await waitSaid(/three steps at most/);
+const tooMany = { on: await cardOn(), said: await actSaid(), added: records.length - n0 };
+await page.evaluate(() => { document.getElementById('reply').value = 'before'; window.submitted = false; });
+const saved0 = (await pageNow()).saved;
+await propose('fill Reply with First; click Save; fill Reply with Third');
+await waitStep('step 1 of 3');
+const runCard = await panel.evaluate(() => ({ list: [...document.querySelectorAll('.act-steps li')].map((l) => l.textContent), hidden: document.querySelector('.act-steps').hidden, what: document.querySelector('.act-what').textContent }));
+await pressStep('.act-yes', 'step 1 of 3'); await waitStep('step 2 of 3');
+const midRun = { on: await cardOn(), page: await pageNow() };
+await pressStep('.act-no', 'step 2 of 3'); await waitSaid(/stopped at step 2 of 3/);
+const noRun = { page: await pageNow(), recs: records.slice(n0), said: await actSaid(), on: await cardOn() };
+check('B3 run: three steps come as one card listing them all, with a Yes for each in turn; a No at step 2 stops it: step 1 done, step 2 stubbed, step 3 never runs and leaves no record; four steps are refused outright',
+  !tooMany.on && /three steps at most/.test(tooMany.said) && tooMany.added === 0
+  && runCard.list.length === 3 && !runCard.hidden && /Reply/.test(runCard.list[0]) && /Save/.test(runCard.list[1]) && /Reply/.test(runCard.what)
+  && midRun.on && midRun.page.reply === 'First'
+  && noRun.page.reply === 'First' && noRun.page.saved === saved0 && noRun.recs.length === 2
+  && noRun.recs[0].state === 'done' && noRun.recs[0].ref === 'fixture.test · Reply' && noRun.recs[1].state === 'stubbed' && noRun.recs[1].ref === 'fixture.test · Save'
+  && /1 done before it/.test(noRun.said) && !noRun.on,
+  { tooMany, runCard, midRun, noRun });
+
+n0 = records.length;
+await propose('fill Reply with Second then click send then click Save');
+await waitStep('step 1 of 3');
+await pressStep('.act-yes', 'step 1 of 3'); await waitStep('step 2 of 3');
+await pressStep('.act-yes', 'step 2 of 3'); await waitSaid(/stopped at step 2 of 3/);
+const refusedRun = { page: await pageNow(), recs: records.slice(n0), said: await actSaid(), on: await cardOn() };
+check('B3 run: a step the page refuses stops the run: step 1 done, the send button refused (a failed record, nothing submitted), step 3 never runs and leaves no record',
+  refusedRun.page.reply === 'Second' && !refusedRun.page.submitted && refusedRun.page.saved === saved0 && refusedRun.recs.length === 2
+  && refusedRun.recs[0].state === 'done' && refusedRun.recs[1].state === 'failed' && /submits/.test(refusedRun.recs[1].result || '') && /press it yourself/.test(refusedRun.said) && !refusedRun.on,
+  refusedRun);
+
+n0 = records.length;
+await propose('fill Reply with Both done, then click Save');
+await waitStep('step 1 of 2');
+await pressStep('.act-yes', 'step 1 of 2'); await waitStep('step 2 of 2');
+await pressStep('.act-yes', 'step 2 of 2'); await waitSaid(/all 2 steps done/);
+const fullRun = { page: await pageNow(), recs: records.slice(n0), said: await actSaid() };
+check('B3 run: with a Yes at every step the whole run happens, each step with its own done record',
+  fullRun.page.reply === 'Both done' && fullRun.page.saved === saved0 + 1 && fullRun.recs.length === 2 && fullRun.recs.every((r) => r.state === 'done') && /all 2 steps done on fixture\.test/.test(fullRun.said),
+  fullRun);
+
 // B3 joined to the drafts: a "draft for me: reply" on an allowed site comes back as a proposed step, the same card with the
 // draft in it; on a site not on the list the draft stays copy-only, with no card and nothing said about acting
 const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
@@ -223,6 +280,43 @@ check('B3 from a draft: a "draft for me: reply" on an allowed site yields the Ye
   autoCard.on && replyDraft.length > 0 && autoCard.text === replyDraft && /Reply/.test(autoCard.what) && autoCard.site === 'fixture.test'
   && !offList.on && /^reply from Void/.test(offList.said) && !/not on your list/.test(offList.act) && offList.box.length > 0,
   { autoCard, replyDraft: replyDraft.slice(0, 80), offList });
+
+// A customer email becomes a proposal in your reply box, after your yes: "draft for me: proposal" in a mail thread sends the
+// thread once, the proposal card drafts it, and on an allowed site Void proposes filling the reply box with it as plain text
+const THREAD = FIXTURE + 'thread';
+await page.goto(THREAD);
+await page.evaluate(() => document.getElementById('body').focus());
+await read(THREAD);
+await V.waitForFunction(() => /Order flow/.test((document.querySelector('.tab-card') || {}).innerText || ''), null, { timeout: 8000 }).catch(() => {});
+const proposalPosts = () => out.filter((x) => /\/api\/answer/.test(x) && /"mode":"proposal"/.test(x));
+const lastProposal = () => V.evaluate(() => { const c = [...document.querySelectorAll('.proposal-card')].pop(); if (!c) return null;
+  const f = {}; c.querySelectorAll('[data-field]').forEach((e) => { f[e.dataset.field] = e.value; }); return { ...f, to: c.querySelector('.proposal-to').value, n: document.querySelectorAll('.proposal-card').length }; });
+const pressProposal = async (n) => { await V.evaluate(() => document.querySelector('.tab-ask-proposal').click());
+  await V.waitForFunction((k) => document.querySelectorAll('.proposal-card').length >= k && /^proposal from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), n, { timeout: 10000 }).catch(() => {}); };
+const p0 = proposalPosts().length, r0 = records.length;
+await pressProposal(1); await page.waitForTimeout(800); // the allow list is empty here
+const offP = { on: await cardOn(), card: await lastProposal(), box: await page.evaluate(() => document.getElementById('body').textContent), recs: records.length - r0,
+  foot: await V.evaluate(() => (document.querySelector('.tab-foot') || {}).textContent || ''), kept: await V.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'proposal').map((t) => ({ request: t.request || '', title: (t.fields || {}).title }))) };
+await sw.evaluate(() => chrome.storage.local.set({ allow: ['fixture.test'] }));
+await pressProposal(2);
+await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 8000 }).catch(() => {});
+const stepCard = await panel.evaluate(() => ({ on: document.getElementById('act').classList.contains('on'), what: document.querySelector('.act-what').textContent, text: document.querySelector('.act-text').textContent, site: document.querySelector('.act-site').textContent }));
+const drafted = await lastProposal();
+const beforeYes = await page.evaluate(() => document.getElementById('body').textContent);
+await press('.act-yes', async () => !(await cardOn()));
+await V.waitForFunction(() => /recorded/.test((document.querySelector('.tab-act-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+const replyBox = await page.evaluate(() => document.getElementById('body').innerText);
+const recP = records[records.length - 1] || {};
+const sentP = proposalPosts().slice(p0);
+check('proposal → reply: in a mail thread, "draft for me: proposal" sends the thread once and the proposal card drafts it (the address taken from the thread, the thread itself not kept); off the allow list that is all: no step card, the reply box untouched, no record',
+  !offP.on && !!offP.card && /order flow/i.test(offP.card.title || '') && offP.card.to === 'dana@acme.test' && offP.box === '' && offP.recs === 0 && /sent to a-to-mind\.com for a proposal draft/.test(offP.foot)
+  && offP.kept.length >= 1 && offP.kept.every((k) => !k.request) && sentP.length === 2 && sentP.every((x) => x.includes('order flow fixed by June')),
+  { offP, sent: sentP.map((x) => x.slice(0, 160)) });
+check('proposal → reply: on an allowed site the same press yields the B3 card to fill the reply box ("Message Body") with the proposal as plain text, its drafted fields in it; nothing changes until Yes, and Yes fills it, sends nothing, and leaves an extension.act record',
+  stepCard.on && stepCard.site === 'fixture.test' && /Message Body/.test(stepCard.what) && !!drafted && stepCard.text.startsWith(drafted.title) && stepCard.text.includes('What they asked for:\n' + drafted.asked)
+  && stepCard.text.includes('Scope:\n') && stepCard.text.includes('[price: left for the owner') && !/^#/m.test(stepCard.text) && beforeYes === ''
+  && replyBox.includes(drafted.title) && /What they asked for:/.test(replyBox) && recP.kind === 'extension.act' && recP.ref === 'fixture.test · Message Body' && recP.state === 'done',
+  { stepCard: { ...stepCard, text: stepCard.text.slice(0, 200) }, drafted: drafted && drafted.title, beforeYes, replyBox: replyBox.slice(0, 160), recP });
 
 // "Ask Void about this page" (sent to Void, #134): the answer card says the page left the browser for this answer
 await sw.evaluate(() => chrome.storage.session.set({ ask: { q: 'What is this page about?', page: { title: 'Fixture page', url: 'https://fixture.test/', selection: '', field: '', text: 'fixture text' }, at: Date.now() } }));

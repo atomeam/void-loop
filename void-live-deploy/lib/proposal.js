@@ -17,7 +17,8 @@ export const MAX_FIELD = 1500;
 
 const ctl = (s) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/g, ' ');
 const oneLine = (s) => ctl(s).replace(/\s+/g, ' ').trim();
-const multi = (s) => ctl(s).replace(/\r\n?/g, '\n').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+// the page's one-line ask box keeps a paste's line breaks as ' ⏎ ' (void.html's paste handler), so those are line breaks here too
+const multi = (s) => ctl(s).replace(/\r\n?/g, '\n').replace(/[ \t]*⏎[ \t]*/g, '\n').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
 
 // "turn this into a proposal", "make a proposal from this: …", "write a proposal for <request>", "draft a proposal"
 const ASK_RE = /^(?:please\s+)?(?:(?:can|could|would)\s+you\s+(?:please\s+)?)?(?:(?:turn|make|convert)\s+(?:this|that|it|the\s+following|this\s+(?:email|request|message))\s+into\s+an?\s+(?:\w+\s+)?proposal|(?:make|write|draft|create|build|generate|prepare)\s+(?:me\s+)?an?\s+(?:\w+\s+)?proposal(?:\s+(?:from|for|out\s+of|based\s+on|about|on)\b)?)\s*(?:(?:this|that|it|the\s+following|the\s+request\s+below|this\s+(?:email|request|message))\b\s*)?[:\-–—]?\s*([\s\S]*)$/i;
@@ -95,10 +96,18 @@ export function parseProposal(text) {
 
 const sentences = (s) => multi(s).replace(/\n+/g, ' ').split(/(?<=[.!?])\s+/).map((x) => x.trim()).filter((x) => x.length > 2);
 const ASKING = /\b(?:need|needs|want|wants|would (?:also |really |just )?like|looking for|should|must|can you|could you|would you|help (?:me|us)|fix|set up|build|make|migrate|move|clean|automate|stop|start)\b/i;
-const GREETING = /^(?:hi|hello|hey|dear|good (?:morning|afternoon|evening))\b[^.!?\n]*[,.!]?\s*/i;
+const GREETING = /^(?:hi|hello|hey|dear|good (?:morning|afternoon|evening))\b[^.!?\n,]*[,.!]?\s*/i; // up to its comma: "Hi, we need X." keeps "we need X.
+const HEADER = /^(?:from|to|cc|bcc|date|sent|subject|reply-to)\s*:/i;
+/** a mail thread as read off the page (the extension's "draft for me: proposal"): its header lines and the short bare lines a mail
+ *  app puts around a message (the subject, "to me", "Reply") are not the request; a plain pasted request is left as it is */
+export function mailBody(text) {
+  const lines = multi(text).split('\n');
+  if (!lines.some((l) => HEADER.test(l.trim()))) return multi(text);
+  return lines.filter((l) => { const t = l.trim(); return t && !HEADER.test(t) && (/[.!?,:;]/.test(t) || t.split(/\s+/).length > 5); }).join('\n');
+}
 /** the proposal with no model: honest, plain, every field present, [brackets] where the owner decides */
 export function ruleProposal(p) {
-  const body = multi(p.request).replace(GREETING, '');
+  const body = mailBody(p.request).replace(GREETING, '');
   const s = sentences(body);
   const asks = s.filter((x) => ASKING.test(x) && !/^(?:can|could|would|will)\s+you\s+(?:tell|let|send|give|show)\b.*\?$/i.test(x)); // the request itself ("can you tell us what you would do?") is not a scope item
   const first = (asks[0] || s[0] || body).replace(/^(?:we|i|our team|my team)\s+(?:need|needs|want|wants|would like|are looking for)\s+/i, '');
@@ -121,6 +130,13 @@ export function toMarkdown(f, to = '') {
   const v = (k) => multi((f && f[k]) || '') || (k === 'price' ? PRICE_BLANK : '');
   return '# ' + (v('title') || 'Proposal') + '\n\n' + (to ? 'To: ' + oneLine(to) + '\n\n' : '')
     + FIELDS.filter(([k]) => k !== 'title').map(([k, label]) => '## ' + label + '\n\n' + v(k)).join('\n\n') + '\n';
+}
+
+/** the proposal as plain text for a reply box (an email body has no Markdown): the title, then each field under its label */
+export function toPlain(f, to = '') {
+  const v = (k) => multi((f && f[k]) || '') || (k === 'price' ? PRICE_BLANK : '');
+  return (v('title') || 'Proposal') + '\n\n' + (to ? 'To: ' + oneLine(to) + '\n\n' : '')
+    + FIELDS.filter(([k]) => k !== 'title').map(([k, label]) => label + ':\n' + v(k)).join('\n\n') + '\n';
 }
 
 /** a safe file name for the download */

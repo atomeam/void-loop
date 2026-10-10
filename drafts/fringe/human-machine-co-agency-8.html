@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · its side of the table (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#table{display:grid;grid-template-columns:1fr 1fr;gap:10px;height:120px}
+.side{border:1px solid rgba(255,255,255,.1);border-radius:12px;display:flex;align-items:center;justify-content:center;position:relative}
+.dot{width:46px;height:46px;border-radius:50%}
+#partner{position:absolute;bottom:6px;right:10px;font-size:12px;color:#8a8a92}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>its side of the table · draft · not published</h1>
+  <p class="note">A dot appears on the left or the right. You answer only the green dots, with your one key (space, or tap your button) as fast as you can, wherever the dot is; ignore the violet ones. Your button sits on the left. In some sittings a machine partner sits on the right and answers the violet dots itself. People acting beside a partner tend to be slower when their target appears on the partner's side, as if they had taken the partner's task into account (the joint Simon effect, Sebanz, Knoblich and Prinz 2003); alone, with the same single key, the effect mostly disappears. Whether a visible machine partner draws the same cost from you is an open question this page asks: it compares your sittings with and without it. Everything stays in this browser.</p>
+  <div id="table" aria-hidden="true"><div class="side" id="L"></div><div class="side" id="R"><span id="partner"></span></div></div>
+  <div class="row"><button id="mine" type="button" disabled>my key (space)</button></div>
+  <div class="row"><button id="alone" type="button">sit alone · 40</button><button id="paired" type="button">sit with the machine · 40</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var N=40,KEY='a2m.fringe.jointsimon.v1',GREEN='#45c45a',VIOLET='#a46bff',st={sittings:[]},run=null;
+  function el(id){return document.getElementById(id)}
+  function ok(s){return s&&(s.mode==='alone'||s.mode==='paired')&&isFinite(s.effect)}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.sittings))st.sittings=j.sittings.filter(ok)}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({sittings:st.sittings.slice(-200)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your sittings (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var k=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[k];a[k]=t}return a}
+  // half the dots are yours (green), half the partner's (violet); each colour on each side equally often; shuffled
+  function plan(n){var t=[];for(var i=0;i<n;i++)t.push({mine:i%2===0,side:(i>>1)%2?'R':'L'});return shuffle(t)}
+  function median(a){if(!a.length)return null;var s=a.slice().sort(function(x,y){return x-y}),m=s.length>>1;return s.length%2?s[m]:(s[m-1]+s[m])/2}
+  // one sitting: your median time to your own dots on your side (left, compatible) and on the other side; the effect is
+  // other minus yours; false presses on the partner's dots are counted, not timed
+  function sitting(trials){var near=[],far=[],false_=0,missed=0;trials.forEach(function(t){if(!t.mine){if(t.ms!=null)false_++;return}if(t.ms==null){missed++;return}(t.side==='L'?near:far).push(t.ms)});
+    var a=median(near),b=median(far);return{near:a,far:b,effect:a!=null&&b!=null?b-a:null,falsePress:false_,missed:missed}}
+  function mean(a){return a.reduce(function(x,y){return x+y},0)/a.length}
+  function clear(){el('L').innerHTML='';el('R').innerHTML='<span id="partner">'+(run&&run.mode==='paired'?'machine partner':'')+'</span>'}
+  function dot(side,c){var d=document.createElement('div');d.className='dot';d.style.background=c;el(side).appendChild(d)}
+  function show(){var t=run.trials[run.i];clear();el('mine').disabled=true;
+    run.timer=setTimeout(function(){dot(t.side,t.mine?GREEN:VIOLET);run.at=performance.now();el('mine').disabled=false;
+      if(!t.mine&&run.mode==='paired')setTimeout(function(){if(run&&run.trials[run.i]===t)el('partner').textContent='machine partner ✓'},380+Math.random()*120);
+      run.timer=setTimeout(next,1200)},600+Math.random()*500)}
+  function press(){if(!run||!run.at)return;var t=run.trials[run.i];if(t.ms==null)t.ms=performance.now()-run.at;clearTimeout(run.timer);next()}
+  function next(){if(!run)return;run.at=0;run.i++;if(run.i<run.trials.length){show();return}
+    var s=sitting(run.trials);s.mode=run.mode;s.at=Date.now();clear();el('mine').disabled=true;el('alone').disabled=false;el('paired').disabled=false;
+    if(s.effect!=null){st.sittings.push(s);save()}
+    el('state').textContent=s.effect==null?'too many misses to measure this time':(s.mode==='paired'?'with the machine':'alone')+': your dots on your side '+Math.round(s.near)+' ms, on the other side '+Math.round(s.far)+' ms, effect '+Math.round(s.effect)+' ms · '+s.falsePress+' presses on its dots';run=null;draw()}
+  function start(mode){if(run)return;run={mode:mode,trials:plan(N),i:0,at:0};el('alone').disabled=true;el('paired').disabled=true;el('state').textContent='';show()}
+  el('alone').addEventListener('click',function(){start('alone')});el('paired').addEventListener('click',function(){start('paired')});
+  el('mine').addEventListener('click',press);
+  document.addEventListener('keydown',function(e){if(e.code==='Space'&&run){e.preventDefault();if(!e.repeat)press()}});
+  function draw(){var ss=st.sittings;if(!ss.length){el('score').textContent='';return}
+    var by=function(m){var xs=ss.filter(function(s){return s.mode===m}).map(function(s){return s.effect});return xs.length?Math.round(mean(xs))+' ms ('+xs.length+')':'–'};
+    el('score').textContent='your effect alone '+by('alone')+' · with the machine '+by('paired')+(ss.length<6?'\nabout 3 sittings of each, alternating, before comparing':'')}
+  draw();
+  // made-up trials: the plan is balanced, the effect is far minus near on your own dots, partner dots are never timed
+  function selftest(){var p=plan(40);if(p.filter(function(t){return t.mine}).length!==20)return'half the dots should be yours';
+    if(p.filter(function(t){return t.mine&&t.side==='L'}).length!==10||p.filter(function(t){return !t.mine&&t.side==='R'}).length!==10)return'sides should be balanced per colour';
+    var s=sitting([{mine:true,side:'L',ms:300},{mine:true,side:'L',ms:320},{mine:true,side:'R',ms:350},{mine:true,side:'R',ms:370},{mine:true,side:'R',ms:null},{mine:false,side:'R',ms:250},{mine:false,side:'L',ms:null}]);
+    if(s.near!==310||s.far!==360||s.effect!==50||s.falsePress!==1||s.missed!==1)return'sitting gave '+JSON.stringify(s);return true}
+  window.__jointSimon={plan:plan,sitting:sitting,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

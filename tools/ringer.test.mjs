@@ -92,3 +92,51 @@ test('routing: "play marbles", "marbles", "shoot marbles", "ringer" open Ringer;
   for (const t of ringer.nearMisses) assert.equal(ringerOf(t), null, t);
   for (const t of ['Play marbles!', 'shoot some marbles', "let's play ringer", 'play marbles with me']) assert.ok(ringerOf(t), t);
 });
+
+test('drag to flick: the shot goes opposite the pull, power grows with the pull up to PULL_MAX, and nothing moves until the flick', () => {
+  const s = R.create(4), sh = s.marbles[0];
+  const back = R.pull(s, sh.x, sh.y - R.PULL_MAX / 2); // pulled straight back, away from the middle
+  assert.ok(Math.abs(back.angle - Math.PI / 2) < 1e-12, 'aimed at the middle, opposite the pull');
+  assert.ok(Math.abs(back.power - 0.5) < 1e-12);
+  assert.equal(R.pull(s, sh.x - 1, sh.y).power, 1, 'a long pull is full power, not more');
+  assert.ok(Math.abs(R.pull(s, sh.x + 0.01, sh.y).angle - Math.PI) < 1e-12, 'pulled to the right shoots left');
+  assert.equal(R.pull(s, sh.x, sh.y), s, 'no pull, no change');
+  assert.equal(back.phase, 'aim'); assert.equal(R.moving(back), false);
+  assert.ok(R.pullLength(s, sh.x, sh.y - 0.005) < R.PULL_MIN, 'a tiny pull is under the threshold');
+  const shot = R.settle(R.flick(R.pull(s, sh.x, sh.y - R.PULL_MAX)));
+  assert.equal(shot.shots, 1); assert.ok(shot.out >= 1, 'a full pull straight back breaks the cross');
+  assert.equal(R.pull(R.flick(s), 0, 0).phase, 'rolling', 'no pulling mid-roll');
+});
+
+test('reach: the aim line shows where a shot that meets nothing stops (friction, or caught at FAR), checked against the rolling itself', () => {
+  const s0 = R.create(6), sh = s0.marbles[0];
+  const alone = (s) => ({ ...s, marbles: [s.marbles[0]] }); // no targets: the shooter meets nothing
+  for (const [power, angle] of [[0, Math.PI / 2], [0.3, Math.PI / 2], [1, Math.PI / 2], [0.5, Math.PI / 2 + 0.6], [0.2, -Math.PI / 2]]) {
+    const s = R.setPower(R.aim(alone(s0), angle), power), r = R.reach(s);
+    // where it stopped rolling (settling then puts a shot that got nothing back at the edge)
+    let n = R.flick(s), end = n.marbles[0];
+    for (let i = 0; i < 4000 && n.phase === 'rolling'; i++) { end = n.marbles[0]; n = R.step(n, 1 / 480); }
+    // the rolling steps at 1/480 s and stops under STOP m/s, so it lands within a few millimetres of the formula
+    assert.ok(Math.hypot(end.x - r.x, end.y - r.y) < 0.006, power + '@' + angle.toFixed(2) + ': reach ' + JSON.stringify(r) + ' rolled to ' + end.x.toFixed(4) + ',' + end.y.toFixed(4));
+  }
+  const soft = R.reach(R.setPower(s0, 0)), hard = R.reach(R.setPower(s0, 1));
+  assert.ok(Math.abs(soft.d - R.SPEED_MIN ** 2 / (2 * R.DECEL)) < 1e-12, 'a soft flick rolls v^2/2a');
+  assert.ok(hard.d < R.SPEED_MAX ** 2 / (2 * R.DECEL) && Math.abs(Math.hypot(hard.x, hard.y) - R.FAR) < 1e-9, 'a full flick across the ring is caught at FAR');
+  assert.ok(Math.hypot(sh.x, sh.y) > 0, 'the shooter starts at the edge');
+});
+
+test('best clear: a new game keeps the fewest shots that cleared a ring, and the summary says it', () => {
+  let s = R.create(5);
+  for (let n = 0; n < 60 && !s.over; n++) { const m = s.marbles.find((x) => !x.shooter && !x.out); s = R.settle(R.flick(R.setPower(R.aimAt(s, m.x, m.y), 1))); }
+  assert.ok(s.over); assert.equal(s.best, undefined, 'a first game has no best yet');
+  assert.doesNotMatch(R.summary(s), /best/);
+  const next = R.newGame(s, 9);
+  assert.equal(next.best, s.shots); assert.equal(next.shots, 0); assert.equal(next.over, false);
+  assert.match(R.summary(next), new RegExp('best clear: ' + s.shots + ' shot'));
+  assert.equal(R.newGame(next, 3).best, s.shots, 'an unfinished game does not change the best');
+  assert.equal(R.newGame(R.create(1), 2).best, null, 'nothing cleared, no best');
+  const beat = { ...next, over: true, shots: s.shots - 1 }, worse = { ...next, over: true, shots: s.shots + 4 }, same = { ...next, over: true, shots: s.shots };
+  assert.equal(R.newGame(beat, 1).best, s.shots - 1); assert.equal(R.newGame(worse, 1).best, s.shots);
+  assert.match(R.summary(beat), /a new best \(it was/); assert.match(R.summary(worse), /your best is/); assert.match(R.summary(same), /equals your best/);
+  assert.deepEqual({ ...R.newGame(s, 9), best: undefined }, { ...R.create(9), best: undefined }, 'otherwise a fresh game');
+});

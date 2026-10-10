@@ -20,14 +20,19 @@
  *                                                               commits the files to a new branch and opens a pull request
  *                                                               (never pushes to an existing default branch; never merges)
  *   { action: 'http.post', url, body? }                         POSTs JSON to a public https address
+ *   { action: 'watch', watch, tell? }                           a standing watch (lib/watch.js): fetch one thing, judge it, keep the
+ *                                                               check as a watch.check record; tell 'note' (the record is the note on
+ *                                                               the stage) or 'send' (a stubbed send). Only on a schedule.
  * What a rule can reach is fenced here, not trusted to the rule: GitHub only in the repos the owner allows
  * (AUTOMATION_REPOS, default atomeam/void-loop), branches only under void/, never workflow files, and http only to
  * public https hosts. Event data can fill text in but never chooses the repo, the branch prefix or a file path's root.
  */
+import { validateWatch, describe, TELLS, DEFAULT_EVERY } from './watch.js';
+
 export const SCHEMA = 'void.automation.v1';
 export const TRIGGERS = ['webhook', 'manual', 'schedule'];
 export const EVERY_MIN = 15, EVERY_MAX = 10080; // minutes between scheduled runs: the clock ticks every 15, a week at most
-export const ACTIONS = ['note', 'queue.add', 'github.comment', 'github.pr', 'http.post'];
+export const ACTIONS = ['note', 'queue.add', 'github.comment', 'github.pr', 'http.post', 'watch'];
 export const MAX_STEPS = 5, MAX_FILES = 20, MAX_FILE_BYTES = 100000, MAX_TEXT = 4000, MAX_NAME = 60, MAX_EVENT = 64000; // a GitHub webhook body is often 20 to 40 KB
 export const DEFAULT_REPOS = ['atomeam/void-loop'];
 export const BRANCH_PREFIX = 'void/';
@@ -135,6 +140,11 @@ export function validate(input, env) {
       const url = str(s.url);
       if (templated(url) || !safeUrl(url)) bad(at + 'url is a fixed public https address');
       rule.do.push({ action: 'http.post', url, body: text('body', false) });
+    } else if (s.action === 'watch') {
+      const v = validateWatch(s.watch);
+      if (!v.ok) v.errors.forEach((e) => bad(at + e));
+      if (w.on !== 'schedule') bad(at + 'a watch runs on a schedule');
+      rule.do.push({ action: 'watch', watch: v.watch, tell: TELLS.includes(s.tell) ? s.tell : 'note' });
     }
   });
   return { ok: errors.length === 0, errors, rule: errors.length ? null : rule };
@@ -156,8 +166,14 @@ export function steps(rule, event = {}) {
       return { action: 'github.pr', repo: s.repo, base: s.base, branch, title: fill(s.title, event).slice(0, 200), body: fill(s.body, event).slice(0, MAX_TEXT), files: s.files.map((f) => ({ path: f.path, content: fill(f.content, event) })) };
     }
     if (s.action === 'http.post') return { action: 'http.post', url: s.url, body: fill(s.body, event).slice(0, MAX_TEXT) };
+    if (s.action === 'watch') return { action: 'watch', watch: s.watch, tell: s.tell }; // nothing in a watch is filled from the event
     return { action: s.action, error: 'unknown action' };
   });
+}
+
+/** the rule a watch becomes: one scheduled step, named by what it watches for */
+export function watchRule(watch, tell = 'note', every = DEFAULT_EVERY) {
+  return { name: ('Watch: ' + describe(watch)).slice(0, MAX_NAME), when: { on: 'schedule', every }, do: [{ action: 'watch', watch, tell }] };
 }
 
 /** three rules to start from (the card offers them; each is valid as it stands) */

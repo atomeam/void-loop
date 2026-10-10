@@ -7,7 +7,7 @@
  * stays in the ring and you keep knocking marbles out; otherwise it goes back to the edge. Clear the ring in as few shots
  * as you can. Real sizes in metres: a 16 mm marble, a 19 mm shooter, a schoolyard ring 0.56 m across.
  *   create(seed) -> state                aim(s, angle) / aimAt(s, x, y) / setPower(s, p) -> s
- *   flick(s) -> s (rolling)              step(s, dt) -> s (back to 'aim' once everything has stopped)
+ *   pull(s, x, y) -> s (drag to flick)   flick(s) -> s (rolling)   step(s, dt) -> s (back to 'aim' once everything has stopped)
  *   settle(s) -> s (steps until it stops, for tests and a hidden board)      summary(s) -> text
  */
 export const RING = 0.28, MARBLE = 0.008, SHOOTER = 0.0095, GAP = 0.04, COUNT = 13;
@@ -38,6 +38,26 @@ export function aim(s, angle) { return s.phase !== 'aim' || s.over ? s : { ...s,
 export function aimAt(s, x, y) { const sh = shooterOf(s); return (x === sh.x && y === sh.y) ? s : aim(s, Math.atan2(y - sh.y, x - sh.x)); }
 export function setPower(s, p) { return s.phase !== 'aim' || s.over ? s : { ...s, power: clamp(+p || 0, 0, 1) }; }
 export const speedFor = (power) => SPEED_MIN + (SPEED_MAX - SPEED_MIN) * clamp(power, 0, 1);
+
+// Drag to flick (the 3D ring): press the shooter, pull back like a knuckle flick, let go. The shot goes opposite the pull,
+// and its power grows with the pull up to PULL_MAX; a pull shorter than PULL_MIN is not a shot (a tap, or a change of mind).
+export const PULL_MAX = 0.12, PULL_MIN = 0.008;
+/** Aim and power from where the pointer is while pulling back (x, y on the ground, metres). */
+export function pull(s, x, y) {
+  if (s.phase !== 'aim' || s.over) return s;
+  const sh = shooterOf(s), dx = sh.x - x, dy = sh.y - y, len = Math.hypot(dx, dy);
+  if (len < 1e-9) return s;
+  return { ...s, angle: Math.atan2(dy, dx), power: clamp(len / PULL_MAX, 0, 1) };
+}
+export const pullLength = (s, x, y) => { const sh = shooterOf(s); return Math.hypot(sh.x - x, sh.y - y); };
+// Where the shooter would stop if it met nothing: rolling friction takes v^2 / (2 DECEL), and a marble that reaches FAR from
+// the middle is caught there. The aim line is drawn this long, so what it shows is what the dirt will do. Pure.
+export function reach(s) {
+  const sh = shooterOf(s), ux = Math.cos(s.angle), uy = Math.sin(s.angle), v = speedFor(s.power), free = (v * v) / (2 * DECEL);
+  const b = sh.x * ux + sh.y * uy, c = sh.x * sh.x + sh.y * sh.y - FAR * FAR, disc = b * b - c;
+  const toFar = disc >= 0 ? -b + Math.sqrt(disc) : Infinity, d = Math.max(0, Math.min(free, toFar));
+  return { x: sh.x + ux * d, y: sh.y + uy * d, d };
+}
 
 /** Flick the shooter along the aim at the chosen power. */
 export function flick(s) {
@@ -97,11 +117,19 @@ export function step(s, dt) {
 /** Step until everything stops (at most `limit` seconds). */
 export function settle(s, limit = 30) { let n = s; for (let t = 0; n.phase === 'rolling' && t < limit; t += 1 / 60) n = step(n, 1 / 60); return n; }
 
+// A new game that keeps the best score: the fewest shots that cleared a ring so far (the game's own record, nothing else). Pure.
+export function newGame(s, seed) {
+  const was = s && Number.isFinite(s.best) ? s.best : null, now = s && s.over ? s.shots : null;
+  const best = was == null ? now : now == null ? was : Math.min(was, now);
+  return { ...create(seed), best };
+}
+const plural = (n) => n + ' shot' + (n === 1 ? '' : 's');
 export function summary(s) {
-  if (s.over) return 'Ring cleared: all ' + COUNT + ' marbles in ' + s.shots + ' shot' + (s.shots === 1 ? '' : 's');
+  const best = Number.isFinite(s.best) ? s.best : null;
+  if (s.over) return 'Ring cleared: all ' + COUNT + ' marbles in ' + plural(s.shots) + (best == null ? '' : s.shots < best ? ' · a new best (it was ' + best + ')' : s.shots === best ? ' · equals your best' : ' · your best is ' + best);
   if (s.phase === 'rolling') return 'Rolling…';
   const got = s.out + ' of ' + COUNT + ' knocked out · ' + s.shots + ' shot' + (s.shots === 1 ? '' : 's');
-  if (!s.shots) return 'Tap where to aim, set the power, then Flick';
+  if (!s.shots) return 'Tap where to aim, set the power, then Flick' + (best == null ? '' : ' · best clear: ' + plural(best));
   const inside = inRing(shooterOf(s)) && s.shotOut > 0;
   return got + (s.shotOut ? ' · that one got ' + s.shotOut : ' · missed') + (inside ? ' · shoot again from where it stopped' : '');
 }

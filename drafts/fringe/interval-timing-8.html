@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Void · the longer, the looser (draft)</title>
+<style>
+:root{color-scheme:dark}
+html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+main{max-width:620px;margin:0 auto;padding:32px 16px;display:flex;flex-direction:column;gap:14px}
+h1{font-size:16px;font-weight:normal;color:#8a8a92;margin:0}
+p.note{color:#8a8a92;font-size:13px;margin:0}
+button{font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px;cursor:pointer;touch-action:none}
+button:focus-visible{outline:2px solid #7cf;outline-offset:2px}
+button:disabled{opacity:.4;cursor:default}
+#lamp{width:90px;height:90px;border-radius:50%;margin:0 auto;background:#141418;border:1px solid rgba(255,255,255,.12)}
+#lamp.on{background:#ffd23a;box-shadow:0 0 40px #ffd23a88}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:center}
+#state,#score{white-space:pre-line}
+</style>
+</head>
+<body>
+<main>
+  <h1>the longer, the looser · draft · not published</h1>
+  <p class="note">The lamp lights for a while, then goes out. Then press and hold the space bar (or the hold button) for as long as it was lit. The lamp shows three lengths, mixed up. Most people are about as far off in proportion at every length: twice as long a time, about twice as wide a spread. That is the scalar property of timing (Gibbon’s scalar expectancy theory, 1977, and many studies since; Grondin’s 2010 review). This page works out your own spread as a share of the time (spread ÷ average) at each length, so you can see whether yours stays level. Whether your level is steady from one sitting to the next is an open question this page asks, not a finding. Everything stays in this browser.</p>
+  <div id="lamp" aria-hidden="true"></div>
+  <div class="row"><button id="hold" type="button" disabled>hold</button><button id="go" type="button">start 18</button></div>
+  <div id="warn" role="alert" hidden></div>
+  <div id="state" aria-live="polite"></div>
+  <div id="score" class="note" aria-live="polite"></div>
+</main>
+<script>
+(function(){
+  var LENS=[600,1200,2400],PER=6,KEY='a2m.fringe.scalar.v1',st={sittings:[]},run=null;
+  function el(id){return document.getElementById(id)}
+  function ok(s){return s&&Array.isArray(s.cv)&&s.cv.length===LENS.length&&s.cv.every(function(x){return x==null||isFinite(x)})}
+  try{var j=JSON.parse(localStorage.getItem(KEY)||'null');if(j&&Array.isArray(j.sittings))st.sittings=j.sittings.filter(ok)}catch(_){}
+  function save(){var w=el('warn');try{localStorage.setItem(KEY,JSON.stringify({sittings:st.sittings.slice(-200)}));w.hidden=true}catch(_){w.textContent='this browser is not saving your sittings (storage is full or blocked): they count for now but will be gone after a reload';w.hidden=false}}
+  function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var k=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[k];a[k]=t}return a}
+  function plan(){var t=[];LENS.forEach(function(l){for(var i=0;i<PER;i++)t.push(l)});return shuffle(t)}
+  function mean(a){return a.reduce(function(x,y){return x+y},0)/a.length}
+  function sd(a){var m=mean(a);return Math.sqrt(a.reduce(function(x,y){return x+(y-m)*(y-m)},0)/(a.length-1))}
+  // one sitting: for each length, the average hold and the spread as a share of it (coefficient of variation); holds under a
+  // fifth or over three times the length are slips, left out; a length needs 3 good holds to count
+  function sitting(trials){return{mean:LENS.map(function(l){var h=good(trials,l);return h.length>=3?mean(h):null}),cv:LENS.map(function(l){var h=good(trials,l);return h.length>=3?sd(h)/mean(h):null})}}
+  function good(trials,l){return trials.filter(function(t){return t.len===l&&t.ms>l*0.2&&t.ms<l*3}).map(function(t){return t.ms})}
+  // level: the longest length's spread share over the shortest's (1 = perfectly scalar; well above 1, long times loosen more)
+  function level(s){var a=s.cv[0],b=s.cv[s.cv.length-1];return a&&b!=null?b/a:null}
+  function show(){var l=run.trials[run.i];el('hold').disabled=true;el('lamp').classList.remove('on');
+    run.timer=setTimeout(function(){el('lamp').classList.add('on');run.timer=setTimeout(function(){el('lamp').classList.remove('on');run.ready=true;el('hold').disabled=false},l)},700+Math.random()*500)}
+  function press(){if(!run||!run.ready||run.down)return;run.down=performance.now()}
+  function release(){if(!run||!run.down)return;var ms=performance.now()-run.down;run.down=0;run.ready=false;run.trials[run.i]={len:run.trials[run.i],ms:ms};run.i++;
+    if(run.i<run.trials.length){el('state').textContent='held '+(ms/1000).toFixed(2)+' s';show();return}
+    var s=sitting(run.trials);el('hold').disabled=true;el('go').disabled=false;el('go').textContent='another 18';
+    var any=s.cv.some(function(x){return x!=null});if(any){s.at=Date.now();st.sittings.push(s);save()}
+    el('state').textContent=any?LENS.map(function(l,i){return (l/1000)+' s: you held '+(s.mean[i]!=null?(s.mean[i]/1000).toFixed(2)+' s, spread '+Math.round(s.cv[i]*100)+'%':'too few good holds')}).join('\n'):'too many slips to measure this time';run=null;draw()}
+  el('go').addEventListener('click',function(){if(run)return;run={trials:plan(),i:0,ready:false,down:0};el('go').disabled=true;el('state').textContent='';show()});
+  var hb=el('hold');hb.addEventListener('pointerdown',function(e){e.preventDefault();press()});hb.addEventListener('pointerup',release);hb.addEventListener('pointercancel',function(){if(run)run.down=0});
+  document.addEventListener('keydown',function(e){if(e.code==='Space'&&run){e.preventDefault();if(!e.repeat)press()}});
+  document.addEventListener('keyup',function(e){if(e.code==='Space'&&run){e.preventDefault();release()}});
+  function draw(){var ss=st.sittings;if(!ss.length){el('score').textContent='';return}
+    var lv=ss.map(level).filter(function(x){return x!=null});
+    el('score').textContent=ss.length+' sitting'+(ss.length>1?'s':'')+' · your spread by length: '+LENS.map(function(l,i){var xs=ss.map(function(s){return s.cv[i]}).filter(function(x){return x!=null});return (l/1000)+' s '+(xs.length?Math.round(mean(xs)*100)+'%':'–')}).join(' · ')
+      +(lv.length?'\nlong ÷ short spread '+mean(lv).toFixed(2)+' (1.00 = the same share at every length)':'')+(ss.length<5?'\nabout 5 sittings before reading much into it':'')}
+  draw();
+  // made-up holds: slips are left out, the spread share is sd/mean, and a perfectly scalar sitting has level 1
+  function selftest(){var p=plan();if(p.length!==18||LENS.some(function(l){return p.filter(function(x){return x===l}).length!==PER}))return'plan should hold 6 of each length';
+    var tr=[];LENS.forEach(function(l){[0.9,1,1.1].forEach(function(k){tr.push({len:l,ms:l*k})});tr.push({len:l,ms:l*5})});
+    var s=sitting(tr);if(s.mean.some(function(m,i){return Math.abs(m-LENS[i])>1e-9}))return'mean gave '+JSON.stringify(s.mean);
+    if(s.cv.some(function(c){return Math.abs(c-0.1)>1e-9}))return'cv gave '+JSON.stringify(s.cv);
+    if(Math.abs(level(s)-1)>1e-9)return'level gave '+level(s);
+    if(sitting([{len:600,ms:600}]).cv[0]!==null)return'one hold should not count';return true}
+  window.__scalar={plan:plan,sitting:sitting,level:level,selftest:selftest}; // for checks
+})();
+</script>
+</body>
+</html>

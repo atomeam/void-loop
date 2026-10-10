@@ -10,9 +10,10 @@
  */
 import { keepLive } from './live.js';
 
-const OWNER_KEY = 'a2m.void.owner.v1';
+const OWNER_KEY = 'a2m.void.owner.v1', ME_KEY = 'a2m.void.me.v1';
 export const PAGE = 30, EVERY = 60e3;
-const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || ''; } catch (_) { return ''; } };
+// the owner's key, else a signed-in member's session: a paid member reads their own records only (what happened to their stage while they were away)
+const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || (JSON.parse(localStorage.getItem(ME_KEY) || 'null') || {}).token || ''; } catch (_) { return ''; } };
 
 export function actionsOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -67,7 +68,7 @@ function mount(th, stageApi) {
   const tok = ownerToken();
   stageApi.bindDrag(card, th);
   stageApi.stage.appendChild(card);
-  if (!tok) { status.textContent = 'The record is the owner’s. Unlock Void first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
+  if (!tok) { status.textContent = 'The record is for the owner and paid members. Unlock Void first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
 
   let rows = [], onlyFailed = false, more = true;
   const paint = () => {
@@ -80,7 +81,7 @@ function mount(th, stageApi) {
   };
   const get = async (limit, offset) => {
     const r = await fetch('/api/actions?limit=' + limit + '&offset=' + offset, { headers: { authorization: 'Bearer ' + tok } });
-    if (!r.ok) throw new Error(r.status === 401 ? 'only the owner can read the record' : r.status === 503 ? 'no database behind this copy of Void' : 'the record answered ' + r.status);
+    if (!r.ok) throw new Error(r.status === 401 ? 'only the owner and paid members can read the record' : r.status === 503 ? 'no database behind this copy of Void' : 'the record answered ' + r.status);
     const data = await r.json().catch(() => ({}));
     return Array.isArray(data.actions) ? data.actions : [];
   };

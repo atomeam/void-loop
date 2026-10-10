@@ -32,6 +32,10 @@ const T = [
   ['const key = "sk-abcdefghijklmnopqrstuvwx";', 'hardcoded-secret@1'],
   ['fetch("http://api.weather-data.net/data");', 'plain-http@1'],
 ];
+// an import of a file named skills-… is not a key: "sk" must be followed by a separator
+ok(!rules("import { unlistedSkills } from './skills-unlisted.mjs';", 'javascript').includes('hardcoded-secret@1'), 'a skills-… file name is not a secret');
+ok(rules('const k = "sk_abcdefghijklmnopqrstuvwx";', 'javascript').includes('hardcoded-secret@1'), 'sk_ key still flagged');
+ok(rules('const t = "ghp_abcdefghijklmnopqrstuvwx";', 'javascript').includes('hardcoded-secret@1'), 'ghp_ token still flagged');
 // run 52: for…in over an array is flagged, over an object (a hasOwnProperty guard, the key used as a name) is not;
 // innerHTML from a builder handed the escaper (card(esc)) is not flagged, a plain variable still is
 ok(rules('for (var i in list) total += list[i];', 'javascript').includes('for-in-array@1'), 'for…in over an array flagged');
@@ -373,6 +377,15 @@ for (const c of ['let best = null; if (best.t > 1) go();', 'let r = null; const 
 {
   const page = ['<p>hi</p>', '<textarea id="code">if (x = 5) {', '  el.innerHTML = name;', '}</textarea>', '<script>', 'if (y = 6) go();', '</script>', '<pre>eval(input)</pre>', '<pre class="a">', 'q = "SELECT " + id', '</pre><p>after</p>'];
   ok([...textLines(page)].join(',') === '2,3,4,8,9,10,11', 'text lines: ' + [...textLines(page)].join(','));
+}
+{ // conflict markers: a bug in any file, whatever its language; a lone ======= (a Markdown heading underline) only beside a start line
+  const { conflictMarkers } = await import('../void-live-deploy/lib/code-review.js');
+  const json = '[\n  {"a": 1},\n' + '<'.repeat(7) + ' HEAD\n  {"b": 2}\n' + '='.repeat(7) + '\n  {"c": 3}\n' + '>'.repeat(7) + ' origin/main\n]';
+  ok(conflictMarkers(json).map((c) => c.line).join(',') === '3,5,7', 'markers found on lines 3, 5 and 7 of a JSON ledger: ' + JSON.stringify(conflictMarkers(json)));
+  ok(rules(json.replace(/^\[|\]$/g, ''), 'javascript').filter((r) => r.startsWith('conflict-markers@')).length === 3, 'the rule flags all three marker lines as a bug in code too');
+  const md = 'Title\n' + '='.repeat(7) + '\n\ntext ' + '<'.repeat(7) + ' not at the start\n';
+  ok(!conflictMarkers(md).length && !rules(md, 'javascript').some((r) => r.startsWith('conflict-markers@')), 'a Markdown underline and a marker that does not start a line are left alone');
+  ok(conflictMarkers('>'.repeat(7) + '\n').length === 1 && !conflictMarkers('>'.repeat(8) + ' x\n').length, 'an end marker with no branch name counts; eight > is not git\'s');
 }
 console.log(bad ? bad + ' failed' : 'review: all passed');
 process.exit(bad ? 1 : 0);

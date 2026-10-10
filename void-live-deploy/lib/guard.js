@@ -16,6 +16,7 @@ export const LIMITS = {
   routes: { rpm: 30, body: 0 }, // owner-only: the router's decisions (GET)
   earnings: { rpm: 30, body: 0 },
   queue: { rpm: 60, body: 4000 },
+  share: { rpm: 30, body: 200 }, // invites (POST, a signed-in member) and joining one (a WebSocket per tab)
   approval: { rpm: 60, body: 8000 },
   will: { rpm: 60, body: 64000 },
   catalog: { rpm: 60, body: 1000 },
@@ -30,7 +31,8 @@ export const LIMITS = {
   reflect: { rpm: 30, body: 2000 }, // Void's voice: public GET of its reflections, owner POST asks it what it thinks (lib/voice.js)
   automations: { rpm: 60, body: 2200000 }, // owner-only: Void's own automations; a pull-request rule carries up to 20 files of 100 KB
   hook: { rpm: 60, body: 64000 },
-  actions: { rpm: 60, body: 4000 }, // owner-only: the execution record (lib/actions.js); GET reads it, POST writes an extension.* record (B3); nothing here takes an action // webhooks into an automation (functions/api/hook/[id].js); MAX_EVENT in lib/automations.js
+  actions: { rpm: 60, body: 4000 },
+  watch: { rpm: 30, body: 8000 }, // the owner's or a paid member's standing watches (functions/api/watch.js) // owner-only: the execution record (lib/actions.js); GET reads it, POST writes an extension.* record (B3); nothing here takes an action // webhooks into an automation (functions/api/hook/[id].js); MAX_EVENT in lib/automations.js
 };
 export const DEFAULT_LIMIT = { rpm: 60, body: 16000 };
 export const FAIL_MAX = 10; // wrong keys (401/403) per connection per minute before every /api call from it is refused
@@ -173,6 +175,7 @@ export async function guard(ctx) {
     req = new Request(request, { body: bytes.byteLength ? bytes : null });
   }
   const res = await ctx.next(req);
+  if (res.status === 101 || res.webSocket) return res; // an invite's WebSocket (functions/api/share/): rewrapping it would drop the socket
   if (res.status === 401 || res.status === 403) await bump(url.origin, 'fail:' + conn);
   const out = new Response(res.body, res);
   out.headers.set('x-content-type-options', 'nosniff');

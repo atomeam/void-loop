@@ -91,7 +91,7 @@ test('the real ledger makes a whole tree: a branch for every entry, a few metres
   assert.ok(R.height > 2 && R.height < 8 && R.width < 5, R.height + ' x ' + R.width);
   assert.ok(R.branches.every((b) => [...b.start, ...b.end, b.radius].every(Number.isFinite)));
   assert.ok(Math.max(...R.branches.map((b) => b.depth)) <= 8);
-  assert.deepEqual(layout([]), { branches: [], ghosts: [], height: 0, width: 0 });
+  assert.deepEqual(layout([]), { branches: [], ghosts: [], leaves: [], height: 0, width: 0 });
 });
 
 test('leaves are real leaves, coloured by the season of their date; the kind stays on the branch for its berry', () => {
@@ -143,4 +143,63 @@ test('self.json carries the think tank\'s tracks and the claim being built now (
   assert.deepEqual(readBuilding(frontier), { at: '2026-10-10T00:00:00Z', date: '2026-10-10', by: 'grok', item: 'Games', what: 'a second piece' });
   assert.deepEqual(readBuilding(frontier, { 2: '2026-10-10T05:00:00Z', 7: '2026-10-10T01:00:00Z' }), { at: '2026-10-10T05:00:00Z', date: '2026-10-10', by: 'claude', item: 'Growth you can watch', what: 'the tree, shipped' });
   assert.equal(readBuilding('## 1. x\n- **claim:**\n'), null);
+  assert.equal(readBuilding('## 3. Growth\n- **claim:** claude 2026-10-11: **done.** card and tree\n'), null, 'a claim marked done is not being built');
+  assert.equal(readBuilding('## 3. Growth\n- **claim:** claude 2026-10-11: **done.** x\n## 5. Games\n- **claim:** claude 2026-10-09: self-play\n').item, 'Games', 'the newest claim still open is');
+});
+
+test('the week: entries since 7 days ago, grouped by kind, in plain words, newest first; the tree\'s week-ago stop', async () => {
+  const { weekSummary, plainly } = await import('../void-live-deploy/skills/growth-tree.js');
+  const now = Date.parse('2026-10-10T12:00:00Z'), at = (d) => new Date(now - d * 86400000).toISOString().replace(/\.\d+Z$/, 'Z');
+  const L = [{ at: at(9), kind: 'grow', what: 'Chess' }, { at: at(5), kind: 'grow', what: 'Backgammon, the board game: you can play it now' }, { at: at(3), kind: 'build', what: 'The `weather` card: hourly rain' },
+    { at: at(2), kind: 'grow', what: 'Ringer marbles. Flick and knock them out' }, { at: at(1), kind: 'fix', what: 'the timer (it stopped at 59 s)' }, { at: at(1), kind: 'idea', what: 'a sky that follows the hour' }];
+  const w = weekSummary(L, now);
+  assert.equal(w.since, '2026-10-03'); assert.equal(w.until, '2026-10-03T12:00:00Z'); assert.equal(w.total, 5);
+  assert.deepEqual(w.groups.map((g) => [g.kind, g.count, g.label]), [['grow', 2, 'new things I can do'], ['build', 1, 'thing I do better'], ['fix', 1, 'thing I fixed'], ['idea', 1, 'idea']]);
+  assert.deepEqual(w.groups[0].items, ['Ringer marbles', 'Backgammon, the board game'], 'newest first, each its first plain phrase');
+  assert.equal(w.groups[1].items[0], 'The weather card', 'no Markdown');
+  assert.equal(plainly('the timer (it stopped at 59 s)'), 'the timer (it stopped at 59 s)', 'too short to cut stays whole');
+  assert.equal(plainly('CLOUDFLARE_API_TOKEN_2 is used now'), 'CLOUDFLARE_API_TOKEN_2 is used now', 'names keep their underscores');
+  assert.match(w.text, /^Since 2026-10-03 \(the last 7 days\) I changed 5 things: 2 new things I can do, 1 thing I do better, 1 thing I fixed, 1 idea\. New things I can do: Ringer marbles; Backgammon, the board game\. Thing I do better: The weather card\. Thing I fixed: the timer \(it stopped at 59 s\)\.$/);
+  assert.ok(!/Chess/.test(w.text), 'older than a week stays out');
+  assert.equal(weekSummary(L.slice(0, 1), now).text, 'Nothing new in my growth ledger since 2026-10-03.');
+  const many = weekSummary(Array.from({ length: 9 }, (_, i) => ({ at: at(1 + i * 0.1), kind: 'grow', what: 'thing number ' + i })), now);
+  assert.match(many.text, /\(and 5 more\)/);
+});
+
+test('wants are buds until built: the glowing shoot while a claim builds them, gone once their grow line lands', async () => {
+  const { wantState, saysTheSame } = await import('../void-live-deploy/skills/growth-tree.js');
+  const want = 'Learn backgammon so people can play it';
+  const building = { what: 'backgammon you can play against Void, first piece', item: 'Games', at: '2026-10-10T09:00:00Z' };
+  const grown = FIXTURE.concat([{ at: '2026-10-11T09:00:00Z', by: 'claude', kind: 'grow', what: 'Backgammon, the board game: you can play it now' }]);
+  assert.equal(wantState(want, FIXTURE, null), 'bud', 'a want without a ledger entry is a bud');
+  assert.equal(wantState(want, FIXTURE, building), 'building');
+  assert.equal(wantState(want, grown, building), 'grown', 'a built want stops being a bud, even while its claim line is still up');
+  assert.ok(!saysTheSame('I want to answer every question about tides.', 'everyday benchmark: answer who-questions, weather where you are'), 'shared filler words are not the same thing');
+  assert.ok(!saysTheSame('Better maps', 'the map card shows hills'), 'one short word says too little');
+  const B = layout(FIXTURE, { wants: [want, { i_want: 'I want to answer every question about tides.' }] });
+  assert.deepEqual(B.branches, T.branches, 'buds change nothing about the real tree');
+  assert.deepEqual(B.ghosts.map((g) => g.kind), ['want', 'want'], 'a want without a ledger entry is a bud, not a branch');
+  for (const g of B.ghosts) assert.ok(g.length < 0.1 && g.parent >= 0, 'a bud sits on a short stalk on real wood');
+  const C = layout(FIXTURE, { wants: [want], building });
+  assert.deepEqual(C.ghosts.map((g) => g.kind), ['building'], 'the want being built is the glowing shoot, not also a bud');
+  assert.deepEqual(layout(grown, { wants: [want] }).ghosts, [], 'grown: no bud, it is a real branch now');
+});
+
+test('the last commits are new leaves on the branch of the ledger entry nearest them in time', async () => {
+  const { readCommits } = await import('./self-context.mjs');
+  const log = '2026-10-08T09:01:00+00:00\tFix the `clock` hands\n2026-10-03T12:00:00Z\tAdd **ringer**\nnot a commit line\n';
+  const commits = readCommits(log);
+  assert.deepEqual(commits, [{ at: '2026-10-08T09:01:00Z', subject: 'Fix the clock hands' }, { at: '2026-10-03T12:00:00Z', subject: 'Add ringer' }]);
+  const L = layout(FIXTURE, { commits });
+  assert.equal(L.leaves.length, 2);
+  for (const c of L.leaves) {
+    const t = Date.parse(c.at), d = (b) => Math.abs(Date.parse(b.at) - t), nearest = Math.min(...T.branches.map(d));
+    assert.equal(d(T.branches[c.branch]), nearest, 'on the branch nearest in time');
+    assert.equal(T.branches[c.branch].index, c.index);
+    const b = T.branches[c.branch], tip = b.end;
+    assert.ok(Math.hypot(c.pos[0] - tip[0], c.pos[1] - tip[1], c.pos[2] - tip[2]) < 0.1, 'at that branch\'s tip, where new growth comes');
+  }
+  assert.deepEqual(layout(FIXTURE, { commits }).leaves, L.leaves, 'they stay put');
+  assert.deepEqual(L.branches, T.branches);
+  assert.deepEqual(layout([], { commits }).leaves, []);
 });
