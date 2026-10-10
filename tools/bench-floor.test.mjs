@@ -36,3 +36,10 @@ test('the command writes the file only when the floor rises, and keeps its note'
   const after = JSON.parse(readFileSync(f, 'utf8'));
   assert.equal(after.score, 1979); assert.equal(after.total, 1984); assert.equal(after.note, 'the floor');
 });
+
+test('called as the workflow calls it (no --floor), the result file is still found', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'floor-')), r = join(dir, 'score.json');
+  writeFileSync(r, JSON.stringify({ score: 1, total: 2, wrong: [] }));
+  const out = spawnSync(process.execPath, ['tools/bench-floor.mjs', r], { encoding: 'utf8' });
+  assert.equal(out.status, 0); assert.doesNotMatch(out.stdout + out.stderr, /usage/); assert.match(out.stdout, /floor stays/);
+});

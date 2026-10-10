@@ -23,7 +23,7 @@ export function nextFloor(result, floor, margin = MARGIN) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2), at = args.indexOf('--floor');
   const floorFile = at >= 0 ? resolve(args[at + 1]) : resolve(dirname(fileURLToPath(import.meta.url)), 'bench.best.json');
-  const resultFile = args.find((a, i) => !a.startsWith('--') && i !== at + 1);
+  const resultFile = args.find((a, i) => !a.startsWith('--') && (at < 0 || i !== at + 1));
   if (!resultFile) { console.error('usage: node tools/bench-floor.mjs bench-score.json [--write] [--floor path.json]'); process.exit(2); }
   const result = JSON.parse(readFileSync(resolve(resultFile), 'utf8')), floor = JSON.parse(readFileSync(floorFile, 'utf8'));
   const next = nextFloor(result, floor);
