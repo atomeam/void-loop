@@ -64,6 +64,7 @@ for (const [name, file] of [
   ['model-switch', 'model-switch.test.mjs'],
   ['bench-route', 'bench-route.test.mjs'],
   ['poster', 'poster.test.mjs'],
+  ['speak', 'speak.test.mjs'],
   ['next-skill', 'next-skill.test.mjs'],
   ['share', 'share.test.mjs'],
   ['advance', 'advance.test.mjs'],
