@@ -141,6 +141,33 @@ export function printCheck(model) {
   return { fits, stands, brim: !stands, closed, outward, baseCm2, volumeCm3, grams, overhangPct, supports, triangles: n, ok: fits && closed && outward, notes };
 }
 
+/** Before a file goes to print (Void's ask: verify the geometry before the print command): read the STL back and hold it to
+ *  its model. The facet count in the header matches the model and the file's length, every number is finite, the file's
+ *  extent is the model's size (Z up), and the mesh is one a slicer takes as it is (printCheck: fits, watertight, outward).
+ *  { ok, problems: [why, in words], triangles } — pure, from the bytes and the model alone. */
+export function verifyStl(buf, model) {
+  const problems = [], n = model.indices.length / 3;
+  if (!buf || buf.byteLength < 84) return { ok: false, problems: ['the file is empty'], triangles: 0 };
+  const dv = new DataView(buf), count = dv.getUint32(80, true);
+  if (count !== n) problems.push('the file says ' + count + ' facets, the model has ' + n);
+  if (buf.byteLength !== 84 + count * 50) problems.push('the file holds ' + Math.floor((buf.byteLength - 84) / 50) + ' facets, its header says ' + count);
+  const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity], whole = Math.min(count, Math.floor((buf.byteLength - 84) / 50));
+  let nan = 0;
+  for (let t = 0; t < whole; t++) {
+    const o = 84 + t * 50;
+    for (let k = 0; k < 12; k++) { const x = dv.getFloat32(o + k * 4, true); if (!Number.isFinite(x)) { nan++; continue; } if (k >= 3) { const a = (k - 3) % 3; if (x < lo[a]) lo[a] = x; if (x > hi[a]) hi[a] = x; } }
+  }
+  if (nan) problems.push(nan + ' numbers in the file are not a number');
+  // the file is Z up: its x, y, z extents are the model's x, z, y
+  const want = [model.size[0], model.size[2], model.size[1]], got = [0, 1, 2].map((a) => hi[a] - lo[a]);
+  if (whole && got.some((g, a) => !(Math.abs(g - want[a]) <= Math.max(0.2, want[a] * 0.01)))) problems.push('the file\'s extent ' + got.map((g) => Math.round(g)).join(' × ') + ' mm is not the model\'s ' + want.map(Math.round).join(' × ') + ' mm');
+  const pc = printCheck(model);
+  if (!pc.fits) problems.push(pc.notes[0]);
+  if (!pc.closed) problems.push(pc.notes[2]);
+  if (!pc.outward) problems.push('it faces inward (a slicer would read it inside out)');
+  return { ok: !problems.length, problems, triangles: whole };
+}
+
 /** binary STL in millimetres, Z up (the model's y), each facet with its own normal */
 export function stl(model) {
   const P = model.positions, I = model.indices, n = I.length / 3;
