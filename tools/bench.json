@@ -5701,5 +5701,22 @@
   {"ask": "what can you print", "want": "skill:inventory"},
   {"ask": "what can you 3d print?", "want": "skill:inventory"},
   {"ask": "what can the forge make", "want": "skill:inventory"},
-  {"ask": "list printable things", "want": "skill:inventory"}
+  {"ask": "list printable things", "want": "skill:inventory"},
+  {"ask": "review this python: for u in users: users.remove(u)", "want": "review", "says": "skips|copy"},
+  {"ask": "review this python: if type(x) == dict: return x[\"a\"]", "want": "review", "says": "isinstance"},
+  {"ask": "review this go: for _, it := range items { it.Price *= 2 }", "want": "review", "says": "copy"},
+  {"ask": "review this go: go func() { wg.Add(1); defer wg.Done(); fetch(u) }()", "want": "review", "says": "Wait"},
+  {"ask": "review this rust: let mut g = state.lock().expect(\"poisoned\"); fetch(url).await;", "want": "review", "says": "lock"},
+  {"ask": "review this sql: SELECT u.name, o.total FROM users u LEFT JOIN orders o ON o.user_id = u.id WHERE o.total > 50;", "want": "review", "says": "ON clause"},
+  {"ask": "what time will it be in Lagos when it's 9pm in London", "want": "skill:worldtime"},
+  {"ask": "how many hours ahead is Lagos than London", "want": "skill:worldtime"},
+  {"ask": "sunrise and sunset in Reykjavik tomorrow", "want": "skill:worldtime"},
+  {"ask": "is it morning or evening in Mumbai", "want": "skill:worldtime"},
+  {"ask": "a fancy word for tired", "want": "skill:words"},
+  {"ask": "i need a better word for tired", "want": "skill:words"},
+  {"ask": "another way to say tired", "want": "skill:words"},
+  {"ask": "whats the tempature in paris", "want": "skill:weather"},
+  {"ask": "wat time is it in lagos", "want": "skill:worldtime"},
+  {"ask": "defne sonder", "want": "skill:define"},
+  {"ask": "how far is lyon frm turin", "want": "skill:distance"}
 ]
