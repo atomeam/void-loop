@@ -797,6 +797,37 @@ Object.values(things).forEach((th) => {
       decorate();
       syncFigures();
       announceNew();
+      requestAnimationFrame(() => layoutStage()); // after any centring the summoner asked for
+    }
+    // Cards stop landing on top of each other (lib/placement.js, 2026-10-10): a card that just arrived takes the nearest free
+    // spot from where it was asked to land; a card that grows (a draft filling the tab card, a 3D miniature loading) moves the
+    // cards it now covers; a card the person dragged stays where they put it; a saved layout is never reshuffled on load.
+    let placement = null; import('/lib/placement.js').then((m) => { placement = m; layoutStage(); }).catch(() => {});
+    let laidOut = null; const cardSize = new Map(), grownIds = new Set();
+    const sizeWatch = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
+      for (const e of entries) {
+        const id = e.target.dataset && e.target.dataset.id; if (!id || !things[id]) continue;
+        const w = e.target.offsetWidth, h = e.target.offsetHeight, was = cardSize.get(id);
+        if (was && (h > was.h + 4 || w > was.w + 4)) grownIds.add(id);
+        cardSize.set(id, { w, h });
+      }
+      if (grownIds.size) requestAnimationFrame(() => layoutStage());
+    }) : null;
+    function layoutStage() {
+      if (!placement || PAGE || document.documentElement.classList.contains('dragging')) return;
+      const els = [...stage.querySelectorAll(':scope > .thing[data-id]')].filter((el) => things[el.dataset.id] && el.offsetWidth);
+      if (sizeWatch) { sizeWatch.disconnect(); els.forEach((el) => sizeWatch.observe(el)); }
+      const first = !laidOut; if (first) laidOut = new Set();
+      const cards = els.map((el) => { const th = things[el.dataset.id];
+        return { id: th.id, x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth, h: el.offsetHeight, pinned: !!th.pinned, fresh: !first && !laidOut.has(th.id), grew: grownIds.has(th.id) }; });
+      cards.forEach((c) => laidOut.add(c.id)); grownIds.clear();
+      const moves = placement.arrange(cards, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) });
+      let moved = false;
+      for (const [id, p] of Object.entries(moves)) {
+        const th = things[id], el = stage.querySelector('[data-id="' + CSS.escape(id) + '"]'); if (!th || !el) continue;
+        th.x = p.x; th.y = p.y; el.style.left = p.x + 'px'; el.style.top = p.y + 'px'; moved = true;
+      }
+      if (moved) { decorate(); save(); }
     }
     // A thing that just arrived on the stage (a list, a timer, a game board) is read out once, like an answer page
     let seenIds = null;
@@ -1111,6 +1142,7 @@ Object.values(things).forEach((th) => {
             cur.style.left = th.x + 'px'; cur.style.top = th.y + 'px';
             moveMates(th.x - origX, th.y - origY);
             for (const m of mates) { m.t.x = Math.max(0, m.t.x); m.t.y = Math.max(0, m.t.y); if (m.el) { m.el.style.left = m.t.x + 'px'; m.el.style.top = m.t.y + 'px'; } }
+            if (th.x !== origX || th.y !== origY) { th.pinned = true; for (const m of mates) m.t.pinned = true; } // put there by hand: the stage never moves it (lib/placement.js)
             decorate();
             try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
             save();

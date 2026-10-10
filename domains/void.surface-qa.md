@@ -113,3 +113,8 @@ Validate that every live skill in void.html parses freer English phrases to Pass
 - Fail — `countdown for 5 minutes` (`no handler yet`; no timer created).
 - Fail — `countdown` (`no handler yet`; no timer created).
 - Fail — `stop the timer` (`no timer`; timer already paused).
+## Cards on top of each other (claimed 2026-10-10, helper/stage-placement)
+- Seen: in the extension's panel, the tab card (which grew with the draft buttons and the B3 step box) and a countdown summoned after it overlapped, so a click aimed at one card landed on the other. Two test checks had been switched to pressing buttons directly to get past it.
+- Fixed on the stage (lib/placement.js, wired in void.html after each render and on a card's growth): a card that just arrived takes the nearest free spot from where it was asked to land; a card that grows moves the unpinned cards it now covers; a card the person dragged stays where they put it; a saved layout is never reshuffled on load.
+- The two checks click for real again ("draft for me: summary", B2 "into the page"); with placement switched off, the draft check fails, so the suite sees the overlap. tools/placement.test.mjs (5) runs in checks.mjs.
+- Still open: cards tilt toward the pointer, so a button moves a couple of pixels as the mouse arrives (Playwright waits for it to hold still; force skips only that wait).
