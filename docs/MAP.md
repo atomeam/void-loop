@@ -1,59 +1,69 @@
 # MAP: what the year of work is, and how it fits together
 
-Written 2026-10-06 from the repos themselves. Each claim says how it was checked:
-**[read]** = I read the code or files. **[desc]** = taken from the GitHub description or metadata only; I did not open the code. Nothing here has been deleted or moved.
+Written 2026-10-10 from main at `5e9ecc8` (PR #337 merged). Each claim says how it was checked:
+**[read]** = read in this clone at that commit. **[gh]** = GitHub API this session (open/merged PRs, repo secrets). **[desc]** = carried from the 2026-10-06 map's GitHub descriptions, not re-verified. Nothing here has been deleted or moved.
 
 ## The short version
-One product (**Void**, a-to-mind.com) is real and live. Around it are engines that feed it, and a large body of earlier work that is either already folded in, specified but never built, or archive. The new engine, **Ouroboros**, turns the old work itself into Void's memory.
+One product (**Void**, a-to-mind.com, repo `atomeam/void-loop`) is live and merges to main many times a day: a blank stage with one input, 101 rule-matched skills, a 2,001-ask benchmark whose floor raises itself, a code reviewer that is also for sale, and merge machinery that reverts its own bad commits. Around it sit the Cloudflare account (cleanup list in `BASE.md`), the Void browser extension, the Ouroboros memory engine, and the older repos, which either feed Void or wait. The growth ledger (`void-live-deploy/void.growth.json`, 234 entries at this sha) is the surface-readable record of every change; `domains/void.frontier.md` is the ranked work a run takes when nothing is queued.
 
-```
-  old projects on disk ──► void_lens (free scan) ──► ouroboros harvest ──► digests + memory.jsonl
-                                                          │ verify (hashes)         │ push: full digest, then read back + hash check
-                                                          ▼                         ▼
-                                                   report.html            /api/memory (D1)  ──► Void answers
-                                                          │                                      "what did I do about X?"
-                                                          ▼                                      (skill: not built yet)
-                              reclaim (only rebuildable node_modules/venvs; never a project)
-  a-to-mind.com/cheat-codes/ ──► free scanner ──► Ouroboros download (draft, not on sale)
-```
+## Void, what is live (`atomeam/void-loop` main → a-to-mind.com) [read][gh]
+- **The surface:** `void.html`, copied to `void-live-deploy/index.html` and `void-live-deploy/void.html` (tools/checks.mjs fails if the three differ), deployed on every merge to main by `.github/workflows/deploy.yml`, then checked against the live domain itself ("The live domain serves this deploy"; growth entry, PR #227).
+- **101 skills** registered in `void-live-deploy/skills/index.json` at `5e9ecc8`, each a card: aggravation, sorry, part, figure, connect4, ringer, growth, quiz, challenge, intent, forge, make, weather, air, uv, quake, pollen, spanish, translate, rebuild-map, place, worldtime, define, news, words, country, grades, distance, joke, recipe, crypto, loan, savings, fuel, tip, room, walls, home, sleep, ovulation, period, pregnancy, nutrition, heart, util, remind, calendar, today, book, show, sport, holidays, work, share, recent, coral, senolytic, trialwatch, incident, releasenotes, status, motorbody, printedmotor, magnetize, inventory, tictactoe, othello, throw-off, print-file, countdown, figures, dismiss, group, layer, label, light-look, dark-look, local-inference, print-download, cartoon, zoom-figure, figure-can, show-countdown, mancala, chess, checkers, go, monopoly, battleship, poker, fireworks, rack, eightball, gears, moon, lock, automations, actions, proposal, memory, services.
+- **38 standing miniatures** in `void-live-deploy/skills/mini/`: aggravation, battleship, calculator, checkers, chess, clock, connect4, countdown, counter, eightball, fireworks, forge, gears, go, growthtree, heart, list, lock, mancala, monopoly, moon, notepad, othello, paper, pentamote, piggybank, poker, rack, ringer, sample, savings, stopwatch, tabletop, tictactoe, timer, tip, void, weather. Every figure obeys the four permanent rules in `STANDING.md` (realistic, seeded individual, clonable, acts on its nature).
+- **Games** (their skills above, listed on the rack by "games"): Void-brand names since 2026-10-09 (Back to Start, Star Marbles, The Landlord's Game, Sea Battle, Four in a Row, Reversi; asking the old names still works), agent log 2026-10-09; Ringer added by PR #276.
+- **Memory:** the memory card (`skills/memory.js`, PR #271), member-scoped `/api/memory` (#273), "remember that …" / "forget that …" (#279), "what you told me" in the answer path (#291, scoped to a signed-in member or the owner, material never instruction), and Ouroboros push for paid members (#306 with #312; `python tools/ouroboros.py push` into their own scope, 500-project cap).
+- **Code review, for sale:** `/code-review/`, `/api/review`, and the GitHub Action `atomeam/void-loop/review@main` (agent log 2026-10-09T15:00Z; `void-live-deploy/lib/products.js`; Gumroad product `dkmcjk`). The owner key is free and uncapped; `.github/workflows/void-review.yml` uses it on every PR, and Void reviews its own PRs before anything else merges.
+- **Services and pricing:** pages `/one-time-fix/`, `/keep-it-running/`, `/full-stack-audit/`, `/first-automation-setup/` (PR #321) behind the pricing card (`skills/services.js`, #282; the price question shows membership and services together, #302; live Gumroad catalog, #304; re-registered in the index by #328 after a merge dropped it and the clean floor run lost 9 pricing asks, agent log 2026-10-10T02:16Z).
+- **The Void extension** (`extension/`, 0.5.0): the tab card drafts reply/summary/notes/rewrite through `/api/answer` mode `draft` (#254, #258), and B3 proposes page steps on an allow-listed site after a Yes, one `extension.act` execution record per step, two-or-three-step runs as one card (#274, #280, #327).
+- **Automation and learning:** Void's own when-this-then-that rules with a 15-minute tick (`lib/automations.js`, #233; `void-tick.yml`), the miss→build-queue learning loop (`lib/learn.js`, #232 re-landed after #230's revert, daily sweep #241), Void's voice reflections after every deploy and daily (`void-voice.yml`, `lib/voice.js`, first daily 2026-10-09T21:59Z in `domains/void.voice.md`), and the claim-by-name build queue (`python tools/void_queue.py claim <target>`, #287).
+- **Execution records:** every action writes a `void_actions` row before acting and settles it after (`lib/actions.js`, #237 re-landed with its route limit as #251; the owner's card #252; every server-side action-taker through `track()` #255; the card live and paged #259).
+- **Live cards:** `skills/live.js` keeps a card current while it is up (weather 15 min, news 30, tech 10; asked by Void, PR #244 with the pieces the squash dropped in #249).
+- **Benchmark and gate:** floor **1985 of 2001** (`tools/bench.best.json`, 2026-10-10; the floor now raises itself after a clean main run via `tools/bench-floor.mjs`, #301/#326). The correctness suite has per-check timeouts and a whole-suite budget (#234). Every push to main gets its own full-suite run in `.github/workflows/verify.yml` (split out of deploy.yml by #333; the job keeps the name `verify-main` because `tools/revert-target.mjs` reads earlier verdicts by it), and a red one reverts the commit where the check first went red, or reports when the record is unclear (`tools/revert-target.mjs`, #227, #234, #281, #283). A labelled PR merges on Void's review alone and, when it conflicts with main, automerge merges main into it itself (#307, #311).
 
-## What is live and real: Void  (`atomeam/void-loop`) [read]
-- A blank stage with one input. About 61 skills (calculators, units, timers, weather, time zones, calendar, games, 3D figures) matched by rules; anything else goes to a free model (Gemma on Workers AI) with a Wikipedia source.
-- A 1,019-ask benchmark with a score floor, and a browser suite. The benchmark checks that asks route to handlers that already exist.
-- Automation (CI, Oct 7: trimmed to fit GitHub Free minutes): deploy on PR/main, daily watchdog, daily dispatcher (dry-run); the ship helper and hourly grow job are retired. Earlier: The ship helper and deploys have been failing since Oct 5 (a merge broke `tools/test_void.mjs`; three real checks still fail).
-- NOT built despite the docs: "Void learns skills by itself" (`domains/void.edit-engine.md`: no `/api/learn`, no checker, no KV store).
+## Built, not merged [gh, 2026-10-10]
+- PR #335 — Memory: "written" asks and "remember that …" answer from memory (touches `skills/memory.js` and the index; labelled automerge).
+- PR #293 — the standing watch card, "watch this for me" (build-order step 4, first piece; claim line merged as #285; now labelled automerge [gh]).
+- PR #250 — a webhook automation rule runs at most 200 times a day (older, no label).
 
-## New this session (branches/PRs; none on `main` yet)
-| Piece | Where | State |
+## Build order (owner, 2026-10-09; `domains/void.frontier.md`) — status at `5e9ecc8`
+1. **Living miniature reference + a revert that finds the real commit** — shipped; owner sign-off still open. The revert handled a live red run (reverted #230, the commit that broke the suite; frontier "evidence" line) and verify-main now says "Already reverted" instead of failing silently; suite-split part (4) shipped (#234), parts (1)-(3) (bench out of the merge gate, parallel suite workers) open (frontier "claim (suite split)"). The gear pair (#224), the moon (#229) and the lock cutaway (#317, which closes frontier #17) are the shipped explainers; `miniContract` in `tools/test_3d.mjs` is the behaviour contract (`docs/miniatures.md`). The frontier keeps this at priority 1 until the owner accepts the live-run evidence (frontier "status (owner, 2026-10-09)").
+2. **A small execution record for actions** — shipped in all four pieces: the record (#251), the owner's card (#252), every action-taker through `track()` (#255), the card live and paged (#259). Next on the item: publishing (`/api/publish`) and the Gumroad-side writes are the action-takers still outside the record; then a `?kind=` filter on the card.
+3. **One bounded business workflow (request → proposal)** — first piece shipped (#263; suite fix #314): the editable proposal card, send stubbed behind the confirm line with a `proposal.send` execution record. Next on the item: the model draft on the live site, the send executor (email.send) behind the confirm line, a "proposals" list on the stage.
+4. **One explicitly requested standing watch** — built; PR #293 open, not yet merged [gh]. Claim line #285; the frontier claim describes the design (named thing + condition, D1 in the asker's scope, the existing 15-minute tick, `watch.check` records, "my watches").
+5. **One playable toy on the shared scene (Ringer)** — first piece shipped (#276, claim #269): pure rules (`skills/ringer-rules.js`), seeded marbles, the card and the 3D ring, miniContract plus an end-to-end Flick check. Next on the item: drag-to-flick on the 3D ring, and a Ringer box on the game rack.
+
+## Frontier items, claim state at `5e9ecc8` (`domains/void.frontier.md`) [read]
+- **Claimed and shipped (or with merged claim lines):** #1 the reviewer that learns (claim on the item; the extras went silent so the lesson source is Void's own closer read — #270, #286, #277, #303; the weekly number shows on `/code-review/` from `void-live-deploy/review-stats.json`); #3 growth you can watch (#288, #308, "what changed this week" #324); #10 summon by intent (`skills/intent.js`, agent log 2026-10-09T16:06Z); #14 the forge (first piece shipped as #337: `skills/forge-rules.js`, `skills/forge.js`, `skills/mini/forge.js`; "make me a rocket"/vase/bottle/table/snowman/lighthouse as blended SDF meshes with a binary STL download; 6 of the 10 the done-when asks for); #17 explainers (gear, moon, quiz #284, challenge #305, lock #317 — the item's "Done when" is met); the memory-card + synaptic-layer claim (#271, #272); the products claim (#282, #302, #304, #316, #321) plus its sale-to-job line claimed (a Gumroad sale becomes an execution record and a build-queue job, refund cancels it; claim merged as #336, not yet built); the told-me claim (#291, named by #329); the Ouroboros-for-members claim (#306, #312, named by #320); the bench-pre-existing-misses claim (#292, #294; the floor rose with #326); build-order steps 1-5 as above.
+- **Claimed, not built:** #4 a world that keeps living while you are away (its claim line merged as #330; no build on the item yet).
+- **Empty claims (nobody has claimed a piece):** #2 Void builds its own skills from what it could not answer (its named first piece `tools/next-skill.mjs` is unclaimed, though the miss→job queue itself shipped in #232/#241), #5 the self-play arena, #6 the MCP endpoint, #7 the estate, #8 mission cards that update themselves, #9 the Clef router, #11 invite someone into your Void, #12 paste anything get a better version, #13 skills that spread between Voids, #15 make it real, #16 Void's own voice, #18 goal mode, #19 the discovery notebook, #20 gear sound (#18-#20 are marked "later, after #17", and #17 closed with #317). After the six build-order steps, the owner's fallback order on the item is 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
+
+## The Cloudflare account: the three name collisions of BASE.md cleanup item 3 [read BASE.md]
+1. **`a-to-mind`** exists as both a Worker and the Pages project that serves the apex (the Pages project is the live site; deploy.yml targets it).
+2. **`a-to-mind-homepage`** exists as both a Worker and a Pages project.
+3. **`api.a-to-mind.com` is claimed twice:** the route `d44e3e08c03a43e8a8f4f7824c573824` on the Worker `aether-api` (live: a URL Scanner run on 2026-10-09 got its run-status dashboard) and the custom domain `e998b6802547816fd11ccc14edfe831ee9cc454a` on the Worker `a-to-mind-homepage` (dormant: no service binding points at it; its `RunExecutor` Durable Object still holds stored data, so whoever retires it exports or deletes that namespace deliberately first). Neither Worker is Void. Full facts and the retirement order: BASE.md item 3.
+`pipeline-db`/`pipeline-db-staging` vs `aether-bridge-db`/`-staging` are the same kind of collision, one layer down (BASE.md item 3, first paragraph). The estate inventory (`void.estate.json`) is still not written (BASE.md; frontier #7 unclaimed). Account census (2026-10-06 [desc]): 63 Workers, 10 Pages projects, 16 D1 databases, 29 KV namespaces, 7 R2 buckets; the June-scaffold retirement list and the `council-routing-db` / `a-to-mind-board` read-before-delete notes are BASE.md items 1 and 4.
+
+## Secrets [gh `gh secret list`, 2026-10-10; Pages-project secrets are not listable from here]
+- **Set in the repo:** `CLOUDFLARE_ACCOUNT_ID`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_API_TOKEN2`, `VOID_OWNER_TOKEN` (added 2026-10-09T21:58Z; the voice daily ran one minute later, `domains/void.voice.md`).
+- **Not set in the repo** (the workflows run them empty or gate on them): `OPENROUTER_API_KEY` (learn's model drafts — STANDING.md: "with OPENROUTER_API_KEY set"), `ANTHROPIC_API_KEY` (think-tank beyond its default dry-run, `.github/workflows/think-tank.yml`), `NOTIFY_WEBHOOK` (voice/think-tank notifications), `READ_TOKEN` and `BRIDGE_URL` (the daily dispatcher's dry-run).
+- **Not verifiable from here, documented as needed:** `VOID_MISSES_TOKEN` (the owner-only miss board — sessions still log "board unread", e.g. agent log 2026-10-09T22:13Z; set as a user env on the Victus since 2026-09-25, agent log), and the Pages-project `GITHUB_TOKEN` for automations' GitHub steps (STANDING.md; a Pages secret, not a repo secret).
+
+## Ouroboros and the disk tools (on main since the 2026-10-06 map's PRs; all [read])
+`tools/void_lens.py` (the free read-only scanner), `tools/ouroboros.py` (harvest, verify, report, plan, reclaim, run, push; Windows CI since #323, `.github/workflows/ouroboros.yml`), `tools/build_ouroboros_pack.py` and `drafts/ouroboros/` (the download, 0.3.0, not the paid tier), and Void's memory API `void-live-deploy/functions/api/memory.js` (owner, then paid members #273, then notes and told-me #279/#291). The paid side beyond members' own pushes waits on the Windows run (growth entry, Ouroboros-for-members).
+
+## The other repos on the account (carried from the 2026-10-06 map; [desc] unless marked)
+| Repo | What it is | Relation to Void |
 |---|---|---|
-| Parse guard (a broken script fails in seconds) | `tools/guard-source.mjs`, PR branch `claude/guard-source-syntax` | built, tested |
-| `/cheat-codes/` page, sitemap, IndexNow | PR #122 | built; the page's disk tip now links the free scanner |
-| void-lens: free read-only disk scanner | `tools/void_lens.py`, PR #124 | built, 6 tests |
-| Ouroboros: harvest, verify, report, plan, reclaim, run, push | `tools/ouroboros.py`, PR #125 | built, 18 tests; not run on Windows |
-| Download pack + landing draft + launch checklist | `tools/build_ouroboros_pack.py`, `drafts/ouroboros/` | built; not on sale |
-| Void's memory API | `functions/api/memory.js`, `lib/memory-core.js` | built, 12 tests on real SQLite; stores each project's full digest and the hash Void computed from what it stored; lookup by id; `?view=topics` and `?related=<id>` show how projects connect (shared tech, file types ignored); table created on first use |
-| Train-recognition concept | `drafts/train-visualization/` (PR #123) | concept only, nothing measured |
-
-## The other repos on the account
-| Repo | What it is | Evidence | Relation to Void | Suggestion (yours to decide) |
-|---|---|---|---|---|
-| `a-to-mind.com` | Brand repo; `FEATURE_LEDGER.md` lists 26 features, all "specified", none built, all "hold-gate only"; 51 open issues | [read] ledger and README; issues not read | The hold-gate era's output | Keep the ledger as an idea bank; the hold-gate rule was retired 2026-10-02, so rebuild items only if Void's growth board wants them |
-| `the-void` | "A second brain. Pages, wiki, graph, Inbox, monthly room" (TypeScript) | [desc] | Same idea as the memory graph you described (Notion/Obsidian hybrid) | Read it before building a memory UI: it may already have the page/wiki/graph model |
-| `autosalvage` (private) | "Scan, classify, and safely migrate legacy repositories" | [desc] | Overlaps Ouroboros's job directly | Compare before maintaining two scanners; `void-loop/archive/victus/classify_archive_packages.py` and `archive/victus/victus_ingest*.py` are earlier versions of the same idea [read] |
-| `glassbox`, `promise-ledger` | Public execution ledgers; checkpoints "baseline census only until a human approves" | [desc] | Proof-of-work records; `domains/void.assimilate.md` row 4 plans a "what did you do today" page | Fold into that page; keep the repos as the public record |
-| `hold` (private) | "CRA Art.14 clock, human hold-gate, AlphaGenome dry-run" | [desc] | The hold-gate concept, since retired as a rule | Archive candidate; confirm nothing live depends on it |
-| `ALPHA` | "Consolidated AtoMind ecosystem (backend :8080, frontend :5173, trust-first integration routing)"; 13 open issues | [desc] | An earlier consolidation attempt | Archive after checking the issues |
-| `auto-deploy-action` | A generic deploy action | [desc] | Overlaps `.github/workflows/deploy.yml` | Only relevant if you want to sell/share the deploy flow |
-| `infinite-briefing`, `Crypto-Cryptids`, `adventure-lab`, `wix`, `Broke`, `HomeBase-`, `atomarcade-bridge`, `fire-ember-mountain-cabin` | Satire outlet, game ideas, old sites and bridges | [desc] | Not part of Void | Leave alone, or archive |
-| On the Victus: `_archive_old_mono`, `hold`, `Desktop` | 64 items classified in `archive/victus/victus-ingest.md`: 25 capabilities, 12 domains, 14 to review, 5 waste, 4 to absorb | [read] counts only | The raw material Ouroboros is built to digest | Run `ouroboros run` on it; the digests become the real inventory |
+| `a-to-mind.com` | Brand repo; `FEATURE_LEDGER.md` lists 26 features, all "specified", none built [desc 2026-10-06] | The hold-gate era's idea bank; the hold-gate rule was retired 2026-10-02 (STANDING.md) |
+| `the-void` | "A second brain. Pages, wiki, graph, Inbox, monthly room" [desc] | The page/wiki/graph model the memory UI may want; read before building one |
+| `autosalvage` (private) | "Scan, classify, and safely migrate legacy repositories" [desc] | Overlaps Ouroboros; earlier versions live in `archive/victus/` [read] |
+| `glassbox`, `promise-ledger` | Public execution ledgers [desc] | Proof-of-work records; fold into a "what did you do today" page |
+| `hold` (private) | "CRA Art.14 clock, human hold-gate, AlphaGenome dry-run" [desc] | The retired hold-gate; archive candidate |
+| `ALPHA` | An earlier ecosystem consolidation [desc] | Archive candidate after its issues are read |
+| `auto-deploy-action` | A generic deploy action [desc] | Overlaps `.github/workflows/deploy.yml` |
+| `infinite-briefing`, `Crypto-Cryptids`, `adventure-lab`, `wix`, `Broke`, `HomeBase-`, `atomarcade-bridge`, `fire-ember-mountain-cabin` | Satire outlet, game ideas, old sites and bridges [desc] | Not part of Void; leave alone or archive |
+| On the Victus: `_archive_old_mono`, `hold`, `Desktop` | 64 items classified in `archive/victus/victus-ingest.md` [read] | The raw material Ouroboros digests |
 
 ## What is real, what is plan
-- **Real and working:** the Void skills and answer fallback, the benchmark, the Void deploy flow (when its checks pass), the new disk tools and memory API (tested here on Linux).
-- **Plan only:** self-learning skills, the semantic graph, cloud backup, anything on the 26-item ledger, the paid Ouroboros tier. Marketing language in older docs states several of these in the present tense.
-
-## Order I would work in
-1. Make `main` green: the three failing checks (a fix attempt is in flight on `helper/mark-inbox-building-shipped`). Nothing ships until this is done.
-2. Merge the small, tested pieces: guard, void-lens, Ouroboros, memory API, SEO page.
-3. Run Ouroboros on the Victus; read the report; push the memory.
-4. Add the Void skill that answers from memory, and a page that shows the topics and related projects ("what did I build for X?").
-5. Only then, the paid pack and cloud backup.
+- **Real and working:** everything under "Void, what is live" above, at `5e9ecc8`.
+- **Plan only:** the unclaimed frontier items (#2, #5-#16, #18-#20), `void.estate.json`, the paid Ouroboros tier, anything in the frontier's candidate capability map (every connector-backed item there is `status: discovered`), and "Void learns skills by itself" beyond the miss→job queue (no `/api/learn`, no checker, no KV store — `domains/void.edit-engine.md` is older than the queue that shipped).
