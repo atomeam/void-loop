@@ -565,6 +565,7 @@
     .void-presence { position: fixed; z-index: 40; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, color-mix(in srgb, var(--fg) 45%, transparent) 0%, transparent 70%); box-shadow: 0 0 14px color-mix(in srgb, var(--fg) 25%, transparent); transition: left .08s linear, top .08s linear; }
     #away-note { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; transition: opacity .25s ease; }
     #away-note:empty { opacity: 0; }
+    #away-note .away-see { color: var(--fg); text-underline-offset: 2px; }
     /* smooth background: the grain lives on its own unscaled layer, so the dark gradient dithers instead of banding or streaking */
     #void-depth::after { content: none; }
     body::after { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05; mix-blend-mode: overlay;
@@ -769,6 +770,7 @@
     function keptThings() { const out = {}; for (const [id, t] of Object.entries(things)) if (!(t && stageKinds[t.kind] && stageKinds[t.kind].ephemeral) || t.keep) out[id] = t; return out; }
     function save() {
       if (PAGE) return;
+      try { if (figures3d && figures3d.keepPlaces) figures3d.keepPlaces(things); } catch (_) {} // where each figure stands is kept whenever the scene is saved (figures3d.js), not only when the tab hides
       localStorage.setItem(STATE_KEY, JSON.stringify(keptThings()));
       try { localStorage.setItem(AWAY_KEY, String(Date.now())); } catch (_) {}
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
@@ -6298,7 +6300,13 @@ return { ok: true, detail: 'timer-reset' };
     // (a zombie and a brain, a cat and a mouse) moves forward by the time since the stage was last left, the same way for
     // everyone (advance in skills/scripts.js), from where each figure last stood; one line says what happened
     const awayNote = document.getElementById('away-note');
-    function tellAway(text) { if (!awayNote || !text) return; awayNote.textContent = text; clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { awayNote.textContent = ''; }, 9000); }
+    // the line under the whisper; with `recorded` it also links to the record ("my actions"), which only exists for the owner and paid members
+    function tellAway(text, recorded) {
+      if (!awayNote || !text) return;
+      awayNote.textContent = text;
+      if (recorded) { const a = document.createElement('a'); a.href = '#'; a.className = 'away-see'; a.textContent = ' · see what happened'; a.addEventListener('click', (e) => { e.preventDefault(); document.dispatchEvent(new CustomEvent('void:summon', { detail: 'my actions' })); }); awayNote.append(a); }
+      clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { awayNote.textContent = ''; }, 9000);
+    }
     if (!PAGE && awayMs > 0) import('/skills/scripts.js').then((m) => {
       const figs = Object.values(things).filter((t) => t && t.kind === 'figure' && t.kindOf);
       if (!figs.length || awayMs < m.AWAY_MIN_MS) return;
@@ -6314,14 +6322,14 @@ return { ok: true, detail: 'timer-reset' };
       save(); render();
       window.__voidAway = { ms: awayMs, note: r.note, changes: r.changes };
       tellAway(r.note);
+      // asked by Void: what happened while you were away is also an execution record (lib/scene-advance.js, kind scene.advance), in your own scope
+      // ("my actions" shows it); only the owner and paid members can write one, so a visitor with no key sends nothing and the note stands alone
+      let tok = ''; try { tok = localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) {}
+      if (tok && r.changes.length) fetch('/api/actions', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + tok }, body: JSON.stringify({ op: 'scene', note: r.note, changes: r.changes }) })
+        .then((res) => (res.ok ? res.json() : null)).then((j) => { if (j && j.id) tellAway(r.note, true); }).catch(() => {});
     }).catch(() => {});
     // leaving: keep where each figure stands and the live conditions it has, so the next visit continues from here (and stamp the time)
-    function rememberWorld() {
-      try {
-        if (figures3d && figures3d.world) for (const [id, w] of Object.entries(figures3d.world())) if (things[id]) { things[id].at = { x: w.x, y: w.y }; if (w.nature) things[id].nature = w.nature; }
-        save();
-      } catch (_) {}
-    }
+    function rememberWorld() { try { save(); } catch (_) {} } // save() folds in the places and stamps the time
     document.addEventListener('visibilitychange', () => { if (document.hidden) rememberWorld(); });
     window.addEventListener('pagehide', rememberWorld);
     if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s Void'), 400);

@@ -7,9 +7,18 @@
 // keep writing their records through track(), and nothing posted here can pose as one of them.
 import { ownerOk } from '../../lib/guard.js';
 import { recent, open, close } from '../../lib/actions.js';
+import { scopeOf } from '../../lib/memory-scope.js';
+import { recordScene } from '../../lib/scene-advance.js';
 
 export async function onRequestGet({ request, env }) {
-  if (!(await ownerOk(request, env))) return new Response('no', { status: 401 });
+  if (!(await ownerOk(request, env))) { // a paid member reads only their own records (scene.advance: what happened to their stage while they were away)
+    const sc = await scopeOf({ request, env });
+    if (!sc || sc.free) return new Response('no', { status: sc && sc.free ? 403 : 401 });
+    if (!env.DB) return new Response('no database', { status: 503 });
+    const u = new URL(request.url);
+    try { return Response.json({ actions: await recent(env, { limit: u.searchParams.get('limit'), offset: u.searchParams.get('offset'), owner: 'member:' + sc.scope }) }); }
+    catch (_) { return new Response('actions error', { status: 500 }); }
+  }
   if (!env.DB) return new Response('no database', { status: 503 });
   const u = new URL(request.url);
   try { return Response.json({ actions: await recent(env, { limit: u.searchParams.get('limit'), offset: u.searchParams.get('offset'), owner: u.searchParams.get('owner') || undefined }) }); }
@@ -18,9 +27,18 @@ export async function onRequestGet({ request, env }) {
 
 export const EXT_KIND = /^extension\.[a-z]{2,20}$/;
 export async function onRequestPost({ request, env }) {
-  if (!(await ownerOk(request, env))) return new Response('no', { status: 401 });
+  const isOwner = await ownerOk(request, env);
+  let b; try { b = await request.json(); } catch (_) { return isOwner ? Response.json({ error: 'not JSON' }, { status: 400 }) : new Response('no', { status: 401 }); }
+  if (b && b.op === 'scene') { // the owner's or a paid member's stage, written in their own scope only (lib/scene-advance.js)
+    const sc = await scopeOf({ request, env });
+    if (!sc) return new Response('no', { status: 401 });
+    if (sc.free) return Response.json({ error: sc.why }, { status: 403 });
+    if (!env.DB) return new Response('no database', { status: 503 });
+    try { const r = await recordScene(env, sc, b); return r.id ? Response.json({ id: r.id }) : Response.json({ error: r.error }, { status: r.status }); }
+    catch (_) { return new Response('actions error', { status: 500 }); }
+  }
+  if (!isOwner) return new Response('no', { status: 401 });
   if (!env.DB) return new Response('no database', { status: 503 });
-  let b; try { b = await request.json(); } catch (_) { return Response.json({ error: 'not JSON' }, { status: 400 }); }
   const op = b && b.op, text = String((b && b.text) || '').slice(0, 500);
   try {
     if (op === 'begin' || op === 'stub') {

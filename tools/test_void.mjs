@@ -1045,6 +1045,7 @@ try {
       const st = JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}'), where = { cloud: [300, 100], flower: [310, 250], zombie: [100, 300], brain: [500, 300] };
       for (const t of Object.values(st)) if (t.kind === 'figure' && where[t.kindOf]) t.at = { x: where[t.kindOf][0], y: where[t.kindOf][1] };
       localStorage.setItem('a2m.void.state.v1', JSON.stringify(st)); localStorage.setItem('a2m.void.away.v1', String(Date.now() - 36e5)); } catch (_) {} }); // once, in the next page that opens
+    let visitorPosts = 0; await W.ctx.route(/\/api\/actions(?:\?|$)/, (r) => { visitorPosts += 1; return r.fulfill({ status: 401, body: 'no' }); }); // a visitor holds no key: nothing may be sent for them
     const back = await W.ctx.newPage(); back.on('pageerror', (e) => errsW.push(String(e && e.message || e)));
     await back.goto(base); await back.waitForTimeout(1500);
     const away = await back.evaluate(() => window.__voidAway || null);
@@ -1053,8 +1054,8 @@ try {
     const flower = left.find((t) => t.k === 'flower'), zombie = left.find((t) => t.k === 'zombie');
     check('away: a cloud, a flower, a zombie and a brain left for an hour: the line says "the cloud rained, the flower grew, the zombie found the brain", the brain is gone, the zombie stands where it was, the flower grew',
       kept === 'brain,cloud,flower,zombie' && away && away.note === 'While you were away (1 hour): the cloud rained, the flower grew, the zombie found the brain.' && line === away.note && Math.abs(away.ms - 36e5) < 60e3
-      && !left.some((t) => t.k === 'brain') && zombie && Math.hypot(zombie.at.x - 500, zombie.at.y - 300) < 3 && flower && flower.grow > 0.5 && !errsW.length,
-      JSON.stringify({ kept, away, line, left, errsW }));
+      && visitorPosts === 0 && !left.some((t) => t.k === 'brain') && zombie && Math.hypot(zombie.at.x - 500, zombie.at.y - 300) < 3 && flower && flower.grow > 0.5 && !errsW.length,
+      JSON.stringify({ kept, away, line, left, errsW, visitorPosts }));
     await back.reload(); await back.waitForTimeout(800);
     check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway && !(document.getElementById('away-note') || {}).textContent), '');
     await W.ctx.close(); }
@@ -1075,6 +1076,54 @@ try {
       /tabs in this browser/.test(saidA) && onB === 1 && dot && Math.abs(dot.x - 320) < 40 && Math.abs(dot.y - 220) < 40 && after === 0 && !errsS.length && !S.errors.length,
       JSON.stringify({ saidA, onB, dot, after, errsS, errs: S.errors }));
     await S.ctx.close(); }
+  // asked by Void: what happened while you were away is also one execution record in your own scope (lib/scene-advance.js, kind scene.advance); the away line
+  // links to it and "my actions" shows the row. Here the owner's key is set and /api/actions is answered by the page's own stand-in.
+  { const M = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const figSrcM = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const namesM = Array.from(new Set(Array.from(figSrcM.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUBM = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + namesM.map((n) => n + '=U').join(',') + ';';
+    await M.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBM }));
+    const posted = [];
+    await M.ctx.route(/\/api\/actions(?:\?|$)/, (r) => { const q = r.request();
+      if (q.method() === 'POST') { posted.push({ auth: q.headers().authorization || '', b: JSON.parse(q.postData() || '{}') }); return r.fulfill(json({ id: 'act-scene-1' })); }
+      const t = new Date().toISOString();
+      return r.fulfill(json({ actions: posted.length ? [{ id: 'act-scene-1', owner: 'owner', kind: 'scene.advance', ref: 'stage', state: 'done', result: posted[0].b.note + ' [3 changes]', error: null, started: t, finished: t }] : [] })); });
+    await M.ctx.addInitScript(() => { try { if (sessionStorage.getItem('away-faked')) return; sessionStorage.setItem('away-faked', '1');
+      const fig = (id, kindOf, x, y, seed) => ({ id, kind: 'figure', kindOf, seed, x: 0, y: 0, at: { x, y }, title: kindOf });
+      localStorage.setItem('a2m.void.state.v1', JSON.stringify({ c: fig('c', 'cloud', 300, 100, 1), f: fig('f', 'flower', 310, 250, 2), z: fig('z', 'zombie', 100, 300, 3), b: fig('b', 'brain', 500, 300, 4) }));
+      localStorage.setItem('a2m.void.away.v1', String(Date.now() - 36e5)); } catch (_) {} });
+    await M.p.reload(); await M.p.waitForTimeout(1800);
+    const lineM = await M.p.evaluate(() => (document.getElementById('away-note') || {}).textContent || '');
+    const linkM = await M.p.$('#away-note .away-see');
+    if (linkM) { await linkM.click(); await M.p.waitForTimeout(900); }
+    const cardM = await M.p.$eval('.actions-card', (e) => e.innerText).catch(() => '');
+    check('away: asked by Void: with the owner\'s key the run is sent once as one scene record (the three changes, the owner\'s bearer), the line links to it, and "my actions" shows the scene.advance row',
+      posted.length === 1 && posted[0].auth === 'Bearer owner-k' && posted[0].b.op === 'scene' && posted[0].b.changes.length === 3 && /the zombie found the brain/.test(posted[0].b.note)
+      && /see what happened$/.test(lineM) && lineM.startsWith(posted[0].b.note) && /scene\.advance · stage/.test(cardM) && !M.errors.length,
+      JSON.stringify({ posted, lineM, cardM: cardM.slice(0, 200), errs: M.errors }));
+    await M.ctx.close(); }
+  // last place survives a page that never hid: the figure's own place is written on the scene's ordinary save (here an unrelated sticky), with no pagehide and no
+  // visibility change; a page opened afterwards puts the figure back there. Reduced motion keeps the figure still so the numbers are exact. three.js is stubbed.
+  { const L = await fresh({ content: 'try { localStorage.setItem("a2m.void.motion.v1", "still"); } catch (_) {}' });
+    const figSrcL = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+    const namesL = Array.from(new Set(Array.from(figSrcL.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
+    const STUBL = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
+      + 'const U=new Proxy(function(){},h);export const ' + namesL.map((n) => n + '=U').join(',') + ';';
+    await L.ctx.route(/\/vendor\/three-r180\/build\/three\.module\.min\.js/, (r) => r.fulfill({ status: 200, contentType: 'text/javascript', headers: { 'access-control-allow-origin': '*' }, body: STUBL }));
+    await L.ask('summon a zombie', 1200);
+    const live = await until(async () => { const v = await L.p.evaluate(() => (window.__void3d ? window.__void3d.state() : null)); return v && v.figures.length === 1 ? v.figures[0] : false; }, 6000);
+    let hid = false; await L.p.evaluate(() => { window.__hid = 0; document.addEventListener('visibilitychange', () => { window.__hid += 1; }); window.addEventListener('pagehide', () => { window.__hid += 1; }); });
+    await L.ask('add a sticky that says hello', 500); // an ordinary save, nothing to do with the figure
+    const kept = await L.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'figure').map((t) => t.at || null));
+    hid = (await L.p.evaluate(() => window.__hid)) > 0;
+    await L.p.close({ runBeforeUnload: false });
+    const back = await L.ctx.newPage(); await back.goto(base);
+    const again = await until(async () => { const v = await back.evaluate(() => (window.__void3d ? window.__void3d.state() : null)); return v && v.figures.length === 1 ? v.figures[0] : false; }, 8000);
+    check('away: last place survives a page that never hid: the zombie\'s own place is saved by the scene\'s ordinary save (no pagehide, no visibility change before it) and a new page puts it back there',
+      !!live && !hid && kept.length === 1 && kept[0] && Math.abs(kept[0].x - Math.round(live.x)) <= 2 && Math.abs(kept[0].y - Math.round(live.y)) <= 2 && !!again && Math.hypot(again.x - kept[0].x, again.y - kept[0].y) <= 3,
+      JSON.stringify({ live: live && [live.x, live.y], kept, hid, again: again && [again.x, again.y] }));
+    await L.ctx.close(); }
   { const G = await fresh(); let n = 0;
     await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
     await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
