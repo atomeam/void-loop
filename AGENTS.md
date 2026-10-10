@@ -2,6 +2,8 @@
 
 This is the live Void (a-to-mind.com) and the private company Loop.
 
+**Current priority (owner, 2026-10-10): clean up and tie together.** Before anything else, read the top of `domains/void.frontier.md` and take its next unclaimed step. Nothing is deleted; unused pieces are salvaged.
+
 Read `STANDING.md` first: it explains what we are building and where things are.
 
 Then read `domains\void.growth.md` (what's next) and the last lines of `domains\void.agents.log.md` (what just happened).
