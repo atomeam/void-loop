@@ -2,6 +2,7 @@
 // so the diff shows only the new line. The ledger is what "growth" summons on the surface; it is live on the next deploy.
 //   node tools/grow.mjs grow "Poker: heads-up fixed-limit Hold'em against Void"         a new thing Void can do
 //   node tools/grow.mjs fix "the timer no longer stops at 59 s" --by claude --ref https://github.com/atomeam/void-loop/pull/205
+//   node tools/grow.mjs grow "…" --asked "<Void's ask, word for word>"   this answers one of Void's asks (tools/reflect.mjs drops it from the list)
 //   node tools/grow.mjs --check      the whole ledger is valid (also run by tools/checks.mjs)
 // kinds: grow, build, fix, retire, idea, finding (void-live-deploy/void.growth.schema.json)
 import { readFileSync, writeFileSync } from 'node:fs';
@@ -10,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 
 export const LEDGER = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'void.growth.json');
 export const KINDS = ['grow', 'build', 'fix', 'retire', 'idea', 'finding'];
-const FIELDS = ['at', 'by', 'kind', 'what', 'ref', 'from'];
+const FIELDS = ['at', 'by', 'kind', 'what', 'ref', 'from', 'asked'];
 
 // null when the entry is valid, else what is wrong with it
 export function entryProblem(e) {
@@ -23,6 +24,7 @@ export function entryProblem(e) {
   if (typeof e.what !== 'string' || !e.what.trim() || e.what.length > 4000) return '"what" must be 1 to 4000 characters';
   if (e.ref !== undefined && (typeof e.ref !== 'string' || !/^https:\/\/\S+$/.test(e.ref))) return '"ref" must be an https link';
   if (e.from !== undefined && typeof e.from !== 'string') return '"from" must be text';
+  if (e.asked !== undefined && (typeof e.asked !== 'string' || !e.asked.trim())) return '"asked" must be the ask, word for word';
   return null;
 }
 
@@ -50,12 +52,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     process.exit(0);
   }
   const opt = (name) => { const i = args.indexOf(name); if (i < 0) return undefined; const v = args[i + 1]; args.splice(i, 2); return v; };
-  const by = opt('--by') || 'claude', ref = opt('--ref');
+  const by = opt('--by') || 'claude', ref = opt('--ref'), asked = opt('--asked');
   const [kind, ...words] = args;
   const entry = { at: new Date().toISOString().replace(/\.\d{3}Z$/, 'Z'), by, kind, what: words.join(' ').trim() };
   if (ref) entry.ref = ref;
+  if (asked) entry.asked = asked;
   const p = entryProblem(entry);
-  if (p) { console.error(p + '\nusage: node tools/grow.mjs <' + KINDS.join('|') + '> "what changed" [--by slug] [--ref https://…]'); process.exit(2); }
+  if (p) { console.error(p + '\nusage: node tools/grow.mjs <' + KINDS.join('|') + '> "what changed" [--by slug] [--ref https://…] [--asked "Void\'s ask"]'); process.exit(2); }
   const text = readFileSync(LEDGER, 'utf8');
   const next = appendTo(text, entry);
   JSON.parse(next);

@@ -3,11 +3,13 @@
  * out by skills/growth-tree.js (the oldest entry is the trunk, the newest are at the tips), barked wood tapering by the
  * pipe model, each branch ending in a cluster of real leaves (the season of its entry's date) with a berry in its kind's
  * colour (the card's chips). The think tank's open tracks are faint shoots with no leaves, and the claim being built now
- * glows. Touch a branch, leaf or berry to read its entry (data.onPick(ledgerIndex)), a faint shoot to read what it is
- * (data.onPickGhost(ghost)); the picked one is lit. data.until grows the tree as it stood then (the time slider): going
+ * glows; Void's wants are closed buds; the last commits on main are fresh young leaves. Touch a branch, leaf or berry to read
+ * its entry (data.onPick(ledgerIndex)), a faint shoot or a bud to read what it is (data.onPickGhost(ghost)), a young leaf to
+ * read its commit (data.onPickCommit(leaf)); the picked one is lit. data.until grows the tree as it stood then (the time slider): going
  * forward, new branches grow in; under reduced motion they are simply there. Everything is posed from data; nothing is kept.
  * data: { entries: the ledger (a list), until?: ISO time, tracks?: [{ name, last }], building?: { what, at, item },
- *   selected?: ledger index, onPick?(ledgerIndex), onPickGhost?(ghost) }
+ *   wants?: [text | { i_want, title, ask }], commits?: [{ at, subject }], selected?: ledger index, onPick?(ledgerIndex),
+ *   onPickGhost?(ghost), onPickCommit?(leaf) }
  */
 import { layout, hash32, rng } from '../growth-tree.js';
 
@@ -45,16 +47,18 @@ export default async function build(ctx, data) {
   const berryMat = new THREE.MeshPhysicalMaterial({ roughness: 0.28, clearcoat: 0.6, clearcoatRoughness: 0.2 }); // glossy, like a ripe berry
   const ghostMat = new THREE.MeshStandardMaterial({ color: '#d8cfc0', roughness: 0.9, transparent: true, opacity: 0.5, depthWrite: false }); // pale bare wood, half there
   const glowMat = new THREE.MeshStandardMaterial({ color: '#ffd28a', roughness: 0.6, emissive: '#ff9a2e', emissiveIntensity: 2.4 });
+  const budMat = new THREE.MeshStandardMaterial({ color: '#a3b06a', roughness: 0.6, transparent: true, opacity: 0.85, depthWrite: false }); // a closed bud: wanted, not grown
+  const youngMat = new THREE.MeshStandardMaterial({ color: '#86d23f', roughness: 0.5, side: THREE.DoubleSide }); // a new leaf: this week's commits
   const leafGeo = leafGeometry(THREE), jointGeo = new THREE.SphereGeometry(1, 16, 12), berryGeo = new THREE.SphereGeometry(1, 14, 10);
   const soil = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.62, 0.05, 64), new THREE.MeshStandardMaterial({ color: '#3b2c20', roughness: 1 }));
   soil.position.y = -0.025; soil.receiveShadow = true; root.add(soil);
   const tree = new THREE.Group(); root.add(tree);
 
-  let shape = '', T = null, wood = [], ghosts = [], joints = null, leaves = null, berries = null, leafOf = [], leafBase = [], berryBase = [], grownAt = new Map(), selected = null;
+  let shape = '', T = null, wood = [], ghosts = [], joints = null, leaves = null, berries = null, young = null, leafOf = [], leafBase = [], berryBase = [], grownAt = new Map(), selected = null;
   const up = new THREE.Vector3(0, 1, 0), m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), e = new THREE.Euler(), v = new THREE.Vector3(), s3 = new THREE.Vector3();
   let lastList = null, lastSig = '';
   const ledgerSig = (list) => { if (list !== lastList) { lastList = list; lastSig = Array.isArray(list) ? list.length + ':' + hash32(JSON.stringify(list)) : '0'; } return lastSig; };
-  const signature = (d) => ledgerSig(d.entries) + '|' + (d.until || '') + '|' + hash32(JSON.stringify([d.tracks || null, d.building || null]));
+  const signature = (d) => ledgerSig(d.entries) + '|' + (d.until || '') + '|' + hash32(JSON.stringify([d.tracks || null, d.building || null, d.wants || null, d.commits || null]));
   const nowS = () => performance.now() / 1000;
 
   function clear() {
@@ -62,8 +66,9 @@ export default async function build(ctx, data) {
     for (const g of ghosts) { tree.remove(g); g.geometry.dispose(); }
     if (leaves) { tree.remove(leaves); leaves.dispose(); }
     if (berries) { tree.remove(berries); berries.dispose(); }
+    if (young) { tree.remove(young); young.dispose(); }
     if (joints) { tree.remove(joints); joints.dispose(); }
-    wood = []; ghosts = []; joints = null; leaves = null; berries = null; leafOf = []; leafBase = []; berryBase = [];
+    wood = []; ghosts = []; joints = null; leaves = null; berries = null; young = null; leafOf = []; leafBase = []; berryBase = [];
   }
   const lathe = (b) => {
     const geo = new THREE.LatheGeometry(b.profile.map(([f, r]) => new THREE.Vector2(r, f * b.length)), Math.max(8, Math.min(32, Math.round(b.radius * 260))));
@@ -73,7 +78,7 @@ export default async function build(ctx, data) {
   function rebuild(d) {
     const first = !T, before = new Set(T ? T.branches.map((b) => b.index + '@' + b.at) : []);
     clear();
-    T = layout(d.entries, { until: d.until || undefined, tracks: d.tracks, building: d.building });
+    T = layout(d.entries, { until: d.until || undefined, tracks: d.tracks, building: d.building, wants: d.wants, commits: d.commits });
     for (const b of T.branches) {
       const mesh = new THREE.Mesh(lathe(b), bark); mesh.castShadow = mesh.receiveShadow = true;
       mesh.position.set(...b.start); mesh.quaternion.setFromUnitVectors(up, v.set(...b.dir));
@@ -97,7 +102,17 @@ export default async function build(ctx, data) {
       if (g.kind === 'building') { // its bud, at the tip, lit from inside
         const bud = new THREE.Mesh(berryGeo, glowMat); bud.scale.setScalar(BERRY * 1.6); bud.position.set(0, g.length, 0); bud.userData.ghost = gi; mesh.add(bud);
       }
+      if (g.kind === 'want') { // a closed bud on its short stalk: pointed, longer than wide, like a beech bud
+        const bud = new THREE.Mesh(berryGeo, budMat); bud.scale.set(BERRY * 1.5, BERRY * 3.2, BERRY * 1.5); bud.position.set(0, g.length + BERRY * 2.2, 0); bud.userData.ghost = gi; mesh.add(bud);
+      }
     });
+    // the last commits on main: fresh young leaves on the branch of the nearest ledger entry
+    young = new THREE.InstancedMesh(leafGeo, youngMat, Math.max(1, T.leaves.length)); young.count = T.leaves.length; young.castShadow = true;
+    T.leaves.forEach((c, i) => {
+      e.set(0.6, c.turn, 0.3); q.setFromEuler(e);
+      young.setMatrixAt(i, m4.compose(v.set(...c.pos), q, s3.setScalar(1.5)));
+    });
+    young.userData.commits = true; young.instanceMatrix.needsUpdate = true; young.computeBoundingSphere(); tree.add(young);
     leaves = new THREE.InstancedMesh(leafGeo, leafMat, T.branches.length * LEAVES); leaves.castShadow = true;
     const col = new THREE.Color();
     T.branches.forEach((b, bi) => {
@@ -177,10 +192,11 @@ export default async function build(ctx, data) {
   // touch a branch or its leaves to read its entry
   ctx.onTap((hits) => {
     const u = (x) => x.object.userData;
-    const h = (hits || []).find((x) => x.object && x.object.visible !== false && (u(x).entry != null || u(x).ghost != null || ((u(x).leaves || u(x).joints || u(x).berries) && x.instanceId != null)));
+    const h = (hits || []).find((x) => x.object && x.object.visible !== false && (u(x).entry != null || u(x).ghost != null || ((u(x).leaves || u(x).joints || u(x).berries || u(x).commits) && x.instanceId != null)));
     if (!h) return;
     const d = ctx.handle.data || data;
     if (u(h).ghost != null) { if (d.onPickGhost) d.onPickGhost(T.ghosts[u(h).ghost]); return; }
+    if (u(h).commits) { if (d.onPickCommit) d.onPickCommit(T.leaves[h.instanceId]); return; }
     const index = u(h).leaves ? leafOf[h.instanceId] : u(h).joints ? T.branches[h.instanceId >> 1].index : u(h).berries ? T.branches[Math.floor(h.instanceId / BERRIES)].index : u(h).entry;
     if (d.onPick) d.onPick(index);
   });
@@ -196,8 +212,8 @@ export default async function build(ctx, data) {
     },
     state() {
       const newest = T.branches.reduce((a, b) => (Date.parse(b.at) >= Date.parse(a.at) ? b : a), T.branches[0] || { index: null, at: '' });
-      return { branches: T.branches.length, leaves: T.branches.length * LEAVES, berries: T.branches.length * BERRIES, ghosts: T.ghosts.length, building: T.ghosts.some((g) => g.kind === 'building'), until: (ctx.handle.data || data).until || null, height: Math.round(T.height * 100) / 100, newest: newest.index, selected, growing: growing || grownAt.size > 0 };
+      return { branches: T.branches.length, leaves: T.branches.length * LEAVES, berries: T.branches.length * BERRIES, ghosts: T.ghosts.length, buds: T.ghosts.filter((g) => g.kind === 'want').length, commitLeaves: T.leaves.length, building: T.ghosts.some((g) => g.kind === 'building'), until: (ctx.handle.data || data).until || null, height: Math.round(T.height * 100) / 100, newest: newest.index, selected, growing: growing || grownAt.size > 0 };
     },
-    dispose() { clear(); leafGeo.dispose(); jointGeo.dispose(); soil.geometry.dispose(); soil.material.dispose(); berryGeo.dispose(); for (const m of [bark, lit, leafMat, berryMat, ghostMat, glowMat]) m.dispose(); barkMap.dispose(); },
+    dispose() { clear(); leafGeo.dispose(); jointGeo.dispose(); soil.geometry.dispose(); soil.material.dispose(); berryGeo.dispose(); for (const m of [bark, lit, leafMat, berryMat, ghostMat, glowMat, budMat, youngMat]) m.dispose(); barkMap.dispose(); },
   };
 }

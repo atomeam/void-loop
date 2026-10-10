@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Tests for tools/ouroboros.py on a fake machine. Run: python tools/ouroboros_test.py"""
-import contextlib, hashlib, http.server, io, json, os, subprocess, sys, tempfile, threading, time, unittest
+import contextlib, hashlib, http.server, io, json, os, stat, subprocess, sys, tempfile, threading, time, unittest
 from pathlib import Path, PureWindowsPath
 from unittest import mock
 
@@ -649,6 +649,9 @@ class WindowsPaths(unittest.TestCase):
             with mock.patch("os.unlink", unlink), mock.patch("os.remove", unlink):
                 left = ouroboros._rmtree(folder)
             self.assertIn("held.dll", [os.path.basename(x) for x in left])
+            # the folder that still holds it keeps its search bit (a replaced mode once left it 0600: on macOS or Linux it could
+            # no longer be entered; checked on the mode itself, so the test fails the same way when it runs as root)
+            self.assertTrue(os.stat(folder / "a").st_mode & stat.S_IXUSR, "the kept folder can still be entered")
             self.assertTrue((folder / "a" / "held.dll").exists(), "the held file is kept, not lost")
             self.assertFalse((folder / "a" / "free.js").exists(), "everything else is still removed")
 

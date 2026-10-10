@@ -38,6 +38,30 @@ export const THINGS = {
     { type: 'capsule', a: [-12, 143, 15], b: [-11, 143, 17], ra: 2.6, k: 1 }, { type: 'capsule', a: [12, 143, 15], b: [11, 143, 17], ra: 2.6, k: 1 },
     { type: 'capsule', a: [-24, 100, 0], b: [-52, 122, 0], ra: 2.6, k: 3 }, { type: 'capsule', a: [24, 100, 0], b: [52, 122, 0], ra: 2.6, k: 3 },
     FLOOR] },
+  teapot: { label: 'Teapot', names: ['teapot', 'tea pot', 'kettle'], k: 6, cell: 1.6, shapes: [
+    { type: 'ellipsoid', c: [0, 50, 0], r: [52, 42, 52] }, cyl(-6, 16, 34), { type: 'ellipsoid', c: [0, 90, 0], r: [30, 8, 30] }, { type: 'sphere', c: [0, 103, 0], r: 7 },
+    { type: 'capsule', a: [40, 38, 0], b: [80, 82, 0], ra: 10, rb: 5, k: 6 },
+    { type: 'capsule', a: [-42, 76, 0], b: [-70, 70, 0], ra: 6, k: 4 }, { type: 'capsule', a: [-70, 70, 0], b: [-68, 38, 0], ra: 6, k: 4 }, { type: 'capsule', a: [-68, 38, 0], b: [-44, 28, 0], ra: 6, k: 4 },
+    FLOOR] },
+  house: { label: 'House', names: ['house', 'little house', 'cottage', 'home model'], k: 1.5, cell: 1.2, shapes: [
+    { type: 'box', c: [0, 30, 0], r: [48, 30, 36] },
+    ...[0, 1, 2, 3, 4, 5, 6, 7].map((i) => ({ type: 'box', c: [0, 63 + i * 5, 0], r: [52 - i * 1.2, 2.6, 40 - i * 5], k: 2.5 })),
+    { type: 'box', c: [26, 92, -14], r: [6, 18, 6] },
+    { type: 'box', c: [0, 18, 36], r: [8, 16, 4], cut: true, k: 0.6 },
+    { type: 'box', c: [-28, 38, 36], r: [8, 8, 3], cut: true, k: 0.6 }, { type: 'box', c: [28, 38, 36], r: [8, 8, 3], cut: true, k: 0.6 },
+    FLOOR] },
+  boat: { label: 'Sailboat', names: ['boat', 'sailboat', 'sail boat', 'sailing boat', 'yacht'], k: 3, cell: 1.3, shapes: [
+    { type: 'ellipsoid', c: [0, 26, 0], r: [72, 26, 24] },
+    { type: 'box', c: [0, 80, 0], r: [100, 34, 40], cut: true, k: 1 }, { type: 'ellipsoid', c: [0, 30, 0], r: [64, 20, 18], cut: true, k: 1 },
+    { type: 'box', c: [0, 10, 0], r: [62, 4, 16] },
+    { type: 'capsule', a: [6, 8, 0], b: [6, 150, 0], ra: 2.6, k: 2 },
+    { type: 'ellipsoid', c: [-22, 86, 0], r: [26, 56, 1.8], k: 2 },
+    FLOOR] },
+  tree: { label: 'Tree', names: ['tree', 'oak tree', 'oak', 'big tree'], k: 12, cell: 1.6, shapes: [
+    cyl(-6, 70, 11, 7), { type: 'capsule', a: [0, 4, 0], b: [16, -4, 6], ra: 6, k: 8 }, { type: 'capsule', a: [0, 4, 0], b: [-14, -4, -8], ra: 6, k: 8 },
+    { type: 'capsule', a: [0, 56, 0], b: [-22, 86, 4], ra: 5, k: 6 }, { type: 'capsule', a: [0, 60, 0], b: [20, 92, -6], ra: 5, k: 6 },
+    { type: 'sphere', c: [0, 112, 0], r: 34 }, { type: 'sphere', c: [-30, 96, 8], r: 26 }, { type: 'sphere', c: [30, 100, -6], r: 27 }, { type: 'sphere', c: [6, 96, 28], r: 24 }, { type: 'sphere', c: [-6, 100, -28], r: 24 },
+    FLOOR] },
   lighthouse: { label: 'Lighthouse', names: ['lighthouse', 'light house', 'beacon tower'], k: 6, cell: 1.6, shapes: [
     cyl(-10, 118, 30, 19), { type: 'ellipsoid', c: [0, 120, 0], r: [27, 5, 27] }, cyl(122, 144, 15), { type: 'sphere', c: [0, 146, 0], r: 15 }, cyl(150, 166, 5, 1),
     { type: 'ellipsoid', c: [0, 0, 0], r: [44, 10, 44] },
@@ -55,7 +79,7 @@ function bounds(shapes) {
   const grow = (p, r) => { for (let i = 0; i < 3; i++) { lo[i] = Math.min(lo[i], p[i] - (Array.isArray(r) ? r[i] : r)); hi[i] = Math.max(hi[i], p[i] + (Array.isArray(r) ? r[i] : r)); } };
   for (const s of shapes) {
     if (s.cut) continue;
-    if (s.type === 'capsule') { grow(s.a, s.ra); grow(s.b, s.rb ?? s.ra); } else grow(s.c, s.r);
+    if (s.type === 'capsule') { grow(s.a, s.ra); grow(s.b, s.rb ?? s.ra); } else grow(s.c, s.r); // spheres, ellipsoids and boxes all grow by r about c
   }
   const pad = 6;
   return { min: [lo[0] - pad, -pad, lo[2] - pad], max: [hi[0] + pad, hi[1] + pad, hi[2] + pad] };

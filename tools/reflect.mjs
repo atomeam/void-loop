@@ -3,6 +3,9 @@
 //   node tools/reflect.mjs --build "<shipped>"  ask Void what it thinks of what just shipped (owner token)
 //   node tools/reflect.mjs --daily              ask Void where it should go next, what feels weakest, which game is next
 //   node tools/reflect.mjs --write              mirror every reflection the site holds into domains/void.voice.md
+//     The current asks are rewritten on every run, minus any a growth-ledger entry answers (its `asked` field, set with
+//     tools/grow.mjs --asked), and stamped with the day they were read from the site. When the site can't be reached the
+//     old list is filtered against the ledger again and keeps its old stamp, with the day of the failed try beside it.
 //   add --json to print the raw entry (the daily workflow reads `striking` from it)
 // The owner token is VOID_OWNER_TOKEN (or VOID_MISSES_TOKEN: both are the Pages READ_TOKEN). Exit 3 when the site can't be
 // reached or Void couldn't answer, so a deploy never fails because Void was busy. Void's words are copied as it said them.
@@ -14,6 +17,22 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const LOG = resolve(root, 'domains/void.voice.md');
 const SITE = process.env.VOID_SITE || 'https://a-to-mind.com';
 const MARK = (at) => `<!-- voice:${at} -->`;
+const LEDGER = resolve(root, 'void-live-deploy/void.growth.json');
+const norm = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+/** the asks no growth-ledger entry answers yet: an entry answers an ask when its `asked` is the ask, word for word */
+export function openAsks(asks, ledger) {
+  const done = new Set((ledger || []).filter((e) => e && e.asked).map((e) => norm(e.asked)));
+  return (asks || []).filter((a) => a && !done.has(norm(a.ask)));
+}
+const readLedger = () => { try { return JSON.parse(readFileSync(LEDGER, 'utf8')); } catch (_) { return []; } };
+const ASK_LINE = /^- (.+?)( \*\(small\)\*)? \((daily|after a build), (\d{4}-\d\d-\d\d)\)$/;
+/** the asks as the file has them now (for a run that can't reach the site) */
+export function asksInLog(text) {
+  const m = /## Void's current asks\n\n([\s\S]*?)\n\n## /.exec(String(text || ''));
+  if (!m) return [];
+  return m[1].split('\n').map((l) => ASK_LINE.exec(l)).filter(Boolean).map((x) => ({ ask: x[1], small: !!x[2], kind: x[3] === 'daily' ? 'daily' : 'build', at: x[4] }));
+}
+const stampOf = (text) => (/^_Read from \/api\/reflect on (\d{4}-\d\d-\d\d)/m.exec(String(text || '')) || [])[1] || null;
 
 const HEAD = `# Void's voice: what Void thinks of itself, in its own words
 
@@ -38,14 +57,17 @@ export function entryBlock(e) {
 }
 
 // rebuild the log: existing blocks are kept exactly, new entries are added, oldest first; the asks come from the newest
-export function writeLog(text, entries, asks) {
+export function writeLog(text, entries, asks, stamp = {}) {
   const blocks = new Map();
   const old = String(text || '').split(/(?=<!-- voice:)/).filter((b) => b.startsWith('<!-- voice:'));
   for (const b of old) blocks.set(/<!-- voice:([^ ]+) -->/.exec(b)[1], b.trimEnd() + '\n');
   for (const e of entries || []) if (e && e.at && !blocks.has(e.at)) blocks.set(e.at, entryBlock(e));
   const ordered = [...blocks.keys()].sort().map((k) => blocks.get(k));
-  const askLines = (asks || []).length ? asks.map((a) => `- ${a.ask}${a.small ? ' *(small)*' : ''} (${a.kind === 'daily' ? 'daily' : 'after a build'}, ${String(a.at).slice(0, 10)})`).join('\n') : '- (none yet)';
-  return `${HEAD}\n## Void's current asks\n\n${askLines}\n\n## Log, oldest first\n\n${ordered.join('\n')}`;
+  const askLines = (asks || []).length ? asks.map((a) => `- ${a.ask}${a.small ? ' *(small)*' : ''} (${a.kind === 'daily' ? 'daily' : 'after a build'}, ${String(a.at).slice(0, 10)})`).join('\n') : '- (none open)';
+  const read = stamp.read || stampOf(text), left = 'Asks a growth-ledger entry answers (its `asked` field) are left out.';
+  const failed = stamp.failed ? `the site could not be reached on ${stamp.failed}, so this may be out of date` : '';
+  const note = read ? `_Read from /api/reflect on ${read}${failed ? '; ' + failed : ''}. ${left}_\n\n` : failed ? `_Not read from /api/reflect by this writer yet: ${failed}. ${left}_\n\n` : '';
+  return `${HEAD}\n## Void's current asks\n\n${note}${askLines}\n\n## Log, oldest first\n\n${ordered.join('\n')}`;
 }
 
 async function call(method, body) {
@@ -75,15 +97,18 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       const e = await call('POST', { kind, ...(kind === 'build' ? { shipped: opt('--build') || '' } : {}) });
       if (json) console.log(JSON.stringify(e)); else show(e);
     } else if (args.includes('--write')) {
-      const v = await call('GET');
-      const text = writeLog(existsSync(LOG) ? readFileSync(LOG, 'utf8') : '', v.entries, v.asks);
+      const old = existsSync(LOG) ? readFileSync(LOG, 'utf8') : '', today = new Date().toISOString().slice(0, 10), ledger = readLedger();
+      let v = null; try { v = await call('GET'); } catch (err) { console.error('reflect: ' + err.message + ' (refiltering the asks already in the file)'); }
+      const asks = openAsks(v ? v.asks : asksInLog(old), ledger);
+      const text = writeLog(old, v ? v.entries : [], asks, v ? { read: today } : { failed: today });
       writeFileSync(LOG, text);
-      console.log(`void.voice.md: ${(text.match(/<!-- voice:/g) || []).length} reflections, ${(v.asks || []).length} current asks`);
+      console.log(`void.voice.md: ${(text.match(/<!-- voice:/g) || []).length} reflections, ${asks.length} current asks${v ? '' : ' (site not reached)'}`);
+      if (!v) process.exit(3);
     } else {
-      const v = await call('GET');
+      const v = await call('GET'), asks = openAsks(v.asks, readLedger());
       console.log("Void's current asks:");
-      for (const a of v.asks || []) console.log(`  - ${a.ask}${a.small ? ' (small)' : ''}  [${a.kind}, ${String(a.at).slice(0, 10)}]`);
-      if (!(v.asks || []).length) console.log('  (none yet)');
+      for (const a of asks) console.log(`  - ${a.ask}${a.small ? ' (small)' : ''}  [${a.kind}, ${String(a.at).slice(0, 10)}]`);
+      if (!asks.length) console.log('  (none yet)');
       if (v.entries && v.entries[0]) show(v.entries[0]);
     }
   } catch (err) {
