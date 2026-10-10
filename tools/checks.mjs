@@ -43,6 +43,7 @@ for (const [name, file] of [
   ['learning', 'learning.test.mjs'],
   ['learn', 'learn.test.mjs'],
   ['learn-draft', 'learn-draft.test.mjs'],
+  ['learn-e2e', 'learn.e2e.test.mjs'],
   ['automations', 'automations.test.mjs'],
   ['actions', 'actions.test.mjs'],
   ['ringer', 'ringer.test.mjs'],
