@@ -15,8 +15,9 @@ export function mergeMisses(rows) {
   for (const r of rows || []) {
     if (!r || !r.ask) continue;
     const k = missKey(r.ask), g = by.get(k);
-    if (!g) { by.set(k, { ...r, count: +r.count || 0, _words: [[r.ask, +r.count || 0]] }); continue; }
+    if (!g) { by.set(k, { ...r, count: +r.count || 0, agent: +r.agent || 0, _words: [[r.ask, +r.count || 0]] }); continue; }
     g.count += +r.count || 0;
+    g.agent += +r.agent || 0;
     if (r.first && (!g.first || r.first < g.first)) g.first = r.first;
     if (r.last && (!g.last || r.last > g.last)) { g.last = r.last; if (r.fallback) g.fallback = r.fallback; }
     g._words.push([r.ask, +r.count || 0]);
@@ -24,6 +25,7 @@ export function mergeMisses(rows) {
   return [...by.values()].map((g) => {
     const words = g._words.sort((a, b) => b[1] - a[1]);
     const out = { ask: words[0][0], count: g.count, first: g.first, last: g.last, fallback: g.fallback };
+    if (g.agent) out.agent = g.agent;
     if (words.length > 1) out.variants = words.slice(1, 6).map((w) => w[0]);
     return out;
   });

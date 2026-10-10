@@ -3,7 +3,9 @@ import { mergeMisses } from '../../lib/misskey.js';
 export async function onRequestGet({ request: req, env }) {
   if (!(await ownerOk(req, env))) return new Response('no', { status: 401 });
   const byAsk = new Map();
-  const { results } = await env.DB.prepare('SELECT ask, count, first, last, fallback FROM void_misses').all();
+  let results;
+  try { ({ results } = await env.DB.prepare('SELECT ask, count, first, last, fallback, agent FROM void_misses').all()); } // agent: added when the first agent miss arrives
+  catch (_) { ({ results } = await env.DB.prepare('SELECT ask, count, first, last, fallback FROM void_misses').all()); }
   for (const r of results) byAsk.set(r.ask, r);
   // older rows still in KV (read-only now) until they expire
   try {

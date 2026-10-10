@@ -3796,9 +3796,10 @@ return { ok: true, detail: 'timer-reset' };
         }
       }
     }
+    let agentRuns = 0; // > 0 while a visiting agent's WebMCP call is being answered: a miss then is tagged, so Void's learning can tell
     function reportMiss(ask, fallback) {
       try {
-        fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback }), keepalive: true }).catch(() => {});
+        fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback, ...(agentRuns > 0 ? { origin: 'agent' } : {}) }), keepalive: true }).catch(() => {});
       } catch (_) {}
     }
     stage.addEventListener('pointerdown', (e) => { if (e.target !== stage) return; if (worldCur && worldCur.inst) { if (!worldCur.gesture) { worldCur.gesture = true; worldGesture(e); } } else closePage(); });
@@ -6436,7 +6437,8 @@ return { ok: true, detail: 'timer-reset' };
 
     // --- WebMCP (plan item 5): browser agents call Void's tools directly, from the same list as /tools.json. ---
     // Each tool takes one plain-words ask, runs it like a typed ask, and returns what appeared. Owner-only asks never run from an agent.
-    async function agentAsk(ask) {
+    async function agentAsk(ask) { agentRuns++; try { return await agentAskRun(ask); } finally { agentRuns--; } }
+    async function agentAskRun(ask) {
       ask = String(ask || '').trim().slice(0, 500);
       if (!ask) return 'Say what you want in plain words, e.g. "weather in Tokyo".';
       if (/^(unlock\b|update yourself|ship the next|build the next|build\s|build status|update status)/i.test(ask)) return 'That one is for the person at the screen, asked by hand.';
