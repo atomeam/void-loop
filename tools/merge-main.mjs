@@ -7,8 +7,10 @@
 //   node tools/merge-main.mjs            fetch, merge, resolve the append-only records, commit (refused while any tracked file has a conflict marker)
 import { execSync, execFileSync } from 'node:child_process';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 import { mergeIndex } from './merge-index.mjs';
+import { readOrder, indexText } from './skills-index.mjs';
 
 const sh = (c) => execSync(c, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 const APPEND_JSON = ['tools/bench.json', 'tools/grown.json', 'void-live-deploy/void.growth.json'];
@@ -22,9 +24,14 @@ try { sh('git merge --no-edit origin/main'); console.log('merged origin/main (no
 
 const conflicted = sh('git diff --name-only --diff-filter=U').split('\n').filter(Boolean);
 const sideOf = (n, f) => { try { return execFileSync('git', ['show', `:${n}:${f}`], { encoding: 'utf8' }); } catch (_) { return ''; } };
-let indexMerged = null; // the settled index text, or null when a person has to
-if (conflicted.includes(INDEX)) { try { const l = (n) => JSON.parse(sideOf(n, INDEX) || '[]'); const m = mergeIndex(l(1), l(2), l(3));
-  if (m) indexMerged = JSON.stringify(m) + (sideOf(3, INDEX).endsWith('\n') ? '\n' : ''); } catch (_) {} }
+let indexMerged = null, indexHow = ''; // the settled index text, or null when a person has to
+// the index is generated from one order file per skill (tools/skills-index.mjs): after the merge both sides' order files are in
+// the tree, so the settled index is simply regenerated; the name-by-name merge (tools/merge-index.mjs) is the fallback when the
+// order files are not there yet (a branch from before them)
+if (conflicted.includes(INDEX)) {
+  try { const order = resolve(process.cwd(), 'void-live-deploy', 'skills', 'order'); if (existsSync(order)) { indexMerged = indexText(readOrder(order)); indexHow = 'regenerated from skills/order/ (both sides\' order files are in the tree)'; } } catch (_) {}
+  if (indexMerged === null) try { const l = (n) => JSON.parse(sideOf(n, INDEX) || '[]'); const m = mergeIndex(l(1), l(2), l(3));
+    if (m) { indexMerged = JSON.stringify(m) + (sideOf(3, INDEX).endsWith('\n') ? '\n' : ''); indexHow = "kept main's order and added this branch's new skills after the name before them"; } } catch (_) {} }
 const other = conflicted.filter((f) => !APPEND_JSON.includes(f) && !APPEND_TEXT.includes(f) && !(f === INDEX && indexMerged !== null));
 if (other.length) { console.error('conflicts need a person: ' + other.join(', ') + ' (merge left in progress)'); process.exit(1); }
 
@@ -32,7 +39,7 @@ const side = (n, f) => { try { return execSync(`git show :${n}:${f}`, { encoding
 for (const f of conflicted) {
   if (f === INDEX) {
     writeFileSync(f, indexMerged);
-    console.log(`${f}: kept main's order and added this branch's new skills after the name before them (${JSON.parse(indexMerged).length} total)`);
+    console.log(`${f}: ${indexHow} (${JSON.parse(indexMerged).length} total)`);
   } else if (APPEND_JSON.includes(f)) {
     // main's file stays exactly as it is (its formatting, and any ask main edited: run 47 found a merge that had put an
     // old "want" back), and only the asks this branch added are appended, one per line in the files' own style
