@@ -557,6 +557,8 @@
     /* the status line under the ask bar: a quiet, centred caption that fades, never a stray left-aligned word */
     #whisper { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; margin-top: 8px; transition: opacity .25s ease; }
     #whisper:empty { opacity: 0; }
+    #away-note { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; transition: opacity .25s ease; }
+    #away-note:empty { opacity: 0; }
     /* smooth background: the grain lives on its own unscaled layer, so the dark gradient dithers instead of banding or streaking */
     #void-depth::after { content: none; }
     body::after { content: ''; position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: .05; mix-blend-mode: overlay;
@@ -692,12 +694,14 @@
       <button id="go" type="button" aria-label="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
+    <div id="away-note" role="status" aria-live="polite"></div>
   </div>
   <script>
     // Private learning log — never shown as product claims.
     // freerEnglishParse — natural-language intent for clock (+ sticky)
     const LOOP_KEY = 'a2m.void.loop.v1';
     const STATE_KEY = 'a2m.void.state.v1';
+    const AWAY_KEY = 'a2m.void.away.v1'; // when this stage was last left or saved: the world lives on from then (advance in skills/scripts.js)
     // plan item 6: the passkey session on this device ({ token, userId, rev, sig, synced }); see "Your Void follows you" below
     const ME_KEY = 'a2m.void.me.v1';
     const PAGE = window.__VOID_PAGE__ || null; // a-to-mind.com/@name: someone's published Void (functions/[handle].js), shown, never saved over yours
@@ -756,6 +760,7 @@
     function save() {
       if (PAGE) return;
       localStorage.setItem(STATE_KEY, JSON.stringify(keptThings()));
+      try { localStorage.setItem(AWAY_KEY, String(Date.now())); } catch (_) {}
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
       mineChanged();
     }
@@ -2741,7 +2746,7 @@ t.remaining = durationMs;
       if (/\b(remove|delete|get\s+rid\s+of|hide|clear)\b/.test(lower) && /\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return false;
       if (/^(a\s+)?(shape|rect|rectangle|circle|line|square)(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
       if (/\b(draw|sketch)\b.*\b(circle|rect|rectangle|line|square|shape)\b/.test(lower)) return true;
-      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
+      if (/\b(make|add|create|show|spawn|put|place|drop|summon)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
       if (/\b(shape|rect|rectangle|circle|line|square)\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
       if (/^shape\s*:\s*(rect|rectangle|circle|line|square)\b/i.test(raw)) return true;
       return false;
@@ -5648,7 +5653,7 @@ return { ok: true, detail: 'timer-reset' };
     let typoFix = null;
     const TYPO_WORDS = { waht: 'what', whta: 'what', wht: 'what', tiem: 'time', tmie: 'time', captial: 'capital', capitla: 'capital', definiton: 'definition', defintion: 'definition', defenition: 'definition',
       synonim: 'synonym', synonims: 'synonyms', synomym: 'synonym', traslate: 'translate', tranlate: 'translate', transalte: 'translate', precent: 'percent', percnet: 'percent', pecent: 'percent',
-      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', weathr: 'weather', wats: 'whats', defin: 'define', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
+      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', weathr: 'weather', aggrevation: 'aggravation', agravation: 'aggravation', wats: 'whats', defin: 'define', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
     const TYPO_LONG = ['definition', 'synonym', 'synonyms', 'translate', 'temperature', 'tomorrow', 'population', 'kilometers', 'kilometres', 'antonym', 'pronounce'];
     // the short forms people type: "12*15=", "ephemeral meaning", "synonyms happy", "tip 20% 85", "random number 1-10",
     // "days till christmas", "capital france", "usd to eur" read as the full ask
@@ -6214,8 +6219,39 @@ return { ok: true, detail: 'timer-reset' };
       }
     })();
 
+    let awayMs = 0; try { const t = +localStorage.getItem(AWAY_KEY); awayMs = t > 0 ? Date.now() - t : 0; } catch (_) {} // read before this visit saves anything
     load();
     render();
+    // the world lives on while you are away: what has conditions (a cloud, ice, a flower) and what reacts to something near
+    // (a zombie and a brain, a cat and a mouse) moves forward by the time since the stage was last left, the same way for
+    // everyone (advance in skills/scripts.js), from where each figure last stood; one line says what happened
+    const awayNote = document.getElementById('away-note');
+    function tellAway(text) { if (!awayNote || !text) return; awayNote.textContent = text; clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { awayNote.textContent = ''; }, 9000); }
+    if (!PAGE && awayMs > 0) import('/skills/scripts.js').then((m) => {
+      const figs = Object.values(things).filter((t) => t && t.kind === 'figure' && t.kindOf);
+      if (!figs.length || awayMs < m.AWAY_MIN_MS) return;
+      const r = m.advance(figs.map((t) => ({ id: t.id, kindOf: t.kindOf, x: t.x, y: t.y, at: t.at, seed: t.seed, nature: t.nature, title: t.title })), awayMs, { bounds: { w: innerWidth, h: innerHeight } });
+      const stamp = Date.now();
+      for (const n of r.things) {
+        if (!things[n.id]) continue;
+        if (n.gone) { delete things[n.id]; continue; }
+        if (n.nature) things[n.id].nature = n.nature;
+        if (n.at) things[n.id].at = n.at;
+        things[n.id].adv = stamp;
+      }
+      save(); render();
+      window.__voidAway = { ms: awayMs, note: r.note, changes: r.changes };
+      tellAway(r.note);
+    }).catch(() => {});
+    // leaving: keep where each figure stands and the live conditions it has, so the next visit continues from here (and stamp the time)
+    function rememberWorld() {
+      try {
+        if (figures3d && figures3d.world) for (const [id, w] of Object.entries(figures3d.world())) if (things[id]) { things[id].at = { x: w.x, y: w.y }; if (w.nature) things[id].nature = w.nature; }
+        save();
+      } catch (_) {}
+    }
+    document.addEventListener('visibilitychange', () => { if (document.hidden) rememberWorld(); });
+    window.addEventListener('pagehide', rememberWorld);
     if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s Void'), 400);
     window.addEventListener('resize', () => render());
   </script>

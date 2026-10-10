@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Tests for tools/ouroboros.py on a fake machine. Run: python tools/ouroboros_test.py"""
-import contextlib, hashlib, http.server, io, json, os, subprocess, sys, tempfile, threading, time, unittest
+import contextlib, hashlib, http.server, io, json, os, stat, subprocess, sys, tempfile, threading, time, unittest
 from pathlib import Path, PureWindowsPath
 from unittest import mock
 
@@ -649,8 +649,28 @@ class WindowsPaths(unittest.TestCase):
             with mock.patch("os.unlink", unlink), mock.patch("os.remove", unlink):
                 left = ouroboros._rmtree(folder)
             self.assertIn("held.dll", [os.path.basename(x) for x in left])
+            # the folder that still holds it keeps its search bit (a replaced mode once left it 0600: on macOS or Linux it could
+            # no longer be entered; checked on the mode itself, so the test fails the same way when it runs as root)
+            self.assertTrue(os.stat(folder / "a").st_mode & stat.S_IXUSR, "the kept folder can still be entered")
             self.assertTrue((folder / "a" / "held.dll").exists(), "the held file is kept, not lost")
             self.assertFalse((folder / "a" / "free.js").exists(), "everything else is still removed")
+
+    @unittest.skipUnless(os.name == "nt", "a held file is only refused like this on Windows; the simulation above covers the other platforms")
+    def test_a_file_held_open_on_windows_is_kept_and_reported(self):
+        """The real sharing violation: a file a program has open (no FILE_SHARE_DELETE) cannot be deleted. Nothing else is simulated."""
+        with tempfile.TemporaryDirectory() as t:
+            folder = Path(t) / "held app" / "node_modules"
+            write(folder / "a" / "held.dll", "x"); write(folder / "a" / "free.js", "y")
+            holder = open(folder / "a" / "held.dll", "rb")
+            try:
+                left = ouroboros._rmtree(folder)
+                self.assertIn("held.dll", [os.path.basename(x) for x in left])
+                self.assertTrue((folder / "a" / "held.dll").exists(), "the held file is kept, not lost")
+                self.assertFalse((folder / "a" / "free.js").exists(), "everything else is still removed")
+            finally:
+                holder.close()
+            self.assertEqual(ouroboros._rmtree(folder), [], "once the program lets go the folder goes")
+            self.assertFalse(folder.exists())
 
     def test_a_file_that_cannot_be_opened_reads_as_empty(self):
         with tempfile.TemporaryDirectory() as t:

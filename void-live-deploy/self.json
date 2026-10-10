@@ -178,6 +178,7 @@
   "growthtree",
   "heart",
   "list",
+  "lock",
   "mancala",
   "monopoly",
   "moon",
@@ -226,10 +227,92 @@
   }
  ],
  "building": {
-  "at": "2026-10-10T01:49:51Z",
+  "at": "2026-10-10T02:21:13Z",
   "date": "2026-10-10",
   "by": "claude",
-  "item": "Growth you can watch: the growth card gets its figure",
-  "what": "two pieces shipped. (1, #288) \"growth\" brings its tree inside the card: skills/growth-tree.js lays the ledger out, one branch per entry, oldest the trunk, newest at the tips, each seeded by its own entry so the tree is t"
- }
+  "item": "The forge: type or sketch a thing, hold it, print it",
+  "what": "first piece: \"make me a <thing>\" for things no figure covers yet, as a spinning model with a \"print it\" STL."
+ },
+ "commits": [
+  {
+   "at": "2026-10-10T02:23:33Z",
+   "subject": "Secret redaction needs a separator after sk/pk/rk/gh/xox, so skills-unlisted is no longer a key"
+  },
+  {
+   "at": "2026-10-10T02:21:44Z",
+   "subject": "Every merge gets its suite: verify-main moves to its own workflow"
+  },
+  {
+   "at": "2026-10-10T02:21:13Z",
+   "subject": "Frontier #14: claim the forge's first piece"
+  },
+  {
+   "at": "2026-10-10T02:17:54Z",
+   "subject": "frontier: claim #4, a world that keeps living while you are away"
+  },
+  {
+   "at": "2026-10-10T02:17:39Z",
+   "subject": "frontier: the told-me claim names its shipped PR (#291)"
+  },
+  {
+   "at": "2026-10-10T02:17:08Z",
+   "subject": "Register the services skill again; skills-check fails on a skill file the index does not list"
+  },
+  {
+   "at": "2026-10-10T02:16:05Z",
+   "subject": "Bench floor 1773 -> 1985 from a clean full run on main (1990 of 2001)"
+  },
+  {
+   "at": "2026-10-10T02:15:09Z",
+   "subject": "This month's review stats from the symbol placement, with its ledger and log lines"
+  },
+  {
+   "at": "2026-10-10T02:13:37Z",
+   "subject": "\"What can you do now that you couldn't last week?\" answered from the ledger (frontier #3)"
+  },
+  {
+   "at": "2026-10-10T02:13:29Z",
+   "subject": "Ouroboros on Windows in CI: Windows-path suite, real-CLI smoke, windows-latest workflow"
+  },
+  {
+   "at": "2026-10-10T02:12:38Z",
+   "subject": "The pages' catalog catch logs instead of swallowing"
+  },
+  {
+   "at": "2026-10-10T02:11:47Z",
+   "subject": "B3 runs: two or three steps as one card, a Yes for each, stopping at the first No or refused element"
+  },
+  {
+   "at": "2026-10-10T02:11:28Z",
+   "subject": "Log it: every service has its page"
+  },
+  {
+   "at": "2026-10-10T02:10:51Z",
+   "subject": "Every service has its page"
+  },
+  {
+   "at": "2026-10-10T02:10:43Z",
+   "subject": "frontier: Ouroboros-for-members claim names its shipped PRs (#306, #312)"
+  },
+  {
+   "at": "2026-10-10T02:10:25Z",
+   "subject": "learn: the e2e test's stand-in D1 now matches lib/learn.js (first(col), run(), no bare rows); added to checks"
+  },
+  {
+   "at": "2026-10-10T02:09:22Z",
+   "subject": "Frontier #17: the lock's PR number on the done line"
+  },
+  {
+   "at": "2026-10-10T02:08:39Z",
+   "subject": "Stage placement: a board and its side card move as one; boards that centre themselves hold the middle"
+  },
+  {
+   "at": "2026-10-10T02:08:00Z",
+   "subject": "review-learn: a file name in backticks is not a symbol, and the file:line form places like Line N"
+  },
+  {
+   "at": "2026-10-10T02:07:58Z",
+   "subject": "The lock cutaway: explainer.pin-lock, and its payload into the quiz and the challenge unchanged (closes #17)"
+  }
+ ]
 }

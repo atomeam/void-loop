@@ -234,9 +234,11 @@ export async function run3dChecks({ check, fresh }) {
     const slide = async (v) => { await F.p.evaluate((v) => { const r = document.querySelector('.vpage .growth-when input'); r.value = String(v); r.dispatchEvent(new Event('input', { bubbles: true })); }, v);
       return until(() => F.p.evaluate((v) => { const s = window.__voidMini.state('growth-tree'); return s && !s.growing && (v === 0 ? s.branches === 1 : s.until === null) ? { s, day: document.querySelector('.vpage .growth-day').textContent } : false; }, v), 15000); };
     const first = await slide(0), last = await slide(9999);
-    check('"growth": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built)',
-      !!first && first.s.branches === 1 && first.s.ghosts === 0 && /2026-09-25 · 1 change\b/.test(first.day) && !!last && last.s.branches === at.n && last.s.ghosts > 0 && last.s.building && new RegExp('today, .* · ' + at.n + ' changes').test(last.day) && !F.errors.length,
-      JSON.stringify({ first, last, e: F.errors }));
+    // the will has an open want (the suite's /api/will says one), so today there is at least one bud, and the commits are new leaves
+    const buds = await until(() => F.p.evaluate(() => { const s = window.__voidMini.state('growth-tree'); return s && s.buds >= 1 && s.commitLeaves > 0 ? s : false; }), 15000);
+    check('"growth": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built, at least one bud for the will\'s open want, the last commits as new leaves)',
+      !!first && first.s.branches === 1 && first.s.ghosts === 0 && /2026-09-25 · 1 change\b/.test(first.day) && !!last && last.s.branches === at.n && last.s.ghosts > 0 && last.s.building && new RegExp('today, .* · ' + at.n + ' changes').test(last.day) && !F.errors.length && !!buds,
+      JSON.stringify({ first, last, buds, e: F.errors }));
     await F.ctx.close();
   }
   // ---- "what can you do now that you couldn't last week?": the tree stands as it was a week ago, then this week's tips grow in
