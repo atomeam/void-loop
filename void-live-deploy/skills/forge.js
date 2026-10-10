@@ -1,6 +1,6 @@
 /**
- * forge skill — frontier #14, first piece: "make me a rocket" (a vase, a bottle, a table, a snowman, a lighthouse: things no
- * figure covers yet) puts the thing on the stage as a model you can turn and inspect, and "print it" downloads it as an
+ * forge skill — frontier #14, first piece: "make me a rocket" (a vase, a bottle, a table, a snowman, a lighthouse, a teapot, a house,
+ * a sailboat, a tree: things no figure covers yet) puts the thing on the stage as a model you can turn and inspect, and "print it" downloads it as an
  * STL sized for a home printer (millimetres, flat base, inside a 180 mm cube). The model, the flat render here and the
  * STL all come from one recipe (skills/forge-rules.js; tests in tools/forge.test.mjs); in 3D it stands on a turntable
  * beside the card (skills/mini/forge.js). Offline: no model service, no network.
@@ -92,7 +92,7 @@ async function run(text, api) {
   const forged = Object.values(api.stage.things()).filter((t) => t.kind === 'forge');
   if (q.print) {
     const sel = api.stage.selected && api.stage.selected(), th = forged.find((t) => t.id === sel) || forged[forged.length - 1];
-    if (!th) { api.say('Nothing forged to print yet · say "make me a rocket" (or a vase, a bottle, a table, a snowman, a lighthouse)'); return 'forge'; }
+    if (!th) { api.say('Nothing forged to print yet · say "make me a rocket" (or a vase, a bottle, a table, a snowman, a lighthouse, a teapot, a house, a sailboat, a tree)'); return 'forge'; }
     const model = F.build(th.key);
     download(model);
     api.say('Downloading ' + fileName(th.key) + ' · ' + dims(model.size) + ' · open it in your slicer');
@@ -107,7 +107,7 @@ async function run(text, api) {
 export default {
   name: 'forge',
   forgeOf,
-  examples: ['make me a rocket', 'make a vase', '3d print a bottle', 'forge a lighthouse', 'build me a snowman', 'make me a table i can print', 'print it', 'download the stl'],
+  examples: ['make me a rocket', 'make a vase', '3d print a bottle', 'forge a lighthouse', 'build me a snowman', 'make me a teapot', 'make a little house', 'make me a sailboat', 'forge a tree', 'make me a table i can print', 'print it', 'download the stl'],
   nearMisses: ['make me a coffee', 'make a reservation', 'print the page', 'table of contents', 'what is a rocket', 'make me a zombie', 'make a list', 'make a 3d torus', 'make me a mug', 'make a chair'],
   match(lower, text) { return !!forgeOf(text); },
   run,
