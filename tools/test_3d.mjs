@@ -450,6 +450,21 @@ export async function run3dChecks({ check, fresh }) {
       jumped = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'checkers'); return c && c.state.s.board[27] === 'd' && c.state.moves >= 2 && c.state.s.turn === 'd' ? true : false; }, 30000);
     }
     check('checkers: "play checkers" lays turned wooden men on the same board; tapping c3 then d4 moves your man and Void replies', !!ck && !!jumped && !F.errors.length, JSON.stringify({ ck, jumped, e: F.errors }));
+    // two boards on a 1280-wide stage don't both fit with their cards: the one pushed aside shrinks instead of half-covering the
+    // new one, and a tap on it brings it back (the other then shrinks in its place)
+    const boards = () => F.p.evaluate(() => {
+      const box = (n) => { const r = n.getBoundingClientRect(); return { x: r.x, y: r.y, r: r.right, b: r.bottom }; };
+      const of = (kind) => { const el = [...document.querySelectorAll('#stage > .thing[data-id]')].find((e) => e.dataset.id.startsWith(kind + '_')); if (!el) return null;
+        const side = document.querySelector('#stage > .side-card[data-of="' + el.dataset.id + '"]'); return { small: el.classList.contains('shrunk'), w: Math.round(el.getBoundingClientRect().width), parts: [box(el)].concat(side ? [box(side)] : []) }; };
+      const c = of('chess'), k = of('checkers'), hit = (a, b) => a.x < b.r && b.x < a.r && a.y < b.b && b.y < a.b;
+      return { stageW: document.getElementById('stage').clientWidth, chess: c, checkers: k, overlap: !!(c && k) && c.parts.some((a) => k.parts.some((b) => hit(a, b))) }; });
+    const shrunk = await until(async () => { const s = await boards(); return s.chess && s.chess.small && s.checkers && !s.checkers.small ? s : false; }, 8000) || await boards();
+    const smallAt = await F.p.evaluate(() => { const e = [...document.querySelectorAll('#stage > .thing.shrunk')].find((x) => x.dataset.id.startsWith('chess_')); if (!e) return null; const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    if (smallAt) await F.p.mouse.click(smallAt.x, smallAt.y);
+    const back = await until(async () => { const s = await boards(); return s.chess && !s.chess.small && s.checkers && s.checkers.small ? s : false; }, 8000) || await boards();
+    check('two boards on a 1280 stage: chess then checkers, the chess board moves aside shrunk (its card with it) and neither overlaps; a tap on the small chess board brings it back to full size and checkers shrinks instead',
+      shrunk.stageW === 1280 && !!shrunk.chess && shrunk.chess.small && !shrunk.checkers.small && !shrunk.overlap && !!smallAt && back.chess && !back.chess.small && back.chess.w >= 500 && back.checkers.small && !back.overlap && !F.errors.length,
+      JSON.stringify({ shrunk, back, e: F.errors }));
     // questions about chess are still questions (they open a page, which would cover the boards, so they come last)
     await F.ask('who invented chess', 400); await F.ask('chess rules', 400); await F.ask('checkers rules', 400);
     const after = await F.p.evaluate(() => ({ chess: document.querySelectorAll('.chess-card').length, checkers: document.querySelectorAll('.checkers-card').length }));
