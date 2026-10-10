@@ -24,7 +24,7 @@ export const GAMES = [
 
 export function rackOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+i\s+play|do\s+you\s+have|are\s+there)$|^(?:any\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
+  if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+(?:i|we)\s+play|do\s+you\s+have|are\s+there)(?:\s+on\s+this\s+site|\s+here)?$|^(?:any\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+|your\s+)?(?:3d\s+)?(?:game|games|board\s*game|board\s*games)\s+(?:rack|shelf|shelves|cabinet|closet|cupboard)$|^(?:show\s+(?:me\s+)?)(?:the\s+|your\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
   // a board game Void can't play yet, asked for as a game ("play scrabble", "scrabble board game"): say so plainly, record
   // the request, and show the rack. A bare name ("scrabble") stays a question about the word.

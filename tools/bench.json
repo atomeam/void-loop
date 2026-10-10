@@ -5596,5 +5596,10 @@
   {"ask": "how many km from Lyon to Turin", "want": "skill:distance"},
   {"ask": "weathr in paris", "want": "skill:weather"},
   {"ask": "5 m c", "want": "article"},
-  {"ask": "the 3 mile run", "want": "article"}
+  {"ask": "the 3 mile run", "want": "article"},
+  {"ask": "play agravation", "want": "skill:aggravation"},
+  {"ask": "back to start", "want": "skill:sorry"},
+  {"ask": "what board games can we play here", "want": "skill:rack"},
+  {"ask": "summon a square", "want": "shape"},
+  {"ask": "motelet sitting on the chair", "want": "skill:figure"}
 ]

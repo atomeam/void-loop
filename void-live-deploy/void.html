@@ -2660,7 +2660,7 @@ t.remaining = durationMs;
       if (/\b(remove|delete|get\s+rid\s+of|hide|clear)\b/.test(lower) && /\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return false;
       if (/^(a\s+)?(shape|rect|rectangle|circle|line|square)(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
       if (/\b(draw|sketch)\b.*\b(circle|rect|rectangle|line|square|shape)\b/.test(lower)) return true;
-      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
+      if (/\b(make|add|create|show|spawn|put|place|drop|summon)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
       if (/\b(shape|rect|rectangle|circle|line|square)\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
       if (/^shape\s*:\s*(rect|rectangle|circle|line|square)\b/i.test(raw)) return true;
       return false;
@@ -5567,7 +5567,7 @@ return { ok: true, detail: 'timer-reset' };
     let typoFix = null;
     const TYPO_WORDS = { waht: 'what', whta: 'what', wht: 'what', tiem: 'time', tmie: 'time', captial: 'capital', capitla: 'capital', definiton: 'definition', defintion: 'definition', defenition: 'definition',
       synonim: 'synonym', synonims: 'synonyms', synomym: 'synonym', traslate: 'translate', tranlate: 'translate', transalte: 'translate', precent: 'percent', percnet: 'percent', pecent: 'percent',
-      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', weathr: 'weather', wats: 'whats', defin: 'define', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
+      wheather: 'weather', weahter: 'weather', waether: 'weather', wether: 'weather', weathr: 'weather', aggrevation: 'aggravation', agravation: 'aggravation', wats: 'whats', defin: 'define', teh: 'the', tommorow: 'tomorrow', tomorow: 'tomorrow', tommorrow: 'tomorrow', calender: 'calendar', recieve: 'receive' };
     const TYPO_LONG = ['definition', 'synonym', 'synonyms', 'translate', 'temperature', 'tomorrow', 'population', 'kilometers', 'kilometres', 'antonym', 'pronounce'];
     // the short forms people type: "12*15=", "ephemeral meaning", "synonyms happy", "tip 20% 85", "random number 1-10",
     // "days till christmas", "capital france", "usd to eur" read as the full ask
