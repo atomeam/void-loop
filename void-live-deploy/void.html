@@ -41,7 +41,7 @@
       if (L && L.bg) { d.style.setProperty('--void-bg', L.bg); d.style.backgroundColor = L.bg; }
       if (L && L.glow) d.style.setProperty('--void-glow', L.glow);
       if (localStorage.getItem('a2m.void.entered.v1')) d.classList.add('void-entered');
-      var K = JSON.parse(localStorage.getItem('a2m.void.sky.v1') || 'null'); // the last sky this device saw, so the first frame is already tinted
+      var K = JSON.parse(localStorage.getItem('a2m.void.sky.v1') || 'null'); // the last sky this device saw, so the first frame is already tinted; void-review: ok (inside the try above, like the look)
       if (K && K.glow && K.bg) { d.style.setProperty('--sky-glow', K.glow); d.style.setProperty('--sky-bg', K.bg); if (!(L && L.glow)) d.classList.add('sky-on'); }
       d.classList.add('void-first');
       addEventListener('load', function () { setTimeout(function () { d.classList.remove('void-first'); }, 50); });
