@@ -3,7 +3,9 @@
  * glass marbles (cat's eyes with three vanes, swirls, clearies; each one its own from figures.js marbleLook) and a worn
  * agate shooter. Built from code. Nothing is simulated here: every frame poses the marbles from the card's one state
  * (skills/ringer-rules.js), and the spin of a rolling marble is the distance it moved over its radius.
- * data: { state: ringer state, or () => ringer state; onAim?(x, y) (metres on the ground, ring centre 0,0) }
+ * Drag to flick: press the shooter, pull back and let go (data.onPull(x, y) while pulling, data.onRelease() on letting go);
+ * a tap on the dirt aims, and a drag anywhere else looks around.
+ * data: { state: ringer state, or () => ringer state; onAim?(x, y), onPull?(x, y), onRelease?() (metres on the ground, ring centre 0,0) }
  * (plain data works too, so the behaviour contract in tools/test_3d.mjs can drive it)
  */
 import { marbleLook } from '../figures.js';
@@ -91,12 +93,49 @@ export default async function build(ctx, data) {
     const h = hits.find((x) => x.object === ground || x.object === ring); if (!h) return;
     const d = ctx.handle.data; if (d.onAim) d.onAim(h.point.x, -h.point.z);
   });
+  // drag to flick: a press on the shooter pulls it back (orbiting stops while pulling); the pointer's spot on the dirt goes to
+  // the card, which turns it into aim and power through the rules (ringer-rules.js pull), and letting go flicks
+  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), ray = new THREE.Raycaster(), hit = new THREE.Vector3(), ndc = new THREE.Vector2();
+  const onGround = (e) => {
+    const r = ctx.canvas.getBoundingClientRect();
+    ndc.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+    ray.setFromCamera(ndc, ctx.camera);
+    return ray.ray.intersectPlane(plane, hit) ? [hit.x, -hit.z] : null;
+  };
+  let pulling = false;
+  const host = ctx.canvas.parentElement || ctx.canvas;
+  const down = (e) => {
+    if (e.button > 0) return;
+    const s = stateOf(ctx.handle.data), shooter = marbles.children[0];
+    if (!s || s.phase !== 'aim' || s.over || !shooter) return;
+    const hits = ctx.pick(e.clientX, e.clientY, [shooter]) || [];
+    if (!hits.length) return; // not on the shooter: a tap aims, a drag looks around
+    e.stopPropagation(); e.preventDefault();
+    if (ctx.controls) ctx.controls.enabled = false;
+    pulling = true; ctx.canvas.style.cursor = 'grabbing';
+    addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
+  };
+  const move = (e) => {
+    if (!pulling) return;
+    const p = onGround(e), d = ctx.handle.data;
+    if (p && d.onPull) d.onPull(p[0], p[1]);
+  };
+  const up = (e) => {
+    if (!pulling) return;
+    removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
+    pulling = false; ctx.canvas.style.cursor = '';
+    if (ctx.controls) ctx.controls.enabled = true;
+    const d = ctx.handle.data;
+    if (e.type === 'pointerup' && d.onRelease) d.onRelease();
+  };
+  host.addEventListener('pointerdown', down, { capture: true });
+
   ctx.addContactShadow({ y: 0.0008, size: G * 2.4, opacity: 0.55, blur: 2.4, darkness: 0.8, exclude: [ground, ring] });
   ctx.frame(ring, { view: [0, 1.15, 0.7], pad: 1, ground: 'none', minZoom: 0.6, maxZoom: 8, light: [-0.6, 1.4, 0.5] }); // fit the ring itself: the marbles read at card size
   return {
     update() { if (pose()) ctx.requestRender(); },
     tick() { return pose(); },
-    state() { const s = stateOf(ctx.handle.data); return { marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible }; },
-    dispose() { for (const m of mats) m.dispose(); for (const x of made) x.dispose(); },
+    state() { const s = stateOf(ctx.handle.data); return { marbles: marbles.children.length, left: R.left(s), out: s.out, shots: s.shots, phase: s.phase, rolling: s.phase === 'rolling', aiming: aimLine.visible, pulling, angle: s.angle, power: s.power }; },
+    dispose() { host.removeEventListener('pointerdown', down, { capture: true }); for (const m of mats) m.dispose(); for (const x of made) x.dispose(); },
   };
 }

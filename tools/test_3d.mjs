@@ -234,9 +234,11 @@ export async function run3dChecks({ check, fresh }) {
     const slide = async (v) => { await F.p.evaluate((v) => { const r = document.querySelector('.vpage .growth-when input'); r.value = String(v); r.dispatchEvent(new Event('input', { bubbles: true })); }, v);
       return until(() => F.p.evaluate((v) => { const s = window.__voidMini.state('growth-tree'); return s && !s.growing && (v === 0 ? s.branches === 1 : s.until === null) ? { s, day: document.querySelector('.vpage .growth-day').textContent } : false; }, v), 15000); };
     const first = await slide(0), last = await slide(9999);
-    check('"growth": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built)',
-      !!first && first.s.branches === 1 && first.s.ghosts === 0 && /2026-09-25 · 1 change\b/.test(first.day) && !!last && last.s.branches === at.n && last.s.ghosts > 0 && last.s.building && new RegExp('today, .* · ' + at.n + ' changes').test(last.day) && !F.errors.length,
-      JSON.stringify({ first, last, e: F.errors }));
+    // the will has an open want (the suite's /api/will says one), so today there is at least one bud, and the commits are new leaves
+    const buds = await until(() => F.p.evaluate(() => { const s = window.__voidMini.state('growth-tree'); return s && s.buds >= 1 && s.commitLeaves > 0 ? s : false; }), 15000);
+    check('"growth": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built, at least one bud for the will\'s open want, the last commits as new leaves)',
+      !!first && first.s.branches === 1 && first.s.ghosts === 0 && /2026-09-25 · 1 change\b/.test(first.day) && !!last && last.s.branches === at.n && last.s.ghosts > 0 && last.s.building && new RegExp('today, .* · ' + at.n + ' changes').test(last.day) && !F.errors.length && !!buds,
+      JSON.stringify({ first, last, buds, e: F.errors }));
     await F.ctx.close();
   }
   // ---- "what can you do now that you couldn't last week?": the tree stands as it was a week ago, then this week's tips grow in
@@ -249,6 +251,27 @@ export async function run3dChecks({ check, fresh }) {
     const n = await F.p.evaluate(async () => (await import('/skills/growth-tree.js')).layout(await (await fetch('/void.growth.json')).json()).branches.length);
     check('"what can you do now that you couldn\'t last week?": the card\'s tree first stands as it was a week ago (fewer branches), then grows to today with this week\'s tips, the readout ending on today',
       !!seen.weekAgo && !!seen.today && seen.weekAgo.branches < seen.today.branches && seen.today.branches === n && /^today, /.test(day || '') && !F.errors.length, JSON.stringify({ seen, day, n, e: F.errors }));
+    await F.ctx.close();
+  }
+  // ---- Ringer drag to flick: press the shooter on the 3D ring, pull it straight back and let go: one shot, aimed opposite the pull
+  {
+    const Rr = await import(pathToFileURL(path.join(root, 'skills', 'ringer-rules.js')).href);
+    const F = await fresh();
+    await F.ask('play marbles', 600);
+    const key = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'ringer'); return c && c.ready && c.draws > 0 ? c.key : false; }), 30000);
+    const z0 = Rr.RING + Rr.SHOOTER; // a new game's shooter sits at the edge, ring centre (0, 0); the ground's y is the state's -y
+    const at = key && await F.p.evaluate(([k, a, b]) => ({ from: window.__voidMini.project(k, a), to: window.__voidMini.project(k, b) }), [key, [0, Rr.SHOOTER, z0], [0, 0, z0 + Rr.PULL_MAX * 0.8]]);
+    let mid = null;
+    if (at && at.from && at.to) {
+      await F.p.mouse.move(at.from.x, at.from.y); await F.p.mouse.down();
+      for (let i = 1; i <= 6; i++) await F.p.mouse.move(at.from.x + (at.to.x - at.from.x) * i / 6, at.from.y + (at.to.y - at.from.y) * i / 6);
+      mid = await F.p.evaluate((k) => window.__voidMini.state(k), key);
+      await F.p.mouse.up();
+    }
+    const after = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.shots === 1 && !s.rolling ? s : false; }, key), 20000);
+    check('Ringer: on the 3D ring, pressing the shooter and pulling it straight back aims at the middle with the pull as power (orbit held while pulling); letting go flicks it, one shot',
+      !!key && !!mid && mid.pulling && Math.abs(mid.angle - Math.PI / 2) < 0.2 && mid.power > 0.5 && mid.shots === 0 && !!after && after.shots === 1 && !after.pulling && F.errors.length === 0,
+      JSON.stringify({ key, at, mid, after, errors: F.errors.slice(0, 3) }));
     await F.ctx.close();
   }
   // ---- the timer's hourglass: mounts beside the timer, sand follows remaining time, a fresh run turns the glass over
@@ -537,8 +560,8 @@ export async function run3dChecks({ check, fresh }) {
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, sorry, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,sorry,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, ringer, sorry, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
+      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,ringer,sorry,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
     await F.ctx.close();
   }
   {
