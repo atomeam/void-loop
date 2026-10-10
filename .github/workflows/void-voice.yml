@@ -63,7 +63,8 @@ jobs:
       - name: Copy Void's words into the log
         if: steps.gate.outputs.run == 'true'
         run: |
-          node tools/reflect.mjs --write || exit 0
+          # unreachable site: the asks already in the log are refiltered against the ledger and stamped with today's failed try
+          node tools/reflect.mjs --write || echo "::warning title=Asks not refreshed::the site could not be reached; the list was refiltered against the growth ledger and marked with its last refresh date"
           git diff --quiet domains/void.voice.md && { echo "log unchanged"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
