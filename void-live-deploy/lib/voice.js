@@ -5,6 +5,7 @@
 // domains/void.voice.md by tools/reflect.mjs. Builders read "Void's current asks" before a run; a concrete ask is built next and
 // credited to Void. Anyone can ask Void "what do you think of yourself?" and see the latest reflections (GET /api/reflect).
 import { INJECTION_RULE, redact } from './automation-fix.js';
+import { weekSummary } from '../skills/growth-tree.js';
 
 export const KEEP = 60; // reflections kept in void_kv 'voice'
 export const KINDS = ['build', 'daily'];
@@ -70,6 +71,13 @@ export function knowsFacts(self) {
   const c = self && self.canon;
   if (c) parts.push('My canon (v' + c.version + '): motto: ' + (c.motto || 'not written yet, so I do not know it') + '; VoidQuest: ' + (c.voidquest || 'not written yet, so I do not know it'));
   return parts.join('\n');
+}
+
+// the daily reflection also reads its own last week, from the growth ledger: the same summary the growth card gives for
+// "what can you do now that you couldn't last week?" (skills/growth-tree.js weekSummary), so Void judges itself on what changed
+export function weekFacts(ledger, now = Date.now()) {
+  if (!Array.isArray(ledger) || !ledger.length) return '';
+  return 'What changed in me in the last 7 days (my growth ledger): ' + clean(weekSummary(ledger, now).text, 1600);
 }
 
 export async function readVoice(env) {
