@@ -1070,6 +1070,8 @@ try {
   // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent
   { const P = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '");' });
     const REQ = 'Hi Adam,\n\nWe run a small bakery in Portland and our online orders come in through Shopify. We need the Zapier zap that copies each order into our Google Sheet fixed: since last week every order shows up twice and the morning bake list is wrong. We would also like someone to check the whole flow once a month so it does not break again before the holidays.\n\nCan you tell us what you would do and when you could start?\n\nThanks,\nMaria\nmaria@sunrisebakery.example';
+    // the ask box is a one-line <input>: like a real paste, each line break arrives as a space, so that is what the card keeps
+    const typedREQ = REQ.replace(/\r?\n/g, ' ');
     const actionsBefore = gate.env.DB.actions.size, callsBefore = gate.calls.length;
     await P.p.fill('#input', 'turn this into a proposal:\n' + REQ); await P.p.keyboard.press('Enter');
     await until(async () => P.p.$eval('.proposal-field[data-field="title"]', (e) => e.value).catch(() => ''), 6000);
@@ -1083,7 +1085,7 @@ try {
     check('proposal card: the pasted request becomes the proposal\'s fields (what they asked for, scope, a blank price line, timeline, next step, the customer\'s address), an edit is kept, Send asks the confirm line and records a stubbed proposal.send for the customer\'s domain, nothing sent',
       /^Proposal: the Zapier zap/.test(drafted.title) && /check the whole flow once a month/.test(drafted.asked) && /^- We need the Zapier zap/.test(drafted.scope) && /out of scope\]$/.test(drafted.scope)
       && drafted.price === '[price: left for the owner to fill in]' && /^\[/.test(drafted.timeline) && /Reply with a yes/.test(drafted.next) && drafted.to === 'maria@sunrisebakery.example'
-      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === REQ
+      && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === typedREQ
       && line === 'Send the proposal \u201cFix the double orders\u201d to maria@sunrisebakery.example? Yes / No'
       && gate.calls.slice(callsBefore).some((c) => c.type === 'a2m.approval.requested' && c.toolName === 'proposal.send' && c.args.to === 'maria@sunrisebakery.example')
       && rec && rec.state === 'stubbed' && rec.ref === 'sunrisebakery.example' && /nothing is sent/.test(rec.result || '') && gate.ran.length === ranBeforeProposal && !P.errors.length,
