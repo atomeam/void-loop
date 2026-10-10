@@ -1093,6 +1093,48 @@ try {
       && noon.sky.daylight > night.sky.daylight && noon.sky.drifting === true && still.sky.drifting === false && still.glow === noon.glow && moving.sky.drifting === true && !K.errors.length,
       JSON.stringify({ place, noon, night, still: still.sky && still.sky.drifting, errs: K.errors }));
     await K.ctx.close(); }
+  // the splat viewer (skills/splat.js): a card you drop or choose a .splat file on, read on this device. The demo galaxy draws (lit pixels on the canvas, whichever renderer the browser has), a file that is not a splat says why, a real one loads, keys orbit, and with reduced motion nothing turns by itself.
+  { const lit = (page) => page.evaluate(() => { const cv = document.querySelector('[data-splat-canvas]'), t = document.createElement('canvas'); t.width = cv.width; t.height = cv.height; const x = t.getContext('2d'); x.drawImage(cv, 0, 0); const d = x.getImageData(0, 0, t.width, t.height).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] + d[i + 1] + d[i + 2] > 120) n++; return { n, frame: t.toDataURL().length + ':' + (d.length ? d[Math.floor(d.length / 2)] : 0) + ':' + n }; });
+    const V = await fresh(), splatReqs = []; V.p.on('request', (r) => splatReqs.push(r.url())); await V.ask('view a gaussian splat', 900);
+    const card0 = await V.p.evaluate(() => ({ file: !!document.querySelector('[data-splat-file]'), demo: !!document.querySelector('[data-splat-demo]'), label: (document.querySelector('[data-splat-canvas]') || {}).getAttribute && document.querySelector('[data-splat-canvas]').getAttribute('aria-label'), status: (document.querySelector('[data-splat-status]') || {}).textContent, text: document.body.innerText }));
+    await V.p.click('[data-splat-demo]'); await V.p.waitForTimeout(1200);
+    const demo = await V.p.evaluate(() => ({ status: document.querySelector('[data-splat-status]').textContent, renderer: [...document.querySelectorAll('[data-splat-renderer]')].map((e) => e.dataset.splatRenderer)[0], count: [...document.querySelectorAll('[data-splat-count]')].map((e) => e.dataset.splatCount)[0] })), drawn = await lit(V.p);
+    await V.p.setInputFiles('[data-splat-file]', { name: 'notes.splat', mimeType: 'application/octet-stream', buffer: Buffer.from('this is not a splat file at all') }); await V.p.waitForTimeout(300);
+    const bad = await V.p.evaluate(() => ({ status: document.querySelector('[data-splat-status]').textContent, role: document.querySelector('[data-splat-status]').getAttribute('role') }));
+    const one = Buffer.alloc(64); for (let i = 0; i < 2; i++) { one.writeFloatLE(i - 0.5, 32 * i); one.writeFloatLE(0, 32 * i + 4); one.writeFloatLE(0, 32 * i + 8); [0.3, 0.3, 0.3].forEach((v, k) => one.writeFloatLE(v, 32 * i + 12 + 4 * k)); one.set([255, 160, 80, 255, 255, 128, 128, 128], 32 * i + 24); }
+    await V.p.setInputFiles('[data-splat-file]', { name: 'two.splat', mimeType: 'application/octet-stream', buffer: one }); await V.p.waitForTimeout(900);
+    const good = await V.p.evaluate(() => ({ status: document.querySelector('[data-splat-status]').textContent })), goodDrawn = await lit(V.p);
+    await V.p.focus('[data-splat-canvas]'); const before = await lit(V.p); await V.p.keyboard.press('ArrowRight'); await V.p.keyboard.press('+'); await V.p.keyboard.press('R'); await V.p.waitForTimeout(400);
+    const external = splatReqs.filter((u) => !/^(?:https?:\/\/(?:127\.0\.0\.1|localhost)[:/]|data:|blob:)/.test(u));
+    check('splat: "view a gaussian splat" opens a viewer with a file chooser, a demo, a described canvas and a status line; the demo draws a scene; a file that is not a splat says why (as an alert); a real .splat loads and draws; the keys do not break it; nothing is fetched from outside', card0.file && card0.demo && /splat/i.test(card0.label || '') && /Nothing loaded yet/.test(card0.status) && /goes nowhere/.test(card0.text)
+      && /Showing 6,000 splats/.test(demo.status) && /^(webgl2|2d)$/.test(demo.renderer || '') && demo.count === '6000' && drawn.n > 3000
+      && /does not look like a \.splat/.test(bad.status) && bad.role === 'alert' && /Showing 2 splats/.test(good.status) && goodDrawn.n > 200 && before.n > 100 && external.length === 0 && !V.errors.length, JSON.stringify({ card0: { ...card0, text: undefined }, demo, drawn: drawn.n, bad, good, goodDrawn: goodDrawn.n, external, errs: V.errors }));
+    await V.ctx.close(); }
+  { const lit2 = (page) => page.evaluate(() => { const cv = document.querySelector('[data-splat-canvas]'), t = document.createElement('canvas'); t.width = cv.width; t.height = cv.height; t.getContext('2d').drawImage(cv, 0, 0); return t.toDataURL(); });
+    const Q = await fresh(); await Q.p.emulateMedia({ reducedMotion: 'reduce' }); await Q.p.reload(); await Q.p.waitForTimeout(500); await Q.ask('view a splat', 900); await Q.p.click('[data-splat-demo]'); await Q.p.waitForTimeout(900);
+    const s1 = await lit2(Q.p); await Q.p.waitForTimeout(1200); const s2 = await lit2(Q.p);
+    check('splat: with reduced motion the scene holds still (it does not turn by itself)', s1.length > 1000 && s1 === s2 && !Q.errors.length, JSON.stringify({ same: s1 === s2, errs: Q.errors }));
+    await Q.ctx.close(); }
+  // sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioContext (the game sound effects in skills/sfx.js open their own on the first tap, so the drone's is the one that gets oscillators)
+  // proves nothing is built before the tap, the tap builds one drone of four voices, and the same button mutes it.
+  { const fake = `window.__au = { all: [] }; window.AudioContext = class { constructor() { this.rec = { osc: 0, master: [] }; window.__au.all.push(this.rec); this.state = 'running'; this.currentTime = 0; this.destination = {}; this.sampleRate = 8000; this.n = 0; }
+      resume() { return Promise.resolve(); } suspend() { return Promise.resolve(); } close() {}
+      createBuffer() { return { getChannelData: () => new Float32Array(8) }; } createBufferSource() { return { connect() {}, start() {}, stop() {}, playbackRate: { value: 1 } }; }
+      createGain() { const rec = this.rec, first = this.n++ === 0; return { connect() {}, gain: { value: 0, setTargetAtTime(v) { this.value = v; if (first) rec.master.push(v); }, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} } }; }
+      createBiquadFilter() { return { connect() {}, type: '', Q: { value: 0 }, frequency: { value: 0, setTargetAtTime() {}, setValueAtTime() {} } }; }
+      createOscillator() { const rec = this.rec; return { connect() {}, start() { rec.osc++; }, stop() {}, type: '', frequency: { value: 0, setTargetAtTime() {}, setValueAtTime() {} }, detune: { value: 0 } }; } };`;
+    const S = await fresh({ content: fake }); await S.p.waitForTimeout(400);
+    const read = () => S.p.evaluate(() => { const d = window.__au.all.find((c) => c.osc > 0), b = document.getElementById('sound'); return { drones: window.__au.all.filter((c) => c.osc > 0).length, osc: d ? d.osc : 0, last: d ? d.master[d.master.length - 1] : null, pressed: b && b.getAttribute('aria-pressed'), label: b && b.getAttribute('aria-label') }; });
+    const hiddenAtFirst = await S.p.evaluate(() => { const b = document.getElementById('sound'); return !!b && b.offsetParent === null; }); // the void is bare on arrival
+    await S.p.mouse.move(40, 40); await S.p.waitForTimeout(100);
+    const before = await read(); await S.p.click('#sound'); await S.p.waitForTimeout(400);
+    const on = await read(); await S.p.click('#sound'); await S.p.waitForTimeout(200);
+    const off = await read(); await S.p.click('#sound'); await S.p.waitForTimeout(200);
+    const again = await read();
+    check('sound: off until a tap (no oscillator; the speaker button is not on the bare page and appears with the first move, with a label that says so); the tap builds one drone of four voices at a quiet volume; the same button mutes to silence and unmutes without building another', hiddenAtFirst && before.osc === 0 && before.pressed === 'false' && /on/i.test(before.label || '')
+      && on.drones === 1 && on.osc === 4 && on.pressed === 'true' && on.last > 0 && on.last <= 0.06
+      && off.pressed === 'false' && off.last === 0 && again.pressed === 'true' && again.drones === 1 && again.osc === 4 && again.last > 0 && !S.errors.length, JSON.stringify({ before, on, off, again, errs: S.errors }));
+    await S.ctx.close(); }
   { const Lk = await fresh({ content: 'localStorage.setItem("a2m.void.look.v1", JSON.stringify({ bg: "#101010", glow: "#202020", fx: "off" }));' });
     await Lk.p.waitForTimeout(500);
     const v = await Lk.p.evaluate(() => ({ glow: getComputedStyle(document.documentElement).getPropertyValue('--void-glow').trim(), sky: getComputedStyle(document.documentElement).getPropertyValue('--sky-glow').trim(), on: document.documentElement.classList.contains('sky-on') }));
@@ -1258,7 +1300,7 @@ try {
       && kept && kept.fields && kept.fields.title === 'Fix the double orders' && kept.request === pastedREQ
       && line === 'Send the proposal \u201cFix the double orders\u201d to maria@sunrisebakery.example? Yes / No'
       && gate.calls.slice(callsBefore).some((c) => c.type === 'a2m.approval.requested' && c.toolName === 'proposal.send' && c.args.to === 'maria@sunrisebakery.example')
-      && rec && rec.state === 'stubbed' && rec.ref === 'sunrisebakery.example' && /nothing is sent/.test(rec.result || '') && gate.ran.length === ranBeforeProposal && !P.errors.length,
+      && rec && rec.state === 'stubbed' && rec.ref === 'sunrisebakery.example' && /Nothing goes out before the yes\.$/.test(rec.result || '') && gate.ran.length === ranBeforeProposal && !P.errors.length,
       JSON.stringify({ drafted: { ...drafted, asked: drafted.asked.slice(0, 40), scope: drafted.scope.slice(0, 40) + '…' + drafted.scope.slice(-30) }, kept: kept && { title: kept.fields && kept.fields.title, request: kept.request === pastedREQ || kept.request }, line, rec: rec && { state: rec.state, ref: rec.ref, result: rec.result }, errs: P.errors }).slice(0, 900));
     await P.ask('no', 600);
     await P.ctx.close(); }

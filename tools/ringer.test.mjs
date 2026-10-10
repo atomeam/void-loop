@@ -140,3 +140,24 @@ test('best clear: a new game keeps the fewest shots that cleared a ring, and the
   assert.match(R.summary(beat), /a new best \(it was/); assert.match(R.summary(worse), /your best is/); assert.match(R.summary(same), /equals your best/);
   assert.deepEqual({ ...R.newGame(s, 9), best: undefined }, { ...R.create(9), best: undefined }, 'otherwise a fresh game');
 });
+
+test('the ghost of a shot: the first 0.6 s of the real roll (same flick and step), starting at the shooter along the aim, with the marbles it would hit; the state is untouched', () => {
+  const s = R.setPower(R.create(42), 0.8), before = JSON.stringify(s), g = R.ghost(s);
+  assert.equal(JSON.stringify(s), before, 'pure');
+  const sh = s.marbles[0];
+  assert.deepEqual(g.shooter[0], [sh.x, sh.y], 'starts at the shooter');
+  const [x1, y1] = g.shooter[1];
+  assert.ok(Math.abs(Math.atan2(y1 - sh.y, x1 - sh.x) - s.angle) < 1e-6, 'leaves along the aim');
+  // the same positions as the real roll stepped the same way
+  let n = R.flick(s); for (let i = 0; i < 6; i++) n = R.step(n, 1 / 30);
+  assert.ok(Math.hypot(g.shooter[6][0] - n.marbles[0].x, g.shooter[6][1] - n.marbles[0].y) < 1e-12, 'the roll\'s own start');
+  // aimed at the middle of the cross at 0.8 the shooter reaches the arm in 0.6 s, so the ghost shows the marble it knocks
+  assert.ok(g.hits.length >= 1 && g.hits.every((h) => h.path.length === g.shooter.length), JSON.stringify(g.hits.map((h) => h.id)));
+  // aimed away from every marble: no hits; a soft shot stops early and ends where it last rolled, not back at the edge
+  const away = R.setPower(R.aim(s, s.angle + Math.PI), 0), ga = R.ghost(away);
+  assert.equal(ga.hits.length, 0);
+  assert.ok(ga.shooter.length < 19, 'stopped before 0.6 s');
+  const last = ga.shooter[ga.shooter.length - 1];
+  assert.ok(Math.hypot(last[0] - sh.x, last[1] - sh.y) > 0.005, 'the end is where it rolled to');
+  assert.equal(R.ghost({ ...s, phase: 'rolling' }), null); assert.equal(R.ghost({ ...s, over: true }), null);
+});

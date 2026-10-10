@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import * as F from '../void-live-deploy/skills/forge-rules.js';
-import forge, { forgeOf, fileName } from '../void-live-deploy/skills/forge.js';
+import forge, { forgeOf, fileName, printOrRefuse } from '../void-live-deploy/skills/forge.js';
 import { natureSummon } from '../void-live-deploy/skills/figures.js';
 import figureSkill from '../void-live-deploy/skills/figure.js';
 
@@ -50,6 +50,30 @@ test('forge: every thing meshes into a closed, outward-facing, printable body', 
   }
 });
 
+test('forge: printCheck says what a slicer will find, for every thing, from the mesh alone', () => {
+  for (const k of KEYS) {
+    const m = F.build(k), c = F.printCheck(m);
+    assert.ok(c.ok && c.fits && c.closed && c.outward, k + ' is printable as it is: ' + c.notes.join(' · '));
+    assert.equal(c.triangles, m.indices.length / 3);
+    assert.ok(c.volumeCm3 > 50 && c.volumeCm3 < 700, k + ' volume ' + c.volumeCm3 + ' cm³');
+    assert.equal(c.grams, Math.round(c.volumeCm3 * F.PLA_G_PER_CM3), k + ' grams follow the volume');
+    assert.equal(c.supports, c.overhangPct >= F.OVERHANG_PCT); assert.equal(c.brim, !c.stands);
+    assert.equal(c.notes.length, 5); assert.match(c.notes[0], /fits a 180 mm bed/); assert.match(c.notes[2], /watertight/);
+    assert.match(c.notes[3], c.supports ? /print with supports/ : /no supports needed/);
+    assert.match(c.notes[1], c.stands ? /stands on its base/ : /print with a brim/);
+  }
+  // the table top, the sail and the canopy lean out over nothing: supports; a vase, a lighthouse and a house print plain
+  for (const k of ['table', 'boat', 'tree']) assert.ok(F.printCheck(F.build(k)).supports, k + ' needs supports');
+  for (const k of ['vase', 'lighthouse', 'house', 'bottle']) assert.ok(!F.printCheck(F.build(k)).supports, k + ' prints without supports');
+  // a rocket on its fin tips and a boat on its keel want a brim; a house and a lighthouse stand on a wide base
+  for (const k of ['rocket', 'boat']) assert.ok(F.printCheck(F.build(k)).brim, k + ' gets a brim');
+  for (const k of ['house', 'lighthouse', 'vase', 'teapot']) assert.ok(F.printCheck(F.build(k)).stands, k + ' stands');
+  // a made-up open shell is not watertight and faces nowhere: one triangle
+  const one = F.printCheck({ positions: new Float32Array([0, 0, 0, 10, 0, 0, 0, 10, 0]), indices: [0, 1, 2], size: [10, 10, 0] });
+  assert.ok(!one.closed && !one.ok, 'an open sheet is not printable');
+  assert.match(one.notes[2], /open edges: 3/);
+});
+
 test('forge: the bottle and the vase are hollow and open at the neck; the snowman has its arms out', () => {
   const B = F.build('bottle').positions; let inside = 0, mouth = 0;
   for (let i = 0; i < B.length; i += 3) { const r = Math.hypot(B[i], B[i + 2]); if (r > 22 && r < 29 && B[i + 1] > 20 && B[i + 1] < 90) inside++; if (r < 8 && B[i + 1] > 110) mouth++; }
@@ -94,4 +118,46 @@ test('forge: the second four read as themselves (teapot spout and handle, house 
   for (let i = 0; i < T.length; i += 3) { const r = Math.hypot(T[i], T[i + 2]); if (T[i + 1] > 90 && r > 40) wide++; if (T[i + 1] > 20 && T[i + 1] < 45 && r < 13) trunk++; }
   assert.ok(wide > 100 && trunk > 50, 'a wide canopy over a narrow trunk (' + wide + ', ' + trunk + ')');
   assert.equal(Object.keys(F.THINGS).length, 10, 'ten things, the number #14 asks for');
+});
+
+// Void's ask (2026-10-10): "a link between the forge and print-file so I can verify an object's geometry before the print
+// command is issued". Before a file goes out, the STL bytes are read back and held to the model: the facet count, the
+// file's length, every number finite, its extent the model's size, and the mesh a slicer takes as it is (printCheck.ok).
+test('forge: before printing, the STL is read back and held to the model; every thing passes', () => {
+  for (const key of Object.keys(F.THINGS)) {
+    const m = F.build(key), v = F.verifyStl(F.stl(m), m);
+    assert.ok(v.ok, key + ': ' + v.problems.join('; '));
+    assert.equal(v.triangles, m.indices.length / 3, key);
+  }
+});
+
+test('forge: a file that does not match its model, or a model a slicer would choke on, is never sent to print, and says why', () => {
+  const m = F.build('rocket'), good = F.stl(m);
+  const cut = good.slice(0, good.byteLength - 50); // one facet short of what the header says
+  assert.match(F.verifyStl(cut, m).problems.join(' '), /facets/);
+  const nan = good.slice(0); new DataView(nan).setFloat32(84 + 12, NaN, true);
+  assert.match(F.verifyStl(nan, m).problems.join(' '), /not a number/);
+  const holed = { ...m, indices: m.indices.slice(0, m.indices.length - 3 * 40) }; // forty triangles gone: open edges
+  const vh = F.verifyStl(F.stl(holed), holed);
+  assert.equal(vh.ok, false); assert.match(vh.problems.join(' '), /open edges/);
+  const huge = { ...m, positions: m.positions.map((x) => x * 3), size: m.size.map((x) => x * 3) };
+  assert.match(F.verifyStl(F.stl(huge), huge).problems.join(' '), /too big/);
+  const other = F.build('vase'); // the right kind of file, for another thing
+  assert.match(F.verifyStl(F.stl(other), m).problems.join(' '), /facets|extent/);
+});
+
+test('forge: "print it" and the Print button only download a file that passed; a failing one is refused with the reason', async () => {
+  const said = [], say = (x) => said.push(x), th = { id: 't1', kind: 'forge', key: 'rocket' };
+  let downloads = 0;
+  globalThis.document = { createElement: () => ({ click() { downloads++; }, remove() {} }), body: { appendChild() {} } };
+  const realURL = { create: URL.createObjectURL, revoke: URL.revokeObjectURL };
+  URL.createObjectURL = () => 'blob:x'; URL.revokeObjectURL = () => {};
+  try {
+    await forge.run('print it', { stage: { things: () => ({ t1: th }), selected: () => 't1' }, say, summon() {} });
+    assert.equal(downloads, 1); assert.match(said.at(-1), /^Checked and downloading void-rocket\.stl/);
+    const m = F.build('rocket');
+    assert.equal(printOrRefuse(m, say, () => ({ ok: false, problems: ['open edges: 12 (a slicer may need to mend it)'], triangles: 0 })), false);
+    assert.equal(downloads, 1, 'nothing downloaded');
+    assert.match(said.at(-1), /^Not printed: the rocket's file did not pass its check · open edges: 12/);
+  } finally { delete globalThis.document; URL.createObjectURL = realURL.create; URL.revokeObjectURL = realURL.revoke; }
 });

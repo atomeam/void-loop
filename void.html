@@ -337,6 +337,10 @@
     #mic:hover { background: #2a2a2a; }
     #mic.listening, #mic:granted { color: #fff; background: #26304a; box-shadow: 0 0 18px rgba(140,166,255,.35); }
     #mic svg { width: 16px; height: 16px; vertical-align: -3px; }
+    #sound { border: 0; border-radius: 999px; background: #1d1d1d; color: #d8d8d8; padding: 7px 11px; cursor: pointer; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+    #sound[hidden] { display: none; } /* a fresh visit is the void: the speaker appears with the first touch, move or key */
+    #sound:hover { background: #2a2a2a; } #sound[aria-pressed="true"] { color: #fff; background: #26304a; box-shadow: 0 0 18px rgba(140,166,255,.35); }
+    #sound svg { width: 16px; height: 16px; } #sound:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 2px; }
 #whisper {
       max-width: 720px; margin: 6px auto 0;
       color: var(--muted); font-size: 12px; min-height: 16px;
@@ -372,6 +376,12 @@
       font-size: 0.55em; color: var(--muted); text-transform: uppercase; letter-spacing: 0.06em;
       white-space: nowrap; pointer-events: none;
     }
+    /* a world (board: the sky first): a skill's canvas behind the stage while its card is open; it fades in over the void and out again when the card closes */
+    #void-card-world { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .5s ease; }
+    #void-card-world.on { opacity: 1; }
+    html.has-world #stage { cursor: grab; touch-action: none; }
+    html.has-world .vpage { max-height: min(58vh, calc(100vh - 140px)); background: linear-gradient(160deg, rgba(10,14,28,0.62), rgba(10,14,28,0.40)); }
+    @media (prefers-reduced-motion: reduce) { #void-world, #void-card-world { transition: none; } }
     .vpage {
       position: fixed; left: 50%; top: 46%;
       transform: translate(-50%, -46%) scale(0.98);
@@ -3352,9 +3362,59 @@ return { ok: true, detail: 'timer-reset' };
 
     // summoned page: a calm floating page; ephemeral, not saved
     let vpageEl = null;
+    // ---- Worlds: a card can own the stage's background while it is open. api.world(card, factory) -> instance (or null).
+    // factory({ canvas, reduced, lowPower }) returns { start(), destroy(), resize(), drag(dx, dy), zoom(factor), tap(x, y) -> true when it landed on something }.
+    // The canvas sits under the stage and the card (z-index 0, after the void's own layers, so it covers them); it fades in, and when the card
+    // closes it fades out and is removed, which leaves the void exactly as it was. Reduced motion: no fade (CSS), and the world is told to hold still.
+    let worldCur = null;
+    const lowPowerNow = () => { try { const c = navigator.connection; return !!((c && c.saveData) || (navigator.deviceMemory && navigator.deviceMemory <= 2) || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2)); } catch (_) { return false; } };
+    function closeWorld(now) {
+      const w = worldCur; if (!w) return false; worldCur = null;
+      document.documentElement.classList.remove('has-world'); w.canvas.classList.remove('on');
+      window.removeEventListener('resize', w.onResize);
+      const gone = () => { try { w.inst && w.inst.destroy && w.inst.destroy(); } catch (_) {} w.canvas.remove(); };
+      if (now) gone(); else setTimeout(gone, window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 520);
+      return true;
+    }
+    function openWorld(card, factory) {
+      if (vpageEl !== card || typeof factory !== 'function') return null;
+      closeWorld(true);
+      const canvas = document.createElement('canvas'); canvas.id = 'void-card-world'; canvas.setAttribute('aria-hidden', 'true');
+      document.body.insertBefore(canvas, stage);
+      let inst = null;
+      try { inst = factory({ canvas, reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches, lowPower: lowPowerNow() }); } catch (e) { console.error('[Void] world failed:', e && e.message); }
+      if (!inst) { canvas.remove(); return null; }
+      const w = { card, canvas, inst, onResize: () => { try { inst.resize && inst.resize(); } catch (_) {} } };
+      worldCur = w; window.addEventListener('resize', w.onResize);
+      window.__voidWorld = () => (worldCur ? worldCur.inst : null); // for the tests: the world that owns the stage right now
+      document.documentElement.classList.add('has-world');
+      try { inst.start && inst.start(); } catch (e) { console.error('[Void] world start failed:', e && e.message); }
+      requestAnimationFrame(() => canvas.classList.add('on'));
+      return inst;
+    }
+    // a drag on the empty stage looks around the world, two fingers zoom it, a tap lands on something or (on nothing) dismisses the card as before
+    function worldGesture(e) {
+      const w = worldCur; if (!w || !w.inst) return;
+      const pts = new Map([[e.pointerId, { x: e.clientX, y: e.clientY }]]); let moved = false, pinch = 0;
+      const move = (ev) => {
+        const p = pts.get(ev.pointerId); if (!p) return;
+        const dx = ev.clientX - p.x, dy = ev.clientY - p.y; p.x = ev.clientX; p.y = ev.clientY;
+        if (pts.size >= 2) { const [a, b] = [...pts.values()], d = Math.hypot(a.x - b.x, a.y - b.y); if (pinch && d > 0) w.inst.zoom && w.inst.zoom(pinch / d); pinch = d; moved = true; return; }
+        if (!moved && Math.hypot(ev.clientX - e.clientX, ev.clientY - e.clientY) < 6) return;
+        moved = true; w.inst.drag && w.inst.drag(dx, dy);
+      };
+      const down = (ev) => { if (ev.target === stage) { pts.set(ev.pointerId, { x: ev.clientX, y: ev.clientY }); pinch = 0; } };
+      const up = (ev) => {
+        pts.delete(ev.pointerId); if (pts.size) return; w.gesture = false;
+        window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', up); window.removeEventListener('pointercancel', up); stage.removeEventListener('pointerdown', down);
+        if (!moved && ev.type === 'pointerup') { let hit = false; try { hit = !!(w.inst.tap && w.inst.tap(ev.clientX, ev.clientY)); } catch (_) {} if (!hit) closePage(); }
+      };
+      window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up); stage.addEventListener('pointerdown', down);
+    }
+    stage.addEventListener('wheel', (e) => { if (e.target === stage && worldCur && worldCur.inst && worldCur.inst.zoom) { e.preventDefault(); worldCur.inst.zoom(e.deltaY > 0 ? 1.1 : 0.9); } }, { passive: false });
     function closePage() {
       if (!vpageEl) return false;
-      const el = vpageEl; vpageEl = null;
+      const el = vpageEl; vpageEl = null; closeWorld();
       if (el._slogan && el._slogan.parentNode) el._slogan.parentNode.removeChild(el._slogan);
       el._slogan = null;
       document.querySelectorAll('.vslogan').forEach((n) => n.remove());
@@ -3741,7 +3801,7 @@ return { ok: true, detail: 'timer-reset' };
         fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback }), keepalive: true }).catch(() => {});
       } catch (_) {}
     }
-    stage.addEventListener('pointerdown', (e) => { if (e.target === stage) closePage(); });
+    stage.addEventListener('pointerdown', (e) => { if (e.target !== stage) return; if (worldCur && worldCur.inst) { if (!worldCur.gesture) { worldCur.gesture = true; worldGesture(e); } } else closePage(); });
 
     // weather page (Open-Meteo, no key)
     const WX = {0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',56:'Freezing drizzle',57:'Freezing drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Showers',81:'Showers',82:'Heavy showers',85:'Snow showers',86:'Snow showers',95:'Thunderstorm',96:'Thunderstorm, hail',99:'Thunderstorm, hail'};
@@ -5027,6 +5087,7 @@ return { ok: true, detail: 'timer-reset' };
             reportMiss,
             loopLog,
             _pageStill: (el) => vpageEl === el,
+            world: openWorld,
             summon: summonThing,
             stage: stageApi,
             refreshThings: () => render(), // the 3D calendar redraws the stage card after an edit
@@ -6232,18 +6293,22 @@ return { ok: true, detail: 'timer-reset' };
 
     // Voice: tap and talk. A plain mic button on arrival; on Chrome 153+ the <microphone> element (browser-owned permission
     // + stream) replaces it after the first tap. No recognition -> no mic at all.
+    // Frontier #16: or hold Space (not while typing) and let go to ask; an ask that came by voice is answered out loud in
+    // Void's one low voice, sentence by sentence (lib/speak.js), spoken in this browser.
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let voiceRec = null, voiceStream = null;
+    let voiceRec = null, voiceStream = null, speak = null;
+    import('/lib/speak.js').then((m) => { speak = m; }).catch(() => {});
     function voiceEnd() {
       const m = document.getElementById('mic'); if (m) m.classList.remove('listening');
       if (voiceStream) { try { voiceStream.getTracks().forEach((t) => t.stop()); } catch (_) {} voiceStream = null; }
       voiceRec = null;
     }
-    function voiceListen(track) {
+    function voiceListen(track, opts = {}) {
       if (voiceRec) { try { voiceRec.stop(); } catch (_) {} return; }
+      if ('speechSynthesis' in window) speechSynthesis.cancel(); // talking over Void stops it
       const rec = new SpeechRec();
       rec.lang = navigator.language || 'en-US';
-      rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+      rec.interimResults = true; rec.continuous = !!opts.hold; rec.maxAlternatives = 1; // held: listens until the key is let go
       if (voiceLocal) { try { rec.processLocally = true; } catch (_) {} }
       let heard = '';
       rec.onresult = (e) => {
@@ -6256,7 +6321,7 @@ return { ok: true, detail: 'timer-reset' };
         voiceEnd();
         const ask = (heard || '').trim();
         if (whisper.textContent === 'listening') whisper.textContent = '';
-        if (ask) { input.value = ''; drawHints(); loopLog({ domain: 'void.voice', ask, score: 'pass', note: 'voice' }); handle(ask); }
+        if (ask) { input.value = ''; drawHints(); loopLog({ domain: 'void.voice', ask, score: 'pass', note: 'voice' }); const sr0 = (document.getElementById('sr-say') || {}).textContent || ''; Promise.resolve(handle(ask)).then(() => replyAloud(sr0, ask), () => {}); }
       };
       voiceRec = rec;
       const m = document.getElementById('mic'); if (m) m.classList.add('listening');
@@ -6289,6 +6354,61 @@ return { ok: true, detail: 'timer-reset' };
         voiceListen(null);
       });
       go0.before(plain);
+      plain.title = 'Talk (or hold Space)';
+      // hold Space to talk: a tap stays a tap (HOLD_MS), letting go asks
+      let holdTimer = 0, holding = false;
+      document.addEventListener('keydown', (e) => {
+        if (!speak) return;
+        const typing = /^(INPUT|TEXTAREA)$/.test((e.target && e.target.tagName) || '') || (e.target && e.target.isContentEditable);
+        if (!speak.holdKey(e, typing)) { if (e.repeat && (holdTimer || holding) && e.code === 'Space') e.preventDefault(); return; }
+        e.preventDefault();
+        if (holdTimer || holding) return;
+        holdTimer = setTimeout(() => { holdTimer = 0; holding = true; if (voiceRec) { try { voiceRec.abort(); } catch (_) {} voiceEnd(); } voiceListen(null, { hold: true }); }, speak.HOLD_MS);
+      });
+      document.addEventListener('keyup', (e) => {
+        if (e.code !== 'Space' && e.key !== ' ') return;
+        if (holdTimer) { clearTimeout(holdTimer); holdTimer = 0; return; }
+        if (holding) { holding = false; e.preventDefault(); if (voiceRec) { try { voiceRec.stop(); } catch (_) {} } }
+      });
+    }
+    // Void's voice: say a card's text in the one low voice, the first sentence at once and the rest queued behind it
+    function sayAloud(text) {
+      if (!speak || !('speechSynthesis' in window)) return false;
+      const parts = speak.chunks(text); if (!parts.length) return false;
+      speechSynthesis.cancel();
+      const voice = speak.pickVoice(speechSynthesis.getVoices(), navigator.language || 'en-US');
+      for (const part of parts) {
+        const u = new SpeechSynthesisUtterance(part);
+        if (voice) u.voice = voice;
+        u.lang = (voice && voice.lang) || navigator.language || 'en-US'; u.pitch = speak.VOICE.pitch; u.rate = speak.VOICE.rate;
+        speechSynthesis.speak(u);
+      }
+      return true;
+    }
+    // after an ask that came by voice: wait for its card to settle (an answer says "thinking…" first), then say what it shows;
+    // a summon says what arrived on the stage (the line read to screen readers), else the whisper line, if there is one
+    async function replyAloud(sr0 = '', ask = '') {
+      const read = () => { const pg = document.querySelector('.vpage.on'); return pg ? pg.innerText || '' : (whisper.textContent || '') + '\n' + ((document.getElementById('sr-say') || {}).textContent || ''); };
+      const t0 = Date.now(); let last = null, still = 0;
+      while (Date.now() - t0 < 15000 && still < 3) {
+        await new Promise((r) => setTimeout(r, 150));
+        const now = read(), sr1 = (document.getElementById('sr-say') || {}).textContent || '';
+        if (!document.querySelector('.vpage.on') && sr1 && sr1 !== sr0 && /^added: /.test(sr1)) break; // a summon: say it as it lands
+        if (/thinking…|looking up|reading the page/.test(now + ' ' + whisper.textContent)) { still = 0; continue; }
+        if (now === last) still += 1; else { last = now; still = 0; }
+      }
+      const pg = document.querySelector('.vpage.on');
+      const sr = (document.getElementById('sr-say') || {}).textContent || '';
+      let text = sr && sr !== sr0 ? sr.replace(/^added: /, 'Added: ') : whisper.textContent || '';
+      if (pg) {
+        const c = pg.cloneNode(true);
+        c.querySelectorAll('.src, .sub, script, style, iframe, button, pre, code, input, textarea').forEach((n) => n.remove());
+        const said = (n) => (n.textContent || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+        c.querySelectorAll('h1, h2').forEach((n) => { if (said(n) === said({ textContent: ask })) n.remove(); else n.append('. '); }); // the ask itself is not read back
+        c.querySelectorAll('li, tr').forEach((n) => n.append('. ')); c.querySelectorAll('p, div, h3, h4, br').forEach((n) => n.append(' '));
+        text = c.textContent || '';
+      }
+      sayAloud(text);
     }
 
     // Read aloud: "read it aloud" reads the open page; "stop" while reading stops it.
@@ -6436,6 +6556,35 @@ return { ok: true, detail: 'timer-reset' };
       apply(); aurora();
       if (!still) { setInterval(apply, 5 * 60e3); setInterval(aurora, 60 * 60e3); }
     } catch (_) {}
+  })();
+  // ---- Sound (skills/drone.js; frontier #21): off until a visitor taps the speaker, and the same button mutes it. Nothing is built before the tap: no
+  // AudioContext, no oscillator. Once on, it follows the shared sky (window.__voidSky, `void:sky`) and the cursor, and sleeps while the page is hidden. ----
+  (() => {
+    const go = document.getElementById('go'); if (!go) return;
+    const btn = document.createElement('button'); btn.id = 'sound'; btn.type = 'button';
+    const ON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
+    const OFF = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+    const show = (on) => { btn.setAttribute('aria-pressed', on ? 'true' : 'false'); btn.setAttribute('aria-label', on ? 'Mute the sound' : 'Turn on ambient sound'); btn.title = btn.getAttribute('aria-label'); btn.innerHTML = on ? ON : OFF; };
+    show(false); btn.hidden = true; go.before(btn);
+    const reveal = () => { btn.hidden = false; for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.removeEventListener(ev, reveal, true); };
+    for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.addEventListener(ev, reveal, { capture: true, passive: true });
+    let drone = null, ctx = null, pointer = { x: 0.5, y: 0.5 }, raf = 0;
+    const tune = () => { raf = 0; if (drone) drone.update(window.__voidSky || { daylight: 0 }, pointer); };
+    const soon = () => { if (!raf && drone) raf = requestAnimationFrame(tune); };
+    document.addEventListener('void:sky', soon);
+    window.addEventListener('pointermove', (e) => { pointer = { x: e.clientX / Math.max(1, innerWidth), y: e.clientY / Math.max(1, innerHeight) }; soon(); }, { passive: true });
+    document.addEventListener('visibilitychange', () => { if (!ctx) return; try { if (document.hidden) ctx.suspend(); else if (!drone.muted) ctx.resume(); } catch (_) {} });
+    btn.addEventListener('click', async () => {
+      try {
+        if (!drone) {
+          const AC = window.AudioContext || window.webkitAudioContext; if (!AC) { btn.disabled = true; btn.title = 'this browser cannot play sound'; return; }
+          ctx = new AC(); if (ctx.state === 'suspended') await ctx.resume();
+          drone = (await import('/skills/drone.js')).createDrone(ctx); drone.update(window.__voidSky || { daylight: 0 }, pointer); show(true);
+        } else if (drone.muted) { drone.unmute(); if (ctx.state === 'suspended') await ctx.resume(); show(true); }
+        else { drone.mute(); show(false); }
+        const sr = document.getElementById('sr-say'); if (sr) sr.textContent = drone && !drone.muted ? 'Ambient sound is on' : 'Ambient sound is muted';
+      } catch (_) { show(false); }
+    });
   })();
   // ---- Atmosphere: a slow nebula behind the void (WebGL, tinted by your look), plus depth on everything summoned ----
   (function () {

@@ -78,7 +78,7 @@ async function run(text, api) {
 export default {
   name: 'skycard',
   skyCardOf,
-  examples: ['where is jupiter', 'where is the moon tonight', 'is venus up', 'can i see mars tonight', 'where is sirius', 'when does the moon rise', 'where is the north star'],
+  examples: ['where is jupiter', 'where is the moon tonight', 'is venus up', 'can i see mars tonight', 'where is sirius', 'when does saturn rise', 'where is the north star'],
   nearMisses: ['where is paris', 'is the store open', 'where is my phone', 'can i see you tonight', 'when does the store open', 'where is the moon landing site'],
   match(lower, text) { return !!skyCardOf(text); },
   run,

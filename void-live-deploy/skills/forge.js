@@ -1,7 +1,8 @@
 /**
  * forge skill — frontier #14, first piece: "make me a rocket" (a vase, a bottle, a table, a snowman, a lighthouse, a teapot, a house,
  * a sailboat, a tree: things no figure covers yet) puts the thing on the stage as a model you can turn and inspect, and "print it" downloads it as an
- * STL sized for a home printer (millimetres, flat base, inside a 180 mm cube). The model, the flat render here and the
+ * STL sized for a home printer (millimetres, flat base, inside a 180 mm cube). The card says what a slicer will find (printCheck:
+ * fits the bed, stands on its base, watertight, how much PLA, whether it needs supports). The model, the flat render here and the
  * STL all come from one recipe (skills/forge-rules.js; tests in tools/forge.test.mjs); in 3D it stands on a turntable
  * beside the card (skills/mini/forge.js). Offline: no model service, no network.
  * "make me a rocket", "3d print a vase", "forge a lighthouse", "print it", "download the stl".
@@ -54,10 +55,21 @@ function drawFlat(cv, model, angleDeg) {
   }
 }
 
-function download(model) {
-  const blob = new Blob([F.stl(model)], { type: 'model/stl' }), a = document.createElement('a');
+function download(model, buf) {
+  const blob = new Blob([buf], { type: 'model/stl' }), a = document.createElement('a');
   a.href = URL.createObjectURL(blob); a.download = fileName(model.key);
   document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+}
+/** The one way a forged thing goes to print (the card's button and "print it"): its STL is written, read back and held to
+ *  the model (forge-rules.js verifyStl); only a file that passes downloads, and a failing one is refused with the reason. */
+export function printOrRefuse(model, say, verify = F.verifyStl) {
+  const buf = F.stl(model), v = verify(buf, model);
+  if (!v.ok) { say('Not printed: the ' + model.label.toLowerCase() + '\'s file did not pass its check · ' + v.problems.join(' · ')); return false; }
+  download(model, buf);
+  const pc = F.printCheck(model);
+  say('Checked and downloading ' + fileName(model.key) + ' · ' + v.triangles.toLocaleString('en') + ' facets, watertight, fits a ' + F.BED_MM + ' mm bed · ' + dims(model.size) + ' · about ' + pc.grams + ' g in solid PLA'
+    + (pc.supports ? ' · print with supports (it leans out on ' + pc.overhangPct + '% of its surface)' : ' · no supports needed') + ' · open it in any slicer');
+  return true;
 }
 
 function mount(th, stageApi) {
@@ -71,13 +83,14 @@ function mount(th, stageApi) {
   const cv = document.createElement('canvas'); cv.width = 300; cv.height = 240; cv.className = 'forge-view'; cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', 'the ' + model.label.toLowerCase() + ' Void made, shaded');
   cv.style.cssText = 'width:100%;height:auto;display:block;background:#0b0b0e;border-radius:10px';
   const facts = document.createElement('div'); facts.className = 'forge-facts g-status'; facts.style.cssText = 'display:block;margin-top:8px';
-  facts.textContent = dims(model.size) + ' · ' + (model.indices.length / 3).toLocaleString('en') + ' triangles · flat base, fits a 180 mm printer';
+  const pc = F.printCheck(model);
+  facts.textContent = dims(model.size) + ' · ' + pc.triangles.toLocaleString('en') + ' triangles · ' + pc.notes.join(' · ');
   const row = document.createElement('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:8px';
   const stop = (b) => { b.addEventListener('pointerdown', (e) => e.stopPropagation()); return b; };
   const btn = (label, cls, fn, aria) => { const b = stop(document.createElement('button')); b.type = 'button'; b.className = 'g-btn ' + cls; b.textContent = label; if (aria) b.setAttribute('aria-label', aria); b.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); return b; };
   const turn = (d) => { th.angle = ((th.angle || 0) + d + 360) % 360; drawFlat(cv, model, th.angle); if (stageApi.save) stageApi.save(); };
   row.append(btn('⟲', 'forge-left', () => turn(-30), 'turn it left'), btn('⟳', 'forge-right', () => turn(30), 'turn it right'),
-    btn('Print it (STL)', 'g-primary forge-print', () => download(model), 'download an STL of the ' + model.label.toLowerCase()));
+    btn('Print it (STL)', 'g-primary forge-print', () => printOrRefuse(model, (line) => { facts.textContent = line; }), 'check and download an STL of the ' + model.label.toLowerCase()));
   const note = document.createElement('div'); note.className = 'g-rules'; note.textContent = 'Millimetres, Z up. Open the STL in any slicer (Cura, PrusaSlicer, Bambu Studio).';
   el.append(cv, facts, row, note);
   drawFlat(cv, model, th.angle || 0);
@@ -93,14 +106,13 @@ async function run(text, api) {
   if (q.print) {
     const sel = api.stage.selected && api.stage.selected(), th = forged.find((t) => t.id === sel) || forged[forged.length - 1];
     if (!th) { api.say('Nothing forged to print yet · say "make me a rocket" (or a vase, a bottle, a table, a snowman, a lighthouse, a teapot, a house, a sailboat, a tree)'); return 'forge'; }
-    const model = F.build(th.key);
-    download(model);
-    api.say('Downloading ' + fileName(th.key) + ' · ' + dims(model.size) + ' · open it in your slicer');
+    printOrRefuse(F.build(th.key), (line) => api.say(line));
     return 'forge';
   }
   const model = F.build(q.make);
   api.summon('forge', { key: q.make, angle: 0, center: true });
-  api.say(model.label + ' · ' + dims(model.size) + ' · say "print it" for the STL');
+  const pc = F.printCheck(model);
+  api.say(model.label + ' · ' + dims(model.size) + (pc.supports ? ' · prints with supports' : ' · prints without supports') + ' · say "print it" for the STL');
   return 'forge';
 }
 

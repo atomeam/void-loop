@@ -59,3 +59,9 @@ test('sky-math: checks that need no book (noon sun, the pole star, a full moon, 
   assert.equal(london.stars.length, S.STARS.length); assert.equal(london.planets.length, 7);
   assert.throws(() => S.planet('pluto', 2451545), /No planet called pluto/);
 });
+
+test('sky-math: the moon is drawn where you see it, not from the Earth\'s centre: at totality over Dallas (2024 April 8, 18:42 UT) it covers the sun', () => {
+  const d = S.sky(new Date("2024-04-08T18:42:00Z"), 32.78, -96.8), r = Math.PI / 180;
+  const sep = Math.acos(Math.min(1, Math.sin(d.sun.alt * r) * Math.sin(d.moon.alt * r) + Math.cos(d.sun.alt * r) * Math.cos(d.moon.alt * r) * Math.cos((d.sun.az - d.moon.az) * r))) / r;
+  assert.ok(sep < 0.1, 'the moon on the sun at totality, ' + sep.toFixed(3) + '°'); // from the Earth's centre it sits 0.43° off: no eclipse
+});
