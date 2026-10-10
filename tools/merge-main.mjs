@@ -2,9 +2,10 @@
 // tools/grown.json, void-live-deploy/void.growth.json, domains/void.agents.log.md), so a branch that sat for an hour almost always "conflicts" there even
 // though both sides only added lines. Those three are resolved here by keeping both sides (main's file as it is, then this branch's new entries
 // that are new; an ask already present is not repeated). Any other conflicted file stops the merge for a person.
-//   node tools/merge-main.mjs            fetch, merge, resolve the append-only records, commit
+//   node tools/merge-main.mjs            fetch, merge, resolve the append-only records, commit (refused while any tracked file has a conflict marker)
 import { execSync } from 'node:child_process';
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 
 const sh = (c) => execSync(c, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 const APPEND_JSON = ['tools/bench.json', 'tools/grown.json', 'void-live-deploy/void.growth.json'];
@@ -41,5 +42,8 @@ for (const f of conflicted) {
   }
   sh(`git add ${f}`);
 }
+// never commit a merge that still carries a conflict marker anywhere (#291 hand-merged one into the growth ledger): name it and stop
+const marked = sh('git ls-files').split('\n').filter(Boolean).filter((f) => { try { const t = existsSync(f) ? readFileSync(f, 'utf8') : ''; return !t.includes('\0') && conflictMarkers(t).length; } catch (_) { return false; } });
+if (marked.length) { console.error('conflict markers left in: ' + marked.join(', ') + ' (merge left in progress, nothing committed)'); process.exit(1); }
 sh('git commit -q --no-edit');
 console.log('merged origin/main; resolved ' + conflicted.join(', '));
