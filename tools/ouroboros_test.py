@@ -316,6 +316,48 @@ class Ouroboros(unittest.TestCase):
         n = len(json.loads((self.out / "manifest.json").read_text())["projects"])
         self.assertIn(f"Void remembers {n} of {n}", txt)
 
+    def test_push_as_a_member_sends_the_void_key_as_the_bearer_and_asks_for_it_at_a_terminal_without_echo(self):
+        self.harvest()
+        srv, got = self._server()
+        url = f"http://127.0.0.1:{srv.server_address[1]}"
+        key = "vr1." + "A" * 43
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": key}):
+            rc, txt = call("push", ["--out", str(self.out), "--url", url])
+        self.assertEqual(rc, 0, txt)
+        self.assertTrue(got and all(g["auth"] == "Bearer " + key for g in got))
+        # no variable, at a terminal: asked for with getpass (not echoed, not on the command line)
+        srv2, got2 = self._server()
+        url2 = f"http://127.0.0.1:{srv2.server_address[1]}"
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("VOID_MEMORY_TOKEN", None)
+            with mock.patch.object(sys.stdin, "isatty", return_value=True), mock.patch("getpass.getpass", return_value="  " + key + "  ") as gp:
+                rc, txt = call("push", ["--out", str(self.out), "--url", url2])
+        self.assertEqual(rc, 0, txt)
+        self.assertEqual(gp.call_count, 1)
+        self.assertTrue(got2 and all(g["auth"] == "Bearer " + key for g in got2))
+
+    def test_push_with_no_key_and_no_terminal_says_where_to_get_one(self):
+        self.harvest()
+        with mock.patch.dict(os.environ, {}, clear=False):
+            os.environ.pop("VOID_MEMORY_TOKEN", None)
+            with mock.patch.object(sys.stdin, "isatty", return_value=False):
+                rc, txt = call("push", ["--out", str(self.out), "--url", "https://example.com"])
+        self.assertEqual(rc, 2)
+        self.assertIn("vr1.", txt); self.assertIn("paid Void", txt); self.assertIn("a-to-mind.com", txt)
+
+    def test_push_refused_for_a_free_account_or_an_unknown_key_says_so_in_plain_words_and_claims_nothing(self):
+        self.harvest()
+        srv, got = self._server(status=403)
+        url = f"http://127.0.0.1:{srv.server_address[1]}"
+        with mock.patch.dict(os.environ, {"VOID_MEMORY_TOKEN": "vr1." + "B" * 43}):
+            rc, txt = call("push", ["--out", str(self.out), "--url", url])
+        self.assertEqual(rc, 1)
+        self.assertIn("Void answered 403", txt); self.assertIn("owner and paid members", txt); self.assertIn("https://a-to-mind.com/code-review/#pro", txt)
+        self.assertNotIn("Void remembers", txt)
+        self.assertFalse((self.out / "absorbed.json").exists(), "a refused push never writes a receipt")
+        self.assertIn("paid members", ouroboros.refused_text(403, ""))
+        self.assertIn("500", ouroboros.refused_text(413))
+
     def test_push_does_not_claim_memory_when_voids_copy_differs(self):
         self.harvest()
         srv, _ = self._server(tamper=True)

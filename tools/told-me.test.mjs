@@ -8,6 +8,7 @@ import * as memoryApi from '../void-live-deploy/functions/api/memory.js';
 import { ensureTables, newSession } from '../void-live-deploy/lib/void-me.js';
 import { noteRecord } from '../void-live-deploy/skills/memory.js';
 import { INJECTION_RULE } from '../void-live-deploy/lib/automation-fix.js';
+import { newKey, keyHash } from '../void-live-deploy/lib/review-api.js';
 
 const TOKEN = 'owner-token-for-tests-1234567890';
 function d1() {
@@ -99,5 +100,20 @@ test('with the models off, a matching note is the answer, said plainly; with no 
   assert.equal(a.answer, "From what you told me:\n• my dog's name is Rex"); assert.equal(a.told, 1);
   const b = await ask(env, 'what is the capital of France', ann);
   assert.equal(b.told, undefined); assert.equal(b.answer, null);
+});
+
+test('a member\'s machine-pushed projects (Ouroboros, by Void key) answer through "what you told me", for them alone', async () => {
+  const { env, calls } = world(); const ann = await member(env, 'annAnnAnnAnnAnnAnnAnn'), bob = await member(env, 'bobBobBobBobBobBobBob');
+  const key = newKey();
+  await env.DB.prepare('INSERT INTO void_review_keys (hash, user_id, prefix, at) VALUES (?, ?, ?, ?)').bind(await keyHash(key), 'annAnnAnnAnnAnnAnnAnn', key.slice(0, 10), new Date().toISOString()).run();
+  const pushed = await memoryApi.onRequestPost({ env, request: new Request('https://x/api/memory', { method: 'POST', headers: { authorization: 'Bearer ' + key }, body: JSON.stringify({ source: 'ouroboros', records: [{ id: 'loginpage-1a2b3c4d', kind: 'project', name: 'loginpage', summary: 'Login page for the shop, built with Auth0 and React.', links: ['react', 'auth0'], state: 'remote-current', remote: '', last_commit: '2026-03-01' }] }) }) });
+  assert.equal(pushed.status, 200);
+  const a = await ask(env, 'what did I use for the login page', ann);
+  assert.equal(a.told, 1); assert.match(lastUser(calls), /- loginpage \(react, auth0\): Login page for the shop, built with Auth0 and React\./);
+  // the same key on the answer path (a machine asking) reads the same scope
+  const viaKey = await ask(env, 'what did I use for the login page', key);
+  assert.equal(viaKey.told, 1);
+  const b = await ask(env, 'what did I use for the login page', bob);
+  assert.equal(b.told, undefined); assert.ok(!/loginpage/.test(lastUser(calls)), 'another member never sees it');
 });
 test.after(() => { globalThis.fetch = realFetch; });
