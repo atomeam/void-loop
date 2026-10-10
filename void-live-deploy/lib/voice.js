@@ -48,14 +48,18 @@ export function parseVoice(text) {
   return out.thoughts || out.better ? out : null;
 }
 
+// A stable id for an ask: the reflection it came from (its time, to the minute) and its place in that reflection. It never
+// changes once the reflection is stored, so a ledger entry that names it (tools/grow.mjs --asked) still matches if the
+// ask's words are edited later.
+export const askId = (at, i) => 'ask-' + String(at || '').replace(/[^0-9]/g, '').slice(0, 12).replace(/^(\d{8})(\d{4})$/, '$1-$2') + '-' + (i + 1);
 // "Void's current asks": the asks from the newest reflections, newest first, one of each, with where they came from
 export function currentAsks(entries, n = 6) {
   const seen = new Set(), out = [];
   for (const e of (entries || []).slice(0, 4)) {
-    for (const a of e.asks || []) {
+    for (const [i, a] of (e.asks || []).entries()) {
       const k = a.ask.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
       if (!k || seen.has(k)) continue;
-      seen.add(k); out.push({ ask: a.ask, small: !!a.small, kind: e.kind, at: e.at });
+      seen.add(k); out.push({ id: askId(e.at, i), ask: a.ask, small: !!a.small, kind: e.kind, at: e.at });
       if (out.length >= n) return out;
     }
   }

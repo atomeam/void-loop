@@ -71,11 +71,33 @@ function voidAct(step) {
     ? [...document.querySelectorAll('textarea, input, [contenteditable=""], [contenteditable="true"]')].filter((e) => e.isContentEditable || e.tagName === 'TEXTAREA' || /^(?:text|search|email|url|tel|)$/i.test(e.getAttribute('type') || ''))
     : [...document.querySelectorAll('button, [role="button"], input[type="button"]')];
   const usable = pool.filter((e) => shown(e) && !e.disabled && !e.readOnly);
-  let hits = usable.filter((e) => labelOf(e).includes(want));
-  if (!hits.length) hits = usable.filter((e) => labelOf(e).some((n) => n.includes(want)));
-  if (!hits.length) return { ok: false, why: 'not-found' };
-  if (hits.length > 1) return { ok: false, why: 'ambiguous', count: hits.length };
-  const el = hits[0];
+  // "the box you were in" (box: 'mine', a reply or a proposal Void drafted for that box): first the very box you were typing in
+  // when you pointed Void at the page, if it is still there; mail apps re-draw their compose box, so then the compose box by its
+  // shape: a multi-line box you can type in (a textarea, a contenteditable, role=textbox), never a search box, never a one-line
+  // field like To or Subject. Its label is only a hint (it differs by language and by mail app): it breaks a tie between two.
+  let el = null;
+  if (step.action === 'fill' && step.box === 'mine') {
+    const mine = window.__voidField;
+    if (mine && mine.isConnected && shown(mine) && !mine.disabled && !mine.readOnly) el = mine;
+    else {
+      const searchy = (e) => e.getAttribute('role') === 'searchbox' || !!e.closest('[role="search"], form[role="search"], search') || /\b(?:search|suche|recherche|rechercher|buscar|cerca|zoeken)\b/i.test(e.getAttribute('aria-label') || e.getAttribute('placeholder') || '');
+      const boxes = [...document.querySelectorAll('textarea, [contenteditable=""], [contenteditable="true"], [role="textbox"]')]
+        .filter((e) => (e.tagName === 'TEXTAREA' || e.isContentEditable) && usable.includes(e) && !searchy(e) && !(e.parentElement && e.parentElement.closest('[contenteditable=""], [contenteditable="true"]')));
+      const area = (e) => { const r = e.getBoundingClientRect(); return r.width * Math.max(r.height, 1); };
+      const named = boxes.filter((e) => labelOf(e).includes(want));
+      if (boxes.length === 1) el = boxes[0];
+      else if (named.length === 1) el = named[0];
+      else if (boxes.length > 1) { const big = boxes.slice().sort((a, b) => area(b) - area(a)); if (area(big[0]) >= 2 * area(big[1])) el = big[0]; else return { ok: false, why: 'ambiguous', count: boxes.length }; }
+      else return { ok: false, why: 'not-found' };
+    }
+  }
+  if (!el) {
+    let hits = usable.filter((e) => labelOf(e).includes(want));
+    if (!hits.length) hits = usable.filter((e) => labelOf(e).some((n) => n.includes(want)));
+    if (!hits.length) return { ok: false, why: 'not-found' };
+    if (hits.length > 1) return { ok: false, why: 'ambiguous', count: hits.length };
+    el = hits[0];
+  }
   if (step.action === 'click') {
     const submits = el.tagName === 'BUTTON' ? (el.getAttribute('type') || 'submit').toLowerCase() === 'submit' && !!el.form : false;
     if (submits) return { ok: false, why: 'submits' };
@@ -88,8 +110,10 @@ function voidAct(step) {
   if (el.isContentEditable) { const r = document.createRange(); r.selectNodeContents(el); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }
   else if (el.select) el.select();
   let typed = false; try { typed = document.execCommand('insertText', false, text); } catch (_) {}
-  const now = () => (el.isContentEditable ? el.textContent : el.value);
-  if (!typed || now() !== text) {
+  // a rich box (Gmail, Outlook) turns line breaks into its own blocks: what it typed counts when the words match, so the page's own
+  // formatting is kept rather than flattened
+  const now = () => (el.isContentEditable ? el.innerText : el.value), same = (a, b) => String(a).replace(/\s+/g, ' ').trim() === String(b).replace(/\s+/g, ' ').trim();
+  if (!typed || !same(now(), text)) {
     if (el.isContentEditable) el.textContent = text; else el.value = text;
     el.dispatchEvent(new InputEvent('input', { bubbles: true, inputType: 'insertText', data: text }));
   }

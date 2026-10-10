@@ -4,7 +4,7 @@
 // habits, with line numbers), then the model reads the whole thing. Keys and passwords in the paste are masked before
 // anything is shown, logged or sent (redact, lib/automation-fix.js). The checks are tuned to say nothing rather than
 // something wrong: each one looks for a pattern that is almost always a real problem.
-import { redact } from './automation-fix.js';
+import { redact, envName } from './automation-fix.js';
 
 // "review my code", "code review", "check this script", "what's wrong with my function", "is this query safe", "find bugs in this"
 const NOUN = '(?:code|script|function|snippet|program|pull\\s+request|pr|diff|class|method|query|sql|component|module|file|regex|github\\s+action|(?:ci|actions?|github)\\s+workflow|workflow\\s+(?:file|ya?ml))'; // "audit my github actions", "check this ci workflow"
@@ -600,7 +600,7 @@ function hasSecret(r, lang) {
     const v = s[2];
     if (redact(v) !== v && !/^\[redacted/.test(v)) return true;
     const before = r.slice(0, s.index), min = PASSNAME.test(before) ? 4 : 8; // people's passwords are often short; random keys are not
-    if (v.length >= min && /^[^\s${}<>]+$/.test(v) && !/^(?:https?:\/\/|\/|\.|[\w-]+\.(?:js|json|html|css|md|txt|py|sh)$)/i.test(v) && !/^(?:x{3,}|\*{3,}|your[_-]|<|changeme|placeholder|example|test|dummy|redacted|password|secret|none|null|true|false)/i.test(v) && KEYNAME.test(before)) return true;
+    if (v.length >= min && /^[^\s${}<>]+$/.test(v) && !/^(?:https?:\/\/|\/|\.|[\w-]+\.(?:js|json|html|css|md|txt|py|sh)$)/i.test(v) && !/^(?:x{3,}|\*{3,}|your[_-]|<|changeme|placeholder|example|test|dummy|redacted|password|secret|none|null|true|false)/i.test(v) && !envName(v, before.slice(-40)) && KEYNAME.test(before)) return true; // an env-shaped name (automation-fix.js envName) names a variable, not a key
   }
   if (lang === 'yaml' && /^\s*(?:-\s+)?[\w.-]*(?:password|passwd|secret|token|api[_-]?key|private[_-]?key)[\w.-]*\s*:\s*(?!["']?(?:\$|\{\{|<|!|xxx|\*\*\*|changeme|example|your[_-]))["']?[^\s"'#]{4,}/i.test(r)) return true;
   if (lang === 'dockerfile' && /^\s*(?:ENV|ARG)\s+[A-Z0-9_]*(?:KEY|SECRET|TOKEN|PASSWORD|PASS|PWD)[A-Z0-9_]*[= ](?!["']?\$)[^\s"'$]{4,}/i.test(r)) return true;

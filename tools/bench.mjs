@@ -17,7 +17,8 @@
 // no fixed sleeps, so a fast answer is read at once and a busy machine still doesn't miss one.
 import http from 'node:http'; import fs from 'node:fs'; import os from 'node:os'; import crypto from 'node:crypto'; import path from 'node:path'; import { chromium } from 'playwright-core';
 import { CAPITALS, CURRENCIES } from '../void-live-deploy/skills/country.js';
-import { envName, latencyOf, verdict } from './bench-load.mjs';
+import { execFileSync } from 'node:child_process';
+import { envName, latencyOf, assess } from './bench-load.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
@@ -131,24 +132,34 @@ async function one({ ask: a, want, says, before }) {
 const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cpus().length - 1));
 let next = 0;
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]); } }));
-await browser.close(); server.close();
-// was the machine quiet? (tools/bench-load.mjs): misses plus slow answers mean the run says nothing about Void
+// every miss is replayed alone before the run is judged (tools/bench-load.mjs): a miss that passes by itself was the machine, one that still misses is real
 let best = {}; try { best = JSON.parse(fs.readFileSync(BEST, 'utf8')); } catch (_) {}
 const env = envName(), latency = latencyOf(out.map((x) => x.ms));
-const load = verdict({ misses: out.some((x) => !x.right), latency, baseline: best.latency && best.latency[env], pages: PAR });
+const full = !probeFile && !lastN && !process.env.BENCH_ASKS; // a partial replay is not scored against the floor, unless a floor is named
+const a = probeFile ? { score: out.filter((x) => x.right).length, total: out.length, wrong: [], loadMisses: [], unreplayed: 0, inconclusive: false, note: '', failed: false }
+  : await assess({ out, replay: async (i) => (await one(todo[i])).right, floor: full || process.env.BENCH_BEST ? best : null, latency, baseline: best.latency && best.latency[env], pages: PAR });
+await browser.close(); server.close();
+const loadSet = new Set(a.loadMisses);
+for (const x of out) if (!x.right) x.alone = loadSet.has(x.ask + ' -> ' + x.by) ? 'passed alone (load)' : 'misses alone';
+if (a.inconclusive) console.error(a.note);
 if (process.argv.includes('--score')) {
-  const result = { score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by), env, cores: os.cpus().length, pages: PAR, latency };
-  if (load.inconclusive) { result.inconclusive = true; result.note = load.line; console.error(load.line); }
+  let sha = process.env.GITHUB_SHA || ''; if (!sha) try { sha = execFileSync('git', ['rev-parse', 'HEAD'], { cwd: here, encoding: 'utf8' }).trim(); } catch (_) {}
+  const result = { score: a.score, total: a.total, wrong: a.wrong, env, cores: os.cpus().length, pages: PAR, latency, sha, at: new Date().toISOString() };
+  if (a.loadMisses.length) result.loadMisses = a.loadMisses;
+  if (a.unreplayed) result.unreplayed = a.unreplayed;
+  if (a.inconclusive) { result.inconclusive = true; result.note = a.note; }
   const floor = Number.isFinite(best.score) ? best.score : Infinity;
-  if (cacheable && !load.inconclusive && result.score >= floor) try { fs.writeFileSync(CACHE, JSON.stringify({ key, at: new Date().toISOString(), result })); } catch (_) {}
-  console.log(JSON.stringify(result)); process.exit(0); }
-for (const x of out) if (!probeFile || !x.right) console.log((x.right ? '  ok  ' : ' ---- ') + x.ask.padEnd(42) + ' ' + (x.by + (x.right ? '' : '   (wants ' + x.want + ')')));
-const n = out.filter((x) => x.right).length;
+  if (cacheable && !a.inconclusive && result.score >= floor) try { fs.writeFileSync(CACHE, JSON.stringify({ key, at: result.at, result })); } catch (_) {}
+  console.log(JSON.stringify(result)); process.exit(a.failed ? 1 : 0); }
+for (const x of out) if (!probeFile || !x.right) console.log((x.right ? '  ok  ' : ' ---- ') + x.ask.padEnd(42) + ' ' + (x.by + (x.right ? '' : '   (wants ' + x.want + (x.alone ? '; ' + x.alone : '') + ')')));
+const n = a.score;
 // with --last N only part of the list ran: the asks that did not run stay in the replay file
 // say why the common misses happen, so a fix starts in the right file
 if (probeFile && out.some((x) => !x.right && /asked for code/.test(x.by))) console.log('("asked for code": Void did not see code in the ask. Name the language in NAMED and give looksLikeCode a reason to count a short paste, both in void-live-deploy/lib/code-review.js)');
 if (probeFile && out.some((x) => !x.right && /^review .* 0 \(wrong value\)/.test(x.by))) console.log('("review … 0 (wrong value)": the review found nothing. Add a rule to RULES in void-live-deploy/lib/code-review.js and a case to tools/review.test.mjs)');
 if (probeFile) { const missed = asks.filter((a) => !todo.includes(a)).concat(todo.filter((_, i) => !out[i].right)); fs.writeFileSync(AGAIN, JSON.stringify(missed, null, 1)); if (missed.length) console.log('(node tools/bench.mjs --again probes just these ' + missed.length + ' after a fix)'); }
-console.log('\n' + n + ' of ' + out.length + ' answered by what should answer them (answers took p50 ' + latency.p50 + 'ms, p95 ' + latency.p95 + 'ms).');
-if (load.inconclusive) console.log(load.line);
-if (process.argv.includes('--json')) { if (load.inconclusive) console.log('bench.last.json kept as it was: an inconclusive run never replaces a conclusive one'); else fs.writeFileSync(path.join(here, 'bench.last.json'), JSON.stringify(out, null, 1)); }
+console.log('\n' + n + ' of ' + out.length + ' answered by what should answer them (answers took p50 ' + latency.p50 + 'ms, p95 ' + latency.p95 + 'ms' + (a.loadMisses.length ? '; ' + a.loadMisses.length + ' miss(es) passed alone and count as answered' : '') + ').');
+if (a.inconclusive) console.log(a.note);
+if (a.failed) console.log('FAILED: ' + a.wrong.length + ' miss(es) reproduce alone and take the score below the floor (' + best.score + '/' + best.total + ')');
+if (process.argv.includes('--json')) { if (a.inconclusive) console.log('bench.last.json kept as it was: an inconclusive run never replaces a conclusive one'); else fs.writeFileSync(path.join(here, 'bench.last.json'), JSON.stringify(out, null, 1)); }
+process.exit(a.failed ? 1 : 0);

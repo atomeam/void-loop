@@ -48,9 +48,26 @@ const out = []; // every request that left for anywhere, with its body
 ctx.on('request', (r) => out.push(r.url() + ' ' + (r.postData() || '')));
 const FIXTURE = 'https://fixture.test/';
 const THREAD_ASK = 'Hi, we need our order flow fixed by June. Orders stop syncing to the sheet and the confirmation emails go out twice. Can you send us a proposal?';
-const OWNER = 'owner-token-for-the-extension-test', records = []; // B3's execution records, as /api/actions would keep them
+// Mail apps as they lay out a reply (their words, their structure; not their code): a search box, one-line To / Subject fields,
+// and the compose body, labelled in the app's language. Outlook re-draws its compose body, so the box you were in is replaced.
+const thread = (subject, from) => '<h2>' + subject + '</h2><div class="msg">' + from + ' Dana Reyes &lt;dana@acme.test&gt;<p>' + THREAD_ASK + '</p></div>';
+const MAIL = {
+  'gmail-fr': '<!doctype html><title>Flux de commandes - Gmail</title><header><input aria-label="Rechercher dans les messages" placeholder="Rechercher dans les messages"></header>'
+    + '<div role="main">' + thread('Flux de commandes', 'De :') + '<div role="dialog" aria-label="Nouveau message"><input aria-label="À"><input aria-label="Objet" value="Re: Flux de commandes">'
+    + '<div data-t="body" role="textbox" contenteditable="true" aria-label="Corps du message" aria-multiline="true" style="min-height:160px;width:520px"></div></div></div>',
+  'gmail-de': '<!doctype html><title>Bestellablauf - Gmail</title><header><input aria-label="In E-Mails suchen" placeholder="In E-Mails suchen"></header>' // two compose windows, the same label
+    + '<div role="main">' + thread('Bestellablauf', 'Von:') + '<div role="dialog" aria-label="Neue Nachricht"><input aria-label="An"><div data-t="other" role="textbox" contenteditable="true" aria-label="Nachrichtentext" aria-multiline="true" style="min-height:160px;width:520px"></div></div>'
+    + '<div role="dialog" aria-label="Neue Nachricht"><input aria-label="An"><input aria-label="Betreff" value="Re: Bestellablauf">'
+    + '<div data-t="body" role="textbox" contenteditable="true" aria-label="Nachrichtentext" aria-multiline="true" style="min-height:160px;width:520px"></div></div></div>',
+  'outlook': '<!doctype html><title>Mail - Outlook</title><div role="search"><div role="textbox" contenteditable="true" aria-label="Search" style="width:300px;height:24px"></div></div>' // a compose body with no label, re-drawn
+    + '<div role="main">' + thread('Order flow', 'From:') + '<div role="region" aria-label="Reading Pane"><div role="textbox" contenteditable="true" aria-label="To" style="width:520px;height:24px"></div>'
+    + '<input aria-label="Add a subject"><div data-t="body" role="textbox" contenteditable="true" aria-multiline="true" style="min-height:200px;width:560px"></div></div></div>'
+    + '<script>window.redraw = () => { const old = document.querySelector("[data-t=body]"), n = old.cloneNode(false); old.replaceWith(n); };</script>',
+};
+const OWNER = 'owner-token-for-the-extension-test', records = [], queuePosts = []; // B3's execution records, as /api/actions would keep them
 await ctx.route(/^https?:\/\//, (r) => {
   const u = new URL(r.request().url());
+  if (u.origin === 'https://fixture.test' && u.pathname.startsWith('/mail/')) return r.fulfill({ contentType: 'text/html', body: MAIL[u.pathname.slice(6)] || 'none' });
   if (u.origin === 'https://fixture.test' && u.pathname === '/thread') { // a mail thread, the way Gmail lays one out: the thread in main, your reply box under it
     return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Order flow - Inbox</title><nav>Inbox Starred Sent</nav><div role="main"><h2>Order flow</h2>'
       + '<div class="msg">From: Dana Reyes &lt;dana@acme.test&gt;<p>' + THREAD_ASK + '</p></div>'
@@ -73,6 +90,12 @@ await ctx.route(/^https?:\/\//, (r) => {
     if (u.pathname.startsWith('/api/answer') && /"mode":"(?:draft|proposal)"/.test(r.request().postData() || '')) { // the tab card's "draft for me": the real handler, no model
       return answerFn.onRequestPost({ request: new Request('http://x/api/answer', { method: 'POST', body: r.request().postData() }), env: { AI: undefined } })
         .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
+    }
+    if (u.pathname === '/api/queue' && r.request().method() === 'POST') { // a sale job from the thread's domain (lib/job-draft.js draftFromThread)
+      const b = JSON.parse(r.request().postData() || '{}');
+      if (b.op === 'draft-from-thread' && r.request().headers().authorization === 'Bearer ' + OWNER) { queuePosts.push(b);
+        return r.fulfill({ contentType: 'application/json', body: JSON.stringify({ matched: true, job: 'j1', target: 'sale:s-1', line: 'draft proposal on job j1 for acme.test, waiting on the confirm line' }) }); }
+      return r.fulfill({ status: 401, body: 'no' });
     }
     if (u.pathname.startsWith('/api/')) return r.fulfill({ status: 404, contentType: 'application/json', body: '{}' });
     const f = u.pathname === '/' || u.pathname === '/index.html' ? path.join(repo, 'void.html') : path.join(live, decodeURIComponent(u.pathname));
@@ -121,6 +144,9 @@ check('B2: "put in the page" types the draft into the box you were in and submit
 await V.fill('#input', 'days until new year');
 await V.press('#input', 'Enter');
 await V.waitForSelector('.vput', { state: 'visible', timeout: 10000 }).catch(() => {});
+// the stage places a new card a frame after it appears (lib/placement.js): wait until the button stops moving, as a person's
+// hand would (a click in that first frame landed where the button had been, 2 runs in 4)
+for (let i = 0, last = ''; i < 20; i++) { const b = JSON.stringify(await V.evaluate(() => { const r = document.querySelector('.vput').getBoundingClientRect(); return [Math.round(r.x), Math.round(r.y)]; })); if (b === last) break; last = b; await V.waitForTimeout(150); }
 await page.evaluate(() => { const t = document.getElementById('reply'); t.value = ''; t.focus(); });
 // a real click, as a person makes it: the stage keeps the countdown card clear of the tab card (lib/placement.js). force only
 // skips Playwright's wait for the card to hold still (cards tilt toward the pointer); the press and release are real mouse events
@@ -317,6 +343,36 @@ check('proposal → reply: on an allowed site the same press yields the B3 card 
   && stepCard.text.includes('Scope:\n') && stepCard.text.includes('[price: left for the owner') && !/^#/m.test(stepCard.text) && beforeYes === ''
   && replyBox.includes(drafted.title) && /What they asked for:/.test(replyBox) && recP.kind === 'extension.act' && recP.ref === 'fixture.test · Message Body' && recP.state === 'done',
   { stepCard: { ...stepCard, text: stepCard.text.slice(0, 200) }, drafted: drafted && drafted.title, beforeYes, replyBox: replyBox.slice(0, 160), recP });
+
+// Mail apps beyond one English Gmail: the reply box is found as the box you were in, whatever its label says; when the app has
+// re-drawn it (Outlook), by its shape: the multi-line compose body, not the search box, not To or Subject
+for (const [app, name, redraw] of [['Gmail in French', 'gmail-fr', false], ['Gmail in German with two compose windows, the same label', 'gmail-de', false], ['Outlook on the web, a compose body with no label', 'outlook', true]]) {
+  const url = FIXTURE + 'mail/' + name;
+  await page.goto(url);
+  await page.evaluate(() => document.querySelector('[data-t=body]').focus());
+  await read(url);
+  await V.waitForFunction((t) => ((document.querySelector('.tab-card') || {}).innerText || '').includes(t), (await page.title()).split(' - ')[0], { timeout: 8000 }).catch(() => {});
+  if (redraw) await page.evaluate(() => window.redraw());
+  const n0 = await V.evaluate(() => document.querySelectorAll('.proposal-card').length), r0m = records.length;
+  await pressProposal(n0 + 1);
+  await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 8000 }).catch(() => {});
+  const card = await panel.evaluate(() => ({ on: document.getElementById('act').classList.contains('on'), what: document.querySelector('.act-what').textContent, text: document.querySelector('.act-text').textContent }));
+  const drafted = await lastProposal();
+  await press('.act-yes', async () => !(await cardOn()));
+  await V.waitForFunction(() => /recorded/.test((document.querySelector('.tab-act-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+  const after = await page.evaluate(() => ({ body: document.querySelector('[data-t=body]').innerText, others: [...document.querySelectorAll('input, [contenteditable]')].filter((e) => e.dataset.t !== 'body').map((e) => (e.tagName === 'INPUT' ? e.value : e.textContent)) }));
+  const rec = records[records.length - 1] || {};
+  check('mail apps: ' + app + (redraw ? ' (re-drawn after you pointed Void at it)' : '') + ': "draft for me: proposal" yields the step card for the reply box you were in, and Yes fills that box with the proposal and nothing else (search, To, Subject and any other compose window untouched), with a done record',
+    card.on && !!drafted && card.text.startsWith(drafted.title) && after.body.includes(drafted.title) && /What they asked for:/.test(after.body)
+    && after.others.every((v) => v === '' || /^Re: /.test(v)) && records.length === r0m + 1 && rec.state === 'done',
+    { app, card: { ...card, text: card.text.slice(0, 80) }, title: drafted && drafted.title, after: { body: after.body.slice(0, 120), others: after.others }, rec });
+}
+
+// the thread's sender is a sale job's buyer: the draft goes onto that job too, the same way the job's claim drafts it (owner only)
+const toJob = await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '');
+check('proposal → reply joined to the sale job: with the owner key, the thread goes once to /api/queue (draft-from-thread) with the sender\'s address, and the card says the draft is on the job for that domain',
+  queuePosts.length >= 1 && queuePosts.every((b) => b.from === 'dana@acme.test' && b.request.includes('order flow fixed by June')) && /on the job for acme\.test \(sale:s-1\)/.test(toJob),
+  { posts: queuePosts.map((b) => ({ from: b.from, n: (b.request || '').length })), toJob });
 
 // "Ask Void about this page" (sent to Void, #134): the answer card says the page left the browser for this answer
 await sw.evaluate(() => chrome.storage.session.set({ ask: { q: 'What is this page about?', page: { title: 'Fixture page', url: 'https://fixture.test/', selection: '', field: '', text: 'fixture text' }, at: Date.now() } }));
