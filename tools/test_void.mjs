@@ -13,7 +13,8 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'applic
 const server = http.createServer((req, res) => {
   let p = decodeURIComponent(new URL(req.url, 'http://x').pathname);
   if (p === '/') p = '/index.html';
-  const f = path.join(root, p);
+  let f = path.join(root, p);
+  if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
   if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); }
   res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' });
   fs.createReadStream(f).pipe(res);
