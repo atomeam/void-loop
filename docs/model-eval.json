@@ -1,0 +1,1535 @@
+{
+ "date": "2026-10-10",
+ "current": "@cf/google/gemma-4-26b-a4b-it",
+ "unit": "neurons",
+ "summary": {
+  "@cf/google/gemma-4-26b-a4b-it": {
+   "reports": true,
+   "perPath": {
+    "answer": {
+     "score": 10,
+     "total": 10,
+     "errors": 0,
+     "cost": 0.8590908944606781,
+     "ms": 0
+    },
+    "will": {
+     "score": 5,
+     "total": 5,
+     "errors": 0,
+     "cost": 3.8090906143188477,
+     "ms": 0
+    },
+    "review": {
+     "score": 7,
+     "total": 7,
+     "errors": 0,
+     "cost": 7.063636302947998,
+     "ms": 0
+    },
+    "figurescript": {
+     "score": 6,
+     "total": 8,
+     "errors": 0,
+     "cost": 4.795454502105713,
+     "ms": 0
+    }
+   }
+  },
+  "@cf/nvidia/nemotron-3-120b-a12b": {
+   "reports": true,
+   "perPath": {
+    "answer": {
+     "score": 10,
+     "total": 10,
+     "errors": 0,
+     "cost": 3.632,
+     "ms": 0
+    },
+    "will": {
+     "score": 5,
+     "total": 5,
+     "errors": 0,
+     "cost": 17.081,
+     "ms": 0
+    },
+    "review": {
+     "score": 6,
+     "total": 7,
+     "errors": 0,
+     "cost": 35.18600000000001,
+     "ms": 0
+    },
+    "figurescript": {
+     "score": 4,
+     "total": 8,
+     "errors": 0,
+     "cost": 17.875500000000002,
+     "ms": 0
+    }
+   }
+  },
+  "@cf/zai-org/glm-4.7-flash": {
+   "reports": true,
+   "perPath": {
+    "answer": {
+     "score": 10,
+     "total": 10,
+     "errors": 0,
+     "cost": 0.8917000000000002,
+     "ms": 0
+    },
+    "will": {
+     "score": 5,
+     "total": 5,
+     "errors": 0,
+     "cost": 5.574000000000001,
+     "ms": 0
+    },
+    "review": {
+     "score": 7,
+     "total": 7,
+     "errors": 0,
+     "cost": 6.3302,
+     "ms": 0
+    },
+    "figurescript": {
+     "score": 0,
+     "total": 8,
+     "errors": 0,
+     "cost": 4.53195,
+     "ms": 0
+    }
+   }
+  },
+  "@cf/openai/gpt-oss-20b": {
+   "reports": true,
+   "perPath": {
+    "answer": {
+     "score": 10,
+     "total": 10,
+     "errors": 0,
+     "cost": 2.7363609,
+     "ms": 0
+    },
+    "will": {
+     "score": 5,
+     "total": 5,
+     "errors": 0,
+     "cost": 6.699993300000001,
+     "ms": 0
+    },
+    "review": {
+     "score": 6,
+     "total": 7,
+     "errors": 0,
+     "cost": 17.1181647,
+     "ms": 0
+    },
+    "figurescript": {
+     "score": 6,
+     "total": 8,
+     "errors": 0,
+     "cost": 7.7454468,
+     "ms": 0
+    }
+   }
+  },
+  "@cf/qwen/qwq-32b": {
+   "reports": true,
+   "perPath": {
+    "answer": {
+     "score": 10,
+     "total": 10,
+     "errors": 0,
+     "cost": 19.6190909090745,
+     "ms": 0
+    },
+    "will": {
+     "score": 5,
+     "total": 5,
+     "errors": 0,
+     "cost": 67.607272727214,
+     "ms": 0
+    },
+    "review": {
+     "score": 7,
+     "total": 7,
+     "errors": 0,
+     "cost": 80.318181818124,
+     "ms": 0
+    },
+    "figurescript": {
+     "score": 0,
+     "total": 8,
+     "errors": 0,
+     "cost": 103.989090909,
+     "ms": 0
+    }
+   }
+  }
+ },
+ "switched": {},
+ "calls": {
+  "@cf/google/gemma-4-26b-a4b-it": [
+   {
+    "path": "answer",
+    "id": "What is the capital of Australia?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.7181817889213562,
+    "tokens": 63,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is 17 times 23?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.8727272748947144,
+    "tokens": 70,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "Who wrote Pride and Prejudice?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.699999988079071,
+    "tokens": 61,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "At what temperature does water boil in Fahrenheit at sea level?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.945454478263855,
+    "tokens": 74,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is the chemical symbol for gold?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.7454545497894287,
+    "tokens": 64,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "Which planet in our solar system is the largest?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.8181818127632141,
+    "tokens": 68,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "How many days are in a leap year?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.8636363744735718,
+    "tokens": 69,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What does HTTP stand for?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 1.4090908765792847,
+    "tokens": 87,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "In what year did the Second World War end?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.8545454144477844,
+    "tokens": 70,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is the square root of 144?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.9090908765792847,
+    "tokens": 72,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-clear-best",
+    "ms": 0,
+    "pass": true,
+    "neurons": 3.754545211791992,
+    "tokens": 241,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-clear-best-last",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.5363636016845703,
+    "tokens": 197,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-a",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.099999904632568,
+    "tokens": 251,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-b",
+    "ms": 0,
+    "pass": true,
+    "neurons": 3.8090906143188477,
+    "tokens": 229,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-c",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.090909004211426,
+    "tokens": 260,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Tabby cat",
+    "ms": 0,
+    "pass": false,
+    "neurons": 5.018181800842285,
+    "tokens": 334,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Thunderstorm",
+    "ms": 0,
+    "pass": true,
+    "neurons": 3.818181037902832,
+    "tokens": 320,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Chef",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.918181896209717,
+    "tokens": 327,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Great white shark",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.5545454025268555,
+    "tokens": 315,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Honey bee",
+    "ms": 0,
+    "pass": false,
+    "neurons": 4.763636589050293,
+    "tokens": 322,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Police officer",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.854545593261719,
+    "tokens": 326,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Campfire",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.827272415161133,
+    "tokens": 327,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Rabbit",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.727272987365723,
+    "tokens": 324,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "sql-concat",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.763636589050293,
+    "tokens": 506,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "eval-input",
+    "ms": 0,
+    "pass": true,
+    "neurons": 7.554543972015381,
+    "tokens": 591,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "off-by-one",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.699998378753662,
+    "tokens": 485,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "hardcoded-secret",
+    "ms": 0,
+    "pass": true,
+    "neurons": 9.763635635375977,
+    "tokens": 632,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "missing-await",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.545454502105713,
+    "tokens": 496,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "loose-equality",
+    "ms": 0,
+    "pass": true,
+    "neurons": 12.936363220214844,
+    "tokens": 729,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "innerhtml",
+    "ms": 0,
+    "pass": true,
+    "neurons": 7.063636302947998,
+    "tokens": 509,
+    "reports": true
+   }
+  ],
+  "@cf/nvidia/nemotron-3-120b-a12b": [
+   {
+    "path": "answer",
+    "id": "What is the capital of Australia?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 3.428,
+    "tokens": 60,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is 17 times 23?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.243,
+    "tokens": 68,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "Who wrote Pride and Prejudice?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 3.745,
+    "tokens": 63,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "At what temperature does water boil in Fahrenheit at sea level?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.695,
+    "tokens": 74,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is the chemical symbol for gold?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.657,
+    "tokens": 55,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "Which planet in our solar system is the largest?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.107,
+    "tokens": 67,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "How many days are in a leap year?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.9739999999999998,
+    "tokens": 58,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What does HTTP stand for?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 3.519,
+    "tokens": 60,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "In what year did the Second World War end?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 4.243,
+    "tokens": 68,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is the square root of 144?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.928,
+    "tokens": 59,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-clear-best",
+    "ms": 0,
+    "pass": true,
+    "neurons": 11.917,
+    "tokens": 190,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-clear-best-last",
+    "ms": 0,
+    "pass": true,
+    "neurons": 13.503,
+    "tokens": 203,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-a",
+    "ms": 0,
+    "pass": true,
+    "neurons": 17.086,
+    "tokens": 226,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-b",
+    "ms": 0,
+    "pass": true,
+    "neurons": 19.630000000000003,
+    "tokens": 234,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-c",
+    "ms": 0,
+    "pass": true,
+    "neurons": 17.081,
+    "tokens": 236,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Tabby cat",
+    "ms": 0,
+    "pass": false,
+    "neurons": 19.552,
+    "tokens": 299,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Thunderstorm",
+    "ms": 0,
+    "pass": true,
+    "neurons": 18.012,
+    "tokens": 285,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Chef",
+    "ms": 0,
+    "pass": true,
+    "neurons": 16.834,
+    "tokens": 275,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Great white shark",
+    "ms": 0,
+    "pass": false,
+    "neurons": 19.281,
+    "tokens": 295,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Honey bee",
+    "ms": 0,
+    "pass": false,
+    "neurons": 17.378,
+    "tokens": 279,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Police officer",
+    "ms": 0,
+    "pass": false,
+    "neurons": 18.556,
+    "tokens": 289,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Campfire",
+    "ms": 0,
+    "pass": true,
+    "neurons": 17.739,
+    "tokens": 285,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Rabbit",
+    "ms": 0,
+    "pass": true,
+    "neurons": 15.969999999999999,
+    "tokens": 274,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "sql-concat",
+    "ms": 0,
+    "pass": true,
+    "neurons": 30.744,
+    "tokens": 483,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "eval-input",
+    "ms": 0,
+    "pass": true,
+    "neurons": 38.949,
+    "tokens": 544,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "off-by-one",
+    "ms": 0,
+    "pass": true,
+    "neurons": 35.18600000000001,
+    "tokens": 517,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "hardcoded-secret",
+    "ms": 0,
+    "pass": true,
+    "neurons": 31.144,
+    "tokens": 502,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "missing-await",
+    "ms": 0,
+    "pass": true,
+    "neurons": 31.154,
+    "tokens": 482,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "loose-equality",
+    "ms": 0,
+    "pass": false,
+    "neurons": 44.980000000000004,
+    "tokens": 585,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "innerhtml",
+    "ms": 0,
+    "pass": true,
+    "neurons": 42.896,
+    "tokens": 567,
+    "reports": true
+   }
+  ],
+  "@cf/zai-org/glm-4.7-flash": [
+   {
+    "path": "answer",
+    "id": "What is the capital of Australia?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.777,
+    "tokens": 57,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is 17 times 23?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.3821,
+    "tokens": 47,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "Who wrote Pride and Prejudice?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.6369,
+    "tokens": 54,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "At what temperature does water boil in Fahrenheit at sea level?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.5497000000000001,
+    "tokens": 55,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is the chemical symbol for gold?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 0.3457,
+    "tokens": 46,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "Which planet in our solar system is the largest?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 1.4487,
+    "tokens": 78,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "How many days are in a leap year?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 1.4796,
+    "tokens": 78,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What does HTTP stand for?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 1.1719,
+    "tokens": 67,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "In what year did the Second World War end?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.2495000000000003,
+    "tokens": 100,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is the square root of 144?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 1.0064000000000002,
+    "tokens": 65,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-clear-best",
+    "ms": 0,
+    "pass": true,
+    "neurons": 5.418200000000001,
+    "tokens": 266,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-clear-best-last",
+    "ms": 0,
+    "pass": true,
+    "neurons": 5.7204,
+    "tokens": 276,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-a",
+    "ms": 0,
+    "pass": true,
+    "neurons": 3.6909,
+    "tokens": 216,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-b",
+    "ms": 0,
+    "pass": true,
+    "neurons": 5.574000000000001,
+    "tokens": 255,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-c",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.1339,
+    "tokens": 295,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Tabby cat",
+    "ms": 0,
+    "pass": false,
+    "neurons": 5.570399999999999,
+    "tokens": 333,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Thunderstorm",
+    "ms": 0,
+    "pass": false,
+    "neurons": 4.2071000000000005,
+    "tokens": 293,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Chef",
+    "ms": 0,
+    "pass": false,
+    "neurons": 4.0869,
+    "tokens": 288,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Great white shark",
+    "ms": 0,
+    "pass": false,
+    "neurons": 3.8795,
+    "tokens": 284,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Honey bee",
+    "ms": 0,
+    "pass": false,
+    "neurons": 4.6748,
+    "tokens": 305,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Police officer",
+    "ms": 0,
+    "pass": false,
+    "neurons": 4.3891,
+    "tokens": 298,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Campfire",
+    "ms": 0,
+    "pass": false,
+    "neurons": 5.3939,
+    "tokens": 329,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Rabbit",
+    "ms": 0,
+    "pass": false,
+    "neurons": 5.6178,
+    "tokens": 336,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "sql-concat",
+    "ms": 0,
+    "pass": true,
+    "neurons": 10.9365,
+    "tokens": 612,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "eval-input",
+    "ms": 0,
+    "pass": true,
+    "neurons": 12.2469,
+    "tokens": 648,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "off-by-one",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.3302,
+    "tokens": 488,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "hardcoded-secret",
+    "ms": 0,
+    "pass": true,
+    "neurons": 10.231300000000001,
+    "tokens": 613,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "missing-await",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.2134,
+    "tokens": 478,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "loose-equality",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.2608,
+    "tokens": 481,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "innerhtml",
+    "ms": 0,
+    "pass": true,
+    "neurons": 5.9366,
+    "tokens": 467,
+    "reports": true
+   }
+  ],
+  "@cf/openai/gpt-oss-20b": [
+   {
+    "path": "answer",
+    "id": "What is the capital of Australia?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.6272701,
+    "tokens": 133,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is 17 times 23?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.5636338,
+    "tokens": 131,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "Who wrote Pride and Prejudice?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.7363609,
+    "tokens": 137,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "At what temperature does water boil in Fahrenheit at sea level?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.8545426000000003,
+    "tokens": 143,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is the chemical symbol for gold?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.8909062,
+    "tokens": 143,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "Which planet in our solar system is the largest?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.7636336,
+    "tokens": 139,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "How many days are in a leap year?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.4727248000000004,
+    "tokens": 128,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What does HTTP stand for?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.7999972,
+    "tokens": 139,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "In what year did the Second World War end?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.7363609,
+    "tokens": 138,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is the square root of 144?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 2.5545429000000004,
+    "tokens": 131,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-clear-best",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.554538900000001,
+    "tokens": 309,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-clear-best-last",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.809084100000001,
+    "tokens": 319,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-a",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.554538900000001,
+    "tokens": 308,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-b",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.9636294,
+    "tokens": 318,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-c",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.699993300000001,
+    "tokens": 318,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Tabby cat",
+    "ms": 0,
+    "pass": true,
+    "neurons": 8.345446200000001,
+    "tokens": 400,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Thunderstorm",
+    "ms": 0,
+    "pass": true,
+    "neurons": 9.818172,
+    "tokens": 453,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Chef",
+    "ms": 0,
+    "pass": true,
+    "neurons": 7.4363562000000005,
+    "tokens": 365,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Great white shark",
+    "ms": 0,
+    "pass": true,
+    "neurons": 7.545447,
+    "tokens": 370,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Honey bee",
+    "ms": 0,
+    "pass": true,
+    "neurons": 7.9454466,
+    "tokens": 384,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Police officer",
+    "ms": 0,
+    "pass": false,
+    "neurons": 10.0363536,
+    "tokens": 461,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Campfire",
+    "ms": 0,
+    "pass": false,
+    "neurons": 7.5272652,
+    "tokens": 370,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Rabbit",
+    "ms": 0,
+    "pass": true,
+    "neurons": 6.5363571,
+    "tokens": 334,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "sql-concat",
+    "ms": 0,
+    "pass": true,
+    "neurons": 17.1181647,
+    "tokens": 772,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "eval-input",
+    "ms": 0,
+    "pass": true,
+    "neurons": 22.6545228,
+    "tokens": 975,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "off-by-one",
+    "ms": 0,
+    "pass": true,
+    "neurons": 21.9454326,
+    "tokens": 950,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "hardcoded-secret",
+    "ms": 0,
+    "pass": true,
+    "neurons": 20.7454338,
+    "tokens": 913,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "missing-await",
+    "ms": 0,
+    "pass": true,
+    "neurons": 16.999983,
+    "tokens": 766,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "loose-equality",
+    "ms": 0,
+    "pass": false,
+    "neurons": 11.4999885,
+    "tokens": 565,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "innerhtml",
+    "ms": 0,
+    "pass": true,
+    "neurons": 11.245443300000002,
+    "tokens": 554,
+    "reports": true
+   }
+  ],
+  "@cf/qwen/qwq-32b": [
+   {
+    "path": "answer",
+    "id": "What is the capital of Australia?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 13.332727272717,
+    "tokens": 164,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is 17 times 23?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 37.058181818148,
+    "tokens": 426,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "Who wrote Pride and Prejudice?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 15.483636363624,
+    "tokens": 188,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "At what temperature does water boil in Fahrenheit at sea level?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 23.905454545433997,
+    "tokens": 282,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is the chemical symbol for gold?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 18.756363636348,
+    "tokens": 224,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "Which planet in our solar system is the largest?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 21.603636363617998,
+    "tokens": 256,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "How many days are in a leap year?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 25.089090909069,
+    "tokens": 294,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What does HTTP stand for?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 14.636363636352,
+    "tokens": 178,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "In what year did the Second World War end?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 17.78545454544,
+    "tokens": 214,
+    "reports": true
+   },
+   {
+    "path": "answer",
+    "id": "What is the square root of 144?",
+    "ms": 0,
+    "pass": true,
+    "neurons": 20.481818181801,
+    "tokens": 244,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-clear-best",
+    "ms": 0,
+    "pass": true,
+    "neurons": 54.423636363591,
+    "tokens": 650,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-clear-best-last",
+    "ms": 0,
+    "pass": true,
+    "neurons": 74.361818181753,
+    "tokens": 870,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-a",
+    "ms": 0,
+    "pass": true,
+    "neurons": 67.607272727214,
+    "tokens": 794,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-b",
+    "ms": 0,
+    "pass": true,
+    "neurons": 91.101818181735,
+    "tokens": 1047,
+    "reports": true
+   },
+   {
+    "path": "will",
+    "id": "will-shape-c",
+    "ms": 0,
+    "pass": true,
+    "neurons": 45.083636363600995,
+    "tokens": 551,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Tabby cat",
+    "ms": 0,
+    "pass": false,
+    "neurons": 104.169090909,
+    "tokens": 1221,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Thunderstorm",
+    "ms": 0,
+    "pass": false,
+    "neurons": 103.989090909,
+    "tokens": 1218,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Chef",
+    "ms": 0,
+    "pass": false,
+    "neurons": 103.869090909,
+    "tokens": 1216,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Great white shark",
+    "ms": 0,
+    "pass": false,
+    "neurons": 99.807272727186,
+    "tokens": 1172,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Honey bee",
+    "ms": 0,
+    "pass": false,
+    "neurons": 84.11090909083799,
+    "tokens": 999,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Police officer",
+    "ms": 0,
+    "pass": false,
+    "neurons": 103.989090909,
+    "tokens": 1218,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Campfire",
+    "ms": 0,
+    "pass": false,
+    "neurons": 104.229090909,
+    "tokens": 1222,
+    "reports": true
+   },
+   {
+    "path": "figurescript",
+    "id": "Rabbit",
+    "ms": 0,
+    "pass": false,
+    "neurons": 104.289090909,
+    "tokens": 1223,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "sql-concat",
+    "ms": 0,
+    "pass": true,
+    "neurons": 63.316363636323,
+    "tokens": 825,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "eval-input",
+    "ms": 0,
+    "pass": true,
+    "neurons": 92.952727272657,
+    "tokens": 1151,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "off-by-one",
+    "ms": 0,
+    "pass": true,
+    "neurons": 70.04181818177099,
+    "tokens": 900,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "hardcoded-secret",
+    "ms": 0,
+    "pass": true,
+    "neurons": 80.301818181762,
+    "tokens": 1020,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "missing-await",
+    "ms": 0,
+    "pass": true,
+    "neurons": 99.198181818105,
+    "tokens": 1218,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "loose-equality",
+    "ms": 0,
+    "pass": true,
+    "neurons": 80.318181818124,
+    "tokens": 1011,
+    "reports": true
+   },
+   {
+    "path": "review",
+    "id": "innerhtml",
+    "ms": 0,
+    "pass": true,
+    "neurons": 113.049090909,
+    "tokens": 1369,
+    "reports": true
+   }
+  ]
+ }
+}
