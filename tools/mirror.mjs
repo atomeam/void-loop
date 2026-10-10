@@ -33,7 +33,7 @@ export function plan(files, read) {
   return { include, skipped };
 }
 
-const git = (args, cwd, env = {}) => execFileSync('git', args, { cwd, env: { ...process.env, ...env }, stdio: ['ignore', 'pipe', 'pipe'], encoding: 'utf8' });
+const git = (args, cwd, env = {}) => execFileSync('git', args, { cwd, env: { ...process.env, ...env }, stdio: ['ignore', 'pipe', 'pipe'], encoding: 'utf8', timeout: 120e3 }); // a stalled host fails the run instead of holding it
 const scrub = (s, ...secrets) => secrets.filter(Boolean).reduce((t, x) => t.split(x).join('***'), String(s));
 
 export async function main(argv = process.argv.slice(2), env = process.env, root = process.cwd()) {
