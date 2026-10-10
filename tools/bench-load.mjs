@@ -28,9 +28,12 @@ export function limitFor(baseline) {
   return Number.isFinite(b) && b > 0 ? Math.max(b * LOAD_FACTOR, b + LOAD_SLACK_MS) : null;
 }
 
+// a baseline measured at another parallelism says nothing about this run (more pages at once means slower answers)
+const comparable = (baseline, par) => !baseline || baseline.par === undefined || par === undefined || baseline.par === par;
+
 // { inconclusive, line }: inconclusive only when there are misses AND the p95 is above the limit
-export function verdict({ misses, latency, baseline }) {
-  const limit = limitFor(baseline), p95 = num(latency && latency.p95);
+export function verdict({ misses, latency, baseline, par }) {
+  const limit = comparable(baseline, par) ? limitFor(baseline) : null, p95 = num(latency && latency.p95);
   if (!misses || limit === null || !Number.isFinite(p95) || p95 <= limit) return { inconclusive: false, line: '' };
   return { inconclusive: true, line: `inconclusive: machine under load (p95 ${Math.round(p95)}ms vs baseline ${Math.round(baseline.p95)}ms); re-run alone` };
 }
@@ -41,6 +44,7 @@ export function nextLatency(result, floor) {
   const env = result && result.env, p95 = num(result && result.latency && result.latency.p95);
   if (!env || !Number.isFinite(p95) || result.inconclusive || !(Number(result.score) >= Number(floor && floor.score))) return null;
   const cur = num(floor && floor.latency && floor.latency[env] && floor.latency[env].p95);
-  if (Number.isFinite(cur) && cur <= p95) return null;
-  return { ...(floor && floor.latency), [env]: { p50: result.latency.p50, p95, n: result.latency.n } };
+  const was = floor && floor.latency && floor.latency[env];
+  if (Number.isFinite(cur) && (cur <= p95 || !comparable(was, result.par))) return null; // never loosens, and never swaps a baseline for one measured at another parallelism
+  return { ...(floor && floor.latency), [env]: { p50: result.latency.p50, p95, n: result.latency.n, par: result.par } };
 }

@@ -107,7 +107,7 @@ async function one({ ask: a, want, says, before }) {
   const said = await p.evaluate(() => { const w = document.getElementById('whisper'); return (w && w.textContent) || window.__said || ''; }).catch(() => '');
   const log = await p.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } });
   const last = log.filter((x) => String(x.ask).trim() === a.trim()).pop();
-  const ms = last ? Date.now() - t0 : null; // how long the answer took; an ask the page never logged timed out at 4 s and says nothing about the machine
+  const ms = Date.now() - t0; // how long the answer took; an ask the page never logged counts at the wait it gave up after, or a loaded machine would look fast
   const note = last ? String(last.note || '') : (said && !miss.length ? 'said' : '');
   const routed = !miss.length && new RegExp('^(' + want + ')').test(note);
   // "says": a pattern the visible answer must contain (the right ability AND the right value: "7 cubed" -> 343)
@@ -124,14 +124,16 @@ async function one({ ask: a, want, says, before }) {
   await ctx.close();
   return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms };
 }
-const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || 6);
+// default: one page fewer than the cores, at most 6. At 6 on a 4-core machine the bench saturated itself (answers took 2.8 s at the median, 3.7 s at p95
+// of the 4 s it waits, two of five misses in a clean run were timing, and the full run took 20 min against about 15 at 3): no headroom to see load in
+const PAR = Math.max(1, parseInt(process.env.BENCH_PAR, 10) || Math.min(6, os.cpus().length - 1));
 let next = 0;
 await Promise.all(Array.from({ length: Math.min(PAR, todo.length) }, async () => { while (next < todo.length) { const i = next++; out[i] = await one(todo[i]); } }));
 await browser.close(); server.close();
 // was the machine quiet? (tools/bench-load.mjs): misses plus slow answers mean the run says nothing about Void
 let best = {}; try { best = JSON.parse(fs.readFileSync(BEST, 'utf8')); } catch (_) {}
 const env = envName(), latency = latencyOf(out.map((x) => x.ms));
-const load = verdict({ misses: out.some((x) => !x.right), latency, baseline: best.latency && best.latency[env] });
+const load = verdict({ misses: out.some((x) => !x.right), latency, baseline: best.latency && best.latency[env], par: PAR });
 if (process.argv.includes('--score')) {
   const result = { score: out.filter((x) => x.right).length, total: out.length, wrong: out.filter((x) => !x.right).map((x) => x.ask + ' -> ' + x.by), env, par: PAR, latency };
   if (load.inconclusive) { result.inconclusive = true; result.note = load.line; console.error(load.line); }
