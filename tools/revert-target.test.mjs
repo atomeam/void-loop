@@ -1,7 +1,7 @@
 // verify-main reverts the commit that broke the failing check, not whichever commit it happened to test (tools/revert-target.mjs).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { failingChecks, annotations, namesFrom, pickRevert, verifiedState, stillLive, stillRed, pickLive, TITLE, COUNT_TITLE } from './revert-target.mjs';
+import { failingChecks, annotations, namesFrom, pickRevert, verifiedState, stillLive, stillRed, pickLive, TITLE, COUNT_TITLE, VERIFY_WORKFLOWS } from './revert-target.mjs';
 
 const RACK = 'rack: "what games do you have" stands a 3D shelf';
 
@@ -127,4 +127,37 @@ test('pickLive: the pick stands only while the target is live and the check is s
   assert.equal(r.action, 'report'); assert.match(r.why, /green passed the suite/);
   // a newer head with no finished suite yet: the tested run's word stands
   assert.equal(pickLive({ tested: 't', failing: [RACK], history, mainLine: ['newer', 't', 'p'], body, repo: 'o/r', api }).action, 'revert');
+});
+
+test('verify-main has its own workflow (verify.yml, 2026-10-10): its runs count, older deploy-run verdicts still count, other workflows do not', () => {
+  const api = (path) => {
+    if (path.includes('head_sha=new')) return { workflow_runs: [{ id: 5, name: 'Void verify', event: 'workflow_dispatch' }, { id: 6, name: 'Void deploy', event: 'workflow_dispatch' }] };
+    if (path.includes('head_sha=other')) return { workflow_runs: [{ id: 7, name: 'Void review', event: 'push' }] };
+    if (path.endsWith('runs/5/jobs')) return { jobs: [{ id: 51, name: 'verify-main', status: 'completed', conclusion: 'failure' }] };
+    if (path.endsWith('runs/6/jobs')) return { jobs: [{ id: 61, name: 'test-and-deploy', status: 'completed', conclusion: 'success' }] };
+    if (path.endsWith('runs/7/jobs')) return { jobs: [{ id: 71, name: 'verify-main', status: 'completed', conclusion: 'failure' }] };
+    if (path.includes('check-runs/51/annotations')) return [{ title: TITLE, message: RACK }, { title: COUNT_TITLE, message: '1' }];
+    throw new Error('unexpected ' + path);
+  };
+  const body = () => 'Merge pull request #2';
+  assert.deepEqual(verifiedState('new', 'o/r', api, body), { sha: 'new', state: 'fail', failing: [RACK] });
+  assert.equal(verifiedState('other', 'o/r', api, body).state, 'unknown', 'a job named verify-main in some other workflow is not a verdict');
+  assert.deepEqual(VERIFY_WORKFLOWS, ['Void verify', 'Void deploy']);
+});
+
+test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, which never waits for a deploy; automerge starts it', async () => {
+  const { readFileSync } = await import('node:fs');
+  const read = (p) => readFileSync(new URL('../' + p, import.meta.url), 'utf8');
+  const verify = read('.github/workflows/verify.yml'), deploy = read('.github/workflows/deploy.yml'), auto = read('tools/automerge.mjs');
+  assert.match(verify, /^name: Void verify$/m, 'the name VERIFY_WORKFLOWS looks for');
+  assert.match(verify, /^on:\n  push:\n    branches: \[main\]\n  workflow_dispatch:/m, 'a push to main, or a dispatch (automerge, by hand)');
+  assert.match(verify, /^  verify-main:\n    runs-on:/m, 'the job keeps its name and has no needs');
+  assert.doesNotMatch(verify, /^\s+needs:/m);
+  assert.match(verify, /group: void-verify-\$\{\{ github\.sha \}\}\n\s+cancel-in-progress: false/, 'one group per head, never cancelled');
+  assert.match(verify, /node tools\/revert-target\.mjs --pick/);
+  assert.match(verify, /Void-auto-revert: \$sha/);
+  assert.match(verify, /gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/);
+  assert.doesNotMatch(deploy, /^  verify-main:/m, 'the deploy no longer carries the suite');
+  assert.match(deploy, /void-deploy-\$\{\{ github\.event_name == 'pull_request' && format\('pr-\{0\}', github\.event\.pull_request\.number\) \|\| 'production' \}\}/, 'deploys stay serialized in production');
+  assert.match(auto, /\['workflow', 'run', 'verify\.yml', '--repo', repo, '--ref', 'main'\]/, 'a GITHUB_TOKEN merge starts no push workflow: automerge starts the suite');
 });
