@@ -1,0 +1,45 @@
+# The live model bake-off (tools/model-bench.mjs), run by hand: Void's answer prompts sent to the current free model and the
+# challengers on real Workers AI, scored and timed, with a verdict. Manual only (Actions > Model bench > Run workflow), because
+# every call spends Workers AI neurons (40 asks x models). Needs the repo secrets CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN
+# (the token needs Workers AI run/read permission). Nothing is written to D1 and nothing is deployed; the table is in the job
+# summary and the full results are the artifact.
+name: Model bench
+
+on:
+  workflow_dispatch:
+    inputs:
+      models:
+        description: Challenger model ids, comma separated (empty = the 3 newest in the catalog)
+        default: '@cf/nvidia/nemotron-3-120b-a12b,@cf/zai-org/glm-4.7-flash,@cf/openai/gpt-oss-20b'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run the bench
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          MODELS: ${{ inputs.models }}
+        run: |
+          set -o pipefail
+          args=(--out model-bench.json)
+          if [ -n "$MODELS" ]; then args+=(--models "$MODELS"); fi
+          node tools/model-bench.mjs "${args[@]}" 2>&1 | tee model-bench.txt
+          { echo '```'; cat model-bench.txt; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: model-bench
+          path: |
+            model-bench.json
+            model-bench.txt

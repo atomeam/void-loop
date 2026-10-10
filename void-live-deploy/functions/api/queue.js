@@ -51,9 +51,25 @@ export const onRequestPost = guard(async (ctx) => {
 export const onRequestPatch = guard(async ({ request, env }) => {
   const b = await body(request), now = new Date().toISOString();
   if (b.heartbeat) await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('heartbeat', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(now).run();
+  const state = b.state ? String(b.state).slice(0, 20) : null, note = b.note ? String(b.note).slice(0, 300) : null;
+  // a claim: { target | id, state: 'building', from: 'queued' } moves the job only if it is still in `from`, in one statement,
+  // so of two builders claiming at once exactly one gets it; the other is told who holds it (409) or that there is none (404)
+  if (b.from && (b.target || b.id)) {
+    const from = String(b.from).slice(0, 20), target = b.target ? String(b.target).slice(0, 40) : null;
+    // the claimer is named at the front of the note, keeping what the note already said (a miss job's counts, say)
+    const by = b.by ? String(b.by).slice(0, 60) : null;
+    const r = await env.DB.prepare(target
+      ? "UPDATE void_queue SET state = COALESCE(?, state), note = CASE WHEN ? IS NULL THEN COALESCE(?, note) ELSE substr('claimed by ' || ? || CASE WHEN COALESCE(note, '') = '' THEN '' ELSE ' · ' || note END, 1, 300) END, updated = ? WHERE id = (SELECT id FROM void_queue WHERE target = ? AND state = ? ORDER BY at LIMIT 1)"
+      : "UPDATE void_queue SET state = COALESCE(?, state), note = CASE WHEN ? IS NULL THEN COALESCE(?, note) ELSE substr('claimed by ' || ? || CASE WHEN COALESCE(note, '') = '' THEN '' ELSE ' · ' || note END, 1, 300) END, updated = ? WHERE id = ? AND state = ?")
+      .bind(state, by, note, by, now, target || String(b.id), from).run();
+    const row = target ? await env.DB.prepare('SELECT * FROM void_queue WHERE target = ? ORDER BY updated DESC LIMIT 1').bind(target).first()
+      : await env.DB.prepare('SELECT * FROM void_queue WHERE id = ?').bind(String(b.id)).first();
+    if (!r.meta.changes) return row ? Response.json({ held: row }, { status: 409 }) : new Response('not found', { status: 404 });
+    return Response.json({ claimed: row, ...(await view(env)) });
+  }
   if (b.id) {
     const r = await env.DB.prepare('UPDATE void_queue SET state = COALESCE(?, state), note = COALESCE(?, note), updated = ? WHERE id = ?')
-      .bind(b.state ? String(b.state).slice(0, 20) : null, b.note ? String(b.note).slice(0, 300) : null, now, String(b.id)).run();
+      .bind(state, note, now, String(b.id)).run();
     if (!r.meta.changes) return new Response('not found', { status: 404 });
   }
   return Response.json(await view(env));

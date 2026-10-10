@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as api from '../void-live-deploy/functions/api/review.js';
 import { ensureTables, sessionId } from '../void-live-deploy/lib/void-me.js';
-import { quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE } from '../void-live-deploy/lib/review-api.js';
+import { quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX } from '../void-live-deploy/lib/review-api.js';
 
 function d1() {
   const db = new DatabaseSync(':memory:');
@@ -165,4 +165,44 @@ test('imports from the request are cleaned and capped before they reach the prom
   assert.equal(big['a.js'].length, 60); assert.equal(big['b.js'][0].length, 300);
   assert.ok(cleanImports({ 'a.js': Array.from({ length: 50 }, () => 'i'.repeat(300)) })['a.js'].length <= 20);
   assert.match(importsText({ 'a.js': ['import a from "b";'] }), /^What each touched file imports or declares at top level \(outside the diff\):\na\.js:\n  import a from "b";$/);
+});
+
+// #262: the diff ran past MODEL_CODE_MAX, the old hard cut landed inside a fringe draft's flash() line, and the closer read
+// reported the function "truncated/cut off in the middle of a line" (it was whole in the file). Now the model sees whole lines
+// and a note saying the rest was left out, the prompt says what the note means, and a cut-off claim is dropped when it ran anyway.
+const FLASH = "  function flash(delayMs) { setTimeout(() => { el('dot').style.visibility = 'visible'; setTimeout(() => { el('dot').style.visibility = 'hidden'; }, 17); }, delayMs); }";
+const READ_262 = '### Bugs\n*   **Line 75 (inferred):** The `flash` function is truncated/cut off in the middle of a line. This will cause a syntax error and prevent the entire script from executing.\n    *   **Fix:** Ensure the `setTimeout` and function closures are fully written.\n\n### Performance\n*   **Line 30:** `counts` is recomputed on every addition; keep a running map.';
+const longDiff = () => { // the flash() line straddles MODEL_CODE_MAX, as it did on #262
+  const pad = '+  const keep = 1; // padding line that makes the diff long enough\n'; let d = 'diff --git a/drafts/fringe/sensory-substitution-7.html b/drafts/fringe/sensory-substitution-7.html\n';
+  while (d.length < MODEL_CODE_MAX - 60) d += pad;
+  return d + '+' + FLASH + '\n' + pad.repeat(40);
+};
+
+test('a long diff is shortened for the model at a line boundary with a note; nothing is cut in half', () => {
+  const d = longDiff(), shown = clipForModel(d);
+  assert.ok(d.indexOf(FLASH) < MODEL_CODE_MAX && d.indexOf(FLASH) + FLASH.length > MODEL_CODE_MAX, 'the test diff straddles the limit');
+  assert.equal(shown.clipped, true);
+  const lines = shown.text.split('\n'), note = lines.pop();
+  assert.match(note, /^\[41 more lines of this change not shown here: shortened to fit, not cut off\]$/);
+  assert.ok(lines.every((l) => d.split('\n').includes(l)), 'every line shown is a whole line of the diff');
+  assert.ok(!shown.text.includes('function flash'), 'the straddling line is left out whole, not half shown');
+  assert.deepEqual(clipForModel('short\ncode'), { text: 'short\ncode', clipped: false });
+});
+
+test('closer read on #262\'s long diff: the clip rule goes to the model, its "cut off" finding is dropped, its real finding stays', async () => {
+  const calls = []; const env = await envWith({ ai: ai(READ_262, calls) }); env.READ_TOKEN = 'owner-secret-0123456789';
+  const r = await (await call(api.onRequestPost, env, { diff: longDiff() }, env.READ_TOKEN)).json();
+  const user = calls[0].messages[1].content;
+  assert.ok(user.includes(CLIP_RULE) && /not shown here: shortened to fit, not cut off\]\n```$/.test(user), 'the rule and the note');
+  assert.doesNotMatch(r.answer, /truncated|cut off|### Bugs/);
+  assert.match(r.answer, /### Performance[\s\S]*running map/);
+});
+
+test('a cut-off claim about code that was not shortened is kept: only a clipped input silences it', async () => {
+  assert.match(dropPhantoms(READ_262, new Set(), FLASH, false), /truncated/);
+  assert.doesNotMatch(dropPhantoms(READ_262, new Set(), FLASH, true), /truncated/);
+  const calls = []; const env = await envWith({ ai: ai(READ_262, calls) }); env.READ_TOKEN = 'owner-secret-0123456789';
+  const r = await (await call(api.onRequestPost, env, { diff: 'diff --git a/x.html b/x.html\n+' + FLASH + '\n' }, env.READ_TOKEN)).json();
+  assert.ok(!calls[0].messages[1].content.includes(CLIP_RULE));
+  assert.match(r.answer, /truncated/);
 });
