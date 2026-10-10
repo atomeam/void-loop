@@ -7,6 +7,8 @@
 //   node tools/model-bench.mjs --models a,b,c         DEFAULT_MODEL vs exactly these model ids
 //   node tools/model-bench.mjs --top 5                DEFAULT_MODEL vs the 5 newest catalog models
 //   node tools/model-bench.mjs --only self,page       only some kinds of ask (fact, howto, reason, self, page)
+//   node tools/model-bench.mjs --via URL --models a,b  send the calls through tools/model-bench-worker (wrangler dev --remote --port 8799) under your wrangler
+//                                                      login instead of the REST API: no API token needed. First token = total time there (no streaming).
 //   node tools/model-bench.mjs --dry                  no network: canned answers, to check the harness and the scoring
 // Needs CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN (a token with Workers AI read/run). Every call counts against the
 // account's Workers AI neurons (40 asks x 4 models = 160 calls); nothing is written to D1, nothing is deployed.
@@ -29,7 +31,7 @@ const flag = (f) => argv.includes(f);
 const opt = (f, d) => (argv.includes(f) ? argv[argv.indexOf(f) + 1] : d);
 const ACCOUNT = process.env.CLOUDFLARE_ACCOUNT_ID, TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 const API = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT}/ai`;
-const DRY = flag('--dry');
+const DRY = flag('--dry'), VIA = opt('--via', '');
 const TIMEOUT_MS = 60000, PAR = 4;
 
 // ---- the asks ----
@@ -129,6 +131,14 @@ async function catalog() {
 // streams one answer; ttft = ms until the first non-empty text, total = ms until done
 async function run(model, messages) {
   const t0 = Date.now();
+  if (VIA) { // through the wrangler-dev Worker: one reply, so the first-token time is the total time
+    try {
+      const j = await (await fetch(VIA, { method: 'POST', signal: AbortSignal.timeout(TIMEOUT_MS), body: JSON.stringify({ model, messages, max_tokens: 1200 }) })).json();
+      if (!j.ok) return { error: String(j.error || 'no reply').slice(0, 200), ms: Date.now() - t0 };
+      const r = j.result || {}, text = String(r.response ?? r.choices?.[0]?.message?.content ?? r.result?.response ?? '');
+      return { text, ttft: Date.now() - t0, ms: Date.now() - t0 };
+    } catch (e) { return { error: String(e.message || e), ms: Date.now() - t0 }; }
+  }
   const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
   try {
     const r = await fetch(`${API}/run/${model}`, { method: 'POST', signal: ctl.signal, headers: { ...auth, 'content-type': 'application/json' },
@@ -185,6 +195,7 @@ const p90 = (xs) => { const s = xs.filter((x) => x != null).sort((a, b) => a - b
 export function verdict(rows) {
   const base = rows.find((r) => r.model === DEFAULT_MODEL);
   if (!base) return { switchTo: null, why: 'the default model did not run' };
+  if (rows.every((r) => r.errors === r.total)) return { switchTo: null, why: 'no verdict: every call failed (check the credentials or the --via Worker)' };
   const better = rows.filter((r) => r !== base && r.errors < r.total / 4).map((r) => {
     const more = r.correct - base.correct;
     const noKindWorse = Object.keys(base.byKind).every((k) => (r.byKind[k] || 0) >= base.byKind[k] - 1);
@@ -198,7 +209,8 @@ export function verdict(rows) {
 }
 
 async function main() {
-  if (!DRY && (!ACCOUNT || !TOKEN)) { console.error('set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN (or use --dry)'); process.exit(2); }
+  if (!DRY && !VIA && (!ACCOUNT || !TOKEN)) { console.error('set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN (or use --dry, or --via a wrangler-dev Worker)'); process.exit(2); }
+  if (VIA && !opt('--models', '')) { console.error('--via needs --models a,b,c (the catalog listing needs the REST API)'); process.exit(2); }
   if (flag('--list')) {
     for (const m of await catalog()) console.log(`${m.id.padEnd(52)} ${String(m.created).slice(0, 10)}${m.beta ? '  beta' : ''}${m.ctx ? '  ctx ' + m.ctx : ''}`);
     return;
