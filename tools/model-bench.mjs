@@ -31,7 +31,9 @@
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { DEFAULT_MODEL, PAID_MODEL } from '../void-live-deploy/lib/router.js';
 import { selfFacts } from '../void-live-deploy/lib/self-context.js';
-import { buildAsks, messagesFor as messagesForLib, PAGES, esc } from '../void-live-deploy/lib/bench-asks.js';
+import { buildAsks, messagesFor as messagesForLib, PAGES, esc, REVIEW_ASKS } from '../void-live-deploy/lib/bench-asks.js';
+import { FINDINGS_SCHEMA, parseFindingsJson, validateFindings, evidenceLines } from '../void-live-deploy/lib/review-api.js';
+export { REVIEW_ASKS };
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const dep = path.resolve(here, '..', 'void-live-deploy');
@@ -50,7 +52,20 @@ const skills = JSON.parse(fs.readFileSync(path.join(dep, 'skills/index.json'), '
 const FACTS = selfFacts({ self, skills, will: null, voice: null });
 export const ASKS = buildAsks({ self, skills }); // lib/bench-asks.js: the same asks /api/bench runs on the site
 const messagesFor = (a) => messagesForLib(a, FACTS);
+/** compliance of one closer-read answer with the JSON shape: { json, quotes, echoes, kept, dropped, failed } (lib/bench-asks.js REVIEW_ASKS) */
+export function comply(a, text) {
+  const list = parseFindingsJson(text);
+  if (!list) return { json: false, quotes: false, echoes: 0, kept: 0, dropped: 0, failed: ['not JSON in the shape'] };
+  const v = validateFindings(list, evidenceLines(a.diff, true)), failed = [], quoted = v.kept.map((f) => f.quote);
+  if (v.dropped - v.echoes > 0) failed.push((v.dropped - v.echoes) + ' finding(s) quoted no line of the diff');
+  if (v.echoes) failed.push(v.echoes + ' echo(es) of the shape');
+  if (a.expectFindings && !v.kept.length) failed.push('the planted bug was not found');
+  if (!a.expectFindings && v.kept.length) failed.push(v.kept.length + ' finding(s) on a clean diff');
+  for (const re of a.mustQuote || []) if (!quoted.some((q) => re.test(q))) failed.push('did not quote ' + re);
+  return { json: true, quotes: v.dropped - v.echoes === 0 && !!v.kept.length === !!a.expectFindings, echoes: v.echoes, kept: v.kept.length, dropped: v.dropped, failed };
+}
 export function score(a, text) {
+  if (a.diff) { const c = comply(a, text); return { ok: c.json && c.quotes && !c.echoes && !c.failed.length, failed: c.failed, comply: c }; }
   const t = String(text || '').replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
   const failed = [...(a.must || []).filter((r) => !r.test(t)).map((r) => 'missing ' + r), ...(a.mustNot || []).filter((r) => r.test(t)).map((r) => 'has ' + r)];
   return { ok: t.length > 0 && failed.length === 0, failed: t ? failed : ['empty answer'] };
@@ -128,6 +143,8 @@ export function planRun(models, asks, prices, { cap = Infinity, keep = [], allow
   });
 }
 
+// the compliance column: of the review asks, how many answered valid JSON first time, how many quoted every finding from the diff, and the echoes
+export const complyText = (c) => (!c || !c.asks ? '-' : `${c.json}/${c.asks} · ${c.quotes}/${c.asks} · ${c.echoes}`);
 export function markdown({ asks, rows, verdict: v, plan }) {
   const kinds = Object.keys(kindCounts(asks)), c = kindCounts(asks);
   const out = [`**Asks:** ${asks.length} (${countLine(asks)})`, ''];
@@ -137,8 +154,8 @@ export function markdown({ asks, rows, verdict: v, plan }) {
     out.push('');
   }
   if (rows.length) {
-    out.push(`| model | right | ${kinds.map((k) => `${k} /${c[k]}`).join(' | ')} | first token p50 | p90 | errors |`, `|:--|--:|${kinds.map(() => '--:').join('|')}|--:|--:|--:|`);
-    for (const r of rows) out.push(`| \`${r.model}\` | ${r.correct}/${r.total} | ${kinds.map((k) => r.byKind[k] || 0).join(' | ')} | ${r.ttft == null ? '-' : r.ttft + ' ms'} | ${r.ttft90 == null ? '-' : r.ttft90 + ' ms'} | ${r.errors} |`);
+    out.push(`| model | right | ${kinds.map((k) => `${k} /${c[k]}`).join(' | ')} | comply: JSON · quotes · echoes | first token p50 | p90 | errors |`, `|:--|--:|${kinds.map(() => '--:').join('|')}|:--|--:|--:|--:|`);
+    for (const r of rows) out.push(`| \`${r.model}\` | ${r.correct}/${r.total} | ${kinds.map((k) => r.byKind[k] || 0).join(' | ')} | ${complyText(r.comply)} | ${r.ttft == null ? '-' : r.ttft + ' ms'} | ${r.ttft90 == null ? '-' : r.ttft90 + ' ms'} | ${r.errors} |`);
     out.push('');
   }
   out.push(`**Verdict:** ${v.switchTo ? 'switch to `' + v.switchTo + '`: ' : ''}${v.why}`);
@@ -197,7 +214,7 @@ export async function siteRun(site, key, model, n, chunk, get = fetch) {
 }
 
 // streams one answer; ttft = ms until the first non-empty text, total = ms until done
-async function run(model, messages) {
+async function run(model, messages, schema = null) {
   const t0 = Date.now();
   if (VIA) { // through the wrangler-dev Worker: one reply, so the first-token time is the total time
     try {
@@ -209,6 +226,14 @@ async function run(model, messages) {
   }
   const ctl = new AbortController(), timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
   try {
+    if (schema) { // a review ask: JSON mode, one whole answer (a model without JSON mode gets the same ask held by the prompt alone)
+      const post = (body) => fetch(`${API}/run/${model}`, { method: 'POST', signal: ctl.signal, headers: { ...auth, 'content-type': 'application/json' }, body: JSON.stringify(body) });
+      let r = await post({ messages, max_tokens: 1200, response_format: { type: 'json_schema', json_schema: schema } });
+      if (!r.ok) r = await post({ messages, max_tokens: 1200 });
+      if (!r.ok) return { error: 'HTTP ' + r.status + ' ' + (await r.text()).slice(0, 200), ms: Date.now() - t0 };
+      const j = await r.json(), x = j.result || {}, text = typeof x.response === 'string' ? x.response : x.response ? JSON.stringify(x.response) : String(x.choices?.[0]?.message?.content ?? '');
+      return { text, ttft: Date.now() - t0, ms: Date.now() - t0 };
+    }
     const r = await fetch(`${API}/run/${model}`, { method: 'POST', signal: ctl.signal, headers: { ...auth, 'content-type': 'application/json' },
       body: JSON.stringify({ messages, max_tokens: 1200, stream: true }) });
     if (!r.ok || !r.body) return { error: 'HTTP ' + r.status + ' ' + (await r.text()).slice(0, 200), ms: Date.now() - t0 };
@@ -246,6 +271,10 @@ function dryRun(model, a) {
     self: 'I can play ' + (self.games || []).join(', ') + '. My skills include ' + skills.slice(0, 5).join(', ') + ', and weather. Nothing is open in my growth inbox right now. A-to-Mind made me, Void.',
     page: 'The launch is October 14. Ads are $12,000 of the budget. This page is the Q3 plan. The page does not say who the CEO is. Hi team, the launch moves to Friday because the vendor is late. You need spaghetti, a lemon and parmesan. The recipe does not say how long it takes.',
   }[a.kind] || good.fact;
+  if (a.diff) { // the strong dry model answers the shape, the weak one writes prose about it
+    if (/weak/.test(model)) return { text: 'I have reviewed the diff. Line 12 assigns instead of comparing.', ttft: 700, ms: 900 };
+    return { text: JSON.stringify({ findings: a.expectFindings ? [{ file: 'lib/pay.js', line: 12, kind: 'bug', text: 'assignment where a comparison was meant', quote: '  if (total = 0) return null;' }, { file: 'lib/pay.js', line: 13, kind: 'risk', text: 'the coupon code is pasted into the SQL', quote: '  const q = "SELECT * FROM coupons WHERE code = \'" + order.coupon + "\'";' }] : [] }), ttft: 400, ms: 900 };
+  }
   const weak = /weak/.test(model) && ['reason', 'page'].includes(a.kind);
   return { text: weak ? 'It depends on your goals.' : text, ttft: weak ? 900 : 300 + (a.ask.length % 7) * 20, ms: 800 };
 }
@@ -308,17 +337,18 @@ async function main() {
   for (const model of models) {
     process.stdout.write(model.padEnd(52));
     const site = SITE ? await siteRun(SITE, SITE_KEY, model, asks.length, probe.chunk) : null;
-    const res = await pool(asks, PAR, async (a, i) => { const r = DRY ? dryRun(model, a) : site ? site[i] : await run(model, messagesFor(a)); return { ...a, ...r, ...(r.error ? { ok: false, failed: [r.error] } : score(a, r.text)) }; });
+    const res = await pool(asks, PAR, async (a, i) => { const r = DRY ? dryRun(model, a) : site ? site[i] : await run(model, messagesFor(a), a.diff ? FINDINGS_SCHEMA : null); return { ...a, ...r, ...(r.error ? { ok: false, failed: [r.error] } : score(a, r.text)) }; });
     const byKind = {}; for (const r of res) byKind[r.kind] = (byKind[r.kind] || 0) + (r.ok ? 1 : 0);
-    const row = { model, total: res.length, correct: res.filter((r) => r.ok).length, errors: res.filter((r) => r.error).length, byKind,
+    const rev = res.filter((r) => r.diff), comp = { asks: rev.length, json: rev.filter((r) => r.comply && r.comply.json).length, quotes: rev.filter((r) => r.comply && r.comply.quotes).length, echoes: rev.reduce((n, r) => n + ((r.comply && r.comply.echoes) || 0), 0) };
+    const row = { model, total: res.length, correct: res.filter((r) => r.ok).length, errors: res.filter((r) => r.error).length, byKind, comply: comp,
       ttft: median(res.map((r) => r.ttft)), ttft90: p90(res.map((r) => r.ttft)), ms: median(res.map((r) => r.ms)), results: res };
     rows.push(row);
     console.log(`${row.correct}/${row.total} right, first token ${row.ttft ?? '-'} ms median${row.errors ? `, ${row.errors} errors` : ''}`);
   }
 
   const kinds = [...new Set(asks.map((a) => a.kind))], count = (k) => asks.filter((a) => a.kind === k).length;
-  console.log('\n' + ['model'.padEnd(52), 'right'.padStart(7), ...kinds.map((k) => (k + ' /' + count(k)).padStart(Math.max(10, k.length + 5))), 'TTFT p50'.padStart(10), 'TTFT p90'.padStart(10), 'errors'.padStart(7)].join(''));
-  for (const r of rows) console.log([r.model.padEnd(52), `${r.correct}/${r.total}`.padStart(7), ...kinds.map((k) => String(r.byKind[k] || 0).padStart(Math.max(10, k.length + 5))),
+  console.log('\n' + ['model'.padEnd(52), 'right'.padStart(7), ...kinds.map((k) => (k + ' /' + count(k)).padStart(Math.max(10, k.length + 5))), 'comply J·Q·E'.padStart(16), 'TTFT p50'.padStart(10), 'TTFT p90'.padStart(10), 'errors'.padStart(7)].join(''));
+  for (const r of rows) console.log([r.model.padEnd(52), `${r.correct}/${r.total}`.padStart(7), ...kinds.map((k) => String(r.byKind[k] || 0).padStart(Math.max(10, k.length + 5))), complyText(r.comply).padStart(16),
     (r.ttft == null ? '-' : r.ttft + ' ms').padStart(10), (r.ttft90 == null ? '-' : r.ttft90 + ' ms').padStart(10), String(r.errors).padStart(7)].join(''));
 
   console.log('\nmisses (first 2 per model):');
@@ -326,7 +356,7 @@ async function main() {
 
   const v = verdict(rows);
   console.log('\nverdict: ' + (v.switchTo ? 'switch to ' : '') + v.why);
-  if (v.switchTo) console.log(`to switch: DEFAULT_MODEL in void-live-deploy/lib/router.js (and MODEL in functions/api/will.js), then run the suite.`);
+  if (v.switchTo) console.log(`to switch: tools/model-switch.mjs edits PATH_MODELS in void-live-deploy/lib/models.js (the answer path, and the review path when the winner follows the closer read's JSON shape at least as well); model-bench.yml opens that PR.`);
   if (opt('--md', '')) fs.writeFileSync(opt('--md', ''), markdown({ asks, rows, verdict: v, plan }));
   const out = opt('--out', path.join(os.tmpdir(), 'void-model-bench.json'));
   fs.writeFileSync(out, JSON.stringify({ at: new Date().toISOString(), dry: DRY, verdict: v, asks: kindCounts(asks), plan, rows: rows.map(({ results, ...r }) => ({ ...r, results: results.map(({ must, mustNot, page, ...x }) => x) })) }, null, 1));
