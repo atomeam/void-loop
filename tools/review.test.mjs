@@ -304,6 +304,32 @@ for (const [lang, c] of [['python', 'items.sort()\nprint(items[0])'], ['python',
   ['rust', 'let n = 5; let m = n; println!("{}", n);'], ['rust', 'let v = vec![1, 2, 3]; println!("{}", v[2]);'],
   ['sql', 'SELECT * FROM users WHERE email IS NULL'], ['sql', 'SELECT * FROM users WHERE age BETWEEN 10 AND 20']])
   ok(!rules(c, lang).some((r) => /sort-none|range-next|dict-add-missing|go-err-log-continue|len-le-loop|rust-moved-use|rust-literal-index|null-compare|between-reversed/.test(r)), 'no finding in ' + lang + ': ' + c.slice(0, 60) + ' (got ' + rules(c, lang).join(',') + ')');
+// run 65: batch 2 (helper/bench-thin-areas-2) - six rules the first thin-area round did not cover
+for (const [lang, c, want] of [
+  ['python', 'for u in users:\n    users.remove(u)', 'remove-while-iterating@1'],
+  ['python', 'if type(x) == dict:\n    return x["a"]', 'type-eq-dict@1'],
+  ['go', 'for _, it := range items {\n\tit.Price *= 2\n}', 'range-value-copy@1'],
+  ['go', 'go func() {\n\twg.Add(1)\n\tdefer wg.Done()\n\tfetch(u)\n}()', 'wg-add-in-goroutine@2'],
+  ['rust', 'let mut g = state.lock().expect("poisoned");\nfetch(url).await;', 'lock-across-await@1'],
+  ['sql', 'SELECT u.name, o.total FROM users u LEFT JOIN orders o ON o.user_id = u.id WHERE o.total > 50;', 'left-join-where-filter@1'],
+  // the same six as one-line pastes, which is the shape the bench asks in
+  ['python', 'for u in users: users.remove(u)', 'remove-while-iterating@1'],
+  ['python', 'if type(x) == dict: return x["a"]', 'type-eq-dict@1'],
+  ['go', 'for _, it := range items { it.Price *= 2 }', 'range-value-copy@1'],
+  ['go', 'go func() { wg.Add(1); defer wg.Done(); fetch(u) }()', 'wg-add-in-goroutine@1'],
+  ['rust', 'let mut g = state.lock().expect("poisoned"); fetch(url).await;', 'lock-across-await@1'],
+  ['sql', 'SELECT u.name, o.total FROM users u LEFT JOIN orders o ON o.user_id = u.id WHERE o.total > 50;', 'left-join-where-filter@1']])
+  ok(rules(c, lang).includes(want), want + ' in ' + lang + ': ' + c.slice(0, 60) + ' (got ' + rules(c, lang).join(',') + ')');
+for (const [lang, c] of [
+  ['python', 'for u in users[:]:\n    users.remove(u)'], ['python', 'for u in users:\n    keep.append(u)'],
+  ['python', 'if isinstance(x, dict):\n    return x["a"]'], ['python', 'for x in items:\n    print(x)'],
+  ['go', 'for _, it := range items {\n\tfmt.Println(it.Price)\n}'], ['go', 'for i := range items {\n\titems[i].Price *= 2\n}'],
+  ['go', 'var wg sync.WaitGroup\nwg.Add(1)\ngo func() {\n\tdefer wg.Done()\n\tfetch(u)\n}()'], ['go', 'wg.Wait()'],
+  ['rust', 'let mut g = state.lock().expect("x");\ndrop(g);\nfetch(url).await;'], ['rust', 'let n = 5;\nlet m = n;\nprintln!("{}", n);'],
+  ['sql', 'SELECT u.name, o.total FROM users u LEFT JOIN orders o ON o.user_id = u.id AND o.total > 50;'],
+  ['sql', 'SELECT u.name, o.total FROM users u LEFT JOIN orders o ON o.user_id = u.id WHERE u.id = 3;'],
+  ['sql', 'SELECT u.name FROM users u LEFT JOIN orders o ON o.user_id = u.id WHERE o.total IS NULL;']])
+  ok(!rules(c, lang).some((r) => /remove-while-iterating|type-eq-dict|range-value-copy|wg-add-in-goroutine|lock-across-await|left-join-where-filter/.test(r)), 'no finding in ' + lang + ': ' + c.slice(0, 60) + ' (got ' + rules(c, lang).join(',') + ')');
 // the pull-request review skips tests in every language the repo writes (their fixtures are bad code on purpose), and nothing else by accident
 for (const f of ['tools/ouroboros_test.py', 'tools/void_lens_test.py', 'tools/memory.test.mjs', 'tools/test_void.mjs', 'tools/skills_test.mjs', 'tools/tictactoe.test.mjs', 'tools/sub/helper_test.js', 'tools/test_glyphs.mjs'])
   ok(skippedInReview(f), 'a test file is not reviewed: ' + f);

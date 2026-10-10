@@ -38,7 +38,8 @@ export function pluralOf(word) {
 }
 export function wordsOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/["“”]/g, '');
-  let m = t.match(/^(?:what(?:['’]?s| is| are)\s+)?(?:a\s+|the\s+)?(?:synonyms?|another\s+word|other\s+words?|a\s+word|words?)\s+(?:for|of|that\s+means?|meaning|like)\s+([a-z' -]{2,30})$/);
+  let m = t.match(/^(?:(?:what(?:['’]?s| is| are)|i\s+(?:need|want)|can\s+you\s+(?:give\s+me\s+)?|give\s+me)\s+)?(?:a\s+|an\s+|the\s+)?(?:(?:fancy|better|nicer|simpler|different|other|politer|stronger|bigger|smaller|single|good|alternative|precise|posh)\s+)*(?:synonyms?|another\s+word|other\s+words?|a\s+word|words?)\s+(?:for|of|that\s+means?|meaning|like)\s+([a-z' -]{2,30})$/)
+    || t.match(/^(?:(?:what(?:['’]?s| is)\s+)?)(?:another|a different|some other)\s+way\s+to\s+say\s+([a-z' -]{2,30})$/); // "another way to say tired"
   if (m) return { kind: 'syn', word: m[1].trim() };
   m = t.match(/^(?:what(?:['’]?s| is)\s+)?(?:the\s+)?(?:opposite|antonyms?)\s+(?:of|for)\s+([a-z' -]{2,30})$/);
   if (m) return { kind: 'ant', word: m[1].trim() };

@@ -249,6 +249,16 @@ const RULES = [
     'this reads [i + 1] while range(len(xs)) stops at len(xs) - 1, so the last pass reads one past the end of the list (an off-by-one, out of bounds). Loop over range(len(xs) - 1), or pair neighbours with zip(xs, xs[1:]).'],
   ['dict-add-missing', 'bug', ['python'], (m) => /(\w+)\[([^\]]+)\]\s*=\s*\1\[\2\]\s*\+/.test(m),
     'the first time this key appears, d[k] on the right-hand side does not exist yet, so this raises KeyError. Count from what is there: d[k] = d.get(k, 0) + 1 (or use collections.Counter).'],
+  // thin-area probes: removing from the list you are looping over, comparing type(x) with ==
+  ['remove-while-iterating', 'bug', ['python'], (m, r, x) => {
+    const f = m.match(/^\s*for\s+\w+\s+in\s+([\w.]+)\s*:(.*)$/);
+    if (!f) return false;
+    const body = f[2] + '\n' + [x.next(1), x.next(2), x.next(3)].join('\n');
+    return new RegExp('\\b' + f[1].replace(/\./g, '\\.') + '\\s*\\.\\s*(?:remove|pop|insert|append|clear)\\s*\\(').test(body);
+  },
+    'changing the list you are looping over skips the item after each change, because the loop moves on while the list shifts under it. Loop over a copy (for u in users[:]:), or build a new list with the ones you keep.'],
+  ['type-eq-dict', 'style', ['python'], (m) => /\btype\s*\(\s*[\w.]+\s*\)\s*[=!]=/.test(m),
+    'comparing type(x) with == misses subclasses and matches anything that pretends to be that type. Use isinstance(x, dict) (it also takes a tuple of types).'],
   ['is-literal', 'bug', ['python'], (m) => /\bis\s+(?:not\s+)?(?:-?\d|['"])/.test(m),
     '"is" checks whether two things are the same object, not equal values, so it can be False for equal numbers or strings. Use == (keep "is" for None, True and False).'],
   ['eq-none', 'style', ['python'], (m) => /[=!]=\s*None\b/.test(m),
@@ -299,6 +309,13 @@ const RULES = [
     return +idx[1] >= n;
   },
     'this reads an index past the end of the vector (out of bounds): it panics at run time instead of returning anything. Check the length first, or use v.get(i), which gives None instead of crashing.'],
+  ['lock-across-await', 'risk', ['rust'], (m, r, x) => {
+    const l = m.search(/\.\s*(?:lock|read|try_lock|write)\s*\(\s*\)/);
+    if (l < 0) return false;
+    const after = m.slice(l) + '\n' + [x.nextRaw(1), x.nextRaw(2), x.nextRaw(3), x.nextRaw(4)].join('\n');
+    return /\.\s*await\b/.test(after) && !/\bdrop\s*\(/.test(after);
+  },
+    'a lock guard held across an await keeps the lock while this task sleeps and blocks every other task that wants it (and with a std Mutex the future may not even be Send). Copy the data out and drop the guard before awaiting.'],
   ['force-unwrap', 'risk', ['kotlin', 'swift'], (m, r, x) => x.lang === 'kotlin' ? /!!/.test(m) : /[\w)\]]!(?![=!])/.test(m.replace(/!=/g, '')),
     'a force unwrap (!! in Kotlin, ! in Swift) crashes the app when the value is null/nil. Handle the missing case: ?. with ?: in Kotlin, if let / guard let or ?? in Swift.'],
   ['string-eq', 'bug', ['java'], (m) => /[=!]=\s*"|"\s*[=!]=/.test(m),
@@ -364,6 +381,23 @@ const RULES = [
     'the error is logged but the code carries on with the failed result, so the next lines run on empty or half-filled data. Return the error (return err) or stop, instead of continuing with it.'],
   ['len-le-loop', 'bug', ['go'], (m) => /\bfor\b[^{]*<=\s*len\s*\(/.test(m),
     'the loop runs while i <= len(nums), but the length is len(nums) and the last valid index is one less, so the final pass reads out of bounds (an off-by-one that panics). Use i < len(nums).'],
+  // thin-area probes: writing to the range value (a copy), wg.Add inside the goroutine
+  ['range-value-copy', 'bug', ['go'], (m, r, x) => {
+    const names = (m.match(/\bfor\s+([^=]*?)\s*:?=\s*range\s+/) || [])[1];
+    if (!names) return false;
+    const v = names.split(',').pop().trim();
+    if (!/^[A-Za-z_]\w*$/.test(v) || v === '_') return false;
+    const body = m.slice(m.search(/\brange\s+/)) + '\n' + [x.next(1), x.next(2), x.next(3)].join('\n');
+    return new RegExp('\\b' + v + '\\s*\\.\\s*\\w+\\s*(?:[-+*/]|\\*\\*)?=(?!=)').test(body);
+  },
+    'the value in a for … := range loop is a copy of the element, so writing to it (it.Price = …, it.Price *= 2) changes the copy and the slice never changes. Use the index: for i := range items { items[i].Price *= 2 }.'],
+  ['wg-add-in-goroutine', 'bug', ['go'], (m, r, x) => {
+    const a = m.search(/\b\w+\s*\.\s*Add\s*\(\s*\d/);
+    if (a < 0) return false;
+    const before = x.prev() + '\n' + m.slice(0, a), lastGo = before.lastIndexOf('go func(');
+    return lastGo >= 0 && !/}\(\)/.test(before.slice(lastGo));
+  },
+    'wg.Add(1) inside the goroutine can run after wg.Wait() has already returned, so the wait finishes before the work starts. Raise the counter before the go statement: wg.Add(len(urls)) above the loop.'],
   ['go-race', 'risk', ['go'], (m, r, x) => /\bgo\s+func\s*\([^)]*\)\s*\{[^}]*?\b[\w.]+\s*(?:\+\+|--|[+\-*/]?=(?!=))/.test(x.statement()) && !/\b(?:Lock|RLock|atomic\.|chan\b|<-)/.test(x.statement()),
     'a goroutine changes a variable that other goroutines can also touch, with no lock: a data race, so counts come out wrong at random. Use sync.Mutex, sync/atomic (atomic.AddInt64), or send the change on a channel; go run -race finds these.'],
   ['rails-where-interp', 'risk', ['ruby'], (m, r) => /\.(?:where|find_by_sql|order|having|joins|select|group|pluck|exists\?)\s*\(\s*"[^"]*#\{/.test(r),
@@ -515,6 +549,15 @@ const RULES = [
     '= NULL is never true: NULL means unknown, so the whole comparison comes out unknown and the rows silently vanish. Use IS NULL (or IS NOT NULL).'],
   ['between-reversed', 'bug', ['sql'], (m) => { const k = m.match(/\bBETWEEN\s+(\d+(?:\.\d+)?)\s+AND\s+(\d+(?:\.\d+)?)\b/i); return !!k && +k[1] > +k[2]; },
     'BETWEEN 20 AND 10 is reversed, so it never matches and the query returns no rows (an empty result with no error). Swap the ends: BETWEEN 10 AND 20.'],
+  ['left-join-where-filter', 'risk', ['sql'], (m, r, x) => {
+    const j = m.match(/\b(?:LEFT|RIGHT)\s+(?:OUTER\s+)?JOIN\s+([\w."\[\]]+)\s+(?:(?:AS\s+)?(\w+)\s+)?ON\b/i);
+    if (!j) return false;
+    const table = j[1].replace(/["\[\]]/g, ''), alias = j[2] || table;
+    const w = (m + '\n' + x.next(1) + '\n' + x.next(2)).match(/\bWHERE\b([\s\S]*)$/i);
+    if (!w) return false;
+    return new RegExp('\\b' + alias + '\\s*\\.\\s*\\w+\\s*(?:=|!=|<>|<|>|<=|>=|\\bLIKE\\b|\\bIN\\b|\\bBETWEEN\\b)', 'i').test(w[1]);
+  },
+    'a WHERE condition on the joined table\'s column filters out the rows the LEFT JOIN was there to keep (an unmatched row comes back NULL), so it behaves as an INNER JOIN. Move the condition into the ON clause: LEFT JOIN orders o ON o.user_id = u.id AND o.total > 50.'],
   ['select-star', 'style', ['sql'], (m) => /\bSELECT\s+\*\s+FROM\b/i.test(m),
     'SELECT * returns every column, so the query breaks or slows down when columns are added. Name the columns you use.'],
   ['sql-concat', 'risk', ['*'], (m, r, x) => sqlPasted(r, x.lang),
