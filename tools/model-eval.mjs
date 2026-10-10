@@ -74,7 +74,7 @@ export const PROMPTS = [
   review('sql-concat', 'const q = "SELECT * FROM users WHERE name = \'" + req.query.name + "\'";\ndb.query(q);', /inject|parameteri[sz]|prepared|placeholder|bind/i),
   review('eval-input', 'app.post("/calc", (req, res) => {\n  res.send(String(eval(req.body.expr)));\n});', /eval/i),
   review('off-by-one', 'for (let i = 0; i <= items.length; i++) {\n  total += items[i].price;\n}', /off[- ]by[- ]one|<=|out of (range|bounds)|undefined|length/i),
-  review('hardcoded-secret', 'const API_KEY = "sk_live_9f8a7b6c5d4e3f2a1b0c";\nfetch(url, { headers: { Authorization: "Bearer " + API_KEY } });', /hard-?coded|secret|credential|environment variable|leak|commit/i),
+  review('hardcoded-secret', 'const API_KEY = "sk_live_9f8a7b6c5d4e3f2a1b0c";\nfetch(url, { headers: { Authorization: "Bearer " + API_KEY } });', /hard-?coded|secret|credential|environment variable|leak|commit/i), // void-review: ok (a made-up key: the planted bug the model should find)
   review('missing-await', 'async function save(user) {\n  db.insert(user);\n  return "saved";\n}', /await|promise|async/i),
   review('loose-equality', 'if (user.role == "admin" || user.id == 0) { grant(); }', /===|strict|loose|coerc/i),
   review('innerhtml', 'el.innerHTML = "<p>" + comment.text + "</p>";', /xss|innerhtml|sanit|escape|textcontent|inject/i),
