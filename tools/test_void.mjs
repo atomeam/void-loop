@@ -977,6 +977,13 @@ try {
     check('memory card: "what did I build with react" asks /api/memory?ask= with the owner bearer and shows each match with its tech, change and remote copy',
       /alpha \(React, py\)/.test(card) && /I remember 1 match/.test(card) && /no remote copy|backed up at/.test(card) && rows === 1 && /^Bearer owner-k$/.test(auth) && asked === 'react' && !M.errors.length, card.slice(0, 300) + ' | ' + auth + ' | ' + asked);
     await M.ctx.close(); }
+  { const P = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+    let auth = '';
+    await P.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'I remember 1 match:\n\u2022 mine (py): A tiny tool. \u00b7 no remote copy', matches: ['m'] })); });
+    await P.ask('what do you remember about python', 900);
+    const card = await P.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
+    check('memory card: a signed-in member (no owner key) sends their own session as the bearer and sees their answer', /mine \(py\)/.test(card) && /^Bearer member-session-token-/.test(auth) && !P.errors.length, card.slice(0, 200) + ' | ' + auth);
+    await P.ctx.close(); }
   { const N = await fresh(); let fetched = 0;
     await N.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { fetched++; return r.fulfill(json({ answer: 'x' })); });
     await N.ask('what did I build with react', 900);
