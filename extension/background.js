@@ -106,7 +106,7 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
     if (!tab || tab.tabId == null) return reply({ ok: false, why: 'no-tab' });
     const host = hostOf(tab.url);
     if (!host || !allow.includes(host) || host !== msg.host) return reply({ ok: false, why: 'not-allowed' });
-    const step = { action: msg.step.action, label: String(msg.step.label || '').slice(0, 120), text: String(msg.step.text || '').slice(0, 20000) };
+    const step = { action: msg.step.action, label: String(msg.step.label || '').slice(0, 120), text: String(msg.step.text || '').slice(0, 20000), box: msg.step.box === 'mine' ? 'mine' : undefined };
     try {
       const [r] = await chrome.scripting.executeScript({ target: { tabId: tab.tabId }, func: voidAct, args: [step] });
       reply((r && r.result) || { ok: false, why: 'no-result' });
