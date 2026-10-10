@@ -4,8 +4,9 @@
  * agate shooter. Built from code. Nothing is simulated here: every frame poses the marbles from the card's one state
  * (skills/ringer-rules.js), and the spin of a rolling marble is the distance it moved over its radius.
  * Drag to flick: press the shooter, pull back and let go (data.onPull(x, y) while pulling, data.onRelease() on letting go);
- * a tap on the dirt aims, and a drag anywhere else looks around.
- * data: { state: ringer state, or () => ringer state; onAim?(x, y), onPull?(x, y), onRelease?() (metres on the ground, ring centre 0,0) }
+ * a press inside the chalk ring aims (the camera holds still and a drag moves the aim, data.onAimEnd() on letting go), a tap on
+ * the dirt outside it aims too, and a drag there, in the space around, or with the right button looks around.
+ * data: { state: ringer state, or () => ringer state; onAim?(x, y), onAimEnd?(), onPull?(x, y), onRelease?() (metres on the ground, ring centre 0,0) }
  * (plain data works too, so the behaviour contract in tools/test_3d.mjs can drive it)
  */
 import { marbleLook } from '../figures.js';
@@ -97,7 +98,7 @@ export default async function build(ctx, data) {
   const thumbAt = (power) => -K * (1.6 + 1.6 * power); // the thumb's tip just behind the marble, drawn back as the power grows
   let handPose = { visible: false, back: 0 };
   const axis = new THREE.Vector3(), q = new THREE.Quaternion();
-  let sig = '', pulling = false;
+  let sig = '', pulling = false, aiming = false;
   function pose() {
     const s = stateOf(ctx.handle ? ctx.handle.data : data);
     if (!s || !s.marbles) return false;
@@ -132,7 +133,10 @@ export default async function build(ctx, data) {
     const d = ctx.handle.data; if (d.onAim) d.onAim(h.point.x, -h.point.z);
   });
   // drag to flick: a press on the shooter pulls it back (orbiting stops while pulling); the pointer's spot on the dirt goes to
-  // the card, which turns it into aim and power through the rules (ringer-rules.js pull), and letting go flicks
+  // the card, which turns it into aim and power through the rules (ringer-rules.js pull), and letting go flicks.
+  // Aiming wins over orbiting inside the chalk ring: a press there holds the camera, aims at once and a drag keeps aiming, so
+  // a finger that wobbles while tapping no longer spins the board away; the dirt band outside the ring and the space around
+  // it still look around, and so does the right button anywhere
   const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), 0), ray = new THREE.Raycaster(), hit = new THREE.Vector3(), ndc = new THREE.Vector2();
   const onGround = (e) => {
     const r = ctx.canvas.getBoundingClientRect();
@@ -145,26 +149,30 @@ export default async function build(ctx, data) {
     if (e.button > 0) return;
     const s = stateOf(ctx.handle.data), shooter = marbles.children[0];
     if (!s || s.phase !== 'aim' || s.over || !shooter) return;
-    const hits = ctx.pick(e.clientX, e.clientY, [shooter]) || [];
-    if (!hits.length) return; // not on the shooter: a tap aims, a drag looks around
+    const onShooter = (ctx.pick(e.clientX, e.clientY, [shooter]) || []).length > 0;
+    const p = onShooter ? null : onGround(e);
+    if (!onShooter && !(p && Math.hypot(p[0], p[1]) <= R.RING)) return; // outside the ring: a tap aims, a drag looks around
     e.stopPropagation(); e.preventDefault();
     if (ctx.controls) ctx.controls.enabled = false;
-    pulling = true; ctx.canvas.style.cursor = 'grabbing'; if (pose()) ctx.requestRender();
+    if (onShooter) { pulling = true; ctx.canvas.style.cursor = 'grabbing'; if (pose()) ctx.requestRender(); }
+    else { aiming = true; const d = ctx.handle.data; if (d.onAim) d.onAim(p[0], p[1]); }
     addEventListener('pointermove', move); addEventListener('pointerup', up); addEventListener('pointercancel', up);
   };
   const move = (e) => {
-    if (!pulling) return;
+    if (!pulling && !aiming) return;
     const p = onGround(e), d = ctx.handle.data;
-    if (p && d.onPull) d.onPull(p[0], p[1]);
+    if (p && pulling && d.onPull) d.onPull(p[0], p[1]);
+    if (p && aiming && d.onAim) d.onAim(p[0], p[1]);
   };
   const up = (e) => {
-    if (!pulling) return;
+    if (!pulling && !aiming) return;
     removeEventListener('pointermove', move); removeEventListener('pointerup', up); removeEventListener('pointercancel', up);
-    pulling = false; ctx.canvas.style.cursor = ''; if (pose()) ctx.requestRender();
+    const wasPulling = pulling; pulling = false; aiming = false; ctx.canvas.style.cursor = ''; if (pose()) ctx.requestRender();
     if (ctx.controls) ctx.controls.enabled = true;
     const d = ctx.handle.data;
-    if (e.type === 'pointerup' && d.onRelease) d.onRelease();
+    if (wasPulling) { if (e.type === 'pointerup' && d.onRelease) d.onRelease(); } else if (d.onAimEnd) d.onAimEnd();
   };
+  if (ctx.controls) ctx.controls.mouseButtons.RIGHT = ctx.THREE.MOUSE.ROTATE; // pan is off, so the right button looks around too
   host.addEventListener('pointerdown', down, { capture: true });
 
   ctx.addContactShadow({ y: 0.0008, size: G * 2.4, opacity: 0.55, blur: 2.4, darkness: 0.8, exclude: [ground, ring] });
