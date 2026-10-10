@@ -6291,18 +6291,22 @@ return { ok: true, detail: 'timer-reset' };
 
     // Voice: tap and talk. A plain mic button on arrival; on Chrome 153+ the <microphone> element (browser-owned permission
     // + stream) replaces it after the first tap. No recognition -> no mic at all.
+    // Frontier #16: or hold Space (not while typing) and let go to ask; an ask that came by voice is answered out loud in
+    // Void's one low voice, sentence by sentence (lib/speak.js), spoken in this browser.
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-    let voiceRec = null, voiceStream = null;
+    let voiceRec = null, voiceStream = null, speak = null;
+    import('/lib/speak.js').then((m) => { speak = m; }).catch(() => {});
     function voiceEnd() {
       const m = document.getElementById('mic'); if (m) m.classList.remove('listening');
       if (voiceStream) { try { voiceStream.getTracks().forEach((t) => t.stop()); } catch (_) {} voiceStream = null; }
       voiceRec = null;
     }
-    function voiceListen(track) {
+    function voiceListen(track, opts = {}) {
       if (voiceRec) { try { voiceRec.stop(); } catch (_) {} return; }
+      if ('speechSynthesis' in window) speechSynthesis.cancel(); // talking over Void stops it
       const rec = new SpeechRec();
       rec.lang = navigator.language || 'en-US';
-      rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 1;
+      rec.interimResults = true; rec.continuous = !!opts.hold; rec.maxAlternatives = 1; // held: listens until the key is let go
       if (voiceLocal) { try { rec.processLocally = true; } catch (_) {} }
       let heard = '';
       rec.onresult = (e) => {
@@ -6315,7 +6319,7 @@ return { ok: true, detail: 'timer-reset' };
         voiceEnd();
         const ask = (heard || '').trim();
         if (whisper.textContent === 'listening') whisper.textContent = '';
-        if (ask) { input.value = ''; drawHints(); loopLog({ domain: 'void.voice', ask, score: 'pass', note: 'voice' }); handle(ask); }
+        if (ask) { input.value = ''; drawHints(); loopLog({ domain: 'void.voice', ask, score: 'pass', note: 'voice' }); const sr0 = (document.getElementById('sr-say') || {}).textContent || ''; Promise.resolve(handle(ask)).then(() => replyAloud(sr0, ask), () => {}); }
       };
       voiceRec = rec;
       const m = document.getElementById('mic'); if (m) m.classList.add('listening');
@@ -6348,6 +6352,61 @@ return { ok: true, detail: 'timer-reset' };
         voiceListen(null);
       });
       go0.before(plain);
+      plain.title = 'Talk (or hold Space)';
+      // hold Space to talk: a tap stays a tap (HOLD_MS), letting go asks
+      let holdTimer = 0, holding = false;
+      document.addEventListener('keydown', (e) => {
+        if (!speak) return;
+        const typing = /^(INPUT|TEXTAREA)$/.test((e.target && e.target.tagName) || '') || (e.target && e.target.isContentEditable);
+        if (!speak.holdKey(e, typing)) { if (e.repeat && (holdTimer || holding) && e.code === 'Space') e.preventDefault(); return; }
+        e.preventDefault();
+        if (holdTimer || holding) return;
+        holdTimer = setTimeout(() => { holdTimer = 0; holding = true; if (voiceRec) { try { voiceRec.abort(); } catch (_) {} voiceEnd(); } voiceListen(null, { hold: true }); }, speak.HOLD_MS);
+      });
+      document.addEventListener('keyup', (e) => {
+        if (e.code !== 'Space' && e.key !== ' ') return;
+        if (holdTimer) { clearTimeout(holdTimer); holdTimer = 0; return; }
+        if (holding) { holding = false; e.preventDefault(); if (voiceRec) { try { voiceRec.stop(); } catch (_) {} } }
+      });
+    }
+    // Void's voice: say a card's text in the one low voice, the first sentence at once and the rest queued behind it
+    function sayAloud(text) {
+      if (!speak || !('speechSynthesis' in window)) return false;
+      const parts = speak.chunks(text); if (!parts.length) return false;
+      speechSynthesis.cancel();
+      const voice = speak.pickVoice(speechSynthesis.getVoices(), navigator.language || 'en-US');
+      for (const part of parts) {
+        const u = new SpeechSynthesisUtterance(part);
+        if (voice) u.voice = voice;
+        u.lang = (voice && voice.lang) || navigator.language || 'en-US'; u.pitch = speak.VOICE.pitch; u.rate = speak.VOICE.rate;
+        speechSynthesis.speak(u);
+      }
+      return true;
+    }
+    // after an ask that came by voice: wait for its card to settle (an answer says "thinking…" first), then say what it shows;
+    // a summon says what arrived on the stage (the line read to screen readers), else the whisper line, if there is one
+    async function replyAloud(sr0 = '', ask = '') {
+      const read = () => { const pg = document.querySelector('.vpage.on'); return pg ? pg.innerText || '' : (whisper.textContent || '') + '\n' + ((document.getElementById('sr-say') || {}).textContent || ''); };
+      const t0 = Date.now(); let last = null, still = 0;
+      while (Date.now() - t0 < 15000 && still < 3) {
+        await new Promise((r) => setTimeout(r, 150));
+        const now = read(), sr1 = (document.getElementById('sr-say') || {}).textContent || '';
+        if (!document.querySelector('.vpage.on') && sr1 && sr1 !== sr0 && /^added: /.test(sr1)) break; // a summon: say it as it lands
+        if (/thinking…|looking up|reading the page/.test(now + ' ' + whisper.textContent)) { still = 0; continue; }
+        if (now === last) still += 1; else { last = now; still = 0; }
+      }
+      const pg = document.querySelector('.vpage.on');
+      const sr = (document.getElementById('sr-say') || {}).textContent || '';
+      let text = sr && sr !== sr0 ? sr.replace(/^added: /, 'Added: ') : whisper.textContent || '';
+      if (pg) {
+        const c = pg.cloneNode(true);
+        c.querySelectorAll('.src, .sub, script, style, iframe, button, pre, code, input, textarea').forEach((n) => n.remove());
+        const said = (n) => (n.textContent || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
+        c.querySelectorAll('h1, h2').forEach((n) => { if (said(n) === said({ textContent: ask })) n.remove(); else n.append('. '); }); // the ask itself is not read back
+        c.querySelectorAll('li, tr').forEach((n) => n.append('. ')); c.querySelectorAll('p, div, h3, h4, br').forEach((n) => n.append(' '));
+        text = c.textContent || '';
+      }
+      sayAloud(text);
     }
 
     // Read aloud: "read it aloud" reads the open page; "stop" while reading stops it.
