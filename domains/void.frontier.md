@@ -73,7 +73,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** summons have lives between visits.
 - **First piece:** a pure `advance(things, ms)` in `skills/scripts.js` with tests, run once on load against the last-saved time.
 - **Done when:** three natures change visibly across a reload an hour apart, deterministically, with the note.
-- **claim:**
+- **claim:** **Claim (claude, helper/advance, 2026-10-10):** the first piece: a pure `advance(things, ms)` in `skills/scripts.js` that moves every summoned thing forward by `ms` of simulated time from `NATURES`, `CONDITIONS` and `climateAt`, deterministic from each thing's seed; run once on load against the last-saved time; a one-line "while you were away" note from what changed. Tests in `tools/advance.test.mjs`; a suite check summons a cloud and a flower, fakes the saved time back an hour, reloads and sees the note. **Next step:** shipped PR number goes here when it merges.
 
 ## 5. Void learns its games by playing itself
 - **What:** a self-play arena (`tools/arena.mjs`) for the games Void already plays (Connect Four, Othello, Go, checkers, poker): two versions of Void play each other, the stronger one is kept, and its rating goes in the ledger as a `build` entry. "How good are you at Go?" answers with the curve.
