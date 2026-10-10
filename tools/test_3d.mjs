@@ -504,6 +504,23 @@ export async function run3dChecks({ check, fresh }) {
     check('two boards on a 1280 stage: chess then checkers, the chess board moves aside shrunk (its card with it) and neither overlaps; a tap on the small chess board brings it back to full size and checkers shrinks instead',
       shrunk.stageW === 1280 && !!shrunk.chess && shrunk.chess.small && !shrunk.checkers.small && !shrunk.overlap && !!smallAt && back.chess && !back.chess.small && back.chess.w >= 500 && back.checkers.small && !back.overlap && !F.errors.length,
       JSON.stringify({ shrunk, back, e: F.errors }));
+    // keyboard only: the small board is a button in the tab order, "Restore Checkers"; Enter swaps the boards, focus follows to
+    // the one that just shrank ("Restore Chess"), and Space swaps them back, with each swap read out
+    const focused = () => F.p.evaluate(() => { const a = document.activeElement; return a ? { id: (a.dataset && a.dataset.id) || '', role: a.getAttribute('role'), label: a.getAttribute('aria-label') || '', small: a.classList.contains('shrunk') } : null; });
+    await F.p.evaluate(() => { if (document.activeElement) document.activeElement.blur(); });
+    let reached = null;
+    for (let i = 0; i < 80 && !reached; i++) { await F.p.keyboard.press('Tab'); const f = await focused(); if (f && f.small && f.id.startsWith('checkers_')) reached = f; }
+    if (reached) await F.p.keyboard.press('Enter');
+    const afterEnter = await until(async () => { const s = await boards(); const f = await focused(); return s.checkers && !s.checkers.small && s.chess && s.chess.small && f && f.small && f.id.startsWith('chess_') ? { s, f } : false; }, 8000) || { s: await boards(), f: await focused() };
+    const said1 = await F.p.evaluate(() => document.getElementById('sr-say').textContent);
+    if (afterEnter.f && afterEnter.f.small) await F.p.keyboard.press(' ');
+    const afterSpace = await until(async () => { const s = await boards(); return s.chess && !s.chess.small && s.checkers && s.checkers.small ? s : false; }, 8000) || await boards();
+    const plain = await F.p.evaluate(() => { const e = [...document.querySelectorAll('#stage > .thing[data-id]')].find((x) => x.dataset.id.startsWith('chess_')); return e ? { role: e.getAttribute('role'), label: e.getAttribute('aria-label') } : null; });
+    check('keyboard only: the small board is a button in the tab order labelled "Restore Checkers"; Enter brings it back and focus moves to the chess board that just shrank ("Restore Chess"), Space swaps them back, each swap is read out, and a full-size board is no longer a restore button',
+      !!reached && reached.role === 'button' && reached.label === 'Restore Checkers' && afterEnter.f && afterEnter.f.label === 'Restore Chess' && !afterEnter.s.overlap
+      && /Checkers is back to full size; Chess is small now/.test(said1) && afterSpace.chess && !afterSpace.chess.small && afterSpace.checkers.small && !afterSpace.overlap
+      && plain && plain.role !== 'button' && !/^Restore/.test(plain.label || '') && !F.errors.length,
+      JSON.stringify({ reached, afterEnter: afterEnter.f, said1, afterSpace: { chess: afterSpace.chess && afterSpace.chess.small, checkers: afterSpace.checkers && afterSpace.checkers.small }, plain, e: F.errors }));
     // questions about chess are still questions (they open a page, which would cover the boards, so they come last)
     await F.ask('who invented chess', 400); await F.ask('chess rules', 400); await F.ask('checkers rules', 400);
     const after = await F.p.evaluate(() => ({ chess: document.querySelectorAll('.chess-card').length, checkers: document.querySelectorAll('.checkers-card').length }));

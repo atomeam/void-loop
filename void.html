@@ -417,6 +417,7 @@
     @keyframes auraDrift { to { transform: translate(3%, -2%) scale(1.08); } }
     #stage { perspective: 1400px; }
     #stage > .shrunk, #stage > .shrunk * { cursor: zoom-in; } /* a board shrunk beside a newer one: a tap brings it back */
+    #stage > .thing.shrunk:focus-visible { outline: calc(3px / var(--sc, 1)) solid #ffe2a1; outline-offset: calc(4px / var(--sc, 1)); } /* the outline shrinks with the board: divided by its scale, it shows at 3px */
     .thing { transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
       transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .35s ease; filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); }
     .thing.lift { --tz: 18px; filter: drop-shadow(0 26px 40px rgba(0,0,0,.55)) drop-shadow(0 0 14px rgba(140,170,255,.18)); }
@@ -835,19 +836,48 @@ Object.values(things).forEach((th) => {
     function placeThing(th) {
       const el = stage.querySelector(':scope > .thing[data-id="' + CSS.escape(th.id) + '"]'), side = stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(th.id) + '"]');
       const s = th.scale < 1 ? th.scale : 1;
-      for (const n of [el, side]) if (n) { n.style.transformOrigin = s < 1 ? '0 0' : ''; n.style.scale = s < 1 ? String(s) : ''; n.classList.toggle('shrunk', s < 1); }
-      if (el) { el.style.left = th.x + 'px'; el.style.top = th.y + 'px'; }
+      for (const n of [el, side]) if (n) { n.style.transformOrigin = s < 1 ? '0 0' : ''; n.style.scale = s < 1 ? String(s) : ''; n.style.setProperty('--sc', String(s)); n.classList.toggle('shrunk', s < 1); }
+      if (el) { el.style.left = th.x + 'px'; el.style.top = th.y + 'px'; asRestoreButton(el, th, s < 1); }
       if (side && th.card) { side.style.left = th.card.x + 'px'; side.style.top = th.card.y + 'px'; }
+    }
+    // a shrunk board is a button for the keyboard and screen readers too: "Restore Chess", in the tab order, Enter or Space
+    const boardName = (th, el) => { const g = el.querySelector('.board-grip'); const t = ((g && g.textContent) || th.kind || 'board').replace(/^[^\p{L}\p{N}]+/u, '').trim(); return t.charAt(0).toUpperCase() + t.slice(1).toLowerCase(); };
+    function asRestoreButton(el, th, on) {
+      if (on) {
+        if (!el.dataset.restore) el.dataset.restore = JSON.stringify({ tab: el.getAttribute('tabindex'), role: el.getAttribute('role'), label: el.getAttribute('aria-label') }); // what it had before, put back on restore
+        el.setAttribute('tabindex', '0'); el.setAttribute('role', 'button'); el.setAttribute('aria-label', 'Restore ' + boardName(th, el));
+      } else if (el.dataset.restore) {
+        const was = JSON.parse(el.dataset.restore); delete el.dataset.restore;
+        for (const [k, v] of [['tabindex', was.tab], ['role', was.role], ['aria-label', was.label]]) { if (v == null) el.removeAttribute(k); else el.setAttribute(k, v); }
+      }
+    }
+    // the board comes back to full size where it stood and holds that spot; the board in front of it moves or shrinks
+    function restoreThing(id, byKey) {
+      const th = things[id]; if (!th || !(th.scale < 1)) return;
+      const g = th.geo, home = th.home || { x: th.x - g.bx * th.scale, y: th.y - g.by * th.scale };
+      th.x = Math.round(home.x + g.bx); th.y = Math.round(home.y + g.by); if (th.card) th.card = { x: Math.round(home.x + g.sx), y: Math.round(home.y + g.sy) };
+      delete th.scale; delete th.geo; delete th.home;
+      placeThing(th); centred.add(id); save();
+      requestAnimationFrame(() => {
+        layoutStage();
+        if (!byKey) return;
+        // from the keyboard: say what happened, and put focus on the board that just shrunk, so Enter swaps them back
+        const other = stage.querySelector(':scope > .thing.shrunk[role="button"]'), sr = document.getElementById('sr-say'), el = stage.querySelector(':scope > .thing[data-id="' + CSS.escape(id) + '"]');
+        if (sr) sr.textContent = (el ? boardName(th, el) : 'The board') + ' is back to full size' + (other ? '; ' + other.getAttribute('aria-label').replace(/^Restore /, '') + ' is small now: press Enter on it to swap' : '');
+        if (other) other.focus(); else if (el) { el.setAttribute('tabindex', '-1'); el.focus(); }
+      });
     }
     let swallowClick = 0;
     stage.addEventListener('pointerdown', (e) => {
       const n = e.target.closest && e.target.closest('.thing[data-id], .side-card[data-of]'), id = n && (n.dataset.id || n.dataset.of), th = id && things[id];
       if (!th || !(th.scale < 1)) return;
       e.stopPropagation(); e.preventDefault(); swallowClick = Date.now() + 700; // the tap brings it back; it doesn't also play a move
-      const g = th.geo, home = th.home || { x: th.x - g.bx * th.scale, y: th.y - g.by * th.scale };
-      th.x = Math.round(home.x + g.bx); th.y = Math.round(home.y + g.by); if (th.card) th.card = { x: Math.round(home.x + g.sx), y: Math.round(home.y + g.sy) };
-      delete th.scale; delete th.geo; delete th.home;
-      placeThing(th); centred.add(id); save(); requestAnimationFrame(() => layoutStage()); // it holds its spot again; the board in front of it moves or shrinks
+      restoreThing(id, false);
+    }, true);
+    stage.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      const n = e.target.closest && e.target.closest('.thing.shrunk[data-id]'); if (!n || n !== e.target) return;
+      e.preventDefault(); e.stopPropagation(); restoreThing(n.dataset.id, true);
     }, true);
     stage.addEventListener('click', (e) => { if (Date.now() < swallowClick) { e.stopPropagation(); e.preventDefault(); swallowClick = 0; } }, true);
     const sizeWatch = typeof ResizeObserver === 'function' ? new ResizeObserver((entries) => {
