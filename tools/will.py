@@ -7,7 +7,7 @@ domains/void.frontier.md (the one build order since 2026-10-11), every project o
 to Void itself, and ideas from everything that passed through Void as input (domains/inputs/*/records.jsonl,
 tagged with their source, e.g. growth-ledger-backlog). Rule for all of them: use what already exists before building.
 Void picks 3 wants in its own words (/api/will), saves them, and queues the top one for the builders.
-Needs env VOID_MISSES_TOKEN.  `python tools/will.py --candidates [--all]` prints the candidate list only (--all = before the top-60 cut; no network without the token).
+Needs env VOID_MISSES_TOKEN (VOID_MISSES_FILE = a saved copy of /api/misses, for tests).  `python tools/will.py --candidates [--all]` prints the candidate list only (--all = before the top-60 cut; no network without the token).
 """
 import json, os, re, sys, urllib.request, pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -27,12 +27,30 @@ def call(path, body=None):
     req = urllib.request.Request("https://a-to-mind.com" + path, data=json.dumps(body).encode() if body is not None else None, headers=H, method="POST" if body is not None else "GET")
     return json.load(urllib.request.urlopen(req, timeout=90))
 
+MISS_DAYS = 7  # lib/learn.js DAYS
+
+def recent(last, days=MISS_DAYS, now=None):
+    """True when a miss's last time is within the last `days` days (an unreadable time counts as old)."""
+    import datetime
+    try:
+        t = datetime.datetime.fromisoformat(str(last).replace("Z", "+00:00").replace(" ", "T"))
+    except Exception:
+        return False
+    if t.tzinfo is None:
+        t = t.replace(tzinfo=datetime.timezone.utc)
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    return (now - t).days < days
+
 def gather(cap=60, with_done=False):
     cands = []
     # 1. what people asked for and Void couldn't do
     try:
         import subprocess
-        misses = [m for m in call("/api/misses")[:40] if not str(m.get("fallback", "")).startswith("skill:")]
+        # only asks still being missed this week (the same window as lib/learn.js DAYS): the board counts all time, so an ask
+        # the page learned to answer since (e.g. "add milk", now the inline list) would otherwise stay a want forever
+        mf = os.environ.get("VOID_MISSES_FILE", "")
+        board = json.loads(pathlib.Path(mf).read_text(encoding="utf-8")) if mf else call("/api/misses")
+        misses = [m for m in board[:40] if not str(m.get("fallback", "")).startswith("skill:") and recent(m.get("last"))]
         covered = json.loads(subprocess.run(["node", str(ROOT / "tools" / "covered.mjs")], input=json.dumps([m["ask"] for m in misses]), capture_output=True, text=True, timeout=60).stdout or "[]")
         for m, done in zip(misses, covered + [False] * len(misses)):
             if not done and len(m["ask"]) > 4 and not NOISE.match(str(m["ask"]).strip()):
