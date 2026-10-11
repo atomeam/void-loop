@@ -103,6 +103,7 @@ for (const [name, file] of [
   ['placement', 'placement.test.mjs'],
   ['skills-index', 'skills-index.test.mjs'],
   ['heavy', 'heavy.test.mjs'],
+  ['clef-probe', 'clef-probe.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
