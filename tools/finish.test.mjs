@@ -14,6 +14,10 @@ test('parseArgs takes the kind, what changed and the flags, and refuses what it 
   assert.equal(parseArgs(['fix', 'x', '--from', 'nope']).from, 0);
   assert.deepEqual(parseArgs(['fix', 'x', '--test', 'shop this list', '--test', '3d monopoly']).tests, ['shop this list', '3d monopoly']);
   assert.equal(parseArgs(['fix', 'x', '--body', 'Co-Authored-By: a']).body, 'Co-Authored-By: a');
+  const st = parseArgs(['grow', 'x', '--show', 'sticky notes look like real paper', '--try', 'sticky note buy milk']);
+  assert.deepEqual([st.show, st.try], ['sticky notes look like real paper', 'sticky note buy milk']);
+  assert.deepEqual(steps(st)[1][1][1].slice(-4), ['--show', 'sticky notes look like real paper', '--try', 'sticky note buy milk'], 'they go on the ledger line');
+  assert.ok(!steps(parseArgs(['grow', 'x']))[1][1][1].includes('--show'), 'and only when given');
 });
 
 test('the log line has the log\'s own shape', () => {

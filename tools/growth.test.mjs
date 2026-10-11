@@ -54,6 +54,9 @@ test('grow.mjs: entries are checked, appended one per line, and the real ledger 
   assert.match(entryProblem({ at: '2026-10-09T15:00:00Z', by: 'claude', kind: 'grow', what: ' ' }), /"what"/);
   assert.match(entryProblem({ at: '2026-10-09T15:00:00Z', by: 'claude', kind: 'grow', what: 'x', ref: 'http://x' }), /"ref"/);
   assert.match(entryProblem({ at: '2026-10-09T15:00:00Z', by: 'claude', kind: 'grow', what: 'x', extra: 1 }), /unknown field/);
+  assert.equal(entryProblem({ at: '2026-10-09T15:00:00Z', by: 'claude', kind: 'grow', what: 'x', show: 'sticky notes look like real paper', try: 'sticky note buy milk' }), null);
+  assert.match(entryProblem({ at: '2026-10-09T15:00:00Z', by: 'claude', kind: 'grow', what: 'x', show: 'x'.repeat(71) }), /"show"/);
+  assert.match(entryProblem({ at: '2026-10-09T15:00:00Z', by: 'claude', kind: 'grow', what: 'x', try: 'two\nasks' }), /"try"/);
   const e = { at: '2026-10-09T15:00:00Z', by: 'claude', kind: 'fix', what: 'y' };
   assert.equal(appendTo('[\n]\n', e), '[\n  {"at": "2026-10-09T15:00:00Z", "by": "claude", "kind": "fix", "what": "y"}\n]\n');
   assert.equal(JSON.parse(appendTo('[\n  {"a": 1}\n]\n', e)).length, 2);

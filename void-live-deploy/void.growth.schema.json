@@ -15,6 +15,8 @@
       "what": { "type": "string", "minLength": 1, "maxLength": 4000, "description": "What changed, in plain words." },
       "ref": { "type": "string", "pattern": "^https://", "description": "Optional link: the PR, commit or page." },
       "from": { "type": "string", "description": "Optional: where a backfilled entry was copied from." },
+      "show": { "type": "string", "minLength": 1, "maxLength": 70, "description": "Optional: the change in a few plain words for people, not agents (\"sticky notes look like real paper\"); the \"look what I made\" walkthrough reads it (skills/showcase.js)." },
+      "try": { "type": "string", "minLength": 1, "maxLength": 120, "description": "Optional: an ask that shows the change on the stage (\"sticky note buy milk\"); the walkthrough runs it." },
       "asked": { "type": "string", "minLength": 1, "description": "Optional: the id of the ask of Void's this answers (ask-YYYYMMDD-HHMM-n, shown in domains/void.voice.md; the ask's exact words also match, for older entries); tools/reflect.mjs leaves an answered ask out of the current list." }
     }
   }

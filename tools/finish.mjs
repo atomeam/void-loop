@@ -2,7 +2,9 @@
 // order, stopping at the first that fails, so no run forgets one and none is done by hand.
 //   node tools/finish.mjs <kind> "what changed, in plain words" [--log "the agent-log line, if it should say more"]
 //        [--by claude] [--title "commit and PR title"] [--brief "who it is for; the problem; what it will not build"] [--body "more commit message"]
-//        [--test "<browser-suite words>"]... [--dry] [--from N]
+//        [--test "<browser-suite words>"]... [--show "the change in plain words"] [--try "an ask that shows it"] [--dry] [--from N]
+// --show and --try go on the ledger line, so the "look what I made" walkthrough can put the change on the stage the next
+// time someone comes back (skills/showcase.js); a grow or build that reaches the site without --try is reminded.
 // kinds are the ledger's: grow, build, fix, retire, idea, finding (tools/grow.mjs).
 //   0. first shot (owner, 2026-10-11: automerge lands a PR before the full suite runs on main, so it has to be right before
 //      the push): when the change touches the page or anything the site runs (void.html, void-live-deploy/), each --test
@@ -33,7 +35,7 @@ export function parseArgs(argv) {
   if (!what || what.startsWith('--')) return { error: 'say what changed, in quotes: node tools/finish.mjs build "the tide card shows the next three tides"' };
   if (/[\r\n]/.test(what)) return { error: 'what changed is one line' };
   const tests = rest.flatMap((x, i) => (x === '--test' && rest[i + 1] && !rest[i + 1].startsWith('--') ? [rest[i + 1]] : []));
-  return { kind, what, by: opt('--by') || 'claude', log: opt('--log') || what, title: opt('--title') || what, brief: opt('--brief'), body: opt('--body'), tests, dry: rest.includes('--dry'), from: Math.max(0, Number.isFinite(Number(opt('--from'))) && opt('--from') !== '' ? Number(opt('--from')) : 0) };
+  return { kind, what, by: opt('--by') || 'claude', log: opt('--log') || what, title: opt('--title') || what, brief: opt('--brief'), body: opt('--body'), show: opt('--show'), try: opt('--try'), tests, dry: rest.includes('--dry'), from: Math.max(0, Number.isFinite(Number(opt('--from'))) && opt('--from') !== '' ? Number(opt('--from')) : 0) };
 }
 
 /** the changed files that reach the site: the page and its copies, skills, the server and its shared code. Pure. */
@@ -73,7 +75,7 @@ export function prBody({ what, brief, kind, tests }) {
 export function steps(a) {
   return [
     ['first shot: the browser check', () => firstShot(a)],
-    ['ledger line', node('grow.mjs', a.kind, a.what, '--by', a.by)],
+    ['ledger line', node('grow.mjs', a.kind, a.what, '--by', a.by, ...(a.show ? ['--show', a.show] : []), ...(a.try ? ['--try', a.try] : []))],
     ['agent-log line', () => { appendFileSync(LOG, logLine(a) + '\n'); return 0; }],
     ['map covers everything', [process.execPath, ['--test', '--test-reporter=dot', resolve(root, 'tools', 'map-coverage.test.mjs')]]],
     ['commit', () => (git('add', '-A') || git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : [])))],
@@ -104,7 +106,8 @@ function openPr(a) {
 
 function main(argv) {
   const a = parseArgs(argv.slice(2));
-  if (a.error) { console.error('finish: ' + a.error + '\nusage: node tools/finish.mjs <kind> "what changed" [--log "..."] [--by claude] [--title "..."] [--brief "..."] [--body "..."] [--test "<words>"]... [--dry] [--from N]'); return 2; }
+  if (a.error) { console.error('finish: ' + a.error + '\nusage: node tools/finish.mjs <kind> "what changed" [--log "..."] [--by claude] [--title "..."] [--brief "..."] [--body "..."] [--test "<words>"]... [--show "..."] [--try "..."] [--dry] [--from N]'); return 2; }
+  if (!a.try && (a.kind === 'grow' || a.kind === 'build') && a.from === 0) console.log('finish: no --try: the "look what I made" walkthrough cannot show this one on the stage (add --show "plain words" --try "an ask that shows it" if people can see it)');
   for (const [i, [label, step]] of steps(a).entries()) {
     const shown = typeof step === 'function' ? '' : ': ' + [step[0] === process.execPath ? 'node' : step[0], ...step[1].map((x) => x.replace(root + '/', ''))].join(' ');
     console.log(`\n[${i}/8] ${label}${shown}`);
