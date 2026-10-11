@@ -37,7 +37,16 @@ function mount(th, stageApi) {
   const again = document.createElement('button'); again.type = 'button'; again.className = 'g-btn c4-new'; again.textContent = 'New game';
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
   again.addEventListener('click', (e) => { e.stopPropagation(); clearTimeout(timers.get(th)); th.state = K.create(); save(); paint(); });
-  const log = document.createElement('div'); log.className = 'c4-log'; log.style.cssText = 'font-size:11.5px;color:var(--muted,#8a8a8a);max-height:110px;overflow:auto;border-top:1px solid rgba(255,255,255,.08);padding-top:4px;margin-top:6px';
+  // the move log: the latest move and its reason up front, the earlier ones folded under it (a thin dark scrollbar when open)
+  const log = document.createElement('div'); log.className = 'c4-log'; log.style.cssText = 'border-top:1px solid rgba(255,255,255,.08);padding-top:6px;margin-top:6px';
+  const latest = document.createElement('div'); latest.className = 'c4-latest'; latest.style.cssText = 'font-size:13px;line-height:1.4;color:var(--ink,#ddd)';
+  const earlier = document.createElement('details'); earlier.className = 'c4-earlier'; earlier.style.cssText = 'margin-top:4px;font-size:11.5px;color:var(--muted,#8a8a8a)';
+  const sum = document.createElement('summary'); sum.style.cssText = 'cursor:pointer;list-style-position:inside';
+  sum.addEventListener('pointerdown', (e) => e.stopPropagation());
+  const past = document.createElement('div'); past.className = 'c4-past';
+  past.style.cssText = 'max-height:96px;overflow-y:auto;padding:2px 6px 6px 0;margin-top:2px;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent;overscroll-behavior:contain';
+  earlier.append(sum, past); log.append(latest, earlier);
+  if (!document.getElementById('c4-style')) { const st = document.createElement('style'); st.id = 'c4-style'; st.textContent = '.c4-past::-webkit-scrollbar{width:6px}.c4-past::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:6px}.c4-past::-webkit-scrollbar-track{background:transparent}.c4-past::-webkit-scrollbar-button{display:none}'; document.head.appendChild(st); }
   const save = () => stageApi.save && stageApi.save();
   function voidPlays() {
     clearTimeout(timers.get(th));
@@ -48,8 +57,13 @@ function mount(th, stageApi) {
     const s = th.state, line = s.over && s.over !== 'draw' ? K.winLine(s.board, s.over === 'you' ? 1 : 2) || [] : [];
     s.board.forEach((v, i) => { holes[i].style.background = v === 1 ? '#e0303e' : v === 2 ? '#f2c230' : '#0d1a33'; holes[i].style.boxShadow = line.includes(i) ? '0 0 0 3px #fff' : ''; });
     status.textContent = s.over === 'you' ? 'You win! Four in a row' : s.over === 'void' ? 'Void wins this one' : s.over === 'draw' ? 'A draw' : s.turn === 1 ? 'Your move: pick a column' : 'Void is thinking…';
-    log.textContent = '';
-    for (const l of s.log.slice(-10).reverse()) { const d = document.createElement('div'); d.textContent = l.who + ' ' + l.text; if (l.why) { const w = document.createElement('span'); w.style.color = 'var(--ink,#ddd)'; w.textContent = ' · because ' + l.why; d.appendChild(w); } log.appendChild(d); }
+    const entry = (l) => { const d = document.createElement('div'); d.textContent = l.who + ' ' + l.text; if (l.why) { const w = document.createElement('span'); w.style.color = 'var(--ink,#ddd)'; w.textContent = ' · because ' + l.why; d.appendChild(w); } return d; };
+    const moves = s.log.slice(-10).reverse();
+    latest.textContent = ''; past.textContent = '';
+    if (moves[0]) latest.appendChild(entry(moves[0]));
+    for (const l of moves.slice(1)) past.appendChild(entry(l));
+    earlier.style.display = moves.length > 1 ? '' : 'none';
+    sum.textContent = 'Earlier moves (' + (moves.length - 1) + ')';
   }
   el.append(wrap, status, again, log);
   paint();

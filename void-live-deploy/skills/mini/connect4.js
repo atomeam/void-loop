@@ -1,6 +1,7 @@
 /**
  * connect4 miniature — the upright blue frame standing in the void, discs dropping down the columns and settling in the
- * holes, the winning four ringed in light. Built from code; the card keeps the rules (skills/connect4-rules.js).
+ * holes, the winning four ringed in light and lit while the rest dim. Built from code; the card keeps the rules
+ * (skills/connect4-rules.js).
  * data: { board: Array(42) of 0|1|2, last, win: [cells] | null, onTap(selector) }
  */
 import { tweens } from './tabletop.js';
@@ -22,12 +23,26 @@ export default async function build(ctx, data) {
   front.position.set(0, y0, -TH / 2 - 0.001); back.position.set(0, y0, TH / 2 + 0.001); back.rotation.y = Math.PI;
   front.castShadow = back.castShadow = true; front.userData.frame = back.userData.frame = true; root.add(front, back);
   const side = new THREE.MeshPhysicalMaterial({ color: '#1a43a6', roughness: 0.35 });
+  // each hole has a dark inner wall, so the holes read as cut through the frame, not painted on it (one instanced tube)
+  const wallGeo = new THREE.CylinderGeometry(DR + 0.0012, DR + 0.0012, TH + 0.002, 40, 1, true).rotateX(Math.PI / 2);
+  const wallMat = new THREE.MeshStandardMaterial({ color: '#0b1630', roughness: 0.9, side: THREE.BackSide });
+  const walls = new THREE.InstancedMesh(wallGeo, wallMat, R * C);
   for (const x of [-W / 2, W / 2]) { const s = new THREE.Mesh(new THREE.BoxGeometry(0.006, H, TH + 0.004), side); s.position.set(x, y0, 0); root.add(s);
     const foot = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.03, 0.09), side); foot.position.set(x, 0.015, 0); foot.castShadow = true; root.add(foot); }
   const at = (cell) => { const r = Math.floor(cell / C), c = cell % C; return new THREE.Vector3(W / 2 - 0.01 - (c + 0.5) * P, y0 + H / 2 - 0.01 - (r + 0.5) * P, 0); };
+  { const m4 = new THREE.Matrix4(); for (let i = 0; i < R * C; i++) { m4.setPosition(at(i)); walls.setMatrixAt(i, m4); } walls.userData.frame = true; root.add(walls); }
   const discGeo = new THREE.CylinderGeometry(DR, DR, TH * 0.8, 48).rotateX(Math.PI / 2);
-  const red = new THREE.MeshPhysicalMaterial({ color: '#e0303e', roughness: 0.35, clearcoat: 0.5 }), yellow = new THREE.MeshPhysicalMaterial({ color: '#f2c230', roughness: 0.35, clearcoat: 0.5 });
-  const glow = new THREE.MeshBasicMaterial({ color: '#ffffff' }), ringGeo = new THREE.RingGeometry(DR * 1.02, DR * 1.2, 40);
+  // a disc is moulded, not flat: a darker groove ring on each face, a little in from the edge
+  const grooveGeo = new THREE.RingGeometry(DR * 0.6, DR * 0.7, 40);
+  const disc = (color) => new THREE.MeshPhysicalMaterial({ color, roughness: 0.35, clearcoat: 0.5 });
+  const groove = (color) => new THREE.MeshStandardMaterial({ color, roughness: 0.6, side: THREE.DoubleSide });
+  const red = disc('#e0303e'), yellow = disc('#f2c230'), redGroove = groove('#a01f2a'), yellowGroove = groove('#b88f17');
+  // once someone has four: the four lit, every other disc dimmed, so the line reads on the board itself
+  const redWin = disc('#ff4a58'), yellowWin = disc('#ffd84a');
+  redWin.emissive.set('#e0303e'); redWin.emissiveIntensity = 0.55; yellowWin.emissive.set('#f2c230'); yellowWin.emissiveIntensity = 0.55;
+  const redDim = disc('#e0303e'), yellowDim = disc('#f2c230');
+  for (const m of [redDim, yellowDim]) { m.color.multiplyScalar(0.45); }
+  const glow = new THREE.MeshBasicMaterial({ color: '#ffffff', side: THREE.DoubleSide }), ringGeo = new THREE.RingGeometry(DR * 1.02, DR * 1.2, 40);
   const discs = new THREE.Group(), rings = new THREE.Group(); root.add(discs, rings);
   const tw = tweens();
   let shown = Array(R * C).fill(0), objs = Array(R * C).fill(null);
@@ -35,13 +50,17 @@ export default async function build(ctx, data) {
     (d.board || []).forEach((v, i) => {
       if (v === shown[i]) return;
       if (objs[i]) { discs.remove(objs[i]); objs[i] = null; }
-      if (v) { const m = new THREE.Mesh(discGeo, v === 1 ? red : yellow); m.castShadow = true; const to = at(i);
+      if (v) { const m = new THREE.Mesh(discGeo, v === 1 ? red : yellow); m.castShadow = true; m.userData.v = v; const to = at(i);
+        for (const z of [-TH * 0.4 - 0.0003, TH * 0.4 + 0.0003]) { const gr = new THREE.Mesh(grooveGeo, v === 1 ? redGroove : yellowGroove); gr.position.z = z; m.add(gr); }
         if (i === d.last) { m.position.set(to.x, y0 + H / 2 + 0.03, 0); tw.add(m, to, { dur: 0.12 + 0.05 * Math.floor(i / C), hop: 0 }); } else m.position.copy(to);
         discs.add(m); objs[i] = m; }
       shown[i] = v;
     });
     for (const o of [...rings.children]) rings.remove(o);
-    for (const i of d.win || []) for (const z of [-TH / 2 - 0.0015, TH / 2 + 0.0015]) { const r = new THREE.Mesh(ringGeo, glow); r.position.copy(at(i)); r.position.z = z; if (z > 0) r.rotation.y = Math.PI; rings.add(r); }
+    // both rings show from either side (the front one used to face away from the camera and was culled)
+    for (const i of d.win || []) for (const z of [-TH / 2 - 0.0015, TH / 2 + 0.0015]) { const r = new THREE.Mesh(ringGeo, glow); r.position.copy(at(i)); r.position.z = z; rings.add(r); }
+    const win = new Set(d.win || []);
+    objs.forEach((m, i) => { if (!m) return; const y = m.userData.v === 2; m.material = !win.size ? (y ? yellow : red) : win.has(i) ? (y ? yellowWin : redWin) : (y ? yellowDim : redDim); });
   }
   paint(data);
   ctx.onTap((hits) => {
@@ -54,7 +73,7 @@ export default async function build(ctx, data) {
   return {
     update(d) { paint(d); ctx.requestRender(); },
     tick(dt) { return tw.tick(dt); },
-    state() { return { discs: discs.children.length, win: rings.children.length / 2 }; },
-    dispose() { for (const x of [face, discGeo, ringGeo]) x.dispose(); for (const m of [blue, side, red, yellow, glow]) m.dispose(); alpha.dispose(); },
+    state() { return { discs: discs.children.length, win: rings.children.length / 2, lit: discs.children.filter((m) => m.material === redWin || m.material === yellowWin).length, dim: discs.children.filter((m) => m.material === redDim || m.material === yellowDim).length }; },
+    dispose() { for (const x of [face, discGeo, ringGeo, grooveGeo, wallGeo]) x.dispose(); for (const m of [blue, side, red, yellow, glow, redGroove, yellowGroove, redWin, yellowWin, redDim, yellowDim, wallMat]) m.dispose(); walls.dispose(); alpha.dispose(); },
   };
 }
