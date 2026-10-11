@@ -899,6 +899,26 @@ try {
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
   // step 6: the sticky note, pinned before it moves out of void.html (what it does today, ask by ask)
+  // step 6: the link card, pinned before it moves out of void.html (what it does today, ask by ask)
+  if (want("built-in link: a bare url, add a link, a colour, a reload, an image url stays an image, remove")) { const P = await fresh();
+    const ln = async () => (await P.state()).filter((t) => t.kind === 'link').map((t) => t.title + '|' + t.host + '|' + (t.color || '')).join(' / ');
+    const r = {};
+    await P.ask('https://www.example.org/guides/getting-started', 600); r.a = await ln();
+    await P.ask('add a link https://github.com/atomeam', 500); r.b = await ln();
+    await P.ask('make the link blue', 400); r.c = await ln();
+    r.href = await P.p.$$eval('.thing.link-card a', (els) => els.map((e) => e.getAttribute('href') + '|' + e.target + '|' + e.rel).join(' / '));
+    await P.p.reload(); await P.p.waitForTimeout(1500);
+    r.reload = await until(() => P.p.$$eval('.thing.link-card a', (els) => els.length === 1 ? els[0].textContent : false), 6000);
+    await P.ask('https://example.org/cat.png', 500); r.d = await ln();
+    r.img = (await P.state()).filter((t) => t.kind === 'image').length;
+    await P.ask('remove the link', 500); r.e = await ln();
+    await P.ask('remove the link', 500); r.f = await ln();
+    check('built-in link: a bare url makes a link card titled by its host and last path part, "add a link ..." replaces it (one card), "make the link blue" edges it blue, it opens in a new tab, it comes back after a reload, an image url makes an image and leaves the card, "remove the link" takes it away (twice is harmless)',
+      r.a === 'example.org/getting-started|example.org|' && r.b === 'github.com/atomeam|github.com|' && r.c === 'github.com/atomeam|github.com|#6aa8ff'
+        && r.href === 'https://github.com/atomeam|_blank|noopener noreferrer' && r.reload === 'github.com/atomeam' && r.d === r.c && r.img === 1
+        && r.e === '' && r.f === '' && !P.errors.length,
+      JSON.stringify({ r, e: P.errors }));
+    await P.ctx.close(); }
   // step 6: the notepad, pinned before it moves out of void.html (what it does today, ask by ask)
   if (want("built-in notepad: open, notepad: writes, write in, a colour, clear, a reload, remove")) { const P = await fresh();
     const np = async () => (await P.state()).filter((t) => t.kind === 'notepad').map((t) => (t.text || '') + '|' + (t.color || '')).join(' / ');

@@ -858,7 +858,6 @@ Object.values(things).forEach((th) => {
         if (th.kind === 'clock') mountClock(th);
         else if (th.kind === 'timer') mountTimer(th);
         else if (th.kind === 'image') mountImage(th);
-        else if (th.kind === 'link') mountLink(th);
         else if (th.kind === 'list') mountList(th);
         else if (th.kind === 'calc') mountCalc(th);
         else if (th.kind === 'kept') mountKept(th);
@@ -1401,29 +1400,6 @@ Object.values(things).forEach((th) => {
       // the brass desk clock beside it (skills/mini/clock.js), keeping the same time in this device's zone
       let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {}
       if (tz) stageApi.miniature(el, 'clock', { clocks: [{ tz, label: 'Here' }] }, { key: th.id, place: 'beside', width: 150, height: 160, label: '3D desk clock showing the time here' }).catch(() => {});
-      bindDrag(el, th);
-      stage.appendChild(el);
-    }
-
-function mountLink(th) {
-      const el = document.createElement('div');
-      el.className = 'thing link-card';
-      el.dataset.id = th.id;
-      el.style.left = th.x + 'px';
-      el.style.top = th.y + 'px';
-      if (th.color) el.style.borderColor = th.color;
-      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
-      const a = document.createElement('a');
-      a.href = th.url;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.textContent = th.title || th.host || th.url;
-      a.addEventListener('pointerdown', (e) => e.stopPropagation());
-      const host = document.createElement('div');
-      host.className = 'host';
-      host.textContent = th.host || '';
-      el.appendChild(a);
-      if (th.host && th.title !== th.host) el.appendChild(host);
       bindDrag(el, th);
       stage.appendChild(el);
     }
@@ -2153,70 +2129,6 @@ function wantsCreateImage(lower, raw) {
       return img;
     }
 
-    function hostFromUrl(url) {
-      try { return new URL(url).hostname.replace(/^www\./, ''); } catch (_) { return url; }
-    }
-    function titleFromUrl(url) {
-      try {
-        const u = new URL(url);
-        const host = u.hostname.replace(/^www\./, '');
-        const path = (u.pathname || '/').replace(/\/$/, '');
-        if (path && path !== '/') {
-          const parts = path.split('/').filter(Boolean);
-          const snip = parts[parts.length - 1] || path;
-          return host + '/' + decodeURIComponent(snip).slice(0, 48);
-        }
-        return host;
-      } catch (_) { return url; }
-    }
-    function isImageUrl(url) {
-      return /\.(png|jpe?g|gif|webp|avif|svg)(\?.*)?$/i.test(url);
-    }
-    function parseUrl(text) {
-      const m = text.match(/https?:\/\/[^\s]+/i);
-      return m ? m[0].replace(/[),.!]+$/, '') : null;
-    }
-    function wantsCreateLink(lower, raw) {
-      if (/\b(remove|delete|get rid|hide|clear)\b/.test(lower) && /\b(link|card|url)\b/.test(lower)) return false;
-      const url = parseUrl(raw);
-      if (!url || isImageUrl(url)) return false;
-      if (/\blink\s*card\b/.test(lower) && url) return true;
-      if (/\b(show\s+this\s+link|put\s+a\s+link|show\s+link|add\s+a\s+link|drop\s+a\s+link)\b/.test(lower) && url) return true;
-      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\blink\b/.test(lower) && url) return true;
-      if (/^https?:\/\/[^\s]+$/i.test(raw.trim()) && !isImageUrl(raw.trim())) return true;
-      return false;
-    }
-    function wantsRemoveLink(lower) {
-      if (/\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(link|card)\b/.test(lower)) return true;
-      if (/\b(link|card)\b.*\b(away|gone)\b/.test(lower)) return true;
-      // allow bare "remove the link" / "remove the card"
-      if (/^(remove|delete|hide|clear)\s+(the\s+)?(link|card)(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
-      return false;
-    }
-    function ensureLink(url) {
-      const host = hostFromUrl(url);
-      let card = Object.values(things).find((th) => th.kind === 'link');
-      if (!card) {
-        card = {
-          id: uid('link'),
-          kind: 'link',
-          x: Math.max(40, stage.clientWidth / 2 - 140),
-          y: Math.max(40, stage.clientHeight / 2 - 20),
-          url: url,
-          host: host,
-          title: titleFromUrl(url),
-        };
-        things[card.id] = card;
-        selectedId = card.id;
-      } else {
-        card.url = url;
-        card.host = host;
-        card.title = titleFromUrl(url);
-        selectedId = card.id;
-      }
-      return card;
-    }
-
     function cleanListText(value) {
       return (value || '').replace(/^[\s,;:]+|[\s,;.!?]+$/g, '').trim();
     }
@@ -2737,31 +2649,11 @@ say('nothing selected to remove');
         }
         return { ok: false, detail: 'no image' };
       }
-      // link card create
-      if (wantsCreateLink(lower, text)) {
-        const url = parseUrl(text);
-        if (url && !isImageUrl(url)) {
-          ensureLink(url);
-          save(); render();
-          return { ok: true, detail: 'link' };
-        }
-      }
-      // link card remove
-      if (wantsRemoveLink(lower)) {
-        const card = Object.values(things).find((th) => th.kind === 'link');
-        if (card) {
-          delete things[card.id];
-          if (selectedId === card.id) selectedId = null;
-          save(); render();
-          return { ok: true, detail: 'link-removed' };
-        }
-        return { ok: false, detail: 'no link' };
-      }
-      // bare URL (non-image) → link card
-      if (/^https?:\/\/[^\s]+$/i.test(text.trim()) && !isImageUrl(text.trim())) {
-        ensureLink(text.trim());
-        save(); render();
-        return { ok: true, detail: 'link' };
+      // link card create / remove / a bare url (skills/link.js, cleanup step 6), at the place in this order it always had
+      if (stageKinds.link && typeof stageKinds.link.ask === 'function') {
+        const ld = stageKinds.link.ask(lower, text, stageApi);
+        if (ld === 'no link') return { ok: false, detail: 'no link' };
+        if (ld) return { ok: true, detail: ld };
       }
       // bare image url paste (freer)
       if (/^https?:\/\/[^\s]+\.(png|jpe?g|gif|webp|avif|svg)(\?.*)?$/i.test(text.trim())) {
