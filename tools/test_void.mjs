@@ -25,6 +25,16 @@ const server = http.createServer((req, res) => {
 const base = 'http://127.0.0.1:' + server.address().port + '/';
 
 const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe', 'C:/Program Files/Google/Chrome/Application/chrome.exe', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
+// --only "<words>": run just the sections whose heading has all those words (and the short opening section every run shares),
+// so a builder tests the flow it touched in a minute instead of the whole suite (owner, 2026-10-11: the full suite runs on
+// main in verify.yml, not locally on every change). --list prints the section headings. The full run is still the plain command.
+const argOf = (f) => { const i = process.argv.indexOf(f); return i > 0 ? String(process.argv[i + 1] || '') : ''; };
+const ONLY = (argOf('--only') || process.env.VOID_ONLY || '').toLowerCase().split(/\s+/).filter(Boolean);
+const want = (label) => !ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w));
+if (process.argv.includes('--list')) {
+  for (const m of fs.readFileSync(new URL(import.meta.url), 'utf8').matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)) console.log(JSON.parse(m[1]));
+  process.exit(0);
+}
 const releaseHeavy = await acquireHeavy('browser suite (tools/test_void.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const results = [];
@@ -38,7 +48,7 @@ const chromeMajor = parseInt(browser.version(), 10) || 0; // what this machine's
 const STALL_MS = Number(process.env.VOID_CHECK_TIMEOUT_MS) || 300000;
 const BUDGET_MS = Number(process.env.VOID_SUITE_BUDGET_MS) || (process.env.VOID_SKIP_BENCH ? 28 : 38) * 60000;
 const watch = { t0: Date.now(), lastAt: Date.now(), lastCheck: '(none yet)', page: '(none yet)', ask: '', gaps: [] };
-const check = (name, ok, got) => { const now = Date.now(); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); };
+const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); };
 // a check this machine cannot run (no <microphone> element in its Chromium, no passkey authenticator): skipped with the reason, never red
 const skip = (name, why) => { watch.lastAt = Date.now(); watch.lastCheck = name; results.push({ name, ok: true, skipped: why }); };
 const line = (r) => (r.skipped ? 'skip ' + r.name + '  (' + r.skipped + ')' : (r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
@@ -412,7 +422,7 @@ try {
   await t.ask('undo'); check('undo brings the group back', (await t.state()).filter((x) => x.kind === 'sticky').length === 2);
   await t.ask('make everything blue'); check('make everything blue', (await t.state()).every((x) => !x.color || /6aa8ff|9ec8ff/.test(x.color)));
   // Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss board (items 3-8 of the 2026-09-28 list).
-  { const M = await fresh(); const out = [];
+  if (want("Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss ")) { const M = await fresh(); const out = [];
     const net = []; M.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer)$/.test(u)) net.push(u); });
     const quiet = async (a) => { const n0 = net.length; await M.ask(a, 500); return net.length === n0 && !(await M.page()); };
     for (const a of ['close', 'dismiss', 'go away', 'hello', 'ola', 'test', 'probe', 'zzqx']) if (!(await quiet(a))) out.push(a);
@@ -434,7 +444,7 @@ try {
     await M.ctx.close(); }
   // Calendar (per-person spaces): a visitor's own adds save in this browser and show on a draggable stage card; no yes, no server, no Wikipedia.
   // Only an ask that reaches another person ("schedule a meeting with Sam") goes to the confirm line, which is the owner's.
-  { const C = await fresh(); const net = [];
+  if (want("Calendar (per-person spaces): a visitor's own adds save in this browser and show on a drag")) { const C = await fresh(); const net = [];
     C.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer|approval)$/.test(u)) net.push(u.replace(/^.*\/\/[^/]+/, '')); });
     await C.ask('call Sam next Tuesday at 4', 900); const said = await C.whisper();
     await C.ask('add dentist to my calendar Oct 12 at 3pm', 900);
@@ -475,7 +485,7 @@ try {
     await C.ctx.close(); }
   // Earned effects (Atom 2026-09-28: personal layer first): the public stage runs no WebGL; the nebula and the particle swarm
   // start only when someone asks in their own Void, and "calm my void" stops them. Card physics: a grabbed card comes to the front.
-  { const V = await fresh();
+  if (want("Earned effects (Atom 2026-09-28: personal layer first): the public stage runs no WebGL; th")) { const V = await fresh();
     const pub = await V.p.evaluate(() => { const d = document.getElementById('void-depth'), cs = d && getComputedStyle(d); return { aura: !!document.getElementById('void-aura'), swarm: !!document.getElementById('void-swarm'), fx: document.documentElement.dataset.fx, depth: !!cs && /radial-gradient/.test(cs.backgroundImage) && cs.animationName === 'depthBreath', pill: getComputedStyle(document.getElementById('row')).backdropFilter }; });
     { // lag on every device (2026-10-10): a breathing caret-color repainted the input 60 times a second forever (16% of a phone's main
       // thread at rest, half of each keystroke's delay). What runs forever on the empty page may only move what the GPU moves.
@@ -505,7 +515,7 @@ try {
     await V.ctx.close(); }
   // synapses: the faint branching network lives in the nebula look only: the aura's shader linked (no no-gl) and the network canvas is
   // on and drawing something, it clears and goes off when the look changes, and reduced motion never turns it on
-  { const Y = await fresh();
+  if (want("synapses: the faint branching network lives in the nebula look only: the aura's shader lin")) { const Y = await fresh();
     const syn = async () => Y.p.evaluate(() => { const c = document.getElementById('void-syn'); let drawn = 0; if (c && c.width) { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; for (let i = 3; i < d.length; i += 4) if (d[i]) { drawn++; break; } } return { on: !!document.querySelector('#void-syn.on'), exists: !!c, drawn, noGl: document.documentElement.classList.contains('no-gl') }; });
     const pub = await syn();
     await Y.ask('add a nebula', 800); await Y.p.mouse.move(400, 300); await Y.p.mouse.move(700, 420, { steps: 6 });
@@ -517,7 +527,7 @@ try {
       !pub.exists && (nb.noGl || (nb.on && nb.drawn)) && !off.on && !rd && !Y.errors.length && !R.errors.length, JSON.stringify({ pub, nb, off, rd, e: Y.errors.concat(R.errors) })); }
   // Board Next #3, grouping half (skills/group.js): "group the clock and the note" ties them together, dragging one carries the
   // other the same distance, the group moves and resizes as one, "bring the group to the front" layers it, "ungroup" lets go.
-  { const G = await fresh();
+  if (want("Board Next #3, grouping half (skills/group.js): \"group the clock and the note\" ties them t")) { const G = await fresh();
     await G.ask('make a clock', 400); await G.ask('add a sticky that says grouped', 400); await G.ask('make a 5 minute timer', 400);
     await G.ask('group the clock and the note', 900);
     const said = await G.whisper();
@@ -549,7 +559,7 @@ try {
     await G.ctx.close(); }
   // Summon by intent (frontier #10, skills/intent.js): an outcome with a deadline runs asks Void already answers (countdown,
   // dated checklist, calendar day, a draft to the person named) and groups what they put on the stage. Nothing is sent.
-  { const I = await fresh(); const net = [];
+  if (want("Summon by intent (frontier #10, skills/intent.js): an outcome with a deadline runs asks Vo")) { const I = await fresh(); const net = [];
     I.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer|approval)$/.test(u)) net.push(u.replace(/^.*\/\/[^/]+/, '')); });
     await I.ask('I need to ship the product page by Friday and tell Sam', 2500);
     const said = await I.whisper();
@@ -573,7 +583,7 @@ try {
     await I.ctx.close(); }
   // Labels and arrows (skills/label.js, board "Later": text annotation / labels): "label the clock kitchen" tags it, an arrow
   // drawn by label names joins two things and follows a drag, a free label can be an arrow's end, "undo" and reload behave.
-  { const L = await fresh();
+  if (want("Labels and arrows (skills/label.js, board \"Later\": text annotation / labels): \"label the c")) { const L = await fresh();
     await L.ask('make a clock', 400); await L.ask('add a sticky that says milk', 400); await L.ask('make a 5 minute timer', 400);
     await L.ask('move the timer to the bottom right', 500);
     await L.ask('label the clock kitchen', 700); await L.ask('label the note groceries', 700);
@@ -600,7 +610,7 @@ try {
       JSON.stringify({ tags, said, l1, l2, two, undone, kept, clean, e: L.errors }));
     await L.ctx.close(); }
   // Public Voids: "publish my void as @name" puts a paid Void's look and kept cards (as text) at /@name, after the person's own yes.
-  { const DB = sqliteD1(), env = { DB, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'index.html'), 'utf8')) } };
+  if (want("Public Voids: \"publish my void as @name\" puts a paid Void's look and kept cards (as text) ")) { const DB = sqliteD1(), env = { DB, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'index.html'), 'utf8')) } };
     await voidMe.ensureTables(env);
     const mk = async (uid, tier) => { const tok = 'tok_' + uid + '_' + 'x'.repeat(40); await DB.prepare('INSERT INTO void_sessions (id, user_id, at, expires) VALUES (?, ?, ?, ?)').bind(await voidMe.sessionId(tok), uid, 'now', Date.now() + 1e9).run(); if (tier) await DB.prepare("INSERT INTO void_accounts (user_id, tier, updated) VALUES (?, ?, 'now')").bind(uid, tier).run(); return tok; };
     const A = await mk('userA', 'paid'), B = await mk('userB', 'paid'), F = await mk('userF', null);
@@ -657,7 +667,7 @@ try {
       JSON.stringify({ up, forget: fg.status, afterForget, rowC, agentTry }));
     await O.ctx.close(); }
   // More of the list: directions, definitions (Wiktionary), weekday countdowns, "what day is it in", the time gap between two places.
-  { const D = await fresh(); const net = [];
+  if (want("More of the list: directions, definitions (Wiktionary), weekday countdowns, \"what day is i")) { const D = await fresh(); const net = [];
     await D.ctx.route(/geocoding-api\.open-meteo\.com/, (r) => { const u = r.request().url(); const tok = /name=tokyo/i.test(u), lon = /name=london/i.test(u);
       return r.fulfill(json({ results: [tok ? { name: 'Tokyo', country: 'Japan', latitude: 35.68, longitude: 139.69, timezone: 'Asia/Tokyo', population: 9e6 } : lon ? { name: 'London', country: 'United Kingdom', latitude: 51.5, longitude: -0.12, timezone: 'Europe/London', population: 8e6 } : { name: 'Kyoto', country: 'Japan', latitude: 35.01, longitude: 135.77, timezone: 'Asia/Tokyo', population: 1.4e6 }] })); });
     await D.ctx.route(/en\.wiktionary\.org\/api\/rest_v1\/page\/definition\//, (r) => r.fulfill(json({ en: [{ partOfSpeech: 'Noun', definitions: [{ definition: 'The <b>faculty</b> of making happy discoveries by accident.' }] }] })));
@@ -681,7 +691,7 @@ try {
     await D.ctx.close(); }
   // The next batch: every ECB currency with the rate's date, a choice between Springfields, a choice between meanings,
   // the same ask again keeps its page, and Esc does one thing at a time.
-  { const B = await fresh(); const fx = [], summaries = [];
+  if (want("The next batch: every ECB currency with the rate's date, a choice between Springfields, a ")) { const B = await fresh(); const fx = [], summaries = [];
     await B.ctx.route(/frankfurter/, (r) => { const u = new URL(r.request().url()); fx.push(u.search); const to = u.searchParams.get('symbols'), amt = +u.searchParams.get('amount');
       return r.fulfill(json({ amount: amt, base: u.searchParams.get('base'), date: '2026-09-25', rates: { [to]: amt * 0.5 } })); });
     const SPR = [['Missouri', 169176, 'America/Chicago'], ['Massachusetts', 155929, 'America/New_York'], ['Illinois', 114230, 'America/Chicago'], ['Oregon', 62000, 'America/Los_Angeles']]
@@ -728,7 +738,7 @@ try {
     check('the batch threw no page errors', !B.errors.length, B.errors.join(' | '));
     await B.ctx.close(); }
   // World clock, translation copy and MyMemory's matches, skill files cached for a minute, and a 390px phone.
-  { const C = await fresh(); await C.ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: new URL(base).origin });
+  if (want("World clock, translation copy and MyMemory's matches, skill files cached for a minute, and")) { const C = await fresh(); await C.ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: new URL(base).origin });
     await C.ctx.route(/geocoding-api\.open-meteo\.com/, (r) => { const u = r.request().url();
       const v = /name=paris/i.test(u) ? { name: 'Paris', country: 'France', country_code: 'FR', timezone: 'Europe/Paris', population: 2.1e6 } : /name=sydney/i.test(u) ? { name: 'Sydney', country: 'Australia', country_code: 'AU', timezone: 'Australia/Sydney', population: 5e6 } : null;
       return r.fulfill(json({ results: v ? [v] : [] })); });
@@ -758,7 +768,7 @@ try {
     check('the world clock / translate / phone batch threw no page errors', !C.errors.length, C.errors.join(' | '));
     await C.ctx.close(); }
   // Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail + slider, closed shells, mm)
-  { const P = await fresh();
+  if (want("Linemote-1, the first printable part: summoned as a page, and its one STL downloads (rail ")) { const P = await fresh();
     await P.ask('summon linemote-1', 900); const lm = await P.page();
     const dl = P.p.waitForEvent('download', { timeout: 5000 }).catch(() => null);
     await P.p.click('.vpage.on [data-linemote-stl]').catch(() => {}); const d = await dl;
@@ -774,7 +784,7 @@ try {
       [lm.slice(0, 80), d ? d.suggestedFilename() : 'no download', facets, vol.toFixed(2), span.join('x'), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
   // void status: every skill loads, the browser checks show, and each outside source reads up or down as it really answers
-  { const P = await fresh();
+  if (want("void status: every skill loads, the browser checks show, and each outside source reads up ")) { const P = await fresh();
     await P.ctx.route(/open-meteo\.com|wikipedia\.org/, (r) => r.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: '{}' }));
     await P.ctx.route(/frankfurter\.dev/, (r) => r.fulfill({ status: 503, headers: { 'access-control-allow-origin': '*' }, body: 'down' }));
     await P.ctx.route(/wiktionary\.org|usgs\.gov|nager\.at|coingecko\.com|clinicaltrials\.gov/, (r) => r.abort()); // the rest unreachable, whatever the machine's network allows
@@ -788,7 +798,7 @@ try {
       [done.replace(/\s+/g, ' ').slice(0, 400), want, probe, P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
-  { const P = await fresh();
+  if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();
     await P.ask('release notes for v1.4.0 ⏎ a1b2c3d feat(api): add search (#41) ⏎ fix: crash on empty list ⏎ Merge pull request #42 from x/y', 900);
     const md1 = await P.p.$eval('.vpage.on .rn-md', (e) => e.textContent).catch(() => '');
     await P.p.fill('.vpage.on [data-l]', 'feat!: drop Node 16\nRemove the old export');
@@ -799,7 +809,7 @@ try {
       [JSON.stringify(md1), JSON.stringify(md2), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
   // an incident brief: fill the form, the durations and the Markdown follow; the draft survives a reload and "clear" empties it
-  { const P = await fresh();
+  if (want("an incident brief: fill the form, the durations and the Markdown follow; the draft survive")) { const P = await fresh();
     await P.ask('incident report for the login outage', 900);
     const set = async (sel, v) => { await P.p.fill('.vpage.on ' + sel, v); };
     await set('[data-k="started"]', '2026-10-08T14:00'); await set('[data-k="detected"]', '2026-10-08T14:12'); await set('[data-k="resolved"]', '2026-10-08T16:05');
@@ -816,7 +826,7 @@ try {
       [md.slice(0, 80), dur, kept, cleared, P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
   // printed motors, from a twitch to a wave: three dated steps, the honest next step, and links on (works offline: fresh() blocks outside requests)
-  { const P = await fresh();
+  if (want("printed motors, from a twitch to a wave: three dated steps, the honest next step, and link")) { const P = await fresh();
     await P.ask('can you 3d print a motor', 900); const pm = await P.page();
     const asks = await P.p.$$eval('.vpage.on a[data-ask]', (as) => as.map((a) => a.getAttribute('data-ask')).join('|')).catch(() => '');
     await P.p.click('.vpage.on a[data-ask="show the magnetize step"]').catch(() => {}); await P.p.waitForTimeout(700); const mg = await P.page();
@@ -826,7 +836,7 @@ try {
       [pm.slice(0, 80), asks, mg.slice(0, 40), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
   // Pentamote-1: the five-material motor body page, and its 3MF (five named parts, one colour group each, PrusaSlicer config)
-  { const P = await fresh();
+  if (want("Pentamote-1: the five-material motor body page, and its 3MF (five named parts, one colour ")) { const P = await fresh();
     await P.ask('download the printed motor as 3mf', 900); const pm = await P.page();
     const dl = P.p.waitForEvent('download', { timeout: 5000 }).catch(() => null);
     await P.p.click('.vpage.on [data-pentamote-3mf]').catch(() => {}); const d = await dl;
@@ -842,7 +852,7 @@ try {
     await P.ctx.close(); }
   // figures first: a chair, then Motelet sits on it; a cup, then the next Motelet picks it up; a third stands; spin;
   // the print file is the body as it is on the stage; flung off the screen a figure is gone; the rest come back after a reload
-  { const G = await fresh();
+  if (want("figures first: a chair, then Motelet sits on it; a cup, then the next Motelet picks it up;")) { const G = await fresh();
     const figs = () => G.p.$$eval('.fig3d', (els) => els.map((e) => ({ m: e.dataset.model, pose: e.dataset.pose, x: parseFloat(e.style.left), y: parseFloat(e.style.top) })));
     const st3d = async () => (await G.state()).filter((t) => t.kind === 'fig3d');
     await G.ask('a chair', 700); await G.ask('summon motelet', 700); const w1 = await G.whisper();
@@ -874,7 +884,7 @@ try {
     await G.ctx.close(); }
   // Motelet remembers you, on this device: it asks your name once, greets you by name after a reload and asks after the
   // last thing you summoned; "Motelet, forget me" clears it and it asks again; nothing leaves the browser
-  { const M = await fresh(); const out = [];
+  if (want("Motelet remembers you, on this device: it asks your name once, greets you by name after a ")) { const M = await fresh(); const out = [];
     M.ctx.on('request', (r) => { if (!/^https?:\/\/(127\.0\.0\.1|localhost)/.test(r.url())) out.push(r.url()); });
     await M.ask('summon motelet', 700); const asked = await M.whisper();
     await M.ask('my name is Sam', 500); const met = await M.whisper();
@@ -894,7 +904,7 @@ try {
     await M.ctx.close(); }
   // the longevity trial watch reads ClinicalTrials.gov live (stubbed here): every watchlist trial shows its status and
   // primary-completion date with the time of the check; with the registry unreachable it shows the saved snapshot and its date
-  { const W = await fresh(); let live = true;
+  if (want("the longevity trial watch reads ClinicalTrials.gov live (stubbed here): every watchlist tr")) { const W = await fresh(); let live = true;
     await W.ctx.route(/clinicaltrials\.gov\/api\/v2\/studies\//, (r) => { if (!live) return r.abort();
       const id = r.request().url().match(/NCT\d+/)[0];
       return r.fulfill(json({ hasResults: id === 'NCT05506488', protocolSection: { identificationModule: { briefTitle: 'Trial ' + id }, statusModule: { overallStatus: 'ACTIVE_NOT_RECRUITING', primaryCompletionDateStruct: { date: '2027-03' } }, designModule: { enrollmentInfo: { count: 40 } } } })); });
@@ -909,7 +919,7 @@ try {
       [page1.slice(0, 160), page2.slice(0, 120), W.errors.join(';')].join(' | '));
     await W.ctx.close(); }
   // "who is X" prefers the person; a loose match says so in one line; the board counts one ask in different words once.
-  { const E = await fresh(); const sums = [];
+  if (want("\"who is X\" prefers the person; a loose match says so in one line; the board counts one ask")) { const E = await fresh(); const sums = [];
     // #18 two-part summon loads figures3d + three.js on an article; keep the suite offline with the same stub #17 uses.
     const figSrcE = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
     const namesE = Array.from(new Set(Array.from(figSrcE.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
@@ -937,7 +947,7 @@ try {
       JSON.stringify(merged));
   }
   // The owner's board shows what Void has earned and its milestones (they used to be "never on screen", even to the owner).
-  { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+  if (want("The owner's board shows what Void has earned and its milestones (they used to be \"never on")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     await O.ctx.route(/\/api\/misses$/, (r) => r.fulfill(json([{ ask: 'make me an app', count: 2, last: '2026-09-30', fallback: 'answer' }])));
     await O.ctx.route(/\/api\/earnings$/, (r) => r.fulfill(json(/owner-k/.test(r.request().headers().authorization || '') ? { earned_cents: 9800, refunded_cents: 0, sales: 2, milestones: [{ id: 'sales-1', at: '2026-10-02T10:00:00Z' }], shortfalls_7d: { total: 3, by: [] } } : {})));
     await O.ask('show the board', 900); const bp = await O.page();
@@ -946,7 +956,7 @@ try {
     await O.ctx.close(); }
   // the owner's actions card (skills/actions.js) reads the execution record (lib/actions.js) and shows every kind of action,
   // not only automation steps: here a queue.add from the miss board (lib/learn.js) and a stubbed confirm-line send
-  { const A = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+  if (want("the owner's actions card (skills/actions.js) reads the execution record (lib/actions.js) a")) { const A = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const recs = [
       { id: 'act-1', owner: 'void', kind: 'queue.add', ref: 'miss:learn-to-handle-tides', state: 'done', result: 'queued k1: learn to handle "tides"', error: null, started: '2026-10-10T00:10:00Z', finished: '2026-10-10T00:10:00Z' },
       { id: 'act-2', owner: 'owner', kind: 'confirm.email.send', ref: 'appr-1', state: 'stubbed', result: 'approved, but email.send is not connected yet: nothing was sent', error: null, started: '2026-10-10T00:05:00Z', finished: '2026-10-10T00:05:00Z' },
@@ -963,7 +973,7 @@ try {
     await A.ctx.close(); }
   // the memory card (skills/memory.js): the owner's key goes as a bearer to /api/memory?ask=, the API's answer shows as rows, and without
   // the key it says so and fetches nothing
-  { const M = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+  if (want("the memory card (skills/memory.js): the owner's key goes as a bearer to /api/memory?ask=, ")) { const M = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     let auth = '', asked = '';
     await M.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; asked = new URL(r.request().url()).searchParams.get('ask'); return r.fulfill(json({ answer: 'I remember 1 match:\n\u2022 alpha (React, py): A tiny tool. \u00b7 last change 2025-01-01 \u00b7 backed up at https://github.com/o/alpha', matches: ['alpha-1234abcd'] })); });
     await M.ask('what did I build with react', 900);
@@ -972,7 +982,7 @@ try {
     check('memory card: "what did I build with react" asks /api/memory?ask= with the owner bearer and shows each match with its tech, change and remote copy',
       /alpha \(React, py\)/.test(card) && /I remember 1 match/.test(card) && /no remote copy|backed up at/.test(card) && rows === 1 && /^Bearer owner-k$/.test(auth) && asked === 'react' && !M.errors.length, card.slice(0, 300) + ' | ' + auth + ' | ' + asked);
     await M.ctx.close(); }
-  { const P = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+  if (want("block at line 975")) { const P = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
     // the page syncs a stored session with /api/mine as it loads, and the real mine function here has never seen this made-up
     // session: its 401 signs the device out (as it should) before the ask. Answer the sync for this session, then load again.
     await P.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
@@ -985,7 +995,7 @@ try {
     await P.ctx.close(); }
   // "remember that <fact>" keeps one line (POST with the bearer), "forget that <fact>" removes it (DELETE by the same note id); without a key neither fetches
   // "what you told me": a signed-in member's ask carries their session to /api/answer, and an answer that used a note says so on the card; a visitor's carries nothing
-  { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
+  if (want("\"remember that <fact>\" keeps one line (POST with the bearer), \"forget that <fact>\" removes")) { const T = await fresh({ content: 'localStorage.setItem("a2m.void.me.v1", JSON.stringify({ token: "member-session-token-0123456789abcdef0123456789", userId: "u1" }));' });
     // as in the memory card's member check: answer the page's load-time /api/mine sync for this made-up session, then load again
     await T.ctx.route(/\/api\/mine(?:\?|$)/, (r) => r.fulfill(json({ data: null, rev: 0, updated: null })));
     await T.p.reload(); await T.p.waitForTimeout(700);
@@ -994,12 +1004,12 @@ try {
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
     check('what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Void', /^Bearer member-session-token-/.test(auth || '') && /from what you told me · written by Void/.test(card) && !T.errors.length, (auth || '') + ' | ' + card.slice(0, 200));
     await T.ctx.close(); }
-  { const V2 = await fresh(); let auth = null;
+  if (want("block at line 997")) { const V2 = await fresh(); let auth = null;
     await V2.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization; return r.fulfill(json({ answer: 'Sunlight scatters.', sources: [] })); });
     await V2.ask('why is the sky blue', 900); const card = await V2.p.evaluate(() => document.body.innerText);
     check('what you told me: a visitor with no key sends no authorization and the card never claims a note', auth === undefined && !/from what you told me/.test(card) && !V2.errors.length, String(auth) + ' | ' + card.slice(0, 120));
     await V2.ctx.close(); }
-  { const K = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+  if (want("block at line 1002")) { const K = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const calls = [];
     await K.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { const q = r.request(); calls.push({ m: q.method(), u: new URL(q.url()).search, a: q.headers().authorization || '', b: q.postData() || '' }); return r.fulfill(json(q.method() === 'DELETE' ? { removed: 1 } : { saved: 1, rejected: 0 })); });
     await K.ask('remember that I prefer tabs over spaces', 900); const said1 = await K.p.evaluate(() => document.body.innerText);
@@ -1013,7 +1023,7 @@ try {
   // saved time is faked back; the figures are put where they last stood, the flower under the cloud's rain and the zombie some way from the brain),
   // come back, and one line says what happened where a visitor sees it (#away-note, which a failing 3D layer cannot overwrite); a quick reload says nothing.
   // three.js is stubbed as in the article check above.
-  { const W = await fresh(); const figSrcW = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
+  if (want("a world that keeps living while you are away (advance in skills/scripts.js): summon a clou")) { const W = await fresh(); const figSrcW = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
     const namesW = Array.from(new Set(Array.from(figSrcW.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBW = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
       + 'const U=new Proxy(function(){},h);export const ' + namesW.map((n) => n + '=U').join(',') + ';';
@@ -1059,7 +1069,7 @@ try {
     await S.ctx.close(); }
   // asked by Void: what happened while you were away is also one execution record in your own scope (lib/scene-advance.js, kind scene.advance); the away line
   // links to it and "my actions" shows the row. Here the owner's key is set and /api/actions is answered by the page's own stand-in.
-  { const M = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+  if (want("asked by Void: what happened while you were away is also one execution record in your own ")) { const M = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const figSrcM = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
     const namesM = Array.from(new Set(Array.from(figSrcM.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBM = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
@@ -1086,7 +1096,7 @@ try {
     await M.ctx.close(); }
   // a sky and a clock (frontier #21, skills/sky-rules.js): the empty stage is tinted by the real sun where the visitor is, with no network call; it is there on
   // load, differs between the middle of the night and noon, drifts (one timer) unless motion is reduced, and the visitor's own look still wins.
-  { const K = await fresh(); const sky = await import(new URL('../void-live-deploy/skills/sky-rules.js', import.meta.url).href);
+  if (want("a sky and a clock (frontier #21, skills/sky-rules.js): the empty stage is tinted by the re")) { const K = await fresh(); const sky = await import(new URL('../void-live-deploy/skills/sky-rules.js', import.meta.url).href);
     const glowAt = async (when, reduce) => { await K.p.emulateMedia({ reducedMotion: reduce ? 'reduce' : 'no-preference' }); await K.p.clock.setFixedTime(when); await K.p.reload(); await K.p.waitForTimeout(500);
       return K.p.evaluate(() => ({ glow: getComputedStyle(document.documentElement).getPropertyValue('--sky-glow').trim(), bg: getComputedStyle(document.documentElement).getPropertyValue('--sky-bg').trim(), on: document.documentElement.classList.contains('sky-on'), sky: window.__voidSky || null, layer: getComputedStyle(document.getElementById('void-glow')).opacity })); };
     await glowAt(new Date('2026-06-21T12:00:00Z'), false); // first look at where this browser thinks it is
@@ -1100,7 +1110,7 @@ try {
       JSON.stringify({ place, noon, night, still: still.sky && still.sky.drifting, errs: K.errors }));
     await K.ctx.close(); }
   // the splat viewer (skills/splat.js): a card you drop or choose a .splat file on, read on this device. The demo galaxy draws (lit pixels on the canvas, whichever renderer the browser has), a file that is not a splat says why, a real one loads, keys orbit, and with reduced motion nothing turns by itself.
-  { const lit = (page) => page.evaluate(() => { const cv = document.querySelector('[data-splat-canvas]'), t = document.createElement('canvas'); t.width = cv.width; t.height = cv.height; const x = t.getContext('2d'); x.drawImage(cv, 0, 0); const d = x.getImageData(0, 0, t.width, t.height).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] + d[i + 1] + d[i + 2] > 120) n++; return { n, frame: t.toDataURL().length + ':' + (d.length ? d[Math.floor(d.length / 2)] : 0) + ':' + n }; });
+  if (want("the splat viewer (skills/splat.js): a card you drop or choose a .splat file on, read on th")) { const lit = (page) => page.evaluate(() => { const cv = document.querySelector('[data-splat-canvas]'), t = document.createElement('canvas'); t.width = cv.width; t.height = cv.height; const x = t.getContext('2d'); x.drawImage(cv, 0, 0); const d = x.getImageData(0, 0, t.width, t.height).data; let n = 0; for (let i = 0; i < d.length; i += 4) if (d[i] + d[i + 1] + d[i + 2] > 120) n++; return { n, frame: t.toDataURL().length + ':' + (d.length ? d[Math.floor(d.length / 2)] : 0) + ':' + n }; });
     const V = await fresh(), splatReqs = []; V.p.on('request', (r) => splatReqs.push(r.url())); await V.ask('view a gaussian splat', 900);
     const card0 = await V.p.evaluate(() => ({ file: !!document.querySelector('[data-splat-file]'), demo: !!document.querySelector('[data-splat-demo]'), label: (document.querySelector('[data-splat-canvas]') || {}).getAttribute && document.querySelector('[data-splat-canvas]').getAttribute('aria-label'), status: (document.querySelector('[data-splat-status]') || {}).textContent, text: document.body.innerText }));
     await V.p.click('[data-splat-demo]'); await V.p.waitForTimeout(1200);
@@ -1116,14 +1126,14 @@ try {
       && /Showing 6,000 splats/.test(demo.status) && /^(webgl2|2d)$/.test(demo.renderer || '') && demo.count === '6000' && drawn.n > 3000
       && /does not look like a \.splat/.test(bad.status) && bad.role === 'alert' && /Showing 2 splats/.test(good.status) && goodDrawn.n > 200 && before.n > 100 && external.length === 0 && !V.errors.length, JSON.stringify({ card0: { ...card0, text: undefined }, demo, drawn: drawn.n, bad, good, goodDrawn: goodDrawn.n, external, errs: V.errors }));
     await V.ctx.close(); }
-  { const lit2 = (page) => page.evaluate(() => { const cv = document.querySelector('[data-splat-canvas]'), t = document.createElement('canvas'); t.width = cv.width; t.height = cv.height; t.getContext('2d').drawImage(cv, 0, 0); return t.toDataURL(); });
+  if (want("block at line 1119")) { const lit2 = (page) => page.evaluate(() => { const cv = document.querySelector('[data-splat-canvas]'), t = document.createElement('canvas'); t.width = cv.width; t.height = cv.height; t.getContext('2d').drawImage(cv, 0, 0); return t.toDataURL(); });
     const Q = await fresh(); await Q.p.emulateMedia({ reducedMotion: 'reduce' }); await Q.p.reload(); await Q.p.waitForTimeout(500); await Q.ask('view a splat', 900); await Q.p.click('[data-splat-demo]'); await Q.p.waitForTimeout(900);
     const s1 = await lit2(Q.p); await Q.p.waitForTimeout(1200); const s2 = await lit2(Q.p);
     check('splat: with reduced motion the scene holds still (it does not turn by itself)', s1.length > 1000 && s1 === s2 && !Q.errors.length, JSON.stringify({ same: s1 === s2, errs: Q.errors }));
     await Q.ctx.close(); }
   // sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioContext (the game sound effects in skills/sfx.js open their own on the first tap, so the drone's is the one that gets oscillators)
   // proves nothing is built before the tap, the tap builds one drone of four voices, and the same button mutes it.
-  { const fake = `window.__au = { all: [] }; window.AudioContext = class { constructor() { this.rec = { osc: 0, master: [] }; window.__au.all.push(this.rec); this.state = 'running'; this.currentTime = 0; this.destination = {}; this.sampleRate = 8000; this.n = 0; }
+  if (want("sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioConte")) { const fake = `window.__au = { all: [] }; window.AudioContext = class { constructor() { this.rec = { osc: 0, master: [] }; window.__au.all.push(this.rec); this.state = 'running'; this.currentTime = 0; this.destination = {}; this.sampleRate = 8000; this.n = 0; }
       resume() { return Promise.resolve(); } suspend() { return Promise.resolve(); } close() {}
       createBuffer() { return { getChannelData: () => new Float32Array(8) }; } createBufferSource() { return { connect() {}, start() {}, stop() {}, playbackRate: { value: 1 } }; }
       createGain() { const rec = this.rec, first = this.n++ === 0; return { connect() {}, gain: { value: 0, setTargetAtTime(v) { this.value = v; if (first) rec.master.push(v); }, setValueAtTime() {}, linearRampToValueAtTime() {}, exponentialRampToValueAtTime() {} } }; }
@@ -1141,14 +1151,14 @@ try {
       && on.drones === 1 && on.osc === 4 && on.pressed === 'true' && on.last > 0 && on.last <= 0.06
       && off.pressed === 'false' && off.last === 0 && again.pressed === 'true' && again.drones === 1 && again.osc === 4 && again.last > 0 && !S.errors.length, JSON.stringify({ before, on, off, again, errs: S.errors }));
     await S.ctx.close(); }
-  { const Lk = await fresh({ content: 'localStorage.setItem("a2m.void.look.v1", JSON.stringify({ bg: "#101010", glow: "#202020", fx: "off" }));' });
+  if (want("block at line 1144")) { const Lk = await fresh({ content: 'localStorage.setItem("a2m.void.look.v1", JSON.stringify({ bg: "#101010", glow: "#202020", fx: "off" }));' });
     await Lk.p.waitForTimeout(500);
     const v = await Lk.p.evaluate(() => ({ glow: getComputedStyle(document.documentElement).getPropertyValue('--void-glow').trim(), sky: getComputedStyle(document.documentElement).getPropertyValue('--sky-glow').trim(), on: document.documentElement.classList.contains('sky-on') }));
     check('sky: a look the visitor chose still wins: with their own glow saved, the sky does not switch the empty-stage glow on and their colour stays the stage\'s', v.glow === '#202020' && !v.on && !Lk.errors.length, JSON.stringify({ v, errs: Lk.errors }));
     await Lk.ctx.close(); }
   // last place survives a page that never hid: the figure's own place is written on the scene's ordinary save (here an unrelated sticky), with no pagehide and no
   // visibility change; a page opened afterwards puts the figure back there. Reduced motion keeps the figure still so the numbers are exact. three.js is stubbed.
-  { const L = await fresh({ content: 'try { localStorage.setItem("a2m.void.motion.v1", "still"); } catch (_) {}' });
+  if (want("last place survives a page that never hid: the figure's own place is written on the scene'")) { const L = await fresh({ content: 'try { localStorage.setItem("a2m.void.motion.v1", "still"); } catch (_) {}' });
     const figSrcL = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
     const namesL = Array.from(new Set(Array.from(figSrcL.matchAll(/\b(?:THREE|T)\.([A-Z][A-Za-z0-9]*)/g), (m) => m[1])));
     const STUBL = 'const h={get(t,k){if(k===Symbol.toPrimitive)return()=>0;if(k==="then")return undefined;if(k in t)return t[k];return U},set(t,k,v){t[k]=v;return true},construct(){return new Proxy(function(){},h)},apply(){return U}};'
@@ -1176,12 +1186,12 @@ try {
     check('a11y: the main flows ran with the keyboard alone and with reduced motion, and every step has a verdict (shortfalls are reported in the log, as findings)',
       report.length >= 13 && broken.length === 0 && report.every((x) => typeof x.ok === 'boolean'), JSON.stringify(broken.length ? broken : report.map((x) => [x.id, x.ok])));
   }
-  { const G = await fresh(); let n = 0;
+  if (want("block at line 1179")) { const G = await fresh(); let n = 0;
     await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
     await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
     check('memory: without a key "remember that …" says to unlock Void first and sends nothing', /Unlock Void first/.test(said) && n === 0 && !G.errors.length, said.slice(0, 200) + ' | ' + n);
     await G.ctx.close(); }
-  { const N = await fresh(); let fetched = 0;
+  if (want("block at line 1184")) { const N = await fresh(); let fetched = 0;
     await N.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { fetched++; return r.fulfill(json({ answer: 'x' })); });
     await N.ask('what did I build with react', 900);
     const card = await N.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
@@ -1189,7 +1199,7 @@ try {
     await N.ctx.close(); }
   // the card keeps itself live (skills/live.js, every minute): a record that is running when the card opens settles to done
   // on screen after one tick with nobody pressing Refresh; it fetches a page of 30 and Show more brings the next 30
-  { const L = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+  if (want("the card keeps itself live (skills/live.js, every minute): a record that is running when t")) { const L = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const rec = (i, state) => ({ id: 'act-' + i, owner: 'owner', kind: i ? 'automation.note' : 'automation.http.post', ref: 'r' + i, state, result: state === 'done' ? 'did it' : null, error: null, started: new Date(1760000000000 - i * 60000).toISOString(), finished: state === 'done' ? '2026-10-10T00:10:00Z' : null });
     let all = [rec(0, 'running'), ...Array.from({ length: 40 }, (_, i) => rec(i + 1, 'done'))]; const calls = [];
     await L.ctx.route(/\/api\/actions(?:\?|$)/, (r) => { const u = new URL(r.request().url()); const limit = +u.searchParams.get('limit'), offset = +u.searchParams.get('offset') || 0; calls.push(limit + '/' + offset); return r.fulfill(json({ actions: all.slice(offset, offset + limit) })); });
@@ -1208,7 +1218,7 @@ try {
     await L.ctx.close(); }
   // the quiz (skills/quiz.js, frontier #17) is a learning card: never in the saved stage after a reload unless the visitor
   // kept that one card ("keep this quiz"); the gears it quizzed on are saved as always (void.html keptThings)
-  { const Z = await fresh();
+  if (want("the quiz (skills/quiz.js, frontier #17) is a learning card: never in the saved stage after")) { const Z = await fresh();
     await Z.ask('explain gears', 900); await Z.ask('quiz me on this', 900);
     const saved = () => Z.p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).map((t) => t.kind));
     const shown = await Z.p.$eval('.quiz-card .quiz-prompt', (e) => e.innerText).catch(() => '');
@@ -1224,7 +1234,7 @@ try {
   // the goal card (skills/goal.js, frontier #18): "give me a challenge with this" beside the gears sets the first goal they
   // do not already meet; the card takes their observations live (the stage's change event), so its "Now" line follows the
   // gears' own steppers, and Check says what still needs changing, then that it is done
-  { const Y = await fresh();
+  if (want("the goal card (skills/goal.js, frontier #18): \"give me a challenge with this\" beside the g")) { const Y = await fresh();
     await Y.ask('explain gears', 900);
     await Y.p.$$eval('.gears-more', (b) => b[0].click()); await Y.p.waitForTimeout(200); // driver 16 -> 17: no longer half speed
     await Y.ask('give me a challenge with this', 900);
@@ -1246,7 +1256,7 @@ try {
     await Y.ctx.close(); }
   // the same goal card on the Moon (frontier #18, no adapter): its orbit slider never saves while dragged, so the stage's
   // capture-phase notice is what keeps the card live; first quarter (90°) is a waxing half, 270° is half lit but waning
-  { const X = await fresh();
+  if (want("the same goal card on the Moon (frontier #18, no adapter): its orbit slider never saves wh")) { const X = await fresh();
     await X.ask('explain moon phases', 900); await X.ask('give me a challenge with this', 900);
     const goalText = await X.p.$eval('.goal-card .goal-text', (e) => e.textContent).catch(() => '');
     const slide = (deg) => X.p.$eval('.moon-orbit', (r, d) => { r.value = String(d); r.dispatchEvent(new Event('input', { bubbles: true })); }, deg);
@@ -1264,7 +1274,7 @@ try {
     await X.ctx.close(); }
   // and on the lock (frontier #18, the third explainer, still no adapter): a choice of key and a slider, checked by the
   // lock's own state word; a mismatched key all the way in is blocked (not yet), the matching key all the way in is ready
-  { const W = await fresh();
+  if (want("and on the lock (frontier #18, the third explainer, still no adapter): a choice of key and")) { const W = await fresh();
     await W.ask('how does a lock work', 900); await W.ask('give me a challenge with this', 900);
     const goalText = await W.p.$eval('.goal-card .goal-text', (e) => e.textContent).catch(() => '');
     const key = (k) => W.p.$eval('.lock-key[data-key="' + k + '"]', (b) => b.click());
@@ -1283,7 +1293,7 @@ try {
   const ranBeforeProposal = gate.ran.length;
   // the proposal card (skills/proposal.js, build order step 3): a pasted customer request becomes an editable proposal with
   // the price left for the owner; Send asks the confirm line and writes a stubbed proposal.send record; nothing is sent
-  { const P = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '");' });
+  if (want("the proposal card (skills/proposal.js, build order step 3): a pasted customer request beco")) { const P = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '");' });
     const REQ = 'Hi Adam,\n\nWe run a small bakery in Portland and our online orders come in through Shopify. We need the Zapier zap that copies each order into our Google Sheet fixed: since last week every order shows up twice and the morning bake list is wrong. We would also like someone to check the whole flow once a month so it does not break again before the holidays.\n\nCan you tell us what you would do and when you could start?\n\nThanks,\nMaria\nmaria@sunrisebakery.example';
     // pasted the way a person pastes it: the one-line ask box keeps each line break as ' ⏎ ' (void.html's paste handler; blank
     // lines fold) and the card keeps the whole request with its lines, not just the first one (lib/proposal.js multi)
@@ -1312,7 +1322,7 @@ try {
     await P.ctx.close(); }
   // the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the asker's scope and the card shows
   // its first check as evidence; "my watches" lists them with pause and stop; a visitor without a key is told whose it is
-  { const V = await fresh();
+  if (want("the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the aske")) { const V = await fresh();
     await V.ctx.route(/\/api\/watch(?:\?|$)/, (r) => r.fulfill({ status: 401, body: 'no' })); // as functions/api/watch.js answers a stranger
     await V.ask("tell me when it's below 0 in Oslo", 900);
     const visitor = await V.p.$eval('.watch-card .watch-status', (e) => e.textContent).catch(() => '');
@@ -1353,7 +1363,7 @@ try {
       keys.every((k) => k === '0123456789abcdef0123456789abcdef') && !leaked.length && !U.errors.length, JSON.stringify(keys) + ' ' + leaked.join(','));
     await U.ctx.close(); delete meEnv.READ_TOKEN; }
   // How-to asks, "what are you", "remove every clock", "reset my void" (list items 48, 88, 89, 96).
-  { const H = await fresh(); const net = []; H.p.on('request', (r) => { if (/wikipedia\.org|\/api\/(answer|miss)$/.test(r.url())) net.push(r.url()); });
+  if (want("How-to asks, \"what are you\", \"remove every clock\", \"reset my void\" (list items 48, 88, 89,")) { const H = await fresh(); const net = []; H.p.on('request', (r) => { if (/wikipedia\.org|\/api\/(answer|miss)$/.test(r.url())) net.push(r.url()); });
     await H.ask('how do I make a timer', 700); const how = await H.page(); const lit = await H.p.$eval('.vpage.on li.focus', (e) => e.textContent).catch(() => '');
     await H.ask('how can I add a sticky note?', 700); const lit2 = await H.p.$eval('.vpage.on li.focus', (e) => e.textContent).catch(() => '');
     const built = (await H.state()).length;
@@ -1389,7 +1399,7 @@ try {
     check('the how-to batch threw no page errors', !H.errors.length, H.errors.join(' | '));
     await H.ctx.close(); }
   // Handoff: writes need HANDOFF_TOKEN (the owner's READ_TOKEN never writes); the /handoff page drops and opens a file; /surface is a preview.
-  { const hf = await import(new URL('../void-live-deploy/functions/api/handoff.js', import.meta.url).href);
+  if (want("Handoff: writes need HANDOFF_TOKEN (the owner's READ_TOKEN never writes); the /handoff pag")) { const hf = await import(new URL('../void-live-deploy/functions/api/handoff.js', import.meta.url).href);
     const DB = sqliteD1();
     const post = (env, tok, body) => hf.onRequest({ request: new Request('https://a-to-mind.com/api/handoff', { method: 'POST', headers: { 'content-type': 'application/json', ...(tok ? { authorization: 'Bearer ' + tok } : {}) }, body: JSON.stringify(body || { name: 'x.sh', body: 'echo hi' }) }), env: { DB, ...env } });
     const none = (await post({ READ_TOKEN: 'owner-read' }, 'owner-read')).status, wrong = (await post({ HANDOFF_TOKEN: 'hand' }, 'nope')).status;
@@ -1434,7 +1444,7 @@ try {
   // Every service has its page (/one-time-fix/ and friends, the way Code Review Pro has /code-review/): it loads,
   // shows the live price from /api/catalog (the fix is stubbed at $26 to prove the live read, not the fallback), and
   // links its Gumroad product.
-  { const SVC = [['one-time-fix', 'eozcma', 2600, null, '$26'], ['keep-it-running', 'keep-it-running-membership', 4900, 'monthly', '$49 a month'], ['full-stack-audit', 'full-stack-audit', 32500, null, '$325'], ['first-automation-setup', 'first-automation-setup', 10000, null, '$100']];
+  if (want("Every service has its page (/one-time-fix/ and friends, the way Code Review Pro has /code-")) { const SVC = [['one-time-fix', 'eozcma', 2600, null, '$26'], ['keep-it-running', 'keep-it-running-membership', 4900, 'monthly', '$49 a month'], ['full-stack-audit', 'full-stack-audit', 32500, null, '$325'], ['first-automation-setup', 'first-automation-setup', 10000, null, '$100']];
     const cat = { products: SVC.map(([, slug, cents, rec]) => ({ slug, price_cents: cents, recurrence: rec, url: 'https://moonbeam846.gumroad.com/l/' + slug, available: true })) };
     const V = await fresh(); const got = [];
     await V.ctx.route(/\/api\/catalog(?:\?|$)/, (rt) => rt.fulfill(json(cat)));
@@ -1449,7 +1459,7 @@ try {
     await V.ctx.close(); }
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
-  { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
+  if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
     const R = await fresh(); const miss = [];
     R.p.on('request', (r) => { if (/\/api\/miss$/.test(r.url())) miss.push(r.url()); });
     for (const g of grown) {
@@ -1536,7 +1546,7 @@ try {
   await t.ask('my gpa is 3.2 with 60 credits and i got a 3.8 this semester with 15 credits', 700); const cumPg = await t.page(); check('grades: cumulative GPA (3.2 x 60 + 3.8 x 15) / 75 = 3.32', /Cumulative GPA/.test(cumPg) && /3\.32/.test(cumPg), cumPg.slice(0, 220));
   await t.ask('what letter grade is an 87', 700); const ltrPg = await t.page(); check('grades: 87% is a B+ (3.3) with the scale shown', /Letter grade/.test(ltrPg) && /B\+/.test(ltrPg) && /3\.3 grade points/.test(ltrPg), ltrPg.slice(0, 220));
   await t.ask('gpa calculator', 700); const gpForm = await t.page(); check('grades: "gpa calculator" opens a live form (A 3, B+ 3, A- 4, B 3 = 3.52)', /GPA calculator/.test(gpForm) && /3\.52/.test(gpForm) && /add a class/.test(gpForm), gpForm.slice(0, 220));
-  { const g = await import(new URL('../void-live-deploy/skills/grades.js', import.meta.url).href);
+  if (want("block at line 1539")) { const g = await import(new URL('../void-live-deploy/skills/grades.js', import.meta.url).href);
     check('grades: maths and routing (final formula, letter scale, lowercase "a" as article, asks left to calc)', Math.abs(g.neededOf(85, 20, 80) - 60) < 1e-9 && g.letterOf(89.9).l === 'B+' && g.letterOf(64).l === 'F'
       && JSON.stringify(g.gradesOf('what is my gpa with an a and a b').courses.map((c) => c.grade)) === '["A","B"]' && !g.gradesOf('what is the gpa of 3.5 and 4.0') && !g.gradesOf('what grade is 42 out of 50') && !g.gradesOf('what is a good gpa'), ''); }
   await t.ask('due date if my last period was march 1 2026', 700); const duePg = await t.page(); check('pregnancy: due date from the last period (Naegele, last period + 280 days), with the full-term window and ACOG source', /Due date/.test(duePg) && /December 6, 2026/.test(duePg) && /Full term/.test(duePg) && /ACOG/.test(duePg) && !/on your calendar/i.test(duePg), duePg.slice(0, 220));
@@ -1547,7 +1557,7 @@ try {
   await t.ask('my cycle is 26 to 32 days and my last period was october 1 2026 when am i fertile', 700); const ovRg = await t.page(); check('ovulation: irregular cycles as a range (shortest - 18 to longest - 11)', /October 8\u201321, 2026/.test(ovRg) && /shortest cycle minus 18/.test(ovRg), ovRg.slice(0, 220));
   await t.ask('ovulation calculator', 700); const ovCalc = await t.page(); check('ovulation: "ovulation calculator" opens a live form', /Ovulation calculator/.test(ovCalc) && /luteal phase/.test(ovCalc) && /Ovulation:/.test(ovCalc), ovCalc.slice(0, 220));
   // period log (this browser only): three starts 28 days apart give a 28-day average; "when am i ovulating" with no date then reads the log
-  { const d0 = new Date(); d0.setHours(12, 0, 0, 0); const ago = (n) => { const d = new Date(d0); d.setDate(d.getDate() - n); return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }); };
+  if (want("period log (this browser only): three starts 28 days apart give a 28-day average; \"when am")) { const d0 = new Date(); d0.setHours(12, 0, 0, 0); const ago = (n) => { const d = new Date(d0); d.setDate(d.getDate() - n); return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }); };
     await t.ask('clear my period log', 500);
     await t.ask('my period started on ' + ago(66), 500); await t.ask('my period started on ' + ago(38), 500); await t.ask('my period started on ' + ago(10), 700);
     const plog = await t.page(); check('period: "my period started on <date>" logs it; three starts 28 days apart give a 28-day average, today\'s cycle day and the next period', /Period log/.test(plog) && /3 periods logged/.test(plog) && /28-day cycle/.test(plog) && /day 11 of your cycle/.test(plog) && /in 18 days/.test(plog) && !/on your calendar/i.test(plog), plog.slice(0, 260));
@@ -1588,7 +1598,7 @@ try {
   await t.ask('how many sheets of drywall for a 12x14 room', 700); await t.ask('the whole room', 700); const rmF = await t.page(); check('room: "the whole room" after a drywall card puts that room and its drywall on one card', /Everything for the room/.test(rmF) && /15 sheets of 4 \u00d7 8 ft/.test(rmF) && /hang the drywall/.test(rmF) && /Paint/.test(rmF), rmF.slice(0, 300));
   await t.ask('redo a 4 by 5 metre room', 700); const rmG = await t.page(); check('room: a metric room in litres and square metres', /4 \u00d7 5 m room/.test(rmG) && /7\.7 L/.test(rmG) && /22 m\u00b2 of flooring/.test(rmG), rmG.slice(0, 300));
   await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
-  { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
+  if (want("block at line 1591")) { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
   await t.ask('5 miles in km', 700); check('calculation', /8\.05/.test(await t.page()));
   await t.ask('make my void deep blue'); check('your look', /01040f/.test(await t.p.evaluate(() => localStorage.getItem('a2m.void.look.v1') || '')));
@@ -1596,7 +1606,7 @@ try {
   await t.ask('why is the model busy', 600); check('answer engine busy -> article excerpt', await until(async () => /Black hole/.test(await t.page()), 5000));
   await t.ask('what do you want to be?', 300); check('will: Void says what it wants', await until(async () => /I want to answer every question about tides/.test(await t.page()), 4000));
   await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await t.page(); return /I am strong at sums and thin on places/.test(pg) && /Backgammon/.test(pg) && /Give the map card terrain/.test(pg); }, 4000); check('voice: Void says what it thinks of itself, in its own words, with what it has asked for', ok, (await t.page()).slice(0, 200)); }
-  { const q0 = queued.length; await t.ask('update yourself', 700); const w = await t.whisper();
+  if (want("block at line 1599")) { const q0 = queued.length; await t.ask('update yourself', 700); const w = await t.whisper();
     check('build asks are owner-only (a stranger\'s goes the ordinary way: nothing queued, no word of an owner)', queued.length === q0 && !/owner/i.test(w), w); }
   await t.p.fill('#input', 'tim'); await t.p.waitForTimeout(150); check('hints while typing', (await t.p.$$eval('#hints div', (d) => d.map((x) => x.textContent))).some((h) => /timer/.test(h)));
   check('no script errors', t.errors.length === 0, t.errors.join(' | '));
@@ -2032,7 +2042,7 @@ try {
   // (after the brake checks: these ceremonies share the per-isolate challenge brake with them)
   // Owner login with a passkey (Adam, 2026-10-03): the owner key binds a passkey once; after that "sign in" + the device PIN makes
   // the owner. Strangers can't bind, can't tell an owner mode exists, and nothing public lists it.
-  { const G1 = await import(new URL('../void-live-deploy/lib/guard.js', import.meta.url).href);
+  if (want("(after the brake checks: these ceremonies share the per-isolate challenge brake with them)")) { const G1 = await import(new URL('../void-live-deploy/lib/guard.js', import.meta.url).href);
     const oEnv = { DB: memoryMeD1(), PASSKEY_RP_ID: 'localhost', PASSKEY_ORIGINS: localOrigin, PASSKEY_BRAKE: 100000, READ_TOKEN: OWNER, SALT: 'test-salt' };
     const bearer = (t) => new Request('http://localhost/api/misses', { headers: { authorization: 'Bearer ' + t } });
     const opts = await pk(oEnv, { step: 'create-options' }), pkO = opts.body.publicKey, sel = pkO.authenticatorSelection || {};
@@ -2271,7 +2281,7 @@ try {
 
   // Free models until Void has earned: each time the free model falls short it is counted (place + reason, never the ask),
   // and the count becomes the will's evidence for a stronger model; the owner sees it next to the earnings.
-  { const limitEnv = { ...eEnv, AI: { run: async () => { throw new Error('AiError: 4006: you have used up your daily free allocation of 10,000 neurons'); } } };
+  if (want("Free models until Void has earned: each time the free model falls short it is counted (pla")) { const limitEnv = { ...eEnv, AI: { run: async () => { throw new Error('AiError: 4006: you have used up your daily free allocation of 10,000 neurons'); } } };
     eEnv.DB.queue.clear();
     await wPost(limitEnv); eEnv.DB.queue.clear(); await wPost(limitEnv);
     const rows = [...eEnv.DB.shortfalls.values()];
@@ -2766,7 +2776,7 @@ try {
   }
   // every skill in skills/index.json, old and new: its own examples reach it first and its near misses never do
   // (a new skill that takes another's asks, or a dead example, fails here instead of on the benchmark)
-  { const bad = [];
+  if (want("every skill in skills/index.json, old and new: its own examples reach it first and its nea")) { const bad = [];
     for (const mod of nsMods) {
       for (const e of mod.examples || []) if (firstNs(e) !== mod.name) bad.push(mod.name + ': "' + e + '" -> ' + firstNs(e));
       for (const e of mod.nearMisses || []) if (firstNs(e) === mod.name) bad.push(mod.name + ': near miss "' + e + '" taken');
@@ -2858,7 +2868,7 @@ try {
 
   // outcome card: the count is a stage thing now (not a popup page) — it keeps the right day count, copies as
   // plain text (stageApi.addCopy, reused rather than a one-off button), and survives a reload like any other thing
-  { const Q = await fresh();
+  if (want("outcome card: the count is a stage thing now (not a popup page) \u2014 it keeps the right day c")) { const Q = await fresh();
     const cdFull = await import(new URL('../void-live-deploy/skills/countdown.js', import.meta.url).href);
     const wantDays = cdFull.daysUntil(cdFull.newYearDate());
     await Q.ask('days until new year', 500);
@@ -2876,7 +2886,7 @@ try {
   // a press on a button in a card is a click when the pointer is let go where it went down, even if the card slid the
   // button out from under it (cards tilt toward the pointer and ease into it); dragging away still cancels, the keyboard
   // still clicks once, and a click that lands on the button is never doubled. The card is moved directly, not by timing.
-  { const Z = await fresh();
+  if (want("a press on a button in a card is a click when the pointer is let go where it went down, ev")) { const Z = await fresh();
     const probe = (h, pos) => Z.p.evaluate(([h, pos]) => { document.querySelector('#press-probe')?.remove(); const c = document.createElement('div'); c.id = 'press-probe'; c.className = 'thing kept-card game-card';
       c.style.cssText = 'left:420px;top:20px;width:440px;height:' + h + 'px;display:flex;flex-direction:column;justify-content:' + pos + ';padding:12px;transition:none';
       const b = document.createElement('button'); b.className = 'g-btn g-primary'; b.id = 'press-probe-btn'; b.textContent = 'press'; window.__pressHits = 0; window.__cardClicks = 0;
@@ -2907,7 +2917,7 @@ try {
     await Z.ctx.close(); }
 
   // othello: real rules (4 starting discs, a move must flip, 8 directions), and Void answers your move on the card
-  { const oth = await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
+  if (want("othello: real rules (4 starting discs, a move must flip, 8 directions), and Void answers y")) { const oth = await import(new URL('../void-live-deploy/skills/othello.js', import.meta.url).href);
     const s0 = oth.createOthelloState();
     const after = oth.resolveMove(s0, 19).nextState; // d3: flips d4
     let illegal = false; try { oth.resolveMove(s0, 0); } catch (_) { illegal = true; }
@@ -2927,7 +2937,7 @@ try {
   // polish (2026-10-07): boards arrive centred and clear of the ask bar (desktop and phone), long pages stop above it,
   // Aggravation is a real star board with a locked roll and computer players, "play 3d tic tac toe" gets a board (no hang),
   // the games hint names every game, and a finished ask leaves no stray "done" under the input
-  { const agg = await import(new URL('../void-live-deploy/skills/aggravation.js', import.meta.url).href);
+  if (want("polish (2026-10-07): boards arrive centred and clear of the ask bar (desktop and phone), l")) { const agg = await import(new URL('../void-live-deploy/skills/aggravation.js', import.meta.url).href);
     const unit = agg.default.suite();
     const Q = await fresh();
     // measured once the card has stopped moving: it arrives with a transform transition (.35-.6 s), and on a busy runner a
@@ -2979,7 +2989,7 @@ try {
       && failResult && (failResult.pass === false || failResult.issues?.includes?.('skipped')) && Array.isArray(failResult.issues),
     liMod ? liMod.examples.map((e) => e + ' -> ' + firstNs(e)).join(' | ') : 'missing local-inference');
 
-  { const slog = await import(new URL('../void-live-deploy/skills/slogan3d.js', import.meta.url).href);
+  if (want("block at line 2982")) { const slog = await import(new URL('../void-live-deploy/skills/slogan3d.js', import.meta.url).href);
     const doc = slog.sloganDoc({ reduce: true });
     check('slogan3d: exact slogan text; reduced-motion doc stays still (REDUCE true); no network libs',
       slog.SLOGAN === 'A-to-Mind. Peace of mind, from A to Z. An all-in-one supertool.'

@@ -5,6 +5,7 @@
 // them plainly still queues; the wrapper is for anything else that opens a browser for minutes.
 //   node tools/heavy.mjs <command> [args...]    run the command once no other heavy job holds the lock
 //   VOID_HEAVY_WAIT_MS                          how long to wait for the lock (default 90 min), then fail loudly
+//   VOID_HEAVY_HELD=<pid>                       set by the wrapper for its command: a job inside it does not wait on its own parent
 //   VOID_HEAVY_OFF=1                            no lock (a machine that runs one thing at a time, or CI, where each job has its own runner)
 import { mkdirSync, rmSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
@@ -27,6 +28,10 @@ export function holder(lock = LOCK) {
  */
 export async function acquire(label, { lock = LOCK, waitMs = Number(process.env.VOID_HEAVY_WAIT_MS) || 5400000, pollMs = 2000, log = (m) => console.error(m), isAlive = alive } = {}) {
   if (process.env.VOID_HEAVY_OFF) return () => {};
+  // run under `node tools/heavy.mjs`, which already holds the lock for this job: waiting would wait on our own parent forever
+  // (2026-10-11: `heavy.mjs node tools/test_void.mjs` deadlocked, since the suite takes the lock itself)
+  const held = Number(process.env.VOID_HEAVY_HELD);
+  if (held && (holder(lock) || {}).pid === held && isAlive(held)) return () => {};
   const t0 = Date.now(); let said = 0;
   for (;;) {
     try {
@@ -51,7 +56,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [cmd, ...args] = process.argv.slice(2);
   if (!cmd) { console.error('usage: node tools/heavy.mjs <command> [args...]'); process.exit(2); }
   const release = await acquire(cmd + ' ' + args.join(' '));
-  const r = spawnSync(cmd, args, { stdio: 'inherit', shell: process.platform === 'win32' });
+  const r = spawnSync(cmd, args, { stdio: 'inherit', shell: process.platform === 'win32', env: { ...process.env, VOID_HEAVY_HELD: String(process.pid) } });
   release();
   process.exit(r.status === null ? 1 : r.status);
 }
