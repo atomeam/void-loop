@@ -888,6 +888,28 @@ try {
         && !/I made/.test(r.reload) && /^1 of 4 · Built lately/.test(r.typed) && !P.errors.length,
       JSON.stringify({ ...r, errors: P.errors }).slice(0, 900));
     await P.ctx.close(); }
+  // the owner (2026-10-11): a sticky sat 85% hidden behind the rating card; an open card never buries a stage thing
+  if (want("an open card never buries a stage thing: it steps aside while the card is up and comes back, its saved place unchanged")) {
+    const r = {};
+    for (const [w, h] of [[1280, 800], [390, 844]]) {
+      const P = await fresh(); await P.p.setViewportSize({ width: w, height: h }); await P.p.waitForTimeout(300);
+      await P.ask('sticky note buy milk', 700);
+      const box = () => P.p.$eval('.sticky', (e) => { const b = e.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.top), Math.round(b.width), Math.round(b.height)]; });
+      const covered = () => P.p.evaluate(() => { const s = document.querySelector('.sticky'), v = document.querySelector('.vpage.on'); if (!s || !v) return -1; const a = s.getBoundingClientRect(), b = v.getBoundingClientRect();
+        return Math.round(100 * Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)) / (a.width * a.height)); });
+      const saved = async () => (await P.state()).filter((t) => t.kind === 'sticky').map((t) => [t.x, t.y]).join(';');
+      const before = await box(), place = await saved();
+      await P.ask('how good are you at othello', 1600);
+      const under = await covered(), during = await box(), placeDuring = await saved();
+      await P.ask('close', 900);
+      const after = await box();
+      r[w] = { before, under, during, after, same: place === placeDuring && place === await saved(), errors: P.errors.length };
+      await P.ctx.close();
+    }
+    const ok = (x) => x.under === 0 && x.same && x.during.join() !== x.before.join() && x.after.join() === x.before.join() && !x.errors;
+    check('an open card never buries a stage thing: a sticky in the middle steps aside when "how good are you at othello" opens (none of it under the card, on a desktop and on a phone), comes back to the same spot when the card closes, and where it was put is never changed or saved over',
+      ok(r[1280]) && ok(r[390]), JSON.stringify(r));
+  }
   // step 6 (one shape for skills): the counter, pinned before it moves out of void.html; the same asks must keep working after
   if (want("built-in counter: make, count up and down, set, reset, size, buttons, a reload, remove; only ever one counter")) { const P = await fresh();
     const one = async () => (await P.state()).filter((t) => t.kind === 'counter');

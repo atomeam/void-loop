@@ -72,6 +72,8 @@
       cursor: grab;
     }
     .thing:active { cursor: grabbing; }
+    .thing.aside-glide { transition: translate .35s cubic-bezier(.2,.7,.2,1); } /* stepping aside for an open card (clearUnderPage) */
+    @media (prefers-reduced-motion: reduce) { .thing.aside-glide { transition: none; } }
     .clock {
       font-variant-numeric: tabular-nums;
       letter-spacing: 0.04em;
@@ -870,6 +872,42 @@ Object.values(things).forEach((th) => {
       syncFigures();
       announceNew();
       requestAnimationFrame(() => layoutStage()); // after any centring the summoner asked for
+      if (vpageEl) requestAnimationFrame(() => clearUnderPage(false)); // things drawn again while a card is up stay clear of it
+    }
+    // An open card never buries what is on the stage (the owner, 2026-10-11: a sticky sat 85% hidden under the rating card).
+    // A thing mostly under the card glides to the nearest side with room (left, right, above, below: the shortest move)
+    // while the card is up, and back when it closes.
+    // Only how it is drawn moves (CSS translate); where it was put (th.x, th.y) is unchanged and unsaved, unless you take
+    // hold of it while it is aside: then it stays where you see it. Where no side has room, it stays put.
+    function clearUnderPage(glide = true) {
+      const pg = vpageEl && vpageEl.classList.contains('on') ? vpageEl.getBoundingClientRect() : null;
+      const floor = stage.getBoundingClientRect().bottom - 8;
+      for (const el of stage.querySelectorAll(':scope > [data-id]')) {
+        const had = el._aside || [0, 0], r0 = el.getBoundingClientRect();
+        const r = { left: r0.left - had[0], right: r0.right - had[0], top: r0.top - had[1], bottom: r0.bottom - had[1], width: r0.width, height: r0.height };
+        let move = [0, 0];
+        if (pg) {
+          const w = Math.min(r.right, pg.right) - Math.max(r.left, pg.left), h = Math.min(r.bottom, pg.bottom) - Math.max(r.top, pg.top);
+          if (w > 0 && h > 0 && w * h >= 0.3 * r.width * r.height) {
+            const fits = ([x, y]) => r.left + x >= 8 && r.right + x <= innerWidth - 8 && r.top + y >= 8 && r.bottom + y <= floor;
+            move = [[pg.left - 14 - r.right, 0], [pg.right + 14 - r.left, 0], [0, pg.top - 14 - r.bottom], [0, pg.bottom + 14 - r.top]]
+              .filter(fits).sort((a, b) => Math.abs(a[0]) + Math.abs(a[1]) - Math.abs(b[0]) - Math.abs(b[1]))[0] || [0, 0];
+          }
+        }
+        if (Math.round(move[0]) === Math.round(had[0]) && Math.round(move[1]) === Math.round(had[1])) continue;
+        const away = !!(move[0] || move[1]);
+        el.classList.toggle('aside-glide', glide);
+        el._aside = move; el.style.translate = away ? Math.round(move[0]) + 'px ' + Math.round(move[1]) + 'px' : '';
+        if (away && !el._asideHold) {
+          el._asideHold = () => { // taken hold of while aside: it stays where it is seen
+            const th = things[el.dataset.id], [x, y] = el._aside || [0, 0]; if (!th || (!x && !y)) return;
+            th.x = (Number(th.x) || 0) + x; th.y = (Number(th.y) || 0) + y; el.style.left = th.x + 'px'; el.style.top = th.y + 'px';
+            el.classList.remove('aside-glide'); el.style.translate = ''; el._aside = [0, 0]; save();
+          };
+          el.addEventListener('pointerdown', el._asideHold, true);
+        }
+        if (!away && el._asideHold) { el.removeEventListener('pointerdown', el._asideHold, true); el._asideHold = null; }
+      }
     }
     // Cards stop landing on top of each other (lib/placement.js, 2026-10-10): a card that just arrived takes the nearest free
     // spot from where it was asked to land; a card that grows (a draft filling the tab card, a 3D miniature loading) moves the
@@ -2853,6 +2891,7 @@ return { ok: true, detail: 'timer-reset' };
       document.querySelectorAll('.vslogan').forEach((n) => n.remove());
       el.classList.remove('on');
       setTimeout(() => el.remove(), 350);
+      clearUnderPage(); // what stepped aside for it comes back
       return true;
     }
     // Dated sources: every sourced answer says when it was fetched.
@@ -2933,6 +2972,9 @@ return { ok: true, detail: 'timer-reset' };
       stampSources(el); keepTail(el);
       new MutationObserver(() => { stampSources(el); keepTail(el); }).observe(el, { childList: true, subtree: true });
       requestAnimationFrame(() => el.classList.add('on'));
+      // what it covers steps aside, once it is up and again whenever it grows (an answer arriving); not on a phone-wide card
+      setTimeout(() => { if (vpageEl === el) clearUnderPage(); }, 380);
+      if (typeof ResizeObserver === 'function') new ResizeObserver(() => { if (vpageEl === el && el.classList.contains('on')) clearUnderPage(); }).observe(el);
       return el;
     }
     // a "copy" button under an answer: copies the heading and the text (not the buttons), says "copied"
