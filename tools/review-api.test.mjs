@@ -314,3 +314,15 @@ test('standard CSS is never a finding: #522 and #525\'s false claims about rotat
   assert.equal(knownFalse('The CSS property scale is set twice, the second overrides the first'), null, 'a real CSS finding stays');
   assert.match(CSS_RULE, /rotate, translate and scale/);
 });
+test('a line marked "void-review: ok" is left out of the closer read too, as the quick checks leave it out (#538\'s ReDoS claim on a marked line)', () => {
+  const diff = ['diff --git a/tools/review-bench.mjs b/tools/review-bench.mjs', '+++ b/tools/review-bench.mjs', '@@ -0,0 +21,2 @@',
+    "+  const re = new RegExp(quote); // void-review: ok (the pattern is a case written in tools/review-bench.json, meant as a regex)",
+    "+  const r2 = new RegExp(userText);"].join('\n');
+  const ev = evidenceLines(diff, true);
+  const v = validateFindings([
+    { file: 'tools/review-bench.mjs', line: 21, kind: 'risk', text: 'Building a RegExp directly from external data can cause ReDoS.', quote: 'const re = new RegExp(quote); // void-review: ok (the pattern is a case written in tools/review-bench.json, meant as a regex)' },
+    { file: 'tools/review-bench.mjs', line: 22, kind: 'risk', text: 'Building a RegExp from user text can cause ReDoS.', quote: 'const r2 = new RegExp(userText);' },
+  ], ev);
+  assert.deepEqual(v.kept.map((f) => f.line), [22], 'the unmarked line stays');
+  assert.equal(v.dropped, 1);
+});
