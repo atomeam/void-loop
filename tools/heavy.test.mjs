@@ -38,3 +38,16 @@ test('VOID_HEAVY_OFF skips the lock (CI gives each job its own runner)', async (
   try { const release = await acquire('x', { lock }); assert.equal(existsSync(lock), false); release(); }
   finally { delete process.env.VOID_HEAVY_OFF; }
 });
+
+test('a job run under the wrapper does not wait on its own parent (VOID_HEAVY_HELD)', async () => {
+  const lock = join(mkdtempSync(join(tmpdir(), 'heavy-')), 'lock');
+  const parent = await acquire('wrapper', { lock });
+  process.env.VOID_HEAVY_HELD = String(process.pid);
+  try {
+    const inner = await acquire('suite inside', { lock, waitMs: 200, pollMs: 10 });
+    inner(); // a no-op: the wrapper still holds it
+    assert.equal(holder(lock).label, 'wrapper');
+    process.env.VOID_HEAVY_HELD = '999999'; // someone else's pid: wait as usual
+    await assert.rejects(acquire('stranger', { lock, waitMs: 50, pollMs: 10 }), /still waiting/);
+  } finally { delete process.env.VOID_HEAVY_HELD; parent(); }
+});
