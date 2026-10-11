@@ -41,7 +41,7 @@ export function lineOf(what) {
 /** { line, ask } for a ledger entry that can be shown on the stage, or null. Pure. */
 export function playable(e) {
   if (!e || !SHOWN_KINDS.has(e.kind)) return null;
-  if (e.try) return { line: e.show || lineOf(e.what), ask: e.try };
+  if (e.try) return showcaseOf(e.try) ? null : { line: e.show || lineOf(e.what), ask: e.try }; // never the walkthrough itself
   const k = KNOWN.find((x) => x.match.test(String(e.what || '')));
   return k ? { line: k.show, ask: k.try } : null;
 }
