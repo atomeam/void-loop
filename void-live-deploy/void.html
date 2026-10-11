@@ -891,7 +891,10 @@ Object.values(things).forEach((th) => {
       const floor = stage.getBoundingClientRect().bottom - 8;
       for (const el of stage.querySelectorAll(':scope > [data-id]')) {
         const had = el._aside || [0, 0], r0 = el.getBoundingClientRect();
-        const r = { left: r0.left - had[0], right: r0.right - had[0], top: r0.top - had[1], bottom: r0.bottom - had[1], width: r0.width, height: r0.height };
+        // where it is drawn now, mid-glide included (the computed translate, not the target in _aside): measured against the
+        // target while it was still gliding, a second look put it back under the card
+        const now = (getComputedStyle(el).translate || 'none').split(' ').map((v) => parseFloat(v) || 0), nx = now[0] || 0, ny = now[1] || 0;
+        const r = { left: r0.left - nx, right: r0.right - nx, top: r0.top - ny, bottom: r0.bottom - ny, width: r0.width, height: r0.height };
         let move = [0, 0];
         if (pg) {
           const w = Math.min(r.right, pg.right) - Math.max(r.left, pg.left), h = Math.min(r.bottom, pg.bottom) - Math.max(r.top, pg.top);
@@ -2987,6 +2990,9 @@ return { ok: true, detail: 'timer-reset' };
       // what it covers steps aside, once it is up and again whenever it grows (an answer arriving); not on a phone-wide card
       setTimeout(() => { if (vpageEl === el) clearUnderPage(); }, 380);
       if (typeof ResizeObserver === 'function') new ResizeObserver(() => { if (vpageEl === el && el.classList.contains('on')) clearUnderPage(); }).observe(el);
+      // and once more when it has finished opening: it is drawn smaller while it scales in (transform, .6 s), which a
+      // ResizeObserver never sees, so a slow machine measured the small card and left a thing under the full one
+      el.addEventListener('transitionend', (e) => { if (e.target === el && e.propertyName === 'transform' && vpageEl === el && el.classList.contains('on')) clearUnderPage(); });
       return el;
     }
     // a "copy" button under an answer: copies the heading and the text (not the buttons), says "copied"
