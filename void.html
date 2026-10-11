@@ -81,18 +81,31 @@
       border: 1px solid rgba(255,255,255,0.06);
       backdrop-filter: blur(8px);
     }
-    .sticky {
+    /* Caveat (SIL OFL 1.1, vendor/caveat-5.0.13/LICENSE), served from this site: the browser fetches it only once a note is up */
+    @font-face { font-family: 'Void Hand'; src: url('/vendor/caveat-5.0.13/caveat-latin-500-normal.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
+    /* a real 3x3 in sticky note: square paper, sharp corners, the glue strip a shade darker along the top, the bottom edge
+       lifting off the stage (the shadow sits low), a slight tilt per note (skills/sticky.js), written in a felt-tip hand */
+    .thing.sticky {
+      box-sizing: border-box;
       width: 180px;
-      min-height: 120px;
-      padding: 12px 14px;
-      border-radius: 4px;
-      background: #f4e27a;
-      color: #222;
-      font: 14px/1.35 ui-sans-serif, system-ui, sans-serif;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      min-height: 180px;
+      padding: 30px 16px 16px;
+      border-radius: 1px 1px 3px 2px;
+      background-color: #f4e27a;
+      background-image:
+        linear-gradient(to bottom, rgba(0,0,0,0.045), rgba(0,0,0,0.02) 18%, rgba(0,0,0,0) 19%),
+        linear-gradient(to top, rgba(0,0,0,0.08), rgba(0,0,0,0) 12%),
+        linear-gradient(135deg, rgba(255,255,255,0) 60%, rgba(255,255,255,0.16));
+      color: #23252b;
+      font-family: 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
+      font-size: 21px;
+      line-height: 1.2;
+      box-shadow: 0 1px 1px rgba(0,0,0,0.18), 0 14px 12px -10px rgba(0,0,0,0.55), 0 6px 18px rgba(0,0,0,0.22);
       white-space: pre-wrap;
       word-break: break-word;
+      outline-offset: 3px;
     }
+    .thing.sticky:focus { outline: 1px dashed rgba(0,0,0,0.28); }
     .notepad {
       width: 320px;
       min-height: 240px;
