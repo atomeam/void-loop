@@ -31,6 +31,9 @@ const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Ed
 const argOf = (f) => { const i = process.argv.indexOf(f); return i > 0 ? String(process.argv[i + 1] || '') : ''; };
 const ONLY = (argOf('--only') || process.env.VOID_ONLY || '').toLowerCase().split(/\s+/).filter(Boolean);
 const want = (label) => !ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w));
+// everything outside the named sections (the long run of asks on the one shared page `t`, and the checks that read what
+// those asks left behind): --only "core" runs it. Plain setup (declarations, no checks) always runs.
+const CORE = want('core: the shared page, the asks typed one after another');
 if (process.argv.includes('--list')) {
   for (const m of fs.readFileSync(new URL(import.meta.url), 'utf8').matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)) console.log(JSON.parse(m[1]));
   process.exit(0);
@@ -408,7 +411,9 @@ async function fresh(...inits) {
 }
 
 try {
+  let menu, art, tr, mp, airPg, uvPg, quakePg, loanPg, loanX, fuelPg, calPg, proPg, h2oPg, calForm, nfA, nfB, nfC, hrA, hrB, hrC, hrD, hrE, hrF, hrG, hrH, tipPg, tipSplit, svPg, svTime, svNeed, svCalc, sleepPg, wakePg, needPg, gpaPg, wgpPg, finPg, cumPg, ltrPg, gpForm, duePg, conPg, ivfPg, farPg, ovPg, ovRg, ovCalc, hmPaint, hmTile, hmCarpet, hfCoats, hfCeil, hfCost, hfOpen, hfCarpet, hfTile, hfPaint, hmCalc, wlWp, wlRep, wlCost, wlDw, wlCeil, wlLong, wlPaint, wlBack, wlDw2, wlCalc, rmA, rmB, rmC, rmD, rmE, rmF, rmG, pollenPg, an, man, os, micAfter, spoken, sharedAsk, sharedLink, errs1, fb, names, schemaOk, calc, made, owner, idAsks, paidAgent, toolText, buyLine, timedOut, brokenLine; // declared up front: the CORE blocks below assign them (tools/test_void.mjs --only)
   let t = await fresh();
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   check('surface is empty on arrival', (await t.p.$$eval('#stage > *', (d) => d.length)) === 0 && !(await t.page()));
   check('noscript text stays hidden', !(await t.p.evaluate(() => document.body.innerText)).includes('It needs JavaScript'));
   // the first ask of a fresh page: wait for the clock to land rather than 450 ms (on a loaded runner it once took longer and the whole run went red)
@@ -421,6 +426,7 @@ try {
   await t.ask('clear all the notes'); check('clear all the notes', !(await t.state()).some((x) => x.kind === 'sticky') && (await t.state()).some((x) => x.kind === 'timer'));
   await t.ask('undo'); check('undo brings the group back', (await t.state()).filter((x) => x.kind === 'sticky').length === 2);
   await t.ask('make everything blue'); check('make everything blue', (await t.state()).every((x) => !x.color || /6aa8ff|9ec8ff/.test(x.color)));
+  } // CORE
   // Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss board (items 3-8 of the 2026-09-28 list).
   if (want("Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss ")) { const M = await fresh(); const out = [];
     const net = []; M.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer)$/.test(u)) net.push(u); });
@@ -1050,6 +1056,7 @@ try {
     await back.reload(); await back.waitForTimeout(800);
     check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway && !(document.getElementById('away-note') || {}).textContent), '');
     await W.ctx.close(); }
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   { // frontier #11: two tabs on one invite link (?with=<room>). Here the live relay is not there (no Durable Object in this
     // local server), so the tabs share through a BroadcastChannel: a clock summoned in one appears in the other, and the
     // other tab's cursor shows as a faint presence; closing that tab takes the presence away.
@@ -1067,6 +1074,7 @@ try {
       /tabs in this browser/.test(saidA) && onB === 1 && dot && Math.abs(dot.x - 320) < 40 && Math.abs(dot.y - 220) < 40 && after === 0 && !errsS.length && !S.errors.length,
       JSON.stringify({ saidA, onB, dot, after, errsS, errs: S.errors }));
     await S.ctx.close(); }
+  } // CORE
   // asked by Void: what happened while you were away is also one execution record in your own scope (lib/scene-advance.js, kind scene.advance); the away line
   // links to it and "my actions" shows the row. Here the owner's key is set and /api/actions is answered by the page's own stand-in.
   if (want("asked by Void: what happened while you were away is also one execution record in your own ")) { const M = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
@@ -1179,6 +1187,7 @@ try {
     await L.ctx.close(); }
   // the visitors Void would exclude (frontier #23, tools/a11y-flows.mjs): the main flows with the keyboard alone and with reduced motion, each step reporting whether it
   // holds or where it falls short. The shortfalls are printed for the log and are findings, not failures (fixes come after); the check fails only if the flows cannot run.
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   { const { runFlows, formatReport } = await import(new URL('./a11y-flows.mjs', import.meta.url).href);
     const report = await runFlows(fresh);
     console.log('a11y flows (' + report.filter((x) => x.ok).length + ' of ' + report.length + ' hold):\n' + formatReport(report).split('\n').map((l) => '  ' + l).join('\n'));
@@ -1186,6 +1195,7 @@ try {
     check('a11y: the main flows ran with the keyboard alone and with reduced motion, and every step has a verdict (shortfalls are reported in the log, as findings)',
       report.length >= 13 && broken.length === 0 && report.every((x) => typeof x.ok === 'boolean'), JSON.stringify(broken.length ? broken : report.map((x) => [x.id, x.ok])));
   }
+  } // CORE
   if (want("block at line 1179")) { const G = await fresh(); let n = 0;
     await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
     await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
@@ -1353,6 +1363,7 @@ try {
     await W.ctx.close(); }
   // "unlock <key>" is the first thing handled: pasted with or without the space (or "unlock" twice) it is saved on this
   // device and nothing carrying the key leaves the page (it once went to the answer model and the miss board).
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   { meEnv.READ_TOKEN = '0123456789abcdef0123456789abcdef'; const U = await fresh(); const leaked = []; // the server checks the key first (owner login) U.p.on('request', (r) => { if (/0123456789abcdef0123/.test(r.url() + (r.postData() || ''))) leaked.push(r.url()); });
     const keys = [];
     for (const a of ['unlock 0123456789abcdef0123456789abcdef', 'unlock0123456789abcdef0123456789abcdef', 'unlockunlock 0123456789abcdef0123456789abcdef']) {
@@ -1362,6 +1373,7 @@ try {
     check('unlock: with or without the space (or doubled) the key is saved on this device, and no request carries it',
       keys.every((k) => k === '0123456789abcdef0123456789abcdef') && !leaked.length && !U.errors.length, JSON.stringify(keys) + ' ' + leaked.join(','));
     await U.ctx.close(); delete meEnv.READ_TOKEN; }
+  } // CORE
   // How-to asks, "what are you", "remove every clock", "reset my void" (list items 48, 88, 89, 96).
   if (want("How-to asks, \"what are you\", \"remove every clock\", \"reset my void\" (list items 48, 88, 89,")) { const H = await fresh(); const net = []; H.p.on('request', (r) => { if (/wikipedia\.org|\/api\/(answer|miss)$/.test(r.url())) net.push(r.url()); });
     await H.ask('how do I make a timer', 700); const how = await H.page(); const lit = await H.p.$eval('.vpage.on li.focus', (e) => e.textContent).catch(() => '');
@@ -1489,39 +1501,40 @@ try {
     check('grown: ' + grown.length + ' real asks Void once missed now answer on the real page (no miss posted, the right answer); the list only grows',
       shape && !bad.length && grown.length >= 15 && !R.errors.length, bad.join(' | ') + ' ' + R.errors.join('|'));
     await R.ctx.close(); }
-  await t.ask('menu'); const menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
+  await t.ask('menu'); menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
   await t.ask('close');
-  await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); const art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
-  await t.ask('translate hello to Spanish', 1200); const tr = await t.page(); check('translate', /hola/.test(tr) && /Google Translate/.test(tr), tr.slice(0, 80));
+  await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
+  await t.ask('translate hello to Spanish', 1200); tr = await t.page(); check('translate', /hola/.test(tr) && /Google Translate/.test(tr), tr.slice(0, 80));
   await t.ask('keep this'); check('keep this', (await t.state()).some((x) => x.kind === 'kept'));
   await t.ask('call this spanish hello'); check('call this', (await t.state()).some((x) => x.kind === 'kept' && x.name === 'spanish hello'));
   await t.p.reload(); await t.p.waitForTimeout(700); check('kept card survives reload', (await t.p.$$eval('.kept-card', (d) => d.length)) === 1);
-  await t.ask('map of Lisbon', 1200); const mp = await t.page(); check('map of Lisbon picks Portugal', /Lisbon/.test(mp) && /Portugal/.test(mp) && (await t.p.$$eval('.vpage iframe', (d) => d.length)) === 1, mp.slice(0, 80));
+  await t.ask('map of Lisbon', 1200); mp = await t.page(); check('map of Lisbon picks Portugal', /Lisbon/.test(mp) && /Portugal/.test(mp) && (await t.p.$$eval('.vpage iframe', (d) => d.length)) === 1, mp.slice(0, 80));
   await t.ask('weather in Lisbon', 1200); check('weather', /20°|68°/.test(await t.page()));
-  await t.ask('air quality in Lisbon', 1200); const airPg = await t.page(); check('air quality', /US AQI/.test(airPg) && /Good|Moderate|Unhealthy|Hazardous/.test(airPg) && /Open-Meteo/.test(airPg), airPg.slice(0, 120));
-  await t.ask('UV index in Lisbon', 1200); const uvPg = await t.page(); check('uv index', /UV index/.test(uvPg) && /Low|Moderate|High|Very High|Extreme/.test(uvPg) && /Open-Meteo/.test(uvPg) && /WHO/.test(uvPg), uvPg.slice(0, 120));
-  await t.ask('earthquakes near Lisbon', 1200); const quakePg = await t.page(); check('earthquakes', /Near Lisbon|Earthquakes|USGS/.test(quakePg) && /M5\.2|M3\.1|magnitude|Major|Strong|Moderate|Light|Minor/.test(quakePg), quakePg.slice(0, 160));
-  await t.ask('monthly payment on a $250000 mortgage at 6.5% for 30 years', 700); const loanPg = await t.page(); check('loan payment', /\/ month/.test(loanPg) && /Total interest/.test(loanPg) && /mortgage/i.test(loanPg) && /First year/.test(loanPg) && /extra each month/.test(loanPg), loanPg.slice(0, 180));
-  await t.ask('$300k mortgage at 6.5% for 30 years with $200 extra a month', 700); const loanX = await t.page(); check('loan extra payment', /extra \/ month/.test(loanX) && /months sooner/.test(loanX) && /save/.test(loanX) && /interest/.test(loanX), loanX.slice(0, 180));
-  await t.ask('gas cost for 320 miles at 28 mpg $3.59 a gallon', 700); const fuelPg = await t.page(); check('trip fuel', /Trip fuel/.test(fuelPg) && /Fuel needed/.test(fuelPg) && /Per mile/.test(fuelPg) && /gal/.test(fuelPg), fuelPg.slice(0, 180));
-  await t.ask("calories for a 30 year old male 5'10 180 lbs moderately active", 700); const calPg = await t.page(); check('nutrition: daily calories by Mifflin-St Jeor (30, male, 5\'10, 180 lb, moderate = 2,760 to keep, BMR 1,780)', /Daily calories/.test(calPg) && /2,760/.test(calPg) && /1,780/.test(calPg) && /Lose 1 lb a week: 2,260/.test(calPg) && /Mifflin/.test(calPg), calPg.slice(0, 200));
-  await t.ask('how much protein do i need if i weigh 180 pounds', 700); const proPg = await t.page(); check('nutrition: protein for 180 lb (RDA 65 g, 1.6 g/kg 131 g)', /Protein a day/.test(proPg) && /65 g/.test(proPg) && /131 g/.test(proPg) && /ISSN/.test(proPg), proPg.slice(0, 200));
-  await t.ask('how much water should i drink a day', 700); const h2oPg = await t.page(); check('nutrition: water a day (National Academies: 13 cups men, 9 cups women)', /Water a day/.test(h2oPg) && /13 cups/.test(h2oPg) && /9 cups/.test(h2oPg) && /National Academies/.test(h2oPg) && !/noted it/.test(h2oPg), h2oPg.slice(0, 200));
-  await t.ask('calorie calculator', 700); const calForm = await t.page(); check('nutrition: calorie calculator form works (default 30, 5\'9, 170 lb, light = 2,370)', /Calorie calculator/.test(calForm) && /2,370/.test(calForm), calForm.slice(0, 200));
+  await t.ask('air quality in Lisbon', 1200); airPg = await t.page(); check('air quality', /US AQI/.test(airPg) && /Good|Moderate|Unhealthy|Hazardous/.test(airPg) && /Open-Meteo/.test(airPg), airPg.slice(0, 120));
+  await t.ask('UV index in Lisbon', 1200); uvPg = await t.page(); check('uv index', /UV index/.test(uvPg) && /Low|Moderate|High|Very High|Extreme/.test(uvPg) && /Open-Meteo/.test(uvPg) && /WHO/.test(uvPg), uvPg.slice(0, 120));
+  await t.ask('earthquakes near Lisbon', 1200); quakePg = await t.page(); check('earthquakes', /Near Lisbon|Earthquakes|USGS/.test(quakePg) && /M5\.2|M3\.1|magnitude|Major|Strong|Moderate|Light|Minor/.test(quakePg), quakePg.slice(0, 160));
+  await t.ask('monthly payment on a $250000 mortgage at 6.5% for 30 years', 700); loanPg = await t.page(); check('loan payment', /\/ month/.test(loanPg) && /Total interest/.test(loanPg) && /mortgage/i.test(loanPg) && /First year/.test(loanPg) && /extra each month/.test(loanPg), loanPg.slice(0, 180));
+  await t.ask('$300k mortgage at 6.5% for 30 years with $200 extra a month', 700); loanX = await t.page(); check('loan extra payment', /extra \/ month/.test(loanX) && /months sooner/.test(loanX) && /save/.test(loanX) && /interest/.test(loanX), loanX.slice(0, 180));
+  await t.ask('gas cost for 320 miles at 28 mpg $3.59 a gallon', 700); fuelPg = await t.page(); check('trip fuel', /Trip fuel/.test(fuelPg) && /Fuel needed/.test(fuelPg) && /Per mile/.test(fuelPg) && /gal/.test(fuelPg), fuelPg.slice(0, 180));
+  await t.ask("calories for a 30 year old male 5'10 180 lbs moderately active", 700); calPg = await t.page(); check('nutrition: daily calories by Mifflin-St Jeor (30, male, 5\'10, 180 lb, moderate = 2,760 to keep, BMR 1,780)', /Daily calories/.test(calPg) && /2,760/.test(calPg) && /1,780/.test(calPg) && /Lose 1 lb a week: 2,260/.test(calPg) && /Mifflin/.test(calPg), calPg.slice(0, 200));
+  await t.ask('how much protein do i need if i weigh 180 pounds', 700); proPg = await t.page(); check('nutrition: protein for 180 lb (RDA 65 g, 1.6 g/kg 131 g)', /Protein a day/.test(proPg) && /65 g/.test(proPg) && /131 g/.test(proPg) && /ISSN/.test(proPg), proPg.slice(0, 200));
+  await t.ask('how much water should i drink a day', 700); h2oPg = await t.page(); check('nutrition: water a day (National Academies: 13 cups men, 9 cups women)', /Water a day/.test(h2oPg) && /13 cups/.test(h2oPg) && /9 cups/.test(h2oPg) && /National Academies/.test(h2oPg) && !/noted it/.test(h2oPg), h2oPg.slice(0, 200));
+  await t.ask('calorie calculator', 700); calForm = await t.page(); check('nutrition: calorie calculator form works (default 30, 5\'9, 170 lb, light = 2,370)', /Calorie calculator/.test(calForm) && /2,370/.test(calForm), calForm.slice(0, 200));
   // nutrition follow-ups (page memory) and the heart skill built on them: change one number and the card redoes itself; heart zones reuse the age
-  await t.ask("calories for a 30 year old male 5'10 180 lbs moderately active", 700); await t.ask("what if i'm very active", 700); const nfA = await t.page(); check('nutrition follow-up: "what if i\'m very active" redoes the same person (3,080 to keep)', /Daily calories/.test(nfA) && /very active/.test(nfA) && /3,080/.test(nfA) && /last numbers/.test(nfA), nfA.slice(0, 260));
-  await t.ask('to lose 1 pound a week', 700); const nfB = await t.page(); check('nutrition follow-up: "to lose 1 pound a week" picks that row', /lose 1 lb a week/.test(nfB) && /2,5[78]0/.test(nfB), nfB.slice(0, 260));
-  await t.ask('and protein', 700); const nfC = await t.page(); check('nutrition follow-up: "and protein" uses the same 180 lb', /Protein a day/.test(nfC) && /180 lb/.test(nfC) && /losing weight/.test(nfC), nfC.slice(0, 260));
-  await t.ask('what is my target heart rate', 700); const hrA = await t.page(); check('heart: "what is my target heart rate" reuses age 30 from the calories ask (95-162 bpm, Tanaka beside it)', /Heart rate zones/.test(hrA) && /age 30 \(from your last ask\)/.test(hrA) && /95\u2013162/.test(hrA) && /Tanaka/.test(hrA) && /Zone 5/.test(hrA), hrA.slice(0, 300));
-  await t.ask('my resting heart rate is 60', 700); const hrB = await t.page(); check('heart follow-up: a resting rate switches to heart rate reserve (Karvonen 125-171)', /resting 60 bpm/.test(hrB) && /125\u2013171/.test(hrB) && /normal adult range/.test(hrB), hrB.slice(0, 300));
-  await t.ask('zone 2', 700); const hrC = await t.page(); check('heart follow-up: "zone 2" picks that zone (138-151 on reserve)', /138\u2013151/.test(hrC) && /zone 2 \(light/.test(hrC), hrC.slice(0, 300));
-  await t.ask('and calories', 700); const hrD = await t.page(); check('heart -> nutrition: "and calories" after a heart card is the same person again', /Daily calories/.test(hrD) && /180 lb/.test(hrD), hrD.slice(0, 260));
-  await t.ask('heart rate zones for a 40 year old', 700); const hrE = await t.page(); check('heart: zones for a 40 year old (max 180, target 90-153, Tanaka 180)', /age 40 \u00b7 max 180/.test(hrE) && /90\u2013153/.test(hrE) && /Zone 2 \u00b7 light \(60\u201370%\): 108\u2013126/.test(hrE), hrE.slice(0, 300));
-  await t.ask('fat burning heart rate for a 35 year old', 700); const hrF = await t.page(); check('heart: fat-burning heart rate is zone 2 (111-130 at 35)', /111\u2013130/.test(hrF) && /fat-burning/.test(hrF), hrF.slice(0, 300));
-  await t.ask('what is a normal resting heart rate', 700); const hrG = await t.page(); check('heart: a normal resting heart rate (AHA 60-100)', /Resting heart rate/.test(hrG) && /60\u2013100/.test(hrG) && /athletes/.test(hrG), hrG.slice(0, 260));
-  await t.ask('heart rate zone calculator', 700); const hrH = await t.page(); check('heart: "heart rate zone calculator" is a live form (age 40 = 90-153)', /Heart rate zone calculator/.test(hrH) && /90\u2013153/.test(hrH) && /Zone 5/.test(hrH), hrH.slice(0, 260));
-  await t.ask('20% tip on 45', 700); const tipPg = await t.page(); check('tip amount', /Tip/.test(tipPg) && /\$9/.test(tipPg) && /Total/.test(tipPg) && /\$54/.test(tipPg), tipPg.slice(0, 180));
-  await t.ask('split $85 three ways with 20% tip', 700); const tipSplit = await t.page(); check('tip and split', /Tip and split|\/ person/.test(tipSplit) && /Total/.test(tipSplit) && /Tip each|Bill each/.test(tipSplit), tipSplit.slice(0, 180));
+  await t.ask("calories for a 30 year old male 5'10 180 lbs moderately active", 700); await t.ask("what if i'm very active", 700); nfA = await t.page(); check('nutrition follow-up: "what if i\'m very active" redoes the same person (3,080 to keep)', /Daily calories/.test(nfA) && /very active/.test(nfA) && /3,080/.test(nfA) && /last numbers/.test(nfA), nfA.slice(0, 260));
+  await t.ask('to lose 1 pound a week', 700); nfB = await t.page(); check('nutrition follow-up: "to lose 1 pound a week" picks that row', /lose 1 lb a week/.test(nfB) && /2,5[78]0/.test(nfB), nfB.slice(0, 260));
+  await t.ask('and protein', 700); nfC = await t.page(); check('nutrition follow-up: "and protein" uses the same 180 lb', /Protein a day/.test(nfC) && /180 lb/.test(nfC) && /losing weight/.test(nfC), nfC.slice(0, 260));
+  await t.ask('what is my target heart rate', 700); hrA = await t.page(); check('heart: "what is my target heart rate" reuses age 30 from the calories ask (95-162 bpm, Tanaka beside it)', /Heart rate zones/.test(hrA) && /age 30 \(from your last ask\)/.test(hrA) && /95\u2013162/.test(hrA) && /Tanaka/.test(hrA) && /Zone 5/.test(hrA), hrA.slice(0, 300));
+  await t.ask('my resting heart rate is 60', 700); hrB = await t.page(); check('heart follow-up: a resting rate switches to heart rate reserve (Karvonen 125-171)', /resting 60 bpm/.test(hrB) && /125\u2013171/.test(hrB) && /normal adult range/.test(hrB), hrB.slice(0, 300));
+  await t.ask('zone 2', 700); hrC = await t.page(); check('heart follow-up: "zone 2" picks that zone (138-151 on reserve)', /138\u2013151/.test(hrC) && /zone 2 \(light/.test(hrC), hrC.slice(0, 300));
+  await t.ask('and calories', 700); hrD = await t.page(); check('heart -> nutrition: "and calories" after a heart card is the same person again', /Daily calories/.test(hrD) && /180 lb/.test(hrD), hrD.slice(0, 260));
+  await t.ask('heart rate zones for a 40 year old', 700); hrE = await t.page(); check('heart: zones for a 40 year old (max 180, target 90-153, Tanaka 180)', /age 40 \u00b7 max 180/.test(hrE) && /90\u2013153/.test(hrE) && /Zone 2 \u00b7 light \(60\u201370%\): 108\u2013126/.test(hrE), hrE.slice(0, 300));
+  await t.ask('fat burning heart rate for a 35 year old', 700); hrF = await t.page(); check('heart: fat-burning heart rate is zone 2 (111-130 at 35)', /111\u2013130/.test(hrF) && /fat-burning/.test(hrF), hrF.slice(0, 300));
+  await t.ask('what is a normal resting heart rate', 700); hrG = await t.page(); check('heart: a normal resting heart rate (AHA 60-100)', /Resting heart rate/.test(hrG) && /60\u2013100/.test(hrG) && /athletes/.test(hrG), hrG.slice(0, 260));
+  await t.ask('heart rate zone calculator', 700); hrH = await t.page(); check('heart: "heart rate zone calculator" is a live form (age 40 = 90-153)', /Heart rate zone calculator/.test(hrH) && /90\u2013153/.test(hrH) && /Zone 5/.test(hrH), hrH.slice(0, 260));
+  await t.ask('20% tip on 45', 700); tipPg = await t.page(); check('tip amount', /Tip/.test(tipPg) && /\$9/.test(tipPg) && /Total/.test(tipPg) && /\$54/.test(tipPg), tipPg.slice(0, 180));
+  await t.ask('split $85 three ways with 20% tip', 700); tipSplit = await t.page(); check('tip and split', /Tip and split|\/ person/.test(tipSplit) && /Total/.test(tipSplit) && /Tip each|Bill each/.test(tipSplit), tipSplit.slice(0, 180));
   { // "what can you do now that you couldn't last week?" is the growth card opening on the week, from the ledger itself
     const L = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), from = Date.now() - 7 * 86400000;
     const n = L.filter((e) => e && e.what && Date.parse(e.at) > from).length;
@@ -1531,31 +1544,34 @@ try {
       /How Void has grown/.test(wkPg) && new RegExp('Since ' + new Date(from).toISOString().slice(0, 10) + ', ' + n + ' change').test(wkPg) && /new things? I can do/.test(wkPg) && !/How Void has grown/.test(menuPg),
       JSON.stringify({ n, wk: wkPg.slice(0, 300), menu: menuPg.slice(0, 120) }));
   }
-  await t.ask('how much will i have if i save 200 a month for 20 years at 7%', 700); const svPg = await t.page(); check('savings: 200 a month for 20 years at 7% grows to $104,185 (monthly compounding), put in vs growth and a range', /Savings growth/.test(svPg) && /\$104,185/.test(svPg) && /\$48,000/.test(svPg) && /Investor\.gov/.test(svPg) && !/don't know this yet|on your calendar/i.test(svPg), svPg.slice(0, 220));
-  await t.ask('how long to save 50000 if i save 500 a month', 700); const svTime = await t.page(); check('savings: time to a goal (no rate: 0% = 8 years 4 months, with 4% and 7% beside it)', /Time to your goal/.test(svTime) && /8 years 4 months/.test(svTime) && /7%/.test(svTime), svTime.slice(0, 220));
-  await t.ask('how much do i need to save a month to have 1 million in 30 years at 7%', 700); const svNeed = await t.page(); check('savings: monthly amount a goal needs ($819.69 a month for $1M in 30 years at 7%)', /Monthly savings needed/.test(svNeed) && /\$819\.69/.test(svNeed) && /Start 5 years later/.test(svNeed), svNeed.slice(0, 220));
-  await t.ask('savings calculator', 700); const svCalc = await t.page(); check('savings: "savings calculator" opens a live form with a goal', /Savings calculator/.test(svCalc) && /Goal/.test(svCalc) && /Balance:/.test(svCalc), svCalc.slice(0, 220));
+  await t.ask('how much will i have if i save 200 a month for 20 years at 7%', 700); svPg = await t.page(); check('savings: 200 a month for 20 years at 7% grows to $104,185 (monthly compounding), put in vs growth and a range', /Savings growth/.test(svPg) && /\$104,185/.test(svPg) && /\$48,000/.test(svPg) && /Investor\.gov/.test(svPg) && !/don't know this yet|on your calendar/i.test(svPg), svPg.slice(0, 220));
+  await t.ask('how long to save 50000 if i save 500 a month', 700); svTime = await t.page(); check('savings: time to a goal (no rate: 0% = 8 years 4 months, with 4% and 7% beside it)', /Time to your goal/.test(svTime) && /8 years 4 months/.test(svTime) && /7%/.test(svTime), svTime.slice(0, 220));
+  await t.ask('how much do i need to save a month to have 1 million in 30 years at 7%', 700); svNeed = await t.page(); check('savings: monthly amount a goal needs ($819.69 a month for $1M in 30 years at 7%)', /Monthly savings needed/.test(svNeed) && /\$819\.69/.test(svNeed) && /Start 5 years later/.test(svNeed), svNeed.slice(0, 220));
+  await t.ask('savings calculator', 700); svCalc = await t.page(); check('savings: "savings calculator" opens a live form with a goal', /Savings calculator/.test(svCalc) && /Goal/.test(svCalc) && /Balance:/.test(svCalc), svCalc.slice(0, 220));
   { const { _test: sv } = await import(new URL('../void-live-deploy/skills/savings.js', import.meta.url).href);
     check('savings: maths (FV of 200/mo at 7% for 20y, months to 50k at 0%, monthly for 1M)', Math.abs(sv.grow(0, 200, 7, 240) - 104185.33) < 0.5 && sv.monthsTo(0, 500, 0, 50000) === 100 && Math.abs(sv.monthlyFor(0, 7, 360, 1e6) - 819.69) < 0.01 && sv.grow(1000, 0, 0, 12) === 1000, ''); }
-  await t.ask('if i wake up at 7am when should i go to sleep', 700); const sleepPg = await t.page(); check('sleep: bedtimes for a 7 am wake-up (90-min cycles + 15 min to fall asleep, CDC hours)', /Bedtime/.test(sleepPg) && /11:15\s?PM/.test(sleepPg) && /9:45\s?PM/.test(sleepPg) && /12:45\s?AM/.test(sleepPg) && /aim for/.test(sleepPg) && /CDC/.test(sleepPg) && !/on your calendar/i.test(sleepPg), sleepPg.slice(0, 200));
-  await t.ask('if i go to bed at 11pm when should i wake up', 700); const wakePg = await t.page(); check('sleep: wake-up times for an 11 pm bedtime', /Wake-up time/.test(wakePg) && /6:45\s?AM/.test(wakePg) && /8:15\s?AM/.test(wakePg) && /5:15\s?AM/.test(wakePg), wakePg.slice(0, 200));
-  await t.ask('how much sleep does a teenager need', 700); const needPg = await t.page(); check('sleep: hours a teen needs (CDC)', /How much sleep/.test(needPg) && /8\u201310 hours/.test(needPg) && /CDC/.test(needPg), needPg.slice(0, 200));
-  await t.ask('gpa with A 4 credits, B+ 3 credits, C 3 credits', 700); const gpaPg = await t.page(); check('grades: credit-weighted GPA (A 4 cr, B+ 3, C 3 = 31.9 / 10 = 3.19, College Board scale)', /GPA/.test(gpaPg) && /3\.19/.test(gpaPg) && /College Board/.test(gpaPg), gpaPg.slice(0, 220));
-  await t.ask('weighted gpa A in AP, B+ honors, A-', 700); const wgpPg = await t.page(); check('grades: weighted GPA (AP +1, honors +0.5) with the unweighted beside it', /Weighted GPA/.test(wgpPg) && /4\.17/.test(wgpPg) && /Unweighted 3\.67/.test(wgpPg), wgpPg.slice(0, 220));
-  await t.ask('i have an 85 and my final is worth 20% what do i need to get a 90', 700); const finPg = await t.page(); check('grades: score needed on a final ((90 - 85 x 0.8) / 0.2 = 110%, out of reach; a B needs 60%)', /Score you need on the final/.test(finPg) && /110%/.test(finPg) && /out of reach/.test(finPg) && /60%/.test(finPg), finPg.slice(0, 220));
-  await t.ask('my gpa is 3.2 with 60 credits and i got a 3.8 this semester with 15 credits', 700); const cumPg = await t.page(); check('grades: cumulative GPA (3.2 x 60 + 3.8 x 15) / 75 = 3.32', /Cumulative GPA/.test(cumPg) && /3\.32/.test(cumPg), cumPg.slice(0, 220));
-  await t.ask('what letter grade is an 87', 700); const ltrPg = await t.page(); check('grades: 87% is a B+ (3.3) with the scale shown', /Letter grade/.test(ltrPg) && /B\+/.test(ltrPg) && /3\.3 grade points/.test(ltrPg), ltrPg.slice(0, 220));
-  await t.ask('gpa calculator', 700); const gpForm = await t.page(); check('grades: "gpa calculator" opens a live form (A 3, B+ 3, A- 4, B 3 = 3.52)', /GPA calculator/.test(gpForm) && /3\.52/.test(gpForm) && /add a class/.test(gpForm), gpForm.slice(0, 220));
+  await t.ask('if i wake up at 7am when should i go to sleep', 700); sleepPg = await t.page(); check('sleep: bedtimes for a 7 am wake-up (90-min cycles + 15 min to fall asleep, CDC hours)', /Bedtime/.test(sleepPg) && /11:15\s?PM/.test(sleepPg) && /9:45\s?PM/.test(sleepPg) && /12:45\s?AM/.test(sleepPg) && /aim for/.test(sleepPg) && /CDC/.test(sleepPg) && !/on your calendar/i.test(sleepPg), sleepPg.slice(0, 200));
+  await t.ask('if i go to bed at 11pm when should i wake up', 700); wakePg = await t.page(); check('sleep: wake-up times for an 11 pm bedtime', /Wake-up time/.test(wakePg) && /6:45\s?AM/.test(wakePg) && /8:15\s?AM/.test(wakePg) && /5:15\s?AM/.test(wakePg), wakePg.slice(0, 200));
+  await t.ask('how much sleep does a teenager need', 700); needPg = await t.page(); check('sleep: hours a teen needs (CDC)', /How much sleep/.test(needPg) && /8\u201310 hours/.test(needPg) && /CDC/.test(needPg), needPg.slice(0, 200));
+  await t.ask('gpa with A 4 credits, B+ 3 credits, C 3 credits', 700); gpaPg = await t.page(); check('grades: credit-weighted GPA (A 4 cr, B+ 3, C 3 = 31.9 / 10 = 3.19, College Board scale)', /GPA/.test(gpaPg) && /3\.19/.test(gpaPg) && /College Board/.test(gpaPg), gpaPg.slice(0, 220));
+  await t.ask('weighted gpa A in AP, B+ honors, A-', 700); wgpPg = await t.page(); check('grades: weighted GPA (AP +1, honors +0.5) with the unweighted beside it', /Weighted GPA/.test(wgpPg) && /4\.17/.test(wgpPg) && /Unweighted 3\.67/.test(wgpPg), wgpPg.slice(0, 220));
+  await t.ask('i have an 85 and my final is worth 20% what do i need to get a 90', 700); finPg = await t.page(); check('grades: score needed on a final ((90 - 85 x 0.8) / 0.2 = 110%, out of reach; a B needs 60%)', /Score you need on the final/.test(finPg) && /110%/.test(finPg) && /out of reach/.test(finPg) && /60%/.test(finPg), finPg.slice(0, 220));
+  await t.ask('my gpa is 3.2 with 60 credits and i got a 3.8 this semester with 15 credits', 700); cumPg = await t.page(); check('grades: cumulative GPA (3.2 x 60 + 3.8 x 15) / 75 = 3.32', /Cumulative GPA/.test(cumPg) && /3\.32/.test(cumPg), cumPg.slice(0, 220));
+  await t.ask('what letter grade is an 87', 700); ltrPg = await t.page(); check('grades: 87% is a B+ (3.3) with the scale shown', /Letter grade/.test(ltrPg) && /B\+/.test(ltrPg) && /3\.3 grade points/.test(ltrPg), ltrPg.slice(0, 220));
+  await t.ask('gpa calculator', 700); gpForm = await t.page(); check('grades: "gpa calculator" opens a live form (A 3, B+ 3, A- 4, B 3 = 3.52)', /GPA calculator/.test(gpForm) && /3\.52/.test(gpForm) && /add a class/.test(gpForm), gpForm.slice(0, 220));
+  } // CORE
   if (want("block at line 1539")) { const g = await import(new URL('../void-live-deploy/skills/grades.js', import.meta.url).href);
     check('grades: maths and routing (final formula, letter scale, lowercase "a" as article, asks left to calc)', Math.abs(g.neededOf(85, 20, 80) - 60) < 1e-9 && g.letterOf(89.9).l === 'B+' && g.letterOf(64).l === 'F'
       && JSON.stringify(g.gradesOf('what is my gpa with an a and a b').courses.map((c) => c.grade)) === '["A","B"]' && !g.gradesOf('what is the gpa of 3.5 and 4.0') && !g.gradesOf('what grade is 42 out of 50') && !g.gradesOf('what is a good gpa'), ''); }
-  await t.ask('due date if my last period was march 1 2026', 700); const duePg = await t.page(); check('pregnancy: due date from the last period (Naegele, last period + 280 days), with the full-term window and ACOG source', /Due date/.test(duePg) && /December 6, 2026/.test(duePg) && /Full term/.test(duePg) && /ACOG/.test(duePg) && !/on your calendar/i.test(duePg), duePg.slice(0, 220));
-  await t.ask('i conceived on january 10 2026 when is my baby due', 700); const conPg = await t.page(); check('pregnancy: due date from conception (+ 266 days)', /Due date/.test(conPg) && /October 3, 2026/.test(conPg) && !/on your calendar/i.test(conPg), conPg.slice(0, 220));
-  await t.ask('ivf due date 5 day transfer on may 2 2026', 700); const ivfPg = await t.page(); check('pregnancy: IVF due date (5-day transfer + 261 days)', /January 18, 2027/.test(ivfPg) && /5-day embryo transfer/.test(ivfPg), ivfPg.slice(0, 220));
-  await t.ask('my due date is june 1 how far along am i', 700); const farPg = await t.page(); check('pregnancy: how far along from a known due date', /How far along/.test(farPg) && /weeks?/.test(farPg) && /June 1/.test(farPg) && !/on your calendar/i.test(farPg), farPg.slice(0, 220));
-  await t.ask('when am i ovulating if my last period was march 1 2026', 700); const ovPg = await t.page(); check('ovulation: fertile window and ovulation day from the last period (next period - 14; six days ending on ovulation, Wilcox NEJM 1995)', /Fertile window/.test(ovPg) && /fertile March 10 \u2013 March 15/.test(ovPg) && /ovulation March 15/.test(ovPg) && /NEJM/.test(ovPg) && /ACOG/.test(ovPg) && !/on your calendar|don't know this yet/i.test(ovPg), ovPg.slice(0, 220));
-  await t.ask('my cycle is 26 to 32 days and my last period was october 1 2026 when am i fertile', 700); const ovRg = await t.page(); check('ovulation: irregular cycles as a range (shortest - 18 to longest - 11)', /October 8\u201321, 2026/.test(ovRg) && /shortest cycle minus 18/.test(ovRg), ovRg.slice(0, 220));
-  await t.ask('ovulation calculator', 700); const ovCalc = await t.page(); check('ovulation: "ovulation calculator" opens a live form', /Ovulation calculator/.test(ovCalc) && /luteal phase/.test(ovCalc) && /Ovulation:/.test(ovCalc), ovCalc.slice(0, 220));
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
+  await t.ask('due date if my last period was march 1 2026', 700); duePg = await t.page(); check('pregnancy: due date from the last period (Naegele, last period + 280 days), with the full-term window and ACOG source', /Due date/.test(duePg) && /December 6, 2026/.test(duePg) && /Full term/.test(duePg) && /ACOG/.test(duePg) && !/on your calendar/i.test(duePg), duePg.slice(0, 220));
+  await t.ask('i conceived on january 10 2026 when is my baby due', 700); conPg = await t.page(); check('pregnancy: due date from conception (+ 266 days)', /Due date/.test(conPg) && /October 3, 2026/.test(conPg) && !/on your calendar/i.test(conPg), conPg.slice(0, 220));
+  await t.ask('ivf due date 5 day transfer on may 2 2026', 700); ivfPg = await t.page(); check('pregnancy: IVF due date (5-day transfer + 261 days)', /January 18, 2027/.test(ivfPg) && /5-day embryo transfer/.test(ivfPg), ivfPg.slice(0, 220));
+  await t.ask('my due date is june 1 how far along am i', 700); farPg = await t.page(); check('pregnancy: how far along from a known due date', /How far along/.test(farPg) && /weeks?/.test(farPg) && /June 1/.test(farPg) && !/on your calendar/i.test(farPg), farPg.slice(0, 220));
+  await t.ask('when am i ovulating if my last period was march 1 2026', 700); ovPg = await t.page(); check('ovulation: fertile window and ovulation day from the last period (next period - 14; six days ending on ovulation, Wilcox NEJM 1995)', /Fertile window/.test(ovPg) && /fertile March 10 \u2013 March 15/.test(ovPg) && /ovulation March 15/.test(ovPg) && /NEJM/.test(ovPg) && /ACOG/.test(ovPg) && !/on your calendar|don't know this yet/i.test(ovPg), ovPg.slice(0, 220));
+  await t.ask('my cycle is 26 to 32 days and my last period was october 1 2026 when am i fertile', 700); ovRg = await t.page(); check('ovulation: irregular cycles as a range (shortest - 18 to longest - 11)', /October 8\u201321, 2026/.test(ovRg) && /shortest cycle minus 18/.test(ovRg), ovRg.slice(0, 220));
+  await t.ask('ovulation calculator', 700); ovCalc = await t.page(); check('ovulation: "ovulation calculator" opens a live form', /Ovulation calculator/.test(ovCalc) && /luteal phase/.test(ovCalc) && /Ovulation:/.test(ovCalc), ovCalc.slice(0, 220));
+  } // CORE
   // period log (this browser only): three starts 28 days apart give a 28-day average; "when am i ovulating" with no date then reads the log
   if (want("period log (this browser only): three starts 28 days apart give a 28-day average; \"when am")) { const d0 = new Date(); d0.setHours(12, 0, 0, 0); const ago = (n) => { const d = new Date(d0); d.setDate(d.getDate() - n); return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }); };
     await t.ask('clear my period log', 500);
@@ -1565,49 +1581,54 @@ try {
     await t.ask('is my period late', 600); const plate = await t.page(); check('period: "is my period late" reads the log', /Not late/.test(plate) && /in 18 days/.test(plate), plate.slice(0, 200));
     await t.ask('remove my last period', 600); const prm = await t.page(); check('period: "remove my last period" takes the newest entry off', /Took off the period/.test(prm) && /2 periods logged/.test(prm), prm.slice(0, 200));
     await t.ask('clear my period log', 500); const pcl = await t.page(); check('period: "clear my period log" empties it (nothing left in localStorage)', /Cleared your period log/.test(pcl) && (await t.p.evaluate(() => localStorage.getItem('a2m.void.cycle.v1'))) === null, pcl.slice(0, 160)); }
-  await t.ask('how much paint do i need for a 12x14 room', 700); const hmPaint = await t.page(); check('home: paint for a room (perimeter x 8 ft, less 1 door and 2 windows, 2 coats at 350 sq ft a gallon)', /Paint for the room/.test(hmPaint) && /366 sq ft/.test(hmPaint) && /2\.09 gallons/.test(hmPaint) && /2 gallons \+ 1 quart/.test(hmPaint) && /Sherwin-Williams/.test(hmPaint), hmPaint.slice(0, 260));
-  await t.ask('how many 12x24 tiles for a 10x12 floor', 700); const hmTile = await t.page(); check('home: tiles for a floor from the tile size, 10% waste', /Tile for the room/.test(hmTile) && /66 tiles/.test(hmTile) && /132 sq ft/.test(hmTile) && /Baseboard/.test(hmTile), hmTile.slice(0, 260));
-  await t.ask('how much carpet for a 12x14 room', 700); const hmCarpet = await t.page(); check('home: carpet in square yards off a 12-ft roll', /Carpet for the room/.test(hmCarpet) && /19 sq yd/.test(hmCarpet) && /12-ft roll/.test(hmCarpet) && /no seams/.test(hmCarpet), hmCarpet.slice(0, 260));
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
+  await t.ask('how much paint do i need for a 12x14 room', 700); hmPaint = await t.page(); check('home: paint for a room (perimeter x 8 ft, less 1 door and 2 windows, 2 coats at 350 sq ft a gallon)', /Paint for the room/.test(hmPaint) && /366 sq ft/.test(hmPaint) && /2\.09 gallons/.test(hmPaint) && /2 gallons \+ 1 quart/.test(hmPaint) && /Sherwin-Williams/.test(hmPaint), hmPaint.slice(0, 260));
+  await t.ask('how many 12x24 tiles for a 10x12 floor', 700); hmTile = await t.page(); check('home: tiles for a floor from the tile size, 10% waste', /Tile for the room/.test(hmTile) && /66 tiles/.test(hmTile) && /132 sq ft/.test(hmTile) && /Baseboard/.test(hmTile), hmTile.slice(0, 260));
+  await t.ask('how much carpet for a 12x14 room', 700); hmCarpet = await t.page(); check('home: carpet in square yards off a 12-ft roll', /Carpet for the room/.test(hmCarpet) && /19 sq yd/.test(hmCarpet) && /12-ft roll/.test(hmCarpet) && /no seams/.test(hmCarpet), hmCarpet.slice(0, 260));
   // home follow-ups: the card's own suggestions ("with 2 doors and no windows", "9 foot ceilings") and a change of coats, ceiling, price or material redo the last room
   await t.ask('how much paint do i need for a 12x14 room', 700);
-  await t.ask('what about 3 coats', 700); const hfCoats = await t.page(); check('home follow-up: "what about 3 coats" redoes the last room with 3 coats', /Paint for the room/.test(hfCoats) && /3 coats/.test(hfCoats) && /3\.14 gallons/.test(hfCoats), hfCoats.slice(0, 260));
-  await t.ask('the ceiling too', 700); const hfCeil = await t.page(); check('home follow-up: "the ceiling too" adds the ceiling and keeps the 3 coats', /Ceiling/.test(hfCeil) && /168 sq ft/.test(hfCeil) && /4\.58 gallons/.test(hfCeil), hfCeil.slice(0, 260));
-  await t.ask('at $40 a gallon', 700); const hfCost = await t.page(); check('home follow-up: "at $40 a gallon" prices the same job', /about \$200/.test(hfCost) && /5 \u00d7 \$40 a gallon/.test(hfCost), hfCost.slice(0, 260));
-  await t.ask('with 2 doors and no windows', 700); const hfOpen = await t.page(); check('home follow-up: the card\'s own "with 2 doors and no windows" works on its own', /2 doors, 0 windows/.test(hfOpen) && /376 sq ft/.test(hfOpen) && /about \$200/.test(hfOpen), hfOpen.slice(0, 260));
-  await t.ask('what about carpet', 700); const hfCarpet = await t.page(); check('home follow-up: "what about carpet" switches the same room to carpet', /Carpet for the room/.test(hfCarpet) && /19 sq yd/.test(hfCarpet), hfCarpet.slice(0, 260));
-  await t.ask('how about 12x24 tiles', 700); const hfTile = await t.page(); check('home follow-up: "how about 12x24 tiles" tiles the same floor', /Tile for the room/.test(hfTile) && /93 tiles/.test(hfTile), hfTile.slice(0, 260));
-  await t.ask('paint for it', 700); const hfPaint = await t.page(); check('home follow-up: "paint for it" goes back to paint for the 12x14 room, not the tile size', /Paint for the room/.test(hfPaint) && /366 sq ft/.test(hfPaint), hfPaint.slice(0, 260));
-  await t.ask('paint calculator', 700); const hmCalc = await t.page(); check('home: "paint calculator" opens a live form', /Paint calculator/.test(hmCalc) && /gallons/.test(hmCalc) && /ceiling too/.test(hmCalc), hmCalc.slice(0, 220));
+  await t.ask('what about 3 coats', 700); hfCoats = await t.page(); check('home follow-up: "what about 3 coats" redoes the last room with 3 coats', /Paint for the room/.test(hfCoats) && /3 coats/.test(hfCoats) && /3\.14 gallons/.test(hfCoats), hfCoats.slice(0, 260));
+  await t.ask('the ceiling too', 700); hfCeil = await t.page(); check('home follow-up: "the ceiling too" adds the ceiling and keeps the 3 coats', /Ceiling/.test(hfCeil) && /168 sq ft/.test(hfCeil) && /4\.58 gallons/.test(hfCeil), hfCeil.slice(0, 260));
+  await t.ask('at $40 a gallon', 700); hfCost = await t.page(); check('home follow-up: "at $40 a gallon" prices the same job', /about \$200/.test(hfCost) && /5 \u00d7 \$40 a gallon/.test(hfCost), hfCost.slice(0, 260));
+  await t.ask('with 2 doors and no windows', 700); hfOpen = await t.page(); check('home follow-up: the card\'s own "with 2 doors and no windows" works on its own', /2 doors, 0 windows/.test(hfOpen) && /376 sq ft/.test(hfOpen) && /about \$200/.test(hfOpen), hfOpen.slice(0, 260));
+  await t.ask('what about carpet', 700); hfCarpet = await t.page(); check('home follow-up: "what about carpet" switches the same room to carpet', /Carpet for the room/.test(hfCarpet) && /19 sq yd/.test(hfCarpet), hfCarpet.slice(0, 260));
+  await t.ask('how about 12x24 tiles', 700); hfTile = await t.page(); check('home follow-up: "how about 12x24 tiles" tiles the same floor', /Tile for the room/.test(hfTile) && /93 tiles/.test(hfTile), hfTile.slice(0, 260));
+  await t.ask('paint for it', 700); hfPaint = await t.page(); check('home follow-up: "paint for it" goes back to paint for the 12x14 room, not the tile size', /Paint for the room/.test(hfPaint) && /366 sq ft/.test(hfPaint), hfPaint.slice(0, 260));
+  await t.ask('paint calculator', 700); hmCalc = await t.page(); check('home: "paint calculator" opens a live form', /Paint calculator/.test(hmCalc) && /gallons/.test(hmCalc) && /ceiling too/.test(hmCalc), hmCalc.slice(0, 220));
   // walls: wallpaper rolls by the drop method and drywall sheets, with follow-ups that cross to and from home's paint and floor cards
-  await t.ask('how many rolls of wallpaper for a 12x12 room', 700); const wlWp = await t.page(); check('walls: wallpaper by the drop method (32 drops of 8 ft 4 in, 3 a 33-ft roll = 11 rolls, not the 7 area says)', /Wallpaper for the room/.test(wlWp) && /11 rolls/.test(wlWp) && /32 drops/.test(wlWp) && /Why not 7/.test(wlWp), wlWp.slice(0, 260));
-  await t.ask('with a 21 inch repeat', 700); const wlRep = await t.page(); check('walls follow-up: "with a 21 inch repeat" rounds each drop up to whole repeats', /21 in straight repeat/.test(wlRep) && /drops of 8 ft 9 in/.test(wlRep) && /11 rolls/.test(wlRep), wlRep.slice(0, 260));
-  await t.ask('at $45 a roll', 700); const wlCost = await t.page(); check('walls follow-up: "at $45 a roll" prices the same paper', /about \$495/.test(wlCost) && /11 rolls/.test(wlCost), wlCost.slice(0, 260));
-  await t.ask('drywall for it', 700); const wlDw = await t.page(); check('walls follow-up: "drywall for it" switches the same room to drywall sheets', /Drywall for the room/.test(wlDw) && /14 sheets/.test(wlDw) && /384 sq ft/.test(wlDw), wlDw.slice(0, 260));
-  await t.ask('the ceiling too', 700); const wlCeil = await t.page(); check('walls follow-up: "the ceiling too" adds the ceiling to the drywall (not home\'s paint)', /Drywall for the room/.test(wlCeil) && /19 sheets/.test(wlCeil) && /144 sq ft/.test(wlCeil), wlCeil.slice(0, 260));
-  await t.ask('4x12 sheets', 700); const wlLong = await t.page(); check('walls follow-up: "4x12 sheets" redoes it with longer sheets', /4 \u00d7 12 ft sheets/.test(wlLong) && /13 sheets/.test(wlLong), wlLong.slice(0, 260));
-  await t.ask('paint for it', 700); const wlPaint = await t.page(); check('walls follow-up: "paint for it" hands the same room to home', /Paint for the room/.test(wlPaint) && /12 \u00d7 12 ft room/.test(wlPaint), wlPaint.slice(0, 260));
-  await t.ask('wallpaper for it', 700); const wlBack = await t.page(); check('walls follow-up: "wallpaper for it" after a paint card uses that room', /Wallpaper for the room/.test(wlBack) && /11 rolls/.test(wlBack), wlBack.slice(0, 260));
-  await t.ask('how many sheets of drywall for a 12x14 room', 700); const wlDw2 = await t.page(); check('walls: drywall sheets, screws, tape and compound from USG\'s figures', /15 sheets/.test(wlDw2) && /416 sq ft/.test(wlDw2) && /154 ft of paper tape/.test(wlDw2) && /USG/.test(wlDw2), wlDw2.slice(0, 260));
-  await t.ask('wallpaper calculator', 700); const wlCalc = await t.page(); check('walls: "wallpaper calculator" opens a live form', /Wallpaper calculator/.test(wlCalc) && /rolls/.test(wlCalc) && /half drop/.test(wlCalc), wlCalc.slice(0, 220));
+  await t.ask('how many rolls of wallpaper for a 12x12 room', 700); wlWp = await t.page(); check('walls: wallpaper by the drop method (32 drops of 8 ft 4 in, 3 a 33-ft roll = 11 rolls, not the 7 area says)', /Wallpaper for the room/.test(wlWp) && /11 rolls/.test(wlWp) && /32 drops/.test(wlWp) && /Why not 7/.test(wlWp), wlWp.slice(0, 260));
+  await t.ask('with a 21 inch repeat', 700); wlRep = await t.page(); check('walls follow-up: "with a 21 inch repeat" rounds each drop up to whole repeats', /21 in straight repeat/.test(wlRep) && /drops of 8 ft 9 in/.test(wlRep) && /11 rolls/.test(wlRep), wlRep.slice(0, 260));
+  await t.ask('at $45 a roll', 700); wlCost = await t.page(); check('walls follow-up: "at $45 a roll" prices the same paper', /about \$495/.test(wlCost) && /11 rolls/.test(wlCost), wlCost.slice(0, 260));
+  await t.ask('drywall for it', 700); wlDw = await t.page(); check('walls follow-up: "drywall for it" switches the same room to drywall sheets', /Drywall for the room/.test(wlDw) && /14 sheets/.test(wlDw) && /384 sq ft/.test(wlDw), wlDw.slice(0, 260));
+  await t.ask('the ceiling too', 700); wlCeil = await t.page(); check('walls follow-up: "the ceiling too" adds the ceiling to the drywall (not home\'s paint)', /Drywall for the room/.test(wlCeil) && /19 sheets/.test(wlCeil) && /144 sq ft/.test(wlCeil), wlCeil.slice(0, 260));
+  await t.ask('4x12 sheets', 700); wlLong = await t.page(); check('walls follow-up: "4x12 sheets" redoes it with longer sheets', /4 \u00d7 12 ft sheets/.test(wlLong) && /13 sheets/.test(wlLong), wlLong.slice(0, 260));
+  await t.ask('paint for it', 700); wlPaint = await t.page(); check('walls follow-up: "paint for it" hands the same room to home', /Paint for the room/.test(wlPaint) && /12 \u00d7 12 ft room/.test(wlPaint), wlPaint.slice(0, 260));
+  await t.ask('wallpaper for it', 700); wlBack = await t.page(); check('walls follow-up: "wallpaper for it" after a paint card uses that room', /Wallpaper for the room/.test(wlBack) && /11 rolls/.test(wlBack), wlBack.slice(0, 260));
+  await t.ask('how many sheets of drywall for a 12x14 room', 700); wlDw2 = await t.page(); check('walls: drywall sheets, screws, tape and compound from USG\'s figures', /15 sheets/.test(wlDw2) && /416 sq ft/.test(wlDw2) && /154 ft of paper tape/.test(wlDw2) && /USG/.test(wlDw2), wlDw2.slice(0, 260));
+  await t.ask('wallpaper calculator', 700); wlCalc = await t.page(); check('walls: "wallpaper calculator" opens a live form', /Wallpaper calculator/.test(wlCalc) && /rolls/.test(wlCalc) && /half drop/.test(wlCalc), wlCalc.slice(0, 220));
   // room: everything for one room on one card (paint, floor, wallpaper, drywall, baseboard), priced per line with a live total, built on home + walls
-  await t.ask('paint and carpet a 12x14 room at $40 a gallon', 700); const rmA = await t.page(); check('room: paint and carpet for one room on one card, the paint priced', /Everything for the room/.test(rmA) && /2 gallons \+ 1 quart for the walls/.test(rmA) && /19 sq yd of carpet/.test(rmA) && /54 ft of baseboard/.test(rmA) && /\$120 so far, 1 of 3 lines priced/.test(rmA), rmA.slice(0, 300));
-  await t.ask('add wallpaper', 700); const rmB = await t.page(); check('room follow-up: "add wallpaper" adds a wallpaper line by the drop method', /Everything for the room/.test(rmB) && /12 rolls/.test(rmB) && /4 things to buy/.test(rmB), rmB.slice(0, 300));
-  await t.ask('the ceiling too', 700); const rmC = await t.page(); check('room follow-up: "the ceiling too" with wallpaper puts the paint on the ceiling only (not walls\' drywall)', /paint is just for the ceiling/.test(rmC) && /1 gallon of ceiling white/.test(rmC) && /Everything for the room/.test(rmC), rmC.slice(0, 300));
-  await t.ask('$45 a roll and $4 a sq yd and $1.50 a foot', 700); const rmD = await t.page(); check('room follow-up: prices for every line give the whole room\'s total', /about \$737/.test(rmD) && /4 lines priced/.test(rmD), rmD.slice(0, 300));
-  await t.p.fill('.vpage.on input.rp-price[data-k="paint"]', '50'); await t.p.waitForTimeout(200); const rmE = await t.page(); check('room: typing a price on a line updates the total', /about \$747/.test(rmE), rmE.slice(0, 200));
-  await t.ask('how many sheets of drywall for a 12x14 room', 700); await t.ask('the whole room', 700); const rmF = await t.page(); check('room: "the whole room" after a drywall card puts that room and its drywall on one card', /Everything for the room/.test(rmF) && /15 sheets of 4 \u00d7 8 ft/.test(rmF) && /hang the drywall/.test(rmF) && /Paint/.test(rmF), rmF.slice(0, 300));
-  await t.ask('redo a 4 by 5 metre room', 700); const rmG = await t.page(); check('room: a metric room in litres and square metres', /4 \u00d7 5 m room/.test(rmG) && /7\.7 L/.test(rmG) && /22 m\u00b2 of flooring/.test(rmG), rmG.slice(0, 300));
-  await t.ask('pollen in Lisbon', 1200); const pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
+  await t.ask('paint and carpet a 12x14 room at $40 a gallon', 700); rmA = await t.page(); check('room: paint and carpet for one room on one card, the paint priced', /Everything for the room/.test(rmA) && /2 gallons \+ 1 quart for the walls/.test(rmA) && /19 sq yd of carpet/.test(rmA) && /54 ft of baseboard/.test(rmA) && /\$120 so far, 1 of 3 lines priced/.test(rmA), rmA.slice(0, 300));
+  await t.ask('add wallpaper', 700); rmB = await t.page(); check('room follow-up: "add wallpaper" adds a wallpaper line by the drop method', /Everything for the room/.test(rmB) && /12 rolls/.test(rmB) && /4 things to buy/.test(rmB), rmB.slice(0, 300));
+  await t.ask('the ceiling too', 700); rmC = await t.page(); check('room follow-up: "the ceiling too" with wallpaper puts the paint on the ceiling only (not walls\' drywall)', /paint is just for the ceiling/.test(rmC) && /1 gallon of ceiling white/.test(rmC) && /Everything for the room/.test(rmC), rmC.slice(0, 300));
+  await t.ask('$45 a roll and $4 a sq yd and $1.50 a foot', 700); rmD = await t.page(); check('room follow-up: prices for every line give the whole room\'s total', /about \$737/.test(rmD) && /4 lines priced/.test(rmD), rmD.slice(0, 300));
+  await t.p.fill('.vpage.on input.rp-price[data-k="paint"]', '50'); await t.p.waitForTimeout(200); rmE = await t.page(); check('room: typing a price on a line updates the total', /about \$747/.test(rmE), rmE.slice(0, 200));
+  await t.ask('how many sheets of drywall for a 12x14 room', 700); await t.ask('the whole room', 700); rmF = await t.page(); check('room: "the whole room" after a drywall card puts that room and its drywall on one card', /Everything for the room/.test(rmF) && /15 sheets of 4 \u00d7 8 ft/.test(rmF) && /hang the drywall/.test(rmF) && /Paint/.test(rmF), rmF.slice(0, 300));
+  await t.ask('redo a 4 by 5 metre room', 700); rmG = await t.page(); check('room: a metric room in litres and square metres', /4 \u00d7 5 m room/.test(rmG) && /7\.7 L/.test(rmG) && /22 m\u00b2 of flooring/.test(rmG), rmG.slice(0, 300));
+  await t.ask('pollen in Lisbon', 1200); pollenPg = await t.page(); check('pollen', /Pollen/.test(pollenPg) && /Grass|Birch|Ragweed|None|Low|Moderate|High/.test(pollenPg) && /Open-Meteo|CAMS/.test(pollenPg) && /grains/.test(pollenPg) && /Tomorrow|4-day|Europe/.test(pollenPg), pollenPg.slice(0, 200));
+  } // CORE
   if (want("block at line 1591")) { const h = fs.readFileSync(path.join(root, '_headers'), 'utf8');
     check('side panel: the site allows extension frames (no X-Frame-Options DENY)', !/X-Frame-Options/i.test(h) && /frame-ancestors 'self' chrome-extension:/.test(h), h.split('\n').slice(0, 3).join(' / ')); }
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   await t.ask('5 miles in km', 700); check('calculation', /8\.05/.test(await t.page()));
   await t.ask('make my void deep blue'); check('your look', /01040f/.test(await t.p.evaluate(() => localStorage.getItem('a2m.void.look.v1') || '')));
-  await t.ask('why is the sky blue', 900); const an = await t.page(); check('answer engine answers with sources', /blue light scatters/.test(an) && /Rayleigh scattering/.test(an) && /as of/.test(an), an.slice(0, 120));
+  await t.ask('why is the sky blue', 900); an = await t.page(); check('answer engine answers with sources', /blue light scatters/.test(an) && /Rayleigh scattering/.test(an) && /as of/.test(an), an.slice(0, 120));
   await t.ask('why is the model busy', 600); check('answer engine busy -> article excerpt', await until(async () => /Black hole/.test(await t.page()), 5000));
   await t.ask('what do you want to be?', 300); check('will: Void says what it wants', await until(async () => /I want to answer every question about tides/.test(await t.page()), 4000));
   await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await t.page(); return /I am strong at sums and thin on places/.test(pg) && /Backgammon/.test(pg) && /Give the map card terrain/.test(pg); }, 4000); check('voice: Void says what it thinks of itself, in its own words, with what it has asked for', ok, (await t.page()).slice(0, 200)); }
+  } // CORE
   if (want("block at line 1599")) { const q0 = queued.length; await t.ask('update yourself', 700); const w = await t.whisper();
     check('build asks are owner-only (a stranger\'s goes the ordinary way: nothing queued, no word of an owner)', queued.length === q0 && !/owner/i.test(w), w); }
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   await t.p.fill('#input', 'tim'); await t.p.waitForTimeout(150); check('hints while typing', (await t.p.$$eval('#hints div', (d) => d.map((x) => x.textContent))).some((h) => /timer/.test(h)));
   check('no script errors', t.errors.length === 0, t.errors.join(' | '));
   await t.ctx.close();
@@ -1619,40 +1640,42 @@ try {
 
   // Plan item 4: Void everywhere you already are (app install, address bar, share sheet, voice, read aloud).
   t = await fresh(VOICE_STUB);
-  const man = await t.p.evaluate(async () => {
+  man = await t.p.evaluate(async () => {
     const m = await (await fetch(document.querySelector('link[rel=manifest]').href)).json();
     const icons = await Promise.all(m.icons.map((i) => fetch(i.src).then((r) => r.ok)));
     return { m, icons };
   }).catch((e) => ({ err: String(e) }));
   check('installable app: manifest, icons, opens to the input', man.m && man.m.display === 'standalone' && man.m.icons.some((i) => i.sizes === '512x512' && /maskable/.test(i.purpose)) && man.icons.every(Boolean) && (await t.p.evaluate(() => document.activeElement && document.activeElement.id)) === 'input', JSON.stringify(man).slice(0, 160));
-  const os = await t.p.evaluate(async () => { const l = document.querySelector('link[rel=search][type="application/opensearchdescription+xml"]'); return l ? (await fetch(l.href)).text() : ''; });
+  os = await t.p.evaluate(async () => { const l = document.querySelector('link[rel=search][type="application/opensearchdescription+xml"]'); return l ? (await fetch(l.href)).text() : ''; });
   check('address bar search (OpenSearch) runs a Void ask', /template="https:\/\/a-to-mind\.com\/\?q=\{searchTerms\}"/.test(os), os.slice(0, 120));
   check('service worker registers (opens offline)', await until(() => t.p.evaluate(() => navigator.serviceWorker.getRegistration().then((r) => !!(r && (r.active || r.waiting || r.installing)))), 6000));
   check('voice: plain mic icon on arrival (no "Use microphone" on the empty surface)', await t.p.evaluate(() => { const m = document.getElementById('mic'); return !!m && m.tagName === 'BUTTON' && !document.querySelector('microphone') && !/use microphone/i.test(document.body.innerText); }));
   await t.p.click('#mic');
   check('voice: the first tap listens and a spoken ask runs', await until(async () => (await t.state()).some((x) => x.kind === 'counter'), 5000));
-  const micAfter = await t.p.evaluate(() => ({ el: 'HTMLMicrophoneElement' in window, tag: document.getElementById('mic') && document.getElementById('mic').tagName, n: document.querySelectorAll('#mic').length }));
+  micAfter = await t.p.evaluate(() => ({ el: 'HTMLMicrophoneElement' in window, tag: document.getElementById('mic') && document.getElementById('mic').tagName, n: document.querySelectorAll('#mic').length }));
   await t.p.evaluate(() => { window.__said = 'make a list'; document.getElementById('mic').dispatchEvent(new Event('stream')); });
   // the <microphone> element exists from Chrome 153: an older Chromium (the sandbox's 141) keeps the button, and the check is skipped there, not red
   if (chromeMajor >= 153) check('voice: <microphone> element takes over after the first tap (Chrome 153+)', micAfter.el && micAfter.tag === 'MICROPHONE' && micAfter.n === 1 && await until(async () => (await t.state()).some((x) => x.kind === 'list'), 5000), JSON.stringify(micAfter));
+  } // CORE
   else skip('voice: <microphone> element takes over after the first tap (Chrome 153+)', 'Chromium ' + browser.version() + ' has no <microphone> element; it needs Chrome 153 or newer');
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   await t.ask('what is a black hole', 300); await until(async () => /region of spacetime/.test(await t.page()), 5000);
   await t.ask('read it aloud', 200);
-  const spoken = await t.p.evaluate(() => window.__spoken.join(' '));
+  spoken = await t.p.evaluate(() => window.__spoken.join(' '));
   check('read it aloud reads the open page', /region of spacetime/.test(spoken) && !/as of|last edited/i.test(spoken.replace(/Black hole/, '')), spoken.slice(0, 120));
   await t.p.goto(base + '?share_text=' + encodeURIComponent('make a clock'));
-  const sharedAsk = await until(async () => (await t.state()).some((x) => x.kind === 'clock'), 6000);
+  sharedAsk = await until(async () => (await t.state()).some((x) => x.kind === 'clock'), 6000);
   await t.p.goto(base + '?share_title=Example&share_url=' + encodeURIComponent('https://example.com/a'));
-  const sharedLink = await until(async () => (await t.state()).some((x) => x.kind === 'link' && /example\.com/.test(x.url)), 6000);
+  sharedLink = await until(async () => (await t.state()).some((x) => x.kind === 'link' && /example\.com/.test(x.url)), 6000);
   check('share to Void: words run, a link becomes a card', sharedAsk && sharedLink && !/share_/.test(t.p.url()), t.p.url());
   await t.p.evaluate(() => localStorage.setItem('a2m.void.owner.v1', 'test-owner-key-0123456789'));
   await t.ask('build helper/everywhere', 0);
   check('owner can queue a helper branch build', await until(() => queued.includes('helper/everywhere'), 4000), queued.join(','));
-  const errs1 = t.errors.slice();
+  errs1 = t.errors.slice();
   await t.ctx.close();
 
   t = await fresh(VOICE_STUB, NO_MIC_ELEMENT);
-  const fb = await t.p.evaluate(() => { const m = document.getElementById('mic'); return m && m.tagName; });
+  fb = await t.p.evaluate(() => { const m = document.getElementById('mic'); return m && m.tagName; });
   if (fb === 'BUTTON') await t.p.click('#mic');
   check('voice fallback: plain mic button still works (and stays a button)', fb === 'BUTTON' && await until(async () => (await t.state()).some((x) => x.kind === 'counter'), 5000) && (await t.p.evaluate(() => document.getElementById('mic').tagName)) === 'BUTTON', fb);
   check('no script errors (everywhere)', !errs1.length && !t.errors.length, errs1.concat(t.errors).join(' | '));
@@ -1666,11 +1689,11 @@ try {
     { name: 'weather', description: 'Weather.', examples: ['weather in Tokyo'] },
     { name: 'worldtime', description: 'The time anywhere.', examples: ['time in Tokyo'] }] })));
   await t.p.reload(); await t.p.waitForTimeout(300);
-  const names = await until(async () => { const n = await t.p.evaluate(() => Object.keys(window.__tools).sort()); return n.length >= 4 && n; }, 6000);
-  const schemaOk = await t.p.evaluate(() => { const d = window.__tools.void_calculate; return !!d && d.inputSchema.required[0] === 'ask' && d.annotations.readOnlyHint === true && /5 miles in km/.test(d.description); }).catch(() => false);
+  names = await until(async () => { const n = await t.p.evaluate(() => Object.keys(window.__tools).sort()); return n.length >= 4 && n; }, 6000);
+  schemaOk = await t.p.evaluate(() => { const d = window.__tools.void_calculate; return !!d && d.inputSchema.required[0] === 'ask' && d.annotations.readOnlyHint === true && /5 miles in km/.test(d.description); }).catch(() => false);
   check('WebMCP: tools declared from /tools.json', names && ['void_ask', 'void_calculate', 'void_stage', 'void_weather'].every((n) => names.includes(n)) && schemaOk, String(names));
-  const calc = await t.p.evaluate(() => window.__tools.void_calculate.execute({ ask: '5 miles in km' })).catch((e) => 'ERR ' + e);
-  const made = await t.p.evaluate(() => window.__tools.void_stage.execute({ ask: 'make a clock' })).catch((e) => 'ERR ' + e);
+  calc = await t.p.evaluate(() => window.__tools.void_calculate.execute({ ask: '5 miles in km' })).catch((e) => 'ERR ' + e);
+  made = await t.p.evaluate(() => window.__tools.void_stage.execute({ ask: 'make a clock' })).catch((e) => 'ERR ' + e);
   check('WebMCP: an agent call runs the ask and returns the result', /8\.05/.test(calc) && /clock/.test(made) && (await t.state()).some((x) => x.kind === 'clock'), calc.slice(0, 80) + ' | ' + made);
   check('WebMCP: world time is declared read-only, like weather and map', await t.p.evaluate(() => !!window.__tools.void_worldtime && window.__tools.void_worldtime.annotations.readOnlyHint === true));
   { // origin: a miss caused by an agent's tool call is tagged for Void's learning; the same miss typed by a person is not
@@ -1681,12 +1704,12 @@ try {
     const byAgent = posts.filter((x) => /zorbleflax/.test(x.ask)), byPerson = posts.filter((x) => /plumbus/.test(x.ask));
     check('WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not', byAgent.length > 0 && byAgent.every((x) => x.origin === 'agent') && byPerson.length > 0 && byPerson.every((x) => !('origin' in x)) && t.errors.length === 0, JSON.stringify({ posts, errors: t.errors }).slice(0, 300));
   }
-  const owner = await t.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'update yourself' }));
+  owner = await t.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'update yourself' }));
   check('WebMCP: owner-only asks never run from an agent (and the answer names no owner)', /person at the screen/.test(String(owner || '')) && !/\bowner\b/i.test(String(owner || '')) && t.errors.length === 0, JSON.stringify({ owner, errors: t.errors }));
-  const idAsks = await t.p.evaluate(async () => [await window.__tools.void_ask.execute({ ask: 'forget me' }), await window.__tools.void_ask.execute({ ask: 'sign in' })]);
+  idAsks = await t.p.evaluate(async () => [await window.__tools.void_ask.execute({ ask: 'forget me' }), await window.__tools.void_ask.execute({ ask: 'sign in' })]);
   check('WebMCP: agents cannot sign in or forget anyone (item 6)', idAsks.every((x) => /person at the screen/.test(x)), idAsks.join(' | '));
-  const paidAgent = await t.p.evaluate(async () => { const out = []; for (const a of ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'raise my confirm cap', 'buy paid void']) out.push(await window.__tools.void_ask.execute({ ask: a })); return out; });
-  const toolText = await t.p.evaluate(() => JSON.stringify(Object.values(window.__tools).map((d) => [d.name, d.description])));
+  paidAgent = await t.p.evaluate(async () => { const out = []; for (const a of ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'raise my confirm cap', 'buy paid void']) out.push(await window.__tools.void_ask.execute({ ask: a })); return out; });
+  toolText = await t.p.evaluate(() => JSON.stringify(Object.values(window.__tools).map((d) => [d.name, d.description])));
   check('WebMCP: a paid Void ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout', paidAgent.every((x) => /^Paid Void (is \$49 a month|adds)/.test(x) && /remember me/.test(x)) && t.ctx.pages().length === 1 && t.errors.length === 0, paidAgent.join(' | ').slice(0, 300));
   await t.ctx.close();
 
@@ -1816,10 +1839,12 @@ try {
 
   // Plan item 7: the confirm line. One plain line before a send/book/spend; No, no answer or a changed request = it doesn't run.
   t = await fresh();
+  } // CORE
   const sent = (type) => gate.calls.filter((c) => c.type === type);
   const lastDecision = () => sent('a2m.approval.decision').slice(-1)[0] || {};
   // the gate is shared by the whole run: the proposal card's Send has already asked once, so count from here
   const callsAt = gate.calls.length, requestedAt = sent('a2m.approval.requested').length;
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   await t.ask('send an email to jane@x.com saying hi', 700);
   check('confirm line: visitors cannot send', /person at the screen/.test(await t.whisper()) && gate.calls.length === callsAt, await t.whisper());
   await t.p.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
@@ -1829,19 +1854,28 @@ try {
   check('confirm line: no = it does not run', /^ok, nothing sent$/.test(await t.whisper()) && lastDecision().decision === 'reject' && !!lastDecision().reason && gate.ran.length === 0, await t.whisper());
   await t.ask('send an email to jane@x.com saying hi', 900); await t.p.click('#whisper [data-vc="yes"]'); await t.p.waitForTimeout(800);
   check('confirm line: yes runs it once', gate.ran.length === 1 && gate.ran[0].to === 'jane@x.com' && (await t.whisper()) === 'sent', await t.whisper());
+  } // CORE
   gate.env.CONFIRM_TTL_MS = 1200;
-  await t.ask('buy 2 bags of coffee for $24', 900); const buyLine = await t.whisper();
-  await t.p.waitForTimeout(1600); const timedOut = await t.whisper();
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
+  await t.ask('buy 2 bags of coffee for $24', 900); buyLine = await t.whisper();
+  await t.p.waitForTimeout(1600); timedOut = await t.whisper();
   await t.ask('yes', 800);
   check('confirm line: no answer = timeout, nothing runs', buyLine === 'Buy 2 bags of coffee for $24? Yes / No' && timedOut === 'no answer, nothing spent' && /expired/.test(await t.whisper()) && lastDecision().decision === 'timeout' && !sent('a2m.approval.decision').some((c) => c.decision === 'approve' && /coffee/.test(JSON.stringify(gate.env.DB.approvals.get(c.approvalId)))), buyLine + ' | ' + timedOut);
+  } // CORE
   gate.env.CONFIRM_TTL_MS = 60000;
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   await t.ask('send an email to jane@x.com saying hi', 900);
+  } // CORE
   for (const row of gate.env.DB.approvals.values()) if (row.state === 'pending') { const rec = JSON.parse(row.record); rec.argsSnapshot.to = 'mallory@evil.test'; row.record = JSON.stringify(rec); } // the paused request changes underneath
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   await t.ask('yes', 900);
   check('confirm line: changed request fails hard', gate.ran.length === 1 && /request changed, nothing sent/.test(await t.whisper()) && gate.env.DB.ledger.slice(-1)[0].kind === 'failed', await t.whisper());
+  } // CORE
   const asked = sent('a2m.approval.requested').length;
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   await t.ask('what is a black hole', 900); await t.ask('weather in Lisbon', 1200); await t.ask('how do I send an email', 900); await t.ask('make a clock');
   check('confirm line: read-only asks are never gated', sent('a2m.approval.requested').length === asked && !/Yes \/ No/.test(await t.whisper()) && (await t.state()).some((x) => x.kind === 'clock') && t.errors.length === 0, t.errors.join(' | '));
+  } // CORE
   const call = (body) => approvalFn.onRequestPost({ request: new Request('http://127.0.0.1/api/approval', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify(body) }), env: gate.env }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => null) }));
   const rq = await call({ type: 'a2m.approval.requested', toolName: 'email.send', args: { to: 'a@b.c', body: 'x' } });
   const noReason = await call({ type: 'a2m.approval.decision', approvalId: rq.body.approvalId, decision: 'reject', actor: 'owner' });
@@ -1851,15 +1885,20 @@ try {
   const readOnly = await call({ type: 'a2m.approval.requested', toolName: 'weather', args: { place: 'Lisbon' } });
   const v0 = ['approvalId', 'runId', 'orgId', 'workflowId', 'stepId', 'toolName', 'argsFingerprint', 'argsSnapshot', 'policyVersion', 'policyRuleId', 'budgetImpact', 'requestedAt', 'requestedBy', 'expiresAt', 'correlateKey'].every((k) => k in rq.body) && rq.body.correlateKey === rq.body.approvalId
     && ['decision', 'actor', 'reason', 'decidedAt', 'ledgerEntryId'].every((k) => k in wrongFp.body);
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   check('confirm line: server rules (reason, fingerprint, once, read-only, v0 fields)', noReason.status === 400 && escNoReason.status === 400 && wrongFp.status === 409 && wrongFp.body.ran === false && replay.status === 409 && readOnly.status === 400 && gate.ran.length === 1 && v0,
     [noReason.status, escNoReason.status, wrongFp.status, replay.status, readOnly.status, gate.ran.length, v0].join(','));
+  } // CORE
   // The deploy doesn't run tools/d1/void_approvals.sql: the tables appear on first use; a database that can't make them fails closed.
   const madeAll = ['void_approvals', 'void_ledger', 'void_ledger_at'].every((x) => gate.env.DB.tables.has(x));
   const good = gate.env.DB, ranBefore = gate.ran.length, askedBefore = sent('a2m.approval.requested').length;
   gate.env.DB = memoryD1({ broken: true });
-  await t.ask('send an email to jane@x.com saying hi', 900); const brokenLine = await t.whisper();
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
+  await t.ask('send an email to jane@x.com saying hi', 900); brokenLine = await t.whisper();
+  } // CORE
   const brokenApi = await call({ type: 'a2m.approval.requested', toolName: 'email.send', args: { to: 'a@b.c', body: 'x' } });
   gate.env.DB = good;
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   check('confirm line: tables made on first use; missing table fails closed', madeAll && /couldn't ask for a yes, nothing sent/.test(brokenLine) && !/Yes \/ No/.test(brokenLine) && brokenApi.status === 503 && gate.ran.length === ranBefore && sent('a2m.approval.requested').length === askedBefore + 1,
     [madeAll, brokenLine, brokenApi.status, gate.ran.length].join(' | '));
   await t.ctx.close();
@@ -3689,11 +3728,14 @@ try {
   check('router: nothing on the page changes (no router, route or escalation code in void.html; the confirm line checks above still pass)',
     !/api\/routes|escalat|lib\/router|bge-m3|qwen/i.test(html) && fs.readFileSync(path.join(root, 'void.html'), 'utf8') === html, '');
   }
+  } // CORE
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
-  await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true }, ...a) });
+  if (want("the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)")) await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true }, ...a) });
 } catch (e) {
+  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   check('suite ran to the end', false, String(e && e.message));
 }
+  } // CORE
 clearInterval(watchdog);
 await browser.close(); server.close();
 // the slowest stretches between checks: where making the suite faster (suite split (3)) pays most
