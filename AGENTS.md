@@ -36,6 +36,7 @@ Every run follows B.I.T.E. (owner, 2026-10-11: brief, implement the smallest use
 | How Void has grown | `void-live-deploy/void.growth.json` (append-only; "growth" on the site) |
 | The cloud estate and its cleanup | `BASE.md` |
 | CI | `.github/workflows/` (`deploy.yml`, `verify.yml`, `void-review.yml`, `automerge.yml`, `bench.yml`, ...) |
+| Agent skills (Claude Code loads them for any session in this repo) | `.claude/skills/<name>/SKILL.md`: `void-run` (this page's run, short), `steward` (driving a PR to merged), `learn-from-video` (when the owner shares a video) |
 | Old text | `archive/` |
 
 ## Never
