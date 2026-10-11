@@ -38,7 +38,7 @@ Public face: blank Void only (void.html -> https://a-to-mind.com). No homepage, 
   switch ($role) {
     "Ship" {
       return $base + @"
-Your role: Ship. Follow AGENTS.md's run (B.I.T.E.): claim the next unclaimed step on domains\void.frontier.md with a one-line claim PR carrying its brief and what it will not build; implement the smallest useful piece, reusing what exists and keeping every existing mount; node tools\grow.mjs and one line in domains\void.agents.log.md; node tools\merge-main.mjs, then node tools\checks.mjs; node tools\push.mjs, open the PR, node tools\automerge.mjs <pr> --label. Never deploy by hand: main deploys itself after the merge (deploy.yml) and the suite on main reverts what breaks it. void.growth.md is frozen history.
+Your role: Ship. Follow AGENTS.md's run (B.I.T.E.): claim the next unclaimed step on domains\void.frontier.md with a one-line claim PR carrying its brief and what it will not build; implement the smallest useful piece, reusing what exists and keeping every existing mount; test it the way a person will; then node tools\finish.mjs <kind> "what changed" --brief "..." (the ledger and log lines, the map check, commit, merge-main, checks, push, the PR labelled automerge). Never deploy by hand: main deploys itself after the merge (deploy.yml) and the suite on main reverts what breaks it. void.growth.md is frozen history.
 "@
     }
     "Polish" {

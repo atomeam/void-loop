@@ -23,7 +23,6 @@ Many agents built in parallel, so Void has grown sideways: four overlapping guid
 - **Tasks that keep running after you leave, with an approve card** (`void.assimilate.md` row 3): automations, watches and the actions record are live; the approve card is the review tray below.
 - **One owner page: board, agent log and live checks** (`void.assimilate.md` row 9): "show the board" is live; the log and checks on the same page are not.
 - **Everything built before becomes a skill** (`void.plan.md` Next #8): this is cleanup step 6 and the rest of the assimilation table.
-- **Pit crew: the finisher** (`owner, 2026-10-11, pit crew plan`): node tools/finish.mjs <kind> "what changed" runs the end of every run in order (grow.mjs, the agent-log line, the MAP line, merge-main, checks, push, the PR with its B.I.T.E. brief, the automerge label), and a map-coverage check fails a new skill, miniature or workflow with no line in docs/MAP.md.
 - **Pit crew: the spotter** (`owner, 2026-10-11, pit crew plan`): a check that fails and then passes on the same commit is recorded (tools/flakes.json, append-only); two in 7 days queue one flake: job to make it robust. Never a skip or a quarantine.
 - **Pit crew: the crew chief (waits for the owner)** (`owner, 2026-10-11, pit crew plan`): a scheduled starter that takes the top queued job and starts a builder by itself; it spends on every run, so dispatcher.yml stays dry until the owner says yes (STANDING.md money rule).
 
