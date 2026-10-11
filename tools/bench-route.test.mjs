@@ -64,3 +64,24 @@ test('each ask runs with the answer engine\'s own options (thinking off, its tok
   for (const [k, v] of Object.entries(ANSWER_RUN)) assert.deepEqual(calls[0][k], v, k + ' as /api/answer sends it');
   assert.equal(ANSWER_RUN.chat_template_kwargs.enable_thinking, false);
 });
+
+// Frontier #9 (Clef routes every ask): before any call is written to Clef, the site says what its own Workers AI binding
+// knows about Clef and Clef-flash (name, task, description, the properties where a model's schema lives), so the call is
+// written to the real shape, not a guess. A binding without models() or without Clef gives an empty list, never an error.
+test('a probe also says what the binding knows about Clef and Clef-flash, and nothing else', async () => {
+  const e = env(), asked = [];
+  e.AI.models = async (q) => { asked.push(q); return [
+    { name: '@cf/cloudflare/clef-flash', task: { name: 'Text Classification' }, description: 'fast typed questions', properties: [{ property_id: 'context_window', value: '8192' }, { property_id: 'schema', value: { input: { state: 'string' } } }] },
+    { name: '@cf/cloudflare/clef', task: { name: 'Text Classification' }, description: 'typed questions', properties: [] },
+    { name: '@cf/meta/llama-3.1-8b-instruct', task: { name: 'Text Generation' }, description: 'not clef', properties: [] },
+  ]; };
+  const p = await (await bench({ request: post({ probe: true }), env: e })).json();
+  assert.deepEqual(p.clef.map((m) => m.id), ['@cf/cloudflare/clef-flash', '@cf/cloudflare/clef']);
+  assert.equal(p.clef[0].task, 'Text Classification'); assert.equal(p.clef[0].description, 'fast typed questions');
+  assert.deepEqual(p.clef[0].properties.find((x) => x.property_id === 'schema').value, { input: { state: 'string' } });
+  assert.ok(asked.some((q) => q && q.search === 'clef'), JSON.stringify(asked));
+  const none = await (await bench({ request: post({ probe: true }), env: env() })).json();
+  assert.deepEqual(none.clef, [], 'no models() on the binding: an empty list');
+  const broken = env(); broken.AI.models = async () => { throw new Error('boom'); };
+  assert.deepEqual((await (await bench({ request: post({ probe: true }), env: broken })).json()).clef, []);
+});

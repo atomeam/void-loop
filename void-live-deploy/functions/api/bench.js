@@ -4,8 +4,10 @@
 //                                  the built-in asks from..to-1 (lib/bench-asks.js), at most CHUNK a call, with the messages
 //                                  /api/answer sends, run with its options (ANSWER_RUN: thinking off, its token budget) and its
 //                                  think-stripping (Void's live facts for self asks, pages masked); scoring stays in the tool
-//   { probe: true }             -> { ok, asks, chunk, catalog }  the route is there and the key works; the text models the
-//                                  binding lists, with prices when it gives them (for the tool's spend plan)
+//   { probe: true }             -> { ok, asks, chunk, catalog, clef }  the route is there and the key works; the text models the
+//                                  binding lists, with prices when it gives them (for the tool's spend plan); and what the
+//                                  binding knows of Clef and Clef-flash (frontier #9: tools/clef-probe.mjs prints it, so the
+//                                  router's Clef call is written to the real input shape, not a guess)
 // What a stranger could make it do: nothing (owner only). With the key: run at most CHUNK built-in asks a call, on a free
 // @cf text model only (never PAID_MODEL), under the guard's per-minute limit. It writes nothing and stores no answer.
 import { ownerOk } from '../../lib/guard.js';
@@ -21,6 +23,20 @@ const MODEL_ID = /^@cf\/[a-z0-9][\w.-]{0,60}\/[a-z0-9][\w.-]{0,80}$/i;
 const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
 const pick = (r) => String((r && (r.response ?? r.choices?.[0]?.message?.content ?? r.result?.response)) || '');
 
+// Clef and Clef-flash as the binding describes them: name, task, description and the raw properties (where Workers AI keeps a
+// model's limits and schema), capped. An empty list when the binding has no models() or no Clef, never an error.
+const capped = (list, max = 8000) => { const out = []; let n = 2; for (const x of list) { const k = JSON.stringify(x).length + 1; if (n + k > max) break; out.push(x); n += k; } return out; };
+async function clefModels(env) {
+  try {
+    if (typeof env.AI.models !== 'function') return [];
+    const list = await env.AI.models({ search: 'clef' });
+    return (list || []).filter((m) => /clef/i.test(String(m && m.name))).slice(0, 4).map((m) => ({
+      id: m.name, task: (m.task && m.task.name) || '', description: String(m.description || '').slice(0, 600),
+      properties: capped(Array.isArray(m.properties) ? m.properties : []),
+    }));
+  } catch (_) { return []; }
+}
+
 async function catalog(env) {
   try {
     const list = typeof env.AI.models === 'function' ? await env.AI.models({ task: 'Text Generation' }) : [];
@@ -35,7 +51,7 @@ export async function onRequestPost({ request, env }) {
   if (!env.AI) return json(503, { error: 'no Workers AI binding on this deployment' });
   const sf = await readSelf(env, new URL(request.url).origin);
   const asks = buildAsks({ self: sf.self, skills: sf.skills }), facts = selfFacts(sf);
-  if (b.probe) return json(200, { ok: true, asks: asks.length, chunk: CHUNK, catalog: await catalog(env) });
+  if (b.probe) return json(200, { ok: true, asks: asks.length, chunk: CHUNK, catalog: await catalog(env), clef: await clefModels(env) });
   const model = String(b.model || ''), from = Number(b.from), to = Number(b.to), file = b.file == null ? 'builtin' : b.file;
   if (!MODEL_ID.test(model) || model === PAID_MODEL) return json(400, { error: 'a free @cf text model id' });
   if (!FILES.includes(file)) return json(400, { error: 'unknown ask file' });

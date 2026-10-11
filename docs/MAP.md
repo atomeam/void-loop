@@ -54,6 +54,8 @@ Every tool in `tools/` (tests aside) and every workflow in `.github/workflows/`,
 
 - **Ringer by touch in WebKit:** `.github/workflows/touch-webkit.yml` runs `tools/touch-webkit.mjs` (the 3D ring's touch checks, `ringerTouch` in `tools/test_3d.mjs`) in WebKit, the engine under iOS Safari, on PRs that change Ringer or those checks; the full suite runs the same checks in Chromium with real touch events.
 
+- **Clef probe (frontier #9):** `.github/workflows/clef-probe.yml` (manual) runs `tools/clef-probe.mjs`: what the site's Workers AI binding knows about Clef and Clef-flash (`POST /api/bench { probe: true }` now returns `clef`), in the job summary, so the router's Clef call is written to the real input shape. Needs `VOID_OWNER_TOKEN`.
+
 ## Built, not merged [gh, 2026-10-10]
 - PR #293 — the standing watch card, "watch this for me" (build-order step 4, first piece; claim line merged as #285; labelled automerge [gh]).
 - PR #250 — a webhook automation rule runs at most 200 times a day (older, no label).
