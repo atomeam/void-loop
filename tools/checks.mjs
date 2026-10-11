@@ -19,6 +19,8 @@ for (const [name, file] of [
   ['new-skill', 'new-skill.test.mjs'],
   ['frontier', 'frontier.test.mjs'],
   ['map-sync', 'map-sync.test.mjs'],
+  ['map-coverage', 'map-coverage.test.mjs'],
+  ['finish', 'finish.test.mjs'],
   ['next', 'next.test.mjs'],
   ['calendar', 'test_calendar.mjs'],
   ['glyphs', 'test_glyphs.mjs'],
