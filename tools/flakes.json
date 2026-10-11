@@ -1,4 +1,5 @@
 [
   {"check": "money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load at on", "sha": "d59dc6a86385f22d99efb287c058e766e00e5412", "at": "2026-10-11T03:10:50Z"},
-  {"check": "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves th", "sha": "213aedd1bb424c636b982a8ef77443bacea8e983", "at": "2026-10-11T07:47:59Z"}
+  {"check": "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves th", "sha": "213aedd1bb424c636b982a8ef77443bacea8e983", "at": "2026-10-11T07:47:59Z"},
+  {"check": "3D scene: the empty page loads zero 3D bytes (no scene3d.js, no vendored three.js, no models) and the index never lists the engine or a miniature", "sha": "1013677f3f69da52f756d36867e8859b11da517f", "at": "2026-10-11T08:04:39Z"}
 ]
