@@ -19,7 +19,7 @@ export function openItems(text) {
     const m = /^- \*\*(.+?)\*\*\s*(.*)$/.exec(line);
     if (!m) continue;
     let title = m[1].replace(/[:.]\s*$/, '').trim(), rest = m[2];
-    const src = /\(`([^`]+)`([^)]*)\)/.exec(title + ' ' + rest);
+    const src = /\(`([^`]+)`([^)]*)\)/.exec(title + ' ' + rest); // void-review: ok (RegExp.exec on frontier text, not a shell: nothing runs)
     title = plain(title.replace(/\s*\(`[^)]*\)\s*/, ' '));
     rest = rest.replace(/^\s*\(`[^)]*\)\s*:?\s*/, '');
     out.push({ title, why: plain(rest).replace(/^:\s*/, ''), from: src ? plain(src[1] + src[2]) : '' });
