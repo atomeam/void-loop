@@ -838,6 +838,23 @@ try {
         && r.reload === 10 && r.shownAfter === '10' && r.reset === 0 && r.removed === 0 && !P.errors.length,
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
+  // step 6: the shape, pinned before it moves out of void.html (what works today; "make it a circle" on an existing rect,
+  // "make it thicker", "make it filled" and a clock that "make the shape blue" also brings are fixed after the move)
+  if (want("built-in shape: draw a red square, bigger, blue, a reload, remove; only ever one shape")) { const P = await fresh();
+    const one = async () => (await P.state()).filter((t) => t.kind === 'shape');
+    const r = {};
+    await P.ask('draw a red square', 600); let s = await one(); r.made = s.length + ':' + (s[0] && s[0].shapeType); r.red = s[0] && s[0].color;
+    await P.ask('draw a circle', 500); r.single = (await one()).length;
+    await P.ask('make it bigger', 400); s = await one(); r.bigger = s[0].width + 'x' + s[0].height;
+    await P.ask('make the shape blue', 400); s = await one(); r.blue = s[0].color;
+    r.shown = await P.p.$eval('.thing.shape .shape-rect', () => true).catch(() => false);
+    await P.p.reload(); await P.p.waitForTimeout(1500);
+    r.reload = await until(() => P.p.$eval('.thing.shape .shape-rect', () => true).catch(() => false), 6000);
+    await P.ask('remove the shape', 500); r.removed = (await one()).length;
+    check('built-in shape: "draw a red square" puts up one red rect, a second draw keeps it one shape, "make it bigger" grows it to 120, "make the shape blue" turns it blue, it comes back after a reload, and "remove the shape" takes it away',
+      r.made === '1:rect' && r.red === '#ff5c5c' && r.single === 1 && r.bigger === '120x120' && r.blue === '#6aa8ff' && r.shown && r.reload && r.removed === 0 && !P.errors.length,
+      JSON.stringify({ r, e: P.errors }));
+    await P.ctx.close(); }
   // shop this list (owner, 2026-10-11): one search link per item still to buy, at Walmart or Sam's Club; nothing leaves the page
   if (want("shop this list: the list card links each item still to buy to a Walmart or Sam's Club search")) { const P = await fresh();
     await P.ask('add milk', 500); await P.ask('add eggs', 500); await P.ask('add peanut butter', 500); await P.ask('check off eggs', 500);
