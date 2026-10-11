@@ -173,7 +173,23 @@ function warmUp(h) {
   for (const c of h.contacts) for (const m of c.materials) extra.add(new THREE.Mesh(c.plane.geometry, m));
   Promise.all([r.compileAsync(h.scene, h.camera), extra.children.length ? r.compileAsync(extra, h.camera, h.scene) : null])
     .catch((e) => console.warn('[miniature ' + h.kind + '] compile', e))
-    .finally(() => { h.compiling = false; h.dirty = true; wake(); });
+    .finally(() => uploadTextures(h, () => { h.compiling = false; h.dirty = true; wake(); }));
+}
+// Textures go to the GPU one per frame before the first draw. The first draw used to upload them all at once: the chess set's
+// nine 2k textures held the main thread for seconds in one task (cleanup step 5, 2026-10-11), the freeze when a 3D game opened.
+export function texturesOf(scene) {
+  const out = new Set();
+  scene.traverse((o) => { for (const m of [].concat(o.material || [])) for (const v of Object.values(m)) if (v && v.isTexture) out.add(v); });
+  return [...out];
+}
+function uploadTextures(h, done) {
+  const r = h.E.renderer, todo = r.initTexture ? texturesOf(h.scene) : [];
+  const next = () => {
+    if (!todo.length || h.E.lost || !h.wrap.isConnected) return done();
+    try { r.initTexture(todo.shift()); } catch (e) { console.warn('[miniature ' + h.kind + '] texture', e); }
+    requestAnimationFrame(next);
+  };
+  next();
 }
 function draw(h) {
   const E = h.E, r = E.renderer, pw = h.canvas.width, ph = h.canvas.height;

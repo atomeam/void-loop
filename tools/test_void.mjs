@@ -3421,9 +3421,12 @@ try {
       await ctx.close();
       return { a, ms: ok ? Date.now() - t0 : null, note: last ? last.note : null, right: !!last && note.test(String(last.note)) && !!shown, w };
     }));
-    check('money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load at once (Promise.all), and no "waking up" is left behind',
+    // cleanup step 5 (2026-10-11): the modules load in SKILL_LANES parallel lanes in routing order, not all in one Promise.all;
+    // what this guards is the same: never one after another
+    const lanes = Number((/const SKILL_LANES = (\d+);/.exec(loaderSrc) || [])[1] || 0);
+    check('money/GPA near misses (#110): with 80 ms per skill file the four asks still log calc / skill:loan within 4 s and show 386, 1,825, 1,628, 3.75; skills load in parallel lanes (SKILL_LANES of 8 or more, never one after another), and no "waking up" is left behind',
       slow.every((x) => x.right && x.ms != null && x.ms < 4000 && x.w !== 'waking up')
-      && /const mods = await Promise\.all\(index\.map\(\(name\) => import\('\/skills\/' \+ name \+ '\.js'\)/.test(loaderSrc)
+      && lanes >= 8 && /await Promise\.all\(Array\.from\(\{ length: SKILL_LANES \}, lane\)\)/.test(loaderSrc)
       && !/for \(const name of index\) \{\s*try \{\s*const mod = await import/.test(loaderSrc),
       JSON.stringify(slow));
   }
