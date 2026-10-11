@@ -814,6 +814,9 @@
     }
     const stageDecorators = []; // skills that draw over the stage after each render and drag (labels and arrows: skills/label.js)
     function decorate() { for (const d of stageDecorators) { try { d(stageApi); } catch (_) {} } }
+    // a stage thing's output (frontier #24, living arrows): what it just produced goes to whatever its arrows point at
+    // (skills/label.js listens and delivers; a target kind takes it with receiveInput). A timer at 0:00 is the first.
+    function emit(th, value) { try { document.dispatchEvent(new CustomEvent('void:output', { detail: { id: th && th.id, value } })); } catch (_) {} }
 
     function load() {
       if (PAGE) { // the page's cards, as text only; your own stage stays untouched in this browser
@@ -1325,7 +1328,8 @@ Object.values(things).forEach((th) => {
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
-      closePage: () => closePage(), // the "look what I made" walkthrough closes the card a step opened (skills/showcase.js)
+      closePage: () => closePage(),
+      emit: (th, value) => emit(th, value), // a skill's own thing hands its output down its arrows (frontier #24) // the "look what I made" walkthrough closes the card a step opened (skills/showcase.js)
       ask: (t, attach) => { confirmAttach = attach && typeof attach === 'object' ? attach : null; return handle(String(t || '')); }, // a card that opens something asks as if typed; `attach` rides a gated ask into its fingerprint (the proposal's exact draft)
       log: (a) => loopLog(a) }; // a stage thing's own event (a shaken 8 ball) goes in the same history as asks
 
@@ -1729,6 +1733,7 @@ function mountList(th) {
             th.startedAt = 0;
             save();
             say('timer done');
+            emit(th, { event: 'done', text: (th.label ? th.label : 'the timer') + ' is done' }); // to whatever its arrows point at
           }
         }, 250);
       }

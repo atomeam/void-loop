@@ -79,6 +79,16 @@ export function tiltOf(id) {
   return Math.round(((Math.abs(h) % 51) - 25) / 10 * 10) / 10;
 }
 
+/** what an arrow brings (frontier #24, skills/label.js deliver): its words go on a new line of the note, and it glows once.
+ *  true when the note took it. Changes th. */
+export function receiveInput(th, value) {
+  const text = String((value && value.text) || '').trim().slice(0, 200);
+  if (!text) return false;
+  th.text = th.text ? th.text + '\n' + text : text;
+  th.heard = Date.now();
+  return true;
+}
+
 function mount(th, stageApi) {
   const el = document.createElement('div');
   el.className = 'thing sticky';
@@ -91,6 +101,8 @@ function mount(th, stageApi) {
   el.contentEditable = 'true';
   el.spellcheck = false;
   if (stageApi.selected() === th.id) el.style.outline = '1px solid rgba(0,0,0,0.25)';
+  // it just heard something down an arrow: one soft glow, so the change is seen
+  if (th.heard && Date.now() - th.heard < 1500 && typeof el.animate === 'function') { delete th.heard; el.animate([{ boxShadow: '0 0 0 0 rgba(255,255,255,0)' }, { boxShadow: '0 0 0 6px rgba(255,255,255,.55)' }, { boxShadow: '0 0 0 0 rgba(255,255,255,0)' }], { duration: 1100, easing: 'ease-out' }); } // once
   el.addEventListener('input', () => { th.text = el.textContent || ''; stageApi.save(); });
   el.addEventListener('pointerdown', () => { stageApi.select(th.id); });
   stageApi.bindDrag(el, th);
@@ -138,5 +150,5 @@ export default {
   match(lower, text) { return plainSticky(lower, text); },
   async run(text, api) { const d = ask(String(text || '').toLowerCase(), text, api.stage); return d && d !== 'no sticky' ? 'sticky' : 'none'; },
   // askAt: the page asks this kind's ask/askEdit at its own places, not in the early loop the counter and shape use
-  stageKinds: { sticky: { mount, ensure: (stageApi) => ensure(stageApi, ''), ask, askEdit, colorOf, askAt: 'sticky' } },
+  stageKinds: { sticky: { mount, ensure: (stageApi) => ensure(stageApi, ''), ask, askEdit, colorOf, receiveInput, askAt: 'sticky' } },
 };

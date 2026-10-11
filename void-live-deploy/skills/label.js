@@ -5,6 +5,11 @@
  * dragged or when its group moves (skills/group.js). "add a label that says to do" puts a free-floating label on the stage
  * that arrows can point at. A labelled thing can be named by its label: "connect kitchen to groceries".
  * Labels and arrows are saved with the stage (th.label, th.arrows), so they survive a reload; "undo" takes the last one back.
+ * Living arrows (frontier #24, 2026-10-11, absorbed from tldraw computer without its palette or a model call per hop): an arrow
+ * carries what its source produces. A thing emits a value (the page's emit(); a timer at 0:00 is the first) and deliver() hands
+ * it to each thing its arrows point at, through that kind's receiveInput (a sticky writes it down); a short pulse runs along the
+ * arrow. "connect the timer to the note in capitals" (or "... as a word count") transforms it on the way (PIPES, all plain code).
+ * "lock the note" makes a thing ignore what arrows bring; "unlock the note" lets it listen again.
  * Empty surface stays empty: an ask on an empty stage only says so.
  */
 import { KIND_WORDS } from './layer.js';
@@ -43,6 +48,18 @@ function labelText(s) {
   return t;
 }
 
+// a transform on an arrow, said at the end of the ask: "... to the note in capitals", "... as a word count". Pure.
+export const PIPES = {
+  upper: (t) => String(t).toUpperCase(),
+  count: (t) => { const n = (String(t).match(/\S+/g) || []).length; return n + (n === 1 ? ' word' : ' words'); },
+};
+const PIPE_RE = /\s+(?:in\s+(?:capitals|caps|capital\s+letters|upper\s*case)|as\s+(?:a\s+)?word\s+count|counting\s+(?:the\s+)?words)$/;
+function pipeOf(s) {
+  const m = PIPE_RE.exec(s);
+  if (!m) return [s, null];
+  return [s.slice(0, m.index), /word/.test(m[0]) ? 'count' : 'upper'];
+}
+
 /**
  * Parse an ask. Returns one of:
  *   { op: 'label', ref, text }          tag a thing ("label the clock kitchen")
@@ -51,6 +68,7 @@ function labelText(s) {
  *   { op: 'arrow', from, to }           draw an arrow ("draw an arrow from the clock to the note")
  *   { op: 'unarrow', from?, to? | 'all' }
  *   { op: 'show' }
+ *   { op: 'lock', ref, on }            "lock the note" / "unlock the note": a locked thing ignores what arrows bring
  * or null when the ask is not about labels or arrows.
  */
 export function labelOf(text) {
@@ -75,16 +93,22 @@ export function labelOf(text) {
   if ((m = /^(?:disconnect|unlink|unconnect)\s+(.+?)\s+(?:from|and)\s+(.+)$/.exec(t)) || (m = /^(?:remove|delete|erase)\s+(?:the\s+)?(?:arrow|connector|connection)\s+(?:from|between)\s+(.+?)\s+(?:to|and)\s+(.+)$/.exec(t))) {
     const from = refOf(m[1], true), to = refOf(m[2], true); return from && to ? { op: 'unarrow', from, to } : null;
   }
+  // lock / unlock a thing against what arrows bring (it must name a kind: "lock the screen" is not this)
+  if ((m = /^(lock|unlock)\s+(.+)$/.exec(t))) {
+    const ref = refOf(m[2], false); if (ref && (ref.kind || ref.self)) return { op: 'lock', ref, on: m[1] === 'lock' };
+  }
   // draw an arrow: the arrow word makes it clear, so a bare label name is fine on either end
   if ((m = /^(?:draw|add|make|put|create)\s+(?:an?\s+)?(?:arrow|connector|line)\s+(?:from|between)\s+(.+?)\s+(?:to|and|towards?)\s+(.+)$/.exec(t))
     || (m = /^(?:point|aim)\s+(?:an?\s+)?arrow\s+(?:from\s+)?(.+?)\s+(?:to|at|towards?)\s+(.+)$/.exec(t))
     || (m = /^arrow\s+from\s+(.+?)\s+to\s+(.+)$/.exec(t))) {
-    const from = refOf(m[1], true), to = refOf(m[2], true); return from && to ? { op: 'arrow', from, to } : null;
+    const [end, pipe] = pipeOf(m[2]);
+    const from = refOf(m[1], true), to = refOf(end, true); return from && to ? { op: 'arrow', from, to, ...(pipe ? { pipe } : {}) } : null;
   }
   // "connect the clock to the note", "point the note at the clock": both ends must name a kind, or be quoted
   if ((m = /^(?:connect|link|wire|join\s+up|join)\s+(.+?)\s+(?:to|and|with)\s+(.+)$/.exec(t)) || (m = /^point\s+(.+?)\s+(?:at|to|towards?)\s+(.+)$/.exec(t))) {
+    const [end, pipe] = pipeOf(m[2]);
     const strict = (s) => (QUOTE.test(CLEAN(s)) ? refOf(s, true) : refOf(s, false));
-    const from = strict(m[1]), to = strict(m[2]); return from && to && !(from.self && to.self) ? { op: 'arrow', from, to } : null;
+    const from = strict(m[1]), to = strict(end); return from && to && !(from.self && to.self) ? { op: 'arrow', from, to, ...(pipe ? { pipe } : {}) } : null;
   }
   // tag a thing
   if ((m = /^(?:put|add|stick|give\s+it|place)\s+(?:a\s+)?(?:label|tag|name)\s+(?:on|to)\s+(.+?)\s+(?:that\s+says|saying|reading|which\s+says|of|:)\s*(.+)$/i.exec(raw))) {
@@ -124,19 +148,24 @@ export function pick(order, ref, selected) {
 }
 
 /** Add an arrow from a to b (one per pair, either way round). Returns false when it was already there. Pure on the things. */
-export function addArrow(a, b) {
+export function addArrow(a, b, pipe = null) {
   if (!a || !b || a === b) return false;
-  if ((a.arrows || []).includes(b.id)) return false;
-  if ((b.arrows || []).includes(a.id)) { b.arrows = b.arrows.filter((x) => x !== a.id); if (!b.arrows.length) delete b.arrows; }
+  if ((a.arrows || []).includes(b.id)) {
+    if (!pipe || (a.pipes && a.pipes[b.id] === pipe)) return false;
+    a.pipes = { ...(a.pipes || {}), [b.id]: pipe }; return true; // the same arrow, a new transform on it
+  }
+  if ((b.arrows || []).includes(a.id)) { b.arrows = b.arrows.filter((x) => x !== a.id); if (!b.arrows.length) delete b.arrows; dropPipe(b, a.id); }
   a.arrows = [...(a.arrows || []), b.id];
+  if (pipe) a.pipes = { ...(a.pipes || {}), [b.id]: pipe };
   return true;
 }
+function dropPipe(x, id) { if (x && x.pipes && x.pipes[id]) { delete x.pipes[id]; if (!Object.keys(x.pipes).length) delete x.pipes; } }
 
 /** Take the arrow between a and b off (either way round). Returns how many went. Pure on the things. */
 export function dropArrow(a, b) {
   let n = 0;
   for (const [x, y] of [[a, b], [b, a]]) {
-    if (x && y && x.arrows && x.arrows.includes(y.id)) { x.arrows = x.arrows.filter((id) => id !== y.id); n++; if (!x.arrows.length) delete x.arrows; }
+    if (x && y && x.arrows && x.arrows.includes(y.id)) { x.arrows = x.arrows.filter((id) => id !== y.id); n++; if (!x.arrows.length) delete x.arrows; dropPipe(x, y.id); }
   }
   return n;
 }
@@ -158,6 +187,48 @@ export function arrowEnds(A, B, gap = 6) {
   return { x1: ca.x + ux * ta, y1: ca.y + uy * ta, x2: cb.x - ux * tb, y2: cb.y - uy * tb };
 }
 
+// --- living arrows: what a thing produces goes along its arrows ---
+/** Hand a value from one thing to everything its arrows point at that can take it (a kind with receiveInput) and is not locked;
+ *  the arrow's transform (PIPES) runs on the way. Returns the ids that took it. Changes the receiving things. */
+export function deliver(things, kinds, fromId, value) {
+  const from = things && things[fromId];
+  if (!from || !Array.isArray(from.arrows) || !value) return [];
+  const took = [];
+  for (const id of from.arrows) {
+    const to = things[id], kind = to && kinds && kinds[to.kind];
+    if (!to || to.locked || !kind || typeof kind.receiveInput !== 'function') continue;
+    const f = from.pipes && PIPES[from.pipes[id]];
+    const v = f && typeof value.text === 'string' ? { ...value, text: f(value.text) } : value;
+    try { if (kind.receiveInput(to, v)) took.push(id); } catch (_) {}
+  }
+  return took;
+}
+// a dot that runs along the arrow from its source to its target, so the hand-over is seen
+function pulse(root, fromId, toId) {
+  const ln = root && root.querySelector && root.querySelector('.void-arrows line[data-from="' + fromId + '"][data-to="' + toId + '"]');
+  if (!ln || typeof ln.animate !== 'function') return;
+  const p = (k) => Number(ln.getAttribute(k)) || 0, x1 = p('x1'), y1 = p('y1'), x2 = p('x2'), y2 = p('y2');
+  const dot = document.createElement('div');
+  dot.className = 'void-annot void-pulse';
+  dot.style.cssText = 'position:absolute;left:0;top:0;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#fff;box-shadow:0 0 12px 3px rgba(190,210,255,.8);pointer-events:none;z-index:2';
+  root.appendChild(dot);
+  const a = dot.animate([{ transform: 'translate(' + x1 + 'px,' + y1 + 'px)', opacity: 0.2 }, { transform: 'translate(' + x2 + 'px,' + y2 + 'px)', opacity: 1, offset: 0.85 }, { transform: 'translate(' + x2 + 'px,' + y2 + 'px)', opacity: 0 }], { duration: 900, easing: 'ease-in-out' });
+  a.onfinish = () => dot.remove();
+}
+let lastStage = null; // the page's stageApi, kept from the last decorate(); outputs arrive as 'void:output' events
+function onOutput(e) {
+  const st = lastStage, d = e && e.detail;
+  if (!st || !d || !st.things || !st.kinds) return;
+  const took = deliver(st.things(), st.kinds(), d.id, d.value);
+  if (!took.length) return;
+  if (st.save) st.save();
+  if (st.render) st.render();
+  requestAnimationFrame(() => { for (const id of took) pulse(st.stage, d.id, id); });
+}
+if (typeof document !== 'undefined' && !globalThis.__voidLivingArrows) { globalThis.__voidLivingArrows = true; document.addEventListener('void:output', onOutput); }
+// what a source produces, said when an arrow from it is drawn to a thing that can take it
+const OUTPUTS = { timer: 'when the timer ends' };
+
 const NAMES = { kept: 'card', sticky: 'note', calc: 'calculator' };
 const nameOf = (t) => (t.kind === 'label' ? 'label “' + t.text + '”' : t.label ? (NAMES[t.kind] || t.kind) + ' “' + t.label + '”' : 'the ' + (NAMES[t.kind] || t.kind));
 const refName = (ref) => (ref.name ? '“' + ref.name + '”' : 'no ' + (NAMES[ref.kind] || ref.kind || 'thing'));
@@ -170,6 +241,7 @@ function boxOf(root, t) {
   return { el, x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth || 1, h: el.offsetHeight || 1 };
 }
 export function decorate(st) {
+  if (st && st.things) lastStage = st;
   const root = st && st.stage;
   if (!root || !root.querySelector) return;
   root.querySelectorAll('.void-annot').forEach((n) => n.remove());
@@ -205,13 +277,13 @@ export function decorate(st) {
     root.insertBefore(svg, root.firstChild); // under the things, so cards stay readable
   }
   for (const t of list) {
-    if (!t.label || t.kind === 'label') continue;
+    if ((!t.label && !t.locked) || t.kind === 'label') continue;
     const B = boxOf(root, t);
     if (!B) continue;
     const tag = document.createElement('div');
     tag.className = 'void-annot void-tag';
     tag.dataset.for = t.id;
-    tag.textContent = t.label;
+    tag.textContent = (t.label || '') + (t.locked ? (t.label ? ' · ' : '') + 'locked' : '');
     tag.style.cssText = 'position:absolute;left:' + B.x + 'px;top:' + Math.max(0, B.y - 20) + 'px;font-size:11px;letter-spacing:.04em;color:var(--muted, rgba(255,255,255,0.6));pointer-events:none;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis';
     root.appendChild(tag);
   }
@@ -283,8 +355,10 @@ async function run(text, api) {
     if (!b) { say(refName(hit.to) + ' on the stage'); return 'label'; }
     if (a === b) { say('that is the same thing · an arrow needs two'); return 'label'; }
     snap();
-    if (!addArrow(a, b)) { say('there is already an arrow from ' + nameOf(a) + ' to ' + nameOf(b)); return 'label'; }
-    say('drew an arrow from ' + nameOf(a) + ' to ' + nameOf(b) + ' · it follows them when you drag');
+    if (!addArrow(a, b, hit.pipe || null)) { say('there is already an arrow from ' + nameOf(a) + ' to ' + nameOf(b)); return 'label'; }
+    const kinds = st.kinds ? st.kinds() : {}, takes = !!(kinds[b.kind] && typeof kinds[b.kind].receiveInput === 'function');
+    const live_ = OUTPUTS[a.kind] && takes ? ' · ' + OUTPUTS[a.kind] + ', ' + nameOf(b) + ' gets it' + (hit.pipe === 'upper' ? ' in capitals' : hit.pipe === 'count' ? ' as a word count' : '') : '';
+    say('drew an arrow from ' + nameOf(a) + ' to ' + nameOf(b) + ' · it follows them when you drag' + live_);
     return done();
   }
   if (hit.op === 'unarrow') {
@@ -301,6 +375,15 @@ async function run(text, api) {
     snap();
     if (!dropArrow(a, b)) { say('no arrow between ' + nameOf(a) + ' and ' + nameOf(b)); return 'label'; }
     say('took the arrow away');
+    return done();
+  }
+  if (hit.op === 'lock') {
+    const t = pick(order, hit.ref, selected);
+    if (!t) { say(refName(hit.ref) + ' on the stage'); return 'label'; }
+    if (!!t.locked === hit.on) { say(nameOf(t) + (hit.on ? ' is already locked' : ' is not locked')); return 'label'; }
+    snap();
+    if (hit.on) t.locked = true; else delete t.locked;
+    say(hit.on ? 'locked ' + nameOf(t) + ' · arrows bring it nothing until you unlock it' : 'unlocked ' + nameOf(t));
     return done();
   }
   if (hit.op === 'show') {
