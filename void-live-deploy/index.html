@@ -1971,6 +1971,7 @@ function applyClockAlters(c, lower) {
 
     function hasAlterProperty(lower) {
       return colorFrom(lower) !== null
+        || Object.values(stageKinds).some((k) => k && k.alterWords instanceof RegExp && k.alterWords.test(lower)) // a skill kind's own words ("thicker", "filled")
         || /\b(bigger|larger|increase|grow|enlarge|smaller|tinier|decrease|shrink|huge|giant|enormous|massive|tiny|mini|petite|big|large|small|little)\b/.test(lower)
         || /\b(cent(?:er|re)|middle|top|bottom|left|right|upper|lower)\b/.test(lower)
         || /\b(24\s*-?\s*h(our)?s?|24h|military|12\s*-?\s*h(our)?s?|12h|am\s*\/?\s*pm|bold|seconds|date)\b/.test(lower);

@@ -126,9 +126,10 @@ export function ask(lower, text, stageApi) {
     stageApi.save(); stageApi.render();
     return 'shape-removed';
   }
-  ensure(stageApi, it.type);
+  // "draw a line" with a rect already up: the one shape becomes a line (it used to say shape-line and stay a rect)
+  const s = ensure(stageApi, it.type);
+  s.shapeType = it.type;
   const col = stageApi.colorFrom ? stageApi.colorFrom(lower) : null;
-  const s = shapeOf(stageApi);
   if (s && col) s.color = col;
   stageApi.save(); stageApi.render();
   return 'shape-' + it.type;
@@ -141,5 +142,7 @@ export default {
   nearMisses: ['what shape is the earth', 'get in shape'],
   match(lower) { return plainShape(lower); },
   async run(text, api) { return ask(String(text || '').toLowerCase(), text, api.stage) ? 'shape' : 'none'; },
-  stageKinds: { shape: { mount, ensure: (stageApi) => ensure(stageApi, 'rect'), alter, ask } },
+  // alterWords: the page's shared targeting takes "make it thicker", "fill it", "make it a circle" for the shape too
+  stageKinds: { shape: { mount, ensure: (stageApi) => ensure(stageApi, 'rect'), alter, ask,
+    alterWords: /\b(?:fill(?:ed)?|unfill|outline|stroke|thick(?:er)?|thin(?:ner)?|make\s+(?:it\s+)?a?\s*(?:rect|rectangle|square|circle|line))\b/ } },
 };
