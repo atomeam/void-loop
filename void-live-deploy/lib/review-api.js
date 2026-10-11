@@ -163,6 +163,19 @@ export function parseFindingsJson(text) {
 const normKind = (k) => { k = String(k || '').toLowerCase().trim(); return k === 'bug' ? 'bug' : /^(risk|security|perf|performance|data)/.test(k) ? 'risk' : 'style'; };
 const normQ = (s) => String(s || '').replace(/\s+/g, ' ').trim();
 const matchLine = (q) => { const exact = q.length < 8; return ([, t]) => { const n = normQ(t); return exact ? n === q : n.includes(q) || (n.length >= 8 && q.includes(n)); }; };
+// Claims the free model keeps making about standard code (2026-10-11: #522's el.style.rotate and #525's translate were each called
+// non-standard or not animatable). rotate, translate and scale are CSS Transforms Level 2 individual properties, standard and in every
+// engine since 2022 (Chrome 104, Firefox 72, Safari 14.1), and they transition. The prompt says so (CSS_RULE) and a finding that
+// still claims it is dropped like any other false claim, by code; a real bug on the same line (NaN, a missing unit) still stands.
+export const CSS_RULE = 'The CSS properties rotate, translate and scale (and el.style.rotate, el.style.translate, el.style.scale) are standard individual transform properties in every current browser, and they can be transitioned and animated: never report them as non-standard, unsupported, invalid or not animatable.';
+const NOT_STD = '(?:non[\\s\\-\\u2010-\\u2015]?standard|not\\s+(?:a\\s+)?(?:standard|valid)|unsupported|not\\s+(?:be\\s+)?supported|not\\s+transitionable|not\\s+animatable|cannot\\s+be\\s+(?:animated|transitioned))';
+const PROP = '(?:\\b(?:style\\.)?(?:rotate|translate|scale)\\b)';
+export const KNOWN_FALSE = [
+  { re: new RegExp(PROP + '[\\s\\S]{0,120}' + NOT_STD + '|' + NOT_STD + '[\\s\\S]{0,120}' + PROP, 'i'), why: 'rotate/translate/scale are standard CSS (Transforms Level 2)' },
+];
+// only a claim about CSS: "the scale factor is invalid when width is 0" is a real finding and stays
+export const knownFalse = (text) => { const t = String(text || ''); return /\bcss\b|\bpropert(?:y|ies)\b|\bstyle\./i.test(t) ? KNOWN_FALSE.find((k) => k.re.test(t)) || null : null; };
+
 /**
  * validateFindings(list, evidence) -> { kept: [{ file, line, kind, text, quote }], dropped, echoes }
  * A finding is kept only when its quote sits in the code shown, in the file it names (a basename matches; a finding naming no file is
@@ -175,6 +188,7 @@ export function validateFindings(list, evidence) {
   for (const f of list || []) {
     const quote = normQ(f.quote), text = String(f.text || '').replace(/\s+/g, ' ').trim().slice(0, 240);
     if (!quote || !text) { dropped++; continue; }
+    if (knownFalse(text)) { dropped++; continue; } // a claim about standard code the model keeps getting wrong (KNOWN_FALSE)
     if (TEMPLATE_QUOTE.test(quote) || PLACEHOLDER_TEXT.test(text) || /^file:line$/i.test(String(f.file || '').trim())) { echoes++; dropped++; continue; }
     const named = String(f.file || '').trim().replace(/^[./]+/, '');
     const key = named ? files.find((k) => k === named) || files.find((k) => k && (k.endsWith('/' + named) || named.endsWith('/' + k) || k.split('/').pop() === named.split('/').pop())) || null : null;
@@ -274,7 +288,7 @@ export function quoteCheck(answer, evidence) {
 export async function closerReadDetail(env, { ask, code, lang, diff, res, imports }) {
   const im = importsText(imports), shown = clipForModel(redact(String(code || '')));
   const messages = [
-    { role: 'system', content: REVIEW_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE + ' ' + JSON_RULE },
+    { role: 'system', content: REVIEW_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE + ' ' + CSS_RULE + ' ' + JSON_RULE },
     { role: 'user', content: 'What they asked: ' + redact(String(ask || 'review this code')).slice(0, 300) + '\nLanguage (guessed): ' + lang + (diff ? '\n' + DIFF_RULE : '') + (shown.clipped ? '\n' + CLIP_RULE : '') + '\n\nQuick checks found:\n' + findingsText(res) + (im ? '\n\n' + redact(im) : '') + '\n\nThe code (keys masked):\n```\n' + shown.text + '\n```' },
   ];
   const base = { messages, max_tokens: 1400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
