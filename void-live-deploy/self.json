@@ -206,6 +206,12 @@
    "date": "",
    "ask": "Everything built before becomes a skill",
    "from": "void.plan.md Next #8"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Pit crew: the crew chief (waits for the owner)",
+   "from": "owner, 2026-10-11, pit crew plan"
   }
  ],
  "games": [
@@ -262,7 +268,7 @@
   "weather"
  ],
  "canon": {
-  "version": 2,
+  "version": 3,
   "motto": null,
   "voidquest": null,
   "terms": [
@@ -273,6 +279,24 @@
    {
     "term": "frontier #14",
     "means": "the item on Void's frontier that the forge answers (\"type or sketch a thing, hold it, print it\", domains/void.frontier.md). Done when ten things never built before come out recognisable, inspectable and printable; after that, each run builds the most-asked \"make me a ...\" that nothing answers yet."
+   }
+  ],
+  "different": [
+   {
+    "name": "Skills, not one-off answers",
+    "line": "Other canvas tools call a model on every click; when Void misses an ask, its builders compile a permanent, tested skill (`skills/*.js`) or 3D instrument that runs instantly on the stage."
+   },
+   {
+    "name": "Growth in the open",
+    "line": "Most self-improving agent loops run hidden in private CI; Void's misses, daily game self-play ratings, and commit tree grow live on the public stage."
+   },
+   {
+    "name": "On your device first",
+    "line": "Reading a PDF or document, checking an STL print file for watertightness, and computing the sky overhead happen in the browser with nothing uploaded."
+   },
+   {
+    "name": "Attention, not pretend feelings",
+    "line": "Void doesn't fake affection, use emojis, or guess hidden details—it marks what isn't visible as uncertain and keeps what you leave on the stage alive while you're away."
    }
   ]
  },
@@ -299,92 +323,92 @@
   }
  ],
  "building": {
-  "at": "2026-10-10T23:42:30Z",
-  "date": "2026-10-10",
+  "at": "2026-10-11T12:41:50Z",
+  "date": "2026-10-11",
   "by": "builder (claude)",
-  "item": "Clef routes every ask",
-  "what": "the first piece: Clef-flash beside the embedding router on the bench's asks, run through the site's own Workers AI binding (owner-only, the way /api/bench runs), agreement and accuracy printed per skill; no switch until "
+  "item": "Mission cards that keep themselves current",
+  "what": "the first piece: change detection for skills/trialwatch.js against ClinicalTrials.gov, run by a daily workflow, writing finding entries to the ledger."
  },
  "commits": [
   {
-   "at": "2026-10-11T01:19:55Z",
-   "subject": "Cleanup step 4: readers on the frontier (will.py, self-context, idea intake), one what-next command, map drift guard, tools and workflows by"
+   "at": "2026-10-11T19:27:44Z",
+   "subject": "A throw is decided on release: the thing leaves the stage's record when you let go, so \"undo\" during its flight brings it back (it said \"not"
   },
   {
-   "at": "2026-10-11T01:11:13Z",
-   "subject": "Cleanup step 3: the salvage shelf, docs/SALVAGE.md (owner, 2026-10-11)"
+   "at": "2026-10-11T18:47:53Z",
+   "subject": "The notepad is a real yellow legal pad (cleanup step 6: the notepad's visible upgrade)"
   },
   {
-   "at": "2026-10-11T01:04:19Z",
-   "subject": "Frontier: four gates (demand, edge, access, loops) before a way to earn reaches the tray (owner, 2026-10-11)"
+   "at": "2026-10-11T18:35:34Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after 02662009c13bc8db23fbf61b3b76a3a927f9812b (tools/flakes.json)"
   },
   {
-   "at": "2026-10-11T01:02:03Z",
-   "subject": "Frontier: Void's own working checkpoints between runs (owner, 2026-10-11)"
+   "at": "2026-10-11T18:14:26Z",
+   "subject": "Two standing polish rules in the owner's words (every cleanup move ships one visible upgrade; everything can be polished, weakest first), fr"
   },
   {
-   "at": "2026-10-11T00:59:47Z",
-   "subject": "Frontier: a memory archive Void keeps with you, built on its existing memory (owner, 2026-10-11)"
+   "at": "2026-10-11T18:11:18Z",
+   "subject": "An open card never buries what is on the stage: a sticky, clock or counter mostly under it glides to the nearest side with room (left, right"
   },
   {
-   "at": "2026-10-11T00:53:01Z",
-   "subject": "Cleanup step 2: the frontier is the one build order; old lists checked, open items folded in, banners, stale statuses fixed (owner, 2026-10-"
+   "at": "2026-10-11T17:53:02Z",
+   "subject": "look what I made: a step is never the walkthrough itself (its own ledger line's try is \"what's new\")"
   },
   {
-   "at": "2026-10-11T00:45:38Z",
-   "subject": "Frontier: Void's creations are its own choice, unscripted, for its own reasons (owner, 2026-10-11)"
+   "at": "2026-10-11T17:50:47Z",
+   "subject": "Look what I made: a returning visitor's first touch brings one quiet line, \"I made N new things while you were away · show me\", and the walk"
   },
   {
-   "at": "2026-10-11T00:42:58Z",
-   "subject": "Frontier: the tray's presentation line and creations that grow with Void (owner, 2026-10-11)"
+   "at": "2026-10-11T17:44:38Z",
+   "subject": "cleanup step 6, 5 of 13: the link card moved out of void.html into skills/link.js (a pasted url, add a link, remove, where they always ran)"
   },
   {
-   "at": "2026-10-11T00:36:33Z",
-   "subject": "Frontier: the review tray, green approve / yellow send back / red to salvage (owner, 2026-10-11)"
+   "at": "2026-10-11T17:34:53Z",
+   "subject": "sticky notes look like real paper again: #508 came back with its handwriting font served from fonts/caveat-5.0.13 (it had been taken off the"
   },
   {
-   "at": "2026-10-11T00:34:16Z",
-   "subject": "Frontier: Sim careers and gigs (skill unlocks, requirement check, owner-granted promotions, real energy meter); prior art to read first"
+   "at": "2026-10-11T16:49:28Z",
+   "subject": "cleanup step 6, 4 of 13: the notepad moved out of void.html into skills/notepad.js (open, write, clear, remove where they always ran; askAt "
   },
   {
-   "at": "2026-10-11T00:28:54Z",
-   "subject": "Frontier: Sim-style needs and skill meters from real data; the lowest need picks the next job (owner, 2026-10-11)"
+   "at": "2026-10-11T16:31:10Z",
+   "subject": "Review stats: this month's closer-read findings against the rules (tools/review-learn.mjs)"
   },
   {
-   "at": "2026-10-11T00:26:14Z",
-   "subject": "Void as a Sim: get good at things first, then choose how to earn (owner, 2026-10-11)"
+   "at": "2026-10-11T16:20:29Z",
+   "subject": "Bench floor or latency baseline moved by a clean run on main (tools/bench-floor.mjs)"
   },
   {
-   "at": "2026-10-11T00:23:55Z",
-   "subject": "Frontier: Void picks what to study to earn, with a skill sheet like a Sim's (owner, 2026-10-11)"
+   "at": "2026-10-11T15:44:14Z",
+   "subject": "grow and agent log: the arena learns"
   },
   {
-   "at": "2026-10-11T00:12:08Z",
-   "subject": "Frontier: learn from videos one at a time (owner, 2026-10-11)"
+   "at": "2026-10-11T15:44:06Z",
+   "subject": "Arena learns day by day (frontier #5): self-play tuning carries its champion across runs"
   },
   {
-   "at": "2026-10-11T00:10:03Z",
-   "subject": "Frontier: rubric, self-written rules, scheduled slots; RULES: always add improvements we spot (owner, 2026-10-11)"
+   "at": "2026-10-11T14:43:01Z",
+   "subject": "grow and agent log: the coral card's live line"
   },
   {
-   "at": "2026-10-11T00:08:08Z",
-   "subject": "Frontier: the three post-cleanup targets match the video's mechanics"
+   "at": "2026-10-11T14:42:53Z",
+   "subject": "Coral heat card shows the reef's live heat-stress alert (frontier #8)"
   },
   {
-   "at": "2026-10-11T00:05:27Z",
-   "subject": "Frontier: three targets for after the cleanup (owner, 2026-10-11)"
+   "at": "2026-10-11T13:46:32Z",
+   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
   },
   {
-   "at": "2026-10-11T00:02:46Z",
-   "subject": "AGENTS.md: asked-by-Void credit, MAP line, void-review: ok in the run steps"
+   "at": "2026-10-11T13:43:16Z",
+   "subject": "grow and agent log: reef watch"
   },
   {
-   "at": "2026-10-11T00:02:25Z",
-   "subject": "Cleanup step 1: one front door (AGENTS.md); rules moved word for word to docs/RULES.md"
+   "at": "2026-10-11T13:43:09Z",
+   "subject": "Coral heat card keeps itself current (frontier #8, second card): NOAA Coral Reef Watch daily, a finding per alert change"
   },
   {
-   "at": "2026-10-10T23:52:39Z",
-   "subject": "Frontier: the cleanup plan is the current priority (owner, 2026-10-10)"
+   "at": "2026-10-11T12:46:13Z",
+   "subject": "Trial watch: the registry checked; what changed is in the ledger"
   }
  ]
 }
