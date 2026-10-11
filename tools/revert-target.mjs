@@ -160,7 +160,8 @@ export function pickLive({ tested, failing, history, mainLine, body, repo, api =
   const live = stillLive(pick.sha, mainLine, body);
   if (!live.live) return { ...pick, action: 'report', why: pick.why + '; but ' + live.why };
   const red = stillRed(failing, newestVerified(repo, mainLine, api, body));
-  if (!red.red) return { ...pick, action: 'report', why: pick.why + '; but ' + red.why };
+  // healed: the checks that went green on a newer head with nothing taken back, which tools/flakes.mjs records (the spotter)
+  if (!red.red) return { ...pick, action: 'report', why: pick.why + '; but ' + red.why, healed: failing };
   return pick;
 }
 

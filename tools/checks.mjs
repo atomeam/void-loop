@@ -21,6 +21,7 @@ for (const [name, file] of [
   ['map-sync', 'map-sync.test.mjs'],
   ['map-coverage', 'map-coverage.test.mjs'],
   ['finish', 'finish.test.mjs'],
+  ['flakes', 'flakes.test.mjs'],
   ['next', 'next.test.mjs'],
   ['calendar', 'test_calendar.mjs'],
   ['glyphs', 'test_glyphs.mjs'],
