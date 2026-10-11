@@ -1,0 +1,43 @@
+# The trial watch keeps itself current (frontier #8, tools/trial-changes.mjs), daily: read the ClinicalTrials.gov registry
+# for the watchlist in skills/trialwatch.js, compare it with the last kept check (domains/trialwatch.snapshot.json) and write
+# a `finding` to the growth ledger for each change (a status, posted results, enrollment, the completion date), with the
+# trial's record as its source; then commit both files to main. The first run keeps the baseline and writes no findings.
+# When the registry does not answer, nothing is written. No secret: the registry is public.
+name: Trial watch
+
+on:
+  schedule:
+    - cron: '41 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: trialwatch
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the snapshot and the ledger on main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check the registry and write what changed
+        run: |
+          node tools/trial-changes.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+          git diff --quiet -- domains/trialwatch.snapshot.json void-live-deploy/void.growth.json && ! git ls-files --others --exclude-standard -- domains/trialwatch.snapshot.json | grep -q . && { echo "nothing changed"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add domains/trialwatch.snapshot.json void-live-deploy/void.growth.json
+          git commit -m "Trial watch: the registry checked; what changed is in the ledger"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1

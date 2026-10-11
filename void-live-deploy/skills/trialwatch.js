@@ -45,6 +45,19 @@ export async function check(fetchFn = (u, o) => fetch(u, o), now = () => new Dat
   got.forEach((g, i) => { if (g.status === 'fulfilled') rows[ids[i]] = g.value; else failed.push(ids[i]); });
   return { at: now().toISOString(), rows, failed };
 }
+// What changed between two checks (frontier #8): each trial in both, field by field, in words. A first sighting is the
+// baseline, a trial the registry did not answer is no change, and a field it stopped giving (null) is no change either.
+const FIELD = [['status', 'status', (a, b) => 'status ' + a + ' → ' + b], ['results', 'results', (a, b) => (b ? 'results posted' : 'results withdrawn')],
+  ['enrollment', 'enrollment', (a, b) => 'enrollment ' + a + ' → ' + b], ['primaryCompletion', 'completion', (a, b) => 'primary completion ' + a + ' → ' + b]];
+export function changes(prev, next) {
+  const out = [];
+  for (const id of Object.keys(next || {})) {
+    const a = prev && prev[id], b = next[id];
+    if (!a || !b) continue;
+    for (const [f, kind, say] of FIELD) if (b[f] != null && a[f] != null && b[f] !== a[f]) out.push({ id, kind, title: b.title || a.title || id, href: b.href || a.href, text: say(a[f], b[f]) });
+  }
+  return out;
+}
 function loadSnap() { try { const s = JSON.parse(localStorage.getItem(SNAP_KEY) || 'null'); return s && s.at && s.rows ? s : null; } catch (_) { return null; } }
 function saveSnap(s) { try { localStorage.setItem(SNAP_KEY, JSON.stringify(s)); } catch (_) {} }
 
