@@ -1,0 +1,68 @@
+{
+  "at": "2026-10-11T12:46:13.832Z",
+  "rows": {
+    "NCT05506488": {
+      "id": "NCT05506488",
+      "title": "Dasatinib and Quercetin to Treat Fibrotic Non-alcoholic Fatty Liver Disease",
+      "status": "completed",
+      "enrollment": 30,
+      "primaryCompletion": "2026-02-26",
+      "results": false,
+      "href": "https://clinicaltrials.gov/study/NCT05506488"
+    },
+    "NCT07144293": {
+      "id": "NCT07144293",
+      "title": "Improving Physical Ability and Cellular Senescence Elimination in HIV",
+      "status": "completed",
+      "enrollment": 82,
+      "primaryCompletion": "2026-08-26",
+      "results": false,
+      "href": "https://clinicaltrials.gov/study/NCT07144293"
+    },
+    "NCT07220473": {
+      "id": "NCT07220473",
+      "title": "Tirzepatide to Slow Biological Aging",
+      "status": "recruiting",
+      "enrollment": 90,
+      "primaryCompletion": "2027-11",
+      "results": false,
+      "href": "https://clinicaltrials.gov/study/NCT07220473"
+    },
+    "NCT07707778": {
+      "id": "NCT07707778",
+      "title": "Tirzepatide's Effects on Epigenetic Aging and Metabolic Restoration in Virally Suppressed People With HIV",
+      "status": "enrolling by invitation",
+      "enrollment": 60,
+      "primaryCompletion": "2027-12",
+      "results": false,
+      "href": "https://clinicaltrials.gov/study/NCT07707778"
+    },
+    "NCT07293325": {
+      "id": "NCT07293325",
+      "title": "Semaglutide and Tirzepatide for Genetic Aging Delay in Adults With Obesity",
+      "status": "recruiting",
+      "enrollment": 66,
+      "primaryCompletion": "2027-04-02",
+      "results": false,
+      "href": "https://clinicaltrials.gov/study/NCT07293325"
+    },
+    "NCT06727305": {
+      "id": "NCT06727305",
+      "title": "MTOR Inhibitors in Older Adults",
+      "status": "recruiting",
+      "enrollment": 60,
+      "primaryCompletion": "2027-09-01",
+      "results": false,
+      "href": "https://clinicaltrials.gov/study/NCT06727305"
+    },
+    "NCT07191353": {
+      "id": "NCT07191353",
+      "title": "Resistance Training and Rapamycin to Enhance Bone Formation in Postmenopausal Women",
+      "status": "recruiting",
+      "enrollment": 148,
+      "primaryCompletion": "2027-03-01",
+      "results": false,
+      "href": "https://clinicaltrials.gov/study/NCT07191353"
+    }
+  }
+}
