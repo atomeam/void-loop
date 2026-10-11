@@ -48,3 +48,19 @@ test('arena: tuning keeps a challenger only when it beats the champion; the cham
   assert.ok(t.champion.weights && typeof t.champion.weights.three === 'number');
   assert.ok(t.final.games >= 20);
 });
+
+// run 61: "how good are you at connect four" answers from arena.json, the games' own record, with the curve
+import { connect4Of } from '../void-live-deploy/skills/connect4.js';
+import { readFileSync } from 'node:fs';
+import { arenaSay, arenaCurve } from '../void-live-deploy/lib/arena.js';
+test('arena: the ask is told apart from a game, and the answer is the record: the strongest depth, its rating, the games behind it', () => {
+  for (const q of ['how good are you at connect four', 'how good are you at connect 4?', 'what is your connect four rating', 'are you good at four in a row', 'how strong is void at connect four']) assert.deepEqual(connect4Of(q), { kind: 'rating' }, q);
+  for (const q of ['play connect 4', 'connect four']) assert.deepEqual(connect4Of(q), { kind: 'game' }, q);
+  for (const q of ['how good are you at chess', 'connect four rules', 'who invented connect four']) assert.equal(connect4Of(q), null, q);
+  const a = JSON.parse(readFileSync(new URL('../void-live-deploy/arena.json', import.meta.url)));
+  const say = arenaSay(a), top = a.ladder[a.ladder.length - 1];
+  assert.ok(say.includes(String(top.rating)) && say.includes(String(a.games)) && /depth 1 = 1000/.test(say), say);
+  const svg = arenaCurve(a);
+  assert.match(svg, /^<svg[^>]*role="img"/); assert.equal((svg.match(/<circle/g) || []).length, a.ladder.length);
+  assert.match(arenaSay(null), /not played/);
+});
