@@ -843,6 +843,22 @@ try {
         && a[0].bg === 'rgb(244, 226, 122)' && a[1].bg === 'rgb(255, 158, 200)' && hand,
       JSON.stringify({ a, b, hand }).slice(0, 700));
     await P.ctx.close(); }
+  // step 6's visible upgrade for the notepad (owner, 2026-10-11: every cleanup move ships one): the card is the legal pad its 3D view shows
+  if (want("notepad legal pad look: yellow ruled paper, red margin and binding, the felt-tip hand, rules that line up with the writing, a colour still edges it")) { const P = await fresh();
+    await P.ask('notepad: buy bread', 600);
+    const look = () => P.p.$eval('.thing.notepad', (e) => { const c = getComputedStyle(e), a = e.querySelector('textarea'), ac = getComputedStyle(a), t = getComputedStyle(e.querySelector('.notepad-title'));
+      return { bg: c.backgroundColor, margin: c.backgroundImage, bind: c.borderTopColor, bindW: parseFloat(c.borderTopWidth), side: c.borderLeftColor, rules: ac.backgroundImage, attach: ac.backgroundAttachment,
+        lh: parseFloat(ac.lineHeight), font: ac.fontFamily, ink: ac.color, title: t.fontFamily, text: a.value }; });
+    const a = await look();
+    const hand = await until(() => P.p.evaluate(() => [...document.fonts].some((f) => f.family.replace(/"/g, '') === 'Void Hand' && f.status === 'loaded')), 4000);
+    await P.ask('make the notepad blue', 400);
+    const b = await look();
+    check('notepad legal pad look: the card is yellow legal paper (the 3D pad\'s #f8e36e) with a red gummed binding along the top, blue rules one line (28 px) apart that scroll with the writing, a red double margin down the page, written in the felt-tip hand (served from /fonts) in navy ink, the title in the same hand, and "make the notepad blue" still edges it blue without losing the binding',
+      a.bg === 'rgb(248, 227, 110)' && a.bind === 'rgb(168, 35, 31)' && a.bindW >= 10 && /repeating-linear-gradient\([^]*?28px\)/.test(a.rules) && /rgba?\(200, 50, 50/.test(a.margin)
+        && /local/.test(a.attach) && a.lh === 28 && /^"?Void Hand/.test(a.font) && /^"?Void Hand/.test(a.title) && a.ink === 'rgb(18, 28, 82)' && a.text === 'buy bread' && hand
+        && b.side === 'rgb(106, 168, 255)' && b.bind === 'rgb(168, 35, 31)' && b.bg === a.bg && !P.errors.length,
+      JSON.stringify({ a, b, hand, e: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
   // the owner (2026-10-11): overnight growth should hit you when you open the page; Void shows what it made on the real stage
   if (want("look what I made: a returning visitor's quiet line, the walkthrough on the stage (Next, Keep, Done), nothing on a first visit, \"what's new\"")) {
     const LEDGER = [

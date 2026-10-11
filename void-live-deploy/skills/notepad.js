@@ -55,7 +55,7 @@ function mount(th, stageApi) {
   el.dataset.id = th.id;
   el.style.left = th.x + 'px';
   el.style.top = th.y + 'px';
-  if (th.color) el.style.borderColor = th.color;
+  if (th.color) for (const side of ['Left', 'Right', 'Bottom']) el.style['border' + side + 'Color'] = th.color; // the binding stays red
   if (stageApi.selected() === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
 
   const title = document.createElement('div');
