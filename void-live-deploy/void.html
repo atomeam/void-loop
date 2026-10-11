@@ -1277,6 +1277,7 @@ Object.values(things).forEach((th) => {
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
+      closePage: () => closePage(), // the "look what I made" walkthrough closes the card a step opened (skills/showcase.js)
       ask: (t, attach) => { confirmAttach = attach && typeof attach === 'object' ? attach : null; return handle(String(t || '')); }, // a card that opens something asks as if typed; `attach` rides a gated ask into its fingerprint (the proposal's exact draft)
       log: (a) => loopLog(a) }; // a stage thing's own event (a shaken 8 ball) goes in the same history as asks
 
@@ -5960,7 +5961,18 @@ return { ok: true, detail: 'timer-reset' };
       if (!awayNote || !text) return;
       awayNote.textContent = text;
       if (recorded) { const a = document.createElement('a'); a.href = '#'; a.className = 'away-see'; a.textContent = ' · see what happened'; a.addEventListener('click', (e) => { e.preventDefault(); document.dispatchEvent(new CustomEvent('void:summon', { detail: 'my actions' })); }); awayNote.append(a); }
-      clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { awayNote.textContent = ''; }, 9000);
+      clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { if (awayNote.textContent.startsWith(text)) awayNote.textContent = ''; }, 9000); // a line added since (what Void made) stays
+    }
+    // what Void made while you were away (skills/showcase.js): on a returning visitor's first touch, move or key, one quiet line
+    // with "show me"; a first visit only remembers when it was (the empty page loads nothing for it). Gone with the first ask.
+    if (!PAGE) {
+      const kick = () => {
+        for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.removeEventListener(ev, kick, true);
+        skillsReady.then(() => import('/skills/showcase.js')).then((m) => m.nudge(stageApi, awayNote)).then((n) => {
+          if (n) input.addEventListener('keydown', function off(e) { if (e.key === 'Enter') { input.removeEventListener('keydown', off); if (awayNote.querySelector('.showcase-pill')) awayNote.textContent = ''; } });
+        }).catch(() => {});
+      };
+      for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.addEventListener(ev, kick, true);
     }
     if (!PAGE && awayMs > 0) import('/skills/scripts.js').then((m) => {
       const figs = Object.values(things).filter((t) => t && t.kind === 'figure' && t.kindOf);

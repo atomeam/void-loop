@@ -843,6 +843,51 @@ try {
         && a[0].bg === 'rgb(244, 226, 122)' && a[1].bg === 'rgb(255, 158, 200)' && hand,
       JSON.stringify({ a, b, hand }).slice(0, 700));
     await P.ctx.close(); }
+  // the owner (2026-10-11): overnight growth should hit you when you open the page; Void shows what it made on the real stage
+  if (want("look what I made: a returning visitor's quiet line, the walkthrough on the stage (Next, Keep, Done), nothing on a first visit, \"what's new\"")) {
+    const LEDGER = [
+      { at: '2026-10-10T00:00:00Z', by: 'claude', kind: 'grow', what: 'older', show: 'an old thing', try: 'make a clock' },
+      { at: '2026-10-12T01:00:00Z', by: 'claude', kind: 'grow', what: 'the growth page', show: 'the growth page', try: 'growth' },
+      { at: '2026-10-12T02:00:00Z', by: 'claude', kind: 'build', what: 'counter', show: 'a counter you can tap', try: 'make a counter' },
+      { at: '2026-10-12T03:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
+      { at: '2026-10-12T04:00:00Z', by: 'claude', kind: 'idea', what: 'a thought, not a thing to show' },
+    ];
+    const ledger = (ctx) => ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    const note = (P) => P.p.$eval('#away-note', (e) => e.textContent).catch(() => '');
+    const barText = (P) => P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')).catch(() => '');
+    const kinds = async (P) => (await P.state()).map((t) => t.kind).sort().join(',');
+    const r = {};
+    // a first visit: nothing before the first touch, nothing after it; it only remembers when it was
+    const F = await fresh(); await ledger(F.ctx); await F.p.waitForTimeout(500);
+    r.firstBefore = await note(F); await F.p.mouse.move(200, 200); await F.p.waitForTimeout(1500);
+    r.firstAfter = await note(F); r.firstSeen = !!(await F.p.evaluate(() => localStorage.getItem('a2m.void.growthSeen.v1')));
+    await F.ctx.close();
+    // a returning visitor (last here before the three new things)
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-t')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-11T00:00:00Z'); sessionStorage.setItem('sc-t', '1'); } });
+    await ledger(P.ctx); await P.p.waitForTimeout(500);
+    r.before = await note(P);
+    await P.p.mouse.move(220, 220);
+    r.pill = await until(async () => ((await note(P)).includes('I made 3 new things while you were away') ? await note(P) : ''), 6000);
+    await P.p.click('[data-showcase="show"]');
+    r.s1 = await until(async () => ((await kinds(P)) === 'sticky' ? await barText(P) : ''), 6000);
+    await P.p.click('[data-showcase="next"]');
+    r.s2 = await until(async () => ((await kinds(P)) === 'counter' ? await barText(P) : ''), 6000);
+    await P.p.click('[data-showcase="keep"]');
+    r.s3 = await until(async () => ((await P.page()) && /3 of 3/.test(await barText(P)) ? await barText(P) : ''), 6000);
+    r.s3kinds = await kinds(P);
+    await P.p.click('[data-showcase="next"]'); await P.p.waitForTimeout(600);
+    r.after = { bar: await barText(P), page: await P.page(), kinds: await kinds(P), seen: await P.p.evaluate(() => localStorage.getItem('a2m.void.growthSeen.v1')) };
+    await P.p.reload(); await P.p.waitForTimeout(800); await P.p.mouse.move(260, 260); await P.p.waitForTimeout(1500);
+    r.reload = await note(P);
+    await P.ask("what's new", 1500); r.typed = await barText(P);
+    check('look what I made: a first visit shows nothing before or after its first touch (and remembers it); a returning visitor\'s first move brings "I made 3 new things while you were away · show me"; "show me" puts the newest (a paper sticky) on the stage with "1 of 3", Next → takes it away and puts up a counter, Keep leaves the counter and opens the growth page, the last Done closes it and marks everything seen (the idea is never a step); a reload shows no line; "what\'s new" runs it again as "Built lately" over the latest builds',
+      !r.firstBefore && !r.firstAfter && r.firstSeen && !r.before && /show me$/.test(r.pill)
+        && /^1 of 3 · Built while you were away sticky notes look like real paper/.test(r.s1) && /^2 of 3 .*a counter you can tap/.test(r.s2)
+        && /the growth page/.test(r.s3) && r.s3kinds === 'counter'
+        && !r.after.bar && !r.after.page && r.after.kinds === 'counter' && r.after.seen === '2026-10-12T04:00:00Z'
+        && !/I made/.test(r.reload) && /^1 of 4 · Built lately/.test(r.typed) && !P.errors.length,
+      JSON.stringify({ ...r, errors: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
   // step 6 (one shape for skills): the counter, pinned before it moves out of void.html; the same asks must keep working after
   if (want("built-in counter: make, count up and down, set, reset, size, buttons, a reload, remove; only ever one counter")) { const P = await fresh();
     const one = async () => (await P.state()).filter((t) => t.kind === 'counter');
@@ -3964,10 +4009,9 @@ try {
     if (all3d || [...t3d.matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)].some((m) => want(JSON.parse(m[1]))))
       await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true }, ...a), want: (l) => all3d || want(l) }); }
 } catch (e) {
-  if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
+  // always, --only included: a section that throws is a failure, never "0/0 passed" (finish.mjs's first shot runs --only)
   check('suite ran to the end', false, String(e && e.message));
 }
-  } // CORE
 clearInterval(watchdog);
 await browser.close(); server.close();
 // the slowest stretches between checks: where making the suite faster (suite split (3)) pays most
