@@ -154,7 +154,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** visible learning, measured, not claimed.
 - **First piece:** the arena for Connect Four (`skills/connect4-rules.js`), search depth vs. a tuned evaluation, 200 games, rating out.
 - **Done when:** two games have ratings in the ledger and the ask answers with them.
-- **claim:**
+- **claim:** builder (claude) 2026-10-11: the first piece, the Connect Four arena (`tools/arena.mjs`): search depth vs. a tuned evaluation, 200 games, rating out.
 
 ## 6. Void inside every other AI
 - **What:** plan item 11. A public MCP endpoint (`functions/api/mcp.js`) over `/tools.json`, so Claude, ChatGPT and any agent can call Void, Void's code review included (free instant checks; the closer read with a key).
