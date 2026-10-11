@@ -282,44 +282,63 @@
       box-shadow: 0 8px 24px rgba(0,0,0,0.35);
       font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
     }
-    .calc-card {
+    /* a pocket calculator's face (skills/calc.js): charcoal matte plastic with a little bevel, the sum and its result in one
+       olive LCD window, right-aligned the way a calculator shows them, the result in big dark tabular digits; a colour
+       ("make the calculator blue") edges the body */
+    .thing.calc-card {
+      box-sizing: border-box;
       width: 260px;
-      padding: 14px 16px;
-      border-radius: 10px;
-      background: #141414;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+      padding: 14px 16px 16px;
+      border-radius: 14px;
+      background-color: #26282c;
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.12));
+      border: 1px solid rgba(255, 255, 255, 0.10);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), inset 0 -2px 0 rgba(0, 0, 0, 0.35), 0 12px 24px rgba(0, 0, 0, 0.45);
       font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
     }
     .calc-title {
-      min-height: 22px;
-      margin-bottom: 12px;
-      color: var(--fg);
-      font-size: 16px;
+      min-height: 20px;
+      margin-bottom: 10px;
+      color: rgba(255, 255, 255, 0.55);
+      font-size: 11px;
       font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
       outline: 0;
     }
     .calc-title:empty::before,
     .calc-expression:empty::before,
     .calc-result:empty::before {
       content: attr(data-placeholder);
-      color: var(--muted);
+      color: rgba(28, 36, 24, 0.35);
       font-weight: 400;
     }
+    .calc-title:empty::before { color: rgba(255, 255, 255, 0.35); }
     .calc-expression,
     .calc-result {
-      min-height: 22px;
-      padding: 8px 10px;
-      border-radius: 6px;
-      background: #0c0c0c;
-      border: 1px solid var(--line);
+      background: #b8c4a0;
+      color: #1c2418;
+      text-align: right;
       word-break: break-word;
+      font-family: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
       font-variant-numeric: tabular-nums;
     }
+    .calc-expression {
+      min-height: 18px;
+      padding: 8px 12px 0;
+      border-radius: 6px 6px 0 0;
+      box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.28);
+      font-size: 12px;
+      opacity: 0.85;
+    }
     .calc-result {
-      margin-top: 8px;
-      color: #5dffa5;
-      font-size: 18px;
+      min-height: 36px;
+      padding: 0 12px 6px;
+      border-radius: 0 0 6px 6px;
+      box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.25);
+      font-size: 28px;
+      line-height: 36px;
+      letter-spacing: 0.04em;
     }
     .list-title {
       min-height: 22px;
@@ -905,7 +924,6 @@ Object.values(things).forEach((th) => {
         if (th.kind === 'clock') mountClock(th);
         else if (th.kind === 'timer') mountTimer(th);
         else if (th.kind === 'list') mountList(th);
-        else if (th.kind === 'calc') mountCalc(th);
         else if (th.kind === 'kept') mountKept(th);
         else if (th.kind === 'calendar') mountCalendar(th);
         else if (th.kind === 'tab') mountTab(th);
@@ -1630,50 +1648,6 @@ function mountList(th) {
 
 // a card's 3D miniature (skills/scene3d.js). A hoisted function, not stageApi.miniature: render() runs on load before stageApi exists
     function cardMini(host, kind, data, opts) { return import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)); }
-    var calcTyped = null; // the calculator sum just asked for (var: render can run before this line)
-    function mountCalc(th) {
-      const el = document.createElement('div');
-      el.className = 'thing calc-card';
-      el.dataset.id = th.id;
-      el.style.left = th.x + 'px';
-      el.style.top = th.y + 'px';
-      if (th.color) el.style.borderColor = th.color;
-      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
-
-      const title = document.createElement('div');
-      title.className = 'calc-title';
-      title.contentEditable = 'true';
-      title.spellcheck = false;
-      title.dataset.placeholder = 'Calculator';
-      title.textContent = th.title || '';
-      title.addEventListener('pointerdown', (e) => e.stopPropagation());
-      title.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); title.blur(); }
-      });
-      title.addEventListener('input', () => { th.title = title.textContent || ''; save(); });
-
-      const expression = document.createElement('div');
-      expression.className = 'calc-expression';
-      expression.dataset.placeholder = 'Expression';
-      expression.textContent = th.expression || '';
-
-      const result = document.createElement('div');
-      result.className = 'calc-result';
-      result.dataset.placeholder = 'Result';
-      result.textContent = th.result || '';
-
-      el.appendChild(title);
-      el.appendChild(expression);
-      el.appendChild(result);
-      // a 3D pocket calculator whose keys press out the sum, then show the result (skills/mini/calculator.js)
-      const calcHost = document.createElement('div'); calcHost.className = 'calc-mini'; calcHost.style.cssText = 'height:150px;margin:-4px -6px 8px';
-      el.insertBefore(calcHost, title);
-      cardMini(calcHost, 'calculator', { expression: th.expression || '', result: th.result || '', typed: calcTyped === th.id + '|' + th.expression },
-        { key: 'calculator:' + th.id, label: '3D calculator' + (th.result ? ' showing ' + th.result : '') }).catch(() => calcHost.remove());
-      bindDrag(el, th);
-      stage.appendChild(el);
-    }
-
     // the timer's face (progress ring, m:ss, a state word), one look for every countdown on the stage: the timer card
     // and the five-minute challenge (skills/challenge.js, through stageApi.timerFace) both draw with it
     function timerFace(el) {
@@ -1872,7 +1846,6 @@ function applyClockAlters(c, lower) {
       if (kind === 'timer') return ensureTimer(60000);
       if (stageKinds[kind] && stageKinds[kind].ensure) return stageKinds[kind].ensure(stageApi); // a built-in that moved to skills/ (cleanup step 6)
       if (kind === 'list') return ensureList([]);
-      if (kind === 'calc') return ensureCalc();
       return null;
     }
 
@@ -2227,206 +2200,6 @@ function applyClockAlters(c, lower) {
       return /^(clear|empty)\s+(the\s+)?list\s*[.!]?$/i.test(lower);
     }
 
-    function wantsCreateCalc(lower) {
-      if (/\b(remove|delete|get\s+rid|hide|clear)\b/.test(lower) && /\b(calculator|calc)\b/.test(lower)) return false;
-      if (/^(a\s+)?calculator(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
-      if (/^calc(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
-      return /\b(make|add|create|show|spawn|put|place|drop|open|start|launch|give\s+me|bring\s+up|pull\s+up)\b.*\b(calculator|calc)\b/.test(lower)
-        || /\b(calculator|calc)\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower);
-    }
-
-    function wantsRemoveCalc(lower) {
-      return /\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(calculator|calc)\b/.test(lower)
-        || /\b(calculator|calc)\b.*\b(away|gone)\b/.test(lower)
-        || /^(remove|delete|hide|clear)\s+(the\s+)?(calculator|calc)(\s+please)?\s*[.!]?\s*$/.test(lower);
-    }
-
-    function extractCalcExpression(raw) {
-      const text = (raw || '').trim();
-      let match = text.match(/^calculate\s+([\s\S]+)$/i)
-        || text.match(/^what\s+is\s+([\s\S]+)$/i)
-        || text.match(/^calc(?:ulator)?\s+([\s\S]+)$/i);
-      if (match) return match[1].replace(/[?!]\s*$/, '').trim();
-      if (/^[\d\s()+\-*/.%]+$/.test(text)
-        || /^[\d\s()+\-*/.]+%\s*of\s*[\d\s()+\-*/.]+$/i.test(text)) return text;
-      // "15 percent of 240", "what is 15 percent of 240"
-      if (/(?:what\s+is\s+)?\d+(?:\.\d+)?\s*percent\s+of\s+\d+(?:\.\d+)?/i.test(text)) {
-        return text.replace(/^what\s+is\s+/i, '').replace(/percent/gi, '%');
-      }
-      // "5 miles in km", "5 miles to km", "convert 5 miles to km"
-      const conv = text.match(/^(?:convert\s+)?([\d.]+)\s+(\w+)\s+(?:in|to|as)\s+(\w+)$/i);
-      if (conv) return `convert(${conv[1]}, "${conv[2]}", "${conv[3]}")`;
-      return null;
-    }
-
-    function wantsCalcCompute(raw) {
-      return extractCalcExpression(raw) !== null;
-    }
-
-    function evaluateMath(source) {
-      const text = (source || '').trim();
-      let index = 0;
-      const skip = () => { while (/\s/.test(text[index] || '')) index += 1; };
-      const parseNumber = () => {
-        skip();
-        const start = index;
-        let dots = 0;
-        let digits = 0;
-        while (index < text.length) {
-          const ch = text[index];
-          if (/\d/.test(ch)) { digits += 1; index += 1; continue; }
-          if (ch === '.' && dots === 0) { dots += 1; index += 1; continue; }
-          break;
-        }
-        if (!digits) throw new Error('number expected');
-        const value = Number(text.slice(start, index));
-        if (!Number.isFinite(value)) throw new Error('invalid number');
-        return value;
-      };
-      let parseExpression;
-      const parsePrimary = () => {
-        skip();
-        if (text[index] === '(') {
-          index += 1;
-          const value = parseExpression();
-          skip();
-          if (text[index] !== ')') throw new Error('missing )');
-          index += 1;
-          return value;
-        }
-        if (text[index] === '+' || text[index] === '-') {
-          const sign = text[index++] === '-' ? -1 : 1;
-          return sign * parsePrimary();
-        }
-        return parseNumber();
-      };
-      const parseTerm = () => {
-        let value = parsePrimary();
-        while (true) {
-          skip();
-          const op = text[index];
-          if (op !== '*' && op !== '/') break;
-          index += 1;
-          const rhs = parsePrimary();
-          if (op === '/' && rhs === 0) throw new Error('division by zero');
-          value = op === '*' ? value * rhs : value / rhs;
-        }
-        return value;
-      };
-      parseExpression = () => {
-        let value = parseTerm();
-        while (true) {
-          skip();
-          const op = text[index];
-          if (op !== '+' && op !== '-') break;
-          index += 1;
-          const rhs = parseTerm();
-          value = op === '+' ? value + rhs : value - rhs;
-        }
-        return value;
-      };
-      try {
-        if (!text) throw new Error('empty expression');
-        const value = parseExpression();
-        skip();
-        if (index !== text.length) throw new Error('unexpected character');
-        if (!Number.isFinite(value)) throw new Error('non-finite result');
-        return { ok: true, value };
-      } catch (error) {
-        return { ok: false, error: error.message || 'invalid expression' };
-      }
-    }
-
-    function evaluateCalcExpression(raw) {
-      const text = (raw || '').trim();
-      const percent = text.match(/^([\s\S]+?)\s*%\s*of\s*([\s\S]+)$/i);
-      if (percent) {
-        const left = evaluateMath(percent[1]);
-        const right = evaluateMath(percent[2]);
-        if (!left.ok || !right.ok) return { ok: false, error: 'invalid percent expression' };
-        const value = (left.value / 100) * right.value;
-        return Number.isFinite(value) ? { ok: true, value } : { ok: false, error: 'non-finite result' };
-      }
-      const conv = text.match(/^convert\(([\d.]+),\s*"([^"]+)",\s*"([^"]+)"\)$/);
-      if (conv) {
-        const value = parseFloat(conv[1]);
-        const from = conv[2].toLowerCase();
-        const to = conv[3].toLowerCase();
-        const converted = convertUnits(value, from, to);
-        if (converted === null) return { ok: false, error: `unknown units: ${from} to ${to}` };
-        return { ok: true, value: converted };
-      }
-      return evaluateMath(text);
-    }
-
-    const UNIT_CONVERSIONS = {
-      length: {
-        m: 1, meter: 1, meters: 1, metre: 1, metres: 1,
-        km: 1000, kilometer: 1000, kilometers: 1000,
-        cm: 0.01, centimeter: 0.01, centimeters: 0.01,
-        mm: 0.001, millimeter: 0.001, millimeters: 0.001,
-        mi: 1609.344, mile: 1609.344, miles: 1609.344,
-        yd: 0.9144, yard: 0.9144, yards: 0.9144,
-        ft: 0.3048, foot: 0.3048, feet: 0.3048,
-        in: 0.0254, inch: 0.0254, inches: 0.0254,
-      },
-      mass: {
-        kg: 1, kilogram: 1, kilograms: 1,
-        g: 0.001, gram: 0.001, grams: 0.001,
-        lb: 0.453592, lbs: 0.453592, pound: 0.453592, pounds: 0.453592,
-        oz: 0.0283495, ounce: 0.0283495, ounces: 0.0283495,
-      },
-      temp: { c: 'C', celsius: 'C', f: 'F', fahrenheit: 'F', k: 'K', kelvin: 'K' },
-    };
-
-    function convertUnits(value, from, to) {
-      const length = UNIT_CONVERSIONS.length;
-      if (length[from] !== undefined && length[to] !== undefined) {
-        return (value * length[from]) / length[to];
-      }
-      const mass = UNIT_CONVERSIONS.mass;
-      if (mass[from] !== undefined && mass[to] !== undefined) {
-        return (value * mass[from]) / mass[to];
-      }
-      const temp = UNIT_CONVERSIONS.temp;
-      if (temp[from] !== undefined && temp[to] !== undefined) {
-        let celsius;
-        if (temp[from] === 'C') celsius = value;
-        else if (temp[from] === 'F') celsius = (value - 32) * 5 / 9;
-        else if (temp[from] === 'K') celsius = value - 273.15;
-        else return null;
-        if (temp[to] === 'C') return celsius;
-        if (temp[to] === 'F') return celsius * 9 / 5 + 32;
-        if (temp[to] === 'K') return celsius + 273.15;
-        return null;
-      }
-      return null;
-    }
-
-    function formatCalcResult(value) {
-      if (Object.is(value, -0)) return '0';
-      return String(Number(value.toPrecision(12)));
-    }
-
-    function ensureCalc() {
-      let calc = (selectedId && things[selectedId] && things[selectedId].kind === 'calc' && things[selectedId])
-        || Object.values(things).find((thing) => thing.kind === 'calc');
-      if (!calc) {
-        calc = {
-          id: uid('calc'),
-          kind: 'calc',
-          x: Math.max(40, stage.clientWidth / 2 - 130),
-          y: Math.max(40, stage.clientHeight / 2 - 90),
-          title: '',
-          expression: '',
-          result: '',
-        };
-        things[calc.id] = calc;
-      }
-      selectedId = calc.id;
-      return calc;
-    }
-
     function ensureTimer(durationMs, fresh) {
       let t = fresh ? null : (Object.values(things).find((th) => th.kind === 'timer' && th.id === selectedId) || Object.values(things).find((th) => th.kind === 'timer'));
       if (!t) {
@@ -2532,33 +2305,11 @@ say('nothing selected to remove');
         }
       }
 
-      // simple calculator surface
-      if (wantsRemoveCalc(lower)) {
-        const calc = Object.values(things).find((thing) => thing.kind === 'calc' && thing.id === selectedId)
-          || Object.values(things).find((thing) => thing.kind === 'calc');
-        if (calc) {
-          delete things[calc.id];
-          if (selectedId === calc.id) selectedId = null;
-          save(); render();
-          return { ok: true, detail: 'calc-removed' };
-        }
-        return { ok: false, detail: 'no calculator' };
-      }
-      const calcExpression = extractCalcExpression(text);
-      if (calcExpression !== null) {
-        const computed = evaluateCalcExpression(calcExpression);
-        if (!computed.ok) return { ok: false, detail: 'calc-invalid' };
-        const calc = ensureCalc();
-        calc.expression = calcExpression;
-        calc.result = formatCalcResult(computed.value);
-        calcTyped = calc.id + '|' + calcExpression; // its miniature plays the key presses once
-        save(); render();
-        return { ok: true, detail: 'calc-computed' };
-      }
-      if (wantsCreateCalc(lower)) {
-        ensureCalc();
-        save(); render();
-        return { ok: true, detail: 'calc' };
+      // calculator remove / a sum / open (skills/calc.js, cleanup step 6), at the place in this order it always had
+      if (stageKinds.calc && typeof stageKinds.calc.ask === 'function') {
+        const cd = stageKinds.calc.ask(lower, text, stageApi);
+        if (cd === 'no calculator' || cd === 'calc-invalid') return { ok: false, detail: cd };
+        if (cd) return { ok: true, detail: cd };
       }
 
       // simple list surface

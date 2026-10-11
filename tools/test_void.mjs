@@ -1060,6 +1060,37 @@ try {
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
   // step 6: the sticky note, pinned before it moves out of void.html (what it does today, ask by ask)
+  // step 6: the calculator card, pinned before it moves out of void.html (what it does today, ask by ask). Most sums never
+  // reach it: the answer card (showCalc) takes "calculate ...", "what is ...", percents and units first; "calculator <sum>" does
+  if (want("built-in calculator: open one, a colour, calculator 2+5 on the card, a reload, remove")) { const P = await fresh();
+    const cc = async () => (await P.state()).filter((t) => t.kind === 'calc').map((t) => (t.expression || '') + '=' + (t.result || '') + '|' + (t.color || '')).join(' / ');
+    const r = {};
+    await P.ask('open a calculator', 600); r.a = await cc();
+    await P.ask('add a calculator', 500); r.b = await cc();
+    await P.ask('make the calculator blue', 400); r.c = await cc();
+    await P.ask('calculator 2+5', 800); r.d = await cc();
+    r.shown = await P.p.$$eval('.thing.calc-card', (els) => els.map((e) => e.querySelector('.calc-expression').textContent + '=' + e.querySelector('.calc-result').textContent).join(' / '));
+    await P.p.reload(); await P.p.waitForTimeout(1500);
+    r.reload = await until(() => P.p.$$eval('.thing.calc-card .calc-result', (els) => els.length === 1 && els[0].textContent ? els[0].textContent : false), 6000);
+    await P.ask('remove the calculator', 500); r.e = await cc();
+    check('built-in calculator: "open a calculator" puts one up and "add a calculator" keeps it one, "make the calculator blue" edges it blue, "calculator 2+5" works it out on the card (7), it comes back after a reload, and "remove the calculator" takes it away',
+      r.a === '=|' && r.b === r.a && r.c === '=|#6aa8ff' && r.d === '2+5=7|#6aa8ff' && r.shown === '2+5=7' && r.reload === '7' && r.e === '' && !P.errors.length,
+      JSON.stringify({ r, e: P.errors }));
+    await P.ctx.close(); }
+  // step 6's visible upgrade for the calculator (owner, 2026-10-11: every cleanup move ships one): a pocket calculator's face
+  if (want("calculator LCD look: charcoal body, the sum and the result in one olive LCD window, right-aligned, the result in big dark digits, a colour still edges it")) { const P = await fresh();
+    await P.ask('calculator 12*7', 800);
+    const look = () => P.p.$eval('.thing.calc-card', (e) => { const c = getComputedStyle(e), x = e.querySelector('.calc-expression'), xc = getComputedStyle(x), r = e.querySelector('.calc-result'), rc = getComputedStyle(r);
+      return { body: c.backgroundColor, lcd: [xc.backgroundColor, rc.backgroundColor], align: [xc.textAlign, rc.textAlign], gap: Math.round(r.getBoundingClientRect().top - x.getBoundingClientRect().bottom),
+        ink: rc.color, size: parseFloat(rc.fontSize), mono: /mono|Menlo|Consolas/i.test(rc.fontFamily), num: rc.fontVariantNumeric, text: x.textContent + '=' + r.textContent, side: c.borderLeftColor }; });
+    const a = await look();
+    await P.ask('make the calculator orange', 400);
+    const b = await look();
+    check('calculator LCD look: the card is a charcoal calculator body, the sum and its result share one olive LCD window (no gap between), both right-aligned like a real calculator, the result in big dark tabular digits, and "make the calculator orange" edges it orange',
+      a.body === 'rgb(38, 40, 44)' && a.lcd[0] === 'rgb(184, 196, 160)' && a.lcd[1] === a.lcd[0] && a.align.join() === 'right,right' && Math.abs(a.gap) <= 1
+        && a.ink === 'rgb(28, 36, 24)' && a.size >= 26 && a.mono && /tabular-nums/.test(a.num) && a.text === '12*7=84' && b.side === 'rgb(255, 176, 96)' && !P.errors.length,
+      JSON.stringify({ a, b, e: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
   // step 6: the image card, pinned before it moves out of void.html (what it does today, ask by ask); the pictures are served
   // here (a 2x2 png), so nothing leaves the page
   if (want("built-in image: show this image, a bare image url replaces it, a colour, a reload, a picture that fails, remove")) { const P = await fresh();
