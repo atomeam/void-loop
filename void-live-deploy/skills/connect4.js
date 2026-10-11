@@ -5,9 +5,12 @@
  */
 import * as K from './connect4-rules.js';
 import { lift3d } from './lift3d.js';
+import { arenaSay, arenaCurve } from '../lib/arena.js';
 
 export function connect4Of(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  if (/^(?:how (?:good|strong|well) (?:are you|is void|do you play)|are you (?:any )?good|what(?:'s| is) your (?:rating|elo|level))\s+(?:at|in)\s+(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)$/.test(t)
+    || /^what(?:'s| is) your (?:connect\s*(?:4|four)|four\s+in\s+a\s+row) (?:rating|elo|level)$/.test(t)) return { kind: 'rating' };
   if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new|make\s+(?:me\s+)?a)?\s*(?:a\s+)?(?:game\s+of\s+)?(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game' };
   return null;
 }
@@ -75,7 +78,17 @@ function mount(th, stageApi) {
 }
 
 async function run(text, api) {
-  if (!connect4Of(text)) return 'none';
+  const ask = connect4Of(text);
+  if (!ask) return 'none';
+  if (ask.kind === 'rating') { // the record the self-play arena wrote (tools/arena.mjs, frontier #5), fetched from this site
+    const el = api.showPage((p) => { p.innerHTML = '<h2>How good I am at Four in a Row</h2><p data-arena-say class="sub">Reading my games…</p><div data-arena-curve></div>'; });
+    fetch('/arena.json').then((r) => (r.ok ? r.json() : null)).catch(() => null).then((a) => {
+      el.querySelector('[data-arena-say]').textContent = arenaSay(a);
+      el.querySelector('[data-arena-curve]').innerHTML = arenaCurve(a); // void-review: ok: numbers and fixed words from our own arena.json
+      api.say('');
+    });
+    return 'connect4';
+  }
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'connect4');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'connect4'; }
   api.summon('connect4', { state: K.create(), x: Math.max(10, Math.round(innerWidth / 2 - 380)), y: 50 });

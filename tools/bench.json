@@ -5732,5 +5732,10 @@
   {"ask": "ask questions about this text", "want": "skill:pdf-card"},
   {"ask": "chat with a document", "want": "skill:pdf-card"},
   {"ask": "ask questions about pasted text", "want": "skill:pdf-card"},
-  {"ask": "ask my document", "want": "skill:pdf-card"}
+  {"ask": "ask my document", "want": "skill:pdf-card"},
+  {"ask": "how good are you at connect four", "want": "skill:connect4"},
+  {"ask": "what is your connect four rating", "want": "skill:connect4"},
+  {"ask": "are you good at four in a row", "want": "skill:connect4"},
+  {"ask": "how strong is void at connect 4", "want": "skill:connect4"},
+  {"ask": "what's your elo at connect four", "want": "skill:connect4"}
 ]
