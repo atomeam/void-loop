@@ -1,0 +1,33 @@
+// mcp-probe — a real MCP client (the official SDK, @modelcontextprotocol/sdk) against Void's MCP endpoint (frontier #6):
+// connect over streamable HTTP, initialize, list the tools, and call each one with an input whose answer is known. It proves an
+// MCP client can use Void, not only that the handler answers our own tests. .github/workflows/mcp-live.yml runs it against
+// a-to-mind.com after each deploy; the SDK is installed there for this job only (the repo does not depend on it).
+//   node tools/mcp-probe.mjs [url]     default https://a-to-mind.com/api/mcp; exit 1 on the first thing that is wrong
+// Self-contained on purpose (no imports from this repo), so it can be copied next to an SDK install and run anywhere.
+const URL_ = process.argv[2] || 'https://a-to-mind.com/api/mcp';
+const { Client } = await import('@modelcontextprotocol/sdk/client/index.js');
+const { StreamableHTTPClientTransport } = await import('@modelcontextprotocol/sdk/client/streamableHttp.js');
+
+const fail = (why) => { console.error('FAIL ' + why); process.exit(1); };
+const client = new Client({ name: 'void-mcp-probe', version: '1.0.0' });
+try { await client.connect(new StreamableHTTPClientTransport(new URL(URL_))); } catch (e) { fail('connect/initialize: ' + (e && e.message)); }
+const info = client.getServerVersion();
+if (!info || info.name !== 'void') fail('server name: ' + JSON.stringify(info));
+console.log('ok   initialize: ' + info.name + ' ' + info.version);
+
+const { tools } = await client.listTools();
+const names = tools.map((t) => t.name);
+for (const want of ['review_code', 'moon_phase', 'meteor_showers']) if (!names.includes(want)) fail('tools/list has no ' + want + ': ' + names.join(', '));
+console.log('ok   tools/list: ' + names.join(', '));
+
+const call = async (name, args, check) => {
+  const r = await client.callTool({ name, arguments: args });
+  const text = (r.content || []).map((c) => c.text || '').join(' ');
+  if (r.isError || !check(r.structuredContent || {}, text)) fail(name + ': ' + text.slice(0, 200));
+  console.log('ok   ' + name + ': ' + text.split('\n')[0].slice(0, 120));
+};
+await call('review_code', { code: 'function f(a) { eval(a) }\ntry { f() } catch (e) {}', lang: 'javascript' }, (s) => (s.findings || []).some((f) => f.rule === 'eval'));
+await call('moon_phase', { date: '2026-10-11T00:00:00Z' }, (s) => s.illuminated >= 0 && s.illuminated <= 1 && typeof s.phase === 'string');
+await call('meteor_showers', { date: '2026-10-11' }, (s) => Array.isArray(s.active) && !!(s.next && s.next.name));
+await client.close();
+console.log('mcp probe: an MCP client listed and called all three tools at ' + URL_);

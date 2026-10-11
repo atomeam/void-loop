@@ -1,0 +1,46 @@
+# Frontier #6 (Void inside every other AI): a real MCP client against the live site. After each deploy of main (and once a
+# day, or by hand) the official MCP SDK client (tools/mcp-probe.mjs) connects to https://a-to-mind.com/api/mcp, initializes,
+# lists the tools and calls each one with an input whose answer is known. Red means an agent can no longer use Void.
+# The SDK is installed in this job only (pinned); the repo does not depend on it. Read-only: the tools write nothing and need
+# no key or secret.
+name: MCP live
+
+on:
+  workflow_run:
+    workflows: [Void deploy]
+    types: [completed]
+    branches: [main]
+  schedule:
+    - cron: '17 6 * * *'
+  workflow_dispatch:
+    inputs:
+      url:
+        description: The MCP endpoint to probe
+        default: 'https://a-to-mind.com/api/mcp'
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mcp-live
+  cancel-in-progress: true
+
+jobs:
+  probe:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: The MCP SDK, for this job only
+        run: mkdir -p /tmp/probe && cp tools/mcp-probe.mjs /tmp/probe/ && cd /tmp/probe && npm init -y >/dev/null && npm i --no-audit --no-fund @modelcontextprotocol/sdk@1.32.1
+      - name: An MCP client lists and calls Void's tools
+        env:
+          URL_IN: ${{ inputs.url }}
+        run: |
+          sleep 45 # the Pages deploy is live a few seconds after the job ends; give the edge a moment
+          cd /tmp/probe && node mcp-probe.mjs "${URL_IN:-https://a-to-mind.com/api/mcp}" | tee -a "$GITHUB_STEP_SUMMARY"
