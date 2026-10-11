@@ -94,6 +94,7 @@ for (const [name, file] of [
   ['reef-changes', 'reef-changes.test.mjs'],
   ['pdf-qa', 'pdf-qa.test.mjs'],
   ['arena', 'arena.test.mjs'],
+  ['calc', 'calc.test.mjs'],
   ['automations', 'automations.test.mjs'],
   ['actions', 'actions.test.mjs'],
   ['ringer', 'ringer.test.mjs'],
