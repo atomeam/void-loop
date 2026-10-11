@@ -843,7 +843,6 @@
       stage.innerHTML = '';
 Object.values(things).forEach((th) => {
         if (th.kind === 'clock') mountClock(th);
-        else if (th.kind === 'notepad') mountNotepad(th);
         else if (th.kind === 'timer') mountTimer(th);
         else if (th.kind === 'image') mountImage(th);
         else if (th.kind === 'link') mountLink(th);
@@ -1393,48 +1392,6 @@ Object.values(things).forEach((th) => {
       stage.appendChild(el);
     }
 
-function mountNotepad(th) {
-      const el = document.createElement('div');
-      el.className = 'thing notepad';
-      el.dataset.id = th.id;
-      el.style.left = th.x + 'px';
-      el.style.top = th.y + 'px';
-      if (th.color) el.style.borderColor = th.color;
-      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
-
-      const title = document.createElement('div');
-      title.className = 'notepad-title';
-      title.contentEditable = 'true';
-      title.spellcheck = false;
-      title.dataset.placeholder = 'Notepad';
-      title.textContent = th.title || '';
-      title.addEventListener('pointerdown', (e) => e.stopPropagation());
-      title.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); title.blur(); }
-      });
-      title.addEventListener('input', () => { th.title = title.textContent || ''; save(); });
-
-      const area = document.createElement('textarea');
-      area.className = 'notepad-textarea';
-      area.placeholder = 'Write in your notepad';
-      area.value = th.text || '';
-      area.spellcheck = false;
-      area.addEventListener('pointerdown', (e) => e.stopPropagation());
-      area.addEventListener('input', () => { th.text = area.value || ''; save(); });
-
-      // a yellow legal pad on the desk with this note handwritten on it (skills/mini/notepad.js); it rewrites as you type
-      const padHost = document.createElement('div'); padHost.className = 'notepad-mini'; padHost.style.cssText = 'height:190px;margin:-4px -6px 8px';
-      el.appendChild(padHost);
-      const padData = () => ({ title: th.title || '', text: th.text || '' });
-      cardMini(padHost, 'notepad', padData(), { key: 'notepad:' + th.id, label: '3D notepad' }).then((h) => {
-        let t = 0; const later = () => { clearTimeout(t); t = setTimeout(() => h.update(padData()), 250); };
-        area.addEventListener('input', later); title.addEventListener('input', later);
-      }).catch(() => padHost.remove());
-      el.appendChild(title);
-      el.appendChild(area);
-      bindDrag(el, th);
-      stage.appendChild(el);
-    }
 function mountLink(th) {
       const el = document.createElement('div');
       el.className = 'thing link-card';
@@ -1769,49 +1726,6 @@ bindDrag(el, th);
       const n = Object.values(things).filter((t) => t.kind === kind).length;
       return { x: Math.min(Math.max(20, stage.clientWidth - 220), bx + n * 28), y: Math.min(Math.max(20, stage.clientHeight - 120), by + n * 28) };
     }
-    function wantsCreateNotepad(lower, raw) {
-      if (/\b(remove|delete|get rid|hide|clear)\b/.test(lower) && /\bnotepad\b/.test(lower)) return false;
-      if (/^notepad\s*:/i.test(raw)) return true;
-      if (/^\s*write\s+(?:in|on)\s+(?:the\s+)?notepad\b/i.test(raw)) return true;
-      if (/^(a\s+)?notepad(\s+please)?\s*[.!]?\s*$/i.test(raw.trim())) return true;
-      return /\b(make|add|create|open|new|show|spawn|put|place|drop)\b.*\bnotepad\b/.test(lower);
-    }
-
-    function extractNotepadText(raw) {
-      let match = raw.match(/^\s*notepad\s*:\s*([\s\S]*)$/i);
-      if (match) return match[1].trim();
-      match = raw.match(/^\s*write\s+(?:in|on)\s+(?:the\s+)?notepad\s+([\s\S]+?)\s*[.!]?\s*$/i);
-      return match ? match[1].trim() : '';
-    }
-
-    function wantsClearNotepad(lower) {
-      return /^(clear|empty)\s+(the\s+)?notepad\s*[.!]?\s*$/.test(lower);
-    }
-
-    function wantsRemoveNotepad(lower) {
-      return /^(remove|delete|get\s+rid\s+of|hide)\s+(the\s+)?notepad\s*[.!]?\s*$/.test(lower)
-        || /\b(remove|delete|get\s+rid\s+of|hide)\b.*\bnotepad\b/.test(lower);
-    }
-
-    function ensureNotepad(seedText) {
-      let note = (selectedId && things[selectedId] && things[selectedId].kind === 'notepad' && things[selectedId])
-        || Object.values(things).find((thing) => thing.kind === 'notepad');
-      if (!note) {
-        note = {
-          id: uid('notepad'),
-          kind: 'notepad',
-          x: Math.max(40, stage.clientWidth / 2 - 160),
-          y: Math.max(40, stage.clientHeight / 2 - 120),
-          title: '',
-          text: seedText || '',
-        };
-        things[note.id] = note;
-      } else if (seedText != null && seedText !== '') {
-        note.text = seedText;
-      }
-      selectedId = note.id;
-      return note;
-    }
     function colorFrom(text) {
       const map = {
         red: '#ff5c5c', blue: '#6aa8ff', green: '#5dffa5', yellow: '#ffe66a',
@@ -1908,7 +1822,6 @@ function applyClockAlters(c, lower) {
       if (kind === 'clock') return ensureClock();
       if (kind === 'timer') return ensureTimer(60000);
       if (stageKinds[kind] && stageKinds[kind].ensure) return stageKinds[kind].ensure(stageApi); // a built-in that moved to skills/ (cleanup step 6)
-      if (kind === 'notepad') return ensureNotepad('');
       if (kind === 'list') return ensureList([]);
       if (kind === 'calc') return ensureCalc();
       return null;
@@ -2778,33 +2691,11 @@ say('nothing selected to remove');
         return { ok: true, detail: 'list' };
       }
 
-      // notepad surface
-      if (wantsRemoveNotepad(lower)) {
-        const note = Object.values(things).find((thing) => thing.kind === 'notepad' && thing.id === selectedId)
-          || Object.values(things).find((thing) => thing.kind === 'notepad');
-        if (note) {
-          delete things[note.id];
-          if (selectedId === note.id) selectedId = null;
-          save(); render();
-          return { ok: true, detail: 'notepad-removed' };
-        }
-        return { ok: false, detail: 'no notepad' };
-      }
-      if (wantsClearNotepad(lower)) {
-        const note = Object.values(things).find((thing) => thing.kind === 'notepad' && thing.id === selectedId)
-          || Object.values(things).find((thing) => thing.kind === 'notepad');
-        if (note) {
-          note.text = '';
-          selectedId = note.id;
-          save(); render();
-          return { ok: true, detail: 'notepad-cleared' };
-        }
-        return { ok: false, detail: 'no notepad' };
-      }
-      if (wantsCreateNotepad(lower, text)) {
-        const note = ensureNotepad(extractNotepadText(text));
-        save(); render();
-        return { ok: true, detail: 'notepad' };
+      // notepad remove / clear / open and write (skills/notepad.js, cleanup step 6), at the place in this order it always had
+      if (stageKinds.notepad && typeof stageKinds.notepad.ask === 'function') {
+        const nd = stageKinds.notepad.ask(lower, text, stageApi);
+        if (nd === 'no notepad') return { ok: false, detail: 'no notepad' };
+        if (nd) return { ok: true, detail: nd };
       }
       // sticky create / colour / remove (skills/sticky.js, cleanup step 6), at the place in this order it always had
       if (stageKinds.sticky && typeof stageKinds.sticky.ask === 'function') {
