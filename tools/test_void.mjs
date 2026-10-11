@@ -846,6 +846,23 @@ try {
         && a[0].bg === 'rgb(244, 226, 122)' && a[1].bg === 'rgb(255, 158, 200)' && hand,
       JSON.stringify({ a, b, hand }).slice(0, 700));
     await P.ctx.close(); }
+  // step 6's visible upgrade for the link card (owner, 2026-10-11: every cleanup move ships one): a kraft shipping tag you keep a link on
+  if (want("link tag look: kraft paper tag with a punched hole, the title in the felt-tip hand, the host stamped in red, still a new-tab link, a colour still edges it")) { const P = await fresh();
+    await P.ask('add a link https://github.com/atomeam/void-loop', 600);
+    const look = () => P.p.$eval('.thing.link-card', (e) => { const c = getComputedStyle(e), a = e.querySelector('a'), ac = getComputedStyle(a), h = e.querySelector('.host'), hc = h && getComputedStyle(h), hole = getComputedStyle(e, '::before');
+      return { bg: c.backgroundColor, radius: parseFloat(c.borderTopLeftRadius), right: parseFloat(c.borderTopRightRadius), side: c.borderRightColor, hole: hole.content !== 'none' && hole.borderRadius === '50%',
+        font: ac.fontFamily, ink: ac.color, title: a.textContent, href: a.getAttribute('href'), tab: a.target + '|' + a.rel,
+        stamp: hc && { text: h.textContent, upper: hc.textTransform, ink: hc.color, frame: hc.borderTopStyle, turn: hc.rotate } }; });
+    const a = await look();
+    await P.ask('make the link green', 400);
+    const b = await look();
+    check('link tag look: the card is a kraft shipping tag (tan paper, a rounded tag end on the left with a punched hole, square on the right), the title written in the felt-tip hand in dark ink, the host stamped in red capitals in a box at a slight turn, still opening in a new tab safely, and "make the link green" edges it green',
+      a.bg === 'rgb(201, 164, 106)' && a.radius >= 20 && a.right <= 4 && a.hole && /^"?Void Hand/.test(a.font) && a.ink === 'rgb(58, 42, 23)' && a.title === 'github.com/void-loop'
+        && a.href === 'https://github.com/atomeam/void-loop' && a.tab === '_blank|noopener noreferrer'
+        && a.stamp && a.stamp.text === 'github.com' && a.stamp.upper === 'uppercase' && /^rgba?\(170, 40, 30/.test(a.stamp.ink) && a.stamp.frame === 'solid' && /^-\d/.test(a.stamp.turn)
+        && b.side === 'rgb(93, 255, 165)' && b.bg === a.bg && !P.errors.length,
+      JSON.stringify({ a, b, e: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
   // step 6's visible upgrade for the notepad (owner, 2026-10-11: every cleanup move ships one): the card is the legal pad its 3D view shows
   if (want("notepad legal pad look: yellow ruled paper, red margin and binding, the felt-tip hand, rules that line up with the writing, a colour still edges it")) { const P = await fresh();
     await P.ask('notepad: buy bread', 600);

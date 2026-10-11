@@ -215,28 +215,47 @@
       object-fit: contain;
     }
     body:not(.in-ext-panel) .vput { display: none; } /* "into the page" shows only in the extension's side panel */
-    .link-card {
-      width: 280px;
-      padding: 14px 16px;
-      border-radius: 10px;
-      background: #141414;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-      font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
+    /* a kraft shipping tag you keep a link on: tan card stock with a little fibre, the rounded tag end on the left with a
+       punched hole and its reinforcing ring, the title written in the felt-tip hand, the host stamped in red; a colour
+       ("make the link green") edges it (skills/link.js) */
+    .thing.link-card {
+      box-sizing: border-box;
+      width: 300px;
+      min-height: 96px;
+      padding: 16px 18px 14px 56px;
+      border-radius: 30px 3px 3px 30px;
+      background-color: #c9a46a;
+      background-image:
+        radial-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1.5px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.10), rgba(0, 0, 0, 0.06));
+      background-size: 7px 9px, 100% 100%;
+      border: 1px solid rgba(90, 60, 25, 0.45);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25), 0 12px 20px -8px rgba(0, 0, 0, 0.55);
+      color: #3a2a17;
+      font: 22px/1.15 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
       overflow: hidden;
     }
-    .link-card a {
-      color: #8ab4ff;
-      text-decoration: none;
-      word-break: break-all;
-      font-weight: 500;
+    .thing.link-card::before { /* the punched hole and its ring */
+      content: ''; position: absolute; left: 16px; top: 50%; width: 14px; height: 14px; margin-top: -7px;
+      border-radius: 50%; background: #0b0b10; box-shadow: 0 0 0 4px #b8925a, 0 0 0 5px rgba(90, 60, 25, 0.4), inset 0 1px 2px rgba(0, 0, 0, 0.6);
     }
-    .link-card a:hover { text-decoration: underline; }
+    .link-card a {
+      color: #3a2a17;
+      text-decoration: none;
+      word-break: break-word;
+    }
+    .link-card a:hover { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
     .link-card .host {
-      color: #9a9a9a;
-      font-size: 11px;
-      margin-top: 6px;
-      letter-spacing: 0.02em;
+      display: inline-block;
+      margin-top: 8px;
+      padding: 1px 6px;
+      border: 1.5px solid rgba(170, 40, 30, 0.8);
+      border-radius: 2px;
+      color: rgba(170, 40, 30, 0.85);
+      font: 600 11px/1.4 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      rotate: -3deg;
     }
     .list-card {
       width: 280px;
