@@ -38,7 +38,7 @@ This repo is Void, live at https://a-to-mind.com: a blank stage where anything s
 
 ## Never
 
-- Delete something because nothing uses it: put it on the salvage shelf (`docs/SALVAGE.md`, built in cleanup step 3).
+- Delete something because nothing uses it: put it on the salvage shelf (`docs/SALVAGE.md`): what it is, what it could become.
 - Hand-edit `skills/index.json`, or edit or remove old lines of the growth ledger or the agent log.
 - Open an unauthenticated POST endpoint without asking what a stranger could make it do (`docs/RULES.md`).
 - Run two heavy browser jobs at once on one machine (`node tools/heavy.mjs <command>` queues them).
