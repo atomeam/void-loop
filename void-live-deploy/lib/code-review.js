@@ -204,7 +204,68 @@ export function conflictMarkers(text) {
 }
 export const CONFLICT_MESSAGE = 'a git conflict marker: this file was committed in the middle of a merge, so it is broken (JSON will not parse, code will not run). Settle the conflict (node tools/merge-main.mjs keeps both sides of the append-only records) and remove every marker line.';
 
+// For undefined-constant: the UPPER_CASE names a module declares anywhere (const/let/var/function/class, destructuring, import
+// lists, parameters, catch), worked out once per file. Built-in globals spelled in capitals are never flagged.
+const CAPS_GLOBALS = new Set(['JSON', 'URL', 'CSS', 'NaN', 'BYTES_PER_ELEMENT']);
+let capsFile = { raw: null, module: false, declared: new Set(), lines: [] };
+// JavaScript as code only: comments, strings, template text and regex literals blanked (lengths and lines kept). The shared mask
+// loses its place after a regex holding a quote, so this rule scans the raw file itself.
+export function jsCodeOnly(t) {
+  let out = '', i = 0, last = '';
+  const blank = (j) => { out += t.slice(i, j).replace(/[^\n]/g, ' '); i = j; };
+  while (i < t.length) {
+    const c = t[i], d = t[i + 1];
+    if (c === '/' && d === '/') { let j = t.indexOf('\n', i); blank(j < 0 ? t.length : j); continue; }
+    if (c === '/' && d === '*') { const j = t.indexOf('*/', i + 2); blank(j < 0 ? t.length : j + 2); continue; }
+    if (c === '"' || c === "'" || c === '`') {
+      let j = i + 1; while (j < t.length && t[j] !== c && (c === '`' || t[j] !== '\n')) j += t[j] === '\\' ? 2 : 1;
+      blank(Math.min(j + 1, t.length)); last = c; continue;
+    }
+    if (c === '/' && (/[(,=:[!&|?{};>+\-*%~^]/.test(last) || last === '' || /\b(?:return|typeof|case|in|of|delete|void|throw)\s*$/.test(out.slice(-14)))) {
+      let j = i + 1, cls = false;
+      while (j < t.length && t[j] !== '\n' && (cls || t[j] !== '/')) { if (t[j] === '\\') j++; else if (t[j] === '[') cls = true; else if (t[j] === ']') cls = false; j++; }
+      if (t[j] === '/') { j++; while (/[a-z]/.test(t[j] || '')) j++; blank(j); last = '/'; continue; }
+    }
+    out += c; if (!/\s/.test(c)) last = c; i++;
+  }
+  return out;
+}
+function capsOf(ctx) {
+  const raw = ctx.all();
+  if (capsFile.raw === raw) return capsFile;
+  const t = jsCodeOnly(raw), declared = new Set();
+  const names = (s) => { for (const n of String(s || '').matchAll(/\b[A-Z][A-Z0-9_]{2,}\b/g)) declared.add(n[0]); };
+  for (const m of t.matchAll(/\b(?:const|let|var|function\*?|class)\s+([A-Za-z_$][\w$]*)/g)) declared.add(m[1]);
+  for (const m of t.matchAll(/\b(?:const|let|var)\s[^;]*/g)) { // const A = 1, B = 2, { C } = x
+    for (const d of m[0].matchAll(/,\s*([A-Za-z_$][\w$]*)\s*=(?![=>])/g)) declared.add(d[1]);
+    for (const d of m[0].matchAll(/,\s*([{[][^=]*[}\]])\s*=(?![=>])/g)) names(d[1]);
+  }
+  for (const m of t.matchAll(/\b(?:const|let|var)\s*([{[][^;\n]*[}\]])\s*=/g)) names(m[1]);
+  for (const m of t.matchAll(/\bimport\b([^;]*?)\bfrom\b/g)) names(m[1]);
+  for (const m of t.matchAll(/\bfunction\b[^(]*\(([^)]*)\)/g)) names(m[1]);
+  for (const m of t.matchAll(/\(([^()]*)\)\s*=>/g)) names(m[1]);
+  for (const m of t.matchAll(/\bcatch\s*\(([^)]*)\)/g)) names(m[1]);
+  capsFile = { raw, module: /^\s*(?:import|export)\b/m.test(t), declared, lines: t.split('\n') };
+  return capsFile;
+}
+/** the UPPER_CASE names a line uses that its module never declares or imports (the line found through ctx.prev) */
+export function undefinedConstants(m0, ctx) {
+  if (!/\b[A-Z][A-Z0-9_]{2,}\b/.test(m0)) return [];
+  const f = capsOf(ctx);
+  if (!f.module) return [];
+  const before = ctx.prev();
+  // an import or re-export statement only names things; the rest of the line is checked (a pasted one-line snippet)
+  const m = (f.lines[before ? before.split('\n').length : 0] || '').replace(/\b(?:import\b[^;]*?\bfrom|export\s*(?:\{[^}]*\}|\*(?:\s+as\s+\w+)?)\s*from)\s*;?/g, ' ');
+  return [...m.matchAll(/(?<![\w$.])([A-Z][A-Z0-9_]{2,})(?![\w$])(?!\s*:(?!:))/g)].map((x) => x[1])
+    .filter((n) => !f.declared.has(n) && !CAPS_GLOBALS.has(n) && !new RegExp('\\btypeof\\s+' + n + '\\b').test(m));
+}
+
 const RULES = [
+  // ESLint's no-undef, for the names that matter most: an UPPER_CASE constant an ES module uses but never declares or imports is a
+  // ReferenceError the first time that line runs (#250 used RUN_CAP_DAY and QUEUE_DEDUPE_MS with no definition anywhere; every
+  // hook run threw until b2e2a2d). Modules only: a classic script may read a constant another script defined.
+  ['undefined-constant', 'bug', JS, (m, r, ctx) => undefinedConstants(m, ctx).length > 0,
+    'this UPPER_CASE name is never declared or imported in this file, so the line throws ReferenceError when it runs. Define it, or import it from the module that exports it.'],
   ['assign-in-condition', 'bug', [...JS, 'java', 'csharp', 'c', 'php', 'python'], (m) => /\b(?:if|while)\s*\(\s*!?\s*[A-Za-z_$][\w$.[\]]*\s*=\s*[^=>]/.test(m) || /^\s*if\s+[A-Za-z_$]\w*\s*=\s/.test(m),
     'an assignment (=) inside the condition: it sets the value and is then always true or false. To compare, use === (or == outside JavaScript).'],
   ['loose-equality', 'style', JS, (m) => /[^=!<>]==[^=]|!=[^=]/.test(m) && !/[=!]=\s*null\b|\bnull\s*[=!]=[^=]/.test(m),
