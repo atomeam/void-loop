@@ -18,6 +18,11 @@ Many agents built in parallel, so Void has grown sideways: four overlapping guid
 
 One PR per step (or per skill in step 6), checks before push, automerge. Claim a step by adding `claim: <who> <date>` under it in a one-line PR; mark it done with the PR link.
 
+**After the cleanup: three targets (owner, 2026-10-11, from a video on self-improving agent loops; not built until the six steps are done):**
+- **Verification loop:** a drafted change (a skill from `lib/learn.js` / `tools/learn-draft.mjs`) is kept only if `tools/bench.mjs --probe` and `tools/draft-check.mjs` pass and the score holds or rises; otherwise it is dropped (modify, test, keep or revert).
+- **Single-target focus:** a self-improvement run takes exactly one job or skill draft per cycle (the queue already caps open miss jobs at 3, `OPEN_MAX` in `lib/learn.js`).
+- **Feedback doc:** one markdown file the owner dumps raw notes into (typed or transcribed voice); the scheduled runs read it first and take its constraints before touching code. Its own file, since `growth-inbox.md` folds into this list in step 2.
+
 ---
 
 Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as a **candidate capability map** (owner decisions, 2026-10-09). A run that finds no ask from Void, no real miss and no open inbox row takes the top unclaimed step of the build order below instead of stopping.
