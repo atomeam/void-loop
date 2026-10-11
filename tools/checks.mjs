@@ -31,6 +31,7 @@ for (const [name, file] of [
   ['incident', 'incident.test.mjs'],
   ['cite', 'cite.test.mjs'],
   ['showcase', 'showcase.test.mjs'],
+  ['fix-pages', 'fix-pages.test.mjs'],
   ['releasenotes', 'releasenotes.test.mjs'],
   ['intent', 'intent.test.mjs'],
   ['revert-target', 'revert-target.test.mjs'],
