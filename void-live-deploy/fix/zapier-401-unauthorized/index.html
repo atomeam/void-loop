@@ -90,12 +90,12 @@
 <script>
 (function () {
   'use strict';
-  var SLUG = "eozcma";
+  const SLUG = "eozcma";
   function money(x) { return '$' + (x.price_cents / 100).toFixed(x.price_cents % 100 ? 2 : 0); }
   fetch('/api/catalog').then(function (r) { return r.json(); }).then(function (j) {
-    var row = (j.products || []).find(function (x) { return x.slug === SLUG || String(x.url || '').split('/l/')[1] === SLUG; });
+    const row = (j.products || []).find(function (x) { return x.slug === SLUG || String(x.url || '').split('/l/')[1] === SLUG; });
     if (!row) return; // the page's own price and link stand
-    var price = document.getElementById('fix-price'), buy = document.getElementById('fix-buy');
+    const price = document.getElementById('fix-price'), buy = document.getElementById('fix-buy');
     if (row.price_cents && price) price.textContent = money(row);
     if (row.available === false && buy) { buy.href = '/one-time-fix/'; return; }
     if (/^https:\/\//.test(row.url || '') && buy) buy.href = row.url;
