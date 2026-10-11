@@ -1,5 +1,7 @@
 # Growth inbox
 
+**Since 2026-10-11 (cleanup step 2):** ideas still land here (`tools/grow-ideas.mjs`) and Void reads it about itself (`tools/self-context.mjs`), but the build order is `domains/void.frontier.md`: an open row is built from there.
+
 New ideas land here in batches. A run may build any open row. Shipped rows stay, with the main SHA. Rows are not deleted.
 
 | status | date | ask | source |
