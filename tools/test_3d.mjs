@@ -599,6 +599,30 @@ export async function run3dChecks({ check, fresh }) {
       lifted.tictactoe && lifted.othello && lifted.mancala && lifted.aggravation && lifted.connect4 && !!lifted.played && !F.errors.length, JSON.stringify({ lifted, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- Four in a Row on a phone (owner, 2026-10-11 polish): the frame fits a 390 px screen, the card sits below it and never
+  // on it, stops above the ask bar, the winning four light up while the rest dim, and the log leads with the latest reason
+  {
+    const F = await fresh();
+    await F.p.setViewportSize({ width: 390, height: 844 });
+    await F.ask('play connect 4', 600);
+    const key = await until(() => F.p.evaluate(() => { const m = window.__voidMini && window.__voidMini.list().find((x) => x.kind === 'connect4' && x.ready && x.draws > 0); return m && m.key; }), 90000);
+    for (let k = 0; key && k < 30; k++) { // you keep dropping in column 1; Void finds its four
+      const st = await F.p.$eval('.c4-status', (e) => e.textContent).catch(() => '');
+      if (/win|draw/i.test(st)) break;
+      if (/Your move/.test(st)) await F.p.evaluate(() => document.querySelectorAll('.c4-col')[0].click());
+      await F.p.waitForTimeout(800);
+    }
+    const won = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.win === 4 && s.lit === 4 ? s : null; }, key), 8000);
+    const lay = await F.p.evaluate(() => { const r = (s) => { const e = document.querySelector(s); return e && e.getBoundingClientRect(); };
+      const v = r('.connect4-view'), c = r('.connect4-side'), a = r('#input'), latest = document.querySelector('.c4-latest'), sum = document.querySelector('.c4-earlier summary');
+      return { fits: !!v && v.right <= innerWidth && v.left >= 0, apart: !!v && !!c && (c.top >= v.bottom || c.left >= v.right), above: !!c && !!a && c.bottom <= a.top + 1,
+        latest: latest && latest.textContent, earlier: sum && sum.textContent };
+    });
+    check('Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)',
+      !!won && won.dim === won.discs - 4 && lay.fits && lay.apart && lay.above && /because/.test(lay.latest || '') && /^Earlier moves \(\d+\)$/.test(lay.earlier || '') && !F.errors.length,
+      JSON.stringify({ won, lay, e: F.errors }));
+    await F.ctx.close();
+  }
   // ---- the Magic 8 Ball is a ball in the void: asking again shakes the same ball for a new answer
   {
     const F = await fresh();

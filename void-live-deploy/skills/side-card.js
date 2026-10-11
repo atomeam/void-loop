@@ -21,7 +21,9 @@ export function grip(label) {
 }
 
 const CSS = '.side-card{position:absolute;z-index:2;padding:14px 16px;border-radius:var(--radius,16px);background:var(--card-bg,rgba(16,16,18,.94));border:1px solid var(--card-line,rgba(255,255,255,.12));'
-  + 'box-shadow:var(--card-shadow,0 18px 50px rgba(0,0,0,.45));color:var(--ink,#eee);font-size:var(--fs-s,13px);line-height:1.45;text-align:left;user-select:none;backdrop-filter:blur(8px)}'
+  + 'box-shadow:var(--card-shadow,0 18px 50px rgba(0,0,0,.45));color:var(--ink,#eee);font-size:var(--fs-s,13px);line-height:1.45;text-align:left;user-select:none;backdrop-filter:blur(8px);'
+  + 'scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.18) transparent;overscroll-behavior:contain}'
+  + '.side-card::-webkit-scrollbar{width:6px}.side-card::-webkit-scrollbar-thumb{background:rgba(255,255,255,.16);border-radius:6px}.side-card::-webkit-scrollbar-button{display:none}'
   + '.side-card .g-head{cursor:grab}.side-card button{cursor:pointer}';
 function style() {
   if (typeof document === 'undefined' || document.getElementById('side-card-style')) return;
@@ -32,9 +34,13 @@ export function sideCard(th, stageApi, card, { boardW = 420, boardH = 420, w = 2
   style();
   const vw = (typeof innerWidth === 'number' ? innerWidth : 1200);
   const beside = th.x + boardW + gap + w <= vw - 8;
-  const at = th.card && Number.isFinite(th.card.x) && Number.isFinite(th.card.y) ? th.card
-    : beside ? { x: th.x + boardW + gap, y: th.y + Math.round(boardH * 0.18) } : { x: Math.max(8, th.x + Math.round((boardW - Math.min(w, vw - 16)) / 2)), y: th.y + boardH + gap };
-  if (!th.card) th.card = { x: at.x, y: at.y }; // from now on the card stays where it is when the board moves
+  const cw = Math.min(w, vw - 16);
+  const fresh = beside ? { x: th.x + boardW + gap, y: th.y + Math.round(boardH * 0.18) } : { x: Math.max(8, th.x + Math.round((boardW - cw) / 2)), y: th.y + boardH + gap };
+  // a card never sits on its board: a place kept from a wider window, or a board moved under it, puts it back beside or below
+  const onBoard = (p) => p.x < th.x + boardW && p.x + cw > th.x && p.y < th.y + boardH && p.y + 120 > th.y;
+  const kept = th.card && Number.isFinite(th.card.x) && Number.isFinite(th.card.y) && !onBoard(th.card) ? th.card : null;
+  const at = kept || fresh;
+  if (!kept) th.card = { x: at.x, y: at.y }; // from now on the card stays where it is when the board moves
   card.classList.add('side-card');
   howTo(card, th.kind); // every game's card: a "How to play" that opens by itself the first time
   const head = card.querySelector('.g-head');
@@ -42,7 +48,10 @@ export function sideCard(th, stageApi, card, { boardW = 420, boardH = 420, w = 2
   card.dataset.of = th.id; // not data-id: the stage's own drag and lookups stay on the board
   card.style.position = 'absolute';
   card.style.left = at.x + 'px'; card.style.top = at.y + 'px';
-  card.style.width = Math.min(w, vw - 16) + 'px';
+  card.style.width = cw + 'px';
+  // it stops above the ask bar and scrolls inside, thin and dark, instead of running under it
+  const vh = typeof innerHeight === 'number' ? innerHeight : 900;
+  if (at.y < vh) { card.style.maxHeight = Math.max(200, vh - at.y - 120) + 'px'; card.style.overflowY = 'auto'; }
   card.style.cursor = 'grab';
   card.addEventListener('pointerdown', (e) => {
     if (e.button > 0 || (e.target && e.target.closest && e.target.closest('button,input,select,a'))) return;

@@ -32,6 +32,11 @@ function flatNote(el, kind, stageApi) {
 export function lift3d(th, stageApi, el, { kind, board, title, W, H, snapshot, label }) {
   if (!stageApi.miniature || typeof document === 'undefined') return;
   if (guard.isOff(kind)) { flatNote(el, kind, stageApi); return; } // it crashed here before: the flat board, which always works
+  // every lifted board fits the screen it opens on (owner, 2026-10-11: "things should smartly try to autofit in Void"):
+  // the same proportions, narrower on a phone, and moved left if it would run off the right edge
+  const vw = typeof innerWidth === 'number' ? innerWidth : 1200, fit = Math.min(1, (vw - 20) / W);
+  if (fit < 1) { W = Math.max(240, Math.round(W * fit)); H = Math.round(H * fit); }
+  if (Number.isFinite(th.x) && th.x + W > vw - 10) th.x = Math.max(10, vw - 10 - W);
   const key = kind + ':' + th.id;
   const view = document.createElement('div');
   view.className = kind + '-view lift3d-view';
