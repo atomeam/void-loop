@@ -201,7 +201,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **What:** paste a URL or drop a file and Void rebuilds it as a living thing in the void: a PDF becomes a card you can ask questions of, a site becomes a dissected blueprint (its sections, its claims, what it gets wrong, sourced). (Not `tools/void_lens.py`, the disk scanner; pick another name.)
 - **First piece:** a dropped PDF becomes a card that answers questions about it, in the browser, nothing uploaded.
 - **Done when:** a PDF and a public URL each become a card that answers three questions about them with the line it came from.
-- **claim:**
+- **claim:** builder (claude) 2026-10-11: the first piece: a dropped PDF becomes a card that answers questions about it with the line each answer came from, read in the browser, nothing uploaded.
 
 ## 13. Skills that spread between Voids
 - **What:** when a visitor teaches their Void something (a named routine of existing asks: "my morning: weather here, my calendar, a 25-minute timer"), they can offer it to everyone; offered routines appear for other visitors with attribution, opt-in. Only routines made of existing asks spread, never code, so nothing anyone shares can do more than Void already does.
