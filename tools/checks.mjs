@@ -88,6 +88,7 @@ for (const [name, file] of [
   ['digest-proposal', 'digest-proposal.test.mjs'],
   ['splat', 'splat.test.mjs'],
   ['routines', 'routines.test.mjs'],
+  ['mcp', 'mcp.test.mjs'],
   ['pdf-qa', 'pdf-qa.test.mjs'],
   ['arena', 'arena.test.mjs'],
   ['automations', 'automations.test.mjs'],
