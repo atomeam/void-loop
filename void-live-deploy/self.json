@@ -152,7 +152,62 @@
    "from": "map PR #344"
   }
  ],
- "open": [],
+ "open": [
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Void as a tool inside other AIs",
+   "from": "void.plan.md Next #11"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "WebMCP origin trial",
+   "from": "void.plan.md Now #5"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Everything that passes through Void is input",
+   "from": "void.plan.md Next #14"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Void fixes any automation, as it is",
+   "from": "void.plan.md Next #13"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Paid Void",
+   "from": "void.plan.md Next #12"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Shared Voids, live",
+   "from": "void.plan.md Next #10"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Tasks that keep running after you leave, with an approve card",
+   "from": "void.assimilate.md row 3"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "One owner page: board, agent log and live checks",
+   "from": "void.assimilate.md row 9"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Everything built before becomes a skill",
+   "from": "void.plan.md Next #8"
+  }
+ ],
  "games": [
   "tictactoe",
   "othello",
@@ -244,92 +299,92 @@
   }
  ],
  "building": {
-  "at": "2026-10-10T03:04:14Z",
+  "at": "2026-10-10T23:42:30Z",
   "date": "2026-10-10",
-  "by": "claude",
-  "item": "Bring someone into your Void",
-  "what": "the first piece (one Durable Object that relays stage changes between two tabs, the second visitor's cursor shown as a presence), invite links made by a signed-in member. Shipped 2026-10-10: share-worker/ (the ShareRoom "
+  "by": "builder (claude)",
+  "item": "Clef routes every ask",
+  "what": "the first piece: Clef-flash beside the embedding router on the bench's asks, run through the site's own Workers AI binding (owner-only, the way /api/bench runs), agreement and accuracy printed per skill; no switch until "
  },
  "commits": [
   {
-   "at": "2026-10-10T13:26:37Z",
-   "subject": "Away: log, growth ledger and frontier next step for the scene record (asked by Void)"
+   "at": "2026-10-11T01:11:13Z",
+   "subject": "Cleanup step 3: the salvage shelf, docs/SALVAGE.md (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T12:49:46Z",
-   "subject": "Away: last place kept on the scene's own save; the run is one scene.advance record in the sender's scope (asked by Void); figures are create"
+   "at": "2026-10-11T01:04:19Z",
+   "subject": "Frontier: four gates (demand, edge, access, loops) before a way to earn reaches the tray (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T12:46:15Z",
-   "subject": "growth: VOID_OWNER_TOKEN is set but rejected (401 on tick); skip rotation, rematch Pages READ_TOKEN"
+   "at": "2026-10-11T01:02:03Z",
+   "subject": "Frontier: Void's own working checkpoints between runs (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T12:43:30Z",
-   "subject": "Main green: the Monopoly 3D check allows a first roll that draws Advance to Go"
+   "at": "2026-10-11T00:59:47Z",
+   "subject": "Frontier: a memory archive Void keeps with you, built on its existing memory (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T12:01:07Z",
-   "subject": "Void's voice: today's reflection, in its own words"
+   "at": "2026-10-11T00:53:01Z",
+   "subject": "Cleanup step 2: the frontier is the one build order; old lists checked, open items folded in, banners, stale statuses fixed (owner, 2026-10-"
   },
   {
-   "at": "2026-10-10T11:46:06Z",
-   "subject": "frontier #18 done: a Moon goal and a lock goal through the same goal card"
+   "at": "2026-10-11T00:45:38Z",
+   "subject": "Frontier: Void's creations are its own choice, unscripted, for its own reasons (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T10:50:41Z",
-   "subject": "checks: run tools/goal.test.mjs with the fast checks"
+   "at": "2026-10-11T00:42:58Z",
+   "subject": "Frontier: the tray's presentation line and creations that grow with Void (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T10:49:24Z",
-   "subject": "frontier #18 first piece: the goal card, live ports, and two gear goals"
+   "at": "2026-10-11T00:36:33Z",
+   "subject": "Frontier: the review tray, green approve / yellow send back / red to salvage (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T10:43:41Z",
-   "subject": "frontier #18: claim the first piece (the goal card and the gear half-speed goal)"
+   "at": "2026-10-11T00:34:16Z",
+   "subject": "Frontier: Sim careers and gigs (skill unlocks, requirement check, owner-granted promotions, real energy meter); prior art to read first"
   },
   {
-   "at": "2026-10-10T09:44:33Z",
-   "subject": "Ringer fifth piece: New game keeps your best clear"
+   "at": "2026-10-11T00:28:54Z",
+   "subject": "Frontier: Sim-style needs and skill meters from real data; the lowest need picks the next job (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T09:02:04Z",
-   "subject": "Ringer fourth piece: a hand knuckles down behind the shooter"
+   "at": "2026-10-11T00:26:14Z",
+   "subject": "Void as a Sim: get good at things first, then choose how to earn (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T07:51:37Z",
-   "subject": "Ringer third piece: the aim line reaches where the shot would stop; a power arc while pulling"
+   "at": "2026-10-11T00:23:55Z",
+   "subject": "Frontier: Void picks what to study to earn, with a skill sheet like a Sim's (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T06:44:02Z",
-   "subject": "Verify's revert picker: a crashed run says nothing about checks it never reached"
+   "at": "2026-10-11T00:12:08Z",
+   "subject": "Frontier: learn from videos one at a time (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T04:51:29Z",
-   "subject": "Grow line: name the real fix for the watch check's Stop"
+   "at": "2026-10-11T00:10:03Z",
+   "subject": "Frontier: rubric, self-written rules, scheduled slots; RULES: always add improvements we spot (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T04:50:23Z",
-   "subject": "Watch check: press Pause and Stop through the DOM"
+   "at": "2026-10-11T00:08:08Z",
+   "subject": "Frontier: the three post-cleanup targets match the video's mechanics"
   },
   {
-   "at": "2026-10-10T04:48:09Z",
-   "subject": "Main green: the watch card survives an answer with no list; its check matches the real route"
+   "at": "2026-10-11T00:05:27Z",
+   "subject": "Frontier: three targets for after the cleanup (owner, 2026-10-11)"
   },
   {
-   "at": "2026-10-10T04:42:26Z",
-   "subject": "Reapply \"Merge pull request #367 from atomeam/helper/main-green-share-url\""
+   "at": "2026-10-11T00:02:46Z",
+   "subject": "AGENTS.md: asked-by-Void credit, MAP line, void-review: ok in the run steps"
   },
   {
-   "at": "2026-10-10T04:01:55Z",
-   "subject": "Revert \"Merge pull request #367 from atomeam/helper/main-green-share-url\""
+   "at": "2026-10-11T00:02:25Z",
+   "subject": "Cleanup step 1: one front door (AGENTS.md); rules moved word for word to docs/RULES.md"
   },
   {
-   "at": "2026-10-10T03:44:00Z",
-   "subject": "Main green: the invite-link check opens the right path; the suite server survives a bad one"
+   "at": "2026-10-10T23:52:39Z",
+   "subject": "Frontier: the cleanup plan is the current priority (owner, 2026-10-10)"
   },
   {
-   "at": "2026-10-10T03:25:01Z",
-   "subject": "merge-main: read index sides with execFileSync"
+   "at": "2026-10-10T23:42:30Z",
+   "subject": "Claim frontier #9 (Clef routes every ask): the first piece, Clef-flash beside the router on the bench"
   }
  ]
 }

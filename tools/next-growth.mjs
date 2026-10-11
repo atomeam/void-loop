@@ -1,11 +1,3 @@
-// Open growth ideas. Prints every open row. Building rows are in progress, not a lock.
-import { readFileSync } from 'node:fs';
-const text = readFileSync(new URL('../domains/growth-inbox.md', import.meta.url), 'utf8');
-const open = text.split('\n').filter((line) => line.startsWith('| open |'));
-const building = text.split('\n').filter((line) => line.startsWith('| building |'));
-if (!open.length && !building.length) {
-  console.log('none');
-  process.exit(1);
-}
-for (const line of open) console.log(line);
-for (const line of building) console.log(line);
+// Kept so the old command still works: the growth inbox is not a build order any more (cleanup step 2, 2026-10-11).
+// What to build next is one command now: node tools/next.mjs (the frontier's steps and open items, then the miss board).
+import './next.mjs';

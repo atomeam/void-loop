@@ -53,7 +53,9 @@ The workflows that only run by hand (`cf-scope.yml`, `model-bench.yml`, `rehears
 
 | File | What it is | Could become | Size |
 | --- | --- | --- | --- |
-| `next-growth.mjs` | Prints the open rows of `domains/growth-inbox.md`; nothing calls it | Merged in cleanup step 4 with `next-skill.mjs` and `learn.mjs` (one "what next" tool reading the frontier) | S |
+| `next-growth.mjs` | Printed the open rows of `domains/growth-inbox.md`; nothing called it | **Done in cleanup step 4:** an alias of `tools/next.mjs`, the one "what next" command | none |
+| `jobs.mjs` | An early local job list made from the miss board (`domains/void.jobs.json`); only its own test uses it | Replaced by `learn.mjs` and the real build queue in D1; its claim/done flow is `void_queue.py` now | none |
+| `board_patch.py`, `entry_look_patch.py`, `weather_patch.py` | One-off patch scripts that added the owner's board, entering your own Void, and weather to `void.html`; applied in September | History; what they added is live in `void.html` | none |
 | `indexnow_submit.py` | Tells IndexNow search engines about a-to-mind.com's pages; run by hand after a deploy (its key file is served from `void-live-deploy/`) | A step in the deploy workflow, so new pages reach search engines on their own | S |
 | `opencode-autoreply.ps1` | Role prompts for the Windows helper agents (Ship, Polish, Prove, Chooser, Salvage scout); sends them to the frontier since 2026-10-11 | Kept in step with `AGENTS.md` when the helpers run again | S |
 

@@ -2,8 +2,8 @@
 
   python tools/will.py        (the task "\\A2M void_will" runs this every 3 hours, 9 AM - 9 PM)
 
-Candidates come from: what people asked that Void couldn't do (the miss list), the open plan items,
-every assimilate row not live yet, every project on Victus the ingest classified as a capability, upgrades
+Candidates come from: what people asked that Void couldn't do (the miss list), the open items of
+domains/void.frontier.md (the one build order since 2026-10-11), every project on Victus the ingest classified as a capability, upgrades
 to Void itself, and ideas from everything that passed through Void as input (domains/inputs/*/records.jsonl,
 tagged with their source, e.g. growth-ledger-backlog). Rule for all of them: use what already exists before building.
 Void picks 3 wants in its own words (/api/will), saves them, and queues the top one for the builders.
@@ -39,21 +39,24 @@ def gather(cap=60, with_done=False):
                 cands.append({"kind": "people asked", "title": f"learn to handle \"{m['ask']}\"", "why": f"asked {m['count']} times, last {m['last'][:10]}", "weight": 10 + 5 * m["count"]})
     except Exception as e:
         print("misses:", e, file=sys.stderr)
-    # 2. the plan's open items
-    plan = (ROOT / "domains" / "void.plan.md").read_text(encoding="utf-8", errors="replace")
-    for m in re.finditer(r"^\s*(\d+)\.\s+\*\*(.+?)\*\*(.*)$", plan, re.M):
-        n, title, rest = int(m.group(1)), m.group(2), m.group(3)
-        if "DONE" in title or "DONE" in rest[:40]:
-            continue
-        cands.append({"kind": "plan", "title": title.rstrip(".:"), "why": re.sub(r"\s+", " ", rest).strip()[:180] or "on the plan", "weight": max(1, 40 - 3 * n)})
-    # 3. old parts of Void not joined yet
-    ass = (ROOT / "domains" / "void.assimilate.md").read_text(encoding="utf-8", errors="replace")
-    for line in ass.splitlines():
-        cells = [c.strip() for c in line.strip().strip("|").split("|")]
-        if len(cells) >= 5 and cells[0].isdigit() and not re.search(r"\blive\b", cells[4], re.I):
-            cands.append({"kind": "old part of me", "title": f"become {cells[3][:110]}", "why": f"{cells[1][:60]} did this: {cells[2][:60]}", "weight": 18})
-        elif len(cells) >= 3 and cells[1] in ("skill", "optional skill", "core", "skill (row 4)"):
-            cands.append({"kind": "old part of me", "title": f"learn \"{cells[0]}\"", "why": cells[2][:150], "weight": 15})
+    # 2. the open items of the frontier, the one build order (cleanup step 4, 2026-10-11; it replaces the plan's open items and
+    #    the assimilation rows not live, which were checked and folded in there). Same rule as tools/frontier.mjs openItems.
+    fr = (ROOT / "domains" / "void.frontier.md").read_text(encoding="utf-8", errors="replace").split("\n")
+    at = next((i for i, l in enumerate(fr) if l.startswith("**Folded in from the old lists")), None)
+    if at is not None:
+        n = 0
+        for line in fr[at + 1:]:
+            if not line.strip():
+                break
+            m = re.match(r"^- \*\*(.+?)\*\*\s*(.*)$", line)
+            if not m:
+                continue
+            title = re.sub(r"\s*\(`[^)]*\)\s*", " ", m.group(1)).rstrip(":. ").strip()
+            src = re.search(r"\(`([^`]+)`([^)]*)\)", m.group(1) + " " + m.group(2))
+            why = re.sub(r"\*\*|`", "", re.sub(r"^\s*\(`[^)]*\)\s*:?\s*", "", m.group(2))).strip(" :")
+            n += 1
+            cands.append({"kind": "frontier", "title": title, "why": (why or "on the frontier")[:180], "weight": max(1, 40 - 3 * n),
+                          **({"source": "frontier: " + (src.group(1) + src.group(2)).strip()} if src else {})})
     # 4. everything else on Victus the ingest marked as a capability
     try:
         ing = json.loads((ROOT / "archive" / "victus" / "victus-ingest.json").read_text(encoding="utf-8", errors="replace"))
