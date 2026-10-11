@@ -1,0 +1,43 @@
+# The coral heat card keeps itself current (frontier #8, the second card; tools/reef-changes.mjs), daily: read NOAA Coral Reef
+# Watch's virtual-station files for the stations in lib/reefwatch.js, compare each newest reading with the last kept one
+# (domains/reefwatch.snapshot.json), write a `finding` to the growth ledger when a reef's heat-stress alert level changes
+# (the station's page as its source), then commit both files to main. The first run keeps the baseline. A station that does
+# not answer, or whose file is not shaped as expected, writes nothing. No secret: the data is public.
+name: Reef watch
+
+on:
+  schedule:
+    - cron: '47 6 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: reefwatch
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the snapshot and the ledger on main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Read the stations and write what changed
+        run: |
+          node tools/reef-changes.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+          git diff --quiet -- domains/reefwatch.snapshot.json void-live-deploy/void.growth.json && ! git ls-files --others --exclude-standard -- domains/reefwatch.snapshot.json | grep -q . && { echo "nothing changed"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add domains/reefwatch.snapshot.json void-live-deploy/void.growth.json
+          git commit -m "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1

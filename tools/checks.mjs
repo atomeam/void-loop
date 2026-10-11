@@ -90,6 +90,7 @@ for (const [name, file] of [
   ['routines', 'routines.test.mjs'],
   ['mcp', 'mcp.test.mjs'],
   ['trial-changes', 'trial-changes.test.mjs'],
+  ['reef-changes', 'reef-changes.test.mjs'],
   ['pdf-qa', 'pdf-qa.test.mjs'],
   ['arena', 'arena.test.mjs'],
   ['automations', 'automations.test.mjs'],
