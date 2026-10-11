@@ -11,6 +11,7 @@
 // the models off. With models on, D1 is written: the answer cache, the route log (void_routes), the shortfall counts.
 // An ask about Void itself ("what's next?", "what are you building?") skips Wikipedia and the cache: it is answered from
 // Void's own facts, its skills, growth inbox and will (lib/self-context.js), so the answer is about this project, not generic.
+import { keepCited } from '../../lib/cite.js';
 import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
 import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/code-review.js';
 import { models } from '../../lib/models.js';
@@ -219,7 +220,8 @@ export async function onRequestPost({ request, env, waitUntil }) {
   const told = self ? null : await toldMe(request, env, ask);
   try {
     const hit = masked || self || told ? null : await env.DB.prepare('SELECT answer, sources, at FROM void_answers WHERE id = ? AND at > ?').bind(key, new Date(Date.now() - TTL_DAYS * 864e5).toISOString()).first();
-    if (hit) return Response.json({ answer: hit.answer, sources: JSON.parse(hit.sources), at: hit.at, cached: true });
+    // an answer cached before sources were filtered is filtered on the way out (lib/cite.js)
+    if (hit) { const c = keepCited(hit.answer, JSON.parse(hit.sources)); return Response.json({ answer: c.answer, sources: c.sources, at: hit.at, cached: true }); }
   } catch (_) {}
   if (await rateLimited(request, env)) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
 
@@ -268,7 +270,7 @@ async function pageAnswer(request, env, ask, pg) {
 
 // Sources are help, not a cage: cite one when it actually answers the question, but never refuse just because
 // none matched (they're only Wikipedia searches; a script, a plan, a proof, a poem has no Wikipedia page at all).
-export const ANSWER_SYSTEM = 'You are Void. Answer the question directly and completely, from what you know. Use a numbered source only when it genuinely answers part of the question, citing it inline like [1]; when the sources do not cover it, answer anyway from your own knowledge and reasoning. Never refuse or say you lack sources: that is only true if you genuinely cannot help at all. For code, write the whole thing in a fenced code block with the language named, then a short explanation after. Keep plain answers to 2 to 6 sentences unless the question needs more (a full script, a step-by-step, a worked example). No preamble, no markdown headings. ' + INJECTION_RULE;
+export const ANSWER_SYSTEM = 'You are Void. Answer the question directly and completely, from what you know. Use a numbered source only when it genuinely answers part of the question, citing it inline like [1]; when the sources do not cover it, answer anyway from your own knowledge and reasoning. Never refuse or say you lack sources: that is only true if you genuinely cannot help at all. For code, write the whole thing in a fenced code block with the language named, then a short explanation after. Keep plain answers to 2 to 6 sentences unless the question needs more (a full script, a step-by-step, a worked example). No preamble, no markdown headings. Your voice is plain and quiet: no exclamation marks, no customer-service lines ("I\'m here to help", "as best I can", "Great question"), no offers of further help at the end. ' + INJECTION_RULE;
 // How an answer is asked for (the main answer and the page answer), shared with the model bake-off (functions/api/bench.js) so
 // a challenger is measured the way Void runs it: thinking off, low reasoning effort, the same token budget.
 export const ANSWER_RUN = { max_tokens: 2200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
@@ -290,7 +292,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   // the router's 'self' examples catch self asks the regex missed
   if (!self && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
   const facts = self ? selfFacts(await selfP) : '';
-  const pub = src.map(({ title, url, edited }) => ({ title, url, edited }));
+  let pub = src.map(({ title, url, edited }) => ({ title, url, edited }));
   const ctx = src.map((s, i) => `[${i + 1}] ${s.title}: ${s.text}`).join('\n\n') || '(no sources found)';
   const messages = self ? [
     { role: 'system', content: ANSWER_SYSTEM + ' ' + SELF_RULE },
@@ -348,6 +350,8 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     }
   }
   log({ model });
+  // only the sources the answer cited go on the card (lib/cite.js); its [n] markers are renumbered to match
+  ({ answer, sources: pub } = keepCited(answer, pub));
   const at = new Date().toISOString();
   if (!masked && !self && !told) try {
     await env.DB.prepare('INSERT INTO void_answers (id, ask, answer, sources, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET answer = excluded.answer, sources = excluded.sources, at = excluded.at')

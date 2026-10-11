@@ -815,6 +815,18 @@ try {
         && /### Breaking changes\n- Drop Node 16\n\n### Removed\n- Remove the old export\n$/.test(md2) && !P.errors.length,
       [JSON.stringify(md1), JSON.stringify(md2), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
+  // "do you love me?" once went to the answer engine: three songs and an album from a Wikipedia search as its sources, in a stock chatbot voice
+  if (want("feelings: do you love me, do you have feelings, are you conscious answered in Void's own words, no sources, no exclamation; lyrics are not this")) { const P = await fresh();
+    const r = {};
+    for (const [k, a] of [['love', 'do you love me?'], ['feel', 'Void, do you have feelings?'], ['mind', 'are you conscious'], ['lonely', 'do you get lonely']]) {
+      await P.ask(a, 500); r[k] = await P.page();
+    }
+    await P.ask('do you love me lyrics', 900); r.lyrics = await P.page();
+    const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can/i.test(t) && /written by Void, about itself/.test(t);
+    check('feelings: "do you love me?", "Void, do you have feelings?", "are you conscious" and "do you get lonely" get Void\'s own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no "here to help"), and "do you love me lyrics" is not taken',
+      own(r.love, 'won’t pretend') && own(r.feel, 'No feelings here') && own(r.mind, 'Not alive, and not conscious') && own(r.lonely, 'No feelings here') && !r.lyrics.includes('won’t pretend'),
+      JSON.stringify(r).slice(0, 600));
+    await P.ctx.close(); }
   // step 6 (one shape for skills): the counter, pinned before it moves out of void.html; the same asks must keep working after
   if (want("built-in counter: make, count up and down, set, reset, size, buttons, a reload, remove; only ever one counter")) { const P = await fresh();
     const one = async () => (await P.state()).filter((t) => t.kind === 'counter');
