@@ -4,13 +4,21 @@
 // rated from those games against depth 2). The result goes to void-live-deploy/arena.json, the record an ask can answer from.
 //   node tools/arena.mjs            plays, prints the ratings, writes arena.json
 //   node tools/arena.mjs --check    plays nothing; exit 1 when arena.json is missing or not shaped as written here
+// It also rates Othello (random, greedy, the card's engine; random = 1000) into void-live-deploy/arena-othello.json.
 import { writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { ladder, tune, perf } from '../void-live-deploy/lib/arena.js';
+import { ladder, tune, perf, ladderOf, othelloGame, othelloPlayers } from '../void-live-deploy/lib/arena.js';
 
 export const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'arena.json');
 export const DEPTHS = [1, 2, 3, 4], GAMES = 40, SEED = 1;
+export const OUT_OTHELLO = resolve(dirname(OUT), 'arena-othello.json');
+
+// Othello (run 62): random, greedy and the card's own engine, each against the one before it, 40 games a step; random = 1000
+export function runOthello() {
+  const t0 = Date.now(), steps = ladderOf(othelloGame, othelloPlayers(), GAMES, SEED);
+  return { game: 'othello', games: GAMES * (steps.length - 1), anchor: 'random = 1000', ladder: steps, ms: Date.now() - t0 };
+}
 
 export function run() {
   const t0 = Date.now(), steps = ladder(DEPTHS, GAMES, SEED);
@@ -39,4 +47,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   for (const s of r.ladder) console.log(s.name.padEnd(16), String(s.rating).padStart(5), s.vs ? ' (' + Math.round(s.score * 100) + '% against ' + s.vs + ')' : ' (anchor)');
   console.log(r.tuned.name.padEnd(16), String(r.tuned.rating).padStart(5), ' (' + Math.round(r.tuned.score * 100) + '% against the card\'s weights at depth 2; ' + (r.tuned.kept ? 'kept: it wins clearly' : 'not kept: the card\'s weights stay') + ')');
   console.log(r.games + ' games in ' + (ms / 1000).toFixed(1) + ' s -> ' + OUT);
+  const o = runOthello(), { ms: oms, ...okeep } = o;
+  writeFileSync(OUT_OTHELLO, JSON.stringify({ ...okeep, played: new Date().toISOString().slice(0, 10) }, null, 2) + '\n');
+  for (const st of o.ladder) console.log('othello ' + st.name.padEnd(9), String(st.rating).padStart(5), st.vs ? ' (' + Math.round(st.score * 100) + '% against ' + st.vs + ')' : ' (anchor)');
+  console.log(o.games + ' Othello games in ' + (oms / 1000).toFixed(1) + ' s -> ' + OUT_OTHELLO);
 }

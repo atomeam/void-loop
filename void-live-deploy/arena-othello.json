@@ -1,0 +1,29 @@
+{
+  "game": "othello",
+  "games": 80,
+  "anchor": "random = 1000",
+  "ladder": [
+    {
+      "name": "random",
+      "how": "any legal move",
+      "rating": 1000,
+      "vs": null,
+      "score": null
+    },
+    {
+      "name": "greedy",
+      "how": "the move that flips the most discs",
+      "rating": 1098,
+      "vs": "random",
+      "score": 0.6375
+    },
+    {
+      "name": "the card",
+      "how": "the position table and the reply it leaves (the card's own engine)",
+      "rating": 1480,
+      "vs": "greedy",
+      "score": 0.9
+    }
+  ],
+  "played": "2026-10-11"
+}

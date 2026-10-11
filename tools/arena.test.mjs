@@ -67,3 +67,27 @@ test('arena: the ask is told apart from a game, and the answer is the record: th
   const evil = arenaCurve({ ladder: [{ name: '<img src=x onerror=alert(1)>', rating: 1000, depth: 1 }, { name: 'b" onload="x', rating: '1200<script>', depth: '2' }] });
   assert.ok(!/<img|<script|" onload/.test(evil), evil); assert.equal((evil.match(/<circle/g) || []).length, 1);
 });
+
+// run 62: the second game. Othello's engine has no look-ahead depth, so its ladder is three players: random moves, the
+// greedy one (most discs flipped), and the card's own engine (the position table and the reply it leaves); random = 1000.
+import { playWith, othelloGame, othelloPlayers, ladderOf } from '../void-live-deploy/lib/arena.js';
+import { othelloOf } from '../void-live-deploy/skills/othello.js';
+test('arena: Othello through the same arena: games end, the same seed gives the same game, and the card beats random', () => {
+  const P = othelloPlayers();
+  assert.deepEqual(P.map((p) => p.name), ['random', 'greedy', 'the card']);
+  const g1 = playWith(othelloGame, P[2], P[0], 4), g2 = playWith(othelloGame, P[2], P[0], 4);
+  assert.deepEqual(g1, g2); assert.ok(['a', 'b', 'draw'].includes(g1.result)); assert.ok(g1.moves.length > 8 && g1.moves.length <= 64);
+  const m = match(P[2], P[0], 20, 1, othelloGame);
+  assert.ok(m.score >= 0.7, 'the card should beat random: ' + JSON.stringify(m));
+  const L = ladderOf(othelloGame, P, 10, 1);
+  assert.equal(L[0].rating, 1000); assert.equal(L[0].name, 'random'); assert.ok(L[2].rating > L[0].rating, JSON.stringify(L));
+});
+test('arena: "how good are you at othello" is its own ask, and the answer names the players, not a depth', () => {
+  for (const q of ['how good are you at othello', 'how good are you at reversi?', 'what is your othello rating', 'are you good at othello']) assert.deepEqual(othelloOf(q), { kind: 'rating' }, q);
+  assert.deepEqual(othelloOf('play othello'), { kind: 'game' });
+  assert.equal(othelloOf('othello rules'), null);
+  const rec = { game: 'othello', games: 60, anchor: 'random = 1000', ladder: [{ name: 'random', rating: 1000 }, { name: 'greedy', rating: 1150 }, { name: 'the card', rating: 1400 }] };
+  const say = arenaSay(rec);
+  assert.ok(/Othello/.test(say) && /the card plays at 1400/.test(say) && /400 above random/.test(say) && !/moves ahead/.test(say), say);
+  assert.equal((arenaCurve(rec).match(/<circle/g) || []).length, 3);
+});

@@ -5737,5 +5737,9 @@
   {"ask": "what is your connect four rating", "want": "skill:connect4"},
   {"ask": "are you good at four in a row", "want": "skill:connect4"},
   {"ask": "how strong is void at connect 4", "want": "skill:connect4"},
-  {"ask": "what's your elo at connect four", "want": "skill:connect4"}
+  {"ask": "what's your elo at connect four", "want": "skill:connect4"},
+  {"ask": "how good are you at othello", "want": "skill:othello"},
+  {"ask": "what is your othello rating", "want": "skill:othello"},
+  {"ask": "are you good at reversi", "want": "skill:othello"},
+  {"ask": "how strong is void at othello", "want": "skill:othello"}
 ]

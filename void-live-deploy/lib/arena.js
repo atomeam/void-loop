@@ -6,6 +6,7 @@
 //   perf(opponentRating, score) -> rating      ladder(depths, games, seed) -> [{ name, depth, rating, vs, score }]
 //   tune({ depth, rounds, games, seed }) -> { champion, rounds: [{ challenger, score, kept }], final }
 import * as K from '../skills/connect4-rules.js';
+import * as O from '../skills/othello.js';
 
 export const OPENING = 2; // plies played at random from the seed before the engines take over
 
@@ -36,9 +37,49 @@ export function playGame(a, b, seed) {
   return { result, moves, aFirst };
 }
 
-export function match(a, b, n, seed = 1) {
+// Any two-player game through the same arena (run 62): a game is { create, moves(s), play(s, move), turn(s) -> 1|2,
+// winner(s) -> null while playing, else 1, 2 or 0 for a draw }; a player is { name, move(s, r) } with r the game's seeded
+// generator. The same random opening and colour swap as Connect Four.
+export function playWith(game, a, b, seed) {
+  const r = rng(seed), aFirst = seed % 2 === 0, moves = [];
+  let s = game.create(), w = null;
+  while ((w = game.winner(s)) == null) {
+    const legal = game.moves(s), mover = (game.turn(s) === 1) === aFirst ? a : b;
+    const mv = moves.length < OPENING ? legal[Math.floor(r() * legal.length)] : mover.move(s, r);
+    s = game.play(s, mv); moves.push(mv);
+  }
+  return { result: w === 0 ? 'draw' : (w === 1) === aFirst ? 'a' : 'b', moves, aFirst };
+}
+
+// Othello (skills/othello.js): its engine has no look-ahead depth, so its ladder is three players
+export const othelloGame = {
+  title: 'Othello',
+  create: () => O.createOthelloState(),
+  moves: (s) => O.legalMoves(s.board, s.turn),
+  play: (s, i) => O.resolveMove(s, i).nextState,
+  turn: (s) => s.turn,
+  winner: (s) => (s.status === 'playing' ? null : s.status === 'black_wins' ? 1 : s.status === 'white_wins' ? 2 : 0),
+};
+export function othelloPlayers() {
+  return [
+    { name: 'random', how: 'any legal move', move: (s, r) => { const m = O.legalMoves(s.board, s.turn); return m[Math.floor(r() * m.length)]; } },
+    { name: 'greedy', how: 'the move that flips the most discs', move: (s) => { let best = -1, n = -1; for (const i of O.legalMoves(s.board, s.turn)) { const f = O.flipsFor(s.board, i, s.turn).length; if (f > n) { n = f; best = i; } } return best; } },
+    { name: 'the card', how: 'the position table and the reply it leaves (the card\'s own engine)', move: (s) => O.voidMove(s.board, s.turn) },
+  ];
+}
+/** each player against the one before it; the first is the anchor at 1000 */
+export function ladderOf(game, players, games, seed = 1) {
+  const out = [{ name: players[0].name, how: players[0].how, rating: 1000, vs: null, score: null }];
+  for (let i = 1; i < players.length; i++) {
+    const m = match(players[i], players[i - 1], games, seed + i, game);
+    out.push({ name: players[i].name, how: players[i].how, rating: perf(out[i - 1].rating, m.score), vs: players[i - 1].name, score: m.score });
+  }
+  return out;
+}
+
+export function match(a, b, n, seed = 1, game = null) {
   const m = { games: n, a: 0, b: 0, draw: 0 };
-  for (let i = 0; i < n; i++) m[playGame(a, b, seed * 1000 + i).result]++;
+  for (let i = 0; i < n; i++) m[(game ? playWith(game, a, b, seed * 1000 + i) : playGame(a, b, seed * 1000 + i)).result]++;
   m.score = (m.a + m.draw / 2) / n;
   return m;
 }
@@ -77,27 +118,5 @@ export function tune({ depth = 2, rounds = 5, games = 40, seed = 1 } = {}) {
   return { champion, rounds: log, final };
 }
 
-// The answer to "how good are you at connect four": the record the games wrote (tools/arena.mjs -> arena.json), never a claim.
-const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
-export function arenaSay(a) {
-  if (!a || !Array.isArray(a.ladder) || !a.ladder.length) return 'I have not played myself at Connect Four yet, so I have no rating to give.';
-  const top = a.ladder[a.ladder.length - 1], low = a.ladder[0];
-  return 'Rated from ' + plural(a.games, 'game') + ' against myself (' + (a.anchor || low.name + ' = ' + low.rating) + '): looking ' + top.depth + ' moves ahead I play at '
-    + top.rating + ', ' + (top.rating - low.rating) + ' above looking ' + low.depth + ' ahead. ' + a.ladder.map((s) => s.name + ' ' + s.rating).join(' · ') + '.'
-    + (a.tuned ? ' A tuned evaluation scored ' + Math.round(a.tuned.score * 100) + '% against my own and ' + (a.tuned.kept ? 'was kept.' : 'was not kept.') : '')
-    + (a.played ? ' Played ' + a.played + '.' : '');
-}
-// every value that reaches the markup is escaped or forced to a number, so a record that is not ours cannot add markup
-const escXml = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-/** the curve: rating against look-ahead depth, an inline SVG (no library), labelled for a screen reader */
-export function arenaCurve(a, w = 300, h = 140) {
-  const L = ((a && a.ladder) || []).filter((s) => Number.isFinite(+s.rating)).map((s) => ({ name: String(s.name), rating: Math.round(+s.rating), depth: Math.round(+s.depth) || 0 }));
-  if (!L.length) return '';
-  const lo = Math.min(...L.map((s) => s.rating)) - 50, hi = Math.max(...L.map((s) => s.rating)) + 50, pad = 28;
-  const x = (i) => pad + (L.length === 1 ? 0 : (i * (w - 2 * pad)) / (L.length - 1)), y = (r) => h - pad - ((r - lo) * (h - 2 * pad)) / (hi - lo);
-  const pts = L.map((s, i) => x(i).toFixed(1) + ',' + y(s.rating).toFixed(1));
-  return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" role="img" aria-label="Rating by look-ahead depth: ' + escXml(L.map((s) => s.name + ' ' + s.rating).join(', ')) + '">'
-    + '<polyline points="' + pts.join(' ') + '" fill="none" stroke="currentColor" stroke-width="2"/>'
-    + L.map((s, i) => '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(s.rating).toFixed(1) + '" r="4" fill="currentColor"/><text x="' + x(i).toFixed(1) + '" y="' + (y(s.rating) - 8).toFixed(1) + '" font-size="11" text-anchor="middle" fill="currentColor">' + s.rating + '</text><text x="' + x(i).toFixed(1) + '" y="' + (h - 8) + '" font-size="11" text-anchor="middle" fill="currentColor">depth ' + s.depth + '</text>').join('')
-    + '</svg>';
-}
+// the answer and the curve live in lib/arena-say.js (no game imports, so a game's card can use them); re-exported here
+export { arenaSay, arenaCurve } from './arena-say.js';
