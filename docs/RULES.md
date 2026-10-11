@@ -32,6 +32,9 @@ From the owner's message: "Void is encouraged to try every legal way to make mon
 ## Things fit the screen (owner, 2026-10-11)
 "things should smartly try to autofit in Void". A card, a board or a miniature opens at a size and place that fit the screen it is on, phone included, and never lands on another thing or under the ask bar (`skills/lift3d.js`, `skills/side-card.js`).
 
+## Every cleanup ships one visible upgrade; everything can be polished, weakest first (owner, 2026-10-11)
+In the owner's words: "Every cleanup move ships one visible upgrade to the same skill (starting from notepad on)", and "Everything can be polished, weakest first: Polish doesn't stop when Step 6 finishes. Any run may upgrade an existing skill or 3D view, always picking the plainest or roughest untouched surface first (never re-polishing the same skill twice in a week), and judging polish by tactile craft, camera/screen fit, and visual clarity — never extra clutter or chrome." The model is the sticky note: its move out of `void.html` came with real paper, a tilt and a felt-tip hand. A polish PR names in its brief which surface it picked and why it was the plainest, passes `--show`/`--try` so "look what I made" puts it on the stage, and checks the look in a browser section.
+
 ## Right the first time (owner, 2026-10-11)
 "Automerge is loose, so code must be on point first shot before `finish.mjs` ever pushes", and relying on the full suite on main or the jack after the merge "is a last resort, not the plan". A PR merges once Void's review is clean and goes live a minute later, before `verify.yml` has run. So `tools/finish.mjs` will not write, commit or push a change that reaches the site (`void.html`, `void-live-deploy/`) until each `--test "<words>"` passes in a real browser (`test_void.mjs --only`, seconds per section; `--list` shows them); with no `--test` it stops.
 
