@@ -1895,6 +1895,32 @@ try {
     }
     check('every service has its page: it loads, shows the live price from /api/catalog, and links its Gumroad product', got.every((g) => g.ok) && !V.errors.length, JSON.stringify(got) + ' ' + V.errors.join(' | '));
     await V.ctx.close(); }
+  // The fix pages (/fix/, tools/fix-pages.mjs): the hub lists every error page; each page loads with its steps and sources,
+  // shows the One-Time Fix's live price (stubbed at $26 to prove the live read) and its Gumroad link, fits a phone with no
+  // sideways scroll, and its "Ask Void" link lands on Void's fixer with the error (/api/answer stubbed, mode 'fix').
+  if (want("The fix pages (/fix/, tools/fix-pages.mjs): the hub lists every error page")) { const FP = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'fix-pages.json'), 'utf8'));
+    const V = await fresh(); const got = []; const asked = [];
+    await V.ctx.route(/\/api\/catalog(?:\?|$)/, (rt) => rt.fulfill(json({ products: [{ slug: 'eozcma', price_cents: 2600, url: 'https://moonbeam846.gumroad.com/l/eozcma', available: true }] })));
+    await V.ctx.route(/\/api\/answer(?:\?|$)/, (rt) => { const b = JSON.parse(rt.request().postData() || '{}'); asked.push(b); return rt.fulfill(json({ answer: 'Reconnect the app, then replay the run.', fix: 'rules' })); });
+    await V.p.setViewportSize({ width: 375, height: 760 });
+    await V.p.goto(base + 'fix/');
+    const hub = await V.p.$$eval('main a[href^="/fix/"]', (as) => as.map((a) => a.getAttribute('href')));
+    const hubOk = FP.every((p) => hub.includes('/fix/' + p.slug + '/'));
+    for (const p of FP) {
+      await V.p.goto(base + 'fix/' + p.slug + '/');
+      const price = await until(async () => { const t = await V.p.$eval('#fix-price', (e) => e.textContent).catch(() => ''); return t === '$26' ? t : ''; }, 4000);
+      const info = await V.p.evaluate(() => ({ h1: (document.querySelector('h1') || {}).textContent || '', steps: document.querySelectorAll('ol li').length,
+        sources: document.querySelectorAll('ul.muted a[href^="https://help."]').length, buy: (document.getElementById('fix-buy') || {}).href || '',
+        wide: document.documentElement.scrollWidth > window.innerWidth, ask: (document.querySelector('[data-fix="ask"]') || {}).href || '' }));
+      got.push({ slug: p.slug, ok: !!price && info.h1 === p.title && info.steps === p.steps.length && info.sources === p.sources.length && /\/l\/eozcma$/.test(info.buy) && !info.wide && /\?q=/.test(info.ask), info: price ? '' : info });
+    }
+    // follow one page's "Ask Void" link: Void takes it as a broken-automation ask and shows the fix
+    await V.p.goto(base + 'fix/zapier-401-unauthorized/'); await V.p.click('[data-fix="ask"]');
+    const shown = await until(async () => { const t = await V.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); return /Reconnect the app/.test(t) ? t : ''; }, 8000);
+    const fixAsk = asked.find((b) => b.mode === 'fix' && /401/.test(b.ask || ''));
+    check('the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and "Ask Void" lands on the fixer',
+      hubOk && got.every((g) => g.ok) && !!shown && !!fixAsk && !V.errors.length, JSON.stringify({ hubOk, bad: got.filter((g) => !g.ok), shown: !!shown, asked, errors: V.errors }));
+    await V.ctx.close(); }
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];

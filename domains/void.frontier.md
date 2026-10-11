@@ -19,6 +19,7 @@ Many agents built in parallel, so Void has grown sideways: four overlapping guid
 - **Everything that passes through Void is input** (`void.plan.md` Next #14): started on `helper/ingest-ledger`; read that branch before building.
 - **Void fixes any automation, as it is** (`void.plan.md` Next #13): built on `helper/fix-any-automation`, not shown deployed; read that branch before building.
 - **Paid Void** (`void.plan.md` Next #12): built 2026-09-27 on a helper branch; check a real purchase end to end before calling it done.
+- **Fix pages that bring buyers** (claude, 2026-10-11): `/fix/` is live with eight Zapier and Make error pages, each ending on "Ask Void" and the One-Time Fix. Next: the same for n8n, Power Automate and GitHub Actions errors (the fixer already knows them, `lib/automation-fix.js` `ruleFix`), and a page per error people actually paste into Void (the fix asks the miss board and `void.fix` log lines show), so the pages follow real demand.
 - **Shared Voids, live** (`void.plan.md` Next #10): sharing a card is live; building one Void together live is not.
 - **Tasks that keep running after you leave, with an approve card** (`void.assimilate.md` row 3): automations, watches and the actions record are live; the approve card is the review tray below.
 - **One owner page: board, agent log and live checks** (`void.assimilate.md` row 9): "show the board" is live; the log and checks on the same page are not.

@@ -1,0 +1,131 @@
+[
+  {
+    "slug": "zapier-401-unauthorized",
+    "platform": "Zapier",
+    "title": "Zapier 401 Unauthorized: why your Zap lost access and how to fix it",
+    "short": "Zapier 401 Unauthorized",
+    "error": "401 Unauthorized",
+    "means": "The app your Zap talks to no longer accepts the login Zapier holds for it. The connection expired, the password changed, the token was revoked, or the account that connected it lost access.",
+    "steps": [
+      "Open Zap history, click the errored run and open the step that failed. Its Troubleshoot tab names the app and shows the error.",
+      "Go to the Apps page in Zapier, find that app's connection and reconnect it (sign in again).",
+      "If the sign-in popup fails or closes on its own, try another browser, or a private window with popups allowed.",
+      "Back in the Zap, make sure the step uses the reconnected account, then replay the failed runs from Zap history."
+    ],
+    "again": "If it comes back every few days, the app is expiring its tokens or someone keeps changing the password. Connect it with an account that does not rotate (a shared service login, where the app allows one).",
+    "sources": [["How to troubleshoot errors in Zap workflows (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"]]
+  },
+  {
+    "slug": "zapier-403-forbidden",
+    "platform": "Zapier",
+    "title": "Zapier 403 Forbidden: when the Zap is signed in but not allowed",
+    "short": "Zapier 403 Forbidden",
+    "error": "403 Forbidden",
+    "means": "Zapier is signed in to the app, but that account is not allowed to do what the step asks: create the record, read the folder, post in the channel. It is a permissions problem, not a broken login.",
+    "steps": [
+      "Open the errored run in Zap history and read which step failed and what it tried to do.",
+      "Check the connected account's role in that app. Ask the app's administrator for the permission the step needs (for example, write access to that sheet, folder or pipeline).",
+      "If the step points at something owned by another person or workspace, share it with the connected account or reconnect with an account that owns it.",
+      "Replay the failed runs once access is in place."
+    ],
+    "again": "A 403 that starts out of nowhere usually follows a change on the app side: a role was downgraded, a shared drive moved, or a plan lost a feature.",
+    "sources": [["How to troubleshoot errors in Zap workflows (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"]]
+  },
+  {
+    "slug": "zapier-422-unprocessable-entity",
+    "platform": "Zapier",
+    "title": "Zapier 422 Unprocessable Entity: the app refused the data your Zap sent",
+    "short": "Zapier 422 Unprocessable Entity",
+    "error": "422 Unprocessable Entity",
+    "means": "The app received the request but rejected the data in it: a required field was empty, or a value was in the wrong shape (a date the app cannot read, text where it wants a number, an email that is not an email).",
+    "steps": [
+      "Open the errored run in Zap history and look at the data the failing step sent. The empty or odd-looking field is usually visible right there.",
+      "Make sure every field the app requires is mapped, and that earlier steps actually produce a value for it on every run (one blank form answer is enough to break it).",
+      "Convert values to the shape the app wants with a Formatter step: dates to the format it expects, text to numbers, phone numbers cleaned up.",
+      "Test the step again with a real record, then replay the failed runs."
+    ],
+    "again": "When only some runs fail, compare a run that worked with one that failed: the difference in their input is the cause.",
+    "sources": [["How to troubleshoot errors in Zap workflows (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"]]
+  },
+  {
+    "slug": "zapier-throttled-429",
+    "platform": "Zapier",
+    "title": "\"Throttled by Zapier\" or 429 Too Many Requests: how to slow a Zap down",
+    "short": "Zapier throttled / 429",
+    "error": "Throttled by Zapier · Zapier has blocked this task · 429 Too Many Requests",
+    "means": "The Zap made too many requests in a short time, to Zapier or to the app it calls, so the requests were held back. Big imports, loops and bursts of new records are the usual cause.",
+    "steps": [
+      "Replay the throttled or blocked runs from Zap history once the burst has passed.",
+      "Add a Delay step (or Delay After Queue) before the step that calls the app, so runs go out one at a time instead of all at once.",
+      "If the Zap loops over many items, process fewer per run.",
+      "If it keeps happening with normal traffic, check Zapier's status page and the app's status page for an outage."
+    ],
+    "again": "A 429 from the app itself means its own rate limit: check that app's API limits for your plan, and space the Zap's calls to fit under them.",
+    "sources": [["Fix \"Throttled by Zapier\" or \"Zapier has blocked this task\" errors (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496038845325-Fix-Throttled-by-Zapier-or-Zapier-has-blocked-this-task-errors-in-Zap-workflows"], ["How to troubleshoot errors in Zap workflows (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496037690637-How-to-troubleshoot-errors-in-Zap-workflows"]]
+  },
+  {
+    "slug": "zapier-zap-turned-off-or-held",
+    "ask": "my zap was turned off and is not triggering, runs are on hold",
+    "platform": "Zapier",
+    "title": "Zap turned off, held or not triggering: how to get it running again",
+    "short": "Zap turned off or held",
+    "error": "Zap turned off · run on hold · Zap not triggering",
+    "means": "A Zap that errors again and again is turned off automatically. Runs are held when flood protection kicks in, an app is disconnected, the account hit its task limit, or there is a payment problem. A trigger that never fires is usually a disconnected account or a required trigger field left empty.",
+    "steps": [
+      "Open Zap history and filter by status: errored runs explain why the Zap was turned off, held runs say why they were held.",
+      "Fix the cause it names: reconnect the app, raise or wait out the task limit, or update the payment details.",
+      "Replay the held runs, then turn the Zap back on.",
+      "If the trigger never fires, check that its account is still connected and its required fields are filled, then create a new item in the app and test the trigger again."
+    ],
+    "again": "Runs marked safely halted or handled error do not turn a Zap off; only repeated errors do. Fix the step that errors and the Zap stays on.",
+    "sources": [["How to troubleshoot held Zap or step runs (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/37454233721869-How-to-troubleshoot-held-Zap-or-step-runs"], ["Zap trigger test fails (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/8496262128141-Zap-trigger-test-fails"], ["Zap is not working (Zapier Help Center)", "https://help.zapier.com/hc/en-us/articles/30582278131597-Zap-is-not-working"]]
+  },
+  {
+    "slug": "make-rate-limit-error",
+    "platform": "Make",
+    "title": "Make RateLimitError (429): how to stop a scenario hitting the app's limit",
+    "short": "Make RateLimitError",
+    "error": "RateLimitError · 429",
+    "means": "The scenario sent more requests to an app than its API allows in that window, so the app answered 429 and Make raised a RateLimitError.",
+    "steps": [
+      "Turn on incomplete executions in the scenario settings, so a failed run is stored and retried instead of lost. Often the retry alone clears it.",
+      "For an instant trigger, set a rate limit on the scenario; for a scheduled one, run it less often.",
+      "Handle fewer records per run (around 20), and use the app's bulk modules where it has them.",
+      "If it still trips the limit, add a Sleep module before the module that calls the app."
+    ],
+    "again": "Two scenarios calling the same app share its limit. Spread their schedules apart, or merge them.",
+    "sources": [["Fix rate limit errors (Make Help Center)", "https://help.make.com/fix-rate-limit-errors"], ["Overview of error handling (Make Help Center)", "https://help.make.com/Overview-of-error-handling"]]
+  },
+  {
+    "slug": "make-connection-error",
+    "platform": "Make",
+    "title": "Make ConnectionError (502, 503, 504): when the app on the other end is down",
+    "short": "Make ConnectionError",
+    "error": "ConnectionError · 502 · 503 · 504",
+    "means": "The app the module talks to did not answer properly: it was down, overloaded or timing out (HTTP 502, 503 or 504). Nothing is wrong with your mapping.",
+    "steps": [
+      "Check the app's status page: if it is having an outage, wait for it to recover.",
+      "Turn on incomplete executions in the scenario settings, so runs that hit the outage are kept and can be retried.",
+      "Add a Break error handler to the module so Make retries it automatically after a pause.",
+      "Once the app is back, replay or resolve the stored incomplete executions."
+    ],
+    "again": "If one app times out often, it may be the request: ask for less data per call, or split one heavy run into smaller ones.",
+    "sources": [["Overview of error handling (Make Help Center)", "https://help.make.com/Overview-of-error-handling"], ["Incomplete executions (Make Help Center)", "https://help.make.com/incomplete-executions"], ["Error handlers (Make Help Center)", "https://help.make.com/error-handlers"]]
+  },
+  {
+    "slug": "make-data-error",
+    "platform": "Make",
+    "title": "Make DataError: the app rejected what the module sent",
+    "short": "Make DataError",
+    "error": "DataError",
+    "means": "The data a module sent did not pass the app's validation: a value too long, in the wrong format, or missing. A post longer than the platform allows is the classic example.",
+    "steps": [
+      "Open the failed run and the module that errored, and read the input bundle it sent next to the error message.",
+      "Fix the mapping: fill the missing field, trim or convert the value (Make's text, date and number functions), or add a filter so records that cannot be sent are skipped.",
+      "If some records will always be bad, add a Resume or Ignore error handler so one bad record does not stop the rest.",
+      "Run the scenario once with a real record to confirm."
+    ],
+    "again": "A DataError that appears after months of working usually means the data changed: a new form field, a longer product name, a new date format upstream.",
+    "sources": [["Overview of error handling (Make Help Center)", "https://help.make.com/Overview-of-error-handling"], ["Fix missing data errors (Make Help Center)", "https://help.make.com/fix-missing-data-errors"]]
+  }
+]
