@@ -883,6 +883,26 @@ try {
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
   // step 6: the sticky note, pinned before it moves out of void.html (what it does today, ask by ask)
+  // step 6: the notepad, pinned before it moves out of void.html (what it does today, ask by ask)
+  if (want("built-in notepad: open, notepad: writes, write in, a colour, clear, a reload, remove")) { const P = await fresh();
+    const np = async () => (await P.state()).filter((t) => t.kind === 'notepad').map((t) => (t.text || '') + '|' + (t.color || '')).join(' / ');
+    const r = {};
+    await P.ask('open a notepad', 600); r.a = await np();
+    await P.ask('notepad: buy bread', 500); r.b = await np();
+    await P.ask('write in the notepad call the vet', 500); r.c = await np();
+    await P.ask('make the notepad blue', 400); r.d = await np();
+    await P.ask('new notepad', 400); r.e = await np();
+    r.shown = await P.p.$$eval('.thing.notepad textarea', (els) => els.map((e) => e.value).join(' / '));
+    await P.p.reload(); await P.p.waitForTimeout(1500);
+    r.reload = await until(() => P.p.$$eval('.thing.notepad textarea', (els) => els.length === 1 ? els[0].value : false), 6000);
+    await P.ask('clear the notepad', 500); r.f = await np();
+    await P.ask('remove the notepad', 500); r.g = await np();
+    await P.ask('remove the notepad', 500); r.h = await np();
+    check('built-in notepad: "open a notepad" opens one, "notepad: buy bread" and "write in the notepad ..." write it, "make the notepad blue" edges it blue, "new notepad" keeps one, it comes back after a reload, "clear the notepad" empties it and "remove the notepad" takes it away (twice is harmless)',
+      r.a === '|' && r.b === 'buy bread|' && r.c === 'call the vet|' && r.d === 'call the vet|#6aa8ff' && r.e === r.d && r.shown === 'call the vet'
+        && r.reload === 'call the vet' && r.f === '|#6aa8ff' && r.g === '' && r.h === '' && !P.errors.length,
+      JSON.stringify({ r, e: P.errors }));
+    await P.ctx.close(); }
   if (want("built-in sticky: a note with text, a pink one, another, note: edits, colours, take notes, remove, a reload")) { const P = await fresh();
     const st = async () => (await P.state()).filter((t) => t.kind === 'sticky').map((t) => (t.text || '') + '|' + t.color).join(' / ');
     const r = {};
