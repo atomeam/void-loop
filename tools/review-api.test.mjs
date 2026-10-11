@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as api from '../void-live-deploy/functions/api/review.js';
 import { ensureTables, sessionId } from '../void-live-deploy/lib/void-me.js';
-import { quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, JSON_RULE, FINDINGS_SCHEMA, parseFinding, evidenceLines, quoteCheck, parseFindingsJson, validateFindings, renderFindings } from '../void-live-deploy/lib/review-api.js';
+import { quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, JSON_RULE, FINDINGS_SCHEMA, parseFinding, evidenceLines, quoteCheck, parseFindingsJson, validateFindings, renderFindings, knownFalse, CSS_RULE } from '../void-live-deploy/lib/review-api.js';
 
 function d1() {
   const db = new DatabaseSync(':memory:');
@@ -295,4 +295,22 @@ test('a bearer that is not the owner: the answer is the free tier with no reason
     assert.ok(lines.every((l) => !l.includes('wrong-owner-key') && !l.includes('the-real-owner-key')), 'no token in the log');
     assert.ok(!JSON.stringify(r).includes('differs') && !JSON.stringify(r).includes('READ_TOKEN'), 'no reason in the answer');
   } finally { console.log = orig; }
+});
+
+test('standard CSS is never a finding: #522 and #525\'s false claims about rotate and translate are dropped; real bugs on the same lines stay', () => {
+  const diff = ['diff --git a/void-live-deploy/skills/sticky.js b/void-live-deploy/skills/sticky.js', '+++ b/void-live-deploy/skills/sticky.js', '@@ -86,0 +89,2 @@',
+    "+  el.style.rotate = tiltOf(th.id) + 'deg'; // a real note never sits square; each keeps its own tilt",
+    "+  el._aside = move; el.style.translate = away ? Math.round(move[0]) + 'px ' + Math.round(move[1]) + 'px' : '';"].join('\n');
+  const ev = evidenceLines(diff, true);
+  const v = validateFindings([
+    { file: 'void-live-deploy/skills/sticky.js', line: 89, kind: 'bug', text: 'Using el.style.rotate is not a standard CSS property, so the tilt will not be applied in most browsers.', quote: "el.style.rotate = tiltOf(th.id) + 'deg'; // a real note never sits square; each keeps its own tilt" },
+    { file: 'void-live-deploy/skills/sticky.js', line: 90, kind: 'bug', text: 'Using the non\u2011standard "style.translate" property may not be supported in many browsers, causing the element not to move as expected.', quote: "el._aside = move; el.style.translate = away ? Math.round(move[0]) + 'px ' + Math.round(move[1]) + 'px' : '';" },
+    { file: 'void-live-deploy/skills/sticky.js', line: 89, kind: 'bug', text: 'tiltOf can return NaN for an empty id, so rotate gets "NaNdeg".', quote: "el.style.rotate = tiltOf(th.id) + 'deg'; // a real note never sits square; each keeps its own tilt" },
+  ], ev);
+  assert.deepEqual(v.kept.map((f) => f.text), ['tiltOf can return NaN for an empty id, so rotate gets "NaNdeg".'], 'only the real one stays');
+  assert.equal(v.dropped, 2);
+  assert.ok(knownFalse('CSS property "translate" is not a valid transitionable property; the intended effect (smooth glide) will not work.'), "#525's other claim");
+  assert.equal(knownFalse('The scale factor is invalid when width is 0'), null, 'a scale that is not CSS is not this');
+  assert.equal(knownFalse('The CSS property scale is set twice, the second overrides the first'), null, 'a real CSS finding stays');
+  assert.match(CSS_RULE, /rotate, translate and scale/);
 });
