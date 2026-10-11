@@ -5741,5 +5741,10 @@
   {"ask": "how good are you at othello", "want": "skill:othello"},
   {"ask": "what is your othello rating", "want": "skill:othello"},
   {"ask": "are you good at reversi", "want": "skill:othello"},
-  {"ask": "how strong is void at othello", "want": "skill:othello"}
+  {"ask": "how strong is void at othello", "want": "skill:othello"},
+  {"ask": "call this my morning", "want": "skill:routine"},
+  {"ask": "save that as my evening", "want": "skill:routine"},
+  {"ask": "save the last 2 asks as my study", "want": "skill:routine"},
+  {"ask": "call these my workout", "want": "skill:routine"},
+  {"ask": "my routines", "want": "skill:routine"}
 ]
