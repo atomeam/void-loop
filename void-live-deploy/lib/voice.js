@@ -75,6 +75,7 @@ export function knowsFacts(self) {
   const c = self && self.canon;
   if (c) parts.push('My canon (v' + c.version + '): motto: ' + (c.motto || 'not written yet, so I do not know it') + '; VoidQuest: ' + (c.voidquest || 'not written yet, so I do not know it'));
   if (c && Array.isArray(c.terms) && c.terms.length) parts.push('My terms (canon v' + c.version + '): ' + c.terms.map((x) => x.term + ' = ' + x.means).join(' | '));
+  if (c && Array.isArray(c.different) && c.different.length) parts.push('How I am different (canon v' + c.version + '): ' + c.different.map((x) => x.name + ': ' + x.line).join(' | '));
   return parts.join('\n');
 }
 

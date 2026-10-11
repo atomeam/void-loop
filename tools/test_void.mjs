@@ -949,6 +949,16 @@ try {
     check('undo during a throw: a clock flicked off the stage is flying, "undo" right away brings it back, and it is still there once the flight would have left the stage',
       flying && back && stays && !P.errors.length, JSON.stringify({ flying, back, stays, e: P.errors }));
     await P.ctx.close(); }
+  // the owner's four lines (domains/void.canon.md, 2026-10-11): "what makes you different" is answered from the canon, never made up
+  if (want("how Void is different: answered from the canon's four lines with its version, no model; a look-alike about two words is not taken")) { const P = await fresh();
+    const r = {};
+    await P.ask('how are you different from chatgpt?', 900); r.chat = await P.page();
+    await P.ask('what makes you different', 900); r.plain = await P.page();
+    await P.ask('what is different about these two words', 900); r.near = await P.page();
+    const ok = (t) => ['Skills, not one-off answers', 'Growth in the open', 'On your device first', 'Attention, not pretend feelings'].every((n) => t.includes(n)) && /from Void's canon, version \d+/.test(t) && !/!/.test(t);
+    check('how Void is different: "how are you different from chatgpt?" and "what makes you different" show the four lines from Void\'s canon with its version (no exclamation marks), and "what is different about these two words" is not taken',
+      ok(r.chat) && ok(r.plain) && !r.near.includes('Growth in the open') && !P.errors.length, JSON.stringify({ ...r, e: P.errors }).slice(0, 700));
+    await P.ctx.close(); }
   // step 6 (one shape for skills): the counter, pinned before it moves out of void.html; the same asks must keep working after
   if (want("built-in counter: make, count up and down, set, reset, size, buttons, a reload, remove; only ever one counter")) { const P = await fresh();
     const one = async () => (await P.state()).filter((t) => t.kind === 'counter');

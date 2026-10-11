@@ -26,7 +26,10 @@ export function readCanon(text) {
   // terms: '- **name**: what it is' lines under ## Terms (Void's names for its own parts); left out when there are none
   const terms = [...String((new RegExp('^## Terms\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
     .map((m) => ({ term: m[1].trim().slice(0, 60), means: clip(m[2], 400) })).slice(0, 20);
-  return { version: +((/^version:\s*(\d+)/m.exec(t) || [])[1] || 0), motto: known(sec('Motto')), voidquest: known(sec('VoidQuest')), ...(terms.length ? { terms } : {}) };
+  // how Void is different: Adam's '- **name**: line' lines under ## How Void is different (2026-10-11); left out when there are none
+  const different = [...String((new RegExp('^## How Void is different\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
+    .map((m) => ({ name: m[1].trim().slice(0, 60), line: clip(m[2], 400) })).slice(0, 8);
+  return { version: +((/^version:\s*(\d+)/m.exec(t) || [])[1] || 0), motto: known(sec('Motto')), voidquest: known(sec('VoidQuest')), ...(terms.length ? { terms } : {}), ...(different.length ? { different } : {}) };
 }
 
 // domains/forethinkers/index.md: the think tank's open tracks (name, when last advanced), drawn as faint branches on the
