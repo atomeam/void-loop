@@ -46,7 +46,9 @@ export function runCase(c, deep = '') {
   const broken = blamed.filter((b) => b.commit === commit).map((b) => b.line);
   const args = [resolve(here, 'review-pr.mjs'), '--base', commit + '^', '--head', commit, '--json'];
   if (deep) args.push('--deep', deep);
-  const r = JSON.parse(execFileSync(process.execPath, args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 300000 }));
+  let r;
+  try { r = JSON.parse(execFileSync(process.execPath, args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 300000 })); }
+  catch (e) { return { ...c, commit, broken, error: 'the review did not run: ' + String(e.message || e).split('\n')[0] }; } // one case, not the whole bench
   const findings = [...(r.findings || []), ...((r.deep && r.deep.findings) || [])];
   return { ...c, commit, broken, ...score(findings, c.file, broken) };
 }

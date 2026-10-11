@@ -198,6 +198,8 @@ export function validateFindings(list, evidence) {
     if (!hits.length && !named) for (const k of files) { const h = (evidence[k] || []).filter(matchLine(quote)); if (h.length) { hits = h; at = k; break; } }
     if (!hits.length) { dropped++; continue; }
     const best = Number.isFinite(want) ? hits.reduce((a, b) => (Math.abs(b[0] - want) < Math.abs(a[0] - want) ? b : a)) : hits[0];
+    // a line its author marked right as written ("void-review: ok") is left out, as the quick checks leave it out (tools/review-pr.mjs)
+    if (/void-review:\s*ok\b/.test(best[1])) { dropped++; continue; }
     const id = at + ':' + best[0] + ':' + quote;
     if (seen.has(id)) { dropped++; continue; }
     seen.add(id);
