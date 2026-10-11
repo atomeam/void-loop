@@ -843,7 +843,6 @@
       stage.innerHTML = '';
 Object.values(things).forEach((th) => {
         if (th.kind === 'clock') mountClock(th);
-        else if (th.kind === 'sticky') mountSticky(th);
         else if (th.kind === 'notepad') mountNotepad(th);
         else if (th.kind === 'timer') mountTimer(th);
         else if (th.kind === 'image') mountImage(th);
@@ -1394,26 +1393,6 @@ Object.values(things).forEach((th) => {
       stage.appendChild(el);
     }
 
-    function mountSticky(th) {
-      const el = document.createElement('div');
-      el.className = 'thing sticky';
-      el.dataset.id = th.id;
-      el.style.left = th.x + 'px';
-      el.style.top = th.y + 'px';
-      if (th.color) el.style.background = th.color;
-      el.textContent = th.text || '';
-      el.contentEditable = 'true';
-      el.spellcheck = false;
-      if (selectedId === th.id) el.style.outline = '1px solid rgba(0,0,0,0.25)';
-      el.addEventListener('input', () => {
-        th.text = el.textContent || '';
-        save();
-      });
-      el.addEventListener('pointerdown', () => { selectedId = th.id; });
-      bindDrag(el, th);
-      stage.appendChild(el);
-    }
-
 function mountNotepad(th) {
       const el = document.createElement('div');
       el.className = 'thing notepad';
@@ -1790,25 +1769,6 @@ bindDrag(el, th);
       const n = Object.values(things).filter((t) => t.kind === kind).length;
       return { x: Math.min(Math.max(20, stage.clientWidth - 220), bx + n * 28), y: Math.min(Math.max(20, stage.clientHeight - 120), by + n * 28) };
     }
-    function ensureSticky(seedText, fresh) {
-      let note = fresh ? null : (Object.values(things).find((t) => t.kind === 'sticky' && t.id === selectedId)
-        || Object.values(things).find((t) => t.kind === 'sticky'));
-      if (!note) {
-        note = {
-          id: uid('sticky'),
-          kind: 'sticky',
-          ...nextSpot('sticky', Math.max(40, stage.clientWidth / 2 - 90), Math.max(40, stage.clientHeight / 2 + 40)),
-          text: seedText || '',
-          color: '#f4e27a',
-        };
-        things[note.id] = note;
-        selectedId = note.id;
-      } else if (seedText != null && seedText !== '') {
-        note.text = seedText;
-      }
-      return note;
-    }
-
     function wantsCreateNotepad(lower, raw) {
       if (/\b(remove|delete|get rid|hide|clear)\b/.test(lower) && /\bnotepad\b/.test(lower)) return false;
       if (/^notepad\s*:/i.test(raw)) return true;
@@ -1865,16 +1825,6 @@ bindDrag(el, th);
       return hex ? hex[0] : null;
     }
 
-    function stickyColorFrom(text) {
-      const map = {
-        yellow: '#f4e27a', pink: '#ff9ec8', blue: '#9ec8ff', green: '#b6f5a8',
-        orange: '#ffc080', white: '#f5f5f5', purple: '#d4b0ff',
-      };
-      const t = text.toLowerCase();
-      for (const [k, v] of Object.entries(map)) if (new RegExp('\\b' + k + '\\b').test(t)) return v;
-      return null;
-    }
-
 function wantsClearStage(lower) {
       return /^(clear|clear\s+(everything|all|stage|the\s+stage)|reset\s+(everything|all|stage)|wipe|start\s+over)\s*[.!]?\s*$/.test(lower)
         || /\b(clear|reset)\s+(everything|all|the\s+stage|stage)\b/.test(lower)
@@ -1892,32 +1842,6 @@ function wantsClearStage(lower) {
       if (/\b(blue|red|green|yellow|white|black|purple|orange|pink|gray|grey|gold|cyan|teal|#(?:[0-9a-f]{3}|[0-9a-f]{6}))\s+clock\b/.test(lower)) return true;
       if (/\b(big|large|huge|giant|small|tiny|little)\s+clock\b/.test(lower)) return true;
       return false;
-    }
-
-    function wantsCreateSticky(lower, raw) {
-      if (/\b(remove|delete|get rid|hide)\b/.test(lower) && /\b(note|sticky)\b/.test(lower)) return false;
-      if (/^(a\s+)?(sticky(\s+note)?|note)(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
-      if (/\b(make|add|create|show|spawn|put|place|drop|i\s+want|give\s+me)\b.*\b(sticky(\s+note)?|note)\b/.test(lower)) return true;
-      if (/^(take|jot(\s+down)?|write)\s+(a\s+|some\s+)?notes?(\s+down)?\s*[.!]?$/.test(lower.trim())) return true;
-      if (/^(another|one\s+more|a\s+new|new|a\s+second)\s+(sticky(\s+note)?|note)\b/.test(lower)) return true;
-      if (/^(?:take|make|jot(?:\s+down)?|write(?:\s+down)?|add)\s+(?:a\s+)?note\s*:\s*\S/i.test(raw)) return true;
-      if (/^note\s*:\s*/i.test(raw)) return true;
-      if (/^sticky\s*:\s*/i.test(raw)) return true;
-      if (/^(a\s+)?sticky(\s+note)?\s+(that\s+says?|saying)\s+\S/.test(lower)) return true;
-      if (/^(a\s+)?sticky\s+note\s+\S/.test(lower)) return true;
-      return false;
-    }
-
-    function extractStickyText(raw, lower) {
-      let m = raw.match(/^(?:(?:take|make|jot(?:\s+down)?|write(?:\s+down)?|add)\s+(?:a\s+)?)?note\s*:\s*([\s\S]+)/i) || raw.match(/^sticky\s*:\s*([\s\S]+)/i);
-      if (m) return m[1].trim();
-      m = raw.match(/\b(?:that\s+says?|saying|with\s+text|reading)\s+["']?([\s\S]+?)["']?\s*$/i);
-      if (m) return m[1].trim();
-      m = raw.match(/\b(?:sticky(?:\s+note)?|note)\s+(?:that\s+says?\s+)?["']([^"']+)["']/i);
-      if (m) return m[1].trim();
-      m = raw.match(/^\s*(?:a\s+)?sticky\s+note\s+([\s\S]+?)\s*[.!]?\s*$/i);
-      if (m) return m[1].trim();
-      return '';
     }
 
 function applyClockAlters(c, lower) {
@@ -1984,7 +1908,6 @@ function applyClockAlters(c, lower) {
       if (kind === 'clock') return ensureClock();
       if (kind === 'timer') return ensureTimer(60000);
       if (stageKinds[kind] && stageKinds[kind].ensure) return stageKinds[kind].ensure(stageApi); // a built-in that moved to skills/ (cleanup step 6)
-      if (kind === 'sticky') return ensureSticky('');
       if (kind === 'notepad') return ensureNotepad('');
       if (kind === 'list') return ensureList([]);
       if (kind === 'calc') return ensureCalc();
@@ -2006,11 +1929,10 @@ function applyClockAlters(c, lower) {
         if (/\b(small|little)\b/.test(lower) && !/\bsmaller\b/.test(lower)) { th.size = Math.min(th.size || 40, 24); ok = true; }
       }
       if (stageKinds[kind] && stageKinds[kind].alter) ok = stageKinds[kind].alter(th, lower) || ok; // a moved built-in's own size words
-      if (kind === 'sticky') {
-        const col = stickyColorFrom(lower);
-        if (col) { th.color = col; ok = true; }
-      } else {
-        const col = colorFrom(lower);
+      {
+        // a kind with its own colours (a sticky's paper) uses them
+        const own = stageKinds[kind] && typeof stageKinds[kind].colorOf === 'function';
+        const col = own ? stageKinds[kind].colorOf(lower) : colorFrom(lower);
         if (col) { th.color = col; ok = true; }
       }
       ok = applyPositionTarget(th, lower) || ok;
@@ -2081,11 +2003,6 @@ function applyClockAlters(c, lower) {
       return /\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(clock|it|this)\b/.test(lower)
         || /\b(clock)\b.*\b(away|gone)\b/.test(lower)
         || /^(remove|delete|get\s+rid\s+of|hide)\s+(it|this)\s*[.!]?\s*$/.test(lower);
-    }
-
-    function wantsRemoveSticky(lower) {
-      return /\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(sticky|note|it|this)\b/.test(lower)
-        && /\b(sticky|note)\b/.test(lower);
     }
 
     function wantsAlter(lower) {
@@ -2889,29 +2806,11 @@ say('nothing selected to remove');
         save(); render();
         return { ok: true, detail: 'notepad' };
       }
-      // sticky create / text
-      if (wantsCreateSticky(lower, text)) {
-        const seed = extractStickyText(text, lower);
-        const n = ensureSticky(seed, wantsFresh(lower) && Object.values(things).some((t) => t.kind === 'sticky'));
-        const scol = stickyColorFrom(lower);
-        if (scol) n.color = scol;
-        selectedId = n.id;
-        save(); render();
-        return { ok: true, detail: 'sticky' };
-      }
-
-      // sticky remove
-      if (wantsRemoveSticky(lower)) {
-        const n = Object.values(things).find((t) => t.kind === 'sticky' && t.id === selectedId)
-          || Object.values(things).find((t) => t.kind === 'sticky');
-        if (n) {
-          delete things[n.id];
-          if (selectedId === n.id) selectedId = null;
-          save(); render();
-          return { ok: true, detail: 'sticky-removed' };
-        }
-        say('');
-        return { ok: false, detail: 'no sticky' };
+      // sticky create / colour / remove (skills/sticky.js, cleanup step 6), at the place in this order it always had
+      if (stageKinds.sticky && typeof stageKinds.sticky.ask === 'function') {
+        const sd = stageKinds.sticky.ask(lower, text, stageApi);
+        if (sd === 'no sticky') { say(''); return { ok: false, detail: 'no sticky' }; }
+        if (sd) return { ok: true, detail: sd };
       }
 
       // image create (url)
@@ -2968,14 +2867,9 @@ say('nothing selected to remove');
       }
 
       // sticky text edit when selected / referenced
-      if (/\b(sticky|note)\b/.test(lower) && /:/.test(text)) {
-        const seed = extractStickyText(text, lower);
-        if (seed) {
-          const n = ensureSticky(seed);
-          selectedId = n.id;
-          save(); render();
-          return { ok: true, detail: 'sticky-text' };
-        }
+      if (stageKinds.sticky && typeof stageKinds.sticky.askEdit === 'function') {
+        const sd = stageKinds.sticky.askEdit(lower, text, stageApi);
+        if (sd) return { ok: true, detail: sd };
       }
 
 // sticker alter branch (below) catches "make it blue" for a selected sticky.
@@ -3035,7 +2929,7 @@ return { ok: true, detail: 'timer-reset' };
       // the built-ins that moved to skills/ (cleanup step 6) answer here, at the place in this order they always had, so a bare
       // "reset" still reaches a timer first; before the skills have loaded the same asks go to the skill's own match and run
       for (const sk of Object.values(stageKinds)) {
-        if (!sk || typeof sk.ask !== 'function') continue;
+        if (!sk || typeof sk.ask !== 'function' || sk.askAt) continue; // askAt: the page asks this kind at its own place
         const done = sk.ask(lower, text, stageApi);
         if (done) return { ok: true, detail: done };
       }
@@ -3083,7 +2977,7 @@ return { ok: true, detail: 'timer-reset' };
         // if sticky is selected and alter has no clock word, skip unless color/size typical of clock
         const sel = selectedId && things[selectedId];
         if (sel && sel.kind === 'sticky' && !/\bclock\b/.test(lower) && !/\b(24|12|military|am\s*\/?\s*pm|seconds)\b/.test(lower)) {
-          const scol = stickyColorFrom(lower);
+          const scol = stageKinds.sticky && stageKinds.sticky.colorOf ? stageKinds.sticky.colorOf(lower) : null;
           if (scol) {
             sel.color = scol;
             save(); render();

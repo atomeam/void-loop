@@ -870,6 +870,27 @@ try {
       r.line === 'line' && r.circle === 'circle' && r.thick === 4 && r.filled === true && r.blue === '#6aa8ff' && r.kinds === 'shape' && !P.errors.length,
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
+  // step 6: the sticky note, pinned before it moves out of void.html (what it does today, ask by ask)
+  if (want("built-in sticky: a note with text, a pink one, another, note: edits, colours, take notes, remove, a reload")) { const P = await fresh();
+    const st = async () => (await P.state()).filter((t) => t.kind === 'sticky').map((t) => (t.text || '') + '|' + t.color).join(' / ');
+    const r = {};
+    await P.ask('sticky note buy milk', 600); r.a = await st();
+    await P.ask('make a pink sticky', 500); r.b = await st();
+    await P.ask('another note', 500); r.c = await st();
+    await P.ask('note: call mom', 500); r.d = await st();
+    await P.ask('make it blue', 400); r.e = await st();
+    await P.ask('make the sticky green', 400); r.f = await st();
+    await P.ask('take notes', 400); r.g = await st();
+    r.shown = await P.p.$$eval('.thing.sticky', (els) => els.map((e) => e.textContent).join(' / '));
+    await P.p.reload(); await P.p.waitForTimeout(1500);
+    r.reload = await until(() => P.p.$$eval('.thing.sticky', (els) => els.length === 2 ? els.map((e) => e.textContent).join(' / ') : false), 6000);
+    await P.ask('remove the sticky', 500); r.h = await st();
+    check('built-in sticky: "sticky note buy milk" writes it, "make a pink sticky" turns it pink, "another note" adds a second, "note: call mom" writes the picked one, "make it blue" and "make the sticky green" recolour it, "take notes" keeps two, both come back after a reload, and after the reload (nothing picked) "remove the sticky" takes the first one',
+      r.a === 'buy milk|#f4e27a' && r.b === 'buy milk|#ff9ec8' && r.c === 'buy milk|#ff9ec8 / |#f4e27a' && r.d === 'buy milk|#ff9ec8 / call mom|#f4e27a'
+        && r.e === 'buy milk|#ff9ec8 / call mom|#9ec8ff' && r.f === 'buy milk|#ff9ec8 / call mom|#b6f5a8' && r.g === r.f && r.shown === 'buy milk / call mom'
+        && r.reload === 'buy milk / call mom' && r.h === 'call mom|#b6f5a8' && !P.errors.length,
+      JSON.stringify({ r, e: P.errors }));
+    await P.ctx.close(); }
   // shop this list (owner, 2026-10-11): one search link per item still to buy, at Walmart or Sam's Club; nothing leaves the page
   if (want("shop this list: the list card links each item still to buy to a Walmart or Sam's Club search")) { const P = await fresh();
     await P.ask('add milk', 500); await P.ask('add eggs', 500); await P.ask('add peanut butter', 500); await P.ask('check off eggs', 500);
