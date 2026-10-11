@@ -6,6 +6,8 @@
  * Every line carries its source and date; nothing beyond what the sources say; no planet-saving promise.
  * "coral restoration florida keys", "reef accretion potential", "can coral survive heatwaves", "flonduran coral".
  */
+import { liveLine } from '../lib/reefwatch.js';
+
 export const ACCRETION_SOURCES = [
   { date: '2025', name: 'Toth et al., Scientific Reports', href: 'https://doi.org/10.1038/s41598-025-04818-3' },
   { date: '2025', name: 'USGS data release (CC0)', href: 'https://doi.org/10.5066/P13HMEON' },
@@ -82,9 +84,11 @@ export function accretionHtml(esc) {
     + '<div class="src">Dated sources: ' + c.sources.map((s) => srcRef(s, esc)).join(' · ') + '</div>';
 }
 
-export function heatHtml(esc) {
+// live: lib/reefwatch.js liveLine() from the served reading (the reef watch keeps it daily), or null for the card without it
+export function heatHtml(esc, live = null) {
   const c = heatCard();
   return '<h2>' + esc(c.title) + '</h2><div class="sub">' + esc(c.sub) + '</div>'
+    + (live ? '<div data-coral-live><h3 style="margin:14px 0 4px;font-size:15px">Right now</h3><p>' + esc(live.text) + ' <span style="' + SRC_STYLE + '">· <a href="' + esc(live.href) + '" target="_blank" rel="noopener">the station</a></span></p><p style="' + SRC_STYLE + '">' + esc(live.note) + '</p></div>' : '')
     + c.parts.map(([head, lines]) => '<h3 style="margin:14px 0 4px;font-size:15px">' + esc(head) + '</h3>'
       + lines.map(([line, i]) => '<p>' + (i < 0 ? '<b>' + esc(line) + '</b>' : esc(line) + ' <span style="' + SRC_STYLE + '">· ' + srcRef(c.sources[i], esc) + '</span>') + '</p>').join('')).join('')
     + '<p>One thing you can do: <a href="' + esc(c.action.href) + '" target="_blank" rel="noopener">' + esc(c.action.text) + '</a>.</p>'
@@ -96,7 +100,13 @@ async function run(text, api) {
   const which = coralOf(text);
   if (!which) return 'none';
   const { showPage, esc } = api;
-  showPage((p) => { p.innerHTML = which === 'heat' ? heatHtml(esc) : accretionHtml(esc); });
+  const el = showPage((p) => { p.innerHTML = which === 'heat' ? heatHtml(esc) : accretionHtml(esc); });
+  if (which === 'heat') { // the live level from the reef watch's served reading; the card stands without it
+    fetch('/reefwatch.json').then((r) => (r.ok ? r.json() : null)).catch(() => null).then((snap) => {
+      const live = liveLine(snap);
+      if (live && el && el.isConnected) el.innerHTML = heatHtml(esc, live); // void-review: ok: heatHtml escapes every value
+    });
+  }
   return 'coral';
 }
 

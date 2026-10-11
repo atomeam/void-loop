@@ -1,6 +1,6 @@
 // reef-changes — the coral heat card keeps itself current (frontier #8, the second card): read NOAA Coral Reef Watch's
 // virtual-station files for the stations in lib/reefwatch.js, compare each newest reading with the last kept one
-// (domains/reefwatch.snapshot.json), and write one `finding` to the growth ledger when a reef's heat-stress alert level
+// (void-live-deploy/reefwatch.json, served so the heat card shows the live level), and write one `finding` to the growth ledger when a reef's heat-stress alert level
 // changes, with the station's page as its source. Run daily by .github/workflows/reefwatch.yml, which commits both files.
 //   node tools/reef-changes.mjs        check, write findings and the new snapshot
 //   node tools/reef-changes.mjs --dry  print only
@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { VS_BASE, STATIONS, stationPage, parseStation, reefChanges } from '../void-live-deploy/lib/reefwatch.js';
 import { LEDGER, appendTo, entryProblem } from './grow.mjs';
 
-export const SNAP = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'domains', 'reefwatch.snapshot.json');
+export const SNAP = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'reefwatch.json'); // served: the coral heat card reads it
 const stamp = (d) => d.toISOString().replace(/\.\d{3}Z$/, 'Z');
 
 async function read(fetchFn, id, ms = 15000) {

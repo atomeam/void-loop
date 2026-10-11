@@ -42,3 +42,18 @@ test('reef watch: one run reads the stations, writes a finding per change and ke
   const down = await runOnce({ fetchFn: async () => ({ ok: false, status: 404, text: async () => '' }), stations, snapPath: snap, ledgerPath: ledger });
   assert.equal(down.findings.length, 0); assert.match(down.note, /no answer/);
 });
+
+// run 70: the heat card shows the live alert from the served reading (void-live-deploy/reefwatch.json)
+import { liveLine } from '../void-live-deploy/lib/reefwatch.js';
+import { heatHtml } from '../void-live-deploy/skills/coral.js';
+test('reef watch: the heat card says the live level, the heat stress and the reading date, with what the numbers mean, from the served file', () => {
+  const live = liveLine({ rows: { florida_keys: { name: 'Florida Keys', date: '2026-10-09', sstMax: 30.39, dhw: 17.4086, baa: 1 } } });
+  assert.match(live.text, /^Florida Keys: Watch · 17\.4 degree heating weeks · water up to 30\.4 °C \(NOAA Coral Reef Watch, 2026-10-09\)/);
+  assert.match(live.note, /4 or more.*8 or more/); assert.match(live.href, /^https:\/\/coralreefwatch\.noaa\.gov\//);
+  assert.equal(liveLine(null), null); assert.equal(liveLine({ rows: {} }), null);
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  assert.match(heatHtml(esc, live), /data-coral-live/); assert.match(heatHtml(esc, live), /Right now/);
+  assert.doesNotMatch(heatHtml(esc, null), /data-coral-live/);
+  const evil = liveLine({ rows: { florida_keys: { name: '<img src=x onerror=alert(1)>', date: '2026-10-09', dhw: 1, baa: 0 } } });
+  assert.doesNotMatch(heatHtml(esc, evil), /<img/);
+});
