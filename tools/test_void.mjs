@@ -910,7 +910,9 @@ try {
   // the owner (2026-10-11): a sticky sat 85% hidden behind the rating card; an open card never buries a stage thing
   if (want("an open card never buries a stage thing: it steps aside while the card is up and comes back, its saved place unchanged")) {
     const r = {};
-    for (const [w, h] of [[1280, 800], [390, 844]]) {
+    // the third: a desktop whose CPU is 20x slower while the card opens (CDP throttling), the way a loaded runner left the sticky
+    // under the card for good (verify run 38165509211): it measured the card while it was still scaling in, and nothing measured again
+    for (const [w, h, slow] of [[1280, 800], [390, 844], [1280, 800, 20]]) {
       const P = await fresh(); await P.p.setViewportSize({ width: w, height: h }); await P.p.waitForTimeout(300);
       await P.ask('sticky note buy milk', 700);
       const box = () => P.p.$eval('.sticky', (e) => { const b = e.getBoundingClientRect(); return [Math.round(b.left), Math.round(b.top), Math.round(b.width), Math.round(b.height)]; });
@@ -918,7 +920,10 @@ try {
         return Math.round(100 * Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)) / (a.width * a.height)); });
       const saved = async () => (await P.state()).filter((t) => t.kind === 'sticky').map((t) => [t.x, t.y]).join(';');
       const before = await box(), place = await saved();
-      await P.ask('how good are you at othello', 600);
+      const cdp = slow ? await P.p.context().newCDPSession(P.p) : null;
+      if (cdp) await cdp.send('Emulation.setCPUThrottlingRate', { rate: slow });
+      await P.ask('how good are you at othello', slow ? 4000 : 600);
+      if (cdp) await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
       // the card can grow when its numbers arrive (late on a loaded runner) and the sticky glides again (.35 s): wait for it to be
       // clear and settled, not a fixed time (a fixed 1.6 s once caught it mid-glide in CI, 2% under: run 38162949242)
       await until(async () => ((await covered()) === 0 ? "clear" : ""), 6000);
@@ -926,12 +931,12 @@ try {
       const under = await covered(), during = await box(), placeDuring = await saved();
       await P.ask('close', 900);
       const after = await box();
-      r[w] = { before, under, during, after, same: place === placeDuring && place === await saved(), errors: P.errors.length };
+      r[slow ? 'slow' : w] = { before, under, during, after, same: place === placeDuring && place === await saved(), errors: P.errors.length };
       await P.ctx.close();
     }
     const ok = (x) => x.under === 0 && x.same && x.during.join() !== x.before.join() && x.after.join() === x.before.join() && !x.errors;
-    check('an open card never buries a stage thing: a sticky in the middle steps aside when "how good are you at othello" opens (none of it under the card, on a desktop and on a phone), comes back to the same spot when the card closes, and where it was put is never changed or saved over',
-      ok(r[1280]) && ok(r[390]), JSON.stringify(r));
+    check('an open card never buries a stage thing: a sticky in the middle steps aside when "how good are you at othello" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over',
+      ok(r[1280]) && ok(r[390]) && ok(r.slow), JSON.stringify(r));
   }
   // a throw undone mid-flight stays undone (2026-10-11: the labels flake was this; the flying copy deleted the brought-back clock)
   if (want("undo during a throw: a clock flicked off the stage and undone at once comes back and stays")) { const P = await fresh();
