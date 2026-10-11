@@ -1,0 +1,64 @@
+{
+  "game": "connect4",
+  "games": 200,
+  "anchor": "depth 1 = 1000",
+  "ladder": [
+    {
+      "name": "depth 1",
+      "depth": 1,
+      "rating": 1000,
+      "vs": null,
+      "score": null
+    },
+    {
+      "name": "depth 2",
+      "depth": 2,
+      "rating": 1319,
+      "vs": "depth 1",
+      "score": 0.8625
+    },
+    {
+      "name": "depth 3",
+      "depth": 3,
+      "rating": 1354,
+      "vs": "depth 2",
+      "score": 0.55
+    },
+    {
+      "name": "depth 4",
+      "depth": 4,
+      "rating": 1609,
+      "vs": "depth 3",
+      "score": 0.8125
+    }
+  ],
+  "tuned": {
+    "name": "depth 2, tuned",
+    "depth": 2,
+    "weights": {
+      "centre": 3.6,
+      "three": 7.4,
+      "two": 1.8,
+      "theirThree": 10.5,
+      "theirTwo": 1.5
+    },
+    "kept": false,
+    "rating": 1230,
+    "vs": "depth 2 (the card's weights)",
+    "score": 0.375
+  },
+  "rounds": [
+    {
+      "challenger": {
+        "centre": 3.6,
+        "three": 7.4,
+        "two": 1.8,
+        "theirThree": 10.5,
+        "theirTwo": 1.5
+      },
+      "score": 0.375,
+      "kept": false
+    }
+  ],
+  "played": "2026-10-11"
+}
