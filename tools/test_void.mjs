@@ -827,22 +827,6 @@ try {
       own(r.love, 'won’t pretend') && own(r.feel, 'No feelings here') && own(r.mind, 'Not alive, and not conscious') && own(r.lonely, 'No feelings here') && !r.lyrics.includes('won’t pretend'),
       JSON.stringify(r).slice(0, 600));
     await P.ctx.close(); }
-  // the owner (2026-10-11): "sticky notes shoul look just like real world sticky notes"
-  if (want("sticky paper look: square like a 3x3 in note, its own tilt that survives a reload, the felt-tip hand loaded from this site, glue strip and curl, colour kept")) { const P = await fresh();
-    await P.ask('sticky note buy milk', 600); await P.ask('another note that says call mom', 600); await P.ask('make it pink', 400);
-    const look = () => P.p.$$eval('.sticky', (d) => d.map((e) => { const r = e.getBoundingClientRect(), c = getComputedStyle(e);
-      return { id: e.dataset.id, w: e.offsetWidth, h: e.offsetHeight, rot: c.rotate, bg: c.backgroundColor, img: c.backgroundImage, radius: parseFloat(c.borderTopLeftRadius), font: c.fontFamily }; }));
-    const a = await look();
-    const hand = await until(() => P.p.evaluate(() => document.fonts.check('21px "Void Hand"') && [...document.fonts].some((f) => f.family.replace(/"/g, '') === 'Void Hand' && f.status === 'loaded')), 4000);
-    await P.p.reload(); await P.p.waitForTimeout(1500);
-    const b = await look();
-    const tilt = (x) => (x.find((n) => n.rot !== 'none' && n.rot !== '0deg') || {}).rot;
-    check('sticky paper look: each note is square (180 px, like a 3x3 in Post-it) with sharp paper corners, a glue strip and curl over its colour, the felt-tip hand (Caveat, served from /vendor) loaded, its own slight tilt kept after a reload, and the colours unchanged (yellow, then pink)',
-      a.length === 2 && a.every((n) => n.w === 180 && n.h === 180 && n.radius <= 2 && /linear-gradient/.test(n.img) && /^"?Void Hand/.test(n.font) && /^-?\d+(\.\d+)?deg$|^none$/.test(n.rot))
-        && !!tilt(a) && JSON.stringify(a.map((n) => [n.id, n.rot])) === JSON.stringify(b.map((n) => [n.id, n.rot]))
-        && a[0].bg === 'rgb(244, 226, 122)' && a[1].bg === 'rgb(255, 158, 200)' && hand,
-      JSON.stringify({ a, b, hand }).slice(0, 700));
-    await P.ctx.close(); }
   // step 6 (one shape for skills): the counter, pinned before it moves out of void.html; the same asks must keep working after
   if (want("built-in counter: make, count up and down, set, reset, size, buttons, a reload, remove; only ever one counter")) { const P = await fresh();
     const one = async () => (await P.state()).filter((t) => t.kind === 'counter');

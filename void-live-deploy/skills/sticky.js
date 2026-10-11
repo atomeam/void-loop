@@ -72,21 +72,13 @@ export function ensure(stageApi, seed = '', fresh = false) {
   return note;
 }
 
-/** a note's own slight tilt, -2.5 to 2.5 degrees, the same every time for the same note. Pure. */
-export function tiltOf(id) {
-  let h = 0;
-  for (const c of String(id || '')) h = (h * 31 + c.charCodeAt(0)) | 0;
-  return Math.round(((Math.abs(h) % 51) - 25) / 10 * 10) / 10;
-}
-
 function mount(th, stageApi) {
   const el = document.createElement('div');
   el.className = 'thing sticky';
   el.dataset.id = th.id;
   el.style.left = th.x + 'px';
   el.style.top = th.y + 'px';
-  if (th.color) el.style.backgroundColor = th.color; // the colour only: the paper's glue strip and curl are background images
-  el.style.rotate = tiltOf(th.id) + 'deg'; // a real note never sits square; each keeps its own tilt
+  if (th.color) el.style.background = th.color;
   el.textContent = th.text || '';
   el.contentEditable = 'true';
   el.spellcheck = false;
