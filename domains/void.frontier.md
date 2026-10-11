@@ -9,6 +9,7 @@ Many agents built in parallel, so Void has grown sideways: four overlapping guid
 **Nothing is deleted.** Every unused or old piece is wired back in, merged into its living twin, or listed on the salvage shelf (`docs/SALVAGE.md`) with what it is and what it could become. A file nothing uses is a thing to salvage, not to remove.
 
 1. **One front door.** `AGENTS.md` becomes the one short page every agent reads: what Void is, the handful of commands, where things live. The live facts of `STANDING.md`, `BASE.md` and `GROWTH.md` fold into it or the doc they belong in; stale facts are corrected; the old text goes to `archive/`.
+   - **done** (claude 2026-10-10, this PR): `AGENTS.md` is a one-page front door (read order, a run in five commands, where things live, the nevers); its "Working fast" rules and the sections cut from `STANDING.md` moved word for word to `docs/RULES.md`; `STANDING.md` keeps the owner's vision and the money rule, stale facts corrected (115 skills, public repo, CI deploys); old full texts in `archive/AGENTS.2026-10-10.md` and `archive/STANDING.2026-10-10.md`. `BASE.md` and `GROWTH.md` stay: one job each. Nothing deleted; every path code reads is unchanged.
 2. **One "next" list.** This file becomes the only build order. The Next items of `void.growth.md`, `void.plan.md`, `void.assimilate.md` and `growth-inbox.md` move here, deduplicated, each keeping where it came from; those files become one-line pointers (their history goes to `archive/`).
 3. **The salvage shelf.** `docs/SALVAGE.md`: one line for every unused or old piece (the venture files, drafts, tools nothing calls such as `next-growth.mjs` and `indexnow_submit.py`, `archive/victus`, workflows): what it is, what it could become, rough effort. Promising ones become candidates in this file. Paths stay put, so no link breaks.
 4. **Tools and workflows tied together.** Group the tools and workflows by job in `docs/MAP.md`; where two do one job (e.g. `next-skill.mjs`, `next-growth.mjs`, `learn.mjs`), merge them and shelve the rest.
@@ -16,6 +17,11 @@ Many agents built in parallel, so Void has grown sideways: four overlapping guid
 6. **One shape for skills.** The 13 skills still built into `void.html` move to `skills/` files with the same contract as every other skill, one per PR, tests first.
 
 One PR per step (or per skill in step 6), checks before push, automerge. Claim a step by adding `claim: <who> <date>` under it in a one-line PR; mark it done with the PR link.
+
+**After the cleanup: three targets (owner, 2026-10-11, from a video on self-improving agent loops; not built until the six steps are done):**
+- **Verification loop:** a drafted change (a skill from `lib/learn.js` / `tools/learn-draft.mjs`) is kept only if `tools/bench.mjs --probe` and `tools/draft-check.mjs` pass and the score holds or rises; otherwise it is dropped (modify, test, keep or revert).
+- **Single-target focus:** a self-improvement run takes exactly one job or skill draft per cycle (the queue already caps open miss jobs at 3, `OPEN_MAX` in `lib/learn.js`).
+- **Feedback doc:** one markdown file the owner dumps raw notes into (typed or transcribed voice); the scheduled runs read it first and take its constraints before touching code. Its own file, since `growth-inbox.md` folds into this list in step 2.
 
 ---
 
