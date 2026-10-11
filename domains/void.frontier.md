@@ -178,7 +178,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** Void tracks the problems it cares most about (life extension, disease, the planet) and says when the world moves.
 - **First piece:** change detection for `skills/trialwatch.js` against ClinicalTrials.gov, run by the daily workflow, writing to the ledger.
 - **Done when:** two cards report their own changes into the ledger.
-- **claim:**
+- **claim:** builder (claude) 2026-10-11: the first piece: change detection for `skills/trialwatch.js` against ClinicalTrials.gov, run by a daily workflow, writing `finding` entries to the ledger.
 
 ## 9. Clef routes every ask
 - **What:** `lib/router.js` routes asks with a nearest-neighbour guess over `@cf/baai/bge-m3` embeddings, written because "Workers AI has no general intent classifier". Now it has one: Clef and Clef-flash (`@cf/cloudflare/clef`, `@cf/cloudflare/clef-flash`, Workers AI changelog 2026-10-01) take a state and typed questions and return a probability for every allowed answer, Clef-flash in about 39 ms at the median. Ask it which skill should answer, and hand off to a skill or the answer engine on its answer.
