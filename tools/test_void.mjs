@@ -815,6 +815,29 @@ try {
         && /### Breaking changes\n- Drop Node 16\n\n### Removed\n- Remove the old export\n$/.test(md2) && !P.errors.length,
       [JSON.stringify(md1), JSON.stringify(md2), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
+  // step 6 (one shape for skills): the counter, pinned before it moves out of void.html; the same asks must keep working after
+  if (want("built-in counter: make, count up and down, set, reset, size, buttons, a reload, remove; only ever one counter")) { const P = await fresh();
+    const one = async () => (await P.state()).filter((t) => t.kind === 'counter');
+    const v = async () => { const c = await one(); return c.length === 1 ? c[0].value : 'n=' + c.length; };
+    const r = {};
+    await P.ask('make a counter', 600); r.made = (await one()).length;
+    await P.ask('add a counter', 500); r.single = (await one()).length;
+    await P.ask('count up', 400); await P.ask('count up by 3', 400); r.up = await v();
+    await P.ask('decrement the counter', 400); r.down = await v();
+    await P.ask('set the counter to 10', 400); r.set = await v();
+    await P.ask('down', 400); r.selDown = await v();
+    await P.ask('make the counter big', 400); r.size = (await one())[0].size;
+    await P.p.click('.counter .counter-chip[aria-label="increment counter"]'); await P.p.waitForTimeout(200); r.button = await v();
+    r.shown = await P.p.$eval('.counter .counter-value', (e) => e.textContent).catch(() => '');
+    await P.p.reload(); await P.p.waitForTimeout(1500); r.reload = await v();
+    r.shownAfter = await until(() => P.p.$eval('.counter .counter-value', (e) => e.textContent).catch(() => ''), 6000);
+    await P.ask('reset the counter', 400); r.reset = await v();
+    await P.ask('remove the counter', 500); r.removed = (await one()).length;
+    check('built-in counter: "make a counter" puts one counter up and "add a counter" keeps it one; count up (by 3), decrement, set to 10, a bare "down" while it is picked, "make the counter big", the + button, a reload, reset and remove all work',
+      r.made === 1 && r.single === 1 && r.up === 4 && r.down === 3 && r.set === 10 && r.selDown === 9 && r.size === 40 && r.button === 10 && r.shown === '10'
+        && r.reload === 10 && r.shownAfter === '10' && r.reset === 0 && r.removed === 0 && !P.errors.length,
+      JSON.stringify({ r, e: P.errors }));
+    await P.ctx.close(); }
   // shop this list (owner, 2026-10-11): one search link per item still to buy, at Walmart or Sam's Club; nothing leaves the page
   if (want("shop this list: the list card links each item still to buy to a Walmart or Sam's Club search")) { const P = await fresh();
     await P.ask('add milk', 500); await P.ask('add eggs', 500); await P.ask('add peanut butter', 500); await P.ask('check off eggs', 500);
