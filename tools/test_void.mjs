@@ -1286,6 +1286,14 @@ try {
     const rec = JSON.parse(fs.readFileSync(path.join(root, 'arena-othello.json'), 'utf8')), top = rec.ladder[rec.ladder.length - 1];
     check('arena: "how good are you at othello" answers with the rating the self-play games wrote for the card\'s engine, against random and greedy players, with a curve labelled by player, and opens no board', got.say.includes(String(top.rating)) && /the card plays at/.test(got.say) && /random = 1000/.test(got.say) && !/moves ahead/.test(got.say) && got.dots === rec.ladder.length && /Rating by player/.test(got.label) && !got.board && !B.errors.length, JSON.stringify({ ...got, errs: B.errors }));
     await B.ctx.close(); }
+  // the coral heat card's live line (frontier #8, run 70): "can coral survive heatwaves" shows the reef watch's served reading (/reefwatch.json): the alert level, the heat stress and the reading date, with what the numbers mean.
+  if (want("the coral heat card's live line (frontier #8, run 70)")) {
+    const C = await fresh(); await C.ask('can coral survive heatwaves', 1200);
+    await C.p.waitForSelector('[data-coral-live]', { timeout: 5000 }).catch(() => {});
+    const got = await C.p.evaluate(() => ({ live: (document.querySelector('[data-coral-live]') || {}).innerText || '', page: (document.querySelector('.vpage.on') || {}).innerText || '' }));
+    const rec = JSON.parse(fs.readFileSync(path.join(root, 'reefwatch.json'), 'utf8')).rows.florida_keys;
+    check('coral: the heat card shows the reef watch reading for the Florida Keys (level, degree heating weeks, date) under "Right now", with what 4 and 8 mean, and keeps its sourced story', /Right now/.test(got.live) && got.live.includes(rec.date) && /degree heating weeks/.test(got.live) && /4 or more/.test(got.live) && /Gene banks on land/.test(got.page) && !C.errors.length, JSON.stringify({ live: got.live.slice(0, 300), errs: C.errors }));
+    await C.ctx.close(); }
   // routines (frontier #13, skills/routine.js): "call this my morning" keeps the asks before it, in order, in this browser; after a reload "my morning" asks them again as if typed; "my routines" lists it; "forget my morning" drops it, and then "my morning" is no longer a routine.
   if (want("routines (frontier #13, skills/routine.js): \"call this my morning\" keeps the asks before it")) {
     const R = await fresh(); await R.ask('15% tip on 80', 700); await R.ask('flip a coin', 700); await R.ask('call this my morning', 700);

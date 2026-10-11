@@ -39,3 +39,17 @@ export function reefChanges(prev, next) {
   }
   return out;
 }
+
+// The heat card's "right now" line, from the served reading (void-live-deploy/reefwatch.json, kept daily by the reef watch).
+// The thresholds are Coral Reef Watch's own: 4 or more degree heating weeks, significant bleaching likely; 8 or more,
+// severe bleaching and significant mortality likely. null when there is no reading.
+const r1 = (x) => Math.round(+x * 10) / 10;
+export function liveLine(snap, id = STATIONS[0].id) {
+  const s = snap && snap.rows && snap.rows[id];
+  if (!s || !Number.isFinite(+s.dhw) || !Number.isFinite(+s.baa)) return null;
+  return {
+    text: (s.name || id) + ': ' + alertName(s.baa) + ' · ' + r1(s.dhw) + ' degree heating weeks' + (Number.isFinite(+s.sstMax) && s.sstMax != null ? ' · water up to ' + r1(s.sstMax) + ' °C' : '') + ' (NOAA Coral Reef Watch, ' + (s.date || 'latest') + ')',
+    note: 'Degree heating weeks add up the last 12 weeks of heat above the usual summer maximum: 4 or more means significant bleaching is likely, 8 or more severe bleaching and coral death.',
+    href: stationPage(id),
+  };
+}
