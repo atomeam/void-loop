@@ -84,7 +84,7 @@ function run(text, api) {
     e.preventDefault();
     if (!lines) return;
     const a = ask(q.value, lines);
-    out.innerHTML = a.lines.length
+    out.innerHTML = a.lines.length // void-review: ok: the document's text and the file name go through esc(), the rest is numbers and fixed words
       ? '<ol data-pdf-lines>' + a.lines.map((l) => '<li><q>' + esc(l.text) + '</q> <span class="sub">— page ' + l.page + ', line ' + l.line + '</span></li>').join('') + '</ol>'
         + '<div class="sub">From ' + esc(name) + '. These are the lines that hold what you asked about; read them in place before you rely on them.</div>'
       : '<p data-pdf-none>' + esc(a.say) + '</p>';

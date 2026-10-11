@@ -348,9 +348,9 @@ for (const [lang, c] of [
   ['sql', 'SELECT u.name FROM users u LEFT JOIN orders o ON o.user_id = u.id WHERE o.total IS NULL;']])
   ok(!rules(c, lang).some((r) => /remove-while-iterating|type-eq-dict|range-value-copy|wg-add-in-goroutine|lock-across-await|left-join-where-filter/.test(r)), 'no finding in ' + lang + ': ' + c.slice(0, 60) + ' (got ' + rules(c, lang).join(',') + ')');
 // the pull-request review skips tests in every language the repo writes (their fixtures are bad code on purpose), and nothing else by accident
-for (const f of ['tools/ouroboros_test.py', 'tools/void_lens_test.py', 'tools/memory.test.mjs', 'tools/test_void.mjs', 'tools/skills_test.mjs', 'tools/tictactoe.test.mjs', 'tools/sub/helper_test.js', 'tools/test_glyphs.mjs'])
+for (const f of ['tools/ouroboros_test.py', 'tools/void_lens_test.py', 'tools/memory.test.mjs', 'tools/test_void.mjs', 'tools/skills_test.mjs', 'tools/tictactoe.test.mjs', 'tools/sub/helper_test.js', 'tools/test_glyphs.mjs', 'void-live-deploy/vendor/pdfjs-6.4.299/build/pdf.min.js', 'void-live-deploy/vendor/three-r180/build/three.module.min.js'])
   ok(skippedInReview(f), 'a test file is not reviewed: ' + f);
-for (const f of ['tools/ouroboros.py', 'tools/void_lens.py', 'void-live-deploy/lib/memory-core.js', 'tools/latest.py', 'tools/contest.mjs', 'tools/testing_notes.py', 'void-live-deploy/functions/api/memory.js'])
+for (const f of ['tools/ouroboros.py', 'tools/void_lens.py', 'void-live-deploy/lib/memory-core.js', 'tools/latest.py', 'tools/contest.mjs', 'tools/testing_notes.py', 'void-live-deploy/functions/api/memory.js', 'void-live-deploy/skills/pdf-card.js', 'tools/vendor.mjs'])
   ok(!skippedInReview(f), 'real code is still reviewed: ' + f);
 // run 54: XML namespace and package-type names (xmlns="http://…", schemas.microsoft.com, schemas.openxmlformats.org) are identifiers, never fetched
 for (const c of ['const m = \'<model xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02">\';', 'const t = \'<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">\';',
