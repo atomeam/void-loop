@@ -1393,9 +1393,16 @@ Object.values(things).forEach((th) => {
           }
           takeUndoSnapshot();
           moveMates(0, 0); // a throw takes only the one in the hand; the rest of its group stays put
+          // the throw is decided on release: the thing leaves the stage's record now, so "undo" during the flight brings it back
+          // (2026-10-11: it used to be deleted only once off-screen, so undo mid-flight said "nothing to undo" and a later undo's
+          // restored copy was deleted by the old flight: the labels flake). Only its picture flies, and the picture touches nothing.
+          delete things[th.id];
+          if (selectedId === th.id) selectedId = null;
+          save();
           let px = th.x, py = th.y, tvx = vx || (th.x < 0 ? -1.2 : 1.2), tvy = vy || -0.4, spin = tvx * 40;
           let prev = performance.now();
           const step = (t) => {
+            if (!cur.isConnected) return; // the stage was drawn again (an undo, a reload of things): this picture is gone
             const dt = Math.min(32, t - prev); prev = t;
             tvx *= 0.995; tvy += 0.0016 * dt; spin += tvx * dt * 0.4; // a real toss: carried by its own speed, gravity pulls it down
             px += tvx * dt; py += tvy * dt;
@@ -1404,9 +1411,7 @@ Object.values(things).forEach((th) => {
             const gone = px + w < 0 || py + h < 0 || px > stage.clientWidth || py > stage.clientHeight;
             if (!gone) { requestAnimationFrame(step); return; }
             try { if (sk && sk.thrown) sk.thrown(th, stageApi); } catch (_) {}
-            delete things[th.id];
-            if (selectedId === th.id) selectedId = null;
-            save(); render();
+            render();
           };
           requestAnimationFrame(step);
         };
