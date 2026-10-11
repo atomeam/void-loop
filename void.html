@@ -4827,7 +4827,7 @@ return { ok: true, detail: 'timer-reset' };
       }
       if (/^(keep|keep this|keep that|keep it|save this|pin this|pin it)\s*[.!]?$/.test(lower)) { keepPage(); return true; }
       const nm = text.match(/^(?:call|name)\s+(?:this|it|that)\s+(.+?)\s*[.!]?$/i);
-      if (nm) { const th = targetThing(); if (!th) { say('nothing to name'); return true; } th.name = nm[1]; if ('title' in th && th.kind !== 'kept' && th.kind !== 'link') th.title = nm[1]; save(); render(); say('named'); return true; }
+      if (nm) { const th = targetThing(); if (!th && /^my\s/i.test(nm[1])) return false; /* nothing to name: "call this my morning" is a routine (skills/routine.js) */ if (!th) { say('nothing to name'); return true; } th.name = nm[1]; if ('title' in th && th.kind !== 'kept' && th.kind !== 'link') th.title = nm[1]; save(); render(); say('named'); return true; }
       if (/^(forget this|forget that|forget it|clear this|clear that|take this off|take that off|remove this|remove that)\s*[.!]?$/.test(lower)) {
         if (vpageEl) { closePage(); return true; }
         const th = targetThing(); if (!th) { say('nothing here'); return true; }

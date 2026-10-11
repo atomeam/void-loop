@@ -1286,6 +1286,19 @@ try {
     const rec = JSON.parse(fs.readFileSync(path.join(root, 'arena-othello.json'), 'utf8')), top = rec.ladder[rec.ladder.length - 1];
     check('arena: "how good are you at othello" answers with the rating the self-play games wrote for the card\'s engine, against random and greedy players, with a curve labelled by player, and opens no board', got.say.includes(String(top.rating)) && /the card plays at/.test(got.say) && /random = 1000/.test(got.say) && !/moves ahead/.test(got.say) && got.dots === rec.ladder.length && /Rating by player/.test(got.label) && !got.board && !B.errors.length, JSON.stringify({ ...got, errs: B.errors }));
     await B.ctx.close(); }
+  // routines (frontier #13, skills/routine.js): "call this my morning" keeps the asks before it, in order, in this browser; after a reload "my morning" asks them again as if typed; "my routines" lists it; "forget my morning" drops it, and then "my morning" is no longer a routine.
+  if (want("routines (frontier #13, skills/routine.js): \"call this my morning\" keeps the asks before it")) {
+    const R = await fresh(); await R.ask('15% tip on 80', 700); await R.ask('flip a coin', 700); await R.ask('call this my morning', 700);
+    const saved = { page: await R.page(), store: await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}')) };
+    await R.p.reload(); await R.p.waitForTimeout(700);
+    await R.ask('my morning', 2500);
+    const ran = { page: await R.page(), asks: await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')) };
+    await R.ask('my routines', 700); const listed = await R.page();
+    await R.ask('forget my morning', 700); const gone = await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}'));
+    const order = saved.page.indexOf('15% tip on 80') < saved.page.indexOf('flip a coin');
+    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test(saved.page.split('Saved')[1] || '') && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
+      && /Coin/.test(ran.page) && ran.asks[0] === 'flip a coin' && ran.asks[1] === '15% tip on 80' && ran.asks[2] === 'my morning' && /my morning: 15% tip on 80 · flip a coin/.test(listed) && !gone.morning && !R.errors.length, JSON.stringify({ saved, ran, listed: listed.slice(0, 200), gone, errs: R.errors }));
+    await R.ctx.close(); }
   // sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioContext (the game sound effects in skills/sfx.js open their own on the first tap, so the drone's is the one that gets oscillators)
   // proves nothing is built before the tap, the tap builds one drone of four voices, and the same button mutes it.
   if (want("sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioConte")) { const fake = `window.__au = { all: [] }; window.AudioContext = class { constructor() { this.rec = { osc: 0, master: [] }; window.__au.all.push(this.rec); this.state = 'running'; this.currentTime = 0; this.destination = {}; this.sampleRate = 8000; this.n = 0; }
