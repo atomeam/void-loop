@@ -26,6 +26,9 @@ The owner: "no add them always add improvements we spot". An improvement an agen
 ## Things fit the screen (owner, 2026-10-11)
 "things should smartly try to autofit in Void". A card, a board or a miniature opens at a size and place that fit the screen it is on, phone included, and never lands on another thing or under the ask bar (`skills/lift3d.js`, `skills/side-card.js`).
 
+## Right the first time (owner, 2026-10-11)
+"Automerge is loose, so code must be on point first shot before `finish.mjs` ever pushes", and relying on the full suite on main or the jack after the merge "is a last resort, not the plan". A PR merges once Void's review is clean and goes live a minute later, before `verify.yml` has run. So `tools/finish.mjs` will not write, commit or push a change that reaches the site (`void.html`, `void-live-deploy/`) until each `--test "<words>"` passes in a real browser (`test_void.mjs --only`, seconds per section; `--list` shows them); with no `--test` it stops.
+
 ## Working fast (learned 2026-10-04 onward)
 
 - `node tools/checks.mjs` runs every fast check in one go (fringe ledger, skill collisions, calendar, glyphs, void.html matching its two deploy copies, the full benchmark against its floor, the miss reader's redaction). Run it before every push; CI runs the full browser suite. The benchmark is not replayed when nothing it reads has changed since its last passing run (a hash of the served files, bench.json, the browser and the day; `node tools/bench.mjs --score --fresh` forces it), and it waits for each answer instead of sleeping a fixed time, so a change that never touches the page costs nothing and a full replay is far shorter than the old 20 minutes. Add your test on its own line in the list at the top of `tools/checks.mjs` (one entry per line, so two PRs adding tests do not conflict).
