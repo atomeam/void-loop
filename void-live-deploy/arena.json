@@ -60,5 +60,32 @@
       "kept": false
     }
   ],
+  "champion": {
+    "weights": {
+      "centre": 3,
+      "three": 6,
+      "two": 2,
+      "theirThree": 8,
+      "theirTwo": 2
+    },
+    "vsCard": 0.5,
+    "since": "2026-10-11",
+    "last": "2026-10-11",
+    "days": 1,
+    "tried": [
+      {
+        "score": 0.3375,
+        "kept": false
+      },
+      {
+        "score": 0.4625,
+        "kept": false
+      },
+      {
+        "score": 0.425,
+        "kept": false
+      }
+    ]
+  },
   "played": "2026-10-11"
 }

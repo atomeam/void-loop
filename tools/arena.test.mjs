@@ -91,3 +91,31 @@ test('arena: "how good are you at othello" is its own ask, and the answer names 
   assert.ok(/Othello/.test(say) && /the card plays at 1400/.test(say) && /400 above random/.test(say) && !/moves ahead/.test(say), say);
   assert.equal((arenaCurve(rec).match(/<circle/g) || []).length, 3);
 });
+
+// run 71: the learning half. Each day's run starts from the best evaluation self-play has found so far (arena.json's
+// champion), tries challengers seeded by the date, keeps one only when it beats the champion clearly, and records how the
+// champion does against the card's own weights. Same date, same result; the champion never gets worse than it was.
+import { learn } from './arena.mjs';
+import { WEIGHTS } from '../void-live-deploy/skills/connect4-rules.js';
+test('arena: tuning can start from a given evaluation, not only the card\'s', () => {
+  const start = { ...WEIGHTS, three: 9 };
+  assert.deepEqual(tune({ depth: 2, rounds: 0, games: 10, seed: 5, start }).champion.weights, start, 'no rounds: the start is the champion');
+});
+test('arena: one day of learning is reproducible, keeps the champion unless beaten, and is rated against the card', () => {
+  const a = learn(null, '2026-10-11', { rounds: 2, games: 12 }), b = learn(null, '2026-10-11', { rounds: 2, games: 12 });
+  assert.deepEqual(a, b, 'same date, same result');
+  assert.ok(a.weights && Number.isFinite(a.vsCard) && a.vsCard >= 0 && a.vsCard <= 1 && a.since && Array.isArray(a.tried));
+  for (const t of a.tried) assert.equal(typeof t.kept, 'boolean');
+  if (!a.tried.some((t) => t.kept)) assert.deepEqual(a.weights, { ...WEIGHTS }, 'nothing kept: still the card\'s weights');
+  assert.deepEqual(learn(a, '2026-10-11', { rounds: 2, games: 12 }), a, 'a rerun the same day changes nothing');
+  if (!a.tried.some((t) => t.kept)) assert.equal(a.vsCard, 0.5, 'the card against itself is even');
+  const next = learn(a, '2026-10-12', { rounds: 0, games: 12 });
+  assert.deepEqual(next.weights, a.weights, 'no challenger: yesterday\'s champion carries over'); assert.equal(next.since, a.since);
+  assert.ok(next.days >= 2);
+});
+test('arena: the answer names the self-play champion when it beats the card\'s own evaluation', () => {
+  const rec = JSON.parse(readFileSync(new URL('../void-live-deploy/arena.json', import.meta.url)));
+  const say = arenaSay({ ...rec, champion: { weights: { ...WEIGHTS }, vsCard: 0.62, since: '2026-10-11', days: 3, tried: [] } });
+  assert.match(say, /self-play.*62%.*since 2026-10-11/i);
+  assert.doesNotMatch(arenaSay({ ...rec, champion: { weights: {}, vsCard: 0.5, since: '2026-10-11', days: 1, tried: [] } }), /62%/);
+});

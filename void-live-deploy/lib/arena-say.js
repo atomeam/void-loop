@@ -11,7 +11,10 @@ export function arenaSay(a, game = (a && a.game) || 'connect4') {
   const head = byDepth ? 'looking ' + top.depth + ' moves ahead I play at ' + top.rating + ', ' + (top.rating - low.rating) + ' above looking ' + low.depth + ' ahead'
     : top.name + ' plays at ' + top.rating + ', ' + (top.rating - low.rating) + ' above ' + low.name + (top.how ? ' (' + top.how + ')' : '');
   return 'At ' + title + ', rated from ' + plural(a.games, 'game') + ' against myself (' + (a.anchor || low.name + ' = ' + low.rating) + '): ' + head + '. ' + a.ladder.map((s) => s.name + ' ' + s.rating).join(' · ') + '.'
-    + (a.tuned ? ' A tuned evaluation scored ' + Math.round(a.tuned.score * 100) + '% against my own and ' + (a.tuned.kept ? 'was kept.' : 'was not kept.') : '')
+    + (a.champion && Number.isFinite(+a.champion.vsCard) && a.champion.vsCard > 0.55
+      ? ' Self-play has found an evaluation that scores ' + Math.round(a.champion.vsCard * 100) + '% against my card\'s own, kept since ' + a.champion.since + ' (' + a.champion.days + ' day' + (a.champion.days === 1 ? '' : 's') + ' of tuning).'
+      : a.champion ? ' Self-play tuning has run for ' + a.champion.days + ' day' + (a.champion.days === 1 ? '' : 's') + ' and has not yet found an evaluation that clearly beats my own.'
+      : a.tuned ? ' A tuned evaluation scored ' + Math.round(a.tuned.score * 100) + '% against my own and ' + (a.tuned.kept ? 'was kept.' : 'was not kept.') : '')
     + (a.played ? ' Played ' + a.played + '.' : '');
 }
 // every value that reaches the markup is escaped or forced to a number, so a record that is not ours cannot add markup

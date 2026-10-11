@@ -103,9 +103,9 @@ export function ladder(depths, games, seed = 1) {
 
 const KEEP = 0.55; // a challenger is kept only when it clearly wins, not on a coin flip
 /** hill-climb the evaluation at a fixed depth: each round a nudged copy of the champion plays it; the winner is kept */
-export function tune({ depth = 2, rounds = 5, games = 40, seed = 1 } = {}) {
+export function tune({ depth = 2, rounds = 5, games = 40, seed = 1, start = K.WEIGHTS } = {}) {
   const r = rng(seed * 7919);
-  let champion = { depth, weights: { ...K.WEIGHTS } };
+  let champion = { depth, weights: { ...start } }; // start: where the climb begins (the card's weights, or yesterday's champion)
   const log = [];
   for (let i = 0; i < rounds; i++) {
     const weights = Object.fromEntries(Object.entries(champion.weights).map(([k, v]) => [k, Math.round(v * (0.5 + r()) * 10) / 10]));
