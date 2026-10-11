@@ -164,6 +164,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **First piece:** `tools/list` and `tools/call` for three read-only tools, with the guard middleware's limits.
 - **Done when:** an MCP client lists and calls Void's tools against a-to-mind.com; the suite covers the endpoint.
 - **claim:** builder (claude) 2026-10-11: the first piece: `functions/api/mcp.js`, `tools/list` and `tools/call` for three read-only tools, with the guard's limits.
+- **next:** (2026-10-11) the endpoint is built: `POST /api/mcp` with `review_code`, `moon_phase` and `meteor_showers`, read-only, listed in `/tools.json`'s `mcp` field. Left for "done when": prove a real MCP client against a-to-mind.com. A small workflow (or the verify job) runs the official MCP SDK client (`@modelcontextprotocol/sdk`, `StreamableHTTPClientTransport`) against the live URL after each deploy: initialize, list, and one call of each tool. Then the closer read as a fourth tool, behind the same key `/api/review` takes (the owner or a Pro key in `Authorization`), so an agent gets the model's review only when someone pays for it.
 
 ## 7. Void owns its body: the estate
 - **What:** BASE.md's `void.estate.json`: every Worker, Pages project, D1, KV and R2 in the account with a verdict (keep, fold into Void, retire, verify). "estate" summons it; each retirement is a `retire` ledger entry, so the cleanup shows on the surface.

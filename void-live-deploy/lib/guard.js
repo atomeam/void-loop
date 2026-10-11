@@ -10,6 +10,7 @@
 export const WINDOW_MS = 60e3;
 // rpm: requests per connection per minute on that route. body: the largest request body accepted, in bytes.
 export const LIMITS = {
+  mcp: { rpm: 60, body: 64000 }, // Void as an MCP server (functions/api/mcp.js): read-only tools; a review_code call carries up to 60,000 characters of code
   answer: { rpm: 30, body: 20000 }, // /api/answer also keeps its own tighter 12 a minute for model calls
   miss: { rpm: 30, body: 1000 },
   misses: { rpm: 30, body: 0 },

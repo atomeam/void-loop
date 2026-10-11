@@ -1,5 +1,7 @@
 // GET /tools.json — Void's callable tools, built live from /skills so it never drifts.
-// Each tool is called by opening https://a-to-mind.com/?q=<ask>.
+// Each tool is called by opening https://a-to-mind.com/?q=<ask>. Agents can also call Void's read-only tools over MCP
+// (functions/api/mcp.js, lib/mcp.js): the `mcp` field names the endpoint and lists those tools, from the same table tools/list serves.
+import { TOOLS as MCP_TOOLS, PROTOCOL } from '../lib/mcp.js';
 const CORE = [
   { name: 'stage', description: 'Put a thing on the stage: clock, timer, counter, sticky note, notepad, list, calculator, shape, image or link card.', examples: ['make a clock', 'make a 5 minute timer', 'add a sticky that says hi', 'make a list', 'draw a circle'] },
   { name: 'page', description: 'A short sourced page about almost any topic (Wikipedia, Wiktionary).', examples: ['what is a black hole', 'who was Ada Lovelace', 'define serendipity'] },
@@ -27,6 +29,7 @@ export async function onRequestGet({ request, env }) {
   const out = {
     name: 'Void by A-to-Mind',
     call: { method: 'GET', url: origin + '/?q={ask}', note: 'Opens Void in a browser and runs the ask in plain words. Results render in the page.' },
+    mcp: { endpoint: origin + '/api/mcp', transport: 'streamable HTTP, POST JSON-RPC, JSON replies', protocolVersion: PROTOCOL, tools: MCP_TOOLS.map(({ name, title, description, inputSchema, annotations }) => ({ name, title, description, inputSchema, annotations })) },
     tools: tools.map((t) => ({ ...t, try: t.examples.slice(0, 3).map((e) => origin + '/?q=' + encodeURIComponent(e)) })),
   };
   return new Response(JSON.stringify(out, null, 2), { headers: { 'content-type': 'application/json; charset=utf-8', 'access-control-allow-origin': '*', 'cache-control': 'public, max-age=300' } });
