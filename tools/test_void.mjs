@@ -1155,6 +1155,20 @@ try {
       && /could not read that file as a PDF/.test(bad.status) && bad.role === 'alert' && /lease\.pdf: 2 pages, 5 lines read/.test(good.status) && good.form === false
       && /rent of 1,200 dollars/.test(rent) && /page 1, line 2/.test(rent) && /31 August 2027/.test(end) && /page 2, line 2/.test(end) && /does not say/.test(none) && loadedPdfjs && external.length === 0 && !D.errors.length, JSON.stringify({ card0: { ...card0, text: undefined }, bad, good, rent, end, none, loadedPdfjs, external, errs: D.errors }));
     await D.ctx.close(); }
+  // the same card, run 59: a saved web page (.html) and pasted text answer like a PDF, each line with its section (the heading above it); the page's script never runs and its image is never fetched.
+  if (want("the same card, run 59: a saved web page (.html) and pasted text answer like a PDF")) {
+    const H = await fresh(), reqs = []; H.p.on('request', (r) => reqs.push(r.url())); await H.ask('ask questions about a saved web page', 900);
+    const page = '<html><head><script>window.__ran = 1</script><style>p{color:red}</style></head><body><nav>Home About</nav><h1>Lease</h1><p>The tenant pays rent of 1,200 dollars a month.</p><img src="https://example.invalid/x.png"><h2>Pets</h2><ul><li>One cat is allowed with a deposit of 300 dollars.</li></ul><footer>Copyright</footer></body></html>';
+    await H.p.setInputFiles('[data-pdf-file]', { name: 'lease.html', mimeType: 'text/html', buffer: Buffer.from(page) }); await H.p.waitForTimeout(300);
+    const st = await H.p.evaluate(() => document.querySelector('[data-pdf-status]').textContent);
+    const askIt = async (q) => { await H.p.fill('[data-pdf-q]', q); await H.p.press('[data-pdf-q]', 'Enter'); await H.p.waitForTimeout(150); return H.p.evaluate(() => document.querySelector('[data-pdf-answer]').innerText); };
+    const pet = await askIt('is a cat allowed'), foot = await askIt('copyright');
+    await H.p.click('[data-pdf-pastebox] summary'); await H.p.fill('[data-pdf-paste]', '# Trip\nWe leave at 7 in the morning.\n## Food\nBring lunch and water.'); await H.p.click('[data-pdf-read]'); await H.p.waitForTimeout(200);
+    const pst = await H.p.evaluate(() => document.querySelector('[data-pdf-status]').textContent), lunch = await askIt('what should we bring for lunch');
+    const ran = await H.p.evaluate(() => window.__ran), external = reqs.filter((u) => !/^(?:https?:\/\/(?:127\.0\.0\.1|localhost)[:/]|data:|blob:)/.test(u));
+    check('ask a document: a saved web page answers with the section and line ("Pets", line 1 for the cat), its nav and footer are not read, its script never runs and its image is never fetched; pasted markdown answers the same way', /lease\.html: 2 sections, 2 lines read/.test(st) && /One cat is allowed/.test(pet) && /section “Pets”, line 1/.test(pet) && /does not say/.test(foot)
+      && /Your text: 2 sections/.test(pst) && /Bring lunch and water/.test(lunch) && /section “Food”, line 1/.test(lunch) && ran === undefined && external.length === 0 && !H.errors.length, JSON.stringify({ st, pet, foot, pst, lunch, ran, external, errs: H.errors }));
+    await H.ctx.close(); }
   // sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioContext (the game sound effects in skills/sfx.js open their own on the first tap, so the drone's is the one that gets oscillators)
   // proves nothing is built before the tap, the tap builds one drone of four voices, and the same button mutes it.
   if (want("sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioConte")) { const fake = `window.__au = { all: [] }; window.AudioContext = class { constructor() { this.rec = { osc: 0, master: [] }; window.__au.all.push(this.rec); this.state = 'running'; this.currentTime = 0; this.destination = {}; this.sampleRate = 8000; this.n = 0; }

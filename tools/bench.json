@@ -5726,5 +5726,11 @@
   {"ask": "pdf reader", "want": "skill:pdf-card"},
   {"ask": "what does this pdf say", "want": "skill:pdf-card"},
   {"ask": "ask my pdf a question", "want": "skill:pdf-card"},
-  {"ask": "search a pdf", "want": "skill:pdf-card"}
+  {"ask": "search a pdf", "want": "skill:pdf-card"},
+  {"ask": "ask questions about a document", "want": "skill:pdf-card"},
+  {"ask": "ask questions about a saved web page", "want": "skill:pdf-card"},
+  {"ask": "ask questions about this text", "want": "skill:pdf-card"},
+  {"ask": "chat with a document", "want": "skill:pdf-card"},
+  {"ask": "ask questions about pasted text", "want": "skill:pdf-card"},
+  {"ask": "ask my document", "want": "skill:pdf-card"}
 ]

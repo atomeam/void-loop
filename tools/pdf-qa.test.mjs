@@ -29,3 +29,16 @@ test('pdf-qa: a question the document does not answer says so instead of guessin
   assert.equal(none.lines.length, 0); assert.match(none.say, /does not say/);
   assert.match(ask('anything', []).say, /no text/);
 });
+
+// run 59: the same card takes a saved web page, a text or markdown file, or pasted text. Each heading starts a section, and an
+// answer says the section (its heading) and the line, the way a PDF answer says the page and line.
+import { sectionsOf, blocksOfText } from '../void-live-deploy/lib/pdf-qa.js';
+test('pdf-qa: headings split a page or a text into sections, and an answer names its section and line', () => {
+  const s = sectionsOf([{ text: 'Intro words', heading: false }, { text: 'Rent', heading: true }, { text: 'Rent is 900 dollars a month.', heading: false }, { text: 'Pets', heading: true }, { text: 'No dogs over 20 kg.', heading: false }]);
+  assert.deepEqual(s.titles, ['', 'Rent', 'Pets']);
+  const a = ask('how much is the rent', linesOf(s.pages));
+  assert.match(a.lines[0].text, /900 dollars/); assert.equal(s.titles[a.lines[0].page - 1], 'Rent');
+  const md = blocksOfText('# Lease\nThe tenant pays on the first.\n\n## Pets\nOne cat is allowed.\n');
+  assert.deepEqual(md.map((b) => [b.heading, b.text]), [[true, 'Lease'], [false, 'The tenant pays on the first.'], [true, 'Pets'], [false, 'One cat is allowed.']]);
+  assert.deepEqual(sectionsOf([]).pages, []);
+});
