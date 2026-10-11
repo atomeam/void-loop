@@ -102,6 +102,7 @@ jobs:
         if: failure() && steps.test.outcome == 'failure'
         env:
           GH_TOKEN: ${{ github.token }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }} # the spotter queues a flake job (tools/flakes.mjs); unset = it only records
         run: |
           tested=$(git rev-parse HEAD)
           # Not always the tested commit: when a failed check was already red before it, the commit where that check
@@ -114,6 +115,25 @@ jobs:
           if [ "$action" != "revert" ]; then
             echo "::error title=Not reverted::$tested failed the browser suite (job browser-suite) after it shipped, but which commit broke it is unclear: $why. Look at the failed checks and revert by hand."
             echo "### $tested failed after shipping; not reverted automatically: $why" >> "$GITHUB_STEP_SUMMARY"
+            # the spotter: checks that went green on a newer head with nothing taken back are written down, and one that does it
+            # twice in a week is queued as a job to make it robust (tools/flakes.mjs). Never a skip or a retry; a failure here
+            # only warns, and this run stays red either way.
+            healed=$(node -e 'console.log((JSON.parse(process.argv[1]).healed || []).join("\n"))' "$pick")
+            if [ -n "$healed" ]; then
+              mapfile -t checks <<< "$healed"
+              ( set -e
+                git config user.name "github-actions[bot]"
+                git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+                git fetch -q origin main && git checkout -q -B main origin/main
+                node tools/flakes.mjs record "$tested" "${checks[@]}"
+                if ! git diff --quiet tools/flakes.json; then
+                  git add tools/flakes.json
+                  git commit -q -m "Spotter: ${#checks[@]} check(s) healed with no revert after $tested (tools/flakes.json)"
+                  git push -q origin main
+                fi
+                node tools/flakes.mjs queue
+              ) || echo "::warning title=Flake not recorded::the spotter could not record or queue the healed checks for $tested (see the lines above)"
+            fi
             exit 1
           fi
           sha=$(node -e 'console.log(JSON.parse(process.argv[1]).sha)' "$pick")

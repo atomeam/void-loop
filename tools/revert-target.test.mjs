@@ -142,6 +142,7 @@ test('pickLive: the pick stands only while the target is live and the check is s
   // a newer head passed the suite (someone fixed it forward): report
   const r = pickLive({ tested: 't', failing: [RACK], history, mainLine: ['green', 't', 'p'], body, repo: 'o/r', api });
   assert.equal(r.action, 'report'); assert.match(r.why, /green passed the suite/);
+  assert.deepEqual(r.healed, [RACK], 'the checks that went green with nothing taken back, for the spotter (tools/flakes.mjs)');
   // a newer head with no finished suite yet: the tested run's word stands
   assert.equal(pickLive({ tested: 't', failing: [RACK], history, mainLine: ['newer', 't', 'p'], body, repo: 'o/r', api }).action, 'revert');
 });
