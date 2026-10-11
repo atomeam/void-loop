@@ -11,13 +11,9 @@ import { resolve } from 'node:path';
 import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 import { mergeIndex } from './merge-index.mjs';
 import { readOrder, indexText, adoptOrder } from './skills-index.mjs';
+import { APPEND_JSON, APPEND_TEXT, INDEX, keyOf } from './records.mjs'; // the append-only records, shared with tools/revert-records.mjs
 
 const sh = (c) => execSync(c, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
-const APPEND_JSON = ['tools/bench.json', 'tools/grown.json', 'void-live-deploy/void.growth.json'];
-// the asks are keyed by their text; a growth ledger entry by when, who and what
-const keyOf = (f, x) => (f.endsWith('void.growth.json') ? [x.at, x.by, x.what].join('|') : String(x.ask)).toLowerCase();
-const APPEND_TEXT = ['domains/void.agents.log.md'];
-const INDEX = 'void-live-deploy/skills/index.json';
 
 sh('git fetch -q origin main');
 try { sh('git merge --no-edit origin/main'); console.log('merged origin/main (no conflicts)'); process.exit(0); } catch (_) {}
