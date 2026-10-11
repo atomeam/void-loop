@@ -1,0 +1,14 @@
+[
+  { "id": "automations-undefined-caps", "fix": "b2e2a2d", "file": "void-live-deploy/lib/automations-run.js", "quote": "RUN_CAP_DAY|QUEUE_DEDUPE_MS",
+    "what": "two constants used but never defined or imported: every hook run threw ReferenceError" },
+  { "id": "watch-no-list", "fix": "2e85295", "file": "void-live-deploy/skills/watch.js", "quote": "data\\.watches\\.length|j\\.saved\\.do\\[0\\]",
+    "what": "reads a list off an answer that may have none: the watch card crashed on an answer without one" },
+  { "id": "queue-flag-per-isolate", "fix": "be62554", "file": "void-live-deploy/functions/api/queue.js", "quote": "draftColumnEnsured",
+    "what": "a module-level flag remembers a schema change once per isolate, not per database, so a second database never gets the column" },
+  { "id": "suntimes-too-broad", "fix": "457f1ac", "file": "void-live-deploy/skills/suntimes.js", "quote": "match\\(lower, text\\) \\{ return !!sunAsk",
+    "what": "the new skill's match also claims asks that name a place, which belong to worldtime" },
+  { "id": "ringer-fade-on-frames", "fix": "088c5a6", "file": "void-live-deploy/skills/mini/ringer.js", "quote": "GHOST_FADE|ghostMat\\.opacity = GHOST_ON",
+    "what": "the ghost fades inside tick(), which the scene skips while the miniature is off screen, so it never fades" },
+  { "id": "clear-under-page-timing", "fix": "aaeb4db", "file": "void.html", "quote": "const r = \\{ left: r0\\.left - had\\[0\\]",
+    "what": "measures the card while it is still scaling in, so a thing is left under the finished card" }
+]
