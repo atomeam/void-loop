@@ -14,11 +14,11 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
 export const WINDOW = 3;
-const git = (...a) => execFileSync('git', a, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20 });
+const git = (...a) => execFileSync('git', a, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 120e3 });
 
 /** the commit and line (in that commit's file) that wrote each line matching `quote` in `file` just before `fix` */
 export function blameBroken(fix, file, quote) {
-  const re = new RegExp(quote);
+  const re = new RegExp(quote); // void-review: ok (the pattern is a case written in tools/review-bench.json, meant as a regex)
   const lines = git('show', fix + '^:' + file).split('\n');
   const out = [];
   lines.forEach((l, i) => {
