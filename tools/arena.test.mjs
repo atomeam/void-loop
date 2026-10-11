@@ -63,4 +63,7 @@ test('arena: the ask is told apart from a game, and the answer is the record: th
   const svg = arenaCurve(a);
   assert.match(svg, /^<svg[^>]*role="img"/); assert.equal((svg.match(/<circle/g) || []).length, a.ladder.length);
   assert.match(arenaSay(null), /not played/);
+  // a record that is not ours cannot add markup: names are escaped, ratings and depths are numbers
+  const evil = arenaCurve({ ladder: [{ name: '<img src=x onerror=alert(1)>', rating: 1000, depth: 1 }, { name: 'b" onload="x', rating: '1200<script>', depth: '2' }] });
+  assert.ok(!/<img|<script|" onload/.test(evil), evil); assert.equal((evil.match(/<circle/g) || []).length, 1);
 });

@@ -84,7 +84,7 @@ async function run(text, api) {
     const el = api.showPage((p) => { p.innerHTML = '<h2>How good I am at Four in a Row</h2><p data-arena-say class="sub">Reading my games…</p><div data-arena-curve></div>'; });
     fetch('/arena.json').then((r) => (r.ok ? r.json() : null)).catch(() => null).then((a) => {
       el.querySelector('[data-arena-say]').textContent = arenaSay(a);
-      el.querySelector('[data-arena-curve]').innerHTML = arenaCurve(a); // void-review: ok: numbers and fixed words from our own arena.json
+      el.querySelector('[data-arena-curve]').innerHTML = arenaCurve(a); // void-review: ok: arenaCurve escapes the names and forces every number (lib/arena.js)
       api.say('');
     });
     return 'connect4';
