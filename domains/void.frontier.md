@@ -342,6 +342,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Then:** the document card → notepad; arrow labels that transform (lib/translate for "in Spanish", which also answers the miss "answer me in Spanish: what is the weather like"); "lock the note"; routines as receivers.
 - **Will not build:** a block palette or toolbar, a canvas of empty nodes, a model call on every hop.
 - **Done when:** three pairs work by asking, with a section each, and a label transforms a value on the way.
+- **next:** (claude, 2026-10-11) **first piece shipped:** a stage kind's output goes down its arrows (`emit` in `void.html`, `deliver` in `skills/label.js`, `receiveInput` on the sticky); a timer at 0:00 writes "the timer is done" on the note it points at, with a pulse along the arrow; "... in capitals" / "... as a word count" transform on the way; "lock the note" / "lock it" stops input. Section "living arrows". Next pairs: the document card → notepad, a routine as a receiver, "in Spanish" once a translation runs without a model.
 
 ## Candidate capability map (2026-10-09)
 

@@ -959,6 +959,29 @@ try {
     check('how Void is different: "how are you different from chatgpt?" and "what makes you different" show the four lines from Void\'s canon with its version (no exclamation marks), and "what is different about these two words" is not taken',
       ok(r.chat) && ok(r.plain) && !r.near.includes('Growth in the open') && !P.errors.length, JSON.stringify({ ...r, e: P.errors }).slice(0, 700));
     await P.ctx.close(); }
+  // frontier #24, living arrows (2026-10-11): an arrow carries what its source produces; a timer at 0:00 writes on the note it points at
+  if (want("living arrows: a timer connected to a note writes on it when it ends (in capitals on the way), with a pulse; an unconnected note is unchanged; a locked note takes nothing")) { const P = await fresh();
+    await P.ask('sticky note pasta', 600);
+    await P.ask('make a 3 second timer', 600);
+    await P.ask('connect the timer to the note in capitals', 700); const said = await P.whisper();
+    await P.ask('another note that says spare', 600);
+    const notes = async () => Object.fromEntries((await P.state()).filter((t) => t.kind === 'sticky').map((t) => [t.text.split('\n')[0], t.text]));
+    let pulse = false;
+    const heard = await until(async () => { if (!pulse && await P.p.$('.void-pulse')) pulse = true; const n = await notes(); return /THE TIMER IS DONE/.test(n.pasta || '') ? n : null; }, 9000);
+    const ids = await P.p.evaluate(() => { const s = Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')); return { timer: (s.find((t) => t.kind === 'timer') || {}).id, pasta: (s.find((t) => t.kind === 'sticky' && /^pasta/.test(t.text)) || {}).id }; });
+    const emit = (text) => P.p.evaluate(([id, t]) => document.dispatchEvent(new CustomEvent('void:output', { detail: { id, value: { text: t } } })), [ids.timer, text]);
+    await P.p.click('.sticky >> nth=0'); await P.p.waitForTimeout(200); // pick the pasta note (the first one up)
+    await P.ask('lock it', 600); const lockedSaid = await P.whisper();
+    await emit('once more'); await P.p.waitForTimeout(400);
+    const whileLocked = (await notes()).pasta;
+    await P.p.click('.sticky >> nth=0'); await P.p.waitForTimeout(150); await P.ask('unlock it', 500);
+    await emit('and again'); await P.p.waitForTimeout(400);
+    const after = (await notes()).pasta;
+    check('living arrows: "connect the timer to the note in capitals" says the note gets it when the timer ends; at 0:00 the note reads "pasta / THE TIMER IS DONE" with a pulse along the arrow; the note put up after it ("spare") is unchanged; "lock it" makes the note take nothing; unlocked, it takes the next one',
+      /when the timer ends, the note gets it in capitals/.test(said) && !!heard && pulse && heard.spare === 'spare' && /^locked/.test(lockedSaid)
+        && !/ONCE MORE/.test(whileLocked || '') && /AND AGAIN$/.test(after || '') && !P.errors.length,
+      JSON.stringify({ said, heard, pulse, lockedSaid, whileLocked, after, e: P.errors }).slice(0, 800));
+    await P.ctx.close(); }
   // step 6 (one shape for skills): the counter, pinned before it moves out of void.html; the same asks must keep working after
   if (want("built-in counter: make, count up and down, set, reset, size, buttons, a reload, remove; only ever one counter")) { const P = await fresh();
     const one = async () => (await P.state()).filter((t) => t.kind === 'counter');
