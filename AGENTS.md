@@ -13,10 +13,12 @@ This repo is Void, live at https://a-to-mind.com: a blank stage where anything s
 
 ## A run, start to finish
 
-1. Claim: `python tools/void_queue.py claim` (a queued job), or a one-line PR claiming a frontier step.
-2. Build. A new skill: `node tools/new-skill.mjs <name> --ask "..."` (`docs/UPGRADING.md`). Reuse what exists before writing new code.
+Every run follows B.I.T.E. (owner, 2026-10-11: brief, implement the smallest useful piece, test it the way it will be used, evolve from what the test showed; `docs/RULES.md`).
+
+1. Claim: `python tools/void_queue.py claim` (a queued job), or a one-line PR claiming a frontier step. Write the brief in the claim or the PR: who it is for, the problem, what the first version does, and **what it will not build**.
+2. Build the smallest useful piece. A new skill: `node tools/new-skill.mjs <name> --ask "..."` (`docs/UPGRADING.md`). Reuse what exists before writing new code.
 3. `node tools/grow.mjs <grow|build|fix|retire|idea|finding> "what changed"` (`GROWTH.md`), one line in the agent log, and for a new skill, miniature, workflow or secret one line in `docs/MAP.md`. Built what Void asked for (`domains/void.voice.md`)? Say "asked by Void" in both.
-4. `node tools/merge-main.mjs` (never merge main by hand), then `VOID_SKIP_BENCH=1 node tools/checks.mjs`. Fix what it names.
+4. Test: `node tools/merge-main.mjs` (never merge main by hand), then `VOID_SKIP_BENCH=1 node tools/checks.mjs`, and use it the way a person will (`node tools/ask.mjs`, the 3D check, a play-through). Fix what it names; what the test showed goes in the PR as what to evolve next.
 5. `node tools/push.mjs`, open the PR, `node tools/automerge.mjs <pr> --label`. Void's review (`void-review`) fails on a bug or risk in the added lines: fix it, or mark a line that is right as written with `void-review: ok`. Move on: it merges when Void's review is clean, main deploys in a minute, and the full suite on main reverts a commit that breaks it.
 
 ## Where things live
