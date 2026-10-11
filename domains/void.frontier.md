@@ -214,7 +214,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Why it is special:** what one Void learns, every Void gets (the plan's promise), as shared tested routines, never pooled private content.
 - **First piece:** "call this my morning" saves the last few asks as a routine in this browser; "my morning" runs it.
 - **Done when:** a routine can be saved, run, offered, and taken by a second visitor, with the author's name on it.
-- **claim:**
+- **claim:** builder (claude) 2026-10-11: the first piece: "call this my morning" saves the last few asks as a routine in this browser; "my morning" runs it.
 
 ## 14. The forge: type or sketch a thing, hold it, print it
 - **What:** type or sketch an object and Void makes a 3D model of it you can spin and inspect up close (the inspect the figures already have, `skills/figures3d.js` zoom), then "print it" downloads a file sized for a home printer. Use whatever makes the best model: the in-browser distance-field bodies (`skills/sdfmesh.js`), a text-to-3D or image-to-3D model, or both. The stage's printable 3MF (`skills/print-file.js`, `print-download.js`) is the start of the print half; add STL.
