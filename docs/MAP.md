@@ -25,6 +25,7 @@ Every tool in `tools/` (tests aside) and every workflow in `.github/workflows/`,
 | **Models** | `model-bench.mjs`, `model-bench-worker/`, `model-switch.mjs` | `model-bench.yml` |
 | **Accounts and continuity** | `cf-scope.mjs`, `mirror.mjs` | `cf-scope.yml`, `mirror.yml`, `void-tick.yml` |
 | **Ouroboros and the disk** | `ouroboros.py`, `ouroboros_smoke.py`, `build_ouroboros_pack.py`, `void_lens.py` | `ouroboros.yml` |
+| **Agent skills** | `.claude/skills/`: `void-run`, `steward` (a cloud session reads it before acting on a PR's CI or review), `learn-from-video` | |
 | **Helpers** | `opencode-autoreply.ps1` (the Windows helpers' prompts), `indexnow_submit.py`, `next-growth.mjs` (an alias of `next.mjs` now) | |
 
 ## Void, what is live (`atomeam/void-loop` main → a-to-mind.com) [read][gh]
