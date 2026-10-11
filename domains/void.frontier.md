@@ -202,6 +202,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **First piece:** a dropped PDF becomes a card that answers questions about it, in the browser, nothing uploaded.
 - **Done when:** a PDF and a public URL each become a card that answers three questions about them with the line it came from.
 - **claim:** builder (claude) 2026-10-11: the first piece: a dropped PDF becomes a card that answers questions about it with the line each answer came from, read in the browser, nothing uploaded.
+- **next:** (2026-10-11) the PDF card is built (`skills/pdf-card.js`, "ask questions about a pdf"): pdf.js reads it on the device and each answer is the document's own lines with page and line. Next: the public-URL half. "ask about <url>" fetches the page through the site's own reader (no third-party proxy), splits it into its headings and paragraphs as `lib/pdf-qa.js` lines (section in place of page), and answers the same way; then a scanned PDF (no text) says it needs OCR rather than staying silent.
 
 ## 13. Skills that spread between Voids
 - **What:** when a visitor teaches their Void something (a named routine of existing asks: "my morning: weather here, my calendar, a 25-minute timer"), they can offer it to everyone; offered routines appear for other visitors with attribution, opt-in. Only routines made of existing asks spread, never code, so nothing anyone shares can do more than Void already does.
