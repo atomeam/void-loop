@@ -294,6 +294,11 @@
     .list-remove:hover { color: var(--fg); }
     .list-empty { color: var(--muted); margin-top: 6px; }
     .list-add-row { display: flex; gap: 6px; margin-top: 12px; }
+    .list-shop { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--muted, #8a8a8a); }
+    .list-shop-store { font: inherit; color: var(--ink, #ddd); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
+    .list-shop-store[aria-pressed="true"] { background: rgba(255,255,255,.16); }
+    .list-shop-links { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; font-size: 12.5px; }
+    .list-shop-links a { color: var(--ink, #ddd); text-decoration: underline; text-underline-offset: 2px; }
     .list-add-input {
       flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 6px;
       padding: 6px 8px; outline: 0; background: #0c0c0c; color: var(--fg); font: inherit;
@@ -1597,6 +1602,43 @@ function mountList(th) {
       addRow.appendChild(addInput);
       addRow.appendChild(addButton);
       el.appendChild(addRow);
+      // shop this list (owner, 2026-10-11: "should have links to stores ... sams walmart is good start"): one search link per
+      // item still to buy, at the store picked. Nothing leaves the page until a link is tapped; no cart, no account, no tag.
+      const toBuy = items.filter((item) => item && !item.done && item.text);
+      if (toBuy.length) {
+        const SHOPS = [['walmart', 'Walmart', (q) => 'https://www.walmart.com/search?q=' + encodeURIComponent(q)],
+          ['sams', "Sam's Club", (q) => 'https://www.samsclub.com/s/' + encodeURIComponent(q)]];
+        const shop = document.createElement('div');
+        shop.className = 'list-shop';
+        const lead = document.createElement('span');
+        lead.textContent = 'Shop this list:';
+        shop.appendChild(lead);
+        const links = document.createElement('div');
+        links.className = 'list-shop-links';
+        const show = (key) => {
+          links.textContent = '';
+          const s = SHOPS.find((x) => x[0] === key);
+          if (!s) return;
+          toBuy.forEach((item) => {
+            const a = document.createElement('a');
+            a.href = s[2](item.text); a.target = '_blank'; a.rel = 'noopener noreferrer';
+            a.textContent = item.text + ' at ' + s[1];
+            a.addEventListener('pointerdown', (e) => e.stopPropagation());
+            links.appendChild(a);
+          });
+        };
+        SHOPS.forEach(([key, name]) => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'list-shop-store'; b.dataset.store = key; b.textContent = name;
+          b.setAttribute('aria-pressed', String(th.shop === key));
+          b.addEventListener('pointerdown', (e) => e.stopPropagation());
+          b.addEventListener('click', () => { th.shop = th.shop === key ? '' : key; save(); render(); });
+          shop.appendChild(b);
+        });
+        el.appendChild(shop);
+        show(th.shop);
+        el.appendChild(links);
+      }
       // the 3D clipboard beside the list (skills/mini/list.js): its paper shows the items, and ticking one sends the pencil to tick it
       stageApi.miniature(el, 'list', { title: th.title || '', items: (th.items || []).map((i) => ({ text: i.text, done: !!i.done })) }, { key: th.id, place: 'beside', width: 150, height: 180, label: '3D clipboard' }).catch(() => {});
 
