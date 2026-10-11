@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as api from '../void-live-deploy/functions/api/review.js';
 import { ensureTables, sessionId } from '../void-live-deploy/lib/void-me.js';
-import { quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, JSON_RULE, FINDINGS_SCHEMA, parseFinding, evidenceLines, quoteCheck, parseFindingsJson, validateFindings, renderFindings, knownFalse, CSS_RULE } from '../void-live-deploy/lib/review-api.js';
+import { widestDiff, quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, JSON_RULE, FINDINGS_SCHEMA, parseFinding, evidenceLines, quoteCheck, parseFindingsJson, validateFindings, renderFindings, knownFalse, CSS_RULE } from '../void-live-deploy/lib/review-api.js';
 
 function d1() {
   const db = new DatabaseSync(':memory:');
@@ -325,4 +325,13 @@ test('a line marked "void-review: ok" is left out of the closer read too, as the
   ], ev);
   assert.deepEqual(v.kept.map((f) => f.line), [22], 'the unmarked line stays');
   assert.equal(v.dropped, 1);
+});
+test('the closer read gets the widest diff that fits, file by file: narrowest first, then widened cheapest first while it fits', () => {
+  const v = (n, c) => [c.repeat(n * 3), c.repeat(n * 2), c.repeat(n)]; // whole functions, 10 lines, 3 lines
+  assert.equal(widestDiff([v(10, 'a')], 100), 'a'.repeat(30), 'one small file: its whole functions');
+  assert.equal(widestDiff([v(10, 'a'), v(30, 'b')], 70).length, 30 + 1 + 30, 'the cheap file widens fully (30), the big one stays at 3 lines (30)');
+  assert.equal(widestDiff([v(10, 'a'), v(30, 'b')], 200), 'a'.repeat(30) + '\n' + 'b'.repeat(90), 'room for both: both whole');
+  assert.equal(widestDiff([v(50, 'a'), v(50, 'b')], 60), ('a'.repeat(50) + '\n' + 'b'.repeat(50)).slice(0, 60), 'nothing fits: the 3-line views, clipped');
+  assert.equal(widestDiff([['', '', 'x']], 10), 'x', 'an empty view (a git error) is skipped');
+  assert.equal(widestDiff([], 10), '');
 });
