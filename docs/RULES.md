@@ -2,6 +2,10 @@
 
 Moved word for word from `AGENTS.md` on 2026-10-10 (cleanup step 1), so the front door stays one page. Each line is dated and says why it exists; the old file is `archive/AGENTS.2026-10-10.md`.
 
+## Improvements we spot (owner, 2026-10-11)
+
+The owner: "no add them always add improvements we spot". An improvement an agent notices (in a source, a review, a test, its own work) goes onto `domains/void.frontier.md` as a one-line target in the same PR, even when it is not built now; it is never left as an offer in chat.
+
 ## Working fast (learned 2026-10-04 onward)
 
 - `node tools/checks.mjs` runs every fast check in one go (fringe ledger, skill collisions, calendar, glyphs, void.html matching its two deploy copies, the full benchmark against its floor, the miss reader's redaction). Run it before every push; CI runs the full browser suite. The benchmark is not replayed when nothing it reads has changed since its last passing run (a hash of the served files, bench.json, the browser and the day; `node tools/bench.mjs --score --fresh` forces it), and it waits for each answer instead of sleeping a fixed time, so a change that never touches the page costs nothing and a full replay is far shorter than the old 20 minutes. Add your test on its own line in the list at the top of `tools/checks.mjs` (one entry per line, so two PRs adding tests do not conflict).
