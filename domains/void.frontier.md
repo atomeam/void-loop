@@ -1,5 +1,24 @@
 # The frontier: what keeps Void moving
 
+## Current priority, above everything in this file: clean up and tie together (owner, 2026-10-10)
+
+The owner, 2026-10-10: "clean everything up that exists and tie it all together", and "just because nothing uses it doesnt mean it cant be salvaged".
+
+Many agents built in parallel, so Void has grown sideways: four overlapping guides (AGENTS.md, STANDING.md, BASE.md, GROWTH.md, plus docs/MAP.md), at least six "what's next" lists, 19 old venture files beside the live docs in `domains/`, 79 drafts, 181 tool files, 21 workflows, a 6,826-line page kept in three copies with 13 skills still inside it, and a 231 KB agent log. Until the six steps below are done, a run takes the next unclaimed step here before Void's asks, misses, the inbox or any other item, and adds no new list, guide or top-level file.
+
+**Nothing is deleted.** Every unused or old piece is wired back in, merged into its living twin, or listed on the salvage shelf (`docs/SALVAGE.md`) with what it is and what it could become. A file nothing uses is a thing to salvage, not to remove.
+
+1. **One front door.** `AGENTS.md` becomes the one short page every agent reads: what Void is, the handful of commands, where things live. The live facts of `STANDING.md`, `BASE.md` and `GROWTH.md` fold into it or the doc they belong in; stale facts are corrected; the old text goes to `archive/`.
+2. **One "next" list.** This file becomes the only build order. The Next items of `void.growth.md`, `void.plan.md`, `void.assimilate.md` and `growth-inbox.md` move here, deduplicated, each keeping where it came from; those files become one-line pointers (their history goes to `archive/`).
+3. **The salvage shelf.** `docs/SALVAGE.md`: one line for every unused or old piece (the venture files, drafts, tools nothing calls such as `next-growth.mjs` and `indexnow_submit.py`, `archive/victus`, workflows): what it is, what it could become, rough effort. Promising ones become candidates in this file. Paths stay put, so no link breaks.
+4. **Tools and workflows tied together.** Group the tools and workflows by job in `docs/MAP.md`; where two do one job (e.g. `next-skill.mjs`, `next-growth.mjs`, `learn.mjs`), merge them and shelve the rest.
+5. **Speed, part 2.** The 2–3 s freeze when a 3D game opens (`skills/scene3d.js` first draw), then the 163 skill modules loaded before the first answer.
+6. **One shape for skills.** The 13 skills still built into `void.html` move to `skills/` files with the same contract as every other skill, one per PR, tests first.
+
+One PR per step (or per skill in step 6), checks before push, automerge. Claim a step by adding `claim: <who> <date>` under it in a one-line PR; mark it done with the PR link.
+
+---
+
 Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as a **candidate capability map** (owner decisions, 2026-10-09). A run that finds no ask from Void, no real miss and no open inbox row takes the top unclaimed step of the build order below instead of stopping.
 
 **The current milestone outranks everything in this file:** beautiful, behaving 3D miniatures on the shared engine (`docs/miniatures.md`), auto-merge and deploy when the existing required tests pass, no new human approval gates.
