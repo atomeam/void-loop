@@ -1,0 +1,42 @@
+// arena — Void plays Connect Four against itself and writes down how good it is (frontier #5, lib/arena.js).
+// 200 games: a depth ladder (each look-ahead depth against the one below, 40 games a step, depth 1 anchored at 1000), then a
+// tuned evaluation at depth 2 (a nudged copy plays the card's own weights for 40 games; kept only if it wins clearly, and
+// rated from those games against depth 2). The result goes to void-live-deploy/arena.json, the record an ask can answer from.
+//   node tools/arena.mjs            plays, prints the ratings, writes arena.json
+//   node tools/arena.mjs --check    plays nothing; exit 1 when arena.json is missing or not shaped as written here
+import { writeFileSync, readFileSync, existsSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { ladder, tune, perf } from '../void-live-deploy/lib/arena.js';
+
+export const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'arena.json');
+export const DEPTHS = [1, 2, 3, 4], GAMES = 40, SEED = 1;
+
+export function run() {
+  const t0 = Date.now(), steps = ladder(DEPTHS, GAMES, SEED);
+  const t = tune({ depth: 2, rounds: 1, games: GAMES, seed: SEED });
+  const d2 = steps.find((s) => s.depth === 2);
+  // the challenger is rated from its own games against the card's weights (the champion's final match replays the card's
+  // weights against themselves when the challenger lost, which says nothing about the challenger)
+  const c = t.rounds[0];
+  const tuned = { name: 'depth 2, tuned', depth: 2, weights: c.challenger, kept: c.kept, rating: perf(d2.rating, c.score), vs: d2.name + ' (the card\'s weights)', score: c.score };
+  const games = GAMES * (DEPTHS.length - 1) + GAMES * (t.rounds.length + 1); // the ladder, the tuning round, the champion's check
+  return { game: 'connect4', games, anchor: 'depth 1 = 1000', ladder: steps, tuned, rounds: t.rounds, ms: Date.now() - t0 };
+}
+
+export const shapeOk = (a) => !!a && a.game === 'connect4' && a.games >= 200 && Array.isArray(a.ladder) && a.ladder.length >= 2
+  && a.ladder.every((s) => Number.isFinite(s.rating) && Number.isFinite(s.depth)) && a.tuned && Number.isFinite(a.tuned.rating);
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  if (process.argv.includes('--check')) {
+    let a = null; try { a = existsSync(OUT) && JSON.parse(readFileSync(OUT, 'utf8')); } catch (_) {}
+    console.log(shapeOk(a) ? 'arena.json: ' + a.games + ' games, ratings ' + a.ladder.map((s) => s.name + ' ' + s.rating).join(', ') : 'arena.json missing or malformed: node tools/arena.mjs');
+    process.exit(shapeOk(a) ? 0 : 1);
+  }
+  const r = run();
+  const { ms, ...keep } = r;
+  writeFileSync(OUT, JSON.stringify({ ...keep, played: new Date().toISOString().slice(0, 10) }, null, 2) + '\n');
+  for (const s of r.ladder) console.log(s.name.padEnd(16), String(s.rating).padStart(5), s.vs ? ' (' + Math.round(s.score * 100) + '% against ' + s.vs + ')' : ' (anchor)');
+  console.log(r.tuned.name.padEnd(16), String(r.tuned.rating).padStart(5), ' (' + Math.round(r.tuned.score * 100) + '% against the card\'s weights at depth 2; ' + (r.tuned.kept ? 'kept: it wins clearly' : 'not kept: the card\'s weights stay') + ')');
+  console.log(r.games + ' games in ' + (ms / 1000).toFixed(1) + ' s -> ' + OUT);
+}

@@ -155,6 +155,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **First piece:** the arena for Connect Four (`skills/connect4-rules.js`), search depth vs. a tuned evaluation, 200 games, rating out.
 - **Done when:** two games have ratings in the ledger and the ask answers with them.
 - **claim:** builder (claude) 2026-10-11: the first piece, the Connect Four arena (`tools/arena.mjs`): search depth vs. a tuned evaluation, 200 games, rating out.
+- **next:** (2026-10-11) the Connect Four arena is built (`tools/arena.mjs`, 200 games, ratings in `void-live-deploy/arena.json`: depth 1 1000, depth 2 1319, depth 3 1354, depth 4 1609; a nudged depth-2 evaluation scored 38% against the card's weights and was not kept). Next: "how good are you at connect four" answers from arena.json with the curve (the connect4 card's own corner, or a line in its log), then the second game: Othello (`skills/othello-rules.js`) through the same `match`/`ladder`, and more tuning rounds on a schedule so a kept challenger can change the card's weights.
 
 ## 6. Void inside every other AI
 - **What:** plan item 11. A public MCP endpoint (`functions/api/mcp.js`) over `/tools.json`, so Claude, ChatGPT and any agent can call Void, Void's code review included (free instant checks; the closer read with a key).
