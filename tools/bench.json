@@ -5718,5 +5718,13 @@
   {"ask": "whats the tempature in paris", "want": "skill:weather"},
   {"ask": "wat time is it in lagos", "want": "skill:worldtime"},
   {"ask": "defne sonder", "want": "skill:define"},
-  {"ask": "how far is lyon frm turin", "want": "skill:distance"}
+  {"ask": "how far is lyon frm turin", "want": "skill:distance"},
+  {"ask": "ask questions about a pdf", "want": "skill:pdf-card"},
+  {"ask": "chat with a pdf", "want": "skill:pdf-card"},
+  {"ask": "read this pdf", "want": "skill:pdf-card"},
+  {"ask": "open a pdf", "want": "skill:pdf-card"},
+  {"ask": "pdf reader", "want": "skill:pdf-card"},
+  {"ask": "what does this pdf say", "want": "skill:pdf-card"},
+  {"ask": "ask my pdf a question", "want": "skill:pdf-card"},
+  {"ask": "search a pdf", "want": "skill:pdf-card"}
 ]
