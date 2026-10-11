@@ -1,7 +1,7 @@
 // The end of every run in one command (pit crew position 2, 2026-10-11): the steps AGENTS.md lists after the build, in
 // order, stopping at the first that fails, so no run forgets one and none is done by hand.
 //   node tools/finish.mjs <kind> "what changed, in plain words" [--log "the agent-log line, if it should say more"]
-//        [--by claude] [--title "commit and PR title"] [--brief "who it is for; the problem; what it will not build"] [--dry] [--from N]
+//        [--by claude] [--title "commit and PR title"] [--brief "who it is for; the problem; what it will not build"] [--body "more commit message"] [--dry] [--from N]
 // kinds are the ledger's: grow, build, fix, retire, idea, finding (tools/grow.mjs).
 //   1. the growth ledger line (tools/grow.mjs)          2. the agent-log line (domains/void.agents.log.md)
 //   3. the map covers every skill, miniature, workflow and tool (tools/map-coverage.test.mjs; add a line to docs/MAP.md if not)
@@ -27,7 +27,7 @@ export function parseArgs(argv) {
   if (!KINDS.includes(kind)) return { error: 'the first word is the kind: ' + KINDS.join(', ') };
   if (!what || what.startsWith('--')) return { error: 'say what changed, in quotes: node tools/finish.mjs build "the tide card shows the next three tides"' };
   if (/[\r\n]/.test(what)) return { error: 'what changed is one line' };
-  return { kind, what, by: opt('--by') || 'claude', log: opt('--log') || what, title: opt('--title') || what, brief: opt('--brief'), dry: rest.includes('--dry'), from: Math.max(1, Number(opt('--from')) || 1) };
+  return { kind, what, by: opt('--by') || 'claude', log: opt('--log') || what, title: opt('--title') || what, brief: opt('--brief'), body: opt('--body'), dry: rest.includes('--dry'), from: Math.max(1, Number(opt('--from')) || 1) };
 }
 
 /** the agent-log line, in the log's own shape. Pure. */
@@ -45,8 +45,8 @@ export function steps(a) {
   return [
     ['ledger line', node('grow.mjs', a.kind, a.what, '--by', a.by)],
     ['agent-log line', () => { appendFileSync(LOG, logLine(a) + '\n'); return 0; }],
-    ['map covers everything', [process.execPath, ['--test', resolve(root, 'tools', 'map-coverage.test.mjs')]]],
-    ['commit', () => (git('add', '-A') || git('commit', '-q', '-m', a.title))],
+    ['map covers everything', [process.execPath, ['--test', '--test-reporter=dot', resolve(root, 'tools', 'map-coverage.test.mjs')]]],
+    ['commit', () => (git('add', '-A') || git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : [])))],
     ['bring main in', node('merge-main.mjs')],
     ['fast checks', node('checks.mjs')],
     ['push', node('push.mjs')],
@@ -74,7 +74,7 @@ function openPr(a) {
 
 function main(argv) {
   const a = parseArgs(argv.slice(2));
-  if (a.error) { console.error('finish: ' + a.error + '\nusage: node tools/finish.mjs <kind> "what changed" [--log "..."] [--by claude] [--title "..."] [--brief "..."] [--dry] [--from N]'); return 2; }
+  if (a.error) { console.error('finish: ' + a.error + '\nusage: node tools/finish.mjs <kind> "what changed" [--log "..."] [--by claude] [--title "..."] [--brief "..."] [--body "..."] [--dry] [--from N]'); return 2; }
   for (const [i, [label, step]] of steps(a).entries()) {
     const shown = typeof step === 'function' ? '' : ': ' + [step[0] === process.execPath ? 'node' : step[0], ...step[1].map((x) => x.replace(root + '/', ''))].join(' ');
     console.log(`\n[${i + 1}/8] ${label}${shown}`);

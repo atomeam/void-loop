@@ -12,6 +12,7 @@ test('parseArgs takes the kind, what changed and the flags, and refuses what it 
   assert.match(parseArgs(['fix']).error, /what changed/);
   assert.match(parseArgs(['fix', 'two\nlines']).error, /one line/);
   assert.equal(parseArgs(['fix', 'x', '--from', 'nope']).from, 1);
+  assert.equal(parseArgs(['fix', 'x', '--body', 'Co-Authored-By: a']).body, 'Co-Authored-By: a');
 });
 
 test('the log line has the log\'s own shape', () => {
