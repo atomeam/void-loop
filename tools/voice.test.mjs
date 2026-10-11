@@ -122,6 +122,11 @@ test('the canon: Adam\'s motto and VoidQuest are read with their version; "(not 
   const real = readCanon(fs.readFileSync(new URL('../domains/void.canon.md', import.meta.url), 'utf8'));
   assert.ok(real.terms.some((x) => x.term === 'the forge' && /STL/.test(x.means)) && real.terms.some((x) => x.term === 'frontier #14'), 'the canon carries both terms Void asked for');
   assert.match(knowsFacts({ canon: { version: 1, motto: null, voidquest: 'Learn games.' } }), /My canon \(v1\): motto: not written yet, so I do not know it; VoidQuest: Learn games\./);
+  // how Void is different: Adam's four lines (2026-10-11), read with the version and said in the facts
+  assert.deepEqual(real.different.map((x) => x.name), ['Skills, not one-off answers', 'Growth in the open', 'On your device first', 'Attention, not pretend feelings']);
+  assert.ok(real.version >= 3, 'the canon went up a version with them');
+  assert.match(knowsFacts({ canon: { version: 3, different: [{ name: 'On your device first', line: 'nothing uploaded.' }] } }), /How I am different \(canon v3\): On your device first: nothing uploaded\./);
+  assert.equal(readCanon('version: 1\n\n## Motto\n(not written yet)\n').different, undefined, 'no section, no field');
 });
 
 test('weekFacts: the week in the growth card\'s words, nothing for a ledger that cannot be read', async () => {
