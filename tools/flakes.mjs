@@ -49,7 +49,7 @@ async function queue(dry) {
   const tok = process.env.VOID_OWNER_TOKEN;
   for (const g of jobs) {
     if (dry || !tok) { console.log((tok ? 'would queue ' : 'would queue (no VOID_OWNER_TOKEN here) ') + g.target + ': ' + askOf(g)); continue; }
-    const res = await fetch(SITE + '/api/queue', { method: 'POST', headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json', 'user-agent': 'a2m-flakes/1.0' }, body: JSON.stringify({ ask: askOf(g), target: g.target }) });
+    const res = await fetch(SITE + '/api/queue', { method: 'POST', headers: { authorization: 'Bearer ' + tok, 'content-type': 'application/json', 'user-agent': 'a2m-flakes/1.0' }, body: JSON.stringify({ ask: askOf(g), target: g.target }) }); // void-review: ok (/api/queue takes one job per POST, no batch form; only checks that healed twice in a week get here)
     console.log(res.ok ? 'queued ' + g.target : 'could not queue ' + g.target + ': HTTP ' + res.status);
   }
   return 0;
