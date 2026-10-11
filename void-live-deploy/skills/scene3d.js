@@ -211,6 +211,16 @@ function draw(h) {
  * Show a miniature of `kind` in host. Re-mounting the same key (a card that re-rendered) moves the live miniature into the
  * new host and hands it the new data, so nothing is rebuilt. Rejects where WebGL is unavailable.
  */
+// a miniature beside its card stays on the screen (owner, 2026-10-11: "things should smartly try to autofit in Void"): to the
+// right when it fits, else to the left, else under the card
+function fitBeside(wrap) {
+  if (typeof innerWidth !== 'number' || !wrap.isConnected) return;
+  const put = (side) => { wrap.style.top = side === 'below' ? 'calc(100% + 10px)' : '0'; wrap.style.left = side === 'right' ? 'calc(100% + 14px)' : side === 'below' ? '0' : 'auto'; wrap.style.right = side === 'left' ? 'calc(100% + 14px)' : 'auto'; };
+  put('right'); if (wrap.getBoundingClientRect().right <= innerWidth - 4) return;
+  put('left'); if (wrap.getBoundingClientRect().left >= 4) return;
+  put('below');
+}
+
 export async function mountMiniature(host, kind, data = {}, opts = {}) {
   const key = String(opts.key || kind + ':' + Math.random().toString(36).slice(2, 9));
   const old = live.get(key);
@@ -244,7 +254,7 @@ export async function mountMiniature(host, kind, data = {}, opts = {}) {
   const h = {
     key, kind, E, wrap, canvas, scene, camera, controls, root, keyLight, sky, data, draws: 0, gone: 0, dirty: true, visible: true, ready: false, needsCompile: true, compiling: false,
     anim: [], moving: false, exposure: opts.exposure ?? 1.0, contact: null, contacts: [], cssW: 0, cssH: 0, inst: null, taps: [],
-    attach(host2) { if (host2 && wrap.parentNode !== host2) host2.appendChild(wrap); h.dirty = true; wake(); },
+    attach(host2) { if (host2 && wrap.parentNode !== host2) host2.appendChild(wrap); if (place === 'beside') fitBeside(wrap); h.dirty = true; wake(); },
     update(d) { h.data = d; h.needsCompile = true; if (h.inst && h.inst.update) { try { h.inst.update(d); } catch (e) { console.warn('[miniature ' + kind + '] update', e); } } h.requestRender(); },
     requestRender(opts2 = {}) { h.dirty = true; if (opts2.shadows !== false) for (const c of h.contacts) c.dirty = true; wake(); },
     /** Another blurred contact shadow, e.g. pieces on a board: { y, size, exclude: [objects that must not cast it], opacity, blur, darkness, height }. */
