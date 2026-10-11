@@ -1,5 +1,5 @@
-# Frontier #6 (Void inside every other AI): a real MCP client against the live site. After each deploy of main (and once a
-# day, or by hand) the official MCP SDK client (tools/mcp-probe.mjs) connects to https://a-to-mind.com/api/mcp, initializes,
+# Frontier #6 (Void inside every other AI): a real MCP client against the live site. Every hour, after a deploy a person or
+# an agent's own token starts, and by hand, the official MCP SDK client (tools/mcp-probe.mjs) connects to https://a-to-mind.com/api/mcp, initializes,
 # lists the tools and calls each one with an input whose answer is known. Red means an agent can no longer use Void.
 # The SDK is installed in this job only (pinned); the repo does not depend on it. Read-only: the tools write nothing and need
 # no key or secret.
@@ -10,8 +10,10 @@ on:
     workflows: [Void deploy]
     types: [completed]
     branches: [main]
+  # hourly: automerge starts the deploy with GITHUB_TOKEN, and a run started that way fires no workflow_run (first deploy after
+  # #514: the deploy succeeded, this never ran), so the hour is what catches a merged deploy
   schedule:
-    - cron: '17 6 * * *'
+    - cron: '17 * * * *'
   workflow_dispatch:
     inputs:
       url:
