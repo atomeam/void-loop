@@ -600,8 +600,11 @@ try {
     const line = () => L.p.$eval('.void-arrows line', (l) => [l.getAttribute('x1'), l.getAttribute('y1'), l.getAttribute('x2'), l.getAttribute('y2')].map(Number)).catch(() => null);
     const l1 = await line();
     const box = await L.p.$eval('.clock', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + 10, y: b.top + 10 }; });
-    await L.p.mouse.move(box.x, box.y); await L.p.mouse.down(); await L.p.mouse.move(box.x - 120, box.y - 60, { steps: 6 }); await L.p.mouse.up(); await L.p.waitForTimeout(250);
+    // a slow drag, never a flick: in 6 steps the release read as ~1.4 px/ms on a fast runner, over the 0.9 px/ms throw speed
+    // (bindDrag), and the clock was tossed off the stage with its arrow (the flake of 2026-10-11, about 1 run in 3)
+    await L.p.mouse.move(box.x, box.y); await L.p.mouse.down(); await L.p.mouse.move(box.x - 120, box.y - 60, { steps: 24 }); await L.p.mouse.up(); await L.p.waitForTimeout(250);
     const l2 = await line();
+    await L.p.waitForTimeout(600); const placed = (await L.state()).some((t) => t.kind === 'clock'); // put down, not thrown away
     const follows = !!(l1 && l2) && Math.abs(l2[0] - l1[0]) + Math.abs(l2[1] - l1[1]) > 100 && Math.hypot(l2[2] - l1[2], l2[3] - l1[3]) < 30; // the clock's end moves with it; the timer's end only slides along its edge
     await L.ask('add a label that says to do', 700);
     await L.ask('connect the label to the note', 700);
@@ -613,8 +616,8 @@ try {
     await L.ask('remove the arrows', 600); await L.ask('remove the labels', 600);
     const clean = (await L.p.$$eval('.void-arrows line, .void-tag, .void-label', (es) => es.length)) === 0 && (await L.state()).length === 3;
     check('label: "label the clock kitchen" and "label the note groceries" tag them, "draw an arrow from kitchen to the timer" joins them and the arrow follows the clock when it is dragged, a free label "to do" takes an arrow, "undo" takes the last arrow back, all of it survives a reload, and "remove the arrows" / "remove the labels" clear them',
-      tags === 'groceries,kitchen' && /drew an arrow/.test(said) && follows && two === 2 && undone === 1 && kept && clean && !L.errors.length,
-      JSON.stringify({ tags, said, l1, l2, two, undone, kept, clean, e: L.errors }));
+      tags === 'groceries,kitchen' && /drew an arrow/.test(said) && placed && follows && two === 2 && undone === 1 && kept && clean && !L.errors.length,
+      JSON.stringify({ tags, said, placed, l1, l2, two, undone, kept, clean, e: L.errors }));
     await L.ctx.close(); }
   // Public Voids: "publish my void as @name" puts a paid Void's look and kept cards (as text) at /@name, after the person's own yes.
   if (want("Public Voids: \"publish my void as @name\" puts a paid Void's look and kept cards (as text) ")) { const DB = sqliteD1(), env = { DB, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'index.html'), 'utf8')) } };
@@ -915,7 +918,11 @@ try {
         return Math.round(100 * Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)) / (a.width * a.height)); });
       const saved = async () => (await P.state()).filter((t) => t.kind === 'sticky').map((t) => [t.x, t.y]).join(';');
       const before = await box(), place = await saved();
-      await P.ask('how good are you at othello', 1600);
+      await P.ask('how good are you at othello', 600);
+      // the card can grow when its numbers arrive (late on a loaded runner) and the sticky glides again (.35 s): wait for it to be
+      // clear and settled, not a fixed time (a fixed 1.6 s once caught it mid-glide in CI, 2% under: run 38162949242)
+      await until(async () => ((await covered()) === 0 ? "clear" : ""), 6000);
+      await P.p.waitForTimeout(450);
       const under = await covered(), during = await box(), placeDuring = await saved();
       await P.ask('close', 900);
       const after = await box();
@@ -926,6 +933,22 @@ try {
     check('an open card never buries a stage thing: a sticky in the middle steps aside when "how good are you at othello" opens (none of it under the card, on a desktop and on a phone), comes back to the same spot when the card closes, and where it was put is never changed or saved over',
       ok(r[1280]) && ok(r[390]), JSON.stringify(r));
   }
+  // a throw undone mid-flight stays undone (2026-10-11: the labels flake was this; the flying copy deleted the brought-back clock)
+  if (want("undo during a throw: a clock flicked off the stage and undone at once comes back and stays")) { const P = await fresh();
+    await P.ask('make a clock', 700);
+    const flick = () => P.p.evaluate(() => { const el = document.querySelector('.clock'), b = el.getBoundingClientRect(), x = b.left + 10, y = b.top + 10;
+      const ev = (type, cx, cy) => new PointerEvent(type, { clientX: cx, clientY: cy, bubbles: true, pointerId: 1, isPrimary: true, button: 0 });
+      el.dispatchEvent(ev('pointerdown', x, y)); window.dispatchEvent(ev('pointermove', x + 60, y - 30)); window.dispatchEvent(ev('pointermove', x + 80, y - 40)); window.dispatchEvent(ev('pointerup', x + 80, y - 40)); // ~1.4 px/ms: just over the throw speed, a slow flight
+      return !!(el.style.transform || '').length || true; });
+    await flick(); await P.p.waitForTimeout(120);
+    const flying = await P.p.evaluate(() => /rotate/.test((document.querySelector('.clock') || {}).style ? document.querySelector('.clock').style.transform : ''));
+    await P.ask('undo', 300);
+    const back = (await P.state()).some((t) => t.kind === 'clock');
+    await P.p.waitForTimeout(2500); // longer than any flight takes to leave the stage
+    const stays = (await P.state()).some((t) => t.kind === 'clock') && !!(await P.p.$('.clock'));
+    check('undo during a throw: a clock flicked off the stage is flying, "undo" right away brings it back, and it is still there once the flight would have left the stage',
+      flying && back && stays && !P.errors.length, JSON.stringify({ flying, back, stays, e: P.errors }));
+    await P.ctx.close(); }
   // step 6 (one shape for skills): the counter, pinned before it moves out of void.html; the same asks must keep working after
   if (want("built-in counter: make, count up and down, set, reset, size, buttons, a reload, remove; only ever one counter")) { const P = await fresh();
     const one = async () => (await P.state()).filter((t) => t.kind === 'counter');
