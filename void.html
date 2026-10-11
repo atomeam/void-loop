@@ -197,23 +197,39 @@
     .counter-label {
       font-size: 0.4em; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em;
     }
-    .image {
-      border-radius: 8px;
-      overflow: hidden;
-      background: #111;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    /* an instant photo (skills/image.js): an off-white frame with the deep bottom strip, the caption written under the
+       picture in the felt-tip hand, each photo's own slight tilt; a colour ("make the image red") edges the frame */
+    .thing.image {
+      box-sizing: border-box;
       display: block;
       max-width: 320px;
+      padding: 12px 12px 0;
+      border-radius: 2px;
+      background-color: #faf8f2;
+      background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(0, 0, 0, 0.03));
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2), 0 14px 22px -10px rgba(0, 0, 0, 0.6);
     }
-    .image img {
+    .thing.image img {
       display: block;
       width: 100%;
       height: auto;
-      max-width: 320px;
-      max-height: 320px;
-      object-fit: contain;
+      max-width: 296px;
+      max-height: 296px;
+      object-fit: cover;
+      background: #1b1b20;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
     }
+    .thing.image .image-title {
+      min-height: 44px;
+      padding: 8px 4px 6px;
+      color: #282830;
+      font: 22px/1.25 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
+      text-align: center;
+      outline: 0;
+      word-break: break-word;
+    }
+    .thing.image .image-title:empty:focus::before { content: 'write a caption'; color: rgba(40, 40, 48, 0.4); }
     body:not(.in-ext-panel) .vput { display: none; } /* "into the page" shows only in the extension's side panel */
     /* a kraft shipping tag you keep a link on: tan card stock with a little fibre, the rounded tag end on the left with a
        punched hole and its reinforcing ring, the title written in the felt-tip hand, the host stamped in red; a colour
@@ -888,7 +904,6 @@
 Object.values(things).forEach((th) => {
         if (th.kind === 'clock') mountClock(th);
         else if (th.kind === 'timer') mountTimer(th);
-        else if (th.kind === 'image') mountImage(th);
         else if (th.kind === 'list') mountList(th);
         else if (th.kind === 'calc') mountCalc(th);
         else if (th.kind === 'kept') mountKept(th);
@@ -1477,39 +1492,6 @@ Object.values(things).forEach((th) => {
       // the brass desk clock beside it (skills/mini/clock.js), keeping the same time in this device's zone
       let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {}
       if (tz) stageApi.miniature(el, 'clock', { clocks: [{ tz, label: 'Here' }] }, { key: th.id, place: 'beside', width: 150, height: 160, label: '3D desk clock showing the time here' }).catch(() => {});
-      bindDrag(el, th);
-      stage.appendChild(el);
-    }
-
-function mountImage(th) {
-      const el = document.createElement('div');
-      el.className = 'thing image';
-      el.dataset.id = th.id;
-      el.style.left = th.x + 'px';
-      el.style.top = th.y + 'px';
-      if (th.color) el.style.borderColor = th.color;
-      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
-
-      const title = document.createElement('div');
-      title.className = 'image-title';
-      title.style.cssText = 'min-height:22px;margin-bottom:6px;color:var(--fg);font-size:12px;font-weight:500;outline:0;text-align:center;opacity:0.6;';
-      title.dataset.placeholder = 'Image';
-      title.contentEditable = 'true';
-      title.spellcheck = false;
-      title.textContent = th.title || '';
-      title.addEventListener('pointerdown', (e) => e.stopPropagation());
-      title.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); title.blur(); } });
-      title.addEventListener('input', () => { th.title = title.textContent || ''; save(); });
-
-      const img = document.createElement('img');
-      img.src = th.src;
-      img.alt = '';
-      img.draggable = false;
-      img.onerror = () => { img.style.display = 'none'; title.textContent = th.title || 'Image (failed)'; say('image failed to load'); };
-      img.onload = () => { if (!th.title) title.textContent = ''; };
-
-      el.appendChild(title);
-      el.appendChild(img);
       bindDrag(el, th);
       stage.appendChild(el);
     }
@@ -2154,59 +2136,6 @@ function applyClockAlters(c, lower) {
       return false;
     }
 
-    function parseImageUrl(text) {
-      const m = text.match(/https?:\/\/[^\s]+/i);
-      if (!m) return null;
-      const url = m[0].replace(/[),.!]+$/, '');
-      if (/\.(png|jpe?g|gif|webp|avif|svg)(\?.*)?$/i.test(url) || /https?:\/\//i.test(url)) return url;
-      return url;
-    }
-function wantsCreateImage(lower, raw) {
-      if (/\b(remove|delete|get rid|hide)\b/.test(lower) && /\b(image|picture|photo|img)\b/.test(lower)) return false;
-      const url = parseImageUrl(raw);
-      // "show this image https://..." / "show image https://..."
-      if (url && /\b(show|display)\b.*\b(this\s+)?(image|picture|photo|img)\b/.test(lower)) return true;
-      // "put an image here <url>" / "put image here <url>" / "place image here <url>"
-      if (url && /\b(put|place|drop)\b.*\b(image|picture|photo|img)\b.*\bhere\b/.test(lower)) return true;
-      // "put an image here <url>" without "image" keyword if URL is clearly an image
-      if (url && /\b(put|place|drop)\b.*\bhere\b/.test(lower) && /\.(png|jpe?g|gif|webp|avif|svg)\b/i.test(url)) return true;
-      // "add image <url>" / "create image <url>"
-      if (url && /\b(add|create|make|new)\b.*\b(image|picture|photo|img)\b/.test(lower)) return true;
-      // existing patterns
-      if (url && /\b(image|picture|photo|img)\b/.test(lower)) return true;
-      if (url && /https?:\/\//i.test(raw) && /\.(png|jpe?g|gif|webp|avif|svg)\b/i.test(raw)) return true;
-      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\b(image|picture|photo|img)\b/.test(lower) && url) return true;
-      if (/^image\s*:\s*https?:\/\//i.test(raw)) return true;
-      return false;
-    }
-    function wantsRemoveImage(lower) {
-      // "remove the image" / "remove image" / "delete the image" / "get rid of the image" / "clear the image"
-      if (/^(remove|delete|get\s+rid\s+of|hide|clear)\s+(the\s+)?(image|picture|photo|img)\s*[.!]?\s*$/.test(lower)) return true;
-      if (/\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(image|picture|photo|img)\b/.test(lower)) return true;
-      if (/\b(image|picture|photo)\b.*\b(away|gone)\b/.test(lower)) return true;
-      // "remove it" when image is selected
-      if (/^(remove|delete|get\s+rid\s+of|hide)\s+(it|this)\s*[.!]?\s*$/.test(lower)) return true;
-      return false;
-    }
-    function ensureImage(src) {
-      let img = Object.values(things).find((th) => th.kind === 'image');
-      if (!img) {
-        img = {
-          id: uid('image'),
-          kind: 'image',
-          x: Math.max(40, stage.clientWidth / 2 - 160),
-          y: Math.max(40, stage.clientHeight / 2 - 160),
-          src: src,
-        };
-        things[img.id] = img;
-        selectedId = img.id;
-      } else {
-        img.src = src;
-        selectedId = img.id;
-      }
-      return img;
-    }
-
     function cleanListText(value) {
       return (value || '').replace(/^[\s,;:]+|[\s,;.!?]+$/g, '').trim();
     }
@@ -2707,25 +2636,11 @@ say('nothing selected to remove');
         if (sd) return { ok: true, detail: sd };
       }
 
-      // image create (url)
-      if (wantsCreateImage(lower, text)) {
-        const url = parseImageUrl(text);
-        if (url) {
-          ensureImage(url);
-          save(); render();
-          return { ok: true, detail: 'image' };
-        }
-      }
-      // image remove
-      if (wantsRemoveImage(lower)) {
-        const im = Object.values(things).find((th) => th.kind === 'image');
-        if (im) {
-          delete things[im.id];
-          if (selectedId === im.id) selectedId = null;
-          save(); render();
-          return { ok: true, detail: 'image-removed' };
-        }
-        return { ok: false, detail: 'no image' };
+      // image create / remove (skills/image.js, cleanup step 6), at the place in this order it always had
+      if (stageKinds.image && typeof stageKinds.image.ask === 'function') {
+        const idn = stageKinds.image.ask(lower, text, stageApi);
+        if (idn === 'no image') return { ok: false, detail: 'no image' };
+        if (idn) return { ok: true, detail: idn };
       }
       // link card create / remove / a bare url (skills/link.js, cleanup step 6), at the place in this order it always had
       if (stageKinds.link && typeof stageKinds.link.ask === 'function') {
@@ -2733,11 +2648,10 @@ say('nothing selected to remove');
         if (ld === 'no link') return { ok: false, detail: 'no link' };
         if (ld) return { ok: true, detail: ld };
       }
-      // bare image url paste (freer)
-      if (/^https?:\/\/[^\s]+\.(png|jpe?g|gif|webp|avif|svg)(\?.*)?$/i.test(text.trim())) {
-        ensureImage(text.trim());
-        save(); render();
-        return { ok: true, detail: 'image' };
+      // a pasted image url (skills/image.js askBare), after the link card as it always was
+      if (stageKinds.image && typeof stageKinds.image.askBare === 'function') {
+        const idn = stageKinds.image.askBare(lower, text, stageApi);
+        if (idn) return { ok: true, detail: idn };
       }
 
       // sticky text edit when selected / referenced

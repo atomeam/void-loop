@@ -1060,6 +1060,47 @@ try {
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
   // step 6: the sticky note, pinned before it moves out of void.html (what it does today, ask by ask)
+  // step 6: the image card, pinned before it moves out of void.html (what it does today, ask by ask); the pictures are served
+  // here (a 2x2 png), so nothing leaves the page
+  if (want("built-in image: show this image, a bare image url replaces it, a colour, a reload, a picture that fails, remove")) { const P = await fresh();
+    const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAEklEQVR4nGP4z8DwHwyBNCMDAD3NBP1OcVJjAAAAAElFTkSuQmCC', 'base64');
+    await P.p.route(/^https:\/\/img\.example\.org\//, (r) => /missing/.test(r.request().url()) ? r.fulfill({ status: 404, body: '' }) : r.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
+    const im = async () => (await P.state()).filter((t) => t.kind === 'image').map((t) => t.src + '|' + (t.color || '')).join(' / ');
+    const shown = () => P.p.$$eval('.thing.image', (els) => els.map((e) => { const i = e.querySelector('img'); return (i && i.complete && i.naturalWidth > 0 ? 'loaded' : 'not') + '|' + (e.querySelector('.image-title') || {}).textContent; }).join(' / '));
+    const r = {};
+    await P.ask('show this image https://img.example.org/cat.png', 700); r.a = await im(); r.aShown = await shown();
+    await P.ask('https://img.example.org/dog.png', 600); r.b = await im();
+    await P.ask('make the image red', 400); r.c = await im();
+    await P.p.reload(); await P.p.waitForTimeout(1500);
+    r.reload = await until(() => P.p.$$eval('.thing.image img', (els) => els.length === 1 && els[0].naturalWidth > 0 ? els[0].getAttribute('src') : false), 6000);
+    await P.ask('show image https://img.example.org/missing.png', 900); r.d = await im(); r.dShown = await shown();
+    await P.ask('remove the image', 500); r.e = await im();
+    await P.ask('remove the image', 500); r.f = await im();
+    check('built-in image: "show this image <url>" puts the picture up, a bare image url replaces it (one card), "make the image red" edges it red, it comes back after a reload, a picture that will not load says so on the card, and "remove the image" takes it away (twice is harmless)',
+      r.a === 'https://img.example.org/cat.png|' && r.aShown === 'loaded|' && r.b === 'https://img.example.org/dog.png|' && r.c === 'https://img.example.org/dog.png|#ff5c5c'
+        && r.reload === 'https://img.example.org/dog.png' && r.d === 'https://img.example.org/missing.png|#ff5c5c' && r.dShown === 'not|Image (failed)'
+        && r.e === '' && r.f === '' && !P.errors.length,
+      JSON.stringify({ r, e: P.errors }));
+    await P.ctx.close(); }
+  // step 6's visible upgrade for the image card (owner, 2026-10-11: every cleanup move ships one): an instant photo
+  if (want("image instant photo look: white frame with a deep bottom strip, the caption under the picture in the felt-tip hand, its own tilt kept after a reload, a colour still edges it")) { const P = await fresh();
+    const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAEklEQVR4nGP4z8DwHwyBNCMDAD3NBP1OcVJjAAAAAElFTkSuQmCC', 'base64');
+    await P.p.route(/^https:\/\/img\.example\.org\//, (r) => r.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
+    await P.ask('show this image https://img.example.org/cat.png', 800);
+    await P.p.click('.thing.image .image-title'); await P.p.keyboard.type('the cat, 2026'); await P.p.keyboard.press('Enter'); await P.p.waitForTimeout(300);
+    const look = () => P.p.$eval('.thing.image', (e) => { const c = getComputedStyle(e), im = e.querySelector('img'), t = e.querySelector('.image-title'), tc = getComputedStyle(t);
+      return { bg: c.backgroundColor, padTop: parseFloat(c.paddingTop), padBottom: parseFloat(c.paddingBottom), stripe: e.offsetHeight - (im.offsetTop + im.offsetHeight), below: t.offsetTop >= im.offsetTop + im.offsetHeight, // layout, not the tilted screen boxes
+        font: tc.fontFamily, ink: tc.color, caption: t.textContent, rot: c.rotate, side: c.borderLeftColor }; });
+    const a = await look(), saved = (await P.state()).filter((t) => t.kind === 'image').map((t) => t.title).join();
+    await P.p.reload(); await P.p.waitForTimeout(1500);
+    const b = await until(() => P.p.$$eval('.thing.image img', (els) => els.length === 1 && els[0].naturalWidth > 0).then((ok) => ok && look()), 6000);
+    await P.ask('make the image blue', 400);
+    const c = await look();
+    check('image instant photo look: the picture sits in an off-white instant-photo frame with a deep bottom strip (at least 3x the side), the caption you write sits under the picture in the felt-tip hand in dark ink and is kept, each photo has its own slight tilt that survives a reload, and "make the image blue" edges it blue',
+      a.bg === 'rgb(250, 248, 242)' && a.stripe >= 3 * a.padTop && a.below && /^"?Void Hand/.test(a.font) && a.ink === 'rgb(40, 40, 48)' && a.caption === 'the cat, 2026' && saved === 'the cat, 2026'
+        && /^-?\d+(\.\d+)?deg$/.test(a.rot) && a.rot !== '0deg' && b && b.rot === a.rot && b.caption === 'the cat, 2026' && c.side === 'rgb(106, 168, 255)' && !P.errors.length,
+      JSON.stringify({ a, b, c, saved, e: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
   // step 6: the link card, pinned before it moves out of void.html (what it does today, ask by ask)
   if (want("built-in link: a bare url, add a link, a colour, a reload, an image url stays an image, remove")) { const P = await fresh();
     const ln = async () => (await P.state()).filter((t) => t.kind === 'link').map((t) => t.title + '|' + t.host + '|' + (t.color || '')).join(' / ');
