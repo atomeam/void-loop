@@ -5,6 +5,7 @@
 // Writes void-live-deploy/self.json. The deploy workflow runs this before every deploy, so the file never goes stale there.
 //   node tools/self-context.mjs          write the file
 //   node tools/self-context.mjs --check  exit 1 if the committed file differs from what would be written
+import { openItems } from './frontier.mjs';
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -63,7 +64,7 @@ export function readCommits(log, n = 20) {
     .slice(0, n).map(([at, subject]) => ({ at: new Date(Date.parse(at)).toISOString().replace('.000', ''), subject: clip(subject.replace(/[`*]/g, ''), 140) }));
 }
 
-export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, tracks = null, building = null, commits = null } = {}) {
+export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, tracks = null, building = null, commits = null, open = null } = {}) {
   const about = clip((/^>\s*(.+)$/m.exec(llms) || [])[1], 300);
   const rows = [];
   for (const line of inbox.split('\n')) {
@@ -75,7 +76,9 @@ export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, 
     rows.push({ state: shipped ? 'shipped' : clip(status.split(/\s/)[0], 20).toLowerCase(), date: clip(date, 10), ask: clip(ask, 120), from: clip(source.replace(/\s*\(.*$/, ''), 120) });
   }
   return {
-    about, shipped: rows.filter((r) => r.state === 'shipped'), open: rows.filter((r) => r.state !== 'shipped'),
+    about, shipped: rows.filter((r) => r.state === 'shipped'),
+    // what is still open comes from the frontier, the one build order (cleanup step 4); the inbox keeps the shipped history
+    open: open ? open.map((o) => ({ state: 'open', date: '', ask: clip(o.title, 120), from: clip(o.from, 120) })) : rows.filter((r) => r.state !== 'shipped'),
     games: GAMES.filter((g) => skills.includes(g)), minis: minis.filter((m) => m !== 'sample').sort(),
     ...(canon ? { canon } : {}),
     ...(tracks ? { tracks } : {}),
@@ -93,6 +96,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (blame.status === 0) { let t = 0; for (const l of blame.stdout.split('\n')) { const h = /^[0-9a-f]{40} \d+ (\d+)/.exec(l); if (h) lineTimes.next = +h[1]; const c = /^committer-time (\d+)/.exec(l); if (c) t = +c[1]; if (l.startsWith('\t')) { lineTimes[lineTimes.next] = new Date(t * 1000).toISOString().replace('.000', ''); } } delete lineTimes.next; }
   const self = buildSelf(readFileSync(resolve(root, 'void-live-deploy/llms.txt'), 'utf8'), readFileSync(resolve(root, 'domains/growth-inbox.md'), 'utf8'), { skills, minis, canon: existsSync(resolve(root, 'domains/void.canon.md')) ? readCanon(readFileSync(resolve(root, 'domains/void.canon.md'), 'utf8')) : null,
     tracks: existsSync(tank) ? readTracks(readFileSync(tank, 'utf8')) : null, building: existsSync(frontier) ? readBuilding(readFileSync(frontier, 'utf8'), lineTimes) : null,
+    open: existsSync(frontier) ? openItems(readFileSync(frontier, 'utf8')) : null,
     commits: readCommits(spawnSync('git', ['log', '--no-merges', '-20', '--format=%cI%x09%s', 'HEAD'], { cwd: root, encoding: 'utf8', timeout: 20000 }).stdout) });
   const text = JSON.stringify(self, null, 1) + '\n';
   if (process.argv.includes('--check')) {

@@ -1,6 +1,8 @@
-// Add several new Void asks to the growth inbox. Does not delete rows.
-// Ideas are plain asks a visitor might type. Already-listed asks are skipped.
+// The idea intake: add new Void asks to the open list on the frontier, the one build order (cleanup step 4, 2026-10-11).
+// Ideas are plain asks a visitor might type. An ask already on the frontier, or already in the growth inbox's history
+// (shipped or listed there before 2026-10-11), is skipped. Nothing is ever removed.
 import { readFileSync, writeFileSync } from 'node:fs';
+import { FRONTIER, openItems, addOpen } from './frontier.mjs';
 
 const inboxPath = new URL('../domains/growth-inbox.md', import.meta.url);
 
@@ -44,14 +46,20 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+// the asks the frontier's open list already has, lower-cased
+export const frontierAsks = (frontier) => openItems(frontier).map((o) => o.title.toLowerCase());
+
 function main() {
-  const text = readFileSync(inboxPath, 'utf8');
-  const ideas = ideasToAdd(text);
+  const inbox = readFileSync(inboxPath, 'utf8');
+  let frontier = readFileSync(FRONTIER, 'utf8');
+  const have = new Set([...asksIn(inbox), ...frontierAsks(frontier)]);
+  const ideas = IDEA_BANK.filter(([ask]) => !have.has(ask.toLowerCase())).slice(0, 5);
   if (!ideas.length) {
     console.log('none');
     return;
   }
-  writeFileSync(inboxPath, appendIdeas(text, ideas, today()));
+  for (const [ask, source] of ideas) frontier = addOpen(frontier, { title: ask, from: 'idea bank, ' + source, why: 'added ' + today() + ' by tools/grow-ideas.mjs' });
+  writeFileSync(FRONTIER, frontier);
   for (const [ask] of ideas) console.log(ask);
 }
 

@@ -2,6 +2,10 @@
 
 Moved word for word from `AGENTS.md` on 2026-10-10 (cleanup step 1), so the front door stays one page. Each line is dated and says why it exists; the old file is `archive/AGENTS.2026-10-10.md`.
 
+## B.I.T.E. on every run (owner, 2026-10-11)
+
+The owner: "make sure you are using bite". From a video the owner shared on building with Claude Code: **Brief** (who it is for, the problem, what the first version does, and what it will not build), **Implement** the smallest useful piece, **Test** it the way it will be used, **Evolve** from what the test showed. A run's claim or PR carries the brief, including its "not building" line; its PR says what the test showed and what comes next. Void's own runs (its whims and wants, on the frontier) follow the same four steps.
+
 ## Improvements we spot (owner, 2026-10-11)
 
 The owner: "no add them always add improvements we spot". An improvement an agent notices (in a source, a review, a test, its own work) goes onto `domains/void.frontier.md` as a one-line target in the same PR, even when it is not built now; it is never left as an offer in chat.
