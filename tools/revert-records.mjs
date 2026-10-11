@@ -13,7 +13,7 @@ import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
 import { readOrder, indexText } from './skills-index.mjs';
 import { APPEND_JSON, INDEX, HISTORY, keyOf } from './records.mjs';
 
-const git = (...a) => execFileSync('git', a, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+const git = (...a) => execFileSync('git', a, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], timeout: 60000 });
 const stage = (n, f) => { try { return git('show', `:${n}:${f}`); } catch (_) { return ''; } };
 const inHead = (f) => { try { git('cat-file', '-e', 'HEAD:' + f); return true; } catch (_) { return false; } };
 const keyFor = (f, x) => (typeof x === 'string' ? x.toLowerCase() : keyOf(f, x));
