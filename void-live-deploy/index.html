@@ -5006,8 +5006,7 @@ return { ok: true, detail: 'timer-reset' };
 
     // --- Skill loader (edit engine step 1) ---
     const SKILLS_INDEX_URL = '/skills/index.json';
-    let learnedSkills = [], skillsLoaded = false, skillSlots = null;
-    const SKILL_LANES = 24; // modules requested at once: enough to fill a fast link, few enough that the top-ranked skills arrive first
+    let learnedSkills = [], skillsLoaded = false;
     async function loadLearnedSkills() {
       let index = null;
       try {
@@ -5027,28 +5026,17 @@ return { ok: true, detail: 'timer-reset' };
         return learnedSkills;
       }
       delete window.__VOID_SKILLS_LOAD_ERROR__;
-      // Each skill module is requested in routing order, a few at a time, so the first-ranked ones arrive first: an ask is
-      // answered as soon as every skill ranked above its match has loaded (firstSkill below), not after all of them (cleanup
-      // step 5, 2026-10-11: on a slow phone the first skill answer waited about four seconds for 160 modules). Match order stays the index order.
-      skillSlots = index.map(() => { let set; const p = new Promise((r) => { set = r; }); return { p, set, skill: null, done: false }; });
+      // All skill modules load at once, not one after another: one round trip per skill in a row (55 and growing) kept
+      // asks that wait for the skills ("waking up": calc, loan) past 4 s on a slow link or busy machine. Match order stays the index order.
+      const mods = await Promise.all(index.map((name) => import('/skills/' + name + '.js').catch(() => null)));
       const missing = [];
-      const take = (i, mod) => {
-        const skill = mod && mod.default, slot = skillSlots[i];
-        if (skill && skill.name && skill.match && skill.run) slot.skill = skill; else missing.push(index[i]);
-        if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds); // a skill that answers early may put its kind on the stage
-        slot.done = true; slot.set(slot.skill);
-      };
-      let nextIdx = 0;
-      const lane = async () => { while (nextIdx < index.length) { const i = nextIdx++; take(i, await import('/skills/' + index[i] + '.js').catch(() => null)); } };
-      await Promise.all(Array.from({ length: SKILL_LANES }, lane));
-      // once all are in, everything is registered in index order, exactly as when they loaded all at once
-      for (const slot of skillSlots) {
-        const skill = slot.skill;
-        if (!skill) continue;
-        learnedSkills.push(skill);
-        if (skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
-        if (skill.world && typeof skill.world.mount === 'function') worlds[skill.name] = skill.world;
-        if (typeof skill.decorate === 'function') stageDecorators.push(skill.decorate);
+      for (let i = 0; i < mods.length; i++) {
+        const skill = mods[i] && mods[i].default;
+        if (skill && skill.name && skill.match && skill.run) learnedSkills.push(skill);
+        else missing.push(index[i]);
+        if (skill && skill.stageKinds) Object.assign(stageKinds, skill.stageKinds);
+        if (skill && skill.world && typeof skill.world.mount === 'function') worlds[skill.name] = skill.world;
+        if (skill && typeof skill.decorate === 'function') stageDecorators.push(skill.decorate);
       }
       // An index entry with no file behind it, or a file without the {name,match,run} shape, is a
       // silent hole: that ask just never gets answered by a skill.
@@ -5089,20 +5077,9 @@ return { ok: true, detail: 'timer-reset' };
     document.addEventListener('void:share-join', (e) => shareJoin(e && e.detail));
     { const r = new URLSearchParams(location.search).get('with'); if (r && /^[A-Za-z0-9_-]{16}\.[A-Za-z0-9_-]{16}$/.test(r) && !PAGE) skillsReady.then(() => shareJoin(r)); }
 
-    // The skill that takes this ask: the first in routing order whose match says yes. Before all skills have loaded, it waits only
-    // for the ones ranked above the match, each until `deadline` (a skill still missing then is passed over, as before).
-    async function firstSkill(lower0, text, deadline) {
-      if (skillsLoaded || !skillSlots) return learnedSkills.find((sk) => sk.match(lower0, text)) || null;
-      for (const slot of skillSlots) {
-        const skill = slot.done ? slot.skill : await Promise.race([slot.p, new Promise((r) => setTimeout(() => r(null), Math.max(0, deadline - Date.now())))]);
-        if (skill && skill.match(lower0, text)) return skill;
-      }
-      return null;
-    }
-    async function runLearnedSkills(text, lower0, deadline = Date.now()) {
-      const skill = await firstSkill(lower0, text, deadline);
-      {
-        if (skill) {
+    async function runLearnedSkills(text, lower0) {
+      for (const skill of learnedSkills) {
+        if (skill.match(lower0, text)) {
           const api = {
             showPage,
             esc,
@@ -6165,9 +6142,8 @@ return { ok: true, detail: 'timer-reset' };
       if (handleMetaAsk(text, lower0)) return;
       currentAsk = text; if (!/^(close|menu|undo|oops|clear)\b/.test(lower0)) lastAsk = text;
       if (!skillsLoaded) say('waking up');
-      const ranSkill = await runLearnedSkills(text, lower0, Date.now() + 6000); // waits only for the skills ranked above the one that answers
-      if (whisper.textContent === 'waking up') say('');
-      if (ranSkill) return;
+      if (!skillsLoaded) { await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]); if (whisper.textContent === 'waking up') say(''); }
+      if (await runLearnedSkills(text, lower0)) return;
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
