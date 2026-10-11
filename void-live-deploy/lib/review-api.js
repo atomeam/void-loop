@@ -49,6 +49,22 @@ export function quick(body) {
 // the prompt names them and the mask; and dropPhantoms() takes out such a claim when the model makes it anyway, so a wrong
 // "not defined" never reaches the PR. tools/review-learn.mjs counts the same claims in past reviews with the same functions.
 export const DIFF_RULE = 'This is a pull request diff: review the added lines (+), using the rest as context. You see only part of each file: a name used in the diff but declared elsewhere in the file (an import at the top, a helper above or below the hunk) is not missing; the imports and top-level declarations of each touched file are listed below. Never report a missing import, an undefined name or a ReferenceError from a diff.';
+/** the widest diff that fits the closer read, file by file. Each file gives its views widest first (its changes' whole functions,
+ * then 10 lines around them, then 3); every file starts at its narrowest and is widened, cheapest first, while the whole still
+ * fits. A reviewer that sees the whole function sees where a value comes from (the review bench's misses: a list read off an
+ * answer that may have none, a flag shared across calls; none visible in 3 lines). Nothing fits even at 3: the 3-line views,
+ * clipped, as before. Pure. */
+export function widestDiff(files, max = MODEL_CODE_MAX) {
+  const views = (files || []).map((v) => (Array.isArray(v) ? v : [v]).map((d) => String(d || '')).filter((d) => d.trim())).filter((v) => v.length);
+  const at = views.map((v) => v.length - 1), size = () => views.reduce((n, v, i) => n + v[at[i]].length + (i ? 1 : 0), 0); // with the newlines that join them
+  if (size() > max) return views.map((v) => v[v.length - 1]).join('\n').slice(0, max);
+  for (let widened = true; widened;) {
+    widened = false;
+    const steps = views.map((v, i) => (at[i] > 0 ? { i, cost: v[at[i] - 1].length - v[at[i]].length } : null)).filter(Boolean).sort((a, b) => a.cost - b.cost);
+    for (const st of steps) if (size() + st.cost <= max) { at[st.i]--; widened = true; break; }
+  }
+  return views.map((v, i) => v[at[i]]).join('\n');
+}
 export const MASK_RULE = '"[redacted]" marks a secret that was masked before you saw the code; it is not in the file. Never report it as a value, a syntax error or a bug.';
 export const IMPORTS_MAX = 6000; // characters of import and declaration lines the prompt may carry, over all files
 // { path: [lines] } from the request, capped and stringified; null when there is nothing usable

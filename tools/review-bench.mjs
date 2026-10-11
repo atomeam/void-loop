@@ -29,6 +29,11 @@ export function blameBroken(fix, file, quote) {
   return out;
 }
 
+/** the closer read's findings, from its rendered lines ("file:line — kind — sentence — `quote`", lib/review-api.js renderFindings). Pure. */
+export function deepFindings(text) {
+  return [...String(text || '').matchAll(/^(\S+?):(\d+) — (bug|risk|style) — /gm)].map((m) => ({ file: m[1], line: Number(m[2]), kind: m[3], deep: true }));
+}
+
 /** caught or not, from Void's findings on the bug commit and the broken lines there. Pure. */
 export function score(findings, file, broken) {
   const near = (f) => f.file === file && broken.some((b) => Math.abs(f.line - b) <= WINDOW);
@@ -49,7 +54,7 @@ export function runCase(c, deep = '') {
   let r;
   try { r = JSON.parse(execFileSync(process.execPath, args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 300000 })); }
   catch (e) { return { ...c, commit, broken, error: 'the review did not run: ' + String(e.message || e).split('\n')[0] }; } // one case, not the whole bench
-  const findings = [...(r.findings || []), ...((r.deep && r.deep.findings) || [])];
+  const findings = [...(r.findings || []), ...deepFindings(r.deep)];
   return { ...c, commit, broken, ...score(findings, c.file, broken) };
 }
 
