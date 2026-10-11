@@ -32,7 +32,7 @@ export function arenaCurve(a, w = 300, h = 140) {
 
 /** the card a rating ask opens: the record from this site (/arena.json, /arena-othello.json), the answer and the curve */
 export function showArena(api, url, game) {
-  const el = api.showPage((p) => { p.innerHTML = '<h2>How good I am at ' + escXml(TITLES[game] || 'this game') + '</h2><p data-arena-say class="sub">Reading my games…</p><div data-arena-curve></div>'; });
+  const el = api.showPage((p) => { p.innerHTML = '<h2>How good I am at ' + escXml(TITLES[game] || 'this game') + '</h2><p data-arena-say class="sub">Reading my games…</p><div data-arena-curve></div>'; }); // void-review: ok: the title is a fixed name from TITLES, escaped
   fetch(url).then((r) => (r.ok ? r.json() : null)).catch(() => null).then((a) => {
     el.querySelector('[data-arena-say]').textContent = arenaSay(a, game);
     el.querySelector('[data-arena-curve]').innerHTML = arenaCurve(a); // void-review: ok: arenaCurve escapes the names and forces every number
