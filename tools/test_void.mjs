@@ -35,7 +35,7 @@ const want = (label) => !ONLY.length || ONLY.every((w) => label.toLowerCase().in
 // those asks left behind): --only "core" runs it. Plain setup (declarations, no checks) always runs.
 const CORE = want('core: the shared page, the asks typed one after another');
 if (process.argv.includes('--list')) {
-  for (const m of fs.readFileSync(new URL(import.meta.url), 'utf8').matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)) console.log(JSON.parse(m[1]));
+  for (const f of [import.meta.url, new URL('./test_3d.mjs', import.meta.url)]) for (const m of fs.readFileSync(new URL(f), 'utf8').matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)) console.log(JSON.parse(m[1]));
   process.exit(0);
 }
 const releaseHeavy = await acquireHeavy('browser suite (tools/test_void.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
@@ -3763,7 +3763,12 @@ try {
   }
   } // CORE
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
-  if (want("the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)")) await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true }, ...a) });
+  // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
+  // the section's own words still run them all
+  { const all3d = want("the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)");
+    const t3d = fs.readFileSync(new URL('./test_3d.mjs', import.meta.url), 'utf8');
+    if (all3d || [...t3d.matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)].some((m) => want(JSON.parse(m[1]))))
+      await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true }, ...a), want: (l) => all3d || want(l) }); }
 } catch (e) {
   if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   check('suite ran to the end', false, String(e && e.message));
