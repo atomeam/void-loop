@@ -30,7 +30,8 @@ const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Ed
 // main in verify.yml, not locally on every change). --list prints the section headings. The full run is still the plain command.
 const argOf = (f) => { const i = process.argv.indexOf(f); return i > 0 ? String(process.argv[i + 1] || '') : ''; };
 const ONLY = (argOf('--only') || process.env.VOID_ONLY || '').toLowerCase().split(/\s+/).filter(Boolean);
-const want = (label) => !ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w));
+const wanted = new Set(); // the sections --only picked: none at all is a failed run, never a silent pass (tools/finish.mjs leans on it)
+const want = (label) => { const on = !ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w)); if (on && ONLY.length) wanted.add(label); return on; };
 // everything outside the named sections (the long run of asks on the one shared page `t`, and the checks that read what
 // those asks left behind): --only "core" runs it. Plain setup (declarations, no checks) always runs.
 const CORE = want('core: the shared page, the asks typed one after another');
@@ -3803,5 +3804,6 @@ const bad = results.filter((r) => !r.ok);
 for (const r of results) console.log(line(r));
 const skipped = results.filter((r) => r.skipped).length;
 console.log(`${results.length - bad.length}/${results.length} passed` + (skipped ? ` (${skipped} skipped on this machine)` : ''));
+if (ONLY.length && !wanted.size) { console.log('--only "' + ONLY.join(' ') + '" matched no section (node tools/test_void.mjs --list)'); process.exit(1); }
 process.exit(bad.length ? 1 : 0);
 

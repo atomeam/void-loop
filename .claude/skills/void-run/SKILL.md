@@ -14,7 +14,8 @@ Every run is B.I.T.E.: brief, implement the smallest useful piece, test it the w
 3. **Build on the best.** Take the proven approach (an open-source library, a known algorithm) rather than inventing one. A new skill: `node tools/new-skill.mjs <name> --ask "..."` (`docs/UPGRADING.md`); `docs/MAP.md` and `docs/SALVAGE.md` say what is already here.
 4. **Test as a person will.** `node tools/ask.mjs "..."`, a play-through, and the browser-suite sections you touched: `node tools/test_void.mjs --only "<words>"` (seconds; `--list` shows them). Never the whole 20-minute suite locally: `verify.yml` runs it on main. What the test showed goes in the PR's Evolve section.
 5. **Finish.**
-   `node tools/finish.mjs <grow|build|fix|retire|idea|finding> "what changed" --brief "..." --body "<commit trailers>"`
+   `node tools/finish.mjs <grow|build|fix|retire|idea|finding> "what changed" --brief "..." --test "<browser-suite words>" --body "<commit trailers>"`
+   Anything that reaches the site needs a `--test` that passes in a real browser first; it stops otherwise (`docs/RULES.md`, right the first time).
    It writes the ledger and log lines, checks the map, commits, merges main, runs the fast checks and pushes, then opens the PR labelled automerge (or prints the body when `gh` is not signed in). It stops at the first failure; resume with `--from N`. `--dry` shows the steps.
 6. **Review.** `node tools/review-pr.mjs` before or after pushing; then the `steward` skill drives the PR to merged.
 
