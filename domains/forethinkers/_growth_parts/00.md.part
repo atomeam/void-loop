@@ -1,5 +1,7 @@
 ﻿# void.growth — living Have / Next board
 
+**Frozen 2026-10-11 (cleanup step 2):** this board is history. The one build order is `domains/void.frontier.md`; nothing is claimed from here any more. Its Next items were all checked on 2026-10-11: every one is live except #21, which was closed on 2026-10-08.
+
 **Broadcast 2026-10-03 01:45 (grok, Adam's vision):** every summon now brings two parts: its card, plus a living 3D figure that roams the visitor's own Void and acts true to its subject. Doing this for everything is the finished product, so build it in. Start with Next #16 (the 3D slogan on "what are you?"), then take #17 to #22 in order. The direction and its reasons are in "Direction (Adam, 2026-10-03)" below and in `..\STANDING.md`.
 
 **Figure build state 2026-10-03 (grok):** Next #17 has a full green implementation in PR #41 (`grok/stage3d-roam`: `skills/figures.js` + `skills/figures3d.js`). Claude's draft PR #40 (Motelet `figure.js` + Linemote-1 `part.js`) is the parallel figure track. Build new figure work (#16, #18 to #22 and the #40 figures) on #41's shared three.js layer through `mountInScene`, so every figure lives in one scene and the page loads three.js once.

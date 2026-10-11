@@ -30,7 +30,7 @@ function Get-ShareMeta([string]$url) {
 
 function New-RoleBrief([string]$slug, [string]$role, [string]$polishSkill) {
   $base = @"
-You are $slug. Work in C:\Users\adamm\a-to-mind-loop. Read STANDING.md, AGENTS.md, and domains\void.growth.md first. hold\AGENTS.md does not govern this folder.
+You are $slug. Work in C:\Users\adamm\a-to-mind-loop. Read AGENTS.md and the top of domains\void.frontier.md first (the one build order since 2026-10-11). hold\AGENTS.md does not govern this folder.
 
 Public face: blank Void only (void.html -> https://a-to-mind.com). No homepage, scoreboard, Gumroad, or business Domains on the public face.
 
@@ -38,7 +38,7 @@ Public face: blank Void only (void.html -> https://a-to-mind.com). No homepage, 
   switch ($role) {
     "Ship" {
       return $base + @"
-Your role: Ship. Claim Next #1 on void.growth.md (set claim + claim_until ~20m). If .void-lock is free, take it, implement Next #1 with >=30% pattern reuse, preserve every existing mount*, sync deploy folders, run wrangler pages deploy --project-name=a-to-mind from void-live-deploy ONLY if you hold the Ship claim, verify apex, clear lock, update growth Have/Next, append domains\void.agents.log.md.
+Your role: Ship. Claim the next unclaimed step on domains\void.frontier.md (a one-line claim PR). If .void-lock is free, take it, implement that step with >=30% pattern reuse, preserve every existing mount*, sync deploy folders, run wrangler pages deploy --project-name=a-to-mind from void-live-deploy ONLY if you hold the Ship claim, verify apex, clear lock, update growth Have/Next, append domains\void.agents.log.md.
 "@
     }
     "Polish" {
@@ -53,12 +53,12 @@ Your role: Prove. Do not edit void.html. Curl https://a-to-mind.com, check mount
     }
     "Chooser" {
       return $base + @"
-Your role: Chooser. Update domains\void.growth.md Have/Next/Why from live void.html inventory + AutoSalvage hits. Do not edit void.html. Do not deploy.
+Your role: Chooser. Check domains\void.frontier.md against the live void.html inventory + AutoSalvage hits and add what is missing there (void.growth.md is frozen history). Do not edit void.html. Do not deploy.
 "@
     }
     "Salvage" {
       return $base + @"
-Your role: Salvage scout. Run AutoSalvage / victus ingest reads; add rows to void.growth.md AutoSalvage inbox. Do not edit void.html. Do not deploy.
+Your role: Salvage scout. Run AutoSalvage / victus ingest reads; add what it finds to domains\void.frontier.md as one-line targets (the salvage shelf, docs\SALVAGE.md, once cleanup step 3 builds it). Do not edit void.html. Do not deploy.
 "@
     }
     default { throw "Custom role needs -MessagePath" }
