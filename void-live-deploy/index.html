@@ -846,7 +846,6 @@ Object.values(things).forEach((th) => {
         else if (th.kind === 'sticky') mountSticky(th);
         else if (th.kind === 'notepad') mountNotepad(th);
         else if (th.kind === 'timer') mountTimer(th);
-        else if (th.kind === 'counter') mountCounter(th);
         else if (th.kind === 'image') mountImage(th);
         else if (th.kind === 'link') mountLink(th);
         else if (th.kind === 'list') mountList(th);
@@ -1763,56 +1762,6 @@ bindDrag(el, th);
       stage.appendChild(el);
     }
 
-    function mountCounter(th) {
-      const el = document.createElement('div');
-      el.className = 'thing counter';
-      el.dataset.id = th.id;
-      el.style.left = th.x + 'px';
-      el.style.top = th.y + 'px';
-      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
-
-      const dec = document.createElement('button');
-      dec.type = 'button';
-      dec.className = 'counter-chip';
-      dec.textContent = '−';
-      dec.setAttribute('aria-label', 'decrement counter');
-      dec.addEventListener('pointerdown', (e) => e.stopPropagation());
-      dec.addEventListener('click', () => {
-        th.value = (th.value || 0) - 1;
-        save(); render();
-      });
-
-      const value = document.createElement('span');
-      value.className = 'counter-value';
-      value.textContent = String(th.value || 0);
-      if (th.color) value.style.color = th.color;
-      if (th.size) value.style.fontSize = th.size + 'px';
-
-      const inc = document.createElement('button');
-      inc.type = 'button';
-      inc.className = 'counter-chip';
-      inc.textContent = '+';
-      inc.setAttribute('aria-label', 'increment counter');
-      inc.addEventListener('pointerdown', (e) => e.stopPropagation());
-      inc.addEventListener('click', () => {
-        th.value = (th.value || 0) + 1;
-        save(); render();
-      });
-
-      const label = document.createElement('span');
-      label.className = 'counter-label';
-      label.textContent = 'counter';
-
-      el.appendChild(dec);
-      el.appendChild(value);
-      el.appendChild(inc);
-      el.appendChild(label);
-      // the 3D tally counter beside it (skills/mini/counter.js): its wheels roll to the value, and pressing its plunger counts one up
-      stageApi.miniature(el, 'counter', { value: th.value || 0, onPress: () => { th.value = (th.value || 0) + 1; save(); render(); } }, { key: th.id, place: 'beside', width: 120, height: 140, label: '3D tally counter' }).catch(() => {});
-      bindDrag(el, th);
-      stage.appendChild(el);
-    }
-
     function mountShape(th) {
       const el = document.createElement('div');
       el.className = 'thing shape';
@@ -2092,7 +2041,7 @@ function applyClockAlters(c, lower) {
       if (th) return th;
       if (kind === 'clock') return ensureClock();
       if (kind === 'timer') return ensureTimer(60000);
-      if (kind === 'counter') return ensureCounter();
+      if (stageKinds[kind] && stageKinds[kind].ensure) return stageKinds[kind].ensure(stageApi); // a built-in that moved to skills/ (cleanup step 6)
       if (kind === 'sticky') return ensureSticky('');
       if (kind === 'notepad') return ensureNotepad('');
       if (kind === 'list') return ensureList([]);
@@ -2115,14 +2064,7 @@ function applyClockAlters(c, lower) {
         if (/\b(big|large)\b/.test(lower) && !/\bbigger\b|\blarger\b/.test(lower)) { th.size = Math.max(th.size || 40, 64); ok = true; }
         if (/\b(small|little)\b/.test(lower) && !/\bsmaller\b/.test(lower)) { th.size = Math.min(th.size || 40, 24); ok = true; }
       }
-      if (kind === 'counter') {
-        if (/\b(bigger|larger|increase|grow|enlarge)\b/.test(lower)) { th.size = Math.min(200, (th.size || 26) + 16); ok = true; }
-        if (/\b(smaller|tinier|decrease|shrink)\b/.test(lower)) { th.size = Math.max(10, (th.size || 26) - 16); ok = true; }
-        if (/\b(huge|giant|enormous|massive)\b/.test(lower)) { th.size = 56; ok = true; }
-        if (/\b(tiny|mini|petite)\b/.test(lower)) { th.size = 14; ok = true; }
-        if (/\b(big|large)\b/.test(lower) && !/\bbigger\b|\blarger\b/.test(lower)) { th.size = Math.max(th.size || 26, 40); ok = true; }
-        if (/\b(small|little)\b/.test(lower) && !/\bsmaller\b/.test(lower)) { th.size = Math.min(th.size || 26, 18); ok = true; }
-      }
+      if (stageKinds[kind] && stageKinds[kind].alter) ok = stageKinds[kind].alter(th, lower) || ok; // a moved built-in's own size words
       if (kind === 'shape') {
         if (/\b(bigger|larger|increase|grow|enlarge)\b/.test(lower)) { th.width = Math.min(400, (th.width || 80) + 40); th.height = Math.min(400, (th.height || 80) + 40); ok = true; }
         if (/\b(smaller|tinier|decrease|shrink)\b/.test(lower)) { th.width = Math.max(20, (th.width || 80) - 40); th.height = Math.max(20, (th.height || 80) - 40); ok = true; }
@@ -2824,22 +2766,6 @@ t.remaining = durationMs;
       return t;
     }
 
-    function ensureCounter() {
-      let counter = Object.values(things).find((th) => th.kind === 'counter');
-      if (!counter) {
-        counter = {
-          id: uid('counter'),
-          kind: 'counter',
-          x: Math.max(40, stage.clientWidth / 2 - 60),
-          y: Math.max(40, stage.clientHeight / 2 - 40),
-          value: 0,
-        };
-        things[counter.id] = counter;
-        selectedId = counter.id;
-      }
-      return counter;
-    }
-
     function ensureShape(shapeType) {
       let shape = Object.values(things).find((th) => th.kind === 'shape');
       if (!shape) {
@@ -2859,55 +2785,6 @@ t.remaining = durationMs;
         selectedId = shape.id;
       }
       return shape;
-    }
-
-    function parseCounterDelta(text) {
-      const m = /(?:by|plus|minus)\s+(-?\d+)/i.exec(text || '');
-      if (m) return parseInt(m[1], 10);
-      return 1;
-    }
-
-    function parseCounterSetNumber(text) {
-      const m = /(?:to|at|equals?|is)\s+(-?\d+)/i.exec(text || '');
-      if (m) return parseInt(m[1], 10);
-      return null;
-    }
-
-    function wantsCreateCounter(lower) {
-      if (/\b(remove|delete|get\s+rid\s+of|hide|clear|reset|set|increment|decrement|count)\b/.test(lower) && /\bcounter\b/.test(lower)) return false;
-      if (/^(a\s+)?counter(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
-      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\bcounter\b/.test(lower)) return true;
-      if (/\bcounter\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
-      return false;
-    }
-
-    function wantsCounterAction(lower, text) {
-      const counterWord = /\bcounter\b/.test(lower);
-      const selected = selectedId && things[selectedId];
-      const counterSel = selected && selected.kind === 'counter';
-      const hasCounter = Object.values(things).some((th) => th.kind === 'counter');
-      const hasTimer = Object.values(things).some((th) => th.kind === 'timer');
-      if (counterWord) {
-        if (/\b(count\s+up|increment|increase|go\s+up|plus\s+one|add\s+one)\b/.test(lower)) return 'up';
-        if (/\b(count\s+down|decrement|decrease|go\s+down|minus\s+one)\b/.test(lower)) return 'down';
-        if (/\b(set|put|change)\b.*\bcounter\b.*\bto\s+(-?\d+)\b/.test(lower)) return 'set';
-        if (/\b(reset|zero|back\s+to\s+zero)\b/.test(lower)) return 'reset';
-      }
-      if (/^count\s+up(\s+by\s+(-?\d+))?\s*[.!]?\s*$/.test(lower)) return 'up';
-      if (/^count\s+down(\s+by\s+(-?\d+))?\s*[.!]?\s*$/.test(lower)) return 'down';
-      if (counterSel && /^(up|plus)\s*[.!]?\s*$/.test(lower)) return 'up';
-      if (counterSel && /^(down|minus)\s*[.!]?\s*$/.test(lower)) return 'down';
-      if (counterSel && /^(reset|zero|clear\s+it)\s*[.!]?\s*$/.test(lower)) return 'reset';
-      if (!hasTimer && hasCounter && /^(reset|zero|clear\s+it)\s*[.!]?\s*$/.test(lower)) return 'reset';
-      return null;
-    }
-
-    function wantsRemoveCounter(lower) {
-      if (/\b(remove|delete|get\s+rid\s+of|hide|clear|cancel)\b.*\bcounter\b/.test(lower)) return true;
-      if (/\bcounter\b.*\b(away|gone)\b/.test(lower)) return true;
-      const selected = selectedId && things[selectedId];
-      if (selected && selected.kind === 'counter' && /^(remove|delete|get\s+rid\s+of|hide|clear|cancel)\s+(it|this)\s*[.!]?\s*$/.test(lower)) return true;
-      return false;
     }
 
     function wantsCreateShape(lower, raw) {
@@ -3278,11 +3155,12 @@ return { ok: true, detail: 'timer-reset' };
         }
       }
 
-      // counter create
-      if (wantsCreateCounter(lower)) {
-        ensureCounter();
-        save(); render();
-        return { ok: true, detail: 'counter' };
+      // the built-ins that moved to skills/ (cleanup step 6) answer here, at the place in this order they always had, so a bare
+      // "reset" still reaches a timer first; before the skills have loaded the same asks go to the skill's own match and run
+      for (const sk of Object.values(stageKinds)) {
+        if (!sk || typeof sk.ask !== 'function') continue;
+        const done = sk.ask(lower, text, stageApi);
+        if (done) return { ok: true, detail: done };
       }
 
       // shape create
@@ -3294,37 +3172,6 @@ return { ok: true, detail: 'timer-reset' };
         if (s && col) s.color = col;
         save(); render();
         return { ok: true, detail: 'shape-' + st };
-      }
-
-      // counter actions (count up/down, set, reset)
-      const counterAction = wantsCounterAction(lower, text);
-      if (counterAction) {
-        let counter = Object.values(things).find((th) => th.kind === 'counter');
-        if (!counter) counter = ensureCounter();
-        if (counterAction === 'up') counter.value = (counter.value || 0) + parseCounterDelta(text);
-        else if (counterAction === 'down') counter.value = (counter.value || 0) - parseCounterDelta(text);
-        else if (counterAction === 'set') {
-          const n = parseCounterSetNumber(text);
-          counter.value = n === null ? 0 : n;
-        }
-        else if (counterAction === 'reset') counter.value = 0;
-        selectedId = counter.id;
-        save(); render();
-        return { ok: true, detail: 'counter-' + counterAction };
-      }
-
-      // counter remove
-      if (wantsRemoveCounter(lower)) {
-        const counter = Object.values(things).find((th) => th.kind === 'counter' && th.id === selectedId)
-          || Object.values(things).find((th) => th.kind === 'counter');
-        if (counter) {
-          delete things[counter.id];
-          if (selectedId === counter.id) selectedId = null;
-          save(); render();
-          return { ok: true, detail: 'counter-removed' };
-        }
-        say('');
-        return { ok: false, detail: 'no counter' };
       }
 
       // shape remove
