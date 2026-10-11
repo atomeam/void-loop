@@ -450,7 +450,8 @@ const RULES = [
     'an image with no alt text: screen readers say the file name or nothing at all. Add alt="what it shows", or alt="" if it is only decoration'],
   ['image-latest', 'risk', ['yaml'], (m, r) => { const k = r.match(/^\s*(?:-\s+)?image:\s*["']?([^\s"'#]+)/); return !!k && !/@sha256:|^\$|\{\{/.test(k[1]) && (/:latest$/i.test(k[1]) || !/:[^/]+$/.test(k[1])); },
     'no fixed version: :latest (or no tag) means each deploy can pull a different image, so what worked yesterday can break today. Pin a version tag, such as postgres:16, or a digest'],
-  ['js-exec-concat', 'risk', JS, (m, r) => /\b(?:child_process\.)?exec(?:Sync)?\s*\(\s*(?:`[^`]*\$\{|(['"])[^'"]*\1\s*\+|[A-Za-z_$][\w$.]*\s*\+)/.test(r),
+  // not a regex's own .exec: on a regex literal (/x/.exec) or a name that says it is one (re, rx, regex, pattern, fooRe, fooRegex)
+  ['js-exec-concat', 'risk', JS, (m, r) => /(?<!\/\.)(?<!(?:^|[^\w$])(?:re|rx|regex|pattern)\.)(?<![\w$](?:Re|RE|Rx|Regex|Pattern)\.)\b(?:child_process\.)?exec(?:Sync)?\s*\(\s*(?:`[^`]*\$\{|(['"])[^'"]*\1\s*\+|[A-Za-z_$][\w$.]*\s*\+)/.test(r),
     'a shell command built from a variable: a value like "x; rm -rf ~" runs as a second command. Use execFile / spawn with the arguments as an array, so nothing is read by a shell'],
   ['reflected-input', 'risk', JS, (m) => /\bres\.(?:send|write|end)\s*\(\s*req\.(?:query|params|body)\b/.test(m),
     'the request is sent straight back as the page: a link with <script> in it runs in the visitor\'s browser (reflected XSS). Escape it, or send it as JSON with res.json'],

@@ -130,9 +130,13 @@ jobs:
             exit 1
           fi
           if git rev-parse -q --verify "$sha^2" >/dev/null; then parent="-m 1"; else parent=""; fi
-          if ! git revert --no-commit $parent "$sha"; then
+          # the append-only records never jam it (five hand reverts until 2026-10-11): the growth ledger and the agent log keep
+          # main's file (history stays written), and the test asks and the skill index lose only what this commit added
+          # (tools/revert-records.mjs). Only a conflict anywhere else still stops for a person.
+          git revert --no-commit $parent "$sha" || true
+          if ! node tools/revert-records.mjs; then
             git revert --abort || true
-            echo "::error title=Not reverted::$sha broke the suite ($why), and reverting it on main conflicts with what merged since. Revert it by hand."
+            echo "::error title=Not reverted::$sha broke the suite ($why), and reverting it on main conflicts with what merged since, outside the append-only records. Revert it by hand."
             echo "### $sha broke the suite ($why); automatic revert conflicted: revert it by hand" >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
@@ -142,6 +146,8 @@ jobs:
             echo "### $sha broke the suite ($why); its revert is empty on main now: look by hand" >> "$GITHUB_STEP_SUMMARY"
             exit 1
           fi
+          # the ledger says what was taken back, so "growth" never shows a change the site no longer has without saying so
+          node tools/grow.mjs retire "Taken back off the site: \"$subject\" ($sha) failed the browser suite on main ($why)." --by void-verify --ref "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" && git add void-live-deploy/void.growth.json || true
           git commit -q -m "Revert \"$subject\"" -m "It shipped and the browser suite failed on main (job browser-suite in Void verify, run ${{ github.run_id }}, testing $tested): $why. So it is taken back off the site." -m "Void-auto-revert: $sha"
           git push origin main
           gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true
