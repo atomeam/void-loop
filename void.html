@@ -850,7 +850,6 @@ Object.values(things).forEach((th) => {
         else if (th.kind === 'link') mountLink(th);
         else if (th.kind === 'list') mountList(th);
         else if (th.kind === 'calc') mountCalc(th);
-        else if (th.kind === 'shape') mountShape(th);
         else if (th.kind === 'kept') mountKept(th);
         else if (th.kind === 'calendar') mountCalendar(th);
         else if (th.kind === 'tab') mountTab(th);
@@ -1264,7 +1263,7 @@ Object.values(things).forEach((th) => {
       stage.appendChild(el);
     }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
-    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, setWorld, world: () => (worldNow ? worldNow.name : null), bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, snapshot: () => takeUndoSnapshot(),
+    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, setWorld, world: () => (worldNow ? worldNow.name : null), bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, colorFrom: (t) => colorFrom(t), snapshot: () => takeUndoSnapshot(),
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
@@ -1762,64 +1761,6 @@ bindDrag(el, th);
       stage.appendChild(el);
     }
 
-    function mountShape(th) {
-      const el = document.createElement('div');
-      el.className = 'thing shape';
-      el.dataset.id = th.id;
-      el.style.left = th.x + 'px';
-      el.style.top = th.y + 'px';
-      if (th.width) el.style.width = th.width + 'px';
-      if (th.height) el.style.height = th.height + 'px';
-      if (th.color) {
-        el.style.setProperty('--shape-color', th.color);
-        const inner = el.querySelector('.shape-rect, .shape-circle, .shape-line');
-        if (inner) inner.style.borderColor = th.color;
-      }
-      if (th.filled) el.classList.add('filled');
-      const shapeType = th.shapeType || 'rect';
-      if (selectedId === th.id && shapeType !== 'circle') el.style.outline = '1px solid rgba(255,255,255,0.25)';
-      let inner;
-      if (shapeType === 'circle') {
-        inner = document.createElement('div');
-        inner.className = 'shape-circle';
-        inner.style.width = '100%';
-        inner.style.height = '100%';
-      } else if (shapeType === 'line') {
-        inner = document.createElement('div');
-        inner.className = 'shape-line';
-        inner.style.width = '100%';
-        if (th.rotation) inner.style.transform = 'rotate(' + th.rotation + 'deg)';
-      } else {
-        inner = document.createElement('div');
-        inner.className = 'shape-rect';
-        inner.style.width = '100%';
-        inner.style.height = '100%';
-      }
-      inner.style.borderWidth = (th.strokeWidth || 2) + 'px';
-      if (th.color) inner.style.borderColor = th.color;
-      el.appendChild(inner);
-
-      if (shapeType === 'circle') {
-        // a circle is alive (skills/void-ring.js): a breathing WebGL ring with a dark feathered hole that takes in what you
-        // type; a tap makes it ripple. No box, no label. Where WebGL can't run, the CSS ring stays, softened.
-        inner.style.borderColor = 'rgba(232,236,255,0.55)';
-        inner.style.boxShadow = '0 0 18px rgba(200,210,255,0.18), inset 0 0 22px rgba(0,0,0,0.9)';
-        import('/skills/void-ring.js').then((m) => {
-          const c = m.ringCanvas(th.id, th.color || '#e8ecff'); if (!c || !el.isConnected) return;
-          el.style.overflow = 'visible'; el.appendChild(c); inner.style.opacity = '0';
-          if (!el._ringTap) { el._ringTap = true; el.addEventListener('pointerdown', () => m.pulse()); }
-        }).catch(() => {});
-      } else {
-        const label = document.createElement('div');
-        label.className = 'shape-label';
-        label.textContent = shapeType;
-        el.appendChild(label);
-      }
-
-      bindDrag(el, th);
-      stage.appendChild(el);
-    }
-
     function ensureClock() {
       let clock = Object.values(things).find((t) => t.kind === 'clock');
       if (!clock) {
@@ -2046,7 +1987,6 @@ function applyClockAlters(c, lower) {
       if (kind === 'notepad') return ensureNotepad('');
       if (kind === 'list') return ensureList([]);
       if (kind === 'calc') return ensureCalc();
-      if (kind === 'shape') return ensureShape('rect');
       return null;
     }
 
@@ -2065,21 +2005,6 @@ function applyClockAlters(c, lower) {
         if (/\b(small|little)\b/.test(lower) && !/\bsmaller\b/.test(lower)) { th.size = Math.min(th.size || 40, 24); ok = true; }
       }
       if (stageKinds[kind] && stageKinds[kind].alter) ok = stageKinds[kind].alter(th, lower) || ok; // a moved built-in's own size words
-      if (kind === 'shape') {
-        if (/\b(bigger|larger|increase|grow|enlarge)\b/.test(lower)) { th.width = Math.min(400, (th.width || 80) + 40); th.height = Math.min(400, (th.height || 80) + 40); ok = true; }
-        if (/\b(smaller|tinier|decrease|shrink)\b/.test(lower)) { th.width = Math.max(20, (th.width || 80) - 40); th.height = Math.max(20, (th.height || 80) - 40); ok = true; }
-        if (/\b(huge|giant|enormous|massive)\b/.test(lower)) { th.width = 200; th.height = 200; ok = true; }
-        if (/\b(tiny|mini|petite)\b/.test(lower)) { th.width = 40; th.height = 40; ok = true; }
-        if (/\b(big|large)\b/.test(lower) && !/\bbigger\b|\blarger\b/.test(lower)) { th.width = Math.max(th.width || 80, 160); th.height = Math.max(th.height || 80, 160); ok = true; }
-        if (/\b(small|little)\b/.test(lower) && !/\bsmaller\b/.test(lower)) { th.width = Math.min(th.width || 80, 50); th.height = Math.min(th.height || 80, 50); ok = true; }
-        if (/\b(make\s+(?:it\s+)?a?\s*(?:rect|rectangle|square))\b/.test(lower) && th.shapeType !== 'rect') { th.shapeType = 'rect'; ok = true; }
-        if (/\b(make\s+(?:it\s+)?a?\s*circle)\b/.test(lower) && th.shapeType !== 'circle') { th.shapeType = 'circle'; ok = true; }
-        if (/\b(make\s+(?:it\s+)?a?\s*line)\b/.test(lower) && th.shapeType !== 'line') { th.shapeType = 'line'; ok = true; }
-        if (/\bfill(?:ed)?\b/.test(lower)) { th.filled = true; ok = true; }
-        if (/\b(unfill|outline|stroke)\b/.test(lower)) { th.filled = false; ok = true; }
-        if (/\b(thick|thicker)\b/.test(lower)) { th.strokeWidth = Math.min(8, (th.strokeWidth || 2) + 2); ok = true; }
-        if (/\b(thin|thinner)\b/.test(lower)) { th.strokeWidth = Math.max(1, (th.strokeWidth || 2) - 1); ok = true; }
-      }
       if (kind === 'sticky') {
         const col = stickyColorFrom(lower);
         if (col) { th.color = col; ok = true; }
@@ -2766,55 +2691,6 @@ t.remaining = durationMs;
       return t;
     }
 
-    function ensureShape(shapeType) {
-      let shape = Object.values(things).find((th) => th.kind === 'shape');
-      if (!shape) {
-        const size = 80;
-        shape = {
-          id: uid('shape'),
-          kind: 'shape',
-          x: Math.max(40, stage.clientWidth / 2 - size / 2),
-          y: Math.max(40, stage.clientHeight / 2 - size / 2),
-          width: size,
-          height: size,
-          shapeType: shapeType || 'rect',
-          strokeWidth: 2,
-          filled: false,
-        };
-        things[shape.id] = shape;
-        selectedId = shape.id;
-      }
-      return shape;
-    }
-
-    function wantsCreateShape(lower, raw) {
-      if (/\b(remove|delete|get\s+rid\s+of|hide|clear)\b/.test(lower) && /\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return false;
-      if (/^(a\s+)?(shape|rect|rectangle|circle|line|square)(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
-      if (/\b(draw|sketch)\b.*\b(circle|rect|rectangle|line|square|shape)\b/.test(lower)) return true;
-      if (/\b(make|add|create|show|spawn|put|place|drop|summon)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
-      if (/\b(shape|rect|rectangle|circle|line|square)\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
-      if (/^shape\s*:\s*(rect|rectangle|circle|line|square)\b/i.test(raw)) return true;
-      return false;
-    }
-
-    function extractShapeType(lower, raw) {
-      if (/\bcircle\b/.test(lower)) return 'circle';
-      if (/\bline\b/.test(lower)) return 'line';
-      if (/\b(rect|rectangle)\b/.test(lower)) return 'rect';
-      if (/\bsquare\b/.test(lower)) return 'rect';
-      let match = raw.match(/^shape\s*:\s*(rect|rectangle|circle|line|square)\b/i);
-      if (match) return match[1] === 'square' ? 'rect' : match[1];
-      return 'rect';
-    }
-
-    function wantsRemoveShape(lower) {
-      if (/\b(remove|delete|get\s+rid\s+of|hide|clear|cancel|erase)\b.*\b(shape|rect|rectangle|circle|line|square)\b/.test(lower)) return true;
-      if (/\b(shape|rect|rectangle|circle|line|square)\b.*\b(away|gone)\b/.test(lower)) return true;
-      const selected = selectedId && things[selectedId];
-      if (selected && selected.kind === 'shape' && /^(remove|delete|get\s+rid\s+of|hide|clear|cancel|erase)\s+(it|this)\s*[.!]?\s*$/.test(lower)) return true;
-      return false;
-    }
-
     /** freerEnglishParse — broaden natural asks for clock (+ sticky) without rigid phrases */
     function freerEnglishParse(raw) {
       const text = (raw || '').trim();
@@ -3163,30 +3039,7 @@ return { ok: true, detail: 'timer-reset' };
         if (done) return { ok: true, detail: done };
       }
 
-      // shape create
-      if (wantsCreateShape(lower, text)) {
-        const st = extractShapeType(lower, text);
-        ensureShape(st);
-        const col = colorFrom(lower);
-        const s = Object.values(things).find((th) => th.kind === 'shape');
-        if (s && col) s.color = col;
-        save(); render();
-        return { ok: true, detail: 'shape-' + st };
-      }
 
-      // shape remove
-      if (wantsRemoveShape(lower)) {
-        const shape = Object.values(things).find((th) => th.kind === 'shape' && th.id === selectedId)
-          || Object.values(things).find((th) => th.kind === 'shape');
-        if (shape) {
-          delete things[shape.id];
-          if (selectedId === shape.id) selectedId = null;
-          save(); render();
-          return { ok: true, detail: 'shape-removed' };
-        }
-        say('');
-        return { ok: false, detail: 'no shape' };
-      }
 
       // timer remove
       if (wantsRemoveTimer(lower)) {
