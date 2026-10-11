@@ -22,6 +22,9 @@ One PR per step (or per skill in step 6), checks before push, automerge. Claim a
 - **Verification loop:** a drafted change (a skill from `lib/learn.js` / `tools/learn-draft.mjs`) is kept only if `tools/bench.mjs --probe` and `tools/draft-check.mjs` pass and the score is better than before; otherwise it is thrown away (change one thing, test, score, keep or revert; the video's loop).
 - **Single-target focus:** each scheduled run works on one named focus area, rotating through them (the video: typography one night, clarity of message the next, motion design after), and takes one job or skill draft per cycle; trying to improve everything at once wastes tokens and improves little (the queue already caps open miss jobs at 3, `OPEN_MAX` in `lib/learn.js`).
 - **Feedback doc:** one markdown file the owner dumps raw notes into (typed or transcribed voice); the scheduled runs read it first and carry out that feedback before their own improvement work. Its own file, since `growth-inbox.md` folds into this list in step 2.
+- **A scoring rubric in the owner's taste:** a run grades its own output against named criteria before keeping it (the video's ten for a page: clarity, visual craft, motion, topic fit, layout and composition, typography, interaction, restraint, wow factor, narrative); Void's criteria for a card or miniature are set once by the owner, then every run scores against them, and they are the focus areas the run rotates through.
+- **Rules it writes itself:** when a run catches its own mistake, it writes one dated rule so no later run repeats it (the way `docs/RULES.md` and `tools/review-learn.mjs` already grow by hand); each run starts from the rules the last one left.
+- **On a schedule, one area per slot:** each area gets its own nightly slot (the video: pages at 1 am, shorts at 3, writing at 4, long video at 5), so the owner wakes to every area improved; Void's scheduled workflows (`.github/workflows/`) are where these slots live.
 
 ---
 
