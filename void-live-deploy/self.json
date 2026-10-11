@@ -307,6 +307,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-11T01:19:55Z",
+   "subject": "Cleanup step 4: readers on the frontier (will.py, self-context, idea intake), one what-next command, map drift guard, tools and workflows by"
+  },
+  {
    "at": "2026-10-11T01:11:13Z",
    "subject": "Cleanup step 3: the salvage shelf, docs/SALVAGE.md (owner, 2026-10-11)"
   },
@@ -381,10 +385,6 @@
   {
    "at": "2026-10-10T23:52:39Z",
    "subject": "Frontier: the cleanup plan is the current priority (owner, 2026-10-10)"
-  },
-  {
-   "at": "2026-10-10T23:42:30Z",
-   "subject": "Claim frontier #9 (Clef routes every ask): the first piece, Clef-flash beside the router on the bench"
   }
  ]
 }
