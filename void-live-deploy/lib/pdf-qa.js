@@ -44,3 +44,26 @@ export function ask(question, lines, max = 3) {
   return scored.length ? { lines: scored.map(({ page, line, text }) => ({ page, line, text })), say: '' }
     : { lines: [], say: 'The document does not say (no line holds what you asked about).' };
 }
+
+/** a markdown or plain text -> blocks: a "#" line is a heading, every other non-blank line is text */
+export function blocksOfText(text) {
+  const out = [];
+  for (const raw of String(text || '').split(/\r?\n/)) {
+    const t = raw.trim(); if (!t) continue;
+    const h = /^#{1,6}\s+(.*)$/.exec(t);
+    out.push(h ? { text: h[1].trim(), heading: true } : { text: t, heading: false });
+  }
+  return out;
+}
+
+/** blocks ({ text, heading }) -> { pages, titles }: each heading starts a section (a "page" for linesOf and ask), titled by it;
+ *  text before the first heading is a section with no title. A saved web page and a markdown file answer like a PDF does. */
+export function sectionsOf(blocks) {
+  const pages = [], titles = [];
+  for (const b of blocks || []) {
+    if (b.heading) { pages.push(''); titles.push(b.text); continue; }
+    if (!pages.length) { pages.push(''); titles.push(''); }
+    pages[pages.length - 1] += b.text + '\n';
+  }
+  return { pages, titles };
+}
