@@ -7,6 +7,7 @@
  * Void plays by a position table (corners high, the squares next to corners low) plus the discs it flips.
  */
 import { lift3d } from './lift3d.js';
+import { showArena } from '../lib/arena-say.js';
 const N = 8;
 const DIRS = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
@@ -86,6 +87,8 @@ export function voidMove(board, p = 2) {
 
 export function othelloOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  if (/^(?:how (?:good|strong|well) (?:are you|is void|do you play)|are you (?:any )?good|what(?:'s| is) your (?:rating|elo|level))\s+(?:at|in)\s+(?:othello|reversi)$/.test(t)
+    || /^what(?:'s| is) your (?:othello|reversi) (?:rating|elo|level)$/.test(t)) return { kind: 'rating' };
   if (/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|start|open|summon)?\s*(?:me\s+)?(?:a\s+|an\s+|the\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:othello|reversi)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game' };
   return null;
 }
@@ -171,7 +174,9 @@ function mount(th, stageApi) {
 }
 
 async function run(text, api) {
-  if (!othelloOf(text)) return 'none';
+  const ask = othelloOf(text);
+  if (!ask) return 'none';
+  if (ask.kind === 'rating') { showArena(api, '/arena-othello.json', 'othello'); return 'othello'; } // the self-play record (frontier #5)
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'othello');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'othello'; } // one board at a time
   api.summon('othello', { state: createOthelloState(), center: true });

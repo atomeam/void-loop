@@ -5,7 +5,7 @@
  */
 import * as K from './connect4-rules.js';
 import { lift3d } from './lift3d.js';
-import { arenaSay, arenaCurve } from '../lib/arena.js';
+import { showArena } from '../lib/arena-say.js';
 
 export function connect4Of(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -81,12 +81,7 @@ async function run(text, api) {
   const ask = connect4Of(text);
   if (!ask) return 'none';
   if (ask.kind === 'rating') { // the record the self-play arena wrote (tools/arena.mjs, frontier #5), fetched from this site
-    const el = api.showPage((p) => { p.innerHTML = '<h2>How good I am at Four in a Row</h2><p data-arena-say class="sub">Reading my games…</p><div data-arena-curve></div>'; });
-    fetch('/arena.json').then((r) => (r.ok ? r.json() : null)).catch(() => null).then((a) => {
-      el.querySelector('[data-arena-say]').textContent = arenaSay(a);
-      el.querySelector('[data-arena-curve]').innerHTML = arenaCurve(a); // void-review: ok: arenaCurve escapes the names and forces every number (lib/arena.js)
-      api.say('');
-    });
+    showArena(api, '/arena.json', 'connect4');
     return 'connect4';
   }
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'connect4');
