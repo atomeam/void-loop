@@ -814,6 +814,20 @@ try {
         && /### Breaking changes\n- Drop Node 16\n\n### Removed\n- Remove the old export\n$/.test(md2) && !P.errors.length,
       [JSON.stringify(md1), JSON.stringify(md2), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
+  // shop this list (owner, 2026-10-11): one search link per item still to buy, at Walmart or Sam's Club; nothing leaves the page
+  if (want("shop this list: the list card links each item still to buy to a Walmart or Sam's Club search")) { const P = await fresh();
+    await P.ask('add milk', 500); await P.ask('add eggs', 500); await P.ask('add peanut butter', 500); await P.ask('check off eggs', 500);
+    const before = await P.p.$$eval('.list-shop-links a', (as) => as.length);
+    await P.p.click('.list-shop-store[data-store="walmart"]'); await P.p.waitForTimeout(200);
+    const wal = await P.p.$$eval('.list-shop-links a', (as) => as.map((a) => [a.textContent, a.href, a.target, a.rel]));
+    await P.p.click('.list-shop-store[data-store="sams"]'); await P.p.waitForTimeout(200);
+    const sams = await P.p.$$eval('.list-shop-links a', (as) => as.map((a) => a.href));
+    check("shop this list: with milk, eggs (checked off) and peanut butter, Walmart links milk and peanut butter to its search (encoded, a new tab, no referrer), Sam's Club the same; nothing is linked before a store is picked",
+      before === 0 && wal.length === 2 && wal[0][1] === 'https://www.walmart.com/search?q=milk' && wal[1][1] === 'https://www.walmart.com/search?q=peanut%20butter'
+        && wal.every((w) => w[2] === '_blank' && /noopener/.test(w[3]) && /noreferrer/.test(w[3])) && !wal.some((w) => /eggs/.test(w[0]))
+        && sams.join() === 'https://www.samsclub.com/s/milk,https://www.samsclub.com/s/peanut%20butter' && !P.errors.length,
+      JSON.stringify({ before, wal, sams, e: P.errors }));
+    await P.ctx.close(); }
   // an incident brief: fill the form, the durations and the Markdown follow; the draft survives a reload and "clear" empties it
   if (want("an incident brief: fill the form, the durations and the Markdown follow; the draft survive")) { const P = await fresh();
     await P.ask('incident report for the login outage', 900);
