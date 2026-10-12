@@ -97,6 +97,7 @@ for (const [name, file] of [
   ['pdf-qa', 'pdf-qa.test.mjs'],
   ['arena', 'arena.test.mjs'],
   ['calc', 'calc.test.mjs'],
+  ['timer', 'timer.test.mjs'],
   ['automations', 'automations.test.mjs'],
   ['actions', 'actions.test.mjs'],
   ['ringer', 'ringer.test.mjs'],

@@ -1060,6 +1060,54 @@ try {
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
   // step 6: the sticky note, pinned before it moves out of void.html (what it does today, ask by ask)
+  // step 6: the timer, pinned before it moves out of void.html (what it does today, ask by ask, quirks included: a bare
+  // "pause" and "remove the timer" act on the first timer, not the picked one)
+  if (want("built-in timer: set one for 5 minutes, pause, start, reset, bigger, a colour, another, a bare pause, a reload, remove, an alarm, a short one ends")) { const P = await fresh();
+    const tm = async () => (await P.state()).filter((t) => t.kind === 'timer').map((x) => [x.duration, x.running ? 'run' : 'stop', x.remaining === x.duration ? 'full' : 'part', x.size, x.color].join(',')).join(' / ');
+    const r = {};
+    await P.ask('set a timer for 5 minutes', 700); r.a = await tm();
+    await P.ask('pause the timer', 500); r.b = await tm();
+    await P.ask('start the timer', 500); r.c = await tm();
+    await P.ask('reset the timer', 500); r.d = await tm();
+    await P.ask('make the timer bigger', 400); r.e = await tm();
+    await P.ask('make the timer red', 400); r.f = await tm();
+    await P.ask('another timer for 2 minutes', 600); r.g = await tm();
+    await P.ask('pause', 500); r.h = await tm();
+    r.faces = await P.p.$$eval('.thing.timer', (els) => els.map((e) => e.textContent.replace(/\s+/g, ' ').trim()).join(' / '));
+    await P.p.reload(); await P.p.waitForTimeout(1500);
+    r.reload = await until(() => P.p.$$eval('.thing.timer', (els) => els.length === 2 ? els.length : false), 6000);
+    await P.ask('remove the timer', 500); r.i = await tm();
+    await P.ask('remove the timer', 500); r.j = await tm();
+    await P.ask('set an alarm for 7am', 600); r.alarm = (await P.state()).filter((t) => t.kind === 'timer').map((x) => x.running && x.duration > 0 && x.duration <= 24 * 3600e3).join();
+    await P.ask('remove the timer', 400);
+    await P.ask('a 2 second timer', 600);
+    r.done = await until(() => P.p.$$eval('.thing.timer', (els) => els.length === 1 && /done/i.test(els[0].textContent) ? els[0].textContent.replace(/\s+/g, ' ').trim() : false), 8000);
+    r.state = await tm();
+    check('built-in timer: "set a timer for 5 minutes" starts one, pause / start / reset work it, "make the timer bigger" grows it to 56 and "make the timer red" colours it, "another timer for 2 minutes" adds a second that starts, a bare "pause" acts on the first, both come back after a reload, "remove the timer" takes the first then the second, "set an alarm for 7am" starts one under a day long, and a 2 second timer says done and stops at 0',
+      r.a === '300000,run,full,40,#e8e8e8' && r.b === '300000,stop,part,40,#e8e8e8' && r.c === '300000,run,part,40,#e8e8e8' && r.d === '300000,stop,full,40,#e8e8e8'
+        && r.e === '300000,stop,full,56,#e8e8e8' && r.f === '300000,stop,full,56,#ff5c5c' && r.g === '300000,stop,full,56,#ff5c5c / 120000,run,full,40,#e8e8e8' && r.h === r.g
+        && /5:00/.test(r.faces) && r.reload === 2 && r.i === '120000,run,full,40,#e8e8e8' && r.j === '' && r.alarm === 'true' && !!r.done && r.state === '2000,stop,part,40,#e8e8e8' && !P.errors.length,
+      JSON.stringify({ r, e: P.errors }));
+    await P.ctx.close(); }
+  // step 6's visible upgrade for the timer (owner, 2026-10-11: every cleanup move ships one): its progress ring was built with
+  // createElement('svg'), an unknown HTML tag that never drew; it is a real SVG ring now, and a finished timer flashes 0:00
+  if (want("timer ring and done flash: the progress ring is drawn and sweeps down while it runs, a finished timer flashes 0:00, steady with reduced motion")) {
+    const r = {};
+    for (const reduce of [false, true]) {
+      const P = await fresh(); if (reduce) await P.p.emulateMedia({ reducedMotion: 'reduce' });
+      await P.ask('a 3 second timer', 500);
+      const ring = () => P.p.$eval('.thing.timer svg', (s) => { const b = s.getBoundingClientRect(), fg = s.querySelectorAll('circle')[1];
+        return { ns: s.namespaceURI, w: Math.round(b.width), h: Math.round(b.height), off: fg ? parseFloat(fg.getAttribute('stroke-dashoffset')) : null, drawn: fg ? Math.round(fg.getBoundingClientRect().width) : 0 }; });
+      const a = await ring(); await P.p.waitForTimeout(1200); const b = await ring();
+      const done = await until(() => P.p.$eval('.thing.timer', (e) => e.classList.contains('timer-done') ? getComputedStyle(e.querySelector('span')).animationName : false), 8000);
+      r[reduce ? 'reduce' : 'motion'] = { a, b, done };
+      await P.ctx.close();
+    }
+    const m = r.motion;
+    check('timer ring and done flash: the timer\'s progress ring is a real SVG that draws (about the height of its digits), its sweep shrinks while it runs, and when it ends the timer is marked done and its 0:00 flashes; with reduced motion it is marked done and stays steady',
+      m.a.ns === 'http://www.w3.org/2000/svg' && m.a.w >= 20 && m.a.h >= 20 && m.a.drawn > 0 && m.b.off > m.a.off && !!m.done && m.done !== 'none' && r.reduce.done === 'none',
+      JSON.stringify(r));
+  }
   // step 6: the calculator card, pinned before it moves out of void.html (what it does today, ask by ask). Most sums never
   // reach it: the answer card (showCalc) takes "calculate ...", "what is ...", percents and units first; "calculator <sum>" does
   if (want("built-in calculator: open one, a colour, calculator 2+5 on the card, a reload, remove")) { const P = await fresh();
