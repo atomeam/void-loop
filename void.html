@@ -165,6 +165,10 @@
       align-items: center;
       gap: 8px;
     }
+    .timer .timer-ring { width: 0.9em; height: 0.9em; flex: none; }
+    .timer.timer-done > span:first-of-type { animation: timer-flash 1s steps(2, jump-none) infinite; }
+    @keyframes timer-flash { 0% { opacity: 1; } 100% { opacity: 0.25; } }
+    @media (prefers-reduced-motion: reduce) { .timer.timer-done > span:first-of-type { animation: none; } }
 .timer-label {
       font-size: 0.4em;
       color: var(--muted);
@@ -922,7 +926,6 @@
       stage.innerHTML = '';
 Object.values(things).forEach((th) => {
         if (th.kind === 'clock') mountClock(th);
-        else if (th.kind === 'timer') mountTimer(th);
         else if (th.kind === 'list') mountList(th);
         else if (th.kind === 'kept') mountKept(th);
         else if (th.kind === 'calendar') mountCalendar(th);
@@ -1651,14 +1654,16 @@ function mountList(th) {
     // the timer's face (progress ring, m:ss, a state word), one look for every countdown on the stage: the timer card
     // and the five-minute challenge (skills/challenge.js, through stageApi.timerFace) both draw with it
     function timerFace(el) {
-      const ring = document.createElement('svg');
-      ring.setAttribute('width', '32');
-      ring.setAttribute('height', '32');
+      // an SVG ring (createElementNS: built with createElement('svg') it was an unknown HTML tag and never drew), as tall as the digits
+      const NS = 'http://www.w3.org/2000/svg';
+      const ring = document.createElementNS(NS, 'svg');
       ring.setAttribute('viewBox', '0 0 32 32');
-      const bg = document.createElement('circle');
+      ring.setAttribute('class', 'timer-ring');
+      ring.setAttribute('aria-hidden', 'true');
+      const bg = document.createElementNS(NS, 'circle');
       bg.setAttribute('cx', '16'); bg.setAttribute('cy', '16'); bg.setAttribute('r', '14');
       bg.setAttribute('fill', 'none'); bg.setAttribute('stroke', 'rgba(255,255,255,0.08)'); bg.setAttribute('stroke-width', '2');
-      const fg = document.createElement('circle');
+      const fg = document.createElementNS(NS, 'circle');
       fg.setAttribute('cx', '16'); fg.setAttribute('cy', '16'); fg.setAttribute('r', '14');
       fg.setAttribute('fill', 'none');
       fg.setAttribute('stroke-width', '2');
@@ -1678,48 +1683,9 @@ function mountList(th) {
         label.textContent = word;
         fg.setAttribute('stroke', p > 0.15 ? '#5dffa5' : '#ff5c5c');
         fg.setAttribute('stroke-dashoffset', String(2 * Math.PI * 14 * (1 - p)));
+        el.classList.toggle('timer-done', word === 'done'); // a finished timer flashes its 0:00 like a kitchen timer
       };
     }
-    function mountTimer(th) {
-      const el = document.createElement('div');
-      el.className = 'thing timer';
-      el.dataset.id = th.id;
-      el.style.left = th.x + 'px';
-      el.style.top = th.y + 'px';
-      el.style.fontSize = (th.size || 40) + 'px';
-      el.style.color = th.color || '#e8e8e8';
-      el.style.fontFamily = 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
-      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
-
-      const remaining = th.running ? Math.max(0, th.remaining - (Date.now() - th.startedAt)) : th.remaining;
-      const total = th.duration;
-      const face = timerFace(el);
-      face(remaining, total, th.running ? 'running' : (remaining <= 0 ? 'done' : 'paused'));
-
-      // tick while running
-      if (th.running) {
-        el._tickInterval = setInterval(() => {
-          const rem = Math.max(0, th.remaining - (Date.now() - th.startedAt));
-          face(rem, total, rem > 0 ? 'running' : 'done');
-          if (rem <= 0) {
-            clearInterval(el._tickInterval);
-            th.running = false;
-            th.remaining = 0;
-            th.startedAt = 0;
-            save();
-            say('timer done');
-            emit(th, { event: 'done', text: (th.label ? th.label : 'the timer') + ' is done' }); // to whatever its arrows point at
-          }
-        }, 250);
-      }
-
-      // the 3D hourglass beside the timer (skills/mini/timer.js): its sand follows remaining/startedAt, a fresh run turns it over
-      stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: 'beside', width: 120, height: 160, label: '3D hourglass' }).catch(() => {});
-
-bindDrag(el, th);
-      stage.appendChild(el);
-    }
-
     function ensureClock() {
       let clock = Object.values(things).find((t) => t.kind === 'clock');
       if (!clock) {
@@ -1740,15 +1706,6 @@ bindDrag(el, th);
       return clock;
     }
 
-    // 007: "add a sticky…", "another timer", "a new note" adds one; edits still reuse the selected one.
-    function wantsFresh(lower) {
-      return /\b(add|make|create|put|start|set|give\s+me|new|another)\b[^.]*?\b(a|an|another|new|one\s+more|second)\s+(?:\w+\s+){0,3}?(sticky|stickies|note|timer|countdown)\b/.test(lower)
-        || /\b(another|one\s+more|second|new)\s+(sticky|note|timer|countdown)\b/.test(lower);
-    }
-    function nextSpot(kind, bx, by) {
-      const n = Object.values(things).filter((t) => t.kind === kind).length;
-      return { x: Math.min(Math.max(20, stage.clientWidth - 220), bx + n * 28), y: Math.min(Math.max(20, stage.clientHeight - 120), by + n * 28) };
-    }
     function colorFrom(text) {
       const map = {
         red: '#ff5c5c', blue: '#6aa8ff', green: '#5dffa5', yellow: '#ffe66a',
@@ -1843,7 +1800,6 @@ function applyClockAlters(c, lower) {
         || Object.values(things).find((t) => t.kind === kind);
       if (th) return th;
       if (kind === 'clock') return ensureClock();
-      if (kind === 'timer') return ensureTimer(60000);
       if (stageKinds[kind] && stageKinds[kind].ensure) return stageKinds[kind].ensure(stageApi); // a built-in that moved to skills/ (cleanup step 6)
       if (kind === 'list') return ensureList([]);
       return null;
@@ -1854,14 +1810,6 @@ function applyClockAlters(c, lower) {
       if (kind === 'clock') {
         ok = applyClockAlters(th, lower) || ok;
         return ok;
-      }
-      if (kind === 'timer') {
-        if (/\b(bigger|larger|increase|grow|enlarge)\b/.test(lower)) { th.size = Math.min(200, (th.size || 40) + 16); ok = true; }
-        if (/\b(smaller|tinier|decrease|shrink)\b/.test(lower)) { th.size = Math.max(16, (th.size || 40) - 16); ok = true; }
-        if (/\b(huge|giant|enormous|massive)\b/.test(lower)) { th.size = 80; ok = true; }
-        if (/\b(tiny|mini|petite)\b/.test(lower)) { th.size = 20; ok = true; }
-        if (/\b(big|large)\b/.test(lower) && !/\bbigger\b|\blarger\b/.test(lower)) { th.size = Math.max(th.size || 40, 64); ok = true; }
-        if (/\b(small|little)\b/.test(lower) && !/\bsmaller\b/.test(lower)) { th.size = Math.min(th.size || 40, 24); ok = true; }
       }
       if (stageKinds[kind] && stageKinds[kind].alter) ok = stageKinds[kind].alter(th, lower) || ok; // a moved built-in's own size words
       {
@@ -1948,165 +1896,6 @@ function applyClockAlters(c, lower) {
         || /\b(blue|red|green|yellow|white|black|purple|orange|pink|gray|grey|gold|cyan|teal)\b/.test(lower)
         || /#([0-9a-f]{3}|[0-9a-f]{6})\b/i.test(lower)
         || /\b(bold|seconds|date)\b/.test(lower);
-    }
-
-    function durationNumber(value) {
-      const token = value.toLowerCase();
-      if (/^\d+(?:\.\d+)?$/.test(token)) return Number(token);
-      const words = {
-        a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5,
-        six: 6, seven: 7, eight: 8, nine: 9, ten: 10,
-        eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15,
-        sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20,
-        thirty: 30, forty: 40, fifty: 50, sixty: 60, seventy: 70,
-        eighty: 80, ninety: 90, hundred: 100,
-        half: 0.5,
-      };
-      return Object.prototype.hasOwnProperty.call(words, token) ? words[token] : 0;
-    }
-
-    // "set an alarm for 7am", "wake me up at 6:30": a timer that rings at the next 7:00 (no am/pm: the next one of the two)
-    function alarmMs(lower, now = new Date()) {
-      const m = String(lower || '').trim().replace(/[?.!]+$/, '').match(/^(?:please\s+)?(?:(?:set|make|start)\s+(?:an?\s+|my\s+)?alarm|alarm|wake\s+me(?:\s+up)?)\s+(?:for|at)\s+(\d{1,2})(?::(\d{2}))?\s*(a\.?m\.?|p\.?m\.?)?(?:\s+(?:tomorrow|tonight|today))?(?:\s+please)?$/);
-      if (!m) return 0;
-      let h = +m[1]; const min = +(m[2] || 0), ap = (m[3] || '').replace(/\./g, '');
-      if (h > 23 || min > 59 || (ap && (h < 1 || h > 12))) return 0;
-      if (ap === 'pm' && h < 12) h += 12;
-      if (ap === 'am' && h === 12) h = 0;
-      const at = new Date(now); at.setSeconds(0, 0); at.setHours(h, min);
-      const step = ap || h > 12 || h === 0 ? 24 : 12;
-      while (at <= now) at.setHours(at.getHours() + step);
-      if (/\btomorrow\b/.test(lower) && at.getDate() === now.getDate()) at.setDate(at.getDate() + 1);
-      return at - now;
-    }
-
-    function parseDuration(text) {
-      const alarm = alarmMs(text);
-      if (alarm) return alarm;
-      const lower = (text || '').toLowerCase()
-        .replace(/[-‐‑‒–—]/g, ' ')
-        .replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
-      // "days until christmas", "days until december 25", "how many days until christmas"
-      const daysUntil = lower.match(/(?:how\s+many\s+)?days?\s+until\s+(.+)$/i);
-      if (daysUntil) {
-        const target = parseTargetDate(daysUntil[1].trim());
-        if (target) {
-          const diff = target - Date.now();
-          if (diff > 0) return diff;
-        }
-      }
-      const pattern = /(\d+(?:\.\d+)?|a|an|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|half)\s*(hours?|hrs?|h|minutes?|mins?|m|seconds?|secs?|s)(?=\b|\d)/g;
-      let ms = 0;
-      let match;
-      while ((match = pattern.exec(lower)) !== null) {
-        const amount = durationNumber(match[1]);
-        const unit = match[2].charAt(0);
-        if (unit === 'h') ms += amount * 3600000;
-        else if (unit === 'm') ms += amount * 60000;
-        else if (unit === 's') ms += amount * 1000;
-      }
-      if (ms === 0) {
-        const bare = lower.match(/(\d+(?:\.\d+)?)\s*$/);
-        if (bare) ms = Number(bare[1]) * 60000;
-      }
-      return ms;
-    }
-
-    function parseTargetDate(text) {
-      const lower = text.toLowerCase().trim();
-      const now = new Date();
-      const year = now.getFullYear();
-      const monthMap = {
-        january: 0, jan: 0, february: 1, feb: 1, march: 2, mar: 2, april: 3, apr: 3,
-        may: 4, june: 5, jun: 5, july: 6, jul: 6, august: 7, aug: 7, september: 8, sep: 8, sept: 8,
-        october: 9, oct: 9, november: 10, nov: 10, december: 11, dec: 11,
-      };
-      // "christmas", "xmas", "new year", "new years", "halloween", "thanksgiving"
-      const fixedDates = {
-        christmas: new Date(year, 11, 25),
-        xmas: new Date(year, 11, 25),
-        'new year': new Date(year + 1, 0, 1),
-        'new years': new Date(year + 1, 0, 1),
-        halloween: new Date(year, 9, 31),
-        thanksgiving: (() => { const d = new Date(year, 10, 1); while (d.getDay() !== 4) d.setDate(d.getDate() + 1); d.setDate(d.getDate() + 21); return d; })(),
-      };
-      if (fixedDates[lower]) return fixedDates[lower].getTime();
-      // "december 25", "dec 25", "25 december", "25 dec"
-      const m = lower.match(/^(\d{1,2})\s+(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*$/i)
-        || lower.match(/^(jan|feb|mar|apr|may|jun|jul|aug|sep|sept|oct|nov|dec)[a-z]*\s+(\d{1,2})$/i);
-      if (m) {
-        const day = parseInt(m[1].match(/\d+/) ? m[1] : m[2], 10);
-        const month = monthMap[m[1].match(/\d+/) ? m[2].toLowerCase() : m[1].toLowerCase()];
-        if (month !== undefined) {
-          const target = new Date(year, month, day);
-          if (target < now) target.setFullYear(year + 1);
-          return target.getTime();
-        }
-      }
-      return null;
-    }
-
-    function isDurationRequest(lower) {
-      const normalized = lower
-        .replace(/[-‐‑‒–—]/g, ' ')
-        .replace(/\bhalf\s+an?\s+(?:hours?|hrs?|h)\b/g, '30 minutes');
-      if (/(?:how\s+many\s+)?days?\s+until\s+.+/i.test(normalized)) return true;
-      const number = '(?:\\d+(?:\\.\\d+)?|a|an|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred)';
-      const unit = '(?:hours?|hrs?|h|minutes?|mins?|m|seconds?|secs?|s)';
-      const duration = number + '\\s*' + unit + '(?:\\s*' + number + '\\s*' + unit + ')*';
-      return new RegExp('^(?:please\\s+)?(?:(?:start|begin|go|run|set)\\s+)?(?:(?:a|an|the)\\s+)?(?:for\\s+)?' + duration + '(?:\\s+please)?[.!]?$').test(normalized);
-    }
-
-    function wantsCreateTimer(lower) {
-      const mentionsTimer = /\b(timers?|countdowns?|pomodoros?)\b/.test(lower);
-      const duration = parseDuration(lower);
-      if (mentionsTimer && /\b(remove|delete|get\s+rid\s+of|hide|clear|cancel|dismiss)\b/.test(lower)) return false;
-      if (mentionsTimer && /\b(pause|stop|hold|wait|freeze|suspend)\b/.test(lower)) return false;
-      if (mentionsTimer && duration === 0 && (/\b(start|begin|go|resume|continue|run|launch|activate|reset|restart|redo)\b/.test(lower) || /\bstart\s+over\b/.test(lower))) return false;
-      if (duration > 0 && (mentionsTimer || isDurationRequest(lower))) return true;
-      if (alarmMs(lower)) return true;
-      if (duration > 0 && /^(?:please\s+)?(?:remind|wake|ping|alert|buzz)\s+me\b.*\bin\s+\S+\s*(?:minutes?|mins?|hours?|hrs?|seconds?|secs?)\b/.test(lower)) return true; // "remind me to stretch in 20 minutes"
-      if (/^(?:an?\s+)?(?:timer|countdown)(?:\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
-      if (/\b(make|add|create|set|start|spawn|put|place|drop|show|open|give\s+me|i\s+need|i'?d\s+like)\b.*\b(timer|countdown)\b/.test(lower)) return true;
-      if (/\b(timer|countdown)\b.*\b(please|for|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
-      if (/(?:how\s+many\s+)?days?\s+until\s+/.test(lower)) return true;
-      return false;
-    }
-
-
-    function wantsTimerAction(lower) {
-      const selected = selectedId && things[selectedId];
-      const timerSelected = selected && selected.kind === 'timer';
-      const hasTimer = Object.values(things).some((thing) => thing.kind === 'timer');
-      const mentionsTimer = /\b(timers?|countdowns?)\b/.test(lower);
-      let action = null;
-      if (/\b(reset|restart|redo)\b/.test(lower) || /\bstart\s+over\b/.test(lower)) action = 'reset';
-      else if (/\b(pause|stop|hold|wait|freeze|suspend)\b/.test(lower)) action = 'pause';
-      else if (/\b(start|go|resume|continue|run|launch|activate)\b/.test(lower)) action = 'start';
-      if (mentionsTimer && action) return action;
-      if (!timerSelected && (selected || !hasTimer)) return null;
-      const command = lower
-        .replace(/^\s*(?:please\s+)?(?:can\s+you|could\s+you|would\s+you)\s+/, '')
-        .replace(/\s+please\s*$/, '')
-        .trim();
-      const verbs = action === 'start'
-        ? 'start|go|resume|continue|run|launch|activate'
-        : action === 'pause'
-          ? 'pause|stop|hold|wait|freeze|suspend'
-          : 'reset|restart|redo|start\\s+over';
-      if (action && new RegExp('^(?:' + verbs + ')(?:\\s+(?:it|this))?[.!]?$').test(command)) return action;
-      return null;
-    }
-
-    function wantsRemoveTimer(lower) {
-      const selected = selectedId && things[selectedId];
-      const timerSelected = selected && selected.kind === 'timer';
-      const hasTimer = Object.values(things).some((thing) => thing.kind === 'timer');
-      const removeWord = /\b(remove|delete|get\s+rid\s+of|hide|clear|cancel|dismiss)\b/;
-      if (removeWord.test(lower) && /\b(timers?|countdowns?)\b/.test(lower)) return true;
-      if (/\b(timers?|countdowns?)\b.*\b(away|gone)\b/.test(lower)) return true;
-      if ((timerSelected || (!selected && hasTimer)) && /^(remove|delete|get\s+rid\s+of|hide|clear|cancel|dismiss)(\s+(it|this))?\s*[.!]?\s*$/.test(lower)) return true;
-      return false;
     }
 
     function cleanListText(value) {
@@ -2198,33 +1987,6 @@ function applyClockAlters(c, lower) {
     }
     function wantsClearList(lower) {
       return /^(clear|empty)\s+(the\s+)?list\s*[.!]?$/i.test(lower);
-    }
-
-    function ensureTimer(durationMs, fresh) {
-      let t = fresh ? null : (Object.values(things).find((th) => th.kind === 'timer' && th.id === selectedId) || Object.values(things).find((th) => th.kind === 'timer'));
-      if (!t) {
-        t = {
-          id: uid('timer'),
-          kind: 'timer',
-          ...nextSpot('timer', Math.max(40, stage.clientWidth / 2 - 60), Math.max(40, stage.clientHeight / 2 - 40)),
-          size: 40,
-          color: '#e8e8e8',
-          duration: durationMs,
-          remaining: durationMs,
-          running: false,
-          startedAt: 0,
-        };
-        things[t.id] = t;
-        selectedId = t.id;
-      } else {
-        // reset with new duration if creating fresh
-        t.duration = durationMs;
-t.remaining = durationMs;
-        t.running = false;
-        t.startedAt = 0;
-        selectedId = t.id;
-      }
-      return t;
     }
 
     /** freerEnglishParse — broaden natural asks for clock (+ sticky) without rigid phrases */
@@ -2412,57 +2174,13 @@ say('nothing selected to remove');
       }
 
 // sticker alter branch (below) catches "make it blue" for a selected sticky.
-      // timer create
-      if (wantsCreateTimer(lower)) {
-        const dur = parseDuration(lower) || 60000; // default 1 min
-        const t = ensureTimer(dur, wantsFresh(lower) && Object.values(things).some((th) => th.kind === 'timer'));
-        // a timer asked for with a length ("set a timer for 5 minutes") starts at once, like every phone's; "make a timer" or "…paused" waits
-        const startNow = /\b(start|begin|go)\b|^(?:please\s+)?(?:remind|wake|ping|alert|buzz)\s+me\b/.test(lower) || (parseDuration(lower) > 0 && !/\b(paused?|don'?t\s+start|not\s+yet|later)\b/.test(lower));
-        if (startNow && !t.running) {
-          t.running = true;
-          t.startedAt = Date.now();
-        }
-        save(); render();
-        return { ok: true, detail: t.running ? 'timer-start' : 'timer' };
-      }
-
-// timer action (start/pause/reset)
-      const timerAction = wantsTimerAction(lower);
-      if (timerAction) {
-        const timerMentioned = /\b(timer|countdown)\b/.test(lower)
-          || !!(selectedId && things[selectedId] && things[selectedId].kind === 'timer');
-        const t = Object.values(things).find((th) => th.kind === 'timer');
-        if (t) {
-          if (timerAction === 'start') {
-            if (!t.running) {
-              if (t.remaining <= 0) t.remaining = t.duration;
-              t.running = true;
-              t.startedAt = Date.now();
-            }
-            save(); render();
-            return { ok: true, detail: 'timer-start' };
-          }
-          if (timerAction === 'pause') {
-            if (t.running) {
-              t.remaining = Math.max(0, t.remaining - (Date.now() - t.startedAt));
-              t.running = false;
-              t.startedAt = 0;
-            }
-            save(); render();
-            return { ok: true, detail: 'timer-pause' };
-          }
-          if (timerAction === 'reset') {
-            t.remaining = t.duration;
-            t.running = false;
-            t.startedAt = 0;
-            save(); render();
-return { ok: true, detail: 'timer-reset' };
-          }
-        }
-        if (timerMentioned) {
-          say('no timer to ' + timerAction);
-          return { ok: false, detail: 'no timer' };
-        }
+      // timer create, then start / pause / reset (skills/timer.js, cleanup step 6), at the places in this order they always had
+      if (stageKinds.timer && typeof stageKinds.timer.ask === 'function') {
+        const td = stageKinds.timer.ask(lower, text, stageApi);
+        if (td) return { ok: true, detail: td };
+        const ta = stageKinds.timer.askAction(lower, text, stageApi);
+        if (ta === 'no timer') return { ok: false, detail: 'no timer' };
+        if (ta) return { ok: true, detail: ta };
       }
 
       // the built-ins that moved to skills/ (cleanup step 6) answer here, at the place in this order they always had, so a bare
@@ -2475,17 +2193,11 @@ return { ok: true, detail: 'timer-reset' };
 
 
 
-      // timer remove
-      if (wantsRemoveTimer(lower)) {
-        const t = Object.values(things).find((th) => th.kind === 'timer');
-        if (t) {
-          delete things[t.id];
-          if (selectedId === t.id) selectedId = null;
-          save(); render();
-          return { ok: true, detail: 'timer-removed' };
-        }
-        say('');
-        return { ok: false, detail: 'no timer' };
+      // timer remove (skills/timer.js askRemove), after the moved built-ins as it always was
+      if (stageKinds.timer && typeof stageKinds.timer.askRemove === 'function') {
+        const tr = stageKinds.timer.askRemove(lower, text, stageApi);
+        if (tr === 'no timer') return { ok: false, detail: 'no timer' };
+        if (tr) return { ok: true, detail: tr };
       }
 
       // remove clock
