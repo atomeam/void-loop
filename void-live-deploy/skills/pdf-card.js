@@ -7,7 +7,7 @@
  * answer names its section and line (run 59; a page is never fetched for you, so no site is reached on your behalf).
  * The reading and the answering are in lib/pdf-qa.js (tested in node).
  */
-import { linesOf, ask, sectionsOf, blocksOfText } from '../lib/pdf-qa.js';
+import { linesOf, ask, sectionsOf, blocksOfText, outlineOf } from '../lib/pdf-qa.js';
 
 export const PDFJS = '/vendor/pdfjs-6.4.299/build/pdf.min.js';
 export const PDFJS_WORKER = '/vendor/pdfjs-6.4.299/build/pdf.worker.min.js';
@@ -63,7 +63,7 @@ export function blocksOfHtml(html) {
   for (const n of doc.body ? doc.body.querySelectorAll(BLOCKS) : []) {
     if (n.querySelector(BLOCKS)) continue;
     const t = (n.textContent || '').replace(/\s+/g, ' ').trim();
-    if (t) out.push({ text: t, heading: /^H[1-6]$/.test(n.tagName) });
+    if (t) out.push(/^H[1-6]$/.test(n.tagName) ? { text: t, heading: true, level: Number(n.tagName[1]) } : { text: t, heading: false });
   }
   return out;
 }
@@ -76,23 +76,25 @@ function run(text, api) {
       + '<p><input type="file" accept=".pdf,application/pdf,.html,.htm,text/html,.txt,text/plain,.md,text/markdown" data-pdf-file aria-label="Choose a PDF, a saved web page or a text file"></p>'
       + '<details data-pdf-pastebox><summary>Or paste text</summary><textarea data-pdf-paste rows="5" aria-label="Text to ask about" style="width:100%"></textarea><button type="button" data-pdf-read>Read it</button></details>'
       + '<div data-pdf-status role="status" aria-live="polite" class="sub">Nothing loaded yet.</div>'
+      + '<p><button type="button" data-pdf-map hidden>Map it</button></p><div data-pdf-outline></div>'
       + '<form data-pdf-ask hidden style="display:flex;gap:6px;margin:8px 0"><input type="text" data-pdf-q aria-label="Your question about the document" placeholder="Ask about the document" style="flex:1"> <button type="submit">Ask</button></form>'
       + '<div data-pdf-answer aria-live="polite"></div>';
   });
-  const $ = (s) => el.querySelector(s), status = $('[data-pdf-status]'), form = $('[data-pdf-ask]'), q = $('[data-pdf-q]'), out = $('[data-pdf-answer]');
+  const $ = (s) => el.querySelector(s), mapBtn = $('[data-pdf-map]'), mapOut = $('[data-pdf-outline]'), status = $('[data-pdf-status]'), form = $('[data-pdf-ask]'), q = $('[data-pdf-q]'), out = $('[data-pdf-answer]');
   const say2 = (msg, alert) => { status.textContent = msg; status.setAttribute('role', alert ? 'alert' : 'status'); };
-  let lines = null, name = '', titles = null; // titles: a section's heading by its number (null for a PDF, whose answers say the page)
+  let lines = null, name = '', titles = null, outline = []; // titles: a section's heading by its number (null for a PDF, whose answers say the page)
   const plural = (n, w) => n + ' ' + w + (n === 1 ? '' : 's');
 
-  const ready = (pages, label, unit, total, ts) => {
-    lines = linesOf(pages); name = label; titles = ts;
+  const ready = (pages, label, unit, total, ts, sections) => {
+    lines = linesOf(pages); name = label; titles = ts; outline = sections ? outlineOf(sections) : [];
+    mapBtn.hidden = outline.filter((n) => n.title !== 'the opening').length < 2; mapOut.innerHTML = ''; // a map needs two headings
     el.dataset.pdfPages = String(pages.length); el.dataset.pdfLines = String(lines.length);
     if (!lines.length) { say2(label + ': ' + plural(total, unit) + ', but no text I can read' + (unit === 'page' ? ' (it may be a scan).' : '.'), true); return; }
     say2(label + ': ' + plural(total, unit) + ', ' + lines.length + ' lines read' + (total > pages.length ? ' (the first ' + pages.length + ' pages)' : '') + '. Ask it something.');
     form.hidden = false; q.focus();
     say('document loaded');
   };
-  const useText = (body, label, html) => { const s = sectionsOf(html ? blocksOfHtml(body) : blocksOfText(body)); ready(s.pages, label, 'section', s.pages.length, s.titles); };
+  const useText = (body, label, html) => { const s = sectionsOf(html ? blocksOfHtml(body) : blocksOfText(body)); ready(s.pages, label, 'section', s.pages.length, s.titles, s); };
   async function readFile(f) {
     const nm = f.name || '', isPdf = /\.pdf$/i.test(nm) || f.type === 'application/pdf', isHtml = /\.html?$/i.test(nm) || f.type === 'text/html', isText = /\.(txt|md|markdown)$/i.test(nm) || /^text\/(plain|markdown)$/.test(f.type);
     if (!isPdf && !isHtml && !isText) { say2('That is not a PDF, a web page or a text file; choose one of those.', true); return; }
@@ -112,6 +114,16 @@ function run(text, api) {
   el.addEventListener('dragover', (e) => { e.preventDefault(); });
   el.addEventListener('drop', (e) => { e.preventDefault(); const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) readFile(f); });
   const where = (l) => titles ? (titles[l.page - 1] ? 'section “' + esc(titles[l.page - 1]) + '”' : 'the opening') + ', line ' + l.line : 'page ' + l.page + ', line ' + l.line;
+  // "map it": the headings as a tree, indented by depth, each opening to its own lines (asked by Void, 2026-10-11)
+  mapBtn.addEventListener('click', () => {
+    mapOut.innerHTML = '<ul class="doc-map" data-pdf-outline-list>' + outline.map((n) => { // void-review: ok: titles and lines go through esc(), the rest is numbers
+      const own = lines.filter((l) => l.page === n.page);
+      return '<li style="--depth:' + n.depth + '"><details data-depth="' + n.depth + '"><summary>' + esc(n.title) + ' <span class="sub">· ' + plural(n.lines, 'line') + '</span></summary>'
+        + (own.length ? '<ol>' + own.map((l) => '<li>' + esc(l.text) + '</li>').join('') + '</ol>' : '<p class="sub">just the heading</p>') + '</details></li>';
+    }).join('') + '</ul>';
+    mapOut.setAttribute('aria-label', 'Map of ' + name);
+    say('mapped ' + plural(outline.length, 'section'));
+  });
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!lines) return;

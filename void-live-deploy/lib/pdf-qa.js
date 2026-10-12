@@ -45,13 +45,13 @@ export function ask(question, lines, max = 3) {
     : { lines: [], say: 'The document does not say (no line holds what you asked about).' };
 }
 
-/** a markdown or plain text -> blocks: a "#" line is a heading, every other non-blank line is text */
+/** a markdown or plain text -> blocks: a "#" line is a heading (its level, the number of "#"), every other non-blank line is text */
 export function blocksOfText(text) {
   const out = [];
   for (const raw of String(text || '').split(/\r?\n/)) {
     const t = raw.trim(); if (!t) continue;
-    const h = /^#{1,6}\s+(.*)$/.exec(t);
-    out.push(h ? { text: h[1].trim(), heading: true } : { text: t, heading: false });
+    const h = /^(#{1,6})\s+(.*)$/.exec(t);
+    out.push(h ? { text: h[2].trim(), heading: true, level: h[1].length } : { text: t, heading: false });
   }
   return out;
 }
@@ -59,11 +59,27 @@ export function blocksOfText(text) {
 /** blocks ({ text, heading }) -> { pages, titles }: each heading starts a section (a "page" for linesOf and ask), titled by it;
  *  text before the first heading is a section with no title. A saved web page and a markdown file answer like a PDF does. */
 export function sectionsOf(blocks) {
-  const pages = [], titles = [];
+  const pages = [], titles = [], levels = []; // levels: each heading's level (1 for "#" or h1), 0 for the untitled opening
   for (const b of blocks || []) {
-    if (b.heading) { pages.push(''); titles.push(b.text); continue; }
-    if (!pages.length) { pages.push(''); titles.push(''); }
+    if (b.heading) { pages.push(''); titles.push(b.text); levels.push(b.level || 1); continue; }
+    if (!pages.length) { pages.push(''); titles.push(''); levels.push(0); }
     pages[pages.length - 1] += b.text + '\n';
   }
-  return { pages, titles };
+  return { pages, titles, levels };
+}
+
+/** "map it" (asked by Void, 2026-10-11): the sections as a heading tree, [{ title, depth, lines, page }] in reading order. A
+ *  heading nests under the nearest heading above it of a higher level, one step at a time however many levels it skips; the
+ *  untitled opening ("the opening") stays at the top when it holds text. page is the section's number, as ask() reports it. */
+export function outlineOf({ pages = [], titles = [], levels = [] } = {}) {
+  const out = [], stack = [];
+  pages.forEach((text, i) => {
+    const lines = String(text).split('\n').filter((l) => l.trim()).length;
+    if (!titles[i]) { if (lines) out.push({ title: 'the opening', depth: 0, lines, page: i + 1 }); return; }
+    const level = levels[i] || 1;
+    while (stack.length && stack[stack.length - 1] >= level) stack.pop();
+    out.push({ title: titles[i], depth: stack.length, lines, page: i + 1 });
+    stack.push(level);
+  });
+  return out;
 }
