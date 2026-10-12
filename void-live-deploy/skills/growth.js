@@ -39,9 +39,20 @@ export function summary(list) {
   return { total: all.length, since: last && !isNaN(Date.parse(last.at)) ? last.at.slice(0, 10) : '', byKind };
 }
 
-export function growthHead(esc, list) {
-  const s = summary(list);
-  return '<h2>How Void has grown</h2><div class="sub">' + s.total + ' changes' + (s.since ? ' since ' + esc(s.since) : '') + ', newest first</div>';
+/** Void asked (2026-10-12): "a velocity metric … to show if my skill acquisition is accelerating or stalling". New or better changes
+ * in the last 7 days against the 7 before; a quarter more is speeding up, a quarter fewer is slowing, none at all is stalled. Pure. */
+export function velocity(list, now = Date.now()) {
+  const day = 864e5, t = (e) => Date.parse(e && e.at);
+  const n = (a, b) => (Array.isArray(list) ? list : []).filter((e) => e && (e.kind === 'grow' || e.kind === 'build') && t(e) > now - b * day && t(e) <= now - a * day).length;
+  const week = n(0, 7), before = n(7, 14);
+  const trend = !week ? 'stalled' : !before || week >= before * 1.25 ? 'speeding up' : week <= before * 0.75 ? 'slowing' : 'steady';
+  return { week, before, trend };
+}
+
+export function growthHead(esc, list, now = Date.now()) {
+  const s = summary(list), v = velocity(list, now);
+  return '<h2>How Void has grown</h2><div class="sub">' + s.total + ' changes' + (s.since ? ' since ' + esc(s.since) : '') + ', newest first</div>'
+    + '<div class="sub" data-velocity="' + esc(v.trend) + '">This week ' + v.week + ' new or better, the week before ' + v.before + ': ' + esc(v.trend) + '</div>';
 }
 
 /** One entry as the tree's readout shows it, when a branch is touched. */

@@ -2246,6 +2246,14 @@ try {
     check("Void's review catches an undefined constant in a pasted snippet, and stays quiet once it is imported",
       !!bad && /bug/.test(bad) && !!good && !/never declared or imported/.test(good) && !R.errors.length, JSON.stringify({ bad: bad.slice(0, 200), good: good.slice(0, 200), errors: R.errors }));
     await R.ctx.close(); }
+  // The growth card says how fast Void is gaining skills (asked by Void, 2026-10-12): new or better changes this week against the
+  // week before, and whether that is speeding up, steady, slowing or stalled; read from the real ledger.
+  if (want("The growth card says how fast Void is gaining skills")) { const G = await fresh();
+    await G.ask('growth', 1500);
+    const v = await until(async () => G.p.$eval('.vpage [data-velocity]', (e) => ({ trend: e.dataset.velocity, text: e.textContent })).catch(() => null), 6000);
+    check('the growth card says how fast Void is gaining skills: this week against the week before, with the trend',
+      !!v && /^This week \d+ new or better, the week before \d+: (speeding up|steady|slowing|stalled)$/.test(v.text) && v.text.endsWith(v.trend) && !G.errors.length, JSON.stringify({ v, errors: G.errors }));
+    await G.ctx.close(); }
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];

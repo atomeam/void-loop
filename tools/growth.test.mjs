@@ -65,3 +65,14 @@ test('grow.mjs: entries are checked, appended one per line, and the real ledger 
   assert.ok(real.length >= 160);
   assert.ok(suite().ok);
 });
+
+test('velocity (asked by Void, 2026-10-12): new or better changes this week against the week before, and whether that is speeding up, steady, slowing or stalled', async () => {
+  const { velocity, growthHead } = await import('../void-live-deploy/skills/growth.js');
+  const now = Date.parse('2026-10-12T12:00:00Z'), d = (n, kind = 'grow') => ({ at: new Date(now - n * 864e5).toISOString(), kind, what: 'x' });
+  assert.deepEqual(velocity([d(1), d(2), d(3, 'build'), d(9)], now), { week: 3, before: 1, trend: 'speeding up' });
+  assert.equal(velocity([d(1), d(8), d(9), d(10)], now).trend, 'slowing');
+  assert.equal(velocity([d(1), d(2), d(8), d(9)], now).trend, 'steady');
+  assert.equal(velocity([d(8), d(9)], now).trend, 'stalled');
+  assert.equal(velocity([d(1, 'fix'), d(2, 'idea'), d(8)], now).week, 0, 'fixes and ideas are not new skills');
+  assert.match(growthHead(esc, [d(1), d(9)], now), /This week 1 new or better, the week before 1: steady/);
+});
