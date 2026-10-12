@@ -1,7 +1,9 @@
 // mcp — Void as an MCP server (frontier #6): the JSON-RPC half of functions/api/mcp.js, pure and tested in node
 // (tools/mcp.test.mjs). An MCP client POSTs one JSON-RPC message to /api/mcp (the streamable HTTP transport, answered with plain
 // JSON, no stream) and lists and calls Void's tools. Every tool is read-only: it computes from what it is given and from Void's own
-// tables, writes nothing, calls no model and reaches no other service. /tools.json is the same list, public.
+// tables and reaches no other service. One, review_code_closer, is /api/review itself (the route hands it over, ctx.review): the
+// closer read by a model comes only with the key that endpoint takes, on its terms, and the only thing written is that key's daily
+// count. /tools.json is the same list, public.
 import { quick } from './review-api.js';
 import { jde, moonPhase } from './sky-math.js';
 import { activeShowers, nextShower } from './showers.js';
@@ -15,6 +17,9 @@ export const TOOLS = [
   { name: 'review_code', title: 'Review code (instant checks)', annotations: RO,
     description: "Void's instant code review: pattern checks for bugs, risks and style in pasted code or a diff's added lines, in many languages. The same checks a-to-mind.com runs when someone asks Void to review code. No model; the closer read is not included.",
     inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to review (up to 60,000 characters).' }, diff: { type: 'string', description: 'A unified diff instead of code: only the added lines are reviewed, with their line numbers in the new file.' }, lang: { type: 'string', description: 'The language, if known (javascript, python, go, rust, sql, ...).' } } } },
+  { name: 'review_code_closer', title: 'Review code (with the closer read)', annotations: { ...RO, idempotentHint: false },
+    description: "Void's code review with the closer read: the instant checks, then an AI reviewer that confirms real findings, drops wrong ones and adds what the patterns missed, each quoting its line. The closer read needs a key in the MCP request's Authorization header (Bearer: a Void Pro review key vr1.… or a Void Code Review Pro license key; https://a-to-mind.com/code-review/#pro). Without one you get the instant checks and how to get it.",
+    inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to review (up to 60,000 characters).' }, diff: { type: 'string', description: 'A unified diff instead of code: the added lines are reviewed.' }, lang: { type: 'string', description: 'The language, if known.' } } } },
   { name: 'moon_phase', title: "The moon's phase", annotations: RO,
     description: "The moon's illuminated fraction, whether it is waxing or waning, and the phase's name for a moment, from Meeus' formulas (Astronomical Algorithms, ch. 47-48).",
     inputSchema: { type: 'object', properties: { date: DATE } } },
@@ -34,7 +39,21 @@ function when(a) {
 }
 const PHASES = [[0.02, 'new moon'], [0.35, 'crescent'], [0.65, 'quarter'], [0.98, 'gibbous'], [1.01, 'full moon']];
 
+// the closer read: /api/review answers (ctx.review hands it { code | diff, lang } with the caller's Authorization), this words it
+async function closer(a, ctx) {
+  if (typeof a.code !== 'string' && typeof a.diff !== 'string') return toolError('Give the code to review as "code" (or a unified diff as "diff").');
+  if (!ctx || typeof ctx.review !== 'function') return toolError('The closer read is only reachable at https://a-to-mind.com/api/mcp.');
+  const args = { ...(typeof a.code === 'string' ? { code: a.code } : { diff: a.diff }), ...(typeof a.lang === 'string' ? { lang: a.lang } : {}) };
+  const { status, body } = await ctx.review(args);
+  if (!body || status !== 200 || body.ok === false) return toolError('The review said no: ' + String((body && body.error) || 'status ' + status).slice(0, 200));
+  const { ok: _ok, ...data } = body;
+  const found = (data.findings || []).length ? data.findings.map((f) => 'line ' + f.line + ' · ' + f.kind + ' · ' + f.message).join('\n') : 'The instant checks found nothing in ' + data.lines + ' line' + (data.lines === 1 ? '' : 's') + '.';
+  const more = data.answer ? '\n\nCloser read:\n' + data.answer : data.note || data.upgrade ? '\n\n' + [data.note, data.upgrade].filter(Boolean).join(' ') : '';
+  return toolResult(found + more, data);
+}
+
 const RUN = {
+  review_code_closer: closer,
   review_code(a) {
     if (typeof a.code !== 'string' && typeof a.diff !== 'string') return toolError('Give the code to review as "code" (or a unified diff as "diff").');
     const r = quick({ code: a.code, diff: a.diff, lang: typeof a.lang === 'string' ? a.lang : undefined });
@@ -58,19 +77,19 @@ const RUN = {
   },
 };
 
-/** one JSON-RPC message in, its reply out (null for a notification, which gets none) */
-export async function rpc(msg) {
+/** one JSON-RPC message in, its reply out (null for a notification, which gets none). ctx: what the route lends a tool (ctx.review) */
+export async function rpc(msg, ctx) {
   if (!msg || typeof msg !== 'object' || Array.isArray(msg) || msg.jsonrpc !== '2.0' || typeof msg.method !== 'string') return err(msg && msg.id, -32600, 'Invalid request: one JSON-RPC 2.0 message');
   const { id, method } = msg, params = (msg.params && typeof msg.params === 'object') ? msg.params : {};
   if (id === undefined) return null; // notifications (notifications/initialized, cancelled) need no reply
-  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Void's read-only tools: the instant code review, the moon's phase, the meteor showers. Nothing here writes or calls a model." });
+  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Void's read-only tools: the instant code review, the closer read (with a key in Authorization), the moon's phase, the meteor showers. Only the closer read calls a model." });
   if (method === 'ping') return ok(id, {});
   if (method === 'tools/list') return ok(id, { tools: TOOLS });
   if (method === 'tools/call') {
     const fn = Object.prototype.hasOwnProperty.call(RUN, params.name) ? RUN[params.name] : null;
     if (!fn) return err(id, -32602, 'Unknown tool: ' + String(params.name).slice(0, 60));
     const args = params.arguments && typeof params.arguments === 'object' && !Array.isArray(params.arguments) ? params.arguments : {};
-    try { return ok(id, fn(args)); } catch (_) { return ok(id, toolError('The tool failed on that input.')); }
+    try { return ok(id, await fn(args, ctx)); } catch (_) { return ok(id, toolError('The tool failed on that input.')); }
   }
   return err(id, -32601, 'Method not found: ' + method.slice(0, 60));
 }

@@ -11,7 +11,7 @@ test('mcp: initialize names Void and its tools capability; tools/list gives thre
   const init = await rpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: PROTOCOL, capabilities: {}, clientInfo: { name: 't', version: '1' } } });
   assert.equal(init.id, 1); assert.equal(init.result.serverInfo.name, 'void'); assert.ok(init.result.capabilities.tools); assert.equal(init.result.protocolVersion, PROTOCOL);
   const list = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
-  assert.deepEqual(list.result.tools.map((t) => t.name), ['review_code', 'moon_phase', 'meteor_showers']);
+  assert.deepEqual(list.result.tools.map((t) => t.name), ['review_code', 'review_code_closer', 'moon_phase', 'meteor_showers']);
   for (const t of list.result.tools) { assert.equal(t.inputSchema.type, 'object'); assert.ok(t.description.length > 20); assert.equal(t.annotations.readOnlyHint, true); }
   assert.equal(await rpc({ jsonrpc: '2.0', method: 'notifications/initialized' }), null, 'a notification gets no reply');
   assert.deepEqual((await rpc({ jsonrpc: '2.0', id: 3, method: 'ping' })).result, {});
@@ -38,7 +38,7 @@ test('mcp: bad calls are JSON-RPC errors, never a crash: unknown method, unknown
 test('mcp: the endpoint speaks HTTP: POST JSON in, JSON out; a notification is 202; bad JSON is a parse error; GET says how to use it', async () => {
   const post = (body) => onRequestPost({ request: new Request('https://a-to-mind.com/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body }) });
   const r = await post(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }));
-  assert.equal(r.status, 200); assert.match(r.headers.get('content-type'), /application\/json/); assert.equal((await r.json()).result.tools.length, 3);
+  assert.equal(r.status, 200); assert.match(r.headers.get('content-type'), /application\/json/); assert.equal((await r.json()).result.tools.length, 4);
   assert.equal((await post(JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }))).status, 202);
   assert.equal((await (await post('{not json')).json()).error.code, -32700);
   const g = await onRequestGet({ request: new Request('https://a-to-mind.com/api/mcp') });
@@ -62,6 +62,33 @@ test('mcp: an MCP client (no Origin) gets through the guard to the tools; a page
   const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' });
   const ctx = (headers) => ({ request: new Request('https://a-to-mind.com/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body }), env: {}, next: (req) => onRequestPost({ request: req }) });
   const r = await guard(ctx({}));
-  assert.equal(r.status, 200); assert.equal((await r.json()).result.tools.length, 3);
+  assert.equal(r.status, 200); assert.equal((await r.json()).result.tools.length, 4);
   assert.equal((await guard(ctx({ origin: 'https://evil.example', 'sec-fetch-site': 'cross-site' }))).status, 403);
+});
+
+// frontier #6, the next piece: the closer read as a tool, behind the same key /api/review takes (functions/api/review.js decides:
+// the owner, a Void Pro key or a license key in the MCP request's Authorization; nothing else changes who gets it or what it costs)
+const CODE = 'function f(a) { eval(a) }\ntry { f() } catch (e) {}';
+test('mcp: review_code_closer hands the code to /api/review and shows what it gives: instant checks, plus the closer read when the key allows it', async () => {
+  const seen = [];
+  const ctx = (status, body) => ({ review: async (args) => { seen.push(args); return { status, body }; } });
+  const call = (c, args = { code: CODE, lang: 'javascript' }) => rpc({ jsonrpc: '2.0', id: 20, method: 'tools/call', params: { name: 'review_code_closer', arguments: args } }, c);
+  const free = await call(ctx(200, { ok: true, findings: [{ line: 1, kind: 'risk', rule: 'eval', message: 'eval runs any string as code' }], lang: 'javascript', lines: 2, tier: 'free', review: 'rules', upgrade: 'Void Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/#pro' }));
+  assert.equal(free.result.isError, false); assert.match(free.result.content[0].text, /line 1 · risk/); assert.match(free.result.content[0].text, /closer read by an AI reviewer/);
+  assert.equal(free.result.structuredContent.review, 'rules'); assert.equal('ok' in free.result.structuredContent, false);
+  assert.deepEqual(seen[0], { code: CODE, lang: 'javascript' }, 'only the code and its language go to the review');
+  const pro = await call(ctx(200, { ok: true, findings: [], lang: 'javascript', lines: 2, tier: 'pro', review: 'model', answer: '- line 1: eval of an argument', left: 299 }));
+  assert.match(pro.result.content[0].text, /Closer read:\n- line 1: eval of an argument/); assert.equal(pro.result.structuredContent.left, 299);
+  assert.equal((await call(ctx(401, { ok: false, error: 'unknown review key' }))).result.isError, true, 'a key /api/review refuses is an error the client sees');
+  assert.equal((await call(ctx(200, {}), {})).result.isError, true, 'no code');
+  assert.equal(seen.length, 3, 'no code is never sent');
+  assert.equal((await call(undefined)).result.isError, true, 'without the route behind it the tool says so');
+});
+
+test('mcp: through the real route with no key, review_code_closer gives the instant checks and how to get the closer read (no model, no database)', async () => {
+  const r = await onRequestPost({ request: new Request('https://a-to-mind.com/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'review_code_closer', arguments: { code: CODE, lang: 'javascript' } } }) }), env: {} });
+  const j = await r.json();
+  assert.equal(j.result.isError, false); assert.equal(j.result.structuredContent.tier, 'free');
+  assert.ok(j.result.structuredContent.findings.some((f) => f.rule === 'eval')); assert.match(j.result.content[0].text, /code-review\/#pro/);
 });
