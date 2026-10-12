@@ -356,3 +356,11 @@ test('the second pass drops a finding the code does not prove (#540: "r.deep is 
   assert.deepEqual(applyVerdicts([{ a: 1 }, { a: 2 }], { verdicts: [{ n: 2, holds: false }] }).kept, [{ a: 1 }]);
   assert.equal(verifyMessages([], 'x').length, 2);
 });
+test('a "never defined" claim that names a declared constant bare (not in backticks) is dropped (#541: CSS_RULE)', () => {
+  const known = declaredNames("export const CSS_RULE = 'x';\nexport const MASK_RULE = 'y';");
+  const claim = 'CSS_RULE is referenced but never defined or imported, causing a ReferenceError when verifyMessages runs. `return [{ role: \'system\', content: VERIFY_SYSTEM + MASK_RULE + CSS_RULE },`';
+  assert.equal(dropPhantoms(claim, known, 'content: VERIFY_SYSTEM + MASK_RULE + CSS_RULE'), '');
+  // a claim about a name that really is undeclared stays, and plain English words are never names
+  assert.notEqual(dropPhantoms('RUN_CAP_DAY is never defined, so this throws. `if (n > RUN_CAP_DAY) stop();`', known, 'if (n > RUN_CAP_DAY) stop();'), '');
+  assert.deepEqual(phantomNames('The Value is not defined here and Text is never imported.', declaredNames('const Value = 1, Text = 2;')), []);
+});
