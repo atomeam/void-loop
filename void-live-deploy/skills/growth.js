@@ -106,10 +106,12 @@ async function run(text, api) {
   let kind = '', shown = PAGE_SIZE;
   el.innerHTML = growthHead(esc, list);
   const w = week ? weekSummary(list) : null;
-  if (w) el.insertAdjacentHTML('beforeend', weekHtml(esc, w));
   const body = document.createElement('div');
   const draw = () => { body.innerHTML = growthHtml(esc, list, kind, shown, { head: false }); };
+  // the tree right under the title and the week's words after it: with the words first, the tree started below the fold on a
+  // 720-high screen, and a miniature that is never on screen never draws, so the week's growing-in was never seen
   plantTree(el, api, list, w ? { from: w.until } : {});
+  if (w) el.insertAdjacentHTML('beforeend', weekHtml(esc, w));
   el.appendChild(body);
   body.addEventListener('click', (ev) => {
     const b = ev.target && ev.target.closest && ev.target.closest('button[data-kind],button[data-more]');
