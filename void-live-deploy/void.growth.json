@@ -382,5 +382,6 @@
   {"at": "2026-10-12T03:51:26Z", "by": "builder", "kind": "grow", "what": "cleanup step 6, 11 of 13: the extension's tab card moved out of void.html into skills/tab.js, and it shows the page it read as it looked: the title on a browser tab, the address in a bar with its lock, the selection in yellow highlighter"},
   {"at": "2026-10-12T05:40:25Z", "by": "builder", "kind": "grow", "what": "kept answers are pinned up: a red pushpin, a slight tilt of their own, the title handwritten", "show": "a kept answer pinned to the stage with a red pushpin", "try": "15% of 240, then keep this"},
   {"at": "2026-10-12T07:36:27Z", "by": "builder", "kind": "grow", "what": "lists are a clipboard: white paper under a steel clip, items in pencil, drawn tick boxes, done ones crossed out", "show": "a shopping list on a clipboard, milk ticked and crossed out", "try": "a shopping list with eggs, milk and bread"},
-  {"at": "2026-10-12T07:45:49Z", "by": "builder", "kind": "fix", "what": "Void's code review no longer calls a line truncated when it was its own view of a big diff that was cut short"}
+  {"at": "2026-10-12T07:45:49Z", "by": "builder", "kind": "fix", "what": "Void's code review no longer calls a line truncated when it was its own view of a big diff that was cut short"},
+  {"at": "2026-10-12T08:55:05Z", "by": "builder", "kind": "fix", "what": "a slow 3D poker table now fails its own check instead of stopping the whole browser suite"}
 ]
