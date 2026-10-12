@@ -5754,5 +5754,9 @@
   {"ask": "the sales pitch is on Wednesday, tell Jordan", "want": "skill:intent"},
   {"ask": "my driving test in 10 days", "want": "skill:intent"},
   {"ask": "our wedding is on june 14", "want": "skill:intent"},
-  {"ask": "the website release by the end of the month", "want": "skill:intent"}
+  {"ask": "the website release by the end of the month", "want": "skill:intent"},
+  {"ask": "what are they doing?", "want": "skill:together"},
+  {"ask": "what would those two do", "want": "skill:together"},
+  {"ask": "what will they do together", "want": "skill:together"},
+  {"ask": "what are the two of them doing", "want": "skill:together"}
 ]
