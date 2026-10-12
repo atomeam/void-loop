@@ -599,6 +599,20 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       lifted.tictactoe && lifted.othello && lifted.mancala && lifted.aggravation && lifted.connect4 && !!lifted.played && !F.errors.length, JSON.stringify({ lifted, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- one side card per board: a move made while the 3D board is still loading still ends with exactly one side card, and it
+  // carries the move. (Written while chasing verify on c8268d7, where the phone check below read an empty log and "Earlier
+  // moves (-1)"; this path did not reproduce that, so the phone check now also reports every card and log it can see.)
+  if (want("3d: one side card per lifted board, even after a move while 3d loads")) {
+    const F = await fresh();
+    await F.ask('play connect 4', 300);
+    await F.p.evaluate(() => { const c = document.querySelector('.c4-col'); if (c) c.click(); }); // before the 3D board is up
+    const key = await until(() => F.p.evaluate(() => { const m = window.__voidMini && window.__voidMini.list().find((x) => x.kind === 'connect4' && x.ready && x.draws > 0); return m && m.key; }), 90000);
+    await F.p.waitForTimeout(1500);
+    const sides = await F.p.evaluate(() => [...document.querySelectorAll('.connect4-side')].map((c) => ({ log: (c.querySelector('.c4-latest') || {}).textContent || '' })));
+    check('one side card per lifted board: a move made while the 3D board loads leaves exactly one side card on the stage, and it carries the move, not the empty first state',
+      !!key && sides.length === 1 && /because|You|Void/.test(sides[0].log) && !F.errors.length, JSON.stringify({ key, sides, e: F.errors }));
+    await F.ctx.close();
+  }
   // ---- Four in a Row on a phone (owner, 2026-10-11 polish): the frame fits a 390 px screen, the card sits below it and never
   // on it, stops above the ask bar, the winning four light up while the rest dim, and the log leads with the latest reason
   if (want("3d: four in a row on a phone")) {
@@ -616,7 +630,9 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const lay = await F.p.evaluate(() => { const r = (s) => { const e = document.querySelector(s); return e && e.getBoundingClientRect(); };
       const v = r('.connect4-view'), c = r('.connect4-side'), a = r('#input'), latest = document.querySelector('.c4-latest'), sum = document.querySelector('.c4-earlier summary');
       return { fits: !!v && v.right <= innerWidth && v.left >= 0, apart: !!v && !!c && (c.top >= v.bottom || c.left >= v.right), above: !!c && !!a && c.bottom <= a.top + 1,
-        latest: latest && latest.textContent, earlier: sum && sum.textContent };
+        latest: latest && latest.textContent, earlier: sum && sum.textContent,
+        // what was on the page, so a failure says which card it read (verify on c8268d7 read an empty log, "Earlier moves (-1)")
+        sides: document.querySelectorAll('.connect4-side').length, logs: [...document.querySelectorAll('.c4-latest')].map((e) => e.textContent.slice(0, 60)) };
     });
     check('Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)',
       !!won && won.dim === won.discs - 4 && lay.fits && lay.apart && lay.above && /because/.test(lay.latest || '') && /^Earlier moves \(\d+\)$/.test(lay.earlier || '') && !F.errors.length,
