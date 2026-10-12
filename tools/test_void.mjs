@@ -1854,6 +1854,21 @@ try {
     check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test(saved.page.split('Saved')[1] || '') && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
       && /Coin/.test(ran.page) && ran.asks[0] === 'flip a coin' && ran.asks[1] === '15% tip on 80' && ran.asks[2] === 'my morning' && /my morning: 15% tip on 80 · flip a coin/.test(listed) && !gone.morning && !R.errors.length, JSON.stringify({ saved, ran, listed: listed.slice(0, 200), gone, errs: R.errors }));
     await R.ctx.close(); }
+  // offering a routine (frontier #13's second piece, lib/shared-routines.js): "offer my morning" sends nothing and asks for a display name; "offer my morning as Sam"
+  // sends only { name, author, asks } to /api/routines and says the owner reviews it first; "routines from others" shows the approved ones with their author.
+  if (want("offering a routine (frontier #13's second piece")) {
+    const R = await fresh(); const sent = [];
+    await R.p.route(/\/api\/routines(?:\?|$)/, (r) => { const q = r.request(); if (q.method() === 'POST') { sent.push(q.postData()); return r.fulfill({ status: 202, contentType: 'application/json', body: '{"state":"pending"}' }); }
+      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([{ id: 'x1', name: 'study', author: 'Ana', asks: ['a 25 minute timer', 'flip a coin'] }]) }); });
+    await R.ask('15% tip on 80', 700); await R.ask('flip a coin', 700); await R.ask('call this my morning', 700);
+    await R.ask('offer my morning', 700); const asked = await R.page(), before = sent.length;
+    await R.ask('offer my morning as Sam', 1200); const offered = await R.page();
+    await R.ask('routines from others', 1200); const others = await R.page();
+    const body = (() => { try { return JSON.parse(sent[0]); } catch (_) { return null; } })();
+    check('offering a routine: "offer my morning" asks for a name and sends nothing; "offer my morning as Sam" sends only the name, Sam and the two asks, and says the owner reviews it; "routines from others" lists the approved one with its author', /as <a name>/.test(asked) && before === 0 && sent.length === 1
+      && JSON.stringify(body) === JSON.stringify({ name: 'morning', author: 'Sam', asks: ['15% tip on 80', 'flip a coin'] }) && /owner reviews it first/.test(offered) && /study by Ana: a 25 minute timer · flip a coin/.test(others) && !R.errors.length,
+      JSON.stringify({ asked: asked.slice(0, 200), offered: offered.slice(0, 240), others: others.slice(0, 200), sent, errs: R.errors }));
+    await R.ctx.close(); }
   // sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioContext (the game sound effects in skills/sfx.js open their own on the first tap, so the drone's is the one that gets oscillators)
   // proves nothing is built before the tap, the tap builds one drone of four voices, and the same button mutes it.
   if (want("sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioConte")) { const fake = `window.__au = { all: [] }; window.AudioContext = class { constructor() { this.rec = { osc: 0, master: [] }; window.__au.all.push(this.rec); this.state = 'running'; this.currentTime = 0; this.destination = {}; this.sampleRate = 8000; this.n = 0; }
