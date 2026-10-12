@@ -2262,6 +2262,26 @@ try {
     check("Void's review catches an undefined constant in a pasted snippet, and stays quiet once it is imported",
       !!bad && /bug/.test(bad) && !!good && !/never declared or imported/.test(good) && !R.errors.length, JSON.stringify({ bad: bad.slice(0, 200), good: good.slice(0, 200), errors: R.errors }));
     await R.ctx.close(); }
+  // The growth card says how fast Void is gaining skills (asked by Void, 2026-10-12): new or better changes this week against the
+  // week before, and whether that is speeding up, steady, slowing or stalled; read from the real ledger.
+  if (want("The growth card says how fast Void is gaining skills")) { const G = await fresh();
+    await G.ask('growth', 1500);
+    const v = await until(async () => G.p.$eval('.vpage [data-velocity]', (e) => ({ trend: e.dataset.velocity, text: e.textContent })).catch(() => null), 6000);
+    check('the growth card says how fast Void is gaining skills: this week against the week before, with the trend',
+      !!v && /^This week \d+ new or better, the week before \d+: (speeding up|steady|slowing|stalled)$/.test(v.text) && v.text.endsWith(v.trend) && !G.errors.length, JSON.stringify({ v, errors: G.errors }));
+    await G.ctx.close(); }
+  // Void's will tells no lies (the owner, 2026-10-12: "its also lying aboout it being the most frequent . we have a 0 lie policy"):
+  // a stored reason that ranks or counts ("the most frequent thing people are asking me to do") shows the recorded fact instead;
+  // a plain reason stays in Void's words.
+  if (want("Void's will tells no lies")) { const W = await fresh();
+    await W.ctx.route(/\/api\/will(?:\?|$)/, (rt) => rt.fulfill(json({ at: '2026-10-12T15:41:00Z', wants: [
+      { kind: 'people asked', title: 'learn to handle "add milk"', i_want: 'I want to learn how to handle requests like \'add milk\'.', because: 'It is the most frequent thing people are asking me to do.', evidence: 'asked 9 times, last 2026-10-11' },
+      { kind: 'frontier', title: 'Tasks that keep running', i_want: 'I want to become tasks that keep running even after you leave.', because: 'It joins my old parts into a persistent system.', evidence: 'open on the frontier' }] })));
+    await W.ask('what do you want to become', 1500);
+    const t = await until(async () => { const x = await W.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); return /add milk/.test(x) ? x : ''; }, 6000) || '';
+    check("Void's will tells no lies: a reason that ranks or counts shows the recorded fact; a plain reason stays in Void's words",
+      !/most frequent/.test(t) && /asked 9 times, last 2026-10-11/.test(t) && /It joins my old parts into a persistent system/.test(t) && !W.errors.length, JSON.stringify({ t: t.slice(0, 400), errors: W.errors }));
+    await W.ctx.close(); }
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
