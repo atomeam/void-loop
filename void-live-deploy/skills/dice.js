@@ -1,48 +1,57 @@
 /**
- * dice skill — flip a coin or roll dice in the browser
- * Nothing is sent. The surface stays empty until the ask.
- * "flip a coin", "roll a die", "roll 2d6".
+ * dice skill — roll dice or flip a coin, no network, no key
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * "roll a die", "roll a d6", "roll 2d6", "flip a coin", "heads or tails".
+ * Empty surface stays empty: only a temporary page, no stage card.
  */
-export function diceOf(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:please\s+)?(?:flip|toss)\s+(?:a\s+)?coin$/i.test(t)) return { kind: 'coin' };
-  if (/^(?:please\s+)?roll\s+(?:a\s+)?(?:die|dice)$/i.test(t)) return { kind: 'die', n: 1, sides: 6 };
-  const m = t.match(/^(?:please\s+)?roll\s+(\d{1,2})d(\d{1,3})$/i);
-  if (!m) return null;
-  const n = Math.min(12, Math.max(1, +m[1]));
-  const sides = Math.min(100, Math.max(2, +m[2]));
-  return { kind: 'die', n, sides };
+function clean(text) {
+  return String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 }
 
-export function rollDice(hit, rand = Math.random) {
-  if (!hit) return null;
-  const r = typeof rand === 'function' ? rand : Math.random;
-  if (hit.kind === 'coin') return { label: 'Coin', value: r() < 0.5 ? 'heads' : 'tails' };
-  const rolls = Array.from({ length: hit.n }, () => 1 + Math.floor(r() * hit.sides));
-  const total = rolls.reduce((a, b) => a + b, 0);
-  return { label: hit.n + 'd' + hit.sides, value: rolls.join(' + '), total };
+export function parseDice(text) {
+  const t = clean(text).toLowerCase();
+  if (/^(?:please\s+)?(?:flip\s+(?:a\s+)?coin|heads?\s+or\s+tails?|toss\s+(?:a\s+)?coin)$/.test(t)) return { type: 'coin' };
+  const m = t.match(/^(?:please\s+)?(?:roll\s+(?:a\s+|the\s+)?(?:die|dice)|roll\s+(\d+)d(\d+)|d(\d+))$/);
+  if (m) {
+    if (m[1] && m[2]) {
+      const n = Math.min(20, Math.max(1, parseInt(m[1], 10)));
+      const sides = Math.min(100, Math.max(2, parseInt(m[2], 10)));
+      return { type: 'dice', n, sides };
+    }
+    if (m[3]) return { type: 'dice', n: 1, sides: Math.min(100, Math.max(2, parseInt(m[3], 10))) };
+    return { type: 'dice', n: 1, sides: 6 };
+  }
+  return null;
+}
+
+function roll(n, sides) {
+  const rolls = [];
+  for (let i = 0; i < n; i++) rolls.push(1 + Math.floor(Math.random() * sides));
+  return rolls;
 }
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  const hit = diceOf(text);
-  if (!hit) return 'none';
-  const rolled = rollDice(hit);
-  const title = hit.kind === 'coin' ? 'Coin' : 'Dice';
-  const line = hit.kind === 'coin' ? rolled.value : rolled.value + (hit.n > 1 ? ' = ' + rolled.total : '');
-  showPage((p) => {
-    p.innerHTML = '<h2>' + esc(title) + '</h2><div class="util-out" style="font-size:44px;font-weight:300;line-height:1.15;margin:8px 0">' + esc(line) + '</div>'
-      + '<div class="src">Rolled in this browser. Nothing was sent.</div>';
-  });
+  const p = parseDice(text);
+  if (!p) return 'none';
+  let html = '';
+  if (p.type === 'coin') {
+    const side = Math.random() < 0.5 ? 'Heads' : 'Tails';
+    html = '<h2>Coin flip</h2><p style="font-size:28px;font-weight:300">' + esc(side) + '</p><div class="sub">say “flip a coin” for another</div>';
+  } else {
+    const rolls = roll(p.n, p.sides);
+    const sum = rolls.reduce((a, b) => a + b, 0);
+    const label = p.n === 1 ? `d${p.sides}` : `${p.n}d${p.sides}`;
+    html = '<h2>Dice roll</h2><p style="font-size:24px;font-weight:300">' + esc(rolls.join(', ')) + (p.n > 1 ? ' <span style="color:#8a8a8a">(sum ' + sum + ')</span>' : '') + '</p><div class="sub">' + esc(label) + ' · say “roll a die” for another</div>';
+  }
+  showPage((el) => { el.innerHTML = html; });
   return 'dice';
 }
 
 export default {
   name: 'dice',
-  examples: ['flip a coin', 'toss a coin', 'roll a die', 'roll 2d6', 'please roll a die'],
-  nearMisses: ['what is a coin', 'dice history', 'make a clock'],
-  diceOf,
-  rollDice,
-  match(lower, text) { return !!diceOf(text); },
+  examples: ['roll a die', 'roll a d6', 'roll 2d6', 'flip a coin', 'heads or tails'],
+  nearMisses: ['what is a die', 'dice game', 'coin collection', 'roll the ball'],
+  match(lower, text) { return !!parseDice(text); },
   run
 };
