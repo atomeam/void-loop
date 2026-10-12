@@ -1,57 +1,43 @@
 /**
- * dice skill — roll dice or flip a coin, no network, no key
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "roll a die", "roll a d6", "roll 2d6", "flip a coin", "heads or tails".
- * Empty surface stays empty: only a temporary page, no stage card.
+ * dice skill - roll dice
+ * "roll a die", "roll a d6", "roll 2d6"
  */
-function clean(text) {
-  return String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+function isDice(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').toLowerCase();
+  return /^(?:please\s+)?(?:roll\s+(?:a\s+)?(?:die|dice)|roll\s+(?:a\s+)?d\d+|roll\s+\d+d\d+)$/.test(t);
 }
 
-export function parseDice(text) {
-  const t = clean(text).toLowerCase();
-  if (/^(?:please\s+)?(?:flip\s+(?:a\s+)?coin|heads?\s+or\s+tails?|toss\s+(?:a\s+)?coin)$/.test(t)) return { type: 'coin' };
-  const m = t.match(/^(?:please\s+)?(?:roll\s+(?:a\s+|the\s+)?(?:die|dice)|roll\s+(\d+)d(\d+)|d(\d+))$/);
-  if (m) {
-    if (m[1] && m[2]) {
-      const n = Math.min(20, Math.max(1, parseInt(m[1], 10)));
-      const sides = Math.min(100, Math.max(2, parseInt(m[2], 10)));
-      return { type: 'dice', n, sides };
-    }
-    if (m[3]) return { type: 'dice', n: 1, sides: Math.min(100, Math.max(2, parseInt(m[3], 10))) };
-    return { type: 'dice', n: 1, sides: 6 };
+function roll(sides = 6, count = 1) {
+  let total = 0, rolls = [];
+  for (let i = 0; i < count; i++) {
+    const r = Math.floor(Math.random() * sides) + 1;
+    rolls.push(r);
+    total += r;
   }
-  return null;
+  return { rolls, total };
 }
 
-function roll(n, sides) {
-  const rolls = [];
-  for (let i = 0; i < n; i++) rolls.push(1 + Math.floor(Math.random() * sides));
-  return rolls;
-}
-
-async function run(text, api) {
+function run(text, api) {
   const { showPage, esc } = api;
-  const p = parseDice(text);
-  if (!p) return 'none';
-  let html = '';
-  if (p.type === 'coin') {
-    const side = Math.random() < 0.5 ? 'Heads' : 'Tails';
-    html = '<h2>Coin flip</h2><p style="font-size:28px;font-weight:300">' + esc(side) + '</p><div class="sub">say “flip a coin” for another</div>';
-  } else {
-    const rolls = roll(p.n, p.sides);
-    const sum = rolls.reduce((a, b) => a + b, 0);
-    const label = p.n === 1 ? `d${p.sides}` : `${p.n}d${p.sides}`;
-    html = '<h2>Dice roll</h2><p style="font-size:24px;font-weight:300">' + esc(rolls.join(', ')) + (p.n > 1 ? ' <span style="color:#8a8a8a">(sum ' + sum + ')</span>' : '') + '</p><div class="sub">' + esc(label) + ' · say “roll a die” for another</div>';
-  }
-  showPage((el) => { el.innerHTML = html; });
+  const t = String(text || '').toLowerCase();
+  let sides = 6, count = 1;
+  const m = t.match(/(\d+)d(\d+)/);
+  if (m) { count = Math.min(10, parseInt(m[1], 10)); sides = Math.min(100, parseInt(m[2], 10)); }
+  else if (/d(\d+)/.test(t)) sides = Math.min(100, parseInt(t.match(/d(\d+)/)[1], 10));
+  const { rolls, total } = roll(sides, count);
+  showPage((el) => {
+    el.innerHTML = '<h2>Dice roll</h2><p style="font-size:36px;font-weight:300">' + esc(rolls.join(', ')) + '</p>'
+      + (count > 1 ? '<p>Total: ' + total + '</p>' : '')
+      + '<div class="sub">say “roll a d20” for another</div><div class="src">Source: fair random · as of 2026-10</div>';
+  });
   return 'dice';
 }
 
 export default {
   name: 'dice',
-  examples: ['roll a die', 'roll a d6', 'roll 2d6', 'flip a coin', 'heads or tails'],
-  nearMisses: ['what is a die', 'dice game', 'coin collection', 'roll the ball'],
-  match(lower, text) { return !!parseDice(text); },
-  run
+  examples: ['roll a die', 'roll a d6', 'roll 2d6'],
+  nearMisses: ['what is a die', 'dice game', 'how dice work'],
+  match(lower, text) { return isDice(text); },
+  run,
+  suite() { return { ok: isDice('roll a d6') && !isDice('dice game') }; }
 };
