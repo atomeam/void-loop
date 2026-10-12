@@ -5746,5 +5746,13 @@
   {"ask": "save that as my evening", "want": "skill:routine"},
   {"ask": "save the last 2 asks as my study", "want": "skill:routine"},
   {"ask": "call these my workout", "want": "skill:routine"},
-  {"ask": "my routines", "want": "skill:routine"}
+  {"ask": "my routines", "want": "skill:routine"},
+  {"ask": "the app launch on Thursday", "want": "skill:intent"},
+  {"ask": "our podcast launch is next Monday", "want": "skill:intent"},
+  {"ask": "my research paper is due the 28th", "want": "skill:intent"},
+  {"ask": "my thesis is due in 3 weeks", "want": "skill:intent"},
+  {"ask": "the sales pitch is on Wednesday, tell Jordan", "want": "skill:intent"},
+  {"ask": "my driving test in 10 days", "want": "skill:intent"},
+  {"ask": "our wedding is on june 14", "want": "skill:intent"},
+  {"ask": "the website release by the end of the month", "want": "skill:intent"}
 ]

@@ -66,3 +66,24 @@ test('a goal the countdown cannot label still gets a countdown it takes', () => 
   assert.ok(countdown.countdownOf(p.asks[0].ask), p.asks[0].ask);
   assert.ok(!/,/.test(p.asks[1].ask.replace(/ \([a-z]{3} \d+\), /g, '|')), 'no stray commas split a step');
 });
+
+test('a goal said as a noun ("the product page launch on Friday") plans the same way, the verb in front', () => {
+  assert.deepEqual(intentOf('the product page launch on Friday'), { goal: 'launch the product page', when: 'friday', who: null });
+  assert.deepEqual(intentOf("Our newsletter launch is next Tuesday, let Sam know"), { goal: 'launch our newsletter', when: 'next tuesday', who: 'sam' });
+  assert.equal(intentOf('my essay is due October 20').goal, 'hand in my essay');
+  assert.equal(intentOf('my history report is due by the 20th').when, 'the 20th');
+  assert.equal(intentOf('the pitch to investors is on Thursday').goal, 'give the pitch to investors');
+  assert.equal(intentOf('my biology exam in 2 weeks').goal, 'be ready for my biology exam');
+  assert.equal(intentOf("our team's offsite is next week").goal, "our team's offsite");
+  const p = planOf('the product page launch on Friday', FRI);
+  assert.deepEqual(p.asks.map((a) => a.piece), ['countdown', 'checklist', 'calendar']);
+  assert.match(p.asks[1].ask, /^make a list with outline it \(fri 9\), .*, launch the product page \(fri 16\)$/); // a launch's own steps
+  assert.match(planOf('my essay is due October 20', FRI).asks[1].ask, /^make a list with outline \(fri 9\), first draft/);
+});
+
+test('a noun with a date is a goal only when it names an outcome: the weather, a birthday or a question stay with their skills', () => {
+  for (const q of ['the weather on Friday', 'my birthday on Friday', 'the moon on Friday', 'my dentist appointment on Friday', 'is my essay due Friday',
+    'when is the product launch on Friday', 'the launch', 'my essay', 'what is the exam on friday about', 'the exam was on Friday']) {
+    assert.equal(planOf(q, FRI), null, q);
+  }
+});
