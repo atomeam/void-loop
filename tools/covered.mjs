@@ -7,4 +7,7 @@ const names = JSON.parse(fs.readFileSync(path.join(dir, 'index.json'), 'utf8'));
 const skills = [];
 for (const n of names) { try { skills.push((await import(pathToFileURL(path.join(dir, n + '.js')).href)).default); } catch (_) {} }
 const asks = JSON.parse(fs.readFileSync(0, 'utf8'));
-console.log(JSON.stringify(asks.map((a) => skills.some((s) => { try { return s.match(a.toLowerCase(), a); } catch (_) { return false; } }))));
+// the page answers some asks itself (the inline list takes "add milk"); tools/grown.json lists every once-missed ask Void now
+// answers, each replayed on the real page by the browser suite, so an ask there counts as handled too
+const grown = new Set((() => { try { return JSON.parse(fs.readFileSync(path.join(dir, '..', '..', 'tools', 'grown.json'), 'utf8')); } catch (_) { return []; } })().map((g) => String(g.ask || '').trim().toLowerCase()));
+console.log(JSON.stringify(asks.map((a) => grown.has(String(a).trim().toLowerCase()) || skills.some((s) => { try { return s.match(a.toLowerCase(), a); } catch (_) { return false; } }))));

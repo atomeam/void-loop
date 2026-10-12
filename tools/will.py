@@ -1,6 +1,6 @@
 """Void's will engine, laptop side: gather everything that exists, let Void choose, queue its top want.
 
-  python tools/will.py        (the task "\\A2M void_will" runs this every 3 hours, 9 AM - 9 PM)
+  python tools/will.py        (.github/workflows/will.yml runs this every 3 hours, 9 AM - 9 PM New York; the laptop task "\\A2M void_will" did before)
 
 Candidates come from: what people asked that Void couldn't do (the miss list), the open items of
 domains/void.frontier.md (the one build order since 2026-10-11), every project on Victus the ingest classified as a capability, upgrades
@@ -204,8 +204,11 @@ if __name__ == "__main__":
     lines = ["# void.will: what Void wants to become next (chosen by Void)", "", f"Chosen {res['at'][:16]} from {len(out)} candidates. Top want queued: {res.get('queued') or ('already building ' + str(res.get('open')))}.", ""]
     for i, w in enumerate(res["wants"], 1):
         lines.append(f"{i}. **{w['i_want']}**  \n   because {w['because']} ({w['kind']}: {w['title']})")
-    # notes for Atom only (never on the page): what Void has earned and any milestone reached
+    # notes for Atom only (never on the page): what Void has earned and any milestone reached. Never in CI: Actions logs on this
+    # public repo are public (.github/workflows/will.yml runs the will there)
     try:
+        if os.environ.get("GITHUB_ACTIONS"):
+            raise RuntimeError("left out in CI (public logs)")
         e = call("/api/earnings")
         lines += ["", f"Owner only: earned ${e['earned_cents'] / 100:.2f} from {e['sales']} sales (gross ${e['gross_cents'] / 100:.2f}, refunded ${e['refunded_cents'] / 100:.2f}); budget ${e['budget_cents'] / 100:.2f}."]
         for m in e.get("milestones", []):
