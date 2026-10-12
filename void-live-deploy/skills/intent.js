@@ -19,13 +19,34 @@ const LEAD = String.raw`(?:(?:i|we)\s+(?:really\s+)?(?:need|have|want|must|got)\
 const TELL = String.raw`(?:(?:,\s*|\s+)(?:and\s+|then\s+)?(?:tell|let|update|email|text|message|ping|send\s+(?:it\s+|this\s+|that\s+)?to|show\s+(?:it\s+)?to)\s+([a-z][a-z'-]{1,20})(?:\s+know)?)?`;
 const ASK_RE = new RegExp('^' + LEAD + String.raw`\s+(.{3,80}?)\s+(?:(?:by|before|on|until|till|for)\s+|(?=in\s))(` + DATE_RE + ')' + TELL + '$');
 
+// a goal said as a noun: "the product page launch on Friday", "my essay is due October 20", "our offsite is next week". Only
+// a noun that names an outcome counts (a launch, a piece of work handed in, a talk, an exam, an event), so "the weather on
+// Friday" or "my birthday on Friday" stay with their skills; the verb goes in front so the steps and the list read as a goal
+const NOUN_RE = new RegExp(String.raw`^((?:the|my|our)\s+.{2,60}?)\s+(?:(?:is|'s)\s+)?(?:(?:due|happening|coming\s+up|set\s+for)\s+)?(?:(?:on|by|for)\s+)?(` + DATE_RE + ')' + TELL + '$');
+const NOUN_KINDS = [
+  [/^(.+?)\s+(launch|release|go-live)$/, (m) => (m[2] === 'go-live' ? 'go live with' : m[2]) + ' ' + m[1]],
+  [/\b(?:essay|report|paper|thesis|dissertation|article|proposal|application|chapter|homework|assignment|coursework)\b/, (m) => 'hand in ' + m.input],
+  [/\b(?:presentation|talk|pitch|speech|demo|keynote|lecture)\b/, (m) => 'give ' + m.input],
+  [/\b(?:exam|test|midterm|final|finals|interview|audition)\b/, (m) => 'be ready for ' + m.input],
+  [/\b(?:party|wedding|event|trip|dinner|offsite|conference|launch party|recital|fundraiser)\b/, (m) => m.input],
+];
+function nounGoal(phrase) {
+  if (/\b(?:was|were|is|are|will|would|did|does|do|has|had|got|went|isn't|wasn't)\b/.test(phrase)) return null; // "the exam was on Friday" is not a plan
+  for (const [re, verb] of NOUN_KINDS) { const m = re.exec(phrase); if (m) return verb(m); }
+  return null;
+}
+
 const NOT_A_PERSON = /^(?:me|us|them|everyone|everybody|people|the|my|our|it|you|him|her|team|boss)$/;
 
 /** "I need to ship the product page by Friday and tell Sam" -> { goal, when, who } or null. Pure. */
 export function intentOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/[’]/g, "'");
   const m = ASK_RE.exec(t);
-  if (!m) return null;
+  if (!m) {
+    const n = NOUN_RE.exec(t), goal = n && nounGoal(n[1]);
+    if (!goal) return null;
+    return { goal, when: n[2], who: n[3] && !NOT_A_PERSON.test(n[3]) ? n[3] : null };
+  }
   const goal = m[1].replace(/^(?:to\s+)/, '').trim();
   if (!/^[a-z]/.test(goal) || /\b(?:remind|timer|alarm|wake|sleep|period|ovulat)\w*/.test(goal)) return null; // other skills own these
   const who = m[3] && !NOT_A_PERSON.test(m[3]) ? m[3] : null;
@@ -158,9 +179,11 @@ async function run(text, api) {
 export default {
   name: 'intent',
   examples: ['I need to ship the product page by Friday', 'I have to finish my essay by October 20', 'I need to prepare a talk by next week and tell Sam',
-    'help me launch the newsletter by the end of the month', 'we need to move house in 2 weeks'],
+    'help me launch the newsletter by the end of the month', 'we need to move house in 2 weeks',
+    'the product page launch on Friday', 'my essay is due October 20'],
   nearMisses: ['I need to wake up at 6 am, what time should I go to bed?', 'remind me at 5 to call home', 'days until friday', 'what do i need to get a 90',
-    'I need to ship', 'call Sam next Tuesday at 4', 'i need a timer for 5 minutes', 'I need to finish my essay', 'how do I ship a product by friday'],
+    'I need to ship', 'call Sam next Tuesday at 4', 'i need a timer for 5 minutes', 'I need to finish my essay', 'how do I ship a product by friday',
+    'my birthday on Friday', 'the exam was on Friday'],
   intentOf,
   deadlineOf,
   stepsFor,
