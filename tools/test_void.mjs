@@ -1870,6 +1870,15 @@ try {
     check('offering a routine: "offer my morning" asks for a name and sends nothing; "offer my morning as Sam" sends only the name, Sam and the two asks, and says the owner reviews it; "routines from others" lists the approved one with its author', /as <a name>/.test(asked) && before === 0 && sent.length === 1
       && JSON.stringify(body) === JSON.stringify({ name: 'morning', author: 'Sam', asks: ['15% tip on 80', 'flip a coin'] }) && /owner reviews it first/.test(offered) && /study by Ana: a 25 minute timer · flip a coin/.test(others) && !R.errors.length,
       JSON.stringify({ asked: asked.slice(0, 200), offered: offered.slice(0, 240), others: others.slice(0, 200), sent, errs: R.errors }));
+    // taking one: "take Ana's study" (the list just showed it) keeps it as "my study" without running it; taken again it changes nothing
+    const asksBefore = await R.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')).length);
+    await R.ask("take Ana's study", 1200); const took = await R.page();
+    const store = await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}'));
+    const ranNothing = !/Coin|Heads|Tails/.test(took) && !/timer/i.test(await R.whisper());
+    await R.ask("take Ana's study routine", 1200); const again = await R.page();
+    check('taking a routine: "take Ana\'s study" keeps the approved one as "my study" in this browser (the morning stays as it was) and runs nothing; taking it again changes nothing', /Took Ana's study as "my study"/.test(took)
+      && JSON.stringify(store.study && store.study.asks) === JSON.stringify(['a 25 minute timer', 'flip a coin']) && JSON.stringify(store.morning && store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
+      && ranNothing && /already/.test(again) && !R.errors.length, JSON.stringify({ took: took.slice(0, 200), again: again.slice(0, 120), store, asksBefore, errs: R.errors }));
     await R.ctx.close(); }
   // sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioContext (the game sound effects in skills/sfx.js open their own on the first tap, so the drone's is the one that gets oscillators)
   // proves nothing is built before the tap, the tap builds one drone of four voices, and the same button mutes it.
