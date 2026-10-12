@@ -644,7 +644,7 @@ try {
     const render = async (h) => { let nexted = false; const res = await pageFn.onRequestGet({ request: new Request('https://a-to-mind.com/' + h), env, params: { handle: h }, next: async () => { nexted = true; return new Response('asset'); } }); return { status: res.status, html: await res.text(), nexted, cache: res.headers.get('cache-control') }; };
     const pg = await render('@sam'), none = await render('@nobody'), asset = await render('sw.js');
     check('publish: /@sam is the homepage with that look set in the HTML (before first paint) and its cards as data; an unclaimed name is a 404 "no one here"; any other path is the site as usual',
-      pg.status === 200 && /--void-bg:#01040f/.test(pg.html) && /data-fx="swarm"/.test(pg.html) && /window\.__VOID_PAGE__=\{"handle":"sam"/.test(pg.html) && !/<img src=x/.test(pg.html) && /mountCalendar/.test(pg.html)
+      pg.status === 200 && /--void-bg:#01040f/.test(pg.html) && /data-fx="swarm"/.test(pg.html) && /window\.__VOID_PAGE__=\{"handle":"sam"/.test(pg.html) && !/<img src=x/.test(pg.html) && /<div id="stage"/.test(pg.html) /* the homepage itself (its stage), not a function that may move to skills/ (mountCalendar did, #545) */
       && none.status === 404 && /"none":true/.test(none.html) && asset.nexted && pg.cache === 'no-store' && none.cache === 'no-store',
       [pg.status, none.status, asset.nexted].join(' | '));
     // in the browser: a visitor sees @sam's look and cards, and their own stage is untouched; the owner publishes with a yes
