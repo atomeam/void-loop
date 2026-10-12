@@ -670,7 +670,9 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const F = await fresh();
     await F.ask('play poker', 600);
     const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'poker'); return l && l.ready && l.draws > 0; }), 90000);
-    const shown = await F.p.evaluate(() => ({ cards: window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('poker:'))).cards, faces: [...document.querySelectorAll('.pk-table .pk-card')].map((c) => c.textContent) }));
+    // only once the table is ready (as the rack below): a table still loading after 90 s fails this check with what it shows,
+    // instead of a null state ending the whole run (verify on 6d2585f: "Cannot read properties of null (reading 'cards')")
+    const shown = await F.p.evaluate(() => { const s = window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('poker:'))); return { cards: s ? s.cards : null, faces: [...document.querySelectorAll('.pk-table .pk-card')].map((c) => c.textContent) }; });
     check('poker: "play poker" stands the card table in the void with its card separate; your two cards show, Void\'s two stay face down',
       !!ready && shown.cards === 4 && shown.faces.filter(Boolean).length === 2 && shown.faces.length === 4 && !F.errors.length, JSON.stringify({ ready, shown, e: F.errors }));
     await F.ctx.close();
