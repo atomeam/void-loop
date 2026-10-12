@@ -644,7 +644,15 @@ const RULES = [
     for (let i = above.length - 1; i >= 0; i--) {
       const l = above[i]; if (!/\b(?:for(?:\s+await)?|while)\s*\(.*\)\s*\{\s*$|\.forEach\s*\(\s*(?:async\s*)?\(?[^)]*\)?\s*=>\s*\{\s*$/.test(l)) continue;
       const between = above.slice(i + 1).join('\n'), opens = (between.match(/\{/g) || []).length, closes = (between.match(/\}/g) || []).length;
-      return opens >= closes; // the loop's block has not closed before this line
+      if (opens < closes) return false; // the loop's block closed before this line
+      // a named function the loop body only defines (a click handler: const decide = async () => { … fetch … }) runs when it is
+      // called, not once per turn; it counts when its own block is still open at this line
+      for (let k = i + 1; k < above.length; k++) {
+        if (!/^\s*(?:(?:const|let|var)\s+[\w$]+\s*=\s*(?:async\s+)?(?:\([^)]*\)|[\w$]+)\s*=>|(?:async\s+)?function\b[^(]*\([^)]*\))\s*\{\s*$/.test(above[k])) continue;
+        const inner = above.slice(k + 1).join('\n');
+        if ((inner.match(/\{/g) || []).length >= (inner.match(/\}/g) || []).length) return false;
+      }
+      return true;
     }
     return false; },
     'a query runs once per loop turn (one for every item): slow, and a cap on the loop becomes a cap on the database. Collect what you need and run one query (WHERE id IN (…)), or build the statements and run them as one batch (DB.batch(list.map(…)), Promise.all) and await once.'],
