@@ -574,13 +574,17 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.ask('play go', 600);
     const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'go'); return l && l.ready && l.draws > 0 ? l : false; }), 90000);
     const tapGo = async (col, row) => { const pt = await F.p.evaluate(([c, r]) => { const k = window.__voidMini.keys().find((x) => x.startsWith('go:')); return window.__voidMini.project(k, [(4 - c) * 0.0237, 0.034, (4 - r) * 0.0237]); }, [col, row]); await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(300); };
+    // when the board never draws, say why (it failed once on a loaded runner with only "ready: false"): the miniature as the
+    // host sees it (visible, ready, draws) and where its board sits against the window
+    const why = ready ? null : await F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'go'); const w = document.querySelector('.go-board-wrap'), r = w && w.getBoundingClientRect();
+      return { mini: l || null, minis: window.__voidMini ? window.__voidMini.list().map((m) => m.kind) : null, wrap: r ? [Math.round(r.left), Math.round(r.top), Math.round(r.width), Math.round(r.height)] : null, win: [innerWidth, innerHeight], hidden: document.hidden }; });
     if (ready) { await tapGo(4, 4); await tapGo(2, 6); }
     const g = await until(async () => { const st = await F.state(); const t = st.find((x) => x.kind === 'go'); return t && t.state.moveCount === 2 ? t.state : false; }, 15000);
     const layout = await F.p.evaluate(() => { const b = document.querySelector('.go-board-wrap'), c = document.querySelector('.side-card'); return { sep: !!b && !!c && !b.contains(c) && !c.contains(b), status: c ? c.innerText : '' }; });
     await F.p.click('.go-count'); const counted = await F.p.$eval('.go-countout', (e) => e.innerText).catch(() => '');
     check('go: "play go" stands a 3D goban in the void with its card separate; tapping E5 then C3 places Black then White, no capture count moves, no winner; Count position gives an estimate only when asked',
       !!ready && !!g && g.board[40] === 1 && g.board[56] === 2 && g.captured[1] === 0 && g.captured[2] === 0 && layout.sep && /Black to play/.test(layout.status)
-        && /not a result/.test(counted) && !/wins/.test(counted) && !F.errors.length, JSON.stringify({ ready, g: g && { b: g.board.filter(Boolean).length, c: g.captured }, layout, counted, e: F.errors }));
+        && /not a result/.test(counted) && !/wins/.test(counted) && !F.errors.length, JSON.stringify({ ready, why, g: g && { b: g.board.filter(Boolean).length, c: g.captured }, layout, counted, e: F.errors }));
     await F.ctx.close();
   }
   // ---- every flat game stands in 3D in the void (skills/lift3d.js): its 2D board hides, the card is separate, a 3D tap plays
