@@ -74,7 +74,7 @@ jobs:
               console.log('miss jobs open before this run: ' + r.open);
               for (const q of r.queued) console.log((q.dry ? 'would queue' : q.skipped ? 'already open' : 'queued ' + q.id) + ': ' + q.ask + '  [' + q.target + ']  ' + q.note);
               for (const a of r.later) console.log('later: ' + a);
-              if (!r.queued.length && !r.later.length) console.log('nothing new to learn');
+              if (!r.queued.length && !r.later.length) console.log('no ask was missed often enough to queue this week; the build list is node tools/next.mjs');
             " | tee -a "$GITHUB_STEP_SUMMARY"
             echo "queued=$(node -p "require('./learn.json').queued.filter((q) => q.id && !q.skipped).length")" >> "$GITHUB_OUTPUT"
           else
