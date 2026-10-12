@@ -1649,6 +1649,15 @@ try {
     await back.reload(); await back.waitForTimeout(800);
     check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway && !(document.getElementById('away-note') || {}).textContent), '');
     await W.ctx.close(); }
+  // frontier #4, the owner's piece (2026-10-11): figures left together pick something to do (skills/together.js)
+  if (want("figures together: \"what are they doing\" names what two figures pick (trade, spar, inspect, argue) and why")) { const P = await fresh();
+    await P.ask('what are they doing', 500); const none = await P.whisper();
+    await P.ask('summon a zombie', 900); await P.ask('what are they doing', 500); const one = await P.whisper();
+    await P.ask('bring a dog', 900); await P.ask('what are they doing', 500); const two = await P.whisper();
+    check('figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it',
+      /summon two figures first/.test(none) && /no one to be with yet/.test(one) && /^the zombie and the dog spar: the (zombie|dog) offers a scuffle and the (zombie|dog) wants one$/.test(two) && !P.errors.length,
+      JSON.stringify({ none, one, two, e: P.errors }));
+    await P.ctx.close(); }
   // frontier #11's next step: things moved live between the tabs of a shared Void. Each tab gives its own ids to what a summon
   // makes, so the summon carries a token and a move names it; the spot is a share of the stage, so different sizes agree
   if (want("shared Void moves: a clock dragged in one tab moves in the other, both ways")) {
