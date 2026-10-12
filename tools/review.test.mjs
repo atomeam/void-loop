@@ -212,6 +212,17 @@ ok(rules("const l = JSON.parse(localStorage.getItem('log') || '[]').filter((x) =
   && !rules("const v = JSON.parse(localStorage.getItem('log') || '[]'); const l = (Array.isArray(v) ? v : []).filter(f)", 'javascript').includes('json-array-shape@1')
   && !rules("const have = new Set(JSON.parse(text).map((x) => x.ask))", 'javascript').includes('json-array-shape@1'),
   'an array call straight on parsed saved data is flagged (valid JSON that is not a list throws); a shape check or a repo file is not');
+// undefined-constant (ESLint no-undef, for UPPER_CASE names in ES modules): #250 used RUN_CAP_DAY with no definition anywhere
+{ const U = (code) => rules(code, 'javascript').filter((r) => r.startsWith('undefined-constant'));
+  ok(U("import { due } from './a.js';\nif (n > RUN_CAP_DAY) stop();").join() === 'undefined-constant@2', 'an undefined UPPER_CASE name in a module is a bug');
+  ok(U("import { due } from './a.js'; if (n > RUN_CAP_DAY) stop();").join() === 'undefined-constant@1', 'a pasted one-line snippet is checked past its import');
+  ok(!U("import { due, RUN_CAP_DAY } from './a.js';\nif (n > RUN_CAP_DAY) stop();").length, 'an imported name is defined');
+  ok(!U("export const DEPTHS = [1, 2], GAMES = 40;\nrun(DEPTHS, GAMES);").length, 'a second declarator in one const is defined');
+  ok(!U("export const a = 1;\nconst [, , HID, SITE = 'x'] = argv, { NAMES } = await import('./n.js');\nuse(HID, SITE, NAMES);").length, 'destructured names, with defaults and after a comma, are defined');
+  ok(!U("export const a = 1;\nif (/^INSERT INTO void_queue/.test(sql)) go();\nthrow new Error(`${m}: HTTP ${s}`);\nconst o = { MAX_X: 1 };").length, 'regex, template text and object keys name no constant');
+  ok(!U("export const a = 1;\nconst q = /a\"b/; // a quote in a regex\nconst KINDS = new Set();\nif (!KINDS.has(k)) go();").length, 'a quote inside a regex does not lose the scanner its place');
+  ok(!U("const x = 1;\nif (n > RUN_CAP_DAY) stop();").length, 'a classic script may read a constant another script defined');
+  ok(!U("export const a = JSON.stringify(URL.name, CSS.escape('x'));\nif (typeof FEATURE_X !== 'undefined') go();").length, 'built-in globals and a typeof guard are fine'); }
 ok(rules("const git = (...a) => execFileSync('git', a, { encoding: 'utf8' });", 'javascript').includes('exec-no-timeout@1')
   && rules("execFileSync('gh', ['api', '-X', 'POST', path]);", 'javascript').includes('exec-no-timeout@1')
   && !rules("const git = (...a) => execFileSync('git', a, { encoding: 'utf8', timeout: 120e3 });", 'javascript').includes('exec-no-timeout@1')

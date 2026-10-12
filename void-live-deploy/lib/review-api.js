@@ -49,6 +49,22 @@ export function quick(body) {
 // the prompt names them and the mask; and dropPhantoms() takes out such a claim when the model makes it anyway, so a wrong
 // "not defined" never reaches the PR. tools/review-learn.mjs counts the same claims in past reviews with the same functions.
 export const DIFF_RULE = 'This is a pull request diff: review the added lines (+), using the rest as context. You see only part of each file: a name used in the diff but declared elsewhere in the file (an import at the top, a helper above or below the hunk) is not missing; the imports and top-level declarations of each touched file are listed below. Never report a missing import, an undefined name or a ReferenceError from a diff.';
+/** the widest diff that fits the closer read, file by file. Each file gives its views widest first (its changes' whole functions,
+ * then 10 lines around them, then 3); every file starts at its narrowest and is widened, cheapest first, while the whole still
+ * fits. A reviewer that sees the whole function sees where a value comes from (the review bench's misses: a list read off an
+ * answer that may have none, a flag shared across calls; none visible in 3 lines). Nothing fits even at 3: the 3-line views,
+ * clipped, as before. Pure. */
+export function widestDiff(files, max = MODEL_CODE_MAX) {
+  const views = (files || []).map((v) => (Array.isArray(v) ? v : [v]).map((d) => String(d || '')).filter((d) => d.trim())).filter((v) => v.length);
+  const at = views.map((v) => v.length - 1), size = () => views.reduce((n, v, i) => n + v[at[i]].length + (i ? 1 : 0), 0); // with the newlines that join them
+  if (size() > max) return views.map((v) => v[v.length - 1]).join('\n').slice(0, max);
+  for (let widened = true; widened;) {
+    widened = false;
+    const steps = views.map((v, i) => (at[i] > 0 ? { i, cost: v[at[i] - 1].length - v[at[i]].length } : null)).filter(Boolean).sort((a, b) => a.cost - b.cost);
+    for (const st of steps) if (size() + st.cost <= max) { at[st.i]--; widened = true; break; }
+  }
+  return views.map((v, i) => v[at[i]]).join('\n');
+}
 export const MASK_RULE = '"[redacted]" marks a secret that was masked before you saw the code; it is not in the file. Never report it as a value, a syntax error or a bug.';
 export const IMPORTS_MAX = 6000; // characters of import and declaration lines the prompt may carry, over all files
 // { path: [lines] } from the request, capped and stringified; null when there is nothing usable
@@ -98,7 +114,10 @@ export function phantomNames(paragraph, known, code = '') {
   const p = String(paragraph || ''), out = [];
   if (MASK_CLAIM_RE.test(p) && MASK_WORDS.test(p)) out.push('mask');
   if (PHANTOM_RE.test(p)) {
-    const names = tick(p), declared = names.filter((n) => known && known.has(n));
+    // the names in backticks, and the code-shaped words of the claim itself (CSS_RULE, closerReadDetail, $el: an underscore, a capital
+    // or a $), since a JSON finding names them bare ("CSS_RULE is never defined", #541); plain English words are never taken for names
+    const bare = [...p.split('`')[0].matchAll(/(?<![\w$.])([A-Za-z_$][\w$]*)(?![\w$])/g)].map((m) => m[1]).filter((n) => n.length > 2 && /[_$A-Z]/.test(n) && !/^[A-Z][a-z]+$/.test(n) && !KEYWORDS.has(n) && !GLOBALS.has(n));
+    const names = [...new Set([...tick(p), ...bare])], declared = names.filter((n) => known && known.has(n));
     const suspect = names.some((n) => !(known && known.has(n)) && bareIn(code, n));
     if (declared.length && !suspect) out.push(...declared);
   }
@@ -198,6 +217,8 @@ export function validateFindings(list, evidence) {
     if (!hits.length && !named) for (const k of files) { const h = (evidence[k] || []).filter(matchLine(quote)); if (h.length) { hits = h; at = k; break; } }
     if (!hits.length) { dropped++; continue; }
     const best = Number.isFinite(want) ? hits.reduce((a, b) => (Math.abs(b[0] - want) < Math.abs(a[0] - want) ? b : a)) : hits[0];
+    // a line its author marked right as written ("void-review: ok") is left out, as the quick checks leave it out (tools/review-pr.mjs)
+    if (/void-review:\s*ok\b/.test(best[1])) { dropped++; continue; }
     const id = at + ':' + best[0] + ':' + quote;
     if (seen.has(id)) { dropped++; continue; }
     seen.add(id);
@@ -281,6 +302,41 @@ export function quoteCheck(answer, evidence) {
   return { text, kept, dropped };
 }
 
+// The second pass (the skeptical check the leading reviewers run before they post): every finding the first pass kept goes back
+// to the model, numbered, beside the code it was shown, with one question each: does this code prove the claim? A claim about
+// code that is not shown (what another file's function returns, what a caller passes) does not hold. One call per review that
+// has findings; when that call fails or answers nothing usable, every finding stays (the review is never emptier by accident).
+export const VERIFY_SYSTEM = 'You check another reviewer\'s findings against the code. For each numbered finding, decide only from the code shown whether it is true. ' +
+  'It holds when the shown code proves it. It does not hold when it depends on code that is not shown (what a function in another file returns, what a caller passes, how a value is shaped elsewhere), when the code already handles it, or when it misreads the code. ' +
+  'Answer with JSON only, in exactly this shape: {"verdicts":[{"n":1,"holds":true,"why":"one short reason"}]}.';
+export const VERDICTS_SCHEMA = { type: 'object', properties: { verdicts: { type: 'array', items: { type: 'object',
+  properties: { n: { type: 'integer' }, holds: { type: 'boolean' }, why: { type: 'string' } }, required: ['n', 'holds'] } } }, required: ['verdicts'] };
+export function verifyMessages(findings, shownCode) {
+  const list = findings.map((f, i) => (i + 1) + '. ' + (f.file ? f.file + ':' : 'line ') + f.line + ' (' + f.kind + '): ' + f.text + ' Quoted line: ' + f.quote).join('\n');
+  return [{ role: 'system', content: VERIFY_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE + ' ' + CSS_RULE },
+    { role: 'user', content: 'Findings:\n' + list + '\n\nThe code they were made from:\n' + shownCode }];
+}
+/** the findings whose verdict says they hold; a finding with no verdict, or no usable verdicts at all, stays. Pure. */
+export function applyVerdicts(findings, answer) {
+  let j = answer;
+  if (typeof j === 'string') { const m = j.match(/\{[\s\S]*\}/); try { j = m ? JSON.parse(m[0]) : null; } catch (_) { j = null; } }
+  const verdicts = j && Array.isArray(j.verdicts) ? j.verdicts : null;
+  if (!verdicts || !verdicts.length) return { kept: findings, refuted: [] };
+  const no = new Map(verdicts.filter((v) => v && v.holds === false && Number.isInteger(Number(v.n))).map((v) => [Number(v.n), String(v.why || '').slice(0, 200)]));
+  return { kept: findings.filter((f, i) => !no.has(i + 1)), refuted: findings.map((f, i) => (no.has(i + 1) ? { ...f, why: no.get(i + 1) } : null)).filter(Boolean) };
+}
+export async function verifyFindings(env, findings, shownCode) {
+  if (!findings.length || !env || !env.AI) return { kept: findings, refuted: [] };
+  try {
+    const base = { messages: verifyMessages(findings, shownCode), max_tokens: 600, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
+    let r;
+    try { r = await env.AI.run(MODEL, { ...base, response_format: { type: 'json_schema', json_schema: VERDICTS_SCHEMA } }); }
+    catch (_) { r = await env.AI.run(MODEL, base); }
+    const out = r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response));
+    return applyVerdicts(findings, out);
+  } catch (_) { return { kept: findings, refuted: [] }; }
+}
+
 // The closer read by the model, told what the checks found. Keys are masked before the model sees anything. For a diff, the
 // touched files' imports come along (DIFF_RULE). The model answers JSON (FINDINGS_SCHEMA; a model that refuses the schema is asked
 // once more without it), the findings are validated against the code shown and rendered by code; dropPhantoms and quoteCheck run on
@@ -304,7 +360,10 @@ export async function closerReadDetail(env, { ask, code, lang, diff, res, import
   const known = declaredNames(String(code || '') + '\n' + im);
   const sound = v.kept.filter((f) => dropPhantoms(f.text + ' `' + f.quote + '`', known, String(code || '') + '\n' + im, shown.clipped) !== '');
   const q = quoteCheck(renderFindings(sound).split('\n\n').slice(0, sound.length).join('\n'), evidence);
-  const kept = Math.min(q.kept, sound.length), dropped = v.dropped + (v.kept.length - kept);
-  return { answer: renderFindings(sound.slice(0, kept)), kept, dropped, parsed: true, echoes: v.echoes };
+  const quoted = sound.slice(0, Math.min(q.kept, sound.length));
+  // the second pass: each finding checked against the code it was made from; the refuted ones go
+  const checked = await verifyFindings(env, quoted, shown.text);
+  const kept = checked.kept.length, dropped = v.dropped + (v.kept.length - kept);
+  return { answer: renderFindings(checked.kept), kept, dropped, parsed: true, echoes: v.echoes, refuted: checked.refuted.length };
 }
 export async function closerRead(env, opts) { return (await closerReadDetail(env, opts)).answer; }

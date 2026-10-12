@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as api from '../void-live-deploy/functions/api/review.js';
 import { ensureTables, sessionId } from '../void-live-deploy/lib/void-me.js';
-import { quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, JSON_RULE, FINDINGS_SCHEMA, parseFinding, evidenceLines, quoteCheck, parseFindingsJson, validateFindings, renderFindings, knownFalse, CSS_RULE } from '../void-live-deploy/lib/review-api.js';
+import { widestDiff, applyVerdicts, verifyMessages, closerReadDetail, quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, JSON_RULE, FINDINGS_SCHEMA, parseFinding, evidenceLines, quoteCheck, parseFindingsJson, validateFindings, renderFindings, knownFalse, CSS_RULE } from '../void-live-deploy/lib/review-api.js';
 
 function d1() {
   const db = new DatabaseSync(':memory:');
@@ -146,7 +146,7 @@ test('closer read on a diff: the touched file\'s imports go to the model with th
   assert.doesNotMatch(r.answer, /redact` is not defined|INJECTION_RULE` is used|\[redacted\]/);
   assert.match(r.answer, /^answer\.js:143 — bug — `frobnicate\(p\)` is called but `frobnicate` is not defined anywhere\. — `return frobnicate\(p\);`/m, 'the real finding, its line taken from the quote (150 was wrong)');
   assert.match(r.answer, /1 finding, each quoting its line: 1 bug\./);
-  assert.deepEqual(r.quoted, { kept: 1, dropped: 3, parsed: true, echoes: 0 });
+  assert.deepEqual(r.quoted, { kept: 1, dropped: 3, parsed: true, echoes: 0, refuted: 0 });
 });
 
 test('the phantom filter on its own handles a model that ignores the rule: names a file imports or declares, in both languages', () => {
@@ -232,14 +232,14 @@ test('the closer read answers JSON: a stand-in model that invents a line sees it
   assert.doesNotMatch(r.answer, /query runs inside/, 'a finding with no quote is gone');
   assert.doesNotMatch(r.answer, /Two things to fix/, 'the model\'s prose never reaches the reader');
   assert.match(r.answer, /^lib\/q\.js:22 — bug — the parse is unguarded\. — `const v = JSON\.parse\(raw\)\.filter\(Boolean\);`\n\n1 finding, each quoting its line: 1 bug\.$/, 'the real finding stays, its line taken from the quote, the summary from code');
-  assert.deepEqual(r.quoted, { kept: 1, dropped: 3, parsed: true, echoes: 0 });
+  assert.deepEqual(r.quoted, { kept: 1, dropped: 3, parsed: true, echoes: 0, refuted: 0 });
 });
 
 test('nothing parseable is none; fences, a bare array and prose around the JSON are tolerated; echoes of the shape are counted and dropped', async () => {
   const env = await envWith({ ai: ai('I have reviewed the diff. The code is fine, no bugs.') }); env.READ_TOKEN = 'owner-secret-0123456789';
   const r = await (await call(api.onRequestPost, env, { diff: QUOTE_DIFF }, env.READ_TOKEN)).json();
   assert.equal(r.answer, 'Nothing to report on a closer read.');
-  assert.deepEqual(r.quoted, { kept: 0, dropped: 0, parsed: false, echoes: 0 });
+  assert.deepEqual(r.quoted, { kept: 0, dropped: 0, parsed: false, echoes: 0, refuted: 0 });
   assert.equal(parseFindingsJson('```json\n{"findings":[]}\n```').length, 0);
   assert.equal(parseFindingsJson('Here you go: [{"file":"a","line":1,"kind":"bug","text":"t","quote":"q"}] hope it helps').length, 1);
   assert.equal(parseFindingsJson('{"findings": "none"}'), null);
@@ -313,4 +313,54 @@ test('standard CSS is never a finding: #522 and #525\'s false claims about rotat
   assert.equal(knownFalse('The scale factor is invalid when width is 0'), null, 'a scale that is not CSS is not this');
   assert.equal(knownFalse('The CSS property scale is set twice, the second overrides the first'), null, 'a real CSS finding stays');
   assert.match(CSS_RULE, /rotate, translate and scale/);
+});
+test('a line marked "void-review: ok" is left out of the closer read too, as the quick checks leave it out (#538\'s ReDoS claim on a marked line)', () => {
+  const diff = ['diff --git a/tools/review-bench.mjs b/tools/review-bench.mjs', '+++ b/tools/review-bench.mjs', '@@ -0,0 +21,2 @@',
+    "+  const re = new RegExp(quote); // void-review: ok (the pattern is a case written in tools/review-bench.json, meant as a regex)",
+    "+  const r2 = new RegExp(userText);"].join('\n');
+  const ev = evidenceLines(diff, true);
+  const v = validateFindings([
+    { file: 'tools/review-bench.mjs', line: 21, kind: 'risk', text: 'Building a RegExp directly from external data can cause ReDoS.', quote: 'const re = new RegExp(quote); // void-review: ok (the pattern is a case written in tools/review-bench.json, meant as a regex)' },
+    { file: 'tools/review-bench.mjs', line: 22, kind: 'risk', text: 'Building a RegExp from user text can cause ReDoS.', quote: 'const r2 = new RegExp(userText);' },
+  ], ev);
+  assert.deepEqual(v.kept.map((f) => f.line), [22], 'the unmarked line stays');
+  assert.equal(v.dropped, 1);
+});
+test('the closer read gets the widest diff that fits, file by file: narrowest first, then widened cheapest first while it fits', () => {
+  const v = (n, c) => [c.repeat(n * 3), c.repeat(n * 2), c.repeat(n)]; // whole functions, 10 lines, 3 lines
+  assert.equal(widestDiff([v(10, 'a')], 100), 'a'.repeat(30), 'one small file: its whole functions');
+  assert.equal(widestDiff([v(10, 'a'), v(30, 'b')], 70).length, 30 + 1 + 30, 'the cheap file widens fully (30), the big one stays at 3 lines (30)');
+  assert.equal(widestDiff([v(10, 'a'), v(30, 'b')], 200), 'a'.repeat(30) + '\n' + 'b'.repeat(90), 'room for both: both whole');
+  assert.equal(widestDiff([v(50, 'a'), v(50, 'b')], 60), ('a'.repeat(50) + '\n' + 'b'.repeat(50)).slice(0, 60), 'nothing fits: the 3-line views, clipped');
+  assert.equal(widestDiff([['', '', 'x']], 10), 'x', 'an empty view (a git error) is skipped');
+  assert.equal(widestDiff([], 10), '');
+});
+test('the second pass drops a finding the code does not prove (#540: "r.deep is an object" when review-pr writes it as text) and keeps the rest', async () => {
+  const code = "const findings = [...(r.findings || []), ...deepFindings(r.deep)];\nconst n = JSON.parse(text);";
+  const first = { findings: [
+    { file: '', line: 1, kind: 'bug', text: 'deepFindings is called with r.deep, an object, so it finds nothing.', quote: 'const findings = [...(r.findings || []), ...deepFindings(r.deep)];' },
+    { file: '', line: 2, kind: 'bug', text: 'JSON.parse throws on bad text and nothing catches it.', quote: 'const n = JSON.parse(text);' }] };
+  const calls = [];
+  const env = (verdicts) => ({ AI: { run: async (_m, o) => { calls.push(o.messages); return { response: JSON.stringify(calls.length % 2 ? first : verdicts) }; } } });
+  calls.length = 0;
+  const d = await closerReadDetail(env({ verdicts: [{ n: 1, holds: false, why: 'what r.deep is depends on code not shown' }, { n: 2, holds: true }] }), { ask: 'review this code', code, lang: 'javascript', res: { findings: [] } });
+  assert.equal(d.kept, 1); assert.equal(d.refuted, 1);
+  assert.match(d.answer, /JSON\.parse throws/); assert.doesNotMatch(d.answer, /an object/);
+  assert.match(calls[1][1].content, /1\. line 1 \(bug\): deepFindings is called/, 'the check sees each finding, numbered');
+  assert.match(calls[1][1].content, /const n = JSON\.parse\(text\);/, 'and the code it was made from');
+  // the check fails or says nothing usable: every finding stays
+  calls.length = 0;
+  const kept = await closerReadDetail({ AI: { run: async (_m, o) => { calls.push(1); if (calls.length > 1) throw new Error('busy'); return { response: JSON.stringify(first) }; } } }, { ask: 'review this code', code, lang: 'javascript', res: { findings: [] } });
+  assert.equal(kept.kept, 2);
+  assert.deepEqual(applyVerdicts([{ a: 1 }, { a: 2 }], 'no json here').kept.length, 2);
+  assert.deepEqual(applyVerdicts([{ a: 1 }, { a: 2 }], { verdicts: [{ n: 2, holds: false }] }).kept, [{ a: 1 }]);
+  assert.equal(verifyMessages([], 'x').length, 2);
+});
+test('a "never defined" claim that names a declared constant bare (not in backticks) is dropped (#541: CSS_RULE)', () => {
+  const known = declaredNames("export const CSS_RULE = 'x';\nexport const MASK_RULE = 'y';");
+  const claim = 'CSS_RULE is referenced but never defined or imported, causing a ReferenceError when verifyMessages runs. `return [{ role: \'system\', content: VERIFY_SYSTEM + MASK_RULE + CSS_RULE },`';
+  assert.equal(dropPhantoms(claim, known, 'content: VERIFY_SYSTEM + MASK_RULE + CSS_RULE'), '');
+  // a claim about a name that really is undeclared stays, and plain English words are never names
+  assert.notEqual(dropPhantoms('RUN_CAP_DAY is never defined, so this throws. `if (n > RUN_CAP_DAY) stop();`', known, 'if (n > RUN_CAP_DAY) stop();'), '');
+  assert.deepEqual(phantomNames('The Value is not defined here and Text is never imported.', declaredNames('const Value = 1, Text = 2;')), []);
 });

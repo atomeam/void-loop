@@ -2000,6 +2000,16 @@ try {
     check('the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and "Ask Void" lands on the fixer',
       hubOk && got.every((g) => g.ok) && !!shown && !!fixAsk && !V.errors.length, JSON.stringify({ hubOk, bad: got.filter((g) => !g.ok), shown: !!shown, asked, errors: V.errors }));
     await V.ctx.close(); }
+  // Void's review catches an undefined constant (ESLint's no-undef for UPPER_CASE names; the bug #250 shipped): a visitor's pasted
+  // snippet gets the bug on its line, and the same snippet with the import is clean.
+  if (want("Void's review catches an undefined constant")) { const R = await fresh();
+    await R.ask("review this code: import { due } from './a.js'; if (n > RUN_CAP_DAY) stop();", 1500);
+    const bad = await until(async () => { const t = await R.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); return /never declared or imported/.test(t) ? t : ''; }, 6000) || '';
+    await R.ask("review this code: import { due, RUN_CAP_DAY } from './a.js'; if (n > RUN_CAP_DAY) stop();", 1500);
+    const good = await until(async () => { const t = await R.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); return /found nothing wrong/.test(t) ? t : ''; }, 6000) || '';
+    check("Void's review catches an undefined constant in a pasted snippet, and stays quiet once it is imported",
+      !!bad && /bug/.test(bad) && !!good && !/never declared or imported/.test(good) && !R.errors.length, JSON.stringify({ bad: bad.slice(0, 200), good: good.slice(0, 200), errors: R.errors }));
+    await R.ctx.close(); }
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];

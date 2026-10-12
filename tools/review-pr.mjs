@@ -11,6 +11,7 @@
 import { execFileSync } from 'node:child_process';
 import { ruleReview, langOf, skippedInReview, autoFix, textLines, conflictMarkers, CONFLICT_MESSAGE } from '../void-live-deploy/lib/code-review.js';
 import { redact } from '../void-live-deploy/lib/automation-fix.js';
+import { widestDiff } from '../void-live-deploy/lib/review-api.js';
 
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const base = arg('--base', 'origin/main'), head = arg('--head', 'HEAD'), deep = arg('--deep', '');
@@ -78,7 +79,9 @@ const unavailableSide = (j, status) => {
 if (deep && Object.keys(files).length) {
   try {
     const deepFiles = Object.keys(files).filter((f) => !skippedInReview(f) && LANG[(f.match(/\.([\w]+)$/) || [])[1]]);
-    const diff = redact(git('diff', '--unified=3', '--no-color', base + '...' + head, '--', ...deepFiles)).slice(0, 12000);
+    // the widest view that fits, file by file: whole functions, else 10 lines around each change, else 3 (lib/review-api.js widestDiff)
+    const view = (f, o) => { try { return redact(git('diff', o, '--no-color', base + '...' + head, '--', f)).trimEnd(); } catch (_) { return ''; } };
+    const diff = widestDiff(deepFiles.map((f) => [view(f, '--function-context'), view(f, '--unified=10'), view(f, '--unified=3')]), 12000);
     if (diff.trim()) {
       const headers = { 'content-type': 'application/json' }; if (process.env.VOID_REVIEW_KEY) headers.authorization = 'Bearer ' + process.env.VOID_REVIEW_KEY.trim();
       // each touched file's import and top-level declaration lines go along (lib/review-api.js DIFF_RULE): a diff shows only the
