@@ -331,7 +331,18 @@ test('the closer read gets the widest diff that fits, file by file: narrowest fi
   assert.equal(widestDiff([v(10, 'a')], 100), 'a'.repeat(30), 'one small file: its whole functions');
   assert.equal(widestDiff([v(10, 'a'), v(30, 'b')], 70).length, 30 + 1 + 30, 'the cheap file widens fully (30), the big one stays at 3 lines (30)');
   assert.equal(widestDiff([v(10, 'a'), v(30, 'b')], 200), 'a'.repeat(30) + '\n' + 'b'.repeat(90), 'room for both: both whole');
-  assert.equal(widestDiff([v(50, 'a'), v(50, 'b')], 60), ('a'.repeat(50) + '\n' + 'b'.repeat(50)).slice(0, 60), 'nothing fits: the 3-line views, clipped');
+  // nothing fits: the 3-line views, shortened at a line boundary with the note, never cut inside a line (#549: a hard cut at
+  // 12,000 characters ended the diff on "addEventListener('clic" and the closer read called the line truncated)
+  const lines = (n, c) => Array.from({ length: n }, (_, i) => c + i + ' ' + c.repeat(20)).join('\n');
+  const cut = widestDiff([lines(8, 'a'), lines(8, 'b')], 200);
+  assert.ok(cut.length <= 200, 'it fits: ' + cut.length);
+  const shownLines = cut.split('\n'), note = shownLines.pop();
+  assert.match(note, /^\[\d+ more lines? of this change not shown here: shortened to fit, not cut off\]$/);
+  assert.ok(shownLines.length && shownLines.every((l) => (lines(8, 'a') + '\n' + lines(8, 'b')).split('\n').includes(l)), 'every line shown is whole');
+  assert.equal(Number(note.match(/\d+/)[0]), 16 - shownLines.length, 'the note counts the lines left out');
+  // and the model's side knows it was shortened: the clip rule goes with it and a "cut off" claim is dropped
+  const shown = clipForModel(cut, 200);
+  assert.deepEqual([shown.text, shown.clipped], [cut, true]);
   assert.equal(widestDiff([['', '', 'x']], 10), 'x', 'an empty view (a git error) is skipped');
   assert.equal(widestDiff([], 10), '');
 });

@@ -57,7 +57,8 @@ export const DIFF_RULE = 'This is a pull request diff: review the added lines (+
 export function widestDiff(files, max = MODEL_CODE_MAX) {
   const views = (files || []).map((v) => (Array.isArray(v) ? v : [v]).map((d) => String(d || '')).filter((d) => d.trim())).filter((v) => v.length);
   const at = views.map((v) => v.length - 1), size = () => views.reduce((n, v, i) => n + v[at[i]].length + (i ? 1 : 0), 0); // with the newlines that join them
-  if (size() > max) return views.map((v) => v[v.length - 1]).join('\n').slice(0, max);
+  // nothing fits even at 3 lines: shortened at a line boundary with the note (clipForModel), never cut inside a line (#549)
+  if (size() > max) { const all = views.map((v) => v[v.length - 1]).join('\n'); return clipForModel(all, max - clipNote(all.split('\n').length).length - 1).text; }
   for (let widened = true; widened;) {
     widened = false;
     const steps = views.map((v, i) => (at[i] > 0 ? { i, cost: v[at[i] - 1].length - v[at[i]].length } : null)).filter(Boolean).sort((a, b) => a.cost - b.cost);
@@ -131,9 +132,10 @@ export function phantomNames(paragraph, known, code = '') {
 // paragraph goes (CUT_RE), but only when the code really was shortened.
 export const CLIP_RULE = 'If the code ends with a line saying more lines are not shown, the rest was left out to fit: every line above it is complete. Never report code as truncated, cut off or incomplete because of where it ends.';
 export const clipNote = (n) => '[' + n + ' more line' + (n === 1 ? '' : 's') + ' of this change not shown here: shortened to fit, not cut off]';
+const NOTE_RE = /\n\[\d+ more lines? of this change not shown here: shortened to fit, not cut off\]$/;
 export function clipForModel(code, max = MODEL_CODE_MAX) {
   const s = String(code || '');
-  if (s.length <= max) return { text: s, clipped: false };
+  if (s.length <= max) return { text: s, clipped: NOTE_RE.test(s) }; // already shortened by the sender (widestDiff): still clipped
   const at = s.lastIndexOf('\n', max), head = s.slice(0, at > 0 ? at : max);
   return { text: head + '\n' + clipNote(s.slice(head.length).split('\n').filter((l) => l.trim()).length), clipped: true };
 }
