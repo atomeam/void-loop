@@ -125,6 +125,16 @@ const card = await V.evaluate(() => { const c = document.querySelector('.tab-car
 check('B1: the panel shows the tab in Void: its title, address and the selected text, marked as staying in this browser',
   /Fixture page/.test(card) && /fixture\.test/.test(card) && card.includes(SECRET) && /stays in this browser/.test(card), card.slice(0, 300));
 
+// step 6's visible upgrade for the tab card (skills/tab.js; owner, 2026-10-11: every cleanup move ships one): the card looks
+// like the page it read: the title on a browser tab, the address in a bar with its lock, the selection in highlighter
+const look = await V.evaluate(() => { const c = document.querySelector('.tab-card'); if (!c) return null; const t = c.querySelector('.tab-title'), h = c.querySelector('.tab-host'), m = c.querySelector('.tab-sel mark');
+  const ts = t && getComputedStyle(t), hs = h && getComputedStyle(h);
+  return { tab: !!ts && parseFloat(ts.borderTopLeftRadius) >= 6 && parseFloat(ts.borderBottomLeftRadius) === 0 && ts.backgroundColor !== 'rgba(0, 0, 0, 0)',
+    bar: !!hs && parseFloat(hs.borderTopLeftRadius) >= 8 && hs.backgroundColor !== 'rgba(0, 0, 0, 0)', host: h && h.textContent, lock: !!(h && h.querySelector('svg.tab-lock')),
+    mark: !!m && /linear-gradient/.test(getComputedStyle(m).backgroundImage) && /rgba?\(255, 2\d\d, \d+/.test(getComputedStyle(m).backgroundImage), marked: m && m.textContent }; });
+check('tab card look: the title sits on a browser tab, the address in a rounded bar with a lock for https, and the selection Void read is marked in yellow highlighter',
+  !!look && look.tab && look.bar && /fixture\.test/.test(look.host || '') && look.lock && look.mark && (look.marked || '').includes(SECRET), look);
+
 // a new read replaces the card's contents while the panel is open
 await page.evaluate(() => { getSelection().removeAllRanges(); document.getElementById('reply').focus(); });
 await read(FIXTURE);
