@@ -13,6 +13,7 @@ import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../
 import { models } from '../../lib/models.js';
 import { honestBecause } from '../../lib/honest.js';
 const MODEL = models('will');
+const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every three hours)
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content))) || '';
@@ -55,6 +56,9 @@ export async function onRequestPost({ request, env }) {
   const noMoney = (t) => String(t || '').replace(/[$€£]\s?\d[\d,.]*(\s?(k|m|\/\s?mo(nth)?|a month|per month))?/gi, 'what I earned').replace(/\b(budget|earnings?|profits?|revenue|sales total)\b/gi, 'what I earned');
   const will = { at, wants: wants.map((w) => ({ kind: w.c.kind, title: w.c.title, ...(w.c.source ? { source: w.c.source } : {}), i_want: redact(noMoney(w.i_want)).slice(0, 220), because: redact(noMoney(honestBecause(w.because, w.c.why))).slice(0, 200), evidence: redact(noMoney(w.c.why)).slice(0, 200) })) };
   await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('will', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(will)).run();
+  // a will job nobody has touched in STALE_DAYS makes way for the newest top want: it is set aside (kept, with why), not deleted
+  await env.DB.prepare("UPDATE void_queue SET state = 'set aside', note = substr('set aside: untouched for ' || ? || ' days, a newer want takes its place · ' || COALESCE(note, ''), 1, 300), updated = ? WHERE target LIKE 'will:%' AND state IN ('queued','building') AND COALESCE(updated, at) < ?")
+    .bind(STALE_DAYS, at, new Date(Date.parse(at) - STALE_DAYS * 864e5).toISOString()).run();
   // queue the top want unless a will job is already open
   const open = await env.DB.prepare("SELECT id FROM void_queue WHERE target LIKE 'will:%' AND state IN ('queued','building') LIMIT 1").first();
   let queued = null;
