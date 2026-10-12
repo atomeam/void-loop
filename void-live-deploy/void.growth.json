@@ -384,5 +384,6 @@
   {"at": "2026-10-12T07:36:27Z", "by": "builder", "kind": "grow", "what": "lists are a clipboard: white paper under a steel clip, items in pencil, drawn tick boxes, done ones crossed out", "show": "a shopping list on a clipboard, milk ticked and crossed out", "try": "a shopping list with eggs, milk and bread"},
   {"at": "2026-10-12T07:45:49Z", "by": "builder", "kind": "fix", "what": "Void's code review no longer calls a line truncated when it was its own view of a big diff that was cut short"},
   {"at": "2026-10-12T08:55:05Z", "by": "builder", "kind": "fix", "what": "a slow 3D poker table now fails its own check instead of stopping the whole browser suite"},
-  {"at": "2026-10-12T10:08:13Z", "by": "builder", "kind": "grow", "what": "say a goal as a thing and a day (\"the product page launch on Friday\") and Void plans it: countdown, dated steps, the calendar day", "show": "the plan for a launch said as a noun", "try": "the product page launch on Friday"}
+  {"at": "2026-10-12T10:08:13Z", "by": "builder", "kind": "grow", "what": "say a goal as a thing and a day (\"the product page launch on Friday\") and Void plans it: countdown, dated steps, the calendar day", "show": "the plan for a launch said as a noun", "try": "the product page launch on Friday"},
+  {"at": "2026-10-12T11:08:36Z", "by": "builder", "kind": "grow", "what": "in a shared Void, drag something and it moves on the other screen too, both ways", "show": "a clock dragged in one tab moving in the other", "try": "invite someone, then make a clock and drag it"}
 ]

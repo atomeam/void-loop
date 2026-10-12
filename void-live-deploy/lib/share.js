@@ -6,6 +6,7 @@
 // and the page; tested in tools/share.test.mjs.
 export const MAX_PEERS = 4, RATE = 40, MAX_MSG = 600, ASK_MAX = 120;
 const B64U = /^[A-Za-z0-9_-]{16}$/;
+const TOKEN = /^[A-Za-z0-9_-]{1,12}$/, KEY = /^[A-Za-z0-9_-]{1,12}\.\d{1,2}$/; // a summon's token; a thing it made: token.place
 const enc = new TextEncoder();
 const b64u = (bytes) => btoa(String.fromCharCode(...new Uint8Array(bytes))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
@@ -30,14 +31,17 @@ export function roomFromUrl(href) {
   try { const r = new URL(href).searchParams.get('with'); return r && /^[A-Za-z0-9_-]{16}\.[A-Za-z0-9_-]{16}$/.test(r) ? r : null; } catch (_) { return null; }
 }
 
-// what may pass: a cursor (0..1 of the screen) or a summon (the words, trimmed); anything else is null
+// what may pass: a cursor (0..1 of the screen), a summon (the words, trimmed, and the short token the typing tab gave it), or a
+// move (that token and the thing's place in what the summon made, to a spot 0..1 of the stage); anything else is null.
+// Each tab gives its own ids to what a summon makes, so the token is how both tabs know which thing a move means.
 export function clean(raw) {
   if (typeof raw !== 'string' || raw.length > MAX_MSG) return null;
   let m; try { m = JSON.parse(raw); } catch (_) { return null; }
   if (!m || typeof m !== 'object' || Array.isArray(m)) return null;
   const unit = (v) => Math.min(1, Math.max(0, v));
   if (m.t === 'cursor' && Number.isFinite(m.x) && Number.isFinite(m.y)) return { t: 'cursor', x: unit(m.x), y: unit(m.y) };
-  if (m.t === 'summon' && typeof m.ask === 'string') { const ask = m.ask.trim(); if (ask && ask.length <= ASK_MAX) return { t: 'summon', ask }; }
+  if (m.t === 'summon' && typeof m.ask === 'string') { const ask = m.ask.trim(); if (ask && ask.length <= ASK_MAX) return typeof m.k === 'string' && TOKEN.test(m.k) ? { t: 'summon', ask, k: m.k } : { t: 'summon', ask }; }
+  if (m.t === 'move' && typeof m.key === 'string' && KEY.test(m.key) && Number.isFinite(m.x) && Number.isFinite(m.y)) return { t: 'move', key: m.key, x: unit(m.x), y: unit(m.y) };
   return null;
 }
 

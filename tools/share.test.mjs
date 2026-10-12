@@ -169,3 +169,34 @@ test('the page: it joins by WebSocket, and when the relay is not there, tabs in 
   B.leave();
   assert.deepEqual(seenA.filter((x) => x[0] === 'gone'), [['gone']], 'closing the tab ends its presence');
 });
+
+test('moving a thing passes too: a summon carries a short token, and a move names the token, the place in that summon and a spot on the stage', () => {
+  assert.deepEqual(clean(JSON.stringify({ t: 'summon', ask: 'a clock', k: 'k3x9q2ab' })), { t: 'summon', ask: 'a clock', k: 'k3x9q2ab' });
+  assert.deepEqual(clean(JSON.stringify({ t: 'summon', ask: 'a clock', k: '<b>' })), { t: 'summon', ask: 'a clock' }, 'a bad token is left off, the summon still passes');
+  assert.deepEqual(clean(JSON.stringify({ t: 'move', key: 'k3x9q2ab.0', x: 0.4, y: 0.25 })), { t: 'move', key: 'k3x9q2ab.0', x: 0.4, y: 0.25 });
+  assert.deepEqual(clean(JSON.stringify({ t: 'move', key: 'k3x9q2ab.2', x: 3, y: -1, html: '<img>' })), { t: 'move', key: 'k3x9q2ab.2', x: 1, y: 0 }, 'kept on the stage, nothing rides along');
+  for (const bad of [{ t: 'move', key: 'k3x9q2ab', x: 0.1, y: 0.1 }, { t: 'move', key: '../x.0', x: 0.1, y: 0.1 }, { t: 'move', key: 'k3x9q2ab.123', x: 0.1, y: 0.1 },
+    { t: 'move', key: 'k3x9q2ab.0', x: 'a', y: 0.1 }, { t: 'move', x: 0.1, y: 0.1 }]) assert.equal(clean(JSON.stringify(bad)), null, JSON.stringify(bad));
+  const room = new Room(), a = peer(), b = peer();
+  const ia = room.join(a.send); room.join(b.send);
+  assert.equal(room.message(ia, JSON.stringify({ t: 'move', key: 'k3x9q2ab.0', x: 0.5, y: 0.5 })), 1);
+  assert.deepEqual(b.got.pop(), { t: 'move', key: 'k3x9q2ab.0', x: 0.5, y: 0.5, from: ia });
+});
+
+test('the page passes moves both ways, and a summon\'s token reaches the other tab', async () => {
+  const { join } = await import('../void-live-deploy/lib/share-client.js');
+  const room = await mintRoom(SECRET);
+  class NoSocket { constructor() { setTimeout(() => this.onclose && this.onclose({ code: 1006 }), 0); } send() {} close() {} }
+  const chans = [];
+  class Chan { constructor(name) { this.name = name; chans.push(this); } postMessage(m) { for (const c of chans) if (c !== this && c.name === this.name && c.onmessage) c.onmessage({ data: structuredClone(m) }); } close() {} }
+  const env = { WebSocket: NoSocket, BroadcastChannel: Chan, location: { protocol: 'https:', host: 'a-to-mind.com' } };
+  const seenA = [], seenB = [];
+  const mk = (out) => ({ summon: (a, k) => out.push(['summon', a, k]), move: (key, x, y) => out.push(['move', key, x, y]), presence() {}, gone() {}, note() {} });
+  const A = join(room, mk(seenA), env), B = join(room, mk(seenB), env);
+  await new Promise((r) => setTimeout(r, 5));
+  A.summoned('a clock', 'k3x9q2ab');
+  A.moved('k3x9q2ab.0', 0.4, 0.3);
+  B.moved('k3x9q2ab.0', 0.1, 0.2);
+  assert.deepEqual(seenB, [['summon', 'a clock', 'k3x9q2ab'], ['move', 'k3x9q2ab.0', 0.4, 0.3]]);
+  assert.deepEqual(seenA, [['move', 'k3x9q2ab.0', 0.1, 0.2]]);
+});

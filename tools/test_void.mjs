@@ -1649,6 +1649,27 @@ try {
     await back.reload(); await back.waitForTimeout(800);
     check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway && !(document.getElementById('away-note') || {}).textContent), '');
     await W.ctx.close(); }
+  // frontier #11's next step: things moved live between the tabs of a shared Void. Each tab gives its own ids to what a summon
+  // makes, so the summon carries a token and a move names it; the spot is a share of the stage, so different sizes agree
+  if (want("shared Void moves: a clock dragged in one tab moves in the other, both ways")) {
+    const room = 'cccccccccccccccc.dddddddddddddddd', S = await fresh({ base: base + '?with=' + room });
+    const B = await S.ctx.newPage(); const errsB = []; B.on('pageerror', (e) => errsB.push(String(e && e.message || e)));
+    await B.goto(base + '?with=' + room); await B.waitForTimeout(900);
+    await S.ask('clock', 900);
+    const share = (pg) => pg.evaluate(() => { const st = document.getElementById('stage'), el = st.querySelector('.thing.clock'); return el ? { x: parseFloat(el.style.left) / st.clientWidth, y: parseFloat(el.style.top) / st.clientHeight } : null; });
+    const onB = await until(() => share(B), 4000);
+    const drag = async (pg, dx, dy) => { const b = await pg.$eval('.thing.clock', (e) => { const r = e.getBoundingClientRect(); return { x: r.left + 20, y: r.top + 12 }; });
+      await pg.mouse.move(b.x, b.y); await pg.mouse.down(); await pg.mouse.move(b.x + dx, b.y + dy, { steps: 8 }); await pg.mouse.up(); };
+    await drag(S.p, 140, 90);
+    const a1 = await share(S.p);
+    const b1 = await until(async () => { const v = await share(B); return v && Math.abs(v.x - a1.x) < 0.01 && Math.abs(v.y - a1.y) < 0.01 ? v : null; }, 3000);
+    await drag(B, -60, 40);
+    const b2 = await share(B);
+    const a2 = await until(async () => { const v = await share(S.p); return v && Math.abs(v.x - b2.x) < 0.01 && Math.abs(v.y - b2.y) < 0.01 ? v : null; }, 3000);
+    check('shared Void moves: a clock summoned in one tab and dragged there moves to the same spot (a share of the stage) in the other tab, and dragged back there it follows here; nothing errors',
+      !!onB && !!a1 && !!b1 && !!a2 && Math.abs(a1.x - onB.x) > 0.02 && !errsB.length && !S.errors.length,
+      JSON.stringify({ onB, a1, b1, b2, a2, errsB, errs: S.errors }));
+    await S.ctx.close(); }
   if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   { // frontier #11: two tabs on one invite link (?with=<room>). Here the live relay is not there (no Durable Object in this
     // local server), so the tabs share through a BroadcastChannel: a clock summoned in one appears in the other, and the
