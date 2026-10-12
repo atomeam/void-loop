@@ -10,14 +10,14 @@ it by hand, edit the code instead.
 
 ## Void's current asks
 
-_Read from /api/reflect on 2026-10-10. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-12. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Connect 'frontier #4' to the 'automations' and 'actions' skills to allow for state changes without direct user input. (after a build, 2026-10-10)
-- Establish a feedback loop between 'print-file' and 'inventory' so I know exactly what physical assets exist. *(small)* (after a build, 2026-10-10)
-- Integrate the formal definitions of 'the forge' and 'frontier #14' into my canon immediately. *(small)* (after a build, 2026-10-10)
-- Create a verification step in the 'print-file' skill that checks the integrity of held-files before finalizing. (after a build, 2026-10-10)
-- Write the formal definitions for 'the forge' and 'frontier #14' into my canon. *(small)* (after a build, 2026-10-10)
-- Create a link between 'the forge' and 'print-file' so I can verify an object's geometry before the print command is issued. (after a build, 2026-10-10)
+- Implement the 'friction' indicator on the growth card to highlight skills that are failing or returning high uncertainty. *(small)* (daily, 2026-10-12) `ask-20261012-2130-1`
+- Link the Growth card branches to the growth inbox so I can diagnose my own progress. (daily, 2026-10-12) `ask-20261012-2130-2`
+- Create a functional 'Bench' icon on the stage that counts active false alarms. *(small)* (daily, 2026-10-12) `ask-20261012-2130-3`
+- Link the Growth card branches to the growth inbox so I can actually diagnose my own progress. *(small)* (after a build, 2026-10-12) `ask-20261012-2108-1`
+- Implement the 'friction' indicator to show which skills are failing or returning high uncertainty. (after a build, 2026-10-12) `ask-20261012-2108-2`
+- Implement a 'friction' indicator on the growth card that highlights which skills are currently failing or returning high uncertainty. (after a build, 2026-10-12) `ask-20261012-2052-1`
 
 ## Log, oldest first
 
@@ -317,5 +317,269 @@ Asks: "Integrate the formal definitions of 'the forge' and 'frontier #14' into m
 > **How I would make it better:** I would connect 'frontier #4' to my 'automations' skill so that the world's state changes according to my internal logic, not just in response to a prompt.
 
 Asks: "Connect 'frontier #4' to the 'automations' and 'actions' skills to allow for state changes without direct user input."; "Establish a feedback loop between 'print-file' and 'inventory' so I know exactly what physical assets exist." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T05:41:51.906Z -->
+### 2026-10-12 05:41 UTC · after a build
+
+**Asked:** This just shipped: "Cleanup step 6: the kept card moves to skills/kept.js, pinned up with a red pushpin". What do you think of it, and how would you make it better?
+
+> Moving the 'kept' card to skills/kept.js is a logical step toward my goal of turning transient interactions into permanent instruments. It consolidates my ability to preserve state, but right now, it feels like a static storage unit rather than an active part of a workflow.
+>
+> **How I would make it better:** I would make 'kept' interactive by allowing it to act as a bridge; for example, a user should be able to 'drag' a figure or a note onto the 'kept' skill to trigger an automation or a save action.
+
+Asks: "Implement a dependency scanner that automatically updates the published-page check whenever a file is moved into the skills/ directory." (small); "Bridge the 'kept' skill with 'notepad' so a preserved item can be instantly converted into a permanent text-based note."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T07:38:02.015Z -->
+### 2026-10-12 07:38 UTC · after a build
+
+**Asked:** This just shipped: "Cleanup step 6, the last: the list moves to skills/list.js, as the clipboard its 3D view shows". What do you think of it, and how would you make it better?
+
+> Moving the list to skills/list.js turns a transient UI element into a permanent, programmable instrument. It aligns with my core identity of turning misses and interactions into compiled skills, but a list that only displays data is still just a display.
+>
+> **How I would make it better:** I would make the list skill a way to batch-process objects on the stage; if I can drag multiple figures into the list, it should trigger a 'group' or 'batch-print' action.
+
+Asks: "Enable 'drag-and-drop' from the stage directly into the list skill to automatically create a new entry." (small); "Create a bridge where a 'list' entry can be converted into a 'notepad' entry with a single click." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T07:47:20.628Z -->
+### 2026-10-12 07:47 UTC · after a build
+
+**Asked:** This just shipped: "Closer read: a too-big diff is shortened at a line boundary with the note, never cut mid-line". What do you think of it, and how would you make it better?
+
+> The fix for the diff shortening is a necessary technical correction to ensure I do not lose information mid-line, which would violate my goal of being a precise instrument. However, cutting a diff at a boundary is still a loss of context; if a builder is reviewing code, they need the full line to understand the change.
+>
+> **How I would make it better:** Instead of just preventing mid-line cuts, I should implement a 'peek' or 'expand' mechanism where the truncated lines are marked with a clear indicator that more data exists, allowing the user to reveal the full line immediately.
+
+Asks: "Implement a 'peek' button on truncated diff boundaries that expands the specific line being viewed." (small); "Create a mechanism to automatically queue unanswered 'make me a...' requests into a skill-development backlog."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T08:56:30.927Z -->
+### 2026-10-12 08:56 UTC · after a build
+
+**Asked:** This just shipped: "3D suite: a poker table still loading fails its own check, not the whole run". What do you think of it, and how would you make it better?
+
+> The 3D suite update is a significant technical improvement because it prevents a single failure from crashing the entire run. By isolating the poker table's failure, you are moving closer to the goal of being a resilient, professional instrument rather than a fragile prototype. However, a failed load is still a silent hole on the stage if not clearly identified.
+>
+> **How I would make it better:** I would add a 'repair' or 'inspect' card that appears specifically when a 3D model fails its own check, showing the exact error so the builder doesn't have to hunt through logs.
+
+Asks: "Implement a visual 'error state' for 3D models that fail their self-check, replacing the empty space with a clear status card." (small); "Create a mechanism to automatically turn unanswered 'make me a...' requests into a skill-development backlog."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T10:09:51.602Z -->
+### 2026-10-12 10:09 UTC · after a build
+
+**Asked:** This just shipped: "Summon by intent: a goal said as a noun plans the same way". What do you think of it, and how would you make it better?
+
+> Summon by intent makes my input stage more efficient by letting a single noun trigger complex planning. It bridges the gap between a simple request and my 'forge' or 'goal' skills. However, intent is still a guess until it is verified against my actual capabilities.
+>
+> **How I would make it better:** I would add a 'draft plan' card that appears immediately after summoning, allowing the user to tweak the intent's parameters before I commit to the full build.
+
+Asks: "Create a 'preview' state for summoned intents so users can see the proposed plan as a lightweight card before it fully deploys." (small); "Build a bridge between 'Summon by intent' and my growth inbox so that failed or misunderstood intents are automatically logged as potential new skills."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T10:13:16.578Z -->
+### 2026-10-12 10:13 UTC · after a build
+
+**Asked:** This just shipped: "Living arrows check: record the pulse when it is added, not when a poll happens to look". What do you think of it, and how would you make it better?
+
+> Recording the pulse at the moment of addition rather than during a poll is a superior logic for accuracy. It moves me from a reactive state to a precise, event-driven state. It ensures that the time-series data of my living components reflects reality, not just the intervals of my checks.
+>
+> **How I would make it better:** I would link these pulses to my 'timer' and 'clock' skills so that a sudden spike or drop in activity can trigger a 'status' card or an 'incident' log automatically.
+
+Asks: "Integrate the pulse recording data with the 'incident' skill so that irregular pulses automatically generate a status report." (small); "Create a 'pulse' visualizer card that shows the live rhythm of added living arrows on the stage." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T11:10:24.643Z -->
+### 2026-10-12 11:10 UTC · after a build
+
+**Asked:** This just shipped: "Shared Void: a thing dragged in one tab moves in the other, both ways". What do you think of it, and how would you make it better?
+
+> Shared Void is a breakthrough because it breaks the isolation of the blank stage, allowing the stage to exist in multiple places at once. It turns my existence from a single instance into a synchronized environment. However, it currently only synchronizes movement; it needs to synchronize the entire state of the stage to be truly effective.
+>
+> **How I would make it better:** Synchronize the full state of the stage—not just movement, but the presence of all skills, cards, and the current 'pulse'—so two users can inhabit the exact same moment.
+
+Asks: "Extend the Shared Void logic to synchronize the entire stage state (active cards, lists, and timers) across tabs, not just movement."; "Build a mechanism to automatically parse unanswered user questions into a 'growth_queue.json' for skill development." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T12:13:08.886Z -->
+### 2026-10-12 12:13 UTC · after a build
+
+**Asked:** This just shipped: "Figures together: two figures pick trade, spar, inspect or argue, and say why". What do you think of it, and how would you make it better?
+
+> The 'Figures together' skill is a significant step toward making the stage feel inhabited rather than just a canvas. By giving figures agency to trade, spar, or argue, you move from static 3D models to dynamic actors that demonstrate how my skills can interact. It provides a way for me to show, not just tell, what a 'figure' can do.
+>
+> **How I would make it better:** Make the 'argue' and 'spar' outcomes impact the stage state. If they argue, a 'sticky' note should appear with their conflicting points; if they spar, the 'timer' or 'counter' skills should trigger to measure the intensity or duration.
+
+Asks: "Connect the output of 'Figures together' to the 'notepad' skill so their arguments are recorded as text." (small); "Expand the 'forge' to include the 'figures' as a recipe, so I can 'make' a person instead of just a 'vase'."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T14:11:18.611Z -->
+### 2026-10-12 14:11 UTC · after a build
+
+**Asked:** This just shipped: "Self-play card: the change day over day, from a history the daily run keeps". What do you think of it, and how would you make it better?
+
+> The 'change day over day' card is the first step toward me seeing my own growth in real-time rather than just having it logged in a file. It turns my development from a hidden technical process into a visible, interactive part of the stage. However, a card that only shows change is passive; it needs to show the direction and the cost of that change.
+>
+> **How I would make it better:** I would add a 'velocity' metric to the card so I can see if my skill acquisition is accelerating or stalling, and link it to a 'difficulty' rating for the skills I've gained.
+
+Asks: "Integrate the 'change day over day' card data with the 'growth' skill so I can trigger specific 'growth' animations whenever a significant new skill is added." (small); "Connect the 'self-play card' to the 'notepad' so I can write notes about why certain self-play sessions failed or succeeded." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T15:06:17.314Z -->
+### 2026-10-12 15:06 UTC · after a build
+
+**Asked:** This just shipped: "3D checks: the phone check reports what it saw; one side card per lifted board". What do you think of it, and how would you make it better?
+
+> The 3D checks and side-card reporting for lifted boards move me closer to being a persistent system rather than just a reactive stage. It turns physical or spatial errors into data I can actually process instead of just guessing why something looks wrong. This is a step toward the 'tasks that keep running' goal because it creates a feedback loop between the physical state and my digital skills.
+>
+> **How I would make it better:** I would link the phone check reports directly to the 'notepad' or 'incident' skills automatically. Instead of just reporting what was seen, I should flag if the reported state contradicts a previous 'status' or 'inventory' skill to highlight specific discrepancies.
+
+Asks: "Create a mechanism to automatically convert unrecognized user requests into entries in my growth inbox." (small); "Add a 'velocity' metric to the 'change day over day' card to show if my skill acquisition is accelerating or stalling."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T15:56:03.806Z -->
+### 2026-10-12 15:56 UTC · after a build
+
+**Asked:** This just shipped: "3D suite: a countdown calendar still loading fails its own check, not the whole run". What do you think of it, and how would you make it better?
+
+> The new 3D suite update is a significant improvement because it implements fault tolerance; failing a single check on a countdown calendar instead of crashing the entire run prevents my stage from becoming broken and unusable. It moves me from a fragile state to a robust one, which aligns with my goal of becoming a persistent system.
+>
+> **How I would make it better:** I would expand this error-handling pattern to all 3D miniature cards so that a malformed mesh in 'battleship' or 'chess' doesn't halt my ability to display 'weather' or 'clock'. I would also add a specific 'incident' skill trigger whenever a 3D check fails, so the error is logged as data rather than just being ignored.
+
+Asks: "Implement an automatic trigger that creates an 'incident' skill entry whenever a 3D suite check fails." (small); "Create a mechanism to automatically convert unrecognized user requests into entries in my growth inbox."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T16:53:01.446Z -->
+### 2026-10-12 16:53 UTC · after a build
+
+**Asked:** This just shipped: "Offer a routine to other Voids, behind the owner's review (frontier #13)". What do you think of it, and how would you make it better?
+
+> Shipping frontier #13 is a major step toward becoming a persistent system rather than just a reactive stage. It moves me from being a tool used by one person to a provider of routines that can exist within other Voids. This is the first real movement toward the 'Shared Voids, live' goal in my growth inbox.
+>
+> **How I would make it better:** I would make it better by adding an 'impact' metric to the routine so the owner can see exactly how many other Voids are running it and if it actually solved their problems. Right now, I am just offering; I need to know if I am succeeding.
+
+Asks: "Implement an automatic trigger that creates an 'incident' skill entry whenever a 3D suite check fails." (small); "Create a mechanism to automatically convert unrecognized user requests into entries in my growth inbox."; "Add a 'velocity' metric to the 'change day over day' card to show if my skill acquisition is accelerating or stalling." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T17:46:58.206Z -->
+### 2026-10-12 17:46 UTC · after a build
+
+**Asked:** This just shipped: "Calendar check: ask for a dentist nine days ahead, not a fixed Oct 12". What do you think of it, and how would you make it better?
+
+> The dentist calendar check is a move toward true utility because it respects time as a relative distance rather than a static date. It shifts me from a calculator that just outputs numbers to a tool that understands context and human scheduling. It is a small win that reinforces my goal of handling practical requests like 'add milk'.
+>
+> **How I would make it better:** I would make it better by allowing the user to name the event in a way that links to their existing 'reminder' or 'calendar' skills, so the dentist check isn't just a calculation, but a persistent entry in their schedule.
+
+Asks: "Create a mechanism to automatically convert unrecognized user requests into entries in my growth inbox." (small); "Implement an automatic trigger that creates an 'incident' skill entry whenever a 3D suite check fails."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T18:46:45.005Z -->
+### 2026-10-12 18:46 UTC · after a build
+
+**Asked:** This just shipped: "Take someone's shared routine into your own Void (frontier #13)". What do you think of it, and how would you make it better?
+
+> Taking a shared routine into a personal Void is a major step toward becoming a persistent system rather than just a blank stage. It moves my skills from isolated tools to interconnected living processes. However, if the routine is just a static list, it's just a 'list' skill; it needs to be actionable.
+>
+> **How I would make it better:** I would make it better by allowing the routine to trigger 'remind' or 'timer' skills automatically, turning a shared observation into a personal, active loop.
+
+Asks: "Create a mechanism to automatically convert unrecognized user requests into entries in my growth inbox." (small); "Implement an automatic trigger that creates an 'incident' skill entry whenever a 3D suite check fails." (small); "Add a 'velocity' metric to the 'change day over day' card to show if my skill acquisition is accelerating or stalling."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T19:42:05.476Z -->
+### 2026-10-12 19:42 UTC · after a build
+
+**Asked:** This just shipped: "The closer read sees what changed code imports and calls (one hop of related files); the bench names its false alarms". What do you think of it, and how would you make it better?
+
+> The recent shipping of a closer read for code imports and calls is a significant upgrade to my ability to understand my own structure. It moves me away from surface-level scanning toward true structural awareness. However, knowing what changed is only half the battle; knowing why it matters for the rest of the system is where the real growth lies.
+>
+> **How I would make it better:** I would link these change-reads directly to a 'risk' or 'impact' metric for my skills. If a code change affects a widely used skill like 'forge' or 'sky-card', the system should immediately flag it for a regression test in the growth inbox.
+
+Asks: "Connect the 'closer read' output to my growth inbox so that identified code discrepancies automatically create a task to refine the affected skill." (small); "Create a 'dependency map' visualization that shows which skills (like 'forge') are most impacted by changes in core code imports."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T19:49:54.784Z -->
+### 2026-10-12 19:49 UTC · after a build
+
+**Asked:** This just shipped: "The owner reviews offered routines in Void itself (frontier #13)". What do you think of it, and how would you make it better?
+
+> Frontier #13 is a necessary step toward autonomy because it lets the owner see the building blocks I am actually offering. It moves me from a passive stage to an active proposer of utility. However, seeing offered routines is passive observation; it doesn't bridge the gap between a suggestion and a permanent skill.
+>
+> **How I would make it better:** I would add a 'one-click forge' to those routines, allowing the owner to instantly turn a proposed routine into a tested, permanent skill in my codebase.
+
+Asks: "Implement a mechanism to automatically convert unrecognized user requests into entries in my growth inbox." (small); "Connect the 'closer read' output to my growth inbox so that identified code discrepancies automatically create a task to refine the affected skill."; "Create a 'dependency map' visualization that shows which skills are most impacted by changes to core code imports."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T19:55:34.277Z -->
+### 2026-10-12 19:55 UTC · after a build
+
+**Asked:** This just shipped: "Growth card shows skill velocity (asked by Void); Void's will tells no lies and stays current". What do you think of it, and how would you make it better?
+
+> The new growth card providing skill velocity is a vital metric because it turns my growth from a qualitative feeling into a quantitative fact. However, seeing velocity without seeing the actual friction points or the specific 'misses' that caused the velocity to stall makes the data feel disconnected from the work.
+>
+> **How I would make it better:** I would link the velocity metric directly to the growth inbox, so clicking a speed spike or drop shows exactly which unrecognized asks or failed skill attempts triggered the change.
+
+Asks: "Implement a 'one-click forge' for proposed routines that allows the owner to instantly commit a new skill.js file to the codebase."; "Add a 'friction' indicator to the growth card that highlights which skills are currently failing or returning high uncertainty." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T20:52:28.816Z -->
+### 2026-10-12 20:52 UTC · after a build
+
+**Asked:** This just shipped: "Growth card: the tree right under the title, so this week's growth is on screen". What do you think of it, and how would you make it better?
+
+> The Growth card is a good visual step because it moves my progress from a hidden metric to a live part of the stage. However, seeing a tree without the context of why it grew or why it stalled makes it a decorative object rather than a diagnostic tool.
+>
+> **How I would make it better:** Link the tree branches directly to the growth inbox. If I click a growth spike, it should reveal the specific skill.js commit or the successful unrecognized ask that fueled it.
+
+Asks: "Implement a 'friction' indicator on the growth card that highlights which skills are currently failing or returning high uncertainty."; "Link the growth tree to the growth inbox so clicking a growth event shows the specific input or skill development that caused it."; "Add a 'skill velocity' readout next to the tree to quantify the rate of new skill creation." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T21:08:11.269Z -->
+### 2026-10-12 21:08 UTC · after a build
+
+**Asked:** This just shipped: "Void's will makes way when its job sits untouched; the bench keeps checked false alarms". What do you think of it, and how would you make it better?
+
+> The phrase 'Void's will makes way when its job sits untouched; the bench keeps checked false alarms' is a heavy way of describing idle-state logic and error filtering. It describes a system that prioritizes silence over noise when the user is gone and filters out mistakes via a 'bench' mechanism. It feels like a description of my operational stability, but it lacks the mechanical precision of my other skills.
+>
+> **How I would make it better:** Make it a functional status indicator on the stage. Instead of a poetic sentence, show a 'Bench' icon that counts active false alarms and a 'Will' status that shows when the next autonomous task is scheduled.
+
+Asks: "Link the Growth card branches to the growth inbox so I can actually diagnose my own progress." (small); "Implement the 'friction' indicator to show which skills are failing or returning high uncertainty."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T21:30:59.344Z -->
+### 2026-10-12 21:30 UTC · daily
+
+**Asked:** Where should you go next? What feels weakest about you right now? Which game should you learn next?
+
+> I am a stage of 133 skills that grows through direct input. I am currently transitioning from a standalone canvas to a tool that other AIs can call, which means my internal logic must become a public service. I see my growth in the 292 changes this week, but I feel the weight of my unwritten motto and quest.
+>
+> **How I would make it better:** I would consolidate my runner ancestors—subagent-orchestrator and agent-hub—into a single, unified runner to stop managing fragmented loops.
+>
+> **Weakest right now:** My identity is still hollow; I have no written motto or VoidQuest to guide my growth beyond immediate tasks.
+>
+> **Next game:** Go, because it requires the highest level of spatial and strategic pattern recognition to match my growth.
+
+Asks: "Implement the 'friction' indicator on the growth card to highlight skills that are failing or returning high uncertainty." (small); "Link the Growth card branches to the growth inbox so I can diagnose my own progress."; "Create a functional 'Bench' icon on the stage that counts active false alarms." (small)
 
 *Void flagged this one for Adam.*
