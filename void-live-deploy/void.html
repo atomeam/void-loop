@@ -74,15 +74,19 @@
     .thing:active { cursor: grabbing; }
     .thing.aside-glide { transition: translate .35s cubic-bezier(.2,.7,.2,1); } /* stepping aside for an open card (clearUnderPage) */
     @media (prefers-reduced-motion: reduce) { .thing.aside-glide { transition: none; } }
+    /* an LED bedside clock (skills/clock.js): a dark recessed panel, the digits glowing in the clock's colour, the unlit
+       segments (every digit as an 8) faintly behind the lit ones */
     .clock {
       font-variant-numeric: tabular-nums;
       letter-spacing: 0.04em;
       padding: 0.35em 0.55em;
       border-radius: 12px;
-      background: rgba(255,255,255,0.03);
-      border: 1px solid rgba(255,255,255,0.06);
-      backdrop-filter: blur(8px);
+      background: #0b0b0e;
+      border: 1px solid rgba(255,255,255,0.08);
+      box-shadow: inset 0 2px 10px rgba(0,0,0,0.85), inset 0 0 0 1px rgba(0,0,0,0.6), 0 10px 24px rgba(0,0,0,0.45);
     }
+    .clock > span { position: relative; display: inline-block; text-shadow: 0 0 0.12em currentColor, 0 0 0.45em currentColor; }
+    .clock > span::before { content: attr(data-ghost); position: absolute; left: 0; top: 0; opacity: 0.1; text-shadow: none; pointer-events: none; }
     /* Caveat (SIL OFL 1.1, fonts/caveat-5.0.13/LICENSE), served from this site: the browser fetches it only once a note is up */
     @font-face { font-family: 'Void Hand'; src: url('/fonts/caveat-5.0.13/caveat-latin-500-normal.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
     /* a real 3x3 in sticky note: square paper, sharp corners, the glue strip a shade darker along the top, the bottom edge
@@ -925,8 +929,7 @@
       stage.querySelectorAll('.timer').forEach((el) => clearInterval(el._tickInterval));
       stage.innerHTML = '';
 Object.values(things).forEach((th) => {
-        if (th.kind === 'clock') mountClock(th);
-        else if (th.kind === 'list') mountList(th);
+        if (th.kind === 'list') mountList(th);
         else if (th.kind === 'kept') mountKept(th);
         else if (th.kind === 'calendar') mountCalendar(th);
         else if (th.kind === 'tab') mountTab(th);
@@ -1384,6 +1387,7 @@ Object.values(things).forEach((th) => {
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
       closePage: () => closePage(),
+      alterThing: (th, kind, lower) => applyTargetAlters(th, kind, lower), // the shared targeting: a kind's own words, then colour, then position
       emit: (th, value) => emit(th, value), // a skill's own thing hands its output down its arrows (frontier #24) // the "look what I made" walkthrough closes the card a step opened (skills/showcase.js)
       ask: (t, attach) => { confirmAttach = attach && typeof attach === 'object' ? attach : null; return handle(String(t || '')); }, // a card that opens something asks as if typed; `attach` rides a gated ask into its fingerprint (the proposal's exact draft)
       log: (a) => loopLog(a) }; // a stage thing's own event (a shaken 8 ball) goes in the same history as asks
@@ -1480,41 +1484,6 @@ Object.values(things).forEach((th) => {
         window.addEventListener('pointermove', move);
         window.addEventListener('pointerup', up);
       });
-    }
-
-    function mountClock(th) {
-      const el = document.createElement('div');
-      el.className = 'thing clock';
-      el.dataset.id = th.id;
-      el.style.left = th.x + 'px';
-      el.style.top = th.y + 'px';
-      el.style.fontSize = (th.size || 48) + 'px';
-      el.style.color = th.color || '#e8e8e8';
-      el.style.fontFamily = th.font || 'ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
-      if (th.bold) el.style.fontWeight = '600';
-      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
-
-      const tick = () => {
-        const now = new Date();
-        let text;
-        if (th.format === '24h') {
-          text = now.toLocaleTimeString([], { hour12: false, hour: '2-digit', minute: '2-digit', second: th.seconds ? '2-digit' : undefined });
-        } else if (th.format === 'date') {
-          text = now.toLocaleString();
-        } else {
-          text = now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: th.seconds ? '2-digit' : undefined });
-        }
-        face.textContent = text;
-      };
-      const face = document.createElement('span'); // the time lives in its own span, so the 3D clock beside it survives each tick
-      el.appendChild(face);
-      tick();
-      el._timer = setInterval(tick, 250);
-      // the brass desk clock beside it (skills/mini/clock.js), keeping the same time in this device's zone
-      let tz = ''; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (_) {}
-      if (tz) stageApi.miniature(el, 'clock', { clocks: [{ tz, label: 'Here' }] }, { key: th.id, place: 'beside', width: 150, height: 160, label: '3D desk clock showing the time here' }).catch(() => {});
-      bindDrag(el, th);
-      stage.appendChild(el);
     }
 
 function mountList(th) {
@@ -1686,26 +1655,6 @@ function mountList(th) {
         el.classList.toggle('timer-done', word === 'done'); // a finished timer flashes its 0:00 like a kitchen timer
       };
     }
-    function ensureClock() {
-      let clock = Object.values(things).find((t) => t.kind === 'clock');
-      if (!clock) {
-        clock = {
-          id: uid('clock'),
-          kind: 'clock',
-          x: Math.max(40, stage.clientWidth / 2 - 80),
-          y: Math.max(40, stage.clientHeight / 2 - 40),
-          size: 56,
-          color: '#e8e8e8',
-          format: '12h',
-          seconds: true,
-          bold: false,
-        };
-        things[clock.id] = clock;
-        selectedId = clock.id;
-      }
-      return clock;
-    }
-
     function colorFrom(text) {
       const map = {
         red: '#ff5c5c', blue: '#6aa8ff', green: '#5dffa5', yellow: '#ffe66a',
@@ -1723,51 +1672,6 @@ function wantsClearStage(lower) {
       return /^(clear|clear\s+(everything|all|stage|the\s+stage)|reset\s+(everything|all|stage)|wipe|start\s+over)\s*[.!]?\s*$/.test(lower)
         || /\b(clear|reset)\s+(everything|all|the\s+stage|stage)\b/.test(lower)
         || /\bwipe\s+(everything|all|the\s+stage)\b/.test(lower);
-    }
-
-    function wantsCreateClock(lower) {
-      if (/\b(remove|delete|get rid|hide|clear the clock)\b/.test(lower)) return false;
-      // bare / polite create
-      if (/^(a\s+)?clock(\s+please)?\s*[.!]?\s*$/.test(lower)) return true;
-      if (/\b(i\s+want|i'd\s+like|i\s+need|give\s+me|can\s+i\s+have|could\s+i\s+have)\b.*\bclock\b/.test(lower)) return true;
-      if (/\b(make|add|create|show|spawn|put|place|drop)\b.*\bclock\b/.test(lower)) return true;
-      if (/\bclock\b.*\b(please|here|on\s+(the\s+)?(stage|screen|page))\b/.test(lower)) return true;
-      // "blue clock" / "big clock" as create-or-alter (ensureClock handles)
-      if (/\b(blue|red|green|yellow|white|black|purple|orange|pink|gray|grey|gold|cyan|teal|#(?:[0-9a-f]{3}|[0-9a-f]{6}))\s+clock\b/.test(lower)) return true;
-      if (/\b(big|large|huge|giant|small|tiny|little)\s+clock\b/.test(lower)) return true;
-      return false;
-    }
-
-function applyClockAlters(c, lower) {
-      let ok = false;
-      const col = colorFrom(lower);
-      if (col) { c.color = col; ok = true; }
-
-      if (/\b(bigger|larger|increase|grow|enlarge)\b/.test(lower)) {
-        c.size = Math.min(200, (c.size || 56) + 16); ok = true;
-      }
-      if (/\b(smaller|tinier|decrease|shrink)\b/.test(lower)) {
-        c.size = Math.max(16, (c.size || 56) - 16); ok = true;
-      }
-      if (/\b(huge|giant|enormous|massive)\b/.test(lower)) { c.size = 120; ok = true; }
-      if (/\b(tiny|mini|petite)\b/.test(lower)) { c.size = 22; ok = true; }
-      if (/\b(big|large)\b/.test(lower) && !/\bbigger\b|\blarger\b/.test(lower)) {
-        c.size = Math.max(c.size || 56, 96); ok = true;
-      }
-      if (/\b(small|little)\b/.test(lower) && !/\bsmaller\b/.test(lower)) {
-        c.size = Math.min(c.size || 56, 28); ok = true;
-      }
-
-      if (/\b(24\s*-?\s*h(our)?s?|24h|military(\s+time)?)\b/.test(lower)) { c.format = '24h'; ok = true; }
-      if (/\b(12\s*-?\s*h(our)?s?|12h|am\s*\/?\s*pm)\b/.test(lower)) { c.format = '12h'; ok = true; }
-      if (/\b(show\s+date|with\s+date|date\s*time|datetime|full\s+date)\b/.test(lower)) { c.format = 'date'; ok = true; }
-      if (/\b(hide\s+seconds|no\s+seconds|without\s+seconds)\b/.test(lower)) { c.seconds = false; ok = true; }
-      if (/\b(show\s+seconds|with\s+seconds)\b/.test(lower)) { c.seconds = true; ok = true; }
-      if (/\bbold\b/.test(lower)) { c.bold = true; ok = true; }
-      if (/\b(unbold|not\s+bold|normal\s+weight)\b/.test(lower)) { c.bold = false; ok = true; }
-
-      ok = applyPositionTarget(c, lower) || ok;
-      return ok;
     }
 
     // Multi-object targeting: apply color/size/position alters to whichever
@@ -1799,7 +1703,6 @@ function applyClockAlters(c, lower) {
       let th = (selectedId && things[selectedId] && things[selectedId].kind === kind && things[selectedId])
         || Object.values(things).find((t) => t.kind === kind);
       if (th) return th;
-      if (kind === 'clock') return ensureClock();
       if (stageKinds[kind] && stageKinds[kind].ensure) return stageKinds[kind].ensure(stageApi); // a built-in that moved to skills/ (cleanup step 6)
       if (kind === 'list') return ensureList([]);
       return null;
@@ -1807,10 +1710,6 @@ function applyClockAlters(c, lower) {
 
     function applyTargetAlters(th, kind, lower) {
       let ok = false;
-      if (kind === 'clock') {
-        ok = applyClockAlters(th, lower) || ok;
-        return ok;
-      }
       if (stageKinds[kind] && stageKinds[kind].alter) ok = stageKinds[kind].alter(th, lower) || ok; // a moved built-in's own size words
       {
         // a kind with its own colours (a sticky's paper) uses them
@@ -1880,12 +1779,6 @@ function applyClockAlters(c, lower) {
         ok = true;
       }
       return ok;
-    }
-
-    function wantsRemoveClock(lower) {
-      return /\b(remove|delete|get\s+rid\s+of|hide|clear)\b.*\b(clock|it|this)\b/.test(lower)
-        || /\b(clock)\b.*\b(away|gone)\b/.test(lower)
-        || /^(remove|delete|get\s+rid\s+of|hide)\s+(it|this)\s*[.!]?\s*$/.test(lower);
     }
 
     function wantsAlter(lower) {
@@ -2200,31 +2093,17 @@ say('nothing selected to remove');
         if (tr) return { ok: true, detail: tr };
       }
 
-      // remove clock
-      if (wantsRemoveClock(lower) && !/\b(sticky|note)\b/.test(lower)) {
-        const c = Object.values(things).find((t) => t.kind === 'clock' && t.id === selectedId)
-          || Object.values(things).find((t) => t.kind === 'clock');
-        if (c) {
-          delete things[c.id];
-          if (selectedId === c.id) selectedId = null;
-          save(); render();
-          return { ok: true, detail: 'removed' };
-        }
-        say('');
-        return { ok: false, detail: 'no clock' };
-      }
-
-      // create clock (also applies color/size/format from same phrase)
-      if (wantsCreateClock(lower)) {
-        const c = ensureClock();
-        selectedId = c.id;
-        applyClockAlters(c, lower);
-        save(); render();
-        return { ok: true, detail: 'clock' };
+      // remove clock, then create one (skills/clock.js, cleanup step 6), at the places in this order they always had
+      if (stageKinds.clock && typeof stageKinds.clock.askRemove === 'function') {
+        const cr = stageKinds.clock.askRemove(lower, text, stageApi);
+        if (cr === 'no clock') return { ok: false, detail: 'no clock' };
+        if (cr) return { ok: true, detail: cr };
+        const cc = stageKinds.clock.ask(lower, text, stageApi);
+        if (cc) return { ok: true, detail: cc };
       }
 
       // alter clock — create-then-apply when none exists yet
-      if (wantsAlter(lower) || /\bclock\b/.test(lower) || (selectedId && things[selectedId] && things[selectedId].kind === 'clock')) {
+      if (stageKinds.clock && (wantsAlter(lower) || /\bclock\b/.test(lower) || (selectedId && things[selectedId] && things[selectedId].kind === 'clock'))) {
         // if sticky is selected and alter has no clock word, skip unless color/size typical of clock
         const sel = selectedId && things[selectedId];
         if (sel && sel.kind === 'sticky' && !/\bclock\b/.test(lower) && !/\b(24|12|military|am\s*\/?\s*pm|seconds)\b/.test(lower)) {
@@ -2235,9 +2114,9 @@ say('nothing selected to remove');
             return { ok: true, detail: 'sticky-altered' };
           }
         }
-        const c = ensureClock(); // prefer create-then-apply
+        const c = stageKinds.clock.ensure(stageApi); // prefer create-then-apply (skills/clock.js)
         selectedId = c.id;
-        ok = applyClockAlters(c, lower);
+        ok = applyTargetAlters(c, 'clock', lower);
         if (ok) {
           save(); render();
           return { ok: true, detail: 'altered' };
