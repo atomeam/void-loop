@@ -114,7 +114,10 @@ export function phantomNames(paragraph, known, code = '') {
   const p = String(paragraph || ''), out = [];
   if (MASK_CLAIM_RE.test(p) && MASK_WORDS.test(p)) out.push('mask');
   if (PHANTOM_RE.test(p)) {
-    const names = tick(p), declared = names.filter((n) => known && known.has(n));
+    // the names in backticks, and the code-shaped words of the claim itself (CSS_RULE, closerReadDetail, $el: an underscore, a capital
+    // or a $), since a JSON finding names them bare ("CSS_RULE is never defined", #541); plain English words are never taken for names
+    const bare = [...p.split('`')[0].matchAll(/(?<![\w$.])([A-Za-z_$][\w$]*)(?![\w$])/g)].map((m) => m[1]).filter((n) => n.length > 2 && /[_$A-Z]/.test(n) && !/^[A-Z][a-z]+$/.test(n) && !KEYWORDS.has(n) && !GLOBALS.has(n));
+    const names = [...new Set([...tick(p), ...bare])], declared = names.filter((n) => known && known.has(n));
     const suspect = names.some((n) => !(known && known.has(n)) && bareIn(code, n));
     if (declared.length && !suspect) out.push(...declared);
   }
