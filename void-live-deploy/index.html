@@ -263,6 +263,16 @@
     }
     .thing.image .image-title:empty:focus::before { content: 'write a caption'; color: rgba(40, 40, 48, 0.4); }
     body:not(.in-ext-panel) .vput { display: none; } /* "into the page" shows only in the extension's side panel */
+    /* an answer you kept, pinned up (skills/kept.js): a red pushpin above its top edge, a slight tilt of its own, the title in
+       the felt-tip hand; the card itself never scrolls (that would clip the pin), its answer does */
+    .thing.kept-card.pinned { overflow: visible; }
+    .thing.kept-card.pinned::before {
+      content: ''; position: absolute; left: 50%; top: -9px; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; z-index: 1;
+      background-image: radial-gradient(circle at 35% 30%, rgb(255, 214, 206) 0, rgb(226, 58, 44) 30%, rgb(150, 22, 16) 78%, rgb(98, 12, 8) 100%);
+      box-shadow: 2px 5px 5px -1px rgba(0, 0, 0, 0.55), inset -1px -2px 2px rgba(0, 0, 0, 0.3);
+    }
+    .thing.kept-card.pinned .kept-head { font: 21px/1.15 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive; color: var(--ink); margin: 2px 0 6px; cursor: grab; }
+    .thing.kept-card.pinned .kept-body { max-height: 330px; overflow: auto; }
     /* a kraft shipping tag you keep a link on: tan card stock with a little fibre, the rounded tag end on the left with a
        punched hole and its reinforcing ring, the title written in the felt-tip hand, the host stamped in red; a colour
        ("make the link green") edges it (skills/link.js) */
@@ -954,7 +964,6 @@
       stage.innerHTML = '';
 Object.values(things).forEach((th) => {
         if (th.kind === 'list') mountList(th);
-        else if (th.kind === 'kept') mountKept(th);
         else if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
       Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
@@ -1112,29 +1121,6 @@ Object.values(things).forEach((th) => {
         if (el && sr) { const t = (el.innerText || el.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim(); if (t) sr.textContent = 'added: ' + (t.length > 200 ? t.slice(0, 197) + '…' : t); }
       }
       seenIds = ids;
-    }
-
-    function mountKept(th) {
-      const el = document.createElement('div');
-      el.className = 'thing kept-card';
-      el.dataset.id = th.id;
-      el.style.cssText += ';left:' + th.x + 'px;top:' + th.y + 'px;width:' + (th.w || 320) + 'px;max-height:380px;overflow:auto;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:rgba(12,12,12,0.92);font-size:13px';
-      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
-      const head = document.createElement('div');
-      head.style.cssText = 'color:var(--muted);font-size:12px;margin-bottom:4px;cursor:grab';
-      head.textContent = th.name || th.ask || 'kept';
-      const body = document.createElement('div');
-      body.className = 'kept-body';
-      body.innerHTML = th.html || '';
-      body.querySelectorAll('.asof[data-t]').forEach((a) => { const t = new Date(a.dataset.t); a.textContent = ' · as of ' + t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) + (t.toDateString() === new Date().toDateString() ? '' : ', ' + t.toLocaleDateString([], { month: 'short', day: 'numeric' })) + ' · say “refresh this”'; });
-      body.querySelectorAll('h2').forEach((h) => { h.style.cssText = 'font-size:16px;margin:0 0 2px;font-weight:500'; });
-      body.querySelectorAll('iframe').forEach((f) => { f.style.height = '220px'; });
-      body.querySelectorAll('a[data-alt], a[data-ask]').forEach((a) => a.removeAttribute('href'));
-      el.appendChild(head); el.appendChild(body);
-      head.addEventListener('pointerdown', () => {});
-      bindDrag(el, th);
-      body.addEventListener('pointerdown', (e) => { if (e.target.closest('a, iframe')) e.stopPropagation(); });
-      stage.appendChild(el);
     }
 
     // the agenda's key (skills/calendar.js keeps the events and draws the card): undo snapshots it with the stage

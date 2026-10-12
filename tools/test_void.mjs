@@ -650,7 +650,7 @@ try {
     // in the browser: a visitor sees @sam's look and cards, and their own stage is untouched; the owner publishes with a yes
     const P = await fresh(() => { localStorage.setItem('a2m.void.state.v1', JSON.stringify({ s1: { id: 's1', kind: 'sticky', x: 10, y: 10, text: 'mine' } })); });
     await P.ctx.route(/\/@[a-z0-9_]+$/, async (rt) => { const h = new URL(rt.request().url()).pathname.slice(1); const out = await render(h); return rt.fulfill({ status: out.status, contentType: 'text/html', body: out.html }); });
-    await P.p.goto(base + '@sam'); await P.p.waitForTimeout(900);
+    await P.p.goto(base + '@sam'); await P.p.waitForTimeout(900); await until(async () => !!(await P.p.$('.kept-card')), 6000); // kept cards mount once skills/kept.js loads
     const seen = await P.p.evaluate(() => ({ card: (document.querySelector('.kept-card') || {}).innerText || '', img: !!document.querySelector('#stage img'), bg: getComputedStyle(document.documentElement).getPropertyValue('--void-bg').trim(), fx: document.documentElement.dataset.fx, mine: localStorage.getItem('a2m.void.state.v1') }));
     const hello = await P.whisper();
     await P.p.goto(base + '@nobody'); await P.p.waitForTimeout(700); const nobody = await P.whisper();
@@ -846,6 +846,41 @@ try {
         && !!tilt(a) && JSON.stringify(a.map((n) => [n.id, n.rot])) === JSON.stringify(b.map((n) => [n.id, n.rot]))
         && a[0].bg === 'rgb(244, 226, 122)' && a[1].bg === 'rgb(255, 158, 200)' && hand,
       JSON.stringify({ a, b, hand }).slice(0, 700));
+    await P.ctx.close(); }
+  // cleanup step 6 (the kept card moves to skills/kept.js): what "keep this" does today, pinned before the move
+  if (want("kept card: keep this, call this, a second keep, the card after a reload, dragged by its head")) { const P = await fresh();
+    await P.ask('15% of 240', 500); await P.ask('keep this', 500);
+    await P.ask('call this my tip', 400);
+    await P.ask('18% of 60', 500); await P.ask('keep this', 500);
+    const kept = async () => (await P.state()).filter((x) => x.kind === 'kept');
+    const a = await kept();
+    await P.p.reload();
+    const back = await until(async () => (await P.p.$$eval('.thing.kept-card', (d) => d.length)) === 2, 6000);
+    const cards = await P.p.$$eval('.thing.kept-card', (d) => d.map((e) => ({ id: e.dataset.id, head: e.firstElementChild.textContent, body: (e.querySelector('.kept-body') || {}).textContent || '' })));
+    const mine = cards.find((c) => c.head === 'my tip') || {};
+    const head = await P.p.$('.thing.kept-card[data-id="' + mine.id + '"] > :first-child');
+    const box = head && await head.boundingBox(), x0 = (a.find((x) => x.id === mine.id) || {}).x;
+    if (box) { await P.p.mouse.move(box.x + 20, box.y + 6); await P.p.mouse.down(); await P.p.mouse.move(box.x + 80, box.y + 46, { steps: 6 }); await P.p.mouse.up(); await P.p.waitForTimeout(300); }
+    const moved = ((await kept()).find((x) => x.id === mine.id) || {}).x;
+    check('kept card: "keep this" keeps the answer as a card (its ask as the title), "call this my tip" names it, a second "keep this" keeps a second card, both come back after a reload with their titles and answers, and the head drags the card',
+      a.length === 2 && a.some((x) => x.ask === '15% of 240' && x.name === 'my tip' && /36/.test(x.html)) && a.some((x) => x.ask === '18% of 60' && !x.name && /10\.8/.test(x.html))
+        && back && /36/.test(mine.body) && cards.some((c) => c.head === '18% of 60' && /10\.8/.test(c.body)) && typeof x0 === 'number' && moved >= x0 + 40 && !P.errors.length,
+      JSON.stringify({ a, cards, x0, moved, e: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
+  // step 6's visible upgrade for the kept card (owner, 2026-10-11: every cleanup move ships one): an answer you kept is pinned up
+  if (want("kept pinned look: a red pushpin holds it up, a slight tilt of its own kept after a reload, the title in the felt-tip hand, the answer scrolls under the pin")) { const P = await fresh();
+    await P.ask('15% of 240', 500); await P.ask('keep this', 500);
+    const look = () => P.p.$eval('.thing.kept-card', (e) => { const c = getComputedStyle(e), pin = getComputedStyle(e, '::before'), h = getComputedStyle(e.firstElementChild), b = getComputedStyle(e.querySelector('.kept-body'));
+      return { pinned: e.classList.contains('pinned'), pin: pin.content !== 'none' && pin.borderRadius === '50%' && /radial-gradient/.test(pin.backgroundImage) && parseFloat(pin.top) < 0, pinInk: pin.backgroundImage.match(/rgb\(\d+, \d+, \d+\)/g),
+        clip: c.overflow, rot: c.rotate, font: h.fontFamily, size: parseFloat(h.fontSize), scroll: b.overflowY, text: e.querySelector('.kept-body').textContent }; });
+    const a = await look();
+    await P.p.reload(); await until(async () => !!(await P.p.$('.thing.kept-card')), 6000);
+    const b = await look();
+    const deg = parseFloat(a.rot);
+    check('kept pinned look: the kept answer hangs on a red pushpin above its top edge (not clipped: the card itself does not scroll, its answer does), sits at a slight tilt of its own (under 2.5 degrees, never square) that is the same after a reload, and its title is written in the felt-tip hand',
+      a.pinned && a.pin && (a.pinInk || []).some((x) => /^rgb\((1[5-9]\d|2\d\d), (\d|[1-6]\d), (\d|[1-6]\d)\)$/.test(x)) && a.clip === 'visible' && a.scroll === 'auto'
+        && Math.abs(deg) > 0 && Math.abs(deg) <= 2.5 && b.rot === a.rot && /^"?Void Hand/.test(a.font) && a.size >= 18 && /36/.test(a.text) && !P.errors.length,
+      JSON.stringify({ a, b, e: P.errors }).slice(0, 900));
     await P.ctx.close(); }
   // step 6's visible upgrade for the link card (owner, 2026-10-11: every cleanup move ships one): a kraft shipping tag you keep a link on
   if (want("link tag look: kraft paper tag with a punched hole, the title in the felt-tip hand, the host stamped in red, still a new-tab link, a colour still edges it")) { const P = await fresh();
@@ -2100,7 +2135,7 @@ try {
   await t.ask('translate hello to Spanish', 1200); tr = await t.page(); check('translate', /hola/.test(tr) && /Google Translate/.test(tr), tr.slice(0, 80));
   await t.ask('keep this'); check('keep this', (await t.state()).some((x) => x.kind === 'kept'));
   await t.ask('call this spanish hello'); check('call this', (await t.state()).some((x) => x.kind === 'kept' && x.name === 'spanish hello'));
-  await t.p.reload(); await t.p.waitForTimeout(700); check('kept card survives reload', (await t.p.$$eval('.kept-card', (d) => d.length)) === 1);
+  await t.p.reload(); await until(async () => (await t.p.$$eval('.kept-card', (d) => d.length)) === 1, 6000); check('kept card survives reload', (await t.p.$$eval('.kept-card', (d) => d.length)) === 1);
   await t.ask('map of Lisbon', 1200); mp = await t.page(); check('map of Lisbon picks Portugal', /Lisbon/.test(mp) && /Portugal/.test(mp) && (await t.p.$$eval('.vpage iframe', (d) => d.length)) === 1, mp.slice(0, 80));
   await t.ask('weather in Lisbon', 1200); check('weather', /20°|68°/.test(await t.page()));
   await t.ask('air quality in Lisbon', 1200); airPg = await t.page(); check('air quality', /US AQI/.test(airPg) && /Good|Moderate|Unhealthy|Hazardous/.test(airPg) && /Open-Meteo/.test(airPg), airPg.slice(0, 120));
@@ -2520,6 +2555,7 @@ try {
   await authenticator(B, credsA.map((c) => ({ ...c, signCount: 100 })));
   await B.ask('sign in', 0);
   const inB = await until(async () => /welcome back/.test(await B.whisper()), 10000);
+  await until(async () => (await B.p.$$eval('.kept-card', (d) => d.length)) === 1, 6000); // kept cards mount once skills/kept.js loads
   const bState = await B.state();
   const bBg = await B.p.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue('--void-bg').trim());
   check('sign in on another device brings your stage, look and kept cards', inB && bState.some((x) => x.kind === 'clock') && bState.some((x) => x.kind === 'kept') && (await B.p.$$eval('.kept-card', (d) => d.length)) === 1 && (await lookOf(B)).bg === '#07020f' && bBg === '#07020f' && db().passkeys.size === 1,
