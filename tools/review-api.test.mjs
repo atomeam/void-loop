@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as api from '../void-live-deploy/functions/api/review.js';
 import { ensureTables, sessionId } from '../void-live-deploy/lib/void-me.js';
-import { widestDiff, applyVerdicts, verifyMessages, closerReadDetail, quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, JSON_RULE, FINDINGS_SCHEMA, parseFinding, evidenceLines, quoteCheck, parseFindingsJson, validateFindings, renderFindings, knownFalse, CSS_RULE } from '../void-live-deploy/lib/review-api.js';
+import { relatedPaths, widestDiff, applyVerdicts, verifyMessages, closerReadDetail, quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, JSON_RULE, FINDINGS_SCHEMA, parseFinding, evidenceLines, quoteCheck, parseFindingsJson, validateFindings, renderFindings, knownFalse, CSS_RULE } from '../void-live-deploy/lib/review-api.js';
 
 function d1() {
   const db = new DatabaseSync(':memory:');
@@ -374,4 +374,17 @@ test('a "never defined" claim that names a declared constant bare (not in backti
   // a claim about a name that really is undeclared stays, and plain English words are never names
   assert.notEqual(dropPhantoms('RUN_CAP_DAY is never defined, so this throws. `if (n > RUN_CAP_DAY) stop();`', known, 'if (n > RUN_CAP_DAY) stop();'), '');
   assert.deepEqual(phantomNames('The Value is not defined here and Text is never imported.', declaredNames('const Value = 1, Text = 2;')), []);
+});
+test('the closer read gets one hop of related files: relative and site-root imports, and the server function behind an /api/ call', () => {
+  const text = "import { a } from './watch-ui.js';\nimport { b } from '../lib/watch.js';\nconst m = await import('/lib/automation-fix.js');\nconst j = await fetch('/api/watch', { method: 'POST' });\nimport fs from 'node:fs';";
+  assert.deepEqual(relatedPaths('void-live-deploy/skills/watch.js', text).sort(), ['void-live-deploy/functions/api/watch.js', 'void-live-deploy/lib/automation-fix.js', 'void-live-deploy/lib/watch.js', 'void-live-deploy/skills/watch-ui.js']);
+  assert.deepEqual(relatedPaths('tools/x.mjs', "import { r } from '../void-live-deploy/lib/review-api.js';\nfetch('/api/review');"), ['void-live-deploy/lib/review-api.js'], 'outside the site: no /api/ mapping, no site-root imports');
+  assert.deepEqual(relatedPaths('a.js', "import x from './a.js';"), [], 'never itself');
+  assert.match(DIFF_RULE, /never review them/);
+  // the changed file's own lines come first and are kept when the budget is short; a related file only gets what is left
+  const own = Array.from({ length: 40 }, (_, i) => 'export const OWN_' + i + ' = ' + 'x'.repeat(80) + ';');
+  const rel = Array.from({ length: 60 }, (_, i) => 'export const REL_' + i + ' = ' + 'y'.repeat(80) + ';');
+  const c = cleanImports({ 'skills/watch.js': own, 'functions/api/watch.js': rel });
+  assert.equal(c['skills/watch.js'].length, 40, 'every own line kept');
+  assert.ok(!c['functions/api/watch.js'] || c['functions/api/watch.js'].length < 60);
 });

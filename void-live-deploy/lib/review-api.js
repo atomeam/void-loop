@@ -48,7 +48,7 @@ export function quick(body) {
 // reads the code. tools/review-pr.mjs sends each touched file's import and top-level declaration lines as `imports` ({ path: [lines] });
 // the prompt names them and the mask; and dropPhantoms() takes out such a claim when the model makes it anyway, so a wrong
 // "not defined" never reaches the PR. tools/review-learn.mjs counts the same claims in past reviews with the same functions.
-export const DIFF_RULE = 'This is a pull request diff: review the added lines (+), using the rest as context. You see only part of each file: a name used in the diff but declared elsewhere in the file (an import at the top, a helper above or below the hunk) is not missing; the imports and top-level declarations of each touched file are listed below. Never report a missing import, an undefined name or a ReferenceError from a diff.';
+export const DIFF_RULE = 'This is a pull request diff: review the added lines (+), using the rest as context. You see only part of each file: a name used in the diff but declared elsewhere in the file (an import at the top, a helper above or below the hunk) is not missing; the imports and top-level declarations of each touched file are listed below. Never report a missing import, an undefined name or a ReferenceError from a diff. Lines from related files (what the changed code imports, or the server function an /api/ call reaches) may come along under their own paths: read them to understand what a call takes and returns, never review them.';
 /** the widest diff that fits the closer read, file by file. Each file gives its views widest first (its changes' whole functions,
  * then 10 lines around them, then 3); every file starts at its narrowest and is widened, cheapest first, while the whole still
  * fits. A reviewer that sees the whole function sees where a value comes from (the review bench's misses: a list read off an
@@ -69,6 +69,25 @@ export function widestDiff(files, max = MODEL_CODE_MAX) {
 export const MASK_RULE = '"[redacted]" marks a secret that was masked before you saw the code; it is not in the file. Never report it as a value, a syntax error or a bug.';
 export const IMPORTS_MAX = 6000; // characters of import and declaration lines the prompt may carry, over all files
 // { path: [lines] } from the request, capped and stringified; null when there is nothing usable
+/** the files a changed file leans on, one hop: what it imports by relative or site path, and the server function behind each
+ * /api/<name> it calls (a skill that reads /api/watch is shaped by functions/api/watch.js). The closer read gets their exported
+ * names after the changed files' own lines, so it can see what a call returns without reviewing those files. Pure. */
+export function relatedPaths(file, text) {
+  const dir = String(file).split('/').slice(0, -1), out = new Set();
+  const site = String(file).startsWith('void-live-deploy/') ? 'void-live-deploy' : '';
+  const resolve = (spec) => {
+    if (spec.startsWith('/')) return site ? site + spec : null; // a page or skill imports /lib/x.js from the site root
+    const parts = [...dir];
+    for (const seg of spec.split('/')) { if (seg === '..') parts.pop(); else if (seg && seg !== '.') parts.push(seg); }
+    return parts.join('/');
+  };
+  for (const m of String(text || '').matchAll(/\bfrom\s+['"]((?:\.{1,2})?\/[^'"\s]+)['"]|\bimport\s*\(\s*['"]((?:\.{1,2})?\/[^'"\s]+)['"]/g)) {
+    const r = resolve(m[1] || m[2]); if (r && /\.m?js$/.test(r)) out.add(r);
+  }
+  if (site) for (const m of String(text || '').matchAll(/['"`]\/api\/([a-z0-9-]+)\b/g)) out.add(site + '/functions/api/' + m[1] + '.js');
+  out.delete(file);
+  return [...out];
+}
 export function cleanImports(x) {
   if (!x || typeof x !== 'object' || Array.isArray(x)) return null;
   const out = {}; let total = 0;

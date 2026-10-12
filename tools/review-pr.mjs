@@ -11,7 +11,7 @@
 import { execFileSync } from 'node:child_process';
 import { ruleReview, langOf, skippedInReview, autoFix, textLines, conflictMarkers, CONFLICT_MESSAGE } from '../void-live-deploy/lib/code-review.js';
 import { redact } from '../void-live-deploy/lib/automation-fix.js';
-import { widestDiff } from '../void-live-deploy/lib/review-api.js';
+import { widestDiff, relatedPaths } from '../void-live-deploy/lib/review-api.js';
 
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const base = arg('--base', 'origin/main'), head = arg('--head', 'HEAD'), deep = arg('--deep', '');
@@ -87,6 +87,12 @@ if (deep && Object.keys(files).length) {
       // each touched file's import and top-level declaration lines go along (lib/review-api.js DIFF_RULE): a diff shows only the
       // hunks, and without them the closer read called imports at the top of the file missing (#254)
       const imports = {}; for (const f of deepFiles) { const ls = topLines(f); if (ls.length) imports[f] = ls; }
+      // then one hop out: the exported names of what the changed files import or call (lib/review-api.js relatedPaths), after their own
+      // lines, so the closer read sees what a call returns; the server keeps the changed files' lines first when the budget is short
+      const related = new Set();
+      for (const f of deepFiles) { let t = ''; try { t = git('show', head + ':' + f); } catch (_) {} for (const r of relatedPaths(f, t)) if (!deepFiles.includes(r)) related.add(r); }
+      const exists = (r) => { try { execFileSync('git', ['cat-file', '-e', head + ':' + r], { stdio: 'ignore', timeout: 10e3 }); return true; } catch (_) { return false; } };
+      for (const r of [...related].filter(exists).slice(0, 8)) { const ls = topLines(r), ex = ls.filter((l) => /^export\b/.test(l)); if (ls.length) imports[r] = ex.length ? ex : ls; }
       const r = await fetch(deep, { method: 'POST', headers, body: JSON.stringify({ mode: 'review', ask: 'review this pull request', code: diff, diff, imports }), signal: AbortSignal.timeout(60000) });
       let j = null; try { j = r.ok ? await r.json() : null; } catch (_) {}
       if (j && j.answer && j.review === 'model') { deepText = String(j.answer).trim(); deepQuoted = j.quoted || null; }

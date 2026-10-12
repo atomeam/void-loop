@@ -31,7 +31,7 @@ export function blameBroken(fix, file, quote) {
 
 /** the closer read's findings, from its rendered lines ("file:line — kind — sentence — `quote`", lib/review-api.js renderFindings). Pure. */
 export function deepFindings(text) {
-  return [...String(text || '').matchAll(/^(\S+?):(\d+) — (bug|risk|style) — /gm)].map((m) => ({ file: m[1], line: Number(m[2]), kind: m[3], deep: true }));
+  return [...String(text || '').matchAll(/^(\S+?):(\d+) — (bug|risk|style) — (.*?)(?: — `|$)/gm)].map((m) => ({ file: m[1], line: Number(m[2]), kind: m[3], message: m[4], deep: true }));
 }
 
 /** caught or not, from Void's findings on the bug commit and the broken lines there. Pure. */
@@ -68,6 +68,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     if (c.error) { console.log('skip  ' + c.id + ': ' + c.error); continue; }
     console.log((c.caught ? 'caught' : 'missed') + '  ' + c.id + '  (' + c.commit + ', ' + c.file + ':' + c.broken.join(',') + ')' + (c.noise.length ? '  noise ' + c.noise.length : ''));
     if (!c.caught) console.log('        ' + c.what);
+    for (const f of c.noise) console.log('        noise: ' + f.file + ':' + f.line + ' ' + f.kind + ' — ' + String(f.message || f.rule || '').slice(0, 200)); // what the false alarm said
   }
   console.log('\nVoid\'s review' + (deep ? ' with the closer read' : ' (pattern checks)') + ' caught ' + caught.length + ' of ' + ran.length + ' bugs that reached main; ' + noise + ' other bug or risk findings on those commits');
 }
