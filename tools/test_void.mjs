@@ -293,7 +293,8 @@ function memoryStoreD1({ broken = false } = {}) {
     if (/^INSERT OR IGNORE INTO void_milestones \(id, at, earned_cents, note\) VALUES \(\?, \?, \?, \?\)$/.test(sql)) { need('void_milestones'); if (T.milestones.has(a[0])) return ch(0); T.milestones.set(a[0], { id: a[0], at: a[1], earned_cents: a[2], note: a[3] }); return ch(1); }
     if (/^INSERT INTO void_shortfalls \(day, place, reason, n, last\) VALUES \(\?, \?, \?, 1, \?\) ON CONFLICT\(day, place, reason\) DO UPDATE SET n = n \+ 1, last = excluded\.last$/.test(sql)) { need('void_shortfalls'); const k = a.slice(0, 3).join('|'), r = T.shortfalls.get(k); T.shortfalls.set(k, { day: a[0], place: a[1], reason: a[2], n: r ? r.n + 1 : 1, last: a[3] }); return ch(1); }
     if (/^INSERT INTO void_kv \(k, v\) VALUES \('will', \?\) ON CONFLICT/.test(sql)) { T.kv.set('will', a[0]); return ch(1); }
-    if (/^INSERT INTO void_queue \(id, ask, target, state, note, at, updated\) VALUES/.test(sql)) { T.queue.set(a[0], { id: a[0], ask: a[1], target: a[2], state: a[3], note: a[4] }); return ch(1); }
+    if (/^INSERT INTO void_queue \(id, ask, target, state, note, at, updated\) VALUES/.test(sql)) { T.queue.set(a[0], { id: a[0], ask: a[1], target: a[2], state: a[3], note: a[4], at: a[5], updated: a[6] }); return ch(1); }
+    if (/^UPDATE void_queue SET state = 'set aside', note = substr\('set aside: untouched for ' \|\| \? \|\| ' days, a newer want takes its place · ' \|\| COALESCE\(note, ''\), 1, 300\), updated = \? WHERE target LIKE 'will:%' AND state IN \('queued','building'\) AND COALESCE\(updated, at\) < \?$/.test(sql)) { let n = 0; for (const q of T.queue.values()) if (/^will:/.test(q.target) && /^(queued|building)$/.test(q.state) && (q.updated || q.at) < a[2]) { q.state = 'set aside'; q.note = ('set aside: untouched for ' + a[0] + ' days, a newer want takes its place · ' + (q.note || '')).slice(0, 300); q.updated = a[1]; n += 1; } return ch(n); }
     if (/^INSERT INTO void_actions/.test(sql)) return ch(1); // the execution record (lib/actions.js) around every queue write
     if (/^DELETE FROM void_actions/.test(sql)) return ch(0);
     if (/^UPDATE void_accounts SET tier = \?, updated = \? WHERE subscription_id = \? OR sale_id = \?$/.test(sql)) { need('void_accounts'); let n = 0; for (const r of T.accounts.values()) if ((r.subscription_id && r.subscription_id === a[2]) || (r.sale_id && r.sale_id === a[3])) { r.tier = a[0]; r.updated = a[1]; n += 1; } return ch(n); }
@@ -2282,6 +2283,23 @@ try {
     check("Void's will tells no lies: a reason that ranks or counts shows the recorded fact; a plain reason stays in Void's words",
       !/most frequent/.test(t) && /asked 9 times, last 2026-10-11/.test(t) && /It joins my old parts into a persistent system/.test(t) && !W.errors.length, JSON.stringify({ t: t.slice(0, 400), errors: W.errors }));
     await W.ctx.close(); }
+  // A will job nobody touched in three days makes way: set aside (kept, with why), and the newest top want is queued
+  if (want("Void's will makes way when its job sits untouched")) {
+    const wEnv = { DB: memoryStoreD1(), READ_TOKEN: OWNER, AI: { run: async () => ({ response: JSON.stringify({ wants: [{ id: 1, i_want: 'I want to answer tide questions.', because: 'people ask for tides' }] }) }) } };
+    const wPost = () => willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ candidates: [{ kind: 'people asked', title: 'Answer tide questions', why: 'asked about tides', weight: 20 }] }) }), env: wEnv });
+    const Q = wEnv.DB.queue, old = new Date(Date.now() - 4 * 864e5).toISOString(), fresh = new Date(Date.now() - 3600e3).toISOString();
+    Q.set('oldjob', { id: 'oldjob', ask: 'add milk', target: 'will:add-milk', state: 'queued', note: 'Void chose this', at: old, updated: old });
+    const sa = await (await wPost()).json();
+    const kept = Q.get('oldjob'), fresh1 = [...Q.values()].find((q) => q.id !== 'oldjob');
+    Q.clear();
+    Q.set('newjob', { id: 'newjob', ask: 'x', target: 'will:x', state: 'building', note: 'claimed by a builder', at: old, updated: fresh });
+    const sb = await (await wPost()).json();
+    check("will: a will job untouched for 3 days is set aside (kept, saying why) and the newest top want is queued; one a builder touched today still holds the place",
+      kept && kept.state === 'set aside' && /^set aside: untouched for 3 days, a newer want takes its place · Void chose this$/.test(kept.note) && sa.queued && fresh1 && fresh1.state === 'queued' && fresh1.target === 'will:answer-tide-questions' && !sa.open
+      && sb.open === 'newjob' && !sb.queued && Q.get('newjob').state === 'building' && Q.size === 1,
+      JSON.stringify([kept, sa.queued, sa.open, sb.open, sb.queued]).slice(0, 300));
+  }
+
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];

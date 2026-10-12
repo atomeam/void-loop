@@ -6,6 +6,8 @@
 //   node tools/review-bench.mjs --deep URL       also the closer read (VOID_REVIEW_KEY, as tools/review-pr.mjs --deep)
 //   node tools/review-bench.mjs --json           the scores and every case as JSON
 // Add a case whenever a fix lands for a bug the review let through: the score only means something if the set keeps growing.
+// Noise is checked by hand in tools/review-noise.json (each finding read at its commit: "false", or "real" for a bug the bench
+// does not score), so the summary says how many other findings were false alarms, real, or not yet checked.
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -14,6 +16,7 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 const root = resolve(here, '..');
 export const WINDOW = 3;
+const CHECKED = JSON.parse(readFileSync(resolve(here, 'review-noise.json'), 'utf8'));
 const git = (...a) => execFileSync('git', a, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 120e3 });
 
 /** the commit and line (in that commit's file) that wrote each line matching `quote` in `file` just before `fix` */
@@ -42,6 +45,14 @@ export function score(findings, file, broken) {
   return { caught: hits.length > 0, hits, noise };
 }
 
+/** each noise finding with what a person found when they read it ("false", "real" or "" for not yet checked). Pure. */
+export function checkedNoise(noise, commit, checked) {
+  return noise.map((f) => {
+    const k = checked.find((x) => x.commit === commit && x.file === f.file && Math.abs(x.line - f.line) <= WINDOW);
+    return { ...f, verdict: k ? k.verdict : '', why: k ? k.why : '' };
+  });
+}
+
 export function runCase(c, deep = '') {
   const blamed = blameBroken(c.fix, c.file, c.quote);
   if (!blamed.length) return { ...c, error: 'no line matches the quote before the fix' };
@@ -55,20 +66,23 @@ export function runCase(c, deep = '') {
   try { r = JSON.parse(execFileSync(process.execPath, args, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 300000 })); }
   catch (e) { return { ...c, commit, broken, error: 'the review did not run: ' + String(e.message || e).split('\n')[0] }; } // one case, not the whole bench
   const findings = [...(r.findings || []), ...deepFindings(r.deep)];
-  return { ...c, commit, broken, ...score(findings, c.file, broken) };
+  const s = score(findings, c.file, broken);
+  return { ...c, commit, broken, ...s, noise: checkedNoise(s.noise, commit, CHECKED) };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const i = process.argv.indexOf('--deep'), deep = i > 0 ? process.argv[i + 1] : '';
   const cases = JSON.parse(readFileSync(resolve(here, 'review-bench.json'), 'utf8')).map((c) => runCase(c, deep));
   const ran = cases.filter((c) => !c.error), caught = ran.filter((c) => c.caught);
-  const noise = ran.reduce((n, c) => n + c.noise.length, 0);
-  if (process.argv.includes('--json')) { console.log(JSON.stringify({ caught: caught.length, of: ran.length, noise, cases }, null, 1)); process.exit(0); }
+  const all = ran.flatMap((c) => c.noise), noise = all.length;
+  const tally = { false: all.filter((f) => f.verdict === 'false').length, real: all.filter((f) => f.verdict === 'real').length };
+  tally.unchecked = noise - tally.false - tally.real;
+  if (process.argv.includes('--json')) { console.log(JSON.stringify({ caught: caught.length, of: ran.length, noise, checked: tally, cases }, null, 1)); process.exit(0); }
   for (const c of cases) {
     if (c.error) { console.log('skip  ' + c.id + ': ' + c.error); continue; }
     console.log((c.caught ? 'caught' : 'missed') + '  ' + c.id + '  (' + c.commit + ', ' + c.file + ':' + c.broken.join(',') + ')' + (c.noise.length ? '  noise ' + c.noise.length : ''));
     if (!c.caught) console.log('        ' + c.what);
-    for (const f of c.noise) console.log('        noise: ' + f.file + ':' + f.line + ' ' + f.kind + ' — ' + String(f.message || f.rule || '').slice(0, 200)); // what the false alarm said
+    for (const f of c.noise) console.log('        noise' + (f.verdict ? ' (' + (f.verdict === 'real' ? 'a real bug' : 'checked: false alarm') + ')' : ' (not checked yet)') + ': ' + f.file + ':' + f.line + ' ' + f.kind + ' — ' + String(f.message || f.rule || '').slice(0, 200)); // what it said
   }
-  console.log('\nVoid\'s review' + (deep ? ' with the closer read' : ' (pattern checks)') + ' caught ' + caught.length + ' of ' + ran.length + ' bugs that reached main; ' + noise + ' other bug or risk findings on those commits');
+  console.log('\nVoid\'s review' + (deep ? ' with the closer read' : ' (pattern checks)') + ' caught ' + caught.length + ' of ' + ran.length + ' bugs that reached main; ' + noise + ' other bug or risk findings on those commits' + (noise ? ' (' + tally.false + ' checked false alarms, ' + tally.real + ' real bugs, ' + tally.unchecked + ' not checked yet)' : ''));
 }

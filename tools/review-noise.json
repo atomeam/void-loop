@@ -1,0 +1,4 @@
+[
+ { "commit": "a3213c686040", "file": "tools/build-stars.mjs", "line": 25, "verdict": "false", "why": "every constellation in the data has a name (the generated lib/stars.js lists 88, none empty), and the old filter kept every entry too" },
+ { "commit": "a3213c686040", "file": "void.html", "line": 2977, "verdict": "false", "why": "the page is removed 350 ms after it closes and its callback does nothing once another page is up, so the observer goes with the element; nothing piles up" }
+]
