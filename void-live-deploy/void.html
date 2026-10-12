@@ -926,7 +926,7 @@
 
     /** @type {Record<string, any>} */
     let things = {};
-    let share = null, relayAsk = null, relayingIn = false, shareKnown = null; const presences = new Map(); // a shared Void (frontier #11, shareJoin): declared before the first save()
+    let share = null, relayAsk = null, relayingIn = false, shareKnown = null; const presences = new Map(), shareKeyOf = new Map(), shareIdOf = new Map(); // a shared Void (frontier #11, shareJoin): declared before the first save()
     let selectedId = null;
     // stage kinds a skill file brings (3D figures and objects): { kind: { mount(th, S), dropped?(th, S), thrown?(th, S), throwable } }
     const stageKinds = {};
@@ -1384,6 +1384,7 @@ Object.values(things).forEach((th) => {
           cur.style.top = th.y + 'px';
           moveMates(th.x - origX, th.y - origY);
           decorate(); // labels and arrows follow the thing in the hand
+          if (share) { shareMoved(th, false); for (const m of mates) shareMoved(m.t, false); } // a shared Void sees it move (frontier #11)
         };
         const up = () => {
           window.removeEventListener('pointermove', move);
@@ -1402,6 +1403,7 @@ Object.values(things).forEach((th) => {
             decorate();
             try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
             save();
+            if (share) { shareMoved(th, true); for (const m of mates) shareMoved(m.t, true); } // where it was set down, exactly
             return;
           }
           takeUndoSnapshot();
@@ -3516,15 +3518,41 @@ say('nothing selected to remove');
     function shareNoticeNew() {
       const ids = Object.keys(things), had = shareKnown; shareKnown = new Set(ids);
       if (!share || !had || !relayAsk || !ids.some((id) => !had.has(id))) return;
-      share.summoned(relayAsk); relayAsk = null; // one ask goes once, however many things it made
+      const k = Math.random().toString(36).slice(2, 10); // the summon's token: both tabs name what it made by it, in order
+      shareLink(k, ids.filter((id) => !had.has(id)));
+      share.summoned(relayAsk, k); relayAsk = null; // one ask goes once, however many things it made
     }
-    function shareRun(ask) { relayingIn = true; try { handle(ask); } finally { relayingIn = false; } }
+    // what one summon made, in order, under its token (each tab gives its own ids, so a move names token.place)
+    function shareLink(k, ids) { ids.slice(0, 20).forEach((id, i) => { shareKeyOf.set(id, k + '.' + i); shareIdOf.set(k + '.' + i, id); }); }
+    async function shareRun(ask, k) {
+      const had = new Set(Object.keys(things));
+      relayingIn = true; let done; try { done = handle(ask); } finally { relayingIn = false; }
+      try { await done; } catch (_) {}
+      if (k) shareLink(k, Object.keys(things).filter((id) => !had.has(id)));
+    }
+    // a thing this tab moved goes to the others as a share of the stage (screens differ); while dragging, at most every 50 ms
+    let shareMoveAt = 0;
+    function shareMoved(th, final) {
+      const key = share && th && shareKeyOf.get(th.id), now = Date.now();
+      if (!key || (!final && now - shareMoveAt < 50)) return;
+      shareMoveAt = now;
+      share.moved(key, th.x / (stage.clientWidth || 1), th.y / (stage.clientHeight || 1));
+    }
+    let shareSaveT = 0;
+    function shareMove(key, x, y) {
+      const th = things[shareIdOf.get(key)];
+      if (!th) return;
+      th.x = Math.round(x * stage.clientWidth); th.y = Math.round(y * stage.clientHeight); th.pinned = true;
+      const el = stage.querySelector('[data-id="' + CSS.escape(th.id) + '"]');
+      if (el) { el.style.left = th.x + 'px'; el.style.top = th.y + 'px'; decorate(); } else render();
+      clearTimeout(shareSaveT); shareSaveT = setTimeout(save, 300); // kept once it stops moving, not on every step
+    }
     function shareJoin(room) {
       if (share || typeof room !== 'string') return;
       shareKnown = new Set(Object.keys(things));
-      share = { summoned() {}, cursor() {}, leave() {} };
+      share = { summoned() {}, moved() {}, cursor() {}, leave() {} };
       import('/lib/share-client.js').then((m) => {
-        share = m.join(room, { summon: shareRun, presence: sharePresence, gone: shareGone, note: (t) => say(t) });
+        share = m.join(room, { summon: shareRun, move: shareMove, presence: sharePresence, gone: shareGone, note: (t) => say(t) });
         let last = 0;
         addEventListener('pointermove', (e) => { const now = Date.now(); if (now - last < 50) return; last = now; share.cursor(e.clientX / innerWidth, e.clientY / innerHeight); }, { passive: true });
         addEventListener('pagehide', () => share.leave());
