@@ -92,3 +92,13 @@ test('mcp: through the real route with no key, review_code_closer gives the inst
   assert.equal(j.result.isError, false); assert.equal(j.result.structuredContent.tier, 'free');
   assert.ok(j.result.structuredContent.findings.some((f) => f.rule === 'eval')); assert.match(j.result.content[0].text, /code-review\/#pro/);
 });
+
+// /code-review/ tells an agent's owner how to add Void (frontier #6): the endpoint, every tool tools/list serves, and where the key goes
+test('mcp: /code-review/ shows how to add Void to an AI: the endpoint, each tool by name, the key as a Bearer header', async () => {
+  const { readFileSync } = await import('node:fs');
+  const html = readFileSync(new URL('../void-live-deploy/code-review/index.html', import.meta.url), 'utf8');
+  const sec = (html.match(/<section id="mcp">([\s\S]*?)<\/section>/) || [])[1] || '';
+  assert.match(sec, /https:\/\/a-to-mind\.com\/api\/mcp/);
+  for (const t of TOOLS) assert.ok(sec.includes(t.name), 'the page names ' + t.name);
+  assert.match(sec, /Authorization: Bearer/); assert.match(sec, /claude mcp add --transport http void https:\/\/a-to-mind\.com\/api\/mcp/);
+});
