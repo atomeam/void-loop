@@ -3,7 +3,8 @@
 # ("what do you think of yourself?"), a concrete small ask goes to the builders' queue credited to Void, and every
 # reflection since the last run (the after-build ones too) is copied word for word into domains/void.voice.md on main.
 # When Void flags something as striking, an issue is opened so Adam hears it (and NOTIFY_WEBHOOK gets it, when set).
-# Two crons because GitHub's are UTC: 18:09 UTC is 2:09 PM in summer time, 19:09 UTC in winter; the gate keeps the right one.
+# Two crons because GitHub's are UTC: 18:09 UTC is 2:09 PM in summer time, 19:09 UTC in winter; the gate (tools/cron-gate.mjs)
+# keeps the one that fired for today's season, however late GitHub starts it.
 # About 2 Actions minutes a day. Needs the repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN).
 name: Void's voice
 
@@ -26,22 +27,19 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - name: 2 PM in New York, or a manual run
-        id: gate
-        run: |
-          hour=$(TZ=America/New_York date +%H)
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$((10#$hour))" = 14 ]; then echo "run=true" >> "$GITHUB_OUTPUT"
-          else echo "run=false" >> "$GITHUB_OUTPUT"; echo "not 2 PM in New York (hour $hour): the other cron is today's"; fi
-
       - uses: actions/checkout@v4
-        if: steps.gate.outputs.run == 'true'
         with:
           ref: main
 
       - uses: actions/setup-node@v4
-        if: steps.gate.outputs.run == 'true'
         with:
           node-version: 22
+
+      - name: Today's cron, or a manual run (keyed on the cron that fired, since GitHub starts them hours late)
+        id: gate
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+        run: node tools/cron-gate.mjs --summer '9 18 * * *' --winter '9 19 * * *'
 
       - name: Ask Void
         id: ask

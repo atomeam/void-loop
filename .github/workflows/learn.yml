@@ -8,7 +8,8 @@
 # key; the sweep's owner key and the write token live in other steps and jobs; checkouts keep no credentials except the
 # one job that pushes the drafts branch, which never runs model output. A Hermes Agent step can come back once it runs
 # sandboxed (no secrets, no write token, its output only as a reviewed pull request).
-# Two crons because GitHub's are UTC: 18:39 is 2:39 PM in summer time, 19:39 in winter; the gate keeps the right one.
+# Two crons because GitHub's are UTC: 18:39 is 2:39 PM in summer time, 19:39 in winter; the gate (tools/cron-gate.mjs) keeps
+# the one that fired for today's season, however late GitHub starts it.
 # Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
 name: Void learns
 
@@ -37,23 +38,20 @@ jobs:
     outputs:
       drafted: ${{ steps.draft.outputs.drafted }}
     steps:
-      - name: 2 PM in New York, or a manual run
-        id: gate
-        run: |
-          hour=$(TZ=America/New_York date +%H)
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] || [ "$((10#$hour))" = 14 ]; then echo "run=true" >> "$GITHUB_OUTPUT"
-          else echo "run=false" >> "$GITHUB_OUTPUT"; echo "not 2 PM in New York (hour $hour): the other cron is today's"; fi
-
       - uses: actions/checkout@v4
-        if: steps.gate.outputs.run == 'true'
         with:
           ref: main
           persist-credentials: false
 
       - uses: actions/setup-node@v4
-        if: steps.gate.outputs.run == 'true'
         with:
           node-version: 22
+
+      - name: Today's cron, or a manual run (keyed on the cron that fired, since GitHub starts them hours late)
+        id: gate
+        env:
+          SCHEDULE: ${{ github.event.schedule }}
+        run: node tools/cron-gate.mjs --summer '39 18 * * *' --winter '39 19 * * *'
 
       - name: Checks
         if: steps.gate.outputs.run == 'true'

@@ -186,6 +186,18 @@
   {
    "state": "open",
    "date": "",
+   "ask": "Fix pages that bring buyers",
+   "from": "claude, 2026-10-11"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "The best code reviewer, measured",
+   "from": "owner, 2026-10-11: \"go if it make it a beter product, always go on improvements\""
+  },
+  {
+   "state": "open",
+   "date": "",
    "ask": "Shared Voids, live",
    "from": "void.plan.md Next #10"
   },
@@ -323,92 +335,92 @@
   }
  ],
  "building": {
-  "at": "2026-10-11T12:41:50Z",
-  "date": "2026-10-11",
+  "at": "2026-10-12T16:51:00Z",
+  "date": "2026-10-12",
   "by": "builder (claude)",
-  "item": "Mission cards that keep themselves current",
-  "what": "the first piece: change detection for skills/trialwatch.js against ClinicalTrials.gov, run by a daily workflow, writing finding entries to the ledger."
+  "item": "Skills that spread between Voids",
+  "what": "offering: \"offer my morning as Sam\" and \"routines from others\", behind the owner's review."
  },
  "commits": [
   {
-   "at": "2026-10-11T19:27:44Z",
-   "subject": "A throw is decided on release: the thing leaves the stage's record when you let go, so \"undo\" during its flight brings it back (it said \"not"
+   "at": "2026-10-12T21:03:31Z",
+   "subject": "Void's will makes way when its job sits untouched; the bench keeps checked false alarms"
   },
   {
-   "at": "2026-10-11T18:47:53Z",
-   "subject": "The notepad is a real yellow legal pad (cleanup step 6: the notepad's visible upgrade)"
+   "at": "2026-10-12T20:48:50Z",
+   "subject": "Growth card: the tree right under the title, the week's words after it"
   },
   {
-   "at": "2026-10-11T18:35:34Z",
-   "subject": "Spotter: 1 check(s) healed with no revert after 02662009c13bc8db23fbf61b3b76a3a927f9812b (tools/flakes.json)"
+   "at": "2026-10-12T20:20:05Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after 8ffdaaad098db126780c5a484fb5364ae1ec839b (tools/flakes.json)"
   },
   {
-   "at": "2026-10-11T18:14:26Z",
-   "subject": "Two standing polish rules in the owner's words (every cleanup move ships one visible upgrade; everything can be polished, weakest first), fr"
+   "at": "2026-10-12T20:04:50Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after bed19c6c6f8e26631a69abca2525f44b9f5555d3 (tools/flakes.json)"
   },
   {
-   "at": "2026-10-11T18:11:18Z",
-   "subject": "An open card never buries what is on the stage: a sticky, clock or counter mostly under it glides to the nearest side with room (left, right"
+   "at": "2026-10-12T19:48:49Z",
+   "subject": "Void's will: zero lies in its reasons, refreshed every three hours in CI, and no want for what it already does (add milk)"
   },
   {
-   "at": "2026-10-11T17:53:02Z",
-   "subject": "look what I made: a step is never the walkthrough itself (its own ledger line's try is \"what's new\")"
+   "at": "2026-10-12T19:46:10Z",
+   "subject": "Void's review: a handler the loop only defines is not a query per turn"
   },
   {
-   "at": "2026-10-11T17:50:47Z",
-   "subject": "Look what I made: a returning visitor's first touch brings one quiet line, \"I made N new things while you were away · show me\", and the walk"
+   "at": "2026-10-12T19:43:32Z",
+   "subject": "The owner reviews offered routines in Void itself (frontier #13)"
   },
   {
-   "at": "2026-10-11T17:44:38Z",
-   "subject": "cleanup step 6, 5 of 13: the link card moved out of void.html into skills/link.js (a pasted url, add a link, remove, where they always ran)"
+   "at": "2026-10-12T19:42:27Z",
+   "subject": "asked by Void: the growth card shows skill velocity (this week against the week before, and the trend)"
   },
   {
-   "at": "2026-10-11T17:34:53Z",
-   "subject": "sticky notes look like real paper again: #508 came back with its handwriting font served from fonts/caveat-5.0.13 (it had been taken off the"
+   "at": "2026-10-12T19:37:33Z",
+   "subject": "The closer read sees what changed code imports and calls (one hop of related files); the bench names its false alarms"
   },
   {
-   "at": "2026-10-11T16:49:28Z",
-   "subject": "cleanup step 6, 4 of 13: the notepad moved out of void.html into skills/notepad.js (open, write, clear, remove where they always ran; askAt "
+   "at": "2026-10-12T18:43:09Z",
+   "subject": "Take someone's shared routine into your own Void (frontier #13)"
   },
   {
-   "at": "2026-10-11T16:31:10Z",
-   "subject": "Review stats: this month's closer-read findings against the rules (tools/review-learn.mjs)"
+   "at": "2026-10-12T17:43:07Z",
+   "subject": "Calendar check: ask for a dentist nine days ahead, not a fixed Oct 12"
   },
   {
-   "at": "2026-10-11T16:20:29Z",
-   "subject": "Bench floor or latency baseline moved by a clean run on main (tools/bench-floor.mjs)"
+   "at": "2026-10-12T16:51:00Z",
+   "subject": "Offer a routine to other Voids, behind the owner's review (frontier #13)"
   },
   {
-   "at": "2026-10-11T15:44:14Z",
-   "subject": "grow and agent log: the arena learns"
+   "at": "2026-10-12T16:11:25Z",
+   "subject": "Arena: Void played itself again; the records and the self-play champion"
   },
   {
-   "at": "2026-10-11T15:44:06Z",
-   "subject": "Arena learns day by day (frontier #5): self-play tuning carries its champion across runs"
-  },
-  {
-   "at": "2026-10-11T14:43:01Z",
-   "subject": "grow and agent log: the coral card's live line"
-  },
-  {
-   "at": "2026-10-11T14:42:53Z",
-   "subject": "Coral heat card shows the reef's live heat-stress alert (frontier #8)"
-  },
-  {
-   "at": "2026-10-11T13:46:32Z",
+   "at": "2026-10-12T16:09:36Z",
    "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
   },
   {
-   "at": "2026-10-11T13:43:16Z",
-   "subject": "grow and agent log: reef watch"
-  },
-  {
-   "at": "2026-10-11T13:43:09Z",
-   "subject": "Coral heat card keeps itself current (frontier #8, second card): NOAA Coral Reef Watch daily, a finding per alert change"
-  },
-  {
-   "at": "2026-10-11T12:46:13Z",
+   "at": "2026-10-12T16:05:17Z",
    "subject": "Trial watch: the registry checked; what changed is in the ledger"
+  },
+  {
+   "at": "2026-10-12T15:54:20Z",
+   "subject": "3D suite: a countdown calendar still loading fails its own check, not the whole run"
+  },
+  {
+   "at": "2026-10-12T15:04:34Z",
+   "subject": "3D checks: the phone check reports what it saw; one side card per lifted board"
+  },
+  {
+   "at": "2026-10-12T14:32:12Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after c8268d7db664bf342549a3500ecb0b1feea5c5b2 (tools/flakes.json)"
+  },
+  {
+   "at": "2026-10-12T14:09:25Z",
+   "subject": "Self-play card: the change day over day, from a history the daily run keeps"
+  },
+  {
+   "at": "2026-10-12T13:20:09Z",
+   "subject": "Document card: 'Map it' lays a document's headings out as a tree"
   }
  ]
 }
