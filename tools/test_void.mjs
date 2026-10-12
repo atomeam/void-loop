@@ -1031,12 +1031,15 @@ try {
   // frontier #24, living arrows (2026-10-11): an arrow carries what its source produces; a timer at 0:00 writes on the note it points at
   if (want("living arrows: a timer connected to a note writes on it when it ends (in capitals on the way), with a pulse; an unconnected note is unchanged; a locked note takes nothing")) { const P = await fresh();
     await P.ask('sticky note pasta', 600);
+    // the pulse dot comes a frame after the note is redrawn and lives 900 ms, so a poll that stops on the note's text can miss
+    // it (full suite, 2026-10-12: pulse false, all else right); the page records any pulse the moment one is added
+    await P.p.evaluate(() => { window.__pulseSeen = false; new MutationObserver((ms) => { if (ms.some((m) => [...m.addedNodes].some((n) => n.classList && n.classList.contains('void-pulse')))) window.__pulseSeen = true; }).observe(document.body, { childList: true, subtree: true }); });
     await P.ask('make a 3 second timer', 600);
     await P.ask('connect the timer to the note in capitals', 700); const said = await P.whisper();
     await P.ask('another note that says spare', 600);
     const notes = async () => Object.fromEntries((await P.state()).filter((t) => t.kind === 'sticky').map((t) => [t.text.split('\n')[0], t.text]));
-    let pulse = false;
-    const heard = await until(async () => { if (!pulse && await P.p.$('.void-pulse')) pulse = true; const n = await notes(); return /THE TIMER IS DONE/.test(n.pasta || '') ? n : null; }, 9000);
+    const heard = await until(async () => { const n = await notes(); return /THE TIMER IS DONE/.test(n.pasta || '') ? n : null; }, 9000);
+    const pulse = !!heard && await until(() => P.p.evaluate(() => window.__pulseSeen), 1500); // the frame after the redraw
     const ids = await P.p.evaluate(() => { const s = Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')); return { timer: (s.find((t) => t.kind === 'timer') || {}).id, pasta: (s.find((t) => t.kind === 'sticky' && /^pasta/.test(t.text)) || {}).id }; });
     const emit = (text) => P.p.evaluate(([id, t]) => document.dispatchEvent(new CustomEvent('void:output', { detail: { id, value: { text: t } } })), [ids.timer, text]);
     await P.p.click('.sticky >> nth=0'); await P.p.waitForTimeout(200); // pick the pasta note (the first one up)
