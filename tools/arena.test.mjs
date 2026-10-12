@@ -119,3 +119,32 @@ test('arena: the answer names the self-play champion when it beats the card\'s o
   assert.match(say, /self-play.*62%.*since 2026-10-11/i);
   assert.doesNotMatch(arenaSay({ ...rec, champion: { weights: {}, vsCard: 0.5, since: '2026-10-11', days: 1, tried: [] } }), /62%/);
 });
+
+import { pushHistory, arenaDelta, arenaTrend } from '../void-live-deploy/lib/arena-say.js';
+test('arena: day over day (the owner, 2026-10-11): one line a day, a rerun the same day replaces it, the last 60 kept', () => {
+  let h = pushHistory(undefined, { date: '2026-10-10', rating: 1547, vsCard: 0.5 });
+  h = pushHistory(h, { date: '2026-10-11', rating: 1609, vsCard: 0.5 });
+  h = pushHistory(h, { date: '2026-10-11', rating: 1609, vsCard: 0.46 });
+  assert.deepEqual(h, [{ date: '2026-10-10', rating: 1547, vsCard: 0.5 }, { date: '2026-10-11', rating: 1609, vsCard: 0.46 }]);
+  let long = [];
+  for (let d = 1; d <= 70; d++) long = pushHistory(long, { date: '2026-08-' + String(d).padStart(2, '0'), rating: 1000 + d, vsCard: null });
+  assert.equal(long.length, 60); assert.equal(long[0].rating, 1011);
+  assert.deepEqual(pushHistory(h, { date: 'yesterday', rating: 'x' }), h, 'a malformed day is not written');
+});
+
+test('arena: the change since the last day that differed, and an unchanged day says so instead of inventing one', () => {
+  assert.equal(arenaDelta([]), '');
+  assert.equal(arenaDelta([{ date: '2026-10-11', rating: 1609 }]), 'first day on record (Oct 11)');
+  assert.equal(arenaDelta([{ date: '2026-10-10', rating: 1547 }, { date: '2026-10-11', rating: 1609 }]), '+62 since Oct 10');
+  assert.equal(arenaDelta([{ date: '2026-10-10', rating: 1547 }, { date: '2026-10-11', rating: 1609 }, { date: '2026-10-12', rating: 1609 }]), '+62 since Oct 10');
+  assert.equal(arenaDelta([{ date: '2026-10-11', rating: 1609 }, { date: '2026-10-12', rating: 1580 }]), '−29 since Oct 11');
+  assert.equal(arenaDelta([{ date: '2026-10-10', rating: 1609 }, { date: '2026-10-12', rating: 1609 }]), 'no change since Oct 10');
+});
+
+test('arena: a small line of the days, labelled, only once there are two', () => {
+  assert.equal(arenaTrend([{ date: '2026-10-11', rating: 1609 }]), '');
+  const s = arenaTrend([{ date: '2026-10-10', rating: 1547 }, { date: '2026-10-11', rating: 1609 }]);
+  assert.match(s, /^<svg [^>]*role="img"[^>]*aria-label="Rating by day: Oct 10 1547, Oct 11 1609"/);
+  assert.equal((s.match(/<circle /g) || []).length, 2);
+  assert.doesNotMatch(arenaTrend([{ date: '<b>', rating: 1 }, { date: '2026-10-11', rating: 2 }]), /<b>/, 'a date that is not a date never reaches the markup');
+});

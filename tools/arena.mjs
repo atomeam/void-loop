@@ -11,6 +11,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ladder, tune, perf, ladderOf, othelloGame, othelloPlayers, match } from '../void-live-deploy/lib/arena.js';
 import { WEIGHTS } from '../void-live-deploy/skills/connect4-rules.js';
+import { pushHistory } from '../void-live-deploy/lib/arena-say.js';
 
 export const OUT = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'arena.json');
 export const DEPTHS = [1, 2, 3, 4], GAMES = 40, SEED = 1;
@@ -61,9 +62,12 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   }
   const r = run(), day = new Date().toISOString().slice(0, 10);
   const { ms, ...keep } = r;
-  let prev = null; try { prev = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')).champion || null : null; } catch (_) { prev = null; }
+  let was = null; try { was = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')) : null; } catch (_) { was = null; }
+  const prev = (was && was.champion) || null;
   const champion = process.argv.includes('--learn') ? learn(prev, day) : prev; // --learn: one more day of self-play tuning
-  writeFileSync(OUT, JSON.stringify({ ...keep, ...(champion ? { champion } : {}), played: day }, null, 2) + '\n');
+  // one line a day for the card's "day over day" (lib/arena-say.js): the strongest depth's rating and the champion's score
+  const history = pushHistory(was && was.history, { date: day, rating: r.ladder[r.ladder.length - 1].rating, vsCard: champion ? champion.vsCard : null });
+  writeFileSync(OUT, JSON.stringify({ ...keep, ...(champion ? { champion } : {}), played: day, history }, null, 2) + '\n');
   if (champion) console.log('champion since ' + champion.since + ' (' + champion.days + ' day' + (champion.days === 1 ? '' : 's') + '): ' + Math.round(champion.vsCard * 100) + '% against the card\'s own weights; tried ' + champion.tried.map((t) => Math.round(t.score * 100) + '%' + (t.kept ? ' kept' : '')).join(', '));
   for (const s of r.ladder) console.log(s.name.padEnd(16), String(s.rating).padStart(5), s.vs ? ' (' + Math.round(s.score * 100) + '% against ' + s.vs + ')' : ' (anchor)');
   console.log(r.tuned.name.padEnd(16), String(r.tuned.rating).padStart(5), ' (' + Math.round(r.tuned.score * 100) + '% against the card\'s weights at depth 2; ' + (r.tuned.kept ? 'kept: it wins clearly' : 'not kept: the card\'s weights stay') + ')');
