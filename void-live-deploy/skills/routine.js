@@ -5,10 +5,11 @@
  * typing them could not; it stays in this browser unless its owner offers it. The pure half (the ask, the pick, the store) is
  * lib/routines.js. The second piece: "offer my morning as Sam" sends only that routine's asks and the name Sam chose to a list
  * the site's owner reviews (lib/shared-routines.js, /api/routines); "routines from others" shows the approved ones, and
- * "take Sam's morning" copies one into this browser (never over a routine of your own; taking it does not run it).
+ * "take Sam's morning" copies one into this browser (never over a routine of your own; taking it does not run it). The owner
+ * says "offered routines" to see what waits and approve or reject each one.
  */
 import { routineAsk, pick, load, save, remove, recentAsks, MAX_ASKS } from '../lib/routines.js';
-import { offerAsk, othersAsk, cleanOffer, takeAsk, findShared, takeName } from '../lib/shared-routines.js';
+import { offerAsk, othersAsk, cleanOffer, takeAsk, findShared, takeName, pendingAsk } from '../lib/shared-routines.js';
 
 const store = () => { try { return typeof localStorage === 'undefined' ? null : localStorage; } catch (_) { return null; } };
 let running = false; // a routine never runs inside another one
@@ -60,11 +61,43 @@ async function take(q, ls, saved, api, log) {
   api.say('took ' + r.author + '\'s ' + r.name); log('take'); return 'routine';
 }
 
+const ownerKey = () => { try { return (typeof localStorage !== 'undefined' && localStorage.getItem('a2m.void.owner.v1')) || ''; } catch (_) { return ''; } };
+
+// the owner's card: each offer that waits, its asks, and Approve / Reject (POST /api/routines with the owner's key)
+async function pending(api, log) {
+  const tok = ownerKey();
+  if (!tok) { card(api, 'Offered routines are the owner\'s to review', [], 'Unlock Void first (unlock <key>), then ask again.'); log('pending-locked'); return 'routine'; }
+  let list = null;
+  try { const r = await fetch('/api/routines?pending=1', { headers: { authorization: 'Bearer ' + tok } }); if (r.ok) list = await r.json(); } catch (_) {}
+  if (!Array.isArray(list)) { card(api, 'Could not read offered routines', [], 'The key was refused or the list is unreachable. Try again in a minute.'); log('pending-failed'); return 'routine'; }
+  const { showPage, esc } = api;
+  showPage((p) => {
+    p.innerHTML = '<h2>' + esc(list.length ? 'Offered routines (' + list.length + ')' : 'No offered routines waiting') + '</h2>' // void-review: ok: every value goes through esc()
+      + list.map((r, i) => '<div class="routine-offer" data-i="' + i + '"><b>' + esc(r.name) + '</b> by ' + esc(r.author) + '<ol>' + r.asks.map((a) => '<li>' + esc(a) + '</li>').join('') + '</ol>'
+        + '<button type="button" data-yes>Approve</button> <button type="button" data-no>Reject</button> <span class="sub" data-said></span></div>').join('')
+      + '<div class="sub" data-routine-foot>' + esc(list.length ? 'Approved ones show to everyone under "routines from others", with the author\'s name.' : 'When someone offers a routine, it waits here.') + '</div>';
+    p.querySelectorAll('.routine-offer').forEach((row) => {
+      const r = list[+row.dataset.i], said = row.querySelector('[data-said]');
+      const decide = async (yes) => {
+        row.querySelectorAll('button').forEach((b) => { b.disabled = true; });
+        let ok = false;
+        try { const res = await fetch('/api/routines', { method: 'POST', headers: { 'content-type': 'application/json', authorization: 'Bearer ' + tok }, body: JSON.stringify(yes ? { approve: r.id } : { reject: r.id }) }); ok = res.ok && !!(await res.json()).ok; } catch (_) {}
+        said.textContent = ok ? (yes ? 'approved' : 'rejected') : 'not changed, try again';
+        if (!ok) row.querySelectorAll('button').forEach((b) => { b.disabled = false; });
+      };
+      row.querySelector('[data-yes]').addEventListener('click', () => decide(true));
+      row.querySelector('[data-no]').addEventListener('click', () => decide(false));
+    });
+  });
+  log('pending'); return 'routine';
+}
+
 async function run(text, api) {
   const ls = store(), saved = load(ls), log = (note) => api.loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'routine:' + note });
   const o = offerAsk(text, saved);
   if (o) return offer(o, saved, api, log);
   if (othersAsk(text)) return others(api, log);
+  if (pendingAsk(text)) return pending(api, log);
   const tq = takeAsk(text, seen);
   if (tq) return take(tq, ls, saved, api, log);
   const ask = routineAsk(text, saved);
@@ -96,6 +129,6 @@ export default {
   routineAsk, offerAsk, othersAsk,
   examples: ['call this my morning', 'save that as my evening', 'save the last 2 asks as my study', 'my routines', 'routines from others', "take Sam's morning routine"],
   nearMisses: ['call my mom', 'what is a morning routine', 'save the whales', 'call this number', 'my calendar', 'forget my password', 'share my screen', 'offer my condolences', "take Sam's advice", 'take a picture'],
-  match(lower, text) { const t = text || lower, saved = load(store()); return !!(routineAsk(t, saved) || offerAsk(t, saved) || othersAsk(t) || takeAsk(t, seen)); },
+  match(lower, text) { const t = text || lower, saved = load(store()); return !!(routineAsk(t, saved) || offerAsk(t, saved) || othersAsk(t) || pendingAsk(t) || takeAsk(t, seen)); },
   run,
 };
