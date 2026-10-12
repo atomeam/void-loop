@@ -42,3 +42,14 @@ test('pdf-qa: headings split a page or a text into sections, and an answer names
   assert.deepEqual(md.map((b) => [b.heading, b.text]), [[true, 'Lease'], [false, 'The tenant pays on the first.'], [true, 'Pets'], [false, 'One cat is allowed.']]);
   assert.deepEqual(sectionsOf([]).pages, []);
 });
+
+import { outlineOf } from '../void-live-deploy/lib/pdf-qa.js';
+test('pdf-qa: "map it": the headings as a tree, each with its depth, how many lines it holds and where its lines are', () => {
+  const md = blocksOfText('Before any heading.\n# Lease\nThe tenant pays on the first.\n## Rent\nRent is 900.\nLate fees are 50.\n## Pets\nOne cat.\n### Deposits\nThe deposit is 300.\n# Signing\nSign both copies.\n');
+  assert.deepEqual(md.filter((b) => b.heading).map((b) => [b.text, b.level]), [['Lease', 1], ['Rent', 2], ['Pets', 2], ['Deposits', 3], ['Signing', 1]]);
+  const o = outlineOf(sectionsOf(md));
+  assert.deepEqual(o.map((n) => [n.title, n.depth, n.lines, n.page]), [['the opening', 0, 1, 1], ['Lease', 0, 1, 2], ['Rent', 1, 2, 3], ['Pets', 1, 1, 4], ['Deposits', 2, 1, 5], ['Signing', 0, 1, 6]]);
+  // levels that skip ("#" then "###") still nest one step at a time, and a heading-only doc maps with zero lines
+  assert.deepEqual(outlineOf(sectionsOf(blocksOfText('# A\n### B\ntext\n# C'))).map((n) => [n.title, n.depth, n.lines]), [['A', 0, 0], ['B', 1, 1], ['C', 0, 0]]);
+  assert.deepEqual(outlineOf(sectionsOf([])), []);
+});

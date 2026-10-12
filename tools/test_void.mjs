@@ -1792,6 +1792,23 @@ try {
     check('ask a document: a saved web page answers with the section and line ("Pets", line 1 for the cat), its nav and footer are not read, its script never runs and its image is never fetched; pasted markdown answers the same way', /lease\.html: 2 sections, 2 lines read/.test(st) && /One cat is allowed/.test(pet) && /section “Pets”, line 1/.test(pet) && /does not say/.test(foot)
       && /Your text: 2 sections/.test(pst) && /Bring lunch and water/.test(lunch) && /section “Food”, line 1/.test(lunch) && ran === undefined && external.length === 0 && !H.errors.length, JSON.stringify({ st, pet, foot, pst, lunch, ran, external, errs: H.errors }));
     await H.ctx.close(); }
+  // "map it" on the same card (asked by Void, 2026-10-11): the headings as a tree, each opening to its own lines, nothing uploaded
+  if (want("ask a document, map it: the headings of pasted text as a tree, each opening to its lines")) {
+    const H = await fresh(), reqs = []; H.p.on('request', (r) => reqs.push(r.url())); await H.ask('ask questions about a document', 900);
+    const noMapBefore = await H.p.$eval('[data-pdf-map]', (b) => b.hidden).catch(() => 'missing');
+    await H.p.click('[data-pdf-pastebox] summary');
+    await H.p.fill('[data-pdf-paste]', 'Read this first.\n# Lease\nThe tenant pays on the first.\n## Rent\nRent is 900.\nLate fees are 50.\n## Pets\nOne cat.\n### Deposits\nThe deposit is 300.\n# Signing\nSign both copies.');
+    await H.p.click('[data-pdf-read]'); await H.p.waitForTimeout(200);
+    await H.p.click('[data-pdf-map]', { timeout: 3000 }).catch(() => {}); await H.p.waitForTimeout(150); // a missing button fails this check, not the run
+    const nodes = await H.p.$$eval('[data-pdf-outline] [data-depth]', (ns) => ns.map((n) => [n.querySelector('summary').textContent.replace(/\s+/g, ' ').trim(), Number(n.dataset.depth)]));
+    await H.p.click('[data-pdf-outline] [data-depth="1"] summary >> nth=0', { timeout: 3000 }).catch(() => {}); await H.p.waitForTimeout(100);
+    const rent = await H.p.$eval('[data-pdf-outline] [data-depth="1"]', (n) => ({ open: n.open, text: n.innerText })).catch(() => ({}));
+    const external = reqs.filter((u) => !/^(?:https?:\/\/(?:127\.0\.0\.1|localhost)[:/]|data:|blob:)/.test(u));
+    check('ask a document, map it: no map button before a document is loaded; after pasted markdown it maps the opening, Lease, Rent and Pets under Lease, Deposits under Pets and Signing, each with its line count, and Rent opens to its own two lines; nothing leaves the page',
+      noMapBefore === true && JSON.stringify(nodes) === JSON.stringify([['the opening · 1 line', 0], ['Lease · 1 line', 0], ['Rent · 2 lines', 1], ['Pets · 1 line', 1], ['Deposits · 1 line', 2], ['Signing · 1 line', 0]])
+        && rent.open && /Rent is 900\./.test(rent.text) && /Late fees are 50\./.test(rent.text) && !/One cat/.test(rent.text) && external.length === 0 && !H.errors.length,
+      JSON.stringify({ noMapBefore, nodes, rent, external, errs: H.errors }));
+    await H.ctx.close(); }
   // the self-play arena's record (frontier #5): "how good are you at connect four" answers from /arena.json, the games' own ratings, with the curve, and opens no game.
   if (want("the self-play arena's record (frontier #5): \"how good are you at connect four\" answers")) {
     const A = await fresh(); await A.ask('how good are you at connect four', 900); await A.p.waitForFunction(() => /Rated from/.test((document.querySelector('[data-arena-say]') || {}).textContent || ''), null, { timeout: 5000 }).catch(() => {});
