@@ -1809,6 +1809,16 @@ try {
         && rent.open && /Rent is 900\./.test(rent.text) && /Late fees are 50\./.test(rent.text) && !/One cat/.test(rent.text) && external.length === 0 && !H.errors.length,
       JSON.stringify({ noMapBefore, nodes, rent, external, errs: H.errors }));
     await H.ctx.close(); }
+  // day over day on the same card (the owner, 2026-10-11): the change since the last day that differed, from arena.json's history
+  if (want("arena day over day: the rating card says the change since the last day that differed")) {
+    const A = await fresh(); await A.ask('how good are you at connect four', 900);
+    await A.p.waitForFunction(() => /Day over day/.test((document.querySelector('[data-arena-delta]') || {}).textContent || ''), null, { timeout: 5000 }).catch(() => {});
+    const delta = await A.p.evaluate(() => (document.querySelector('[data-arena-delta]') || {}).textContent || '');
+    const { arenaDelta } = await import(path.join(root, 'lib', 'arena-say.js'));
+    const rec = JSON.parse(fs.readFileSync(path.join(root, 'arena.json'), 'utf8'));
+    check('arena day over day: "how good are you at connect four" says the change since the last day that differed, from the history the daily run keeps (here: ' + arenaDelta(rec.history) + ')',
+      Array.isArray(rec.history) && rec.history.length >= 1 && delta === 'Day over day: ' + arenaDelta(rec.history) + '.' && !A.errors.length, JSON.stringify({ delta, history: rec.history, e: A.errors }));
+    await A.ctx.close(); }
   // the self-play arena's record (frontier #5): "how good are you at connect four" answers from /arena.json, the games' own ratings, with the curve, and opens no game.
   if (want("the self-play arena's record (frontier #5): \"how good are you at connect four\" answers")) {
     const A = await fresh(); await A.ask('how good are you at connect four', 900); await A.p.waitForFunction(() => /Rated from/.test((document.querySelector('[data-arena-say]') || {}).textContent || ''), null, { timeout: 5000 }).catch(() => {});

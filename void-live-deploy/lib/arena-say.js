@@ -33,12 +33,50 @@ export function arenaCurve(a, w = 300, h = 140) {
     + '</svg>';
 }
 
+// Day over day (the owner, 2026-10-11: "show day-over-day deltas on self-play ... so overnight progress is visible at a
+// glance"): the daily run keeps one line a day in arena.json's history; the card says the change since the last day that
+// differed. The seed is fixed, so most days change nothing, and the card says that rather than inventing a delta.
+const DAY = /^(\d{4})-(\d{2})-(\d{2})$/, MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const dayLabel = (d) => { const m = DAY.exec(String(d)); return m ? MONTHS[+m[2] - 1] + ' ' + +m[3] : ''; };
+const goodDay = (e) => e && DAY.test(String(e.date)) && Number.isFinite(e.rating);
+/** history plus one day ({ date: 'YYYY-MM-DD', rating, vsCard }): the same date replaces its line; the last `max` kept. Pure. */
+export function pushHistory(history, entry, max = 60) {
+  const h = (Array.isArray(history) ? history : []).filter(goodDay);
+  if (!goodDay(entry)) return h;
+  return [...h.filter((e) => e.date !== entry.date), { date: entry.date, rating: Math.round(entry.rating), vsCard: Number.isFinite(entry.vsCard) ? entry.vsCard : null }]
+    .sort((a, b) => (a.date < b.date ? -1 : 1)).slice(-max);
+}
+/** "+62 since Oct 10": the latest rating against the most recent earlier day that differed; '' with no history. Pure. */
+export function arenaDelta(history) {
+  const h = (Array.isArray(history) ? history : []).filter(goodDay);
+  if (!h.length) return '';
+  const last = h[h.length - 1];
+  if (h.length === 1) return 'first day on record (' + dayLabel(last.date) + ')';
+  const prev = [...h.slice(0, -1)].reverse().find((e) => e.rating !== last.rating);
+  if (!prev) return 'no change since ' + dayLabel(h[0].date);
+  const d = last.rating - prev.rating;
+  return (d > 0 ? '+' : '\u2212') + Math.abs(d) + ' since ' + dayLabel(prev.date);
+}
+/** a small line of the days, an inline SVG labelled for a screen reader; '' until there are two days. Pure. */
+export function arenaTrend(history, w = 300, h = 60) {
+  const H = (Array.isArray(history) ? history : []).filter(goodDay).map((e) => ({ label: dayLabel(e.date), rating: Math.round(e.rating) }));
+  if (H.length < 2) return '';
+  const lo = Math.min(...H.map((e) => e.rating)) - 10, hi = Math.max(...H.map((e) => e.rating)) + 10, pad = 8;
+  const x = (i) => pad + (i * (w - 2 * pad)) / (H.length - 1), y = (r) => h - pad - ((r - lo) * (h - 2 * pad)) / (hi - lo);
+  return '<svg viewBox="0 0 ' + w + ' ' + h + '" width="100%" role="img" aria-label="Rating by day: ' + escXml(H.map((e) => e.label + ' ' + e.rating).join(', ')) + '">'
+    + '<polyline points="' + H.map((e, i) => x(i).toFixed(1) + ',' + y(e.rating).toFixed(1)).join(' ') + '" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7"/>'
+    + H.map((e, i) => '<circle cx="' + x(i).toFixed(1) + '" cy="' + y(e.rating).toFixed(1) + '" r="2.5" fill="currentColor"/>').join('') + '</svg>';
+}
+
 /** the card a rating ask opens: the record from this site (/arena.json, /arena-othello.json), the answer and the curve */
 export function showArena(api, url, game) {
-  const el = api.showPage((p) => { p.innerHTML = '<h2>How good I am at ' + escXml(TITLES[game] || 'this game') + '</h2><p data-arena-say class="sub">Reading my games…</p><div data-arena-curve></div>'; }); // void-review: ok: the title is a fixed name from TITLES, escaped
+  const el = api.showPage((p) => { p.innerHTML = '<h2>How good I am at ' + escXml(TITLES[game] || 'this game') + '</h2><p data-arena-say class="sub">Reading my games…</p><div data-arena-curve></div><p data-arena-delta class="sub"></p><div data-arena-trend></div>'; }); // void-review: ok: the title is a fixed name from TITLES, escaped
   fetch(url).then((r) => (r.ok ? r.json() : null)).catch(() => null).then((a) => {
     el.querySelector('[data-arena-say]').textContent = arenaSay(a, game);
     el.querySelector('[data-arena-curve]').innerHTML = arenaCurve(a); // void-review: ok: arenaCurve escapes the names and forces every number
+    const delta = arenaDelta(a && a.history); // day over day, from the daily run's history
+    el.querySelector('[data-arena-delta]').textContent = delta ? 'Day over day: ' + delta + '.' : '';
+    el.querySelector('[data-arena-trend]').innerHTML = arenaTrend(a && a.history); // void-review: ok: arenaTrend writes only day labels it built and numbers
     api.say('');
   });
 }
