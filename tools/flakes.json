@@ -3,5 +3,6 @@
   {"check": "figure: \"a chair\" then \"summon motelet\" sits Motelet on it; a cup is picked up by the next; a third stands; \"spin motelet\" turns it; \"download motelet\" saves th", "sha": "213aedd1bb424c636b982a8ef77443bacea8e983", "at": "2026-10-11T07:47:59Z"},
   {"check": "3D scene: the empty page loads zero 3D bytes (no scene3d.js, no vendored three.js, no models) and the index never lists the engine or a miniature", "sha": "1013677f3f69da52f756d36867e8859b11da517f", "at": "2026-10-11T08:04:39Z"},
   {"check": "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop an", "sha": "02662009c13bc8db23fbf61b3b76a3a927f9812b", "at": "2026-10-11T18:35:34Z"},
-  {"check": "publish: /@sam is the homepage with that look set in the HTML (before first paint) and its cards as data; an unclaimed name is a 404 \"no one here\"; any other pa", "sha": "547e8cfff6b75fbe8b98108a1f6750ffcc04b908", "at": "2026-10-12T02:33:01Z"}
+  {"check": "publish: /@sam is the homepage with that look set in the HTML (before first paint) and its cards as data; an unclaimed name is a 404 \"no one here\"; any other pa", "sha": "547e8cfff6b75fbe8b98108a1f6750ffcc04b908", "at": "2026-10-12T02:33:01Z"},
+  {"check": "suite ran to the end", "sha": "6d2585f0e2cb7d7ee5a6e25184830a558eeed8f4", "at": "2026-10-12T07:58:21Z"}
 ]
