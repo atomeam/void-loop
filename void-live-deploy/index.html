@@ -427,6 +427,44 @@
       color: var(--accent); cursor: pointer; padding: 4px 9px; font: inherit;
     }
     .list-add-button:hover { background: #2a2a2a; }
+    /* the list is the clipboard its 3D view shows (skills/list.js, skills/mini/list.js): white paper on a hardboard board under a
+       steel clip, the items written in pencil in the felt-tip hand, tick boxes drawn on the paper with a pencil tick, a done
+       item crossed out in pencil; a colour ("make the list red") paints the board's edge */
+    .thing.list-card {
+      box-sizing: border-box; width: 290px; padding: 22px 16px 14px; border-radius: 4px;
+      background: #fbfaf5; border: 9px solid #9a6b3f; color: #33363d;
+      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 0 1px rgba(60, 35, 15, 0.5), 0 14px 26px -6px rgba(0, 0, 0, 0.55);
+      font: 20px/1.25 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
+    }
+    .thing.list-card::before { /* the steel clip */
+      content: ''; position: absolute; left: 50%; top: -17px; width: 78px; height: 26px; margin-left: -39px; border-radius: 7px 7px 3px 3px;
+      background-image: linear-gradient(to bottom, #eef0f3, #b5bac2 45%, #7c828b 100%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -2px 3px rgba(0, 0, 0, 0.25), 0 3px 4px rgba(0, 0, 0, 0.45);
+    }
+    .thing.list-card .list-title { color: #33363d; font: 700 24px/1.2 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive; }
+    .thing.list-card .list-title:empty::before, .thing.list-card .list-empty { color: rgba(51, 54, 61, 0.5); }
+    .thing.list-card .list-entry { margin-top: 4px; border-bottom: 1px solid rgba(90, 130, 190, 0.22); padding-bottom: 2px; }
+    .thing.list-card .list-entry .list-item-text { color: #33363d; }
+    .thing.list-card .list-entry.done .list-item-text { color: rgba(51, 54, 61, 0.55); text-decoration: line-through 2px #33363d; }
+    .thing.list-card .list-entry input[type="checkbox"] {
+      appearance: none; width: 17px; height: 17px; margin: 0; border: 1.6px solid #33363d; border-radius: 3px 2px 4px 2px;
+      background: transparent no-repeat center / 15px 15px; cursor: pointer; rotate: -2deg;
+    }
+    .thing.list-card .list-entry input[type="checkbox"]:checked {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8.5l3.2 3.6L13.8 2.5' fill='none' stroke='%2333363d' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+    .thing.list-card .list-entry input[type="checkbox"]:focus-visible { outline: 2px solid #1d3a8a; outline-offset: 2px; }
+    .thing.list-card .list-remove { color: rgba(51, 54, 61, 0.45); }
+    .thing.list-card .list-remove:hover { color: #a8231f; }
+    .thing.list-card .list-add-input { background: transparent; border: 0; border-bottom: 1.5px dashed rgba(51, 54, 61, 0.45); border-radius: 0; color: #33363d; font: inherit; padding: 2px 2px; }
+    .thing.list-card .list-add-input::placeholder { color: rgba(51, 54, 61, 0.45); }
+    .thing.list-card .list-add-button { background: transparent; border: 1.5px solid rgba(51, 54, 61, 0.55); color: #33363d; border-radius: 50%; width: 30px; padding: 0; }
+    .thing.list-card .list-add-button:hover { background: rgba(51, 54, 61, 0.08); }
+    .thing.list-card .list-shop { color: rgba(51, 54, 61, 0.7); font: 13px/1.4 ui-sans-serif, system-ui, sans-serif; }
+    .thing.list-card .list-shop-store { color: #33363d; background: #fff; border-color: rgba(51, 54, 61, 0.3); }
+    .thing.list-card .list-shop-store[aria-pressed="true"] { background: #e8ecf7; border-color: #1d3a8a; color: #1d3a8a; }
+    .thing.list-card .list-shop-links { font: 13px/1.45 ui-sans-serif, system-ui, sans-serif; }
+    .thing.list-card .list-shop-links a { color: #1d3a8a; }
     #hints { max-width: 720px; margin: 0 auto 6px; padding: 0 10px; display: none; }
     #hints.on { display: block; }
     #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; }
@@ -963,8 +1001,7 @@
       stage.querySelectorAll('.timer').forEach((el) => clearInterval(el._tickInterval));
       stage.innerHTML = '';
 Object.values(things).forEach((th) => {
-        if (th.kind === 'list') mountList(th);
-        else if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
+        if (stageKinds[th.kind]) { try { stageKinds[th.kind].mount(th, stageApi); } catch (_) {} }
       });
       Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
       decorate();
@@ -1290,7 +1327,7 @@ Object.values(things).forEach((th) => {
       if (th && tab.field) extPropose({ action: 'fill', label: boxName(tab.field), box: 'mine', text: L.toPlain(d.fields), auto: true });
     }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
-    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, setWorld, world: () => (worldNow ? worldNow.name : null), bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, colorFrom: (t) => colorFrom(t), snapshot: () => takeUndoSnapshot(),
+    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, setWorld, world: () => (worldNow ? worldNow.name : null), bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, colorFrom: (t) => colorFrom(t), targetKind: (t) => resolveTargetKind(t), snapshot: () => takeUndoSnapshot(),
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
@@ -1396,137 +1433,6 @@ Object.values(things).forEach((th) => {
       });
     }
 
-function mountList(th) {
-      const el = document.createElement('div');
-      el.className = 'thing list-card';
-      el.dataset.id = th.id;
-      el.style.left = th.x + 'px';
-      el.style.top = th.y + 'px';
-      if (th.color) el.style.borderColor = th.color;
-      if (selectedId === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
-
-      const title = document.createElement('div');
-      title.className = 'list-title';
-      title.contentEditable = 'true';
-      title.spellcheck = false;
-      title.dataset.placeholder = 'List';
-      title.textContent = th.title || '';
-      title.addEventListener('pointerdown', (e) => e.stopPropagation());
-      title.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') { e.preventDefault(); title.blur(); }
-      });
-      title.addEventListener('input', () => { th.title = title.textContent || ''; save(); });
-      el.appendChild(title);
-
-      const items = Array.isArray(th.items) ? th.items : (th.items = []);
-      items.forEach((item) => {
-        if (!item || !item.id) return;
-        const row = document.createElement('div');
-        row.className = 'list-entry' + (item.done ? ' done' : '');
-        const check = document.createElement('input');
-        check.type = 'checkbox';
-        check.checked = !!item.done;
-        check.setAttribute('aria-label', 'complete ' + (item.text || 'item'));
-        check.addEventListener('pointerdown', (e) => e.stopPropagation());
-        check.addEventListener('change', () => {
-          item.done = check.checked;
-          save();
-          render();
-        });
-        const label = document.createElement('span');
-        label.className = 'list-item-text';
-        label.textContent = item.text || '';
-        const remove = document.createElement('button');
-        remove.className = 'list-remove';
-        remove.type = 'button';
-        remove.textContent = '×';
-        remove.setAttribute('aria-label', 'remove ' + (item.text || 'item'));
-        remove.addEventListener('pointerdown', (e) => e.stopPropagation());
-        remove.addEventListener('click', () => {
-          th.items = th.items.filter((candidate) => candidate.id !== item.id);
-          save();
-          render();
-        });
-        row.appendChild(check);
-        row.appendChild(label);
-        row.appendChild(remove);
-        el.appendChild(row);
-      });
-
-      if (!items.length) {
-        const empty = document.createElement('div');
-        empty.className = 'list-empty';
-        empty.textContent = 'No items yet';
-        el.appendChild(empty);
-      }
-
-      const addRow = document.createElement('div');
-      addRow.className = 'list-add-row';
-      const addInput = document.createElement('input');
-      addInput.className = 'list-add-input';
-      addInput.type = 'text';
-      addInput.placeholder = 'Add item';
-      const addButton = document.createElement('button');
-      addButton.className = 'list-add-button';
-      addButton.type = 'button';
-      addButton.textContent = '+';
-      const addItem = () => {
-        const value = addInput.value.trim();
-        if (!value) return;
-        th.items.push({ id: uid('item'), text: value, done: false });
-        save();
-        render();
-      };
-      addInput.addEventListener('pointerdown', (e) => e.stopPropagation());
-      addInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') addItem(); });
-      addButton.addEventListener('pointerdown', (e) => e.stopPropagation());
-      addButton.addEventListener('click', addItem);
-      addRow.appendChild(addInput);
-      addRow.appendChild(addButton);
-      el.appendChild(addRow);
-      // shop this list (owner, 2026-10-11: "should have links to stores ... sams walmart is good start"): one search link per
-      // item still to buy, at the store picked. Nothing leaves the page until a link is tapped; no cart, no account, no tag.
-      const toBuy = items.filter((item) => item && !item.done && item.text);
-      if (toBuy.length) {
-        const SHOPS = [['walmart', 'Walmart', (q) => 'https://www.walmart.com/search?q=' + encodeURIComponent(q)],
-          ['sams', "Sam's Club", (q) => 'https://www.samsclub.com/s/' + encodeURIComponent(q)]];
-        const shop = document.createElement('div');
-        shop.className = 'list-shop';
-        const lead = document.createElement('span');
-        lead.textContent = 'Shop this list:';
-        shop.appendChild(lead);
-        const links = document.createElement('div');
-        links.className = 'list-shop-links';
-        const show = (key) => {
-          links.textContent = '';
-          const s = SHOPS.find((x) => x[0] === key);
-          if (!s) return;
-          toBuy.forEach((item) => {
-            const a = document.createElement('a');
-            a.href = s[2](item.text); a.target = '_blank'; a.rel = 'noopener noreferrer';
-            a.textContent = item.text + ' at ' + s[1];
-            a.addEventListener('pointerdown', (e) => e.stopPropagation());
-            links.appendChild(a);
-          });
-        };
-        SHOPS.forEach(([key, name]) => {
-          const b = document.createElement('button');
-          b.type = 'button'; b.className = 'list-shop-store'; b.dataset.store = key; b.textContent = name;
-          b.setAttribute('aria-pressed', String(th.shop === key));
-          b.addEventListener('pointerdown', (e) => e.stopPropagation());
-          b.addEventListener('click', () => { th.shop = th.shop === key ? '' : key; save(); render(); });
-          shop.appendChild(b);
-        });
-        el.appendChild(shop);
-        show(th.shop);
-        el.appendChild(links);
-      }
-      // the 3D clipboard beside the list (skills/mini/list.js): its paper shows the items, and ticking one sends the pencil to tick it
-      stageApi.miniature(el, 'list', { title: th.title || '', items: (th.items || []).map((i) => ({ text: i.text, done: !!i.done })) }, { key: th.id, place: 'beside', width: 150, height: 180, label: '3D clipboard' }).catch(() => {});
-
-      bindDrag(el, th);
-      stage.appendChild(el);
-    }
 
 // a card's 3D miniature (skills/scene3d.js). A hoisted function, not stageApi.miniature: render() runs on load before stageApi exists
     function cardMini(host, kind, data, opts) { return import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)); }
@@ -1614,7 +1520,6 @@ function wantsClearStage(lower) {
         || Object.values(things).find((t) => t.kind === kind);
       if (th) return th;
       if (stageKinds[kind] && stageKinds[kind].ensure) return stageKinds[kind].ensure(stageApi); // a built-in that moved to skills/ (cleanup step 6)
-      if (kind === 'list') return ensureList([]);
       return null;
     }
 
@@ -1701,96 +1606,6 @@ function wantsClearStage(lower) {
         || /\b(bold|seconds|date)\b/.test(lower);
     }
 
-    function cleanListText(value) {
-      return (value || '').replace(/^[\s,;:]+|[\s,;.!?]+$/g, '').trim();
-    }
-
-    function normalizeListItems(items) {
-      return (Array.isArray(items) ? items : []).map((item) => {
-        if (typeof item === 'string') return { id: uid('item'), text: cleanListText(item), done: false };
-        return { id: item && item.id || uid('item'), text: cleanListText(item && item.text), done: !!(item && item.done) };
-      }).filter((item) => item.text);
-    }
-
-    function ensureList(seedItems) {
-      let list = (selectedId && things[selectedId] && things[selectedId].kind === 'list' && things[selectedId])
-        || Object.values(things).find((thing) => thing.kind === 'list');
-      const seeds = normalizeListItems(seedItems);
-      if (!list) {
-        list = {
-          id: uid('list'),
-          kind: 'list',
-          x: Math.max(40, stage.clientWidth / 2 - 140),
-          y: Math.max(40, stage.clientHeight / 2 - 120),
-          title: '',
-          items: seeds,
-        };
-        things[list.id] = list;
-      } else {
-        list.items = normalizeListItems(list.items);
-        seeds.forEach((seed) => {
-          if (!list.items.some((item) => item.text.toLowerCase() === seed.text.toLowerCase())) list.items.push(seed);
-        });
-      }
-      selectedId = list.id;
-      return list;
-    }
-
-    function findList() {
-      return (selectedId && things[selectedId] && things[selectedId].kind === 'list' && things[selectedId])
-        || Object.values(things).find((thing) => thing.kind === 'list') || null;
-    }
-
-    function extractListSeeds(raw) {
-      const match = raw.match(/\blist\s*:\s*([\s\S]+)/i);
-      // "a shopping list with eggs, milk and bread": the same seeds in plain English
-      const plain = !match && raw.match(/\blist\s+(?:with|containing|including)\s+([\s\S]+)/i);
-      if (!match && !plain) return [];
-      return (match || plain)[1].split(plain ? /\s*(?:,|\band\b|&|\n)\s*/i : /[,\n]/).map(cleanListText).filter(Boolean).map((text) => ({ id: uid('item'), text, done: false }));
-    }
-
-    function wantsCreateList(lower, raw) {
-      if (/\b(add\s+item|list\s+add|check|done|complete|remove|delete|clear|empty)\b/.test(lower)) return false;
-      if (/^list\s*:/i.test(raw)) return true;
-      if (/^(todo\s+list|list)(\s+please)?\s*[.!]?$/i.test(raw.trim())) return true;
-      if (/^(?:a\s+)?(?:grocery|groceries|shopping|packing|todo|to-do|chores?)\s+list\s+(?:with|containing|including)\s+\S/i.test(raw.trim())) return true;
-      if (/^(?:a\s+)?(?:grocery|groceries|shopping|packing|todo|to-do|chores?)\s+list\s*[.!]?$/i.test(raw.trim()) || /^list\s+(?:groceries|shopping|chores|todos?)\s*[.!]?$/i.test(raw.trim())) return true;
-      return /\b(make|add|create|show|spawn|put|place|drop|start|open)\s+(a\s+|my\s+|new\s+|a\s+new\s+)?(todo|to-do|grocery|groceries|shopping|packing|chores?)?\s*list\b/.test(lower);
-    }
-
-    function extractListAdd(raw) {
-      let match = raw.match(/^\s*add\s+item\s+([\s\S]+?)\s*[.!]?\s*$/i);
-      if (match) return cleanListText(match[1]);
-      match = raw.match(/^\s*list\s+add\s+([\s\S]+?)\s*[.!]?\s*$/i);
-      if (match) return cleanListText(match[1]);
-      match = raw.match(/^\s*(?:please\s+)?(?:add|put)\s+([\s\S]+?)\s+(?:to|on)\s+(?:the\s+|my\s+)?(?:(?:grocery|groceries|shopping|packing|todo|to-do|chores?)\s+)?list\s*[.!]?\s*$/i);
-      if (match) return cleanListText(match[1]);
-      match = raw.match(/^\s*(?:make|create|start)\s+(?:a\s+)?(?:new\s+)?list\s*(?:,|and)?\s+add\s+([\s\S]+?)\s*[.!]?\s*$/i);
-      if (match) return cleanListText(match[1]);
-      // bare "add milk": onto the open list (or a new one), unless it names a stage thing, a look, a number or a link
-      match = raw.match(/^\s*add\s+([a-z][a-z' -]{0,40}?)\s*[.!]?\s*$/i);
-      if (match && !resolveTargetKind(match[1].toLowerCase()) && !/\b(a|an|another|some|more|the|my|stars?|glow|sparkles?|clock|timer|sticky|note|notepad|list|counter|calc(ulator)?|shape|circle|square|line|image|picture|photo|link|card|item)\b/i.test(match[1])) return cleanListText(match[1]);
-      return '';
-    }
-
-    function wantsListAdd(raw) { return !!extractListAdd(raw); }
-    function extractListActionItem(raw) {
-      const match = raw.match(/^\s*(?:check(?:\s+off)?|cross\s+off|tick(?:\s+off)?|done|complete)\s+([\s\S]+?)(?:\s+(?:on|from)\s+(?:the\s+|my\s+)?(?:\w+\s+)?list)?\s*[.!]?\s*$/i)
-        || raw.match(/^\s*mark\s+([\s\S]+?)\s+(?:as\s+)?(?:done|complete|completed|bought|checked)\s*[.!]?\s*$/i);
-      return match ? cleanListText(match[1]) : '';
-    }
-    function wantsListCheck(raw) { return !!extractListActionItem(raw); }
-    function extractListRemove(raw) {
-      const match = raw.match(/^\s*remove\s+([\s\S]+?)\s+from\s+(?:the\s+)?list\s*[.!]?\s*$/i);
-      return match ? cleanListText(match[1]) : '';
-    }
-    function wantsListItemRemove(raw) { return !!extractListRemove(raw); }
-    function wantsRemoveList(lower) {
-      return /^(remove|delete|get\s+rid\s+of|hide)\s+(the\s+)?list\s*[.!]?$/i.test(lower);
-    }
-    function wantsClearList(lower) {
-      return /^(clear|empty)\s+(the\s+)?list\s*[.!]?$/i.test(lower);
-    }
 
     /** freerEnglishParse — broaden natural asks for clock (+ sticky) without rigid phrases */
     function freerEnglishParse(raw) {
@@ -1877,66 +1692,11 @@ say('nothing selected to remove');
         if (cd) return { ok: true, detail: cd };
       }
 
-      // simple list surface
-      if (wantsRemoveList(lower)) {
-        const list = findList();
-        if (list) {
-          delete things[list.id];
-          if (selectedId === list.id) selectedId = null;
-          save(); render();
-          return { ok: true, detail: 'list-removed' };
-        }
-        return { ok: false, detail: 'no list' };
-      }
-      if (wantsClearList(lower)) {
-        const list = findList();
-        if (list) {
-          list.items = [];
-          selectedId = list.id;
-          save(); render();
-          return { ok: true, detail: 'list-cleared' };
-        }
-        return { ok: false, detail: 'no list' };
-      }
-      if (wantsListItemRemove(text)) {
-        const list = findList();
-        const itemText = extractListRemove(text);
-        const item = list && list.items.find((candidate) => candidate.text.toLowerCase() === itemText.toLowerCase());
-        if (item) {
-          list.items = list.items.filter((candidate) => candidate.id !== item.id);
-          selectedId = list.id;
-          save(); render();
-          return { ok: true, detail: 'list-item-removed' };
-        }
-        return { ok: false, detail: 'list-item-not-found' };
-      }
-      if (wantsListCheck(text)) {
-        const list = findList();
-        const itemText = extractListActionItem(text);
-        const item = list && list.items.find((candidate) => candidate.text.toLowerCase() === itemText.toLowerCase());
-        if (item) {
-          item.done = !item.done;
-          selectedId = list.id;
-          save(); render();
-          return { ok: true, detail: item.done ? 'list-item-complete' : 'list-item-uncomplete' };
-        }
-        return { ok: false, detail: 'list-item-not-found' };
-      }
-      if (wantsListAdd(text)) {
-        const list = ensureList([]);
-        const itemText = extractListAdd(text);
-        if (itemText && !list.items.some((item) => item.text.toLowerCase() === itemText.toLowerCase())) {
-          list.items.push({ id: uid('item'), text: itemText, done: false });
-          save(); render();
-          return { ok: true, detail: 'list-item-added' };
-        }
-        selectedId = list.id; say('already on the list'); save(); render();
-        return { ok: true, detail: 'list-item-already-exists' };
-      }
-      if (wantsCreateList(lower, text)) {
-        ensureList(extractListSeeds(text));
-        save(); render();
-        return { ok: true, detail: 'list' };
+      // the list: remove, clear, an item off, ticked, added, or a new list (skills/list.js, cleanup step 6), at the place in this order it always had
+      if (stageKinds.list && typeof stageKinds.list.ask === 'function') {
+        const ld = stageKinds.list.ask(lower, text, stageApi);
+        if (ld === 'no list' || ld === 'list-item-not-found') return { ok: false, detail: ld };
+        if (ld) return { ok: true, detail: ld };
       }
 
       // notepad remove / clear / open and write (skills/notepad.js, cleanup step 6), at the place in this order it always had

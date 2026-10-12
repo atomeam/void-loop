@@ -1326,6 +1326,59 @@ try {
         && r.reload === 'buy milk / call mom' && r.h === 'call mom|#b6f5a8' && !P.errors.length,
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
+  // cleanup step 6 (the list card moves to skills/list.js, the last built-in): what the list does today, pinned before the move
+  if (want("list card: create with seeds, add, already on it, check off, remove an item, the card's own box, tick and x, title, colour, reload, clear, remove")) { const P = await fresh();
+    const L = async () => { const l = (await P.state()).filter((x) => x.kind === 'list'); return l.length === 1 ? { title: l[0].title, color: l[0].color || '', items: l[0].items.map((i) => i.text + (i.done ? '*' : '')).join('|') } : l.length; };
+    const card = () => P.p.$eval('.thing.list-card', (e) => [...e.querySelectorAll('.list-entry')].map((r) => r.querySelector('.list-item-text').textContent + (r.classList.contains('done') ? '*' : '')).join('|')).catch(() => null);
+    const r = {};
+    await P.ask('a shopping list with eggs, milk and bread', 500); r.seed = await L();
+    await P.ask('add peanut butter to the list', 400); r.add = await L();
+    await P.ask('add milk', 400); r.again = await L();
+    await P.ask('check off milk', 400); r.check = await L();
+    await P.ask('mark milk as done', 400); r.uncheck = await L();
+    await P.ask('remove bread from the list', 400); r.drop = await L();
+    await P.ask('remove kale from the list', 400); r.missing = await L();
+    await P.ask('list: apples, pears', 400); r.merge = await L();
+    await P.p.fill('.list-add-input', 'rice'); await P.p.press('.list-add-input', 'Enter'); await P.p.waitForTimeout(200); r.typed = await L();
+    await (await P.p.$$('.list-entry input[type=checkbox]'))[1].click(); await P.p.waitForTimeout(200); r.tick = await L();
+    await (await P.p.$$('.list-entry .list-remove'))[2].click(); await P.p.waitForTimeout(200); r.x = await L();
+    await P.p.click('.list-title'); await P.p.keyboard.type('Saturday'); await P.p.keyboard.press('Enter'); await P.p.waitForTimeout(200); r.title = await L();
+    await P.ask('make the list red', 400); r.red = await L(); r.edge = await P.p.$eval('.thing.list-card', (e) => e.style.borderColor).catch(() => '');
+    await P.p.reload(); await until(async () => !!(await card()), 6000); r.reload = await card(); r.reloadTitle = await P.p.$eval('.list-title', (e) => e.textContent).catch(() => '');
+    await P.ask('clear the list', 400); r.clearSaid = await P.whisper(); r.clear = await L(); r.empty = await P.p.$eval('.list-empty', (e) => e.textContent).catch(() => '');
+    await P.ask('remove the list', 400); r.gone = await L();
+    await P.ask('remove the list', 400); r.none = await L();
+    await P.ask('make a list', 400); r.bare = await L();
+    check('list card: seeds from "a shopping list with eggs, milk and bread", "add X to the list", "add milk" again adds nothing, "check off" ticks and "mark X as done" toggles back, "remove X from the list" (and an unknown item changes nothing), "list: a, b" adds to the open list, the card\'s own box adds, its tick box ticks and its x removes, the title is typed in place, "make the list red" edges it, all of it comes back after a reload, then "clear the list" empties it, "remove the list" takes it away and a bare "make a list" makes a new empty one',
+      r.seed && r.seed.items === 'eggs|milk|bread' && r.add.items === 'eggs|milk|bread|peanut butter' && r.again.items === r.add.items
+        && r.check.items === 'eggs|milk*|bread|peanut butter' && r.uncheck.items === 'eggs|milk|bread|peanut butter' && r.drop.items === 'eggs|milk|peanut butter' && r.missing.items === r.drop.items
+        && r.merge.items === 'eggs|milk|peanut butter|apples|pears' && r.typed.items === 'eggs|milk|peanut butter|apples|pears|rice'
+        && r.tick.items === 'eggs|milk*|peanut butter|apples|pears|rice' && r.x.items === 'eggs|milk*|apples|pears|rice' && r.title.title === 'Saturday'
+        && r.red.color === '#ff5c5c' && r.edge === 'rgb(255, 92, 92)' && r.reload === 'eggs|milk*|apples|pears|rice' && r.reloadTitle === 'Saturday'
+        && r.clear.items === '' && r.empty === 'No items yet' && r.gone === 0 && r.none === 0 && r.bare && r.bare.items === '' && !P.errors.length,
+      JSON.stringify({ r, e: P.errors }).slice(0, 1400));
+    await P.ctx.close(); }
+  // step 6's visible upgrade for the list (owner, 2026-10-11: every cleanup move ships one): the card is the clipboard its 3D view shows
+  if (want("list clipboard look: white paper on a hardboard clipboard, a steel clip, items in pencil in the felt-tip hand, drawn tick boxes, done ones crossed out, a colour still edges it")) { const P = await fresh();
+    await P.ask('a shopping list with eggs, milk and bread', 500); await P.ask('check off milk', 400); await P.ask('add peanut butter', 400);
+    await P.p.click('.list-shop-store[data-store="walmart"]'); await P.p.waitForTimeout(200);
+    const look = () => P.p.$eval('.thing.list-card', (e) => { const c = getComputedStyle(e), clip = getComputedStyle(e, '::before'), rows = [...e.querySelectorAll('.list-entry')];
+      const t = (r) => getComputedStyle(r.querySelector('.list-item-text')), box = (r) => getComputedStyle(r.querySelector('input[type=checkbox]')), a = e.querySelector('.list-shop-links a');
+      return { bg: c.backgroundColor, board: c.borderTopColor, boardW: parseFloat(c.borderTopWidth), side: c.borderLeftColor,
+        clip: clip.content !== 'none' && /linear-gradient/.test(clip.backgroundImage) && parseFloat(clip.top) < 0,
+        font: t(rows[0]).fontFamily, ink: t(rows[0]).color, title: getComputedStyle(e.querySelector('.list-title')).fontFamily,
+        boxLook: box(rows[0]).appearance, ticked: box(rows[1]).backgroundImage, unticked: box(rows[0]).backgroundImage,
+        cross: t(rows[1]).textDecorationLine, crossInk: t(rows[1]).textDecorationColor, link: a && getComputedStyle(a).color, rows: rows.length }; });
+    const a = await look();
+    const hand = await until(() => P.p.evaluate(() => [...document.fonts].some((f) => f.family.replace(/"/g, '') === 'Void Hand' && f.status === 'loaded')), 4000);
+    await P.ask('make the list red', 400);
+    const b = await look();
+    check('list clipboard look: the list is white paper (#fbfaf5) clipped to a hardboard clipboard (a brown board edge at least 8 px) under a steel clip above its top edge, the items written in pencil (#33363d) in the felt-tip hand (served from /fonts), the title in the same hand, tick boxes drawn on the paper (a pencil tick when done, none when not), a done item crossed out in pencil, store links in blue ink, and "make the list red" still edges it red on the same paper',
+      a.rows === 4 && a.bg === 'rgb(251, 250, 245)' && a.board === 'rgb(154, 107, 63)' && a.boardW >= 8 && a.clip && /^"?Void Hand/.test(a.font) && /^"?Void Hand/.test(a.title) && a.ink === 'rgb(51, 54, 61)'
+        && a.boxLook === 'none' && /url\("data:image\/svg\+xml/.test(a.ticked) && a.unticked === 'none' && a.cross === 'line-through' && /^rgba?\(51, 54, 61/.test(a.crossInk)
+        && a.link === 'rgb(29, 58, 138)' && hand && b.side === 'rgb(255, 92, 92)' && b.bg === a.bg && !P.errors.length,
+      JSON.stringify({ a, b, hand, e: P.errors }).slice(0, 1200));
+    await P.ctx.close(); }
   // shop this list (owner, 2026-10-11): one search link per item still to buy, at Walmart or Sam's Club; nothing leaves the page
   if (want("shop this list: the list card links each item still to buy to a Walmart or Sam's Club search")) { const P = await fresh();
     await P.ask('add milk', 500); await P.ask('add eggs', 500); await P.ask('add peanut butter', 500); await P.ask('check off eggs', 500);
