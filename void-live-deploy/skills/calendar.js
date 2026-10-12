@@ -176,9 +176,56 @@ async function run(text, api) {
     save(rows);
     if (api.say) api.say('on your calendar: ' + q.title + ', ' + fmtWhen(q.at.toISOString()));
   }
-  if (api.summon) api.summon('calendar'); // the card on the stage (void.html mountCalendar)
+  if (api.summon) api.summon('calendar'); // the card on the stage (mount below)
   if (q.kind === 'show') show3d(api); // and the 3D wall calendar; an add only says so (the card shows it)
   return 'calendar';
+}
+
+// the card on the stage (moved out of void.html in cleanup step 6): upcoming events from this browser's agenda, a day
+// header for each day, × to take one off (undo brings it back)
+function mount(th, stageApi) {
+  let list = load();
+  if (!Array.isArray(list)) list = [];
+  const now = Date.now();
+  const up = list.filter((e) => e && e.at && new Date(e.at).getTime() + (e.allDay ? 864e5 : 36e5) >= now).sort((a, b) => a.at.localeCompare(b.at));
+  const el = document.createElement('div');
+  el.className = 'thing calendar-card';
+  el.dataset.id = th.id;
+  el.style.left = th.x + 'px'; el.style.top = th.y + 'px'; // the planner look is the page's .thing.calendar-card
+  if (stageApi.selected() === th.id) el.style.outline = '1px solid rgba(255,255,255,0.25)';
+  const head = document.createElement('div');
+  head.className = 'cal-head';
+  head.textContent = 'Calendar';
+  el.appendChild(head);
+  if (!up.length) {
+    const none = document.createElement('div'); none.className = 'cal-none';
+    none.textContent = 'Nothing coming up. Try “call Sam next Tuesday at 4”.'; el.appendChild(none);
+  }
+  let lastDay = '';
+  up.slice(0, 30).forEach((ev) => {
+    const t = new Date(ev.at), day = t.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' });
+    if (day !== lastDay) { const d = document.createElement('div'); d.className = 'cal-day'; d.textContent = t.toDateString() === new Date().toDateString() ? 'Today' : day; el.appendChild(d); lastDay = day; }
+    const row = document.createElement('div'); row.className = 'cal-event';
+    const when = document.createElement('span'); when.className = 'cal-when';
+    when.textContent = ev.allDay ? 'all day' : t.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    const what = document.createElement('span'); what.className = 'cal-what'; what.textContent = ev.title || 'Event';
+    const x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'remove ' + (ev.title || 'event'));
+    x.className = 'cal-x';
+    x.addEventListener('pointerdown', (e) => e.stopPropagation());
+    x.addEventListener('click', () => { stageApi.snapshot(); save(list.filter((e) => e.id !== ev.id)); stageApi.render(); });
+    row.appendChild(when); row.appendChild(what); row.appendChild(x); el.appendChild(row);
+  });
+  stageApi.bindDrag(el, th);
+  stageApi.stage.appendChild(el);
+}
+
+/** summon('calendar'): one card (shown again, never a second), { hide: true } takes it off; the events stay */
+function summon(stageApi, opts = {}) {
+  const things = stageApi.things(), st = stageApi.stage;
+  let th = Object.values(things).find((t) => t && t.kind === 'calendar');
+  if (opts.hide) { if (th) { delete things[th.id]; if (stageApi.selected() === th.id) stageApi.select(null); } stageApi.save(); stageApi.render(); return null; }
+  if (!th) { th = { id: 'calendar_' + Math.random().toString(36).slice(2, 9), kind: 'calendar', x: Math.max(16, Math.min((st.clientWidth || 800) - 300, (st.clientWidth || 800) - 340)), y: 60 }; things[th.id] = th; }
+  stageApi.select(th.id); stageApi.save(); stageApi.render(); return th;
 }
 
 export default {
@@ -186,5 +233,6 @@ export default {
   examples: ['my calendar', 'agenda', "what's next", 'call Sam next Tuesday at 4', 'dentist October 12 at 3pm', 'clear calender'],
   nearMisses: ['make a 5 minute timer', 'what is a calendar', 'schedule a meeting with Sam', 'book a call with Sam', 'time in Tokyo', 'clear the stage'],
   match(lower, text) { return !!parseCalendar(text); },
-  run
+  run,
+  stageKinds: { calendar: { mount, summon } },
 };

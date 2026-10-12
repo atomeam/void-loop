@@ -461,7 +461,8 @@ try {
     const netAdds = net.slice(), pageAfterAdds = await C.page(); // read now: "calender" and "agenda" below open the 3D calendar
     await C.ask('schedule a meeting with Sam on Friday at 3', 700); const gated = await C.whisper();
     await C.ask('calender', 700); const shown = await C.p.$$eval('.calendar-card', (d) => d.length);
-    await C.p.reload(); await C.p.waitForTimeout(700); const afterReload = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
+    // the card is a skill's stage kind (skills/calendar.js, cleanup step 6): it is drawn once that skill has loaded, so wait for it
+    await C.p.reload(); const afterReload = await until(() => C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => ''), 6000) || '';
     await C.ask('remove my calendar', 700); const gone = await C.p.$$eval('.calendar-card', (d) => d.length);
     const kept = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
     await C.ask('agenda', 700);
@@ -1060,6 +1061,17 @@ try {
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
   // step 6: the sticky note, pinned before it moves out of void.html (what it does today, ask by ask)
+  // step 6's visible upgrade for the calendar card (owner, 2026-10-11: every cleanup move ships one): a paper desk planner
+  if (want("calendar planner look: cream paper with a spiral binding, red day headers, entries handwritten in navy ink, the times in grey, still a list you can take one off")) { const P = await fresh();
+    await P.ask('call Sam next Tuesday at 4', 900);
+    const look = () => P.p.$eval('.thing.calendar-card', (e) => { const c = getComputedStyle(e), b = getComputedStyle(e, '::before'), day = e.querySelector('.cal-day'), ev = e.querySelector('.cal-event'), what = ev && ev.querySelector('.cal-what'), when = ev && ev.querySelector('.cal-when');
+      return { paper: c.backgroundColor, rings: /radial-gradient/.test(b.backgroundImage), dayInk: day && getComputedStyle(day).color, font: what && getComputedStyle(what).fontFamily, ink: what && getComputedStyle(what).color,
+        whenInk: when && getComputedStyle(when).color, text: e.innerText.replace(/\s+/g, ' '), x: !!(ev && ev.querySelector('button')) }; });
+    const a = await look();
+    check('calendar planner look: the card is cream planner paper with a spiral binding along the top, each day\'s header in red, the entry written in the felt-tip hand in navy ink with its time in grey, and × still there to take it off',
+      a.paper === 'rgb(250, 247, 239)' && a.rings && a.dayInk === 'rgb(179, 38, 30)' && /^"?Void Hand/.test(a.font) && a.ink === 'rgb(31, 42, 90)' && a.whenInk === 'rgb(107, 107, 114)' && /Call Sam/.test(a.text) && a.x && !P.errors.length,
+      JSON.stringify({ a, e: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
   // step 6: the clock, pinned before it moves out of void.html (what it does today, ask by ask). It is the page's last word:
   // "make it blue" on an empty stage makes a blue clock
   if (want("built-in clock: make it blue on an empty stage, remove, make one, bigger, hide seconds, bold, a colour, move, 24 hour on the clock, a reload, a big red clock")) { const P = await fresh();
