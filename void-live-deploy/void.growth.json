@@ -390,5 +390,6 @@
   {"at": "2026-10-12T12:46:23Z", "by": "builder", "kind": "grow", "what": "the document card maps a document: its headings as a tree, each opening to its own lines, read on this device", "show": "a lease mapped as a tree of its headings", "try": "ask questions about a document"},
   {"at": "2026-10-12T13:45:19Z", "by": "builder", "kind": "grow", "what": "the self-play rating card shows the change day over day, and a small line of the days", "show": "the Connect Four rating card with its day-over-day line", "try": "how good are you at connect four"},
   {"at": "2026-10-12T16:46:29Z", "by": "offer-routine", "kind": "build", "what": "Routines can be offered to other Voids: the owner reviews each one, then others see it with its author", "show": "Offer a routine you made; approved ones show with your name", "try": "routines from others"},
-  {"at": "2026-10-12T17:43:07Z", "by": "calendar-date-check", "kind": "fix", "what": "The calendar check asks for a dentist nine days ahead, so it no longer fails on the day it names"}
+  {"at": "2026-10-12T17:43:07Z", "by": "calendar-date-check", "kind": "fix", "what": "The calendar check asks for a dentist nine days ahead, so it no longer fails on the day it names"},
+  {"at": "2026-10-12T18:43:09Z", "by": "take-routine", "kind": "build", "what": "Approved routines from others can be taken into your own Void, never over one of yours", "show": "Take someone's shared routine as your own", "try": "routines from others"}
 ]

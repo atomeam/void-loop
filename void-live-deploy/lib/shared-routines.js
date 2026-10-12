@@ -50,3 +50,27 @@ export async function offerId(o) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode([o.author.toLowerCase(), o.name, ...o.asks].join('\n')));
   return [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('').slice(0, 20);
 }
+
+/** "take Sam's morning routine", "copy Ana's study": { author, name }, or null. Without the word "routine" it is taken only for
+ * a pair the list of others showed (seen), so "take Sam's advice" stays an ordinary ask. Pure. */
+export function takeAsk(text, seen = []) {
+  const m = /^(?:take|copy|use|get|add) ([A-Za-z0-9][A-Za-z0-9 .'_-]{0,29}?)['’]s ([a-z][a-z0-9' -]{1,30}?)( routine)?$/i.exec(flat(text).replace(/[?!.]+$/, ''));
+  if (!m || /^(?:my|your|our|their|his|her)$/i.test(m[1])) return null;
+  const q = { author: m[1].trim(), name: m[2].toLowerCase() };
+  return m[3] || findShared(seen, q) ? q : null;
+}
+
+/** the approved routine with this author (any case) and name, or null. Pure. */
+export function findShared(list, q) {
+  return (Array.isArray(list) ? list : []).find((r) => r && r.name === q.name && String(r.author).toLowerCase() === String(q.author).toLowerCase()) || null;
+}
+
+/** the name a taken routine is kept under: its own when free, "<author>'s <name>" when that is yours already; null when one
+ * of those already holds exactly its asks (or both names are taken), so taking never replaces a routine of your own. Pure. */
+export function takeName(saved, r) {
+  saved = saved || {};
+  const same = (n) => saved[n] && JSON.stringify(saved[n].asks) === JSON.stringify(r.asks);
+  const names = [r.name, (r.author.toLowerCase() + "'s " + r.name).slice(0, 31)];
+  if (names.some(same)) return null;
+  return names.find((n) => !Object.prototype.hasOwnProperty.call(saved, n)) || null;
+}

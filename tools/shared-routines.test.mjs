@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { cleanOffer, offerAsk, othersAsk } from '../void-live-deploy/lib/shared-routines.js';
+import { cleanOffer, offerAsk, othersAsk, takeAsk, findShared, takeName } from '../void-live-deploy/lib/shared-routines.js';
 import * as api from '../void-live-deploy/functions/api/routines.js';
 
 const TOKEN = 'owner-token-for-tests-1234567890';
@@ -50,4 +50,23 @@ test('the route: an offer waits for the owner; only approved ones are shown; onl
   assert.equal((await call(api.onRequestPost, env, req('POST', { approve: waiting[0].id }, true))).status, 200);
   assert.deepEqual((await call(api.onRequestGet, env, req('GET'))).j, [{ id: waiting[0].id, name: 'morning', author: 'Sam', asks: ['weather here', 'my calendar'] }]);
   assert.equal((await call(api.onRequestPost, env, req('POST', { name: 'x', author: '<i>', asks: ['a b'] }))).status, 400);
+});
+
+test('taking one: "take Sam\'s morning" (always with "routine"; without it, only a pair the list of others showed)', () => {
+  const seen = [{ id: 'a', name: 'morning', author: 'Sam Lee', asks: ['weather here'] }, { id: 'b', name: 'study', author: 'Ana', asks: ['a 25 minute timer'] }];
+  assert.deepEqual(takeAsk("take Sam Lee's morning routine"), { author: 'Sam Lee', name: 'morning' });
+  assert.deepEqual(takeAsk("copy Ana’s study routine"), { author: 'Ana', name: 'study' });
+  assert.deepEqual(takeAsk("take Sam Lee's morning", seen), { author: 'Sam Lee', name: 'morning' });
+  assert.deepEqual(takeAsk("use ana's study", seen), { author: 'ana', name: 'study' });
+  for (const q of ["take Sam's advice", "take Ana's morning", 'take a picture', "take my morning", "what's Ana's study"]) assert.equal(takeAsk(q, seen), null, q);
+  assert.equal(findShared(seen, { author: 'sam lee', name: 'morning' }).id, 'a', 'the author matches in any case');
+  assert.equal(findShared(seen, { author: 'Sam', name: 'morning' }), null);
+});
+
+test('taking one never replaces a routine of your own: a free name is kept, a taken one gets the author\'s name in front', () => {
+  const r = { name: 'morning', author: 'Sam Lee', asks: ['weather here'] };
+  assert.equal(takeName({}, r), 'morning');
+  assert.equal(takeName({ morning: { asks: ['flip a coin'] } }, r), "sam lee's morning");
+  assert.equal(takeName({ morning: { asks: ['weather here'] } }, r), null, 'already yours, the same asks');
+  assert.equal(takeName({ morning: { asks: ['flip a coin'] }, "sam lee's morning": { asks: ['weather here'] } }, r), null);
 });

@@ -4,13 +4,15 @@
  * "my routines" lists them, "forget my morning" drops one. A routine is only asks Void already answers, so it can do nothing
  * typing them could not; it stays in this browser unless its owner offers it. The pure half (the ask, the pick, the store) is
  * lib/routines.js. The second piece: "offer my morning as Sam" sends only that routine's asks and the name Sam chose to a list
- * the site's owner reviews (lib/shared-routines.js, /api/routines); "routines from others" shows the approved ones.
+ * the site's owner reviews (lib/shared-routines.js, /api/routines); "routines from others" shows the approved ones, and
+ * "take Sam's morning" copies one into this browser (never over a routine of your own; taking it does not run it).
  */
 import { routineAsk, pick, load, save, remove, recentAsks, MAX_ASKS } from '../lib/routines.js';
-import { offerAsk, othersAsk, cleanOffer } from '../lib/shared-routines.js';
+import { offerAsk, othersAsk, cleanOffer, takeAsk, findShared, takeName } from '../lib/shared-routines.js';
 
 const store = () => { try { return typeof localStorage === 'undefined' ? null : localStorage; } catch (_) { return null; } };
 let running = false; // a routine never runs inside another one
+let seen = []; // the approved routines "routines from others" last showed, so "take Sam's morning" needs no "routine" after it
 
 function card(api, title, rows, foot) {
   const { showPage, esc } = api;
@@ -38,9 +40,24 @@ async function others(api, log) {
   let list = null;
   try { const r = await fetch('/api/routines'); if (r.ok) list = await r.json(); } catch (_) {}
   if (!Array.isArray(list)) { card(api, 'Could not reach shared routines', [], 'Try again in a minute.'); log('others-failed'); return 'routine'; }
+  seen = list;
   card(api, list.length ? 'Routines from others' : 'No shared routines yet', list.map((r) => r.name + ' by ' + r.author + ': ' + r.asks.join(' · ')),
-    list.length ? 'Each one was offered by its author and approved before it showed here.' : 'Offer one of yours: "offer my morning as <a name>".');
+    list.length ? 'Each one was offered by its author and approved before it showed here. Say "take ' + list[0].author + '\'s ' + list[0].name + '" to keep one.' : 'Offer one of yours: "offer my morning as <a name>".');
   log('others'); return 'routine';
+}
+
+async function take(q, ls, saved, api, log) {
+  let list = null;
+  try { const r = await fetch('/api/routines'); if (r.ok) list = await r.json(); } catch (_) {}
+  if (!Array.isArray(list)) { card(api, 'Could not reach shared routines', [], 'Try again in a minute.'); log('take-failed'); return 'routine'; }
+  seen = list;
+  const r = findShared(list, q);
+  if (!r) { card(api, 'No "' + q.name + '" by ' + q.author, [], 'Say "routines from others" to see the ones you can take.'); log('take-none'); return 'routine'; }
+  const name = takeName(saved, r);
+  if (!name) { card(api, 'You have "my ' + r.name + '" already', [], 'Nothing changed. "forget my ' + r.name + '" frees the name.'); log('take-have'); return 'routine'; }
+  save(ls, name, r.asks, new Date().toISOString().slice(0, 10));
+  card(api, 'Took ' + r.author + '\'s ' + r.name + ' as "my ' + name + '"', r.asks, 'Say "my ' + name + '" to ask these, in this order. It stays in this browser; nothing was run yet.');
+  api.say('took ' + r.author + '\'s ' + r.name); log('take'); return 'routine';
 }
 
 async function run(text, api) {
@@ -48,6 +65,8 @@ async function run(text, api) {
   const o = offerAsk(text, saved);
   if (o) return offer(o, saved, api, log);
   if (othersAsk(text)) return others(api, log);
+  const tq = takeAsk(text, seen);
+  if (tq) return take(tq, ls, saved, api, log);
   const ask = routineAsk(text, saved);
   if (!ask) return 'none';
   if (ask.kind === 'save') {
@@ -75,8 +94,8 @@ async function run(text, api) {
 export default {
   name: 'routine',
   routineAsk, offerAsk, othersAsk,
-  examples: ['call this my morning', 'save that as my evening', 'save the last 2 asks as my study', 'my routines', 'routines from others'],
-  nearMisses: ['call my mom', 'what is a morning routine', 'save the whales', 'call this number', 'my calendar', 'forget my password', 'share my screen', 'offer my condolences'],
-  match(lower, text) { const t = text || lower, saved = load(store()); return !!(routineAsk(t, saved) || offerAsk(t, saved) || othersAsk(t)); },
+  examples: ['call this my morning', 'save that as my evening', 'save the last 2 asks as my study', 'my routines', 'routines from others', "take Sam's morning routine"],
+  nearMisses: ['call my mom', 'what is a morning routine', 'save the whales', 'call this number', 'my calendar', 'forget my password', 'share my screen', 'offer my condolences', "take Sam's advice", 'take a picture'],
+  match(lower, text) { const t = text || lower, saved = load(store()); return !!(routineAsk(t, saved) || offerAsk(t, saved) || othersAsk(t) || takeAsk(t, seen)); },
   run,
 };
