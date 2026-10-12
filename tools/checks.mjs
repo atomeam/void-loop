@@ -34,6 +34,7 @@ for (const [name, file] of [
   ['fix-pages', 'fix-pages.test.mjs'],
   ['review-bench', 'review-bench.test.mjs'],
   ['honest', 'honest.test.mjs'],
+  ['cron-gate', 'cron-gate.test.mjs'],
   ['releasenotes', 'releasenotes.test.mjs'],
   ['intent', 'intent.test.mjs'],
   ['revert-target', 'revert-target.test.mjs'],

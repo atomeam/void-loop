@@ -8,7 +8,7 @@ import { spawnSync } from 'node:child_process';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
-import { readFrontier, openItems, stepsLeft } from './frontier.mjs';
+import { readFrontier, openItems, stepsLeft, targets } from './frontier.mjs';
 
 const SNAPSHOT = new URL('../domains/void.misses.json', import.meta.url);
 
@@ -22,7 +22,17 @@ export function snapshotLines(snap, top = 10) {
 }
 
 export function summary(text) {
-  return { steps: stepsLeft(text), open: openItems(text) };
+  const steps = stepsLeft(text), open = openItems(text), after = targets(text);
+  return { steps, open, targets: after, take: takeNext({ steps, open, targets: after }) };
+}
+
+/** the one thing a run takes now. There is always one: a run never reports "nothing to do" (the owner, 2026-10-12: "no open
+ *  items or anything similar is absolute bullshit and I dont ever want to see that again"). Pure. */
+export function takeNext({ steps = [], open = [], targets: after = [] }) {
+  if (steps.length) return 'cleanup step ' + steps[0].n + ': ' + steps[0].title;
+  if (open.length) return open[0].title + ' (the first open item nobody has claimed; check open PRs and the agent log)';
+  if (after.length) return after[0].title + ' (the first target after the cleanup)';
+  return "Void's top ask in domains/void.voice.md, then write the next targets on the frontier";
 }
 
 function main(argv) {
@@ -30,8 +40,11 @@ function main(argv) {
   if (argv.includes('--json')) { console.log(JSON.stringify(s, null, 1)); return 0; }
   console.log(s.steps.length ? 'Cleanup steps left (take the first unclaimed one before anything else):' : 'Cleanup: all steps done.');
   for (const st of s.steps) console.log(`  ${st.n}. ${st.title}`);
-  console.log(`\nOpen on the frontier (${s.open.length}):`);
+  console.log('Take next: ' + s.take);
+  if (s.open.length) console.log(`\nOpen on the frontier (${s.open.length}):`);
   for (const o of s.open) console.log(`  - ${o.title}${o.from ? '  [' + o.from + ']' : ''}`);
+  if (s.targets.length) console.log(`\nTargets after the cleanup (${s.targets.length}):`);
+  for (const t of s.targets) console.log('  - ' + t.title);
   if (process.env.VOID_MISSES_TOKEN || process.env.VOID_OWNER_TOKEN) {
     const r = spawnSync(process.execPath, [resolve(dirname(fileURLToPath(import.meta.url)), 'next-skill.mjs')], { encoding: 'utf8', timeout: 60000 });
     console.log('\nFrom the miss board:\n' + ((r.stdout || '') + (r.stderr || '')).trim());

@@ -6,6 +6,7 @@ import { readFileSync } from 'node:fs';
 
 export const FRONTIER = new URL('../domains/void.frontier.md', import.meta.url);
 export const OPEN_HEADER = '**Folded in from the old lists';
+export const TARGETS_HEADER = '**After the cleanup';
 const plain = (s) => String(s || '').replace(/\*\*|`/g, '').replace(/\s+/g, ' ').trim();
 
 /** the open items: [{ title, why, from }] from the bullets under OPEN_HEADER, up to the first blank line */
@@ -23,6 +24,20 @@ export function openItems(text) {
     title = plain(title.replace(/\s*\(`[^)]*\)\s*/, ' '));
     rest = rest.replace(/^\s*\(`[^)]*\)\s*:?\s*/, '');
     out.push({ title, why: plain(rest).replace(/^:\s*/, ''), from: src ? plain(src[1] + src[2]) : '' });
+  }
+  return out;
+}
+
+/** the targets held until the cleanup was done (the bullets under TARGETS_HEADER, up to the first blank line): [{ title }] */
+export function targets(text) {
+  const lines = String(text || '').split('\n');
+  const at = lines.findIndex((l) => l.startsWith(TARGETS_HEADER));
+  if (at < 0) return [];
+  const out = [];
+  for (const line of lines.slice(at + 1)) {
+    if (!line.trim()) break;
+    const m = /^- \*\*(.+?)\*\*/.exec(line);
+    if (m) out.push({ title: plain(m[1].replace(/\s*\(.*$/, '')).replace(/[:.]\s*$/, '') });
   }
   return out;
 }

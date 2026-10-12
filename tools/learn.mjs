@@ -61,6 +61,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     console.log(`miss jobs open: ${p.open} of ${OPEN_MAX}; ${rows.length} rows on the board, ${p.queue.length + p.later.length} worth learning`);
     for (const q of queued) console.log(`  ${q.dry ? 'would queue' : q.skipped ? 'already open' : 'queued ' + q.id}: ${q.ask}  [${q.target}]  ${q.note}`);
     for (const c of p.later) console.log(`  later: ${c.ask} (score ${c.score})`);
-    if (!queued.length && !p.later.length) console.log('  nothing new to learn from the last ' + DAYS + ' days');
+    if (!queued.length && !p.later.length) console.log('  no ask was missed often enough to queue in the last ' + DAYS + ' days; the build list is node tools/next.mjs');
   }
 }

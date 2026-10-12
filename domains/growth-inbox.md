@@ -1,8 +1,8 @@
 # Growth inbox
 
-**Since 2026-10-11 (cleanup step 2):** ideas still land here (`tools/grow-ideas.mjs`) and Void reads it about itself (`tools/self-context.mjs`), but the build order is `domains/void.frontier.md`: an open row is built from there.
+**This is not the build list, and "no open rows here" never means there is nothing to do.** Since 2026-10-11 (cleanup step 2) every open item lives in `domains/void.frontier.md`; `node tools/next.mjs` lists them (12 open on 2026-10-12). Build from there. This file only collects new ideas (`tools/grow-ideas.mjs`) and is what Void reads about itself (`tools/self-context.mjs`); an idea that lands here is carried onto the frontier before anyone builds it.
 
-New ideas land here in batches. A run may build any open row. Shipped rows stay, with the main SHA. Rows are not deleted.
+Shipped rows stay, with the main SHA. Rows are not deleted.
 
 | status | date | ask | source |
 | --- | --- | --- | --- |
