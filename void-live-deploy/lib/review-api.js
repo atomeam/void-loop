@@ -299,6 +299,41 @@ export function quoteCheck(answer, evidence) {
   return { text, kept, dropped };
 }
 
+// The second pass (the skeptical check the leading reviewers run before they post): every finding the first pass kept goes back
+// to the model, numbered, beside the code it was shown, with one question each: does this code prove the claim? A claim about
+// code that is not shown (what another file's function returns, what a caller passes) does not hold. One call per review that
+// has findings; when that call fails or answers nothing usable, every finding stays (the review is never emptier by accident).
+export const VERIFY_SYSTEM = 'You check another reviewer\'s findings against the code. For each numbered finding, decide only from the code shown whether it is true. ' +
+  'It holds when the shown code proves it. It does not hold when it depends on code that is not shown (what a function in another file returns, what a caller passes, how a value is shaped elsewhere), when the code already handles it, or when it misreads the code. ' +
+  'Answer with JSON only, in exactly this shape: {"verdicts":[{"n":1,"holds":true,"why":"one short reason"}]}.';
+export const VERDICTS_SCHEMA = { type: 'object', properties: { verdicts: { type: 'array', items: { type: 'object',
+  properties: { n: { type: 'integer' }, holds: { type: 'boolean' }, why: { type: 'string' } }, required: ['n', 'holds'] } } }, required: ['verdicts'] };
+export function verifyMessages(findings, shownCode) {
+  const list = findings.map((f, i) => (i + 1) + '. ' + (f.file ? f.file + ':' : 'line ') + f.line + ' (' + f.kind + '): ' + f.text + ' Quoted line: ' + f.quote).join('\n');
+  return [{ role: 'system', content: VERIFY_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE + ' ' + CSS_RULE },
+    { role: 'user', content: 'Findings:\n' + list + '\n\nThe code they were made from:\n' + shownCode }];
+}
+/** the findings whose verdict says they hold; a finding with no verdict, or no usable verdicts at all, stays. Pure. */
+export function applyVerdicts(findings, answer) {
+  let j = answer;
+  if (typeof j === 'string') { const m = j.match(/\{[\s\S]*\}/); try { j = m ? JSON.parse(m[0]) : null; } catch (_) { j = null; } }
+  const verdicts = j && Array.isArray(j.verdicts) ? j.verdicts : null;
+  if (!verdicts || !verdicts.length) return { kept: findings, refuted: [] };
+  const no = new Map(verdicts.filter((v) => v && v.holds === false && Number.isInteger(Number(v.n))).map((v) => [Number(v.n), String(v.why || '').slice(0, 200)]));
+  return { kept: findings.filter((f, i) => !no.has(i + 1)), refuted: findings.map((f, i) => (no.has(i + 1) ? { ...f, why: no.get(i + 1) } : null)).filter(Boolean) };
+}
+export async function verifyFindings(env, findings, shownCode) {
+  if (!findings.length || !env || !env.AI) return { kept: findings, refuted: [] };
+  try {
+    const base = { messages: verifyMessages(findings, shownCode), max_tokens: 600, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
+    let r;
+    try { r = await env.AI.run(MODEL, { ...base, response_format: { type: 'json_schema', json_schema: VERDICTS_SCHEMA } }); }
+    catch (_) { r = await env.AI.run(MODEL, base); }
+    const out = r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response));
+    return applyVerdicts(findings, out);
+  } catch (_) { return { kept: findings, refuted: [] }; }
+}
+
 // The closer read by the model, told what the checks found. Keys are masked before the model sees anything. For a diff, the
 // touched files' imports come along (DIFF_RULE). The model answers JSON (FINDINGS_SCHEMA; a model that refuses the schema is asked
 // once more without it), the findings are validated against the code shown and rendered by code; dropPhantoms and quoteCheck run on
@@ -322,7 +357,10 @@ export async function closerReadDetail(env, { ask, code, lang, diff, res, import
   const known = declaredNames(String(code || '') + '\n' + im);
   const sound = v.kept.filter((f) => dropPhantoms(f.text + ' `' + f.quote + '`', known, String(code || '') + '\n' + im, shown.clipped) !== '');
   const q = quoteCheck(renderFindings(sound).split('\n\n').slice(0, sound.length).join('\n'), evidence);
-  const kept = Math.min(q.kept, sound.length), dropped = v.dropped + (v.kept.length - kept);
-  return { answer: renderFindings(sound.slice(0, kept)), kept, dropped, parsed: true, echoes: v.echoes };
+  const quoted = sound.slice(0, Math.min(q.kept, sound.length));
+  // the second pass: each finding checked against the code it was made from; the refuted ones go
+  const checked = await verifyFindings(env, quoted, shown.text);
+  const kept = checked.kept.length, dropped = v.dropped + (v.kept.length - kept);
+  return { answer: renderFindings(checked.kept), kept, dropped, parsed: true, echoes: v.echoes, refuted: checked.refuted.length };
 }
 export async function closerRead(env, opts) { return (await closerReadDetail(env, opts)).answer; }
