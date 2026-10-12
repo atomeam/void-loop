@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { cleanOffer, offerAsk, othersAsk, takeAsk, findShared, takeName } from '../void-live-deploy/lib/shared-routines.js';
+import { cleanOffer, offerAsk, othersAsk, takeAsk, findShared, takeName, pendingAsk } from '../void-live-deploy/lib/shared-routines.js';
 import * as api from '../void-live-deploy/functions/api/routines.js';
 
 const TOKEN = 'owner-token-for-tests-1234567890';
@@ -69,4 +69,9 @@ test('taking one never replaces a routine of your own: a free name is kept, a ta
   assert.equal(takeName({ morning: { asks: ['flip a coin'] } }, r), "sam lee's morning");
   assert.equal(takeName({ morning: { asks: ['weather here'] } }, r), null, 'already yours, the same asks');
   assert.equal(takeName({ morning: { asks: ['flip a coin'] }, "sam lee's morning": { asks: ['weather here'] } }, r), null);
+});
+
+test('the owner\'s ask: "offered routines" (what waits for a yes)', () => {
+  for (const q of ['offered routines', 'routines waiting', 'review offered routines', 'pending routines', 'routine offers', 'approve routines']) assert.ok(pendingAsk(q), q);
+  for (const q of ['routines from others', 'my routines', 'pending orders', 'offered jobs']) assert.ok(!pendingAsk(q), q);
 });

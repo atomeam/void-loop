@@ -1880,6 +1880,22 @@ try {
       && JSON.stringify(store.study && store.study.asks) === JSON.stringify(['a 25 minute timer', 'flip a coin']) && JSON.stringify(store.morning && store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
       && ranNothing && /already/.test(again) && !R.errors.length, JSON.stringify({ took: took.slice(0, 200), again: again.slice(0, 120), store, asksBefore, errs: R.errors }));
     await R.ctx.close(); }
+  // the owner's offered routines (frontier #13): "offered routines" with the owner's key lists what waits; Approve sends { approve: id } with the key as a bearer; without the key nothing is fetched
+  if (want("the owner's offered routines (frontier #13)")) {
+    const V = await fresh(); const hits = [];
+    await V.p.route(/\/api\/routines(?:\?|$)/, (r) => { const q = r.request(); hits.push({ m: q.method(), u: q.url().replace(/^.*\/api/, '/api'), auth: q.headers().authorization || '', body: q.postData() || '' });
+      if (q.method() === 'POST') return r.fulfill({ status: 200, contentType: 'application/json', body: '{"ok":true}' });
+      return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify([{ id: 'p1', name: 'study', author: 'Ana', asks: ['a 25 minute timer'] }]) }); });
+    await V.ask('offered routines', 900); const locked = await V.page(), lockedHits = hits.length;
+    await V.p.evaluate(() => localStorage.setItem('a2m.void.owner.v1', 'owner-k'));
+    await V.ask('review offered routines', 1200); const listed = await V.page(); // a different phrasing: the same ask twice in a row shows the answer already open
+    await V.p.click('.routine-offer [data-yes]').catch(() => {}); await V.p.waitForTimeout(500);
+    const said = await V.p.$eval('.routine-offer [data-said]', (e) => e.textContent).catch(() => '');
+    const post = hits.find((h) => h.m === 'POST');
+    check('offered routines: without the owner\'s key Void says they are the owner\'s and fetches nothing; with it the card lists Ana\'s study and Approve sends { approve: "p1" } with the key', /owner/.test(locked) && lockedHits === 0
+      && /study/.test(listed) && /Ana/.test(listed) && /a 25 minute timer/.test(listed) && post && post.auth === 'Bearer owner-k' && post.body === '{"approve":"p1"}' && said === 'approved' && !V.errors.length,
+      JSON.stringify({ locked: locked.slice(0, 120), lockedHits, listed: listed.slice(0, 200), hits, said, errs: V.errors }));
+    await V.ctx.close(); }
   // sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioContext (the game sound effects in skills/sfx.js open their own on the first tap, so the drone's is the one that gets oscillators)
   // proves nothing is built before the tap, the tap builds one drone of four voices, and the same button mutes it.
   if (want("sound (frontier #21, skills/drone.js): off until a tap. A counting stand-in for AudioConte")) { const fake = `window.__au = { all: [] }; window.AudioContext = class { constructor() { this.rec = { osc: 0, master: [] }; window.__au.all.push(this.rec); this.state = 'running'; this.currentTime = 0; this.destination = {}; this.sampleRate = 8000; this.n = 0; }

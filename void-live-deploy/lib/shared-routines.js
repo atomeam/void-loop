@@ -74,3 +74,9 @@ export function takeName(saved, r) {
   if (names.some(same)) return null;
   return names.find((n) => !Object.prototype.hasOwnProperty.call(saved, n)) || null;
 }
+
+/** the owner's ask for what waits: "offered routines", "routines waiting", "approve routines". Pure. */
+export function pendingAsk(text) {
+  const t = flat(text).toLowerCase().replace(/[?!.]+$/, '');
+  return /^(?:(?:show|review|see|list) )?(?:(?:the )?(?:offered|pending|waiting) routines|routines (?:waiting|pending|offered)(?: for (?:me|review|a yes))?|routine offers|approve (?:the )?routines)$/.test(t);
+}
