@@ -6,5 +6,6 @@
   {"check": "publish: /@sam is the homepage with that look set in the HTML (before first paint) and its cards as data; an unclaimed name is a 404 \"no one here\"; any other pa", "sha": "547e8cfff6b75fbe8b98108a1f6750ffcc04b908", "at": "2026-10-12T02:33:01Z"},
   {"check": "suite ran to the end", "sha": "6d2585f0e2cb7d7ee5a6e25184830a558eeed8f4", "at": "2026-10-12T07:58:21Z"},
   {"check": "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a ", "sha": "e6c781627684956fdecdb8734afecc02e2669f28", "at": "2026-10-12T10:32:55Z"},
-  {"check": "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others ", "sha": "c8268d7db664bf342549a3500ecb0b1feea5c5b2", "at": "2026-10-12T14:32:12Z"}
+  {"check": "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others ", "sha": "c8268d7db664bf342549a3500ecb0b1feea5c5b2", "at": "2026-10-12T14:32:12Z"},
+  {"check": "go: \"play go\" stands a 3D goban in the void with its card separate; tapping E5 then C3 places Black then White, no capture count moves, no winner; Count positio", "sha": "bed19c6c6f8e26631a69abca2525f44b9f5555d3", "at": "2026-10-12T20:04:50Z"}
 ]
