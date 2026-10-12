@@ -454,7 +454,9 @@ try {
   if (want("Calendar (per-person spaces): a visitor's own adds save in this browser and show on a drag")) { const C = await fresh(); const net = [];
     C.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer|approval)$/.test(u)) net.push(u.replace(/^.*\/\/[^/]+/, '')); });
     await C.ask('call Sam next Tuesday at 4', 900); const said = await C.whisper();
-    await C.ask('add dentist to my calendar Oct 12 at 3pm', 900);
+    // a day nine days ahead, so the dentist is always still to come (a fixed "Oct 12 at 3pm" went red on Oct 12 after 4pm: the card hides an event once it is an hour past)
+    const ahead = new Date(Date.now() + 9 * 864e5), dentistDay = ahead.toLocaleDateString('en-US', { month: 'short' }) + ' ' + ahead.getDate();
+    await C.ask('add dentist to my calendar ' + dentistDay + ' at 3pm', 900);
     await C.ask('put lunch with Ana on my calendar tomorrow at noon', 900);
     const agenda = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]'));
     const card = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
@@ -469,7 +471,7 @@ try {
     await C.p.click('.calendar-card .cal-event button'); await C.p.waitForTimeout(200);
     const afterX = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
     await C.ask('undo', 400); const afterUndo = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
-    check('calendar: a visitor adds "call Sam next Tuesday at 4", "add dentist to my calendar Oct 12 at 3pm", "put lunch with Ana on my calendar tomorrow at noon"; all saved here and on the stage card; no yes, no server, no Wikipedia',
+    check('calendar: a visitor adds "call Sam next Tuesday at 4", "add dentist to my calendar <nine days ahead> at 3pm", "put lunch with Ana on my calendar tomorrow at noon"; all saved here and on the stage card; no yes, no server, no Wikipedia',
       agenda.length === 3 && /Call Sam/.test(card) && /dentist/i.test(card) && /Lunch with Ana/i.test(card) && /on your calendar: Call Sam/.test(said) && !netAdds.length && !pageAfterAdds,
       JSON.stringify(agenda.map((e) => e.title)) + ' | ' + said + ' | ' + netAdds.join(',') + ' | page: ' + pageAfterAdds.slice(0, 60) + ' | ' + card.slice(0, 120));
     check('calendar: "schedule a meeting with Sam" is the owner\'s confirm line (a visitor is told so, nothing saved); "calender" shows one card; the card survives a reload; "remove my calendar" hides it and keeps the events; × removes one and undo brings it back',
