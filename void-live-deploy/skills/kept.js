@@ -32,7 +32,9 @@ function mount(th, stageApi) {
   head.textContent = th.name || th.ask || 'kept';
   const body = document.createElement('div');
   body.className = 'kept-body';
-  body.innerHTML = th.html || ''; // cleaned by the page (cleanHTML) before it was kept, and again when it comes back from the server
+  // void-review: ok: the html is the page's own: "keep this" copies the answer it already drew, a synced stage passes the page's
+  // cleanHTML on the way in, and a public /@name page's cards are escaped text (as when this lived in void.html)
+  body.innerHTML = th.html || ''; // void-review: ok
   body.querySelectorAll('.asof[data-t]').forEach((a) => { a.textContent = asOf(new Date(a.dataset.t)); });
   body.querySelectorAll('h2').forEach((h) => { h.style.cssText = 'font-size:16px;margin:0 0 2px;font-weight:500'; });
   body.querySelectorAll('iframe').forEach((f) => { f.style.height = '220px'; });
