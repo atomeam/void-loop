@@ -589,6 +589,17 @@ try {
       && moved.x - list.x === 50 && moved.y - list.y === 30 && after === st.length && !planNet.length && !I.errors.length,
       JSON.stringify({ said, kinds, groups: [...groups], items: list && list.items.map((i) => i.text), draft: draft && draft.text, agenda, planNet, e: I.errors }));
     await I.ctx.close(); }
+  // the same plan from a goal said as a noun (frontier #10's next step): the verb goes in front, the steps are that kind's own
+  if (want("intent as a noun: \"the product page launch on Friday\" plans like \"I need to launch the product page by Friday\"")) { const I = await fresh();
+    await I.ask('the product page launch on Friday', 2500);
+    const said = await I.whisper(), st = await I.state(), list = st.find((x) => x.kind === 'list');
+    const agenda = await I.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').map((e) => e.title));
+    check('intent as a noun: "the product page launch on Friday" plans "launch the product page": a countdown, a launch\'s own dated steps ending on the day, the day on the calendar, one group, and no draft (nobody was named)',
+      /planned "launch the product page"/.test(said) && !st.some((x) => x.kind === 'sticky') && st.some((x) => x.kind === 'countdown') && list && list.items.length === 5
+        && list.items[0].text.startsWith('outline it') && /^launch the product page \(fri \d+\)$/.test(list.items[4].text) && agenda.some((t) => /launch the product page/i.test(t))
+        && new Set(st.map((x) => x.group)).size === 1 && !I.errors.length,
+      JSON.stringify({ said, items: list && list.items.map((i) => i.text), agenda, e: I.errors }));
+    await I.ctx.close(); }
   // Labels and arrows (skills/label.js, board "Later": text annotation / labels): "label the clock kitchen" tags it, an arrow
   // drawn by label names joins two things and follows a drag, a free label can be an arrow's end, "undo" and reload behave.
   if (want("Labels and arrows (skills/label.js, board \"Later\": text annotation / labels): \"label the c")) { const L = await fresh();
