@@ -1060,6 +1060,45 @@ try {
       JSON.stringify({ r, e: P.errors }));
     await P.ctx.close(); }
   // step 6: the sticky note, pinned before it moves out of void.html (what it does today, ask by ask)
+  // step 6: the clock, pinned before it moves out of void.html (what it does today, ask by ask). It is the page's last word:
+  // "make it blue" on an empty stage makes a blue clock
+  if (want("built-in clock: make it blue on an empty stage, remove, make one, bigger, hide seconds, bold, a colour, move, 24 hour on the clock, a reload, a big red clock")) { const P = await fresh();
+    const ck = async () => (await P.state()).filter((t) => t.kind === 'clock').map((x) => [x.size, x.color, x.format, x.seconds, x.bold, Math.round(x.x) < 100 && Math.round(x.y) < 100 ? 'topleft' : 'mid'].join(',')).join(' / ');
+    const r = {};
+    await P.ask('make it blue', 600); r.a = await ck();
+    await P.ask('remove the clock', 500); r.b = await ck();
+    await P.ask('make a clock', 600); r.c = await ck();
+    await P.ask('add a clock', 500); r.d = await ck();
+    await P.ask('make the clock bigger', 400); r.e = await ck();
+    await P.ask('hide seconds', 400); r.f = await ck();
+    await P.ask('bold', 400); r.g = await ck();
+    await P.ask('make the clock green', 400); r.h = await ck();
+    await P.ask('move it to the top left', 400); r.i = await ck();
+    await P.ask('make the clock 24 hour', 400); r.j = await ck();
+    r.face = await P.p.$eval('.thing.clock span', (e) => e.textContent);
+    await P.p.reload(); await P.p.waitForTimeout(1500);
+    r.reload = await until(() => P.p.$$eval('.thing.clock span', (els) => els.length === 1 && /^\d{2}:\d{2}$/.test(els[0].textContent) ? 'ok' : false), 6000);
+    await P.ask('remove the clock', 500); r.k = await ck();
+    await P.ask('a big red clock', 600); r.l = await ck();
+    check('built-in clock: "make it blue" on an empty stage makes a blue clock, "remove the clock" takes it, "make a clock" makes one and "add a clock" keeps it one, bigger (72), hide seconds, bold, green, "move it to the top left", "make the clock 24 hour" (no seconds: HH:MM), it comes back after a reload, and "a big red clock" makes a big (96) red one',
+      r.a === '56,#6aa8ff,12h,true,false,mid' && r.b === '' && r.c === '56,#e8e8e8,12h,true,false,mid' && r.d === r.c && r.e === '72,#e8e8e8,12h,true,false,mid'
+        && r.f === '72,#e8e8e8,12h,false,false,mid' && r.g === '72,#e8e8e8,12h,false,true,mid' && r.h === '72,#5dffa5,12h,false,true,mid' && r.i === '72,#5dffa5,12h,false,true,topleft'
+        && r.j === '72,#5dffa5,24h,false,true,topleft' && /^\d{2}:\d{2}$/.test(r.face) && r.reload === 'ok' && r.k === '' && r.l === '96,#ff5c5c,12h,true,false,mid' && !P.errors.length,
+      JSON.stringify({ r, e: P.errors }));
+    await P.ctx.close(); }
+  // step 6's visible upgrade for the clock (owner, 2026-10-11: every cleanup move ships one): an LED bedside clock's face
+  if (want("clock LED look: a dark recessed panel, the digits glow in the clock's colour, the unlit 8s show faintly behind them, a colour moves the glow")) { const P = await fresh();
+    await P.ask('make a clock', 600);
+    const look = () => P.p.$eval('.thing.clock', (e) => { const c = getComputedStyle(e), f = e.querySelector('span'), fc = getComputedStyle(f), g = getComputedStyle(f, '::before');
+      return { panel: c.backgroundColor, inset: /inset/.test(c.boxShadow), glow: fc.textShadow, ink: fc.color, ghost: f.dataset.ghost, text: f.textContent, ghostShown: g.content, ghostOpacity: parseFloat(g.opacity) }; });
+    const a = await look();
+    await P.ask('make the clock red', 400);
+    const b = await look();
+    check('clock LED look: the clock is a dark recessed panel (#0b0b0e, inset shadow), its digits glow in the clock\'s colour, the unlit segments (every digit as an 8) show faintly behind the lit ones and follow the time, and "make the clock red" turns the digits and the glow red',
+      a.panel === 'rgb(11, 11, 14)' && a.inset && /rgb\(232, 232, 232\)/.test(a.glow) && a.ghost === a.text.replace(/\d/g, '8') && /^"?attr|^".*8/.test(a.ghostShown) && a.ghostShown !== 'none' && a.ghostOpacity > 0 && a.ghostOpacity <= 0.2
+        && b.ink === 'rgb(255, 92, 92)' && /rgb\(255, 92, 92\)/.test(b.glow) && !P.errors.length,
+      JSON.stringify({ a, b, e: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
   // step 6: the timer, pinned before it moves out of void.html (what it does today, ask by ask, quirks included: a bare
   // "pause" and "remove the timer" act on the first timer, not the picked one)
   if (want("built-in timer: set one for 5 minutes, pause, start, reset, bigger, a colour, another, a bare pause, a reload, remove, an alarm, a short one ends")) { const P = await fresh();

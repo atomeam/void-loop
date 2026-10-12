@@ -98,6 +98,7 @@ for (const [name, file] of [
   ['arena', 'arena.test.mjs'],
   ['calc', 'calc.test.mjs'],
   ['timer', 'timer.test.mjs'],
+  ['clock', 'clock.test.mjs'],
   ['automations', 'automations.test.mjs'],
   ['actions', 'actions.test.mjs'],
   ['ringer', 'ringer.test.mjs'],
