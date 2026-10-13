@@ -37,7 +37,7 @@ const want = (label) => { const on = !ONLY.length || ONLY.every((w) => label.toL
 const CORE = want('core: the shared page, the asks typed one after another');
 if (process.argv.includes('--list')) {
   for (const f of [import.meta.url, new URL('./test_3d.mjs', import.meta.url)]) for (const m of fs.readFileSync(new URL(f), 'utf8').matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)) console.log(JSON.parse(m[1]));
-  process.exit(0);
+  exitFlushed(0);
 }
 const releaseHeavy = await acquireHeavy('browser suite (tools/test_void.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
 const browser = await chromium.launch({ executablePath: exe, headless: true });
@@ -56,11 +56,15 @@ const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_
 // a check this machine cannot run (no <microphone> element in its Chromium, no passkey authenticator): skipped with the reason, never red
 const skip = (name, why) => { watch.lastAt = Date.now(); watch.lastCheck = name; results.push({ name, ok: true, skipped: why }); };
 const line = (r) => (r.skipped ? 'skip ' + r.name + '  (' + r.skipped + ')' : (r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
+// exit once everything printed has reached stdout: piped (| tee in verify.yml) node writes asynchronously, and a bare
+// process.exit dropped the end of the results, the FAIL lines and the summary with it (verify on fd2677f stopped
+// mid-list and could only say "outside the named checks")
+function exitFlushed(code) { process.exitCode = code; process.stdout.write('', () => process.exit(code)); }
 function stopLoudly(why) {
   for (const r of results) console.log(line(r));
   console.log('FAIL ' + why + '  -> last page opened: ' + watch.page + (watch.ask ? '; last ask: ' + JSON.stringify(watch.ask) : '') + '; last check finished: ' + watch.lastCheck + '; ' + Math.round((Date.now() - watch.t0) / 1000) + ' s in');
   console.log(`${results.filter((r) => r.ok).length}/${results.length + 1} passed`);
-  process.exit(1);
+  exitFlushed(1);
 }
 const watchdog = setInterval(() => {
   const now = Date.now();
@@ -4987,6 +4991,5 @@ const bad = results.filter((r) => !r.ok);
 for (const r of results) console.log(line(r));
 const skipped = results.filter((r) => r.skipped).length;
 console.log(`${results.length - bad.length}/${results.length} passed` + (skipped ? ` (${skipped} skipped on this machine)` : ''));
-if (ONLY.length && !wanted.size) { console.log('--only "' + ONLY.join(' ') + '" matched no section (node tools/test_void.mjs --list)'); process.exit(1); }
-process.exit(bad.length ? 1 : 0);
+if (ONLY.length && !wanted.size) { console.log('--only "' + ONLY.join(' ') + '" matched no section (node tools/test_void.mjs --list)'); exitFlushed(1); } else exitFlushed(bad.length ? 1 : 0);
 
