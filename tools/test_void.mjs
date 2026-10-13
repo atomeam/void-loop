@@ -1698,6 +1698,24 @@ try {
       !!onB && !!a1 && !!b1 && !!a2 && Math.abs(a1.x - onB.x) > 0.02 && !errsB.length && !S.errors.length,
       JSON.stringify({ onB, a1, b1, b2, a2, errsB, errs: S.errors }));
     await S.ctx.close(); }
+  // frontier #11, next: a summoned sticky's words edited live between the tabs of a shared Void, both ways, under the same key as a move
+  if (want("shared Void words: a sticky typed in one tab reads the same in the other, both ways")) {
+    const room = 'eeeeeeeeeeeeeeee.ffffffffffffffff', S = await fresh({ base: base + '?with=' + room });
+    const B = await S.ctx.newPage(); const errsB = []; B.on('pageerror', (e) => errsB.push(String(e && e.message || e)));
+    await B.goto(base + '?with=' + room);
+    await until(() => B.$eval('#whisper', (e) => /tabs in this browser/.test(e.textContent)).catch(() => false), 8000);
+    await S.ask('add a sticky that says hello', 900);
+    const words = (pg) => pg.$eval('.thing.sticky', (e) => e.textContent).catch(() => null);
+    const onB = await until(async () => (await words(B)) === 'hello' || null, 4000);
+    const type = async (pg, text) => { await pg.click('.thing.sticky'); await pg.keyboard.press('End'); await pg.keyboard.type(text, { delay: 20 }); };
+    await type(S.p, ' world');
+    const b1 = await until(async () => ((await words(B)) === 'hello world') || null, 3000);
+    await B.waitForTimeout(900); // past A's own typing window (shareText keeps a sticky typed in during the last 800 ms)
+    await type(B, '!');
+    const a1 = await until(async () => ((await words(S.p)) === 'hello world!') || null, 3000);
+    check('shared Void words: a sticky summoned in one tab and typed into ("hello" + " world") reads the same in the other, and typed there ("!") it follows here; nothing errors',
+      !!onB && !!b1 && !!a1 && !errsB.length && !S.errors.length, JSON.stringify({ onB, b1, a1, A: await words(S.p), B: await words(B), errsB, errs: S.errors }));
+    await S.ctx.close(); }
   if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   { // frontier #11: two tabs on one invite link (?with=<room>). Here the live relay is not there (no Durable Object in this
     // local server), so the tabs share through a BroadcastChannel: a clock summoned in one appears in the other, and the

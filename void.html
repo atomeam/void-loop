@@ -1335,7 +1335,7 @@ Object.values(things).forEach((th) => {
       if (th && tab.field) extPropose({ action: 'fill', label: boxName(tab.field), box: 'mine', text: L.toPlain(d.fields), auto: true });
     }
     // what a skill's stage kind gets: the live things, and the stage's own drag, save, render and copy
-    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, setWorld, world: () => (worldNow ? worldNow.name : null), bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, colorFrom: (t) => colorFrom(t), targetKind: (t) => resolveTargetKind(t), snapshot: () => takeUndoSnapshot(),
+    const stageApi = { stage, things: () => things, kinds: () => stageKinds, timerFace, setWorld, world: () => (worldNow ? worldNow.name : null), bindDrag, save, render, say, addCopy, select: (id) => { selectedId = id; }, selected: () => selectedId, edited: (th) => shareEdited(th), colorFrom: (t) => colorFrom(t), targetKind: (t) => resolveTargetKind(t), snapshot: () => takeUndoSnapshot(),
       // a card's 3D miniature (skills/scene3d.js, docs/miniatures.md): loads three.js only on first use; rejects where WebGL can't run
       miniature: (host, kind, data, opts) => import('/skills/scene3d.js').then((m) => m.mountMiniature(host, kind, data, opts)),
       center: (id) => { selectedId = id; render(); centreThing(id); },
@@ -3563,6 +3563,31 @@ say('nothing selected to remove');
       shareMoveAt = now;
       share.moved(key, th.x / (stage.clientWidth || 1), th.y / (stage.clientHeight || 1));
     }
+    // a summoned thing's words, edited here, go to the others under the same key (frontier #11): while typing at most every 150 ms,
+    // and once more when the typing stops, so the last word always arrives. Only stickies for now.
+    let shareTextAt = 0, shareTextT = 0; const shareTypedAt = new Map();
+    function shareEdited(th) {
+      const key = share && th && th.kind === 'sticky' && shareKeyOf.get(th.id);
+      if (!key) return;
+      shareTypedAt.set(th.id, Date.now());
+      const send = () => { shareTextAt = Date.now(); share.edited(key, String(th.text || '')); };
+      clearTimeout(shareTextT);
+      if (Date.now() - shareTextAt >= 150) send(); else shareTextT = setTimeout(send, 150);
+    }
+    // the others' words land on this tab's copy of the sticky; one typed in here in the last 800 ms keeps its words and caret
+    // (two people typing at once: this tab's next keystroke goes out and wins); after that the other's words show, even with focus
+    function shareText(key, text) {
+      const th = things[shareIdOf.get(key)];
+      if (!th || th.kind !== 'sticky' || Date.now() - (shareTypedAt.get(th.id) || 0) < 800) return;
+      th.text = text;
+      const el = stage.querySelector('[data-id="' + CSS.escape(th.id) + '"]');
+      if (el && el.textContent !== text) {
+        const focused = document.activeElement === el;
+        el.textContent = text;
+        if (focused) { const r = document.createRange(); r.selectNodeContents(el); r.collapse(false); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); } // the caret stays at the end
+      }
+      clearTimeout(shareSaveT); shareSaveT = setTimeout(save, 300);
+    }
     let shareSaveT = 0;
     function shareMove(key, x, y) {
       const th = things[shareIdOf.get(key)];
@@ -3575,9 +3600,9 @@ say('nothing selected to remove');
     function shareJoin(room) {
       if (share || typeof room !== 'string') return;
       shareKnown = new Set(Object.keys(things));
-      share = { summoned() {}, moved() {}, cursor() {}, leave() {} };
+      share = { summoned() {}, moved() {}, edited() {}, cursor() {}, leave() {} };
       import('/lib/share-client.js').then((m) => {
-        share = m.join(room, { summon: shareRun, move: shareMove, presence: sharePresence, gone: shareGone, note: (t) => say(t) });
+        share = m.join(room, { summon: shareRun, move: shareMove, text: shareText, presence: sharePresence, gone: shareGone, note: (t) => say(t) });
         let last = 0;
         addEventListener('pointermove', (e) => { const now = Date.now(); if (now - last < 50) return; last = now; share.cursor(e.clientX / innerWidth, e.clientY / innerHeight); }, { passive: true });
         addEventListener('pagehide', () => share.leave());
