@@ -612,6 +612,20 @@ try {
       /planned "move"/.test(said) && /no day yet/.test(said) && list && JSON.stringify(list.items.map((i) => i.text)) === JSON.stringify(['sort out what to give away', 'get boxes', 'pack', 'last checks', 'move'])
         && !st.some((x) => x.kind === 'countdown') && agenda === 0 && !U.errors.length, JSON.stringify({ said, items: list && list.items.map((i) => i.text), kinds: st.map((x) => x.kind), agenda, e: U.errors }));
     await U.ctx.close(); }
+  // an open plan (frontier #10, next step): a plan of a kind with no steps of its own asks the answer engine (mode 'plan') for
+  // the steps; the only ask that runs is the checklist. The engine is stood in for here (the suite reaches no model).
+  if (want("open plan: \"plan my garden\" asks the answer engine for steps")) { const O = await fresh();
+    let sent = null;
+    await O.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = JSON.parse(r.request().postData() || '{}'); if (b.mode === 'plan') sent = b; return r.fulfill(json({ goal: 'my garden', steps: ['Pick a sunny spot', 'Test the soil', 'Choose plants & seeds', 'Water every morning'], model: 'gemma' })); });
+    await O.ask('plan my garden', 2500);
+    const said = await O.whisper(), st = await O.state(), list = st.find((x) => x.kind === 'list');
+    await O.ask('plan my day', 1200);
+    const after = (await O.state()).length;
+    check('open plan: "plan my garden" asks the answer engine (mode plan) for the steps and puts them up as one checklist, says they came from the engine; "plan my day" adds nothing',
+      sent && sent.mode === 'plan' && sent.goal === 'my garden' && /planned "my garden"/.test(said) && /answer engine/.test(said)
+        && list && JSON.stringify(list.items.map((i) => i.text)) === JSON.stringify(['Pick a sunny spot', 'Test the soil', 'Choose plants + seeds', 'Water every morning'])
+        && st.length === 1 && after === 1 && !O.errors.length, JSON.stringify({ sent, said, items: list && list.items.map((i) => i.text), kinds: st.map((x) => x.kind), after, e: O.errors }));
+    await O.ctx.close(); }
   // Labels and arrows (skills/label.js, board "Later": text annotation / labels): "label the clock kitchen" tags it, an arrow
   // drawn by label names joins two things and follows a drag, a free label can be an arrow's end, "undo" and reload behave.
   if (want("Labels and arrows (skills/label.js, board \"Later\": text annotation / labels): \"label the c")) { const L = await fresh();

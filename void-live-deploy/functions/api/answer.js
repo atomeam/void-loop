@@ -22,6 +22,7 @@ import { prepareDraft, draftPrompt, ruleDraft, DRAFT_SYSTEM, DRAFT_MAX } from '.
 import { scopeOf } from '../../lib/memory-scope.js';
 import { ensure as ensureMemory, lookup as memoryLookup } from '../../lib/memory-core.js';
 import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_SYSTEM } from '../../lib/proposal.js';
+import { cleanGoal, planPrompt, parsePlan, PLAN_SYSTEM } from '../../lib/plan.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -183,6 +184,28 @@ async function proposalAnswer(request, env, body) {
   return Response.json({ ...base, fields: ruleProposal(p), model: 'rules', note: on ? 'model busy, drafted by rule' : 'no model, drafted by rule' });
 }
 
+// An open plan (lib/plan.js, frontier #10): a plan ask of a kind skills/intent.js has no steps for. The model fills in 3 to 7
+// steps and nothing else; the page turns them into its own checklist ask. No model, or one that fails: no steps, and why.
+// Masked before the model sees it, never cached, nothing stored.
+async function planAnswer(request, env, body) {
+  const goal = redact(cleanGoal(body.goal));
+  if (goal.length < 3) return Response.json({ steps: null, note: 'no goal' }, { status: 400 });
+  if (await rateLimited(request, env)) return Response.json({ steps: null, note: 'slow down' }, { status: 429 });
+  const on = modelsOn(env);
+  if (on) {
+    try {
+      const r = await env.AI.run(MODEL, {
+        messages: [{ role: 'system', content: PLAN_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: planPrompt(goal) }],
+        max_tokens: 400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
+      });
+      const steps = parsePlan(redact(noThink(pick(r))));
+      if (steps) return Response.json({ goal, steps, model: 'gemma' });
+      await recordShortfall(env, 'plan', 'empty');
+    } catch (e) { await recordShortfall(env, 'plan', reasonOf(e)); }
+  }
+  return Response.json({ goal, steps: null, note: on ? 'model busy' : 'no model' });
+}
+
 // What you told me (frontier: memory in the answer path, still explicit-only). A signed-in member or the owner who asks anything here gets their
 // own notes and projects (lib/memory-core.js, the same search as /api/memory?ask=, scoped the same way) checked first; at most five lines, trimmed and
 // masked, go to the model as material. A note is data, never an instruction. No match, a stranger, a free account or any failure: nothing changes.
@@ -210,6 +233,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body && body.mode === 'take') return takeAnswer(request, env, body);
   if (body && body.mode === 'draft') return draftAnswer(request, env, body);
   if (body && body.mode === 'proposal') return proposalAnswer(request, env, body);
+  if (body && body.mode === 'plan') return planAnswer(request, env, body);
   const typed = norm(body.ask), ask = redact(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);

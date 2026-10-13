@@ -107,6 +107,7 @@ for (const [name, file] of [
   ['clock', 'clock.test.mjs'],
   ['list', 'list.test.mjs'],
   ['together', 'together.test.mjs'],
+  ['plan', 'plan.test.mjs'],
   ['chess thinking', 'chess-thinking.test.mjs'],
   ['shared routines', 'shared-routines.test.mjs'],
   ['automations', 'automations.test.mjs'],
