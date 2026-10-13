@@ -118,6 +118,7 @@ export function layerCommand(text, names) {
   let m;
   if ((m = new RegExp('^(?:new|add)(?: a)? (?:3d|3-d|three[ -]d|vr|space) layer(?: (?:for|called|named))?(?: ' + L + ')?$').exec(t)) || (m = new RegExp('^(?:new|add)(?: a)? layer(?: (?:for|called|named))?(?: ' + L + ')? in (?:3d|3-d|space|vr)$').exec(t))) return { op: 'add', name: bare(m[1] || '') || '3d ' + (names.length + 1), space: true };
   if ((m = new RegExp('^(?:new|add)(?: a)? layer(?:s)?(?: (?:for|called|named))?(?: ' + L + ')?$').exec(t)) || (m = new RegExp('^add ' + L + ' (?:on|as) (?:a )?new layer$').exec(t))) return { op: 'add', name: bare(m[1] || '') || 'layer ' + (names.length + 1) };
+  if (/^(?:make|set|use|put)\s+(?:it|this|my drawing|the drawing|this drawing)\s+(?:as\s+)?(?:my|the)\s+(?:void'?s?\s+)?(?:backdrop|background|wallpaper)$|^(?:make\s+(?:it\s+)?)?my\s+(?:void'?s?\s+)?(?:backdrop|background|wallpaper)$/.test(t)) return { op: 'backdrop' };
   if ((m = new RegExp('^(?:turn|spin|rotate) ' + L + '(?: (?:by )?(-?\\d{1,3})(?: ?(?:degrees|deg|°))?)?(?: (left|right|around))?$').exec(t))) return one('turn', m[1], { deg: m[2] ? +m[2] : m[3] === 'left' ? -90 : m[3] === 'around' ? 180 : 90 });
   if ((m = new RegExp('^(?:put|move|send|place|bring) ' + L + ' (behind|under|below|beneath|in front of|over|above|on top of) ' + L + '$').exec(t))) {
     const a = idx(m[1]), b = idx(m[3]); if (a < 0 || b < 0) return { op: 'missing', name: bare(a < 0 ? m[1] : m[3]) };
@@ -193,7 +194,7 @@ function run(text, api) {
       + '<form class="vd-make" style="display:flex;gap:6px;margin:8px 0"><input class="vd-words" placeholder="describe a brush, or tell the layers what to do…" aria-label="describe a brush, or tell the layers what to do" style="flex:1;font:inherit;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:transparent;color:inherit"><button type="submit">Make it</button></form>'
       + '<div class="vd-said sub" aria-live="polite"></div><div class="vd-layers" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;align-items:center"></div><div class="vd-steady sub"></div><div class="vd-brushes" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0"></div>'
       + '<div class="vd-colors" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">' + Object.entries(COLORS).filter(([k]) => !/grey|violet/.test(k)).map(([k, v]) => '<button type="button" data-color="' + esc(v) + '" title="' + esc(k) + '" style="width:26px;height:26px;border-radius:50%;background:' + esc(v) + ';border:2px solid rgba(255,255,255,.3)"></button>').join('') + '</div>'
-      + '<div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="vd-undo">Undo</button><button type="button" class="vd-clear">Clear layer</button><button type="button" class="vd-save">Save as picture</button><button type="button" class="vd-steadyon" aria-pressed="true">Steadying on</button><label class="sub" style="display:flex;align-items:center;gap:6px">Steadiness <input class="vd-strength" type="range" min="0" max="100" value="0" aria-label="steadiness, 0 = learned from your hand"><span class="vd-strength-v">auto</span></label></div></div>';
+      + '<div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="vd-undo">Undo</button><button type="button" class="vd-clear">Clear layer</button><button type="button" class="vd-save">Save as picture</button><button type="button" class="vd-backdrop">Make it my backdrop</button><button type="button" class="vd-steadyon" aria-pressed="true">Steadying on</button><label class="sub" style="display:flex;align-items:center;gap:6px">Steadiness <input class="vd-strength" type="range" min="0" max="100" value="0" aria-label="steadiness, 0 = learned from your hand"><span class="vd-strength-v">auto</span></label></div></div>';
   });
   const $ = (s) => el.querySelector(s), cv = $('canvas'), g = cv.getContext('2d');
   const undo = [], said = $('.vd-said');
@@ -223,6 +224,12 @@ function run(text, api) {
   const named = (L) => '"' + L.name + '"';
   const doLayer = (c) => {
     const L = layers[c.i];
+    if (c.op === 'backdrop') {
+      const src = backdropSrc(); if (!src) return 'That picture is too big to keep as a backdrop.';
+      if (!layers.some((x) => !x.hidden && x.c.getContext('2d').getImageData(0, 0, cv.width, cv.height).data.some((v, i) => i % 4 === 3 && v > 0))) return 'Draw something first: the canvas is empty.';
+      window.dispatchEvent(new CustomEvent('void-backdrop', { detail: { src } }));
+      return 'Your drawing is now your Void\'s backdrop, kept with your Void (signed in, it follows you to your other devices). Say "remove my backdrop" to take it off.';
+    }
     if (c.op === 'missing') return 'There is no layer called "' + c.name + '". The layers are: ' + layers.map((x) => x.name).join(', ') + '.';
     if (c.op === 'cannot') return 'Cannot do that: ' + c.why + '.';
     if (c.op === 'add') { const n = layers.some((x) => x.name === c.name) ? c.name + ' ' + (layers.length + 1) : c.name; const N = newLayer(n);
@@ -336,6 +343,18 @@ function run(text, api) {
     if (S.live) { S.group.remove(S.live); S.live.geometry.dispose(); S.live.material.dispose(); }
     S.live = tubeOf(S, S.pts); S.group.add(S.live); renderSpace(L); compose();
   };
+  // "make it my backdrop" (frontier 25, step 3): the picture as it shows now, every visible layer, 3D ones as they are turned,
+  // goes behind your Void (void.html keeps it in the look, which your passkey syncs). Transparent stays transparent: the strokes
+  // float on your Void's own colour. Too big to sync, it is drawn smaller until it fits.
+  const backdropSrc = () => {
+    compose();
+    for (let w = cv.width; w >= 240; w = Math.round(w * 0.75)) {
+      const c = document.createElement('canvas'); c.width = w; c.height = Math.round(cv.height * w / cv.width); c.getContext('2d').drawImage(cv, 0, 0, c.width, c.height);
+      let src = c.toDataURL('image/webp', 0.85); if (!/^data:image\/webp/.test(src)) src = c.toDataURL('image/png');
+      if (src.length < 550000) return src;
+    }
+    return '';
+  };
   const talk = (w) => { const c = layerCommand(w, layers.map((x) => x.name)); if (!c) return false; said.textContent = doLayer(c); compose(); showLayers(); return true; };
   const show = () => {
     said.textContent = 'Brush: ' + cur.name + ' (' + describe(cur) + ')';
@@ -359,6 +378,7 @@ function run(text, api) {
   });
   $('.vd-undo').addEventListener('click', () => { const u = undo.pop(); if (u && layers.includes(u.L)) { if (u.mesh) { u.L.space.group.remove(u.mesh); u.mesh.geometry.dispose(); u.mesh.material.dispose(); renderSpace(u.L); } else u.L.g.putImageData(u.im, 0, 0); } compose(); });
   $('.vd-clear').addEventListener('click', () => { talk('clear ' + A.name); });
+  $('.vd-backdrop').addEventListener('click', () => { talk('make it my backdrop'); });
   $('.vd-save').addEventListener('click', () => { compose(); const a = document.createElement('a'); a.download = 'void-drawing.png'; a.href = cv.toDataURL('image/png'); a.click(); });
   // drawing: stamps along the path, spacing a quarter of the size; the grain mask is laid over each stroke on its own layer
   // steadying that learns your hand (target ibisPaint X, feature stabilizer): each stroke's own shake is measured, the hand's is kept
@@ -419,6 +439,7 @@ export default {
       && learnHand(null, [[0, 0], [1, 2], [2, 0], [3, 2], [4, 0], [5, 2]]).strokes === 1 && learnHand({ tremor: 1, strokes: 3 }, [[0, 0], [1, 0]]).strokes === 3
       && layerCommand('put the moon behind the house', ['sky', 'house', 'moon']).rel === 'behind' && moveLayer(['sky', 'house', 'moon'], 2, 'behind', 1).join() === 'sky,moon,house'
       && layerCommand('new layer for the moon', []).name === 'moon' && layerCommand('make the shading multiply', ['shading']).mode === 'multiply' && layerCommand('hide the dog', ['sky']).op === 'missing' && !layerCommand('what is a layer', ['sky'])
+      && layerCommand('make it my backdrop', []).op === 'backdrop' && layerCommand('use this drawing as my background', []).op === 'backdrop' && !layerCommand('make the sky my backdrop', ['sky'])
       && layerCommand('new 3d layer for the ring', []).space === true && layerCommand('turn the ring left', ['ring']).deg === -90 && tubeRadius(8, 100) === 0.04
       && drawOf('let me draw') && drawOf('make a brush like dry charcoal').brush.tool === 'charcoal' && !drawOf('draw a cat') && !drawOf('what is charcoal');
     return { ok: !!ok, got: ok ? 'pass' : JSON.stringify({ c, i, f }) };

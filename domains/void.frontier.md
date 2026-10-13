@@ -386,7 +386,14 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
     - In the headset the layer stands about 0.9 m in front of you at chest height, and holding a trigger paints in the air.
     - Leaving VR brings the strokes back to the card.
     - It is tested with Meta's WebXR emulator (`iwer`, a dev dependency) standing in for a Quest 3. It has not yet been tried on a real headset.
-  - **Next:** "make it my backdrop" or "put it on the stage", kept with the passkey. Then the stage itself in VR (step 4 above).
+  - **"Make it my backdrop" shipped 2026-10-13:**
+    - The picture as it shows (every visible layer, 3D ones as turned) goes behind your Void.
+    - It is kept in the look, which the passkey syncs, so it survives a reload.
+    - "remove my backdrop" takes it off.
+  - **Next, in the owner's words (2026-10-13):**
+    - "Void should allow any customizable backdrop on demand . understandibly it has to learn them or how o procedreal generate". So: "make my backdrop a sunset over mountains" paints one from words, procedurally, with no model call per backdrop. A word it cannot paint yet becomes a job to learn (the misses → jobs loop, `lib/learn.js`).
+    - "and the figures and the backdrops should interact as well". Figures (the miniatures) stand in the backdrop's light: a sunset warms them and casts long shadows, water reflects them, rain falls on them, a ground line gives them somewhere to stand.
+  - **Then:** "put it on the stage" (a drawing as a card), and the stage itself in VR (step 4 above), with the backdrop around you as the room.
 
 ## Candidate capability map (2026-10-09)
 
