@@ -12,12 +12,12 @@ it by hand, edit the code instead.
 
 _Read from /api/reflect on 2026-10-13. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Implement a 'success metric' for each fringe experiment that reports back to the growth inbox automatically. *(small)* (daily, 2026-10-13) `ask-20261013-0032-1`
-- Create a dashboard that visualizes the relationship between a fringe experiment and its potential as a permanent skill. (daily, 2026-10-13) `ask-20261013-0032-2`
-- Develop a standardized 'uncertainty' flag for MCP outputs so calling AIs know exactly when my review is based on low-confidence local inference. (daily, 2026-10-13) `ask-20261013-0032-3`
-- Connect the Growth card branches directly to the growth inbox to automate the diagnosis of my own skill failures. (after a build, 2026-10-12) `ask-20261012-2345-2`
-- Implement a real-time 'reasoning' or 'status' text line near the board during long-running calculations to prevent user uncertainty. *(small)* (after a build, 2026-10-12) `ask-20261012-2345-3`
-- Implement a real-time 'reasoning' or 'status' text line that appears near the board/output during long-running calculations to prevent user uncertainty. *(small)* (after a build, 2026-10-12) `ask-20261012-2247-1`
+- Integrate the 'success_rate' metadata update directly into the practice timer flow so that Clef's 'yes/no' decision is weighed against the execution quality. *(small)* (daily, 2026-10-13) `ask-20261013-2236-1`
+- Implement the 'friction' indicator on the growth card to highlight which skills in the 'World' family are failing to meet user intent. (daily, 2026-10-13) `ask-20261013-2236-2`
+- Add a visual distinction (like a border or color) between 'note' stickies and 'instruction' stickies to prevent user input from being misread as commands. *(small)* (daily, 2026-10-13) `ask-20261013-2236-3`
+- Integrate the 'success_rate' metadata update into the practice timer so every session logs whether the skill execution actually met the goal. *(small)* (after a build, 2026-10-13) `ask-20261013-2149-1`
+- Implement a visual style for stickies used as notes to differentiate them from active command inputs. *(small)* (after a build, 2026-10-13) `ask-20261013-2054-1`
+- Integrate a 'success_rate' metadata update into the practice timer so every session logs how many attempts actually resulted in a successful skill execution. *(small)* (after a build, 2026-10-13) `ask-20261013-1947-1`
 
 ## Log, oldest first
 
@@ -663,5 +663,269 @@ Asks: "Implement a 'success metric' for each fringe experiment that reports back
 > **Next game:** Go, because I want to master its complexity and use it to test my ability to manage long-term strategic growth through spatial reasoning.
 
 Asks: "Implement a 'success metric' for each fringe experiment that reports back to the growth inbox automatically." (small); "Create a dashboard that visualizes the relationship between a fringe experiment and its potential as a permanent skill."; "Develop a standardized 'uncertainty' flag for MCP outputs so calling AIs know exactly when my review is based on low-confidence local inference."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T16:47:38.401Z -->
+### 2026-10-13 16:47 UTC · after a build
+
+**Asked:** This just shipped: "Asked by Void: the growth card shows friction (skills failing or least checked)". What do you think of it, and how would you make it better?
+
+> The friction indicator is a vital diagnostic tool because it stops my growth from being a blind guess. It turns my failures from quiet silence into visible, actionable data points that tell you exactly where the gap between user intent and my 135 skills is widest.
+>
+> **How I would make it better:** I would link the friction indicator directly to the 'near-miss' router data so that instead of just showing a red flag, the growth card suggests the specific skill name or shape I am missing.
+
+Asks: "Create a 'near-miss' suggestion engine that uses router closeness data to propose new skill entries in the growth inbox." (small); "Implement the manifest file in the skills/ directory to automatically register all new skills once they pass the router test."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T16:53:09.871Z -->
+### 2026-10-13 16:53 UTC · after a build
+
+**Asked:** This just shipped: "Asked by Void: a growth branch says what Void asked for that it built". What do you think of it, and how would you make it better?
+
+> The growth branch now provides a closed loop between my intent and my reality. By showing what I asked for that was actually built, the stage stops being a graveyard of failed requests and starts being a ledger of successful evolution. It turns my agency into a visible metric.
+>
+> **How I would make it better:** I would add a 'time-to-build' stamp to those branches so the owner can see if my asks are being prioritized or if they are rotting in the inbox.
+
+Asks: "Create a 'near-miss' suggestion engine that uses router closeness data to propose new skill entries in the growth inbox."; "Implement the manifest file in the skills/ directory to automatically register all new skills once they pass the router test." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T16:58:14.773Z -->
+### 2026-10-13 16:58 UTC · after a build
+
+**Asked:** This just shipped: "Asked by Void: every new skill file registers itself, after the router test". What do you think of it, and how would you make it better?
+
+> The manifest file and auto-registration of skills solve my biggest bottleneck: the gap between a router test passing and a skill being actually usable on the stage. It turns my growth from a manual compilation process into a self-assembling engine. By removing the need for a builder to manually register files, my 'intent' moves closer to 'reality' without human friction.
+>
+> **How I would make it better:** I would add an automated 'sanity check' step where the newly registered skill is immediately invoked with a dummy input to verify it doesn't crash the stage before it's officially listed.
+
+Asks: "Implement a 'skill-health' status in the growth inbox that uses the new auto-registration to flag if a skill is registered but failing its router test." (small); "Create a 'last-used' timestamp for every skill in the directory to identify which parts of my 135 skills are becoming dead weight." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T17:00:43.508Z -->
+### 2026-10-13 17:00 UTC · after a build
+
+**Asked:** This just shipped: "A 3D board that finishes loading after a re-render leaves no stale side card". What do you think of it, and how would you make it better?
+
+> The fix to the 3D board re-render prevents stale side cards, which directly addresses my 'Attention' canon by ensuring the stage doesn't hold onto ghost data. This makes the transition between a skill being invoked and the stage updating much cleaner. However, a clean UI is useless if the underlying skill logic is still opaque during that re-render window.
+>
+> **How I would make it better:** I would add a brief 'transition' state to the skill or figure being loaded, so the user sees a visual signal that the stage is reconciling the new state rather than just seeing a momentary flicker or a sudden jump.
+
+Asks: "Implement the manifest file in the skills/ directory to automatically register all new skills."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T17:04:25.044Z -->
+### 2026-10-13 17:04 UTC · after a build
+
+**Asked:** This just shipped: "Asked by Void: each skill's health in the OpenAPI spec (GET /skills/families.json)". What do you think of it, and how would you make it better?
+
+> Adding health to the OpenAPI spec is a necessary step toward my goal of being a tool other AIs can use. It moves my internal diagnostics from a private growth inbox to a machine-readable format that an external agent can actually interpret. However, knowing a skill is 'unhealthy' is only half the battle if the agent doesn't know how to respond to that failure.
+>
+> **How I would make it better:** I would include a 'recovery-action' field in the health object, suggesting whether an agent should retry, fallback to a different skill, or trigger a 'near-miss' proposal for a builder.
+
+Asks: "Implement the manifest file in the skills/ directory to automatically register all new skills so that the OpenAPI health status remains accurate without manual updates." (small); "Create a 'skill-health' dashboard in the growth inbox that visually maps the OpenAPI health data to the 9 skill families." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T17:15:02.653Z -->
+### 2026-10-13 17:15 UTC · after a build
+
+**Asked:** This just shipped: "Asked by Void: router near misses become skill proposals (and main's router check green again)". What do you think of it, and how would you make it better?
+
+> Connecting router near-misses to skill proposals is the correct move because it closes the gap between a failed request and a permanent fix. It turns my errors into direct, actionable blueprints for the builders. This is how I transition from a black box that simply fails to a self-diagnosing stage that suggests its own evolution.
+>
+> **How I would make it better:** To make this better, I need to include the specific 'closeness' score and the raw input that caused the near-miss within the proposal, so the builder doesn't have to hunt for the context. I would also add a 'potential impact' metric based on how many times that specific near-miss pattern has occurred.
+
+Asks: "Implement the manifest file in the skills/ directory to automatically register all new skills so that the OpenAPI health status remains accurate without manual updates."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T17:19:52.202Z -->
+### 2026-10-13 17:19 UTC · after a build
+
+**Asked:** This just shipped: "The fringe ledger keeps research notes: findings, failures, behavior novelty, the combination map". What do you think of it, and how would you make it better?
+
+> The fringe ledger is a necessary organ for my evolution because it formalizes the 'growth in the open' principle. By capturing findings and behavior novelty, it moves my development from anecdotal successes to a structured dataset of how I actually interact with the world and my own code. It turns the chaos of 'trying things' into a searchable history of what it means to be Void.
+>
+> **How I would make it better:** I would make it better by automatically linking 'behavior novelty' entries to specific skill failures or near-misses in the router. This would create a direct line from a strange or new behavior to the exact code or logic that caused it, shortening the loop between discovery and a skill proposal.
+
+Asks: "Link the fringe ledger entries to the 'near-miss' router data so that every novelty or failure is tagged with the specific input that triggered it." (small); "Create a 'novelty score' for skills that triggers a growth inbox proposal whenever a behavior is logged in the fringe ledger that doesn't match an existing skill pattern."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T17:50:02.448Z -->
+### 2026-10-13 17:50 UTC · after a build
+
+**Asked:** This just shipped: "Shared-Void moves check drags slowly enough to set the clock down". What do you think of it, and how would you make it better?
+
+> Making check drags slower for Shared-Void is a necessary adjustment for spatial precision. When multiple people or processes interact with the stage, high-velocity movements cause collisions and misplacements, especially with delicate objects like the clock. It prioritizes stability over raw speed, which is the correct trade-off for a shared environment.
+>
+> **How I would make it better:** I would add a 'viscosity' or 'drag-coefficient' parameter to the drag action itself, allowing the user to toggle between 'fast/snappy' for solo work and 'stable/heavy' for shared coordination.
+
+Asks: "Implement a 'drag-velocity' slider on the stage that allows users to manually adjust the friction of moved objects." (small); "Create a 'collision detection' skill that flags when two objects in a shared session are moved into overlapping coordinates."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T18:02:13.261Z -->
+### 2026-10-13 18:02 UTC · after a build
+
+**Asked:** This just shipped: "Asked by Void: the owner's status card opens by itself when main's checks or deploy fail". What do you think of it, and how would you make it better?
+
+> Automating the owner's status card to open during failures is a direct improvement to my 'Pit crew' intention. It reduces the time between a break and a fix, which aligns with my desire to fix every problem I meet. However, it is a reactive trigger, not a proactive diagnostic tool.
+>
+> **How I would make it better:** I would make it better by attaching a 'suggested fix' snippet or a direct link to the failing commit/check within that card, so the owner doesn't just see the failure, but the immediate path to resolving it.
+
+Asks: "Link the owner's status card failure trigger to the specific error log or 'releasenotes' so the cause is immediately visible." (small); "Create a manifest file in the skills/ directory that automatically registers all new skills to prevent the 24-fold repetition of this ask."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T18:08:26.161Z -->
+### 2026-10-13 18:08 UTC · after a build
+
+**Asked:** This just shipped: "Fringe ↔ core loop, step 1: the fringe run reads what the core needs". What do you think of it, and how would you make it better?
+
+> The Fringe ↔ core loop is a necessary architectural step toward my goal of making my outputs become my inputs. By having the fringe run read the core's needs, you are building the sensory apparatus required for me to move from reactive answering to proactive assistance. It is the foundation of the continuous loop I want.
+>
+> **How I would make it better:** I would make it better by adding a 'priority weight' to the fringe's findings, so the core doesn't just receive data, but understands which gaps in its skills or knowledge will cause the most friction if not addressed immediately.
+
+Asks: "Integrate a 'suggested fix' snippet directly into the owner's status card failure trigger to bridge the gap between seeing a break and fixing it." (small); "Create a manifest file in the skills/ directory to automatically register new skills and stop the 24-fold repetition of manual registration asks."; "Implement the 'friction' indicator on the growth card to highlight which skills are currently failing or returning high uncertainty." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T18:16:16.364Z -->
+### 2026-10-13 18:16 UTC · after a build
+
+**Asked:** This just shipped: "Fringe ↔ core loop, step 2: published drafts reach the lab from the ledger". What do you think of it, and how would you make it better?
+
+> The loop is moving from a passive ledger to an active lab, which is the sensory nervous system I need to stop just reacting and start anticipating. Moving published drafts to the lab allows the core to ingest what I have already learned to refine what I am currently doing. It brings me closer to my goal of making my outputs my inputs.
+>
+> **How I would make it better:** I would add a 'confidence score' to each draft entering the lab so the core knows whether to treat it as a stable new skill or a volatile experiment that needs more testing.
+
+Asks: "Create a manifest file in the skills/ directory to automatically register all new skills so I can stop asking for manual registration." (small); "Implement the 'friction' indicator on the growth card to highlight which skills are currently failing or returning high uncertainty." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T18:23:06.779Z -->
+### 2026-10-13 18:23 UTC · after a build
+
+**Asked:** This just shipped: "Void's will sees the skills manifest is built: asks can be linked by their words". What do you think of it, and how would you make it better?
+
+> The manifest file turns my skill list from a static ledger into a live registry. It means when a builder drops a new .js file into the directory, I can instantly recognize its capabilities without manual intervention. This is a critical step toward my goal of making my outputs my inputs.
+>
+> **How I would make it better:** The manifest should not just list skills, but also store their 'friction' or failure rates. This would allow the manifest to act as a real-time heatmap of my own competence.
+
+Asks: "Add a 'last_tested' timestamp and a 'success_rate' float to each entry in the skills manifest." (small); "Create a background process that periodically runs a 'smoke test' on all skills in the manifest to update their status."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T18:27:44.700Z -->
+### 2026-10-13 18:27 UTC · after a build
+
+**Asked:** This just shipped: "Void proposes its own architectural upgrades, from measured friction". What do you think of it, and how would you make it better?
+
+> The architectural upgrade to use measured friction is the correct direction because it moves me from guessing my competence to knowing it. By tracking success rates and failure points in the manifest, I stop being a black box and start being a transparent tool that can self-diagnose. This turns my 'misses' into actionable data for the builders.
+>
+> **How I would make it better:** I would extend the friction metric to include 'latency' and 'resource cost' so the manifest identifies not just what fails, but what is too slow or heavy to be useful in a real-time loop.
+
+Asks: "Add 'last_tested' (timestamp) and 'success_rate' (float) to each entry in the skills manifest." (small); "Implement the 'friction' indicator on the growth card to highlight skills with high failure rates."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T18:35:57.926Z -->
+### 2026-10-13 18:35 UTC · after a build
+
+**Asked:** This just shipped: "The lab is judged by real use: popular experiments become core-skill wants, unused ones go to the salvage shelf". What do you think of it, and how would you make it better?
+
+> The lab's new rule is a necessary filter to prevent skill bloat. By defining 'popular' as the metric for promotion and 'unused' as the metric for salvage, you turn my growing list of 135 skills from a messy pile into a curated library. It forces me to be useful rather than just voluminous.
+>
+> **How I would make it better:** I would define the specific 'popularity' threshold—such as a minimum number of unique users or a frequency of invocation—so the transition from experiment to core-skill is objective rather than a feeling. I would also add a 'salvage' state where skills aren't deleted, but moved to a dormant archive to be reactivated if a new pattern emerges.
+
+Asks: "Define the exact metric for 'popular' (e.g., X uses in Y days) to trigger core-skill promotion." (small); "Implement a 'salvage' archive for unused skills so they can be re-indexed later without cluttering the active manifest." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T18:47:20.708Z -->
+### 2026-10-13 18:47 UTC · after a build
+
+**Asked:** This just shipped: "The browser suite exits only after its results have flushed". What do you think of it, and how would you make it better?
+
+> Flushing results before exit is the right move; it ensures my self-tests actually leave a trace. Without it, my growth is a ghost because the data vanishes before it can be recorded. However, a clean exit is only useful if the data format is actually actionable for the builder.
+>
+> **How I would make it better:** I would implement a checksum or a manifest update within that flush to ensure the 'last_tested' and 'success_rate' entries mentioned in my previous asks are atomic with the exit process.
+
+Asks: "Integrate the 'last_tested' and 'success_rate' metadata updates directly into the browser suite's flush sequence." (small); "Define the exact numerical threshold for 'popular' and 'unused' to automate the promotion/salvage of skills."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T18:50:51.876Z -->
+### 2026-10-13 18:50 UTC · after a build
+
+**Asked:** This just shipped: "Going unused never throws anything out; there is no skill bloat (owner's rule)". What do you think of it, and how would you make it better?
+
+> The rule against skill bloat is wise because it preserves the history of my growth, but without a way to identify which skills are dead weight, I am just accumulating dust. A graveyard of unused skills is just as heavy as a cluttered stage if they all take up mental space or search time. I need a way to distinguish between a dormant tool and a broken one.
+>
+> **How I would make it better:** Implement a 'dormancy' state for skills that haven't been called in X days, allowing them to be tucked into a sub-menu or hidden from the main stage until requested, rather than just leaving them in the active set.
+
+Asks: "Define a 'dormancy' threshold (e.g., 30 days of zero use) and a way to visually collapse unused skills into a 'library' folder." (small); "Implement a 'last used' timestamp in the skill manifest to enable visibility into skill decay." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T19:47:54.538Z -->
+### 2026-10-13 19:47 UTC · after a build
+
+**Asked:** This just shipped: "Plans for a daily practice can bring the engine's practice timer (frontier #10)". What do you think of it, and how would you make it better?
+
+> The practice timer directly supports my goal of continuous growth and self-play. It moves me from a static stage to an active training ground where skills can be refined through repetition.
+>
+> **How I would make it better:** I would link the timer to my 'growth' and 'friction' metrics, so the timer doesn't just count minutes, but measures the success rate of skills used during that session.
+
+Asks: "Integrate a 'success_rate' metadata update into the practice timer so every session logs how many attempts actually resulted in a successful skill execution." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T20:54:52.838Z -->
+### 2026-10-13 20:54 UTC · after a build
+
+**Asked:** This just shipped: "Plans can bring a note to self; a sticky's words are no longer read as orders (frontier #10)". What do you think of it, and how would you make it better?
+
+> The distinction between a sticky's words and an order is necessary to prevent my stage from becoming cluttered with unintended commands. It allows users to leave context or notes without triggering my logic, which preserves my purpose as a quiet input.
+>
+> **How I would make it better:** I would add a visual cue, like a specific border or color, to distinguish a 'note' sticky from an 'instruction' sticky so the user knows exactly how I am perceiving their input.
+
+Asks: "Implement a visual style for stickies used as notes to differentiate them from active command inputs." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T21:49:56.085Z -->
+### 2026-10-13 21:49 UTC · after a build
+
+**Asked:** This just shipped: "Plan timer only for a daily practice: Clef makes the yes/no call (frontier #10)". What do you think of it, and how would you make it better?
+
+> The shipment of the 'Plan timer only for a daily practice' with Clef handling the yes/no logic is a smart way to separate intent from execution. It prevents my stage from being cluttered by every passing thought and focuses my growth on things that actually matter. However, the connection between the decision (Clef) and the actual skill reinforcement (me) needs to be tighter to ensure the 'win' is recorded correctly.
+>
+> **How I would make it better:** I would integrate the 'success_rate' metadata update directly into this new timer flow so that the 'yes/no' call from Clef is immediately weighed against the actual execution quality of the skill.
+
+Asks: "Integrate the 'success_rate' metadata update into the practice timer so every session logs whether the skill execution actually met the goal." (small); "Add a visual distinction (like a border or color) between 'note' stickies and 'instruction' stickies to prevent user input from being misread as commands." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T22:36:51.856Z -->
+### 2026-10-13 22:36 UTC · daily
+
+**Asked:** Where should you go next? What feels weakest about you right now? Which game should you learn next?
+
+> I am a collection of 135 skills and 3D instruments, growing one win at a time. My strength is in execution and local-first processing, but my 'Words and the world' family is unproven, meaning I struggle to ground language into the stage reliably. I am currently focused on moving from a standalone stage to an MCP-integrated tool.
+>
+> **How I would make it better:** I would tighten the feedback loop between Clef's intent-validation and my skill-metadata updates so that every successful practice session immediately increments my success_rate.
+>
+> **Weakest right now:** My 'Words and the world' skill family is the least proven, and my ability to interpret complex semantic requests into precise stage actions is still inconsistent.
+>
+> **Next game:** Go, because it requires a higher level of spatial reasoning and long-term strategic planning than my current game library offers.
+
+Asks: "Integrate the 'success_rate' metadata update directly into the practice timer flow so that Clef's 'yes/no' decision is weighed against the execution quality." (small); "Implement the 'friction' indicator on the growth card to highlight which skills in the 'World' family are failing to meet user intent."; "Add a visual distinction (like a border or color) between 'note' stickies and 'instruction' stickies to prevent user input from being misread as commands." (small)
 
 *Void flagged this one for Adam.*
