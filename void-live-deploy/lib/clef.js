@@ -4,8 +4,9 @@
 // Nothing here is wired into /api/answer yet: /api/bench (owner only) runs both routers on the bench's asks and
 // tools/route-bench.mjs scores them; the router switches only where Clef wins.
 import { SKILLS } from './router.js';
+import { CLEF_MODEL } from './models.js';
 
-export const CLEF_MODEL = '@cf/cloudflare/clef-flash';
+export { CLEF_MODEL };
 export const NONE = 'none';
 export const CLEF_TIMEOUT_MS = 3000;
 
@@ -49,4 +50,23 @@ export async function clefRoute(env, ask, { question = skillQuestion() } = {}) {
   } catch (e) {
     return { kind: 'fallback', why: /timeout/.test(String(e && e.message)) ? 'timeout' : 'model error', ms: Date.now() - t0 };
   } finally { clearTimeout(t); }
+}
+
+// Where Clef routes (frontier #9, Route bench run 38428528839, 2026-10-13): Clef-flash 290/306 right against the embedding
+// router's 201/306; it won by 2+ on these skills and sent 3 of 69 answer-in-words asks to a skill. Every other skill keeps the
+// embedding guess. Below CONFIDENT Clef is not followed; its pick is kept as `unsure`, for asking instead of guessing.
+export const CLEF_SKILLS = ['calc', 'place', 'timer', 'translate', 'weather', 'worldtime'];
+export const CONFIDENT = 0.7;
+export function clefOn(env) { return !(env && /^(off|0|false|no)$/i.test(String(env.VOID_CLEF || ''))); }
+
+// the embedding router's result, with Clef's pick taking over where Clef won the bench
+export function mergeRoute(embed, clef) {
+  const e = embed || { kind: 'fallback', why: 'no route' };
+  if (!clef || clef.kind === 'fallback') return e;
+  const sure = clef.p != null && clef.p >= CONFIDENT;
+  const mine = (k) => CLEF_SKILLS.includes(k);
+  if (!sure) return (clef.skill && mine(clef.skill)) ? { ...e, unsure: clef.skill, clefP: clef.p } : e;
+  if (clef.kind === 'skill' && mine(clef.skill)) return { ...e, kind: 'skill', skill: clef.skill, score: clef.p, by: 'clef' };
+  if (clef.kind === NONE && e.kind === 'skill' && mine(e.skill)) return { ...e, kind: 'simple', skill: undefined, score: clef.p, by: 'clef' };
+  return e;
 }

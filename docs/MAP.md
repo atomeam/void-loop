@@ -79,6 +79,7 @@ Every tool in `tools/` (tests aside) and every workflow in `.github/workflows/`,
 
 - **Clef probe (frontier #9):** `.github/workflows/clef-probe.yml` (manual) runs `tools/clef-probe.mjs`: what the site's Workers AI binding knows about Clef and Clef-flash (`POST /api/bench { probe: true }` now returns `clef`), in the job summary, so the router's Clef call is written to the real input shape. Needs `VOID_OWNER_TOKEN`.
 - **Route bench (frontier #9, first piece):** `.github/workflows/route-bench.yml` (manual) runs `tools/route-bench.mjs`: Clef-flash (`lib/clef.js`) beside the embedding router on the bench's asks through `POST /api/bench { route: true }` (owner only); accuracy, agreement, confidence bands and the skills where Clef wins. Nothing switches yet.
+- **Clef routing (frontier #9):** `lib/clef.js` mergeRoute: Clef-flash decides calc, place, timer, translate, weather, worldtime in `/api/answer`'s route log (confidence 0.7+, never waited on); the embedding router keeps the rest. `VOID_CLEF=off` turns it off.
 
 ## Built, not merged [gh, 2026-10-10]
 - PR #293 — the standing watch card, "watch this for me" (build-order step 4, first piece; claim line merged as #285; labelled automerge [gh]).

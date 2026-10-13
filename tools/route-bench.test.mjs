@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { skillQuestion, clefPick, clefRoute, CLEF_MODEL, NONE } from '../void-live-deploy/lib/clef.js';
+import { skillQuestion, clefPick, clefRoute, mergeRoute, clefOn, CLEF_SKILLS, CLEF_MODEL, NONE } from '../void-live-deploy/lib/clef.js';
 import { SKILLS, resetRouter } from '../void-live-deploy/lib/router.js';
 import { onRequestPost as bench, ROUTE_CHUNK } from '../void-live-deploy/functions/api/bench.js';
 import { benchSet, sample, score, verdict, table, runSite, noneSet, CONFIDENT } from './route-bench.mjs';
@@ -115,5 +115,50 @@ test('every run adds the router\'s own answer-in-words asks as "none": near-miss
   assert.equal(new Set(rows.map((r) => r.ask)).size, rows.length, 'no ask twice');
   const s = score([{ ask: 'who invented the clock', want: [NONE] }, { ask: 'why is the sky blue', want: [NONE] }], [{ embed: { skill: null }, clef: { skill: 'clock', p: 0.6 } }, { embed: { skill: null }, clef: { skill: null, p: 0.9 } }]);
   assert.match(table(s, verdict(s)), /Clef sent 1 of them to a skill/);
+});
+
+test('the switch: Clef decides only the skills it won, only when sure; the embedding guess stays for the rest and as the fallback', () => {
+  const embed = { kind: 'simple', score: 0.1, scores: { skill: 0.6 }, ms: 40 };
+  assert.deepEqual(CLEF_SKILLS, ['calc', 'place', 'timer', 'translate', 'weather', 'worldtime']);
+  const r = mergeRoute(embed, { kind: 'skill', skill: 'timer', p: 0.93 });
+  assert.deepEqual([r.kind, r.skill, r.by, r.score], ['skill', 'timer', 'clef', 0.93]);
+  assert.equal(r.scores, embed.scores, 'the embedding scores stay in the log');
+  assert.equal(mergeRoute(embed, { kind: 'skill', skill: 'clock', p: 0.99 }), embed, 'a skill Clef did not win: the embedding guess');
+  const unsure = mergeRoute(embed, { kind: 'skill', skill: 'weather', p: 0.55 });
+  assert.equal(unsure.kind, 'simple'); assert.equal(unsure.unsure, 'weather', 'below 0.7: not followed, kept for asking instead');
+  const undo = mergeRoute({ kind: 'skill', skill: 'calc', score: 0.72 }, { kind: NONE, skill: null, p: 0.9 });
+  assert.deepEqual([undo.kind, undo.by], ['simple', 'clef'], 'sure it is a question: the embedding\'s calc guess is dropped');
+  assert.equal(mergeRoute({ kind: 'skill', skill: 'self' }, { kind: NONE, p: 0.95 }).kind, 'skill', 'self stays the embedding router\'s');
+  assert.equal(mergeRoute(embed, { kind: 'fallback', why: 'timeout' }), embed);
+  assert.equal(mergeRoute(embed, null), embed);
+  assert.equal(clefOn({}), true); assert.equal(clefOn({ VOID_CLEF: 'off' }), false);
+});
+
+test('/api/answer: Clef never holds the answer; its pick reaches the route log after it', async () => {
+  const { onRequestPost: answer } = await import('../void-live-deploy/functions/api/answer.js');
+  resetRouter();
+  const logged = [], pending = [];
+  let releaseClef;
+  const clefGate = new Promise((r) => { releaseClef = r; });
+  const AI = { run: async (model, input) => {
+    if (model === CLEF_MODEL) { await clefGate; return answer_('timer', { timer: 0.94, none: 0.06 }); }
+    if (input && input.text) return { data: input.text.map(() => [1, 0, 0, 0]) };
+    return { response: 'Five minutes is 300 seconds.' };
+  } };
+  function answer_(choice, probabilities) { return { answers: { skill: { choice, probabilities } } }; }
+  const DB = { prepare: (sql) => ({ bind: (...a) => ({ run: async () => { if (/INSERT INTO void_routes/.test(sql)) logged.push(a); return {}; }, first: async () => null, all: async () => ({ results: [] }) }), run: async () => ({}), first: async () => null }), batch: async () => [] };
+  const req = new Request('https://a-to-mind.com/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: 'count down five minutes for my eggs' }) });
+  const origFetch = globalThis.fetch; globalThis.fetch = async () => new Response('{}', { status: 404 });
+  try {
+    const res = await answer({ request: req, env: { AI, DB }, waitUntil: (p) => pending.push(p) });
+    const j = await res.json();
+    assert.match(j.answer || '', /300 seconds/, 'answered while Clef was still out');
+    assert.equal(logged.length, 0, 'nothing logged before Clef answered');
+    releaseClef(); await Promise.allSettled(pending); await new Promise((r) => setTimeout(r, 20)); await Promise.allSettled(pending);
+    const row = logged.at(-1);
+    assert.ok(row, 'the route was logged');
+    assert.equal(row[2], 'skill'); assert.equal(row[3], 'timer');
+    assert.match(row[5], /skill missed: timer \(Clef\)/);
+  } finally { globalThis.fetch = origFetch; }
 });
 
