@@ -217,7 +217,7 @@ async function engineSteps(goal) {
     const steps = Array.isArray(j.steps) && j.steps.length ? j.steps.map((x) => listSafe(String(x)).replace(/\s*&\s*|\s+and\s+/gi, ' + ').slice(0, 60)).filter(Boolean).slice(0, 7) : null;
     const timer = Number.isInteger(j.timer) && j.timer >= 5 && j.timer <= 60 ? j.timer : null;
     const note = typeof j.note === 'string' && cleanNote(j.note).length >= 3 ? cleanNote(j.note) : null;
-    return steps ? { steps, timer, practice: !!timer && j.practice === true, note } : null;
+    return steps ? { steps, timer, practice: !!timer && j.practice === true, learn: j.learn === true, note } : null;
   } catch (_) { return null; }
 }
 // the fixed shapes besides the checklist that an engine reply may add: a practice timer, run as the timer's own ask
@@ -236,10 +236,10 @@ async function run(text, api) {
     const asks = [{ piece: 'checklist', ask: 'make a list with ' + steps.join(', ') }];
     if (open.who) asks.push({ piece: 'draft', ask: 'add a sticky that says draft to ' + cap(open.who) + ' (not sent): heads up, ' + (/^(?:give\s+)?us\b|\bour\b/.test(String(text).toLowerCase()) ? "we're" : "I'm") + ' working on: ' + open.goal });
     asks.push(...extras(got));
-    plan = { goal: open.goal, who: open.who, deadline: null, steps: steps.map((t) => ({ text: t, date: null })), asks, open: true };
+    plan = { goal: open.goal, who: open.who, deadline: null, steps: steps.map((t) => ({ text: t, date: null })), asks, open: true, learn: got.learn };
   } else if (plan.generic && !OPEN_NOT.test(plan.goal)) { // a dated plan with only the generic steps: the engine's, when it has them
     const got = await engineSteps(plan.goal);
-    if (got) { plan = withSteps(plan, got.steps); plan.asks.push(...extras(got)); }
+    if (got) { plan = withSteps(plan, got.steps); plan.asks.push(...extras(got)); plan.learn = got.learn; }
   }
   const st = api.stage || {};
   if (!st.ask || !st.things) return 'none';
@@ -255,10 +255,12 @@ async function run(text, api) {
     if (st.save) st.save();
     if (st.render) st.render();
   }
+  // Clef called it a skill to learn (lib/plan.js withLearnStep), so the engine's steps open with finding a teacher
+  const taught = plan.learn ? ' · a skill to learn, so it starts with finding a teacher or a course' : '';
   const pieces = plan.asks.map((a) => a.piece === 'draft' ? 'a draft to ' + cap(plan.who) : a.piece === 'timer' ? (a.practice ? 'a daily practice, so a ' + a.minutes + ' minute timer' : 'a ' + a.minutes + ' minute practice timer') : a.piece === 'note' ? 'a note to self' : a.piece).join(', ');
-  if (api.say && plan.open) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · steps from the answer engine, check them'); return 'intent'; }
+  if (api.say && plan.open) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · steps from the answer engine, check them' + taught); return 'intent'; }
   if (api.say && !plan.deadline) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · no day yet: add one ("' + plan.goal + ' by Friday") for dates, a countdown and the calendar'); return 'intent'; }
-  if (api.say) api.say('planned "' + plan.goal + '" for ' + LONG_DAY(plan.deadline) + ' · ' + pieces + (ids.length > 1 ? ' · one group, drag one to move them all' : '') + (plan.who ? ' · nothing sent' : '') + (plan.engine ? ' · steps from the answer engine, check them' : ''));
+  if (api.say) api.say('planned "' + plan.goal + '" for ' + LONG_DAY(plan.deadline) + ' · ' + pieces + (ids.length > 1 ? ' · one group, drag one to move them all' : '') + (plan.who ? ' · nothing sent' : '') + (plan.engine ? ' · steps from the answer engine, check them' + taught : ''));
   return 'intent';
 }
 

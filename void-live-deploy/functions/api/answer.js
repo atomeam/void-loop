@@ -23,7 +23,7 @@ import { prepareDraft, draftPrompt, ruleDraft, DRAFT_SYSTEM, DRAFT_MAX } from '.
 import { scopeOf } from '../../lib/memory-scope.js';
 import { ensure as ensureMemory, lookup as memoryLookup } from '../../lib/memory-core.js';
 import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_SYSTEM } from '../../lib/proposal.js';
-import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, PLAN_SYSTEM } from '../../lib/plan.js';
+import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, LEARN_ASK, withLearnStep, PLAN_SYSTEM } from '../../lib/plan.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -196,15 +196,17 @@ async function planAnswer(request, env, body) {
   if (on) {
     // Clef's yes/no call (is this a daily practice?) runs beside the plan and is read only when the engine offers a timer
     const asked = clefOn(env) ? clefYesNo(env, goal, PRACTICE_ASK) : Promise.resolve(null);
+    // and the second (a skill to learn?): yes opens the checklist with finding a teacher or a course
+    const learning = clefOn(env) ? clefYesNo(env, goal, LEARN_ASK) : Promise.resolve(null);
     try {
       const r = await env.AI.run(MODEL, {
         messages: [{ role: 'system', content: PLAN_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: planPrompt(goal) }],
         max_tokens: 400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
-      const said = redact(noThink(pick(r))), steps = parsePlan(said);
+      const said = redact(noThink(pick(r))), parsed = parsePlan(said), steps = parsed && withLearnStep(parsed, await learning);
       const offered = parseTimer(said), daily = offered ? await asked : null, timer = offered && keepTimer(offered, daily);
       // practice: true says Clef called it a daily practice, so the card can say why the timer is there
-      if (steps) return Response.json({ goal, steps, timer, practice: timer && daily && daily.yes === true ? true : undefined, note: parseNote(said), model: 'gemma' });
+      if (steps) return Response.json({ goal, steps, timer, practice: timer && daily && daily.yes === true ? true : undefined, learn: steps && steps !== parsed ? true : undefined, note: parseNote(said), model: 'gemma' });
       await recordShortfall(env, 'plan', 'empty');
     } catch (e) { await recordShortfall(env, 'plan', reasonOf(e)); }
   }

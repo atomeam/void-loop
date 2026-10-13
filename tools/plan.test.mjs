@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, NOTE_MAX, cleanGoal, planPrompt, PLAN_SYSTEM, PLAN_MIN, PLAN_MAX, STEP_MAX } from '../void-live-deploy/lib/plan.js';
+import { parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, LEARN_ASK, LEARN_STEP, withLearnStep, NOTE_MAX, cleanGoal, planPrompt, PLAN_SYSTEM, PLAN_MIN, PLAN_MAX, STEP_MAX } from '../void-live-deploy/lib/plan.js';
 import skill, { openPlanOf, planOf, withSteps } from '../void-live-deploy/skills/intent.js';
 import * as answerApi from '../void-live-deploy/functions/api/answer.js';
 import { clefYesNo, yesNoQuestion, CLEF_MODEL } from '../void-live-deploy/lib/clef.js';
@@ -146,6 +146,13 @@ test('/api/answer passes the timer on; the skill adds only the fixed timer ask f
     said.length = 0;
     await skill.run('make a plan to learn spanish', { stage, say: (s) => said.push(s) });
     assert.match(said[0], /checklist, a daily practice, so a 20 minute timer/, 'the card says the call Clef made');
+    assert.doesNotMatch(said[0], /skill to learn/);
+    globalThis.fetch = async () => new Response(JSON.stringify({ steps: ['Find a teacher or a course', 'Learn 20 words a day', 'Talk with a friend'], learn: true }));
+    for (const ask of ['make a plan to learn spanish', 'make a plan to learn spanish by friday']) {
+      said.length = 0;
+      await skill.run(ask, { stage, say: (s) => said.push(s) });
+      assert.match(said[0], /a skill to learn, so it starts with finding a teacher or a course/, ask);
+    }
     globalThis.fetch = async () => new Response(JSON.stringify({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 20 }));
     asked.length = 0; said.length = 0;
     await skill.run('make a plan to learn spanish by friday', { stage, say: (s) => said.push(s) });
@@ -191,6 +198,31 @@ test('/api/answer drops the timer when Clef says the goal is not a daily practic
   const off = [];
   assert.equal(await timerOf({ AI: run(clefSays('no', 0.9), off), VOID_CLEF: 'off' }), 20);
   assert.ok(!off.includes(CLEF_MODEL), 'VOID_CLEF=off never asks Clef');
+});
+
+// the second yes/no call: a skill to learn (rather than a project) opens its checklist with finding a teacher or a course,
+// unless a step already does; a full plan keeps its own steps; Clef saying no, failing or off changes nothing
+test('a skill to learn opens with finding a teacher or a course, once, and only when Clef says yes', async () => {
+  const steps = ['Learn 20 words a day', 'Do one lesson a day', 'Watch a show in Spanish'];
+  assert.match(LEARN_ASK, /learn/); assert.ok(LEARN_STEP.length <= STEP_MAX);
+  assert.deepEqual(withLearnStep(['Practise chords daily', 'Learn one song', 'Play for a friend'], { yes: true, p: 0.9 }), [LEARN_STEP, 'Practise chords daily', 'Learn one song', 'Play for a friend']);
+  assert.deepEqual(withLearnStep(steps, { yes: true, p: 0.9 }), steps, 'a lesson step already covers it');
+  assert.deepEqual(withLearnStep(['Find a tutor online', 'b step', 'c step'], { yes: true }), ['Find a tutor online', 'b step', 'c step']);
+  const full = Array.from({ length: PLAN_MAX }, (_, i) => 'Step number ' + (i + 1));
+  assert.deepEqual(withLearnStep(full, { yes: true }), full, 'a full plan stays as it is');
+  for (const v of [{ yes: false, p: 0.9 }, { yes: null }, null]) assert.deepEqual(withLearnStep(['a b', 'c d', 'e f'], v), ['a b', 'c d', 'e f']);
+  const garden = { response: '["Pick a sunny spot", "Choose plants", "Water every morning"]' };
+  const run = (learn) => ({ run: async (model, input) => {
+    if (model !== CLEF_MODEL) return garden;
+    if (learn instanceof Error) throw learn;
+    return /practi[sc]es a little each day/.test(input.questions.skill.instructions) ? clefSays('no', 0.9) : learn;
+  } });
+  const got = async (env) => (await (await post({ DB: kvDB(), ...env }, { mode: 'plan', goal: 'learn the guitar' })).json());
+  const yes = await got({ AI: run(clefSays('yes', 0.9)) });
+  assert.deepEqual(yes.steps, [LEARN_STEP, 'Pick a sunny spot', 'Choose plants', 'Water every morning']); assert.equal(yes.learn, true);
+  for (const env of [{ AI: run(clefSays('no', 0.9)) }, { AI: run(new Error('down')) }, { AI: run(clefSays('yes', 0.9)), VOID_CLEF: 'off' }]) {
+    const r = await got(env); assert.equal(r.steps.length, 3); assert.equal(r.learn, undefined);
+  }
 });
 
 // the second fixed shape: a short note to self ({"steps": [...], "note": "..."}), one plain line, put up as a sticky
