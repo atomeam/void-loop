@@ -1,0 +1,94 @@
+#!/usr/bin/env node
+// The public API's description (void-live-deploy/openapi.json, found from /.well-known/api-catalog) against the real routes.
+//   node tools/openapi-check.mjs    one line per problem, exit 1 if any
+// Checks: every operation in the spec has a function file that answers its method; every /api route file is either in the spec
+// or named below as Void's own, with why; the catalog points at the spec. A new route fails here until someone decides which it
+// is, so the description never drifts from the code and nothing internal is published by accident.
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { join, relative } from 'node:path';
+
+const ROOT = new URL('../void-live-deploy/', import.meta.url).pathname;
+const FN = join(ROOT, 'functions');
+
+// Void's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
+export const INTERNAL = {
+  '/api/actions': 'the actions record, for the page and the owner',
+  '/api/answer': "the page's answer model",
+  '/api/approval': 'the approve card, signed-in',
+  '/api/aurora': "the page's aurora card",
+  '/api/automations': 'automations, signed-in',
+  '/api/automations/tick': 'the scheduler, owner key',
+  '/api/bench': 'the benchmarks, owner key',
+  '/api/earnings': "the page's earnings card",
+  '/api/figurescript': "the page's 3D figures",
+  '/api/gumroad': "Gumroad's ping, server to server",
+  '/api/handoff': 'agent handoff, owner key',
+  '/api/hook/{id}': 'automation webhooks, one secret URL each',
+  '/api/memory': 'what Void remembers, owner only',
+  '/api/mine': "a person's own Void, passkey session",
+  '/api/miss': 'the page reports a miss',
+  '/api/misses': 'the miss board, owner token',
+  '/api/passkey': 'sign in with a passkey, for the page',
+  '/api/publish': 'publishing a skill, owner',
+  '/api/queue': 'the build queue, owner token',
+  '/api/reflect': "Void's reflections, owner",
+  '/api/rehearsal': 'the sales rehearsal, owner',
+  '/api/routes': "the page's router",
+  '/api/routines': 'routines, signed-in',
+  '/api/share': 'shared Voids, for the page',
+  '/api/share/{room}': 'a shared Void room (WebSocket)',
+  '/api/watch': 'watches, signed-in',
+  '/api/where': "the page's place lookup",
+  '/api/will': "Void's will card",
+};
+
+const METHODS = ['get', 'post', 'put', 'patch', 'delete'];
+const walk = (d) => readdirSync(d).flatMap((n) => { const p = join(d, n); return statSync(p).isDirectory() ? walk(p) : [p]; });
+
+// functions/api/hook/[id].js -> /api/hook/{id}; functions/api/share/index.js -> /api/share; functions/tools.json.js -> /tools.json
+export function routeOf(file) {
+  let r = '/' + relative(FN, file).replace(/\\/g, '/').replace(/\.js$/, '').replace(/\/index$/, '');
+  return r.replace(/\[([^\]]+)\]/g, '{$1}');
+}
+export function methodsOf(src) {
+  if (/export\s+(async\s+)?(function|const)\s+onRequest\b/.test(src)) return new Set(METHODS);
+  return new Set([...src.matchAll(/export\s+(?:async\s+)?(?:function|const)\s+onRequest(Get|Post|Put|Patch|Delete)\b/g)].map((m) => m[1].toLowerCase()));
+}
+
+export function check({ spec, routes, catalog }) {
+  const problems = [];
+  for (const [path, ops] of Object.entries(spec.paths || {})) {
+    const have = routes.get(path);
+    for (const m of Object.keys(ops).filter((k) => METHODS.includes(k))) {
+      if (!have) problems.push(`openapi.json documents ${m.toUpperCase()} ${path}, but no function serves ${path}`);
+      else if (!have.has(m)) problems.push(`openapi.json documents ${m.toUpperCase()} ${path}, but its function has no onRequest${m[0].toUpperCase() + m.slice(1)}`);
+      if (!ops[m].operationId) problems.push(`${m.toUpperCase()} ${path} has no operationId`);
+    }
+    if (INTERNAL[path]) problems.push(`${path} is both in openapi.json and marked internal in tools/openapi-check.mjs: pick one`);
+  }
+  for (const path of routes.keys()) {
+    if (!path.startsWith('/api/') && path !== '/tools.json') continue; // /[handle] is the share-card page, not an API
+    if (!spec.paths[path] && !INTERNAL[path]) problems.push(`${path} is a route but neither in openapi.json nor marked internal in tools/openapi-check.mjs: document it, or say why it is Void's own`);
+  }
+  for (const path of Object.keys(INTERNAL)) if (!routes.has(path)) problems.push(`tools/openapi-check.mjs marks ${path} internal, but no function serves it any more`);
+  const ls = (catalog && catalog.linkset && catalog.linkset[0]) || {};
+  if (!(ls['service-desc'] || []).some((l) => /\/openapi\.json$/.test(l.href))) problems.push('/.well-known/api-catalog does not point its service-desc at /openapi.json');
+  return problems;
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const spec = JSON.parse(readFileSync(join(ROOT, 'openapi.json'), 'utf8'));
+  const routes = new Map();
+  for (const f of walk(FN)) {
+    if (!f.endsWith('.js') || /_middleware\.js$/.test(f)) continue;
+    const ms = methodsOf(readFileSync(f, 'utf8'));
+    if (ms.size) routes.set(routeOf(f), ms);
+  }
+  const catPath = join(ROOT, '.well-known', 'api-catalog');
+  const catalog = existsSync(catPath) ? JSON.parse(readFileSync(catPath, 'utf8')) : null;
+  const problems = check({ spec, routes, catalog });
+  if (spec.openapi !== '3.1.0') problems.push('openapi.json is not OpenAPI 3.1.0');
+  for (const p of problems) console.log('openapi: ' + p);
+  if (problems.length) process.exit(1);
+  console.log(`openapi: ok, ${Object.keys(spec.paths).length} public paths documented, ${Object.keys(INTERNAL).length} of Void's own left out on purpose`);
+}
