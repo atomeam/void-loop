@@ -11,6 +11,10 @@ export const PLAN_SYSTEM = 'You turn one personal goal into a short checklist. A
   + 'if the goal needs it, make the first step "Talk to a professional". When the goal is a skill practised a little each day, '
   + 'you may answer {"steps": [...], "timer": N} instead, N the whole minutes of one practice session (5 to 60). You may also add '
   + '"note": one short encouraging line to keep in mind (at most 12 words).';
+// the yes/no call Clef makes beside the plan (lib/clef.js clefYesNo): a timer fits a daily practice, not a project done once
+export const PRACTICE_ASK = 'Is this goal a skill the person practises a little each day (a language, an instrument, drawing, a sport, fitness), rather than a project done once (a garden, a move, a trip)?';
+/** the engine's timer, unless Clef said the goal is not a daily practice; Clef failing or off leaves it as the engine said */
+export const keepTimer = (timer, daily) => (daily && daily.yes === false ? null : timer);
 export const NOTE_MAX = 80;
 export const TIMER_MIN = 5, TIMER_MAX = 60;
 

@@ -16,14 +16,14 @@ import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../l
 import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/code-review.js';
 import { models } from '../../lib/models.js';
 import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
-import { clefRoute, clefOn, mergeRoute } from '../../lib/clef.js';
+import { clefRoute, clefOn, mergeRoute, clefYesNo } from '../../lib/clef.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { isSelfAsk, readSelf, selfFacts, SELF_RULE } from '../../lib/self-context.js';
 import { prepareDraft, draftPrompt, ruleDraft, DRAFT_SYSTEM, DRAFT_MAX } from '../../lib/draft.js';
 import { scopeOf } from '../../lib/memory-scope.js';
 import { ensure as ensureMemory, lookup as memoryLookup } from '../../lib/memory-core.js';
 import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_SYSTEM } from '../../lib/proposal.js';
-import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, PLAN_SYSTEM } from '../../lib/plan.js';
+import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, PLAN_SYSTEM } from '../../lib/plan.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -194,13 +194,16 @@ async function planAnswer(request, env, body) {
   if (await rateLimited(request, env)) return Response.json({ steps: null, note: 'slow down' }, { status: 429 });
   const on = modelsOn(env);
   if (on) {
+    // Clef's yes/no call (is this a daily practice?) runs beside the plan and is read only when the engine offers a timer
+    const daily = clefOn(env) ? clefYesNo(env, goal, PRACTICE_ASK) : Promise.resolve(null);
     try {
       const r = await env.AI.run(MODEL, {
         messages: [{ role: 'system', content: PLAN_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: planPrompt(goal) }],
         max_tokens: 400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
       const said = redact(noThink(pick(r))), steps = parsePlan(said);
-      if (steps) return Response.json({ goal, steps, timer: parseTimer(said), note: parseNote(said), model: 'gemma' });
+      const timer = parseTimer(said);
+      if (steps) return Response.json({ goal, steps, timer: timer && keepTimer(timer, await daily), note: parseNote(said), model: 'gemma' });
       await recordShortfall(env, 'plan', 'empty');
     } catch (e) { await recordShortfall(env, 'plan', reasonOf(e)); }
   }
