@@ -47,3 +47,16 @@ test('every known build in the real ledger still matches a line, and its ask is 
     assert.ok(k.show.length <= 70 && k.try.length <= 120 && !/^(call this|save|forget|publish|buy|delete|remove|send|clear|unlock)\b/i.test(k.try), k.try);
   }
 });
+
+test('the site leaves out quotes of the owner\'s messages from ledger lines, keeping the credit (owner, 2026-10-13)', async () => {
+  const { publicWhat } = await import('../void-live-deploy/skills/growth-tree.js');
+  const { ordered } = await import('../void-live-deploy/skills/growth.js');
+  const { lineOf } = await import('../void-live-deploy/skills/showcase.js');
+  const assert = (await import('node:assert/strict')).default;
+  assert.equal(publicWhat('Void\'s will made real (owner: "if it is Theatre it needs to seriosly be worked on"): Void hears'), 'Void\'s will made real (asked by the owner): Void hears');
+  assert.equal(publicWhat('Draw: a 3D layer (asked by the owner: "Void should have a 3d/Vr draw layer as well"): paints'), 'Draw: a 3D layer (asked by the owner): paints');
+  assert.equal(publicWhat('asked by Void ("skill families"; the owner: "this should be taken seriosly"): grouped'), 'asked by Void ("skill families", and the owner): grouped');
+  assert.equal(publicWhat('the stage keeps its look (2026-10-09)'), 'the stage keeps its look (2026-10-09)');
+  assert.doesNotMatch(ordered([{ at: '2026-10-13T00:00:00Z', kind: 'grow', what: 'x (owner: "seriosly")' }])[0].what, /seriosly/);
+  assert.doesNotMatch(lineOf('Will made real (the owner: "seriosly"): more'), /seriosly/);
+});

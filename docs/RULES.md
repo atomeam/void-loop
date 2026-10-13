@@ -2,6 +2,12 @@
 
 Moved word for word from `AGENTS.md` on 2026-10-10 (cleanup step 1), so the front door stays one page. Each line is dated and says why it exists; the old file is `archive/AGENTS.2026-10-10.md`.
 
+## Credit the owner, don't quote his messages on the site (owner, 2026-10-13)
+"why are you having Void quote my mispelled words?" Anything the site shows (a growth-ledger line, a card, a reflection's
+context) credits the owner ("asked by the owner") and says what he asked for in correct words; it never pastes his message.
+The growth card and "look what I made" already leave quotes out of older ledger lines (`skills/growth-tree.js` `publicWhat`).
+His exact words still go where a rule needs them in his name (this file, `STANDING.md`), which the site does not show.
+
 ## B.I.T.E. on every run (owner, 2026-10-11)
 
 The owner: "make sure you are using bite". From a video the owner shared on building with Claude Code: **Brief** (who it is for, the problem, what the first version does, and what it will not build), **Implement** the smallest useful piece, **Test** it the way it will be used, **Evolve** from what the test showed. A run's claim or PR carries the brief, including its "not building" line; its PR says what the test showed and what comes next. Void's own runs (its whims and wants, on the frontier) follow the same four steps.

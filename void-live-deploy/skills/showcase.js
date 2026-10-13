@@ -12,6 +12,7 @@
  * saved a routine; a demo must change nothing the person did not ask for, so each ask here is one a person chose. Seen is kept on this device
  * only (a2m.void.growthSeen.v1, the newest `at` shown); nothing is sent anywhere.
  */
+import { publicWhat } from './growth-tree.js'; // the site leaves out quotes of the owner's messages
 export const SEEN_KEY = 'a2m.void.growthSeen.v1';
 export const LEDGER_URL = '/void.growth.json';
 const SHOWN_KINDS = new Set(['grow', 'build', 'fix']);
@@ -33,7 +34,7 @@ export const KNOWN = [
 
 /** a ledger line cut to what a person reads: the first clause, at most 90 characters. Pure. */
 export function lineOf(what) {
-  const s = String(what || '').replace(/\s+/g, ' ').trim();
+  const s = publicWhat(what).replace(/\s+/g, ' ').trim();
   const cut = s.split(/(?<=[a-z0-9)"])[:;](?=\s)/i)[0].trim();
   return cut.length > 90 ? cut.slice(0, 89).replace(/\s+\S*$/, '') + '…' : cut;
 }

@@ -192,8 +192,16 @@ const WEEK_LABEL = { grow: ['new thing I can do', 'new things I can do'], build:
 const WEEK_ORDER = ['grow', 'build', 'fix', 'retire', 'finding', 'idea'];
 // an entry's first plain phrase: up to its first colon, full stop, semicolon or bracket when that leaves enough to read, no
 // Markdown, clipped
+/** a ledger line as the site shows it: quotes of the owner's own messages are left out (the owner, 2026-10-13, asked why the
+ *  site was quoting his misspelled words); the credit stays ("asked by the owner"). The ledger itself is never changed. Pure. */
+export function publicWhat(what) {
+  return String(what || '')
+    .replace(/\(\s*(?:the\s+)?owner(?:,\s*\d{4}-\d\d-\d\d)?:\s*"[^"]*"(?:\s*;\s*(?:the\s+)?owner(?:,\s*\d{4}-\d\d-\d\d)?:\s*"[^"]*")*\s*\)/gi, '(asked by the owner)') // a whole parenthesis of quotes
+    .replace(/([;,]\s*)?\b(?:the\s+)?owner(?:,\s*\d{4}-\d\d-\d\d)?:\s*"[^"]*"/gi, (m, sep) => (sep ? ', and the owner' : 'the owner')) // a quote inside other words
+    .replace(/\s{2,}/g, ' ');
+}
 export function plainly(what, n = 90) {
-  const t = String(what || '').replace(/[`*]/g, '').replace(/\s+/g, ' ').trim();
+  const t = publicWhat(String(what || '')).replace(/[`*]/g, '').replace(/\s+/g, ' ').trim();
   const cut = t.search(/: |\. |; | \(| — /), head = cut >= 12 ? t.slice(0, cut) : t;
   return head.length > n ? head.slice(0, n).replace(/\s+\S*$/, '') + '…' : head;
 }

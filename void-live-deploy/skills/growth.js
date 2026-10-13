@@ -4,7 +4,7 @@
  * next deploy makes it summonable here. Kinds: grow (a new thing), build (better at one), fix, retire, idea and finding
  * (the idea stream, not built yet). Filter by kind; 40 at a time. Read from this site only; nothing is sent or kept.
  */
-import { timeline, weekSummary } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
+import { timeline, weekSummary, publicWhat } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
 
 export const LEDGER_URL = '/void.growth.json';
 export const KIND_LABEL = { grow: 'new', build: 'better', fix: 'fixed', retire: 'retired', idea: 'idea', finding: 'finding' };
@@ -28,7 +28,7 @@ export function weekOf(text) { return WEEK_RE.test(CLEAN(text)); }
 export function ordered(list, kind) {
   const t = (e) => { const n = Date.parse(e && e.at); return isNaN(n) ? -Infinity : n; };
   return (Array.isArray(list) ? list : []).filter((e) => e && typeof e.what === 'string' && (!kind || e.kind === kind))
-    .map((e, i) => [e, i]).sort((a, b) => t(b[0]) - t(a[0]) || b[1] - a[1]).map((p) => p[0]);
+    .map((e, i) => [e, i]).sort((a, b) => t(b[0]) - t(a[0]) || b[1] - a[1]).map((p) => ({ ...p[0], what: publicWhat(p[0].what) })); // shown without quotes of the owner's messages
 }
 
 /** { total, since, byKind: { grow: n, … } } */
