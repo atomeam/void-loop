@@ -101,8 +101,34 @@ export function stepFigure(f, dt, world, rng = Math.random) {
     if (dc > NOTICE * 1.4) f.noticed = false;
     f.lookX *= Math.pow(0.1, dt); f.lookY *= Math.pow(0.1, dt);
     if (insideAny(f.tx, f.ty, rects, PAD - 12)) { const p = pickTarget(world, rng); f.tx = p.x; f.ty = p.y; } // a card landed on the goal
+    // frontier #4: a pair acting out what they chose together (skills/together.js, meetBrains): walk to the other, stop a body
+    // apart, then the interaction's own move on a beat; when the time runs out (or the other is gone) each goes its own way
+    if (f.together) {
+      const tg = f.together, o = (world.others || []).find((x) => x && x.id === tg.id && !x.chasedOff && !x.eaten && !x.leaving);
+      tg.t -= dt;
+      if (!o || tg.t <= 0) { f.together = null; f.mode = 'idle'; f.modeT = 0.8 + rng() * 1.2; f.act = 'look'; }
+      else {
+        f.mode = 'together';
+        const dx = o.x - f.x, dy = o.y - f.y, d = Math.hypot(dx, dy) || 1;
+        wantYaw = clamp(dx / 220, -0.7, 0.7);
+        f.lookX += (clamp(dx / 160, -1, 1) - f.lookX) * Math.min(1, dt * 8);
+        // both walk at once, so each aims for a body apart and slows as it gets there (and steps back if too close)
+        const want = clamp((d - R * 2.2) * 2.5, -SPEED, SPEED * 1.2), a = Math.min(1, dt * 4);
+        f.vx += (dx / d * want - f.vx) * a; f.vy += (dy / d * want - f.vy) * a;
+        if (d <= R * 2.6) {
+          tg.beat -= dt;
+          if (tg.beat <= 0) {
+            tg.n = (tg.n || 0) + 1;
+            if (tg.kind === 'spar') { tg.beat = 0.7; f.hop = 1; if (tg.n % 2) f.spin = 1; }
+            else if (tg.kind === 'trade') { tg.beat = 1.2; f.wave = 1; f.hop = 0.6; f.act = 'wave'; }
+            else if (tg.kind === 'argue') { tg.beat = 0.9; f.wave = 1; f.hop = 0.8; f.act = 'wave'; }
+            else { tg.beat = 1.5; f.act = 'look'; f.hop = 0.3; } // inspect: a long look, now and then a little lean in
+          }
+        }
+      }
+    }
     // Next #20: react to a nearby figure when the script says so (cursor notice still wins above).
-    const near = pickNearbyReaction(f, world.others || [], NOTICE * 1.15);
+    const near = f.together ? null : pickNearbyReaction(f, world.others || [], NOTICE * 1.15);
     if (near && (!f.react || f.reactId !== near.other.id || f.react !== near.react)) {
       f.react = near.react; f.reactId = near.other.id; f.reactT = 2.4 + rng() * 1.6;
       if (near.react === 'greet' || near.react === 'argue') { f.mode = near.react; f.hop = 1; f.wave = 1; f.act = 'wave'; }
@@ -147,6 +173,7 @@ export function stepFigure(f, dt, world, rng = Math.random) {
           wantYaw = clamp(gx / 180, -0.7, 0.7);
         }
       }
+    } else if (f.mode === 'together') { // moved above, where the pair acts it out
     } else if (f.mode === 'idle') {
       f.modeT -= dt; f.vx *= Math.pow(0.05, dt); f.vy *= Math.pow(0.05, dt);
       if (f.act === 'look') { f.lookX = Math.sin(f.t * 1.3) * 0.6; wantYaw = Math.sin(f.t * 0.9) * 0.35; }
@@ -886,6 +913,22 @@ export function removeFigures(ids) {
   }
   requestRender();
   return n;
+}
+/** Two brains act out what they chose together (frontier #4, skills/together.js): each walks to the other and does the kind's
+ *  move for `secs` seconds. Only the four kinds. Pure on the brains. */
+export const TOGETHER_KINDS = ['trade', 'spar', 'inspect', 'argue'];
+export function meetBrains(a, b, kind, secs = 8) {
+  if (!a || !b || a === b || !TOGETHER_KINDS.includes(kind)) return false;
+  for (const [f, o] of [[a, b], [b, a]]) { f.together = { id: o.id, kind, t: secs, beat: 0, n: 0 }; f.react = null; f.reactId = null; f.reactT = 0; }
+  return true;
+}
+/** The live figures with these ids act it out; false when either is not on the 3D stage. */
+export function meet(idA, idB, kind, secs) {
+  const fa = figures.get(idA), fb = figures.get(idB);
+  if (!fa || !fb || fa.leaving || fb.leaving) return false;
+  const ok = meetBrains(fa.brain, fb.brain, kind, secs);
+  if (ok) requestRender();
+  return ok;
 }
 /** Where every figure is and the live conditions it has ({ id: { x, y, nature, adv } }), so the page can keep them for the next visit (and advance() can carry on from there). */
 export function world() { const out = {}; for (const [id, f] of figures) if (!f.leaving) out[id] = { x: Math.round(f.brain.x), y: Math.round(f.brain.y), nature: f.nature ? { ...f.nature } : null, adv: f.advSeen || null }; return out; }

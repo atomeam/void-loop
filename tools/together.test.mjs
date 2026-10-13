@@ -38,3 +38,24 @@ test('the ask: "what are they doing" and its kin, nothing else', () => {
   for (const q of skill.examples) assert.ok(skill.match(q.toLowerCase(), q), q);
   for (const q of skill.nearMisses) assert.ok(!skill.match(q.toLowerCase(), q), q);
 });
+
+// frontier #4, next: the pair acts it out. meet() puts both figures in a 'together' mode: each walks to the other, stops a body
+// apart, and does the interaction's own move (a spar trades hops and spins, a trade waves, an inspection looks the other over),
+// then both go back to their own business.
+import { makeBrain, stepFigure, meetBrains } from '../void-live-deploy/skills/figures3d.js';
+test('the pair acts it out: they walk to each other, stop a body apart, do the move, then go their own way', () => {
+  let s = 7; const rng = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  const a = makeBrain({ id: 'a', x: 200, y: 300 }, rng), b = makeBrain({ id: 'b', x: 700, y: 320 }, rng);
+  const world = { bounds: { l: 0, r: 1200, t: 0, b: 700 }, rects: [], cursor: null, still: false, posing: false, others: [a, b] };
+  assert.equal(meetBrains(a, b, 'spar', 10), true);
+  const d0 = Math.hypot(a.x - b.x, a.y - b.y);
+  let spun = 0, hopped = 0;
+  for (let i = 0; i < 160; i++) { stepFigure(a, 0.05, world, rng); stepFigure(b, 0.05, world, rng); if (a.spin > 0 || b.spin > 0) spun++; if (a.hop > 0.5 || b.hop > 0.5) hopped++; }
+  const d1 = Math.hypot(a.x - b.x, a.y - b.y);
+  assert.equal(a.mode, 'together'); assert.equal(b.mode, 'together');
+  assert.ok(d1 < d0 / 4 && d1 > 40, 'met a body apart: ' + Math.round(d0) + ' -> ' + Math.round(d1));
+  assert.ok(spun > 0 && hopped > 0, 'a spar is hops and spins');
+  for (let i = 0; i < 80; i++) { stepFigure(a, 0.05, world, rng); stepFigure(b, 0.05, world, rng); }
+  assert.notEqual(a.mode, 'together', 'the time runs out and each goes its own way'); assert.equal(a.together, null);
+  assert.equal(meetBrains(a, null, 'spar'), false); assert.equal(meetBrains(a, b, 'dance'), false, 'only the four kinds');
+});

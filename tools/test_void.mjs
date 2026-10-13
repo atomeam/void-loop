@@ -1673,9 +1673,12 @@ try {
     await P.ask('what are they doing', 500); const none = await P.whisper();
     await P.ask('summon a zombie', 900); await P.ask('what are they doing', 500); const one = await P.whisper();
     await P.ask('bring a dog', 900); await P.ask('what are they doing', 500); const two = await P.whisper();
-    check('figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it',
-      /summon two figures first/.test(none) && /no one to be with yet/.test(one) && /^the zombie and the dog spar: the (zombie|dog) offers a scuffle and the (zombie|dog) wants one$/.test(two) && !P.errors.length,
-      JSON.stringify({ none, one, two, e: P.errors }));
+    // and they act it out (frontier #4, figures3d meet): both walk to each other and spar, a body apart
+    const met = await until(() => P.p.evaluate(() => { const s = window.__void3d && window.__void3d.state(), f = s ? s.figures : [];
+      return f.length === 2 && f.every((x) => x.mode === 'together') && Math.hypot(f[0].x - f[1].x, f[0].y - f[1].y) < 100 ? f.map((x) => ({ mode: x.mode, x: x.x, y: x.y })) : null; }), 20000);
+    check('figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it, then the two walk to each other and spar a body apart',
+      /summon two figures first/.test(none) && /no one to be with yet/.test(one) && /^the zombie and the dog spar: the (zombie|dog) offers a scuffle and the (zombie|dog) wants one$/.test(two) && !!met && !P.errors.length,
+      JSON.stringify({ none, one, two, met, figs: await P.p.evaluate(() => window.__void3d && window.__void3d.state().figures.map((x) => ({ mode: x.mode, x: x.x, y: x.y }))), e: P.errors }));
     await P.ctx.close(); }
   // frontier #11's next step: things moved live between the tabs of a shared Void. Each tab gives its own ids to what a summon
   // makes, so the summon carries a token and a move names it; the spot is a share of the stage, so different sizes agree
