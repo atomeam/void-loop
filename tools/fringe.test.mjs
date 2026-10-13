@@ -3,7 +3,8 @@
 // back for the next run. The first 73 runs stand as written.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { check, sameBehavior, notesOf, learned, next, demand } from './fringe.mjs';
+import { check, sameBehavior, notesOf, learned, next, demand, labOf, unreachable } from './fringe.mjs';
+import { labTools } from '../void-live-deploy/skills/make.js';
 
 const real = JSON.parse(readFileSync(new URL('./fringe.json', import.meta.url), 'utf8'));
 assert.deepEqual(check(real), [], 'the ledger as it stands, no notes anywhere, is fine');
@@ -44,4 +45,20 @@ assert.deepEqual(D.friction, ['weather: failing 2 benchmark asks', 'map: nothing
 assert.deepEqual(D.bench, ['rain later -> answer']);
 assert.deepEqual(D.misses, [], 'no snapshot yet: left out');
 assert.deepEqual(demand(() => { throw new Error('nothing'); }), { asks: [], friction: [], bench: [], misses: [] });
+// fringe → core: a published run's lab entry reaches the lab without a hand edit; a published draft nobody can open is refused
+const lab = { label: 'Scroll pauses', sub: 'Which paragraphs you paused on.', asks: ['scroll pauses', 'what did i pause on'] };
+assert.deepEqual(check(withNotes({ lab })), []);
+for (const bad of [{ label: '', sub: 's', asks: ['abc'] }, { label: 'x', sub: 's', asks: [] }, { label: 'x', sub: 's', asks: ['Has Capitals'] }, { label: 'x'.repeat(41), sub: 's', asks: ['abc'] }])
+  assert.match(check(withNotes({ lab: bad })).join('\n'), /lab must be/, JSON.stringify(bad));
+const pubRun = { ...last, emit: true, lab };
+const id = last.draft.split('/').pop().replace(/\.html$/, '');
+assert.deepEqual(labOf(real.slice(0, -1).concat(pubRun)), [{ id, label: 'Scroll pauses', sub: 'Which paragraphs you paused on.', asks: ['scroll pauses', 'what did i pause on'] }]);
+assert.deepEqual(labOf(real.slice(0, -1).concat({ ...pubRun, emit: false })), [], 'not published: not in the lab');
+assert.deepEqual(unreachable(real, "['x', '" + id + "', 'L', 's']"), real.filter((r) => r.emit).map((r) => r.draft.split('/').pop().replace(/\.html$/, '')).filter((x, k, a) => x !== id && a.indexOf(x) === k), 'every published draft the list does not name is unreachable');
+assert.deepEqual(unreachable(real.slice(0, -1).concat(pubRun), ''), [...new Set(real.slice(0, -1).filter((r) => r.emit).map((r) => r.draft.split('/').pop().replace(/\.html$/, '')))].filter((x) => x !== id), 'a lab entry makes its draft reachable');
+assert.deepEqual(unreachable(real), [], 'today every published draft is in the lab list');
+// the lab reads the file: each ask opens its draft, the hand list wins, junk is dropped
+const T = labTools([{ id: 'attention-9', label: 'Scroll pauses', sub: 's', asks: ['scroll pauses', 'what did i pause on'] }, { id: 'miss-board', label: 'dupe', asks: ['dupe'] }, { id: 'Bad Id', label: 'x', asks: ['x'] }, { id: 'no-asks', label: 'x', asks: [] }]);
+assert.deepEqual(T.map((t) => t[1]), ['attention-9']);
+assert.ok(T[0][0].test('scroll pauses') && T[0][0].test('open the scroll pauses') && T[0][0].test('what did i pause on') && !T[0][0].test('scroll pauses please'));
 console.log('fringe-notes: ok');
