@@ -75,6 +75,9 @@ export function lift3d(th, stageApi, el, { kind, board, title, W, H, snapshot, l
   obs.observe(board, { subtree: true, childList: true, attributes: true, characterData: true });
   stageApi.miniature(view, kind, data(), { key, label: label || ('3D ' + title + ' board: tap to play; drag to look around'), maxPolar: 1.2, minPolar: 0.12 })
     .then((h) => {
+      // the stage re-rendered while this board loaded (a move made before 3D was up): this card is gone and the new one
+      // lifts itself, so this one must not leave its stale side card on the stage (verify on 5df007b: two side cards)
+      if (!el.isConnected) { obs.disconnect(); return; }
       mini = h; up.add(key); lift(); h.update(data());
       guard.begin(kind);
       const dispose = h.dispose.bind(h); h.dispose = () => { guard.end(kind); return dispose(); };
