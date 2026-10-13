@@ -66,7 +66,7 @@ function run(text, api) {
   let pattern = breathOf(text) || 'box';
   style();
   const el = showPage((p) => {
-    p.innerHTML = '<h2>Breathe with me</h2><div class="sub">Follow the dot. Stop whenever you like.</div>'
+    p.innerHTML = '<h2>Breathe with me</h2><div class="sub">Follow the dot. Stop whenever you like.</div>' // void-review: ok (fixed markup; the only values are pattern labels from PATTERNS, through esc())
       + '<div class="vbreath"><svg viewBox="0 0 100 100" aria-hidden="true"><rect class="track" x="10" y="10" width="80" height="80" rx="6" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1.2"/>'
       + '<line class="col" x1="50" y1="10" x2="50" y2="90" stroke="rgba(255,255,255,.18)" stroke-width="1.2"/>'
       + '<circle class="dot" cx="10" cy="90" r="5" fill="#7cb4ff"/></svg>'
