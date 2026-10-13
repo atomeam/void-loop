@@ -8,7 +8,8 @@
 //                                  binding lists, with prices when it gives them (for the tool's spend plan); and what the
 //                                  binding knows of Clef and Clef-flash (frontier #9: tools/clef-probe.mjs prints it, so the
 //                                  router's Clef call is written to the real input shape, not a guess)
-//   { route: true, asks: [..] } -> { route, results: [{ i, embed: { skill|null, score, ms }, clef: { skill|null, p, ms } }] }
+//   { route: true, asks: [..] } -> { route, results: [{ i, embed: { skill|null, score, ms, nearest? }, clef: { skill|null, p, ms } }] }
+//                                  nearest (on a none): { skill, score, bar, held }, the skill the embedding came closest to and what held it back (asked by Void)
 //                                  frontier #9: both routers on up to ROUTE_CHUNK asks (lib/router.js's embedding guess and
 //                                  Clef-flash, lib/clef.js); null = no skill, answer in words; a failure is { error }
 // What a stranger could make it do: nothing (owner only). With the key: run at most CHUNK built-in asks a call, on a free
@@ -62,7 +63,7 @@ export async function onRequestPost({ request, env }) {
     const question = skillQuestion(), origin = new URL(request.url).origin;
     const results = await Promise.all(list.map(async (ask, i) => {
       const [e, c] = await Promise.all([classify(env, ask, { origin }), clefRoute(env, ask, { question })]);
-      return { i, embed: e.kind === 'fallback' ? { error: e.why, ms: e.ms } : { skill: e.kind === 'skill' ? e.skill : null, score: e.score, ms: e.ms },
+      return { i, embed: e.kind === 'fallback' ? { error: e.why, ms: e.ms } : { skill: e.kind === 'skill' ? e.skill : null, score: e.score, ms: e.ms, ...(e.kind !== 'skill' && e.nearest ? { nearest: e.nearest } : {}) },
         clef: c.kind === 'fallback' ? { error: c.why, ms: c.ms } : { skill: c.skill, p: c.p, ms: c.ms } };
     }));
     return json(200, { route: true, results });

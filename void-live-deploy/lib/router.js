@@ -109,7 +109,10 @@ export function decide(askVec, ex, vecs, ask, tune = TUNING) {
   // hard: closer to the hard asks than to simple ones (plus the structural signs), and either a sign or a close hard neighbour
   const hardness = best.hard - Math.max(best.simple, best.near) + lift;
   scores.hardness = r3(hardness);
-  return hardness >= t.hardMargin && (c > 0 || best.hard >= t.hardMin) ? { kind: 'hard', score: r3(hardness), scores } : { kind: 'simple', score: r3(hardness), scores };
+  // nearest: the skill it came closest to and how close, so a "none" says whether it nearly was that skill or was nowhere near one
+  const held = c > 0 ? 'hard-signs' : best.skill < t.skillMin ? 'below-bar' : 'too-close-to-non-skill'; // what kept it from being the skill
+  const nearest = best.skillName ? { skill: best.skillName, score: r3(best.skill), bar: t.skillMin, held } : null;
+  return hardness >= t.hardMargin && (c > 0 || best.hard >= t.hardMin) ? { kind: 'hard', score: r3(hardness), scores, nearest } : { kind: 'simple', score: r3(hardness), scores, nearest };
 }
 
 // --- example vectors: memory -> edge cache -> embed once (in the background when the request can't wait) ---
