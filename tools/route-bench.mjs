@@ -71,6 +71,42 @@ export function score(rows, results) {
   return s;
 }
 
+// Void's ask (its reflection on d53c33d): a routing confidence on every "none", so a none says whether the router nearly picked a
+// skill or the ask was nowhere near one, and a missed skill says whether the wording was close (the bar, or a phrasing the
+// examples nearly cover) or far (the router has no example like it). The embedding router's nearest skill and its score come
+// back with each none (lib/router.js decide `nearest`); NEAR is how far under the bar still counts as close.
+export const NEAR = 0.1;
+export function noneConfidence(rows, results, near = NEAR) {
+  const out = { n: 0, close: 0, far: 0, missed: { close: 0, far: 0 }, right: { close: 0, far: 0 }, unknown: 0, rows: [] };
+  rows.forEach((row, i) => {
+    const e = (results[i] || {}).embed;
+    if (!e || e.error || e.skill) return; // only the router's own nones
+    out.n += 1;
+    const x = e.nearest;
+    if (!x || !Number.isFinite(x.score)) { out.unknown += 1; return; } // an older deployment that does not send it
+    const close = x.score >= (x.bar ?? 0.7) - near, side = row.want.includes(NONE) ? 'right' : 'missed';
+    out[close ? 'close' : 'far'] += 1; out[side][close ? 'close' : 'far'] += 1;
+    out.rows.push({ ask: row.ask, want: row.want, nearest: x.skill, score: x.score, gap: Math.round(((x.bar ?? 0.7) - x.score) * 1000) / 1000, held: x.held || null, close, missed: side === 'missed' });
+  });
+  out.rows.sort((a, b) => b.score - a.score);
+  return out;
+}
+
+export function noneTable(c, show = 8) {
+  if (!c.n) return '';
+  const lines = ['### How close each "none" came to a skill', '',
+    `The embedding router said none ${c.n} times. ` + (c.n - c.unknown ? `${c.close} came within ${NEAR} of the bar to a skill (close), ${c.far} were further off (noise to the router).` : 'This deployment does not send the nearest skill yet.'), ''];
+  if (c.n - c.unknown) {
+    lines.push('| the none was | close to a skill | far from any |', '|:--|--:|--:|',
+      `| wrong: the bench wanted a skill | ${c.missed.close} (the wording or the bar) | ${c.missed.far} (no example like it) |`,
+      `| right: the bench wanted none | ${c.right.close} (a near miss to watch) | ${c.right.far} |`, '');
+    const missed = c.rows.filter((r) => r.missed).slice(0, show);
+    if (missed.length) lines.push('Missed skills, closest first:', '', '| ask | wanted | nearest | score | under the bar | held by |', '|:--|:--|:--|--:|--:|:--|',
+      ...missed.map((r) => `| ${r.ask.replace(/\|/g, '\\|').slice(0, 70)} | ${r.want.join(' or ')} | ${r.nearest} | ${r.score} | ${r.gap} | ${r.held || '—'} |`), '');
+  }
+  return lines.join('\n') + '\n';
+}
+
 // where Clef should take over: a skill with WIN or more asks more right than the embedding guess, and never fewer
 export function verdict(s) {
   const wins = Object.entries(s.skills).filter(([, k]) => k.clef - k.embed >= WIN).map(([name]) => name).sort();
@@ -113,8 +149,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const rows = sample(benchSet(JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'))), Number(opt('--sample', '240'))).concat(noneSet());
   try {
     const results = await runSite(opt('--site', 'https://a-to-mind.com'), process.env.READ_TOKEN || process.env.VOID_OWNER_TOKEN || '', rows);
-    const s = score(rows, results), v = verdict(s), md = table(s, v);
-    if (opt('--out')) fs.writeFileSync(opt('--out'), JSON.stringify({ at: new Date().toISOString(), score: s, verdict: v, rows: rows.map((r, i) => ({ ...r, ...results[i] })) }, null, 1));
+    const s = score(rows, results), v = verdict(s), nones = noneConfidence(rows, results), md = table(s, v) + '\n' + noneTable(nones);
+    if (opt('--out')) fs.writeFileSync(opt('--out'), JSON.stringify({ at: new Date().toISOString(), score: s, verdict: v, nones: { ...nones, rows: undefined }, rows: rows.map((r, i) => ({ ...r, ...results[i] })) }, null, 1));
     if (opt('--md')) fs.writeFileSync(opt('--md'), md);
     process.stdout.write(md);
   } catch (e) { console.error('route bench: ' + (e.message || e)); process.exit(e.code || 1); }

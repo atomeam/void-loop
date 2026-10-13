@@ -7,7 +7,8 @@ import fs from 'node:fs';
 import { skillQuestion, clefPick, clefRoute, mergeRoute, clefOn, CLEF_SKILLS, CLEF_MODEL, NONE } from '../void-live-deploy/lib/clef.js';
 import { SKILLS, resetRouter } from '../void-live-deploy/lib/router.js';
 import { onRequestPost as bench, ROUTE_CHUNK } from '../void-live-deploy/functions/api/bench.js';
-import { benchSet, sample, score, verdict, table, runSite, noneSet, CONFIDENT } from './route-bench.mjs';
+import { benchSet, sample, score, verdict, table, runSite, noneSet, CONFIDENT, noneConfidence, noneTable, NEAR } from './route-bench.mjs';
+import { decide, TUNING } from '../void-live-deploy/lib/router.js';
 
 const KEY = 'k'.repeat(40);
 const answer = (choice, probabilities) => ({ model: 'clef-flash', answers: { skill: { choice, probabilities, confidence: probabilities[choice] } } });
@@ -162,3 +163,43 @@ test('/api/answer: Clef never holds the answer; its pick reaches the route log a
   } finally { globalThis.fetch = origFetch; }
 });
 
+
+test('Void\'s ask: every none says which skill it came closest to, how close, and what held it back', async () => {
+  // three examples on unit axes, so each dot product is the ask's coordinate on that axis
+  const ex = [{ kind: 'skill', skill: 'timer' }, { kind: 'skill', skill: 'weather' }, { kind: 'simple' }, { kind: 'hard' }, { kind: 'near' }];
+  const axis = (k) => Array.from({ length: 5 }, (_, d) => (d === k ? 1 : 0));
+  const vecs = ex.map((_, i) => axis(i));
+  const at = (t, w, simple, hard = 0, near = 0) => [t, w, simple, hard, near];
+  assert.equal(decide(at(0.9, 0.1, 0.2), ex, vecs, 'set a timer').kind, 'skill', 'a skill pick is unchanged');
+  assert.equal(decide(at(0.9, 0.1, 0.2), ex, vecs, 'set a timer').nearest, undefined, 'a skill pick needs no nearest');
+  const below = decide(at(0.65, 0.3, 0.4), ex, vecs, 'timer-ish');
+  assert.deepEqual([below.kind, below.nearest], ['simple', { skill: 'timer', score: 0.65, bar: TUNING.skillMin, held: 'below-bar' }]);
+  assert.equal(decide(at(0.8, 0.1, 0.78), ex, vecs, 'a near question').nearest.held, 'too-close-to-non-skill');
+  assert.equal(decide(at(0.9, 0.1, 0.2), ex, vecs, 'compare the timer and the clock and prove which is better step by step').nearest.held, 'hard-signs');
+  assert.equal(decide(at(0.2, 0.25, 0.9), ex, vecs, 'who wrote hamlet').nearest.skill, 'weather', 'far from both: still names the nearer');
+
+  // /api/bench { route } passes it on for a none, never for a skill pick
+  resetRouter();
+  const AI = { run: async (model, input) => model === CLEF_MODEL ? answer('none', { none: 0.9 }) : { data: input.text.map((t, i) => Array.from({ length: 8 }, (_, d) => ((t.length + i + d) % 7) / 7 + 0.01)) } };
+  const r = await bench({ request: new Request('https://a-to-mind.com/api/bench', { method: 'POST', headers: { authorization: 'Bearer ' + KEY }, body: JSON.stringify({ route: true, asks: ['why is the sky so very blue today'] }) }), env: { READ_TOKEN: KEY, AI } });
+  const e = (await r.json()).results[0].embed;
+  if (e.skill) assert.equal(e.nearest, undefined); else assert.ok(e.nearest && typeof e.nearest.skill === 'string' && Number.isFinite(e.nearest.score) && e.nearest.held, JSON.stringify(e));
+
+  // the bench: close or far, missed or right, closest misses first; skill picks and errors are not nones
+  const rows = [{ ask: 'timer for pasta', want: ['timer'] }, { ask: 'rain later?', want: ['weather'] }, { ask: 'who wrote hamlet', want: [NONE] }, { ask: 'what time is it', want: [NONE] }, { ask: 'a', want: ['timer'] }, { ask: 'b', want: ['timer'] }, { ask: 'c', want: [NONE] }];
+  const n = (skill, score, held = 'below-bar') => ({ embed: { skill: null, nearest: { skill, score, bar: 0.7, held } } });
+  const res = [n('timer', 0.66), n('translate', 0.41), n('weather', 0.3), n('clock', 0.68), { embed: { skill: 'timer' } }, { embed: { error: 'timeout' } }, { embed: { skill: null } }];
+  const c = noneConfidence(rows, res);
+  assert.deepEqual([c.n, c.close, c.far, c.unknown], [5, 2, 2, 1]);
+  assert.deepEqual(c.missed, { close: 1, far: 1 }); assert.deepEqual(c.right, { close: 1, far: 1 });
+  assert.deepEqual(c.rows.map((x) => x.ask), ['what time is it', 'timer for pasta', 'rain later?', 'who wrote hamlet']);
+  assert.equal(c.rows[1].gap, 0.04);
+  assert.ok(0.7 - NEAR <= 0.66 && 0.7 - NEAR > 0.41, 'NEAR puts 0.66 close and 0.41 far');
+  const md = noneTable(c);
+  assert.match(md, /said none 5 times\. 2 came within 0\.1 of the bar to a skill \(close\), 2 were further off/);
+  assert.match(md, /\| wrong: the bench wanted a skill \| 1 \(the wording or the bar\) \| 1 \(no example like it\) \|/);
+  assert.match(md, /\| timer for pasta \| timer \| timer \| 0\.66 \| 0\.04 \| below-bar \|/);
+  assert.ok(md.indexOf('timer for pasta') < md.indexOf('rain later?'), 'closest miss first');
+  assert.equal(noneTable(noneConfidence([], [])), '', 'no nones: no section');
+  assert.match(noneTable(noneConfidence([{ ask: 'x', want: [NONE] }], [{ embed: { skill: null } }])), /does not send the nearest skill yet/);
+});
