@@ -2364,7 +2364,8 @@ try {
     const D = await fresh();
     await D.ask('let me draw', 500);
     const box = await D.p.$eval('.vpage.on .vdraw canvas', (c) => { const r = c.getBoundingClientRect(); return [r.left, r.top, r.width, r.height]; });
-    const zigzag = async () => { await D.p.mouse.move(box[0] + box[2] * 0.1, box[1] + box[3] * 0.5); await D.p.mouse.down();
+    const zigzag = async () => { const box = await D.p.$eval('.vpage.on .vdraw canvas', (c) => { c.scrollIntoView({ block: 'center' }); const r = c.getBoundingClientRect(); return [r.left, r.top, r.width, r.height]; }); // where it is now: a click below it can scroll the card
+      await D.p.mouse.move(box[0] + box[2] * 0.1, box[1] + box[3] * 0.5); await D.p.mouse.down();
       for (let i = 1; i <= 40; i++) await D.p.mouse.move(box[0] + box[2] * (0.1 + i * 0.02), box[1] + box[3] * 0.5 + (i % 2 ? 9 : -9));
       await D.p.mouse.up(); await D.p.waitForTimeout(60); };
     // the ink's spread across the stroke: rows that hold ink in the middle of the canvas
@@ -2382,6 +2383,37 @@ try {
     check('draw steadying: it starts by saying it learns your hand; two shaky strokes teach it (kept in the browser, named on the card); the same scribble spreads less with it on than off',
       /learns your hand/.test(label0) && /learned from your hand \(2 strokes\)/.test(learned) && hand && hand.strokes === 2 && hand.tremor > 1 && off > 0 && on < off * 0.7 && manualOk && !D.errors.length,
       JSON.stringify({ label0, learned, hand, off, on, manualLabel, errors: D.errors }));
+    await D.ctx.close();
+  }
+
+  // Layers you can talk to (2026-10-13, target ibisPaint X, feature layers): two strokes on two named layers, then words reorder,
+  // hide and fade them, and the pixel where they cross shows it
+  if (want("Draw: layers you can talk to, put the moon behind the house")) {
+    const D = await fresh();
+    await D.ask('let me draw', 500);
+    const say = async (w) => { await D.p.fill('.vpage.on .vd-words', w); await D.p.click('.vpage.on .vd-make button'); await D.p.waitForTimeout(60); return D.p.$eval('.vpage.on .vd-said', (e) => e.textContent); };
+    const stroke = async () => { const box = await D.p.$eval('.vpage.on .vdraw canvas', (c) => { c.scrollIntoView({ block: 'center' }); const r = c.getBoundingClientRect(); return [r.left, r.top, r.width, r.height]; }); // where it is now: the controls below it scroll the card
+      await D.p.mouse.move(box[0] + box[2] * 0.3, box[1] + box[3] * 0.5); await D.p.mouse.down();
+      for (let i = 1; i <= 20; i++) await D.p.mouse.move(box[0] + box[2] * (0.3 + i * 0.02), box[1] + box[3] * 0.5);
+      await D.p.mouse.up(); await D.p.waitForTimeout(60); };
+    // the colour where the two strokes cross: the middle of the canvas
+    const mid = () => D.p.$eval('.vpage.on .vdraw canvas', (c) => Array.from(c.getContext('2d').getImageData(c.width / 2, c.height / 2, 1, 1).data));
+    const list = () => D.p.$eval('.vpage.on .vd-layers', (e) => e.textContent);
+    await say('thick hard ink');
+    const added = await say('new layer for the house');
+    await D.p.click('.vpage.on [data-color="#2f6fd6"]'); await stroke();
+    await say('new layer for the moon');
+    await D.p.click('.vpage.on [data-color="#f2cf3a"]'); await stroke();
+    const moonOnTop = await mid();
+    const moved = await say('put the moon behind the house'); const houseOnTop = await mid(), order = await list();
+    const hid = await say('hide the house'); const moonAlone = await mid();
+    const faded = await say('make the moon 40%'); const moonFaint = await mid();
+    const missing = await say('put the dog behind the house');
+    const yellow = (px) => px[0] > 180 && px[1] > 150 && px[2] < 120, blue = (px) => px[2] > 150 && px[0] < 120;
+    check('draw layers: "new layer for the house" and "for the moon" name the layers; "put the moon behind the house" puts the blue house over the yellow moon where they cross; "hide the house" and "make the moon 40%" act on the right layer; an unknown layer is named back',
+      /New layer "house"/.test(added) && yellow(moonOnTop) && /"moon" is now behind "house"/.test(moved) && blue(houseOnTop) && /house.*moon.*layer 1/.test(order)
+        && /"house" is hidden/.test(hid) && yellow(moonAlone) && /40%/.test(faded) && moonFaint[3] > 0 && moonFaint[3] < moonAlone[3] * 0.6 && /no layer called "dog"/.test(missing) && !D.errors.length,
+      JSON.stringify({ added, moonOnTop, moved, houseOnTop, order, hid, moonAlone, faded, moonFaint, missing, errors: D.errors }));
     await D.ctx.close();
   }
 
