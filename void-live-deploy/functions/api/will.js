@@ -53,8 +53,10 @@ export async function onRequestPost({ request, env }) {
   let wants = (chosen && chosen.wants || []).map((w) => ({ ...w, c: cands.find((c) => c.id === +w.id) })).filter((w) => w.c).slice(0, 3);
   if (!wants.length) wants = cands.slice().sort((a, b) => b.weight - a.weight).slice(0, 3).map((c) => ({ c, i_want: 'I want to ' + c.title.replace(/^./, (x) => x.toLowerCase()) + '.', because: c.why }));
   const at = new Date().toISOString();
+  // a reason or fact longer than n ends at a word with an ellipsis, never mid-word or on a space (the card compares them)
+  const clip = (t, n) => { const x = String(t || '').trim(); return x.length <= n ? x : x.slice(0, n - 1).replace(/\s+\S*$/, '') + '…'; };
   const noMoney = (t) => String(t || '').replace(/[$€£]\s?\d[\d,.]*(\s?(k|m|\/\s?mo(nth)?|a month|per month))?/gi, 'what I earned').replace(/\b(budget|earnings?|profits?|revenue|sales total)\b/gi, 'what I earned');
-  const will = { at, wants: wants.map((w) => ({ kind: w.c.kind, title: w.c.title, ...(w.c.source ? { source: w.c.source } : {}), i_want: redact(noMoney(w.i_want)).slice(0, 220), because: redact(noMoney(honestBecause(w.because, w.c.why))).slice(0, 200), evidence: redact(noMoney(w.c.why)).slice(0, 200) })) };
+  const will = { at, wants: wants.map((w) => ({ kind: w.c.kind, title: w.c.title, ...(w.c.source ? { source: w.c.source } : {}), i_want: redact(noMoney(w.i_want)).slice(0, 220), because: clip(redact(noMoney(honestBecause(w.because, w.c.why))), 200), evidence: clip(redact(noMoney(w.c.why)), 200) })) };
   await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('will', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(will)).run();
   // a will job nobody has touched in STALE_DAYS makes way for the newest top want: it is set aside (kept, with why), not deleted
   await env.DB.prepare("UPDATE void_queue SET state = 'set aside', note = substr('set aside: untouched for ' || ? || ' days, a newer want takes its place · ' || COALESCE(note, ''), 1, 300), updated = ? WHERE target LIKE 'will:%' AND state IN ('queued','building') AND COALESCE(updated, at) < ?")
