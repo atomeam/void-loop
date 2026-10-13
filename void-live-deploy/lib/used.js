@@ -4,7 +4,7 @@
 // page under /fringe/ is counted, nothing typed is sent or kept, and the page sends one per browser per experiment per day
 // (the endpoint also keeps one per connection per experiment per day). Rows are per day, so "opened on N different days" is
 // a COUNT. tools/lab-use.mjs reads it (owner-only GET /api/misses?used=1) and the will turns it into wants: an experiment
-// opened on enough days becomes "make it a core skill", one never opened goes to the salvage shelf.
+// opened on enough days becomes "make it a core skill". Going unused never shelves one (owner, 2026-10-13, docs/RULES.md).
 export const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_used (id TEXT NOT NULL, day TEXT NOT NULL, opens INTEGER NOT NULL, PRIMARY KEY (id, day))';
 const made = new WeakMap();

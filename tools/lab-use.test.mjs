@@ -1,6 +1,6 @@
-// tools/lab-use.mjs and lib/used.js: real opens of the lab's experiments decide what becomes a core skill and what is shelved.
+// tools/lab-use.mjs and lib/used.js: real opens of the lab's experiments can lift one into the core; going unused never shelves one.
 import assert from 'node:assert/strict';
-import { judge, selfTestedIds, COUNT_FROM } from './lab-use.mjs';
+import { judge, selfTestedIds } from './lab-use.mjs';
 import { onRequestPost } from '../void-live-deploy/functions/api/miss.js';
 import { onRequestGet } from '../void-live-deploy/functions/api/misses.js';
 import { noteUse } from '../void-live-deploy/skills/make.js';
@@ -8,12 +8,11 @@ import { noteUse } from '../void-live-deploy/skills/make.js';
 // the judge
 const tools = [{ id: 'a-1', label: 'A' }, { id: 'b-2', label: 'B' }, { id: 'c-3', label: 'C' }, { id: 'd-4', label: 'D' }];
 const vs = judge({ tools, used: [{ id: 'a-1', days: 3, opens: 7 }, { id: 'b-2', days: 5, opens: 5 }, { id: 'd-4', days: 1, opens: 1 }],
-  live: { 'c-3': '2026-10-01', 'd-4': '2026-10-01' }, selfTested: new Set(['a-1']), now: '2026-10-30T00:00:00Z' });
-assert.deepEqual(vs.map((v) => [v.verdict, v.id]), [['promote', 'a-1'], ['test first', 'b-2'], ['retire', 'c-3']], 'opened on 3+ days and self-tested: promote; without a self-test on main: test first; never opened for 14+ days: retire; opened once: nothing');
-// counting began on COUNT_FROM: an experiment live long before it is not unused until 14 days of counting have passed
-assert.equal(judge({ tools, used: [], live: { 'c-3': '2026-10-01' }, now: '2026-10-20T00:00:00Z' }).length, 0, 'six days of counting is too soon to call it unused');
-assert.equal(COUNT_FROM, '2026-10-14');
-assert.equal(judge({ tools, used: [], live: {} , now: '2027-01-01T00:00:00Z' }).length, 0, 'not known to be live: never retired');
+  selfTested: new Set(['a-1']) });
+assert.deepEqual(vs.map((v) => [v.verdict, v.id]), [['promote', 'a-1'], ['test first', 'b-2']], 'opened on 3+ days and self-tested: promote; without a self-test on main: test first; opened once or never: nothing');
+// the owner's rule (docs/RULES.md, 2026-10-13): nobody knows the site yet, so going unused never retires or shelves anything
+assert.ok(judge({ tools, used: [], selfTested: new Set(['a-1']) }).every((v) => !/retire|salvage|shelf/i.test(v.verdict + v.why)), 'no use: no verdict at all');
+assert.equal(judge({ tools, used: [] }).length, 0);
 // self-tested: in the suite's lab list and the page defines selftest()
 const suite = "const lab = [['test my attention', 'a-1'], ['b', 'b-2']];";
 assert.deepEqual([...selfTestedIds(suite, (id) => (id === 'a-1' ? 'window.__a = { selftest() { return true; } }' : '<p>no test</p>'))], ['a-1']);

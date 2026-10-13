@@ -248,7 +248,8 @@ def gather(cap=60, with_done=False):
 
     # 9. the lab's experiments, judged by real use (the fringe → core loop, owner's direction 2026-10-13): tools/lab-use.mjs reads
     #    how often each was opened (owner-only /api/misses?used=1): opened on 3+ days with its self-test held on main becomes
-    #    "make it a core skill"; live 14+ days and opened by nobody goes to the salvage shelf. No count read, nothing judged.
+    #    "make it a core skill". Use only adds: nothing is shelved for going unused (owner, 2026-10-13: "Remember no one knows
+    #    about our site yet, so don't throw out skills just because no one uses them; that's a disaster."). No count, nothing.
     try:
         import subprocess
         vs = json.loads(subprocess.run(["node", str(ROOT / "tools" / "lab-use.mjs"), "--json"], capture_output=True, text=True, timeout=120).stdout or "[]")
@@ -257,8 +258,6 @@ def gather(cap=60, with_done=False):
                 cands.append({"kind": "grow from the lab", "title": f"make the lab's \"{v['label']}\" a core skill of its own", "why": v["why"], "weight": 8 + 2 * int(v["days"]), "source": "lab"})
             elif v["verdict"] == "test first":
                 cands.append({"kind": "grow from the lab", "title": f"give the lab's \"{v['label']}\" a self-test on main", "why": v["why"], "weight": 6 + int(v["days"]), "source": "lab"})
-            elif v["verdict"] == "retire":
-                cands.append({"kind": "tidy the lab", "title": f"move the lab's \"{v['label']}\" to the salvage shelf", "why": v["why"], "weight": 6, "source": "lab"})
     except Exception as e:
         print("lab use:", e, file=sys.stderr)
 
