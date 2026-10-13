@@ -525,9 +525,15 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const sq = async (name, lift) => F.p.evaluate(([n, y]) => { const k = window.__voidMini.keys().find((x) => x.startsWith('chess:')); const f = 'abcdefgh'.indexOf(n[0]), r = +n[1] - 1;
       return window.__voidMini.project(k, [(3.5 - f) * 0.0579, 0.0174 + y, (r - 3.5) * 0.0579]); }, [name, lift]);
     const tap = async (name, lift = 0) => { const pt = await sq(name, lift); await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(250); };
+    // every line the card's status shows while Void answers (asked by Void: say what it is weighing while it thinks)
+    await F.p.evaluate(() => { const seen = window.__chessLines = []; setInterval(() => { for (const e of document.querySelectorAll('.chess-status')) if (seen[seen.length - 1] !== e.textContent) seen.push(e.textContent); }, 30); });
     if (ready) { await tap('e2', 0.04); await tap('e4'); }
     const moved = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.s.board[28] === 'P' ? c : false; }, 20000);
     const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 40000);
+    const lines = await F.p.evaluate(() => window.__chessLines || []);
+    const weighing = lines.find((t) => /^Void is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
+    check('chess: while Void thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Void), then "Your move"',
+      !!replied && !!weighing && /Your move/.test(lines[lines.length - 1] || ''), JSON.stringify({ weighing, lines: lines.slice(-8) }));
     const pix = await F.p.evaluate(() => { const c = document.querySelector('.chess-card canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 16) if (d[i] + d[i + 1] + d[i + 2] > 60) n++; return n / (d.length / 16); });
     const shot = await F.p.evaluate(() => [...document.querySelectorAll('.void-mini')].map((m) => m.dataset.kind));
     check('chess: the 3D wooden set draws on the card, tapping e2 then e4 on the canvas plays 1. e4, and Void answers with a legal move',

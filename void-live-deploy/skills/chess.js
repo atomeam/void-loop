@@ -18,13 +18,14 @@ const GLYPH = { K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙', k: '
 const STATUS = { checkmate: (s) => (s.turn === 'w' ? 'Checkmate · Void wins' : 'Checkmate · you win'), stalemate: () => 'Stalemate · a draw', 'draw-50': () => 'Draw · fifty quiet moves', 'draw-material': () => 'Draw · not enough to mate', 'draw-repetition': () => 'Draw · the same position three times' };
 const thinking = new Map(); // th.id -> pending search, so a re-render never starts a second one
 let worker = null, seq = 0;
-function think(s) {
+const leaning = new Map(); // th.id -> what the search has seen so far ({ depth, nodes, best }), for the line while Void thinks
+function think(s, onProgress) {
   return new Promise((res) => {
     const opts = { depth: 5, ms: 1100 };
     try {
       if (!worker) worker = new Worker(new URL('./chess-worker.js', import.meta.url), { type: 'module' });
       const id = ++seq;
-      const on = (e) => { if (e.data.id !== id) return; worker.removeEventListener('message', on); res(e.data.m); };
+      const on = (e) => { if (e.data.id !== id) return; if (e.data.progress) { onProgress && onProgress(e.data.progress); return; } worker.removeEventListener('message', on); res(e.data.m); };
       worker.addEventListener('message', on);
       worker.postMessage({ id, s, opts });
     } catch (_) { setTimeout(() => res(R.bestMove(s, { depth: 4, ms: 700 })), 30); } // no module workers: think on the page
@@ -83,7 +84,7 @@ function mount(th, stageApi) {
   }
   function paint() {
     const s = st().s, code = R.status(s), busy = thinking.has(th.id);
-    status.textContent = STATUS[code] ? STATUS[code](s) : busy ? 'Void is thinking…' : s.turn === 'w' ? (code === 'check' ? 'Check · your move' : 'Your move') : 'Void to move';
+    status.textContent = STATUS[code] ? STATUS[code](s) : busy ? R.thinkingLine(leaning.get(th.id), s) : s.turn === 'w' ? (code === 'check' ? 'Check · your move' : 'Your move') : 'Void to move';
     const list = st().moves; let txt = '';
     for (let i = 0; i < list.length; i += 2) txt += (i / 2 + 1) + '. ' + list[i] + (list[i + 1] ? ' ' + list[i + 1] : '') + '  ';
     txt = txt.trim(); moves.title = txt;
@@ -104,8 +105,10 @@ function mount(th, stageApi) {
     const s = st().s;
     if (s.turn !== 'b' || R.isOver(R.status(s)) || thinking.has(th.id)) return;
     const started = Date.now();
-    const p = think(s).then((m) => new Promise((res) => setTimeout(() => res(m), Math.max(0, 650 - (Date.now() - started))))).then((m) => {
-      thinking.delete(th.id);
+    leaning.delete(th.id);
+    const p = think(s, (info) => { if (thinking.has(th.id) && st().s === s) { leaning.set(th.id, info); if (el.isConnected) paint(); } })
+      .then((m) => new Promise((res) => setTimeout(() => res(m), Math.max(0, 650 - (Date.now() - started))))).then((m) => {
+      thinking.delete(th.id); leaning.delete(th.id);
       if (st().s !== s || !m) { paint(); return; } // the game changed while Void thought
       doMove(m);
       if (!el.isConnected) stageApi.render(); // the card re-rendered while Void thought: show the move on the live card
