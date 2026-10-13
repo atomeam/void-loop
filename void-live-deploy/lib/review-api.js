@@ -213,6 +213,16 @@ const PROP = '(?:\\b(?:style\\.)?(?:rotate|translate|scale)\\b)';
 export const KNOWN_FALSE = [
   { re: new RegExp(PROP + '[\\s\\S]{0,120}' + NOT_STD + '|' + NOT_STD + '[\\s\\S]{0,120}' + PROP, 'i'), why: 'rotate/translate/scale are standard CSS (Transforms Level 2)' },
 ];
+// A regex built from joined strings (new RegExp('^x ' + L + ' (a|b)$'), or a template) can hold capture groups inside its parts,
+// so the model cannot count them: #590's closer read called draw.js's m[2] "undefined" where L carries the first group and m[2]
+// is right. REGEX_RULE tells it; a claim that a capture group or index is undefined, on such a line, is dropped. A literal
+// regex can be counted, and a claim about one stays.
+export const REGEX_RULE = 'A regular expression built with new RegExp from joined strings or a template can hold capture groups inside the parts you do not see: never report a capture group or match index (m[1], m[2]) as undefined, missing or off by one on such a line.';
+const GROUP_CLAIM = /\b(?:capture(?:\s+group)?s?|group\s*\d|m(?:atch)?\s*\[\s*\d+\s*\])/i, GROUP_WRONG = /\b(?:undefined|does\s?n[o']t\s+exist|do(?:es)?\s+not\s+exist|missing|off[- ]by[- ]one|wrong\s+(?:index|group)|no\s+such\s+group|only\s+(?:one|\d+)\s+(?:capture\s+)?groups?)\b/i;
+export function uncountedGroupClaim(text, line) {
+  const t = String(text || ''), l = String(line || '');
+  return GROUP_CLAIM.test(t) && GROUP_WRONG.test(t) && /\bnew\s+RegExp\s*\(/.test(l) && /new\s+RegExp\s*\([\s\S]{0,200}?(?:['"`]\s*\+|\+\s*['"`]|\$\{)/.test(l);
+}
 // only a claim about CSS: "the scale factor is invalid when width is 0" is a real finding and stays
 export const knownFalse = (text) => { const t = String(text || ''); return /\bcss\b|\bpropert(?:y|ies)\b|\bstyle\./i.test(t) ? KNOWN_FALSE.find((k) => k.re.test(t)) || null : null; };
 
@@ -240,6 +250,7 @@ export function validateFindings(list, evidence) {
     const best = Number.isFinite(want) ? hits.reduce((a, b) => (Math.abs(b[0] - want) < Math.abs(a[0] - want) ? b : a)) : hits[0];
     // a line its author marked right as written ("void-review: ok") is left out, as the quick checks leave it out (tools/review-pr.mjs)
     if (/void-review:\s*ok\b/.test(best[1])) { dropped++; continue; }
+    if (uncountedGroupClaim(text, best[1])) { dropped++; continue; } // a group count the model cannot see (#590, REGEX_RULE)
     const id = at + ':' + best[0] + ':' + quote;
     if (seen.has(id)) { dropped++; continue; }
     seen.add(id);
@@ -334,7 +345,7 @@ export const VERDICTS_SCHEMA = { type: 'object', properties: { verdicts: { type:
   properties: { n: { type: 'integer' }, holds: { type: 'boolean' }, why: { type: 'string' } }, required: ['n', 'holds'] } } }, required: ['verdicts'] };
 export function verifyMessages(findings, shownCode) {
   const list = findings.map((f, i) => (i + 1) + '. ' + (f.file ? f.file + ':' : 'line ') + f.line + ' (' + f.kind + '): ' + f.text + ' Quoted line: ' + f.quote).join('\n');
-  return [{ role: 'system', content: VERIFY_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE + ' ' + CSS_RULE },
+  return [{ role: 'system', content: VERIFY_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE + ' ' + CSS_RULE + ' ' + REGEX_RULE },
     { role: 'user', content: 'Findings:\n' + list + '\n\nThe code they were made from:\n' + shownCode }];
 }
 /** the findings whose verdict says they hold; a finding with no verdict, or no usable verdicts at all, stays. Pure. */
@@ -365,7 +376,7 @@ export async function verifyFindings(env, findings, shownCode) {
 export async function closerReadDetail(env, { ask, code, lang, diff, res, imports }) {
   const im = importsText(imports), shown = clipForModel(redact(String(code || '')));
   const messages = [
-    { role: 'system', content: REVIEW_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE + ' ' + CSS_RULE + ' ' + JSON_RULE },
+    { role: 'system', content: REVIEW_SYSTEM + ' ' + INJECTION_RULE + ' ' + MASK_RULE + ' ' + CSS_RULE + ' ' + REGEX_RULE + ' ' + JSON_RULE },
     { role: 'user', content: 'What they asked: ' + redact(String(ask || 'review this code')).slice(0, 300) + '\nLanguage (guessed): ' + lang + (diff ? '\n' + DIFF_RULE : '') + (shown.clipped ? '\n' + CLIP_RULE : '') + '\n\nQuick checks found:\n' + findingsText(res) + (im ? '\n\n' + redact(im) : '') + '\n\nThe code (keys masked):\n```\n' + shown.text + '\n```' },
   ];
   const base = { messages, max_tokens: 1400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };

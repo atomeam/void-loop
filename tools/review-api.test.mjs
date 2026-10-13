@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as api from '../void-live-deploy/functions/api/review.js';
 import { ensureTables, sessionId } from '../void-live-deploy/lib/void-me.js';
-import { relatedPaths, widestDiff, applyVerdicts, verifyMessages, closerReadDetail, quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, JSON_RULE, FINDINGS_SCHEMA, parseFinding, evidenceLines, quoteCheck, parseFindingsJson, validateFindings, renderFindings, knownFalse, CSS_RULE } from '../void-live-deploy/lib/review-api.js';
+import { relatedPaths, widestDiff, applyVerdicts, verifyMessages, closerReadDetail, quick, KEY_RE, PRO_DAILY, keyHash, today, cleanImports, importsText, declaredNames, dropPhantoms, phantomNames, DIFF_RULE, MASK_RULE, clipForModel, CLIP_RULE, MODEL_CODE_MAX, JSON_RULE, FINDINGS_SCHEMA, parseFinding, evidenceLines, quoteCheck, parseFindingsJson, validateFindings, renderFindings, knownFalse, CSS_RULE, uncountedGroupClaim, REGEX_RULE } from '../void-live-deploy/lib/review-api.js';
 
 function d1() {
   const db = new DatabaseSync(':memory:');
@@ -387,4 +387,19 @@ test('the closer read gets one hop of related files: relative and site-root impo
   const c = cleanImports({ 'skills/watch.js': own, 'functions/api/watch.js': rel });
   assert.equal(c['skills/watch.js'].length, 40, 'every own line kept');
   assert.ok(!c['functions/api/watch.js'] || c['functions/api/watch.js'].length < 60);
+});
+
+// #590: the closer read said draw.js:122 "uses m[2] which is undefined"; the pattern is new RegExp('^(?:make|set) ' + L + ' (thicker|…)$')
+// and L holds the first group, so m[2] is the second and right ("make sky thicker" gives 1.5). A group count it cannot see is not a bug.
+test('a claim that a capture group is undefined, on a regex built from joined strings, is dropped; on a literal regex it stays (#590)', () => {
+  const line = "  if ((m = new RegExp('^(?:make|set) ' + L + ' (thicker|fatter|bolder|thinner|slimmer|finer)$').exec(t))) return one('thick', m[1], { by: /thicker|fatter|bolder/.test(m[2]) ? 1.5 : 1 / 1.5 });";
+  const claim = "The regex capture for thickness uses m[2] which is undefined, causing the 'by' factor to be wrong for thicker/fatter/bolder commands.";
+  assert.ok(uncountedGroupClaim(claim, line), "#590's claim");
+  assert.ok(uncountedGroupClaim('Capture group 3 does not exist in this pattern, so m[3] is always undefined.', "const re = new RegExp(`^${A} (x|y) ${B}$`);"), 'a template-built pattern');
+  assert.ok(!uncountedGroupClaim('m[2] is undefined: the pattern has only one capture group.', 'const m = /^make (\\w+)$/.exec(t); use(m[2]);'), 'a literal regex can be counted: the claim stays');
+  assert.ok(!uncountedGroupClaim('This regex is rebuilt on every call; hoist it.', line), 'another claim on the same line stays');
+  const ev = evidenceLines(['diff --git a/void-live-deploy/skills/draw.js b/void-live-deploy/skills/draw.js', '+++ b/void-live-deploy/skills/draw.js', '@@ -0,0 +122,1 @@', '+' + line].join('\n'), true);
+  const v = validateFindings([{ file: 'void-live-deploy/skills/draw.js', line: 122, kind: 'bug', text: claim, quote: line.trim() }], ev);
+  assert.equal(v.kept.length, 0); assert.equal(v.dropped, 1);
+  assert.match(REGEX_RULE, /new RegExp/);
 });
