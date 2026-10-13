@@ -45,6 +45,10 @@ function main(argv) {
   for (const o of s.open) console.log(`  - ${o.title}${o.from ? '  [' + o.from + ']' : ''}`);
   if (s.targets.length) console.log(`\nTargets after the cleanup (${s.targets.length}):`);
   for (const t of s.targets) console.log('  - ' + t.title);
+  const BM = new URL('./bench.misses.json', import.meta.url);
+  if (existsSync(BM)) { let b = null; try { b = JSON.parse(readFileSync(BM, 'utf8')); } catch (_) {}
+    if (b && Array.isArray(b.misses) && b.misses.length) console.log(`\nThe bench misses (${b.misses.length}, on ${b.sha} at ${String(b.at).slice(0, 10)}; each is an ask and the skill that took it):\n` + b.misses.map((m) => '  - ' + m).join('\n'));
+    else if (b && !Array.isArray(b.misses)) console.log('\nThe bench misses: ' + (b.note || 'not recorded yet') + '.'); }
   if (process.env.VOID_MISSES_TOKEN || process.env.VOID_OWNER_TOKEN) {
     const r = spawnSync(process.execPath, [resolve(dirname(fileURLToPath(import.meta.url)), 'next-skill.mjs')], { encoding: 'utf8', timeout: 60000 });
     console.log('\nFrom the miss board:\n' + ((r.stdout || '') + (r.stderr || '')).trim());
