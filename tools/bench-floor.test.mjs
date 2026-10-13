@@ -4,7 +4,7 @@ import { mkdtempSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
-import { nextFloor, MARGIN } from './bench-floor.mjs';
+import { nextFloor, MARGIN, missesOf } from './bench-floor.mjs';
 
 const floor = { score: 1773, total: 1773, date: '2026-10-07', note: 'the floor' };
 
@@ -42,4 +42,11 @@ test('called as the workflow calls it (no --floor), the result file is still fou
   writeFileSync(r, JSON.stringify({ score: 1, total: 2, wrong: [] }));
   const out = spawnSync(process.execPath, ['tools/bench-floor.mjs', r], { encoding: 'utf8' });
   assert.equal(out.status, 0); assert.doesNotMatch(out.stdout + out.stderr, /usage/); assert.match(out.stdout, /floor stays/);
+});
+
+// the misses are kept by name for the next builder; an inconclusive run (machine under load) keeps nothing
+test('a conclusive run records which asks it missed, sorted, with its commit', () => {
+  assert.deepEqual(missesOf({ score: 2, total: 4, wrong: ['b -> x', 'a -> y'], sha: '0123456789abcdef', at: '2026-10-13T00:00:00Z' }), { at: '2026-10-13T00:00:00Z', sha: '0123456789ab', score: 2, total: 4, misses: ['a -> y', 'b -> x'] });
+  assert.equal(missesOf({ score: 2, total: 4, wrong: ['a'], inconclusive: true }), null);
+  assert.equal(missesOf({ score: 2, total: 4 }), null);
 });

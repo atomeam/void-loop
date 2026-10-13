@@ -6,12 +6,20 @@
 //   node tools/bench-floor.mjs bench-score.json --write    and write tools/bench.best.json when it would rise
 //   --baseline-only    with --write, record the latency baseline and leave the floor where it is
 //   --floor path.json  read and write a different floor file (the tests)
+// With --write, a conclusive run also writes tools/bench.misses.json: the asks it got wrong, so the next builder knows what to fix
+// (node tools/next.mjs lists them). The floor file keeps only numbers; it was the only record, and it never named a miss.
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { nextLatency } from './bench-load.mjs';
 
 export const MARGIN = 5;
+
+/** the misses record for a conclusive run: which asks the bench got wrong on which commit. Pure. */
+export function missesOf(result) {
+  if (!result || result.inconclusive || !Array.isArray(result.wrong)) return null;
+  return { at: result.at || '', sha: String(result.sha || '').slice(0, 12), score: result.score, total: result.total, misses: result.wrong.slice().sort() };
+}
 
 // the floor the result earns, or null when the floor stays (the result is not above it, or something is not a number)
 export function nextFloor(result, floor, margin = MARGIN) {
@@ -35,5 +43,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (latency) console.log(`latency baseline (${result.env}) ${floor.latency && floor.latency[result.env] ? 'tightens from p95 ' + floor.latency[result.env].p95 + 'ms ' : 'is recorded '}at p95 ${result.latency.p95}ms (p50 ${result.latency.p50}ms)`);
   if (!next) console.log(`${args.includes('--baseline-only') ? 'floor left alone (--baseline-only), it is' : 'floor stays'} at ${floor.score}/${floor.total} (this run: ${result.score}/${result.total}, margin ${MARGIN})`);
   else console.log(`floor rises from ${floor.score}/${floor.total} to ${next.score}/${next.total} (this run: ${result.score}/${result.total}, margin ${MARGIN})`);
+  const missed = missesOf(result), missesFile = resolve(dirname(floorFile), 'bench.misses.json');
+  if (missed) console.log(missed.misses.length ? `misses (${missed.misses.length}): ${missed.misses.join(' | ')}` : 'no misses');
+  if (missed && args.includes('--write') && at < 0) writeFileSync(missesFile, JSON.stringify(missed, null, 1) + '\n');
   if ((next || latency) && args.includes('--write')) writeFileSync(floorFile, JSON.stringify({ ...floor, ...(next || {}), ...(latency ? { latency } : {}), ...(next ? { date: new Date().toISOString().slice(0, 10) } : {}) }) + '\n');
 }
