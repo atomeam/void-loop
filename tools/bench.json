@@ -5822,5 +5822,29 @@
   {
     "ask": "how small a button",
     "want": "skill:make"
+  },
+  {
+    "ask": "box breathing",
+    "want": "skill:breath"
+  },
+  {
+    "ask": "breathe with me",
+    "want": "skill:breath"
+  },
+  {
+    "ask": "4-7-8 breathing",
+    "want": "skill:breath"
+  },
+  {
+    "ask": "resonance breathing",
+    "want": "skill:breath"
+  },
+  {
+    "ask": "guided breathing exercise",
+    "want": "skill:breath"
+  },
+  {
+    "ask": "help me breathe",
+    "want": "skill:breath"
   }
 ]

@@ -2322,6 +2322,22 @@ try {
     await L.ctx.close();
   }
 
+  // Breathe with me (2026-10-13): a guide you follow, not a paragraph of counts
+  if (want("Breathe with me: the breathing card moves in time and switches patterns")) {
+    const B = await fresh();
+    await B.ask('box breathing', 400);
+    const at = () => B.p.evaluate(() => { const d = document.querySelector('.vpage.on .vbreath .dot'); return d ? [+d.getAttribute('cx'), +d.getAttribute('cy'), document.querySelector('.vpage.on .vbreath .ph').textContent, document.querySelector('.vpage.on .vbreath .n').textContent] : null; });
+    const a = await at(); await B.p.waitForTimeout(1500); const b = await at();
+    await B.p.click('.vpage.on .vbreath [data-pat="478"]'); await B.p.waitForTimeout(300);
+    const pressed = await B.p.$eval('.vpage.on .vbreath [data-pat="478"]', (e) => e.getAttribute('aria-pressed')).catch(() => '');
+    const src = await B.p.$eval('.vpage.on .src', (e) => e.textContent).catch(() => '');
+    await B.p.click('.vpage.on .vbreath .go'); const paused = await B.p.$eval('.vpage.on .vbreath .ph', (e) => e.textContent).catch(() => '');
+    check('breathing: "box breathing" opens a guide whose dot climbs the square as "Breathe in" counts down; 4-7-8 switches the pattern and names its source; Stop pauses it',
+      !!a && !!b && a[2] === 'Breathe in' && b[1] < a[1] && Number(b[3]) < Number(a[3]) + 1 && pressed === 'true' && /hold 7/.test(src) && /Weil/.test(src) && paused === 'Paused' && !B.errors.length,
+      JSON.stringify({ a, b, pressed, src, paused, errors: B.errors }));
+    await B.ctx.close();
+  }
+
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
