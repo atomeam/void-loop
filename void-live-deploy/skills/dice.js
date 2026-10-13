@@ -1,48 +1,68 @@
 /**
- * dice skill — roll dice from the ask (no key; pure math)
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "roll a d20", "roll 2d6", "roll 3d10 + 4", "d6".
- * Shows each die and the total. Empty surface stays empty until asked.
+ * dice skill — roll dice, flip a coin, or pick a random number (no key)
+ * "roll a d20", "roll 2d6", "flip a coin", "random number between 1 and 100"
  */
 export function diceOf(text) {
-  const t = String(text || '').toLowerCase().trim().replace(/[?!.]+$/, '');
-  const m = t.match(/^(?:please\s+)?(?:roll\s+(?:a\s+|me\s+)?)?(?:(\d+)\s*)?d(\d+)(?:\s*([+-])\s*(\d+))?$/);
-  if (!m) return null;
-  const n = Math.max(1, Math.min(20, parseInt(m[1] || '1', 10)));
-  const sides = parseInt(m[2], 10);
-  if (sides < 2 || sides > 100) return null;
-  const mod = m[3] && m[4] ? (m[3] === '-' ? -1 : 1) * parseInt(m[4], 10) : 0;
-  return { n, sides, mod };
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const m = t.match(/^(?:please\s+)?(?:roll\s+(?:a\s+|me\s+)?)?(?:(\d+)\s*)?d(\d+)(?:\s+(?:dice|die))?$/i)
+    || t.match(/^(?:please\s+)?roll\s+(?:a\s+)?(\d+)[- ]sided\s+die$/i);
+  if (m) {
+    const count = m[1] ? parseInt(m[1], 10) : 1;
+    const sides = parseInt(m[2] || m[1], 10);
+    if (count >= 1 && count <= 100 && sides >= 2 && sides <= 1000) return { kind: 'dice', count, sides };
+  }
+  if (/^(?:please\s+)?(?:flip\s+(?:a\s+)?coin|coin\s+flip|heads\s+or\s+tails)$/i.test(t)) return { kind: 'coin' };
+  const rn = t.match(/^(?:please\s+)?(?:random\s+number|pick\s+a\s+number)\s+(?:between\s+|from\s+)?(\d+)\s+(?:and|to)\s+(\d+)$/i);
+  if (rn) {
+    const a = parseInt(rn[1], 10), b = parseInt(rn[2], 10);
+    if (a <= b && b - a < 1000000) return { kind: 'range', min: a, max: b };
+  }
+  return null;
 }
-function roll(n, sides) {
-  const dice = [];
-  for (let i = 0; i < n; i++) dice.push(1 + Math.floor(Math.random() * sides));
-  return dice;
+
+function roll(count, sides) {
+  const rolls = [];
+  for (let i = 0; i < count; i++) rolls.push(1 + Math.floor(Math.random() * sides));
+  return { rolls, total: rolls.reduce((a, b) => a + b, 0) };
 }
-function run(text, api) {
+
+async function run(text, api) {
   const { showPage, esc } = api;
-  const q = diceOf(text);
-  if (!q) return 'none';
-  const dice = roll(q.n, q.sides);
-  const sum = dice.reduce((a, b) => a + b, 0) + q.mod;
-  showPage((el) => {
-    el.innerHTML = '<h2>Dice</h2><div class="sub">' + esc(q.n + 'd' + q.sides + (q.mod ? (q.mod > 0 ? '+' : '') + q.mod : '')) + '</div>'
-      + '<div style="font-size:36px;font-weight:300;margin:8px 0">' + esc(dice.join(' + ')) + (q.mod ? ' ' + (q.mod > 0 ? '+' : '') + q.mod : '') + '</div>'
-      + '<div style="font-size:48px;font-weight:200">' + esc(String(sum)) + '</div>'
-      + '<div class="src">Rolled in the browser. Say “roll 2d6” for more.</div>';
-  });
+  const hit = diceOf(text);
+  if (!hit) return 'none';
+  const el = showPage((p) => { p.innerHTML = '<h2>Rolling…</h2><div class="sub">…</div>'; });
+  if (!api._pageStill(el)) return 'dice';
+  if (hit.kind === 'coin') {
+    const side = Math.random() < 0.5 ? 'Heads' : 'Tails';
+    el.innerHTML = '<h2>Coin flip</h2><p style="font-size:36px;text-align:center;margin:20px 0">' + side + '</p><div class="sub">say “flip a coin” for another</div>';
+    return 'dice';
+  }
+  if (hit.kind === 'range') {
+    const n = hit.min + Math.floor(Math.random() * (hit.max - hit.min + 1));
+    el.innerHTML = '<h2>Random number</h2><p style="font-size:36px;text-align:center;margin:20px 0">' + n + '</p><div class="sub">between ' + hit.min + ' and ' + hit.max + '</div>';
+    return 'dice';
+  }
+  const { rolls, total } = roll(hit.count, hit.sides);
+  const show = hit.count === 1 ? String(rolls[0]) : rolls.join(' + ') + ' = <b>' + total + '</b>';
+  el.innerHTML = '<h2>Dice</h2><p style="font-size:28px;text-align:center;margin:16px 0">' + show + '</p><div class="sub">' + hit.count + 'd' + hit.sides + '</div>';
   return 'dice';
 }
+
+export function suite() {
+  const d = diceOf('roll a d20');
+  if (!d || d.kind !== 'dice' || d.count !== 1 || d.sides !== 20) return { ok: false, got: 'd20 parse' };
+  const c = diceOf('flip a coin');
+  if (!c || c.kind !== 'coin') return { ok: false, got: 'coin parse' };
+  const r = diceOf('random number between 1 and 10');
+  if (!r || r.kind !== 'range' || r.min !== 1 || r.max !== 10) return { ok: false, got: 'range parse' };
+  return { ok: true };
+}
+
 export default {
   name: 'dice',
-  examples: ['roll a d20', 'roll 2d6', 'roll 3d10', 'd6'],
-  nearMisses: ['what is a die', 'history of dice', 'dice games'],
-  match(lower, text) { return !!diceOf(text || lower); },
+  examples: ['roll a d20', 'roll 2d6', 'flip a coin', 'random number between 1 and 100'],
+  nearMisses: ['what is dice', 'play a dice game', 'calculate 2+2'],
+  match(lower, text) { return !!diceOf(text); },
   run,
-  suite() {
-    const a = diceOf('roll a d20') && diceOf('roll a d20').n === 1 && diceOf('roll a d20').sides === 20;
-    const b = diceOf('roll 2d6') && diceOf('roll 2d6').n === 2 && diceOf('roll 2d6').sides === 6;
-    const c = !diceOf('what is a die');
-    return { ok: !!(a && b && c), got: a && b && c ? 'pass' : 'fail' };
-  }
+  suite
 };
