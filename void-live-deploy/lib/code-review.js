@@ -271,6 +271,41 @@ export function undefinedConstants(m0, ctx) {
     .filter((n) => !f.declared.has(n) && !CAPS_GLOBALS.has(n) && !new RegExp('\\btypeof\\s+' + n + '\\b').test(m));
 }
 
+// float-equality: a value a function rounds to k places (return Math.round(v * 100) / 100) is the same double as a literal
+// with k places or fewer, so f(x) === 0.15 is exact by construction. True when every comparison on the line with a decimal
+// binary cannot hold is against a call to such a function in this file (every return in it rounded, or a whole number).
+function roundedPlaces(name, all) {
+  const at = new RegExp('function\\s+' + name.replace(/\$/g, '\\$') + '\\s*\\([^)]*\\)\\s*\\{').exec(all);
+  if (!at) return -1;
+  let d = 0, e = all.length; for (let k = at.index + at[0].length - 1; k < all.length; k++) { if (all[k] === '{') d++; else if (all[k] === '}' && !--d) { e = k; break; } }
+  const rets = all.slice(at.index + at[0].length, e).match(/\breturn\b[^;\n}]*/g) || [];
+  let places = Infinity;
+  for (const ret of rets) {
+    if (/^return\s+-?\d+\s*$/.test(ret)) continue; // a whole number
+    const k = /^return\s+Math\.round\s*\(.*\)\s*\/\s*(10+)\s*$/.exec(ret.trim());
+    if (!k) return -1;
+    places = Math.min(places, k[1].length - 1);
+  }
+  return places === Infinity ? -1 : places;
+}
+function roundedOnly(line, all) {
+  const odd = (d) => ![1, 2, 4, 8, 16, 32].some((k) => Number.isInteger(Number(d) * k));
+  const name = (s) => { const n = /([\w$]+)\s*$/.exec(s); return n ? n[1] : ''; };
+  const callBefore = (i) => { let k = i - 1; while (k >= 0 && /\s/.test(line[k])) k--; if (line[k] !== ')') return ''; let d = 0; for (; k >= 0; k--) { if (line[k] === ')') d++; else if (line[k] === '(' && !--d) break; } return name(line.slice(0, k)); };
+  const callAfter = (i) => { const n = /^\s*([\w$]+)\s*\(/.exec(line.slice(i)); return n ? n[1] : ''; };
+  const re = /[=!]==?\s*(-?\d*\.\d+)|(\d*\.\d+)\s*[=!]==?/g;
+  let hit, any = false;
+  while ((hit = re.exec(line))) {
+    const lit = hit[1] || hit[2];
+    if (!odd(lit)) continue;
+    const fn = hit[1] ? callBefore(hit.index) : callAfter(hit.index + hit[0].length);
+    const places = fn ? roundedPlaces(fn, all) : -1;
+    if (places < 0 || (lit.split('.')[1] || '').length > places) return false;
+    any = true;
+  }
+  return any;
+}
+
 const RULES = [
   // ESLint's no-undef, for the names that matter most: an UPPER_CASE constant an ES module uses but never declares or imports is a
   // ReferenceError the first time that line runs (#250 used RUN_CAP_DAY and QUEUE_DEDUPE_MS with no definition anywhere; every
@@ -425,10 +460,11 @@ const RULES = [
     'indexOf returns -1 when the item is missing (which counts as true) and 0 when it is first (which counts as false), so this check is backwards in both cases. Use list.includes(x), or compare: list.indexOf(x) !== -1.'],
   ['listener-called', 'bug', JS, (m, r) => /\.addEventListener\s*\(/.test(m) && /\.addEventListener\s*\(\s*(['"`])[\w:-]+\1\s*,\s*[\w$.]+\s*\(\s*\)\s*[,)]/.test(r), // handler(): a factory with arguments, makeHandler(1), is fine
     'the handler is called right away (handler()) and its result is what gets attached, so nothing happens on the event. Pass the function itself: addEventListener("click", handler), or wrap it: () => handler(arg).'],
-  ['float-equality', 'bug', [...JS, 'python', 'java', 'csharp'], (m) => { const c = m.replace(/['"`][^'"`]*['"`]/g, '""'); // 1.25, 0.5, 0.75 are exact in binary: == on them alone is safe
+  ['float-equality', 'bug', [...JS, 'python', 'java', 'csharp'], (m, r, x) => { const c = m.replace(/['"`][^'"`]*['"`]/g, '""'); // 1.25, 0.5, 0.75 are exact in binary: == on them alone is safe
     if (!/\d\.\d*[1-9]\d*\s*(?:[-+*/]\s*[\d.]+[^=!<>]*)?[=!]==?|[=!]==?\s*-?\d*\.\d*[1-9]/.test(c)) return false;
     const decs = c.match(/\d*\.\d+/g) || [];
-    return !decs.length || !decs.every((d) => { const v = Number(d); return [1, 2, 4, 8, 16, 32].some((k) => Number.isInteger(v * k)); }); },
+    if (decs.length && decs.every((d) => { const v = Number(d); return [1, 2, 4, 8, 16, 32].some((k) => Number.isInteger(v * k)); })) return false;
+    return !x || !roundedOnly(c, x.all()); },
     'decimal numbers are stored in binary, so sums like 0.1 + 0.2 come out as 0.30000000000000004 and an exact == fails. Compare with a small tolerance: Math.abs(a - b) < 1e-9 (math.isclose in Python), or work in whole cents.'],
   ['drop-table', 'risk', ['sql', 'shell', 'code'], (m) => /^\s*(?:DROP\s+(?:TABLE|DATABASE|SCHEMA)\b|TRUNCATE\s+(?:TABLE\s+)?[\w."`[\]]+)/i.test(m),
     'this deletes the table (or database) and every row in it, and there is no undo. Take a backup first, and in a migration say exactly what you mean: DROP TABLE IF EXISTS old_name.'],
