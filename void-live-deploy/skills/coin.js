@@ -1,33 +1,32 @@
 /**
- * coin skill — flip a coin, heads or tails (no key; pure random)
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), suite }
- * "flip a coin", "heads or tails", "toss a coin".
- * Empty stage stays empty: only shows a page on a matching ask.
+ * coin skill — flip a coin: "flip a coin", "heads or tails", "coin flip".
+ * Shows Heads or Tails. Empty stage stays empty.
  */
-export function isCoin(text) {
-  return /^(?:(?:flip|toss|throw)\s+(?:a\s+|the\s+)?coin|heads\s+or\s+tails|coin\s+flip|flip\s+it)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+
+export function coinOf(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').toLowerCase();
+  if (/\b(what is|history of|collecting|bitcoin|crypto)\b/.test(t)) return false;
+  return /\b(flip|toss)\b.*\bcoin\b|\bcoin\s+(flip|toss)\b|\bheads?\s+or\s+tails?\b/.test(t);
 }
 
 async function run(text, api) {
-  if (!isCoin(text)) return 'none';
   const { showPage, esc } = api;
+  if (!coinOf(text)) return 'none';
   const side = Math.random() < 0.5 ? 'Heads' : 'Tails';
   showPage((p) => {
-    p.innerHTML = '<h2>Coin flip</h2>'
-      + '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:8px 0;text-align:center">' + esc(side) + '</div>'
-      + '<div class="sub">say “flip a coin” again for another</div>';
+    p.innerHTML = '<h2>Coin flip</h2><p style="font-size:48px;font-weight:300">' + esc(side) + '</p>';
   });
   return 'coin';
 }
 
 export default {
   name: 'coin',
-  examples: ['flip a coin', 'heads or tails', 'toss a coin'],
-  nearMisses: ['what is a coin', 'bitcoin price', 'flip the script'],
-  match(lower, text) { return isCoin(text); },
+  examples: ['flip a coin', 'heads or tails', 'coin flip'],
+  nearMisses: ['what is a coin', 'coin collecting', 'bitcoin price'],
+  match(lower, text) { return coinOf(text); },
   run,
   suite() {
-    const ok = isCoin('flip a coin') && !isCoin('what is a coin');
-    return { ok, got: ok ? undefined : 'matcher failed' };
+    const ok = coinOf('flip a coin') && coinOf('heads or tails') && coinOf('coin flip') && !coinOf('what is a coin') && !coinOf('bitcoin price');
+    return { ok, got: 'ok' };
   }
 };
