@@ -15,10 +15,10 @@ const DATE = { type: 'string', description: 'An ISO date or date-time (UTC). Lea
 
 export const TOOLS = [
   { name: 'review_code', title: 'Review code (instant checks)', annotations: RO,
-    description: "Void's instant code review: pattern checks for bugs, risks and style in pasted code or a diff's added lines, in many languages. The same checks a-to-mind.com runs when someone asks Void to review code. No model; the closer read is not included.",
+    description: "Void's instant code review: pattern checks for bugs, risks and style in pasted code or a diff's added lines, in many languages. The same checks a-to-mind.com runs when someone asks Void to review code. No model; the closer read is not included. Its structured result says basis 'patterns' and confidence 'low'.",
     inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to review (up to 60,000 characters).' }, diff: { type: 'string', description: 'A unified diff instead of code: only the added lines are reviewed, with their line numbers in the new file.' }, lang: { type: 'string', description: 'The language, if known (javascript, python, go, rust, sql, ...).' } } } },
   { name: 'review_code_closer', title: 'Review code (with the closer read)', annotations: { ...RO, idempotentHint: false },
-    description: "Void's code review with the closer read: the instant checks, then an AI reviewer that confirms real findings, drops wrong ones and adds what the patterns missed, each quoting its line. The closer read needs a key in the MCP request's Authorization header (Bearer: a Void Pro review key vr1.… or a Void Code Review Pro license key; https://a-to-mind.com/code-review/#pro). Without one you get the instant checks and how to get it.",
+    description: "Void's code review with the closer read: the instant checks, then an AI reviewer that confirms real findings, drops wrong ones and adds what the patterns missed, each quoting its line. The closer read needs a key in the MCP request's Authorization header (Bearer: a Void Pro review key vr1.… or a Void Code Review Pro license key; https://a-to-mind.com/code-review/#pro). Without one you get the instant checks and how to get it. The structured result says what it rests on: basis 'closer_read' (confidence 'reviewed') only when the closer read came back, else 'patterns' (confidence 'low').",
     inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to review (up to 60,000 characters).' }, diff: { type: 'string', description: 'A unified diff instead of code: the added lines are reviewed.' }, lang: { type: 'string', description: 'The language, if known.' } } } },
   { name: 'moon_phase', title: "The moon's phase", annotations: RO,
     description: "The moon's illuminated fraction, whether it is waxing or waning, and the phase's name for a moment, from Meeus' formulas (Astronomical Algorithms, ch. 47-48).",
@@ -37,6 +37,12 @@ function when(a) {
   const d = new Date(String(a));
   return Number.isNaN(d.getTime()) ? null : d;
 }
+// what a review rests on (asked by Void): pattern checks alone are low confidence; the closer read is only claimed when its answer came back
+const BASIS = {
+  patterns: { basis: 'patterns', confidence: 'low', line: 'Basis: pattern checks only, no model. A finding can be a false positive, and finding nothing is not proof the code is right.' },
+  closer_read: { basis: 'closer_read', confidence: 'reviewed', line: 'Basis: pattern checks, then an AI reviewer read the code. It can still miss things.' },
+};
+const based = (text, data, read) => { const b = BASIS[read ? 'closer_read' : 'patterns']; return toolResult(text + '\n\n' + b.line, { ...data, basis: b.basis, confidence: b.confidence }); };
 const PHASES = [[0.02, 'new moon'], [0.35, 'crescent'], [0.65, 'quarter'], [0.98, 'gibbous'], [1.01, 'full moon']];
 
 // the closer read: /api/review answers (ctx.review hands it { code | diff, lang } with the caller's Authorization), this words it
@@ -49,7 +55,7 @@ async function closer(a, ctx) {
   const { ok: _ok, ...data } = body;
   const found = (data.findings || []).length ? data.findings.map((f) => 'line ' + f.line + ' · ' + f.kind + ' · ' + f.message).join('\n') : 'The instant checks found nothing in ' + data.lines + ' line' + (data.lines === 1 ? '' : 's') + '.';
   const more = data.answer ? '\n\nCloser read:\n' + data.answer : data.note || data.upgrade ? '\n\n' + [data.note, data.upgrade].filter(Boolean).join(' ') : '';
-  return toolResult(found + more, data);
+  return based(found + more, data, data.review === 'model' && !!data.answer);
 }
 
 const RUN = {
@@ -58,7 +64,7 @@ const RUN = {
     if (typeof a.code !== 'string' && typeof a.diff !== 'string') return toolError('Give the code to review as "code" (or a unified diff as "diff").');
     const r = quick({ code: a.code, diff: a.diff, lang: typeof a.lang === 'string' ? a.lang : undefined });
     const text = r.findings.length ? r.findings.map((f) => 'line ' + f.line + ' · ' + f.kind + ' · ' + f.message).join('\n') : 'The instant checks found nothing in ' + r.lines + ' line' + (r.lines === 1 ? '' : 's') + '.';
-    return toolResult(text, { lang: r.lang, lines: r.lines, findings: r.findings });
+    return based(text, { lang: r.lang, lines: r.lines, findings: r.findings }, false);
   },
   moon_phase(a) {
     const d = when(a.date); if (!d) return toolError('That date could not be read; use ISO, like 2026-10-11 or 2026-10-11T21:00:00Z.');

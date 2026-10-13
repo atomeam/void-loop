@@ -26,7 +26,7 @@ const call = async (name, args, check) => {
   if (r.isError || !check(r.structuredContent || {}, text)) fail(name + ': ' + text.slice(0, 200));
   console.log('ok   ' + name + ': ' + text.split('\n')[0].slice(0, 120));
 };
-await call('review_code', { code: 'function f(a) { eval(a) }\ntry { f() } catch (e) {}', lang: 'javascript' }, (s) => (s.findings || []).some((f) => f.rule === 'eval'));
+await call('review_code', { code: 'function f(a) { eval(a) }\ntry { f() } catch (e) {}', lang: 'javascript' }, (s) => s.basis === 'patterns' && (s.findings || []).some((f) => f.rule === 'eval'));
 // with no key: /api/review's free tier through MCP, the instant checks and the way to the closer read (no model is called)
 await call('review_code_closer', { code: 'function f(a) { eval(a) }\ntry { f() } catch (e) {}', lang: 'javascript' }, (s, text) => s.tier === 'free' && (s.findings || []).some((f) => f.rule === 'eval') && /code-review/.test(text));
 await call('moon_phase', { date: '2026-10-11T00:00:00Z' }, (s) => s.illuminated >= 0 && s.illuminated <= 1 && typeof s.phase === 'string');
