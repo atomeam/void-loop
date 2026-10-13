@@ -142,6 +142,11 @@ test('/api/answer passes the timer on; the skill adds only the fixed timer ask f
     await skill.run('make a plan to learn spanish', { stage, say: (s) => said.push(s) });
     assert.deepEqual(asked, ['make a list with Learn 20 words a day, Do one lesson a day, Talk with a tutor', 'set a timer for 20 minutes']);
     assert.match(said[0], /checklist, a 20 minute practice timer/);
+    globalThis.fetch = async () => new Response(JSON.stringify({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 20, practice: true }));
+    said.length = 0;
+    await skill.run('make a plan to learn spanish', { stage, say: (s) => said.push(s) });
+    assert.match(said[0], /checklist, a daily practice, so a 20 minute timer/, 'the card says the call Clef made');
+    globalThis.fetch = async () => new Response(JSON.stringify({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 20 }));
     asked.length = 0; said.length = 0;
     await skill.run('make a plan to learn spanish by friday', { stage, say: (s) => said.push(s) });
     assert.ok(asked.includes('set a timer for 20 minutes'), 'a dated plan takes it too: ' + asked.join(' | '));
@@ -179,6 +184,9 @@ test('/api/answer drops the timer when Clef says the goal is not a daily practic
   assert.equal(await timerOf({ AI: run(clefSays('no', 0.85), seen) }), null, 'a one-off goal gets no timer');
   assert.ok(seen.includes(CLEF_MODEL), 'Clef was asked');
   assert.equal(await timerOf({ AI: run(clefSays('yes', 0.9)) }), 20);
+  const said = async (env) => (await (await post({ DB: kvDB(), ...env }, { mode: 'plan', goal: 'learn spanish' })).json()).practice;
+  assert.equal(await said({ AI: run(clefSays('yes', 0.9)) }), true, 'the call Clef made goes back with the timer');
+  for (const env of [{ AI: run(clefSays('no', 0.9)) }, { AI: run(new Error('down')) }, { AI: run(clefSays('yes', 0.9)), VOID_CLEF: 'off' }]) assert.equal(await said(env), undefined, 'no call made, none said');
   assert.equal(await timerOf({ AI: run(new Error('down')) }), 20, 'Clef down: the engine\'s timer stands');
   const off = [];
   assert.equal(await timerOf({ AI: run(clefSays('no', 0.9), off), VOID_CLEF: 'off' }), 20);

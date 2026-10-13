@@ -217,14 +217,15 @@ async function engineSteps(goal) {
     const steps = Array.isArray(j.steps) && j.steps.length ? j.steps.map((x) => listSafe(String(x)).replace(/\s*&\s*|\s+and\s+/gi, ' + ').slice(0, 60)).filter(Boolean).slice(0, 7) : null;
     const timer = Number.isInteger(j.timer) && j.timer >= 5 && j.timer <= 60 ? j.timer : null;
     const note = typeof j.note === 'string' && cleanNote(j.note).length >= 3 ? cleanNote(j.note) : null;
-    return steps ? { steps, timer, note } : null;
+    return steps ? { steps, timer, practice: !!timer && j.practice === true, note } : null;
   } catch (_) { return null; }
 }
 // the fixed shapes besides the checklist that an engine reply may add: a practice timer, run as the timer's own ask
-const timerAsk = (min) => ({ piece: 'timer', ask: 'set a timer for ' + min + ' minutes', minutes: min });
+// (practice: Clef called the goal a daily practice, and the card says so)
+const timerAsk = (min, practice) => ({ piece: 'timer', ask: 'set a timer for ' + min + ' minutes', minutes: min, practice });
 // and a note to self, run as the sticky's own ask
 const noteAsk = (note) => ({ piece: 'note', ask: 'add a sticky that says ' + note });
-const extras = (got) => [...(got.timer ? [timerAsk(got.timer)] : []), ...(got.note ? [noteAsk(got.note)] : [])];
+const extras = (got) => [...(got.timer ? [timerAsk(got.timer, got.practice)] : []), ...(got.note ? [noteAsk(got.note)] : [])];
 async function run(text, api) {
   let plan = planOf(text);
   if (!plan) {
@@ -254,7 +255,7 @@ async function run(text, api) {
     if (st.save) st.save();
     if (st.render) st.render();
   }
-  const pieces = plan.asks.map((a) => a.piece === 'draft' ? 'a draft to ' + cap(plan.who) : a.piece === 'timer' ? 'a ' + a.minutes + ' minute practice timer' : a.piece === 'note' ? 'a note to self' : a.piece).join(', ');
+  const pieces = plan.asks.map((a) => a.piece === 'draft' ? 'a draft to ' + cap(plan.who) : a.piece === 'timer' ? (a.practice ? 'a daily practice, so a ' + a.minutes + ' minute timer' : 'a ' + a.minutes + ' minute practice timer') : a.piece === 'note' ? 'a note to self' : a.piece).join(', ');
   if (api.say && plan.open) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · steps from the answer engine, check them'); return 'intent'; }
   if (api.say && !plan.deadline) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · no day yet: add one ("' + plan.goal + ' by Friday") for dates, a countdown and the calendar'); return 'intent'; }
   if (api.say) api.say('planned "' + plan.goal + '" for ' + LONG_DAY(plan.deadline) + ' · ' + pieces + (ids.length > 1 ? ' · one group, drag one to move them all' : '') + (plan.who ? ' · nothing sent' : '') + (plan.engine ? ' · steps from the answer engine, check them' : ''));
