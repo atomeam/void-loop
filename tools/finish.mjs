@@ -78,7 +78,8 @@ export function steps(a) {
     ['ledger line', node('grow.mjs', a.kind, a.what, '--by', a.by, ...(a.show ? ['--show', a.show] : []), ...(a.try ? ['--try', a.try] : []), ...(a.asked ? ['--asked', a.asked] : []))],
     ['agent-log line', () => { appendFileSync(LOG, logLine(a) + '\n'); return 0; }],
     ['map covers everything', [process.execPath, ['--test', '--test-reporter=dot', resolve(root, 'tools', 'map-coverage.test.mjs')]]],
-    ['commit', () => (git('add', '-A') || git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : [])))],
+    // a new skill file is registered before it is committed (Void's ask: the skills/ manifest registers every new skill; the fast checks then run the router test on it)
+    ['commit', () => (run(process.execPath, [resolve(root, 'tools', 'skills-index.mjs'), '--adopt']) || git('add', '-A') || git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : [])))],
     ['bring main in', node('merge-main.mjs')],
     ['fast checks', node('checks.mjs')],
     ['push', node('push.mjs')],
