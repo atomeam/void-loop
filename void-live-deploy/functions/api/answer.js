@@ -195,15 +195,16 @@ async function planAnswer(request, env, body) {
   const on = modelsOn(env);
   if (on) {
     // Clef's yes/no call (is this a daily practice?) runs beside the plan and is read only when the engine offers a timer
-    const daily = clefOn(env) ? clefYesNo(env, goal, PRACTICE_ASK) : Promise.resolve(null);
+    const asked = clefOn(env) ? clefYesNo(env, goal, PRACTICE_ASK) : Promise.resolve(null);
     try {
       const r = await env.AI.run(MODEL, {
         messages: [{ role: 'system', content: PLAN_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: planPrompt(goal) }],
         max_tokens: 400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
       const said = redact(noThink(pick(r))), steps = parsePlan(said);
-      const timer = parseTimer(said);
-      if (steps) return Response.json({ goal, steps, timer: timer && keepTimer(timer, await daily), note: parseNote(said), model: 'gemma' });
+      const offered = parseTimer(said), daily = offered ? await asked : null, timer = offered && keepTimer(offered, daily);
+      // practice: true says Clef called it a daily practice, so the card can say why the timer is there
+      if (steps) return Response.json({ goal, steps, timer, practice: timer && daily && daily.yes === true ? true : undefined, note: parseNote(said), model: 'gemma' });
       await recordShortfall(env, 'plan', 'empty');
     } catch (e) { await recordShortfall(env, 'plan', reasonOf(e)); }
   }

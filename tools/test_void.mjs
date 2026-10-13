@@ -640,11 +640,11 @@ try {
     await W.ctx.close(); }
   // the engine's one other shape: a practice timer ({"steps": [...], "timer": 15}) becomes the timer's own ask beside the checklist
   if (want("open plan timer: \"make a plan to learn spanish\" adds the engine's practice timer")) { const T = await fresh();
-    await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, note: 'Little and often beats one long session.', model: 'gemma' })));
+    await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, practice: true, note: 'Little and often beats one long session.', model: 'gemma' })));
     await T.ask('make a plan to learn spanish', 3000);
     const said = await T.whisper(), st = await T.state(), list = st.find((x) => x.kind === 'list'), timer = st.find((x) => x.kind === 'timer'), note = st.find((x) => x.kind === 'sticky');
-    check('open plan timer: "make a plan to learn spanish" puts up the engine\'s steps as a checklist, its 15 minute practice timer and its note to self as a sticky, as one group, and says so',
-      !!list && list.items.length === 3 && !!timer && /15 minute practice timer, a note to self/.test(said) && !!note && note.text === 'Little and often beats one long session.'
+    check('open plan timer: "make a plan to learn spanish" puts up the engine\'s steps as a checklist, its 15 minute practice timer and its note to self as a sticky, as one group, and says so (with the call Clef made: a daily practice)',
+      !!list && list.items.length === 3 && !!timer && /a daily practice, so a 15 minute timer, a note to self/.test(said) && !!note && note.text === 'Little and often beats one long session.'
         && !!list.group && list.group === timer.group && list.group === note.group && !T.errors.length,
       JSON.stringify({ said, stickies: st.filter((x) => x.kind === "sticky").map((x) => x.text), kinds: st.map((x) => x.kind), e: T.errors }));
     await T.ctx.close(); }
