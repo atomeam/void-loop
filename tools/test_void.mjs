@@ -2300,6 +2300,28 @@ try {
       JSON.stringify([kept, sa.queued, sa.open, sb.open, sb.queued]).slice(0, 300));
   }
 
+  // The lab (2026-10-13): the newest working fringe draft of each family is live; each opens from a plain ask and passes its own self-test there
+  if (want("The lab: every fringe experiment opens from an ask and passes its own self-test")) {
+    const L = await fresh(); const res = [];
+    const lab = [['test my attention', 'attention-7'], ['hold the lamp', 'interval-timing-8'], ['fitts law', 'opt-in-gesture-6'], ['joint simon task', 'human-machine-co-agency-8'],
+      ['count the flashes', 'sensory-substitution-7'], ['how sure are they', 'non-lexical-intent-5'], ["simpson's paradox", 'correlation-view-6'], ['when did it start', 'quiet-signal-filter-5'],
+      ['base rate fallacy', 'weak-signal-hypothesis-ledger-7'], ['word puzzles', 'private-incubation-log-6'], ["what hasn't void heard yet", 'miss-board-4'], ['odd moments log', 'anomalous-event-timeline-4']];
+    for (const [ask, id] of lab) {
+      const hook = (/window\.(__[A-Za-z]+)/.exec(fs.readFileSync(path.join(root, 'fringe', id + '.html'), 'utf8')) || [])[1];
+      await L.ask(ask, 300);
+      const fr = await until(async () => L.p.frames().find((f) => f.url().endsWith('/fringe/' + id + '.html')), 6000);
+      const ok = fr ? await until(async () => fr.evaluate((h) => { try { return window[h] && window[h].selftest && window[h].selftest() === true; } catch (_) { return false; } }, hook).catch(() => false), 6000) : false;
+      res.push({ id, ok: !!ok, hook, framed: !!fr });
+    }
+    await L.ask('show me the lab', 500);
+    const links = await L.p.$$eval('.vpage.on .vlab a[data-ask]', (as) => as.map((a) => a.getAttribute('data-ask'))).catch(() => []);
+    if (links.length) await L.p.click('.vpage.on .vlab a[data-ask="count the flashes"]');
+    const opened = await until(async () => L.p.frames().some((f) => f.url().endsWith('/fringe/sensory-substitution-7.html')), 6000);
+    check('the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; "show me the lab" lists all 12 and a click opens one',
+      res.every((r) => r.ok) && links.length === 12 && !!opened && !L.errors.length, JSON.stringify(res.filter((r) => !r.ok)) + ' links ' + links.length + ' ' + L.errors.join(' | '));
+    await L.ctx.close();
+  }
+
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
