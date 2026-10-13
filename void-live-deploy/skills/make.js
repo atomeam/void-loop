@@ -26,11 +26,26 @@ const TOOLS = [
   ['(?:void(?:\'s)? (?:growth chart|progress|growth)|void progress|how is void growing)', 'correlation-view', 'Void growth', 'The benchmark score round by round, and what moved it.'],
   ['(?:hypothesis ledger|weak signal ledger|weak signals)', 'weak-signal-hypothesis-ledger', 'Hypothesis ledger', 'Weak signals held as hypotheses, each with its confidence and source.'],
   ['(?:(?:uap|ufo) (?:disclosure )?timeline|uap disclosure)', 'anomalous-event-timeline', 'UAP timeline', 'Public steps in US UAP disclosure, each with its confidence. Releases are events; the cases stay unresolved.'],
+  // the lab: the newest working draft of each fringe family, each a real experiment with its own self-test (2026-10-13)
+  ['(?:posner(?: cue| cueing)?(?: test)?|arrow (?:attention )?test|attention test|test my attention)', 'attention-7', 'The pointing arrow', 'An arrow hints where a star will appear. Sometimes it lies. How much does a hint steer you?'],
+  ['(?:hold the lamp|lamp timing(?: test)?|scalar timing(?: test)?)', 'interval-timing-8', 'Hold the lamp', 'Hold for as long as the lamp was lit. Longer times drift more, in proportion.'],
+  ['(?:fitts(?:\'s|s)?(?: law)?(?: test)?|pointing test|how fast can i tap)', 'opt-in-gesture-6', 'How small a button', 'Tap the targets as fast as you can; Fitts\'s law predicts your time from size and distance.'],
+  ['(?:(?:joint )?simon (?:effect|test|task)|joint simon|its side of the table)', 'human-machine-co-agency-8', 'Its side of the table', 'Answer only the green dots. Does sharing the task with Void slow you on its side?'],
+  ['(?:count the flashes|flash[\\s-]beep(?: illusion)?|double[\\s-]flash illusion|sound[\\s-]induced flash(?: illusion)?)', 'sensory-substitution-7', 'Count the flashes', 'One flash or two? The beeps are not a clue, and they still change what you see.'],
+  ['(?:feeling of knowing|do they know|how sure are they)', 'non-lexical-intent-5', 'Do they know', 'Only how the answer arrives: the pause, the um. How sure do they sound?'],
+  ['(?:simpson(?:\'s|s)? paradox|the link turns over)', 'correlation-view-6', 'The link turns over', 'Inside every group more x goes with more y; pooled, the line can slope the other way.'],
+  ['(?:cusum|change detector|when did it start|change[\\s-]point(?: test)?)', 'quiet-signal-filter-5', 'When did it start', 'Paste a series of numbers; a cumulative-sum test finds when a small lasting change began.'],
+  ['(?:base[\\s-]rate(?: fallacy| test| check)?|one in a hundred|how likely is it really)', 'weak-signal-hypothesis-ledger-7', 'One in a hundred', 'A positive test, an alarm, a strong hunch: how likely is the thing behind it, really?'],
+  ['(?:remote associates(?: test)?|three[\\s-]word puzzles?|word puzzles?|the wrong lead)', 'private-incubation-log-6', 'The wrong lead', 'Three words, one word that goes with all of them. Some come with a misleading hint.'],
+  ['(?:good[\\s-]turing|unseen asks|what hasn\'?t void heard(?: yet)?)', 'miss-board-4', 'What it hasn\'t heard yet', 'How much of what people will ask has Void already seen? Good and Turing\'s estimate.'],
+  ['(?:odd moments?(?: log)?|something odd (?:just )?happened|weirdness log)', 'anomalous-event-timeline-4', 'Odd moments', 'Log each odd moment; over days it asks whether they come in bursts more than chance would.'],
 ].map(([re, id, label, sub]) => [new RegExp('^' + OPEN + re + '$'), id, label, sub]);
 
 export function makeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  if (/^(?:show (?:me )?|open )?(?:the |void'?s )?(?:lab|experiments?|fringe lab)$|^what experiments (?:can i try|do you have)$/.test(t)) return { kind: 'lab' };
   for (const [re, id, label, sub] of TOOLS) if (re.test(t)) return { kind: 'tool', id, label, sub };
+  for (const [, id, label, sub] of TOOLS) if (label.toLowerCase().replace(/[^a-z' ]/g, '') === t.replace(/[^a-z' ]/g, '')) return { kind: 'tool', id, label, sub }; // the lab's own titles
   let m = t.match(/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|build|create|start|open|give\s+me|code)\s+(?:me\s+)?(?:a\s+|an\s+)?(?:game\s+of\s+|round\s+of\s+)?(.+?)(?:\s+game|\s+app)?$/);
   if (m) for (const [re, id, label] of GAMES) {
     if (id === 'tictactoe' && !/^(?:make|build|create|give me|code)\b/.test(t)) continue;
@@ -159,6 +174,11 @@ async function run(text, api) {
   if (!q) return 'none';
   ensureStyle();
   let title, doc, h, sub;
+  if (q.kind === 'lab') {
+    showPage((p) => { p.innerHTML = '<h2>The lab</h2><div class="sub">Real experiments from cognitive science and statistics. Each runs in your browser and checks its own maths.</div><ul class="vlab">'
+      + TOOLS.filter((x) => /-\d+$/.test(x[1])).map((x) => '<li><a href="#" data-ask="' + esc(x[2].toLowerCase()) + '">' + esc(x[2]) + '</a> · ' + esc(x[3]) + '</li>').join('') + '</ul>'; });
+    return 'make';
+  }
   if (q.kind === 'tool') {
     const el = showPage((p) => { p.innerHTML = '<h2>' + esc(q.label) + '</h2><div class="sub">' + esc(q.sub) + '</div><div class="vmake"></div>'; });
     const f = document.createElement('iframe');

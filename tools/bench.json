@@ -5758,5 +5758,69 @@
   {"ask": "what are they doing?", "want": "skill:together"},
   {"ask": "what would those two do", "want": "skill:together"},
   {"ask": "what will they do together", "want": "skill:together"},
-  {"ask": "what are the two of them doing", "want": "skill:together"}
+  {"ask": "what are the two of them doing", "want": "skill:together"},
+  {
+    "ask": "test my attention",
+    "want": "skill:make"
+  },
+  {
+    "ask": "fitts law",
+    "want": "skill:make"
+  },
+  {
+    "ask": "count the flashes",
+    "want": "skill:make"
+  },
+  {
+    "ask": "simpson's paradox",
+    "want": "skill:make"
+  },
+  {
+    "ask": "when did it start",
+    "want": "skill:make"
+  },
+  {
+    "ask": "base rate fallacy",
+    "want": "skill:make"
+  },
+  {
+    "ask": "word puzzles",
+    "want": "skill:make"
+  },
+  {
+    "ask": "odd moments log",
+    "want": "skill:make"
+  },
+  {
+    "ask": "hold the lamp",
+    "want": "skill:make"
+  },
+  {
+    "ask": "how sure are they",
+    "want": "skill:make"
+  },
+  {
+    "ask": "joint simon task",
+    "want": "skill:make"
+  },
+  {
+    "ask": "what hasn't void heard yet",
+    "want": "skill:make"
+  },
+  {
+    "ask": "show me the lab",
+    "want": "skill:make"
+  },
+  {
+    "ask": "what experiments can i try",
+    "want": "skill:make"
+  },
+  {
+    "ask": "the pointing arrow",
+    "want": "skill:make"
+  },
+  {
+    "ask": "how small a button",
+    "want": "skill:make"
+  }
 ]
