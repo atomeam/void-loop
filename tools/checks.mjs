@@ -52,6 +52,8 @@ for (const [name, file] of [
   ['revert-records', 'revert-records.test.mjs'],
   ['prepush', 'prepush.test.mjs'],
   ['astro', 'astro.test.mjs'],
+  ['openapi', 'openapi-check.mjs'],
+  ['openapi-check', 'openapi-check.test.mjs'],
   ['where', 'where.test.mjs'],
   ['sky-skills', 'sky-skills.test.mjs'],
   ['sky-world', 'sky-world.test.mjs'],

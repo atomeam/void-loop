@@ -1,0 +1,283 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Void by A-to-Mind",
+    "version": "1.0.0",
+    "summary": "Void's public API: code review, Void as an MCP server, and the list of what Void can do.",
+    "description": "Void (https://a-to-mind.com) is a blank stage where anything someone asks for appears. Everything a person sees runs in the browser; open https://a-to-mind.com/?q={ask} to run any ask in plain words. The operations below are the ones meant for other programs. Every other /api route is Void's own (the page, the owner, signed-in accounts) and is left out on purpose. Calls from other websites' pages are refused (no CORS): call from a server, a CLI or an agent. Each connection gets 60 requests a minute per route.",
+    "contact": { "url": "https://a-to-mind.com/code-review/" }
+  },
+  "servers": [{ "url": "https://a-to-mind.com" }],
+  "security": [{}],
+  "externalDocs": { "description": "What Void does, for agents and crawlers", "url": "https://a-to-mind.com/llms.txt" },
+  "tags": [
+    { "name": "review", "description": "Void's code review: instant pattern checks free, a closer read by an AI reviewer with a key." },
+    { "name": "mcp", "description": "Void as an MCP server (streamable HTTP, JSON replies)." },
+    { "name": "discovery", "description": "What Void can do and what is on sale." }
+  ],
+  "paths": {
+    "/api/review": {
+      "post": {
+        "tags": ["review"],
+        "operationId": "reviewCode",
+        "summary": "Review code or a diff",
+        "description": "Send code or a unified diff. The instant checks (bugs, security holes, risky habits, with line numbers) are free and need no key. With a Void Pro key, a Void Code Review Pro license key, or the owner's token in Authorization, the answer also carries the closer read by an AI reviewer (`review: 'model'`), up to a daily cap. For a diff, only the added lines are reviewed and line numbers are in the new file. Code over 60,000 characters is cut there. The free GitHub Action atomeam/void-loop/review@main calls this for every pull request.",
+        "security": [{}, { "reviewKey": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ReviewRequest" },
+              "examples": {
+                "code": { "value": { "code": "const key = \"sk_live_abcdefghijklmnop1234\";\nel.innerHTML = location.hash;\n", "lang": "javascript" } },
+                "diff": { "value": { "diff": "@@ -10,2 +10,3 @@\n const a = 1;\n+el.innerHTML = location.hash;\n const b = 2;\n" } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The findings. Without a key `tier` is `free`, `review` is `rules` and `upgrade` says how to get the closer read. A `note` says why the closer read did not run when a key was sent (today's cap used, the model off or busy).",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReviewResult" },
+                "example": {
+                  "ok": true,
+                  "findings": [
+                    { "line": 1, "kind": "risk", "rule": "hardcoded-secret", "message": "a key, token or password is written into the code. Anyone who sees the code (or the repo history) has it. Move it to an environment variable or a secret store, and change the key if this code was ever shared." },
+                    { "line": 2, "kind": "risk", "rule": "inner-html", "message": "putting a variable into innerHTML lets any HTML in it run (a script tag, an onerror handler): an XSS hole if the text can come from a user. Use textContent, or escape the text first." }
+                  ],
+                  "lang": "javascript",
+                  "lines": 3,
+                  "ms": 14,
+                  "tier": "free",
+                  "review": "rules",
+                  "upgrade": "Void Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/"
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/components/responses/BadRequest" },
+          "401": { "description": "The Authorization header carries a review key or license key Void does not know.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" }, "example": { "ok": false, "error": "unknown review key" } } } },
+          "403": { "$ref": "#/components/responses/CrossSite" },
+          "413": { "$ref": "#/components/responses/TooBig" },
+          "429": { "$ref": "#/components/responses/SlowDown" }
+        }
+      },
+      "get": {
+        "tags": ["review", "discovery"],
+        "operationId": "reviewOffer",
+        "summary": "What the closer read costs and where to buy it",
+        "description": "Only with the `offer` query parameter. Without it this path lists a signed-in account's own review keys, which needs a Void session and is not part of the public API.",
+        "parameters": [
+          { "name": "offer", "in": "query", "required": true, "allowEmptyValue": true, "schema": { "type": "string" }, "description": "Present with any value (`?offer`)." }
+        ],
+        "responses": {
+          "200": {
+            "description": "The offer. `standalone` is null whenever Void Code Review Pro is not sold on its own.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ReviewOffer" },
+                "example": { "product": "Void Code Review Pro", "adds": "the closer read: an AI reviewer on every pull request, on top of the free instant checks", "included": { "in": "Void Pro", "url": "https://moonbeam846.gumroad.com/l/yinmj" }, "standalone": { "url": "https://moonbeam846.gumroad.com/l/dkmcjk" } }
+              }
+            }
+          },
+          "429": { "$ref": "#/components/responses/SlowDown" }
+        }
+      }
+    },
+    "/api/mcp": {
+      "post": {
+        "tags": ["mcp"],
+        "operationId": "mcpMessage",
+        "summary": "Send one MCP JSON-RPC message",
+        "description": "Void's MCP server: the streamable HTTP transport, answered as plain JSON (no event stream). Methods: `initialize`, `tools/list`, `tools/call`, `ping`. The tools are read-only: `review_code` (the instant checks), `review_code_closer` (the closer read; send the same Authorization header /api/review takes), `moon_phase` and `meteor_showers`. A JSON-RPC notification (no `id`) gets 202 with no body. Unparseable JSON still gets 200 with JSON-RPC error -32700. GET answers 405.",
+        "security": [{}, { "reviewKey": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/JsonRpcRequest" },
+              "examples": {
+                "list": { "value": { "jsonrpc": "2.0", "id": 1, "method": "tools/list" } },
+                "call": { "value": { "jsonrpc": "2.0", "id": 2, "method": "tools/call", "params": { "name": "moon_phase", "arguments": {} } } }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "The JSON-RPC reply (a result, or an error object).", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/JsonRpcResponse" } } } },
+          "202": { "description": "A notification was received; there is no reply." },
+          "403": { "$ref": "#/components/responses/CrossSite" },
+          "413": { "$ref": "#/components/responses/TooBig" },
+          "429": { "$ref": "#/components/responses/SlowDown" }
+        }
+      }
+    },
+    "/tools.json": {
+      "get": {
+        "tags": ["discovery"],
+        "operationId": "listTools",
+        "summary": "Everything Void can do, with asks to try",
+        "description": "Built live from Void's skills, so it never drifts. Each tool is used by opening https://a-to-mind.com/?q={ask} in a browser; `mcp` describes the MCP endpoint and its tools. This is the one response other websites may read (CORS open).",
+        "responses": {
+          "200": { "description": "Void's tools.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ToolList" } } } }
+        }
+      }
+    },
+    "/api/catalog": {
+      "get": {
+        "tags": ["discovery"],
+        "operationId": "listProducts",
+        "summary": "What A-to-Mind sells, with live prices",
+        "description": "Read from the Gumroad store and refreshed when older than six hours. A product that is no longer sold stays listed with `available: false`.",
+        "responses": {
+          "200": {
+            "description": "The products. `source` is `store` (saved catalog), `live` (read straight from Gumroad) or `none`.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Catalog" } } }
+          },
+          "429": { "$ref": "#/components/responses/SlowDown" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "reviewKey": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Optional. A Void Pro review key (`vr1.…`, made by a signed-in paid account on a-to-mind.com) or a Void Code Review Pro license key. It unlocks the closer read; without it the instant checks run free."
+      }
+    },
+    "responses": {
+      "BadRequest": { "description": "The body is not JSON, or it has no `code` or `diff` of at least 8 characters.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" }, "example": { "ok": false, "error": "send { code } or { diff }" } } } },
+      "CrossSite": { "description": "The request came from another website's page. Call from a server, a CLI or an agent instead.", "content": { "text/plain": { "schema": { "type": "string" }, "example": "cross-site requests are refused" } } },
+      "TooBig": { "description": "The body is over the route's size cap (70,000 bytes for /api/review, 64,000 for /api/mcp).", "content": { "text/plain": { "schema": { "type": "string" }, "example": "too big" } } },
+      "SlowDown": { "description": "Over 60 requests a minute from this connection on this route, or too many wrong keys. Wait for `retry-after` seconds.", "headers": { "retry-after": { "schema": { "type": "integer" }, "example": 60 } }, "content": { "text/plain": { "schema": { "type": "string" }, "example": "slow down" } } }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": ["ok", "error"],
+        "properties": { "ok": { "const": false }, "error": { "type": "string" } }
+      },
+      "ReviewRequest": {
+        "type": "object",
+        "description": "Send `code` or `diff`.",
+        "properties": {
+          "code": { "type": "string", "minLength": 8, "description": "The code to review." },
+          "diff": { "type": "string", "minLength": 8, "description": "A unified diff; its added lines are reviewed." },
+          "lang": { "type": "string", "description": "The language, when it can't be told from the code (for example javascript, python, go, dockerfile, terraform)." },
+          "ask": { "type": "string", "description": "What to look for, in plain words. It can also name the language (\"review my python\")." },
+          "imports": { "type": "object", "additionalProperties": { "type": "array", "items": { "type": "string" } }, "description": "For a diff: each touched file's import and top-level declaration lines, by path, so the closer read does not call a name declared outside the hunk missing." }
+        },
+        "anyOf": [{ "required": ["code"] }, { "required": ["diff"] }]
+      },
+      "Finding": {
+        "type": "object",
+        "required": ["line", "kind", "rule", "message"],
+        "properties": {
+          "line": { "type": "integer", "description": "1-based line in the code (in the new file, for a diff)." },
+          "kind": { "type": "string", "description": "What sort of finding it is, for example `bug` or `risk`." },
+          "rule": { "type": "string", "description": "The check that found it, for example `hardcoded-secret`." },
+          "message": { "type": "string", "description": "What is wrong and how to fix it, in plain words." }
+        }
+      },
+      "ReviewResult": {
+        "type": "object",
+        "required": ["ok", "findings", "lang", "lines", "ms", "tier", "review"],
+        "properties": {
+          "ok": { "const": true },
+          "findings": { "type": "array", "items": { "$ref": "#/components/schemas/Finding" } },
+          "lang": { "type": ["string", "null"], "description": "The language Void read the code as." },
+          "lines": { "type": "integer" },
+          "ms": { "type": "integer", "description": "How long the instant checks took." },
+          "tier": { "enum": ["free", "pro", "owner"] },
+          "review": { "enum": ["rules", "model"], "description": "`model` when the closer read ran." },
+          "answer": { "type": "string", "description": "The closer read, when it ran." },
+          "quoted": { "type": "object", "description": "How the closer read's findings were checked against the code: kept, dropped, whether the model's JSON parsed, echoes and refuted claims.", "properties": { "kept": { "type": "integer" }, "dropped": { "type": "integer" }, "parsed": { "type": "boolean" }, "echoes": { "type": "integer" }, "refuted": { "type": "integer" } } },
+          "left": { "type": "integer", "description": "Closer reads left today for this key." },
+          "note": { "type": "string", "description": "Why the closer read did not run, when a key was sent." },
+          "upgrade": { "type": "string", "description": "How to get the closer read (free tier only)." }
+        }
+      },
+      "ReviewOffer": {
+        "type": "object",
+        "required": ["product", "included", "standalone"],
+        "properties": {
+          "product": { "type": "string" },
+          "adds": { "type": "string" },
+          "included": { "type": "object", "properties": { "in": { "type": "string" }, "url": { "type": "string", "format": "uri" } } },
+          "standalone": { "type": ["object", "null"], "properties": { "url": { "type": "string", "format": "uri" } } }
+        }
+      },
+      "JsonRpcRequest": {
+        "type": "object",
+        "required": ["jsonrpc", "method"],
+        "properties": {
+          "jsonrpc": { "const": "2.0" },
+          "id": { "type": ["string", "integer"], "description": "Leave it out for a notification." },
+          "method": { "enum": ["initialize", "tools/list", "tools/call", "ping", "notifications/initialized"] },
+          "params": { "type": "object" }
+        }
+      },
+      "JsonRpcResponse": {
+        "type": "object",
+        "required": ["jsonrpc", "id"],
+        "properties": {
+          "jsonrpc": { "const": "2.0" },
+          "id": { "type": ["string", "integer", "null"] },
+          "result": { "type": "object" },
+          "error": { "type": "object", "required": ["code", "message"], "properties": { "code": { "type": "integer" }, "message": { "type": "string" } } }
+        }
+      },
+      "ToolList": {
+        "type": "object",
+        "required": ["name", "call", "mcp", "tools"],
+        "properties": {
+          "name": { "type": "string" },
+          "call": { "type": "object", "properties": { "method": { "const": "GET" }, "url": { "type": "string" }, "note": { "type": "string" } } },
+          "mcp": { "type": "object", "properties": { "endpoint": { "type": "string", "format": "uri" }, "transport": { "type": "string" }, "protocolVersion": { "type": "string" }, "tools": { "type": "array", "items": { "type": "object" } } } },
+          "tools": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["name", "description", "examples", "try"],
+              "properties": {
+                "name": { "type": "string" },
+                "description": { "type": "string" },
+                "examples": { "type": "array", "items": { "type": "string" } },
+                "try": { "type": "array", "items": { "type": "string", "format": "uri" } }
+              }
+            }
+          }
+        }
+      },
+      "Catalog": {
+        "type": "object",
+        "required": ["products", "refreshed", "source"],
+        "properties": {
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "slug": { "type": "string" },
+                "id": { "type": ["string", "null"], "description": "Gumroad's product id." },
+                "name": { "type": "string" },
+                "description": { "type": "string", "description": "The product's own description, up to 800 characters." },
+                "price_cents": { "type": ["integer", "null"] },
+                "currency": { "type": "string" },
+                "recurrence": { "type": ["string", "null"] },
+                "url": { "type": "string", "format": "uri" },
+                "available": { "type": "boolean" }
+              }
+            }
+          },
+          "refreshed": { "type": ["string", "null"], "description": "When the saved catalog was last read from the store." },
+          "source": { "enum": ["store", "live", "none"] }
+        }
+      }
+    }
+  }
+}
