@@ -5846,5 +5846,37 @@
   {
     "ask": "help me breathe",
     "want": "skill:breath"
+  },
+  {
+    "ask": "let me draw",
+    "want": "skill:draw"
+  },
+  {
+    "ask": "open a canvas",
+    "want": "skill:draw"
+  },
+  {
+    "ask": "sketch pad",
+    "want": "skill:draw"
+  },
+  {
+    "ask": "make a brush like dry charcoal",
+    "want": "skill:draw"
+  },
+  {
+    "ask": "new brush: soft watercolor",
+    "want": "skill:draw"
+  },
+  {
+    "ask": "make a thick wet ink brush",
+    "want": "skill:draw"
+  },
+  {
+    "ask": "i want to draw",
+    "want": "skill:draw"
+  },
+  {
+    "ask": "draw with me",
+    "want": "skill:draw"
   }
 ]
