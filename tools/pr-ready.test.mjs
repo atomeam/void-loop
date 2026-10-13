@@ -87,5 +87,12 @@ const boom = new Error('fatal: something else'); boom.stderr = 'fatal: could not
 b = bot({ mergeMain: boom });
 ok(b.out.state === 'failed' && !b.has('git', 'push') && !b.has('gh', 'api', '-X', 'POST'), 'any other failure: reported, nothing pushed, no comment');
 
+// a review the bot dispatched ends without a workflow_run event, so the review itself wakes automerge (#598 sat green for hours)
+const { readFileSync } = await import('node:fs');
+const wf = readFileSync(new URL('../.github/workflows/void-review.yml', import.meta.url), 'utf8');
+const wake = wf.slice(wf.indexOf('- name: Wake automerge'));
+ok(/gh workflow run automerge\.yml/.test(wake) && /github\.event_name == 'workflow_dispatch'/.test(wake) && /always\(\)/.test(wake), 'a dispatched review wakes automerge, pass or fail');
+ok(/^\s*actions: write/m.test(wf.slice(wf.indexOf('permissions:'), wf.indexOf('jobs:'))), 'the review may start a workflow');
+
 console.log(bad ? bad + ' failed' : 'pr-ready: all passed');
 process.exit(bad ? 1 : 0);
