@@ -626,6 +626,23 @@ try {
         && list && JSON.stringify(list.items.map((i) => i.text)) === JSON.stringify(['Pick a sunny spot', 'Test the soil', 'Choose plants + seeds', 'Water every morning'])
         && st.length === 1 && after === 1 && !O.errors.length, JSON.stringify({ sent, said, items: list && list.items.map((i) => i.text), kinds: st.map((x) => x.kind), after, e: O.errors }));
     await O.ctx.close(); }
+  // a dated plan of a kind with no steps of its own: the engine's steps, dated back from the day; with no engine, the generic
+  // steps, and the checklist is there (its "check it" step used to stop the list ask, so the plan came without one)
+  if (want("dated open plan: \"make a plan to learn spanish by friday\" takes the engine's steps")) { const D = await fresh();
+    let engine = true, sent = null;
+    await D.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = JSON.parse(r.request().postData() || '{}'); if (b.mode === 'plan' && !sent) sent = b;
+      return r.fulfill(json(engine ? { steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], model: 'gemma' } : { steps: null, note: 'no model' })); });
+    await D.ask('make a plan to learn spanish by friday', 3000);
+    const said = await D.whisper(), st = await D.state(), list = st.find((x) => x.kind === 'list');
+    const texts = list ? list.items.map((i) => i.text) : [];
+    await D.ask('clear the stage', 800); engine = false;
+    await D.ask('I need to learn guitar by next week', 3000);
+    const st2 = await D.state(), list2 = st2.find((x) => x.kind === 'list');
+    check('dated open plan: "make a plan to learn spanish by friday" asks the engine and lists its steps dated back from the day (the goal last), with the countdown and the calendar; with no engine "learn guitar by next week" still gets its checklist',
+      sent && sent.goal === 'learn spanish' && /steps from the answer engine/.test(said) && texts.length === 4 && /^Learn 20 words a day \(\w{3} \d+\)$/.test(texts[0]) && /^learn spanish \(fri \d+\)$/.test(texts[3])
+        && st.some((x) => x.kind === 'countdown') && !!list2 && /^work out the steps/.test(list2.items[0].text) && !D.errors.length,
+      JSON.stringify({ sent, said, texts, kinds: st.map((x) => x.kind), list2: list2 && list2.items.map((i) => i.text), kinds2: st2.map((x) => x.kind), e: D.errors }));
+    await D.ctx.close(); }
   // Labels and arrows (skills/label.js, board "Later": text annotation / labels): "label the clock kitchen" tags it, an arrow
   // drawn by label names joins two things and follows a drag, a free label can be an arrow's end, "undo" and reload behave.
   if (want("Labels and arrows (skills/label.js, board \"Later\": text annotation / labels): \"label the c")) { const L = await fresh();

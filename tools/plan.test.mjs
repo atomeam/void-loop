@@ -5,7 +5,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import { parsePlan, cleanGoal, planPrompt, PLAN_SYSTEM, PLAN_MIN, PLAN_MAX, STEP_MAX } from '../void-live-deploy/lib/plan.js';
-import skill, { openPlanOf, planOf } from '../void-live-deploy/skills/intent.js';
+import skill, { openPlanOf, planOf, withSteps } from '../void-live-deploy/skills/intent.js';
 import * as answerApi from '../void-live-deploy/functions/api/answer.js';
 
 test('the reply becomes 3 to 7 short steps that the list ask keeps whole (no commas, no "and"); anything else is no plan', () => {
@@ -79,4 +79,37 @@ test('/api/answer mode plan: the model\'s steps when it answers; none (and why) 
   const empty = await (await post({ DB: kvDB(), AI: ai('no plan here') }, { mode: 'plan', goal: 'plan my garden' })).json();
   assert.equal(empty.steps, null);
   assert.equal((await post(on, { mode: 'plan', goal: 'x' })).status, 400);
+});
+
+// the next piece: a dated plan of a kind with no steps of its own ("make a plan to learn Spanish by Friday") got the generic
+// "work out the steps, do the main part, check it"; now the engine's steps take their place, dated back from the day
+const NOW = new Date(2026, 9, 13, 12); // Tue Oct 13
+test('a dated plan marks when its steps are only the generic ones; withSteps puts the engine\'s steps in, dated back from the day', () => {
+  const p = planOf('make a plan to learn spanish by friday', NOW);
+  assert.equal(p.generic, true); assert.equal(planOf('I need to ship the product page by Friday', NOW).generic, false);
+  const q = withSteps(p, ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], NOW);
+  assert.deepEqual(q.steps.map((s) => s.text), ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor', 'learn spanish']);
+  assert.equal(q.asks.find((a) => a.piece === 'checklist').ask, 'make a list with Learn 20 words a day (tue 13), Do one lesson a day (wed 14), Talk with a tutor (thu 15), learn spanish (fri 16)');
+  assert.deepEqual(q.asks.filter((a) => a.piece !== 'checklist'), p.asks.filter((a) => a.piece !== 'checklist'), 'countdown and calendar unchanged');
+  assert.equal(q.engine, true); assert.equal(q.generic, false);
+});
+
+test('the dated run asks the engine only for a generic plan (not a templated kind, not health or money), and keeps the generic steps when it has none', async () => {
+  const runIt = async (text, reply) => {
+    const asked = [], said = [], sent = [], things = {};
+    const stage = { ask: async (a) => { asked.push(a); things['t' + asked.length] = {}; }, things: () => things, render() {}, save() {} };
+    const was = globalThis.fetch;
+    globalThis.fetch = async (url, o) => { sent.push(JSON.parse(o.body)); return new Response(JSON.stringify(reply)); };
+    try { await skill.run(text, { stage, say: (s) => said.push(s) }); } finally { globalThis.fetch = was; }
+    return { asked, said, sent };
+  };
+  const a = await runIt('make a plan to learn spanish by friday', { steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'] });
+  assert.deepEqual(a.sent, [{ mode: 'plan', goal: 'learn spanish' }]);
+  assert.match(a.asked.find((x) => x.startsWith('make a list with')), /^make a list with Learn 20 words a day \(\w{3} \d+\), Do one lesson a day/);
+  assert.match(a.said[0], /steps from the answer engine/);
+  const b = await runIt('make a plan to learn spanish by friday', { steps: null, note: 'no model' });
+  assert.match(b.asked.find((x) => x.startsWith('make a list with')), /^make a list with work out the steps/, 'no engine: the generic steps, as before');
+  assert.doesNotMatch(b.said[0], /answer engine/);
+  assert.equal((await runIt('I need to ship the product page by Friday', { steps: ['x', 'y', 'z'] })).sent.length, 0, 'a templated kind never asks');
+  assert.equal((await runIt('I need to lose weight by friday', { steps: ['x', 'y', 'z'] })).sent.length, 0, 'health stays off the engine');
 });
