@@ -1,1 +1,1 @@
-$(cat /tmp/test_void.mjs)
+PLACEHOLDER_WILL_BE_REPLACED
