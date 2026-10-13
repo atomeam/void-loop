@@ -364,6 +364,12 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **next:** (claude, 2026-10-11) **first piece shipped:** a stage kind's output goes down its arrows (`emit` in `void.html`, `deliver` in `skills/label.js`, `receiveInput` on the sticky); a timer at 0:00 writes "the timer is done" on the note it points at, with a pulse along the arrow; "... in capitals" / "... as a word count" transform on the way; "lock the note" / "lock it" stops input. Section "living arrows". Next pairs: the document card → notepad, a routine as a receiver, "in Spanish" once a translation runs without a model.
 
 ## 25. Draw in space, and draw your own Void (the owner, 2026-10-13)
+- **Where it is going (the owner, 2026-10-13):** "ok just remember we are working towards fully working Vr Void". Each step below builds toward the whole of Void in a headset, not only a VR drawing app:
+  1. the Draw card's 3D layer (shipped);
+  2. Enter VR from the Draw card, painting with a controller;
+  3. a drawing that dresses your own Void, kept with the passkey;
+  4. the stage itself in VR: the cards and miniatures stand around you, and you ask by voice;
+  5. a shared Void in VR (frontier 11), with the other person as a presence in the room.
 - **The owner's words:** "Void should have a 3d/Vr draw layer as well"; "this should help with the user individualized Void spaces being even more customizable . make sure all that is still in the works".
 - **What:** the Draw card (`skills/draw.js`: brushes from words, steadying that learns your hand, layers you talk to) gains a 3D layer. On it, a stroke is a tube in space, not ink on paper. You turn the scene with a drag, and in a headset (WebXR) you paint with the controller in the room around you. What you draw then becomes part of your own Void, which persists with your passkey (frontier "Your own Void persists"). It can be the stage's backdrop, a sticker on the stage, a 3D piece standing in your space, or a texture on a miniature.
 - **Copy the best, then beat it:** Open Brush (the open-source Tilt Brush) paints light-and-ribbon strokes in VR, but only in a headset and only in its own app. ibisPaint's layers are flat. Void, one notch past: one picture holds flat and 3D layers together, the same words drive both ("put the moon behind the house" works in depth), it works on a phone without a headset, and it opens in VR when there is one. What you make dresses your own Void, not a file in a gallery.
