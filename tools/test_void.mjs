@@ -4782,11 +4782,13 @@ try {
         JSON.stringify({ un: un.note, busy: busy.note, off: offP.note, wikiHits }));
     }
     calls.length = 0;
+    // Clef-flash runs beside the router for the route log only (12e8b395) and never answers, so its call is allowed here
+    const { CLEF_MODEL } = await import(new URL('../void-live-deploy/lib/clef.js', import.meta.url).href);
     const h1 = await ask('what are the tradeoffs between rust and go for a web backend', e1);
     const hr = rowOf(e1, 'what are the tradeoffs between rust and go for a web backend');
     check('router: with nothing earned, a hard ask gets Gemma (the one free model, no second free model) and the stronger model is recorded, not called: "would escalate" in the route log and one count in void_shortfalls',
       h1.answer === 'Gemma: a short answer [1].' && h1.route === 'hard' && /^would escalate; paid: no earned budget/.test(hr.outcome) && hr.model === R.DEFAULT_MODEL && hr.would === R.PAID_MODEL
-      && calls.every((c) => c.m === R.EMBED_MODEL || c.m === R.DEFAULT_MODEL) && e1.DB.shortfalls.get('answer|would escalate') === 1 && R.STRONG_MODEL === undefined && R.escalation === undefined,
+      && calls.every((c) => c.m === R.EMBED_MODEL || c.m === R.DEFAULT_MODEL || c.m === CLEF_MODEL) && e1.DB.shortfalls.get('answer|would escalate') === 1 && R.STRONG_MODEL === undefined && R.escalation === undefined,
       JSON.stringify({ a: h1.answer, hr, sf: [...e1.DB.shortfalls] }).slice(0, 300));
     // Gemma itself failing (free allocation used up, empty reply) is counted in the same ledger; fix mode too; then open web / rules
     const eOut0 = envOf({ ai: { gemma: 'out' } }), eEmpty = envOf({ ai: { gemma: 'empty' } });

@@ -32,6 +32,7 @@ export const STRONG_TIMEOUT_MS = 20000; // a paid call that takes longer is drop
 export const EXAMPLES_TIMEOUT_MS = 10000; // a stuck embedding call is dropped, so the next ask tries again
 // Initial thresholds for bge-m3 cosine similarity; every routed ask logs its scores so these can be tuned from real traffic
 // (Pages env VOID_ROUTER_TUNE = JSON, e.g. {"skillMin":0.72}) without a code change.
+export const CLOSE = 0.1; // how far under the skill bar an ask still counts as nearly that skill (the route bench's NEAR)
 export const TUNING = { skillMin: 0.7, skillMargin: 0.04, hardMargin: 0.03, hardMin: 0.62, cue: 0.05, cueMax: 0.1 };
 
 // Labelled examples. Skills: what the skill does (examples) and what only looks like it (near: answered, never a skill).
@@ -102,7 +103,7 @@ export function decide(askVec, ex, vecs, ask, tune = TUNING) {
   }
   const other = Math.max(best.near, best.simple, best.hard);
   const c = cues(ask), lift = Math.min(t.cueMax, c * t.cue);
-  const scores = { skill: r3(best.skill), near: r3(best.near), simple: r3(best.simple), hard: r3(best.hard), cues: c };
+  const scores = { skill: r3(best.skill), nearest: best.skillName, near: r3(best.near), simple: r3(best.simple), hard: r3(best.hard), cues: c }; // nearest: the skill `skill` scores (kept in the route log)
   // a skill: close to one of its asks and clearly closer than to anything that only looks like it; an ask with signs of a hard
   // question (compare, prove, step by step, several questions, code, 25+ words) is never a skill ask
   if (c === 0 && best.skill >= t.skillMin && best.skill - other >= t.skillMargin) return { kind: 'skill', skill: best.skillName, score: r3(best.skill), scores };
@@ -272,6 +273,14 @@ export async function readRoutes(env, limit = 500) {
   const pct = (p) => (waits.length ? waits[Math.min(waits.length - 1, Math.floor(p * waits.length))] : null);
   const skills = {};
   for (const r of rows.filter((x) => x.route === 'skill')) (skills[r.skill] = skills[r.skill] || []).push({ ask: r.ask, count: r.count, score: r.score });
+  // Void's ask (2026-10-13): "use the router's closeness data to automatically generate near-miss skill proposals". An ask the
+  // router answered as a question while within CLOSE of a skill's bar, by the skill it nearly was: the will proposes teaching that skill.
+  const close = {};
+  for (const r of rows.filter((x) => x.route === 'simple' || x.route === 'hard')) {
+    let s = null; try { s = JSON.parse(r.scores || 'null'); } catch (_) {}
+    if (!s || !s.nearest || !Number.isFinite(s.skill) || s.skill < TUNING.skillMin - CLOSE) continue;
+    (close[s.nearest] = close[s.nearest] || []).push({ ask: r.ask, count: r.count, score: s.skill });
+  }
   return {
     total: sum(() => true),
     skill: sum((r) => r.route === 'skill'), simple: sum((r) => r.route === 'simple'), hard: sum((r) => r.route === 'hard'), fallback: sum((r) => r.route === 'fallback'),
@@ -281,6 +290,7 @@ export async function readRoutes(env, limit = 500) {
     fallback_why: rows.filter((r) => r.route === 'fallback').reduce((o, r) => ({ ...o, [r.outcome || '?']: (o[r.outcome || '?'] || 0) + (r.count || 1) }), {}),
     waited_ms: { p50: pct(0.5), p95: pct(0.95), max: waits.length ? waits[waits.length - 1] : null },
     skills,
+    close,
     hard_asks: rows.filter((r) => r.route === 'hard').slice(0, 20).map((r) => ({ ask: r.ask, count: r.count, outcome: r.outcome, would: r.would })),
     rows: rows.slice(0, 100),
   };

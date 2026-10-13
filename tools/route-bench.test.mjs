@@ -203,3 +203,28 @@ test('Void\'s ask: every none says which skill it came closest to, how close, an
   assert.equal(noneTable(noneConfidence([], [])), '', 'no nones: no section');
   assert.match(noneTable(noneConfidence([{ ask: 'x', want: [NONE] }], [{ embed: { skill: null } }])), /does not send the nearest skill yet/);
 });
+
+test('Void\'s ask: the route log keeps the nearest skill, and readRoutes groups the close nones by the skill they nearly were', async () => {
+  const { readRoutes, CLOSE } = await import('../void-live-deploy/lib/router.js');
+  const ex = [{ kind: 'skill', skill: 'timer' }, { kind: 'skill', skill: 'weather' }, { kind: 'simple' }, { kind: 'hard' }, { kind: 'near' }];
+  const vecs = ex.map((_, i) => Array.from({ length: 5 }, (_, d) => (d === i ? 1 : 0)));
+  assert.equal(decide([0.2, 0.66, 0.4, 0, 0], ex, vecs, 'will it pour').scores.nearest, 'weather', 'the logged scores name the skill their `skill` score is for');
+  const row = (ask, route, skill, nearest, count = 1) => ({ ask, route, skill: route === 'skill' ? nearest : null, scores: JSON.stringify({ skill, nearest }), count, last: '2026-10-13' });
+  const rows = [row('will it pour saturday', 'simple', 0.66, 'weather', 3), row('who wrote hamlet', 'simple', 0.31, 'weather'), row('timer please', 'skill', 0.9, 'timer'),
+    row('compare two timers', 'hard', 0.62, 'timer'), row('old row', 'simple', 0.69, null), { ask: 'no scores', route: 'simple', scores: null, count: 1 }];
+  const DB = { prepare: (q) => ({ run: async () => ({}), bind: () => ({ all: async () => ({ results: /FROM void_routes/.test(q) ? rows : [] }) }) }), batch: async () => [] };
+  const r = await readRoutes({ DB });
+  assert.deepEqual(r.close, { weather: [{ ask: 'will it pour saturday', count: 3, score: 0.66 }], timer: [{ ask: 'compare two timers', count: 1, score: 0.62 }] });
+  assert.ok(0.7 - CLOSE <= 0.62 && 0.7 - CLOSE > 0.31, 'CLOSE puts 0.62 in and 0.31 out');
+});
+
+test('the will proposes teaching the skill a close none nearly was, unless that skill already answers it', async () => {
+  const { spawnSync } = await import('node:child_process'); const { mkdtempSync, writeFileSync } = await import('node:fs');
+  const { join } = await import('node:path'); const { tmpdir } = await import('node:os');
+  const f = join(mkdtempSync(join(tmpdir(), 'routes-')), 'routes.json');
+  writeFileSync(f, JSON.stringify({ total: 4, fallback: 0, skills: {}, close: { weather: [{ ask: 'is it going to pour on my picnic saturday', count: 3, score: 0.66 }], timer: [{ ask: 'set a timer for 5 minutes', count: 1, score: 0.65 }] } }));
+  const py = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [new URL('./will.py', import.meta.url).pathname, '--candidates', '--all'], { encoding: 'utf8', timeout: 120000, env: { ...process.env, VOID_ROUTES_FILE: f, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '' } });
+  const c = JSON.parse(py.stdout || '[]').filter((x) => x.source === 'router near miss');
+  assert.deepEqual(c.map((x) => x.title), ['teach my weather skill "is it going to pour on my picnic saturday"'], 'the timer ask is one the timer skill already answers (tools/covered.mjs)');
+  assert.match(c[0].why, /came within 0\.04 of my weather skill .* \(asked 3 times\)/);
+});
