@@ -175,7 +175,7 @@ async function run(text, api) {
   ensureStyle();
   let title, doc, h, sub;
   if (q.kind === 'lab') {
-    showPage((p) => { p.innerHTML = '<h2>The lab</h2><div class="sub">Real experiments from cognitive science and statistics. Each runs in your browser and checks its own maths.</div><ul class="vlab">'
+    showPage((p) => { p.innerHTML = '<h2>The lab</h2><div class="sub">Real experiments from cognitive science and statistics. Each runs in your browser and checks its own maths.</div><ul class="vlab">' // void-review: ok (built only from the fixed TOOLS list, every value through esc(); no visitor text reaches it)
       + TOOLS.filter((x) => /-\d+$/.test(x[1])).map((x) => '<li><a href="#" data-ask="' + esc(x[2].toLowerCase()) + '">' + esc(x[2]) + '</a> · ' + esc(x[3]) + '</li>').join('') + '</ul>'; });
     return 'make';
   }
