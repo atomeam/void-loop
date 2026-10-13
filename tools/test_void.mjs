@@ -2487,6 +2487,28 @@ try {
     await D.ctx.close();
   }
 
+  // Make it my backdrop (2026-10-13, frontier 25 step 3: drawings dress your own Void): a drawing goes behind the Void, stays
+  // after a reload (kept in the look, which the passkey syncs), and "remove my backdrop" takes it off; an empty canvas says so
+  if (want("Draw: make it my backdrop puts the drawing behind your Void and keeps it")) {
+    const D = await fresh();
+    await D.ask('let me draw', 500);
+    const said = () => D.p.$eval('.vpage.on .vd-said', (e) => e.textContent);
+    const backdrop = () => D.p.evaluate(() => { const b = document.getElementById('void-backdrop'); return { on: !!b && b.classList.contains('on'), img: b ? (b.style.backgroundImage || '').slice(0, 30) : '', kept: (JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}').backdrop || '').length }; });
+    await D.p.click('.vpage.on .vd-backdrop'); const empty = await said();
+    const box = await D.p.$eval('.vpage.on .vdraw canvas', (c) => { c.scrollIntoView({ block: 'center' }); const r = c.getBoundingClientRect(); return [r.left, r.top, r.width, r.height]; });
+    await D.p.mouse.move(box[0] + box[2] * 0.2, box[1] + box[3] * 0.5); await D.p.mouse.down();
+    for (let i = 1; i <= 20; i++) await D.p.mouse.move(box[0] + box[2] * (0.2 + i * 0.03), box[1] + box[3] * (0.5 + Math.sin(i / 3) * 0.2));
+    await D.p.mouse.up(); await D.p.waitForTimeout(80);
+    await D.p.click('.vpage.on .vd-backdrop'); const made = await said(); const now = await backdrop();
+    await D.p.reload(); await D.p.waitForTimeout(800); const afterReload = await backdrop();
+    await D.ask('remove my backdrop', 500); const removed = await backdrop();
+    check('draw backdrop: on an empty canvas it says to draw first; after a stroke "Make it my backdrop" puts the picture behind the Void, kept in the look; it is still there after a reload; "remove my backdrop" takes it off',
+      /Draw something first/.test(empty) && /now your Void's backdrop/.test(made) && now.on && /data:image/.test(now.img) && now.kept > 1000
+        && afterReload.on && /data:image/.test(afterReload.img) && !removed.on && removed.kept === 0 && !D.errors.length,
+      JSON.stringify({ empty, made, now, afterReload, removed, errors: D.errors }));
+    await D.ctx.close();
+  }
+
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];

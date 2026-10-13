@@ -581,6 +581,9 @@
     #void-stars { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;
       opacity: 0; transition: opacity 1.5s ease; }
     #void-stars.on { opacity: 1; }
+    /* your drawing behind your Void (skills/draw.js, "make it my backdrop"): kept in the look, synced with the passkey */
+    #void-backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: center / contain no-repeat; opacity: 0; transition: opacity 1.2s ease; }
+    #void-backdrop.on { opacity: 1; }
     #stage, #dock { z-index: 1; }
     html.dragging, html.dragging * { user-select: none !important; -webkit-user-select: none !important; cursor: grabbing !important; }
     #void-swarm { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity 1.2s ease; }
@@ -873,7 +876,7 @@
     <p>Void by A-to-Mind is one quiet input. Ask for anything and it appears: a clock, a timer, notes, a list, a street map, the weather, a translation, a calculation, or a page about any topic. Nothing to sign up for. It needs JavaScript to run.</p>
     <p>Link straight to an answer: <a style="color:#fff" href="/?q=weather%20in%20Tokyo">a-to-mind.com/?q=weather in Tokyo</a>. More in <a style="color:#fff" href="/llms.txt">llms.txt</a>.</p>
   </main></noscript>
-  <div id="void-depth" aria-hidden="true"></div><div id="void-glow" aria-hidden="true"></div><canvas id="void-stars-far" aria-hidden="true"></canvas><canvas id="void-stars" aria-hidden="true"></canvas>
+  <div id="void-depth" aria-hidden="true"></div><div id="void-glow" aria-hidden="true"></div><canvas id="void-stars-far" aria-hidden="true"></canvas><canvas id="void-stars" aria-hidden="true"></canvas><div id="void-backdrop" aria-hidden="true"></div>
   <div id="stage" role="region" aria-label="your stage"></div>
   <!-- screen readers hear each answer page here (its title and first lines), so asking never ends in silence -->
   <div id="sr-say" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
@@ -3384,7 +3387,9 @@ say('nothing selected to remove');
 
     // row 13: entering your own Void (silent, first time something is kept) + personal look
     const ENTRY_KEY = 'a2m.void.entered.v1', LOOK_KEY = 'a2m.void.look.v1';
-    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'off', quiet: false, scale: 1, fx: 'off' };
+    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'off', quiet: false, scale: 1, fx: 'off', backdrop: '' };
+    // a backdrop is a picture you drew (skills/draw.js), as a data URL: image only, and small enough to sync
+    const backdropOk = (src) => typeof src === 'string' && src.length < 600000 && /^data:image\/(?:png|webp|jpeg);base64,[A-Za-z0-9+/=]+$/.test(src);
     const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };
     let voidLook = { ...LOOK_DEFAULT };
     try { voidLook = { ...LOOK_DEFAULT, ...(JSON.parse(localStorage.getItem(LOOK_KEY) || '{}') || {}) }; } catch (_) {}
@@ -3432,6 +3437,8 @@ say('nothing selected to remove');
       cancelAnimationFrame(starRAF); starRAF = 0;
       if (voidLook.stars !== 'off') { if (!stars.length) seedStars(); starCv.classList.add('on'); if (starFar) starFar.classList.add('on'); drawStars(); }
       else { starCv.classList.remove('on'); if (starFar) starFar.classList.remove('on'); }
+      const bd = document.getElementById('void-backdrop');
+      if (bd) { const on = backdropOk(voidLook.backdrop); bd.style.backgroundImage = on ? 'url("' + voidLook.backdrop + '")' : ''; bd.classList.toggle('on', on); }
       document.documentElement.dataset.fx = voidLook.fx || 'off'; // the atmosphere script below reads this; the public stage is plain
       window.dispatchEvent(new Event('void-fx'));
       if (persist && !PAGE) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} mineChanged(); }
@@ -3441,6 +3448,7 @@ say('nothing selected to remove');
     function handleLookAsk(lower) {
       if (/^(this is mine|open my void|my void)\s*[.!]?$/.test(lower)) { enterVoid(); say('yours'); return true; }
       const FX = /\b(add|no|remove|hide|stop)\s+(a\s+|the\s+)?(nebula|particles?|swarm)\b|\bmake\s+my\s+void\s+(swirl|swirly|alive|move)\b|^(calm\s+my\s+void|no\s+effects)\s*[.!]?$/;
+      if (/^(?:remove|clear|take off|no|hide)\s+(?:my\s+|the\s+)?(?:backdrop|background\s+drawing|drawing\s+backdrop)\s*[.!]?$/.test(lower)) { voidLook.backdrop = ''; applyLook(true); say('backdrop off'); return true; }
       if (!FX.test(lower) && !/\b(my void|the void|void)\b.*\b(deep blue|blue|purple|warmer|warm|darker|dark)\b|\b(add|slow|no|remove|hide)\s+(the\s+)?stars\b|\bquieter\s+(font|text)\b|\b(bigger|larger|smaller)\s+text\b|^reset\s+my\s+void$/.test(lower)) return false;
       enterVoid();
       if (/^reset\s+my\s+void$/.test(lower)) voidLook = { ...LOOK_DEFAULT };
@@ -3460,6 +3468,8 @@ say('nothing selected to remove');
     }
     if (isEntered()) document.body.classList.add('void-entered');
     applyLook(false);
+    // the Draw card hands its picture here ("make it my backdrop"); an empty src takes it off
+    window.addEventListener('void-backdrop', (e) => { const src = e && e.detail && e.detail.src; if (src && !backdropOk(src)) return; voidLook.backdrop = src || ''; if (src) enterVoid(); applyLook(true); });
 
     // --- Skill loader (edit engine step 1) ---
     const SKILLS_INDEX_URL = '/skills/index.json';
@@ -3878,6 +3888,7 @@ say('nothing selected to remove');
       if (['off', 'nebula', 'swarm'].includes(l.fx)) o.fx = l.fx;
       o.quiet = !!l.quiet;
       const s = Number(l.scale); if (isFinite(s) && s) o.scale = Math.min(1.4, Math.max(0.85, s));
+      if (backdropOk(l.backdrop)) o.backdrop = l.backdrop;
       return o;
     }
     // mode: 'replace' (a newer copy from another device), 'signin' (their look + union of stages), 'conflict' (this device's look + union)
