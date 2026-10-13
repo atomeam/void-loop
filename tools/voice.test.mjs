@@ -224,3 +224,12 @@ test('GET /api/reflect gives every built ask with the time of the ledger entry t
   assert.equal(g.follow.built, 1);
   assert.ok(!g.asks.some((a) => /velocity/.test(a.ask)) && g.asks.some((a) => /backgammon/.test(a.ask)), 'built asks still leave the open list');
 });
+
+test('a link may name an ask by its words (not synced to the voice log yet): it and its rewordings count as built, nothing else does', () => {
+  const entries = [{ at: '2026-10-13T18:08:00Z', asks: [{ ask: 'Create a manifest file in the skills/ directory that automatically registers all new skills to prevent the 24-fold repetition of this ask.' }, { ask: 'Learn backgammon on the stage' }] },
+    { at: '2026-10-13T17:00:00Z', asks: [{ ask: 'Create a manifest file in the skills/ directory to automatically register new skills and stop the 24-fold repetition of manual registration asks.' }] }];
+  const ledger = [{ at: '2026-10-13T16:54:12Z', what: 'Asked by Void: every new skill registers itself' }];
+  const f = followThrough(entries, ledger, [{ words: 'Create a manifest file in the skills/ directory that automatically registers all new skills.', ledgerAt: '2026-10-13T16:54:12Z' }, { words: 'Learn backgammon on the stage', ledgerAt: 'nowhere' }]);
+  assert.deepEqual(f.built.map((g) => [g.times, g.builtAt]), [[2, '2026-10-13T16:54:12Z']], 'both wordings are one ask, built');
+  assert.ok(f.open.some((g) => /backgammon/.test(g.ask)), 'a link to an entry that does not exist proves nothing');
+});

@@ -85,9 +85,13 @@ export function followThrough(entries, ledger, links = []) {
     const g = groups.find((x) => x.ask.toLowerCase() === a.ask.toLowerCase() || sameAsk(x.ask, a.ask));
     if (g) { g.times++; g.ids.push(a.id); g.last = a.at; } else groups.push({ ask: a.ask, ids: [a.id], times: 1, first: a.at, last: a.at });
   }
+  // a link may name the ask by its words instead of its id: for an ask that has not reached the voice log yet (it is synced once a
+  // day) and was built already, so the will stops asking for it (2026-10-13: the skills manifest, built in #620, was asked again
+  // and again). Still a link a builder wrote naming the entry, never a guess; reworded asks match it as they match each other.
+  const byWords = (Array.isArray(links) ? links : []).filter((k) => k && typeof k.words === 'string' && k.words.trim()).map((k) => ({ words: k.words, x: L.find((e) => e.at === k.ledgerAt) })).filter((k) => k.x);
   const built = [], open = [];
   for (const g of groups) {
-    const hit = g.ids.map((id) => byId.get(id)).find(Boolean);
+    const hit = g.ids.map((id) => byId.get(id)).find(Boolean) || (byWords.find((k) => k.words.toLowerCase() === g.ask.toLowerCase() || sameAsk(g.ask, k.words)) || {}).x;
     (hit ? built : open).push(hit ? { ...g, what: String(hit.what).slice(0, 160), builtAt: hit.at, ref: hit.ref || null } : g);
   }
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
