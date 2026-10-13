@@ -213,6 +213,21 @@ def gather(cap=60, with_done=False):
                 continue
             what = "an action my confirm line should have recognised" if skill == "act" else f"my {skill} skill didn't catch this wording"
             cands.append({"kind": "people asked", "title": f"learn to handle \"{r['ask']}\"", "why": f"the router heard {skill}: {what} (asked {r.get('count', 1)} times)", "weight": 10 + 5 * int(r.get("count") or 1), "source": "router"})
+        # Void's ask (2026-10-13): "use the router's closeness data to automatically generate near-miss skill proposals". An ask
+        # the router answered as a question while it came within CLOSE of a skill's bar (lib/router.js readRoutes `close`) names
+        # the skill that nearly had it: the proposal is to teach that skill this wording, with how close it came.
+        props = [(skill, r) for skill, rows in (rt.get("close") or {}).items() for r in rows
+                 if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not NOISE.match(str(r["ask"]).strip())]
+        try:
+            import subprocess
+            pdone = json.loads(subprocess.run(["node", str(ROOT / "tools" / "covered.mjs")], input=json.dumps([r["ask"] for _, r in props]), capture_output=True, text=True, timeout=60).stdout or "[]")
+        except Exception:
+            pdone = []
+        for (skill, r), covered in zip(props, pdone + [False] * len(props)):
+            if covered:
+                continue
+            n = int(r.get("count") or 1)
+            cands.append({"kind": "people asked", "title": f"teach my {skill} skill \"{r['ask']}\"", "why": f"the router came within {max(0.0, 0.7 - float(r.get('score') or 0)):.2f} of my {skill} skill and answered it as a question instead (asked {n} times)", "weight": 9 + 5 * n, "source": "router near miss"})
         total, fb = int(rt.get("total") or 0), int(rt.get("fallback") or 0)
         if total >= 20 and fb * 4 > total:
             cands.append({"kind": "fix myself", "title": "make my router answer in time", "why": f"the classifier fell back {fb} of {total} times ({', '.join(f'{k} {v}' for k, v in (rt.get('fallback_why') or {}).items())})"[:240], "weight": 9, "source": "router"})

@@ -6,7 +6,7 @@
 //   READ_TOKEN=… node tools/route-bench.mjs [--site https://a-to-mind.com] [--sample 240] [--out route-bench.json] [--md table.md]
 // Exit 3 when the site cannot be asked (no key, rejected, an older deployment without { route }).
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { SKILLS, SIMPLE, HARD } from '../void-live-deploy/lib/router.js';
+import { SKILLS, SIMPLE, HARD, CLOSE } from '../void-live-deploy/lib/router.js';
 import { NONE } from '../void-live-deploy/lib/clef.js';
 
 export const CONFIDENT = 0.7; // the confidence a low-confidence answer would ask under ("not sure: did you mean…")
@@ -75,7 +75,7 @@ export function score(rows, results) {
 // skill or the ask was nowhere near one, and a missed skill says whether the wording was close (the bar, or a phrasing the
 // examples nearly cover) or far (the router has no example like it). The embedding router's nearest skill and its score come
 // back with each none (lib/router.js decide `nearest`); NEAR is how far under the bar still counts as close.
-export const NEAR = 0.1;
+export const NEAR = CLOSE; // lib/router.js: the same "close" the will's near-miss proposals use
 export function noneConfidence(rows, results, near = NEAR) {
   const out = { n: 0, close: 0, far: 0, missed: { close: 0, far: 0 }, right: { close: 0, far: 0 }, unknown: 0, rows: [] };
   rows.forEach((row, i) => {
