@@ -31,7 +31,9 @@ export function seedsOf(raw) {
 /** the ask makes (or opens) a list. Pure. */
 export function wantsCreate(lower, raw = lower) {
   const t = String(raw || '').trim();
-  if (/\b(add\s+item|list\s+add|check|done|complete|remove|delete|clear|empty)\b/.test(lower)) return false;
+  // only the ask's own words count, not the items after "list with" / "list:" (a plan's "check it" step is an item, not a tick)
+  const head = String(lower || '').split(/\blist\s*(?::|\b(?:with|containing|including)\b)/)[0];
+  if (/\b(add\s+item|list\s+add|check|done|complete|remove|delete|clear|empty)\b/.test(head)) return false;
   if (/^list\s*:/i.test(t)) return true;
   if (/^(todo\s+list|list)(\s+please)?\s*[.!]?$/i.test(t)) return true;
   if (/^(?:a\s+)?(?:grocery|groceries|shopping|packing|todo|to-do|chores?)\s+list\s+(?:with|containing|including)\s+\S/i.test(t)) return true;
