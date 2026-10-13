@@ -100,3 +100,10 @@ test('the tool asks the site in chunks with the key, and says plainly when it ca
   await assert.rejects(runSite('https://x', 'k', rows, { get: async () => new Response('{}', { status: 401 }) }), /rejected/);
   await assert.rejects(runSite('https://x', 'k', rows, { get: async () => new Response('{"model":"x"}', { status: 400 }) }), /does not route yet/);
 });
+
+test('a full route chunk fits the guard\'s body limit for /api/bench (HTTP 413 on the first run)', async () => {
+  const { LIMITS } = await import('../void-live-deploy/lib/guard.js');
+  const body = JSON.stringify({ route: true, asks: Array(ROUTE_CHUNK).fill('é'.repeat(300)) });
+  assert.ok(new TextEncoder().encode(body).length <= LIMITS.bench.body, 'sixteen 300-character asks of two-byte characters fit');
+});
+

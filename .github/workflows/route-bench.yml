@@ -33,7 +33,7 @@ jobs:
           READ_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
           SITE: ${{ inputs.site }}
           SAMPLE: ${{ inputs.sample }}
-        run: node tools/route-bench.mjs --site "$SITE" --sample "$SAMPLE" --out route-bench.json --md table.md | tee -a "$GITHUB_STEP_SUMMARY"
+        run: set -o pipefail; node tools/route-bench.mjs --site "$SITE" --sample "$SAMPLE" --out route-bench.json --md table.md | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
