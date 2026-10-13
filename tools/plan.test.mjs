@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { parsePlan, cleanGoal, planPrompt, PLAN_SYSTEM, PLAN_MIN, PLAN_MAX, STEP_MAX } from '../void-live-deploy/lib/plan.js';
+import { parsePlan, parseTimer, cleanGoal, planPrompt, PLAN_SYSTEM, PLAN_MIN, PLAN_MAX, STEP_MAX } from '../void-live-deploy/lib/plan.js';
 import skill, { openPlanOf, planOf, withSteps } from '../void-live-deploy/skills/intent.js';
 import * as answerApi from '../void-live-deploy/functions/api/answer.js';
 
@@ -112,4 +112,39 @@ test('the dated run asks the engine only for a generic plan (not a templated kin
   assert.doesNotMatch(b.said[0], /answer engine/);
   assert.equal((await runIt('I need to ship the product page by Friday', { steps: ['x', 'y', 'z'] })).sent.length, 0, 'a templated kind never asks');
   assert.equal((await runIt('I need to lose weight by friday', { steps: ['x', 'y', 'z'] })).sent.length, 0, 'health stays off the engine');
+});
+
+// frontier #10's next shape: besides the steps the engine may suggest one practice timer ({"steps": [...], "timer": 20});
+// it is a fixed shape, a whole number of minutes from 5 to 60, and the page turns it into its own ask ("set a timer for 20 minutes")
+test('the reply may carry one practice timer: whole minutes 5 to 60, else none; steps read the same from either shape', () => {
+  const obj = '{"steps": ["Learn 20 words a day", "Do one lesson a day", "Talk with a tutor"], "timer": 20}';
+  assert.deepEqual(parsePlan(obj), ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor']);
+  assert.equal(parseTimer(obj), 20);
+  assert.equal(parseTimer('["a step", "b step", "c step"]'), null, 'no timer in an array');
+  for (const bad of [3, 0, 61, 200, -5, '"twenty"', 'null', 12.5]) assert.equal(parseTimer('{"steps": ["a b", "c d", "e f"], "timer": ' + bad + '}'), null, String(bad));
+  assert.equal(parseTimer('{"steps": ["a b", "c d", "e f"], "timer": "15"}'), 15);
+  assert.equal(parseTimer('not json at all'), null);
+  assert.match(PLAN_SYSTEM, /"timer"/);
+});
+
+test('/api/answer passes the timer on; the skill adds only the fixed timer ask for it', async () => {
+  const ai = { run: async () => ({ response: '{"steps": ["Learn 20 words a day", "Do one lesson a day", "Talk with a tutor"], "timer": 20}' }) };
+  const r = await (await post({ DB: kvDB(), AI: ai }, { mode: 'plan', goal: 'learn spanish' })).json();
+  assert.equal(r.timer, 20); assert.equal(r.steps.length, 3);
+  const asked = [], said = [], things = {};
+  const stage = { ask: async (a) => { asked.push(a); things['t' + asked.length] = {}; }, things: () => things, render() {}, save() {} };
+  const was = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 20 }));
+  try {
+    await skill.run('make a plan to learn spanish', { stage, say: (s) => said.push(s) });
+    assert.deepEqual(asked, ['make a list with Learn 20 words a day, Do one lesson a day, Talk with a tutor', 'set a timer for 20 minutes']);
+    assert.match(said[0], /checklist, a 20 minute practice timer/);
+    asked.length = 0; said.length = 0;
+    await skill.run('make a plan to learn spanish by friday', { stage, say: (s) => said.push(s) });
+    assert.ok(asked.includes('set a timer for 20 minutes'), 'a dated plan takes it too: ' + asked.join(' | '));
+    globalThis.fetch = async () => new Response(JSON.stringify({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 999 }));
+    asked.length = 0;
+    await skill.run('make a plan to learn spanish', { stage, say: () => {} });
+    assert.ok(!asked.some((a) => /timer/.test(a)), 'an out-of-range timer never runs');
+  } finally { globalThis.fetch = was; }
 });

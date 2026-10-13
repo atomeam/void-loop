@@ -207,27 +207,33 @@ function layOut(st, ids, live) {
 }
 
 let seq = 0;
-// the open plan's steps from the answer engine; null when it has none (no model, busy, or no reply)
+// the plan's steps from the answer engine, and the one practice timer it may suggest (whole minutes, 5 to 60, checked here
+// too); null when it has no steps (no model, busy, or no reply)
 async function engineSteps(goal) {
   try {
     const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'plan', goal }) });
     const j = await r.json();
-    return Array.isArray(j.steps) && j.steps.length ? j.steps.map((x) => listSafe(String(x)).replace(/\s*&\s*|\s+and\s+/gi, ' + ').slice(0, 60)).filter(Boolean).slice(0, 7) : null;
+    const steps = Array.isArray(j.steps) && j.steps.length ? j.steps.map((x) => listSafe(String(x)).replace(/\s*&\s*|\s+and\s+/gi, ' + ').slice(0, 60)).filter(Boolean).slice(0, 7) : null;
+    const timer = Number.isInteger(j.timer) && j.timer >= 5 && j.timer <= 60 ? j.timer : null;
+    return steps ? { steps, timer } : null;
   } catch (_) { return null; }
 }
+// the fixed shapes besides the checklist that an engine reply may add: a practice timer, run as the timer's own ask
+const timerAsk = (min) => ({ piece: 'timer', ask: 'set a timer for ' + min + ' minutes', minutes: min });
 async function run(text, api) {
   let plan = planOf(text);
   if (!plan) {
     const open = openPlanOf(text);
     if (!open) return 'none';
-    const steps = await engineSteps(open.goal);
+    const got = await engineSteps(open.goal), steps = got && got.steps;
     if (!steps) { if (api.say) api.say('could not plan "' + open.goal + '" right now: the answer engine gave no steps. Try again in a minute'); return 'intent'; }
     const asks = [{ piece: 'checklist', ask: 'make a list with ' + steps.join(', ') }];
     if (open.who) asks.push({ piece: 'draft', ask: 'add a sticky that says draft to ' + cap(open.who) + ' (not sent): heads up, ' + (/^(?:give\s+)?us\b|\bour\b/.test(String(text).toLowerCase()) ? "we're" : "I'm") + ' working on: ' + open.goal });
+    if (got.timer) asks.push(timerAsk(got.timer));
     plan = { goal: open.goal, who: open.who, deadline: null, steps: steps.map((t) => ({ text: t, date: null })), asks, open: true };
   } else if (plan.generic && !OPEN_NOT.test(plan.goal)) { // a dated plan with only the generic steps: the engine's, when it has them
-    const steps = await engineSteps(plan.goal);
-    if (steps) plan = withSteps(plan, steps);
+    const got = await engineSteps(plan.goal);
+    if (got) { plan = withSteps(plan, got.steps); if (got.timer) plan.asks.push(timerAsk(got.timer)); }
   }
   const st = api.stage || {};
   if (!st.ask || !st.things) return 'none';
@@ -243,7 +249,7 @@ async function run(text, api) {
     if (st.save) st.save();
     if (st.render) st.render();
   }
-  const pieces = plan.asks.map((a) => a.piece === 'draft' ? 'a draft to ' + cap(plan.who) : a.piece).join(', ');
+  const pieces = plan.asks.map((a) => a.piece === 'draft' ? 'a draft to ' + cap(plan.who) : a.piece === 'timer' ? 'a ' + a.minutes + ' minute practice timer' : a.piece).join(', ');
   if (api.say && plan.open) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · steps from the answer engine, check them'); return 'intent'; }
   if (api.say && !plan.deadline) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · no day yet: add one ("' + plan.goal + ' by Friday") for dates, a countdown and the calendar'); return 'intent'; }
   if (api.say) api.say('planned "' + plan.goal + '" for ' + LONG_DAY(plan.deadline) + ' · ' + pieces + (ids.length > 1 ? ' · one group, drag one to move them all' : '') + (plan.who ? ' · nothing sent' : '') + (plan.engine ? ' · steps from the answer engine, check them' : ''));

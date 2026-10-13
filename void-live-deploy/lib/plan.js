@@ -8,7 +8,9 @@
 export const GOAL_MAX = 80, STEP_MAX = 60, PLAN_MIN = 3, PLAN_MAX = 7;
 export const PLAN_SYSTEM = 'You turn one personal goal into a short checklist. Answer with only a JSON array of 3 to 7 steps in the order to do them, '
   + 'each a plain instruction of at most 8 words, with no numbering, no dates and no commas. Do not give medical, legal or financial advice; '
-  + 'if the goal needs it, make the first step "Talk to a professional".';
+  + 'if the goal needs it, make the first step "Talk to a professional". When the goal is a skill practised a little each day, '
+  + 'you may answer {"steps": [...], "timer": N} instead, N the whole minutes of one practice session (5 to 60).';
+export const TIMER_MIN = 5, TIMER_MAX = 60;
 
 const ctl = (s) => String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ');
 /** the goal as one line, at most GOAL_MAX characters */
@@ -34,4 +36,13 @@ export function parsePlan(text) {
     if (steps.length === PLAN_MAX) break;
   }
   return steps.length >= PLAN_MIN ? steps : null;
+}
+
+/** the one practice timer a reply may suggest ({"steps": [...], "timer": 20}): whole minutes from TIMER_MIN to TIMER_MAX, else null */
+export function parseTimer(text) {
+  const o = String(text || '').match(/\{[\s\S]*\}/);
+  if (!o) return null;
+  let j = null; try { j = JSON.parse(o[0]); } catch (_) { return null; }
+  const v = j && (typeof j.timer === 'number' || (typeof j.timer === 'string' && /^\d+$/.test(j.timer.trim()))) ? Number(j.timer) : NaN;
+  return Number.isInteger(v) && v >= TIMER_MIN && v <= TIMER_MAX ? v : null;
 }
