@@ -11,5 +11,6 @@
   {"check": "\"what can you do now that you couldn't last week?\": the card's tree first stands as it was a week ago (fewer branches), then grows to today with this week's tip", "sha": "8ffdaaad098db126780c5a484fb5364ae1ec839b", "at": "2026-10-12T20:20:05Z"},
   {"check": "one side card per lifted board: a move made while the 3D board loads leaves exactly one side card on the stage, and it carries the move, not the empty first sta", "sha": "6d551b8f94da13bdb79519fb60fc2237ac0a7367", "at": "2026-10-13T02:12:21Z"},
   {"check": "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the ", "sha": "76a8cf32bbd73a0c352947c6e91912fd7ddfded7", "at": "2026-10-13T02:20:01Z"},
-  {"check": "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wa", "sha": "9b11e376f1396d661340b93760df351798332c3a", "at": "2026-10-13T09:12:46Z"}
+  {"check": "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wa", "sha": "9b11e376f1396d661340b93760df351798332c3a", "at": "2026-10-13T09:12:46Z"},
+  {"check": "suite ran to the end", "sha": "f672395e9c0d357edc5df3ade513c0b3f9c5de79", "at": "2026-10-13T10:53:54Z"}
 ]
