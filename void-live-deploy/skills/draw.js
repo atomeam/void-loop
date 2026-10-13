@@ -9,6 +9,9 @@
  * softness, flow and a paper-grain mask, the way painting apps build brushes.
  * Layers you talk to (feature "layers"): "new layer for the moon", "put the moon behind the house", "hide the sky", "make the
  * shading multiply", "clip the shading to the skin", "lock the skin", "merge the shading down": the same box takes them.
+ * 3D layers (frontier 25): "new 3d layer for the ring" paints tubes in space with the same brushes and steadying, rendered by
+ * skills/scene3d.js (loaded only then) into the layer's canvas, so a 3D layer stacks, fades, clips and blends with flat ones;
+ * "turn the ring 70", the Turn button, or a right or shift drag spins it.
  */
 export const TOOLS = {
   pencil: { size: 3, hardness: 0.85, flow: 0.8, grain: 0.35, jitter: 0.05 },
@@ -112,7 +115,9 @@ export function layerCommand(text, names) {
   const L = '((?:the |my )?[a-z0-9][a-z0-9 \'-]*?)', idx = (w) => layerIndex(names, w);
   const one = (op, w, extra) => { const i = idx(w); return i < 0 ? { op: 'missing', name: bare(w) } : { op, i, ...extra }; };
   let m;
+  if ((m = new RegExp('^(?:new|add)(?: a)? (?:3d|3-d|three[ -]d|vr|space) layer(?: (?:for|called|named))?(?: ' + L + ')?$').exec(t)) || (m = new RegExp('^(?:new|add)(?: a)? layer(?: (?:for|called|named))?(?: ' + L + ')? in (?:3d|3-d|space|vr)$').exec(t))) return { op: 'add', name: bare(m[1] || '') || '3d ' + (names.length + 1), space: true };
   if ((m = new RegExp('^(?:new|add)(?: a)? layer(?:s)?(?: (?:for|called|named))?(?: ' + L + ')?$').exec(t)) || (m = new RegExp('^add ' + L + ' (?:on|as) (?:a )?new layer$').exec(t))) return { op: 'add', name: bare(m[1] || '') || 'layer ' + (names.length + 1) };
+  if ((m = new RegExp('^(?:turn|spin|rotate) ' + L + '(?: (?:by )?(-?\\d{1,3})(?: ?(?:degrees|deg|°))?)?(?: (left|right|around))?$').exec(t))) return one('turn', m[1], { deg: m[2] ? +m[2] : m[3] === 'left' ? -90 : m[3] === 'around' ? 180 : 90 });
   if ((m = new RegExp('^(?:put|move|send|place|bring) ' + L + ' (behind|under|below|beneath|in front of|over|above|on top of) ' + L + '$').exec(t))) {
     const a = idx(m[1]), b = idx(m[3]); if (a < 0 || b < 0) return { op: 'missing', name: bare(a < 0 ? m[1] : m[3]) };
     return { op: 'move', i: a, rel: /behind|under|below|beneath/.test(m[2]) ? 'behind' : 'front', of: b };
@@ -139,6 +144,8 @@ export function layerCommand(text, names) {
   if ((m = new RegExp('^(?:make|set|blend) ' + L + ' (?:to |as |with |on )?(' + Object.keys(BLENDS).join('|') + ')(?: blend(?:ing)?(?: mode)?| mode)?$').exec(t))) return one('blend', m[1], { mode: m[2] });
   return null;
 }
+/** a brush's tube radius in space: half its size in pixels, at the scale the camera sees the middle of the scene (pixels per unit). Pure. */
+export function tubeRadius(sizePx, pxPerUnit) { return Math.round(Math.max(0.5, sizePx / 2) / Math.max(1, pxPerUnit) * 10000) / 10000; }
 /** the layer list after moving layer i (bottom to top): behind or in front of layer j, or to the top or bottom. Pure. */
 export function moveLayer(list, i, rel, j) {
   const out = list.slice(), [item] = out.splice(i, 1);
@@ -207,15 +214,21 @@ function run(text, api) {
   };
   const showLayers = () => {
     $('.vd-layers').innerHTML = '<span class="sub">Layers, top first:</span>' + layers.map((L, i) => [L, i]).reverse().map(([L, i]) => '<button type="button" data-layer="' + i + '"' + (L === A ? ' aria-pressed="true"' : '') + '>' + esc(L.name) // void-review: ok (every name through esc)
-      + (L.hidden ? ' (hidden)' : '') + (L.alpha < 1 ? ' ' + Math.round(L.alpha * 100) + '%' : '') + (L.blend !== 'normal' ? ' ' + esc(L.blend) : '') + (L.locked ? ' (locked)' : '') + (L.clipTo && layers.includes(L.clipTo) ? ' (clipped to ' + esc(L.clipTo.name) + ')' : '') + '</button>').join('')
-      + '<button type="button" class="vd-addlayer" title="new layer on top">+ layer</button>';
+      + (L.hidden ? ' (hidden)' : '') + (L.alpha < 1 ? ' ' + Math.round(L.alpha * 100) + '%' : '') + (L.blend !== 'normal' ? ' ' + esc(L.blend) : '') + (L.kind === '3d' ? (L.space ? ' (3D)' : ' (3D, starting…)') : '') + (L.locked ? ' (locked)' : '') + (L.clipTo && layers.includes(L.clipTo) ? ' (clipped to ' + esc(L.clipTo.name) + ')' : '') + '</button>').join('')
+      + '<button type="button" class="vd-addlayer" title="new layer on top">+ layer</button><button type="button" class="vd-add3d" title="new 3D layer on top: paint in space">+ 3D layer</button>'
+      + (A.kind === '3d' ? '<button type="button" class="vd-turn" aria-pressed="' + turning + '">' + (turning ? 'Turning: drag to spin' : 'Turn') + '</button>' : '');
   };
   const named = (L) => '"' + L.name + '"';
   const doLayer = (c) => {
     const L = layers[c.i];
     if (c.op === 'missing') return 'There is no layer called "' + c.name + '". The layers are: ' + layers.map((x) => x.name).join(', ') + '.';
     if (c.op === 'cannot') return 'Cannot do that: ' + c.why + '.';
-    if (c.op === 'add') { const n = layers.some((x) => x.name === c.name) ? c.name + ' ' + (layers.length + 1) : c.name; A = newLayer(n); layers.push(A); return 'New layer ' + named(A) + ' on top. You are drawing on it.'; }
+    if (c.op === 'add') { const n = layers.some((x) => x.name === c.name) ? c.name + ' ' + (layers.length + 1) : c.name; const N = newLayer(n);
+      if (!c.space) { A = N; layers.push(A); return 'New layer ' + named(A) + ' on top. You are drawing on it.'; }
+      N.kind = '3d'; A = N; layers.push(A);
+      makeSpace(N).then(() => { showLayers(); if (A === N) said.textContent = named(N) + ' is ready: drag to paint in space.'; }).catch((e) => { console.warn('[draw] 3D layer', e); layers = layers.filter((x) => x !== N); if (A === N) A = layers[layers.length - 1]; said.textContent = 'A 3D layer could not start here: it needs WebGL, which this browser has off or cannot load.'; showLayers(); compose(); });
+      return 'New 3D layer ' + named(A) + ' on top: a drag paints in space; press Turn (or say "turn ' + A.name + '") to spin it.'; }
+    if (c.op === 'turn') { if (!L.space) return named(L) + ' is flat; only a 3D layer turns.'; L.space.yaw += c.deg * Math.PI / 180; renderSpace(L); return named(L) + ' turned ' + Math.abs(c.deg) + '°' + (c.deg < 0 ? ' left.' : '.'); }
     if (c.op === 'move') { layers = moveLayer(layers, c.i, c.rel, c.of); return named(L) + (c.rel === 'top' ? ' is now on top.' : c.rel === 'bottom' ? ' is now at the bottom.' : ' is now ' + (c.rel === 'behind' ? 'behind ' : 'in front of ') + named(layers[layers.indexOf(L) + (c.rel === 'behind' ? 1 : -1)]) + '.'); }
     if (c.op === 'hide' || c.op === 'show') { L.hidden = c.op === 'hide'; return named(L) + (L.hidden ? ' is hidden (say "show ' + L.name + '" to bring it back).' : ' is showing.'); }
     if (c.op === 'lock' || c.op === 'unlock') { L.locked = c.op === 'lock'; return L.locked ? named(L) + ' is locked: you can paint over what is on it, but not outside it.' : named(L) + ' is unlocked.'; }
@@ -224,14 +237,58 @@ function run(text, api) {
     if (c.op === 'opacity') { L.alpha = c.value; return named(L) + ' is at ' + Math.round(c.value * 100) + '%.'; }
     if (c.op === 'blend') { L.blend = c.mode; return named(L) + ' now blends as ' + c.mode + '.'; }
     if (c.op === 'clip') { L.clipTo = c.to < 0 ? null : layers[c.to]; return L.clipTo ? named(L) + ' only shows where ' + named(L.clipTo) + ' has paint.' : named(L) + ' is no longer clipped.'; }
-    if (c.op === 'clear') { undo.push({ L, im: L.g.getImageData(0, 0, cv.width, cv.height) }); L.g.clearRect(0, 0, cv.width, cv.height); return named(L) + ' is cleared (Undo brings it back).'; }
+    if (c.op === 'clear') { if (L.space) { for (const o of [...L.space.group.children]) { L.space.group.remove(o); o.geometry.dispose(); o.material.dispose(); } renderSpace(L); return named(L) + ' is cleared.'; } undo.push({ L, im: L.g.getImageData(0, 0, cv.width, cv.height) }); L.g.clearRect(0, 0, cv.width, cv.height); return named(L) + ' is cleared (Undo brings it back).'; }
     if (c.op === 'delete') { if (layers.length < 2) return 'It is the only layer; say "clear ' + L.name + '" to empty it.'; layers = layers.filter((x) => x !== L); if (A === L) A = layers[layers.length - 1]; return named(L) + ' is deleted. Drawing on ' + named(A) + '.'; }
-    if (c.op === 'merge') { const T = layers[c.into]; if (T === L) return 'That is the same layer.';
+    if (c.op === 'merge') { const T = layers[c.into]; if (T === L) return 'That is the same layer.'; if (T.kind === '3d') return 'Cannot merge into a 3D layer: merge it into a flat one (its picture, as it faces you now, goes down flat).';
       let src = L.c; // what shows of it goes down, as it shows: clipped to its layer, at its opacity, in its blend
       if (L.clipTo && layers.includes(L.clipTo)) { cg.clearRect(0, 0, cv.width, cv.height); cg.drawImage(L.c, 0, 0); cg.globalCompositeOperation = 'destination-in'; cg.drawImage(L.clipTo.c, 0, 0); cg.globalCompositeOperation = 'source-over'; src = clipC; }
       T.g.globalAlpha = L.alpha; T.g.globalCompositeOperation = BLENDS[L.blend] || 'source-over'; T.g.drawImage(src, 0, 0); T.g.globalAlpha = 1; T.g.globalCompositeOperation = 'source-over';
       layers = layers.filter((x) => x !== L); for (const x of layers) if (x.clipTo === L) x.clipTo = T; if (A === L) A = T; return named(L) + ' is merged into ' + named(T) + '.'; }
     return '';
+  };
+  // a 3D layer (frontier 25): its strokes are tubes in a scene of their own, rendered by Void's one WebGL renderer
+  // (skills/scene3d.js, loaded only when a 3D layer is made) into the layer's own canvas, so it stacks, hides, fades,
+  // clips and blends like any other layer. A drag paints on the plane through the middle of the scene, facing you; Turn spins it.
+  let E3 = null, turning = false, spin = null;
+  const renderSpace = (L) => {
+    const S = L.space; if (!S || !E3 || E3.lost) return;
+    const r = E3.renderer, w = cv.width, h = cv.height;
+    if (E3.w < w || E3.h < h) { E3.w = Math.max(E3.w, w); E3.h = Math.max(E3.h, h); r.setSize(E3.w, E3.h, false); }
+    S.group.rotation.set(S.pitch, S.yaw, 0);
+    r.setRenderTarget(null); r.setViewport(0, 0, w, h); r.setScissor(0, 0, w, h); r.setScissorTest(true); r.setClearColor(0x000000, 0); r.clear();
+    const tm = r.toneMapping; r.toneMapping = S.THREE.NoToneMapping; r.render(S.scene, S.camera); r.toneMapping = tm; r.setScissorTest(false); // filmic tone mapping pales a picked colour; the miniatures keep it
+    L.g.clearRect(0, 0, w, h); L.g.drawImage(E3.canvas, 0, E3.h - h, w, h, 0, 0, w, h);
+  };
+  const makeSpace = async (L) => {
+    const mod = await import('./scene3d.js');
+    if (!mod.webglOk()) throw new Error('no WebGL');
+    E3 = await mod.engine(); const { THREE } = E3;
+    const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(40, cv.width / cv.height, 0.1, 100), group = new THREE.Group();
+    camera.position.set(0, 0, 6); camera.lookAt(0, 0, 0); scene.add(group); scene.environment = E3.env;
+    scene.add(new THREE.HemisphereLight(0xffffff, 0x445566, 0.35)); const key = new THREE.DirectionalLight(0xffffff, 0.8); key.position.set(3, 4, 5); scene.add(key);
+    const pxPerUnit = cv.height / (2 * Math.tan(THREE.MathUtils.degToRad(20)) * 6);
+    L.space = { THREE, scene, camera, group, yaw: 0, pitch: 0, pxPerUnit, live: null, pts: [] };
+    renderSpace(L); compose();
+  };
+  const spaceAt = (L, p) => { // a canvas point to a point in the layer's scene: on the plane through the middle, facing you
+    const S = L.space, { THREE } = S, ray = new THREE.Raycaster();
+    ray.setFromCamera(new THREE.Vector2(p[0] / cv.width * 2 - 1, 1 - p[1] / cv.height * 2), S.camera);
+    const hit = new THREE.Vector3(); if (!ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), hit)) return null;
+    S.group.updateMatrixWorld(true); return S.group.worldToLocal(hit);
+  };
+  const tubeOf = (S, pts) => {
+    const { THREE } = S, r = tubeRadius(cur.size, S.pxPerUnit), path = pts.length > 1 ? new THREE.CatmullRomCurve3(pts) : null;
+    const geo = path ? new THREE.TubeGeometry(path, Math.min(400, pts.length * 4), r, 10, false) : new THREE.SphereGeometry(r, 12, 8);
+    if (!path) geo.translate(pts[0].x, pts[0].y, pts[0].z);
+    const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(color), roughness: 0.45 + cur.grain * 0.45, metalness: 0, envMapIntensity: 0.3, transparent: cur.flow < 0.45, opacity: Math.min(1, Math.max(0.15, cur.flow * 2.2)) }); // dabs overlap and build up on paper; a tube is one pass, so flow counts double
+    return new THREE.Mesh(geo, mat);
+  };
+  const paintSpace = (L, p) => {
+    const S = L.space, q = spaceAt(L, p); if (!q) return;
+    const lastPt = S.pts[S.pts.length - 1]; if (lastPt && lastPt.distanceTo(q) < 0.015) return;
+    S.pts.push(q);
+    if (S.live) { S.group.remove(S.live); S.live.geometry.dispose(); S.live.material.dispose(); }
+    S.live = tubeOf(S, S.pts); S.group.add(S.live); renderSpace(L); compose();
   };
   const talk = (w) => { const c = layerCommand(w, layers.map((x) => x.name)); if (!c) return false; said.textContent = doLayer(c); compose(); showLayers(); return true; };
   const show = () => {
@@ -249,9 +306,11 @@ function run(text, api) {
   $('.vd-colors').addEventListener('click', (e) => { const btn = e.target.closest('[data-color]'); if (btn) color = btn.dataset.color; });
   $('.vd-layers').addEventListener('click', (e) => {
     if (e.target.closest('.vd-addlayer')) { talk('new layer'); return; }
+    if (e.target.closest('.vd-add3d')) { talk('new 3d layer'); return; }
+    if (e.target.closest('.vd-turn')) { turning = !turning; showLayers(); return; }
     const btn = e.target.closest('[data-layer]'); if (!btn) return; A = layers[+btn.dataset.layer] || A; said.textContent = 'Drawing on ' + named(A) + '.'; showLayers();
   });
-  $('.vd-undo').addEventListener('click', () => { const u = undo.pop(); if (u && layers.includes(u.L)) u.L.g.putImageData(u.im, 0, 0); compose(); });
+  $('.vd-undo').addEventListener('click', () => { const u = undo.pop(); if (u && layers.includes(u.L)) { if (u.mesh) { u.L.space.group.remove(u.mesh); u.mesh.geometry.dispose(); u.mesh.material.dispose(); renderSpace(u.L); } else u.L.g.putImageData(u.im, 0, 0); } compose(); });
   $('.vd-clear').addEventListener('click', () => { talk('clear ' + A.name); });
   $('.vd-save').addEventListener('click', () => { compose(); const a = document.createElement('a'); a.download = 'void-drawing.png'; a.href = cv.toDataURL('image/png'); a.click(); });
   // drawing: stamps along the path, spacing a quarter of the size; the grain mask is laid over each stroke on its own layer
@@ -276,16 +335,25 @@ function run(text, api) {
     A.g.globalAlpha = 1; A.g.globalCompositeOperation = A.locked ? 'source-atop' : 'source-over'; A.g.drawImage(stroke, 0, 0); A.g.globalCompositeOperation = 'source-over'; stroke = null; sg = null; compose();
   };
   cv.addEventListener('pointerdown', (e) => {
-    cv.setPointerCapture(e.pointerId); if (A.hidden) { A.hidden = false; showLayers(); } undo.push({ L: A, im: A.g.getImageData(0, 0, cv.width, cv.height) }); if (undo.length > 30) undo.shift();
+    cv.setPointerCapture(e.pointerId); if (A.hidden) { A.hidden = false; showLayers(); }
+    if (A.kind === '3d') { if (!A.space) { said.textContent = named(A) + ' is still starting; draw again in a moment.'; return; } const p0 = at(e);
+      if (turning || e.button === 2 || e.shiftKey) { spin = { x: p0[0], y: p0[1], yaw: A.space.yaw, pitch: A.space.pitch }; return; }
+      last = p0; raw = [p0]; lead = p0; A.space.pts = []; A.space.live = null; paintSpace(A, p0); return; } undo.push({ L: A, im: A.g.getImageData(0, 0, cv.width, cv.height) }); if (undo.length > 30) undo.shift();
     stroke = document.createElement('canvas'); stroke.width = cv.width; stroke.height = cv.height; sg = stroke.getContext('2d');
     last = at(e); raw = [last]; lead = last; dab(sg, last[0], last[1], cur, color); compose();
   });
-  cv.addEventListener('pointermove', (e) => { if (!last || !sg) return; const r = at(e); raw.push(r); const k = follow(), p = [lead[0] + (r[0] - lead[0]) * k, lead[1] + (r[1] - lead[1]) * k]; lead = p; line(last, p); last = p; compose(); }); // show the stroke as it goes, in its layer's place
-  const end = () => { if (!last) return;
+  cv.addEventListener('pointermove', (e) => {
+    if (spin && A.space) { const r = at(e); A.space.yaw = spin.yaw + (r[0] - spin.x) / cv.width * Math.PI * 2; A.space.pitch = clamp(spin.pitch + (r[1] - spin.y) / cv.height * Math.PI, -1.4, 1.4); renderSpace(A); compose(); return; }
+    if (!last || (!sg && !(A.space && A.space.live))) return; const r = at(e); raw.push(r); const k = follow(), p = [lead[0] + (r[0] - lead[0]) * k, lead[1] + (r[1] - lead[1]) * k]; lead = p;
+    if (A.space) { paintSpace(A, p); last = p; return; }
+    line(last, p); last = p; compose(); }); // show the stroke as it goes, in its layer's place
+  const end = () => { if (spin) { spin = null; return; } if (!last) return;
+    if (A.space && A.space.live) { const tail = raw[raw.length - 1]; if (tail) paintSpace(A, tail); undo.push({ L: A, mesh: A.space.live }); if (undo.length > 30) undo.shift(); A.space.live = null; A.space.pts = [];
+      hand = learnHand(hand, raw); try { localStorage.setItem(HAND, JSON.stringify(hand)); } catch (_) {} showSteady(); last = null; return; }
     const tail = raw[raw.length - 1]; if (tail && sg) line(last, tail); // catch up to where the pen lifted
     hand = learnHand(hand, raw); try { localStorage.setItem(HAND, JSON.stringify(hand)); } catch (_) {} showSteady();
     last = null; commit(); };
-  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end); cv.addEventListener('contextmenu', (e) => { if (A.kind === '3d') e.preventDefault(); });
   show(); showSteady(); showLayers();
   return 'draw';
 }
@@ -304,6 +372,7 @@ export default {
       && learnHand(null, [[0, 0], [1, 2], [2, 0], [3, 2], [4, 0], [5, 2]]).strokes === 1 && learnHand({ tremor: 1, strokes: 3 }, [[0, 0], [1, 0]]).strokes === 3
       && layerCommand('put the moon behind the house', ['sky', 'house', 'moon']).rel === 'behind' && moveLayer(['sky', 'house', 'moon'], 2, 'behind', 1).join() === 'sky,moon,house'
       && layerCommand('new layer for the moon', []).name === 'moon' && layerCommand('make the shading multiply', ['shading']).mode === 'multiply' && layerCommand('hide the dog', ['sky']).op === 'missing' && !layerCommand('what is a layer', ['sky'])
+      && layerCommand('new 3d layer for the ring', []).space === true && layerCommand('turn the ring left', ['ring']).deg === -90 && tubeRadius(8, 100) === 0.04
       && drawOf('let me draw') && drawOf('make a brush like dry charcoal').brush.tool === 'charcoal' && !drawOf('draw a cat') && !drawOf('what is charcoal');
     return { ok: !!ok, got: ok ? 'pass' : JSON.stringify({ c, i, f }) };
   }

@@ -2424,6 +2424,37 @@ try {
     await D.ctx.close();
   }
 
+  // A 3D layer (2026-10-13, frontier 25, the owner: "Void should have a 3d/Vr draw layer as well"): a drag paints a tube in space,
+  // words and the Turn button spin it, undo takes the stroke back
+  if (want("Draw: a 3D layer paints in space and turns")) {
+    // where 3D cannot start (here: the engine is not served, as on a device without WebGL), it says so and adds no layer
+    const N = await fresh(); await N.ask('let me draw', 500);
+    await N.p.fill('.vpage.on .vd-words', 'new 3d layer'); await N.p.click('.vpage.on .vd-make button'); await N.p.waitForTimeout(400);
+    const fallback = { said: await N.p.$eval('.vpage.on .vd-said', (e) => e.textContent), list: await N.p.$eval('.vpage.on .vd-layers', (e) => e.textContent) };
+    await N.ctx.close();
+    const D = await fresh({ mini3d: true });
+    await D.ask('let me draw', 500);
+    const say = async (w) => { await D.p.fill('.vpage.on .vd-words', w); await D.p.click('.vpage.on .vd-make button'); await D.p.waitForTimeout(60); return D.p.$eval('.vpage.on .vd-said', (e) => e.textContent); };
+    const drag = async (pts) => { const box = await D.p.$eval('.vpage.on .vdraw canvas', (c) => { c.scrollIntoView({ block: 'center' }); const r = c.getBoundingClientRect(); return [r.left, r.top, r.width, r.height]; });
+      await D.p.mouse.move(box[0] + box[2] * pts[0][0], box[1] + box[3] * pts[0][1]); await D.p.mouse.down(); for (const q of pts.slice(1)) await D.p.mouse.move(box[0] + box[2] * q[0], box[1] + box[3] * q[1]); await D.p.mouse.up(); await D.p.waitForTimeout(80); };
+    // how much ink and how wide it spreads across the canvas: a ring turned edge-on gets narrower
+    const ink = () => D.p.$eval('.vpage.on .vdraw canvas', (c) => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0, lo = c.width, hi = 0;
+      for (let i = 3; i < d.length; i += 4) if (d[i] > 40) { n++; const x = ((i - 3) / 4) % c.width; lo = Math.min(lo, x); hi = Math.max(hi, x); } return { n, w: n ? hi - lo : 0 }; });
+    await say('thick bold marker');
+    const made = await say('new 3d layer for the ring');
+    await D.p.waitForFunction(() => /ring \(3D\)/.test(document.querySelector('.vpage.on .vd-layers')?.textContent || ''), null, { timeout: 15000 }).catch(() => {});
+    const ring = []; for (let i = 0; i <= 40; i++) { const a = i / 40 * Math.PI * 2; ring.push([0.5 + Math.cos(a) * 0.25, 0.5 + Math.sin(a) * 0.3]); }
+    await drag(ring); const drawn = await ink();
+    const turned = await say('turn the ring 70'); const side = await ink();
+    const list = await D.p.$eval('.vpage.on .vd-layers', (e) => e.textContent);
+    await D.p.click('.vpage.on .vd-undo'); const undone = await ink();
+    check('draw 3D: "new 3d layer for the ring" makes a 3D layer; a drag paints a ring in space; "turn the ring 70" turns it so it narrows on the canvas; Undo takes the stroke back; where 3D cannot start it says so and adds no layer',
+      /New 3D layer "ring"/.test(made) && drawn.n > 3000 && /turned 70/.test(turned) && side.n > 1000 && side.w < drawn.w * 0.75 && /ring \(3D\)/.test(list) && /Turn/.test(list) && undone.n === 0 && !D.errors.length
+        && /could not start here/.test(fallback.said) && !/3D\)/.test(fallback.list),
+      JSON.stringify({ made, drawn, turned, side, list, undone, fallback, errors: D.errors }));
+    await D.ctx.close();
+  }
+
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];

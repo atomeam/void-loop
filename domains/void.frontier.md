@@ -359,7 +359,12 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **First piece:** "new 3D layer" on the Draw card, using the shared engine (`skills/scene3d.js`). A drag paints a tube at a set depth, two fingers or the right button turn the scene, and the layer composites with the flat ones. **Then:** an "Enter VR" button where WebXR is present, with controller strokes; "put my drawing on the stage" and "make it my backdrop", kept with the passkey; brushes from words for 3D (ribbon, light, smoke).
 - **Will not build:** a separate VR app, a model call per stroke, or uploading drawings anywhere but the person's own Void.
 - **Done when:** a 3D stroke drawn on a phone is seen turning in the browser suite. A saved drawing comes back as the stage backdrop after a reload. The Enter VR button appears only when `navigator.xr` reports an immersive session.
-- **claim:** (open; next after [atomeam/void-loop#584](https://github.com/atomeam/void-loop/pull/584), layers you talk to)
+- **claim:** claude 2026-10-13. **First piece shipped:**
+  - "new 3d layer for the ring" (or "+ 3D layer") makes a layer whose strokes are lit tubes in space, painted with the same brushes, colours and learned steadying.
+  - "turn the ring 70", the Turn button, or a right or shift drag spins it. Undo takes a stroke back.
+  - It stacks, hides, fades, clips and blends with flat layers.
+  - Where 3D cannot start, the card says so and adds no layer.
+  - **Next:** Enter VR (WebXR controller strokes), then "make it my backdrop" or "put it on the stage", kept with the passkey.
 
 ## Candidate capability map (2026-10-09)
 
