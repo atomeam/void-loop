@@ -2487,6 +2487,32 @@ try {
     await D.ctx.close();
   }
 
+  // Asked by Void (its reflections, 2026-10-12): a thickness control for 3D strokes, and a spatial sketch turned into an STL
+  // through forge (its STL writer and print check): the ring gets thicker on the canvas, and "print it" downloads a watertight STL
+  if (want("Draw: a 3D sketch gets thicker and prints as a watertight STL (asked by Void)")) {
+    const D = await fresh({ mini3d: true });
+    await D.ask('let me draw', 500);
+    const say = async (w) => { await D.p.fill('.vpage.on .vd-words', w); await D.p.click('.vpage.on .vd-make button'); await D.p.waitForTimeout(80); return D.p.$eval('.vpage.on .vd-said', (e) => e.textContent); };
+    const ink = () => D.p.$eval('.vpage.on .vdraw canvas', (c) => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 40) n++; return n; });
+    await say('ink pen');
+    await say('new 3d layer for the ring');
+    await D.p.waitForFunction(() => /ring \(3D\)/.test(document.querySelector('.vpage.on .vd-layers')?.textContent || ''), null, { timeout: 15000 }).catch(() => {});
+    const box = await D.p.$eval('.vpage.on .vdraw canvas', (c) => { c.scrollIntoView({ block: 'center' }); const r = c.getBoundingClientRect(); return [r.left, r.top, r.width, r.height]; });
+    await D.p.mouse.move(box[0] + box[2] * 0.75, box[1] + box[3] * 0.5); await D.p.mouse.down();
+    for (let i = 1; i <= 36; i++) { const a = i / 36 * Math.PI * 1.8; await D.p.mouse.move(box[0] + box[2] * (0.5 + Math.cos(a) * 0.25), box[1] + box[3] * (0.5 + Math.sin(a) * 0.3)); }
+    await D.p.mouse.up(); await D.p.waitForTimeout(80);
+    const thin = await ink(); const thick = await say('make the ring thicker'); const fat = await ink();
+    const dl = D.p.waitForEvent('download', { timeout: 15000 }).catch(() => null);
+    await say('print it'); const file = await dl;
+    await D.p.waitForFunction(() => /STL,/.test(document.querySelector('.vpage.on .vd-said')?.textContent || ''), null, { timeout: 15000 }).catch(() => {});
+    const printed = await D.p.$eval('.vpage.on .vd-said', (e) => e.textContent);
+    let bytes = 0; if (file) { const fp = await file.path().catch(() => null); if (fp) bytes = fs.statSync(fp).size; }
+    check('draw 3D print: "make the ring thicker" thickens the strokes already drawn; "print it" downloads the 3D layer as an STL that forge\'s print check calls watertight',
+      thin > 1000 && /thicker/.test(thick) && fat > thin * 1.2 && !!file && /\.stl$/.test(file ? file.suggestedFilename() : '') && bytes > 84 + 50 * 100 && /saved as an STL/.test(printed) && /watertight/.test(printed) && !/not watertight/.test(printed) && !D.errors.length,
+      JSON.stringify({ thin, thick, fat, file: file && file.suggestedFilename(), bytes, printed, errors: D.errors }));
+    await D.ctx.close();
+  }
+
   // Make it my backdrop (2026-10-13, frontier 25 step 3: drawings dress your own Void): a drawing goes behind the Void, stays
   // after a reload (kept in the look, which the passkey syncs), and "remove my backdrop" takes it off; an empty canvas says so
   if (want("Draw: make it my backdrop puts the drawing behind your Void and keeps it")) {

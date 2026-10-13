@@ -119,6 +119,9 @@ export function layerCommand(text, names) {
   if ((m = new RegExp('^(?:new|add)(?: a)? (?:3d|3-d|three[ -]d|vr|space) layer(?: (?:for|called|named))?(?: ' + L + ')?$').exec(t)) || (m = new RegExp('^(?:new|add)(?: a)? layer(?: (?:for|called|named))?(?: ' + L + ')? in (?:3d|3-d|space|vr)$').exec(t))) return { op: 'add', name: bare(m[1] || '') || '3d ' + (names.length + 1), space: true };
   if ((m = new RegExp('^(?:new|add)(?: a)? layer(?:s)?(?: (?:for|called|named))?(?: ' + L + ')?$').exec(t)) || (m = new RegExp('^add ' + L + ' (?:on|as) (?:a )?new layer$').exec(t))) return { op: 'add', name: bare(m[1] || '') || 'layer ' + (names.length + 1) };
   if (/^(?:make|set|use|put)\s+(?:it|this|my drawing|the drawing|this drawing)\s+(?:as\s+)?(?:my|the)\s+(?:void'?s?\s+)?(?:backdrop|background|wallpaper)$|^(?:make\s+(?:it\s+)?)?my\s+(?:void'?s?\s+)?(?:backdrop|background|wallpaper)$/.test(t)) return { op: 'backdrop' };
+  if ((m = new RegExp('^(?:make|set) ' + L + ' (thicker|fatter|bolder|thinner|slimmer|finer)$').exec(t))) return one('thick', m[1], { by: /thicker|fatter|bolder/.test(m[2]) ? 1.5 : 1 / 1.5 });
+  if (/^(?:3d\s+)?print\s+(?:it|this)$|^(?:save|export|download)\s+(?:it|this)\s+as\s+(?:an?\s+)?stl$/.test(t)) return { op: 'print', i: -1 };
+  if ((m = new RegExp('^(?:3d\\s+)?print ' + L + '$').exec(t)) || (m = new RegExp('^(?:save|export|download) ' + L + ' as (?:an? )?stl$').exec(t))) return one('print', m[1]);
   if ((m = new RegExp('^(?:turn|spin|rotate) ' + L + '(?: (?:by )?(-?\\d{1,3})(?: ?(?:degrees|deg|°))?)?(?: (left|right|around))?$').exec(t))) return one('turn', m[1], { deg: m[2] ? +m[2] : m[3] === 'left' ? -90 : m[3] === 'around' ? 180 : 90 });
   if ((m = new RegExp('^(?:put|move|send|place|bring) ' + L + ' (behind|under|below|beneath|in front of|over|above|on top of) ' + L + '$').exec(t))) {
     const a = idx(m[1]), b = idx(m[3]); if (a < 0 || b < 0) return { op: 'missing', name: bare(a < 0 ? m[1] : m[3]) };
@@ -148,6 +151,44 @@ export function layerCommand(text, names) {
 }
 /** a brush's tube radius in space: half its size in pixels, at the scale the camera sees the middle of the scene (pixels per unit). Pure. */
 export function tubeRadius(sizePx, pxPerUnit) { return Math.round(Math.max(0.5, sizePx / 2) / Math.max(1, pxPerUnit) * 10000) / 10000; }
+/** close a tube's two open ends (Void asked: a spatial sketch as an STL): a fan from each end ring's centre, wound to face out
+ *  (away from the next ring in). P: flat positions, I: indices, laid out as rings of radial+1 vertices, tubular+1 rings. Pure. */
+export function capTube(P, I, radial, tubular) {
+  const pos = Array.from(P), idx = Array.from(I), per = radial + 1;
+  const centre = (ring) => { const c = [0, 0, 0]; for (let j = 0; j < radial; j++) for (let a = 0; a < 3; a++) c[a] += pos[(ring * per + j) * 3 + a] / radial; return c; };
+  for (const [ring, next] of [[0, 1], [tubular, tubular - 1]]) {
+    const c = centre(ring), n = centre(next), out = [c[0] - n[0], c[1] - n[1], c[2] - n[2]], k = pos.length / 3;
+    pos.push(...c);
+    for (let j = 0; j < radial; j++) {
+      let a = ring * per + j, b = ring * per + j + 1;
+      const A = pos.slice(a * 3, a * 3 + 3), B = pos.slice(b * 3, b * 3 + 3), u = [A[0] - c[0], A[1] - c[1], A[2] - c[2]], v = [B[0] - c[0], B[1] - c[1], B[2] - c[2]];
+      const nrm = [u[1] * v[2] - u[2] * v[1], u[2] * v[0] - u[0] * v[2], u[0] * v[1] - u[1] * v[0]];
+      if (nrm[0] * out[0] + nrm[1] * out[1] + nrm[2] * out[2] < 0) [a, b] = [b, a];
+      idx.push(k, a, b);
+    }
+  }
+  return { positions: pos, indices: idx };
+}
+/** the shells of a 3D layer as one printable model (forge's shape: millimetres, y up, standing on the bed, longest side `mm`):
+ *  vertices at the same place are joined (a tube's seam), so a closed shell reads as closed. Pure. */
+export function printModel(shells, label = 'sketch', mm = 100) {
+  const keyOf = (x, y, z) => Math.round(x * 1e5) + ',' + Math.round(y * 1e5) + ',' + Math.round(z * 1e5);
+  const at = new Map(), pos = [], idx = [];
+  for (const sh of shells) {
+    const map = [];
+    for (let v = 0; v < sh.positions.length / 3; v++) {
+      const x = sh.positions[v * 3], y = sh.positions[v * 3 + 1], z = sh.positions[v * 3 + 2], k = keyOf(x, y, z);
+      if (!at.has(k)) { at.set(k, pos.length / 3); pos.push(x, y, z); }
+      map.push(at.get(k));
+    }
+    for (let t = 0; t < sh.indices.length; t += 3) { const a = map[sh.indices[t]], b = map[sh.indices[t + 1]], c = map[sh.indices[t + 2]]; if (a !== b && b !== c && a !== c) idx.push(a, b, c); }
+  }
+  const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
+  for (let v = 0; v < pos.length; v += 3) for (let a = 0; a < 3; a++) { lo[a] = Math.min(lo[a], pos[v + a]); hi[a] = Math.max(hi[a], pos[v + a]); }
+  const k = mm / Math.max(1e-9, ...hi.map((h, a) => h - lo[a])), mid = [(lo[0] + hi[0]) / 2, lo[1], (lo[2] + hi[2]) / 2];
+  for (let v = 0; v < pos.length; v += 3) for (let a = 0; a < 3; a++) pos[v + a] = Math.round((pos[v + a] - mid[a]) * k * 1000) / 1000;
+  return { key: 'sketch', label, positions: pos, indices: idx, size: hi.map((h, a) => Math.round((h - lo[a]) * k * 10) / 10) };
+}
 /** the layer list after moving layer i (bottom to top): behind or in front of layer j, or to the top or bottom. Pure. */
 export function moveLayer(list, i, rel, j) {
   const out = list.slice(), [item] = out.splice(i, 1);
@@ -237,6 +278,8 @@ function run(text, api) {
       N.kind = '3d'; A = N; layers.push(A);
       makeSpace(N).then(() => { showLayers(); if (A === N) said.textContent = named(N) + ' is ready: drag to paint in space.'; }).catch((e) => { console.warn('[draw] 3D layer', e); layers = layers.filter((x) => x !== N); if (A === N) A = layers[layers.length - 1]; said.textContent = 'A 3D layer could not start here: it needs WebGL, which this browser has off or cannot load.'; showLayers(); compose(); });
       return 'New 3D layer ' + named(A) + ' on top: a drag paints in space; press Turn (or say "turn ' + A.name + '") to spin it.'; }
+    if (c.op === 'thick') { if (!L.space) return named(L) + ' is flat; thickness is for 3D strokes (change the brush for flat ones).'; const n = thicken(L, c.by); return n ? named(L) + "'s " + n + ' stroke' + (n > 1 ? 's are ' : ' is ') + (c.by > 1 ? 'thicker' : 'thinner') + '.' : named(L) + ' has no strokes yet.'; }
+    if (c.op === 'print') { const P = c.i < 0 ? A : L; if (!P.space) return 'Only a 3D layer prints: say "new 3d layer", draw in it, then "print it".'; printLayer(P).then((m) => { said.textContent = m; }).catch((e) => { console.warn('[draw] print', e); said.textContent = 'The STL could not be made.'; }); return 'Making ' + named(P) + ' into an STL…'; }
     if (c.op === 'turn') { if (!L.space) return named(L) + ' is flat; only a 3D layer turns.'; L.space.yaw += c.deg * Math.PI / 180; renderSpace(L); return named(L) + ' turned ' + Math.abs(c.deg) + '°' + (c.deg < 0 ? ' left.' : '.'); }
     if (c.op === 'move') { layers = moveLayer(layers, c.i, c.rel, c.of); return named(L) + (c.rel === 'top' ? ' is now on top.' : c.rel === 'bottom' ? ' is now at the bottom.' : ' is now ' + (c.rel === 'behind' ? 'behind ' : 'in front of ') + named(layers[layers.indexOf(L) + (c.rel === 'behind' ? 1 : -1)]) + '.'); }
     if (c.op === 'hide' || c.op === 'show') { L.hidden = c.op === 'hide'; return named(L) + (L.hidden ? ' is hidden (say "show ' + L.name + '" to bring it back).' : ' is showing.'); }
@@ -285,12 +328,30 @@ function run(text, api) {
     const hit = new THREE.Vector3(); if (!ray.ray.intersectPlane(new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), hit)) return null;
     S.group.updateMatrixWorld(true); return S.group.worldToLocal(hit);
   };
-  const tubeOf = (S, pts) => {
-    const { THREE } = S, r = tubeRadius(cur.size, S.pxPerUnit), path = pts.length > 1 ? new THREE.CatmullRomCurve3(pts) : null;
+  const tubeOf = (S, pts, size = cur.size) => {
+    const { THREE } = S, r = tubeRadius(size, S.pxPerUnit), path = pts.length > 1 ? new THREE.CatmullRomCurve3(pts) : null;
     const geo = path ? new THREE.TubeGeometry(path, Math.min(400, pts.length * 4), r, 10, false) : new THREE.SphereGeometry(r, 12, 8);
     if (!path) geo.translate(pts[0].x, pts[0].y, pts[0].z);
     const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(color), roughness: 0.45 + cur.grain * 0.45, metalness: 0, envMapIntensity: 0.3, transparent: cur.flow < 0.45, opacity: Math.min(1, Math.max(0.15, cur.flow * 2.2)) }); // dabs overlap and build up on paper; a tube is one pass, so flow counts double
-    return new THREE.Mesh(geo, mat);
+    const mesh = new THREE.Mesh(geo, mat); mesh.userData = { pts: pts.slice(), size }; return mesh;
+  };
+  // Void asked (2026-10-12): "a 'thickness' parameter to the spatial paint skill" and "convert a spatial sketch into an STL file"
+  const thicken = (L, by) => {
+    let n = 0;
+    for (const o of L.space.group.children) { const u = o.userData; if (!u || !u.pts) continue;
+      const t = tubeOf(L.space, u.pts, Math.max(1, Math.min(160, u.size * by))); o.geometry.dispose(); o.geometry = t.geometry; o.userData = t.userData; t.material.dispose(); n++; }
+    renderSpace(L); return n;
+  };
+  const printLayer = async (L) => {
+    const shells = [];
+    for (const o of L.space.group.children) { const g = o.geometry, p = g.parameters || {};
+      if (!g || !g.index) continue;
+      if (p.path) shells.push(capTube(g.attributes.position.array, g.index.array, p.radialSegments, p.tubularSegments));
+      else shells.push({ positions: Array.from(g.attributes.position.array), indices: Array.from(g.index.array) }); }
+    if (!shells.length) return named(L) + ' has nothing in it to print yet.';
+    const F = await import('./forge-rules.js'), model = printModel(shells, L.name), check = F.printCheck(model), buf = F.stl(model);
+    const a = document.createElement('a'); a.download = 'void-' + L.name.replace(/[^a-z0-9]+/gi, '-') + '.stl'; a.href = URL.createObjectURL(new Blob([buf], { type: 'model/stl' })); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+    return named(L) + ' is saved as an STL, ' + model.size.map((v) => Math.round(v)).join(' × ') + ' mm: ' + (check.closed ? 'watertight' : 'not watertight') + (check.supports ? ', it needs supports' : '') + ', about ' + check.grams + ' g of PLA.';
   };
   // Enter VR (frontier 25, the owner: "we are working towards fully working Vr Void"): the 3D layer's scene goes into a headset
   // session of its own renderer (so the page's miniatures keep theirs), standing in front of you at chest height, about a metre
@@ -439,6 +500,8 @@ export default {
       && learnHand(null, [[0, 0], [1, 2], [2, 0], [3, 2], [4, 0], [5, 2]]).strokes === 1 && learnHand({ tremor: 1, strokes: 3 }, [[0, 0], [1, 0]]).strokes === 3
       && layerCommand('put the moon behind the house', ['sky', 'house', 'moon']).rel === 'behind' && moveLayer(['sky', 'house', 'moon'], 2, 'behind', 1).join() === 'sky,moon,house'
       && layerCommand('new layer for the moon', []).name === 'moon' && layerCommand('make the shading multiply', ['shading']).mode === 'multiply' && layerCommand('hide the dog', ['sky']).op === 'missing' && !layerCommand('what is a layer', ['sky'])
+      && layerCommand('make the ring thicker', ['ring']).by === 1.5 && layerCommand('print the ring', ['ring']).op === 'print' && layerCommand('print it', []).i === -1
+      && printModel([{ positions: [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1], indices: [0, 2, 1, 0, 1, 3, 0, 3, 2, 1, 2, 3] }], 't', 50).size.join() === '50,50,50'
       && layerCommand('make it my backdrop', []).op === 'backdrop' && layerCommand('use this drawing as my background', []).op === 'backdrop' && !layerCommand('make the sky my backdrop', ['sky'])
       && layerCommand('new 3d layer for the ring', []).space === true && layerCommand('turn the ring left', ['ring']).deg === -90 && tubeRadius(8, 100) === 0.04
       && drawOf('let me draw') && drawOf('make a brush like dry charcoal').brush.tool === 'charcoal' && !drawOf('draw a cat') && !drawOf('what is charcoal');
