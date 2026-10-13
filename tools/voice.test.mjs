@@ -2,7 +2,7 @@ import test from 'node:test';
 import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { VOICE_SYSTEM, parseVoice, currentAsks, questionFor, knowsFacts, voiceFacts } from '../void-live-deploy/lib/voice.js';
+import { VOICE_SYSTEM, parseVoice, currentAsks, questionFor, knowsFacts, voiceFacts, followThrough, followFacts } from '../void-live-deploy/lib/voice.js';
 import { isSelfAsk, selfFacts } from '../void-live-deploy/lib/self-context.js';
 import * as reflect from '../void-live-deploy/functions/api/reflect.js';
 import { writeLog, entryBlock, openAsks, asksInLog } from './reflect.mjs';
@@ -187,4 +187,26 @@ test('an unreachable site is "unknown", never "(none open)", unless the last goo
   assert.match(downAfterEmpty, /\n- \(none open\)\n/); assert.doesNotMatch(downAfterEmpty, /unknown/);
   // a good read clears the unknown line
   assert.doesNotMatch(writeLog(never, [], [{ ask: 'Learn backgammon.', kind: 'daily', at: '2026-10-13' }], { read: '2026-10-13' }), /unknown/);
+});
+
+test('follow-through: an ask counts as built only on evidence (its id on a ledger entry, or a link naming the entry); repeats are one ask asked n times', () => {
+  const entries = [
+    { at: '2026-10-12T21:30:00Z', asks: [{ ask: "Implement the 'friction' indicator on the growth card to highlight skills that are failing" }, { ask: 'Learn backgammon on the stage' }] },
+    { at: '2026-10-12T20:52:00Z', asks: [{ ask: "Add a 'friction' indicator to the growth card that highlights which skills are failing" }, { ask: 'Add a skill velocity readout next to the tree' }] },
+    { at: '2026-10-10T02:30:00Z', asks: [{ ask: 'Write the forge into my canon' }] },
+  ];
+  const ledger = [
+    { at: '2026-10-12T19:42:26Z', what: 'asked by Void: the growth card says how fast Void is gaining skills' },
+    { at: '2026-10-10T13:43:27Z', what: 'the canon defines the forge (asked by Void)', asked: 'ask-20261010-0230-1' },
+    { at: '2026-10-11T00:00:00Z', what: 'asked by Void: learn backgammon on the stage' }, // words alone are not evidence
+  ];
+  const f = followThrough(entries, ledger, [{ ask: 'ask-20261012-2052-2', ledgerAt: '2026-10-12T19:42:26Z' }, { ask: 'ask-20261012-2130-2', ledgerAt: 'nowhere' }]);
+  assert.equal(f.total, 4); assert.equal(f.asked, 5);
+  assert.deepEqual(f.built.map((x) => x.ask).sort(), ['Add a skill velocity readout next to the tree', 'Write the forge into my canon']);
+  const friction = f.open.find((x) => /friction/.test(x.ask));
+  assert.equal(friction.times, 2); assert.equal(f.open[0], friction); // asked most comes first
+  assert.ok(f.open.some((x) => /backgammon/.test(x.ask)), 'a ledger line in the same words without an id or a link is not evidence');
+  const line = followFacts(f);
+  assert.match(line, /2 of my 4 asks were built/); assert.match(line, /asked 2 times/); assert.match(line, /already there since 2026-10-12/);
+  assert.equal(followFacts({ total: 0, built: [], open: [] }), '');
 });

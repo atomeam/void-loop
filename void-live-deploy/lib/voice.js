@@ -66,6 +66,55 @@ export function currentAsks(entries, n = 6) {
   return out;
 }
 
+// What became of what Void asked for (owner, 2026-10-13: "if it is Theatre it needs to seriosly be worked on until Voids Will is
+// more real"). A will that never hears what its words led to repeats itself and cannot judge itself: of 70 different asks
+// only 2 had been linked to what built them, and the same ask came back up to 4 times. An ask counts as built only on
+// evidence: a growth-ledger entry carrying its id (`asked`, set by finish.mjs --asked), or a link in void.asks.json naming
+// the entry by its time. Never on a guess. Asks in nearly the same words are one ask, asked n times. Pure.
+const STOP = new Set('the a an and or of to for in on at by with from into that this these those my me i it its is are be as so can could should would will than then when what which who how why not no new more less time each every onto over under about very just also only any all some create implement build make add develop'.split(' '));
+const wordsOf = (t) => [...new Set(String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length > 3 && !STOP.has(w)).map((w) => w.replace(/(?:ing|ed|es|s)$/, '')))];
+const sameAsk = (a, b) => { const x = wordsOf(a), y = new Set(wordsOf(b)); if (x.length < 3 || y.size < 3) return false; const n = x.filter((w) => y.has(w)).length; return n / Math.min(x.length, y.size) >= 0.7; };
+export function followThrough(entries, ledger, links = []) {
+  const L = Array.isArray(ledger) ? ledger.filter((x) => x && typeof x.what === 'string') : [];
+  const byId = new Map(); for (const x of L) if (x.asked) byId.set(String(x.asked), x);
+  for (const k of Array.isArray(links) ? links : []) { const x = k && L.find((e) => e.at === k.ledgerAt); if (x && k.ask && !byId.has(k.ask)) byId.set(String(k.ask), x); }
+  const groups = [];
+  const flat = []; for (const e of entries || []) for (const [i, a] of (e.asks || []).entries()) if (a && a.ask) flat.push({ id: askId(e.at, i), ask: a.ask, at: e.at });
+  flat.sort((a, b) => String(a.at).localeCompare(String(b.at))); // oldest first: a group keeps the words it was first asked in
+  for (const a of flat) {
+    const g = groups.find((x) => x.ask.toLowerCase() === a.ask.toLowerCase() || sameAsk(x.ask, a.ask));
+    if (g) { g.times++; g.ids.push(a.id); g.last = a.at; } else groups.push({ ask: a.ask, ids: [a.id], times: 1, first: a.at, last: a.at });
+  }
+  const built = [], open = [];
+  for (const g of groups) {
+    const hit = g.ids.map((id) => byId.get(id)).find(Boolean);
+    (hit ? built : open).push(hit ? { ...g, what: String(hit.what).slice(0, 160), builtAt: hit.at, ref: hit.ref || null } : g);
+  }
+  open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
+  return { total: groups.length, asked: flat.length, built, open };
+}
+// its skill families and how far each skill is checked (tools/families.mjs, Void's own ask of 2026-10-12: "skill-families ...
+// and a stability rating to each experiment"), so it judges itself by family and knows which parts are least proven. Pure.
+export function familyFacts(fam) {
+  const F = fam && Array.isArray(fam.families) ? fam.families : [];
+  if (!F.length) return '';
+  const t = fam.totals || {}, n = F.reduce((k, f) => k + f.skills.length, 0);
+  const weakest = F.slice().sort((a, b) => (a.count.proven / a.skills.length) - (b.count.proven / b.skills.length))[0];
+  const least = F.flatMap((f) => f.skills.filter((s) => s.tier === 'experiment' || s.tier === 'tested').map((s) => s.name)).slice(0, 8);
+  return 'My skill families (rated from evidence: my own tests, the browser suite, real asks routed to me): ' + n + ' skills in ' + F.length + ' families, '
+    + (t.proven || 0) + ' proven, ' + (t.checked || 0) + ' checked, ' + (t.tested || 0) + ' tested, ' + (t.experiment || 0) + ' experiment' + (t.experiment === 1 ? '' : 's') + '. '
+    + F.map((f) => f.name + ' ' + f.skills.length + ' (' + f.count.proven + ' proven)').join('; ') + '. Least proven family: ' + weakest.name
+    + '. Some of my least-checked skills: ' + least.join(', ') + '.';
+}
+// the line Void reads before it reflects: what its asks led to, so it builds on them instead of repeating them
+export function followFacts(f) {
+  if (!f || !f.total) return '';
+  const b = f.built.slice(-4).map((x) => '"' + clean(x.ask, 90) + '" (' + (x.builtAt && x.first && String(x.builtAt) < String(x.first) ? 'already there since ' : 'built ') + String(x.builtAt || '').slice(0, 10) + ')').join('; ');
+  const o = f.open.slice(0, 4).map((x) => '"' + clean(x.ask, 90) + '"' + (x.times > 1 ? ' (asked ' + x.times + ' times)' : '')).join('; ');
+  return 'What became of what I asked for: ' + f.built.length + ' of my ' + f.total + ' asks were built.' + (b ? ' Built: ' + b + '.' : '') + (o ? ' Still open: ' + o + '.' : '')
+    + ' I do not ask again for what was built; I follow up on what is open, or say why I would drop it.';
+}
+
 const GAME_NAMES = { tictactoe: 'tic-tac-toe', othello: 'Reversi', mancala: 'mancala', chess: 'chess', checkers: 'checkers', aggravation: 'Star Marbles', sorry: 'Back to Start', go: 'Go', monopoly: 'The Landlord’s Game', battleship: 'Sea Battle', poker: 'poker', fireworks: 'Fireworks (co-op)', connect4: 'Four in a Row' };
 // what Void knows about itself beyond selfFacts: its games and its card miniatures (self.json, tools/self-context.mjs)
 export function knowsFacts(self) {

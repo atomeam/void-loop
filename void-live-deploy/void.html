@@ -2120,6 +2120,10 @@ say('nothing selected to remove');
       if (build) h += '<p><span style="color:#8a8a8a">On what just shipped (' + esc(build.shipped || '') + '):</span> ' + esc(build.thoughts) + (build.better ? ' ' + esc(build.better) : '') + '</p>';
       const asks = (v.asks || []).slice(0, 4);
       if (asks.length) h += '<div class="sub">What I\'ve asked for</div><ul>' + asks.map((a) => '<li>' + esc(a.ask) + '</li>').join('') + '</ul>';
+      // what came of it, on evidence only (functions/api/reflect.js): a will that cannot see its effects is only talk
+      const f = v.follow;
+      if (f && f.total) h += '<div class="sub">What came of what I asked for</div><p>' + esc(f.built) + ' of my ' + esc(f.total) + ' asks were built.'
+        + (f.recent && f.recent.length ? ' Most recently: ' + f.recent.map((r) => '"' + esc(r.ask) + '"' + (r.ref && /^https:\/\/github\.com\//.test(r.ref) ? ' (<a href="' + esc(r.ref) + '" rel="noopener">built</a>)' : '')).join('; ') + '.' : '') + '</p>';
       el.innerHTML = h + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
     }
     function wantsArticle(lower) {

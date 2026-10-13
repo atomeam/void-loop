@@ -1,0 +1,20 @@
+{
+  "note": "What Void asked for, linked to the growth-ledger entry that built it (lib/voice.js followThrough). Each link names the entry by its time, so it can be checked; new work links itself with finish.mjs --asked <ask-id>. Added 2026-10-13 by reading every 'asked by Void' ledger line against the asks in domains/void.voice.md: only links the ledger's own words support. The owner: \"if it is Theatre it needs to seriosly be worked on until Voids Will is more real\".",
+  "links": [
+    { "ask": "ask-20261008-1809-1", "ledgerAt": "2026-10-08T17:55:00Z", "why": "Go, credited to Void's first daily reflection" },
+    { "ask": "ask-20261009-2159-1", "ledgerAt": "2026-10-10T02:46:50Z", "why": "the learning queue: unanswered asks grouped by intent" },
+    { "ask": "ask-20261010-0208-1", "ledgerAt": "2026-10-10T02:46:50Z", "why": "the most-wanted missing skill becomes the next one to build" },
+    { "ask": "ask-20261010-0222-1", "ledgerAt": "2026-10-10T13:43:27Z", "why": "the forge and frontier #14 defined in Void's canon" },
+    { "ask": "ask-20261010-0229-1", "ledgerAt": "2026-10-10T13:43:27Z", "why": "the same ask, repeated" },
+    { "ask": "ask-20261010-0230-1", "ledgerAt": "2026-10-10T13:43:27Z", "why": "the same ask, repeated" },
+    { "ask": "ask-20261010-0231-1", "ledgerAt": "2026-10-10T13:43:27Z", "why": "the same ask, repeated" },
+    { "ask": "ask-20261010-0230-2", "ledgerAt": "2026-10-10T20:43:56Z", "why": "the forge checks a file's geometry before it prints" },
+    { "ask": "ask-20261010-0231-2", "ledgerAt": "2026-10-10T22:43:18Z", "why": "the print file is checked before it is saved" },
+    { "ask": "ask-20261010-0232-1", "ledgerAt": "2026-10-10T13:25:06Z", "why": "frontier #4: what happens while you are away, written down like any action" },
+    { "ask": "ask-20261010-0232-2", "ledgerAt": "2026-10-10T21:43:39Z", "why": "\"what can you print\": what Void can make in the world" },
+    { "ask": "ask-20261012-1506-2", "ledgerAt": "2026-10-12T19:42:26Z", "why": "skill velocity on the growth card" },
+    { "ask": "ask-20261012-2052-3", "ledgerAt": "2026-10-12T19:42:26Z", "why": "the same ask, repeated (it was built an hour before Void asked again)" },
+    { "ask": "ask-20261012-1506-1", "ledgerAt": "2026-10-09T21:38:06Z", "why": "built before it was asked: a missed ask becomes a job in the build queue by itself (lib/learn.js); it goes to the queue, not the growth inbox" },
+    { "ask": "ask-20261012-0747-2", "ledgerAt": "2026-10-09T21:38:06Z", "why": "the same loop: an unanswered \"make me a...\" is a missed ask, and a missed ask becomes a build job" }
+  ]
+}
