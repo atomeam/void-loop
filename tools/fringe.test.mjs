@@ -3,7 +3,7 @@
 // back for the next run. The first 73 runs stand as written.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { check, sameBehavior, notesOf, learned, next } from './fringe.mjs';
+import { check, sameBehavior, notesOf, learned, next, demand } from './fringe.mjs';
 
 const real = JSON.parse(readFileSync(new URL('./fringe.json', import.meta.url), 'utf8'));
 assert.deepEqual(check(real), [], 'the ledger as it stands, no notes anywhere, is fine');
@@ -32,4 +32,16 @@ assert.deepEqual([L.findings[0].x, L.failures[0].x.what, L.next[0].x, L.behavior
 assert.ok(!L.untried.some(([a, b]) => a + '+' + b === 'attention+opt-in-gesture'), 'a pair a run combined is no longer untried');
 const may = new Set(next(real));
 assert.ok(L.untried.slice(0, 6).every(([a, b]) => may.has(a) || may.has(b)), 'the first pairs each hold a family the next run may pick');
+// what the core needs: Void's open asks, failing then unchecked skills, benchmark misses, people's misses; a missing source is left out
+const files = {
+  'domains/void.voice.md': "# x\n\n## Void's current asks\n\n_Read on 2026-10-13._\n\n- Track a success metric for each experiment. *(small)* (daily, 2026-10-13) `ask-1`\n- Show which experiment could become a skill. (after a build, 2026-10-12) `ask-2`\n\n## Log, oldest first\n",
+  'void-live-deploy/skills/families.json': JSON.stringify({ families: [{ skills: [{ name: 'map', tier: 'experiment' }, { name: 'weather', tier: 'proven', failing: ['rain later', 'snow?'] }, { name: 'clock', tier: 'proven' }] }] }),
+  'tools/bench.misses.json': JSON.stringify({ misses: ['rain later -> answer'] }),
+};
+const D = demand((p) => { if (p in files) return files[p]; throw new Error('no ' + p); });
+assert.deepEqual(D.asks, ['Track a success metric for each experiment.', 'Show which experiment could become a skill.']);
+assert.deepEqual(D.friction, ['weather: failing 2 benchmark asks', 'map: nothing checks it yet']);
+assert.deepEqual(D.bench, ['rain later -> answer']);
+assert.deepEqual(D.misses, [], 'no snapshot yet: left out');
+assert.deepEqual(demand(() => { throw new Error('nothing'); }), { asks: [], friction: [], bench: [], misses: [] });
 console.log('fringe-notes: ok');

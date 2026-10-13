@@ -18,7 +18,8 @@
 //     run number, time, sha256, emit:false) in the ledger's own 2-space style, then checks the ledger. sources.json is the
 //     sources array, or { sources, hypothesis, behavior, findings, failure_modes, next_experiments, combines } (the research notes)
 //   node tools/fringe.mjs --learned   what the ledger has learned, for the next run to read first: recent findings, failure
-//     modes and next experiments, and pairs of published families no run has combined yet
+//     modes and next experiments, what the core needs (Void's open asks, failing or unchecked skills, benchmark and people's
+//     misses), and pairs of published families no run has combined yet
 // The research notes (owner, 2026-10-13: the ledger becomes a research engine that compounds: "every run should leave Void
 // with at least one durable asset"; optional, so the first 73 runs stand as written, append-only):
 //   hypothesis        what the run set out to show
@@ -60,6 +61,31 @@ const load = () => JSON.parse(readFileSync(resolve(root, 'tools/fringe.json'), '
 const STOP = new Set('the a an and or of to for in on at by with from into that this it its is are be as can you your a person someone'.split(' '));
 const words = (t) => [...new Set(String(t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length > 2 && !STOP.has(w)).map((w) => w.replace(/(?:ing|ed|es|s)$/, '')))];
 export function sameBehavior(a, b) { const x = words(a), y = new Set(words(b)); if (x.length < 3 || y.size < 3) return false; return x.filter((w) => y.has(w)).length / Math.min(x.length, y.size) >= 0.7; }
+
+// What the core needs (owner, 2026-10-13: "if you want void to be truly self-sustaining, you need to focus on the feedback loops
+// between the fringe experiments and the core"): the demand a run should build toward, read from the repo where the hourly run
+// can see it. Void's own open asks (domains/void.voice.md), the skills failing on the benchmark or least checked
+// (void-live-deploy/skills/families.json), the asks the benchmark got wrong (tools/bench.misses.json) and what people asked
+// that Void could not answer (domains/void.misses.json, the public snapshot, when it is written). A source that is missing is
+// left out. Pure apart from the reads.
+export function demand(read = (p) => readFileSync(resolve(root, p), 'utf8'), n = 5) {
+  const out = { asks: [], friction: [], bench: [], misses: [] };
+  try {
+    const m = /## Void's current asks\n\n([\s\S]*?)\n\n## /.exec(read('domains/void.voice.md'));
+    if (m) out.asks = m[1].split('\n').map((l) => /^- (.+?)(?: \*\(small\)\*)? \((?:daily|after a build)/.exec(l)).filter(Boolean).map((x) => x[1]).slice(0, n);
+  } catch (_) {}
+  try {
+    const all = (JSON.parse(read('void-live-deploy/skills/families.json')).families || []).flatMap((f) => f.skills || []);
+    out.friction = all.filter((s) => s.failing && s.failing.length).map((s) => s.name + ': failing ' + s.failing.length + ' benchmark ask' + (s.failing.length > 1 ? 's' : ''))
+      .concat(all.filter((s) => s.tier === 'experiment').map((s) => s.name + ': nothing checks it yet')).slice(0, n);
+  } catch (_) {}
+  try { const b = JSON.parse(read('tools/bench.misses.json')); out.bench = Array.isArray(b.misses) ? b.misses.slice(0, n) : []; } catch (_) {}
+  try {
+    const j = JSON.parse(read('domains/void.misses.json')), rows = Array.isArray(j) ? j : j.misses || j.top || [];
+    out.misses = rows.map((r) => (typeof r === 'string' ? r : r && (r.ask || r.text))).filter(Boolean).slice(0, n);
+  } catch (_) {}
+  return out;
+}
 
 /** what the ledger has learned, for the next run to read first. Pure. */
 export function learned(runs = load(), recent = WINDOW) {
@@ -141,6 +167,12 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     out.push('', 'What failed, and the evidence (do not repeat these):', ...(L.failures.length ? L.failures.map((f) => line(`run ${f.run} (${f.family}): ${f.x.what} (${f.x.evidence})`)) : [line('none recorded yet')]));
     out.push('', 'Next experiments the runs suggested:', ...(L.next.length ? L.next.map((f) => line(`run ${f.run} (${f.family}): ${f.x}`)) : [line('none recorded yet')]));
     out.push('', 'Behaviors already built (a new run must do something else):', ...(L.behaviors.length ? L.behaviors.map((f) => line(`run ${f.run} (${f.family}): ${f.x}`)) : [line('none recorded yet')]));
+    const D = demand(), dl = (xs) => (xs.length ? xs.map(line) : [line('none recorded yet')]);
+    out.push('', 'What the core needs (build toward one of these when your family can serve it, and say which in findings):',
+      '  Void\'s own open asks:', ...dl(D.asks).map((x) => '  ' + x),
+      '  Skills failing or unchecked:', ...dl(D.friction).map((x) => '  ' + x),
+      '  Benchmark asks Void got wrong:', ...dl(D.bench).map((x) => '  ' + x),
+      '  What people asked that Void could not answer:', ...dl(D.misses).map((x) => '  ' + x));
     out.push('', `Published families never combined (${L.untried.length} pairs; a run may join its family with another and say so in combines):`, ...L.untried.slice(0, 12).map(([a, b]) => line(a + ' + ' + b)));
     console.log(out.join('\n'));
   }
