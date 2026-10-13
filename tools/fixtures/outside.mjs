@@ -41,7 +41,7 @@ export function outsideReply(u) {
 
 // Void's own data-only endpoints the page reads on load (what Void said of itself, what it wants next), the same in every runner
 export function voidApiReply(u) {
-  if (u.includes('/api/reflect')) return json({ entries: [{ at: '2026-10-08T18:09:00Z', kind: 'daily', question: 'q', thoughts: 'I am strong at sums and thin on places.', weakest: 'My maps are flat.', next_game: 'Backgammon, because people keep asking.', asks: [] }], asks: [{ ask: 'Give the map card terrain', small: false, kind: 'daily', at: '2026-10-08T18:09:00Z' }] });
+  if (u.includes('/api/reflect')) return json({ entries: [{ at: '2026-10-08T18:09:00Z', kind: 'daily', question: 'q', thoughts: 'I am strong at sums and thin on places.', weakest: 'My maps are flat.', next_game: 'Backgammon, because people keep asking.', asks: [] }], asks: [{ ask: 'Give the map card terrain', small: false, kind: 'daily', at: '2026-10-08T18:09:00Z' }], follow: { total: 5, built: 2, recent: [{ ask: 'Learn Go on the stage', at: '2026-10-08T17:55:00Z', ref: 'https://github.com/atomeam/void-loop/pull/244' }] } });
   if (u.includes('/api/will')) return json({ at: '2026-09-27T23:00:00Z', wants: [{ kind: 'people asked', title: 'learn x', i_want: 'I want to answer every question about tides.', because: 'asked 9 times' }] });
   return null;
 }

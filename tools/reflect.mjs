@@ -21,11 +21,13 @@ const LEDGER = resolve(root, 'void-live-deploy/void.growth.json');
 const norm = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 /** the asks no growth-ledger entry answers yet: an entry answers an ask when its `asked` is the ask's id (ask-…, stable
  * however the words change) or, for entries written before ids, the ask word for word */
-export function openAsks(asks, ledger) {
+export function openAsks(asks, ledger, links = []) {
   const done = new Set((ledger || []).filter((e) => e && e.asked).map((e) => norm(e.asked)));
+  for (const k of links || []) if (k && k.ask && (ledger || []).some((e) => e && e.at === k.ledgerAt)) done.add(norm(k.ask)); // void.asks.json: a link names the entry that built it
   return (asks || []).filter((a) => a && !(a.id && done.has(norm(a.id))) && !done.has(norm(a.ask)));
 }
 const readLedger = () => { try { return JSON.parse(readFileSync(LEDGER, 'utf8')); } catch (_) { return []; } };
+const readLinks = () => { try { return JSON.parse(readFileSync(resolve(root, 'void-live-deploy/void.asks.json'), 'utf8')).links || []; } catch (_) { return []; } };
 const ASK_LINE = /^- (.+?)( \*\(small\)\*)? \((daily|after a build), (\d{4}-\d\d-\d\d)\)(?: `(ask-[0-9-]+)`)?$/;
 /** the asks as the file has them now (for a run that can't reach the site) */
 export function asksInLog(text) {
@@ -108,13 +110,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     } else if (args.includes('--write')) {
       const old = existsSync(LOG) ? readFileSync(LOG, 'utf8') : '', today = new Date().toISOString().slice(0, 10), ledger = readLedger();
       let v = null; try { v = await call('GET'); } catch (err) { console.error('reflect: ' + err.message + ' (refiltering the asks already in the file)'); }
-      const asks = openAsks(v ? v.asks : asksInLog(old), ledger);
+      const asks = openAsks(v ? v.asks : asksInLog(old), ledger, readLinks());
       const text = writeLog(old, v ? v.entries : [], asks, v ? { read: today } : { failed: today });
       writeFileSync(LOG, text);
       console.log(`void.voice.md: ${(text.match(/<!-- voice:/g) || []).length} reflections, ${asks.length} current asks${v ? '' : ' (site not reached)'}`);
       if (!v) process.exit(3);
     } else {
-      const v = await call('GET'), asks = openAsks(v.asks, readLedger());
+      const v = await call('GET'), asks = openAsks(v.asks, readLedger(), readLinks());
       console.log("Void's current asks:");
       for (const a of asks) console.log(`  - ${a.ask}${a.small ? ' (small)' : ''}  [${a.kind}, ${String(a.at).slice(0, 10)}${a.id ? ', ' + a.id : ''}]`);
       if (!asks.length) console.log('  (none yet)');

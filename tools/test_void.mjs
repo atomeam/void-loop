@@ -1695,10 +1695,15 @@ try {
     // other tab's cursor shows as a faint presence; closing that tab takes the presence away.
     const room = 'aaaaaaaaaaaaaaaa.bbbbbbbbbbbbbbbb', S = await fresh({ base: base + '?with=' + room });
     const B = await S.ctx.newPage(); const errsS = []; B.on('pageerror', (e) => errsS.push(String(e && e.message || e)));
-    await B.goto(base + '?with=' + room); await B.waitForTimeout(900);
+    await B.goto(base + '?with=' + room);
+    // B listens only once its page has opened the channel (lib/share-client.js says so in its whisper); a fixed 900 ms lost the
+    // race on a loaded machine and the clock never reached B (2026-10-13), so wait for B to be listening before A summons
+    await until(() => B.$eval('#whisper', (e) => /tabs in this browser/.test(e.textContent)).catch(() => false), 8000);
     const saidA = await S.whisper();
     await S.ask('clock', 900);
-    const onB = await B.$$eval('.thing', (n) => n.length); // on B's own stage (both tabs share one localStorage, so the saved state proves nothing)
+    // on B's own stage (both tabs share one localStorage, so the saved state proves nothing); waited for, not a fixed sleep: a loaded
+    // machine delivers the broadcast later (it failed twice in a row under load at 900 ms, 2026-10-13)
+    let onB = 0; for (let k = 0; k < 20 && onB !== 1; k++) { onB = await B.$$eval('.thing', (n) => n.length); if (onB !== 1) await B.waitForTimeout(200); }
     await B.mouse.move(300, 200); await B.mouse.move(320, 220); await S.p.waitForTimeout(300);
     const dot = await S.p.$eval('.void-presence', (e) => ({ x: parseFloat(e.style.left), y: parseFloat(e.style.top) })).catch(() => null);
     await B.close(); await S.p.waitForTimeout(300);
@@ -2690,7 +2695,7 @@ try {
   await t.ask('why is the sky blue', 900); an = await t.page(); check('answer engine answers with sources', /blue light scatters/.test(an) && /Rayleigh scattering/.test(an) && /as of/.test(an), an.slice(0, 120));
   await t.ask('why is the model busy', 600); check('answer engine busy -> article excerpt', await until(async () => /Black hole/.test(await t.page()), 5000));
   await t.ask('what do you want to be?', 300); check('will: Void says what it wants', await until(async () => /I want to answer every question about tides/.test(await t.page()), 4000));
-  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await t.page(); return /I am strong at sums and thin on places/.test(pg) && /Backgammon/.test(pg) && /Give the map card terrain/.test(pg); }, 4000); check('voice: Void says what it thinks of itself, in its own words, with what it has asked for', ok, (await t.page()).slice(0, 200)); }
+  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await t.page(); return /I am strong at sums and thin on places/.test(pg) && /Backgammon/.test(pg) && /Give the map card terrain/.test(pg) && /2 of my 5 asks were built/.test(pg) && /Learn Go on the stage/.test(pg); }, 4000); check('voice: Void says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built', ok, (await t.page()).slice(0, 200)); }
   } // CORE
   if (want("block at line 1599")) { const q0 = queued.length; await t.ask('update yourself', 700); const w = await t.whisper();
     check('build asks are owner-only (a stranger\'s goes the ordinary way: nothing queued, no word of an owner)', queued.length === q0 && !/owner/i.test(w), w); }
