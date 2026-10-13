@@ -70,6 +70,17 @@ One PR per step (or per skill in step 6), checks before push, automerge. Claim a
   - *Prestige, not presence (2026-10-11, from a video the owner shared by Sandeep Swadia on businesses AI does not commoditize):* what Void makes for the public or for a client is crafted for that one use, never a generic template (the look every AI site builder gives). First step: hold the pages Void already serves (the stage, the offer pages such as `full-stack-audit/`, the public `@name` Voids) against that bar and list what reads as templated.
   - *Read first, before building any of this:* Voyager (2023, a Minecraft agent: an automatic curriculum, a skill library that only keeps skills that passed self-verification) is the closest prior art; Generative Agents ("Smallville", 2023) for needs and daily routines; ChatDev for roles. The first study items on the queue, as digests in Void's own words.
   - The first video, on self-improving overnight agents, gave the five targets above.
+  - *A house style that learns from notes, and stills before motion (2026-10-13, from a video the owner shared by Duncan Rogoff, "Turn Claude Into a Motion Design GENIUS": references, study them, one design-system file, approve stills first, review in plain words):*
+    - **What applies to Void:** everything Void makes (cards, figures, a promo for someone's site) should follow one house-style file: colours, type, motion, and a leave-out list.
+    - **Notes become rules:** an owner's plain-words note ("too much copy", "the buttons look like AI slop") is written into that file once, so the same miss never comes back. Void's review already works this way for code (`lib/code-review.js`, `tools/review-overrides.mjs`); this is the same loop for looks.
+    - **Stills first:** each new kind of card or scene is shown as a still at phone width, and checked, before it moves. That is the visual reviewer already proposed.
+    - **Best at it now:** Remotion (video as React code) is what Claude-made motion pieces are mostly built with, and design-token files (Style Dictionary) hold a house style.
+    - **Void, one notch past:** the promo is made from the person's own site, and every number on screen is checked against that site by `lib/honest.js`.
+    - **Why the number check matters:** the video's own failure was a copied reference prompt that carried a false "a million visitors in 8 months" onto a brand it was not true for.
+    - **Marks:**
+      - **uncertain:** "11 to 20 minutes per video try" is the creator's own timing.
+      - **what would have to be true:** prompt-motion.com (the description's spelling; the speech says promptmotion.com) would have to publish each piece's exact prompt.
+      - The creator's paid club is not an input here.
 
 ---
 
@@ -359,7 +370,12 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **First piece:** "new 3D layer" on the Draw card, using the shared engine (`skills/scene3d.js`). A drag paints a tube at a set depth, two fingers or the right button turn the scene, and the layer composites with the flat ones. **Then:** an "Enter VR" button where WebXR is present, with controller strokes; "put my drawing on the stage" and "make it my backdrop", kept with the passkey; brushes from words for 3D (ribbon, light, smoke).
 - **Will not build:** a separate VR app, a model call per stroke, or uploading drawings anywhere but the person's own Void.
 - **Done when:** a 3D stroke drawn on a phone is seen turning in the browser suite. A saved drawing comes back as the stage backdrop after a reload. The Enter VR button appears only when `navigator.xr` reports an immersive session.
-- **claim:** (open; next after [atomeam/void-loop#584](https://github.com/atomeam/void-loop/pull/584), layers you talk to)
+- **claim:** claude 2026-10-13. **First piece shipped:**
+  - "new 3d layer for the ring" (or "+ 3D layer") makes a layer whose strokes are lit tubes in space, painted with the same brushes, colours and learned steadying.
+  - "turn the ring 70", the Turn button, or a right or shift drag spins it. Undo takes a stroke back.
+  - It stacks, hides, fades, clips and blends with flat layers.
+  - Where 3D cannot start, the card says so and adds no layer.
+  - **Next:** Enter VR (WebXR controller strokes), then "make it my backdrop" or "put it on the stage", kept with the passkey.
 
 ## Candidate capability map (2026-10-09)
 
