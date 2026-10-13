@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
 import { readFrontier, openItems, stepsLeft, targets } from './frontier.mjs';
 import { scan as reviewOverrides, summarize as overrideSummary } from './review-overrides.mjs';
+import { load as loadTargets, scoreOf } from './targets.mjs';
 
 const SNAPSHOT = new URL('../domains/void.misses.json', import.meta.url);
 
@@ -46,6 +47,10 @@ function main(argv) {
   for (const o of s.open) console.log(`  - ${o.title}${o.from ? '  [' + o.from + ']' : ''}`);
   if (s.targets.length) console.log(`\nTargets after the cleanup (${s.targets.length}):`);
   for (const t of s.targets) console.log('  - ' + t.title);
+  try { // the site Void has set its sights on, and the next feature to build one notch past it (tools/targets.mjs)
+    for (const t of loadTargets()) { const sc = scoreOf(t); if (sc.done) continue;
+      console.log(`\nTarget: ${sc.site}, beats ${sc.beats} of ${sc.total}.` + (sc.next ? ` Next: ${sc.next.id}. They: ${sc.next.theirs}. Void, one notch past: ${sc.next.plus_one}` : '')); }
+  } catch (_) {}
   try { // Void's review: where builders overrode it, by rule; the noisiest rule is the next reviewer fix (tools/review-overrides.mjs)
     const o = overrideSummary(reviewOverrides());
     if (o.rules.length) console.log(`\nVoid's review, overridden as right as written: ${o.rules.map((r) => r.rule + ' ' + r.n).join(', ')}${o.idle.length ? ` (and ${o.idle.length} markers no rule needs any more)` : ''}. Fix the noisiest rule or confirm the overrides: node tools/review-overrides.mjs`);

@@ -1,0 +1,18 @@
+{
+ "site": "ibisPaint X",
+ "kind": "drawing and painting app (iOS, Android, desktop)",
+ "chosen": "2026-10-13",
+ "why": "the owner's first named target (2026-10-13); drawing is a skill Void has none of yet, and every card, figure and miniature Void makes gets better once it can draw",
+ "source": ["App Store listing", "https://apps.apple.com/app/450722833"],
+ "rule": "Elevenessee: the target's feature is the floor, not the blueprint. Void never ships its copy of X; it ships X plus one notch, and the plus one is written down before the build starts.",
+ "features": [
+  { "id": "brushes", "theirs": "thousands of brushes with thickness, opacity and angle controls and a live preview", "plus_one": "describe a brush in words (\"dry charcoal that catches the paper grain\") and Void makes it, then keeps it as yours", "void": "none" },
+  { "id": "stabilizer", "theirs": "stroke stabilizer that smooths a shaky line", "plus_one": "smoothing that learns your hand: it measures your own tremor over the first strokes and corrects just that much", "void": "none" },
+  { "id": "layers", "theirs": "layers without a set limit, clipping masks, 27 blend modes", "plus_one": "layers you can talk to: \"put the moon behind the house\", \"make the shadows softer\" moves and edits the right layer", "void": "none" },
+  { "id": "rulers", "theirs": "radial, symmetry and perspective rulers", "plus_one": "any n-fold symmetry and a perspective grid you set by dragging two lines in a photo you dropped in", "void": "none" },
+  { "id": "filters", "theirs": "84 filters and 46 screentones", "plus_one": "filters by name in plain words, previewed side by side, each one undoable by asking", "void": "none" },
+  { "id": "recording", "theirs": "records the drawing process as a video; watch other people's process videos", "plus_one": "the process is kept as strokes, not video: replay it at any speed, scrub it, and branch a new picture from any moment in it", "void": "none" },
+  { "id": "vector", "theirs": "vector tool (premium)", "plus_one": "every stroke stays editable as a curve by default, and the picture exports as SVG for free", "void": "none" },
+  { "id": "export", "theirs": "PNG, PSD and CMYK export (CMYK premium)", "plus_one": "export straight onto the stage: what you draw becomes a card, a sticker or a 3D figure's texture", "void": "none" }
+ ]
+}

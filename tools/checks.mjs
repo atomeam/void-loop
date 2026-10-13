@@ -38,6 +38,7 @@ for (const [name, file] of [
   ['autofix', 'automation-fix.test.mjs'],
   ['overrides', 'review-overrides.test.mjs'],
   ['offer', 'review-offer.test.mjs'],
+  ['targets', 'targets.test.mjs'],
   ['releasenotes', 'releasenotes.test.mjs'],
   ['intent', 'intent.test.mjs'],
   ['revert-target', 'revert-target.test.mjs'],
