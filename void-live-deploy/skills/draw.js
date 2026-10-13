@@ -369,11 +369,14 @@ function run(text, api) {
     const was = { pos: S.group.position.clone(), scale: S.group.scale.clone(), bg: S.scene.background };
     const eye = new THREE.PerspectiveCamera(70, 1, 0.05, 50); // the headset moves the camera it renders with: its own, so the card's view stays put
     S.group.position.set(0, 1.3, -0.9); S.group.scale.setScalar(0.25); S.scene.background = new THREE.Color(0x0b0d12);
+    // a stroke ends on the trigger's release, or when the session ends first (the headset taken off mid-stroke, or the release not
+    // handled before the end): either way it is kept and Undo can take it back
+    const finish = (pen) => { pen.on = false; if (pen.live) { undo.push({ L, mesh: pen.live }); if (undo.length > 30) undo.shift(); } pen.live = null; pen.pts = []; };
     const pens = [0, 1].map((i) => { const c = r.xr.getController(i); S.scene.add(c);
       const tip = new THREE.Mesh(new THREE.SphereGeometry(0.008, 12, 8), new THREE.MeshBasicMaterial({ color: new THREE.Color(color) })); c.add(tip);
       const pen = { c, tip, on: false, pts: [], live: null };
       c.addEventListener('selectstart', () => { pen.on = true; pen.pts = []; pen.live = null; });
-      c.addEventListener('selectend', () => { pen.on = false; if (pen.live) { undo.push({ L, mesh: pen.live }); if (undo.length > 30) undo.shift(); } pen.live = null; pen.pts = []; });
+      c.addEventListener('selectend', () => finish(pen));
       return pen; });
     const at = new THREE.Vector3();
     r.setAnimationLoop(() => {
@@ -390,7 +393,7 @@ function run(text, api) {
     });
     vr = { session, r };
     session.addEventListener('end', () => {
-      r.setAnimationLoop(null); for (const pen of pens) { S.scene.remove(pen.c); pen.tip.geometry.dispose(); pen.tip.material.dispose(); }
+      r.setAnimationLoop(null); for (const pen of pens) { finish(pen); S.scene.remove(pen.c); pen.tip.geometry.dispose(); pen.tip.material.dispose(); }
       S.group.position.copy(was.pos); S.group.scale.copy(was.scale); S.scene.background = was.bg; r.dispose(); vr = null;
       renderSpace(L); compose(); said.textContent = 'Back from VR: what you painted there is on ' + named(L) + '.';
     });
