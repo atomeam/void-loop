@@ -1685,11 +1685,15 @@ try {
   if (want("shared Void moves: a clock dragged in one tab moves in the other, both ways")) {
     const room = 'cccccccccccccccc.dddddddddddddddd', S = await fresh({ base: base + '?with=' + room });
     const B = await S.ctx.newPage(); const errsB = []; B.on('pageerror', (e) => errsB.push(String(e && e.message || e)));
-    await B.goto(base + '?with=' + room); await B.waitForTimeout(900);
+    await B.goto(base + '?with=' + room);
+    // B must have joined before the clock is summoned (a fixed wait raced the join under load; verify on f672395 then found no
+    // clock on B and the drag threw, ending the suite): wait for its join line, as the words check below does
+    await until(() => B.$eval('#whisper', (e) => /tabs in this browser/.test(e.textContent)).catch(() => false), 8000);
     await S.ask('clock', 900);
     const share = (pg) => pg.evaluate(() => { const st = document.getElementById('stage'), el = st.querySelector('.thing.clock'); return el ? { x: parseFloat(el.style.left) / st.clientWidth, y: parseFloat(el.style.top) / st.clientHeight } : null; });
     const onB = await until(() => share(B), 4000);
-    const drag = async (pg, dx, dy) => { const b = await pg.$eval('.thing.clock', (e) => { const r = e.getBoundingClientRect(); return { x: r.left + 20, y: r.top + 12 }; });
+    const drag = async (pg, dx, dy) => { const b = await pg.$eval('.thing.clock', (e) => { const r = e.getBoundingClientRect(); return { x: r.left + 20, y: r.top + 12 }; }).catch(() => null);
+      if (!b) return; // no clock on that tab: the check below fails with what each tab had, the suite carries on
       await pg.mouse.move(b.x, b.y); await pg.mouse.down(); await pg.mouse.move(b.x + dx, b.y + dy, { steps: 8 }); await pg.mouse.up(); };
     await drag(S.p, 140, 90);
     const a1 = await share(S.p);
