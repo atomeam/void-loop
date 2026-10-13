@@ -1,17 +1,13 @@
-// The dice skill's parser (skills/dice.js): coin flips and dice rolls, nothing else.
-// Run: node --test tools/dice.test.mjs
-import test from 'node:test';
+// suite check for dice skill
+import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseDice } from '../void-live-deploy/skills/dice.js';
-
-test('dice: coin and dice asks parse, near misses do not', () => {
-  assert.deepEqual(parseDice('flip a coin'), { type: 'coin' });
-  assert.deepEqual(parseDice('heads or tails'), { type: 'coin' });
-  assert.deepEqual(parseDice('roll a die'), { type: 'dice', n: 1, sides: 6 });
-  assert.deepEqual(parseDice('roll a d6'), { type: 'dice', n: 1, sides: 6 });
-  assert.deepEqual(parseDice('roll 2d6'), { type: 'dice', n: 2, sides: 6 });
-  assert.deepEqual(parseDice('d20'), { type: 'dice', n: 1, sides: 20 });
-  assert.equal(parseDice('what is a die'), null);
-  assert.equal(parseDice('roll the ball'), null);
-  assert.equal(parseDice(''), null);
+import skill from '../void-live-deploy/skills/dice.js';
+test('dice matches its examples and rolls', () => {
+  assert.equal(skill.match('roll a die', 'roll a die'), true);
+  assert.equal(skill.match('roll 2d6', 'roll 2d6'), true);
+  assert.equal(skill.match('what is a die', 'what is a die'), false);
+  let html = '';
+  const ret = skill.run('roll 2d6', { esc: (t) => t, showPage: (b) => b({ set innerHTML(v) { html = v; } }) });
+  assert.equal(ret, 'dice');
+  assert.match(html, /Dice/);
 });
