@@ -1,8 +1,8 @@
 /**
- * draw skill - a drawing card where you describe a brush in words and Void makes it (target: ibisPaint X, feature "brushes";
- * domains/targets/ibispaint.json). Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * draw skill - a drawing card where you describe a brush in words and Void makes it.
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "let me draw", "open a canvas", "sketch pad", "make a brush like dry charcoal", "new brush: soft watercolor".
- * ibisPaint ships thousands of fixed brushes with sliders. One notch past (Elevenessee): say what you want ("dry charcoal that
+ * Not a shelf of fixed brushes with sliders: say what you want ("dry charcoal that
  * catches the paper grain", "thick wet ink", "faint pencil") and the brush is built from the words: its tool sets size,
  * edge, flow and grain, the words around it move them, and the card says what it understood. Brushes you make are kept in
  * this browser. Strokes are stamped along the path (spacing a fraction of the size), each stamp a radial dab with its edge
@@ -94,7 +94,7 @@ export function learnHand(hand, points) {
 }
 const HAND = 'a2m.void.hand.v1';
 
-// layers you can talk to (target ibisPaint X, feature layers): every layer has a name, and the card takes plain words for what to do
+// layers you can talk to: every layer has a name, and the card takes plain words for what to do
 // with them: "new layer for the moon", "put the moon behind the house", "hide the sky", "make the shadows 40%", "make the
 // shadows multiply", "clip the shading to the skin", "lock the house", "merge the moon into the sky", "rename moon to sun"
 export const BLENDS = { normal: 'source-over', multiply: 'multiply', screen: 'screen', overlay: 'overlay', darken: 'darken', lighten: 'lighten',
@@ -442,11 +442,11 @@ function run(text, api) {
   $('.vd-backdrop').addEventListener('click', () => { talk('make it my backdrop'); });
   $('.vd-save').addEventListener('click', () => { compose(); const a = document.createElement('a'); a.download = 'void-drawing.png'; a.href = cv.toDataURL('image/png'); a.click(); });
   // drawing: stamps along the path, spacing a quarter of the size; the grain mask is laid over each stroke on its own layer
-  // steadying that learns your hand (target ibisPaint X, feature stabilizer): each stroke's own shake is measured, the hand's is kept
+  // steadying that learns your hand: each stroke's own shake is measured, the hand's is kept
   // in this browser, and the pen is followed just closely enough to take that shake out (a lazy follow: the line moves part of the
   // way toward the pen each move, and catches up where you lift it)
   let hand = (() => { try { return JSON.parse(localStorage.getItem(HAND) || 'null'); } catch (_) { return null; } })(), steadyOn = true, raw = [], lead = null;
-  let manual = 0; // 0 = learned from your hand; 1-100 = how much of each wobble to take out, set by hand (as ibisPaint's stabilizer levels)
+  let manual = 0; // 0 = learned from your hand; 1-100 = how much of each wobble to take out, set by hand (a stabilizer level)
   const follow = () => (!steadyOn ? 1 : manual ? Math.max(0.15, 1 - manual / 100 * 0.85) : hand && hand.strokes ? followFor(hand.tremor) : 1);
   const showSteady = () => { $('.vd-steady').textContent = !steadyOn ? 'Steadying off: the line follows your pen exactly.'
     : manual ? 'Steadiness set by hand: the line takes out ' + Math.round((1 - follow()) * 100) + '% of each wobble (slide to 0 to let it learn your hand again).'

@@ -723,6 +723,21 @@ try {
       && /Tokyo is \d+ hours ahead of London/.test(gap) && !net.length && cal === 0,
       [fri.slice(0, 60), day.slice(0, 60), gap.slice(0, 160), net.join(','), cal].join(' | '));
     await D.ctx.close(); }
+  // The refusal object (asked by Void): every "I cannot" says what is missing, to the person and as data to an agent.
+  if (want('refusal object: every "I cannot" names what is missing')) { const R = await fresh(() => { window.__tools = {}; document.modelContext = { registerTool: async (x) => { window.__tools[x.name] = x; } }; });
+    await R.ctx.route(/wikipedia\.org|wiktionary\.org/, (r) => r.fulfill({ status: 404, body: '' }));
+    await R.ask('tell me about zorbleflux', 400);
+    await until(async () => /Missing:/.test(await R.page()), 6000);
+    const pg = await R.page();
+    const agent = await R.p.evaluate(async () => { for (let i = 0; i < 50 && !window.__tools.void_ask; i++) await new Promise((r) => setTimeout(r, 100)); return window.__tools.void_ask ? String(await window.__tools.void_ask.execute({ ask: 'tell me about quuxblarf' })) : 'no tool'; });
+    const obj = (() => { try { return JSON.parse(agent.split('[cannot] ')[1]); } catch (_) { return null; } })();
+    const kept = await R.p.evaluate(() => (window.voidRefusals || []).map((r) => r.id));
+    check('refusal object: every "I cannot" names what is missing: the page says it and where it is noted; the agent door returns the object as data; one id per gap',
+      /don't know this yet/.test(pg) && /Missing: what this is .*Noted as miss:tell-me-about-zorbleflux\./.test(pg)
+      && obj && obj.cannot === true && obj.kind === 'knowledge' && obj.id === 'cannot:knowledge:tell-me-about-quuxblarf'
+      && kept.includes('cannot:knowledge:tell-me-about-zorbleflux'),
+      [pg.slice(0, 200), agent.slice(-200), kept.join(',')].join(' | '));
+    await R.ctx.close(); }
   // The next batch: every ECB currency with the rate's date, a choice between Springfields, a choice between meanings,
   // the same ask again keeps its page, and Esc does one thing at a time.
   if (want("The next batch: every ECB currency with the rate's date, a choice between Springfields, a ")) { const B = await fresh(); const fx = [], summaries = [];

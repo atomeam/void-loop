@@ -6,6 +6,7 @@
 //   node tools/self-context.mjs          write the file
 //   node tools/self-context.mjs --check  exit 1 if the committed file differs from what would be written
 import { openItems } from './frontier.mjs';
+import { isPrivate } from './private.mjs';
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -78,10 +79,15 @@ export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, 
     // the note in brackets is for agents (corrections, checks); the public line keeps only the source's first clause
     rows.push({ state: shipped ? 'shipped' : clip(status.split(/\s/)[0], 20).toLowerCase(), date: clip(date, 10), ask: clip(ask, 120), from: clip(source.replace(/\s*\(.*$/, ''), 120) });
   }
+  // what Void studies stays off the site (tools/private.mjs): self.json is served, and the answer engine reads it
+  const pub = (r) => !isPrivate(r.ask) && !isPrivate(r.from) && !isPrivate(r.subject) && !isPrivate(r.title);
+  if (commits) commits = commits.filter(pub);
+  if (open) open = open.filter(pub);
+  if (building && isPrivate(JSON.stringify(building))) building = null;
   return {
-    about, shipped: rows.filter((r) => r.state === 'shipped'),
+    about, shipped: rows.filter((r) => r.state === 'shipped' && pub(r)),
     // what is still open comes from the frontier, the one build order (cleanup step 4); the inbox keeps the shipped history
-    open: open ? open.map((o) => ({ state: 'open', date: '', ask: clip(o.title, 120), from: clip(o.from, 120) })) : rows.filter((r) => r.state !== 'shipped'),
+    open: open ? open.map((o) => ({ state: 'open', date: '', ask: clip(o.title, 120), from: clip(o.from, 120) })) : rows.filter((r) => r.state !== 'shipped' && pub(r)),
     games: GAMES.filter((g) => skills.includes(g)), minis: minis.filter((m) => m !== 'sample').sort(),
     ...(canon ? { canon } : {}),
     ...(tracks ? { tracks } : {}),
