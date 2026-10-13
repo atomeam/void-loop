@@ -10,10 +10,10 @@
  "features": [
   {
    "id": "creator-start",
-   "theirs": "the character creator opens on one decision with two big finished examples (a realistic style or an anime style) and no form; a category toggle above sets the path; the second screen offers two paths side by side: a detailed studio (badged Beta and Recommended) with one large preview and chips beside it for body type, size, hairstyle, skin-tone swatches and eye colour, or a quick path that starts from four picture cards",
+   "theirs": "the character creator opens on one decision with two big finished examples (a realistic style or an anime style) and no form; a category toggle above sets the path; the second screen offers two paths side by side: a detailed studio (badged Beta and Recommended) with one large preview and chips beside it for body type, size, hairstyle, skin-tone swatches and eye colour, or a quick path that starts from four picture cards; inside the studio a third choice: start from a preset (342 curated looks, tweak anything afterward) or from scratch (every filter yourself)",
    "plus_one": "Void's figure maker opens the same way, pictures not a form, and can be skipped by saying it in words (\"an old fisherman with a grey beard\"); it leads with realistic figures (STANDING: realistic, not cute) that are 3D you can turn and stand next to in VR; every chip answers in the preview at once, and the same controls work by voice inside VR",
    "void": "none",
-   "progress": "2026-10-13: first screen seen (the style picker); second screen seen (studio or quick path; the studio is the one the site steers to)."
+   "progress": "2026-10-13: first screen seen (the style picker); second screen seen (studio or quick path; the studio is the one the site steers to); third screen seen (preset or scratch, 342 presets)."
   },
   {
    "id": "consistency",
@@ -41,7 +41,7 @@
    "theirs": "a subscription plus tokens for images and voice, with upgrade prompts",
    "plus_one": "prices said plainly up front, no pressure prompts; what is fair is taken, what is manipulative is left",
    "void": "none",
-   "progress": "to record: free versus paid limits, token costs, what triggers an upgrade prompt. 2026-10-13: a coin balance (100 on a new account) sits in the header from the first screen, so the token economy is visible before anything is made."
+   "progress": "to record: free versus paid limits, token costs, what triggers an upgrade prompt. 2026-10-13: a coin balance (100 on a new account) sits in the header from the first screen, so the token economy is visible before anything is made. The studio shows a free-pictures allowance shared across all your characters (6 of 6 on a new account)."
   }
  ]
 }
