@@ -2,6 +2,14 @@
 
 Moved word for word from `AGENTS.md` on 2026-10-10 (cleanup step 1), so the front door stays one page. Each line is dated and says why it exists; the old file is `archive/AGENTS.2026-10-10.md`.
 
+## No use is not a reason to throw anything out; there is no skill bloat (owner, 2026-10-13)
+"Remember no one knows about our site yet, so don't throw out skills just because no one uses them; that's a disaster." and
+"There's no such thing as skill bloat to a thing that literally wants to grow to do everything."
+Few or no visitors says nothing about a skill, an experiment or a page while the site is unknown, and the number of skills
+is never a cost to cut: Void grows toward doing everything. Nothing is retired, shelved, merged away or proposed for the
+salvage shelf because people did not use it or because there are many: real use only ever adds (an experiment opened on
+many days becomes a candidate for a core skill, `tools/lab-use.mjs`), it never takes away.
+
 ## What Void studies is for the owner only (owner, 2026-10-13)
 "Void does not need to say what sites it is studying or borrowing from. Fix and remove immediately." and "Void would never
 reveal who it's assimilating and absorbing from to anyone but me." Nothing the site serves or says names a product Void
