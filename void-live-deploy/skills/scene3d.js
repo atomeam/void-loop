@@ -166,14 +166,21 @@ function loop(t) {
 // Shaders compile before a miniature draws, off the main thread where the browser can (KHR_parallel_shader_compile, in
 // Chrome on a real GPU). Compiling them inside the first render froze the whole page for seconds per board (every 3D game
 // on first open, and again on its first move), long enough on some GPUs for the driver to reset and the page to crash.
+// A compile that never settles (a lost context, a starved GPU process) kept a miniature blank for good: the go board and the
+// tally counter never drew on loaded CI runners (2026-10-12/13). Past this bound the first draw compiles what is left itself,
+// a slow first frame instead of none.
+export const COMPILE_BOUND_MS = 6000;
 function warmUp(h) {
   if (h.compiling) return;
   h.compiling = true; h.needsCompile = false;
   const { renderer: r, THREE } = h.E, extra = new THREE.Scene(); // the contact-shadow passes, drawn with materials no mesh in the scene wears
   for (const c of h.contacts) for (const m of c.materials) extra.add(new THREE.Mesh(c.plane.geometry, m));
+  let settled = false;
+  const finish = () => { if (settled) return; settled = true; clearTimeout(bound); uploadTextures(h, () => { h.compiling = false; h.dirty = true; wake(); }); };
+  const bound = setTimeout(() => { console.warn('[miniature ' + h.kind + '] compile still running after ' + COMPILE_BOUND_MS + ' ms: drawing anyway'); finish(); }, COMPILE_BOUND_MS);
   Promise.all([r.compileAsync(h.scene, h.camera), extra.children.length ? r.compileAsync(extra, h.camera, h.scene) : null])
     .catch((e) => console.warn('[miniature ' + h.kind + '] compile', e))
-    .finally(() => uploadTextures(h, () => { h.compiling = false; h.dirty = true; wake(); }));
+    .finally(finish);
 }
 // Textures go to the GPU one per frame before the first draw. The first draw used to upload them all at once: the chess set's
 // nine 2k textures held the main thread for seconds in one task (cleanup step 5, 2026-10-11), the freeze when a 3D game opened.
