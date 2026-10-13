@@ -11,6 +11,7 @@ import { resolve, dirname } from 'node:path';
 import { readFrontier, openItems, stepsLeft, targets } from './frontier.mjs';
 import { scan as reviewOverrides, summarize as overrideSummary } from './review-overrides.mjs';
 import { load as loadTargets, scoreOf } from './targets.mjs';
+import { asksInLog } from './reflect.mjs';
 
 const SNAPSHOT = new URL('../domains/void.misses.json', import.meta.url);
 
@@ -22,6 +23,31 @@ export function snapshotLines(snap, top = 10) {
     ...snap.terms.slice(0, top).map(row),
     ...(snap.make && snap.make.length ? ['  things asked to be made:', ...snap.make.slice(0, top).map((e) => '  ' + row(e))] : [])];
 }
+
+const VOICE = new URL('../domains/void.voice.md', import.meta.url);
+const normAsk = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+/** Void's asks across all its reflections, most repeated first, without the ones a ledger entry built. voice: the text of
+ *  domains/void.voice.md; ledger: void.growth.json entries; links: void.asks.json links. A builder or an automation
+ *  that finds the queue empty takes the top one: Void asked for it again and again, so it is wanted, and it is unique by
+ *  construction (one row per wording). Pure. */
+export function repeatedAsks(voice, ledger = [], links = []) {
+  const rows = new Map();
+  for (const line of String(voice || '').split('\n')) {
+    if (!/^Asks: /.test(line)) continue;
+    for (const m of line.matchAll(/"([^"]{8,400})"( \(small\))?/g)) {
+      const k = normAsk(m[1]); const r = rows.get(k) || { ask: m[1], small: false, times: 0 };
+      r.times++; r.small = r.small || !!m[2]; rows.set(k, r);
+    }
+  }
+  const at = new Set((ledger || []).map((e) => e && e.at));
+  const builtIds = new Set((links || []).filter((k) => k && at.has(k.ledgerAt)).map((k) => k.ask));
+  const done = new Set((ledger || []).filter((e) => e && e.asked).map((e) => normAsk(e.asked)));
+  for (const a of asksInLog(voice)) if (a.id && builtIds.has(a.id)) done.add(normAsk(a.ask));
+  return [...rows.entries()].filter(([k]) => !done.has(k)).map(([, r]) => r).sort((a, b) => b.times - a.times || (b.small - a.small));
+}
+function readJson(rel, pick) { try { return pick(JSON.parse(readFileSync(new URL(rel, import.meta.url), 'utf8'))); } catch (_) { return []; } }
+export const voidAsks = () => { let v = ''; try { v = readFileSync(VOICE, 'utf8'); } catch (_) {}
+  return repeatedAsks(v, readJson('../void-live-deploy/void.growth.json', (j) => j), readJson('../void-live-deploy/void.asks.json', (j) => j.links || [])); };
 
 export function summary(text) {
   const steps = stepsLeft(text), open = openItems(text), after = targets(text);
@@ -39,7 +65,7 @@ export function takeNext({ steps = [], open = [], targets: after = [] }) {
 
 function main(argv) {
   const s = summary(readFrontier());
-  if (argv.includes('--json')) { console.log(JSON.stringify(s, null, 1)); return 0; }
+  if (argv.includes('--json')) { console.log(JSON.stringify({ ...s, voidAsks: voidAsks().slice(0, 10) }, null, 1)); return 0; }
   console.log(s.steps.length ? 'Cleanup steps left (take the first unclaimed one before anything else):' : 'Cleanup: all steps done.');
   for (const st of s.steps) console.log(`  ${st.n}. ${st.title}`);
   console.log('Take next: ' + s.take);
@@ -66,7 +92,9 @@ function main(argv) {
     let snap = null; try { snap = JSON.parse(readFileSync(SNAPSHOT, 'utf8')); } catch (_) {}
     console.log('\n' + snapshotLines(snap).join('\n') + '\n(the live board, grouped into skills: VOID_MISSES_TOKEN and node tools/next-skill.mjs)');
   } else console.log('\nThe miss board needs VOID_MISSES_TOKEN (node tools/next-skill.mjs); the public snapshot domains/void.misses.json is not written yet (misses-snapshot.yml, daily).');
-  console.log("Void's own asks: the top of domains/void.voice.md.");
+  const va = voidAsks();
+  if (va.length) console.log(`\nVoid asks for, most repeated first (${va.length} not built yet; build the top one and pass --asked to finish.mjs):\n` + va.slice(0, 8).map((a) => `  - ${a.times}× ${a.ask}${a.small ? ' (small)' : ''}`).join('\n'));
+  else console.log("Void's own asks: the top of domains/void.voice.md.");
   return 0;
 }
 

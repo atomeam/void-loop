@@ -335,92 +335,76 @@
   }
  ],
  "building": {
-  "at": "2026-10-12T16:51:00Z",
-  "date": "2026-10-12",
-  "by": "builder (claude)",
-  "item": "Skills that spread between Voids",
-  "what": "offering: \"offer my morning as Sam\" and \"routines from others\", behind the owner's review."
+  "at": "2026-10-13T05:44:47Z",
+  "date": "2026-10-10",
+  "by": "claude",
+  "item": "Bring someone into your Void",
+  "what": "the first piece (one Durable Object that relays stage changes between two tabs, the second visitor's cursor shown as a presence), invite links made by a signed-in member. Shipped 2026-10-10: share-worker/ (the ShareRoom "
  },
  "commits": [
   {
-   "at": "2026-10-12T21:03:31Z",
-   "subject": "Void's will makes way when its job sits untouched; the bench keeps checked false alarms"
+   "at": "2026-10-13T05:46:46Z",
+   "subject": "Regenerate skills/families.json for the shared-text browser check"
   },
   {
-   "at": "2026-10-12T20:48:50Z",
-   "subject": "Growth card: the tree right under the title, the week's words after it"
+   "at": "2026-10-13T05:44:47Z",
+   "subject": "Shared Void: a sticky's words edit live between tabs (frontier #11)"
   },
   {
-   "at": "2026-10-12T20:20:05Z",
-   "subject": "Spotter: 1 check(s) healed with no revert after 8ffdaaad098db126780c5a484fb5364ae1ec839b (tools/flakes.json)"
+   "at": "2026-10-13T05:22:40Z",
+   "subject": "The owner's words, spelled right: the message first, not his typos"
   },
   {
-   "at": "2026-10-12T20:04:50Z",
-   "subject": "Spotter: 1 check(s) healed with no revert after bed19c6c6f8e26631a69abca2525f44b9f5555d3 (tools/flakes.json)"
+   "at": "2026-10-13T05:17:26Z",
+   "subject": "The site credits the owner without quoting his messages"
   },
   {
-   "at": "2026-10-12T19:48:49Z",
-   "subject": "Void's will: zero lies in its reasons, refreshed every three hours in CI, and no want for what it already does (add milk)"
+   "at": "2026-10-13T04:49:35Z",
+   "subject": "Regenerate skills/families.json for the intent skill's new bench asks"
   },
   {
-   "at": "2026-10-12T19:46:10Z",
-   "subject": "Void's review: a handler the loop only defines is not a query per turn"
+   "at": "2026-10-13T04:45:18Z",
+   "subject": "Plans without a day: \"plan my move\" lays out the steps (frontier #10)"
   },
   {
-   "at": "2026-10-12T19:43:32Z",
-   "subject": "The owner reviews offered routines in Void itself (frontier #13)"
+   "at": "2026-10-13T04:18:55Z",
+   "subject": "Skill families with ratings earned from evidence (asked by Void)"
   },
   {
-   "at": "2026-10-12T19:42:27Z",
-   "subject": "asked by Void: the growth card shows skill velocity (this week against the week before, and the trend)"
+   "at": "2026-10-13T03:53:20Z",
+   "subject": "Void's will made real: it hears what came of its asks (14 of 56 built, on evidence)"
   },
   {
-   "at": "2026-10-12T19:37:33Z",
-   "subject": "The closer read sees what changed code imports and calls (one hop of related files); the bench names its false alarms"
+   "at": "2026-10-13T03:51:30Z",
+   "subject": "Void's closer read: no \"capture group undefined\" claims on regexes it cannot count (#590)"
   },
   {
-   "at": "2026-10-12T18:43:09Z",
-   "subject": "Take someone's shared routine into your own Void (frontier #13)"
+   "at": "2026-10-13T03:18:39Z",
+   "subject": "Asked by Void: thicker 3D strokes, and a spatial sketch printed as a watertight STL"
   },
   {
-   "at": "2026-10-12T17:43:07Z",
-   "subject": "Calendar check: ask for a dentist nine days ahead, not a fixed Oct 12"
+   "at": "2026-10-13T03:12:28Z",
+   "subject": "Make it my backdrop: your drawing behind your Void, kept with your passkey (VR Void step 3)"
   },
   {
-   "at": "2026-10-12T16:51:00Z",
-   "subject": "Offer a routine to other Voids, behind the owner's review (frontier #13)"
+   "at": "2026-10-13T02:44:09Z",
+   "subject": "3D boards draw even when a shader compile stalls"
   },
   {
-   "at": "2026-10-12T16:11:25Z",
-   "subject": "Arena: Void played itself again; the records and the self-play champion"
+   "at": "2026-10-13T02:37:40Z",
+   "subject": "Draw: Enter VR, paint in the air with a controller (VR Void step 2)"
   },
   {
-   "at": "2026-10-12T16:09:36Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
+   "at": "2026-10-13T02:25:19Z",
+   "subject": "VR Void: the owner's goal recorded, and the path to it on the frontier"
   },
   {
-   "at": "2026-10-12T16:05:17Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
+   "at": "2026-10-13T02:20:01Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after 76a8cf32bbd73a0c352947c6e91912fd7ddfded7 (tools/flakes.json)"
   },
   {
-   "at": "2026-10-12T15:54:20Z",
-   "subject": "3D suite: a countdown calendar still loading fails its own check, not the whole run"
-  },
-  {
-   "at": "2026-10-12T15:04:34Z",
-   "subject": "3D checks: the phone check reports what it saw; one side card per lifted board"
-  },
-  {
-   "at": "2026-10-12T14:32:12Z",
-   "subject": "Spotter: 1 check(s) healed with no revert after c8268d7db664bf342549a3500ecb0b1feea5c5b2 (tools/flakes.json)"
-  },
-  {
-   "at": "2026-10-12T14:09:25Z",
-   "subject": "Self-play card: the change day over day, from a history the daily run keeps"
-  },
-  {
-   "at": "2026-10-12T13:20:09Z",
-   "subject": "Document card: 'Map it' lays a document's headings out as a tree"
+   "at": "2026-10-13T02:14:14Z",
+   "subject": "From a video the owner shared by Duncan Rogoff (motion design with Claude): a house-style file that learns from plain-words notes, stills ch"
   }
  ]
 }

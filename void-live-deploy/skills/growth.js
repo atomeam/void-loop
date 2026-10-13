@@ -28,7 +28,7 @@ export function weekOf(text) { return WEEK_RE.test(CLEAN(text)); }
 export function ordered(list, kind) {
   const t = (e) => { const n = Date.parse(e && e.at); return isNaN(n) ? -Infinity : n; };
   return (Array.isArray(list) ? list : []).filter((e) => e && typeof e.what === 'string' && (!kind || e.kind === kind))
-    .map((e, i) => [e, i]).sort((a, b) => t(b[0]) - t(a[0]) || b[1] - a[1]).map((p) => ({ ...p[0], what: publicWhat(p[0].what) })); // shown without quotes of the owner's messages
+    .map((e, i) => [e, i]).sort((a, b) => t(b[0]) - t(a[0]) || b[1] - a[1]).map((p) => ({ ...p[0], what: publicWhat(p[0].what) })).filter((e) => e.what); // shown without quotes of the owner's messages or what Void studies
 }
 
 /** { total, since, byKind: { grow: n, … } } */
