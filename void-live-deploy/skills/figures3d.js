@@ -31,6 +31,7 @@ export const MOTION_KEY = 'a2m.void.motion.v1';
 const PALETTE = [0x9d8cff, 0x6ee7c8, 0xffa98a, 0x7cc4ff, 0xff8fc7, 0xc6f27a];
 const R = 28;            // body radius in CSS px: a figure is about 80 px tall on the stage
 const SPEED = 42;        // px per second while wandering
+const MEET_WALK_S = 20;  // a pair that has not reached each other in this many seconds gives up the meeting
 const NOTICE = 190;      // the cursor is "near" inside this many px
 const MAX_ZOOM = 6;
 const PAD = R * 1.3 + 42; // how far a goal sits from any card, just outside where cards start to push
@@ -105,8 +106,9 @@ export function stepFigure(f, dt, world, rng = Math.random) {
     // apart, then the interaction's own move on a beat; when the time runs out (or the other is gone) each goes its own way
     if (f.together) {
       const tg = f.together, o = (world.others || []).find((x) => x && x.id === tg.id && !x.chasedOff && !x.eaten && !x.leaving);
-      tg.t -= dt;
-      if (!o || tg.t <= 0) { f.together = null; f.mode = 'idle'; f.modeT = 0.8 + rng() * 1.2; f.act = 'look'; }
+      // the meeting's time runs once they are together, not while they walk there (a pair across the stage used to part short
+      // of each other); one that cannot reach the other within MEET_WALK_S seconds gives up
+      if (!o || tg.t <= 0 || (tg.walk || 0) > MEET_WALK_S) { f.together = null; f.mode = 'idle'; f.modeT = 0.8 + rng() * 1.2; f.act = 'look'; }
       else {
         f.mode = 'together';
         const dx = o.x - f.x, dy = o.y - f.y, d = Math.hypot(dx, dy) || 1;
@@ -115,8 +117,9 @@ export function stepFigure(f, dt, world, rng = Math.random) {
         // both walk at once, so each aims for a body apart and slows as it gets there (and steps back if too close)
         const want = clamp((d - R * 2.2) * 2.5, -SPEED, SPEED * 1.2), a = Math.min(1, dt * 4);
         f.vx += (dx / d * want - f.vx) * a; f.vy += (dy / d * want - f.vy) * a;
-        if (d <= R * 2.6) {
-          tg.beat -= dt;
+        if (d > R * 2.6) tg.walk = (tg.walk || 0) + dt;
+        else {
+          tg.t -= dt; tg.beat -= dt;
           if (tg.beat <= 0) {
             tg.n = (tg.n || 0) + 1;
             if (tg.kind === 'spar') { tg.beat = 0.7; f.hop = 1; if (tg.n % 2) f.spin = 1; }
@@ -310,7 +313,7 @@ export function mountStage3D() {
 
 function debugState() {
   return { mounted: !!stage, canvas: !!document.getElementById('void-3d'), animating: !!(stage && stage.raf), still: motionStill(), zoom: ui.zoom, zoomTo: ui.zoomTo,
-    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null, kindOf: f.spec.kindOf || null, detail: f.spec.detail | 0, tris: trisOf(f), seed: f.spec.seed ?? null, nature: f.nature || null, climate: f.climate || null, held: !!f.brain.held, flying: !!f.toss })), grab: ui.grab ? { id: ui.grab.f.brain.id, moved: ui.grab.moved } : null };
+    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, together: f.brain.together ? f.brain.together.kind + ' ' + f.brain.together.t.toFixed(1) : null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null, kindOf: f.spec.kindOf || null, detail: f.spec.detail | 0, tris: trisOf(f), seed: f.spec.seed ?? null, nature: f.nature || null, climate: f.climate || null, held: !!f.brain.held, flying: !!f.toss })), grab: ui.grab ? { id: ui.grab.f.brain.id, moved: ui.grab.moved } : null };
 }
 
 // --- the void sprite: a soft, glossy little blob with big shiny eyes, rosy cheeks, a glowing antenna bulb and a wispy tail ---
