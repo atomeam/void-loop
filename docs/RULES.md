@@ -2,11 +2,12 @@
 
 Moved word for word from `AGENTS.md` on 2026-10-10 (cleanup step 1), so the front door stays one page. Each line is dated and says why it exists; the old file is `archive/AGENTS.2026-10-10.md`.
 
-## Credit the owner, don't quote his messages on the site (owner, 2026-10-13)
-"why are you having Void quote my mispelled words?" Anything the site shows (a growth-ledger line, a card, a reflection's
-context) credits the owner ("asked by the owner") and says what he asked for in correct words; it never pastes his message.
-The growth card and "look what I made" already leave quotes out of older ledger lines (`skills/growth-tree.js` `publicWhat`).
-His exact words still go where a rule needs them in his name (this file, `STANDING.md`), which the site does not show.
+## The owner's words, spelled right; the message over the credit (owner, 2026-10-13)
+"Why are you having Void quote my misspelled words?" and "The message is more important than crediting me, and it's definitely
+uncool to attempt to ridicule me." When anything in the repo or on the site carries what the owner said, it carries his
+meaning in correct spelling and punctuation, never his typos; what he asked for comes first, the credit after. Older growth-
+ledger lines that pasted his typos are shown corrected (`skills/growth-tree.js` `OWNER_WORDS`, `publicWhat`); the ledger
+itself is append-only and stays as written.
 
 ## B.I.T.E. on every run (owner, 2026-10-11)
 

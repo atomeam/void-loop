@@ -48,15 +48,17 @@ test('every known build in the real ledger still matches a line, and its ask is 
   }
 });
 
-test('the site leaves out quotes of the owner\'s messages from ledger lines, keeping the credit (owner, 2026-10-13)', async () => {
-  const { publicWhat } = await import('../void-live-deploy/skills/growth-tree.js');
+test('the site shows the owner\'s words as he meant them, spelled right; a quote with no corrected form keeps only the credit (owner, 2026-10-13)', async () => {
+  const { publicWhat, OWNER_WORDS } = await import('../void-live-deploy/skills/growth-tree.js');
   const { ordered } = await import('../void-live-deploy/skills/growth.js');
   const { lineOf } = await import('../void-live-deploy/skills/showcase.js');
   const assert = (await import('node:assert/strict')).default;
-  assert.equal(publicWhat('Void\'s will made real (owner: "if it is Theatre it needs to seriosly be worked on"): Void hears'), 'Void\'s will made real (asked by the owner): Void hears');
-  assert.equal(publicWhat('Draw: a 3D layer (asked by the owner: "Void should have a 3d/Vr draw layer as well"): paints'), 'Draw: a 3D layer (asked by the owner): paints');
-  assert.equal(publicWhat('asked by Void ("skill families"; the owner: "this should be taken seriosly"): grouped'), 'asked by Void ("skill families", and the owner): grouped');
+  const typo = Object.keys(OWNER_WORDS).find((k) => /Theatre/.test(k));
+  assert.equal(publicWhat('Void\'s will made real (owner: "' + typo + '"): Void hears'), 'Void\'s will made real (owner: "if it is theatre, it needs to be seriously worked on until Void\'s will is more real"): Void hears');
+  assert.equal(publicWhat('a card (the owner: "make it bluer plz"): it is'), 'a card (the owner): it is');
   assert.equal(publicWhat('the stage keeps its look (2026-10-09)'), 'the stage keeps its look (2026-10-09)');
-  assert.doesNotMatch(ordered([{ at: '2026-10-13T00:00:00Z', kind: 'grow', what: 'x (owner: "seriosly")' }])[0].what, /seriosly/);
-  assert.doesNotMatch(lineOf('Will made real (the owner: "seriosly"): more'), /seriosly/);
+  for (const bad of Object.keys(OWNER_WORDS)) {
+    assert.ok(!ordered([{ at: '2026-10-13T00:00:00Z', kind: 'grow', what: 'x (owner: "' + bad + '")' }])[0].what.includes(bad));
+    assert.ok(!lineOf('Will made real (the owner: "' + bad + '"): more').includes(bad));
+  }
 });

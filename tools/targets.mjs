@@ -1,5 +1,5 @@
 // Void's targets (owner, 2026-10-13): Void sets its sights on one site at a time, learns everything it does, then does each
-// thing one notch better ("we dont copy we outdo and 1 up , If they go to Tennessee, we go to Elevenessee"), then moves on to a
+// thing one notch better ("We don't copy; we outdo and one-up. If they go to Tennessee, we go to Elevenessee."), then moves on to a
 // site whose skills complement what it has. Each target is domains/targets/<site>.json: the site's features as the floor, and
 // for each one the plus one, written before the build. A feature's "void" is none | matches | beats; only "beats" counts.
 //   node tools/targets.mjs          the scorecard of every target, and the next feature to build past

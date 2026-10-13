@@ -192,12 +192,19 @@ const WEEK_LABEL = { grow: ['new thing I can do', 'new things I can do'], build:
 const WEEK_ORDER = ['grow', 'build', 'fix', 'retire', 'finding', 'idea'];
 // an entry's first plain phrase: up to its first colon, full stop, semicolon or bracket when that leaves enough to read, no
 // Markdown, clipped
-/** a ledger line as the site shows it: quotes of the owner's own messages are left out (the owner, 2026-10-13, asked why the
- *  site was quoting his misspelled words); the credit stays ("asked by the owner"). The ledger itself is never changed. Pure. */
+/** the owner's words as some older ledger lines quoted them, and as the site shows them: his meaning, spelled right (the
+ *  owner, 2026-10-13: "the message is more important than crediting me", and pasting his typos read as ridicule). */
+export const OWNER_WORDS = {
+  'Void should have a 3d/Vr draw layer as well': 'Void should have a 3D/VR draw layer as well',
+  'we are working towards fully working Vr Void': 'we are working towards a fully working VR Void',
+  'if it is Theatre it needs to seriosly be worked on until Voids Will is more real': 'if it is theatre, it needs to be seriously worked on until Void\'s will is more real',
+  'this should be taken seriosly': 'this should be taken seriously',
+};
+/** a ledger line as the site shows it: the owner's words as he meant them, spelled right (OWNER_WORDS); a quote of his that
+ *  has no corrected form is left out and only the credit stays, so a typo never reaches the page. The ledger is never changed. Pure. */
 export function publicWhat(what) {
-  return String(what || '')
-    .replace(/\(\s*(?:the\s+)?owner(?:,\s*\d{4}-\d\d-\d\d)?:\s*"[^"]*"(?:\s*;\s*(?:the\s+)?owner(?:,\s*\d{4}-\d\d-\d\d)?:\s*"[^"]*")*\s*\)/gi, '(asked by the owner)') // a whole parenthesis of quotes
-    .replace(/([;,]\s*)?\b(?:the\s+)?owner(?:,\s*\d{4}-\d\d-\d\d)?:\s*"[^"]*"/gi, (m, sep) => (sep ? ', and the owner' : 'the owner')) // a quote inside other words
+  const q = /((?:\bthe\s+)?\bowner(?:,\s*\d{4}-\d\d-\d\d)?:\s*)"([^"]*)"/gi;
+  return String(what || '').replace(q, (m, lead, said) => (OWNER_WORDS[said] ? lead + '"' + OWNER_WORDS[said] + '"' : lead.replace(/:\s*$/, '')))
     .replace(/\s{2,}/g, ' ');
 }
 export function plainly(what, n = 90) {
