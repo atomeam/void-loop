@@ -72,6 +72,13 @@ def gather(cap=60, with_done=False):
             title = re.sub(r"\s*\(`[^)]*\)\s*", " ", m.group(1)).rstrip(":. ").strip()
             src = re.search(r"\(`([^`]+)`([^)]*)\)", m.group(1) + " " + m.group(2))
             why = re.sub(r"\*\*|`", "", re.sub(r"^\s*\(`[^)]*\)\s*:?\s*", "", m.group(2))).strip(" :")
+            # an item marked Live is built: the want is its next step, not the thing it already is (2026-10-13: the will chose
+            # "become a public MCP server" an hour after the frontier said it was live); live with no next step is no want
+            if re.search(r"\*\*Live\*\*", m.group(2)):
+                nxt = re.search(r"\bNext:\s*(.+?)(?:\.\s|\.?$)", re.sub(r"\*\*|`", "", m.group(2)))
+                if not nxt:
+                    continue
+                title, why = nxt.group(1).strip()[:1].upper() + nxt.group(1).strip()[1:], "next step for: " + title
             n += 1
             cands.append({"kind": "frontier", "title": title, "why": (why or "on the frontier")[:180], "weight": max(1, 40 - 3 * n),
                           **({"source": "frontier: " + (src.group(1) + src.group(2)).strip()} if src else {})})
