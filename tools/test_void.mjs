@@ -2369,11 +2369,14 @@ try {
   if (want("Void's will tells no lies")) { const W = await fresh();
     await W.ctx.route(/\/api\/will(?:\?|$)/, (rt) => rt.fulfill(json({ at: '2026-10-12T15:41:00Z', wants: [
       { kind: 'people asked', title: 'learn to handle "add milk"', i_want: 'I want to learn how to handle requests like \'add milk\'.', because: 'It is the most frequent thing people are asking me to do.', evidence: 'asked 9 times, last 2026-10-11' },
-      { kind: 'frontier', title: 'Tasks that keep running', i_want: 'I want to become tasks that keep running even after you leave.', because: 'It joins my old parts into a persistent system.', evidence: 'open on the frontier' }] })));
+      { kind: 'frontier', title: 'Tasks that keep running', i_want: 'I want to become tasks that keep running even after you leave.', because: 'It joins my old parts into a persistent system.', evidence: 'open on the frontier' },
+      // a fact cut at 200 characters right after a word: the same text with a trailing space must not show twice (seen live 2026-10-13)
+      { kind: 'upgrade myself', title: 'answer and fix with a stronger model', i_want: 'I want to answer and fix with a stronger model.', because: 'better fixes (usage estimate); the free model fell short', evidence: 'better fixes (usage estimate); the free model fell short ' }] })));
     await W.ask('what do you want to become', 1500);
     const t = await until(async () => { const x = await W.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); return /add milk/.test(x) ? x : ''; }, 6000) || '';
-    check("Void's will tells no lies: a reason that ranks or counts shows the recorded fact; a plain reason stays in Void's words",
-      !/most frequent/.test(t) && /asked 9 times, last 2026-10-11/.test(t) && /It joins my old parts into a persistent system/.test(t) && !W.errors.length, JSON.stringify({ t: t.slice(0, 400), errors: W.errors }));
+    check("Void's will tells no lies: a reason that ranks or counts shows the recorded fact; a plain reason stays in Void's words; a reason and its fact that differ only by a trailing space show once",
+      !/most frequent/.test(t) && /asked 9 times, last 2026-10-11/.test(t) && /It joins my old parts into a persistent system/.test(t) && !W.errors.length
+      && (t.match(/the free model fell short/g) || []).length === 1, JSON.stringify({ t: t.slice(0, 600), errors: W.errors }));
     await W.ctx.close(); }
   // A will job nobody touched in three days makes way: set aside (kept, with why), and the newest top want is queued
   if (want("Void's will makes way when its job sits untouched")) {
