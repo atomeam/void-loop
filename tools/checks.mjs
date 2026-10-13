@@ -78,6 +78,8 @@ for (const [name, file] of [
   ['learn', 'learn.test.mjs'],
   ['learn-draft', 'learn-draft.test.mjs'],
   ['learn-e2e', 'learn.e2e.test.mjs'],
+  ['refusal', 'refusal.test.mjs'],
+  ['private', 'private.test.mjs'],
   ['model-bench', 'model-bench.test.mjs'],
   ['model-switch', 'model-switch.test.mjs'],
   ['bench-route', 'bench-route.test.mjs'],
@@ -128,6 +130,7 @@ for (const [name, file] of [
   ['skills-index', 'skills-index.test.mjs'],
   ['heavy', 'heavy.test.mjs'],
   ['clef-probe', 'clef-probe.test.mjs'],
+  ['route-bench', 'route-bench.test.mjs'],
   ['families', 'families.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);

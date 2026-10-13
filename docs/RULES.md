@@ -2,6 +2,15 @@
 
 Moved word for word from `AGENTS.md` on 2026-10-10 (cleanup step 1), so the front door stays one page. Each line is dated and says why it exists; the old file is `archive/AGENTS.2026-10-10.md`.
 
+## What Void studies is for the owner only (owner, 2026-10-13)
+"Void does not need to say what sites it is studying or borrowing from. Fix and remove immediately." and "Void would never
+reveal who it's assimilating and absorbing from to anyone but me." Nothing the site serves or says names a product Void
+measures itself against or learns from: not the growth card, "look what I made", Void's reflections, self.json, nor code
+comments in served files. The deploy filters the served ledger (`tools/public-ledger.mjs`) and self.json
+(`tools/self-context.mjs`) through `tools/private.mjs`, which is never served; `tools/private.test.mjs` fails if a served
+line names one. New work never names them in ledger lines, commit messages, PR titles or served code: say "the drawing
+target" or the feature, not the product.
+
 ## The owner's words, spelled right; the message over the credit (owner, 2026-10-13)
 "Why are you having Void quote my misspelled words?" and "The message is more important than crediting me, and it's definitely
 uncool to attempt to ridicule me." When anything in the repo or on the site carries what the owner said, it carries his

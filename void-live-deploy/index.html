@@ -2260,10 +2260,25 @@ say('nothing selected to remove');
       }
     }
     let agentRuns = 0; // > 0 while a visiting agent's WebMCP call is being answered: a miss then is tagged, so Void's learning can tell
+    // Every "I cannot" carries what is missing (lib/refusal.js, asked by Void): the page shows one line under the answer,
+    // the event `void-refusal` and window.voidRefusals hold the object, and the agent door returns it with its answer.
+    const refusalReady = import('/lib/refusal.js').catch(() => null);
+    const refusals = []; window.voidRefusals = refusals;
     function reportMiss(ask, fallback) {
       try {
         fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback, ...(agentRuns > 0 ? { origin: 'agent' } : {}) }), keepalive: true }).catch(() => {});
       } catch (_) {}
+      const pg = vpageEl;
+      return refusalReady.then((m) => {
+        if (!m) return null;
+        const r = m.refusalOf(ask, fallback);
+        refusals.push(r); if (refusals.length > 20) refusals.shift();
+        window.dispatchEvent(new CustomEvent('void-refusal', { detail: r }));
+        if (pg && pg === vpageEl && /^(knowledge|skill|calc)$/.test(r.kind) && !pg.querySelector('.refusal')) {
+          const d = document.createElement('div'); d.className = 'src refusal'; d.textContent = m.refusalLine(r); pg.appendChild(d);
+        }
+        return r;
+      }).catch(() => null);
     }
     stage.addEventListener('pointerdown', (e) => { if (e.target !== stage) return; if (worldCur && worldCur.inst) { if (!worldCur.gesture) { worldCur.gesture = true; worldGesture(e); } } else closePage(); });
 
@@ -4999,7 +5014,7 @@ say('nothing selected to remove');
       if (coreA.parseGatedAsk(ask)) return 'Sends, bookings and spends are for the person at the screen, asked by hand.';
       if (wantsBoard(ask.toLowerCase())) return 'That one is for the person at the screen, asked by hand.';
       await skillsReady;
-      const before = JSON.stringify(things), pageBefore = vpageEl;
+      const before = JSON.stringify(things), pageBefore = vpageEl, refusedBefore = refusals.length;
       await handle(ask);
       let text = '';
       for (let i = 0; i < 40; i++) {
@@ -5011,9 +5026,12 @@ say('nothing selected to remove');
         if (!pg && JSON.stringify(things) !== before) break;
         await new Promise((r) => setTimeout(r, 150));
       }
-      if (text) return text.slice(0, 4000);
+      // a refusal during this ask goes back as data, so the agent knows what is missing, not only that something is
+      if (/don.t know this yet|couldn.t find|isn.t connected/i.test(text)) for (let i = 0; i < 10 && refusals.length === refusedBefore; i++) await new Promise((r) => setTimeout(r, 100));
+      const cannot = refusals.length > refusedBefore ? '\n[cannot] ' + JSON.stringify(refusals[refusals.length - 1]) : '';
+      if (text) return text.slice(0, 4000) + cannot;
       const now = Object.values(things).map((t) => t.kind);
-      return JSON.stringify(things) !== before ? 'Done. On the stage now: ' + (now.join(', ') || 'nothing') + '.' : (whisper.textContent || 'Done.');
+      return (JSON.stringify(things) !== before ? 'Done. On the stage now: ' + (now.join(', ') || 'nothing') + '.' : (whisper.textContent || 'Done.')) + cannot;
     }
     (async () => {
       const mc = document.modelContext || navigator.modelContext;

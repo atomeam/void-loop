@@ -201,7 +201,7 @@ export const OWNER_WORDS = {
   'this should be taken seriosly': 'this should be taken seriously',
 };
 /** a ledger line as the site shows it: the owner's words as he meant them, spelled right (OWNER_WORDS); a quote of his that
- *  has no corrected form is left out and only the credit stays, so a typo never reaches the page. The ledger is never changed. Pure. */
+ *  has no corrected form is left out and only the credit stays, so a typo never reaches the page. (What Void studies is left out before the ledger is served: tools/public-ledger.mjs.) The ledger is never changed. Pure. */
 export function publicWhat(what) {
   const q = /((?:\bthe\s+)?\bowner(?:,\s*\d{4}-\d\d-\d\d)?:\s*)"([^"]*)"/gi;
   return String(what || '').replace(q, (m, lead, said) => (OWNER_WORDS[said] ? lead + '"' + OWNER_WORDS[said] + '"' : lead.replace(/:\s*$/, '')))
