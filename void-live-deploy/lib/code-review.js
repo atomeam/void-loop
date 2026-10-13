@@ -403,6 +403,8 @@ const RULES = [
     'while True: pass spins forever at full speed, using a whole CPU core and never stopping. Wait on something (time.sleep, an event, input) or add a condition that ends the loop.'],
   // a typed array (Float32Array, Uint8Array...) sorts numerically with no compare, so a receiver declared as one just above is not a finding
   ['sort-no-compare', 'style', JS, (m, r, x) => {
+    // what is always a list of strings sorts right as text: Object.keys, a directory listing, a split, .map(String)
+    m = m.replace(/(?:Object\.(?:keys|getOwnPropertyNames)\s*\((?:[^()]|\([^()]*\))*\)|\breaddir(?:Sync)?\s*\((?:[^()]|\([^()]*\))*\)|\.split\s*\((?:[^()]|\([^()]*\))*\)|\.map\s*\(\s*String\s*\))\s*\.sort\s*\(\s*\)/g, ' ');
     if (!/\.sort\s*\(\s*\)/.test(m)) return false;
     const recv = /([\w$]+)\s*\.sort\s*\(\s*\)/.exec(m);
     return !(recv && new RegExp('\\b(?:const|let|var)\\s+' + recv[1].replace(/\$/g, '\\$') + '\\s*=\\s*new\\s+(?:Float(?:32|64)|Int(?:8|16|32)|Uint(?:8|16|32)|Uint8Clamped|Big(?:Int|Uint)64)Array\\b').test(x.prev() + '\n' + m));
