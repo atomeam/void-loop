@@ -1,0 +1,15 @@
+{
+ "site": "Candy.ai",
+ "kind": "AI companion: a character you design, chat with, and get pictures and voice from",
+ "chosen": "2026-10-13",
+ "why": "the owner took a month's subscription to study it for Void: character consistency, memory, voice, a creator that turns choices into a character, and how a big consumer AI product charges. Notes stay on features and mechanics only (this repo is public).",
+ "source": ["the owner's own account, screens he shares"],
+ "rule": "Elevenessee: the target's feature is the floor, not the blueprint. Void never ships its copy of X; it ships X plus one notch, and the plus one is written down before the build starts. What is fair is taken; what is manipulative is left.",
+ "features": [
+  { "id": "creator-start", "theirs": "the character creator opens on one decision with two big finished examples (a realistic style or an anime style) and no form; a category toggle above sets the path", "plus_one": "Void's figure maker opens the same way, pictures not a form, and can be skipped by saying it in words (\"an old fisherman with a grey beard\"); it leads with realistic figures (STANDING: realistic, not cute) that are 3D you can turn and stand next to in VR", "void": "none", "progress": "2026-10-13: first screen seen (the style picker)." },
+  { "id": "consistency", "theirs": "the same character looks and behaves the same across many images and weeks of chat", "plus_one": "one consistent 3D figure on the stage and in VR, not a series of flat pictures", "void": "none", "progress": "to test: the same character in 10 scenes; where the face or details drift" },
+  { "id": "memory", "theirs": "the character remembers what you told it", "plus_one": "memory you can open, correct and delete, with what it recalls shown, not hidden", "void": "none", "progress": "to test: 5 facts told on day 1, checked on days 3, 7 and 14" },
+  { "id": "voice", "theirs": "voice messages and calls with the character", "plus_one": "a figure that speaks in VR, in the room with you", "void": "none", "progress": "to test: latency, emotion, interruptions" },
+  { "id": "pricing", "theirs": "a subscription plus tokens for images and voice, with upgrade prompts", "plus_one": "prices said plainly up front, no pressure prompts; what is fair is taken, what is manipulative is left", "void": "none", "progress": "to record: free versus paid limits, token costs, what triggers an upgrade prompt" }
+ ]
+}
