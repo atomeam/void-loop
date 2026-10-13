@@ -3624,6 +3624,9 @@ say('nothing selected to remove');
       }).catch(() => { share = null; say("sharing can't start in this browser"); });
     }
     document.addEventListener('void:share-join', (e) => shareJoin(e && e.detail));
+    // For the owner only (owner's choice, 2026-10-13; Void asked for it five times): when the newest checks or deploy on main failed,
+    // the status card opens by itself (skills/status.js autoOpen). Visitors keep the blank stage; an ask in the address bar goes first.
+    if (ownerToken() && !PAGE && !new URLSearchParams(location.search).get('q')) skillsReady.then(() => import('/skills/status.js')).then((m) => m.autoOpen(() => runLearnedSkills('void status', 'void status'))).catch(() => {});
     { const r = new URLSearchParams(location.search).get('with'); if (r && /^[A-Za-z0-9_-]{16}\.[A-Za-z0-9_-]{16}$/.test(r) && !PAGE) skillsReady.then(() => shareJoin(r)); }
 
     // The skill that takes this ask: the first in routing order whose match says yes. Before all skills have loaded, it waits only
