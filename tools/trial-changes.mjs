@@ -1,5 +1,5 @@
 // trial-changes — the trial watch keeps itself current (frontier #8): read the ClinicalTrials.gov registry for the watchlist
-// (skills/trialwatch.js check), compare it with the last kept check (domains/trialwatch.snapshot.json), and write one
+// (skills/trialwatch.js check), compare it with the last kept check (void-live-deploy/trialwatch.json, served so the card can show Void's daily check), and write one
 // `finding` to the growth ledger for each change (a status, posted results, enrollment, the primary-completion date), with
 // the trial's record as its source. Run daily by .github/workflows/trialwatch.yml, which commits the two files.
 //   node tools/trial-changes.mjs          check, write findings and the new snapshot
@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { check, changes } from '../void-live-deploy/skills/trialwatch.js';
 import { LEDGER, appendTo, entryProblem } from './grow.mjs';
 
-export const SNAP = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'domains', 'trialwatch.snapshot.json');
+export const SNAP = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'trialwatch.json'); // served: the trial watch card falls back to it
 const stamp = (d) => d.toISOString().replace(/\.\d{3}Z$/, 'Z');
 
 export async function runOnce({ fetchFn = (u, o) => fetch(u, o), snapPath = SNAP, ledgerPath = LEDGER, now = () => new Date(), dry = false } = {}) {

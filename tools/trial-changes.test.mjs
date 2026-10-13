@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, writeFileSync, readFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { changes } from '../void-live-deploy/skills/trialwatch.js';
+import { changes, newerSnap } from '../void-live-deploy/skills/trialwatch.js';
 import { runOnce } from './trial-changes.mjs';
 
 const row = (o) => ({ id: 'NCT1', title: 'Senolytics in MASH', status: 'recruiting', enrollment: 40, primaryCompletion: '2027-06', results: false, href: 'https://clinicaltrials.gov/study/NCT1', ...o });
@@ -40,4 +40,13 @@ test('trial changes: one run reads the registry, writes a finding per change to 
   const down = await runOnce({ fetchFn: async () => { throw new Error('offline'); }, snapPath: snap, ledgerPath: ledger });
   assert.equal(down.findings.length, 0); assert.match(down.note, /no answer/);
   assert.equal(JSON.parse(readFileSync(ledger, 'utf8')).length, list.length, 'nothing written when the registry is down');
+});
+
+test('trial watch card: with the registry out of reach it shows the newer of this browser\'s last check and Void\'s own daily one (served at /trialwatch.json)', () => {
+  const a = { at: '2026-10-10T06:41:00Z', rows: { NCT1: row() } }, b = { at: '2026-10-12T06:41:00Z', rows: { NCT1: row() } };
+  assert.equal(newerSnap(a, b), b); assert.equal(newerSnap(b, a), b);
+  assert.equal(newerSnap(null, b), b); assert.equal(newerSnap(a, null), a); assert.equal(newerSnap(null, null), null);
+  assert.equal(newerSnap(a, { at: 'x', rows: {} }), a, 'a served file with no rows or a bad date is not a check');
+  const served = JSON.parse(readFileSync(new URL('../void-live-deploy/trialwatch.json', import.meta.url), 'utf8'));
+  assert.ok(served.at && Object.keys(served.rows).length >= 1, 'the daily check is kept where the site serves it');
 });
