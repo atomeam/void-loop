@@ -2242,7 +2242,7 @@ try {
       await V.p.goto(base + 'fix/' + p.slug + '/');
       const price = await until(async () => { const t = await V.p.$eval('#fix-price', (e) => e.textContent).catch(() => ''); return t === '$26' ? t : ''; }, 4000);
       const info = await V.p.evaluate(() => ({ h1: (document.querySelector('h1') || {}).textContent || '', steps: document.querySelectorAll('ol li').length,
-        sources: document.querySelectorAll('ul.muted a[href^="https://help."]').length, buy: (document.getElementById('fix-buy') || {}).href || '',
+        sources: document.querySelectorAll('ul.muted a[href^="https://"]').length, buy: (document.getElementById('fix-buy') || {}).href || '',
         wide: document.documentElement.scrollWidth > window.innerWidth, ask: (document.querySelector('[data-fix="ask"]') || {}).href || '' }));
       got.push({ slug: p.slug, ok: !!price && info.h1 === p.title && info.steps === p.steps.length && info.sources === p.sources.length && /\/l\/eozcma$/.test(info.buy) && !info.wide && /\?q=/.test(info.ask), info: price ? '' : info });
     }

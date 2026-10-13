@@ -66,7 +66,11 @@ export function ruleFix(text) {
   const steps = [];
   let cause = null, corrected = null;
   const url = (s.match(/https?:\/\/\S+/) || [])[0];
-  if (/\b(401|403)\b|unauthori[sz]ed|forbidden|invalid (api )?(key|token|credentials?)|token (has )?expired|expired token|authenticat|permission denied|access denied|invalid_grant|reauthori/i.test(s)) {
+  if (/resource not accessible by integration/i.test(s)) { // GitHub: the workflow's GITHUB_TOKEN lacks the permission, nothing expired
+    cause = 'the workflow\'s GITHUB_TOKEN does not have the permission this step needs (403). Nothing expired: its permissions come from the repository default and the workflow\'s permissions key.';
+    steps.push('Add a permissions block to the failing job that grants just what the step does, e.g. permissions: { contents: write } to push or release, pull-requests: write to comment on a PR, issues: write to label. Scopes you leave out drop to none.');
+    steps.push('If the run comes from a fork\'s pull request or Dependabot, the token is read-only by design: do the write in a workflow that runs on the base repository. To write to another repository, use a GitHub App token or a personal access token stored as a secret.');
+  } else if (/\b(401|403)\b|unauthori[sz]ed|forbidden|invalid (api )?(key|token|credentials?)|token (has )?expired|expired token|authenticat|permission denied|access denied|invalid_grant|reauthori/i.test(s)) {
     cause = 'the credential it uses has expired or lost access, so the service is refusing the call (' + ((s.match(/\b(401|403)\b/) || [])[0] || 'auth error') + ').';
     steps.push(where.cred);
     if (/403|forbidden|permission/i.test(s)) steps.push('If reconnecting doesn\'t clear it, the account lacks permission for that resource: share the sheet/folder/repo with that account or add the missing scope.');

@@ -127,5 +127,69 @@
     ],
     "again": "A DataError that appears after months of working usually means the data changed: a new form field, a longer product name, a new date format upstream.",
     "sources": [["Overview of error handling (Make Help Center)", "https://help.make.com/Overview-of-error-handling"], ["Fix missing data errors (Make Help Center)", "https://help.make.com/fix-missing-data-errors"]]
+  },
+  {
+    "slug": "n8n-webhook-404-not-registered",
+    "platform": "n8n",
+    "title": "n8n webhook 404 \"not registered\": test URL or production URL, and how to fix it",
+    "short": "n8n webhook 404",
+    "error": "404 · webhook is not registered",
+    "means": "n8n gives every Webhook node two URLs. The test URL only answers while the editor is listening for a test event; the production URL only answers once the workflow is active (published, in newer versions). A 404 nearly always means the sender is calling the one that is not listening right now.",
+    "steps": [
+      "Open the Webhook node and compare its Test URL and Production URL with the URL the sending app is calling. The test one has /webhook-test/ in its path.",
+      "For live traffic, put the Production URL into the sending app, then save the workflow and switch it to active (publish it, in newer n8n).",
+      "For a test, click Listen for test event first and send within the listening window (about two minutes), then check the run in the editor.",
+      "Check the HTTP method: the node only answers the method it is set to (GET, POST and so on). Production runs show in the Executions tab, not the editor."
+    ],
+    "again": "Self-hosted behind a proxy: if the URLs n8n shows point at localhost or the wrong host, set the WEBHOOK_URL environment variable to your public address, and make sure the proxy forwards both /webhook/ and /webhook-test/.",
+    "sources": [["Webhook node (n8n Docs)", "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook"], ["Webhook node common issues (n8n Docs)", "https://docs.n8n.io/integrations/builtin/core-nodes/n8n-nodes-base.webhook/common-issues"], ["Endpoints environment variables (n8n Docs)", "https://docs.n8n.io/hosting/configuration/environment-variables/endpoints/"]]
+  },
+  {
+    "slug": "n8n-google-credential-401",
+    "platform": "n8n",
+    "title": "n8n Google node 401: why the credential stopped working after a week, and the fix",
+    "short": "n8n Google credential 401",
+    "error": "401 Unauthorized · Google credential",
+    "means": "The Google credential n8n holds no longer gives a valid token. The most common cause: the Google Cloud OAuth app is External with its publishing status set to Testing, and Google expires consent and tokens for testing apps after seven days. Changed scopes or a disabled API do the same.",
+    "steps": [
+      "Open the failing node's error to see which Google service refused it, then open that credential in n8n (Credentials).",
+      "Click to reconnect (sign in with Google again) and allow every permission it asks for.",
+      "In Google Cloud, check that the API the node uses (Gmail, Sheets, Drive...) is enabled for the project the credential belongs to.",
+      "Back in the workflow, select the reconnected credential on the node and run it once to confirm."
+    ],
+    "again": "To stop the weekly expiry, move the OAuth app out of Testing (publish it in Google Cloud's OAuth consent screen), or use an Internal app inside a Google Workspace organisation.",
+    "sources": [["Google OAuth2 single service credentials (n8n Docs)", "https://docs.n8n.io/integrations/builtin/credentials/google/oauth-single-service"], ["Gmail node common issues (n8n Docs)", "https://docs.n8n.io/integrations/builtin/app-nodes/n8n-nodes-base.gmail/common-issues"]]
+  },
+  {
+    "slug": "power-automate-429-rate-limit-exceeded",
+    "platform": "Power Automate",
+    "title": "Power Automate 429 \"Rate limit is exceeded\": why your flow is throttled and how to fix it",
+    "short": "Power Automate 429",
+    "error": "429 · Rate limit is exceeded",
+    "means": "A connector your flow uses has its own limit on calls per connection in a time window. Your flow went over it, so the service answered 429 Too Many Requests and told you how many seconds to wait. Retries and pagination count as calls too.",
+    "steps": [
+      "Open the failed run and find the action that returned 429; its connector is the one being throttled.",
+      "Lower the concurrency on Apply to each (or on the trigger) so fewer calls run at once.",
+      "Cut the number of calls: filter rows in the trigger or the List action instead of looping over everything, and use batch actions where the connector has them.",
+      "Spread the work out: run the flow less often, or split a big run into child flows that each handle part of it."
+    ],
+    "again": "Flows that keep hitting limits can be slowed down, and a flow throttled continuously for 14 days can be turned off. Check the connector's Throttling section on Microsoft Learn for its exact numbers.",
+    "sources": [["Understand limits (Power Automate, Microsoft Learn)", "https://learn.microsoft.com/en-us/power-automate/guidance/coding-guidelines/understand-limits"], ["Troubleshoot slow running flows (Microsoft Learn)", "https://learn.microsoft.com/troubleshoot/power-platform/power-automate/flow-run-issues/troubleshoot-slow-running-flows"]]
+  },
+  {
+    "slug": "github-actions-resource-not-accessible-by-integration",
+    "platform": "GitHub Actions",
+    "title": "GitHub Actions \"Resource not accessible by integration\" (403): give the token the permission it needs",
+    "short": "GitHub Actions 403 not accessible",
+    "error": "403 · Resource not accessible by integration",
+    "means": "The GITHUB_TOKEN your workflow runs with does not have the permission the step needs. Its permissions start from the repository or organization default (often read-only) and are then set by the permissions key in the workflow. Writing to a different repository is outside what that token can ever do.",
+    "steps": [
+      "Find the step that failed and what it tried to do: comment on a pull request, push, create a release, label an issue.",
+      "Add a permissions block to that job granting just that, for example permissions: with pull-requests: write, or contents: write. Scopes you leave out drop to none.",
+      "If the run comes from a fork's pull request or Dependabot, the token is read-only by design; move the write into a workflow that runs on the base repository.",
+      "If it writes to another repository, use a GitHub App installation token or a personal access token stored as a secret instead of GITHUB_TOKEN."
+    ],
+    "again": "An admin can change the default in the repository's Settings, Actions, General, Workflow permissions; setting permissions per job in the workflow is the safer habit.",
+    "sources": [["Controlling permissions for GITHUB_TOKEN (GitHub Docs)", "https://docs.github.com/en/actions/writing-workflows/choosing-what-your-workflow-does/controlling-permissions-for-github_token"], ["Managing GitHub Actions settings for a repository (GitHub Docs)", "https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/enabling-features-for-your-repository/managing-github-actions-settings-for-a-repository"]]
   }
 ]
