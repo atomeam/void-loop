@@ -30,6 +30,7 @@ concurrency:
 permissions:
   contents: read
   pull-requests: write
+  actions: write # wake automerge after a review the bot dispatched (below)
 
 jobs:
   void-review:
@@ -105,3 +106,14 @@ jobs:
           else
             echo "this PR does not touch void-live-deploy/skills/"
           fi
+
+      # A review the automerge bot dispatched (after merging main into the PR) was started with the workflow's token, so its end
+      # fires no workflow_run and automerge never hears it passed; the hourly schedule rarely fires, so #598 sat green for hours
+      # (2026-10-13). Wake automerge here, pass or fail: it reads the check itself and only merges a clean head.
+      - name: Wake automerge (only after a dispatched review)
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.report_only != true }}
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: gh workflow run automerge.yml --repo "$REPO" --ref main
