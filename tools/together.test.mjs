@@ -55,7 +55,7 @@ test('the pair acts it out: they walk to each other, stop a body apart, do the m
   assert.equal(a.mode, 'together'); assert.equal(b.mode, 'together');
   assert.ok(d1 < d0 / 4 && d1 > 40, 'met a body apart: ' + Math.round(d0) + ' -> ' + Math.round(d1));
   assert.ok(spun > 0 && hopped > 0, 'a spar is hops and spins');
-  for (let i = 0; i < 80; i++) { stepFigure(a, 0.05, world, rng); stepFigure(b, 0.05, world, rng); }
+  for (let i = 0; i < 200; i++) { stepFigure(a, 0.05, world, rng); stepFigure(b, 0.05, world, rng); } // the walk there no longer counts against the meeting's 10 s
   assert.notEqual(a.mode, 'together', 'the time runs out and each goes its own way'); assert.equal(a.together, null);
   assert.equal(meetBrains(a, null, 'spar'), false); assert.equal(meetBrains(a, b, 'dance'), false, 'only the four kinds');
 });
@@ -75,4 +75,26 @@ test('a meeting waits for a figure still being built, then starts; an old one is
   const c = makeBrain({ id: 'c' }); here.set('c', { brain: c, leaving: 0 });
   assert.equal(settleMeets([{ idA: 'c', idB: 'd', kind: 'trade', secs: 8, until: 5000 }], get, 6000).length, 0, 'past its time it is dropped');
   assert.equal(c.together, undefined);
+});
+
+// a pair far apart still meets: the meeting's time counts only once they are together, not while they walk there (verify on
+// b19d39e: two figures ~930 px apart walked for the whole 8 s and parted 160 px short, so "figures together" never saw them meet)
+test('a pair across the stage walks the whole way and then has its full meeting; one that can never reach gives up', () => {
+  let s = 11; const rng = () => ((s = (s * 16807) % 2147483647) / 2147483647);
+  const a = makeBrain({ id: 'a', x: 100, y: 300 }, rng), b = makeBrain({ id: 'b', x: 1100, y: 420 }, rng);
+  const world = { bounds: { l: 0, r: 1280, t: 0, b: 720 }, rects: [], cursor: null, still: false, posing: false, others: [a, b] };
+  meetBrains(a, b, 'spar', 8);
+  let metAt = -1, spun = 0;
+  for (let i = 0; i < 600 && a.together; i++) {
+    stepFigure(a, 0.05, world, rng); stepFigure(b, 0.05, world, rng);
+    if (metAt < 0 && Math.hypot(a.x - b.x, a.y - b.y) < 100) metAt = i;
+    if (metAt >= 0 && (a.spin > 0 || b.spin > 0)) spun++;
+  }
+  assert.ok(metAt > 0, 'they met');
+  assert.ok(spun > 0, 'and sparred once they met');
+  const far = makeBrain({ id: 'c', x: 0, y: 300 }, rng), gone = makeBrain({ id: 'd', x: 6000, y: 300 }, rng);
+  meetBrains(far, gone, 'trade', 8);
+  const w2 = { ...world, bounds: { l: 0, r: 8000, t: 0, b: 720 }, others: [far, gone] };
+  let steps = 0; for (; steps < 1000 && far.together; steps++) stepFigure(far, 0.05, w2, rng); // the other never moves
+  assert.equal(far.together, null, 'it gives up'); assert.ok(steps * 0.05 <= 21, 'within the walk limit: ' + steps * 0.05 + ' s');
 });
