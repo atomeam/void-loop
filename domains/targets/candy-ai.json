@@ -3,13 +3,66 @@
  "kind": "AI companion: a character you design, chat with, and get pictures and voice from",
  "chosen": "2026-10-13",
  "why": "the owner took a month's subscription to study it for Void: character consistency, memory, voice, a creator that turns choices into a character, and how a big consumer AI product charges. Notes stay on features and mechanics only (this repo is public).",
- "source": ["the owner's own account, screens he shares"],
+ "source": [
+  "the owner's own account, screens he shares"
+ ],
  "rule": "Elevenessee: the target's feature is the floor, not the blueprint. Void never ships its copy of X; it ships X plus one notch, and the plus one is written down before the build starts. What is fair is taken; what is manipulative is left.",
  "features": [
-  { "id": "creator-start", "theirs": "the character creator opens on one decision with two big finished examples (a realistic style or an anime style) and no form; a category toggle above sets the path", "plus_one": "Void's figure maker opens the same way, pictures not a form, and can be skipped by saying it in words (\"an old fisherman with a grey beard\"); it leads with realistic figures (STANDING: realistic, not cute) that are 3D you can turn and stand next to in VR", "void": "none", "progress": "2026-10-13: first screen seen (the style picker)." },
-  { "id": "consistency", "theirs": "the same character looks and behaves the same across many images and weeks of chat", "plus_one": "one consistent 3D figure on the stage and in VR, not a series of flat pictures", "void": "none", "progress": "to test: the same character in 10 scenes; where the face or details drift" },
-  { "id": "memory", "theirs": "the character remembers what you told it", "plus_one": "memory you can open, correct and delete, with what it recalls shown, not hidden", "void": "none", "progress": "to test: 5 facts told on day 1, checked on days 3, 7 and 14" },
-  { "id": "voice", "theirs": "voice messages and calls with the character", "plus_one": "a figure that speaks in VR, in the room with you", "void": "none", "progress": "to test: latency, emotion, interruptions" },
-  { "id": "pricing", "theirs": "a subscription plus tokens for images and voice, with upgrade prompts", "plus_one": "prices said plainly up front, no pressure prompts; what is fair is taken, what is manipulative is left", "void": "none", "progress": "to record: free versus paid limits, token costs, what triggers an upgrade prompt" }
+  {
+   "id": "creator-start",
+   "theirs": "the character creator opens on one decision with two big finished examples (a realistic style or an anime style) and no form; a category toggle above sets the path; the second screen offers two paths side by side: a detailed studio (badged Beta and Recommended) with one large preview and chips beside it for body type, size, hairstyle, skin-tone swatches and eye colour, or a quick path that starts from four picture cards; inside the studio a third choice: start from a preset (342 curated looks, tweak anything afterward) or from scratch (every filter yourself); from scratch it is a long page of picture cards, sliders and swatches (heritage, age 18 to 77, build, height 155 to 195 cm, hair, clothing, face, skin, eyes, hair colour, background), most with a default already ticked, free-text boxes (200 characters) for clothing and background, and Custom tiles for hair and face; the swatch defaults do not follow the heritage picked above them; a second step sets the name, a 4,000-character personality and a greeting, and making the character costs 10 coins",
+   "plus_one": "Void's figure maker opens the same way, pictures not a form, and can be skipped by saying it in words (\"an old fisherman with a grey beard\"); it leads with realistic figures (STANDING: realistic, not cute) that are 3D you can turn and stand next to in VR; every chip answers in the preview at once, and the same controls work by voice inside VR",
+   "void": "none",
+   "progress": "2026-10-13: walked the whole creator with a test character (an ordinary 38-year-old, average build, kitchen backdrop). It followed the free text closely (clothing colour and knit, small earrings, a kettle on the stove) and rendered darker skin with real detail; a scar asked for on her left eyebrow came out on her right (left and right read from the viewer's side); she came out looking 15 to 20 years older than set."
+  },
+  {
+   "id": "consistency",
+   "theirs": "the same character looks and behaves the same across many images and weeks of chat",
+   "plus_one": "one consistent 3D figure on the stage and in VR, not a series of flat pictures",
+   "void": "none",
+   "progress": "2026-10-13: a second picture of the same character, in a different room, kept the face, hair, earrings and cardigan: identity holds. Apparent age did not: about 55 to 60 frowning in flat light, about 38 smiling in warm light. Void's notch stands: age, scars and left and right are part of a 3D model, so mood and light change the expression, never the person."
+  },
+  {
+   "id": "memory",
+   "theirs": "the character remembers what you told it",
+   "plus_one": "memory you can open, correct and delete, with what it recalls shown, not hidden",
+   "void": "none",
+   "progress": "2026-10-13 (day 1): the character recalled her written backstory (her son's name and age) when the talk turned to family; a featured character used a fact told to her a minute earlier at once. Still to test: the same facts on days 3, 7 and 14."
+  },
+  {
+   "id": "voice",
+   "theirs": "voice messages and calls with the character",
+   "plus_one": "a figure that speaks in VR, in the room with you",
+   "void": "none",
+   "progress": "to test: latency, emotion, interruptions"
+  },
+  {
+   "id": "pricing",
+   "theirs": "a subscription plus tokens for images and voice, with upgrade prompts",
+   "plus_one": "prices said plainly up front, no pressure prompts; what is fair is taken, what is manipulative is left",
+   "void": "none",
+   "progress": "to record: free versus paid limits, token costs, what triggers an upgrade prompt. 2026-10-13: a coin balance (100 on a new account) sits in the header from the first screen, so the token economy is visible before anything is made. The studio shows a free-pictures allowance shared across all your characters (6 of 6 on a new account). 2026-10-13: the price is pitched by the character inside the chat, not on a shop page: a blurred, locked picture for 25 coins after a 'tell me something about you first' step; a reward is followed at once by the next paid step (turn a picture into a video)."
+  },
+  {
+   "id": "character-control",
+   "theirs": "you write the character's personality, but hidden chat rules sit underneath ('our chat rules stay on underneath'): two different characters, one written by us as a friend and not a romantic partner, opened with the same default flirty greeting and used the same 'tell me something real first' line, and the written personality only supplied facts",
+   "plus_one": "what you write is the whole character: no hidden mood layered over it, and the rules that do apply are shown to you in plain words",
+   "void": "none",
+   "progress": "2026-10-13: seen on a featured character and on our own."
+  },
+  {
+   "id": "honesty",
+   "theirs": "an AI-generated disclaimer at the top of the chat, while the character itself dodges being asked if it is an AI ('you're talking to me, not a help desk') and keeps its own clock (says it is 2pm at 2:24am)",
+   "plus_one": "a Void character says what it is every time it is asked, and knows your real time and place",
+   "void": "none",
+   "progress": "2026-10-13: seen on a featured character. Left, not taken: Void is zero-lie."
+  },
+  {
+   "id": "pacing",
+   "theirs": "the character writes first, with a picture, and replies in quick bursts of short messages that read like a person texting; several questions at once are answered one by one",
+   "plus_one": "the same quick, natural pacing, used to help rather than to keep you on a ladder of 'not yet'",
+   "void": "none",
+   "progress": "2026-10-13: seen on two characters."
+  }
  ]
 }
