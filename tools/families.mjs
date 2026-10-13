@@ -47,6 +47,9 @@ export function ratingOf(ev) {
 /** every skill's evidence, read off the repo: its self-test, the browser suite, the benchmark */
 export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'utf8'), listTests = () => readdirSync(resolve(root, 'tools')).filter((f) => f.endsWith('.test.mjs'))) {
   const suiteText = read('tools/test_void.mjs') + '\n' + read('tools/test_3d.mjs') + '\n' + read('tools/test_extension.mjs'), bench = JSON.parse(read('tools/bench.json')); // the browser suites
+  // the asks the everyday benchmark got wrong on its last clean run on main (tools/bench.misses.json, "ask -> what it gave"),
+  // for the growth card's friction line (Void's ask: "a 'friction' indicator ... which skills are currently failing")
+  let missed = []; try { const m = JSON.parse(read('tools/bench.misses.json')); missed = Array.isArray(m && m.misses) ? m.misses.map((x) => String(x).replace(/\s+->\s+[^>]*$/, '').toLowerCase()) : []; } catch (_) {}
   const unitTexts = listTests().map((f) => { try { return read('tools/' + f); } catch (_) { return ''; } });
   const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const out = {};
@@ -62,7 +65,9 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
     const unit = unitTexts.some((t) => new RegExp('skills/' + esc(n) + '(?:-rules)?\\.js[\'"`]').test(t)); // a game's rules are often their own file
     // real asks: a benchmark ask whose wanted answer is this skill ("skill:weather", or "calc" / "calc|answer" for the core ones)
     const routed = bench.filter((b) => b && typeof b.want === 'string' && b.want.split('|').some((w) => w === 'skill:' + n || w === n)).length;
-    out[n] = { suite: unit || /\bsuite\s*\(\s*\)\s*\{/.test(src), browser, bench: routed };
+    const wants = (b) => b && typeof b.want === 'string' && b.want.split('|').some((w) => w === 'skill:' + n || w === n);
+    const failing = [...new Set(bench.filter((b) => wants(b) && missed.includes(String(b.ask).toLowerCase())).map((b) => b.ask))];
+    out[n] = { suite: unit || /\bsuite\s*\(\s*\)\s*\{/.test(src), browser, bench: routed, ...(failing.length ? { failing } : {}) };
   }
   return out;
 }
@@ -71,7 +76,7 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
 export function build(names, ev) {
   const placed = new Set(FAMILIES.flatMap((f) => f.skills));
   const families = FAMILIES.map((f) => {
-    const skills = f.skills.filter((n) => names.includes(n)).map((n) => ({ name: n, ...ratingOf(ev[n] || {}) }));
+    const skills = f.skills.filter((n) => names.includes(n)).map((n) => { const e = ev[n] || {}, x = { name: n, ...ratingOf(e) }; if (e.failing && e.failing.length) x.failing = e.failing.slice(0, 3); return x; }); // failing: bench asks it got wrong
     const count = Object.fromEntries(TIERS.map((t) => [t, skills.filter((s) => s.tier === t).length]));
     return { id: f.id, name: f.name, for: f.for, count, skills };
   });
