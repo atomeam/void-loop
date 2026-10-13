@@ -6,7 +6,7 @@
  * dragging one piece moves the plan (skills/group.js).
  * Nothing is sent or published: the draft is a sticky on your own stage. No model call; the planner is a fixed
  * list of existing asks and their shapes, so the same sentence always brings the same pieces.
- * Empty surface stays empty: only an outcome with a deadline triggers this.
+ * Empty surface stays empty: only an outcome with a deadline, or one asked for as a plan ("plan my move"), triggers this.
  */
 
 const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
@@ -40,7 +40,8 @@ const NOT_A_PERSON = /^(?:me|us|them|everyone|everybody|people|the|my|our|it|you
 
 /** "I need to ship the product page by Friday and tell Sam" -> { goal, when, who } or null. Pure. */
 export function intentOf(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/[’]/g, "'");
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/[’]/g, "'")
+    .replace(/^(?:(?:can you |please )?(?:help me )?(?:make|give|build|draw up|write|put together) (?:me |us )?(?:a )?plan (to|for))\b/, 'plan $1'); // "make a plan to X by Friday" is "plan to X by Friday"
   const m = ASK_RE.exec(t);
   if (!m) {
     const n = NOUN_RE.exec(t), goal = n && nounGoal(n[1]);
@@ -91,14 +92,15 @@ export function deadlineOf(when, now = new Date()) {
   return null;
 }
 
-// The steps before the goal itself, by what kind of outcome it is. The goal is always the last line, on the day.
+// The steps before the goal itself, by what kind of outcome it is. The goal is always the last line, on the day. No step says
+// "and": the list ask splits on it ("sort and give away" came out as two items).
 const STEPS = [
   [/^(?:ship|launch|release|publish|deploy|go live|roll out|put out|push out)\b/, ['outline it', 'build the first version', 'review it', 'fix what the review found']],
   [/^(?:write|finish|submit|hand in|turn in|file)\b|\b(?:essay|report|paper|thesis|article|proposal|application|chapter|post|blog)\b/, ['outline', 'first draft', 'revise', 'final read']],
   [/\b(?:presentation|talk|pitch|speech|demo|slides|deck|keynote|lecture)\b/, ['outline the story', 'make the slides', 'rehearse', 'last run-through']],
   [/\b(?:exam|test|quiz|midterm|final|finals|interview)\b|^(?:study|revise|prepare|prep)\b/, ['list the topics', 'study the hard parts', 'practise', 'light review']],
-  [/^(?:move|pack|clear out|empty)\b/, ['sort and give away', 'get boxes', 'pack', 'last checks']],
-  [/^(?:plan|organi[sz]e|host|throw|run)\b|\b(?:party|wedding|event|trip|dinner)\b/, ['set the plan', 'book and invite', 'get what you need', 'confirm everyone']],
+  [/^(?:move|pack|clear out|empty)\b/, ['sort out what to give away', 'get boxes', 'pack', 'last checks']],
+  [/^(?:plan|organi[sz]e|host|throw|run)\b|\b(?:party|wedding|event|trip|dinner)\b/, ['set the plan', 'book the place', 'invite people', 'get what you need']],
 ];
 
 /** Steps worked back from the deadline: [{ text, date }], the goal last on the day itself. Pure. */
@@ -119,10 +121,39 @@ const LONG_DAY = (d) => WEEKDAYS[d.getDay()][0].toUpperCase() + WEEKDAYS[d.getDa
 const listSafe = (s) => s.replace(/[,;]+/g, ' ').replace(/\s+/g, ' ').trim(); // the list ask splits on commas
 const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
+// A plan asked for without a day (frontier #10's next step): "make a plan to ship the product page", "plan my move", "plan our
+// wedding". Only an explicit ask for a plan counts, and only an outcome the steps know: "I need to finish my essay" (no plan
+// asked, no day) still leaves the void empty, and "plan my day" or "a plan to lose weight" are not outcomes with steps here.
+const PLAN_VERB_RE = new RegExp(String.raw`^(?:(?:can\s+you\s+|please\s+)?(?:help\s+me\s+)?(?:make|give|build|draw\s+up|write|put\s+together)\s+(?:me\s+|us\s+)?(?:a\s+)?plan\s+(?:to|for\s+how\s+to)\s+)(.{3,80}?)` + TELL + '$');
+const PLAN_NOUN_RE = new RegExp(String.raw`^(?:(?:can\s+you\s+|please\s+)?(?:help\s+me\s+)?(?:(?:make|give|build|draw\s+up|put\s+together)\s+(?:me\s+|us\s+)?(?:a\s+)?plan\s+for\s+|plan\s+(?:out\s+)?))((?:the|my|our)\s+.{2,60}?)` + TELL + '$');
+export function undatedOf(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/[’]/g, "'");
+  if (new RegExp('\\b(?:by|before|until|till|on|in)\\s+' + DATE_RE + '\\b').test(t)) return null; // a day: the dated plan
+  let goal = null, who = null, m = PLAN_VERB_RE.exec(t);
+  if (m) {
+    goal = m[1].trim();
+    if (!STEPS.some(([re]) => re.test(goal)) || (/^write\b/.test(goal) && !/\b(?:essay|report|paper|thesis|article|proposal|application|chapter|post|blog)\b/.test(goal))) return null;
+  } else if ((m = PLAN_NOUN_RE.exec(t))) {
+    const phrase = m[1].trim();
+    goal = nounGoal(phrase) || (/^(?:my|our|the)\s+(?:house\s+)?move$/.test(phrase) ? 'move' : null);
+    if (!goal || !STEPS.some(([re]) => re.test(goal))) return null;
+  } else return null;
+  who = m[2] && !NOT_A_PERSON.test(m[2]) ? m[2] : null;
+  return { goal: listSafe(goal), who };
+}
+
 /** The build order: asks Void already answers, in the order they run. Pure. */
 export function planOf(text, now = new Date()) {
   const hit = intentOf(text);
-  if (!hit) return null;
+  if (!hit) {
+    const u = undatedOf(text);
+    if (!u) return null;
+    const hit2 = STEPS.find(([re]) => re.test(u.goal));
+    const steps = hit2[1].map((t) => ({ text: t, date: null })).concat([{ text: u.goal, date: null }]);
+    const asks = [{ piece: 'checklist', ask: 'make a list with ' + steps.map((st) => st.text).join(', ') }];
+    if (u.who) asks.push({ piece: 'draft', ask: 'add a sticky that says draft to ' + cap(u.who) + ' (not sent): heads up, ' + (/^(?:give\s+)?us\b|\bour\b/.test(String(text).toLowerCase()) ? "we're" : "I'm") + ' working on: ' + u.goal });
+    return { goal: u.goal, who: u.who, deadline: null, steps, asks };
+  }
   const deadline = deadlineOf(hit.when, now);
   if (!deadline) return null;
   const goal = listSafe(hit.goal);
@@ -172,6 +203,7 @@ async function run(text, api) {
     if (st.render) st.render();
   }
   const pieces = plan.asks.map((a) => a.piece === 'draft' ? 'a draft to ' + cap(plan.who) : a.piece).join(', ');
+  if (api.say && !plan.deadline) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · no day yet: add one ("' + plan.goal + ' by Friday") for dates, a countdown and the calendar'); return 'intent'; }
   if (api.say) api.say('planned "' + plan.goal + '" for ' + LONG_DAY(plan.deadline) + ' · ' + pieces + (ids.length > 1 ? ' · one group, drag one to move them all' : '') + (plan.who ? ' · nothing sent' : ''));
   return 'intent';
 }
@@ -180,10 +212,10 @@ export default {
   name: 'intent',
   examples: ['I need to ship the product page by Friday', 'I have to finish my essay by October 20', 'I need to prepare a talk by next week and tell Sam',
     'help me launch the newsletter by the end of the month', 'we need to move house in 2 weeks',
-    'the product page launch on Friday', 'my essay is due October 20'],
+    'the product page launch on Friday', 'my essay is due October 20', 'make a plan to ship the product page', 'plan my move'],
   nearMisses: ['I need to wake up at 6 am, what time should I go to bed?', 'remind me at 5 to call home', 'days until friday', 'what do i need to get a 90',
     'I need to ship', 'call Sam next Tuesday at 4', 'i need a timer for 5 minutes', 'I need to finish my essay', 'how do I ship a product by friday',
-    'my birthday on Friday', 'the exam was on Friday'],
+    'my birthday on Friday', 'the exam was on Friday', 'plan my day', 'make a plan to lose weight', 'meal plan for the week'],
   intentOf,
   deadlineOf,
   stepsFor,

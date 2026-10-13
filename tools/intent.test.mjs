@@ -87,3 +87,26 @@ test('a noun with a date is a goal only when it names an outcome: the weather, a
     assert.equal(planOf(q, FRI), null, q);
   }
 });
+
+// frontier #10, next: an outcome with no day, asked for as a plan ("make a plan to ship the product page", "plan my move"), gets
+// the same steps as an undated checklist and a hint to add a day; "I need to finish my essay" (no plan asked, no day) stays alone
+test('a plan asked for without a day: the steps as an undated checklist, and how to add a day', () => {
+  const p = planOf('make a plan to ship the product page', FRI);
+  assert.equal(p.deadline, null); assert.equal(p.goal, 'ship the product page');
+  assert.deepEqual(p.asks.map((a) => a.piece), ['checklist']);
+  assert.equal(p.asks[0].ask, 'make a list with outline it, build the first version, review it, fix what the review found, ship the product page');
+  assert.equal(planOf('plan my move', FRI).goal, 'move');
+  assert.equal(planOf('plan our wedding', FRI).goal, 'our wedding');
+  assert.equal(planOf('give me a plan for my biology exam', FRI).goal, 'be ready for my biology exam');
+  assert.equal(planOf('help me plan the product launch', FRI).goal, 'launch the product');
+  const told = planOf('make a plan to finish my essay and tell Maya', FRI);
+  assert.deepEqual(told.asks.map((a) => a.piece), ['checklist', 'draft']); assert.match(told.asks[1].ask, /draft to Maya \(not sent\)/);
+  assert.equal(planOf('make a plan to ship the product page by Friday', FRI).asks.length, 3, 'with a day it is the dated plan');
+  for (const q of ['I need to finish my essay', 'I need to ship', 'plan', 'make a plan', 'plan my day', 'plan a route to the airport', 'make a plan to lose weight', 'what is a business plan', 'meal plan for the week'])
+    assert.equal(planOf(q, FRI), null, q);
+});
+
+test('no step says "and": the list ask splits on it, so a step would come out as two items', () => {
+  for (const goal of ['ship it', 'write the report', 'give the talk', 'be ready for the exam', 'move', 'plan the party', 'do the thing'])
+    for (const s of stepsFor(goal, new Date(2026, 9, 20), FRI)) if (s.text !== goal) assert.ok(!/\band\b/.test(s.text), goal + ': ' + s.text);
+});
