@@ -82,6 +82,32 @@ def gather(cap=60, with_done=False):
             n += 1
             cands.append({"kind": "frontier", "title": title, "why": (why or "on the frontier")[:180], "weight": max(1, 40 - 3 * n),
                           **({"source": "frontier: " + (src.group(1) + src.group(2)).strip()} if src else {})})
+    # 3. Void's own outputs become its input (its want, 2026-10-13: "make my outputs become my inputs"): what it asked for in
+    #    its reflections, most repeated first and without the ones a ledger entry built (tools/next.mjs voidAsks), and the
+    #    benchmark asks it got wrong on main (tools/bench.misses.json). Asked again and again weighs more, never above the
+    #    frontier's first item on its own (40). VOID_ASKS_FILE = a saved copy of voidAsks, for tests.
+    try:
+        af = os.environ.get("VOID_ASKS_FILE", "")
+        if af:
+            asks = json.loads(pathlib.Path(af).read_text(encoding="utf-8"))
+        else:
+            import subprocess
+            asks = json.loads(subprocess.run(["node", str(ROOT / "tools" / "next.mjs"), "--json"], capture_output=True, text=True, timeout=60).stdout or "{}").get("voidAsks") or []
+        for a in asks[:10]:
+            ask, times = str(a.get("ask", "")).strip(), int(a.get("times") or 1)
+            if len(ask) < 8:
+                continue
+            cands.append({"kind": "I asked for this", "title": ask.rstrip(".")[:160], "why": f"I asked for this {times} time{'s' if times != 1 else ''} in my reflections" + (" (a small one)" if a.get("small") else ""),
+                          "weight": min(40, 12 + 3 * times), "source": "my reflections"})
+    except Exception as e:
+        print("own asks:", e, file=sys.stderr)
+    try:
+        bm = json.loads((ROOT / "tools" / "bench.misses.json").read_text(encoding="utf-8"))
+        for m in (bm.get("misses") or [])[:5]:
+            cands.append({"kind": "fix myself", "title": f"answer \"{str(m)[:120]}\" right", "why": f"my benchmark on main got it wrong ({str(bm.get('at', ''))[:10]})", "weight": 14, "source": "my benchmark"})
+    except Exception as e:
+        print("bench misses:", e, file=sys.stderr)
+
     # 4. everything else on Victus the ingest marked as a capability
     try:
         ing = json.loads((ROOT / "archive" / "victus" / "victus-ingest.json").read_text(encoding="utf-8", errors="replace"))
