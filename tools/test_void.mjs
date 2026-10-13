@@ -2446,6 +2446,16 @@ try {
   }
 
   // The lab (2026-10-13): the newest working fringe draft of each family is live; each opens from a plain ask and passes its own self-test there
+  // fringe → core (owner's direction, 2026-10-13): a draft the fringe ledger published with a lab entry joins the lab from
+  // /fringe/lab.json (tools/fringe.mjs --publish), with nobody editing skills/make.js.
+  if (want("a published fringe draft with a lab entry opens from its own ask, read from fringe/lab.json")) {
+    // the skill reads the file as it loads, with the page: the stub is in the page before anything runs
+    const F = await fresh({ content: "{ const f = window.fetch; window.fetch = (u, o) => /\\/fringe\\/lab\\.json$/.test(String(u)) ? Promise.resolve(new Response(JSON.stringify([{ id: 'zz-lab-play', label: 'Scroll pauses', sub: 'Which paragraphs you paused on.', asks: ['scroll pause lab', 'what did i pause on'] }]), { status: 200, headers: { 'content-type': 'application/json' } })) : f(u, o); }" });
+    await F.ask('scroll pause lab', 800);
+    const card = await (async () => { for (let i = 0; i < 24; i++) { const c = await F.p.evaluate(() => { const v = document.querySelector('.vpage'); const f = v && v.querySelector('iframe'); return v ? { h: (v.querySelector('h2') || {}).textContent, sub: (v.querySelector('.sub') || {}).textContent, src: f && f.getAttribute('src') } : null; }); if (c && c.src) return c; await F.p.waitForTimeout(250); } return null; })();
+    check('a published fringe draft with a lab entry opens from its own ask (read from /fringe/lab.json, no hand edit of the lab list)',
+      !!card && card.h === 'Scroll pauses' && card.sub === 'Which paragraphs you paused on.' && card.src === '/fringe/zz-lab-play.html' && !F.errors.length, JSON.stringify({ card, errors: F.errors }));
+    await F.ctx.close(); }
   if (want("The lab: every fringe experiment opens from an ask and passes its own self-test")) {
     const L = await fresh(); const res = [];
     const lab = [['test my attention', 'attention-7'], ['hold the lamp', 'interval-timing-8'], ['fitts law', 'opt-in-gesture-6'], ['joint simon task', 'human-machine-co-agency-8'],

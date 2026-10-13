@@ -29,6 +29,9 @@
 //   failure_modes     [{ what, evidence }]: what failed and what shows it, so the next run does not repeat it
 //   next_experiments  what to try next
 //   combines          other families this run joins with its own (the combination map is read off these)
+//   lab               { label, sub, asks: [phrases] }: how a published draft is opened from the stage. --publish writes
+//                     void-live-deploy/fringe/lab.json from these and skills/make.js reads it, so a draft that ships reaches
+//                     people without anyone editing the lab list by hand (the fringe → core loop, owner's direction 2026-10-13)
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { resolve, dirname } from 'node:path';
@@ -106,6 +109,21 @@ export function learned(runs = load(), recent = WINDOW) {
   return { findings: pick('findings'), failures: pick('failure_modes'), next: pick('next_experiments'), behaviors: runs.filter((r) => r.behavior).map((r) => ({ run: r.run, family: r.family, x: r.behavior })), untried: ordered, noted: runs.filter((r) => r.hypothesis || r.behavior || r.findings).length };
 }
 
+const labOk = (l) => !!l && typeof l.label === 'string' && l.label.trim() && l.label.length <= 40 && typeof l.sub === 'string' && l.sub.trim() && l.sub.length <= 160
+  && Array.isArray(l.asks) && l.asks.length >= 1 && l.asks.length <= 6 && l.asks.every((a) => typeof a === 'string' && /^[a-z0-9' -]{3,60}$/.test(a));
+export const LAB = 'void-live-deploy/fringe/lab.json';
+/** the lab entries the published runs carry, newest run of each draft winning. Pure. */
+export function labOf(runs = load()) {
+  const byId = new Map();
+  for (const r of runs) if (r && r.emit === true && r.lab && labOk(r.lab)) byId.set(live(r).split('/').pop().replace(/\.html$/, ''), { id: live(r).split('/').pop().replace(/\.html$/, ''), label: r.lab.label, sub: r.lab.sub, asks: r.lab.asks });
+  return [...byId.values()];
+}
+/** published drafts nobody can open: not in skills/make.js's lab list and with no lab entry */
+export function unreachable(runs = load(), makeSrc = readFileSync(resolve(root, 'void-live-deploy/skills/make.js'), 'utf8')) {
+  const listed = new Set([...makeSrc.matchAll(/'(?:[^'\\]|\\.)*', '([a-z0-9-]+)', '/g)].map((m) => m[1])), lab = new Set(labOf(runs).map((x) => x.id));
+  return [...new Set(runs.filter((r) => r && r.emit === true).map((r) => live(r).split('/').pop().replace(/\.html$/, '')))].filter((id) => !listed.has(id) && !lab.has(id));
+}
+
 export function check(runs = load()) {
   const bad = [];
   if (!Array.isArray(runs)) return ['tools/fringe.json must be an array of runs'];
@@ -132,6 +150,7 @@ export function check(runs = load()) {
     for (const k of ['hypothesis', 'behavior']) if (k in r && (typeof r[k] !== 'string' || !r[k].trim() || r[k].length > 400)) bad.push(`${at}: ${k} must be a line of text (400 characters at most)`);
     for (const k of ['findings', 'next_experiments']) if (k in r && (!Array.isArray(r[k]) || r[k].some((x) => typeof x !== 'string' || !x.trim()))) bad.push(`${at}: ${k} must be a list of lines`);
     if ('failure_modes' in r && (!Array.isArray(r.failure_modes) || r.failure_modes.some((x) => !x || typeof x.what !== 'string' || typeof x.evidence !== 'string' || !x.what.trim() || !x.evidence.trim()))) bad.push(`${at}: failure_modes must be a list of { what, evidence }`);
+    if ('lab' in r && !labOk(r.lab)) bad.push(`${at}: lab must be { label (40 characters at most), sub (160 at most), asks: 1 to 6 lowercase phrases }`);
     if ('combines' in r && (!Array.isArray(r.combines) || r.combines.some((f) => !FAMILIES.includes(f) || f === r.family))) bad.push(`${at}: combines must list other known families`);
     if (typeof r.behavior === 'string') { const twin = runs.slice(0, i).find((x) => x && typeof x.behavior === 'string' && sameBehavior(x.behavior, r.behavior)); if (twin) bad.push(`${at}: its behavior repeats run ${twin.run}'s ("${twin.behavior.slice(0, 80)}"): novelty is what a person can do, not the family's name`); }
     if (!Array.isArray(r.sources) || !r.sources.length) bad.push(`${at}: needs at least one source`);
@@ -144,7 +163,7 @@ export function check(runs = load()) {
 }
 
 /** the sources file: the sources array, or { sources, ...research notes } (only the notes the ledger knows are kept) */
-export const NOTES = ['hypothesis', 'behavior', 'findings', 'failure_modes', 'next_experiments', 'combines'];
+export const NOTES = ['hypothesis', 'behavior', 'findings', 'failure_modes', 'next_experiments', 'combines', 'lab'];
 export function notesOf(j) {
   if (Array.isArray(j)) return { sources: j };
   const out = { sources: j && j.sources };
@@ -198,9 +217,13 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   else if (arg === '--publish') {
     mkdirSync(resolve(root, 'void-live-deploy/fringe'), { recursive: true });
     for (const r of load()) if (r.emit === true) { writeFileSync(resolve(root, live(r)), published(readFileSync(resolve(root, r.draft), 'utf8'))); console.log('published ' + live(r)); }
+    writeFileSync(resolve(root, LAB), JSON.stringify(labOf(), null, 1) + '\n'); console.log('wrote ' + LAB + ' (' + labOf().length + ' from the ledger)');
   }
   else {
     const runs = load(), bad = check(runs);
+    for (const id of unreachable(runs)) bad.push(`${id} is published but nobody can open it: give its run a lab { label, sub, asks } and run --publish`);
+    const want = JSON.stringify(labOf(runs), null, 1) + '\n', lp = resolve(root, LAB);
+    if (labOf(runs).length ? !existsSync(lp) || readFileSync(lp, 'utf8') !== want : existsSync(lp) && readFileSync(lp, 'utf8') !== want) bad.push(`${LAB} is out of date (run --publish)`);
     if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
     console.log(`fringe ledger ok: ${runs.length} run(s); last: ${runs.length ? runs[runs.length - 1].family : 'none'}; next may pick ${next(runs).length} families`);
   }

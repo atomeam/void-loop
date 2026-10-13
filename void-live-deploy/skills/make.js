@@ -40,6 +40,14 @@ const TOOLS = [
   ['(?:good[\\s-]turing|unseen asks|what hasn\'?t void heard(?: yet)?)', 'miss-board-4', 'What it hasn\'t heard yet', 'How much of what people will ask has Void already seen? Good and Turing\'s estimate.'],
   ['(?:odd moments?(?: log)?|something odd (?:just )?happened|weirdness log)', 'anomalous-event-timeline-4', 'Odd moments', 'Log each odd moment; over days it asks whether they come in bursts more than chance would.'],
 ].map(([re, id, label, sub]) => [new RegExp('^' + OPEN + re + '$'), id, label, sub]);
+// drafts the fringe ledger published with a lab entry (tools/fringe.mjs --publish writes /fringe/lab.json): they join the lab
+// without anyone editing the list above (the fringe → core loop, owner's direction 2026-10-13). A list entry wins over the file.
+export function labTools(lab, known = TOOLS) {
+  const have = new Set(known.map((t) => t[1])), esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return (Array.isArray(lab) ? lab : []).filter((e) => e && /^[a-z0-9-]+$/.test(e.id || '') && !have.has(e.id) && typeof e.label === 'string' && Array.isArray(e.asks) && e.asks.length)
+    .map((e) => [new RegExp('^' + OPEN + '(?:' + e.asks.map((a) => esc(String(a).toLowerCase())).join('|') + ')$'), e.id, e.label, String(e.sub || '')]);
+}
+try { const r = await fetch('/fringe/lab.json'); if (r.ok) TOOLS.push(...labTools(await r.json())); } catch (_) {} // no file, no network, or not a browser: the list above stands
 
 export function makeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
