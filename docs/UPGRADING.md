@@ -11,6 +11,8 @@ Written for the simplest agent that can run a shell. `AGENTS.md` has the full ru
 4. `node tools/merge-main.mjs`, then `VOID_SKIP_BENCH=1 node tools/checks.mjs`. Fix what it prints; it names the file.
 5. `node tools/grow.mjs grow "what Void can do now"`, one line in `docs/MAP.md`, `node tools/push.mjs`, open the PR, `node tools/automerge.mjs <pr> --label`. Then move on.
 
+A skill file that lands in `skills/` without its order file is registered at the end of the routing order by `node tools/skills-index.mjs --adopt` (finish.mjs runs it before it commits), and the fast checks then run the router test on it; a skill kept out on purpose is named in `OFF` in `tools/skills-index.mjs` with why.
+
 Never hand-edit `skills/index.json`, the agent log's old lines or the growth ledger's old lines.
 
 ## How Void upgrades itself

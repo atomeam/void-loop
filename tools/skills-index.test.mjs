@@ -41,3 +41,19 @@ test('--adopt: a skill the index lists by hand gets an order file between its ne
   assert.deepEqual(writeIndex(order, index), ['a', 'b', 'c', 'd', 'e', 'f']);
   assert.throws(() => adoptOrder(['a', 'x', 'y', 'b'], (() => { const o = join(d, 'tight'); mkdirSync(o); writeFileSync(join(o, '0010-a'), ''); writeFileSync(join(o, '0011-b'), ''); return o; })()), /no rank left/);
 });
+
+test('Void\'s ask: a new skill file in skills/ registers itself at the end of the routing order; libraries and OFF files stay out', async () => {
+  const { unregistered, registerNew, OFF } = await import('./skills-index.mjs');
+  const { mkdtempSync, writeFileSync: w, readdirSync: ls, mkdirSync } = await import('node:fs');
+  const { join } = await import('node:path'); const { tmpdir } = await import('node:os');
+  const skill = (n) => "export default {\n  name: '" + n + "',\n  examples: ['x'],\n  match() { return false; },\n  async run() { return 'none'; },\n};\n";
+  const files = { 'kettle.js': skill('kettle'), 'tide.js': skill('tide'), 'map.js': skill('map'), 'chess-rules.js': 'export const rules = { name: "x" };', 'odd.js': skill('other-name'), 'index.json': '[]' };
+  assert.deepEqual(unregistered(Object.keys(files), (f) => files[f], { tide: 10 }).map((x) => x.name), ['kettle'], 'registered, OFF, a library and a file whose name differs from its skill all stay out');
+  assert.ok(OFF.map, 'map is kept out on purpose, with why');
+  const root = mkdtempSync(join(tmpdir(), 'skills-')), order = join(root, 'order'); mkdirSync(order);
+  for (const [f, t] of Object.entries(files)) w(join(root, f), t);
+  w(join(order, '0010-tide'), ''); w(join(order, '1090-draw'), '');
+  assert.deepEqual(registerNew(order, root), ['1100-kettle']);
+  assert.deepEqual(ls(order).sort(), ['0010-tide', '1090-draw', '1100-kettle']);
+  assert.deepEqual(registerNew(order, root), [], 'twice is the same as once');
+});
