@@ -131,6 +131,7 @@ for (const [name, file] of [
   ['heavy', 'heavy.test.mjs'],
   ['clef-probe', 'clef-probe.test.mjs'],
   ['route-bench', 'route-bench.test.mjs'],
+  ['models', 'models.test.mjs'],
   ['families', 'families.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
