@@ -366,7 +366,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 ## 25. Draw in space, and draw your own Void (the owner, 2026-10-13)
 - **Where it is going (the owner, 2026-10-13):** "ok just remember we are working towards fully working Vr Void". Each step below builds toward the whole of Void in a headset, not only a VR drawing app:
   1. the Draw card's 3D layer (shipped);
-  2. Enter VR from the Draw card, painting with a controller;
+  2. Enter VR from the Draw card, painting with a controller (shipped, emulator-tested);
   3. a drawing that dresses your own Void, kept with the passkey;
   4. the stage itself in VR: the cards and miniatures stand around you, and you ask by voice;
   5. a shared Void in VR (frontier 11), with the other person as a presence in the room.
@@ -381,7 +381,12 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
   - "turn the ring 70", the Turn button, or a right or shift drag spins it. Undo takes a stroke back.
   - It stacks, hides, fades, clips and blends with flat layers.
   - Where 3D cannot start, the card says so and adds no layer.
-  - **Next:** Enter VR (WebXR controller strokes), then "make it my backdrop" or "put it on the stage", kept with the passkey.
+  - **Enter VR shipped 2026-10-13:**
+    - The button appears on a 3D layer only where the browser offers immersive VR.
+    - In the headset the layer stands about 0.9 m in front of you at chest height, and holding a trigger paints in the air.
+    - Leaving VR brings the strokes back to the card.
+    - It is tested with Meta's WebXR emulator (`iwer`, a dev dependency) standing in for a Quest 3. It has not yet been tried on a real headset.
+  - **Next:** "make it my backdrop" or "put it on the stage", kept with the passkey. Then the stage itself in VR (step 4 above).
 
 ## Candidate capability map (2026-10-09)
 
