@@ -7,7 +7,7 @@ import fs from 'node:fs';
 import { skillQuestion, clefPick, clefRoute, CLEF_MODEL, NONE } from '../void-live-deploy/lib/clef.js';
 import { SKILLS, resetRouter } from '../void-live-deploy/lib/router.js';
 import { onRequestPost as bench, ROUTE_CHUNK } from '../void-live-deploy/functions/api/bench.js';
-import { benchSet, sample, score, verdict, table, runSite, CONFIDENT } from './route-bench.mjs';
+import { benchSet, sample, score, verdict, table, runSite, noneSet, CONFIDENT } from './route-bench.mjs';
 
 const KEY = 'k'.repeat(40);
 const answer = (choice, probabilities) => ({ model: 'clef-flash', answers: { skill: { choice, probabilities, confidence: probabilities[choice] } } });
@@ -105,5 +105,15 @@ test('a full route chunk fits the guard\'s body limit for /api/bench (HTTP 413 o
   const { LIMITS } = await import('../void-live-deploy/lib/guard.js');
   const body = JSON.stringify({ route: true, asks: Array(ROUTE_CHUNK).fill('é'.repeat(300)) });
   assert.ok(new TextEncoder().encode(body).length <= LIMITS.bench.body, 'sixteen 300-character asks of two-byte characters fit');
+});
+
+test('every run adds the router\'s own answer-in-words asks as "none": near-misses, simple and hard questions', () => {
+  const rows = noneSet();
+  assert.ok(rows.length >= 60, 'near-misses + simple + hard: ' + rows.length);
+  assert.ok(rows.every((r) => r.want.length === 1 && r.want[0] === NONE && r.examples));
+  assert.ok(rows.some((r) => r.ask === 'who invented the clock') && rows.some((r) => r.ask === 'who wrote hamlet'));
+  assert.equal(new Set(rows.map((r) => r.ask)).size, rows.length, 'no ask twice');
+  const s = score([{ ask: 'who invented the clock', want: [NONE] }, { ask: 'why is the sky blue', want: [NONE] }], [{ embed: { skill: null }, clef: { skill: 'clock', p: 0.6 } }, { embed: { skill: null }, clef: { skill: null, p: 0.9 } }]);
+  assert.match(table(s, verdict(s)), /Clef sent 1 of them to a skill/);
 });
 
