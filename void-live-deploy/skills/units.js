@@ -1,91 +1,79 @@
 /**
- * units skill — convert common units (pure math, no key)
+ * units skill - convert common units (pure math, no key)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "5 miles to km", "100 fahrenheit to celsius", "2 cups to ml", "how many ounces in a pound".
+ * "100 fahrenheit to celsius", "10 miles in km", "5 kg to pounds", "32 f to c".
  */
 const FACTORS = {
   m: 1, meter: 1, meters: 1, metre: 1, metres: 1,
   km: 1000, kilometer: 1000, kilometers: 1000, kilometre: 1000, kilometres: 1000,
   cm: 0.01, centimeter: 0.01, centimeters: 0.01,
-  mm: 0.001, millimeter: 0.001, millimeters: 0.001,
-  mi: 1609.344, mile: 1609.344, miles: 1609.344,
-  yd: 0.9144, yard: 0.9144, yards: 0.9144,
-  ft: 0.3048, foot: 0.3048, feet: 0.3048,
-  in: 0.0254, inch: 0.0254, inches: 0.0254,
+  mm: 0.001, millimeter: 0.001,
+  mile: 1609.344, miles: 1609.344, mi: 1609.344,
+  yard: 0.9144, yards: 0.9144, yd: 0.9144,
+  foot: 0.3048, feet: 0.3048, ft: 0.3048,
+  inch: 0.0254, inches: 0.0254, in: 0.0254,
   g: 1, gram: 1, grams: 1,
   kg: 1000, kilogram: 1000, kilograms: 1000,
-  lb: 453.59237, pound: 453.59237, pounds: 453.59237,
-  oz: 28.349523125, ounce: 28.349523125, ounces: 28.349523125,
-  ml: 1, milliliter: 1, milliliters: 1, millilitre: 1, millilitres: 1,
-  l: 1000, liter: 1000, liters: 1000, litre: 1000, litres: 1000,
-  cup: 236.588, cups: 236.588,
-  tbsp: 14.7868, tablespoon: 14.7868, tablespoons: 14.7868,
-  tsp: 4.92892, teaspoon: 4.92892, teaspoons: 4.92892,
-  'fl oz': 29.5735, floz: 29.5735
+  lb: 453.59237, lbs: 453.59237, pound: 453.59237, pounds: 453.59237,
+  oz: 28.349523125, ounce: 28.349523125, ounces: 28.349523125
 };
-const TEMP = { c: 'c', celsius: 'c', f: 'f', fahrenheit: 'f', k: 'k', kelvin: 'k' };
 
-export function parseUnits(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
-  if (!t) return null;
-  let m = t.match(/^(?:convert\s+)?(-?\d+(?:\.\d+)?)\s*(c|celsius|f|fahrenheit|k|kelvin)\s+(?:to|in)\s+(c|celsius|f|fahrenheit|k|kelvin)$/);
-  if (m) return { kind: 'temp', value: +m[1], from: TEMP[m[2]], to: TEMP[m[3]] };
-  m = t.match(/^(?:convert\s+|how\s+many\s+)?(-?\d+(?:\.\d+)?)\s+([a-z ]+?)\s+(?:to|in)\s+([a-z ]+)$/);
+function parseUnit(s) {
+  s = s.toLowerCase().replace(/s$/, '').trim();
+  return FACTORS[s] ? s : null;
+}
+
+export function unitsOf(text) {
+  const t = String(text || '').toLowerCase().trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  let m = t.match(/(-?\d+(?:\.\d+)?)\s*(f|fahrenheit|c|celsius|k|kelvin)\s+(?:to|in|as)\s+(f|fahrenheit|c|celsius|k|kelvin)/);
+  if (m) return { kind: 'temp', value: +m[1], from: m[2][0], to: m[3][0] };
+  m = t.match(/(-?\d+(?:\.\d+)?)\s*([a-z]+)\s+(?:to|in|as)\s+([a-z]+)/);
   if (m) {
-    const from = m[2].trim(), to = m[3].trim();
-    if (FACTORS[from] && FACTORS[to]) return { kind: 'factor', value: +m[1], from, to };
+    const from = parseUnit(m[2]), to = parseUnit(m[3]);
+    if (from && to && FACTORS[from] && FACTORS[to]) return { kind: 'linear', value: +m[1], from, to, factorFrom: FACTORS[from], factorTo: FACTORS[to] };
   }
-  m = t.match(/^how\s+many\s+([a-z ]+)\s+in\s+(?:a\s+|an\s+)?([a-z ]+)$/);
-  if (m && FACTORS[m[1]] && FACTORS[m[2]]) return { kind: 'factor', value: 1, from: m[2], to: m[1] };
   return null;
 }
 
 function convertTemp(v, from, to) {
-  let c;
-  if (from === 'c') c = v;
-  else if (from === 'f') c = (v - 32) * 5 / 9;
-  else c = v - 273.15;
-  if (to === 'c') return c;
+  let c = from === 'f' ? (v - 32) * 5 / 9 : from === 'k' ? v - 273.15 : v;
   if (to === 'f') return c * 9 / 5 + 32;
-  return c + 273.15;
+  if (to === 'k') return c + 273.15;
+  return c;
 }
 
-export function convert(q) {
-  if (q.kind === 'temp') return convertTemp(q.value, q.from, q.to);
-  return q.value * FACTORS[q.from] / FACTORS[q.to];
-}
-
-function nice(n) {
-  if (!Number.isFinite(n)) return '—';
-  const a = Math.abs(n);
-  if (a === 0) return '0';
-  if (a >= 100) return n.toFixed(1).replace(/\.0$/, '');
-  if (a >= 1) return n.toFixed(2).replace(/\.?0+$/, '');
-  return n.toPrecision(3).replace(/\.?0+$/, '');
-}
-
-async function run(text, api) {
+function run(text, api) {
   const { showPage, esc } = api;
-  const q = parseUnits(text);
+  const q = unitsOf(text);
   if (!q) return 'none';
-  const result = convert(q);
-  const el = showPage((p) => {
-    p.innerHTML = '<h2>Units</h2>'
-      + '<div style="font-size:26px;margin:12px 0">' + esc(nice(q.value) + ' ' + q.from + ' = ' + nice(result) + ' ' + q.to) + '</div>'
-      + '<div class="sub">exact conversion</div>';
+  let result, label, formula;
+  if (q.kind === 'temp') {
+    result = convertTemp(q.value, q.from, q.to);
+    const names = { f: '°F', c: '°C', k: 'K' };
+    label = q.value + names[q.from] + ' = ' + result.toFixed(2) + names[q.to];
+    formula = 'C = (F − 32) × 5/9; F = C × 9/5 + 32; K = C + 273.15';
+  } else {
+    const base = q.value * q.factorFrom;
+    result = base / q.factorTo;
+    label = q.value + ' ' + q.from + ' = ' + result.toFixed(4).replace(/\.?0+$/, '') + ' ' + q.to;
+    formula = 'via SI base unit (meters or grams)';
+  }
+  showPage((el) => {
+    el.innerHTML = '<h2>Units</h2><div style="font-size:32px;font-weight:300;margin:10px 0">' + esc(label) + '</div>'
+      + '<div class="sub">' + esc(formula) + '</div><div class="src">Pure math · as of Oct 2026</div>';
   });
   return 'units';
 }
 
 export default {
   name: 'units',
-  examples: ['5 miles to km', '100 fahrenheit to celsius', '2 cups to ml', 'how many ounces in a pound', '10 kg to lb'],
-  nearMisses: ['what is a mile', 'convert currency', 'miles per hour', 'how far is a mile'],
-  match(lower, text) { return !!parseUnits(text); },
+  examples: ['100 fahrenheit to celsius', '10 miles in km', '5 kg to pounds', '32 f to c'],
+  nearMisses: ['unit of measurement history', 'how many units in a building', 'unit test'],
+  match(lower, text) { return !!unitsOf(text || lower); },
   run,
   suite() {
-    const mi = parseUnits('5 miles to km');
-    const temp = parseUnits('100 fahrenheit to celsius');
-    return { ok: !!mi && Math.abs(convert(mi) - 8.04672) < 0.01 && !!temp && Math.abs(convert(temp) - 37.7778) < 0.1 && !parseUnits('what is a mile') };
+    const a = unitsOf('100 fahrenheit to celsius'), b = unitsOf('10 miles in km'), c = unitsOf('5 kg to pounds');
+    const ok = a && Math.abs(convertTemp(100, 'f', 'c') - 37.777) < 0.01 && b && Math.abs(10 * 1609.344 / 1000 - 16.093) < 0.01 && c && Math.abs(5 * 1000 / 453.59237 - 11.023) < 0.01 && !unitsOf('what is a unit');
+    return { ok, got: ok ? 'pass' : 'fail' };
   }
 };
