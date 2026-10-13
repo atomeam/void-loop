@@ -2363,6 +2363,25 @@ try {
     check('the growth card says how fast Void is gaining skills: this week against the week before, with the trend',
       !!v && /^This week \d+ new or better, the week before \d+: (speeding up|steady|slowing|stalled)$/.test(v.text) && v.text.endsWith(v.trend) && !G.errors.length, JSON.stringify({ v, errors: G.errors }));
     await G.ctx.close(); }
+  // The growth card's friction line (asked by Void, five times since 2026-10-12: "a 'friction' indicator on the growth card that
+  // highlights which skills are currently failing or returning high uncertainty"): from skills/families.json, the bench's wrong
+  // asks first, then the least checked skills, each with its reason.
+  if (want("The growth card shows friction: the skills failing on the bench, then the least checked")) { const G = await fresh();
+    await G.ask('growth', 1500);
+    const real = await until(async () => G.p.$eval('.vpage .growth-friction', (e) => ({ n: e.dataset.friction, text: e.textContent })).catch(() => null), 6000);
+    const fam = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'families.json'), 'utf8')), rows = fam.families.flatMap((f) => f.skills);
+    const least = rows.filter((x) => x.tier === 'experiment' || x.tier === 'tested').length + rows.filter((x) => x.failing && x.tier !== 'experiment' && x.tier !== 'tested').length;
+    const under = await G.p.$eval('.vpage', (p) => { const v = p.querySelector('[data-velocity]'); return !!v && !!v.nextElementSibling && v.nextElementSibling.classList.contains('growth-friction'); }).catch(() => false);
+    // a skill failing on the bench, in a context of its own (the service worker would serve the real file to a second ask)
+    const H = await fresh(() => { delete Navigator.prototype.serviceWorker; }); // the service worker fetches /skills/ itself, past any route
+    await H.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ skills: [{ name: 'weather', tier: 'proven', why: 'x', failing: ['weather in oslo', 'rain <later>'] }, { name: 'tide', tier: 'experiment', why: 'nothing checks it yet' }, { name: 'clock', tier: 'proven', why: 'y' }] }] })));
+    await H.ask('growth', 1500);
+    const stub = await until(async () => H.p.$eval('.vpage .growth-friction', (e) => ({ n: e.dataset.friction, text: e.textContent, html: e.innerHTML })).catch(() => null), 6000);
+    await H.ctx.close();
+    check("the growth card shows friction (asked by Void): skills failing on the bench first, then the least checked, each with its reason, right under the velocity",
+      !!real && Number(real.n) === least && /^Friction: /.test(real.text) && !!stub && /^Friction: 1 failing, 1 barely checked\. weather failing \(the bench got 2 of its asks wrong: “weather in oslo”, “rain <later>”\); tide unchecked \(nothing checks it yet\)\.$/.test(stub.text)
+      && !/<later>/.test(stub.html) && !/clock/.test(stub.text) && under && !G.errors.length && !H.errors.length, JSON.stringify({ real, least, stub, under, errors: G.errors.concat(H.errors) }));
+    await G.ctx.close(); }
   // Void's will tells no lies (the owner, 2026-10-12: "its also lying aboout it being the most frequent . we have a 0 lie policy"):
   // a stored reason that ranks or counts ("the most frequent thing people are asking me to do") shows the recorded fact instead;
   // a plain reason stays in Void's words.

@@ -49,6 +49,29 @@ export function velocity(list, now = Date.now()) {
   return { week, before, trend };
 }
 
+/** Void asked (2026-10-12, five times since): "a 'friction' indicator on the growth card that highlights which skills are currently
+ * failing or returning high uncertainty". From skills/families.json, evidence only: failing = the asks the everyday benchmark got
+ * wrong on its last clean run on main; uncertain = the least checked (nothing checks it yet, then one kind of check). Pure. */
+export const FAMILIES_URL = '/skills/families.json';
+export function friction(fam, show = 5) {
+  const all = ((fam && fam.families) || []).flatMap((f) => (f && f.skills) || []).filter((s) => s && s.name);
+  const failing = all.filter((s) => Array.isArray(s.failing) && s.failing.length).sort((a, b) => b.failing.length - a.failing.length || a.name.localeCompare(b.name));
+  const rank = { experiment: 0, tested: 1 };
+  const unsure = all.filter((s) => s.tier in rank && !failing.includes(s)).sort((a, b) => rank[a.tier] - rank[b.tier] || a.name.localeCompare(b.name));
+  const top = [...failing, ...unsure].slice(0, show);
+  return { failing: failing.length, unsure: unsure.length, top: top.map((s) => ({ name: s.name, failing: s.failing || null, tier: s.tier, why: s.why })) };
+}
+export function frictionHtml(esc, f) {
+  if (!f || !f.top.length) return '';
+  const item = (s) => '<b style="font-weight:600">' + esc(s.name) + '</b> ' + (s.failing
+    ? '<span style="color:#e06a5a">failing</span> (the bench got ' + s.failing.length + ' of its asks wrong: ' + s.failing.map((a) => '“' + esc(a) + '”').join(', ') + ')'
+    : '<span style="color:#e0a24a">' + (s.tier === 'experiment' ? 'unchecked' : 'barely checked') + '</span> (' + esc(s.why) + ')');
+  const rest = f.failing + f.unsure - f.top.length;
+  return '<div class="sub growth-friction" data-friction="' + (f.failing + f.unsure) + '" style="line-height:1.45">Friction: '
+    + (f.failing ? f.failing + ' failing, ' : 'nothing failing on the bench, ') + f.unsure + ' barely checked. ' + f.top.map(item).join('; ')
+    + (rest > 0 ? '; and ' + rest + ' more' : '') + '.</div>';
+}
+
 export function growthHead(esc, list, now = Date.now()) {
   const s = summary(list), v = velocity(list, now);
   return '<h2>How Void has grown</h2><div class="sub">' + s.total + ' changes' + (s.since ? ' since ' + esc(s.since) : '') + ', newest first</div>'
@@ -105,6 +128,11 @@ async function run(text, api) {
   if (_pageStill && !_pageStill(el)) return 'growth';
   let kind = '', shown = PAGE_SIZE;
   el.innerHTML = growthHead(esc, list);
+  // the friction line under the velocity: which skills are failing or least checked (skills/families.json); without it, no line
+  fetch(FAMILIES_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((fam) => {
+    const html = frictionHtml(esc, friction(fam)), v = el.querySelector('[data-velocity]');
+    if (html && v && el.isConnected) v.insertAdjacentHTML('afterend', html);
+  }).catch(() => {});
   const w = week ? weekSummary(list) : null;
   const body = document.createElement('div');
   const draw = () => { body.innerHTML = growthHtml(esc, list, kind, shown, { head: false }); };
@@ -201,7 +229,10 @@ export function suite() {
     { at: '2026-10-02T10:00:00Z', by: 'c', kind: 'grow', what: 'three' }];
   const o = ordered(list).map((e) => e.what).join(','), s = summary(list), h = growthHtml(esc, list, 'grow', 40);
   const ok = o === 'two <b>,three,one' && s.total === 3 && s.since === '2026-10-01' && s.byKind.grow === 2 && !h.includes('two') && h.includes('three') && !growthHtml(esc, list, '', 40).includes('<b>');
-  return { ok, got: ok ? '' : o + ' ' + JSON.stringify(s) };
+  const fam = { families: [{ skills: [{ name: 'a', tier: 'proven', why: 'x' }, { name: 'b', tier: 'tested', why: 'one test' }, { name: 'c', tier: 'experiment', why: 'nothing checks it yet' }, { name: 'd', tier: 'proven', why: 'y', failing: ['q <i>'] }] }] };
+  const f = friction(fam), fh = frictionHtml(esc, f);
+  const fok = f.top.map((x) => x.name).join() === 'd,c,b' && f.failing === 1 && f.unsure === 2 && fh.includes('q &lt;i&gt;') && !fh.includes('<i>') && frictionHtml(esc, friction(null)) === '';
+  return { ok: ok && fok, got: ok && fok ? '' : o + ' ' + JSON.stringify(s) + ' ' + JSON.stringify(f) };
 }
 
 export default {

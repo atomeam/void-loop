@@ -64,8 +64,9 @@ jobs:
             # decide again on the newest main each time: a floor raised meanwhile (a PR, another run) is never overwritten with less
             git fetch -q origin main && git reset -q --hard origin/main
             node tools/bench-floor.mjs bench-score.json --write | tee -a "$GITHUB_STEP_SUMMARY"
-            git diff --quiet tools/bench.best.json tools/bench.misses.json && exit 0
-            git add tools/bench.best.json tools/bench.misses.json
+            node tools/families.mjs > /dev/null # the misses are each skill's failing asks there: the growth card's friction line
+            git diff --quiet tools/bench.best.json tools/bench.misses.json void-live-deploy/skills/families.json && exit 0
+            git add tools/bench.best.json tools/bench.misses.json void-live-deploy/skills/families.json
             git commit -q -m "Bench floor, latency baseline or misses moved by a clean run on main (tools/bench-floor.mjs)"
             git push origin HEAD:main && exit 0
             sleep $((2 ** i))
