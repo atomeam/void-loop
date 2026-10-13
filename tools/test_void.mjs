@@ -2338,6 +2338,27 @@ try {
     await B.ctx.close();
   }
 
+  // Draw (2026-10-13, target ibisPaint X): a brush made from words, and a stroke that really lands on the canvas
+  if (want("Draw: a brush from words, and a stroke that lands on the canvas")) {
+    const D = await fresh();
+    await D.ask('let me draw', 500);
+    const ink = () => D.p.$eval('.vpage.on .vdraw canvas', (c) => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 10) n++; return n; }).catch(() => -1);
+    const before = await ink();
+    await D.p.fill('.vpage.on .vd-words', 'dry charcoal that catches the paper grain'); await D.p.click('.vpage.on .vd-make button');
+    const said = await D.p.$eval('.vpage.on .vd-said', (e) => e.textContent).catch(() => '');
+    const box = await D.p.$eval('.vpage.on .vdraw canvas', (c) => { const r = c.getBoundingClientRect(); return [r.left, r.top, r.width, r.height]; });
+    await D.p.mouse.move(box[0] + box[2] * 0.2, box[1] + box[3] * 0.5); await D.p.mouse.down();
+    for (let i = 1; i <= 12; i++) await D.p.mouse.move(box[0] + box[2] * (0.2 + i * 0.05), box[1] + box[3] * (0.5 + Math.sin(i / 2) * 0.1));
+    await D.p.mouse.up(); await D.p.waitForTimeout(100);
+    const after = await ink();
+    await D.p.click('.vpage.on .vd-undo'); const undone = await ink();
+    const kept = await D.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.brushes.v1') || '[]').map((b) => b.tool));
+    check('draw: "let me draw" opens a blank canvas; "dry charcoal that catches the paper grain" makes a charcoal brush with heavy grain and keeps it; a drag lays a stroke; undo takes it back',
+      before === 0 && /charcoal/.test(said) && /heavy paper grain/.test(said) && after > 500 && undone === 0 && kept.includes('charcoal') && !D.errors.length,
+      JSON.stringify({ before, said, after, undone, kept, errors: D.errors }));
+    await D.ctx.close();
+  }
+
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
