@@ -4,7 +4,8 @@
  * (index entries whose module is missing or misshapen are named). This browser: storage (a throwaway value written and
  * removed), 3D (WebGL), the offline layer (service worker), online or not. Outside sources: the open services Void reads,
  * pinged once each, only now, in parallel, with a 6 s limit, showing up / down and how long each took. The translation
- * service is not pinged: a ping would spend its small daily quota. Nothing is sent about you; nothing is kept.
+ * service is not pinged: a ping would spend its small daily quota. Void's own build: the newest checks and deploy on main (GitHub's
+ * public API). For the owner, the card opens by itself when one of those failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
 export const SOURCES = [
   { name: 'Open-Meteo weather', for: 'weather, air quality, UV', url: 'https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current=temperature_2m' },
@@ -58,8 +59,37 @@ export function checkBrowser(w = typeof window !== 'undefined' ? window : {}) {
   return out;
 }
 
+// Void's own build (Void asked, 2026-10-11/12, five times: "a system where a blocked deployment or failed action generates a 'status'
+// card automatically"; "make the results of verify-main visible to me as a status card"): the newest run on main of the checks and
+// of the deploy, from GitHub's public API (the repository is public; no key, 60 reads an hour per address). The owner chose
+// (2026-10-13) that the card opens by itself only for the owner: visitors keep the blank stage (autoOpen below).
+export const REPO = 'atomeam/void-loop';
+export const BUILD = [{ name: 'Checks on main', file: 'verify.yml' }, { name: 'Deploy', file: 'deploy.yml' }];
+export async function buildRun(wf, fetchFn = (u, o) => fetch(u, o)) {
+  try {
+    const r = await fetchFn('https://api.github.com/repos/' + REPO + '/actions/workflows/' + wf.file + '/runs?branch=main&per_page=1&exclude_pull_requests=true', { headers: { accept: 'application/vnd.github+json' } });
+    if (!r.ok) return { ...wf, state: 'unknown', note: 'GitHub answered HTTP ' + r.status };
+    const run = ((await r.json()).workflow_runs || [])[0];
+    if (!run) return { ...wf, state: 'unknown', note: 'no run on main yet' };
+    const state = run.status !== 'completed' ? 'running' : run.conclusion === 'success' ? 'passed' : run.conclusion === 'skipped' || run.conclusion === 'cancelled' ? 'unknown' : 'failed';
+    return { ...wf, state, note: (state === 'failed' ? 'failed (' + run.conclusion + ')' : state === 'running' ? 'running now' : state === 'passed' ? 'passed' : run.conclusion) + ' on ' + String(run.head_sha || '').slice(0, 7) + ' · ' + String(run.created_at || '').slice(0, 16).replace('T', ' ') + ' UTC', url: /^https:\/\/github\.com\//.test(run.html_url || '') ? run.html_url : null };
+  } catch (_) { return { ...wf, state: 'unknown', note: 'GitHub could not be reached from this browser' }; }
+}
+export const buildState = (fetchFn) => Promise.all(BUILD.map((w) => buildRun(w, fetchFn)));
+export const buildFailed = (rows) => Array.isArray(rows) && rows.some((r) => r.state === 'failed');
+// once a page load, for the owner only: the build is read, and the status card opens when a run on main failed. Read at most once
+// in ten minutes per tab (sessionStorage), so reloads don't spend the public API's hourly allowance.
+const SEEN = 'a2m.void.status.build.v1';
+export async function autoOpen(open, { fetchFn, store = typeof sessionStorage !== 'undefined' ? sessionStorage : null, now = Date.now() } = {}) {
+  let rows = null;
+  try { const c = JSON.parse((store && store.getItem(SEEN)) || 'null'); if (c && now - c.at < 600000) rows = c.rows; } catch (_) {}
+  if (!rows) { rows = await buildState(fetchFn); try { store && store.setItem(SEEN, JSON.stringify({ at: now, rows })); } catch (_) {} }
+  if (buildFailed(rows)) { await open(); return true; }
+  return false;
+}
+
 const dot = (ok) => '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:' + (ok ? '#3fbf6a' : '#e0584a') + '"></span>';
-export function statusHtml(esc, skills, browser, sources, at) {
+export function statusHtml(esc, skills, browser, sources, at, build) {
   const row = (ok, name, note, ms) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + dot(ok) + esc(name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(note) + (ms != null ? ' · ' + ms + ' ms' : '') + '</td></tr>';
   const up = sources ? sources.filter((s) => s.ok).length : 0;
   return '<h2>Void status</h2><div class="sub">checked just now, from this browser' + (at ? ' · ' + esc(at) : '') + '</div>'
@@ -69,6 +99,8 @@ export function statusHtml(esc, skills, browser, sources, at) {
     + '<h3 style="margin:12px 0 4px;font-size:15px">Outside sources' + (sources ? ' · ' + up + ' of ' + sources.length + ' answering' : '') + '</h3>'
     + (sources ? '<table style="border-collapse:collapse">' + sources.map((s) => row(s.ok, s.name, 'for ' + s.for + (s.note ? ' · ' + s.note : ''), s.ok ? s.ms : null)).join('') + '</table>'
       : '<p style="color:#8a8a92">Not checked: this browser is offline.</p>')
+    + (build ? '<h3 style="margin:12px 0 4px;font-size:15px">Void’s own build' + (buildFailed(build) ? ' · <span style="color:#e0584a">something on main failed</span>' : '') + '</h3><table style="border-collapse:collapse">'
+      + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '') + '</td></tr>').join('') + '</table>' : '')
     + '<div class="src">Each source was asked once, now, because you asked; the translation service is not pinged, to save its daily quota. Nothing about you is sent or kept.</div>';
 }
 
@@ -77,9 +109,9 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>Void status</h2><div class="sub">checking…</div>'; });
   const browser = checkBrowser(), online = browser.find((b) => b.name === 'Online').ok;
-  const [skills, sources] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null)]);
+  const [skills, sources, build] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState() : Promise.resolve(null)]);
   const at = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-  el.innerHTML = statusHtml(esc, skills, browser, sources, at);
+  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build);
   return 'status';
 }
 

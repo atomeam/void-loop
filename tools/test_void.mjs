@@ -877,6 +877,23 @@ try {
         && /Frankfurter\s+for currency · answered HTTP 503/.test(done) && /USGS\s+for earthquakes · could not be reached from this browser/.test(done) && probe === null && !P.errors.length,
       [done.replace(/\s+/g, ' ').slice(0, 400), want, probe, P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
+  // Void's own build (asked by Void five times; the owner chose 2026-10-13 that it opens by itself for the owner only): the newest
+  // checks and deploy on main from GitHub's public API. A failed run opens the status card for the owner; a green build, or a
+  // visitor, keeps the blank stage. GitHub is stubbed in the page (an init script), so the page's own check at load sees it.
+  if (want("the owner's status card opens by itself when the checks or deploy on main failed; visitors keep the blank stage")) {
+    const gh = (conclusion, owner) => (owner ? 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' : '') + `{ const f = window.fetch; window.fetch = (u, o) => /api\\.github\\.com\\/repos\\/atomeam\\/void-loop\\/actions\\/workflows\\/(verify|deploy)\\.yml\\/runs/.test(String(u)) ? Promise.resolve(new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: /verify/.test(String(u)) ? '${conclusion}' : 'success', head_sha: 'abc1234def', created_at: '2026-10-13T16:20:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200, headers: { 'content-type': 'application/json' } })) : f(u, o); }`;
+    const cardOf = async (P) => { for (let i = 0; i < 24; i++) { const t = await P.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); if (t) return t; await P.p.waitForTimeout(250); } return ''; };
+    const O = await fresh({ content: gh('failure', true) });
+    const red = await cardOf(O);
+    const link = await O.p.$eval('.vpage a[href*="/actions/runs/7"]', (a) => a.href).catch(() => null);
+    const G = await fresh({ content: gh('success', true) }); await G.p.waitForTimeout(3000); const green = await G.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
+    const V = await fresh({ content: gh('failure', false) }); await V.p.waitForTimeout(3000); const visitor = await V.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
+    await V.ask('void status', 400); const asked = await (async () => { for (let i = 0; i < 40; i++) { const t = await V.page(); if (/Void’s own build/.test(t)) return t; await V.p.waitForTimeout(250); } return V.page(); })();
+    check("the owner's status card opens by itself when the checks on main failed (with the run linked); a green build or a visitor sees nothing until they ask, and asking shows Void's own build",
+      /Void status/.test(red) && /Void’s own build · something on main failed/.test(red) && /Checks on main\s*failed \(failure\) on abc1234/.test(red) && /Deploy\s*passed/.test(red) && link === 'https://github.com/atomeam/void-loop/actions/runs/7'
+        && !green && !visitor && /Void’s own build · something on main failed/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
+      JSON.stringify({ red: red.replace(/\s+/g, ' ').slice(0, 300), link, green: green.slice(0, 80), visitor: visitor.slice(0, 80), asked: asked.replace(/\s+/g, ' ').slice(0, 200), errors: O.errors.concat(G.errors, V.errors) }));
+    await O.ctx.close(); await G.ctx.close(); await V.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();
     await P.ask('release notes for v1.4.0 ⏎ a1b2c3d feat(api): add search (#41) ⏎ fix: crash on empty list ⏎ Merge pull request #42 from x/y', 900);
