@@ -13,5 +13,6 @@
   {"check": "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the ", "sha": "76a8cf32bbd73a0c352947c6e91912fd7ddfded7", "at": "2026-10-13T02:20:01Z"},
   {"check": "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wa", "sha": "9b11e376f1396d661340b93760df351798332c3a", "at": "2026-10-13T09:12:46Z"},
   {"check": "suite ran to the end", "sha": "f672395e9c0d357edc5df3ade513c0b3f9c5de79", "at": "2026-10-13T10:53:54Z"},
-  {"check": "defences: a burst from one connection is cut off (answer 30/min, will 60/min, 429 + retry-after); other connections are unaffected", "sha": "2334e35d161d9531f35b995793969a8069f32b2e", "at": "2026-10-13T16:26:30Z"}
+  {"check": "defences: a burst from one connection is cut off (answer 30/min, will 60/min, 429 + retry-after); other connections are unaffected", "sha": "2334e35d161d9531f35b995793969a8069f32b2e", "at": "2026-10-13T16:26:30Z"},
+  {"check": "one side card per lifted board: a move made while the 3D board loads leaves exactly one side card on the stage, and it carries the move, not the empty first sta", "sha": "5df007b4337dda83ddd7eeaf52a5d8e0e5c33864", "at": "2026-10-13T16:38:07Z"}
 ]
