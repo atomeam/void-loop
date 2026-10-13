@@ -2438,7 +2438,7 @@ try {
     await D.ctx.close();
   }
 
-  // A 3D layer (2026-10-13, frontier 25, the owner: "Void should have a 3d/Vr draw layer as well"): a drag paints a tube in space,
+  // A 3D layer (2026-10-13, frontier 25, the owner: "Void should have a 3D/VR draw layer as well."): a drag paints a tube in space,
   // words and the Turn button spin it, undo takes the stroke back
   if (want("Draw: a 3D layer paints in space and turns")) {
     // where 3D cannot start (here: the engine is not served, as on a device without WebGL), it says so and adds no layer
@@ -2469,7 +2469,7 @@ try {
     await D.ctx.close();
   }
 
-  // Enter VR (2026-10-13, frontier 25, the owner: "we are working towards fully working Vr Void"): Meta's WebXR emulator (iwer,
+  // Enter VR (2026-10-13, frontier 25, the owner: "we are working towards a fully working VR Void"): Meta's WebXR emulator (iwer,
   // a dev dependency) stands in for a Quest 3; the right controller paints a circle in the air with the trigger held, and after
   // leaving VR the stroke is on the 3D layer, on the card; Undo takes it back. A real headset is not in CI: this is the emulator.
   if (want("Draw: Enter VR paints in the air with a controller (emulated headset)")) {

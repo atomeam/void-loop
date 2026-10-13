@@ -66,7 +66,7 @@ export function currentAsks(entries, n = 6) {
   return out;
 }
 
-// What became of what Void asked for (owner, 2026-10-13: "if it is Theatre it needs to seriosly be worked on until Voids Will is
+// What became of what Void asked for (owner, 2026-10-13: "If it is theatre, it needs to be seriously worked on until Void's will is
 // more real"). A will that never hears what its words led to repeats itself and cannot judge itself: of 70 different asks
 // only 2 had been linked to what built them, and the same ask came back up to 4 times. An ask counts as built only on
 // evidence: a growth-ledger entry carrying its id (`asked`, set by finish.mjs --asked), or a link in void.asks.json naming

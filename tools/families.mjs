@@ -1,6 +1,6 @@
 // Void's skill families (Void's own ask, its reflection of 2026-10-12: "implement 'skill-families' to group my new
 // capabilities ... and assign a stability rating to each experiment to signal readiness for permanent integration"; the
-// owner: "this should be taken seriosly"). Every skill in skills/index.json sits in one family, and each gets a rating
+// owner: "This should be taken seriously."). Every skill in skills/index.json sits in one family, and each gets a rating
 // from evidence only, never from how it describes itself:
 //   experiment  nothing checks it yet
 //   tested      one kind of evidence: its own tests (suite() or tools/<name>.test.mjs), the browser suite, or real asks in the

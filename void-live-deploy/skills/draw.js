@@ -353,7 +353,7 @@ function run(text, api) {
     const a = document.createElement('a'); a.download = 'void-' + L.name.replace(/[^a-z0-9]+/gi, '-') + '.stl'; a.href = URL.createObjectURL(new Blob([buf], { type: 'model/stl' })); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     return named(L) + ' is saved as an STL, ' + model.size.map((v) => Math.round(v)).join(' × ') + ' mm: ' + (check.closed ? 'watertight' : 'not watertight') + (check.supports ? ', it needs supports' : '') + ', about ' + check.grams + ' g of PLA.';
   };
-  // Enter VR (frontier 25, the owner: "we are working towards fully working Vr Void"): the 3D layer's scene goes into a headset
+  // Enter VR (frontier 25, the owner: "we are working towards a fully working VR Void"): the 3D layer's scene goes into a headset
   // session of its own renderer (so the page's miniatures keep theirs), standing in front of you at chest height, about a metre
   // and a half across; holding a controller's trigger paints a tube where the controller is, in the brush and colour on the
   // card; leaving VR brings the layer back to the card as it was turned. The button shows only where the browser offers VR.
