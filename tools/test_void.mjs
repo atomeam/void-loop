@@ -1519,7 +1519,14 @@ try {
         && /primary completion 2027-03/.test(page1) && /results posted/.test(page1) && /No follow-up senolytic liver trial is registered yet/.test(page1)
         && /could not be reached; showing the last check, from/.test(page2) && ids.every((id) => page2.includes(id)) && !W.errors.length,
       [page1.slice(0, 160), page2.slice(0, 120), W.errors.join(';')].join(' | '));
-    await W.ctx.close(); }
+    await W.ctx.close();
+    // a browser that never checked, with the registry out of reach: Void's own daily check (/trialwatch.json, kept by the trial watch workflow)
+    const D = await fresh(); await D.ctx.route(/clinicaltrials\.gov\/api\/v2\/studies\//, (r) => r.abort());
+    await D.ask('trial watch', 2500); const page3 = await D.page();
+    const served = JSON.parse(fs.readFileSync(path.join(root, 'trialwatch.json'), 'utf8'));
+    check('trial watch: a browser that never checked, with the registry out of reach, shows Void\'s own daily check (/trialwatch.json) and its date, not "ask again"',
+      /showing Void's own daily check, from/.test(page3) && Object.keys(served.rows).every((id) => page3.includes(id)) && !/Ask again in a moment/.test(page3) && !D.errors.length, page3.slice(0, 200) + ' | ' + D.errors.join(';'));
+    await D.ctx.close(); }
   // "who is X" prefers the person; a loose match says so in one line; the board counts one ask in different words once.
   if (want("\"who is X\" prefers the person; a loose match says so in one line; the board counts one ask")) { const E = await fresh(); const sums = [];
     // #18 two-part summon loads figures3d + three.js on an article; keep the suite offline with the same stub #17 uses.
