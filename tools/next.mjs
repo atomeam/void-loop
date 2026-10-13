@@ -9,6 +9,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
 import { readFrontier, openItems, stepsLeft, targets } from './frontier.mjs';
+import { scan as reviewOverrides, summarize as overrideSummary } from './review-overrides.mjs';
 
 const SNAPSHOT = new URL('../domains/void.misses.json', import.meta.url);
 
@@ -45,6 +46,10 @@ function main(argv) {
   for (const o of s.open) console.log(`  - ${o.title}${o.from ? '  [' + o.from + ']' : ''}`);
   if (s.targets.length) console.log(`\nTargets after the cleanup (${s.targets.length}):`);
   for (const t of s.targets) console.log('  - ' + t.title);
+  try { // Void's review: where builders overrode it, by rule; the noisiest rule is the next reviewer fix (tools/review-overrides.mjs)
+    const o = overrideSummary(reviewOverrides());
+    if (o.rules.length) console.log(`\nVoid's review, overridden as right as written: ${o.rules.map((r) => r.rule + ' ' + r.n).join(', ')}${o.idle.length ? ` (and ${o.idle.length} markers no rule needs any more)` : ''}. Fix the noisiest rule or confirm the overrides: node tools/review-overrides.mjs`);
+  } catch (_) {}
   const BM = new URL('./bench.misses.json', import.meta.url);
   if (existsSync(BM)) { let b = null; try { b = JSON.parse(readFileSync(BM, 'utf8')); } catch (_) {}
     if (b && Array.isArray(b.misses) && b.misses.length) console.log(`\nThe bench misses (${b.misses.length}, on ${b.sha} at ${String(b.at).slice(0, 10)}; each is an ask and the skill that took it):\n` + b.misses.map((m) => '  - ' + m).join('\n'));

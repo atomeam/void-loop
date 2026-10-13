@@ -253,6 +253,16 @@ ok(rules('while True: pass', 'python').includes('busy-loop@1') && rules('while T
 }
 // run 39: sort() without a compare, indexOf used as a truth test, a handler called instead of passed, exact == on decimals, os.chmod 0o777
 ok(rules('arr.sort()', 'javascript').includes('sort-no-compare@1') && !rules('arr.sort((a, b) => a - b)', 'javascript').includes('sort-no-compare@1'), 'sort() flagged, sort with a compare not');
+// a list that is always strings sorts right as text: Object.keys, a directory listing, a split, .map(String) are not flagged; a plain list still is
+{ const flagged = (c) => rules(c, 'javascript').some((r) => r.startsWith('sort-no-compare@'));
+  ok(!flagged('const k = Object.keys(o).sort();') && !flagged('for (const n of fs.readdirSync(d).sort()) {}') && !flagged("const w = s.split(',').sort();") && !flagged('const t = nums.map(String).sort();')
+    && flagged('const v = list.sort();') && flagged('const k = Object.keys(o).sort(); const v = list.sort();') && flagged('const v = nums.map(Number).sort();'), 'sort() on always-string producers not flagged; plain and numeric still are'); }
+// escaping helpers by their usual names (escXml, escAttr, escapeHtml) count; a word that only starts with "esc" does not; a build read to its end
+{ const flagged = (c) => rules(c, 'javascript').some((r) => r.startsWith('inner-html@'));
+  ok(!flagged("p.innerHTML = '<h2>' + escXml(title) + '</h2>';") && !flagged("p.innerHTML = '<b>' + escapeHtml(n) + '</b>';") && flagged("p.innerHTML = '<b>' + escalate(n) + '</b>';"), 'escXml/escapeHtml count as escaping, escalate does not');
+  const cb = "out.innerHTML = '<ul>' + rows.map((n) => {\n  const own = n.kids.length;\n  return '<li>' + esc(n.title) + own + '</li>';\n}).join('') + '</ul>';";
+  ok(!flagged(cb), 'a build whose map callback has its own semicolons is read to its end');
+  ok(flagged("out.innerHTML = '<ul>' + rows.map((n) => {\n  const own = n.kids.length;\n  return '<li>' + n.title + '</li>';\n}).join('') + '</ul>';"), 'the same build with no escaping is still flagged'); }
 // a typed array sorts numerically with no compare: a receiver declared as one (this line or the one above) is not flagged; a plain array, another name and a call result still are
 { const flagged = (c) => rules(c, 'javascript').some((r) => r.startsWith('sort-no-compare@'));
   ok(!flagged('const v = new Float32Array(n); v.sort();') && !flagged('const ds = new Float32Array(count);\nds.sort();') && !flagged('let $a = new Uint8Array(4);\n$a.sort();') && !flagged('const big = new BigInt64Array(3);\nbig.sort();') && !flagged('const u = new Uint16Array(3);\nu.sort();') && !flagged('const i = new Int32Array(3);\ni.sort();') && !flagged('const c = new Uint8ClampedArray(3);\nc.sort();'), 'typed-array sort() is not flagged');

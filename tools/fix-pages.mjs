@@ -1,4 +1,4 @@
-// The fix pages: one page per common automation error (Zapier, Make), each answering it properly, with Void's free
+// The fix pages: one page per common automation error (Zapier, Make, n8n, Power Automate, GitHub Actions), each answering it properly, with Void's free
 // diagnosis one tap away and the One-Time Fix for when it should just be done. People search the exact error text;
 // these pages are where they land. Data: tools/fix-pages.json (claims paraphrased from each platform's own help
 // center, linked on the page). Writes void-live-deploy/fix/index.html and fix/<slug>/index.html.
@@ -20,7 +20,8 @@ const BUY = 'https://moonbeam846.gumroad.com/l/' + fix.gumroad.slug;
 export function askOf(p) {
   if (p.ask) return p.ask;
   const err = p.error.split(' · ').filter((x) => !/^(Zap |run on hold|Zapier has)/.test(x)).join(' ');
-  return (p.platform === 'Make' ? 'my make scenario is failing with ' : 'my zap is failing with ') + (err || p.error);
+  const lead = { Make: 'my make scenario is failing with ', n8n: 'my n8n workflow is failing with ', 'Power Automate': 'my power automate flow is failing with ', 'GitHub Actions': 'my github actions workflow is failing with ' };
+  return (lead[p.platform] || 'my zap is failing with ') + (err || p.error);
 }
 
 const STYLE = `:root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --card: #141414; --accent: #7aa7ff; }
@@ -135,25 +136,22 @@ ${PRICE_JS}
 }
 
 export function hubOf(pages) {
-  const title = 'Fix a broken automation: Zapier and Make errors, explained';
-  const desc = 'The errors that stop Zaps and Make scenarios, each with what it means and the steps to fix it. Ask Void free, or have it fixed.';
+  const platforms = [...new Set(pages.map((p) => p.platform))]; // in the order the data lists them
+  const named = platforms.length > 1 ? platforms.slice(0, -1).join(', ') + ' and ' + platforms[platforms.length - 1] : platforms.join('');
+  const title = 'Fix a broken automation: ' + named + ' errors, explained';
+  const desc = 'The errors that stop ' + named + ' automations, each with what it means and the steps to fix it. Ask Void free, or have it fixed.';
   const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description: desc, url: SITE + '/fix/',
     hasPart: pages.map((p) => ({ '@type': 'TechArticle', headline: p.title, url: SITE + '/fix/' + p.slug + '/' })) };
   const group = (name) => pages.filter((p) => p.platform === name)
     .map((p) => `    <li><a href="/fix/${p.slug}/">${esc(p.short)}</a> <span class="muted">${esc(p.error)}</span></li>`).join('\n');
   return head(title, desc, '/fix/', ld) + `  <h1>Fix a broken automation</h1>
-  <p class="lead">The errors that stop Zaps and Make scenarios, each with what it means and the steps that fix it.</p>
-
-  <h2>Zapier</h2>
+  <p class="lead">The errors that stop ${esc(named)} automations, each with what it means and the steps that fix it.</p>
+${platforms.map((name) => `
+  <h2>${esc(name)}</h2>
   <ul>
-${group('Zapier')}
+${group(name)}
   </ul>
-
-  <h2>Make</h2>
-  <ul>
-${group('Make')}
-  </ul>
-
+`).join('')}
 ${helpBoxes('my automation stopped working, here is the error:')}
 </main>
 ${PRICE_JS}
