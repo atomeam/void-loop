@@ -36,6 +36,7 @@ for (const [name, file] of [
   ['honest', 'honest.test.mjs'],
   ['cron-gate', 'cron-gate.test.mjs'],
   ['autofix', 'automation-fix.test.mjs'],
+  ['overrides', 'review-overrides.test.mjs'],
   ['releasenotes', 'releasenotes.test.mjs'],
   ['intent', 'intent.test.mjs'],
   ['revert-target', 'revert-target.test.mjs'],

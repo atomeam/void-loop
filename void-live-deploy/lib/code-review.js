@@ -152,7 +152,18 @@ function constantHtml(st, rawSt) {
 // like): the esc call sits inside the builder, so the assignment line alone looks unescaped. Exempt when the right-hand
 // side calls a function defined in this file whose nearby body uses esc()/escape, or carries a plain name declared above
 // from esc or from such a builder. A builder whose body does not escape keeps the finding.
-const ESC_CALL = /\besc(?:ape)?(?:Html)?\s*\(|[(,]\s*esc(?:ape)?(?:Html)?\s*[,)]/;
+// an escaping helper by its usual names: esc, escape, and either with a capitalised suffix (escHtml, escXml, escAttr, escapeHtml);
+// a lower-case run after it (escalate, escaped) is a different word
+const ESC_NAME = String.raw`esc(?:ape)?(?:[A-Z][\w$]*)?`;
+const ESC_CALL = new RegExp(String.raw`\b${ESC_NAME}\s*\(|[(,]\s*(?:[\w$]+\.)?${ESC_NAME}\s*[,)]`);
+// the whole markup build an innerHTML line starts, read on until its brackets close and it ends with ';' (a .map((n) => { ... })
+// callback has semicolons of its own, so the plain statement stops too early); at most 30 lines
+function wholeBuild(r, x) {
+  const depth = (t) => (t.match(/[([{]/g) || []).length - (t.match(/[)\]}]/g) || []).length;
+  let st = r, d = depth(r), last = r;
+  for (let k = 1; k <= 30 && !(d <= 0 && /;\s*(?:\/\/.*)?$/.test(last)); k++) { const n = x.nextRaw(k); if (!n) break; st += ' ' + n; d += depth(n); last = n; }
+  return st;
+}
 function builderEscapes(st, all, prev) {
   const defEscapes = (name) => { if (SAFE_METHODS.test(name)) return false;
     const d = all.search(new RegExp('(?:^|\\n)[^\\n]*(?:function\\s+' + name + '\\s*\\(|(?:const|let|var)\\s+' + name + '\\s*=\\s*(?:async\\s*)?(?:function\\b|\\())'));
@@ -283,7 +294,7 @@ const RULES = [
     'for…in walks property names as strings (and inherited ones), not array values. For an array use for (const x of list), or for (let i = 0; i < list.length; i++).'],
   ['eval', 'risk', [...JS, 'python', 'php', 'ruby'], (m) => /(?:^|[^\w$.])(?:eval|exec)\s*\(|\bnew\s+Function\s*\(/.test(m),
     'eval/exec runs text as code: if any of that text comes from a user, a URL or a file, they can run anything. Parse the data instead (JSON.parse, a lookup table, ast.literal_eval in Python).'],
-  ['inner-html', 'risk', JS, (m, r, x) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !constantHtml(x.statement(), x.rawStatement()) && !/\besc(?:ape)?(?:Html)?\s*\(|[(,]\s*(?:\w+\.)?esc(?:ape)?(?:Html)?\s*[,)]|DOMPurify|sanitize/i.test(x.rawStatement()) && !builderEscapes(x.statement(), x.all(), x.prev()), // only fixed text, esc called anywhere in the statement (api.esc counts; a build spread over lines escapes on a later line), or handed to (or built by) an escaping HTML builder (card(esc, data); rowHtml defined in this file calling esc)
+  ['inner-html', 'risk', JS, (m, r, x) => /\.(?:innerHTML|outerHTML)\s*\+?=/.test(m) && !constantHtml(x.statement(), x.rawStatement()) && !ESC_CALL.test(wholeBuild(r, x)) && !/DOMPurify|sanitize/i.test(wholeBuild(r, x)) && !builderEscapes(x.statement(), x.all(), x.prev()), // only fixed text, esc called anywhere in the statement (api.esc counts; a build spread over lines escapes on a later line), or handed to (or built by) an escaping HTML builder (card(esc, data); rowHtml defined in this file calling esc)
     'putting a variable into innerHTML lets any HTML in it run (a script tag, an onerror handler): an XSS hole if the text can come from a user. Use textContent, or escape the text first.'],
   ['document-write', 'risk', JS, (m) => /\bdocument\.write(?:ln)?\s*\(/.test(m),
     'document.write wipes the whole page if it runs after loading, and writes raw HTML (XSS risk). Build elements with createElement and textContent.'],
