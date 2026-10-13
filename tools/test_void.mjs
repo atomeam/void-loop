@@ -1740,7 +1740,7 @@ try {
     const onB = await until(() => share(B), 4000);
     const drag = async (pg, dx, dy) => { const b = await pg.$eval('.thing.clock', (e) => { const r = e.getBoundingClientRect(); return { x: r.left + 20, y: r.top + 12 }; }).catch(() => null);
       if (!b) return; // no clock on that tab: the check below fails with what each tab had, the suite carries on
-      await pg.mouse.move(b.x, b.y); await pg.mouse.down(); await pg.mouse.move(b.x + dx, b.y + dy, { steps: 8 }); await pg.mouse.up(); };
+      await pg.mouse.move(b.x, b.y); await pg.mouse.down(); await pg.mouse.move(b.x + dx, b.y + dy, { steps: 24 }); await pg.mouse.up(); }; // slow enough to set it down: 8 steps of ~21 px read as a flick (>= 0.9 px/ms) on a fast runner, the clock was thrown away and no final move was sent (verify on 02d430e)
     await drag(S.p, 140, 90);
     const a1 = await share(S.p);
     const b1 = await until(async () => { const v = await share(B); return v && Math.abs(v.x - a1.x) < 0.01 && Math.abs(v.y - a1.y) < 0.01 ? v : null; }, 3000);
