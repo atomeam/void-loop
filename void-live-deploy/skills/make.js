@@ -48,6 +48,22 @@ export function labTools(lab, known = TOOLS) {
     .map((e) => [new RegExp('^' + OPEN + '(?:' + e.asks.map((a) => esc(String(a).toLowerCase())).join('|') + ')$'), e.id, e.label, String(e.sub || '')]);
 }
 try { const r = await fetch('/fringe/lab.json'); if (r.ok) TOOLS.push(...labTools(await r.json())); } catch (_) {} // no file, no network, or not a browser: the list above stands
+/** the lab's experiments and tools as { id, label } (tools/lab-use.mjs reads it) */
+export const toolList = () => TOOLS.map(([, id, label]) => ({ id, label }));
+// One open of an experiment counted (lib/used.js via /api/miss, owner's choice 2026-10-13): its id only, never what was typed,
+// once per browser per experiment per day, and not the owner's own opens. Returns whether it sent.
+const USED_KEY = 'a2m.void.used.v1';
+export function noteUse(id, { store = globalThis.localStorage, send = (b) => fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(b), keepalive: true }), now = new Date() } = {}) {
+  try {
+    if (store.getItem('a2m.void.owner.v1')) return false;
+    const day = now.toISOString().slice(0, 10), seen = JSON.parse(store.getItem(USED_KEY) || '{}');
+    if (seen[id] === day) return false;
+    for (const k of Object.keys(seen)) if (seen[k] !== day) delete seen[k]; // only today's are needed
+    seen[id] = day; store.setItem(USED_KEY, JSON.stringify(seen));
+    Promise.resolve(send({ kind: 'used', id })).catch(() => {});
+    return true;
+  } catch (_) { return false; }
+}
 
 export function makeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -197,6 +213,7 @@ async function run(text, api) {
     f.src = '/fringe/' + q.id + '.html';
     const box = el.querySelector('.vmake');
     if (box) box.appendChild(f);
+    noteUse(q.id);
     return 'make';
   }
   if (q.kind === 'game') {

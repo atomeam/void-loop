@@ -2456,6 +2456,15 @@ try {
     check('a published fringe draft with a lab entry opens from its own ask (read from /fringe/lab.json, no hand edit of the lab list)',
       !!card && card.h === 'Scroll pauses' && card.sub === 'Which paragraphs you paused on.' && card.src === '/fringe/zz-lab-play.html' && !F.errors.length, JSON.stringify({ card, errors: F.errors }));
     await F.ctx.close(); }
+  // the lab judged by real use (owner's choice 2026-10-13: reuse /api/miss, capped): opening an experiment sends its id, once a day
+  if (want("opening a lab experiment counts one use: its id only, once per browser per day")) {
+    const U = await fresh({ content: "{ const f = window.fetch; window.__usedSent = []; window.fetch = (u, o) => /\\/api\\/miss$/.test(String(u)) ? (window.__usedSent.push(o && o.body), Promise.resolve(new Response(null, { status: 204 }))) : f(u, o); }" });
+    await U.ask('test my attention', 800);
+    await U.ask('test my attention', 800);
+    const sent = await U.p.evaluate(() => window.__usedSent.map((b) => JSON.parse(b)));
+    check('opening a lab experiment counts one use: { kind: "used", id } once per browser per day, nothing typed sent',
+      JSON.stringify(sent) === JSON.stringify([{ kind: 'used', id: 'attention-7' }]) && !U.errors.length, JSON.stringify(sent) + ' ' + U.errors.join(' | '));
+    await U.ctx.close(); }
   if (want("The lab: every fringe experiment opens from an ask and passes its own self-test")) {
     const L = await fresh(); const res = [];
     const lab = [['test my attention', 'attention-7'], ['hold the lamp', 'interval-timing-8'], ['fitts law', 'opt-in-gesture-6'], ['joint simon task', 'human-machine-co-agency-8'],
