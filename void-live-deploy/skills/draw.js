@@ -69,6 +69,25 @@ export function drawOf(text) {
   return null;
 }
 
+/** how shaky a stroke is: the mean distance (px) of each point from the midpoint of its neighbours. A steady line is near 0. Pure. */
+export function tremorOf(points) {
+  const p = (points || []).filter((q) => Array.isArray(q) && q.length >= 2);
+  if (p.length < 3) return 0;
+  let sum = 0;
+  for (let i = 1; i < p.length - 1; i++) sum += Math.hypot(p[i][0] - (p[i - 1][0] + p[i + 1][0]) / 2, p[i][1] - (p[i - 1][1] + p[i + 1][1]) / 2);
+  return Math.round(sum / (p.length - 2) * 100) / 100;
+}
+/** how much to follow the pen (1 = exactly, lower = steadier) for a hand that shakes this much: just enough, no more. Pure. */
+export function followFor(tremor) { return Math.round(clamp(1 / (1 + Math.max(0, tremor) * 0.9), 0.15, 1) * 100) / 100; }
+/** a hand learned over strokes: the running tremor, recent strokes counting most; strokes too short to tell leave it. Pure. */
+export function learnHand(hand, points) {
+  const t = tremorOf(points), n = (points || []).length;
+  if (n < 6) return hand || { tremor: 0, strokes: 0 };
+  const h = hand && hand.strokes ? hand : { tremor: t, strokes: 0 };
+  return { tremor: Math.round((h.strokes ? h.tremor * 0.7 + t * 0.3 : t) * 100) / 100, strokes: h.strokes + 1 };
+}
+const HAND = 'a2m.void.hand.v1';
+
 const KEY = 'a2m.void.brushes.v1';
 const mine = () => { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (_) { return []; } };
 const keep = (list) => { try { localStorage.setItem(KEY, JSON.stringify(list.slice(-24))); } catch (_) {} };
@@ -105,9 +124,9 @@ function run(text, api) {
     p.innerHTML = '<h2>Draw</h2><div class="sub">Describe a brush in your own words and Void makes it: "dry charcoal that catches the paper grain", "thick wet ink", "faint pencil".</div>' // void-review: ok (fixed text; the brush row below is built with esc)
       + '<div class="vdraw"><canvas width="900" height="600" style="width:100%;touch-action:none;background:#fbfaf6;border-radius:10px;cursor:crosshair"></canvas>'
       + '<form class="vd-make" style="display:flex;gap:6px;margin:8px 0"><input class="vd-words" placeholder="describe a brush…" style="flex:1;font:inherit;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:transparent;color:inherit"><button type="submit">Make it</button></form>'
-      + '<div class="vd-said sub" aria-live="polite"></div><div class="vd-brushes" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0"></div>'
+      + '<div class="vd-said sub" aria-live="polite"></div><div class="vd-steady sub"></div><div class="vd-brushes" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0"></div>'
       + '<div class="vd-colors" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">' + Object.entries(COLORS).filter(([k]) => !/grey|violet/.test(k)).map(([k, v]) => '<button type="button" data-color="' + esc(v) + '" title="' + esc(k) + '" style="width:26px;height:26px;border-radius:50%;background:' + esc(v) + ';border:2px solid rgba(255,255,255,.3)"></button>').join('') + '</div>'
-      + '<div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="vd-undo">Undo</button><button type="button" class="vd-clear">Clear</button><button type="button" class="vd-save">Save as picture</button></div></div>';
+      + '<div style="display:flex;gap:6px;flex-wrap:wrap"><button type="button" class="vd-undo">Undo</button><button type="button" class="vd-clear">Clear</button><button type="button" class="vd-save">Save as picture</button><button type="button" class="vd-steadyon" aria-pressed="true">Steadying on</button><label class="sub" style="display:flex;align-items:center;gap:6px">Steadiness <input class="vd-strength" type="range" min="0" max="100" value="0" aria-label="steadiness, 0 = learned from your hand"><span class="vd-strength-v">auto</span></label></div></div>';
   });
   const $ = (s) => el.querySelector(s), cv = $('canvas'), g = cv.getContext('2d');
   const undo = [], said = $('.vd-said');
@@ -126,6 +145,18 @@ function run(text, api) {
   $('.vd-clear').addEventListener('click', () => { undo.push(g.getImageData(0, 0, cv.width, cv.height)); g.clearRect(0, 0, cv.width, cv.height); });
   $('.vd-save').addEventListener('click', () => { const a = document.createElement('a'); a.download = 'void-drawing.png'; a.href = cv.toDataURL('image/png'); a.click(); });
   // drawing: stamps along the path, spacing a quarter of the size; the grain mask is laid over each stroke on its own layer
+  // steadying that learns your hand (target ibisPaint X, feature stabilizer): each stroke's own shake is measured, the hand's is kept
+  // in this browser, and the pen is followed just closely enough to take that shake out (a lazy follow: the line moves part of the
+  // way toward the pen each move, and catches up where you lift it)
+  let hand = (() => { try { return JSON.parse(localStorage.getItem(HAND) || 'null'); } catch (_) { return null; } })(), steadyOn = true, raw = [], lead = null;
+  let manual = 0; // 0 = learned from your hand; 1-100 = how much of each wobble to take out, set by hand (as ibisPaint's stabilizer levels)
+  const follow = () => (!steadyOn ? 1 : manual ? Math.max(0.15, 1 - manual / 100 * 0.85) : hand && hand.strokes ? followFor(hand.tremor) : 1);
+  const showSteady = () => { $('.vd-steady').textContent = !steadyOn ? 'Steadying off: the line follows your pen exactly.'
+    : manual ? 'Steadiness set by hand: the line takes out ' + Math.round((1 - follow()) * 100) + '% of each wobble (slide to 0 to let it learn your hand again).'
+    : hand && hand.strokes ? 'Steadying learned from your hand (' + hand.strokes + ' stroke' + (hand.strokes > 1 ? 's' : '') + '): a shake of ' + hand.tremor + ' px, so the line takes out ' + Math.round((1 - follow()) * 100) + '% of each wobble.'
+    : 'Steadying learns your hand as you draw.'; };
+  $('.vd-strength').addEventListener('input', (e) => { manual = +e.target.value; $('.vd-strength-v').textContent = manual ? manual + '%' : 'auto'; showSteady(); });
+  $('.vd-steadyon').addEventListener('click', (e) => { steadyOn = !steadyOn; e.target.setAttribute('aria-pressed', String(steadyOn)); e.target.textContent = steadyOn ? 'Steadying on' : 'Steadying off'; showSteady(); });
   let last = null, stroke = null, sg = null;
   const at = (e) => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) * cv.width / r.width, (e.clientY - r.top) * cv.height / r.height]; };
   const line = (a, b) => { const d = Math.hypot(b[0] - a[0], b[1] - a[1]), step = Math.max(0.5, cur.size * 0.25), n = Math.max(1, Math.ceil(d / step)); for (let i = 1; i <= n; i++) dab(sg, a[0] + (b[0] - a[0]) * i / n, a[1] + (b[1] - a[1]) * i / n, cur, color); };
@@ -137,13 +168,16 @@ function run(text, api) {
   cv.addEventListener('pointerdown', (e) => {
     cv.setPointerCapture(e.pointerId); undo.push(g.getImageData(0, 0, cv.width, cv.height)); if (undo.length > 30) undo.shift();
     stroke = document.createElement('canvas'); stroke.width = cv.width; stroke.height = cv.height; sg = stroke.getContext('2d');
-    last = at(e); dab(sg, last[0], last[1], cur, color); g.globalAlpha = 1;
+    last = at(e); raw = [last]; lead = last; dab(sg, last[0], last[1], cur, color); g.globalAlpha = 1;
   });
-  cv.addEventListener('pointermove', (e) => { if (!last || !sg) return; const p = at(e); line(last, p); last = p; // show the stroke as it goes: redraw the base, then the stroke on top
+  cv.addEventListener('pointermove', (e) => { if (!last || !sg) return; const r = at(e); raw.push(r); const k = follow(), p = [lead[0] + (r[0] - lead[0]) * k, lead[1] + (r[1] - lead[1]) * k]; lead = p; line(last, p); last = p; // show the stroke as it goes: redraw the base, then the stroke on top
     const base = undo[undo.length - 1]; if (base) g.putImageData(base, 0, 0); g.drawImage(stroke, 0, 0); });
-  const end = () => { if (!last) return; last = null; const base = undo[undo.length - 1]; if (base) g.putImageData(base, 0, 0); commit(); };
+  const end = () => { if (!last) return;
+    const tail = raw[raw.length - 1]; if (tail && sg) line(last, tail); // catch up to where the pen lifted
+    hand = learnHand(hand, raw); try { localStorage.setItem(HAND, JSON.stringify(hand)); } catch (_) {} showSteady();
+    last = null; const base = undo[undo.length - 1]; if (base) g.putImageData(base, 0, 0); commit(); };
   cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
-  show();
+  show(); showSteady();
   return 'draw';
 }
 
@@ -157,6 +191,8 @@ export default {
   suite() {
     const c = brushFrom('dry charcoal that catches the paper grain'), i = brushFrom('thick wet ink'), f = brushFrom('faint pencil');
     const ok = c && c.tool === 'charcoal' && c.grain >= 0.9 && i && i.tool === 'ink' && i.size === 8 && i.hardness < 1 && f && f.flow < TOOLS.pencil.flow
+      && tremorOf([[0, 0], [1, 0], [2, 0], [3, 0]]) === 0 && tremorOf([[0, 0], [1, 2], [2, 0], [3, 2], [4, 0]]) === 2 && followFor(0) === 1 && followFor(3) < followFor(1) && followFor(50) === 0.15
+      && learnHand(null, [[0, 0], [1, 2], [2, 0], [3, 2], [4, 0], [5, 2]]).strokes === 1 && learnHand({ tremor: 1, strokes: 3 }, [[0, 0], [1, 0]]).strokes === 3
       && drawOf('let me draw') && drawOf('make a brush like dry charcoal').brush.tool === 'charcoal' && !drawOf('draw a cat') && !drawOf('what is charcoal');
     return { ok: !!ok, got: ok ? 'pass' : JSON.stringify({ c, i, f }) };
   }
