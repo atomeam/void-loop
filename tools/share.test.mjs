@@ -200,3 +200,28 @@ test('the page passes moves both ways, and a summon\'s token reaches the other t
   assert.deepEqual(seenB, [['summon', 'a clock', 'k3x9q2ab'], ['move', 'k3x9q2ab.0', 0.4, 0.3]]);
   assert.deepEqual(seenA, [['move', 'k3x9q2ab.0', 0.1, 0.2]]);
 });
+
+// frontier #11, next: a summoned thing edited live, the same keys as a move. A sticky's words go as plain text (no markup, at most
+// TEXT_MAX characters, line breaks kept, other control characters dropped) and land on the other tab's copy of that sticky.
+test('a sticky\'s words pass too: plain text under the thing\'s key, cut to TEXT_MAX, nothing else rides along', async () => {
+  const { TEXT_MAX } = await import('../void-live-deploy/lib/share.js');
+  assert.deepEqual(clean(JSON.stringify({ t: 'text', key: 'k3x9q2ab.0', text: 'buy milk\neggs' })), { t: 'text', key: 'k3x9q2ab.0', text: 'buy milk\neggs' });
+  assert.deepEqual(clean(JSON.stringify({ t: 'text', key: 'k3x9q2ab.0', text: '' })), { t: 'text', key: 'k3x9q2ab.0', text: '' }, 'emptied is an edit too');
+  assert.deepEqual(clean(JSON.stringify({ t: 'text', key: 'k3x9q2ab.0', text: 'a\u0000b\u0007c', html: '<img>' })), { t: 'text', key: 'k3x9q2ab.0', text: 'abc' });
+  assert.equal(clean(JSON.stringify({ t: 'text', key: 'k3x9q2ab.0', text: 'x'.repeat(TEXT_MAX + 50) })).text.length, TEXT_MAX);
+  for (const bad of [{ t: 'text', key: 'k3x9q2ab', text: 'a' }, { t: 'text', key: 'k3x9q2ab.0', text: 5 }, { t: 'text', text: 'a' }]) assert.equal(clean(JSON.stringify(bad)), null, JSON.stringify(bad));
+  const { join } = await import('../void-live-deploy/lib/share-client.js');
+  const room = await mintRoom(SECRET);
+  class NoSocket { constructor() { setTimeout(() => this.onclose && this.onclose({ code: 1006 }), 0); } send() {} close() {} }
+  const chans = [];
+  class Chan { constructor(name) { this.name = name; chans.push(this); } postMessage(m) { for (const c of chans) if (c !== this && c.name === this.name && c.onmessage) c.onmessage({ data: structuredClone(m) }); } close() {} }
+  const env = { WebSocket: NoSocket, BroadcastChannel: Chan, location: { protocol: 'https:', host: 'a-to-mind.com' } };
+  const seenA = [], seenB = [];
+  const mk = (out) => ({ summon() {}, move() {}, text: (key, t) => out.push(['text', key, t]), presence() {}, gone() {}, note() {} });
+  const A = join(room, mk(seenA), env), B = join(room, mk(seenB), env);
+  await new Promise((r) => setTimeout(r, 5));
+  A.edited('k3x9q2ab.0', 'buy milk');
+  B.edited('k3x9q2ab.0', 'buy milk and eggs');
+  assert.deepEqual(seenB, [['text', 'k3x9q2ab.0', 'buy milk']]);
+  assert.deepEqual(seenA, [['text', 'k3x9q2ab.0', 'buy milk and eggs']]);
+});
