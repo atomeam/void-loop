@@ -59,3 +59,20 @@ test('the pair acts it out: they walk to each other, stop a body apart, do the m
   assert.notEqual(a.mode, 'together', 'the time runs out and each goes its own way'); assert.equal(a.together, null);
   assert.equal(meetBrains(a, null, 'spar'), false); assert.equal(meetBrains(a, b, 'dance'), false, 'only the four kinds');
 });
+
+// a meeting asked for while a figure is still being built (syncFigures is async; under load the second figure lands after
+// together.js calls meet) waits for both to be on the stage instead of being dropped (verify on 9b11e37: met false, greet/follow)
+import { settleMeets } from '../void-live-deploy/skills/figures3d.js';
+test('a meeting waits for a figure still being built, then starts; an old one is let go', () => {
+  const a = makeBrain({ id: 'a', x: 200, y: 300 }), b = makeBrain({ id: 'b', x: 700, y: 320 });
+  const here = new Map([['a', { brain: a, leaving: 0 }]]), get = (id) => here.get(id);
+  let waiting = [{ idA: 'a', idB: 'b', kind: 'spar', secs: 8, until: 5000 }];
+  waiting = settleMeets(waiting, get, 1000);
+  assert.equal(waiting.length, 1, 'the dog is not here yet: still waiting'); assert.equal(a.together, undefined);
+  here.set('b', { brain: b, leaving: 0 });
+  waiting = settleMeets(waiting, get, 2000);
+  assert.equal(waiting.length, 0); assert.equal(a.together.kind, 'spar'); assert.equal(b.together.id, 'a');
+  const c = makeBrain({ id: 'c' }); here.set('c', { brain: c, leaving: 0 });
+  assert.equal(settleMeets([{ idA: 'c', idB: 'd', kind: 'trade', secs: 8, until: 5000 }], get, 6000).length, 0, 'past its time it is dropped');
+  assert.equal(c.together, undefined);
+});

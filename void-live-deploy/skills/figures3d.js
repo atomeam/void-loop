@@ -895,6 +895,7 @@ export async function addFigure(spec = {}) {
   const { obj, parts } = buildFigure({ ...spec, body, color });
   const f = { brain, spec: { ...spec, id, body, color: spec.color || null, prop: spec.prop || null, line: spec.line || null, script: script || null, title: spec.title || null }, obj, parts, born: performance.now(), leaving: 0 };
   stage.scene.add(obj); figures.set(id, f); poseSprite(f, f.born); requestRender();
+  if (meetsWaiting.length) meetsWaiting = settleMeets(meetsWaiting, (x) => figures.get(x), Date.now());
   return f;
 }
 function disposeFigure(f) {
@@ -922,13 +923,28 @@ export function meetBrains(a, b, kind, secs = 8) {
   for (const [f, o] of [[a, b], [b, a]]) { f.together = { id: o.id, kind, t: secs, beat: 0, n: 0 }; f.react = null; f.reactId = null; f.reactT = 0; }
   return true;
 }
-/** The live figures with these ids act it out; false when either is not on the 3D stage. */
+/** Start each waiting meeting whose two figures are both on the stage; drop one past its time. Returns what still waits. */
+export function settleMeets(list, get, now) {
+  return list.filter((w) => {
+    if (now > w.until) return false;
+    const fa = get(w.idA), fb = get(w.idB);
+    if (!fa || !fb || fa.leaving || fb.leaving) return true;
+    meetBrains(fa.brain, fb.brain, w.kind, w.secs);
+    return false;
+  });
+}
+// a meeting asked for while a figure is still being built (syncFigures awaits each addFigure; under load the second one lands
+// after together.js calls meet) waits here, up to MEET_WAIT_MS, and starts when addFigure puts the last of the pair on the stage
+const MEET_WAIT_MS = 10000;
+let meetsWaiting = [];
+/** The live figures with these ids act it out: true when it starts, 'waiting' while either is not on the 3D stage yet. */
 export function meet(idA, idB, kind, secs) {
-  const fa = figures.get(idA), fb = figures.get(idB);
-  if (!fa || !fb || fa.leaving || fb.leaving) return false;
-  const ok = meetBrains(fa.brain, fb.brain, kind, secs);
-  if (ok) requestRender();
-  return ok;
+  if (!TOGETHER_KINDS.includes(kind) || idA === idB) return false;
+  meetsWaiting = [{ idA, idB, kind, secs, until: Date.now() + MEET_WAIT_MS }]; // the latest choice replaces any older one
+  meetsWaiting = settleMeets(meetsWaiting, (id) => figures.get(id), Date.now());
+  if (meetsWaiting.length) return 'waiting';
+  requestRender();
+  return true;
 }
 /** Where every figure is and the live conditions it has ({ id: { x, y, nature, adv } }), so the page can keep them for the next visit (and advance() can carry on from there). */
 export function world() { const out = {}; for (const [id, f] of figures) if (!f.leaving) out[id] = { x: Math.round(f.brain.x), y: Math.round(f.brain.y), nature: f.nature ? { ...f.nature } : null, adv: f.advSeen || null }; return out; }
