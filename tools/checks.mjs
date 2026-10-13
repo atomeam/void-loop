@@ -128,6 +128,7 @@ for (const [name, file] of [
   ['skills-index', 'skills-index.test.mjs'],
   ['heavy', 'heavy.test.mjs'],
   ['clef-probe', 'clef-probe.test.mjs'],
+  ['route-bench', 'route-bench.test.mjs'],
   ['families', 'families.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);

@@ -1,0 +1,42 @@
+# Frontier #9 (Clef routes every ask), first piece: Clef-flash beside the embedding router on the bench's own asks
+# (tools/route-bench.mjs, POST /api/bench { route: true }, owner only), the table and verdict written to the job summary.
+# Manual only. Each ask is one embedding and one Clef-flash call on the site's own binding ($0.038 per M input tokens for
+# Clef-flash; a 240-ask run is a few thousand tokens). Nothing switches here. Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN).
+name: Route bench
+
+on:
+  workflow_dispatch:
+    inputs:
+      site:
+        description: The site to ask (its /api/bench)
+        default: 'https://a-to-mind.com'
+        type: string
+      sample:
+        description: How many bench asks (spread across the skills)
+        default: '240'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  route:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Both routers on the bench's asks
+        env:
+          READ_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          SITE: ${{ inputs.site }}
+          SAMPLE: ${{ inputs.sample }}
+        run: node tools/route-bench.mjs --site "$SITE" --sample "$SAMPLE" --out route-bench.json --md table.md | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: route-bench
+          path: route-bench.json
+          if-no-files-found: ignore
