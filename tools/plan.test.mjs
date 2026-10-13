@@ -4,7 +4,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { parsePlan, parseTimer, cleanGoal, planPrompt, PLAN_SYSTEM, PLAN_MIN, PLAN_MAX, STEP_MAX } from '../void-live-deploy/lib/plan.js';
+import { parsePlan, parseTimer, parseNote, NOTE_MAX, cleanGoal, planPrompt, PLAN_SYSTEM, PLAN_MIN, PLAN_MAX, STEP_MAX } from '../void-live-deploy/lib/plan.js';
 import skill, { openPlanOf, planOf, withSteps } from '../void-live-deploy/skills/intent.js';
 import * as answerApi from '../void-live-deploy/functions/api/answer.js';
 
@@ -146,5 +146,35 @@ test('/api/answer passes the timer on; the skill adds only the fixed timer ask f
     asked.length = 0;
     await skill.run('make a plan to learn spanish', { stage, say: () => {} });
     assert.ok(!asked.some((a) => /timer/.test(a)), 'an out-of-range timer never runs');
+  } finally { globalThis.fetch = was; }
+});
+
+// the second fixed shape: a short note to self ({"steps": [...], "note": "..."}), one plain line, put up as a sticky
+test('the reply may carry one note to self: one clean line of words, cut at a word under NOTE_MAX, else none', () => {
+  const r = (note) => '{"steps": ["a b", "c d", "e f"], "note": ' + JSON.stringify(note) + '}';
+  assert.equal(parseNote(r('Little and often beats one long session.')), 'Little and often beats one long session.');
+  assert.equal(parseNote(r('  two\nlines\u0007 here  ')), 'two lines here');
+  const long = parseNote(r('word '.repeat(60)));
+  assert.ok(long.length <= NOTE_MAX && !/\s$/.test(long) && /^word( word)*$/.test(long), long);
+  for (const bad of [r(''), r('  '), '{"steps": ["a b", "c d", "e f"], "note": 7}', '["a b", "c d", "e f"]', 'no json']) assert.equal(parseNote(bad), null, bad);
+  assert.equal(parseNote(r('<b>hi</b> there')), 'hi there', 'no markup');
+});
+
+test('/api/answer passes the note on; the skill adds only the sticky ask for it', async () => {
+  const ai = { run: async () => ({ response: '{"steps": ["Learn 20 words a day", "Do one lesson a day", "Talk with a tutor"], "note": "Little and often beats one long session."}' }) };
+  const r = await (await post({ DB: kvDB(), AI: ai }, { mode: 'plan', goal: 'learn spanish' })).json();
+  assert.equal(r.note, 'Little and often beats one long session.');
+  const asked = [], said = [], things = {};
+  const stage = { ask: async (a) => { asked.push(a); things['t' + asked.length] = {}; }, things: () => things, render() {}, save() {} };
+  const was = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], note: 'Little and often beats one long session.' }));
+  try {
+    await skill.run('make a plan to learn spanish', { stage, say: (s) => said.push(s) });
+    assert.deepEqual(asked, ['make a list with Learn 20 words a day, Do one lesson a day, Talk with a tutor', 'add a sticky that says Little and often beats one long session.']);
+    assert.match(said[0], /checklist, a note to self/);
+    globalThis.fetch = async () => new Response(JSON.stringify({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], note: 'x'.repeat(500) }));
+    asked.length = 0;
+    await skill.run('make a plan to learn spanish', { stage, say: () => {} });
+    assert.ok(asked.every((a) => a.length < 200), 'a long note is cut, never passed whole');
   } finally { globalThis.fetch = was; }
 });

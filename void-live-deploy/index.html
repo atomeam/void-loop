@@ -1517,7 +1517,12 @@ function wantsClearStage(lower) {
       return null;
     }
 
+    // the words a thing is told to say ("a sticky that says big plans", "note: top left") are its words, never a size, colour
+    // or place for it: "add a sticky that says big plans for the top left" ran as "make it bigger, move it top left" on an
+    // empty new sticky, and the words were lost
+    const saidOff = (lower) => String(lower || '').replace(/\b(?:that\s+says?|saying|with\s+text|reading)\s+[\s\S]*$/, '').replace(/\b(note|sticky)\s*:[\s\S]*$/, '$1');
     function hasAlterProperty(lower) {
+      lower = saidOff(lower);
       return colorFrom(lower) !== null
         || Object.values(stageKinds).some((k) => k && k.alterWords instanceof RegExp && k.alterWords.test(lower)) // a skill kind's own words ("thicker", "filled")
         || /\b(bigger|larger|increase|grow|enlarge|smaller|tinier|decrease|shrink|huge|giant|enormous|massive|tiny|mini|petite|big|large|small|little)\b/.test(lower)
