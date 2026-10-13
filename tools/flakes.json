@@ -8,5 +8,6 @@
   {"check": "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a ", "sha": "e6c781627684956fdecdb8734afecc02e2669f28", "at": "2026-10-12T10:32:55Z"},
   {"check": "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others ", "sha": "c8268d7db664bf342549a3500ecb0b1feea5c5b2", "at": "2026-10-12T14:32:12Z"},
   {"check": "go: \"play go\" stands a 3D goban in the void with its card separate; tapping E5 then C3 places Black then White, no capture count moves, no winner; Count positio", "sha": "bed19c6c6f8e26631a69abca2525f44b9f5555d3", "at": "2026-10-12T20:04:50Z"},
-  {"check": "\"what can you do now that you couldn't last week?\": the card's tree first stands as it was a week ago (fewer branches), then grows to today with this week's tip", "sha": "8ffdaaad098db126780c5a484fb5364ae1ec839b", "at": "2026-10-12T20:20:05Z"}
+  {"check": "\"what can you do now that you couldn't last week?\": the card's tree first stands as it was a week ago (fewer branches), then grows to today with this week's tip", "sha": "8ffdaaad098db126780c5a484fb5364ae1ec839b", "at": "2026-10-12T20:20:05Z"},
+  {"check": "one side card per lifted board: a move made while the 3D board loads leaves exactly one side card on the stage, and it carries the move, not the empty first sta", "sha": "6d551b8f94da13bdb79519fb60fc2237ac0a7367", "at": "2026-10-13T02:12:21Z"}
 ]
