@@ -49,6 +49,11 @@ ok(!rules("el.innerHTML = cardHtml(esc, data, 'live');", 'javascript').includes(
 ok(!rules('said.innerHTML = entryHtml(api.esc, e);', 'javascript').includes('inner-html@1') && rules('said.innerHTML = entryHtml(api.escaped_name, e);', 'javascript').includes('inner-html@1'), 'a builder handed api.esc not flagged; a lookalike name still is');
 // a builder defined in the same file whose body escapes: the esc call lives inside it, not on the assignment line
 const escBuilder = "const esc = (s) => String(s).replace(/</g, '&lt;');\nfunction rowHtml(p) { return '<b>' + esc(p.name) + '</b>'; }\nconst lis = items.map((p) => rowHtml(p)).join('');\nel.innerHTML = '<ul>' + lis + '</ul>';";
+// a card built over several lines escapes on a later line: the whole statement counts, not just its first line (lab and breathing cards, 2026-10-13)
+const multiEsc = "showPage((p) => { p.innerHTML = '<h2>The lab</h2><ul>'\n  + TOOLS.map((x) => '<li>' + esc(x[2]) + '</li>').join('') + '</ul>'; });";
+ok(!rules(multiEsc, 'javascript').includes('inner-html@1'), 'innerHTML built over lines with esc on a later line not flagged');
+const multiRaw = "showPage((p) => { p.innerHTML = '<h2>Hi</h2>'\n  + name + '</p>'; });";
+ok(rules(multiRaw, 'javascript').includes('inner-html@1'), 'innerHTML built over lines with a raw variable and no esc still flagged');
 ok(!rules(escBuilder, 'javascript').includes('inner-html@4'), 'innerHTML from a same-file builder that escapes not flagged');
 const rawBuilder = "function rowHtml(p) { return '<b>' + p.name + '</b>'; }\nconst lis = items.map((p) => rowHtml(p)).join('');\nel.innerHTML = '<ul>' + lis + '</ul>';";
 ok(rules(rawBuilder, 'javascript').includes('inner-html@3'), 'innerHTML from a same-file builder that does not escape still flagged');
