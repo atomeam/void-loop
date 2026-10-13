@@ -38,3 +38,13 @@ test('list: stored items come back clean, and the skill takes only a list by its
   for (const a of ['list', 'make a list', 'todo list', 'create a new list', 'open list please']) assert.ok(plainList(a), a);
   for (const a of ['list my routines', 'list: eggs', 'a shopping list with eggs', 'what is a linked list', 'add milk to the list']) assert.ok(!plainList(a), a);
 });
+
+// a list's own items may say check, remove, clear, done or complete: only the words before "list with" / "list:" decide that
+// the ask is not a new list (a dated plan's "check it" step, or a garden plan's "Remove weeds", left the plan with no checklist)
+test('items that say check, remove, clear or complete still make the list; the ask itself saying so still does not', () => {
+  for (const a of ['make a list with work out the steps (tue 13), do the main part (thu 15), check it (sat 17), learn guitar (tue 20)',
+    'make a list with Remove weeds, Clear a bed, Water daily', 'list: check the oil, empty the trash, complete the form'])
+    assert.ok(wantsCreate(a.toLowerCase(), a), a);
+  assert.deepEqual(seedsOf('make a list with Remove weeds, Clear a bed, Water daily'), ['Remove weeds', 'Clear a bed', 'Water daily']);
+  for (const a of ['clear the list', 'remove the list', 'check off milk', 'add item eggs', 'mark milk as done', 'empty the list', 'delete the list']) assert.ok(!wantsCreate(a, a), a);
+});

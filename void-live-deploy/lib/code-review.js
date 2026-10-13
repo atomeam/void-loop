@@ -450,6 +450,8 @@ const RULES = [
   // a typed array (Float32Array, Uint8Array...) sorts numerically with no compare, so a receiver declared as one just above is not a finding
   ['sort-no-compare', 'style', JS, (m, r, x) => {
     // what is always a list of strings sorts right as text: Object.keys, a directory listing, a split, .map(String), and the same after a .filter, .slice, .reverse or .concat
+    // and Object.entries(...) mapped to its keys: .map(([k]) => k) or .map(([k, v]) => k), with .filter/.slice/.reverse/.concat around it
+    m = m.replace(/Object\.entries\s*\((?:[^()]|\([^()]*\))*\)(?:\s*\.(?:filter|slice|reverse|concat)\s*\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\))*\s*\.map\s*\(\s*\(\s*\[\s*([\w$]+)\s*(?:,[^\]]*)?\]\s*\)\s*=>\s*\1\s*\)(?:\s*\.(?:filter|slice|reverse|concat)\s*\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\))*\s*\.sort\s*\(\s*\)/g, ' ');
     m = m.replace(/(?:Object\.(?:keys|getOwnPropertyNames)\s*\((?:[^()]|\([^()]*\))*\)|\breaddir(?:Sync)?\s*\((?:[^()]|\([^()]*\))*\)|\.split\s*\((?:[^()]|\([^()]*\))*\)|\.map\s*\(\s*String\s*\))(?:\s*\.(?:filter|slice|reverse|concat)\s*\((?:[^()]|\((?:[^()]|\([^()]*\))*\))*\))*\s*\.sort\s*\(\s*\)/g, ' ');
     if (!/\.sort\s*\(\s*\)/.test(m)) return false;
     const recv = /([\w$]+)\s*\.sort\s*\(\s*\)/.exec(m);

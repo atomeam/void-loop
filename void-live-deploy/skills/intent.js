@@ -104,11 +104,11 @@ const STEPS = [
 ];
 
 /** Steps worked back from the deadline: [{ text, date }], the goal last on the day itself. Pure. */
-export function stepsFor(goal, deadline, now = new Date()) {
+export function stepsFor(goal, deadline, now = new Date(), own = null) {
   const today = day0(now);
   const span = Math.max(0, Math.round((day0(deadline) - today) / 86400000));
   const hit = STEPS.find(([re]) => re.test(goal));
-  const before = (hit ? hit[1] : ['work out the steps', 'do the main part', 'check it']).slice();
+  const before = (own && own.length ? own : hit ? hit[1] : ['work out the steps', 'do the main part', 'check it']).slice(); // own: the answer engine's steps
   // spread the steps over the days before the deadline; with fewer days than steps several share a day
   const out = before.map((text, i) => ({ text, date: addDays(today, span ? Math.floor((i * span) / before.length) : 0) }));
   out.push({ text: goal, date: day0(deadline) });
@@ -142,6 +142,21 @@ export function undatedOf(text) {
   return { goal: listSafe(goal), who };
 }
 
+// An open plan (frontier #10, next step): an explicit plan ask of a kind with no steps here ("plan my garden", "make a plan to
+// learn Spanish") goes to the answer engine for the steps (lib/plan.js, /api/answer mode 'plan'). Not a day's or a week's plan,
+// and not health, diet or money: those stay with their own skills, or with no one.
+const OPEN_NOT = /\b(?:day|days|week|weekend|morning|evening|night|today|tomorrow|weight|diet|meal|meals|eat|eating|calories|workout|exercise|fitness|sleep|health|medical|medicine|medication|pain|therapy|money|budget|debt|loan|invest|investing|investment|savings|retirement|tax|taxes|stocks?|crypto)\b/;
+export function openPlanOf(text) {
+  if (planOf(text)) return null; // a kind with its own steps, dated or not
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/[’]/g, "'");
+  if (new RegExp('\\b(?:by|before|until|till|on|in)\\s+' + DATE_RE + '\\b').test(t)) return null;
+  const m = PLAN_VERB_RE.exec(t) || PLAN_NOUN_RE.exec(t);
+  if (!m) return null;
+  const goal = listSafe(m[1].trim());
+  if (goal.length < 3 || OPEN_NOT.test(goal)) return null;
+  return { goal, who: m[2] && !NOT_A_PERSON.test(m[2]) ? m[2] : null };
+}
+
 /** The build order: asks Void already answers, in the order they run. Pure. */
 export function planOf(text, now = new Date()) {
   const hit = intentOf(text);
@@ -166,7 +181,14 @@ export function planOf(text, now = new Date()) {
     { piece: 'calendar', ask: 'add ' + goal + ' to my calendar on ' + MONTH_DAY(deadline) },
   ];
   if (hit.who) asks.push({ piece: 'draft', ask: 'add a sticky that says draft to ' + cap(hit.who) + ' (not sent): heads up, ' + (/^we\b/.test(String(text).trim().toLowerCase()) ? "we're" : "I'm") + ' aiming to ' + goal + ' by ' + LONG_DAY(deadline) });
-  return { goal, who: hit.who, deadline, steps, asks };
+  return { goal, who: hit.who, deadline, steps, asks, generic: !STEPS.some(([re]) => re.test(goal)) };
+}
+
+/** A dated plan with the answer engine's steps in place of the generic ones, dated back from the day; the other asks as they were. Pure. */
+export function withSteps(plan, own, now = new Date()) {
+  const steps = stepsFor(plan.goal, plan.deadline, now, own);
+  const asks = plan.asks.map((a) => (a.piece === 'checklist' ? { ...a, ask: 'make a list with ' + steps.map((st) => st.text + ' (' + SHORT_DAY(st.date) + ')').join(', ') } : a));
+  return { ...plan, steps, asks, generic: false, engine: true };
 }
 
 // Lay the new pieces out in a row (wrapping), so the group lands as one tidy block near the top left.
@@ -185,9 +207,28 @@ function layOut(st, ids, live) {
 }
 
 let seq = 0;
+// the open plan's steps from the answer engine; null when it has none (no model, busy, or no reply)
+async function engineSteps(goal) {
+  try {
+    const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'plan', goal }) });
+    const j = await r.json();
+    return Array.isArray(j.steps) && j.steps.length ? j.steps.map((x) => listSafe(String(x)).replace(/\s*&\s*|\s+and\s+/gi, ' + ').slice(0, 60)).filter(Boolean).slice(0, 7) : null;
+  } catch (_) { return null; }
+}
 async function run(text, api) {
-  const plan = planOf(text);
-  if (!plan) return 'none';
+  let plan = planOf(text);
+  if (!plan) {
+    const open = openPlanOf(text);
+    if (!open) return 'none';
+    const steps = await engineSteps(open.goal);
+    if (!steps) { if (api.say) api.say('could not plan "' + open.goal + '" right now: the answer engine gave no steps. Try again in a minute'); return 'intent'; }
+    const asks = [{ piece: 'checklist', ask: 'make a list with ' + steps.join(', ') }];
+    if (open.who) asks.push({ piece: 'draft', ask: 'add a sticky that says draft to ' + cap(open.who) + ' (not sent): heads up, ' + (/^(?:give\s+)?us\b|\bour\b/.test(String(text).toLowerCase()) ? "we're" : "I'm") + ' working on: ' + open.goal });
+    plan = { goal: open.goal, who: open.who, deadline: null, steps: steps.map((t) => ({ text: t, date: null })), asks, open: true };
+  } else if (plan.generic && !OPEN_NOT.test(plan.goal)) { // a dated plan with only the generic steps: the engine's, when it has them
+    const steps = await engineSteps(plan.goal);
+    if (steps) plan = withSteps(plan, steps);
+  }
   const st = api.stage || {};
   if (!st.ask || !st.things) return 'none';
   const before = new Set(Object.keys(st.things()));
@@ -203,8 +244,9 @@ async function run(text, api) {
     if (st.render) st.render();
   }
   const pieces = plan.asks.map((a) => a.piece === 'draft' ? 'a draft to ' + cap(plan.who) : a.piece).join(', ');
+  if (api.say && plan.open) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · steps from the answer engine, check them'); return 'intent'; }
   if (api.say && !plan.deadline) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · no day yet: add one ("' + plan.goal + ' by Friday") for dates, a countdown and the calendar'); return 'intent'; }
-  if (api.say) api.say('planned "' + plan.goal + '" for ' + LONG_DAY(plan.deadline) + ' · ' + pieces + (ids.length > 1 ? ' · one group, drag one to move them all' : '') + (plan.who ? ' · nothing sent' : ''));
+  if (api.say) api.say('planned "' + plan.goal + '" for ' + LONG_DAY(plan.deadline) + ' · ' + pieces + (ids.length > 1 ? ' · one group, drag one to move them all' : '') + (plan.who ? ' · nothing sent' : '') + (plan.engine ? ' · steps from the answer engine, check them' : ''));
   return 'intent';
 }
 
@@ -212,14 +254,16 @@ export default {
   name: 'intent',
   examples: ['I need to ship the product page by Friday', 'I have to finish my essay by October 20', 'I need to prepare a talk by next week and tell Sam',
     'help me launch the newsletter by the end of the month', 'we need to move house in 2 weeks',
-    'the product page launch on Friday', 'my essay is due October 20', 'make a plan to ship the product page', 'plan my move'],
+    'the product page launch on Friday', 'my essay is due October 20', 'make a plan to ship the product page', 'plan my move', 'plan my garden', 'make a plan to learn Spanish'],
   nearMisses: ['I need to wake up at 6 am, what time should I go to bed?', 'remind me at 5 to call home', 'days until friday', 'what do i need to get a 90',
     'I need to ship', 'call Sam next Tuesday at 4', 'i need a timer for 5 minutes', 'I need to finish my essay', 'how do I ship a product by friday',
     'my birthday on Friday', 'the exam was on Friday', 'plan my day', 'make a plan to lose weight', 'meal plan for the week'],
   intentOf,
   deadlineOf,
+  withSteps,
   stepsFor,
   planOf,
-  match(lower, text) { return !!planOf(text); },
+  openPlanOf,
+  match(lower, text) { return !!planOf(text) || !!openPlanOf(text); },
   run,
 };

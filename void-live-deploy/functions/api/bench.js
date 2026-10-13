@@ -8,16 +8,23 @@
 //                                  binding lists, with prices when it gives them (for the tool's spend plan); and what the
 //                                  binding knows of Clef and Clef-flash (frontier #9: tools/clef-probe.mjs prints it, so the
 //                                  router's Clef call is written to the real input shape, not a guess)
+//   { route: true, asks: [..] } -> { route, results: [{ i, embed: { skill|null, score, ms }, clef: { skill|null, p, ms } }] }
+//                                  frontier #9: both routers on up to ROUTE_CHUNK asks (lib/router.js's embedding guess and
+//                                  Clef-flash, lib/clef.js); null = no skill, answer in words; a failure is { error }
 // What a stranger could make it do: nothing (owner only). With the key: run at most CHUNK built-in asks a call, on a free
-// @cf text model only (never PAID_MODEL), under the guard's per-minute limit. It writes nothing and stores no answer.
+// @cf text model only (never PAID_MODEL), under the guard's per-minute limit; or route at most ROUTE_CHUNK asks of at most 300
+// characters (two classifier calls each: one embedding, one Clef-flash). It writes nothing and stores no answer.
 import { ownerOk } from '../../lib/guard.js';
 import { buildAsks, messagesFor } from '../../lib/bench-asks.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { PAID_MODEL } from '../../lib/models.js';
 import { FINDINGS_SCHEMA } from '../../lib/review-api.js';
 import { ANSWER_RUN, noThink } from './answer.js';
+import { classify } from '../../lib/router.js';
+import { skillQuestion, clefRoute } from '../../lib/clef.js';
 
 export const CHUNK = 8;
+export const ROUTE_CHUNK = 16;
 const FILES = ['builtin'];
 const MODEL_ID = /^@cf\/[a-z0-9][\w.-]{0,60}\/[a-z0-9][\w.-]{0,80}$/i;
 const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
@@ -49,6 +56,17 @@ export async function onRequestPost({ request, env }) {
   if (!(await ownerOk(request, env))) return json(401, { error: 'owner only' });
   let b = {}; try { b = await request.json(); } catch (_) {}
   if (!env.AI) return json(503, { error: 'no Workers AI binding on this deployment' });
+  if (b.route) {
+    const list = Array.isArray(b.asks) ? b.asks : [];
+    if (!list.length || list.length > ROUTE_CHUNK || !list.every((a) => typeof a === 'string' && a.trim() && a.length <= 300)) return json(400, { error: `asks: 1 to ${ROUTE_CHUNK} asks of at most 300 characters` });
+    const question = skillQuestion(), origin = new URL(request.url).origin;
+    const results = await Promise.all(list.map(async (ask, i) => {
+      const [e, c] = await Promise.all([classify(env, ask, { origin }), clefRoute(env, ask, { question })]);
+      return { i, embed: e.kind === 'fallback' ? { error: e.why, ms: e.ms } : { skill: e.kind === 'skill' ? e.skill : null, score: e.score, ms: e.ms },
+        clef: c.kind === 'fallback' ? { error: c.why, ms: c.ms } : { skill: c.skill, p: c.p, ms: c.ms } };
+    }));
+    return json(200, { route: true, results });
+  }
   const sf = await readSelf(env, new URL(request.url).origin);
   const asks = buildAsks({ self: sf.self, skills: sf.skills }), facts = selfFacts(sf);
   if (b.probe) return json(200, { ok: true, asks: asks.length, chunk: CHUNK, catalog: await catalog(env), clef: await clefModels(env) });

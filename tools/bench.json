@@ -5882,5 +5882,8 @@
   {"ask": "make a plan to ship the product page", "want": "skill:intent"},
   {"ask": "plan my move", "want": "skill:intent"},
   {"ask": "give me a plan for my biology exam", "want": "skill:intent"},
-  {"ask": "can you make me a plan to launch the newsletter", "want": "skill:intent"}
+  {"ask": "can you make me a plan to launch the newsletter", "want": "skill:intent"},
+  {"ask": "plan my garden", "want": "skill:intent"},
+  {"ask": "make a plan to learn Spanish", "want": "skill:intent"},
+  {"ask": "can you make me a plan to learn guitar", "want": "skill:intent"}
 ]

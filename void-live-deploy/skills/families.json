@@ -2,8 +2,8 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 1,
-  "tested": 47,
-  "checked": 13,
+  "tested": 46,
+  "checked": 14,
   "proven": 74
  },
  "families": [
@@ -136,8 +136,8 @@
    "for": "board games, card games and play",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 3,
+    "tested": 2,
+    "checked": 4,
     "proven": 12
    },
    "skills": [
@@ -173,8 +173,8 @@
     },
     {
      "name": "chess",
-     "tier": "tested",
-     "why": "6 browser-suite mentions"
+     "tier": "checked",
+     "why": "a self-test, 7 browser-suite mentions"
     },
     {
      "name": "checkers",
@@ -730,7 +730,7 @@
     {
      "name": "intent",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 15 real asks in the benchmark"
+     "why": "a self-test, 7 browser-suite mentions, 18 real asks in the benchmark"
     },
     {
      "name": "different",

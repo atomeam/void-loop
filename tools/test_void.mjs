@@ -612,6 +612,37 @@ try {
       /planned "move"/.test(said) && /no day yet/.test(said) && list && JSON.stringify(list.items.map((i) => i.text)) === JSON.stringify(['sort out what to give away', 'get boxes', 'pack', 'last checks', 'move'])
         && !st.some((x) => x.kind === 'countdown') && agenda === 0 && !U.errors.length, JSON.stringify({ said, items: list && list.items.map((i) => i.text), kinds: st.map((x) => x.kind), agenda, e: U.errors }));
     await U.ctx.close(); }
+  // an open plan (frontier #10, next step): a plan of a kind with no steps of its own asks the answer engine (mode 'plan') for
+  // the steps; the only ask that runs is the checklist. The engine is stood in for here (the suite reaches no model).
+  if (want("open plan: \"plan my garden\" asks the answer engine for steps")) { const O = await fresh();
+    let sent = null;
+    await O.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = JSON.parse(r.request().postData() || '{}'); if (b.mode === 'plan') sent = b; return r.fulfill(json({ goal: 'my garden', steps: ['Pick a sunny spot', 'Test the soil', 'Choose plants & seeds', 'Water every morning'], model: 'gemma' })); });
+    await O.ask('plan my garden', 2500);
+    const said = await O.whisper(), st = await O.state(), list = st.find((x) => x.kind === 'list');
+    await O.ask('plan my day', 1200);
+    const after = (await O.state()).length;
+    check('open plan: "plan my garden" asks the answer engine (mode plan) for the steps and puts them up as one checklist, says they came from the engine; "plan my day" adds nothing',
+      sent && sent.mode === 'plan' && sent.goal === 'my garden' && /planned "my garden"/.test(said) && /answer engine/.test(said)
+        && list && JSON.stringify(list.items.map((i) => i.text)) === JSON.stringify(['Pick a sunny spot', 'Test the soil', 'Choose plants + seeds', 'Water every morning'])
+        && st.length === 1 && after === 1 && !O.errors.length, JSON.stringify({ sent, said, items: list && list.items.map((i) => i.text), kinds: st.map((x) => x.kind), after, e: O.errors }));
+    await O.ctx.close(); }
+  // a dated plan of a kind with no steps of its own: the engine's steps, dated back from the day; with no engine, the generic
+  // steps, and the checklist is there (its "check it" step used to stop the list ask, so the plan came without one)
+  if (want("dated open plan: \"make a plan to learn spanish by friday\" takes the engine's steps")) { const D = await fresh();
+    let engine = true, sent = null;
+    await D.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = JSON.parse(r.request().postData() || '{}'); if (b.mode === 'plan' && !sent) sent = b;
+      return r.fulfill(json(engine ? { steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], model: 'gemma' } : { steps: null, note: 'no model' })); });
+    await D.ask('make a plan to learn spanish by friday', 3000);
+    const said = await D.whisper(), st = await D.state(), list = st.find((x) => x.kind === 'list');
+    const texts = list ? list.items.map((i) => i.text) : [];
+    await D.ask('clear the stage', 800); engine = false;
+    await D.ask('I need to learn guitar by next week', 3000);
+    const st2 = await D.state(), list2 = st2.find((x) => x.kind === 'list');
+    check('dated open plan: "make a plan to learn spanish by friday" asks the engine and lists its steps dated back from the day (the goal last), with the countdown and the calendar; with no engine "learn guitar by next week" still gets its checklist',
+      sent && sent.goal === 'learn spanish' && /steps from the answer engine/.test(said) && texts.length === 4 && /^Learn 20 words a day \(\w{3} \d+\)$/.test(texts[0]) && /^learn spanish \(fri \d+\)$/.test(texts[3])
+        && st.some((x) => x.kind === 'countdown') && !!list2 && /^work out the steps/.test(list2.items[0].text) && !D.errors.length,
+      JSON.stringify({ sent, said, texts, kinds: st.map((x) => x.kind), list2: list2 && list2.items.map((i) => i.text), kinds2: st2.map((x) => x.kind), e: D.errors }));
+    await D.ctx.close(); }
   // Labels and arrows (skills/label.js, board "Later": text annotation / labels): "label the clock kitchen" tags it, an arrow
   // drawn by label names joins two things and follows a drag, a free label can be an arrow's end, "undo" and reload behave.
   if (want("Labels and arrows (skills/label.js, board \"Later\": text annotation / labels): \"label the c")) { const L = await fresh();
@@ -1688,20 +1719,27 @@ try {
     await P.ask('what are they doing', 500); const none = await P.whisper();
     await P.ask('summon a zombie', 900); await P.ask('what are they doing', 500); const one = await P.whisper();
     await P.ask('bring a dog', 900); await P.ask('what are they doing', 500); const two = await P.whisper();
-    check('figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it',
-      /summon two figures first/.test(none) && /no one to be with yet/.test(one) && /^the zombie and the dog spar: the (zombie|dog) offers a scuffle and the (zombie|dog) wants one$/.test(two) && !P.errors.length,
-      JSON.stringify({ none, one, two, e: P.errors }));
+    // and they act it out (frontier #4, figures3d meet): both walk to each other and spar, a body apart
+    const met = await until(() => P.p.evaluate(() => { const s = window.__void3d && window.__void3d.state(), f = s ? s.figures : [];
+      return f.length === 2 && f.every((x) => x.mode === 'together') && Math.hypot(f[0].x - f[1].x, f[0].y - f[1].y) < 100 ? f.map((x) => ({ mode: x.mode, x: x.x, y: x.y })) : null; }), 20000);
+    check('figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wants it, then the two walk to each other and spar a body apart',
+      /summon two figures first/.test(none) && /no one to be with yet/.test(one) && /^the zombie and the dog spar: the (zombie|dog) offers a scuffle and the (zombie|dog) wants one$/.test(two) && !!met && !P.errors.length,
+      JSON.stringify({ none, one, two, met, figs: await P.p.evaluate(() => window.__void3d && window.__void3d.state().figures.map((x) => ({ mode: x.mode, x: x.x, y: x.y }))), e: P.errors }));
     await P.ctx.close(); }
   // frontier #11's next step: things moved live between the tabs of a shared Void. Each tab gives its own ids to what a summon
   // makes, so the summon carries a token and a move names it; the spot is a share of the stage, so different sizes agree
   if (want("shared Void moves: a clock dragged in one tab moves in the other, both ways")) {
     const room = 'cccccccccccccccc.dddddddddddddddd', S = await fresh({ base: base + '?with=' + room });
     const B = await S.ctx.newPage(); const errsB = []; B.on('pageerror', (e) => errsB.push(String(e && e.message || e)));
-    await B.goto(base + '?with=' + room); await B.waitForTimeout(900);
+    await B.goto(base + '?with=' + room);
+    // B must have joined before the clock is summoned (a fixed wait raced the join under load; verify on f672395 then found no
+    // clock on B and the drag threw, ending the suite): wait for its join line, as the words check below does
+    await until(() => B.$eval('#whisper', (e) => /tabs in this browser/.test(e.textContent)).catch(() => false), 8000);
     await S.ask('clock', 900);
     const share = (pg) => pg.evaluate(() => { const st = document.getElementById('stage'), el = st.querySelector('.thing.clock'); return el ? { x: parseFloat(el.style.left) / st.clientWidth, y: parseFloat(el.style.top) / st.clientHeight } : null; });
     const onB = await until(() => share(B), 4000);
-    const drag = async (pg, dx, dy) => { const b = await pg.$eval('.thing.clock', (e) => { const r = e.getBoundingClientRect(); return { x: r.left + 20, y: r.top + 12 }; });
+    const drag = async (pg, dx, dy) => { const b = await pg.$eval('.thing.clock', (e) => { const r = e.getBoundingClientRect(); return { x: r.left + 20, y: r.top + 12 }; }).catch(() => null);
+      if (!b) return; // no clock on that tab: the check below fails with what each tab had, the suite carries on
       await pg.mouse.move(b.x, b.y); await pg.mouse.down(); await pg.mouse.move(b.x + dx, b.y + dy, { steps: 8 }); await pg.mouse.up(); };
     await drag(S.p, 140, 90);
     const a1 = await share(S.p);
@@ -2515,7 +2553,7 @@ try {
     await say('new 3d layer for the halo');
     await D.p.waitForFunction(() => /Enter VR/.test(document.querySelector('.vpage.on .vd-layers')?.textContent || ''), null, { timeout: 15000 }).catch(() => {});
     const button = await D.p.$('.vpage.on .vd-vr');
-    let inVR = false, during = '', back = '', painted = 0, undone = -1;
+    let inVR = false, during = '', back = '', painted = 0, undone = -1, offPainted = 0, offUndone = -1;
     if (button) {
       await button.click(); await D.p.waitForTimeout(1200);
       inVR = await D.p.evaluate(() => !!window.__xr.activeSession); during = await D.p.$eval('.vpage.on .vd-said', (e) => e.textContent);
@@ -2527,10 +2565,19 @@ try {
       await D.p.waitForTimeout(600);
       back = await D.p.$eval('.vpage.on .vd-said', (e) => e.textContent); painted = await ink();
       await D.p.click('.vpage.on .vd-undo'); undone = await ink();
+      // the headset taken off mid-stroke (the trigger still held, so no selectend comes): the stroke is kept and Undo still takes it
+      // back (verify on d284554: the session ended before selectend was handled and Undo had nothing to take)
+      await button.click(); await D.p.waitForTimeout(1200);
+      await D.p.evaluate(async () => { const c = window.__xr.controllers.right, wait = () => new Promise((r) => setTimeout(r, 40));
+        c.position.set(0.2, 1.3, -0.9); await wait(); c.updateButtonValue('trigger', 1); await wait();
+        for (let i = 0; i <= 12; i++) { c.position.set(-0.2 + i / 30, 1.3, -0.9); await wait(); }
+        if (window.__xr.activeSession) await window.__xr.activeSession.end(); });
+      await D.p.waitForTimeout(600);
+      offPainted = await ink(); await D.p.click('.vpage.on .vd-undo'); offUndone = await ink();
     }
-    check('draw VR: with a headset present an Enter VR button shows on a 3D layer; in VR the controller\'s trigger paints in the air; back on the card the stroke is on the layer; Undo takes it back',
-      !!button && inVR && /hold a trigger to paint/.test(during) && /Back from VR/.test(back) && painted > 3000 && undone === 0 && !D.errors.length,
-      JSON.stringify({ button: !!button, inVR, during, back, painted, undone, errors: D.errors }));
+    check('draw VR: with a headset present an Enter VR button shows on a 3D layer; in VR the controller\'s trigger paints in the air; back on the card the stroke is on the layer; Undo takes it back, even when the headset came off mid-stroke',
+      !!button && inVR && /hold a trigger to paint/.test(during) && /Back from VR/.test(back) && painted > 3000 && undone === 0 && offPainted > 500 && offUndone === 0 && !D.errors.length,
+      JSON.stringify({ button: !!button, inVR, during, back, painted, undone, offPainted, offUndone, errors: D.errors }));
     await D.ctx.close();
   }
 

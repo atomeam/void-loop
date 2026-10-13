@@ -164,9 +164,15 @@ function evaluate(s) { // from the side to move
     const v = VAL[t] + (t === 'k' && endgame ? PST.ke : PST[t])[idx]; mg += w ? v : -v; }
   return s.turn === 'w' ? mg : -mg;
 }
+/** The card's line while Void searches: how deep it has looked, how many positions, the move it leans to (asked by Void). */
+export function thinkingLine(info, s) {
+  if (!info || !info.best) return 'Void is thinking…';
+  const m = legalMoves(s).find((x) => x.from === info.best.from && x.to === info.best.to && (x.promo || null) === (info.best.promo || null));
+  return 'Void is thinking… ' + info.depth + (info.depth === 1 ? ' move' : ' moves') + ' deep · ' + info.nodes.toLocaleString('en-US') + ' positions' + (m ? ' · leaning ' + moveLabel(s, m) : '');
+}
 const MATE = 100000;
 const order = (ms) => ms.sort((a, b) => ((b.captured ? VAL[b.captured.toLowerCase()] * 10 - VAL[b.piece.toLowerCase()] : 0) + (b.promo ? 800 : 0)) - ((a.captured ? VAL[a.captured.toLowerCase()] * 10 - VAL[a.piece.toLowerCase()] : 0) + (a.promo ? 800 : 0)));
-export function bestMove(s, { depth = 3, ms = 700, rng = Math.random } = {}) {
+export function bestMove(s, { depth = 3, ms = 700, rng = Math.random, onDepth = null } = {}) {
   const t0 = Date.now(); let nodes = 0, stop = false;
   const out = () => { if ((++nodes & 1023) === 0 && Date.now() - t0 > ms) stop = true; return stop; };
   function quiesce(p, a, b, qd) {
@@ -196,6 +202,7 @@ export function bestMove(s, { depth = 3, ms = 700, rng = Math.random } = {}) {
       if (v > bestV) { bestV = v; bestD = m; ties = [m]; } else if (v === bestV) ties.push(m);
     }
     if (!stop && bestD) { best = ties.length > 1 && d === depth ? ties[Math.floor(rng() * ties.length)] : bestD; root.splice(root.indexOf(bestD), 1); root.unshift(bestD); }
+    if (!stop && bestD && onDepth) onDepth({ depth: d, nodes, best: { from: bestD.from, to: bestD.to, piece: bestD.piece, promo: bestD.promo || null } }); // what it has seen so far (asked by Void: a line while it thinks)
   }
   return best;
 }

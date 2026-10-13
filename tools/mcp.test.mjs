@@ -93,6 +93,24 @@ test('mcp: through the real route with no key, review_code_closer gives the inst
   assert.ok(j.result.structuredContent.findings.some((f) => f.rule === 'eval')); assert.match(j.result.content[0].text, /code-review\/#pro/);
 });
 
+// asked by Void (ask-20261013-0032-3): every review says what it rests on, so a calling AI knows when it is pattern checks alone
+test('mcp: each review says its basis: pattern checks alone are low confidence, the closer read is marked as read by a model', async () => {
+  const quickR = (await rpc({ jsonrpc: '2.0', id: 30, method: 'tools/call', params: { name: 'review_code', arguments: { code: CODE, lang: 'javascript' } } })).result;
+  assert.equal(quickR.structuredContent.basis, 'patterns'); assert.equal(quickR.structuredContent.confidence, 'low');
+  assert.match(quickR.content[0].text, /\nBasis: pattern checks only, no model/);
+  const clean = (await rpc({ jsonrpc: '2.0', id: 31, method: 'tools/call', params: { name: 'review_code', arguments: { code: 'const a = 1;\n', lang: 'javascript' } } })).result;
+  assert.match(clean.content[0].text, /finding nothing is not proof/);
+  const ctx = (body) => ({ review: async () => ({ status: 200, body }) });
+  const call = (c) => rpc({ jsonrpc: '2.0', id: 32, method: 'tools/call', params: { name: 'review_code_closer', arguments: { code: CODE } } }, c);
+  const free = (await call(ctx({ ok: true, findings: [], lang: 'javascript', lines: 2, tier: 'free', review: 'rules' }))).result.structuredContent;
+  assert.equal(free.basis, 'patterns'); assert.equal(free.confidence, 'low');
+  const pro = (await call(ctx({ ok: true, findings: [], lang: 'javascript', lines: 2, tier: 'pro', review: 'model', answer: '- line 1: eval' }))).result;
+  assert.equal(pro.structuredContent.basis, 'closer_read'); assert.equal(pro.structuredContent.confidence, 'reviewed');
+  assert.match(pro.content[0].text, /\nBasis: pattern checks, then an AI reviewer/);
+  const noAnswer = (await call(ctx({ ok: true, findings: [], lang: 'javascript', lines: 2, tier: 'pro', review: 'model' }))).result.structuredContent;
+  assert.equal(noAnswer.basis, 'patterns', 'a model tier with no closer read in hand is still pattern checks alone');
+});
+
 // /code-review/ tells an agent's owner how to add Void (frontier #6): the endpoint, every tool tools/list serves, and where the key goes
 test('mcp: /code-review/ shows how to add Void to an AI: the endpoint, each tool by name, the key as a Bearer header', async () => {
   const { readFileSync } = await import('node:fs');

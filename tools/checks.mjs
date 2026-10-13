@@ -109,6 +109,8 @@ for (const [name, file] of [
   ['clock', 'clock.test.mjs'],
   ['list', 'list.test.mjs'],
   ['together', 'together.test.mjs'],
+  ['plan', 'plan.test.mjs'],
+  ['chess thinking', 'chess-thinking.test.mjs'],
   ['shared routines', 'shared-routines.test.mjs'],
   ['automations', 'automations.test.mjs'],
   ['actions', 'actions.test.mjs'],
@@ -128,6 +130,7 @@ for (const [name, file] of [
   ['skills-index', 'skills-index.test.mjs'],
   ['heavy', 'heavy.test.mjs'],
   ['clef-probe', 'clef-probe.test.mjs'],
+  ['route-bench', 'route-bench.test.mjs'],
   ['families', 'families.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
