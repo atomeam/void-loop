@@ -11,7 +11,8 @@
  * shading multiply", "clip the shading to the skin", "lock the skin", "merge the shading down": the same box takes them.
  * 3D layers (frontier 25): "new 3d layer for the ring" paints tubes in space with the same brushes and steadying, rendered by
  * skills/scene3d.js (loaded only then) into the layer's canvas, so a 3D layer stacks, fades, clips and blends with flat ones;
- * "turn the ring 70", the Turn button, or a right or shift drag spins it.
+ * "turn the ring 70", the Turn button, or a right or shift drag spins it. Where the browser offers VR, Enter VR puts the layer
+ * in a headset in front of you and a controller's trigger paints in the air; leaving brings the strokes back to the card.
  */
 export const TOOLS = {
   pencil: { size: 3, hardness: 0.85, flow: 0.8, grain: 0.35, jitter: 0.05 },
@@ -216,7 +217,8 @@ function run(text, api) {
     $('.vd-layers').innerHTML = '<span class="sub">Layers, top first:</span>' + layers.map((L, i) => [L, i]).reverse().map(([L, i]) => '<button type="button" data-layer="' + i + '"' + (L === A ? ' aria-pressed="true"' : '') + '>' + esc(L.name) // void-review: ok (every name through esc)
       + (L.hidden ? ' (hidden)' : '') + (L.alpha < 1 ? ' ' + Math.round(L.alpha * 100) + '%' : '') + (L.blend !== 'normal' ? ' ' + esc(L.blend) : '') + (L.kind === '3d' ? (L.space ? ' (3D)' : ' (3D, starting…)') : '') + (L.locked ? ' (locked)' : '') + (L.clipTo && layers.includes(L.clipTo) ? ' (clipped to ' + esc(L.clipTo.name) + ')' : '') + '</button>').join('')
       + '<button type="button" class="vd-addlayer" title="new layer on top">+ layer</button><button type="button" class="vd-add3d" title="new 3D layer on top: paint in space">+ 3D layer</button>'
-      + (A.kind === '3d' ? '<button type="button" class="vd-turn" aria-pressed="' + turning + '">' + (turning ? 'Turning: drag to spin' : 'Turn') + '</button>' : '');
+      + (A.kind === '3d' ? '<button type="button" class="vd-turn" aria-pressed="' + turning + '">' + (turning ? 'Turning: drag to spin' : 'Turn') + '</button>' : '')
+      + (A.kind === '3d' && A.space && vrOk ? '<button type="button" class="vd-vr">Enter VR</button>' : '');
   };
   const named = (L) => '"' + L.name + '"';
   const doLayer = (c) => {
@@ -283,6 +285,50 @@ function run(text, api) {
     const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(color), roughness: 0.45 + cur.grain * 0.45, metalness: 0, envMapIntensity: 0.3, transparent: cur.flow < 0.45, opacity: Math.min(1, Math.max(0.15, cur.flow * 2.2)) }); // dabs overlap and build up on paper; a tube is one pass, so flow counts double
     return new THREE.Mesh(geo, mat);
   };
+  // Enter VR (frontier 25, the owner: "we are working towards fully working Vr Void"): the 3D layer's scene goes into a headset
+  // session of its own renderer (so the page's miniatures keep theirs), standing in front of you at chest height, about a metre
+  // and a half across; holding a controller's trigger paints a tube where the controller is, in the brush and colour on the
+  // card; leaving VR brings the layer back to the card as it was turned. The button shows only where the browser offers VR.
+  let vrOk = false, vr = null;
+  try { if (navigator.xr && navigator.xr.isSessionSupported) navigator.xr.isSessionSupported('immersive-vr').then((ok) => { vrOk = !!ok; if (ok) showLayers(); }).catch(() => {}); } catch (_) {}
+  const enterVR = async (L) => {
+    const S = L.space, { THREE } = S;
+    let session;
+    try { session = await navigator.xr.requestSession('immersive-vr', { optionalFeatures: ['local-floor'] }); }
+    catch (e) { said.textContent = 'VR did not start: ' + (e && e.message ? e.message : 'the headset said no') + '.'; return; }
+    const r = new THREE.WebGLRenderer({ antialias: true, alpha: false }); r.xr.enabled = true; r.outputColorSpace = THREE.SRGBColorSpace;
+    r.xr.setReferenceSpaceType('local-floor');
+    const was = { pos: S.group.position.clone(), scale: S.group.scale.clone(), bg: S.scene.background };
+    const eye = new THREE.PerspectiveCamera(70, 1, 0.05, 50); // the headset moves the camera it renders with: its own, so the card's view stays put
+    S.group.position.set(0, 1.3, -0.9); S.group.scale.setScalar(0.25); S.scene.background = new THREE.Color(0x0b0d12);
+    const pens = [0, 1].map((i) => { const c = r.xr.getController(i); S.scene.add(c);
+      const tip = new THREE.Mesh(new THREE.SphereGeometry(0.008, 12, 8), new THREE.MeshBasicMaterial({ color: new THREE.Color(color) })); c.add(tip);
+      const pen = { c, tip, on: false, pts: [], live: null };
+      c.addEventListener('selectstart', () => { pen.on = true; pen.pts = []; pen.live = null; });
+      c.addEventListener('selectend', () => { pen.on = false; if (pen.live) { undo.push({ L, mesh: pen.live }); if (undo.length > 30) undo.shift(); } pen.live = null; pen.pts = []; });
+      return pen; });
+    const at = new THREE.Vector3();
+    r.setAnimationLoop(() => {
+      for (const pen of pens) {
+        pen.tip.material.color.set(color);
+        if (!pen.on) continue;
+        pen.c.getWorldPosition(at); S.group.updateMatrixWorld(true); const q = S.group.worldToLocal(at.clone());
+        const lastPt = pen.pts[pen.pts.length - 1]; if (lastPt && lastPt.distanceTo(q) < 0.02) continue;
+        pen.pts.push(q);
+        if (pen.live) { S.group.remove(pen.live); pen.live.geometry.dispose(); pen.live.material.dispose(); }
+        pen.live = tubeOf(S, pen.pts); S.group.add(pen.live);
+      }
+      r.render(S.scene, eye);
+    });
+    vr = { session, r };
+    session.addEventListener('end', () => {
+      r.setAnimationLoop(null); for (const pen of pens) { S.scene.remove(pen.c); pen.tip.geometry.dispose(); pen.tip.material.dispose(); }
+      S.group.position.copy(was.pos); S.group.scale.copy(was.scale); S.scene.background = was.bg; r.dispose(); vr = null;
+      renderSpace(L); compose(); said.textContent = 'Back from VR: what you painted there is on ' + named(L) + '.';
+    });
+    await r.xr.setSession(session);
+    said.textContent = 'In VR: hold a trigger to paint in the air in front of you; take the headset off or press its menu to come back.';
+  };
   const paintSpace = (L, p) => {
     const S = L.space, q = spaceAt(L, p); if (!q) return;
     const lastPt = S.pts[S.pts.length - 1]; if (lastPt && lastPt.distanceTo(q) < 0.015) return;
@@ -308,6 +354,7 @@ function run(text, api) {
     if (e.target.closest('.vd-addlayer')) { talk('new layer'); return; }
     if (e.target.closest('.vd-add3d')) { talk('new 3d layer'); return; }
     if (e.target.closest('.vd-turn')) { turning = !turning; showLayers(); return; }
+    if (e.target.closest('.vd-vr')) { if (A.space && !vr) enterVR(A); return; }
     const btn = e.target.closest('[data-layer]'); if (!btn) return; A = layers[+btn.dataset.layer] || A; said.textContent = 'Drawing on ' + named(A) + '.'; showLayers();
   });
   $('.vd-undo').addEventListener('click', () => { const u = undo.pop(); if (u && layers.includes(u.L)) { if (u.mesh) { u.L.space.group.remove(u.mesh); u.mesh.geometry.dispose(); u.mesh.material.dispose(); renderSpace(u.L); } else u.L.g.putImageData(u.im, 0, 0); } compose(); });

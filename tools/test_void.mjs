@@ -2449,9 +2449,41 @@ try {
     const list = await D.p.$eval('.vpage.on .vd-layers', (e) => e.textContent);
     await D.p.click('.vpage.on .vd-undo'); const undone = await ink();
     check('draw 3D: "new 3d layer for the ring" makes a 3D layer; a drag paints a ring in space; "turn the ring 70" turns it so it narrows on the canvas; Undo takes the stroke back; where 3D cannot start it says so and adds no layer',
-      /New 3D layer "ring"/.test(made) && drawn.n > 3000 && /turned 70/.test(turned) && side.n > 1000 && side.w < drawn.w * 0.75 && /ring \(3D\)/.test(list) && /Turn/.test(list) && undone.n === 0 && !D.errors.length
+      /New 3D layer "ring"/.test(made) && drawn.n > 3000 && /turned 70/.test(turned) && side.n > 1000 && side.w < drawn.w * 0.75 && /ring \(3D\)/.test(list) && /Turn/.test(list) && !/Enter VR/.test(list) && undone.n === 0 && !D.errors.length
         && /could not start here/.test(fallback.said) && !/3D\)/.test(fallback.list),
       JSON.stringify({ made, drawn, turned, side, list, undone, fallback, errors: D.errors }));
+    await D.ctx.close();
+  }
+
+  // Enter VR (2026-10-13, frontier 25, the owner: "we are working towards fully working Vr Void"): Meta's WebXR emulator (iwer,
+  // a dev dependency) stands in for a Quest 3; the right controller paints a circle in the air with the trigger held, and after
+  // leaving VR the stroke is on the 3D layer, on the card; Undo takes it back. A real headset is not in CI: this is the emulator.
+  if (want("Draw: Enter VR paints in the air with a controller (emulated headset)")) {
+    const iwer = fs.readFileSync(path.join(root, '..', 'node_modules', 'iwer', 'build', 'iwer.js'), 'utf8');
+    const D = await fresh({ mini3d: true }, { content: iwer + ';window.__xr = new IWER.XRDevice(IWER.metaQuest3); window.__xr.installRuntime({ forceInstall: true });' });
+    await D.ask('let me draw', 500);
+    const say = async (w) => { await D.p.fill('.vpage.on .vd-words', w); await D.p.click('.vpage.on .vd-make button'); await D.p.waitForTimeout(60); return D.p.$eval('.vpage.on .vd-said', (e) => e.textContent); };
+    const ink = () => D.p.$eval('.vpage.on .vdraw canvas', (c) => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 40) n++; return n; });
+    await say('thick bold marker'); await D.p.click('.vpage.on [data-color="#d6402f"]');
+    await say('new 3d layer for the halo');
+    await D.p.waitForFunction(() => /Enter VR/.test(document.querySelector('.vpage.on .vd-layers')?.textContent || ''), null, { timeout: 15000 }).catch(() => {});
+    const button = await D.p.$('.vpage.on .vd-vr');
+    let inVR = false, during = '', back = '', painted = 0, undone = -1;
+    if (button) {
+      await button.click(); await D.p.waitForTimeout(1200);
+      inVR = await D.p.evaluate(() => !!window.__xr.activeSession); during = await D.p.$eval('.vpage.on .vd-said', (e) => e.textContent);
+      await D.p.evaluate(async () => { const c = window.__xr.controllers.right, wait = () => new Promise((r) => setTimeout(r, 40));
+        c.position.set(0.2, 1.3, -0.9); await wait(); c.updateButtonValue('trigger', 1); await wait();
+        for (let i = 0; i <= 30; i++) { const a = i / 30 * Math.PI * 2; c.position.set(Math.cos(a) * 0.2, 1.3 + Math.sin(a) * 0.2, -0.9); await wait(); }
+        c.updateButtonValue('trigger', 0); await wait(); await wait();
+        if (window.__xr.activeSession) await window.__xr.activeSession.end(); });
+      await D.p.waitForTimeout(600);
+      back = await D.p.$eval('.vpage.on .vd-said', (e) => e.textContent); painted = await ink();
+      await D.p.click('.vpage.on .vd-undo'); undone = await ink();
+    }
+    check('draw VR: with a headset present an Enter VR button shows on a 3D layer; in VR the controller\'s trigger paints in the air; back on the card the stroke is on the layer; Undo takes it back',
+      !!button && inVR && /hold a trigger to paint/.test(during) && /Back from VR/.test(back) && painted > 3000 && undone === 0 && !D.errors.length,
+      JSON.stringify({ button: !!button, inVR, during, back, painted, undone, errors: D.errors }));
     await D.ctx.close();
   }
 
