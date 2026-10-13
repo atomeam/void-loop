@@ -52,6 +52,16 @@ export async function clefRoute(env, ask, { question = skillQuestion() } = {}) {
   } finally { clearTimeout(t); }
 }
 
+// Yes/no calls (frontier #10): the same model on one choice between yes and no about a short text, e.g. whether a goal is a
+// daily practice (lib/plan.js PRACTICE_ASK). { yes: true | false, p } or, on any failure, { yes: null, why }: never a guess.
+export function yesNoQuestion(instructions) {
+  return { skill: { type: 'choice', instructions, criteria: { yes: 'Yes, it is', no: 'No, it is not' } } };
+}
+export async function clefYesNo(env, text, instructions) {
+  const r = await clefRoute(env, text, { question: yesNoQuestion(instructions) });
+  return r.kind === 'skill' ? { yes: r.skill === 'yes', p: r.p, ms: r.ms } : { yes: null, why: r.why, ms: r.ms };
+}
+
 // Where Clef routes (frontier #9, Route bench run 38428528839, 2026-10-13): Clef-flash 290/306 right against the embedding
 // router's 201/306; it won by 2+ on these skills and sent 3 of 69 answer-in-words asks to a skill. Every other skill keeps the
 // embedding guess. Below CONFIDENT Clef is not followed; its pick is kept as `unsure`, for asking instead of guessing.

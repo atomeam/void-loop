@@ -4,9 +4,10 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
-import { parsePlan, parseTimer, parseNote, NOTE_MAX, cleanGoal, planPrompt, PLAN_SYSTEM, PLAN_MIN, PLAN_MAX, STEP_MAX } from '../void-live-deploy/lib/plan.js';
+import { parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, NOTE_MAX, cleanGoal, planPrompt, PLAN_SYSTEM, PLAN_MIN, PLAN_MAX, STEP_MAX } from '../void-live-deploy/lib/plan.js';
 import skill, { openPlanOf, planOf, withSteps } from '../void-live-deploy/skills/intent.js';
 import * as answerApi from '../void-live-deploy/functions/api/answer.js';
+import { clefYesNo, yesNoQuestion, CLEF_MODEL } from '../void-live-deploy/lib/clef.js';
 
 test('the reply becomes 3 to 7 short steps that the list ask keeps whole (no commas, no "and"); anything else is no plan', () => {
   assert.deepEqual(parsePlan('["Pick a sunny spot", "Test the soil, then add compost", "Choose plants and seeds", "Water every morning"]'),
@@ -70,7 +71,9 @@ test('/api/answer mode plan: the model\'s steps when it answers; none (and why) 
   const on = { DB: kvDB(), AI: ai('["Pick a sunny spot", "Choose plants and seeds", "Water every morning"]') };
   const r1 = await (await post(on, { mode: 'plan', goal: 'plan my garden with key sk-ant-api03-' + 'a'.repeat(40) })).json();
   assert.equal(r1.model, 'gemma'); assert.deepEqual(r1.steps, ['Pick a sunny spot', 'Choose plants + seeds', 'Water every morning']);
-  assert.match(calls[0].messages[0].content, /JSON array/); assert.doesNotMatch(calls[0].messages[1].content, /sk-ant-api03-a{20}/, 'a key never reaches the model');
+  const asked = calls.find((o) => o.messages), clef = calls.find((o) => o.state);
+  assert.match(asked.messages[0].content, /JSON array/); assert.doesNotMatch(asked.messages[1].content, /sk-ant-api03-a{20}/, 'a key never reaches the model');
+  assert.doesNotMatch(clef.state, /sk-ant-api03-a{20}/, 'nor Clef');
   assert.equal(on.DB.db.prepare('SELECT COUNT(*) n FROM void_kv').get().n, 0, 'nothing stored');
   const off = await (await post({ DB: kvDB(), AI: ai('x'), VOID_ANSWER_MODELS: 'off' }, { mode: 'plan', goal: 'plan my garden' })).json();
   assert.equal(off.steps, null); assert.match(off.note, /no model/);
@@ -147,6 +150,39 @@ test('/api/answer passes the timer on; the skill adds only the fixed timer ask f
     await skill.run('make a plan to learn spanish', { stage, say: () => {} });
     assert.ok(!asked.some((a) => /timer/.test(a)), 'an out-of-range timer never runs');
   } finally { globalThis.fetch = was; }
+});
+
+// frontier #10's next step: Clef makes the yes/no call (is this goal a daily practice?) beside the plan, never waited on
+// longer than the plan itself; a timer the engine offers is kept unless Clef says no, so a one-off goal never gets one
+const clefSays = (choice, p) => ({ answers: { skill: { choice, probabilities: { yes: choice === 'yes' ? p : 1 - p, no: choice === 'no' ? p : 1 - p } } } });
+test('a yes/no call through Clef: one choice between yes and no; a failure is no answer, never a guess', async () => {
+  const q = yesNoQuestion(PRACTICE_ASK);
+  assert.deepEqual(Object.keys(q.skill.criteria), ['yes', 'no']);
+  assert.equal(q.skill.type, 'choice'); assert.match(q.skill.instructions, /practi/);
+  const calls = [];
+  const env = (reply) => ({ AI: { run: async (model, input) => { calls.push({ model, input }); if (reply instanceof Error) throw reply; return reply; } } });
+  assert.deepEqual(await clefYesNo(env(clefSays('yes', 0.9)), 'learn spanish', PRACTICE_ASK).then((r) => [r.yes, r.p]), [true, 0.9]);
+  assert.equal(calls[0].model, CLEF_MODEL); assert.equal(calls[0].input.state, 'learn spanish');
+  assert.deepEqual(await clefYesNo(env(clefSays('no', 0.8)), 'plan my garden', PRACTICE_ASK).then((r) => [r.yes, r.p]), [false, 0.8]);
+  for (const bad of [new Error('boom'), { response: 'yes' }, { answers: { skill: { choice: 'maybe' } } }]) assert.equal((await clefYesNo(env(bad), 'x y z', PRACTICE_ASK)).yes, null);
+  assert.equal((await clefYesNo({}, 'x y z', PRACTICE_ASK)).yes, null, 'no model');
+  assert.equal(keepTimer(20, { yes: false, p: 0.8 }), null);
+  for (const v of [{ yes: true, p: 0.9 }, { yes: null }, null, undefined]) assert.equal(keepTimer(20, v), 20, JSON.stringify(v));
+  assert.equal(keepTimer(null, { yes: true, p: 0.9 }), null);
+});
+
+test('/api/answer drops the timer when Clef says the goal is not a daily practice, keeps it when Clef says yes, fails or is off', async () => {
+  const plan = { response: '{"steps": ["Pick a sunny spot", "Choose plants", "Water every morning"], "timer": 20}' };
+  const run = (clef, seen = []) => ({ run: async (model, input) => { seen.push(model); if (model === CLEF_MODEL) { if (clef instanceof Error) throw clef; return clef; } return plan; } });
+  const timerOf = async (env) => (await (await post({ DB: kvDB(), ...env }, { mode: 'plan', goal: 'plan my garden' })).json()).timer;
+  const seen = [];
+  assert.equal(await timerOf({ AI: run(clefSays('no', 0.85), seen) }), null, 'a one-off goal gets no timer');
+  assert.ok(seen.includes(CLEF_MODEL), 'Clef was asked');
+  assert.equal(await timerOf({ AI: run(clefSays('yes', 0.9)) }), 20);
+  assert.equal(await timerOf({ AI: run(new Error('down')) }), 20, 'Clef down: the engine\'s timer stands');
+  const off = [];
+  assert.equal(await timerOf({ AI: run(clefSays('no', 0.9), off), VOID_CLEF: 'off' }), 20);
+  assert.ok(!off.includes(CLEF_MODEL), 'VOID_CLEF=off never asks Clef');
 });
 
 // the second fixed shape: a short note to self ({"steps": [...], "note": "..."}), one plain line, put up as a sticky
