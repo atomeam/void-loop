@@ -8,6 +8,7 @@
 // safe automatic fix (autoFix) rewrites that line. --gate makes Void's review a merge gate: exit 1 when the added lines carry a
 // bug or a risk (the "void-review" check, .github/workflows/void-review.yml). A line that is right as written says so with
 // "void-review: ok" in a comment on it, and is left out. Otherwise the exit code is 0: the review informs.
+import { offerLines, HOME } from './review-offer.mjs';
 import { execFileSync } from 'node:child_process';
 import { ruleReview, langOf, skippedInReview, autoFix, textLines, conflictMarkers, CONFLICT_MESSAGE } from '../void-live-deploy/lib/code-review.js';
 import { redact } from '../void-live-deploy/lib/automation-fix.js';
@@ -160,6 +161,7 @@ const ms = Math.max(1, Math.round(performance.now() - started)), blocking = repo
 const gate = process.argv.includes('--gate') && blocking ? 1 : 0;
 if (process.argv.includes('--json')) { console.log(JSON.stringify({ base, head, findings: report, deep: deepText || null, quoted: deepQuoted, deepWhy: deepWhy || null, lines: scanned, ms, blocking }, null, 1)); process.exit(gate); }
 const n = { bug: 0, risk: 0, style: 0, note: 0 }; report.forEach((f) => n[f.kind]++);
+const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || '', outside = !!repo && repo.toLowerCase() !== HOME; // whose PR this is (the Action passes it)
 const out = ['<!-- void-review -->', '### Void\'s review', '', ...walkthrough()];
 if (!report.length) out.push('The quick checks found nothing in the lines this PR adds.');
 else {
@@ -168,10 +170,16 @@ else {
   const main = report.filter((f) => f.kind === 'bug' || f.kind === 'risk'), minor = report.filter((f) => f.kind === 'style' || f.kind === 'note');
   for (const f of main.slice(0, 30)) out.push(item(f));
   if (main.length > 30) out.push('', '…and ' + (main.length - 30) + ' more bugs and risks.');
-  if (minor.length) out.push('', '<details><summary>' + minor.length + ' style point' + (minor.length > 1 ? 's' : '') + ' and notes</summary>', '', ...minor.slice(0, 30).map(item), '', '</details>');
+  // on someone else's repository the best style points are shown as upgrades, not folded away (Void's own PRs keep them folded)
+  const lead = outside ? minor.filter((f, i, all) => f.kind === 'style' && all.findIndex((g) => g.kind === 'style' && g.rule === f.rule) === i).slice(0, 3) : []; // three different upgrades, one per rule
+  if (lead.length) out.push('', '**Quick upgrades** (not bugs; each makes the code a little better):', ...lead.map(item));
+  const rest = minor.filter((f) => !lead.includes(f));
+  if (rest.length) out.push('', '<details><summary>' + rest.length + (lead.length ? ' more' : '') + ' style point' + (rest.length > 1 ? 's' : '') + ' and notes</summary>', '', ...rest.slice(0, 30).map(item), '', '</details>');
 }
 if (deepText) out.push('', '#### A closer read', '', deepText);
 out.push('', blocking ? '**Blocking:** ' + blocking + ' bug' + (blocking > 1 ? 's and risks' : ' or risk') + ' to fix first (or mark a line that is right as written with a `void-review: ok` comment).' : '**Not blocking:** no bugs or risks in the added lines.');
 out.push('', '<sub>Reviewed ' + scanned + ' added line' + (scanned === 1 ? '' : 's') + ' in ' + (ms < 1000 ? ms + ' ms' : (ms / 1000).toFixed(1) + ' s') + (deepText ? ' (plus the closer read' + (deepQuoted ? ': ' + (deepQuoted.parsed === false ? 'its JSON did not parse, so nothing to report' : deepQuoted.kept + ' finding' + (deepQuoted.kept === 1 ? '' : 's') + ' quoted from the diff, ' + deepQuoted.dropped + ' claim' + (deepQuoted.dropped === 1 ? '' : 's') + ' about lines not in it dropped' + (deepQuoted.echoes ? ', ' + deepQuoted.echoes + ' echo' + (deepQuoted.echoes === 1 ? '' : 'es') + ' of the shape' : '')) : '') + ')' : deepWhy ? ' (closer read unavailable (' + deepWhy + '))' : '') + '. Pattern checks from void-live-deploy/lib/code-review.js, the same ones a-to-mind.com runs when someone asks Void to review code. Bugs and risks are worth a look; style is a suggestion.</sub>');
+const offer = offerLines({ repo, files: git('diff', '--name-only', '--no-color', base + '...' + head).split('\n').filter(Boolean), blocking, deep: !!deepText, upgrades: report.filter((f) => f.kind === 'style').length });
+if (offer.length) out.splice(out.length - 2, 0, '', '#### From A-to-Mind', '', ...offer.map((l) => '- ' + l)); // above the small print
 console.log(out.join('\n'));
 process.exit(gate);
