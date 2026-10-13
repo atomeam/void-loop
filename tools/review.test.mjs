@@ -255,8 +255,8 @@ ok(rules('while True: pass', 'python').includes('busy-loop@1') && rules('while T
 ok(rules('arr.sort()', 'javascript').includes('sort-no-compare@1') && !rules('arr.sort((a, b) => a - b)', 'javascript').includes('sort-no-compare@1'), 'sort() flagged, sort with a compare not');
 // a list that is always strings sorts right as text: Object.keys, a directory listing, a split, .map(String) are not flagged; a plain list still is
 { const flagged = (c) => rules(c, 'javascript').some((r) => r.startsWith('sort-no-compare@'));
-  ok(!flagged('const k = Object.keys(o).sort();') && !flagged('for (const n of fs.readdirSync(d).sort()) {}') && !flagged("const w = s.split(',').sort();") && !flagged('const t = nums.map(String).sort();')
-    && flagged('const v = list.sort();') && flagged('const k = Object.keys(o).sort(); const v = list.sort();') && flagged('const v = nums.map(Number).sort();'), 'sort() on always-string producers not flagged; plain and numeric still are'); }
+  ok(!flagged('const k = Object.keys(o).sort();') && !flagged('for (const n of fs.readdirSync(d).sort()) {}') && !flagged("const w = s.split(',').sort();") && !flagged('const t = nums.map(String).sort();') && !flagged("const fs = readdirSync(dir).filter((f) => f.endsWith('.json')).sort();") && !flagged('const k = Object.keys(o).slice(1).sort();')
+    && flagged('const v = list.sort();') && flagged('const k = Object.keys(o).sort(); const v = list.sort();') && flagged('const v = nums.map(Number).sort();') && flagged('const v = nums.filter((n) => n > 1).sort();'), 'sort() on always-string producers not flagged; plain and numeric still are'); }
 // escaping helpers by their usual names (escXml, escAttr, escapeHtml) count; a word that only starts with "esc" does not; a build read to its end
 { const flagged = (c) => rules(c, 'javascript').some((r) => r.startsWith('inner-html@'));
   ok(!flagged("p.innerHTML = '<h2>' + escXml(title) + '</h2>';") && !flagged("p.innerHTML = '<b>' + escapeHtml(n) + '</b>';") && flagged("p.innerHTML = '<b>' + escalate(n) + '</b>';"), 'escXml/escapeHtml count as escaping, escalate does not');

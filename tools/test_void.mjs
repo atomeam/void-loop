@@ -2359,6 +2359,32 @@ try {
     await D.ctx.close();
   }
 
+  // Steadying that learns your hand (2026-10-13, target ibisPaint X, feature stabilizer): the same shaky scribble lands steadier with it on
+  if (want("Draw: steadying learns your hand and takes the shake out")) {
+    const D = await fresh();
+    await D.ask('let me draw', 500);
+    const box = await D.p.$eval('.vpage.on .vdraw canvas', (c) => { const r = c.getBoundingClientRect(); return [r.left, r.top, r.width, r.height]; });
+    const zigzag = async () => { await D.p.mouse.move(box[0] + box[2] * 0.1, box[1] + box[3] * 0.5); await D.p.mouse.down();
+      for (let i = 1; i <= 40; i++) await D.p.mouse.move(box[0] + box[2] * (0.1 + i * 0.02), box[1] + box[3] * 0.5 + (i % 2 ? 9 : -9));
+      await D.p.mouse.up(); await D.p.waitForTimeout(60); };
+    // the ink's spread across the stroke: rows that hold ink in the middle of the canvas
+    const spread = () => D.p.$eval('.vpage.on .vdraw canvas', (c) => { const g = c.getContext('2d'), d = g.getImageData(c.width * 0.3, 0, c.width * 0.4, c.height).data, w = Math.floor(c.width * 0.4);
+      let top = c.height, bot = 0; for (let y = 0; y < c.height; y++) for (let x = 0; x < w; x++) if (d[(y * w + x) * 4 + 3] > 40) { top = Math.min(top, y); bot = Math.max(bot, y); break; } return bot - top; });
+    const label0 = await D.p.$eval('.vpage.on .vd-steady', (e) => e.textContent);
+    await zigzag(); await zigzag(); // two strokes teach it the hand
+    const learned = await D.p.$eval('.vpage.on .vd-steady', (e) => e.textContent);
+    const hand = await D.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.hand.v1') || 'null'));
+    await D.p.click('.vpage.on .vd-clear'); await D.p.click('.vpage.on .vd-steadyon'); await zigzag(); const off = await spread();
+    await D.p.click('.vpage.on .vd-clear'); await D.p.click('.vpage.on .vd-steadyon'); await zigzag(); const on = await spread();
+    await D.p.$eval('.vpage.on .vd-strength', (r) => { r.value = '100'; r.dispatchEvent(new Event('input', { bubbles: true })); });
+    const manualLabel = await D.p.$eval('.vpage.on .vd-steady', (e) => e.textContent);
+    const manualOk = /set by hand: the line takes out 85%/.test(manualLabel);
+    check('draw steadying: it starts by saying it learns your hand; two shaky strokes teach it (kept in the browser, named on the card); the same scribble spreads less with it on than off',
+      /learns your hand/.test(label0) && /learned from your hand \(2 strokes\)/.test(learned) && hand && hand.strokes === 2 && hand.tremor > 1 && off > 0 && on < off * 0.7 && manualOk && !D.errors.length,
+      JSON.stringify({ label0, learned, hand, off, on, manualLabel, errors: D.errors }));
+    await D.ctx.close();
+  }
+
   // Grown: every real ask from the board that Void once missed and now answers (tools/grown.json). Each is replayed on the real
   // page: no miss is posted, and the answer is where the entry says. The list only grows; a regression fails here.
   if (want("Grown: every real ask from the board that Void once missed and now answers (tools/grown.js")) { const grown = JSON.parse(fs.readFileSync(path.join(root, '..', 'tools', 'grown.json'), 'utf8')); const bad = [];
