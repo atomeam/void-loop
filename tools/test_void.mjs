@@ -2503,7 +2503,7 @@ try {
     await say('new 3d layer for the halo');
     await D.p.waitForFunction(() => /Enter VR/.test(document.querySelector('.vpage.on .vd-layers')?.textContent || ''), null, { timeout: 15000 }).catch(() => {});
     const button = await D.p.$('.vpage.on .vd-vr');
-    let inVR = false, during = '', back = '', painted = 0, undone = -1;
+    let inVR = false, during = '', back = '', painted = 0, undone = -1, offPainted = 0, offUndone = -1;
     if (button) {
       await button.click(); await D.p.waitForTimeout(1200);
       inVR = await D.p.evaluate(() => !!window.__xr.activeSession); during = await D.p.$eval('.vpage.on .vd-said', (e) => e.textContent);
@@ -2515,10 +2515,19 @@ try {
       await D.p.waitForTimeout(600);
       back = await D.p.$eval('.vpage.on .vd-said', (e) => e.textContent); painted = await ink();
       await D.p.click('.vpage.on .vd-undo'); undone = await ink();
+      // the headset taken off mid-stroke (the trigger still held, so no selectend comes): the stroke is kept and Undo still takes it
+      // back (verify on d284554: the session ended before selectend was handled and Undo had nothing to take)
+      await button.click(); await D.p.waitForTimeout(1200);
+      await D.p.evaluate(async () => { const c = window.__xr.controllers.right, wait = () => new Promise((r) => setTimeout(r, 40));
+        c.position.set(0.2, 1.3, -0.9); await wait(); c.updateButtonValue('trigger', 1); await wait();
+        for (let i = 0; i <= 12; i++) { c.position.set(-0.2 + i / 30, 1.3, -0.9); await wait(); }
+        if (window.__xr.activeSession) await window.__xr.activeSession.end(); });
+      await D.p.waitForTimeout(600);
+      offPainted = await ink(); await D.p.click('.vpage.on .vd-undo'); offUndone = await ink();
     }
-    check('draw VR: with a headset present an Enter VR button shows on a 3D layer; in VR the controller\'s trigger paints in the air; back on the card the stroke is on the layer; Undo takes it back',
-      !!button && inVR && /hold a trigger to paint/.test(during) && /Back from VR/.test(back) && painted > 3000 && undone === 0 && !D.errors.length,
-      JSON.stringify({ button: !!button, inVR, during, back, painted, undone, errors: D.errors }));
+    check('draw VR: with a headset present an Enter VR button shows on a 3D layer; in VR the controller\'s trigger paints in the air; back on the card the stroke is on the layer; Undo takes it back, even when the headset came off mid-stroke',
+      !!button && inVR && /hold a trigger to paint/.test(during) && /Back from VR/.test(back) && painted > 3000 && undone === 0 && offPainted > 500 && offUndone === 0 && !D.errors.length,
+      JSON.stringify({ button: !!button, inVR, during, back, painted, undone, offPainted, offUndone, errors: D.errors }));
     await D.ctx.close();
   }
 
