@@ -6,7 +6,7 @@
 //   READ_TOKEN=… node tools/route-bench.mjs [--site https://a-to-mind.com] [--sample 240] [--out route-bench.json] [--md table.md]
 // Exit 3 when the site cannot be asked (no key, rejected, an older deployment without { route }).
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
-import { SKILLS } from '../void-live-deploy/lib/router.js';
+import { SKILLS, SIMPLE, HARD } from '../void-live-deploy/lib/router.js';
 import { NONE } from '../void-live-deploy/lib/clef.js';
 
 export const CONFIDENT = 0.7; // the confidence a low-confidence answer would ask under ("not sure: did you mean…")
@@ -30,6 +30,15 @@ export function benchSet(bench, skills = SKILLS) {
 
 // n asks spread across the skills: one from each skill in turn (the bench is mostly calc), in bench order, so each run of the
 // same bench sees the same asks
+// the asks that should reach the answer engine, not a skill: each skill's near-misses ("who invented the clock") and the
+// router's simple and hard questions. The bench has few of these (3 on 2026-10-13), and a router that sends a question to a
+// skill is the costly mistake, so every run adds them. The embedding router has them as its own examples: it scores high here
+// by construction, so this row shows Clef's false skills more than it compares the two.
+export function noneSet(skills = SKILLS, simple = SIMPLE, hard = HARD) {
+  const asks = [...Object.values(skills).flatMap((s) => s.near || []), ...simple, ...hard];
+  return [...new Set(asks)].map((ask) => ({ ask, want: [NONE], examples: true }));
+}
+
 export function sample(set, n) {
   if (!n || n >= set.length) return set.slice();
   const groups = new Map();
@@ -76,6 +85,7 @@ export function table(s, v) {
     '| router | right | errors | median ms |', '|:--|--:|--:|--:|',
     `| embedding (bge-m3) | ${s.embed.right}/${s.n} (${pct(s.embed.right, s.n)}) | ${s.embed.errors} | ${s.ms.embed ?? '—'} |`,
     `| Clef-flash | ${s.clef.right}/${s.n} (${pct(s.clef.right, s.n)}) | ${s.clef.errors} | ${s.ms.clef ?? '—'} |`, '',
+    (s.skills[NONE] ? `The ${s.skills[NONE].n} "none" asks include the router's own near-misses and simple/hard questions (the embedding router's examples, so it scores high there by construction): Clef sent ${s.skills[NONE].n - s.skills[NONE].clef} of them to a skill.\n\n` : '') +
     `Agreement: ${s.agree}/${s.n}. Clef at confidence ${CONFIDENT}+ : ${s.sure.right}/${s.sure.n} right (${pct(s.sure.right, s.sure.n)}); below: ${s.unsure.right}/${s.unsure.n} (${pct(s.unsure.right, s.unsure.n)}).`, '',
     '| skill | asks | embedding | Clef |', '|:--|--:|--:|--:|',
     ...Object.entries(s.skills).sort((a, b) => b[1].n - a[1].n).map(([k, x]) => `| ${k} | ${x.n} | ${x.embed} | ${x.clef} |`), '',
@@ -100,7 +110,7 @@ export async function runSite(site, key, rows, { chunk = 16, get = fetch } = {})
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2), opt = (k, d) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : d; };
   const here = path.dirname(fileURLToPath(import.meta.url));
-  const rows = sample(benchSet(JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'))), Number(opt('--sample', '240')));
+  const rows = sample(benchSet(JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'))), Number(opt('--sample', '240'))).concat(noneSet());
   try {
     const results = await runSite(opt('--site', 'https://a-to-mind.com'), process.env.READ_TOKEN || process.env.VOID_OWNER_TOKEN || '', rows);
     const s = score(rows, results), v = verdict(s), md = table(s, v);
