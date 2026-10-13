@@ -2378,6 +2378,20 @@ try {
       !/most frequent/.test(t) && /asked 9 times, last 2026-10-11/.test(t) && /It joins my old parts into a persistent system/.test(t) && !W.errors.length
       && (t.match(/the free model fell short/g) || []).length === 1, JSON.stringify({ t: t.slice(0, 600), errors: W.errors }));
     await W.ctx.close(); }
+  // Void's want "make my outputs become my inputs": what it asked for in its reflections reaches its will, weighted by how
+  // often, never above the frontier's first item; a built ask is not a want
+  if (want("will: Void's own outputs become its input")) { const repo = path.resolve(root, '..');
+    const af = path.join(nodeOs.tmpdir(), 'void-asks-' + process.pid + '.json');
+    fs.writeFileSync(af, JSON.stringify([{ ask: 'Add a friction indicator to the growth card.', times: 5, small: true }, { ask: 'Learn backgammon.', times: 20 }, { ask: 'hi', times: 9 }]));
+    const r = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all'], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_ASKS_FILE: af, VOID_MISSES_TOKEN: '', VOID_OWNER_TOKEN: '', VOID_MISSES_FILE: '', VOID_ROUTES_FILE: '' }, timeout: 120000 });
+    fs.rmSync(af, { force: true });
+    let c = []; try { const j = JSON.parse(r.stdout); c = Array.isArray(j) ? j : j.candidates || []; } catch (_) {}
+    const fr = c.find((x) => x.title === 'Add a friction indicator to the growth card'), bg = c.find((x) => x.title === 'Learn backgammon');
+    check("will: Void's own outputs become its input: an ask from its reflections is a want with how often it asked; asked more weighs more, capped at 40; a two-letter ask is not a want",
+      fr && fr.kind === 'I asked for this' && fr.source === 'my reflections' && fr.weight === 27 && /^I asked for this 5 times in my reflections \(a small one\)$/.test(fr.why)
+      && bg && bg.weight === 40 && !c.some((x) => x.title === 'hi'),
+      JSON.stringify({ fr, bg, err: String(r.stderr || '').slice(0, 200) }));
+  }
   // A will job nobody touched in three days makes way: set aside (kept, with why), and the newest top want is queued
   if (want("Void's will makes way when its job sits untouched")) {
     const wEnv = { DB: memoryStoreD1(), READ_TOKEN: OWNER, AI: { run: async () => ({ response: JSON.stringify({ wants: [{ id: 1, i_want: 'I want to answer tide questions.', because: 'people ask for tides' }] }) }) } };
