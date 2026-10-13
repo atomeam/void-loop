@@ -8,7 +8,8 @@
       "item": [
         { "href": "https://a-to-mind.com/api/review" },
         { "href": "https://a-to-mind.com/api/mcp" },
-        { "href": "https://a-to-mind.com/api/catalog" }
+        { "href": "https://a-to-mind.com/api/catalog" },
+        { "href": "https://a-to-mind.com/skills/families.json" }
       ]
     }
   ]
