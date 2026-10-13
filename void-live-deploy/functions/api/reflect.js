@@ -1,5 +1,5 @@
 // Void's voice (lib/voice.js): Void says what it thinks of itself, and its words are kept word for word.
-// GET  (public)  -> { entries: newest reflections, asks: Void's current asks } ("what do you think of yourself?")
+// GET  (public)  -> { entries: newest reflections, asks: Void's current asks, follow: { total, built, recent, asked } } ("what do you think of yourself?")
 // POST (owner)   { kind: 'build', shipped: '<what just shipped>' }  after anything ships
 //                { kind: 'daily' }                                  once a day (.github/workflows/void-voice.yml)
 //   -> the saved entry. A concrete small ask is queued for the builders (target 'voice:...'), one open at a time.
@@ -21,7 +21,10 @@ export async function onRequestGet({ request, env }) {
   const [ledger, answered] = request && env.ASSETS ? await Promise.all([asset('/void.growth.json'), asset('/void.asks.json')]) : [null, null];
   const f = ledger ? followThrough(entries, ledger, answered && answered.links) : null;
   const built = new Set(f ? f.built.flatMap((g) => g.ids) : []);
-  const follow = f ? { total: f.total, built: f.built.length, recent: f.built.slice().sort((a, b) => String(b.builtAt).localeCompare(String(a.builtAt))).slice(0, 3).map((g) => ({ ask: g.ask, at: g.builtAt, ref: g.ref })) } : null;
+  const follow = f ? { total: f.total, built: f.built.length, recent: f.built.slice().sort((a, b) => String(b.builtAt).localeCompare(String(a.builtAt))).slice(0, 3).map((g) => ({ ask: g.ask, at: g.builtAt, ref: g.ref })),
+    // every built ask by the ledger entry that built it (its time), so a growth-tree branch can say what Void asked for (Void's ask:
+    // "link the growth card branches to the growth inbox so I can diagnose my own progress")
+    asked: f.built.map((g) => ({ ask: g.ask, at: g.builtAt, times: g.times })).slice(0, 200) } : null;
   return Response.json({ entries: entries.slice(0, 20), asks: currentAsks(entries, 12).filter((a) => !built.has(a.id)).slice(0, 6), ...(follow ? { follow } : {}) }, { headers: { 'cache-control': 'public, max-age=60' } });
 }
 

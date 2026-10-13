@@ -210,3 +210,17 @@ test('follow-through: an ask counts as built only on evidence (its id on a ledge
   assert.match(line, /2 of my 4 asks were built/); assert.match(line, /asked 2 times/); assert.match(line, /already there since 2026-10-12/);
   assert.equal(followFacts({ total: 0, built: [], open: [] }), '');
 });
+
+test('GET /api/reflect gives every built ask with the time of the ledger entry that built it, so a growth-tree branch can say what Void asked for', async () => {
+  const entries = [
+    { at: '2026-10-12T21:30:00Z', kind: 'build', asks: [{ ask: 'Add a skill velocity readout next to the tree' }] },
+    { at: '2026-10-12T20:52:00Z', kind: 'build', asks: [{ ask: 'Add a skill velocity readout next to the tree' }, { ask: 'Learn backgammon on the stage' }] },
+  ];
+  const DB = { prepare: () => ({ bind: () => ({ first: async () => JSON.stringify(entries) }) }) };
+  const files = { '/void.growth.json': [{ at: '2026-10-12T22:00:00Z', what: 'velocity on the growth card', asked: 'ask-20261012-2130-1' }, { at: '2026-10-11T00:00:00Z', what: 'other' }], '/void.asks.json': { links: [] } };
+  const ASSETS = { fetch: async (rq) => { const p = new URL(rq.url).pathname; return p in files ? Response.json(files[p]) : new Response('', { status: 404 }); } };
+  const g = await (await reflect.onRequestGet({ request: new Request('https://a-to-mind.com/api/reflect'), env: { DB, ASSETS } })).json();
+  assert.deepEqual(g.follow.asked, [{ ask: 'Add a skill velocity readout next to the tree', at: '2026-10-12T22:00:00Z', times: 2 }]);
+  assert.equal(g.follow.built, 1);
+  assert.ok(!g.asks.some((a) => /velocity/.test(a.ask)) && g.asks.some((a) => /backgammon/.test(a.ask)), 'built asks still leave the open list');
+});
