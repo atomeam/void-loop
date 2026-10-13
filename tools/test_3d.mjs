@@ -258,6 +258,9 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
   // ---- "growth": the card brings its tree (two-part summons), and touching the trunk reads the oldest entry under it
   if (want("3d: \"growth\"")) {
     const F = await fresh();
+    // what Void asked for, by the entry that built it (GET /api/reflect follow.asked): here every entry has one naming its own time
+    const ledgerAts = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')).map((e) => e.at);
+    await F.ctx.route(/\/api\/reflect(?:\?|$)/, (rt) => rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [], asks: [], follow: { total: 1, built: 1, recent: [], asked: ledgerAts.map((at) => ({ ask: 'the ask built at ' + at, at, times: 2 })) } }) }));
     await F.ask('growth');
     const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'growthtree'); return c && c.draws > 0 && c.ready ? c : false; }), 60000);
     const at = drawn && await F.p.evaluate(async () => {
@@ -266,6 +269,10 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     });
     if (at && at.pt) await F.p.mouse.click(at.pt.x, at.pt.y);
     const read = at && await until(() => F.p.evaluate((w) => { const s = document.querySelector('.vpage .growth-picked'); return s && s.textContent.includes(w) ? s.textContent.slice(0, 80) : false; }, at.oldest), 8000);
+    const cause = at && await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c ? c.textContent : null; });
+    const trunkAt = at && ledgerAts[at.trunk];
+    check('"growth": touching a branch says what Void asked for that it built (asked by Void: "link the growth card branches to the growth inbox"), matched by the entry that built it',
+      cause === 'Void asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
     const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
     check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
       !!drawn && at.inCard && at.state.branches === at.n && !!read && sel && sel.selected === at.trunk && !F.errors.length, JSON.stringify({ drawn: !!drawn, at, read, sel, e: F.errors }));

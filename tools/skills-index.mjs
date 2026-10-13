@@ -6,7 +6,8 @@
 //   node tools/skills-index.mjs            prints the list this would write and whether index.json matches it
 //   node tools/skills-index.mjs --write    writes void-live-deploy/skills/index.json
 //   node tools/skills-index.mjs --check    exit 1 when index.json is stale (what checks.mjs runs)
-//   node tools/skills-index.mjs --adopt    make the order file for a skill the index lists by hand (at its place), then rewrite the index
+//   node tools/skills-index.mjs --adopt    make the order file for a skill the index lists by hand (at its place), and for any new skill
+//                                          file in skills/ (at the end), then rewrite the index
 import { readdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -70,18 +71,51 @@ export function adoptOrder(names, dir = ORDER_DIR) {
   return made;
 }
 
+// Void asked (2026-10-13): "the manifest file in the skills/ directory to automatically register all new skills once they pass the
+// router test". A skill is a file in skills/ whose default export is a skill ({ name, ..., run }); one with no order file is
+// registered at the end of the routing order (last, so it takes nothing an older skill answers), and checks.mjs runs the router
+// test (tools/skills-check.mjs: each example reaches it first) on it like on every other. A file kept out on purpose is named
+// in OFF with why; nothing else can sit in skills/ unregistered.
+export const OFF = {
+  map: 'the assimilation map, retired with the assimilation table in cleanup step 2 (domains/void.frontier.md); kept for salvage',
+};
+const SKILL_SHAPE = /export\s+default\s*\{[\s\S]*?\bname\s*:\s*['"]([a-z0-9][a-z0-9-]*)['"][\s\S]*?\brun\b/;
+/** the skill files in skills/ that no order file registers and OFF does not keep out: [{ file, name }]. Pure given the reader. */
+export function unregistered(files, read, ranks, off = OFF) {
+  const out = [];
+  for (const f of files) {
+    if (!/^[a-z0-9][a-z0-9-]*\.js$/.test(f)) continue;
+    const n = f.slice(0, -3);
+    if (n in ranks || n in off) continue;
+    const m = SKILL_SHAPE.exec(read(f) || '');
+    if (m && m[1] === n) out.push({ file: f, name: n });
+  }
+  return out;
+}
+/** an order file at the end of the routing order for each new skill; returns the files made */
+export function registerNew(dir = ORDER_DIR, sdir = skillsDir) {
+  const ranks = ranksOf(dir), made = [];
+  let last = Math.max(0, ...Object.values(ranks));
+  for (const { name } of unregistered(readdirSync(sdir), (f) => readFileSync(resolve(sdir, f), 'utf8'), ranks)) {
+    last += 10; const f = String(last).padStart(4, '0') + '-' + name;
+    writeFileSync(resolve(dir, f), ''); made.push(f);
+  }
+  return made;
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const mode = process.argv[2] || '';
   if (mode === '--write') { const n = writeIndex(); console.log('wrote skills/index.json: ' + n.length + ' skills'); }
   else if (mode === '--adopt') { // the index's own order for skills that have no order file yet, then the index rewritten from the files
-    const made = adoptOrder(JSON.parse(readFileSync(INDEX, 'utf8')));
+    const made = adoptOrder(JSON.parse(readFileSync(INDEX, 'utf8'))).concat(registerNew()); // and every new skill file, at the end
     const n = writeIndex();
     console.log((made.length ? 'made ' + made.join(', ') + '; ' : 'every skill had its order file; ') + 'skills/index.json: ' + n.length + ' skills');
   } else {
     const { names, stale } = indexState();
     if (mode === '--check') {
-      let missing = [];
-      try { const r = ranksOf(); missing = JSON.parse(readFileSync(INDEX, 'utf8')).filter((n) => !(n in r)); } catch (_) {}
+      let missing = [], loose = [];
+      try { const r = ranksOf(); missing = JSON.parse(readFileSync(INDEX, 'utf8')).filter((n) => !(n in r)); loose = unregistered(readdirSync(skillsDir), (f) => readFileSync(resolve(skillsDir, f), 'utf8'), r); } catch (_) {}
+      if (loose.length) { console.log('skills/' + loose.map((x) => x.file).join(', ') + ' is a skill with no order file: node tools/skills-index.mjs --adopt registers it (at the end of the routing order), or name it in OFF in tools/skills-index.mjs with why'); process.exit(1); }
       console.log(!stale ? names.length + ' skills, index.json matches skills/order/'
         : missing.length ? 'skills/index.json lists ' + missing.join(', ') + ' with no order file: node tools/skills-index.mjs --adopt makes one at the index\'s own place'
         : 'skills/index.json is stale: node tools/skills-index.mjs --write (the order files in skills/order/ are the source)');

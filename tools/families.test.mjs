@@ -43,3 +43,22 @@ test('Void reads its families before it reflects', () => {
   assert.match(line, /3 skills in 2 families, 1 proven/); assert.match(line, /1 experiment\./); assert.match(line, /Least proven family: Sky/); assert.match(line, /chess, moon/);
   assert.equal(familyFacts(null), '');
 });
+
+test('friction (Void\'s ask): the asks the bench got wrong on main are each skill\'s failing asks, on its row in families.json', () => {
+  const files = {
+    'tools/test_void.mjs': '', 'tools/test_3d.mjs': '', 'tools/test_extension.mjs': '',
+    'tools/bench.json': JSON.stringify([{ ask: 'Weather in Oslo', want: 'skill:weather' }, { ask: 'rain later', want: 'skill:weather' }, { ask: '15% of 80', want: 'calc|answer' }, { ask: 'set a timer', want: 'timer' }]),
+    'tools/bench.misses.json': JSON.stringify({ misses: ['weather in oslo -> skill:place', '15% of 80 -> answer', 'an ask no longer in the bench -> x'] }),
+  };
+  const read = (p) => { if (p in files) return files[p]; throw new Error('no ' + p); };
+  const ev = evidence(['weather', 'calc', 'timer'], read, () => []);
+  assert.deepEqual(ev.weather.failing, ['Weather in Oslo']);
+  assert.deepEqual(ev.calc.failing, ['15% of 80']);
+  assert.equal('failing' in ev.timer, false, 'nothing missed: no field, so families.json is unchanged');
+  const none = evidence(['weather'], (p) => (p === 'tools/bench.misses.json' ? JSON.stringify({ misses: null }) : read(p)), () => []);
+  assert.equal('failing' in none.weather, false, 'misses not recorded yet');
+  const b = build(['weather', 'calc', 'timer'], ev);
+  const row = (n) => b.families.flatMap((f) => f.skills).find((s) => s.name === n);
+  assert.deepEqual(row('weather').failing, ['Weather in Oslo']);
+  assert.equal(row('timer').failing, undefined);
+});

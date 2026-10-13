@@ -49,17 +49,51 @@ export function velocity(list, now = Date.now()) {
   return { week, before, trend };
 }
 
+/** Void asked (2026-10-12, five times since): "a 'friction' indicator on the growth card that highlights which skills are currently
+ * failing or returning high uncertainty". From skills/families.json, evidence only: failing = the asks the everyday benchmark got
+ * wrong on its last clean run on main; uncertain = the least checked (nothing checks it yet, then one kind of check). Pure. */
+export const FAMILIES_URL = '/skills/families.json';
+export function friction(fam, show = 5) {
+  const all = ((fam && fam.families) || []).flatMap((f) => (f && f.skills) || []).filter((s) => s && s.name);
+  const failing = all.filter((s) => Array.isArray(s.failing) && s.failing.length).sort((a, b) => b.failing.length - a.failing.length || a.name.localeCompare(b.name));
+  const rank = { experiment: 0, tested: 1 };
+  const unsure = all.filter((s) => s.tier in rank && !failing.includes(s)).sort((a, b) => rank[a.tier] - rank[b.tier] || a.name.localeCompare(b.name));
+  const top = [...failing, ...unsure].slice(0, show);
+  return { failing: failing.length, unsure: unsure.length, top: top.map((s) => ({ name: s.name, failing: s.failing || null, tier: s.tier, why: s.why })) };
+}
+export function frictionHtml(esc, f) {
+  if (!f || !f.top.length) return '';
+  const item = (s) => '<b style="font-weight:600">' + esc(s.name) + '</b> ' + (s.failing
+    ? '<span style="color:#e06a5a">failing</span> (the bench got ' + s.failing.length + ' of its asks wrong: ' + s.failing.map((a) => '“' + esc(a) + '”').join(', ') + ')'
+    : '<span style="color:#e0a24a">' + (s.tier === 'experiment' ? 'unchecked' : 'barely checked') + '</span> (' + esc(s.why) + ')');
+  const rest = f.failing + f.unsure - f.top.length;
+  return '<div class="sub growth-friction" data-friction="' + (f.failing + f.unsure) + '" style="line-height:1.45">Friction: '
+    + (f.failing ? f.failing + ' failing, ' : 'nothing failing on the bench, ') + f.unsure + ' barely checked. ' + f.top.map(item).join('; ')
+    + (rest > 0 ? '; and ' + rest + ' more' : '') + '.</div>';
+}
+
 export function growthHead(esc, list, now = Date.now()) {
   const s = summary(list), v = velocity(list, now);
   return '<h2>How Void has grown</h2><div class="sub">' + s.total + ' changes' + (s.since ? ' since ' + esc(s.since) : '') + ', newest first</div>'
     + '<div class="sub" data-velocity="' + esc(v.trend) + '">This week ' + v.week + ' new or better, the week before ' + v.before + ': ' + esc(v.trend) + '</div>';
 }
 
+/** What Void asked for that this entry built (GET /api/reflect follow.asked: each built ask with the time of the ledger entry that
+ *  built it, on evidence only, lib/voice.js followThrough). Void asked: "link the growth card branches to the growth inbox so I can
+ *  diagnose my own progress". Pure. */
+export function causeOf(e, asked) {
+  if (!e || !e.at || !Array.isArray(asked)) return null;
+  const hit = asked.filter((a) => a && a.at === e.at && typeof a.ask === 'string');
+  return hit.length ? hit : null;
+}
+
 /** One entry as the tree's readout shows it, when a branch is touched. */
-export function entryHtml(esc, e) {
+export function entryHtml(esc, e, cause) {
   if (!e) return '';
+  const why = cause && cause.length ? '<div class="growth-cause" style="margin-top:4px;font-size:13px">Void asked for this' + (cause.length > 1 ? ' (' + cause.length + ' asks)' : '') + ': '
+    + cause.map((a) => '“' + esc(a.ask) + '”' + (a.times > 1 ? ' <span style="color:#8a8a92">(' + a.times + ' times)</span>' : '')).join('; ') + '</div>' : '';
   return '<div style="font-size:12px;color:#8a8a92"><span style="color:' + (KIND_COLOR[e.kind] || '#aaa') + '">' + esc(KIND_LABEL[e.kind] || e.kind || '') + '</span> · ' + esc(String(e.at || '').slice(0, 10))
-    + ' · ' + esc(e.by || '') + (e.ref && /^https:\/\//.test(e.ref) ? ' · <a href="' + esc(e.ref) + '" target="_blank" rel="noopener">link</a>' : '') + '</div>' + esc(e.what);
+    + ' · ' + esc(e.by || '') + (e.ref && /^https:\/\//.test(e.ref) ? ' · <a href="' + esc(e.ref) + '" target="_blank" rel="noopener">link</a>' : '') + '</div>' + esc(e.what) + why;
 }
 
 export function growthHtml(esc, list, kind, shown, { head = true } = {}) {
@@ -105,6 +139,11 @@ async function run(text, api) {
   if (_pageStill && !_pageStill(el)) return 'growth';
   let kind = '', shown = PAGE_SIZE;
   el.innerHTML = growthHead(esc, list);
+  // the friction line under the velocity: which skills are failing or least checked (skills/families.json); without it, no line
+  fetch(FAMILIES_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((fam) => {
+    const html = frictionHtml(esc, friction(fam)), v = el.querySelector('[data-velocity]');
+    if (html && v && el.isConnected) v.insertAdjacentHTML('afterend', html);
+  }).catch(() => {});
   const w = week ? weekSummary(list) : null;
   const body = document.createElement('div');
   const draw = () => { body.innerHTML = growthHtml(esc, list, kind, shown, { head: false }); };
@@ -151,7 +190,7 @@ function plantTree(el, api, list, { from } = {}) {
   const hint = 'One branch for every change, the oldest at the trunk, the newest at the tips; its berries are its kind, the closed buds what Void still wants. Touch any of it to read it.';
   said.textContent = hint;
   el.append(slot, when, said);
-  let selected = null, self = null, wants = null;
+  let selected = null, self = null, wants = null, asked = null; // asked: what Void asked for, by the entry that built it
   const at = () => stops[+range.value] || null, today = () => +range.value >= stops.length - 1;
   const showDay = () => { const s = at(); day.textContent = s ? (today() ? 'today, ' : +range.value === 0 ? 'the first change, ' : '') + s.day + ' · ' + s.count + (s.count === 1 ? ' change' : ' changes') : ''; };
   // what is not grown yet shows only today: the think tank's open tracks (faint) and the claim being built (glowing)
@@ -162,7 +201,7 @@ function plantTree(el, api, list, { from } = {}) {
     { key: TREE_KEY, place: 'inside', label: 'Void’s growth as a tree: one branch per change; touch a branch to read it' })));
   function onPick(index) {
     const e = list[index]; if (!e) return;
-    selected = index; said.style.color = ''; said.innerHTML = entryHtml(api.esc, e);
+    selected = index; said.style.color = ''; said.innerHTML = entryHtml(api.esc, e, causeOf(e, asked));
     mount().catch(() => {});
   }
   function onPickGhost(g) {
@@ -186,6 +225,7 @@ function plantTree(el, api, list, { from } = {}) {
   // Void's wants, as buds: its will (GET /api/will) and the asks in its reflections (GET /api/reflect), each said once
   const json = (u) => fetch(u, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   Promise.all([json('/api/will'), json('/api/reflect')]).then(([will, voice]) => {
+    asked = (voice && voice.follow && voice.follow.asked) || null;
     const seen = new Set(), out = [];
     for (const t of [...((will && will.wants) || []).map((w) => w && (w.i_want || w.title)), ...((voice && voice.asks) || []).map((a) => a && a.ask)]) {
       const k = String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim(); if (!k || seen.has(k)) continue; seen.add(k); out.push(String(t).trim());
@@ -201,7 +241,13 @@ export function suite() {
     { at: '2026-10-02T10:00:00Z', by: 'c', kind: 'grow', what: 'three' }];
   const o = ordered(list).map((e) => e.what).join(','), s = summary(list), h = growthHtml(esc, list, 'grow', 40);
   const ok = o === 'two <b>,three,one' && s.total === 3 && s.since === '2026-10-01' && s.byKind.grow === 2 && !h.includes('two') && h.includes('three') && !growthHtml(esc, list, '', 40).includes('<b>');
-  return { ok, got: ok ? '' : o + ' ' + JSON.stringify(s) };
+  const fam = { families: [{ skills: [{ name: 'a', tier: 'proven', why: 'x' }, { name: 'b', tier: 'tested', why: 'one test' }, { name: 'c', tier: 'experiment', why: 'nothing checks it yet' }, { name: 'd', tier: 'proven', why: 'y', failing: ['q <i>'] }] }] };
+  const f = friction(fam), fh = frictionHtml(esc, f);
+  const fok = f.top.map((x) => x.name).join() === 'd,c,b' && f.failing === 1 && f.unsure === 2 && fh.includes('q &lt;i&gt;') && !fh.includes('<i>') && frictionHtml(esc, friction(null)) === '';
+  const asked = [{ ask: 'a <b>bud</b>', at: '2026-10-01T10:00:00Z', times: 3 }, { ask: 'elsewhere', at: '2026-10-09T00:00:00Z', times: 1 }];
+  const c = causeOf(list[0], asked), ch = entryHtml(esc, list[0], c);
+  const cok = c && c.length === 1 && ch.includes('Void asked for this: “a &lt;b&gt;bud&lt;/b&gt;” <span style="color:#8a8a92">(3 times)</span>') && !causeOf(list[1], asked) && !entryHtml(esc, list[1], null).includes('growth-cause') && causeOf(list[0], null) === null;
+  return { ok: ok && fok && cok, got: ok && fok && cok ? '' : o + ' ' + JSON.stringify(s) + ' ' + JSON.stringify(f) + ' ' + ch };
 }
 
 export default {
