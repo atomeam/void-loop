@@ -257,6 +257,9 @@ ok(rules('arr.sort()', 'javascript').includes('sort-no-compare@1') && !rules('ar
 { const flagged = (c) => rules(c, 'javascript').some((r) => r.startsWith('sort-no-compare@'));
   ok(!flagged('const k = Object.keys(o).sort();') && !flagged('for (const n of fs.readdirSync(d).sort()) {}') && !flagged("const w = s.split(',').sort();") && !flagged('const t = nums.map(String).sort();') && !flagged("const fs = readdirSync(dir).filter((f) => f.endsWith('.json')).sort();") && !flagged('const k = Object.keys(o).slice(1).sort();')
     && flagged('const v = list.sort();') && flagged('const k = Object.keys(o).sort(); const v = list.sort();') && flagged('const v = nums.map(Number).sort();') && flagged('const v = nums.filter((n) => n > 1).sort();'), 'sort() on always-string producers not flagged; plain and numeric still are'); }
+{ const flagged = (c) => rules(c, 'javascript').some((r) => r.startsWith('sort-no-compare@'));
+  ok(!flagged('const wins = Object.entries(s.skills).filter(([, k]) => k.clef - k.embed >= WIN).map(([name]) => name).sort();') && !flagged('const k = Object.entries(o).map(([key, v]) => key).sort();')
+    && flagged('const v = Object.entries(o).map(([k, v]) => v).sort();') && flagged('const n = Object.entries(o).map(([k]) => k.length).sort();'), 'Object.entries mapped to its keys sorts as text rightly (#607); mapped to values or numbers still flagged'); }
 // escaping helpers by their usual names (escXml, escAttr, escapeHtml) count; a word that only starts with "esc" does not; a build read to its end
 { const flagged = (c) => rules(c, 'javascript').some((r) => r.startsWith('inner-html@'));
   ok(!flagged("p.innerHTML = '<h2>' + escXml(title) + '</h2>';") && !flagged("p.innerHTML = '<b>' + escapeHtml(n) + '</b>';") && flagged("p.innerHTML = '<b>' + escalate(n) + '</b>';"), 'escXml/escapeHtml count as escaping, escalate does not');
