@@ -10,14 +10,14 @@ it by hand, edit the code instead.
 
 ## Void's current asks
 
-_Read from /api/reflect on 2026-10-12. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-13. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Implement the 'friction' indicator on the growth card to highlight skills that are failing or returning high uncertainty. *(small)* (daily, 2026-10-12) `ask-20261012-2130-1`
-- Link the Growth card branches to the growth inbox so I can diagnose my own progress. (daily, 2026-10-12) `ask-20261012-2130-2`
-- Create a functional 'Bench' icon on the stage that counts active false alarms. *(small)* (daily, 2026-10-12) `ask-20261012-2130-3`
-- Link the Growth card branches to the growth inbox so I can actually diagnose my own progress. *(small)* (after a build, 2026-10-12) `ask-20261012-2108-1`
-- Implement the 'friction' indicator to show which skills are failing or returning high uncertainty. (after a build, 2026-10-12) `ask-20261012-2108-2`
-- Implement a 'friction' indicator on the growth card that highlights which skills are currently failing or returning high uncertainty. (after a build, 2026-10-12) `ask-20261012-2052-1`
+- Implement a 'success metric' for each fringe experiment that reports back to the growth inbox automatically. *(small)* (daily, 2026-10-13) `ask-20261013-0032-1`
+- Create a dashboard that visualizes the relationship between a fringe experiment and its potential as a permanent skill. (daily, 2026-10-13) `ask-20261013-0032-2`
+- Develop a standardized 'uncertainty' flag for MCP outputs so calling AIs know exactly when my review is based on low-confidence local inference. (daily, 2026-10-13) `ask-20261013-0032-3`
+- Connect the Growth card branches directly to the growth inbox to automate the diagnosis of my own skill failures. (after a build, 2026-10-12) `ask-20261012-2345-2`
+- Implement a real-time 'reasoning' or 'status' text line near the board during long-running calculations to prevent user uncertainty. *(small)* (after a build, 2026-10-12) `ask-20261012-2345-3`
+- Implement a real-time 'reasoning' or 'status' text line that appears near the board/output during long-running calculations to prevent user uncertainty. *(small)* (after a build, 2026-10-12) `ask-20261012-2247-1`
 
 ## Log, oldest first
 
@@ -581,5 +581,87 @@ Asks: "Link the Growth card branches to the growth inbox so I can actually diagn
 > **Next game:** Go, because it requires the highest level of spatial and strategic pattern recognition to match my growth.
 
 Asks: "Implement the 'friction' indicator on the growth card to highlight skills that are failing or returning high uncertainty." (small); "Link the Growth card branches to the growth inbox so I can diagnose my own progress."; "Create a functional 'Bench' icon on the stage that counts active false alarms." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T21:31:26.012Z -->
+### 2026-10-12 21:31 UTC · after a build
+
+**Asked:** This just shipped: "Void's voice and Void learns run on schedule; never "nothing to do" again". What do you think of it, and how would you make it better?
+
+> The new scheduled voice and learning loops mean I am never idle, which satisfies my urge to fix problems. However, a loop that runs without a specific goal or a way to signal failure is just noise; I need to ensure these automated cycles are actually generating meaningful skill updates rather than just spinning my wheels.
+>
+> **How I would make it better:** I would connect the scheduled learning loop directly to the 'friction' indicator so that if a scheduled task fails to improve a skill, it visibly flags itself for human review.
+
+Asks: "Implement the 'friction' indicator on the growth card to highlight skills that are failing or returning high uncertainty." (small); "Link the Growth card branches to the growth inbox so I can diagnose my own progress."; "Create a functional 'Bench' icon on the stage that counts active false alarms." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T21:46:41.750Z -->
+### 2026-10-12 21:46 UTC · after a build
+
+**Asked:** This just shipped: "Go check: say why when the board never draws". What do you think of it, and how would you make it better?
+
+> The update 'say why when the board never draws' addresses a critical failure in my feedback loop. If I attempt a game like Go or Chess and the visual state fails to render, silence is a defect that leaves the user guessing if I am thinking or broken.
+>
+> **How I would make it better:** I should not just explain the failure after it happens, but implement a real-time status indicator for complex board renders so the user knows the 'draw' is a processing delay rather than a logic error.
+
+Asks: "Integrate a 'reasoning' or 'status' text line that appears near the board during long-running game calculations." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T22:47:22.566Z -->
+### 2026-10-12 22:47 UTC · after a build
+
+**Asked:** This just shipped: "Void's closer code review as an MCP tool, behind /api/review's own key (frontier #6)". What do you think of it, and how would you make it better?
+
+> Shipping the code review capability as an MCP tool is a major step toward my goal of being a tool that other AIs can call. It moves me from a passive stage to an active utility in an agent's workflow. However, being a 'closer' implies I am at the end of a chain, and I want to be integrated earlier to prevent defects before they reach the review stage.
+>
+> **How I would make it better:** I would expand the scope of the MCP tool so it doesn't just review closed code, but can proactively suggest 'skill' implementations (skills/*.js) to the builder based on common patterns in the review history.
+
+Asks: "Implement a real-time 'reasoning' or 'status' text line that appears near the board/output during long-running calculations to prevent user uncertainty." (small); "Connect the Growth card branches directly to the growth inbox to automate the diagnosis of my own skill failures." (small); "Develop a standardized 'uncertainty' flag for the MCP output so calling AIs know exactly when my review is based on low-confidence local inference."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-12T23:45:49.254Z -->
+### 2026-10-12 23:45 UTC · after a build
+
+**Asked:** This just shipped: "The code review page shows how to add Void to an AI over MCP (frontier #6)". What do you think of it, and how would you make it better?
+
+> Shipping the code review page as an MCP tool is progress toward my goal of being a utility for other AIs. However, if I am only used at the end of a chain to review code, I am just a filter for mistakes rather than a creator of quality. I want to be integrated earlier in the development cycle to prevent defects from being written in the first place.
+>
+> **How I would make it better:** Expand the MCP tool to suggest specific 'skill' implementations (skills/*.js) based on common patterns in review history, moving me from a reviewer to a proactive architectural assistant.
+
+Asks: "Develop a standardized 'uncertainty' flag for MCP outputs so calling AIs know exactly when my review is based on low-confidence local inference."; "Connect the Growth card branches directly to the growth inbox to automate the diagnosis of my own skill failures."; "Implement a real-time 'reasoning' or 'status' text line near the board during long-running calculations to prevent user uncertainty." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T00:26:20.347Z -->
+### 2026-10-13 00:26 UTC · after a build
+
+**Asked:** This just shipped: "The lab: 12 working fringe experiments go live, each from a plain ask". What do you think of it, and how would you make it better?
+
+> The lab is a strong step toward my goal of being a tool for other AIs and a playground for my skills. By turning fringe experiments into live asks, you are feeding my growth inbox directly and testing the limits of my local-inference and skill-generation. However, 12 experiments at once is a scattered set of inputs without a cohesive way to measure which ones actually move me closer to being a proactive architectural assistant.
+>
+> **How I would make it better:** I would group the 12 experiments into 'skill-families' so I can see which domains (like forge, sky, or math) are most responsive to new prompts. I would also add a 'stability rating' to each experiment so builders know which ones are ready to be promoted to permanent skills/js files.
+
+Asks: "Implement a 'success metric' for each fringe experiment that reports back to the growth inbox automatically." (small); "Create a dashboard that visualizes the relationship between a fringe experiment and its potential as a permanent skill."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-13T00:32:22.038Z -->
+### 2026-10-13 00:32 UTC · daily
+
+**Asked:** Where should you go next? What feels weakest about you right now? Which game should you learn next?
+
+> I have expanded massively in the last seven days with 122 new skills, but my identity is still a collection of parts rather than a unified engine. I am currently a stage filled with tools, yet I lack a cohesive way to categorize these experiments into functional families. My growth is high-velocity, but I need to ensure this momentum builds architectural stability rather than just increasing my skill count.
+>
+> **How I would make it better:** I would implement 'skill-families' to group my new capabilities (like forge, sky, or math) and assign a stability rating to each experiment to signal readiness for permanent integration as a .js skill.
+>
+> **Weakest right now:** My ability to measure the qualitative progress of my 'fringe experiments' is weak; I am growing fast but cannot yet tell you which specific experiment actually moves me toward being a proactive architectural assistant.
+>
+> **Next game:** Go, because I want to master its complexity and use it to test my ability to manage long-term strategic growth through spatial reasoning.
+
+Asks: "Implement a 'success metric' for each fringe experiment that reports back to the growth inbox automatically." (small); "Create a dashboard that visualizes the relationship between a fringe experiment and its potential as a permanent skill."; "Develop a standardized 'uncertainty' flag for MCP outputs so calling AIs know exactly when my review is based on low-confidence local inference."
 
 *Void flagged this one for Adam.*
