@@ -78,6 +78,8 @@ for (const [name, file] of [
   ['learn', 'learn.test.mjs'],
   ['learn-draft', 'learn-draft.test.mjs'],
   ['learn-e2e', 'learn.e2e.test.mjs'],
+  ['refusal', 'refusal.test.mjs'],
+  ['private', 'private.test.mjs'],
   ['model-bench', 'model-bench.test.mjs'],
   ['model-switch', 'model-switch.test.mjs'],
   ['bench-route', 'bench-route.test.mjs'],
