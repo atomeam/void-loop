@@ -16,6 +16,7 @@ import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../l
 import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/code-review.js';
 import { models } from '../../lib/models.js';
 import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
+import { clefRoute, clefOn, mergeRoute } from '../../lib/clef.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { isSelfAsk, readSelf, selfFacts, SELF_RULE } from '../../lib/self-context.js';
 import { prepareDraft, draftPrompt, ruleDraft, DRAFT_SYSTEM, DRAFT_MAX } from '../../lib/draft.js';
@@ -307,6 +308,9 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const origin = new URL(request.url).origin;
   // the router runs alongside the source fetch; the answer waits for it until BUDGET_MS from the start, then moves on without it
   const routeP = classify(env, ask, { origin, waitUntil });
+  // Clef-flash (frontier #9) runs beside it and is never waited on: its pick only reaches the route log, after the answer, for
+  // the skills where it beat the embedding router on the bench (lib/clef.js mergeRoute). VOID_CLEF=off turns it off.
+  const clefP = clefOn(env) ? clefRoute(env, ask) : Promise.resolve(null);
   // an ask about Void itself reads Void's own facts instead of Wikipedia (lib/self-context.js)
   let selfP = self ? readSelf(env, origin) : null;
   let src = self ? [] : await sources(ask);
@@ -351,7 +355,12 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
       later(recordShortfall(env, 'answer', 'would escalate'));
     }
   }
-  const log = (extra) => later(logRoute(env, { ask, masked, route: route.kind, skill: route.skill, score: route.score, scores: route.scores, ms: route.ms, waited, model, outcome, would, ...extra }));
+  const log = (extra) => later(clefP.then((c) => {
+    const r = mergeRoute(route, c), rec = { ask, masked, route: r.kind, skill: r.skill, score: r.score, scores: r.scores, ms: route.ms, waited, model, outcome, would, ...extra };
+    if (r.by === 'clef' && !(extra && extra.outcome)) rec.outcome = r.kind === 'skill' ? String(outcome).replace(/^(default|skill missed: \w+)/, 'skill missed: ' + r.skill + ' (Clef)') : String(outcome).replace(/^skill missed: \w+/, 'default (Clef: no skill)');
+    if (r.unsure) rec.outcome = String(rec.outcome) + '; Clef unsure: ' + r.unsure + ' ' + r.clefP;
+    return logRoute(env, rec);
+  }, () => logRoute(env, { ask, masked, route: route.kind, skill: route.skill, score: route.score, scores: route.scores, ms: route.ms, waited, model, outcome, would, ...extra })));
   if (!answer) {
     try {
       const r = await env.AI.run(MODEL, { messages, ...ANSWER_RUN });
