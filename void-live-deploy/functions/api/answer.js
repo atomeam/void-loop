@@ -23,7 +23,7 @@ import { prepareDraft, draftPrompt, ruleDraft, DRAFT_SYSTEM, DRAFT_MAX } from '.
 import { scopeOf } from '../../lib/memory-scope.js';
 import { ensure as ensureMemory, lookup as memoryLookup } from '../../lib/memory-core.js';
 import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_SYSTEM } from '../../lib/proposal.js';
-import { cleanGoal, planPrompt, parsePlan, parseTimer, PLAN_SYSTEM } from '../../lib/plan.js';
+import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, PLAN_SYSTEM } from '../../lib/plan.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -200,7 +200,7 @@ async function planAnswer(request, env, body) {
         max_tokens: 400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
       const said = redact(noThink(pick(r))), steps = parsePlan(said);
-      if (steps) return Response.json({ goal, steps, timer: parseTimer(said), model: 'gemma' });
+      if (steps) return Response.json({ goal, steps, timer: parseTimer(said), note: parseNote(said), model: 'gemma' });
       await recordShortfall(env, 'plan', 'empty');
     } catch (e) { await recordShortfall(env, 'plan', reasonOf(e)); }
   }

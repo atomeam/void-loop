@@ -9,7 +9,9 @@ export const GOAL_MAX = 80, STEP_MAX = 60, PLAN_MIN = 3, PLAN_MAX = 7;
 export const PLAN_SYSTEM = 'You turn one personal goal into a short checklist. Answer with only a JSON array of 3 to 7 steps in the order to do them, '
   + 'each a plain instruction of at most 8 words, with no numbering, no dates and no commas. Do not give medical, legal or financial advice; '
   + 'if the goal needs it, make the first step "Talk to a professional". When the goal is a skill practised a little each day, '
-  + 'you may answer {"steps": [...], "timer": N} instead, N the whole minutes of one practice session (5 to 60).';
+  + 'you may answer {"steps": [...], "timer": N} instead, N the whole minutes of one practice session (5 to 60). You may also add '
+  + '"note": one short encouraging line to keep in mind (at most 12 words).';
+export const NOTE_MAX = 80;
 export const TIMER_MIN = 5, TIMER_MAX = 60;
 
 const ctl = (s) => String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ');
@@ -45,4 +47,19 @@ export function parseTimer(text) {
   let j = null; try { j = JSON.parse(o[0]); } catch (_) { return null; }
   const v = j && (typeof j.timer === 'number' || (typeof j.timer === 'string' && /^\d+$/.test(j.timer.trim()))) ? Number(j.timer) : NaN;
   return Number.isInteger(v) && v >= TIMER_MIN && v <= TIMER_MAX ? v : null;
+}
+
+/** a note to self as one plain line: no markup, no control characters, cut at a word under NOTE_MAX; '' when nothing is left */
+export function cleanNote(s) {
+  let t = ctl(s).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  if (t.length > NOTE_MAX) { const cut = t.slice(0, NOTE_MAX + 1); const sp = cut.lastIndexOf(' '); t = (sp > 20 ? cut.slice(0, sp) : t.slice(0, NOTE_MAX)).trim(); }
+  return t;
+}
+/** the one note to self a reply may carry ({"steps": [...], "note": "..."}), cleaned; null when there is none */
+export function parseNote(text) {
+  const o = String(text || '').match(/\{[\s\S]*\}/);
+  if (!o) return null;
+  let j = null; try { j = JSON.parse(o[0]); } catch (_) { return null; }
+  const n = j && typeof j.note === 'string' ? cleanNote(j.note) : '';
+  return n.length >= 3 ? n : null;
 }
