@@ -2705,8 +2705,9 @@ try {
   await t.ctx.close();
 
   t = await fresh();
-  await t.p.goto(base + '?q=' + encodeURIComponent('make a clock')); await t.p.waitForTimeout(1200);
-  check('?q= link runs the ask', (await t.state()).some((x) => x.kind === 'clock'));
+  await t.p.goto(base + '?q=' + encodeURIComponent('make a clock'));
+  // waited for, not a fixed 1200 ms: on a loaded machine the page's skills arrive later (failed so once, 2026-10-13)
+  check('?q= link runs the ask', await until(async () => (await t.state()).some((x) => x.kind === 'clock'), 6000));
   await t.ctx.close();
 
   // Plan item 4: Void everywhere you already are (app install, address bar, share sheet, voice, read aloud).

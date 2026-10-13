@@ -126,6 +126,7 @@ for (const [name, file] of [
   ['skills-index', 'skills-index.test.mjs'],
   ['heavy', 'heavy.test.mjs'],
   ['clef-probe', 'clef-probe.test.mjs'],
+  ['families', 'families.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
@@ -157,6 +158,8 @@ for (const [name, file] of [
 // skills/index.json is generated from skills/order/ (tools/skills-index.mjs): a skill added without its order file, or an order file
 // without the index rewritten, is caught here, not on the page
 { const r = run([resolve(here, 'skills-index.mjs'), '--check']); results.push(['index', r.ok, r.out[r.out.length - 1] || '']); }
+// every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
+{ const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
 // VOID_SKIP_BENCH (the same switch tools/test_void.mjs honours): the benchmark is not a merge gate (owner, 2026-10-09, the suite split in
 // domains/void.frontier.md); CI runs it as its own job (.github/workflows/bench.yml) and reports the number on the PR, and a drop below
 // the floor is a fix PR, never a wait. Without the variable this row replays it as before.

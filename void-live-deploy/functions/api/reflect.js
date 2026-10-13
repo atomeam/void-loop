@@ -9,7 +9,7 @@ import { track } from '../../lib/actions.js';
 import { models } from '../../lib/models.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
-import { VOICE_SYSTEM, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts } from '../../lib/voice.js';
+import { VOICE_SYSTEM, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, familyFacts } from '../../lib/voice.js';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 
@@ -43,6 +43,7 @@ export async function onRequestPost({ request, env }) {
   const ledger = await asset('/void.growth.json'), answered = await asset('/void.asks.json');
   if (kind === 'daily') { const week = weekFacts(ledger); if (week) context += '\n' + week; }
   const follow = followFacts(followThrough(before, ledger, answered && answered.links)); if (follow) context += '\n' + follow;
+  const fams = familyFacts(await asset('/skills/families.json')); if (fams) context += '\n' + fams;
   let said = null;
   try {
     const r = await env.AI.run(models('will'), {

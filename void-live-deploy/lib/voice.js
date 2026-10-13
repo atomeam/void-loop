@@ -93,6 +93,19 @@ export function followThrough(entries, ledger, links = []) {
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
   return { total: groups.length, asked: flat.length, built, open };
 }
+// its skill families and how far each skill is checked (tools/families.mjs, Void's own ask of 2026-10-12: "skill-families ...
+// and a stability rating to each experiment"), so it judges itself by family and knows which parts are least proven. Pure.
+export function familyFacts(fam) {
+  const F = fam && Array.isArray(fam.families) ? fam.families : [];
+  if (!F.length) return '';
+  const t = fam.totals || {}, n = F.reduce((k, f) => k + f.skills.length, 0);
+  const weakest = F.slice().sort((a, b) => (a.count.proven / a.skills.length) - (b.count.proven / b.skills.length))[0];
+  const least = F.flatMap((f) => f.skills.filter((s) => s.tier === 'experiment' || s.tier === 'tested').map((s) => s.name)).slice(0, 8);
+  return 'My skill families (rated from evidence: my own tests, the browser suite, real asks routed to me): ' + n + ' skills in ' + F.length + ' families, '
+    + (t.proven || 0) + ' proven, ' + (t.checked || 0) + ' checked, ' + (t.tested || 0) + ' tested, ' + (t.experiment || 0) + ' experiment' + (t.experiment === 1 ? '' : 's') + '. '
+    + F.map((f) => f.name + ' ' + f.skills.length + ' (' + f.count.proven + ' proven)').join('; ') + '. Least proven family: ' + weakest.name
+    + '. Some of my least-checked skills: ' + least.join(', ') + '.';
+}
 // the line Void reads before it reflects: what its asks led to, so it builds on them instead of repeating them
 export function followFacts(f) {
   if (!f || !f.total) return '';
