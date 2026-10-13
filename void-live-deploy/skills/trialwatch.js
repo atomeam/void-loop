@@ -58,12 +58,21 @@ export function changes(prev, next) {
   }
   return out;
 }
+/** of two kept checks ({ at, rows }), the newer real one, or null: this browser's last check and Void's own daily one (served at
+ * /trialwatch.json by tools/trial-changes.mjs); one with no rows or no readable date is not a check. Pure. */
+export function newerSnap(a, b) {
+  const ok = (s) => !!(s && s.rows && typeof s.rows === 'object' && Object.keys(s.rows).length && !isNaN(Date.parse(s.at)));
+  if (!ok(a)) return ok(b) ? b : null;
+  if (!ok(b)) return a;
+  return Date.parse(b.at) > Date.parse(a.at) ? b : a;
+}
 function loadSnap() { try { const s = JSON.parse(localStorage.getItem(SNAP_KEY) || 'null'); return s && s.at && s.rows ? s : null; } catch (_) { return null; } }
 function saveSnap(s) { try { localStorage.setItem(SNAP_KEY, JSON.stringify(s)); } catch (_) {} }
 
 const when = (iso) => { const d = new Date(iso); return isNaN(d) ? iso : d.toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); };
 export function trialwatchHtml(esc, data, from) {
-  const head = from === 'live' ? 'Checked live from ClinicalTrials.gov on ' + when(data.at) : from === 'snapshot' ? 'ClinicalTrials.gov could not be reached; showing the last check, from ' + when(data.at) : '';
+  const head = from === 'live' ? 'Checked live from ClinicalTrials.gov on ' + when(data.at) : from === 'snapshot' ? 'ClinicalTrials.gov could not be reached; showing the last check, from ' + when(data.at)
+    : from === 'daily' ? 'ClinicalTrials.gov could not be reached from here; showing Void\'s own daily check, from ' + when(data.at) : '';
   return '<h2>Longevity trial watch</h2><div class="sub">' + esc(head) + '</div>'
     + WATCH.map((w) => '<h3 style="margin:14px 0 4px;font-size:15px">' + esc(w.topic) + '</h3>'
       + (w.note ? '<p>' + esc(w.note) + '</p>' : '')
@@ -82,8 +91,10 @@ async function run(text, api) {
   try { data = await check(); } catch (_) { data = null; }
   const live = data && Object.keys(data.rows).length > 0;
   if (live) { saveSnap({ at: data.at, rows: data.rows }); el.innerHTML = trialwatchHtml(esc, data, 'live'); return 'trialwatch'; }
-  const snap = loadSnap();
-  if (snap) { el.innerHTML = trialwatchHtml(esc, snap, 'snapshot'); return 'trialwatch'; }
+  // the registry is out of reach from this browser: the newer of its own last check and Void's daily one (the trial watch workflow)
+  const mine = loadSnap(), daily = await fetch('/trialwatch.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  const snap = newerSnap(mine, daily);
+  if (snap) { el.innerHTML = trialwatchHtml(esc, snap, snap === mine ? 'snapshot' : 'daily'); return 'trialwatch'; }
   el.innerHTML = '<h2>Longevity trial watch</h2><p>ClinicalTrials.gov could not be reached just now, and this browser has no earlier check saved. Ask again in a moment.</p>'
     + '<p style="color:#8a8a92">Watching: ' + esc(WATCH.flatMap((w) => w.ids).join(', ')) + '.</p>';
   return 'trialwatch';
