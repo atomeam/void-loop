@@ -747,7 +747,7 @@
      "tier": "tested",
      "why": "4 browser-suite mentions"
     },
-     {
+    {
      "name": "memory",
      "tier": "proven",
      "why": "a self-test, 7 browser-suite mentions, 10 real asks in the benchmark"
@@ -784,28 +784,28 @@
     },
     {
      "name": "services",
-     "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark"
+     "tier": "proven",
+     "why": "a self-test, 9 real asks in the benchmark"
     },
     {
      "name": "share",
-     "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 5 real asks in the benchmark"
+     "tier": "tested",
+     "why": "2 browser-suite mentions"
     },
     {
      "name": "invite",
-     "tier": "tested",
-     "why": "2 real asks in the benchmark"
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention"
     },
     {
      "name": "local-inference",
-     "tier": "experiment",
-     "why": "nothing checks it yet"
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark"
     },
     {
      "name": "rebuild-map",
-     "tier": "tested",
-     "why": "1 real ask in the benchmark"
+     "tier": "experiment",
+     "why": "nothing checks it yet"
     }
    ]
   }
