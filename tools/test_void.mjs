@@ -630,6 +630,15 @@ try {
         && list && JSON.stringify(list.items.map((i) => i.text)) === JSON.stringify(['Pick a sunny spot', 'Test the soil', 'Choose plants + seeds', 'Water every morning'])
         && st.length === 1 && after === 1 && !O.errors.length, JSON.stringify({ sent, said, items: list && list.items.map((i) => i.text), kinds: st.map((x) => x.kind), after, e: O.errors }));
     await O.ctx.close(); }
+  // the engine's one other shape: a practice timer ({"steps": [...], "timer": 15}) becomes the timer's own ask beside the checklist
+  if (want("open plan timer: \"make a plan to learn spanish\" adds the engine's practice timer")) { const T = await fresh();
+    await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, model: 'gemma' })));
+    await T.ask('make a plan to learn spanish', 3000);
+    const said = await T.whisper(), st = await T.state(), list = st.find((x) => x.kind === 'list'), timer = st.find((x) => x.kind === 'timer');
+    check('open plan timer: "make a plan to learn spanish" puts up the engine\'s steps as a checklist and its 15 minute practice timer, as one group, and says so',
+      !!list && list.items.length === 3 && !!timer && /15 minute practice timer/.test(said) && !!list.group && list.group === timer.group && !T.errors.length,
+      JSON.stringify({ said, kinds: st.map((x) => x.kind), timer, group: list && list.group, e: T.errors }));
+    await T.ctx.close(); }
   // a dated plan of a kind with no steps of its own: the engine's steps, dated back from the day; with no engine, the generic
   // steps, and the checklist is there (its "check it" step used to stop the list ask, so the plan came without one)
   if (want("dated open plan: \"make a plan to learn spanish by friday\" takes the engine's steps")) { const D = await fresh();
