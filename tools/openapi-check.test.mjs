@@ -24,4 +24,9 @@ assert.match(check({ spec: { paths: { ...spec.paths, '/api/gone': { get: { opera
 assert.match(check({ spec: { paths: { ...spec.paths, '/api/memory': { get: { operationId: 'm' } } } }, routes, catalog }).join('\n'), /both in openapi.json and marked internal/);
 // the catalog lost its pointer
 assert.match(check({ spec, routes, catalog: { linkset: [{}] } }).join('\n'), /service-desc/);
+// a documented static file answers GET only
+const statics = new Set(['/skills/families.json']);
+assert.deepEqual(check({ spec: { paths: { ...spec.paths, '/skills/families.json': { get: { operationId: 'skillHealth' } } } }, routes, catalog, statics }), []);
+assert.match(check({ spec: { paths: { ...spec.paths, '/skills/families.json': { post: { operationId: 'x' } } } }, routes, catalog, statics }).join('\n'), /no onRequestPost/);
+assert.match(check({ spec: { paths: { ...spec.paths, '/nowhere.json': { get: { operationId: 'n' } } } }, routes, catalog, statics }).join('\n'), /no function serves \/nowhere\.json/);
 console.log('openapi-check: ok');

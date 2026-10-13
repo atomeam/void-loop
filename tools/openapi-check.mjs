@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // The public API's description (void-live-deploy/openapi.json, found from /.well-known/api-catalog) against the real routes.
 //   node tools/openapi-check.mjs    one line per problem, exit 1 if any
-// Checks: every operation in the spec has a function file that answers its method; every /api route file is either in the spec
+// Checks: every operation in the spec has a function file that answers its method (or, for GET, a static file); every /api route file is either in the spec
 // or named below as Void's own, with why; the catalog points at the spec. A new route fails here until someone decides which it
 // is, so the description never drifts from the code and nothing internal is published by accident.
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
@@ -55,10 +55,10 @@ export function methodsOf(src) {
   return new Set([...src.matchAll(/export\s+(?:async\s+)?(?:function|const)\s+onRequest(Get|Post|Put|Patch|Delete)\b/g)].map((m) => m[1].toLowerCase()));
 }
 
-export function check({ spec, routes, catalog }) {
+export function check({ spec, routes, catalog, statics = new Set() }) {
   const problems = [];
   for (const [path, ops] of Object.entries(spec.paths || {})) {
-    const have = routes.get(path);
+    const have = routes.get(path) || (statics.has(path) ? new Set(['get']) : null); // a static file answers GET
     for (const m of Object.keys(ops).filter((k) => METHODS.includes(k))) {
       if (!have) problems.push(`openapi.json documents ${m.toUpperCase()} ${path}, but no function serves ${path}`);
       else if (!have.has(m)) problems.push(`openapi.json documents ${m.toUpperCase()} ${path}, but its function has no onRequest${m[0].toUpperCase() + m.slice(1)}`);
@@ -86,7 +86,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   }
   const catPath = join(ROOT, '.well-known', 'api-catalog');
   const catalog = existsSync(catPath) ? JSON.parse(readFileSync(catPath, 'utf8')) : null;
-  const problems = check({ spec, routes, catalog });
+  // documented paths served as static files (no function): a GET to a file that is in void-live-deploy/
+  const statics = new Set(Object.keys(spec.paths).filter((p) => !routes.has(p) && existsSync(join(ROOT, p.replace(/^\//, '')))));
+  const problems = check({ spec, routes, catalog, statics });
   if (spec.openapi !== '3.1.0') problems.push('openapi.json is not OpenAPI 3.1.0');
   for (const p of problems) console.log('openapi: ' + p);
   if (problems.length) process.exit(1);
