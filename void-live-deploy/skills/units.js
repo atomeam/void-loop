@@ -4,7 +4,6 @@
  * "5 miles to km", "100 fahrenheit to celsius", "2 cups to ml", "how many ounces in a pound".
  */
 const FACTORS = {
-  // length to meters
   m: 1, meter: 1, meters: 1, metre: 1, metres: 1,
   km: 1000, kilometer: 1000, kilometers: 1000, kilometre: 1000, kilometres: 1000,
   cm: 0.01, centimeter: 0.01, centimeters: 0.01,
@@ -13,12 +12,10 @@ const FACTORS = {
   yd: 0.9144, yard: 0.9144, yards: 0.9144,
   ft: 0.3048, foot: 0.3048, feet: 0.3048,
   in: 0.0254, inch: 0.0254, inches: 0.0254,
-  // mass to grams
   g: 1, gram: 1, grams: 1,
   kg: 1000, kilogram: 1000, kilograms: 1000,
   lb: 453.59237, pound: 453.59237, pounds: 453.59237,
   oz: 28.349523125, ounce: 28.349523125, ounces: 28.349523125,
-  // volume to ml
   ml: 1, milliliter: 1, milliliters: 1, millilitre: 1, millilitres: 1,
   l: 1000, liter: 1000, liters: 1000, litre: 1000, litres: 1000,
   cup: 236.588, cups: 236.588,
@@ -31,16 +28,13 @@ const TEMP = { c: 'c', celsius: 'c', f: 'f', fahrenheit: 'f', k: 'k', kelvin: 'k
 export function parseUnits(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
   if (!t) return null;
-  // temperature
   let m = t.match(/^(?:convert\s+)?(-?\d+(?:\.\d+)?)\s*(c|celsius|f|fahrenheit|k|kelvin)\s+(?:to|in)\s+(c|celsius|f|fahrenheit|k|kelvin)$/);
   if (m) return { kind: 'temp', value: +m[1], from: TEMP[m[2]], to: TEMP[m[3]] };
-  // general: N unit to unit
   m = t.match(/^(?:convert\s+|how\s+many\s+)?(-?\d+(?:\.\d+)?)\s+([a-z ]+?)\s+(?:to|in)\s+([a-z ]+)$/);
   if (m) {
     const from = m[2].trim(), to = m[3].trim();
     if (FACTORS[from] && FACTORS[to]) return { kind: 'factor', value: +m[1], from, to };
   }
-  // "how many ounces in a pound"
   m = t.match(/^how\s+many\s+([a-z ]+)\s+in\s+(?:a\s+|an\s+)?([a-z ]+)$/);
   if (m && FACTORS[m[1]] && FACTORS[m[2]]) return { kind: 'factor', value: 1, from: m[2], to: m[1] };
   return null;
@@ -88,5 +82,10 @@ export default {
   examples: ['5 miles to km', '100 fahrenheit to celsius', '2 cups to ml', 'how many ounces in a pound', '10 kg to lb'],
   nearMisses: ['what is a mile', 'convert currency', 'miles per hour', 'how far is a mile'],
   match(lower, text) { return !!parseUnits(text); },
-  run
+  run,
+  suite() {
+    const mi = parseUnits('5 miles to km');
+    const temp = parseUnits('100 fahrenheit to celsius');
+    return { ok: !!mi && Math.abs(convert(mi) - 8.04672) < 0.01 && !!temp && Math.abs(convert(temp) - 37.7778) < 0.1 && !parseUnits('what is a mile') };
+  }
 };
