@@ -376,6 +376,17 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       !!drawn && r.beside && Math.abs(r.half - 0.5) < 1e-9 && r.paused === 0.25 && r.done === 0 && r.none === 0 && turned && !F.errors.length, JSON.stringify({ drawn, r, turned, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- a shader compile that never settles (a lost context, a starved GPU process: the go and counter checks failed on loaded
+  // runners with no draw at all, 2026-10-12/13) must not keep a miniature blank: past the bound it draws anyway
+  if (want("3d: a compile that never settles")) {
+    const F = await fresh();
+    await F.p.evaluate(async () => { const m = await import('/skills/scene3d.js'); const E = await m.engine(); E.renderer.compileAsync = () => new Promise(() => {}); });
+    await F.ask('make a counter');
+    const drawn = await until(() => F.p.evaluate(() => { const c = window.__voidMini && window.__voidMini.list().find((x) => x.kind === 'counter'); return c && c.draws > 0 ? c : false; }), 20000);
+    check('3d: a compile that never settles still draws: with compileAsync hung, "make a counter" draws its tally counter within the bound',
+      !!drawn && !F.errors.length, JSON.stringify({ drawn, l: await F.p.evaluate(() => window.__voidMini && window.__voidMini.list()), e: F.errors }));
+    await F.ctx.close();
+  }
   // ---- the counter's tally counter: mounts beside it, shows the value on four strips, and its plunger counts one up
   if (want("3d: the counter's tally counter")) {
     const F = await fresh();
