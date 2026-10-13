@@ -234,6 +234,18 @@ def gather(cap=60, with_done=False):
     except Exception as e:
         print("routes:", e, file=sys.stderr)
 
+    # 8. Void's own architectural upgrades (owner, 2026-10-13: "if it can already identify its own friction points, it needs to start
+    #    suggesting its own architectural upgrades"): tools/upgrades.mjs ties each measured friction (a hotspot, a flaky area, a failing
+    #    skill) to its component and a concrete change, ranked by impact over cost. Proposals: each still goes through a PR, Void's
+    #    review and the suite on main.
+    try:
+        import subprocess
+        ups = json.loads(subprocess.run(["node", str(ROOT / "tools" / "upgrades.mjs"), "--json"], capture_output=True, text=True, timeout=120).stdout or "[]")
+        for u in ups[:5]:
+            cands.append({"kind": "upgrade my architecture", "title": f"{u['component']}: {u['action']}"[:200], "why": f"{u['evidence']} (impact {u['impact']}, cost {u['cost']})"[:240], "weight": 8 + int(round(2 * float(u.get('score') or 0))), "source": "architecture"})
+    except Exception as e:
+        print("upgrades:", e, file=sys.stderr)
+
     # keep it to the strongest 60, unique titles
     seen, out = set(), []
     for c in sorted(cands, key=lambda c: -c["weight"]):
