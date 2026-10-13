@@ -603,6 +603,15 @@ try {
         && new Set(st.map((x) => x.group)).size === 1 && !I.errors.length,
       JSON.stringify({ said, items: list && list.items.map((i) => i.text), agenda, e: I.errors }));
     await I.ctx.close(); }
+  // a plan asked for without a day (frontier #10): "plan my move" brings the move's steps as an undated checklist and says how to add a day; no countdown, nothing on the calendar
+  if (want("intent without a day: \"plan my move\" brings an undated checklist")) { const U = await fresh();
+    await U.ask('plan my move', 2500);
+    const said = await U.whisper(), st = await U.state(), list = st.find((x) => x.kind === 'list');
+    const agenda = await U.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
+    check('intent without a day: "plan my move" brings the move\'s steps as a checklist with no dates (the move last), no countdown, nothing on the calendar, and says how to add a day',
+      /planned "move"/.test(said) && /no day yet/.test(said) && list && JSON.stringify(list.items.map((i) => i.text)) === JSON.stringify(['sort out what to give away', 'get boxes', 'pack', 'last checks', 'move'])
+        && !st.some((x) => x.kind === 'countdown') && agenda === 0 && !U.errors.length, JSON.stringify({ said, items: list && list.items.map((i) => i.text), kinds: st.map((x) => x.kind), agenda, e: U.errors }));
+    await U.ctx.close(); }
   // Labels and arrows (skills/label.js, board "Later": text annotation / labels): "label the clock kitchen" tags it, an arrow
   // drawn by label names joins two things and follows a drag, a free label can be an arrow's end, "undo" and reload behave.
   if (want("Labels and arrows (skills/label.js, board \"Later\": text annotation / labels): \"label the c")) { const L = await fresh();
