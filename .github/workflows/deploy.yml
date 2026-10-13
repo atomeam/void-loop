@@ -31,6 +31,7 @@ permissions:
   contents: read
   checks: read # to see that a merged PR's head already passed (see "What needs testing")
   pull-requests: read # which PR a merge commit came from
+  actions: write # to start MCP live after a main deploy (a workflow_dispatch is the one start a GITHUB_TOKEN run can make)
 
 jobs:
   test-and-deploy:
@@ -179,6 +180,16 @@ jobs:
           check /skills/sorry.js void-live-deploy/skills/sorry.js || ok=1
           [ "$ok" = 0 ] && echo "### a-to-mind.com serves $SHA" >> "$GITHUB_STEP_SUMMARY"
           exit $ok
+
+      # MCP live (frontier #6) checks Void's tools with the real MCP client against a-to-mind.com. Its hourly schedule fires only
+      # every few hours (5 scheduled runs on 2026-10-12, none for 5 h after #571 added a tool), and a deploy automerge starts
+      # fires no workflow_run, so the deploy starts it: the live check follows every main deploy within minutes.
+      - name: Start MCP live against this deploy
+        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run mcp-live.yml --repo "${{ github.repository }}" --ref main && echo "MCP live started" >> "$GITHUB_STEP_SUMMARY"
 
       # Void's voice (lib/voice.js): after anything ships, Void is asked what it thinks of it and how it would make it
       # better. Its words are kept on the site and copied into domains/void.voice.md by the daily run. Input, not a gate:
