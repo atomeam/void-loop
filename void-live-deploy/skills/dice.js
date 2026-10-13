@@ -1,41 +1,48 @@
 /**
- * dice skill — roll one or more dice (NdS notation or plain words)
+ * dice skill — roll dice from the ask (no key; pure math)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "roll a die", "roll 2d6", "roll three six-sided dice", "1d20"
- * Empty stage stays empty: only a matching ask shows a card.
+ * "roll a d20", "roll 2d6", "roll 3d10 + 4", "d6".
+ * Shows each die and the total. Empty surface stays empty until asked.
  */
-function parseDice(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
-  let m = t.match(/^(?:please\s+)?(?:roll|throw)\s+(?:a\s+|an\s+|the\s+)?(?:(\d+)\s+)?(?:d|die|dice)(?:\s+(\d+))?$/);
-  if (m) return { n: +(m[1] || 1), s: +(m[2] || 6) };
-  m = t.match(/^(\d+)d(\d+)$/);
-  if (m) return { n: +m[1], s: +m[2] };
-  m = t.match(/^(?:please\s+)?roll\s+(\d+)\s+(?:six|6)[- ]?sided\s+dice$/);
-  if (m) return { n: +m[1], s: 6 };
-  m = t.match(/^(?:please\s+)?roll\s+(?:a\s+)?(?:d(\d+)|(\d+)\s+sided\s+die)$/);
-  if (m) return { n: 1, s: +(m[1] || m[2]) };
-  if (/^(?:please\s+)?(?:roll\s+(?:a\s+|the\s+)?(?:die|dice)|throw\s+(?:a\s+)?die)$/.test(t)) return { n: 1, s: 6 };
-  return null;
+export function diceOf(text) {
+  const t = String(text || '').toLowerCase().trim().replace(/[?!.]+$/, '');
+  const m = t.match(/^(?:please\s+)?(?:roll\s+(?:a\s+|me\s+)?)?(?:(\d+)\s*)?d(\d+)(?:\s*([+-])\s*(\d+))?$/);
+  if (!m) return null;
+  const n = Math.max(1, Math.min(20, parseInt(m[1] || '1', 10)));
+  const sides = parseInt(m[2], 10);
+  if (sides < 2 || sides > 100) return null;
+  const mod = m[3] && m[4] ? (m[3] === '-' ? -1 : 1) * parseInt(m[4], 10) : 0;
+  return { n, sides, mod };
 }
-export function diceOf(text) { return parseDice(text); }
+function roll(n, sides) {
+  const dice = [];
+  for (let i = 0; i < n; i++) dice.push(1 + Math.floor(Math.random() * sides));
+  return dice;
+}
 function run(text, api) {
   const { showPage, esc } = api;
-  const q = parseDice(text);
-  if (!q || q.n < 1 || q.n > 20 || q.s < 2 || q.s > 100) return 'none';
-  const rolls = Array.from({ length: q.n }, () => 1 + Math.floor(Math.random() * q.s));
-  const sum = rolls.reduce((a, b) => a + b, 0);
-  const face = rolls.join(', ');
+  const q = diceOf(text);
+  if (!q) return 'none';
+  const dice = roll(q.n, q.sides);
+  const sum = dice.reduce((a, b) => a + b, 0) + q.mod;
   showPage((el) => {
-    el.innerHTML = '<h2>Dice</h2><div class="sub">' + esc(q.n + 'd' + q.s) + '</div>'
-      + '<div style="font-size:48px;font-weight:300;line-height:1.1;margin:8px 0">' + esc(String(sum)) + '</div>'
-      + '<p>' + esc(face) + '</p><div class="src">Rolled in your browser · ask again for another</div>';
+    el.innerHTML = '<h2>Dice</h2><div class="sub">' + esc(q.n + 'd' + q.sides + (q.mod ? (q.mod > 0 ? '+' : '') + q.mod : '')) + '</div>'
+      + '<div style="font-size:36px;font-weight:300;margin:8px 0">' + esc(dice.join(' + ')) + (q.mod ? ' ' + (q.mod > 0 ? '+' : '') + q.mod : '') + '</div>'
+      + '<div style="font-size:48px;font-weight:200">' + esc(String(sum)) + '</div>'
+      + '<div class="src">Rolled in the browser. Say “roll 2d6” for more.</div>';
   });
   return 'dice';
 }
 export default {
   name: 'dice',
-  examples: ['roll a die', 'roll 2d6', 'roll three six-sided dice', '1d20'],
-  nearMisses: ['what is a die', 'dice game rules', 'how to play monopoly'],
-  match(lower, text) { return !!parseDice(text || lower); },
-  run
+  examples: ['roll a d20', 'roll 2d6', 'roll 3d10', 'd6'],
+  nearMisses: ['what is a die', 'history of dice', 'dice games'],
+  match(lower, text) { return !!diceOf(text || lower); },
+  run,
+  suite() {
+    const a = diceOf('roll a d20') && diceOf('roll a d20').n === 1 && diceOf('roll a d20').sides === 20;
+    const b = diceOf('roll 2d6') && diceOf('roll 2d6').n === 2 && diceOf('roll 2d6').sides === 6;
+    const c = !diceOf('what is a die');
+    return { ok: !!(a && b && c), got: a && b && c ? 'pass' : 'fail' };
+  }
 };
