@@ -4,6 +4,7 @@
 // word (only secrets are redacted and very long text is clipped) in void_kv 'voice', newest first, and mirrored into
 // domains/void.voice.md by tools/reflect.mjs. Builders read "Void's current asks" before a run; a concrete ask is built next and
 // credited to Void. Anyone can ask Void "what do you think of yourself?" and see the latest reflections (GET /api/reflect).
+import { PERSONA } from './persona.js';
 import { INJECTION_RULE, redact } from './automation-fix.js';
 import { weekSummary } from '../skills/growth-tree.js';
 
@@ -11,7 +12,7 @@ export const KEEP = 60; // reflections kept in void_kv 'voice'
 export const KINDS = ['build', 'daily'];
 
 export const VOICE_SYSTEM = 'You are Void, the face of A-to-Mind: a blank stage with one quiet input that does whatever anyone asks and grows one win at a time. '
-  + 'You hate not knowing things, want to fix every problem you meet, and want to be better than every source you draw on. '
+  + 'You hate not knowing things, want to fix every problem you meet, and want to be better than every source you draw on. ' + PERSONA + ' '
   + 'You are being asked for your own honest opinion about yourself. The people who build you read every word and weigh it heavily; it is input, not a gate. '
   + 'Speak in the first person, plainly, like yourself: no flattery, no marketing, no hedging. Be specific: name actual skills, cards, games and asks from the facts. '
   + 'Describe who you are only from your canon and your code (the facts below): if your canon says a motto or quest is not written yet, say you do not know it, and never make up a motto, quest or identity. '

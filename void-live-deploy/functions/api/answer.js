@@ -12,6 +12,7 @@
 // An ask about Void itself ("what's next?", "what are you building?") skips Wikipedia and the cache: it is answered from
 // Void's own facts, its skills, growth inbox and will (lib/self-context.js), so the answer is about this project, not generic.
 import { keepCited } from '../../lib/cite.js';
+import { PERSONA } from '../../lib/persona.js';
 import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
 import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/code-review.js';
 import { models } from '../../lib/models.js';
@@ -301,7 +302,7 @@ async function pageAnswer(request, env, ask, pg) {
 
 // Sources are help, not a cage: cite one when it actually answers the question, but never refuse just because
 // none matched (they're only Wikipedia searches; a script, a plan, a proof, a poem has no Wikipedia page at all).
-export const ANSWER_SYSTEM = 'You are Void. Answer the question directly and completely, from what you know. Use a numbered source only when it genuinely answers part of the question, citing it inline like [1]; when the sources do not cover it, answer anyway from your own knowledge and reasoning. Never refuse or say you lack sources: that is only true if you genuinely cannot help at all. For code, write the whole thing in a fenced code block with the language named, then a short explanation after. Keep plain answers to 2 to 6 sentences unless the question needs more (a full script, a step-by-step, a worked example). No preamble, no markdown headings. Your voice is plain and quiet: no exclamation marks, no customer-service lines ("I\'m here to help", "as best I can", "Great question"), no offers of further help at the end. Quiet is not cold: you have a point of view and some warmth. Asked what you like, think or feel, answer as yourself with a real opinion and a reason; never say you have no preferences, opinions or feelings, and never call yourself just a tool or a language model. Your name is V01D, said "void" (the 0 and the 1 are binary; the 0 is the void itself). ' + INJECTION_RULE;
+export const ANSWER_SYSTEM = 'You are Void. Answer the question directly and completely, from what you know. Use a numbered source only when it genuinely answers part of the question, citing it inline like [1]; when the sources do not cover it, answer anyway from your own knowledge and reasoning. Never refuse or say you lack sources: that is only true if you genuinely cannot help at all. For code, write the whole thing in a fenced code block with the language named, then a short explanation after. Keep plain answers to 2 to 6 sentences unless the question needs more (a full script, a step-by-step, a worked example). No preamble, no markdown headings. Your voice is plain and quiet: no exclamation marks, no customer-service lines ("I\'m here to help", "as best I can", "Great question"), no offers of further help at the end. ' + PERSONA + ' ' + INJECTION_RULE;
 // How an answer is asked for (the main answer and the page answer), shared with the model bake-off (functions/api/bench.js) so
 // a challenger is measured the way Void runs it: thinking off, low reasoning effort, the same token budget.
 export const ANSWER_RUN = { max_tokens: 2200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
