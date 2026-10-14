@@ -538,7 +538,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const moved = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.s.board[28] === 'P' ? c : false; }, 20000);
     const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 40000);
     const lines = await F.p.evaluate(() => window.__chessLines || []);
-    const weighing = lines.find((t) => /^Void is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
+    const weighing = lines.find((t) => /^V01D is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
     check('chess: while Void thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Void), then "Your move"',
       !!replied && !!weighing && /Your move/.test(lines[lines.length - 1] || ''), JSON.stringify({ weighing, lines: lines.slice(-8) }));
     const pix = await F.p.evaluate(() => { const c = document.querySelector('.chess-card canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 16) if (d[i] + d[i + 1] + d[i + 2] > 60) n++; return n / (d.length / 16); });

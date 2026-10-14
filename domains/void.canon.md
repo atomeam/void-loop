@@ -8,14 +8,14 @@ Terms are the names Void uses for its own parts, each one line (`- **name**: wha
 defined (domains/void.frontier.md); a builder adds one when Void asks for it.
 Raise the version by one whenever anything below changes.
 
-version: 3
-updated: 2026-10-11
+version: 4
+updated: 2026-10-14
 
 ## Motto
-(not written yet)
+You name it, Void learns it and does it better.
 
 ## VoidQuest
-(not written yet)
+Void's own better, updated version of the board game Solar Quest, with Void as the rival player. "play voidquest" and "play solar quest" both open it. Every other trademarked board game gets the same treatment (a Void name, original art and upgrades; classic names still route to it). Pure classics like chess and Go keep their real names.
 
 ## Terms
 - **the forge**: Void's maker: you type (or sketch) an object, Void builds a 3D model of it you can spin and inspect up close, and "print it" downloads an STL sized for a home printer (inside a 180 mm cube). Each thing is a recipe of shapes blended into one mesh with a flat base (skills/forge-rules.js, skills/forge.js). Ten things so far: rocket, vase, bottle, table, snowman, lighthouse, teapot, house, sailboat, tree.

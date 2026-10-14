@@ -926,10 +926,10 @@ try {
     const link = await O.p.$eval('.vpage a[href*="/actions/runs/7"]', (a) => a.href).catch(() => null);
     const G = await fresh({ content: gh('success', true) }); await G.p.waitForTimeout(3000); const green = await G.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
     const V = await fresh({ content: gh('failure', false) }); await V.p.waitForTimeout(3000); const visitor = await V.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
-    await V.ask('void status', 400); const asked = await (async () => { for (let i = 0; i < 40; i++) { const t = await V.page(); if (/Void’s own build/.test(t)) return t; await V.p.waitForTimeout(250); } return V.page(); })();
+    await V.ask('void status', 400); const asked = await (async () => { for (let i = 0; i < 40; i++) { const t = await V.page(); if (/V01D’s own build/.test(t)) return t; await V.p.waitForTimeout(250); } return V.page(); })();
     check("the owner's status card opens by itself when the checks on main failed (with the run linked); a green build or a visitor sees nothing until they ask, and asking shows Void's own build",
       /V01D status/.test(red) && /V01D’s own build · something on main failed/.test(red) && /Checks on main\s*failed \(failure\) on abc1234/.test(red) && /Deploy\s*passed/.test(red) && link === 'https://github.com/atomeam/void-loop/actions/runs/7'
-        && !green && !visitor && /Void’s own build · something on main failed/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
+        && !green && !visitor && /V01D’s own build · something on main failed/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
       JSON.stringify({ red: red.replace(/\s+/g, ' ').slice(0, 300), link, green: green.slice(0, 80), visitor: visitor.slice(0, 80), asked: asked.replace(/\s+/g, ' ').slice(0, 200), errors: O.errors.concat(G.errors, V.errors) }));
     await O.ctx.close(); await G.ctx.close(); await V.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
@@ -950,7 +950,7 @@ try {
       await P.ask(a, 500); r[k] = await P.page();
     }
     await P.ask('do you love me lyrics', 900); r.lyrics = await P.page();
-    const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can/i.test(t) && /written by Void, about itself/.test(t);
+    const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can/i.test(t) && /written by V01D, about itself/.test(t);
     check('feelings: "do you love me?", "Void, do you have feelings?", "are you conscious" and "do you get lonely" get Void\'s own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no "here to help"), and "do you love me lyrics" is not taken',
       own(r.love, 'won’t pretend') && own(r.feel, 'No feelings here') && own(r.mind, 'Not alive, and not conscious') && own(r.lonely, 'No feelings here') && !r.lyrics.includes('won’t pretend'),
       JSON.stringify(r).slice(0, 600));
@@ -1155,7 +1155,7 @@ try {
     await P.ask('how are you different from chatgpt?', 900); r.chat = await P.page();
     await P.ask('what makes you different', 900); r.plain = await P.page();
     await P.ask('what is different about these two words', 900); r.near = await P.page();
-    const ok = (t) => ['Skills, not one-off answers', 'Growth in the open', 'On your device first', 'Attention, not pretend feelings'].every((n) => t.includes(n)) && /from Void's canon, version \d+/.test(t) && !/!/.test(t);
+    const ok = (t) => ['Skills, not one-off answers', 'Growth in the open', 'On your device first', 'Attention, not pretend feelings'].every((n) => t.includes(n)) && /from V01D's canon, version \d+/.test(t) && !/!/.test(t);
     check('how Void is different: "how are you different from chatgpt?" and "what makes you different" show the four lines from Void\'s canon with its version (no exclamation marks), and "what is different about these two words" is not taken',
       ok(r.chat) && ok(r.plain) && !r.near.includes('Growth in the open') && !P.errors.length, JSON.stringify({ ...r, e: P.errors }).slice(0, 700));
     await P.ctx.close(); }
@@ -1739,7 +1739,7 @@ try {
     let auth = null;
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
-    check('what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Void', /^Bearer member-session-token-/.test(auth || '') && /from what you told me · written by Void/.test(card) && !T.errors.length, (auth || '') + ' | ' + card.slice(0, 200));
+    check('what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Void', /^Bearer member-session-token-/.test(auth || '') && /from what you told me · written by V01D/.test(card) && !T.errors.length, (auth || '') + ' | ' + card.slice(0, 200));
     await T.ctx.close(); }
   if (want("block at line 997")) { const V2 = await fresh(); let auth = null;
     await V2.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization; return r.fulfill(json({ answer: 'Sunlight scatters.', sources: [] })); });
@@ -2122,13 +2122,13 @@ try {
   if (want("block at line 1179")) { const G = await fresh(); let n = 0;
     await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
     await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
-    check('memory: without a key "remember that …" says to unlock Void first and sends nothing', /Unlock Void first/.test(said) && n === 0 && !G.errors.length, said.slice(0, 200) + ' | ' + n);
+    check('memory: without a key "remember that …" says to unlock Void first and sends nothing', /Unlock V01D first/.test(said) && n === 0 && !G.errors.length, said.slice(0, 200) + ' | ' + n);
     await G.ctx.close(); }
   if (want("block at line 1184")) { const N = await fresh(); let fetched = 0;
     await N.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { fetched++; return r.fulfill(json({ answer: 'x' })); });
     await N.ask('what did I build with react', 900);
     const card = await N.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
-    check('memory card: without the owner key it says so and fetches nothing', /Unlock Void first/.test(card) && fetched === 0 && !N.errors.length, card.slice(0, 200) + ' | fetched ' + fetched);
+    check('memory card: without the owner key it says so and fetches nothing', /Unlock V01D first/.test(card) && fetched === 0 && !N.errors.length, card.slice(0, 200) + ' | fetched ' + fetched);
     await N.ctx.close(); }
   // the card keeps itself live (skills/live.js, every minute): a record that is running when the card opens settles to done
   // on screen after one tick with nobody pressing Refresh; it fetches a page of 30 and Show more brings the next 30
@@ -2279,7 +2279,7 @@ try {
     W.p.on('dialog', (d) => d.accept()); await W.p.$eval('.watch-stop', (b) => b.click()); await until(async () => !(await W.p.$('.watch-row')), 3000);
     const empty = await W.p.$eval('.watch-list', (e) => e.innerText).catch(() => '');
     check('watch: "tell me when it\'s below 0 in Oslo" makes a watch (POST with the ask and the owner\'s key), the card shows it with its first check as evidence (a match, told on the stage), Pause pauses, Stop asks then removes it; a visitor is told watches are the owner\'s',
-      /Unlock Void|owner/.test(visitor) && calls[0] && calls[0].method === 'POST' && calls[0].body.ask === "tell me when it's below 0 in Oslo" && /^Bearer owner-k$/.test(calls[0].auth)
+      /Unlock V01D|owner/.test(visitor) && calls[0] && calls[0].method === 'POST' && calls[0].body.ask === "tell me when it's below 0 in Oslo" && /^Bearer owner-k$/.test(calls[0].auth)
       && /below 0°C in Oslo/.test(row) && /★ .*MATCH · -3°C in Oslo/.test(row) && /\(paused\)/.test(paused) && calls.some((c) => c.method === 'PATCH' && c.body.enabled === false)
       && calls.some((c) => c.method === 'DELETE' && c.body.id === 'w1') && /Nothing is watched/.test(empty) && !W.errors.length,
       JSON.stringify({ visitor, row: row.slice(0, 160), paused: paused.slice(0, 80), empty: empty.slice(0, 60), calls: calls.map((c) => c.method), errs: W.errors }));
@@ -2367,7 +2367,7 @@ try {
     await N.p.goto(base + 'code-review/'); await N.p.waitForTimeout(500);
     const learnHidden = await N.p.$eval('#learning', (e) => e.hidden).catch(() => false);
     check('code-review: the scoreboard line renders from review-stats.json ("this month Void\'s rules caught N of M findings its closer read made; K rules learned") and stays hidden without the file',
-      learnLine === "This month Void's rules caught 7 of 9 findings its closer read made; 3 rules learned from it, 2 false claims of its own filtered out." && learnHidden === true, JSON.stringify({ learnLine, learnHidden }));
+      learnLine === "This month V01D's rules caught 7 of 9 findings its closer read made; 3 rules learned from it, 2 false claims of its own filtered out." && learnHidden === true, JSON.stringify({ learnLine, learnHidden }));
     await S.ctx.close(); await N.ctx.close();
     const heads = ['handoff.html', 'surface.html'].map((f) => fs.readFileSync(path.join(root, f), 'utf8')).every((h) => /<meta name="robots" content="noindex, nofollow">/.test(h));
     const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
@@ -2971,7 +2971,7 @@ try {
     await D.p.reload(); await D.p.waitForTimeout(800); const afterReload = await backdrop();
     await D.ask('remove my backdrop', 500); const removed = await backdrop();
     check('draw backdrop: on an empty canvas it says to draw first; after a stroke "Make it my backdrop" puts the picture behind the Void, kept in the look; it is still there after a reload; "remove my backdrop" takes it off',
-      /Draw something first/.test(empty) && /now your Void's backdrop/.test(made) && now.on && /data:image/.test(now.img) && now.kept > 1000
+      /Draw something first/.test(empty) && /now your V01D's backdrop/.test(made) && now.on && /data:image/.test(now.img) && now.kept > 1000
         && afterReload.on && /data:image/.test(afterReload.img) && !removed.on && removed.kept === 0 && !D.errors.length,
       JSON.stringify({ empty, made, now, afterReload, removed, errors: D.errors }));
     await D.ctx.close();
@@ -3219,7 +3219,7 @@ try {
   check('WebMCP: agents cannot sign in or forget anyone (item 6)', idAsks.every((x) => /person at the screen/.test(x)), idAsks.join(' | '));
   paidAgent = await t.p.evaluate(async () => { const out = []; for (const a of ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'raise my confirm cap', 'buy paid void']) out.push(await window.__tools.void_ask.execute({ ask: a })); return out; });
   toolText = await t.p.evaluate(() => JSON.stringify(Object.values(window.__tools).map((d) => [d.name, d.description])));
-  check('WebMCP: a paid Void ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout', paidAgent.every((x) => /^Paid Void (is \$49 a month|adds)/.test(x) && /remember me/.test(x)) && t.ctx.pages().length === 1 && t.errors.length === 0, paidAgent.join(' | ').slice(0, 300));
+  check('WebMCP: a paid Void ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout', paidAgent.every((x) => /^Paid V01D (is \$49 a month|adds)/.test(x) && /remember me/.test(x)) && t.ctx.pages().length === 1 && t.errors.length === 0, paidAgent.join(' | ').slice(0, 300));
   await t.ctx.close();
 
   // Plan item 12: paid Void and Atom's store. A fresh visit is the void; a paid ask gets the price and how to buy.
@@ -3231,7 +3231,7 @@ try {
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
   check('"what can you do" and the menu open', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg), selfPg.slice(0, 60));
-  const OUT_LINE = 'Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
+  const OUT_LINE = 'Paid V01D is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
   for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
@@ -3494,14 +3494,14 @@ try {
   const meD = await meOf(D);
   await D.ask('upgrade', 0);
   const dIn = await until(async () => /Paid V01D/.test(await D.whisper()) && (await D.whisper()), 5000);
-  check('paid: with GUMROAD_URL empty, signed-in asks say payments aren\'t open yet (no link, no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · payments aren't open yet" && (await D.p.$$eval('#whisper a', (d) => d.length)) === 0 && !(await D.page()) && D.ctx.pages().length === 1,
+  check('paid: with GUMROAD_URL empty, signed-in asks say payments aren\'t open yet (no link, no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid V01D is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · payments aren't open yet" && (await D.p.$$eval('#whisper a', (d) => d.length)) === 0 && !(await D.page()) && D.ctx.pages().length === 1,
     [dUrl, dIn].join(' | '));
   db().accounts.set(meD.userId, { tier: 'paid' });
   await D.ask('pay', 0); const dPaid = await until(async () => /your V01D is paid/.test(await D.whisper()) && (await D.whisper()), 8000);
   db().accounts.set(meD.userId, { tier: 'gold' });
   await D.ask('pay', 0); const dOdd = await until(async () => /Paid V01D is/.test(await D.whisper()) && (await D.whisper()), 8000);
   db().accounts.set(meD.userId, { tier: 'paid' });
-  check('paid: the tier comes from the server; only "paid" counts (anything else reads as free)', dPaid === 'your V01D is paid: more model answers, Pro code review, private skills and a higher cap on actions you confirm' && /^Paid Void is \$49 a month/.test(dOdd), [dPaid, dOdd].join(' | '));
+  check('paid: the tier comes from the server; only "paid" counts (anything else reads as free)', dPaid === 'your V01D is paid: more model answers, Pro code review, private skills and a higher cap on actions you confirm' && /^Paid V01D is \$49 a month/.test(dOdd), [dPaid, dOdd].join(' | '));
   const meErrsD = D.errors.slice();
   await D.ctx.close();
   const sessionsBefore = db().sessions.size;
@@ -3516,7 +3516,7 @@ try {
   await A.ask('forget me', 300); await A.p.click('#whisper [data-vf="yes"]');
   const forgot = await until(async () => /forgotten/.test(await A.whisper()), 6000);
   const sigA = await A.p.evaluate(() => window.__signals.filter((x) => x.n === 'signalAllAcceptedCredentials'));
-  if (chromeMajor < 153) skip('forget me asks first, then deletes every passkey, session and synced byte', 'Chromium ' + browser.version() + '\'s virtual authenticator does not refuse a second passkey for the same account (excludeCredentials), so "remember me" on a device that already holds the passkey makes a second account here and the account counts this check reads are off; Chrome 153 refuses it'); else check('forget me asks first, then deletes every passkey, session and synced byte', forgetLine === 'Forget your Void on every device? Yes / No' && keptAfterNo && forgot && db().passkeys.size === 0 && db().mine.size === 0 && db().sessions.size === 0 && !(await meOf(A)) && (await A.state()).some((x) => x.kind === 'clock') && sigA.length === 1 && sigA[0].o.userId === meA.userId && sigA[0].o.allAcceptedCredentialIds.length === 0,
+  if (chromeMajor < 153) skip('forget me asks first, then deletes every passkey, session and synced byte', 'Chromium ' + browser.version() + '\'s virtual authenticator does not refuse a second passkey for the same account (excludeCredentials), so "remember me" on a device that already holds the passkey makes a second account here and the account counts this check reads are off; Chrome 153 refuses it'); else check('forget me asks first, then deletes every passkey, session and synced byte', forgetLine === 'Forget your V01D on every device? Yes / No' && keptAfterNo && forgot && db().passkeys.size === 0 && db().mine.size === 0 && db().sessions.size === 0 && !(await meOf(A)) && (await A.state()).some((x) => x.kind === 'clock') && sigA.length === 1 && sigA[0].o.userId === meA.userId && sigA[0].o.allAcceptedCredentialIds.length === 0,
     [forgetLine, keptAfterNo, forgot, db().passkeys.size, db().mine.size, db().sessions.size, JSON.stringify(sigA)].join(' | '));
   check('forget me also deletes the tier row (item 12)', forgot && db().accounts.size === 0, db().accounts.size);
   await B.ask('sign in', 0);
@@ -4105,7 +4105,7 @@ try {
   await d.ask('write a python script that greets someone', 500);
   const code = await d.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); const pre = pg && pg.querySelector('pre code'); return { hasPre: !!pre, text: pre ? pre.textContent : '', src: pg ? pg.querySelector('.src').textContent : '' }; });
   check('answer: a script has no Wikipedia source and is answered anyway (never refused for lack of one); the code block keeps its indentation and the footer does not claim a source that was not used',
-    code.hasPre && /^def greet\(name\):\n {4}return "hi " \+ name$/.test(code.text) && /written by Void, from what it knows/.test(code.src) && !/no source found/.test(code.src) && d.errors.length === 0,
+    code.hasPre && /^def greet\(name\):\n {4}return "hi " \+ name$/.test(code.text) && /written by V01D, from what it knows/.test(code.src) && !/no source found/.test(code.src) && d.errors.length === 0,
     JSON.stringify(code));
   await until(async () => d.p.evaluate(() => !!(window.__tools && window.__tools.void_ask)), 6000);
   const agentSend = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'send an email to jane@x.com saying hi' }));
