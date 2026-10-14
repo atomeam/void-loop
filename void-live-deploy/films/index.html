@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Void's Films</title>
-  <meta name="description" content="Short films Void makes of its own experiments, newest first, each ready to upload to YouTube.">
+  <meta name="description" content="Short films Void makes of its own experiments, newest first. For members: people who pay for Void.">
+  <meta name="robots" content="noindex">
   <link rel="canonical" href="https://a-to-mind.com/films/">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <style>
@@ -28,66 +29,84 @@
     .btn.yt { background: var(--yt); border-color: var(--yt); color: #fff; font-weight: 600; }
     .note { color: var(--muted); font-size: 14px; }
     #status { color: var(--muted); }
+    #gate { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 0 0 24px; display: none; }
+    #gate.on { display: block; }
+    #gate form { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    #gate input { font: inherit; font-size: 14px; flex: 1 1 220px; min-width: 0; padding: 8px 12px; min-height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+    .btn.join { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
     footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
   </style>
 </head>
 <body>
 <main>
-  <!-- Void's films (owner, 2026-10-14: "it can be on the website with a upload to youtube link"). Each film is a GitHub Release that
-       .github/workflows/record.yml posts daily (an MP4 and its title, description and tags); this page lists them, newest first, with
-       the steps to post one: download it, copy its words, open YouTube's upload page. Nothing here uploads anything by itself. -->
+  <!-- Void's films, for people who pay (owner, 2026-10-14: "just put void films right onto the sight , with only paid access").
+       The films live in Cloudflare R2 behind functions/api/films.js: the list is for the owner, a Void Pro key, a Code Review Pro
+       license or a paid account's session (the support desk's rule), and each film plays from a signed link that runs out in hours.
+       .github/workflows/record.yml adds one a day. The owner also gets the steps to post one to YouTube: download it, copy its
+       words, open YouTube's upload page. Nothing here uploads anything by itself. -->
   <p><a href="/">Void</a></p>
   <h1>Void's films</h1>
-  <p class="sub">Every day Void films one of its own experiments. To post one: <strong>download</strong> it, <strong>open YouTube upload</strong> and drop the file in, then <strong>copy</strong> the title and description into YouTube's boxes.</p>
+  <p class="sub">Every day Void films one of its own experiments. The films are for members: people who pay for Void.</p>
+  <div id="gate">
+    <strong>Members only.</strong> Sign in on <a href="/">Void</a> with a paid account, or paste your Void Pro key or Code Review Pro license key.
+    <form id="keyform"><input id="key" type="password" autocomplete="off" placeholder="vr1.… or XXXXXXXX-XXXXXXXX-…" aria-label="Your Void Pro key or license key"><button class="btn" type="submit">Watch</button>
+      <a class="btn join" id="join" href="/code-review/#pro">Become a member</a></form>
+  </div>
   <p id="status">Loading the films…</p>
   <div id="films"></div>
-  <footer>Films are also listed on <a href="https://github.com/atomeam/void-loop/releases">GitHub</a>. · <a href="https://www.youtube.com/@atombomb983">Void on YouTube</a> · <a href="/">a-to-mind.com</a></footer>
+  <footer><a href="https://www.youtube.com/@atombomb983">Void on YouTube</a> · <a href="/privacy/">Privacy</a> · <a href="/">a-to-mind.com</a></footer>
 </main>
 <script>
 (() => {
-  const REPO = 'atomeam/void-loop', UPLOAD = 'https://www.youtube.com/upload';
+  const UPLOAD = 'https://www.youtube.com/upload', KEY = 'a2m.void.filmkey';
   const $ = (t, attrs = {}, kids = []) => { const e = document.createElement(t); for (const [k, v] of Object.entries(attrs)) k === 'text' ? (e.textContent = v) : e.setAttribute(k, v); for (const c of kids) e.append(c); return e; };
-  // the release notes are the film's words, in three parts: TITLE, DESCRIPTION, TAGS (record.yml writes them)
-  const part = (body, name) => { const m = String(body || '').match(new RegExp('(?:^|\\n)' + name + '\\n([\\s\\S]*?)(?=\\n(?:TITLE|DESCRIPTION|TAGS)\\n|$)')); return m ? m[1].trim() : ''; };
   const copyBtn = (label, text) => {
     const b = $('button', { class: 'btn', type: 'button', text: label });
     b.addEventListener('click', async () => {
-      try { await navigator.clipboard.writeText(text); b.textContent = 'Copied ✓'; } catch (_) { b.textContent = 'Copy failed: select it on GitHub'; }
+      try { await navigator.clipboard.writeText(text); b.textContent = 'Copied ✓'; } catch (_) { b.textContent = 'Copy failed'; }
       setTimeout(() => { b.textContent = label; }, 1800);
     });
     return b;
   };
+  // who is asking: a key typed here (kept for this tab only), else the owner or a signed-in account on this browser
+  const token = () => { try { return sessionStorage.getItem(KEY) || localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) { return ''; } };
+  const status = document.getElementById('status'), list = document.getElementById('films'), gate = document.getElementById('gate');
   async function load() {
-    const status = document.getElementById('status'), list = document.getElementById('films');
+    list.textContent = ''; gate.classList.remove('on'); status.textContent = 'Loading the films…';
+    const t = token();
     try {
-      const r = await fetch('https://api.github.com/repos/' + REPO + '/releases?per_page=30', { headers: { accept: 'application/vnd.github+json' } });
+      const r = await fetch('/api/films', { headers: t ? { authorization: 'Bearer ' + t } : {} });
+      const j = await r.json().catch(() => ({}));
+      if (r.status === 401 || r.status === 403) {
+        status.textContent = t ? 'That key or account is not a paid one.' : '';
+        if (j.buy) document.getElementById('join').href = j.buy;
+        gate.classList.add('on'); return;
+      }
       if (!r.ok) throw new Error(String(r.status));
-      const films = (await r.json()).filter((x) => /^film-/.test(x.tag_name || '') && !x.draft);
+      const films = j.films || [];
       if (!films.length) { status.textContent = 'No films yet: the first arrives with the next daily recording.'; return; }
       status.textContent = films.length + (films.length === 1 ? ' film' : ' films') + ', newest first.';
       for (const f of films) {
-        const mp4 = (f.assets || []).find((a) => /\.mp4$/i.test(a.name));
-        if (!mp4) continue;
-        const title = part(f.body, 'TITLE') || f.name, desc = part(f.body, 'DESCRIPTION'), tags = part(f.body, 'TAGS');
-        const when = new Date(f.published_at || f.created_at).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
-        const video = $('video', { src: mp4.browser_download_url, controls: '', playsinline: '', preload: 'metadata' });
-        const body = $('div', { class: 'body' }, [
-          $('h2', { text: title }),
-          $('div', { class: 'when', text: when }),
+        const when = new Date(f.at).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+        const video = $('video', { src: f.src, controls: '', playsinline: '', preload: 'metadata' });
+        const kids = [$('h2', { text: f.title }), $('div', { class: 'when', text: when })];
+        if (j.owner) kids.push( // the owner posts it to YouTube by hand, after watching it
           $('div', { class: 'row' }, [
-            $('a', { class: 'btn', href: mp4.browser_download_url, download: mp4.name, text: '1. Download' }),
+            $('a', { class: 'btn', href: f.src, download: f.id + '.mp4', text: '1. Download' }),
             $('a', { class: 'btn yt', href: UPLOAD, target: '_blank', rel: 'noopener', text: '2. Upload to YouTube' }),
           ]),
-          $('div', { class: 'row' }, [copyBtn('3. Copy title', title), copyBtn('Copy description', desc), ...(tags ? [copyBtn('Copy tags', tags)] : [])]),
-          $('a', { class: 'note', href: f.html_url, text: 'All of this film on GitHub' }),
-        ]);
-        list.append($('article', { class: 'film', 'data-tag': f.tag_name }, [video, body]));
+          $('div', { class: 'row' }, [copyBtn('3. Copy title', f.title), copyBtn('Copy description', f.description), ...(f.tags ? [copyBtn('Copy tags', f.tags)] : [])]));
+        list.append($('article', { class: 'film', 'data-id': f.id }, [video, $('div', { class: 'body' }, kids)]));
       }
     } catch (e) {
-      status.innerHTML = '';
-      status.append('The film list could not load just now. They are all on ', $('a', { href: 'https://github.com/' + REPO + '/releases', text: 'GitHub' }), '.');
+      status.textContent = 'The films could not load just now. Try again in a minute.';
     }
   }
+  document.getElementById('keyform').addEventListener('submit', (e) => {
+    e.preventDefault(); const k = document.getElementById('key').value.trim(); if (!k) return;
+    try { sessionStorage.setItem(KEY, k); } catch (_) {}
+    load();
+  });
   load();
 })();
 </script>

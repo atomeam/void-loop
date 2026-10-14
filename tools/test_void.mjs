@@ -2387,28 +2387,36 @@ try {
       && /forget me/.test(txt) && /atom@a-to-mind\.com/.test(txt) && !wide && !P.errors.length, JSON.stringify({ wide, errors: P.errors, head: txt.slice(0, 120) }));
     await P.ctx.close(); }
 
-  // Void's films (owner, 2026-10-14: "it can be on the website with a upload to youtube link"): /films/ lists the film releases
-  // record.yml posts, newest first, each with download, YouTube upload and the words to copy; when GitHub cannot answer it says so
-  if (want("films page: each film with download, upload to YouTube and its words to copy; a fallback when GitHub is down")) {
+  // Void's films, for people who pay (owner, 2026-10-14: "just put void films right onto the sight , with only paid access"):
+  // /films/ asks /api/films with the visitor's credential; a stranger gets the members-only gate (and can paste a key), a member
+  // gets the films, and the owner also gets download, upload to YouTube and the words to copy
+  if (want("films page: members watch, the owner gets the YouTube steps, a stranger meets the members-only gate")) {
     const F = await fresh(); await F.p.setViewportSize({ width: 390, height: 844 });
-    const body = 'TITLE\nOdd moments | an AI built this itself #Shorts\n\nDESCRIPTION\nLog each odd moment.\n\nTry it: https://a-to-mind.com\n\nTAGS\nVoid, AI\n';
-    const rel = [{ tag_name: 'film-20261014-x-r6', name: 'Film: x', body, draft: false, published_at: '2026-10-14T16:33:31Z', html_url: 'https://github.com/atomeam/void-loop/releases/tag/film-20261014-x-r6',
-      assets: [{ name: 'x.mp4', browser_download_url: 'https://github.com/atomeam/void-loop/releases/download/film-20261014-x-r6/x.mp4' }, { name: 'x.txt', browser_download_url: 'https://example.invalid/x.txt' }] },
-      { tag_name: 'v1.0.0', name: 'not a film', body: '', assets: [] }];
-    let down = false;
-    await F.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/releases/, (r) => down ? r.fulfill({ status: 503, body: '' }) : r.fulfill(json(rel)));
-    await F.ctx.route(/github\.com\/atomeam\/void-loop\/releases\/download\//, (r) => r.fulfill({ status: 404, body: '' }));
-    await F.p.goto(base + 'films/'); await until(async () => (await F.p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
-    const card = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return a && { n: document.querySelectorAll('#films .film').length, h: a.querySelector('h2').textContent,
-      yt: a.querySelector('a.yt').href, dl: a.querySelector('a[download]').href, btns: [...a.querySelectorAll('button')].map((b) => b.textContent), wide: document.documentElement.scrollWidth > innerWidth }; });
+    const film = { id: '20261014-x-r6', at: '2026-10-14T16:33:31Z', title: 'Odd moments | an AI built this itself #Shorts', description: 'Log each odd moment.\n\nTry it: https://a-to-mind.com', tags: 'Void, AI', bytes: 1135255, src: '/api/films?id=20261014-x-r6&exp=9999999999&sig=abc' };
+    const seen = [];
+    await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => {
+      const auth = r.request().headers().authorization || ''; seen.push(auth);
+      if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
+      if (auth === 'Bearer owner-tok') return r.fulfill(json({ films: [film], owner: true }));
+      if (auth === 'Bearer vr1.' + 'A'.repeat(43)) return r.fulfill(json({ films: [film], owner: false }));
+      return r.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'pay', buy: 'https://a-to-mind.com/code-review/#pro' }) });
+    });
+    await F.p.goto(base + 'films/'); await until(async () => F.p.$eval('#gate', (e) => e.classList.contains('on')), 5000);
+    const gate = await F.p.evaluate(() => ({ on: document.getElementById('gate').classList.contains('on'), films: document.querySelectorAll('#films .film').length, text: document.getElementById('gate').innerText }));
+    await F.p.fill('#key', 'vr1.' + 'A'.repeat(43)); await F.p.click('#keyform button');
+    await until(async () => (await F.p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
+    const member = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'), yt: !!a.querySelector('a.yt'), gate: document.getElementById('gate').classList.contains('on') }; });
+    await F.p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'owner-tok'); }); await F.p.reload();
+    await until(async () => !!(await F.p.$('#films .film a.yt')), 5000);
+    const card = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return a && { yt: a.querySelector('a.yt').href, dl: a.querySelector('a[download]').getAttribute('href'),
+      btns: [...a.querySelectorAll('button')].map((b) => b.textContent), wide: document.documentElement.scrollWidth > innerWidth }; });
     await F.ctx.grantPermissions(['clipboard-read', 'clipboard-write']);
     await F.p.click('#films .film button:nth-of-type(2)'); const copied = await F.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
-    down = true; await F.p.reload(); await until(async () => /could not load/.test(await F.p.$eval('#status', (e) => e.textContent)), 5000);
-    const fallback = await F.p.$eval('#status', (e) => e.innerText);
-    check('films page: each film with download, upload to YouTube and its words to copy; a fallback when GitHub is down',
-      !!card && card.n === 1 && card.h === 'Odd moments | an AI built this itself #Shorts' && card.yt === 'https://www.youtube.com/upload' && /\/x\.mp4$/.test(card.dl)
-      && JSON.stringify(card.btns) === '["3. Copy title","Copy description","Copy tags"]' && copied === 'Log each odd moment.\n\nTry it: https://a-to-mind.com' && !card.wide
-      && /could not load[\s\S]*GitHub/.test(fallback) && !F.errors.length, JSON.stringify({ card, copied, fallback, errors: F.errors }));
+    check('films page: members watch, the owner gets the YouTube steps, a stranger meets the members-only gate',
+      gate.on && gate.films === 0 && /Members only/.test(gate.text) && seen[0] === ''
+      && member.h === film.title && member.src === film.src && !member.yt && !member.gate
+      && !!card && card.yt === 'https://www.youtube.com/upload' && card.dl === film.src && JSON.stringify(card.btns) === '["3. Copy title","Copy description","Copy tags"]'
+      && copied === film.description && !card.wide && !F.errors.length, JSON.stringify({ gate, member, card, copied, seen, errors: F.errors }));
     await F.ctx.close(); }
 
   // the map (skills/rebuild-map.js), the one skill nothing checked (the growth card's friction line, 2026-10-14): "show the map"
