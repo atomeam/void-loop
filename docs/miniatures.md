@@ -85,6 +85,12 @@ light, blurred contact shadows. A miniature redraws only when it is on screen an
 `update`, a `tick` that returned true). The empty page loads none of this: `scene3d.js` and three.js load on the first
 `miniature(...)` call.
 
+When a miniature has drawn its first frame it says so (asked by Void, 2026-10-14: a rendered signal): its wrapper goes
+from `data-rendered="false"` to `"true"`, its canvas from `aria-busy="true"` to `"false"` and fades in from transparent,
+and one `void:mini-rendered` event bubbles up with `{ key, kind }`; `liveMiniatures()` lists `rendered`. Before that the card
+shows nothing where the miniature will be, never a half-built scene. A test or a skill that must wait for the 3D can wait on
+`.void-mini[data-rendered="true"]` or the event instead of polling `draws`.
+
 ## Tests
 
 `tools/test_3d.mjs` (run inside `node tools/test_void.mjs`) checks the empty page stays at zero 3D bytes, a miniature

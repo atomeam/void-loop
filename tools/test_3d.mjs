@@ -133,6 +133,10 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       hits.length === 0 && !index.includes('scene3d') && !index.some((n) => n.startsWith('mini/')) && !/\/vendor\/|\/models\//.test(html), JSON.stringify(hits));
     const r = await F.p.evaluate(async () => {
       const host = document.createElement('div'); host.id = 't3host'; host.style.cssText = 'position:fixed;left:40px;top:40px;width:320px;height:320px;z-index:9'; document.body.appendChild(host);
+      // the rendered signal (asked by Void): how the wrapper looks the moment it is put in, and every void:mini-rendered event after
+      window.__t3born = []; window.__t3rendered = [];
+      new MutationObserver((ms) => { for (const x of ms) for (const n of x.addedNodes) if (n.classList && n.classList.contains('void-mini')) { const c = n.querySelector('canvas'); window.__t3born.push({ rendered: n.dataset.rendered, busy: c && c.getAttribute('aria-busy'), opacity: c && c.style.opacity }); } }).observe(host, { childList: true });
+      host.addEventListener('void:mini-rendered', (e) => window.__t3rendered.push(e.detail));
       const m = await import('/skills/scene3d.js');
       const h = await m.mountMiniature(host, 'sample', { color: '#8b3a1a' }, { key: 't3' });
       const E = await m.engine(); const T = E.THREE;
@@ -144,6 +148,12 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); return l && l[0] && l[0].draws > 0 && l[0].ready ? l[0] : false; }));
     const pixOf = () => F.p.evaluate(() => { const c = document.querySelector('#t3host canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 20) n++; return n / (c.width * c.height); });
     const pix = (await until(async () => { const v = await pixOf(); return v > 0.03 ? v : 0; }, 20000)) || (await pixOf()); // a slow software renderer can hand over its first frame late
+    const sig = await F.p.evaluate(async () => { const w = document.querySelector('#t3host .void-mini'), c = w && w.querySelector('canvas'); const m = await import('/skills/scene3d.js');
+      return { born: window.__t3born, now: w && w.dataset.rendered, busy: c && c.getAttribute('aria-busy'), opacity: c && c.style.opacity, events: window.__t3rendered, listed: (m.liveMiniatures()[0] || {}).rendered }; });
+    check('3D scene: a miniature says when it has drawn (asked by Void: a rendered signal): put in as data-rendered="false", aria-busy and invisible; its first frame sets data-rendered="true", fades it in and fires one void:mini-rendered with its key and kind; liveMiniatures() lists rendered',
+      sig.born.length === 1 && sig.born[0].rendered === 'false' && sig.born[0].busy === 'true' && sig.born[0].opacity === '0'
+      && sig.now === 'true' && sig.busy === 'false' && sig.opacity === '1' && sig.events.length === 1 && sig.events[0].key === 't3' && sig.events[0].kind === 'sample' && sig.listed === true,
+      JSON.stringify(sig));
     check('3D scene: a miniature mounts on demand (vendored three.js r180 and skills/mini/sample.js load only now) with ACES, sRGB, PCF soft shadows, a room environment map, contact shadows, orbit and zoom, and GLTFLoader with meshopt and KTX2; bad kinds are refused',
       !!drawn && Object.values(r.settings).every(Boolean) && r.badKind && pix > 0.03 && hits.some((u) => /\/vendor\/three-r180\/build\/three\.module\.min\.js$/.test(u)) && hits.some((u) => /\/skills\/mini\/sample\.js$/.test(u)) && !F.errors.length,
       JSON.stringify({ r, drawn, pix, hits, e: F.errors }));
