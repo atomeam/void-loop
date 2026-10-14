@@ -202,6 +202,15 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run mcp-registry.yml --repo "${{ github.repository }}" --ref main && echo "MCP registry started" >> "$GITHUB_STEP_SUMMARY"
 
+      # V01D's hourly automations (automations/hourly.json): seeded through its own door after every main deploy, so a change to the
+      # seed file is live within minutes (an automerge merge starts no push workflow). The same id replaces a rule: most runs change nothing.
+      - name: Start the automations seed
+        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run automations-seed.yml --repo "${{ github.repository }}" --ref main && echo "Automations seed started" >> "$GITHUB_STEP_SUMMARY"
+
       # Void's voice (lib/voice.js): after anything ships, Void is asked what it thinks of it and how it would make it
       # better. Its words are kept on the site and copied into domains/void.voice.md by the daily run. Input, not a gate:
       # a busy model or a missing VOID_OWNER_TOKEN never fails the deploy.

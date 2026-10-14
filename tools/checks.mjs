@@ -22,6 +22,7 @@ for (const [name, file] of [
   ['support', 'support.test.mjs'],
   ['films', 'films.test.mjs'],
   ['owner-account', 'owner-account.test.mjs'],
+  ['automations-seed', 'automations-seed.test.mjs'],
   ['rebuild-map', 'rebuild-map.test.mjs'],
   ['record', 'record.test.mjs'],
   ['youtube', 'youtube.test.mjs'],
