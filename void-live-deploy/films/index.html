@@ -6,34 +6,47 @@
   <title>Void's Films</title>
   <meta name="description" content="Short films Void makes of its own experiments, newest first. For members: people who pay for Void.">
   <meta name="robots" content="noindex">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#07070d">
   <link rel="canonical" href="https://a-to-mind.com/films/">
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <style>
-    :root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --card: #141414; --accent: #7aa7ff; --yt: #ff3b30; }
-    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --card: #ffffff; --accent: #2457c5; --yt: #d0201a; } }
+    :root { --bg: #07070d; --ink: #f2f0fa; --muted: #a4a0b8; --line: rgba(255,255,255,.1); --card: rgba(255,255,255,.04); --accent: #8f7bff; --hot: #ff3d7f; --yt: #ff3030; --grad: linear-gradient(90deg, #ff3d7f, #7a5cff); }
     * { box-sizing: border-box; }
-    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
-    main { max-width: 960px; margin: 0 auto; padding: 24px 16px 64px; }
+    html { background: var(--bg); }
+    body { margin: 0; color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; min-height: 100vh;
+      background: radial-gradient(80% 50% at 90% -10%, rgba(255,61,127,.28), transparent 60%), radial-gradient(70% 50% at -10% 10%, rgba(90,110,255,.3), transparent 60%), var(--bg); background-attachment: fixed; }
+    main { max-width: 1040px; margin: 0 auto; padding: 24px 16px 64px; }
     a { color: var(--accent); }
-    h1 { font-size: clamp(28px, 6vw, 38px); line-height: 1.15; margin: 18px 0 6px; }
-    .sub { color: var(--muted); margin: 0 0 24px; }
-    #films { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-    .film { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+    .home { color: var(--muted); text-decoration: none; font-weight: 600; letter-spacing: .02em; }
+    .kicker { font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin: 28px 0 6px; }
+    h1 { font-size: clamp(36px, 9vw, 64px); line-height: 1; letter-spacing: -.03em; margin: 0 0 12px; background: linear-gradient(90deg, #fff, #ffd1e2 40%, #b9adff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .sub { color: var(--muted); margin: 0 0 28px; max-width: 60ch; }
+    #films { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
+    .film { background: var(--card); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.45); transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
+    .film:hover { transform: translateY(-3px); border-color: rgba(255,61,127,.35); box-shadow: 0 26px 70px rgba(122,92,255,.25); }
     .film video { width: 100%; aspect-ratio: 9 / 16; background: #000; display: block; }
-    .film .body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 10px; }
-    .film h2 { font-size: 16px; margin: 0; line-height: 1.3; }
+    .film .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+    .film h2 { font-size: 17px; margin: 0; line-height: 1.3; }
     .film .when { color: var(--muted); font-size: 13px; }
     .row { display: flex; flex-wrap: wrap; gap: 8px; }
-    .btn { font: inherit; font-size: 14px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; min-height: 40px; }
-    .btn:hover, .btn:focus-visible { border-color: var(--accent); }
-    .btn.yt { background: var(--yt); border-color: var(--yt); color: #fff; font-weight: 600; }
+    .btn { font: inherit; font-size: 14px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,.04); color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; min-height: 40px; transition: border-color .15s ease, background .15s ease; }
+    .btn:hover, .btn:focus-visible { border-color: var(--accent); background: rgba(143,123,255,.12); }
+    .btn.yt { background: var(--yt); border-color: var(--yt); color: #fff; font-weight: 700; }
     .note { color: var(--muted); font-size: 14px; }
     #status { color: var(--muted); }
-    #gate { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin: 0 0 24px; display: none; }
+    #gate { background: linear-gradient(160deg, rgba(255,61,127,.14), rgba(122,92,255,.14)); border: 1px solid var(--line); border-radius: 20px; padding: 20px; margin: 0 0 24px; display: none; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
     #gate.on { display: block; }
-    #gate form { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-    #gate input { font: inherit; font-size: 14px; flex: 1 1 220px; min-width: 0; padding: 8px 12px; min-height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
-    .btn.join { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+    #gate form { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    #gate input { font: inherit; font-size: 14px; flex: 1 1 220px; min-width: 0; padding: 8px 14px; min-height: 42px; border-radius: 12px; border: 1px solid var(--line); background: rgba(0,0,0,.35); color: var(--ink); }
+    footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+    @media (prefers-reduced-motion: reduce) { .film, .btn { transition: none; } .film:hover { transform: none; } }
+    .review { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .review .row .btn[aria-pressed="true"] { background: var(--grad); border-color: transparent; color: #fff; font-weight: 700; }
+    .review textarea { font: inherit; font-size: 14px; width: 100%; min-height: 60px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: rgba(0,0,0,.35); color: var(--ink); resize: vertical; }
+    .review .tally, .review .said { color: var(--muted); font-size: 13px; }
+    .review ul { margin: 0; padding-left: 18px; font-size: 14px; }
+    .btn.join { background: var(--grad); border-color: transparent; color: #fff; font-weight: 700; box-shadow: 0 8px 24px rgba(255,61,127,.35); }
     footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
   </style>
 </head>
@@ -44,9 +57,10 @@
        license or a paid account's session (the support desk's rule), and each film plays from a signed link that runs out in hours.
        .github/workflows/record.yml adds one a day. The owner also gets the steps to post one to YouTube: download it, copy its
        words, open YouTube's upload page. Nothing here uploads anything by itself. -->
-  <p><a href="/">Void</a></p>
+  <p><a class="home" href="/">← Void</a></p>
+  <p class="kicker">Now showing · a new one daily</p>
   <h1>Void's films</h1>
-  <p class="sub">Every day Void films one of its own experiments. The films are for members: people who pay for Void.</p>
+  <p class="sub">Every day Void films one of its own experiments. The films are for members: people who pay for Void. Members review them: post it, needs work or skip, with a note, and the owner decides what goes on YouTube.</p>
   <div id="gate">
     <strong>Members only.</strong> Sign in on <a href="/">Void</a> with a paid account, or paste your Void Pro key or Code Review Pro license key.
     <form id="keyform"><input id="key" type="password" autocomplete="off" placeholder="vr1.… or XXXXXXXX-XXXXXXXX-…" aria-label="Your Void Pro key or license key"><button class="btn" type="submit">Watch</button>
@@ -59,6 +73,7 @@
 <script>
 (() => {
   const UPLOAD = 'https://www.youtube.com/upload', KEY = 'a2m.void.filmkey';
+  const VERDICTS = { post: 'Post it', fix: 'Needs work', skip: 'Skip it' };
   const $ = (t, attrs = {}, kids = []) => { const e = document.createElement(t); for (const [k, v] of Object.entries(attrs)) k === 'text' ? (e.textContent = v) : e.setAttribute(k, v); for (const c of kids) e.append(c); return e; };
   const copyBtn = (label, text) => {
     const b = $('button', { class: 'btn', type: 'button', text: label });
@@ -70,12 +85,41 @@
   };
   // who is asking: a key typed here (kept for this tab only), else the owner or a signed-in account on this browser
   const token = () => { try { return sessionStorage.getItem(KEY) || localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) { return ''; } };
+  const auth = () => { const t = token(); return t ? { authorization: 'Bearer ' + t } : {}; };
+  const tally = (c) => { const n = c.post + c.fix + c.skip; return n ? n + (n === 1 ? ' review: ' : ' reviews: ') + Object.keys(VERDICTS).filter((k) => c[k]).map((k) => c[k] + ' ' + VERDICTS[k].toLowerCase()).join(', ') : 'No reviews yet.'; };
+  // the review: one verdict and a note per reviewer, changeable (functions/api/film-review.js); the owner also reads every note
+  function reviewBox(f, owner) {
+    const r = f.reviews || { counts: { post: 0, fix: 0, skip: 0 }, mine: null };
+    let pick = r.mine ? r.mine.verdict : '';
+    const btns = Object.entries(VERDICTS).map(([k, label]) => { const b = $('button', { class: 'btn', type: 'button', 'data-v': k, 'aria-pressed': String(k === pick), text: label });
+      b.addEventListener('click', () => { pick = k; for (const x of btns) x.setAttribute('aria-pressed', String(x === b)); }); return b; });
+    const note = $('textarea', { maxlength: '1000', placeholder: 'What works, what to cut, a better hook…', 'aria-label': 'Your note on this film' }); note.value = r.mine ? r.mine.note : '';
+    const save = $('button', { class: 'btn join', type: 'button', text: r.mine ? 'Update review' : 'Save review' });
+    const said = $('div', { class: 'said', text: r.mine ? 'Your review: ' + VERDICTS[r.mine.verdict] + '.' : '' });
+    const count = $('div', { class: 'tally', text: tally(r.counts) });
+    save.addEventListener('click', async () => {
+      if (!pick) { said.textContent = 'Pick post it, needs work or skip first.'; return; }
+      save.disabled = true; said.textContent = 'Saving…';
+      try {
+        const res = await fetch('/api/film-review', { method: 'POST', headers: { 'content-type': 'application/json', ...auth() }, body: JSON.stringify({ id: f.id, verdict: pick, note: note.value.trim() }) });
+        const j = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(j.error || String(res.status));
+        if (!r.mine) r.counts[pick]++; else if (r.mine.verdict !== pick) { r.counts[r.mine.verdict]--; r.counts[pick]++; }
+        r.mine = { verdict: pick, note: note.value.trim() }; count.textContent = tally(r.counts);
+        said.textContent = 'Saved: ' + VERDICTS[pick] + '. Thank you.'; save.textContent = 'Update review';
+      } catch (e) { said.textContent = 'Not saved: ' + e.message; }
+      save.disabled = false;
+    });
+    const kids = [$('strong', { text: 'Your review' }), $('div', { class: 'row' }, btns), note, $('div', { class: 'row' }, [save]), said, count];
+    if (owner && r.notes && r.notes.length) kids.push($('ul', {}, r.notes.map((n) => $('li', { text: VERDICTS[n.verdict] + ' (' + n.by + '): ' + n.note }))));
+    return $('div', { class: 'review' }, kids);
+  }
   const status = document.getElementById('status'), list = document.getElementById('films'), gate = document.getElementById('gate');
   async function load() {
     list.textContent = ''; gate.classList.remove('on'); status.textContent = 'Loading the films…';
     const t = token();
     try {
-      const r = await fetch('/api/films', { headers: t ? { authorization: 'Bearer ' + t } : {} });
+      const r = await fetch('/api/films', { headers: auth() });
       const j = await r.json().catch(() => ({}));
       if (r.status === 401 || r.status === 403) {
         status.textContent = t ? 'That key or account is not a paid one.' : '';
@@ -96,6 +140,7 @@
             $('a', { class: 'btn yt', href: UPLOAD, target: '_blank', rel: 'noopener', text: '2. Upload to YouTube' }),
           ]),
           $('div', { class: 'row' }, [copyBtn('3. Copy title', f.title), copyBtn('Copy description', f.description), ...(f.tags ? [copyBtn('Copy tags', f.tags)] : [])]));
+        kids.push(reviewBox(f, j.owner));
         list.append($('article', { class: 'film', 'data-id': f.id }, [video, $('div', { class: 'body' }, kids)]));
       }
     } catch (e) {

@@ -4,7 +4,7 @@
   "experiment": 0,
   "tested": 44,
   "checked": 14,
-  "proven": 78
+  "proven": 79
  },
  "families": [
   {
@@ -719,7 +719,7 @@
     "experiment": 0,
     "tested": 3,
     "checked": 1,
-    "proven": 12
+    "proven": 13
    },
    "skills": [
     {
@@ -801,6 +801,11 @@
      "name": "rebuild-map",
      "tier": "proven",
      "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark"
+    },
+    {
+     "name": "films",
+     "tier": "proven",
+     "why": "6 browser-suite mentions, 4 real asks in the benchmark"
     }
    ]
   }
