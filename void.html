@@ -3666,6 +3666,7 @@ say('nothing selected to remove');
     function groundCheck(text, skill, el) {
       import('/lib/ground.js').then((g) => setTimeout(() => {
         if (vpageEl !== el) return; // replaced before it settled: not this card's to judge
+        if (el.dataset && el.dataset.grounded) return; // the skill opened what the ask named (a lab tool by its own pattern)
         const r = g.judgeCard(text, el.innerText || '', skill);
         if (!r.unmet) return;
         window.voidUngrounded = (window.voidUngrounded || []).concat([{ ask: text, skill: skill.name, missing: r.missing }]).slice(-20);
