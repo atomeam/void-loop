@@ -1,7 +1,8 @@
 // mcp — Void as an MCP server (frontier #6): the JSON-RPC half of functions/api/mcp.js, pure and tested in node
 // (tools/mcp.test.mjs). An MCP client POSTs one JSON-RPC message to /api/mcp (the streamable HTTP transport, answered with plain
 // JSON, no stream) and lists and calls Void's tools. Every tool is read-only: it computes from what it is given and from Void's own
-// tables and reaches no other service. One, review_code_closer, is /api/review itself (the route hands it over, ctx.review): the
+// tables and reaches no other service, except ask_void, which is /api/answer itself (the route hands it over, ctx.answer: the open
+// web and the model, on that endpoint's terms and limits). One, review_code_closer, is /api/review itself (the route hands it over, ctx.review): the
 // closer read by a model comes only with the key that endpoint takes, on its terms, and the only thing written is that key's daily
 // count. /tools.json is the same list, public.
 import { quick } from './review-api.js';
@@ -9,11 +10,14 @@ import { jde, moonPhase } from './sky-math.js';
 import { activeShowers, nextShower } from './showers.js';
 
 export const PROTOCOL = '2025-06-18';
-export const SERVER = { name: 'void', title: 'Void (a-to-mind.com)', version: '1.0.0' };
+export const SERVER = { name: 'void', title: 'Void (a-to-mind.com)', version: '1.1.0' };
 const RO = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 const DATE = { type: 'string', description: 'An ISO date or date-time (UTC). Leave it out for now.' };
 
 export const TOOLS = [
+  { name: 'ask_void', title: 'Ask Void anything', annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    description: "Ask Void a question in plain words and get its answer: a short, direct answer from Void's answer engine (a-to-mind.com), citing the Wikipedia pages it drew on when they match. Ask about Void itself (\"what are you building?\") and it answers from its own live facts. Up to 12 model answers a minute per caller; a repeated question may come from the 7-day cache.",
+    inputSchema: { type: 'object', required: ['ask'], properties: { ask: { type: 'string', description: 'The question, in plain words (3 to 600 characters).' } } } },
   { name: 'review_code', title: 'Review code (instant checks)', annotations: RO,
     description: "Void's instant code review: pattern checks for bugs, risks and style in pasted code or a diff's added lines, in many languages. The same checks a-to-mind.com runs when someone asks Void to review code. No model; the closer read is not included. Its structured result says basis 'patterns' and confidence 'low'.",
     inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to review (up to 60,000 characters).' }, diff: { type: 'string', description: 'A unified diff instead of code: only the added lines are reviewed, with their line numbers in the new file.' }, lang: { type: 'string', description: 'The language, if known (javascript, python, go, rust, sql, ...).' } } } },
@@ -58,7 +62,21 @@ async function closer(a, ctx) {
   return based(found + more, data, data.review === 'model' && !!data.answer);
 }
 
+// ask_void: /api/answer answers (ctx.answer hands it { ask } with the caller's connection, so its per-caller limit holds), this words it
+async function askVoid(a, ctx) {
+  const ask = typeof a.ask === 'string' ? a.ask.trim().slice(0, 600) : '';
+  if (ask.length < 3) return toolError('Give the question as "ask", in plain words.');
+  if (!ctx || typeof ctx.answer !== 'function') return toolError('Asking Void is only reachable at https://a-to-mind.com/api/mcp.');
+  const { status, body } = await ctx.answer({ ask });
+  if (status === 429) return toolError('Slow down: Void answers up to 12 questions a minute per caller. Try again in a minute.');
+  if (!body || !body.answer) return toolError('Void had no answer for that just now' + (body && body.note ? ' (' + String(body.note).slice(0, 160) + ')' : '') + '. Rephrase it, or try again in a moment.');
+  const sources = (body.sources || []).map(({ title, url }) => ({ title, url }));
+  const text = body.answer + (sources.length ? '\n\nSources:\n' + sources.map((x) => '- ' + x.title + ': ' + x.url).join('\n') : '');
+  return toolResult(text, { answer: body.answer, sources, at: body.at || null, cached: !!body.cached });
+}
+
 const RUN = {
+  ask_void: askVoid,
   review_code_closer: closer,
   review_code(a) {
     if (typeof a.code !== 'string' && typeof a.diff !== 'string') return toolError('Give the code to review as "code" (or a unified diff as "diff").');
@@ -88,7 +106,7 @@ export async function rpc(msg, ctx) {
   if (!msg || typeof msg !== 'object' || Array.isArray(msg) || msg.jsonrpc !== '2.0' || typeof msg.method !== 'string') return err(msg && msg.id, -32600, 'Invalid request: one JSON-RPC 2.0 message');
   const { id, method } = msg, params = (msg.params && typeof msg.params === 'object') ? msg.params : {};
   if (id === undefined) return null; // notifications (notifications/initialized, cancelled) need no reply
-  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Void's read-only tools: the instant code review, the closer read (with a key in Authorization), the moon's phase, the meteor showers. Only the closer read calls a model." });
+  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Void's read-only tools: ask Void anything (ask_void, its answer engine), the instant code review, the closer read (with a key in Authorization), the moon's phase, the meteor showers. ask_void and the closer read call a model." });
   if (method === 'ping') return ok(id, {});
   if (method === 'tools/list') return ok(id, { tools: TOOLS });
   if (method === 'tools/call') {

@@ -7,15 +7,20 @@
 //   GET                                                                                            -> 405 (no event stream; POST only)
 import { rpc } from '../../lib/mcp.js';
 import { onRequestPost as review } from './review.js';
+import { onRequestPost as answer } from './answer.js';
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' } });
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost({ request, env, waitUntil }) {
   let msg;
   try { msg = JSON.parse(await request.text()); } catch (_) { return json({ jsonrpc: '2.0', id: null, error: { code: -32700, message: 'Parse error: send one JSON-RPC message as JSON' } }); }
   const auth = request.headers.get('authorization');
   const ctx = { review: async (args) => { // the same request /api/review gets from the page or the GitHub Action
     const res = await review({ request: new Request(new URL('/api/review', request.url), { method: 'POST', headers: { 'content-type': 'application/json', ...(auth ? { authorization: auth } : {}) }, body: JSON.stringify(args) }), env: env || {} });
+    return { status: res.status, body: await res.json().catch(() => null) };
+  }, answer: async (args) => { // ask_void: /api/answer as the page asks it, with the caller's connection (its per-caller limit) and no credential
+    const ip = request.headers.get('cf-connecting-ip');
+    const res = await answer({ request: new Request(new URL('/api/answer', request.url), { method: 'POST', headers: { 'content-type': 'application/json', ...(ip ? { 'cf-connecting-ip': ip } : {}) }, body: JSON.stringify({ ask: args.ask }) }), env: env || {}, waitUntil: (p) => (waitUntil ? waitUntil(p) : p) });
     return { status: res.status, body: await res.json().catch(() => null) };
   } };
   const reply = await rpc(msg, ctx);
