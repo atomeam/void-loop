@@ -45,11 +45,11 @@ function run(text, api) {
   showPage((el) => {
     el.innerHTML = STYLE + '<div class="vfilms">'
       + '<div class="poster"><p class="kicker">' + esc('Now showing · a new one daily') + '</p>'
-      + '<h2>' + esc("Void's films") + '</h2>'
-      + '<p class="line">' + esc('Every day Void films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
+      + '<h2>' + esc("V01D's films") + '</h2>'
+      + '<p class="line">' + esc('Every day V01D films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
       + '<a class="play" href="' + PAGE + '"><i aria-hidden="true">\u25B6</i>' + esc('Watch and review') + '</a></div>'
       + '<ol><li>' + esc('Watch the newest film') + '</li><li>' + esc('Review it: post it, needs work or skip') + '</li><li>' + esc('The best go to YouTube') + '</li></ol>'
-      + '<p class="who">' + esc('For members. Sign in with a paid account, or paste your Void Pro key or Code Review Pro license on the films page.') + '</p>'
+      + '<p class="who">' + esc('For members. Sign in with a paid account, or paste your V01D Pro key or Code Review Pro license on the films page.') + '</p>'
       + '<div class="src">' + esc('a-to-mind.com/films/') + '</div></div>';
   });
   return 'films';

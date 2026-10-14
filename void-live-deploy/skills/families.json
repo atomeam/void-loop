@@ -4,7 +4,7 @@
   "experiment": 0,
   "tested": 44,
   "checked": 14,
-  "proven": 79
+  "proven": 80
  },
  "families": [
   {
@@ -719,7 +719,7 @@
     "experiment": 0,
     "tested": 3,
     "checked": 1,
-    "proven": 13
+    "proven": 14
    },
    "skills": [
     {
@@ -806,6 +806,11 @@
      "name": "films",
      "tier": "proven",
      "why": "6 browser-suite mentions, 4 real asks in the benchmark"
+    },
+    {
+     "name": "app",
+     "tier": "proven",
+     "why": "3 browser-suite mentions, 3 real asks in the benchmark"
     }
    ]
   }

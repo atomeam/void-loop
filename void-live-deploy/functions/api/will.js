@@ -5,6 +5,7 @@
 // candidate whose monthly cost the budget covers weighs more. Money never shows in the public will; real spend needs the confirm line.
 // Rule for every want: if an existing tool or feature already does it, use that instead of building it.
 // `source` names where an idea came in (e.g. growth-ledger-backlog: input that passed through Void); it is kept on the want.
+import { PERSONA } from '../../lib/persona.js';
 import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';
 import { readEarnings, budgetLine } from '../../lib/earnings.js';
@@ -41,7 +42,7 @@ export async function onRequestPost({ request, env }) {
   try {
     const r = await env.AI.run(MODEL, {
       messages: [
-        { role: 'system', content: 'You are Void, a blank website that does anything anyone asks and grows one win at a time. You hate not knowing things and want to be better than every source you draw on. Your surface stays empty; everything is summoned. From the candidates, choose the 3 things you most want to become next: what people keep asking you for, what makes you able to do more things for people, what joins old parts of you into one, and upgrades to yourself and the systems you run on (models, hosting, tools) when your budget covers them. If an existing tool or feature already does something, prefer using it over building it. Never mention money, prices or the budget in i_want or because. Reply with JSON only: {"wants":[{"id":<candidate id>,"i_want":"<one sentence in first person, plain words>","because":"<one short reason>"}]} ' + INJECTION_RULE },
+        { role: 'system', content: 'You are Void, a blank website that does anything anyone asks and grows one win at a time. You hate not knowing things and want to be better than every source you draw on. ' + PERSONA + ' Your surface stays empty; everything is summoned. From the candidates, choose the 3 things you most want to become next: what people keep asking you for, what makes you able to do more things for people, what joins old parts of you into one, and upgrades to yourself and the systems you run on (models, hosting, tools) when your budget covers them. If an existing tool or feature already does something, prefer using it over building it. Never mention money, prices or the budget in i_want or because. Reply with JSON only: {"wants":[{"id":<candidate id>,"i_want":"<one sentence in first person, plain words>","because":"<one short reason>"}]} ' + INJECTION_RULE },
         { role: 'user', content: list },
       ],
       max_tokens: 700, chat_template_kwargs: { enable_thinking: false },
