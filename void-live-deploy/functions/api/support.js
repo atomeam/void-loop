@@ -61,12 +61,11 @@ export async function onRequestGet({ request, env }) {
   const p = await payer(request, env);
   if (!p) return notPaying();
   await ready(env);
-  const cols = 'id, at, place AS "where", what, status, answer, answered';
   if (p.owner) {
-    const { results } = await env.DB.prepare(`SELECT ${cols} FROM void_support ORDER BY status = 'open' DESC, at DESC LIMIT 100`).all();
+    const { results } = await env.DB.prepare('SELECT id, at, place AS "where", what, status, answer, answered FROM void_support ORDER BY status = \'open\' DESC, at DESC LIMIT 100').all();
     const tickets = results || [];
     return good({ open: tickets.filter((t) => t.status === 'open').length, tickets });
   }
-  const { results } = await env.DB.prepare(`SELECT ${cols} FROM void_support WHERE who = ? ORDER BY at DESC LIMIT 20`).bind(p.who).all();
+  const { results } = await env.DB.prepare('SELECT id, at, place AS "where", what, status, answer, answered FROM void_support WHERE who = ? ORDER BY at DESC LIMIT 20').bind(p.who).all();
   return good({ tickets: results || [] });
 }
