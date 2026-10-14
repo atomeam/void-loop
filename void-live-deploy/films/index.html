@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Void's Films</title>
+  <meta name="description" content="Short films Void makes of its own experiments, newest first, each ready to upload to YouTube.">
+  <link rel="canonical" href="https://a-to-mind.com/films/">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <style>
+    :root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --card: #141414; --accent: #7aa7ff; --yt: #ff3b30; }
+    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --card: #ffffff; --accent: #2457c5; --yt: #d0201a; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, -apple-system, sans-serif; }
+    main { max-width: 960px; margin: 0 auto; padding: 24px 16px 64px; }
+    a { color: var(--accent); }
+    h1 { font-size: clamp(28px, 6vw, 38px); line-height: 1.15; margin: 18px 0 6px; }
+    .sub { color: var(--muted); margin: 0 0 24px; }
+    #films { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+    .film { background: var(--card); border: 1px solid var(--line); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+    .film video { width: 100%; aspect-ratio: 9 / 16; background: #000; display: block; }
+    .film .body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 10px; }
+    .film h2 { font-size: 16px; margin: 0; line-height: 1.3; }
+    .film .when { color: var(--muted); font-size: 13px; }
+    .row { display: flex; flex-wrap: wrap; gap: 8px; }
+    .btn { font: inherit; font-size: 14px; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: var(--ink); cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; min-height: 40px; }
+    .btn:hover, .btn:focus-visible { border-color: var(--accent); }
+    .btn.yt { background: var(--yt); border-color: var(--yt); color: #fff; font-weight: 600; }
+    .note { color: var(--muted); font-size: 14px; }
+    #status { color: var(--muted); }
+    footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+<main>
+  <!-- Void's films (owner, 2026-10-14: "it can be on the website with a upload to youtube link"). Each film is a GitHub Release that
+       .github/workflows/record.yml posts daily (an MP4 and its title, description and tags); this page lists them, newest first, with
+       the steps to post one: download it, copy its words, open YouTube's upload page. Nothing here uploads anything by itself. -->
+  <p><a href="/">Void</a></p>
+  <h1>Void's films</h1>
+  <p class="sub">Every day Void films one of its own experiments. To post one: <strong>download</strong> it, <strong>open YouTube upload</strong> and drop the file in, then <strong>copy</strong> the title and description into YouTube's boxes.</p>
+  <p id="status">Loading the films…</p>
+  <div id="films"></div>
+  <footer>Films are also listed on <a href="https://github.com/atomeam/void-loop/releases">GitHub</a>. · <a href="https://www.youtube.com/@atombomb983">Void on YouTube</a> · <a href="/">a-to-mind.com</a></footer>
+</main>
+<script>
+(() => {
+  const REPO = 'atomeam/void-loop', UPLOAD = 'https://www.youtube.com/upload';
+  const $ = (t, attrs = {}, kids = []) => { const e = document.createElement(t); for (const [k, v] of Object.entries(attrs)) k === 'text' ? (e.textContent = v) : e.setAttribute(k, v); for (const c of kids) e.append(c); return e; };
+  // the release notes are the film's words, in three parts: TITLE, DESCRIPTION, TAGS (record.yml writes them)
+  const part = (body, name) => { const m = String(body || '').match(new RegExp('(?:^|\\n)' + name + '\\n([\\s\\S]*?)(?=\\n(?:TITLE|DESCRIPTION|TAGS)\\n|$)')); return m ? m[1].trim() : ''; };
+  const copyBtn = (label, text) => {
+    const b = $('button', { class: 'btn', type: 'button', text: label });
+    b.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(text); b.textContent = 'Copied ✓'; } catch (_) { b.textContent = 'Copy failed: select it on GitHub'; }
+      setTimeout(() => { b.textContent = label; }, 1800);
+    });
+    return b;
+  };
+  async function load() {
+    const status = document.getElementById('status'), list = document.getElementById('films');
+    try {
+      const r = await fetch('https://api.github.com/repos/' + REPO + '/releases?per_page=30', { headers: { accept: 'application/vnd.github+json' } });
+      if (!r.ok) throw new Error(String(r.status));
+      const films = (await r.json()).filter((x) => /^film-/.test(x.tag_name || '') && !x.draft);
+      if (!films.length) { status.textContent = 'No films yet: the first arrives with the next daily recording.'; return; }
+      status.textContent = films.length + (films.length === 1 ? ' film' : ' films') + ', newest first.';
+      for (const f of films) {
+        const mp4 = (f.assets || []).find((a) => /\.mp4$/i.test(a.name));
+        if (!mp4) continue;
+        const title = part(f.body, 'TITLE') || f.name, desc = part(f.body, 'DESCRIPTION'), tags = part(f.body, 'TAGS');
+        const when = new Date(f.published_at || f.created_at).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+        const video = $('video', { src: mp4.browser_download_url, controls: '', playsinline: '', preload: 'metadata' });
+        const body = $('div', { class: 'body' }, [
+          $('h2', { text: title }),
+          $('div', { class: 'when', text: when }),
+          $('div', { class: 'row' }, [
+            $('a', { class: 'btn', href: mp4.browser_download_url, download: mp4.name, text: '1. Download' }),
+            $('a', { class: 'btn yt', href: UPLOAD, target: '_blank', rel: 'noopener', text: '2. Upload to YouTube' }),
+          ]),
+          $('div', { class: 'row' }, [copyBtn('3. Copy title', title), copyBtn('Copy description', desc), ...(tags ? [copyBtn('Copy tags', tags)] : [])]),
+          $('a', { class: 'note', href: f.html_url, text: 'All of this film on GitHub' }),
+        ]);
+        list.append($('article', { class: 'film', 'data-tag': f.tag_name }, [video, body]));
+      }
+    } catch (e) {
+      status.innerHTML = '';
+      status.append('The film list could not load just now. They are all on ', $('a', { href: 'https://github.com/' + REPO + '/releases', text: 'GitHub' }), '.');
+    }
+  }
+  load();
+})();
+</script>
+</body>
+</html>

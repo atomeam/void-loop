@@ -2387,6 +2387,30 @@ try {
       && /forget me/.test(txt) && /atom@a-to-mind\.com/.test(txt) && !wide && !P.errors.length, JSON.stringify({ wide, errors: P.errors, head: txt.slice(0, 120) }));
     await P.ctx.close(); }
 
+  // Void's films (owner, 2026-10-14: "it can be on the website with a upload to youtube link"): /films/ lists the film releases
+  // record.yml posts, newest first, each with download, YouTube upload and the words to copy; when GitHub cannot answer it says so
+  if (want("films page: each film with download, upload to YouTube and its words to copy; a fallback when GitHub is down")) {
+    const F = await fresh(); await F.p.setViewportSize({ width: 390, height: 844 });
+    const body = 'TITLE\nOdd moments | an AI built this itself #Shorts\n\nDESCRIPTION\nLog each odd moment.\n\nTry it: https://a-to-mind.com\n\nTAGS\nVoid, AI\n';
+    const rel = [{ tag_name: 'film-20261014-x-r6', name: 'Film: x', body, draft: false, published_at: '2026-10-14T16:33:31Z', html_url: 'https://github.com/atomeam/void-loop/releases/tag/film-20261014-x-r6',
+      assets: [{ name: 'x.mp4', browser_download_url: 'https://github.com/atomeam/void-loop/releases/download/film-20261014-x-r6/x.mp4' }, { name: 'x.txt', browser_download_url: 'https://example.invalid/x.txt' }] },
+      { tag_name: 'v1.0.0', name: 'not a film', body: '', assets: [] }];
+    let down = false;
+    await F.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/releases/, (r) => down ? r.fulfill({ status: 503, body: '' }) : r.fulfill(json(rel)));
+    await F.ctx.route(/github\.com\/atomeam\/void-loop\/releases\/download\//, (r) => r.fulfill({ status: 404, body: '' }));
+    await F.p.goto(base + 'films/'); await until(async () => (await F.p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
+    const card = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return a && { n: document.querySelectorAll('#films .film').length, h: a.querySelector('h2').textContent,
+      yt: a.querySelector('a.yt').href, dl: a.querySelector('a[download]').href, btns: [...a.querySelectorAll('button')].map((b) => b.textContent), wide: document.documentElement.scrollWidth > innerWidth }; });
+    await F.ctx.grantPermissions(['clipboard-read', 'clipboard-write']);
+    await F.p.click('#films .film button:nth-of-type(2)'); const copied = await F.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
+    down = true; await F.p.reload(); await until(async () => /could not load/.test(await F.p.$eval('#status', (e) => e.textContent)), 5000);
+    const fallback = await F.p.$eval('#status', (e) => e.innerText);
+    check('films page: each film with download, upload to YouTube and its words to copy; a fallback when GitHub is down',
+      !!card && card.n === 1 && card.h === 'Odd moments | an AI built this itself #Shorts' && card.yt === 'https://www.youtube.com/upload' && /\/x\.mp4$/.test(card.dl)
+      && JSON.stringify(card.btns) === '["3. Copy title","Copy description","Copy tags"]' && copied === 'Log each odd moment.\n\nTry it: https://a-to-mind.com' && !card.wide
+      && /could not load[\s\S]*GitHub/.test(fallback) && !F.errors.length, JSON.stringify({ card, copied, fallback, errors: F.errors }));
+    await F.ctx.close(); }
+
   // the support desk (functions/api/support.js): on /code-review/, someone who pays says what broke, gets a ticket number, and reads the answer
   if (want("code-review: someone who pays reports what broke and reads the owner's answer")) {
     const D = await fresh(); const sent = [];
