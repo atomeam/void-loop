@@ -469,7 +469,9 @@ try {
     await C.ask('schedule a meeting with Sam on Friday at 3', 700); const gated = await C.whisper();
     await C.ask('calender', 700); const shown = await C.p.$$eval('.calendar-card', (d) => d.length);
     // the card is a skill's stage kind (skills/calendar.js, cleanup step 6): it is drawn once that skill has loaded, so wait for it
-    await C.p.reload(); const afterReload = await until(() => C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => ''), 6000) || '';
+    // and its events, not just its heading: on a loaded runner the card showed "CALENDAR" before the saved events were drawn (verify f0d79bb)
+    await C.p.reload(); const afterReload = await until(async () => { const t = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => ''); return /Call Sam/.test(t) ? t : ''; }, 6000)
+      || await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
     await C.ask('remove my calendar', 700); const gone = await C.p.$$eval('.calendar-card', (d) => d.length);
     const kept = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.agenda.v1') || '[]').length);
     await C.ask('agenda', 700);

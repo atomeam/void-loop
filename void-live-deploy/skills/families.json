@@ -730,7 +730,7 @@
     {
      "name": "intent",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 18 real asks in the benchmark"
+     "why": "a self-test, 7 browser-suite mentions, 37 real asks in the benchmark"
     },
     {
      "name": "different",
