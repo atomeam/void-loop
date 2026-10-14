@@ -38,6 +38,8 @@
     #gate { background: linear-gradient(160deg, rgba(255,61,127,.14), rgba(122,92,255,.14)); border: 1px solid var(--line); border-radius: 20px; padding: 20px; margin: 0 0 24px; display: none; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
     #gate.on { display: block; }
     #gate form { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    #gate details.key { margin-top: 12px; color: var(--muted); font-size: 14px; }
+    #gate details.key summary { cursor: pointer; width: max-content; }
     #gate input { font: inherit; font-size: 14px; flex: 1 1 220px; min-width: 0; padding: 8px 14px; min-height: 42px; border-radius: 12px; border: 1px solid var(--line); background: rgba(0,0,0,.35); color: var(--ink); }
     /* the I in FILMS glitches into a 1 now and then (owner, 2026-10-14: "the i flickers"; "drop the l i only") */
     .gl { position: relative; display: inline-block; }
@@ -70,11 +72,13 @@
   <p class="kicker">Now showing · a new one daily</p>
   <h1 aria-label="V01D FILMS">V01D F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h1>
   <p class="sub">Every day V01D films one of its own experiments. The films are for members: people who pay for V01D. Members review them: post it, needs work or skip, with a note, and the owner decides what goes on YouTube.</p>
+  <!-- one way in for everyone (owner, 2026-10-14: "V01D Pro is complex and could drive off members . needs a simpler interface for
+       all"): Sign in with your passkey, or become a member; a bought key stays possible, folded away under "Have a key?" -->
   <div id="gate">
-    <strong>Members only.</strong> Sign in with your passkey, or paste your V01D Pro key or Code Review Pro license key.
-    <div class="row" style="margin-top:12px"><button class="btn join" id="signin" type="button">Sign in with passkey</button></div>
-    <form id="keyform"><input id="key" type="password" autocomplete="off" placeholder="vr1.… or XXXXXXXX-XXXXXXXX-…" aria-label="Your Void Pro key or license key"><button class="btn" type="submit">Watch</button>
-      <a class="btn join" id="join" href="/code-review/#pro">Become a member</a></form>
+    <strong>Members only.</strong> Sign in to watch, or become a member.
+    <div class="row" style="margin-top:14px"><button class="btn join" id="signin" type="button">Sign in</button><a class="btn" id="join" href="/code-review/#pro">Become a member</a></div>
+    <details class="key"><summary>Have a key?</summary>
+      <form id="keyform"><input id="key" type="password" autocomplete="off" placeholder="Paste your key" aria-label="Your V01D key"><button class="btn" type="submit">Watch</button></form></details>
   </div>
   <p id="status">Loading the films…</p>
   <div id="films"></div>
@@ -144,10 +148,10 @@
       }
       if (!r) { r = await fetch('/api/films'); j = await r.json().catch(() => ({})); }
       if (r.status === 401 || r.status === 403) {
-        status.textContent = tried.includes('owner') ? 'Your owner sign-in on this browser has run out. Sign in again with your passkey below.'
-          : tried.includes('account') ? 'This browser is signed in to a free account. Paid members watch here; or paste your key.'
+        status.textContent = tried.includes('owner') ? 'Your owner sign-in here has run out: tap Sign in.'
+          : tried.includes('account') ? 'Your account isn\u2019t a member yet: become a member to watch.'
           : tried.includes('key') ? 'That key was not accepted.'
-          : 'Not signed in on this browser yet (on iPhone, the home-screen app and Safari each keep their own sign-in). Sign in with your passkey below.';
+          : 'Not signed in on this browser yet: tap Sign in.';
         if (j.buy) document.getElementById('join').href = j.buy;
         gate.classList.add('on'); return;
       }

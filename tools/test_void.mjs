@@ -2403,7 +2403,7 @@ try {
     });
     await F.p.goto(base + 'films/'); await until(async () => F.p.$eval('#gate', (e) => e.classList.contains('on')), 5000);
     const gate = await F.p.evaluate(() => ({ on: document.getElementById('gate').classList.contains('on'), films: document.querySelectorAll('#films .film').length, text: document.getElementById('gate').innerText }));
-    await F.p.fill('#key', 'vr1.' + 'A'.repeat(43)); await F.p.click('#keyform button');
+    await F.p.click('#gate details.key summary'); await F.p.fill('#key', 'vr1.' + 'A'.repeat(43)); await F.p.click('#keyform button');
     await until(async () => (await F.p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
     const member = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'), yt: !!a.querySelector('a.yt'), gate: document.getElementById('gate').classList.contains('on') }; });
     await F.p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'owner-tok'); }); await F.p.reload();
