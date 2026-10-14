@@ -544,7 +544,7 @@
     {
      "name": "define",
      "tier": "tested",
-     "why": "37 real asks in the benchmark"
+     "why": "41 real asks in the benchmark"
     },
     {
      "name": "words",

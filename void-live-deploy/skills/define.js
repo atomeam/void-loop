@@ -9,7 +9,11 @@ export function wordOf(text) {
   const m = t.match(/^(?:please\s+)?define\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
     || t.match(/^(?:what(?:['’]?s|\s+is)\s+the\s+)?(?:meaning|definition)\s+of\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
     || t.match(/^what\s+does\s+(?:the\s+word\s+)?["“]?(.+?)["”]?\s+mean$/i)
-    || t.match(/^what\s+is\s+the\s+meaning\s+of\s+["“]?(.+?)["”]?$/i);
+    || t.match(/^what\s+is\s+the\s+meaning\s+of\s+["“]?(.+?)["”]?$/i)
+    // "what does it mean to be pragmatic", "dictionary definition of empathy", "use serendipity in a sentence" (the card's example)
+    || t.match(/^what\s+does\s+it\s+mean\s+to\s+be\s+(?:an?\s+)?["“]?([a-z][a-z'-]+)["”]?$/i)
+    || t.match(/^(?:the\s+)?(?:dictionary|oxford|webster'?s?|merriam[- ]webster)\s+(?:definition|meaning)\s+(?:of|for)\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
+    || t.match(/^(?:use|put)\s+(?:the\s+word\s+)?["“]?([a-z][a-z'-]+)["”]?\s+in\s+a\s+sentence$/i);
   if (!m) return null;
   const w = m[1].trim();
   if (/^(?:[a-z]{2,6})$/i.test(w) && ABBR_HELD.has(w.toLowerCase())) return null; // texting and office abbreviations are answered by the calculator's table
@@ -32,7 +36,9 @@ async function run(text, api) {
   try { const r = await fetch(url); reached = r.ok || r.status === 404; if (r.ok) j = await r.json(); } catch (_) {}
   if (!api._pageStill(el)) return 'define';
   let senses = (j && (j.en || j[Object.keys(j)[0]])) || [];
-  senses = senses.map((s) => ({ pos: s.partOfSpeech, defs: (s.definitions || []).map((d) => strip(d.definition)).filter(Boolean).slice(0, 3) })).filter((s) => s.defs.length).slice(0, 3);
+  senses = senses.map((s) => ({ pos: s.partOfSpeech, defs: (s.definitions || []).map((d) => strip(d.definition)).filter(Boolean).slice(0, 3),
+    // one example sentence per sense, when the dictionary has one ("use serendipity in a sentence" is answered by it)
+    ex: (s.definitions || []).flatMap((d) => (d.examples || []).map(strip)).find((e) => e && e.length <= 220) || '' })).filter((s) => s.defs.length).slice(0, 3);
   if (!senses.length && !reached) {
     el.innerHTML = '<h2>' + esc(word) + '</h2><p>The dictionary didn\'t answer just now. Ask again in a moment.</p>';
     return 'none';
@@ -42,7 +48,7 @@ async function run(text, api) {
     return 'none';
   }
   el.innerHTML = '<h2>' + esc(word) + '</h2>'
-    + senses.map((s) => '<div class="sub" style="margin-top:8px">' + esc(s.pos || '') + '</div><ol style="margin:4px 0 0 18px;padding:0">' + s.defs.map((d) => '<li style="margin:2px 0">' + esc(d) + '</li>').join('') + '</ol>').join('')
+    + senses.map((s) => '<div class="sub" style="margin-top:8px">' + esc(s.pos || '') + '</div><ol style="margin:4px 0 0 18px;padding:0">' + s.defs.map((d) => '<li style="margin:2px 0">' + esc(d) + '</li>').join('') + '</ol>' + (s.ex ? '<div class="sub" style="margin:4px 0 0 18px;font-style:italic">“' + esc(s.ex) + '”</div>' : '')).join('')
     + '<div class="src">Source: <a href="' + esc(page) + '" target="_blank" rel="noopener">Wiktionary</a></div>';
   return 'define';
 }

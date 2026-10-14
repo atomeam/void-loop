@@ -9,7 +9,8 @@ export function countryOf(text) {
   let m = t.match(/^(?:what(?:['’]?s| is| are)\s+)?(?:the\s+)?(capital|population|currency|currencies|official\s+languages?|languages?|area|size|flag)(?:\s+city)?\s+of\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{3,40})$/i);
   if (m) return { want: FIELDS[m[1].toLowerCase().replace(/^official\s+/, '')] || 'all', name: m[2].trim() };
   m = t.match(/^(?:what|which)\s+(currency|languages?)\s+(?:does|do|is|are)\s+(?:used\s+in|spoken\s+in)?\s*(?:the\s+)?([A-Za-zÀ-ÿ' .-]{3,40}?)(?:\s+(?:use|speak|have))?$/i);
-  if (m) return { want: FIELDS[m[1].toLowerCase()], name: m[2].trim() };
+  // "what language does the word kindergarten come from" asks where a word comes from, not about a country
+  if (m && !/\b(?:words?|come|comes|came|from|originate)\b/i.test(m[2])) return { want: FIELDS[m[1].toLowerCase()], name: m[2].trim() };
   m = t.match(/^how\s+many\s+people\s+live\s+in\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{3,40})$/i);
   if (m) return { want: 'population', name: m[1].trim() };
   m = t.match(/^(?:what\s+)?languages?\s+(?:are\s+|is\s+)?spoken\s+in\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{3,40})$/i);
