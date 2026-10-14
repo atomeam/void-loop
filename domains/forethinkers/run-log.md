@@ -2,6 +2,16 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-14 14:13 ET even-hour cycle
+
+Read `convergence.md`, every track, `index.md`, `run-log.md`, and the frontier (the growth board has been frozen history since 2026-10-11, so the new claimable line goes on `domains/void.frontier.md` item 8). No earlier `forethinkers/*` branches or open think-tank PRs to fold. The runs from 2026-10-08 to 2026-10-14 08:07 failed because the box lost its Node 22 symlinks, `node_modules` and the test browser again; this run restored `node_modules` and the browser with `npm ci` and `npx playwright-core install chromium` and ran with `~/.local/node22/bin` first on PATH. Picked life-extension: least recently advanced (2026-10-07 16:20), and its open question 4 could be answered from the live registry.
+
+- Answered: one registered senolytic trial enriches by burden. NCT07270120 (Ohio State, D+Q in secondary progressive MS) excludes p16INK4a below the cohort median; phase 1, single arm, 30 people, not yet recruiting. Searched 115 unique records via ClinicalTrials.gov API v2 at 2026-10-14 18:14 UTC.
+- Established: MaGE, a blood methylation score of p16, p14 and p21 expression (medRxiv, 1 Oct 2026, doi 10.64898/2026.09.29.26364335), validated in 18,859 people; MaGE-p16 mortality HR 1.38 per SD. Code is public; the CpG weights are not yet (checked 2026-10-14).
+- Logged: a biomarker-guided senotherapy trial design for fatty liver (Aging and Disease, 8 Oct 2026, doi 10.14336/AD.2026.1114), perspective only.
+- Next open question: score MaGE-p16 on the public semaglutide methylome (GSE327270) once the weights are out, and test whether high baseline burden picks the people whose clocks slowed most.
+- Frontier: a next line on item 8 to add NCT07270120 to the trial watch.
+
 ## 2026-10-07 20:14 ET even-hour cycle
 
 Read `convergence.md`, every track, `index.md`, `toy-problems.md`, and the growth board. No earlier `forethinkers/*` branches or open think-tank PRs to fold. Picked the printed-actuator-moves-figure-joint node: hypothesis since the seed, it touches the least recently advanced track (living figures, 12:17), and it is the node that most changes the map.
