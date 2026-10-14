@@ -3711,16 +3711,19 @@ try {
   const up = wc.find((c) => c.kind === 'upgrade myself' && /stronger model/.test(c.title));
   const registry = fs.readFileSync(path.join(repo, 'domains', 'void.existing-tools.md'), 'utf8');
   const NEW3 = /MiMo|DeepSeek V4|Claude Marketplace|DevDay|World Labs|Open-RAIL|Gemini 3\.8|GLiNER/i;
+  // the DevDay watch is dated (want.until 2026-10-13): tools/will.py drops it once that day has passed (its local date, as here)
+  const devUntil = (al0.find((r) => r.want && /DevDay/.test(r.want.title)) || {}).want?.until || '', now = new Date();
+  const devOn = [now.getFullYear(), String(now.getMonth() + 1).padStart(2, '0'), String(now.getDate()).padStart(2, '0')].join('-') <= devUntil;
   check('intake: the late-September AI landscape (current, unverified, marked paraphrase) feeds the will: tiered model stack lifts the stale evaluation, defences lifted again, Claude Marketplace on the tools registry, DevDay watch, price drops on the budget line; nothing on screen',
     alV.ok && al0.length === 11 && al0.every((r) => r.source === 'ai-landscape-2026-09-late' && r.stale === false && r.verified === false && /^2026-09-27T23:55/.test(r.received))
     && ov && ov.text_kind === 'paraphrase' && ov.verbatim === false && lf(ov.text) === lf(alText) && /^> \*\*PARAPHRASE, not verbatim\.\*\*/.test(alText) && /The last two weeks of September 2026 have been unusually dense/.test(alText)
     && al0.filter((r) => r.want).length === 5 && al0.filter((r) => r.record_only).length === 4 && al0.filter((r) => r.record_only).every((r) => !r.want) && al0.some((r) => r.budget_input && !r.want)
     && tier.length === 1 && tier[0].weight === 11 && tier[0].kind === 'idea from input' && tier[0].source === 'ai-landscape-2026-09-late' && /Workers AI already hosts/.test(tier[0].why) && /joins 1 earlier record/.test(tier[0].why) && !wc.some((c) => /^evaluate Qwen/.test(c.title))
     && defence[0].weight === 12 && /joins \d earlier records\)$/.test(defence[0].why) && /^ai-landscape-2026-09-late/.test(defence[0].source)
-    && mkt && mkt.weight === 9 && /\| Claude Marketplace \(2,000\+ connectors\) \|/.test(registry) && dev && dev.weight === 8 && tts && tts.weight === 2
-    && alc.length === 5 && alc.every((c) => /Use what already exists before building/.test(c.why)) && up && /40-50% price drops/.test(up.why)
+    && mkt && mkt.weight === 9 && /\| Claude Marketplace \(2,000\+ connectors\) \|/.test(registry) && (devOn ? dev && dev.weight === 8 : !dev && devUntil === '2026-10-13') && tts && tts.weight === 2
+    && alc.length === (devOn ? 5 : 4) && alc.every((c) => /Use what already exists before building/.test(c.why)) && up && /40-50% price drops/.test(up.why)
     && !NEW3.test(ivText) && !NEW3.test(pageSrc),
-    JSON.stringify({ alV, n: al.length, cands: alc.map((c) => c.weight + ' ' + c.title.slice(0, 30)), up: up && up.why.slice(-60) }));
+    JSON.stringify({ alV, n: al.length, devOn, devUntil, cands: alc.map((c) => c.weight + ' ' + c.title.slice(0, 30)), up: up && up.why.slice(-60) }));
   // Follow-up (23:57 ET), "use this week, no lab required": mostly repeats, so it links to the 23:55 overview; the new points are
   // recorded (voice-first, Codex, ChatGPT Work scheduled tasks on the registry) and the kill-switch rule backs the defences want.
   const fu = al.filter((r) => r.source === 'ai-landscape-2026-09-late-followup'), fov = fu.find((r) => r.type === 'overview');
