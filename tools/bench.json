@@ -5976,5 +5976,9 @@
   {"ask": "ideal weight for 180 cm", "want": "calc", "says": "60"},
   {"ask": "bmi calculator", "want": "skill:nutrition", "says": "healthy weight"},
   {"ask": "check my bmi", "want": "skill:nutrition"},
-  {"ask": "body mass index", "want": "skill:nutrition"}
+  {"ask": "body mass index", "want": "skill:nutrition"},
+  {"ask": "what time is 4pm tokyo in london", "want": "skill:worldtime"},
+  {"ask": "the call is at 11am in chicago what time is that in paris", "want": "skill:worldtime"},
+  {"ask": "is london ahead of new york", "want": "skill:worldtime"},
+  {"ask": "utc time now", "want": "skill:worldtime|timenow"}
 ]
