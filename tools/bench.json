@@ -5941,5 +5941,9 @@
   {"ask": "set timr for 12 min", "want": "timer|skill:timer|timer-start"},
   {"ask": "start a timmer for 6 minutes", "want": "timer|skill:timer|timer-start"},
   {"ask": "time me for 90 seconds", "want": "timer|skill:timer|timer-start"},
-  {"ask": "egg timer", "want": "calc", "says": "soft 6 min"}
+  {"ask": "egg timer", "want": "calc", "says": "soft 6 min"},
+  {"ask": "show the map", "want": "skill:rebuild-map"},
+  {"ask": "what is the map", "want": "skill:rebuild-map"},
+  {"ask": "what's being built", "want": "skill:rebuild-map"},
+  {"ask": "map of everything", "want": "skill:rebuild-map"}
 ]
