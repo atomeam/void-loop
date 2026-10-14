@@ -1,7 +1,8 @@
 # Void films its own experiments (owner, 2026-10-14: "Void should use my Youtube channel to make its own Videos"). Step 1 of the
 # broadcast loop: tools/record.mjs opens a lab experiment in a real browser, runs it, and films it with the run's own words from
-# the fringe ledger as a caption; the video and its title and description are kept as this run's artifact (14 days). Nothing is
-# uploaded yet: step 2 adds the YouTube upload once the owner's channel credentials are repository secrets.
+# the fringe ledger as a caption. Each film is then posted as a GitHub Release (an MP4 and a text file with its title, description
+# and tags), so the owner can watch it and upload it in YouTube Studio by hand (owner, 2026-10-14: review each video before it goes
+# up; "all we need is the videos"). The automatic upload (tools/youtube.mjs) runs only when the repo variable YT_UPLOAD is 1.
 name: Void records itself
 
 on:
@@ -15,7 +16,7 @@ on:
         type: string
 
 permissions:
-  contents: read
+  contents: write # the film's release (gh release create); nothing else is written  void-review: ok (releases need contents: write)
 
 jobs:
   record:
@@ -36,10 +37,30 @@ jobs:
         env:
           ID: ${{ inputs.id }}
         run: node tools/record.mjs $ID --seconds 20 | tee -a "$GITHUB_STEP_SUMMARY"
-      # step 2: to Void's channel (tools/youtube.mjs refuses any other), when the owner's YouTube OAuth client is in the repo
-      # secrets; without them it says so and the film stays this run's artifact. Private unless the repo variable YT_PRIVACY says
-      # otherwise (and YouTube keeps an unaudited project's uploads private anyway).
+      # MP4 for phones and YouTube (Playwright films in WebM), and the words to paste into YouTube Studio
+      - name: Make the MP4 and the words to paste
+        run: |
+          sudo apt-get install -y -qq ffmpeg >/dev/null
+          for m in media/*.json; do
+            b="${m%.json}"
+            ffmpeg -loglevel error -y -i "$b.webm" -vf "scale=1080:1920:flags=lanczos" -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p -movflags +faststart -an "$b.mp4"
+            node -e 'const m=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));process.stdout.write("TITLE\n"+m.title+"\n\nDESCRIPTION\n"+m.description+"\n\nTAGS\n"+(m.tags||[]).join(", ")+"\n")' "$m" > "$b.txt"
+          done
+      # one release per film: https://github.com/<repo>/releases, newest first, with the video and the words on the page
+      - name: Post the film as a release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for m in media/*.json; do
+            b="${m%.json}"; id="$(basename "$b")"
+            tag="film-$(date -u +%Y%m%d)-$id-r${{ github.run_number }}"
+            gh release create "$tag" "$b.mp4" "$b.txt" --title "Film: $id ($(date -u +%Y-%m-%d))" --notes-file "$b.txt"
+            echo "Film posted: ${{ github.server_url }}/${{ github.repository }}/releases/tag/$tag" | tee -a "$GITHUB_STEP_SUMMARY"
+          done
+      # optional: straight to Void's channel (tools/youtube.mjs refuses any other), only when the repo variable YT_UPLOAD is 1 and
+      # the owner's YouTube OAuth client is in the repo secrets. Private unless the repo variable YT_PRIVACY says otherwise.
       - name: Upload to Void's YouTube channel
+        if: vars.YT_UPLOAD == '1'
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}

@@ -78,8 +78,10 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
   const { server, base } = serve();
   const browser = await chromium.launch({ headless: true, ...(exe ? { executablePath: exe } : {}) });
-  // a vertical Short (9:16, where new viewers find a channel): the page laid out as on a phone, filmed at 1080 x 1920
-  const ctx = await browser.newContext({ viewport: { width: 540, height: 960 }, deviceScaleFactor: 2, recordVideo: { dir: out, size: { width: 1080, height: 1920 } } });
+  // a vertical Short (9:16, where new viewers find a channel): the page laid out as on a phone and filmed at the page's own size,
+  // 540 x 960. Playwright never scales a film up: asked for 1080 x 1920 it put the page in the top-left quarter of a grey frame
+  // (every film before 2026-10-14). record.yml scales the film to 1080 x 1920 when it makes the MP4.
+  const ctx = await browser.newContext({ viewport: { width: 540, height: 960 }, recordVideo: { dir: out, size: { width: 540, height: 960 } } });
   const page = await ctx.newPage();
   try {
     await page.goto(base + 'fringe/' + id + '.html', { waitUntil: 'load' });
