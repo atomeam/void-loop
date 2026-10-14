@@ -35,7 +35,7 @@ jobs:
       - name: Film it
         env:
           ID: ${{ inputs.id }}
-        run: node tools/record.mjs $ID --seconds 14 | tee -a "$GITHUB_STEP_SUMMARY"
+        run: node tools/record.mjs $ID --seconds 20 | tee -a "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         with:
           name: void-recording
