@@ -17,4 +17,10 @@ assert.equal(grounded('tell me a joke', 'Why did the chicken…', new Set(['joke
 assert.equal(grounded('weather in new york city', 'New York: 18°', new Set(['weather'])).ok, true);
 // accents and plural forms
 assert.equal(grounded('define café', 'Café (noun): a small restaurant', new Set(['define'])).ok, true);
+// the validator's own mistakes on the first full run (2026-10-14): apostrophes, verbs, numbers written differently
+assert.deepEqual(subjectOf("what's the moon tonight", new Set(['moon'])), []);
+assert.deepEqual(subjectOf('how do gears work', new Set(['gear'])), []);
+assert.equal(grounded('car loan $20000 at 7% for 5 years', 'Monthly payment on $20,000 at 7% over 5 years', new Set(['loan', 'car'])).ok, true);
+assert.equal(grounded('payment on a $300k mortgage', 'A $300,000 mortgage', new Set(['mortgage', 'payment'])).ok, true);
+assert.equal(grounded('how many rolls of wallpaper for a 12x14 room', 'A 12 × 14 room needs 8 rolls', new Set(['wallpaper', 'roll', 'room'])).ok, true);
 console.log('ground: ok');
