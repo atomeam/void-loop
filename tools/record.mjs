@@ -83,48 +83,77 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
   const { server, base } = serve();
   const browser = await chromium.launch({ headless: true, ...(exe ? { executablePath: exe } : {}) });
-  // a vertical Short (9:16, where new viewers find a channel): the page laid out as on a phone and filmed at the page's own size,
-  // 540 x 960. Playwright never scales a film up: asked for 1080 x 1920 it put the page in the top-left quarter of a grey frame
-  // (every film before 2026-10-14). record.yml scales the film to 1080 x 1920 when it makes the MP4.
-  const ctx = await browser.newContext({ viewport: { width: 540, height: 960 }, recordVideo: { dir: out, size: { width: 540, height: 960 } } });
+  // a vertical Short (9:16, where new viewers find a channel), filmed sharp: the page laid out as on a 540 px phone and drawn at
+  // about twice that, 1080 x 1920 (CSS zoom 2.3), so every pixel of the film is real. Playwright never scales a film up (asked for
+  // 1080 x 1920 at a 540 viewport it put the page in the top-left quarter of a grey frame, every film before 2026-10-14).
+  const ctx = await browser.newContext({ viewport: { width: 1080, height: 1920 }, recordVideo: { dir: out, size: { width: 1080, height: 1920 } } });
   const page = await ctx.newPage();
   try {
     await page.goto(base + 'fringe/' + id + '.html', { waitUntil: 'load' });
-    // the caption: what Void says it built, in its own ledger's words, over the bottom of the frame
-    await page.evaluate(({ title, caption }) => {
-      const c = document.createElement('div');
-      c.setAttribute('data-void-caption', '');
-      c.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:2147483647;padding:14px 22px;background:rgba(10,10,14,.82);color:#f4f4f6;font:600 20px/1.35 system-ui,sans-serif;pointer-events:none';
-      const t = document.createElement('div'); t.textContent = title; t.style.cssText = 'font-size:14px;opacity:.7;margin-bottom:4px';
-      const b = document.createElement('div'); b.textContent = caption;
-      c.append(t, b); document.body.appendChild(c);
-      document.body.style.paddingBottom = (c.offsetHeight + 40) + 'px'; // the caption never hides the end of the page
-    }, { title: words.title, caption: words.caption });
-    // the hook (the first two seconds decide whether anyone stays) and, at the end, the call to action: full-screen cards
-    const card = (text, ms) => page.evaluate(({ text }) => {
-      const c = document.createElement('div'); c.setAttribute('data-void-card', '');
-      c.style.cssText = 'position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:36px;box-sizing:border-box;text-align:center;white-space:pre-line;background:radial-gradient(circle at 50% 40%,#2a1f55,#07070b 70%);color:#fff;font:800 38px/1.2 system-ui,sans-serif;letter-spacing:-.5px';
-      c.textContent = text; document.body.appendChild(c);
-    }, { text }).then(() => page.waitForTimeout(ms)).then(() => page.evaluate(() => document.querySelectorAll('[data-void-card]').forEach((n) => n.remove())));
-    await card(words.hook, 2200);
-    const until = Date.now() + Math.max(4, seconds - 5) * 1000; // the demo, then three seconds for the call to action
-    await page.waitForTimeout(800);
-    // the page's own demo when it has one; then its buttons, one after another, as a person would try it
-    await page.evaluate(() => { const h = Object.keys(window).filter((k) => /^__/.test(k)).map((k) => window[k]).find((o) => o && typeof o.demo === 'function'); try { if (h) h.demo(); } catch (_) {} });
-    // the button that starts things first (start, play, an example), so the film shows it running, then the rest in page order
+    // the edit (owner, 2026-10-14: "teach Void how to edit and make epic videos that are very entertaining"): a hook that slams in,
+    // a progress bar, a punch-in on every action with a kinetic caption, and an ending that matches the first frame so it loops.
+    await page.evaluate(({ title, caption, total }) => {
+      document.documentElement.style.zoom = '2.3'; // the page laid out about 470 px wide, as on a phone, and big enough to read
+      const css = document.createElement('style');
+      css.textContent = `
+        [data-v-fx] { position: fixed; z-index: 2147483647; pointer-events: none; font-family: system-ui, -apple-system, sans-serif; }
+        [data-v-bar] { top: 0; left: 0; height: 5px; width: 0; background: linear-gradient(90deg, #ff3d7f, #7a5cff); box-shadow: 0 0 12px #ff3d7f; transition: width linear; }
+        [data-v-cap] { left: 0; right: 0; bottom: 0; padding: 14px 20px 18px; background: linear-gradient(transparent, rgba(5,5,12,.92) 30%); color: #fff; }
+        [data-v-cap] small { display: block; font: 700 11px/1 system-ui; letter-spacing: .2em; text-transform: uppercase; color: #ff9dbd; margin-bottom: 6px; }
+        [data-v-cap] b { font: 800 21px/1.25 system-ui; }
+        [data-v-chip] { top: 14px; left: 50%; transform: translate(-50%, -12px) scale(.9); opacity: 0; padding: 8px 14px; border-radius: 999px; color: #fff;
+          font: 800 15px/1 system-ui; background: linear-gradient(90deg, #ff3d7f, #7a5cff); box-shadow: 0 8px 22px rgba(255,61,127,.45); transition: transform .18s ease, opacity .18s ease; }
+        [data-v-chip].on { transform: translate(-50%, 0) scale(1); opacity: 1; }
+        [data-v-card] { inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 28px; text-align: center; color: #fff;
+          background: radial-gradient(80% 60% at 50% 40%, #1d1640, #050508 75%); }
+        [data-v-card] .k { font: 800 12px/1 system-ui; letter-spacing: .3em; color: #ff9dbd; }
+        [data-v-card] .h { font: 900 34px/1.08 system-ui; letter-spacing: -.02em; white-space: pre-line; animation: v-slam .45s cubic-bezier(.2,1.4,.4,1) both; }
+        [data-v-card] .m { font: 200 44px/1 system-ui; letter-spacing: .06em; }
+        @keyframes v-slam { from { transform: scale(1.6); opacity: 0; filter: blur(6px); } to { transform: none; opacity: 1; filter: none; } }
+        [data-v-punch] { transition: transform .35s cubic-bezier(.2,.8,.2,1) !important; }`;
+      document.head.appendChild(css);
+      const fx = (attr, html) => { const e = document.createElement('div'); e.setAttribute('data-v-fx', ''); e.setAttribute(attr, ''); if (html != null) e.innerHTML = html; document.body.appendChild(e); return e; }; // void-review: ok: every caller passes esc()-escaped text
+      const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+      const cap = fx('data-v-cap', '<small>' + esc(title) + '</small><b>' + esc(caption) + '</b>');
+      document.body.style.paddingBottom = (cap.offsetHeight + 40) + 'px'; // the caption never hides the end of the page
+      const bar = fx('data-v-bar'); requestAnimationFrame(() => { bar.style.transitionDuration = total + 'ms'; bar.style.width = '100%'; });
+      window.__vfx = {
+        card(kicker, text, mark) { const c = fx('data-v-card', (kicker ? '<div class="k">' + esc(kicker) + '</div>' : '') + '<div class="h">' + esc(text) + '</div>' + (mark ? '<div class="m">V01D</div>' : '')); return c; },
+        clear() { document.querySelectorAll('[data-v-card]').forEach((n) => n.remove()); },
+        chip(text) { const c = fx('data-v-chip', esc(text)); requestAnimationFrame(() => c.classList.add('on')); setTimeout(() => { c.classList.remove('on'); setTimeout(() => c.remove(), 250); }, 1100); },
+        punch(el) { // push in on what was pressed, then ease back: the camera follows the action
+          // the origin as a share of the page, so the page zoom's units never matter (in px it swung the frame off-centre)
+          const root = document.body, r = el.getBoundingClientRect(), b = root.getBoundingClientRect();
+          const px = ((r.left + r.width / 2 - b.left) / b.width) * 100, py = ((r.top + r.height / 2 - b.top) / b.height) * 100;
+          root.setAttribute('data-v-punch', ''); root.style.transformOrigin = px.toFixed(1) + '% ' + py.toFixed(1) + '%'; root.style.transform = 'scale(1.18)';
+          setTimeout(() => { root.style.transform = ''; }, 700);
+        },
+      };
+    }, { title: words.title, caption: words.caption, total: seconds * 1000 });
+    const fx = (fn, ...args) => page.evaluate(({ fn, args }) => window.__vfx && window.__vfx[fn](...args), { fn, args });
+    // the hook: the first second decides whether anyone stays
+    await fx('card', 'an AI built this itself', words.hook, false);
+    await page.waitForTimeout(1600);
+    await fx('clear');
+    const until = Date.now() + Math.max(4, seconds - 4) * 1000; // the demo, then the ending
+    await page.waitForTimeout(300);
+    // the page's own demo when it has one; then its buttons, one after another, as a person would try it: tight, no dead air
+    await page.evaluate(() => { const h = Object.keys(window).filter((k) => /^__/.test(k) && k !== '__vfx').map((k) => window[k]).find((o) => o && typeof o.demo === 'function'); try { if (h) h.demo(); } catch (_) {} });
     const buttons = await page.$$('button:visible'), starts = [];
     for (const b of buttons) if (/\b(?:start|begin|play|go|run|try|demo|example|made-up|sample|new)\b/i.test(await b.innerText().catch(() => ''))) starts.push(b);
     for (const b of [...starts, ...buttons.filter((x) => !starts.includes(x))]) {
-      if (Date.now() > until - 1500) break;
+      if (Date.now() > until - 1200) break;
+      const label = ((await b.innerText().catch(() => '')) || '').replace(/\s+/g, ' ').trim().slice(0, 28);
+      await b.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' })).catch(() => {});
+      if (label) await fx('chip', 'tap: ' + label);
       await b.click({ timeout: 1000 }).catch(() => {});
-      await page.waitForTimeout(500);
-      await b.evaluate((el) => el.scrollIntoView({ block: 'start', behavior: 'smooth' })).catch(() => {}); // what the press did, below it, in frame
-      await page.waitForTimeout(1000);
+      await b.evaluate((el) => window.__vfx && window.__vfx.punch(el)).catch(() => {});
+      await page.waitForTimeout(1100);
     }
     const left = until - Date.now(); if (left > 0) await page.waitForTimeout(left);
-    await page.evaluate(() => document.querySelectorAll('[data-void-card]').forEach((n) => n.remove()));
-    await page.evaluate(({ cta }) => { const c = document.createElement('div'); c.setAttribute('data-void-card', ''); c.style.cssText = 'position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:36px;box-sizing:border-box;text-align:center;white-space:pre-line;background:radial-gradient(circle at 50% 40%,#2a1f55,#07070b 70%);color:#fff;font:800 36px/1.25 system-ui,sans-serif'; c.textContent = cta; document.body.appendChild(c); }, { cta: words.cta });
-    await page.waitForTimeout(3000);
+    // the ending: the call to action on the same card as the hook, so the last frame flows into the first and the Short loops
+    await fx('card', 'try it free · a-to-mind.com', words.hook, true);
+    await page.waitForTimeout(2600);
   } finally {
     await page.close(); // the video is written when its page closes
   }

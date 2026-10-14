@@ -272,7 +272,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const cause = at && await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c ? c.textContent : null; });
     const trunkAt = at && ledgerAts[at.trunk];
     check('"growth": touching a branch says what Void asked for that it built (asked by Void: "link the growth card branches to the growth inbox"), matched by the entry that built it',
-      cause === 'Void asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
+      cause === 'V01D asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
     const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
     check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
       !!drawn && at.inCard && at.state.branches === at.n && !!read && sel && sel.selected === at.trunk && !F.errors.length, JSON.stringify({ drawn: !!drawn, at, read, sel, e: F.errors }));

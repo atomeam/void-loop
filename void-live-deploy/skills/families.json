@@ -3,8 +3,8 @@
  "totals": {
   "experiment": 0,
   "tested": 45,
-  "checked": 14,
-  "proven": 80
+  "checked": 13,
+  "proven": 81
  },
  "families": [
   {
@@ -14,8 +14,8 @@
    "count": {
     "experiment": 0,
     "tested": 8,
-    "checked": 4,
-    "proven": 10
+    "checked": 3,
+    "proven": 11
    },
    "skills": [
     {
@@ -35,8 +35,8 @@
     },
     {
      "name": "figures",
-     "tier": "checked",
-     "why": "a self-test, 12 browser-suite mentions"
+     "tier": "proven",
+     "why": "a self-test, 12 browser-suite mentions, 3 real asks in the benchmark"
     },
     {
      "name": "zoom-figure",

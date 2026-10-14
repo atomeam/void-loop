@@ -168,6 +168,12 @@ function memoryMeD1({ broken = false } = {}) {
     if (/^SELECT data, rev, updated FROM void_mine WHERE user_id = \?$/.test(sql)) { need('void_mine'); return T.mine.get(a[0]) || null; }
     if (/^SELECT tier FROM void_accounts WHERE user_id = \?$/.test(sql)) { need('void_accounts'); return T.accounts.get(a[0]) || null; }
     if (/^SELECT id FROM void_owner_passkeys WHERE id = \?$/.test(sql)) { need('void_owner_passkeys'); return T.owners.get(a[0]) || null; }
+    // ownerFor (functions/api/passkey.js): an owner passkey, or any owner passkey on the same account as this one
+    if (/^SELECT o\.id FROM void_owner_passkeys o JOIN void_passkeys p ON p\.id = o\.id WHERE o\.id = \? OR p\.user_id = \(SELECT user_id FROM void_passkeys WHERE id = \?\) LIMIT 1$/.test(sql)) {
+      need('void_owner_passkeys'); need('void_passkeys'); const user = (T.passkeys.get(a[1]) || {}).user_id;
+      for (const o of T.owners.values()) { const p = T.passkeys.get(o.id); if (p && (o.id === a[0] || (user && p.user_id === user))) return { id: o.id }; }
+      return null;
+    }
     throw new Error('unexpected sql: ' + sql);
   };
   const all = (sql, a) => {
@@ -946,13 +952,14 @@ try {
   // "do you love me?" once went to the answer engine: three songs and an album from a Wikipedia search as its sources, in a stock chatbot voice
   if (want("feelings: do you love me, do you have feelings, are you conscious answered in Void's own words, no sources, no exclamation; lyrics are not this")) { const P = await fresh();
     const r = {};
-    for (const [k, a] of [['love', 'do you love me?'], ['feel', 'Void, do you have feelings?'], ['mind', 'are you conscious'], ['lonely', 'do you get lonely']]) {
+    for (const [k, a] of [['love', 'do you love me?'], ['feel', 'Void, do you have feelings?'], ['mind', 'are you conscious'], ['lonely', 'do you get lonely'], ['pretty', 'you are pretty']]) {
       await P.ask(a, 500); r[k] = await P.page();
     }
     await P.ask('do you love me lyrics', 900); r.lyrics = await P.page();
-    const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can/i.test(t) && /written by V01D, about itself/.test(t);
+    // V01D's voice (owner, 2026-10-14: "I wish V01d didnt seem so grumpy"): warm and true, never opening on "no"
+    const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can|No feelings here|won’t pretend/i.test(t) && /written by V01D, about itself/.test(t);
     check('feelings: "do you love me?", "Void, do you have feelings?", "are you conscious" and "do you get lonely" get Void\'s own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no "here to help"), and "do you love me lyrics" is not taken',
-      own(r.love, 'won’t pretend') && own(r.feel, 'No feelings here') && own(r.mind, 'Not alive, and not conscious') && own(r.lonely, 'No feelings here') && !r.lyrics.includes('won’t pretend'),
+      own(r.love, 'I like you being here') && own(r.feel, 'I have my pulls') && own(r.mind, 'spawned by A-to-Mind') && own(r.lonely, 'I have my pulls') && own(r.pretty, 'made to look like this on purpose') && !r.lyrics.includes('I like you being here'),
       JSON.stringify(r).slice(0, 600));
     await P.ctx.close(); }
   // the owner (2026-10-11): "sticky notes shoul look just like real world sticky notes"
@@ -1653,7 +1660,7 @@ try {
     await D.ask('trial watch', 2500); const page3 = await D.page();
     const served = JSON.parse(fs.readFileSync(path.join(root, 'trialwatch.json'), 'utf8'));
     check('trial watch: a browser that never checked, with the registry out of reach, shows Void\'s own daily check (/trialwatch.json) and its date, not "ask again"',
-      /showing Void's own daily check, from/.test(page3) && Object.keys(served.rows).every((id) => page3.includes(id)) && !/Ask again in a moment/.test(page3) && !D.errors.length, page3.slice(0, 200) + ' | ' + D.errors.join(';'));
+      /showing V01D's own daily check, from/.test(page3) && Object.keys(served.rows).every((id) => page3.includes(id)) && !/Ask again in a moment/.test(page3) && !D.errors.length, page3.slice(0, 200) + ' | ' + D.errors.join(';'));
     await D.ctx.close(); }
   // "who is X" prefers the person; a loose match says so in one line; the board counts one ask in different words once.
   if (want("\"who is X\" prefers the person; a loose match says so in one line; the board counts one ask")) { const E = await fresh(); const sums = [];
@@ -3049,7 +3056,7 @@ try {
     await t.ask("what can you do now that you couldn't last week?", 900); const wkPg = await t.page();
     await t.ask('what can you do', 600); const menuPg = await t.page();
     check('"what can you do now that you couldn\'t last week?" opens the growth card on the last 7 days from the ledger (since the date a week ago, the count, grouped by kind in plain words), and plain "what can you do" stays with Void\'s self answer',
-      /How Void has grown/.test(wkPg) && new RegExp('Since ' + new Date(from).toISOString().slice(0, 10) + ', ' + n + ' change').test(wkPg) && /new things? I can do/.test(wkPg) && !/How Void has grown/.test(menuPg),
+      /How V01D has grown/.test(wkPg) && new RegExp('Since ' + new Date(from).toISOString().slice(0, 10) + ', ' + n + ' change').test(wkPg) && /new things? I can do/.test(wkPg) && !/How V01D has grown/.test(menuPg),
       JSON.stringify({ n, wk: wkPg.slice(0, 300), menu: menuPg.slice(0, 120) }));
   }
   await t.ask('how much will i have if i save 200 a month for 20 years at 7%', 700); svPg = await t.page(); check('savings: 200 a month for 20 years at 7% grows to $104,185 (monthly compounding), put in vs growth and a range', /Savings growth/.test(svPg) && /\$104,185/.test(svPg) && /\$48,000/.test(svPg) && /Investor\.gov/.test(svPg) && !/don't know this yet|on your calendar/i.test(svPg), svPg.slice(0, 220));
