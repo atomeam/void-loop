@@ -5904,5 +5904,14 @@
   {"ask": "help me plan a road trip", "want": "skill:intent"},
   {"ask": "set up a plan to learn to swim", "want": "skill:intent"},
   {"ask": "what's a good plan to learn italian", "want": "skill:intent"},
-  {"ask": "make a plan for learning the violin", "want": "skill:intent"}
+  {"ask": "make a plan for learning the violin", "want": "skill:intent"},
+  {"ask": "current time lagos", "want": "skill:worldtime"},
+  {"ask": "local time tokyo", "want": "skill:worldtime"},
+  {"ask": "how many hours ahead is dubai", "want": "skill:worldtime"},
+  {"ask": "how many hours behind is new york", "want": "skill:worldtime"},
+  {"ask": "when does it get dark in london today", "want": "skill:worldtime"},
+  {"ask": "humidity in miami", "want": "skill:weather"},
+  {"ask": "wind speed in chicago", "want": "skill:weather"},
+  {"ask": "what does nasa stand for", "want": "calc", "says": "National Aeronautics and Space Administration"},
+  {"ask": "what does dna stand for", "want": "calc", "says": "deoxyribonucleic acid"}
 ]

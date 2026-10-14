@@ -277,7 +277,7 @@
     {
      "name": "weather",
      "tier": "proven",
-     "why": "a self-test, 4 browser-suite mentions, 34 real asks in the benchmark"
+     "why": "a self-test, 4 browser-suite mentions, 36 real asks in the benchmark"
     },
     {
      "name": "air",
@@ -327,7 +327,7 @@
     {
      "name": "worldtime",
      "tier": "proven",
-     "why": "14 browser-suite mentions, 82 real asks in the benchmark"
+     "why": "14 browser-suite mentions, 87 real asks in the benchmark"
     },
     {
      "name": "distance",
@@ -418,7 +418,7 @@
     {
      "name": "calc",
      "tier": "proven",
-     "why": "a self-test, 803 real asks in the benchmark"
+     "why": "a self-test, 805 real asks in the benchmark"
     },
     {
      "name": "loan",
