@@ -85,11 +85,22 @@ export async function autoOpen(open, { fetchFn, store = typeof sessionStorage !=
   try { const c = JSON.parse((store && store.getItem(SEEN)) || 'null'); if (c && now - c.at < 600000) rows = c.rows; } catch (_) {}
   if (!rows) { rows = await buildState(fetchFn); try { store && store.setItem(SEEN, JSON.stringify({ at: now, rows })); } catch (_) {} }
   if (buildFailed(rows)) { await open(); return true; }
+  const sup = await supportState(fetchFn); // a paying user waiting on an answer opens the card too
+  if (sup && sup.open) { await open(); return true; }
   return false;
 }
 
+// Paying users who said "it broke" (functions/api/support.js): the open reports, read with the owner's key. A visitor has no key and
+// sees nothing; the owner sees each report and answers it from the card's link (POST /api/support { action: 'answer' }).
+const OWNER_KEY = 'a2m.void.owner.v1';
+const ownerKey = () => { try { return localStorage.getItem(OWNER_KEY) || ''; } catch (_) { return ''; } };
+export async function supportState(fetchFn = (u, o) => fetch(u, o), key = ownerKey()) {
+  if (!key) return null;
+  try { const r = await fetchFn('/api/support', { headers: { authorization: 'Bearer ' + key } }); if (!r.ok) return null; const j = await r.json(); return { open: Number(j.open) || 0, tickets: (j.tickets || []).filter((t) => t.status === 'open').slice(0, 5) }; } catch (_) { return null; }
+}
+
 const dot = (ok) => '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:' + (ok ? '#3fbf6a' : '#e0584a') + '"></span>';
-export function statusHtml(esc, skills, browser, sources, at, build) {
+export function statusHtml(esc, skills, browser, sources, at, build, support) {
   const row = (ok, name, note, ms) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + dot(ok) + esc(name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(note) + (ms != null ? ' · ' + ms + ' ms' : '') + '</td></tr>';
   const up = sources ? sources.filter((s) => s.ok).length : 0;
   return '<h2>Void status</h2><div class="sub">checked just now, from this browser' + (at ? ' · ' + esc(at) : '') + '</div>'
@@ -101,6 +112,9 @@ export function statusHtml(esc, skills, browser, sources, at, build) {
       : '<p style="color:#8a8a92">Not checked: this browser is offline.</p>')
     + (build ? '<h3 style="margin:12px 0 4px;font-size:15px">Void’s own build' + (buildFailed(build) ? ' · <span style="color:#e0584a">something on main failed</span>' : '') + '</h3><table style="border-collapse:collapse">'
       + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '') + '</td></tr>').join('') + '</table>' : '')
+    + (support ? '<h3 style="margin:12px 0 4px;font-size:15px">Paying users who said it broke · ' + (support.open ? '<span style="color:#e0584a">' + support.open + ' waiting on you</span>' : 'none waiting') + '</h3>'
+      + support.tickets.map((t) => '<p style="margin:4px 0"><b>' + esc(t.id) + '</b> · ' + esc(t.where) + ' · ' + esc(String(t.at).slice(0, 16).replace('T', ' ')) + '<br>' + esc(t.what) + '</p>').join('')
+      + (support.open ? '<p style="color:#8a8a92;margin:4px 0">Answer one: POST /api/support { action: "answer", id, answer } with your key; the reporter reads it with theirs.</p>' : '') : '')
     + '<div class="src">Each source was asked once, now, because you asked; the translation service is not pinged, to save its daily quota. Nothing about you is sent or kept.</div>';
 }
 
@@ -109,9 +123,9 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>Void status</h2><div class="sub">checking…</div>'; });
   const browser = checkBrowser(), online = browser.find((b) => b.name === 'Online').ok;
-  const [skills, sources, build] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState() : Promise.resolve(null)]);
+  const [skills, sources, build, support] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState() : Promise.resolve(null), online ? supportState() : Promise.resolve(null)]);
   const at = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build);
+  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support);
   return 'status';
 }
 

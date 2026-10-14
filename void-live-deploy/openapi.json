@@ -18,6 +18,35 @@
     { "name": "discovery", "description": "What Void can do and what is on sale." }
   ],
   "paths": {
+    "/api/support": {
+      "post": {
+        "tags": ["review"],
+        "operationId": "reportProblem",
+        "summary": "Tell the owner something broke (paying users)",
+        "description": "For people who pay for Void: send your Void Pro key, your Code Review Pro license key or a signed-in paid account as Bearer, and say what broke. The answer carries a ticket id; the owner sees every report the same day and answers it. Keys typed into the report are masked before it is kept. Without a paying credential: 401 with where to buy.",
+        "security": [{ "reviewKey": [] }],
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "type": "object", "required": ["what"], "properties": { "what": { "type": "string", "maxLength": 2000, "description": "What broke, in your words." }, "where": { "type": "string", "enum": ["review", "action", "account", "site", "other"] } } }, "examples": { "report": { "value": { "what": "The closer read stopped appearing on my pull requests since this morning.", "where": "action" } } } } }
+        },
+        "responses": {
+          "201": { "description": "Received.", "content": { "application/json": { "schema": { "type": "object", "properties": { "id": { "type": "string", "example": "S-1A2B3C4D" }, "status": { "type": "string" }, "at": { "type": "string", "format": "date-time" }, "said": { "type": "string" } } } } } },
+          "400": { "description": "No report in what." },
+          "401": { "description": "Not a paying credential." },
+          "429": { "description": "Twenty reports are already open." }
+        }
+      },
+      "get": {
+        "tags": ["review"],
+        "operationId": "listMyReports",
+        "summary": "Your reports and the owner's answers (paying users)",
+        "security": [{ "reviewKey": [] }],
+        "responses": {
+          "200": { "description": "Your reports, newest first.", "content": { "application/json": { "schema": { "type": "object", "properties": { "tickets": { "type": "array", "items": { "type": "object", "properties": { "id": { "type": "string" }, "at": { "type": "string" }, "where": { "type": "string" }, "what": { "type": "string" }, "status": { "type": "string", "enum": ["open", "answered"] }, "answer": { "type": ["string", "null"] }, "answered": { "type": ["string", "null"] } } } } } } } } },
+          "401": { "description": "Not a paying credential." }
+        }
+      }
+    },
     "/api/review": {
       "post": {
         "tags": ["review"],
