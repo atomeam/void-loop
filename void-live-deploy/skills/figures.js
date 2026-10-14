@@ -27,7 +27,7 @@ const ROAM = /^(?:please\s+)?(?:more\s+motion|let\s+(?:them|the\s+(?:figures?|sp
 // eats it; "bring a cat" and "add a mouse", and the cat gives chase. Each arrives with the body and colour its kind wears.
 const NATURE_LOOK = { zombie: ['person', '#7d9a5a'], brain: ['object', '#e9a3b4'], cat: ['animal', '#e39a4f'], mouse: ['animal', '#b9b3ad'],
   dog: ['animal', '#a8784c'], bone: ['object', '#efe8da'], fish: ['animal', '#5fa8d8'], cheese: ['object', '#f2c94c'], rabbit: ['animal', '#e8e1d8'],
-  carrot: ['object', '#ef8a2c'], monkey: ['animal', '#8a5a3a'], horse: ['animal', '#6e3f22', 1.4], donkey: ['animal', '#8e8780', 0.9], // third: walking pace (a horse's trot, a donkey's plod) banana: ['object', '#f5d84a'], shark: ['animal', '#7c8fa3'], bee: ['animal', '#f2c230'], flower: ['object', '#ef6fa0'],
+  carrot: ['object', '#ef8a2c'], monkey: ['animal', '#8a5a3a'], horse: ['animal', '#6e3f22', 1.4], donkey: ['animal', '#8e8780', 0.9], /* third: walking pace (a horse's trot, a donkey's plod) */ banana: ['object', '#f5d84a'], shark: ['animal', '#7c8fa3'], bee: ['animal', '#f2c230'], flower: ['object', '#ef6fa0'],
   cloud: ['object', '#eef1f4', 0.3], sun: ['object', '#ffc23a', 0.05], fire: ['object', '#ff6a1a', 0.05], ice: ['object', '#cfeaff', 0.05], water: ['place', '#2e6d96', 0.05] }; // third: walking pace (clouds drift, a fire stays put)
 const NATURE_SUMMON = /^(?:please\s+)?(?:summon|bring(?:\s+(?:out|in))?|add|spawn|make|drop|put|release|let\s+loose|give\s+me|show\s+me)\s+(?:me\s+)?(?:(?:an|a|some|another|one\s+more|the)\s+)?([a-z]+(?:\s[a-z]+)?)(?:\s+(?:on\s+the\s+stage|here|in))?(?:\s+please)?$/;
 // Every summon is an individual: a random seed picks its shade, size and build, so no two zombies match; "clone it"
