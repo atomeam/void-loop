@@ -237,7 +237,11 @@ export async function mountMiniature(host, kind, data = {}, opts = {}) {
   const old = live.get(key);
   if (old) { old.attach(host); if (data !== undefined && data !== old.data) old.update(data); return old; }
   const inFlight = loading.get(key);
-  if (inFlight) { const h = await inFlight; if (h && !h.disposed) { h.attach(host); if (data !== undefined && data !== h.data) h.update(data); } return h; }
+  if (inFlight) {
+    const h = await inFlight;
+    if (!h || h.disposed) return mountMiniature(host, kind, data, opts); // freed before this caller took it: load afresh
+    h.attach(host); if (data !== undefined && data !== h.data) h.update(data); return h;
+  }
   const p = mountFresh(host, kind, data, opts, key);
   loading.set(key, p);
   try { return await p; } finally { if (loading.get(key) === p) loading.delete(key); }
