@@ -5957,5 +5957,13 @@
   {"ask": "how many students is 20 percent of 150", "want": "calc", "says": "30"},
   {"ask": "get the app", "want": "skill:app"},
   {"ask": "is there an app", "want": "skill:app"},
-  {"ask": "where is my app", "want": "skill:app"}
+  {"ask": "where is my app", "want": "skill:app"},
+  {"ask": "how warm will it get today", "want": "skill:weather"},
+  {"ask": "chance of snow tomorrow", "want": "skill:weather"},
+  {"ask": "what is the low tonight", "want": "skill:weather"},
+  {"ask": "is there a thunderstorm coming", "want": "skill:weather"},
+  {"ask": "what to wear in paris today", "want": "skill:weather"},
+  {"ask": "is it going to be foggy tomorrow morning", "want": "skill:weather"},
+  {"ask": "should i wear a coat tonight", "want": "skill:weather"},
+  {"ask": "wind chill right now", "want": "skill:weather"}
 ]
