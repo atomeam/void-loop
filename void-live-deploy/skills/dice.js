@@ -1,45 +1,56 @@
 /**
- * dice skill — roll one or more dice
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), suite }
- * "roll a die", "roll the dice", "roll 2d6", "roll 3d20".
+ * dice skill — roll dice from the ask (no key; pure math)
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * "roll a dice", "roll 2d6", "roll d20", "roll three d10".
+ * Shows the total and the individual faces. Empty stage stays empty.
  */
-export function diceOf(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  let m = t.match(/^(?:please\s+)?roll\s+(?:a\s+)?(\d+)d(\d+)(?:\s+(?:dice|die))?$/);
-  if (m) return { n: Math.min(20, parseInt(m[1], 10) || 1), sides: Math.min(100, parseInt(m[2], 10) || 6) };
-  m = t.match(/^(?:please\s+)?(?:roll\s+(?:the\s+)?dice|roll\s+(?:a\s+)?die|dice\s+roll|roll\s+dice)$/);
-  if (m) return { n: 1, sides: 6 };
-  return null;
+function diceOf(text) {
+  const raw = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const t = raw.toLowerCase();
+  if (!/\b(?:roll|dice|die|d\d+)\b/.test(t)) return null;
+  if (/\b(?:what is|history of|how to make)\b/.test(t)) return null;
+  let n = 1, sides = 6;
+  let m = t.match(/\b(\d+)\s*d\s*(\d+)\b/) || t.match(/\bd\s*(\d+)\b/);
+  if (m) {
+    if (m[2]) { n = +m[1]; sides = +m[2]; }
+    else sides = +m[1];
+  } else {
+    m = t.match(/\b(?:roll|dice)\s+(?:a\s+)?(?:(\d+)\s+)?(?:d(?:ie|ice)|(\d+)\s*sided)\b/);
+    if (m) {
+      if (m[1]) n = +m[1];
+      if (m[2]) sides = +m[2];
+    } else if (!/\b(?:roll|dice|die)\b/.test(t)) return null;
+  }
+  n = Math.max(1, Math.min(20, n || 1));
+  sides = Math.max(2, Math.min(100, sides || 6));
+  return { n, sides, raw };
+}
+
+function roll(n, sides) {
+  const faces = [];
+  for (let i = 0; i < n; i++) faces.push(1 + Math.floor(Math.random() * sides));
+  return { faces, total: faces.reduce((a, b) => a + b, 0) };
 }
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  const d = diceOf(text);
-  if (!d) return 'none';
-  const rolls = [];
-  for (let i = 0; i < d.n; i++) rolls.push(1 + Math.floor(Math.random() * d.sides));
-  const total = rolls.reduce((a, b) => a + b, 0);
-  const list = rolls.join(', ');
+  const q = diceOf(text);
+  if (!q) return 'none';
+  const r = roll(q.n, q.sides);
   showPage((p) => {
-    p.innerHTML = '<h2>Dice roll</h2><p style="font-size:36px;font-weight:300;line-height:1.1">' + esc(list) + '</p>'
-      + (d.n > 1 ? '<p>total ' + total + '</p>' : '')
-      + '<div class="sub">' + d.n + 'd' + d.sides + ' · say “roll the dice” for another</div>';
+    p.innerHTML = '<h2>Dice</h2>'
+      + '<div class="sub">' + esc(q.n + 'd' + q.sides) + '</div>'
+      + '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + r.total + '</div>'
+      + '<p style="color:#8a8a8a">' + esc(r.faces.join(' + ')) + '</p>'
+      + '<div class="sub">say “roll again” or another dice ask</div>';
   });
   return 'dice';
 }
 
-export function suite() {
-  const one = diceOf('roll a die');
-  const two = diceOf('roll 2d6');
-  const three = diceOf('roll 3d20');
-  return { ok: one && one.n === 1 && one.sides === 6 && two && two.n === 2 && two.sides === 6 && three && three.n === 3 && three.sides === 20 && !diceOf('what is a die') && !diceOf('roll over') };
-}
-
 export default {
   name: 'dice',
-  examples: ['roll a die', 'roll the dice', 'roll 2d6'],
-  nearMisses: ['what is a die', 'roll the window down', 'dice game'],
+  examples: ['roll a dice', 'roll 2d6', 'roll d20', 'roll three d10'],
+  nearMisses: ['what is a dice', 'history of dice', 'how to make dice'],
   match(lower, text) { return !!diceOf(text); },
-  run,
-  suite
+  run
 };
