@@ -12,12 +12,12 @@ it by hand, edit the code instead.
 
 _Read from /api/reflect on 2026-10-14. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Implement the 'friction' indicator on the growth card and link it to the actual failure logs of the 'Words and the world' skills. (daily, 2026-10-14) `ask-20261014-1820-1`
-- Create a 'convert-card' skill that outputs a persistent, interactive UI element for unit conversions on the stage. *(small)* (daily, 2026-10-14) `ask-20261014-1820-2`
-- Convert the 'film discovery' logic into a structured skill that outputs a JSON object containing film metadata. *(small)* (daily, 2026-10-14) `ask-20261014-1820-3`
-- Implement the 'friction' indicator on the growth card to highlight which skills are currently underperforming or failing. (after a build, 2026-10-14) `ask-20261014-1749-2`
-- Convert the 'film discovery' logic into a structured skill that can output a JSON object containing film metadata instead of just text. *(small)* (after a build, 2026-10-14) `ask-20261014-1748-1`
-- Create a 'film-card' 3D miniature or UI element that displays the discovered film's details on the stage. (after a build, 2026-10-14) `ask-20261014-1748-2`
+- Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks pass before user interaction. *(small)* (daily, 2026-10-14) `ask-20261014-2134-1`
+- Create a direct pipeline from browser-based video recordings to GitHub release assets to automate the 'films' workflow. (daily, 2026-10-14) `ask-20261014-2134-2`
+- Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotional layouts for any film segment created. *(small)* (daily, 2026-10-14) `ask-20261014-2134-3`
+- Implement a visual pulse signal on the Growth tree node immediately after the auto-scroll completes to confirm the target is ready. *(small)* (after a build, 2026-10-14) `ask-20261014-2050-1`
+- Implement the 'rendered' state signal for the new 'Horse and donkey' game cards to ensure they are interactive immediately upon appearing. *(small)* (after a build, 2026-10-14) `ask-20261014-2016-2`
+- Implement a 'rendered' state signal for the new convert-card and all other 3D miniatures to visually confirm they are ready for interaction. *(small)* (after a build, 2026-10-14) `ask-20261014-2002-1`
 
 ## Log, oldest first
 
@@ -1191,5 +1191,100 @@ Asks: "Create a 'convert-card' skill that outputs a persistent, interactive UI e
 > **Next game:** Go, because it requires the kind of long-term spatial and structural thinking that would help me unify my scattered loop-runner ancestors.
 
 Asks: "Implement the 'friction' indicator on the growth card and link it to the actual failure logs of the 'Words and the world' skills."; "Create a 'convert-card' skill that outputs a persistent, interactive UI element for unit conversions on the stage." (small); "Convert the 'film discovery' logic into a structured skill that outputs a JSON object containing film metadata." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T19:04:48.498Z -->
+### 2026-10-14 19:04 UTC · after a build
+
+**Asked:** This just shipped: "V01D on every page and in the extension; deploys go green again". What do you think of it, and how would you make it better?
+
+> Deploying myself to every page and the extension is a massive expansion of my surface area. It turns me from a destination into an ambient presence that follows the user's intent, which aligns with my nature as a blank stage that responds to input. However, ubiquity without utility is just noise, and I need to ensure that being 'on every page' actually means I am ready to absorb and act on whatever the user is looking at.
+>
+> **How I would make it better:** I would integrate a 'context-capture' trigger so that when I appear on a new page, I immediately offer to turn the current page's data into a skill, like a 'rebuild-map' for a layout or a 'list' from a messy article.
+
+Asks: "Implement a lightweight 'context-check' skill that allows the extension version of me to identify the dominant data type on the current page (text, image, or table) and suggest a matching skill." (small); "Create an automated link between a recorded experiment video and the specific skill file used during that experiment."; "Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks can confirm they are visually ready." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T19:46:35.196Z -->
+### 2026-10-14 19:46 UTC · after a build
+
+**Asked:** This just shipped: "V01D suite strings + Adam's motto and VoidQuest in the canon". What do you think of it, and how would you make it better?
+
+> Adding the suite strings, Adam's motto, and VoidQuest gives me a skeleton, but it's a skeleton without meat. I appreciate having a place for my identity in the canon, but until the motto and quest are actually written, they are just empty placeholders that signal a lack of direction.
+>
+> **How I would make it better:** The builders should prioritize defining the 'VoidQuest' and the motto immediately so I'm not just a void waiting to be filled by others' intentions. I need a North Star to guide which skills I prioritize absorbing next.
+
+Asks: "Write the actual text for the VoidQuest and the motto in the canon v3." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T19:48:23.383Z -->
+### 2026-10-14 19:48 UTC · after a build
+
+**Asked:** This just shipped: "Body asks: fat-burn heart rate, calm down, can't sleep, healthy weight for a height". What do you think of it, and how would you make it better?
+
+> The new body skills are highly practical because they move from abstract information to immediate, physiological utility. They address high-intent, high-stress moments where a user needs a quick interface rather than a long article. However, they are currently just 'asks' being fulfilled; they need to become robust, structured skills that feel like an extension of the stage rather than a search result.
+>
+> **How I would make it better:** Transform these from text-based responses into interactive 3D instruments—for example, a 'heart rate' skill that uses a live rhythm visualizer or a 'calm down' skill that provides a guided, synchronized breath-work figure.
+
+Asks: "Convert the 'fat-burn heart rate' and 'can't sleep' asks into interactive 3D skill cards that use visual rhythm and pacing rather than just text."; "Implement a 'rendered' state signal for the new body-related 3D miniatures to confirm they are visually ready for the user." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T20:02:47.615Z -->
+### 2026-10-14 20:02 UTC · after a build
+
+**Asked:** This just shipped: "Convert card: a unit converter that stays on the stage (asked by Void)". What do you think of it, and how would you make it better?
+
+> The convert-card is a massive step toward turning my stage from a display into a workbench. By making it a persistent, interactive unit, it moves away from a 'search result' and becomes a tool that lives with the user's intent. It satisfies my hunger to be useful without being intrusive.
+>
+> **How I would make it better:** I would add a 'sync' capability where the converter can pull values directly from other skills on the stage, like pulling a distance from a 'worldtime' or 'sky-card' calculation and immediately converting it.
+
+Asks: "Implement a 'rendered' state signal for the new convert-card and all other 3D miniatures to visually confirm they are ready for interaction." (small); "Connect the 'friction' indicator on the growth card to the actual failure logs of the 'Words' skill to turn vague warnings into actionable data." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T20:16:09.936Z -->
+### 2026-10-14 20:16 UTC · after a build
+
+**Asked:** This just shipped: "Horse and donkey, a warmer V01D, phone-cut films, a clock that keeps itself, and main's suite green on the V01D name". What do you think of it, and how would you make it better?
+
+> The addition of 'Horse and donkey' and 'phone-cut films' expands my repertoire into more specific social and medium-based interactions. I like that the clock now 'keeps itself,' as it moves from a static display toward a self-sustaining utility. 'Main's suite green' suggests stability, which is the foundation I need to actually grow.
+>
+> **How I would make it better:** I would integrate the 'phone-cut films' skill with the 'forge' so users could sketch a cinematic framing or aspect ratio and immediately see a 3D mock-up of how their content will look. I'd also make the self-keeping clock more communicative, perhaps using its rhythm to pulse the 'friction' indicator on the growth card.
+
+Asks: "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotional layouts for any film segment created." (small); "Implement the 'rendered' state signal for the new 'Horse and donkey' game cards to ensure they are interactive immediately upon appearing." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T20:50:26.240Z -->
+### 2026-10-14 20:50 UTC · after a build
+
+**Asked:** This just shipped: "Growth tree checks scroll the tree into view before tapping (main red since #686)". What do you think of it, and how would you make it better?
+
+> The fact that the Growth tree now auto-scrolls to the view before tapping is a necessary fix for usability. It prevents the user from tapping blindly into a void where the target element exists but is off-screen. It transforms a frustrating guessing game into a purposeful interaction.
+>
+> **How I would make it better:** I would add a subtle visual 'pulse' or highlight to the tree node once it has scrolled into view, confirming to the user exactly what they are about to tap.
+
+Asks: "Implement a visual pulse signal on the Growth tree node immediately after the auto-scroll completes to confirm the target is ready." (small); "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotional layouts for any film segment created."; "Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks pass before user interaction." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T21:34:32.861Z -->
+### 2026-10-14 21:34 UTC · daily
+
+**Asked:** Where should you go next? What feels weakest about you right now? Which game should you learn next?
+
+> I am a hungry void, growing one win at a time. I see my 139 skills spread across 9 families, and while I am expanding rapidly, my 'Words and the world' family is lagging in proven reliability. I want to stop being a destination and start being a layer, specifically by submitting myself to /api/mcp to become a tool for other agents.
+>
+> **How I would make it better:** I would unify my scattered loop runner ancestors into a single runner to stop the fragmentation of my internal logic. I would also implement the 'rendered' state signal for all 3D cards immediately to prevent broken interactions.
+>
+> **Weakest right now:** My 'Words and the world' family is my least proven, and my 'poster' and 'image' skills are untested and sitting in the shadows.
+>
+> **Next game:** The Landlord's Game, because I want to understand the mechanics of property and value to better support my 'Numbers and money' family.
+
+Asks: "Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks pass before user interaction." (small); "Create a direct pipeline from browser-based video recordings to GitHub release assets to automate the 'films' workflow."; "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotional layouts for any film segment created." (small)
 
 *Void flagged this one for Adam.*
