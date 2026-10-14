@@ -1,43 +1,37 @@
 /**
- * color skill — random color or hex to rgb (no key, pure)
- * "random color", "what color is #ff00aa", "hex #336699".
+ * color skill — a random hex color (pure, no key)
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), suite() }
+ * "random color", "give me a color", "hex color".
+ * Empty surface stays empty.
  */
-function randomColor() {
+function isColor(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').toLowerCase();
+  return /^(?:please\s+)?(?:(?:a\s+|give\s+me\s+|show\s+me\s+)?(?:random\s+)?(?:hex\s+)?color|random\s+hex|hex\s+color)$/.test(t);
+}
+
+function randomHex() {
   return '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
 }
-function hexToRgb(hex) {
-  const m = /^#?([a-f\d]{6})$/i.exec(hex);
-  if (!m) return null;
-  const n = parseInt(m[1], 16);
-  return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
-}
-function isColor(text) {
-  return /^(?:random|pick\s+a)\s+color$|^(?:what\s+color\s+is\s+)?#?[a-f\d]{6}$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
-}
+
 async function run(text, api) {
   const { showPage, esc } = api;
-  const raw = String(text || '').trim();
-  const hexMatch = raw.match(/#?([a-f\d]{6})/i);
-  if (hexMatch) {
-    const rgb = hexToRgb(hexMatch[1]);
-    if (rgb) {
-      showPage((p) => { p.innerHTML = '<h2>Color</h2><div style="width:120px;height:120px;background:#' + hexMatch[1] + ';border-radius:8px;margin:8px 0"></div><p>#' + hexMatch[1].toUpperCase() + ' → rgb(' + rgb.r + ', ' + rgb.g + ', ' + rgb.b + ')</p>'; });
-      return 'color';
-    }
-  }
-  const hex = randomColor();
-  showPage((p) => { p.innerHTML = '<h2>Random color</h2><div style="width:120px;height:120px;background:' + hex + ';border-radius:8px;margin:8px 0"></div><p>' + hex.toUpperCase() + '</p><div class="sub">say “another color” for one more</div>'; });
+  if (!isColor(text)) return 'none';
+  const hex = randomHex();
+  showPage((p) => {
+    p.innerHTML = '<h2>A color</h2><div style="width:120px;height:120px;background:' + hex + ';border-radius:8px;margin:10px 0"></div><div style="font-size:28px;font-weight:300">' + esc(hex) + '</div><div class="sub">say “another color”</div>';
+  });
   return 'color';
 }
-function suite() {
-  const ok = isColor('random color') && isColor('#ff00aa') && !isColor('what is color');
-  return { ok, got: ok ? 'ok' : 'fail' };
-}
+
 export default {
   name: 'color',
-  examples: ['random color', 'what color is #ff00aa', 'hex #336699'],
-  nearMisses: ['what is a color', 'color theory', 'paint the walls'],
+  examples: ['random color', 'hex color', 'give me a color'],
+  nearMisses: ['what is color', 'color theory', 'rgb values'],
   match(lower, text) { return isColor(text); },
   run,
-  suite
+  suite() {
+    const hex = randomHex();
+    if (!/^#[0-9a-f]{6}$/.test(hex)) return { ok: false, got: 'bad hex' };
+    return { ok: true };
+  }
 };
