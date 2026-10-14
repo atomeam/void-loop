@@ -103,7 +103,7 @@ async function one({ ask: a, want, says, before }) {
     if (u.includes('hn.algolia.com')) return r.fulfill(json({ hits: [{ objectID: '1', title: 'A thing shipped', url: 'https://example.com/a', points: 120 }] }));
     if (u.includes('/feed/featured/')) return r.fulfill(json({ news: [{ story: '<b>Something</b> happened today.', links: [] }] }));
     return r.fulfill({ status: 204, body: '' }); });
-  await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => { const u = r.request().url(); if (/\/api\/miss$/.test(u) && !/"kind":"used"/.test(r.request().postData() || '')) miss.push(1); // a lab experiment's use count (lib/used.js) is no miss
+  await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => { const u = r.request().url(); if (/\/api\/miss$/.test(u) && !/"kind":"used"|"fallback":"ungrounded:/.test(r.request().postData() || '')) miss.push(1); // a lab experiment's use count (lib/used.js) and the page's own grounding report (lib/ground.js, reported apart) are no miss
     if (/\/api\/answer$/.test(u)) return r.fulfill(json({ answer: 'A generic answer.', sources: [] }));
     return r.fulfill({ status: 204, body: '' }); });
   // no fixed sleeps: goto resolves after the page's inline script has bound the input, and handle() itself waits for the skills

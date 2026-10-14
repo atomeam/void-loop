@@ -23,4 +23,14 @@ assert.deepEqual(subjectOf('how do gears work', new Set(['gear'])), []);
 assert.equal(grounded('car loan $20000 at 7% for 5 years', 'Monthly payment on $20,000 at 7% over 5 years', new Set(['loan', 'car'])).ok, true);
 assert.equal(grounded('payment on a $300k mortgage', 'A $300,000 mortgage', new Set(['mortgage', 'payment'])).ok, true);
 assert.equal(grounded('how many rolls of wallpaper for a 12x14 room', 'A 12 × 14 room needs 8 rolls', new Set(['wallpaper', 'roll', 'room'])).ok, true);
+assert.equal(grounded('what is a 20% tip on 45', 'A 20% tip on $45.00 is $9.00', new Set(['tip'])).ok, true, '45 and 45.00 are one number');
+// the page's check: a skill's own name and words shared by its examples are triggers; only a card with none of the subject is unmet
+const { judgeCard, skillTriggers } = await import('../void-live-deploy/lib/ground.js');
+const recipe = { name: 'recipe', examples: ['recipe for pancakes', 'lasagna recipe', 'recipes with chicken', 'how do i make guacamole'] };
+assert.ok(skillTriggers(recipe).has('recipe'));
+assert.ok(skillTriggers({ name: 'define', examples: [] }).has('define'), "the skill's own name");
+assert.equal(judgeCard('how do i make guacamole', 'Guacamole\n3 avocados', recipe).unmet, false);
+assert.equal(judgeCard('how do i make guacamole', 'Pancakes\nflour, milk', recipe).unmet, true, 'a card about something else');
+assert.equal(judgeCard('recipe for banana bread', 'Banana pudding', recipe).unmet, false, 'part of the subject shown: not reported on the page');
+assert.equal(judgeCard('a recipe please', 'Pancakes', recipe).unmet, false, 'no subject: nothing to judge');
 console.log('ground: ok');
