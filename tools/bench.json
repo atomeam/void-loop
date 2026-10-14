@@ -381,7 +381,7 @@
   },
   {
     "ask": "how many calories in a banana",
-    "want": "answer|article"
+    "want": "skill:food|answer|article"
   },
   {
     "ask": "translate thank you to japanese",
@@ -4995,7 +4995,7 @@
   {"ask": "whats teh weather in london", "want": "skill:weather", "says": null},
   {"ask": "wheather in new york", "want": "skill:weather", "says": null},
   {"ask": "waht is the capital of italy", "want": "skill:country", "says": null},
-  {"ask": "how many calories in an apple", "want": "answer|article|calc", "says": null},
+  {"ask": "how many calories in an apple", "want": "skill:food|answer|article|calc", "says": null},
   {"ask": "convert 100 usd to eur", "want": "calc|skill:crypto|skill:util", "says": null},
   {"ask": "whats 20 percent of 150", "want": "calc", "says": "\\b30\\b"},
   {"ask": "what is 3/4 as a decimal", "want": "calc", "says": "0\\.75"},
@@ -5926,5 +5926,11 @@
   {"ask": "is it a public holiday tomorrow", "want": "holiday|skill:holidays"},
   {"ask": "what day was i born if my birthday is may 9 1985", "want": "calc", "says": "Thursday"},
   {"ask": "what day of the week was i born on 12 october 1999", "want": "calc", "says": "Tuesday"},
-  {"ask": "what day was 3rd of august 2004", "want": "calc", "says": "Tuesday"}
+  {"ask": "what day was 3rd of august 2004", "want": "calc", "says": "Tuesday"},
+  {"ask": "calories in a banana", "want": "skill:food", "says": "105"},
+  {"ask": "how much protein in an egg", "want": "skill:food", "says": "6.3"},
+  {"ask": "carbs in rice", "want": "skill:food", "says": "44.5"},
+  {"ask": "sugar in a can of coke", "want": "skill:food", "says": "39"},
+  {"ask": "protein in three eggs", "want": "skill:food", "says": "18.9"},
+  {"ask": "nutrition facts for brown rice", "want": "skill:food", "says": "218"}
 ]

@@ -13,7 +13,7 @@
  * Water: "how much water should i drink a day", "how many glasses of water a day", "how much water should a pregnant woman drink".
  *   National Academies adequate intake (3.7 L men, 2.7 L women in all, about 80% of it from drinks: 13 and 9 cups),
  *   pregnancy, breastfeeding and children, plus more for each hour of sweaty exercise.
- * Leaves food lookups ("calories in a banana"), exercise burns ("calories burned running"), BMI (calc) and
+ * Leaves food lookups ("calories in a banana": skills/food.js), exercise burns ("calories burned running"), BMI (calc) and
  * "how many calories to lose a pound" (calc: 3,500) to the skills that already answer them.
  */
 const LB = 0.45359237, CUP = 0.236588;
