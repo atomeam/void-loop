@@ -263,6 +263,9 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.ctx.route(/\/api\/reflect(?:\?|$)/, (rt) => rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [], asks: [], follow: { total: 1, built: 1, recent: [], asked: ledgerAts.map((at) => ({ ask: 'the ask built at ' + at, at, times: 2 })) } }) }));
     await F.ask('growth');
     const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'growthtree'); return c && c.draws > 0 && c.ready ? c : false; }), 60000);
+    // the card scrolls, and a longer friction line above the tree (#686) can leave the trunk below its first screen: bring the
+    // tree into view first, as a visitor scrolls to it, so the tap lands on the tree and not on the ask box under the card
+    if (drawn) { await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-tree canvas'); if (c) c.scrollIntoView({ block: 'center' }); }); await F.p.waitForTimeout(300); }
     const at = drawn && await F.p.evaluate(async () => {
       const T = await import('/skills/growth-tree.js'); const list = await (await fetch('/void.growth.json')).json(); const t = T.layout(list);
       return { pt: window.__voidMini.project('growth-tree', T.midpoint(t.branches[0])), oldest: list[t.branches[0].index].what.slice(0, 40), trunk: t.branches[0].index, n: t.branches.length, inCard: !!document.querySelector('.vpage .growth-tree canvas'), state: window.__voidMini.state('growth-tree') };
