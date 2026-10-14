@@ -24,5 +24,6 @@
   {"check": "opening a lab experiment counts one use: { kind: \"used\", id } once per browser per day, nothing typed sent", "sha": "8d2589a8fd5c096505d1e2b985051d07adfeff74", "at": "2026-10-14T04:46:10Z"},
   {"check": "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload", "sha": "4679bb0df93e6e906f1deced28d749d85c52ab9b", "at": "2026-10-14T04:58:28Z"},
   {"check": "opening a lab experiment counts one use: { kind: \"used\", id } once per browser per day, nothing typed sent", "sha": "4679bb0df93e6e906f1deced28d749d85c52ab9b", "at": "2026-10-14T04:58:28Z"},
-  {"check": "opening a lab experiment counts one use: { kind: \"used\", id } once per browser per day, nothing typed sent", "sha": "d054c03add060800d151b81a22eed4533e9fba09", "at": "2026-10-14T06:14:31Z"}
+  {"check": "opening a lab experiment counts one use: { kind: \"used\", id } once per browser per day, nothing typed sent", "sha": "d054c03add060800d151b81a22eed4533e9fba09", "at": "2026-10-14T06:14:31Z"},
+  {"check": "list: \"how many days until friday\" counts to the next Friday; \"what day is it in Tokyo\" shows the day there; \"time difference between London and Tokyo\" says the", "sha": "0a01c699d37feacbd4ce6810ecd0a5d04a866be2", "at": "2026-10-14T17:06:03Z"}
 ]
