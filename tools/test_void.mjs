@@ -5283,6 +5283,24 @@ try {
       && miles && miles.kind === 'length' && miles.a === '5' && miles.b === '8.04672' && /feet/.test(miles.text) && count === 1 && kept && kept.b === '8.04672' && gone && Q.errors.length === 0,
       JSON.stringify({ maths, routes, first, boiled, back, swapped: swapped && swapped.a + '|' + swapped.b, miles, count, kept: kept && kept.b, gone, errs: Q.errors }));
     await Q.ctx.close(); }
+  // the dice roller (new idea): "dice roller" puts a roller on the stage that rolls, keeps its count and sides across a reload
+  if (want("dice roller: a dice roller on the stage that rolls and survives a reload")) { const D = await fresh();
+    const dice = await import(new URL('../void-live-deploy/skills/dice.js', import.meta.url).href);
+    const routes = ['dice roller', 'roll dice', 'open a dice roller', '2d6 roller', 'close the dice roller'].every((a) => !!dice.default.match(a.toLowerCase(), a))
+      && ['dice', 'roll', 'what are the odds', 'random number', 'coin flip'].every((a) => !dice.default.match(a.toLowerCase(), a));
+    await D.ask('dice roller', 600);
+    const has = await D.p.$('.dice-card').catch(() => null);
+    await D.p.click('.dice-card .dice-roll'); await D.p.waitForTimeout(40);
+    const out = await D.p.$eval('.dice-card .dice-out', (e) => e.textContent).catch(() => '');
+    const rolled = /\d/.test(out);
+    await D.p.reload(); await D.p.waitForTimeout(900);
+    const kept = await D.p.$('.dice-card').catch(() => null);
+    await D.ask('close the dice roller', 400);
+    const gone = !(await D.p.$('.dice-card'));
+    check('dice roller: asks route to it and look-alikes do not; "dice roller" opens it, roll shows numbers, it survives a reload and "close the dice roller" puts it away',
+      routes && has && rolled && kept && gone && D.errors.length === 0,
+      JSON.stringify({ routes, has: !!has, rolled, kept: !!kept, gone, out, errs: D.errors }));
+    await D.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all
