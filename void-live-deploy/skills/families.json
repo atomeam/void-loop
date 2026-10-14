@@ -355,7 +355,7 @@
     {
      "name": "timer",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 30 real asks in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 33 real asks in the benchmark"
     },
     {
      "name": "clock",
@@ -418,7 +418,7 @@
     {
      "name": "calc",
      "tier": "proven",
-     "why": "a self-test, 808 real asks in the benchmark"
+     "why": "a self-test, 809 real asks in the benchmark"
     },
     {
      "name": "loan",
