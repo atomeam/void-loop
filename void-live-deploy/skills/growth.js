@@ -51,25 +51,46 @@ export function velocity(list, now = Date.now()) {
 
 /** Void asked (2026-10-12, five times since): "a 'friction' indicator on the growth card that highlights which skills are currently
  * failing or returning high uncertainty". From skills/families.json, evidence only: failing = the asks the everyday benchmark got
- * wrong on its last clean run on main; uncertain = the least checked (nothing checks it yet, then one kind of check). Pure. */
+ * wrong on its last clean run on main; uncertain = the least checked (nothing checks it yet, then one kind of check). Pure.
+ * 2026-10-14: Void asked again to link it to the failure logs of the least-proven family (Words and the world): each skill names
+ * its family, and the line leads with that family's failing and barely-checked skills from the same evidence. */
 export const FAMILIES_URL = '/skills/families.json';
 export function friction(fam, show = 5) {
-  const all = ((fam && fam.families) || []).flatMap((f) => (f && f.skills) || []).filter((s) => s && s.name);
+  const families = (fam && fam.families) || [];
+  const all = families.flatMap((f) => ((f && f.skills) || []).filter((s) => s && s.name).map((s) => ({ ...s, family: f.name })));
   const failing = all.filter((s) => Array.isArray(s.failing) && s.failing.length).sort((a, b) => b.failing.length - a.failing.length || a.name.localeCompare(b.name));
   const rank = { experiment: 0, tested: 1 };
   const unsure = all.filter((s) => s.tier in rank && !failing.includes(s)).sort((a, b) => rank[a.tier] - rank[b.tier] || a.name.localeCompare(b.name));
   const top = [...failing, ...unsure].slice(0, show);
-  return { failing: failing.length, unsure: unsure.length, top: top.map((s) => ({ name: s.name, failing: s.failing || null, tier: s.tier, why: s.why })) };
+  const weakest = families.slice().filter((f) => f && f.skills && f.skills.length).sort((a, b) => ((a.count && a.count.proven) || 0) / a.skills.length - ((b.count && b.count.proven) || 0) / b.skills.length)[0] || null;
+  const wFail = weakest ? failing.filter((s) => s.family === weakest.name) : [];
+  const wUnsure = weakest ? unsure.filter((s) => s.family === weakest.name) : [];
+  const wTop = [...wFail, ...wUnsure].slice(0, show);
+  const row = (s) => ({ name: s.name, family: s.family || null, failing: s.failing || null, tier: s.tier, why: s.why });
+  return {
+    failing: failing.length, unsure: unsure.length, top: top.map(row),
+    weakest: weakest ? { name: weakest.name, failing: wFail.length, unsure: wUnsure.length, top: wTop.map(row) } : null,
+  };
 }
 export function frictionHtml(esc, f) {
   if (!f || !f.top.length) return '';
-  const item = (s) => '<b style="font-weight:600">' + esc(s.name) + '</b> ' + (s.failing
-    ? '<span style="color:#e06a5a">failing</span> (the bench got ' + s.failing.length + ' of its asks wrong: ' + s.failing.map((a) => '“' + esc(a) + '”').join(', ') + ')'
-    : '<span style="color:#e0a24a">' + (s.tier === 'experiment' ? 'unchecked' : 'barely checked') + '</span> (' + esc(s.why) + ')');
+  const item = (s) => '<b style="font-weight:600">' + esc(s.name) + '</b>'
+    + (s.family ? ' <span style="color:#8a8a92">(' + esc(s.family) + ')</span>' : '') + ' '
+    + (s.failing
+      ? '<span style="color:#e06a5a">failing</span> (the bench got ' + s.failing.length + ' of its asks wrong: ' + s.failing.map((a) => '“' + esc(a) + '”').join(', ') + ')'
+      : '<span style="color:#e0a24a">' + (s.tier === 'experiment' ? 'unchecked' : 'barely checked') + '</span> (' + esc(s.why) + ')');
   const rest = f.failing + f.unsure - f.top.length;
-  return '<div class="sub growth-friction" data-friction="' + (f.failing + f.unsure) + '" style="line-height:1.45">Friction: '
+  const w = f.weakest;
+  const famLine = w && (w.failing + w.unsure)
+    ? ' Least proven family, <b style="font-weight:600">' + esc(w.name) + '</b>: '
+      + (w.failing ? w.failing + ' failing, ' : 'nothing failing on the bench, ') + w.unsure + ' barely checked'
+      + (w.top.length ? ' — ' + w.top.map(item).join('; ') : '') + '.'
+    : '';
+  return '<div class="sub growth-friction" data-friction="' + (f.failing + f.unsure) + '"'
+    + (w && w.name ? ' data-weakest-family="' + esc(w.name) + '"' : '')
+    + ' style="line-height:1.45">Friction: '
     + (f.failing ? f.failing + ' failing, ' : 'nothing failing on the bench, ') + f.unsure + ' barely checked. ' + f.top.map(item).join('; ')
-    + (rest > 0 ? '; and ' + rest + ' more' : '') + '.</div>';
+    + (rest > 0 ? '; and ' + rest + ' more' : '') + '.' + famLine + '</div>';
 }
 
 export function growthHead(esc, list, now = Date.now()) {
@@ -241,9 +262,15 @@ export function suite() {
     { at: '2026-10-02T10:00:00Z', by: 'c', kind: 'grow', what: 'three' }];
   const o = ordered(list).map((e) => e.what).join(','), s = summary(list), h = growthHtml(esc, list, 'grow', 40);
   const ok = o === 'two <b>,three,one' && s.total === 3 && s.since === '2026-10-01' && s.byKind.grow === 2 && !h.includes('two') && h.includes('three') && !growthHtml(esc, list, '', 40).includes('<b>');
-  const fam = { families: [{ skills: [{ name: 'a', tier: 'proven', why: 'x' }, { name: 'b', tier: 'tested', why: 'one test' }, { name: 'c', tier: 'experiment', why: 'nothing checks it yet' }, { name: 'd', tier: 'proven', why: 'y', failing: ['q <i>'] }] }] };
+  const fam = { families: [
+    { name: 'Strong', count: { proven: 2 }, skills: [{ name: 'a', tier: 'proven', why: 'x' }, { name: 'z', tier: 'proven', why: 'ok' }] },
+    { name: 'Words and the world', count: { proven: 0 }, skills: [{ name: 'b', tier: 'tested', why: 'one test' }, { name: 'c', tier: 'experiment', why: 'nothing checks it yet' }, { name: 'd', tier: 'proven', why: 'y', failing: ['q <i>'] }] },
+  ] };
   const f = friction(fam), fh = frictionHtml(esc, f);
-  const fok = f.top.map((x) => x.name).join() === 'd,c,b' && f.failing === 1 && f.unsure === 2 && fh.includes('q &lt;i&gt;') && !fh.includes('<i>') && frictionHtml(esc, friction(null)) === '';
+  const fok = f.top.map((x) => x.name).join() === 'd,c,b' && f.failing === 1 && f.unsure === 2
+    && f.weakest && f.weakest.name === 'Words and the world' && f.weakest.failing === 1 && f.weakest.unsure === 2
+    && fh.includes('q &lt;i&gt;') && fh.includes('Words and the world') && fh.includes('data-weakest-family') && !fh.includes('<i>')
+    && frictionHtml(esc, friction(null)) === '';
   const asked = [{ ask: 'a <b>bud</b>', at: '2026-10-01T10:00:00Z', times: 3 }, { ask: 'elsewhere', at: '2026-10-09T00:00:00Z', times: 1 }];
   const c = causeOf(list[0], asked), ch = entryHtml(esc, list[0], c);
   const cok = c && c.length === 1 && ch.includes('Void asked for this: “a &lt;b&gt;bud&lt;/b&gt;” <span style="color:#8a8a92">(3 times)</span>') && !causeOf(list[1], asked) && !entryHtml(esc, list[1], null).includes('growth-cause') && causeOf(list[0], null) === null;

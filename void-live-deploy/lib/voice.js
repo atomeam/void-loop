@@ -89,7 +89,10 @@ export function followThrough(entries, ledger, links = []) {
   // a link may name the ask by its words instead of its id: for an ask that has not reached the voice log yet (it is synced once a
   // day) and was built already, so the will stops asking for it (2026-10-13: the skills manifest, built in #620, was asked again
   // and again). Still a link a builder wrote naming the entry, never a guess; reworded asks match it as they match each other.
+  // A ledger `asked` that is free text (not ask-…) is the same kind of evidence: the builder named the ask's words (2026-10-14:
+  // friction kept coming back because its id aged out of the live reflect window and only the id was on the ledger).
   const byWords = (Array.isArray(links) ? links : []).filter((k) => k && typeof k.words === 'string' && k.words.trim()).map((k) => ({ words: k.words, x: L.find((e) => e.at === k.ledgerAt) })).filter((k) => k.x);
+  for (const e of L) if (e.asked && !/^ask-\d/.test(String(e.asked))) byWords.push({ words: String(e.asked), x: e });
   const built = [], open = [];
   for (const g of groups) {
     const hit = g.ids.map((id) => byId.get(id)).find(Boolean) || (byWords.find((k) => k.words.toLowerCase() === g.ask.toLowerCase() || sameAsk(g.ask, k.words)) || {}).x;
