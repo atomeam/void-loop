@@ -244,7 +244,13 @@ async function run(text, api) {
   const st = api.stage || {};
   if (!st.ask || !st.things) return 'none';
   const before = new Set(Object.keys(st.things()));
-  for (const a of plan.asks) await st.ask(a.ask); // in order: each is an ask Void already answers, as if typed
+  for (const a of plan.asks) { // in order: each is an ask Void already answers, as if typed
+    const had = new Set(Object.keys(st.things()));
+    await st.ask(a.ask);
+    // a sticky the plan put up says what it is (Void's ask): a note to keep in mind, or a message not yet sent
+    const role = a.piece === 'note' ? 'note' : a.piece === 'draft' ? 'draft' : '';
+    if (role) for (const [id, t] of Object.entries(st.things())) if (!had.has(id) && t && t.kind === 'sticky') t.role = role;
+  }
   const live = st.things();
   const ids = Object.keys(live).filter((id) => !before.has(id));
   if (ids.length > 1) {

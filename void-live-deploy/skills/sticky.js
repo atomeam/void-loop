@@ -97,6 +97,7 @@ function mount(th, stageApi) {
   el.style.top = th.y + 'px';
   if (th.color) el.style.backgroundColor = th.color; // the colour only: the paper's glue strip and curl are background images
   el.style.rotate = tiltOf(th.id) + 'deg'; // a real note never sits square; each keeps its own tilt
+  if (th.role === 'note' || th.role === 'draft') el.dataset.role = th.role; // a plan's note or unsent draft: a tab says so (void.html)
   el.textContent = th.text || '';
   el.contentEditable = 'true';
   el.spellcheck = false;

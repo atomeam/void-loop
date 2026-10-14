@@ -136,6 +136,12 @@
       outline-offset: 3px;
     }
     .thing.sticky:focus { outline: 1px dashed rgba(0,0,0,0.28); }
+    /* a sticky a plan put up says what it is on a small tab in the glue strip (skills/intent.js sets the role): words to
+       keep in mind, or a message not yet sent; never an order, and not part of the writing */
+    .thing.sticky[data-role]::before { position: absolute; top: 7px; left: 12px; font: 600 10px/1.4 system-ui, sans-serif; letter-spacing: .04em;
+      text-transform: uppercase; color: rgba(35,37,43,.62); background: rgba(255,255,255,.42); border-radius: 3px; padding: 0 5px; pointer-events: none; }
+    .thing.sticky[data-role="note"]::before { content: 'note to self'; }
+    .thing.sticky[data-role="draft"]::before { content: 'draft \00B7  not sent'; }
     /* a yellow legal pad, the same paper as its 3D view (skills/mini/notepad.js): a red gummed binding along the top, the
        pages under it showing at the bottom edge, blue rules one line apart and a red double margin that scroll with the
        writing, written in the felt-tip hand in navy ink; a colour ("make the notepad blue") edges the sides, never the binding */

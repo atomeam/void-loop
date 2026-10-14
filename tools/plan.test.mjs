@@ -225,6 +225,20 @@ test('a skill to learn opens with finding a teacher or a course, once, and only 
   }
 });
 
+// Void's ask (2026-10-13, twice): stickies a plan puts up say what they are, so a note is never taken for an order; the
+// note to self and the unsent draft carry a role, and the page shows it as a tab on the paper
+test('a plan marks the stickies it puts up: its note to self as a note, a message to someone as an unsent draft', async () => {
+  const asked = [], things = {};
+  const stage = { ask: async (a) => { asked.push(a); things['t' + asked.length] = { kind: /^add a sticky/.test(a) ? 'sticky' : /^make a list/.test(a) ? 'list' : 'timer' }; }, things: () => things, render() {}, save() {} };
+  const was = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], note: 'Little and often beats one long session.' }));
+  try {
+    await skill.run('give me a plan to learn spanish and tell Sam', { stage, say: () => {} });
+    const roles = Object.values(things).map((t) => t.kind + ':' + (t.role || ''));
+    assert.deepEqual(roles, ['list:', 'sticky:draft', 'sticky:note'], asked.join(' | '));
+  } finally { globalThis.fetch = was; }
+});
+
 // the second fixed shape: a short note to self ({"steps": [...], "note": "..."}), one plain line, put up as a sticky
 test('the reply may carry one note to self: one clean line of words, cut at a word under NOTE_MAX, else none', () => {
   const r = (note) => '{"steps": ["a b", "c d", "e f"], "note": ' + JSON.stringify(note) + '}';
