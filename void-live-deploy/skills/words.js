@@ -74,10 +74,10 @@ export function anagramsIn(list, letters) {
 // letter patterns and anagrams, from Datamuse's spelled-like search (sp=, with ? for one letter and * for any): an anagram is
 // looked up as every word of its length starting with each of its letters, then kept when it uses exactly those letters
 async function listRun(q, api) {
-  const { showPage, esc } = api, up = (x) => esc(x.toUpperCase());
+  const { showPage, esc } = api, up = (x) => x.toUpperCase();
   const title = q.kind === 'ana' ? 'Anagrams of ' + up(q.word)
     : (q.n ? q.n + '-letter words' : 'Words') + (q.pre ? ' starting with ' + up(q.pre) : '') + (q.suf ? (q.pre ? ' and' : '') + ' ending in ' + up(q.suf) : '');
-  const el = showPage((p) => { p.innerHTML = '<h2>' + title + '</h2><div class="sub">…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">…</div>'; });
   const src = '<div class="src">Source: <a href="https://www.datamuse.com/api/" target="_blank" rel="noopener">Datamuse</a> (common English words)</div>';
   const get = (sp, max) => fetch('https://api.datamuse.com/words?max=' + max + '&sp=' + encodeURIComponent(sp)).then((x) => x.json()).then((r) => (r || []).map((x) => x.word));
   try {
@@ -90,12 +90,12 @@ async function listRun(q, api) {
       list = Array.from(new Set((await get(q.sp, 80)).filter((w) => re.test(w)))).slice(0, 60);
     }
     if (!api._pageStill(el)) return 'words';
-    el.innerHTML = '<h2>' + title + '</h2>' + (list.length ? '<p style="font-size:18px;line-height:1.7">' + list.map(esc).join(' · ') + '</p>'
-      : '<p>' + (q.kind === 'ana' ? 'No common English word uses exactly the letters ' + up(q.word) + '.' : 'I didn\'t find common words like that.') + '</p>') + src;
+    el.innerHTML = '<h2>' + esc(title) + '</h2>' + (list.length ? '<p style="font-size:18px;line-height:1.7">' + list.map(esc).join(' · ') + '</p>'
+      : '<p>' + (q.kind === 'ana' ? 'No common English word uses exactly the letters ' + esc(up(q.word)) + '.' : 'I didn\'t find common words like that.') + '</p>') + src;
     return 'words'; // an empty list is still an answer: no common word fits
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
-    el.innerHTML = '<h2>' + title + '</h2><p>The word service didn\'t answer just now. Ask again in a moment.</p>';
+    el.innerHTML = '<h2>' + esc(title) + '</h2><p>The word service didn\'t answer just now. Ask again in a moment.</p>';
     return 'none';
   }
 }
