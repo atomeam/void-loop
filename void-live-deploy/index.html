@@ -1964,6 +1964,14 @@ say('nothing selected to remove');
       // and once more when it has finished opening: it is drawn smaller while it scales in (transform, .6 s), which a
       // ResizeObserver never sees, so a slow machine measured the small card and left a thing under the full one
       el.addEventListener('transitionend', (e) => { if (e.target === el && e.propertyName === 'transform' && vpageEl === el && el.classList.contains('on')) clearUnderPage(); });
+      // and whenever it is drawn at a new size while it is open, by its transform alone (verify run 38503074544: the scale-in's
+      // end was missed under load and a sticky stayed 9% under): its box is looked at four times a second, 4 px steps
+      const seen = setInterval(() => {
+        if (vpageEl !== el || !el.isConnected) { clearInterval(seen); return; }
+        if (!el.classList.contains('on')) return;
+        const b = el.getBoundingClientRect(), k = [b.left, b.top, b.right, b.bottom].map((v) => Math.round(v / 4)).join();
+        if (k !== el._seenBox) { const first = !el._seenBox; el._seenBox = k; if (!first) clearUnderPage(); }
+      }, 250);
       return el;
     }
     // a "copy" button under an answer: copies the heading and the text (not the buttons), says "copied"
