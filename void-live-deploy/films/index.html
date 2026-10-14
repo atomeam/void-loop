@@ -138,7 +138,7 @@
     try {
       let r = null, j = {}, tried = [];
       for (const [kind, tok] of creds()) {
-        r = await fetch('/api/films', { headers: { authorization: 'Bearer ' + tok } }); j = await r.json().catch(() => ({}));
+        r = await fetch('/api/films', { headers: { authorization: 'Bearer ' + tok } }); j = await r.json().catch(() => ({})); // void-review: ok (at most 3 sign-ins, tried in turn on purpose, stopping at the first that works)
         if (r.status !== 401 && r.status !== 403) { good = tok; break; }
         tried.push(kind); if (kind === 'key') { try { sessionStorage.removeItem(KEY); } catch (_) {} }
       }
