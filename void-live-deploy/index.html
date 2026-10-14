@@ -4475,7 +4475,7 @@ say('nothing selected to remove');
     const CODES = 'usd|eur|gbp|jpy|cad|aud|chf|cny|inr|mxn|nzd|sek|nok|dkk|krw|brl|zar|sgd|hkd|try|pln|thb';
     const CITIES = 'tokyo|london|paris|new york|nyc|los angeles|la|chicago|sydney|melbourne|dubai|berlin|madrid|rome|moscow|beijing|shanghai|hong kong|singapore|seoul|mumbai|delhi|new delhi|toronto|vancouver|mexico city|sao paulo|cairo|istanbul|bangkok|manila|jakarta|lagos|nairobi|denver|seattle|miami|boston|dallas|houston|phoenix|honolulu|hawaii|california|texas|florida|amsterdam|dublin|lisbon|athens|stockholm|oslo|zurich|vienna|prague|warsaw|buenos aires|lima|bogota|santiago|auckland|perth|tel aviv|riyadh|karachi|dhaka|taipei|hanoi|kuala lumpur';
     // the unit words "mph to kph 60" may start with (kept short: only units people put first)
-    const UNIT_WORDS = 'mph|kph|km/h|kmh|fahrenheit|celsius|f|c|kg|kgs|lbs?|pounds|cm|mm|inches|inch|in|ft|feet|foot|m|meters|metres|miles?|km|kilometers|kilometres|oz|ounces|g|grams|ml|l|liters|litres|gallons?|cups?|stone|yards?|usd|eur|gbp|jpy|cad|aud';
+    const UNIT_WORDS = 'mph|kph|km/h|kmh|fahrenheit|celsius|f|c|kg|kgs|kilos?|kilograms?|lbs?|pounds?|grams?|g|oz|ounces?|stones?|cm|centimet(?:er|re)s?|mm|millimet(?:er|re)s?|m|met(?:er|re)s?|km|kilomet(?:er|re)s?|inches|inch|in|ft|feet|foot|yards?|miles?|ml|millilit(?:er|re)s?|l|lit(?:er|re)s?|gallons?|quarts?|pints?|cups?|tablespoons?|tbsp|teaspoons?|tsp|usd|eur|gbp|jpy|cad|aud';
     function shortForms(t) {
       if (/^[\d\s.,+\-*/x×÷^()%]+=\s*$/i.test(t)) return t.replace(/\s*=\s*$/, '');
       return t.replace(/^([a-z]{3,})\s+(?:meaning|definition)\s*[?.!]*$/i, 'define $1')
