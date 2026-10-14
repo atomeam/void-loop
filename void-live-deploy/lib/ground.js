@@ -9,11 +9,17 @@ const STOP = new Set(('a an the and or but of to for in on at by with from into 
   'i me my mine you your yours we our us it its this that these those there here what which who whom whose when where why how ' +
   'can could would should will shall may might must please pls show tell give get make find let lets need want like just some any ' +
   'all one two me up out over under than then so if not no yes ok okay hey hi void now today tonight right really very much many ' +
-  'more most less little bit thing things stuff something anything again also too new old good best quick quickly').split(' '));
+  'more most less little bit thing things stuff something anything again also too new old good best quick quickly ' +
+  // verbs and asking words: they say what to do, not what the answer is about
+  'explain work works working have has had got open chat send play take took reach check create test turn save load redo hire offer ' +
+  'see know look go going start use set put keep add help try ask say said tell bring move learn teach long bad high low strong ' +
+  'recent next last public first lets let whats thats im ive dont doesnt cant should would could').split(' '));
 
-const norm = (t) => String(t || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '');
+// numbers compare as numbers: "$20,000" and "20000", "300k" and "300,000", "12x14" and "12 × 14"; apostrophes go ("what's" is "whats")
+const norm = (t) => String(t || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+  .replace(/(\d),(?=\d{3}\b)/g, '$1').replace(/\b(\d+(?:\.\d+)?)k\b/g, (_, n) => String(Math.round(parseFloat(n) * 1000))).replace(/['\u2019]/g, '');
 const stem = (w) => w.replace(/(?:ies)$/, 'y').replace(/(?:ing|ed|es|s)$/, '') || w;
-export const words = (t) => norm(t).match(/[a-z0-9]+(?:'[a-z]+)?/g) || [];
+export const words = (t) => norm(t).match(/[a-z]+|\d+(?:\.\d+)?/g) || [];
 
 /** a skill's trigger words, read off its own asks: the words in at least `share` of them (at least 3 asks), stemmed. Pure. */
 export function triggersFrom(asks, share = 0.25) {
