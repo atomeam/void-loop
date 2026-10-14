@@ -113,13 +113,18 @@ export default {
     if (/\btemp(?:erature)?\b/.test(lower) && (/\b(cook|cooked|bake|roast|oven|internal|body|fever)\b/.test(lower) || /\btemp(?:erature)?\s+(?:for|of|should)\s+(?:a\s+|the\s+)?(chicken|pork|beef|steak|turkey|fish|salmon|burgers?|eggs?|ham|lamb|leftovers)\b/.test(lower) || /\b(chicken|pork|beef|steak|fish|salmon|burgers?)\s+(?:be|is)\s+(?:done|cooked)/.test(lower))) return false;
     return /\b(weather|forecast|temperature)\b/.test(lower)
       || /\b(is it|will it|going to)\s+(rain|snow|freeze|frost|storm|hail|sleet)\b/.test(lower)
-      || /^is\s+it\s+(raining|snowing|sunny|windy|cloudy|hot|cold)\b/.test(lower)
-      || /\bhow\s+(cold|hot|warm)\s+is\s+it\b/.test(lower)
+      || /^is\s+it\s+(?:going\s+to\s+be\s+)?(raining|snowing|sunny|windy|cloudy|hot|cold|freezing|foggy|humid|stormy)\b/.test(lower)
+      || /\bhow\s+(cold|hot|warm)\s+(?:is\s+it|will\s+it\s+(?:be|get)|is\s+it\s+going\s+to\s+(?:be|get))\b/.test(lower)
+      // "chance of rain today", "is there a storm coming", "what's the high today", "dew point today"
+      || /\bchance\s+of\s+(?:rain|snow|showers|storms?|thunderstorms?|sleet|hail|frost)\b/.test(lower)
+      || /\bis\s+there\s+(?:a\s+)?(?:storm|thunderstorm|hurricane|tornado|blizzard|heat\s*wave|cold\s+snap)\s+(?:coming|on\s+the\s+way|tonight|today|tomorrow)\b/.test(lower)
+      || /^(?:what(?:'?s|\s+is|\s+will\s+be)\s+)?(?:the\s+|today'?s\s+|tomorrow'?s\s+)?(?:high|low)(?:\s+temp(?:erature)?)?\s+(?:today|tonight|tomorrow)\b/.test(lower)
+      || /^(?:what(?:'?s|\s+is)\s+(?:the\s+)?)?(?:dew\s+point|wind\s*chill|heat\s+index)(?:\s+(?:today|tonight|tomorrow|now|outside|right\s+now|here|(?:in|at|for)\s+[a-z].*))?$/.test(lower)
       // "humidity in Miami", "what's the wind speed in Chicago": the card shows both
       || /^(?:what(?:'?s|\s+is)\s+(?:the\s+)?)?(?:humidity|wind(?:\s+speed)?)\s+(?:like\s+)?(?:in|at|for)\s+[a-z]/.test(lower)
       // "do i need an umbrella today in seattle", "should i bring a jacket": the forecast answers it
-      || /^what\s+should\s+i\s+wear\b(?!\s+(?:to|for|with)\b)/.test(lower)
-      || /^(?:do|will|should)\s+i\s+(?:need|bring|take)\s+(?:an?\s+)?(?:umbrella|raincoat|rain\s+jacket|jacket|coat)\b/.test(lower);
+      || /^what\s+(?:should\s+i\s+|to\s+)wear\b(?!\s+(?:to|for|with)\b)/.test(lower)
+      || /^(?:do|will|should)\s+i\s+(?:need|bring|take|wear)\s+(?:an?\s+)?(?:umbrella|raincoat|rain\s+jacket|jacket|coat|shorts|boots)\b/.test(lower);
   },
   run
 };
