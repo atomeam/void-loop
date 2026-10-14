@@ -5922,5 +5922,9 @@
   {"ask": "what's the italian word for window", "want": "skill:translate"},
   {"ask": "how long is the flight from paris to new york", "want": "skill:distance", "says": "in the air"},
   {"ask": "miles from chicago to denver", "want": "skill:distance"},
-  {"ask": "how big is germany", "want": "skill:country"}
+  {"ask": "how big is germany", "want": "skill:country"},
+  {"ask": "is it a public holiday tomorrow", "want": "holiday|skill:holidays"},
+  {"ask": "what day was i born if my birthday is may 9 1985", "want": "calc", "says": "Thursday"},
+  {"ask": "what day of the week was i born on 12 october 1999", "want": "calc", "says": "Tuesday"},
+  {"ask": "what day was 3rd of august 2004", "want": "calc", "says": "Tuesday"}
 ]
