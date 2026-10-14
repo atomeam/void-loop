@@ -3,20 +3,18 @@
  * Empty surface stays empty; result is a card.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-function diceOf(text) {
+export function diceOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
-  if (/^(?:please\s+)?(?:roll\s+(?:a\s+)?(?:die|dice)|roll\s+\d+d\d+|d\d+|roll\s+a\s+d\d+)$/.test(t)) {
-    const m = t.match(/(\d+)?d(\d+)/) || t.match(/d(\d+)/);
-    if (m) {
-      const n = m[1] ? parseInt(m[1], 10) : 1;
-      const sides = parseInt(m[2] || m[1], 10);
-      if (n > 0 && n <= 20 && sides >= 2 && sides <= 100) return { n, sides };
-    }
-    return { n: 1, sides: 6 }; // default die
+  const m = t.match(/^(?:please\s+)?(?:roll\s+(?:a\s+)?(?:die|dice)|roll\s+)?(\d+)?d(\d+)$/);
+  if (m) {
+    const n = m[1] ? Math.min(20, Math.max(1, parseInt(m[1], 10))) : 1;
+    const sides = Math.min(100, Math.max(2, parseInt(m[2], 10)));
+    return { n, sides };
   }
+  if (/^(?:please\s+)?roll\s+(?:a\s+)?(?:die|dice)$/.test(t)) return { n: 1, sides: 6 };
   return null;
 }
-function roll(n, sides) {
+export function roll(n, sides) {
   const rolls = [];
   for (let i = 0; i < n; i++) rolls.push(1 + Math.floor(Math.random() * sides));
   return rolls;
@@ -39,5 +37,12 @@ export default {
   examples: ['roll a die', 'roll 2d6', 'd20', 'roll a d20'],
   nearMisses: ['what is a die', 'dice game', 'play dice'],
   match(lower, text) { return !!diceOf(text); },
-  run
+  run,
+  suite() {
+    const a = diceOf('roll 2d6');
+    const b = diceOf('d20');
+    const c = diceOf('roll a die');
+    const ok = a && a.n === 2 && a.sides === 6 && b && b.n === 1 && b.sides === 20 && c && c.n === 1 && c.sides === 6 && !diceOf('what is a die');
+    return { ok, got: ok ? 'pass' : 'parser fail' };
+  }
 };
