@@ -2538,6 +2538,22 @@ try {
       && reported[0].ask === 'how do i make guacamole' && after === 1 && !/Missing:/.test(shown) && !G.errors.length, JSON.stringify({ wrong, sent, after, shown, errors: G.errors }));
     await G.ctx.close(); }
 
+  // grounding, where the validator found it (owner, 2026-10-14: "a tighter grounding mechanism"): "where is Orion" with no place known
+  // answered "I need a place" and nothing about Orion; now it answers what needs no place, under the name the person used
+  if (want("a named constellation with no place known still answers about it")) {
+    const K = await fresh();
+    await K.ctx.route(/\/api\/where$|geocoding-api|nominatim/, (rt) => rt.fulfill({ status: 404, body: '' }));
+    await K.ask('where is Orion', 800);
+    await until(async () => /Rigel/.test(await K.page()), 5000);
+    const orion = await K.page();
+    await K.ask('find the southern cross', 800);
+    await until(async () => /Acrux/.test(await K.page()), 5000);
+    const cross = await K.page();
+    check('a named constellation with no place known still answers about it: "where is Orion" gives its stars, who can see it and when it is highest; "find the southern cross" is titled with the name used',
+      /Orion: look for Rigel, Betelgeuse, Bellatrix/.test(orion) && /at midnight around December 1[45]/.test(orion) && /where is Orion from Oslo/.test(orion)
+      && /Crux \(the Southern Cross\)/.test(cross) && /south of 30°N/.test(cross) && !K.errors.length, JSON.stringify({ orion: orion.slice(0, 400), cross: cross.slice(0, 300), errors: K.errors }));
+    await K.ctx.close(); }
+
   // the lab judged by real use (owner's choice 2026-10-13: reuse /api/miss, capped): opening an experiment sends its id, once a day
   if (want("opening a lab experiment counts one use: its id only, once per browser per day")) {
     const U = await fresh({ content: "{ const f = window.fetch; window.__usedSent = []; window.fetch = (u, o) => /\\/api\\/miss$/.test(String(u)) ? (window.__usedSent.push(o && o.body), Promise.resolve(new Response(null, { status: 204 }))) : f(u, o); }" });

@@ -70,15 +70,36 @@ export async function oneAnswer(date, place, abbr) {
   return { lines, c, h, reach };
 }
 
+// a named constellation when the place is not known: what does not depend on it (its bright stars, which latitudes ever see it, and
+// when in the year it is highest in the evening), so "where is Orion" without a location still answers about Orion
+export async function anywhereAnswer(date, abbr) {
+  const c = await centre(abbr), name = NAMES[abbr]; if (!c) return { lines: [`I don't have ${name}.`] };
+  const s = seasonOf(c.ra, date.getUTCFullYear()), lines = [], bright = c.stars.slice().sort((a, b) => a[2] - b[2]).slice(0, 3).map((x) => x[3]).join(', ');
+  if (bright) lines.push(`${name}: look for ${bright}.`);
+  const edge = Math.round(90 - Math.abs(c.dec)); // farther than this from the equator, on the other side, it never rises
+  lines.push(edge >= 85 ? `${name} lies near the celestial equator, so it can be seen from almost anywhere on Earth.` : `${name} can be seen from anywhere ${c.dec >= 0 ? 'north of ' + edge + '°S' : 'south of ' + edge + '°N'}; farther ${c.dec >= 0 ? 'south' : 'north'} it never rises.`);
+  lines.push(`It stands highest at 9 pm around ${monthDay(s.nine)}, and at midnight around ${monthDay(s.midnight)} (on the same date every year); it is in the evening sky for a few months either side.`);
+  lines.push(`To say where to face right now, I need a place: try "where is ${name} from Oslo", or open the sky and set your location.`);
+  return { lines, c };
+}
+
+// the name the ask used when it is not the official one ("the southern cross" for Crux), to show beside it. Pure.
+export function askedAs(text, abbr) {
+  const t = plain(text), key = Object.keys(ALIAS).filter((k) => ALIAS[k] === abbr && !k.includes(plain(NAMES[abbr])) && new RegExp('\\b' + k + '\\b').test(t)).sort((a, b) => b.length - a.length)[0];
+  return key ? key.replace(/^the /, '').replace(/\b[a-z]/g, (x) => x.toUpperCase()) : '';
+}
+const title = (text, abbr) => { const a = askedAs(text, abbr); return NAMES[abbr] + (a ? ' (the ' + a + ')' : ''); };
+
 async function run(text, api) {
   const { showPage, esc, say, loopLog } = api, ask = constAsk(text) || { kind: 'list' };
   const el = showPage((p) => { p.innerHTML = '<h2>Constellations</h2><div class="sub">…</div>'; });
   const place = ask.place ? await findPlace(ask.place) : await whereAmI();
   if (!api._pageStill(el)) return 'constellation';
+  if (!place && ask.kind === 'one') { const a = await anywhereAnswer(new Date(), ask.abbr); if (!api._pageStill(el)) return 'constellation'; el.innerHTML = `<h2>${esc(title(text, ask.abbr))}</h2>${a.lines.map((l) => `<p>${esc(l)}</p>`).join('')}${SKY_LINK}`; say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'constellation' }); return 'constellation'; }
   if (!place) { el.innerHTML = `<h2>Constellations</h2><p>I need a place for this: try "constellations in Oslo", or open the sky and set your location.</p>${SKY_LINK}`; return 'constellation'; }
   const date = new Date(), a = ask.kind === 'one' ? await oneAnswer(date, place, ask.abbr) : await listAnswer(date, place);
   if (!api._pageStill(el)) return 'constellation';
-  el.innerHTML = `<h2>${esc(ask.kind === 'one' ? NAMES[ask.abbr] : 'Constellations up now')}</h2><div class="sub">${esc(place.name)}</div>${a.lines.map((l) => `<p>${esc(l)}</p>`).join('')}${ask.kind === 'list' ? '<p>To name a star you can see, open the sky and tap it.</p>' : ''}<p class="src">Computed from the Hipparcos star catalog. <a href="#" data-ask="meteor showers this month">Meteor showers</a></p>${SKY_LINK}`;
+  el.innerHTML = `<h2>${esc(ask.kind === 'one' ? title(text, ask.abbr) : 'Constellations up now')}</h2><div class="sub">${esc(place.name)}</div>${a.lines.map((l) => `<p>${esc(l)}</p>`).join('')}${ask.kind === 'list' ? '<p>To name a star you can see, open the sky and tap it.</p>' : ''}<p class="src">Computed from the Hipparcos star catalog. <a href="#" data-ask="meteor showers this month">Meteor showers</a></p>${SKY_LINK}`;
   say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'constellation' });
   return 'constellation';
 }

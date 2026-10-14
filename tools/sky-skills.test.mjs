@@ -136,6 +136,12 @@ test('constellations: what is up, where Orion is and when it is best, and the na
   assert.match((await c.oneAnswer(date, CHCH, 'Cru')).lines.join(' '), /never sets/);
   const list = await c.listAnswer(date, LONDON); assert.ok(list.lines.some((l) => /^Orion: Rigel is 3\d° up, to the south\.$/.test(l)));
   assert.match((await c.listAnswer(new Date('2026-01-15T12:00:00Z'), LONDON)).lines[0], /no constellation is showing yet/);
+  // no place known (owner, 2026-10-14: "a tighter grounding mechanism"; "where is Orion" answered "I need a place" and nothing about Orion):
+  // what does not depend on the place, and the name the person used beside the official one
+  const any = (await c.anywhereAnswer(date, 'Ori')).lines.join(' ');
+  assert.match(any, /Orion: look for Rigel, Betelgeuse, Bellatrix/); assert.match(any, /at midnight around December 1[45]/); assert.match(any, /north of 8\d°S/);
+  assert.match((await c.anywhereAnswer(date, 'Cru')).lines.join(' '), /Crux can be seen from anywhere south of 30°N/);
+  assert.equal(c.askedAs('find the southern cross', 'Cru'), 'Southern Cross'); assert.equal(c.askedAs('where is orions belt', 'Ori'), ''); assert.equal(c.askedAs('where is Orion', 'Ori'), '');
 });
 
 test('meteor showers: the right ones on the right days, the moon at the peak, and the radiant', async () => {
