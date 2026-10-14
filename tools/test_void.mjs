@@ -433,6 +433,13 @@ try {
   await t.ask('undo'); check('undo brings the group back', (await t.state()).filter((x) => x.kind === 'sticky').length === 2);
   await t.ask('make everything blue'); check('make everything blue', (await t.state()).every((x) => !x.color || /6aa8ff|9ec8ff/.test(x.color)));
   } // CORE
+  // coin skill: flip a coin shows heads or tails on a page, empty surface stays empty until asked
+  if (want("coin: flip a coin")) { const C = await fresh();
+    check("coin: empty surface stays empty", (await C.p.$$eval("#stage > *", (d) => d.length)) === 0 && !(await C.page()));
+    await C.ask("flip a coin");
+    const pg = await C.page();
+    check("coin: flip a coin shows Heads or Tails", pg && /Heads|Tails/.test(pg));
+  }
   // Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss board (items 3-8 of the 2026-09-28 list).
   if (want("Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss ")) { const M = await fresh(); const out = [];
     const net = []; M.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer)$/.test(u)) net.push(u); });
