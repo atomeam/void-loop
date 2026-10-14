@@ -1,0 +1,116 @@
+#!/usr/bin/env node
+// Void records its own experiments (owner, 2026-10-14: "Void should use my Youtube channel to make its own Videos"; step 1 of
+// the broadcast loop is teaching Void to record itself). One lab experiment (a page under void-live-deploy/fringe/) is opened in a
+// real browser and filmed while it runs: the page's own demo() when it has one, otherwise its buttons pressed one after another.
+// The narration is the run's own research notes from the fringe ledger (tools/fringe.json: behavior, hypothesis, findings),
+// shown as a caption on the video (a headless browser has no speech voices) and written next to it as the title and
+// description an upload will carry. Nothing is uploaded here: that is step 2, with the owner's YouTube credentials.
+//   node tools/record.mjs [id] [--seconds 14] [--out media]   -> media/<id>.webm and media/<id>.json { title, description, tags, caption }
+// id: a lab experiment such as attention-7 (default: the newest experiment in the lab).
+import fs from 'node:fs';
+import path from 'node:path';
+import http from 'node:http';
+import { fileURLToPath } from 'node:url';
+
+const here = path.dirname(fileURLToPath(import.meta.url));
+const site = path.resolve(here, '..', 'void-live-deploy');
+const TITLE_MAX = 100, DESC_MAX = 4500; // YouTube allows 100 and 5,000
+
+/** the run in the fringe ledger whose live page is fringe/<id>.html (the newest one when a draft was redone), or null */
+export function runOf(ledger, id) {
+  const runs = (Array.isArray(ledger) ? ledger : []).filter((r) => String(r.draft || '').split('/').pop() === id + '.html');
+  return runs.length ? runs[runs.length - 1] : null;
+}
+
+/** what the video says: { title, caption, description, tags } from the lab entry ({ id, label, sub }) and its ledger run. Pure. */
+export function script(tool, run) {
+  const label = String(tool.label || tool.id), sub = String(tool.sub || '').trim();
+  const behavior = run && run.behavior ? String(run.behavior).trim() : sub;
+  const lines = (xs) => (Array.isArray(xs) ? xs : []).map((x) => '- ' + String(x).trim()).join('\n');
+  const title = ('Void built this: ' + label).slice(0, TITLE_MAX);
+  const parts = [
+    behavior,
+    run && run.hypothesis ? 'What it set out to show: ' + String(run.hypothesis).trim() : '',
+    run && Array.isArray(run.findings) && run.findings.length ? 'What it found:\n' + lines(run.findings) : '',
+    run && Array.isArray(run.failure_modes) && run.failure_modes.length ? 'What failed:\n' + lines(run.failure_modes.map((f) => (f && f.what) || f)) : '',
+    'Try it yourself: https://a-to-mind.com/?q=' + encodeURIComponent(label.toLowerCase()),
+    'Void (https://a-to-mind.com) builds an experiment like this every hour, tests it, and films it itself. This video was recorded by Void in a real browser; nothing was edited by hand.',
+  ].filter(Boolean);
+  return { title, caption: behavior || label, description: parts.join('\n\n').slice(0, DESC_MAX), tags: ['Void', 'A-to-Mind', 'AI', 'experiment', run ? run.family : 'lab'].filter(Boolean) };
+}
+
+function serve() {
+  const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png' };
+  const server = http.createServer((req, res) => {
+    let p; try { p = decodeURIComponent(new URL(req.url, 'http://x').pathname); } catch (_) { res.writeHead(400); return res.end(); }
+    const f = path.join(site, p === '/' ? '/index.html' : p);
+    if (!f.startsWith(site) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); }
+    res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' }); fs.createReadStream(f).pipe(res);
+  }).listen(0);
+  return { server, base: 'http://127.0.0.1:' + server.address().port + '/' };
+}
+
+/** film one experiment: returns { video, meta } paths */
+export async function record(id, { seconds = 14, out = path.resolve(here, '..', 'media') } = {}) {
+  const { chromium } = await import('playwright-core');
+  const { toolList } = await import('../void-live-deploy/skills/make.js');
+  const tool = toolList().find((t) => t.id === id);
+  if (!tool) throw new Error(id + ' is not a lab experiment (skills/make.js)');
+  if (!fs.existsSync(path.join(site, 'fringe', id + '.html'))) throw new Error('no page at void-live-deploy/fringe/' + id + '.html');
+  const ledger = JSON.parse(fs.readFileSync(path.join(here, 'fringe.json'), 'utf8'));
+  const words = script(tool, runOf(ledger, id));
+  fs.mkdirSync(out, { recursive: true });
+  const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
+  const { server, base } = serve();
+  const browser = await chromium.launch({ headless: true, ...(exe ? { executablePath: exe } : {}) });
+  const size = { width: 1280, height: 720 };
+  const ctx = await browser.newContext({ viewport: size, recordVideo: { dir: out, size } });
+  const page = await ctx.newPage();
+  try {
+    await page.goto(base + 'fringe/' + id + '.html', { waitUntil: 'load' });
+    // the caption: what Void says it built, in its own ledger's words, over the bottom of the frame
+    await page.evaluate(({ title, caption }) => {
+      const c = document.createElement('div');
+      c.setAttribute('data-void-caption', '');
+      c.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:2147483647;padding:14px 22px;background:rgba(10,10,14,.82);color:#f4f4f6;font:600 20px/1.35 system-ui,sans-serif;pointer-events:none';
+      const t = document.createElement('div'); t.textContent = title; t.style.cssText = 'font-size:14px;opacity:.7;margin-bottom:4px';
+      const b = document.createElement('div'); b.textContent = caption;
+      c.append(t, b); document.body.appendChild(c);
+      document.body.style.paddingBottom = (c.offsetHeight + 40) + 'px'; // the caption never hides the end of the page
+    }, { title: words.title, caption: words.caption });
+    const until = Date.now() + seconds * 1000;
+    await page.waitForTimeout(2000);
+    // the page's own demo when it has one; then its buttons, one after another, as a person would try it
+    await page.evaluate(() => { const h = Object.keys(window).filter((k) => /^__/.test(k)).map((k) => window[k]).find((o) => o && typeof o.demo === 'function'); try { if (h) h.demo(); } catch (_) {} });
+    for (const b of await page.$$('button:visible')) {
+      if (Date.now() > until - 1500) break;
+      await b.click({ timeout: 1000 }).catch(() => {});
+      await page.waitForTimeout(500);
+      await b.evaluate((el) => el.scrollIntoView({ block: 'start', behavior: 'smooth' })).catch(() => {}); // what the press did, below it, in frame
+      await page.waitForTimeout(1000);
+    }
+    const left = until - Date.now(); if (left > 0) await page.waitForTimeout(left);
+  } finally {
+    await page.close(); // the video is written when its page closes
+  }
+  const raw = await page.video().path();
+  await ctx.close(); await browser.close(); server.close();
+  const video = path.join(out, id + '.webm');
+  fs.renameSync(raw, video);
+  const meta = path.join(out, id + '.json');
+  fs.writeFileSync(meta, JSON.stringify({ id, ...words, video: path.basename(video), recorded: new Date().toISOString() }, null, 2) + '\n');
+  return { video, meta };
+}
+
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const arg = (f) => { const i = process.argv.indexOf(f); return i > 0 ? process.argv[i + 1] : undefined; };
+  const { toolList } = await import('../void-live-deploy/skills/make.js');
+  const lab = toolList().filter((t) => /-\d+$/.test(t.id));
+  const id = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : lab[lab.length - 1].id;
+  const { acquire } = await import('./heavy.mjs');
+  const release = await acquire('recording ' + id + ' (tools/record.mjs)'); // one heavy browser job at a time on this machine
+  try {
+    const r = await record(id, { seconds: Number(arg('--seconds')) || 14, ...(arg('--out') ? { out: path.resolve(arg('--out')) } : {}) });
+    console.log('recorded ' + path.relative(process.cwd(), r.video) + ' and ' + path.relative(process.cwd(), r.meta));
+  } finally { release(); }
+}

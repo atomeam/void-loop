@@ -49,7 +49,7 @@ export function labTools(lab, known = TOOLS) {
 }
 try { const r = await fetch('/fringe/lab.json'); if (r.ok) TOOLS.push(...labTools(await r.json())); } catch (_) {} // no file, no network, or not a browser: the list above stands
 /** the lab's experiments and tools as { id, label } (tools/lab-use.mjs reads it) */
-export const toolList = () => TOOLS.map(([, id, label]) => ({ id, label }));
+export const toolList = () => TOOLS.map(([, id, label, sub]) => ({ id, label, sub }));
 // One open of an experiment counted (lib/used.js via /api/miss, owner's choice 2026-10-13): its id only, never what was typed,
 // once per browser per experiment per day, and not the owner's own opens. Returns whether it sent.
 const USED_KEY = 'a2m.void.used.v1';
