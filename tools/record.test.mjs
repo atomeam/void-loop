@@ -10,13 +10,14 @@ assert.equal(run.run, 2, 'the newest run of a redone draft');
 assert.equal(runOf(ledger, 'nope-1'), null);
 const s = script({ id: 'miss-board-4', label: "What it hasn't heard yet", sub: 'How much of what people will ask has Void already seen?' }, run);
 // an ad (owner, 2026-10-14): the experiment's own question as the hook, the link in the first line, #Shorts for reach
-assert.equal(s.hook, 'How much of what people will ask has Void already seen?');
-assert.equal(s.title, 'How much of what people will ask has Void already seen? | an AI built this itself #Shorts');
+assert.equal(s.hook, 'How much of what people will ask has V01D already seen?', 'the name viewers see is V01D');
+assert.equal(s.title, 'How much of what people will ask has V01D already seen? | an AI built this itself #Shorts');
 assert.ok(s.description.startsWith(s.hook + ' Try it free: https://a-to-mind.com/'), 'hook and link before the fold');
 assert.match(s.description, /#Shorts/); assert.ok(s.tags.includes('Shorts'));
 assert.match(s.cta, /a\u2011to\u2011mind\.com/, 'the domain never breaks across lines');
 assert.equal(hookOf({ label: 'X', sub: 'No question here.' }, { behavior: 'Does a thing.' }), 'Does a thing.', 'no question: the behavior');
-assert.equal(s.caption, 'Estimate how much of what people ask Void has already seen.', 'the ledger behavior is the caption');
+assert.equal(s.caption, 'Estimate how much of what people ask V01D has already seen.', 'the ledger behavior is the caption');
+assert.ok(!/\bVoid\b/.test(s.description) && /V01D FILMS/.test(s.description) && s.tags.includes('V01D'), 'no Void left in what a viewer reads');
 assert.match(s.description, /What it set out to show: Good-Turing says it/);
 assert.match(s.description, /What it found:\n- about 40% unseen/);
 assert.match(s.description, /What failed:\n- small samples swing/);

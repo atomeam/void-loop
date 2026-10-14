@@ -7,7 +7,7 @@
  */
 const FILM = '(?:films?|fillms?|filmes|flims?|fimls?|fims)';
 const ASK = '(?:(?:where|how)\\s+(?:do|can|could)\\s+i\\s+(?:watch|see|find|review|get\\s+to)\\s+|(?:show\\s+me|open|watch|see|play|review|go\\s+to|take\\s+me\\s+to|where\\s+are)\\s+)?(?:the\\s+)?';
-const WHOSE = "(?:void'?s?|your|my|a-?to-?mind'?s?)\\s+";
+const WHOSE = "(?:void'?s?|v0[1i]d'?s?|your|my|a-?to-?mind'?s?)\\s+";
 const MINE = new RegExp('^' + ASK + '(?:' + WHOSE + ')?' + FILM + '(?:\\s+(?:page|reviews?|to\\s+review))?$', 'i'); // "films", "voids fillms", "review films"
 const VIDEOS = new RegExp('^' + ASK + WHOSE + '(?:videos?|movies?|shorts|recordings)(?:\\s+page)?$', 'i'); // "your videos" needs the whose
 const REVIEW = new RegExp('^' + FILM + '\\s+reviews?$', 'i'); // "film review"
@@ -37,7 +37,16 @@ const STYLE = `<style>
   .vfilms li { counter-increment: s; padding: 10px; border-radius: 12px; background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); font-size: 13px; line-height: 1.35; }
   .vfilms li::before { content: counter(s); display: block; font-weight: 800; font-size: 18px; background: linear-gradient(90deg, #ff3d7f, #7a5cff); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .vfilms .who { margin: 0; font-size: 13px; opacity: .75; }
-  @media (prefers-reduced-motion: reduce) { .vfilms .play { transition: none; } }
+  /* the I in FILMS glitches into a 1 now and then (owner, 2026-10-14: "the i flickers"; "drop the l i only") */
+  .vfilms .gl { position: relative; display: inline-block; }
+  .vfilms .gl b { font-weight: inherit; animation: gl-l 6s steps(1, end) infinite; }
+  .vfilms .gl i { position: absolute; left: 50%; top: 0; font-style: normal; visibility: hidden; transform: translateX(-50%) skewX(-6deg); color: #fff; -webkit-text-fill-color: #fff;
+    text-shadow: -2px 0 #ff3d7f, 2px 0 #7a5cff; animation: gl-1 6s steps(1, end) infinite; }
+  .vfilms .gl.fast b, .vfilms .gl.fast i { animation-duration: 2.6s; animation-delay: -1.1s; } /* the I flickers more often (owner: "the i flickers") */
+  @keyframes gl-l { 0%, 88% { visibility: visible; } 89% { visibility: hidden; } 91% { visibility: visible; } 94% { visibility: hidden; } 95%, 100% { visibility: visible; } }
+  @keyframes gl-1 { 0%, 88% { visibility: hidden; } 89% { visibility: visible; } 91% { visibility: hidden; } 94% { visibility: visible; } 95%, 100% { visibility: hidden; } }
+  @media (prefers-reduced-motion: reduce) { .vfilms .gl b, .vfilms .gl i { animation: none; } .vfilms .play { transition: none; } }
+
 </style>`;
 
 function run(text, api) {
@@ -45,7 +54,7 @@ function run(text, api) {
   showPage((el) => {
     el.innerHTML = STYLE + '<div class="vfilms">'
       + '<div class="poster"><p class="kicker">' + esc('Now showing · a new one daily') + '</p>'
-      + '<h2>' + esc("V01D's films") + '</h2>'
+      + '<h2 aria-label="V01D FILMS">V01D F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h2>'
       + '<p class="line">' + esc('Every day V01D films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
       + '<a class="play" href="' + PAGE + '"><i aria-hidden="true">\u25B6</i>' + esc('Watch and review') + '</a></div>'
       + '<ol><li>' + esc('Watch the newest film') + '</li><li>' + esc('Review it: post it, needs work or skip') + '</li><li>' + esc('The best go to YouTube') + '</li></ol>'
@@ -66,6 +75,7 @@ export default {
     'review films',
     'film review',
     '/films/',
+    'v01d films',
   ],
   nearMisses: [
     'film a timer',

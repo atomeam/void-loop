@@ -40,7 +40,7 @@ function run(text, api) {
   const k = feelingOf(text);
   if (!k) return 'none';
   showPage((el) => {
-    el.innerHTML = '<h2>' + esc(String(text).trim()) + '</h2>' + REPLY[k].map((p) => '<p>' + esc(p) + '</p>').join('') + '<div class="src">written by Void, about itself</div>';
+    el.innerHTML = '<h2>' + esc(String(text).trim()) + '</h2>' + REPLY[k].map((p) => '<p>' + esc(p) + '</p>').join('') + '<div class="src">written by V01D, about itself</div>';
   });
   return 'feelings';
 }

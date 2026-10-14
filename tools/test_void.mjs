@@ -763,7 +763,7 @@ try {
     const afterForget = (await render('@cee')).status, rowC = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userC'").first();
     const agentTry = await O.p.evaluate(async () => { const t = window.__tools && window.__tools.void_ask; return t ? [await t.execute({ ask: 'publish my void as @agentx' }), await t.execute({ ask: 'unpublish' })] : null; }).catch((e) => 'ERR ' + e);
     check('publish: "publish my void as @neo" asks the person first (nothing written); "yes" publishes and shows the link (the old @sam is freed); "unpublish" takes it down',
-      /Put your Void at a-to-mind\.com\/@neo/.test(asked) && !before && /Your Void is public/.test(done) && /@neo/.test(done) && after && after.handle === 'neo' && !gone,
+      /Put your V01D at a-to-mind\.com\/@neo/.test(asked) && !before && /Your V01D is public/.test(done) && /@neo/.test(done) && after && after.handle === 'neo' && !gone,
       JSON.stringify({ asked, before, done: done.slice(0, 80), after, gone }));
     check('publish: "forget me" also takes the public page down (it was live, then 404, row gone); a browser agent cannot publish or unpublish',
       up === 200 && fg.status === 200 && afterForget === 404 && !rowC && Array.isArray(agentTry) && agentTry.every((x) => /person at the screen/.test(String(x))),
@@ -928,7 +928,7 @@ try {
     const V = await fresh({ content: gh('failure', false) }); await V.p.waitForTimeout(3000); const visitor = await V.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
     await V.ask('void status', 400); const asked = await (async () => { for (let i = 0; i < 40; i++) { const t = await V.page(); if (/Void’s own build/.test(t)) return t; await V.p.waitForTimeout(250); } return V.page(); })();
     check("the owner's status card opens by itself when the checks on main failed (with the run linked); a green build or a visitor sees nothing until they ask, and asking shows Void's own build",
-      /Void status/.test(red) && /Void’s own build · something on main failed/.test(red) && /Checks on main\s*failed \(failure\) on abc1234/.test(red) && /Deploy\s*passed/.test(red) && link === 'https://github.com/atomeam/void-loop/actions/runs/7'
+      /V01D status/.test(red) && /V01D’s own build · something on main failed/.test(red) && /Checks on main\s*failed \(failure\) on abc1234/.test(red) && /Deploy\s*passed/.test(red) && link === 'https://github.com/atomeam/void-loop/actions/runs/7'
         && !green && !visitor && /Void’s own build · something on main failed/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
       JSON.stringify({ red: red.replace(/\s+/g, ' ').slice(0, 300), link, green: green.slice(0, 80), visitor: visitor.slice(0, 80), asked: asked.replace(/\s+/g, ' ').slice(0, 200), errors: O.errors.concat(G.errors, V.errors) }));
     await O.ctx.close(); await G.ctx.close(); await V.ctx.close(); }
@@ -2452,11 +2452,40 @@ try {
   if (want("films skill: films, voids fillms and where do I watch the films open the way to /films/")) {
     const S = await fresh(); const got = [];
     for (const a of ['films', 'voids fillms', 'where do I watch the films']) {
-      await S.ask(a, 500); await until(async () => /V01D's films/.test(await S.page()), 4000);
-      got.push(await S.p.evaluate(() => { const c = document.querySelector('.vpage.on'); const l = c && c.querySelector('a[href="/films/"]'); return !!(c && /V01D's films/.test(c.innerText) && l); }));
+      await S.ask(a, 500); await until(async () => !!(await S.p.$('.vpage.on h2[aria-label="V01D FILMS"]')), 4000);
+      got.push(await S.p.evaluate(() => { const c = document.querySelector('.vpage.on'); const l = c && c.querySelector('a[href="/films/"]'); return !!(c && c.querySelector('h2[aria-label="V01D FILMS"]') && l); }));
     }
     check('films skill: films, voids fillms and where do I watch the films open the way to /films/', got.every(Boolean) && !S.errors.length, JSON.stringify({ got, errors: S.errors }));
     await S.ctx.close(); }
+
+  // signed in as the owner, the films open (owner, 2026-10-14: "why am i geting the Members only ... when i am already signed in as
+  // owner?" / "just sign me in and build the wall around me"): every sign-in this browser holds is tried until one works, and the
+  // gate signs in with a passkey right there
+  if (want("films page: every sign-in is tried, and the passkey button signs the owner in")) {
+    const F = await fresh(); const p = F.p; const seen = [];
+    const film = { id: '20261014-x-r6', at: '2026-10-14T16:33:31Z', title: 'Odd moments', description: 'd', tags: '', bytes: 1, src: '/api/films?id=20261014-x-r6&exp=9999999999&sig=abc', reviews: null };
+    await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => { const a = r.request().headers().authorization || ''; seen.push(a);
+      if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
+      if (a === 'Bearer vo1.fresh' || a === 'Bearer paid-acct') return r.fulfill(json({ owner: a === 'Bearer vo1.fresh', films: [film] }));
+      return r.fulfill({ status: 401, contentType: 'application/json', body: '{"ok":false,"buy":"/code-review/#pro"}' }); });
+    const pk = [];
+    await F.ctx.route(/\/api\/passkey$/, (r) => { const b = JSON.parse(r.request().postData() || '{}'); pk.push(b.step);
+      return r.fulfill(json(b.step === 'get-options' ? { publicKey: { challenge: 'AAAA', rpId: '127.0.0.1', allowCredentials: [] } } : { ok: true, token: 'acct-tok', userId: 'u1', owner: { token: 'vo1.fresh', expires: '2026-11-13' } })); });
+    // 1) a stale owner session and a paid account: the account opens the films
+    await p.goto(base + 'films/'); await p.evaluate(() => { localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); localStorage.setItem('a2m.void.me.v1', JSON.stringify({ token: 'paid-acct' })); }); await p.reload();
+    await until(async () => (await p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
+    const fell = { films: await p.$$eval('#films .film', (d) => d.length), order: seen.slice(-3) };
+    // 2) nothing that works: the gate, then the passkey button signs the owner in and the YouTube steps appear
+    await p.evaluate(() => { localStorage.clear(); sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); }); await p.reload();
+    await until(async () => p.$eval('#gate', (e) => e.classList.contains('on')), 5000);
+    const why = await p.$eval('#status', (e) => e.textContent);
+    await p.evaluate(() => { navigator.credentials.get = async () => ({ id: 'cred1', toJSON: () => ({ id: 'cred1', type: 'public-key', response: {} }) }); });
+    await p.click('#signin'); await until(async () => !!(await p.$('#films .film a.yt')), 5000);
+    const kept = await p.evaluate(() => localStorage.getItem('a2m.void.owner.v1'));
+    check('films page: every sign-in is tried, and the passkey button signs the owner in',
+      fell.films === 1 && JSON.stringify(fell.order) === JSON.stringify(['Bearer vo1.stale', 'Bearer paid-acct', ''].slice(0, fell.order.length)) && /run out/.test(why)
+      && JSON.stringify(pk) === JSON.stringify(['get-options', 'get']) && kept === 'vo1.fresh' && !F.errors.length, JSON.stringify({ fell, why, pk, kept, errors: F.errors }));
+    await F.ctx.close(); }
 
   // V01D's startup intro (owner, 2026-10-14: "a super professional brief V01D on startup"): the wordmark shows, typing works under
   // it from the first frame, it is gone in under 2 s, and a test browser (or a link straight to an answer) never sees it unasked
@@ -3214,8 +3243,8 @@ try {
   for (const a of priceAsks) {
     await P.p.$eval('#whisper', (e) => { e.textContent = ''; });
     await P.ask(a, 0);
-    priceGot.push(await until(async () => { const w = await P.whisper(); return /Paid Void/.test(w) ? w : ''; }, 6000) || await P.whisper());
-    priceGot.push(!!(await until(async () => /What Void sells/.test((await P.page()) || '') && (await P.page()), 5000)));
+    priceGot.push(await until(async () => { const w = await P.whisper(); return /Paid V01D/.test(w) ? w : ''; }, 6000) || await P.whisper());
+    priceGot.push(!!(await until(async () => /What V01D sells/.test((await P.page()) || '') && (await P.page()), 5000)));
     await P.ask('close');
   }
   check('paid: signed out, a price question says the membership line AND opens the services card under it',
@@ -3417,18 +3446,18 @@ try {
   check('cross-device look works from the passkey alone, on the free tier (no payment)', inB && bBg === '#07020f' && (await lookOf(B)).bg === '#07020f' && tierB.status === 200 && tierB.body.tier === 'free' && db().accounts.size === 0, [inB, bBg, tierB.status, JSON.stringify(tierB.body), db().accounts.size].join(' | '));
   // Plan item 12, signed in with a passkey: $49 a month (live from the store), what it adds, and Void Monthly's link carrying the account id.
   const GUM = 'https://moonbeam846.gumroad.com/l/yinmj';
-  const IN_LINK = 'Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · buy it on Gumroad';
+  const IN_LINK = 'Paid V01D is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · buy it on Gumroad';
   const inAsks = ['upgrade', 'pay', 'more answers', 'make a private skill', 'higher confirm cap', 'how do I pay'];
   const inGot = [];
-  for (const a of inAsks) { await A.ask(a, 0); inGot.push(await until(async () => { const w = await A.whisper(); return /Paid Void|paid Void|your Void is paid/.test(w) ? w : ''; }, 5000) || await A.whisper()); }
+  for (const a of inAsks) { await A.ask(a, 0); inGot.push(await until(async () => { const w = await A.whisper(); return /Paid V01D|paid V01D|your V01D is paid/.test(w) ? w : ''; }, 5000) || await A.whisper()); }
   const aLink = await A.p.$eval('#whisper a', (a) => ({ href: a.href, target: a.target, rel: a.rel })).catch(() => null);
   check('paid: signed in, paid asks give $49 a month, what it adds and the Void Monthly link with the account id (never opened by itself)', inGot.every((w) => w === IN_LINK) && aLink && aLink.href === GUM + '?void=' + encodeURIComponent(meA.userId) && aLink.target === '_blank' && /noopener/.test(aLink.rel) && !(await A.page()) && A.ctx.pages().length === 1 && db().accounts.size === 0,
     inGot.map((w, i) => inAsks[i] + '=' + w).join(' | ') + ' ' + JSON.stringify(aLink));
   await A.ask('pricing', 0);
-  const inPriceW = await until(async () => { const w = await A.whisper(); return /Paid Void/.test(w) ? w : ''; }, 6000) || await A.whisper();
-  const inPricePg = await until(async () => /What Void sells/.test((await A.page()) || '') && (await A.page()), 5000);
+  const inPriceW = await until(async () => { const w = await A.whisper(); return /Paid V01D/.test(w) ? w : ''; }, 6000) || await A.whisper();
+  const inPricePg = await until(async () => /What V01D sells/.test((await A.page()) || '') && (await A.page()), 5000);
   check('paid: signed in, "pricing" keeps the membership line and shows the services card with the plan row',
-    inPriceW === IN_LINK && /What Void sells/.test(inPricePg || '') && /Keep-It-Running Plan/.test(inPricePg || ''),
+    inPriceW === IN_LINK && /What V01D sells/.test(inPricePg || '') && /Keep-It-Running Plan/.test(inPricePg || ''),
     inPriceW + ' | ' + String(inPricePg || '').slice(0, 160));
   await A.ask('close');
   // With a passkey, an outbound action still stops on the confirm line (a passkey never skips it; visitors still can't send).
@@ -3464,15 +3493,15 @@ try {
   await D.ask('sign in', 0); await until(async () => /welcome back/.test(await D.whisper()), 10000);
   const meD = await meOf(D);
   await D.ask('upgrade', 0);
-  const dIn = await until(async () => /Paid Void/.test(await D.whisper()) && (await D.whisper()), 5000);
+  const dIn = await until(async () => /Paid V01D/.test(await D.whisper()) && (await D.whisper()), 5000);
   check('paid: with GUMROAD_URL empty, signed-in asks say payments aren\'t open yet (no link, no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · payments aren't open yet" && (await D.p.$$eval('#whisper a', (d) => d.length)) === 0 && !(await D.page()) && D.ctx.pages().length === 1,
     [dUrl, dIn].join(' | '));
   db().accounts.set(meD.userId, { tier: 'paid' });
-  await D.ask('pay', 0); const dPaid = await until(async () => /your Void is paid/.test(await D.whisper()) && (await D.whisper()), 8000);
+  await D.ask('pay', 0); const dPaid = await until(async () => /your V01D is paid/.test(await D.whisper()) && (await D.whisper()), 8000);
   db().accounts.set(meD.userId, { tier: 'gold' });
-  await D.ask('pay', 0); const dOdd = await until(async () => /Paid Void is/.test(await D.whisper()) && (await D.whisper()), 8000);
+  await D.ask('pay', 0); const dOdd = await until(async () => /Paid V01D is/.test(await D.whisper()) && (await D.whisper()), 8000);
   db().accounts.set(meD.userId, { tier: 'paid' });
-  check('paid: the tier comes from the server; only "paid" counts (anything else reads as free)', dPaid === 'your Void is paid: more model answers, Pro code review, private skills and a higher cap on actions you confirm' && /^Paid Void is \$49 a month/.test(dOdd), [dPaid, dOdd].join(' | '));
+  check('paid: the tier comes from the server; only "paid" counts (anything else reads as free)', dPaid === 'your V01D is paid: more model answers, Pro code review, private skills and a higher cap on actions you confirm' && /^Paid Void is \$49 a month/.test(dOdd), [dPaid, dOdd].join(' | '));
   const meErrsD = D.errors.slice();
   await D.ctx.close();
   const sessionsBefore = db().sessions.size;

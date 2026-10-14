@@ -30,7 +30,7 @@ export function layoutPoster({ title, text }, w, h, measure) {
   };
   const titleSize = Math.round(w * 0.07), bodySize = Math.round(w * 0.028), markSize = Math.round(w * 0.016);
   let y = margin + titleSize, cut = false;
-  for (const l of wrap(title || 'Void', titleSize).slice(0, 3)) { lines.push({ text: l, size: titleSize, x: margin, y, weight: 600 }); y += titleSize * 1.15; }
+  for (const l of wrap(title || 'V01D', titleSize).slice(0, 3)) { lines.push({ text: l, size: titleSize, x: margin, y, weight: 600 }); y += titleSize * 1.15; }
   y += bodySize * 1.2;
   const foot = h - margin, last = foot - markSize * 3;
   for (const para of String(text || '').split(/\n+/).map((p) => p.trim()).filter(Boolean)) {

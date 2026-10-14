@@ -25,10 +25,10 @@ export const showcaseOf = (text) => ASK_RE.test(CLEAN(text));
 // recent visible builds whose ledger lines came before `show` and `try` existed
 export const KNOWN = [
   { match: /^sticky notes look like real paper/i, show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
-  { match: /^do you love me\?: answered/i, show: 'Void answers "do you love me?" in its own words', try: 'do you love me?' },
+  { match: /^do you love me\?: answered/i, show: 'V01D answers "do you love me?" in its own words', try: 'do you love me?' },
   { match: /^Four in a Row looks finished/i, show: 'Four in a Row: the winning four light up', try: 'four in a row' },
-  { match: /^Void played Othello against itself/i, show: 'Void knows how good it is at Othello', try: 'how good are you at othello' },
-  { match: /^(?:Ask Void how good it is at Connect Four|Void now learns Connect Four)/i, show: 'Void learns Connect Four a little every day', try: 'how good are you at connect four' },
+  { match: /^Void played Othello against itself/i, show: 'V01D knows how good it is at Othello', try: 'how good are you at othello' },
+  { match: /^(?:Ask Void how good it is at Connect Four|Void now learns Connect Four)/i, show: 'V01D learns Connect Four a little every day', try: 'how good are you at connect four' },
   { match: /^Ask whether coral can survive heatwaves/i, show: 'the coral card reads the Florida Keys reef live', try: 'can coral survive heatwaves' },
 ];
 

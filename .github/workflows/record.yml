@@ -76,6 +76,18 @@ jobs:
             node tools/film-post.mjs "$(ls "$d"/*.mp4 | head -1)" "$(ls "$d"/*.txt | head -1)" --id "${tag#film-}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
             gh release edit "$tag" --draft=true
           done
+      # every film's words in today's name (owner, 2026-10-14: "it shoud say V01d everywhere"): tools/film-post.mjs brands them V01D
+      - name: Refresh every film's words on the site
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          set -o pipefail
+          for tag in $(gh release list --limit 100 --json tagName --jq '.[].tagName | select(startswith("film-"))'); do
+            d="words/$tag"; mkdir -p "$d"
+            gh release download "$tag" --dir "$d" --pattern '*.txt' --clobber
+            node tools/film-post.mjs --words-only "$(ls "$d"/*.txt | head -1)" --id "${tag#film-}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          done
       # optional: straight to Void's channel (tools/youtube.mjs refuses any other), only when the repo variable YT_UPLOAD is 1 and
       # the owner's YouTube OAuth client is in the repo secrets. Private unless the repo variable YT_PRIVACY says otherwise.
       - name: Upload to Void's YouTube channel

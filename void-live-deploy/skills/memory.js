@@ -16,8 +16,8 @@ export const EVERY = 5 * 60e3;
 // the owner's key, else this device's member session (a signed-in paid member reads only their own memory; the server decides which)
 const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || (JSON.parse(localStorage.getItem(ME_KEY) || 'null') || {}).token || ''; } catch (_) { return ''; } };
 // a topic that is a person or a pronoun is not a project ("what do you remember about me")
-const NO_KEY = 'What Void remembers is for the owner and paid members. Unlock Void first (unlock <key>, or sign in with your passkey), then ask again.';
-const failText = (status) => (status === 401 ? 'Only the owner can use memory.' : status === 403 ? 'What Void remembers is for paid members.' : status === 503 ? 'There is no database behind this copy of Void.' : 'Memory answered ' + status + '.');
+const NO_KEY = 'What V01D remembers is for the owner and paid members. Unlock V01D first (unlock <key>, or sign in with your passkey), then ask again.';
+const failText = (status) => (status === 401 ? 'Only the owner can use memory.' : status === 403 ? 'What V01D remembers is for paid members.' : status === 503 ? 'There is no database behind this copy of V01D.' : 'Memory answered ' + status + '.');
 const NOT_TOPIC = /^(?:me|you|us|it|that|this|them|him|her|everything|anything|nothing|myself|yourself)$/;
 
 /** what the ask means: null, or { q } where q is what goes to /api/memory?ask= ("" asks for the prompt sentence) */
@@ -73,7 +73,7 @@ function mount(th, stageApi) {
   card.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(460px, calc(100vw - 20px))';
   const head = el('div'); head.className = 'g-head';
   const title = el('span', null, 'Memory'); title.className = 'g-title';
-  const sub = el('span', null, th.q ? 'asked: ' + th.q : 'what Void remembers'); sub.className = 'g-sub';
+  const sub = el('span', null, th.q ? 'asked: ' + th.q : 'what V01D remembers'); sub.className = 'g-sub';
   head.append(title, sub);
   const status = el('div', 'margin-top:6px;' + MUTED); status.className = 'memory-status g-status'; status.setAttribute('aria-live', 'polite');
   const list = el('div', 'display:grid;gap:6px;margin-top:10px;font-size:13px'); list.className = 'memory-list';
@@ -91,7 +91,7 @@ function mount(th, stageApi) {
     status.textContent = 'asking…';
     try {
       const r = await fetch(askUrl(th.q), { headers: { authorization: 'Bearer ' + tok } });
-      if (!r.ok) throw new Error(r.status === 401 ? 'only the owner can read what Void remembers' : r.status === 403 ? 'what Void remembers is for paid members' : r.status === 503 ? 'no database behind this copy of Void' : 'memory answered ' + r.status);
+      if (!r.ok) throw new Error(r.status === 401 ? 'only the owner can read what V01D remembers' : r.status === 403 ? 'what V01D remembers is for paid members' : r.status === 503 ? 'no database behind this copy of V01D' : 'memory answered ' + r.status);
       const data = await r.json().catch(() => ({}));
       paint(data.answer); status.textContent = '';
     } catch (e) { status.textContent = e.message; throw e; }
@@ -109,7 +109,7 @@ async function run(text, api) {
   if (!q) return 'none';
   if (q.remember || q.forget) return keepOrDrop(q, api);
   api.summon('memory', { q: q.q, center: true });
-  api.say('Memory · what Void remembers about your projects');
+  api.say('Memory · what V01D remembers about your projects');
   return 'memory';
 }
 

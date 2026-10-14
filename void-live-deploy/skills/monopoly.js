@@ -33,7 +33,7 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card game-card monopoly-card';
   el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(470px, calc(100vw - 20px))';
-  el.innerHTML = '<div class="g-head"><span class="g-title">The Landlord’s Game</span><span class="g-sub">you against Void</span></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title">The Landlord’s Game</span><span class="g-sub">you against V01D</span></div>';
   const wrap = document.createElement('div'); wrap.className = 'g-board';
   const board = document.createElement('div'); board.className = 'mono-board';
   board.style.cssText = 'display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(11,1fr);aspect-ratio:1;gap:1px;background:#1d2a22;border-radius:8px;padding:2px;font-size:6.5px;line-height:1.05';
@@ -73,11 +73,11 @@ function mount(th, stageApi) {
   cashIn.addEventListener('pointerdown', (e) => e.stopPropagation());
   const offerB = btn('Offer', 'mono-offer-btn', () => { const r = M.offer(th.state, { space: picked, cash: cashIn.value }); th.state = r.s; offerOut.textContent = r.why; save(); paint(); });
   const buildB = btn('Build a house', 'mono-build', () => act(M.build(th.state, picked)));
-  offerRow.append(document.createTextNode('Offer Void'), cashIn, offerB);
+  offerRow.append(document.createTextNode('Offer V01D'), cashIn, offerB);
   const offerOut = document.createElement('div'); offerOut.className = 'mono-offer-out'; offerOut.style.cssText = 'font-size:12px;color:var(--muted,#8a8a8a);min-height:15px';
   const log = document.createElement('div'); log.className = 'mono-log'; log.style.cssText = 'font-size:11.5px;color:var(--muted,#8a8a8a);max-height:132px;overflow:auto;margin-top:6px;border-top:1px solid rgba(255,255,255,.08);padding-top:4px';
   const foot = document.createElement('div'); foot.className = 'g-rules';
-  foot.textContent = 'Buying is always your choice. Rent, tax, cards and Jail are forced. Tap a space to see it; tap one of Void’s to make an offer, or one of your full sets to build.';
+  foot.textContent = 'Buying is always your choice. Rent, tax, cards and Jail are forced. Tap a space to see it; tap one of V01D’s to make an offer, or one of your full sets to build.';
   let picked = -1;
   const save = () => stageApi.save && stageApi.save();
   function act(next) { if (next !== th.state) { th.state = next; save(); } paint(); voidPlays(); }
@@ -148,7 +148,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'monopoly');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'monopoly'; }
   api.summon('monopoly', { state: M.create({ voids: 1 }), x: Math.max(10, Math.round(innerWidth / 2 - 420)), y: 40 });
-  api.say('The Landlord’s Game (plays like Monopoly) · you against Void · roll to start; buying is always your choice');
+  api.say('The Landlord’s Game (plays like Monopoly) · you against V01D · roll to start; buying is always your choice');
   return 'monopoly';
 }
 
