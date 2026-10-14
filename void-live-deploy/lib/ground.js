@@ -17,7 +17,7 @@ const STOP = new Set(('a an the and or but of to for in on at by with from into 
 
 // numbers compare as numbers: "$20,000" and "20000", "300k" and "300,000", "12x14" and "12 × 14"; apostrophes go ("what's" is "whats")
 const norm = (t) => String(t || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
-  .replace(/(\d),(?=\d{3}\b)/g, '$1').replace(/\b(\d+(?:\.\d+)?)k\b/g, (_, n) => String(Math.round(parseFloat(n) * 1000))).replace(/['\u2019]/g, '');
+  .replace(/(\d),(?=\d{3}\b)/g, '$1').replace(/\b(\d+(?:\.\d+)?)k\b/g, (_, n) => String(Math.round(parseFloat(n) * 1000))).replace(/(\d)\.0+\b/g, '$1').replace(/['\u2019]/g, ''); // and 45.00 is 45
 const stem = (w) => w.replace(/(?:ies)$/, 'y').replace(/(?:ing|ed|es|s)$/, '') || w;
 export const words = (t) => norm(t).match(/[a-z]+|\d+(?:\.\d+)?/g) || [];
 
@@ -51,4 +51,22 @@ export function grounded(ask, cardText, triggers = new Set()) {
   const found = subject.filter(has), missing = subject.filter((s) => !has(s));
   const need = Math.ceil(subject.length / 2);
   return { subject, found, missing, ok: !subject.length || found.length >= need };
+}
+
+/** a skill's trigger words on the page, where only its own examples are at hand: its name's words and the words in at least two
+ *  of its examples (so "recipe" in "recipe for pancakes" and "lasagna recipe"). Pure. */
+export function skillTriggers(skill) {
+  const t = triggersFrom((skill && skill.examples) || [], 0);
+  const list = ((skill && skill.examples) || []).map((a) => new Set(words(a).map(stem)));
+  const count = new Map(); for (const s of list) for (const w of s) count.set(w, (count.get(w) || 0) + 1);
+  for (const [w, n] of count) if (n >= 2) t.add(w);
+  for (const w of words(String((skill && skill.name) || '').replace(/-/g, ' '))) t.add(stem(w));
+  return t;
+}
+
+/** the page's check (void.html, after a skill draws a card): { unmet, subject, missing }. Stricter than the benchmark's on purpose:
+ *  only a card that shows none of the ask's subject is unmet, so what reaches the miss list is a card about something else. */
+export function judgeCard(ask, cardText, skill) {
+  const g = grounded(ask, cardText, skillTriggers(skill));
+  return { unmet: g.subject.length > 0 && g.found.length === 0, subject: g.subject, missing: g.missing };
 }

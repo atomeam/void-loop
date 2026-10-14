@@ -3658,6 +3658,20 @@ say('nothing selected to remove');
       }
       return null;
     }
+    // The semantic validator on the page (owner, 2026-10-14: "it needs a tighter grounding mechanism" and "maybe it needs a
+    // 'semantic validator' loop"; lib/ground.js): a skill drew a card, but is it about what was asked? A card that shows none of the
+    // ask's subject ("how do i make guacamole" -> a pancakes card) goes to the miss list as ungrounded:<skill>, quietly (nothing is
+    // shown to the person), so the learning loop (lib/learn.js) turns a repeated one into a job. window.voidUngrounded keeps the
+    // last 20 for the tests and the console.
+    function groundCheck(text, skill, el) {
+      import('/lib/ground.js').then((g) => setTimeout(() => {
+        if (vpageEl !== el) return; // replaced before it settled: not this card's to judge
+        const r = g.judgeCard(text, el.innerText || '', skill);
+        if (!r.unmet) return;
+        window.voidUngrounded = (window.voidUngrounded || []).concat([{ ask: text, skill: skill.name, missing: r.missing }]).slice(-20);
+        try { fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(text).slice(0, 200), fallback: 'ungrounded:' + skill.name }), keepalive: true }).catch(() => {}); } catch (_) {}
+      }, 1500)).catch(() => {});
+    }
     async function runLearnedSkills(text, lower0, deadline = Date.now()) {
       const skill = await firstSkill(lower0, text, deadline);
       {
@@ -3675,10 +3689,11 @@ say('nothing selected to remove');
             refreshThings: () => render(), // the 3D calendar redraws the stage card after an edit
           };
           say(/weather|place|map/.test(skill.name) ? 'looking up' : skill.name === 'translate' ? 'translating' : 'working');
-          const before = whisper.textContent;
+          const before = whisper.textContent, cardBefore = vpageEl;
           const src = await skill.run(text, api);
           if (whisper.textContent === before) say(src === 'none' ? (navigator.onLine === false ? "you're offline · this one needs the internet" : "couldn't") : ''); // a skill that said something keeps its line; a finished one clears it
           if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + skill.name });
+          if (src !== 'none' && vpageEl && vpageEl !== cardBefore) groundCheck(text, skill, vpageEl);
           if (src === 'none') reportMiss(text, 'skill:' + skill.name);
           return true;
         }
