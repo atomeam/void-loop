@@ -70,6 +70,7 @@ for (const [name, file] of [
   ['words', 'words.test.mjs'],
   ['weather-match', 'weather-match.test.mjs'],
   ['body-asks', 'body-asks.test.mjs'],
+  ['bmi', 'bmi.test.mjs'],
   ['sky-skills', 'sky-skills.test.mjs'],
   ['sky-world', 'sky-world.test.mjs'],
   ['sky', 'test_sky.mjs'],
