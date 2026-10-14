@@ -646,7 +646,8 @@ try {
     const said = await T.whisper(), st = await T.state(), list = st.find((x) => x.kind === 'list'), timer = st.find((x) => x.kind === 'timer'), note = st.find((x) => x.kind === 'sticky');
     check('open plan timer: "make a plan to learn spanish" puts up the engine\'s steps as a checklist, its 15 minute practice timer and its note to self as a sticky, as one group, and says so (with the call Clef made: a daily practice)',
       !!list && list.items.length === 3 && !!timer && /a daily practice, so a 15 minute timer, a note to self/.test(said) && !!note && note.text === 'Little and often beats one long session.'
-        && !!list.group && list.group === timer.group && list.group === note.group && !T.errors.length,
+        && !!list.group && list.group === timer.group && list.group === note.group && note.role === 'note' && !T.errors.length
+        && await T.p.$eval('.thing.sticky[data-role="note"]', (e) => getComputedStyle(e, '::before').content.includes('note to self')).catch(() => false),
       JSON.stringify({ said, stickies: st.filter((x) => x.kind === "sticky").map((x) => x.text), kinds: st.map((x) => x.kind), e: T.errors }));
     await T.ctx.close(); }
   // a dated plan of a kind with no steps of its own: the engine's steps, dated back from the day; with no engine, the generic
