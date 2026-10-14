@@ -1,34 +1,73 @@
 /**
- * film-discovery skill — structured film discovery returning JSON film metadata
+ * film-discovery skill - structured film metadata as JSON (asked by Void, daily 2026-10-14 ask-20261014-1820-3:
+ * "Convert the 'film discovery' logic into a structured skill that outputs a JSON object containing film metadata").
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "film discovery", "film metadata", "json film", "discover films".
- * Returns a JSON object with film metadata. Empty surface stays empty.
+ * "film metadata for Inception", "discover film The Matrix", "JSON film metadata for Parasite".
+ * Uses Wikipedia summary (no key). Returns { title, year, extract, thumbnail, page, source }.
+ * Empty surface stays empty: no card until asked.
  */
-export const FILMS = [
-  { title: 'The Void Experiment', year: 2026, director: 'V01D', genre: 'experimental', runtime: '2 min', note: 'Built and shot by Void itself' },
-  { title: 'Stage Lights', year: 2026, director: 'A-to-Mind', genre: 'short', runtime: '1 min', note: 'Daily film from the stage' },
-  { title: 'Magnetize', year: 2026, director: 'MIT collab', genre: 'science', runtime: '3 min', note: 'The magnetize step' }
-];
-
-export function wantsFilmDiscovery(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:please\s+)?(?:film\s+discovery|film\s+metadata|json\s+film|discover\s+films|film\s+json|show\s+film\s+metadata)$/.test(t);
+export function filmOf(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const m = t.match(/^(?:please\s+)?(?:(?:film|movie)\s+(?:metadata|info|details|discovery)\s+(?:for|of|on)\s+|discover(?:\s+the)?\s+(?:film|movie)\s+|json\s+(?:film|movie)\s+metadata\s+(?:for|of)\s+)["“]?(.+?)["”]?$/i);
+  if (!m) return null;
+  const title = m[1].trim();
+  if (!title || title.length < 2 || title.split(' ').length > 8) return null;
+  return title;
 }
 
-function run(text, api) {
-  const { showPage, esc } = api;
-  if (!wantsFilmDiscovery(text)) return 'none';
-  const meta = { films: FILMS, count: FILMS.length, source: 'Void film discovery' };
-  showPage((el) => {
-    el.innerHTML = '<h2>Film discovery</h2><pre style="white-space:pre-wrap;font-size:13px;line-height:1.4">' + esc(JSON.stringify(meta, null, 2)) + '</pre><div class="src">Structured JSON film metadata</div>';
-  });
-  return 'film-discovery';
+export async function metadataFor(title, fetchFn = (u, o) => fetch(u, o)) {
+  const page = title.replace(/ /g, '_');
+  const url = 'https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(page);
+  const r = await fetchFn(url, { headers: { Accept: 'application/json' } });
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  const j = await r.json();
+  const year = (j.description || '').match(/\b(19|20)\d{2}\b/)?.[0] || (j.extract || '').match(/\b(19|20)\d{2}\b/)?.[0] || null;
+  return {
+    title: j.title || title,
+    year,
+    extract: j.extract || '',
+    thumbnail: j.thumbnail?.source || null,
+    page: j.content_urls?.desktop?.page || 'https://en.wikipedia.org/wiki/' + encodeURIComponent(page),
+    source: 'Wikipedia',
+  };
+}
+
+async function run(text, api) {
+  const { showPage, esc, _pageStill } = api;
+  const title = filmOf(text);
+  if (!title) return 'none';
+  const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><div class="sub">reading film metadata…</div>'; });
+  try {
+    const meta = await metadataFor(title);
+    if (_pageStill && !_pageStill(el)) return 'film-discovery';
+    const json = JSON.stringify(meta, null, 2);
+    el.innerHTML = '<h2>' + esc(meta.title) + (meta.year ? ' <span class="sub">(' + esc(meta.year) + ')</span>' : '') + '</h2>'
+      + (meta.thumbnail ? '<img src="' + esc(meta.thumbnail) + '" alt="" style="max-width:160px;border-radius:8px;float:right;margin:0 0 8px 12px">' : '')
+      + '<p>' + esc(meta.extract) + '</p>'
+      + '<details open><summary style="cursor:pointer">JSON film metadata</summary><pre style="white-space:pre-wrap;font-size:12px;background:rgba(255,255,255,.04);padding:8px;border-radius:6px">' + esc(json) + '</pre></details>'
+      + '<div class="src">Source: <a href="' + esc(meta.page) + '" target="_blank" rel="noopener">' + esc(meta.source) + '</a></div>';
+    return 'film-discovery';
+  } catch (e) {
+    if (_pageStill && !_pageStill(el)) return 'none';
+    el.innerHTML = '<h2>' + esc(title) + '</h2><p>Film metadata could not be read just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>';
+    return 'none';
+  }
 }
 
 export default {
   name: 'film-discovery',
-  examples: ['film discovery', 'film metadata', 'json film', 'discover films', 'show film metadata'],
-  nearMisses: ['best films of 2025', 'watch films', 'film a timer', 'horror movies'],
-  match(lower, text) { return wantsFilmDiscovery(text || lower); },
-  run
+  examples: [
+    'film metadata for Inception',
+    'discover film The Matrix',
+    'JSON film metadata for Parasite',
+    'movie info for Spirited Away',
+  ],
+  nearMisses: [
+    'films',
+    'void films',
+    'best films of 2025',
+    'how do I film a video',
+  ],
+  match(lower, text) { return !!filmOf(text || lower); },
+  run,
 };
