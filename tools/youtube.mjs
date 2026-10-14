@@ -14,12 +14,19 @@ import { fileURLToPath } from 'node:url';
 export const CHANNEL_ID = 'UCk9IOf_MwoC6Bw3zxEZiTPg'; // A-to-Mind's Void, @atombomb983 (the owner, 2026-10-14)
 export const CATEGORY = '28'; // Science & Technology
 
+// what Google's refusals mean, in the owner's terms (the first real run, 2026-10-14, got unauthorized_client)
+export const HINTS = {
+  unauthorized_client: 'the refresh token was made for a different OAuth client than YT_CLIENT_ID and YT_CLIENT_SECRET. Make it again in the OAuth Playground with "Use your own OAuth credentials" ticked (the gear icon) and this client\'s ID and secret',
+  invalid_grant: 'the refresh token has expired or was revoked (a consent screen left in "Testing" expires them after 7 days). Publish the app, then make a new token',
+  invalid_client: 'YT_CLIENT_ID or YT_CLIENT_SECRET is wrong: copy both again from Google Cloud, Credentials',
+};
+
 /** a fresh access token from the refresh token */
 export async function accessToken({ clientId, clientSecret, refreshToken }, fetchFn = fetch) {
   const r = await fetchFn('https://oauth2.googleapis.com/token', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' },
     body: new URLSearchParams({ client_id: clientId, client_secret: clientSecret, refresh_token: refreshToken, grant_type: 'refresh_token' }).toString() });
   const j = await r.json().catch(() => ({}));
-  if (!r.ok || !j.access_token) throw new Error('Google refused the refresh token (' + r.status + (j.error ? ': ' + j.error : '') + ')');
+  if (!r.ok || !j.access_token) throw new Error('Google refused the refresh token (' + r.status + (j.error ? ': ' + j.error : '') + ')' + (HINTS[j.error] ? ': ' + HINTS[j.error] : ''));
   return j.access_token;
 }
 
