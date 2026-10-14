@@ -213,6 +213,9 @@ async function run(text, api) {
     f.src = '/fringe/' + q.id + '.html';
     const box = el.querySelector('.vmake');
     if (box) box.appendChild(f);
+    // the ask named this tool by its own pattern, so the card is what was asked even when its title says it another way ("test my
+    // attention" -> "The pointing arrow"): the page's semantic validator leaves it be
+    if (el && el.dataset) el.dataset.grounded = 'named';
     noteUse(q.id);
     return 'make';
   }
