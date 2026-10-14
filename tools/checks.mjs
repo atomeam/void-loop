@@ -21,6 +21,7 @@ for (const [name, file] of [
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
   ['record', 'record.test.mjs'],
+  ['youtube', 'youtube.test.mjs'],
   ['skills', 'skills-check.mjs'],
   ['new-skill', 'new-skill.test.mjs'],
   ['frontier', 'frontier.test.mjs'],

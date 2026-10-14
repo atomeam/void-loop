@@ -36,6 +36,16 @@ jobs:
         env:
           ID: ${{ inputs.id }}
         run: node tools/record.mjs $ID --seconds 20 | tee -a "$GITHUB_STEP_SUMMARY"
+      # step 2: to Void's channel (tools/youtube.mjs refuses any other), when the owner's YouTube OAuth client is in the repo
+      # secrets; without them it says so and the film stays this run's artifact. Private unless the repo variable YT_PRIVACY says
+      # otherwise (and YouTube keeps an unaudited project's uploads private anyway).
+      - name: Upload to Void's YouTube channel
+        env:
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YT_PRIVACY: ${{ vars.YT_PRIVACY }}
+        run: for m in media/*.json; do node tools/youtube.mjs "$m" | tee -a "$GITHUB_STEP_SUMMARY"; done
       - uses: actions/upload-artifact@v4
         with:
           name: void-recording

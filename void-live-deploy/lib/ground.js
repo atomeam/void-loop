@@ -1,0 +1,48 @@
+// The semantic validator, first step (owner, 2026-10-14: "it needs a tighter grounding mechanism" and "maybe it needs a 'semantic
+// validator' loop"; Void, 2026-10-13: its 'Words and the world' family struggles "to ground language into the stage reliably").
+// Routing is measured (the everyday benchmark: the right skill answered), but whether the card is about what was asked was checked
+// for only the asks that carry a "says" pattern. This checks every answer the same way: an ask's subject is what is left once the
+// skill's own trigger words and the small words are taken out ("recipe for banana bread" -> banana, bread), and a grounded card
+// shows that subject. Cheap and deterministic, so it can run on every answer; an ask with no subject ("tell me a joke") is not
+// judged. The benchmark reports the ungrounded answers (node tools/bench.mjs --ground) before anything on the page acts on it.
+const STOP = new Set(('a an the and or but of to for in on at by with from into onto about as is are was were be been being am do does did ' +
+  'i me my mine you your yours we our us it its this that these those there here what which who whom whose when where why how ' +
+  'can could would should will shall may might must please pls show tell give get make find let lets need want like just some any ' +
+  'all one two me up out over under than then so if not no yes ok okay hey hi void now today tonight right really very much many ' +
+  'more most less little bit thing things stuff something anything again also too new old good best quick quickly').split(' '));
+
+const norm = (t) => String(t || '').toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '');
+const stem = (w) => w.replace(/(?:ies)$/, 'y').replace(/(?:ing|ed|es|s)$/, '') || w;
+export const words = (t) => norm(t).match(/[a-z0-9]+(?:'[a-z]+)?/g) || [];
+
+/** a skill's trigger words, read off its own asks: the words in at least `share` of them (at least 3 asks), stemmed. Pure. */
+export function triggersFrom(asks, share = 0.25) {
+  const list = (Array.isArray(asks) ? asks : []).map((a) => new Set(words(a).map(stem)));
+  const count = new Map();
+  for (const s of list) for (const w of s) count.set(w, (count.get(w) || 0) + 1);
+  const min = Math.max(3, Math.ceil(list.length * share));
+  return new Set([...count].filter(([, n]) => n >= min).map(([w]) => w));
+}
+
+/** what the ask is about: its words minus the small words and the skill's triggers, 3+ letters or a number, stemmed and unique */
+export function subjectOf(ask, triggers = new Set()) {
+  const out = [];
+  for (const w of words(ask)) {
+    const s = stem(w);
+    if (STOP.has(w) || STOP.has(s) || triggers.has(s) || (w.length < 3 && !/^\d+$/.test(w))) continue;
+    if (!out.includes(s)) out.push(s);
+  }
+  return out;
+}
+
+/** does the card show the subject? { subject, found, missing, ok }: ok when the ask has no subject (nothing to judge), or when
+ *  at least half of its words are on the card (lenient on purpose: a false alarm costs more than a miss here). A word counts when the card has a
+ *  word that starts with its stem (bread -> "breads", banana -> "bananas"). Pure. */
+export function grounded(ask, cardText, triggers = new Set()) {
+  const subject = subjectOf(ask, triggers);
+  const shown = new Set(words(cardText).map(stem)), seen = [...shown];
+  const has = (s) => shown.has(s) || (s.length >= 4 && seen.some((w) => w.startsWith(s)));
+  const found = subject.filter(has), missing = subject.filter((s) => !has(s));
+  const need = Math.ceil(subject.length / 2);
+  return { subject, found, missing, ok: !subject.length || found.length >= need };
+}

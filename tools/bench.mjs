@@ -20,6 +20,7 @@ import { CAPITALS, CURRENCIES } from '../void-live-deploy/skills/country.js';
 import { execFileSync } from 'node:child_process';
 import { envName, latencyOf, assess } from './bench-load.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
+import { triggersFrom, grounded } from '../void-live-deploy/lib/ground.js';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
 // --probe file.json: try candidate asks (same shape) without touching bench.json; prints only the misses, so a big batch
@@ -64,6 +65,13 @@ const browser = await chromium.launch({ executablePath: exe, headless: true });
 const json = (b) => ({ contentType: 'application/json', body: JSON.stringify(b) });
 const lastN = process.argv.includes('--last') ? Math.max(1, parseInt(process.argv[process.argv.indexOf('--last') + 1], 10) || 10) : 0;
 const todo = lastN ? asks.slice(-lastN) : asks, out = new Array(todo.length);
+// --ground: the semantic validator's measurement (lib/ground.js; owner, 2026-10-14: "a 'semantic validator' loop"). Every answer the
+// right skill gave, with no "says" to check it, is read off the page and asked: is this card about the ask's subject? Reported
+// apart (tools/bench.ground.json); it never changes the score. A skill's trigger words are read off its own asks in bench.json.
+const GROUND = process.argv.includes('--ground');
+const triggersOf = new Map();
+if (GROUND) { const by = new Map(); for (const x of JSON.parse(fs.readFileSync(path.join(here, 'bench.json'), 'utf8'))) for (const w of String(x.want).split('|')) if (w.startsWith('skill:')) { const k = w.slice(6); if (!by.has(k)) by.set(k, []); by.get(k).push(x.ask); }
+  for (const [k, list] of by) triggersOf.set(k, triggersFrom(list)); }
 async function one({ ask: a, want, says, before }) {
   const ctx = await browser.newContext(); const miss = [];
   await ctx.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => { const u = r.request().url();
@@ -122,10 +130,14 @@ async function one({ ask: a, want, says, before }) {
   // (other cards may rightly repeat the ask: a note shows its text, a spelling answer shows the word)
   if (/(^|\|)review(\||$)/.test(want)) { const echoes = [a, a.includes(':') ? a.slice(a.indexOf(':') + 1) : ''].map((x) => x.trim()).filter((x) => x.length >= 4);
     for (const e of echoes) shown = shown.split(e).join(' '); }
+  let ground = null;
+  if (GROUND && routed && !says) { const skill = (/^skill:([\w-]+)/.exec(note) || [])[1];
+    if (skill) { await p.waitForTimeout(400); const card = await p.evaluate(() => { const i = document.getElementById('input'); return document.body.innerText.replace(i ? i.value : '', ''); }).catch(() => '');
+      const g = grounded(a, said + '\n' + card, triggersOf.get(skill)); if (g.subject.length) ground = { skill, ok: g.ok, missing: g.missing }; } }
   const valueOk = !says || new RegExp(says, 'i').test(shown);
   const right = routed && valueOk;
   await ctx.close();
-  return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms };
+  return { ask: a, want: want + (says ? ' saying /' + says + '/' : ''), by: (note || '(none)') + (routed && !valueOk ? ' (wrong value)' : ''), right, ms, ...(ground ? { ground } : {}) };
 }
 // default: one page fewer than the cores, at most 6. At 6 on a 4-core machine the bench saturated itself (answers took 2.8 s at the median, 3.7 s at p95
 // of the 4 s it waits, two of five misses in a clean run were timing, and a full run takes about 20 min either way, it is CPU-bound): no headroom to see load in
@@ -158,6 +170,13 @@ const n = a.score;
 if (probeFile && out.some((x) => !x.right && /asked for code/.test(x.by))) console.log('("asked for code": Void did not see code in the ask. Name the language in NAMED and give looksLikeCode a reason to count a short paste, both in void-live-deploy/lib/code-review.js)');
 if (probeFile && out.some((x) => !x.right && /^review .* 0 \(wrong value\)/.test(x.by))) console.log('("review … 0 (wrong value)": the review found nothing. Add a rule to RULES in void-live-deploy/lib/code-review.js and a case to tools/review.test.mjs)');
 if (probeFile) { const missed = asks.filter((a) => !todo.includes(a)).concat(todo.filter((_, i) => !out[i].right)); fs.writeFileSync(AGAIN, JSON.stringify(missed, null, 1)); if (missed.length) console.log('(node tools/bench.mjs --again probes just these ' + missed.length + ' after a fix)'); }
+if (GROUND) {
+  const judged = out.filter((x) => x && x.ground), off = judged.filter((x) => !x.ground.ok);
+  const per = {}; for (const x of judged) { const k = x.ground.skill; per[k] = per[k] || { judged: 0, ungrounded: 0 }; per[k].judged++; if (!x.ground.ok) per[k].ungrounded++; }
+  fs.writeFileSync(path.join(here, 'bench.ground.json'), JSON.stringify({ at: new Date().toISOString(), judged: judged.length, ungrounded: off.length, skills: per, asks: off.map((x) => ({ ask: x.ask, skill: x.ground.skill, missing: x.ground.missing })) }, null, 1) + '\n');
+  console.log('\nGrounding: ' + (judged.length - off.length) + ' of ' + judged.length + ' answers with a subject show it (tools/bench.ground.json)');
+  for (const [k, v] of Object.entries(per).filter(([, v]) => v.ungrounded).sort((x, y) => y[1].ungrounded - x[1].ungrounded)) console.log('  ' + k.padEnd(14) + v.ungrounded + ' of ' + v.judged + ' ungrounded: ' + off.filter((x) => x.ground.skill === k).slice(0, 3).map((x) => '"' + x.ask + '" (no ' + x.ground.missing.join(', ') + ')').join('; '));
+}
 console.log('\n' + n + ' of ' + out.length + ' answered by what should answer them (answers took p50 ' + latency.p50 + 'ms, p95 ' + latency.p95 + 'ms' + (a.loadMisses.length ? '; ' + a.loadMisses.length + ' miss(es) passed alone and count as answered' : '') + ').');
 if (a.inconclusive) console.log(a.note);
 if (a.failed) console.log('FAILED: ' + a.wrong.length + ' miss(es) reproduce alone and take the score below the floor (' + best.score + '/' + best.total + ')');

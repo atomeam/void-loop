@@ -47,6 +47,7 @@ export function script(tool, run) {
     run && Array.isArray(run.findings) && run.findings.length ? 'What it found:\n' + lines(run.findings) : '',
     run && Array.isArray(run.failure_modes) && run.failure_modes.length ? 'What failed:\n' + lines(run.failure_modes.map((f) => (f && f.what) || f)) : '',
     'Ask Void for anything: https://a-to-mind.com',
+    'A new one every day: https://www.youtube.com/@atombomb983',
     '#Shorts #AI #Void',
   ].filter(Boolean);
   return { hook, caption: behavior || label, cta: 'Built by an AI, by itself.\nTry it free at\na\u2011to\u2011mind.com', title, description: parts.join('\n\n').slice(0, DESC_MAX),
