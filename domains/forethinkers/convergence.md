@@ -49,6 +49,15 @@ nodes:
     date: 2026-10-01
     tracks: [life-extension]
     claim: "Phase-2 RCT (n=31): intermittent dasatinib+quercetin achieved ≥1-stage fibrosis improvement without MASH worsening in 47% vs 7% placebo (P=0.02); MASH resolution 53% vs 7%. snRNA-seq showed lower senescence and fibrosis signatures. Hypothesis-generating (small n). Nature Metabolism 1 Oct 2026; NCT05506488."
+  - id: blood-methylation-senescence-score
+    kind: shared-part
+    status: established
+    part: blood DNA-methylation score of senescence burden (p16, p14, p21) for picking senolytic trial participants
+    title: "Methylation-associated Gene Expression (MaGE): a non-invasive, in vivo measure of cellular senescence"
+    url: https://doi.org/10.64898/2026.09.29.26364335
+    date: 2026-10-01
+    tracks: [life-extension]
+    claim: "medRxiv preprint (Simpson ... LeBrasseur, Chandra; PMID 42856468). Elastic-net blood methylation proxies of p16INK4a, p14ARF and p21CIP1 expression, trained in Mayo MOA-2 and applied to 18,859 Generation Scotland volunteers: 45 Bonferroni-significant associations across 18 incident diseases and mortality; MaGE-p16 mortality HR 1.38 per SD (1.28-1.49). Weights not public as of 2026-10-14 (code on GitHub, coefficient files absent). Registry pass 2026-10-14: one senolytic trial enriches by burden, NCT07270120 (Ohio State, D+Q in SPMS, p16INK4a above cohort median, phase 1 single arm, n=30, not yet recruiting); no burden-selected trial has a primary result."
   - id: senolytic-burden-selects-responders
     kind: shared-part
     status: established
@@ -125,6 +134,7 @@ nodes:
 
 ## Cycle log
 
+- 2026-10-14 14:13 ET. Blood-methylation-senescence-score established (MaGE, medRxiv 1 Oct 2026, doi 10.64898/2026.09.29.26364335): a standard blood array gives a p16 burden score that predicts mortality in 18,859 people. Registry pass of 115 senolytic records found one burden-enriched trial (NCT07270120, not yet recruiting) and no burden-selected primary result. No earlier think-tank branches or PRs to fold; the even-hour runs from 2026-10-08 to 2026-10-14 08:07 failed on the box (Node 22 symlinks, node_modules and the test browser were wiped again) and left no work behind.
 - 2026-10-07 20:14 ET. Printed-motor-waves-arm established (Schwalbe et al., Advanced Materials Technologies, 20 Apr 2026, doi 10.1002/admt.70994): a motor printed in every element but its magnets drives a waving arm and a multi-legged walking robot, 7.62 N mm/A, 28.2% efficiency. The figure-joint node stays hypothesis with a narrower gap: toy size, toy battery, toy-safe surface heat. Logged the AIM 2023 single-print coil-plus-gripper and the UC San Diego one-print pneumatic walker as the two earlier routes. No earlier think-tank branches or PRs to fold.
 - 2026-10-07 18:07 ET. Florida-acropora-functional-extinction established (Manzello et al. Science 23 Oct 2025): the 2023 heatwave killed 97.8-100% of Keys Acropora, answering planet-restoration question 3. Logged gene banks (Muller et al. Conserv Biol 2025), Durusdinium +1.9 C elkhorn (Coral Reefs 2025), the Baker et al. Science AGF forum, and the Flonduran field trials (Miami July 2025, Dry Tortugas April 2026). No earlier think-tank branches or PRs to fold.
 - 2026-10-07 16:20 ET. Senolytic-burden-selects-responders established (Farr et al. Nat Med 2024; Aging Cell 2025 p16 variant 5). Live ClinicalTrials.gov pass: no senolytic MASH replication registered, NCT05506488 has no posted results, three prospective GLP-1 DNAm-age trials read out Apr-Dec 2027. Registry API is browser-readable, so a live trial-watch card is buildable. Stale 14:16 worktree removed (its PR #158 had merged).
