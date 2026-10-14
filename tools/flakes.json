@@ -18,5 +18,6 @@
   {"check": "draw 3D: \"new 3d layer for the ring\" makes a 3D layer; a drag paints a ring in space; \"turn the ring 70\" turns it so it narrows on the canvas; Undo takes the st", "sha": "f86862021393ea00ba7c86efe822c903fd37b227", "at": "2026-10-13T16:47:35Z"},
   {"check": "router: with nothing earned, a hard ask gets Gemma (the one free model, no second free model) and the stronger model is recorded, not called: \"would escalate\" i", "sha": "f86862021393ea00ba7c86efe822c903fd37b227", "at": "2026-10-13T16:47:35Z"},
   {"check": "shared Void moves: a clock summoned in one tab and dragged there moves to the same spot (a share of the stage) in the other tab, and dragged back there it follo", "sha": "02d430e643a93049c42d0cb6fb6058e1d2553237", "at": "2026-10-13T17:25:51Z"},
-  {"check": "router: with nothing earned, a hard ask gets Gemma (the one free model, no second free model) and the stronger model is recorded, not called: \"would escalate\" i", "sha": "02d430e643a93049c42d0cb6fb6058e1d2553237", "at": "2026-10-13T17:25:51Z"}
+  {"check": "router: with nothing earned, a hard ask gets Gemma (the one free model, no second free model) and the stronger model is recorded, not called: \"would escalate\" i", "sha": "02d430e643a93049c42d0cb6fb6058e1d2553237", "at": "2026-10-13T17:25:51Z"},
+  {"check": "intake: the late-September AI landscape (current, unverified, marked paraphrase) feeds the will: tiered model stack lifts the stale evaluation, defences lifted ", "sha": "bc0b7c96d8ea3aa6848ab02deb7a8237b87e018b", "at": "2026-10-14T00:12:32Z"}
 ]
