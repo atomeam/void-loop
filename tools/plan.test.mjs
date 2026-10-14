@@ -52,6 +52,7 @@ test('the skill asks the engine, then runs only the checklist ask with its steps
     assert.deepEqual(sent[0], ['/api/answer', { mode: 'plan', goal: 'learn guitar' }]);
     assert.deepEqual(asked, ['make a list with Pick a sunny spot, Choose plants + seeds, Water every morning', 'add a sticky that says draft to Sam (not sent): heads up, I\'m working on: learn guitar']);
     assert.match(said[0], /planned "learn guitar" · checklist, a draft to Sam · one group · nothing sent/);
+    assert.match(said[0], / · say undo to take it all back$/, 'a plan of several things says one undo takes it all back');
     globalThis.fetch = async () => new Response(JSON.stringify({ steps: null, note: 'no model' }));
     asked.length = 0; said.length = 0;
     assert.equal(await skill.run('plan my garden', { stage, say: (s) => said.push(s) }), 'intent');

@@ -277,9 +277,11 @@ async function run(text, api) {
   // Clef called it a skill to learn (lib/plan.js withLearnStep), so the engine's steps open with finding a teacher
   const taught = plan.learn ? ' · a skill to learn, so it starts with finding a teacher or a course' : '';
   const pieces = plan.asks.map((a) => a.piece === 'draft' ? 'a draft to ' + cap(plan.who) : a.piece === 'timer' ? (a.practice ? 'a daily practice, so a ' + a.minutes + ' minute timer' : 'a ' + a.minutes + ' minute practice timer') : a.piece === 'note' ? 'a note to self' : a.piece).join(', ');
-  if (api.say && plan.open) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · steps from the answer engine, check them' + taught); return 'intent'; }
-  if (api.say && !plan.deadline) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · no day yet: add one ("' + plan.goal + ' by Friday") for dates, a countdown and the calendar'); return 'intent'; }
-  if (api.say) api.say('planned "' + plan.goal + '" for ' + LONG_DAY(plan.deadline) + ' · ' + pieces + (ids.length > 1 ? ' · one group, drag one to move them all' : '') + (plan.who ? ' · nothing sent' : '') + (plan.engine ? ' · steps from the answer engine, check them' + taught : ''));
+  // one "undo" takes the whole plan back (void.html snapshots only the asks the person made), and the card says so
+  const undoAll = ids.length > 1 ? ' · say undo to take it all back' : '';
+  if (api.say && plan.open) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · steps from the answer engine, check them' + taught + undoAll); return 'intent'; }
+  if (api.say && !plan.deadline) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · no day yet: add one ("' + plan.goal + ' by Friday") for dates, a countdown and the calendar' + undoAll); return 'intent'; }
+  if (api.say) api.say('planned "' + plan.goal + '" for ' + LONG_DAY(plan.deadline) + ' · ' + pieces + (ids.length > 1 ? ' · one group, drag one to move them all' : '') + (plan.who ? ' · nothing sent' : '') + (plan.engine ? ' · steps from the answer engine, check them' + taught : '') + undoAll);
   return 'intent';
 }
 
