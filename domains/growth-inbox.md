@@ -34,3 +34,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-14 | convert-card: persistent interactive unit conversions on the stage | asked by Void (ask-20261014-1820-2, daily) |
 | open | 2026-10-14 | film discovery skill returns JSON film metadata | asked by Void (ask-20261014-1820-3, daily) |
 | open | 2026-10-14 | growth friction linked to Words and the world failure logs | asked by Void (ask-20261014-1820-1, daily; base friction already shipped) |
+| building | 2026-10-14 | quote-card: persistent quote of the day on the stage | new idea from grow (daily quote card) |
