@@ -12,3 +12,6 @@ domains/inputs/**/raw/
 domains/void.misses.md
 domains/void.jobs.json
 dist/
+
+# Void's own recordings of its experiments (tools/record.mjs): made in CI and kept as run artifacts, never committed
+media/

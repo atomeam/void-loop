@@ -1,0 +1,43 @@
+# Void films its own experiments (owner, 2026-10-14: "Void should use my Youtube channel to make its own Videos"). Step 1 of the
+# broadcast loop: tools/record.mjs opens a lab experiment in a real browser, runs it, and films it with the run's own words from
+# the fringe ledger as a caption; the video and its title and description are kept as this run's artifact (14 days). Nothing is
+# uploaded yet: step 2 adds the YouTube upload once the owner's channel credentials are repository secrets.
+name: Void records itself
+
+on:
+  schedule:
+    - cron: '41 15 * * *' # daily
+  workflow_dispatch:
+    inputs:
+      id:
+        description: A lab experiment to film (empty = the newest in the lab)
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Install Chromium and the ffmpeg Playwright films with
+        run: |
+          npx playwright-core install --with-deps chromium ffmpeg
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Film it
+        env:
+          ID: ${{ inputs.id }}
+        run: node tools/record.mjs $ID --seconds 14 | tee -a "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: void-recording
+          path: media/
+          retention-days: 14
