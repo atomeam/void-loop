@@ -5945,5 +5945,9 @@
   {"ask": "show the map", "want": "skill:rebuild-map"},
   {"ask": "what is the map", "want": "skill:rebuild-map"},
   {"ask": "what's being built", "want": "skill:rebuild-map"},
-  {"ask": "map of everything", "want": "skill:rebuild-map"}
+  {"ask": "map of everything", "want": "skill:rebuild-map"},
+  {"ask": "films", "want": "skill:films"},
+  {"ask": "voids fillms", "want": "skill:films"},
+  {"ask": "where do I watch the films", "want": "skill:films"},
+  {"ask": "film review", "want": "skill:films"}
 ]

@@ -97,3 +97,30 @@ test('without the bucket bound the route says so instead of breaking', async () 
   const { env } = await world(); delete env.FILMS;
   assert.equal((await get(env, OWNER)).status, 503);
 });
+
+// reviews (owner, 2026-10-14: "film review could be for owner and paying members as contributer reviewrs")
+import * as rev from '../void-live-deploy/functions/api/film-review.js';
+test('members and the owner review a film; a member sees the totals and their own, the owner reads every note; nobody else can', async () => {
+  const { env, sess } = await world();
+  await env.FILMS.put('films/20261014-odd-r6.mp4', FILM);
+  const A = 'a'.repeat(43), B = 'b'.repeat(43), FREE = 'f'.repeat(43);
+  await sess(A, 'u-a', 'paid'); await sess(B, 'u-b', 'paid'); await sess(FREE, 'u-free', 'free');
+  const review = (auth, body) => rev.onRequestPost({ request: new Request('https://x.test/api/film-review', { method: 'POST', headers: auth ? { authorization: 'Bearer ' + auth } : {}, body: JSON.stringify(body) }), env });
+  assert.equal((await review(null, { id: '20261014-odd-r6', verdict: 'post' })).status, 401);
+  assert.equal((await review(FREE, { id: '20261014-odd-r6', verdict: 'post' })).status, 401);
+  assert.equal((await review(A, { id: '20261014-odd-r6', verdict: 'love' })).status, 400, 'only post, fix or skip');
+  assert.equal((await review(A, { id: '20261014-nope-r1', verdict: 'post' })).status, 404, 'only a film that exists');
+  assert.equal((await review(A, { id: '20261014-odd-r6', verdict: 'fix', note: 'Cut the first 3 seconds. My key vr1.' + 'Z'.repeat(43) })).status, 200);
+  assert.equal((await review(A, { id: '20261014-odd-r6', verdict: 'post', note: 'Cut the first 3 seconds, then post.' })).status, 200, 'a reviewer changes their mind: one review each');
+  assert.equal((await review(B, { id: '20261014-odd-r6', verdict: 'skip', note: 'Boring middle. vr1.' + 'Z'.repeat(43) })).status, 200);
+  assert.equal((await review(OWNER, { id: '20261014-odd-r6', verdict: 'post' })).status, 200);
+  const asA = (await (await get(env, A)).json()).films[0].reviews;
+  assert.deepEqual(asA.counts, { post: 2, fix: 0, skip: 1 });
+  assert.equal(asA.mine.verdict, 'post'); assert.equal(asA.mine.note, 'Cut the first 3 seconds, then post.');
+  assert.equal(asA.notes, undefined, 'a member does not read the others\' notes');
+  const asOwner = (await (await get(env, OWNER)).json()).films[0].reviews;
+  assert.deepEqual(asOwner.notes.map((n) => [n.by, n.verdict, n.note]).sort(), [['member', 'post', 'Cut the first 3 seconds, then post.'], ['member', 'skip', 'Boring middle. [redacted key]']]);
+  assert.ok(!JSON.stringify(asOwner).includes('u-a'), 'the owner sees "member", not who');
+  const kept = env.DB.raw.prepare('SELECT note FROM void_film_reviews').all().map((r) => r.note).join(' ');
+  assert.ok(!kept.includes('Z'.repeat(43)), 'a key typed into a note is never kept');
+});
