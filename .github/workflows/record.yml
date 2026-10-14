@@ -45,8 +45,10 @@ jobs:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
           YT_PRIVACY: ${{ vars.YT_PRIVACY }}
-        run: for m in media/*.json; do node tools/youtube.mjs "$m" | tee -a "$GITHUB_STEP_SUMMARY"; done
+        # pipefail: a refused upload turns the run red (through tee it showed green); the film is still kept as the artifact below
+        run: set -o pipefail; for m in media/*.json; do node tools/youtube.mjs "$m" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"; done
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: void-recording
           path: media/
