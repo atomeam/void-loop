@@ -3704,6 +3704,7 @@ say('nothing selected to remove');
 
     // --- Undo the last thing: one step, this device ---
     const UNDO_KEY = 'a2m.void.undo.v1';
+    let skillsRunning = 0; // a skill running now: the asks it makes are part of the one the person made (handle)
     function takeUndoSnapshot() {
       try { localStorage.setItem(UNDO_KEY, JSON.stringify({ state: localStorage.getItem(STATE_KEY), look: localStorage.getItem(LOOK_KEY), agenda: localStorage.getItem(AGENDA_KEY) })); } catch (_) {}
     }
@@ -4737,11 +4738,14 @@ say('nothing selected to remove');
       { const full = restorePaste(text); if (await handleReviewAsk(text, full)) return; if (await handleFixAsk(text, full)) return; }
       if (handleVoiceAsk(lower0)) return;
       if (await handleGatedAsk(text)) return;
-      takeUndoSnapshot();
+      // one snapshot per ask the person made: the asks a running skill makes for its pieces (a plan's checklist, timer and note)
+      // take none of their own, so one "undo" takes back the whole plan, not just its last piece
+      if (!skillsRunning) takeUndoSnapshot();
       if (handleMetaAsk(text, lower0)) return;
       currentAsk = text; if (!/^(close|menu|undo|oops|clear)\b/.test(lower0)) lastAsk = text;
       if (!skillsLoaded) say('waking up');
-      const ranSkill = await runLearnedSkills(text, lower0, Date.now() + 6000); // waits only for the skills ranked above the one that answers
+      let ranSkill; skillsRunning++;
+      try { ranSkill = await runLearnedSkills(text, lower0, Date.now() + 6000); } finally { skillsRunning--; } // waits only for the skills ranked above the one that answers
       if (whisper.textContent === 'waking up') say('');
       if (ranSkill) return;
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }

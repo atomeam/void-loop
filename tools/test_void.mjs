@@ -652,6 +652,18 @@ try {
         && await T.p.$eval('.thing.sticky[data-role="note"]', (e) => getComputedStyle(e, '::before').content.includes('note to self')).catch(() => false),
       JSON.stringify({ said, stickies: st.filter((x) => x.kind === "sticky").map((x) => x.text), kinds: st.map((x) => x.kind), e: T.errors }));
     await T.ctx.close(); }
+  // one undo takes back a whole plan: its pieces are asks the plan skill makes, and each used to take its own undo snapshot, so
+  // "undo" after a plan removed only the last piece (the note) and left the checklist and the timer
+  if (want("undo after a plan takes back the whole plan, not its last piece")) { const U = await fresh();
+    await U.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, note: 'Little and often.', model: 'gemma' })));
+    await U.ask('make a clock', 700);
+    await U.ask('make a plan to learn spanish', 3000);
+    const during = (await U.state()).map((x) => x.kind).sort().join(',');
+    await U.ask('undo', 800);
+    const after = (await U.state()).map((x) => x.kind).sort().join(',');
+    check('undo after a plan takes back the whole plan (checklist, timer and note), and leaves what was there before it',
+      /list/.test(during) && /timer/.test(during) && /sticky/.test(during) && after === 'clock' && !U.errors.length, JSON.stringify({ during, after, e: U.errors }));
+    await U.ctx.close(); }
   // a dated plan of a kind with no steps of its own: the engine's steps, dated back from the day; with no engine, the generic
   // steps, and the checklist is there (its "check it" step used to stop the list ask, so the plan came without one)
   if (want("dated open plan: \"make a plan to learn spanish by friday\" takes the engine's steps")) { const D = await fresh();
