@@ -2452,11 +2452,37 @@ try {
   if (want("films skill: films, voids fillms and where do I watch the films open the way to /films/")) {
     const S = await fresh(); const got = [];
     for (const a of ['films', 'voids fillms', 'where do I watch the films']) {
-      await S.ask(a, 500); await until(async () => /Void's films/.test(await S.page()), 4000);
-      got.push(await S.p.evaluate(() => { const c = document.querySelector('.vpage.on'); const l = c && c.querySelector('a[href="/films/"]'); return !!(c && /Void's films/.test(c.innerText) && l); }));
+      await S.ask(a, 500); await until(async () => /V01D's films/.test(await S.page()), 4000);
+      got.push(await S.p.evaluate(() => { const c = document.querySelector('.vpage.on'); const l = c && c.querySelector('a[href="/films/"]'); return !!(c && /V01D's films/.test(c.innerText) && l); }));
     }
     check('films skill: films, voids fillms and where do I watch the films open the way to /films/', got.every(Boolean) && !S.errors.length, JSON.stringify({ got, errors: S.errors }));
     await S.ctx.close(); }
+
+  // V01D's startup intro (owner, 2026-10-14: "a super professional brief V01D on startup"): the wordmark shows, typing works under
+  // it from the first frame, it is gone in under 2 s, and a test browser (or a link straight to an answer) never sees it unasked
+  if (want("V01D intro: the wordmark shows on startup, never blocks typing, and is gone in 2 s")) {
+    const I = await fresh(); const p = I.p;
+    await p.goto(base + '?intro=1', { waitUntil: 'domcontentloaded' }); await p.waitForTimeout(700);
+    const mid = await p.evaluate(() => { const e = document.getElementById('v01d'); return e && { text: e.innerText.replace(/\s+/g, ''), on: getComputedStyle(e).visibility !== 'hidden', clicks: getComputedStyle(e).pointerEvents }; });
+    await p.fill('#input', 'films'); const typed = await p.inputValue('#input');
+    await p.waitForTimeout(1500); const gone = await p.evaluate(() => !document.getElementById('v01d'));
+    await p.goto(base, { waitUntil: 'domcontentloaded' }); const unasked = await p.evaluate(() => !!document.getElementById('v01d'));
+    check('V01D intro: the wordmark shows on startup, never blocks typing, and is gone in 2 s',
+      !!mid && mid.text === 'V1DA-TO-MIND' && mid.on && mid.clicks === 'none' && typed === 'films' && gone && !unasked
+      && (await p.title()) === 'V01D · A-to-Mind' && !I.errors.length, JSON.stringify({ mid, typed, gone, unasked, errors: I.errors }));
+    await I.ctx.close(); }
+
+  // the app (owner, 2026-10-14: "wheres my apps . web mobile?"): "get the app" shows Install where the browser offers it, and it works
+  if (want("app skill: get the app shows Install where the browser offers it, and installing says so")) {
+    const A = await fresh(); const p = A.p;
+    await p.evaluate(() => { let asked = 0; window.__v01dInstall = { prompt: async () => { asked++; window.__asked = asked; }, userChoice: Promise.resolve({ outcome: 'accepted' }) }; });
+    await A.ask('get the app', 500); await until(async () => /Get the V01D app/.test(await A.page()), 4000);
+    await p.click('.vpage.on .vapp .go'); await until(async () => /Installed\./.test(await A.page()), 3000);
+    const r = await p.evaluate(() => ({ asked: window.__asked, said: document.querySelector('.vpage.on .vapp .said').textContent, gone: window.__v01dInstall === null, icon: document.querySelector('.vpage.on .vapp img').getAttribute('src') }));
+    await A.ask('app ideas', 500); const other = await p.evaluate(() => { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return (l.filter((x) => x.ask === 'app ideas').pop() || {}).note || ''; });
+    check('app skill: get the app shows Install where the browser offers it, and installing says so',
+      r.asked === 1 && /Installed\. Find V01D/.test(r.said) && r.gone && r.icon === '/icon-192.png' && !/skill:app/.test(other) && !A.errors.length, JSON.stringify({ r, other, errors: A.errors }));
+    await A.ctx.close(); }
 
   // the map (skills/rebuild-map.js), the one skill nothing checked (the growth card's friction line, 2026-10-14): "show the map"
   // opens its 13 rows as they stand now, with no row still "not started" for something that is live

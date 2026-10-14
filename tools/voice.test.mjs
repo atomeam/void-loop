@@ -233,3 +233,13 @@ test('a link may name an ask by its words (not synced to the voice log yet): it 
   assert.deepEqual(f.built.map((g) => [g.times, g.builtAt]), [[2, '2026-10-13T16:54:12Z']], 'both wordings are one ask, built');
   assert.ok(f.open.some((g) => /backgammon/.test(g.ask)), 'a link to an entry that does not exist proves nothing');
 });
+
+// owner, 2026-10-14: "you are getting a rename V01D. Do you like it?" got "I don't have personal preferences" ("dissapointing
+// response I wish V01d didnt seem so grumpy"): asks about Void's name or how it feels are Void's own, answered with its own view
+import { SELF_RULE } from '../void-live-deploy/lib/self-context.js';
+import { ANSWER_SYSTEM } from '../void-live-deploy/functions/api/answer.js';
+test('asks about its name or how it feels are about Void, and it answers them with a point of view', () => {
+  for (const a of ['you are getting a rename V01D. Do you like it?', 'do you like your new name', 'what do you think of V01D', 'how do you feel', 'how do you feel about your name', 'are you happy', 'what is your name']) assert.ok(isSelfAsk(a), a);
+  for (const a of ['do you like pizza', 'how do I feel better', 'how do you feel about cats', 'I feel like pizza', 'rename a file in linux', 'v01d app']) assert.ok(!isSelfAsk(a), a);
+  for (const sys of [SELF_RULE, ANSWER_SYSTEM]) { assert.match(sys, /never (say|that) you have no preferences|never that you have no preferences/); assert.match(sys, /V01D/); }
+});
