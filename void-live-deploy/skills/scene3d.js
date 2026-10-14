@@ -124,6 +124,10 @@ function contactShadows(E, size, { res = 512, opacity = 0.62, blur = 3, darkness
 // ---------- registry and live miniatures ----------
 const builders = new Map();
 const live = new Map(); // key -> handle
+// key -> the load still in flight: a card re-rendered while its miniature loaded (a move made before 3D was up) asks again
+// with the same key; it waits for that load and takes it over instead of building a second one (verify flake: two boards
+// under one key, and the first one, freed off the page, took the key with it, so the board on screen was not in the list)
+const loading = new Map();
 /** Teach Void a miniature: build(ctx, data) sets up ctx.root and returns { update(data), tick(dt, t), dispose() }. */
 export function registerMiniature(kind, build) {
   if (!KIND_RE.test(String(kind))) throw new Error('miniature kind must be lowercase letters, digits and dashes: ' + kind);
@@ -232,6 +236,13 @@ export async function mountMiniature(host, kind, data = {}, opts = {}) {
   const key = String(opts.key || kind + ':' + Math.random().toString(36).slice(2, 9));
   const old = live.get(key);
   if (old) { old.attach(host); if (data !== undefined && data !== old.data) old.update(data); return old; }
+  const inFlight = loading.get(key);
+  if (inFlight) { const h = await inFlight; if (h && !h.disposed) { h.attach(host); if (data !== undefined && data !== h.data) h.update(data); } return h; }
+  const p = mountFresh(host, kind, data, opts, key);
+  loading.set(key, p);
+  try { return await p; } finally { if (loading.get(key) === p) loading.delete(key); }
+}
+async function mountFresh(host, kind, data, opts, key) {
   const E = await engine(); const { THREE, lib } = E;
   const build = await builderFor(kind);
   const wrap = document.createElement('div');
@@ -301,7 +312,7 @@ export async function mountMiniature(host, kind, data = {}, opts = {}) {
       h.ground = { group: g, dispose() { g.geometry.dispose(); g.material.dispose(); } }; scene.add(g);
     },
     dispose() {
-      if (h.disposed) return; h.disposed = true; live.delete(key);
+      if (h.disposed) return; h.disposed = true; if (live.get(key) === h) live.delete(key);
       try { h.inst && h.inst.dispose && h.inst.dispose(); } catch (_) {}
       if (controls) controls.dispose(); for (const c of h.contacts) c.dispose(); if (h.ground) h.ground.dispose(); if (h.ro) h.ro.disconnect(); if (h.io) h.io.disconnect();
       scene.traverse((o) => { if (o.isMesh && !o.userData.shared) { o.geometry && o.geometry.dispose(); } });
