@@ -14,7 +14,7 @@ on:
 
 permissions:
   contents: read
-  id-token: write # the registry login (GitHub OIDC)
+  id-token: write # the registry login (GitHub OIDC). void-review: ok (a permission name, not a key: GitHub mints a short-lived token per run)
 
 concurrency:
   group: mcp-registry
