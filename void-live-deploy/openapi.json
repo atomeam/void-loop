@@ -5,7 +5,9 @@
     "version": "1.0.0",
     "summary": "Void's public API: code review, Void as an MCP server, and the list of what Void can do.",
     "description": "Void (https://a-to-mind.com) is a blank stage where anything someone asks for appears. Everything a person sees runs in the browser; open https://a-to-mind.com/?q={ask} to run any ask in plain words. The operations below are the ones meant for other programs. Every other /api route is Void's own (the page, the owner, signed-in accounts) and is left out on purpose. Calls from other websites' pages are refused (no CORS): call from a server, a CLI or an agent. Each connection gets 60 requests a minute per route.",
-    "contact": { "url": "https://a-to-mind.com/code-review/" }
+    "contact": { "url": "https://a-to-mind.com/code-review/" },
+    "x-logo": { "url": "https://a-to-mind.com/icon-512.png" },
+    "x-apisguru-categories": ["developer_tools", "machine_learning"]
   },
   "servers": [{ "url": "https://a-to-mind.com" }],
   "security": [{}],

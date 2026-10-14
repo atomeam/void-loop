@@ -1,0 +1,10 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.atomeam/void",
+  "title": "Void by A-to-Mind",
+  "description": "Code review, moon phases and meteor showers from Void, the stage where anything you ask appears.",
+  "version": "1.0.0",
+  "websiteUrl": "https://a-to-mind.com",
+  "repository": { "url": "https://github.com/atomeam/void-loop", "source": "github" },
+  "remotes": [{ "type": "streamable-http", "url": "https://a-to-mind.com/api/mcp" }]
+}
