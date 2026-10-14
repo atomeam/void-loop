@@ -33,4 +33,15 @@ assert.equal(judgeCard('how do i make guacamole', 'Guacamole\n3 avocados', recip
 assert.equal(judgeCard('how do i make guacamole', 'Pancakes\nflour, milk', recipe).unmet, true, 'a card about something else');
 assert.equal(judgeCard('recipe for banana bread', 'Banana pudding', recipe).unmet, false, 'part of the subject shown: not reported on the page');
 assert.equal(judgeCard('a recipe please', 'Pancakes', recipe).unmet, false, 'no subject: nothing to judge');
+// verify on 3365bf4: the calendar's own one-word ask ("agenda") and a misspelling of what the card says ("calender" on a CALENDAR
+// card) were reported as ungrounded, so a calendar visit sent a miss
+const calendar = { name: 'calendar', examples: ['my calendar', 'agenda', "what's next", 'call Sam next Tuesday at 4', 'clear calender'] };
+const agendaCard = 'CALENDAR\nTHU, OCT 15\n12:00 PM\nLunch with Ana';
+assert.ok(skillTriggers(calendar).has('agenda'), 'an example that is one word is the skill\'s own word');
+assert.equal(judgeCard('agenda', agendaCard, calendar).unmet, false);
+assert.equal(judgeCard('calender', agendaCard, calendar).unmet, false, 'one letter off what the card says is what it says');
+assert.equal(judgeCard('how do i make guacamole', 'Guacamole\n3 avocados', recipe).unmet, false);
+assert.equal(judgeCard('how do i make guacamole', 'Pancakes\nflour, milk', recipe).unmet, true, 'still: a card about something else');
+assert.equal(judgeCard('lasagne', 'Pancakes\nflour', recipe).unmet, true, 'a near spelling only counts against what the card shows');
+assert.equal(judgeCard('cat', 'car parts', { name: 'x', examples: [] }).unmet, true, 'short words must match exactly');
 console.log('ground: ok');

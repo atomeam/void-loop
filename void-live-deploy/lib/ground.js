@@ -41,13 +41,22 @@ export function subjectOf(ask, triggers = new Set()) {
   return out;
 }
 
+// one letter changed, added or dropped (and nothing else): a typo, not another word
+function oneOff(a, b) {
+  if (a === b || Math.abs(a.length - b.length) > 1 || b.length < 5) return false;
+  let i = 0; while (i < a.length && i < b.length && a[i] === b[i]) i++;
+  const rest = (x, y) => x.slice(i + 1) === y.slice(i + (a.length === b.length ? 1 : 0));
+  return a.length === b.length ? rest(a, b) : a.length > b.length ? a.slice(i + 1) === b.slice(i) : a.slice(i) === b.slice(i + 1);
+}
+
 /** does the card show the subject? { subject, found, missing, ok }: ok when the ask has no subject (nothing to judge), or when
  *  at least half of its words are on the card (lenient on purpose: a false alarm costs more than a miss here). A word counts when the card has a
  *  word that starts with its stem (bread -> "breads", banana -> "bananas"). Pure. */
 export function grounded(ask, cardText, triggers = new Set()) {
   const subject = subjectOf(ask, triggers);
   const shown = new Set(words(cardText).map(stem)), seen = [...shown];
-  const has = (s) => shown.has(s) || (s.length >= 4 && seen.some((w) => w.startsWith(s)));
+  // a word one letter off what the card says is that word ("calender" on a CALENDAR card), for words of 5 letters or more
+  const has = (s) => shown.has(s) || (s.length >= 4 && seen.some((w) => w.startsWith(s))) || (s.length >= 5 && seen.some((w) => oneOff(s, w)));
   const found = subject.filter(has), missing = subject.filter((s) => !has(s));
   const need = Math.ceil(subject.length / 2);
   return { subject, found, missing, ok: !subject.length || found.length >= need };
@@ -60,6 +69,8 @@ export function skillTriggers(skill) {
   const list = ((skill && skill.examples) || []).map((a) => new Set(words(a).map(stem)));
   const count = new Map(); for (const s of list) for (const w of s) count.set(w, (count.get(w) || 0) + 1);
   for (const [w, n] of count) if (n >= 2) t.add(w);
+  // an example that is one word on its own ("agenda") is the skill's own word for itself
+  for (const a of ((skill && skill.examples) || [])) { const ws = words(a); if (ws.length === 1) t.add(stem(ws[0])); }
   for (const w of words(String((skill && skill.name) || '').replace(/-/g, ' '))) t.add(stem(w));
   return t;
 }
