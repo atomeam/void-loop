@@ -103,9 +103,12 @@ async function get(request, env, b) {
 
 // Owner login (2026-10-03). Only the owner key itself (READ_TOKEN, constant-time) can bind a passkey as the owner's login: a stranger
 // can never promote their own passkey, and a copied owner session can't make itself permanent.
-async function ownerFor(env, credentialId) {
+export async function ownerFor(env, credentialId) {
   try {
-    const row = await env.DB.prepare('SELECT id FROM void_owner_passkeys WHERE id = ?').bind(credentialId).first();
+    // the owner is an account, not one device (owner, 2026-10-14: "build me into it so I stop having to struggle to access my own
+    // site"): a passkey is the owner's when it, or any passkey on the same account, was bound. Adding a passkey to an account needs
+    // that account's own session, so this never lets a stranger in.
+    const row = await env.DB.prepare('SELECT o.id FROM void_owner_passkeys o JOIN void_passkeys p ON p.id = o.id WHERE o.id = ? OR p.user_id = (SELECT user_id FROM void_passkeys WHERE id = ?) LIMIT 1').bind(credentialId, credentialId).first();
     return row ? await mintOwnerSession(env, credentialId) : null;
   } catch (_) { return null; } // fails closed: not the owner
 }
