@@ -1,7 +1,7 @@
 // Summon by intent (frontier #10): an outcome with a deadline becomes a build order of asks Void already answers.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import skill, { intentOf, deadlineOf, stepsFor, planOf } from '../void-live-deploy/skills/intent.js';
+import skill, { intentOf, deadlineOf, stepsFor, planOf, openPlanOf, planWords } from '../void-live-deploy/skills/intent.js';
 import countdown from '../void-live-deploy/skills/countdown.js';
 
 const FRI = new Date(2026, 9, 9); // Friday, October 9 2026
@@ -109,4 +109,24 @@ test('a plan asked for without a day: the steps as an undated checklist, and how
 test('no step says "and": the list ask splits on it, so a step would come out as two items', () => {
   for (const goal of ['ship it', 'write the report', 'give the talk', 'be ready for the exam', 'move', 'plan the party', 'do the thing'])
     for (const s of stepsFor(goal, new Date(2026, 9, 20), FRI)) if (s.text !== goal) assert.ok(!/\band\b/.test(s.text), goal + ': ' + s.text);
+});
+
+// the ways people ask for a plan (probed 2026-10-14, 14 of 20 went to an article): each reads as the plan it means
+test('plan asks said other ways: "i need a plan to", "create a study plan for", "X, make me a plan", "plan a party" plan the same way', () => {
+  const open = (a) => (openPlanOf(a) || {}).goal;
+  assert.equal(open('i need a plan to learn japanese'), 'learn japanese');
+  assert.equal(open("what's a good plan to learn italian"), 'learn italian');
+  assert.equal(open('come up with a plan to learn photography'), 'learn photography');
+  assert.equal(open('give me a step by step plan to learn chess'), 'learn chess');
+  assert.equal(open('i want to learn piano, make me a plan'), 'learn piano');
+  assert.equal(open('plan for learning to code'), 'learn to code');
+  assert.equal(open('a plan to learn to draw'), 'learn to draw');
+  assert.equal(open('make a practice plan for guitar'), 'practise guitar');
+  assert.equal(open('make a plan for learning the violin'), 'learn the violin');
+  assert.equal(planOf('create a study plan for my chemistry exam').goal, 'be ready for my chemistry exam');
+  assert.equal(planOf('help me plan a road trip').goal, 'my road trip');
+  assert.equal(planWords('plan a birthday party'), 'plan my birthday party');
+  // still left alone: no plan asked for, a day's plan, and fitness (health stays off the engine)
+  for (const a of ['i plan to go to bed', 'plan my day', 'what is the plan for today', 'write me a plan to start running', 'i need a plan to lose weight', 'what is a plan'])
+    assert.ok(!openPlanOf(a) && !planOf(a), a);
 });

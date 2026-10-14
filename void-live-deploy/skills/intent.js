@@ -127,8 +127,21 @@ const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 // asked, no day) still leaves the void empty, and "plan my day" or "a plan to lose weight" are not outcomes with steps here.
 const PLAN_VERB_RE = new RegExp(String.raw`^(?:(?:can\s+you\s+|please\s+)?(?:help\s+me\s+)?(?:make|give|build|draw\s+up|write|put\s+together)\s+(?:me\s+|us\s+)?(?:a\s+)?plan\s+(?:to|for\s+how\s+to)\s+)(.{3,80}?)` + TELL + '$');
 const PLAN_NOUN_RE = new RegExp(String.raw`^(?:(?:can\s+you\s+|please\s+)?(?:help\s+me\s+)?(?:(?:make|give|build|draw\s+up|put\s+together)\s+(?:me\s+|us\s+)?(?:a\s+)?plan\s+for\s+|plan\s+(?:out\s+)?))((?:the|my|our)\s+.{2,60}?)` + TELL + '$');
+// the ways people ask for a plan, said the one way the plan patterns read (probed 2026-10-14: "i need a plan to learn
+// japanese", "create a study plan for my chemistry exam", "i want to learn piano, make me a plan", "plan a birthday party")
+export function planWords(t) {
+  return String(t || '')
+    .replace(/^i\s+(?:want|need|would\s+like)\s+to\s+(.{3,60}?),?\s+(?:so\s+)?(?:can\s+you\s+|please\s+)?(?:make|give|write)\s+me\s+a\s+plan$/, 'make a plan to $1')
+    .replace(/^(?:i\s+(?:need|want)|i'?d\s+like|what'?s|what\s+is)\s+(?=an?\s)/, 'make ')
+    .replace(/^((?:can\s+you\s+|could\s+you\s+|please\s+)?(?:help\s+me\s+)?)(?:create|come\s+up\s+with|set\s+up|work\s+out|sketch\s+out)\s+/, '$1make ')
+    .replace(/^(?=(?:an?\s+)?plan\s+(?:to|for)\s)/, 'make ').replace(/^make plan\b/, 'make a plan')
+    .replace(/\ban?\s+practi[sc]e\s+plan\s+for\s+(?!the\s|my\s|our\s|how\s)/, 'a plan to practise ')
+    .replace(/\ban?\s+(?:(?:simple|good|quick|rough|clear|study|learning|step[\s-]by[\s-]step)\s+)+plan\b/, 'a plan')
+    .replace(/\ba\s+plan\s+for\s+learning\s+/, 'a plan to learn ')
+    .replace(/^((?:can\s+you\s+|could\s+you\s+|please\s+)?(?:help\s+me\s+)?)plan\s+(?:out\s+)?an?\s+/, '$1plan my ');
+}
 export function undatedOf(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/[’]/g, "'");
+  const t = planWords(String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/[’]/g, "'"));
   if (new RegExp('\\b(?:by|before|until|till|on|in)\\s+' + DATE_RE + '\\b').test(t)) return null; // a day: the dated plan
   let goal = null, who = null, m = PLAN_VERB_RE.exec(t);
   if (m) {
@@ -146,10 +159,10 @@ export function undatedOf(text) {
 // An open plan (frontier #10, next step): an explicit plan ask of a kind with no steps here ("plan my garden", "make a plan to
 // learn Spanish") goes to the answer engine for the steps (lib/plan.js, /api/answer mode 'plan'). Not a day's or a week's plan,
 // and not health, diet or money: those stay with their own skills, or with no one.
-const OPEN_NOT = /\b(?:day|days|week|weekend|morning|evening|night|today|tomorrow|weight|diet|meal|meals|eat|eating|calories|workout|exercise|fitness|sleep|health|medical|medicine|medication|pain|therapy|money|budget|debt|loan|invest|investing|investment|savings|retirement|tax|taxes|stocks?|crypto)\b/;
+const OPEN_NOT = /\b(?:day|days|week|weekend|morning|evening|night|today|tomorrow|weight|diet|meal|meals|eat|eating|calories|workout|exercise|fitness|gym|run|running|jog|jogging|marathon|sleep|health|medical|medicine|medication|pain|therapy|money|budget|debt|loan|invest|investing|investment|savings|retirement|tax|taxes|stocks?|crypto)\b/;
 export function openPlanOf(text) {
   if (planOf(text)) return null; // a kind with its own steps, dated or not
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/[’]/g, "'");
+  const t = planWords(String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase().replace(/[’]/g, "'"));
   if (new RegExp('\\b(?:by|before|until|till|on|in)\\s+' + DATE_RE + '\\b').test(t)) return null;
   const m = PLAN_VERB_RE.exec(t) || PLAN_NOUN_RE.exec(t);
   if (!m) return null;
