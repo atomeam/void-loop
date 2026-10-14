@@ -1101,6 +1101,24 @@ try {
     check('an open card never buries a stage thing: a sticky in the middle steps aside when "how good are you at othello" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over',
       ok(r[1280]) && ok(r[390]) && ok(r.slow), JSON.stringify(r));
   }
+  // the card drawn bigger after the thing stepped aside, by its transform alone (verify run 38503074544: the sticky moved for a
+  // card still scaling in and was left 9% under the full one; a ResizeObserver never sees a transform, and a transitionend can
+  // be missed): what the card covers is measured again while it is open, so the thing moves clear
+  if (want("an open card never buries a stage thing: a card drawn bigger after the thing stepped aside moves it again")) {
+    const P = await fresh(); await P.p.setViewportSize({ width: 1280, height: 800 }); await P.p.waitForTimeout(300);
+    await P.ask('sticky note buy milk', 700);
+    await P.ask('how good are you at othello', 600);
+    const covered = () => P.p.evaluate(() => { const s = document.querySelector('.sticky'), v = document.querySelector('.vpage.on'); if (!s || !v) return -1; const a = s.getBoundingClientRect(), b = v.getBoundingClientRect();
+      return Math.round(100 * Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left)) * Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top)) / (a.width * a.height)); });
+    const clear1 = await until(async () => ((await covered()) === 0 ? 'clear' : ''), 6000); await P.p.waitForTimeout(800);
+    // drawn a fifth bigger at once, by the transform only: no layout change, no transition
+    await P.p.evaluate(() => { const v = document.querySelector('.vpage.on'); v.style.transition = 'none'; v.style.transform = getComputedStyle(v).transform + ' scale(1.2)'; });
+    const grown = await covered();
+    const clear2 = await until(async () => ((await covered()) === 0 ? 'clear' : ''), 3000); await P.p.waitForTimeout(450);
+    const under = await covered();
+    check('an open card never buries a stage thing: a card drawn bigger after the thing stepped aside moves it again (none of it under the grown card)',
+      clear1 === 'clear' && grown > 0 && under === 0 && !P.errors.length, JSON.stringify({ clear1, grown, clear2, under, e: P.errors }));
+    await P.ctx.close(); }
   // a throw undone mid-flight stays undone (2026-10-11: the labels flake was this; the flying copy deleted the brought-back clock)
   if (want("undo during a throw: a clock flicked off the stage and undone at once comes back and stays")) { const P = await fresh();
     await P.ask('make a clock', 700);
