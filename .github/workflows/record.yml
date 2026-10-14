@@ -37,13 +37,14 @@ jobs:
         env:
           ID: ${{ inputs.id }}
         run: node tools/record.mjs $ID --seconds 20 | tee -a "$GITHUB_STEP_SUMMARY"
-      # MP4 for phones and YouTube (Playwright films in WebM), and the words to paste into YouTube Studio
+      # MP4 for phones and YouTube (Playwright films in WebM), 15% faster so no moment drags (the edit: tools/record.mjs), and the words
+      # to paste into YouTube Studio
       - name: Make the MP4 and the words to paste
         run: |
           sudo apt-get install -y -qq ffmpeg >/dev/null
           for m in media/*.json; do
             b="${m%.json}"
-            ffmpeg -loglevel error -y -i "$b.webm" -vf "scale=1080:1920:flags=lanczos" -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p -movflags +faststart -an "$b.mp4"
+            ffmpeg -loglevel error -y -i "$b.webm" -vf "setpts=PTS/1.15,scale=1080:1920:flags=lanczos" -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p -movflags +faststart -an "$b.mp4"
             node -e 'const m=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));process.stdout.write("TITLE\n"+m.title+"\n\nDESCRIPTION\n"+m.description+"\n\nTAGS\n"+(m.tags||[]).join(", ")+"\n")' "$m" > "$b.txt"
           done
       # one draft release per film: a private copy only people with write access to the repo can see (the films are for people

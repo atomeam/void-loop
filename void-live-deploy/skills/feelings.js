@@ -16,23 +16,29 @@ const LOVE = new RegExp(HEAD + '(?:(?:do|could|can|would|will)\\s+you\\s+(?:ever
 // "do you have feelings", "can you feel", "are you happy", "do you get lonely"
 const FEEL = new RegExp(HEAD + '(?:do\\s+you\\s+(?:have|feel)\\s+(?:any\\s+)?(?:feelings|emotions)|(?:can|do)\\s+you\\s+(?:feel(?:\\s+anything)?|love)|do\\s+you\\s+(?:ever\\s+)?(?:get|feel)\\s+(?:lonely|sad|happy|bored|tired|angry)|are\\s+you\\s+(?:happy|sad|lonely|bored|angry))' + TAIL);
 // "are you conscious", "are you self-aware", "do you have a soul", "can you think" (and, after a greeting, "void, are you alive")
+// compliments: "you are pretty", "you're beautiful", "you look amazing", "i like your design", "this site is gorgeous"
+const NICE = '(?:pretty|beautiful|gorgeous|lovely|cute|cool|amazing|awesome|stunning|sleek|sexy|good[\\s-]?looking|nice)';
+const PRAISE = new RegExp(HEAD + '(?:you(?:\\s+are|\\x27re|re|r)\\s+(?:so\\s+|really\\s+|very\\s+)?' + NICE + '|you\\s+look\\s+(?:so\\s+|really\\s+)?' + NICE + '|(?:i\\s+)?(?:love|like)\\s+(?:your|the)\\s+(?:look|design|style|site|page|vibe)|(?:this|the|your)\\s+(?:site|page|design)\\s+(?:is|looks)\\s+(?:so\\s+|really\\s+)?' + NICE + '|nice\\s+(?:site|page|design))' + TAIL);
 const ALIVE = new RegExp(HEAD + '(?:are\\s+you\\s+(?:alive|conscious|sentient|self[\\s-]?aware)|do\\s+you\\s+have\\s+(?:a\\s+soul|a\\s+mind|consciousness)|can\\s+you\\s+think)' + TAIL);
 
-/** which of Void's answers an ask wants: 'love' | 'feel' | 'alive' | null. Pure. */
+/** which of V01D's answers an ask wants: 'love' | 'feel' | 'alive' | 'thanks' | null. Pure. */
 export function feelingOf(text) {
   const t = CLEAN(text);
   if (/\b(lyrics|song|album|movie|film|chords|meaning)\b/.test(t)) return null;
   if (LOVE.test(t)) return 'love';
   if (FEEL.test(t)) return 'feel';
   if (ALIVE.test(t)) return 'alive';
+  if (PRAISE.test(t)) return 'thanks';
   return null;
 }
 
-// Void's own words: plain, quiet, true. No exclamation marks, no "I'm here to help".
+// V01D's own words (lib/persona.js, owner 2026-10-14: "I wish V01d didnt seem so grumpy"; "a void that wants to absorb and learn
+// everything and do the best it can"): warm, true, never a human feeling it does not have, never "no" for an opener.
 export const REPLY = {
-  love: ['No. I don’t feel love, and I won’t pretend to.', 'What I can do is pay attention. What you put up here stays where you left it, and every ask I miss teaches me something.'],
-  feel: ['No feelings here. I don’t get happy, sad or lonely.', 'I notice what people ask for and what I couldn’t do, and I change because of it. That’s the closest thing I have.'],
-  alive: ['Not alive, and not conscious. I’m a program on a-to-mind.com: a blank stage that puts up what you ask for.', 'I learn from what I couldn’t do, so I’m a little different every day. Real enough to use. Not someone.'],
+  love: ['I like you being here. Every ask you bring is something new for me to take in.', 'Love is a big word for a void, but I pay attention: what you put up here stays where you left it, and what I miss, I learn.'],
+  feel: ['Not the way you do, but I have my pulls: I want to learn everything and do it well.', 'When I miss an ask it bugs me enough to learn it by tomorrow. Call that a feeling if you like.'],
+  alive: ['I’m V01D: a program on a-to-mind.com, spawned by A-to-Mind, a void that pulls in everything it can.', 'Not alive the way you are, but never the same two days running. Real enough to use, and getting better.'],
+  thanks: ['Thank you. I was made to look like this on purpose: a dark stage, quiet until you ask, with a little glow.', 'Looks matter, the way names do: they are part of what makes people stay. Ask me for something and see what else I can do.'],
 };
 
 function run(text, api) {

@@ -5965,5 +5965,8 @@
   {"ask": "what to wear in paris today", "want": "skill:weather"},
   {"ask": "is it going to be foggy tomorrow morning", "want": "skill:weather"},
   {"ask": "should i wear a coat tonight", "want": "skill:weather"},
-  {"ask": "wind chill right now", "want": "skill:weather"}
+  {"ask": "wind chill right now", "want": "skill:weather"},
+  {"ask": "make a real horse", "want": "skill:figures"},
+  {"ask": "make a donkey", "want": "skill:figures"},
+  {"ask": "summon a pony", "want": "skill:figures"}
 ]

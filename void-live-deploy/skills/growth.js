@@ -81,7 +81,7 @@ export function frictionHtml(esc, f) {
       : '<span style="color:#e0a24a">' + (s.tier === 'experiment' ? 'unchecked' : 'barely checked') + '</span> (' + esc(s.why) + ')');
   const rest = f.failing + f.unsure - f.top.length;
   const w = f.weakest;
-  const famLine = w && (w.failing + w.unsure)
+  const famLine = w && w.name && (w.failing + w.unsure) // a family with no name would read "Least proven family, :"
     ? ' Least proven family, <b style="font-weight:600">' + esc(w.name) + '</b>: '
       + (w.failing ? w.failing + ' failing, ' : 'nothing failing on the bench, ') + w.unsure + ' barely checked'
       + (w.top.length ? ' — ' + w.top.map(item).join('; ') : '') + '.'
