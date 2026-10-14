@@ -2364,6 +2364,17 @@ try {
       && /url\.pathname === '\/'/.test(sw) && !P.errors.length,
       JSON.stringify({ shown, meta, idInUrl, nf, card, heads, errors: P.errors }));
     await P.ctx.close(); }
+  // the privacy page (owner, 2026-10-14: Google asks for one before Void's YouTube app can be published): it loads, says the things
+  // Google and a visitor look for, and fits a phone
+  if (want("privacy page: no cookies, what reaches the server, Google and YouTube, how to delete")) {
+    const P = await fresh(); await P.p.setViewportSize({ width: 390, height: 844 });
+    await P.p.goto(base + 'privacy/'); const txt = await P.p.$eval('main', (e) => e.innerText).catch(() => '');
+    const wide = await P.p.evaluate(() => document.documentElement.scrollWidth > innerWidth);
+    check('privacy page: no cookies, what reaches the server, Google and YouTube, how to delete',
+      /sets no cookies/.test(txt) && /What reaches our server/.test(txt) && /YouTube API Services/.test(txt) && /Google Privacy Policy/.test(txt)
+      && /forget me/.test(txt) && /atom@a-to-mind\.com/.test(txt) && !wide && !P.errors.length, JSON.stringify({ wide, errors: P.errors, head: txt.slice(0, 120) }));
+    await P.ctx.close(); }
+
   // the support desk (functions/api/support.js): on /code-review/, someone who pays says what broke, gets a ticket number, and reads the answer
   if (want("code-review: someone who pays reports what broke and reads the owner's answer")) {
     const D = await fresh(); const sent = [];
