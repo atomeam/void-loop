@@ -112,7 +112,7 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
         @keyframes v-slam { from { transform: scale(1.6); opacity: 0; filter: blur(6px); } to { transform: none; opacity: 1; filter: none; } }
         [data-v-punch] { transition: transform .35s cubic-bezier(.2,.8,.2,1) !important; }`;
       document.head.appendChild(css);
-      const fx = (attr, html) => { const e = document.createElement('div'); e.setAttribute('data-v-fx', ''); e.setAttribute(attr, ''); if (html != null) e.innerHTML = html; document.body.appendChild(e); return e; };
+      const fx = (attr, html) => { const e = document.createElement('div'); e.setAttribute('data-v-fx', ''); e.setAttribute(attr, ''); if (html != null) e.innerHTML = html; document.body.appendChild(e); return e; }; // void-review: ok: every caller passes esc()-escaped text
       const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
       const cap = fx('data-v-cap', '<small>' + esc(title) + '</small><b>' + esc(caption) + '</b>');
       document.body.style.paddingBottom = (cap.offsetHeight + 40) + 'px'; // the caption never hides the end of the page
