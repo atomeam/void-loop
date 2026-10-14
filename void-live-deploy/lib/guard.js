@@ -31,6 +31,7 @@ export const LIMITS = {
   rehearsal: { rpm: 10, body: 500 }, // owner-only: seed and clean the rehearsal's stand-in reply (functions/api/rehearsal.js)
   figurescript: { rpm: 60, body: 4000 }, // Next #19: behavior script for a summoned figure (AI once, then D1 cache)
   memory: { rpm: 30, body: 262144 }, // owner-only: what Void remembers (tools/ouroboros.py push); 256 KB matches MAX_BODY in lib/memory-core.js
+  films: { rpm: 120, body: 40000000 }, // Void's films for people who pay (functions/api/films.js): a video seeks with many Range GETs; only the owner POSTs a film (OWNER_WRITES)
   support: { rpm: 10, body: 6000 }, // the support desk (functions/api/support.js): paying users only, a report of up to 2,000 characters
   review: { rpm: 60, body: 70000 }, // Void's code review API (lib/review-api.js): the instant checks free, the closer read with a Pro key
   reflect: { rpm: 30, body: 2000 }, // Void's voice: public GET of its reflections, owner POST asks it what it thinks (lib/voice.js)
@@ -44,6 +45,7 @@ export const LIMITS = {
 export const DEFAULT_LIMIT = { rpm: 60, body: 16000 };
 export const FAIL_MAX = 10; // wrong keys (401/403) per connection per minute before every /api call from it is refused
 export const NO_ORIGIN_CHECK = ['gumroad']; // server-to-server: Gumroad's ping
+export const OWNER_WRITES = ['films']; // routes whose large writes only the owner sends: anyone else is refused before a byte of the body is read
 
 const enc = new TextEncoder();
 const hex = (b) => [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('');
@@ -174,6 +176,7 @@ export async function guard(ctx) {
   if ((await peek(url.origin, 'fail:' + conn)) >= FAIL_MAX) return plain(429, 'too many wrong keys, wait a minute', { 'retry-after': '60' });
   if ((await bump(url.origin, 'rl:' + route + ':' + conn)) > lim.rpm) return plain(429, 'slow down', { 'retry-after': '60' });
   let req = request;
+  if (!/^(GET|HEAD)$/.test(request.method) && OWNER_WRITES.includes(route) && !(await ownerOk(request, env))) { await bump(url.origin, 'fail:' + conn); return plain(403, 'only the owner writes here'); }
   if (!/^(GET|HEAD)$/.test(request.method)) {
     const len = Number(request.headers.get('content-length'));
     if (Number.isFinite(len) && len > lim.body) return plain(413, 'too big');

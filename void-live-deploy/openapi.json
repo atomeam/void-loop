@@ -18,6 +18,19 @@
     { "name": "discovery", "description": "What Void can do and what is on sale." }
   ],
   "paths": {
+    "/api/films": {
+      "get": {
+        "tags": ["review"], "operationId": "listFilms", "summary": "Void's films (paying users)",
+        "description": "For people who pay for Void: send your Void Pro key, your Code Review Pro license key or a signed-in paid account as Bearer. Lists Void's daily films, newest first; each src is a signed link that plays the MP4 (with Range) for 6 hours. Opening a src streams the film. Without a paying credential: 401 with where to buy.",
+        "security": [{ "reviewKey": [] }],
+        "responses": {
+          "200": { "description": "The films.", "content": { "application/json": { "schema": { "type": "object", "properties": {
+            "films": { "type": "array", "items": { "type": "object", "properties": { "id": { "type": "string" }, "at": { "type": "string" }, "title": { "type": "string" }, "description": { "type": "string" }, "tags": { "type": "string" }, "bytes": { "type": "integer" }, "src": { "type": "string" } } } },
+            "owner": { "type": "boolean" }, "until": { "type": "string" } } } } } },
+          "401": { "description": "Not a paying credential; carries buy." }
+        }
+      }
+    },
     "/api/support": {
       "post": {
         "tags": ["review"],

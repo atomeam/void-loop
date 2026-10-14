@@ -16,7 +16,7 @@ on:
         type: string
 
 permissions:
-  contents: write # the film's release (gh release create); nothing else is written  void-review: ok (releases need contents: write)
+  contents: write # the film's draft release (gh release create / edit --draft); nothing else is written  void-review: ok (releases need contents: write)
 
 jobs:
   record:
@@ -46,16 +46,35 @@ jobs:
             ffmpeg -loglevel error -y -i "$b.webm" -vf "scale=1080:1920:flags=lanczos" -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p -movflags +faststart -an "$b.mp4"
             node -e 'const m=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));process.stdout.write("TITLE\n"+m.title+"\n\nDESCRIPTION\n"+m.description+"\n\nTAGS\n"+(m.tags||[]).join(", ")+"\n")' "$m" > "$b.txt"
           done
-      # one release per film: https://github.com/<repo>/releases, newest first, with the video and the words on the page
-      - name: Post the film as a release
+      # one draft release per film: a private copy only people with write access to the repo can see (the films are for people
+      # who pay, owner 2026-10-14: "just put void films right onto the sight , with only paid access")
+      - name: Keep the film as a draft release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           for m in media/*.json; do
             b="${m%.json}"; id="$(basename "$b")"
             tag="film-$(date -u +%Y%m%d)-$id-r${{ github.run_number }}"
-            gh release create "$tag" "$b.mp4" "$b.txt" --title "Film: $id ($(date -u +%Y-%m-%d))" --notes-file "$b.txt"
-            echo "Film posted: ${{ github.server_url }}/${{ github.repository }}/releases/tag/$tag" | tee -a "$GITHUB_STEP_SUMMARY"
+            gh release create "$tag" "$b.mp4" "$b.txt" --draft --title "Film: $id ($(date -u +%Y-%m-%d))" --notes-file "$b.txt"
+            echo "${tag#film-}" > "$b.siteid"
+          done
+      # on the site for members (functions/api/films.js, stored in Cloudflare R2): https://a-to-mind.com/films/
+      - name: Put the film on the site for members
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: set -o pipefail; for m in media/*.json; do b="${m%.json}"; node tools/film-post.mjs "$b.mp4" "$m" --id "$(cat "$b.siteid")" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"; done
+      # films posted before this were public releases: put each on the site, then make its release a draft (nothing is deleted)
+      - name: Move the older public films onto the site
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          set -o pipefail
+          for tag in $(gh release list --limit 100 --json tagName,isDraft --jq '.[] | select(.isDraft | not) | .tagName | select(startswith("film-"))'); do
+            d="old/$tag"; mkdir -p "$d"
+            gh release download "$tag" --dir "$d" --pattern '*.mp4' --pattern '*.txt'
+            node tools/film-post.mjs "$(ls "$d"/*.mp4 | head -1)" "$(ls "$d"/*.txt | head -1)" --id "${tag#film-}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+            gh release edit "$tag" --draft=true
           done
       # optional: straight to Void's channel (tools/youtube.mjs refuses any other), only when the repo variable YT_UPLOAD is 1 and
       # the owner's YouTube OAuth client is in the repo secrets. Private unless the repo variable YT_PRIVACY says otherwise.
