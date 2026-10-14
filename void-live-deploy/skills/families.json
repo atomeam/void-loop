@@ -327,7 +327,7 @@
     {
      "name": "worldtime",
      "tier": "proven",
-     "why": "14 browser-suite mentions, 87 real asks in the benchmark"
+     "why": "a self-test, 14 browser-suite mentions, 91 real asks in the benchmark"
     },
     {
      "name": "distance",
