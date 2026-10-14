@@ -4478,6 +4478,10 @@ say('nothing selected to remove');
         .replace(/^(?:a\s+)?random\s+number\s+(?:from\s+)?(-?\d+)\s*(?:-|to)\s*(-?\d+)\s*$/i, 'random number between $1 and $2')
         .replace(/^((?:how\s+many\s+)?(?:days|weeks|sleeps))\s+(?:till|til|untill)\s+/i, '$1 until ')
         .replace(/^(?:what(?:'s|\s+is)\s+)?my\s+age\s+in\s+(days|weeks|months)\s+(?:if\s+i\s+was\s+)?born\s+(?:on\s+|in\s+)?(.+?)\s*[?.!]*$/i, 'how many $1 old am i if i was born on $2')
+        // "what day was i born if my birthday is july 4 1990", "what day of the week was i born on 3/14/2001": the weekday of that date
+        .replace(/^(?:what|which)\s+day\s+(?:of\s+the\s+week\s+)?was\s+i\s+born(?:\s+on|\s+if\s+(?:my\s+birthday\s+is|i\s+was\s+born\s+on)|\s*,?\s*(?:my\s+)?birthday\s+(?:is\s+)?)\s+(.*\d{4})\s*[?.!]*$/i, 'what day of the week was $1')
+        // "what day of the week was 12 october 1999": the day first, read as "october 12 1999"
+        .replace(/^((?:what\s+)?day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?)(\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?([a-z]{3,}),?(\s+\d{4})?\s*[?.!]*$/i, (_, a, d, mo, y) => a + mo + ' ' + d + (y || ''))
         .replace(/^(?:start\s+|begin\s+)?(?:a\s+)?pomodoro(?:\s+timer)?(?:\s+please)?\s*[.!]*$/i, 'set a timer for 25 minutes')
         .replace(/^(?:to\s*-?\s*do|todo)(?:\s+list)?\s*:\s*(.+)$/i, 'make a to-do list with $1')
         .replace(/^(capital|currency|population)\s+(?!of\b|city\b|gains?\b|letters?\b|one\b|punishment\b|cities\b|growth\b|density\b)([a-z][a-z ]{2,30}?)\s*[?.!]*$/i, '$1 of $2')

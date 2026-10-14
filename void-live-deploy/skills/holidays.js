@@ -7,11 +7,14 @@ export function holidayListOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
   // "when is the next holiday", "upcoming holidays": no country named, so this browser's own (en-GB -> GB), else the US
   // "is today a holiday", "is it a bank holiday today", "holidays today": the same list, with a line saying whether today is one
-  const today = /^(?:is\s+(?:today|it)\s+a\s+(?:public\s+|bank\s+|federal\s+|national\s+)?holiday(?:\s+today)?|(?:any\s+)?(?:public\s+|bank\s+)?holidays?\s+today)$/.test(t);
+  // ("is tomorrow a holiday", "is it a holiday tomorrow": the same for tomorrow)
+  const d = t.match(/^is\s+(today|tomorrow|it)\s+a\s+(?:public\s+|bank\s+|federal\s+|national\s+)?holiday(?:\s+(today|tomorrow))?$|^(?:any\s+)?(?:public\s+|bank\s+)?holidays?\s+(today|tomorrow)$/);
+  const when = d && (d[2] || d[3] || (d[1] === 'it' ? 'today' : d[1]));
+  const today = !!when;
   if (today || /^(?:when(?:'s|\s+is)\s+the\s+next\s+(?:public\s+|bank\s+)?holiday|(?:the\s+)?next\s+(?:public\s+|bank\s+)?holiday|upcoming\s+(?:public\s+)?holidays|next\s+(?:public\s+)?holidays)$/.test(t)) {
     const region = (typeof navigator !== 'undefined' && /-([A-Za-z]{2})$/.exec(navigator.language || '') || [])[1];
     const cc = region ? region.toUpperCase() : 'US';
-    return { cc, name: Object.keys(CC).find((k) => CC[k] === cc && k.length > 2) || cc, today };
+    return { cc, name: Object.keys(CC).find((k) => CC[k] === cc && k.length > 2) || cc, today, when: when || '' };
   }
   const m = t.match(/^(?:public\s+holidays(?:\s+in)?|next\s+holiday\s+in|holidays\s+in)\s+(.+)$/);
   if (!m) return null;
@@ -30,9 +33,10 @@ async function run(text, api) {
     const lis = rows.slice(0, 8).map((h) => '<li><b>' + esc(h.date) + '</b> · ' + esc(h.localName || h.name) + '</li>').join('');
     let todayLine = '';
     if (q.today) {
-      const d = new Date(), iso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+      const d = new Date(); if (q.when === 'tomorrow') d.setDate(d.getDate() + 1);
+      const iso = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
       const hit = rows.find((h) => h.date === iso);
-      todayLine = '<p>' + (hit ? 'Yes: today is ' + esc(hit.localName || hit.name) + '.' : 'No, today is not a public holiday in ' + esc(q.name) + '.') + '</p>';
+      todayLine = '<p>' + (hit ? 'Yes: ' + (q.when === 'tomorrow' ? 'tomorrow' : 'today') + ' is ' + esc(hit.localName || hit.name) + '.' : 'No, ' + (q.when === 'tomorrow' ? 'tomorrow' : 'today') + ' is not a public holiday in ' + esc(q.name) + '.') + '</p>';
     }
     el.innerHTML = '<h2>Next holidays · ' + esc(q.name) + '</h2>' + todayLine + '<ul>' + lis + '</ul>'
       + '<div class="src">Source: <a href="https://date.nager.at/PublicHoliday/Country/' + q.cc + '" target="_blank" rel="noopener">Nager.Date</a></div>';
