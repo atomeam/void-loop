@@ -23,6 +23,9 @@ export function breathOf(text) {
   if (new RegExp(pre + String.raw`(?:box|square)\s+breath(?:ing)?(?:\s+exercise)?$`).test(t)) return 'box';
   if (new RegExp(pre + String.raw`(?:guided\s+|calm(?:ing)?\s+|slow\s+|deep\s+)?(?:breathing\s+exercise|breathing\s+timer|breath\s?work(?:\s+session)?|breathing\s+session)$`).test(t)) return 'box';
   if (/^(?:please\s+)?(?:breathe|breath)\s+with\s+me$/.test(t) || /^help\s+me\s+breathe$/.test(t)) return 'box';
+  // "help me calm down", "help me relax": a slow box breath; "i can't sleep": 4-7-8, the pattern people use to fall asleep
+  if (/^(?:please\s+)?(?:help\s+me\s+(?:to\s+)?(?:calm\s+down|relax|unwind|de-?stress)|calm\s+me\s+down|i\s+need\s+to\s+(?:calm\s+down|relax))$/.test(t)) return 'box';
+  if (/^i\s+(?:can'?t|cannot|can\s+not)\s+(?:sleep|fall\s+asleep|get\s+to\s+sleep)(?:\s+tonight)?$/.test(t)) return '478';
   return null;
 }
 

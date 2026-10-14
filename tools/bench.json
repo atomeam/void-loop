@@ -5965,5 +5965,10 @@
   {"ask": "what to wear in paris today", "want": "skill:weather"},
   {"ask": "is it going to be foggy tomorrow morning", "want": "skill:weather"},
   {"ask": "should i wear a coat tonight", "want": "skill:weather"},
-  {"ask": "wind chill right now", "want": "skill:weather"}
+  {"ask": "wind chill right now", "want": "skill:weather"},
+  {"ask": "best heart rate to burn fat", "want": "skill:heart"},
+  {"ask": "help me relax", "want": "skill:breath"},
+  {"ask": "i cant fall asleep", "want": "skill:breath"},
+  {"ask": "healthy weight for 5 foot 4", "want": "calc", "says": "108"},
+  {"ask": "ideal weight for 180 cm", "want": "calc", "says": "60"}
 ]
