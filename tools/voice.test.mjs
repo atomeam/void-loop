@@ -225,6 +225,32 @@ test('GET /api/reflect gives every built ask with the time of the ledger entry t
   assert.ok(!g.asks.some((a) => /velocity/.test(a.ask)) && g.asks.some((a) => /backgammon/.test(a.ask)), 'built asks still leave the open list');
 });
 
+
+test('friction rewordings count as built when a words link names the ledger entry (id aged out of the reflect window)', () => {
+  const entries = [
+    { at: '2026-10-14T18:20:00Z', asks: [{ ask: "Implement the 'friction' indicator on the growth card and link it to the actual failure logs of the 'Words and the world' skills." }, { ask: "Create a 'convert-card' skill that outputs a persistent, interactive UI element for unit conversions on the stage." }] },
+    { at: '2026-10-14T17:49:00Z', asks: [{ ask: "Add a 'friction' indicator to the growth card to highlight skills that are failing or underperforming." }] },
+  ];
+  const ledger = [{ at: '2026-10-13T16:41:06Z', what: 'Asked by Void: the growth card shows friction, the skills failing or least checked', asked: 'ask-20261012-2131-1' }];
+  const f = followThrough(entries, ledger, [
+    { ask: 'ask-20261012-2131-1', ledgerAt: '2026-10-13T16:41:06Z' },
+    { words: "Add a 'friction' indicator to the growth card to highlight skills that are failing or underperforming.", ledgerAt: '2026-10-13T16:41:06Z' },
+  ]);
+  const friction = f.built.find((g) => /friction/.test(g.ask) && !/Words and the world/.test(g.ask));
+  assert.ok(friction, 'base friction rewording is built');
+  assert.equal(friction.builtAt, '2026-10-13T16:41:06Z');
+  assert.ok(f.open.some((g) => /Words and the world/.test(g.ask)), 'World-family link ask stays open (different ask)');
+  assert.ok(f.open.some((g) => /convert-card/.test(g.ask)), 'unrelated ask stays open');
+});
+
+test('a ledger asked field in free text (not ask-…) matches rewordings the same way a words link does', () => {
+  const entries = [{ at: '2026-10-14T12:00:00Z', asks: [{ ask: "Modify the refusal logic so that every 'I cannot' is accompanied by a structured data object identifying the missing skill." }] }];
+  const ledger = [{ at: '2026-10-13T15:51:15Z', what: 'Every I cannot now says what is missing', asked: "Modify the refusal logic so that every 'I cannot' is accompanied by a structured data object identifying the missing skill." }];
+  const f = followThrough(entries, ledger, []);
+  assert.equal(f.built.length, 1);
+  assert.equal(f.built[0].builtAt, '2026-10-13T15:51:15Z');
+});
+
 test('a link may name an ask by its words (not synced to the voice log yet): it and its rewordings count as built, nothing else does', () => {
   const entries = [{ at: '2026-10-13T18:08:00Z', asks: [{ ask: 'Create a manifest file in the skills/ directory that automatically registers all new skills to prevent the 24-fold repetition of this ask.' }, { ask: 'Learn backgammon on the stage' }] },
     { at: '2026-10-13T17:00:00Z', asks: [{ ask: 'Create a manifest file in the skills/ directory to automatically register new skills and stop the 24-fold repetition of manual registration asks.' }] }];
