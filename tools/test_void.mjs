@@ -2579,6 +2579,23 @@ try {
       && /Crux \(the Southern Cross\)/.test(cross) && /south of 30°N/.test(cross) && !K.errors.length, JSON.stringify({ orion: orion.slice(0, 400), cross: cross.slice(0, 300), errors: K.errors }));
     await K.ctx.close(); }
 
+  // the weather card on a phone (owner, 2026-10-14: the hourly row read "11 AM2 PMPM2 PM3" and the card lagged over the moving stars):
+  // each hour stays legible beside the next (the row scrolls sideways instead of squeezing), and a card on a phone draws no
+  // backdrop blur, so the stars moving behind it no longer make the browser blur the card again every frame
+  if (want("weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur")) {
+    const H = await fresh(); await H.p.setViewportSize({ width: 320, height: 640 });
+    await H.ask('weather in Lisbon', 1200); await until(async () => /20°|68°/.test(await H.page()), 5000);
+    const m = await H.p.evaluate(() => {
+      const card = document.querySelector('.vpage.on'), row = card && card.querySelector('.wx-hours');
+      const labels = row ? [...row.children].map((c) => c.firstElementChild.getBoundingClientRect()) : [];
+      let overlaps = 0; for (let i = 1; i < labels.length; i++) if (labels[i].left < labels[i - 1].right - 0.5) overlaps++;
+      const clipped = row ? [...row.children].filter((c) => c.firstElementChild.scrollWidth > c.clientWidth + 0.5).length : -1;
+      return { hours: labels.length, overlaps, clipped, blur: card ? getComputedStyle(card).backdropFilter : '?' };
+    });
+    check('weather on a phone: the hours sit side by side, legible, and the card draws no backdrop blur',
+      m.hours === 8 && m.overlaps === 0 && m.clipped === 0 && (m.blur === 'none' || m.blur === '') && !H.errors.length, JSON.stringify({ ...m, errors: H.errors }));
+    await H.ctx.close(); }
+
   // the lab judged by real use (owner's choice 2026-10-13: reuse /api/miss, capped): opening an experiment sends its id, once a day
   if (want("opening a lab experiment counts one use: its id only, once per browser per day")) {
     const U = await fresh({ content: "{ const f = window.fetch; window.__usedSent = []; window.fetch = (u, o) => /\\/api\\/miss$/.test(String(u)) ? (window.__usedSent.push(o && o.body), Promise.resolve(new Response(null, { status: 204 }))) : f(u, o); }" });

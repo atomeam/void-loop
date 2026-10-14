@@ -277,7 +277,7 @@
     {
      "name": "weather",
      "tier": "proven",
-     "why": "a self-test, 4 browser-suite mentions, 36 real asks in the benchmark"
+     "why": "a self-test, 6 browser-suite mentions, 36 real asks in the benchmark"
     },
     {
      "name": "air",
