@@ -23,5 +23,6 @@
   {"check": "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, o", "sha": "a4f84a9b2839a373178565a9316f8a8af8521e52", "at": "2026-10-14T03:16:24Z"},
   {"check": "opening a lab experiment counts one use: { kind: \"used\", id } once per browser per day, nothing typed sent", "sha": "8d2589a8fd5c096505d1e2b985051d07adfeff74", "at": "2026-10-14T04:46:10Z"},
   {"check": "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload", "sha": "4679bb0df93e6e906f1deced28d749d85c52ab9b", "at": "2026-10-14T04:58:28Z"},
-  {"check": "opening a lab experiment counts one use: { kind: \"used\", id } once per browser per day, nothing typed sent", "sha": "4679bb0df93e6e906f1deced28d749d85c52ab9b", "at": "2026-10-14T04:58:28Z"}
+  {"check": "opening a lab experiment counts one use: { kind: \"used\", id } once per browser per day, nothing typed sent", "sha": "4679bb0df93e6e906f1deced28d749d85c52ab9b", "at": "2026-10-14T04:58:28Z"},
+  {"check": "opening a lab experiment counts one use: { kind: \"used\", id } once per browser per day, nothing typed sent", "sha": "d054c03add060800d151b81a22eed4533e9fba09", "at": "2026-10-14T06:14:31Z"}
 ]
