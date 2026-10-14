@@ -21,7 +21,7 @@ export async function forFilms(env, ids, p) {
   for (const id of ids) out[id] = { counts: { post: 0, fix: 0, skip: 0 }, mine: null, ...(p.owner ? { notes: [] } : {}) };
   if (!ids.length || !env.DB) return out;
   await ready(env);
-  const { results } = await env.DB.prepare('SELECT film, who, verdict, note, at FROM void_film_reviews WHERE film IN (' + ids.map(() => '?').join(',') + ') ORDER BY at DESC').bind(...ids).all();
+  const { results } = await env.DB.prepare('SELECT film, who, verdict, note, at FROM void_film_reviews WHERE film IN (' + ids.map(() => '?').join(',') + ') ORDER BY at DESC').bind(...ids).all(); // void-review: ok (only one ? per film is pasted in; every value is bound)
   for (const r of results || []) {
     const f = out[r.film]; if (!f || !VERDICTS[r.verdict]) continue;
     f.counts[r.verdict]++;
