@@ -5,7 +5,7 @@
 // The narration is the run's own research notes from the fringe ledger (tools/fringe.json: behavior, hypothesis, findings),
 // shown as a caption on the video (a headless browser has no speech voices) and written next to it as the title and
 // description an upload will carry. Nothing is uploaded here: that is step 2, with the owner's YouTube credentials.
-//   node tools/record.mjs [id] [--seconds 14] [--out media]   -> media/<id>.webm and media/<id>.json { title, description, tags, caption }
+//   node tools/record.mjs [id] [--seconds 20] [--out media]   -> media/<id>.webm and media/<id>.json { title, description, tags, caption }
 // id: a lab experiment such as attention-7 (default: the newest experiment in the lab).
 import fs from 'node:fs';
 import path from 'node:path';
@@ -22,21 +22,35 @@ export function runOf(ledger, id) {
   return runs.length ? runs[runs.length - 1] : null;
 }
 
-/** what the video says: { title, caption, description, tags } from the lab entry ({ id, label, sub }) and its ledger run. Pure. */
+/** the opening line: the experiment's own question when its lab line asks one ("How much does a hint steer you?"), else its
+ *  behavior. A hook, never a promise the experiment does not keep. Pure. */
+export function hookOf(tool, run) {
+  const q = String(tool.sub || '').match(/[^.?!]*\?/);
+  return (q ? q[0] : String((run && run.behavior) || tool.sub || tool.label || '')).trim();
+}
+
+/** what the video says, as an ad for Void (owner, 2026-10-14: "make each video into an awesomely epic ad for itself and reach as
+ *  many viewers as possible"): { hook, caption, cta, title, description, tags } from the lab entry ({ id, label, sub }) and its
+ *  ledger run. Everything in it is true of the experiment: what it is, what it found, what failed. Pure. */
 export function script(tool, run) {
   const label = String(tool.label || tool.id), sub = String(tool.sub || '').trim();
   const behavior = run && run.behavior ? String(run.behavior).trim() : sub;
   const lines = (xs) => (Array.isArray(xs) ? xs : []).map((x) => '- ' + String(x).trim()).join('\n');
-  const title = ('Void built this: ' + label).slice(0, TITLE_MAX);
+  const hook = hookOf(tool, run), link = 'https://a-to-mind.com/?q=' + encodeURIComponent(label.toLowerCase());
+  const tail = ' | an AI built this itself #Shorts';
+  const title = (hook.length + tail.length <= TITLE_MAX ? hook + tail : label + tail).slice(0, TITLE_MAX);
   const parts = [
-    behavior,
+    hook + ' Try it free: ' + link, // the first lines are what a viewer sees before "more": the hook and the link
+    'Void, an AI at https://a-to-mind.com, built this experiment by itself, tested it, and filmed it in a real browser. Nothing was edited by hand.',
+    behavior !== hook ? behavior : '',
     run && run.hypothesis ? 'What it set out to show: ' + String(run.hypothesis).trim() : '',
     run && Array.isArray(run.findings) && run.findings.length ? 'What it found:\n' + lines(run.findings) : '',
     run && Array.isArray(run.failure_modes) && run.failure_modes.length ? 'What failed:\n' + lines(run.failure_modes.map((f) => (f && f.what) || f)) : '',
-    'Try it yourself: https://a-to-mind.com/?q=' + encodeURIComponent(label.toLowerCase()),
-    'Void (https://a-to-mind.com) builds an experiment like this every hour, tests it, and films it itself. This video was recorded by Void in a real browser; nothing was edited by hand.',
+    'Ask Void for anything: https://a-to-mind.com',
+    '#Shorts #AI #Void',
   ].filter(Boolean);
-  return { title, caption: behavior || label, description: parts.join('\n\n').slice(0, DESC_MAX), tags: ['Void', 'A-to-Mind', 'AI', 'experiment', run ? run.family : 'lab'].filter(Boolean) };
+  return { hook, caption: behavior || label, cta: 'Built by an AI, by itself.\nTry it free at\na\u2011to\u2011mind.com', title, description: parts.join('\n\n').slice(0, DESC_MAX),
+    tags: ['Void', 'A-to-Mind', 'AI', 'AI experiment', 'interactive', 'Shorts', run ? run.family : 'lab'].filter(Boolean) };
 }
 
 function serve() {
@@ -51,7 +65,7 @@ function serve() {
 }
 
 /** film one experiment: returns { video, meta } paths */
-export async function record(id, { seconds = 14, out = path.resolve(here, '..', 'media') } = {}) {
+export async function record(id, { seconds = 20, out = path.resolve(here, '..', 'media') } = {}) {
   const { chromium } = await import('playwright-core');
   const { toolList } = await import('../void-live-deploy/skills/make.js');
   const tool = toolList().find((t) => t.id === id);
@@ -63,8 +77,8 @@ export async function record(id, { seconds = 14, out = path.resolve(here, '..', 
   const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
   const { server, base } = serve();
   const browser = await chromium.launch({ headless: true, ...(exe ? { executablePath: exe } : {}) });
-  const size = { width: 1280, height: 720 };
-  const ctx = await browser.newContext({ viewport: size, recordVideo: { dir: out, size } });
+  // a vertical Short (9:16, where new viewers find a channel): the page laid out as on a phone, filmed at 1080 x 1920
+  const ctx = await browser.newContext({ viewport: { width: 540, height: 960 }, deviceScaleFactor: 2, recordVideo: { dir: out, size: { width: 1080, height: 1920 } } });
   const page = await ctx.newPage();
   try {
     await page.goto(base + 'fringe/' + id + '.html', { waitUntil: 'load' });
@@ -78,11 +92,21 @@ export async function record(id, { seconds = 14, out = path.resolve(here, '..', 
       c.append(t, b); document.body.appendChild(c);
       document.body.style.paddingBottom = (c.offsetHeight + 40) + 'px'; // the caption never hides the end of the page
     }, { title: words.title, caption: words.caption });
-    const until = Date.now() + seconds * 1000;
-    await page.waitForTimeout(2000);
+    // the hook (the first two seconds decide whether anyone stays) and, at the end, the call to action: full-screen cards
+    const card = (text, ms) => page.evaluate(({ text }) => {
+      const c = document.createElement('div'); c.setAttribute('data-void-card', '');
+      c.style.cssText = 'position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:36px;box-sizing:border-box;text-align:center;white-space:pre-line;background:radial-gradient(circle at 50% 40%,#2a1f55,#07070b 70%);color:#fff;font:800 38px/1.2 system-ui,sans-serif;letter-spacing:-.5px';
+      c.textContent = text; document.body.appendChild(c);
+    }, { text }).then(() => page.waitForTimeout(ms)).then(() => page.evaluate(() => document.querySelectorAll('[data-void-card]').forEach((n) => n.remove())));
+    await card(words.hook, 2200);
+    const until = Date.now() + Math.max(4, seconds - 5) * 1000; // the demo, then three seconds for the call to action
+    await page.waitForTimeout(800);
     // the page's own demo when it has one; then its buttons, one after another, as a person would try it
     await page.evaluate(() => { const h = Object.keys(window).filter((k) => /^__/.test(k)).map((k) => window[k]).find((o) => o && typeof o.demo === 'function'); try { if (h) h.demo(); } catch (_) {} });
-    for (const b of await page.$$('button:visible')) {
+    // the button that starts things first (start, play, an example), so the film shows it running, then the rest in page order
+    const buttons = await page.$$('button:visible'), starts = [];
+    for (const b of buttons) if (/\b(?:start|begin|play|go|run|try|demo|example|made-up|sample|new)\b/i.test(await b.innerText().catch(() => ''))) starts.push(b);
+    for (const b of [...starts, ...buttons.filter((x) => !starts.includes(x))]) {
       if (Date.now() > until - 1500) break;
       await b.click({ timeout: 1000 }).catch(() => {});
       await page.waitForTimeout(500);
@@ -90,6 +114,9 @@ export async function record(id, { seconds = 14, out = path.resolve(here, '..', 
       await page.waitForTimeout(1000);
     }
     const left = until - Date.now(); if (left > 0) await page.waitForTimeout(left);
+    await page.evaluate(() => document.querySelectorAll('[data-void-card]').forEach((n) => n.remove()));
+    await page.evaluate(({ cta }) => { const c = document.createElement('div'); c.setAttribute('data-void-card', ''); c.style.cssText = 'position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:36px;box-sizing:border-box;text-align:center;white-space:pre-line;background:radial-gradient(circle at 50% 40%,#2a1f55,#07070b 70%);color:#fff;font:800 36px/1.25 system-ui,sans-serif'; c.textContent = cta; document.body.appendChild(c); }, { cta: words.cta });
+    await page.waitForTimeout(3000);
   } finally {
     await page.close(); // the video is written when its page closes
   }
@@ -110,7 +137,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const { acquire } = await import('./heavy.mjs');
   const release = await acquire('recording ' + id + ' (tools/record.mjs)'); // one heavy browser job at a time on this machine
   try {
-    const r = await record(id, { seconds: Number(arg('--seconds')) || 14, ...(arg('--out') ? { out: path.resolve(arg('--out')) } : {}) });
+    const r = await record(id, { seconds: Number(arg('--seconds')) || 20, ...(arg('--out') ? { out: path.resolve(arg('--out')) } : {}) });
     console.log('recorded ' + path.relative(process.cwd(), r.video) + ' and ' + path.relative(process.cwd(), r.meta));
   } finally { release(); }
 }
