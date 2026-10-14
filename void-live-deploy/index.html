@@ -4487,6 +4487,12 @@ say('nothing selected to remove');
         // "what day of the week was 12 october 1999": the day first, read as "october 12 1999"
         .replace(/^((?:what\s+)?day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?)(\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?([a-z]{3,}),?(\s+\d{4})?\s*[?.!]*$/i, (_, a, d, mo, y) => a + mo + ' ' + d + (y || ''))
         .replace(/^(?:start\s+|begin\s+)?(?:a\s+)?pomodoro(?:\s+timer)?(?:\s+please)?\s*[.!]*$/i, 'set a timer for 25 minutes')
+        // "set timr 10 min", "set a timmer for 8 minutes": the word typed fast (none of these is a word of its own)
+        .replace(/\b(?:timr|tmer|timmer|timeer|tiemr|timre|tymer)\b/gi, 'timer')
+        // "time me for 2 minutes": a timer
+        .replace(/^time\s+me\s+(?:for\s+)?(\d+(?:\.\d+)?\s*(?:seconds?|secs?|minutes?|mins?|hours?|hrs?))\s*[.!]*$/i, 'set a timer for $1')
+        // "egg timer": how long each kind of boiled egg takes, so the person picks
+        .replace(/^(?:an?\s+)?egg\s+timer\s*[.!]*$/i, 'how long to boil an egg')
         .replace(/^(?:to\s*-?\s*do|todo)(?:\s+list)?\s*:\s*(.+)$/i, 'make a to-do list with $1')
         .replace(/^(capital|currency|population)\s+(?!of\b|city\b|gains?\b|letters?\b|one\b|punishment\b|cities\b|growth\b|density\b)([a-z][a-z ]{2,30}?)\s*[?.!]*$/i, '$1 of $2')
         .replace(new RegExp('^(?:time\\s+(?:in\\s+|at\\s+)?(' + CITIES + ')|(' + CITIES + ')\\s+time)(?:\\s+now|\\s+right\\s+now)?\\s*[?.!]*$', 'i'), (_, a, b) => 'what time is it in ' + (a || b))

@@ -5937,5 +5937,9 @@
   {"ask": "anagram of listen", "want": "skill:words"},
   {"ask": "5 letter words starting with cr", "want": "skill:words"},
   {"ask": "6 letter words ending in ing", "want": "skill:words"},
-  {"ask": "words ending in ology", "want": "skill:words"}
+  {"ask": "words ending in ology", "want": "skill:words"},
+  {"ask": "set timr for 12 min", "want": "timer|skill:timer|timer-start"},
+  {"ask": "start a timmer for 6 minutes", "want": "timer|skill:timer|timer-start"},
+  {"ask": "time me for 90 seconds", "want": "timer|skill:timer|timer-start"},
+  {"ask": "egg timer", "want": "calc", "says": "soft 6 min"}
 ]
