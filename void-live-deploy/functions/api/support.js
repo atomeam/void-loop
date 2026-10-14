@@ -21,7 +21,7 @@ const ready = (env) => { let p = made.get(env.DB); if (!p) { p = env.DB.prepare(
 const ticketId = () => 'S-' + [...crypto.getRandomValues(new Uint8Array(4))].map((b) => b.toString(16).padStart(2, '0')).join('').toUpperCase();
 // Void's own keys are masked too (redact() knows other services' keys): a Pro key vr1.… and a license key XXXXXXXX-XXXXXXXX-…
 const OWN_KEYS = [/\bvr1\.[A-Za-z0-9_-]{43}\b/g, /\b[A-Z0-9]{8}(?:-[A-Z0-9]{8}){3}\b/gi];
-const clean = (t, max) => OWN_KEYS.reduce((x, re) => x.replace(re, '[redacted key]'), redact(String(t || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim())).slice(0, max);
+export const clean = (t, max) => OWN_KEYS.reduce((x, re) => x.replace(re, '[redacted key]'), redact(String(t || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim())).slice(0, max);
 
 /** who is asking: { owner: true } | { who } for someone who pays | null */
 export async function payer(request, env) {

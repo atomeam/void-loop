@@ -33,6 +33,11 @@
     #gate.on { display: block; }
     #gate form { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     #gate input { font: inherit; font-size: 14px; flex: 1 1 220px; min-width: 0; padding: 8px 12px; min-height: 40px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); }
+    .review { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+    .review .row .btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .review textarea { font: inherit; font-size: 14px; width: 100%; min-height: 60px; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); resize: vertical; }
+    .review .tally, .review .said { color: var(--muted); font-size: 13px; }
+    .review ul { margin: 0; padding-left: 18px; font-size: 14px; }
     .btn.join { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
     footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
   </style>
@@ -46,7 +51,7 @@
        words, open YouTube's upload page. Nothing here uploads anything by itself. -->
   <p><a href="/">Void</a></p>
   <h1>Void's films</h1>
-  <p class="sub">Every day Void films one of its own experiments. The films are for members: people who pay for Void.</p>
+  <p class="sub">Every day Void films one of its own experiments. The films are for members: people who pay for Void. Members review them: post it, needs work or skip, with a note, and the owner decides what goes on YouTube.</p>
   <div id="gate">
     <strong>Members only.</strong> Sign in on <a href="/">Void</a> with a paid account, or paste your Void Pro key or Code Review Pro license key.
     <form id="keyform"><input id="key" type="password" autocomplete="off" placeholder="vr1.… or XXXXXXXX-XXXXXXXX-…" aria-label="Your Void Pro key or license key"><button class="btn" type="submit">Watch</button>
@@ -59,6 +64,7 @@
 <script>
 (() => {
   const UPLOAD = 'https://www.youtube.com/upload', KEY = 'a2m.void.filmkey';
+  const VERDICTS = { post: 'Post it', fix: 'Needs work', skip: 'Skip it' };
   const $ = (t, attrs = {}, kids = []) => { const e = document.createElement(t); for (const [k, v] of Object.entries(attrs)) k === 'text' ? (e.textContent = v) : e.setAttribute(k, v); for (const c of kids) e.append(c); return e; };
   const copyBtn = (label, text) => {
     const b = $('button', { class: 'btn', type: 'button', text: label });
@@ -70,12 +76,41 @@
   };
   // who is asking: a key typed here (kept for this tab only), else the owner or a signed-in account on this browser
   const token = () => { try { return sessionStorage.getItem(KEY) || localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) { return ''; } };
+  const auth = () => { const t = token(); return t ? { authorization: 'Bearer ' + t } : {}; };
+  const tally = (c) => { const n = c.post + c.fix + c.skip; return n ? n + (n === 1 ? ' review: ' : ' reviews: ') + Object.keys(VERDICTS).filter((k) => c[k]).map((k) => c[k] + ' ' + VERDICTS[k].toLowerCase()).join(', ') : 'No reviews yet.'; };
+  // the review: one verdict and a note per reviewer, changeable (functions/api/film-review.js); the owner also reads every note
+  function reviewBox(f, owner) {
+    const r = f.reviews || { counts: { post: 0, fix: 0, skip: 0 }, mine: null };
+    let pick = r.mine ? r.mine.verdict : '';
+    const btns = Object.entries(VERDICTS).map(([k, label]) => { const b = $('button', { class: 'btn', type: 'button', 'data-v': k, 'aria-pressed': String(k === pick), text: label });
+      b.addEventListener('click', () => { pick = k; for (const x of btns) x.setAttribute('aria-pressed', String(x === b)); }); return b; });
+    const note = $('textarea', { maxlength: '1000', placeholder: 'What works, what to cut, a better hook…', 'aria-label': 'Your note on this film' }); note.value = r.mine ? r.mine.note : '';
+    const save = $('button', { class: 'btn join', type: 'button', text: r.mine ? 'Update review' : 'Save review' });
+    const said = $('div', { class: 'said', text: r.mine ? 'Your review: ' + VERDICTS[r.mine.verdict] + '.' : '' });
+    const count = $('div', { class: 'tally', text: tally(r.counts) });
+    save.addEventListener('click', async () => {
+      if (!pick) { said.textContent = 'Pick post it, needs work or skip first.'; return; }
+      save.disabled = true; said.textContent = 'Saving…';
+      try {
+        const res = await fetch('/api/film-review', { method: 'POST', headers: { 'content-type': 'application/json', ...auth() }, body: JSON.stringify({ id: f.id, verdict: pick, note: note.value.trim() }) });
+        const j = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(j.error || String(res.status));
+        if (!r.mine) r.counts[pick]++; else if (r.mine.verdict !== pick) { r.counts[r.mine.verdict]--; r.counts[pick]++; }
+        r.mine = { verdict: pick, note: note.value.trim() }; count.textContent = tally(r.counts);
+        said.textContent = 'Saved: ' + VERDICTS[pick] + '. Thank you.'; save.textContent = 'Update review';
+      } catch (e) { said.textContent = 'Not saved: ' + e.message; }
+      save.disabled = false;
+    });
+    const kids = [$('strong', { text: 'Your review' }), $('div', { class: 'row' }, btns), note, $('div', { class: 'row' }, [save]), said, count];
+    if (owner && r.notes && r.notes.length) kids.push($('ul', {}, r.notes.map((n) => $('li', { text: VERDICTS[n.verdict] + ' (' + n.by + '): ' + n.note }))));
+    return $('div', { class: 'review' }, kids);
+  }
   const status = document.getElementById('status'), list = document.getElementById('films'), gate = document.getElementById('gate');
   async function load() {
     list.textContent = ''; gate.classList.remove('on'); status.textContent = 'Loading the films…';
     const t = token();
     try {
-      const r = await fetch('/api/films', { headers: t ? { authorization: 'Bearer ' + t } : {} });
+      const r = await fetch('/api/films', { headers: auth() });
       const j = await r.json().catch(() => ({}));
       if (r.status === 401 || r.status === 403) {
         status.textContent = t ? 'That key or account is not a paid one.' : '';
@@ -96,6 +131,7 @@
             $('a', { class: 'btn yt', href: UPLOAD, target: '_blank', rel: 'noopener', text: '2. Upload to YouTube' }),
           ]),
           $('div', { class: 'row' }, [copyBtn('3. Copy title', f.title), copyBtn('Copy description', f.description), ...(f.tags ? [copyBtn('Copy tags', f.tags)] : [])]));
+        kids.push(reviewBox(f, j.owner));
         list.append($('article', { class: 'film', 'data-id': f.id }, [video, $('div', { class: 'body' }, kids)]));
       }
     } catch (e) {

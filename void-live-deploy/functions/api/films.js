@@ -4,7 +4,8 @@
 // support desk's rule (payer() in functions/api/support.js): the owner, a Void Pro key, a Code Review Pro license or a paid
 // account's session. A <video> cannot send a Bearer header, so the list hands each payer a link to each film that is signed and
 // stops working after WATCH_MS; the link streams from R2 with Range, so a film plays at once and seeks, however many people watch.
-//   GET                          (a paying credential) -> { films: [{ id, at, title, description, tags, bytes, src }], owner }
+//   GET                          (a paying credential) -> { films: [{ id, at, title, description, tags, bytes, src, reviews }], owner }
+//                                 reviews: lib/film-reviews.js (POST one at /api/film-review)
 //   GET ?id=&exp=&sig=           (a signed link)       -> the MP4 (206 for a Range)
 //   POST ?id= video/mp4 body     (the owner)           -> stores the film      (.github/workflows/record.yml, daily)
 //   POST ?id= application/json   (the owner)           -> stores its words { title, description, tags }
@@ -12,6 +13,7 @@
 import { bad, good } from '../../lib/void-me.js';
 import { payer } from './support.js';
 import { BUY_URL } from '../../lib/review-api.js';
+import { forFilms } from '../../lib/film-reviews.js';
 
 export const WATCH_MS = 6 * 3600e3, LIST_MAX = 60, WORDS_MAX = 6000;
 export const ID_RE = /^[a-z0-9][a-z0-9-]{2,95}$/;
@@ -79,6 +81,8 @@ export async function onRequestGet({ request, env }) {
     let w = {}; try { const j = await env.FILMS.get('films/' + id + '.json'); if (j) w = JSON.parse(await j.text()); } catch (_) { w = {}; }
     return { id, at: new Date(o.uploaded).toISOString(), title: w.title || id, description: w.description || '', tags: w.tags || '', bytes: o.size, src: await watchLink(env, id, now) };
   }));
+  const reviews = await forFilms(env, films.map((f) => f.id), p).catch(() => ({}));
+  for (const f of films) f.reviews = reviews[f.id] || null;
   return good({ films, owner: !!p.owner, until: new Date(now + WATCH_MS).toISOString() });
 }
 

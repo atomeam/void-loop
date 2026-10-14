@@ -2409,7 +2409,7 @@ try {
     await F.p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'owner-tok'); }); await F.p.reload();
     await until(async () => !!(await F.p.$('#films .film a.yt')), 5000);
     const card = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return a && { yt: a.querySelector('a.yt').href, dl: a.querySelector('a[download]').getAttribute('href'),
-      btns: [...a.querySelectorAll('button')].map((b) => b.textContent), wide: document.documentElement.scrollWidth > innerWidth }; });
+      btns: [...a.querySelectorAll('.body > .row button')].map((b) => b.textContent), wide: document.documentElement.scrollWidth > innerWidth }; });
     await F.ctx.grantPermissions(['clipboard-read', 'clipboard-write']);
     await F.p.click('#films .film button:nth-of-type(2)'); const copied = await F.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
     check('films page: members watch, the owner gets the YouTube steps, a stranger meets the members-only gate',
@@ -2418,6 +2418,45 @@ try {
       && !!card && card.yt === 'https://www.youtube.com/upload' && card.dl === film.src && JSON.stringify(card.btns) === '["3. Copy title","Copy description","Copy tags"]'
       && copied === film.description && !card.wide && !F.errors.length, JSON.stringify({ gate, member, card, copied, seen, errors: F.errors }));
     await F.ctx.close(); }
+
+  // reviewing a film (owner, 2026-10-14: "film review could be for owner and paying members as contributer reviewrs"): a member picks
+  // a verdict, writes a note and saves it; the owner reads every note under the film
+  if (want("films page: a member reviews a film, the owner reads every note")) {
+    const F = await fresh(); await F.p.setViewportSize({ width: 390, height: 844 });
+    const film = (rev) => ({ id: '20261014-x-r6', at: '2026-10-14T16:33:31Z', title: 'Odd moments', description: 'd', tags: '', bytes: 1, src: '/api/films?id=20261014-x-r6&exp=9999999999&sig=abc', reviews: rev });
+    const sent = [];
+    await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => {
+      if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
+      return r.request().headers().authorization === 'Bearer owner-tok'
+        ? r.fulfill(json({ owner: true, films: [film({ counts: { post: 1, fix: 1, skip: 0 }, mine: null, notes: [{ by: 'member', verdict: 'fix', note: 'Cut the first 3 seconds.' }] })] }))
+        : r.fulfill(json({ owner: false, films: [film({ counts: { post: 1, fix: 0, skip: 0 }, mine: null })] }));
+    });
+    await F.ctx.route(/\/api\/film-review$/, (r) => { sent.push({ auth: r.request().headers().authorization, body: JSON.parse(r.request().postData() || '{}') }); return r.fulfill(json({ ok: true })); });
+    await F.p.goto(base + 'films/'); await F.p.evaluate(() => sessionStorage.setItem('a2m.void.filmkey', 'vr1.' + 'A'.repeat(43))); await F.p.reload();
+    await until(async () => !!(await F.p.$('#films .review')), 5000);
+    await F.p.click('#films .review button:has-text("Save review")'); const empty = await F.p.$eval('#films .review .said', (e) => e.textContent);
+    await F.p.click('#films .review button[data-v="fix"]'); await F.p.fill('#films .review textarea', 'Cut the first 3 seconds.');
+    await F.p.click('#films .review button:has-text("Save review")'); await until(async () => /Saved/.test(await F.p.$eval('#films .review .said', (e) => e.textContent)), 4000);
+    const member = await F.p.evaluate(() => ({ said: document.querySelector('#films .review .said').textContent, tally: document.querySelector('#films .review .tally').textContent, notes: !!document.querySelector('#films .review ul') }));
+    await F.p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'owner-tok'); }); await F.p.reload();
+    await until(async () => !!(await F.p.$('#films .review ul li')), 5000);
+    const owner = await F.p.$$eval('#films .review ul li', (l) => l.map((x) => x.textContent));
+    check('films page: a member reviews a film, the owner reads every note',
+      /Pick post it/.test(empty) && sent.length === 1 && sent[0].auth === 'Bearer vr1.' + 'A'.repeat(43)
+      && JSON.stringify(sent[0].body) === JSON.stringify({ id: '20261014-x-r6', verdict: 'fix', note: 'Cut the first 3 seconds.' })
+      && /Saved: Needs work/.test(member.said) && member.tally === '2 reviews: 1 post it, 1 needs work' && !member.notes
+      && JSON.stringify(owner) === JSON.stringify(['Needs work (member): Cut the first 3 seconds.']) && !F.errors.length, JSON.stringify({ empty, sent, member, owner, errors: F.errors }));
+    await F.ctx.close(); }
+
+  // "films", typos and all, finds Void's films (owner, 2026-10-14: "i have typed films voids fillms nothing pulls it up . Void should know whatI mean and help")
+  if (want("films skill: films, voids fillms and where do I watch the films open the way to /films/")) {
+    const S = await fresh(); const got = [];
+    for (const a of ['films', 'voids fillms', 'where do I watch the films']) {
+      await S.ask(a, 500); await until(async () => /Void's films/.test(await S.page()), 4000);
+      got.push(await S.p.evaluate(() => { const c = document.querySelector('.vpage.on'); const l = c && c.querySelector('a[href="/films/"]'); return !!(c && /Void's films/.test(c.innerText) && l); }));
+    }
+    check('films skill: films, voids fillms and where do I watch the films open the way to /films/', got.every(Boolean) && !S.errors.length, JSON.stringify({ got, errors: S.errors }));
+    await S.ctx.close(); }
 
   // the map (skills/rebuild-map.js), the one skill nothing checked (the growth card's friction line, 2026-10-14): "show the map"
   // opens its 13 rows as they stand now, with no row still "not started" for something that is live
