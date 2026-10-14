@@ -5254,6 +5254,35 @@ try {
     !/api\/routes|escalat|lib\/router|bge-m3|qwen/i.test(html) && fs.readFileSync(path.join(root, 'void.html'), 'utf8') === html, '');
   }
   } // CORE
+  // the convert card (asked by Void, 2026-10-14): "unit converter" puts a converter on the stage that converts both ways,
+  // swaps, lists every other unit of the kind, keeps its kind, units and number across a reload, and puts itself away;
+  // one-off asks ("5 miles in km") and other converters (currency, pdf, time zone) are not its.
+  if (want("convert card: a unit converter on the stage, both ways, swap, every unit, survives a reload")) { const Q = await fresh();
+    const cv = await import(new URL('../void-live-deploy/skills/convert.js', import.meta.url).href);
+    const maths = cv.fmt(cv.convert('temperature', 1, 0, 98.6)) === '37' && cv.fmt(cv.convert('length', 4, 1, 5)) === '8.04672' && cv.fmt(cv.convert('data', 3, 0, 1)) === '1,048,576'
+      && cv.fmt(cv.convert('volume', 2, 3, 1)) === '16' && cv.fmt(cv.convert('mass', 3, 1, 1)) === '453.5924';
+    const routes = ['unit converter', 'open a converter', 'temperature converter', 'cooking converter', 'give me a converter for 5 miles to km', 'close the converter'].every((a) => !!cv.default.match(a.toLowerCase(), a))
+      && ['5 miles in km', 'convert 3 cups to ml', 'currency converter', 'pdf converter', 'time zone converter', 'calculator', 'units'].every((a) => !cv.default.match(a.toLowerCase(), a));
+    await Q.ask('temperature converter', 600);
+    const card = () => Q.p.$eval('.convert-card', (e) => ({ text: e.innerText, a: e.querySelector('.cv-from-val').value, b: e.querySelector('.cv-to-val').value, kind: e.querySelector('.cv-kind').value })).catch(() => null);
+    const first = await card();
+    await Q.p.fill('.convert-card .cv-from-val', '212'); await Q.p.waitForTimeout(60);
+    const boiled = await card();
+    await Q.p.fill('.convert-card .cv-to-val', '-40'); await Q.p.waitForTimeout(60);
+    const back = await card();
+    await Q.p.click('.convert-card .cv-swap'); await Q.p.waitForTimeout(60);
+    const swapped = await card();
+    await Q.ask('give me a converter for 5 miles to km', 600);
+    const miles = await card(), count = await Q.p.$$eval('.convert-card', (e) => e.length);
+    await Q.p.reload(); await Q.p.waitForTimeout(900);
+    const kept = await card();
+    await Q.ask('close the converter', 500);
+    const gone = !(await Q.p.$('.convert-card'));
+    check('convert card: maths (98.6 F = 37 C, 5 mi = 8.04672 km, 1 TB = 1,048,576 MB, 1 cup = 16 tbsp), its asks route to it and look-alikes do not; "temperature converter" opens it on Celsius to Fahrenheit, 212 C gives 413.6 F, typing -40 in the other box gives -40, swap flips the units, "a converter for 5 miles to km" reuses the one card with 8.04672 km and the other lengths listed, it survives a reload and "close the converter" puts it away',
+      maths && routes && first && first.kind === 'temperature' && boiled && boiled.b === '413.6' && back && back.a === '-40' && swapped && /Fahrenheit/.test(swapped.text)
+      && miles && miles.kind === 'length' && miles.a === '5' && miles.b === '8.04672' && /feet/.test(miles.text) && count === 1 && kept && kept.b === '8.04672' && gone && Q.errors.length === 0,
+      JSON.stringify({ maths, routes, first, boiled, back, swapped: swapped && swapped.a + '|' + swapped.b, miles, count, kept: kept && kept.b, gone, errs: Q.errors }));
+    await Q.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all

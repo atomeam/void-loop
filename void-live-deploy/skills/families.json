@@ -2,7 +2,7 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 0,
-  "tested": 44,
+  "tested": 45,
   "checked": 13,
   "proven": 81
  },
@@ -407,10 +407,10 @@
   {
    "id": "numbers",
    "name": "Numbers and money",
-   "for": "sums, loans, savings, prices and home projects",
+   "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 3,
     "checked": 1,
     "proven": 9
    },
@@ -419,6 +419,11 @@
      "name": "calc",
      "tier": "proven",
      "why": "a self-test, 816 real asks in the benchmark"
+    },
+    {
+     "name": "convert",
+     "tier": "tested",
+     "why": "3 browser-suite mentions"
     },
     {
      "name": "loan",
