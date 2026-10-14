@@ -15,7 +15,7 @@ export function chessOf(text) {
 }
 
 const GLYPH = { K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙', k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
-const STATUS = { checkmate: (s) => (s.turn === 'w' ? 'Checkmate · Void wins' : 'Checkmate · you win'), stalemate: () => 'Stalemate · a draw', 'draw-50': () => 'Draw · fifty quiet moves', 'draw-material': () => 'Draw · not enough to mate', 'draw-repetition': () => 'Draw · the same position three times' };
+const STATUS = { checkmate: (s) => (s.turn === 'w' ? 'Checkmate · V01D wins' : 'Checkmate · you win'), stalemate: () => 'Stalemate · a draw', 'draw-50': () => 'Draw · fifty quiet moves', 'draw-material': () => 'Draw · not enough to mate', 'draw-repetition': () => 'Draw · the same position three times' };
 const thinking = new Map(); // th.id -> pending search, so a re-render never starts a second one
 let worker = null, seq = 0;
 const leaning = new Map(); // th.id -> what the search has seen so far ({ depth, nodes, best }), for the line while Void thinks
@@ -84,7 +84,7 @@ function mount(th, stageApi) {
   }
   function paint() {
     const s = st().s, code = R.status(s), busy = thinking.has(th.id);
-    status.textContent = STATUS[code] ? STATUS[code](s) : busy ? R.thinkingLine(leaning.get(th.id), s) : s.turn === 'w' ? (code === 'check' ? 'Check · your move' : 'Your move') : 'Void to move';
+    status.textContent = STATUS[code] ? STATUS[code](s) : busy ? R.thinkingLine(leaning.get(th.id), s) : s.turn === 'w' ? (code === 'check' ? 'Check · your move' : 'Your move') : 'V01D to move';
     const list = st().moves; let txt = '';
     for (let i = 0; i < list.length; i += 2) txt += (i / 2 + 1) + '. ' + list[i] + (list[i + 1] ? ' ' + list[i + 1] : '') + '  ';
     txt = txt.trim(); moves.title = txt;
@@ -92,7 +92,7 @@ function mount(th, stageApi) {
     back.disabled = !list.length; back.style.opacity = list.length ? '1' : '.4';
     const say = (ts) => ts.slice(0, 3).map((t) => t.piece + ' ' + t.square + (t.piece === 'king' ? ' (check)' : t.defended ? '' : ', undefended')).join(', ');
     const mine = R.threats(s, 'w'), theirs = R.threats(s, 'b');
-    underAttack.textContent = mine.length || theirs.length ? 'Under attack · yours: ' + (say(mine) || 'none') + ' · Void’s: ' + (say(theirs) || 'none') : 'Nothing is under attack';
+    underAttack.textContent = mine.length || theirs.length ? 'Under attack · yours: ' + (say(mine) || 'none') + ' · V01D’s: ' + (say(theirs) || 'none') : 'Nothing is under attack';
     if (mini) mini.update(data()); else if (flat) flat();
   }
   function doMove(m) {

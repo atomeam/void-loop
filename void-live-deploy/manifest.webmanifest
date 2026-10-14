@@ -19,7 +19,7 @@
     { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ],
   "shortcuts": [
-    { "name": "V01D's films", "short_name": "Films", "description": "Watch and review V01D's films", "url": "/films/?source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "V01D FILMS", "short_name": "Films", "description": "Watch and review V01D FILMS", "url": "/films/?source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
     { "name": "What's new", "short_name": "New", "url": "/?q=what%27s%20new&source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
   ],
   "share_target": {

@@ -178,14 +178,14 @@ check('local only: no request anywhere carried the page text or the draft', leak
 await V.evaluate(() => { const t = document.querySelector('.tab-draft'); t.value = 'keep it short'; t.dispatchEvent(new Event('input', { bubbles: true })); });
 const beforeDraft = out.length;
 await V.click('.tab-ask-summary', { force: true }); // a real click: the countdown card no longer lands over the tab card (lib/placement.js)
-await V.waitForFunction(() => /from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+await V.waitForFunction(() => /from V01D/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
 const dSaid = await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '');
 const dBox = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
 const dFoot = await V.evaluate(() => (document.querySelector('.tab-foot') || {}).textContent || '');
 const dPosts = out.slice(beforeDraft).filter((x) => /a-to-mind\.com\/api\/answer /.test(x));
 let dBody = null; try { dBody = JSON.parse(dPosts[0].slice(dPosts[0].indexOf(' ') + 1)); } catch (_) {}
 check('draft for me: the summary comes back into the card\'s box, the card says it is from Void and what was sent, and the one request carried mode draft with the title, address, the selection (none now) and the box as a note',
-  /summary from Void/.test(dSaid) && /Fixture page/.test(dBox) && /sent to a-to-mind\.com for a summary draft · not kept there/.test(dFoot)
+  /summary from V01D/.test(dSaid) && /Fixture page/.test(dBox) && /sent to a-to-mind\.com for a summary draft · not kept there/.test(dFoot)
   && dPosts.length === 1 && dBody && dBody.mode === 'draft' && dBody.intent === 'summary' && dBody.title === 'Fixture page' && dBody.url === 'https://fixture.test/' && dBody.note === 'keep it short' && !('text' in dBody) && !('field' in dBody),
   { dSaid, dBox: dBox.slice(0, 120), dFoot, dBody });
 check('draft for me: rewrite is disabled with nothing selected', await V.evaluate(() => !!(document.querySelector('.tab-ask-rewrite') || {}).disabled));
@@ -301,7 +301,7 @@ check('B3 run: with a Yes at every step the whole run happens, each step with it
 
 // B3 joined to the drafts: a "draft for me: reply" on an allowed site comes back as a proposed step, the same card with the
 // draft in it; on a site not on the list the draft stays copy-only, with no card and nothing said about acting
-const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
+const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from V01D/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
 await draftReply();
 await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
 const replyDraft = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
@@ -314,7 +314,7 @@ await page.waitForTimeout(800);
 const offList = { on: await cardOn(), said: await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || ''), act: await actSaid(), box: await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '') };
 check('B3 from a draft: a "draft for me: reply" on an allowed site yields the Yes / No card to fill the box you were in with the draft; on a site not listed, no card and the draft stays copy-only',
   autoCard.on && replyDraft.length > 0 && autoCard.text === replyDraft && /Reply/.test(autoCard.what) && autoCard.site === 'fixture.test'
-  && !offList.on && /^reply from Void/.test(offList.said) && !/not on your list/.test(offList.act) && offList.box.length > 0,
+  && !offList.on && /^reply from V01D/.test(offList.said) && !/not on your list/.test(offList.act) && offList.box.length > 0,
   { autoCard, replyDraft: replyDraft.slice(0, 80), offList });
 
 // A customer email becomes a proposal in your reply box, after your yes: "draft for me: proposal" in a mail thread sends the
@@ -328,7 +328,7 @@ const proposalPosts = () => out.filter((x) => /\/api\/answer/.test(x) && /"mode"
 const lastProposal = () => V.evaluate(() => { const c = [...document.querySelectorAll('.proposal-card')].pop(); if (!c) return null;
   const f = {}; c.querySelectorAll('[data-field]').forEach((e) => { f[e.dataset.field] = e.value; }); return { ...f, to: c.querySelector('.proposal-to').value, n: document.querySelectorAll('.proposal-card').length }; });
 const pressProposal = async (n) => { await V.evaluate(() => document.querySelector('.tab-ask-proposal').click());
-  await V.waitForFunction((k) => document.querySelectorAll('.proposal-card').length >= k && /^proposal from Void/.test((document.querySelector('.tab-said') || {}).textContent || ''), n, { timeout: 10000 }).catch(() => {}); };
+  await V.waitForFunction((k) => document.querySelectorAll('.proposal-card').length >= k && /^proposal from V01D/.test((document.querySelector('.tab-said') || {}).textContent || ''), n, { timeout: 10000 }).catch(() => {}); };
 const p0 = proposalPosts().length, r0 = records.length;
 await pressProposal(1); await page.waitForTimeout(800); // the allow list is empty here
 const offP = { on: await cardOn(), card: await lastProposal(), box: await page.evaluate(() => document.getElementById('body').textContent), recs: records.length - r0,

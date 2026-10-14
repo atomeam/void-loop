@@ -74,7 +74,7 @@ export function frictionHtml(esc, f) {
 
 export function growthHead(esc, list, now = Date.now()) {
   const s = summary(list), v = velocity(list, now);
-  return '<h2>How Void has grown</h2><div class="sub">' + s.total + ' changes' + (s.since ? ' since ' + esc(s.since) : '') + ', newest first</div>'
+  return '<h2>How V01D has grown</h2><div class="sub">' + s.total + ' changes' + (s.since ? ' since ' + esc(s.since) : '') + ', newest first</div>'
     + '<div class="sub" data-velocity="' + esc(v.trend) + '">This week ' + v.week + ' new or better, the week before ' + v.before + ': ' + esc(v.trend) + '</div>';
 }
 
@@ -90,7 +90,7 @@ export function causeOf(e, asked) {
 /** One entry as the tree's readout shows it, when a branch is touched. */
 export function entryHtml(esc, e, cause) {
   if (!e) return '';
-  const why = cause && cause.length ? '<div class="growth-cause" style="margin-top:4px;font-size:13px">Void asked for this' + (cause.length > 1 ? ' (' + cause.length + ' asks)' : '') + ': '
+  const why = cause && cause.length ? '<div class="growth-cause" style="margin-top:4px;font-size:13px">V01D asked for this' + (cause.length > 1 ? ' (' + cause.length + ' asks)' : '') + ': '
     + cause.map((a) => '“' + esc(a.ask) + '”' + (a.times > 1 ? ' <span style="color:#8a8a92">(' + a.times + ' times)</span>' : '')).join('; ') + '</div>' : '';
   return '<div style="font-size:12px;color:#8a8a92"><span style="color:' + (KIND_COLOR[e.kind] || '#aaa') + '">' + esc(KIND_LABEL[e.kind] || e.kind || '') + '</span> · ' + esc(String(e.at || '').slice(0, 10))
     + ' · ' + esc(e.by || '') + (e.ref && /^https:\/\//.test(e.ref) ? ' · <a href="' + esc(e.ref) + '" target="_blank" rel="noopener">link</a>' : '') + '</div>' + esc(e.what) + why;
@@ -117,7 +117,7 @@ export function growthHtml(esc, list, kind, shown, { head = true } = {}) {
     + '<div style="margin:8px 0 2px">' + chips + '</div>'
     + (rows.length ? items : '<p style="color:#8a8a92">Nothing here yet.</p>')
     + (rows.length > n ? '<button type="button" data-more="1" style="margin-top:6px;padding:4px 12px;border-radius:12px;border:1px solid #444;background:transparent;color:inherit;font:inherit;cursor:pointer">show ' + Math.min(PAGE_SIZE, rows.length - n) + ' more</button>' : '')
-    + '<div class="src">From <a href="' + LEDGER_URL + '" target="_blank" rel="noopener">void.growth.json</a>, an append-only ledger: every change to what Void can do adds one line.</div>';
+    + '<div class="src">From <a href="' + LEDGER_URL + '" target="_blank" rel="noopener">void.growth.json</a>, an append-only ledger: every change to what V01D can do adds one line.</div>';
 }
 
 export async function loadLedger(fetchFn = (u, o) => fetch(u, o)) {
@@ -132,10 +132,10 @@ async function run(text, api) {
   const week = weekOf(text);
   if (!week && !growthOf(text)) return 'none';
   const { showPage, esc, _pageStill } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>How Void has grown</h2><div class="sub">reading the ledger…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>How V01D has grown</h2><div class="sub">reading the ledger…</div>'; });
   let list;
   try { list = await loadLedger(); }
-  catch (e) { if (!_pageStill || _pageStill(el)) el.innerHTML = '<h2>How Void has grown</h2><p>The ledger could not be read just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>'; return 'none'; }
+  catch (e) { if (!_pageStill || _pageStill(el)) el.innerHTML = '<h2>How V01D has grown</h2><p>The ledger could not be read just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>'; return 'none'; }
   if (_pageStill && !_pageStill(el)) return 'growth';
   let kind = '', shown = PAGE_SIZE;
   el.innerHTML = growthHead(esc, list);
@@ -187,7 +187,7 @@ function plantTree(el, api, list, { from } = {}) {
   const day = document.createElement('span'); day.className = 'growth-day'; day.style.cssText = 'white-space:nowrap;font-variant-numeric:tabular-nums';
   when.append(range, day);
   const said = document.createElement('div'); said.className = 'growth-picked'; said.style.cssText = 'min-height:18px;margin:0 0 8px;line-height:1.45;font-size:13px;color:#8a8a92';
-  const hint = 'One branch for every change, the oldest at the trunk, the newest at the tips; its berries are its kind, the closed buds what Void still wants. Touch any of it to read it.';
+  const hint = 'One branch for every change, the oldest at the trunk, the newest at the tips; its berries are its kind, the closed buds what V01D still wants. Touch any of it to read it.';
   said.textContent = hint;
   el.append(slot, when, said);
   let selected = null, self = null, wants = null, asked = null; // asked: what Void asked for, by the entry that built it
@@ -198,7 +198,7 @@ function plantTree(el, api, list, { from } = {}) {
   let queue = null;
   const mount = () => (queue = (queue || Promise.resolve()).catch(() => {}).then(() => stage.miniature(slot, 'growthtree', { entries: list, until: today() ? null : at() && at().until, tracks: today() && self ? self.tracks : null, building: today() && self ? self.building : null,
     wants: today() ? wants : null, commits: today() && self ? self.commits : null, selected, onPick, onPickGhost, onPickCommit },
-    { key: TREE_KEY, place: 'inside', label: 'Void’s growth as a tree: one branch per change; touch a branch to read it' })));
+    { key: TREE_KEY, place: 'inside', label: 'V01D’s growth as a tree: one branch per change; touch a branch to read it' })));
   function onPick(index) {
     const e = list[index]; if (!e) return;
     selected = index; said.style.color = ''; said.innerHTML = entryHtml(api.esc, e, causeOf(e, asked));
@@ -246,7 +246,7 @@ export function suite() {
   const fok = f.top.map((x) => x.name).join() === 'd,c,b' && f.failing === 1 && f.unsure === 2 && fh.includes('q &lt;i&gt;') && !fh.includes('<i>') && frictionHtml(esc, friction(null)) === '';
   const asked = [{ ask: 'a <b>bud</b>', at: '2026-10-01T10:00:00Z', times: 3 }, { ask: 'elsewhere', at: '2026-10-09T00:00:00Z', times: 1 }];
   const c = causeOf(list[0], asked), ch = entryHtml(esc, list[0], c);
-  const cok = c && c.length === 1 && ch.includes('Void asked for this: “a &lt;b&gt;bud&lt;/b&gt;” <span style="color:#8a8a92">(3 times)</span>') && !causeOf(list[1], asked) && !entryHtml(esc, list[1], null).includes('growth-cause') && causeOf(list[0], null) === null;
+  const cok = c && c.length === 1 && ch.includes('V01D asked for this: “a &lt;b&gt;bud&lt;/b&gt;” <span style="color:#8a8a92">(3 times)</span>') && !causeOf(list[1], asked) && !entryHtml(esc, list[1], null).includes('growth-cause') && causeOf(list[0], null) === null;
   return { ok: ok && fok && cok, got: ok && fok && cok ? '' : o + ' ' + JSON.stringify(s) + ' ' + JSON.stringify(f) + ' ' + ch };
 }
 

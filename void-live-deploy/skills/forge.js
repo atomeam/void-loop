@@ -80,7 +80,7 @@ function mount(th, stageApi) {
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(320px, calc(100vw - 20px))';
   el.innerHTML = '<div class="g-head"><span class="g-title"></span><span class="g-sub">forged · ready to print</span></div>';
   el.querySelector('.g-title').textContent = model.label;
-  const cv = document.createElement('canvas'); cv.width = 300; cv.height = 240; cv.className = 'forge-view'; cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', 'the ' + model.label.toLowerCase() + ' Void made, shaded');
+  const cv = document.createElement('canvas'); cv.width = 300; cv.height = 240; cv.className = 'forge-view'; cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', 'the ' + model.label.toLowerCase() + ' V01D made, shaded');
   cv.style.cssText = 'width:100%;height:auto;display:block;background:#0b0b0e;border-radius:10px';
   const facts = document.createElement('div'); facts.className = 'forge-facts g-status'; facts.style.cssText = 'display:block;margin-top:8px';
   const pc = F.printCheck(model);

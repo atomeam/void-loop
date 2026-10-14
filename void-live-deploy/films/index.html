@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>V01D's Films</title>
+  <title>V01D FILMS</title>
   <meta name="description" content="Short films V01D makes of its own experiments, newest first. For members: people who pay for V01D.">
   <meta name="robots" content="noindex">
   <meta name="color-scheme" content="dark">
@@ -20,7 +20,7 @@
     a { color: var(--accent); }
     .home { color: var(--muted); text-decoration: none; font-weight: 600; letter-spacing: .02em; }
     .kicker { font-size: 12px; letter-spacing: .24em; text-transform: uppercase; color: var(--muted); margin: 28px 0 6px; }
-    h1 { font-size: clamp(36px, 9vw, 64px); line-height: 1; letter-spacing: -.03em; margin: 0 0 12px; background: linear-gradient(90deg, #fff, #ffd1e2 40%, #b9adff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    h1 { font-size: clamp(36px, 9vw, 64px); line-height: 1; letter-spacing: -.03em; margin: 0 0 12px; color: #f6f3ff; text-shadow: 0 0 24px rgba(255,61,127,.35), 0 0 48px rgba(122,92,255,.3); }
     .sub { color: var(--muted); margin: 0 0 28px; max-width: 60ch; }
     #films { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; }
     .film { background: var(--card); border: 1px solid var(--line); border-radius: 20px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,.45); transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease; }
@@ -39,6 +39,15 @@
     #gate.on { display: block; }
     #gate form { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     #gate input { font: inherit; font-size: 14px; flex: 1 1 220px; min-width: 0; padding: 8px 14px; min-height: 42px; border-radius: 12px; border: 1px solid var(--line); background: rgba(0,0,0,.35); color: var(--ink); }
+    /* the I in FILMS glitches into a 1 now and then (owner, 2026-10-14: "the i flickers"; "drop the l i only") */
+    .gl { position: relative; display: inline-block; }
+    .gl b { font-weight: inherit; animation: gl-l 6s steps(1, end) infinite; }
+    .gl i { position: absolute; left: 50%; top: 0; font-style: normal; visibility: hidden; transform: translateX(-50%) skewX(-6deg); color: #fff; -webkit-text-fill-color: #fff;
+      text-shadow: -2px 0 #ff3d7f, 2px 0 #7a5cff; animation: gl-1 6s steps(1, end) infinite; }
+    .gl.fast b, .gl.fast i { animation-duration: 2.6s; animation-delay: -1.1s; } /* the I flickers more often (owner: "the i flickers") */
+    @keyframes gl-l { 0%, 88% { visibility: visible; } 89% { visibility: hidden; } 91% { visibility: visible; } 94% { visibility: hidden; } 95%, 100% { visibility: visible; } }
+    @keyframes gl-1 { 0%, 88% { visibility: hidden; } 89% { visibility: visible; } 91% { visibility: hidden; } 94% { visibility: visible; } 95%, 100% { visibility: hidden; } }
+    @media (prefers-reduced-motion: reduce) { .gl b, .gl i { animation: none; } }
     footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
     @media (prefers-reduced-motion: reduce) { .film, .btn { transition: none; } .film:hover { transform: none; } }
     .review { border-top: 1px solid var(--line); padding-top: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -59,10 +68,11 @@
        words, open YouTube's upload page. Nothing here uploads anything by itself. -->
   <p><a class="home" href="/">← V01D</a></p>
   <p class="kicker">Now showing · a new one daily</p>
-  <h1>V01D's films</h1>
+  <h1 aria-label="V01D FILMS">V01D F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h1>
   <p class="sub">Every day V01D films one of its own experiments. The films are for members: people who pay for V01D. Members review them: post it, needs work or skip, with a note, and the owner decides what goes on YouTube.</p>
   <div id="gate">
-    <strong>Members only.</strong> Sign in on <a href="/">V01D</a> with a paid account, or paste your V01D Pro key or Code Review Pro license key.
+    <strong>Members only.</strong> Sign in with your passkey, or paste your V01D Pro key or Code Review Pro license key.
+    <div class="row" style="margin-top:12px"><button class="btn join" id="signin" type="button">Sign in with passkey</button></div>
     <form id="keyform"><input id="key" type="password" autocomplete="off" placeholder="vr1.… or XXXXXXXX-XXXXXXXX-…" aria-label="Your Void Pro key or license key"><button class="btn" type="submit">Watch</button>
       <a class="btn join" id="join" href="/code-review/#pro">Become a member</a></form>
   </div>
@@ -83,8 +93,16 @@
     });
     return b;
   };
-  // who is asking: a key typed here (kept for this tab only), else the owner or a signed-in account on this browser
-  const token = () => { try { return sessionStorage.getItem(KEY) || localStorage.getItem('a2m.void.owner.v1') || (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token || ''; } catch (_) { return ''; } };
+  // who is asking (owner, 2026-10-14: "why am i geting the Members only ... when i am already signed in as owner?"): every credential
+  // this browser holds, tried in turn until one is accepted: a key typed here (this tab only), the owner's sign-in, a signed-in account.
+  // Sign-ins live per browser (on iPhone the home-screen app and Safari keep separate ones), so the gate says which case it is.
+  const creds = () => { const out = [];
+    try { const k = sessionStorage.getItem(KEY); if (k) out.push(['key', k]); } catch (_) {}
+    try { const o = localStorage.getItem('a2m.void.owner.v1'); if (o) out.push(['owner', o]); } catch (_) {}
+    try { const m = (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token; if (m) out.push(['account', m]); } catch (_) {}
+    return out; };
+  let good = '';
+  const token = () => good;
   const auth = () => { const t = token(); return t ? { authorization: 'Bearer ' + t } : {}; };
   const tally = (c) => { const n = c.post + c.fix + c.skip; return n ? n + (n === 1 ? ' review: ' : ' reviews: ') + Object.keys(VERDICTS).filter((k) => c[k]).map((k) => c[k] + ' ' + VERDICTS[k].toLowerCase()).join(', ') : 'No reviews yet.'; };
   // the review: one verdict and a note per reviewer, changeable (functions/api/film-review.js); the owner also reads every note
@@ -117,12 +135,19 @@
   const status = document.getElementById('status'), list = document.getElementById('films'), gate = document.getElementById('gate');
   async function load() {
     list.textContent = ''; gate.classList.remove('on'); status.textContent = 'Loading the films…';
-    const t = token();
     try {
-      const r = await fetch('/api/films', { headers: auth() });
-      const j = await r.json().catch(() => ({}));
+      let r = null, j = {}, tried = [];
+      for (const [kind, tok] of creds()) {
+        r = await fetch('/api/films', { headers: { authorization: 'Bearer ' + tok } }); j = await r.json().catch(() => ({}));
+        if (r.status !== 401 && r.status !== 403) { good = tok; break; }
+        tried.push(kind); if (kind === 'key') { try { sessionStorage.removeItem(KEY); } catch (_) {} }
+      }
+      if (!r) { r = await fetch('/api/films'); j = await r.json().catch(() => ({})); }
       if (r.status === 401 || r.status === 403) {
-        status.textContent = t ? 'That key or account is not a paid one.' : '';
+        status.textContent = tried.includes('owner') ? 'Your owner sign-in on this browser has run out. Sign in again with your passkey below.'
+          : tried.includes('account') ? 'This browser is signed in to a free account. Paid members watch here; or paste your key.'
+          : tried.includes('key') ? 'That key was not accepted.'
+          : 'Not signed in on this browser yet (on iPhone, the home-screen app and Safari each keep their own sign-in). Sign in with your passkey below.';
         if (j.buy) document.getElementById('join').href = j.buy;
         gate.classList.add('on'); return;
       }
@@ -147,6 +172,34 @@
       status.textContent = 'The films could not load just now. Try again in a minute.';
     }
   }
+  // passkey sign-in on this page (the same /api/passkey steps void.html uses): the owner's session is kept where V01D keeps it
+  // (a2m.void.owner.v1), so the main page is signed in too; a member's session is kept for this tab only, so V01D's own sync
+  // (a2m.void.me.v1, which carries the stage) is never half-written from here
+  const b2u = (buf) => { const b = new Uint8Array(buf); let s = ''; for (const x of b) s += String.fromCharCode(x); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
+  const u2b = (s) => { const t = String(s).replace(/-/g, '+').replace(/_/g, '/'); const bin = atob(t + '==='.slice((t.length + 3) % 4)); const o = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) o[i] = bin.charCodeAt(i); return o.buffer; };
+  const reqOpts = (j) => (PublicKeyCredential.parseRequestOptionsFromJSON ? PublicKeyCredential.parseRequestOptionsFromJSON(j) : { ...j, challenge: u2b(j.challenge), allowCredentials: (j.allowCredentials || []).map((c) => ({ ...c, id: u2b(c.id) })) });
+  const credJSON = (c) => { try { if (c.toJSON) return c.toJSON(); } catch (_) {} const r = c.response;
+    return { id: c.id, rawId: b2u(c.rawId), type: c.type, authenticatorAttachment: c.authenticatorAttachment || null, clientExtensionResults: c.getClientExtensionResults ? c.getClientExtensionResults() : {},
+      response: { clientDataJSON: b2u(r.clientDataJSON), authenticatorData: b2u(r.authenticatorData), signature: b2u(r.signature), userHandle: r.userHandle ? b2u(r.userHandle) : null } }; };
+  const pk = async (step, extra) => { const r = await fetch('/api/passkey', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ step, ...(extra || {}) }), cache: 'no-store' }); return { status: r.status, body: await r.json().catch(() => ({})) }; };
+  async function signIn() {
+    const btn = document.getElementById('signin');
+    if (!(window.PublicKeyCredential && navigator.credentials && window.isSecureContext)) { status.textContent = 'This browser can\u2019t use passkeys: paste your key instead.'; return; }
+    btn.disabled = true; status.textContent = 'Signing in \u00b7 use this device\u2019s PIN or face';
+    try {
+      const o = await pk('get-options'); if (o.status !== 200) throw new Error('couldn\u2019t start signing in');
+      let cred; try { cred = await navigator.credentials.get({ publicKey: reqOpts(o.body.publicKey) }); } catch (e) { throw new Error(e && e.name === 'NotAllowedError' ? 'no passkey used' : 'couldn\u2019t sign in'); }
+      const r = await pk('get', { credential: credJSON(cred) });
+      if (r.status === 404) throw new Error('that passkey was forgotten: open V01D and say \u201cremember me\u201d');
+      if (r.status !== 200) throw new Error('that passkey didn\u2019t check out');
+      const owner = r.body.owner && typeof r.body.owner.token === 'string' ? r.body.owner.token : '';
+      if (owner) { try { localStorage.setItem('a2m.void.owner.v1', owner); } catch (_) {} }
+      else if (r.body.token) { try { sessionStorage.setItem(KEY, r.body.token); } catch (_) {} }
+      await load();
+    } catch (e) { status.textContent = 'Not signed in: ' + e.message + '.'; }
+    btn.disabled = false;
+  }
+  document.getElementById('signin').addEventListener('click', signIn);
   document.getElementById('keyform').addEventListener('submit', (e) => {
     e.preventDefault(); const k = document.getElementById('key').value.trim(); if (!k) return;
     try { sessionStorage.setItem(KEY, k); } catch (_) {}

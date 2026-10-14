@@ -1283,7 +1283,7 @@ Object.values(things).forEach((th) => {
         extSend({ type: 'void-ext:thread', id });
       });
     }
-    const DRAFT_WHY = { 'no-panel': 'open Void in its side panel to draft into a page', 'no-tab': 'point Void at the page first: Alt+Shift+V there',
+    const DRAFT_WHY = { 'no-panel': 'open V01D in its side panel to draft into a page', 'no-tab': 'point V01D at the page first: Alt+Shift+V there',
       'no-field': 'click into the box on the page first, then try again', 'no-access': 'that tab moved on or closed: press Alt+Shift+V there again' };
     const draftSaid = (r) => (r && r.ok ? 'in the page · nothing was sent' : DRAFT_WHY[(r && r.why) || ''] || "couldn't put it in the page");
     window.addEventListener('message', (e) => {
@@ -1324,10 +1324,10 @@ Object.values(things).forEach((th) => {
       const steps = parts.map(stepOf);
       return steps.length && steps.every(Boolean) ? steps : null;
     }
-    const ACT_WHY = { 'not-allowed': 'that site is not on your list: add it under “sites Void may act on” below, then ask again', 'said-no': 'you said no · nothing changed · recorded',
-      'no-record': 'no record, no action: unlock Void as the owner first, then ask again', 'not-found': 'no field or button with that label on the page',
+    const ACT_WHY = { 'not-allowed': 'that site is not on your list: add it under “sites V01D may act on” below, then ask again', 'said-no': 'you said no · nothing changed · recorded',
+      'no-record': 'no record, no action: unlock V01D as the owner first, then ask again', 'not-found': 'no field or button with that label on the page',
       ambiguous: 'more than one thing on the page has that label: name it more exactly', submits: 'that button sends its form: press it yourself',
-      'no-access': 'that tab moved on or closed: press Alt+Shift+V there again', 'no-tab': 'point Void at the page first: Alt+Shift+V there', busy: 'one step at a time: answer the open card first',
+      'no-access': 'that tab moved on or closed: press Alt+Shift+V there again', 'no-tab': 'point V01D at the page first: Alt+Shift+V there', busy: 'one step at a time: answer the open card first',
       'bad-step': 'say it as “fill <field> with <text>” or “click <button>”', 'too-many': 'three steps at most: split the rest into another run' };
     const actSaid = (m) => {
       if (m && m.of > 1) return m.ok ? 'all ' + m.of + ' steps done on ' + (m.host || 'the page') + ' · recorded · you send it yourself'
@@ -1356,14 +1356,14 @@ Object.values(things).forEach((th) => {
       said.textContent = 'reading the thread…';
       const r = await extThread();
       if (!r.ok || !r.text) { said.textContent = r.why === 'no-text' ? 'no text on this page to draft from' : DRAFT_WHY[r.why || ''] || "couldn't read the thread: press Alt+Shift+V there again"; return; }
-      said.textContent = 'asking Void for a proposal…';
+      said.textContent = 'asking V01D for a proposal…';
       let d = null, L = null;
-      try { await skillsReady; const P = await import('/skills/proposal.js'); L = await import('/lib/proposal.js'); d = await P.draft(r.text); } catch (e) { said.textContent = (e && e.message) || 'Void couldn’t draft just now'; return; }
+      try { await skillsReady; const P = await import('/skills/proposal.js'); L = await import('/lib/proposal.js'); d = await P.draft(r.text); } catch (e) { said.textContent = (e && e.message) || 'V01D couldn’t draft just now'; return; }
       ext.sent = 'The text of this thread was sent to a-to-mind.com for a proposal draft · not kept there.'; footLine();
       // the card keeps the drafted proposal (yours to edit), never the thread itself
       const th = summonThing('proposal', { center: true, fields: d.fields, model: d.model, to: L.addressIn(r.text).to || '' });
       const sp = document.querySelector('.tab-said');
-      if (sp) sp.textContent = 'proposal from Void' + (d.model === 'rules' ? ' (by rule, no model just now)' : '') + ' · in the proposal card, yours to edit';
+      if (sp) sp.textContent = 'proposal from V01D' + (d.model === 'rules' ? ' (by rule, no model just now)' : '') + ' · in the proposal card, yours to edit';
       // the buyer of a sale job wrote this thread: the draft goes onto that job too, the same way the job's claim drafts it
       // (owner only; POST /api/queue op draft-from-thread, lib/job-draft.js), so a reply read in Gmail and one routed through
       // the intake land in the same place. A thread from anyone else attaches nothing and writes nothing.
@@ -1874,13 +1874,13 @@ say('nothing selected to remove');
       const canvas = document.createElement('canvas'); canvas.id = 'void-card-world'; canvas.setAttribute('aria-hidden', 'true');
       document.body.insertBefore(canvas, stage);
       let inst = null;
-      try { inst = factory({ canvas, reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches, lowPower: lowPowerNow() }); } catch (e) { console.error('[Void] world failed:', e && e.message); }
+      try { inst = factory({ canvas, reduced: window.matchMedia('(prefers-reduced-motion: reduce)').matches, lowPower: lowPowerNow() }); } catch (e) { console.error('[V01D] world failed:', e && e.message); }
       if (!inst) { canvas.remove(); return null; }
       const w = { card, canvas, inst, onResize: () => { try { inst.resize && inst.resize(); } catch (_) {} } };
       worldCur = w; window.addEventListener('resize', w.onResize);
       window.__voidWorld = () => (worldCur ? worldCur.inst : null); // for the tests: the world that owns the stage right now
       document.documentElement.classList.add('has-world');
-      try { inst.start && inst.start(); } catch (e) { console.error('[Void] world start failed:', e && e.message); }
+      try { inst.start && inst.start(); } catch (e) { console.error('[V01D] world start failed:', e && e.message); }
       requestAnimationFrame(() => canvas.classList.add('on'));
       return inst;
     }
@@ -1948,7 +1948,7 @@ say('nothing selected to remove');
       if (/^(?:thanks|thank\s+you|thx|ty|cheers|thanks\s+(?:void|a\s+lot|so\s+much)|thank\s+you\s+(?:void|so\s+much))$/.test(l)) return 'anytime';
       if (/^(?:so\s+sorry|i'?m\s+(?:so\s+)?sorry|i\s+am\s+(?:so\s+)?sorry|my\s+bad|oops\s+sorry|apologies|sorry\s+(?:about\s+that|my\s+bad))(?:\s+void)?$/.test(l)) return 'no worries'; // a bare "sorry" stays a lookup: the titles called Sorry, the board game among them
       if (/^(?:how\s+are\s+you|how'?s\s+it\s+going|how\s+are\s+you\s+doing|how\s+do\s+you\s+do|you\s+ok)(?:\s+(?:today|void))?$/.test(l)) return 'quiet and ready. what do you need?';
-      if (/^(?:what'?s|what\s+is)\s+your\s+name$|^who\s+are\s+you$/.test(l)) return 'Void, by A-to-Mind. ask for anything';
+      if (/^(?:what'?s|what\s+is)\s+your\s+name$|^who\s+are\s+you$/.test(l)) return 'V01D (said “void”), by A-to-Mind. ask for anything';
       if (/^(?:who\s+(?:made|built|created|designed)\s+you|who'?s\s+your\s+(?:maker|creator))$/.test(l)) return 'A-to-Mind made me: Adam, building with a crew of AI agents';
       if (/^(?:are\s+you\s+(?:an?\s+)?(?:ai|bot|robot|human|real|a\s+person|alive|chatgpt|sentient))$/.test(l)) return 'software, not a person: I make things appear when you ask';
       if (/^(?:good\s*night|night\s+night|nighty\s+night|sleep\s+well|bye|goodbye|see\s+you|see\s+ya|later)(?:\s+void)?$/.test(l)) return /night/.test(l) ? 'good night' : 'see you';
@@ -2055,7 +2055,7 @@ say('nothing selected to remove');
           ['calculate', '5 miles in km', '15% of 80 · 100 usd in eur'],
           ['read aloud', 'read it aloud', 'stop · or tap the mic and talk'],
         ]],
-        ['Your Void', [
+        ['Your V01D', [
           ['deep blue', 'make my void deep blue', 'purple · warmer · darker'],
           ['stars', 'add stars', 'slow stars · no stars'],
           ['quieter font', 'quieter font', 'bigger text · smaller text'],
@@ -2073,7 +2073,7 @@ say('nothing selected to remove');
       }
       const row = ([k, ask, more]) => '<li' + (focus && k === focus ? ' class="focus" style="background:rgba(150,175,255,.10);border-radius:8px;padding:4px 6px;margin:0 -6px"' : '') + '>' + (ask ? '<a href="#" data-ask="' + esc(ask) + '" style="color:var(--fg);text-decoration:none"><b>' + esc(k) + '</b> <span style="color:#9a9a9a">— ' + esc(ask) + '</span></a>' : '<b>' + esc(k) + '</b>') + (more ? ' <span style="color:#80869a">· ' + esc(more) + '</span>' : '') + '</li>';
       const el = showPage((p) => {
-        p.innerHTML = '<h2>' + (asMenu ? 'Menu' : 'Void') + '</h2>' + (lead ? '<p class="lead" style="font-size:17px;margin:4px 0 10px">' + esc(lead) + '</p>' : '') + '<div class="sub">' + (asMenu ? 'Pick one, or just type.' : 'Ask, and it appears.') + '</div>'
+        p.innerHTML = '<h2>' + (asMenu ? 'Menu' : 'V01D') + '</h2>' + (lead ? '<p class="lead" style="font-size:17px;margin:4px 0 10px">' + esc(lead) + '</p>' : '') + '<div class="sub">' + (asMenu ? 'Pick one, or just type.' : 'Ask, and it appears.') + '</div>'
           + (asMenu ? '' : '<p>Type what you want. Things arrive on the stage; drag them, change them, or clear them away. Tap any line to try it.</p>')
           + groups.map(([g, items]) => '<div class="sub" style="margin-top:12px">' + esc(g) + '</div><ul>' + items.map(row).join('') + '</ul>').join('')
           + '<div class="src">Esc or click the void to close.</div>';
@@ -2085,7 +2085,7 @@ say('nothing selected to remove');
         // Void's own body (skills/mini/void.js): angular, fractured, faceless, the same entity every visit; tap it to break it
         const self = document.createElement('div'); self.className = 'void-self'; self.style.cssText = 'height:220px;margin:4px 0 8px';
         const h = el.querySelector('h2'); if (h) h.after(self); else el.prepend(self);
-        stageApi.miniature(self, 'void', {}, { key: 'void-self', place: 'inside', label: 'Void, as itself: a fractured angular form; tap it' }).catch(() => self.remove());
+        stageApi.miniature(self, 'void', {}, { key: 'void-self', place: 'inside', label: 'V01D, as itself: a fractured angular form; tap it' }).catch(() => self.remove());
         const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         import('/skills/slogan3d.js').then((m) => {
           if (vpageEl !== el) return;
@@ -2128,7 +2128,7 @@ say('nothing selected to remove');
       // fenced code keeps its whitespace and gets a monospace block (fixHtml); sources are a citation when one
       // genuinely matched, not a claim that nothing else went into the answer
       el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + fixHtml(j.answer)
-        + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by Void' : j.told ? 'from what you told me · written by Void' + (srcs ? ' · Source: ' + srcs : '') : srcs ? 'Source: ' + srcs + ' · written by Void' : 'written by Void, from what it knows') + '</div>';
+        + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by V01D' : j.told ? 'from what you told me · written by V01D' + (srcs ? ' · Source: ' + srcs : '') : srcs ? 'Source: ' + srcs + ' · written by V01D' : 'written by V01D, from what it knows') + '</div>';
       addCopy(el);
       say('');
       return 'answer';
@@ -3452,7 +3452,7 @@ say('nothing selected to remove');
           + (earn.shortfalls_7d && earn.shortfalls_7d.total ? '<br><span style="color:#9a9a9a">the free model fell short ' + esc(earn.shortfalls_7d.total) + ' times this week</span>' : '') + '</p>' : '';
         let already = '';
         try { const inv = await import('/skills/inventory.js'); if (inv.boardSectionHtml) already = inv.boardSectionHtml(esc); } catch (_) {}
-        el.innerHTML = '<h2>The board</h2>' + earnLine + '<div class="sub">What people asked that Void can\'t answer yet · most asked first</div>'
+        el.innerHTML = '<h2>The board</h2>' + earnLine + '<div class="sub">What people asked that V01D can\'t answer yet · most asked first</div>'
           + (rows.length ? '<ul>' + rows.slice(0, 40).map((x) => '<li><b>' + esc(x.count) + '×</b> ' + esc(x.ask) + ' <span style="color:#6a6a6a">· ' + esc((x.last || '').slice(0, 10)) + (x.fallback ? ' · ' + esc(x.fallback) : '') + '</span>' + (x.variants && x.variants.length ? '<div style="color:#6a6a6a;font-size:12px">also asked as: ' + x.variants.map(esc).join(' · ') + '</div>' : '') + '</li>').join('') + '</ul>' : '<p>Nothing missed yet.</p>')
           + already;
       } catch (_) { if (vpageEl === el) el.innerHTML = '<h2>The board</h2><p>The board didn\'t answer just now.</p>'; }
@@ -3561,7 +3561,7 @@ say('nothing selected to remove');
       } catch (err) {
         // A corrupt index used to land in the catch below and leave no trace: the loop never ran,
         // learnedSkills stayed empty, and every ask quietly fell through to the model. Say so.
-        console.error('[Void] skills index unusable, keeping ' + learnedSkills.length + ' already loaded:', err && err.message);
+        console.error('[V01D] skills index unusable, keeping ' + learnedSkills.length + ' already loaded:', err && err.message);
         if (typeof window !== 'undefined') window.__VOID_SKILLS_LOAD_ERROR__ = String((err && err.message) || err);
         if (Object.values(things).some((t) => stageKinds[t.kind])) render();
         return learnedSkills;
@@ -3592,7 +3592,7 @@ say('nothing selected to remove');
       }
       // An index entry with no file behind it, or a file without the {name,match,run} shape, is a
       // silent hole: that ask just never gets answered by a skill.
-      if (missing.length) console.warn('[Void] ' + missing.length + ' skill(s) in the index did not load:', missing.join(', '));
+      if (missing.length) console.warn('[V01D] ' + missing.length + ' skill(s) in the index did not load:', missing.join(', '));
       if (Object.values(things).some((t) => stageKinds[t.kind])) render(); // figures kept from last time come back
       return learnedSkills;
     }
@@ -4129,7 +4129,7 @@ say('nothing selected to remove');
       try { localStorage.removeItem(OWNER_KEY); } catch (_) {}
       if (!me || !me.token) { say(wasOwner ? 'signed out' : 'not signed in'); return; }
       clearTimeout(minePushT);
-      if (!(await minePush().catch(() => false)) && mineSig() !== (me && me.sig)) { say("couldn't save the latest to your Void, still signed in"); return; }
+      if (!(await minePush().catch(() => false)) && mineSig() !== (me && me.sig)) { say("couldn't save the latest to your V01D, still signed in"); return; }
       await pkCall('sign-out').catch(() => null);
       meSet(null);
       things = {}; selectedId = null; lastKeptId = null; voidLook = { ...LOOK_DEFAULT };
@@ -4137,7 +4137,7 @@ say('nothing selected to remove');
       if (vpageEl) closePage();
       applyLook(false); render();
       try { [STATE_KEY, LOOK_KEY, UNDO_KEY, ENTRY_KEY].forEach((k) => localStorage.removeItem(k)); } catch (_) {}
-      say('signed out · your Void left with you');
+      say('signed out · your V01D left with you');
     }
     async function ownerBindAsk() {
       const key = rawOwnerKey();
@@ -4188,31 +4188,31 @@ say('nothing selected to remove');
       say('publishing');
       let r = null; try { r = await meFetch('/api/publish', 'POST', { handle, look: voidLook, cards }); } catch (_) {}
       if (!r) { say("couldn't reach the server, nothing published"); return; }
-      if (r.status === 402) { say('publishing is part of a paid Void'); return; }
+      if (r.status === 402) { say('publishing is part of a paid V01D'); return; }
       if (r.status === 401) { say('say “sign in” first, then publish'); return; }
       if (r.status === 409) { say('@' + handle + ' is taken, try another name'); return; }
       if (r.status !== 200) { say(r.body && r.body.error ? r.body.error : "couldn't publish"); return; }
       const url = r.body.url;
-      showPage((p) => { p.innerHTML = '<h2>Your Void is public</h2><p><a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(url.replace(/^https?:\/\//, '')) + '</a></p><p class="sub">Your look and ' + cards.length + ' kept card' + (cards.length === 1 ? '' : 's') + ', as text. Your stage, calendar and notes stay private. Say “unpublish” to take it down.</p><button type="button" class="pub-copy">Copy link</button>'; const b = p.querySelector('.pub-copy'); if (b) b.addEventListener('click', () => { try { navigator.clipboard.writeText(url); b.textContent = 'Copied'; } catch (_) {} }); });
+      showPage((p) => { p.innerHTML = '<h2>Your V01D is public</h2><p><a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(url.replace(/^https?:\/\//, '')) + '</a></p><p class="sub">Your look and ' + cards.length + ' kept card' + (cards.length === 1 ? '' : 's') + ', as text. Your stage, calendar and notes stay private. Say “unpublish” to take it down.</p><button type="button" class="pub-copy">Copy link</button>'; const b = p.querySelector('.pub-copy'); if (b) b.addEventListener('click', () => { try { navigator.clipboard.writeText(url); b.textContent = 'Copied'; } catch (_) {} }); });
       say('published');
       loopLog({ domain: 'void.page', ask: 'publish', score: 'pass', note: '@' + handle });
     }
     async function handlePublishAsk(lower) {
       const m = lower.match(PUBLISH_RE), un = UNPUBLISH_RE.test(lower);
       if (!m && !un) return false;
-      if (PAGE) { say('this is @' + PAGE.handle + '’s Void · go to a-to-mind.com to publish yours'); return true; }
+      if (PAGE) { say('this is @' + PAGE.handle + '’s V01D · go to a-to-mind.com to publish yours'); return true; }
       if (!me || !me.token) { say('say “remember me” first, then publish'); return true; }
       if (un) { let r = null; try { r = await meFetch('/api/publish', 'DELETE'); } catch (_) {} say(r && r.status === 200 ? 'your page is down' : "couldn't take it down"); return true; }
       const handle = m[1];
       const pp = { handle, timer: setTimeout(() => { if (pendingPublish === pp) { pendingPublish = null; whisper.textContent = ''; say('ok, not published'); } }, 60000) };
       pendingPublish = pp;
-      whisper.innerHTML = 'Put your Void at a-to-mind.com/@' + esc(handle) + ' where anyone can see it? <span class="vc" data-vpub="yes" role="button" tabindex="0">Yes</span> / <span class="vc" data-vpub="no" role="button" tabindex="0">No</span>';
+      whisper.innerHTML = 'Put your V01D at a-to-mind.com/@' + esc(handle) + ' where anyone can see it? <span class="vc" data-vpub="yes" role="button" tabindex="0">Yes</span> / <span class="vc" data-vpub="no" role="button" tabindex="0">No</span>';
       return true;
     }
     async function handleMeAsk(lower) {
       if (!isMeAsk(lower)) return false;
       if (WHO_RE.test(lower)) {
-        if (!me || !me.token) say('not signed in' + (pkOK() ? ' · say “remember me” to keep your Void on every device' : ''));
+        if (!me || !me.token) say('not signed in' + (pkOK() ? ' · say “remember me” to keep your V01D on every device' : ''));
         else { await minePull(); say(me ? 'signed in · ' + (me.synced ? 'synced ' + new Date(me.synced).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }) : 'syncing') : 'signed out on this device'); }
         return true;
       }
@@ -4224,7 +4224,7 @@ say('nothing selected to remove');
       if (!me || !me.token) { say('nothing of yours is kept on the server'); return true; }
       const pf = { timer: setTimeout(() => { if (pendingForget === pf) { pendingForget = null; whisper.textContent = ''; say('ok, kept'); } }, 60000) };
       pendingForget = pf;
-      whisper.innerHTML = 'Forget your Void on every device? <span class="vc" data-vf="yes" role="button" tabindex="0">Yes</span> / <span class="vc" data-vf="no" role="button" tabindex="0">No</span>';
+      whisper.innerHTML = 'Forget your V01D on every device? <span class="vc" data-vf="yes" role="button" tabindex="0">Yes</span> / <span class="vc" data-vf="no" role="button" tabindex="0">No</span>';
       return true;
     }
     const whisperBy = (e, el) => {
@@ -4283,18 +4283,18 @@ say('nothing selected to remove');
     }
     async function paidLine() { // what paid Void costs and adds, from the live store
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
-      return vm && vm.available !== false ? 'Paid Void is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Void adds ' + PAID_ADDS;
+      return vm && vm.available !== false ? 'Paid V01D is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid V01D adds ' + PAID_ADDS;
     }
     async function handlePaidAsk(lower, logIt = true) { // logIt false: a price question logs once, as the services card (alsoShowPricedServices)
       if (!isPaidAsk(lower)) return false;
       if (!me || !me.token) { // signed out: the price and what it adds, then how to buy (the purchase attaches to your Void's passkey)
         say((await paidLine()) + ' · say “remember me” first, then ask again to buy');
         if (logIt) loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
-      if ((await meTier()) === 'paid') { say('your Void is paid: ' + PAID_ADDS); return true; }
+      if ((await meTier()) === 'paid') { say('your V01D is paid: ' + PAID_ADDS); return true; }
       const { g, products } = await storeCatalog();
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Void, as the store has it now
       const url = !vm || vm.available !== false ? paidUrl() : '';
-      const line = vm && vm.available !== false ? 'Paid Void is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Void adds ' + PAID_ADDS;
+      const line = vm && vm.available !== false ? 'Paid V01D is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid V01D adds ' + PAID_ADDS;
       if (!url) say(line + " · payments aren't open yet");
       else {
         whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
@@ -4372,7 +4372,7 @@ say('nothing selected to remove');
         pendingFix = { ask: title, until: Date.now() + 600000 };
         return 'none';
       }
-      el.innerHTML = '<h2>' + esc(title) + '</h2>' + fixHtml(j.answer) + '<div class="src">Worked out by Void from what you gave it' + (j.fix === 'rules' ? ' (from the error itself)' : '') + ' · run it once to confirm</div>';
+      el.innerHTML = '<h2>' + esc(title) + '</h2>' + fixHtml(j.answer) + '<div class="src">Worked out by V01D from what you gave it' + (j.fix === 'rules' ? ' (from the error itself)' : '') + ' · run it once to confirm</div>';
       loopLog({ domain: 'void.fix', ask: title, score: 'pass', note: (j.fix || '') + ' ' + (j.platform || '') });
       attachProductTail(title + '\n' + details, { fix: true, el });
       return 'fix';
@@ -4422,8 +4422,8 @@ say('nothing selected to remove');
       } catch (_) {}
       if (vpageEl !== el) return 'review';
       const deep = el.querySelector('[data-deep]');
-      if (deep) deep.outerHTML = j && j.answer ? '<h3 style="margin:16px 0 6px;font-weight:500">A closer read</h3>' + fixHtml(j.answer) + '<div class="src">Quick checks by Void, closer read by Void\'s model · keys and passwords were masked before it was read · <a href="/code-review/">review every pull request this way</a></div>'
-        : '<div class="src">Quick checks by Void' + (j && j.note === 'slow down' ? ' · the closer read is busy, ask again in a minute' : ' · the closer read is not available right now') + ' · keys and passwords are masked · <a href="/code-review/">review every pull request this way</a></div>';
+      if (deep) deep.outerHTML = j && j.answer ? '<h3 style="margin:16px 0 6px;font-weight:500">A closer read</h3>' + fixHtml(j.answer) + '<div class="src">Quick checks by V01D, closer read by V01D\'s model · keys and passwords were masked before it was read · <a href="/code-review/">review every pull request this way</a></div>'
+        : '<div class="src">Quick checks by V01D' + (j && j.note === 'slow down' ? ' · the closer read is busy, ask again in a minute' : ' · the closer read is not available right now') + ' · keys and passwords are masked · <a href="/code-review/">review every pull request this way</a></div>';
       return 'review';
     }
     async function handleReviewAsk(text, full) {
@@ -4457,32 +4457,32 @@ say('nothing selected to remove');
       ['it', /(parli|parla)\s+italiano/, 'Sì! Scrivi in italiano: rispondo come posso. Alcune pagine sono ancora in inglese.'],
     ];
     const WHAT_ARE_YOU = [
-      [/^(o\s*q(ue)?|oq)\s+([eé]|es)\s+voc[eê]|^quem\s+([eé]|es)\s+voc[eê]/, 'Eu sou o Void: peça qualquer coisa e ela aparece aqui.'],
-      [/^(mi|ki)\s+vagy(\s+te)?$/, 'Én vagyok a Void: kérj bármit, és itt megjelenik.'],
-      [/^(qu[eé]|qui[eé]n)\s+eres(\s+t[uú])?$/, 'Soy Void: pide cualquier cosa y aparece aquí.'],
-      [/^(qu'?est[- ]ce\s+que\s+tu\s+es|qui\s+es[- ]tu|tu\s+es\s+qui)$/, 'Je suis Void : demande n’importe quoi et ça apparaît ici.'],
-      [/^(was|wer)\s+bist\s+du$/, 'Ich bin Void: frag nach irgendwas, und es erscheint hier.'],
-      [/^(chi|cosa)\s+sei(\s+tu)?$/, 'Sono Void: chiedi qualsiasi cosa e appare qui.'],
+      [/^(o\s*q(ue)?|oq)\s+([eé]|es)\s+voc[eê]|^quem\s+([eé]|es)\s+voc[eê]/, 'Eu sou o V01D: peça qualquer coisa e ela aparece aqui.'],
+      [/^(mi|ki)\s+vagy(\s+te)?$/, 'Én vagyok a V01D: kérj bármit, és itt megjelenik.'],
+      [/^(qu[eé]|qui[eé]n)\s+eres(\s+t[uú])?$/, 'Soy V01D: pide cualquier cosa y aparece aquí.'],
+      [/^(qu'?est[- ]ce\s+que\s+tu\s+es|qui\s+es[- ]tu|tu\s+es\s+qui)$/, 'Je suis V01D : demande n’importe quoi et ça apparaît ici.'],
+      [/^(was|wer)\s+bist\s+du$/, 'Ich bin V01D: frag nach irgendwas, und es erscheint hier.'],
+      [/^(chi|cosa)\s+sei(\s+tu)?$/, 'Sono V01D: chiedi qualsiasi cosa e appare qui.'],
       // "what is this" / "how does it work" (board: "que coño es esto?", "ça marche comment ?")
-      [/^(o\s*q(ue)?|oq)\s+[eé]\s+(isso|isto|aqui)$|^como\s+(isso\s+)?funciona(\s+isso)?$/, 'Isto é o Void: escreva o que precisa (o tempo, uma conta, uma tradução, um mapa) e aparece aqui.'],
-      [/^mi\s+ez(\s+az?)?$|^(hogy(an)?|hogy\s+kell)\s+m[űu]k[öo]dik$/, 'Ez a Void: írd be, amire szükséged van (időjárás, számolás, fordítás, térkép), és itt megjelenik.'],
-      [/^(qu[eé]|qu[eé]\s+(coño|carajo|diablos|demonios|mierda))\s+es\s+esto$|^c[oó]mo\s+funciona(s|\s+esto)?$/, 'Esto es Void: escribe lo que necesites (el tiempo, una cuenta, una traducción, un mapa) y aparece aquí.'],
-      [/^(c'?est\s+quoi(\s+(ça|ca|ce\s+truc|ce\s+site))?|qu'?est[- ]ce\s+que\s+c'?est(\s+que\s+(ça|ca))?)$|^((ça|ca)\s+marche\s+comment|comment\s+(ça|ca)\s+marche|comment\s+(ça|ca)\s+fonctionne)$/, 'C’est Void : écris ce dont tu as besoin (la météo, un calcul, une traduction, une carte) et ça apparaît ici.'],
-      [/^was\s+ist\s+(das|dies)(\s+hier)?$|^wie\s+funktioniert\s+(das|es)$/, 'Das ist Void: schreib, was du brauchst (Wetter, eine Rechnung, eine Übersetzung, eine Karte), und es erscheint hier.'],
-      [/^(cos'?[eè]|che\s+cos'?[eè])\s+(questo|questa\s+cosa)$|^come\s+funziona$/, 'Questo è Void: scrivi ciò che ti serve (il meteo, un calcolo, una traduzione, una mappa) e appare qui.'],
+      [/^(o\s*q(ue)?|oq)\s+[eé]\s+(isso|isto|aqui)$|^como\s+(isso\s+)?funciona(\s+isso)?$/, 'Isto é o V01D: escreva o que precisa (o tempo, uma conta, uma tradução, um mapa) e aparece aqui.'],
+      [/^mi\s+ez(\s+az?)?$|^(hogy(an)?|hogy\s+kell)\s+m[űu]k[öo]dik$/, 'Ez a V01D: írd be, amire szükséged van (időjárás, számolás, fordítás, térkép), és itt megjelenik.'],
+      [/^(qu[eé]|qu[eé]\s+(coño|carajo|diablos|demonios|mierda))\s+es\s+esto$|^c[oó]mo\s+funciona(s|\s+esto)?$/, 'Esto es V01D: escribe lo que necesites (el tiempo, una cuenta, una traducción, un mapa) y aparece aquí.'],
+      [/^(c'?est\s+quoi(\s+(ça|ca|ce\s+truc|ce\s+site))?|qu'?est[- ]ce\s+que\s+c'?est(\s+que\s+(ça|ca))?)$|^((ça|ca)\s+marche\s+comment|comment\s+(ça|ca)\s+marche|comment\s+(ça|ca)\s+fonctionne)$/, 'C’est V01D : écris ce dont tu as besoin (la météo, un calcul, une traduction, une carte) et ça apparaît ici.'],
+      [/^was\s+ist\s+(das|dies)(\s+hier)?$|^wie\s+funktioniert\s+(das|es)$/, 'Das ist V01D: schreib, was du brauchst (Wetter, eine Rechnung, eine Übersetzung, eine Karte), und es erscheint hier.'],
+      [/^(cos'?[eè]|che\s+cos'?[eè])\s+(questo|questa\s+cosa)$|^come\s+funziona$/, 'Questo è V01D: scrivi ciò che ti serve (il meteo, un calcolo, una traduzione, una mappa) e appare qui.'],
     ];
     async function showApiPage(lead) {
-      const el = showPage((p) => { p.innerHTML = '<h2>Void\'s API</h2><div class="sub">…</div>'; });
+      const el = showPage((p) => { p.innerHTML = '<h2>V01D\'s API</h2><div class="sub">…</div>'; });
       let t = null; try { t = await fetch('/tools.json').then((r) => r.json()); } catch (_) {}
       if (vpageEl !== el) return;
       const tools = (t && t.tools) || [];
-      el.innerHTML = '<h2>Void\'s API</h2>' + (lead ? '<p style="font-size:17px;margin:4px 0 10px">' + esc(lead) + '</p>' : '')
+      el.innerHTML = '<h2>V01D\'s API</h2>' + (lead ? '<p style="font-size:17px;margin:4px 0 10px">' + esc(lead) + '</p>' : '')
         + '<div class="sub">Anything you can type here, a program can ask too.</div>'
         + '<ul><li><b>Ask in plain words</b> <span style="color:#9a9a9a">— open ' + esc(location.origin) + '/?q=your ask</span></li>'
         + '<li><b>The tool list</b> <span style="color:#9a9a9a">— <a href="/tools.json" target="_blank" rel="noopener">/tools.json</a>' + (tools.length ? ' · ' + esc(tools.length) + ' tools: ' + tools.map((x) => esc(x.name)).join(', ') : '') + '</span></li>'
         + '<li><b>Browser agents</b> <span style="color:#9a9a9a">— the same tools over WebMCP, where the browser supports it</span></li>'
         + '<li><b>Files by link</b> <span style="color:#9a9a9a">— <a href="/handoff" target="_blank" rel="noopener">/handoff</a></span></li></ul>'
-        + '<div class="src">Source: <a href="/tools.json" target="_blank" rel="noopener">/tools.json</a>, built live from Void\'s skills</div>';
+        + '<div class="src">Source: <a href="/tools.json" target="_blank" rel="noopener">/tools.json</a>, built live from V01D\'s skills</div>';
     }
     // one or two typed words that mean a known ask, typos included (edit distance ≤ 2 for longer words)
     const SHORT_ASKS = { notes: 'open a notepad', note: 'open a notepad', notepad: 'open a notepad', 'world map': 'map of the world', worldmap: 'map of the world', 'world clock': 'world clock', worldclock: 'world clock' };
@@ -4652,7 +4652,7 @@ say('nothing selected to remove');
       if (/^(?:pick\s+|give\s+me\s+|choose\s+)?(?:a\s+)?random\s+colou?r$/.test(l)) { const hex = '#' + [0, 0, 0].map(() => rnd(256).toString(16).padStart(2, '0')).join(''); return { title: 'Random colour', big: hex, note: 'ask “what color is ' + hex + '” to see it' }; }
       if (/^(?:yes\s+or\s+no|should\s+i\s+do\s+it|decide\s+for\s+me)$/.test(l)) return { title: 'Yes or no', big: rnd(2) ? 'Yes' : 'No', note: 'a fair coin decided' };
       if (/^(?:(?:ask\s+the\s+|shake\s+the\s+)?magic\s+8[\s-]?ball)(?:\s.*)?$/.test(l)) { const A = ['It is certain', 'Without a doubt', 'Yes, definitely', 'You may rely on it', 'As I see it, yes', 'Most likely', 'Outlook good', 'Yes', 'Signs point to yes', 'Reply hazy, try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again', "Don't count on it", 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful', 'No']; return { title: 'Magic 8 ball', big: A[rnd(A.length)], note: 'for fun: it is a random pick of the classic 20 answers', eight: true }; }
-      if (/^(?:play\s+)?rock[\s,]+paper[\s,]+(?:and\s+)?scissors$/.test(l)) { const R = ['Rock', 'Paper', 'Scissors']; return { title: 'Rock, paper, scissors', big: R[rnd(3)], note: 'Void’s throw: what was yours?' }; }
+      if (/^(?:play\s+)?rock[\s,]+paper[\s,]+(?:and\s+)?scissors$/.test(l)) { const R = ['Rock', 'Paper', 'Scissors']; return { title: 'Rock, paper, scissors', big: R[rnd(3)], note: 'V01D’s throw: what was yours?' }; }
       m = l.match(/^(?:pick|give\s+me|choose|generate|think\s+of)\s+(?:me\s+)?a\s+(?:random\s+)?number(?:\s+(?:between|from)\s+(-?\d{1,9})\s+(?:and|to)\s+(-?\d{1,9}))?$|^random\s+number(?:\s+(?:between|from)?\s*(-?\d{1,9})\s+(?:and|to|-)\s+(-?\d{1,9}))?$/);
       if (m) { let a = +(m[1] || m[3] || 1), b = +(m[2] || m[4] || 100); if (a > b) [a, b] = [b, a]; return { title: 'Random number', big: String(a + rnd(b - a + 1)), note: 'from ' + a + ' to ' + b + ', each equally likely' }; }
       return null;
@@ -4753,7 +4753,9 @@ say('nothing selected to remove');
       const typed = (raw || '').trim();
       if (!typed) return;
       relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Void; one that came from it does not go back
-      const text = fixTypos(typed); typoFix = text !== typed ? { from: typed, to: text } : null;
+      const fixed = fixTypos(typed); typoFix = fixed !== typed ? { from: typed, to: fixed } : null;
+      // the name is V01D (owner, 2026-10-14); every skill still reads "void", so "make my V01D blue" and "share my v01d live" reach them
+      const text = fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Void' : 'void'));
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
       { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } return handle('unlock'); } }
@@ -5106,8 +5108,8 @@ say('nothing selected to remove');
       if (isPaidAsk(ask)) return (await paidLine()) + '. The person buys it in their own browser: say "remember me", then "buy paid void".'; // the answer, never a checkout
       // Defences (runaway agents): an agent can never answer the confirm line or "forget me" for the person, never start a
       // send, booking or spend, and never read the owner's board. Those are for the person at the screen, by hand.
-      if (pendingConfirm || pendingForget || pendingPublish) return 'Void is waiting for the person at the screen to answer. Agents can\'t answer for them.';
-      if (PUBLISH_RE.test(ask.toLowerCase()) || UNPUBLISH_RE.test(ask.toLowerCase())) return 'Publishing your Void is for the person at the screen, asked by hand.';
+      if (pendingConfirm || pendingForget || pendingPublish) return 'V01D is waiting for the person at the screen to answer. Agents can\'t answer for them.';
+      if (PUBLISH_RE.test(ask.toLowerCase()) || UNPUBLISH_RE.test(ask.toLowerCase())) return 'Publishing your V01D is for the person at the screen, asked by hand.';
       const coreA = await Promise.race([approvalReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
       if (!coreA) return 'Try again in a moment.';
       if (coreA.parseGatedAsk(ask)) return 'Sends, bookings and spends are for the person at the screen, asked by hand.';
@@ -5140,7 +5142,7 @@ say('nothing selected to remove');
       let tools = list && Array.isArray(list.tools) ? list.tools : null;
       if (!tools) { await skillsReady; tools = learnedSkills.filter((k) => k.name !== 'rebuild-map' && k.examples && k.examples.length).map((k) => ({ name: k.name === 'place' ? 'map' : k.name, description: k.name, examples: k.examples })); }
       const READ_ONLY = /^(page|calculate|weather|worldtime|map|translate|place)$/;
-      const all = [{ name: 'ask', description: 'Ask Void anything in plain words; it answers or puts it on the stage.', examples: ['what is a black hole', 'make a 5 minute timer', 'map of Lisbon'] }].concat(tools);
+      const all = [{ name: 'ask', description: 'Ask V01D anything in plain words; it answers or puts it on the stage.', examples: ['what is a black hole', 'make a 5 minute timer', 'map of Lisbon'] }].concat(tools);
       for (const t of all) {
         const ex = (t.examples || []).slice(0, 3);
         try {
@@ -5205,7 +5207,7 @@ say('nothing selected to remove');
     function rememberWorld() { try { save(); } catch (_) {} } // save() folds in the places and stamps the time
     document.addEventListener('visibilitychange', () => { if (document.hidden) rememberWorld(); });
     window.addEventListener('pagehide', rememberWorld);
-    if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s Void'), 400);
+    if (PAGE) setTimeout(() => say(PAGE.none ? 'no one here yet · a-to-mind.com' : '@' + PAGE.handle + '’s V01D'), 400);
     window.addEventListener('resize', () => render());
   </script>
   <script>

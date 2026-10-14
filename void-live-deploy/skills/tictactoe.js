@@ -138,7 +138,7 @@ function mount(th, stageApi) {
       cells[i].setAttribute('aria-label', 'row ' + (Math.floor(i / 3) + 1) + ', column ' + (i % 3 + 1) + ': ' + (v || 'empty'));
     }
     const s = th.state.status;
-    status.textContent = s === 'playing' ? (th.state.currentPlayer === 'X' ? 'Your move' : 'Void is thinking…') : s === 'draw' ? 'A draw. Void never loses.' : s === 'X_wins' ? 'You win!' : 'Void wins this one.';
+    status.textContent = s === 'playing' ? (th.state.currentPlayer === 'X' ? 'Your move' : 'V01D is thinking…') : s === 'draw' ? 'A draw. V01D never loses.' : s === 'X_wins' ? 'You win!' : 'V01D wins this one.';
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
   again.addEventListener('click', (e) => { e.stopPropagation(); th.state = createTicTacToeState(); paint(); stageApi.save && stageApi.save(); });

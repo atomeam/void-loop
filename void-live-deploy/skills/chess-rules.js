@@ -166,9 +166,9 @@ function evaluate(s) { // from the side to move
 }
 /** The card's line while Void searches: how deep it has looked, how many positions, the move it leans to (asked by Void). */
 export function thinkingLine(info, s) {
-  if (!info || !info.best) return 'Void is thinking…';
+  if (!info || !info.best) return 'V01D is thinking…';
   const m = legalMoves(s).find((x) => x.from === info.best.from && x.to === info.best.to && (x.promo || null) === (info.best.promo || null));
-  return 'Void is thinking… ' + info.depth + (info.depth === 1 ? ' move' : ' moves') + ' deep · ' + info.nodes.toLocaleString('en-US') + ' positions' + (m ? ' · leaning ' + moveLabel(s, m) : '');
+  return 'V01D is thinking… ' + info.depth + (info.depth === 1 ? ' move' : ' moves') + ' deep · ' + info.nodes.toLocaleString('en-US') + ' positions' + (m ? ' · leaning ' + moveLabel(s, m) : '');
 }
 const MATE = 100000;
 const order = (ms) => ms.sort((a, b) => ((b.captured ? VAL[b.captured.toLowerCase()] * 10 - VAL[b.piece.toLowerCase()] : 0) + (b.promo ? 800 : 0)) - ((a.captured ? VAL[a.captured.toLowerCase()] * 10 - VAL[a.piece.toLowerCase()] : 0) + (a.promo ? 800 : 0)));

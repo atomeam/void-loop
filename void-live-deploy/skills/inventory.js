@@ -22,7 +22,7 @@ const WHAT = {
   pollen: 'pollen',
   spanish: 'answers in Spanish',
   translate: 'translation',
-  'rebuild-map': 'assimilation map (what is being rebuilt as Void)',
+  'rebuild-map': 'assimilation map (what is being rebuilt as V01D)',
   place: 'street maps and places',
   worldtime: 'world clock, time zones, sunrise/sunset',
   define: 'definitions',
@@ -39,7 +39,7 @@ const WHAT = {
   util: 'passwords, QR, colours, moon, lorem',
   remind: 'a reminder held on the confirm line',
   calendar: 'calendar / agenda on this device',
-  today: "what Void did today (this device's loop log)",
+  today: "what V01D did today (this device's loop log)",
   book: 'books (Open Library)',
   show: 'TV shows (TVMaze)',
   sport: 'teams (TheSportsDB)',
@@ -57,16 +57,16 @@ export const TOOLS_BUILT = [
   { id: 'existing-tools.md', what: 'registry of tools to check before building anything' },
   { id: 'confirm line', what: 'yes before any send, book or spend' },
   { id: 'Workers AI + router', what: 'Gemma answers; bge-m3 routes; paid model only from earnings' },
-  { id: 'passkeys', what: 'your Void follows you across devices' },
-  { id: 'WebMCP tools.json', what: 'Void tools declared for browser agents' },
+  { id: 'passkeys', what: 'your V01D follows you across devices' },
+  { id: 'WebMCP tools.json', what: 'V01D tools declared for browser agents' },
   { id: 'Gumroad catalog', what: 'live store products when asked' },
   { id: 'defences middleware', what: 'limits, secret masking, CSP, no cross-site writes' },
   { id: 'growth inbox', what: 'unfinished features written down before they are built' },
 ];
 
 export const ASSIMILATE_LIVE = [
-  { id: 'board (misses)', what: 'show the board — what people asked that Void cannot answer yet' },
-  { id: 'skill files', what: 'edit engine step 1 — skills as files Void loads' },
+  { id: 'board (misses)', what: 'show the board — what people asked that V01D cannot answer yet' },
+  { id: 'skill files', what: 'edit engine step 1 — skills as files V01D loads' },
   { id: 'today', what: 'what did you do today' },
   { id: 'work', what: 'find me work as a …' },
   { id: 'inventory', what: 'already built rows (this skill + board section)' },
@@ -150,7 +150,7 @@ function pageHtml(esc, hit) {
     }
     const rows = found.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
     return '<h2>Already built · ' + esc(hit.q) + '</h2><div class="sub">Matches in skills, tools and live assimilate rows · reuse before rebuilding</div><ul>' + rows + '</ul>'
-      + '<div class="src">Source: Void inventory · skills/index.json</div>';
+      + '<div class="src">Source: V01D inventory · skills/index.json</div>';
   }
   const skills = SKILLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
   const tools = TOOLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
@@ -160,7 +160,7 @@ function pageHtml(esc, hit) {
     + '<div class="sub" style="margin-top:12px">Skills</div><ul>' + skills + '</ul>'
     + '<div class="sub">Tools &amp; features</div><ul>' + tools + '</ul>'
     + '<div class="sub">Assimilate (live)</div><ul>' + assim + '</ul>'
-    + '<div class="src">Source: Void inventory · skills/index.json, domains/void.existing-tools.md, domains/void.assimilate.md</div>';
+    + '<div class="src">Source: V01D inventory · skills/index.json, domains/void.existing-tools.md, domains/void.assimilate.md</div>';
 }
 
 async function run(text, api) {

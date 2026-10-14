@@ -9,19 +9,19 @@
 
 // games Void plays, and the family each belongs to: an article about a cousin offers Void's own game
 const GAMES = [
-  { re: /^sorry!?(?: \(game\))?$/i, ask: 'play sorry', label: () => 'Play Back to Start with Void (plays like Sorry!)' },
-  { re: /\b(?:ludo|parcheesi|pachisi|chaupar|trouble \(board game\)|frustration|mensch ärgere dich nicht|uckers|aggravation)\b/i, ask: 'play aggravation', label: (t) => /aggravation/i.test(t) ? 'Play Star Marbles with Void (plays like Aggravation)' : 'Play Star Marbles with Void (same family: race your marbles home, send others back)' },
-  { re: /\bchess\b/i, ask: 'play chess', label: () => 'Play chess with Void' },
-  { re: /\b(?:checkers|draughts)\b/i, ask: 'play checkers', label: () => 'Play checkers with Void' },
-  { re: /\bgo \(game\)|\bweiqi\b|\bbaduk\b/i, ask: 'play go', label: () => 'Play Go with Void' },
-  { re: /\b(?:othello|reversi)\b/i, ask: 'play othello', label: () => 'Play Reversi with Void' },
-  { re: /\bconnect four\b|\bconnect 4\b/i, ask: 'connect 4', label: () => 'Play Four in a Row with Void (plays like Connect Four)' },
-  { re: /\btic[- ]tac[- ]toe\b|\bnoughts and crosses\b/i, ask: 'tic tac toe', label: () => 'Play tic-tac-toe with Void' },
-  { re: /\bmonopoly\b/i, ask: 'play monopoly', label: () => 'Play The Landlord’s Game with Void (plays like Monopoly)' },
-  { re: /\bbattleship\b/i, ask: 'play battleship', label: () => 'Play Sea Battle with Void (plays like Battleship)' },
-  { re: /\b(?:poker|texas hold ?'?em)\b/i, ask: 'play poker', label: () => "Play heads-up Hold'em with Void" },
-  { re: /\b(?:mancala|kalah|oware|bao)\b/i, ask: 'play mancala', label: () => 'Play mancala with Void' },
-  { re: /\bhanabi\b/i, ask: 'play fireworks', label: () => 'Play Fireworks (Hanabi) with Void' },
+  { re: /^sorry!?(?: \(game\))?$/i, ask: 'play sorry', label: () => 'Play Back to Start with V01D (plays like Sorry!)' },
+  { re: /\b(?:ludo|parcheesi|pachisi|chaupar|trouble \(board game\)|frustration|mensch ärgere dich nicht|uckers|aggravation)\b/i, ask: 'play aggravation', label: (t) => /aggravation/i.test(t) ? 'Play Star Marbles with Void (plays like Aggravation)' : 'Play Star Marbles with V01D (same family: race your marbles home, send others back)' },
+  { re: /\bchess\b/i, ask: 'play chess', label: () => 'Play chess with V01D' },
+  { re: /\b(?:checkers|draughts)\b/i, ask: 'play checkers', label: () => 'Play checkers with V01D' },
+  { re: /\bgo \(game\)|\bweiqi\b|\bbaduk\b/i, ask: 'play go', label: () => 'Play Go with V01D' },
+  { re: /\b(?:othello|reversi)\b/i, ask: 'play othello', label: () => 'Play Reversi with V01D' },
+  { re: /\bconnect four\b|\bconnect 4\b/i, ask: 'connect 4', label: () => 'Play Four in a Row with V01D (plays like Connect Four)' },
+  { re: /\btic[- ]tac[- ]toe\b|\bnoughts and crosses\b/i, ask: 'tic tac toe', label: () => 'Play tic-tac-toe with V01D' },
+  { re: /\bmonopoly\b/i, ask: 'play monopoly', label: () => 'Play The Landlord’s Game with V01D (plays like Monopoly)' },
+  { re: /\bbattleship\b/i, ask: 'play battleship', label: () => 'Play Sea Battle with V01D (plays like Battleship)' },
+  { re: /\b(?:poker|texas hold ?'?em)\b/i, ask: 'play poker', label: () => "Play heads-up Hold'em with V01D" },
+  { re: /\b(?:mancala|kalah|oware|bao)\b/i, ask: 'play mancala', label: () => 'Play mancala with V01D' },
+  { re: /\bhanabi\b/i, ask: 'play fireworks', label: () => 'Play Fireworks (Hanabi) with V01D' },
 ];
 
 /** What Void can do about the subject, from the title and the one-line description (the summary's first words help). */
@@ -48,7 +48,7 @@ export function takeHtml(esc, take, asks) {
   const t = String(take || '').trim(), a = Array.isArray(asks) ? asks : [];
   if (!t && !a.length) return '';
   return '<div class="take" style="border-left:2px solid var(--accent, #8ea2ff);padding:2px 0 2px 10px;margin:4px 0 12px">'
-    + '<div style="font-size:12px;color:var(--muted, #8a8a92);margin-bottom:2px">Void’s take</div>'
+    + '<div style="font-size:12px;color:var(--muted, #8a8a92);margin-bottom:2px">V01D’s take</div>'
     + (t ? '<p style="margin:0 0 4px">' + esc(t) + '</p>' : '')
     + (a.length ? '<div>' + a.map((x) => '<a href="#" data-ask="' + esc(x.ask) + '" style="display:inline-block;margin:2px 10px 2px 0">' + esc(x.label) + ' →</a>').join('') + '</div>' : '')
     + '</div>';
