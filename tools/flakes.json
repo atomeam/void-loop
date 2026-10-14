@@ -21,5 +21,7 @@
   {"check": "router: with nothing earned, a hard ask gets Gemma (the one free model, no second free model) and the stronger model is recorded, not called: \"would escalate\" i", "sha": "02d430e643a93049c42d0cb6fb6058e1d2553237", "at": "2026-10-13T17:25:51Z"},
   {"check": "intake: the late-September AI landscape (current, unverified, marked paraphrase) feeds the will: tiered model stack lifts the stale evaluation, defences lifted ", "sha": "bc0b7c96d8ea3aa6848ab02deb7a8237b87e018b", "at": "2026-10-14T00:12:32Z"},
   {"check": "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, o", "sha": "a4f84a9b2839a373178565a9316f8a8af8521e52", "at": "2026-10-14T03:16:24Z"},
-  {"check": "opening a lab experiment counts one use: { kind: \"used\", id } once per browser per day, nothing typed sent", "sha": "8d2589a8fd5c096505d1e2b985051d07adfeff74", "at": "2026-10-14T04:46:10Z"}
+  {"check": "opening a lab experiment counts one use: { kind: \"used\", id } once per browser per day, nothing typed sent", "sha": "8d2589a8fd5c096505d1e2b985051d07adfeff74", "at": "2026-10-14T04:46:10Z"},
+  {"check": "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload", "sha": "4679bb0df93e6e906f1deced28d749d85c52ab9b", "at": "2026-10-14T04:58:28Z"},
+  {"check": "opening a lab experiment counts one use: { kind: \"used\", id } once per browser per day, nothing typed sent", "sha": "4679bb0df93e6e906f1deced28d749d85c52ab9b", "at": "2026-10-14T04:58:28Z"}
 ]
