@@ -59,7 +59,7 @@ async function run(text, api) {
       return place ? 'none' : 'weather';
     }
     const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.latitude + '&longitude=' + loc.longitude
-      + '&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_hours=8&forecast_days=1&timezone=auto';
+      + '&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,is_day&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_hours=8&forecast_days=1&timezone=auto';
     const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
     const T = (c) => Math.round(f ? c * 9 / 5 + 32 : c) + '°';
     // fetch and draw, in place: the first time here, then every 15 minutes while the card is up (skills/live.js), so a
@@ -73,7 +73,7 @@ async function run(text, api) {
       const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center;min-width:0"><div style="color:#8b90a0;font-size:12px;white-space:nowrap">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div style="font-weight:500">' + T(h.temperature_2m[i]) + '</div><div style="color:#8b90a0;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
       el.classList.add('vp-tight'); // a weather card is a glance: tight, no empty right half
       el.innerHTML = '<h2>' + esc(loc.name) + '</h2>'
-        + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + '</div>'
+        + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + (Number.isFinite(c.relative_humidity_2m) ? ' · humidity ' + Math.round(c.relative_humidity_2m) + '%' : '') + '</div>'
         + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
         + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
         + '<div style="display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:2px;padding:10px 0 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)">' + hours + '</div>'
@@ -115,6 +115,8 @@ export default {
       || /\b(is it|will it|going to)\s+(rain|snow|freeze|frost|storm|hail|sleet)\b/.test(lower)
       || /^is\s+it\s+(raining|snowing|sunny|windy|cloudy|hot|cold)\b/.test(lower)
       || /\bhow\s+(cold|hot|warm)\s+is\s+it\b/.test(lower)
+      // "humidity in Miami", "what's the wind speed in Chicago": the card shows both
+      || /^(?:what(?:'?s|\s+is)\s+(?:the\s+)?)?(?:humidity|wind(?:\s+speed)?)\s+(?:like\s+)?(?:in|at|for)\s+[a-z]/.test(lower)
       // "do i need an umbrella today in seattle", "should i bring a jacket": the forecast answers it
       || /^what\s+should\s+i\s+wear\b(?!\s+(?:to|for|with)\b)/.test(lower)
       || /^(?:do|will|should)\s+i\s+(?:need|bring|take)\s+(?:an?\s+)?(?:umbrella|raincoat|rain\s+jacket|jacket|coat)\b/.test(lower);
