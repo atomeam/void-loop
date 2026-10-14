@@ -24,7 +24,7 @@ function parse(text) {
   m = t.match(new RegExp('^what\\s+is\\s+["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'))
    || t.match(new RegExp('^["“]?(.+?)["”]?\\s+in\\s+(' + LANG_RE + ')$', 'i'));
   if (m) return { q: m[1], to: m[2] };
-  m = t.match(new RegExp('^(' + LANG_RE + ')\\s+for\\s+["“]?(.+?)["”]?$', 'i'));
+  m = t.match(new RegExp('^(?:what(?:[\'’]?s|\\s+is)\\s+)?(?:the\\s+)?(' + LANG_RE + ')\\s+(?:word\\s+)?for\\s+["“]?(.+?)["”]?$', 'i'));
   if (m) return { q: m[2], to: m[1] };
   return null;
 }
