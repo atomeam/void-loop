@@ -5932,5 +5932,10 @@
   {"ask": "carbs in rice", "want": "skill:food", "says": "44.5"},
   {"ask": "sugar in a can of coke", "want": "skill:food", "says": "39"},
   {"ask": "protein in three eggs", "want": "skill:food", "says": "18.9"},
-  {"ask": "nutrition facts for brown rice", "want": "skill:food", "says": "218"}
+  {"ask": "nutrition facts for brown rice", "want": "skill:food", "says": "218"},
+  {"ask": "unscramble tlesi", "want": "skill:words"},
+  {"ask": "anagram of listen", "want": "skill:words"},
+  {"ask": "5 letter words starting with cr", "want": "skill:words"},
+  {"ask": "6 letter words ending in ing", "want": "skill:words"},
+  {"ask": "words ending in ology", "want": "skill:words"}
 ]

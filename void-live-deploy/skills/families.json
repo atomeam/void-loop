@@ -2,9 +2,9 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 1,
-  "tested": 45,
+  "tested": 44,
   "checked": 14,
-  "proven": 76
+  "proven": 77
  },
  "families": [
   {
@@ -541,9 +541,9 @@
    "for": "definitions, translation, news, books, shows and sport",
    "count": {
     "experiment": 0,
-    "tested": 9,
+    "tested": 8,
     "checked": 1,
-    "proven": 5
+    "proven": 6
    },
    "skills": [
     {
@@ -553,8 +553,8 @@
     },
     {
      "name": "words",
-     "tier": "tested",
-     "why": "53 real asks in the benchmark"
+     "tier": "proven",
+     "why": "a self-test, 58 real asks in the benchmark"
     },
     {
      "name": "spanish",
