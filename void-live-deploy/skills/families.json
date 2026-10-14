@@ -4,7 +4,7 @@
   "experiment": 1,
   "tested": 45,
   "checked": 14,
-  "proven": 75
+  "proven": 76
  },
  "families": [
   {
@@ -485,7 +485,7 @@
     "experiment": 0,
     "tested": 1,
     "checked": 0,
-    "proven": 7
+    "proven": 8
    },
    "skills": [
     {
@@ -512,6 +512,11 @@
      "name": "nutrition",
      "tier": "proven",
      "why": "8 browser-suite mentions, 18 real asks in the benchmark"
+    },
+    {
+     "name": "food",
+     "tier": "proven",
+     "why": "a self-test, 8 real asks in the benchmark"
     },
     {
      "name": "heart",
