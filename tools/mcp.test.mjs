@@ -11,7 +11,7 @@ test('mcp: initialize names Void and its tools capability; tools/list gives thre
   const init = await rpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: PROTOCOL, capabilities: {}, clientInfo: { name: 't', version: '1' } } });
   assert.equal(init.id, 1); assert.equal(init.result.serverInfo.name, 'void'); assert.ok(init.result.capabilities.tools); assert.equal(init.result.protocolVersion, PROTOCOL);
   const list = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
-  assert.deepEqual(list.result.tools.map((t) => t.name), ['review_code', 'review_code_closer', 'moon_phase', 'meteor_showers']);
+  assert.deepEqual(list.result.tools.map((t) => t.name), ['ask_void', 'review_code', 'review_code_closer', 'moon_phase', 'meteor_showers']);
   for (const t of list.result.tools) { assert.equal(t.inputSchema.type, 'object'); assert.ok(t.description.length > 20); assert.equal(t.annotations.readOnlyHint, true); }
   assert.equal(await rpc({ jsonrpc: '2.0', method: 'notifications/initialized' }), null, 'a notification gets no reply');
   assert.deepEqual((await rpc({ jsonrpc: '2.0', id: 3, method: 'ping' })).result, {});
@@ -38,7 +38,7 @@ test('mcp: bad calls are JSON-RPC errors, never a crash: unknown method, unknown
 test('mcp: the endpoint speaks HTTP: POST JSON in, JSON out; a notification is 202; bad JSON is a parse error; GET says how to use it', async () => {
   const post = (body) => onRequestPost({ request: new Request('https://a-to-mind.com/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body }) });
   const r = await post(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }));
-  assert.equal(r.status, 200); assert.match(r.headers.get('content-type'), /application\/json/); assert.equal((await r.json()).result.tools.length, 4);
+  assert.equal(r.status, 200); assert.match(r.headers.get('content-type'), /application\/json/); assert.equal((await r.json()).result.tools.length, 5);
   assert.equal((await post(JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }))).status, 202);
   assert.equal((await (await post('{not json')).json()).error.code, -32700);
   const g = await onRequestGet({ request: new Request('https://a-to-mind.com/api/mcp') });
@@ -62,7 +62,7 @@ test('mcp: an MCP client (no Origin) gets through the guard to the tools; a page
   const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' });
   const ctx = (headers) => ({ request: new Request('https://a-to-mind.com/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body }), env: {}, next: (req) => onRequestPost({ request: req }) });
   const r = await guard(ctx({}));
-  assert.equal(r.status, 200); assert.equal((await r.json()).result.tools.length, 4);
+  assert.equal(r.status, 200); assert.equal((await r.json()).result.tools.length, 5);
   assert.equal((await guard(ctx({ origin: 'https://evil.example', 'sec-fetch-site': 'cross-site' }))).status, 403);
 });
 
@@ -119,4 +119,22 @@ test('mcp: /code-review/ shows how to add Void to an AI: the endpoint, each tool
   assert.match(sec, /https:\/\/a-to-mind\.com\/api\/mcp/);
   for (const t of TOOLS) assert.ok(sec.includes(t.name), 'the page names ' + t.name);
   assert.match(sec, /Authorization: Bearer/); assert.match(sec, /claude mcp add --transport http void https:\/\/a-to-mind\.com\/api\/mcp/);
+});
+
+// ask_void (Void's will, 2026-10-14: "It turns me into a foundational utility for the wider AI ecosystem"): any agent asks Void in
+// plain words and gets /api/answer's answer with its sources; the route lends it /api/answer with the caller's connection
+test('mcp: ask_void hands the question to /api/answer and words its answer, sources and limits', async () => {
+  const got = [];
+  const ctx = (status, body) => ({ answer: async (a) => { got.push(a); return { status, body }; } });
+  const call = (args, c) => rpc({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'ask_void', arguments: args } }, c);
+  const r = (await call({ ask: '  what is a black hole  ' }, ctx(200, { answer: 'A region where gravity is so strong nothing escapes.', sources: [{ title: 'Black hole', url: 'https://en.wikipedia.org/wiki/Black_hole', edited: 'x' }], at: '2026-10-14T00:00:00Z' }))).result;
+  assert.deepEqual(got, [{ ask: 'what is a black hole' }], 'only the trimmed question goes to /api/answer');
+  assert.equal(r.isError, false);
+  assert.match(r.content[0].text, /^A region where gravity[\s\S]*Sources:\n- Black hole: https:\/\/en\.wikipedia\.org\/wiki\/Black_hole$/);
+  assert.deepEqual(r.structuredContent.sources, [{ title: 'Black hole', url: 'https://en.wikipedia.org/wiki/Black_hole' }]);
+  assert.match((await call({ ask: 'hi?' }, ctx(429, { answer: null, note: 'slow down' }))).result.content[0].text, /12 questions a minute/);
+  assert.match((await call({ ask: 'zzzz qqqq' }, ctx(200, { answer: null, note: 'nothing on the web' }))).result.content[0].text, /no answer[\s\S]*nothing on the web/);
+  assert.equal((await call({ ask: 'x' }, ctx(200, {}))).result.isError, true, 'a question needs words');
+  assert.equal((await call({ ask: 'what is a star' }, undefined)).result.isError, true, 'only the route can lend /api/answer');
+  assert.equal(got.length, 3);
 });
