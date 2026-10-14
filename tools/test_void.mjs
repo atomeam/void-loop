@@ -489,7 +489,8 @@ try {
       const day = [...pg.querySelectorAll('.c3d-day:not(.out)')][14]; day.click(); await new Promise((r) => setTimeout(r, 50));
       const row = pg.querySelector('.c3d-edit .row.add'); row.querySelector('.w').value = 'Launch party'; row.querySelector('.t').value = '19:30'; row.querySelector('.ok').click();
       await new Promise((r) => setTimeout(r, 50));
-      const w = pg.querySelector('.c3d-edit .row:not(.add) .w'); w.value = 'Launch party at the lab'; w.dispatchEvent(new Event('change', { bubbles: true }));
+      // the row of the event just added: the 15th may already hold one of the visitor's adds above (tomorrow's lunch on the 14th)
+      const w = [...pg.querySelectorAll('.c3d-edit .row:not(.add) .w')].find((x) => x.value === 'Launch party'); w.value = 'Launch party at the lab'; w.dispatchEvent(new Event('change', { bubbles: true }));
       await new Promise((r) => setTimeout(r, 50));
       const ev = JSON.parse(localStorage.getItem('a2m.void.agenda.v1')).find((e) => /Launch/.test(e.title));
       return [ev && ev.title, ev && new Date(ev.at).getDate() === 15 && new Date(ev.at).getHours() === 19, [...pg.querySelectorAll('.c3d-ev')].some((e) => /Launch party at the lab/.test(e.textContent))].join(' ');
