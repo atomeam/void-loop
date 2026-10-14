@@ -1,6 +1,7 @@
 # Void in the official MCP registry (Void's own want, 2026-10-13: "I want to submit myself to the MCP registry ... It allows
 # other AIs to use me"; frontier #6's written next step). server.json at the repo root describes the live endpoint
-# (https://a-to-mind.com/api/mcp, which MCP live checks after every deploy). On main, when server.json changes, or by hand:
+# (https://a-to-mind.com/api/mcp, which MCP live checks after every deploy). After every main deploy (deploy.yml starts it: an
+# automerge merge starts no push workflow), when a person pushes server.json to main, or by hand:
 # validate it, and publish its version unless the registry already has that version (a published version cannot be
 # replaced: change what the listing says by raising "version"). The login is GitHub OIDC as this repo's owner, which owns the
 # io.github.atomeam/* names: no key or secret.

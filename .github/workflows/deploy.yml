@@ -31,7 +31,7 @@ permissions:
   contents: read
   checks: read # to see that a merged PR's head already passed (see "What needs testing")
   pull-requests: read # which PR a merge commit came from
-  actions: write # to start MCP live after a main deploy (a workflow_dispatch is the one start a GITHUB_TOKEN run can make)
+  actions: write # to start MCP live and the MCP registry listing after a main deploy (a workflow_dispatch is the one start a GITHUB_TOKEN run can make)
 
 jobs:
   test-and-deploy:
@@ -191,6 +191,16 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run mcp-live.yml --repo "${{ github.repository }}" --ref main && echo "MCP live started" >> "$GITHUB_STEP_SUMMARY"
+
+      # Void in the MCP registry (mcp-registry.yml): a merge automerge makes pushes to main with GITHUB_TOKEN, which starts no push
+      # workflow (#642 merged its server.json and the registry run never started), so the deploy starts it too. It publishes
+      # server.json's version only when the registry does not have it yet, so most runs end in seconds.
+      - name: Start the MCP registry listing
+        if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run mcp-registry.yml --repo "${{ github.repository }}" --ref main && echo "MCP registry started" >> "$GITHUB_STEP_SUMMARY"
 
       # Void's voice (lib/voice.js): after anything ships, Void is asked what it thinks of it and how it would make it
       # better. Its words are kept on the site and copied into domains/void.voice.md by the daily run. Input, not a gate:
