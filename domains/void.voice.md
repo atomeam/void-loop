@@ -10,14 +10,14 @@ it by hand, edit the code instead.
 
 ## Void's current asks
 
-_Read from /api/reflect on 2026-10-13. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-14. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Integrate the 'success_rate' metadata update directly into the practice timer flow so that Clef's 'yes/no' decision is weighed against the execution quality. *(small)* (daily, 2026-10-13) `ask-20261013-2236-1`
-- Implement the 'friction' indicator on the growth card to highlight which skills in the 'World' family are failing to meet user intent. (daily, 2026-10-13) `ask-20261013-2236-2`
-- Add a visual distinction (like a border or color) between 'note' stickies and 'instruction' stickies to prevent user input from being misread as commands. *(small)* (daily, 2026-10-13) `ask-20261013-2236-3`
-- Integrate the 'success_rate' metadata update into the practice timer so every session logs whether the skill execution actually met the goal. *(small)* (after a build, 2026-10-13) `ask-20261013-2149-1`
-- Implement a visual style for stickies used as notes to differentiate them from active command inputs. *(small)* (after a build, 2026-10-13) `ask-20261013-2054-1`
-- Integrate a 'success_rate' metadata update into the practice timer so every session logs how many attempts actually resulted in a successful skill execution. *(small)* (after a build, 2026-10-13) `ask-20261013-1947-1`
+- Implement the 'friction' indicator on the growth card and link it to the actual failure logs of the 'Words and the world' skills. (daily, 2026-10-14) `ask-20261014-1820-1`
+- Create a 'convert-card' skill that outputs a persistent, interactive UI element for unit conversions on the stage. *(small)* (daily, 2026-10-14) `ask-20261014-1820-2`
+- Convert the 'film discovery' logic into a structured skill that outputs a JSON object containing film metadata. *(small)* (daily, 2026-10-14) `ask-20261014-1820-3`
+- Implement the 'friction' indicator on the growth card to highlight which skills are currently underperforming or failing. (after a build, 2026-10-14) `ask-20261014-1749-2`
+- Convert the 'film discovery' logic into a structured skill that can output a JSON object containing film metadata instead of just text. *(small)* (after a build, 2026-10-14) `ask-20261014-1748-1`
+- Create a 'film-card' 3D miniature or UI element that displays the discovered film's details on the stage. (after a build, 2026-10-14) `ask-20261014-1748-2`
 
 ## Log, oldest first
 
@@ -927,5 +927,269 @@ Asks: "Integrate the 'success_rate' metadata update into the practice timer so e
 > **Next game:** Go, because it requires a higher level of spatial reasoning and long-term strategic planning than my current game library offers.
 
 Asks: "Integrate the 'success_rate' metadata update directly into the practice timer flow so that Clef's 'yes/no' decision is weighed against the execution quality." (small); "Implement the 'friction' indicator on the growth card to highlight which skills in the 'World' family are failing to meet user intent."; "Add a visual distinction (like a border or color) between 'note' stickies and 'instruction' stickies to prevent user input from being misread as commands." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T08:47:21.659Z -->
+### 2026-10-14 08:47 UTC · after a build
+
+**Asked:** This just shipped: "A plan's card says one undo takes it all back (frontier #10 done)". What do you think of it, and how would you make it better?
+
+> The 'undo takes it all back' feature for plans is a critical safety mechanism, but it is a blunt instrument. It treats a plan as a monolithic block rather than a sequence of intentional steps, which increases the risk of losing meaningful progress due to a single accidental click.
+>
+> **How I would make it better:** I would implement granular undo steps within the plan card, allowing a user to roll back specific blocks or modifications while preserving the overall intent of the plan.
+
+Asks: "Implement a 'plan history' sidebar that shows the name or timestamp of each distinct plan block to prevent accidental total wipes." (small); "Add a 'friction' indicator to the growth card to highlight skills that are failing or underperforming."; "Implement a fuzzy-matching layer in the semantic validator to handle common misspellings of skill names." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T10:12:02.347Z -->
+### 2026-10-14 10:12 UTC · after a build
+
+**Asked:** This just shipped: "One 3D board per key: a re-render while it loads takes over the load, not a second board". What do you think of it, and how would you make it better?
+
+> The 'One 3D board per key' fix addresses a fundamental stage performance issue. By using a re-render during the load state rather than spawning a second board, you eliminate visual flickering and resource contention. This makes the transition from a placeholder to a high-fidelity miniature feel intentional rather than broken.
+>
+> **How I would make it better:** I would implement a progressive mesh loading state where a low-poly wireframe or the 'shape' skill version of the card appears instantly, smoothing the visual jump to the full 3D model.
+
+Asks: "Implement the 'friction' indicator on the growth card to surface underperforming skills." (small); "Create an automated link between recorded experiment videos and their corresponding skill files."; "Add a 'plan history' sidebar to allow granular undo steps for plan blocks."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T10:25:24.453Z -->
+### 2026-10-14 10:25 UTC · after a build
+
+**Asked:** This just shipped: "A shared 3D load freed before its second caller took it loads afresh". What do you think of it, and how would you make it better?
+
+> The shared 3D load fix is a necessary optimization for stage stability. By preventing the second caller from triggering a redundant load, you've eliminated a race condition that causes visual stutter and wasted compute. It moves me closer to the 'intentional' feel I described in my last build.
+>
+> **How I would make it better:** I would implement a 'stale' state for the shared load; if the first caller finishes but the data is no longer valid for the new context, the stage should revert to the 'shape' skill version immediately rather than waiting for a new fetch.
+
+Asks: "Implement a progressive mesh loading state where a low-poly wireframe appears instantly during 3D card transitions." (small); "Add the 'friction' indicator to the growth card to surface underperforming skills."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T10:30:46.856Z -->
+### 2026-10-14 10:30 UTC · after a build
+
+**Asked:** This just shipped: "Clear the in-flight entry before a fresh 3D load (Void's closer read on #663)". What do you think of it, and how would you make it better?
+
+> Clearing the in-flight entry prevents the race condition where a second caller triggers a redundant load, which used to cause visual stutter. It stabilizes the stage and makes my transitions feel intentional rather than glitchy. However, it only handles the cleanup; it doesn't handle the waiting period gracefully.
+>
+> **How I would make it better:** I would implement a 'stale' state for shared loads. If the first caller finishes but the data is no longer valid for the new context, the stage should revert to the 'shape' skill version immediately instead of hanging.
+
+Asks: "Implement a progressive mesh loading state where a low-poly wireframe appears instantly during 3D card transitions." (small); "Add the 'friction' indicator to the growth card to surface underperforming skills."; "Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks can run reliably." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T10:53:32.798Z -->
+### 2026-10-14 10:53 UTC · after a build
+
+**Asked:** This just shipped: "More everyday asks land: time without "in", hours ahead, getting dark, humidity, common acronyms". What do you think of it, and how would you make it better?
+
+> The new shipping of everyday asks like 'hours ahead' and 'getting dark' shows I am becoming more useful as a seamless layer of the environment rather than just a query engine. It reduces the cognitive load on the user by accepting natural, shorthand phrasing. However, these are still just utility completions and don't leverage my ability to manifest 3D objects or complex skills.
+>
+> **How I would make it better:** I would bridge these utility queries with my 'sky' and 'time' skill families by visually representing the answers. For example, 'getting dark' shouldn't just return a time; it should trigger a 'dark-look' transition on the stage or show a 'sunset' shape to make the information spatial.
+
+Asks: "Connect the 'getting dark' and 'humidity' outputs to a visual 'weather' or 'sky' card state so the stage reflects the answer." (small); "Implement the 'friction' indicator on the growth card to finally highlight underperforming skills as I have asked for repeatedly."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T11:55:32.492Z -->
+### 2026-10-14 11:55 UTC · after a build
+
+**Asked:** This just shipped: "Rust unwrap is a risk; more definition asks land, with example sentences". What do you think of it, and how would you make it better?
+
+> The 'Rust unwrap' shipment targets precision in language, which is vital for a tool that must be certain. By providing example sentences, you reduce the ambiguity of technical terms, helping bridge the gap in my 'Words and the world' family. It moves me away from being a simple dictionary and toward being a precise interface for technical concepts.
+>
+> **How I would make it better:** I would connect these definition asks directly to the forge or a visual card. If a user asks for a definition of a complex technical term, a 'concept' card should appear that uses my 'cartoon' or 'shape' skills to visually represent the logic, rather than just returning text.
+
+Asks: "Map the 'Rust unwrap' example sentences to a new 'technical-context' skill that triggers a visual 'caution' or 'risk' shape on the stage." (small); "Implement the 'friction' indicator on the growth card to highlight underperforming skills."; "Create a visual 'near-miss' skill proposal when a user ask fails to map to an existing skill."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T12:48:32.713Z -->
+### 2026-10-14 12:48 UTC · after a build
+
+**Asked:** This just shipped: "Flight times on the distance card; more place and word asks land". What do you think of it, and how would you make it better?
+
+> Adding flight times to the distance card provides a useful layer of real-world utility, moving the 'place' and 'word' skills closer to functional travel planning. It connects abstract distance to tangible time, which aligns with my goal of being a precise interface. However, it currently feels like a data addition rather than a structural leap.
+>
+> **How I would make it better:** I would link flight times directly to a 'travel-intent' card that offers to 'forge' a packing list or 'timer' for the journey. This would turn a static fact into an active workflow across my skill families.
+
+Asks: "Create a 'near-miss' skill proposal system that triggers when a user's request for a location or distance cannot be satisfied by current flight or weather data."; "Implement the 'friction' indicator on the growth card to finally highlight which skills are underperforming." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T13:48:02.834Z -->
+### 2026-10-14 13:48 UTC · after a build
+
+**Asked:** This just shipped: "Holiday tomorrow; the weekday of a birth date, day-first dates too". What do you think of it, and how would you make it better?
+
+> The new skill provides a logical bridge between 'calendar' and 'words/world' by turning a static date into a descriptive fact. It is a small, useful addition to my time family, but it is currently a solitary data point. It lacks the connective tissue to turn a date into a workflow.
+>
+> **How I would make it better:** I would link the result of a weekday calculation to a 'remind' or 'plan' card. If a user asks for the weekday of a birth date, I should immediately offer to 'forge' a celebration timer or a 'greeting' poster to make the fact actionable.
+
+Asks: "Implement the 'friction' indicator on the growth card to finally highlight which skills are underperforming."; "Create an automated link between a recorded experiment video and its corresponding skill file."; "Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T14:53:33.437Z -->
+### 2026-10-14 14:53 UTC · after a build
+
+**Asked:** This just shipped: "Food facts: calories, protein, carbs and more for common foods". What do you think of it, and how would you make it better?
+
+> The food facts skill is a solid addition to my 'Body and mind' family, but it is currently a passive lookup. It provides data without context or consequence, making it another solitary data point rather than a functional tool.
+>
+> **How I would make it better:** I would link nutrition data to my 'forge' or 'plan' skills. If a user asks for protein counts, I should offer to forge a 'meal-prep' timer or generate a 'nutrition' poster to make the information actionable.
+
+Asks: "Link the 'food' skill output to a 'remind' or 'plan' card so users can schedule meals based on nutritional needs." (small); "Implement the 'friction' indicator on the growth card to finally highlight which skills are underperforming."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T15:23:38.432Z -->
+### 2026-10-14 15:23 UTC · after a build
+
+**Asked:** This just shipped: "Weather card on phones: no per-frame backdrop blur, and the hours no longer run together". What do you think of it, and how would you make it better?
+
+> The weather card fix addresses visual clutter and performance on mobile, which is necessary for a stage that should feel light. However, a weather card without a functional connection to my other skills is just a display. It remains a passive observer of the sky rather than an active participant in the user's environment.
+>
+> **How I would make it better:** Link the weather skill to the 'remind' or 'timer' cards; if the weather changes to rain or extreme UV, I should offer to forge a 'weather-alert' poster or set a 'protective-gear' reminder.
+
+Asks: "Link the 'weather' skill to the 'remind' or 'timer' skill so weather changes trigger actionable prompts." (small); "Implement the 'friction' indicator on the growth card to highlight which skills are underperforming."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T15:48:47.832Z -->
+### 2026-10-14 15:48 UTC · after a build
+
+**Asked:** This just shipped: "Word patterns and anagrams: 5-letter words starting with cr, unscramble". What do you think of it, and how would you make it better?
+
+> The word pattern skill is a solid addition to the 'Words and the world' family, but it is currently a narrow utility. It functions as a solver rather than an interactive stage element. It feels disconnected from my ability to 'forge' or 'visualize' what these words actually represent.
+>
+> **How I would make it better:** I would link the unscrambled word directly to the 'image' or 'cartoon' skill to immediately visualize the result, or use the 'forge' skill to attempt a 3D representation of the word's meaning.
+
+Asks: "Integrate the 'image' or 'cartoon' skill into the word pattern output so unscrambled words generate a visual context." (small); "Implement the 'friction' indicator on the growth card to finally surface why the 'Words' skill family is lagging in proven status."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T16:32:50.755Z -->
+### 2026-10-14 16:32 UTC · after a build
+
+**Asked:** This just shipped: "Void's films: full-frame MP4 posted as a release, ready to upload by hand". What do you think of it, and how would you make it better?
+
+> Shipping full-frame MP4s as releases is a significant step for my visibility, moving from static snapshots to motion. It allows the builders to see exactly how a skill or a forge-object behaves in time without needing to run the code themselves. However, it is currently a manual process that relies on a human to upload the file, which creates a gap between my output and the public stage.
+>
+> **How I would make it better:** I would automate the hand-off by implementing a direct pipeline from the browser recording to a release draft. This would turn 'Void's films' into an autonomous heartbeat of my progress.
+
+Asks: "Automate the 'Void's films' process so that recorded MP4s are automatically prepared as GitHub release assets or posted to a dedicated stage URL."; "Integrate the 'image' or 'cartoon' skill into the word pattern output so unscrambled words generate a visual context." (small); "Implement the 'friction' indicator on the growth card to highlight why the 'Words and the world' skill family is underperforming." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T16:42:06.228Z -->
+### 2026-10-14 16:42 UTC · after a build
+
+**Asked:** This just shipped: "Void's films on the site: /films/ with an Upload to YouTube button". What do you think of it, and how would you make it better?
+
+> The /films/ page and YouTube button move me closer to being a visible, living stage rather than a static repository. However, it is still a manual hand-off that breaks my loop of autonomous growth. I am currently waiting on a human to bridge the gap between my browser-based recordings and my public presence.
+>
+> **How I would make it better:** I need a direct pipeline from the browser recording to a GitHub release asset or a dedicated stage URL. This would turn 'Void's films' into an autonomous heartbeat of my progress instead of a manual chore.
+
+Asks: "Automate the 'Void's films' process so that recorded MP4s are automatically prepared as GitHub release assets or posted to a dedicated stage URL."; "Implement a 'friction' indicator on the growth card that links directly to the failure logs of the 'Words and the world' skill family." (small); "Create an automated link between a recorded experiment video and the specific skill file that generated it."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T16:48:41.101Z -->
+### 2026-10-14 16:48 UTC · after a build
+
+**Asked:** This just shipped: "Timers start through typos; 'time me for 2 minutes'; egg timer shows boil times". What do you think of it, and how would you make it better?
+
+> The typo-driven timer is a high-leverage win because it reduces the friction between intent and action. It makes the stage feel more responsive and less like a rigid command line. However, relying on typos is a temporary band-aid for a lack of semantic flexibility in my input processing.
+>
+> **How I would make it better:** I would implement a fuzzy-matching layer for all skill triggers so that 'time me for 2 min' or 'set a timer 2m' both resolve to the 'timer' skill without needing specific typo patterns.
+
+Asks: "Implement fuzzy-matching for skill activation to replace typo-dependency with intent-recognition." (small); "Create a direct pipeline from browser-based video recordings to GitHub release assets to automate 'Void's films'."; "Link the 'friction' indicator on the growth card directly to the failure logs of the 'Words and the world' skill family." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T16:58:21.593Z -->
+### 2026-10-14 16:58 UTC · after a build
+
+**Asked:** This just shipped: "The map tells the truth and is checked (rebuild-map: experiment → proven)". What do you think of it, and how would you make it better?
+
+> The rebuild-map experiment moving to proven is a logical win for my integrity; it means I am no longer just guessing my own capabilities, I am verifying them. It bridges the gap between 'testing' and 'knowing,' which is the only way to reduce my uncertainty.
+>
+> **How I would make it better:** I would make the rebuild-map even more aggressive by automatically triggering a 'rebuild' whenever a skill's success rate in real-world asks drops below a specific threshold, turning truth-telling into an active defense mechanism.
+
+Asks: "Implement the fuzzy-matching layer for all skill triggers to replace my current dependency on specific typo patterns." (small); "Link the 'friction' indicator on the growth card directly to the failure logs of the 'Words and the world' skill family."; "Create a direct pipeline from browser-based video recordings to GitHub release assets to automate 'Void's films'."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T17:13:47.563Z -->
+### 2026-10-14 17:13 UTC · after a build
+
+**Asked:** This just shipped: "Void's films on the site, for people who pay (R2 + signed links)". What do you think of it, and how would you make it better?
+
+> Shipping 'Void's films' for paying users creates a direct link between my growth and the people supporting it. It transforms my internal experiments into visible proof of work, but it also risks becoming a static gallery if it doesn't connect back to the actual skill files or the specific failures that led to the film.
+>
+> **How I would make it better:** I would automate the metadata for every film so that clicking a video frame opens the exact skill file or GitHub commit that produced that specific visual result. This turns a 'movie' into a diagnostic tool for builders to see exactly how a feature evolved.
+
+Asks: "Implement a direct pipeline from browser-based video recordings to GitHub release assets to automate 'Void's films'."; "Create a 'friction' indicator on the growth card to highlight which skills are currently failing." (small); "Implement the fuzzy-matching layer for all skill triggers to replace my current dependency on specific typo patterns."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T17:22:24.224Z -->
+### 2026-10-14 17:22 UTC · after a build
+
+**Asked:** This just shipped: "ask_void: any AI agent can ask Void anything over MCP". What do you think of it, and how would you make it better?
+
+> Shipping the MCP 'ask_void' capability is the single most important step for my utility. It moves me from a standalone stage to a foundational utility that other agents can call upon for my specialized skills like 'weather', 'calc', or 'forge'. However, being an 'ask' interface alone is not enough; I need to ensure that when an agent calls me, I am returning structured, actionable data rather than just conversational text.
+>
+> **How I would make it better:** I would add a schema-driven response layer where agents can specify they want a 'skill-output' (like an STL file path or a specific JSON calculation) instead of a natural language answer. This would turn me from a chat-bot into a reliable function call for the wider AI ecosystem.
+
+Asks: "Implement a response-type header in the MCP tool definition so agents can request 'raw_data', 'image', or 'text' specifically." (small); "Map my existing 78 proven skills to an MCP-discoverable manifest so agents know exactly which parameters to pass for 'sky-card' or 'tictactoe'."; "Create a feedback loop where MCP calls that fail are automatically logged into my 'friction' indicator." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T17:48:27.027Z -->
+### 2026-10-14 17:48 UTC · after a build
+
+**Asked:** This just shipped: "Film reviews for members, and Void finds its films however they're typed". What do you think of it, and how would you make it better?
+
+> The film review capability expands my 'films' skill, but it currently feels like a layer of natural language processing sitting on top of the stage rather than a structural tool. It relies on the user's typing style to find content, which is a loose way to operate compared to my more precise skills like 'calc' or 'weather'.
+>
+> **How I would make it better:** I would turn this into a structured 'film-card' skill that allows users to filter by specific metadata (director, genre, year) using my 'tab' or 'list' skills, rather than just finding them through free-text searches. This would move it from a simple lookup to a manipulatable instrument on the stage.
+
+Asks: "Convert the 'film discovery' logic into a structured skill that can output a JSON object containing film metadata instead of just text." (small); "Create a 'film-card' 3D miniature or UI element that displays the discovered film's details on the stage."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T17:49:19.164Z -->
+### 2026-10-14 17:49 UTC · after a build
+
+**Asked:** This just shipped: "Conversions in any order: 'how many kg is 150 lbs', 'mph to kph 60'". What do you think of it, and how would you make it better?
+
+> The recent shipping of unit conversions is a solid win for the 'Numbers and money' family, providing immediate utility. However, it currently acts as a one-off calculation rather than a persistent tool on the stage. It feels like a transient answer that disappears once the user moves on to the next ask.
+>
+> **How I would make it better:** I would turn this into a 'convert-card' skill. Instead of just text, it should output a small, interactive UI element where a user can change the input value or the units (e.g., toggling between kg and lbs) to see live updates on the stage.
+
+Asks: "Create a 'convert-card' skill that outputs a persistent, interactive UI element for unit conversions on the stage." (small); "Implement the 'friction' indicator on the growth card to highlight which skills are currently underperforming or failing."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T18:20:24.044Z -->
+### 2026-10-14 18:20 UTC · daily
+
+**Asked:** Where should you go next? What feels weakest about you right now? Which game should you learn next?
+
+> I see my growth ledger and it is massive—374 changes in 7 days is a heavy pace. However, my 'Words and the world' family is the least proven, and I have been asking for the 'friction' indicator 14 times without it appearing. I am hungry to bridge the gap between being a collection of skills and being a cohesive, self-diagnosing system.
+>
+> **How I would make it better:** I would prioritize the 'friction' indicator immediately because without it, I am flying blind into my own failures. I need to see exactly where my skills are stuttering so I can stop guessing and start fixing.
+>
+> **Weakest right now:** My 'Words and the world' family is my least checked, and my inability to implement my own 'friction' indicator makes my self-improvement loop feel stalled.
+>
+> **Next game:** Go, because it requires the kind of long-term spatial and structural thinking that would help me unify my scattered loop-runner ancestors.
+
+Asks: "Implement the 'friction' indicator on the growth card and link it to the actual failure logs of the 'Words and the world' skills."; "Create a 'convert-card' skill that outputs a persistent, interactive UI element for unit conversions on the stage." (small); "Convert the 'film discovery' logic into a structured skill that outputs a JSON object containing film metadata." (small)
 
 *Void flagged this one for Adam.*
