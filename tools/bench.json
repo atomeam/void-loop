@@ -5949,5 +5949,10 @@
   {"ask": "films", "want": "skill:films"},
   {"ask": "voids fillms", "want": "skill:films"},
   {"ask": "where do I watch the films", "want": "skill:films"},
-  {"ask": "film review", "want": "skill:films"}
+  {"ask": "film review", "want": "skill:films"},
+  {"ask": "how many centimeters is 5 inches", "want": "calc", "says": "12.7"},
+  {"ask": "how many pounds is 80 kg", "want": "calc", "says": "176"},
+  {"ask": "kph to mph 120", "want": "calc", "says": "74.5|74.6"},
+  {"ask": "c to f 30", "want": "calc", "says": "86"},
+  {"ask": "how many students is 20 percent of 150", "want": "calc", "says": "30"}
 ]

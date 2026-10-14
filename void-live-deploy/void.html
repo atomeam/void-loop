@@ -4474,6 +4474,8 @@ say('nothing selected to remove');
     // "days till christmas", "capital france", "usd to eur" read as the full ask
     const CODES = 'usd|eur|gbp|jpy|cad|aud|chf|cny|inr|mxn|nzd|sek|nok|dkk|krw|brl|zar|sgd|hkd|try|pln|thb';
     const CITIES = 'tokyo|london|paris|new york|nyc|los angeles|la|chicago|sydney|melbourne|dubai|berlin|madrid|rome|moscow|beijing|shanghai|hong kong|singapore|seoul|mumbai|delhi|new delhi|toronto|vancouver|mexico city|sao paulo|cairo|istanbul|bangkok|manila|jakarta|lagos|nairobi|denver|seattle|miami|boston|dallas|houston|phoenix|honolulu|hawaii|california|texas|florida|amsterdam|dublin|lisbon|athens|stockholm|oslo|zurich|vienna|prague|warsaw|buenos aires|lima|bogota|santiago|auckland|perth|tel aviv|riyadh|karachi|dhaka|taipei|hanoi|kuala lumpur';
+    // the unit words "mph to kph 60" may start with (kept short: only units people put first)
+    const UNIT_WORDS = 'mph|kph|km/h|kmh|fahrenheit|celsius|f|c|kg|kgs|kilos?|kilograms?|lbs?|pounds?|grams?|g|oz|ounces?|stones?|cm|centimet(?:er|re)s?|mm|millimet(?:er|re)s?|m|met(?:er|re)s?|km|kilomet(?:er|re)s?|inches|inch|in|ft|feet|foot|yards?|miles?|ml|millilit(?:er|re)s?|l|lit(?:er|re)s?|gallons?|quarts?|pints?|cups?|tablespoons?|tbsp|teaspoons?|tsp|usd|eur|gbp|jpy|cad|aud';
     function shortForms(t) {
       if (/^[\d\s.,+\-*/x×÷^()%]+=\s*$/i.test(t)) return t.replace(/\s*=\s*$/, '');
       return t.replace(/^([a-z]{3,})\s+(?:meaning|definition)\s*[?.!]*$/i, 'define $1')
@@ -4487,6 +4489,13 @@ say('nothing selected to remove');
         // "what day of the week was 12 october 1999": the day first, read as "october 12 1999"
         .replace(/^((?:what\s+)?day\s+(?:of\s+the\s+week\s+)?(?:is|was|will\s+be|falls\s+on)\s+(?:it\s+on\s+|on\s+)?)(\d{1,2})(?:st|nd|rd|th)?\s+(?:of\s+)?([a-z]{3,}),?(\s+\d{4})?\s*[?.!]*$/i, (_, a, d, mo, y) => a + mo + ' ' + d + (y || ''))
         .replace(/^(?:start\s+|begin\s+)?(?:a\s+)?pomodoro(?:\s+timer)?(?:\s+please)?\s*[.!]*$/i, 'set a timer for 25 minutes')
+        // "how many inches is 180 cm", "how many kg are 150 lbs": the number and its unit, then what to turn them into
+        // (only unit words on both sides: "how many miles is 10k" and "how many megapixels is 4k" are answered as they are)
+        .replace(new RegExp('^how\\s+many\\s+(' + UNIT_WORDS + ')\\s+(?:is|are)\\s+(\\d[\\d,]*(?:\\.\\d+)?)\\s*(' + UNIT_WORDS + ')\\s*[?.!]*$', 'i'), '$2 $3 in $1')
+        // "how many people is 5 percent of 200", "how much is 15% of 80": the percentage itself
+        .replace(/^how\s+(?:many|much)\s+(?:[a-z]+\s+)?(?:is|are)\s+(\d[\d,]*(?:\.\d+)?\s*(?:%|percent)\s+of\s+\$?\d[\d,]*(?:\.\d+)?)\s*[?.!]*$/i, '$1')
+        // "mph to kph 60", "f to c 350": the units first and the number last
+        .replace(new RegExp('^(' + UNIT_WORDS + ')\\s+(?:to|in|into)\\s+(' + UNIT_WORDS + ')\\s+(-?\\d[\\d,]*(?:\\.\\d+)?)\\s*[?.!]*$', 'i'), '$3 $1 to $2')
         // "set timr 10 min", "set a timmer for 8 minutes": the word typed fast (none of these is a word of its own)
         .replace(/\b(?:timr|tmer|timmer|timeer|tiemr|timre|tymer)\b/gi, 'timer')
         // "time me for 2 minutes": a timer
