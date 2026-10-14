@@ -3025,6 +3025,11 @@ say('nothing selected to remove');
       m = t.match(/^(?:convert\s+|how\s+many\s+(grams|tablespoons|tbsp|cups|ounces|oz)\s+(?:is|are|in)\s+)?(\d+(?:\.\d+)?)\s+sticks?\s+(?:of\s+)?butter(?:\s+(?:in|to|into)\s+(grams|tablespoons|tbsp|cups|ounces|oz))?$/);
       if (m && (m[1] || m[3])) { const n = +m[2], u = (m[1] || m[3]).replace(/^tbsp$/, 'tablespoons').replace(/^oz$/, 'ounces'), per = { grams: 113.4, tablespoons: 8, cups: 0.5, ounces: 4 }[u];
         const v = Math.round(n * per * 10) / 10; return { value: v + ' ' + u, note: n + ' stick' + (n === 1 ? '' : 's') + ' of butter (a US stick is 113 g, 8 tbsp, ½ cup)' }; }
+      // "healthy weight for 5 foot 8", "ideal weight for 170 cm": the weights in the standard adult BMI band (18.5-24.9)
+      m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:a\s+|the\s+|my\s+)?(?:healthy|ideal|normal|good|target)\s+weight\s+(?:range\s+)?(?:for|at)\s+(?:a\s+|someone\s+)?(?:(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?|(1[4-9]\d|2[0-2]\d)\s*cm)(?:\s+tall)?(?:\s+(?:man|woman|male|female|person|adult))?$/);
+      if (m) { const inches = m[3] ? +m[3] / 2.54 : +m[1] * 12 + +(m[2] || 0), lo = 18.5 * inches * inches / 703, hi = 24.9 * inches * inches / 703;
+        const h = m[3] ? m[3] + ' cm' : m[1] + ' ft ' + (m[2] || 0) + ' in';
+        return { value: Math.round(lo) + '–' + Math.round(hi) + ' lb', note: Math.round(lo * 0.45359237) + '–' + Math.round(hi * 0.45359237) + ' kg: the weights where an adult ' + h + ' has a BMI of 18.5 to 24.9 (the standard healthy band; BMI ignores muscle, build and age)' }; }
       // BMI in feet/inches and pounds: "bmi for 5 feet 10 inches 170 pounds", "bmi 5'10 170 lbs"
       m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:my\s+)?bmi\s+(?:for|at|if\s+i'?m)?\s*(\d)\s*(?:feet|foot|ft|')\s*(\d{1,2})?\s*(?:inches|inch|in|")?\s*(?:and\s+|,\s*)?(\d{2,3}(?:\.\d+)?)\s*(?:pounds|lbs?)$/);
       if (m) { const inches = +m[1] * 12 + +(m[2] || 0), lb = +m[3], v = 703 * lb / (inches * inches), r = Math.round(v * 10) / 10, band = v < 18.5 ? 'underweight' : v < 25 ? 'healthy range' : v < 30 ? 'overweight' : 'obese range';
