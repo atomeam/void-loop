@@ -141,7 +141,7 @@ async function builderFor(kind) {
   if (!builders.has(kind)) throw new Error('no miniature for ' + kind);
   return builders.get(kind);
 }
-export function liveMiniatures() { return [...live.values()].map((h) => ({ key: h.key, kind: h.kind, w: h.cssW, h: h.cssH, draws: h.draws, ms: h.ms, visible: h.visible, ready: h.ready })); }
+export function liveMiniatures() { return [...live.values()].map((h) => ({ key: h.key, kind: h.kind, w: h.cssW, h: h.cssH, draws: h.draws, ms: h.ms, visible: h.visible, ready: h.ready, rendered: h.draws > 0 })); }
 export function unmountMiniature(key) { const h = live.get(key); if (h) h.dispose(); return !!h; }
 
 let raf = 0, last = 0;
@@ -216,6 +216,12 @@ function draw(h) {
   h.g2d.clearRect(0, 0, pw, ph);
   h.g2d.drawImage(E.canvas, 0, E.h - ph, pw, ph, 0, 0, pw, ph);
   h.draws += 1; h.ms = Math.round(performance.now() - t0);
+  if (h.draws === 1) rendered(h);
+}
+// the first frame is on the canvas: say so on the page (data-rendered, aria-busy), fade it in, and tell anyone listening
+function rendered(h) {
+  h.wrap.dataset.rendered = 'true'; h.canvas.setAttribute('aria-busy', 'false'); h.canvas.style.opacity = '1';
+  try { h.wrap.dispatchEvent(new CustomEvent('void:mini-rendered', { bubbles: true, detail: { key: h.key, kind: h.kind } })); } catch (_) {}
 }
 
 /**
@@ -254,13 +260,15 @@ async function mountFresh(host, kind, data, opts, key) {
   const build = await builderFor(kind);
   const wrap = document.createElement('div');
   wrap.className = 'void-mini'; wrap.dataset.kind = kind; wrap.dataset.key = key;
+  wrap.dataset.rendered = 'false'; // until its first frame (asked by Void: a rendered signal checks and people can wait for)
   const place = opts.place || 'inside';
   wrap.style.cssText = place === 'beside'
     ? 'position:absolute;left:calc(100% + 14px);top:0;width:' + (opts.width || 220) + 'px;height:' + (opts.height || 220) + 'px;pointer-events:auto'
     : 'position:relative;width:' + (opts.width ? opts.width + 'px' : '100%') + ';height:' + (opts.height ? opts.height + 'px' : '100%');
   const canvas = document.createElement('canvas');
   canvas.setAttribute('role', 'img'); canvas.setAttribute('aria-label', opts.label || ('3D ' + kind));
-  canvas.style.cssText = 'display:block;width:100%;height:100%;touch-action:none;cursor:grab;outline:none';
+  canvas.style.cssText = 'display:block;width:100%;height:100%;touch-action:none;cursor:grab;outline:none;opacity:0;transition:opacity .25s ease-out';
+  canvas.setAttribute('aria-busy', 'true');
   wrap.appendChild(canvas);
   for (const ev of ['pointerdown', 'mousedown', 'touchstart']) canvas.addEventListener(ev, (e) => e.stopPropagation(), { passive: true }); // orbit, not a card drag
   const scene = new THREE.Scene(); scene.environment = E.env; scene.environmentIntensity = opts.envIntensity ?? 0.85;
