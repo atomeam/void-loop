@@ -5913,5 +5913,10 @@
   {"ask": "humidity in miami", "want": "skill:weather"},
   {"ask": "wind speed in chicago", "want": "skill:weather"},
   {"ask": "what does nasa stand for", "want": "calc", "says": "National Aeronautics and Space Administration"},
-  {"ask": "what does dna stand for", "want": "calc", "says": "deoxyribonucleic acid"}
+  {"ask": "what does dna stand for", "want": "calc", "says": "deoxyribonucleic acid"},
+  {"ask": "review this rust: let v = vec![1,2,3]; let x = v.get(5).unwrap();", "want": "review", "says": "bug|risk"},
+  {"ask": "what does it mean to be pragmatic", "want": "skill:define"},
+  {"ask": "dictionary definition of empathy", "want": "skill:define"},
+  {"ask": "use serendipity in a sentence", "want": "skill:define"},
+  {"ask": "what language does the word kindergarten come from", "want": "answer|article|skill:define"}
 ]

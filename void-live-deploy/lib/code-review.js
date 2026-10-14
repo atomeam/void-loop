@@ -394,7 +394,7 @@ const RULES = [
     'java.util.Random (and System.Random) is predictable: anyone who sees a few values can work out the next ones, so tokens, passwords and codes made with it can be guessed. Use SecureRandom (RandomNumberGenerator in C#)'],
   ['c-unsafe-string', 'risk', ['c'], (m) => /\b(?:gets|strcpy|strcat|sprintf)\s*\(/.test(m),
     'gets, strcpy, strcat and sprintf write without checking the size of the buffer, so a long input overflows it (a crash, or a way in for an attacker). Use fgets(buf, sizeof buf, stdin), snprintf, or copy with an explicit length.'],
-  ['unwrap', 'style', ['rust'], (m) => /\.unwrap\s*\(\s*\)/.test(m),
+  ['unwrap', 'risk', ['rust'], (m) => /\.unwrap\s*\(\s*\)/.test(m),
     'unwrap() panics (crashes the program) when the value is None or an Err. Handle it with match / if let, pass it up with ?, or use expect("why this cannot fail").'],
   // thin-area probes: using a value after it was moved, indexing a vec! literal past its end
   ['rust-moved-use', 'bug', ['rust'], (m, r, x) => {
