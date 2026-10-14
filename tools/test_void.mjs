@@ -2344,6 +2344,26 @@ try {
       && /url\.pathname === '\/'/.test(sw) && !P.errors.length,
       JSON.stringify({ shown, meta, idInUrl, nf, card, heads, errors: P.errors }));
     await P.ctx.close(); }
+  // the support desk (functions/api/support.js): on /code-review/, someone who pays says what broke, gets a ticket number, and reads the answer
+  if (want("code-review: someone who pays reports what broke and reads the owner's answer")) {
+    const D = await fresh(); const sent = [];
+    await D.ctx.route(/\/api\/support$/, async (rt) => {
+      const r = rt.request();
+      if (r.method() === 'POST') { sent.push({ auth: r.headers().authorization, body: JSON.parse(r.postData() || '{}') }); return rt.fulfill({ status: 201, contentType: 'application/json', body: JSON.stringify({ ok: true, id: 'S-1A2B3C4D', status: 'open', at: '2026-10-14T03:00:00Z' }) }); }
+      return rt.fulfill(json({ tickets: [{ id: 'S-1A2B3C4D', at: '2026-10-14T03:00:00Z', where: 'other', what: 'The closer read stopped showing', status: 'answered', answer: 'Fixed in today\'s deploy.' }] }));
+    });
+    await D.p.goto(base + 'code-review/'); await D.p.waitForTimeout(300);
+    await D.p.click('#supsend'); const empty = await D.p.$eval('#supout', (e) => e.textContent);
+    await D.p.fill('#supkey', 'vr1.' + 'A'.repeat(43)); await D.p.fill('#supwhat', 'The closer read stopped showing');
+    await D.p.click('#supsend'); await until(async () => /S-1A2B3C4D/.test(await D.p.$eval('#supout', (e) => e.textContent)), 4000);
+    const said = await D.p.$eval('#supout', (e) => e.textContent);
+    await D.p.click('#supmine'); await until(async () => /Answer:/.test(await D.p.$eval('#supout', (e) => e.textContent)), 4000);
+    const mine = await D.p.$eval('#supout', (e) => e.textContent);
+    check("code-review: someone who pays reports what broke (the key goes as Bearer, only the words in the body), gets a ticket number, and reads the owner's answer",
+      /Say what broke first/.test(empty) && sent.length === 1 && sent[0].auth === 'Bearer vr1.' + 'A'.repeat(43) && JSON.stringify(sent[0].body) === JSON.stringify({ what: 'The closer read stopped showing' })
+      && /Sent as S-1A2B3C4D/.test(said) && /answered/.test(mine) && /Answer: Fixed in today's deploy\./.test(mine) && !D.errors.length, JSON.stringify({ empty, sent, said, mine, errors: D.errors }));
+    await D.ctx.close(); }
+
   // Every service has its page (/one-time-fix/ and friends, the way Code Review Pro has /code-review/): it loads,
   // shows the live price from /api/catalog (the fix is stubbed at $26 to prove the live read, not the fallback), and
   // links its Gumroad product.

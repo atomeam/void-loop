@@ -19,6 +19,7 @@ for (const [name, file] of [
   ['upgrades', 'upgrades.test.mjs'],
   ['lab-use', 'lab-use.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
+  ['support', 'support.test.mjs'],
   ['skills', 'skills-check.mjs'],
   ['new-skill', 'new-skill.test.mjs'],
   ['frontier', 'frontier.test.mjs'],

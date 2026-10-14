@@ -74,3 +74,18 @@ test('the card shows Void\'s own build with a link to a failed run, escaped', as
   assert.match(h, /Checks on main<\/td><td[^>]*>failed \(failure\) on &#60;b&#62; · <a href="https:\/\/github.com\/x"/);
   assert.ok(!/Void’s own build/.test(statusHtml(esc, { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '')), 'no build, no section');
 });
+
+test('paying users who said it broke: read with the owner key only, shown on the card, and they open it', async () => {
+  const { supportState, statusHtml, autoOpen } = await import('../void-live-deploy/skills/status.js');
+  const esc = (x) => String(x).replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  const fetchFn = async (u) => u === '/api/support' ? new Response(JSON.stringify({ open: 1, tickets: [{ id: 'S-1A2B3C4D', status: 'open', where: 'action', at: '2026-10-14T03:00:00Z', what: '<img src=x> broke' }] })) : new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: 'success', head_sha: 'abc' }] }));
+  assert.equal(await supportState(fetchFn, ''), null, 'no owner key, nothing read');
+  const s = await supportState(fetchFn, 'owner');
+  assert.equal(s.open, 1);
+  const h = statusHtml(esc, { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '', null, s);
+  assert.match(h, /1 waiting on you/); assert.ok(!h.includes('<img'), 'a report is escaped');
+  // the build passed, but a report waits: the card opens (the owner's key comes from localStorage in a browser)
+  globalThis.localStorage = { getItem: () => 'owner' };
+  try { let opened = false; assert.equal(await autoOpen(async () => { opened = true; }, { fetchFn, store: null }), true); assert.ok(opened); }
+  finally { delete globalThis.localStorage; }
+});
