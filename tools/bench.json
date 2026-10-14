@@ -5968,5 +5968,10 @@
   {"ask": "wind chill right now", "want": "skill:weather"},
   {"ask": "make a real horse", "want": "skill:figures"},
   {"ask": "make a donkey", "want": "skill:figures"},
-  {"ask": "summon a pony", "want": "skill:figures"}
+  {"ask": "summon a pony", "want": "skill:figures"},
+  {"ask": "best heart rate to burn fat", "want": "skill:heart"},
+  {"ask": "help me relax", "want": "skill:breath"},
+  {"ask": "i cant fall asleep", "want": "skill:breath"},
+  {"ask": "healthy weight for 5 foot 4", "want": "calc", "says": "108"},
+  {"ask": "ideal weight for 180 cm", "want": "calc", "says": "60"}
 ]
