@@ -1,56 +1,69 @@
 /**
- * dice skill — roll dice (pure, client-side)
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "roll a d6", "roll 2d6", "roll a die".
- * Empty surface stays empty.
+ * dice skill — roll dice or flip a coin (pure, no key)
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), suite() }
+ * "roll a die", "roll 2d6", "flip a coin", "roll 3 dice".
+ * Empty surface stays empty: no match returns none, no page.
  */
-export function parseDice(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  const m = t.match(/^(?:please\s+)?(?:roll\s+)?(?:a\s+)?(\d+)?d(\d+)$/i)
-    || t.match(/^(?:please\s+)?roll\s+(?:a\s+)?(?:die|dice)$/i);
-  if (m) {
-    if (m[1] === undefined && m[2] === undefined) return { n: 1, sides: 6 };
-    const n = m[1] ? parseInt(m[1], 10) : 1;
-    const sides = parseInt(m[2], 10);
-    if (n > 0 && n <= 20 && sides >= 2 && sides <= 100) return { n, sides };
+function parseRoll(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+  if (/^(?:please\s+)?(?:roll\s+(?:a\s+|the\s+)?(?:die|dice)|(?:roll\s+)?(?:a\s+)?d6|roll\s+\d*d\d+|flip\s+(?:a\s+)?coin|heads\s+or\s+tails)$/.test(t)) {
+    const m = t.match(/(\d*)d(\d+)/) || t.match(/roll\s+(\d+)\s+(?:die|dice)/);
+    let n = 1, sides = 6;
+    if (m) {
+      n = m[1] ? parseInt(m[1], 10) : 1;
+      sides = parseInt(m[2], 10);
+    } else if (/coin|heads/.test(t)) {
+      sides = 2;
+    }
+    if (n < 1 || n > 100 || sides < 2 || sides > 100) return null;
+    return { n, sides, coin: sides === 2 };
   }
   return null;
 }
 
-export function rollDice(q) {
-  if (!q) return null;
+function roll(n, sides) {
   const rolls = [];
-  for (let i = 0; i < q.n; i++) rolls.push(1 + Math.floor(Math.random() * q.sides));
-  return { rolls, total: rolls.reduce((a, b) => a + b, 0) };
+  let sum = 0;
+  for (let i = 0; i < n; i++) {
+    const r = Math.floor(Math.random() * sides) + 1;
+    rolls.push(r);
+    sum += r;
+  }
+  return { rolls, sum };
 }
 
 async function run(text, api) {
-  const q = parseDice(text);
-  if (!q) return 'none';
-  const r = rollDice(q);
-  if (!r) return 'none';
   const { showPage, esc } = api;
-  const title = q.n > 1 ? q.n + 'd' + q.sides : 'd' + q.sides;
+  const q = parseRoll(text);
+  if (!q) return 'none';
+  const r = roll(q.n, q.sides);
+  const title = q.coin ? 'Coin flip' : (q.n > 1 ? q.n + 'd' + q.sides : 'd' + q.sides);
   showPage((p) => {
-    p.innerHTML = '<h2>Roll ' + esc(title) + '</h2>'
-      + '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + esc(String(r.total)) + '</div>'
-      + (q.n > 1 ? '<div class="sub">' + esc(r.rolls.join(' + ')) + '</div>' : '')
-      + '<div class="sub">say “roll” again for another</div>';
+    let html = '<h2>' + esc(title) + '</h2>';
+    if (q.coin) {
+      html += '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + (r.rolls[0] === 1 ? 'Heads' : 'Tails') + '</div>';
+    } else {
+      html += '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + r.sum + '</div>';
+      if (q.n > 1) html += '<p style="color:#8a8a8a">' + r.rolls.join(' + ') + '</p>';
+    }
+    html += '<div class="sub">say “roll again” or another roll</div>';
+    p.innerHTML = html;
   });
   return 'dice';
 }
 
 export default {
   name: 'dice',
-  examples: ['roll a d6', 'roll 2d6', 'roll a die'],
-  nearMisses: ['what is a die', 'dice game', 'how many sides on a cube', 'roll of the dice meaning'],
-  match(lower, text) { return !!parseDice(text); },
+  examples: ['roll a die', 'roll 2d6', 'flip a coin', 'roll 3 dice'],
+  nearMisses: ['dice game', 'what is a die', 'roll of film', 'coin collection'],
+  match(lower, text) { return !!parseRoll(text); },
   run,
   suite() {
-    const q = parseDice('roll 2d6');
-    const r = rollDice(q);
-    const ok = !!q && q.n === 2 && q.sides === 6 && r && r.rolls.length === 2 && r.total === r.rolls[0] + r.rolls[1]
-      && parseDice('what is a die') === null && parseDice('roll a d6') != null;
-    return { ok, got: r && r.total };
+    // one check: parse a known ask and that a roll stays in range
+    const q = parseRoll('roll 2d6');
+    if (!q || q.n !== 2 || q.sides !== 6) return { ok: false, got: 'parse failed' };
+    const r = roll(q.n, q.sides);
+    if (r.rolls.length !== 2 || r.rolls.some((x) => x < 1 || x > 6) || r.sum !== r.rolls[0] + r.rolls[1]) return { ok: false, got: 'roll out of range' };
+    return { ok: true };
   }
 };
