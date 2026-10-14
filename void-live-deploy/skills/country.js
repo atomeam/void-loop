@@ -11,6 +11,9 @@ export function countryOf(text) {
   m = t.match(/^(?:what|which)\s+(currency|languages?)\s+(?:does|do|is|are)\s+(?:used\s+in|spoken\s+in)?\s*(?:the\s+)?([A-Za-zÀ-ÿ' .-]{3,40}?)(?:\s+(?:use|speak|have))?$/i);
   // "what language does the word kindergarten come from" asks where a word comes from, not about a country
   if (m && !/\b(?:words?|come|comes|came|from|originate)\b/i.test(m[2])) return { want: FIELDS[m[1].toLowerCase()], name: m[2].trim() };
+  // "how big is france": only a country Void knows by name, so "how big is the sun" stays with what knows it
+  m = t.match(/^how\s+(?:big|large)\s+is\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{2,40})$/i);
+  if (m && CAPITALS[m[1].trim().toLowerCase()]) return { want: 'area', name: m[1].trim() };
   m = t.match(/^how\s+many\s+people\s+live\s+in\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{3,40})$/i);
   if (m) return { want: 'population', name: m[1].trim() };
   m = t.match(/^(?:what\s+)?languages?\s+(?:are\s+|is\s+)?spoken\s+in\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{3,40})$/i);
@@ -69,7 +72,7 @@ async function run(text, api) {
 export default {
   name: 'country',
   examples: ['capital of Australia', 'population of Japan', 'what currency does Brazil use', 'languages spoken in Switzerland'],
-  nearMisses: ['capital letters', 'what is capitalism', 'population growth', 'weather in Japan'],
+  nearMisses: ['capital letters', 'what is capitalism', 'population growth', 'weather in Japan', 'how big is the sun'],
   match(lower, text) { return !!countryOf(text); },
   run
 };

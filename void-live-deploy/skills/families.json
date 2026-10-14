@@ -332,12 +332,12 @@
     {
      "name": "distance",
      "tier": "tested",
-     "why": "21 real asks in the benchmark"
+     "why": "23 real asks in the benchmark"
     },
     {
      "name": "country",
      "tier": "tested",
-     "why": "47 real asks in the benchmark"
+     "why": "48 real asks in the benchmark"
     }
    ]
   },
@@ -559,7 +559,7 @@
     {
      "name": "translate",
      "tier": "proven",
-     "why": "3 browser-suite mentions, 30 real asks in the benchmark"
+     "why": "3 browser-suite mentions, 31 real asks in the benchmark"
     },
     {
      "name": "news",
