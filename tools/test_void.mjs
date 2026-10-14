@@ -2411,6 +2411,16 @@ try {
       && /could not load[\s\S]*GitHub/.test(fallback) && !F.errors.length, JSON.stringify({ card, copied, fallback, errors: F.errors }));
     await F.ctx.close(); }
 
+  // the map (skills/rebuild-map.js), the one skill nothing checked (the growth card's friction line, 2026-10-14): "show the map"
+  // opens its 13 rows as they stand now, with no row still "not started" for something that is live
+  if (want("rebuild-map: show the map lists the 13 rows as they stand now")) {
+    const M = await fresh(); await M.ask('show the map', 600);
+    await until(async () => /The map/.test(await M.page()), 4000);
+    const m = await M.p.evaluate(() => { const c = document.querySelector('.vpage.on'); return c && { rows: c.querySelectorAll('li').length, text: c.innerText }; });
+    check('rebuild-map: show the map lists the 13 rows as they stand now', !!m && m.rows === 13 && /14 games/.test(m.text) && /group and layer skills/.test(m.text)
+      && !/not started|queued/.test(m.text) && !M.errors.length, JSON.stringify({ rows: m && m.rows, head: m && m.text.slice(0, 160), errors: M.errors }));
+    await M.ctx.close(); }
+
   // the support desk (functions/api/support.js): on /code-review/, someone who pays says what broke, gets a ticket number, and reads the answer
   if (want("code-review: someone who pays reports what broke and reads the owner's answer")) {
     const D = await fresh(); const sent = [];
