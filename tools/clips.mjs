@@ -82,7 +82,7 @@ export const MOMENTS = [
 ];
 
 // every product V01D publishes in its store gets an ad clip (tools/store-publish.mjs appends domains/store.clips.jsonl):
-// the clip films the product's own card on /store/ and is ranked first for a week after it is published.
+// the clip films the product's own card on /store/ and gets one daily slot for a week after it is published.
 export function storeMoments(lines = (() => { try { return fs.readFileSync(path.resolve(here, '../domains/store.clips.jsonl'), 'utf8'); } catch (_) { return ''; } })()) {
   const seen = new Map();
   for (const l of String(lines).split('\n')) { try { const j = JSON.parse(l); if (j && j.id) seen.set(j.id, j); } catch (_) {} }
@@ -121,8 +121,11 @@ export const clipId = (m, date) => String(date).replace(/-/g, '') + '-' + m.id;
  *  nothing repeats while another waits. perf: { [momentId]: visits }. Pure. */
 export function plan(date, perf = {}, n = 3) {
   const day = Math.floor(Date.parse(date + 'T00:00:00Z') / 864e5);
-  const ranked = MOMENTS.map((m, i) => ({ m, score: (fresh(m, date) ? 1e8 : 0) + (perf[m.id] || 0) * 10 + ((i - day) % MOMENTS.length + MOMENTS.length) % MOMENTS.length * -1 }))
-    .sort((a, b) => b.score - a.score).slice(0, n).map((x) => x.m);
+  const newProducts = MOMENTS.filter((m) => fresh(m, date)), k = n > 1 && newProducts.length ? 1 : 0;
+  // one slot a day goes to a product published this week (rotating among them); the rest are chosen as before
+  const ranked = MOMENTS.filter((m) => m.kind !== 'store').map((m, i) => ({ m, score: (perf[m.id] || 0) * 10 + ((i - day) % MOMENTS.length + MOMENTS.length) % MOMENTS.length * -1 }))
+    .sort((a, b) => b.score - a.score).slice(0, n - k).map((x) => x.m);
+  if (k) ranked.push(newProducts[day % newProducts.length]);
   return ranked.map((m) => ({ id: clipId(m, date), moment: m.id, ask: m.ask, tricks: [...new Set([...DEFAULT_TRICKS, ...(m.tricks || [])])], platforms: words(m, date) }));
 }
 

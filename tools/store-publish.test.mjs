@@ -44,9 +44,9 @@ test('store-publish: the STL check passes every forge printable and fails a hole
   const g = glb(files[0].model); assert.equal(new DataView(g.buffer).getUint32(0, true), 0x46546c67); assert.equal(g.length % 4, 0);
 });
 
-test('store-publish: each published product becomes an ad clip, filmed on its own store card and ranked first that week', () => {
+test('store-publish: each published product becomes an ad clip, filmed on its own store card and given a daily slot that week', () => {
   const m = storeMoments('{"at":"2026-10-15T06:00:00Z","id":"v01d-clips-pack","hook":"Ten shorts I filmed myself. Free.","caption":"x"}\n{"bad');
   assert.equal(m.length, 1); assert.equal(m[0].url, '/store/#v01d-clips-pack');
   assert.ok(storeMoments().length >= 0);
-  if (storeMoments().length) assert.equal(plan('2026-10-16', {}, 1)[0].moment.startsWith('store-'), true);
+  if (storeMoments().length) { assert.ok(plan('2026-10-16', {}, 3).some((e) => e.moment.startsWith('store-')), 'a new product gets a slot'); assert.ok(!plan('2026-10-16', {}, 1)[0].moment.startsWith('store-'), 'a one-clip day stays on performance'); }
 });
