@@ -12,5 +12,13 @@
   "of": 11,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"air quality in Tokyo\" (skill:air)"
+ },
+ {
+  "at": "2026-10-15T06:23:11Z",
+  "passed": 6,
+  "of": 12,
+  "kind": "file",
+  "key": "what are you? | console: Failed to load module script: Expected a JavaScript",
+  "note": "fix: \"what are you?\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
  }
 ]
