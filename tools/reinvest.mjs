@@ -71,7 +71,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       for (const f of a.funded) {
         const req = toApproval(f, { baseline: f.metric ? await measure(f.metric, get) : null });
         try {
-          const r = await fetch(site + '/api/approval', { method: 'POST', headers: { ...auth, 'content-type': 'application/json' }, body: JSON.stringify({ type: 'a2m.approval.requested', workflowId: 'void.reinvest', ...req }), signal: AbortSignal.timeout(30000) });
+          const r = await fetch(site + '/api/approval', { method: 'POST', headers: { ...auth, 'content-type': 'application/json' }, body: JSON.stringify({ type: 'a2m.approval.requested', workflowId: 'void.reinvest', ...req }), signal: AbortSignal.timeout(30000) }); // void-review: ok (a few HTTP calls, one per due proposal; no database here)
           const j = r.ok ? await r.json() : null, id = j && (j.approvalId || (j.approval && j.approval.approvalId));
           if (id) L.proposed.push({ id: f.id, approvalId: id, at: today, check_by: req.args.by, status: f.status });
           else console.log('confirm line refused ' + f.id + ' (' + r.status + ')');
