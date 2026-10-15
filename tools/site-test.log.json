@@ -232,5 +232,12 @@
   "kind": "file",
   "key": "auotmations | refused: don't know this yet",
   "note": "fix: \"auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T12:07:13Z",
+  "passed": 16,
+  "of": 16,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"yo new automation\" (skill:automations)"
  }
 ]

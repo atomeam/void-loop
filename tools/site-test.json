@@ -64,6 +64,9 @@
     },
     {
       "ask": "yo automations"
+    },
+    {
+      "ask": "yo new automation"
     }
   ],
   "candidates": [
