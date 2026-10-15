@@ -22,6 +22,7 @@ for (const [name, file] of [
   ['support', 'support.test.mjs'],
   ['films', 'films.test.mjs'],
   ['film-share', 'film-share.test.mjs'],
+  ['launch-fixes', 'launch-fixes.test.mjs'],
   ['store', 'store.test.mjs'],
   ['owner-account', 'owner-account.test.mjs'],
   ['automations-seed', 'automations-seed.test.mjs'],
