@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 15,
- "runsTotal": 42,
+ "runsTotal": 43,
  "kinds": {
   "grow": 8,
-  "file": 27,
+  "file": 28,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T20:10:35Z",
+   "passed": 0,
+   "of": 19,
+   "kind": "file",
+   "note": "fix: \"label the clock kitchen\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-15T20:06:20Z",
    "passed": 0,
@@ -140,13 +147,6 @@
    "of": 16,
    "kind": "file",
    "note": "fix: \"my auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T07:27:54Z",
-   "passed": 15,
-   "of": 16,
-   "kind": "file",
-   "note": "fix: \"yo menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -204,6 +204,10 @@
   "skill:incident": "2026-10-15T20:06:20Z",
   "skill:intent": "2026-10-15T20:06:20Z",
   "skill:inventory": "2026-10-15T20:06:20Z",
-  "skill:invite": "2026-10-15T20:06:20Z"
+  "skill:invite": "2026-10-15T20:06:20Z",
+  "skill:appraise": "2026-10-15T20:10:35Z",
+  "skill:joke": "2026-10-15T20:10:35Z",
+  "skill:label": "2026-10-15T20:10:35Z",
+  "skill:layer": "2026-10-15T20:10:35Z"
  }
 }
