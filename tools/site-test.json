@@ -53,6 +53,10 @@
         "selector": ".thing"
       },
       "note": "weak-answer queue (paraphrase): a pasted note about V01D's own systems got only a list of run times; it should answer the substance, times as an aside"
+    },
+    {
+      "ask": "yo what does ephemeral mean",
+      "taught": "define"
     }
   ],
   "candidates": [
@@ -91,11 +95,6 @@
       "ask": "yo play despacito",
       "means": "play despacito",
       "feature": "skill:video-play"
-    },
-    {
-      "ask": "yo what does ephemeral mean",
-      "means": "define serendipity",
-      "feature": "skill:define"
     }
   ],
   "priority": [
