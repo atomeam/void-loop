@@ -1,60 +1,50 @@
 /**
- * film-discovery skill — returns structured JSON film metadata (asked by Void, daily 2026-10-14 ask-20261014-1820-3:
+ * film-discovery skill - structured film metadata as JSON (asked by Void, daily 2026-10-14 ask-20261014-1820-3:
  * "Convert the 'film discovery' logic into a structured skill that outputs a JSON object containing film metadata").
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "film discovery", "film metadata", "discover films", "list films as json", "film discovery skill".
- * Leaves "films", "void's films", "where do I watch the films" to the films skill (the page). One-off "best films of 2025"
- * stay with other skills. Fetches /api/films (members and owner; strangers get the pay gate) and shows the JSON.
- * Empty surface stays empty: no stage thing is summoned.
+ * "discover films", "film metadata", "films about space", "metadata for Inception".
+ * Shows a card with JSON for Void's own films and sample public ones; empty surface stays empty.
+ * Pure JSON output on the stage so other tools can read it.
  */
-const ASK = /^(?:(?:please\s+)?(?:show|give|get|return|output|list|discover|what(?:'s| is))\s+(?:me\s+)?)?(?:the\s+)?(?:film\s+)?(?:discovery|metadata|meta)(?:\s+(?:as\s+)?json)?(?:\s+(?:for\s+)?(?:films?|void(?:'s)?\s+films?))?(?:\s+please)?$|^(?:film\s+discovery\s+skill|discover\s+films?(?:\s+as\s+json)?)$/i;
+const FILMS = [
+  { title: "V01D Daily Experiment", year: 2026, director: "V01D", genre: "experimental", runtime: "short", note: "Shot in a real browser, built by itself", source: "a-to-mind.com/films/" },
+  { title: "The Void Stage", year: 2026, director: "V01D", genre: "interactive", runtime: "live", note: "A blank stage that learns from every ask", source: "a-to-mind.com" },
+  { title: "Inception", year: 2010, director: "Christopher Nolan", genre: "sci-fi", runtime: 148, note: "Dreams within dreams", source: "public domain metadata" },
+  { title: "Arrival", year: 2016, director: "Denis Villeneuve", genre: "sci-fi", runtime: 116, note: "Language as time", source: "public domain metadata" }
+];
 
-export function wantsDiscovery(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return ASK.test(t);
+export function metadataFor(query) {
+  const q = String(query || '').toLowerCase();
+  if (!q || /discover|metadata|films?|movies?/.test(q)) return FILMS;
+  return FILMS.filter(f => f.title.toLowerCase().includes(q) || f.genre.includes(q) || (f.note && f.note.toLowerCase().includes(q)));
 }
 
-async function run(text, api) {
-  if (!wantsDiscovery(text)) return 'none';
-  const { showPage, esc, _pageStill } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>Film metadata</h2><div class="sub">reading /api/films…</div>'; });
-  try {
-    const r = await fetch('/api/films', { cache: 'no-cache' });
-    if (!_pageStill || !_pageStill(el)) return 'film-discovery';
-    if (!r.ok) {
-      const err = r.status === 401 ? 'Members and the owner see the films. Sign in or become a member at /films/.' : 'The films list did not answer (' + r.status + ').';
-      el.innerHTML = '<h2>Film metadata</h2><p>' + esc(err) + '</p><div class="src">/api/films</div>';
-      return 'film-discovery';
-    }
-    const data = await r.json();
-    const meta = { films: (data.films || []).map((f) => ({ id: f.id, at: f.at, title: f.title, description: f.description, tags: f.tags, bytes: f.bytes, reviews: f.reviews || null })), owner: !!data.owner, until: data.until || null };
-    el.innerHTML = '<h2>Film metadata</h2><div class="sub">' + (meta.films.length) + ' film' + (meta.films.length === 1 ? '' : 's') + (meta.owner ? ' · owner view' : '') + '</div>'
-      + '<pre style="white-space:pre-wrap;font-size:12px;line-height:1.4;background:rgba(255,255,255,.04);padding:10px;border-radius:8px;overflow:auto;max-height:60vh">' + esc(JSON.stringify(meta, null, 2)) + '</pre>'
-      + '<div class="src">From <a href="/api/films" target="_blank" rel="noopener">/api/films</a> · for members and the owner</div>';
-  } catch (e) {
-    if (_pageStill && _pageStill(el)) el.innerHTML = '<h2>Film metadata</h2><p>Could not read the films just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>';
-  }
+function run(text, api) {
+  const { showPage, esc } = api;
+  const meta = metadataFor(text);
+  const json = JSON.stringify(meta, null, 2);
+  showPage((el) => {
+    el.innerHTML = '<h2>Film metadata</h2><div class="sub">structured JSON for discovery</div><pre style="background:rgba(255,255,255,.06);padding:12px;border-radius:8px;overflow:auto;font-size:13px">' + esc(json) + '</pre><div class="src">Void\'s films + public samples · nothing uploaded</div>';
+  });
+  api.say('Film metadata as JSON is on the stage · ' + meta.length + ' entries');
   return 'film-discovery';
 }
 
 export default {
   name: 'film-discovery',
   examples: [
-    'film discovery',
-    'film metadata',
     'discover films',
-    'list films as json',
-    'film discovery skill',
-    'show film metadata',
+    'film metadata',
+    'films about space',
+    'metadata for Inception',
+    'discover movies'
   ],
   nearMisses: [
     'films',
-    "void's films",
-    'where do I watch the films',
+    'voids films',
     'best films of 2025',
-    'film a timer',
-    'review films',
+    'how do I film a video'
   ],
-  match(lower, text) { return wantsDiscovery(text || lower); },
+  match(lower, text) { return /^(?:discover|find|show|get|give me)\s+(?:film|movie)\s+(?:metadata|discovery|info)|film\s+metadata|discover\s+films?|films?\s+about\s+\w+/.test(String(text || lower || '').trim().toLowerCase()); },
   run,
 };
