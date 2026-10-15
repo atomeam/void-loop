@@ -27,15 +27,15 @@ export default async function build(ctx, data) {
       if (side === 'top') g.fillRect(x + 1, y + 1, cp - 2, cp * 0.24); else if (side === 'bottom') g.fillRect(x + 1, y + cp * 0.76, cp - 2, cp * 0.24 - 1);
       else if (side === 'right') g.fillRect(x + cp * 0.76, y + 1, cp * 0.24 - 1, cp - 2); else g.fillRect(x + 1, y + 1, cp * 0.24, cp - 2); }
     g.fillStyle = '#1a1a1a'; g.textAlign = 'center'; g.textBaseline = 'middle';
-    const words = sp.n.split(' '), fs = Math.round(cp * (sp.t === 'street' || sp.t === 'station' ? 0.13 : 0.15));
+    const words = ((data.names && data.names[i]) || sp.n).split(' '), fs = Math.round(cp * (sp.t === 'street' || sp.t === 'station' ? 0.13 : 0.15));
     g.font = `600 ${fs}px 'Helvetica Neue', Arial, sans-serif`;
     words.forEach((w, k) => g.fillText(w, x + cp / 2, y + cp * 0.5 + (k - (words.length - 1) / 2) * fs * 1.1));
     if (sp.p) { g.font = `${Math.round(fs * 0.9)}px Arial, sans-serif`; g.fillText(String(sp.p), x + cp / 2, y + cp * 0.86); }
   });
   // Void's own lid in the middle (not the original's logo): THE LANDLORD'S GAME, set like a vintage box
   g.fillStyle = '#2b4a33'; g.textAlign = 'center';
-  g.font = `700 ${Math.round(cp * 0.32)}px Georgia, serif`; g.fillText('THE', px / 2, px / 2 - cp * 0.62);
-  g.font = `700 ${Math.round(cp * 0.7)}px Georgia, serif`; g.fillText('LANDLORD’S GAME', px / 2, px / 2 + cp * 0.1);
+  g.font = `700 ${Math.round(cp * 0.32)}px Georgia, serif`; if (!data.lid) g.fillText('THE', px / 2, px / 2 - cp * 0.62);
+  g.font = `700 ${Math.round(cp * 0.7)}px Georgia, serif`; g.fillText(data.lid || 'LANDLORD’S GAME', px / 2, px / 2 + cp * 0.1);
   g.font = `${Math.round(cp * 0.2)}px system-ui, sans-serif`; g.fillText('A  VOID  GAME', px / 2, px / 2 + cp * 0.5);
   const c2 = document.createElement('canvas'); c2.width = c2.height = px;
   const g2 = c2.getContext('2d'); g2.translate(px, px); g2.rotate(Math.PI); g2.drawImage(flat, 0, 0);

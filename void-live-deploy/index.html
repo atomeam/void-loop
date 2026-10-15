@@ -2142,6 +2142,14 @@ say('nothing selected to remove');
     function wantsSelfPage(lower) {
       return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|a-to-mind)\b|^what\s+can\s+(you|i|void)\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|void)\b/.test(lower);
     }
+    // "what are you?" / "who are you" / "what is void" / "tell me about yourself": V01D says what it is and its motto first, then
+    // the page (launch audit, 2026-10-15: the bare page read as a sign-in menu). MOTTO is the canon's, word for word
+    // (domains/void.canon.md ## Motto; tools/launch-fixes.test.mjs keeps them the same).
+    const MOTTO = 'You name it, Void learns it and does it better.';
+    const SELF_LEAD = 'I’m V01D: one box where you ask for anything and it appears as a working card, game or page. My motto: “' + MOTTO + '”';
+    function wantsIdentity(lower) {
+      return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|v01d|a-to-mind)\b|^tell\s+me\s+about\s+(yourself|you|void|v01d)\b|^what('?s|\s+is)\s+your\s+motto\b/.test(lower);
+    }
     function showSelfPage(asMenu, focus, lead) {
       const groups = [
         ['On the stage', [
@@ -2228,6 +2236,7 @@ say('nothing selected to remove');
         const r = await fetch('/api/answer', { method: 'POST', headers: who ? { 'content-type': 'application/json', authorization: 'Bearer ' + who } : { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text }) });
         if (r.ok || r.status === 429) j = await r.json();
       } catch (_) {}
+      await mdReady;
       if (vpageEl !== el) return 'answer';
       if (!j || !j.answer) { say(''); if (page) { el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<p>' + esc(j && j.note || 'I couldn’t read that page just now. Try again in a moment.') + '</p>'; return 'answer'; } return showArticle(text); }
       const srcs = (j.sources || []).map((s, i) => '<a href="' + esc(/^https:\/\//i.test(String(s.url || '')) ? s.url : '#') + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.title) + '</a>').join(' · '); // https links only
@@ -4484,10 +4493,13 @@ say('nothing selected to remove');
       const raw = pasteRaw, flat = pasteFlat; pasteRaw = pasteFlat = null;
       return raw && flat && text.includes(flat) ? text.replace(flat, raw) : text;
     }
+    // the light markdown a model writes (comics, stories, lists) renders as what it means, not raw asterisks (lib/md.js)
+    let mdLib = null;
+    const mdReady = import('/lib/md.js').then((m) => { mdLib = m; }).catch(() => {});
     function fixHtml(t) {
       return String(t).split(/```[\w.+-]*[ \t]*\n?/).map((part, i) => (i % 2
         ? '<pre style="white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.06);padding:10px 12px;border-radius:8px;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto"><code>' + esc(part.replace(/\n$/, '')) + '</code></pre>'
-        : part.trim() ? '<p>' + esc(part.trim()).replace(/\n+/g, '<br>') + '</p>' : '')).join('');
+        : part.trim() ? (mdLib ? mdLib.mdBlock(part.trim(), esc) : '<p>' + esc(part.trim()).replace(/\n+/g, '<br>') + '</p>') : '')).join('');
     }
     // a paste of any size (owner, 2026-10-15: "I thought we fixed it so that we can paste any sized message"): the title ends
     // with … at a word, the server gets the start and the end of a long paste (errors sit at the end of a log) inside its 20 kB,
@@ -4966,7 +4978,7 @@ say('nothing selected to remove');
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
-      if (wantsSelfPage(lower0)) { showSelfPage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
+      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
       if (/^(why|how|when|where|which|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
           && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {

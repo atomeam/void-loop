@@ -2,7 +2,8 @@
  * howto — a short "how to play" for every game on the rack (Adam, 2026-10-09: "i dont know how to play any of these games …
  * needs tutorials … fun and easy to jump into playing"). Not a skill: side-card.js puts it on every game's card.
  * The first time you open a game it opens by itself (once per game, remembered in this browser); after that it is one tap
- * away on the card's "How to play" button. Three or four steps, each one thing you do, then the goal: no rulebook to read.
+ * away on the card's "How to play" button. It never stands in the way of the board (launch audit, 2026-10-15: chess opened
+ * behind it): a × closes it, Esc closes it, and the first tap anywhere off the panel (a move on the board) folds it away. Three or four steps, each one thing you do, then the goal: no rulebook to read.
  *   HOWTO[kind]            { goal, steps: [...], tip }
  *   howTo(card, kind)      adds the button and the panel to a game's side card (does nothing for a kind it doesn't know)
  */
@@ -63,6 +64,9 @@ const CSS = '.howto-btn{margin-left:auto;border:1px solid var(--card-line,rgba(2
   + '.howto-tip{margin-top:8px;font-size:12px;color:var(--muted,#a9a9b2)}'
   + '.howto-go{margin-top:10px;width:100%;border:0;border-radius:10px;padding:9px 12px;background:#ffe2a1;color:#2a1c06;font:700 13px system-ui,sans-serif}'
   + '.howto-go:hover{background:#fff0c9}'
+  + '.howto{position:relative;max-height:min(46vh,340px);overflow:auto}'
+  + '.howto-x{position:absolute;top:6px;right:6px;width:24px;height:24px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:var(--ink,#eee);font:600 15px/24px system-ui,sans-serif;cursor:pointer;padding:0}'
+  + '.howto-x:hover{background:rgba(255,255,255,.18)}'
   + '@keyframes howto-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}'
   + '@media (prefers-reduced-motion: reduce){.howto{animation:none}}';
 function style() {
@@ -81,11 +85,14 @@ export function howTo(card, kind) {
   for (const s of h.steps) { const li = document.createElement('li'); li.textContent = s; ol.appendChild(li); }
   const tip = document.createElement('div'); tip.className = 'howto-tip'; tip.textContent = 'Tip: ' + h.tip;
   const go = document.createElement('button'); go.type = 'button'; go.className = 'howto-go'; go.textContent = 'Got it, let’s play';
-  panel.append(goal, ol, tip, go);
+  const x = document.createElement('button'); x.type = 'button'; x.className = 'howto-x'; x.textContent = '×'; x.setAttribute('aria-label', 'Close how to play');
+  goal.style.paddingRight = '26px';
+  panel.append(x, goal, ol, tip, go);
   const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'howto-btn'; btn.textContent = 'How to play';
   btn.setAttribute('aria-expanded', 'false');
   const show = (on) => { panel.hidden = !on; btn.setAttribute('aria-expanded', String(on)); btn.textContent = on ? 'Hide' : 'How to play'; };
-  for (const b of [btn, go]) b.addEventListener('pointerdown', (e) => e.stopPropagation());
+  for (const b of [btn, go, x]) b.addEventListener('pointerdown', (e) => e.stopPropagation());
+  x.addEventListener('click', (e) => { e.stopPropagation(); show(false); markSeen(kind); });
   btn.addEventListener('click', (e) => { e.stopPropagation(); show(panel.hidden); markSeen(kind); });
   go.addEventListener('click', (e) => { e.stopPropagation(); show(false); markSeen(kind); });
   const head = card.querySelector('.g-head');
@@ -105,5 +112,14 @@ export function howTo(card, kind) {
     rules.replaceWith(d); d.append(sm, rules);
   }
   show(!seen(kind));
+  // opened by itself: Esc, or the first tap anywhere off the panel (a move on the board), folds it away for good
+  if (!panel.hidden) {
+    const off = () => { document.removeEventListener('keydown', onKey, true); document.removeEventListener('pointerdown', onTap, true); };
+    const fold = () => { off(); if (!panel.hidden) { show(false); markSeen(kind); } };
+    const onKey = (e) => { if (e.key === 'Escape') fold(); };
+    const onTap = (e) => { if (!panel.isConnected) return off(); if (!panel.contains(e.target) && !btn.contains(e.target)) fold(); };
+    document.addEventListener('keydown', onKey, true);
+    document.addEventListener('pointerdown', onTap, true);
+  }
   return panel;
 }
