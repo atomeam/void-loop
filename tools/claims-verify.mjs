@@ -42,7 +42,8 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const live = process.argv.includes('--live'), check = process.argv.includes('--check');
   const { chromium } = await import('playwright-core');
   const ledger = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8'));
-  const claims = claimsOf(ledger, await skillExamples());
+  const only = process.env.VOID_CLAIMS_ONLY ? new RegExp(process.env.VOID_CLAIMS_ONLY, 'i') : null; // a quick recheck of some asks
+  const claims = claimsOf(ledger, await skillExamples()).filter((c) => !only || only.test(c.ask));
   let server, site = process.env.VOID_SITE || 'https://a-to-mind.com';
   if (!live) {
     const TYPES = { '.js': 'text/javascript', '.mjs': 'text/javascript', '.html': 'text/html', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml' };
