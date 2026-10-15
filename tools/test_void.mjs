@@ -3261,7 +3261,7 @@ try {
   const hits0 = catalogHits.length; // earlier contexts asked questions (an answer may carry a product line, so they read the catalog)
   const P = await fresh();
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
-  check('a fresh visit is the void: an empty stage and the input, nothing else to click', bare.stage === 0 && !(await P.page()) && bare.links === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic'), JSON.stringify(bare).slice(0, 200));
+  check('a fresh visit is the void: an empty stage and the input, nothing else to click but the faint support link (owner, 2026-10-15)', bare.stage === 0 && !(await P.page()) && bare.links <= 1 && bare.clickable.every((x) => x === 'go' || x === 'mic' || x === 'void-support'), JSON.stringify(bare).slice(0, 200));
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
   check('"what can you do" and the menu open', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg), selfPg.slice(0, 60));
@@ -3518,7 +3518,7 @@ try {
   const cDone = await until(async () => /welcome back|remembered/.test(await C.whisper()) && (await C.whisper()), 10000);
   check('remember me on a device that already has your passkey signs in (no second Void)', !immediate || (/welcome back/.test(cDone) && db().passkeys.size === 1 && (await C.state()).some((x) => x.kind === 'clock')), [immediate, cDone, db().passkeys.size].join(' | '));
   await C.ctx.close();
-  // GUMROAD_URL empty (test override): payments aren't open, so no link at all. Then the tier the server reports.
+  // GUMROAD_URL empty (test override): the ask links to /store/ instead. Then the tier the server reports.
   const D = await fresh({ base: localBase });
   await D.ctx.route(/^http:\/\/localhost:\d+\/(index\.html)?(\?.*)?$/, (r) => r.fulfill({ status: 200, contentType: 'text/html', body: fs.readFileSync(path.join(root, 'index.html'), 'utf8').replace("var GUMROAD_URL = 'https://moonbeam846.gumroad.com/l/yinmj';", "var GUMROAD_URL = '';") }));
   await D.p.reload(); await D.p.waitForTimeout(700);
@@ -3528,7 +3528,7 @@ try {
   const meD = await meOf(D);
   await D.ask('upgrade', 0);
   const dIn = await until(async () => /Paid V01D/.test(await D.whisper()) && (await D.whisper()), 5000);
-  check('paid: with GUMROAD_URL empty, signed-in asks say payments aren\'t open yet (no link, no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid V01D is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · payments aren't open yet" && (await D.p.$$eval('#whisper a', (d) => d.length)) === 0 && !(await D.page()) && D.ctx.pages().length === 1,
+  check('paid: with GUMROAD_URL empty, signed-in asks link to the V01D store instead (owner, 2026-10-15; no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid V01D is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · see the V01D store" && (await D.p.$$eval('#whisper a', (d) => d.map((a) => a.getAttribute('href')).join(','))) === '/store/' && !(await D.page()) && D.ctx.pages().length === 1,
     [dUrl, dIn].join(' | '));
   db().accounts.set(meD.userId, { tier: 'paid' });
   await D.ask('pay', 0); const dPaid = await until(async () => /your V01D is paid/.test(await D.whisper()) && (await D.whisper()), 8000);

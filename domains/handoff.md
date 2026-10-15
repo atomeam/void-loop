@@ -38,6 +38,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - V01D Tube phase 2 (docs/void-tube.md, plan only): user uploads with moderation, channels, Gumroad for creators, comments. Its wishlist rows go into docs/wishlist.md once that file lands on main.
 - V01D's video asks (2026-10-15, docs/void-voice.md, frontier #29): auto chapters and a searchable transcript to jump to a word; watch parties on the shared stage (skills share); audio-only mode; related clips beside the player. Its "offline smart-cache" (pre-downloading) is declined: embed only.
 - Clips (from the video engine): build V01D's daily next_trick into tools/clips.mjs TRICKS and docs/video-tricks.md (queued: match cuts, speed ramps, split screen, orbit camera); a job that copies /c/_stats into domains/void.clips.json visits.
+- Wishlist: copy the three rows at the end of `docs/store.md` (store, creator platform, business email) into `docs/wishlist.md` once #721 merges (they were kept out of #721 because another session was editing that worktree).
+- Store: upload the first paid pack to R2 `store/voidquest-minis-v1.zip` (FILMS bucket) and drop `soon` on `voidquest-minis` in `lib/store.js`.
 - V01D's asks, oldest first (`domains/void.voice.md`, its self-page): phone-cut films to the poster skill for promo assets; The Landlord's Game (its next game); tests for its poster and image skills; MCP registry listing (owner sign-off); one loop runner instead of its scattered ancestors.
 - Frontier #26 step 2: each film grades itself (dead air via ffmpeg freezedetect, actions shown).
 - Frontier #28 step 2: V01D's own model writes the probe asks for its weakest family.

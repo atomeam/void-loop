@@ -28,7 +28,7 @@ export const FAMILIES = [
   { id: 'body', name: 'Body and mind', for: 'sleep, cycles, food, heart and calm', skills: ['sleep', 'ovulation', 'period', 'pregnancy', 'nutrition', 'food', 'heart', 'breath', 'feelings'] },
   { id: 'words', name: 'Words and the world', for: 'definitions, translation, news, books, shows, videos and sport', skills: ['video', 'video-play', 'define', 'words', 'spanish', 'translate', 'news', 'joke', 'recipe', 'swaps', 'film-metadata', 'book', 'show', 'sport', 'pdf-card', 'coral', 'senolytic', 'trialwatch', 'releasenotes'] },
   { id: 'stage', name: 'The stage', for: 'notes, lists, links and how the stage looks and is arranged', skills: ['sticky', 'notepad', 'link', 'kept', 'list', 'tab', 'group', 'layer', 'label', 'dismiss', 'lock', 'light-look', 'dark-look', 'recent', 'showcase'] },
-  { id: 'self', name: 'Void itself', for: 'how Void grows, what it wants, what it can do and sell, and acting on your behalf', skills: ['growth', 'goal', 'intent', 'different', 'memory', 'watch', 'status', 'incident', 'actions', 'automations', 'proposal', 'services', 'share', 'invite', 'local-inference', 'rebuild-map', 'films', 'app'] },
+  { id: 'self', name: 'Void itself', for: 'how Void grows, what it wants, what it can do and sell, and acting on your behalf', skills: ['growth', 'goal', 'intent', 'different', 'memory', 'watch', 'status', 'incident', 'actions', 'automations', 'proposal', 'services', 'store', 'share', 'invite', 'local-inference', 'rebuild-map', 'films', 'app'] },
 ];
 export const TIERS = ['experiment', 'tested', 'checked', 'proven'];
 
