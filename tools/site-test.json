@@ -67,10 +67,12 @@
     },
     {
       "ask": "yo new automation"
+    },
+    {
+      "ask": "what time is it in tokyo"
     }
   ],
   "candidates": [
-    "what time is it in tokyo",
     "weather in boston",
     "convert 5 miles to km",
     "play connect four",
