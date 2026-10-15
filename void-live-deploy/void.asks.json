@@ -110,6 +110,84 @@
       "words": "Add the 'friction' indicator to the growth card to surface underperforming skills.",
       "ledgerAt": "2026-10-13T16:41:06Z",
       "why": "same ask, later wording"
+    },
+    {
+      "ask": "ask-20261014-1642-3",
+      "words": "Create an automated link between a recorded experiment video and the specific skill file that generated it.",
+      "ledgerAt": "2026-10-15T04:36:40Z",
+      "why": "built: each film's metadata links the code it shows (#716, film-metadata)"
+    },
+    {
+      "ask": "ask-20261015-0452-1",
+      "words": "Implement the 'film-metadata' skill to allow structured JSON extraction from film-related inputs.",
+      "ledgerAt": "2026-10-15T04:36:40Z",
+      "why": "built: film-metadata skill (#713/#716)"
+    },
+    {
+      "ask": "ask-20261014-1748-1",
+      "words": "Convert the 'film discovery' logic into a structured skill that can output a JSON object containing film metadata instead of just text.",
+      "ledgerAt": "2026-10-15T04:36:40Z",
+      "why": "built: films as structured JSON (film-metadata)"
+    },
+    {
+      "ask": "ask-20261014-2016-1",
+      "words": "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotional layouts for any film segment created.",
+      "ledgerAt": "2026-10-15T05:43:43Z",
+      "why": "built: poster skill reads film metadata and draws a 1080x1920 phone story"
+    },
+    {
+      "ask": "ask-20261015-0556-2",
+      "words": "Link the 'phone-cut films' skill to the 'poster' skill to automate promotional asset creation.",
+      "ledgerAt": "2026-10-15T05:43:43Z",
+      "why": "built: same as the poster skill"
+    },
+    {
+      "ask": "ask-20261015-0442-3",
+      "words": "Link the 'phone-cut films' skill to the 'poster' skill to allow for automatic promotional generation.",
+      "ledgerAt": "2026-10-15T05:43:43Z",
+      "why": "built: same as the poster skill"
+    },
+    {
+      "ask": "ask-20261015-0549-1",
+      "words": "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotion assets for newly discovered videos.",
+      "ledgerAt": "2026-10-15T05:43:43Z",
+      "why": "built: same as the poster skill"
+    },
+    {
+      "ask": "ask-20261014-1648-2",
+      "words": "Create a direct pipeline from browser-based video recordings to GitHub release assets to automate 'Void's films'.",
+      "ledgerAt": "2026-10-14T16:28:00Z",
+      "why": "built: every film is posted as a GitHub Release with its MP4"
+    },
+    {
+      "ask": "ask-20261014-1632-1",
+      "words": "Automate the 'Void's films' process so that recorded MP4s are automatically prepared as GitHub release assets or posted to a dedicated stage URL.",
+      "ledgerAt": "2026-10-14T16:28:00Z",
+      "why": "built: films as GitHub Releases and on /films/"
+    },
+    {
+      "ask": "ask-20261014-1948-2",
+      "words": "Implement a 'rendered' state signal for the new body-related 3D miniatures to confirm they are visually ready for the user.",
+      "ledgerAt": "2026-10-14T21:52:26Z",
+      "why": "built: one rendered signal for every 3D mini (data-rendered)"
+    },
+    {
+      "ask": "ask-20261014-2016-2",
+      "words": "Implement the 'rendered' state signal for the new 'Horse and donkey' game cards to ensure they are interactive immediately upon appearing.",
+      "ledgerAt": "2026-10-14T21:52:26Z",
+      "why": "built: one rendered signal for every 3D mini"
+    },
+    {
+      "ask": "ask-20261014-1904-3",
+      "words": "Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks can confirm they are visually ready.",
+      "ledgerAt": "2026-10-14T21:52:26Z",
+      "why": "built: one rendered signal for every 3D mini"
+    },
+    {
+      "ask": "ask-20261014-2348-1",
+      "words": "Create a persistent 'world-clock' card that allows users to pin multiple locations and see their time offsets relative to each other.",
+      "ledgerAt": "2026-09-29T15:19:11Z",
+      "why": "built: world clock card for several places"
     }
   ]
 }
