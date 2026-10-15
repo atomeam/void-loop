@@ -104,6 +104,20 @@ jobs:
         if: failure() && steps.test.outcome == 'failure'
         run: node tools/revert-target.mjs --annotate test-output.txt || true
 
+      - name: Write the incident (asked by Void; skills/incident.js shows it as "what broke lately")
+        if: failure() && steps.test.outcome == 'failure'
+        run: |
+          node tools/incident-log.mjs record "$(git rev-parse HEAD)" "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" test-output.txt || true
+          if ! git diff --quiet void-live-deploy/incidents.json; then
+            cp void-live-deploy/incidents.json /tmp/incidents.json
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git fetch -q origin main && git checkout -q -B main origin/main
+            cp /tmp/incidents.json void-live-deploy/incidents.json
+            git add void-live-deploy/incidents.json && git commit -q -m "Incident: the browser suite failed on $(git rev-parse --short HEAD@{1} 2>/dev/null || echo main) (void-live-deploy/incidents.json)" && git push -q origin main || echo "::warning title=Incident not recorded::could not push incidents.json to main"
+            git checkout -q - 2>/dev/null || true
+          fi
+
       - name: Red after the deploy - revert the commit that broke it, on main, and deploy again
         if: failure() && steps.test.outcome == 'failure'
         env:
