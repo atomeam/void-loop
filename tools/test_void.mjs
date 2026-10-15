@@ -902,6 +902,29 @@ try {
     check('country card: the time there now, from the built-in zones, with or without REST Countries ("population of Japan" with the service down shows Tokyo\'s clock)',
       clock.test(down) && /built-in list/.test(down) && clock.test(up) && /Time/.test(up) && K.errors.length === 0, down.slice(0, 200) + ' | ' + up.slice(0, 200));
     await K.ctx.close(); }
+  // A deadline chain (skills/deadlines.js): each deadline's date in your zone, time left or since, its state, a "mark met" kept in
+  // this browser, and the card keeping itself current. The clock is faked to Thursday 2026-10-15 10:30 so the states are fixed.
+  if (want('deadlines: a chain from one start, each with its date, time left and state; mark met stays; it updates every minute')) { const D = await fresh();
+    await D.p.clock.install({ time: new Date(2026, 9, 15, 10, 30) });
+    const rows = () => D.p.$$eval('.vpage.on .dl-row', (r) => r.map((x) => ({ s: x.dataset.state, t: x.innerText.replace(/\s+/g, ' ') })));
+    await D.ask('when are my deadlines if it started monday 9am: 1 day, 3 days, 2 weeks, 1 month', 900);
+    await until(async () => (await rows()).length === 4, 12000); const mon = await rows(), head = await D.page();
+    await D.p.click('.vpage.on .dl-row[data-i="2"] .dl-met'); await D.p.waitForTimeout(150);
+    const marked = (await rows())[2].s, pressed = await D.p.$eval('.vpage.on .dl-row[data-i="2"] .dl-met', (b) => b.getAttribute('aria-pressed'));
+    await D.ask('when are my deadlines if it started monday 9am: 1 day, 3 days, 2 weeks, 1 month', 900); const kept = (await rows())[2];
+    await D.ask('reporting deadlines from 2026-10-15 14:00', 900); const rep = await rows(), repPage = await D.page();
+    await D.ask('deadline chain from today: 24 hours, 72 hours, 14 days', 900); const today = await rows();
+    await D.p.clock.fastForward('22:00:00'); // 2 hours before the first one: under a tenth of its 24-hour window
+    await until(async () => (await rows())[0].s === 'soon', 4000); const later = await rows(), cap = await D.p.$eval('.vpage.on .vlive', (e) => e.textContent).catch(() => '');
+    check('deadlines: a chain from one start, each with its date, time left and state; mark met stays; it updates every minute ("started monday 9am: 1 day, 3 days, 2 weeks, 1 month")',
+      mon.map((r) => r.s).join() === 'passed,passed,pending,pending' && /Oct 13.*9:00/.test(mon[0].t) && /ago/.test(mon[0].t) && /Nov 12.*9:00/.test(mon[3].t) && /in \d+ days/.test(mon[3].t)
+      && /Deadlines/.test(head) && /From Mon, Oct 12, 2026, 9:00/.test(head) && /just the dates/.test(head)
+      && marked === 'met' && pressed === 'true' && kept.s === 'met' && /undo/.test(kept.t)
+      && rep.length === 4 && /1 month/.test(rep[3].t) && /Nov 15.*2:00/.test(rep[3].t) && /the common chain/.test(repPage)
+      && today.length === 3 && today.every((r) => r.s === 'pending') && /in (?:1 day|23 h 5\d min)/.test(today[0].t)
+      && later[0].s === 'soon' && /in (?:2 h|1 h 5\d min)/.test(later[0].t) && later[1].s === 'pending' && /refreshes every 1 min/.test(cap) && !D.errors.length,
+      JSON.stringify({ mon, marked, pressed, kept, rep: rep.map((r) => r.t), today: today.map((r) => r.s + ' ' + r.t), later: later.map((r) => r.s + ' ' + r.t), cap, errs: D.errors }).slice(0, 1500));
+    await D.ctx.close(); }
   // World clock, translation copy and MyMemory's matches, skill files cached for a minute, and a 390px phone.
   if (want("World clock, translation copy and MyMemory's matches, skill files cached for a minute, and")) { const C = await fresh(); await C.ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: new URL(base).origin });
     await C.ctx.route(/geocoding-api\.open-meteo\.com/, (r) => { const u = r.request().url();

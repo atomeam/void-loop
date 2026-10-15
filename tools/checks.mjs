@@ -79,6 +79,7 @@ for (const [name, file] of [
   ['revert-target', 'revert-target.test.mjs'],
   ['status', 'status.test.mjs'],
   ['growth', 'growth.test.mjs'],
+  ['deadlines', 'deadlines.test.mjs'],
   ['growth-tree', 'growth-tree.test.mjs'],
   ['review-learn', 'review-learn.test.mjs'],
   ['bench-floor', 'bench-floor.test.mjs'],
