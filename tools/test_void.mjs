@@ -2422,34 +2422,35 @@ try {
       && /forget me/.test(txt) && /atom@a-to-mind\.com/.test(txt) && !wide && !P.errors.length, JSON.stringify({ wide, errors: P.errors, head: txt.slice(0, 120) }));
     await P.ctx.close(); }
 
-  // Void's films, for people who pay (owner, 2026-10-14: "just put void films right onto the sight , with only paid access"):
-  // /films/ asks /api/films with the visitor's credential; a stranger gets the members-only gate (and can paste a key), a member
-  // gets the films, and the owner also gets download, upload to YouTube and the words to copy
-  if (want("films page: members watch, the owner gets the YouTube steps, a stranger meets the members-only gate")) {
+  // Void's films (owner, 2026-10-14: "just put void films right onto the sight"; 2026-10-15: "anyone should be able to at least watch
+  // the films those are our ads"): a stranger watches and is asked to sign in only to review (a key still works), a member gets the
+  // review box, and the owner also gets download, upload to YouTube and the words to copy
+  if (want("films page: anyone watches, a member reviews, the owner gets the YouTube steps")) {
     const F = await fresh(); await F.p.setViewportSize({ width: 390, height: 844 });
     const film = { id: '20261014-x-r6', at: '2026-10-14T16:33:31Z', title: 'Odd moments | an AI built this itself #Shorts', description: 'Log each odd moment.\n\nTry it: https://a-to-mind.com', tags: 'Void, AI', bytes: 1135255, src: '/api/films?id=20261014-x-r6&exp=9999999999&sig=abc' };
     const seen = [];
     await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => {
       const auth = r.request().headers().authorization || ''; seen.push(auth);
       if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
-      if (auth === 'Bearer owner-tok') return r.fulfill(json({ films: [film], owner: true }));
-      if (auth === 'Bearer vr1.' + 'A'.repeat(43)) return r.fulfill(json({ films: [film], owner: false }));
-      return r.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'pay', buy: 'https://a-to-mind.com/code-review/#pro' }) });
+      if (auth === 'Bearer owner-tok') return r.fulfill(json({ films: [film], owner: true, member: true }));
+      if (auth === 'Bearer vr1.' + 'A'.repeat(43)) return r.fulfill(json({ films: [film], owner: false, member: true }));
+      return r.fulfill(json({ films: [film], owner: false, member: false, buy: 'https://a-to-mind.com/code-review/#pro' }));
     });
     await F.p.goto(base + 'films/'); await until(async () => F.p.$eval('#gate', (e) => e.classList.contains('on')), 5000);
-    const gate = await F.p.evaluate(() => ({ on: document.getElementById('gate').classList.contains('on'), films: document.querySelectorAll('#films .film').length, text: document.getElementById('gate').innerText }));
-    await F.p.click('#gate details.key summary'); await F.p.fill('#key', 'vr1.' + 'A'.repeat(43)); await F.p.click('#keyform button');
     await until(async () => (await F.p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
-    const member = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'), yt: !!a.querySelector('a.yt'), gate: document.getElementById('gate').classList.contains('on') }; });
+    const gate = await F.p.evaluate(() => ({ on: document.getElementById('gate').classList.contains('on'), films: document.querySelectorAll('#films .film').length, review: !!document.querySelector('#films .review'), video: !!document.querySelector('#films .film video[src]'), text: document.getElementById('gate').innerText, join: document.getElementById('join').href }));
+    await F.p.click('#gate details.key summary'); await F.p.fill('#key', 'vr1.' + 'A'.repeat(43)); await F.p.click('#keyform button');
+    await until(async () => !!(await F.p.$('#films .review')), 5000);
+    const member = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'), yt: !!a.querySelector('a.yt'), review: !!a.querySelector('.review'), gate: document.getElementById('gate').classList.contains('on') }; });
     await F.p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'owner-tok'); }); await F.p.reload();
     await until(async () => !!(await F.p.$('#films .film a.yt')), 5000);
     const card = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return a && { yt: a.querySelector('a.yt').href, dl: a.querySelector('a[download]').getAttribute('href'),
       btns: [...a.querySelectorAll('.body > .row button')].map((b) => b.textContent), wide: document.documentElement.scrollWidth > innerWidth }; });
     await F.ctx.grantPermissions(['clipboard-read', 'clipboard-write']);
     await F.p.click('#films .film button:nth-of-type(2)'); const copied = await F.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
-    check('films page: members watch, the owner gets the YouTube steps, a stranger meets the members-only gate',
-      gate.on && gate.films === 0 && /Members only/.test(gate.text) && seen[0] === ''
-      && member.h === film.title && member.src === film.src && !member.yt && !member.gate
+    check('films page: anyone watches, a member reviews, the owner gets the YouTube steps',
+      gate.on && gate.films === 1 && gate.video && !gate.review && /Review the films/.test(gate.text) && !/Members only/.test(gate.text) && gate.join === 'https://a-to-mind.com/code-review/#pro' && seen[0] === ''
+      && member.h === film.title && member.src === film.src && !member.yt && member.review && !member.gate
       && !!card && card.yt === 'https://www.youtube.com/upload' && card.dl === film.src && JSON.stringify(card.btns) === '["3. Copy title","Copy description","Copy tags"]'
       && copied === film.description && !card.wide && !F.errors.length, JSON.stringify({ gate, member, card, copied, seen, errors: F.errors }));
     await F.ctx.close(); }
@@ -2463,8 +2464,8 @@ try {
     await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => {
       if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
       return r.request().headers().authorization === 'Bearer owner-tok'
-        ? r.fulfill(json({ owner: true, films: [film({ counts: { post: 1, fix: 1, skip: 0 }, mine: null, notes: [{ by: 'member', verdict: 'fix', note: 'Cut the first 3 seconds.' }] })] }))
-        : r.fulfill(json({ owner: false, films: [film({ counts: { post: 1, fix: 0, skip: 0 }, mine: null })] }));
+        ? r.fulfill(json({ owner: true, member: true, films: [film({ counts: { post: 1, fix: 1, skip: 0 }, mine: null, notes: [{ by: 'member', verdict: 'fix', note: 'Cut the first 3 seconds.' }] })] }))
+        : r.fulfill(json({ owner: false, member: true, films: [film({ counts: { post: 1, fix: 0, skip: 0 }, mine: null })] }));
     });
     await F.ctx.route(/\/api\/film-review$/, (r) => { sent.push({ auth: r.request().headers().authorization, body: JSON.parse(r.request().postData() || '{}') }); return r.fulfill(json({ ok: true })); });
     await F.p.goto(base + 'films/'); await F.p.evaluate(() => sessionStorage.setItem('a2m.void.filmkey', 'vr1.' + 'A'.repeat(43))); await F.p.reload();
@@ -2501,16 +2502,16 @@ try {
     const film = { id: '20261014-x-r6', at: '2026-10-14T16:33:31Z', title: 'Odd moments', description: 'd', tags: '', bytes: 1, src: '/api/films?id=20261014-x-r6&exp=9999999999&sig=abc', reviews: null };
     await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => { const a = r.request().headers().authorization || ''; seen.push(a);
       if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
-      if (a === 'Bearer vo1.fresh' || a === 'Bearer paid-acct') return r.fulfill(json({ owner: a === 'Bearer vo1.fresh', films: [film] }));
-      return r.fulfill({ status: 401, contentType: 'application/json', body: '{"ok":false,"buy":"/code-review/#pro"}' }); });
+      if (a === 'Bearer vo1.fresh' || a === 'Bearer paid-acct') return r.fulfill(json({ owner: a === 'Bearer vo1.fresh', member: true, films: [film] }));
+      return r.fulfill(json({ ok: true, owner: false, member: false, films: [film], buy: '/code-review/#pro' })); });
     const pk = [];
     await F.ctx.route(/\/api\/passkey$/, (r) => { const b = JSON.parse(r.request().postData() || '{}'); pk.push(b.step);
       return r.fulfill(json(b.step === 'get-options' ? { publicKey: { challenge: 'AAAA', rpId: '127.0.0.1', allowCredentials: [] } } : { ok: true, token: 'acct-tok', userId: 'u1', owner: { token: 'vo1.fresh', expires: '2026-11-13' } })); });
-    // 1) a stale owner session and a paid account: the account opens the films
+    // 1) a stale owner session and a paid account: the account is the one kept for reviewing
     await p.goto(base + 'films/'); await p.evaluate(() => { localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); localStorage.setItem('a2m.void.me.v1', JSON.stringify({ token: 'paid-acct' })); }); await p.reload();
-    await until(async () => (await p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
+    await until(async () => !!(await p.$('#films .review')), 5000);
     const fell = { films: await p.$$eval('#films .film', (d) => d.length), order: seen.slice(-3) };
-    // 2) nothing that works: the gate, then the passkey button signs the owner in and the YouTube steps appear
+    // 2) nothing that works: the films still play, the panel asks to sign in to review, then the passkey button signs the owner in
     await p.evaluate(() => { localStorage.clear(); sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); }); await p.reload();
     await until(async () => p.$eval('#gate', (e) => e.classList.contains('on')), 5000);
     const why = await p.$eval('#status', (e) => e.textContent);

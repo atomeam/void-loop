@@ -24,9 +24,18 @@ const OWN_KEYS = [/\bvr1\.[A-Za-z0-9_-]{43}\b/g, /\b[A-Z0-9]{8}(?:-[A-Z0-9]{8}){
 export const clean = (t, max) => OWN_KEYS.reduce((x, re) => x.replace(re, '[redacted key]'), redact(String(t || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim())).slice(0, max);
 
 /** who is asking: { owner: true } | { who } for someone who pays | null */
+export async function ownerAccount(env, userId) {
+  if (!env.DB || !userId) return false;
+  const row = await env.DB.prepare('SELECT o.id FROM void_owner_passkeys o JOIN void_passkeys p ON p.id = o.id WHERE p.user_id = ? LIMIT 1').bind(userId).first().catch(() => null); // void-review: ok (bound parameter)
+  return !!row;
+}
 export async function payer(request, env) {
   if (await ownerOk(request, env)) return { owner: true, who: 'owner' };
   const s = await session(request, env).catch(() => null); // a signed-in account first, so its token never reaches access()'s log as an unknown key
+  // the owner is an account (functions/api/passkey.js ownerFor): a signed-in session of the account whose passkey was bound as the
+  // owner's is the owner here too, so the owner gets in on any device already signed in (owner, 2026-10-15: "i need to be let
+  // into the owners access", with the phone that holds the passkey dead)
+  if (s && await ownerAccount(env, s.userId)) return { owner: true, who: 'owner' };
   if (s) return (await tierOf(env, s.userId)) === 'paid' ? { who: 'acct:' + s.userId } : null;
   const a = await access(request, env).catch(() => null);
   return a && a.tier === 'pro' && a.who ? { who: a.who } : null;
