@@ -53,6 +53,10 @@
         "selector": ".thing"
       },
       "note": "weak-answer queue (paraphrase): a pasted note about V01D's own systems got only a list of run times; it should answer the substance, times as an aside"
+    },
+    {
+      "ask": "start despacito",
+      "taught": "video-play"
     }
   ],
   "candidates": [
@@ -79,11 +83,6 @@
     },
     {
       "ask": "can we play despacito",
-      "means": "play despacito",
-      "feature": "skill:video-play"
-    },
-    {
-      "ask": "start despacito",
       "means": "play despacito",
       "feature": "skill:video-play"
     }
