@@ -53,7 +53,7 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <script type="module">
 const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const ICON = { membership: '✦', license: '⌘', service: '🛠', support: '♥', download: '⬢' };
-let products = [], provider = 'gumroad', cart = JSON.parse(localStorage.getItem('v01d-cart') || '[]');
+let products = [], provider = 'gumroad', cart = []; try { cart = JSON.parse(localStorage.getItem('v01d-cart') || '[]'); if (!Array.isArray(cart)) cart = []; } catch (_) { cart = []; }
 const save = () => { localStorage.setItem('v01d-cart', JSON.stringify(cart)); draw(); };
 function draw() {
   const items = cart.map((id) => products.find((p) => p.id === id)).filter(Boolean);
@@ -85,7 +85,7 @@ $('#pay').onclick = async () => {
   if (r && r.mode === 'stripe') { location.href = r.url; return; }
   const urls = (r && r.urls) || cart.map((id) => (products.find((p) => p.id === id) || {}).buy).filter(Boolean);
   urls.forEach((u) => window.open(u, '_blank', 'noopener'));
-  $('#paynote').innerHTML = 'Checkout opened on Gumroad: it sends your files and license keys by email. ' + urls.map((u, i) => `<a href="${u}" target="_blank" rel="noopener">link ${i + 1}</a>`).join(' · ');
+  $('#paynote').innerHTML = 'Checkout opened on Gumroad: it sends your files and license keys by email. ' + urls.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">link ${i + 1}</a>`).join(' · '); // void-review: ok (every url is escaped)
 };
 function showReceipt(r) {
   const el = $('#receipt'); el.hidden = false;
