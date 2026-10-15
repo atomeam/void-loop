@@ -55,5 +55,7 @@
   {"check": "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the", "sha": "16e592fd9ef484b4b74d634ea42f5417876ba67b", "at": "2026-10-15T06:23:16Z"},
   {"check": "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wa", "sha": "16e592fd9ef484b4b74d634ea42f5417876ba67b", "at": "2026-10-15T06:23:16Z"},
   {"check": "pdf card: \"ask questions about a pdf\" opens a card with a file chooser that says nothing leaves the device; a file that is not a PDF says why (as an alert); a r", "sha": "16e592fd9ef484b4b74d634ea42f5417876ba67b", "at": "2026-10-15T06:23:16Z"},
-  {"check": "suite ran to the end", "sha": "16e592fd9ef484b4b74d634ea42f5417876ba67b", "at": "2026-10-15T06:23:16Z"}
+  {"check": "suite ran to the end", "sha": "16e592fd9ef484b4b74d634ea42f5417876ba67b", "at": "2026-10-15T06:23:16Z"},
+  {"check": "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others ", "sha": "705796a843cddb38fa46beb6b1d5e3e75256fb67", "at": "2026-10-15T17:02:23Z"},
+  {"check": "rack: \"what games do you have\" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, ring", "sha": "705796a843cddb38fa46beb6b1d5e3e75256fb67", "at": "2026-10-15T17:02:23Z"}
 ]

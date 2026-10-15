@@ -62,11 +62,20 @@ export function pick(entries, n = 5, verified = null, pending = null) {
   for (const e of entries) {
     const p = playable(e);
     if (!p || asks.has(CLEAN(p.ask))) continue;
-    if (verified && !verified.has(CLEAN(p.ask))) { asks.add(CLEAN(p.ask)); if (pending) pending.push(p); continue; }
+    if (verified && !verified.has(CLEAN(p.ask))) { asks.add(CLEAN(p.ask)); if (pending) pending.push({ ...p, at: e.at }); continue; }
     asks.add(CLEAN(p.ask)); out.push({ ...p, at: e.at });
     if (out.length >= n) break;
   }
   return out;
+}
+
+/** how far the ledger counts as seen once what is ready has been offered: the newest `at`, but never past a build still
+ *  waiting for its live check (`pending` from pick), so it is offered once it answers instead of being marked seen unshown
+ *  (2026-10-15: every fresh build was unverified on the first visit after it, so "while you were away" went quiet). Pure. */
+export function seenUpTo(entries, seen = '', pending = []) {
+  const held = (pending || []).map((p) => p && p.at).filter((a) => typeof a === 'string').sort()[0];
+  if (!held) return newestAt(entries);
+  return (Array.isArray(entries) ? entries : []).reduce((m, e) => (e && typeof e.at === 'string' && e.at < held && e.at > m ? e.at : m), seen || '');
 }
 
 /** the newest `at` in the ledger. Pure. */
@@ -175,8 +184,8 @@ export async function nudge(stageApi, note) {
   if (!seen) { write(SEEN_KEY, new Date().toISOString().replace(/\.\d+Z$/, 'Z')); return 0; }
   let list = [];
   try { list = await ledger(); } catch (_) { return 0; }
-  const steps = pick(sinceLast(list, seen), 5, await verifiedSet());
-  const newest = newestAt(list);
+  const pending = [], steps = pick(sinceLast(list, seen), 5, await verifiedSet(), pending);
+  const newest = seenUpTo(list, seen, pending); // a build still waiting for its live check stays unseen
   if (!steps.length) { if (newest > seen) write(SEEN_KEY, newest); return 0; }
   if (!note) return steps.length;
   const n = steps.length;
@@ -200,7 +209,7 @@ async function run(text, api) {
   const steps = fresh.length ? fresh : pick(sinceLast(list), 5, V, pending);
   const wip = pending.length ? ' · ' + pending.length + ' more in progress (not answering yet)' : '';
   if (!steps.length) { api.say('nothing new to show yet' + wip); return 'none'; }
-  start(stageApi, steps, { label: (fresh.length ? 'Built while you were away' : 'Built lately') + wip, newest: newestAt(list) });
+  start(stageApi, steps, { label: (fresh.length ? 'Built while you were away' : 'Built lately') + wip, newest: seenUpTo(list, seen, pending) });
   return 'showcase';
 }
 

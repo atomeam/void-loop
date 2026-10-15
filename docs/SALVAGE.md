@@ -86,3 +86,9 @@ The workflows that only run by hand (`cf-scope.yml`, `model-bench.yml`, `rehears
 
 - **sky-weather, time, dates** (`lib/skill-family.js`): 20 skills folded into 3 routing entries. Nothing retired and nothing lost: every member file stays as a part of its family, with its examples, near misses and tests, and the page still logs each by its own name. Then `sky-weather` folded into `time` (one family for time, weather and sky); its file only grouped imports and is gone. If a family is ever undone, give each member its old order file back (ranks in git history of `void-live-deploy/skills/order/`).
 
+
+## Built, held back (2026-10-15)
+
+| What | Where it is | Why held | Could become |
+| --- | --- | --- | --- |
+| A Pro / Human switch for how V01D plays checkers, connect four and othello (V01D's ask): Human picks a good move a person would see, with its reason, not always the best | commit 78e86af1 (`skills/playstyle.js`, `humanMove` in `checkers-rules.js`, a `style` option on the connect-four and othello move pickers, its browser section) | main already has one strength for every game (`skills/game-level.js`, easy / normal / hard, the owner's "board games can all be combined"); a second switch on three games would compete with it | how the easy and normal levels slip: a plausible human move instead of a random legal one, inside `levelPick`, for every game at once |

@@ -102,3 +102,25 @@ test('a pasted update about my own routine is news about me, not a time list', a
   let html = ''; const out = await (await import('../void-live-deploy/skills/status.js')).default.run(paste, { showPage: (b) => { const p = {}; b(p); html = p.innerHTML; return p; }, esc: (s) => String(s) });
   assert.equal(out, 'self-news'); assert.match(html, /News about me/); assert.ok(html.indexOf('My take') < html.indexOf('runs a day'));
 });
+
+// the other half of Void's ask (five times): an action Void took for the owner that failed opens the status card by itself
+test('a failed action in the last day opens the status card for the owner and is listed on it; old or done ones are not', async () => {
+  const { failedActions, autoOpen, statusHtml } = await import('../void-live-deploy/skills/status.js');
+  const now = Date.parse('2026-10-15T12:00:00Z');
+  const rows = [{ id: 'a1', kind: 'email.send', ref: 'to jane', state: 'failed', error: 'SMTP refused', started: '2026-10-15T11:00:00Z', finished: '2026-10-15T11:00:02Z' },
+    { id: 'a2', kind: 'order.place', ref: '', state: 'done', result: 'ok', started: '2026-10-15T10:00:00Z', finished: '2026-10-15T10:00:01Z' },
+    { id: 'a3', kind: 'watch.check', ref: 'Oslo', state: 'failed', error: 'old', started: '2026-10-13T10:00:00Z', finished: '2026-10-13T10:00:01Z' }];
+  const fetchFn = async (u) => /\/api\/actions/.test(String(u)) ? new Response(JSON.stringify({ actions: rows }), { status: 200 })
+    : /api\.github\.com/.test(String(u)) ? new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: 'success', head_sha: 'abc1234', created_at: '2026-10-15T11:50:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200 })
+    : new Response(JSON.stringify({ open: 0, tickets: [] }), { status: 200 });
+  const f = await failedActions(fetchFn, 'owner', now);
+  assert.deepEqual(f.map((a) => a.id), ['a1']); assert.equal(f[0].error, 'SMTP refused'); assert.equal(f[0].at, '2026-10-15 11:00');
+  assert.equal(await failedActions(fetchFn, '', now), null, 'a visitor has no key and sees nothing');
+  assert.equal(await failedActions(async () => new Response('no', { status: 401 }), 'owner', now), null);
+  const h = statusHtml((x) => String(x), { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '', null, null, f);
+  assert.match(h, /1 failed in the last day/); assert.match(h, /email\.send/); assert.match(h, /SMTP refused/);
+  assert.match(statusHtml((x) => String(x), { ok: 1, total: 1, missing: [] }, [], null, '', null, null, []), /none failed in the last day/);
+  globalThis.localStorage = { getItem: () => 'owner' };
+  try { let opened = false; assert.equal(await autoOpen(async () => { opened = true; }, { fetchFn, store: null, now }), true); assert.ok(opened, 'a green build, no report, one failed action: the card opens'); }
+  finally { delete globalThis.localStorage; }
+});

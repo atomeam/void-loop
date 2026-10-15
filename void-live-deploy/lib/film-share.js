@@ -29,3 +29,15 @@ export function shareWords(film, platform = 'youtube') {
   else description = [`${CTA} ${link}`, '', body, '', SHARE, '', tags.join(' ')].join('\n').replace(/\n{3,}/g, '\n\n').slice(0, P.max);
   return { title, description, tags: tags.join(' '), link, upload: P.upload, all: (platform === 'x' ? description : title + '\n\n' + description) };
 }
+
+/** the name a downloaded film is saved under: its own title, so YouTube's default title is the experiment's question and not
+ *  the raw id (owner, 2026-10-15: titles came out as "20261015 attention 7 r19"). "?" becomes the full-width "？" (YouTube shows a
+ *  question mark), "|" becomes "-", the other characters a file name cannot hold on common systems are dropped, at most 100
+ *  characters before ".mp4". No title (or nothing left of it): the id. Pure. */
+export function fileName(film) {
+  const f = film || {};
+  const t = String(f.title || '').replace(/\s+/g, ' ').replace(/\?/g, '\uFF1F').replace(/\|/g, '-').replace(/[<>:"/\\*\u0000-\u001f\u007f]/g, '')
+    .replace(/ {2,}/g, ' ').trim();
+  const cut = Array.from(t).slice(0, 100).join('').trim().replace(/[. ]+$/, ''); // whole characters; no trailing dot or space (Windows drops them)
+  return (cut || String(f.id || 'V01D film')) + '.mp4';
+}

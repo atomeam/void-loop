@@ -3,7 +3,7 @@
  "totals": {
   "experiment": 1,
   "tested": 53,
-  "checked": 15,
+  "checked": 17,
   "proven": 84
  },
  "families": [
@@ -363,7 +363,7 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 0,
+    "checked": 1,
     "proven": 6
    },
    "skills": [
@@ -416,6 +416,11 @@
      "name": "routine",
      "tier": "proven",
      "why": "5 browser-suite mentions, 5 real asks in the benchmark"
+    },
+    {
+     "name": "deadlines",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions"
     }
    ]
   },
@@ -802,7 +807,7 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 2,
+    "checked": 3,
     "proven": 14
    },
    "skills": [
@@ -900,6 +905,11 @@
      "name": "app",
      "tier": "proven",
      "why": "3 browser-suite mentions, 3 real asks in the benchmark"
+    },
+    {
+     "name": "family-health",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions"
     }
    ]
   }

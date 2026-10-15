@@ -63,3 +63,18 @@ console.log('record: ok');
   assert.ok(w.description.includes('How it is built: ' + sourceOf('miss-board-4')), 'the link is in the words a viewer reads');
   for (const x of toolList().filter((t) => /-\d+$/.test(t.id))) assert.ok(readFileSync(new URL('../void-live-deploy/fringe/' + x.id + '.html', import.meta.url)), 'every lab film links to a file that exists: ' + x.id);
 }
+
+// the payoff a viewer can check (2026-10-15): a "what it found" card with the run's own first finding, only when the ledger has one
+{
+  const { findingOf, FINDING_MAX } = await import('./record.mjs');
+  assert.equal(s.finding, 'about 40% unseen', 'the first finding, word for word');
+  assert.equal(script({ id: 'x-1', label: 'X', sub: 'A line.' }, null).finding, '', 'no run: no card');
+  assert.equal(script({ id: 'x-1', label: 'X', sub: 'A line.' }, { findings: [] }).finding, '', 'no findings: no card');
+  assert.equal(script({ id: 'x-1', label: 'X', sub: 'y' }, { findings: ['Void misses 3 of 10 asks.', 'second'] }).finding, 'V01D misses 3 of 10 asks.', 'branded, the first only');
+  const long = 'The cue sped answers up when it pointed the right way. It slowed them down when it pointed the wrong way, every sitting, for every one of the people who tried it.';
+  assert.equal(findingOf({ findings: [long] }), 'The cue sped answers up when it pointed the right way.', 'too long: its first sentence');
+  const one = 'word '.repeat(40).trim(), f = findingOf({ findings: [one] });
+  assert.ok(f.length <= FINDING_MAX && f.endsWith('…') && one.startsWith(f.slice(0, -1)), 'no sentence fits: cut at a word, marked with an ellipsis, nothing added: ' + f);
+  // zero-lie: nothing on the card that the ledger does not hold, and no card for a run with no findings
+  for (const [card, src] of [[s.finding, 'about 40% unseen'], [f.slice(0, -1), one]]) assert.ok(src.startsWith(card), card);
+}

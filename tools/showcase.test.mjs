@@ -62,3 +62,28 @@ test('the site shows the owner\'s words as he meant them, spelled right; a quote
     assert.ok(!lineOf('Will made real (the owner: "' + bad + '"): more').includes(bad));
   }
 });
+
+test('a build still waiting for its live check is held back, not marked seen unshown (2026-10-15: "while you were away" went quiet)', async () => {
+  const { seenUpTo } = await import('../void-live-deploy/skills/showcase.js');
+  const L = [
+    { at: '2026-10-14T10:00:00Z', kind: 'grow', what: 'Old thing: shown already', try: 'old thing' },
+    { at: '2026-10-15T09:00:00Z', kind: 'grow', what: 'Ready thing: answers live', try: 'ready thing' },
+    { at: '2026-10-15T11:00:00Z', kind: 'grow', what: 'Fresh thing: not checked live yet', try: 'fresh thing' },
+    { at: '2026-10-15T12:00:00Z', kind: 'idea', what: 'an idea line' },
+  ];
+  const seen = '2026-10-14T12:00:00Z';
+  // the fresh build is not verified yet: it is pending, and seen stops just before it
+  const pending = [], steps = pick(sinceLast(L, seen), 5, new Set(['ready thing']), pending);
+  assert.deepEqual(steps.map((s) => s.ask), ['ready thing']);
+  assert.deepEqual(pending.map((p) => [p.ask, p.at]), [['fresh thing', '2026-10-15T11:00:00Z']]);
+  assert.equal(seenUpTo(L, seen, pending), '2026-10-15T09:00:00Z');
+  // nothing ready at all: seen does not move, so the fresh build is offered once it is checked
+  const p2 = [], s2 = pick(sinceLast(L, seen), 5, new Set(), p2);
+  assert.equal(s2.length, 0);
+  assert.equal(seenUpTo(L, seen, p2), seen);
+  // the next visit, after the live check passed: the fresh build is offered
+  const s3 = pick(sinceLast(L, seenUpTo(L, seen, p2)), 5, new Set(['ready thing', 'fresh thing']));
+  assert.deepEqual(s3.map((s) => s.ask), ['fresh thing', 'ready thing']);
+  // nothing pending: seen goes to the newest line, as before
+  assert.equal(seenUpTo(L, seen, []), newestAt(L));
+});

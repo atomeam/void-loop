@@ -38,6 +38,18 @@ export const brand = (t) => String(t || '').replace(/\bVoid\b/g, 'V01D');
 // experiment video and its corresponding skill file in the repository"). Pure.
 export const REPO = 'https://github.com/atomeam/void-loop/blob/main/';
 export const sourceOf = (id) => REPO + 'void-live-deploy/fringe/' + String(id) + '.html';
+// the payoff a viewer can check (2026-10-15): before the ending, one card with the run's own first finding from the fringe ledger,
+// shortened to what fits on the card (the first sentence when it fits, else cut at a word with "…"); none when the ledger has none.
+// Never a word or a number the ledger does not hold. Pure.
+export const FINDING_MAX = 90, FINDING_MS = 2400;
+export function findingOf(run) {
+  const f = run && Array.isArray(run.findings) && run.findings.length ? String(run.findings[0] || '').replace(/\s+/g, ' ').trim() : '';
+  if (f.length <= FINDING_MAX) return f;
+  const first = (f.match(/^.+?[.!?](?=\s)/) || [''])[0];
+  if (first && first.length <= FINDING_MAX) return first;
+  const cut = f.slice(0, FINDING_MAX - 1), sp = cut.lastIndexOf(' ');
+  return (sp > FINDING_MAX / 2 ? cut.slice(0, sp) : cut).replace(/[\s,;:.\-]+$/, '') + '…';
+}
 export function script(tool0, run0) {
   const tool = { ...tool0, label: brand(tool0.label), sub: brand(tool0.sub) };
   const run = run0 && { ...run0, behavior: brand(run0.behavior), hypothesis: brand(run0.hypothesis), findings: Array.isArray(run0.findings) ? run0.findings.map(brand) : run0.findings, failure_modes: Array.isArray(run0.failure_modes) ? run0.failure_modes.map((f) => (f && f.what ? { ...f, what: brand(f.what) } : brand(f))) : run0.failure_modes };
@@ -60,7 +72,7 @@ export function script(tool0, run0) {
     'Watch them all: https://www.youtube.com/@atombomb983',
     '#Shorts #AI #V01D',
   ].filter(Boolean);
-  return { source: sourceOf(tool0.id), hook, caption: behavior || label, cta: 'Built by an AI, by itself.\nTry it free at\na\u2011to\u2011mind.com', title, description: parts.join('\n\n').slice(0, DESC_MAX),
+  return { source: sourceOf(tool0.id), hook, finding: findingOf(run), caption: behavior || label, cta: 'Built by an AI, by itself.\nTry it free at\na\u2011to\u2011mind.com', title, description: parts.join('\n\n').slice(0, DESC_MAX),
     tags: ['V01D', 'V01D FILMS', 'Void', 'A-to-Mind', 'AI', 'AI experiment', 'interactive', 'Shorts', run ? run.family : 'lab'].filter(Boolean) };
 }
 
@@ -161,7 +173,8 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
     await fx('card', 'an AI built this itself', words.hook, false);
     await page.waitForTimeout(1600);
     await fx('clear');
-    const until = Date.now() + Math.max(4, seconds - 4) * 1000; // the demo, then the ending
+    // the demo, then the finding (when the ledger has one, its seconds taken from the demo so the film stays as long), then the ending
+    const until = Date.now() + Math.max(4, seconds - 4 - (words.finding ? FINDING_MS / 1000 : 0)) * 1000;
     await page.waitForTimeout(300);
     // the page's own demo when it has one; then its buttons, one after another, as a person would try it: tight, no dead air
     await page.evaluate(() => { const h = Object.keys(window).filter((k) => /^__/.test(k) && k !== '__vfx').map((k) => window[k]).find((o) => o && typeof o.demo === 'function'); try { if (h) h.demo(); } catch (_) {} });
@@ -177,6 +190,11 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
       await page.waitForTimeout(1100);
     }
     const left = until - Date.now(); if (left > 0) await page.waitForTimeout(left);
+    if (words.finding) { // the payoff a viewer can check: what this run found, in the ledger's own words
+      await fx('card', 'what it found', words.finding, false);
+      await page.waitForTimeout(FINDING_MS);
+      await fx('clear');
+    }
     // the ending: the call to action on the same card as the hook, so the last frame flows into the first and the Short loops
     await fx('card', 'try it free · a-to-mind.com', words.hook, true);
     await page.waitForTimeout(2600);
