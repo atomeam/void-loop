@@ -73,10 +73,12 @@
     },
     {
       "ask": "weather in boston"
+    },
+    {
+      "ask": "convert 5 miles to km"
     }
   ],
   "candidates": [
-    "convert 5 miles to km",
     "play connect four",
     "set a timer for 5 minutes",
     "what is 17 times 23",
