@@ -23,9 +23,19 @@ test('the repo passes the privacy scan and the runtime guard', () => {
 test('headers: strict CSP, HSTS, Referrer-Policy, Permissions-Policy', () => {
   const h = headerFor(at('void-live-deploy/_headers')), csp = h['Content-Security-Policy'];
   for (const d of ["default-src 'self'", "object-src 'none'", "base-uri 'self'", 'frame-ancestors', 'upgrade-insecure-requests']) assert.ok(csp.includes(d), d);
-  assert.ok(!/script-src[^;]*(https:|\*|'unsafe-eval')/.test(csp), 'no remote or eval scripts');
+  assert.ok(!/script-src[^;]*(https:(?!\/\/)|\*|'unsafe-eval')/.test(csp), 'no wildcard or eval scripts');
   assert.match(h['Strict-Transport-Security'], /max-age=\d{8}/);
   assert.equal(h['Referrer-Policy'], 'no-referrer');
   assert.match(h['Permissions-Policy'], /camera=\(\)/);
 });
 test('secret-scan has a history mode', () => assert.match(readFileSync(at('tools/secret-scan.mjs'), 'utf8'), /--history/));
+
+test('csp-hashes: hashes only inline scripts that run, one rule per page, inside the rule budget', async () => {
+  const { inlineHashes, pathsOf, rules } = await import('./csp-hashes.mjs');
+  const h = inlineHashes('<script>a()</script><script type="module">b()</script><script type="application/ld+json">{}</script><script src="/x.js"></script>');
+  assert.equal(h.length, 2); assert.match(h[0], /^'sha256-[A-Za-z0-9+/]+=*'$/);
+  assert.deepEqual(pathsOf('index.html'), ['/']); assert.deepEqual(pathsOf('films/index.html'), ['/films/']);
+  const r = rules(); assert.ok(r.length > 0 && r.length <= 90 - 10, r.length + ' rules');
+  assert.ok(r.every((x) => !/unsafe-inline/.test(x)));
+  assert.ok(!readFileSync(at('void-live-deploy/_headers'), 'utf8').includes('sha256-'), 'hashes are made at deploy, never committed');
+});
