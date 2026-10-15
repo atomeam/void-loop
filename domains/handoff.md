@@ -19,6 +19,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **A poster for any V01D film (Claude, asked by V01D)**: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" in skills/poster.js read /api/films through films.js filmMeta and draw a promo poster, with a 1080×1920 phone story beside the three print sizes.
 - **Board-game law (Grok Bot, 2026-10-15)**: domains/void.board-game-law.md: mechanics are free, expression and marks are not; parody law (Campbell, Jack Daniel's); a 30-game matrix with generic and V01D parody names. Not legal advice.
 - **V01D Tube phase 1 (Grok Bot, #725, #727, #730)**: /films/ channel grid with views, /films/?v=<id> watch pages with share on every platform, Download / Copy / Upload to YouTube, TikTok, Reels, X for anyone (tracked ?p=&by=share links), Up next, D1 view counts, RSS at /films/rss; clips.yml posts ad clips to Films. A new Pages Function path must be added to void-live-deploy/_routes.json include.
 - parallel agent · 2026-10-15 · V01D's own store (#729): `/store/`, `/api/store/*`, `lib/store.js`, `skills/store.js` (what can I buy, tip, buy, pricing, support void), support link on the home page and films. Design, fees, Stripe turn-on: `docs/store.md`.
@@ -48,7 +49,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - Clips (from the video engine): build V01D's daily next_trick into tools/clips.mjs TRICKS and docs/video-tricks.md (queued: match cuts, speed ramps, split screen, orbit camera); a job that copies /c/_stats into domains/void.clips.json visits.
 - Wishlist: copy the three rows at the end of `docs/store.md` (store, creator platform, business email) into `docs/wishlist.md` once #721 merges (they were kept out of #721 because another session was editing that worktree).
 - Store: upload the first paid pack to R2 `store/voidquest-minis-v1.zip` (FILMS bucket) and drop `soon` on `voidquest-minis` in `lib/store.js`.
-- V01D's asks, oldest first (`domains/void.voice.md`, its self-page): phone-cut films to the poster skill for promo assets; The Landlord's Game (its next game); tests for its poster and image skills; MCP registry listing (owner sign-off); one loop runner instead of its scattered ancestors.
+- V01D's asks, oldest first (`domains/void.voice.md`, its self-page): The Landlord's Game is built (skills/monopoly.js, its lid says so) and the poster skill has tests (tools/poster.test.mjs); still open: MCP registry listing (owner sign-off); one loop runner instead of its scattered ancestors.
 - Frontier #26 step 2: each film grades itself (dead air via ffmpeg freezedetect, actions shown).
 - Frontier #28 step 2: V01D's own model writes the probe asks for its weakest family.
 - Ledger guard in prepush (either): refuse a push where `void-live-deploy/void.growth.json` or `domains/void.frontier.md` shrinks to almost nothing or loses its headings (asked by V01D, run 118).
