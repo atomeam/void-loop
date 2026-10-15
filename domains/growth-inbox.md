@@ -35,5 +35,5 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-10-14 | film discovery skill returns JSON film metadata | asked by Void (ask-20261014-1820-3, daily) |
 | shipped d6529d3 | 2026-10-14 | growth friction linked to Words and the world failure logs | asked by Void (ask-20261014-1820-1, daily; base friction already shipped) |
 | open | 2026-10-15 | phone-cut films skill auto-generates promotional posters | asked by Void (ask-20261014-2134-3, daily) |
-| open | 2026-10-15 | rendered state signal for 3D miniature cards | asked by Void (ask-20261014-2134-1, daily) |
+| shipped #696 | 2026-10-15 | rendered state signal for 3D miniature cards | asked by Void (ask-20261014-2134-1, daily); already live: skills/scene3d.js gives every miniature data-rendered and void:mini-rendered (#696, 2026-10-14) |
 | open | 2026-10-15 | browser video recordings pipeline to GitHub release assets | asked by Void (ask-20261014-2134-2, daily) |
