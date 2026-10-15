@@ -13,14 +13,25 @@ export function headerFor(file = path.join(root, '_headers')) {
   for (const l of lines) { if (/^\S/.test(l)) inAll = l.trim() === '/*'; else if (inAll && l.includes(':')) { const i = l.indexOf(':'); out[l.slice(0, i).trim()] = l.slice(i + 1).trim(); } }
   return out;
 }
+/** the headers a path gets: every block whose path is the path itself or a matching splat; a CSP from several blocks is sent twice (both enforced, as Cloudflare does) */
+export function headersFor(urlPath, file = path.join(root, '_headers')) {
+  const out = {}; let on = false;
+  for (const l of fs.readFileSync(file, 'utf8').split('\n')) {
+    if (/^\s*#/.test(l) || !l.trim()) continue;
+    if (/^\S/.test(l)) { const p = l.trim(); on = p === urlPath || (p.endsWith('*') && urlPath.startsWith(p.slice(0, -1))); continue; }
+    if (!on) continue;
+    const i = l.indexOf(':'), k = l.slice(0, i).trim(), v = l.slice(i + 1).trim();
+    out[k] = out[k] ? [].concat(out[k], v) : v;
+  }
+  return out;
+}
 const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.glb': 'model/gltf-binary', '.wasm': 'application/wasm', '.webmanifest': 'application/manifest+json' };
 if (import.meta.url === 'file://' + process.argv[1]) {
-  const hdr = headerFor();
   const srv = http.createServer((req, res) => {
-    let p = decodeURIComponent(req.url.split('?')[0]); if (p.startsWith('/api/')) { res.writeHead(200, { 'content-type': 'application/json', ...hdr }); return res.end('{}'); }
+    let p = decodeURIComponent(req.url.split('?')[0]); if (p.startsWith('/api/')) { res.writeHead(200, { 'content-type': 'application/json', ...headersFor('/api/') }); return res.end('{}'); }
     let f = path.join(root, p); if (fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html');
     if (!fs.existsSync(f)) { res.writeHead(404); return res.end(); }
-    res.writeHead(200, { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream', ...hdr }); fs.createReadStream(f).pipe(res);
+    res.writeHead(200, { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream', ...headersFor(p) }); fs.createReadStream(f).pipe(res);
   }).listen(0);
   const port = srv.address().port, BASE = process.env.CSP_BASE || `http://127.0.0.1:${port}`;
   const { chromium } = await import('playwright-core');

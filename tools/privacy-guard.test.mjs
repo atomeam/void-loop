@@ -29,3 +29,13 @@ test('headers: strict CSP, HSTS, Referrer-Policy, Permissions-Policy', () => {
   assert.match(h['Permissions-Policy'], /camera=\(\)/);
 });
 test('secret-scan has a history mode', () => assert.match(readFileSync(at('tools/secret-scan.mjs'), 'utf8'), /--history/));
+
+test('csp-hashes: hashes only inline scripts that run, one rule per page, inside the rule budget', async () => {
+  const { inlineHashes, pathsOf, rules } = await import('./csp-hashes.mjs');
+  const h = inlineHashes('<script>a()</script><script type="module">b()</script><script type="application/ld+json">{}</script><script src="/x.js"></script>');
+  assert.equal(h.length, 2); assert.match(h[0], /^'sha256-[A-Za-z0-9+/]+=*'$/);
+  assert.deepEqual(pathsOf('index.html'), ['/']); assert.deepEqual(pathsOf('films/index.html'), ['/films/']);
+  const r = rules(); assert.ok(r.length > 0 && r.length <= 90 - 10, r.length + ' rules');
+  assert.ok(r.every((x) => !/unsafe-inline/.test(x)));
+  assert.ok(!readFileSync(at('void-live-deploy/_headers'), 'utf8').includes('sha256-'), 'hashes are made at deploy, never committed');
+});

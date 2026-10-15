@@ -117,6 +117,12 @@ jobs:
           echo "::warning title=Not deployed::Tests passed, but repo secret CLOUDFLARE_API_TOKEN is not set, so nothing was deployed. Add a token with Account > Cloudflare Pages > Edit (gh secret set CLOUDFLARE_API_TOKEN -R atomeam/void-loop), then re-run this workflow."
           echo "### Not deployed: CLOUDFLARE_API_TOKEN secret missing" >> "$GITHUB_STEP_SUMMARY"
 
+      # per-page sha256 hashes for the inline scripts, so the pages run only their own inline code (tools/csp-hashes.mjs);
+      # made here from the exact files being deployed, never committed, so a hash can't go stale
+      - name: CSP script hashes
+        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true'
+        run: node tools/csp-hashes.mjs --write
+
       - name: Deploy to Cloudflare Pages (a-to-mind)
         id: deploy
         # a PR gets no preview (above): only main deploys
