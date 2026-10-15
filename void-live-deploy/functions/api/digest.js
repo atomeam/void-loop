@@ -45,7 +45,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   let b; try { b = await request.json(); } catch (_) { return reply({ ok: false, error: 'send JSON: { text } or { url }' }, 400); }
   const ask = String(b.ask || '').trim().slice(0, 200), url = String(b.url || '').trim().slice(0, 600);
   let text = String(b.text || '').slice(0, MAX_TEXT);
-  if (!url && text.length < 200) return reply({ ok: false, error: 'paste a transcript (a few sentences at least), or a PeerTube or Internet Archive video link' }, 400);
+  if (!url && text.length < 80) return reply({ ok: false, error: 'paste a transcript (a few sentences at least), or a PeerTube or Internet Archive video link' }, 400);
   if (url && !captionSource(url)) return reply({ ok: false, error: 'V01D reads open captions from PeerTube and the Internet Archive; for YouTube, paste the transcript (YouTube: ⋯ → Show transcript)' }, 400);
   const u = new URL(request.url), cache = typeof caches !== 'undefined' ? caches.default : null;
   const key = new Request(u.origin + '/api/digest?h=' + await hash((url || text) + '|' + ask.toLowerCase()));

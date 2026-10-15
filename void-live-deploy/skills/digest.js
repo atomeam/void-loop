@@ -8,8 +8,8 @@ let last = null; // { text } or { url }: the one video being discussed, this tab
 const LINK = /(https:\/\/(?:archive\.org\/(?:details|embed)\/[^\s]+|[a-z0-9.-]+\.[a-z]{2,}\/(?:w|videos\/watch)\/[A-Za-z0-9-]{8,40}))/i;
 export function digestAsk(text) {
   const t = String(text || '').trim();
-  let m = t.match(/^(?:summari[sz]e|digest|tl;?dr)\s+(?:this\s+|the\s+)?(?:transcript|captions|video transcript)\s*[:\-]?\s*([\s\S]{200,})$/i)
-    || t.match(/^(?:transcript|captions)\s*:\s*([\s\S]{200,})$/i);
+  let m = t.match(/^(?:summari[sz]e|digest|tl;?dr)\s+(?:this\s+|the\s+)?(?:transcript|captions|video transcript)\s*[:\-]?\s*([\s\S]{80,})$/i)
+    || t.match(/^(?:transcript|captions)\s*:\s*([\s\S]{80,})$/i);
   if (m) return { kind: 'text', text: m[1] };
   m = t.match(/^(?:summari[sz]e|digest|tl;?dr|what\s+did|what\s+does)\b[^\n]*?/i) && t.match(LINK);
   if (m && !/youtu/i.test(m[1])) { const ask = /what\s+(?:did|does)/i.test(t) ? t.replace(m[1], 'this video') : ''; return { kind: 'url', url: m[1], ask }; }
@@ -44,7 +44,7 @@ async function run(text, api) {
 }
 export default {
   name: 'digest',
-  examples: ['summarize this transcript: …', 'summarize https://makertube.net/w/02f54689-5640-4be7-b51c-bcbb6587a07f', 'what did this video teach?'],
+  examples: ['summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon', 'summarize https://makertube.net/w/02f54689-5640-4be7-b51c-bcbb6587a07f', 'what did this video teach?'],
   nearMisses: ['summarize this article', 'what did you learn today', 'play a video about black holes'],
   match(lower, text) { return !!digestAsk(text); },
   run,
