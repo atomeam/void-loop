@@ -8,6 +8,8 @@
 
 **Keep secrets (owner, 2026-10-15: "make V01D the best at keeping secrets ever made").** No key, token, password or private key in any file, ever: `tools/secret-scan.mjs` blocks one in any added line (checks.mjs and the Void review), in docs and logs too. A key that reached GitHub is public: rotate it, deleting it is not enough. A made-up key in a test says so with `secret-scan: ok`. Secrets live in GitHub and Cloudflare secrets only.
 
+**Automerge everything, always (owner, 2026-10-15):** every PR from this repository is merged by the bot as soon as Void's review is clean; `tools/automerge.mjs` labels unlabelled PRs itself, so no PR waits on a person. A conflict with main is still a person's job: merge main in, settle the records, push.
+
 **Growth over upkeep (owner, 2026-10-15):** "cloudflare is not unlimited V01D should spend its actions on growth and not so much on testing old thing too much . try to make it ultra productive at improvements and not so much busy work . other ai can maintain that stuff have V01D be a specialist who is hellbent on being the best at all". A run ships something new or makes something measurably better. Test what you changed and nothing more: no re-probing old bench asks, no tests for behaviour you didn't touch, no new timed re-checks of things already live. Upkeep (flakes, renames, tidying, re-verifying) is for other agents unless it blocks a ship. Every Cloudflare call (deploys, Workers AI, live probes) should buy growth: a PR gets no preview deploy, and live checks run after a deploy, not on a timer.
 
 This repo is Void, live at https://a-to-mind.com: a blank stage where anything someone asks for appears, plus the tools and agents that grow it. It is public: never commit secrets or the raw asks people typed.

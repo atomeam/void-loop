@@ -3,6 +3,7 @@
  * Void looks several moves ahead and every disc it drops says why. The upright frame stands in the void in 3D
  * (mini/connect4.js), lifted by skills/lift3d.js with this card beside it; the flat grid here is the fallback.
  */
+import { levelPick } from './game-level.js';
 import * as K from './connect4-rules.js';
 import { lift3d } from './lift3d.js';
 import { showArena } from '../lib/arena-say.js';
@@ -54,7 +55,7 @@ function mount(th, stageApi) {
   function voidPlays() {
     clearTimeout(timers.get(th));
     if (th.state.over || th.state.turn !== 2) return;
-    timers.set(th, setTimeout(() => { const m = K.voidMove(th.state); th.state = K.drop(th.state, m.col, m.why); save(); paint(); }, 600));
+    timers.set(th, setTimeout(() => { const best = K.voidMove(th.state), m = levelPick(best, [0, 1, 2, 3, 4, 5, 6].filter((c) => K.rowFor(th.state.board, c) >= 0).map((col) => ({ col, why: 'an easy-level move' }))); th.state = K.drop(th.state, m.col, m.why); save(); paint(); }, 600));
   }
   function paint() {
     const s = th.state, line = s.over && s.over !== 'draw' ? K.winLine(s.board, s.over === 'you' ? 1 : 2) || [] : [];
