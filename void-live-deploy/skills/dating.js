@@ -31,6 +31,7 @@ function run(text, api) {
   showPage((el) => {
     el.className += ' dating-card';
     const body = () => {
+      // void-review: ok (only constant strings: the field labels are fixed in this file)
       el.innerHTML = '<h2>Dating · the beginning</h2><p class="g-sub" style="font-size:12px">Step one of V01D dating: build your profile and practise openers. All on this page; nothing is sent or saved anywhere.</p>'
         + ['name|First name', 'vibe|Your vibe (e.g. curious night owl)', 'interests|Interests, commas between', 'looking|Looking for'].map((f) => { const [k, l] = f.split('|'); return '<input class="dt-' + k + '" aria-label="' + l + '" placeholder="' + l + '" style="width:100%;margin:3px 0">'; }).join('')
         + '<p style="margin-top:10px"><b>Your bio</b></p><p class="dt-bio" aria-live="polite"></p><p><b>Openers</b></p><ul class="dt-ice"></ul>'
