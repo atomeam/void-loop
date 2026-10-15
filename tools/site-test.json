@@ -42,6 +42,9 @@
     },
     {
       "ask": "my actions"
+    },
+    {
+      "ask": "air quality in Tokyo"
     }
   ],
   "candidates": [
