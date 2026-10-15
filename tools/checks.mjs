@@ -19,6 +19,7 @@ for (const [name, file] of [
   ['upgrades', 'upgrades.test.mjs'],
   ['collide', 'collide.test.mjs'],
   ['lab-use', 'lab-use.test.mjs'],
+  ['untested-unit', 'untested.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
@@ -203,6 +204,8 @@ for (const [name, file] of [
 { const r = run([resolve(here, 'skills-index.mjs'), '--check']); results.push(['index', r.ok, r.out[r.out.length - 1] || '']); }
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
 { const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
+// the untested-code ratchet (docs/multipliers.md #3): no new lib/ or skills/ file without a test that names it
+{ const r = run([resolve(here, 'untested.mjs'), '--check']); results.push(['untested', r.ok, r.out[r.out.length - 1] || '']); }
 // VOID_SKIP_BENCH (the same switch tools/test_void.mjs honours): the benchmark is not a merge gate (owner, 2026-10-09, the suite split in
 // domains/void.frontier.md); CI runs it as its own job (.github/workflows/bench.yml) and reports the number on the PR, and a drop below
 // the floor is a fix PR, never a wait. Without the variable this row replays it as before.
