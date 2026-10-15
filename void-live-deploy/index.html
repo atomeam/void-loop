@@ -5135,10 +5135,11 @@ say('nothing selected to remove');
       const parts = (speak.phrases || speak.chunks)(text); if (!parts.length) return false;
       speechSynthesis.cancel();
       const voice = speak.pickVoice(speechSynthesis.getVoices(), navigator.language || 'en-US');
+      const rate = speak.cadence ? speak.cadence(text) : speak.VOICE.rate; // precise content, slower (asked by Void)
       for (const part of parts) {
         const u = new SpeechSynthesisUtterance(part);
         if (voice) u.voice = voice;
-        u.lang = (voice && voice.lang) || navigator.language || 'en-US'; u.pitch = speak.VOICE.pitch; u.rate = speak.VOICE.rate;
+        u.lang = (voice && voice.lang) || navigator.language || 'en-US'; u.pitch = speak.VOICE.pitch; u.rate = rate;
         speechSynthesis.speak(u);
       }
       return true;
