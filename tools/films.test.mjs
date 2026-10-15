@@ -1,4 +1,4 @@
-// functions/api/films.js + tools/film-post.mjs: Void's films are on the site for people who pay, and only for them
+// functions/api/films.js + tools/film-post.mjs: Void's films are on the site for anyone to watch; reviews are for the owner and members
 // (owner, 2026-10-14: "just put void films right onto the sight , with only paid access").
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -44,7 +44,7 @@ const site = (env) => async (url, init) => {
 const get = (env, auth, path = '/api/films', extra = {}) => api.onRequestGet({ request: new Request('https://x.test' + path, { headers: { ...(auth ? { authorization: 'Bearer ' + auth } : {}), ...extra } }), env });
 const FILM = new Uint8Array(5000).map((_, i) => i % 251);
 
-test('the owner posts a film; a paying account lists it and plays it from a signed link with Range; nobody else can', async () => {
+test('the owner posts a film; anyone lists it and plays it from a signed link with Range (the films are the ads); reviews and the owner flag only with sign-in', async () => {
   const { env, sess } = await world();
   const words = parseWords('TITLE\nOdd moments | an AI built this itself #Shorts\n\nDESCRIPTION\nLog each odd moment.\n\nTAGS\nVoid, AI\n');
   assert.deepEqual(words, { title: 'Odd moments | an AI built this itself #Shorts', description: 'Log each odd moment.', tags: 'Void, AI' });
@@ -55,11 +55,14 @@ test('the owner posts a film; a paying account lists it and plays it from a sign
 
   const PAID = 'p'.repeat(43), FREE = 'f'.repeat(43);
   await sess(PAID, 'u-paid', 'paid'); await sess(FREE, 'u-free', 'free');
-  assert.equal((await get(env, null)).status, 401, 'a stranger sees the way to pay');
-  assert.ok((await (await get(env, null)).json()).buy);
-  assert.equal((await get(env, FREE)).status, 401, 'a free account cannot watch');
+  // anyone watches (owner, 2026-10-15: "anyone should be able to at least watch the films those are our ads")
+  const open = await (await get(env, null)).json();
+  assert.equal(open.films.length, 1, 'a stranger watches'); assert.equal(open.member, false); assert.equal(open.owner, false); assert.ok(open.buy);
+  assert.equal(open.films[0].reviews, null, 'a stranger sees no reviews');
+  const free = await (await get(env, FREE)).json();
+  assert.equal(free.films.length, 1, 'a free account watches'); assert.equal(free.member, false);
   const list = await (await get(env, PAID)).json();
-  assert.equal(list.owner, false); assert.equal(list.films.length, 1);
+  assert.equal(list.owner, false); assert.equal(list.member, true); assert.equal(list.films.length, 1);
   const f = list.films[0];
   assert.equal(f.title, words.title); assert.equal(f.bytes, 5000);
   assert.match(f.src, /^\/api\/films\?id=20261014-odd-moments-r6&exp=\d+&sig=[\w-]+$/);
