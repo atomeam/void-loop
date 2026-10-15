@@ -1,8 +1,8 @@
 {
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
-  "experiment": 0,
-  "tested": 45,
+  "experiment": 1,
+  "tested": 46,
   "checked": 13,
   "proven": 83
  },
@@ -543,14 +543,24 @@
   {
    "id": "words",
    "name": "Words and the world",
-   "for": "definitions, translation, news, books, shows and sport",
+   "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
-    "experiment": 0,
-    "tested": 9,
+    "experiment": 1,
+    "tested": 10,
     "checked": 1,
     "proven": 7
    },
    "skills": [
+    {
+     "name": "video",
+     "tier": "tested",
+     "why": "a self-test"
+    },
+    {
+     "name": "video-play",
+     "tier": "experiment",
+     "why": "nothing checks it yet"
+    },
     {
      "name": "define",
      "tier": "tested",
