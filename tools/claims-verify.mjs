@@ -66,7 +66,9 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
       try {
       if (!page.url().startsWith(site)) await fresh();
       await page.evaluate(() => localStorage.removeItem('a2m.void.loop.v1'));
-      await page.fill('#input', c.ask); await page.keyboard.press('Enter'); await page.waitForTimeout(live ? 3000 : 1200);
+      await page.fill('#input', c.ask); await page.keyboard.press('Enter');
+      // a skill logs only when its card is done (network cards can take seconds): wait for this ask's line, up to 12 s live
+      await page.waitForFunction((a) => { try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => String(x.ask).trim().toLowerCase() === a); } catch (_) { return false; } }, c.ask.trim().toLowerCase(), { timeout: live ? 12000 : 3000 }).catch(() => {});
       const log = await page.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } });
       const mine = log.find((x) => CLEAN(x.ask) === CLEAN(c.ask)) || log[0];
       const wiki = /Source:\s*<?[^\n]{0,4}Wikipedia/.test(await page.evaluate(() => (document.querySelector('.vpage:last-of-type') || document.body).innerText));
