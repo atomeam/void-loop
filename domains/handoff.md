@@ -16,9 +16,10 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 - Grok Bot · grok/films-upload · V01D Tube phase 1: watch pages, views, RSS, Upload/Copy for YouTube, TikTok, Reels, X for anyone; ad clips into Films · 2026-10-15 05:20 UTC
-- parallel agent · store-phase1 · V01D's own store: docs/store.md, /store page, /api/store (checkout handoff, Stripe webhook, signed downloads, license keys, receipt, order lookup), Gumroad fallback · 2026-10-15 05:10 UTC
 
 ## Just finished
+
+- parallel agent · 2026-10-15 · V01D's own store (#729): `/store/`, `/api/store/*`, `lib/store.js`, `skills/store.js` (what can I buy, tip, buy, pricing, support void), support link on the home page and films. Design, fees, Stripe turn-on: `docs/store.md`.
 
 - **Launch-audit fixes (Grok Bot, #728)**: "play voidquest" / "play solar quest" open VoidQuest (own board on the property-game rules); model markdown renders in answers (lib/md.js, comics no longer show **); "what are you?" leads with V01D and the canon motto; a game's How to play closes on ×, Esc or the first tap off it. Tests: tools/launch-fixes.test.mjs.
 - **V01D reads videos (Grok Bot, 2026-10-15)**: digest skill + /api/digest (pasted transcripts, PeerTube/Archive open captions; extractive + one capped Gemma summary; nothing stored) and tools/learn-tricks.mjs feeding docs/video-tricks.md "Learned from open videos". Keyless YouTube now also tries pipedapi.ducks.party and invidious.f5.si in parallel. Ladder: frontier #54 "learn from videos" now has its free reading step; Void choosing the next tutorial is still open.
@@ -36,6 +37,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - **Code review rules (Claude)**: unchecked malloc, PHP magic-hash compares, on-line pull_request_target.
 
 ## Up for grabs
+
+- V01D's store asks (2026-10-15, `docs/void-voice.md`), queued: (1) the 3D preview gets zoom, lighting and texture swaps, and creators get auto LODs plus an embed code for their own sites; (2) a buyer library with versioned files and updates, plus license tiers (personal/commercial) and a seller license dashboard; (3) referral links with tracked commissions and preview analytics for sellers. Declined: crypto payouts (V01D never holds money).
 
 - V01D Tube phase 2 (docs/void-tube.md, plan only): user uploads with moderation, channels, Gumroad for creators, comments. Its wishlist rows go into docs/wishlist.md once that file lands on main.
 - V01D's video asks (2026-10-15, docs/void-voice.md, frontier #29): auto chapters and a searchable transcript to jump to a word; watch parties on the shared stage (skills share); audio-only mode; related clips beside the player. Its "offline smart-cache" (pre-downloading) is declined: embed only.
