@@ -20,7 +20,7 @@ export const wantsUpload = (lower) => UPLOAD.test(String(lower || '').trim().rep
 export function wantsFilms(lower) {
   const t = String(lower || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (wantsUpload(t)) return true;
-  if (/^(?:https?:\/\/)?(?:www\.)?(?:a-to-mind\.com)?\/films\/?$/i.test(t)) return true; // the page's address typed into the ask box
+  if (/^(?:(?:open|go to|take me to|show)\s+)?(?:https?:\/\/)?(?:www\.)?(?:a-to-mind\.com)?\/films\/?$/i.test(t)) return true; // the page's address typed into the ask box
   return MINE.test(t) || VIDEOS.test(t) || REVIEW.test(t);
 }
 

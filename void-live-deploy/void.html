@@ -3846,11 +3846,14 @@ say('nothing selected to remove');
 
     // The skill that takes this ask: the first in routing order whose match says yes. Before all skills have loaded, it waits only
     // for the ones ranked above the match, each until `deadline` (a skill still missing then is passed over, as before).
+    let askText = null; import('/lib/ask-text.js').then((m) => { askText = m; }).catch(() => {});
     async function firstSkill(lower0, text, deadline) {
-      if (skillsLoaded || !skillSlots) return learnedSkills.find((sk) => sk.match(lower0, text)) || null;
+      // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
+      const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
+      if (skillsLoaded || !skillSlots) return learnedSkills.find(fits) || null;
       for (const slot of skillSlots) {
         const skill = slot.done ? slot.skill : await Promise.race([slot.p, new Promise((r) => setTimeout(() => r(null), Math.max(0, deadline - Date.now())))]);
-        if (skill && skill.match(lower0, text)) return skill;
+        if (skill && fits(skill)) return skill;
       }
       return null;
     }
