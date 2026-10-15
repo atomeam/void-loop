@@ -51,5 +51,9 @@
   {"check": "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the", "sha": "a9b686d9b82990ad6840597736b1bfbd42ae2f37", "at": "2026-10-15T04:20:10Z"},
   {"check": "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wa", "sha": "fb7479e68269927ad22218e64d5bf83031cb7149", "at": "2026-10-15T06:17:21Z"},
   {"check": "pdf card: \"ask questions about a pdf\" opens a card with a file chooser that says nothing leaves the device; a file that is not a PDF says why (as an alert); a r", "sha": "fb7479e68269927ad22218e64d5bf83031cb7149", "at": "2026-10-15T06:17:21Z"},
-  {"check": "suite ran to the end", "sha": "fb7479e68269927ad22218e64d5bf83031cb7149", "at": "2026-10-15T06:17:21Z"}
+  {"check": "suite ran to the end", "sha": "fb7479e68269927ad22218e64d5bf83031cb7149", "at": "2026-10-15T06:17:21Z"},
+  {"check": "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the", "sha": "16e592fd9ef484b4b74d634ea42f5417876ba67b", "at": "2026-10-15T06:23:16Z"},
+  {"check": "figures together: with no figure it says to summon two, with one it asks for another, and with a zombie and a dog it says they spar and who offers it and who wa", "sha": "16e592fd9ef484b4b74d634ea42f5417876ba67b", "at": "2026-10-15T06:23:16Z"},
+  {"check": "pdf card: \"ask questions about a pdf\" opens a card with a file chooser that says nothing leaves the device; a file that is not a PDF says why (as an alert); a r", "sha": "16e592fd9ef484b4b74d634ea42f5417876ba67b", "at": "2026-10-15T06:23:16Z"},
+  {"check": "suite ran to the end", "sha": "16e592fd9ef484b4b74d634ea42f5417876ba67b", "at": "2026-10-15T06:23:16Z"}
 ]

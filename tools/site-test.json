@@ -1,5 +1,5 @@
 {
-  "about": "The site tester's suite (tools/site-test.mjs). cases run once each per run; candidates are asks waiting to join (V01D or anyone may add one); limits tighten by themselves when every case passes. games maps a real game name to V01D's own, for new wordings. teach lists wordings V01D missed, each filed once to be taught.",
+  "about": "The site tester's suite (tools/site-test.mjs). cases run once each per run; candidates are asks waiting to join (V01D or anyone may add one); limits tighten by themselves when every case passes. games maps a real game name to V01D's own, for new wordings. teach lists wordings V01D missed, each filed once to be taught. priority: features tested first, the least-checked skills from the growth page friction line (2026-10-15: video-play had no checks).",
   "limits": {
     "fpsMin": 1,
     "loadMs": 15000
@@ -42,6 +42,9 @@
     },
     {
       "ask": "my actions"
+    },
+    {
+      "ask": "air quality in Tokyo"
     }
   ],
   "candidates": [
@@ -60,5 +63,15 @@
     "othello": "reversi",
     "stratego": "fog of v01d"
   },
-  "teach": []
+  "teach": [],
+  "priority": [
+    "skill:video-play",
+    "skill:book",
+    "skill:define",
+    "skill:digest",
+    "skill:film-metadata",
+    "skill:aurora-tonight",
+    "skill:automations",
+    "skill:cartoon"
+  ]
 }
