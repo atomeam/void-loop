@@ -63,9 +63,12 @@ async function rateLimited(request, env) {
   } catch (_) {}
   return false;
 }
+export const DETAILS_MAX = 12000;
 async function fixAnswer(request, env, body) {
   const ask = redact(String(body.ask || '').replace(/[\u0000-\u0008\u000b-\u001f]/g, ' ').trim().slice(0, 600));
-  const details = redact(String(body.details || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').slice(0, 8000));
+  // a long paste keeps its start and its end (a log's error is at the end), not just its first 8000 characters
+  const raw = String(body.details || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ');
+  const details = redact(raw.length <= DETAILS_MAX ? raw : raw.slice(0, DETAILS_MAX / 4) + '\n\u2026 [' + (raw.length - DETAILS_MAX) + ' characters from the middle left out] \u2026\n' + raw.slice(raw.length - DETAILS_MAX * 3 / 4));
   if (ask.length < 3) return new Response('empty', { status: 400 });
   if (await rateLimited(request, env)) return Response.json({ answer: null, sources: [], note: 'slow down' }, { status: 429 });
   const all = ask + (details ? '\n\n' + details : '');

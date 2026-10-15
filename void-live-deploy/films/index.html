@@ -192,10 +192,13 @@
     btn.disabled = true; status.textContent = 'Signing in \u00b7 use this device\u2019s PIN or face';
     try {
       const o = await pk('get-options'); if (o.status !== 200) throw new Error('couldn\u2019t start signing in');
-      let cred; try { cred = await navigator.credentials.get({ publicKey: reqOpts(o.body.publicKey) }); } catch (e) { throw new Error(e && e.name === 'NotAllowedError' ? 'no passkey used' : 'couldn\u2019t sign in'); }
+      // a passkey made on a phone is not on a computer unless it synced there (owner, 2026-10-15: "my passkey for V01D films is
+      // not working on the desktop app"): say how to reach it, and pass on the server's own reason when it refuses one
+      const phoneWay = /Android|iPhone|iPad/i.test(navigator.userAgent) ? '' : ' On a computer, choose \u201cUse a phone or tablet\u201d (or \u201cAnother device\u201d), scan the code with the phone you made your passkey on, and keep Bluetooth on for both';
+      let cred; try { cred = await navigator.credentials.get({ publicKey: reqOpts(o.body.publicKey) }); } catch (e) { throw new Error(e && e.name === 'NotAllowedError' ? 'no passkey was used' + (phoneWay ? '.' + phoneWay : '') : 'couldn\u2019t sign in (' + ((e && e.name) || 'error') + ')'); }
       const r = await pk('get', { credential: credJSON(cred) });
       if (r.status === 404) throw new Error('that passkey was forgotten: open V01D and say \u201cremember me\u201d');
-      if (r.status !== 200) throw new Error('that passkey didn\u2019t check out');
+      if (r.status !== 200) throw new Error('that passkey didn\u2019t check out' + (r.body && r.body.error ? ' (' + String(r.body.error).slice(0, 120) + ')' : ''));
       const owner = r.body.owner && typeof r.body.owner.token === 'string' ? r.body.owner.token : '';
       if (owner) { try { localStorage.setItem('a2m.void.owner.v1', owner); } catch (_) {} }
       else if (r.body.token) { try { sessionStorage.setItem(KEY, r.body.token); } catch (_) {} }

@@ -949,6 +949,34 @@ try {
         && /### Breaking changes\n- Drop Node 16\n\n### Removed\n- Remove the old export\n$/.test(md2) && !P.errors.length,
       [JSON.stringify(md1), JSON.stringify(md2), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
+  // a paste of any size, and a read-aloud button on every card (owner, 2026-10-15: "I thought we fixed it so that we can past any
+  // sized message and V01D can handle it like you can . also V01D needs a read aloud button"): a 3,000-line log pasted under
+  // "my n8n workflow is broken…" reaches the server inside its 20 kB with its first and last lines (the error is at the end), the
+  // card's title ends in … at a word, the card folds away everything given and says how much of the middle was left out; the
+  // card's round button reads the whole card aloud, turns to stop while it reads, and stops when tapped again
+  if (want("paste any size and read aloud: a huge pasted log is read start and end, folded on the card, and the card reads itself aloud")) {
+    const P = await fresh(() => { window.__said = []; window.__cancels = 0; const ss = window.speechSynthesis;
+      if (ss) { ss.speak = (u) => { window.__said.push(u.text); }; ss.cancel = () => { window.__cancels++; }; Object.defineProperty(ss, 'speaking', { get: () => window.__said.length > 0 && window.__cancels === 0 }); } });
+    let sent = null, bytes = 0;
+    await P.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = r.request().postData() || ''; bytes = Buffer.byteLength(b); try { sent = JSON.parse(b); } catch (_) {} return r.fulfill(json({ answer: 'Likely cause: Postgres refuses the connection.\nFix:\n1. Start the database and check its host.', fix: 'model' })); });
+    const first = 'my n8n workflow is broken after the deploy and the webhook step keeps failing on every single run with the log below, please fix it';
+    const log = [first, ...Array.from({ length: 3000 }, (_, i) => 'step ' + i + ' ok: wrote row ' + i + ' to the orders table'), 'Error: connect ECONNREFUSED 10.0.0.5:5432 at TCPConnectWrap.afterConnect'].join('\n');
+    await P.p.focus('#input');
+    await P.p.evaluate((t) => { const dt = new DataTransfer(); dt.setData('text/plain', t); document.getElementById('input').dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true })); }, log);
+    await P.p.keyboard.press('Enter');
+    const card = await until(async () => { const t = await P.page(); return /Likely cause/.test(t) && t; }, 8000) || await P.page();
+    const r = await P.p.evaluate(() => { const el = document.querySelector('.vpage.on'); const sum = el && el.querySelector('.vpaste summary');
+      return { h2: el && el.querySelector('h2').textContent, fold: sum ? sum.textContent : '', whole: el && el.querySelector('.vpaste pre') ? el.querySelector('.vpaste pre').textContent.length : 0, button: !!(el && el.querySelector(':scope > .vread')) }; });
+    await P.p.click('.vpage.on > .vread'); const reading = await P.p.evaluate(() => ({ said: window.__said.join(' '), pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
+    await P.p.click('.vpage.on > .vread'); const stopped = await P.p.evaluate(() => ({ cancels: window.__cancels, pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
+    const d = (sent && sent.details) || '';
+    check('paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card\'s button reads the whole card aloud and stops when tapped again',
+      !!sent && sent.mode === 'fix' && bytes <= 20000 && d.startsWith(first) && /ECONNREFUSED 10\.0\.0\.5:5432/.test(d) && /characters from the middle left out/.test(d)
+      && /…$/.test(r.h2) && !/\s…$/.test(r.h2) && r.h2.length <= 121 && /3,002 lines/.test(r.fold) && /left out/.test(r.fold) && r.whole === log.length && r.button
+      && /Likely cause: Postgres refuses the connection/.test(reading.said) && /Start the database/.test(reading.said) && !/Worked out by/.test(reading.said) && reading.pressed === 'true'
+      && stopped.cancels > 0 && stopped.pressed === 'false' && !P.errors.length,
+      JSON.stringify({ bytes, start: d.slice(0, 60), end: d.slice(-60), r, reading: { ...reading, said: reading.said.slice(0, 160) }, stopped, card: card.slice(0, 120), e: P.errors }));
+    await P.ctx.close(); }
   // "do you love me?" once went to the answer engine: three songs and an album from a Wikipedia search as its sources, in a stock chatbot voice
   if (want("feelings: do you love me, do you have feelings, are you conscious answered in Void's own words, no sources, no exclamation; lyrics are not this")) { const P = await fresh();
     const r = {};
