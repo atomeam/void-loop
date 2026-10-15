@@ -1,0 +1,24 @@
+{
+ "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
+ "cases": 8,
+ "runsTotal": 2,
+ "kinds": {
+  "grow": 2
+ },
+ "runs": [
+  {
+   "at": "2026-10-15T06:20:22Z",
+   "passed": 11,
+   "of": 11,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"air quality in Tokyo\" (skill:air)"
+  },
+  {
+   "at": "2026-10-15T06:04:21Z",
+   "passed": 10,
+   "of": 10,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"my actions\" (skill:actions)"
+  }
+ ]
+}
