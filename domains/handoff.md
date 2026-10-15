@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Grok Bot · perf/3d-smooth · 3D board perf + looks (skills/scene3d.js, figures3d.js, mini/monopoly.js, 24fps starfield in index.html/void.html: one function, drawStars), then the video-games ladder (docs/video-games.md, Void Pong, Void Snake) · 2026-10-15 06:05 UTC
 
 ## Just finished
 
