@@ -21,6 +21,7 @@ for (const [name, file] of [
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
   ['films', 'films.test.mjs'],
+  ['film-share', 'film-share.test.mjs'],
   ['owner-account', 'owner-account.test.mjs'],
   ['automations-seed', 'automations-seed.test.mjs'],
   ['rebuild-map', 'rebuild-map.test.mjs'],

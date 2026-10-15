@@ -13,8 +13,13 @@ const VIDEOS = new RegExp('^' + ASK + WHOSE + '(?:videos?|movies?|shorts|recordi
 const REVIEW = new RegExp('^' + FILM + '\\s+reviews?$', 'i'); // "film review"
 
 export const PAGE = '/films/';
+// "upload this to youtube", "post a film on tiktok", "how do i upload your videos" (owner, 2026-10-15: anyone can upload them):
+// the films page has Download, Copy for <platform> and Upload to <platform> on every film and ad clip
+const UPLOAD = /^(?:how\s+(?:do|can)\s+i\s+)?(?:upload|post|share|repost)\s+(?:this|it|that|a|one|the|your|v01d'?s?|void'?s?)?\s*(?:films?|videos?|clips?|ads?|shorts?)?\s*(?:to|on)\s+(?:youtube|yt|tiktok|reels|instagram|x|twitter)$/i;
+export const wantsUpload = (lower) => UPLOAD.test(String(lower || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
 export function wantsFilms(lower) {
   const t = String(lower || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  if (wantsUpload(t)) return true;
   if (/^(?:https?:\/\/)?(?:www\.)?(?:a-to-mind\.com)?\/films\/?$/i.test(t)) return true; // the page's address typed into the ask box
   return MINE.test(t) || VIDEOS.test(t) || REVIEW.test(t);
 }
@@ -86,7 +91,9 @@ function run(text, api) {
       + '<h2 aria-label="V01D FILMS">V01D F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h2>'
       + '<p class="line">' + esc('Every day V01D films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
       + '<a class="play" href="' + PAGE + '"><i aria-hidden="true">\u25B6</i>' + esc('Watch now') + '</a></div>'
-      + '<ol><li>' + esc('Watch the newest film') + '</li><li>' + esc('Review it: post it, needs work or skip') + '</li><li>' + esc('The best go to YouTube') + '</li></ol>'
+      + (wantsUpload(text)
+        ? '<ol><li>' + esc('Pick any film or ad clip and tap 1. Download (free)') + '</li><li>' + esc('Tap 2. Copy: title, description with the a-to-mind.com link, hashtags') + '</li><li>' + esc('Tap 3. Upload to YouTube, TikTok, Reels or X, signed in as you, and paste') + '</li></ol>'
+        : '<ol><li>' + esc('Watch the newest film') + '</li><li>' + esc('Post any of them: Download, Copy, Upload to YouTube, TikTok, Reels or X') + '</li><li>' + esc('Every upload is an ad for V01D') + '</li></ol>')
       + '<p class="who">' + esc('Free for everyone to watch and share, no sign-in.') + '</p>'
       + '<div class="src">' + esc('a-to-mind.com/films/') + '</div></div>';
   });
@@ -107,6 +114,8 @@ export default {
     'v01d films',
     'film metadata',
     'films as json',
+    'upload this to youtube',
+    'post a clip on tiktok',
   ],
   nearMisses: [
     'film a timer',

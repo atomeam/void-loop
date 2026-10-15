@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>V01D FILMS</title>
+  <title>V01D Tube · V01D FILMS</title>
+  <link rel="alternate" type="application/rss+xml" title="V01D Tube" href="/films/feed.xml">
   <meta name="description" content="Short films V01D makes of its own experiments, newest first. Free to watch.">
   <meta name="robots" content="noindex">
   <meta name="color-scheme" content="dark">
@@ -52,6 +53,18 @@
     .review .tally, .review .said { color: var(--muted); font-size: 13px; }
     .review ul { margin: 0; padding-left: 18px; font-size: 14px; }
     .btn.join { background: var(--grad); border-color: transparent; color: #fff; font-weight: 700; box-shadow: 0 8px 24px rgba(255,61,127,.35); }
+    .share { display: flex; flex-direction: column; gap: 8px; }
+    .share .tab { min-height: 32px; padding: 4px 12px; font-size: 13px; }
+    .share .tab[aria-selected="true"] { background: var(--grad); border-color: transparent; color: #fff; font-weight: 700; }
+    .share details summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+    .share details .row { margin-top: 6px; }
+    .thumb { color: inherit; text-decoration: none; }
+    .thumb video { pointer-events: none; }
+    #watch { margin-bottom: 24px; }
+    .watchbox { margin: 12px auto 0; max-width: 560px; }
+    .watchbox video { max-height: 78vh; }
+    .desc { white-space: pre-wrap; margin: 0; color: #d9d5ea; font-size: 14px; overflow-wrap: anywhere; }
+    .kick { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin: 6px 0 0; }
     footer { margin-top: 48px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
   </style>
 </head>
@@ -62,15 +75,16 @@
        that runs out in hours. .github/workflows/record.yml adds one a day. The owner also gets the steps to post one to YouTube:
        download it, copy its words, open YouTube's upload page. Nothing here uploads anything by itself. -->
   <p><a class="home" href="/">← V01D</a></p>
-  <p class="kicker">Now showing · a new one daily</p>
+  <p class="kicker">V01D Tube · new videos daily · <a href="/films/feed.xml">RSS</a></p>
   <h1 aria-label="V01D FILMS">V01D F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h1>
-  <p class="sub">Every day V01D films one of its own experiments. Watch them free and share them.</p>
+  <p class="sub">Every day V01D films one of its own experiments. Watch them free, and post any of them anywhere: every film is an ad for V01D, and anyone can upload it.</p>
   <!-- no sign-in here (owner, 2026-10-15: "i just need the sign in gone honestly just give the films to everyone"): everyone gets
        the films. A sign-in this browser already holds (the owner's, a member's from V01D) still brings the owner's YouTube steps
        and the review box, without asking. -->
+  <div id="watch"></div>
   <p id="status">Loading the films…</p>
   <div id="films"></div>
-  <footer><a href="https://www.youtube.com/@atombomb983">V01D on YouTube</a> · <a href="/privacy/">Privacy</a> · <a href="/">a-to-mind.com</a></footer>
+  <footer><a href="/films/feed.xml">Subscribe (RSS)</a> · <a href="https://www.youtube.com/@atombomb983">V01D on YouTube</a> · <a href="/privacy/">Privacy</a> · <a href="/">a-to-mind.com</a></footer>
 </main>
 <script>
 (() => {
@@ -80,7 +94,9 @@
   const copyBtn = (label, text) => {
     const b = $('button', { class: 'btn', type: 'button', text: label });
     b.addEventListener('click', async () => {
-      try { await navigator.clipboard.writeText(text); b.textContent = 'Copied ✓'; } catch (_) { b.textContent = 'Copy failed'; }
+      try { await navigator.clipboard.writeText(text); b.textContent = 'Copied ✓'; } catch (_) { // older phones: copy through a hidden box
+        const t = $('textarea', { readonly: '', style: 'position:fixed;opacity:0' }); t.value = text; document.body.append(t); t.select();
+        let ok = false; try { ok = document.execCommand('copy'); } catch (_) {} t.remove(); b.textContent = ok ? 'Copied ✓' : 'Copy failed'; }
       setTimeout(() => { b.textContent = label; }, 1800);
     });
     return b;
@@ -92,6 +108,27 @@
     try { const o = localStorage.getItem('a2m.void.owner.v1'); if (o) out.push(['owner', o]); } catch (_) {}
     try { const m = (JSON.parse(localStorage.getItem('a2m.void.me.v1') || 'null') || {}).token; if (m) out.push(['account', m]); } catch (_) {}
     return out; };
+  // every film is its own ad, and anyone reposts it (owner, 2026-10-15): 1 download (free), 2 copy the words (tracked link, call to
+  // action, share line) in one click, 3 open the platform's own upload page, signed in as you. No API, no token. lib/film-share.js
+  let share = null;
+  function shareBox(f) {
+    const box = $('div', { class: 'share' });
+    const draw = (p) => {
+      const w = share.shareWords(f, p), P = share.PLATFORMS[p];
+      box.replaceChildren(
+        $('div', { class: 'row tabs', role: 'tablist' }, Object.entries(share.PLATFORMS).map(([k, v]) => { const b = $('button', { class: 'btn tab', type: 'button', role: 'tab', 'aria-selected': String(k === p), text: v.name });
+          b.addEventListener('click', () => draw(k)); return b; })),
+        $('div', { class: 'row' }, [
+          $('a', { class: 'btn', href: f.src, download: f.id + '.mp4', text: '1. Download' }),
+          copyBtn('2. Copy for ' + P.name, w.all),
+          $('a', { class: 'btn yt', href: w.upload, target: '_blank', rel: 'noopener', 'data-up': p, text: '3. Upload to ' + P.name }),
+        ]),
+        $('details', {}, [$('summary', { text: 'Copy one piece' }), $('div', { class: 'row' }, [copyBtn('Title', w.title), copyBtn('Description', w.description), copyBtn('Hashtags', w.tags), copyBtn('Link', w.link)])]),
+        $('div', { class: 'note', text: 'Share this ad: anyone can post it, free. Your link is tracked so V01D sees which uploads bring people.' }));
+    };
+    draw('youtube');
+    return box;
+  }
   let good = '';
   const token = () => good;
   const auth = () => { const t = token(); return t ? { authorization: 'Bearer ' + t } : {}; };
@@ -123,10 +160,11 @@
     if (owner && r.notes && r.notes.length) kids.push($('ul', {}, r.notes.map((n) => $('li', { text: VERDICTS[n.verdict] + ' (' + n.by + '): ' + n.note }))));
     return $('div', { class: 'review' }, kids);
   }
-  const status = document.getElementById('status'), list = document.getElementById('films');
+  const status = document.getElementById('status'), list = document.getElementById('films'), watch = document.getElementById('watch');
   async function load() {
     list.textContent = ''; status.textContent = 'Loading the films…';
     try {
+      share = await import('/lib/film-share.js');
       let r = null, j = {};
       // anyone watches (owner, 2026-10-15: the films are our ads); a sign-in this browser already holds is tried in turn, quietly,
       // stopping at the first the server takes as the owner or a member
@@ -140,19 +178,36 @@
       if (!r.ok) throw new Error(String(r.status));
       const films = j.films || [];
       if (!films.length) { status.textContent = 'No films yet: the first arrives with the next daily recording.'; return; }
-      status.textContent = films.length + (films.length === 1 ? ' film' : ' films') + ', newest first.';
-      for (const f of films) {
-        const when = new Date(f.at).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
-        const video = $('video', { src: f.src, controls: '', playsinline: '', preload: 'metadata' });
-        const kids = [$('h2', { text: f.title }), $('div', { class: 'when', text: when })];
-        if (j.owner) kids.push( // the owner posts it to YouTube by hand, after watching it
-          $('div', { class: 'row' }, [
-            $('a', { class: 'btn', href: f.src, download: f.id + '.mp4', text: '1. Download' }),
-            $('a', { class: 'btn yt', href: UPLOAD, target: '_blank', rel: 'noopener', text: '2. Upload to YouTube' }),
-          ]),
-          $('div', { class: 'row' }, [copyBtn('3. Copy title', f.title), copyBtn('Copy description', f.description), ...(f.tags ? [copyBtn('Copy tags', f.tags)] : [])]));
-        if (j.member) kids.push(reviewBox(f, j.owner));
-        list.append($('article', { class: 'film', 'data-id': f.id }, [video, $('div', { class: 'body' }, kids)]));
+      // V01D Tube (owner, 2026-10-15: "V01D should be its own version of YouTube"): the channel grid, and a watch page per video
+      // at /films/?v=<id> with its player, words, views, share and upload buttons and related videos
+      const views = await fetch('/api/film-views?ids=' + films.map((f) => f.id).join(',')).then((x) => x.json()).then((x) => x.views || {}).catch(() => ({}));
+      const vlabel = (id) => { const n = views[id] || 0; return n.toLocaleString() + (n === 1 ? ' view' : ' views'); };
+      const v = new URLSearchParams(location.search).get('v'), cur = films.find((f) => f.id === v);
+      const when = (f) => new Date(f.at).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' });
+      const card = (f) => $('a', { class: 'film thumb', href: '?v=' + encodeURIComponent(f.id), 'data-id': f.id }, [
+        $('video', { src: f.src + '#t=0.5', muted: '', playsinline: '', preload: 'metadata', 'aria-hidden': 'true' }),
+        $('div', { class: 'body' }, [$('h2', { text: f.title }), $('div', { class: 'when', text: vlabel(f.id) + ' · ' + when(f) })])]);
+      if (cur) {
+        document.title = cur.title + ' · V01D Tube';
+        try { if (!sessionStorage.getItem('a2m.tube.seen.' + cur.id)) { sessionStorage.setItem('a2m.tube.seen.' + cur.id, '1');
+          const c = await fetch('/api/film-views?id=' + encodeURIComponent(cur.id), { method: 'POST' }).then((x) => x.json()); if (c.views) views[cur.id] = c.views; } } catch (_) {}
+        const page = location.origin + '/films/?v=' + encodeURIComponent(cur.id), t = encodeURIComponent(cur.title + ' · V01D'), u = encodeURIComponent(page);
+        const out = [['X', 'https://x.com/intent/post?text=' + t + '&url=' + u], ['Facebook', 'https://www.facebook.com/sharer/sharer.php?u=' + u], ['Reddit', 'https://www.reddit.com/submit?url=' + u + '&title=' + t],
+          ['WhatsApp', 'https://wa.me/?text=' + t + '%20' + u], ['Bluesky', 'https://bsky.app/intent/compose?text=' + t + '%20' + u], ['LinkedIn', 'https://www.linkedin.com/sharing/share-offsite/?url=' + u]];
+        const shareRow = $('div', { class: 'row' }, [...out.map(([n, h]) => $('a', { class: 'btn', href: h, target: '_blank', rel: 'noopener', text: n })), copyBtn('Copy link', page)]);
+        if (navigator.share) { const b = $('button', { class: 'btn', type: 'button', text: 'Share…' }); b.addEventListener('click', () => navigator.share({ title: cur.title, url: page }).catch(() => {})); shareRow.append(b); }
+        const kids = [$('h2', { text: cur.title }), $('div', { class: 'when', id: 'views', text: vlabel(cur.id) + ' · ' + when(cur) }),
+          $('p', { class: 'desc', text: cur.description }), $('div', { class: 'kick', text: 'Share it' }), shareRow,
+          $('div', { class: 'kick', text: 'Upload it to your own channel' }), shareBox(cur)];
+        if (j.member) kids.push(reviewBox(cur, j.owner));
+        watch.replaceChildren($('a', { class: 'home', href: './', text: '← All videos' }),
+          $('article', { class: 'film watchbox', 'data-id': cur.id }, [$('video', { src: cur.src, controls: '', playsinline: '', autoplay: '', preload: 'metadata' }), $('div', { class: 'body' }, kids)]),
+          $('h3', { class: 'kick', text: 'Up next' }));
+        status.textContent = '';
+        for (const f of films.filter((x) => x !== cur).slice(0, 12)) list.append(card(f));
+      } else {
+        status.textContent = films.length + (films.length === 1 ? ' video' : ' videos') + ', newest first. Tap one to watch, share or upload it.';
+        for (const f of films) list.append(card(f));
       }
     } catch (e) {
       status.textContent = 'The films could not load just now. Try again in a minute.';
