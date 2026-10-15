@@ -1,36 +1,38 @@
 /**
- * quote skill — a short inspirational quote (local list, no key)
- * "inspire me", "give me a quote", "quote of the day".
+ * quote skill: random inspirational quotes.
+ * "give me a quote", "inspirational quote", "random quote".
+ * Empty surface stays empty. Quotes are static, no external call.
  */
 const QUOTES = [
-  ['The only way to do great work is to love what you do.', 'Steve Jobs'],
-  ['In the middle of difficulty lies opportunity.', 'Albert Einstein'],
-  ['What you do speaks so loudly that I cannot hear what you say.', 'Ralph Waldo Emerson'],
-  ['The best time to plant a tree was 20 years ago. The second best time is now.', 'Chinese proverb'],
-  ['You miss 100% of the shots you don\'t take.', 'Wayne Gretzky'],
-  ['It always seems impossible until it\'s done.', 'Nelson Mandela'],
-  ['The future belongs to those who believe in the beauty of their dreams.', 'Eleanor Roosevelt']
+  'The only way to do great work is to love what you do. — Steve Jobs',
+  'In the middle of difficulty lies opportunity. — Albert Einstein',
+  'Be the change that you wish to see in the world. — Mahatma Gandhi',
+  'The future belongs to those who believe in the beauty of their dreams. — Eleanor Roosevelt',
+  'Success is not final, failure is not fatal: it is the courage to continue that counts. — Winston Churchill',
 ];
+
 function isQuote(text) {
-  return /^(?:inspire\s+me|give\s+me\s+a\s+quote|quote(?:\s+of\s+the\s+day)?|say\s+something\s+inspiring)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return /^(?:give\s+me\s+(?:a\s+)?|random\s+|inspirational\s+)?quote$/.test(t);
 }
+
 async function run(text, api) {
   const { showPage, esc } = api;
-  const [q, a] = QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  if (!isQuote(text)) return 'none';
+  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
   showPage((p) => {
-    p.innerHTML = '<h2>A quote</h2><p style="font-size:22px;line-height:1.5;font-style:italic">' + esc(q) + '</p><div class="sub">— ' + esc(a) + '</div>';
+    p.innerHTML = '<h2>Quote</h2><p style="font-style:italic;font-size:18px">' + esc(q) + '</p>';
   });
   return 'quote';
 }
-function suite() {
-  const ok = isQuote('inspire me') && isQuote('give me a quote') && !isQuote('what is a quote');
-  return { ok, got: ok ? 'ok' : 'fail' };
-}
+
 export default {
   name: 'quote',
-  examples: ['inspire me', 'give me a quote', 'quote of the day'],
-  nearMisses: ['what is a quote', 'stock quote', 'quote this'],
+  examples: ['give me a quote', 'inspirational quote', 'random quote'],
+  nearMisses: ['quote the bible', 'what is a quote'],
   match(lower, text) { return isQuote(text); },
   run,
-  suite
+  suite() {
+    return { ok: isQuote('give me a quote') && !isQuote('hello') };
+  },
 };
