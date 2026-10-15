@@ -2489,6 +2489,7 @@ try {
     await until(async () => !!(await F.p.$('#watch .watchbox a.yt')), 5000);
     const watcher = await F.p.evaluate(() => { const a = document.querySelector('#watch .watchbox'); return a && { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'),
       yt: (a.querySelector('a.yt') || {}).href || '', dl: (a.querySelector('a[download]') || { getAttribute: () => '' }).getAttribute('href'), review: !!a.querySelector('.review'),
+      dn: (a.querySelector('a[download]') || { getAttribute: () => '' }).getAttribute('download'), // saved under the title, so YouTube's default title is the question (2026-10-15)
       wide: document.documentElement.scrollWidth > innerWidth }; });
     await F.ctx.grantPermissions(['clipboard-read', 'clipboard-write']);
     await F.p.click('#watch .share .row:not(.tabs) button'); const copied = await F.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
@@ -2498,7 +2499,7 @@ try {
     const member = await F.p.evaluate(() => !!document.querySelector('#watch .review'));
     check('films page: anyone watches, a member reviews, the owner gets the YouTube steps',
       gate.films === 1 && gate.video && !gate.review && gate.href === '?v=' + film.id && !gate.signin && !/sign in|member|have a key/i.test(gate.text) && seen[0] === ''
-      && !!watcher && watcher.h === film.title && watcher.src === film.src && watcher.yt === 'https://www.youtube.com/upload' && watcher.dl === film.src && !watcher.review && !watcher.wide
+      && !!watcher && watcher.h === film.title && watcher.src === film.src && watcher.yt === 'https://www.youtube.com/upload' && watcher.dl === film.src && watcher.dn === 'Odd moments - an AI built this itself #Shorts.mp4' && !watcher.review && !watcher.wide
       && /Odd moments/.test(copied) && /a-to-mind\.com\/c\/20261014-x-r6\?p=youtube&by=share/.test(copied) && member && !F.errors.length,
       JSON.stringify({ gate: { ...gate, text: gate.text.slice(0, 80) }, watcher, copied: copied.slice(0, 120), member, seen, errors: F.errors }));
     await F.ctx.close(); }
