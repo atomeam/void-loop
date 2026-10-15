@@ -2,7 +2,7 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 1,
-  "tested": 47,
+  "tested": 48,
   "checked": 14,
   "proven": 84
  },
@@ -551,7 +551,7 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 1,
-    "tested": 10,
+    "tested": 11,
     "checked": 1,
     "proven": 8
    },
@@ -656,6 +656,11 @@
      "name": "releasenotes",
      "tier": "proven",
      "why": "a self-test, 1 browser-suite mention, 5 real asks in the benchmark"
+    },
+    {
+     "name": "advice",
+     "tier": "tested",
+     "why": "a self-test"
     }
    ]
   },
@@ -733,27 +738,22 @@
     {
      "name": "dark-look",
      "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark"
-    },
-    {
-     "name": "recent",
-     "tier": "tested",
-     "why": "1 browser-suite mention"
-    },
-    {
-     "name": "showcase",
-     "tier": "tested",
      "why": "a self-test"
+    },
+    {
+     "name": "local-inference",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark"
     }
    ]
   },
   {
    "id": "self",
    "name": "Void itself",
-   "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
+   "for": "how Void grows, what it can do and its own pages",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 4,
     "checked": 2,
     "proven": 14
    },
@@ -761,72 +761,47 @@
     {
      "name": "growth",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 9 real asks in the benchmark"
-    },
-    {
-     "name": "goal",
-     "tier": "proven",
-     "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark"
+     "why": "a self-test, 5 browser-suite mentions, 12 real asks in the benchmark"
     },
     {
      "name": "intent",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 37 real asks in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 8 real asks in the benchmark"
     },
     {
-     "name": "different",
-     "tier": "tested",
-     "why": "4 browser-suite mentions"
-    },
-    {
-     "name": "memory",
+     "name": "goal",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 10 real asks in the benchmark"
-    },
-    {
-     "name": "watch",
-     "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 7 real asks in the benchmark"
-    },
-    {
-     "name": "status",
-     "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 5 real asks in the benchmark"
-    },
-    {
-     "name": "incident",
-     "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 6 real asks in the benchmark"
-    },
-    {
-     "name": "actions",
-     "tier": "proven",
-     "why": "a self-test, 5 browser-suite mentions, 7 real asks in the benchmark"
-    },
-    {
-     "name": "automations",
-     "tier": "tested",
-     "why": "6 real asks in the benchmark"
+     "why": "a self-test, 1 browser-suite mention, 6 real asks in the benchmark"
     },
     {
      "name": "proposal",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 6 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 5 real asks in the benchmark"
     },
     {
-     "name": "services",
+     "name": "automations",
      "tier": "proven",
-     "why": "a self-test, 9 real asks in the benchmark"
+     "why": "a self-test, 4 browser-suite mentions, 7 real asks in the benchmark"
+    },
+    {
+     "name": "actions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 9 real asks in the benchmark"
     },
     {
      "name": "store",
-     "tier": "checked",
-     "why": "a self-test, 4 browser-suite mentions"
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark"
+    },
+    {
+     "name": "services",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark"
     },
     {
      "name": "share",
-     "tier": "tested",
-     "why": "2 browser-suite mentions"
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 6 real asks in the benchmark"
     },
     {
      "name": "invite",
@@ -834,9 +809,29 @@
      "why": "a self-test, 1 browser-suite mention"
     },
     {
-     "name": "local-inference",
+     "name": "recent",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 3 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 11 real asks in the benchmark"
+    },
+    {
+     "name": "status",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 5 real asks in the benchmark"
+    },
+    {
+     "name": "incident",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 4 real asks in the benchmark"
+    },
+    {
+     "name": "showcase",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark"
+    },
+    {
+     "name": "different",
+     "tier": "tested",
+     "why": "a self-test"
     },
     {
      "name": "rebuild-map",
