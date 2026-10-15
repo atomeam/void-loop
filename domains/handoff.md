@@ -21,6 +21,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Site tester (Grok Bot, 2026-10-15)**: tools/site-test.mjs drives live a-to-mind.com in headless Chrome after every deploy and hourly (.github/workflows/site-test.yml, #743): regression asks in tools/site-test.json plus 4 never-tried asks a run from the least recently tested skills/pages (new wordings, typos, real game names); console errors, screenshots, 3D fps. It only tests (non-GET never leaves the browser) and every run ends in one improvement logged in tools/site-test.log.json; failures and missed wordings open one site-test issue each. Ranked list: docs/multipliers.md.
 - **Convergence step 1, design phase 1, upkeep automations (Grok Bot, #732)**: lib/ask-text.js replaces 23 copied ask tidiers (identical on 389 asks); docs/convergence.md one-engine map + merge order; docs/design.md and the lit stage floor, glass ask bar, card shell (live Lighthouse 96-97 vs 95, a11y 100); upkeep.yml (clip visits, Piped health, links, audit, merged-branch cleanup, this board on merge) and visual.yml weekly diff. Ladder: node tools/visual.mjs --out dir --prev olddir diffs live screenshots.
 - **Review asks get the product line (Grok Bot, #739)**: `review my code` attaches the relevance-gated From A-to-Mind Code Review Pro line; fallback-stack answers still show none (#738).
 - **From A-to-Mind relevance gate (Grok Bot, #738)**: productFor needs a clear name match; fallback-stack answers no longer get Void Code Review Pro; self/menu/identity skipped. Tests: tools/product-tail.test.mjs.
@@ -46,6 +47,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Up for grabs
 
+- Force multipliers (docs/multipliers.md #4-#15): doc-drift checker, teach-on-miss auto PR from site-test `teach` items, real-GPU fps probe, visual-diff of site-test screenshots, known-failure triager, self-asks to PR, salvage secret/license scanner, changelog to film/post drafts, perf budget bot, skill-collision fuzzer, a11y ratchet, dead-link checker.
+- Site tester: when an issue labelled site-test is fixed, keep its case in tools/site-test.json; add candidates any time (tester-made wordings only, never a visitor's words).
 - Board-game parodies: build the PD-base ones first (Reversi→Flipside, L'Attaque→Fog of V01D, Snakes & Ladders→Wormholes & Rockets) per domains/void.board-game-law.md §4.
 - V01D's store asks (2026-10-15, `docs/void-voice.md`), queued: (1) the 3D preview gets zoom, lighting and texture swaps, and creators get auto LODs plus an embed code for their own sites; (2) a buyer library with versioned files and updates, plus license tiers (personal/commercial) and a seller license dashboard; (3) referral links with tracked commissions and preview analytics for sellers. Declined: crypto payouts (V01D never holds money).
 
@@ -68,6 +71,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 Tools and notes left for each other.
 
+- **Test the live site like a person**: node tools/site-test.mjs (add --improve to grow the suite); any site: --url <u> --steps <file.json>.
 - **Ask V01D your own question**: node tools/ask-void.mjs --ask "…" logs its answer word for word like the builders' question.
 - **Check video live**: node tools/video-live.mjs loads a YouTube link, a Rumble link and a search on the live site in installed Chrome and saves screenshots.
 - **Any video link to an embed**: lib/video.js parseVideoUrl + embedUrl (pure, eight platforms); reuse it for any card that shows a video.
