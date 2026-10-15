@@ -51,7 +51,10 @@ export function sideCard(th, stageApi, card, { boardW = 420, boardH = 420, w = 2
   card.style.width = cw + 'px';
   // it stops above the ask bar and scrolls inside, thin and dark, instead of running under it
   const vh = typeof innerHeight === 'number' ? innerHeight : 900;
-  if (at.y < vh) { card.style.maxHeight = Math.max(200, vh - at.y - 120) + 'px'; card.style.overflowY = 'auto'; }
+  // the ask bar's real top (it grows with the whisper and away lines; a fixed 120 px left Monopoly's Roll under the ask box, 2026-10-15)
+  const dock = typeof document !== 'undefined' && document.getElementById('dock'), stageTop = card.parentElement ? card.parentElement.getBoundingClientRect().top : 0;
+  const bottom = dock ? dock.getBoundingClientRect().top - stageTop - 12 : vh - 120;
+  if (at.y < vh) { card.style.maxHeight = Math.max(200, bottom - at.y) + 'px'; card.style.overflowY = 'auto'; }
   card.style.cursor = 'grab';
   card.addEventListener('pointerdown', (e) => {
     if (e.button > 0 || (e.target && e.target.closest && e.target.closest('button,input,select,a'))) return;
