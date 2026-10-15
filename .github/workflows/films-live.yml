@@ -1,0 +1,32 @@
+# The live films, checked from outside (tools/films-live.mjs): /films/ and /api/films as a stranger sees them (films listed, the
+# newest one plays, no reviews, not the owner) and the owner key let in as the owner. Results in the job summary, counts and
+# yes/no only. Manual only; reads, nothing stored. The owner row needs VOID_OWNER_TOKEN (the Pages READ_TOKEN).
+name: Films live
+
+on:
+  workflow_dispatch:
+    inputs:
+      site:
+        description: The site to check
+        default: 'https://a-to-mind.com'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: What a stranger and the owner see
+        env:
+          READ_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          SITE: ${{ inputs.site }}
+        run: |
+          set -o pipefail
+          node tools/films-live.mjs --site "$SITE" | tee -a "$GITHUB_STEP_SUMMARY"
