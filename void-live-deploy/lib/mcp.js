@@ -12,12 +12,20 @@ import { activeShowers, nextShower } from './showers.js';
 export const PROTOCOL = '2025-06-18';
 export const SERVER = { name: 'void', title: 'Void (a-to-mind.com)', version: '1.1.0' };
 const RO = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
+// what shape an agent wants back (asked by Void, ask-20261014-1722-1): 'text' (default: the words, sources listed) or 'raw_data'
+// (the structured result as JSON text). 'image' is named so an agent learns it is not offered yet, rather than guessing.
+const RESPONSE_TYPE = { type: 'string', enum: ['text', 'raw_data', 'image'], description: "What to get back: 'text' (default) or 'raw_data' (the structured result as JSON). 'image' is not offered yet." };
+export function shaped(result, type) {
+  if (!result || result.isError || !type || type === 'text') return result;
+  if (type === 'raw_data') return { ...result, content: [{ type: 'text', text: JSON.stringify(result.structuredContent || {}) }] };
+  return { content: [{ type: 'text', text: "This tool gives 'text' or 'raw_data'; 'image' is not offered yet." }], isError: true };
+}
 const DATE = { type: 'string', description: 'An ISO date or date-time (UTC). Leave it out for now.' };
 
 export const TOOLS = [
   { name: 'ask_void', title: 'Ask Void anything', annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
     description: "Ask Void a question in plain words and get its answer: a short, direct answer from Void's answer engine (a-to-mind.com), citing the Wikipedia pages it drew on when they match. Ask about Void itself (\"what are you building?\") and it answers from its own live facts. Up to 12 model answers a minute per caller; a repeated question may come from the 7-day cache.",
-    inputSchema: { type: 'object', required: ['ask'], properties: { ask: { type: 'string', description: 'The question, in plain words (3 to 600 characters).' } } } },
+    inputSchema: { type: 'object', required: ['ask'], properties: { ask: { type: 'string', description: 'The question, in plain words (3 to 600 characters).' }, response_type: RESPONSE_TYPE } } },
   { name: 'review_code', title: 'Review code (instant checks)', annotations: RO,
     description: "Void's instant code review: pattern checks for bugs, risks and style in pasted code or a diff's added lines, in many languages. The same checks a-to-mind.com runs when someone asks Void to review code. No model; the closer read is not included. Its structured result says basis 'patterns' and confidence 'low'.",
     inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to review (up to 60,000 characters).' }, diff: { type: 'string', description: 'A unified diff instead of code: only the added lines are reviewed, with their line numbers in the new file.' }, lang: { type: 'string', description: 'The language, if known (javascript, python, go, rust, sql, ...).' } } } },
@@ -113,7 +121,7 @@ export async function rpc(msg, ctx) {
     const fn = Object.prototype.hasOwnProperty.call(RUN, params.name) ? RUN[params.name] : null;
     if (!fn) return err(id, -32602, 'Unknown tool: ' + String(params.name).slice(0, 60));
     const args = params.arguments && typeof params.arguments === 'object' && !Array.isArray(params.arguments) ? params.arguments : {};
-    try { return ok(id, await fn(args, ctx)); } catch (_) { return ok(id, toolError('The tool failed on that input.')); }
+    try { return ok(id, shaped(await fn(args, ctx), args.response_type)); } catch (_) { return ok(id, toolError('The tool failed on that input.')); }
   }
   return err(id, -32601, 'Method not found: ' + method.slice(0, 60));
 }

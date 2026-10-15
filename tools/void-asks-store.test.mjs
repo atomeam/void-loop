@@ -1,6 +1,7 @@
 // V01D's own asks of 2026-10-15 (Suggested-by: Void): the store-preview carousel, store-publish into its growth inbox, the
 // auto-clip loop for new forge models, the decay timer for stale experiments, and the tester-log card.
 import { test } from 'node:test';
+import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import preview, { previewAsk, slides } from '../void-live-deploy/skills/store.js';
 import growth, { testerAsk, testerRows as rows } from '../void-live-deploy/skills/growth.js';
@@ -55,4 +56,50 @@ test('tester-log: the public view of the site tester, newest first, and the card
   for (const a of ['tester log', 'site tester log', 'what is the site tester testing', 'site test results', 'what have you tested lately']) assert.ok(testerAsk(a), a);
   for (const a of ['test my site', 'blood test results', 'tester']) assert.ok(!testerAsk(a), a);
   assert.ok(growth.match('tester log', 'tester log') && growth.match('growth', 'growth'));
+});
+
+import { failuresByFamily, spurt, stability, ownerHtml } from '../void-live-deploy/skills/growth.js';
+test('owner view on the growth card: failures by family, stability, the last spurt', () => {
+  const fam = { families: [{ name: 'Words', skills: [{ name: 'define', tier: 'proven', failing: ['a', 'b'] }, { name: 'book', tier: 'tested' }] }, { name: 'Sky', skills: [{ name: 'weather', tier: 'proven' }, { name: 'uv', tier: 'tested', failing: ['c'] }] }] };
+  assert.deepEqual(failuresByFamily(fam), [{ family: 'Words', skills: 1, asks: 2 }, { family: 'Sky', skills: 1, asks: 1 }]);
+  const L = [{ at: '2026-10-15T06:00:00Z', kind: 'grow', what: 'store preview: x' }, { at: '2026-10-15T01:00:00Z', kind: 'fix', what: 'digest (y)' }, { at: '2026-10-13T00:00:00Z', kind: 'grow', what: 'old' }];
+  assert.deepEqual(spurt(L), { added: ['store preview'], changed: ['digest'] });
+  assert.equal(stability(fam, { 'skill:weather': '2026-10-15T06:00:00Z' }).filter((x) => x.passed).length, 1);
+  const h = ownerHtml((x) => String(x), fam, L, { 'skill:weather': 'x' });
+  assert.match(h, /Failures by family: <b[^>]*>Words<\/b> 1 skill \(2 asks\), <b[^>]*>Sky<\/b> 1 skill \(1 ask\)\. Stability: 1 of 4 skills proven with nothing failing; the site tester has passed 1 of them live\. Last spurt: 1 new \(store preview\), 1 changed\./);
+  assert.match(ownerHtml(String, { families: [] }, [], {}), /Failures by family: none on the bench/);
+});
+
+import rack, { parodyOf } from '../void-live-deploy/skills/rack.js';
+import { source, DOC, OUT } from './parody.mjs';
+test('parody games in the rack: the 30-game matrix, searchable, with V01D\'s own version', () => {
+  assert.equal(fs.readFileSync(OUT, 'utf8'), source(fs.readFileSync(DOC, 'utf8')), 'run: node tools/parody.mjs');
+  assert.equal(parodyOf('parody of monopoly').row.parody, 'Hollow Holdings');
+  assert.equal(parodyOf("what's your version of clue?").row.parody, 'Who Deleted V01D?');
+  assert.equal(parodyOf('is reversi in the public domain').row.parody, 'Flipside');
+  assert.equal(parodyOf('make a v01d version of risk').row.parody, 'R1SK.EXE');
+  assert.equal(parodyOf('parody forge stratego').row.parody, 'Fog of V01D');
+  assert.ok(parodyOf('parody games').all && parodyOf('parody-forge').all);
+  assert.equal(parodyOf('parody of the zorkball board game').unknown, 'zorkball');
+  for (const a of ['is water wet', 'play chess', 'what is a parody', 'parody of a song by weird al', 'is the moon public domain']) assert.equal(parodyOf(a), null, a);
+  assert.ok(rack.match('', 'parody games') && rack.match('', 'games'));
+});
+
+import films, { wantsNewFilms, newSince } from '../void-live-deploy/skills/films.js';
+test('films: the feed monitor shows what is new since this browser last looked', () => {
+  for (const a of ['new films', 'any new films?', 'latest videos from v01d', "what's new on v01d tube", 'any new videos today']) assert.ok(wantsNewFilms(a), a);
+  for (const a of ['new films about space', 'best new films of 2025', 'films', 'film a timer']) assert.ok(!wantsNewFilms(a), a);
+  const F = [{ id: 'c' }, { id: 'b' }, { id: 'a' }, { id: 'z' }];
+  assert.deepEqual(newSince(F, 'a').map((f) => f.id), ['c', 'b']);
+  assert.deepEqual(newSince(F, 'c'), []);
+  assert.deepEqual(newSince(F, null).map((f) => f.id), ['c', 'b', 'a']);
+  assert.deepEqual(newSince(F, 'gone').map((f) => f.id), ['c', 'b', 'a']);
+  assert.ok(films.match('new films') && films.match('films') && !films.match('best films of 2025'));
+});
+
+import { pulse } from '../void-live-deploy/skills/growth.js';
+test('growth tree: a pulse once the target is ready, marked on the node', () => {
+  const calls = []; const n = { dataset: {}, animate: (k, o) => calls.push(o.duration) };
+  assert.equal(pulse(n), true); assert.equal(n.dataset.pulsed, '1'); assert.deepEqual(calls, [700]);
+  assert.equal(pulse(null), false); assert.equal(pulse({ dataset: {} }), false);
 });

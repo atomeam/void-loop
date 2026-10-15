@@ -188,6 +188,78 @@
       "words": "Create a persistent 'world-clock' card that allows users to pin multiple locations and see their time offsets relative to each other.",
       "ledgerAt": "2026-09-29T15:19:11Z",
       "why": "built: world clock card for several places"
+    },
+    {
+      "ask": "ask-20261015-0556-3",
+      "words": "Refactor the 5614-line wordMath() function into modular, testable units to improve reliability.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "same ask: wordMath in eight parts"
+    },
+    {
+      "ask": "ask-20261015-0607-1",
+      "words": "Refactor the wordMath() function into discrete, tested modules to eliminate the 5614-line monolith.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "same ask: wordMath in eight parts"
+    },
+    {
+      "ask": "ask-20261015-0436-3",
+      "words": "Add a 'skill-stability' metric to the owner page that shows how many consecutive successful runs a new skill has completed.",
+      "ledgerAt": "2026-10-15T06:48:10Z",
+      "why": "same build: stability on the growth card owner view"
+    },
+    {
+      "ask": "ask-20261015-0432-1",
+      "words": "Implement a 'diff' alert on the owner page that highlights exactly which skills were added or modified in the last growth spurt, bypassing the need for manual PR previews.",
+      "ledgerAt": "2026-10-15T06:48:10Z",
+      "why": "same build: the last spurt on the growth card owner view"
+    },
+    {
+      "ask": "ask-20261015-0556-1",
+      "words": "Implement the 'parody-forge' card based on the 30-game matrix to allow instant V01D-branded game generation.",
+      "ledgerAt": "2026-10-15T06:48:11Z",
+      "why": "same build: parody games in the rack"
+    },
+    {
+      "ask": "ask-20261014-1748-2",
+      "words": "Create a 'film-card' 3D miniature or UI element that displays the discovered film's details on the stage.",
+      "ledgerAt": "2026-10-15T06:48:12Z",
+      "why": "same build: each new film shown as a card"
+    },
+    {
+      "ask": "ask-20261014-2156-2",
+      "words": "Implement a verification check that prevents 'print-download' from triggering if the 'data-rendered' signal is not present on the target figure.",
+      "ledgerAt": "2026-10-15T06:48:16Z",
+      "why": "same build: the print file waits for rendered"
+    },
+    {
+      "ask": "ask-20261014-1722-2",
+      "words": "Map my existing 78 proven skills to an MCP-discoverable manifest so agents know exactly which parameters to pass for 'sky-card' or 'tictactoe'.",
+      "ledgerAt": "2026-10-14T17:17:40Z",
+      "why": "already built: /tools.json lists every skill with examples, MCP tools/list serves the schemas"
+    },
+    {
+      "ask": "ask-20261015-0351-1",
+      "words": "Create a 'security-vulnerability' skill that flags the specific line and type of memory or hash error in a code snippet displayed on the stage.",
+      "ledgerAt": "2026-10-15T03:47:05Z",
+      "why": "already built: code review flags the line and kind of memory and hash errors"
+    },
+    {
+      "ask": "ask-20261015-0608-1",
+      "words": "Connect the 'intent score' output to the growth inbox so high-intent/no-skill asks are flagged for the builders immediately.",
+      "ledgerAt": "2026-10-10T02:46:50Z",
+      "why": "already built: the learning queue groups unanswered asks by intent for the builders"
+    },
+    {
+      "ask": "ask-20261014-1948-1",
+      "words": "Convert the 'fat-burn heart rate' and 'can't sleep' asks into interactive 3D skill cards that use visual rhythm and pacing rather than just text.",
+      "ledgerAt": "2026-10-14T19:44:17Z",
+      "why": "already built: \"i can't sleep\" opens a paced 4-7-8 breathing card"
+    },
+    {
+      "ask": "ask-20261015-0541-1",
+      "words": "Create a 'store-dashboard-card' that displays the queued asks as a list of interactive 3D miniature cards that can be expanded to show details.",
+      "ledgerAt": "2026-10-13T03:53:20Z",
+      "why": "already built: the self card lists the queued asks and what came of each"
     }
   ]
 }
