@@ -1,0 +1,103 @@
+// V01D proposes the fix (frontier #28, step 3 of docs/playbooks/probe-and-fix.md): the oldest open `probe:` job (an ask V01D wrote
+// for itself and missed, tools/probe-asks.mjs) goes back to V01D's model with the owning skill's file (owner-only /api/propose-fix,
+// lib/propose-fix.js), which proposes the narrowest matcher change as exact line replacements. This applies them to a copy of the
+// skill and lets the repo's own checks decide, in order: the skill collision check (tools/skills-check.mjs), the skill's unit test
+// when it has one, Void's review as a gate (tools/review-pr.mjs --gate), and the everyday benchmark on the missed ask plus every
+// bench ask the skill already answers (BENCH_ASKS, so nothing it knew is lost). A proposal that passes everything is written as
+// a patch file for the workflow's write job (.github/workflows/propose-fix.yml), which moves the bytes into a pull request labelled
+// "made by V01D" and never automerge; a proposal that fails any step is undone here and the job's note says which step, so a builder
+// picks it up. Nothing a model wrote runs with a write token, and the job's ask is V01D's own words.
+//   node tools/propose-fix.mjs                         the oldest open probe: job (owner token VOID_OWNER_TOKEN)
+//   node tools/propose-fix.mjs --job <id>              that job
+//   node tools/propose-fix.mjs --ask "…" --skill words  no queue: propose for this ask and skill (always --dry)
+//   node tools/propose-fix.mjs --dry                   propose, apply and test, but leave the queue note alone
+//   --out <dir>   where the patch (propose-fix.patch) and the result (propose-fix.json) are written (default: the temp folder)
+// Exit 0 when it ran (passed or failed cleanly), 3 when there is no job, the site could not be reached or V01D proposed nothing.
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { resolve, dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
+import os from 'node:os';
+import { jobAsk, applyEdits } from '../void-live-deploy/lib/propose-fix.js';
+
+const here = dirname(fileURLToPath(import.meta.url)), root = resolve(here, '..');
+const SITE = process.env.VOID_SITE || 'https://a-to-mind.com';
+export const STEPS = ['collisions', 'unit test', 'void review', 'benchmark'];
+
+/** The job to work on: the oldest open probe: job, or the one named; null when there is none. */
+export function pickJob(queue, id = '') {
+  const items = ((queue && queue.items) || []).filter((i) => /^probe:/.test(i.target) && /^(queued|building)$/.test(i.state) && jobAsk(i));
+  if (id) return items.find((i) => i.id === id) || null;
+  return items.sort((a, b) => String(a.at).localeCompare(String(b.at)))[0] || null;
+}
+
+/** The asks the benchmark replays after the change: the missed one first, then every bench ask the skill already answers. */
+export function regressionAsks(miss, bench, skill) {
+  const own = (bench || []).filter((b) => String(b.want || '').split('|').some((p) => p === 'skill:' + skill || p === skill));
+  return [{ ask: miss.ask, want: miss.want }, ...own.filter((b) => b.ask.trim().toLowerCase() !== miss.ask.trim().toLowerCase())];
+}
+
+/** The queue note after an attempt: which step stopped it, or where the fix went; counts and step names only. */
+export function noteFor(result) {
+  if (result.passed) return 'V01D proposed a fix that passed ' + STEPS.join(', ') + ' (' + result.edits + ' line change' + (result.edits === 1 ? '' : 's') + ' in skills/' + result.skill + '.js); see the pull request labelled "made by V01D"';
+  return 'V01D proposed a fix (' + result.edits + ' line change' + (result.edits === 1 ? '' : 's') + ') that failed at: ' + result.failed + (result.detail ? ' (' + result.detail + ')' : '') + '; a builder takes it from here';
+}
+
+const run = (cmd, args, opts = {}) => spawnSync(cmd, args, { cwd: root, encoding: 'utf8', timeout: opts.timeout || 600000, env: { ...process.env, ...(opts.env || {}) }, maxBuffer: 64 * 1024 * 1024 });
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const args = process.argv.slice(2), opt = (k) => { const i = args.indexOf(k); return i >= 0 ? args[i + 1] : undefined; };
+  const direct = opt('--ask') && opt('--skill'), dry = args.includes('--dry') || !!direct;
+  const outDir = opt('--out') || join(os.tmpdir(), 'void-propose-fix'); mkdirSync(outDir, { recursive: true });
+  const api = async (path, method = 'GET', body) => {
+    const tok = process.env.VOID_OWNER_TOKEN || process.env.VOID_MISSES_TOKEN; if (!tok) throw new Error('VOID_OWNER_TOKEN is not set in this environment');
+    const res = await fetch(SITE + path, { method, headers: { authorization: 'Bearer ' + tok, 'user-agent': 'a2m-propose-fix/1.0', ...(body ? { 'content-type': 'application/json' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) });
+    if (!res.ok) throw new Error(`${method} ${path}: HTTP ${res.status} ${(await res.text()).slice(0, 120)}`); return res.json();
+  };
+  let job = null, miss;
+  try {
+    if (direct) miss = { ask: opt('--ask'), skill: opt('--skill'), want: 'skill:' + opt('--skill') };
+    else { job = pickJob(await api('/api/queue'), opt('--job') || ''); if (!job) { console.log('no open probe: job to work on'); process.exit(3); } miss = jobAsk(job); }
+  } catch (e) { console.error('propose-fix: the queue was not read: ' + e.message); process.exit(3); }
+  const file = join(root, 'void-live-deploy', 'skills', miss.skill + '.js');
+  if (!existsSync(file)) { console.error('propose-fix: no skill file for ' + miss.skill); process.exit(3); }
+  const source = readFileSync(file, 'utf8');
+  let proposal;
+  try { proposal = await api('/api/propose-fix', 'POST', { ask: miss.ask, skill: miss.skill, source }); }
+  catch (e) { console.error('propose-fix: V01D proposed nothing: ' + e.message); process.exit(3); }
+  const next = applyEdits(source, proposal.edits);
+  if (!next) { console.error('propose-fix: the edits do not apply to the file as it stands'); process.exit(3); }
+  const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, model: proposal.model, passed: false, failed: '', detail: '' };
+  let committed = false;
+  writeFileSync(file, next);
+  const stop = (step, detail) => { result.failed = step; result.detail = String(detail || '').replace(/\s+/g, ' ').trim().slice(0, 160); };
+  try {
+    const col = run(process.execPath, [join(here, 'skills-check.mjs')]);
+    if (col.status !== 0) stop('collisions', (col.stdout + col.stderr).split('\n').filter((l) => /->|collision|reaches|near miss/i.test(l)).length + ' collision line(s)');
+    const unit = join(here, miss.skill + '.test.mjs');
+    if (!result.failed && existsSync(unit)) { const u = run(process.execPath, ['--test', unit]); if (u.status !== 0) stop('unit test', (u.stdout.match(/^# fail (\d+)/m) || [])[1] ? (u.stdout.match(/^# fail (\d+)/m) || [])[1] + ' failing' : 'failed'); }
+    // Void's review reads committed refs (tools/review-pr.mjs diffs base...head), so the proposal is committed for the review and reset below
+    if (!result.failed) {
+      run('git', ['-c', 'user.name=V01D', '-c', 'user.email=void@a-to-mind.com', 'commit', '-q', '--no-verify', '-m', 'V01D proposes: learn to handle "' + miss.ask + '"', '--', 'void-live-deploy/skills/' + miss.skill + '.js']);
+      committed = run('git', ['rev-parse', '--verify', '-q', 'HEAD~1']).status === 0 && /V01D proposes/.test(run('git', ['log', '-1', '--format=%s']).stdout);
+      const rv = run(process.execPath, [join(here, 'review-pr.mjs'), '--gate', '--base', 'HEAD~1', '--head', 'HEAD']); if (rv.status !== 0) stop('void review', 'a bug or a risk on an added line');
+    }
+    if (!result.failed) {
+      const bench = JSON.parse(readFileSync(join(here, 'bench.json'), 'utf8')), asksFile = join(outDir, 'regression.json');
+      const asks = regressionAsks(miss, bench, miss.skill); writeFileSync(asksFile, JSON.stringify(asks, null, 1));
+      const b = run(process.execPath, [join(here, 'bench.mjs'), '--score'], { env: { BENCH_ASKS: asksFile }, timeout: 20 * 60000 });
+      let score = null; try { score = JSON.parse(b.stdout.trim().split('\n').pop()); } catch (_) { score = null; }
+      if (!score) stop('benchmark', 'did not run'); else if (score.wrong && score.wrong.length) stop('benchmark', score.wrong.length + ' of ' + score.total + ' missed' + (score.wrong.some((w) => String(w.ask || w).trim().toLowerCase() === miss.ask.toLowerCase()) ? ', the ask among them' : ''));
+      else result.bench = { score: score.score, total: score.total };
+    }
+  } catch (e) { stop(result.failed || 'checks', e.message); }
+  result.passed = !result.failed;
+  const diff = committed ? run('git', ['diff', 'HEAD~1', 'HEAD', '--', 'void-live-deploy/skills/' + miss.skill + '.js']) : run('git', ['diff', '--', 'void-live-deploy/skills/' + miss.skill + '.js']);
+  if (result.passed) writeFileSync(join(outDir, 'propose-fix.patch'), diff.stdout);
+  // the tree is left as it was either way; the patch carries the change to the write job
+  if (committed) run('git', ['reset', '-q', '--hard', 'HEAD~1']); else run('git', ['checkout', '--', 'void-live-deploy/skills/' + miss.skill + '.js']);
+  writeFileSync(join(outDir, 'propose-fix.json'), JSON.stringify(result, null, 1));
+  if (job && !dry) { try { await api('/api/queue', 'PATCH', { id: job.id, note: noteFor(result).slice(0, 300) }); } catch (e) { console.error('propose-fix: the job note was not written: ' + e.message); } }
+  console.log('### V01D proposed a fix for its ' + miss.skill + ' skill\n\n| What | |\n|:--|:--|\n| the ask | "' + miss.ask + '" (wanted ' + miss.want + ') |\n| line changes | ' + result.edits + ' |\n| why, in V01D\'s words | ' + (result.why || '—') + ' |\n| result | ' + (result.passed ? 'passed ' + STEPS.join(', ') + (result.bench ? ' (' + result.bench.score + '/' + result.bench.total + ')' : '') : 'failed at ' + result.failed + (result.detail ? ': ' + result.detail : '')) + ' |');
+  process.exit(0);
+}

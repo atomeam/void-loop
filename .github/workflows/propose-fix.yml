@@ -1,0 +1,162 @@
+# V01D proposes the fix (frontier #28, step 3 of docs/playbooks/probe-and-fix.md). Once a day, after its own probe has queued the
+# asks it missed (probe-asks.yml, `probe:` jobs), V01D's model reads the owning skill and proposes the narrowest matcher change
+# (owner-only /api/propose-fix, lib/propose-fix.js); tools/propose-fix.mjs applies it to a copy and lets the repo decide: the skill
+# collision check, the skill's unit test, Void's review as a gate, and the everyday benchmark on the missed ask plus every bench ask
+# the skill already answers. Only a proposal that passes all four leaves this job, as a patch file; the second job holds the write
+# token, moves the patch's bytes into a branch (git apply, nothing run) and opens a pull request labelled "made by V01D", never
+# automerge: a builder reads it like anyone's. A proposal that fails is undone and the job's note says which step, for a builder.
+# Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
+name: V01D proposes a fix
+
+on:
+  schedule:
+    - cron: '23 14 * * *' # 10:23 AM New York (EDT), an hour after V01D probes itself
+  workflow_dispatch:
+    inputs:
+      job:
+        description: the probe: job id to work on (empty = the oldest open one)
+        type: string
+        default: ''
+      dry:
+        description: propose, apply and test, but leave the queue note alone and open no pull request
+        type: boolean
+        default: false
+
+concurrency:
+  group: void-propose-fix
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  propose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    outputs:
+      passed: ${{ steps.result.outputs.passed }}
+      skill: ${{ steps.result.outputs.skill }}
+      slug: ${{ steps.result.outputs.slug }}
+      ask: ${{ steps.result.outputs.ask }}
+      why: ${{ steps.result.outputs.why }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Checks
+        run: node --test tools/propose-fix.test.mjs
+      - name: npm ci
+        run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium (+ system deps)
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Sync void.html copies (what the benchmark serves)
+        run: |
+          cp void.html void-live-deploy/index.html
+          cp void.html void-live-deploy/void.html
+      - name: V01D proposes, the repo decides
+        id: result
+        shell: bash
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          JOB: ${{ inputs.job }}
+          DRY: ${{ inputs.dry && '--dry' || '' }}
+        run: |
+          echo "passed=0" >> "$GITHUB_OUTPUT"
+          if [ -z "$VOID_OWNER_TOKEN" ]; then
+            echo "::warning title=V01D did not propose a fix::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
+            exit 0
+          fi
+          args=($DRY --out "$RUNNER_TEMP/fix"); [ -n "$JOB" ] && args+=(--job "$JOB")
+          code=0; node tools/propose-fix.mjs "${args[@]}" > propose.txt || code=$?
+          sed -n '/^### V01D proposed/,$p' propose.txt >> "$GITHUB_STEP_SUMMARY" || true
+          tail -n 30 propose.txt
+          case $code in
+            0) ;;
+            3) echo "::notice title=Nothing to fix today::no open probe: job, the site could not be reached, or V01D proposed nothing that passed the gate"; exit 0 ;;
+            *) echo "::warning title=The proposal did not run::see the lines above"; exit 0 ;;
+          esac
+          r="$RUNNER_TEMP/fix/propose-fix.json"
+          if [ -f "$r" ] && [ -f "$RUNNER_TEMP/fix/propose-fix.patch" ] && node -e "process.exit(require(process.argv[1]).passed ? 0 : 1)" "$r"; then
+            echo "passed=${{ inputs.dry && '0' || '1' }}" >> "$GITHUB_OUTPUT"
+            echo "skill=$(node -p "require(process.argv[1]).skill" "$r")" >> "$GITHUB_OUTPUT"
+            echo "slug=$(node -p "require(process.argv[1]).ask.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 34)" "$r")" >> "$GITHUB_OUTPUT"
+            echo "ask=$(node -p "require(process.argv[1]).ask.replace(/[^\w ,.'?!-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+            echo "why=$(node -p "require(process.argv[1]).why.replace(/[^\w ,.'?!():;-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: steps.result.outputs.passed == '1'
+        with:
+          name: v01d-fix
+          path: ${{ runner.temp }}/fix/propose-fix.patch
+          retention-days: 7
+
+  # the passing patch becomes a pull request: this job can write, and it only moves bytes (it never runs anything a model wrote)
+  pull-request:
+    needs: propose
+    if: needs.propose.outputs.passed == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          name: v01d-fix
+          path: ${{ runner.temp }}/fix
+      - name: Open a pull request with V01D's fix
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SKILL: ${{ needs.propose.outputs.skill }}
+          SLUG: ${{ needs.propose.outputs.slug }}
+          ASK: ${{ needs.propose.outputs.ask }}
+          WHY: ${{ needs.propose.outputs.why }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          patch="$RUNNER_TEMP/fix/propose-fix.patch"
+          # the patch touches exactly one file, the skill named, under skills/: anything else is not V01D's matcher change
+          files=$(git apply --numstat "$patch" | cut -f3)
+          [ "$files" = "void-live-deploy/skills/$SKILL.js" ] || { echo "::error title=Not opened::the patch touches '$files', not void-live-deploy/skills/$SKILL.js"; exit 1; }
+          branch="v01d/fix-$SLUG-$(date -u +%Y%m%d)"
+          git switch -c "$branch"
+          git apply "$patch"
+          git diff --quiet && { echo "nothing to propose"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "void-live-deploy/skills/$SKILL.js"
+          git commit -q -m "V01D fixes its $SKILL skill: learn to handle \"$ASK\"" -m "Proposed by V01D's own model for an ask its probe missed (tools/propose-fix.mjs, frontier #28 step 3). It passed the collision check, the skill's test, Void's review and the benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY" -m "Suggested-by: Void (probe)"
+          git push -q origin "$branch"
+          gh label create "made by V01D" --color 5c5cff --description "a change V01D's own model proposed and the repo's checks passed; a builder reviews it like anyone's" --force >/dev/null 2>&1 || true
+          url=$(gh pr create --base main --head "$branch" --label "made by V01D" --title "V01D fixes its $SKILL skill: learn to handle \"$ASK\"" \
+            --body "V01D's own model proposed this change for an ask its daily probe wrote and missed (frontier #28, step 3: tools/propose-fix.mjs). Before it got here it passed the skill collision check, the skill's unit test, Void's review as a gate and the everyday benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY. Not labelled automerge on purpose: a builder reads it like anyone's. The ask is V01D's own words, not a visitor's.")
+          echo "### V01D's fix is up: $url" >> "$GITHUB_STEP_SUMMARY"
+          # the job's note says where the fix went (counts and the link only)
+          if [ -n "$VOID_OWNER_TOKEN" ]; then
+            node -e "
+              const url = process.argv[1], slug = process.argv[2];
+              fetch('https://a-to-mind.com/api/queue', { headers: { authorization: 'Bearer ' + process.env.VOID_OWNER_TOKEN } }).then((r) => r.json()).then(async (q) => {
+                const it = (q.items || []).find((i) => i.target === 'probe:' + slug && /^(queued|building)$/.test(i.state)); if (!it) return;
+                const res = await fetch('https://a-to-mind.com/api/queue', { method: 'PATCH', headers: { authorization: 'Bearer ' + process.env.VOID_OWNER_TOKEN, 'content-type': 'application/json' }, body: JSON.stringify({ id: it.id, note: String(it.note || '').slice(0, 200) + '; fix: ' + url }) });
+                console.log('note ' + res.status); }).catch((e) => console.log('note not written: ' + e.message));
+            " "$url" "$SLUG" || true
+          fi

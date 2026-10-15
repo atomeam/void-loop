@@ -2,6 +2,8 @@
 
 **Starts when:** an area answers badly (a miss on the board, a voice ask, a family the self-page calls weakest), or nothing else is queued.
 
+**V01D does steps 1 to 5 itself (2026-10-15):** `.github/workflows/probe-asks.yml` (`tools/probe-asks.mjs`) has V01D's own model write 25 asks for its least proven family, probes them and queues the misses as `probe:` jobs; an hour later `.github/workflows/propose-fix.yml` (`tools/propose-fix.mjs`) takes the oldest `probe:` job, has the model propose the narrowest matcher change to the owning skill (owner-only `/api/propose-fix`, exact line replacements only), and lets the repo decide: `tools/skills-check.mjs`, the skill's unit test, `tools/review-pr.mjs --gate`, and the benchmark on the ask plus every bench ask the skill already answers. A pass becomes a pull request labelled "made by V01D" (never automerge: a builder reviews it like anyone's); a fail leaves the job queued with the failing step in its note, for a builder at step 3. The asks V01D wrote are never committed, so write your own paraphrase at step 6 if the fix earns a bench line.
+
 1. **Write 20–30 asks** in one area, the way people type them (typos, short forms, "how many cups is 500g of flour"), each `{ "ask", "want", "says" }` in the shape of `tools/bench.json`. Paraphrases only, never a visitor's exact words (the repo is public).
 2. **Probe:** `node tools/bench.mjs --probe asks.json` prints only the misses. The bench stubs places (every place is Paris), countries and Datamuse, so a `says` there can only check who answered.
 3. **For each miss, find who answered:** `node tools/ask.mjs "the ask"` shows the skill, the card text and any page error.

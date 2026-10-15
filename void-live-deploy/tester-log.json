@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 15,
- "runsTotal": 44,
+ "cases": 16,
+ "runsTotal": 45,
  "kinds": {
-  "grow": 8,
+  "grow": 9,
   "file": 29,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T21:48:02Z",
+   "passed": 0,
+   "of": 19,
+   "kind": "grow",
+   "note": "grew the suite: \"weather in boston\""
+  },
   {
    "at": "2026-10-15T20:35:25Z",
    "passed": 0,
@@ -140,13 +147,6 @@
    "of": 16,
    "kind": "file",
    "note": "fix: \"catroon version of a plague\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T08:17:23Z",
-   "passed": 15,
-   "of": 16,
-   "kind": "file",
-   "note": "fix: \"find fimls about space\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -212,6 +212,10 @@
   "skill:light-look": "2026-10-15T20:35:25Z",
   "skill:link": "2026-10-15T20:35:25Z",
   "skill:list": "2026-10-15T20:35:25Z",
-  "skill:loan": "2026-10-15T20:35:25Z"
+  "skill:loan": "2026-10-15T20:35:25Z",
+  "skill:local-inference": "2026-10-15T21:48:02Z",
+  "skill:lock": "2026-10-15T21:48:02Z",
+  "skill:magnetize": "2026-10-15T21:48:02Z",
+  "skill:make": "2026-10-15T21:48:02Z"
  }
 }
