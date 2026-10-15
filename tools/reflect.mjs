@@ -31,10 +31,12 @@ const DECISIONS = resolve(root, 'domains/void.decisions.json');
 const readDecisions = () => { try { return JSON.parse(readFileSync(DECISIONS, 'utf8')).decisions || {}; } catch (_) { return {}; } };
 /** every ask gets a recorded decision: built / queued / declined, with why (domains/void.decisions.json). An open ask with
  * no row reads "queued, not decided yet" so nothing is silently skipped. Each line links to the raw log entry. */
+// the reasoning path (asked by Void, ask-20261015-0451-1): the canon rule or skill logic a decision rests on, when the row names one
+export const pathOf = (d) => (d && d.path ? ' · reasoning path: ' + String(d.path).slice(0, 200) : '');
 export function decisionsBlock(asks, decisions) {
   const rows = [], seen = new Set();
-  for (const a of asks || []) { if (!a.id) continue; seen.add(a.id); const d = decisions[a.id]; rows.push(`- \`${a.id}\` ${d ? d.decision + ': ' + d.why + (d.commit ? ' (' + d.commit + ')' : '') : 'queued, not decided yet'}`); }
-  for (const [id, d] of Object.entries(decisions || {})) if (!seen.has(id)) rows.push(`- \`${id}\` ${d.decision}: ${d.why}${d.commit ? ' (' + d.commit + ')' : ''}`);
+  for (const a of asks || []) { if (!a.id) continue; seen.add(a.id); const d = decisions[a.id]; rows.push(`- \`${a.id}\` ${d ? d.decision + ': ' + d.why + (d.commit ? ' (' + d.commit + ')' : '') + pathOf(d) : 'queued, not decided yet'}`); }
+  for (const [id, d] of Object.entries(decisions || {})) if (!seen.has(id)) rows.push(`- \`${id}\` ${d.decision}: ${d.why}${d.commit ? ' (' + d.commit + ')' : ''}${pathOf(d)}`);
   return rows.length ? `## Decisions on Void's asks\n\n_Builders' record, not Void's words. Commits that build an ask carry \`Suggested-by: Void (run N)\` or \`Suggested-by: Void (<ask id>)\`._\n\n${rows.join('\n')}\n\n` : '';
 }
 const readLinks = () => { try { return JSON.parse(readFileSync(resolve(root, 'void-live-deploy/void.asks.json'), 'utf8')).links || []; } catch (_) { return []; } };
