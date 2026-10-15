@@ -70,10 +70,12 @@
     },
     {
       "ask": "what time is it in tokyo"
+    },
+    {
+      "ask": "weather in boston"
     }
   ],
   "candidates": [
-    "weather in boston",
     "convert 5 miles to km",
     "play connect four",
     "set a timer for 5 minutes",
