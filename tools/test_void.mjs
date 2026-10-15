@@ -902,6 +902,22 @@ try {
     check('country card: the time there now, from the built-in zones, with or without REST Countries ("population of Japan" with the service down shows Tokyo\'s clock)',
       clock.test(down) && /built-in list/.test(down) && clock.test(up) && /Time/.test(up) && K.errors.length === 0, down.slice(0, 200) + ' | ' + up.slice(0, 200));
     await K.ctx.close(); }
+  // V01D values anything from a photo (frontier #30, the owner's ask): one photo in, V01D's value out; people are never priced
+  if (want("appraise: a photo in, V01D's value out; a person asking is complimented, never priced")) { const A = await fresh();
+    const sent = [];
+    await A.ctx.route(/\/api\/appraise$/, (r) => { sent.push(JSON.parse(r.request().postData() || '{}'));
+      return r.fulfill(json({ seen: 'A worn silver coin with scratches on the face.', value: { kind: 'coin', cents: 54000, text: '$540', says: ['what I see: coin', 'with visible wear or damage', 'silver'], expert: true, person: false }, text: 'V01D values this at $540. Why: what I see: coin; with visible wear or damage; silver. This kind can be worth far more or far less than a photo shows: have it looked at in hand before you sell or insure it. An estimate from one photo, not a certified appraisal or an authentication; no comparable sales were checked.' })); });
+    await A.ask('what is this coin worth', 600); await until(async () => !!(await A.p.$('.vpage.on [data-ap-file]')), 4000);
+    await A.p.fill('.vpage.on [data-ap-note]', 'from my grandfather');
+    const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
+    await A.p.setInputFiles('.vpage.on [data-ap-file]', { name: 'coin.png', mimeType: 'image/png', buffer: png });
+    await until(async () => /V01D values this at/.test(await A.page()), 5000); const card = await A.page();
+    await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.page();
+    check('appraise: "what is this coin worth" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D\'s one value with its reasons and the expert line; "what am I worth" is a compliment with no number',
+      sent.length === 1 && /^data:image\/jpeg;base64,/.test(sent[0].image) && sent[0].note === 'from my grandfather' && /\$540/.test(card) && /looked at in hand/.test(card) && /What I saw: A worn silver coin/.test(card)
+        && /What you are worth/.test(you) && !/\$|\d/.test(you.replace(/V01D/g, '')) && !A.errors.length,
+      JSON.stringify({ sent: sent.map((x) => ({ note: x.note, image: String(x.image).slice(0, 30) })), card: card.replace(/\s+/g, ' ').slice(0, 160), you: you.replace(/\s+/g, ' ').slice(0, 120), errors: A.errors }));
+    await A.ctx.close(); }
   // A deadline chain (skills/deadlines.js): each deadline's date in your zone, time left or since, its state, a "mark met" kept in
   // this browser, and the card keeping itself current. The clock is faked to Thursday 2026-10-15 10:30 so the states are fixed.
   if (want('deadlines: a chain from one start, each with its date, time left and state; mark met stays; it updates every minute')) { const D = await fresh();
