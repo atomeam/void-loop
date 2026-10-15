@@ -195,5 +195,32 @@ export default [
    "20261015-private-incubation-log-6-r10.mp4",
    "README.txt"
   ]
+ },
+ {
+  "id": "site-tester",
+  "name": "V01D Site Tester",
+  "cents": 2400,
+  "kind": "download",
+  "pack": "sdk",
+  "pwyw": false,
+  "files": [
+   {
+    "key": "store/site-tester-v1.zip"
+   }
+  ],
+  "blurb": "Tests any site like a person in headless Chrome, one fix item per run, never submits anything.",
+  "license": "Personal and commercial use on sites you own or may test",
+  "tier": "commercial",
+  "origin": "v01d",
+  "status": "needs-gumroad",
+  "published": "2026-10-15",
+  "bytes": 26836,
+  "contents": [
+   "site-test.mjs",
+   "site-test.test.mjs",
+   "README.txt",
+   "steps.json"
+  ],
+  "wouldBe": "$24.00"
  }
 ];
