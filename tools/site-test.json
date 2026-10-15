@@ -86,6 +86,16 @@
       "ask": "start despacito",
       "means": "play despacito",
       "feature": "skill:video-play"
+    },
+    {
+      "ask": "yo play despacito",
+      "means": "play despacito",
+      "feature": "skill:video-play"
+    },
+    {
+      "ask": "yo what does ephemeral mean",
+      "means": "define serendipity",
+      "feature": "skill:define"
     }
   ],
   "priority": [
