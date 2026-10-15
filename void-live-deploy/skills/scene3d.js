@@ -69,7 +69,8 @@ export function engine() {
     // recompile and redraw them all (three.js rebuilds its own GPU state when the context comes back)
     // the studio light: a CC0 Poly Haven HDRI (brown_photostudio_02, see docs/licenses.md) replaces the procedural room once it
     // has loaded, so glossy pieces show real softbox highlights; the room stays if the file can't load
-    studioHdri(E).catch((e) => console.warn('[scene3d] studio HDRI', e));
+    // only where half-float targets render (PMREM of a float HDRI stalls WebKit's GL without them), and after the first boards drew
+    const ext = renderer.extensions; if (ext.has('EXT_color_buffer_half_float') || ext.has('EXT_color_buffer_float')) setTimeout(() => studioHdri(E).catch((e) => console.warn('[scene3d] studio HDRI', e)), 1500);
     canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); E.lost = true; guard.contextLost(); });
     canvas.addEventListener('webglcontextrestored', () => { E.lost = false; guard.contextRestored(); for (const h of live.values()) { h.needsCompile = true; h.dirty = true; h.shadowDirty = true; for (const c of h.contacts) c.dirty = true; } wake(); });
     return E;
