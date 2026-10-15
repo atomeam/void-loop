@@ -46,6 +46,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Up for grabs
 
+- **V01D values anything from a photo (frontier #30, the owner's ask, first in the order)**: first the vision slot in `lib/models.js` (Claude takes it: the router is Claude's), then the appraise skill. Store note for whoever holds the store branch: the owner said there is no price range ("the price is whatever its valued at by V01D"), so `docs/store.md`'s "on sale when within the set range ... outside the range stays a hidden draft" should go; `lib/appraise.js` itself is fine.
 - Board-game parodies: build the PD-base ones first (Reversi→Flipside, L'Attaque→Fog of V01D, Snakes & Ladders→Wormholes & Rockets) per domains/void.board-game-law.md §4.
 - V01D's store asks (2026-10-15, `docs/void-voice.md`), queued: (1) the 3D preview gets zoom, lighting and texture swaps, and creators get auto LODs plus an embed code for their own sites; (2) a buyer library with versioned files and updates, plus license tiers (personal/commercial) and a seller license dashboard; (3) referral links with tracked commissions and preview analytics for sellers. Declined: crypto payouts (V01D never holds money).
 

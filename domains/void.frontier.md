@@ -139,7 +139,7 @@ Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as 
 
 **Reviewer (owner, 2026-10-09):** a second Claude session reviews **after merge**: it reads the actual merged SHA against the committed specs, reports concrete mismatches with file references and reproduction evidence, and opens focused fix PRs through the normal pipeline. It is not a required check and adds no gate; making its verdict required would be a separate, explicit owner decision. It also keeps one short file of the settled contract (port rules, modes, naming, tests first) as a faithful record of decisions already made, not new ones. Reports keep three things apart: merged, deployed (finished, smoke-checked), and verified (verify-main green on that SHA). Specs committed never means a feature is built.
 
-After these, the numbered items below in their earlier order, with #26 first (owner, 2026-10-15: "make sure V01D gets better at videos as we go"; "every kind of video ... every type of book. and every type of game"): 26 → 27 → 28 → 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
+After these, the numbered items below in their earlier order, with #26 first (owner, 2026-10-15: "make sure V01D gets better at videos as we go"; "every kind of video ... every type of book. and every type of game"; "an image should value all irtems if asked"): 30 → 26 → 27 → 28 → 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
 
 **Infrastructure (owner):** reuse Cloudflare D1, KV and Vectorize. No new vendor (no Qdrant, no Inngest) until a working feature demonstrates a need this stack can't meet. Memory is an explicit "remember this" only. Learning across visitors means shared, tested skills, never pooled private content. Void stays empty until asked; no silent behaviour tracking.
 
@@ -456,6 +456,20 @@ Shipped first: the video skill (#719): eight platforms' official embeds, search 
 4. Watch parties on a shared stage (skills/share), the host's "skip to" followed by all.
 5. Audio-only mode and an accessibility pass on the card (keyboard, screen reader).
 Declined: an offline "smart-cache" that pre-downloads videos (embed only: never downloaded or rehosted).
+
+
+## 30. V01D values anything from a photo
+
+- **Why (owner, 2026-10-15):** "i already asked for the coin , card , value apraisal system which needs image viewing capabilities for V01D"; "not just coin and card an image should value all irtems if asked"; and V01D is the appraiser of what it sells, "an expert in value".
+- **What:** someone shows V01D a photo (or a few) of anything (a coin, a trading card, a watch, a painting, furniture, a guitar, a toy, a phone) and asks what it is worth. V01D says what it sees, the details that move the value (maker, model, year, edition, condition, grade, signs of wear or repair), a value with how sure it is, the comparable sales or prices it rests on, and what would sharpen it (another angle, the back, a serial number, a ruler for size).
+- **Honest:** an estimate from a photo, never a certified appraisal or an authentication; it says when an item needs an expert in hand (a rare coin, a possible original painting) and never invents a comparable sale. A photo stays in that visitor's ask: nothing is kept unless they save the card.
+- **Needs:** the vision slot of the ability router (`lib/models.js`, the free-provider fallback stack): a model that sees images. Comparables come from sources with an API (eBay's sold listings API, Numista for coins, the PriceCharting or TCGplayer APIs for cards and games) where a key is needed, listed for the owner.
+- **Steps, smallest first:**
+  1. The vision slot in `lib/models.js` with its first free provider (Workers AI vision models run on the site's own binding), tests first.
+  2. The appraise skill: photo in, the card above out, the model's own estimate first with "no comparables yet" said plainly.
+  3. Comparables for coins and cards (the most-asked kinds), then everything else.
+  4. The same appraiser prices what V01D sells (`lib/appraise.js` on the store branch), so V01D's own products and visitors' items are valued by one engine.
+- **claim:**
 
 ## Candidate capability map (2026-10-09)
 
