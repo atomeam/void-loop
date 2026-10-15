@@ -1,0 +1,67 @@
+{
+  "about": "The site tester's suite (tools/site-test.mjs). cases run once each per run; candidates are asks waiting to join (V01D or anyone may add one); limits tighten by themselves when every case passes. games maps a real game name to V01D's own, for new wordings. teach lists wordings V01D missed, each filed once to be taught.",
+  "limits": {
+    "fpsMin": 1,
+    "loadMs": 15000
+  },
+  "cases": [
+    {
+      "ask": "what are you?",
+      "expect": {
+        "text": "V01D"
+      }
+    },
+    {
+      "ask": "play voidquest",
+      "expect": {
+        "selector": ".voidquest-card"
+      },
+      "fps": true
+    },
+    {
+      "ask": "play solarquest",
+      "expect": {
+        "selector": ".voidquest-card"
+      }
+    },
+    {
+      "ask": "what can I buy",
+      "expect": {
+        "text": "store|buy|\\$"
+      }
+    },
+    {
+      "ask": "show me your videos",
+      "expect": {
+        "text": "film|video"
+      }
+    },
+    {
+      "ask": "play chess",
+      "fps": true
+    },
+    {
+      "ask": "my actions"
+    },
+    {
+      "ask": "air quality in Tokyo"
+    }
+  ],
+  "candidates": [
+    "what time is it in tokyo",
+    "weather in boston",
+    "convert 5 miles to km",
+    "play connect four",
+    "set a timer for 5 minutes",
+    "what is 17 times 23",
+    "play reversi",
+    "show me the night sky"
+  ],
+  "games": {
+    "solarquest": "voidquest",
+    "solar quest": "voidquest",
+    "othello": "reversi",
+    "stratego": "fog of v01d"
+  },
+  "teach": []
+}
