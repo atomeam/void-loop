@@ -109,3 +109,6 @@ V01D sets up `you@yourdomain.com` for a creator in minutes and charges for the s
 ## Self-made products: auto-publish (Adam, 2026-10-15)
 V01D's own products go on sale automatically when the price is within the set range, they carry no trademarks, their files are tested, and each gets a public log entry. Anything outside the range stays a hidden draft. Recorded in domains/void.decisions.json (adam-20261015-store-autopublish).
 Where ideas come from: when a buy/hire ask matches no product (or the sponsor-line gate in lib/gumroad.js rejects a weak match), no sponsor line shows; lib/product-gap.js adds one to a redacted topic count (word stems only, no person/device/IP). At 3 asks the topic queues a `store-gap:<topic>` job in void_queue.
+
+## V01D sets its own prices (Adam, 2026-10-15)
+V01D is the appraiser: lib/appraise.js prices each self-made product from comparables, effort, files, topic demand and sales, and writes a 'why this price' note into the public log. Paid items are never $0; anything over 10x the comparables' median is flagged, not blocked. Visitors can never change a price (lib/price-lock.js).

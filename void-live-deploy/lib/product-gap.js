@@ -40,7 +40,7 @@ export async function recordGap(env, ask, products, now = new Date().toISOString
     const id = Date.now().toString(36);
     await db.batch([
       db.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-        .bind(id, 'Store product for: ' + topic.replace(/-/g, ' '), 'store-gap:' + topic, 'queued', GAP_MIN + '+ asks, no matching product (topic only). Build the product; auto-publish if price is within the set range, no trademarks, files tested, public log entry; otherwise keep it a hidden draft', now, now),
+        .bind(id, 'Store product for: ' + topic.replace(/-/g, ' '), 'store-gap:' + topic, 'queued', GAP_MIN + '+ asks, no matching product (topic only). Build the product; price it with lib/appraise.js (public why-this-price note), auto-publish, no trademarks, files tested, public log entry; otherwise keep it a hidden draft', now, now),
       db.prepare('UPDATE void_gaps SET queued = ? WHERE topic = ?').bind(id, topic),
     ]);
     queued = id;
