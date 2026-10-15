@@ -6,7 +6,7 @@
 // (self.json) and what it last said about itself (void_kv 'voice', lib/voice.js), so "what feels weak about you?" gets its own words.
 import { knowsFacts, voiceFacts } from './voice.js';
 import { PERSONA } from './persona.js';
-const SELF_NOUN = /\b(growth[- ]inbox|outcome cards?|scouting[- ]reports?|your (will|wants|skills|board|plans?|roadmap|growth|inbox|features?|backlog|priorit(y|ies))|about yourself)\b/i;
+const SELF_NOUN = /\b(wish\s*list|improvement budget|growth[- ]inbox|outcome cards?|scouting[- ]reports?|your (will|wants|skills|board|plans?|roadmap|growth|inbox|features?|backlog|priorit(y|ies))|about yourself)\b/i;
 // "Void" the product (capitalised) or a-to-mind; never C's void pointer / void function
 const NAMED = /\bVoid\b|\ba-to-mind\b/;
 const CODE_VOID = /\bvoid\s*(\*|\(|pointer|type|function|method|main|return|keyword|0\b)/i;
@@ -55,6 +55,8 @@ export function selfFacts({ self, skills, will, voice } = {}) {
   if (wants.length) parts.push('What I want next (my will' + (will.at ? ', ' + String(will.at).slice(0, 10) : '') + '): ' + wants.map((w) => `${w.i_want || w.title}${w.because ? ' Because: ' + w.because : ''}`).join(' | '));
   const b = builderFacts(self);
   if (b) parts.push(b);
+  const wl = wishlistFacts(self);
+  if (wl) parts.push(wl);
   const knows = knowsFacts(self), said = voiceFacts(voice);
   if (knows) parts.push(knows);
   if (said) parts.push(said);
@@ -71,4 +73,11 @@ export function builderFacts(self) {
   if (b.lessons && b.lessons.length) parts.push('What my builders learned (mistakes and the fix): ' + list(b.lessons));
   if (b.ladders && b.ladders.length) parts.push('Tools my builders left each other: ' + list(b.ladders.slice(0, 4)));
   return parts.join('\n');
+}
+
+// my wishlist (self.json 'wishlist', from docs/wishlist.md): my improvement budget, ranked; a plan, nothing bought. Free paths come first.
+export function wishlistFacts(self) {
+  const w = self && Array.isArray(self.wishlist) ? self.wishlist : [];
+  if (!w.length) return '';
+  return 'My wishlist (my improvement budget, ranked; a plan only, nothing bought yet; free paths first, I may propose a new order): ' + w.map((x) => '#' + x.rank + ' ' + x.item + ' (free path: ' + x.free + '; paid: ' + x.cost + '; why: ' + x.why + ')').join(' | ');
 }

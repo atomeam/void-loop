@@ -39,6 +39,7 @@ export const LIMITS = {
   automations: { rpm: 60, body: 2200000 }, // owner-only: Void's own automations; a pull-request rule carries up to 20 files of 100 KB
   video: { rpm: 30, body: 0 }, // V01D's video search and link lookup (functions/api/video.js): GET only, edge-cached, no KV, no model
   where: { rpm: 20, body: 0 }, // the connection's own coarse place (functions/api/where.js): GET, no input, never cached
+  markets: { rpm: 30, body: 0 }, // the crypto card's price list (functions/api/markets.js): GET, edge-cached two minutes, no KV
   hook: { rpm: 60, body: 64000 },
   routines: { rpm: 30, body: 2000 }, // routines offered to other Voids (functions/api/routines.js): an offer waits for the owner; the route keeps 5 offers a minute itself
   actions: { rpm: 60, body: 4000 },

@@ -80,7 +80,15 @@ export function readTagteam(text, n = 6) {
   return out.finished.length || out.ladders.length || out.lessons.length ? out : null;
 }
 
-export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, tracks = null, building = null, commits = null, open = null, builders = null } = {}) {
+// docs/wishlist.md: V01D's ranked improvement budget (plan only, nothing bought). Each table row goes into self.json 'wishlist'
+// trimmed, so "what's on your wishlist?" is answered from it and V01D can propose a new order.
+export function readWishlist(text, n = 12) {
+  return String(text || '').split('\n').map((l) => l.split('|').slice(1, -1).map((c) => c.trim())).filter((c) => c.length >= 7 && /^\d+$/.test(c[0]))
+    .map((c) => { const t = (x, k) => clip(x.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[`*]/g, ''), k); return { rank: +c[0], item: t(c[1], 80), free: t(c[2], 200), cost: t(c[3], 200), value: t(c[4], 120), why: t(c[5], 160) }; })
+    .filter((x) => !isPrivate(x.item) && !isPrivate(x.why)).slice(0, n);
+}
+
+export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, tracks = null, building = null, commits = null, open = null, builders = null, wishlist = null } = {}) {
   const about = clip((/^>\s*(.+)$/m.exec(llms) || [])[1], 300);
   const rows = [];
   for (const line of inbox.split('\n')) {
@@ -106,6 +114,7 @@ export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, 
     ...(building ? { building } : {}),
     ...(commits && commits.length ? { commits } : {}),
     ...(builders ? { builders } : {}),
+    ...(wishlist && wishlist.length ? { wishlist } : {}),
   };
 }
 
@@ -121,6 +130,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     tracks: existsSync(tank) ? readTracks(readFileSync(tank, 'utf8')) : null, building: existsSync(frontier) ? readBuilding(readFileSync(frontier, 'utf8'), lineTimes) : null,
     open: existsSync(frontier) ? openItems(readFileSync(frontier, 'utf8')) : null,
     builders: existsSync(tagteam) ? readTagteam(readFileSync(tagteam, 'utf8')) : null,
+    wishlist: existsSync(resolve(root, 'docs/wishlist.md')) ? readWishlist(readFileSync(resolve(root, 'docs/wishlist.md'), 'utf8')) : null,
     commits: readCommits(spawnSync('git', ['log', '--no-merges', '-20', '--format=%cI%x09%s', 'HEAD'], { cwd: root, encoding: 'utf8', timeout: 20000 }).stdout) });
   // V01D's clips (tools/clips.mjs): its tricks library and what performed, so it picks what to film next and which trick to learn
   const clipsFile = resolve(root, 'domains/void.clips.json');

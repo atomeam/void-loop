@@ -2,7 +2,7 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 1,
-  "tested": 46,
+  "tested": 50,
   "checked": 13,
   "proven": 83
  },
@@ -410,7 +410,7 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 4,
     "checked": 1,
     "proven": 9
    },
@@ -449,6 +449,11 @@
      "name": "crypto",
      "tier": "tested",
      "why": "7 real asks in the benchmark"
+    },
+    {
+     "name": "markets",
+     "tier": "tested",
+     "why": "a self-test"
     },
     {
      "name": "grades",
@@ -645,6 +650,34 @@
      "name": "releasenotes",
      "tier": "proven",
      "why": "a self-test, 1 browser-suite mention, 5 real asks in the benchmark"
+    }
+   ]
+  },
+  {
+   "id": "life",
+   "name": "Out in the world",
+   "for": "food delivery, rides and Waymo, social feeds and dating",
+   "count": {
+    "experiment": 0,
+    "tested": 3,
+    "checked": 0,
+    "proven": 0
+   },
+   "skills": [
+    {
+     "name": "rides",
+     "tier": "tested",
+     "why": "a self-test"
+    },
+    {
+     "name": "social",
+     "tier": "tested",
+     "why": "a self-test"
+    },
+    {
+     "name": "dating",
+     "tier": "tested",
+     "why": "a self-test"
     }
    ]
   },

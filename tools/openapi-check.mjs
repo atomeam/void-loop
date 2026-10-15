@@ -41,6 +41,7 @@ export const INTERNAL = {
   '/api/share/{room}': 'a shared Void room (WebSocket)',
   '/api/watch': 'watches, signed-in',
   '/api/where': "the page's place lookup",
+  '/api/markets': "the crypto card's edge-cached price list",
   '/api/will': "Void's will card",
 };
 
