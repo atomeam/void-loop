@@ -644,7 +644,7 @@ const RULES = [
     if (!v) return false;
     const rest = m.slice(a.index + a[0].length).split(';').slice(1).filter((t) => t.trim()); // "p = malloc(n); p[0] = 1;" pasted on one line
     for (const n of [...rest, x.next(1), x.next(2), x.next(3)]) {
-      if (!n) return false;
+      if (!n.trim()) continue; // a comment line is blank once masked: look past it
       if (new RegExp('\\bif\\b[^;{]*\\b' + v + '\\b|\\b' + v + '\\s*[!=]=\\s*NULL|\\bassert\\s*\\([^)]*\\b' + v + '\\b').test(n)) return false;
       if (new RegExp('\\b' + v + '\\s*\\[|\\*\\s*' + v + '\\b|\\b' + v + '\\s*->|\\b(?:mem(?:cpy|set|move)|str(?:n?cpy|n?cat))\\s*\\(\\s*' + v + '\\b').test(n)) return true;
     }

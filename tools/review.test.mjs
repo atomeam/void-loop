@@ -453,6 +453,7 @@ for (const c of ['let best = null; if (best.t > 1) go();', 'let r = null; const 
   ok(rules('char *s = (char *)malloc(64);\nstrcpy(s, name);', 'c').some((r) => r === 'malloc-unchecked@1'), 'malloc then strcpy into it');
   ok(rules('node = calloc(1, sizeof *node);\nnode->next = NULL;', 'c').includes('malloc-unchecked@1'), 'calloc then ->');
   ok(rules('int *p = malloc(n); p[0] = 1;', 'c').includes('malloc-unchecked@1') && !rules('int *p = malloc(n); if (!p) return; p[0] = 1;', 'c').includes('malloc-unchecked@1'), 'one-line paste, flagged unless checked');
+  ok(rules('int *p = malloc(n);\n// fill it\np[0] = 1;', 'c').includes('malloc-unchecked@1'), 'a comment line between the malloc and the write');
   for (const c of ['int *p = malloc(n);\nif (p == NULL) return -1;\np[0] = 1;', 'int *p = malloc(n);\nif (!p) exit(1);\np[0] = 1;', 'char *s = malloc(9);\nassert(s);\ns[0] = 0;', 'int *p = malloc(n);\nreturn p;'])
     ok(!rules(c, 'c').includes('malloc-unchecked@1'), 'checked or not written: ' + c.split('\n')[1]);
   // PHP loose comparison on a hash or token
