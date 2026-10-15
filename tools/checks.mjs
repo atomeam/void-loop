@@ -33,6 +33,8 @@ for (const [name, file] of [
   ['launch-fixes', 'launch-fixes.test.mjs'],
   ['price-lock', 'price-lock.test.mjs'],
   ['store', 'store.test.mjs'],
+  ['keeper', 'keeper.test.mjs'],
+  ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
   ['product-tail', 'product-tail.test.mjs'],
   ['product-gap', 'product-gap.test.mjs'],
