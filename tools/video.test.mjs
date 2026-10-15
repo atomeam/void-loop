@@ -69,3 +69,15 @@ test('video: the route is free-tier safe, fixed hosts, embed only', () => {
   const guard = readFileSync(new URL('../void-live-deploy/lib/guard.js', import.meta.url), 'utf8');
   assert.match(guard, /\bvideo: \{ rpm: \d+, body: 0 \}/);
 });
+
+test('video: keyless YouTube search reads Piped items into embeddable YouTube hits and falls through to the key notice', async () => {
+  const { pipedHits, keylessYouTube, PIPED } = await import('../void-live-deploy/functions/api/video.js');
+  const h = pipedHits({ items: [{ type: 'stream', url: '/watch?v=e-P5IFTqB98', title: 'Black Holes', uploaderName: 'Sci', duration: 600 }, { type: 'channel', url: '/channel/x' }, { type: 'stream', url: '/watch?v=bad' }, { type: 'stream', isShort: true, url: '/watch?v=aqz-KE-bpKQ' }] });
+  assert.deepEqual(h.map((x) => x.id), ['e-P5IFTqB98']);
+  assert.equal(h[0].platform, 'youtube'); assert.equal(h[0].seconds, 600); assert.match(h[0].thumb, /^https:\/\/i\.ytimg\.com\/vi\/e-P5IFTqB98\//);
+  assert.ok(PIPED.every((u) => /^https:\/\/[a-z0-9.-]+$/.test(u)));
+  const real = globalThis.fetch; globalThis.fetch = async () => { throw new Error('offline'); };
+  try { const r = await keylessYouTube('black holes', 'https://www.youtube.com/results?search_query=black+holes'); assert.equal(r.hits.length, 0); assert.equal(r.need, 'YOUTUBE_API_KEY'); } finally { globalThis.fetch = real; }
+  const src = readFileSync(new URL('../void-live-deploy/functions/api/video.js', import.meta.url), 'utf8');
+  assert.match(src, /env\.YOUTUBE_API_KEY\) return keylessYouTube/); assert.match(src, /!out\.need/); assert.doesNotMatch(src, /duckduckgo\.com\/|env\.\w*KV|gpt-oss/i);
+});
