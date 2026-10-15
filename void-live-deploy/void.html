@@ -4448,7 +4448,7 @@ say('nothing selected to remove');
     function pasteFold(details, cut) {
       const lines = String(details).split('\n').length;
       return '<details class="vpaste" style="margin:10px 0 4px"><summary style="cursor:pointer;opacity:.75;font-size:13px">Everything you gave it \u00b7 '
-        + lines + (lines === 1 ? ' line' : ' lines') + ', ' + details.length.toLocaleString() + ' characters' + (cut ? ' (the start and the end were read; ' + cut.toLocaleString() + ' from the middle were left out)' : ', all read') + '</summary>'
+        + lines.toLocaleString() + (lines === 1 ? ' line' : ' lines') + ', ' + details.length.toLocaleString() + ' characters' + (cut ? ' (the start and the end were read; ' + cut.toLocaleString() + ' from the middle were left out)' : ', all read') + '</summary>'
         + '<pre style="white-space:pre-wrap;word-break:break-word;max-height:40vh;overflow:auto;background:rgba(255,255,255,.05);padding:10px 12px;border-radius:8px;font:12px/1.45 ui-monospace,Menlo,Consolas,monospace">' + esc(details) + '</pre></details>';
     }
     async function showFix(ask, details) {
