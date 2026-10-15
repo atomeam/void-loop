@@ -1,0 +1,12 @@
+/* TEAM */
+Made by: A-to-Mind
+Contact: atom@a-to-mind.com
+Built with: AI coding agents, working in the open in the repository below
+
+/* SITE */
+Site: https://a-to-mind.com
+Source: https://github.com/atomeam/void-loop
+Standards: HTML5, CSS, JavaScript modules
+Components: three.js, PDF.js
+Software: Cloudflare Pages and Pages Functions, Cloudflare D1, KV, R2 and Workers AI
+Privacy: https://a-to-mind.com/privacy/

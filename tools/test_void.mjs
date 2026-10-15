@@ -18,7 +18,11 @@ const server = http.createServer((req, res) => {
   if (p === '/') p = '/index.html';
   let f = path.join(root, p);
   if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
-  if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); }
+  if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { // as Pages does: a missing path gets the root 404.html, still a 404
+    const nf = path.join(root, '404.html');
+    if (!fs.existsSync(nf)) { res.writeHead(404); return res.end(); }
+    res.writeHead(404, { 'content-type': 'text/html' }); return fs.createReadStream(nf).pipe(res);
+  }
   res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' });
   fs.createReadStream(f).pipe(res);
 }).listen(0);
@@ -439,6 +443,29 @@ try {
   await t.ask('undo'); check('undo brings the group back', (await t.state()).filter((x) => x.kind === 'sticky').length === 2);
   await t.ask('make everything blue'); check('make everything blue', (await t.state()).every((x) => !x.color || /6aa8ff|9ec8ff/.test(x.color)));
   } // CORE
+  // A useful 404 (void-live-deploy/404.html, which Pages serves for a path with no file): status 404, never the homepage with a 200;
+  // V01D's look, the ask box sends what you type to /?q= and V01D runs it; the links all lead to pages that exist; it fits a phone.
+  if (want("404 page: a missing path is a 404 in V01D's look, its ask box goes to /?q= and runs the ask, its links exist")) { const N = await fresh({ phone: true });
+    const res = await N.p.goto(base + 'no-such-page/at-all?x=1'); await N.p.waitForTimeout(200);
+    const info = await N.p.evaluate(() => ({ path: (document.getElementById('path') || {}).textContent, robots: (document.querySelector('meta[name=robots]') || {}).content,
+      links: [...document.querySelectorAll('nav a')].map((a) => a.getAttribute('href')), bg: getComputedStyle(document.body).backgroundColor,
+      focused: document.activeElement && document.activeElement.id, fits: document.documentElement.scrollWidth <= innerWidth }));
+    const linkStatus = await N.p.evaluate((ls) => Promise.all(ls.map((u) => fetch(u).then((r) => r.status))), info.links);
+    const wkStatus = await N.p.evaluate(() => Promise.all(['/.well-known/security.txt', '/humans.txt', '/.well-known/gpc.json'].map((u) => fetch(u).then((r) => r.status))));
+    const navs = []; N.p.on('request', (r) => { if (r.isNavigationRequest()) navs.push(r.url()); }); // the page drops ?q= from the address once it has read it
+    await N.p.fill('#q', 'what time is it in Tokyo'); await N.p.press('#q', 'Enter');
+    await until(async () => navs.length > 0, 5000); const sent = navs[0] || 'http://x/';
+    const ran = await until(async () => /Tokyo/i.test(await N.page()), 8000);
+    check('404 page: a missing path answers 404 (not the homepage), noindex, V01D\'s dark stage, the path shown as text, the ask box focused, fits a 390 px phone',
+      res && res.status() === 404 && info.robots === 'noindex' && info.bg === 'rgb(5, 5, 5)' && info.path === '/no-such-page/at-all' && info.focused === 'q' && info.fits,
+      JSON.stringify({ status: res && res.status(), ...info }));
+    check('404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed',
+      info.links.length >= 4 && linkStatus.every((s) => s === 200) && wkStatus[0] === 200 && wkStatus[1] === 200 && wkStatus[2] === 404,
+      JSON.stringify(info.links) + ' ' + JSON.stringify(linkStatus) + ' ' + JSON.stringify(wkStatus));
+    check('404 page: typing in its ask box goes to /?q=<words> and V01D answers it there',
+      new URL(sent).pathname === '/' && new URL(sent).searchParams.get('q') === 'what time is it in Tokyo' && ran,
+      sent + ' | ' + String(await N.page()).slice(0, 80));
+    await N.ctx.close(); }
   // Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss board (items 3-8 of the 2026-09-28 list).
   if (want("Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss ")) { const M = await fresh(); const out = [];
     const net = []; M.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer)$/.test(u)) net.push(u); });
