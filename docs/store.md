@@ -72,6 +72,27 @@ V01D sets up `you@yourdomain.com` for a creator in minutes and charges for the s
 - **Pricing:** $15 one-time setup (or free with any store plan), or **$3/month** for "Business Email Care": monitoring that mail still flows, DMARC reports read in plain words, new aliases on request. Bundled into V01D Store Pro.
 - For Adam now: `atom@a-to-mind.com` via Email Routing would be free and gives Stripe/press a business address (it is not a Stripe requirement).
 
+## Self-publishing (owner, 2026-10-15: "V01D can make a new product every time it needs in our store")
+
+- **One catalog:** `domains/store.products.json`. `tools/store-publish.mjs sync` regenerates `void-live-deploy/lib/store-products.js`
+  (what `lib/store.js`, `/api/store/*`, the `/store/` page and V01D's store card read), `void-live-deploy/store/changelog.json`
+  (the public "New from V01D" list on `/store/`) and `docs/store-changelog.md`. `tools/store-publish.test.mjs` fails if they drift.
+- **Publishing a shipped thing:** `node tools/store-publish.mjs forge-pack | clips-pack | publish --kind <k> --id <id> --name … --blurb … --files a,b [--preview x.glb] [--paid]`.
+  It runs the guardrails, zips the files, uploads `store/<id>-v1.zip` to R2 (FILMS bucket `void-films`), writes the row (V01D's voice,
+  price from `PRICE_RULE`, preview, licence tier), adds a changelog row and queues an ad clip. On the box set
+  `WRANGLER_BIN=/workspace/.wrangler3/node_modules/.bin/wrangler` (wrangler 3, which can write its cache there).
+- **Price:** free / pay what you want (the $1 tip jar) until Stripe is on. `--paid` prices by `PRICE_RULE` inside `PRICE_RANGE`
+  ($1–$50) and sets status `needs-gumroad`: shown as coming soon, queued in `domains/store.queue.jsonl` for Adam to list by hand
+  (there is no Gumroad API key, so no listing is faked).
+- **Guardrails (checks, not approval gates):** price in range; no trademarked names (`TRADEMARKS`) in title, blurb or file names;
+  every file made by V01D or under an allowed licence (`ORIGINS`); every STL closed, consistently wound, finite and inside a 180 mm
+  bed (`checkStl`, from the bytes); a public changelog row per product; and `.github/workflows/store-check.yml` fetches every live
+  download daily and unpublishes (by an automerge PR) any that fail.
+- **Ad clips:** every published product goes into `domains/store.clips.jsonl`; `tools/clips.mjs` turns each into a moment that
+  films the product's card at `/store/#<id>` and ranks it first for a week, so the daily clips run makes its ad.
+- **Live (2026-10-15):** V01D Forge Printables (10 checked STLs, free) and V01D Clips Pack (10 shorts, free). The VoidQuest minis pack
+  stays "coming soon": no VoidQuest miniature models exist yet to print.
+
 ## Next steps
 
 1. Upload the first paid pack (VoidQuest minis STL/3MF zip) to R2 `store/voidquest-minis-v1.zip` and list it on Gumroad too.
@@ -84,3 +105,10 @@ V01D sets up `you@yourdomain.com` for a creator in minutes and charges for the s
 | 12 | V01D's own store (phase 1 live) | Gumroad stays the checkout (merchant of record, Discover buyers); our page, cart, signed downloads (R2 10 GB free, no egress) and license keys cost $0 | Stripe Checkout 2.9% + 30¢ ([stripe.com/pricing](https://stripe.com/pricing)) once Stripe's business profile is done; Stripe Tax extra | high: each sale keeps ~7% more | free today; Stripe is a dashboard step, not a purchase | Adam |
 | 13 | Creator store platform (multi-seller, Connect) | passkeys and `/@handle` pages already built; Stripe-hosted Express onboarding | $2 per monthly active seller + 0.25% + 25¢ per payout ([Connect](https://stripe.com/connect/pricing)); we charge 5% | high: a product others pay for | waits on 12's Stripe step | Adam |
 | 14 | Business email for creators | Cloudflare Email Routing, free ([docs](https://developers.cloudflare.com/email-routing/)); only the domain costs (~$10/yr) | none needed | medium: $15 setup or $3/mo | free path covers it; also gives Adam atom@a-to-mind.com | Adam |
+
+## Self-made products: auto-publish (Adam, 2026-10-15)
+V01D's own products go on sale automatically when the price is within the set range, they carry no trademarks, their files are tested, and each gets a public log entry. Anything outside the range stays a hidden draft. Recorded in domains/void.decisions.json (adam-20261015-store-autopublish).
+Where ideas come from: when a buy/hire ask matches no product (or the sponsor-line gate in lib/gumroad.js rejects a weak match), no sponsor line shows; lib/product-gap.js adds one to a redacted topic count (word stems only, no person/device/IP). At 3 asks the topic queues a `store-gap:<topic>` job in void_queue.
+
+## V01D sets its own prices (Adam, 2026-10-15)
+V01D is the appraiser: lib/appraise.js prices each self-made product from comparables, effort, files, topic demand and sales, and writes a 'why this price' note into the public log. Paid items are never $0; anything over 10x the comparables' median is flagged, not blocked. Visitors can never change a price (lib/price-lock.js).

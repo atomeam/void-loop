@@ -15,3 +15,5 @@ dist/
 
 # Void's own recordings of its experiments (tools/record.mjs): made in CI and kept as run artifacts, never committed
 media/
+.store-tmp/
+site-test-shots/

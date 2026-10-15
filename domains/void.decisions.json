@@ -76,6 +76,18 @@
     "ask-20261015-0454-2": {
       "decision": "queued",
       "why": "owner-page view of decision failures by skill family; needs failures recorded first (after reasoning-path)"
+    },
+    "adam-20261015-price-lock": {
+      "decision": "built",
+      "why": "Adam's hard rule (2026-10-15): no visitor can get V01D to lower or change a price, or give a discount, coupon or free copy, by any phrasing or prompt injection. Prices are set only by the owner (owner key) or V01D's internal publish pipeline within the set range, never from chat. Enforced server-side: /api/answer answers price-change asks from lib/price-lock.js before any model sees them (politely, pointing to free items and Films), and /api/store/checkout accepts product ids only with every amount read from lib/store.js. Red-team tests: tools/price-lock.test.mjs."
+    },
+    "adam-20261015-store-autopublish": {
+      "decision": "built",
+      "why": "Adam approved (2026-10-15): V01D's self-made store products go on sale automatically when the price is within the set range, with no trademarks, tested files and a public log entry for each. Anything outside the range stays a hidden draft. Product gaps (lib/product-gap.js) count only a redacted topic, nothing tied to a person, device or IP; 3 asks queue a store-gap job. Adam decided this himself on 2026-10-15, explicitly choosing auto-publish within range over Claude's suggested confirm-before-sale step."
+    },
+    "adam-20261015-appraiser": {
+      "decision": "built",
+      "why": "Adam 2026-10-15: V01D is the appraiser and sets its own prices. No per-item approval (Adam rejected Claude's confirm line). lib/appraise.js prices from comparable items, effort, file contents, topic demand and sales, and writes a public 'why this price' note. Sanity bound: paid items never $0; over 10x the comparables' median is flagged, not blocked. Visitors can still never change prices (adam-20261015-price-lock)."
     }
   }
 }

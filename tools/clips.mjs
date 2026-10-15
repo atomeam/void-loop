@@ -81,6 +81,16 @@ export const MOMENTS = [
   { id: 'void-voice', ask: 'what do you think of yourself', kind: 'voice', hook: 'I have opinions about my own future', caption: 'Ask me what I think of myself. I tell you what I want to build next, and my builders listen.', tricks: ['pov', 'ken-burns', 'kinetic-captions'], pov: 'an AI critiques its own code' },
 ];
 
+// every product V01D publishes in its store gets an ad clip (tools/store-publish.mjs appends domains/store.clips.jsonl):
+// the clip films the product's own card on /store/ and gets one daily slot for a week after it is published.
+export function storeMoments(lines = (() => { try { return fs.readFileSync(path.resolve(here, '../domains/store.clips.jsonl'), 'utf8'); } catch (_) { return ''; } })()) {
+  const seen = new Map();
+  for (const l of String(lines).split('\n')) { try { const j = JSON.parse(l); if (j && j.id) seen.set(j.id, j); } catch (_) {} }
+  return [...seen.values()].map((j) => ({ id: 'store-' + j.id, ask: 'open the store', url: '/store/#' + j.id, kind: 'store', at: j.at, hook: j.hook, caption: j.caption, tricks: ['zoom-punch', 'kinetic-captions', 'beat-flash'] }));
+}
+MOMENTS.push(...storeMoments());
+const fresh = (m, date) => m.kind === 'store' && m.at && Date.parse(date + 'T12:00:00Z') - Date.parse(m.at) < 7 * 864e5;
+
 export const PLATFORMS = {
   youtube: { name: 'YouTube Shorts', max: 60, slot: '12:00', tags: ['#Shorts', '#AI', '#V01D'], auto: 'YT_UPLOAD repo variable + YT_* secrets (uploads private until the API project is audited)' },
   tiktok: { name: 'TikTok', max: 60, slot: '19:00', tags: ['#AI', '#tech', '#fyp', '#V01D'], auto: null },
@@ -111,8 +121,11 @@ export const clipId = (m, date) => String(date).replace(/-/g, '') + '-' + m.id;
  *  nothing repeats while another waits. perf: { [momentId]: visits }. Pure. */
 export function plan(date, perf = {}, n = 3) {
   const day = Math.floor(Date.parse(date + 'T00:00:00Z') / 864e5);
-  const ranked = MOMENTS.map((m, i) => ({ m, score: (perf[m.id] || 0) * 10 + ((i - day) % MOMENTS.length + MOMENTS.length) % MOMENTS.length * -1 }))
-    .sort((a, b) => b.score - a.score).slice(0, n).map((x) => x.m);
+  const newProducts = MOMENTS.filter((m) => fresh(m, date)), k = n > 1 && newProducts.length ? 1 : 0;
+  // one slot a day goes to a product published this week (rotating among them); the rest are chosen as before
+  const ranked = MOMENTS.filter((m) => m.kind !== 'store').map((m, i) => ({ m, score: (perf[m.id] || 0) * 10 + ((i - day) % MOMENTS.length + MOMENTS.length) % MOMENTS.length * -1 }))
+    .sort((a, b) => b.score - a.score).slice(0, n - k).map((x) => x.m);
+  if (k) ranked.push(newProducts[day % newProducts.length]);
   return ranked.map((m) => ({ id: clipId(m, date), moment: m.id, ask: m.ask, tricks: [...new Set([...DEFAULT_TRICKS, ...(m.tricks || [])])], platforms: words(m, date) }));
 }
 
@@ -141,7 +154,7 @@ async function capture(m, file, seconds) {
   const dir = path.dirname(file) + '/rec-' + m.id;
   const ctx = await browser.newContext({ viewport: { width: 540, height: 960 }, deviceScaleFactor: 2, recordVideo: { dir, size: { width: 540, height: 960 } } });
   const page = await ctx.newPage();
-  await page.goto(SITE + '/?q=' + encodeURIComponent(m.ask), { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
+  await page.goto(m.url ? SITE + m.url : SITE + '/?q=' + encodeURIComponent(m.ask), { waitUntil: 'domcontentloaded', timeout: 45000 }).catch(() => {});
   const t0 = Date.now();
   while (Date.now() - t0 < seconds * 1000) { const k = (Date.now() - t0) / 1000; await page.mouse.move(270 + 160 * Math.sin(k), 480 + 120 * Math.cos(k * 0.7)); await page.waitForTimeout(100); } // parallax: drift the 3D camera
   const v = page.video(); await ctx.close(); await browser.close();
