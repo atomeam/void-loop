@@ -4,6 +4,7 @@
  * where WebGL can't run too. "games", "what games do you have", "play a game", "game rack", "board games".
  */
 import { grip, sideCard } from './side-card.js';
+import { LEVELS, getLevel, setLevel } from './game-level.js';
 import PARODY from '../lib/parody.js';
 
 // V01D's parody of any classic game (asked by Void: a searchable games matrix and a "parody-forge" card), folded into the game rack.
@@ -48,11 +49,14 @@ export const GAMES = [
   { id: 'poker', title: 'Poker', ask: 'play poker', color: '#17563a', ink: '#f2e6c9', motif: 'poker' },
   { id: 'fireworks', title: 'Fireworks', ask: 'play fireworks', color: '#1b2233', ink: '#ffe9a8', motif: 'fireworks' },
   { id: 'monopoly', title: 'The Landlord’s Game', ask: 'play monopoly', color: '#c8e3c4', ink: '#1d3b25', motif: 'monopoly' },
+  { id: 'voidquest', title: 'VoidQuest', ask: 'play voidquest', color: '#14122b', ink: '#cdbcff', motif: 'monopoly' },
+  { id: 'eightball', title: 'Magic 8 Ball', ask: 'magic 8 ball', color: '#111114', ink: '#e8e8ff', motif: 'fireworks' },
 ];
 
 export function rackOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+(?:i|we)\s+play|do\s+you\s+have|are\s+there)(?:\s+on\s+this\s+site|\s+here)?$|^(?:any\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
+  if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+)?(?:games?\s+(?:card|picker|menu|list)|board\s+games?\s+card)$|^(?:pick|choose)\s+a\s+(?:board\s+)?game$/.test(t)) return { kind: 'rack' };
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+|your\s+)?(?:3d\s+)?(?:game|games|board\s*game|board\s*games)\s+(?:rack|shelf|shelves|cabinet|closet|cupboard)$|^(?:show\s+(?:me\s+)?)(?:the\s+|your\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
   // a board game Void can't play yet, asked for as a game ("play scrabble", "scrabble board game"): say so plainly, record
   // the request, and show the rack. A bare name ("scrabble") stays a question about the word.
@@ -65,7 +69,7 @@ export function rackOf(text) {
 export const SOON = { scrabble: 'Scrabble', risk: 'Risk', clue: 'Clue', cluedo: 'Cluedo', catan: 'Catan', 'settlers of catan': 'Catan',
   backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
 
-const HINT = 'try: chess · checkers · go · monopoly · tic tac toe · reversi · four in a row · mancala · star marbles · marbles · back to start · rock paper scissors · magic 8 ball';
+const HINT = 'pick V01D’s level, then a game · try: chess · checkers · go · monopoly · voidquest · tic tac toe · reversi · four in a row · mancala · star marbles · marbles · back to start · rock paper scissors · magic 8 ball';
 
 function mount(th, stageApi) {
   const phone = Math.min(innerWidth, innerHeight) < 560;
@@ -95,6 +99,17 @@ function mount(th, stageApi) {
     list.appendChild(b);
   }
   card.appendChild(list);
+  // one Void strength for every game (skills/game-level.js): the games read it before Void moves
+  const lv = document.createElement('div'); lv.className = 'rack-level'; lv.style.cssText = 'display:flex;gap:6px;align-items:center;margin-top:10px;font-size:12px;color:var(--muted)';
+  lv.append('V01D plays:');
+  const paintLv = () => lv.querySelectorAll('button').forEach((x) => { x.style.opacity = x.dataset.level === getLevel() ? '1' : '.5'; x.setAttribute('aria-pressed', String(x.dataset.level === getLevel())); });
+  for (const l of LEVELS) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn rack-level-pick'; b.dataset.level = l; b.textContent = l;
+    b.addEventListener('pointerdown', (e) => e.stopPropagation());
+    b.addEventListener('click', (e) => { e.stopPropagation(); setLevel(l); paintLv(); });
+    lv.appendChild(b);
+  }
+  paintLv(); card.appendChild(lv);
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   sideCard(th, stageApi, card, { boardW: W, boardH: H + 24, w: 260 });
@@ -124,7 +139,7 @@ export default {
   rackOf,
   parodyOf,
   GAMES,
-  examples: ['parody of monopoly', 'parody games', 'is reversi public domain', 'games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf', 'play scrabble', 'scrabble board game'],
+  examples: ['parody of monopoly', 'parody games', 'is reversi public domain', 'games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf', 'play scrabble', 'scrabble board game', 'games card', 'pick a game'],
   nearMisses: ['play chess', 'play go', 'video games', 'games for kids', 'what is game theory', 'hunger games', 'play monopoly', 'what is a monopoly', 'play music', 'play sorry by justin bieber'],
   match(lower, text) { return !!rackOf(text) || !!parodyOf(text); },
   run,

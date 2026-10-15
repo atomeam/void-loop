@@ -263,5 +263,21 @@
   "kind": "file",
   "key": "dark | nothing appeared",
   "note": "fix: \"dark\" nothing appeared"
+ },
+ {
+  "at": "2026-10-15T16:35:42Z",
+  "passed": 14,
+  "of": 17,
+  "kind": "file",
+  "key": "catroon version of a hard subject | refused: don't know this yet",
+  "note": "fix: \"catroon version of a hard subject\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T16:40:07Z",
+  "passed": 17,
+  "of": 18,
+  "kind": "file",
+  "key": "dismiss this | nothing appeared",
+  "note": "fix: \"dismiss this\" nothing appeared"
  }
 ]

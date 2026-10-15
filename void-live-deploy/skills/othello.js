@@ -6,6 +6,7 @@
  * and the side with more discs wins.
  * Void plays by a position table (corners high, the squares next to corners low) plus the discs it flips.
  */
+import { levelPick } from './game-level.js';
 import { lift3d } from './lift3d.js';
 import { showArena } from '../lib/arena-say.js';
 const N = 8;
@@ -133,7 +134,7 @@ function mount(th, stageApi) {
     thinking = setTimeout(() => {
       thinking = null;
       if (!el.isConnected) return; // the stage redrew: the new card carries on
-      const m = voidMove(th.state.board, 2);
+      const m = levelPick(voidMove(th.state.board, 2), legalMoves(th.state.board, 2));
       if (m >= 0) th.state = resolveMove(th.state, m).nextState;
       paint(); stageApi.save && stageApi.save();
       voidTurn(); // you had no move, so Void goes again

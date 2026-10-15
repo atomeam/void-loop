@@ -10,6 +10,7 @@
  *
  * Pit numbering: 0-5 are yours along the bottom (left to right), 6-11 are Void's along the top (right to left). Stores are [you, Void].
  */
+import { levelPick } from './game-level.js';
 import { lift3d } from './lift3d.js';
 
 const SEEDS = 4;
@@ -197,7 +198,7 @@ function mount(th, stageApi) {
   function schedule() {
     setTimeout(function tick() {
       if (!el.isConnected || th.state.over || th.state.turn !== 1) return;
-      const m = voidMove(th.state);
+      const m = levelPick(voidMove(th.state), legalMoves(th.state, 1));
       if (m >= 0) { try { th.state = resolveMove(th.state, m).nextState; paint(); stageApi.save && stageApi.save(); } catch (_) { /* raced */ } }
       if (!th.state.over && th.state.turn === 1) setTimeout(tick, 650);
     }, 600);
