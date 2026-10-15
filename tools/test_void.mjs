@@ -1089,6 +1089,31 @@ try {
       JSON.stringify({ a, b, hand, e: P.errors }).slice(0, 900));
     await P.ctx.close(); }
   // the owner (2026-10-11): overnight growth should hit you when you open the page; Void shows what it made on the real stage
+  // a build still waiting for its live check is held back, then offered once it answers (2026-10-15: on the first visit after
+  // a build it was always unchecked, so it was marked seen unshown and "while you were away" went quiet)
+  if (want("look what I made: a build waiting for its live check is offered once it answers")) {
+    const LEDGER = [
+      { at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
+      { at: '2026-10-14T02:00:00Z', by: 'claude', kind: 'build', what: 'counter', show: 'a counter you can tap', try: 'make a counter' },
+    ];
+    let verified = []; // neither build has passed its live check yet (the usual state on the first visit after a deploy)
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-t')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); sessionStorage.setItem('sc-t', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: verified }) }));
+    const note = () => P.p.$eval('#away-note', (e) => e.textContent).catch(() => '');
+    const seen = () => P.p.evaluate(() => localStorage.getItem('a2m.void.growthSeen.v1'));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
+    await P.p.waitForTimeout(2500); const first = await note();
+    // nothing was ready, so nothing is offered, and nothing is marked seen past the waiting builds
+    const seenAfterFirst = await seen();
+    verified = ['sticky note buy milk', 'make a counter']; // the live check ran: the counter answers now
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
+    const second = await until(async () => { const t = await note(); return /while you were away/.test(t) ? t : ''; }, 6000) || await note();
+    check('look what I made: a build waiting for its live check is offered once it answers: a visit before the check offers nothing and marks nothing seen; after the check both are offered',
+      !/while you were away/.test(first) && seenAfterFirst === '2026-10-13T00:00:00Z' && /I made 2 new things while you were away/.test(second),
+      JSON.stringify({ first, seenAfterFirst, second }));
+    await P.ctx.close();
+  }
   if (want("look what I made: a returning visitor's quiet line, the walkthrough on the stage (Next, Keep, Done), nothing on a first visit, \"what's new\"")) {
     const LEDGER = [
       { at: '2026-10-10T00:00:00Z', by: 'claude', kind: 'grow', what: 'older', show: 'an old thing', try: 'make a clock' },
