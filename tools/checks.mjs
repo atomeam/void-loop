@@ -173,6 +173,7 @@ for (const [name, file] of [
   ['extension', 'test_extension.mjs'],
   ['placement', 'placement.test.mjs'],
   ['skills-index', 'skills-index.test.mjs'],
+  ['skill-family', 'skill-family.test.mjs'],
   ['heavy', 'heavy.test.mjs'],
   ['clef-probe', 'clef-probe.test.mjs'],
   ['route-bench', 'route-bench.test.mjs'],
@@ -214,6 +215,8 @@ for (const [name, file] of [
 // at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
 { const r = run([resolve(here, 'secret-scan.mjs'), '--base', 'origin/main']); results.push(['secrets', r.ok, r.out[r.out.length - 1] || '']); }
 { const r = run([resolve(here, 'skills-index.mjs'), '--check']); results.push(['index', r.ok, r.out[r.out.length - 1] || '']); }
+// a new skill whose examples another skill also takes is a merge waiting to happen (tools/skill-overlap.mjs; owner 2026-10-15)
+{ const r = run([resolve(here, 'skill-overlap.mjs'), '--check']); results.push(['overlap', r.ok, r.out[r.out.length - 1] || '']); }
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
 { const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
 // stale docs (docs/multipliers.md #4): a doc may not newly name a repo file that does not exist

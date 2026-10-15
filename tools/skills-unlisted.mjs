@@ -14,6 +14,8 @@ export const RETIRED = [
 
 export async function unlistedSkills(dir, retired = RETIRED) {
   const listed = new Set(JSON.parse(readFileSync(resolve(dir, 'index.json'), 'utf8')));
+  // a family skill (lib/skill-family.js) lists its members: they are loaded through it, so they are not unlisted
+  for (const n of [...listed]) { try { const d = (await import(pathToFileURL(resolve(dir, n + '.js')).href)).default; if (d && d.family) for (const p of d.parts || []) listed.add(p); } catch (_) {} }
   const found = [];
   for (const f of readdirSync(dir).filter((x) => x.endsWith('.js')).sort((a, b) => a.localeCompare(b))) {
     const n = f.slice(0, -3);

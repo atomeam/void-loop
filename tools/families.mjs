@@ -107,7 +107,10 @@ export function build(names, ev) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const names = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8'));
+  // a family skill (lib/skill-family.js) is rated by its members, each still a skill with its own evidence
+  const names = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8')).flatMap((n) => {
+    const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(readFileSync(resolve(root, 'void-live-deploy/skills/' + n + '.js'), 'utf8'));
+    return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
   const b = build(names, evidence(names));
   let prev = null; try { prev = JSON.parse(readFileSync(OUT, 'utf8')); } catch (_) {}
   carrySince(b.families, prev, new Date().toISOString().slice(0, 10));

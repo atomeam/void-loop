@@ -3874,13 +3874,14 @@ say('nothing selected to remove');
             stage: stageApi,
             refreshThings: () => render(), // the 3D calendar redraws the stage card after an edit
           };
-          say(/weather|place|map/.test(skill.name) ? 'looking up' : skill.name === 'translate' ? 'translating' : 'working');
+          const who = skill.part ? (skill.part(lower0, text) || skill.name) : skill.name; // a family skill names the member that answers (lib/skill-family.js)
+          say(/weather|place|map/.test(who) ? 'looking up' : who === 'translate' ? 'translating' : 'working');
           const before = whisper.textContent, cardBefore = vpageEl;
           const src = await skill.run(text, api);
           if (whisper.textContent === before) say(src === 'none' ? (navigator.onLine === false ? "you're offline · this one needs the internet" : "couldn't") : ''); // a skill that said something keeps its line; a finished one clears it
-          if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + skill.name });
-          if (src !== 'none' && vpageEl && vpageEl !== cardBefore) groundCheck(text, skill, vpageEl);
-          if (src === 'none') reportMiss(text, 'skill:' + skill.name);
+          if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + who });
+          if (src !== 'none' && vpageEl && vpageEl !== cardBefore) groundCheck(text, (skill.member && skill.member(lower0, text)) || skill, vpageEl);
+          if (src === 'none') reportMiss(text, 'skill:' + who);
           return true;
         }
       }
