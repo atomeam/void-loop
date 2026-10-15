@@ -100,7 +100,8 @@ jobs:
         if: ${{ inputs.report_only != true }}
         env:
           BASEREF: ${{ steps.pr.outputs.baseref }}
-        run: node tools/secret-scan.mjs --base "$BASEREF" || { echo "::error title=Secret in the added lines::remove it and rotate it (anything that reached GitHub is public); a made-up test key gets a secret-scan: ok comment"; exit 1; }
+        run: |
+          node tools/secret-scan.mjs --base "$BASEREF" || { echo "::error title=Secret in the added lines::remove it and rotate it (anything that reached GitHub is public); a made-up test key gets a secret-scan: ok comment"; exit 1; }
 
       # a PR that touches the skills must leave every skill file registered in skills/index.json (tools/skills-unlisted.mjs, run by skills-check):
       # a merge once dropped "services" from the index and nine pricing asks fell through. It blocks the merge here, not only the next local run.
