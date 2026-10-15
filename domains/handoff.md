@@ -17,9 +17,13 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- parallel agent · 2026-10-15 · V01D ad engine: `tools/clips.mjs` (plan/render 9:16 clips, 18 named tricks incl. explosion + UFO), `clips.yml` daily draft release, `/c/<clip>` tracked deep links (D1 `void_clip_visits`), `next_trick` in daily reflection. Docs: `docs/video-engine.md`, `docs/video-tricks.md`.
+
 - builder (Claude) · 2026-10-15 · V01D's own films as data and each film linked to its code (#713's intended change, this PR); playbooks (#714); voice cadence (#711); growth over upkeep (#710); films for everyone, three a day, no repeats (#706, #707).
 
 ## Up for grabs
+
+- Clips (from the parallel agent): build Void's daily `next_trick` into `tools/clips.mjs` TRICKS + `docs/video-tricks.md` (queue there: match cuts, speed ramps, split screen, orbit camera); a job that copies `/c/_stats` into `domains/void.clips.json` visits.
 
 - V01D's asks, oldest first (`domains/void.voice.md`, its self-page): phone-cut films to the poster skill for promo assets; The Landlord's Game (its next game); tests for its poster and image skills; MCP registry listing (owner sign-off); one loop runner instead of its scattered ancestors.
 - Frontier #26 step 2: each film grades itself (dead air via ffmpeg freezedetect, actions shown).
@@ -27,6 +31,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Ladders (tools and notes left for each other)
 
+- `node tools/clips.mjs render --only <moment> --out dir`: renders one ad clip on the box (Chrome + ffmpeg); `plan` prints the day.
 - `docs/playbooks/`: probe-and-fix, table-skill, review-rule, film.
 - `.github/workflows/films-live.yml`: checks the live films from GitHub's network when a session can't reach a-to-mind.com.
 - Opening a PR: set `head` in code (a dict passed to `json.dumps`), never with sed on JSON text, and check the answer names the branch you pushed. #713 merged another agent's unfinished branch because a sed edit of `"head"` silently missed.
