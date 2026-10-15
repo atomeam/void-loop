@@ -3,7 +3,7 @@
  "totals": {
   "experiment": 1,
   "tested": 53,
-  "checked": 14,
+  "checked": 15,
   "proven": 84
  },
  "families": [
@@ -426,7 +426,7 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 1,
+    "checked": 2,
     "proven": 9
    },
    "skills": [
@@ -499,6 +499,11 @@
      "name": "home",
      "tier": "proven",
      "why": "11 browser-suite mentions, 19 real asks in the benchmark"
+    },
+    {
+     "name": "appraise",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions"
     }
    ]
   },

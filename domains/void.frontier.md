@@ -472,7 +472,7 @@ Declined: an offline "smart-cache" that pre-downloads videos (embed only: never 
   2. The appraise skill: photo in, the card above out, the model's own estimate first with "no comparables yet" said plainly.
   3. Comparables for coins and cards (the most-asked kinds), then everything else.
   4. The same appraiser prices what V01D sells (`lib/appraise.js` on the store branch), so V01D's own products and visitors' items are valued by one engine.
-- **claim:**
+- **claim:** claude 2026-10-15: steps 1 and 2 shipped. The vision slot is `lib/models.js` path `vision` (Workers AI LLaVA, the site's own binding); `skills/appraise.js` + `functions/api/appraise.js` + `lib/appraise-photo.js`: one photo, downsized in the browser, described by the model, valued by V01D's rules (one number, the reasons, an expert line; no comparables, said plainly), people and pets never priced. **Next (step 3):** comparables for coins and cards from an API with sold prices, then everything else; then step 4, one appraiser for the store.
 
 ## Candidate capability map (2026-10-09)
 

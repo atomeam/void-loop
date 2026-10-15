@@ -1,0 +1,66 @@
+// node --test tools/appraise-photo.test.mjs: V01D values anything from a photo (frontier #30). The valuation from a description
+// (lib/appraise-photo.js), the route (functions/api/appraise.js, the vision model stubbed) and the asks the skill takes
+// (skills/appraise.js). People are never priced, in the photo or in the ask.
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { valueFrom, appraisalText, isPersonAsk, personIn, complimentFor, KINDS, usd } from '../void-live-deploy/lib/appraise-photo.js';
+import { imageBytes, onRequestPost, MAX_IMAGE_CHARS } from '../void-live-deploy/functions/api/appraise.js';
+import { appraiseOf } from '../void-live-deploy/skills/appraise.js';
+import { models, PATHS } from '../void-live-deploy/lib/models.js';
+
+const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+
+test('appraise: one value, the reasons, and an expert line when the kind calls for one; never a range', () => {
+  const coin = valueFrom('A worn silver coin, 1921 Morgan dollar, with scratches on the face.');
+  assert.equal(coin.kind, 'coin'); assert.ok(coin.cents > 0); assert.match(coin.text, /^\$/); assert.ok(coin.expert, 'silver: an expert in hand');
+  assert.ok(coin.says.some((s) => /wear or damage/.test(s)) && coin.says.some((s) => /silver/.test(s)));
+  const t = appraisalText(coin);
+  assert.match(t, /^V01D values this at \$/); assert.ok(!/range|between|to \$/.test(t), t); assert.match(t, /not a certified appraisal/); assert.match(t, /looked at in hand/);
+  const chair = valueFrom('A modern plastic chair in excellent condition.');
+  assert.equal(chair.kind, 'furniture'); assert.ok(!chair.expert); assert.ok(!/looked at in hand/.test(appraisalText(chair)));
+  const mint = valueFrom('A sealed first edition holographic Pokémon trading card.'), worn = valueFrom('A faded Pokémon trading card with torn corners.');
+  assert.ok(mint.cents > worn.cents, 'condition moves the value');
+  assert.equal(valueFrom('').unknown, true); assert.match(appraisalText(valueFrom('')), /could not make out/);
+  assert.equal(usd(123456), '$1,234.56'); assert.equal(usd(50000), '$500');
+  for (const k of KINDS) assert.ok(k.base >= 100, k.kind);
+});
+
+test('appraise: people and pets are never priced, in the photo or in the ask', () => {
+  for (const d of ['A smiling woman standing in a kitchen holding a mug.', 'A young boy wearing a red cap.', 'A selfie of a man with glasses.'])
+    { const v = valueFrom(d); assert.equal(v.person, true, d); assert.equal(v.text, ''); assert.ok(!/\$/.test(appraisalText(v)), d); }
+  const pet = valueFrom('A golden retriever puppy on a rug.'); assert.equal(pet.person, true); assert.match(appraisalText(pet), /family/);
+  assert.equal(valueFrom('A porcelain doll in a Victorian dress.').person, false, 'a doll is a thing');
+  assert.equal(valueFrom('An action figure of a man in armour, boxed.').person, false);
+  for (const a of ['what am I worth', 'how much is my friend worth', 'value me', 'how much is a person worth']) assert.ok(isPersonAsk(a), a);
+  assert.ok(!isPersonAsk('how much is my watch worth'));
+  assert.ok(!/\$|\d/.test(complimentFor('a smiling woman', 3)));
+  assert.ok(personIn('a crowd of people at a concert') && !personIn('a wooden table'));
+});
+
+test('appraise: the route reads one small image, asks the vision model, and answers with V01D\'s value; no model = 503, a person = compliment', async () => {
+  assert.ok(imageBytes(PNG) instanceof Uint8Array); assert.equal(imageBytes(PNG).length, 70);
+  assert.equal(imageBytes('data:text/html;base64,PGI+'), null); assert.equal(imageBytes('https://example.org/x.png'), null);
+  assert.equal(imageBytes('data:image/png;base64,' + 'A'.repeat(MAX_IMAGE_CHARS + 4)), null);
+  const req = (body) => new Request('http://x/api/appraise', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  let asked = null;
+  const env = { AI: { run: async (model, input) => { asked = { model, input }; return { description: 'A vintage Omega wristwatch with a gold case, light scratches on the glass.' }; } } };
+  const r = await onRequestPost({ request: req({ image: PNG, note: 'my grandfather\'s' }), env }); const j = await r.json();
+  assert.equal(r.status, 200); assert.equal(asked.model, models('vision')); assert.ok(Array.isArray(asked.input.image) && asked.input.image.length === 70); assert.match(asked.input.prompt, /Do not guess a price/);
+  assert.equal(j.value.kind, 'watch'); assert.match(j.text, /^V01D values this at \$/); assert.match(j.seen, /Omega/);
+  assert.equal((await onRequestPost({ request: req({ image: PNG }), env: {} })).status, 503);
+  assert.equal((await onRequestPost({ request: req({ image: 'nope' }), env })).status, 400);
+  assert.equal((await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async () => { throw new Error('busy'); } } } })).status, 502);
+  const p = await (await onRequestPost({ request: req({ image: PNG, note: 'what am I worth' }), env })).json();
+  assert.equal(p.value.person, true); assert.ok(!/\$/.test(p.text));
+  const person = await (await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async () => ({ description: 'A woman smiling at the camera in a park.' }) } } })).json();
+  assert.equal(person.value.person, true); assert.equal(person.seen, '', 'nothing about a person is echoed back');
+  assert.ok(PATHS.includes('vision'));
+});
+
+test('appraise: the asks that open the card, and the money and abstraction asks that do not', () => {
+  for (const a of ['what is this worth', 'value this', 'appraise this coin', 'how much is my watch worth', 'how much could I sell this for', 'is this valuable', 'appraisal', 'What\'s this card worth?', 'price my guitar'])
+    assert.deepEqual(appraiseOf(a), { photo: true }, a);
+  for (const a of ['what am I worth', 'how much is my friend worth']) assert.deepEqual(appraiseOf(a), { person: true }, a);
+  for (const a of ['what is the dollar worth', 'is it worth it', 'how much is a stamp', 'value of pi', 'what is my time worth', 'gold price today', 'how much is my house worth', 'what is bitcoin worth'])
+    assert.equal(appraiseOf(a), null, a);
+});
