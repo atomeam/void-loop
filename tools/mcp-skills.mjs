@@ -9,7 +9,7 @@
 //      works on the stage, or a dedicated tool already). Nothing that sends, books, spends or touches the owner's data: those
 //      families are not in OVER_MCP at all.
 //   3. the most evidence first: real asks in the benchmark + browser-suite mentions + 1 for its own self-test (read off the
-//      rating's own words), ties by name; the top TOP are kept, listed by name so a swap in rank alone is not drift.
+//      rating's own words), ties by name; up to TOP are kept, listed by name so a swap in rank alone is not drift.
 // Each tool calls the same path as ask_void (/api/answer, on that endpoint's terms and per-caller limit); lib/mcp.js says so in
 // every description and hands back the link where the skill itself runs.
 //   node tools/mcp-skills.mjs           write void-live-deploy/lib/mcp-skills.js (and the tool names on /code-review/)
@@ -24,8 +24,9 @@ const PAGE = resolve(root, 'void-live-deploy/code-review/index.html');
 export const TOP = 10;
 // families whose skills answer a question in words. Left out: make, games, stage and time (they put things on the person's
 // stage), self (acts on Void itself or for its owner: actions, automations, memory, store), body (a person's own health dates
-// stay in their browser)
-export const OVER_MCP = ['numbers', 'words', 'sky'];
+// stay in their browser), numbers (its skills work out an exact answer on the page; over MCP the answer engine, a model, would
+// answer instead and could get the sum wrong under a "proven" name. They come back when the sums run on the server too)
+export const OVER_MCP = ['words', 'sky'];
 const LIVE = 'live data: the answer engine has no live feed for it and would guess';
 export const HELD = {
   weather: LIVE, worldtime: LIVE, air: LIVE, uv: LIVE, pollen: LIVE, quake: LIVE, 'aurora-tonight': LIVE, moontonight: LIVE,
@@ -89,7 +90,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const chosen = choose(fam, liveNames(), bench);
   const text = moduleText(chosen), html = readFileSync(PAGE, 'utf8'), page = pageWith(html, chosen);
   const problems = [];
-  if (chosen.length < TOP) problems.push('only ' + chosen.length + ' skills qualify for an MCP tool (want ' + TOP + ')');
+  if (!chosen.length) problems.push('no skill qualifies for an MCP tool');
   if (!MARK.test(html)) problems.push('void-live-deploy/code-review/index.html has no <span id="skill-tools"> to name the skill tools in');
   if (process.argv.includes('--check')) {
     let cur = ''; try { cur = readFileSync(OUT, 'utf8'); } catch (_) {}

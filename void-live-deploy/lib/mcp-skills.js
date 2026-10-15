@@ -2,14 +2,14 @@
 // Void's most proven read-only skills, each its own MCP tool (lib/mcp.js). Regenerate: node tools/mcp-skills.mjs
 export const SKILL_TOOLS = [
  {
-  "skill": "calc",
-  "tool": "skill_calc",
-  "family": "numbers",
-  "familyName": "Numbers and money",
+  "skill": "constellation",
+  "tool": "skill_constellation",
+  "family": "sky",
+  "familyName": "Sky and earth",
   "examples": [
-   "15% of 80",
-   "what is 12 times 7",
-   "sqrt of 144"
+   "what's that constellation",
+   "constellations tonight",
+   "where is Orion"
   ]
  },
  {
@@ -35,47 +35,14 @@ export const SKILL_TOOLS = [
   ]
  },
  {
-  "skill": "grades",
-  "tool": "skill_grades",
-  "family": "numbers",
-  "familyName": "Numbers and money",
+  "skill": "swaps",
+  "tool": "skill_swaps",
+  "family": "words",
+  "familyName": "Words and the world",
   "examples": [
-   "what is my gpa A B B+ A-",
-   "gpa with A 4 credits, B+ 3 credits, C 3 credits",
-   "weighted gpa A in AP, B+ honors, A-"
-  ]
- },
- {
-  "skill": "home",
-  "tool": "skill_home",
-  "family": "numbers",
-  "familyName": "Numbers and money",
-  "examples": [
-   "how much paint for a 12 by 15 room",
-   "how much paint do i need for a 12x14 room",
-   "paint for a 10x12 bedroom with 9 foot ceilings"
-  ]
- },
- {
-  "skill": "savings",
-  "tool": "skill_savings",
-  "family": "numbers",
-  "familyName": "Numbers and money",
-  "examples": [
-   "if i save 200 a month how much in 5 years",
-   "how much will i have if i save 200 a month for 20 years at 7%",
-   "save $50 a week for 5 years"
-  ]
- },
- {
-  "skill": "tip",
-  "tool": "skill_tip",
-  "family": "numbers",
-  "familyName": "Numbers and money",
-  "examples": [
-   "calculate a 20% tip on 45",
-   "what is a 20% tip on 45",
-   "split 120 between 4 people"
+   "what can i swap for buttermilk",
+   "substitute for eggs in baking",
+   "baking powder substitute"
   ]
  },
  {
@@ -87,17 +54,6 @@ export const SKILL_TOOLS = [
    "translate hello to spanish",
    "translate thank you to japanese",
    "translate good morning to french"
-  ]
- },
- {
-  "skill": "walls",
-  "tool": "skill_walls",
-  "family": "numbers",
-  "familyName": "Numbers and money",
-  "examples": [
-   "how many rolls of wallpaper for a 12x14 room",
-   "how much wallpaper do i need for a 10x12 bedroom with 9 foot ceilings",
-   "wallpaper for an accent wall 12 feet wide"
   ]
  },
  {

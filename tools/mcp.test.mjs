@@ -148,8 +148,8 @@ test('mcp: ask_void hands the question to /api/answer and words its answer, sour
 const FAMILIES = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8'));
 const ratingOf = (n) => FAMILIES.families.flatMap((f) => f.skills.map((s) => ({ ...s, family: f.id }))).find((s) => s.name === n);
 
-test('mcp skills: the ten skill tools are proven, in families that answer in words, not held back, and the most evidence of what qualifies', () => {
-  assert.equal(SKILL_TOOLS.length, TOP);
+test('mcp skills: the skill tools (up to ten) are proven, in families that answer in words, not held back, and the most evidence of what qualifies', () => {
+  assert.ok(SKILL_TOOLS.length > 0 && SKILL_TOOLS.length <= TOP);
   const scores = [];
   for (const s of SKILL_TOOLS) {
     const r = ratingOf(s.skill);
@@ -157,10 +157,12 @@ test('mcp skills: the ten skill tools are proven, in families that answer in wor
     assert.ok(!(s.skill in HELD), s.skill + ' is not held back'); assert.ok(s.examples.length >= 1, s.skill + ' has real asks as examples');
     scores.push(evidenceOf(r.why).score);
   }
-  // nothing left out has more evidence than the least of the ten
+  // nothing left out has more evidence than the least of those chosen
   const left = FAMILIES.families.filter((f) => OVER_MCP.includes(f.id)).flatMap((f) => f.skills)
     .filter((s) => s.tier === 'proven' && !(s.name in HELD) && !SKILL_TOOLS.some((t) => t.skill === s.name));
   for (const s of left) assert.ok(evidenceOf(s.why).score <= Math.min(...scores), s.name + ' has more evidence than a chosen skill');
+  // a skill that works out an exact sum is not offered: over MCP a model would answer in its name
+  assert.ok(!OVER_MCP.includes('numbers'));
   // nothing that sends, books, spends or touches the owner's data: those families are never offered
   for (const f of ['self', 'stage', 'make', 'games', 'time', 'body']) assert.ok(!OVER_MCP.includes(f));
   assert.deepEqual(evidenceOf('a self-test, 4 browser-suite mentions, 30 real asks in the benchmark'), { suite: true, browser: 4, bench: 30, score: 35 });
@@ -168,12 +170,12 @@ test('mcp skills: the ten skill tools are proven, in families that answer in wor
 });
 
 test('mcp skills: the choice is a pure function of the ratings: held back, unproven, not live or a family not offered never gets in', () => {
-  const fam = (skills) => ({ families: [{ id: 'numbers', name: 'Numbers', skills }, { id: 'self', name: 'Void itself', skills: [{ name: 'actions', tier: 'proven', why: 'a self-test, 9 browser-suite mentions, 900 real asks in the benchmark' }] }] });
+  const fam = (skills) => ({ families: [{ id: 'words', name: 'Words', skills }, { id: 'self', name: 'Void itself', skills: [{ name: 'actions', tier: 'proven', why: 'a self-test, 9 browser-suite mentions, 900 real asks in the benchmark' }] }] });
   const bench = [{ ask: 'a', want: 'skill:a' }, { ask: 'b1', want: 'skill:b|calc' }, { ask: 'b1', want: 'skill:b' }];
   const got = choose(fam([{ name: 'a', tier: 'proven', why: '3 real asks in the benchmark' }, { name: 'b', tier: 'proven', why: 'a self-test, 9 real asks in the benchmark' },
     { name: 'c', tier: 'checked', why: 'a self-test, 99 real asks in the benchmark' }, { name: 'util', tier: 'proven', why: 'a self-test, 99 real asks in the benchmark' },
     { name: 'gone', tier: 'proven', why: '50 real asks in the benchmark' }]), ['a', 'b', 'c', 'util', 'actions'], bench, 1);
-  assert.deepEqual(got, [{ skill: 'b', tool: 'skill_b', family: 'numbers', familyName: 'Numbers', examples: ['b1'] }]);
+  assert.deepEqual(got, [{ skill: 'b', tool: 'skill_b', family: 'words', familyName: 'Words', examples: ['b1'] }]);
 });
 
 test('mcp skills: lib/mcp-skills.js and the names on /code-review/ are in step with the ratings (else: node tools/mcp-skills.mjs)', async () => {
@@ -191,17 +193,17 @@ test('mcp skills: each skill tool has a clear description and an ask schema, and
     assert.match(t.description, new RegExp('"' + s.skill + '" skill[\\s\\S]*answered the way ask_void is'));
   }
   const seen = [];
-  const ctx = { answer: async (a) => { seen.push(a); return { status: 200, body: { answer: '20% of 45 is 9, so 54 in all.', sources: [], at: '2026-10-15T00:00:00Z' } }; } };
-  const r = (await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'skill_tip', arguments: { ask: ' 20% tip on 45 ' } } }, ctx)).result;
-  assert.deepEqual(seen, [{ ask: '20% tip on 45' }], 'the same call ask_void makes, nothing more');
-  assert.equal(r.isError, false); assert.match(r.content[0].text, /^20% of 45 is 9[\s\S]*The tip skill itself: https:\/\/a-to-mind\.com\/\?q=20%25%20tip%20on%2045$/);
-  assert.deepEqual([r.structuredContent.skill, r.structuredContent.path], ['tip', 'answer_engine']);
-  const viaAsk = (await rpc({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'ask_void', arguments: { ask: '20% tip on 45' } } }, ctx)).result;
+  const ctx = { answer: async (a) => { seen.push(a); return { status: 200, body: { answer: 'Serendipity: finding something good without looking for it.', sources: [], at: '2026-10-15T00:00:00Z' } }; } };
+  const r = (await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: ' define serendipity ' } } }, ctx)).result;
+  assert.deepEqual(seen, [{ ask: 'define serendipity' }], 'the same call ask_void makes, nothing more');
+  assert.equal(r.isError, false); assert.match(r.content[0].text, /^Serendipity: finding[\s\S]*The define skill itself: https:\/\/a-to-mind\.com\/\?q=define%20serendipity$/);
+  assert.deepEqual([r.structuredContent.skill, r.structuredContent.path], ['define', 'answer_engine']);
+  const viaAsk = (await rpc({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'ask_void', arguments: { ask: 'define serendipity' } } }, ctx)).result;
   assert.equal(viaAsk.structuredContent.answer, r.structuredContent.answer, 'the same answer ask_void gives');
-  assert.equal((await rpc({ jsonrpc: '2.0', id: 4, method: 'tools/call', params: { name: 'skill_tip', arguments: { ask: 'x' } } }, ctx)).result.isError, true, 'too short: ask_void\'s own check');
-  assert.equal((await rpc({ jsonrpc: '2.0', id: 5, method: 'tools/call', params: { name: 'skill_tip', arguments: { ask: '20% tip on 45' } } })).result.isError, true, 'only the route lends /api/answer');
-  const raw = (await rpc({ jsonrpc: '2.0', id: 6, method: 'tools/call', params: { name: 'skill_tip', arguments: { ask: '20% tip on 45', response_type: 'raw_data' } } }, ctx)).result;
-  assert.equal(JSON.parse(raw.content[0].text).skill, 'tip');
+  assert.equal((await rpc({ jsonrpc: '2.0', id: 4, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: 'x' } } }, ctx)).result.isError, true, 'too short: ask_void\'s own check');
+  assert.equal((await rpc({ jsonrpc: '2.0', id: 5, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: 'define serendipity' } } })).result.isError, true, 'only the route lends /api/answer');
+  const raw = (await rpc({ jsonrpc: '2.0', id: 6, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: 'define serendipity', response_type: 'raw_data' } } }, ctx)).result;
+  assert.equal(JSON.parse(raw.content[0].text).skill, 'define');
 });
 
 test('mcp skills: through the real route, a skill tool reaches /api/answer and comes back with a real answer (no model bound: the open web)', async () => {

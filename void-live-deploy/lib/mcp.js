@@ -4,7 +4,7 @@
 // tables and reaches no other service, except ask_void, which is /api/answer itself (the route hands it over, ctx.answer: the open
 // web and the model, on that endpoint's terms and limits). One, review_code_closer, is /api/review itself (the route hands it over, ctx.review): the
 // closer read by a model comes only with the key that endpoint takes, on its terms, and the only thing written is that key's daily
-// count. /tools.json is the same list, public. The skill tools (asked by Void, 2026-10-15) are Void's ten most proven read-only
+// count. /tools.json is the same list, public. The skill tools (asked by Void, 2026-10-15) are Void's most proven read-only (up to ten)
 // skills, generated from the ratings (tools/mcp-skills.mjs -> lib/mcp-skills.js): each is ask_void's own path with the skill's
 // name on it and the link where the skill itself runs. skill_health reads skills/families.json (the route lends it, ctx.families).
 import { quick } from './review-api.js';
@@ -28,7 +28,7 @@ const SITE = 'https://a-to-mind.com';
 const ASKS = { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true }; // a model and the open web answer
 // one of Void's most proven skills as its own tool: the definition is built from lib/mcp-skills.js, never written by hand
 const skillTool = (s) => ({ name: s.tool, title: "Void's " + s.skill + ' skill', annotations: ASKS,
-  description: "Ask Void's \"" + s.skill + "\" skill (" + s.familyName + "), one of the ten proven skills with the most evidence that Void offers over MCP (read-only): rated proven on a-to-mind.com from evidence (real asks in Void's benchmark, its tests), never from how it describes itself. Asks like "
+  description: "Ask Void's \"" + s.skill + "\" skill (" + s.familyName + "), one of the proven skills with the most evidence that Void offers over MCP (read-only): rated proven on a-to-mind.com from evidence (real asks in Void's benchmark, its tests), never from how it describes itself. Asks like "
     + s.examples.map((e) => '"' + e + '"').join(', ') + ". Over MCP it is answered the way ask_void is: Void's answer engine (a model, citing Wikipedia when it matches; up to 12 a minute per caller). The skill itself works it out on its own card at the \"open\" link in the result.",
   inputSchema: { type: 'object', required: ['ask'], properties: { ask: { type: 'string', description: 'The ask in plain words (3 to 600 characters)' + (s.examples[0] ? ', e.g. "' + s.examples[0] + '"' : '') + '.' }, response_type: RESPONSE_TYPE } } });
 
@@ -165,7 +165,7 @@ export async function rpc(msg, ctx) {
   if (!msg || typeof msg !== 'object' || Array.isArray(msg) || msg.jsonrpc !== '2.0' || typeof msg.method !== 'string') return err(msg && msg.id, -32600, 'Invalid request: one JSON-RPC 2.0 message');
   const { id, method } = msg, params = (msg.params && typeof msg.params === 'object') ? msg.params : {};
   if (id === undefined) return null; // notifications (notifications/initialized, cancelled) need no reply
-  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Void's read-only tools: ask Void anything (ask_void, its answer engine), the instant code review, the closer read (with a key in Authorization), the moon's phase, the meteor showers, a tool for each of its ten most proven read-only skills (skill_*, answered the way ask_void is), and skill_health (how far each skill is checked). ask_void, the skill tools and the closer read call a model." });
+  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Void's read-only tools: ask Void anything (ask_void, its answer engine), the instant code review, the closer read (with a key in Authorization), the moon's phase, the meteor showers, a tool for each of its most proven read-only skills (skill_*, answered the way ask_void is), and skill_health (how far each skill is checked). ask_void, the skill tools and the closer read call a model." });
   if (method === 'ping') return ok(id, {});
   if (method === 'tools/list') return ok(id, { tools: TOOLS });
   if (method === 'tools/call') {
