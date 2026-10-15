@@ -36,4 +36,6 @@ t('plan takes least recently tested, untried asks, and never loops', () => {
   for (let i = 0; i < 40; i++) { const p = plan(inv, seen, 2); if (!p.length) break; asks.push(...p.map((x) => x.ask)); seen = remember(seen, p, '2026-10-' + String(10 + i).padStart(2, '0') + 'T00:00:00Z'); }
   assert.equal(new Set(asks).size, asks.length); assert.equal(plan(inv, seen, 2).length, 0); assert.ok(asks.includes('open a calculator') && asks.includes('/store/'));
   const s2 = { features: { 'skill:calc': '2026-10-01T00:00:00Z', 'page:/store/': '2026-10-09T00:00:00Z' }, asks: [] }; assert.equal(plan(inv, s2, 1)[0].feature, 'page:/films/'); });
+t('priority skills go first', () => { const inv2 = inventory([{ name: 'a', examples: ['x a'] }, { name: 'b', examples: ['x b'] }, { name: 'c', examples: ['x c'] }], []);
+  assert.deepEqual(plan(inv2, {}, 2, {}, ['skill:c', 'skill:b']).map((p) => p.feature), ['skill:c', 'skill:b']); });
 console.log('site-test: ' + n + ' checks passed');
