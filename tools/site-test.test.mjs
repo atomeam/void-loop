@@ -21,6 +21,7 @@ t('a new failure is filed once', () => { const r = [{ ask: 'a', ok: false, why: 
   assert.equal(improve(r, suite).kind, 'file'); assert.notEqual(improve(r, suite, ['a | refused']).kind, 'file'); });
 t('a missed new wording is taught first, once', () => { const r = [{ ask: 'yo calculator', ok: false, why: ['refused'], key: 'k', probe: true, variant: true, base: 'calculator', feature: 'skill:calc' }];
   const a = improve(r, suite); assert.equal(a.kind, 'teach'); assert.equal(a.suite.teach[0].means, 'calculator'); assert.notEqual(improve(r, suite, [a.key]).kind, 'teach'); });
+t('a console error on a new wording is a fix, not a teach', () => assert.equal(improve([{ ask: 'yo x', ok: false, why: ['console: boom'], key: 'k2', probe: true, variant: true, base: 'x', feature: 'skill:x' }], suite).kind, 'file'));
 t('new ground that passed becomes a regression case', () => { const a = improve([ok('a'), ok('pull up calculator', { probe: true, feature: 'skill:calc' })], suite); assert.equal(a.kind, 'grow'); assert.equal(a.suite.cases.at(-1).ask, 'pull up calculator'); });
 t('all green grows by a candidate', () => { const a = improve([ok('a')], suite); assert.equal(a.kind, 'grow'); assert.deepEqual(a.suite.candidates, []); });
 t('then tightens fps', () => { const a = improve([ok('a', { fps: 60 })], { ...suite, candidates: [] }); assert.equal(a.kind, 'tighten'); assert.equal(a.suite.limits.fpsMin, 54); });

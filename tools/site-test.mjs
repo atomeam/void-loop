@@ -110,10 +110,11 @@ export function remember(seen = {}, probes, at) {
 export function improve(results, suite, filed = []) {
   const done = new Set(filed);
   // a new wording or activity V01D did not understand: teach it (one alias item with its regression case), before anything else
-  const miss = results.find((r) => !r.ok && r.variant && !done.has('teach | ' + r.ask));
+  const unheard = (r) => r.variant && r.why.every((w) => /^(refused|nothing appeared|no skill caught)/.test(w)); // V01D did not understand the wording
+  const miss = results.find((r) => !r.ok && unheard(r) && !done.has('teach | ' + r.ask));
   if (miss) return { kind: 'teach', key: 'teach | ' + miss.ask, note: 'teach V01D "' + miss.ask + '" (means "' + miss.base + '", ' + miss.feature + '): ' + miss.why.join('; '),
     suite: { ...suite, teach: (suite.teach || []).concat({ ask: miss.ask, means: miss.base, feature: miss.feature }) } };
-  const fail = results.find((r) => !r.ok && !r.variant && !done.has(r.key));
+  const fail = results.find((r) => !r.ok && !unheard(r) && !done.has(r.key));
   if (fail) return { kind: 'file', key: fail.key, note: 'fix: "' + fail.ask + '" ' + fail.why.join('; '), suite };
   // every failure already filed: nothing is filed twice, the run still improves the suite below
   // a new ask that passed becomes a regression case (it is now known ground)
@@ -152,7 +153,7 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
   mkdirSync(shots, { recursive: true }); const { b, ctx } = await browser(); const out = [];
   try { for (const c of onceEach(suite.cases)) {
     const cx = await ctx(), p = await cx.newPage(), errors = [];
-    p.on('pageerror', (e) => errors.push(e.message)); p.on('console', (m) => m.type() === 'error' && !/favicon|204|net::ERR/i.test(m.text()) && errors.push(m.text()));
+    p.on('pageerror', (e) => errors.push(e.message)); p.on('console', (m) => m.type() === 'error' && !/favicon|204|net::ERR|cloudflareinsights|Permissions policy violation/i.test(m.text()) && errors.push(m.text()));
     // a script answered with the wrong type: name the file (the console line alone does not, issue #757)
     p.on('response', (res) => { const q = res.request(), ct = res.headers()['content-type'] || ''; if (q.resourceType() === 'script' && res.status() < 300 && !/javascript|wasm|json/.test(ct)) errors.unshift('script ' + new URL(res.url()).pathname + ' served as ' + (ct || 'nothing') + ' (' + res.status() + ')'); });
     const t0 = Date.now(); await p.goto(site + (c.path || '/'), { waitUntil: 'load', timeout: 45000 }); const loadMs = Date.now() - t0;
