@@ -139,7 +139,7 @@ Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as 
 
 **Reviewer (owner, 2026-10-09):** a second Claude session reviews **after merge**: it reads the actual merged SHA against the committed specs, reports concrete mismatches with file references and reproduction evidence, and opens focused fix PRs through the normal pipeline. It is not a required check and adds no gate; making its verdict required would be a separate, explicit owner decision. It also keeps one short file of the settled contract (port rules, modes, naming, tests first) as a faithful record of decisions already made, not new ones. Reports keep three things apart: merged, deployed (finished, smoke-checked), and verified (verify-main green on that SHA). Specs committed never means a feature is built.
 
-After these, the numbered items below in their earlier order, with #26 first (owner, 2026-10-15: "make sure V01D gets better at videos as we go"): 26 → 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
+After these, the numbered items below in their earlier order, with #26 first (owner, 2026-10-15: "make sure V01D gets better at videos as we go"; "every kind of video ... every type of book. and every type of game"): 26 → 27 → 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
 
 **Infrastructure (owner):** reuse Cloudflare D1, KV and Vectorize. No new vendor (no Qdrant, no Inngest) until a working feature demonstrates a need this stack can't meet. Memory is an explicit "remember this" only. Learning across visitors means shared, tested skills, never pooled private content. Void stays empty until asked; no silent behaviour tracking.
 
@@ -422,6 +422,17 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
   5. **Sound.** Captions are all a film has; a voice-over or music bed comes only within the TTS spend cap the owner sets (an open owner item).
 - **Measure:** the scorecard from step 2, kept per film, and the owner's verdicts from step 3: post-it share going up is the point.
 - **claim:** builder 2026-10-15: step 1 shipped; step 2 next.
+
+
+## 27. Every kind of film, book and game, each one getting better
+
+- **Why (owner, 2026-10-15):** "Void should try to make every kind of video and get better at it, the same way it should be trying to write every type of book. and every type of game". Range, and real improvement in each kind, measured, the same discipline as the reviewer (#1) and the films (#26).
+- **The rule for every kind:** a kind counts as tried when V01D has made one end to end and it is on the site; it counts as getting better when each new one is scored against the last (an automatic score where one exists, the owner's verdicts and visitors' plays or reads where not) and the score goes up. Each kind keeps its own line in a coverage map below: kind, made, best score, what the next one changes.
+- **Films** (the pipeline is #26): experiment demo (made, 1); still to try: explainer of one idea, how-to of one skill, a game played start to finish, a build timelapse (a PR from ask to merge), "what V01D shipped today" recap, a short story told with the stage's figures, a music visualizer, a side-by-side comparison, a before-and-after.
+- **Books** (none yet; skills/book.js only looks books up): a short book written chapter by chapter, kept on the site like the films, one kind at a time: a picture book for children, a field guide (V01D's own skills), a short-story collection, a novella, a how-to book, poetry, a choose-your-own-path book (ties to games), nonfiction explainer. Every book says it was written by an AI; no imitation of a living author's style by name.
+- **Games** (made: chess, Connect Four, Battleship, Aggravation, marbles (Ringer), tic-tac-toe, memory, horse and donkey; #5 has them learn by self-play): still to try: a word game, a puzzle (sliding, logic grid), an arcade game, a card game, a party game for several people, a text adventure, an idle game, a rhythm game, a strategy game on a map.
+- **Order:** films first (the owner's ask of the day), then one new game kind and one book kind per week, alternating, while each made kind gets one improvement per pass. Every new kind is also filmed (#26), so V01D's voice shows its range.
+- **claim:**
 
 ## Candidate capability map (2026-10-09)
 
