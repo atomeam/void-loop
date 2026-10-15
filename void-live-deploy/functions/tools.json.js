@@ -17,7 +17,13 @@ export async function onRequestGet({ request, env }) {
   const tools = CORE.map((t) => ({ ...t }));
   try {
     const index = JSON.parse(await get('/skills/index.json'));
+    const names = [];
     for (const name of index) {
+      // a family skill (lib/skill-family.js) names its members on a `parts:` line; agents still see each member as its own tool
+      const fam = (await get('/skills/' + name + '.js')).match(/^\s*\*\s*parts:\s*\[([^\]]*)\]/m);
+      if (fam) names.push(...Array.from(fam[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1])); else names.push(name);
+    }
+    for (const name of names) {
       if (HIDDEN.has(name)) continue;
       const src = await get('/skills/' + name + '.js');
       const m = src.match(/examples\s*:\s*\[([^\]]*)\]/);
