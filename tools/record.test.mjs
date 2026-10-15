@@ -1,7 +1,7 @@
 // tools/record.mjs: what Void's own video of an experiment says comes from the lab entry and the run's ledger notes.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { runOf, script, hookOf, filmedOf, pickFilm, picksOf } from './record.mjs';
+import { runOf, script, hookOf, filmedOf, pickFilm, picksOf, sourceOf } from './record.mjs';
 import { toolList } from '../void-live-deploy/skills/make.js';
 
 const ledger = [{ run: 1, draft: 'drafts/fringe/miss-board-4.html', family: 'miss-board' }, { run: 2, draft: 'drafts/fringe/miss-board-4.html', family: 'miss-board', behavior: 'Estimate how much of what people ask Void has already seen.', hypothesis: 'Good-Turing says it', findings: ['about 40% unseen'], failure_modes: [{ what: 'small samples swing', evidence: 'n<30' }] }];
@@ -54,4 +54,12 @@ console.log('record: ok');
   assert.deepEqual(picksOf(lab, filmedOf('film-20261014-d-4-r1'), 3), ['c-3', 'b-2', 'a-1'], 'three new ones, newest first');
   assert.deepEqual(picksOf(lab, filmedOf('film-20261014-d-4-r1'), 9), ['c-3', 'b-2', 'a-1', 'd-4'], 'never more than the lab, never one twice');
   assert.deepEqual(picksOf(lab, [], 0), ['d-4'], 'at least one');
+}
+
+// each film links to the code it shows (asked by Void, 2026-10-15)
+{
+  const w = script({ id: 'miss-board-4', label: 'x', sub: 'y?' }, null);
+  assert.equal(w.source, 'https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/miss-board-4.html');
+  assert.ok(w.description.includes('How it is built: ' + sourceOf('miss-board-4')), 'the link is in the words a viewer reads');
+  for (const x of toolList().filter((t) => /-\d+$/.test(t.id))) assert.ok(readFileSync(new URL('../void-live-deploy/fringe/' + x.id + '.html', import.meta.url)), 'every lab film links to a file that exists: ' + x.id);
 }

@@ -19,6 +19,34 @@ export function wantsFilms(lower) {
   return MINE.test(t) || VIDEOS.test(t) || REVIEW.test(t);
 }
 
+// the films as data (asked by Void, 2026-10-15: "Implement the 'film-metadata' skill to extract structured JSON from any V01D FILM
+// currently on the stage"): "film metadata", "films as json", "films json", "export the films". Read from /api/films, which anyone
+// may list; each film becomes { id, day, experiment, title, tags, source, watch }.
+const META = new RegExp('^(?:(?:show|give|get|export|list)\\s+(?:me\\s+)?)?(?:the\\s+)?(?:' + WHOSE + ')?(?:' + FILM + '|videos?)\\s+(?:metadata|meta|data|as\\s+json|json|info)$|^(?:export\\s+(?:the\\s+)?' + FILM + ')$', 'i');
+export const wantsFilmMeta = (lower) => META.test(String(lower || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
+export function filmMeta(f) {
+  const m = String(f.id || '').match(/^(\d{8})-(.+?)-r\d+$/), exp = m ? m[2] : '';
+  const src = (String(f.description || '').match(/How it is built: (https:\/\/github\.com\/\S+)/) || [])[1] || (exp ? 'https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/' + exp + '.html' : '');
+  const day = m ? m[1].slice(0, 4) + '-' + m[1].slice(4, 6) + '-' + m[1].slice(6) : String(f.at || '').slice(0, 10);
+  const tags = Array.isArray(f.tags) ? f.tags : String(f.tags || '').split(',').map((x) => x.trim()).filter(Boolean);
+  return { id: f.id, day, experiment: exp, title: f.title || '', tags, source: src, watch: 'https://a-to-mind.com/films/' };
+}
+async function runMeta(api) {
+  const { showPage, esc } = api;
+  const el = showPage((p) => { p.innerHTML = '<h2>V01D FILMS as data</h2><div class="sub">\u2026</div>'; });
+  try {
+    const j = await fetch('/api/films').then((r) => r.json());
+    if (api._pageStill && !api._pageStill(el)) return 'films';
+    const rows = (j.films || []).map(filmMeta), json = JSON.stringify(rows, null, 2);
+    el.innerHTML = '<h2>V01D FILMS as data</h2><div class="sub">' + esc(rows.length + (rows.length === 1 ? ' film' : ' films') + ', newest first') + '</div>'
+      + '<pre class="vfilm-json" style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:55vh;overflow:auto;font-size:12px">' + esc(json) + '</pre>'
+      + '<div class="src">' + esc('from a-to-mind.com/api/films') + '</div>';
+  } catch (_) {
+    el.innerHTML = '<h2>V01D FILMS as data</h2><p>' + esc('The films could not be read just now. Try again in a minute.') + '</p>';
+  }
+  return 'films';
+}
+
 const STYLE = `<style>
   .vfilms { display: grid; gap: 14px; }
   .vfilms .poster { position: relative; overflow: hidden; border-radius: 16px; padding: 22px 20px 20px; color: #fff;
@@ -50,6 +78,7 @@ const STYLE = `<style>
 </style>`;
 
 function run(text, api) {
+  if (wantsFilmMeta(text)) return runMeta(api);
   const { showPage, esc } = api;
   showPage((el) => {
     el.innerHTML = STYLE + '<div class="vfilms">'
@@ -76,6 +105,8 @@ export default {
     'film review',
     '/films/',
     'v01d films',
+    'film metadata',
+    'films as json',
   ],
   nearMisses: [
     'film a timer',
@@ -84,6 +115,6 @@ export default {
     'how do I film a video',
     'horror movies',
   ],
-  match(lower) { return wantsFilms(lower); },
+  match(lower) { return wantsFilms(lower) || wantsFilmMeta(lower); },
   run,
 };

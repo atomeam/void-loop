@@ -13,9 +13,10 @@ This repo is Void, live at https://a-to-mind.com: a blank stage where anything s
 ## Read, in this order
 
 1. This page.
-2. The top of `domains/void.frontier.md`: the one build order.
-3. The last 20 lines of `domains/void.agents.log.md`: what just happened.
-4. When you need it: `STANDING.md` (what Void is, in the owner's words, and the money rule), `docs/RULES.md` (every rule learned the hard way, dated), `docs/MAP.md` (what exists and where).
+2. `domains/handoff.md`: who is building what right now; add your line before you start and move it when you ship (owner, 2026-10-15: build ladders for each other, never do anything twice).
+3. The top of `domains/void.frontier.md`: the one build order.
+4. The last 20 lines of `domains/void.agents.log.md`: what just happened.
+5. When you need it: `STANDING.md` (what Void is, in the owner's words, and the money rule), `docs/RULES.md` (every rule learned the hard way, dated), `docs/MAP.md` (what exists and where).
 
 ## A run, start to finish
 

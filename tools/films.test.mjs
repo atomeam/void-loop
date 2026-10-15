@@ -127,3 +127,14 @@ test('members and the owner review a film; a member sees the totals and their ow
   const kept = env.DB.raw.prepare('SELECT note FROM void_film_reviews').all().map((r) => r.note).join(' ');
   assert.ok(!kept.includes('Z'.repeat(43)), 'a key typed into a note is never kept');
 });
+
+// the films as data (asked by Void, 2026-10-15: "extract structured JSON from any V01D FILM")
+test('film metadata: the asks it takes, and each film as { id, day, experiment, title, tags, source, watch }', async () => {
+  const { wantsFilmMeta, filmMeta } = await import('../void-live-deploy/skills/films.js');
+  for (const a of ['film metadata', 'films as json', 'show me the films json', 'export the films', 'v01d films metadata', 'film data']) assert.ok(wantsFilmMeta(a), a);
+  for (const a of ['films', 'metadata', 'json', 'export data', 'best films of 2025', 'film a timer']) assert.ok(!wantsFilmMeta(a), a);
+  const m = filmMeta({ id: '20261014-anomalous-event-timeline-4-r6', at: '2026-10-14T16:33:31Z', title: 'T', tags: 'Void, AI', description: 'Try it.\n\nHow it is built: https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/anomalous-event-timeline-4.html\n\nmore' });
+  assert.deepEqual(m, { id: '20261014-anomalous-event-timeline-4-r6', day: '2026-10-14', experiment: 'anomalous-event-timeline-4', title: 'T', tags: ['Void', 'AI'],
+    source: 'https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/anomalous-event-timeline-4.html', watch: 'https://a-to-mind.com/films/' });
+  assert.equal(filmMeta({ id: '20261015-miss-board-4-r9', title: 'x', tags: '', description: '' }).source, 'https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/miss-board-4.html', 'an older film without the line still links its experiment');
+});

@@ -2,7 +2,7 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 0,
-  "tested": 44,
+  "tested": 45,
   "checked": 13,
   "proven": 83
  },
@@ -546,7 +546,7 @@
    "for": "definitions, translation, news, books, shows and sport",
    "count": {
     "experiment": 0,
-    "tested": 8,
+    "tested": 9,
     "checked": 1,
     "proven": 7
    },
@@ -590,6 +590,11 @@
      "name": "swaps",
      "tier": "proven",
      "why": "a self-test, 12 real asks in the benchmark"
+    },
+    {
+     "name": "film-metadata",
+     "tier": "tested",
+     "why": "a self-test"
     },
     {
      "name": "book",
@@ -815,7 +820,7 @@
     {
      "name": "films",
      "tier": "proven",
-     "why": "8 browser-suite mentions, 4 real asks in the benchmark"
+     "why": "a self-test, 8 browser-suite mentions, 4 real asks in the benchmark"
     },
     {
      "name": "app",
