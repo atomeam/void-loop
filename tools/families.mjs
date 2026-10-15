@@ -10,6 +10,7 @@
 // Copied from Home Assistant's integration quality scale (bronze to platinum, earned by meeting written rules), one notch
 // past: the rules are read off the repo, so a rating can't be claimed, only earned, and it drops when a test goes.
 //   node tools/families.mjs           write void-live-deploy/skills/families.json and print the families
+//   node tools/families.mjs --stale   list experiments older than STALE_DAYS, flagged for review (never deleted)
 //   node tools/families.mjs --check   exit 1 if families.json is out of date or a skill has no family (checks.mjs runs this)
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -73,6 +74,27 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
 }
 
 /** the families with each skill rated, the counts, and any skill no family holds. Pure, given the evidence. */
+// The decay timer (asked by Void, ask-20261015-0614-1: "flag stale experiments"): an experiment carries the day it was first
+// rated one (`since`, kept across rewrites); one left an experiment longer than STALE_DAYS is flagged for review. Flag only:
+// nothing is ever deleted or retired by this; a builder decides (test it, or retire it through the ledger).
+export const STALE_DAYS = 14;
+/** carry each experiment's `since` over from the last families.json; a new experiment starts today. Pure. */
+export function carrySince(fams, prev, today) {
+  const old = new Map(); for (const f of (prev && prev.families) || []) for (const s of f.skills || []) if (s.since) old.set(s.name, s.since);
+  for (const f of fams) for (const s of f.skills) if (s.tier === 'experiment') s.since = old.get(s.name) || today;
+  return fams;
+}
+/** experiments older than `days` on `now` (YYYY-MM-DD), oldest first: [{ name, family, since, days }]. Pure. */
+export function staleExperiments(fam, now, days = STALE_DAYS) {
+  const out = [], t = Date.parse(now + 'T00:00:00Z');
+  for (const f of (fam && fam.families) || []) for (const s of f.skills || []) {
+    if (s.tier !== 'experiment' || !s.since) continue;
+    const d = Math.floor((t - Date.parse(s.since + 'T00:00:00Z')) / 864e5);
+    if (d > days) out.push({ name: s.name, family: f.name, since: s.since, days: d });
+  }
+  return out.sort((a, b) => b.days - a.days);
+}
+
 export function build(names, ev) {
   const placed = new Set(FAMILIES.flatMap((f) => f.skills));
   const families = FAMILIES.map((f) => {
@@ -87,6 +109,9 @@ export function build(names, ev) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const names = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8'));
   const b = build(names, evidence(names));
+  let prev = null; try { prev = JSON.parse(readFileSync(OUT, 'utf8')); } catch (_) {}
+  carrySince(b.families, prev, new Date().toISOString().slice(0, 10));
+  if (process.argv.includes('--stale')) { const st = staleExperiments(prev || b, new Date().toISOString().slice(0, 10)); console.log(st.length ? st.map((x) => `${x.name} (${x.family}): an experiment for ${x.days} days, since ${x.since}: review it (test it or retire it)`).join('\n') : 'no stale experiments'); process.exit(0); }
   const json = JSON.stringify({ note: 'Void\'s skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)', totals: b.totals, families: b.families }, null, 1) + '\n';
   const problems = [];
   if (b.unplaced.length) problems.push('skills with no family (add them to FAMILIES in tools/families.mjs): ' + b.unplaced.join(', '));

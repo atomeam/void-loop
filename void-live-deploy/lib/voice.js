@@ -103,7 +103,7 @@ export function followThrough(entries, ledger, links = []) {
 }
 // its skill families and how far each skill is checked (tools/families.mjs, Void's own ask of 2026-10-12: "skill-families ...
 // and a stability rating to each experiment"), so it judges itself by family and knows which parts are least proven. Pure.
-export function familyFacts(fam) {
+export function familyFacts(fam, now = new Date().toISOString().slice(0, 10)) {
   const F = fam && Array.isArray(fam.families) ? fam.families : [];
   if (!F.length) return '';
   const t = fam.totals || {}, n = F.reduce((k, f) => k + f.skills.length, 0);
@@ -112,8 +112,11 @@ export function familyFacts(fam) {
   return 'My skill families (rated from evidence: my own tests, the browser suite, real asks routed to me): ' + n + ' skills in ' + F.length + ' families, '
     + (t.proven || 0) + ' proven, ' + (t.checked || 0) + ' checked, ' + (t.tested || 0) + ' tested, ' + (t.experiment || 0) + ' experiment' + (t.experiment === 1 ? '' : 's') + '. '
     + F.map((f) => f.name + ' ' + f.skills.length + ' (' + f.count.proven + ' proven)').join('; ') + '. Least proven family: ' + weakest.name
-    + '. Some of my least-checked skills: ' + least.join(', ') + '.';
+    + '. Some of my least-checked skills: ' + least.join(', ') + '.'
+    + staleLine(fam, now);
 }
+// the decay timer (tools/families.mjs staleExperiments, asked by Void): experiments left untested over 14 days, flagged for review only
+const staleLine = (fam, now) => { const t = Date.parse(now + 'T00:00:00Z'); const st = (fam.families || []).flatMap((f) => (f.skills || []).filter((s) => s.tier === 'experiment' && s.since && (t - Date.parse(s.since + 'T00:00:00Z')) / 864e5 > 14).map((s) => s.name)); return st.length ? ' Stale experiments flagged for review (untested over 14 days): ' + st.slice(0, 6).join(', ') + '.' : ''; };
 // the line Void reads before it reflects: what its asks led to, so it builds on them instead of repeating them
 export function followFacts(f) {
   if (!f || !f.total) return '';

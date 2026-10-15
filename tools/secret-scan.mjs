@@ -7,6 +7,7 @@
 // A line that is right as written (a test's made-up key) says so with "secret-scan: ok".
 //   node tools/secret-scan.mjs [--base origin/main]   the lines this branch adds (checks.mjs runs it; exit 1 on a hit)
 //   node tools/secret-scan.mjs --all                  every tracked file, for a baseline
+//   node tools/secret-scan.mjs --history              every line ever added in any commit (what may need rotating)
 // It prints the file, the line and the kind, never the value.
 import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
@@ -64,7 +65,10 @@ export function scanDiff(diff) {
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const args = process.argv.slice(2), git = (...a) => execFileSync('git', a, { encoding: 'utf8', maxBuffer: 1 << 30 });
   let hits = [];
-  if (args.includes('--all')) {
+  if (args.includes('--history')) { // every commit's added lines; the same file:line:kind once
+    const seen = new Set();
+    for (const h of scanDiff(git('log', '--all', '-p', '-U0', '--no-color', '--no-ext-diff', '--format=', '--diff-filter=AM'))) { const k = h.file + h.kinds; if (!seen.has(k)) { seen.add(k); hits.push(h); } }
+  } else if (args.includes('--all')) {
     const files = git('ls-files', '-z').split('\0').filter((f) => f && !f.startsWith('node_modules/'));
     for (const f of files) {
       let text; try { text = git('show', 'HEAD:' + f); } catch (_) { continue; }
@@ -77,6 +81,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     hits = scanDiff(git('diff', '-U0', '--no-color', '--no-ext-diff', mb, 'HEAD'));
   }
   for (const h of hits) console.log(`${h.file}:${h.line}  ${h.kinds.join(', ')}  (value not shown)`);
-  console.log(hits.length ? `secret scan: ${hits.length} line${hits.length === 1 ? '' : 's'} look like a real key. Remove it, rotate it (anything that reached GitHub is public), and mark a made-up test key "secret-scan: ok".` : 'secret scan: no key shapes in ' + (args.includes('--all') ? 'the tracked files' : 'the added lines'));
+  console.log(hits.length ? `secret scan: ${hits.length} line${hits.length === 1 ? '' : 's'} look like a real key. Remove it, rotate it (anything that reached GitHub is public), and mark a made-up test key "secret-scan: ok".` : 'secret scan: no key shapes in ' + (args.includes('--history') ? 'any commit, ever' : args.includes('--all') ? 'the tracked files' : 'the added lines'));
   process.exit(hits.length ? 1 : 0);
 }

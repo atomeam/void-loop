@@ -74,3 +74,4 @@ The workflows that only run by hand (`cf-scope.yml`, `model-bench.yml`, `rehears
 | What was retired | Where it lived | Kept as | Date |
 | --- | --- | --- | --- |
 | 23 local copies of the ask tidier `CLEAN` (three forms) | label, layer, cartoon, motorbody, dark-look, print-download, group, incident, status, trialwatch, inventory, show-countdown, dismiss, zoom-figure, senolytic, part, figure, figure-can, today, printedmotor, print-file, light-look, coral | `lib/ask-text.js` (`clean`, `cleanLower`); the old forms live on as the oracle in `tools/ask-text.test.mjs` | 2026-10-15 |
+| store-preview and tester-log as separate skills (never shipped as their own names) | asks ask-20261015-0619-1, ask-20261015-0616-1 | the store card (`skills/store.js`) and the growth card (`skills/growth.js`), routing aliases tested in `tools/void-asks-store.test.mjs` | 2026-10-15 |

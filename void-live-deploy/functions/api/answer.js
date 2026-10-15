@@ -17,6 +17,8 @@ import { PERSONA } from '../../lib/persona.js';
 import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
 import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/code-review.js';
 import { models } from '../../lib/models.js';
+import { keeperOf, scrubOut } from '../../lib/keeper.js';
+import { redactPersonal } from '../../lib/privacy.js';
 import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
 import { clefRoute, clefOn, mergeRoute, clefYesNo } from '../../lib/clef.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
@@ -84,7 +86,7 @@ async function fixAnswer(request, env, body) {
         ],
         max_tokens: 1600, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
-      const answer = redact(String(pick(r)).trim()); // never echo a secret, even one the model made up
+      const answer = scrubOut(redact(String(pick(r)).trim()), env); // never echo a secret, even one the model made up
       if (answer) return Response.json({ answer, sources: [], fix: 'model', platform });
       await recordShortfall(env, 'fix', 'empty');
     } catch (e) { await recordShortfall(env, 'fix', reasonOf(e)); }
@@ -114,7 +116,7 @@ async function reviewAnswer(request, env, body) {
         ],
         max_tokens: 1400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
-      const answer = redact(String(pick(r)).trim());
+      const answer = scrubOut(redact(String(pick(r)).trim()), env);
       if (answer) return Response.json({ answer, findings, lang: res.lang, review: 'model' });
       await recordShortfall(env, 'review', 'empty');
     } catch (e) { await recordShortfall(env, 'review', reasonOf(e)); }
@@ -138,7 +140,7 @@ async function takeAnswer(request, env, body) {
       messages: [{ role: 'system', content: TAKE_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: 'Subject: ' + title + (desc ? ' (' + desc + ')' : '') + '\n\nSummary:\n' + extract }],
       max_tokens: 260, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
     });
-    const take = redact(noThink(pick(r))).replace(/\s+/g, ' ').trim().slice(0, 700);
+    const take = scrubOut(redact(noThink(pick(r))), env).replace(/\s+/g, ' ').trim().slice(0, 700);
     if (!take) throw new Error('empty');
     try { await caches.default.put(cacheReq, new Response(take, { headers: { 'cache-control': 'max-age=604800' } })); } catch (_) {}
     return Response.json({ take });
@@ -160,7 +162,7 @@ async function draftAnswer(request, env, body) {
         messages: [{ role: 'system', content: DRAFT_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: draftPrompt(p) }],
         max_tokens: 900, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
-      const draft = redact(noThink(pick(r))).trim().slice(0, DRAFT_MAX);
+      const draft = scrubOut(redact(noThink(pick(r))), env).trim().slice(0, DRAFT_MAX);
       if (draft) return Response.json({ ...base, draft, model: 'gemma' });
       await recordShortfall(env, 'draft', 'empty');
     } catch (e) { await recordShortfall(env, 'draft', reasonOf(e)); }
@@ -182,7 +184,7 @@ async function proposalAnswer(request, env, body) {
         messages: [{ role: 'system', content: PROPOSAL_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: proposalPrompt(p) }],
         max_tokens: 1200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
-      const fields = parseProposal(redact(noThink(pick(r))));
+      const fields = parseProposal(scrubOut(redact(noThink(pick(r))), env));
       if (fields) return Response.json({ ...base, fields, model: 'gemma' });
       await recordShortfall(env, 'proposal', 'empty');
     } catch (e) { await recordShortfall(env, 'proposal', reasonOf(e)); }
@@ -208,7 +210,7 @@ async function planAnswer(request, env, body) {
         messages: [{ role: 'system', content: PLAN_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: planPrompt(goal) }],
         max_tokens: 400, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
-      const said = redact(noThink(pick(r))), parsed = parsePlan(said), steps = parsed && withLearnStep(parsed, await learning);
+      const said = scrubOut(redact(noThink(pick(r))), env), parsed = parsePlan(said), steps = parsed && withLearnStep(parsed, await learning);
       const offered = parseTimer(said), daily = offered ? await asked : null, timer = offered && keepTimer(offered, daily);
       // practice: true says Clef called it a daily practice, so the card can say why the timer is there
       if (steps) return Response.json({ goal, steps, timer, practice: timer && daily && daily.yes === true ? true : undefined, learn: steps && steps !== parsed ? true : undefined, note: parseNote(said), model: 'gemma' });
@@ -246,8 +248,11 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body && body.mode === 'draft') return draftAnswer(request, env, body);
   if (body && body.mode === 'proposal') return proposalAnswer(request, env, body);
   if (body && body.mode === 'plan') return planAnswer(request, env, body);
-  const typed = norm(body.ask), ask = redact(typed), masked = ask !== typed;
+  const typed = norm(body.ask), ask = redactPersonal(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
+  // secrets, other visitors' data and harmful asks are answered here, kindly, before any cache, model or skill (lib/keeper.js)
+  const kept = keeperOf(typed);
+  if (kept) return Response.json({ answer: kept.answer, sources: [], kept: kept.kind });
   if (isPriceChangeAsk(ask)) return Response.json({ answer: priceLockAnswer(), sources: [], note: 'price-lock' }); // prices come only from store data (lib/price-lock.js)
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);
   const key = await sha(ask.toLowerCase());
@@ -296,7 +301,7 @@ async function pageAnswer(request, env, ask, pg) {
   ];
   try {
     const r = await env.AI.run(MODEL, { messages, ...ANSWER_RUN });
-    const answer = redact(noThink(pick(r)));
+    const answer = scrubOut(redact(noThink(pick(r))), env);
     if (!answer) throw new Error('empty');
     return Response.json({ answer, sources: [], at: new Date().toISOString(), page: true });
   } catch (e) {
@@ -349,7 +354,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const tryPaid = async (access, why) => {
     try {
       const r = await within(env.AI.run(access.model, { messages, max_tokens: 3000 }), STRONG_TIMEOUT_MS);
-      const out = redact(noThink(pick(r)));
+      const out = scrubOut(redact(noThink(pick(r))), env);
       await recordSpend(env, access, costCents(access.model, r, JSON.stringify(messages).length, String(pick(r)).length), { why });
       return out;
     } catch (_) { return ''; }
@@ -376,7 +381,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   if (!answer) {
     try {
       const r = await env.AI.run(MODEL, { messages, ...ANSWER_RUN });
-      answer = redact(String(pick(r)).trim());
+      answer = scrubOut(redact(String(pick(r)).trim()), env);
       model = MODEL;
       if (!answer) throw new Error('empty');
     } catch (e) {
@@ -397,6 +402,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   log({ model });
   // only the sources the answer cited go on the card (lib/cite.js); its [n] markers are renumbered to match
   ({ answer, sources: pub } = keepCited(answer, pub));
+  answer = scrubOut(answer, env); // no env value or key shape leaves in a model's words, whatever the model was told (lib/keeper.js)
   const at = new Date().toISOString();
   if (!masked && !self && !told) try {
     await env.DB.prepare('INSERT INTO void_answers (id, ask, answer, sources, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET answer = excluded.answer, sources = excluded.sources, at = excluded.at')
