@@ -4,7 +4,7 @@
   "experiment": 0,
   "tested": 44,
   "checked": 13,
-  "proven": 82
+  "proven": 83
  },
  "families": [
   {
@@ -548,7 +548,7 @@
     "experiment": 0,
     "tested": 8,
     "checked": 1,
-    "proven": 6
+    "proven": 7
    },
    "skills": [
     {
@@ -584,7 +584,12 @@
     {
      "name": "recipe",
      "tier": "tested",
-     "why": "7 real asks in the benchmark"
+     "why": "8 real asks in the benchmark"
+    },
+    {
+     "name": "swaps",
+     "tier": "proven",
+     "why": "a self-test, 12 real asks in the benchmark"
     },
     {
      "name": "book",
