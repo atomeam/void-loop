@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { readTagteam, buildSelf } from './self-context.mjs';
 import { isSelfAsk, selfFacts, builderFacts } from '../void-live-deploy/lib/self-context.js';
-import { entry, append } from './ask-void.mjs';
+import { entry, append, checkCites } from './ask-void.mjs';
 
 const BOARD = '# x\n\n## Now\n\n- **Grok**: on it\n\n## Just finished\n\n- **Fix A**: solved by `measuring` first\n\n## Up for grabs\n\n- **Thing**: take it\n\n## Ladders\n\n- **Deploy**: run it from inside the folder\n\n## Lessons\n\n- **Wrangler**: copied folder dropped Functions\n';
 
@@ -20,7 +20,7 @@ test('the builders\' board: Just finished, Ladders and Lessons go into self.json
 });
 
 test('the real board parses and stays trimmed', () => {
-  const b = readTagteam(readFileSync(new URL('../docs/TAGTEAM.md', import.meta.url), 'utf8'));
+  const b = readTagteam(readFileSync(new URL('../domains/handoff.md', import.meta.url), 'utf8'));
   assert.ok(b.finished.length && b.ladders.length && b.lessons.length);
   assert.ok(b.lessons.length <= 6 && b.lessons.every((x) => x.line.length <= 240));
 });
@@ -40,4 +40,11 @@ test('ask-void keeps V01D\'s answer word for word', () => {
   const t = append('', b);
   assert.ok(t.startsWith('# V01D on its builders') && t.endsWith(b));
   assert.equal(append(t, b), t + b);
+});
+
+test('V01D may only cite the board for its builders\' lessons', () => {
+  const ex = (f) => f === 'void.assimilate.md';
+  assert.deepEqual(checkCites('Codified in void.assimilate.md / void.plan2.md', ex), ['void.assimilate.md exists, but the builders\' lessons are kept only in domains/handoff.md', 'void.plan2.md does not exist']);
+  assert.deepEqual(checkCites('They live in domains/handoff.md.', ex), []);
+  assert.match(builderFacts({ builders: readTagteam(BOARD) }), /only in domains\/handoff\.md/);
 });
