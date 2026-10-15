@@ -12,7 +12,9 @@ import { agoWords, inWords, dayWord, compass, compassWord, lightName } from '../
 const dir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'skills');
 const names = JSON.parse(readFileSync(resolve(dir, 'index.json'), 'utf8'));
 const mods = {}; for (const n of names) mods[n] = (await import(pathToFileURL(resolve(dir, n + '.js')).href)).default;
-const route = (ask) => { const k = names.find((n) => mods[n].match(ask.toLowerCase(), ask)); return k || null; };
+// a family skill (lib/skill-family.js) answers through its members: the route names the member, and each member is reachable by name
+for (const n of names) for (const m of mods[n].members || []) mods[m.name] = m;
+const route = (ask) => { const k = names.find((n) => mods[n].match(ask.toLowerCase(), ask)); return k ? (mods[k].part ? mods[k].part(ask.toLowerCase(), ask) : k) : null; };
 const LONDON = { lat: 51.5, lon: -0.1, tz: 'Europe/London', name: 'London, GB' }, TROMSO = { lat: 69.65, lon: 18.96, tz: 'Europe/Oslo', name: 'Tromsø, NO' }, CHCH = { lat: -43.5, lon: 172.6, tz: 'Pacific/Auckland', name: 'Christchurch, NZ' };
 const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 

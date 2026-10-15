@@ -37,7 +37,9 @@ export function judge(c, r, limits = {}) {
   const fpsMin = ex.fpsMin ?? (c.fps ? limits.fpsMin : undefined);
   if (fpsMin && typeof r.fps === 'number' && r.fps < fpsMin) why.push('fps ' + r.fps + ' < ' + fpsMin);
   if (limits.loadMs && r.loadMs > limits.loadMs) why.push('load ' + r.loadMs + ' ms > ' + limits.loadMs);
-  return { ask: c.ask, ok: !why.length, why, key: c.ask + ' | ' + (why[0] || '').replace(/[\d.]+/g, '#').slice(0, 60) };
+  // a console error or a broken file is the page's, not the ask's: one key for all asks, so it is filed once, not once per ask
+  const site = why.length && /^console: /.test(why[0]);
+  return { ask: c.ask, ok: !why.length, why, key: (site ? 'site' : c.ask) + ' | ' + (why[0] || '').replace(/[\d.]+/g, '#').slice(0, 60) };
 }
 
 /** The asks of a suite, each once (a repeat is dropped, never sent twice in a run). Pure. */
@@ -92,8 +94,9 @@ export function plan(inv, seen = {}, n = NEW_PER_RUN, games = {}, priority = [])
     if (out.length >= n) break;
     if (f.path) { if (!tried.has(f.path)) out.push({ ask: f.path, path: f.path, feature: f.id, page: true }); continue; }
     const fresh = f.asks.find((x) => !tried.has(x.toLowerCase()));
-    const ask = fresh || f.asks.flatMap((x) => variants(x, games)).find((x) => !tried.has(x));
-    if (ask) out.push({ ask, feature: f.id, variant: !fresh, base: f.asks[0] });
+    const v = fresh ? null : f.asks.flatMap((x) => variants(x, games).map((w) => [w, x])).find(([w]) => !tried.has(w));
+    const ask = fresh || (v && v[0]);
+    if (ask) out.push({ ask, feature: f.id, variant: !fresh, base: fresh || v[1] }); // base: the example this wording came from
   }
   return out;
 }
@@ -110,10 +113,11 @@ export function remember(seen = {}, probes, at) {
 export function improve(results, suite, filed = []) {
   const done = new Set(filed);
   // a new wording or activity V01D did not understand: teach it (one alias item with its regression case), before anything else
-  const miss = results.find((r) => !r.ok && r.variant && !done.has('teach | ' + r.ask));
+  const unheard = (r) => r.variant && r.why.every((w) => /^(refused|nothing appeared|no skill caught)/.test(w)); // V01D did not understand the wording
+  const miss = results.find((r) => !r.ok && unheard(r) && !done.has('teach | ' + r.ask));
   if (miss) return { kind: 'teach', key: 'teach | ' + miss.ask, note: 'teach V01D "' + miss.ask + '" (means "' + miss.base + '", ' + miss.feature + '): ' + miss.why.join('; '),
     suite: { ...suite, teach: (suite.teach || []).concat({ ask: miss.ask, means: miss.base, feature: miss.feature }) } };
-  const fail = results.find((r) => !r.ok && !r.variant && !done.has(r.key));
+  const fail = results.find((r) => !r.ok && !unheard(r) && !done.has(r.key));
   if (fail) return { kind: 'file', key: fail.key, note: 'fix: "' + fail.ask + '" ' + fail.why.join('; '), suite };
   // every failure already filed: nothing is filed twice, the run still improves the suite below
   // a new ask that passed becomes a regression case (it is now known ground)
@@ -152,7 +156,7 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
   mkdirSync(shots, { recursive: true }); const { b, ctx } = await browser(); const out = [];
   try { for (const c of onceEach(suite.cases)) {
     const cx = await ctx(), p = await cx.newPage(), errors = [];
-    p.on('pageerror', (e) => errors.push(e.message)); p.on('console', (m) => m.type() === 'error' && !/favicon|204|net::ERR/i.test(m.text()) && errors.push(m.text()));
+    p.on('pageerror', (e) => errors.push(e.message)); p.on('console', (m) => m.type() === 'error' && !/favicon|204|net::ERR|cloudflareinsights|Permissions policy violation/i.test(m.text()) && errors.push(m.text()));
     // a script answered with the wrong type: name the file (the console line alone does not, issue #757)
     p.on('response', (res) => { const q = res.request(), ct = res.headers()['content-type'] || ''; if (q.resourceType() === 'script' && res.status() < 300 && !/javascript|wasm|json/.test(ct)) errors.unshift('script ' + new URL(res.url()).pathname + ' served as ' + (ct || 'nothing') + ' (' + res.status() + ')'); });
     const t0 = Date.now(); await p.goto(site + (c.path || '/'), { waitUntil: 'load', timeout: 45000 }); const loadMs = Date.now() - t0;
