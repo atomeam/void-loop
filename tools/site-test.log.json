@@ -1,0 +1,9 @@
+[
+ {
+  "at": "2026-10-15T06:04:21Z",
+  "passed": 10,
+  "of": 10,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"my actions\" (skill:actions)"
+ }
+]
