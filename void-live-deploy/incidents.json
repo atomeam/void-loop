@@ -1,4 +1,15 @@
 {
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
- "incidents": []
+ "incidents": [
+  {
+   "at": "2026-10-15T20:02:20.199Z",
+   "sha": "70a90cae53d4dc7b698435f54ff9f1a2e78933b8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38795111476",
+   "suite": "browser suite on main",
+   "checks": [
+    "actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides",
+    "rebuild-map: show the map lists the 13 rows as they stand now"
+   ]
+  }
+ ]
 }
