@@ -4,8 +4,9 @@
  * network URLs, so it stays valid offline. Empty stage stays empty.
  */
 import { stage3mf } from './print-file.js';
+import { cleanLower } from '../lib/ask-text.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 
 export function downloadPrintOf(text) {
   const t = CLEAN(text);

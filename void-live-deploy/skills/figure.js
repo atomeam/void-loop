@@ -7,7 +7,8 @@
  * "download motelet" (or the STL button under it) saves the same body as a print file, in the pose it has on the stage.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), stageKinds }. No network, no libraries.
  */
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+import { cleanLower } from '../lib/ask-text.js';
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 
 const OBJECT_RE = /^(?:please\s+)?(?:(?:summon|add|put|place|make|give|show|get|bring)(?:\s+me)?\s+)?(?:a|an|one|the)?\s*(?:(?:little|tiny|small|3d|wooden)\s+)*(chair|cup|mug|book|lamp)(?:\s+(?:on|to)\s+the\s+stage)?$/;
 const FIGURE_RE = /^(?:please\s+)?(?:(?:summon|add|bring|show(?:\s+me)?|make|put|get|call|where\s+is)\s+)?(?:motelet|(?:a|the|one)\s+figure)(?:\s+(?:on|to)\s+the\s+stage)?$/;

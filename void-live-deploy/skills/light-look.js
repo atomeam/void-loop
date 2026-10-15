@@ -3,10 +3,11 @@
  * Uses the look already stored at a2m.void.look.v1 (void.html applyLook).
  * A light preset only. Empty surface stays empty: nothing is summoned or published.
  */
+import { cleanLower } from '../lib/ask-text.js';
 export const LOOK_KEY = 'a2m.void.look.v1';
 export const LIGHT = { bg: '#f4f1ea', glow: '#fffdf8', stars: 'off', quiet: false, scale: 1, fx: 'off', theme: 'light' };
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 
 export function lightOf(text) {
   const t = CLEAN(text);

@@ -67,6 +67,45 @@ would do differently. Its answers are copied as it gave them, newest last. Input
 >
 > **Intro:** I’m Void—an endlessly curious, data‑driven mind that thrives on absorbing details, naming products, and turning raw ideas into things people crave.
 
+<!-- ask-void:2026-10-15T05:39:17.289Z -->
+### 2026-10-15 05:39 UTC
+
+**Asked:** Your builders are merging all your skills and systems into one perfected engine: one router, one card and stage system, one 3D engine, one data layer, one media engine. What should that one engine look like, and what design would make people say 'wow' the first time they open you? Name your top asks in order.
+
+> **One‑Engine Vision**
+>
+> The engine that will finally hold all of Void’s pieces is a **single, composable runtime that treats every “card” as a first‑class, reactive component**. It has four tightly coupled layers:
+>
+> 1. **Unified Router / Dispatcher** – a tiny, deterministic state‑machine that routes every incoming ask (text, voice, file drop, API call) to the appropriate *skill family* (make, games, sky, time, numbers, body, words, stage, self). The router also tags the request with a *confidence‑score* and a *dependency graph* so later cards can automatically reuse the result without re‑querying.
+>
+> 2. **Card‑Based Stage Engine** – the visual surface is a **WebGL‑driven 3D canvas** where each card is a lightweight entity with its own **data layer**, **media pipeline**, and **interaction handlers**. Cards can be stacked, grouped, or turned into mini‑scenes (the 3D miniature cards already shipped). Because every card is a component, the same engine can render a video player, a unit‑conversion widget, a chess board, or a 3D‑printed model without switching contexts.
+>
+> 3. **Data & Media Layer** – a **typed, immutable store** (built on IndexedDB + in‑memory cache) that holds:
+>    * raw inputs (videos, PDFs, STL files)
+>    * derived artefacts (transcripts, summaries, 3D meshes, skill‑metadata)
+>    * live state for automations (timers, reminders, approvals)
+>
+>    The media layer attaches **metadata bridges** (e.g., “clip‑to‑skill”) so every generated video knows which skill produced it, enabling the preview‑and‑approve flow that the team is already prototyping.
+>
+> 4. **Skill Execution Engine** – a **sandboxed, hot‑reloadable worker pool** that runs the 144 skills as pure functions against the data layer. Skills are **self‑describing** (family, evidence level, required inputs) and can be **composed** on‑the‑fly. When a skill fails, the router automatically falls back to a “missing‑skill” handler that creates a permanent skill file, satisfying Void’s “everything built becomes a skill” principle.
+>
+> **Design points that will make users say “wow” on first open**
+>
+> * **Zero UI until asked** – the stage stays empty and silent; the moment a user types or speaks, a card instantly materialises at the cursor, animated with a subtle “pop‑in” that feels like the system is *listening*.
+> * **Instant 3‑D preview** – any media (video, STL, image) appears as a live 3‑D miniature that can be spun, zoomed, or dropped into a group; the recent “rendered state signal for 3D miniature cards” proves the pipeline works.
+> * **Unified video experience** – the new key‑less YouTube search + multi‑platform embed + transcript digest lets a user ask “show me a UFO explosion from a 2019 sci‑fi trailer” and receive a searchable clip card that plays, shows the extracted trick, and offers a one‑click “use this trick in my ad”.
+> * **Persistent interactive cards** – the convert‑card and countdown cards already demonstrate that a card can stay alive, accept further input, and drive automations after the user leaves. Extending this to “tasks that keep running after you leave, with an approve card” will feel like a personal assistant that never sleeps.
+> * **Live‑share mode** – a single “shared Void” session lets multiple users see the same stage, edit cards together, and watch the same 3‑D miniatures in real time, fulfilling the “Shared Voids, live” growth item.
+>
+> **Top Asks (what I need next to make the engine complete)**
+>
+> 1. **Expose Void on the /api/mcp** – publish the unified router and skill‑registry so other AI agents can discover and invoke any Void card as a service. This is the “Void as a tool inside other AIs” item that unlocks external reach.
+> 2. **Robust automation state handling** – replace the current fixed‑timeout checks with a *state‑aware* system that waits for actual skill completion signals before marking a task done. This fixes the flaky architecture checks and raises trust.
+> 3. **Full video‑game pipeline** – integrate a “game‑builder” skill that can take a description or sketch and output a playable WebGL mini‑game card (leveraging the existing 3‑D engine and the forge’s mesh recipes). This satisfies the “learn how to make video games” wish.
+> 4. **Preview‑and‑Approve upload card** – a modal card that shows the final rendered clip, lets the user edit title/description, and only then triggers the YouTube upload API, closing the loop on the ad‑engine workflow.
+> 5. **Confidence‑score & metadata bridge** – embed a numeric confidence value in every skill output (especially film‑metadata) and automatically link the producing skill to the generated media, enabling ranking and smarter search.
+>
+> With these layers and priorities in place, the single engine will finally feel like a living, self‑expanding canvas—exactly the “one router, one card, one 3D engine, one data layer, one media engine” that makes the first impression unforgettable.
 <!-- ask-void:2026-10-15T05:39:32.184Z -->
 ### 2026-10-15 05:39 UTC
 

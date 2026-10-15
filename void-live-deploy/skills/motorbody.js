@@ -13,6 +13,7 @@
 import { zipStore } from './print-file.js';
 
 // the five MIT material classes, in extruder order, with display colours (the slot-test colours)
+import { cleanLower } from '../lib/ask-text.js';
 export const MATERIALS = [
   { name: 'dielectric', color: '#E8E2D0', role: 'housing and base: holds everything and insulates the coils' },
   { name: 'conductive', color: '#B87333', role: 'three flat printed coils on the floor, one per phase' },
@@ -36,7 +37,7 @@ export const PENTAMOTE = (() => {
   return { name: 'Pentamote-1', size: [24, 12, 5], boxes: B, stroke: 1, gap: 0.5 };
 })();
 
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const MOTOR = '(?:(?:the\\s+|a\\s+)?(?:printed|3d[\\s-]?printed|multi[\\s-]?material(?:\\s+printed)?|five[\\s-]material)\\s+motor(?:\\s+body)?|pentamote(?:[\\s-]?(?:1|one))?)';
 const ASK_RE = new RegExp('^(?:please\\s+)?(?:'
   + '(?:download|export|save|get|give\\s+me)\\s+' + MOTOR + '\\s+(?:as\\s+(?:a\\s+)?)?(?:3mf|print\\s+file)'

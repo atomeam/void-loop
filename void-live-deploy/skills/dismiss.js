@@ -3,7 +3,8 @@
  * throw-off.js only matches a throw phrase. Empty surface stays empty:
  * nothing selected means nothing is removed and nothing is published.
  */
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+import { cleanLower } from '../lib/ask-text.js';
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 
 export function dismissOf(text) {
   const t = CLEAN(text);

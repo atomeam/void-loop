@@ -8,6 +8,7 @@
  * never who is at fault (the postmortem culture in Google's SRE book). Nothing is sent anywhere; the draft stays in this
  * browser (a2m.void.incident.v1) until "clear".
  */
+import { clean } from '../lib/ask-text.js';
 const KEY = 'a2m.void.incident.v1';
 export const SEVERITY = [
   ['SEV1', 'critical: the service is down or data is at risk for many people'],
@@ -17,7 +18,7 @@ export const SEVERITY = [
 ];
 export const STATUS = ['investigating', 'mitigated', 'resolved'];
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = clean; // shared: lib/ask-text.js
 const WHAT = '(?:incident\\s+(?:brief|report|review|summary|write-?up)|post-?mortem|post[\\s-]incident\\s+review|outage\\s+(?:report|brief|summary|write-?up))';
 const ASK_RE = new RegExp('^(?:please\\s+)?(?:(?:help\\s+me\\s+)?(?:write|draft|start|make|create|do|open)\\s+(?:me\\s+)?(?:an?\\s+|the\\s+|our\\s+)?)?' + WHAT + '(?:\\s+template)?(?:\\s+(?:for|about|on)\\s+(.+?))?(?:\\s*:\\s*(.+))?$', 'i');
 /** { title } when the ask wants an incident brief (title from "for the login outage" or after a colon), else null. */

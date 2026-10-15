@@ -4,8 +4,9 @@
  * is named). Does not publish a page. An unmatched ask stays empty.
  */
 import { countdownOf, daysUntil, newYearDate, daysLine } from './countdown.js';
+import { clean } from '../lib/ask-text.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = clean; // shared: lib/ask-text.js
 
 export function showCountdownOf(text) {
   const t = CLEAN(text);
