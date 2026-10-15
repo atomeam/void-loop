@@ -82,11 +82,13 @@ export function variants(ask, games = {}) {
 }
 
 /** This run's new ground: the NEW_PER_RUN least recently tested features, each with one ask never tried before (its own examples
- *  first, then new wordings). A feature with nothing left untried is skipped, so the tester never loops. Pure.
+ *  first, then new wordings); features in priority go first. A feature with nothing left untried is skipped, so the tester never loops. Pure.
  *  seen: { features: { id: iso }, asks: [ask] }. */
-export function plan(inv, seen = {}, n = NEW_PER_RUN, games = {}) {
+export function plan(inv, seen = {}, n = NEW_PER_RUN, games = {}, priority = []) {
   const tried = new Set((seen.asks || []).map((x) => x.toLowerCase())), last = seen.features || {}, out = [];
-  for (const f of [...inv].sort((a, b) => String(last[a.id] || '').localeCompare(String(last[b.id] || '')) || a.id.localeCompare(b.id))) {
+  // priority first, in order (the least-checked skills from the growth page's friction line), then least recently tested
+  const rank = (f) => { const i = priority.indexOf(f.id); return i < 0 ? priority.length : i; };
+  for (const f of [...inv].sort((a, b) => rank(a) - rank(b) || String(last[a.id] || '').localeCompare(String(last[b.id] || '')) || a.id.localeCompare(b.id))) {
     if (out.length >= n) break;
     if (f.path) { if (!tried.has(f.path)) out.push({ ask: f.path, path: f.path, feature: f.id, page: true }); continue; }
     const fresh = f.asks.find((x) => !tried.has(x.toLowerCase()));
@@ -201,7 +203,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const skillsDir = resolve(here, '..', 'void-live-deploy', 'skills'), skills = [];
   for (const n of JSON.parse(readFileSync(resolve(skillsDir, 'index.json'), 'utf8'))) { try { skills.push((await import(resolve(skillsDir, n + '.js'))).default); } catch (_) {} }
   const regress = new Set(suite.cases.map((c) => c.ask.toLowerCase()));
-  const probes = a.includes('--no-new') ? [] : plan(inventory(skills), seen, NEW_PER_RUN, suite.games || {}).filter((p) => !regress.has(p.ask.toLowerCase()));
+  const probes = a.includes('--no-new') ? [] : plan(inventory(skills), seen, NEW_PER_RUN, suite.games || {}, suite.priority || []).filter((p) => !regress.has(p.ask.toLowerCase()));
   const results = await runVoid({ ...suite, cases: suite.cases.concat(probes) }, { shots });
   if (a.includes('--improve')) writeFileSync(SEEN, JSON.stringify(remember(seen, probes, new Date().toISOString().replace(/\.\d+Z$/, 'Z'))) + '\n');
   if (opt('--json')) writeFileSync(opt('--json'), JSON.stringify(results, null, 2));
