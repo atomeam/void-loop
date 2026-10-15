@@ -4,8 +4,19 @@
  * "define serendipity", "what does ephemeral mean", "meaning of saudade", "definition of hubris".
  */
 const ABBR_HELD = new Set(['lol', 'asap', 'brb', 'btw', 'fyi', 'imo', 'imho', 'tbh', 'idk', 'omg', 'rsvp', 'eta', 'faq', 'diy', 'aka', 'tba', 'tbd', 'fomo', 'smh', 'irl', 'dm', 'afaik', 'tldr', 'ootd', 'nvm', 'ttyl', 'rofl', 'jk', 'ikr', 'ftw', 'goat', 'ama', 'eod', 'ooo', 'wfh', 'pto', 'roi', 'kpi', 'cc', 'bcc', 'ps', 'nb', 'ie', 'eg', 'etc']);
+// typo-tolerant key words (issue #792: "menaing of saudade"): a word within a small edit distance of meaning/definition/define is read as it. Pure.
+function lev(a, b) { const d = Array.from({ length: b.length + 1 }, (_, j) => j); for (let i = 1; i <= a.length; i++) { let p = d[0]; d[0] = i;
+  for (let j = 1; j <= b.length; j++) { const t = d[j]; d[j] = Math.min(d[j] + 1, d[j - 1] + 1, p + (a[i - 1] === b[j - 1] ? 0 : 1)); p = t; } } return d[b.length]; }
+const REAL = new Set(['mending', 'melting', 'meeting', 'meaning', 'morning', 'moaning', 'meant', 'defense', 'defiant', 'definite', 'refine', 'decline', 'design', 'detention', 'deflation', 'demolition']);
+const KEYS = [['meaning', 2], ['definition', 2], ['define', 1]];
+export function fixKeyTypos(t) {
+  return t.replace(/^((?:please\s+|what(?:['’]?s|\s+is)\s+the\s+|(?:the\s+)?(?:dictionary|oxford)\s+)?)([a-z]{5,12})\b/i, (all, pre, w) => {
+    const lw = w.toLowerCase(); if (KEYS.some(([k]) => k === lw) || REAL.has(lw)) return all;
+    const hit = KEYS.find(([k, n]) => Math.abs(k.length - lw.length) <= n && lw[0] === k[0] && lev(lw, k) <= n);
+    return hit ? pre + hit[0] : all; });
+}
 export function wordOf(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const t = fixKeyTypos(String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
   const m = t.match(/^(?:please\s+)?define\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
     || t.match(/^(?:what(?:['’]?s|\s+is)\s+the\s+)?(?:meaning|definition)\s+of\s+(?:the\s+word\s+)?["“]?(.+?)["”]?$/i)
     || t.match(/^what\s+does\s+(?:the\s+word\s+)?["“]?(.+?)["”]?\s+mean$/i)
@@ -55,7 +66,7 @@ async function run(text, api) {
 
 export default {
   name: 'define',
-  examples: ['define serendipity', 'what does ephemeral mean', 'meaning of saudade', 'definition of hubris'],
+  examples: ['define serendipity', 'what does ephemeral mean', 'meaning of saudade', 'definition of hubris', 'menaing of saudade', 'defintion of hubris'],
   nearMisses: ['what is a black hole', 'what does it mean', 'define 42', 'meaning of life', 'what time is it in Tokyo'],
   match(lower, text) { return !!wordOf(text); },
   run

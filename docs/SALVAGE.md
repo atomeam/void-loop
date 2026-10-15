@@ -84,5 +84,5 @@ The workflows that only run by hand (`cf-scope.yml`, `model-bench.yml`, `rehears
 
 ## Merged skills (convergence, 2026-10-15)
 
-- **sky-weather, time, dates** (`lib/skill-family.js`): 20 skills folded into 3 routing entries. Nothing retired and nothing lost: every member file stays as a part of its family, with its examples, near misses and tests, and the page still logs each by its own name. If a family is ever undone, give each member its old order file back (ranks in git history of `void-live-deploy/skills/order/`).
+- **sky-weather, time, dates** (`lib/skill-family.js`): 20 skills folded into 3 routing entries. Nothing retired and nothing lost: every member file stays as a part of its family, with its examples, near misses and tests, and the page still logs each by its own name. Then `sky-weather` folded into `time` (one family for time, weather and sky); its file only grouped imports and is gone. If a family is ever undone, give each member its old order file back (ranks in git history of `void-live-deploy/skills/order/`).
 

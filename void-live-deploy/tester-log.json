@@ -1,13 +1,97 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 9,
- "runsTotal": 15,
+ "cases": 12,
+ "runsTotal": 27,
  "kinds": {
-  "grow": 2,
-  "file": 6,
+  "grow": 5,
+  "file": 15,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T08:58:55Z",
+   "passed": 14,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"deifntion of hubris\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T08:35:24Z",
+   "passed": 14,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"catroon version of a plague\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T08:17:23Z",
+   "passed": 15,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"find fimls about space\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:34:43Z",
+   "passed": 11,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"my auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:27:54Z",
+   "passed": 15,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"yo menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:23:58Z",
+   "passed": 10,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"moive metadata for the matrix\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:20:54Z",
+   "passed": 15,
+   "of": 15,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"bokos like dune\" (skill:book)"
+  },
+  {
+   "at": "2026-10-15T07:17:32Z",
+   "passed": 9,
+   "of": 15,
+   "kind": "file",
+   "note": "fix: \"yo movie metadata for the matrix\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:14:22Z",
+   "passed": 9,
+   "of": 15,
+   "kind": "file",
+   "note": "fix: \"deifnition of hubris\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:07:55Z",
+   "passed": 10,
+   "of": 14,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"find the book the left hand of dakrness\" (skill:book)"
+  },
+  {
+   "at": "2026-10-15T07:02:38Z",
+   "passed": 13,
+   "of": 13,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"put on lofi hip hop pls\" (skill:video-play)"
+  },
+  {
+   "at": "2026-10-15T06:58:08Z",
+   "passed": 8,
+   "of": 13,
+   "kind": "file",
+   "note": "fix: \"menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-15T06:55:39Z",
    "passed": 6,
@@ -63,55 +147,6 @@
    "of": 12,
    "kind": "teach",
    "note": "teach V01D \"can we play despacito\" (means \"play despacito\", skill:video-play): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-  },
-  {
-   "at": "2026-10-15T06:34:08Z",
-   "passed": 7,
-   "of": 12,
-   "kind": "teach",
-   "note": "teach V01D \"yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\" (means \"summarize this transcript: black holes form when massive star"
-  },
-  {
-   "at": "2026-10-15T06:31:10Z",
-   "passed": 11,
-   "of": 12,
-   "kind": "file",
-   "note": "fix: \"what did this video teach?\" nothing appeared"
-  },
-  {
-   "at": "2026-10-15T06:28:23Z",
-   "passed": 7,
-   "of": 12,
-   "kind": "file",
-   "note": "fix: \"play solarquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
-  },
-  {
-   "at": "2026-10-15T06:25:50Z",
-   "passed": 8,
-   "of": 12,
-   "kind": "file",
-   "note": "fix: \"play voidquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
-  },
-  {
-   "at": "2026-10-15T06:23:11Z",
-   "passed": 6,
-   "of": 12,
-   "kind": "file",
-   "note": "fix: \"what are you?\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
-  },
-  {
-   "at": "2026-10-15T06:20:22Z",
-   "passed": 11,
-   "of": 11,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"air quality in Tokyo\" (skill:air)"
-  },
-  {
-   "at": "2026-10-15T06:04:21Z",
-   "passed": 10,
-   "of": 10,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"my actions\" (skill:actions)"
   }
  ],
  "seen": {

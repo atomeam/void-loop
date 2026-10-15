@@ -2,9 +2,9 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 1,
-  "tested": 48,
+  "tested": 47,
   "checked": 14,
-  "proven": 83
+  "proven": 84
  },
  "families": [
   {
@@ -342,7 +342,7 @@
     {
      "name": "country",
      "tier": "proven",
-     "why": "a self-test, 54 real asks in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 54 real asks in the benchmark"
     }
    ]
   },
@@ -551,9 +551,9 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 1,
-    "tested": 11,
+    "tested": 10,
     "checked": 1,
-    "proven": 7
+    "proven": 8
    },
    "skills": [
     {
@@ -574,8 +574,8 @@
     },
     {
      "name": "define",
-     "tier": "tested",
-     "why": "41 real asks in the benchmark"
+     "tier": "proven",
+     "why": "a self-test, 41 real asks in the benchmark"
     },
     {
      "name": "words",

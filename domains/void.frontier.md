@@ -88,6 +88,7 @@ One PR per step (or per skill in step 6), checks before push, automerge. Claim a
     - **Who does it best:** REA ("reverse engineer anything", MIT, the `rea-agents` npm package, an MCP server) lets an agent inspect an app it has no source for (web and Electron JavaScript statically with nothing else installed; native code through Ghidra, Hopper or IDA) and answer "how does this feature work" with the evidence for each finding and what it could not tell. Void's builders today study the best only from the outside (docs, how it looks and behaves); "copy the best, then beat it" (`docs/RULES.md`) gets sharper with evidence from the inside.
     - **What applies to Void:** a builder whose brief names who does a feature best may study that feature with REA, then write Void's own version from what it learned. Study, never copying: no code, assets or text carried over, no protection broken, nothing paid used past its terms (REA's own rules say the same). What was studied stays the owner's (the "What Void studies is for the owner only" rule): findings are never committed, served or named in a ledger line; only Void's own feature ships.
     - **First step:** REA as a builder-session tool (not served, not in the site's MCP), static JavaScript analysis only, on the next brief whose best example is a web app. Adding a third-party MCP server to every agent session is the owner's call, so it waits for the owner's yes. Done when one feature's brief cites findings with their evidence and the shipped feature is Void's own code.
+    - **Done (2026-10-15, owner's yes: "find and use REA", "V01D should be able to reverse engineer everything"):** `tools/rea-study.mjs` (REA pinned, passive web commands only), the **REA study** workflow and `docs/playbooks/study-with-rea.md`; findings go only to V01D's private memory, the public run prints counts. **Next:** the owner's ask on the site ("V01D, study how <page> does <feature>", owner only) files the study and starts the workflow; then study the photo appraisers for frontier #30 before building V01D's own.
     - **The three things still worth paying for, held against Void:** the result (Void sells checks and outcomes, not a tool to copy: the closer read finds the bug, the will measures money earned); someone who answers when it breaks (the status card and Void's review answer for Void itself, but a paying user has no "it broke" path yet: that is the gap to build); the people who already trust you (nobody knows the site yet, the owner's words of 2026-10-13: being where agents look, the MCP registry listing of 2026-10-14 and APIs.guru, is the start, not the audience). The weakest of the three is the one to work on: trust and reach.
     - **Uncertain:** the video's star counts and weekly downloads were not checked (this container cannot reach GitHub's API for that repo or npm's download counts); the package exists (`rea-agents` 6.4.0, MIT).
 
@@ -139,7 +140,7 @@ Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as 
 
 **Reviewer (owner, 2026-10-09):** a second Claude session reviews **after merge**: it reads the actual merged SHA against the committed specs, reports concrete mismatches with file references and reproduction evidence, and opens focused fix PRs through the normal pipeline. It is not a required check and adds no gate; making its verdict required would be a separate, explicit owner decision. It also keeps one short file of the settled contract (port rules, modes, naming, tests first) as a faithful record of decisions already made, not new ones. Reports keep three things apart: merged, deployed (finished, smoke-checked), and verified (verify-main green on that SHA). Specs committed never means a feature is built.
 
-After these, the numbered items below in their earlier order, with #26 first (owner, 2026-10-15: "make sure V01D gets better at videos as we go"; "every kind of video ... every type of book. and every type of game"): 26 → 27 → 28 → 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
+After these, the numbered items below in their earlier order, with #26 first (owner, 2026-10-15: "make sure V01D gets better at videos as we go"; "every kind of video ... every type of book. and every type of game"; "an image should value all irtems if asked"): 30 → 26 → 27 → 28 → 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
 
 **Infrastructure (owner):** reuse Cloudflare D1, KV and Vectorize. No new vendor (no Qdrant, no Inngest) until a working feature demonstrates a need this stack can't meet. Memory is an explicit "remember this" only. Learning across visitors means shared, tested skills, never pooled private content. Void stays empty until asked; no silent behaviour tracking.
 
@@ -457,6 +458,21 @@ Shipped first: the video skill (#719): eight platforms' official embeds, search 
 4. Watch parties on a shared stage (skills/share), the host's "skip to" followed by all.
 5. Audio-only mode and an accessibility pass on the card (keyboard, screen reader).
 Declined: an offline "smart-cache" that pre-downloads videos (embed only: never downloaded or rehosted).
+
+
+## 30. V01D values anything from a photo
+
+- **Why (owner, 2026-10-15):** "i already asked for the coin , card , value apraisal system which needs image viewing capabilities for V01D"; "not just coin and card an image should value all irtems if asked"; and V01D is the appraiser of what it sells, "an expert in value".
+- **What:** someone shows V01D a photo (or a few) of anything (a coin, a trading card, a watch, a painting, furniture, a guitar, a toy, a phone) and asks what it is worth. V01D says what it sees, the details that move the value (maker, model, year, edition, condition, grade, signs of wear or repair), a value with how sure it is, the comparable sales or prices it rests on, and what would sharpen it (another angle, the back, a serial number, a ruler for size).
+- **Honest:** an estimate from a photo, never a certified appraisal or an authentication; it says when an item needs an expert in hand (a rare coin, a possible original painting) and never invents a comparable sale. A photo stays in that visitor's ask: nothing is kept unless they save the card.
+- **People are never priced (owner, 2026-10-15: "if its asked to value people it will say they are special or compliment them . never say a money value for humans").** A photo of a person, or "what am I worth" / "how much is my friend worth", gets a warm, sincere compliment about what makes them special, never a number, price, rating or comparison; in a photo with a person and an item, V01D values the item only. Tests: people in, a compliment and no currency or number out.
+- **Needs:** the vision slot of the ability router (`lib/models.js`, the free-provider fallback stack): a model that sees images. Comparables come from sources with an API (eBay's sold listings API, Numista for coins, the PriceCharting or TCGplayer APIs for cards and games) where a key is needed, listed for the owner.
+- **Steps, smallest first:**
+  1. The vision slot in `lib/models.js` with its first free provider (Workers AI vision models run on the site's own binding), tests first.
+  2. The appraise skill: photo in, the card above out, the model's own estimate first with "no comparables yet" said plainly.
+  3. Comparables for coins and cards (the most-asked kinds), then everything else.
+  4. The same appraiser prices what V01D sells (`lib/appraise.js` on the store branch), so V01D's own products and visitors' items are valued by one engine.
+- **claim:**
 
 ## Candidate capability map (2026-10-09)
 

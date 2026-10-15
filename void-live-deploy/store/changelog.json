@@ -1,6 +1,14 @@
 {
  "changelog": [
   {
+   "at": "2026-10-15T06:34:28.905Z",
+   "id": "site-tester",
+   "name": "V01D Site Tester",
+   "what": "published by V01D: 4 files, 0.0 MB (paid: needs a Gumroad listing, queued)",
+   "price": "$24",
+   "status": "needs-gumroad"
+  },
+  {
    "at": "2026-10-15T06:08:38.111Z",
    "id": "v01d-clips-pack",
    "name": "V01D Clips Pack (10 shorts)",
