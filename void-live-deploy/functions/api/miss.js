@@ -11,6 +11,8 @@ import { redact } from '../../lib/automation-fix.js';
 import { isNoise } from '../../lib/noise.js';
 import { learnFromMiss, noteAgentMiss, agentCount } from '../../lib/learn.js';
 import { isLab, noteUse } from '../../lib/used.js';
+import { recordGap } from '../../lib/product-gap.js';
+import { loadCatalog } from '../../lib/store-db.js';
 const MAX_LEN = 200;
 const RL_MAX = 20; // writes per connection per minute
 
@@ -26,6 +28,12 @@ export async function onRequestPost({ request: req, env, waitUntil }) {
   let body = {};
   try { body = JSON.parse((await req.text()).slice(0, 1000)); } catch (_) { return new Response('bad', { status: 400 }); }
   if (body && body.kind === 'used') return used(req, env, body.id);
+  if (body && body.kind === 'gap') { // no product matched a buy/hire ask: count its topic (stems only), never its words
+    const a = redact(norm(body.ask));
+    if (!a || isNoise(a)) return new Response(null, { status: 204 });
+    try { const cat = await loadCatalog(env); await recordGap(env, a, (cat && cat.products) || cat || []); } catch (_) {}
+    return new Response(null, { status: 204 });
+  }
   const ask = redact(norm(body.ask)); // a key typed into Void never lands on the miss list
   const fallback = String(body.fallback || '').slice(0, 40);
   const fromAgent = body.origin === 'agent'; // the page's label for a miss a visiting agent's tool call caused; anything else is people

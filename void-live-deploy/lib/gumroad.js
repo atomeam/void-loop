@@ -64,6 +64,8 @@ const FIX_HINT = ['fix', 'brok', 'fail', 'diagnos', 'repair'];
 // "hack" or even a product's own name in passing. Echoed sponsor lines and store links are dropped, and a long paste counts
 // only when it opens with a short request ("review my code" + the paste); otherwise it is prose, never a product ask.
 const ECHO = /from\s+a-to-mind\s*:[^\n]*|(?:https?:\/\/)?[\w-]+\.gumroad\.com\/\S*|written by v01d[^\n]*/gi;
+// A buy/hire ask (used to decide whether a no-match is a product gap worth noting, lib/product-gap.js).
+export const isBuyAsk = (t) => /\b(?:buy|purchase|order|hire|pay\s+for|price\s+of|how\s+much|cost|subscribe|sell\s+me|for\s+sale|sell|services?|packages?|templates?|courses?|kits?|bundles?|shop|store)\b/i.test(intentOf(t));
 export function intentOf(ask) {
   const s = String(ask || '').replace(ECHO, ' ').replace(/\s+⏎\s*/g, '\n').trim();
   if (!s) return '';
