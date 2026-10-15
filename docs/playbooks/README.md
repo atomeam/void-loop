@@ -6,7 +6,7 @@ Each playbook is one kind of work a builder did by hand, written so V01D's own l
 
 | Playbook | What it grows | Followed by V01D yet |
 |:--|:--|:--|
-| [probe-and-fix.md](probe-and-fix.md) | an existing skill, from asks it misses | step 1 (the asks) and 2 (the probe): V01D writes 25 asks for its least proven family and probes them daily (`.github/workflows/probe-asks.yml`); the misses reach the queue as `probe:` jobs; the fix (step 4) is still a builder's |
+| [probe-and-fix.md](probe-and-fix.md) | an existing skill, from asks it misses | steps 1–5: V01D writes 25 asks for its least proven family and probes them daily (`.github/workflows/probe-asks.yml`), then proposes the matcher fix for the oldest miss and the repo's checks decide (`.github/workflows/propose-fix.yml`, a pull request labelled "made by V01D"); a builder still reviews and merges |
 | [table-skill.md](table-skill.md) | a new skill answered from a built-in table | not yet |
 | [review-rule.md](review-rule.md) | a code-review check for a bug the review missed | not yet |
 | [film.md](film.md) | a film, and the next film being better | not yet |
