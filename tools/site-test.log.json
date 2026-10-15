@@ -44,5 +44,85 @@
   "kind": "file",
   "key": "what did this video teach? | nothing appeared",
   "note": "fix: \"what did this video teach?\" nothing appeared"
+ },
+ {
+  "at": "2026-10-15T06:34:08Z",
+  "passed": 7,
+  "of": 12,
+  "kind": "teach",
+  "key": "teach | yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
+  "note": "teach V01D \"yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\" (means \"summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\", skill:digest): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:36:52Z",
+  "passed": 2,
+  "of": 12,
+  "kind": "teach",
+  "key": "teach | can we play despacito",
+  "note": "teach V01D \"can we play despacito\" (means \"play despacito\", skill:video-play): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:39:37Z",
+  "passed": 0,
+  "of": 12,
+  "kind": "teach",
+  "key": "teach | start despacito",
+  "note": "teach V01D \"start despacito\" (means \"play despacito\", skill:video-play): console: Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920' "
+ },
+ {
+  "at": "2026-10-15T06:42:25Z",
+  "passed": 0,
+  "of": 13,
+  "kind": "teach",
+  "key": "teach | yo play despacito",
+  "note": "teach V01D \"yo play despacito\" (means \"play despacito\", skill:video-play): console: Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920' "
+ },
+ {
+  "at": "2026-10-15T06:45:15Z",
+  "passed": 7,
+  "of": 13,
+  "kind": "teach",
+  "key": "teach | yo what does ephemeral mean",
+  "note": "teach V01D \"yo what does ephemeral mean\" (means \"define serendipity\", skill:define): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:48:00Z",
+  "passed": 11,
+  "of": 13,
+  "kind": "teach",
+  "key": "teach | what did this video teach? pls",
+  "note": "teach V01D \"what did this video teach? pls\" (means \"summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\", skill:digest): nothing appeared"
+ },
+ {
+  "at": "2026-10-15T06:50:33Z",
+  "passed": 2,
+  "of": 13,
+  "kind": "teach",
+  "key": "teach | yo watch the apollo 11 landing",
+  "note": "teach V01D \"yo watch the apollo 11 landing\" (means \"play despacito\", skill:video-play): console: Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'wasm-unsafe-eval' b"
+ },
+ {
+  "at": "2026-10-15T06:53:09Z",
+  "passed": 6,
+  "of": 13,
+  "kind": "file",
+  "key": "what can I buy | console: script /lib/skill-family#js served as text/html; ch",
+  "note": "fix: \"what can I buy\" console: script /lib/skill-family.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:55:39Z",
+  "passed": 6,
+  "of": 13,
+  "kind": "file",
+  "key": "site | console: script /vendor/three-r#/build/three#module#min#js s",
+  "note": "fix: \"what are you?\" console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:58:08Z",
+  "passed": 8,
+  "of": 13,
+  "kind": "file",
+  "key": "menaing of saudade | refused: don't know this yet",
+  "note": "fix: \"menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]

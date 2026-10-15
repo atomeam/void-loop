@@ -53,6 +53,9 @@ export function engine() {
     renderer.outputColorSpace = THREE.SRGBColorSpace;
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.0;
     renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // the key-light shadow is world-space: an orbit or zoom never changes it, so it is redrawn only when the scene moves
+    // (perf 2026-10-15, owner: "choppy and laggy on all devices, even the Victus"): an orbit frame is one pass, not two
+    renderer.shadowMap.autoUpdate = false;
     renderer.setClearColor(0x000000, 0);
     const pmrem = new THREE.PMREMGenerator(renderer);
     const room = new lib.RoomEnvironment();
@@ -61,11 +64,15 @@ export function engine() {
     const gltf = new lib.GLTFLoader(); gltf.setMeshoptDecoder(lib.MeshoptDecoder);
     const ktx2 = new lib.KTX2Loader().setTranscoderPath(V + 'addons/libs/basis/').detectSupport(renderer); gltf.setKTX2Loader(ktx2);
     try { const gl = renderer.getContext(), dbg = gl.getExtension('WEBGL_debug_renderer_info'); guard.setGpu(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER)); } catch (_) {}
-    const E = { lib, THREE, renderer, canvas, env, gltf, ktx2, w: 0, h: 0, models: new Map(), textures: new Map(), maxAniso: renderer.capabilities.getMaxAnisotropy(), lost: false };
+    const E = { lib, THREE, renderer, canvas, env, gltf, ktx2, w: 0, h: 0, quality: 1, gov: { ema: 0, n: 0, good: 0 }, models: new Map(), textures: new Map(), maxAniso: renderer.capabilities.getMaxAnisotropy(), lost: false };
     // a lost context (a GPU reset, the driver's watchdog) used to leave every miniature dead until a reload: wait it out, then
     // recompile and redraw them all (three.js rebuilds its own GPU state when the context comes back)
+    // the studio light: a CC0 Poly Haven HDRI (brown_photostudio_02, see docs/licenses.md) replaces the procedural room once it
+    // has loaded, so glossy pieces show real softbox highlights; the room stays if the file can't load
+    // only where half-float targets render (PMREM of a float HDRI stalls WebKit's GL without them), and after the first boards drew
+    const ext = renderer.extensions; if (ext.has('EXT_color_buffer_half_float') || ext.has('EXT_color_buffer_float')) setTimeout(() => studioHdri(E).catch((e) => console.warn('[scene3d] studio HDRI', e)), 1500);
     canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); E.lost = true; guard.contextLost(); });
-    canvas.addEventListener('webglcontextrestored', () => { E.lost = false; guard.contextRestored(); for (const h of live.values()) { h.needsCompile = true; h.dirty = true; for (const c of h.contacts) c.dirty = true; } wake(); });
+    canvas.addEventListener('webglcontextrestored', () => { E.lost = false; guard.contextRestored(); for (const h of live.values()) { h.needsCompile = true; h.dirty = true; h.shadowDirty = true; for (const c of h.contacts) c.dirty = true; } wake(); });
     return E;
   })().catch((e) => { engineP = null; throw e; });
   return engineP;
@@ -141,7 +148,16 @@ async function builderFor(kind) {
   if (!builders.has(kind)) throw new Error('no miniature for ' + kind);
   return builders.get(kind);
 }
-export function liveMiniatures() { return [...live.values()].map((h) => ({ key: h.key, kind: h.kind, w: h.cssW, h: h.cssH, draws: h.draws, ms: h.ms, visible: h.visible, ready: h.ready, rendered: h.draws > 0 })); }
+export const STUDIO_HDRI = '/models/hdri/brown_photostudio_02_1k.hdr';
+async function studioHdri(E) {
+  const { THREE } = E; const { HDRLoader } = await import(V + 'addons/HDRLoader.js');
+  const tex = await new HDRLoader().setDataType(THREE.HalfFloatType).loadAsync(STUDIO_HDRI);
+  tex.mapping = THREE.EquirectangularReflectionMapping;
+  const pm = new THREE.PMREMGenerator(E.renderer); const env = pm.fromEquirectangular(tex).texture; tex.dispose(); pm.dispose();
+  E.env = env; E.studio = true;
+  for (const h of live.values()) if (h.E === E) { h.scene.environment = env; h.needsCompile = true; h.requestRender(); }
+}
+export function liveMiniatures() { return [...live.values()].map((h) => ({ key: h.key, kind: h.kind, w: h.cssW, h: h.cssH, draws: h.draws, shadowDraws: h.shadowDraws || 0, ms: h.ms, visible: h.visible, ready: h.ready, rendered: h.draws > 0 })); }
 export function unmountMiniature(key) { const h = live.get(key); if (h) h.dispose(); return !!h; }
 
 let raf = 0, last = 0;
@@ -149,7 +165,7 @@ function wake() { if (!raf && live.size) raf = requestAnimationFrame(loop); }
 if (typeof document !== 'undefined') document.addEventListener('visibilitychange', wake);
 function loop(t) {
   raf = 0; const dt = Math.min(0.1, last ? (t - last) / 1000 : 0.016); last = t;
-  let again = false; const phone = isPhone();
+  let again = false, drew = null; const phone = isPhone();
   for (const h of [...live.values()]) {
     if (!h.wrap.isConnected) { // the card re-rendered (it comes straight back) or was thrown away (it doesn't)
       if (++h.gone > 90) h.dispose(); else again = true;
@@ -159,17 +175,39 @@ function loop(t) {
     if (!h.ready || !h.visible || document.hidden) continue;
     let dirty = h.dirty;
     if (h.controls && h.controls.update(dt)) dirty = true;
-    if (h.anim.length) { for (const a of h.anim.splice(0)) a(); dirty = true; for (const c of h.contacts) c.dirty = true; }
-    if (h.inst && h.inst.tick) { try { const r = h.inst.tick(dt, t / 1000); if (r !== false) { dirty = true; if (r !== 'view') for (const c of h.contacts) c.dirty = true; } /* 'view': redraw, shadows unchanged */ } catch (e) { console.warn('[miniature ' + h.kind + '] tick', e); h.inst.tick = null; } again = true; }
+    if (h.anim.length) { for (const a of h.anim.splice(0)) a(); dirty = true; h.shadowDirty = true; for (const c of h.contacts) c.dirty = true; }
+    if (h.inst && h.inst.tick) { try { const r = h.inst.tick(dt, t / 1000); if (r !== false) { dirty = true; h.shadowDirty = true; if (r !== 'view') for (const c of h.contacts) c.dirty = true; } /* 'view': redraw, shadows unchanged */ } catch (e) { console.warn('[miniature ' + h.kind + '] tick', e); h.inst.tick = null; } again = true; }
     if (h.moving) again = true;
     // on a phone, motion nobody is steering (a beating heart, falling rain, a sweeping hand) draws at most every PHONE_FRAME_MS:
     // a steady 30 fps instead of 60 that drops frames (owner, 2026-10-15: "the 3d was still choppy and laggy"); a drag stays 60
     if (dirty && phone && !h.moving && t - (h.lastDraw || 0) < PHONE_FRAME_MS) { h.dirty = true; again = true; continue; }
-    if (dirty && !h.E.lost) { if (h.needsCompile && h.E.renderer.compileAsync) { h.dirty = true; warmUp(h); } else if (!h.compiling) { draw(h); h.lastDraw = t; } }
+    if (dirty && !h.E.lost) { if (h.needsCompile && h.E.renderer.compileAsync) { h.dirty = true; warmUp(h); } else if (!h.compiling) { draw(h); h.lastDraw = t; drew = h; } }
     if (h.dirty && !h.compiling && !h.E.lost) again = true;
   }
-  if (again) raf = requestAnimationFrame(loop); else last = 0;
+  if (drew) govern(drew, t, phone && !drew.moving ? PHONE_FRAME_MS + 2 : 0);
+  if (again) raf = requestAnimationFrame(loop); else { last = 0; prevT = 0; }
 }
+// ---------- the quality governor: holds the frame rate while something moves ----------
+// While frames are being drawn back to back it watches the gap between them. Slower than the screen's refresh for a
+// stretch, it lowers the miniatures' pixel ratio one step (QUALITY_STEPS); fast again for a while, it climbs back. The
+// screen's refresh is learnt from idle frames, so a 120 Hz display aims at 120. Nothing changes while the board is still.
+export const QUALITY_STEPS = [1, 0.85, 0.7, 0.55];
+/** The most pixels per CSS pixel a miniature draws at (devicePixelRatio is capped here; a phone's 3x screen gets 1.5). */
+export const MAX_DPR = 1.5;
+let refreshMs = 1000 / 60, prevT = 0, idleGaps = [];
+function govern(drew, t, floor) {
+  const E = drew.E, g = E.gov, gap = prevT ? t - prevT : 0; prevT = t;
+  if (!gap || gap > 250) return;
+  if (!floor && idleGaps.length < 30) { idleGaps.push(gap); if (idleGaps.length === 30) { const s = [...idleGaps].sort((a, b) => a - b); refreshMs = Math.max(1000 / 165, Math.min(1000 / 30, s[10])); } }
+  g.ema = g.ema ? g.ema * 0.9 + gap * 0.1 : gap; g.n++;
+  const at = QUALITY_STEPS.indexOf(E.quality), target = Math.max(refreshMs, floor || 0);
+  if (g.n > 20 && g.ema > target * 1.35 && at < QUALITY_STEPS.length - 1) { setQuality(E, QUALITY_STEPS[at + 1]); g.n = 0; g.good = 0; }
+  else if (g.ema < target * 1.1 && at > 0) { if (++g.good > 180) { setQuality(E, QUALITY_STEPS[at - 1]); g.good = 0; g.n = 0; } }
+  else g.good = 0;
+}
+function setQuality(E, q) { E.quality = q; for (const h of live.values()) if (h.E === E && h.resize) h.resize(); }
+/** The governor's state, for tests and the console. */
+export function quality() { return engineP ? engineP.then((E) => ({ quality: E.quality, refreshMs, ema: E.gov.ema })) : Promise.resolve(null); }
 // Shaders compile before a miniature draws, off the main thread where the browser can (KHR_parallel_shader_compile, in
 // Chrome on a real GPU). Compiling them inside the first render froze the whole page for seconds per board (every 3D game
 // on first open, and again on its first move), long enough on some GPUs for the driver to reset and the page to crash.
@@ -215,6 +253,7 @@ function draw(h) {
   h.dirty = false; const t0 = performance.now();
   if (E.w < pw || E.h < ph) { E.w = Math.max(E.w, pw); E.h = Math.max(E.h, ph); r.setSize(E.w, E.h, false); }
   r.toneMappingExposure = h.exposure;
+  r.shadowMap.needsUpdate = !!h.shadowDirty; h.shadowDirty = false; if (r.shadowMap.needsUpdate) h.shadowDraws = (h.shadowDraws || 0) + 1;
   for (const c of h.contacts) if (c.dirty) { c.render(r, h.scene); c.dirty = false; }
   r.setRenderTarget(null); r.setViewport(0, 0, pw, ph); r.setScissor(0, 0, pw, ph); r.setScissorTest(true);
   r.setClearColor(0x000000, 0); r.clear();
@@ -292,11 +331,11 @@ async function mountFresh(host, kind, data, opts, key) {
     controls.minPolarAngle = opts.minPolar ?? 0.12; controls.maxPolarAngle = opts.maxPolar ?? 1.38;
   }
   const h = {
-    key, kind, E, wrap, canvas, scene, camera, controls, root, keyLight, sky, data, draws: 0, gone: 0, dirty: true, visible: true, ready: false, needsCompile: true, compiling: false,
+    key, kind, E, wrap, canvas, scene, camera, controls, root, keyLight, sky, data, draws: 0, gone: 0, dirty: true, shadowDirty: true, visible: true, ready: false, needsCompile: true, compiling: false,
     anim: [], moving: false, exposure: opts.exposure ?? 1.0, contact: null, contacts: [], cssW: 0, cssH: 0, inst: null, taps: [],
     attach(host2) { if (host2 && wrap.parentNode !== host2) host2.appendChild(wrap); if (place === 'beside') fitBeside(wrap); h.dirty = true; wake(); },
     update(d) { h.data = d; h.needsCompile = true; if (h.inst && h.inst.update) { try { h.inst.update(d); } catch (e) { console.warn('[miniature ' + kind + '] update', e); } } h.requestRender(); },
-    requestRender(opts2 = {}) { h.dirty = true; if (opts2.shadows !== false) for (const c of h.contacts) c.dirty = true; wake(); },
+    requestRender(opts2 = {}) { h.dirty = true; h.shadowDirty = true; if (opts2.shadows !== false) for (const c of h.contacts) c.dirty = true; wake(); },
     /** Another blurred contact shadow, e.g. pieces on a board: { y, size, exclude: [objects that must not cast it], opacity, blur, darkness, height }. */
     addContactShadow(o = {}) { const c = contactShadows(E, o.size || 1, o); c.group.position.y = o.y || 0; if (o.x || o.z) c.group.position.set(o.x || 0, o.y || 0, o.z || 0); scene.add(c.group); h.contacts.push(c); h.requestRender(); return c; },
     /** Rays from a client point into the scene: hits sorted near to far (objects default to everything under root). */
@@ -354,12 +393,14 @@ async function mountFresh(host, kind, data, opts, key) {
   // "on my phone the 3d was still choppy and laggy"): a drag redraws every frame, and pixels are what a phone's GPU runs short of
   const regress = (on) => { if (!isPhone() || h.regressed === on) return; h.regressed = on; resize(); };
   if (controls) { controls.addEventListener('start', () => { h.moving = true; canvas.style.cursor = 'grabbing'; regress(true); wake(); }); controls.addEventListener('end', () => { h.moving = false; canvas.style.cursor = 'grab'; regress(false); wake(); }); controls.addEventListener('change', () => { h.dirty = true; wake(); }); }
-  const pr = () => h.regressed ? REGRESS_DPR : Math.min(2, Math.max(window.devicePixelRatio || 1, isPhone() ? 1 : 1.5)); // a little supersampling on desktop: no jaggies
+  // capped at MAX_DPR (a 3x phone screen drew 9x the pixels for no visible gain; desktop no longer supersamples 1x screens:
+  // antialias already smooths edges) and scaled by the governor's quality while frames run late
+  const pr = () => h.regressed ? REGRESS_DPR : Math.min(MAX_DPR, window.devicePixelRatio || 1) * (h.E.quality || 1);
   const resize = () => {
     const w = Math.max(1, Math.round(wrap.clientWidth)), hh = Math.max(1, Math.round(wrap.clientHeight)); h.cssW = w; h.cssH = hh;
     const p = pr(); canvas.width = Math.round(w * p); canvas.height = Math.round(hh * p); camera.aspect = w / hh; camera.updateProjectionMatrix(); h.dirty = true; wake();
   };
-  h.ro = new ResizeObserver(resize); h.ro.observe(wrap);
+  h.resize = resize; h.ro = new ResizeObserver(resize); h.ro.observe(wrap);
   h.io = new IntersectionObserver((es) => { for (const e of es) h.visible = e.isIntersecting; if (h.visible) { h.dirty = true; wake(); } }); h.io.observe(wrap);
   live.set(key, h);
   h.attach(host); resize();

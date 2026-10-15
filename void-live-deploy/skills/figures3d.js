@@ -278,7 +278,7 @@ export function mountStage3D() {
     try {
       renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power', premultipliedAlpha: true });
     } catch (e) { canvas.remove(); mountP = null; throw e; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5)); // full-screen layer: 1.5x is sharp and a 3x phone no longer draws 4x the pixels (perf, 2026-10-15)
     renderer.setClearColor(0x000000, 0);
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -1160,8 +1160,10 @@ function frame(ts) {
   stage.dirty = false;
   const empty = !figures.size && !extras.size;
   if (!figures.size) { ui.zoom = ui.zoomTo = 1; ui.zoomId = null; }
-  stage.canvas.style.opacity = empty ? '0' : '1';
-  stage.canvas.style.zIndex = ui.zoom > 1.05 ? '2' : '0'; // zoomed in, the figure comes in front of the cards; the ask box stays on top
+  // style writes only when they change: writing them every frame dirtied style on the whole page 60 times a second
+  const op = empty ? '0' : '1', zi = ui.zoom > 1.05 ? '2' : '0';
+  if (stage.canvas.style.opacity !== op) stage.canvas.style.opacity = op;
+  if (stage.canvas.style.zIndex !== zi) stage.canvas.style.zIndex = zi; // zoomed in, the figure comes in front of the cards; the ask box stays on top
   if (moving && !empty) stage.raf = requestAnimationFrame(frame);
   else stage.last = 0;
 }

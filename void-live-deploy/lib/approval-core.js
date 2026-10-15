@@ -75,7 +75,10 @@ export function confirmLine(toolName, args) {
     case 'proposal.send': return a.title ? `Send the proposal “${a.title}” to ${a.to}?` : `Send the proposal to ${a.to}?`;
     case 'calendar.book': return `Add “${a.what}” to your calendar${a.when ? ' ' + a.when : ''}?`;
     case 'booking.make': return `Book ${a.what}${cost ? ' for ' + cost : ''}?`;
-    case 'order.place': return cost ? `Buy ${a.item} for ${cost}?` : `Buy ${a.item}? The price isn't known yet.`;
+    case 'order.place': { // a spend proposal from V01D's own money (lib/reinvest.js) also says what it should pay back, and by when
+      const back = a.payback ? ` Expected payback: ${a.payback}${a.by ? ', checked by ' + a.by : ''}.` : '';
+      return (cost ? `Buy ${a.item} for ${cost}?` : `Buy ${a.item}? The price isn't known yet.`) + back;
+    }
     case 'payment.send': return `Pay ${a.to} ${cost}?`;
     case 'models.spend': return a.cost && a.cost.amount > 0 ? `Let Void spend up to ${cost} a ${a.per || 'month'} of what it earned on a stronger model?` : 'Stop Void paying for a stronger model?';
     case 'reminder.ping': return `Remind you at ${a.when}${a.what ? ' to ' + a.what : ''}?`;

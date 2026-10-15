@@ -8,7 +8,7 @@ This is the map. It inventories what exists (appendix, generated 2026-10-15 from
 
 | Kind | Count | Where |
 | --- | --- | --- |
-| Skills | 184 files (166 skills + 18 `-rules.js` game engines) | `void-live-deploy/skills/` |
+| Skills | 184 files (166 skills + 18 `-rules.js` game engines) | `void-live-deploy/skills/`; listed for routing: 146, then 129 after the first families (see Done) |
 | Tools listed for agents | 143 skills in `skills/index.json`; `/tools.json` serves them (the board says 147 with the MCP extras) | `functions/tools.json.js` |
 | 3D miniatures | 38 builders on one renderer | `skills/mini/`, `skills/scene3d.js` |
 | Shared libraries | 66 | `void-live-deploy/lib/` |
@@ -89,8 +89,41 @@ Each step that lands moves its row to **Done** below and its line to **Just fini
 
 ## Done
 
+- **Skill families, time and sky (2026-10-15)**: owner: "existing skills should merge". `lib/skill-family.js` makes one routing entry out of several member skills, asked in their old order; `part()` names the member, so the page's log, misses and the benchmark still read `skill:<member>`. Three families: `sky-weather` (sky, moontonight, aurora-tonight, eclipse, meteors, constellation, weather, air, uv, quake, pollen), `time` (timer, clock, worldtime, suntimes, remind) and `dates` (calendar, today, holidays, countdown). Listed skills: **146 -> 129**. Measured with `tools/route-snapshot.mjs` over every example and near miss (member level) plus every bench.json ask, 3,411 asks: 2,344 land right before and after, **0 moved, 0 new misses**. `tools/skill-family.test.mjs` checks each member's examples and near misses through the whole order. Members keep their files (their own tests import them); `/tools.json` and `tools/families.mjs` read a family's `parts:` line, so agents and ratings still see each member.
 - **Step 1, ask text (2026-10-15)**: `lib/ask-text.js` (`clean`, `cleanLower`) replaces 23 copies. `tools/ask-text.test.mjs` checks both against all three old forms on 2,000+ strings and that every merged skill still matches its examples; a one-off before/after run of `match()` over 389 asks in those 23 skills was byte-identical to main.
 - **Combine, don't add (owner, 2026-10-15: "most skills can be combined")**: V01D's asks extend an existing card before a new skill is made. The store preview lives in the store card (`skills/store.js` previewAsk/slides) and the site tester's log in the growth card (`skills/growth.js` testerAsk/testerRows); no new skill names. Tests: `tools/void-asks-store.test.mjs`. Next candidates: kitchen + food + units (swaps, food, convert) into one kitchen card with aliases.
+
+## Families: what merges next (2026-10-15)
+
+How a merge is judged: `node tools/route-snapshot.mjs --out /tmp/before.json` on main, make the family, then `--compare /tmp/before.json` must say 0 new misses. A family sits at one rank, so members that sit side by side merge for free; members far apart only merge when nothing between them takes their asks.
+
+- **Time, weather and sky as one family** (owner, 2026-10-15: sunrise, sunset, moon, seasons and forecasts by date overlap). Tried: `time` + `sky-weather` at rank 0131 (timer and clock move from 13 to 131) is clean, 0 moved. At rank 13 it is not: "temperature converter" goes to weather before convert (18). Next PR merges them at 131. `dates` cannot join: calendar takes any ask naming a day ("moon tonight", "my period started today", "the app launch on Thursday", 65 misses when tried at rank 13), so it stays late in the order until its match is narrowed to calendar asks.
+- **Kitchen and units** (convert 18, nutrition 440, food 445, swaps 446): food, nutrition and swaps sit together; convert is far ahead.
+- **Words** (spanish 190, translate 200; define 240, words 260), **body** (sleep 400 … pregnancy 430, heart 450, breath 1080), **money** (loan 330 … tip 360), **home** (room 370, walls 380, home 390), **media** (films 1100, film-metadata 1130, video-play 1200; video and digest at 8; poster 585).
+- **Overlap guard**: `tools/skill-overlap.mjs --check` (in checks.mjs) fails when a new skill's example is also taken by another skill that `tools/skill-overlap.json` does not already list: a new skill that repeats an old one is caught when it is made. `node tools/skill-overlap.mjs` lists today's 40 pairs, busiest first, with the merge candidates (calendar overlaps 17 skills; home~room 5; place~sky-card 4; video~video-play; services~store; spanish~translate).
+
+## V01D against the super apps (owner, 2026-10-15: "our app should feel like a rival to all the super apps out there")
+
+What the big bundles carry, and V01D's family for it. Gaps are what a super app has and V01D does not.
+
+| Super apps bundle | Who | V01D family today | Gap |
+| --- | --- | --- | --- |
+| Chat and calls | WeChat, LINE, Telegram | invite/share (cursors on one stage) | messaging, voice and video calls |
+| Payments, wallet, transfers | WeChat Pay, Alipay, Revolut, Grab | store (checkout, tips), crypto prices, loan/savings/tip maths | a wallet, sending money, cards, bills (V01D never moves money on an ask: the price lock) |
+| Rides, food, delivery | Grab, Gojek, Uber | distance, fuel; #721 starts food and rides | booking, tracking, delivery |
+| Search and answers | Google | page answers, define, news, country, translate | web results beyond Wikipedia-sized sources |
+| Maps and local | Google Maps, Grab | place, distance, worldtime | directions, transit, local businesses and reviews |
+| Mail, calendar, docs | Google Workspace | dates (calendar, today), notepad, list, pdf-card, remind | mail, shared docs, real calendar sync |
+| Weather, sky, time | Google, Apple | sky-weather, time, dates (this merge) | alerts that push to the phone |
+| Health and fitness | Apple Health, Samsung Health | sleep, cycle, pregnancy, heart, food, breath | step and workout tracking, device data |
+| Shopping and marketplace | Alipay/Taobao, Grab, Google Shopping | V01D's store, appraiser | other sellers, price comparison |
+| Video and media | WeChat Channels, YouTube | video, video-play, films, digest, clips | uploads by others (V01D Tube phase 2), music |
+| Games | WeChat mini games, LINE Games | 18 board and card games, Pong/Snake (#753) | multiplayer across devices, mini-program SDK |
+| Mini programs / third-party apps | WeChat, Alipay | tools.json, MCP (/api/mcp), skills as files | a store where others publish skills |
+| Identity and sign-in | WeChat, Google | passkeys, owner key | sign-in with V01D for other sites |
+| Banking, insurance, investing | Revolut, Alipay | loan, savings maths | accounts and regulated products (out of scope without a licence) |
+
+Biggest gaps worth a family next: messaging, directions and local search, a real calendar/mail sync, and a skill marketplace (mini programs). Money movement and banking stay out until there is a licensed partner.
 
 ## V01D's asks for the engine (2026-10-15, verbatim in docs/void-voice.md)
 

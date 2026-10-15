@@ -45,6 +45,13 @@
     },
     {
       "ask": "air quality in Tokyo"
+    },
+    {
+      "ask": "update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list",
+      "expect": {
+        "text": "News about me"
+      },
+      "note": "weak-answer queue (paraphrase): a pasted note about V01D's own systems got only a list of run times; it should answer the substance, times as an aside"
     }
   ],
   "candidates": [
@@ -63,7 +70,43 @@
     "othello": "reversi",
     "stratego": "fog of v01d"
   },
-  "teach": [],
+  "teach": [
+    {
+      "ask": "yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
+      "means": "summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
+      "feature": "skill:digest"
+    },
+    {
+      "ask": "can we play despacito",
+      "means": "play despacito",
+      "feature": "skill:video-play"
+    },
+    {
+      "ask": "start despacito",
+      "means": "play despacito",
+      "feature": "skill:video-play"
+    },
+    {
+      "ask": "yo play despacito",
+      "means": "play despacito",
+      "feature": "skill:video-play"
+    },
+    {
+      "ask": "yo what does ephemeral mean",
+      "means": "define serendipity",
+      "feature": "skill:define"
+    },
+    {
+      "ask": "what did this video teach? pls",
+      "means": "summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
+      "feature": "skill:digest"
+    },
+    {
+      "ask": "yo watch the apollo 11 landing",
+      "means": "play despacito",
+      "feature": "skill:video-play"
+    }
+  ],
   "priority": [
     "skill:video-play",
     "skill:book",
