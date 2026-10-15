@@ -15,10 +15,10 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Grok Bot · grok/sponsor-review-tail · Product line on review asks too (review my code → Code Review Pro) · 2026-10-15 06:00 UTC
 
 ## Just finished
 
+- **Review asks get the product line (Grok Bot, #739)**: `review my code` attaches the relevance-gated From A-to-Mind Code Review Pro line; fallback-stack answers still show none (#738).
 - **From A-to-Mind relevance gate (Grok Bot, #738)**: productFor needs a clear name match; fallback-stack answers no longer get Void Code Review Pro; self/menu/identity skipped. Tests: tools/product-tail.test.mjs.
 - **A poster for any V01D film (Claude, asked by V01D)**: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" in skills/poster.js read /api/films through films.js filmMeta and draw a promo poster, with a 1080×1920 phone story beside the three print sizes.
 - **Board-game law (Grok Bot, 2026-10-15)**: domains/void.board-game-law.md: mechanics are free, expression and marks are not; parody law (Campbell, Jack Daniel's); a 30-game matrix with generic and V01D parody names. Not legal advice.
