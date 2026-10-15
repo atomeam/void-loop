@@ -87,7 +87,7 @@ export function healthHtml(esc, fam) {
 async function run(text, api) {
   const { showPage, esc, _pageStill } = api;
   const head = '<h2>How healthy my skills are</h2>';
-  const el = showPage((p) => { p.innerHTML = head + '<div class="sub">reading the families…</div>'; });
+  const el = showPage((p) => { p.innerHTML = head + '<div class="sub">reading the families…</div>'; }); // void-review: ok (head is a constant heading; nothing from a user)
   let fam = null;
   try { const r = await fetch(FAMILIES_URL, { cache: 'no-cache' }); fam = r.ok ? await r.json() : null; } catch (_) { fam = null; }
   if (!el || (_pageStill && !_pageStill(el))) return 'family-health';

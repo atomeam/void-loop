@@ -26,7 +26,7 @@ const STUBS = [
   { re: /\b(?:code|implementation|logic|function body|rest) (?:remains|stays) (?:the same|unchanged)\b|\b(?:unchanged|same as before)[ \t]*(?:code|below|above)?[ \t]*(?:\*\/|-->|\))/gi, why: 'it says "unchanged" where the code should be' },
 ];
 
-const count = (re, s) => (String(s || '').match(new RegExp(re.source, re.flags.includes('g') ? re.flags : re.flags + 'g')) || []).length;
+const count = (re, s) => (String(s || '').match(new RegExp(re.source, re.flags.includes('g') ? re.flags : re.flags + 'g')) || []).length; // void-review: ok (re is one of this module's own constant patterns, never user text)
 
 /** the plain-words reasons the new text carries stub markers the original did not; `prose` checks only the plain-text ones */
 export function stubReasons(after, before = '', { prose = false } = {}) {
@@ -63,7 +63,7 @@ function unmodule(code) {
 
 let codegen = null; // can this runtime compile a string? Workers cannot; Node can
 function canCompile() {
-  if (codegen === null) { try { new Function('return 1'); codegen = true; } catch (_) { codegen = false; } }
+  if (codegen === null) { try { new Function('return 1'); codegen = true; } catch (_) { codegen = false; } } // void-review: ok (a constant string: it only asks whether this runtime can compile)
   return codegen;
 }
 
