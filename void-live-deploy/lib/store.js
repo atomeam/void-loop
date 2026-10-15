@@ -3,11 +3,13 @@
 // switches on later by setting Pages secrets, no rebuild. We never see or touch a card number: every provider is hosted.
 //   STORE_PROVIDER      'gumroad' (default) | 'stripe'   which adapter checkout uses
 //   STRIPE_SECRET_KEY   + STRIPE_WEBHOOK_SECRET          needed before 'stripe' is used; without them checkout stays on Gumroad
+//   CASHAPP_CASHTAG / CRYPTO_USDC_BASE_ADDR   special items: Cash App and USDC-on-Base rails, manual or on-chain verified (lib/alt-pay.js)
 //   STORE_SIGNING_KEY   HMAC key for download tokens and license keys (falls back to SALT)
 // The catalog lives in domains/store.products.json (tools/store-publish.mjs adds products and regenerates ./store-products.js).
 // status: live | soon | needs-gumroad (paid, waiting for Adam to list it on Gumroad: shown as coming soon) | unpublished (hidden).
 import CATALOG from './store-products.js';
 import { isShareProduct, publicShare } from './pay-share.js';
+export { railsOf, specialRails, instructions as specialInstructions, verifyUsdcTx, usdcUnits } from './alt-pay.js';
 export const ALL_PRODUCTS = CATALOG;
 export const STORE_PRODUCTS = CATALOG.filter((p) => p.status !== 'unpublished').map((p) => ({ ...p, soon: p.status === 'soon' || p.status === 'needs-gumroad' }));
 export const productOf = (id) => STORE_PRODUCTS.find((p) => p.id === id) || null;
