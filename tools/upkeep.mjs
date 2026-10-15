@@ -40,7 +40,7 @@ export function handoffDone(md, branch, prUrl, today = new Date().toISOString().
   return out.join('\n');
 }
 
-const ghJson = (args) => JSON.parse(execFileSync('gh', args, { encoding: 'utf8' }));
+const ghJson = (args) => JSON.parse(execFileSync('gh', args, { encoding: 'utf8', timeout: 120e3 }));
 
 async function main(cmd, a) {
   if (cmd === 'clips-stats') {
@@ -56,12 +56,11 @@ async function main(cmd, a) {
   } else if (cmd === 'piped') {
     const src = fs.readFileSync(path.join(root, 'void-live-deploy/functions/api/video.js'), 'utf8');
     const hosts = JSON.parse((/export const PIPED = (\[[^\]]*\])/.exec(src) || [, '[]'])[1].replace(/'/g, '"'));
-    const res = [];
-    for (const h of hosts) {
+    const res = await Promise.all(hosts.map(async (h) => { // all hosts at once
       const t0 = Date.now(); let ok = false, status = 0;
       try { const r = await fetch(h + '/search?filter=videos&q=black%20holes', { signal: AbortSignal.timeout(6000) }); status = r.status; ok = r.ok && Array.isArray((await r.json()).items); } catch (_) {}
-      res.push({ host: h, ok, status, ms: Date.now() - t0 });
-    }
+      return { host: h, ok, status, ms: Date.now() - t0 };
+    }));
     const f = path.join(root, 'domains/void.piped.json'), alive = res.filter((x) => x.ok).map((x) => x.host);
     const prev = fs.existsSync(f) ? JSON.parse(fs.readFileSync(f, 'utf8')) : {};
     console.log(JSON.stringify(res));
@@ -70,16 +69,16 @@ async function main(cmd, a) {
   } else if (cmd === 'links') {
     const urls = new Set();
     for (const f of ['void-live-deploy/sitemap.xml', 'void-live-deploy/llms.txt']) for (const m of fs.readFileSync(path.join(root, f), 'utf8').matchAll(/https?:\/\/[^\s<>"')\]]+/g)) urls.add(m[0].replace(/[.,]$/, ''));
+    const codes = await Promise.all([...urls].map(async (u) => { // all links at once, one timeout each
+      try { return [u, (await fetch(u, { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(10000), headers: { 'user-agent': 'V01D-linkcheck' } })).status]; } catch (_) { return [u, 0]; }
+    }));
     let bad = 0;
-    for (const u of urls) {
-      let s = 0; try { s = (await fetch(u, { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(10000), headers: { 'user-agent': 'V01D-linkcheck' } })).status; } catch (_) {}
-      if (!(s >= 200 && s < 400) && s !== 403 && s !== 429) { bad++; console.log(`::warning title=Dead link::${u} answered ${s || 'nothing'}`); }
-    }
+    for (const [u, s] of codes) if (!(s >= 200 && s < 400) && s !== 403 && s !== 429) { bad++; console.log(`::warning title=Dead link::${u} answered ${s || 'nothing'}`); }
     console.log(`${urls.size} links, ${bad} dead`);
   } else if (cmd === 'stale') { // local git only (one call per branch to the API took minutes): needs a full fetch of origin
     const repo = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', apply = a.includes('--apply'), cutoff = Date.now() / 1000 - 14 * 86400;
     const open = new Set(ghJson(['pr', 'list', '-R', repo, '--state', 'open', '--limit', '200', '--json', 'headRefName']).map((p) => p.headRefName));
-    const git = (...x) => execFileSync('git', x, { encoding: 'utf8', cwd: root }).trim();
+    const git = (...x) => execFileSync('git', x, { encoding: 'utf8', cwd: root, timeout: 120e3 }).trim();
     const merged = git('branch', '-r', '--merged', 'origin/main', '--format=%(refname:short) %(committerdate:unix)').split('\n').filter(Boolean);
     let n = 0;
     for (const line of merged) {
