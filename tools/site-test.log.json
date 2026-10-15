@@ -138,5 +138,13 @@
   "of": 14,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"find the book the left hand of dakrness\" (skill:book)"
+ },
+ {
+  "at": "2026-10-15T07:14:22Z",
+  "passed": 9,
+  "of": 15,
+  "kind": "file",
+  "key": "deifnition of hubris | refused: don't know this yet",
+  "note": "fix: \"deifnition of hubris\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]
