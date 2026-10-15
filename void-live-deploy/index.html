@@ -4401,14 +4401,16 @@ say('nothing selected to remove');
         if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + svc.name });
       } catch (_) {}
     }
-    // The optional product line: only when the live catalog has something for this ask, after Void's own answer (or fix).
+    // The optional product line: only when the ask clearly matches a live product (lib/gumroad.js productFor), after Void's own answer (or fix). Never on self/menu/identity asks; at most one line.
     function productLine(g, p) {
       const link = String(p.url || '').replace(/^https:\/\//, '');
       return 'From A-to-Mind: <b>' + esc(p.name) + '</b> · ' + esc(g.priceText(p)) + ' · <a href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(link) + '</a>';
     }
     async function attachProductTail(text, opt = {}) {
+      const lower = String(text || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '');
+      if (wantsSelfPage(lower) || wantsIdentity(lower) || wantsMenu(lower)) return; // self/meta: never a sponsor line
       const { g, products } = await storeCatalog();
-      const p = g && g.productFor(text, products, { fix: !!opt.fix });
+      const p = g && g.productFor(text, products, { fix: !!opt.fix, meta: !!opt.meta });
       if (!p) return;
       const html = productLine(g, p);
       if (opt.el) { if (opt.el === vpageEl) { opt.el._tail = html; keepTail(opt.el); } }
