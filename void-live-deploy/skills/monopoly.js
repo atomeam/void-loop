@@ -61,7 +61,8 @@ const makeMount = (theme) => function mount(th, stageApi) {
   el.className = 'thing kept-card game-card monopoly-card' + (theme.kind === 'voidquest' ? ' voidquest-card' : '');
   el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(470px, calc(100vw - 20px))';
-  el.innerHTML = '<div class="g-head"><span class="g-title">' + theme.title + '</span><span class="g-sub">you against V01D</span></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title"></span><span class="g-sub">you against V01D</span></div>';
+  el.querySelector('.g-title').textContent = theme.title;
   const wrap = document.createElement('div'); wrap.className = 'g-board';
   const board = document.createElement('div'); board.className = 'mono-board';
   board.style.cssText = 'display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(11,1fr);aspect-ratio:1;gap:1px;background:' + theme.ground + ';border-radius:8px;padding:2px;font-size:6.5px;line-height:1.05';
