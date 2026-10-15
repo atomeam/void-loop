@@ -4206,7 +4206,7 @@ try {
   // Routing is checked against the real skill modules in index.json order (first match wins, as on the page), then in a browser.
   const wtIndex = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
   const mods = [];
-  for (const n of wtIndex) mods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
+  for (const n of wtIndex) { const sk = (await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default; mods.push(...(sk.family ? sk.members : [sk])); } // a family routes to its members in their old order (lib/skill-family.js)
   const firstSkill = (a) => { const k = mods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
   const wt = mods.find((s) => s.name === 'worldtime');
   const wtHits = (a) => !!wt && wt.match(a.toLowerCase(), a);
@@ -4262,7 +4262,7 @@ try {
   // "what did you do today" (assimilate row 4 / plan item 8): Void's own recent actions from a2m.void.loop.v1 on this device.
   const tdIndex = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
   const tdMods = [];
-  for (const n of tdIndex) tdMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
+  for (const n of tdIndex) { const sk = (await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default; tdMods.push(...(sk.family ? sk.members : [sk])); } // a family routes to its members in their old order (lib/skill-family.js)
   const firstTd = (a) => { const k = tdMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
   const td = tdMods.find((s) => s.name === 'today');
   const tdHits = (a) => !!td && td.match(a.toLowerCase(), a);
@@ -4369,7 +4369,7 @@ try {
   
   // the skills are loaded here in order (index.json): tdMods/firstTd belong to the "today" block above and are not in scope
   const nsMods = [];
-  for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) nsMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
+  for (const n of JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'))) { const sk = (await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default; nsMods.push(...(sk.family ? sk.members : [sk])); } // a family routes to its members in their old order (lib/skill-family.js)
   const firstNs = (a) => { const k = nsMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
   const newSkills = ['book', 'show', 'sport', 'holidays', 'work', 'make', 'air', 'uv', 'quake', 'loan', 'pollen', 'fuel', 'tip', 'home', 'walls', 'room', 'sleep', 'pregnancy', 'ovulation', 'period', 'nutrition', 'heart', 'inventory', 'part', 'figure'];
   for (const name of newSkills) {
@@ -4610,7 +4610,7 @@ try {
     const figSrc = fs.readFileSync(path.join(root, 'skills', 'figures3d.js'), 'utf8');
     const figIndex = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
     const figMods = [];
-    for (const n of figIndex) figMods.push((await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default);
+    for (const n of figIndex) { const sk = (await import(new URL('../void-live-deploy/skills/' + n + '.js', import.meta.url).href)).default; figMods.push(...(sk.family ? sk.members : [sk])); } // a family routes to its members in their old order (lib/skill-family.js)
     const firstFig = (a) => { const k = figMods.find((s) => s.match(a.toLowerCase(), a)); return k ? k.name : null; };
     const figMod = figMods.find((s) => s.name === 'figures');
     const SUMMONS = ['summon a sprite', 'bring a friend', 'show me a 3D buddy', 'summon a void sprite', 'bring out a little friend'];

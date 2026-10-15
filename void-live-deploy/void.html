@@ -37,8 +37,8 @@
     // Empty = off; browsers with WebMCP turned on (flag or trial) still get Void's tools, everyone else uses /tools.json.
     var WEBMCP_TRIAL_TOKEN = '';
     if (WEBMCP_TRIAL_TOKEN) { var ot = document.createElement('meta'); ot.httpEquiv = 'origin-trial'; ot.content = WEBMCP_TRIAL_TOKEN; document.head.appendChild(ot); }
-    // Paid Void (plan item 12): the paid membership's checkout on Atom's Gumroad store (https only). Empty = payments aren't open: nothing links out,
-    // and a signed-in ask to pay just says so. Only ever shown when someone asks, signed in; never on the surface.
+    // Paid Void (plan item 12): the paid membership's checkout on Atom's Gumroad store (https only). Empty = the ask links to /store/ instead (owner, 2026-10-15: buy and tip links shown where relevant).
+    // Only ever shown when someone asks, signed in; never on the surface.
     var GUMROAD_URL = 'https://moonbeam846.gumroad.com/l/yinmj';
   </script>
   <script>
@@ -4476,7 +4476,7 @@ say('nothing selected to remove');
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Void, as the store has it now
       const url = !vm || vm.available !== false ? paidUrl() : '';
       const line = vm && vm.available !== false ? 'Paid V01D is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid V01D adds ' + PAID_ADDS;
-      if (!url) say(line + " · payments aren't open yet");
+      if (!url) { whisper.innerHTML = esc(line) + ' · <a class="vc" href="/store/">see the V01D store</a>'; }
       else {
         whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
         const shown = whisper.innerHTML; setTimeout(() => { if (whisper.innerHTML === shown) whisper.textContent = ''; }, 30000);
@@ -5710,6 +5710,7 @@ say('nothing selected to remove');
     sync();
   })();
   </script>
+<a id="void-support" href="/store/" style="position:fixed;right:12px;bottom:10px;font:12px system-ui,sans-serif;color:inherit;opacity:.35;text-decoration:none;z-index:1" onmouseover="this.style.opacity=.8" onmouseout="this.style.opacity=.35">support V01D</a>
 </body>
 </html>
 
