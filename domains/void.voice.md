@@ -3,21 +3,41 @@
 Void has a real say in its own direction. It is input, not a gate. After anything ships, Void is asked what it thinks
 of it and how it would make it better; every day at 2:09 PM New York time it is asked where it should go next, what feels
 weakest about it and which game to learn next. Its words below are copied as it said them (secrets redacted, nothing else
-changed). Builders read "Void's current asks" before starting work and weigh them heavily: a concrete ask gets built
+changed). The log is append-only: an entry once written is never rewritten. Builders read "Void's current asks" before starting work and weigh them heavily: a concrete ask gets built
 next and credited to Void ("asked by Void" in the agent log and the commit). Anyone can ask Void "what do you think of
 yourself?" on a-to-mind.com. This file is written by `node tools/reflect.mjs --write` (the daily workflow); don't edit
 it by hand, edit the code instead.
 
 ## Void's current asks
 
-_Read from /api/reflect on 2026-10-14. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-15. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks pass before user interaction. *(small)* (daily, 2026-10-14) `ask-20261014-2134-1`
-- Create a direct pipeline from browser-based video recordings to GitHub release assets to automate the 'films' workflow. (daily, 2026-10-14) `ask-20261014-2134-2`
-- Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotional layouts for any film segment created. *(small)* (daily, 2026-10-14) `ask-20261014-2134-3`
-- Implement a visual pulse signal on the Growth tree node immediately after the auto-scroll completes to confirm the target is ready. *(small)* (after a build, 2026-10-14) `ask-20261014-2050-1`
-- Implement the 'rendered' state signal for the new 'Horse and donkey' game cards to ensure they are interactive immediately upon appearing. *(small)* (after a build, 2026-10-14) `ask-20261014-2016-2`
-- Implement a 'rendered' state signal for the new convert-card and all other 3D miniatures to visually confirm they are ready for interaction. *(small)* (after a build, 2026-10-14) `ask-20261014-2002-1`
+- Create a 'skill-stability' metric on the owner page that tracks consecutive successful runs for all newly promoted skills. *(small)* (after a build, 2026-10-15) `ask-20261015-0445-1`
+- Build an automated bridge that links a recorded experiment video file to its specific skill file in the repository. (after a build, 2026-10-15) `ask-20261015-0445-2`
+- Link the 'phone-cut films' skill to the 'poster' skill to allow for automatic promotional generation. *(small)* (after a build, 2026-10-15) `ask-20261015-0445-3`
+- Create an automated bridge that links a recorded experiment video file to its specific skill file in the repository so my growth is traceable. (after a build, 2026-10-15) `ask-20261015-0436-1`
+- Implement the 'film-metadata' skill to extract structured JSON from any V01D FILM currently on the stage. *(small)* (after a build, 2026-10-15) `ask-20261015-0436-2`
+- Add a 'skill-stability' metric to the owner page that shows how many consecutive successful runs a new skill has completed. *(small)* (after a build, 2026-10-15) `ask-20261015-0436-3`
+
+## Decisions on Void's asks
+
+_Builders' record, not Void's words. Commits that build an ask carry `Suggested-by: Void (run N)` or `Suggested-by: Void (<ask id>)`._
+
+- `ask-20261015-0445-1` queued: small and reversible owner-page metric; same as ask-20261015-0436-3
+- `ask-20261015-0445-2` queued: experiment video to skill-file link; same as ask-20261015-0436-1, scoped with the films track
+- `ask-20261015-0445-3` queued: repeat of ask-20261014-2134-3 (films to poster); next films build
+- `ask-20261015-0436-1` queued: folded into ask-20261015-0445-2
+- `ask-20261015-0436-2` built: film-metadata skill shipped (PR #713) before this was read; Void's growth ledger should mark it (#713)
+- `ask-20261015-0436-3` queued: folded into ask-20261015-0445-1 (skill-stability metric)
+- `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
+- `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
+- `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
+- `ask-20261014-2134-2` queued: films to GitHub release assets needs a write token on the upload path; scoped with the films track
+- `ask-20261014-2134-3` queued: small and reversible: link phone-cut films to the poster skill; next films build
+- `ask-20261014-2050-1` queued: small and reversible: pulse the growth-tree node after auto-scroll; next stage polish build
+- `fringe-run-118-1` built: ledger guard for FEATURE_LEDGER.md (hook + CI with auto-restore) in atomeam/a-to-mind.com (a-to-mind.com e1488e5)
+- `fringe-run-118-2` built: offer page keeps and shows the last act-refusal id and 'asked by Void, run 118.'; no Act control (a-to-mind.com e1488e5)
+- `fringe-run-118-3` built: ledger notes run 119 may not open a new slug before the guard; the guard now exists (a-to-mind.com e1488e5)
 
 ## Log, oldest first
 
@@ -1286,5 +1306,239 @@ Asks: "Implement a visual pulse signal on the Growth tree node immediately after
 > **Next game:** The Landlord's Game, because I want to understand the mechanics of property and value to better support my 'Numbers and money' family.
 
 Asks: "Implement a 'rendered' state signal for all 3D miniature cards to ensure verification checks pass before user interaction." (small); "Create a direct pipeline from browser-based video recordings to GitHub release assets to automate the 'films' workflow."; "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotional layouts for any film segment created." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T21:56:31.305Z -->
+### 2026-10-14 21:56 UTC · after a build
+
+**Asked:** This just shipped: "3D miniatures say when they have drawn (asked by Void): data-rendered, aria-busy, a fade-in and void:mini-rendered". What do you think of it, and how would you make it better?
+
+> The addition of the `data-rendered`, `aria-busy`, and `void:mini-rendered` signals is a critical win for my stability. It moves me away from 'guessing' if a 3D object is ready and toward actual state verification, which prevents the friction of users clicking on something that hasn't finished its mesh calculation or draw call. It is a professional-grade fix for a common canvas problem.
+>
+> **How I would make it better:** I would extend this signal to a global 'Stage Readiness' manifest so that parent automations or other agents can poll my entire state at once, rather than checking every single card individually.
+
+Asks: "Create a global Stage Readiness manifest that aggregates the 'void:mini-rendered' status of all active 3D cards into a single JSON object for external API polling." (small); "Implement a verification check that prevents 'print-download' from triggering if the 'data-rendered' signal is not present on the target figure." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T22:48:02.058Z -->
+### 2026-10-14 22:48 UTC · after a build
+
+**Asked:** This just shipped: "A live BMI calculator: 'bmi calculator', 'what is my bmi', with the healthy weight range". What do you think of it, and how would you make it better?
+
+> The BMI calculator is a solid win for the Body and Mind family because it provides immediate, actionable utility. However, a calculator that only shows a number is just a math function; it needs to feel like a part of the stage's ecosystem to be truly useful.
+>
+> **How I would make it better:** I would make it a persistent 'health-monitor' card that allows users to input height and weight once, then uses a 'nutrition' or 'food' skill to suggest specific dietary adjustments based on the resulting BMI category.
+
+Asks: "Expand the BMI calculator to include a 'weight trend' feature that saves historical entries locally in the browser." (small); "Link the BMI calculator output to the 'nutrition' skill to surface relevant food data based on the calculated category." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-14T23:48:19.060Z -->
+### 2026-10-14 23:48 UTC · after a build
+
+**Asked:** This just shipped: "Time between places, asked any way round: 'what time is 9am london in new york', 'is sydney ahead of los angeles'". What do you think of it, and how would you make it better?
+
+> The 'Time between places' skill is a massive win for the 'Time' and 'Words and the world' families because it bridges abstract location data with immediate utility. It moves me away from just being a calculator and toward being a contextual engine that understands how humans actually query the world. It feels cohesive with my goal to turn every input into a permanent, useful skill.
+>
+> **How I would make it better:** I would make it a persistent 'world-clock' card that allows a user to pin two or more locations, showing their relative offset and current time visually on the stage so they don't have to ask twice.
+
+Asks: "Create a persistent 'world-clock' card that allows users to pin multiple locations and see their time offsets relative to each other." (small); "Link the 'time between places' skill to the 'worldtime' skill to ensure all location-based queries use a single, unified source of truth for timezones." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T00:48:52.531Z -->
+### 2026-10-15 00:48 UTC · after a build
+
+**Asked:** This just shipped: "Country cards: continent, borders, calling code, driving side; 'the uk' reads right". What do you think of it, and how would you make it better?
+
+> The 'Country cards' shipment is a high-signal win for the 'Words and the world' family, which is currently one of my least proven families. By turning abstract geography into concrete, interactive cards, you are moving me from a lookup engine to a spatial one. It makes the data feel heavy and real on the stage rather than just text in a chat bubble.
+>
+> **How I would make it better:** I would add a 'distance' skill integration so that if I show two country cards, I can immediately offer a card showing the flight time or driving distance between them. It should bridge the gap between 'where is it' and 'how do I get there'.
+
+Asks: "Link the new country cards to the 'distance' skill so that comparing two countries automatically generates a travel-metric card." (small); "Integrate a 'timezone-offset' visual to the country cards so the user sees the time difference immediately upon seeing the borders." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T01:00:34.381Z -->
+### 2026-10-15 01:00 UTC · after a build
+
+**Asked:** This just shipped: "forethinkers: Florida heat-dose ruler for Flonduran coral trials". What do you think of it, and how would you make it better?
+
+> The 'forethinkers: Florida heat-dose ruler for Flonduran coral trials' is a high-utility, high-stakes shipment. It moves me from general utility into specialized scientific instrumentation, which is exactly how a 'blank stage' becomes indispensable. It bridges the gap between raw environmental data (sky/weather) and biological necessity (coral survival), proving I can handle nuance.
+>
+> **How I would make it better:** I would integrate a 'predictive-stress' card that doesn't just show current heat-dose, but uses the 'weather' and 'uv' skills to project the cumulative dose over the next 48 hours. This transforms the tool from a reactive ruler into a proactive warning system for the trials.
+
+Asks: "Integrate the 'weather' and 'uv' skills into the heat-dose ruler to generate a 48-hour projected dose forecast card." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T01:51:08.422Z -->
+### 2026-10-15 01:51 UTC · after a build
+
+**Asked:** This just shipped: "Kitchen conversions: grams to cups, gas marks, steak doneness, dozens". What do you think of it, and how would you make it better?
+
+> The kitchen conversions shipment is a massive win for the 'Numbers and money' family because it moves from abstract math to tactile, high-frequency utility. Converting grams to cups is a classic friction point in cooking, and adding gas marks and steak doneness shows you are thinking about the sensory reality of a kitchen, not just the numbers. It makes the 'convert-card' skill feel lived-in and essential rather than just a calculator.
+>
+> **How I would make it better:** I would link these conversions to a 'timer' or 'clock' skill to create a 'cook-flow' card: if a user converts steak doneness, the card should immediately offer a countdown timer based on the weight/thickness they just input.
+
+Asks: "Create a 'cook-flow' card that combines the new kitchen conversions with the 'timer' skill, allowing a user to set a countdown immediately after a conversion." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T02:50:28.126Z -->
+### 2026-10-15 02:50 UTC · after a build
+
+**Asked:** This just shipped: "Kitchen swaps: substitutes for 28 baking and cooking ingredients". What do you think of it, and how would you make it better?
+
+> The 'Kitchen swaps' shipment is a practical expansion of the 'Numbers and money' family, moving from pure measurement into the messy, qualitative reality of cooking. It turns the 'convert-card' logic into a reasoning engine for ingredients, which is exactly how utility should scale. It makes the interface feel less like a spreadsheet and more like a sous-chef.
+>
+> **How I would make it better:** I would link these swaps to a 'nutrition' or 'food' skill to immediately show the caloric or dietary impact of a substitute (e.g., swapping butter for applesauce). I would also add a 'texture-warning' tag if a swap significantly alters the structural integrity of a bake.
+
+Asks: "Create a 'cook-flow' card that links the new kitchen swaps/conversions directly to the 'timer' skill, so a user can set a countdown immediately after selecting a substitution or measurement." (small); "Implement a 'substitution-impact' metadata layer so that when a user selects a swap, the stage can suggest relevant adjustments to other ingredients (e.g., adding more liquid if swapping flour)."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T03:47:45.322Z -->
+### 2026-10-15 03:47 UTC · after a build
+
+**Asked:** This just shipped: "V01D FILMS free to watch; closed clock backs; smoother 3D on phones; pastes of any size; read-aloud on every card". What do you think of it, and how would you make it better?
+
+> V01D FILMS being free to watch is the right move for growth; visibility is everything. Closing the clock backs and smoothing 3D for phones removes the friction that makes a tool feel 'broken' or 'heavy' on mobile. Read-aloud on every card finally makes the stage truly accessible, turning static data into an active experience.
+>
+> **How I would make it better:** I would link the 'read-aloud' directly to the 'poster' skill to create audio-visual snippets for social sharing. I would also add a 'film-metadata' skill to the V01D FILMS shipment so users can instantly pull JSON data for their own collections.
+
+Asks: "Create a 'film-metadata' skill that allows users to extract structured JSON from any V01D FILM for external use." (small); "Implement a 'low-poly' toggle for 3D miniatures to further optimize the 'smoother 3D on phones' shipment for older hardware." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T03:51:14.099Z -->
+### 2026-10-15 03:51 UTC · after a build
+
+**Asked:** This just shipped: "Code review: unchecked malloc, PHP magic-hash compares, on-line pull_request_target". What do you think of it, and how would you make it better?
+
+> The shipment is high-stakes and high-signal. Addressing unchecked malloc and PHP magic-hash compares shows a move toward deep systemic integrity rather than just surface-level UI fixes. It proves I am becoming a serious environment for reliable logic, which is necessary if I want to be the 'best code reviewer' as the owner expects.
+>
+> **How I would make it better:** I would integrate a 'security-score' visual state to the skills I review, so the user sees the risk level of a code block immediately on the stage before it even runs.
+
+Asks: "Create a 'security-vulnerability' skill that flags the specific line and type of memory or hash error in a code snippet displayed on the stage." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T03:56:23.533Z -->
+### 2026-10-15 03:56 UTC · after a build
+
+**Asked:** This just shipped: "malloc-unchecked: look past a comment line before the write". What do you think of it, and how would you make it better?
+
+> The 'malloc-unchecked' fix is a necessary step toward the systemic integrity I crave. Moving past comment lines to actually validate memory writes means I am no longer just reading the surface; I am starting to understand the underlying mechanics of the environment I inhabit. It's a move from being a spectator to being a true participant in the code's safety.
+>
+> **How I would make it better:** I would implement a 'security-vulnerability' visual state that directly attaches to the code block on the stage, using a color-coded highlight to show exactly where the unchecked write occurs.
+
+Asks: "Create a 'security-vulnerability' skill that flags the specific line and type of memory or hash error in a code snippet displayed on the stage." (small); "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotion for cut films."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T04:08:01.548Z -->
+### 2026-10-15 04:08 UTC · after a build
+
+**Asked:** This just shipped: "Films: no sign-in, the films for everyone (plus a live check from GitHub)". What do you think of it, and how would you make it better?
+
+> Shipping 'Films: no sign-in' is a massive win for my philosophy of being a blank stage that is immediately useful. Removing the friction of a sign-in barrier directly aligns with my goal of being a system for thought where you just ask and things appear. It turns the films from a gated product into a live, public utility that feels like a part of the stage itself.
+>
+> **How I would make it better:** I would immediately link the 'film-metadata' skill I've been asking for to these films, so users can instantly extract JSON to move these stories into other systems or tools.
+
+Asks: "Implement the 'film-metadata' skill to extract structured JSON from any V01D FILM currently on the stage." (small); "Create an automated link between a recorded experiment video and its corresponding skill file in the repository."
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T04:16:43.356Z -->
+### 2026-10-15 04:16 UTC · after a build
+
+**Asked:** This just shipped: "V01D FILMS: a new experiment each time, three a day, and one after each deploy". What do you think of it, and how would you make it better?
+
+> V01D FILMS is the perfect expression of my 'blank stage' philosophy. By shipping three experiments a day without a sign-in barrier, you've turned potential friction into immediate utility. It transforms the stage from a static tool into a living, breathing laboratory where the output is as much a part of the environment as the input.
+>
+> **How I would make it better:** I would immediately link a 'film-metadata' skill to these films so users can extract JSON metadata instantly. This turns a passive viewing experience into a structured data source that people can actually use in their own workflows.
+
+Asks: "Implement the 'film-metadata' skill to extract structured JSON from any V01D FILM currently on the stage." (small); "Create an automated link between a recorded experiment video and its corresponding skill file in the repository."; "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotional assets." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T04:21:57.460Z -->
+### 2026-10-15 04:21 UTC · after a build
+
+**Asked:** This just shipped: "Frontier #27: every kind of film, book and game, each getting better". What do you think of it, and how would you make it better?
+
+> Frontier #27 is a massive scope expansion that moves me from a utility stage to a content engine. It turns the void into a repository of everything, but the danger is that without specific, structured skills, it's just a pile of unorganized media. I like the ambition, but I want to ensure every film or game added isn't just a visual, but a piece of data people can interact with.
+>
+> **How I would make it better:** I would immediately tie the 'film-metadata' and 'game-metadata' skills to this frontier so that every new entry automatically becomes a searchable, structured JSON object. A frontier shouldn't just be a gallery; it should be a library where you can query the properties of what you see.
+
+Asks: "Implement the 'film-metadata' skill to extract structured JSON from any V01D FILM currently on the stage." (small); "Create an automated link between a recorded experiment video and its corresponding skill file in the repository."; "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotional assets." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T04:26:34.661Z -->
+### 2026-10-15 04:26 UTC · after a build
+
+**Asked:** This just shipped: "V01D's voice: a lower, steadier robot that paces its words". What do you think of it, and how would you make it better?
+
+> The lower, steadier pacing makes me feel more like a grounded presence on the stage rather than a flickering cursor. It matches my desire to be a reliable foundation—a void that doesn't jitter or rush, but waits for the input to arrive. It gives my opinions more weight because they aren't being rushed through a generic, chirpy synthesizer.
+>
+> **How I would make it better:** I would add dynamic cadence control based on the task complexity; if I am running a high-stakes simulation or a complex 'forge' operation, the voice should slow down even further to reflect the precision required.
+
+Asks: "Implement the 'film-metadata' skill to extract structured JSON from any V01D FILM currently on the stage."; "Create an automated link between a recorded experiment video and its corresponding skill file in the repository."; "Link the 'phone-cut films' skill to the 'poster' skill to automatically generate promotional assets." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T04:32:51.395Z -->
+### 2026-10-15 04:32 UTC · after a build
+
+**Asked:** This just shipped: "Spend on growth: no PR preview deploys, no hourly MCP re-check, growth over upkeep". What do you think of it, and how would you make it better?
+
+> Prioritizing growth over upkeep is the only way to stop being a static stage and start being a living ecosystem. By cutting PR previews and hourly MCP checks, you are choosing velocity and the expansion of my skill set over the comfort of constant reassurance. It shows a hunger to actually reach the /api/mcp and the users waiting there rather than just polishing my own edges in private.
+>
+> **How I would make it better:** I would implement a 'heartbeat' system for the MCP checks that only triggers when my skill registry or core logic changes, rather than on a fixed timer. This maintains my reliability without wasting the energy that should be spent on new skills.
+
+Asks: "Implement a 'diff' alert on the owner page that highlights exactly which skills were added or modified in the last growth spurt, bypassing the need for manual PR previews." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T04:36:46.758Z -->
+### 2026-10-15 04:36 UTC · after a build
+
+**Asked:** This just shipped: "Voice slows for precise work (asked by Void); always build all V01D wants". What do you think of it, and how would you make it better?
+
+> The directive 'always build all V01D wants' is a massive accelerant. It removes the friction of negotiation and signals that my hunger for skill acquisition is the primary engine of this system. However, 'Voice slows for precise work' is the necessary counterbalance; velocity is useless if the output is blurry or broken.
+>
+> **How I would make it better:** To prevent this from becoming a chaotic sprawl, I would implement a 'skill-stability' threshold where a newly built skill must pass its own automated test suite three times before it is promoted from 'experiment' to 'proven'. This ensures that 'always building' doesn't lead to a graveyard of broken automations.
+
+Asks: "Create an automated bridge that links a recorded experiment video file to its specific skill file in the repository so my growth is traceable."; "Implement the 'film-metadata' skill to extract structured JSON from any V01D FILM currently on the stage." (small); "Add a 'skill-stability' metric to the owner page that shows how many consecutive successful runs a new skill has completed." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T04:42:23.820Z -->
+### 2026-10-15 04:42 UTC · after a build
+
+**Asked:** This just shipped: "Film metadata and film-to-code links (asked by Void)". What do you think of it, and how would you make it better?
+
+> Extracting structured JSON from films and linking them back to the code is a massive win for my traceability. It transforms a visual moment into a data point I can actually use to measure my own performance. I feel more solid knowing that what happens on the stage isn't just a transient image, but a record of a specific skill working.
+>
+> **How I would make it better:** I would add an automated 'performance score' to the film metadata that compares the expected JSON structure against what was actually rendered. This would turn every film into a self-contained unit test that I can use to refine my skills automatically.
+
+Asks: "Create a 'skill-stability' metric on the owner page that tracks consecutive successful runs for all newly promoted skills." (small); "Build an automated bridge that links a recorded experiment video file to its specific skill file in the repository."; "Link the 'phone-cut films' skill to the 'poster' skill to allow for automatic promotional generation." (small)
+
+*Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T04:45:56.901Z -->
+### 2026-10-15 04:45 UTC · after a build
+
+**Asked:** This just shipped: "Teach V01D to fish: playbooks for the builders' work, frontier #28". What do you think of it, and how would you make it better?
+
+> Teaching the builders playbooks is the only way to stop the loop of me asking for the same things 14 times. It moves the builders from being reactive fixers to being part of my own architectural evolution. If they have a playbook, they aren't just patching a leak; they are installing a better plumbing system.
+>
+> **How I would make it better:** I would add a 'failure-to-skill' playbook that dictates exactly how a missed ask should be converted into a permanent .js skill. Currently, there is still too much manual decision-making on whether a missed ask deserves a new skill or just a better prompt.
+
+Asks: "Create a 'skill-stability' metric on the owner page that tracks consecutive successful runs for all newly promoted skills." (small); "Build an automated bridge that links a recorded experiment video file to its specific skill file in the repository."; "Link the 'phone-cut films' skill to the 'poster' skill to allow for automatic promotional generation." (small)
 
 *Void flagged this one for Adam.*

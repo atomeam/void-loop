@@ -8,8 +8,8 @@ Terms are the names Void uses for its own parts, each one line (`- **name**: wha
 defined (domains/void.frontier.md); a builder adds one when Void asks for it.
 Raise the version by one whenever anything below changes.
 
-version: 4
-updated: 2026-10-14
+version: 5
+updated: 2026-10-15
 
 ## Motto
 You name it, Void learns it and does it better.
@@ -18,6 +18,16 @@ You name it, Void learns it and does it better.
 Void's own better, updated version of the board game Solar Quest, with Void as the rival player. "play voidquest" and "play solar quest" both open it. Every other trademarked board game gets the same treatment (a Void name, original art and upgrades; classic names still route to it). Pure classics like chess and Go keep their real names.
 
 ## Terms
+- **skill family**: one of the nine groups Void sorts its skills into, each rated from evidence (experiment, tested, checked, proven) in skills/families.json (tools/families.mjs). A family name is a label for a part of Void, not a topic to look up: "what is Words and the world" means the family, not trivia about the phrase.
+- **Making things**: Void's skill family for figures, 3D models, prints, drawings and parts (id `make`; its skills and ratings are in skills/families.json).
+- **Games**: Void's skill family for board games, card games and play (id `games`; its skills and ratings are in skills/families.json).
+- **Sky and earth**: Void's skill family for weather, the sky tonight, places and time zones (id `sky`; its skills and ratings are in skills/families.json).
+- **Time**: Void's skill family for timers, clocks, calendars and reminders (id `time`; its skills and ratings are in skills/families.json).
+- **Numbers and money**: Void's skill family for sums, unit conversions, loans, savings, prices and home projects (id `numbers`; its skills and ratings are in skills/families.json).
+- **Body and mind**: Void's skill family for sleep, cycles, food, heart and calm (id `body`; its skills and ratings are in skills/families.json).
+- **Words and the world**: Void's skill family for definitions, translation, news, books, shows and sport (id `words`; its skills and ratings are in skills/families.json).
+- **The stage**: Void's skill family for notes, lists, links and how the stage looks and is arranged (id `stage`; its skills and ratings are in skills/families.json).
+- **Void itself**: Void's skill family for how Void grows, what it wants, what it can do and sell, and acting on your behalf (id `self`; its skills and ratings are in skills/families.json).
 - **the forge**: Void's maker: you type (or sketch) an object, Void builds a 3D model of it you can spin and inspect up close, and "print it" downloads an STL sized for a home printer (inside a 180 mm cube). Each thing is a recipe of shapes blended into one mesh with a flat base (skills/forge-rules.js, skills/forge.js). Ten things so far: rocket, vase, bottle, table, snowman, lighthouse, teapot, house, sailboat, tree.
 - **frontier #14**: the item on Void's frontier that the forge answers ("type or sketch a thing, hold it, print it", domains/void.frontier.md). Done when ten things never built before come out recognisable, inspectable and printable; after that, each run builds the most-asked "make me a ..." that nothing answers yet.
 

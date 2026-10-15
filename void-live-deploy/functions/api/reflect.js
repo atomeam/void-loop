@@ -57,7 +57,7 @@ export async function onRequestPost({ request, env }) {
   } catch (e) { await recordShortfall(env, 'voice', reasonOf(e)); }
   if (!said) return new Response('Void could not answer just now', { status: 503 });
   const at = new Date().toISOString();
-  const entry = { at, kind, ...(kind === 'build' ? { shipped } : {}), question, ...said };
+  const entry = { at, kind, ...(kind === 'build' ? { shipped } : {}), question, ...said, model: models('will'), by: 'owner', ...(facts && facts.canon && facts.canon.version ? { canon: facts.canon.version } : {}), ...(b.run ? { run: String(b.run).slice(0, 40) } : {}) };
   if (kind !== 'daily') { delete entry.weakest; delete entry.next_game; }
   await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('voice', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify([entry, ...before].slice(0, KEEP))).run();
   // Void's concrete small ask goes to the builders' queue, credited to Void, unless one of its asks is already open
