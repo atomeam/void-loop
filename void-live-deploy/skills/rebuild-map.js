@@ -17,7 +17,7 @@ const MAP = [
   { n: 7, p: 'intent-canvas', f: 'grouping and layers on the stage', s: 'live (group and layer skills)' },
   { n: 8, p: 'Slack ops log', f: 'what the agents are doing', s: 'live (the agent log; the status card shows the build)' },
   { n: 9, p: 'HomeBase / dashboards', f: 'board, agent log and live checks on one summoned page', s: 'live (status card)' },
-  { n: 10, p: 'Player Two', f: '"play a game": games on the stage against V01D', s: 'live (the game rack: 14 games)' },
+  { n: 10, p: 'Player Two', f: '"play a game": games on the stage against V01D', s: 'live (the game rack: 16 games)' },
   { n: 11, p: 'Wikipedia / Wiktionary / Open-Meteo', f: 'answers from open sources, better than the source', s: 'live (articles, define, words, weather)' },
   { n: 12, p: 'Calculation page', f: 'percentages, units, dates, currency', s: 'live (2026-09-25)' },
   { n: 13, p: 'Entering your own V01D', f: 'silent entry on first keep; personal look saved per browser; public surface stays plain', s: 'live (2026-09-25)' },
