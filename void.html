@@ -4469,7 +4469,7 @@ say('nothing selected to remove');
       if (wantsSelfPage(lower) || wantsIdentity(lower) || wantsMenu(lower)) return; // self/meta: never a sponsor line
       const { g, products } = await storeCatalog();
       const p = g && g.productFor(text, products, { fix: !!opt.fix, meta: !!opt.meta });
-      if (!p) return;
+      if (!p) { if (!opt.meta && !opt.fix && g && g.isBuyAsk && g.isBuyAsk(text)) fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'gap', ask: String(text).slice(0, 200) }) }).catch(() => {}); return; } // no line: the server notes a product gap if it's a buy/hire ask (lib/product-gap.js)
       const html = productLine(g, p);
       if (opt.el) { if (opt.el === vpageEl) { opt.el._tail = html; keepTail(opt.el); } }
       else { pageTail = { ask: text, html }; if (vpageEl && vpageEl._ask === text) { vpageEl._tail = html; keepTail(vpageEl); } }
