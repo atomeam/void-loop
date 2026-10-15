@@ -515,7 +515,8 @@ try {
       // thread at rest, half of each keystroke's delay). What runs forever on the empty page may only move what the GPU moves.
       const forever = await V.p.evaluate(() => document.getAnimations().filter((a) => a.effect && a.effect.getComputedTiming().iterations === Infinity)
         .map((a) => ({ name: a.animationName || '', props: [...new Set(a.effect.getKeyframes().flatMap((k) => Object.keys(k).filter((x) => !/^(offset|easing|composite|computedOffset)$/.test(x))))] })));
-      check('speed: what animates forever on the empty page moves only transform and opacity (nothing repaints every frame)', forever.every((a) => a.props.every((x) => /^(transform|opacity)$/.test(x))), JSON.stringify(forever));
+      // rotate, scale and translate are the individual transform properties: composited exactly like transform
+      check('speed: what animates forever on the empty page moves only transform and opacity (nothing repaints every frame)', forever.every((a) => a.props.every((x) => /^(transform|rotate|scale|translate|opacity)$/.test(x))), JSON.stringify(forever));
     }
     await V.p.mouse.move(640, 380); await V.p.mouse.move(1100, 500, { steps: 6 });
     const tracked = await until(async () => { const v = await V.p.evaluate(() => document.getElementById('void-depth').style.getPropertyValue('--dx')); return parseFloat(v) > 55 ? v : false; }, 3000) || '';
@@ -2452,22 +2453,26 @@ try {
     });
     await F.p.goto(base + 'films/');
     await until(async () => (await F.p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
-    const gate = await F.p.evaluate(() => ({ films: document.querySelectorAll('#films .film').length, review: !!document.querySelector('#films .review'), video: !!document.querySelector('#films .film video'),
-      yt: !!document.querySelector('#films .film a.yt'), signin: !!document.querySelector('#gate, #signin, #keyform, a[href*="code-review"]'), text: document.body.innerText }));
-    await F.p.evaluate(() => sessionStorage.setItem('a2m.void.filmkey', 'vr1.' + 'A'.repeat(43))); await F.p.reload();
-    await until(async () => !!(await F.p.$('#films .review')), 5000);
-    const member = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'), yt: !!a.querySelector('a.yt'), review: !!a.querySelector('.review') }; });
-    await F.p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'owner-tok'); }); await F.p.reload();
-    await until(async () => !!(await F.p.$('#films .film a.yt')), 5000);
-    const card = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return a && { yt: a.querySelector('a.yt').href, dl: a.querySelector('a[download]').getAttribute('href'),
-      btns: [...a.querySelectorAll('.body > .row button')].map((b) => b.textContent), wide: document.documentElement.scrollWidth > innerWidth }; });
+    // V01D Tube (2026-10-15): the channel grid for everyone; each card opens its watch page
+    const gate = await F.p.evaluate(() => ({ films: document.querySelectorAll('#films .film').length, review: !!document.querySelector('.review'), video: !!document.querySelector('#films .film video'),
+      href: (document.querySelector('#films .film') || {}).getAttribute?.('href') || '', signin: !!document.querySelector('#gate, #signin, #keyform, a[href*="code-review"]'), text: document.body.innerText }));
+    // the watch page: anyone gets the player, the words and the upload steps (download, copy for YouTube, YouTube's upload page)
+    await F.p.goto(base + 'films/?v=' + film.id);
+    await until(async () => !!(await F.p.$('#watch .watchbox a.yt')), 5000);
+    const watcher = await F.p.evaluate(() => { const a = document.querySelector('#watch .watchbox'); return a && { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'),
+      yt: (a.querySelector('a.yt') || {}).href || '', dl: (a.querySelector('a[download]') || { getAttribute: () => '' }).getAttribute('href'), review: !!a.querySelector('.review'),
+      wide: document.documentElement.scrollWidth > innerWidth }; });
     await F.ctx.grantPermissions(['clipboard-read', 'clipboard-write']);
-    await F.p.click('#films .film button:nth-of-type(2)'); const copied = await F.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
+    await F.p.click('#watch .share .row:not(.tabs) button'); const copied = await F.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
+    // a member's key kept for the tab brings the review box on the watch page
+    await F.p.evaluate(() => sessionStorage.setItem('a2m.void.filmkey', 'vr1.' + 'A'.repeat(43))); await F.p.reload();
+    await until(async () => !!(await F.p.$('#watch .review')), 5000);
+    const member = await F.p.evaluate(() => !!document.querySelector('#watch .review'));
     check('films page: anyone watches, a member reviews, the owner gets the YouTube steps',
-      gate.films === 1 && gate.video && !gate.review && !gate.yt && !gate.signin && !/sign in|member|have a key/i.test(gate.text) && seen[0] === ''
-      && member.h === film.title && member.src === film.src && !member.yt && member.review
-      && !!card && card.yt === 'https://www.youtube.com/upload' && card.dl === film.src && JSON.stringify(card.btns) === '["3. Copy title","Copy description","Copy tags"]'
-      && copied === film.description && !card.wide && !F.errors.length, JSON.stringify({ gate, member, card, copied, seen, errors: F.errors }));
+      gate.films === 1 && gate.video && !gate.review && gate.href === '?v=' + film.id && !gate.signin && !/sign in|member|have a key/i.test(gate.text) && seen[0] === ''
+      && !!watcher && watcher.h === film.title && watcher.src === film.src && watcher.yt === 'https://www.youtube.com/upload' && watcher.dl === film.src && !watcher.review && !watcher.wide
+      && /Odd moments/.test(copied) && /a-to-mind\.com\/c\/20261014-x-r6\?p=youtube&by=share/.test(copied) && member && !F.errors.length,
+      JSON.stringify({ gate: { ...gate, text: gate.text.slice(0, 80) }, watcher, copied: copied.slice(0, 120), member, seen, errors: F.errors }));
     await F.ctx.close(); }
 
   // reviewing a film (owner, 2026-10-14: "film review could be for owner and paying members as contributer reviewrs"): a member picks
@@ -2483,15 +2488,15 @@ try {
         : r.fulfill(json({ owner: false, member: true, films: [film({ counts: { post: 1, fix: 0, skip: 0 }, mine: null })] }));
     });
     await F.ctx.route(/\/api\/film-review$/, (r) => { sent.push({ auth: r.request().headers().authorization, body: JSON.parse(r.request().postData() || '{}') }); return r.fulfill(json({ ok: true })); });
-    await F.p.goto(base + 'films/'); await F.p.evaluate(() => sessionStorage.setItem('a2m.void.filmkey', 'vr1.' + 'A'.repeat(43))); await F.p.reload();
-    await until(async () => !!(await F.p.$('#films .review')), 5000);
-    await F.p.click('#films .review button:has-text("Save review")'); const empty = await F.p.$eval('#films .review .said', (e) => e.textContent);
-    await F.p.click('#films .review button[data-v="fix"]'); await F.p.fill('#films .review textarea', 'Cut the first 3 seconds.');
-    await F.p.click('#films .review button:has-text("Save review")'); await until(async () => /Saved/.test(await F.p.$eval('#films .review .said', (e) => e.textContent)), 4000);
-    const member = await F.p.evaluate(() => ({ said: document.querySelector('#films .review .said').textContent, tally: document.querySelector('#films .review .tally').textContent, notes: !!document.querySelector('#films .review ul') }));
+    await F.p.goto(base + 'films/?v=20261014-x-r6'); await F.p.evaluate(() => sessionStorage.setItem('a2m.void.filmkey', 'vr1.' + 'A'.repeat(43))); await F.p.reload();
+    await until(async () => !!(await F.p.$('#watch .review')), 5000);
+    await F.p.click('#watch .review button:has-text("Save review")'); const empty = await F.p.$eval('#watch .review .said', (e) => e.textContent);
+    await F.p.click('#watch .review button[data-v="fix"]'); await F.p.fill('#watch .review textarea', 'Cut the first 3 seconds.');
+    await F.p.click('#watch .review button:has-text("Save review")'); await until(async () => /Saved/.test(await F.p.$eval('#watch .review .said', (e) => e.textContent)), 4000);
+    const member = await F.p.evaluate(() => ({ said: document.querySelector('#watch .review .said').textContent, tally: document.querySelector('#watch .review .tally').textContent, notes: !!document.querySelector('#watch .review ul') }));
     await F.p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'owner-tok'); }); await F.p.reload();
-    await until(async () => !!(await F.p.$('#films .review ul li')), 5000);
-    const owner = await F.p.$$eval('#films .review ul li', (l) => l.map((x) => x.textContent));
+    await until(async () => !!(await F.p.$('#watch .review ul li')), 5000);
+    const owner = await F.p.$$eval('#watch .review ul li', (l) => l.map((x) => x.textContent));
     check('films page: a member reviews a film, the owner reads every note',
       /Pick post it/.test(empty) && sent.length === 1 && sent[0].auth === 'Bearer vr1.' + 'A'.repeat(43)
       && JSON.stringify(sent[0].body) === JSON.stringify({ id: '20261014-x-r6', verdict: 'fix', note: 'Cut the first 3 seconds.' })
@@ -2521,17 +2526,17 @@ try {
       if (a === 'Bearer paid-acct') return r.fulfill(json({ owner: false, member: true, films: [film] }));
       return r.fulfill(json({ ok: true, owner: false, member: false, films: [film] })); });
     // 1) a stale owner session and a paid account: the account is the one kept for reviewing
-    await p.goto(base + 'films/'); await p.evaluate(() => { localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); localStorage.setItem('a2m.void.me.v1', JSON.stringify({ token: 'paid-acct' })); }); await p.reload();
-    await until(async () => !!(await p.$('#films .review')), 5000);
-    const fell = { films: await p.$$eval('#films .film', (d) => d.length), order: seen.slice(-2) };
+    await p.goto(base + 'films/?v=20261014-x-r6'); await p.evaluate(() => { localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); localStorage.setItem('a2m.void.me.v1', JSON.stringify({ token: 'paid-acct' })); }); await p.reload();
+    await until(async () => !!(await p.$('#watch .review')), 5000);
+    const fell = { films: await p.$$eval('#watch .watchbox', (d) => d.length), order: seen.slice(-2) };
     // 2) only a stale owner session: the film still plays, and the page says nothing about signing in
-    await p.evaluate(() => { localStorage.clear(); sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); }); await p.reload();
+    await p.evaluate(() => { localStorage.clear(); sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); }); await p.goto(base + 'films/');
     await until(async () => (await p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
-    const stale = await p.evaluate(() => ({ status: document.getElementById('status').textContent, video: !!document.querySelector('#films .film video'), review: !!document.querySelector('#films .review'),
+    const stale = await p.evaluate(() => ({ status: document.getElementById('status').textContent, video: !!document.querySelector('#films .film video'), review: !!document.querySelector('.review'),
       asks: !!document.querySelector('#gate, #signin, #keyform') || /sign in|run out|member/i.test(document.body.innerText) }));
     check('films page: every sign-in this browser holds is tried, and none is ever asked for',
       fell.films === 1 && JSON.stringify(fell.order) === JSON.stringify(['Bearer vo1.stale', 'Bearer paid-acct'])
-      && stale.video && !stale.review && !stale.asks && /^1 film, newest first\.$/.test(stale.status) && !F.errors.length, JSON.stringify({ fell, stale, errors: F.errors }));
+      && stale.video && !stale.review && !stale.asks && /^1 video, newest first\./.test(stale.status) && !F.errors.length, JSON.stringify({ fell, stale, errors: F.errors }));
     await F.ctx.close(); }
 
   // V01D's startup intro (owner, 2026-10-14: "a super professional brief V01D on startup"): the wordmark shows, typing works under
