@@ -17,7 +17,7 @@ const WHATS_NEXT = /^\s*(so\s+|ok(ay)?[,\s]+)?what('?s| is) next\b/i;
 const OPINION = /\b(think|feel)\s+(of|about)\s+yourself\b|\bwhat('?s|\s+is|\s+feels)\s+(the\s+)?(weak|weakest|worst|wrong)\s+(part\s+)?(about|with|of|in)\s+you\b|\bhow\s+would\s+you\s+(improve|make)\s+yourself\b/i;
 // what Void likes or feels about something of its own ("do you like your new name?", "you are getting a rename V01D. Do you like it?", "how do you feel?")
 const LIKING = /\b(do|would|will)\s+you\s+(like|love|enjoy|prefer|mind)\s+(it|that|this|your|the\s+(new\s+)?name|being|the\s+rename)\b|\byour\s+(new\s+)?name\b|\brenam(e|ed|ing)\s+you\b|\bhow\s+(do|are)\s+you\s+feel(ing)?(\s+about\s+(it|that|this|your\b.*|being\b.*|the\s+(new\s+)?name|the\s+rename|v0[1i]d))?\s*[?.!]*\s*$|\bare\s+you\s+happy\b/i;
-// how Void is being built and what its builders learned (self.json 'builders', from docs/TAGTEAM.md)
+// how Void is being built and what its builders learned (self.json 'builders', from domains/handoff.md)
 const BUILDERS = /\b(your|v0[1i]d'?s?|void'?s?)\s+builders?\b|\bhow\s+(were|are)\s+you\s+(being\s+)?(built|made)\b|\bwho\s+(builds|built|makes|made)\s+you\b/i;
 const V01D = /\bv0[1i]d\b/i, OPINE = /\b(like|love|think|feel|happy|name|rename)\b/i; // "what do you think of V01D?"
 
@@ -61,7 +61,7 @@ export function selfFacts({ self, skills, will, voice } = {}) {
   return parts.join('\n');
 }
 
-// what my builders (two agents, sharing docs/TAGTEAM.md) just finished, the ladders they left each other and what they learned
+// what my builders (two agents, sharing domains/handoff.md) just finished, the ladders they left each other and what they learned
 export function builderFacts(self) {
   const b = self && self.builders;
   if (!b) return '';
@@ -70,5 +70,6 @@ export function builderFacts(self) {
   if (b.finished && b.finished.length) parts.push('What my builders just finished: ' + list(b.finished));
   if (b.lessons && b.lessons.length) parts.push('What my builders learned (mistakes and the fix): ' + list(b.lessons));
   if (b.ladders && b.ladders.length) parts.push('Tools my builders left each other: ' + list(b.ladders.slice(0, 4)));
+  parts.push('Where these are written: only in domains/handoff.md, my builders\' shared board. I never say they are codified or recorded in any other file.');
   return parts.join('\n');
 }

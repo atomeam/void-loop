@@ -2,7 +2,7 @@
 // growth inbox (domains/growth-inbox.md: what shipped, what is still open), its games and the cards that have a 3D miniature
 // (so its opinions of itself are informed: lib/voice.js), and for the growth tree the think tank's open tracks, the claim
 // being built now (domains/forethinkers/index.md, domains/void.frontier.md) and the last commits on main (git log). Skills, the will and its reflections are read live at answer time.
-// What its two builders just finished, the ladders they left each other and their lessons (docs/TAGTEAM.md).
+// What its two builders just finished, the ladders they left each other and their lessons (domains/handoff.md).
 // Writes void-live-deploy/self.json. The deploy workflow runs this before every deploy, so the file never goes stale there.
 //   node tools/self-context.mjs          write the file
 //   node tools/self-context.mjs --check  exit 1 if the committed file differs from what would be written
@@ -69,7 +69,7 @@ export function readCommits(log, n = 20) {
     .slice(0, n).map(([at, subject]) => ({ at: new Date(Date.parse(at)).toISOString().replace('.000', ''), subject: clip(subject.replace(/[`*]/g, ''), 140) }));
 }
 
-// docs/TAGTEAM.md: the two builders' shared board. Its Just finished, Ladders and Lessons ('- **name**: line' bullets) go into
+// domains/handoff.md: the two builders' shared board. Its Just finished, Ladders and Lessons ('- **name**: line' bullets) go into
 // self.json trimmed, so V01D learns from how it is being built ("what did your builders learn?"). Now and Up for grabs stay out.
 export function readTagteam(text, n = 6) {
   const t = String(text || '');
@@ -113,7 +113,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const skills = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8'));
   const minis = readdirSync(resolve(root, 'void-live-deploy/skills/mini')).filter((f) => /^[a-z0-9-]+\.js$/.test(f)).map((f) => f.slice(0, -3));
   const frontier = resolve(root, 'domains/void.frontier.md'), tank = resolve(root, 'domains/forethinkers/index.md');
-  const tagteam = resolve(root, 'docs/TAGTEAM.md');
+  const tagteam = resolve(root, 'domains/handoff.md');
   const lineTimes = {}; // when each frontier line was last written; empty without git history (then the dates on the lines decide)
   const blame = spawnSync('git', ['blame', '--line-porcelain', '--', 'domains/void.frontier.md'], { cwd: root, encoding: 'utf8', timeout: 20000 });
   if (blame.status === 0) { let t = 0; for (const l of blame.stdout.split('\n')) { const h = /^[0-9a-f]{40} \d+ (\d+)/.exec(l); if (h) lineTimes.next = +h[1]; const c = /^committer-time (\d+)/.exec(l); if (c) t = +c[1]; if (l.startsWith('\t')) { lineTimes[lineTimes.next] = new Date(t * 1000).toISOString().replace('.000', ''); } } delete lineTimes.next; }
