@@ -67,6 +67,7 @@ for (const [name, file] of [
   ['openapi-check', 'openapi-check.test.mjs'],
   ['where', 'where.test.mjs'],
   ['food', 'food.test.mjs'],
+  ['swaps', 'swaps.test.mjs'],
   ['words', 'words.test.mjs'],
   ['weather-match', 'weather-match.test.mjs'],
   ['body-asks', 'body-asks.test.mjs'],
