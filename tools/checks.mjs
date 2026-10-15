@@ -79,6 +79,7 @@ for (const [name, file] of [
   ['revert-target', 'revert-target.test.mjs'],
   ['status', 'status.test.mjs'],
   ['growth', 'growth.test.mjs'],
+  ['deadlines', 'deadlines.test.mjs'],
   ['growth-tree', 'growth-tree.test.mjs'],
   ['review-learn', 'review-learn.test.mjs'],
   ['bench-floor', 'bench-floor.test.mjs'],
@@ -127,6 +128,7 @@ for (const [name, file] of [
   ['sky-card', 'sky-card.test.mjs'],
   ['learn', 'learn.test.mjs'],
   ['learn-draft', 'learn-draft.test.mjs'],
+  ['patch-guard', 'patch-guard.test.mjs'],
   ['learn-e2e', 'learn.e2e.test.mjs'],
   ['refusal', 'refusal.test.mjs'],
   ['private', 'private.test.mjs'],
@@ -187,6 +189,7 @@ for (const [name, file] of [
   ['families', 'families.test.mjs'],
   ['video', 'video.test.mjs'],
   ['digest', 'digest.test.mjs'],
+  ['well-known', 'well-known.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
@@ -234,6 +237,8 @@ for (const [name, file] of [
 { const r = run([resolve(here, 'skill-overlap.mjs'), '--check']); results.push(['overlap', r.ok, r.out[r.out.length - 1] || '']); }
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
 { const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
+// the MCP skill tools (lib/mcp-skills.js) are the ten proven read-only skills with the most evidence, as the ratings now say (asked by Void)
+{ const r = run([resolve(here, 'mcp-skills.mjs'), '--check']); results.push(['mcp-skills', r.ok, r.out[r.out.length - 1] || '']); }
 // stale docs (docs/multipliers.md #4): a doc may not newly name a repo file that does not exist
 { const r = run([resolve(here, 'doc-drift.mjs'), '--check']); results.push(['doc-drift', r.ok, r.out[r.out.length - 1] || '']); }
 // the untested-code ratchet (docs/multipliers.md #3): no new lib/ or skills/ file without a test that names it

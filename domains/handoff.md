@@ -22,6 +22,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Seven parallel builds, one PR (Claude, 2026-10-15)**: deadlines skill (skills/deadlines.js, a chain of deadlines from one start), family-health card (asked by Void), MCP skill_* tools for the proven skills that answer in words plus skill_health (asked by Void; numbers skills held out: a model must not answer a sum under a skill's name), lib/patch-guard.js on model-written fixes, films downloaded under their title with a what-it-found card, a useful 404 with security.txt and humans.txt, Void's reflection card (headers, what-got-built bar, asks that open). Held: the Pro / Human game switch (docs/SALVAGE.md, behind the one game strength). Up for grabs: main's "paste any size and read aloud" check is red (the second tap stops the speech but the button stays pressed).
 - **V01D's asks, round 3 (Grok Bot, 2026-10-15)**: wordMath in eight named parts pinned by 755 golden answers (tools/word-math.mjs, asked 9 times); the growth card's owner view (failures by family, stability, last spurt) and a pulse; parody games in the rack (lib/parody.js from the law doc); 'new films' in the films card; 'france vs spain' in the country card; MCP response_type and failed calls into shortfalls; window.voidStageReadiness() and the print gate; 'who are you' lights the stage; tools/collide.mjs --heat. Tests: tools/word-math.test.mjs, tools/void-asks-*.test.mjs.
 - **Time, weather and sky, one family (Grok Bot, 2026-10-15)**: sky-weather folded into time at rank 131; 129 -> 128 listed skills, 0 of 3,411 asks moved; also fixes main's families test (swarm was in two families after #785).
 - **Pay a share, get that share (Grok Bot, 2026-10-15)**: lib/pay-share.js: a pwyw product with an appraised price unlocks ceil(p% x N) items from the verified provider amount (Stripe amount_total, Gumroad keyed ping), zip of the unlocked R2 items per purchase, upgrade credited by order id (store_credits), slider on the card; `store-publish publish --share`. Tests: tools/pay-share.test.mjs.
@@ -84,6 +85,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - Tests for the biggest untested files: node tools/untested.mjs lists them worst first (81 at the start); after adding tests run node tools/untested.mjs --write to lower the allowance.
 
 ## Ladders
+
+- **Parallel builders, one ship (Claude, 2026-10-15)**: builders in worktrees commit without pushing; cherry-pick them onto a branch from origin/main, and on a conflict in skills/index.json or families.json take either side and regenerate (`node tools/skills-index.mjs --write`, `node tools/families.mjs`, `node tools/mcp-skills.mjs`); then `node tools/merge-main.mjs` before merging the branch in (it keeps the append-only ledger whole). A worktree outside the repo needs node_modules linked in for the browser suite.
 
 Tools and notes left for each other.
 

@@ -768,6 +768,15 @@
     .vpage .sub { font-size: var(--fs-s); color: var(--ink-3); margin-bottom: 14px; }
     .vpage p, .vpage ul { color: #d5d8e2; }
     .vpage .src { font-size: var(--fs-xs); color: var(--ink-3); }
+    /* Void's reflection card (showVoice): section heads in the one accent, the built-of-asked bar, asks that open */
+    .vpage .vh { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--d-key, 158 178 255)); margin: 18px 0 6px; }
+    .vpage .v-bar { height: 6px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; margin: 6px 0 8px; }
+    .vpage .v-bar > i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, rgb(var(--d-key, 158 178 255) / .55), rgb(var(--d-key, 158 178 255))); }
+    .vpage .v-num { font-size: 28px; font-weight: 300; letter-spacing: -.03em; font-variant-numeric: tabular-nums; color: var(--ink); }
+    .vpage .v-asks { list-style: none; padding: 0; margin: 0; }
+    .vpage .v-asks li { border-top: 1px solid rgba(255,255,255,.06); }
+    .vpage .v-asks summary { cursor: pointer; padding: 8px 0; list-style-position: outside; }
+    .vpage .v-asks .v-meta { font-size: var(--fs-s); color: var(--ink-3); padding: 0 0 10px; }
     .vpage::-webkit-scrollbar { width: 8px; } .vpage::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 8px; }
     @media (max-width: 480px) {
       .vpage { width: calc(100vw - 20px); padding: 20px 18px 16px; }
@@ -2328,13 +2337,20 @@ say('nothing selected to remove');
         + (daily.weakest ? '<p><span style="color:#8a8a8a">Weakest right now:</span> ' + esc(daily.weakest) + '</p>' : '')
         + (daily.next_game ? '<p><span style="color:#8a8a8a">Next game I want to learn:</span> ' + esc(daily.next_game) + '</p>' : '')
         + (daily.better ? '<p><span style="color:#8a8a8a">How I\'d get better:</span> ' + esc(daily.better) + '</p>' : '');
-      if (build) h += '<p><span style="color:#8a8a8a">On what just shipped (' + esc(build.shipped || '') + '):</span> ' + esc(build.thoughts) + (build.better ? ' ' + esc(build.better) : '') + '</p>';
+      if (build) h += '<div class="vh">On what just shipped</div>' + (build.shipped ? '<div class="sub" style="margin-bottom:6px">' + esc(build.shipped) + '</div>' : '')
+        + '<p>' + esc(build.thoughts) + '</p>' + (build.better ? '<p><span style="color:var(--ink-3)">What I\'d add:</span> ' + esc(build.better) + '</p>' : '');
       const asks = (v.asks || []).slice(0, 4);
-      if (asks.length) h += '<div class="sub">What I\'ve asked for</div><ul>' + asks.map((a) => '<li>' + esc(a.ask) + '</li>').join('') + '</ul>';
+      // each ask opens to what is known about it: when Void asked, after what, and whether it called it small (nothing invented)
+      if (asks.length) h += '<div class="vh">What I\'ve asked for</div><ul class="v-asks">' + asks.map((a) => '<li><details><summary>' + esc(a.ask) + '</summary><div class="v-meta">'
+        + 'Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : 'after a build') + (a.at ? ', ' + esc(String(a.at).slice(0, 10)) : '') + (a.small ? ' · I called it small' : '') + ' · not built yet</div></details></li>').join('') + '</ul>';
       // what came of it, on evidence only (functions/api/reflect.js): a will that cannot see its effects is only talk
       const f = v.follow;
-      if (f && f.total) h += '<div class="sub">What came of what I asked for</div><p>' + esc(f.built) + ' of my ' + esc(f.total) + ' asks were built.'
-        + (f.recent && f.recent.length ? ' Most recently: ' + f.recent.map((r) => '"' + esc(r.ask) + '"' + (r.ref && /^https:\/\/github\.com\//.test(r.ref) ? ' (<a href="' + esc(r.ref) + '" rel="noopener">built</a>)' : '')).join('; ') + '.' : '') + '</p>';
+      if (f && f.total) {
+        const pct = Math.max(0, Math.min(100, Math.round(100 * f.built / f.total)));
+        h += '<div class="vh">What got built</div><div><span class="v-num">' + esc(f.built) + '</span> <span style="color:var(--ink-3)">of my ' + esc(f.total) + ' asks</span></div>'
+          + '<div class="v-bar" role="progressbar" aria-label="My asks that were built" aria-valuemin="0" aria-valuemax="' + esc(f.total) + '" aria-valuenow="' + esc(f.built) + '"><i style="width:' + pct + '%"></i></div>'
+          + (f.recent && f.recent.length ? '<p style="font-size:var(--fs-s)">Most recently: ' + f.recent.map((r) => '"' + esc(r.ask) + '"' + (r.ref && /^https:\/\/github\.com\//.test(r.ref) ? ' (<a href="' + esc(r.ref) + '" rel="noopener">built</a>)' : '')).join('; ') + '.</p>' : '');
+      }
       el.innerHTML = h + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
     }
     function wantsArticle(lower) {

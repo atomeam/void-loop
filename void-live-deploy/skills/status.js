@@ -5,7 +5,8 @@
  * removed), 3D (WebGL), the offline layer (service worker), online or not. Outside sources: the open services Void reads,
  * pinged once each, only now, in parallel, with a 6 s limit, showing up / down and how long each took. The translation
  * service is not pinged: a ping would spend its small daily quota. Void's own build: the newest checks and deploy on main (GitHub's
- * public API). For the owner, the card opens by itself when one of those failed (autoOpen). Nothing is sent about you; nothing is kept.
+ * public API), and the actions Void took for the owner that failed in the last day (owner-only /api/actions). For the owner, the card
+ * opens by itself when a run on main or one of those actions failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
 import { cleanLower } from '../lib/ask-text.js';
 export const SOURCES = [
@@ -116,7 +117,22 @@ export async function autoOpen(open, { fetchFn, store = typeof sessionStorage !=
   if (buildFailed(rows)) { await open(); return true; }
   const sup = await supportState(fetchFn); // a paying user waiting on an answer opens the card too
   if (sup && sup.open) { await open(); return true; }
+  const acts = await failedActions(fetchFn, undefined, now); // an action Void took for the owner that failed (the other half of Void's ask)
+  if (acts && acts.length) { await open(); return true; }
   return false;
+}
+
+// Actions Void took on the owner's behalf that failed in the last day (lib/actions.js records every one in D1; GET /api/actions is
+// owner-only). Void asked five times for "a blocked deployment or failed action" to open a status card by itself: the build half
+// is buildState above, this is the action half. A visitor has no key and gets null; so does a browser that is offline.
+export const ACTION_WINDOW_MS = 86400000;
+export async function failedActions(fetchFn = (u, o) => fetch(u, o), key = ownerKey(), now = Date.now()) {
+  if (!key) return null;
+  try {
+    const r = await fetchFn('/api/actions?limit=50', { headers: { authorization: 'Bearer ' + key } }); if (!r.ok) return null;
+    const rows = ((await r.json()).actions || []).filter((a) => a && a.state === 'failed' && now - Date.parse(a.finished || a.started || 0) < ACTION_WINDOW_MS);
+    return rows.slice(0, 8).map((a) => ({ id: a.id, kind: a.kind, ref: a.ref || '', error: a.error || 'failed', at: String(a.finished || a.started || '').slice(0, 16).replace('T', ' ') }));
+  } catch (_) { return null; }
 }
 
 // Paying users who said "it broke" (functions/api/support.js): the open reports, read with the owner's key. A visitor has no key and
@@ -129,7 +145,7 @@ export async function supportState(fetchFn = (u, o) => fetch(u, o), key = ownerK
 }
 
 const dot = (ok) => '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:' + (ok ? '#3fbf6a' : '#e0584a') + '"></span>';
-export function statusHtml(esc, skills, browser, sources, at, build, support) {
+export function statusHtml(esc, skills, browser, sources, at, build, support, actions) {
   const row = (ok, name, note, ms) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + dot(ok) + esc(name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(note) + (ms != null ? ' · ' + ms + ' ms' : '') + '</td></tr>';
   const up = sources ? sources.filter((s) => s.ok).length : 0;
   return '<h2>V01D status</h2><div class="sub">checked just now, from this browser' + (at ? ' · ' + esc(at) : '') + '</div>'
@@ -144,6 +160,9 @@ export function statusHtml(esc, skills, browser, sources, at, build, support) {
     + (support ? '<h3 style="margin:12px 0 4px;font-size:15px">Paying users who said it broke · ' + (support.open ? '<span style="color:#e0584a">' + support.open + ' waiting on you</span>' : 'none waiting') + '</h3>'
       + support.tickets.map((t) => '<p style="margin:4px 0"><b>' + esc(t.id) + '</b> · ' + esc(t.where) + ' · ' + esc(String(t.at).slice(0, 16).replace('T', ' ')) + '<br>' + esc(t.what) + '</p>').join('')
       + (support.open ? '<p style="color:#8a8a92;margin:4px 0">Answer one: POST /api/support { action: "answer", id, answer } with your key; the reporter reads it with theirs.</p>' : '') : '')
+    + (actions ? '<h3 style="margin:12px 0 4px;font-size:15px">Actions V01D took for you · ' + (actions.length ? '<span style="color:#e0584a">' + actions.length + ' failed in the last day</span>' : 'none failed in the last day') + '</h3>'
+      + actions.map((a) => '<p style="margin:4px 0">' + dot(false) + '<b>' + esc(a.kind) + '</b>' + (a.ref ? ' · ' + esc(a.ref) : '') + ' · ' + esc(a.at) + '<br><span style="color:#8a8a92">' + esc(a.error) + '</span></p>').join('')
+      + (actions.length ? '<p style="color:#8a8a92;margin:4px 0">Each one is a record in V01D’s action log (lib/actions.js); ask “what did you do today” for the whole list.</p>' : '') : '')
     + '<div class="src">Each source was asked once, now, because you asked; the translation service is not pinged, to save its daily quota. Nothing about you is sent or kept.</div>';
 }
 
@@ -157,9 +176,9 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>V01D status</h2><div class="sub">checking…</div>'; });
   const browser = checkBrowser(), online = browser.find((b) => b.name === 'Online').ok;
-  const [skills, sources, build, support] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState() : Promise.resolve(null), online ? supportState() : Promise.resolve(null)]);
+  const [skills, sources, build, support, actions] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState() : Promise.resolve(null), online ? supportState() : Promise.resolve(null), online ? failedActions() : Promise.resolve(null)]);
   const at = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support);
+  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions);
   return 'status';
 }
 
