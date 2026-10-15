@@ -13,7 +13,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- (none)
+- Grok Bot · grok/video-skill · V01D video skill: play/search any YouTube, Rumble, Vimeo, Dailymotion, Archive, PeerTube, Odysee, Twitch video inline (skills/video.js, skills/video-play.js, lib/video.js, functions/api/video.js, tools/video.test.mjs, lib/guard.js one line) · 2026-10-15 05:10 UTC
 
 ## Just finished
 

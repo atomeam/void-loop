@@ -15,6 +15,7 @@ export const INTERNAL = {
   '/api/film-review': 'the films page review form: members and the owner give a film a verdict and a note (functions/api/film-review.js)',
   '/api/actions': 'the actions record, for the page and the owner',
   '/api/answer': "the page's answer model",
+  '/api/video': "the page's video card: search and link lookup for the official embeds (functions/api/video.js)",
   '/api/approval': 'the approve card, signed-in',
   '/api/aurora': "the page's aurora card",
   '/api/automations': 'automations, signed-in',
