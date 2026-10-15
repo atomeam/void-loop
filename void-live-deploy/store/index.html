@@ -55,6 +55,16 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const TIP = 'https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&utm_medium=store-pwyw&utm_campaign=v01d-store';
 const ICON = { membership: '✦', license: '⌘', service: '🛠', support: '♥', download: '⬢' };
+const usd = (c) => '$' + (c % 100 ? (c / 100).toFixed(2) : String(c / 100));
+// pay a share, get that share (docs/store.md): the slider only explains; what unlocks is decided by the server from the paid amount
+const kOf = (pay, price, n) => (pay >= price ? n : pay <= 0 ? 0 : Math.min(n, Math.max(1, Math.ceil((pay * n) / price - 1e-9))));
+function shareLine(p, pay) { const s = p.share, k = kOf(pay, s.price, s.items.length); return `Pay ${usd(pay)} of ${usd(s.price)} and get ${k} of ${s.items.length} ${s.noun}` + (s.free.length ? ` (plus ${s.free.map(esc).join(', ')}, free)` : ''); }
+function shareBox(p) {
+  const s = p.share, step = Math.max(100, Math.round(s.price / s.items.length));
+  return `<div class="share"><input type="range" aria-label="How much to pay" min="${s.min}" max="${s.price}" step="${Math.min(step, 100)}" value="${s.price}" data-slide="${p.id}" style="width:100%">
+    <span class="note" data-line="${p.id}">${esc(shareLine(p, s.price))}</span>
+    <details class="note"><summary>What each share unlocks</summary><ol>${s.free.map((n) => `<li>${esc(n)} <b class="ok">free</b></li>`).join('')}${s.items.map((n) => `<li>${esc(n)}</li>`).join('')}</ol>Items unlock in this order. Pay the rest later from your receipt to get everything.</details></div>`;
+}
 let products = [], provider = 'gumroad', cart = []; try { cart = JSON.parse(localStorage.getItem('v01d-cart') || '[]'); if (!Array.isArray(cart)) cart = []; } catch (_) { cart = []; }
 const save = () => { localStorage.setItem('v01d-cart', JSON.stringify(cart)); draw(); };
 function draw() {
@@ -70,12 +80,24 @@ async function load() {
   products = r.products || []; provider = r.provider || 'gumroad'; $('#prov').textContent = provider === 'stripe' ? 'Stripe' : 'Gumroad';
   $('#grid').innerHTML = products.map((p) => `<article class="card" id="${p.id}" data-id="${p.id}"><div class="view" ${p.preview ? `data-glb="${p.preview}"` : ''}><span class="tag">${esc(p.status === 'needs-gumroad' ? 'coming soon · ' + (p.wouldBe || '') : p.soon ? 'coming soon' : p.pack ? 'made by V01D' : p.kind)}</span>${p.preview ? '' : ICON[p.kind] || '✦'}</div>
     <div class="body"><h3>${esc(p.name)}</h3><p>${esc(p.blurb)}</p><div class="row"><span class="price">${esc(p.price)}</span>
-    ${p.soon ? '<button disabled>Soon</button>' : p.cents === 0 ? `<button data-free="${p.id}">Download</button>` : `<button data-add="${p.id}">Add to cart</button>`}</div>
-    ${p.buy && !p.soon ? `<a class="note" href="${p.buy}" target="_blank" rel="noopener">or buy on Gumroad</a>` : ''}${p.pwyw ? `<a class="note" href="${TIP}" target="_blank" rel="noopener">Pay what you want: tip the crew</a>` : ''}${p.license ? `<span class="note">${esc(p.license)}</span>` : ''}</div></article>`).join('');
+    ${p.soon ? '<button disabled>Soon</button>' : p.share ? `<button data-share="${p.id}">Pay ${esc(usd(p.cents))}</button>` : p.cents === 0 ? `<button data-free="${p.id}">Download</button>` : `<button data-add="${p.id}">Add to cart</button>`}</div>
+    ${p.buy && !p.soon ? `<a class="note" href="${p.buy}" target="_blank" rel="noopener">or buy on Gumroad</a>` : ''}${p.share ? shareBox(p) : ''}${p.pwyw && !p.share ? `<a class="note" href="${TIP}" target="_blank" rel="noopener">Pay what you want: tip the crew</a>` : ''}${p.license ? `<span class="note">${esc(p.license)}</span>` : ''}</div></article>`).join('');
   draw(); previews(); receipt(); news();
   if (location.hash.length > 1) { const c = document.getElementById(location.hash.slice(1)); if (c) { c.scrollIntoView({ block: 'center' }); c.style.borderColor = 'var(--accent)'; } }
 }
+document.addEventListener('input', (e) => {
+  const id = e.target.dataset && e.target.dataset.slide; if (!id) return; const p = products.find((x) => x.id === id), pay = +e.target.value;
+  document.querySelector(`[data-line="${id}"]`).textContent = shareLine(p, pay); document.querySelector(`[data-share="${id}"]`).textContent = 'Pay ' + usd(pay);
+});
 document.addEventListener('click', async (e) => {
+  const ub = e.target.closest('[data-upgrade]');
+  if (ub) { e.preventDefault(); const email = $('#le').value || $('#email').value || prompt('The email you paid with'); if (!email) return;
+    const r = await fetch('/api/store/checkout', { method: 'POST', body: JSON.stringify({ items: [ub.dataset.upgrade], upgrade: ub.dataset.code, email }) }).then((r) => r.json()).catch(() => null);
+    if (r && r.mode === 'stripe') { location.href = r.url; return; } if (r && r.urls && r.urls[0]) window.open(r.urls[0], '_blank', 'noopener'); else alert((r && r.error) || 'Try again in a minute.'); return; }
+  const sb = e.target.closest('[data-share]');
+  if (sb) { e.preventDefault(); const id = sb.dataset.share, pay = +document.querySelector(`[data-slide="${id}"]`).value;
+    const r = await fetch('/api/store/checkout', { method: 'POST', body: JSON.stringify({ items: [id], pay, email: $('#email').value }) }).then((r) => r.json()).catch(() => null);
+    if (r && r.mode === 'stripe') { location.href = r.url; return; } const u = (r && r.urls && r.urls[0]) || (products.find((p) => p.id === id) || {}).buy; if (u) window.open(u, '_blank', 'noopener'); return; }
   const t = e.target.closest('[data-add],[data-rm],[data-free]'); if (!t) return; e.preventDefault();
   if (t.dataset.add) { if (!cart.includes(t.dataset.add)) cart.push(t.dataset.add); save(); $('#cart').hidden = false; }
   if (t.dataset.rm) { cart = cart.filter((x) => x !== t.dataset.rm); save(); }
@@ -94,7 +116,7 @@ function showReceipt(r) {
   const el = $('#receipt'); el.hidden = false;
   if (!r || !r.items) { el.innerHTML = `<b>Receipt</b><p class="note">${esc((r && r.error) || 'Not found.')}</p>`; return; }
   el.innerHTML = `<b class="ok">✓ ${r.status === 'free' ? 'Yours, free' : 'Paid, thank you'}</b> <span class="note">order code <code>${esc(r.code)}</code> · links good until ${esc(new Date(r.expires).toLocaleString())}</span>` +
-    r.items.map((i) => `<div style="margin-top:10px"><b>${esc(i.name)}</b><br><span class="note">License key</span> <code>${esc(i.license)}</code>${i.downloads.map((d) => `<br><a class="btn" style="display:inline-block;margin-top:6px" href="${d.url}">Download ${esc(d.name)}</a>`).join('')}</div>`).join('');
+    r.items.map((i) => `<div style="margin-top:10px"><b>${esc(i.name)}</b>${i.share ? `<br><span class="note">You paid ${esc(usd(i.share.paid))} of ${esc(usd(i.share.price))}: ${i.share.got} of ${i.share.of} unlocked.${i.share.upgrade ? ' ' + esc(i.share.upgrade.line) + ` (order code <code>${esc(i.share.upgrade.code)}</code>). <button class="ghost" data-upgrade="${esc(i.id)}" data-code="${esc(i.share.upgrade.code)}">Unlock the rest</button>` : ''}</span>` : ''}<br><span class="note">License key</span> <code>${esc(i.license)}</code>${i.downloads.map((d) => `<br><a class="btn" style="display:inline-block;margin-top:6px" href="${d.url}">Download ${esc(d.name)}</a>`).join('')}</div>`).join('');
   el.scrollIntoView({ behavior: 'smooth' });
 }
 async function receipt() {
