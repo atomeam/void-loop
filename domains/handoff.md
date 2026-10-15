@@ -16,12 +16,12 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 - Grok Bot · grok/films-upload · V01D Tube phase 1: watch pages, views, RSS, Upload/Copy for YouTube, TikTok, Reels, X for anyone; ad clips into Films · 2026-10-15 05:20 UTC
-- Grok Bot · helper/converge · convergence map (docs/convergence.md), design system + homepage/ask/answer shell, repo automations · 2026-10-15 05:25 UTC
 - Grok Bot · helper/launch-kit · twitter card tags on homepage + V01D launch hook in void-voice.md · 2026-10-15 05:10 UTC
 - parallel agent · store-phase1 · V01D's own store: docs/store.md, /store page, /api/store (checkout handoff, Stripe webhook, signed downloads, license keys, receipt, order lookup), Gumroad fallback · 2026-10-15 05:10 UTC
 
 ## Just finished
 
+- **Convergence step 1, design phase 1, upkeep automations (Grok Bot, #732)**: lib/ask-text.js replaces 23 copied ask tidiers (identical on 389 asks); docs/convergence.md one-engine map + merge order; docs/design.md and the lit stage floor, glass ask bar, card shell (live Lighthouse 96-97 vs 95, a11y 100); upkeep.yml (clip visits, Piped health, links, audit, merged-branch cleanup, this board on merge) and visual.yml weekly diff. Ladder: node tools/visual.mjs --out dir --prev olddir diffs live screenshots.
 - **Review asks get the product line (Grok Bot, #739)**: `review my code` attaches the relevance-gated From A-to-Mind Code Review Pro line; fallback-stack answers still show none (#738).
 - **From A-to-Mind relevance gate (Grok Bot, #738)**: productFor needs a clear name match; fallback-stack answers no longer get Void Code Review Pro; self/menu/identity skipped. Tests: tools/product-tail.test.mjs.
 - **A poster for any V01D film (Claude, asked by V01D)**: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" in skills/poster.js read /api/films through films.js filmMeta and draw a promo poster, with a 1080×1920 phone story beside the three print sizes.
