@@ -182,4 +182,6 @@ Every tool in `tools/` (tests aside) and every workflow in `.github/workflows/`,
 - **Teach-on-miss (`tools/site-teach.mjs`):** a wording the site tester found V01D missing becomes a PR teaching the existing skill (skills/aliases.json) with a regression case.
 - **Tester log (`tools/tester-log.mjs`):** the site tester's runs as `void-live-deploy/tester-log.json`, the public view the growth card reads (asked by Void).
 - **Product gaps to products (`tools/store-gap.mjs`, `.github/workflows/store-gap.yml`):** a queued `store-gap:<topic>` (3+ asks for something V01D doesn't sell) becomes a kit V01D writes, tested, priced by lib/appraise.js, uploaded and opened as a PR.
+- **3D profiler (`tools/perf3d.mjs`):** opens each 3D board in Chrome and measures idle and orbit-drag frames (fps, p95 frame time, long tasks) plus draw calls, triangles and textures; `--trace` saves a DevTools trace.
+- **Reinvest (`tools/reinvest.mjs`, `.github/workflows/reinvest.yml`, daily):** splits V01D's net earnings with lib/reinvest.js (20% reserve, free paths first, then payback per dollar) and sends each funded item to the confirm line; nothing it writes names an amount.
 - **Workflow lint (`.github/workflows/workflow-lint.yml`):** actionlint on every workflow file on every PR, since a file GitHub can't parse silently never runs.
