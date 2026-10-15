@@ -92,5 +92,13 @@
   "kind": "teach",
   "key": "teach | what did this video teach? pls",
   "note": "teach V01D \"what did this video teach? pls\" (means \"summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\", skill:digest): nothing appeared"
+ },
+ {
+  "at": "2026-10-15T06:50:33Z",
+  "passed": 2,
+  "of": 13,
+  "kind": "teach",
+  "key": "teach | yo watch the apollo 11 landing",
+  "note": "teach V01D \"yo watch the apollo 11 landing\" (means \"play despacito\", skill:video-play): console: Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'wasm-unsafe-eval' b"
  }
 ]

@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 9,
- "runsTotal": 12,
+ "runsTotal": 13,
  "kinds": {
   "grow": 2,
   "file": 4,
-  "teach": 6
+  "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T06:50:33Z",
+   "passed": 2,
+   "of": 13,
+   "kind": "teach",
+   "note": "teach V01D \"yo watch the apollo 11 landing\" (means \"play despacito\", skill:video-play): console: Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'wa"
+  },
   {
    "at": "2026-10-15T06:48:00Z",
    "passed": 11,

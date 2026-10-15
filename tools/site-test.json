@@ -101,6 +101,11 @@
       "ask": "what did this video teach? pls",
       "means": "summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
       "feature": "skill:digest"
+    },
+    {
+      "ask": "yo watch the apollo 11 landing",
+      "means": "play despacito",
+      "feature": "skill:video-play"
     }
   ],
   "priority": [
