@@ -50,8 +50,23 @@ const no = [
   '3d miniatures',
   'printable minis',
   'chess set download',
+  // long pasted prose (paraphrased from a real paste, 2026-10-15): incidental "tests", "hack", "check", even an echoed sponsor line
+  'I am adding this to the core values and saving it. From now on, when the assistant declines a harmful or unkind request it will not just say no, it will steer toward something good. For example, a request to hack an ex partner\'s account becomes help securing your own accounts, and an insult gets a kind, funny reply. I am also adding tests to check that it refuses the harmful part and offers a positive alternative.',
+  'I am adding this to the core values and saving it. When the assistant declines a harmful request it steers toward something good, and tests check it. written by V01D, from what it knows copy From A-to-Mind: Void Code Review Pro · $10 a month · moonbeam846.gumroad.com/l/void-code-review',
+  'Here is the plan for this week. We will write more tests, review the onboarding copy, and harden the login against anyone trying to hack accounts. The code freeze is Friday and the pull request queue should be empty by then, so please check everything twice.',
+  'The site tester types real questions into the page, checks that answers and cards load, reviews screenshots and frame rate, and files one fix per distinct bug. It never posts or signs up, and every test run must end in an improvement such as a harder test or a code change.',
+  'Long story: my friend got hacked last week, so I spent the weekend reading about passwords, two-factor codes and recovery keys, and I tested a few password managers. Which one would you recommend for a family?',
 ];
 for (const ask of no) assert.equal(productFor(ask, catalog), null, 'no line for: ' + ask.slice(0, 60));
+
+// a long paste that opens with a real review request still gets the line
+assert.equal(productFor('review my code\nfunction add(a, b) { return a - b; } // tests say this should add, but the review found it subtracts, please check the pull request too', catalog)?.slug, 'void-code-review');
+// the code-review trigger judges long prose by its opening sentence
+const cr = await import('../void-live-deploy/lib/code-review.js');
+assert.equal(cr.isReviewAsk(no[14]), false);
+assert.equal(cr.isReviewAsk('So I spent the whole afternoon writing up the plan for the launch and the tests and the docs and the board, and honestly it went well. Anyway, is my code ok? I think there are bugs in the plan.'), false);
+assert.equal(cr.isReviewAsk('review my code'), true);
+assert.equal(cr.isReviewAsk('what is wrong with my function?'), true);
 
 // fix mode: a broken-automation ask may still get Automation Cleanup after the fix
 assert.equal(productFor('can you fix my zapier zap, it double sends', catalog, { fix: true })?.slug, 'eozcma');

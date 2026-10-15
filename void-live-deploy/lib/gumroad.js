@@ -60,8 +60,21 @@ const FIX_HINT = ['fix', 'brok', 'fail', 'diagnos', 'repair'];
 // -> the best product, or null. Relevance-gated (2026-10-15): one short name stem ("code", "stack") is never enough;
 // a product line only when the ask clearly matches the product's name (two name hits, or a long name hit plus a description hit).
 // fix = broken-automation ask (Void already answered with the fix); meta = self/menu/identity ask (never a product line).
+// What the ask is actually asking (2026-10-15): pasted prose (a chat message, an earlier answer) mentions "tests", "review",
+// "hack" or even a product's own name in passing. Echoed sponsor lines and store links are dropped, and a long paste counts
+// only when it opens with a short request ("review my code" + the paste); otherwise it is prose, never a product ask.
+const ECHO = /from\s+a-to-mind\s*:[^\n]*|(?:https?:\/\/)?[\w-]+\.gumroad\.com\/\S*|written by v01d[^\n]*/gi;
+export function intentOf(ask) {
+  const s = String(ask || '').replace(ECHO, ' ').replace(/\s+⏎\s*/g, '\n').trim();
+  if (!s) return '';
+  if (s.length <= 160 && s.split(/\s+/).length <= 28) return s;
+  const head = s.split(/\n/)[0].split(/(?<=[.!?])\s+/)[0].trim();
+  return head.length <= 90 ? head : '';
+}
 export function productFor(ask, products, { fix = false, meta = false } = {}) {
   if (meta) return null;
+  ask = intentOf(ask);
+  if (!ask) return null;
   const live = (products || []).filter((p) => p && p.available !== false && !isUnlock(p) && p.name);
   if (!live.length) return null;
   const docs = live.map((p) => ({ p, n: terms(shortName(p.name)), d: terms(p.description) }));
