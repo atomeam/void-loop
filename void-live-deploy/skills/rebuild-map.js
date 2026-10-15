@@ -5,6 +5,7 @@
  * Shows the map of how everything already built is being rebuilt as Void.
  * Mirrors domains\void.assimilate.md (kept light: names + status, no paths).
  */
+import { GAMES } from './rack.js';
 // brought up to date 2026-10-14 (the growth card listed this skill as the one nothing checks; its rows still read as of
 // 2026-09-25); each status names the skill or tool that makes it true, and tools/test_void.mjs checks the rows against them
 const MAP = [
@@ -17,7 +18,7 @@ const MAP = [
   { n: 7, p: 'intent-canvas', f: 'grouping and layers on the stage', s: 'live (group and layer skills)' },
   { n: 8, p: 'Slack ops log', f: 'what the agents are doing', s: 'live (the agent log; the status card shows the build)' },
   { n: 9, p: 'HomeBase / dashboards', f: 'board, agent log and live checks on one summoned page', s: 'live (status card)' },
-  { n: 10, p: 'Player Two', f: '"play a game": games on the stage against V01D', s: 'live (the game rack: 16 games)' },
+  { n: 10, p: 'Player Two', f: '"play a game": games on the stage against V01D', s: 'live (the game rack: ' + GAMES.length + ' games)' }, // counted from skills/rack.js, so a new boxed game never leaves this row stale
   { n: 11, p: 'Wikipedia / Wiktionary / Open-Meteo', f: 'answers from open sources, better than the source', s: 'live (articles, define, words, weather)' },
   { n: 12, p: 'Calculation page', f: 'percentages, units, dates, currency', s: 'live (2026-09-25)' },
   { n: 13, p: 'Entering your own V01D', f: 'silent entry on first keep; personal look saved per browser; public surface stays plain', s: 'live (2026-09-25)' },
