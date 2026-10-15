@@ -5129,10 +5129,10 @@ say('nothing selected to remove');
         if (holding) { holding = false; e.preventDefault(); if (voiceRec) { try { voiceRec.stop(); } catch (_) {} } }
       });
     }
-    // Void's voice: say a card's text in the one low voice, the first sentence at once and the rest queued behind it
+    // Void's voice: say a card's text in the one low robot voice, phrase by phrase (a beat between each), all queued at once
     function sayAloud(text) {
       if (!speak || !('speechSynthesis' in window)) return false;
-      const parts = speak.chunks(text); if (!parts.length) return false;
+      const parts = (speak.phrases || speak.chunks)(text); if (!parts.length) return false;
       speechSynthesis.cancel();
       const voice = speak.pickVoice(speechSynthesis.getVoices(), navigator.language || 'en-US');
       for (const part of parts) {
@@ -5180,9 +5180,7 @@ say('nothing selected to remove');
         const t = pageTextForReading();
         if (!('speechSynthesis' in window)) { say('this browser can\'t read aloud'); return true; }
         if (!t) { say('nothing to read yet'); return true; }
-        speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(t); u.lang = navigator.language || 'en-US'; u.rate = 1;
-        speechSynthesis.speak(u);
+        if (!sayAloud(t)) { speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = navigator.language || 'en-US'; speechSynthesis.speak(u); } // the same voice as everywhere else
         loopLog({ domain: 'void.voice', ask: lower, score: 'pass', note: 'read aloud' });
         return true;
       }

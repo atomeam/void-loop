@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { VOICE, HOLD_MS, pickVoice, speakable, chunks, holdKey } from '../void-live-deploy/lib/speak.js';
+import { VOICE, HOLD_MS, pickVoice, speakable, chunks, holdKey, phrases } from '../void-live-deploy/lib/speak.js';
 
 const v = (name, lang, localService = true) => ({ name, lang, localService });
 
@@ -49,4 +49,18 @@ test('void.html holds Space to talk and speaks voice answers with lib/speak.js',
   assert.match(html, /import\('\/lib\/speak\.js'\)/);
   assert.match(html, /holdKey\(/);
   assert.match(html, /function replyAloud\(/);
+});
+
+test('the pacing: short phrases with a beat at commas, colons, dashes and sentence ends; no scrap of a word or two; nothing lost', () => {
+  const card = 'Canberra is the capital of Australia. It was chosen in 1908, after years of argument, as a compromise between Sydney and Melbourne: neither city would let the other win.';
+  const p = phrases(card);
+  assert.deepEqual(p, ['Canberra is the capital of Australia.', 'It was chosen in 1908,', 'after years of argument,', 'as a compromise between Sydney and Melbourne:', 'neither city would let the other win.']);
+  assert.equal(p.join(' '), speakable(card), 'every word, in order');
+  const run = 'The model reads every line you paste and checks each call against the rules it knows and then it writes the fixes it is sure of';
+  const r = phrases(run);
+  assert.ok(r.length >= 2 && r.every((x) => x.length <= 90), 'a long phrase is cut at a joining word: ' + JSON.stringify(r));
+  assert.match(r[1], /^(?:and|but|so|which|because|when|while|then|or)\b/);
+  assert.deepEqual(phrases('Yes, I can.'), ['Yes, I can.'], 'a scrap joins its neighbour');
+  assert.deepEqual(phrases(''), []);
+  assert.ok(VOICE.pitch <= 0.65 && VOICE.rate < 0.95, 'a low, steady robot');
 });
