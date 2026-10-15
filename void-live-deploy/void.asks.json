@@ -188,6 +188,18 @@
       "words": "Create a persistent 'world-clock' card that allows users to pin multiple locations and see their time offsets relative to each other.",
       "ledgerAt": "2026-09-29T15:19:11Z",
       "why": "built: world clock card for several places"
+    },
+    {
+      "ask": "ask-20261015-0556-3",
+      "words": "Refactor the 5614-line wordMath() function into modular, testable units to improve reliability.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "same ask: wordMath in eight parts"
+    },
+    {
+      "ask": "ask-20261015-0607-1",
+      "words": "Refactor the wordMath() function into discrete, tested modules to eliminate the 5614-line monolith.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "same ask: wordMath in eight parts"
     }
   ]
 }
