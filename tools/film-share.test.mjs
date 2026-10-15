@@ -52,7 +52,7 @@ test('clips.yml puts every ad clip in V01D FILMS', () => {
 // V01D Tube phase 1: views in D1 (no KV), an RSS feed, a watch page per video
 import { DatabaseSync } from 'node:sqlite';
 import * as views from '../void-live-deploy/functions/api/film-views.js';
-import { rss } from '../void-live-deploy/functions/films/feed.xml.js';
+import { rss } from '../void-live-deploy/functions/films/rss.js';
 function d1() {
   const db = new DatabaseSync(':memory:');
   const stmt = (sql, a = []) => ({ bind: (...b) => stmt(sql, b), run: async () => db.prepare(sql).run(...a), all: async () => ({ results: db.prepare(sql).all(...a) }), first: async () => db.prepare(sql).get(...a) || null });
@@ -73,5 +73,5 @@ test('RSS: escaped, each item links its watch page, never the signed play link',
 });
 test('/films/ is V01D Tube: watch page, related, views, share-on links, RSS', () => {
   const html = readFileSync(new URL('../void-live-deploy/films/index.html', import.meta.url), 'utf8');
-  for (const s of ["get('v')", 'Up next', '/api/film-views', 'x.com/intent/post', 'reddit.com/submit', '/films/feed.xml']) assert.ok(html.includes(s), s);
+  for (const s of ["get('v')", 'Up next', '/api/film-views', 'x.com/intent/post', 'reddit.com/submit', '/films/rss']) assert.ok(html.includes(s), s);
 });
