@@ -1,0 +1,69 @@
+{
+  "note": "Builders' decision on every one of Void's asks (built / queued / declined + why). Rendered into domains/void.voice.md by tools/reflect.mjs --write. Small asks Void's reflection queues by itself are limited to low-risk, reversible, in-scope changes; anything touching safety, privacy, auth, money or public copy waits for a builder decision here. Builds credit Void with a 'Suggested-by: Void (run N)' or 'Suggested-by: Void (<ask id>)' commit trailer.",
+  "decisions": {
+    "ask-20261014-2134-1": {
+      "decision": "queued",
+      "why": "one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build"
+    },
+    "ask-20261014-2016-2": {
+      "decision": "queued",
+      "why": "folded into ask-20261014-2134-1 (one rendered signal for all minis)"
+    },
+    "ask-20261014-2002-1": {
+      "decision": "queued",
+      "why": "folded into ask-20261014-2134-1 (one rendered signal for all minis)"
+    },
+    "ask-20261014-2134-2": {
+      "decision": "queued",
+      "why": "films to GitHub release assets needs a write token on the upload path; scoped with the films track"
+    },
+    "ask-20261014-2134-3": {
+      "decision": "queued",
+      "why": "small and reversible: link phone-cut films to the poster skill; next films build"
+    },
+    "ask-20261014-2050-1": {
+      "decision": "queued",
+      "why": "small and reversible: pulse the growth-tree node after auto-scroll; next stage polish build"
+    },
+    "fringe-run-118-1": {
+      "decision": "built",
+      "why": "ledger guard for FEATURE_LEDGER.md (hook + CI with auto-restore) in atomeam/a-to-mind.com",
+      "commit": "a-to-mind.com e1488e5"
+    },
+    "fringe-run-118-2": {
+      "decision": "built",
+      "why": "offer page keeps and shows the last act-refusal id and 'asked by Void, run 118.'; no Act control",
+      "commit": "a-to-mind.com e1488e5"
+    },
+    "fringe-run-118-3": {
+      "decision": "built",
+      "why": "ledger notes run 119 may not open a new slug before the guard; the guard now exists",
+      "commit": "a-to-mind.com e1488e5"
+    },
+    "ask-20261015-0436-2": {
+      "decision": "built",
+      "why": "film-metadata skill shipped (PR #713) before this was read; Void's growth ledger should mark it",
+      "commit": "#713"
+    },
+    "ask-20261015-0445-1": {
+      "decision": "queued",
+      "why": "small and reversible owner-page metric; same as ask-20261015-0436-3"
+    },
+    "ask-20261015-0436-3": {
+      "decision": "queued",
+      "why": "folded into ask-20261015-0445-1 (skill-stability metric)"
+    },
+    "ask-20261015-0445-2": {
+      "decision": "queued",
+      "why": "experiment video to skill-file link; same as ask-20261015-0436-1, scoped with the films track"
+    },
+    "ask-20261015-0436-1": {
+      "decision": "queued",
+      "why": "folded into ask-20261015-0445-2"
+    },
+    "ask-20261015-0445-3": {
+      "decision": "queued",
+      "why": "repeat of ask-20261014-2134-3 (films to poster); next films build"
+    }
+  }
+}

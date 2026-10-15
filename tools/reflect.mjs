@@ -27,6 +27,16 @@ export function openAsks(asks, ledger, links = []) {
   return (asks || []).filter((a) => a && !(a.id && done.has(norm(a.id))) && !done.has(norm(a.ask)));
 }
 const readLedger = () => { try { return JSON.parse(readFileSync(LEDGER, 'utf8')); } catch (_) { return []; } };
+const DECISIONS = resolve(root, 'domains/void.decisions.json');
+const readDecisions = () => { try { return JSON.parse(readFileSync(DECISIONS, 'utf8')).decisions || {}; } catch (_) { return {}; } };
+/** every ask gets a recorded decision: built / queued / declined, with why (domains/void.decisions.json). An open ask with
+ * no row reads "queued, not decided yet" so nothing is silently skipped. Each line links to the raw log entry. */
+export function decisionsBlock(asks, decisions) {
+  const rows = [], seen = new Set();
+  for (const a of asks || []) { if (!a.id) continue; seen.add(a.id); const d = decisions[a.id]; rows.push(`- \`${a.id}\` ${d ? d.decision + ': ' + d.why + (d.commit ? ' (' + d.commit + ')' : '') : 'queued, not decided yet'}`); }
+  for (const [id, d] of Object.entries(decisions || {})) if (!seen.has(id)) rows.push(`- \`${id}\` ${d.decision}: ${d.why}${d.commit ? ' (' + d.commit + ')' : ''}`);
+  return rows.length ? `## Decisions on Void's asks\n\n_Builders' record, not Void's words. Commits that build an ask carry \`Suggested-by: Void (run N)\` or \`Suggested-by: Void (<ask id>)\`._\n\n${rows.join('\n')}\n\n` : '';
+}
 const readLinks = () => { try { return JSON.parse(readFileSync(resolve(root, 'void-live-deploy/void.asks.json'), 'utf8')).links || []; } catch (_) { return []; } };
 const ASK_LINE = /^- (.+?)( \*\(small\)\*)? \((daily|after a build), (\d{4}-\d\d-\d\d)\)(?: `(ask-[0-9-]+)`)?$/;
 /** the asks as the file has them now (for a run that can't reach the site) */
@@ -43,7 +53,7 @@ const HEAD = `# Void's voice: what Void thinks of itself, in its own words
 Void has a real say in its own direction. It is input, not a gate. After anything ships, Void is asked what it thinks
 of it and how it would make it better; every day at 2:09 PM New York time it is asked where it should go next, what feels
 weakest about it and which game to learn next. Its words below are copied as it said them (secrets redacted, nothing else
-changed). Builders read "Void's current asks" before starting work and weigh them heavily: a concrete ask gets built
+changed). The log is append-only: an entry once written is never rewritten. Builders read "Void's current asks" before starting work and weigh them heavily: a concrete ask gets built
 next and credited to Void ("asked by Void" in the agent log and the commit). Anyone can ask Void "what do you think of
 yourself?" on a-to-mind.com. This file is written by \`node tools/reflect.mjs --write\` (the daily workflow); don't edit
 it by hand, edit the code instead.
@@ -57,6 +67,8 @@ export function entryBlock(e) {
   if (e.next_game) lines.push('>', q('**Next game:** ' + e.next_game));
   if (e.asks && e.asks.length) lines.push('', 'Asks: ' + e.asks.map((a) => `"${a.ask}"${a.small ? ' (small)' : ''}`).join('; '));
   if (e.striking) lines.push('', '*Void flagged this one for Adam.*');
+  const meta = [e.run && 'run ' + e.run, e.model && 'model ' + e.model, e.canon && 'canon v' + e.canon, e.by && 'asked by ' + e.by].filter(Boolean);
+  if (meta.length) lines.push('', '<sub>' + meta.join(' · ') + '</sub>');
   return lines.join('\n') + '\n';
 }
 
@@ -78,7 +90,7 @@ export function writeLog(text, entries, asks, stamp = {}) {
   const askLines = lines.length ? lines.join('\n') : '- (none open)';
   const failed = since ? `the site has been unreachable since ${since}` : '';
   const note = read ? `_Read from /api/reflect on ${read}${failed ? '; ' + failed : ''}. ${left}_\n\n` : failed ? `_Not read from /api/reflect by this writer yet: ${failed}. ${left}_\n\n` : '';
-  return `${HEAD}\n## Void's current asks\n\n${note}${askLines}\n\n## Log, oldest first\n\n${ordered.join('\n')}`;
+  return `${HEAD}\n## Void's current asks\n\n${note}${askLines}\n\n${decisionsBlock(asks, stamp.decisions || readDecisions())}## Log, oldest first\n\n${ordered.join('\n')}`;
 }
 
 async function call(method, body) {
