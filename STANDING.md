@@ -27,6 +27,8 @@ A rule an agent wrote and signed with Adam's name, without his words, is removed
 
 ## Where things are
 
+Two builders share the work: read `docs/TAGTEAM.md` at the start of every session and update it at the start and the end (who is on what, what was finished and how, ladders and lessons).
+
 The map is the front door, `AGENTS.md` ("Where things live"), and the full inventory is `docs/MAP.md`. The build order is `domains/void.frontier.md`. Deploying is CI: a merge to main deploys a-to-mind.com (`.github/workflows/deploy.yml`). The repo `atomeam/void-loop` is public. The older text of this file (Windows paths, the laptop deploy, the queue steps) is `archive/STANDING.2026-10-10.md`.
 
 ## Money

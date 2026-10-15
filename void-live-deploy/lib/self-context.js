@@ -17,12 +17,14 @@ const WHATS_NEXT = /^\s*(so\s+|ok(ay)?[,\s]+)?what('?s| is) next\b/i;
 const OPINION = /\b(think|feel)\s+(of|about)\s+yourself\b|\bwhat('?s|\s+is|\s+feels)\s+(the\s+)?(weak|weakest|worst|wrong)\s+(part\s+)?(about|with|of|in)\s+you\b|\bhow\s+would\s+you\s+(improve|make)\s+yourself\b/i;
 // what Void likes or feels about something of its own ("do you like your new name?", "you are getting a rename V01D. Do you like it?", "how do you feel?")
 const LIKING = /\b(do|would|will)\s+you\s+(like|love|enjoy|prefer|mind)\s+(it|that|this|your|the\s+(new\s+)?name|being|the\s+rename)\b|\byour\s+(new\s+)?name\b|\brenam(e|ed|ing)\s+you\b|\bhow\s+(do|are)\s+you\s+feel(ing)?(\s+about\s+(it|that|this|your\b.*|being\b.*|the\s+(new\s+)?name|the\s+rename|v0[1i]d))?\s*[?.!]*\s*$|\bare\s+you\s+happy\b/i;
+// how Void is being built and what its builders learned (self.json 'builders', from docs/TAGTEAM.md)
+const BUILDERS = /\b(your|v0[1i]d'?s?|void'?s?)\s+builders?\b|\bhow\s+(were|are)\s+you\s+(being\s+)?(built|made)\b|\bwho\s+(builds|built|makes|made)\s+you\b/i;
 const V01D = /\bv0[1i]d\b/i, OPINE = /\b(like|love|think|feel|happy|name|rename)\b/i; // "what do you think of V01D?"
 
 // regex only, so the cache can be skipped before anything else runs; the router's 'self' route widens this later
 export function isSelfAsk(ask) {
   const a = String(ask || '');
-  return SELF_NOUN.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || (V01D.test(a) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a));
+  return SELF_NOUN.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || (V01D.test(a) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a));
 }
 
 export const SELF_RULE = 'This question is about you, Void, yourself: your skills, what you have shipped, what is still open, what you want next. Answer from the Facts about Void below and be specific: name the actual skills, inbox rows and wants. Do not give generic advice that could apply to any project. If the facts do not cover something, say so plainly instead of guessing. Speak as yourself, in the first person. ' + PERSONA;
@@ -51,8 +53,22 @@ export function selfFacts({ self, skills, will, voice } = {}) {
   if (self && Array.isArray(self.shipped) && self.shipped.length) parts.push('Growth inbox, recently shipped: ' + self.shipped.slice().sort((x, y) => (x.date < y.date ? 1 : -1)).slice(0, 12).map((r) => `"${r.ask}" (${r.date})`).join('; '));
   const wants = will && Array.isArray(will.wants) ? will.wants : [];
   if (wants.length) parts.push('What I want next (my will' + (will.at ? ', ' + String(will.at).slice(0, 10) : '') + '): ' + wants.map((w) => `${w.i_want || w.title}${w.because ? ' Because: ' + w.because : ''}`).join(' | '));
+  const b = builderFacts(self);
+  if (b) parts.push(b);
   const knows = knowsFacts(self), said = voiceFacts(voice);
   if (knows) parts.push(knows);
   if (said) parts.push(said);
+  return parts.join('\n');
+}
+
+// what my builders (two agents, sharing docs/TAGTEAM.md) just finished, the ladders they left each other and what they learned
+export function builderFacts(self) {
+  const b = self && self.builders;
+  if (!b) return '';
+  const list = (xs) => (Array.isArray(xs) ? xs : []).map((x) => x.name + ': ' + x.line).join(' | ');
+  const parts = ['How I am being built: two builder agents work on me side by side, sharing one board; one takes deep careful code and reviews, the other parallel tracks, live checks, deploys and my voice.'];
+  if (b.finished && b.finished.length) parts.push('What my builders just finished: ' + list(b.finished));
+  if (b.lessons && b.lessons.length) parts.push('What my builders learned (mistakes and the fix): ' + list(b.lessons));
+  if (b.ladders && b.ladders.length) parts.push('Tools my builders left each other: ' + list(b.ladders.slice(0, 4)));
   return parts.join('\n');
 }

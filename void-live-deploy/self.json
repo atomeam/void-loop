@@ -150,6 +150,18 @@
    "date": "2026-10-10",
    "ask": "before rotating the GitHub token: `gh secret list` shows VOID_OWNER_TOKEN set 2026-10-09T21:58Z and the voice daily ran ",
    "from": "map PR #344"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-14",
+   "ask": "convert-card: persistent interactive unit conversions on the stage",
+   "from": "asked by Void"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-14",
+   "ask": "growth friction linked to Words and the world failure logs",
+   "from": "asked by Void"
   }
  ],
  "open": [
@@ -298,10 +310,50 @@
   "weather"
  ],
  "canon": {
-  "version": 4,
+  "version": 5,
   "motto": "You name it, Void learns it and does it better.",
   "voidquest": "Void's own better, updated version of the board game Solar Quest, with Void as the rival player. \"play voidquest\" and \"play solar quest\" both open it. Every other trademarked board game gets the same treatment (a Void name, original art and upgrades; classic names still route to it). Pure classics like chess and Go keep their real names.",
   "terms": [
+   {
+    "term": "skill family",
+    "means": "one of the nine groups Void sorts its skills into, each rated from evidence (experiment, tested, checked, proven) in skills/families.json (tools/families.mjs). A family name is a label for a part of Void, not a topic to look up: \"what is Words and the world\" means the family, not trivia about the phrase."
+   },
+   {
+    "term": "Making things",
+    "means": "Void's skill family for figures, 3D models, prints, drawings and parts (id `make`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Games",
+    "means": "Void's skill family for board games, card games and play (id `games`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Sky and earth",
+    "means": "Void's skill family for weather, the sky tonight, places and time zones (id `sky`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Time",
+    "means": "Void's skill family for timers, clocks, calendars and reminders (id `time`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Numbers and money",
+    "means": "Void's skill family for sums, unit conversions, loans, savings, prices and home projects (id `numbers`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Body and mind",
+    "means": "Void's skill family for sleep, cycles, food, heart and calm (id `body`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Words and the world",
+    "means": "Void's skill family for definitions, translation, news, books, shows and sport (id `words`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "The stage",
+    "means": "Void's skill family for notes, lists, links and how the stage looks and is arranged (id `stage`; its skills and ratings are in skills/families.json)."
+   },
+   {
+    "term": "Void itself",
+    "means": "Void's skill family for how Void grows, what it wants, what it can do and sell, and acting on your behalf (id `self`; its skills and ratings are in skills/families.json)."
+   },
    {
     "term": "the forge",
     "means": "Void's maker: you type (or sketch) an object, Void builds a 3D model of it you can spin and inspect up close, and \"print it\" downloads an STL sized for a home printer (inside a 180 mm cube). Each thing is a recipe of shapes blended into one mesh with a flat base (skills/forge-rules.js, skills/forge.js). Ten things so far: rocket, vase, bottle, table, snowman, lighthouse, teapot, house, sailboat, t"
@@ -345,7 +397,7 @@
   },
   {
    "name": "Planet restoration",
-   "last": "2026-10-07"
+   "last": "2026-10-14"
   },
   {
    "name": "Void stage handoff",
@@ -353,92 +405,172 @@
   }
  ],
  "building": {
-  "at": "2026-10-14T08:43:26Z",
-  "date": "2026-10-09",
-  "by": "claude",
-  "item": "Summon by intent, not by name",
-  "what": "first piece shipped. skills/intent.js (tests: tools/intent.test.mjs, browser check in tools/test_void.mjs): an outcome with a deadline (\"I need to … by Friday\", \"in 2 weeks\", \"the 20th\", \"end of the month\"; \"and tell Sam"
+  "at": "2026-10-15T04:42:05Z",
+  "date": "2026-10-15",
+  "by": "builder",
+  "item": "V01D does the builders' work itself",
+  "what": "step 1 shipped; step 2 next."
  },
  "commits": [
   {
-   "at": "2026-10-14T19:00:17Z",
-   "subject": "Deploy check: read the expected title from void.html (the rename to V01D failed good deploys of #687 and #688)"
+   "at": "2026-10-15T04:50:47Z",
+   "subject": "Tag team: a shared board for both builders, and V01D learns from it"
   },
   {
-   "at": "2026-10-14T18:59:41Z",
-   "subject": "V01D on every remaining page and in the extension (owner: \"it shoud say V01d everywhere\"; \"smooth out the site and apps and polish\"): the co"
+   "at": "2026-10-15T04:50:33Z",
+   "subject": "Void's asks: every ask gets a recorded decision; entries carry model, canon version, who asked; family names in the canon"
   },
   {
-   "at": "2026-10-14T18:52:27Z",
-   "subject": "V01D runs ten automations every hour on its own engine (owner: \"make sure V01D has 10 new automations hourly so that it starts to really uti"
+   "at": "2026-10-15T04:42:05Z",
+   "subject": "Teach V01D to fish: playbooks for the builders' work, frontier #28"
   },
   {
-   "at": "2026-10-14T18:49:36Z",
-   "subject": "Spotter: 19 check(s) healed with no revert after 841418c3759a198db66cbb73e0cce53c7fef577b (tools/flakes.json)"
+   "at": "2026-10-15T04:33:02Z",
+   "subject": "Voice: slower for precise work (asked by Void)"
   },
   {
-   "at": "2026-10-14T18:44:21Z",
-   "subject": "More weather asks land: chance of rain, the high today, how cold tonight"
+   "at": "2026-10-15T04:32:06Z",
+   "subject": "AGENTS.md: always build all V01D wants (the owner's rule)"
   },
   {
-   "at": "2026-10-14T18:33:25Z",
-   "subject": "Asked by Void: friction follow-through + weakest-family callout (#686)"
+   "at": "2026-10-15T04:29:08Z",
+   "subject": "AGENTS.md: growth over upkeep, the owner's rule at the front door"
   },
   {
-   "at": "2026-10-14T18:24:48Z",
-   "subject": "The owner is an account, not one device (owner: \"build me into it so I stop having to struggle to access my own site\"): a passkey sign-in br"
+   "at": "2026-10-15T04:26:38Z",
+   "subject": "Spend on growth: no PR preview deploys, no hourly MCP re-check, the rule in AGENTS.md"
   },
   {
-   "at": "2026-10-14T18:23:54Z",
-   "subject": "Films page: mark the sign-in loop as right as written (at most 3 credentials, tried in turn, stopping at the first that works)"
+   "at": "2026-10-15T04:22:08Z",
+   "subject": "V01D's voice: a lower, steadier robot that paces its words"
   },
   {
-   "at": "2026-10-14T18:20:25Z",
-   "subject": "Void's voice: today's reflection, in its own words"
+   "at": "2026-10-15T04:20:10Z",
+   "subject": "Spotter: 1 check(s) healed with no revert after a9b686d9b82990ad6840597736b1bfbd42ae2f37 (tools/flakes.json)"
   },
   {
-   "at": "2026-10-14T18:20:17Z",
-   "subject": "Forethinkers 2026-10-14: one burden-enriched senolytic trial registered; blood methylation burden score (MaGE); trial-watch next line"
+   "at": "2026-10-15T04:18:21Z",
+   "subject": "Frontier #27: video games of every type, a sim first among them; improve on all fronts"
   },
   {
-   "at": "2026-10-14T18:18:34Z",
-   "subject": "V01D everywhere, and the films page signs you in (owner: \"why am i geting the Members only ... when i am already signed in as owner?\"; \"just"
+   "at": "2026-10-15T04:18:21Z",
+   "subject": "Frontier #27: every kind of film, book and game, each getting better"
   },
   {
-   "at": "2026-10-14T18:17:31Z",
-   "subject": "WIP: films passkey sign-in and every-credential fallback, V01D FILMS with the I glitch, V01D in every visible string (example asks and the o"
+   "at": "2026-10-15T04:12:40Z",
+   "subject": "V01D FILMS: a new experiment each time, three a day, and one after each deploy"
   },
   {
-   "at": "2026-10-14T17:58:11Z",
-   "subject": "V01D's personality (owner: \"make voids personality a void that wants to absorb and learn everything and do the best it can , that V01d would"
+   "at": "2026-10-15T04:04:02Z",
+   "subject": "Films: no sign-in, the films for everyone"
   },
   {
-   "at": "2026-10-14T17:54:19Z",
-   "subject": "V01D (owner: \"V01D ... yes I like it\"; \"a super professional brief V01D on startup\"; \"wheres my apps . web mobile? hows that all look\"; \"I w"
+   "at": "2026-10-15T03:59:46Z",
+   "subject": "Films live: check the live films from GitHub's network"
   },
   {
-   "at": "2026-10-14T17:46:13Z",
-   "subject": "Film reviews: mark the IN (?, ?) line as right as written (only placeholders are pasted in; every value is bound)"
+   "at": "2026-10-15T03:52:49Z",
+   "subject": "malloc-unchecked: look past a comment line between the malloc and the write"
   },
   {
-   "at": "2026-10-14T17:44:46Z",
-   "subject": "Spelled-out units (centimeters, kilograms, tablespoons) in the reordered conversions"
+   "at": "2026-10-15T03:47:05Z",
+   "subject": "grow line: review checks"
   },
   {
-   "at": "2026-10-14T17:43:57Z",
-   "subject": "Conversions in any order: 'how many kg is 150 lbs', 'mph to kph 60'"
+   "at": "2026-10-15T03:44:49Z",
+   "subject": "Code review: unchecked malloc, PHP magic-hash compares, on-line pull_request_target"
   },
   {
-   "at": "2026-10-14T17:40:14Z",
-   "subject": "Void's films: the owner and paying members review each one (post it, needs work or skip, with a note; one review each, changeable; the owner"
+   "at": "2026-10-15T03:43:22Z",
+   "subject": "V01D FILMS free to watch for anyone (owner: the films are our ads), reviews and owner tools behind sign-in; the brass clock and stopwatch ge"
   },
   {
-   "at": "2026-10-14T17:36:15Z",
-   "subject": "WIP: films card as a poster, cinematic films page, /films/ typed into the ask box, films skill in the Void itself family (checks not rerun y"
+   "at": "2026-10-15T03:41:23Z",
+   "subject": "WIP: films page shows the films to everyone with a sign-in-to-review bar; a signed-in owner account is the owner; films tests follow the pub"
   },
   {
-   "at": "2026-10-14T17:31:42Z",
-   "subject": "WIP: film reviews for members and the owner, and a films skill (not finished: families entry and checks pending; no PR yet)"
+   "at": "2026-10-15T03:37:54Z",
+   "subject": "WIP: anyone watches V01D FILMS (the films are the ads); reviews and the owner's tools stay behind sign-in"
   }
- ]
+ ],
+ "builders": {
+  "finished": [
+   {
+    "name": "Builders' lessons in V01D's self-knowledge (Grok Bot)",
+    "line": "this board's Just finished, Ladders and Lessons go into self.json; \"what did your builders learn?\" routes to V01D's self facts, and tools/ask-void.mjs logs its answer word for word in docs/void-voice.md."
+   },
+   {
+    "name": "Playbooks for the builders' work (Claude)",
+    "line": "docs/playbooks/ writes down how a table skill, a review rule, a probe-and-fix and a film are made, so V01D can follow them with its own model (frontier #28)."
+   },
+   {
+    "name": "Weather card on phones",
+    "line": "no backdrop blur on touch screens (it re-blurred the moving stars every frame) and the hourly row scrolls instead of squeezing at 320px; found by measuring at 320 and 360px in headless Chrome first."
+   },
+   {
+    "name": "Unit converter, asked by V01D (Grok Bot)",
+    "line": "nine kinds of units, typed in either box, kept across a reload; built because V01D asked for it in its daily reflection."
+   },
+   {
+    "name": "Friction indicator told to V01D (Grok Bot)",
+    "line": "it shipped but V01D kept asking for it; the fix was putting shipped work into self.json so V01D knows what it already has."
+   },
+   {
+    "name": "Code review rules (Claude)",
+    "line": "unchecked malloc (looking past a comment line), PHP magic-hash compares, on-line pull_request_target."
+   }
+  ],
+  "ladders": [
+   {
+    "name": "Deploy from the box",
+    "line": "from a clean checkout of pushed main HEAD: node tools/self-context.mjs && cd void-live-deploy && npx -y wrangler@3.114.17 pages deploy . --project-name=a-to-mind --branch=main --commit-hash=<sha> --commit-dirty=true; the output must say \"Up"
+   },
+   {
+    "name": "Fast checks",
+    "line": "TZ=UTC node tools/checks.mjs runs every unit test in one go (date tests assume UTC); VOID_SKIP_BENCH=1 skips the long benchmark if it crashes on a busy machine."
+   },
+   {
+    "name": "Headless browser that does not crash",
+    "line": "point VOID_TEST_BROWSER at a full installed Chrome (npx playwright-core install chromium), not chromium-headless-shell, which crashes on the speech interface."
+   },
+   {
+    "name": "Worktree per job",
+    "line": "git worktree add --no-track -b box/<name> /workspace/void-wt-<name> origin/main, then symlink node_modules from the main clone so the right playwright-core is used."
+   },
+   {
+    "name": "Prepush check",
+    "line": "tools/prepush.mjs (run by tools/push.mjs, or .githooks/pre-push after git config core.hooksPath .githooks) stops conflict markers, unparsable JS and broken JSON before they leave the machine."
+   },
+   {
+    "name": "Parse guard",
+    "line": "node tools/guard-source.mjs tells in a second which script no longer parses after a merge."
+   }
+  ],
+  "lessons": [
+   {
+    "name": "Wrangler only uploads functions/ from the current directory",
+    "line": "a deploy run from a copied folder dropped every Function and broke the site's APIs; deploy from inside void-live-deploy and look for \"Uploading Functions bundle\"."
+   },
+   {
+    "name": "Never write a whole file through an API to change part of it",
+    "line": "a full-file write replaced a ledger with the word PLACEHOLDER; edit in a checkout, commit, and push so the diff shows what changed."
+   },
+   {
+    "name": "Tell V01D what shipped",
+    "line": "V01D kept asking for a friction indicator that already existed, because nothing told it; shipped work belongs in self.json."
+   },
+   {
+    "name": "An internal label is not a question",
+    "line": "asked \"words and the world\" (a family name from its own growth card), V01D answered a trivia question; self-facts must name its parts in its own terms."
+   },
+   {
+    "name": "Measure before fixing",
+    "line": "of three performance tips for the weather card, one (pixel ratio) was already done and named files that do not exist; checking the code first saved a wasted change."
+   },
+   {
+    "name": "A failing check may not be yours",
+    "line": "run the same check on unchanged main before treating a failure as caused by your change."
+   }
+  ]
+ }
 }

@@ -2,6 +2,7 @@
 // growth inbox (domains/growth-inbox.md: what shipped, what is still open), its games and the cards that have a 3D miniature
 // (so its opinions of itself are informed: lib/voice.js), and for the growth tree the think tank's open tracks, the claim
 // being built now (domains/forethinkers/index.md, domains/void.frontier.md) and the last commits on main (git log). Skills, the will and its reflections are read live at answer time.
+// What its two builders just finished, the ladders they left each other and their lessons (docs/TAGTEAM.md).
 // Writes void-live-deploy/self.json. The deploy workflow runs this before every deploy, so the file never goes stale there.
 //   node tools/self-context.mjs          write the file
 //   node tools/self-context.mjs --check  exit 1 if the committed file differs from what would be written
@@ -68,7 +69,18 @@ export function readCommits(log, n = 20) {
     .slice(0, n).map(([at, subject]) => ({ at: new Date(Date.parse(at)).toISOString().replace('.000', ''), subject: clip(subject.replace(/[`*]/g, ''), 140) }));
 }
 
-export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, tracks = null, building = null, commits = null, open = null } = {}) {
+// docs/TAGTEAM.md: the two builders' shared board. Its Just finished, Ladders and Lessons ('- **name**: line' bullets) go into
+// self.json trimmed, so V01D learns from how it is being built ("what did your builders learn?"). Now and Up for grabs stay out.
+export function readTagteam(text, n = 6) {
+  const t = String(text || '');
+  const sec = (h) => [...String((new RegExp('^## ' + h + '\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
+    .map((m) => ({ name: clip(m[1].replace(/[`*]/g, ''), 80), line: clip(m[2].replace(/[`*]/g, ''), 240) }))
+    .filter((x) => !isPrivate(x.name) && !isPrivate(x.line)).slice(0, n);
+  const out = { finished: sec('Just finished'), ladders: sec('Ladders'), lessons: sec('Lessons') };
+  return out.finished.length || out.ladders.length || out.lessons.length ? out : null;
+}
+
+export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, tracks = null, building = null, commits = null, open = null, builders = null } = {}) {
   const about = clip((/^>\s*(.+)$/m.exec(llms) || [])[1], 300);
   const rows = [];
   for (const line of inbox.split('\n')) {
@@ -93,6 +105,7 @@ export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, 
     ...(tracks ? { tracks } : {}),
     ...(building ? { building } : {}),
     ...(commits && commits.length ? { commits } : {}),
+    ...(builders ? { builders } : {}),
   };
 }
 
@@ -100,12 +113,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const skills = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8'));
   const minis = readdirSync(resolve(root, 'void-live-deploy/skills/mini')).filter((f) => /^[a-z0-9-]+\.js$/.test(f)).map((f) => f.slice(0, -3));
   const frontier = resolve(root, 'domains/void.frontier.md'), tank = resolve(root, 'domains/forethinkers/index.md');
+  const tagteam = resolve(root, 'docs/TAGTEAM.md');
   const lineTimes = {}; // when each frontier line was last written; empty without git history (then the dates on the lines decide)
   const blame = spawnSync('git', ['blame', '--line-porcelain', '--', 'domains/void.frontier.md'], { cwd: root, encoding: 'utf8', timeout: 20000 });
   if (blame.status === 0) { let t = 0; for (const l of blame.stdout.split('\n')) { const h = /^[0-9a-f]{40} \d+ (\d+)/.exec(l); if (h) lineTimes.next = +h[1]; const c = /^committer-time (\d+)/.exec(l); if (c) t = +c[1]; if (l.startsWith('\t')) { lineTimes[lineTimes.next] = new Date(t * 1000).toISOString().replace('.000', ''); } } delete lineTimes.next; }
   const self = buildSelf(readFileSync(resolve(root, 'void-live-deploy/llms.txt'), 'utf8'), readFileSync(resolve(root, 'domains/growth-inbox.md'), 'utf8'), { skills, minis, canon: existsSync(resolve(root, 'domains/void.canon.md')) ? readCanon(readFileSync(resolve(root, 'domains/void.canon.md'), 'utf8')) : null,
     tracks: existsSync(tank) ? readTracks(readFileSync(tank, 'utf8')) : null, building: existsSync(frontier) ? readBuilding(readFileSync(frontier, 'utf8'), lineTimes) : null,
     open: existsSync(frontier) ? openItems(readFileSync(frontier, 'utf8')) : null,
+    builders: existsSync(tagteam) ? readTagteam(readFileSync(tagteam, 'utf8')) : null,
     commits: readCommits(spawnSync('git', ['log', '--no-merges', '-20', '--format=%cI%x09%s', 'HEAD'], { cwd: root, encoding: 'utf8', timeout: 20000 }).stdout) });
   const text = JSON.stringify(self, null, 1) + '\n';
   if (process.argv.includes('--check')) {

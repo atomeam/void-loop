@@ -58,6 +58,7 @@ for (const [name, file] of [
   ['growth-tree', 'growth-tree.test.mjs'],
   ['review-learn', 'review-learn.test.mjs'],
   ['bench-floor', 'bench-floor.test.mjs'],
+  ['tagteam', 'tagteam.test.mjs'],
   ['bench-load', 'bench-load.test.mjs'],
   ['merge-main', 'merge-main.test.mjs'],
   ['revert-records', 'revert-records.test.mjs'],
