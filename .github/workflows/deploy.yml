@@ -119,8 +119,11 @@ jobs:
 
       # per-page sha256 hashes for the inline scripts, so the pages run only their own inline code (tools/csp-hashes.mjs);
       # made here from the exact files being deployed, never committed, so a hash can't go stale
+      # OFF until Cloudflare stops injecting its per-request inline bot script (JavaScript detections / Bot Fight Mode adds
+      # window.__CF$cv$params to every page, which no hash can match; live check 2026-10-15). Set the repo variable
+      # CSP_HASHES=true once that is off in the Cloudflare dashboard.
       - name: CSP script hashes
-        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true'
+        if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true' && vars.CSP_HASHES == 'true'
         run: node tools/csp-hashes.mjs --write
 
       - name: Deploy to Cloudflare Pages (a-to-mind)
