@@ -1,7 +1,8 @@
 // Void as an MCP server (frontier #6): POST one JSON-RPC message, get its reply as JSON (the streamable HTTP transport without a
 // stream). Read-only tools (lib/mcp.js), and the guard's own limit for the route covers it (lib/guard.js LIMITS.mcp). Public: an MCP
 // client needs no key. review_code_closer is /api/review's own handler, given the caller's Authorization: the closer read (a model)
-// comes only with the key that endpoint takes, on its terms (who, the daily cap, the count). The tools are listed at /tools.json.
+// comes only with the key that endpoint takes, on its terms (who, the daily cap, the count). skill_health reads the static
+// skills/families.json through ASSETS. The tools are listed at /tools.json.
 //   POST { jsonrpc: '2.0', id, method: 'initialize' | 'tools/list' | 'tools/call' | 'ping', params }  -> 200 { jsonrpc, id, result | error }
 //   POST a notification (no id)                                                                    -> 202, no body
 //   GET                                                                                            -> 405 (no event stream; POST only)
@@ -23,6 +24,10 @@ export async function onRequestPost({ request, env, waitUntil }) {
     const ip = request.headers.get('cf-connecting-ip');
     const res = await answer({ request: new Request(new URL('/api/answer', request.url), { method: 'POST', headers: { 'content-type': 'application/json', ...(ip ? { 'cf-connecting-ip': ip } : {}) }, body: JSON.stringify({ ask: args.ask }) }), env: env || {}, waitUntil: (p) => (waitUntil ? waitUntil(p) : p) });
     return { status: res.status, body: await res.json().catch(() => null) };
+  }, families: async () => { // skill_health: the ratings as the site serves them (skills/families.json, a static file), read only
+    if (!env || !env.ASSETS) return null;
+    const res = await env.ASSETS.fetch(new Request(new URL('/skills/families.json', request.url)));
+    return res.ok ? res.json() : null;
   } };
   const reply = await rpc(msg, ctx);
   // a failed tool call is counted where V01D reads its shortfalls (asked by Void, ask-20261014-1722-3): the tool's name and the day only,
