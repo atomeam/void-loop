@@ -5,6 +5,7 @@
  * in a Web Worker (skills/chess-worker.js) so the pieces keep moving smoothly while it thinks.
  * Where WebGL can't run, the same game shows as a flat board of buttons, so the card always works.
  */
+import { levelPick } from './game-level.js';
 import { grip, sideCard } from './side-card.js';
 import * as R from './chess-rules.js';
 
@@ -25,7 +26,7 @@ function think(s, onProgress) {
     try {
       if (!worker) worker = new Worker(new URL('./chess-worker.js', import.meta.url), { type: 'module' });
       const id = ++seq;
-      const on = (e) => { if (e.data.id !== id) return; if (e.data.progress) { onProgress && onProgress(e.data.progress); return; } worker.removeEventListener('message', on); res(e.data.m); };
+      const on = (e) => { if (e.data.id !== id) return; if (e.data.progress) { onProgress && onProgress(e.data.progress); return; } worker.removeEventListener('message', on); res(levelPick(e.data.m, R.legalMoves(s))); };
       worker.addEventListener('message', on);
       worker.postMessage({ id, s, opts });
     } catch (_) { setTimeout(() => res(R.bestMove(s, { depth: 4, ms: 700 })), 30); } // no module workers: think on the page
