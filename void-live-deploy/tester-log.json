@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 8,
- "runsTotal": 7,
+ "runsTotal": 8,
  "kinds": {
   "grow": 2,
   "file": 4,
-  "teach": 1
+  "teach": 2
  },
  "runs": [
+  {
+   "at": "2026-10-15T06:36:52Z",
+   "passed": 2,
+   "of": 12,
+   "kind": "teach",
+   "note": "teach V01D \"can we play despacito\" (means \"play despacito\", skill:video-play): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+  },
   {
    "at": "2026-10-15T06:34:08Z",
    "passed": 7,
