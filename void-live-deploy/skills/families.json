@@ -2,7 +2,7 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 1,
-  "tested": 48,
+  "tested": 49,
   "checked": 14,
   "proven": 83
  },
@@ -138,7 +138,7 @@
   {
    "id": "games",
    "name": "Games",
-   "for": "board games, card games and play",
+   "for": "board games, card games and play: one picker (\"games\"), one V01D strength, one 3D stage",
    "count": {
     "experiment": 0,
     "tested": 2,
@@ -665,7 +665,7 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 0,
-    "tested": 5,
+    "tested": 6,
     "checked": 3,
     "proven": 7
    },
@@ -742,6 +742,11 @@
     },
     {
      "name": "showcase",
+     "tier": "tested",
+     "why": "a self-test"
+    },
+    {
+     "name": "swarm",
      "tier": "tested",
      "why": "a self-test"
     }

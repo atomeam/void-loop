@@ -5,6 +5,7 @@
  * You are X and Void is O: after each tap Void answers with its best move (full minimax, so it never loses).
  * The status line calls the result. New game resets.
  */
+import { levelPick } from './game-level.js';
 import { lift3d } from './lift3d.js';
 
 export function createTicTacToeState() {
@@ -120,7 +121,7 @@ function mount(th, stageApi) {
       const was = th.state;
       if (was.status === 'playing') setTimeout(() => {
         if (th.state !== was) return; // new game or board gone in the meantime
-        const m = bestMove(was);
+        const m = levelPick(bestMove(was), was.board.map((v, i) => (v === null ? i : null)));
         if (m !== null) { th.state = resolveMove(was, m).nextState; paint(); stageApi.save && stageApi.save(); }
       }, 420);
     });
