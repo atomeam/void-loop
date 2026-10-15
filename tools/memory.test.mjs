@@ -48,7 +48,7 @@ test('bad records are rejected and counted, good ones in the same batch still sa
 });
 
 test('the server redacts secrets itself, whatever the sender did', () => {
-  const c = cleanRecord(rec({ summary: 'key sk-abcdefghijklmnopqrstuvwxyz123456 and me@example.com, password = hunter2hunter2', remote: 'https://user:pw12345@github.com/o/r' }));
+  const c = cleanRecord(rec({ summary: 'key sk-abcdefghijklmnopqrstuvwxyz123456 and me@example.com, password = hunter2hunter2', remote: 'https://user:pw12345@github.com/o/r' })); // secret-scan: ok (a made-up credential the redactor must mask)
   assert.ok(!/sk-abc|me@example|hunter2|pw12345/.test(JSON.stringify(c)), JSON.stringify(c));
 });
 

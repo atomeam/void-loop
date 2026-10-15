@@ -1,0 +1,26 @@
+# Which other open PRs touch this PR's files (tools/collide.mjs): written to the run summary in seconds, read-only, never a gate.
+name: Collide
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  collide:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(gh api --paginate "repos/${{ github.repository }}/pulls/${{ github.event.pull_request.number }}/files" --jq '.[].filename' | paste -sd, -)
+          node tools/collide.mjs --files "$files" | grep -v "^COLLIDES #${{ github.event.pull_request.number }} \|^shared   #${{ github.event.pull_request.number }} " | tee -a "$GITHUB_STEP_SUMMARY"

@@ -3,10 +3,11 @@
  * Restores the default dark look stored at a2m.void.look.v1 (void.html applyLook).
  * Empty surface stays empty: nothing is summoned or published.
  */
+import { cleanLower } from '../lib/ask-text.js';
 export const LOOK_KEY = 'a2m.void.look.v1';
 export const DARK = { bg: '#050505', glow: '#16161c', stars: 'on', quiet: false, scale: 1, fx: 'off', theme: 'dark' };
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 
 export function darkOf(text) {
   const t = CLEAN(text);

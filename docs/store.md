@@ -84,3 +84,10 @@ V01D sets up `you@yourdomain.com` for a creator in minutes and charges for the s
 | 12 | V01D's own store (phase 1 live) | Gumroad stays the checkout (merchant of record, Discover buyers); our page, cart, signed downloads (R2 10 GB free, no egress) and license keys cost $0 | Stripe Checkout 2.9% + 30¢ ([stripe.com/pricing](https://stripe.com/pricing)) once Stripe's business profile is done; Stripe Tax extra | high: each sale keeps ~7% more | free today; Stripe is a dashboard step, not a purchase | Adam |
 | 13 | Creator store platform (multi-seller, Connect) | passkeys and `/@handle` pages already built; Stripe-hosted Express onboarding | $2 per monthly active seller + 0.25% + 25¢ per payout ([Connect](https://stripe.com/connect/pricing)); we charge 5% | high: a product others pay for | waits on 12's Stripe step | Adam |
 | 14 | Business email for creators | Cloudflare Email Routing, free ([docs](https://developers.cloudflare.com/email-routing/)); only the domain costs (~$10/yr) | none needed | medium: $15 setup or $3/mo | free path covers it; also gives Adam atom@a-to-mind.com | Adam |
+
+## Self-made products: auto-publish (Adam, 2026-10-15)
+V01D's own products go on sale automatically when the price is within the set range, they carry no trademarks, their files are tested, and each gets a public log entry. Anything outside the range stays a hidden draft. Recorded in domains/void.decisions.json (adam-20261015-store-autopublish).
+Where ideas come from: when a buy/hire ask matches no product (or the sponsor-line gate in lib/gumroad.js rejects a weak match), no sponsor line shows; lib/product-gap.js adds one to a redacted topic count (word stems only, no person/device/IP). At 3 asks the topic queues a `store-gap:<topic>` job in void_queue.
+
+## V01D sets its own prices (Adam, 2026-10-15)
+V01D is the appraiser: lib/appraise.js prices each self-made product from comparables, effort, files, topic demand and sales, and writes a 'why this price' note into the public log. Paid items are never $0; anything over 10x the comparables' median is flagged, not blocked. Visitors can never change a price (lib/price-lock.js).

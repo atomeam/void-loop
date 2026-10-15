@@ -22,7 +22,10 @@ const ASKS = [
 const NOT_CODE = /\b(?:zip|area|postal|post|promo|promotional|discount|dress|morse|country|qr|coupon|gift|access|bar|cheat|tax|airport|iata|swift|sort|colou?r|hex|status|referral|invite|invitation|verification|confirmation|security|activation|redeem|voucher|pin|source\s+of)\s+codes?\b|\bcode\s+of\s+conduct\b|\bda\s+vinci\s+code\b/i;
 
 export function isReviewAsk(text) {
-  const s = String(text || '').trim(), first = s.split('\n')[0].replace(/\s*⏎.*$/, '').slice(0, 300);
+  const s = String(text || '').trim();
+  let first = s.split('\n')[0].replace(/\s*⏎.*$/, '').slice(0, 300);
+  // a long pasted paragraph is judged by its opening sentence, so "is my code ok?" deep in prose isn't a review ask
+  if (first.length > 160) first = first.split(/(?<=[.!?])\s+/)[0];
   if (NOT_CODE.test(first)) return false;
   if (ASKS.some((re) => re.test(first))) return true;
   // "review this python:" with the paste on the next lines: the first line asks for a review, names a language and ends at the colon

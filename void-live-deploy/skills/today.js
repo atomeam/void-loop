@@ -4,7 +4,8 @@
  * Reads localStorage a2m.void.loop.v1 only. No Wikipedia, no network.
  * Near-misses: "what day is it today" / "what's the date today" stay with wantsToday; "what did I do today", "history of today", "today's weather" stay out.
  */
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+import { clean } from '../lib/ask-text.js';
+const CLEAN = clean; // shared: lib/ask-text.js
 
 export function isTodayLog(text) {
   const t = CLEAN(text);

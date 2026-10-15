@@ -68,3 +68,9 @@ The workflows that only run by hand (`cf-scope.yml`, `model-bench.yml`, `rehears
 | `archive/LOOP.md` | The private Loop brief: Void's face is blank plus a chat that does | History; its rule lives in `STANDING.md` | none |
 | `archive/AGENTS.*.md`, `archive/STANDING.*.md` | Earlier full texts of the guides | History; the live rules are in `AGENTS.md`, `docs/RULES.md` and `STANDING.md` | none |
 | `archive/void.agents.log.2026-09.md` | September's agent log | History, and evidence for Void's growth story | none |
+
+## Convergence merges (docs/convergence.md)
+
+| What was retired | Where it lived | Kept as | Date |
+| --- | --- | --- | --- |
+| 23 local copies of the ask tidier `CLEAN` (three forms) | label, layer, cartoon, motorbody, dark-look, print-download, group, incident, status, trialwatch, inventory, show-countdown, dismiss, zoom-figure, senolytic, part, figure, figure-can, today, printedmotor, print-file, light-look, coral | `lib/ask-text.js` (`clean`, `cleanLower`); the old forms live on as the oracle in `tools/ask-text.test.mjs` | 2026-10-15 |

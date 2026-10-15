@@ -7,6 +7,7 @@
  * service is not pinged: a ping would spend its small daily quota. Void's own build: the newest checks and deploy on main (GitHub's
  * public API). For the owner, the card opens by itself when one of those failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
+import { cleanLower } from '../lib/ask-text.js';
 export const SOURCES = [
   { name: 'Open-Meteo weather', for: 'weather, air quality, UV', url: 'https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current=temperature_2m' },
   { name: 'Open-Meteo places', for: 'maps, places, local time', url: 'https://geocoding-api.open-meteo.com/v1/search?count=1&name=Paris' },
@@ -19,7 +20,7 @@ export const SOURCES = [
   { name: 'ClinicalTrials.gov', for: 'the longevity trial watch', url: 'https://clinicaltrials.gov/api/v2/version' },
 ];
 
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const ASK_RE = /^(?:(?:show(?:\s+me)?|check|run|what(?:'s|\s+is))\s+(?:the\s+)?)?(?:void(?:'s)?\s+(?:status|health|health\s+check)|(?:system|service)\s+status|status(?:\s+(?:page|check|of\s+void))?|health\s+check|self[\s-]?check|diagnostics)$|^(?:is\s+void\s+(?:working|up|down|ok|okay|broken)|are\s+(?:the\s+)?(?:skills|sources)\s+(?:working|up|down)|check\s+(?:void|yourself|the\s+sources))$/;
 export function statusOf(text) { return ASK_RE.test(CLEAN(text)); }
 

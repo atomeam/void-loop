@@ -94,6 +94,14 @@ jobs:
         run: |
           node tools/review-pr.mjs --base "$BASEREF" --head HEAD --gate > /dev/null || { echo "::error title=Void review::bugs or risks in the added lines (see Void's review comment); fix them or mark a line that is right as written with a void-review: ok comment"; exit 1; }
 
+      # no real key in any added line, in any file type (tools/secret-scan.mjs; the review above skips docs and data, where a pasted key
+      # in a log or a note is likeliest). It prints the file, the line and the kind, never the value, and blocks the merge.
+      - name: No secrets in the added lines
+        if: ${{ inputs.report_only != true }}
+        env:
+          BASEREF: ${{ steps.pr.outputs.baseref }}
+        run: node tools/secret-scan.mjs --base "$BASEREF" || { echo "::error title=Secret in the added lines::remove it and rotate it (anything that reached GitHub is public); a made-up test key gets a secret-scan: ok comment"; exit 1; }
+
       # a PR that touches the skills must leave every skill file registered in skills/index.json (tools/skills-unlisted.mjs, run by skills-check):
       # a merge once dropped "services" from the index and nine pricing asks fell through. It blocks the merge here, not only the next local run.
       - name: Every skill file is still listed (only when the PR touches skills/)

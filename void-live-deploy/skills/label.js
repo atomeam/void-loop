@@ -13,8 +13,9 @@
  * Empty surface stays empty: an ask on an empty stage only says so.
  */
 import { KIND_WORDS } from './layer.js';
+import { clean } from '../lib/ask-text.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = clean; // shared: lib/ask-text.js
 const LOW = (s) => CLEAN(s).toLowerCase();
 const QUOTE = /^["'“‘](.+)["'”’]$/;
 const unquote = (s) => { const t = CLEAN(s); const m = QUOTE.exec(t); return m ? m[1].trim() : t; };

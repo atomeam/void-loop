@@ -7,6 +7,7 @@
  * "coral restoration florida keys", "reef accretion potential", "can coral survive heatwaves", "flonduran coral".
  */
 import { liveLine } from '../lib/reefwatch.js';
+import { cleanLower } from '../lib/ask-text.js';
 
 export const ACCRETION_SOURCES = [
   { date: '2025', name: 'Toth et al., Scientific Reports', href: 'https://doi.org/10.1038/s41598-025-04818-3' },
@@ -21,7 +22,7 @@ export const HEAT_SOURCES = [
   { date: '2026-05-19', name: 'University of Miami', href: null },
 ];
 
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const ACCRETION_RE = /^(?:(?:tell me about|show(?:\s+me)?|what is|what's)\s+)?(?:coral\s+restoration(?:\s+(?:in\s+)?(?:the\s+)?(?:florida\s+keys|florida|keys))?|(?:the\s+)?florida\s+keys\s+(?:coral\s+)?(?:reef|reefs|coral)(?:\s+restoration)?|reef[\s-]accretion(?:\s+potential)?|does\s+(?:coral\s+)?(?:planting|restoration)\s+(?:coral\s+)?work|does\s+planting\s+coral\s+work)$/;
 const HEAT_RE = /^(?:(?:tell me about|show(?:\s+me)?|what is|what's|what are)\s+)?(?:can\s+(?:coral|corals|coral\s+reefs|reefs)\s+survive\s+(?:a\s+)?(?:heatwaves?|heat\s+waves?|marine\s+heatwaves?|the\s+next\s+heatwave)|flonduran\s+corals?|heat[\s-]tolerant\s+corals?|coral\s+heat\s+(?:survival|tolerance)|coral\s+bleaching\s+(?:in\s+)?(?:florida|the\s+florida\s+keys))$/;
 
