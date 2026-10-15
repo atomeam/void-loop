@@ -5,8 +5,9 @@
  * No network. Tessl / BoardKit exist outside Void; this is Void's own form.
  */
 import skillNames from './index.json' with { type: 'json' };
+import { clean } from '../lib/ask-text.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = clean; // shared: lib/ask-text.js
 
 export const SKILL_NAMES = skillNames;
 

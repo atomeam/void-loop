@@ -4,8 +4,9 @@
  * Does not summon a new figure. Empty surface stays empty.
  */
 import { MOTELET } from './figure.js';
+import { cleanLower } from '../lib/ask-text.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 
 export function canDoOf(text) {
   const t = CLEAN(text);

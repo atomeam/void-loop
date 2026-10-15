@@ -6,8 +6,9 @@
  * Empty surface stays empty: grouping adds nothing to the stage, and an ask on an empty stage only says so.
  */
 import { KIND_WORDS } from './layer.js';
+import { cleanLower } from '../lib/ask-text.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const GROUP_NOUN = String.raw`(?:the\s+|my\s+|this\s+|that\s+)?(?:group|grouped\s+(?:things|ones|stuff|items)|bunch|cluster)`;
 const EVERYTHING = /^(?:everything|all|all of (?:it|them)|them(?: all)?|these|those|all of these|all of those|the lot|it all|all things|all the things|everything on the stage)$/;
 
