@@ -33,6 +33,7 @@ for (const [name, file] of [
   ['appraise', 'appraise.test.mjs'],
   ['launch-fixes', 'launch-fixes.test.mjs'],
   ['price-lock', 'price-lock.test.mjs'],
+  ['reinvest', 'reinvest.test.mjs'],
   ['store', 'store.test.mjs'],
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
