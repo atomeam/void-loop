@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 10,
- "runsTotal": 17,
+ "cases": 11,
+ "runsTotal": 18,
  "kinds": {
-  "grow": 3,
+  "grow": 4,
   "file": 7,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T07:07:55Z",
+   "passed": 10,
+   "of": 14,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"find the book the left hand of dakrness\" (skill:book)"
+  },
   {
    "at": "2026-10-15T07:02:38Z",
    "passed": 13,

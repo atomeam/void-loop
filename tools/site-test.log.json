@@ -131,5 +131,12 @@
   "of": 13,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"put on lofi hip hop pls\" (skill:video-play)"
+ },
+ {
+  "at": "2026-10-15T07:07:55Z",
+  "passed": 10,
+  "of": 14,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"find the book the left hand of dakrness\" (skill:book)"
  }
 ]
