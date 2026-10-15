@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 9,
- "runsTotal": 16,
+ "cases": 10,
+ "runsTotal": 17,
  "kinds": {
-  "grow": 2,
+  "grow": 3,
   "file": 7,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T07:02:38Z",
+   "passed": 13,
+   "of": 13,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"put on lofi hip hop pls\" (skill:video-play)"
+  },
   {
    "at": "2026-10-15T06:58:08Z",
    "passed": 8,
