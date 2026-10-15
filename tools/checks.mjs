@@ -143,6 +143,7 @@ for (const [name, file] of [
   ['advance', 'advance.test.mjs'],
   ['gaps', 'gaps.test.mjs'],
   ['propose-fix', 'propose-fix.test.mjs'],
+  ['probe-asks', 'probe-asks.test.mjs'],
   ['sky', 'sky.test.mjs'],
   ['inventory', 'inventory.test.mjs'],
   ['print-file', 'print-file.test.mjs'],

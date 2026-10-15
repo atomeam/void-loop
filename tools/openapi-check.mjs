@@ -18,6 +18,7 @@ export const INTERNAL = {
   '/api/film-views': 'V01D Tube view counts on /films/: one D1 upsert per view, read for the grid (functions/api/film-views.js)',
   '/api/actions': 'the actions record, for the page and the owner',
   '/api/propose-fix': "V01D proposes the narrowest matcher fix for an ask its own probe missed (owner only, frontier #28 step 3; tools/propose-fix.mjs and its daily workflow are the only callers)",
+  '/api/probe-asks': "V01D writes its own probe asks for one skill family (owner only, frontier #28; tools/probe-asks.mjs and its daily workflow are the only callers)",
   '/api/answer': "the page's answer model",
   '/api/video': "the page's video card: search and link lookup for the official embeds (functions/api/video.js)",
   '/api/approval': 'the approve card, signed-in',
