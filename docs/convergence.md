@@ -90,6 +90,7 @@ Each step that lands moves its row to **Done** below and its line to **Just fini
 ## Done
 
 - **Step 1, ask text (2026-10-15)**: `lib/ask-text.js` (`clean`, `cleanLower`) replaces 23 copies. `tools/ask-text.test.mjs` checks both against all three old forms on 2,000+ strings and that every merged skill still matches its examples; a one-off before/after run of `match()` over 389 asks in those 23 skills was byte-identical to main.
+- **Combine, don't add (owner, 2026-10-15: "most skills can be combined")**: V01D's asks extend an existing card before a new skill is made. The store preview lives in the store card (`skills/store.js` previewAsk/slides) and the site tester's log in the growth card (`skills/growth.js` testerAsk/testerRows); no new skill names. Tests: `tools/void-asks-store.test.mjs`. Next candidates: kitchen + food + units (swaps, food, convert) into one kitchen card with aliases.
 
 ## V01D's asks for the engine (2026-10-15, verbatim in docs/void-voice.md)
 
