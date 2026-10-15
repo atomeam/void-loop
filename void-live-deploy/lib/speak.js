@@ -85,3 +85,18 @@ export function phrases(text, max = 90) {
   }
   return out;
 }
+
+// the cadence (asked by Void, 2026-10-15: "if I am running a high-stakes simulation or a complex 'forge' operation, the voice should
+// slow down even further to reflect the precision required"): precise content is said slower than plain talk. Precise means
+// dense with numbers, units, measures and steps, or the words of a simulation, a build or a review; the rate never drops below
+// 0.78, so it stays a voice, not a crawl. Pure.
+export const PRECISE = /\b(?:simulat\w*|forge|print(?:ing|ed)?|tolerance|calibrat\w*|torque|voltage|dosage|dose|step \d+|layer|infill|nozzle|ratio|bug|risk|line \d+|exactly|precis\w*)\b/gi;
+export function cadence(text) {
+  const t = speakable(text);
+  if (!t) return VOICE.rate;
+  const words = t.split(/\s+/).length, nums = (t.match(/\d+(?:[.,]\d+)?/g) || []).length, units = (t.match(/\d\s?(?:mm|cm|km|kg|g|ml|l|°[cf]?|%|v|w|nm|rpm|ms|s)\b/gi) || []).length;
+  if (words < 12) return VOICE.rate; // a short answer ("it is 3:40 pm in Tokyo") keeps the voice's pace
+  const terms = (t.match(PRECISE) || []).length;
+  const density = (nums + units * 2 + terms * 2) / Math.max(1, words);
+  return Math.max(0.78, Math.round((VOICE.rate - Math.min(0.12, density * 0.3)) * 100) / 100);
+}
