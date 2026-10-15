@@ -65,6 +65,8 @@
     </ul>
   </nav>
 </main>
-<script>document.getElementById('path').textContent = location.pathname.slice(0, 200);</script>
+<script>document.getElementById('path').textContent = location.pathname.slice(0, 200);
+// autofocus is ignored on a phone (Chromium with mobile emulation, Safari on iOS), so the ask box is focused here too: the one thing to do on this page is ask
+var q = document.getElementById('q'); if (q && document.activeElement !== q) q.focus();</script>
 </body>
 </html>
