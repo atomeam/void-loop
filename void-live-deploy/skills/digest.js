@@ -20,7 +20,15 @@ export function digestAsk(text) {
 async function run(text, api) {
   const { showPage, esc } = api, d = digestAsk(text);
   if (!d) return 'none';
-  if (d.kind === 'ask' && !last) { api.say('Paste a transcript ("summarize this transcript: …") or a PeerTube or Internet Archive video link first, then ask what it taught.'); return 'digest'; }
+  // no video yet: a card that says how, with a sample to try (issue #766: a whisper alone read as "nothing appeared")
+  if (d.kind === 'ask' && !last) {
+    const sample = 'summarize https://makertube.net/w/02f54689-5640-4be7-b51c-bcbb6587a07f';
+    showPage((p) => { p.innerHTML = '<h2>What this video teaches</h2><p>I haven\'t read a video in this tab yet. Give me one first:</p><ul>'
+      + '<li>a PeerTube or Internet Archive link: <i>summarize https://…/w/…</i></li><li>or any transcript (YouTube\'s too): <i>summarize this transcript: …</i></li></ul>'
+      + '<p>then ask “what did this video teach?” or “what did it say about …?”</p><button type="button" class="dg-try">Try a sample video</button>';
+      const b = p.querySelector('.dg-try'); if (b) b.addEventListener('click', () => { if (api.stage && api.stage.ask) api.stage.ask(sample); }); });
+    api.say('give me a video first'); return 'digest';
+  }
   if (d.kind === 'text') last = { text: d.text.slice(0, 60000) };
   if (d.kind === 'url') last = { url: d.url };
   const body = Object.assign({}, last, { ask: d.ask || '' });

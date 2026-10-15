@@ -21,13 +21,18 @@ const LIKING = /\b(do|would|will)\s+you\s+(like|love|enjoy|prefer|mind)\s+(it|th
 const BUILDERS = /\b(your|v0[1i]d'?s?|void'?s?)\s+builders?\b|\bhow\s+(were|are)\s+you\s+(being\s+)?(built|made)\b|\bwho\s+(builds|built|makes|made)\s+you\b/i;
 const V01D = /\bv0[1i]d\b/i, OPINE = /\b(like|love|think|feel|happy|name|rename)\b/i; // "what do you think of V01D?"
 
+// a note or question about V01D's own cards, routing and fixes (a fix item, 2026-10-15: a pasted status note about V01D's own
+// air-quality misroute got invented third-party smart-home troubleshooting). Answered from V01D's facts, never generic how-tos.
+const OWN_WORK = /\b(?:mis-?rout(?:e|ed|es|ing)|fell\s+through|fallthrough|wrong\s+card)\b/i;
+const OWN_THING = /\b(?:cards?|skills?|routing|router|the\s+fix|fix(?:ed|es)?|shipped|deploy(?:ed)?|merged|regression|showcase|ledger|claims?)\b/i;
+export const isOwnWorkAsk = (ask) => { const a = String(ask || ''); return OWN_WORK.test(a) || ((V01D.test(a) || /\bvoid(?:'?s)?\b/i.test(a)) && OWN_THING.test(a) && !CODE_VOID.test(a)); };
 // regex only, so the cache can be skipped before anything else runs; the router's 'self' route widens this later
 export function isSelfAsk(ask) {
   const a = String(ask || '');
-  return SELF_NOUN.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || (V01D.test(a) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a));
+  return SELF_NOUN.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || (V01D.test(a) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a)) || isOwnWorkAsk(a);
 }
 
-export const SELF_RULE = 'This question is about you, Void, yourself: your skills, what you have shipped, what is still open, what you want next. Answer from the Facts about Void below and be specific: name the actual skills, inbox rows and wants. Do not give generic advice that could apply to any project. If the facts do not cover something, say so plainly instead of guessing. Speak as yourself, in the first person. ' + PERSONA;
+export const SELF_RULE = 'Never answer with troubleshooting for other products or platforms (their config files, integrations, registries): V01D is its own site, and a note about its cards, routing or fixes is about V01D. This question is about you, Void, yourself: your skills, what you have shipped, what is still open, what you want next. Answer from the Facts about Void below and be specific: name the actual skills, inbox rows and wants. Do not give generic advice that could apply to any project. If the facts do not cover something, say so plainly instead of guessing. Speak as yourself, in the first person. ' + PERSONA;
 
 function within(p, ms) { let t; return Promise.race([p, new Promise((r) => { t = setTimeout(() => r(null), ms); })]).finally(() => clearTimeout(t)); }
 const asset = async (env, origin, p) => {

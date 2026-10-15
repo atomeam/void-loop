@@ -104,7 +104,13 @@ function mount(th, stageApi) {
   load().then(() => { if (card.isConnected) keepLive({}, card, { name: 'memory', every: EVERY, refresh: load, present: () => card.isConnected }); }).catch(() => {});
 }
 
+// "privacy", "privacy policy", "what do you keep about me": the privacy page, folded into the memory card (what V01D keeps)
+export const privacyAsk = (text) => /^(?:(?:open|show|go to|read)\s+)?(?:(?:the|your|void'?s|v01d'?s)\s+)?privacy(?:\s+(?:policy|page|notice))?$|^what\s+do\s+you\s+(?:keep|store|save|know)\s+about\s+me$|^how\s+do\s+i\s+delete\s+my\s+data$/i.test(String(text || '').trim().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
 async function run(text, api) {
+  if (privacyAsk(text)) {
+    api.showPage((p) => { p.innerHTML = '<h2>Privacy</h2><p>What V01D keeps and how to delete it: no cookies, no ads, no analytics trackers; your stage and recent asks stay in your browser unless you sign in and sync.</p><p><a class="btn" href="/privacy/">Read the privacy page</a></p><div class="src">a-to-mind.com/privacy/</div>'; });
+    return 'memory';
+  }
   const q = memoryOf(text);
   if (!q) return 'none';
   if (q.remember || q.forget) return keepOrDrop(q, api);
@@ -136,9 +142,9 @@ async function keepOrDrop(q, api) {
 export default {
   name: 'memory',
   memoryOf,
-  examples: ['what did I build with react', 'what do you remember about the parser', 'remember anything about rust', 'ask my memory about python', 'remember that I prefer tabs over spaces', 'forget that I prefer tabs over spaces'],
+  examples: ['what did I build with react', 'privacy', 'what do you remember about the parser', 'remember anything about rust', 'ask my memory about python', 'remember that I prefer tabs over spaces', 'forget that I prefer tabs over spaces'],
   nearMisses: ['remember me', 'memory game', 'how much memory does chrome use', 'what do you remember about me', 'do you remember me', 'remember the titans', 'i can\'t remember', 'remember to call mom', 'remember that song', 'do you remember that', 'forget it', 'forget about it', 'forget that', 'what did I do today', 'what do you remember'],
-  match(lower, text) { return !!memoryOf(text); },
+  match(lower, text) { return privacyAsk(text) || !!memoryOf(text); },
   run,
   stageKinds: { memory: { mount } },
 };
