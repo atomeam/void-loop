@@ -40,6 +40,7 @@ for (const [name, file] of [
   ['next', 'next.test.mjs'],
   ['calendar', 'test_calendar.mjs'],
   ['glyphs', 'test_glyphs.mjs'],
+  ['perf3d', 'perf3d.test.mjs'],
   ['review', 'review.test.mjs'],
   ['figures', 'figures.test.mjs'],
   ['motorbody', 'motorbody.test.mjs'],
