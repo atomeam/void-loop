@@ -418,7 +418,7 @@
     {
      "name": "calc",
      "tier": "proven",
-     "why": "a self-test, 816 real asks in the benchmark"
+     "why": "a self-test, 827 real asks in the benchmark"
     },
     {
      "name": "convert",
