@@ -96,6 +96,11 @@
       "ask": "yo what does ephemeral mean",
       "means": "define serendipity",
       "feature": "skill:define"
+    },
+    {
+      "ask": "what did this video teach? pls",
+      "means": "summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
+      "feature": "skill:digest"
     }
   ],
   "priority": [
