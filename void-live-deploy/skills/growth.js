@@ -277,15 +277,38 @@ export function suite() {
   return { ok: ok && fok && cok, got: ok && fok && cok ? '' : o + ' ' + JSON.stringify(s) + ' ' + JSON.stringify(f) + ' ' + ch };
 }
 
+// The tester log, folded into the growth card (asked by Void, ask-20261015-0616-1; owner: "most skills can be combined"): the site
+// tester's newest runs from /tester-log.json (tools/tester-log.mjs): when, how many passed, and what each run improved.const TESTER_ASK = /^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:site\s+)?tester(?:'s)?\s+(?:log|runs?|results?)$|^(?:site[\s-]test|site\s+tester)\s*(?:log|results?|runs?)?$|^what\s+(?:is|are|'s)\s+(?:the\s+)?(?:site\s+)?tester\s+(?:testing|checking|doing)(?:\s+(?:now|right now))?\??$|^(?:what\s+(?:did|have)\s+)?(?:you|v01d|void)\s+tested\s+(?:today|lately|recently)\??$/;
+const TESTER_ASK = /^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:site\s+)?tester(?:'s)?\s+(?:log|runs?|results?)$|^(?:site[\s-]test|site\s+tester)\s*(?:log|results?|runs?)?$|^what\s+(?:is|are|'s)\s+(?:the\s+)?(?:site\s+)?tester\s+(?:testing|checking|doing)(?:\s+(?:now|right now))?\??$|^(?:what\s+(?:did|have)\s+)?(?:you|v01d|void)\s+tested\s+(?:today|lately|recently)\??$/;
+export const testerAsk = (text) => TESTER_ASK.test(String(text || '').toLowerCase().trim().replace(/[’]/g, "'").replace(/\s+/g, ' ').replace(/[.!]+$/, ''));
+
+/** the card's rows from /tester-log.json. Pure. */
+export function testerRows(j) {
+  return ((j && j.runs) || []).slice(0, 10).map((r) => ({ when: String(r.at).replace('T', ' ').replace(/:\d\dZ$/, ' UTC'), score: r.passed + ' of ' + r.of, ok: r.passed === r.of, kind: r.kind, note: r.note }));
+}
+
+function runTester(text, api) {
+  const { showPage, esc } = api;
+  const el = showPage((p) => { p.innerHTML = '<h2>What my site tester checks</h2><div class="sub">reading the log…</div>'; });
+  fetch('/tester-log.json', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null).then((j) => {
+    if (!el) return;
+    const R = testerRows(j);
+    el.innerHTML = '<h2>What my site tester checks</h2>' + (j ? '<div class="sub">' + esc(String(j.cases)) + ' regression asks, ' + esc(String(j.runsTotal)) + ' runs so far. It types into V01D after every deploy and every hour; each run improves one thing.</div>' : '') +
+      (R.length ? '<ul style="padding-left:18px">' + R.map((r) => '<li style="margin:6px 0"><b>' + (r.ok ? '✓' : '✗') + ' ' + esc(r.score) + '</b> · ' + esc(r.when) + '<br><span class="sub">' + esc(r.kind) + ': ' + esc(r.note) + '</span></li>').join('') + '</ul>' : '<p class="sub">No runs logged yet.</p>');
+  });
+  return 'growth';
+}
+
+
 export default {
   name: 'growth',
-  examples: ['growth', 'void growth', "void's growth", 'show growth', 'show me the growth ledger', 'how have you grown', 'how has void grown', "what's new with void",
+  examples: ['tester log', 'what is the site tester testing', 'growth', 'void growth', "void's growth", 'show growth', 'show me the growth ledger', 'how have you grown', 'how has void grown', "what's new with void",
     "what can you do now that you couldn't last week", "what's new since last week", 'what have you learned this week', 'how have you grown this week'],
   nearMisses: ['economic growth', 'growth rate of india', 'growth mindset', 'hair growth', 'how do plants grow', 'what is growth', 'grow a tree', 'population growth',
     'what can you do', 'what can i do this week', "what's new in tech this week", 'what changed in the law last week', 'what did i do last week', 'what can you do with python'],
   weekOf,
   growthOf,
   suite,
-  match(lower, text) { return growthOf(text) || weekOf(text); },
-  run,
+  match(lower, text) { return growthOf(text) || weekOf(text) || testerAsk(text); },
+  run(text, api) { return testerAsk(text) ? runTester(text, api) : run(text, api); },
 };

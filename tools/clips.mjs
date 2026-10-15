@@ -86,7 +86,7 @@ export const MOMENTS = [
 export function storeMoments(lines = (() => { try { return fs.readFileSync(path.resolve(here, '../domains/store.clips.jsonl'), 'utf8'); } catch (_) { return ''; } })()) {
   const seen = new Map();
   for (const l of String(lines).split('\n')) { try { const j = JSON.parse(l); if (j && j.id) seen.set(j.id, j); } catch (_) {} }
-  return [...seen.values()].map((j) => ({ id: 'store-' + j.id, ask: 'open the store', url: '/store/#' + j.id, kind: 'store', at: j.at, hook: j.hook, caption: j.caption, tricks: ['zoom-punch', 'kinetic-captions', 'beat-flash'] }));
+  return [...seen.values()].map((j) => ({ id: 'store-' + j.id, ask: j.ask || 'open the store', ...(j.ask ? {} : { url: '/store/#' + j.id }), kind: 'store', at: j.at, hook: j.hook, caption: j.caption, tricks: j.ask ? ['ken-burns', 'kinetic-captions', 'beat-flash'] : ['zoom-punch', 'kinetic-captions', 'beat-flash'] })); // j.ask: a new forge model, filmed turning as it is forged
 }
 MOMENTS.push(...storeMoments());
 const fresh = (m, date) => m.kind === 'store' && m.at && Date.parse(date + 'T12:00:00Z') - Date.parse(m.at) < 7 * 864e5;

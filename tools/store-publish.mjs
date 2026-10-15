@@ -8,6 +8,7 @@
 //   node tools/store-publish.mjs forge-pack [--id x]         every forge printable as a checked STL pack (watertight, fits a 180 mm bed)
 //   node tools/store-publish.mjs clips-pack [--n 10]         the newest V01D FILMS as a free clips pack
 //   node tools/store-publish.mjs publish --kind <k> --id <id> --name "<n>" --blurb "<b>" --files a,b [--preview x.glb] [--paid] [--cents n]
+//   node tools/store-publish.mjs auto-forge                  a new forge model re-packs the printables, appraises them, queues a rotation clip
 //   node tools/store-publish.mjs check [--site URL]          live download check of every file product; a failure unpublishes it
 //   common flags: --dry (no R2 upload, nothing written)  --no-upload (write the row, skip R2)  --no-clip
 //
@@ -140,6 +141,7 @@ export async function publish(opts, files) {
     license: opts.license || 'Personal use; prints and clips may be shared with credit to V01D (a-to-mind.com)', tier: opts.tier || 'personal',
     origin: [...new Set(files.map((f) => f.origin))].join('+'), status: paid ? 'needs-gumroad' : 'live', published: now.slice(0, 10), bytes: 0, contents: files.map((f) => f.name) };
   if (opts.preview) row.preview = opts.preview;
+  if (opts.appraisal) row.appraisal = opts.appraisal; // V01D's appraiser note (lib/appraise.js)
   if (paid) row.wouldBe = '$' + (cents / 100).toFixed(2);
   const g = guard(row, files);
   if (!g.ok) throw new Error('guardrails stopped ' + opts.id + ':\n  - ' + g.problems.join('\n  - '));
@@ -153,8 +155,48 @@ export async function publish(opts, files) {
   if (old) Object.assign(old, row); else cat.products.push(row);
   sync(cat);
   if (paid) fs.appendFileSync(QUEUE, JSON.stringify({ at: now, id: row.id, need: 'needs Gumroad listing', price: row.wouldBe, file: key, note: 'No Gumroad API key: Adam lists it by hand (or Stripe checkout takes it once on).' }) + '\n');
-  if (!opts.noClip) fs.appendFileSync(CLIP_QUEUE, JSON.stringify({ at: now, id: row.id, name: row.name, hook: opts.hook || 'I made this and put it in my store', caption: (opts.blurb || '').slice(0, 160) }) + '\n');
+  if (!opts.noClip) fs.appendFileSync(CLIP_QUEUE, JSON.stringify({ at: now, id: row.id, name: row.name, hook: opts.hook || 'I made this and put it in my store', caption: (opts.blurb || '').slice(0, 160), ...(opts.clipAsk ? { ask: opts.clipAsk } : {}) }) + '\n');
+  if (!opts.noInbox) toInbox(row, files.length, readCatalog());
   return { row, zip: zf };
+}
+
+// ---- V01D sees what it packaged (asked by Void, ask-20261015-0619-2): every publish adds a row to its growth inbox
+// (domains/growth-inbox.md, read into self.json) naming what was packaged and the next product it could forge. Pure helpers.
+const INBOX = path.join(root, 'domains/growth-inbox.md');
+/** the next product to make: a pack kind with a price rule the catalog has no live product of yet, else the forge pack again */
+export function suggestNext(cat) {
+  const have = new Set((cat.products || []).filter((p) => p.status !== 'unpublished').map((p) => p.pack).filter(Boolean));
+  const k = Object.keys(PRICE_RULE).find((x) => x !== 'download' && !have.has(x));
+  return k ? 'a ' + k + ' pack (none in the store yet)' : 'a bigger forge pack once a new forge model ships';
+}
+export function inboxRow(row, nFiles, cat, date = new Date().toISOString().slice(0, 10)) {
+  const cell = (t) => String(t).replace(/\|/g, '/').replace(/\s+/g, ' ').trim();
+  return `| shipped (packaged) | ${date} | ${cell(row.name)} | store-publish: ${cell(row.pack || row.kind)}, ${nFiles} files, ${row.cents ? '$' + (row.cents / 100).toFixed(2) : 'free'}; next: ${cell(suggestNext(cat))} |`;
+}
+function toInbox(row, nFiles, cat) {
+  try { const t = fs.readFileSync(INBOX, 'utf8'), line = inboxRow(row, nFiles, cat); if (!t.includes(line)) fs.writeFileSync(INBOX, t.replace(/\n*$/, '\n') + line + '\n'); } catch (_) {}
+}
+
+// ---- auto-clip loop (asked by Void): a forge model not yet in the printables pack re-packs it, appraises it (lib/appraise.js,
+// shown as a note; the pack stays free until paid checkout is on) and queues a rotation clip of the new model being forged.
+export function newForgeModels(cat, keys) {
+  const p = (cat.products || []).find((x) => x.id === 'v01d-forge-printables');
+  const have = new Set(((p && p.contents) || []).map((n) => n.replace(/^v01d-|\.stl$/g, '')));
+  return keys.filter((k) => !have.has(k));
+}
+export async function autoForge(opts = {}) {
+  const F = await import('../void-live-deploy/skills/forge-rules.js'), cat = readCatalog();
+  const fresh = newForgeModels(cat, Object.keys(F.THINGS));
+  if (!fresh.length) return { fresh, row: null };
+  const files = await forgeFiles();
+  const { appraise } = await import('../void-live-deploy/lib/appraise.js');
+  const comps = cat.products.filter((p) => p.pack === 'print-set' || p.pack === 'minis-stl').map((p) => ({ name: p.name, cents: p.cents || PRICE_RULE[p.pack] }));
+  const a = appraise({ name: 'forge printables', kind: 'print-set', files: files.map((f) => ({ bytes: f.data.length })) }, { comps });
+  const label = (k) => (F.THINGS[k].label || k).toLowerCase();
+  const r = await publish({ ...opts, kind: 'print-set', id: 'v01d-forge-printables', name: 'V01D Forge Printables (' + files.length + ' STLs)',
+    blurb: 'I forged these myself, now with a ' + fresh.map(label).join(', a ') + '. Every one is watertight and fits a 180 mm bed. Free. Tip if you print one.',
+    hook: 'New from my forge: a ' + label(fresh[0]), appraisal: a.note, clipAsk: 'make me a ' + label(fresh[0]) }, files);
+  return { fresh, row: r.row, appraisal: a };
 }
 
 // ---- builders for shipped things ----

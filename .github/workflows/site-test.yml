@@ -56,10 +56,11 @@ jobs:
           gh issue create --label site-test --title "$title" --body "Found by the site tester (tools/site-test.mjs) on live a-to-mind.com, run ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }} (screenshots in its artifact). Fix it with a regression test; for a missed wording, teach the skill the phrase (its examples or match) and keep the case in tools/site-test.json."
       - name: Keep the suite, seen-set and run log
         run: |
-          git diff --quiet -- tools/site-test.json tools/site-test.seen.json tools/site-test.log.json && exit 0
+          node tools/tester-log.mjs # the stage's tester-log card reads this public view (asked by Void)
+          git diff --quiet -- tools/site-test.json tools/site-test.seen.json tools/site-test.log.json void-live-deploy/tester-log.json && exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tools/site-test.json tools/site-test.seen.json tools/site-test.log.json
+          git add tools/site-test.json tools/site-test.seen.json tools/site-test.log.json void-live-deploy/tester-log.json
           git commit -m "Site test: $(node -e "const l=require('./tools/site-test.log.json');process.stdout.write(l.at(-1).note.slice(0,60))")"
           for i in 1 2 3 4; do
             git push origin HEAD:main && exit 0
