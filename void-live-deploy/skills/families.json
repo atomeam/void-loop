@@ -815,7 +815,7 @@
     {
      "name": "films",
      "tier": "proven",
-     "why": "8 browser-suite mentions, 4 real asks in the benchmark"
+     "why": "a self-test, 8 browser-suite mentions, 4 real asks in the benchmark"
     },
     {
      "name": "app",

@@ -34,6 +34,10 @@ export function hookOf(tool, run) {
  *  ledger run. Everything in it is true of the experiment: what it is, what it found, what failed. Pure. */
 // the name viewers see is V01D (owner, 2026-10-14: "it shoud say V01d everywhere"; "V01D FILMS"): the lab's and ledger's own words say Void
 export const brand = (t) => String(t || '').replace(/\bVoid\b/g, 'V01D');
+// the code a film shows: its lab page in the repository (asked by Void, 2026-10-15: "Create an automated link between a recorded
+// experiment video and its corresponding skill file in the repository"). Pure.
+export const REPO = 'https://github.com/atomeam/void-loop/blob/main/';
+export const sourceOf = (id) => REPO + 'void-live-deploy/fringe/' + String(id) + '.html';
 export function script(tool0, run0) {
   const tool = { ...tool0, label: brand(tool0.label), sub: brand(tool0.sub) };
   const run = run0 && { ...run0, behavior: brand(run0.behavior), hypothesis: brand(run0.hypothesis), findings: Array.isArray(run0.findings) ? run0.findings.map(brand) : run0.findings, failure_modes: Array.isArray(run0.failure_modes) ? run0.failure_modes.map((f) => (f && f.what ? { ...f, what: brand(f.what) } : brand(f))) : run0.failure_modes };
@@ -46,6 +50,7 @@ export function script(tool0, run0) {
   const parts = [
     hook + ' Try it free: ' + link, // the first lines are what a viewer sees before "more": the hook and the link
     'V01D, an AI at https://a-to-mind.com, built this experiment by itself, tested it, and filmed it in a real browser. Nothing was edited by hand.',
+    'How it is built: ' + sourceOf(tool0.id), // the film and the code it shows, linked (asked by Void, 2026-10-15)
     behavior !== hook ? behavior : '',
     run && run.hypothesis ? 'What it set out to show: ' + String(run.hypothesis).trim() : '',
     run && Array.isArray(run.findings) && run.findings.length ? 'What it found:\n' + lines(run.findings) : '',
@@ -55,7 +60,7 @@ export function script(tool0, run0) {
     'Watch them all: https://www.youtube.com/@atombomb983',
     '#Shorts #AI #V01D',
   ].filter(Boolean);
-  return { hook, caption: behavior || label, cta: 'Built by an AI, by itself.\nTry it free at\na\u2011to\u2011mind.com', title, description: parts.join('\n\n').slice(0, DESC_MAX),
+  return { source: sourceOf(tool0.id), hook, caption: behavior || label, cta: 'Built by an AI, by itself.\nTry it free at\na\u2011to\u2011mind.com', title, description: parts.join('\n\n').slice(0, DESC_MAX),
     tags: ['V01D', 'V01D FILMS', 'Void', 'A-to-Mind', 'AI', 'AI experiment', 'interactive', 'Shorts', run ? run.family : 'lab'].filter(Boolean) };
 }
 
