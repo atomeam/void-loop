@@ -45,6 +45,10 @@
     },
     {
       "ask": "air quality in Tokyo"
+    },
+    {
+      "ask": "can we play despacito",
+      "taught": "video-play"
     }
   ],
   "candidates": [
@@ -68,11 +72,6 @@
       "ask": "yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
       "means": "summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
       "feature": "skill:digest"
-    },
-    {
-      "ask": "can we play despacito",
-      "means": "play despacito",
-      "feature": "skill:video-play"
     }
   ],
   "priority": [
