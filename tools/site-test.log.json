@@ -311,5 +311,13 @@
   "kind": "file",
   "key": "site | console: Failed to load resource: the server responded with ",
   "note": "fix: \"update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list\" console: Failed to load resource: the server responded with a status of 520 ()"
+ },
+ {
+  "at": "2026-10-15T19:02:51Z",
+  "passed": 0,
+  "of": 18,
+  "kind": "file",
+  "key": "yo automations | nothing appeared",
+  "note": "fix: \"yo automations\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]
