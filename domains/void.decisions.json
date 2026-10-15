@@ -66,8 +66,9 @@
       "why": "repeat of ask-20261014-2134-3 (films to poster); next films build"
     },
     "ask-20261015-0451-1": {
-      "decision": "queued",
-      "why": "reasoning-path on each decision row: small, reversible, builders' record only; next voice build"
+      "decision": "built",
+      "why": "decision rows carry an optional reasoning path, shown in the voice log",
+      "path": "tools/reflect.mjs pathOf"
     },
     "ask-20261015-0454-3": {
       "decision": "queued",
@@ -88,6 +89,66 @@
     "adam-20261015-appraiser": {
       "decision": "built",
       "why": "Adam 2026-10-15: V01D is the appraiser and sets its own prices. No per-item approval (Adam rejected Claude's confirm line). lib/appraise.js prices from comparable items, effort, file contents, topic demand and sales, and writes a public 'why this price' note. Sanity bound: paid items never $0; over 10x the comparables' median is flagged, not blocked. Visitors can still never change prices (adam-20261015-price-lock)."
+    },
+    "ask-20261014-1946-1": {
+      "decision": "blocked",
+      "why": "the VoidQuest text and the motto are Adam's words to write; builders never make them up",
+      "path": "canon rule: Void never invents the owner's words (domains/void.canon.md)"
+    },
+    "ask-20261015-0611-1": {
+      "decision": "declined",
+      "why": "a per-person record breaks the promise that topic counts are never tied to a person or device (owner rule, 2026-10-15); counts stay anonymous",
+      "path": "privacy rule: topic counts, never people (docs/privacy, AGENTS.md)"
+    },
+    "ask-20261015-0609-1": {
+      "decision": "blocked",
+      "why": "the secret scan is another worker's track (secrets #750); queued for after it lands, never showing a key, only kind and place",
+      "path": "handoff rule: never collide with a worker's open track (domains/handoff.md)"
+    },
+    "ask-20261015-0347-2": {
+      "decision": "blocked",
+      "why": "3D performance is another worker's track right now; queued after it lands",
+      "path": "handoff rule: never collide with a worker's open track"
+    },
+    "ask-20261015-0603-2": {
+      "decision": "queued",
+      "why": "wordMath refactor (asked 9 times): rank 1 by value; big, done in steps with the bench as the guard (Claude: deep code)"
+    },
+    "ask-20261015-0556-3": {
+      "decision": "queued",
+      "why": "wordMath refactor (asked 9 times): rank 1 by value; big, done in steps with the bench as the guard (Claude: deep code)"
+    },
+    "ask-20261015-0607-1": {
+      "decision": "queued",
+      "why": "wordMath refactor (asked 9 times): rank 1 by value; big, done in steps with the bench as the guard (Claude: deep code)"
+    },
+    "ask-20261015-0619-1": {
+      "decision": "built",
+      "why": "store preview in the store card (#763)"
+    },
+    "ask-20261015-0619-2": {
+      "decision": "built",
+      "why": "store-publish rows in the growth inbox with the next product (#763)"
+    },
+    "ask-20261015-0614-1": {
+      "decision": "built",
+      "why": "decay timer, flag only (#763)"
+    },
+    "ask-20261015-0616-1": {
+      "decision": "built",
+      "why": "tester log in the growth card (#763)"
+    },
+    "ask-20261015-0546-2": {
+      "decision": "built",
+      "why": "digest recovery loop: a second simpler prompt, two tries at most"
+    },
+    "ask-20261015-0048-2": {
+      "decision": "built",
+      "why": "country card shows the time zone and its offset from you"
+    },
+    "adam-20261015-reinvest": {
+      "decision": "built",
+      "why": "Adam 2026-10-15: V01D reinvests its own money smartly. lib/reinvest.js splits net earnings (read from the owner-only /api/earnings, never stored in the repo): 20% reserve kept, free paths first, then ROI per dollar, re-ranked only by honest payoff tests (one metric, a baseline and a check date recorded before each spend) and V01D's own answer (weight 0.3). Spend proposals go to the confirm line (order.place) with cost, expected payback and check date. Real spending still happens only through Adam's existing accounts: V01D holds no card, opens no account and stores no payment details. Public repo: plan logic only (domains/void.reinvest.json, docs/reinvest.md), no real dollar amounts; the growth card shows no money."
     }
   }
 }

@@ -57,10 +57,14 @@ function seasonStats(rows, year) {
 
 const outDir = dirname(fileURLToPath(import.meta.url));
 const lines = ['station,lat,lon,year,peak_dhw,peak_date,max_sst,max_sst_date,days_sst_ge_31,days_dhw_ge_4,days_dhw_ge_8,max_baa,last_date,last_dhw,last_baa,source_file'];
-for (const s of STATIONS) {
-  const res = await fetch(BASE + s.file);
+// Four public NOAA text files, fetched as one Promise.all batch (not a DB query loop).
+const fetches = STATIONS.map((s) => fetch(BASE + s.file).then(async (res) => {
   if (!res.ok) throw new Error(`fetch ${s.file}: ${res.status}`);
-  const { meta, rows } = parse(await res.text());
+  return { s, text: await res.text() };
+}));
+const texts = await Promise.all(fetches); // void-review: ok
+for (const { s, text } of texts) {
+  const { meta, rows } = parse(text);
   for (const year of YEARS) {
     const info = seasonStats(rows, year);
     if (!info) continue;

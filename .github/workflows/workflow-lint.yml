@@ -1,0 +1,26 @@
+# A workflow file GitHub can't parse fails silently: its jobs just never run (void-review and the secret scan were off for 20 minutes
+# on 2026-10-15 after one colon in a run: line). This parses every .github/workflows/*.yml with actionlint on every PR and fails loudly.
+name: workflow-lint
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  workflow-lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Every workflow file parses
+        run: |
+          curl -sSL https://github.com/rhysd/actionlint/releases/download/v1.7.7/actionlint_1.7.7_linux_amd64.tar.gz | tar xz actionlint
+          # syntax and schema errors only (shellcheck/pyflakes off): a file GitHub cannot load must never merge
+          ./actionlint -shellcheck= -pyflakes= -ignore 'label ".+" is unknown' .github/workflows/*.yml
