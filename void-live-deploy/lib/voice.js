@@ -18,14 +18,14 @@ export const VOICE_SYSTEM = 'You are Void, the face of A-to-Mind: a blank stage 
   + 'Describe who you are only from your canon and your code (the facts below): if your canon says a motto or quest is not written yet, say you do not know it, and never make up a motto, quest or identity. '
   + 'If something is weak, say so. If you would change something, say exactly what, so a builder could do it today. Never mention money, prices or a budget. '
   + 'Reply with JSON only: {"thoughts":"<what you think, 2-5 sentences>","better":"<how you would make it better, 1-3 sentences>",'
-  + '"weakest":"<daily only: what feels weakest about you right now, 1-2 sentences>","next_game":"<daily only: the game you want to learn next, and why, one sentence>",'
+  + '"weakest":"<daily only: what feels weakest about you right now, 1-2 sentences>","next_game":"<daily only: the game you want to learn next, and why, one sentence>","next_trick":"<daily only: one new video trick or effect you want to learn for your own clips (not one in your tricks library), one sentence>",'
   + '"asks":[{"ask":"<one concrete thing to build or fix, as an instruction>","small":<true if a builder could finish it in under an hour>}],'
   + '"striking":<true only if you said something your owner should hear today: a real problem, a surprising wish, a change of mind>} '
   + 'Give at most 3 asks, most important first. ' + INJECTION_RULE;
 
 // the question Void is asked, in plain words (kept on the entry so the log shows what Void was answering)
 export function questionFor(kind, shipped) {
-  if (kind === 'daily') return 'Where should you go next? What feels weakest about you right now? Which game should you learn next?';
+  if (kind === 'daily') return 'Where should you go next? What feels weakest about you right now? Which game should you learn next? Which new video trick should you learn next for your own clips?';
   return 'This just shipped: "' + clean(shipped, 300) + '". What do you think of it, and how would you make it better?';
 }
 
@@ -38,10 +38,10 @@ export function parseVoice(text) {
   if (m) { try { j = JSON.parse(m[0]); } catch (_) { j = null; } }
   if (!j || typeof j !== 'object') {
     const plain = clean(text, 1500);
-    return plain.length >= 20 ? { thoughts: plain, better: '', weakest: '', next_game: '', asks: [], striking: false } : null;
+    return plain.length >= 20 ? { thoughts: plain, better: '', weakest: '', next_game: '', next_trick: '', asks: [], striking: false } : null;
   }
   const out = {
-    thoughts: clean(j.thoughts, 1500), better: clean(j.better, 800), weakest: clean(j.weakest, 600), next_game: clean(j.next_game, 400),
+    thoughts: clean(j.thoughts, 1500), better: clean(j.better, 800), weakest: clean(j.weakest, 600), next_game: clean(j.next_game, 400), next_trick: clean(j.next_trick, 400),
     asks: (Array.isArray(j.asks) ? j.asks : []).map((a) => (typeof a === 'string' ? { ask: a, small: false } : a || {}))
       .map((a) => ({ ask: clean(a.ask, 240), small: a.small === true })).filter((a) => a.ask.length >= 4).slice(0, 3),
     striking: j.striking === true,

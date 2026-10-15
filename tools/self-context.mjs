@@ -122,6 +122,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     open: existsSync(frontier) ? openItems(readFileSync(frontier, 'utf8')) : null,
     builders: existsSync(tagteam) ? readTagteam(readFileSync(tagteam, 'utf8')) : null,
     commits: readCommits(spawnSync('git', ['log', '--no-merges', '-20', '--format=%cI%x09%s', 'HEAD'], { cwd: root, encoding: 'utf8', timeout: 20000 }).stdout) });
+  // V01D's clips (tools/clips.mjs): its tricks library and what performed, so it picks what to film next and which trick to learn
+  const clipsFile = resolve(root, 'domains/void.clips.json');
+  if (existsSync(clipsFile)) { try { const c = JSON.parse(readFileSync(clipsFile, 'utf8')); const { TRICKS } = await import('./clips.mjs');
+    self.clips = { tricks: Object.keys(TRICKS), learned: (c.learned || []).slice(-20), visits: c.visits || {}, note: clip(c.note, 300) }; } catch (_) { /* leave clips out */ } }
   const text = JSON.stringify(self, null, 1) + '\n';
   if (process.argv.includes('--check')) {
     const same = existsSync(out) && readFileSync(out, 'utf8') === text;

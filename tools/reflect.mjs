@@ -65,6 +65,7 @@ export function entryBlock(e) {
   if (e.better) lines.push('>', q('**How I would make it better:** ' + e.better));
   if (e.weakest) lines.push('>', q('**Weakest right now:** ' + e.weakest));
   if (e.next_game) lines.push('>', q('**Next game:** ' + e.next_game));
+  if (e.next_trick) lines.push('>', q('**Next video trick:** ' + e.next_trick)); // built into tools/clips.mjs TRICKS, credited to Void (docs/video-tricks.md)
   if (e.asks && e.asks.length) lines.push('', 'Asks: ' + e.asks.map((a) => `"${a.ask}"${a.small ? ' (small)' : ''}`).join('; '));
   if (e.striking) lines.push('', '*Void flagged this one for Adam.*');
   const meta = [e.run && 'run ' + e.run, e.model && 'model ' + e.model, e.canon && 'canon v' + e.canon, e.by && 'asked by ' + e.by].filter(Boolean);
@@ -106,7 +107,7 @@ async function call(method, body) {
 
 function show(e) {
   console.log(`Void (${e.kind}${e.shipped ? ': ' + e.shipped : ''}, ${e.at}):`);
-  for (const k of ['thoughts', 'better', 'weakest', 'next_game']) if (e[k]) console.log(`  ${k}: ${e[k]}`);
+  for (const k of ['thoughts', 'better', 'weakest', 'next_game', 'next_trick']) if (e[k]) console.log(`  ${k}: ${e[k]}`);
   for (const a of e.asks || []) console.log(`  asks: ${a.ask}${a.small ? ' (small)' : ''}`);
   if (e.queued) console.log(`  queued for the builders as ${e.queued}`);
 }
