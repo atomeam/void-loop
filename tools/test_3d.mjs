@@ -785,8 +785,10 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const boxes = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('rack:'))).boxes) : [];
     await F.p.click('.rack-pick[data-game="go"]');
     const opened = await until(async () => { const st = await F.state(); return st.some((t) => t.kind === 'go') && !st.some((t) => t.kind === 'rack'); }, 10000);
-    check('rack: "what games do you have" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, ringer, sorry, battleship, poker, fireworks, monopoly) ; picking Go puts the rack away and opens the Go board',
-      !!ready && boxes.join() === 'chess,checkers,go,othello,connect4,tictactoe,mancala,aggravation,ringer,sorry,battleship,poker,fireworks,monopoly' && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, opened, e: F.errors }));
+    // every game the rack lists (skills/rack.js GAMES, in its order): a new game joins the shelf without this check going red
+    const { GAMES } = await import(new URL('../void-live-deploy/skills/rack.js', import.meta.url).href);
+    check('rack: "what games do you have" stands a 3D shelf of every boxed game in skills/rack.js (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, ringer, sorry, battleship, poker, fireworks, monopoly, voidquest, the 8 ball...) in its order; picking Go puts the rack away and opens the Go board',
+      !!ready && GAMES.length >= 14 && boxes.join() === GAMES.map((g) => g.id).join() && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, want: GAMES.map((g) => g.id), opened, e: F.errors }));
     await F.ctx.close();
   }
   if (want("3d: no webgl, the flat boards")) {
