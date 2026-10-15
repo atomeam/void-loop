@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 14,
- "runsTotal": 36,
+ "runsTotal": 37,
  "kinds": {
   "grow": 7,
-  "file": 22,
+  "file": 23,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T16:50:11Z",
+   "passed": 17,
+   "of": 18,
+   "kind": "file",
+   "note": "fix: \"what can this figure do\" nothing appeared"
+  },
   {
    "at": "2026-10-15T16:40:07Z",
    "passed": 17,
@@ -140,13 +147,6 @@
    "of": 14,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"find the book the left hand of dakrness\" (skill:book)"
-  },
-  {
-   "at": "2026-10-15T07:02:38Z",
-   "passed": 13,
-   "of": 13,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"put on lofi hip hop pls\" (skill:video-play)"
   }
  ],
  "seen": {
@@ -180,6 +180,10 @@
   "skill:dating": "2026-10-15T16:40:07Z",
   "skill:different": "2026-10-15T16:40:07Z",
   "skill:dismiss": "2026-10-15T16:40:07Z",
-  "skill:distance": "2026-10-15T16:40:07Z"
+  "skill:distance": "2026-10-15T16:40:07Z",
+  "skill:draw": "2026-10-15T16:50:11Z",
+  "skill:feelings": "2026-10-15T16:50:11Z",
+  "skill:figure": "2026-10-15T16:50:11Z",
+  "skill:figure-can": "2026-10-15T16:50:11Z"
  }
 }
