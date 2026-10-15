@@ -14,11 +14,11 @@ on:
   workflow_dispatch:
     inputs:
       job:
-        description: the probe: job id to work on (empty = the oldest open one)
+        description: "the probe: job id to work on (empty = the oldest open one)"
         type: string
         default: ''
       dry:
-        description: propose, apply and test, but leave the queue note alone and open no pull request
+        description: "propose, apply and test, but leave the queue note alone and open no pull request"
         type: boolean
         default: false
 
