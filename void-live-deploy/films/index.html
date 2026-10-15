@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>V01D FILMS</title>
-  <meta name="description" content="Short films V01D makes of its own experiments, newest first. For members: people who pay for V01D.">
+  <meta name="description" content="Short films V01D makes of its own experiments, newest first. Free to watch.">
   <meta name="robots" content="noindex">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#07070d">
@@ -71,11 +71,11 @@
   <p><a class="home" href="/">← V01D</a></p>
   <p class="kicker">Now showing · a new one daily</p>
   <h1 aria-label="V01D FILMS">V01D F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h1>
-  <p class="sub">Every day V01D films one of its own experiments. The films are for members: people who pay for V01D. Members review them: post it, needs work or skip, with a note, and the owner decides what goes on YouTube.</p>
+  <p class="sub">Every day V01D films one of its own experiments. Watch them free and share them. Members review them: post it, needs work or skip, with a note, and the owner decides what goes on YouTube.</p>
   <!-- one way in for everyone (owner, 2026-10-14: "V01D Pro is complex and could drive off members . needs a simpler interface for
        all"): Sign in with your passkey, or become a member; a bought key stays possible, folded away under "Have a key?" -->
   <div id="gate">
-    <strong>Members only.</strong> Sign in to watch, or become a member.
+    <strong>Review the films.</strong> Members and the owner sign in to review them: post it, needs work or skip.
     <div class="row" style="margin-top:14px"><button class="btn join" id="signin" type="button">Sign in</button><a class="btn" id="join" href="/code-review/#pro">Become a member</a></div>
     <details class="key"><summary>Have a key?</summary>
       <form id="keyform"><input id="key" type="password" autocomplete="off" placeholder="Paste your key" aria-label="Your V01D key"><button class="btn" type="submit">Watch</button></form></details>
@@ -141,20 +141,17 @@
     list.textContent = ''; gate.classList.remove('on'); status.textContent = 'Loading the films…';
     try {
       let r = null, j = {}, tried = [];
+      // anyone watches (owner, 2026-10-15: the films are our ads); each sign-in is tried in turn for reviewing, stopping at the first
+      // the server takes as the owner or a member, and the panel only asks to sign in when none does
       for (const [kind, tok] of creds()) {
-        r = await fetch('/api/films', { headers: { authorization: 'Bearer ' + tok } }); j = await r.json().catch(() => ({})); // void-review: ok (at most 3 sign-ins, tried in turn on purpose, stopping at the first that works)
-        if (r.status !== 401 && r.status !== 403) { good = tok; break; }
+        const t = await fetch('/api/films', { headers: { authorization: 'Bearer ' + tok } }); const tj = await t.json().catch(() => ({})); // void-review: ok (at most 3 sign-ins, tried in turn on purpose, stopping at the first that works)
+        if (!r || (t.ok && tj.member)) { r = t; j = tj; }
+        if (t.ok && tj.member) { good = tok; break; }
         tried.push(kind); if (kind === 'key') { try { sessionStorage.removeItem(KEY); } catch (_) {} }
       }
       if (!r) { r = await fetch('/api/films'); j = await r.json().catch(() => ({})); }
-      if (r.status === 401 || r.status === 403) {
-        status.textContent = tried.includes('owner') ? 'Your owner sign-in here has run out: tap Sign in.'
-          : tried.includes('account') ? 'Your account isn\u2019t a member yet: become a member to watch.'
-          : tried.includes('key') ? 'That key was not accepted.'
-          : 'Not signed in on this browser yet: tap Sign in.';
-        if (j.buy) document.getElementById('join').href = j.buy;
-        gate.classList.add('on'); return;
-      }
+      if (j.buy) document.getElementById('join').href = j.buy;
+      if (r.ok && !j.member) gate.classList.add('on');
       if (!r.ok) throw new Error(String(r.status));
       const films = j.films || [];
       if (!films.length) { status.textContent = 'No films yet: the first arrives with the next daily recording.'; return; }
@@ -169,7 +166,7 @@
             $('a', { class: 'btn yt', href: UPLOAD, target: '_blank', rel: 'noopener', text: '2. Upload to YouTube' }),
           ]),
           $('div', { class: 'row' }, [copyBtn('3. Copy title', f.title), copyBtn('Copy description', f.description), ...(f.tags ? [copyBtn('Copy tags', f.tags)] : [])]));
-        kids.push(reviewBox(f, j.owner));
+        if (j.member) kids.push(reviewBox(f, j.owner));
         list.append($('article', { class: 'film', 'data-id': f.id }, [video, $('div', { class: 'body' }, kids)]));
       }
     } catch (e) {
