@@ -519,17 +519,20 @@ try {
       [gated, shown, afterReload.slice(0, 40), gone, kept, afterX, afterUndo, net.join(',')].join(' | '));
     // the 3D wall calendar: "my calendar" opens it; tap a day, add an event in the editor, rename it; it is saved and on the card
     await C.ask('my calendar', 900);
-    const c3 = await C.p.evaluate(async () => {
+    // a day still ahead: the stage card lists only what is coming up (an hour's grace), so a fixed day went red every evening of the 15th
+    const today = new Date(), inMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+    const pick = today.getDate() + 3 <= inMonth ? { day: today.getDate() + 3, time: '19:30', hour: 19 } : { day: today.getDate(), time: '23:59', hour: 23 };
+    const c3 = await C.p.evaluate(async (pick) => {
       const pg = document.querySelector('.vpage.on'); if (!pg || !pg.querySelector('.c3d-page')) return 'no 3d page';
-      const day = [...pg.querySelectorAll('.c3d-day:not(.out)')][14]; day.click(); await new Promise((r) => setTimeout(r, 50));
-      const row = pg.querySelector('.c3d-edit .row.add'); row.querySelector('.w').value = 'Launch party'; row.querySelector('.t').value = '19:30'; row.querySelector('.ok').click();
+      const day = [...pg.querySelectorAll('.c3d-day:not(.out)')][pick.day - 1]; day.click(); await new Promise((r) => setTimeout(r, 50));
+      const row = pg.querySelector('.c3d-edit .row.add'); row.querySelector('.w').value = 'Launch party'; row.querySelector('.t').value = pick.time; row.querySelector('.ok').click();
       await new Promise((r) => setTimeout(r, 50));
-      // the row of the event just added: the 15th may already hold one of the visitor's adds above (tomorrow's lunch on the 14th)
+      // the row of the event just added: the day may already hold one of the visitor's adds above
       const w = [...pg.querySelectorAll('.c3d-edit .row:not(.add) .w')].find((x) => x.value === 'Launch party'); w.value = 'Launch party at the lab'; w.dispatchEvent(new Event('change', { bubbles: true }));
       await new Promise((r) => setTimeout(r, 50));
       const ev = JSON.parse(localStorage.getItem('a2m.void.agenda.v1')).find((e) => /Launch/.test(e.title));
-      return [ev && ev.title, ev && new Date(ev.at).getDate() === 15 && new Date(ev.at).getHours() === 19, [...pg.querySelectorAll('.c3d-ev')].some((e) => /Launch party at the lab/.test(e.textContent))].join(' ');
-    });
+      return [ev && ev.title, ev && new Date(ev.at).getDate() === pick.day && new Date(ev.at).getHours() === pick.hour, [...pg.querySelectorAll('.c3d-ev')].some((e) => /Launch party at the lab/.test(e.textContent))].join(' ');
+    }, pick);
     const card3 = await C.p.$eval('.calendar-card', (e) => e.innerText).catch(() => '');
     check('calendar: "my calendar" opens the 3D wall calendar; tap a day, add an event and rename it in place; saved here, written on the day, on the stage card',
       c3 === 'Launch party at the lab true true' && /Launch party at the lab/.test(card3) && !C.errors.length, c3 + ' | ' + card3.slice(0, 80));
