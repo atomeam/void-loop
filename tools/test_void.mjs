@@ -2423,8 +2423,9 @@ try {
     await P.ctx.close(); }
 
   // Void's films (owner, 2026-10-14: "just put void films right onto the sight"; 2026-10-15: "anyone should be able to at least watch
-  // the films those are our ads"): a stranger watches and is asked to sign in only to review (a key still works), a member gets the
-  // review box, and the owner also gets download, upload to YouTube and the words to copy
+  // the films those are our ads"; "i just need the sign in gone ... just give the films to everyone"): a stranger watches with no
+  // sign-in anywhere on the page, a member's key kept for the tab gets the review box, and the owner also gets download, upload to
+  // YouTube and the words to copy
   if (want("films page: anyone watches, a member reviews, the owner gets the YouTube steps")) {
     const F = await fresh(); await F.p.setViewportSize({ width: 390, height: 844 });
     const film = { id: '20261014-x-r6', at: '2026-10-14T16:33:31Z', title: 'Odd moments | an AI built this itself #Shorts', description: 'Log each odd moment.\n\nTry it: https://a-to-mind.com', tags: 'Void, AI', bytes: 1135255, src: '/api/films?id=20261014-x-r6&exp=9999999999&sig=abc' };
@@ -2436,12 +2437,13 @@ try {
       if (auth === 'Bearer vr1.' + 'A'.repeat(43)) return r.fulfill(json({ films: [film], owner: false, member: true }));
       return r.fulfill(json({ films: [film], owner: false, member: false, buy: 'https://a-to-mind.com/code-review/#pro' }));
     });
-    await F.p.goto(base + 'films/'); await until(async () => F.p.$eval('#gate', (e) => e.classList.contains('on')), 5000);
+    await F.p.goto(base + 'films/');
     await until(async () => (await F.p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
-    const gate = await F.p.evaluate(() => ({ on: document.getElementById('gate').classList.contains('on'), films: document.querySelectorAll('#films .film').length, review: !!document.querySelector('#films .review'), video: !!document.querySelector('#films .film video[src]'), text: document.getElementById('gate').innerText, join: document.getElementById('join').href }));
-    await F.p.click('#gate details.key summary'); await F.p.fill('#key', 'vr1.' + 'A'.repeat(43)); await F.p.click('#keyform button');
+    const gate = await F.p.evaluate(() => ({ films: document.querySelectorAll('#films .film').length, review: !!document.querySelector('#films .review'), video: !!document.querySelector('#films .film video'),
+      yt: !!document.querySelector('#films .film a.yt'), signin: !!document.querySelector('#gate, #signin, #keyform, a[href*="code-review"]'), text: document.body.innerText }));
+    await F.p.evaluate(() => sessionStorage.setItem('a2m.void.filmkey', 'vr1.' + 'A'.repeat(43))); await F.p.reload();
     await until(async () => !!(await F.p.$('#films .review')), 5000);
-    const member = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'), yt: !!a.querySelector('a.yt'), review: !!a.querySelector('.review'), gate: document.getElementById('gate').classList.contains('on') }; });
+    const member = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'), yt: !!a.querySelector('a.yt'), review: !!a.querySelector('.review') }; });
     await F.p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'owner-tok'); }); await F.p.reload();
     await until(async () => !!(await F.p.$('#films .film a.yt')), 5000);
     const card = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return a && { yt: a.querySelector('a.yt').href, dl: a.querySelector('a[download]').getAttribute('href'),
@@ -2449,8 +2451,8 @@ try {
     await F.ctx.grantPermissions(['clipboard-read', 'clipboard-write']);
     await F.p.click('#films .film button:nth-of-type(2)'); const copied = await F.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
     check('films page: anyone watches, a member reviews, the owner gets the YouTube steps',
-      gate.on && gate.films === 1 && gate.video && !gate.review && /Review the films/.test(gate.text) && !/Members only/.test(gate.text) && gate.join === 'https://a-to-mind.com/code-review/#pro' && seen[0] === ''
-      && member.h === film.title && member.src === film.src && !member.yt && member.review && !member.gate
+      gate.films === 1 && gate.video && !gate.review && !gate.yt && !gate.signin && !/sign in|member|have a key/i.test(gate.text) && seen[0] === ''
+      && member.h === film.title && member.src === film.src && !member.yt && member.review
       && !!card && card.yt === 'https://www.youtube.com/upload' && card.dl === film.src && JSON.stringify(card.btns) === '["3. Copy title","Copy description","Copy tags"]'
       && copied === film.description && !card.wide && !F.errors.length, JSON.stringify({ gate, member, card, copied, seen, errors: F.errors }));
     await F.ctx.close(); }
@@ -2495,32 +2497,28 @@ try {
     await S.ctx.close(); }
 
   // signed in as the owner, the films open (owner, 2026-10-14: "why am i geting the Members only ... when i am already signed in as
-  // owner?" / "just sign me in and build the wall around me"): every sign-in this browser holds is tried until one works, and the
-  // gate signs in with a passkey right there
-  if (want("films page: every sign-in is tried, and the passkey button signs the owner in")) {
+  // owner?"): every sign-in this browser holds is tried, quietly, until one works; with none that works the films still play and
+  // nothing asks to sign in (owner, 2026-10-15: "i just need the sign in gone")
+  if (want("films page: every sign-in this browser holds is tried, and none is ever asked for")) {
     const F = await fresh(); const p = F.p; const seen = [];
     const film = { id: '20261014-x-r6', at: '2026-10-14T16:33:31Z', title: 'Odd moments', description: 'd', tags: '', bytes: 1, src: '/api/films?id=20261014-x-r6&exp=9999999999&sig=abc', reviews: null };
-    await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => { const a = r.request().headers().authorization || ''; seen.push(a);
+    await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => { const a = r.request().headers().authorization || '';
       if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
-      if (a === 'Bearer vo1.fresh' || a === 'Bearer paid-acct') return r.fulfill(json({ owner: a === 'Bearer vo1.fresh', member: true, films: [film] }));
-      return r.fulfill(json({ ok: true, owner: false, member: false, films: [film], buy: '/code-review/#pro' })); });
-    const pk = [];
-    await F.ctx.route(/\/api\/passkey$/, (r) => { const b = JSON.parse(r.request().postData() || '{}'); pk.push(b.step);
-      return r.fulfill(json(b.step === 'get-options' ? { publicKey: { challenge: 'AAAA', rpId: '127.0.0.1', allowCredentials: [] } } : { ok: true, token: 'acct-tok', userId: 'u1', owner: { token: 'vo1.fresh', expires: '2026-11-13' } })); });
+      seen.push(a); // the list asks only, not the video loading its signed link
+      if (a === 'Bearer paid-acct') return r.fulfill(json({ owner: false, member: true, films: [film] }));
+      return r.fulfill(json({ ok: true, owner: false, member: false, films: [film] })); });
     // 1) a stale owner session and a paid account: the account is the one kept for reviewing
     await p.goto(base + 'films/'); await p.evaluate(() => { localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); localStorage.setItem('a2m.void.me.v1', JSON.stringify({ token: 'paid-acct' })); }); await p.reload();
     await until(async () => !!(await p.$('#films .review')), 5000);
-    const fell = { films: await p.$$eval('#films .film', (d) => d.length), order: seen.slice(-3) };
-    // 2) nothing that works: the films still play, the panel asks to sign in to review, then the passkey button signs the owner in
+    const fell = { films: await p.$$eval('#films .film', (d) => d.length), order: seen.slice(-2) };
+    // 2) only a stale owner session: the film still plays, and the page says nothing about signing in
     await p.evaluate(() => { localStorage.clear(); sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); }); await p.reload();
-    await until(async () => p.$eval('#gate', (e) => e.classList.contains('on')), 5000);
-    const why = await p.$eval('#status', (e) => e.textContent);
-    await p.evaluate(() => { navigator.credentials.get = async () => ({ id: 'cred1', toJSON: () => ({ id: 'cred1', type: 'public-key', response: {} }) }); });
-    await p.click('#signin'); await until(async () => !!(await p.$('#films .film a.yt')), 5000);
-    const kept = await p.evaluate(() => localStorage.getItem('a2m.void.owner.v1'));
-    check('films page: every sign-in is tried, and the passkey button signs the owner in',
-      fell.films === 1 && JSON.stringify(fell.order) === JSON.stringify(['Bearer vo1.stale', 'Bearer paid-acct', ''].slice(0, fell.order.length)) && /run out/.test(why)
-      && JSON.stringify(pk) === JSON.stringify(['get-options', 'get']) && kept === 'vo1.fresh' && !F.errors.length, JSON.stringify({ fell, why, pk, kept, errors: F.errors }));
+    await until(async () => (await p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
+    const stale = await p.evaluate(() => ({ status: document.getElementById('status').textContent, video: !!document.querySelector('#films .film video'), review: !!document.querySelector('#films .review'),
+      asks: !!document.querySelector('#gate, #signin, #keyform') || /sign in|run out|member/i.test(document.body.innerText) }));
+    check('films page: every sign-in this browser holds is tried, and none is ever asked for',
+      fell.films === 1 && JSON.stringify(fell.order) === JSON.stringify(['Bearer vo1.stale', 'Bearer paid-acct'])
+      && stale.video && !stale.review && !stale.asks && /^1 film, newest first\.$/.test(stale.status) && !F.errors.length, JSON.stringify({ fell, stale, errors: F.errors }));
     await F.ctx.close(); }
 
   // V01D's startup intro (owner, 2026-10-14: "a super professional brief V01D on startup"): the wordmark shows, typing works under
