@@ -735,7 +735,7 @@
     /* a world: one full-stage layer a skill draws behind every card (stageApi.setWorld), above the nebula */
     #void-world { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1.2s ease; }
     #void-world.on { opacity: 1; }
-    #void-stars-far.on { opacity: .55; }
+    #void-stars-far.on { opacity: .9; }
     /* ---- polish (2026-10-07): one type scale, calm cards that never sit under the ask bar ---- */
     :root {
       --font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Inter, Roboto, "Helvetica Neue", system-ui, sans-serif;
@@ -928,31 +928,49 @@
     /* the default void (Adam 2026-10-15: "a beautiful Void by default ... puts people in awe"; no grids, no synthwave floor ever):
        deep space, a slowly breathing event-horizon glow at the centre, a soft oval pool of light where cards arrive, star dust from the
        two star canvases. Transforms and opacity only (GPU-composited, no layout, no per-frame JS); CSS animations pause with the tab. */
+    /* celestial-sync: the nebula and ring tint follow the visitor's local hour (set on <html> by the script below, on the device only, no
+       network, nothing stored) and the real sky's glow when sky-rules has one (--sky-glow) */
+    :root { --neb-a: 92 70 190; --neb-b: 40 130 170; --ring: 1; }
+    html[data-phase="dawn"] { --neb-a: 190 90 140; --neb-b: 230 150 90; }
+    html[data-phase="day"]  { --neb-a: 70 120 210; --neb-b: 60 170 200; --ring: .9; }
+    html[data-phase="dusk"] { --neb-a: 200 80 120; --neb-b: 120 70 200; }
+    html[data-phase="night"]{ --neb-a: 92 70 190; --neb-b: 40 130 170; --ring: 1.08; }
     #void-depth::before { content: ''; position: absolute; left: 50%; top: 44%; width: min(118vmin, 1100px); aspect-ratio: 1; pointer-events: none;
       transform: translate(-50%, -50%); border-radius: 50%;
       background:
-        radial-gradient(closest-side, rgba(2,3,8,.96) 0 33%, transparent 37%),
-        radial-gradient(closest-side, transparent 31%, rgb(var(--d-key) / .48) 35.5%, rgb(var(--d-warm) / .16) 41%, transparent 58%),
-        conic-gradient(from 210deg, rgb(var(--d-teal) / .10), transparent 18%, rgb(var(--d-key) / .16) 40%, transparent 58%, rgb(var(--d-warm) / .12) 78%, rgb(var(--d-teal) / .10));
-      -webkit-mask: radial-gradient(closest-side, #000 55%, transparent 100%); mask: radial-gradient(closest-side, #000 55%, transparent 100%);
-      filter: blur(2px); opacity: .85; animation: d-breathe 11s ease-in-out infinite, d-turn 160s linear infinite; }
-    #void-depth::after { content: ''; position: absolute; inset: auto; opacity: 1; mix-blend-mode: normal; background-image: none; left: 50%; top: 44%; width: 160vmax; height: 90vmax; pointer-events: none; transform: translate(-50%, -50%) rotate(-14deg);
-      background: radial-gradient(30% 22% at 38% 46%, rgba(70,60,150,.13), transparent 70%), radial-gradient(26% 18% at 64% 56%, rgba(40,110,140,.10), transparent 70%), radial-gradient(40% 14% at 50% 50%, rgb(var(--d-warm) / .05), transparent 70%);
+        radial-gradient(closest-side, #000 0 32.5%, rgba(255,255,255,.75) 34.2%, rgb(var(--d-key) / .85) 35%, rgb(var(--d-warm) / .32) 39%, rgb(var(--d-key) / .12) 47%, transparent 62%),
+        conic-gradient(from 210deg, rgb(var(--d-teal) / .30), rgb(var(--d-key) / .05) 15%, rgb(var(--d-key) / .45) 36%, rgb(255 236 210 / .40) 47%, transparent 60%, rgb(var(--d-warm) / .36) 78%, rgb(var(--d-teal) / .30));
+      -webkit-mask: radial-gradient(closest-side, #000 50%, transparent 100%); mask: radial-gradient(closest-side, #000 50%, transparent 100%);
+      opacity: calc(.9 * var(--ring)); animation: d-breathe 11s ease-in-out infinite, d-turn 160s linear infinite; }
+    /* the gravitational lens: a thin bright arc that shimmers just outside the horizon, and the event horizon's own shadow on top */
+    #void-lens { position: absolute; left: 50%; top: 44%; width: min(118vmin, 1100px); aspect-ratio: 1; z-index: 0; pointer-events: none; border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(closest-side, transparent 35.2%, rgba(255,255,255,.16) 36%, transparent 38.4%);
+      animation: d-lens 7s ease-in-out infinite; }
+    @keyframes d-lens { 0%,100% { scale: 1; opacity: .75; } 50% { scale: 1.012; opacity: 1; } }
+    #void-depth::after { content: ''; position: absolute; inset: auto; opacity: 1; mix-blend-mode: screen; background-image: none; left: 50%; top: 44%; width: 160vmax; height: 90vmax; pointer-events: none; transform: translate(-50%, -50%) rotate(-14deg);
+      background: radial-gradient(28% 22% at 36% 46%, rgb(var(--neb-a) / .30), transparent 70%), radial-gradient(24% 18% at 66% 56%, rgb(var(--neb-b) / .24), transparent 70%),
+        radial-gradient(40% 12% at 50% 50%, rgb(var(--d-warm) / .10), transparent 70%), radial-gradient(18% 14% at 24% 62%, color-mix(in srgb, var(--sky-glow, #20306a) 60%, transparent), transparent 70%);
       animation: d-drift 70s ease-in-out infinite alternate; }
-    @keyframes d-breathe { 0%,100% { opacity: .70; } 50% { opacity: 1; } }
+    @keyframes d-breathe { 0%,100% { opacity: calc(.78 * var(--ring)); scale: 1; } 50% { opacity: var(--ring); scale: 1.015; } }
     @keyframes d-turn { to { rotate: 360deg; } }
     @keyframes d-drift { to { translate: 2.5vmax -1.5vmax; scale: 1.06; } }
     /* the light pool: a soft oval where answers stand, and a shadow under the active card (its light on the floor) */
     #void-glow::after { content: ''; position: absolute; left: 50%; top: 74%; width: min(760px, 110vw); height: min(150px, 22vw); transform: translate(-50%, -50%);
-      border-radius: 50%; background: radial-gradient(closest-side, rgb(var(--d-key) / .09), rgb(var(--d-key) / .03) 60%, transparent);
-      transition: opacity 1.2s var(--d-ease-out), scale 1.2s var(--d-ease-out); opacity: .8; }
+      border-radius: 50%; background: radial-gradient(closest-side, rgb(var(--d-key) / .12), rgb(var(--d-key) / .04) 60%, transparent);
+      transition: opacity 1.2s var(--d-ease-out), scale 1.2s var(--d-ease-out); opacity: .85; }
     #void-glow::before { content: ''; position: absolute; left: 50%; top: -30vh; width: 90vmax; height: 70vh; transform: translateX(-50%);
       background: radial-gradient(closest-side, rgb(var(--d-key) / .08), transparent); }
-    /* the void wakes when you start to ask, and leans in while V01D answers */
+    /* the void wakes when you start to ask, leans in while a card is up, and spins up while V01D is thinking */
     html:has(#input:focus) #void-depth::before { animation-duration: 6s, 160s; }
-    html:has(.vpage.on) #void-depth::before { opacity: 1; animation-duration: 4s, 120s; }
-    html:has(.vpage.on) #void-glow::after { opacity: 1; scale: 1.08; background: radial-gradient(closest-side, rgb(var(--d-key) / .14), rgb(0 0 0 / .35) 55%, transparent); }
-    @media (prefers-reduced-motion: reduce) { #void-depth::before, #void-depth::after { animation: none; } }
+    html:has(.vpage.on) #void-depth::before { animation-duration: 5s, 120s; }
+    html:has(.vpage.on) #void-glow::after { opacity: 1; scale: 1.08; background: radial-gradient(closest-side, rgb(var(--d-key) / .16), rgb(0 0 0 / .35) 55%, transparent); }
+    html.void-thinking #void-depth::before { animation-duration: 1.6s, 14s; --ring: 1.35; }
+    html.void-thinking #void-lens { animation-duration: 1.8s; }
+    /* light-reactive cards: the horizon light rims the card's top edge and blooms beneath it in the nebula's colour, stronger while thinking */
+    .vpage.on { box-shadow: var(--d-lift), 0 -1px 0 0 rgb(var(--d-key) / .35), 0 -24px 60px -30px rgb(var(--neb-a) / .55), 0 70px 140px -50px rgb(var(--neb-b) / .30); transition: box-shadow .9s var(--d-ease-out); }
+    html.void-thinking .vpage.on { box-shadow: var(--d-lift), 0 -1px 0 0 rgb(var(--d-key) / .6), 0 -30px 80px -26px rgb(var(--neb-a) / .8), 0 80px 160px -50px rgb(var(--neb-b) / .45); }
+    @media (prefers-reduced-motion: reduce) { #void-depth::before, #void-depth::after, #void-lens { animation: none; } }
     /* the ask bar: deeper glass, a lit rim that wakes on focus, a bigger calmer type size, a send key that glows when there is text */
     #row { border-radius: 22px; background: var(--d-glass); box-shadow: var(--d-lift); position: relative; isolation: isolate; }
     #row::after { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none; z-index: -1;
@@ -978,11 +996,11 @@
     @media (max-width: 480px) {
       #row { border-radius: 20px; }
       #input { font-size: 16px; } /* 16px: iOS never zooms the page when the ask bar takes focus */
-      #void-depth::before { top: 40%; width: 128vmin; }
+      #void-depth::before, #void-lens { top: 40%; width: 128vmin; }
       .vpage { border-radius: 22px; }
     }
     @media (prefers-reduced-motion: reduce) { .vpage.on { animation: none; } #row::after { transition: none; } }
-    @media (forced-colors: active) { #void-depth::before, #void-depth::after, #void-glow::before, #void-glow::after, #row::after { display: none; } }
+    @media (forced-colors: active) { #void-depth::before, #void-depth::after, #void-lens, #void-glow::before, #void-glow::after, #row::after { display: none; } }
   </style>
 </head>
 <body>
@@ -1002,7 +1020,7 @@
     <p>V01D by A-to-Mind is one quiet input. Ask for anything and it appears: a clock, a timer, notes, a list, a street map, the weather, a translation, a calculation, or a page about any topic. Nothing to sign up for. It needs JavaScript to run.</p>
     <p>Link straight to an answer: <a style="color:#fff" href="/?q=weather%20in%20Tokyo">a-to-mind.com/?q=weather in Tokyo</a>. More in <a style="color:#fff" href="/llms.txt">llms.txt</a>.</p>
   </main></noscript>
-  <div id="void-depth" aria-hidden="true"></div><div id="void-glow" aria-hidden="true"></div><canvas id="void-stars-far" aria-hidden="true"></canvas><canvas id="void-stars" aria-hidden="true"></canvas><div id="void-backdrop" aria-hidden="true"></div>
+  <div id="void-depth" aria-hidden="true"><div id="void-lens"></div></div><div id="void-glow" aria-hidden="true"></div><canvas id="void-stars-far" aria-hidden="true"></canvas><canvas id="void-stars" aria-hidden="true"></canvas><div id="void-backdrop" aria-hidden="true"></div>
   <div id="stage" role="region" aria-label="your stage"></div>
   <!-- screen readers hear each answer page here (its title and first lines), so asking never ends in silence -->
   <div id="sr-say" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
@@ -3616,7 +3634,7 @@ say('nothing selected to remove');
 
     // row 13: entering your own Void (silent, first time something is kept) + personal look
     const ENTRY_KEY = 'a2m.void.entered.v1', LOOK_KEY = 'a2m.void.look.v1';
-    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'off', quiet: false, scale: 1, fx: 'off', backdrop: '' };
+    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'on', quiet: false, scale: 1, fx: 'off', backdrop: '' };
     // a backdrop is a picture you drew (skills/draw.js), as a data URL: image only, and small enough to sync
     const backdropOk = (src) => typeof src === 'string' && src.length < 600000 && /^data:image\/(?:png|webp|jpeg);base64,[A-Za-z0-9+/=]+$/.test(src);
     const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };
@@ -3635,29 +3653,45 @@ say('nothing selected to remove');
       document.body.classList.add('void-entered');
     }
     function seedStars() {
-      starCv.width = innerWidth; starCv.height = innerHeight;
-      if (starFar) { starFar.width = innerWidth; starFar.height = innerHeight; }
-      stars = Array.from({ length: 90 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.4 + 0.35, vx: (Math.random() - 0.5) * 0.18, vy: (Math.random() - 0.5) * 0.18 }));
-      farStars = Array.from({ length: 160 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 0.8 + 0.12, vx: (Math.random() - 0.5) * 0.05, vy: (Math.random() - 0.5) * 0.05 }));
+      // the default Void (2026-10-15): DPR capped at 2 (phones stay light), denser on big screens, a few stars twinkle
+      const dpr = Math.min(2, window.devicePixelRatio || 1), W = innerWidth, H = innerHeight, area = Math.min(1.6, (W * H) / (1280 * 800));
+      for (const c of [starCv, starFar]) { if (!c) continue; c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0); }
+      const tint = () => ['255,255,255', '200,215,255', '255,228,205', '215,235,255'][Math.random() * 4 | 0];
+      stars = Array.from({ length: Math.round(110 * area) + 40 }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() < .08 ? Math.random() * 1.1 + 1.3 : Math.random() * 1.1 + 0.4, vx: (Math.random() - 0.5) * 0.16, vy: (Math.random() - 0.5) * 0.16, a: 0.55 + Math.random() * 0.45, c: tint(), tw: Math.random() < .14 ? 0.6 + Math.random() * 1.6 : 0, ph: Math.random() * 6.3 }));
+      farStars = Array.from({ length: Math.round(260 * area) + 60 }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 0.75 + 0.2, vx: (Math.random() - 0.5) * 0.04, vy: (Math.random() - 0.5) * 0.04, a: 0.25 + Math.random() * 0.5 }));
     }
     function drawStars() {
-      starCtx.clearRect(0, 0, starCv.width, starCv.height);
-      if (starFarCtx) starFarCtx.clearRect(0, 0, starFar.width, starFar.height);
+      const W = innerWidth, H = innerHeight, t = performance.now() / 1000;
+      starCtx.clearRect(0, 0, W, H);
+      if (starFarCtx) starFarCtx.clearRect(0, 0, W, H);
       const k = voidLook.stars === 'slow' ? 0.3 : 1, move = !reduceMotion.matches;
       if (starFarCtx) {
-        starFarCtx.fillStyle = 'rgba(210,220,255,0.35)';
         for (const st of farStars) {
-          if (move) { st.x = (st.x + st.vx * k + starFar.width) % starFar.width; st.y = (st.y + st.vy * k + starFar.height) % starFar.height; }
+          if (move) { st.x = (st.x + st.vx * k + W) % W; st.y = (st.y + st.vy * k + H) % H; }
+          starFarCtx.globalAlpha = st.a || .35; starFarCtx.fillStyle = 'rgb(210,220,255)';
           starFarCtx.beginPath(); starFarCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starFarCtx.fill();
         }
       }
-      starCtx.fillStyle = 'rgba(255,255,255,0.7)';
+      if (starFarCtx) starFarCtx.globalAlpha = 1;
       for (const st of stars) {
-        if (move) { st.x = (st.x + st.vx * k + starCv.width) % starCv.width; st.y = (st.y + st.vy * k + starCv.height) % starCv.height; }
+        if (move) { st.x = (st.x + st.vx * k + W) % W; st.y = (st.y + st.vy * k + H) % H; }
+        const tw = st.tw && move ? 0.55 + 0.45 * Math.sin(t * st.tw + st.ph) : 1;
+        starCtx.globalAlpha = (st.a || .7) * tw; starCtx.fillStyle = 'rgb(' + (st.c || '255,255,255') + ')';
         starCtx.beginPath(); starCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starCtx.fill();
+        if (st.r > 1.3 && tw > .8) { starCtx.globalAlpha *= .18; starCtx.beginPath(); starCtx.arc(st.x, st.y, st.r * 3.2, 0, Math.PI * 2); starCtx.fill(); }
       }
+      starCtx.globalAlpha = 1;
       if (move && !document.hidden) starRAF = requestAnimationFrame(drawStars); else starRAF = 0;
     }
+    // celestial-sync + thinking state for the default Void (coarse, on the device only: the local hour; nothing sent or stored)
+    (function () {
+      const d = document.documentElement;
+      const phase = () => { const h = new Date().getHours(); d.dataset.phase = h >= 5 && h < 8 ? 'dawn' : h >= 8 && h < 17 ? 'day' : h >= 17 && h < 20 ? 'dusk' : 'night'; };
+      phase(); setInterval(phase, 10 * 60 * 1000);
+      let q = 0; const look = () => { q = 0; const on = document.querySelector('.vpage.on'); d.classList.toggle('void-thinking', !!on && /thinking…|looking up|reading the page/.test(on.textContent.slice(0, 2000))); };
+      new MutationObserver(() => { if (!q) q = requestAnimationFrame(look); }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['class'] });
+      document.addEventListener('visibilitychange', () => { if (!document.hidden && !starRAF && starCv.classList.contains('on')) drawStars(); });
+    })();
     function applyLook(persist) {
       const r = document.documentElement.style;
       r.setProperty('--void-bg', voidLook.bg); r.setProperty('--void-glow', voidLook.glow);
