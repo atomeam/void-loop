@@ -3,7 +3,7 @@
  "totals": {
   "experiment": 1,
   "tested": 46,
-  "checked": 13,
+  "checked": 14,
   "proven": 83
  },
  "families": [
@@ -552,11 +552,6 @@
    },
    "skills": [
     {
-     "name": "digest",
-     "tier": "tested",
-     "why": "a self-test"
-    },
-    {
      "name": "video",
      "tier": "tested",
      "why": "a self-test"
@@ -748,7 +743,7 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 1,
+    "checked": 2,
     "proven": 14
    },
    "skills": [
@@ -811,6 +806,11 @@
      "name": "services",
      "tier": "proven",
      "why": "a self-test, 9 real asks in the benchmark"
+    },
+    {
+     "name": "store",
+     "tier": "checked",
+     "why": "a self-test, 4 browser-suite mentions"
     },
     {
      "name": "share",

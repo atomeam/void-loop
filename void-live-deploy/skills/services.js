@@ -63,7 +63,7 @@ async function run(text, api) {
 
 export default {
   name: 'services',
-  examples: ['pricing', 'what do you sell', 'hire you', 'fix my automation', 'what does void cost'],
+  examples: ['what do you sell', 'hire you', 'fix my automation', 'what does void cost'],
   nearMisses: ['price of gold', 'fix my code', 'hire a plumber', 'what can you do', 'price of bitcoin'],
   match(lower, text) { return !!servicesOf(text); },
   run

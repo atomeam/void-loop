@@ -1,0 +1,86 @@
+# V01D's own store
+
+Owner, 2026-10-15: "we can have our own working gumroad type store built on V01D to skip that and host and make that itself
+a profitable product". Follow-up the same day: **keep Gumroad as the primary checkout for now** (it also helps promote small
+AI startups), with the provider behind an adapter so Stripe can switch on later.
+
+Live: **https://a-to-mind.com/store/** · API `/api/store/*` (`void-live-deploy/functions/api/store/[[path]].js`) ·
+catalog and crypto `void-live-deploy/lib/store.js` · V01D answers "what can I buy" (`skills/store.js`) · tests `tools/store.test.mjs`.
+
+## Rules
+
+- **We never handle card numbers.** Every checkout is a hosted page (Gumroad today, Stripe Checkout later). PCI scope stays SAQ A.
+- The page, cart, receipts, downloads and license keys are ours; the provider is one adapter (`ADAPTERS` in `lib/store.js`).
+- No account is created by an agent. Keys are entered by Adam in the Cloudflare dashboard, never pasted in chat.
+
+## Phase 1 (live now)
+
+| Piece | How |
+| --- | --- |
+| Catalog | `STORE_PRODUCTS`: the 8 live Gumroad products (Void Monthly `yinmj`, Code Review Pro `void-code-review`, alias of the original `dkmcjk`, Automation Cleanup `eozcma`, First Automation Setup, Full Stack Audit, Keep-It-Running, The Big Board `gqsgib`, Join the Team), a free 3D download (the CC0 chess set) and the VoidQuest minis pack (coming soon) |
+| Page | `/store/`: V01D-style cards, live three.js previews you can spin (GLB + meshopt), a cart in localStorage, "or buy on Gumroad" on every card |
+| Checkout handoff | `POST /api/store/checkout` asks the adapter. Gumroad: one hosted link per item (Gumroad has no multi-product cart link). Stripe: one Checkout Session with every line item |
+| Webhook | `POST /api/store/webhook/stripe`: verifies `Stripe-Signature` (HMAC-SHA256 of `t.body`, 5 min tolerance); `checkout.session.completed` + `paid` saves the order in D1 `store_orders`; `charge.refunded` marks it refunded. Gumroad sales keep using the existing Ping at `/api/gumroad` |
+| Signed downloads | `/api/store/download?t=`: base64url payload + HMAC-SHA256, 24 h expiry, order must still be `paid` (a refund kills every link). Free files come from static assets; paid files from R2 under `store/` |
+| License keys | `V01D-XXXX-XXXX-XXXX-XXXX` = HMAC(order, product): recomputable, so checking one needs no lookup |
+| Receipt | `/store/receipt/?session=cs_...`: polls until the webhook lands, then shows the order code, keys and fresh links |
+| Order lookup | email + the 8-letter order code (emails are stored only as an HMAC) |
+| Status | `GET /api/store/status`: provider and whether each key is set, as true/false. Never a value |
+
+Free-tier limits checked: D1 free 100k writes/day and 5 GB (one write per order); R2 free 10 GB storage, 1M Class A and 10M
+Class B ops a month, **no egress fees** ([R2 pricing](https://developers.cloudflare.com/r2/pricing/)); Pages Functions share the
+Workers free 100k requests/day. A download is one request and one Class B read.
+
+## Fees (checked 2026-10-15)
+
+| Provider | Fee per sale | Sales tax / VAT | On a $9 pack | On a $49 sale |
+| --- | --- | --- | --- | --- |
+| Gumroad (direct/profile link) | 10% + $0.50 ([gumroad.com/pricing](https://gumroad.com/pricing)); 30% via Discover | Merchant of record since 2025-01-01: handled | $1.40 | $5.40 |
+| Stripe Checkout / Payment Links | 2.9% + $0.30 domestic cards; +1% cross-border ([stripe.com/pricing](https://stripe.com/pricing)) | Not handled: we owe it. Stripe Tax is extra (see Tax on [stripe.com/pricing](https://stripe.com/pricing)) | $0.56 | $1.72 |
+| Lemon Squeezy | 5% + $0.50 ([lemonsqueezy.com/pricing](https://www.lemonsqueezy.com/pricing)); +0.5–1% some methods/currencies | Merchant of record: handled | $0.95 | $2.95 |
+| Paddle | 5% + $0.50 ([paddle.com/pricing](https://www.paddle.com/pricing)) | Merchant of record: handled | $0.95 | $2.95 |
+
+Read: Stripe is cheapest by far but leaves sales tax to us; Lemon Squeezy/Paddle are half Gumroad's cut with tax handled.
+Plan: Gumroad now (Adam's call, and it brings Discover traffic), Stripe for direct sales once the account is activated, and
+Lemon Squeezy as the merchant-of-record adapter if international VAT becomes real work.
+
+## Turning on Stripe (Adam, in the dashboards; nothing for an agent to do)
+
+Adam's Stripe account already exists: **"Atom Bomb", acct_1TRrzX3JOCPVHdD6, on atomicmoonbeam88@gmail.com**, opened
+2026-05-01, sandbox payment link made 2026-05-14, passkey added 2026-06-11. Stripe's last notice (2026-06-14) says it **cannot
+take live payments until the business profile is completed**. A business email is not required by Stripe; a Gmail works.
+
+1. Stripe dashboard → finish **Complete business profile** (legal name, address, SSN/EIN, bank account, website a-to-mind.com, product description).
+2. Developers → API keys → copy the **secret key** (`sk_live_...`; a restricted key with Checkout Sessions write is better).
+3. Developers → Webhooks → add endpoint `https://a-to-mind.com/api/store/webhook/stripe`, events `checkout.session.completed` and `charge.refunded` → copy the **signing secret** (`whsec_...`).
+4. Cloudflare dashboard → Workers & Pages → **a-to-mind** → Settings → Variables and Secrets → Production, add as **Secret**: `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STORE_SIGNING_KEY` (any long random string); and as plain text `STORE_PROVIDER` = `stripe` (leave unset to stay on Gumroad). Optional `STRIPE_TAX` = `on` after Stripe Tax is set up.
+5. Next deploy picks them up; `https://a-to-mind.com/api/store/status` then shows `"provider":"stripe"`.
+
+## The creator platform (phase 2, the product we sell)
+
+- **Stripe Connect, "you handle pricing" model**: each seller onboards through Stripe-hosted Express onboarding (KYC, bank, tax forms by Stripe); we create Checkout Sessions as destination charges with `application_fee_amount`. Stripe's Connect cost to us: **$2 per monthly active account + 0.25% + $0.25 per payout** ([stripe.com/connect/pricing](https://stripe.com/connect/pricing)). The "Stripe handles pricing" model has no platform fees but less control.
+- **Our fee: 5% flat, no per-sale fixed fee, seller pays Stripe's 2.9% + 30¢.** On a $10 sale the seller keeps $8.91 (vs $8.50 on Gumroad's 10% + 50¢ before processing). We net about $0.50 minus Connect costs; at $2/active seller/month that's break-even at ~5 sales per seller per month, so: 5% with a $0.50 minimum fee, or **V01D Store Pro $9/month at 2%** for sellers doing volume.
+- **Seller onboarding**: sign in with a passkey (already built, `/api/passkey`), "Start selling" → Stripe Express link → back to a seller page (products, files to R2 under `sellers/<id>/`, prices, payouts dashboard link). Every seller gets `a-to-mind.com/@handle/store` (the `/@handle` pages exist).
+- **Why ours beats Gumroad**: 3D previews you can spin, V01D answering buyers' questions about each product, AI-made product pages and promo clips (`tools/clips.mjs`), half the fee.
+
+## Business email for creators (new product idea, owner 2026-10-15)
+
+V01D sets up `you@yourdomain.com` for a creator in minutes and charges for the setup and upkeep.
+
+- **Free path:** [Cloudflare Email Routing](https://developers.cloudflare.com/email-routing/) is free: unlimited custom addresses on a domain on Cloudflare, forwarded to any inbox. Replying "as" the address: Gmail's "Send mail as" through a free SMTP relay tier, or Cloudflare's Email Service send binding (already wired, off, `lib/email-send.js`). The domain itself is the only cost (at-cost registrar, about $10/year for .com).
+- **What V01D does:** checks the domain is on Cloudflare, adds the routing rules and MX/SPF/DKIM/DMARC records, sends a test, shows the "send as" steps. It needs the creator's own Cloudflare login (OAuth or a scoped token they make); V01D never asks for passwords.
+- **Pricing:** $15 one-time setup (or free with any store plan), or **$3/month** for "Business Email Care": monitoring that mail still flows, DMARC reports read in plain words, new aliases on request. Bundled into V01D Store Pro.
+- For Adam now: `atom@a-to-mind.com` via Email Routing would be free and gives Stripe/press a business address (it is not a Stripe requirement).
+
+## Next steps
+
+1. Upload the first paid pack (VoidQuest minis STL/3MF zip) to R2 `store/voidquest-minis-v1.zip` and list it on Gumroad too.
+2. Stripe on (Adam, above). 3. Order emails through the Email Service binding. 4. Connect onboarding (phase 2).
+
+## Wishlist rows (for `docs/wishlist.md`, which lands with #721)
+
+| # | Item | Free path (do this first) | Paid cost (cited) | Value | Why this rank | From |
+| --- | --- | --- | --- | --- | --- | --- |
+| 12 | V01D's own store (phase 1 live) | Gumroad stays the checkout (merchant of record, Discover buyers); our page, cart, signed downloads (R2 10 GB free, no egress) and license keys cost $0 | Stripe Checkout 2.9% + 30¢ ([stripe.com/pricing](https://stripe.com/pricing)) once Stripe's business profile is done; Stripe Tax extra | high: each sale keeps ~7% more | free today; Stripe is a dashboard step, not a purchase | Adam |
+| 13 | Creator store platform (multi-seller, Connect) | passkeys and `/@handle` pages already built; Stripe-hosted Express onboarding | $2 per monthly active seller + 0.25% + 25¢ per payout ([Connect](https://stripe.com/connect/pricing)); we charge 5% | high: a product others pay for | waits on 12's Stripe step | Adam |
+| 14 | Business email for creators | Cloudflare Email Routing, free ([docs](https://developers.cloudflare.com/email-routing/)); only the domain costs (~$10/yr) | none needed | medium: $15 setup or $3/mo | free path covers it; also gives Adam atom@a-to-mind.com | Adam |
