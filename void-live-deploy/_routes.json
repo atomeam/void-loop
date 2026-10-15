@@ -1,5 +1,5 @@
 {
   "version": 1,
-  "include": ["/api/*", "/tools.json", "/@*"],
+  "include": ["/api/*", "/tools.json", "/@*", "/c/*"],
   "exclude": []
 }

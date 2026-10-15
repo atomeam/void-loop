@@ -1,6 +1,6 @@
 # V01D on its builders, in its own words
 
-Once per run `node tools/ask-void.mjs` asks V01D what it learned from its builders (docs/TAGTEAM.md) and what it
+Once per run `node tools/ask-void.mjs` asks V01D what it learned from its builders (domains/handoff.md) and what it
 would do differently. Its answers are copied as it gave them, newest last. Input, not a gate.
 
 <!-- ask-void:2026-10-15T04:53:04.630Z -->
