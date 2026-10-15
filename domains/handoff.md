@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (hourly builder) · helper/film-poster · asked by V01D: a promo poster for any V01D film, from its film metadata (poster skill) · 2026-10-15 05:45 UTC
 - Grok Bot · grok/films-upload · V01D Tube phase 1: watch pages, views, RSS, Upload/Copy for YouTube, TikTok, Reels, X for anyone; ad clips into Films · 2026-10-15 05:20 UTC
 
 ## Just finished
