@@ -1,13 +1,34 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 14,
- "runsTotal": 41,
+ "cases": 15,
+ "runsTotal": 44,
  "kinds": {
-  "grow": 7,
-  "file": 27,
+  "grow": 8,
+  "file": 29,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T20:35:25Z",
+   "passed": 0,
+   "of": 19,
+   "kind": "file",
+   "note": "fix: \"make my void light\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T20:10:35Z",
+   "passed": 0,
+   "of": 19,
+   "kind": "file",
+   "note": "fix: \"label the clock kitchen\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T20:06:20Z",
+   "passed": 0,
+   "of": 18,
+   "kind": "grow",
+   "note": "grew the suite: \"what time is it in tokyo\""
+  },
   {
    "at": "2026-10-15T19:02:51Z",
    "passed": 0,
@@ -126,27 +147,6 @@
    "of": 16,
    "kind": "file",
    "note": "fix: \"find fimls about space\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T07:34:43Z",
-   "passed": 11,
-   "of": 16,
-   "kind": "file",
-   "note": "fix: \"my auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T07:27:54Z",
-   "passed": 15,
-   "of": 16,
-   "kind": "file",
-   "note": "fix: \"yo menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T07:23:58Z",
-   "passed": 10,
-   "of": 16,
-   "kind": "file",
-   "note": "fix: \"moive metadata for the matrix\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -200,6 +200,18 @@
   "skill:deadlines": "2026-10-15T19:02:51Z",
   "skill:family-health": "2026-10-15T19:02:51Z",
   "skill:home": "2026-10-15T19:02:51Z",
-  "skill:image": "2026-10-15T19:02:51Z"
+  "skill:image": "2026-10-15T19:02:51Z",
+  "skill:incident": "2026-10-15T20:06:20Z",
+  "skill:intent": "2026-10-15T20:06:20Z",
+  "skill:inventory": "2026-10-15T20:06:20Z",
+  "skill:invite": "2026-10-15T20:06:20Z",
+  "skill:appraise": "2026-10-15T20:10:35Z",
+  "skill:joke": "2026-10-15T20:10:35Z",
+  "skill:label": "2026-10-15T20:10:35Z",
+  "skill:layer": "2026-10-15T20:10:35Z",
+  "skill:light-look": "2026-10-15T20:35:25Z",
+  "skill:link": "2026-10-15T20:35:25Z",
+  "skill:list": "2026-10-15T20:35:25Z",
+  "skill:loan": "2026-10-15T20:35:25Z"
  }
 }

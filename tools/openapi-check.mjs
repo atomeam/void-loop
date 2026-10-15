@@ -19,6 +19,7 @@ export const INTERNAL = {
   '/api/actions': 'the actions record, for the page and the owner',
   '/api/probe-asks': "V01D writes its own probe asks for one skill family (owner only, frontier #28; tools/probe-asks.mjs and its daily workflow are the only callers)",
   '/api/answer': "the page's answer model",
+  '/api/appraise': "the page's appraise card: one photo in, V01D's valuation out (functions/api/appraise.js, lib/appraise-photo.js)",
   '/api/video': "the page's video card: search and link lookup for the official embeds (functions/api/video.js)",
   '/api/approval': 'the approve card, signed-in',
   '/api/aurora': "the page's aurora card",
