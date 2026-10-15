@@ -165,7 +165,7 @@ for (const c of ['await deliver(plan, { token: opts.token ?? process.env.BRIDGE_
   ok(!rules(c, 'javascript').some((r) => /hardcoded-secret|plain-http|empty-catch/.test(r)), 'no finding for: ' + c + ' (got ' + rules(c, 'javascript').join(',') + ')');
 ok(rules('const password = "hunter2hunter2";', 'javascript').includes('hardcoded-secret@1'), 'a password string');
 ok(rules('export STRIPE_SECRET_KEY=abcd1234efgh5678', 'shell').includes('hardcoded-secret@1'), 'a shell secret');
-ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').includes('hardcoded-secret@1'), 'a password in a URL');
+ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').includes('hardcoded-secret@1'), 'a password in a URL'); // secret-scan: ok (a made-up credential the rule must flag)
 { // a token read from the environment: no finding, and the closer read is shown the lookup, not a "[redacted]" that reads as a hard-coded key
   const env = 'const ACCOUNT = process.env.CLOUDFLARE_ACCOUNT_ID, TOKEN = process.env.CLOUDFLARE_API_TOKEN;', lit = 'const TOKEN = "sk_live_abcdef1234567890XYZ";';
   ok(!rules(env, 'javascript').includes('hardcoded-secret@1') && redact(env) === env, 'an env lookup is no hard-coded secret and is not masked: ' + redact(env));

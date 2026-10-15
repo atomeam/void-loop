@@ -112,6 +112,7 @@ for (const [name, file] of [
   ['bench-route', 'bench-route.test.mjs'],
   ['poster', 'poster.test.mjs'],
   ['speak', 'speak.test.mjs'],
+  ['secret-scan', 'secret-scan.test.mjs'],
   ['next-skill', 'next-skill.test.mjs'],
   ['share', 'share.test.mjs'],
   ['advance', 'advance.test.mjs'],
@@ -192,6 +193,9 @@ for (const [name, file] of [
   results.push(['copies', !stale.length, stale.length ? stale.join(' and ') + ' differ from void.html: cp void.html void-live-deploy/index.html && cp void.html void-live-deploy/void.html' : 'void.html and both deploy copies match']); }
 // skills/index.json is generated from skills/order/ (tools/skills-index.mjs): a skill added without its order file, or an order file
 // without the index rewritten, is caught here, not on the page
+// every line this branch adds, in every file type, holds no real key (tools/secret-scan.mjs; owner, 2026-10-15: "make V01D the best
+// at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
+{ const r = run([resolve(here, 'secret-scan.mjs'), '--base', 'origin/main']); results.push(['secrets', r.ok, r.out[r.out.length - 1] || '']); }
 { const r = run([resolve(here, 'skills-index.mjs'), '--check']); results.push(['index', r.ok, r.out[r.out.length - 1] || '']); }
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
 { const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
