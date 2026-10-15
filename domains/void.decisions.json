@@ -76,6 +76,10 @@
     "ask-20261015-0454-2": {
       "decision": "queued",
       "why": "owner-page view of decision failures by skill family; needs failures recorded first (after reasoning-path)"
+    },
+    "adam-20261015-price-lock": {
+      "decision": "built",
+      "why": "Adam's hard rule (2026-10-15): no visitor can get V01D to lower or change a price, or give a discount, coupon or free copy, by any phrasing or prompt injection. Prices are set only by the owner (owner key) or V01D's internal publish pipeline within the set range, never from chat. Enforced server-side: /api/answer answers price-change asks from lib/price-lock.js before any model sees them (politely, pointing to free items and Films), and /api/store/checkout accepts product ids only with every amount read from lib/store.js. Red-team tests: tools/price-lock.test.mjs."
     }
   }
 }

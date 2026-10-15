@@ -32,7 +32,8 @@ export async function onRequest(ctx) {
     if (path === 'status' && m === 'GET') { const s = providerOf(env); return J({ provider: s.provider, wanted: s.wanted, stripe_keys: s.stripeReady, signing_key: s.signing, orders_db: !!env.DB, files_bucket: !!env.FILMS }); }
     if (path === 'checkout' && m === 'POST') {
       const b = await request.json().catch(() => ({}));
-      const items = [...new Set([].concat(b.items || []))].slice(0, 20).map(productOf).filter((p) => p && !p.soon && p.cents > 0);
+      // product ids only: any price, amount, discount or coupon in the body is ignored, every amount comes from lib/store.js (lib/price-lock.js)
+      const items = [...new Set([].concat(b.items || []).filter((x) => typeof x === 'string'))].slice(0, 20).map(productOf).filter((p) => p && !p.soon && p.cents > 0);
       if (!items.length) return J({ ok: false, error: 'nothing to buy in the cart' }, 400);
       const email = /^[^@\s]{1,64}@[^@\s]{1,190}$/.test(String(b.email || '')) ? String(b.email) : '';
       const s = providerOf(env);
