@@ -67,6 +67,9 @@ export function engine() {
     const E = { lib, THREE, renderer, canvas, env, gltf, ktx2, w: 0, h: 0, quality: 1, gov: { ema: 0, n: 0, good: 0 }, models: new Map(), textures: new Map(), maxAniso: renderer.capabilities.getMaxAnisotropy(), lost: false };
     // a lost context (a GPU reset, the driver's watchdog) used to leave every miniature dead until a reload: wait it out, then
     // recompile and redraw them all (three.js rebuilds its own GPU state when the context comes back)
+    // the studio light: a CC0 Poly Haven HDRI (brown_photostudio_02, see docs/licenses.md) replaces the procedural room once it
+    // has loaded, so glossy pieces show real softbox highlights; the room stays if the file can't load
+    studioHdri(E).catch((e) => console.warn('[scene3d] studio HDRI', e));
     canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); E.lost = true; guard.contextLost(); });
     canvas.addEventListener('webglcontextrestored', () => { E.lost = false; guard.contextRestored(); for (const h of live.values()) { h.needsCompile = true; h.dirty = true; h.shadowDirty = true; for (const c of h.contacts) c.dirty = true; } wake(); });
     return E;
@@ -143,6 +146,15 @@ async function builderFor(kind) {
   if (!builders.has(kind)) { const m = await import('/skills/mini/' + kind + '.js'); if (!builders.has(kind) && typeof m.default === 'function') builders.set(kind, m.default); }
   if (!builders.has(kind)) throw new Error('no miniature for ' + kind);
   return builders.get(kind);
+}
+export const STUDIO_HDRI = '/models/hdri/brown_photostudio_02_1k.hdr';
+async function studioHdri(E) {
+  const { THREE } = E; const { HDRLoader } = await import(V + 'addons/HDRLoader.js');
+  const tex = await new HDRLoader().setDataType(THREE.HalfFloatType).loadAsync(STUDIO_HDRI);
+  tex.mapping = THREE.EquirectangularReflectionMapping;
+  const pm = new THREE.PMREMGenerator(E.renderer); const env = pm.fromEquirectangular(tex).texture; tex.dispose(); pm.dispose();
+  E.env = env; E.studio = true;
+  for (const h of live.values()) if (h.E === E) { h.scene.environment = env; h.needsCompile = true; h.requestRender(); }
 }
 export function liveMiniatures() { return [...live.values()].map((h) => ({ key: h.key, kind: h.kind, w: h.cssW, h: h.cssH, draws: h.draws, shadowDraws: h.shadowDraws || 0, ms: h.ms, visible: h.visible, ready: h.ready, rendered: h.draws > 0 })); }
 export function unmountMiniature(key) { const h = live.get(key); if (h) h.dispose(); return !!h; }
