@@ -2272,7 +2272,7 @@ try {
     const paged = (await states()).length, moreHidden = await L.p.$eval('.actions-more', (b) => b.style.display === 'none');
     check('actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides',
       before[0] === 'running' && before.length === 30 && after[0] === 'done' && after.length === 30 && /^updated .* · refreshes every 1 min/.test(cap) && paged === 41 && moreHidden
-      && calls.slice(0, 3).join(',') === '30/0,30/0,30/30' && !L.errors.length, JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, errs: L.errors }));
+      && calls.filter((c) => c.startsWith('30/')).slice(0, 3).join(',') === '30/0,30/0,30/30' && !L.errors.length, JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, errs: L.errors })); // the owner's status card reads 50 at load (skills/status.js failedActions); only this card's pages of 30 are counted
     await L.ctx.close(); }
   // the quiz (skills/quiz.js, frontier #17) is a learning card: never in the saved stage after a reload unless the visitor
   // kept that one card ("keep this quiz"); the gears it quizzed on are saved as always (void.html keptThings)
@@ -2648,7 +2648,9 @@ try {
     const M = await fresh(); await M.ask('show the map', 600);
     await until(async () => /The map/.test(await M.page()), 4000);
     const m = await M.p.evaluate(() => { const c = document.querySelector('.vpage.on'); return c && { rows: c.querySelectorAll('li').length, text: c.innerText }; });
-    check('rebuild-map: show the map lists the 13 rows as they stand now', !!m && m.rows === 13 && /14 games/.test(m.text) && /group and layer skills/.test(m.text)
+    // the Player Two row counts the games on the rack (skills/rack.js GAMES), so a new boxed game never turns this red
+    const { GAMES: rackGames } = await import(new URL('../void-live-deploy/skills/rack.js', import.meta.url).href);
+    check('rebuild-map: show the map lists the 13 rows as they stand now', !!m && m.rows === 13 && new RegExp(rackGames.length + ' games').test(m.text) && /group and layer skills/.test(m.text)
       && !/not started|queued/.test(m.text) && !M.errors.length, JSON.stringify({ rows: m && m.rows, head: m && m.text.slice(0, 160), errors: M.errors }));
     await M.ctx.close(); }
 
