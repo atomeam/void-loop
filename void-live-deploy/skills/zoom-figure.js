@@ -3,7 +3,8 @@
  * Detail steps up in this browser only (no texture download). An empty stage
  * stays empty: no figure is invented.
  */
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+import { cleanLower } from '../lib/ask-text.js';
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 export const LOD_MAX = 3;
 const BUDGET = { 1: 24, 2: 96, 3: 280 };
 

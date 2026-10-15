@@ -16,6 +16,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 - Grok Bot · grok/films-upload · V01D Tube phase 1: watch pages, views, RSS, Upload/Copy for YouTube, TikTok, Reels, X for anyone; ad clips into Films · 2026-10-15 05:20 UTC
+- Grok Bot · helper/converge · convergence map (docs/convergence.md), design system + homepage/ask/answer shell, repo automations · 2026-10-15 05:25 UTC
 - Grok Bot · helper/launch-kit · twitter card tags on homepage + V01D launch hook in void-voice.md · 2026-10-15 05:10 UTC
 - parallel agent · store-phase1 · V01D's own store: docs/store.md, /store page, /api/store (checkout handoff, Stripe webhook, signed downloads, license keys, receipt, order lookup), Gumroad fallback · 2026-10-15 05:10 UTC
 
@@ -37,8 +38,11 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Up for grabs
 
 - V01D Tube phase 2 (docs/void-tube.md, plan only): user uploads with moderation, channels, Gumroad for creators, comments. Its wishlist rows go into docs/wishlist.md once that file lands on main.
+- V01D's one-engine asks (2026-10-15 05:39 UTC, docs/void-voice.md), in its order: (1) the unified router + skill registry on /api/mcp (functions/api/mcp.js exists; check what it already exposes first); (2) automations wait on real completion signals instead of fixed timeouts; (3) a game-builder skill (description to playable WebGL mini-game card on scene3d); (4) a preview-and-approve upload card for clips (Films/V01D Tube track owns it); (5) a confidence score on every skill answer and a clip-to-skill metadata link. Its "a card materialises at the cursor" goes to design phase 2.
+- Convergence steps 2-10 (docs/convergence.md): next is the 7 ask-text variants + slug/urlOf/asOf into lib/ask-text.js.
+- Daily wishlist re-rank: waits for #721 to land docs/wishlist.md; then a job in upkeep.yml.
 - V01D's video asks (2026-10-15, docs/void-voice.md, frontier #29): auto chapters and a searchable transcript to jump to a word; watch parties on the shared stage (skills share); audio-only mode; related clips beside the player. Its "offline smart-cache" (pre-downloading) is declined: embed only.
-- Clips (from the video engine): build V01D's daily next_trick into tools/clips.mjs TRICKS and docs/video-tricks.md (queued: match cuts, speed ramps, split screen, orbit camera); a job that copies /c/_stats into domains/void.clips.json visits.
+- Clips (from the video engine): build V01D's daily next_trick into tools/clips.mjs TRICKS and docs/video-tricks.md (queued: match cuts, speed ramps, split screen, orbit camera) (the /c/_stats copy is now automated: upkeep.yml).
 - Wishlist: copy the three rows at the end of `docs/store.md` (store, creator platform, business email) into `docs/wishlist.md` once #721 merges (they were kept out of #721 because another session was editing that worktree).
 - Store: upload the first paid pack to R2 `store/voidquest-minis-v1.zip` (FILMS bucket) and drop `soon` on `voidquest-minis` in `lib/store.js`.
 - V01D's asks, oldest first (`domains/void.voice.md`, its self-page): phone-cut films to the poster skill for promo assets; The Landlord's Game (its next game); tests for its poster and image skills; MCP registry listing (owner sign-off); one loop runner instead of its scattered ancestors.

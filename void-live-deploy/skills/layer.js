@@ -4,7 +4,8 @@
  * Next #3 (grouped objects / layers), the z-order half. "put the clock on top" stays a position move (top of the screen).
  * Empty surface stays empty: nothing is added, and an ask on an empty stage only says so.
  */
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+import { cleanLower } from '../lib/ask-text.js';
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 
 const FRONT_END = String.raw`(?:to\s+the\s+(?:front|very\s+front|top\s+layer|foreground)|to\s+front|forward|frontward|in\s+front(?:\s+of\s+everything(?:\s+else)?)?|on\s+top\s+of\s+(?:everything|the\s+rest|the\s+others)(?:\s+else)?|above\s+(?:everything|the\s+rest|the\s+others)(?:\s+else)?)`;
 const BACK_END = String.raw`(?:to\s+the\s+(?:back|very\s+back|bottom\s+layer|background)|to\s+back|backward|backwards|behind\s+(?:everything|the\s+rest|the\s+others)(?:\s+else)?|under(?:neath)?\s+(?:everything|the\s+rest|the\s+others)(?:\s+else)?|below\s+(?:everything|the\s+rest|the\s+others)(?:\s+else)?)`;

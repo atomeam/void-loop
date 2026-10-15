@@ -5,8 +5,9 @@
  * "download motelet" stays with the figure skill (STL of that one body).
  */
 import { bodyFor } from './figure.js';
+import { clean } from '../lib/ask-text.js';
 
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = clean; // shared: lib/ask-text.js
 
 export function printFileOf(text) {
   const t = CLEAN(text);
