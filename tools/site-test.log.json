@@ -295,5 +295,13 @@
   "kind": "file",
   "key": "summon a sprite | nothing appeared",
   "note": "fix: \"summon a sprite\" nothing appeared; console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T17:47:37Z",
+  "passed": 17,
+  "of": 18,
+  "kind": "file",
+  "key": "give me a challenge with this | nothing appeared",
+  "note": "fix: \"give me a challenge with this\" nothing appeared"
  }
 ]
